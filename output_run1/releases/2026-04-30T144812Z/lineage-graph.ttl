@@ -1,0 +1,2481 @@
+(@prefix owl: <http://www.w3.org/2002/07/owl#> .)
+(@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .)
+(@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .)
+(@prefix dcterms: <http://purl.org/dc/terms/> .)
+(@prefix prov: <http://www.w3.org/ns/prov#> .)
+(@prefix dcat: <http://www.w3.org/ns/dcat#> .)
+(@prefix void: <http://rdfs.org/ns/void#> .)
+(@prefix eli: <http://data.europa.eu/eli/ontology#> .)
+(@prefix sh: <http://www.w3.org/ns/shacl#> .)
+(@prefix odrl: <http://www.w3.org/ns/odrl/2/> .)
+(@prefix slw: <https://stavropouloslaw.com/ontology/legal#> .)
+
+
+# ==============================================================================
+# STAVROPOULOS LAW - IDENTITY LINEAGE GRAPH
+# ==============================================================================
+# PURPOSE: PROV-O compliant identity continuity tracking
+# STANDARD: W3C PROV-O (https://www.w3.org/TR/prov-o/)
+# TEMPORAL PROOF: Blockchain + RFC 3161
+# ==============================================================================
+
+<https://stavropouloslaw.com/lineage/2025> a prov:Collection ;
+    dcterms:title "Greek Constitution Identity Lineage Graph"@en ;
+    dcterms:created "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    dcterms:creator <https://stavropouloslaw.com/identity/org> ;
+    slw:totalArticles 129 ;
+    rdfs:comment """PROV-O lineage graph tracking identity
+        continuity of all articles. Each article has genesis event with
+        blockchain-backed timestamp."""@en .
+
+# === Article 1 Genesis ===
+
+<NIL/1975/art/1> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 1 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/1/genesis> ;
+    slw:identityHash "64a9241d63f1098f97f20ecb98ea0705a2bf3d3d5b536d59cf6efc7af2e01732f0293f9727b4e9c6c4f5517352caab47e077121a0197d8916e81e97648183cd2" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/1> .
+
+<NIL/1975/art/1/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 1 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 1. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 2 Genesis ===
+
+<NIL/1975/art/2> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 2 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/2/genesis> ;
+    slw:identityHash "569cb31d2b9274e6349e810b761a8a725ce03b0abee61175336fd3bd3d853b1ff2fbdf74eb2990c0265414ec6fd68efd627c688efce580b3041db7719e705015" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/2> .
+
+<NIL/1975/art/2/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 2 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 2. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 3 Genesis ===
+
+<NIL/1975/art/3> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 3 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/3/genesis> ;
+    slw:identityHash "5295fdb2a89a904a238309fde839868664814908dd12d983330d72fe621ab59bd083f95cd8a90426ce464e83dafed884ab9a9c834a9e7c64a13d91764d1ea78d" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/3> .
+
+<NIL/1975/art/3/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 3 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 3. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 4 Genesis ===
+
+<NIL/1975/art/4> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 4 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/4/genesis> ;
+    slw:identityHash "2d1ea8fe2520cc9c9709e5d2dd88972e1cbdf8490313504aa950b768bc55b1477b56b39f1346a86a721a71b536a0fd2757644c9836b1c44317e8083e445f8bd3" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/4> .
+
+<NIL/1975/art/4/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 4 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 4. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 5 Genesis ===
+
+<NIL/1975/art/5> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 5 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/5/genesis> ;
+    slw:identityHash "a616c9b8f3dec2743a65ab24f53246becac1964b601bd29c1b052ed83061868a4fb2fbda01391c9fc43f4ecf3cf0a9e486cd02a4b0c63c41ac382b3d06411931" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/5> .
+
+<NIL/1975/art/5/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 5 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 5. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 5 Genesis ===
+
+<NIL/1975/art/5> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 5 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/5/genesis> ;
+    slw:identityHash "201d77d056983fb0cf247b9f77a552454aba2856dc55a4b94a7ebcf69c832369dac1de8d69121b688fe4694463525c9825d7f54fdfa1cac6a4f4f6d14a37a065" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/5> .
+
+<NIL/1975/art/5/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 5 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 5. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 6 Genesis ===
+
+<NIL/1975/art/6> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 6 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/6/genesis> ;
+    slw:identityHash "bec6f0bf588101c179167be6b31b53795b6c07077f3f2d09a3b6ba2ca34d01b723e3add9cfe2e4cbc6362dfaaadaa5492eddbdf50f2bd681dc76dd470d8b7e99" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/6> .
+
+<NIL/1975/art/6/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 6 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 6. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 7 Genesis ===
+
+<NIL/1975/art/7> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 7 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/7/genesis> ;
+    slw:identityHash "64803639e05a61c73f552b74ee9361683879715ecb91e15f2db3eac16d4ad14db69d4a4af4364f338a6ddf2e369e97bf82145716b88bfff27fabd3898ee5867f" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/7> .
+
+<NIL/1975/art/7/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 7 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 7. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 8 Genesis ===
+
+<NIL/1975/art/8> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 8 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/8/genesis> ;
+    slw:identityHash "f83e74e87453b2d37089c641c61bdfcb7de9f340b8430f5dafa0394261d07300bea14954438ceb8ef6a05f420ec2767deb0b1c9e571a1fcb5eade539311151bf" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/8> .
+
+<NIL/1975/art/8/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 8 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 8. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 9 Genesis ===
+
+<NIL/1975/art/9> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 9 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/9/genesis> ;
+    slw:identityHash "634b23968c79279d6572fc9abb8a1ccb5fa72acae37ffeb15d21221ebb21007a800610e58137ba08e04df77202021a59d33d339fa7209d7ecd05448fdbd8c10c" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/9> .
+
+<NIL/1975/art/9/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 9 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 9. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 9 Genesis ===
+
+<NIL/1975/art/9> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 9 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/9/genesis> ;
+    slw:identityHash "5f493a2edd87f731e4d4eda569006c902a88018f67333ea2faf96c221b80ef3340d70606cb5134d239ac0d342938f159a0913e0116c65bb6c29cfd3e0485ed48" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/9> .
+
+<NIL/1975/art/9/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 9 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 9. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 10 Genesis ===
+
+<NIL/1975/art/10> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 10 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/10/genesis> ;
+    slw:identityHash "b5c5cd782478b8c0c4c3982001b7a9f20b9f4022a1e654198304d18219f4e26a8707b0586e5666748c749020987afac8a14d58f53c4ea122f5973015c256b364" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/10> .
+
+<NIL/1975/art/10/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 10 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 10. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 11 Genesis ===
+
+<NIL/1975/art/11> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 11 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/11/genesis> ;
+    slw:identityHash "f479c7babf04c3f02088aefd2392629c2d072a579fd74c3b7681fa70985ae5b78541e03c1e0458f72eade2d0dff578f73f3067c0791bc5a770fd00403887a8e5" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/11> .
+
+<NIL/1975/art/11/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 11 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 11. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 12 Genesis ===
+
+<NIL/1975/art/12> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 12 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/12/genesis> ;
+    slw:identityHash "a951254106ae0d4454af27cec91d1d447650517d9ac30fb16c254565dece46f93a9010e9c2d747af0da71db044284312f7bb316f7aa04a2cdaadbd021116d182" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/12> .
+
+<NIL/1975/art/12/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 12 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 12. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 13 Genesis ===
+
+<NIL/1975/art/13> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 13 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/13/genesis> ;
+    slw:identityHash "2a8a357cd0f676211d8f2206038356c18fd6a3b2d75c6933a7708ca19f94e843f7411df4a4dc4480b052adfd32fa790b7062305d5953a576d5407c2be7437fc7" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/13> .
+
+<NIL/1975/art/13/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 13 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 13. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 14 Genesis ===
+
+<NIL/1975/art/14> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 14 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/14/genesis> ;
+    slw:identityHash "d761ada0f9e4ac344dfd2217fc8f7029177712b0de7c4335d92b42bfdc5edb33156c9f83cbc0c50684368a0496b3a6d777112577da52f8fbde828072dcc1cc9e" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/14> .
+
+<NIL/1975/art/14/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 14 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 14. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 15 Genesis ===
+
+<NIL/1975/art/15> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 15 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/15/genesis> ;
+    slw:identityHash "6e787cc6e941fbdf290bcf3e143d566ba1769d7deef3c028a0dcf784045134769479a5c7442705e34a0bc1c9e6d53d58ff674f0e9f831c7cb4cbf7dbdbdf7e7b" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/15> .
+
+<NIL/1975/art/15/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 15 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 15. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 16 Genesis ===
+
+<NIL/1975/art/16> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 16 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/16/genesis> ;
+    slw:identityHash "8ed15c1a6c099ee39d084368bd2fd6e1c0c84a0e3908b1fb400f4051826aaed4cef92189856f145a9733268f60bfb46f08646636a434e239040efb3f397eb5a2" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/16> .
+
+<NIL/1975/art/16/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 16 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 16. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 17 Genesis ===
+
+<NIL/1975/art/17> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 17 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/17/genesis> ;
+    slw:identityHash "54e37055c2adeea129f8fc06130907125a691c5d1266ad9d25d8c2f8febfcbea97ab39a1386fd235bb611c240b0360e61f50ed48f155d3ce54007430fe20c5bd" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/17> .
+
+<NIL/1975/art/17/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 17 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 17. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 18 Genesis ===
+
+<NIL/1975/art/18> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 18 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/18/genesis> ;
+    slw:identityHash "33bc8195d0787293edd4b5baac949783e467095844a5ecd4ec4c281002c309f6af29dbafd9d8e33a766786a348de28b0cd3a8ffc0de70ef78e1048c823aa9198" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/18> .
+
+<NIL/1975/art/18/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 18 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 18. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 19 Genesis ===
+
+<NIL/1975/art/19> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 19 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/19/genesis> ;
+    slw:identityHash "9a0439d74ddbea15828ef8a82eaa9964ffc3c7a9748b4e3e7a4a7b91e1fdeef19be501c949e29d98f0045bca08244969c61680269f8d64d6a2d84f8765c950f1" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/19> .
+
+<NIL/1975/art/19/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 19 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 19. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 20 Genesis ===
+
+<NIL/1975/art/20> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 20 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/20/genesis> ;
+    slw:identityHash "70d55318541acce1adf1e0b04da4a608babc6ef47d58c7d5a92699515e2176891b7b45c2b75accc8587e4c025fb074b563c454219f9754b6c1eed751acb3b471" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/20> .
+
+<NIL/1975/art/20/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 20 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 20. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 21 Genesis ===
+
+<NIL/1975/art/21> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 21 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/21/genesis> ;
+    slw:identityHash "89beadadf2d8ce94c0c906c6402912e840cebdf883c2e2e0a0c3f9bf627264f571302c66b08acb8a43d10d5a24ce0a18fd636bc7957f110b4263395b5e5a0d66" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/21> .
+
+<NIL/1975/art/21/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 21 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 21. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 22 Genesis ===
+
+<NIL/1975/art/22> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 22 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/22/genesis> ;
+    slw:identityHash "c1c9ef48e5a1e83727c1e6d9762a1a58a14489e345cafb3dea212b352b629f2c33108069e1ab968b43d88f8daf323f4790c821f6923ff9c5a65465e5a7aa5ee3" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/22> .
+
+<NIL/1975/art/22/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 22 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 22. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 23 Genesis ===
+
+<NIL/1975/art/23> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 23 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/23/genesis> ;
+    slw:identityHash "fed3ffbb8a9124c90ba0f266a25decfb8ef3b2b0673a03a4bf38226c3be6f9262508473ff63f9a75917c0c2f38bb5bd4733b022fad8c61b473bed12d26134280" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/23> .
+
+<NIL/1975/art/23/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 23 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 23. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 24 Genesis ===
+
+<NIL/1975/art/24> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 24 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/24/genesis> ;
+    slw:identityHash "29cb29553b0629e7cf96f8e17dedb60a0548425f7a14c1073a65452317cf8a936d66d71877d55f811d0089f5e8acc4aadcbe177f1f125fe8c245c01f201b22b0" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/24> .
+
+<NIL/1975/art/24/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 24 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 24. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 25 Genesis ===
+
+<NIL/1975/art/25> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 25 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/25/genesis> ;
+    slw:identityHash "a9a34169772322eb81e6f16cdafe63278f96c24f6ca927ad810463b60d3e2e91ff6aa1c354d91a783824d22b861b3c16ee2dfb1620e9957d314809ac0c04e383" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/25> .
+
+<NIL/1975/art/25/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 25 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 25. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 26 Genesis ===
+
+<NIL/1975/art/26> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 26 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/26/genesis> ;
+    slw:identityHash "7236f12248516a02087de56c375ee358447bcaee421b8d28e3ade2b10f5515f7452c965850820747b1b296786c68bb0e44a0d48c3bba874b9500bd3cd28c14ea" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/26> .
+
+<NIL/1975/art/26/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 26 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 26. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 27 Genesis ===
+
+<NIL/1975/art/27> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 27 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/27/genesis> ;
+    slw:identityHash "6348b1115fed01f61a82fbf40cb37406ff6b9d95c090a38c62a8d67c6468d5de7e6a23ee586f7ab7246f98fe48d8baac8fc428a52cf0ca2d5705d9143c123d51" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/27> .
+
+<NIL/1975/art/27/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 27 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 27. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 28 Genesis ===
+
+<NIL/1975/art/28> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 28 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/28/genesis> ;
+    slw:identityHash "e2c2aa9e5096dc7ceca8554b4dae2ee7fc8a35f1b359a3a02df611ff119c481aecab9949afa0c1b80ec3f4c4942167d1db489d0b601d5bbc4776c53198fe557d" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/28> .
+
+<NIL/1975/art/28/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 28 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 28. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 29 Genesis ===
+
+<NIL/1975/art/29> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 29 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/29/genesis> ;
+    slw:identityHash "ce2378d3a740158bbabb78e4f3ee764fee544cc1b389574cb08872b212e9ea98bc6ae89ce4e001622158c47766d872cc6d9e50411089df08eef07c18a999d650" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/29> .
+
+<NIL/1975/art/29/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 29 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 29. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 30 Genesis ===
+
+<NIL/1975/art/30> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 30 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/30/genesis> ;
+    slw:identityHash "678c43a336745601eae90430cf435d7417810970b03c12199b41190bb6cb38cb436e27eed510844fc61de32fe5b0ac01d95c65c8d84ebce2addc3b308d79d464" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/30> .
+
+<NIL/1975/art/30/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 30 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 30. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 31 Genesis ===
+
+<NIL/1975/art/31> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 31 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/31/genesis> ;
+    slw:identityHash "14e4bc257521108a2e2f6b7dc3401ced6583903fc29f332dc0e1ca4eacf99dddc9f0dd4f02af4f36a1b1221b4925a6f23c8b25c99498ad5413b7f078e68d3639" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/31> .
+
+<NIL/1975/art/31/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 31 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 31. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 32 Genesis ===
+
+<NIL/1975/art/32> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 32 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/32/genesis> ;
+    slw:identityHash "d2d79caa6d698338005fb77e63c3a452d5a292932a6f586563b2f44c49b7d7df10f061be3e7c2f619cde2f377e6fa6929f90823dc868cfa9d9d491aa2dc4268a" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/32> .
+
+<NIL/1975/art/32/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 32 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 32. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 33 Genesis ===
+
+<NIL/1975/art/33> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 33 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/33/genesis> ;
+    slw:identityHash "267a8a6f20f17b999160c9df4fa6cb17bbe458722c36662785311e94601ea8ca39b86d26e92c9252bd03f1c27a4315a692dc4be734e695d646e6755f22c1b552" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/33> .
+
+<NIL/1975/art/33/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 33 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 33. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 34 Genesis ===
+
+<NIL/1975/art/34> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 34 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/34/genesis> ;
+    slw:identityHash "446e42b4aa87ad1586e74fb688bb7c96e1f944e574c35bcc6704c8a6c6e94130fdd2505c18dcd87fc8d9679746ec23e7556f8423f0fec3eeb6e8929ad34dbf7b" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/34> .
+
+<NIL/1975/art/34/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 34 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 34. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 35 Genesis ===
+
+<NIL/1975/art/35> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 35 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/35/genesis> ;
+    slw:identityHash "c8b545f67ee543a0ce12d548ba4214740bbe26a9abdf2bcd256ab476fd175e7fed140135c23498764f0a49afebb2af0e33977038cb2a80967cfa3e271e6ba515" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/35> .
+
+<NIL/1975/art/35/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 35 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 35. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 53 Genesis ===
+
+<NIL/1975/art/53> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 53 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/53/genesis> ;
+    slw:identityHash "21d72db5c9c5d286eda42379cd2d2c7a81107400db0b49d73f99d42ed116c9e08bc1319272ef5b581c4f8a4d0e389b479e0114565c4615fc60cf2d89814192ae" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/53> .
+
+<NIL/1975/art/53/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 53 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 53. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 36 Genesis ===
+
+<NIL/1975/art/36> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 36 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/36/genesis> ;
+    slw:identityHash "b7c88c2508561fa0e3406a76f30d6aa2a68cd8f0e2900a174db16b57d2a47f3550a0cf04d7a618d7029cdcb2f7e4f178e86646a698ff7320111cfef0eb661826" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/36> .
+
+<NIL/1975/art/36/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 36 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 36. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 37 Genesis ===
+
+<NIL/1975/art/37> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 37 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/37/genesis> ;
+    slw:identityHash "ae71277e31ca0d5e69b8972b35e8e9930e1fe65afb1e99770a2691505945715a8b6ecb46e802c333106cb28b7d933d1e863e6b812464c94e80105d7a37768846" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/37> .
+
+<NIL/1975/art/37/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 37 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 37. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 38 Genesis ===
+
+<NIL/1975/art/38> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 38 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/38/genesis> ;
+    slw:identityHash "c9ad3a46a3bded76143acbf9380c240ad978cdedd15bc6d089ed166af80a8824b10c33ef50a9890e76819fd429a63b1ca7310b75caf85d473ad2644010282cee" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/38> .
+
+<NIL/1975/art/38/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 38 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 38. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 39 Genesis ===
+
+<NIL/1975/art/39> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 39 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/39/genesis> ;
+    slw:identityHash "2be02e18157f8978e66a4cb9416588e755d82b1f5ae5aeb4f3fc36d2efe368de658489fe47e99add98c6dd43ff7781bbc355fdcf96b2d179a28725d0d5b4eebc" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/39> .
+
+<NIL/1975/art/39/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 39 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 39. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 40 Genesis ===
+
+<NIL/1975/art/40> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 40 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/40/genesis> ;
+    slw:identityHash "d4446ee4e8b6c98e970477ca8d27874e26828534c98b155932b0bcd2d6fc261e6ca0a7c2ea87f9a9d47f238c78d2f62eac341f50bdf806d959669d3295fb4bc7" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/40> .
+
+<NIL/1975/art/40/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 40 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 40. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 64 Genesis ===
+
+<NIL/1975/art/64> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 64 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/64/genesis> ;
+    slw:identityHash "f1e88bbc897e4133fe7aad8b82c9d5a7aa9f832796602bf0d97ba93b592cf98b6c77e4cb299a138daff72a1be0f13688e631cae62bb7948fc95d650db3efe019" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/64> .
+
+<NIL/1975/art/64/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 64 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 64. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 41 Genesis ===
+
+<NIL/1975/art/41> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 41 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/41/genesis> ;
+    slw:identityHash "9910ab181d171e3e2fa414352042de9f03656420a7768e999a1c26c9bddde02d773076b2bbbe49815a90d4a4d004a59e60c84680c94c4fed568de48a168872b8" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/41> .
+
+<NIL/1975/art/41/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 41 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 41. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 42 Genesis ===
+
+<NIL/1975/art/42> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 42 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/42/genesis> ;
+    slw:identityHash "08860c48679a8f0bbbfb1be8d2cd64cfb5c51add0f451f27bc47357b230b0180d7302680d19d505a353c79b8fedff7a297c4bac1b24f08139eefea17e05ba596" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/42> .
+
+<NIL/1975/art/42/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 42 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 42. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 43 Genesis ===
+
+<NIL/1975/art/43> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 43 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/43/genesis> ;
+    slw:identityHash "7ab3cfbe05ac89b5eec3e2accefd7ce392f789873cc934fb731148bc85d760ecc4e52462daef09b1fc7e07d57da1fc144a439dc7d7846929ec1a9b7df5d0480e" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/43> .
+
+<NIL/1975/art/43/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 43 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 43. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 44 Genesis ===
+
+<NIL/1975/art/44> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 44 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/44/genesis> ;
+    slw:identityHash "d9651253c4d2d5790d176c24b053463451fa25d520d1832ed6309c7bf4cce1bb0c887fe628d0ae9022c44a68e630db45c56ef7c3c5b6a48f1a13944b6abded5a" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/44> .
+
+<NIL/1975/art/44/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 44 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 44. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 45 Genesis ===
+
+<NIL/1975/art/45> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 45 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/45/genesis> ;
+    slw:identityHash "8e24d8452bc4cde389a3069908c56b34a117761f79cd39ef680d45fd4bf0bdb2b0d384d63d0d952b2a7cc2cd0531e4c46f541e6800fe8dcae65c46fd25b0c464" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/45> .
+
+<NIL/1975/art/45/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 45 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 45. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 46 Genesis ===
+
+<NIL/1975/art/46> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 46 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/46/genesis> ;
+    slw:identityHash "362dcb37739f1beb90b19c2f97a58f55f68f5c0ae25bc0d64bed9ae13954693b71be48abf5237c18e5c1f76f5d39a49dc4314e8b7e698fbc59fe322318dc4ade" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/46> .
+
+<NIL/1975/art/46/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 46 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 46. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 47 Genesis ===
+
+<NIL/1975/art/47> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 47 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/47/genesis> ;
+    slw:identityHash "835dba832f48d4c51cd5ecfedab1daae58c7adb25f8898cf77ce87a9b920eb43d002727248e87cd8be0ac9a62b424a2b1030cd919330e8676ea9c5160f44b6c2" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/47> .
+
+<NIL/1975/art/47/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 47 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 47. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 48 Genesis ===
+
+<NIL/1975/art/48> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 48 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/48/genesis> ;
+    slw:identityHash "7ea00df86a3e0e8164154a4e77409184ea25a7b2753e5072fa04b57bbf08b1ace14cee09e1ce8aa99ad68f6a899cc64666b97a9baee178ac5a2e06cacf4fd77b" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/48> .
+
+<NIL/1975/art/48/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 48 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 48. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 49 Genesis ===
+
+<NIL/1975/art/49> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 49 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/49/genesis> ;
+    slw:identityHash "9e55282508c3495cd1ffa8bc29c6bbf1cdf65d56565fc74e3d27c00869340354a16ca06582648d03378f8223e5e50d460a99935b9c122f52a1cba56a3a054079" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/49> .
+
+<NIL/1975/art/49/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 49 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 49. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 50 Genesis ===
+
+<NIL/1975/art/50> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 50 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/50/genesis> ;
+    slw:identityHash "02fddca990c9254812edf59c732404e75333950c39f1aa9164390ce531a919332b920bbd4fdfa6dcdde0b463568f8b9bea5c6a05e34099ea569148bdbd2c2784" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/50> .
+
+<NIL/1975/art/50/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 50 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 50. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 51 Genesis ===
+
+<NIL/1975/art/51> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 51 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/51/genesis> ;
+    slw:identityHash "313f74fe850683ef0bca8e109075000b9f075cd8d1a0e956b765ca6f400c5ae7282510ffebb0b7ddf27fb0a83cc49a5bca315ca0dc7385c86135c214141e2fd9" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/51> .
+
+<NIL/1975/art/51/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 51 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 51. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 52 Genesis ===
+
+<NIL/1975/art/52> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 52 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/52/genesis> ;
+    slw:identityHash "0b82a41ecbb69bcffd11835a079502fcedbdf935075acc65cab17af49f0e6d73a3dd5251086b0183238569bb8bda62d5f9d55226e3291c0255d3d51e78de54ae" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/52> .
+
+<NIL/1975/art/52/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 52 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 52. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 53 Genesis ===
+
+<NIL/1975/art/53> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 53 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/53/genesis> ;
+    slw:identityHash "ca5a508f245e02464e4dfdca3ce1161e56952fe21f73b19027ffa1465c40d247e24f2ec184bd0c0ea2a45eb9630c17fafa8b5c0d40eba09245dcc0d063229d55" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/53> .
+
+<NIL/1975/art/53/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 53 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 53. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 54 Genesis ===
+
+<NIL/1975/art/54> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 54 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/54/genesis> ;
+    slw:identityHash "64b207b63d77e8336862f2c6e8f83a6727f2da3f93508803d4338b5da7b318606a6e9c9c68e1421197b9431e329e2b15dde846b64f6576fbb2ddafee6144a6e4" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/54> .
+
+<NIL/1975/art/54/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 54 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 54. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 55 Genesis ===
+
+<NIL/1975/art/55> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 55 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/55/genesis> ;
+    slw:identityHash "480734aada7fd595864605f8f0ab48b07fad98956cdc289b320c2764fd0c15a8313e7cc11171988e43be6e3cb936f81394b647a14bb58a01c9cabab5a22cf1ad" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/55> .
+
+<NIL/1975/art/55/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 55 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 55. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 56 Genesis ===
+
+<NIL/1975/art/56> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 56 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/56/genesis> ;
+    slw:identityHash "5c6fb39fc63e16a00d9153dca767c2ca8762e74181c00b84ab0b9aedb4e4f367354b252f3ec3a9d91dacc16ac2d834710885600324896b54b46810989bc90237" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/56> .
+
+<NIL/1975/art/56/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 56 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 56. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 57 Genesis ===
+
+<NIL/1975/art/57> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 57 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/57/genesis> ;
+    slw:identityHash "8b68af272dbe0564a3eded8db7318fcc1853491ca546965fdc33eac48a80ea2e6549d9095714d1f885f8bc34b113e6247675677dd3ba616d8fe8f86a1037125f" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/57> .
+
+<NIL/1975/art/57/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 57 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 57. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 58 Genesis ===
+
+<NIL/1975/art/58> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 58 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/58/genesis> ;
+    slw:identityHash "ad0a60069de967f8dafc2fee5a4124535401773a917f15ca6db0802e232bf93b4961049f2c885a4f025ab85b135c235b7573455ffec3824bead7dba9dd834881" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/58> .
+
+<NIL/1975/art/58/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 58 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 58. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 59 Genesis ===
+
+<NIL/1975/art/59> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 59 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/59/genesis> ;
+    slw:identityHash "d027b2f751d5cf3d88cf40e48191a0a3219d6876c35f7400302ae98743ecdb2102e37a40a8f5e1485a5840c677b1c40a31802ecbe8215637952d1c80c866a3f3" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/59> .
+
+<NIL/1975/art/59/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 59 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 59. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 60 Genesis ===
+
+<NIL/1975/art/60> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 60 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/60/genesis> ;
+    slw:identityHash "9bb5c80a84e8d87e61bc4f72326fe464deb5c13e0585e5cbc27674cb9bb7aa131a1438803e6a46ff9b05139edcd3368fbe4899df947310fdf6084264859c2e1f" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/60> .
+
+<NIL/1975/art/60/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 60 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 60. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 61 Genesis ===
+
+<NIL/1975/art/61> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 61 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/61/genesis> ;
+    slw:identityHash "9cd6f28598d748bcccd3e9f86cf65d4fc8f8655c5e270d401e6765f43ec30074693cc7aae85b66ceeeef4e99bdeb8d9eb7be63d1c8213d2b00dec4399d3ac08d" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/61> .
+
+<NIL/1975/art/61/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 61 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 61. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 62 Genesis ===
+
+<NIL/1975/art/62> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 62 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/62/genesis> ;
+    slw:identityHash "b65f185b0eab02dca46502d7d5144b36bfada4bf3c501522588fa2d7d48e16f2c232bc97700279b364a60303949a43c7b929748d2bb8f4694155de4edbee5377" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/62> .
+
+<NIL/1975/art/62/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 62 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 62. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 63 Genesis ===
+
+<NIL/1975/art/63> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 63 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/63/genesis> ;
+    slw:identityHash "7441034324a078bf5e539d04cc8f7199c6e25161831a0f8ebd65c2b885b4589adb6114fef347fdb3b9d0ac29deb5b31b180836eea512ea6d153bfaa1672984c1" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/63> .
+
+<NIL/1975/art/63/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 63 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 63. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 64 Genesis ===
+
+<NIL/1975/art/64> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 64 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/64/genesis> ;
+    slw:identityHash "19bf1610e4838162968c10e36e7550f0d75da2042e66b94d3c613abb7b104a1c7cef82616ce3cdc7870c390aa781e169c74710ba03215272218c9e1b4450fa2e" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/64> .
+
+<NIL/1975/art/64/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 64 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 64. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 65 Genesis ===
+
+<NIL/1975/art/65> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 65 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/65/genesis> ;
+    slw:identityHash "0bea4e66733ca2c6f02f3e519e887721d2a0b9e625d8baf23c7243dadbb023a6bc4e37f77683670f6a3be71f0bab2105e590098803edcc18439293bd2207ab9f" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/65> .
+
+<NIL/1975/art/65/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 65 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 65. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 66 Genesis ===
+
+<NIL/1975/art/66> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 66 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/66/genesis> ;
+    slw:identityHash "eae86a169afa9ed0c6863772d7a227dcccde5f152d0ae204f1d8c5b3c826347da10917d21948e35666879c562a15586e2c63d336f6df6571e5c390e1525d391b" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/66> .
+
+<NIL/1975/art/66/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 66 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 66. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 67 Genesis ===
+
+<NIL/1975/art/67> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 67 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/67/genesis> ;
+    slw:identityHash "3013fef6d9482a2d37532c91152dfb869fca01c527744cff26aa163a70acd37e6090300f289c257bc75f61021da21a906d4279abd851fab79289769c2904bb01" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/67> .
+
+<NIL/1975/art/67/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 67 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 67. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 68 Genesis ===
+
+<NIL/1975/art/68> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 68 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/68/genesis> ;
+    slw:identityHash "dee1c810b10c2300b49b2a91025d4fb54bacbff784577e75e85a7d8b22b3783f72e7cc1651e62214564313f248ea3261ea559404d090df07953b8f9973b6d5c5" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/68> .
+
+<NIL/1975/art/68/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 68 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 68. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 69 Genesis ===
+
+<NIL/1975/art/69> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 69 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/69/genesis> ;
+    slw:identityHash "2710ba714a2742cd1bd2a578e5afe63370457cfa3d207d30c94e043402473967ef874bd37afe640d99cfdcd49d29c67b712d124f57adcc90083c8be13157819d" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/69> .
+
+<NIL/1975/art/69/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 69 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 69. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 70 Genesis ===
+
+<NIL/1975/art/70> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 70 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/70/genesis> ;
+    slw:identityHash "edd313b09535061dba0afc0a732402883ef715f9f93d02560bf23bfb018417a9a7ca33efebbed6ce5ef79a4c2e007885afffb391a114fe4e465fc9e60a69ee9d" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/70> .
+
+<NIL/1975/art/70/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 70 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 70. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 71 Genesis ===
+
+<NIL/1975/art/71> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 71 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/71/genesis> ;
+    slw:identityHash "5ece5eeb9dff3c7b81d40677139bc47b396aa9cd750e4d76906b097e4a71bda10cd8083c8ef8a6156c69acd8cc0f49e57e05cf1e3d45552329f5c6fee35fc19a" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/71> .
+
+<NIL/1975/art/71/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 71 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 71. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 71 Genesis ===
+
+<NIL/1975/art/71> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 71 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/71/genesis> ;
+    slw:identityHash "a067c5c716d90b4dab173b692a6f041919efc508cea0d8cc873fd0aca2b2bd6bbe6bfa2b8222652c9d6c088caf4ff086d8bc09e11b9f488d98e1c7b1ee34635d" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/71> .
+
+<NIL/1975/art/71/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 71 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 71. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 72 Genesis ===
+
+<NIL/1975/art/72> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 72 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/72/genesis> ;
+    slw:identityHash "8261410378494df663b0721c4d0270d2c0e95db0ee895f49a9e7e80faccda4cdcc9dd412eb7b2181cded221c11cd8a4a824fb73b8301a85d9293519966cb7949" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/72> .
+
+<NIL/1975/art/72/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 72 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 72. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 73 Genesis ===
+
+<NIL/1975/art/73> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 73 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/73/genesis> ;
+    slw:identityHash "3b14e277d54f300116d019d7ff519a9bfb6bb58517a528d455c478f7f24c2c40894ee92f461dc7447ef5c77b5855dc30f8cbc6eef49958c50ef8e5d5a0a80e43" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/73> .
+
+<NIL/1975/art/73/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 73 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 73. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 71 Genesis ===
+
+<NIL/1975/art/71> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 71 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/71/genesis> ;
+    slw:identityHash "c6168f4f7f2a322d1aa2107afa81944f994de46692afa2955deb6997ebec7e4110a86ba996f6b9a0091807603f530e676d1c93ea6668d41bb3228e25b715504f" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/71> .
+
+<NIL/1975/art/71/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 71 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 71. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 74 Genesis ===
+
+<NIL/1975/art/74> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 74 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/74/genesis> ;
+    slw:identityHash "4e819b5d0525f9dd9152b4cde92449b54442a94e6effc7100f847d7863e1e8ea8a7e9e87dbd8092f4ca7ea42510880ae10c4881b775b08a841b41d2085dc9218" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/74> .
+
+<NIL/1975/art/74/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 74 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 74. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 75 Genesis ===
+
+<NIL/1975/art/75> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 75 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/75/genesis> ;
+    slw:identityHash "c5d8d0cb35b387ab17aa4d92ee41bd6f86a04c9293a4ddbccc94f5f1a5a05f2d573ded2dd968af9d684477b9d140645b72ee9b8e4639067184c81a4fd5b2dfc1" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/75> .
+
+<NIL/1975/art/75/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 75 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 75. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 76 Genesis ===
+
+<NIL/1975/art/76> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 76 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/76/genesis> ;
+    slw:identityHash "2acf02b468b165ce6505e0f481fec8b204a61c53d60ccbcd5acb8d3a5ca519f783c496bdcd0a844e6a3e885f9e32b22246e8c918ee3dfaed891d23f5072a99f4" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/76> .
+
+<NIL/1975/art/76/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 76 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 76. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 77 Genesis ===
+
+<NIL/1975/art/77> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 77 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/77/genesis> ;
+    slw:identityHash "179fcb1392c1d78d1fd66006e205733f702c9da9cd2cd9f6a21dca2e385de78d73fe0df43321776ea90e22e541cb479f19f01e511b1fbf9ed12d5e6804640085" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/77> .
+
+<NIL/1975/art/77/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 77 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 77. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 78 Genesis ===
+
+<NIL/1975/art/78> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 78 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/78/genesis> ;
+    slw:identityHash "a7d811612a45a383d4e372e342f5e40f3da79f71426b88f414ba7d28c439bfe6330d41c149169fc25121866462ea2ef22c6751f5372f2c732305f40fc6134cb7" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/78> .
+
+<NIL/1975/art/78/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 78 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 78. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 79 Genesis ===
+
+<NIL/1975/art/79> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 79 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/79/genesis> ;
+    slw:identityHash "100f69ab4fdc86d4ecb7724e474281d60f191c63a97de3fe86afba25385347add45a1bc15ddc3780928ea8afb34259ea28bca23a204e86e1fcd8b192059a236d" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/79> .
+
+<NIL/1975/art/79/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 79 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 79. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 98 Genesis ===
+
+<NIL/1975/art/98> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 98 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/98/genesis> ;
+    slw:identityHash "dae7cd661ca70d1724ce7ea72f55da156a3fe8b4179c288f84f23fa09652df5fe20b9c210018e0c478013330660ff54be85b33bdabae4f2c6cec3fb2318d3c79" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/98> .
+
+<NIL/1975/art/98/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 98 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 98. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 80 Genesis ===
+
+<NIL/1975/art/80> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 80 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/80/genesis> ;
+    slw:identityHash "bab8b3317040abafe25594acd51e041e11d11ed61f8a669b498e718842e4ba917356be7a4be80f9989986f5d0041e0ba934f1e32832b62a5cd7f48e682735880" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/80> .
+
+<NIL/1975/art/80/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 80 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 80. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 81 Genesis ===
+
+<NIL/1975/art/81> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 81 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/81/genesis> ;
+    slw:identityHash "bf83247ee1a3b0dbadef9e3177db7965fe282a9408fda29aa0c8570cd97f0bb05011ce78ad2ec1bc305af179b343ddf7e0a7a17794926847f5690d9fd0f7a4da" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/81> .
+
+<NIL/1975/art/81/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 81 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 81. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 82 Genesis ===
+
+<NIL/1975/art/82> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 82 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/82/genesis> ;
+    slw:identityHash "6e1e81cd57f24f4340261c208375e1b798ea27cce57b412c3c7b755ad6bac3479d49c731cab70a80402d6e02562ff29adf8d7a1a492631fb8977eaec780d2bd5" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/82> .
+
+<NIL/1975/art/82/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 82 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 82. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 83 Genesis ===
+
+<NIL/1975/art/83> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 83 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/83/genesis> ;
+    slw:identityHash "d7a47814bddda5453b21779a5c10159faf5da199205cf68825591a8b60ce331e3ec9ce721fc85aa0c5e38542a6d2144f6380291dcb6e5b9a8f0b9219b52ad80c" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/83> .
+
+<NIL/1975/art/83/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 83 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 83. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 84 Genesis ===
+
+<NIL/1975/art/84> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 84 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/84/genesis> ;
+    slw:identityHash "2923bc01f5761a7ba44711a1357fa21349f0afc6be671ca356baf2ffdb750bf9772c61c012369561f6368a2cb7b084db2e388510eb89888eda188943aa84718c" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/84> .
+
+<NIL/1975/art/84/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 84 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 84. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 85 Genesis ===
+
+<NIL/1975/art/85> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 85 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/85/genesis> ;
+    slw:identityHash "cc57469376764482a6fcb87398f3322e0f8ff2783f95148137103ef4d08b8a4017529e97443dae08399e46c11735e829c91427426ecc1dbb103b90089fdc9e13" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/85> .
+
+<NIL/1975/art/85/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 85 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 85. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 86 Genesis ===
+
+<NIL/1975/art/86> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 86 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/86/genesis> ;
+    slw:identityHash "a6d7999b101e8445bcf6c9c62ce5f3e2cf385e1f93be6ef6f513a574daab71eed3bcf42acc1eb1b1843d6c571b5d7fb17bbb4f60daa20970198f6cd4e25ffa4e" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/86> .
+
+<NIL/1975/art/86/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 86 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 86. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 87 Genesis ===
+
+<NIL/1975/art/87> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 87 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/87/genesis> ;
+    slw:identityHash "c37461ac93a6b54da70927e9944abf5b42118f3d84afce17f4144b5375091855e1702996d35070b9190babcd09f4e414b5269deb07a2d843ea0381fa0a7b34df" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/87> .
+
+<NIL/1975/art/87/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 87 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 87. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 88 Genesis ===
+
+<NIL/1975/art/88> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 88 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/88/genesis> ;
+    slw:identityHash "0e22d5e6cef386962da80219f9828a1f1efe4f198870ba97365faeb0e5fe203aabdaee2f44a8a2c2ead02cb90d90dc46dc5d04c317b662dd176bfe0a17e0e4d6" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/88> .
+
+<NIL/1975/art/88/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 88 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 88. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 89 Genesis ===
+
+<NIL/1975/art/89> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 89 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/89/genesis> ;
+    slw:identityHash "0729ef4fb04aa1f28a659815ad03d65a10d780bcb287247f418291775d0fb3f6323934be2d02c04d9b1ebb036a5d0115b8030ca6cac86b8d1944980297c4b1c3" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/89> .
+
+<NIL/1975/art/89/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 89 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 89. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 90 Genesis ===
+
+<NIL/1975/art/90> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 90 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/90/genesis> ;
+    slw:identityHash "a4f33aad3ee2376bcab5427ecf6a6a9197abf8ee92a97804829640ea8305681bec654d2c62c853bb436b056b6219ff003c2565ab713d9517d7ba5bf3a10a130d" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/90> .
+
+<NIL/1975/art/90/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 90 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 90. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 91 Genesis ===
+
+<NIL/1975/art/91> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 91 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/91/genesis> ;
+    slw:identityHash "51998261894c08b188c61d938ffa8045dc6f03f8897c6f471e4f85c32f5b0fea07d1863c0921b9ceed2e6954338a392d14ae7408aa92c9569e1a1ece8ad08f75" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/91> .
+
+<NIL/1975/art/91/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 91 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 91. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 92 Genesis ===
+
+<NIL/1975/art/92> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 92 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/92/genesis> ;
+    slw:identityHash "ccd9ef1edae038215928ea5722254e9ab9fd0da288985850a26ab7ee074690d2f5e33843087774ec10e316766528cfafc0bb2bb84a33a46e0560861992ca6072" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/92> .
+
+<NIL/1975/art/92/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 92 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 92. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 93 Genesis ===
+
+<NIL/1975/art/93> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 93 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/93/genesis> ;
+    slw:identityHash "b7a67a9d0542e66d9ff160dfdba290cc0b9b8479b739eeaf94247b2a613f1d8420ee5b6122f9fb3272d2398b25a7e69e08acbb4c8b27839d5eccca77d9834322" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/93> .
+
+<NIL/1975/art/93/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 93 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 93. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 94 Genesis ===
+
+<NIL/1975/art/94> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 94 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/94/genesis> ;
+    slw:identityHash "3f5229ed60a618706677d57be39980387955143195aef43a6ebdcd02ff204b8fb3ef08156636f05326cb2365503361c43f4751f2e35a5d9cf57b8aebf7e58baa" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/94> .
+
+<NIL/1975/art/94/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 94 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 94. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 95 Genesis ===
+
+<NIL/1975/art/95> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 95 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/95/genesis> ;
+    slw:identityHash "dfc7af9880abbbafd255a04bc0cfc50565ae681927ebb5c8f06428edf74c96c76edda93f306064f8fabe7933bbb54b84df12698e868ba84ead9f492d59fd3c1b" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/95> .
+
+<NIL/1975/art/95/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 95 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 95. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 96 Genesis ===
+
+<NIL/1975/art/96> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 96 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/96/genesis> ;
+    slw:identityHash "b5d4fc8af19518c1cc3242ffefdd92abbd982dd1bf91b7879b4197cea6ee275c5f063fb4f720334ee63fe6232a7366dae980eb3a983a3fb75542a6e431fec234" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/96> .
+
+<NIL/1975/art/96/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 96 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 96. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 97 Genesis ===
+
+<NIL/1975/art/97> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 97 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/97/genesis> ;
+    slw:identityHash "307aaa903b721652822d918610ce03dc305fdd33dbe43cf0ca1e2188f67d9c87f95062e594e6741dade72bb86427819a928c6abfef0ef0ad9aa1a103d6822d36" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/97> .
+
+<NIL/1975/art/97/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 97 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 97. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 98 Genesis ===
+
+<NIL/1975/art/98> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 98 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/98/genesis> ;
+    slw:identityHash "92f8500bcaee8bc4891b3bf3344436036926fb3dc9bc5c57953c4606393f622fa8e31c1da5fa990173515c5aa358f91dd8fb5a86074103e1f498dfcfd9b4dffc" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/98> .
+
+<NIL/1975/art/98/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 98 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 98. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 99 Genesis ===
+
+<NIL/1975/art/99> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 99 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/99/genesis> ;
+    slw:identityHash "1714d702d10015076f3582d61aabe3fc54f7f7e42d83e1e9f330d1613baefcfd22e08955e1b370a7c61b98cb6009e0ee56ed380e70cdd1f404770f401e6f63d2" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/99> .
+
+<NIL/1975/art/99/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 99 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 99. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 100 Genesis ===
+
+<NIL/1975/art/100> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 100 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/100/genesis> ;
+    slw:identityHash "a3560788e84fa5bbd4178d4d19989ad3eac7aa29892f6a2cba79b060f1378d1f13a28b026b0a3d33a1cf058e3b3a2c66ca05fa827626a5279459fcf6c88f1939" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/100> .
+
+<NIL/1975/art/100/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 100 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 100. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 100 Genesis ===
+
+<NIL/1975/art/100> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 100 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/100/genesis> ;
+    slw:identityHash "21961d9e32b15543a0c7962970d188106db8c9d3ca13e441c0fb6e36527ca8f8f437e8f4d4c4464d3abd65dc0527648dc099cd2b964f50352fef3fa2309aaa30" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/100> .
+
+<NIL/1975/art/100/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 100 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 100. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 101 Genesis ===
+
+<NIL/1975/art/101> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 101 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/101/genesis> ;
+    slw:identityHash "d78f10138a0e3f916963dad2a3c7611be4534cec78327cce5e8aa6b82b75f0b87c0bd04ea3768a50d031cb7ab58fd20bc63082514a0c3b90bd1b62ea35a888f6" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/101> .
+
+<NIL/1975/art/101/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 101 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 101. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 101 Genesis ===
+
+<NIL/1975/art/101> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 101 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/101/genesis> ;
+    slw:identityHash "e550c43cdf0631d40dae4a595da545ef742b2121ac722b528040327299d306790ef29f4fd0dd81e3deaf8ce4a11bcd0415fa0d91899e3e2fa8280bb0e459c9a0" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/101> .
+
+<NIL/1975/art/101/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 101 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 101. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 102 Genesis ===
+
+<NIL/1975/art/102> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 102 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/102/genesis> ;
+    slw:identityHash "c391b74b5a1f98d86c3ef5c93e85bb9163b54b82f3610954dccb870403c1835d0aa608bf31efebe88739ea7abd1fc80859439eb0c47a1fd0b84776acddbcd0a7" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/102> .
+
+<NIL/1975/art/102/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 102 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 102. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 103 Genesis ===
+
+<NIL/1975/art/103> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 103 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/103/genesis> ;
+    slw:identityHash "b238d45162900661b0a43693658d537225cf131f9c7f9fff610870939db7690eeb1a20dbb848424852f0ef7b7184604dcd21e41923374fd9a6a9787feef4cd25" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/103> .
+
+<NIL/1975/art/103/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 103 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 103. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 104 Genesis ===
+
+<NIL/1975/art/104> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 104 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/104/genesis> ;
+    slw:identityHash "9154dec337668e22e628158c6beb2f301e5ba677b161802103da5a47eaf7c043757bff6c31ed4c3a213d8b83cc3779f0aeaa8bffc2241a478fb0c7a5e9a252e5" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/104> .
+
+<NIL/1975/art/104/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 104 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 104. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 105 Genesis ===
+
+<NIL/1975/art/105> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 105 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/105/genesis> ;
+    slw:identityHash "e90deca03d51f90ad48f33758f424cee4cb303df631bf85c517fbea64374a67697d4f25493f9999d88188cd05d776f5ba4dbe0373f9b3565471b73792c8ea260" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/105> .
+
+<NIL/1975/art/105/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 105 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 105. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 106 Genesis ===
+
+<NIL/1975/art/106> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 106 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/106/genesis> ;
+    slw:identityHash "3a53ff14d14cb6e90bddf229adecdcd89ed7a0f53780c9fa4b5e718da91d2836b406eeb08bc94026436c5a418c3c70d615c78be8a99f03d5ce6d2d700501111c" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/106> .
+
+<NIL/1975/art/106/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 106 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 106. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 107 Genesis ===
+
+<NIL/1975/art/107> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 107 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/107/genesis> ;
+    slw:identityHash "3aad00e7328705503cc7ad9034166ebcc2b8886f50384491d4acaaa0f1a41f2232b38090e5503eae7cac5bc7e74ae660233351ec4fc152d9ff6ce4c7b207ea66" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/107> .
+
+<NIL/1975/art/107/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 107 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 107. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 108 Genesis ===
+
+<NIL/1975/art/108> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 108 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/108/genesis> ;
+    slw:identityHash "af1a76a871e9553f0d8d357e4d793a990f92e4570b6fe197f5f485938037302318902387c3f409bceb21132775f6ff9d34cd407b94936ad28fc54b38d4459038" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/108> .
+
+<NIL/1975/art/108/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 108 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 108. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 109 Genesis ===
+
+<NIL/1975/art/109> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 109 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/109/genesis> ;
+    slw:identityHash "ed45831bba6cf08471df0107cd73ba27e78cb67f52e96ed68be237b48cf6ede3a138472d2600f94406c60d2a612f53cbd4e77edd9d2ad06f95846ae05cde5317" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/109> .
+
+<NIL/1975/art/109/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 109 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 109. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 110 Genesis ===
+
+<NIL/1975/art/110> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 110 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/110/genesis> ;
+    slw:identityHash "2d0a60211854ae3e2d3622c90b729feec4e0a0c231404c450bae1bc51280c7f2427ee54935df68b3eeeee660a7669eeb4389c6d48ae2410531239a33e19e401e" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/110> .
+
+<NIL/1975/art/110/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 110 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 110. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 111 Genesis ===
+
+<NIL/1975/art/111> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 111 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/111/genesis> ;
+    slw:identityHash "133e556ba69b82a4f15a0d8e15422f0496c01f4a300754ce657df544046443b59203e2803107f8d162fa6968cf831173e4d4d3dc726b0f995e4982e7aaf9fd6c" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/111> .
+
+<NIL/1975/art/111/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 111 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 111. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 112 Genesis ===
+
+<NIL/1975/art/112> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 112 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/112/genesis> ;
+    slw:identityHash "27869f4087011672d8d7891831e315189ef1dca63f0779ed71352a5c9d9ff0668edcfaa9c4749ea57af1e81e308ffec143cc8493a769d90a82e4a55f1a57ffdf" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/112> .
+
+<NIL/1975/art/112/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 112 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 112. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 113 Genesis ===
+
+<NIL/1975/art/113> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 113 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/113/genesis> ;
+    slw:identityHash "55f79121c0aa1175b68fe4a480d2808afcf8e1ffe257efaa54705fd711856f9692efbeeb53b2e68bf8a176b0e45b25a592bcda5143f29c9a1e3a3623f698d8f8" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/113> .
+
+<NIL/1975/art/113/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 113 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 113. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 114 Genesis ===
+
+<NIL/1975/art/114> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 114 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/114/genesis> ;
+    slw:identityHash "a55ac8df7b0947abea8a1232bc7bbb1f7a8e28a4f814a323d4cd500a5664bf4fa1f90bab173241a3aec3212e653378fe39bffbbcf6c4241998be038ce8c587ff" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/114> .
+
+<NIL/1975/art/114/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 114 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 114. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 115 Genesis ===
+
+<NIL/1975/art/115> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 115 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/115/genesis> ;
+    slw:identityHash "d0f27de2e0bb54473b712e93a5f6976dd7d2bc26a37c661622f9d9cad99ed88b588378ddb73c72c85e50c2094b703b6bd3b94544827baa33649d46fb68ff9a7c" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/115> .
+
+<NIL/1975/art/115/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 115 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 115. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 116 Genesis ===
+
+<NIL/1975/art/116> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 116 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/116/genesis> ;
+    slw:identityHash "652633b93136643db1e466c45e6a2ce2a32852304055c11c2ce05a39e98ceb17333dd2b3dd60f61644f2708ab2a37c84ddfa7ca6b68f305478dae009444f4574" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/116> .
+
+<NIL/1975/art/116/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 116 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 116. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 117 Genesis ===
+
+<NIL/1975/art/117> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 117 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/117/genesis> ;
+    slw:identityHash "f8f0c08336ccfb95621003275a37888c915f281d356e01c021c71ac0b791660b1bc5ba5a025e823e8cf41ea4a8ca00cd4f3474cc1795d16872f2f47d42bad93b" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/117> .
+
+<NIL/1975/art/117/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 117 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 117. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 118 Genesis ===
+
+<NIL/1975/art/118> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 118 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/118/genesis> ;
+    slw:identityHash "d6c919aee021cc960f04cb803b551927f240689fae0b464627ee817fd09144af1fa39a44278b7c81a3032dfae97d617dc9b536606956fc913a7d6f4db90d2bce" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/118> .
+
+<NIL/1975/art/118/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 118 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 118. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 119 Genesis ===
+
+<NIL/1975/art/119> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 119 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/119/genesis> ;
+    slw:identityHash "fd2243fb729f6718bad068e35536cca79ad9cbb0b79d6394409b07fc8d0a913bb7b9b105643e5c7f2e520a5939cf68946408dce32cdef93b969c53a08275674b" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/119> .
+
+<NIL/1975/art/119/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 119 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 119. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+
+# === Article 120 Genesis ===
+
+<NIL/1975/art/120> a prov:Entity, slw:LegalArticleIdentity ;
+    rdfs:label "Article 120 Identity"@en ;
+    prov:wasGeneratedBy <NIL/1975/art/120/genesis> ;
+    slw:identityHash "8434db0dca7936f87f061fe9053eaac6c5a5c444aa68df4e795ec057d61c3967bf6c378ffbd5f06c0dea14b18f7d2d588cfed7ae45d7f38c8dd680afcfb8611d" ;
+    slw:genesisProof "pending" ;
+    dcterms:identifier <NIL/1975/art/120> .
+
+<NIL/1975/art/120/genesis> a prov:Activity, slw:OriginAssertion ;
+    rdfs:label "Article 120 Genesis Event"@en ;
+    prov:startedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-04-30T14:48:12Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
+    rdfs:comment """Genesis event for Article 120. Blockchain anchor serves
+        as timestamp witness, NOT as truth authority."""@en .
+

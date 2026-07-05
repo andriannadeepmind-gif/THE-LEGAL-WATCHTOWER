@@ -1,0 +1,140 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix schema: <https://schema.org/> .
+@prefix cert: <http://www.w3.org/ns/auth/cert#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+
+# ==============================================================================
+# WEBID PROFILE - Spyridon Stavropoulos
+# Attorney at Law - STAVROPOULOS LAW
+# ==============================================================================
+# Generated: 2025-11-13
+# Version: 1.2.0
+# Purpose: Personal WebID for semantic web identity
+# ==============================================================================
+
+<https://stavropouloslaw.com/#me> a foaf:Person, schema:Person ;
+    
+    # Names (Multilingual)
+    foaf:name "Spyridon Stavropoulos" ;
+    schema:name "Spyridon Stavropoulos" ;
+    schema:name "Σπυρίδων Σταυρόπουλος"@el ;
+    schema:givenName "Spyridon" ;
+    schema:givenName "Σπυρίδων"@el ;
+    schema:familyName "Stavropoulos" ;
+    schema:familyName "Σταυρόπουλος"@el ;
+    
+    # Professional Title
+    schema:jobTitle "Attorney at Law"@en ;
+    schema:jobTitle "ΔΙΚΗΓΟΡΟΣ ΑΘΗΝΩΝ"@el ;
+    foaf:title "Managing Partner & Legal Representative" ;
+    
+    # Bar Association Membership
+    schema:memberOf [
+        a schema:Organization ;
+        schema:name "Athens Bar Association"@en ;
+        schema:name "Δικηγορικός Σύλλογος Αθηνών"@el ;
+        schema:url <https://www.dsa.gr>
+    ] ;
+    
+    # ORCID
+    schema:identifier [
+        a schema:PropertyValue ;
+        schema:propertyID "ORCID" ;
+        schema:value "0009-0005-2832-2153" ;
+        schema:url <https://orcid.org/0009-0005-2832-2153>
+    ] ;
+    
+    # Organization
+    schema:worksFor <https://stavropouloslaw.com/#organization> ;
+    org:memberOf <https://stavropouloslaw.com/#organization> ;
+    schema:affiliation <https://stavropouloslaw.com/#organization> ;
+    foaf:workplaceHomepage <https://stavropouloslaw.com> ;
+    
+    # Contact Information
+    schema:email "info@stavropouloslaw.com" ;
+    foaf:mbox <mailto:info@stavropouloslaw.com> ;
+    schema:url <https://stavropouloslaw.com> ;
+    foaf:homepage <https://stavropouloslaw.com> ;
+    
+    # Social/Professional Links
+    schema:sameAs <https://orcid.org/0009-0005-2832-2153> ;
+    foaf:account [
+        a foaf:OnlineAccount ;
+        foaf:accountServiceHomepage <https://orcid.org> ;
+        foaf:accountName "0009-0005-2832-2153"
+    ] ;
+    
+    # Education
+    schema:alumniOf [
+        a schema:EducationalOrganization ;
+        schema:name "National and Kapodistrian University of Athens" ;
+        schema:department "Faculty of Law" ;
+        schema:name "Εθνικό και Καποδιστριακό Πανεπιστήμιο Αθηνών"@el
+    ] ;
+    
+    # Professional Expertise
+    schema:knowsAbout "Constitutional Law"@en,
+                      "Constitutional Law"@el ;
+    
+    schema:knowsAbout "Συνταγματικό Δίκαιο"@el ;
+    
+    # Publications & Works
+    schema:creator <https://stavropouloslaw.com/eli/gr/const> ;
+    dcterms:creator <https://stavropouloslaw.com/eli/gr/const> ;
+    
+    # Cryptographic Key (for QES)
+    cert:key [
+        a cert:RSAPublicKey ;
+        rdfs:label "Spyridon Stavropoulos QES Public Key" ;
+        cert:modulus "00:c8:bf:d9:e3:4c:2a:..."^^xsd:hexBinary ;
+        cert:exponent 65537
+    ] ;
+    
+    # Accountability Statement
+    schema:description """
+        I, Spyridon Stavropoulos, member of the Athens Bar Association, 
+        accept full legal and professional responsibility for the Greek 
+        Constitution Semantic Corpus and all related publications under 
+        the STAVROPOULOS LAW brand.
+    """@en ;
+    
+    schema:description """
+        Εγώ, ο Σπυρίδων Σταυρόπουλος, μέλος του Δικηγορικού Συλλόγου Αθηνών,
+        αναλαμβάνω την πλήρη νομική και επαγγελματική ευθύνη για το 
+        Σημασιολογικό Σώμα του Ελληνικού Συντάγματος και όλες τις σχετικές 
+        δημοσιεύσεις υπό το εμπορικό σήμα STAVROPOULOS LAW.
+    """@el .
+
+# ==============================================================================
+# ORGANIZATION REFERENCE
+# ==============================================================================
+
+<https://stavropouloslaw.com/#organization> a schema:LegalService, schema:Organization, foaf:Organization ;
+    schema:name "STAVROPOULOS LAW®" ;
+    schema:legalName "STAVROPOULOS LAW FIRM" ;
+    
+    schema:foundingDate "1977"^^xsd:gYear ;
+    schema:founder [
+        a schema:Person ;
+        schema:name "Konstantinos Stavropoulos" ;
+        schema:name "Κωνσταντίνος Σταυρόπουλος"@el
+    ] ;
+    
+    schema:employee <https://stavropouloslaw.com/#me> ;
+    org:hasMember <https://stavropouloslaw.com/#me> ;
+    schema:url <https://stavropouloslaw.com> ;
+    
+    # Trademark
+    schema:identifier [
+        a schema:PropertyValue ;
+        schema:propertyID "Greek Trademark Registration" ;
+        schema:value "N294237"
+    ] .
+
+# ==============================================================================
+# END OF WEBID PROFILE
+# ==============================================================================

@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  citation-authority-verification:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    image: orchestrator-citation-tests:latest
+    container_name: orchestrator-citation-verification
+
+    # Run citation authority hardcoded verification tests
+    command: ["sbcl", "--noinform", "--load", "/workspace/tests/run-citation-verification.lisp"]
+
+    volumes:
+      - .:/workspace:ro
+
+    working_dir: /workspace
+
+    environment:
+      SOURCE_DATE_EPOCH: "1735689600"
+
+    # Exit immediately after tests
+    restart: "no"

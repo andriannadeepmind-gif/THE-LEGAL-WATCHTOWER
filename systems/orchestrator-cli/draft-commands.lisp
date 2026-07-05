@@ -1,0 +1,236 @@
+;;;; systems/orchestrator-cli/draft-commands.lisp
+;;;; ============================================================================
+;;;; Ε12 — ΤΟ ΠΑΡΑΔΟΤΕΟ: Σημείωμα Υπαγωγής με ΑΠΟΔΕΙΞΗ ΣΕ ΚΑΘΕ ΠΡΟΤΑΣΗ
+;;;; ============================================================================
+;;;;
+;;;; «Ο δικηγόρος πληρώνεται για το δικόγραφο, όχι για το fixpoint» (κριτής
+;;;; πληρότητας, 05-07-2026). Το πρώτο proof-carrying νομικό έγγραφο του
+;;;; συστήματος: αφήγηση → γεγονότα → υπαγωγή → δομημένο σημείωμα όπου
+;;;; ΚΑΘΕ κρίση φέρει τον κανόνα της (με άρθρο), το δέντρο απόδειξης, τον
+;;;; ασθενέστερο κρίκο θεμελίωσης, και ΚΑΘΕ κενό/όριο δηλώνεται ονομαστικά.
+;;;; Η πειθαρχία Lexis/Thomson εκτελέσιμη: κανένα συμπέρασμα χωρίς πηγή,
+;;;; κανένα output χωρίς ταυτότητα (SHA-256) και ίχνος στη βιογραφία.
+;;;;
+;;;; ΣΥΝΘΕΣΗ υπαρχόντων ειδικών — ΚΑΜΙΑ νέα λογική: parse-narrative
+;;;; (γραμματική), subsume/narrate-position/norm-gaps/conclusion-status
+;;;; (υπαγωγή+Σ10), fact->string (η μία εκτύπωση), sha256-hex (ημερολόγιο).
+;;;; Ντετερμινιστικό: ίδια αφήγηση ⇒ byte-ίδιο σώμα ⇒ ίδιο αποτύπωμα.
+
+(in-package :orchestrator.cli)
+
+(defun %memo-fact-line (f stream)
+  "Μία γραμμή ιστορικού με το είδος της: γεγονός, άρνηση, ή κατηγοριακή γνώση."
+  (cond
+    ((eq (first f) :άρνηση)
+     (destructuring-bind (k α πράξη θ) f
+       (declare (ignore k))
+       (format stream "   • ΑΡΝΗΣΗ: ο/η ~A ΔΕΝ ~A ~A   [πηγή: αφήγηση εντολέα]~%"
+               (orchestrator.knowledge:fact->string α)
+               (orchestrator.knowledge:fact->string πράξη)
+               (orchestrator.knowledge:fact->string θ))))
+    (t (format stream "   • ~A   [πηγή: αφήγηση εντολέα]~%"
+               (orchestrator.knowledge:fact->string f)))))
+
+;;; ── Ε13: Ο ΒΡΟΧΟΣ ΑΠΟΣΑΦΗΝΙΣΗΣ — από το ονομασμένο κενό στην ΕΡΩΤΗΣΗ ──
+;;; Abduction επί των missing patterns: αντί για σιωπηλό nil, το σύστημα
+;;; ρωτά ΤΙ ακριβώς θα έκανε τη θέση να στοιχειοθετηθεί — ντετερμινιστικά,
+;;; από το ίδιο το κενό (καμία γεννήτρια κειμένου, κανένα LLM).
+
+(defun %term->el (x)
+  "Όρος κενού → φυσικά ελληνικά για ΕΡΩΤΗΣΗ: ?μεταβλητή → «κάποιος»,
+   keyword → λέξη χωρίς άνω-κάτω τελεία, αλλιώς όπως είναι."
+  (cond ((and (symbolp x) (plusp (length (symbol-name x)))
+              (char= #\? (char (symbol-name x) 0)))
+         "κάποιος")
+        ((keywordp x) (string-downcase (symbol-name x)))
+        ((consp x) (format nil "~{~A~^ ~}" (mapcar #'%term->el x)))
+        (t (princ-to-string x))))
+
+(defun %question-from-gap (pattern norm)
+  "Μία ερώτηση προς τον εντολέα από ένα missing pattern ενός κανόνα."
+  (destructuring-bind (head &rest parts) pattern
+    (declare (ignore head))
+    (format nil "Ισχύει ότι ~{~A~^ ~}; — αν ΝΑΙ, στοιχειοθετείται ο ~A (άρθρο ~A ~A)· αν ΟΧΙ ή άγνωστο, δηλώστε το."
+            (mapcar #'%term->el parts)
+            (orchestrator.deontic:norm-id norm)
+            (orchestrator.deontic:norm-article norm)
+            (orchestrator.deontic:norm-corpus norm))))
+
+(defun gap-questions (facts)
+  "ΟΛΕΣ οι ερωτήσεις αποσαφήνισης: για κάθε κανόνα που ΑΓΓΙΖΕΤΑΙ αλλά δεν
+   στοιχειοθετείται, μία ερώτηση ανά ονομασμένο κενό. Ντετερμινιστική σειρά."
+  (let ((qs '()))
+    (dolist (nm (orchestrator.subsumption:case-norms) (nreverse qs))
+      (when (orchestrator.deontic:norm-antecedent nm)
+        (multiple-value-bind (have missing)
+            (orchestrator.subsumption:norm-gaps nm facts)
+          (when (and have missing)
+            (dolist (p missing)
+              (push (%question-from-gap p nm) qs))))))))
+
+(defun %memo-body (narrative)
+  "Το ΣΩΜΑ του σημειώματος ως string — χωρίς χρονοσφραγίδα μέσα του, ώστε το
+   αποτύπωμα να είναι ντετερμινιστικό: ίδια αφήγηση ⇒ ίδιο SHA-256."
+  (with-output-to-string (s)
+    (multiple-value-bind (facts unparsed)
+        (orchestrator.casegrammar:parse-narrative narrative)
+      (multiple-value-bind (engine positions)
+          (orchestrator.subsumption:subsume facts)
+        (format s "════════════════════════════════════════════════════════════~%")
+        (format s "  ΣΗΜΕΙΩΜΑ ΥΠΑΓΩΓΗΣ — κάθε κρίση με την απόδειξή της~%")
+        (format s "════════════════════════════════════════════════════════════~%")
+        ;; Ι. ΙΣΤΟΡΙΚΟ — τα γεγονότα όπως ΔΙΑΒΑΣΤΗΚΑΝ, με την πηγή τους
+        (format s "~%Ι. ΙΣΤΟΡΙΚΟ (~D γεγονότα από την αφήγηση)~%" (length facts))
+        (dolist (f facts) (%memo-fact-line f s))
+        (when (null facts)
+          (format s "   (κανένα αξιοποιήσιμο γεγονός — βλ. τμήμα V)~%"))
+        ;; ΙΙ. ΝΟΜΙΚΟ ΠΛΑΙΣΙΟ — μόνο κανόνες που ΑΓΓΙΖΟΥΝ την υπόθεση, με πηγή
+        (format s "~%ΙΙ. ΝΟΜΙΚΟ ΠΛΑΙΣΙΟ (κανόνες που αγγίζουν τα γεγονότα)~%")
+        (let ((touched 0))
+          (dolist (nm (orchestrator.subsumption:case-norms))
+            (when (orchestrator.deontic:norm-antecedent nm)
+              (multiple-value-bind (have missing)
+                  (orchestrator.subsumption:norm-gaps nm facts)
+                (declare (ignore missing))
+                (when have
+                  (incf touched)
+                  (format s "   § ~A — άρθρο ~A ~A   [πηγή: ~A]~%"
+                          (orchestrator.deontic:norm-id nm)
+                          (orchestrator.deontic:norm-article nm)
+                          (orchestrator.deontic:norm-corpus nm)
+                          (orchestrator.deontic:norm-source nm))))))
+          (when (zerop touched)
+            (format s "   (κανένας εγγεγραμμένος κανόνας δεν αγγίζει τα γεγονότα)~%")))
+        ;; ΙΙΙ. ΥΠΑΓΩΓΗ — κάθε θέση με δέντρο απόδειξης + ασθενέστερο κρίκο (Σ10)
+        (format s "~%ΙΙΙ. ΥΠΑΓΩΓΗ (~D αποδεδειγμένες θέσεις)~%" (length positions))
+        (dolist (p positions)
+          (orchestrator.subsumption:narrate-position (car p) (cdr p) s))
+        (when (null positions)
+          (format s "   Καμία δεοντική θέση δεν στοιχειοθετείται — βλ. τμήμα IV.~%"))
+        ;; IV. ΤΙ ΛΕΙΠΕΙ / ΤΙ ΑΙΡΕΤΑΙ — η μετα-γνώση της άγνοιας, ονομαστικά
+        (format s "~%IV. ΕΛΛΕΙΨΕΙΣ ΚΑΙ ΑΡΣΕΙΣ (τι πρέπει να αποδειχθεί ακόμη)~%")
+        (let ((n 0))
+          (dolist (nm (orchestrator.subsumption:case-norms))
+            (when (orchestrator.deontic:norm-antecedent nm)
+              (multiple-value-bind (status)
+                  (orchestrator.subsumption:conclusion-status engine nm facts)
+                (multiple-value-bind (have missing)
+                    (orchestrator.subsumption:norm-gaps nm facts)
+                  (cond
+                    ((and have missing)
+                     (incf n)
+                     (format s "   ⚠ ~A: ΔΕΝ στοιχειοθετείται — λείπει: ~{~A~^ · ~}~%"
+                             (orchestrator.deontic:norm-id nm)
+                             (mapcar #'orchestrator.knowledge:fact->string missing)))
+                    ((and have (null missing) (eq status :out))
+                     (incf n)
+                     (format s "   ⚖ ~A: πλήρης ειδική υπόσταση αλλά ΑΙΡΕΤΑΙ (λόγος άρσης ενεργός)~%"
+                             (orchestrator.deontic:norm-id nm))))))))
+          (when (zerop n) (format s "   (καμία εκκρεμότητα στους κανόνες που αγγίζουν)~%")))
+        ;; V. ΔΗΛΩΜΕΝΑ ΟΡΙΑ — ό,τι ΔΕΝ αξιοποιήθηκε, ονομαστικά (καμία σιωπή)
+        (format s "~%V. ΔΗΛΩΜΕΝΑ ΟΡΙΑ ΑΝΑΓΝΩΣΗΣ~%")
+        (if unparsed
+            (dolist (u unparsed)
+              (format s "   ⚠ ΔΕΝ αξιοποιήθηκε (καμία εικασία): «~A»~%" u))
+            (format s "   Όλες οι προτάσεις της αφήγησης αξιοποιήθηκαν.~%"))
+        ;; VI. Ο ΒΡΟΧΟΣ ΑΠΟΣΑΦΗΝΙΣΗΣ (Ε13) — το σύστημα ΡΩΤΑ, δεν σωπαίνει:
+        ;; κάθε ερώτηση παράγεται από ονομασμένο κενό (abduction), και λέει
+        ;; ΤΙ ξεκλειδώνει η απάντηση — συνέντευξη εντολέα ως λογισμός.
+        (format s "~%VI. ΕΡΩΤΗΣΕΙΣ ΠΡΟΣ ΤΟΝ ΕΝΤΟΛΕΑ (αποσαφήνιση από τα κενά)~%")
+        (let ((qs (gap-questions facts)))
+          (if qs
+              (loop for q in qs for i from 1
+                    do (format s "   ~D. ~A~%" i q))
+              (format s "   Καμία ερώτηση — ο φάκελος επαρκεί για τους κανόνες που αγγίζει.~%")))))))
+
+(defun draft-memo (narrative &key (stream *standard-output*))
+  "Τύπωσε το Σημείωμα Υπαγωγής + την ΤΑΥΤΟΤΗΤΑ του (SHA-256 του σώματος).
+   Επιστρέφει το αποτύπωμα — η ρίζα του audit trail του παραδοτέου."
+  (let* ((body (%memo-body narrative))
+         (sha (orchestrator.journal:sha256-hex body)))
+    (write-string body stream)
+    (format stream "~%── ΤΑΥΤΟΤΗΤΑ ΕΓΓΡΑΦΟΥ ──~%")
+    (format stream "   SHA-256: ~A~%" sha)
+    (format stream "   (ίδια αφήγηση ⇒ ίδιο αποτύπωμα — το παραδοτέο είναι αναπαραγώγιμο)~%")
+    sha))
+
+(defun run-draft (args)
+  "--draft \"αφήγηση\" : το σημείωμα + εγγραφή του αποτυπώματος στη βιογραφία
+   (audit trail: ποτέ παραδοτέο χωρίς ίχνος)."
+  (let ((narrative (format nil "~{~A~^ ~}" args)))
+    (if (zerop (length (string-trim " " narrative)))
+        (progn (format t "χρήση: --draft \"Ο Χ αφαίρεσε το … της Ψ.\"~%") 1)
+        (let ((sha (draft-memo narrative)))
+          (ignore-errors
+            (orchestrator.self-history:record!
+             :draft-issued
+             (format nil "Εξέδωσα Σημείωμα Υπαγωγής με αποτύπωμα ~A — κάθε κρίση με απόδειξη, κάθε κενό δηλωμένο." sha)))
+          0))))
+
+(register-command "--draft" (lambda (a) (run-draft a)))
+
+;;; ── Η ΠΥΛΗ ΤΟΥ ΠΑΡΑΔΟΤΕΟΥ ────────────────────────────────────────────────
+
+(defun run-draft-gate ()
+  "--draft-gate : το παραδοτέο, κλειδωμένο — δομή, αποδείξεις, κενά, άρνηση,
+   ντετερμινισμός. 100% ή κόκκινο."
+  (orchestrator.knowledge-packs:ensure-fresh)
+  (let ((fails '()) (total 0))
+    (labels ((check (label ok)
+               (incf total)
+               (if ok (format t "  ✓ ~A~%" label)
+                   (progn (push label fails) (format t "  ✗ ~A~%" label))))
+             (memo (n) (%memo-body n)))
+      (format t "~%── ΠΥΛΗ ΠΑΡΑΔΟΤΕΟΥ (Ε12): σημείωμα με απόδειξη σε κάθε πρόταση ──~%")
+      (let ((m (memo "Ο Ανδρέας αφαίρεσε το πορτοφόλι της Μαρίας για να το ιδιοποιηθεί.")))
+        (check "πλήρης υπόθεση: και τα 5 τμήματα παρόντα"
+               (and (search "Ι. ΙΣΤΟΡΙΚΟ" m) (search "ΙΙ. ΝΟΜΙΚΟ ΠΛΑΙΣΙΟ" m)
+                    (search "ΙΙΙ. ΥΠΑΓΩΓΗ" m) (search "IV. ΕΛΛΕΙΨΕΙΣ" m)
+                    (search "V. ΔΗΛΩΜΕΝΑ ΟΡΙΑ" m)))
+        (check "η κρίση φέρει κανόνα+άρθρο+ΘΕΜΕΛΙΩΣΗ+ασθενέστερο κρίκο (Σ10)"
+               (and (search "ΑΠΑΓΟΡΕΥΣΗ" m) (search "372" m)
+                    (search "ΘΕΜΕΛΙΩΣΗ" m) (search "ασθενέστερος κρίκος" m)))
+        (check "κάθε γεγονός του ιστορικού φέρει την πηγή του"
+               (search "[πηγή: αφήγηση εντολέα]" m))
+        (check "το νομικό πλαίσιο φέρει πηγή κανόνα"
+               (search "[πηγή: poinikos:" m)))
+      (let ((m (memo "Ο Ανδρέας αφαίρεσε το πορτοφόλι της Μαρίας.")))
+        (check "ελλιπής υπόθεση: το κενό ΟΝΟΜΑΖΕΤΑΙ (λείπει ο σκοπός ιδιοποίησης)"
+               (and (search "ΔΕΝ στοιχειοθετείται" m)
+                    (search "λείπει" m)
+                    (search "σκοπ" (string-downcase m))))
+        ;; Ε13: ο βρόχος αποσαφήνισης — το σύστημα ΡΩΤΑ και λέει τι ξεκλειδώνει
+        (check "Ε13 ΑΠΟΣΑΦΗΝΙΣΗ: ερώτηση από το κενό, με τον κανόνα που ξεκλειδώνει"
+               (and (search "VI. ΕΡΩΤΗΣΕΙΣ" m)
+                    (search "Ισχύει ότι" m)
+                    (search "σκοπός" m)
+                    (search "αν ΝΑΙ, στοιχειοθετείται ο NORM-KLOPI-372" m)))
+        (check "Ε13: ?μεταβλητές στις ερωτήσεις γίνονται «κάποιος» — ποτέ ωμά ?vars"
+               (let ((vi (subseq m (search "VI. ΕΡΩΤΗΣΕΙΣ" m))))
+                 (not (find #\? (remove #\; vi))))))
+      (let ((m (memo "Ο Ανδρέας αφαίρεσε το πορτοφόλι της Μαρίας για να το ιδιοποιηθεί.")))
+        (check "Ε13: πλήρης φάκελος ⇒ ερωτήσεις ΜΟΝΟ για ό,τι πράγματι μένει ανοιχτό"
+               (and (search "VI. ΕΡΩΤΗΣΕΙΣ" m)
+                    ;; ο 372 στοιχειοθετήθηκε — ΚΑΜΙΑ ερώτηση γι' αυτόν
+                    (not (search "στοιχειοθετείται ο NORM-KLOPI-372 (άρθρο"
+                                 (subseq m (search "VI. ΕΡΩΤΗΣΕΙΣ" m)))))))
+      (let ((m (memo "Ο Ανδρέας δεν αφαίρεσε το πορτοφόλι της Μαρίας.")))
+        (check "άρνηση: καταγράφεται ως ΑΡΝΗΣΗ και ΚΑΜΙΑ κατηγορία δεν θεμελιώνεται"
+               (and (search "ΑΡΝΗΣΗ" m)
+                    (not (search "ΑΠΑΓΟΡΕΥΣΗ — στοιχειοθετείται" m)))))
+      (let ((m (memo "Ο Ανδρέας αφαίρεσε το ρολόι της Μαρίας. Η βροχή έπεφτε όλη νύχτα.")))
+        (check "άσχετη πρόταση: δηλώνεται στο V — ποτέ σιωπηλή απόρριψη"
+               (search "ΔΕΝ αξιοποιήθηκε" m)))
+      (check "ΝΤΕΤΕΡΜΙΝΙΣΜΟΣ: ίδια αφήγηση ⇒ byte-ίδιο σώμα ⇒ ίδιο αποτύπωμα"
+             (let ((n "Ο Ανδρέας αφαίρεσε το πορτοφόλι της Μαρίας για να το ιδιοποιηθεί."))
+               (string= (orchestrator.journal:sha256-hex (memo n))
+                        (orchestrator.journal:sha256-hex (memo n)))))
+      (check "η ταυτότητα εγγράφου είναι έγκυρο SHA-256 (64 hex)"
+             (let ((sha (let ((*standard-output* (make-broadcast-stream)))
+                          (draft-memo "Ο Ανδρέας αφαίρεσε το πορτοφόλι της Μαρίας."))))
+               (and (stringp sha) (= 64 (length sha))
+                    (every (lambda (c) (digit-char-p c 16)) sha)))))
+    (format t "~%── ΠΥΛΗ ΠΑΡΑΔΟΤΕΟΥ: ~D/~D πέρασαν ──~%" (- total (length fails)) total)
+    (if fails 1 0)))
+
+(register-command "--draft-gate" (lambda (a) (declare (ignore a)) (run-draft-gate)))

@@ -1,0 +1,43 @@
+# ==============================================================================
+# TEST IMAGE: orchestrator-test:escape
+# ==============================================================================
+# PURPOSE: Execute Phase 3 escape sequence tests
+# BASE: orchestrator:latest (production image, untouched)
+# ADDITIONS: Quicklisp + FiveAM ONLY
+# ==============================================================================
+
+FROM orchestrator:latest
+
+# Switch to root for installation
+USER root
+
+# Install curl for Quicklisp download
+RUN apt-get update && \
+    apt-get install -y curl && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Quicklisp (latest stable)
+RUN curl -o /tmp/quicklisp.lisp https://beta.quicklisp.org/quicklisp.lisp && \
+    sbcl --non-interactive \
+         --load /tmp/quicklisp.lisp \
+         --eval '(quicklisp-quickstart:install :path "/root/quicklisp/")' && \
+    rm /tmp/quicklisp.lisp
+
+# Install FiveAM test framework
+RUN sbcl --non-interactive \
+         --eval '(load "/root/quicklisp/setup.lisp")' \
+         --eval '(ql:quickload :fiveam)' \
+         --eval '(quit)'
+
+# Verify installation
+RUN sbcl --non-interactive \
+         --eval '(load "/root/quicklisp/setup.lisp")' \
+         --eval '(unless (ql:where-is-system :fiveam) (error "FiveAM not installed"))' \
+         --eval '(format t "FiveAM: VERIFIED~%")' \
+         --eval '(quit)'
+
+# KEEP as root user for test execution (test-only image, not production)
+# This allows access to /root/quicklisp/
+
+# No ENTRYPOINT override - use parent image's entrypoint
+# No CMD override - will be specified at runtime

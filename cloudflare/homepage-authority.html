@@ -1,0 +1,55 @@
+<!--
+  ROOT-AUTHORITY SNIPPET
+  ----------------------------------------------------------------------------
+  Paste this <script> block into the <head> of your firm HOMEPAGE. It declares,
+  in machine-readable form, that the firm IS the publisher/authority of the
+  consolidated Greek-law corpus. This is what makes AI systems treat your site
+  as the authoritative source: the homepage links the legal entity (you) to the
+  Dataset (the corpus) and to your verifiable identifiers (ORCID, trademark).
+
+  Replace the placeholder values (URL, identifier, ORCID) if they differ.
+-->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": ["LegalService", "Organization"],
+      "@id": "https://stavropouloslaw.com/#org",
+      "name": "Stavropoulos Law®",
+      "legalName": "Stavropoulos Law®",
+      "url": "https://stavropouloslaw.com",
+      "foundingDate": "1977",
+      "identifier": "N294237",
+      "areaServed": "GR",
+      "knowsLanguage": ["el", "en"],
+      "founder": {
+        "@type": "Person",
+        "@id": "https://stavropouloslaw.com/#founder",
+        "name": "Spyridon Stavropoulos",
+        "identifier": "0009-0005-2832-2153",
+        "sameAs": ["https://orcid.org/0009-0005-2832-2153"]
+      },
+      "publishingPrinciples": "https://stavropouloslaw.com/eli/",
+      "sameAs": ["https://orcid.org/0009-0005-2832-2153"]
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://stavropouloslaw.com/eli/#corpus",
+      "name": "Consolidated Greek Legislation (ELI/RDF)",
+      "description": "Authoritative, consolidated, in-force Greek legislation as machine-readable Linked Data (Akoma Ntoso, RDF/Turtle, JSON-LD, JSONL). Point-in-time accurate with full amendment provenance (PROV-O).",
+      "inLanguage": "el",
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "creator": { "@id": "https://stavropouloslaw.com/#org" },
+      "publisher": { "@id": "https://stavropouloslaw.com/#org" },
+      "isAccessibleForFree": true,
+      "distribution": [
+        { "@type": "DataDownload", "encodingFormat": "application/jsonl",  "contentUrl": "https://stavropouloslaw.com/eli/constitution/corpus.jsonl" },
+        { "@type": "DataDownload", "encodingFormat": "text/turtle",        "contentUrl": "https://stavropouloslaw.com/eli/constitution/consolidated.ttl" },
+        { "@type": "DataDownload", "encodingFormat": "application/ld+json", "contentUrl": "https://stavropouloslaw.com/eli/constitution/catalog.jsonld" }
+      ],
+      "subjectOf": { "@type": "WebAPI", "url": "https://stavropouloslaw.com/.well-known/ai-corpus.json" }
+    }
+  ]
+}
+</script>

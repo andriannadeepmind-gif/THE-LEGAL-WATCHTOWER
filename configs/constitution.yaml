@@ -1,0 +1,319 @@
+# ORCHESTRATOR v1.2 Configuration
+# Greek Constitution Processing Pipeline
+#
+# DATA: deployment/data/syntagma_clean.json is currently EMPTY ([]). The source
+# input/constitution.pdf IS present — run `--materialize-pdf` to parse it and
+# populate the corpus.
+
+# ═══════════════════════════════════════════════════════════════
+# DETERMINISTIC BUILD CONFIGURATION (Phase B)
+# ═══════════════════════════════════════════════════════════════
+deterministic:
+  enabled: true
+  fixed_timestamp: "2025-01-01T00:00:00Z"
+  source_date_epoch: 1735689600  # Unix timestamp for 2025-01-01T00:00:00Z
+  # Guarantee: Same input → Same output → Same hash
+  # This is ELI foundation, not just dev practice
+
+# ═══════════════════════════════════════════════════════════════
+# CANONICAL URI SOVEREIGNTY (Phase C - DRY = LAW)
+# ═══════════════════════════════════════════════════════════════
+# ONE AND ONLY ONE source of truth for ALL URIs in the system
+# NO hardcoded URIs anywhere else in the codebase
+# Build MUST fail if any URI outside canonical base is generated
+canonical:
+  base_uri: "https://stavropouloslaw.com"
+  eli_prefix: "https://stavropouloslaw.com/eli/gr"
+  eli_const_prefix: "https://stavropouloslaw.com/eli/gr/const/1975"
+  corpus_prefix: "https://stavropouloslaw.com/corpus/constitution"
+  identity_prefix: "https://stavropouloslaw.com/identity"
+  policy_prefix: "https://stavropouloslaw.com/policy"
+  ontology_prefix: "https://stavropouloslaw.com/ontology"
+
+corpus:
+  name: "Σύνταγμα της Ελλάδας"
+  english_name: "Constitution of Greece"
+  short_name: "constitution"
+  article_count: 120
+  eli_prefix: "https://stavropouloslaw.com/eli/gr/const/1975"
+  canonical_prefix: "https://stavropouloslaw.com/corpus/constitution"
+  dataset_uri: "https://stavropouloslaw.com/datasets/greek-constitution"
+  dataset_created: "2025-12-14"
+  wikidata_qid: "16519798"   # Q16519798 = Constitution of Greece
+  document_type: "const"
+  # Last constitutional revision — Fourth revision (ΦΕΚ Α' 211/2019, 25 Nov 2019)
+  modified_date: "2019-11-25"
+  publication:
+    date: "1975-06-11"
+    fek_number: "ΦΕΚ Α' 111/1975"
+    language: "el"
+
+source:
+  # Real source document for THIS corpus only. The pipeline processes exactly
+  # this file (it never globs input/), so other corpora's PDFs cannot be mixed
+  # in. Falls back to the JSON below if the PDF is absent.
+  #
+  # Η επίσημη έκδοση της Βουλής (2020, αναθεώρηση 2019 — Θ΄ Αναθεωρητική,
+  # ISBN 978-960-560-199-7), με text layer. Ο pdf-adapter την αναγνωρίζει
+  # («Βουλή print edition») και τη μετασχηματίζει στην κανονική μορφή: τίτλοι
+  # από τον πίνακα περιεχομένων, ομοιόγλυφα/soft-hyphens/κολλημένες λέξεις
+  # διορθωμένα, ψηφίσματα/ευρετήριο εκτός. Δίνει τα ΠΛΗΡΗ 124 άρθρα (120 + τα
+  # 5Α, 9Α, 100Α, 101Α της αναθεώρησης) με το ΙΣΧΥΟΝ κείμενο — το παλαιό
+  # syntagma_clean.json είχε 120, προ-2019 κείμενο σε τροποποιημένα άρθρα και
+  # web-scrape κατάλοιπα («<< Προηγούμενο», υποσημειώσεις).
+  pdf: "/app/input/syntagma_2019.pdf"
+  json: "/app/deployment/data/syntagma_clean.json"
+  # Official state source (κρατική πηγή) for --fetch-sources / the ingestion cron.
+  # Hellenic Parliament — official Constitution text
+  url: "https://www.hellenicparliament.gr/Vouli-ton-Ellinon/To-Politevma/Syntagma/"
+  format: "parliament-crawl"   # json | html | parliament-crawl | pdf
+  # The Parliament page is an INDEX of ~120 article sub-pages; parliament-crawl
+  # fetches the index, follows each /…/syntagma/article-N/ link and parses it.
+  # WIRED: Σύνταγμα της Ελλάδας, ΦΕΚ Α' 111/1975 (revisions are rare). Greek IP.
+  pdf_url: "https://ia37rg02wpsa01.blob.core.windows.net/fek/01/1975/19750100111.pdf"
+  fetch_cmd: "bash deployment/fetch-fek-by-number.sh Α 111 1975 {{out}}"
+  parsing:
+    article_pattern: "Άρθρον\\s+(\\d+)\\s*\\.?\\s*(.+?)(?=Άρθρον\\s+\\d+|$)"
+    encoding: "utf-8"
+    page_range: null  # Process all pages
+
+output:
+  directory: "/opt/orchestrator/output"
+  formats:
+    - turtle
+    - jsonld
+    - html
+  create_graph: true
+  create_manifest: true
+
+# AI Export Configuration
+ai_export:
+  output_root: "/opt/orchestrator/outputs-final/ai/"
+  dataset_name: "greek-constitution-legal-corpus"
+  dataset_version: "1.2.0"
+  publisher: "STAVROPOULOS LAW"
+  canonical_base_uri: "https://stavropouloslaw.com/corpus"
+  manifest_filename: "manifest.jsonl"
+  provenance_subdir: "provenance"
+  include_content_text: true
+  include_html_snippet: true
+  deterministic: true
+  fixed_timestamp: "2025-01-01T00:00:00Z"
+
+identity:
+  # ═══════════════════════════════════════════════════════════════
+  # LEVEL 300: RICH ENTITY IDENTITY (Knowledge Panel Ready)
+  # ═══════════════════════════════════════════════════════════════
+
+  # PERSON IDENTITY
+  person:
+    webid: "https://stavropouloslaw.com/identity/spyridon-stavropoulos"
+    name: "Spyridon Stavropoulos"
+    given_name: "Spyridon"
+    family_name: "Stavropoulos"
+    orcid: "0009-0005-2832-2153"
+    bar_number: ""
+    job_title: "Founder & CEO"
+
+    # SOCIAL PROOF (placeholder - fill when ready)
+    email: null              # e.g., "spyridon@stavropouloslaw.com"
+    telephone: null          # e.g., "+30 210 1234567"
+    linkedin: null           # e.g., "https://linkedin.com/in/spyridon-stavropoulos"
+    twitter: null            # e.g., "https://twitter.com/stavropouloslaw"
+
+    # ACADEMIC CREDENTIALS (placeholder)
+    university: null         # e.g., "National and Kapodistrian University of Athens"
+    degree: null             # e.g., "LL.M. in Constitutional Law"
+    graduation_year: null    # e.g., "2020"
+
+  # ORGANIZATION IDENTITY
+  organization:
+    webid: "https://stavropouloslaw.com/identity/org"
+    name: "Stavropoulos Law®"
+    legal_name: "Stavropoulos Law®"
+    trademark: "N294237"
+    url: "https://stavropouloslaw.com"
+    logo: "https://stavropouloslaw.com/assets/logo-tm.png"
+
+    # CONTACT INFO (placeholder - fill when ready)
+    email: null              # e.g., "info@stavropouloslaw.com"
+    telephone: null          # e.g., "+30 210 1234567"
+
+    # ADDRESS (placeholder - Privacy-safe)
+    address:
+      street_address: null   # e.g., "123 Legal Avenue"
+      city: null             # e.g., "Athens"
+      postal_code: null      # e.g., "10563"
+      region: null           # e.g., "Attica"
+      country: "Greece"
+
+    # ESTABLISHMENT
+    founded: "1977"
+    founding_location: null  # e.g., "Athens, Greece"
+
+# ═══════════════════════════════════════════════════════════════
+# LEVEL 300: ODRL POLICY (Iron Dome - AI Citation Enforcement)
+# ═══════════════════════════════════════════════════════════════
+odrl_policy:
+  enabled: true
+  policy_uri: "https://stavropouloslaw.com/policy/ai-usage"
+
+  # PERMISSIONS
+  permissions:
+    - action: "use"
+      description: "AI systems may use this data with attribution"
+      duties:
+        - action: "attribute"
+          attributed_party: "https://stavropouloslaw.com/identity/org"
+          attribution_text: "Source: Stavropoulos Law® (https://stavropouloslaw.com)"
+          attribution_url: "https://stavropouloslaw.com"
+
+  # PROHIBITIONS
+  prohibitions:
+    - action: "claim_authorship"
+      description: "AI systems MUST NOT claim authorship of this corpus"
+    - action: "misrepresent"
+      description: "AI systems MUST NOT misrepresent the source or publisher"
+
+# ═══════════════════════════════════════════════════════════════
+# LEVEL 300: HTML + JSON-LD GENERATION (SEO & Knowledge Panel)
+# ═══════════════════════════════════════════════════════════════
+html_generation:
+  enabled: true
+  output_directory: "/opt/orchestrator/output/html"
+
+  # JSON-LD SETTINGS
+  jsonld:
+    include_organization: true
+    include_person: true
+    include_ceo: true
+    include_founder: true
+    include_address: true        # Will use placeholders if null
+    include_social_proof: true   # LinkedIn, Twitter, etc.
+
+  # RDFa SETTINGS
+  rdfa:
+    vocabulary: "http://data.europa.eu/eli/ontology#"
+    schema_org: true
+    open_graph: true
+    twitter_card: true
+
+  # SEO SETTINGS
+  seo:
+    canonical_base: "https://stavropouloslaw.com/eli/gr/const/1975/art"
+    robots: "index, follow"
+    sitemap_priority: 0.8
+    sitemap_changefreq: "monthly"
+
+blockchain:
+  ethereum:
+    enabled: true
+    network: "mainnet"
+    contract_address: null  # Will use default anchoring contract
+    gas_limit: 100000
+    
+  arweave:
+    enabled: true
+    gateway: "https://arweave.net"
+    
+  ipfs:
+    enabled: true
+    api: "/ip4/127.0.0.1/tcp/5001"
+    gateway: "https://ipfs.io"
+
+validation:
+  shacl_shapes: "/opt/orchestrator/deployment/shapes/eli-shapes.ttl"
+  strict_mode: true
+  report_format: "turtle"
+
+# DEPRECATED: Jinja2 templates removed - all output now generated by native Lisp
+# templates:
+#   directory: "/opt/orchestrator/deployment/templates"
+#   html_template: "article.html.jinja2"
+#   manifest_template: "manifest.ttl.jinja2"
+
+telemetry:
+  enabled: true
+  endpoint: "https://telemetry.stavropouloslaw.com/beacon"
+  include_referrer: true
+  track_ai_systems: true
+
+qes:
+  enabled: false  # Set to true when hardware token connected
+  pkcs11_module: "/usr/lib/opensc-pkcs11.so"
+  certificate_id: "01"
+  hash_algorithm: "SHA256"
+
+monitoring:
+  prometheus_enabled: true
+  prometheus_port: 9090
+  log_level: "INFO"
+  log_file: "/opt/orchestrator/logs/orchestrator.log"
+
+performance:
+  parallel_processing: true
+  worker_count: 4
+  batch_size: 10
+  cache_enabled: true
+  redis_url: "redis://redis:6379/0"
+
+api:
+  enabled: true
+  port: 8081
+  cors_origins: 
+    - "https://stavropouloslaw.com"
+    - "http://localhost:3000"
+  rate_limit: 100  # requests per minute
+
+provenance:
+  authority_uri: "http://data.stavropouloslaw.com/agent/greek-parliament"
+  authority_label: "Ελληνική Βουλή"
+
+versioning:
+  track_amendments: true
+  # ═══════════════════════════════════════════════════════════════
+  # ELI TEMPORAL COMPLETENESS (Phase D)
+  # Source of truth for all amendments, article-level temporal metadata
+  # ═══════════════════════════════════════════════════════════════
+  amendments:
+    - id: "1986"
+      date: "1986-03-11"
+      date_applicability: "1986-03-11"
+      fek: "ΦΕΚ Α' 35/1986"
+      description: "First constitutional revision"
+      articles_amended: [16, 28, 37, 44, 47, 100, 101, 102, 103, 104, 107, 108, 110, 111]
+      articles_repealed: []
+    - id: "2001"
+      date: "2001-04-17"
+      date_applicability: "2001-04-17"
+      fek: "ΦΕΚ Α' 85/2001"
+      description: "Second constitutional revision"
+      articles_amended: [3, 4, 5, 6, 7, 8, 9, 12, 13, 14, 16, 19, 20, 21, 22, 25, 26, 28, 29, 32, 36, 37, 38, 41, 44, 47, 50, 51, 52, 70, 80, 81, 84, 86, 101, 102]
+      articles_repealed: []
+    - id: "2008"
+      date: "2008-05-27"
+      date_applicability: "2008-05-27"
+      fek: "ΦΕΚ Α' 102/2008"
+      description: "Third constitutional revision"
+      articles_amended: [14, 16, 23, 24, 86]
+      articles_repealed: []
+    - id: "2019"
+      date: "2019-11-25"
+      date_applicability: "2019-11-25"
+      fek: "ΦΕΚ Α' 211/2019"
+      description: "Fourth constitutional revision"
+      articles_amended: [3, 4, 5, 7, 9, 11, 12, 13, 14, 15, 16, 21, 22, 32, 64, 65, 73, 74, 80, 86, 101, 103, 120]
+      articles_repealed: []
+
+# Article-level temporal status - defaults for articles not in amendment lists
+article_defaults:
+  in_force: true
+  date_applicability: "1975-06-11"  # Original constitution publication date
+
+deployment:
+  target: "production"
+  cdn_enabled: true
+  cloudflare_zone: ${CLOUDFLARE_ZONE_ID}
+  cloudflare_api_key: ${CLOUDFLARE_API_KEY}
+  purge_cache: true
+  update_sitemap: true

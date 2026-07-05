@@ -1,0 +1,588 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix schema: <https://schema.org/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix legal: <https://stavropouloslaw.com/ontology/legal#> .
+
+# ==============================================================================
+# SHACL SHAPES FOR GREEK LEGAL CORPUS VALIDATION
+# Implements ELI Standard + DCAT-AP 2.1.1 + PROV-O
+# STAVROPOULOS LAW - Production Ready
+# ==============================================================================
+
+# ==============================================================================
+# ELI LEGAL RESOURCE SHAPE
+# ==============================================================================
+
+legal:LegalResourceShape
+    a sh:NodeShape ;
+    sh:targetClass eli:LegalResource ;
+    sh:message "Legal resource must conform to ELI standard" ;
+    
+    # Required properties
+    sh:property [
+        sh:path eli:id_local ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^article-\\d{3}$" ;
+        sh:message "Must have exactly one local ID in format 'article-XXX'" ;
+    ] ;
+    
+    sh:property [
+        sh:path eli:number ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 1 ;
+        sh:maxInclusive 999 ;
+        sh:message "Must have article number between 1 and 999" ;
+    ] ;
+    
+    sh:property [
+        sh:path eli:title ;
+        sh:minCount 1 ;
+        sh:datatype rdf:langString ;
+        sh:languageIn ("el" "en") ;
+        sh:message "Must have at least one title in Greek or English" ;
+    ] ;
+    
+    sh:property [
+        sh:path eli:description ;
+        sh:minCount 1 ;
+        sh:datatype rdf:langString ;
+        sh:languageIn ("el") ;
+        sh:minLength 10 ;
+        sh:message "Must have description in Greek with at least 10 characters" ;
+    ] ;
+    
+    sh:property [
+        sh:path eli:language ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:pattern "^http://publications\\.europa\\.eu/resource/authority/language/" ;
+        sh:message "Must specify language using EU Publications Office vocabulary" ;
+    ] ;
+    
+    sh:property [
+        sh:path eli:publisher ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:pattern "^https://stavropouloslaw\\.com/" ;
+        sh:message "Publisher must be STAVROPOULOS LAW" ;
+    ] ;
+    
+    # Provenance
+    sh:property [
+        sh:path dct:creator ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:pattern "^https://stavropouloslaw\\.com/#me$" ;
+        sh:message "Creator must be WebID of Spyridon Stavropoulos" ;
+    ] ;
+    
+    sh:property [
+        sh:path dct:created ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:date ;
+        sh:message "Must have creation date" ;
+    ] ;
+    
+    # Schema.org compatibility
+    sh:property [
+        sh:path schema:author ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:message "Must have schema:author for AI systems" ;
+    ] ;
+    
+    sh:property [
+        sh:path schema:inLanguage ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^el$" ;
+        sh:message "Must specify language as 'el' for schema.org" ;
+    ] .
+
+# ==============================================================================
+# CORPUS DATASET SHAPE (DCAT-AP 2.1.1)
+# ==============================================================================
+
+legal:CorpusDatasetShape
+    a sh:NodeShape ;
+    sh:targetClass dcat:Dataset ;
+    sh:message "Corpus must conform to DCAT-AP 2.1.1" ;
+    
+    # Mandatory properties
+    sh:property [
+        sh:path dct:title ;
+        sh:minCount 1 ;
+        sh:uniqueLang true ;
+        sh:message "Dataset must have title (unique per language)" ;
+    ] ;
+    
+    sh:property [
+        sh:path dct:description ;
+        sh:minCount 1 ;
+        sh:uniqueLang true ;
+        sh:minLength 50 ;
+        sh:message "Dataset must have description (min 50 chars)" ;
+    ] ;
+    
+    sh:property [
+        sh:path dct:identifier ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z-]+-(gr|eu)-\\d{4}-[a-z]+$" ;
+        sh:message "Identifier must follow pattern: type-country-year-name" ;
+    ] ;
+    
+    sh:property [
+        sh:path dcat:distribution ;
+        sh:minCount 3 ;
+        sh:nodeKind sh:IRI ;
+        sh:message "Must have at least 3 distributions (TTL, JSON-LD, HTML)" ;
+    ] ;
+    
+    sh:property [
+        sh:path dcat:keyword ;
+        sh:minCount 5 ;
+        sh:datatype xsd:string ;
+        sh:message "Must have at least 5 keywords" ;
+    ] ;
+    
+    sh:property [
+        sh:path dcat:theme ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:pattern "^http://publications\\.europa\\.eu/resource/authority/data-theme/" ;
+        sh:message "Must specify EU data theme" ;
+    ] ;
+    
+    sh:property [
+        sh:path dct:publisher ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:message "Must have exactly one publisher" ;
+    ] ;
+    
+    sh:property [
+        sh:path dct:license ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:in (
+            <https://creativecommons.org/licenses/by/4.0/>
+            <https://creativecommons.org/licenses/by-sa/4.0/>
+            <https://creativecommons.org/publicdomain/zero/1.0/>
+        ) ;
+        sh:message "Must use approved license (CC-BY 4.0, CC-BY-SA 4.0, or CC0)" ;
+    ] ;
+    
+    sh:property [
+        sh:path dct:temporal ;
+        sh:maxCount 1 ;
+        sh:node legal:TemporalCoverageShape ;
+        sh:message "Temporal coverage must be valid" ;
+    ] ;
+    
+    sh:property [
+        sh:path dct:spatial ;
+        sh:maxCount 1 ;
+        sh:node legal:SpatialCoverageShape ;
+        sh:message "Spatial coverage must be valid" ;
+    ] .
+
+# ==============================================================================
+# DISTRIBUTION SHAPE
+# ==============================================================================
+
+legal:DistributionShape
+    a sh:NodeShape ;
+    sh:targetClass dcat:Distribution ;
+    
+    sh:property [
+        sh:path dcat:accessURL ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:pattern "^https://" ;
+        sh:message "Must have secure HTTPS access URL" ;
+    ] ;
+    
+    sh:property [
+        sh:path dct:format ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:in (
+            <http://www.w3.org/ns/formats/Turtle>
+            <http://www.w3.org/ns/formats/JSON-LD>
+            <http://www.w3.org/ns/formats/RDF_XML>
+            <http://www.w3.org/ns/formats/HTML>
+        ) ;
+        sh:message "Format must be Turtle, JSON-LD, RDF/XML, or HTML" ;
+    ] ;
+    
+    sh:property [
+        sh:path dcat:byteSize ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive 0 ;
+        sh:message "Byte size must be non-negative" ;
+    ] ;
+    
+    sh:property [
+        sh:path dct:issued ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:message "Issue date must be valid dateTime" ;
+    ] .
+
+# ==============================================================================
+# PROVENANCE SHAPE (PROV-O)
+# ==============================================================================
+
+legal:ProvenanceShape
+    a sh:NodeShape ;
+    sh:targetClass prov:Entity ;
+    
+    sh:property [
+        sh:path prov:wasGeneratedBy ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:message "Must specify generation activity" ;
+    ] ;
+    
+    sh:property [
+        sh:path prov:wasAttributedTo ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:pattern "^https://stavropouloslaw\\.com/#me$" ;
+        sh:message "Must be attributed to Spyridon Stavropoulos" ;
+    ] ;
+    
+    sh:property [
+        sh:path prov:generatedAtTime ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:message "Must have generation timestamp" ;
+    ] ;
+    
+    sh:property [
+        sh:path prov:wasDerivedFrom ;
+        sh:nodeKind sh:IRI ;
+        sh:message "Derivation must reference valid source" ;
+    ] .
+
+# ==============================================================================
+# ACTIVITY SHAPE
+# ==============================================================================
+
+legal:ActivityShape
+    a sh:NodeShape ;
+    sh:targetClass prov:Activity ;
+    
+    sh:property [
+        sh:path prov:startedAtTime ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:message "Activity must have start time" ;
+    ] ;
+    
+    sh:property [
+        sh:path prov:endedAtTime ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:message "End time must be valid dateTime" ;
+    ] ;
+    
+    sh:property [
+        sh:path prov:wasAssociatedWith ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:message "Activity must be associated with an agent" ;
+    ] ;
+    
+    sh:property [
+        sh:path prov:used ;
+        sh:nodeKind sh:IRI ;
+        sh:message "Used entities must be IRIs" ;
+    ] ;
+    
+    sh:property [
+        sh:path prov:generated ;
+        sh:nodeKind sh:IRI ;
+        sh:message "Generated entities must be IRIs" ;
+    ] .
+
+# ==============================================================================
+# AGENT SHAPE (WebID + ORCID)
+# ==============================================================================
+
+legal:AgentShape
+    a sh:NodeShape ;
+    sh:targetClass foaf:Person ;
+    
+    sh:property [
+        sh:path foaf:name ;
+        sh:minCount 2 ;
+        sh:uniqueLang true ;
+        sh:languageIn ("el" "en") ;
+        sh:message "Must have name in Greek and English" ;
+    ] ;
+    
+    sh:property [
+        sh:path schema:sameAs ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:pattern "^https://orcid\\.org/\\d{4}-\\d{4}-\\d{4}-\\d{4}$" ;
+        sh:message "Must have valid ORCID identifier" ;
+    ] ;
+    
+    sh:property [
+        sh:path schema:memberOf ;
+        sh:minCount 1 ;
+        sh:node legal:BarAssociationShape ;
+        sh:message "Must be member of Bar Association" ;
+    ] ;
+    
+    sh:property [
+        sh:path foaf:homepage ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:pattern "^https://" ;
+        sh:message "Must have secure homepage URL" ;
+    ] .
+
+# ==============================================================================
+# BAR ASSOCIATION MEMBERSHIP SHAPE
+# ==============================================================================
+
+legal:BarAssociationShape
+    a sh:NodeShape ;
+    
+    sh:property [
+        sh:path schema:name ;
+        sh:minCount 1 ;
+        sh:message "Bar Association must have name" ;
+    ] ;
+    
+    sh:property [
+        sh:path schema:identifier ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^\\d{6}$" ;
+        sh:message "Bar number must be 6 digits" ;
+    ] .
+
+# ==============================================================================
+# TEMPORAL COVERAGE SHAPE
+# ==============================================================================
+
+legal:TemporalCoverageShape
+    a sh:NodeShape ;
+    sh:targetClass dct:PeriodOfTime ;
+    
+    sh:property [
+        sh:path dct:start ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:date ;
+        sh:message "Must have start date" ;
+    ] ;
+    
+    sh:property [
+        sh:path dct:end ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:date ;
+        sh:message "End date must be valid" ;
+    ] ;
+    
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "End date must be after start date" ;
+        sh:select """
+            SELECT $this (dct:start AS ?path) ?start ?end
+            WHERE {
+                $this dct:start ?start ;
+                      dct:end ?end .
+                FILTER (?end <= ?start)
+            }
+        """ ;
+    ] .
+
+# ==============================================================================
+# SPATIAL COVERAGE SHAPE
+# ==============================================================================
+
+legal:SpatialCoverageShape
+    a sh:NodeShape ;
+    sh:targetClass dct:Location ;
+    
+    sh:property [
+        sh:path schema:name ;
+        sh:minCount 1 ;
+        sh:uniqueLang true ;
+        sh:message "Location must have name" ;
+    ] ;
+    
+    sh:property [
+        sh:path schema:identifier ;
+        sh:nodeKind sh:IRI ;
+        sh:pattern "^https://www\\.wikidata\\.org/wiki/Q" ;
+        sh:message "Should use Wikidata identifier for location" ;
+    ] .
+
+# ==============================================================================
+# BLOCKCHAIN ANCHOR SHAPE
+# ==============================================================================
+
+legal:BlockchainAnchorShape
+    a sh:NodeShape ;
+    sh:targetClass legal:BlockchainAnchor ;
+    
+    sh:property [
+        sh:path legal:transactionHash ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^0x[a-f0-9]{64}$" ;
+        sh:message "Must have valid Ethereum transaction hash" ;
+    ] ;
+    
+    sh:property [
+        sh:path legal:blockNumber ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 1 ;
+        sh:message "Must have valid block number" ;
+    ] ;
+    
+    sh:property [
+        sh:path legal:merkleRoot ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-f0-9]{64}$" ;
+        sh:message "Must have valid Merkle root (Blake3)" ;
+    ] ;
+    
+    sh:property [
+        sh:path legal:timestamp ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+        sh:message "Must have Unix timestamp" ;
+    ] ;
+    
+    sh:property [
+        sh:path legal:network ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:in ("ethereum" "arweave" "ipfs") ;
+        sh:message "Network must be ethereum, arweave, or ipfs" ;
+    ] .
+
+# ==============================================================================
+# QES SIGNATURE SHAPE
+# ==============================================================================
+
+legal:QESSignatureShape
+    a sh:NodeShape ;
+    sh:targetClass legal:QualifiedElectronicSignature ;
+    
+    sh:property [
+        sh:path legal:signatureValue ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:base64Binary ;
+        sh:minLength 100 ;
+        sh:message "Must have base64-encoded signature value" ;
+    ] ;
+    
+    sh:property [
+        sh:path legal:signatureAlgorithm ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:in ("SHA256withRSA" "SHA384withRSA" "SHA512withRSA") ;
+        sh:message "Must use approved signature algorithm" ;
+    ] ;
+    
+    sh:property [
+        sh:path legal:certificateSerial ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message "Must have certificate serial number" ;
+    ] ;
+    
+    sh:property [
+        sh:path legal:signingTime ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:message "Must have signing timestamp" ;
+    ] .
+
+# ==============================================================================
+# CUSTOM CONSTRAINTS
+# ==============================================================================
+
+# Ensure all articles are numbered sequentially
+legal:SequentialNumberingConstraint
+    a sh:NodeShape ;
+    sh:targetClass eli:LegalResource ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Article numbers must be sequential without gaps" ;
+        sh:select """
+            SELECT DISTINCT ?this ?number
+            WHERE {
+                ?this a eli:LegalResource ;
+                      eli:number ?number .
+                FILTER NOT EXISTS {
+                    ?prev a eli:LegalResource ;
+                          eli:number ?prevNum .
+                    FILTER (?prevNum = ?number - 1)
+                }
+                FILTER (?number > 1)
+            }
+        """ ;
+    ] .
+
+# Ensure unique article numbers
+legal:UniqueNumberConstraint
+    a sh:NodeShape ;
+    sh:targetClass eli:LegalResource ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Article numbers must be unique" ;
+        sh:select """
+            SELECT ?this ?number (COUNT(?other) AS ?count)
+            WHERE {
+                ?this eli:number ?number .
+                ?other eli:number ?number .
+                FILTER (?this != ?other)
+            }
+            GROUP BY ?this ?number
+            HAVING (?count > 0)
+        """ ;
+    ] .
+
+# ==============================================================================
+# END OF SHACL SHAPES
+# ==============================================================================

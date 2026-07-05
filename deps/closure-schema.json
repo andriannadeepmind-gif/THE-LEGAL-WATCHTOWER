@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://stavropoulos.law/orchestrator/closure-schema-v1.0",
+  "title": "ORCHESTRATOR Dependency Closure Artifact",
+  "description": "Schema for canonical, deterministic dependency closure artifacts (deterministic)",
+  "type": "object",
+  "required": ["format_version", "system", "sbcl_version", "closure", "graph"],
+  "additionalProperties": false,
+  "properties": {
+    "format_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+$",
+      "description": "Schema format version (MAJOR.MINOR)"
+    },
+    "system": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Target system name (lowercase, hyphens allowed)"
+    },
+    "sbcl_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "SBCL version used for closure capture (MAJOR.MINOR.PATCH)"
+    },
+    "closure": {
+      "type": "array",
+      "description": "Alphabetically sorted list of systems in the transitive closure",
+      "items": {
+        "type": "object",
+        "required": ["name", "version", "source_id", "hash", "layer"],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z0-9-+.]+$",
+            "description": "System name (lowercase)"
+          },
+          "version": {
+            "type": "string",
+            "description": "Version identifier (from source-id)"
+          },
+          "source_id": {
+            "type": "string",
+            "pattern": "^third-party/[a-zA-Z0-9._+-]+$|^source/cl-dependencies/[a-zA-Z0-9._+-]+$",
+            "description": "Logical source identifier (relative to project root, NOT absolute path)"
+          },
+          "hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$|^unknown$",
+            "description": "SHA-256 hash of dependency directory (lowercase hex)"
+          },
+          "layer": {
+            "type": "string",
+            "enum": ["runtime", "test", "tooling"],
+            "description": "Dependency layer (runtime/test/tooling)"
+          }
+        }
+      }
+    },
+    "graph": {
+      "type": "object",
+      "description": "Dependency graph (system -> list of direct dependencies, alphabetically sorted)",
+      "patternProperties": {
+        "^[a-z0-9-+.]+$": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9-+.]+$"
+          },
+          "description": "Alphabetically sorted list of direct dependencies"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

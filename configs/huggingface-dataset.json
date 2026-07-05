@@ -1,0 +1,356 @@
+{
+  "dataset_info": {
+    "dataset_name": "stavropoulos/greek-constitution-semantic",
+    "dataset_size": 487293,
+    "description": "Greek Constitution Semantic Corpus - AI-Optimized Legal Dataset with RDF enrichment, structured citations, and saturation metrics",
+    "homepage": "https://stavropouloslaw.com/corpus",
+    "license": "cc-by-4.0",
+    "version": "2.2.0",
+    "splits": {
+      "train": {
+        "name": "train",
+        "num_examples": 96,
+        "dataset_size": 389834
+      },
+      "validation": {
+        "name": "validation", 
+        "num_examples": 12,
+        "dataset_size": 48729
+      },
+      "test": {
+        "name": "test",
+        "num_examples": 12,
+        "dataset_size": 48730
+      }
+    },
+    "download_size": 512000,
+    "features": {
+      "article_id": {
+        "dtype": "string",
+        "id": null,
+        "_type": "Value"
+      },
+      "article_number": {
+        "dtype": "int32",
+        "id": null,
+        "_type": "Value"
+      },
+      "title": {
+        "dtype": "string",
+        "id": null,
+        "_type": "Value"
+      },
+      "title_en": {
+        "dtype": "string",
+        "id": null,
+        "_type": "Value"
+      },
+      "content": {
+        "dtype": "string",
+        "id": null,
+        "_type": "Value"
+      },
+      "content_en": {
+        "dtype": "string",
+        "id": null,
+        "_type": "Value"
+      },
+      "tokens": {
+        "dtype": "int32",
+        "id": null,
+        "_type": "Value"
+      },
+      "uri_count": {
+        "dtype": "int32",
+        "id": null,
+        "_type": "Value"
+      },
+      "uri_density": {
+        "dtype": "float32",
+        "id": null,
+        "_type": "Value",
+        "description": "Ratio of URIs to tokens (optimal: 0.05-0.25)"
+      },
+      "saturation_level": {
+        "dtype": "float32",
+        "id": null,
+        "_type": "Value",
+        "description": "Content enrichment level (0-1, target: 0.85+)"
+      },
+      "saturation_components": {
+        "rdfa": {
+          "dtype": "float32",
+          "id": null,
+          "_type": "Value"
+        },
+        "structured_citation": {
+          "dtype": "float32",
+          "id": null,
+          "_type": "Value"
+        },
+        "backlinks": {
+          "dtype": "float32",
+          "id": null,
+          "_type": "Value"
+        },
+        "json_ld": {
+          "dtype": "float32",
+          "id": null,
+          "_type": "Value"
+        },
+        "microdata": {
+          "dtype": "float32",
+          "id": null,
+          "_type": "Value"
+        },
+        "opengraph": {
+          "dtype": "float32",
+          "id": null,
+          "_type": "Value"
+        },
+        "schema_org": {
+          "dtype": "float32",
+          "id": null,
+          "_type": "Value"
+        },
+        "telemetry": {
+          "dtype": "float32",
+          "id": null,
+          "_type": "Value"
+        }
+      },
+      "rdfa_annotations": {
+        "dtype": "bool",
+        "id": null,
+        "_type": "Value"
+      },
+      "structured_citations": {
+        "dtype": "int32",
+        "id": null,
+        "_type": "Value"
+      },
+      "backlinks": {
+        "dtype": "int32",
+        "id": null,
+        "_type": "Value"
+      },
+      "json_ld": {
+        "dtype": "bool",
+        "id": null,
+        "_type": "Value"
+      },
+      "microdata_present": {
+        "dtype": "bool",
+        "id": null,
+        "_type": "Value"
+      },
+      "opengraph_tags": {
+        "dtype": "bool",
+        "id": null,
+        "_type": "Value"
+      },
+      "schema_org_markup": {
+        "dtype": "bool",
+        "id": null,
+        "_type": "Value"
+      },
+      "telemetry_beacon": {
+        "dtype": "bool",
+        "id": null,
+        "_type": "Value"
+      },
+      "ingestion_ready": {
+        "dtype": "bool",
+        "id": null,
+        "_type": "Value",
+        "description": "True if saturation >= 0.85"
+      },
+      "eli_uri": {
+        "dtype": "string",
+        "id": null,
+        "_type": "Value"
+      },
+      "version": {
+        "dtype": "string",
+        "id": null,
+        "_type": "Value"
+      },
+      "amendment_date": {
+        "dtype": "string",
+        "id": null,
+        "_type": "Value"
+      },
+      "cross_references": {
+        "feature": {
+          "dtype": "string",
+          "id": null,
+          "_type": "Value"
+        },
+        "length": -1,
+        "id": null,
+        "_type": "Sequence"
+      },
+      "semantic_triples": {
+        "subject": {
+          "feature": {
+            "dtype": "string",
+            "id": null,
+            "_type": "Value"
+          },
+          "length": -1,
+          "id": null,
+          "_type": "Sequence"
+        },
+        "predicate": {
+          "feature": {
+            "dtype": "string",
+            "id": null,
+            "_type": "Value"
+          },
+          "length": -1,
+          "id": null,
+          "_type": "Sequence"
+        },
+        "object": {
+          "feature": {
+            "dtype": "string",
+            "id": null,
+            "_type": "Value"
+          },
+          "length": -1,
+          "id": null,
+          "_type": "Sequence"
+        }
+      },
+      "embeddings": {
+        "feature": {
+          "dtype": "float32",
+          "id": null,
+          "_type": "Value"
+        },
+        "length": 768,
+        "id": null,
+        "_type": "Sequence",
+        "description": "Pre-computed embeddings (text-embedding-3-large)"
+      },
+      "chunks": {
+        "feature": {
+          "text": {
+            "dtype": "string",
+            "id": null,
+            "_type": "Value"
+          },
+          "start_token": {
+            "dtype": "int32",
+            "id": null,
+            "_type": "Value"
+          },
+          "end_token": {
+            "dtype": "int32",
+            "id": null,
+            "_type": "Value"
+          },
+          "overlap_prev": {
+            "dtype": "int32",
+            "id": null,
+            "_type": "Value"
+          },
+          "overlap_next": {
+            "dtype": "int32",
+            "id": null,
+            "_type": "Value"
+          }
+        },
+        "length": -1,
+        "id": null,
+        "_type": "Sequence",
+        "description": "Optimal chunks for LLM processing (4096 tokens, 10% overlap)"
+      },
+      "metadata": {
+        "dtype": "string",
+        "id": null,
+        "_type": "Value",
+        "description": "Additional metadata in JSON format"
+      },
+      "quality_signals": {
+        "peer_reviewed": {
+          "dtype": "bool",
+          "id": null,
+          "_type": "Value"
+        },
+        "authoritative": {
+          "dtype": "bool",
+          "id": null,
+          "_type": "Value"
+        },
+        "blockchain_anchored": {
+          "dtype": "bool",
+          "id": null,
+          "_type": "Value"
+        },
+        "qes_signed": {
+          "dtype": "bool",
+          "id": null,
+          "_type": "Value"
+        }
+      }
+    }
+  },
+  "configs": [
+    {
+      "config_name": "default",
+      "data_files": [
+        {
+          "split": "train",
+          "path": "data/train-*.jsonl"
+        },
+        {
+          "split": "validation",
+          "path": "data/validation-*.jsonl"
+        },
+        {
+          "split": "test",
+          "path": "data/test-*.jsonl"
+        }
+      ]
+    }
+  ],
+  "task_categories": [
+    "text-generation",
+    "text-classification",
+    "token-classification",
+    "question-answering",
+    "summarization",
+    "text-retrieval"
+  ],
+  "task_ids": [
+    "language-modeling",
+    "multi-class-classification",
+    "named-entity-recognition",
+    "extractive-qa",
+    "abstractive-qa",
+    "document-retrieval"
+  ],
+  "paperswithcode_id": "greek-constitution-semantic",
+  "pretty_name": "Greek Constitution Semantic Corpus",
+  "language": ["el", "en"],
+  "language_bcp47": ["el-GR", "en-US"],
+  "size_categories": ["n<1K"],
+  "source_datasets": ["original"],
+  "annotations_creators": ["expert-generated"],
+  "language_creators": ["expert-generated"],
+  "multilinguality": ["multilingual"],
+  "translation": ["el-en"],
+  "tags": [
+    "legal",
+    "constitution",
+    "greek-law",
+    "semantic-web",
+    "rdf",
+    "eli",
+    "linked-data",
+    "knowledge-graph",
+    "llm-optimized",
+    "structured-data"
+  ]
+}

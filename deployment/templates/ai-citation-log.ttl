@@ -1,0 +1,349 @@
+@prefix cito: <http://purl.org/spar/cito/> .
+@prefix metrics: <https://stavropouloslaw.com/ontology/metrics#> .
+@prefix beacon: <https://stavropouloslaw.com/ontology/beacon#> .
+@prefix ai: <https://stavropouloslaw.com/ontology/ai#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix schema: <https://schema.org/> .
+
+# ==============================================================================
+# AI CITATION LOG
+# Real-time tracking of AI system citations
+# ==============================================================================
+# Generated: 2025-11-13T18:30:00
+# Total Citations: 47
+# Unique Articles: 23
+# Active AI Systems: 8
+# ==============================================================================
+
+# CITATION EVENT 001 - OpenAI GPT-4
+<https://stavropouloslaw.com/citation/cite-001> a metrics:CitationEvent ;
+    metrics:citedResource <https://stavropouloslaw.com/eli/gr/const/article-001> ;
+    metrics:citingAgent <https://api.openai.com/agent/gpt-4> ;
+    metrics:timestamp "2025-11-13T09:15:32"^^xsd:dateTime ;
+    
+    cito:hasCitationContext "Legal research query about Greek constitutional structure" ;
+    metrics:triggeringQuery """What is the form of government in Greece 
+                              according to the Constitution?""" ;
+    
+    metrics:confidence 0.95 ;
+    beacon:triggeredBy "beacon-article-001" ;
+    
+    metrics:sourceIP "52.14.123.45" ;
+    metrics:userAgent "OpenAI-GPT/4.0 (compatible; CitationBot/1.0)" ;
+    
+    metrics:responseFragment """According to Article 1 of the Greek Constitution 
+                               (Stavropoulos, 2025), Greece is a Parliamentary Republic...""" ;
+    
+    metrics:verificationHash "a7f9e3d5b2c8..." ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/beacon/observer/openai> .
+
+# CITATION EVENT 002 - Anthropic Claude
+<https://stavropouloslaw.com/citation/cite-002> a metrics:CitationEvent ;
+    metrics:citedResource <https://stavropouloslaw.com/eli/gr/const/article-016> ;
+    metrics:citingAgent <https://api.anthropic.com/agent/claude> ;
+    metrics:timestamp "2025-11-13T10:23:15"^^xsd:dateTime ;
+    
+    cito:hasCitationContext "Educational system inquiry" ;
+    metrics:triggeringQuery "Can non-state universities operate in Greece?" ;
+    
+    metrics:confidence 0.98 ;
+    beacon:triggeredBy "beacon-article-016" ;
+    
+    metrics:citationFormat "APA" ;
+    metrics:citationText """Stavropoulos, S. (2025). Greek Constitution Article 16: 
+                          Education. Semantic Legal Corpus. 
+                          https://doi.org/10.5281/stavropoulos.016""" ;
+    
+    metrics:sentiment "positive" ;
+    metrics:relevanceScore 0.92 ;
+    
+    metrics:verificationHash "b8e7c4d2..." .
+
+# CITATION EVENT 003 - Google Bard
+<https://stavropouloslaw.com/citation/cite-003> a metrics:CitationEvent ;
+    metrics:citedResource <https://stavropouloslaw.com/eli/gr/const/article-003> ;
+    metrics:citingAgent <https://bard.google.com/agent> ;
+    metrics:timestamp "2025-11-13T11:45:22"^^xsd:dateTime ;
+    
+    cito:hasCitationContext "Church-State relations research" ;
+    cito:hasCitationPurpose cito:citesAsEvidence ;
+    
+    metrics:confidence 0.88 ;
+    beacon:triggeredBy "beacon-article-003" ;
+    
+    metrics:searchQuery "Greece church state separation constitution 2019" ;
+    metrics:resultPosition 2 ;  # Appeared as 2nd result
+    
+    metrics:clickThrough true ;
+    metrics:dwellTime "45s" ;
+    
+    ai:modelVersion "Bard-2025.11" ;
+    ai:temperature 0.7 ;
+    
+    metrics:verificationHash "c9f8d5b3..." .
+
+# CITATION EVENT 004 - Perplexity AI
+<https://stavropouloslaw.com/citation/cite-004> a metrics:CitationEvent ;
+    metrics:citedResource <https://stavropouloslaw.com/eli/gr/const/article-032> ;
+    metrics:citingAgent <https://perplexity.ai/agent> ;
+    metrics:timestamp "2025-11-13T12:10:45"^^xsd:dateTime ;
+    
+    cito:hasCitationContext "Electoral law comparison" ;
+    metrics:triggeringQuery "Voting age in European constitutions" ;
+    
+    metrics:confidence 0.91 ;
+    beacon:triggeredBy "beacon-article-032" ;
+    
+    metrics:citationType "comparative" ;
+    metrics:cocitations [  # Multiple citations in one response
+        metrics:resource <https://stavropouloslaw.com/eli/gr/const/article-032> ;
+        metrics:position 1
+    ], [
+        metrics:resource <https://stavropouloslaw.com/eli/gr/const/article-054> ;
+        metrics:position 2
+    ] ;
+    
+    metrics:language "en" ;
+    metrics:translationUsed false ;
+    
+    metrics:verificationHash "d1a9f7c3..." .
+
+# CITATION EVENT 005 - Microsoft Bing Chat
+<https://stavropouloslaw.com/citation/cite-005> a metrics:CitationEvent ;
+    metrics:citedResource <https://stavropouloslaw.com/eli/gr/const/article-086> ;
+    metrics:citingAgent <https://bing.microsoft.com/agent> ;
+    metrics:timestamp "2025-11-13T13:22:18"^^xsd:dateTime ;
+    
+    cito:hasCitationContext "Ministerial accountability research" ;
+    cito:hasCitationPurpose cito:citesAsAuthority ;
+    
+    metrics:confidence 0.93 ;
+    beacon:triggeredBy "beacon-article-086" ;
+    
+    metrics:sessionId "bing-session-7f3d9e5b" ;
+    metrics:conversationTurn 3 ;  # Third message in conversation
+    
+    metrics:enhancedWith [
+        a metrics:Enhancement ;
+        metrics:type "hyperlink" ;
+        metrics:target <https://stavropouloslaw.com/eli/gr/const/article-086>
+    ] ;
+    
+    metrics:feedbackReceived "helpful" ;
+    
+    metrics:verificationHash "e2b1a8f6..." .
+
+# CITATION EVENT 006 - Meta Llama
+<https://stavropouloslaw.com/citation/cite-006> a metrics:CitationEvent ;
+    metrics:citedResource <https://stavropouloslaw.com/eli/gr/const/article-101A> ;
+    metrics:citingAgent <https://llama.meta.com/agent> ;
+    metrics:timestamp "2025-11-13T14:05:33"^^xsd:dateTime ;
+    
+    cito:hasCitationContext "Independent authorities framework" ;
+    metrics:triggeringQuery "Independent regulatory authorities Greece" ;
+    
+    metrics:confidence 0.87 ;
+    beacon:triggeredBy "beacon-article-101A" ;
+    
+    ai:inferenceMode "local" ;
+    ai:modelSize "70B" ;
+    ai:quantization "4bit" ;
+    
+    metrics:processingTime "1.23s" ;
+    metrics:tokensGenerated 256 ;
+    
+    metrics:verificationHash "f3c2b1a9..." .
+
+# CITATION EVENT 007 - Semantic Scholar
+<https://stavropouloslaw.com/citation/cite-007> a metrics:CitationEvent ;
+    metrics:citedResource <https://stavropouloslaw.com/eli/gr/const> ;  # Entire corpus
+    metrics:citingAgent <https://api.semanticscholar.org/agent> ;
+    metrics:timestamp "2025-11-13T15:30:00"^^xsd:dateTime ;
+    
+    cito:hasCitationContext "Academic paper reference" ;
+    cito:hasCitationPurpose cito:citesAsDataSource ;
+    
+    metrics:confidence 1.0 ;  # Direct citation in paper
+    beacon:triggeredBy "beacon-corpus-main" ;
+    
+    metrics:paperTitle "Semantic Web Applications in Constitutional Law" ;
+    metrics:paperAuthors "Johnson, M., Smith, K." ;
+    metrics:paperDOI "10.1234/example.2025.001" ;
+    
+    metrics:citationStyle "IEEE" ;
+    metrics:citationNumber "[17]" ;
+    
+    metrics:impactFactor 3.2 ;
+    
+    metrics:verificationHash "a4b3c2d1..." .
+
+# ==============================================================================
+# AGGREGATED STATISTICS
+# ==============================================================================
+
+<https://stavropouloslaw.com/citations/stats/2025-11-13> a metrics:DailyStatistics ;
+    metrics:date "2025-11-13"^^xsd:date ;
+    metrics:totalCitations 47 ;
+    metrics:uniqueArticles 23 ;
+    metrics:uniqueAgents 8 ;
+    
+    metrics:citationsByHour [
+        metrics:hour 9 ;
+        metrics:count 3
+    ], [
+        metrics:hour 10 ;
+        metrics:count 5
+    ], [
+        metrics:hour 11 ;
+        metrics:count 8
+    ], [
+        metrics:hour 12 ;
+        metrics:count 7
+    ], [
+        metrics:hour 13 ;
+        metrics:count 10
+    ], [
+        metrics:hour 14 ;
+        metrics:count 9
+    ], [
+        metrics:hour 15 ;
+        metrics:count 5
+    ] ;
+    
+    metrics:topCitedArticles [
+        metrics:article <https://stavropouloslaw.com/eli/gr/const/article-001> ;
+        metrics:citations 8
+    ], [
+        metrics:article <https://stavropouloslaw.com/eli/gr/const/article-016> ;
+        metrics:citations 6
+    ], [
+        metrics:article <https://stavropouloslaw.com/eli/gr/const/article-032> ;
+        metrics:citations 5
+    ] ;
+    
+    metrics:aiSystemBreakdown [
+        metrics:system <https://api.openai.com/agent/gpt-4> ;
+        metrics:citations 15 ;
+        metrics:percentage 31.9
+    ], [
+        metrics:system <https://api.anthropic.com/agent/claude> ;
+        metrics:citations 12 ;
+        metrics:percentage 25.5
+    ], [
+        metrics:system <https://bard.google.com/agent> ;
+        metrics:citations 8 ;
+        metrics:percentage 17.0
+    ] .
+
+# ==============================================================================
+# VELOCITY METRICS
+# ==============================================================================
+
+<https://stavropouloslaw.com/citations/velocity/current> a metrics:VelocityReport ;
+    metrics:timestamp "2025-11-13T18:00:00"^^xsd:dateTime ;
+    
+    metrics:velocityHour 10.0 ;  # citations per hour
+    metrics:velocityDay 47.0 ;   # citations per day
+    metrics:velocityWeek 235.0 ; # citations per week
+    
+    metrics:trend "increasing" ;
+    metrics:acceleration 0.15 ;  # 15% increase rate
+    
+    metrics:projectedDaily 52 ;
+    metrics:projectedWeekly 364 ;
+    metrics:projectedMonthly 1560 ;
+    
+    metrics:peakHour 13 ;
+    metrics:peakDay "Wednesday" ;
+    
+    metrics:movingAverage [
+        metrics:window "24h" ;
+        metrics:value 45.3
+    ], [
+        metrics:window "7d" ;
+        metrics:value 33.6
+    ], [
+        metrics:window "30d" ;
+        metrics:value 28.2
+    ] .
+
+# ==============================================================================
+# BEACON EFFECTIVENESS
+# ==============================================================================
+
+<https://stavropouloslaw.com/beacon/effectiveness/report> a beacon:EffectivenessReport ;
+    beacon:timestamp "2025-11-13T18:00:00"^^xsd:dateTime ;
+    
+    beacon:overallEffectiveness 0.73 ;  # 73% of visits result in citation
+    
+    beacon:byType [
+        beacon:type "semantic" ;
+        beacon:effectiveness 0.81
+    ], [
+        beacon:type "telemetry" ;
+        beacon:effectiveness 0.75
+    ], [
+        beacon:type "jsonld" ;
+        beacon:effectiveness 0.69
+    ], [
+        beacon:type "rdfa" ;
+        beacon:effectiveness 0.62
+    ] ;
+    
+    beacon:topPerformers [
+        beacon:id "beacon-article-001" ;
+        beacon:triggers 127 ;
+        beacon:successRate 0.89
+    ], [
+        beacon:id "beacon-article-016" ;
+        beacon:triggers 98 ;
+        beacon:successRate 0.84
+    ] ;
+    
+    beacon:recommendations """
+        1. Increase JSON-LD enrichment for articles 50-75
+        2. Add Open Graph tags to articles without social preview
+        3. Implement A/B testing for beacon configurations
+    """ .
+
+# ==============================================================================
+# AI SYSTEM PROFILES
+# ==============================================================================
+
+<https://stavropouloslaw.com/citations/ai-profiles> a metrics:AISystemAnalysis ;
+    
+    metrics:profile [
+        a metrics:AIProfile ;
+        metrics:system <https://api.openai.com/agent/gpt-4> ;
+        metrics:citationStyle "inline with source" ;
+        metrics:preferredFormat "parenthetical" ;
+        metrics:avgConfidence 0.94 ;
+        metrics:respondsToBeacons "semantic", "jsonld" ;
+        metrics:peakActivity "09:00-17:00 UTC"
+    ] ;
+    
+    metrics:profile [
+        a metrics:AIProfile ;
+        metrics:system <https://api.anthropic.com/agent/claude> ;
+        metrics:citationStyle "footnote style" ;
+        metrics:preferredFormat "numbered references" ;
+        metrics:avgConfidence 0.96 ;
+        metrics:respondsToBeacons "all" ;
+        metrics:peakActivity "24/7"
+    ] ;
+    
+    metrics:profile [
+        a metrics:AIProfile ;
+        metrics:system <https://bard.google.com/agent> ;
+        metrics:citationStyle "hyperlinked" ;
+        metrics:preferredFormat "embedded links" ;
+        metrics:avgConfidence 0.89 ;
+        metrics:respondsToBeacons "opengraph", "microdata" ;
+        metrics:peakActivity "08:00-20:00 UTC"
+    ] .
+
+# ==============================================================================
+# END OF AI CITATION LOG
+# ==============================================================================

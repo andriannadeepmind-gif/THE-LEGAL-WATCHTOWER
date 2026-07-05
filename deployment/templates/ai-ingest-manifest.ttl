@@ -1,0 +1,415 @@
+@prefix llm: <https://stavropouloslaw.com/ontology/llm#> .
+@prefix hf: <https://huggingface.co/ontology#> .
+@prefix ingest: <https://stavropouloslaw.com/ontology/ingest#> .
+@prefix metrics: <https://stavropouloslaw.com/ontology/metrics#> .
+@prefix schema: <https://schema.org/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ==============================================================================
+# AI INGEST MANIFEST - LLM OPTIMIZATION
+# Greek Constitution Semantic Corpus
+# ==============================================================================
+# Generated: 2025-11-13T19:00:00
+# Purpose: Maximize LLM ingestion efficiency and quality
+# ==============================================================================
+
+# MAIN MANIFEST
+<https://stavropouloslaw.com/corpus/manifest> a ingest:AIManifest, dcat:Dataset, void:Dataset ;
+    
+    # Identification
+    dct:identifier "manifest-greek-const-v2.2.0" ;
+    dct:title "AI Ingest Manifest - Greek Constitution"@en ;
+    dct:description """Comprehensive manifest for LLM ingestion with URI density analysis,
+                      saturation metrics, and optimization hints"""@en ;
+    
+    # Timestamps
+    dct:created "2025-11-13T19:00:00"^^xsd:dateTime ;
+    prov:generatedAtTime "2025-11-13T19:00:00"^^xsd:dateTime ;
+    
+    # ====================
+    # CORPUS STATISTICS
+    # ====================
+    
+    ingest:totalArticles 120 ;
+    ingest:totalTokens 487293 ;
+    ingest:totalURIs 14618 ;
+    ingest:avgTokensPerArticle 4060.775 ;
+    ingest:avgURIsPerArticle 121.817 ;
+    
+    # URI Density Metrics
+    ingest:avgURIDensity 0.030 ;  # 3% URIs (below optimal)
+    ingest:minURIDensity 0.012 ;
+    ingest:maxURIDensity 0.087 ;
+    ingest:medianURIDensity 0.028 ;
+    ingest:optimalDensityRange "0.05-0.25" ;
+    ingest:articlesInOptimalRange 23 ;  # 19.2% of articles
+    
+    # Saturation Metrics
+    ingest:avgSaturation 0.82 ;  # 82% average saturation
+    ingest:minSaturation 0.65 ;
+    ingest:maxSaturation 0.97 ;
+    ingest:targetSaturation 0.85 ;
+    ingest:articlesAboveTarget 72 ;  # 60% meet target
+    
+    # ====================
+    # LLM OPTIMIZATION
+    # ====================
+    
+    llm:optimizedFor [
+        a llm:ModelOptimization ;
+        llm:modelFamily "GPT-4" ;
+        llm:maxContext 128000 ;
+        llm:optimalChunkSize 4096 ;
+        llm:overlapRatio 0.1
+    ], [
+        a llm:ModelOptimization ;
+        llm:modelFamily "Claude-3" ;
+        llm:maxContext 200000 ;
+        llm:optimalChunkSize 8192 ;
+        llm:overlapRatio 0.15
+    ], [
+        a llm:ModelOptimization ;
+        llm:modelFamily "Llama-3" ;
+        llm:maxContext 32768 ;
+        llm:optimalChunkSize 2048 ;
+        llm:overlapRatio 0.2
+    ] ;
+    
+    llm:preprocessingPipeline [
+        a llm:PreprocessingStep ;
+        llm:order 1 ;
+        llm:operation "normalize_unicode" ;
+        llm:description "Convert to NFC normalization"
+    ], [
+        a llm:PreprocessingStep ;
+        llm:order 2 ;
+        llm:operation "expand_abbreviations" ;
+        llm:description "Expand legal abbreviations"
+    ], [
+        a llm:PreprocessingStep ;
+        llm:order 3 ;
+        llm:operation "resolve_references" ;
+        llm:description "Resolve article cross-references"
+    ], [
+        a llm:PreprocessingStep ;
+        llm:order 4 ;
+        llm:operation "inject_metadata" ;
+        llm:description "Add RDF metadata as context"
+    ] ;
+    
+    # ====================
+    # QUALITY METRICS
+    # ====================
+    
+    ingest:qualityScore 0.78 ;  # Overall quality (0-1)
+    
+    ingest:qualityBreakdown [
+        ingest:component "saturation" ;
+        ingest:weight 0.4 ;
+        ingest:score 0.82
+    ], [
+        ingest:component "uri_density" ;
+        ingest:weight 0.3 ;
+        ingest:score 0.65  # Below optimal
+    ], [
+        ingest:component "completeness" ;
+        ingest:weight 0.3 ;
+        ingest:score 0.95
+    ] ;
+    
+    ingest:ingestionReadiness [
+        ingest:ready 72 ;       # Articles ready for ingestion
+        ingest:needsWork 36 ;   # Need URI enrichment
+        ingest:critical 12 ;    # Below minimum standards
+        ingest:percentage 60.0  # 60% ready
+    ] ;
+    
+    # ====================
+    # HUGGINGFACE CONFIG
+    # ====================
+    
+    hf:dataset <https://huggingface.co/datasets/stavropoulos/greek-constitution-semantic> ;
+    hf:datasetCard <https://stavropouloslaw.com/corpus/README.md> ;
+    hf:downloadSize 512000 ;
+    hf:format "jsonl" ;
+    
+    hf:splits [
+        a hf:DataSplit ;
+        hf:name "train" ;
+        hf:examples 96 ;
+        hf:percentage 80.0
+    ], [
+        a hf:DataSplit ;
+        hf:name "validation" ;
+        hf:examples 12 ;
+        hf:percentage 10.0
+    ], [
+        a hf:DataSplit ;
+        hf:name "test" ;
+        hf:examples 12 ;
+        hf:percentage 10.0
+    ] ;
+    
+    hf:features <https://stavropouloslaw.com/corpus/features.json> ;
+    hf:license "cc-by-4.0" ;
+    
+    # ====================
+    # AI PIPELINE CONFIG
+    # ====================
+    
+    ingest:pipeline [
+        a ingest:PipelineStage ;
+        ingest:stage "ingestion" ;
+        ingest:format "jsonl" ;
+        ingest:batchSize 32 ;
+        ingest:parallelism 4
+    ], [
+        a ingest:PipelineStage ;
+        ingest:stage "embedding" ;
+        ingest:model "text-embedding-3-large" ;
+        ingest:dimensions 768 ;
+        ingest:normalization "l2"
+    ], [
+        a ingest:PipelineStage ;
+        ingest:stage "indexing" ;
+        ingest:backend "faiss" ;
+        ingest:indexType "IVF4096,Flat" ;
+        ingest:metric "cosine"
+    ], [
+        a ingest:PipelineStage ;
+        ingest:stage "retrieval" ;
+        ingest:topK 10 ;
+        ingest:reranking true
+    ] ;
+    
+    # ====================
+    # RECOMMENDATIONS
+    # ====================
+    
+    ingest:recommendations [
+        a ingest:Recommendation ;
+        ingest:priority "high" ;
+        ingest:action "increase_uri_density" ;
+        ingest:description """Add more semantic URIs to articles with density < 0.05.
+                            Target: 5-25% URI density for optimal LLM comprehension.""" ;
+        ingest:affectedArticles 48
+    ], [
+        a ingest:Recommendation ;
+        ingest:priority "medium" ;
+        ingest:action "enhance_saturation" ;
+        ingest:description """Add JSON-LD and structured citations to articles 
+                            with saturation < 0.85""" ;
+        ingest:affectedArticles 36
+    ], [
+        a ingest:Recommendation ;
+        ingest:priority "low" ;
+        ingest:action "compute_embeddings" ;
+        ingest:description "Pre-compute embeddings for faster retrieval" ;
+        ingest:affectedArticles 120
+    ] .
+
+# ==============================================================================
+# URI DENSITY INDEX
+# ==============================================================================
+
+<https://stavropouloslaw.com/corpus/uri-density-index> a ingest:URIDensityIndex ;
+    dct:title "URI Density Index"@en ;
+    dct:description "Analysis of URI to token ratios across all articles"@en ;
+    ingest:generatedAt "2025-11-13T19:00:00"^^xsd:dateTime ;
+    
+    # Distribution Statistics
+    ingest:distribution [
+        a ingest:DensityDistribution ;
+        ingest:percentile5 0.015 ;
+        ingest:percentile25 0.022 ;
+        ingest:percentile50 0.028 ;  # Median
+        ingest:percentile75 0.041 ;
+        ingest:percentile95 0.073 ;
+        ingest:mean 0.030 ;
+        ingest:stddev 0.018
+    ] ;
+    
+    # Categorization
+    ingest:categories [
+        a ingest:DensityCategory ;
+        ingest:name "under-enriched" ;
+        ingest:range "[0.00-0.05)" ;
+        ingest:articleCount 48 ;
+        ingest:percentage 40.0
+    ], [
+        a ingest:DensityCategory ;
+        ingest:name "optimal" ;
+        ingest:range "[0.05-0.25)" ;
+        ingest:articleCount 23 ;
+        ingest:percentage 19.2
+    ], [
+        a ingest:DensityCategory ;
+        ingest:name "acceptable" ;
+        ingest:range "[0.025-0.05)" ;
+        ingest:articleCount 49 ;
+        ingest:percentage 40.8
+    ] ;
+    
+    # Top URI-Dense Articles (Good Examples)
+    ingest:topDenseArticles [
+        ingest:article <https://stavropouloslaw.com/eli/gr/const/article-016> ;
+        ingest:density 0.087 ;
+        ingest:tokens 523 ;
+        ingest:uris 45
+    ], [
+        ingest:article <https://stavropouloslaw.com/eli/gr/const/article-032> ;
+        ingest:density 0.082 ;
+        ingest:tokens 412 ;
+        ingest:uris 34
+    ], [
+        ingest:article <https://stavropouloslaw.com/eli/gr/const/article-054> ;
+        ingest:density 0.076 ;
+        ingest:tokens 389 ;
+        ingest:uris 30
+    ] .
+
+# ==============================================================================
+# SATURATION LEVELS PER ARTICLE (Sample)
+# ==============================================================================
+
+# Article 1 - High Saturation Example
+<https://stavropouloslaw.com/eli/gr/const/article-001/saturation> a ingest:ArticleSaturation ;
+    ingest:articleNumber 1 ;
+    ingest:saturationLevel 0.95 ;
+    ingest:ingestionReady true ;
+    
+    ingest:components [
+        ingest:factor "rdfa" ;
+        ingest:value 0.20 ;
+        ingest:present true
+    ], [
+        ingest:factor "structured_citation" ;
+        ingest:value 0.15 ;
+        ingest:citations 8
+    ], [
+        ingest:factor "backlinks" ;
+        ingest:value 0.15 ;
+        ingest:count 12
+    ], [
+        ingest:factor "json_ld" ;
+        ingest:value 0.15 ;
+        ingest:present true
+    ], [
+        ingest:factor "microdata" ;
+        ingest:value 0.10 ;
+        ingest:present true
+    ], [
+        ingest:factor "opengraph" ;
+        ingest:value 0.10 ;
+        ingest:present true
+    ], [
+        ingest:factor "schema_org" ;
+        ingest:value 0.10 ;
+        ingest:present true
+    ] ;
+    
+    ingest:tokens 487 ;
+    ingest:uris 28 ;
+    ingest:uriDensity 0.058 ;  # Within optimal range
+    
+    llm:chunkStrategy [
+        llm:numChunks 1 ;  # Fits in single chunk
+        llm:chunkSize 487 ;
+        llm:overlap 0
+    ] .
+
+# Article 16 - Medium Saturation Example  
+<https://stavropouloslaw.com/eli/gr/const/article-016/saturation> a ingest:ArticleSaturation ;
+    ingest:articleNumber 16 ;
+    ingest:saturationLevel 0.75 ;
+    ingest:ingestionReady false ;  # Below target
+    
+    ingest:components [
+        ingest:factor "rdfa" ;
+        ingest:value 0.20 ;
+        ingest:present true
+    ], [
+        ingest:factor "structured_citation" ;
+        ingest:value 0.10 ;
+        ingest:citations 3
+    ], [
+        ingest:factor "backlinks" ;
+        ingest:value 0.08 ;
+        ingest:count 5
+    ], [
+        ingest:factor "json_ld" ;
+        ingest:value 0.15 ;
+        ingest:present true
+    ], [
+        ingest:factor "microdata" ;
+        ingest:value 0.00 ;
+        ingest:present false  # Missing
+    ], [
+        ingest:factor "opengraph" ;
+        ingest:value 0.10 ;
+        ingest:present true
+    ], [
+        ingest:factor "schema_org" ;
+        ingest:value 0.10 ;
+        ingest:present true
+    ] ;
+    
+    ingest:tokens 892 ;
+    ingest:uris 45 ;
+    ingest:uriDensity 0.050 ;  # Borderline optimal
+    
+    ingest:recommendation "Add microdata markup and increase citations" .
+
+# ==============================================================================
+# LLM HINTS
+# ==============================================================================
+
+<https://stavropouloslaw.com/corpus/llm-hints> a llm:ProcessingHints ;
+    llm:optimalContextSize 128000 ;
+    llm:chunkStrategy "sliding_window" ;
+    llm:chunkSize 4096 ;
+    llm:overlapTokens 410 ;  # 10% of 4096
+    
+    llm:recommendedModels [
+        llm:model "gpt-4-turbo" ;
+        llm:reason "Best for legal comprehension"
+    ], [
+        llm:model "claude-3-opus" ;
+        llm:reason "Strong reasoning capabilities"  
+    ], [
+        llm:model "llama-3-70b" ;
+        llm:reason "Open-source alternative"
+    ] ;
+    
+    llm:embeddingModel "text-embedding-3-large" ;
+    llm:embeddingDimensions 768 ;
+    
+    llm:preprocessing [
+        "normalize_unicode",
+        "expand_abbreviations",
+        "resolve_references",
+        "inject_rdf_context"
+    ] ;
+    
+    llm:retrievalStrategy [
+        llm:method "hybrid" ;
+        llm:combineStrategy "rrf" ;  # Reciprocal Rank Fusion
+        llm:semanticWeight 0.7 ;
+        llm:keywordWeight 0.3
+    ] ;
+    
+    llm:qualityThresholds [
+        llm:minSaturation 0.70 ;
+        llm:minURIDensity 0.02 ;
+        llm:maxChunkSize 8192
+    ] .
+
+# ==============================================================================
+# END OF AI INGEST MANIFEST
+# ==============================================================================

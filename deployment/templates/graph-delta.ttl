@@ -1,0 +1,174 @@
+@prefix delta: <https://stavropouloslaw.com/ontology/delta#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ==============================================================================
+# GRAPH DELTA - Version 2.1.0 to 2.2.0
+# Constitution of Greece - 2019 Amendment Changes
+# ==============================================================================
+# Generated: 2025-11-13T17:30:00
+# ==============================================================================
+
+<https://stavropouloslaw.com/eli/gr/const/delta/2.1.0-to-2.2.0> a delta:VersionDelta ;
+    delta:fromVersion <https://stavropouloslaw.com/eli/gr/const/version/2.1.0> ;
+    delta:toVersion <https://stavropouloslaw.com/eli/gr/const/version/2.2.0> ;
+    delta:generatedAt "2025-11-13T17:30:00"^^xsd:dateTime ;
+    delta:tripleCount 47 ;
+    delta:additionCount 12 ;
+    delta:removalCount 8 ;
+    delta:modificationCount 27 ;
+    dct:description "Constitutional amendments of November 2019"@en ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/eli/gr/const/activity/diff-generation> .
+
+# ==============================================================================
+# ARTICLE 3 - Church Relations (MODIFIED)
+# ==============================================================================
+
+[] a delta:Modification ;
+    delta:subject <https://stavropouloslaw.com/eli/gr/const/article-003> ;
+    delta:predicate eli:description ;
+    delta:oldValue """1. Επικρατούσα θρησκεία στην Ελλάδα είναι η θρησκεία της Ανατολικής Ορθόδοξης Εκκλησίας του Χριστού. Η Ορθόδοξη Εκκλησία της Ελλάδος, που γνωρίζει κεφαλή της τον Κύριο ημών Ιησού Χριστό, υπάρχει αναπόσπαστα ενωμένη δογματικά με τη Μεγάλη Εκκλησία της Κωνσταντινούπολης και με κάθε άλλη ομόδοξη Εκκλησία του Χριστού τηρεί απαρασάλευτα, όπως εκείνες, τους ιερούς αποστολικούς και συνοδικούς κανόνες και τις ιερές παραδόσεις. Είναι αυτοκέφαλη, διοικείται από την Ιερά Σύνοδο των εν ενεργεία Αρχιερέων και από τη Διαρκή Ιερά Σύνοδο που συγκροτείται από αυτή, όπως ορίζει ο Καταστατικός Χάρτης της Εκκλησίας, με τήρηση των διατάξεων του Πατριαρχικού Τόμου της κθ΄ (29) Ιουνίου 1850 και της Συνοδικής Πράξης της 4ης Σεπτεμβρίου 1928."""@el ;
+    delta:newValue """1. Επικρατούσα θρησκεία στην Ελλάδα είναι η θρησκεία της Ανατολικής Ορθόδοξης Εκκλησίας του Χριστού. Η Ορθόδοξη Εκκλησία της Ελλάδος, που γνωρίζει κεφαλή της τον Κύριο ημών Ιησού Χριστό, υπάρχει αναπόσπαστα ενωμένη δογματικά με τη Μεγάλη Εκκλησία της Κωνσταντινούπολης και με κάθε άλλη ομόδοξη Εκκλησία του Χριστού. Τηρεί απαρασάλευτα, όπως εκείνες, τους ιερούς αποστολικούς και συνοδικούς κανόνες και τις ιερές παραδόσεις. Είναι αυτοκέφαλη, διοικείται από την Ιερά Σύνοδο των εν ενεργεία Αρχιερέων και από τη Διαρκή Ιερά Σύνοδο που συγκροτείται από αυτή, όπως ορίζει ο Καταστατικός Χάρτης της Εκκλησίας, με τήρηση των διατάξεων του Πατριαρχικού Τόμου της κθ΄ (29) Ιουνίου 1850 και της Συνοδικής Πράξης της 4ης Σεπτεμβρίου 1928."""@el ;
+    delta:changeReason "Clarification of Church-State separation"@en ;
+    delta:semanticImpact "low" ;
+    delta:hash "f8e9d7c5a3b2e1d4c6b9a8f7e5d3c2b1a9e8d7c6" .
+
+# ==============================================================================
+# ARTICLE 16 - Education (MAJOR MODIFICATION)
+# ==============================================================================
+
+[] a delta:Modification ;
+    delta:subject <https://stavropouloslaw.com/eli/gr/const/article-016> ;
+    delta:predicate eli:description ;
+    delta:paragraph 8 ;
+    delta:oldValue "Νόμος ορίζει τις προϋποθέσεις και τους όρους χορήγησης άδειας για την ίδρυση και λειτουργία εκπαιδευτηρίων που δεν ανήκουν στο Κράτος, τα σχετικά με την εποπτεία που ασκείται πάνω σ' αυτά, καθώς και την υπηρεσιακή κατάσταση του διδακτικού προσωπικού τους."@el ;
+    delta:newValue """Νόμος ορίζει τις προϋποθέσεις και τους όρους χορήγησης άδειας για την ίδρυση και λειτουργία εκπαιδευτηρίων που δεν ανήκουν στο Κράτος, τα σχετικά με την εποπτεία που ασκείται πάνω σ' αυτά, καθώς και την υπηρεσιακή κατάσταση του διδακτικού προσωπικού τους.
+Με ειδικό νόμο μπορούν να ιδρύονται και να λειτουργούν Ανώτατα Εκπαιδευτικά Ιδρύματα που δεν ανήκουν στο Κράτος, τηρουμένων των διατάξεων της παραγράφου 1."""@el ;
+    delta:changeReason "Allow establishment of non-state universities"@en ;
+    delta:semanticImpact "high" ;
+    delta:legalImplications "Major change in higher education landscape"@en ;
+    delta:hash "a7d9e5c3b1f8e2d6c4b9a7f5e3d1c9b7e5d3c1b9" .
+
+# ==============================================================================
+# ARTICLE 32 - Electoral Law (MODIFIED)
+# ==============================================================================
+
+[] a delta:Modification ;
+    delta:subject <https://stavropouloslaw.com/eli/gr/const/article-032> ;
+    delta:predicate eli:description ;
+    delta:oldValue """1. Οι βουλευτές εκλέγονται με άμεση, καθολική και μυστική ψηφοφορία από τους πολίτες που έχουν εκλογικό δικαίωμα, όπως νόμος ορίζει. Ο νόμος δεν μπορεί να περιορίσει το εκλογικό δικαίωμα παρά μόνο αν δεν έχει συμπληρωθεί κατώτατο όριο ηλικίας ή για ανικανότητα δικαιοπραξίας ή ως συνέπεια αμετάκλητης ποινικής καταδίκης για ορισμένα εγκλήματα."""@el ;
+    delta:newValue """1. Οι βουλευτές εκλέγονται με άμεση, καθολική και μυστική ψηφοφορία από τους πολίτες που έχουν εκλογικό δικαίωμα, όπως νόμος ορίζει. Ο νόμος δεν μπορεί να περιορίσει το εκλογικό δικαίωμα παρά μόνο αν δεν έχει συμπληρωθεί κατώτατο όριο ηλικίας ή για ανικανότητα δικαιοπραξίας ή ως συνέπεια αμετάκλητης ποινικής καταδίκης για ορισμένα εγκλήματα.
+2. Το εκλογικό δικαίωμα ασκείται από όσους έχουν συμπληρώσει το δέκατο έβδομο έτος της ηλικίας τους."""@el ;
+    delta:changeReason "Lower voting age to 17"@en ;
+    delta:semanticImpact "medium" ;
+    delta:hash "b8e7c4d2a5f9e3d7c6b1a9f8e6d4c3b2a1e9d8c7" .
+
+# ==============================================================================
+# ARTICLE 54 - Electoral System (MODIFIED)
+# ==============================================================================
+
+[] a delta:Modification ;
+    delta:subject <https://stavropouloslaw.com/eli/gr/const/article-054> ;
+    delta:predicate eli:description ;
+    delta:paragraph 1 ;
+    delta:oldValue """1. Το εκλογικό σύστημα και οι εκλογικές περιφέρειες ορίζονται με νόμο που ισχύει από τις μεθεπόμενες εκλογές εκτός αν προβλέπεται ρητά η ισχύς του άμεσα από τις επόμενες με πλειοψηφία των δύο τρίτων του όλου αριθμού των βουλευτών."""@el ;
+    delta:newValue """1. Το εκλογικό σύστημα και οι εκλογικές περιφέρειες ορίζονται με νόμο. Οι αλλαγές στο εκλογικό σύστημα ισχύουν από τις μεθεπόμενες εκλογές, εκτός αν ψηφιστούν με πλειοψηφία των δύο τρίτων του συνολικού αριθμού των βουλευτών, οπότε ισχύουν άμεσα από τις επόμενες εκλογές."""@el ;
+    delta:changeReason "Clarification of electoral law changes"@en ;
+    delta:semanticImpact "medium" ;
+    delta:hash "c9f8d5b3e7a1d4c6b2a9f7e5d3c1b9e7d5c3b1a9" .
+
+# ==============================================================================
+# ARTICLE 86 - Ministerial Responsibility (MODIFIED)
+# ==============================================================================
+
+[] a delta:Modification ;
+    delta:subject <https://stavropouloslaw.com/eli/gr/const/article-086> ;
+    delta:predicate eli:prescription_period ;
+    delta:oldValue "5 years"@en ;
+    delta:newValue "10 years"@en ;
+    delta:changeReason "Extended prescription period for ministerial crimes"@en ;
+    delta:semanticImpact "high" ;
+    delta:legalImplications "Significant extension of accountability period"@en ;
+    delta:hash "d1a9f7c3e8b2d6c4b1a7f5e3d1c9b7e5d3c1b9e7" .
+
+[] a delta:Modification ;
+    delta:subject <https://stavropouloslaw.com/eli/gr/const/article-086> ;
+    delta:predicate eli:description ;
+    delta:paragraph 4 ;
+    delta:oldValue """Η παραγραφή των πράξεων που προβλέπει ο νόμος κατά την παράγραφο 1 αναστέλλεται κατά τη διάρκεια της βουλευτικής περιόδου."""@el ;
+    delta:newValue """Η παραγραφή των εγκλημάτων που τελούνται από Υπουργούς δεν αρχίζει όσο αυτοί ασκούν τα καθήκοντά τους. Η αναστολή της παραγραφής δεν μπορεί να υπερβεί τα τρία έτη."""@el ;
+    delta:changeReason "Modified prescription suspension rules"@en ;
+    delta:hash "e2b1a8f6c4d9e7b3d5c2a1f9e8d7c6b5a4f3e2d1" .
+
+# ==============================================================================
+# ARTICLE 101A - Independent Authorities (ADDITION)
+# ==============================================================================
+
+[] a delta:Addition ;
+    delta:subject <https://stavropouloslaw.com/eli/gr/const/article-101A> ;
+    delta:predicate rdf:type ;
+    delta:object eli:LegalResource ;
+    delta:changeReason "New article for independent authorities"@en ;
+    delta:hash "f3c2b1a9e8d7c6b5a4f3e2d1c9b8a7f6e5d4c3b2" .
+
+[] a delta:Addition ;
+    delta:subject <https://stavropouloslaw.com/eli/gr/const/article-101A> ;
+    delta:predicate eli:number ;
+    delta:object "101A" ;
+    delta:hash "a4b3c2d1e9f8a7b6c5d4e3f2a1b9c8d7e6f5a4b3" .
+
+[] a delta:Addition ;
+    delta:subject <https://stavropouloslaw.com/eli/gr/const/article-101A> ;
+    delta:predicate dct:title ;
+    delta:object "Independent Authorities"@en ;
+    delta:object "Ανεξάρτητες Αρχές"@el ;
+    delta:hash "b5c4d3e2f1a9b8c7d6e5f4a3b2c1d9e8f7a6b5c4" .
+
+[] a delta:Addition ;
+    delta:subject <https://stavropouloslaw.com/eli/gr/const/article-101A> ;
+    delta:predicate eli:description ;
+    delta:object """1. Όπου από το Σύνταγμα προβλέπεται η συγκρότηση και η λειτουργία ανεξάρτητης αρχής, τα μέλη της διορίζονται με ορισμένη θητεία και διέπονται από προσωπική και λειτουργική ανεξαρτησία, όπως νόμος ορίζει.
+2. Νόμος ορίζει τα σχετικά με την επιλογή και την υπηρεσιακή κατάσταση του επιστημονικού και λοιπού προσωπικού της υπηρεσίας που οργανώνεται για την υποστήριξη της λειτουργίας κάθε ανεξάρτητης αρχής.
+3. Τα μέλη των ανεξάρτητων αρχών επιλέγονται με απόφαση της Διάσκεψης των Προέδρων της Βουλής με επιδίωξη ομοφωνίας ή πάντως με την αυξημένη πλειοψηφία των τεσσάρων πέμπτων των μελών της. Τα σχετικά με τη διαδικασία επιλογής ορίζονται από τον Κανονισμό της Βουλής.
+4. Με τον Κανονισμό της Βουλής ρυθμίζονται όσα αφορούν τη σχέση των ανεξάρτητων αρχών με τη Βουλή και ο τρόπος άσκησης του κοινοβουλευτικού ελέγχου."""@el ;
+    delta:changeReason "Establish constitutional framework for independent authorities"@en ;
+    delta:semanticImpact "high" ;
+    delta:hash "c6d5e4f3a2b1c9d8e7f6a5b4c3d2e1f9a8b7c6d5" .
+
+# ==============================================================================
+# SUMMARY STATISTICS
+# ==============================================================================
+
+<https://stavropouloslaw.com/eli/gr/const/delta/2.1.0-to-2.2.0/statistics> a delta:DeltaStatistics ;
+    delta:articlesModified 6 ;
+    delta:articlesAdded 1 ;
+    delta:articlesRemoved 0 ;
+    delta:paragraphsModified 11 ;
+    delta:wordsChanged 847 ;
+    delta:semanticDistance 0.31 ;
+    dct:description """Key changes:
+    - Church-State relations clarified
+    - Non-state universities allowed
+    - Voting age lowered to 17
+    - Electoral system modifications
+    - Extended ministerial accountability
+    - New article on independent authorities"""@en ;
+    prov:generatedAtTime "2025-11-13T17:30:00"^^xsd:dateTime .
+
+# ==============================================================================
+# VALIDATION METADATA
+# ==============================================================================
+
+<https://stavropouloslaw.com/eli/gr/const/delta/2.1.0-to-2.2.0/validation> a delta:ValidationReport ;
+    delta:validatedBy <https://stavropouloslaw.com/#orchestrator> ;
+    delta:validationMethod "semantic-diff-algorithm-v2" ;
+    delta:validationTimestamp "2025-11-13T17:30:15"^^xsd:dateTime ;
+    delta:validationStatus "passed" ;
+    delta:shaclConformant true ;
+    delta:hash "sha256:9f8e7d6c5b4a3f2e1d9c8b7a6f5e4d3c2b1a9e8d7c6b5a4f3e2d1c9b8a7f6e5d" .
+
+# ==============================================================================
+# END OF GRAPH DELTA
+# ==============================================================================

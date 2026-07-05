@@ -1,0 +1,571 @@
+@prefix : <https://stavropouloslaw.com/ontology/legal#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+@prefix cc: <http://creativecommons.org/ns#> .
+
+# ==============================================================================
+# ONTOLOGY METADATA
+# ==============================================================================
+
+<https://stavropouloslaw.com/ontology/legal>
+    a owl:Ontology ;
+    
+    rdfs:label "Greek Legal Ontology"@en ;
+    rdfs:label "Ελληνική Νομική Οντολογία"@el ;
+    
+    dct:title "STAVROPOULOS LAW® Greek Legal Infrastructure Ontology"@en ;
+    dct:description """Comprehensive ontology defining the semantic structure of 
+    Greek legal provisions, their relationships, and interoperability with European 
+    legal frameworks (ELI, ECLI, DCAT-AP). Establishes the formal vocabulary for 
+    machine-readable Greek law."""@en ;
+    
+    dct:created "2019-01-01"^^xsd:date ;
+    dct:modified "2025-11-14"^^xsd:date ;
+    dct:issued "2025-11-14"^^xsd:date ;
+    
+    dct:creator <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
+    dct:publisher <https://stavropouloslaw.com/identity#stavropoulos-law> ;
+    
+    # Version control
+    owl:versionIRI <https://stavropouloslaw.com/ontology/legal/1.2.0> ;
+    owl:versionInfo "1.2.0" ;
+    owl:priorVersion <https://stavropouloslaw.com/ontology/legal/1.1.0> ;
+    
+    # Standards conformance
+    dct:conformsTo <http://data.europa.eu/eli/ontology#> ;
+    dct:conformsTo <https://www.w3.org/TR/owl2-overview/> ;
+    dct:conformsTo <https://www.w3.org/TR/rdf11-concepts/> ;
+    
+    # Namespace declarations
+    vann:preferredNamespacePrefix "legal" ;
+    vann:preferredNamespaceUri "https://stavropouloslaw.com/ontology/legal#" ;
+    
+    # License
+    cc:license <http://creativecommons.org/licenses/by/4.0/> ;
+    
+    # Import alignments
+    owl:imports <http://data.europa.eu/eli/ontology#> ;
+    
+    rdfs:comment """This ontology defines the formal vocabulary for representing 
+    Greek legal provisions within the European Legal Interoperability framework. 
+    It extends ELI with Greek-specific concepts while maintaining full compatibility 
+    with cross-border legal information exchange standards."""@en .
+
+# ==============================================================================
+# CORE LEGAL STRUCTURE CLASSES
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Legislative Acts
+# ------------------------------------------------------------------------------
+
+:LegislativeAct a owl:Class ;
+    rdfs:label "Legislative Act"@en ;
+    rdfs:label "Νομοθετικό Έργο"@el ;
+    rdfs:comment "A formal legal instrument enacted by the Greek legislative authority"@en ;
+    rdfs:subClassOf eli:LegalExpression ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty dct:type ;
+        owl:hasValue <http://publications.europa.eu/resource/authority/resource-type/ACT>
+    ] ;
+    owl:disjointWith :JudicialDecision ;
+    skos:definition "Comprehensive legal text enacted through the legislative process, including laws, decrees, and regulations"@en .
+
+:Constitution a owl:Class ;
+    rdfs:label "Constitution"@en ;
+    rdfs:label "Σύνταγμα"@el ;
+    rdfs:comment "The supreme law of the Greek state"@en ;
+    rdfs:subClassOf :LegislativeAct ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasAuthority ;
+        owl:allValuesFrom :SupremeAuthority
+    ] ;
+    skos:definition "Fundamental constitutional law establishing the structure and principles of the Greek legal order"@en .
+
+:Law a owl:Class ;
+    rdfs:label "Law"@en ;
+    rdfs:label "Νόμος"@el ;
+    rdfs:comment "Statutory law enacted by the Hellenic Parliament"@en ;
+    rdfs:subClassOf :LegislativeAct ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :enactedBy ;
+        owl:hasValue <https://stavropouloslaw.com/legal/authority#hellenic-parliament>
+    ] ;
+    skos:example "Law 4172/2013 (Income Tax Code)"@en .
+
+:PresidentialDecree a owl:Class ;
+    rdfs:label "Presidential Decree"@en ;
+    rdfs:label "Προεδρικό Διάταγμα"@el ;
+    rdfs:comment "Decree issued by the President of the Hellenic Republic"@en ;
+    rdfs:subClassOf :LegislativeAct ;
+    skos:altLabel "P.D."@en .
+
+:MinisterialDecision a owl:Class ;
+    rdfs:label "Ministerial Decision"@en ;
+    rdfs:label "Υπουργική Απόφαση"@el ;
+    rdfs:comment "Administrative decision issued by a government minister"@en ;
+    rdfs:subClassOf :LegislativeAct ;
+    skos:altLabel "Υ.Α."@el .
+
+# ------------------------------------------------------------------------------
+# Legal Provisions (Article-level)
+# ------------------------------------------------------------------------------
+
+:LegalProvision a owl:Class ;
+    rdfs:label "Legal Provision"@en ;
+    rdfs:label "Νομική Διάταξη"@el ;
+    rdfs:comment "A specific provision (article, paragraph, section) within Greek legislation"@en ;
+    rdfs:subClassOf eli:LegalResource ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty eli:is_part_of ;
+        owl:someValuesFrom :LegislativeAct
+    ] ;
+    skos:definition "Atomic unit of legal content, typically corresponding to an article or paragraph"@en .
+
+:ConstitutionalArticle a owl:Class ;
+    rdfs:label "Constitutional Article"@en ;
+    rdfs:label "Συνταγματικό Άρθρο"@el ;
+    rdfs:comment "Article within the Greek Constitution"@en ;
+    rdfs:subClassOf :LegalProvision ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty eli:is_part_of ;
+        owl:allValuesFrom :Constitution
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :articleNumber ;
+        owl:minCardinality 1
+    ] .
+
+:Article a owl:Class ;
+    rdfs:label "Article"@en ;
+    rdfs:label "Άρθρο"@el ;
+    rdfs:comment "Standard article within statutory law"@en ;
+    rdfs:subClassOf :LegalProvision .
+
+:Paragraph a owl:Class ;
+    rdfs:label "Paragraph"@en ;
+    rdfs:label "Παράγραφος"@el ;
+    rdfs:comment "Subdivision of an article"@en ;
+    rdfs:subClassOf :LegalProvision ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty eli:is_part_of ;
+        owl:allValuesFrom :Article
+    ] .
+
+:Section a owl:Class ;
+    rdfs:label "Section"@en ;
+    rdfs:label "Εδάφιο"@el ;
+    rdfs:comment "Subdivision of a paragraph"@en ;
+    rdfs:subClassOf :LegalProvision ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty eli:is_part_of ;
+        owl:allValuesFrom :Paragraph
+    ] .
+
+# ------------------------------------------------------------------------------
+# Judicial Decisions
+# ------------------------------------------------------------------------------
+
+:JudicialDecision a owl:Class ;
+    rdfs:label "Judicial Decision"@en ;
+    rdfs:label "Δικαστική Απόφαση"@el ;
+    rdfs:comment "Decision issued by a Greek court"@en ;
+    rdfs:subClassOf eli:LegalExpression ;
+    owl:disjointWith :LegislativeAct ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :issuedBy ;
+        owl:someValuesFrom :JudicialAuthority
+    ] .
+
+:SupremeCourtDecision a owl:Class ;
+    rdfs:label "Supreme Court Decision"@en ;
+    rdfs:label "Απόφαση Αρείου Πάγου"@el ;
+    rdfs:comment "Decision by the Supreme Civil and Criminal Court"@en ;
+    rdfs:subClassOf :JudicialDecision ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :issuedBy ;
+        owl:hasValue <https://stavropouloslaw.com/legal/authority#supreme-court>
+    ] .
+
+:CouncilOfStateDecision a owl:Class ;
+    rdfs:label "Council of State Decision"@en ;
+    rdfs:label "Απόφαση Συμβουλίου Επικρατείας"@el ;
+    rdfs:comment "Decision by the Supreme Administrative Court"@en ;
+    rdfs:subClassOf :JudicialDecision .
+
+# ------------------------------------------------------------------------------
+# Legal Domains (Subject Classification)
+# ------------------------------------------------------------------------------
+
+:LegalDomain a owl:Class ;
+    rdfs:label "Legal Domain"@en ;
+    rdfs:label "Νομικός Κλάδος"@el ;
+    rdfs:comment "Branch of Greek law"@en ;
+    rdfs:subClassOf skos:Concept .
+
+:ConstitutionalLaw a owl:Class ;
+    rdfs:label "Constitutional Law"@en ;
+    rdfs:label "Συνταγματικό Δίκαιο"@el ;
+    rdfs:subClassOf :LegalDomain .
+
+:CivilLaw a owl:Class ;
+    rdfs:label "Civil Law"@en ;
+    rdfs:label "Αστικό Δίκαιο"@el ;
+    rdfs:subClassOf :LegalDomain .
+
+:CriminalLaw a owl:Class ;
+    rdfs:label "Criminal Law"@en ;
+    rdfs:label "Ποινικό Δίκαιο"@el ;
+    rdfs:subClassOf :LegalDomain .
+
+:AdministrativeLaw a owl:Class ;
+    rdfs:label "Administrative Law"@en ;
+    rdfs:label "Διοικητικό Δίκαιο"@el ;
+    rdfs:subClassOf :LegalDomain .
+
+:CommercialLaw a owl:Class ;
+    rdfs:label "Commercial Law"@en ;
+    rdfs:label "Εμπορικό Δίκαιο"@el ;
+    rdfs:subClassOf :LegalDomain .
+
+:LaborLaw a owl:Class ;
+    rdfs:label "Labor Law"@en ;
+    rdfs:label "Εργατικό Δίκαιο"@el ;
+    rdfs:subClassOf :LegalDomain .
+
+:TaxLaw a owl:Class ;
+    rdfs:label "Tax Law"@en ;
+    rdfs:label "Φορολογικό Δίκαιο"@el ;
+    rdfs:subClassOf :LegalDomain .
+
+# ------------------------------------------------------------------------------
+# Legal Authorities
+# ------------------------------------------------------------------------------
+
+:LegalAuthority a owl:Class ;
+    rdfs:label "Legal Authority"@en ;
+    rdfs:label "Νομική Αρχή"@el ;
+    rdfs:comment "Entity with power to create or interpret law"@en ;
+    rdfs:subClassOf foaf:Organization .
+
+:LegislativeAuthority a owl:Class ;
+    rdfs:label "Legislative Authority"@en ;
+    rdfs:subClassOf :LegalAuthority .
+
+:JudicialAuthority a owl:Class ;
+    rdfs:label "Judicial Authority"@en ;
+    rdfs:subClassOf :LegalAuthority .
+
+:ExecutiveAuthority a owl:Class ;
+    rdfs:label "Executive Authority"@en ;
+    rdfs:subClassOf :LegalAuthority .
+
+# ==============================================================================
+# OBJECT PROPERTIES (Relationships)
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Legislative Relationships
+# ------------------------------------------------------------------------------
+
+:amends a owl:ObjectProperty ;
+    rdfs:label "amends"@en ;
+    rdfs:label "τροποποιεί"@el ;
+    rdfs:comment "One legislative act modifies another"@en ;
+    rdfs:domain :LegislativeAct ;
+    rdfs:range :LegislativeAct ;
+    rdfs:subPropertyOf eli:amends ;
+    owl:inverseOf :amendedBy ;
+    # Transitive: If A amends B, and B amends C, then A indirectly relates to C
+    rdf:type owl:TransitiveProperty .
+
+:amendedBy a owl:ObjectProperty ;
+    rdfs:label "amended by"@en ;
+    rdfs:label "τροποποιείται από"@el ;
+    rdfs:comment "This act has been modified by another act"@en ;
+    rdfs:domain :LegislativeAct ;
+    rdfs:range :LegislativeAct ;
+    owl:inverseOf :amends .
+
+:repeals a owl:ObjectProperty ;
+    rdfs:label "repeals"@en ;
+    rdfs:label "καταργεί"@el ;
+    rdfs:comment "One act terminates the legal force of another"@en ;
+    rdfs:domain :LegislativeAct ;
+    rdfs:range :LegislativeAct ;
+    rdfs:subPropertyOf eli:changes ;
+    owl:inverseOf :repealedBy .
+
+:repealedBy a owl:ObjectProperty ;
+    rdfs:label "repealed by"@en ;
+    rdfs:label "καταργείται από"@el ;
+    rdfs:domain :LegislativeAct ;
+    rdfs:range :LegislativeAct ;
+    owl:inverseOf :repeals .
+
+:implements a owl:ObjectProperty ;
+    rdfs:label "implements"@en ;
+    rdfs:label "εφαρμόζει"@el ;
+    rdfs:comment "Lower-level act implements a higher-level provision"@en ;
+    rdfs:domain :LegislativeAct ;
+    rdfs:range :LegislativeAct ;
+    owl:inverseOf :implementedBy .
+
+:implementedBy a owl:ObjectProperty ;
+    rdfs:label "implemented by"@en ;
+    rdfs:label "εφαρμόζεται από"@el ;
+    owl:inverseOf :implements .
+
+# ------------------------------------------------------------------------------
+# Citation Relationships
+# ------------------------------------------------------------------------------
+
+:cites a owl:ObjectProperty ;
+    rdfs:label "cites"@en ;
+    rdfs:label "αναφέρεται σε"@el ;
+    rdfs:comment "One provision explicitly references another"@en ;
+    rdfs:domain :LegalProvision ;
+    rdfs:range :LegalProvision ;
+    owl:inverseOf :citedBy .
+
+:citedBy a owl:ObjectProperty ;
+    rdfs:label "cited by"@en ;
+    rdfs:label "αναφέρεται από"@el ;
+    rdfs:domain :LegalProvision ;
+    rdfs:range :LegalProvision ;
+    owl:inverseOf :cites .
+
+:interpretsProvision a owl:ObjectProperty ;
+    rdfs:label "interprets provision"@en ;
+    rdfs:label "ερμηνεύει διάταξη"@el ;
+    rdfs:comment "Judicial decision interprets a legal provision"@en ;
+    rdfs:domain :JudicialDecision ;
+    rdfs:range :LegalProvision ;
+    owl:inverseOf :interpretedBy .
+
+:interpretedBy a owl:ObjectProperty ;
+    rdfs:label "interpreted by"@en ;
+    rdfs:label "ερμηνεύεται από"@el ;
+    rdfs:domain :LegalProvision ;
+    rdfs:range :JudicialDecision ;
+    owl:inverseOf :interpretsProvision .
+
+# ------------------------------------------------------------------------------
+# Structural Relationships
+# ------------------------------------------------------------------------------
+
+:hasProvision a owl:ObjectProperty ;
+    rdfs:label "has provision"@en ;
+    rdfs:label "περιέχει διάταξη"@el ;
+    rdfs:comment "Act contains a specific provision"@en ;
+    rdfs:domain :LegislativeAct ;
+    rdfs:range :LegalProvision ;
+    rdfs:subPropertyOf eli:has_part ;
+    owl:inverseOf :provisionOf .
+
+:provisionOf a owl:ObjectProperty ;
+    rdfs:label "provision of"@en ;
+    rdfs:label "διάταξη του"@el ;
+    rdfs:domain :LegalProvision ;
+    rdfs:range :LegislativeAct ;
+    rdfs:subPropertyOf eli:is_part_of ;
+    owl:inverseOf :hasProvision .
+
+# ------------------------------------------------------------------------------
+# Authority Relationships
+# ------------------------------------------------------------------------------
+
+:enactedBy a owl:ObjectProperty ;
+    rdfs:label "enacted by"@en ;
+    rdfs:label "ψηφίστηκε από"@el ;
+    rdfs:comment "Authority that created this act"@en ;
+    rdfs:domain :LegislativeAct ;
+    rdfs:range :LegalAuthority ;
+    rdfs:subPropertyOf dct:creator .
+
+:issuedBy a owl:ObjectProperty ;
+    rdfs:label "issued by"@en ;
+    rdfs:label "εκδόθηκε από"@el ;
+    rdfs:comment "Authority that issued this decision"@en ;
+    rdfs:domain :JudicialDecision ;
+    rdfs:range :JudicialAuthority ;
+    rdfs:subPropertyOf dct:creator .
+
+# ------------------------------------------------------------------------------
+# Domain Classification
+# ------------------------------------------------------------------------------
+
+:belongsToDomain a owl:ObjectProperty ;
+    rdfs:label "belongs to domain"@en ;
+    rdfs:label "ανήκει στον κλάδο"@el ;
+    rdfs:comment "Provision belongs to a specific legal domain"@en ;
+    rdfs:domain :LegalProvision ;
+    rdfs:range :LegalDomain ;
+    rdfs:subPropertyOf dct:subject .
+
+# ==============================================================================
+# DATATYPE PROPERTIES
+# ==============================================================================
+
+:articleNumber a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "article number"@en ;
+    rdfs:label "αριθμός άρθρου"@el ;
+    rdfs:comment "Numeric identifier of the article"@en ;
+    rdfs:domain :Article ;
+    rdfs:range xsd:positiveInteger .
+
+:paragraphNumber a owl:DatatypeProperty ;
+    rdfs:label "paragraph number"@en ;
+    rdfs:label "αριθμός παραγράφου"@el ;
+    rdfs:domain :Paragraph ;
+    rdfs:range xsd:positiveInteger .
+
+:legalText a owl:DatatypeProperty ;
+    rdfs:label "legal text"@en ;
+    rdfs:label "νομικό κείμενο"@el ;
+    rdfs:comment "Full text of the provision"@en ;
+    rdfs:domain :LegalProvision ;
+    rdfs:range xsd:string ;
+    rdfs:subPropertyOf eli:title_short .
+
+:hasLegalEffect a owl:DatatypeProperty ;
+    rdfs:label "has legal effect"@en ;
+    rdfs:label "έχει νομική ισχύ"@el ;
+    rdfs:comment "Describes the normative effect of a provision"@en ;
+    rdfs:domain :LegalProvision ;
+    rdfs:range xsd:string ;
+    skos:example "Grants rights", "Imposes obligations", "Defines procedure"@en .
+
+:officialGazetteNumber a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "Official Gazette number"@en ;
+    rdfs:label "αριθμός ΦΕΚ"@el ;
+    rdfs:comment "Reference to Government Gazette publication"@en ;
+    rdfs:domain :LegislativeAct ;
+    rdfs:range xsd:string .
+
+:caseNumber a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "case number"@en ;
+    rdfs:label "αριθμός υπόθεσης"@el ;
+    rdfs:domain :JudicialDecision ;
+    rdfs:range xsd:string .
+
+# ==============================================================================
+# OWL INFERENCE RULES & AXIOMS
+# ==============================================================================
+
+# Rule 1: Transitive Amendment Chain
+# If Act A amends Act B, and Act B amends Act C, 
+# then Act A has an indirect relationship with Act C
+:AmendmentTransitivity a owl:Axiom ;
+    rdfs:label "Transitive Amendment Rule"@en ;
+    rdfs:comment "Amendment relationships are transitive"@en ;
+    owl:annotatedSource :amends ;
+    owl:annotatedProperty rdf:type ;
+    owl:annotatedTarget owl:TransitiveProperty .
+
+# Rule 2: Constitutional Supremacy
+# All provisions must be consistent with constitutional articles
+:ConstitutionalSupremacy a owl:Axiom ;
+    rdfs:label "Constitutional Supremacy Rule"@en ;
+    rdfs:comment "Constitutional articles have supreme authority over all other provisions"@en ;
+    owl:annotatedSource :ConstitutionalArticle ;
+    owl:annotatedProperty :hasAuthority ;
+    owl:annotatedTarget :SupremeAuthority .
+
+# Rule 3: Repeal implies loss of legal force
+# If Act A is repealed by Act B, then Act A is no longer in force
+[] a owl:Axiom ;
+    rdfs:label "Repeal Effect Rule"@en ;
+    owl:annotatedSource :repealedBy ;
+    owl:annotatedProperty rdfs:subPropertyOf ;
+    owl:annotatedTarget :losesForceBy .
+
+# Rule 4: Citation implies semantic relationship
+# If Provision A cites Provision B, they share semantic context
+[] a owl:Axiom ;
+    rdfs:label "Citation Context Rule"@en ;
+    owl:annotatedSource :cites ;
+    owl:annotatedProperty rdfs:comment ;
+    owl:annotatedTarget "Citations establish semantic relationships for reasoning"@en .
+
+# ==============================================================================
+# ALIGNMENT WITH ELI & OTHER ONTOLOGIES
+# ==============================================================================
+
+# ELI Equivalences
+:LegislativeAct owl:equivalentClass eli:LegalExpression .
+:LegalProvision owl:equivalentClass eli:LegalResource .
+:amends rdfs:subPropertyOf eli:amends .
+:hasProvision rdfs:subPropertyOf eli:has_part .
+
+# PROV Alignments
+:enactedBy rdfs:subPropertyOf prov:wasAttributedTo .
+:issuedBy rdfs:subPropertyOf prov:wasGeneratedBy .
+
+# DCAT Alignments
+:LegislativeAct rdfs:subClassOf dcat:Resource .
+:belongsToDomain rdfs:subPropertyOf dcat:theme .
+
+# SKOS Alignments
+:LegalDomain rdfs:subClassOf skos:Concept .
+
+# ==============================================================================
+# REASONING & VALIDATION NOTES
+# ==============================================================================
+
+<https://stavropouloslaw.com/ontology/legal>
+    rdfs:comment """
+    REASONING CAPABILITIES:
+    
+    1. Transitive Amendment Chains
+       - Automatically infer indirect amendment relationships
+       - Trace legislative history across multiple acts
+    
+    2. Hierarchical Structure
+       - Infer article→paragraph→section containment
+       - Navigate legal structure programmatically
+    
+    3. Citation Networks
+       - Build semantic relationship graphs
+       - Identify central provisions (high citation count)
+    
+    4. Domain Classification
+       - Automatic categorization based on references
+       - Multi-domain provision detection
+    
+    5. Authority Validation
+       - Verify issuing authority is appropriate for act type
+       - Check constitutional compliance
+    
+    VALIDATION (via SHACL):
+    - See shapes/legal-shapes.ttl for constraints
+    - Validates structure, cardinality, data types
+    - Ensures ELI compliance
+    
+    USAGE:
+    Load this ontology into a reasoner (Apache Jena, OWL API, etc.)
+    to enable automatic inference and validation.
+    """@en .
+
+# ==============================================================================
+# END OF ONTOLOGY
+# ==============================================================================

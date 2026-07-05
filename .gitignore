@@ -1,0 +1,47 @@
+node_modules/
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Build logs (transient)
+logs/
+build-*.txt
+build-*.log
+output/
+
+# Compiled Lisp artifacts (transient; produced by compile-file / ASDF)
+*.fasl
+*.fas
+*.lib
+*.dx64fsl
+*.lx64fsl
+*.lx32fsl
+*.wx64fsl
+
+# Security - Private keys and certificates
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+
+# Backup files
+*.bak
+
+# Local dev build/test helpers (ephemeral, absolute paths)
+local-build.lisp
+local-test.lisp
+
+# Μόνιμη κατάσταση δαίμονα (machine-specific — ΔΕΝ ανήκει στο repo):
+deployment/state/*-last-seen.txt
+deployment/state/amendment-laws.json
+deployment/state/lessons.jsonl
+deployment/data/decisions/kat-arthron.json
+
+# LAWMAX runtime state (not identity)
+deployment/self/proposals.sexp
+deployment/self/episodes.sexp
+deployment/self/graph-snapshot.sexp
+deployment/self/policies.sexp

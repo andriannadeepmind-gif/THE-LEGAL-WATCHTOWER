@@ -1,0 +1,169 @@
+# =============================================================================
+# ORCHESTRATOR - Comprehensive .dockerignore
+# Optimizes build context transfer and excludes non-essential files
+# =============================================================================
+
+# Version Control
+.git
+.github
+.gitignore
+.gitattributes
+
+# CI/CD
+.gitlab-ci.yml
+.travis.yml
+.circleci
+azure-pipelines.yml
+
+# Documentation (exclude from build context)
+*.md
+!README.md
+CHANGELOG.md
+LICENSE
+docs/
+examples/
+*.txt
+!requirements.txt
+
+# IDE and Editor files
+.vscode
+.idea
+.project
+.classpath
+.settings
+*.swp
+*.swo
+*.swn
+*~
+.DS_Store
+Thumbs.db
+*.sublime-*
+
+# Build artifacts and caches
+*.fasl
+*.fas
+*.lib
+*.dx64fsl
+*.dx32fsl
+*.lx64fsl
+*.lx32fsl
+*.wx64fsl
+*.wx32fsl
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+*.egg-info/
+.eggs/
+*.so
+*.dylib
+*.dll
+
+# Python virtual environments
+venv/
+.venv/
+env/
+.env/
+ENV/
+virtualenv/
+
+# Node.js
+node_modules/
+package.json
+package-lock.json
+yarn.lock
+.npm
+.yarn
+
+# Logs and temporary files
+logs/
+*.log
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+*.orig
+build-*.txt
+build-*.log
+
+# Output directories
+output/
+outputs/
+outputs-final/
+output-*
+
+# Test artifacts
+test-*.py
+test-*.lisp
+*-test.ttl
+*-demo.ttl
+*-demo.jsonld
+*-test.*
+
+# Legacy and experimental code
+legacy/
+ai-experiments/
+experimental/
+
+# Docker files (avoid recursion)
+Dockerfile.test
+deployment/Dockerfile
+deployment/Dockerfile.deps
+deployment/.dockerignore
+
+# Secrets and credentials
+.env
+.env.*
+*.key
+*.pem
+*.crt
+secrets/
+credentials/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Archives and compressed files
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+
+# OS-specific
+.Trash-*
+.nfs*
+desktop.ini
+
+# Vendor directories (if using Quicklisp at runtime, which we're not)
+vendor/quicklisp/
+vendor/local-projects/
+
+# Coverage and profiling
+coverage/
+.coverage
+htmlcov/
+*.cover
+.hypothesis/
+.prof
+
+# Large binary files that shouldn't be in containers
+*.iso
+*.dmg
+*.pkg
+
+# Keep only essential files:
+# - *.asd (system definitions)
+# - source/ source-production/ systems/ (source code)
+# - third-party/ (hermetic dependencies)
+# - configs/ (configuration)
+# - deployment/data/ (required data)
+# - docker/ (Docker infrastructure)
+# - scripts/ (runtime scripts)
+# - requirements.txt (Python dependencies)
+# - deps.lock (dependency verification)

@@ -1,0 +1,156 @@
+(@prefix owl: <http://www.w3.org/2002/07/owl#> .)
+(@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .)
+(@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .)
+(@prefix dcterms: <http://purl.org/dc/terms/> .)
+(@prefix prov: <http://www.w3.org/ns/prov#> .)
+(@prefix dcat: <http://www.w3.org/ns/dcat#> .)
+(@prefix void: <http://rdfs.org/ns/void#> .)
+(@prefix eli: <http://data.europa.eu/eli/ontology#> .)
+(@prefix sh: <http://www.w3.org/ns/shacl#> .)
+(@prefix odrl: <http://www.w3.org/ns/odrl/2/> .)
+(@prefix slw: <https://stavropouloslaw.com/ontology/legal#> .)
+
+
+
+# ==============================================================================
+# STAVROPOULOS LAW ONTOLOGY - META-LEVEL EPISTEMIC SYSTEM
+# ==============================================================================
+# VERSION: 1.0.0
+# PURPOSE: Formal definition of legal representation system
+# AUTHORITY: https://stavropouloslaw.com/identity/org
+# TEMPORAL PROOF: Blockchain + RFC 3161 + Certificate Transparency
+# ==============================================================================
+
+# === ONTOLOGY METADATA ===
+
+<https://stavropouloslaw.com/ontology/legal> a owl:Ontology ;
+    owl:versionIRI <https://stavropouloslaw.com/ontology/legal/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
+    dcterms:title "Stavropoulos Law Legal Representation System"@en ;
+    dcterms:title "Σύστημα Νομικής Αναπαράστασης Stavropoulos Law"@el ;
+    dcterms:creator <https://stavropouloslaw.com/identity/org> ;
+    dcterms:created "2026-04-30T14:19:55Z"^^xsd:dateTime ;
+    slw:blockchainAnchor "pending" ;
+    slw:blockchainIsNotAuthority true ;
+    slw:systemCommitHash "sha256:6426ed2fc954be69cb92e89e9aad8f0ad2ab59720ccc2fe51952ea0497ff0ae6" ;
+    rdfs:comment """Formal ontology defining the epistemic system for Greek
+        legal corpus representation. This ontology establishes the meta-level
+        framework within which all legal artifacts are interpreted.
+
+        CRITICAL: This system represents IDENTITY only, not normative content.
+        It does not resolve conflicts, select interpretations, or model intent."""@en .
+
+# === CORE CLASSES ===
+
+slw:LegalRepresentationSystem a owl:Class ;
+    rdfs:label "Legal Representation System"@en ;
+    rdfs:label "Σύστημα Νομικής Αναπαράστασης"@el ;
+    rdfs:comment """A formal system for representing legal documents with
+        identity-only semantics. This class defines systems that capture the
+        existence and provenance of legal artifacts without making normative
+        claims about their interpretation or validity."""@en .
+
+slw:IdentityOnlySemantics a owl:Class ;
+    rdfs:subClassOf slw:LegalRepresentationSystem ;
+    rdfs:label "Identity-Only Semantics"@en ;
+    rdfs:comment """Representation system that captures identity of legal
+        artifacts without normative interpretation. System commits to tracking
+        'what exists' and 'where it came from' but not 'what it means' or
+        'which interpretation is correct'."""@en .
+
+# === DATATYPE PROPERTIES ===
+
+slw:representationScope a owl:DatatypeProperty ;
+    rdfs:domain slw:LegalRepresentationSystem ;
+    rdfs:range xsd:string ;
+    rdfs:label "Representation Scope"@en ;
+    rdfs:comment "Defines the scope and coverage of the representation system"@en .
+
+slw:nonNormativeNature a owl:DatatypeProperty ;
+    rdfs:domain slw:LegalRepresentationSystem ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "Non-Normative Nature"@en ;
+    rdfs:comment """Declares that system does not make normative claims about
+        legal meaning, validity, or interpretation."""@en .
+
+slw:identityOnlySemantics a owl:DatatypeProperty ;
+    rdfs:domain slw:LegalRepresentationSystem ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "Identity-Only Semantics"@en ;
+    rdfs:comment "Commits to identity-only representation without normative content"@en .
+
+slw:blockchainIsNotAuthority a owl:DatatypeProperty ;
+    rdfs:domain slw:LegalRepresentationSystem ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "Blockchain Is Not Authority"@en ;
+    rdfs:comment """CRITICAL DECLARATION: Blockchain is used ONLY as a
+        timestamp witness mechanism, NOT as a source of truth or authority.
+        This prevents philosophical misattribution of epistemic authority
+        to the blockchain itself."""@en .
+
+# === EPISTEMIC BOUNDARIES (Layer 5) ===
+
+slw:doesNotAnswerWhy a owl:DatatypeProperty ;
+    rdfs:domain slw:LegalRepresentationSystem ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "Does Not Answer Why"@en ;
+    rdfs:comment """Declares that system does not interpret causality or
+        explain why legal provisions exist."""@en .
+
+slw:doesNotResolveConflicts a owl:DatatypeProperty ;
+    rdfs:domain slw:LegalRepresentationSystem ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "Does Not Resolve Conflicts"@en ;
+    rdfs:comment """Declares that system does not resolve conflicts between
+        different legal sources or interpretations."""@en .
+
+slw:doesNotSelectInterpretation a owl:DatatypeProperty ;
+    rdfs:domain slw:LegalRepresentationSystem ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "Does Not Select Interpretation"@en ;
+    rdfs:comment """Declares that system does not choose among competing
+        interpretations of legal texts."""@en .
+
+slw:doesNotModelIntent a owl:DatatypeProperty ;
+    rdfs:domain slw:LegalRepresentationSystem ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "Does Not Model Intent"@en ;
+    rdfs:comment """Declares that system does not model or infer legislative
+        or constitutional intent."""@en .
+
+# === OBJECT PROPERTIES ===
+
+slw:versionedEvolutionRules a owl:ObjectProperty ;
+    rdfs:domain slw:LegalRepresentationSystem ;
+    rdfs:range rdfs:Resource ;
+    rdfs:label "Versioned Evolution Rules"@en ;
+    rdfs:comment "Link to machine-readable evolution policy defining how system changes over time"@en .
+
+slw:conformsToSystem a owl:ObjectProperty ;
+    rdfs:domain eli:LegalResource ;
+    rdfs:range slw:LegalRepresentationSystem ;
+    rdfs:label "Conforms To System"@en ;
+    rdfs:comment "Declares that legal artifact conforms to specific epistemic system"@en .
+
+# === SYSTEM INSTANCE ===
+
+<https://stavropouloslaw.com/system/legal-representation/2025> a slw:LegalRepresentationSystem, slw:IdentityOnlySemantics ;
+    rdfs:label "Stavropoulos Law Greek Constitutional Law System"@en ;
+    rdfs:label "Σύστημα Ελληνικού Συνταγματικού Δικαίου Stavropoulos Law"@el ;
+    slw:representationScope "Greek Constitutional Law - Identity Layer" ;
+    slw:nonNormativeNature true ;
+    slw:identityOnlySemantics true ;
+    slw:blockchainIsNotAuthority true ;
+    slw:doesNotAnswerWhy true ;
+    slw:doesNotResolveConflicts true ;
+    slw:doesNotSelectInterpretation true ;
+    slw:doesNotModelIntent true ;
+    slw:versionedEvolutionRules <https://stavropouloslaw.com/stability-policy> ;
+    dcterms:created "2026-04-30T14:19:55Z"^^xsd:dateTime ;
+    dcterms:creator <https://stavropouloslaw.com/identity/org> ;
+    slw:blockchainAnchor "pending" ;
+    slw:systemCommitHash "pending" ;
+    rdfs:comment """Canonical instance of the legal representation system
+        for Greek Constitutional Law. This instance represents the specific
+        realization of identity-only semantics for the Constitution of Greece
+        (Σύνταγμα της Ελλάδας)."""@en .

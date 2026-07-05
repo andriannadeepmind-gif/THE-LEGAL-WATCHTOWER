@@ -1,0 +1,242 @@
+services:
+  orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUILD_DATE=${BUILD_DATE:-2025-12-15T13:58:00Z}
+        - GIT_COMMIT=${GIT_COMMIT:-dev}
+        - VERSION=${VERSION:-1.2.0}
+      target: runtime
+    image: orchestrator:latest
+    container_name: orchestrator-main
+
+    # CRITICAL: Override default CMD to run pipeline (not --help)
+    command: ["--run-pipeline"]
+
+    # Security options
+    security_opt:
+      - no-new-privileges:true
+    read_only: false
+    cap_drop:
+      - ALL
+
+    # Resource limits
+    mem_limit: 2g
+    mem_reservation: 512m
+    cpus: 2.0
+
+    # No host port: this is a one-shot pipeline run. The long-running
+    # corpus-service below owns host port 8080.
+
+    volumes:
+      # Input/Output (read-write)
+      - ./input:/app/input:rw
+      - ./output:/app/output:rw
+      - ./logs:/app/logs:rw
+
+      # Configurations (read-only)
+      - ./configs:/app/configs:ro
+
+      # Deployment data — RW: --materialize-pdf persists each code's clean source.json
+      # here (the materialised real text). The bind mount writes through to ./deployment
+      # on the host, so the populated JSON lands in the repo for commit. corpus-service
+      # below keeps this :ro (serving never writes).
+      - ./deployment:/app/deployment:rw
+
+      # Auto-generated crypto keys (Pure Lisp via Ironclad)
+      - ./keys:/app/keys:rw
+
+    environment:
+      ORCHESTRATOR_OUTPUT_DIR: /app/output
+      ORCHESTRATOR_LOG_DIR: /app/logs
+      ORCHESTRATOR_CONFIG_DIR: /app/configs
+      ORCHESTRATOR_LOG_LEVEL: ${ORCHESTRATOR_LOG_LEVEL:-info}
+      ORCHESTRATOR_WORKERS: ${ORCHESTRATOR_WORKERS:-4}
+      ORCHESTRATOR_DEV_MODE: ${ORCHESTRATOR_DEV_MODE:-1}
+      PRIVATE_KEY_PATH: /app/keys/private.pem
+      # Corpus selection: 'syntagma' (default) or 'poinikos'
+      # To run Ποινικός Κώδικας: set ORCHESTRATOR_CORPUS=poinikos before docker compose up
+      ORCHESTRATOR_CORPUS: ${ORCHESTRATOR_CORPUS:-syntagma}
+      ORCHESTRATOR_JSON_PATH: ${ORCHESTRATOR_JSON_PATH:-}
+
+      # Optional: External service configuration
+      # Uncomment and configure as needed
+      # ETHEREUM_NETWORK: ${ETHEREUM_NETWORK:-mainnet}
+      # ETHEREUM_RPC_URL: ${ETHEREUM_RPC_URL}
+      # ARWEAVE_WALLET: ${ARWEAVE_WALLET}
+      # IPFS_API: ${IPFS_API:-/ip4/127.0.0.1/tcp/5001}
+
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/orchestrator-health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+    networks:
+      - orchestrator-net
+
+    # DNS servers for external TSA access
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+
+    # Run once and stop (pipeline is one-shot, not a daemon)
+    restart: "no"
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # AI-first MULTI-corpus HTTP service (long-running). Serves EVERY legal code,
+  # each under its own /<corpus>/ prefix, with a shared top-level catalog:
+  # content-negotiated Akoma Ntoso / RDF / JSON-LD / JSONL, per-article JSON,
+  # robots.txt and /.well-known/ai-corpus.json.
+  #   docker compose up corpus-service   →   http://localhost:8080/catalog.jsonld
+  #     http://localhost:8080/poinikos/corpus.jsonl
+  #     http://localhost:8080/constitution/corpus.jsonl
+  # ──────────────────────────────────────────────────────────────────────────
+  corpus-service:
+    image: orchestrator:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: orchestrator-corpus-service
+    command: ["--serve"]
+    depends_on:
+      - orchestrator          # reuse the built image
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    mem_limit: 4g          # Φάση 0: χώρος για το ρητό SBCL heap (3.5g) + λειτουργικό
+    cpus: 1.0
+    ports:
+      - "${CORPUS_SERVICE_PORT:-8080}:8080"
+    volumes:
+      - ./configs:/app/configs:ro
+      - ./deployment:/app/deployment:ro
+      # Η ΚΑΤΑΣΤΑΣΗ ΤΟΥ ΕΑΥΤΟΥ (μνήμη επεισοδίων, βιογραφία, προτάσεις,
+      # στιγμιότυπο γράφου) ΕΠΙΒΙΩΝΕΙ επανεκκινήσεων: μόνο το self εγγράψιμο,
+      # όλα τα άλλα (configs, δεδομένα, κείμενα νόμων) μένουν προστατευμένα.
+      - ./deployment/self:/app/deployment/self:rw
+      - ./output:/app/output:ro
+    environment:
+      PORT: 8080
+      CORPUS_BASE_URI: ${CORPUS_BASE_URI:-https://stavropouloslaw.com/eli}
+      ORCHESTRATOR_CORPUS: ${ORCHESTRATOR_CORPUS:-poinikos}
+    networks:
+      - orchestrator-net
+    restart: unless-stopped
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Φάση 6 — ΑΝΤΙΓΡΑΦΑ ΑΝΑΓΝΩΣΗΣ: N stateless αναγνώστες πίσω από εξισορροπητή.
+  # LAWMAX_REPLICA=1 ⇒ τα ημερολόγια είναι ΕΦΗΜΕΡΑ (μόνο μνήμη) και το /decide
+  # απαντά 403 — ένας μοναδικός συγγραφέας-αυθεντία (το corpus-service παραπάνω).
+  # Ενεργοποίηση: ξεσχολίασε και δώσε --scale corpus-replica=N ή replicas.
+  # corpus-replica:
+  #   image: orchestrator:latest
+  #   command: ["--serve"]
+  #   depends_on: [corpus-service]
+  #   security_opt: ["no-new-privileges:true"]
+  #   cap_drop: [ALL]
+  #   mem_limit: 4g
+  #   cpus: 1.0
+  #   ports:
+  #     - "8081-8089:8080"
+  #   volumes:
+  #     - ./configs:/app/configs:ro
+  #     - ./deployment:/app/deployment:ro
+  #     - ./output:/app/output:ro
+  #   environment:
+  #     PORT: 8080
+  #     LAWMAX_REPLICA: "1"
+  #     CORPUS_BASE_URI: ${CORPUS_BASE_URI:-https://stavropouloslaw.com/eli}
+  #   networks: [orchestrator-net]
+  #   restart: unless-stopped
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Live ingestion daemon (long-running): polls Diavgeia for newly published
+  # acts, re-consolidates, and re-emits the consumption artifacts to ./output,
+  # which the corpus-service serves. Needs outbound network access.
+  # ──────────────────────────────────────────────────────────────────────────
+  ingestion:
+    image: orchestrator:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: orchestrator-ingestion
+    command: ["--run-ingestion"]
+    depends_on:
+      - orchestrator
+    profiles: ["ingestion"]     # opt-in: docker compose --profile ingestion up
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    mem_limit: 1g
+    cpus: 1.0
+    volumes:
+      - ./configs:/app/configs:ro
+      - ./deployment:/app/deployment:ro
+      - ./deployment/self:/app/deployment/self:rw
+      - ./output:/app/output:rw
+    environment:
+      ORCHESTRATOR_OUTPUT_DIR: /app/output
+      ORCHESTRATOR_CORPUS: ${ORCHESTRATOR_CORPUS:-poinikos}
+      INGEST_INTERVAL: ${INGEST_INTERVAL:-3600}
+    networks:
+      - orchestrator-net
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    restart: unless-stopped
+
+  # Optional: PostgreSQL database
+  # Uncomment if needed for future persistence features
+  # postgres:
+  #   image: postgres:16-alpine
+  #   container_name: orchestrator-db
+  #   security_opt:
+  #     - no-new-privileges:true
+  #   environment:
+  #     POSTGRES_DB: orchestrator
+  #     POSTGRES_USER: orchestrator
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me_in_production}
+  #   volumes:
+  #     - postgres-data:/var/lib/postgresql/data
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U orchestrator"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #   networks:
+  #     - orchestrator-net
+  #   restart: unless-stopped
+
+  # Optional: Redis cache
+  # Uncomment if needed for caching/queuing
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: orchestrator-cache
+  #   security_opt:
+  #     - no-new-privileges:true
+  #   command: redis-server --appendonly yes
+  #   volumes:
+  #     - redis-data:/data
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 10s
+  #     timeout: 3s
+  #     retries: 5
+  #   networks:
+  #     - orchestrator-net
+  #   restart: unless-stopped
+
+networks:
+  orchestrator-net:
+    driver: bridge
+
+# volumes:
+#   postgres-data:
+#   redis-data:

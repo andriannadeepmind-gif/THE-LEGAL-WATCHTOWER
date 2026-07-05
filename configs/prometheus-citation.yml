@@ -1,0 +1,300 @@
+# ==============================================================================
+# PROMETHEUS CONFIGURATION - AI Citation Velocity Monitoring
+# ==============================================================================
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    corpus: 'greek_constitution'
+    environment: 'production'
+    monitor: 'citation_velocity'
+
+# ==============================================================================
+# ALERTING CONFIGURATION
+# ==============================================================================
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - localhost:9093
+
+# ==============================================================================
+# SCRAPE CONFIGURATIONS
+# ==============================================================================
+
+scrape_configs:
+  
+  # Citation Beacon Metrics
+  - job_name: 'citation_beacons'
+    static_configs:
+      - targets: ['localhost:8080']
+        labels:
+          service: 'orchestrator'
+          component: 'beacon'
+    
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'legal_corpus_citations.*'
+        action: keep
+  
+  # AI Observer Metrics
+  - job_name: 'ai_observers'
+    scrape_interval: 30s
+    static_configs:
+      - targets:
+          - 'observer-openai:9090'
+          - 'observer-anthropic:9090'
+          - 'observer-google:9090'
+          - 'observer-microsoft:9090'
+        labels:
+          service: 'ai_observer'
+    
+    metric_relabel_configs:
+      - source_labels: [ai_system]
+        target_label: ai_provider
+  
+  # Velocity Tracker
+  - job_name: 'velocity_tracker'
+    scrape_interval: 60s
+    static_configs:
+      - targets: ['localhost:9091']
+        labels:
+          service: 'velocity'
+          component: 'tracker'
+  
+  # MongoDB Exporter (for citation storage)
+  - job_name: 'mongodb'
+    static_configs:
+      - targets: ['localhost:9216']
+        labels:
+          service: 'mongodb'
+          database: 'citations'
+
+# ==============================================================================
+# RECORDING RULES
+# ==============================================================================
+
+rule_files:
+  - 'citation_rules.yml'
+
+# Recording rules content (would be in citation_rules.yml):
+# groups:
+#   - name: citation_velocity
+#     interval: 1m
+#     rules:
+#       
+#       # Citations per hour
+#       - record: citation_velocity_1h
+#         expr: rate(legal_corpus_citations_total[1h])
+#       
+#       # Citations per day
+#       - record: citation_velocity_1d
+#         expr: rate(legal_corpus_citations_total[1d])
+#       
+#       # Citations per week
+#       - record: citation_velocity_1w
+#         expr: rate(legal_corpus_citations_total[1w])
+#       
+#       # Moving average
+#       - record: citation_velocity_ma_24h
+#         expr: avg_over_time(citation_velocity_1h[24h])
+#       
+#       # Peak detection
+#       - record: citation_velocity_peak_1d
+#         expr: max_over_time(citation_velocity_1h[1d])
+#       
+#       # Article-specific velocity
+#       - record: article_citation_velocity
+#         expr: rate(legal_corpus_citations_total[1h]) by (article)
+#       
+#       # AI system breakdown
+#       - record: ai_system_citations
+#         expr: sum(legal_corpus_citations_total) by (ai_system)
+#       
+#       # Beacon effectiveness
+#       - record: beacon_effectiveness_rate
+#         expr: |
+#           rate(beacon_triggers_total[1h]) / 
+#           rate(beacon_views_total[1h])
+
+# ==============================================================================
+# ALERTING RULES
+# ==============================================================================
+
+# Alert rules content (would be in alert_rules.yml):
+# groups:
+#   - name: citation_alerts
+#     rules:
+#       
+#       # High citation velocity
+#       - alert: HighCitationVelocity
+#         expr: citation_velocity_1h > 100
+#         for: 5m
+#         labels:
+#           severity: info
+#           component: citations
+#         annotations:
+#           summary: "High citation velocity detected"
+#           description: "Citation rate is {{ $value }} per hour"
+#       
+#       # Sudden spike in citations
+#       - alert: CitationSpike
+#         expr: |
+#           (citation_velocity_1h - citation_velocity_ma_24h) / 
+#           citation_velocity_ma_24h > 2
+#         for: 10m
+#         labels:
+#           severity: warning
+#           component: citations
+#         annotations:
+#           summary: "Sudden spike in citations"
+#           description: "Citation rate increased by {{ $value }}x"
+#       
+#       # No citations for extended period
+#       - alert: NoCitations
+#         expr: rate(legal_corpus_citations_total[1h]) == 0
+#         for: 2h
+#         labels:
+#           severity: warning
+#           component: citations
+#         annotations:
+#           summary: "No citations detected"
+#           description: "No citations for {{ $value }} hours"
+#       
+#       # Beacon failure
+#       - alert: BeaconFailure
+#         expr: beacon_effectiveness_rate < 0.1
+#         for: 30m
+#         labels:
+#           severity: critical
+#           component: beacon
+#         annotations:
+#           summary: "Beacon effectiveness too low"
+#           description: "Beacon effectiveness is {{ $value }}"
+#       
+#       # AI observer offline
+#       - alert: AIObserverOffline
+#         expr: up{job="ai_observers"} == 0
+#         for: 5m
+#         labels:
+#           severity: critical
+#           component: observer
+#         annotations:
+#           summary: "AI Observer offline"
+#           description: "{{ $labels.instance }} is down"
+
+# ==============================================================================
+# METRIC DEFINITIONS
+# ==============================================================================
+
+# Custom metrics exposed by the application:
+
+# legal_corpus_citations_total
+#   Type: Counter
+#   Help: Total number of citations detected
+#   Labels: article, ai_system, citation_type, confidence
+#
+# legal_corpus_citation_velocity
+#   Type: Gauge  
+#   Help: Current citation velocity (citations per hour)
+#   Labels: window (1h, 1d, 1w)
+#
+# beacon_triggers_total
+#   Type: Counter
+#   Help: Total beacon trigger events
+#   Labels: beacon_id, beacon_type
+#
+# beacon_views_total
+#   Type: Counter
+#   Help: Total beacon view events
+#   Labels: beacon_id
+#
+# beacon_effectiveness
+#   Type: Gauge
+#   Help: Beacon effectiveness ratio (0-1)
+#   Labels: beacon_id, beacon_type
+#
+# ai_observer_status
+#   Type: Gauge
+#   Help: AI observer status (1=active, 0=inactive)
+#   Labels: ai_system, observer_id
+#
+# citation_confidence_score
+#   Type: Histogram
+#   Help: Distribution of citation confidence scores
+#   Buckets: 0.5, 0.7, 0.8, 0.9, 0.95, 1.0
+#
+# citation_processing_duration
+#   Type: Histogram
+#   Help: Time taken to process citation events
+#   Buckets: 0.01, 0.05, 0.1, 0.5, 1, 5
+
+# ==============================================================================
+# GRAFANA DASHBOARD QUERIES
+# ==============================================================================
+
+# Example queries for Grafana dashboards:
+#
+# Total Citations:
+#   sum(legal_corpus_citations_total)
+#
+# Citation Rate:
+#   rate(legal_corpus_citations_total[5m])
+#
+# Citations by Article:
+#   sum by (article) (legal_corpus_citations_total)
+#
+# Citations by AI System:
+#   sum by (ai_system) (legal_corpus_citations_total)
+#
+# Beacon Effectiveness:
+#   beacon_effectiveness
+#
+# Citation Velocity Trend:
+#   citation_velocity_ma_24h
+#
+# Top Cited Articles (last 24h):
+#   topk(10, sum by (article) (rate(legal_corpus_citations_total[24h])))
+#
+# AI System Activity:
+#   sum by (ai_system) (rate(legal_corpus_citations_total[1h]))
+#
+# Citation Confidence Distribution:
+#   histogram_quantile(0.95, citation_confidence_score)
+
+# ==============================================================================
+# MONGODB METRICS (via MongoDB Exporter)
+# ==============================================================================
+
+# MongoDB metrics for citation storage:
+#
+# mongodb_mongod_wiredtiger_cache_bytes{type="total"}
+# mongodb_mongod_metrics_document_total{state="inserted"}
+# mongodb_mongod_metrics_query_executor_total{state="collection_scan"}
+# mongodb_mongod_metrics_operation_total{type="query"}
+#
+# Collection-specific:
+# mongodb_collection_size{database="citations",collection="events"}
+# mongodb_collection_count{database="citations",collection="events"}
+
+# ==============================================================================
+# FEDERATION CONFIGURATION (Optional)
+# ==============================================================================
+
+# For multi-region deployment:
+# federation:
+#   - region: eu-west
+#     endpoint: https://prometheus-eu.stavropouloslaw.com/federate
+#     labels:
+#       region: europe
+#   
+#   - region: us-east
+#     endpoint: https://prometheus-us.stavropouloslaw.com/federate
+#     labels:
+#       region: americas
+
+# ==============================================================================
+# END OF PROMETHEUS CONFIGURATION
+# ==============================================================================

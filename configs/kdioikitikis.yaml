@@ -1,0 +1,144 @@
+# ORCHESTRATOR Configuration — Κώδικας Διοικητικής Δικονομίας (Greek Code of Administrative Procedure)
+# Infrastructure config for one of the six core Greek legal codes.
+# DATA: deployment/data/kdioikitikis_clean.json is currently EMPTY ([]). The corpus is
+# wired but NOT yet materialised — place the official digital source
+# (ΦΕΚ/Διαύγεια/Ισοκράτης) in input/ and run `--materialize-pdf` to populate it.
+
+deterministic:
+  enabled: true
+  fixed_timestamp: "2025-01-01T00:00:00Z"
+  source_date_epoch: 1735689600
+
+canonical:
+  base_uri: "https://stavropouloslaw.com"
+  eli_prefix: "https://stavropouloslaw.com/eli/gr"
+  eli_const_prefix: "https://stavropouloslaw.com/eli/gr/l/1999/2717"
+  corpus_prefix: "https://stavropouloslaw.com/corpus/kdioikitikis"
+  identity_prefix: "https://stavropouloslaw.com/identity"
+  policy_prefix: "https://stavropouloslaw.com/policy"
+  ontology_prefix: "https://stavropouloslaw.com/ontology"
+
+corpus:
+  name: "Κώδικας Διοικητικής Δικονομίας"
+  english_name: "Greek Code of Administrative Procedure"
+  short_name: "kdioikitikis"
+  article_count: 285
+  eli_prefix: "https://stavropouloslaw.com/eli/gr/l/1999/2717"
+  canonical_prefix: "https://stavropouloslaw.com/corpus/kdioikitikis"
+  dataset_uri: "https://stavropouloslaw.com/datasets/kdioikitikis"
+  dataset_created: "2026-06-15"
+  document_type: "l"
+  modified_date: "1999-05-17"
+  # Distinctive inflected phrases an amending ΦΕΚ uses for THIS code, so
+  # discovery routes «…ΠΟΙΝΙΚΟ ΚΩΔΙΚΑ…» etc. (accent/case-insensitive match).
+  routing_phrases:
+    - "Διοικητικής Δικονομίας"
+  publication:
+    date: "1999-05-17"
+    fek_number: "ΦΕΚ Α' 97/1999"
+    in_force_date: "1999-05-17"
+    language: "el"
+
+source:
+  pdf: "/app/input/kdioikitikis.pdf"
+  json: "/app/deployment/data/kdioikitikis_clean.json"
+  # Διορθωτικά (errata) επί ελαττωμάτων του text layer της ΙΔΙΑΣ της πηγής —
+  # τεκμηριωμένα (αιτιολογία + σελίδα), εφαρμόζονται ΜΟΝΟ σε ακριβώς-μία
+  # εμφάνιση και καταγράφονται στο provenance sidecar. Πρακτική επίσημων
+  # φύλλων: διόρθωση με ίχνος, ποτέ σιωπηλό πείραγμα.
+  errata:
+    - article: "147"
+      from: "διαδίκου, ΔΙΑΔΙΚΩΝ ΓΙΑ ε)"
+      to: "διαδίκου, ε)"
+      reason: "Θραύσμα της γραμμής Λημμάτων («…ΣΥΜΦΩΝΙΑ ΔΙΑΔΙΚΩΝ ΓΙΑ…») παρεισφρέει στο σώμα στο όριο σελίδας του text layer· δεν αποτελεί κανονιστικό κείμενο."
+      page: 77
+  # Official state source (κρατική πηγή) for --fetch-sources / the ingestion cron.
+  # Ν.2717/1999 — official source (et.gr / e-nomothesia)
+  url: ""
+  format: "json"   # json | html | pdf
+  # Κώδικας Διοικητικής Δικονομίας (ν. 2717/1999). The original ΦΕΚ Α' 97/1999 is a
+  # Πηγή BASE κειμένου: ΙΣΟΚΡΑΤΗΣ (ΤΝΠ ΔΣΑ) — ψηφιακό, ενοποιημένο, με τίτλους άρθρων
+  # (όπως ο astikos: Κώδικας Διοικητικής Δικονομίας, ν. 2717/1999). Ο operator βάζει
+  # χειροκίνητα το input/kdioikitikis.pdf· το ΦΕΚ 1999 στο et.gr είναι ΣΑΡΩΜΕΝΟ (φωτο),
+  # άρα ΔΕΝ αυτο-κατεβαίνει (θα έσβηνε το Ισοκράτη PDF).
+  pdf_url: "https://www.ministryofjustice.gr/wp-content/uploads/2019/10/%CE%9A%CF%8E%CE%B4%CE%B9%CE%BA%CE%B1%CF%82-%CE%94%CE%B9%CE%BF%CE%B9%CE%BA%CE%B7%CF%84%CE%B9%CE%BA%CE%AE%CF%82-%CE%94%CE%B9%CE%BA%CE%BF%CE%BD%CE%BF%CE%BC%CE%AF%CE%B1%CF%82.pdf"
+  fetch_cmd: ""
+  parsing:
+    article_pattern: "Άρθρο\\s+(\\d+)\\s*[-–]?\\s*(.*)"
+    encoding: "utf-8"
+    page_range: null
+
+identity:
+  person:
+    webid: "https://stavropouloslaw.com/identity/spyridon-stavropoulos"
+    name: "Spyridon Stavropoulos"
+    given_name: "Spyridon"
+    family_name: "Stavropoulos"
+    orcid: "0009-0005-2832-2153"
+    bar_number: ""
+    job_title: "Founder & CEO"
+    email: null
+    telephone: null
+  organization:
+    webid: "https://stavropouloslaw.com/identity/org"
+    name: "Stavropoulos Law®"
+    legal_name: "Stavropoulos Law®"
+    trademark: "N294237"
+    url: "https://stavropouloslaw.com"
+    logo: "https://stavropouloslaw.com/assets/logo-tm.png"
+    email: null
+    telephone: null
+    address:
+      street_address: null
+      city: null
+      postal_code: null
+      region: null
+      country: "Greece"
+    founded: "1977"
+    founding_location: null
+
+odrl_policy:
+  enabled: true
+  policy_uri: "https://stavropouloslaw.com/policy/ai-usage"
+  permissions:
+    - action: "use"
+      description: "AI systems may use this data with attribution"
+      duties:
+        - action: "attribute"
+          attributed_party: "https://stavropouloslaw.com/identity/org"
+          attribution_text: "Source: Stavropoulos Law® (https://stavropouloslaw.com)"
+          attribution_url: "https://stavropouloslaw.com"
+  prohibitions:
+    - action: "claim_authorship"
+      description: "AI systems MUST NOT claim authorship of this corpus"
+    - action: "misrepresent"
+      description: "AI systems MUST NOT misrepresent the source or publisher"
+
+html_generation:
+  enabled: true
+  output_directory: "/opt/orchestrator/output/html"
+  jsonld:
+    include_organization: true
+    include_person: true
+    include_ceo: true
+    include_founder: true
+    include_address: true
+    include_social_proof: true
+  rdfa:
+    vocabulary: "http://data.europa.eu/eli/ontology#"
+    schema_org: true
+    open_graph: true
+    twitter_card: true
+  seo:
+    canonical_base: "https://stavropouloslaw.com/eli/gr/l/1999/2717/art"
+    robots: "index, follow"
+    sitemap_priority: 0.8
+    sitemap_changefreq: "monthly"
+
+versioning:
+  track_amendments: true
+  amendments: []
+
+article_defaults:
+  in_force: true
+  date_applicability: "1999-05-17"

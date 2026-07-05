@@ -1,0 +1,351 @@
+# PROVENANCE.yaml — Provenance Infrastructure Configuration
+# Version: 1.0.0
+# Purpose: Configuration for QES/GPG, Blockchain (OpenTimestamps), and IPFS provenance
+
+---
+
+# ==============================================================================
+# 1. GPG / QES CONFIGURATION
+# ==============================================================================
+
+gpg:
+  enabled: true
+  
+  # Primary signing key
+  signing_key:
+    email: "info@stavropouloslaw.com"
+    fingerprint: "<YOUR_GPG_FINGERPRINT_HERE>"  # Replace with actual fingerprint
+    key_id: "<YOUR_KEY_ID_HERE>"                # Replace with actual key ID
+    public_key_url: "https://stavropouloslaw.com/pgp-key.asc"
+    
+  # Git configuration for signed commits
+  git_config:
+    user.name: "Spyridon Stavropoulos"
+    user.email: "info@stavropouloslaw.com"
+    user.signingkey: "<YOUR_KEY_ID_HERE>"       # Replace with actual key ID
+    commit.gpgsign: "true"
+    tag.gpgsign: "true"
+    
+  # Key server for public key distribution
+  keyservers:
+    - "hkps://keys.openpgp.org"
+    - "hkps://keyserver.ubuntu.com"
+    - "hkps://pgp.mit.edu"
+    
+  # Verification
+  verify_commands:
+    - "git verify-commit HEAD"
+    - "git verify-tag v1.2.0"
+    - "gpg --verify release-signature.asc release.tar.gz"
+
+# Optional: eIDAS Qualified Electronic Signature (QES)
+# For EU-compliant qualified signatures
+qes:
+  enabled: false  # Set to true if using eIDAS QES
+  
+  # Provider information (example: replace with actual QES provider)
+  provider:
+    name: "Qualified Trust Service Provider"
+    country: "GR"  # Greece
+    
+  # Certificate information
+  certificate:
+    type: "QES"  # Qualified Electronic Signature
+    subject_dn: "CN=Spyridon Stavropoulos,OU=Athens Bar Association,O=STAVROPOULOS LAW,C=GR"
+    issuer: "<QES_PROVIDER_NAME>"
+    serial_number: "<CERTIFICATE_SERIAL>"
+    valid_from: "2025-01-01"
+    valid_until: "2027-01-01"
+    
+  # Signature format
+  signature_format: "CAdES"  # CMS Advanced Electronic Signature
+  
+  # Timestamp authority
+  tsa_url: "http://timestamp.qualified-tsp.gr/tsa"
+  
+  # Integration notes
+  notes: |
+    QES integration is optional but recommended for legal documents.
+    Requires:
+    1. Obtain QES certificate from qualified TSP in Greece
+    2. Install signing software (e.g., OpenSC, AdobeSign)
+    3. Configure TSA for RFC 3161 timestamps
+    4. Update this config with certificate details
+
+# ==============================================================================
+# 2. BLOCKCHAIN ANCHORING (OpenTimestamps)
+# ==============================================================================
+
+blockchain:
+  enabled: true
+  
+  # OpenTimestamps configuration
+  opentimestamps:
+    enabled: true
+    network: "bitcoin"  # Bitcoin mainnet for production
+    
+    # OTS client configuration
+    client:
+      command: "ots"  # OpenTimestamps client binary
+      calendar_urls:
+        - "https://alice.btc.calendar.opentimestamps.org"
+        - "https://bob.btc.calendar.opentimestamps.org"
+        - "https://finney.calendar.eternitywall.com"
+        
+    # Stamping configuration
+    stamping:
+      auto_stamp_releases: true
+      stamp_format: "detached"  # Create .ots file alongside artifact
+      hash_algorithm: "sha256"
+      
+    # Verification
+    verify_command: "ots verify <file>.ots"
+    info_command: "ots info <file>.ots"
+    
+    # Upgrade configuration (converts pending -> complete)
+    upgrade:
+      auto_upgrade: true
+      upgrade_interval_hours: 24
+      max_upgrade_attempts: 7  # 1 week
+      
+  # Bitcoin configuration (optional - for direct node verification)
+  bitcoin:
+    enabled: false  # Set to true to use local Bitcoin node
+    node_url: "http://localhost:8332"
+    rpc_user: "<BITCOIN_RPC_USER>"
+    rpc_password: "<BITCOIN_RPC_PASSWORD>"
+    
+    # For independent verification without trusting calendar servers
+    notes: |
+      Running a Bitcoin full node allows independent verification
+      of OpenTimestamps proofs without trusting calendar servers.
+      
+      Setup:
+      1. Install Bitcoin Core
+      2. Sync full blockchain (~500GB)
+      3. Configure RPC access
+      4. Use: ots verify --bitcoin-node=<url> file.ots
+
+# ==============================================================================
+# 3. IPFS PINNING
+# ==============================================================================
+
+ipfs:
+  enabled: true
+  
+  # IPFS node configuration
+  node:
+    type: "kubo"  # Kubo (go-ipfs) is the reference implementation
+    api_url: "http://localhost:5001"
+    gateway_url: "http://localhost:8080"
+    
+  # Pinning configuration
+  pinning:
+    auto_pin_releases: true
+    pin_recursively: true
+    
+    # Remote pinning services (optional but recommended)
+    services:
+      pinata:
+        enabled: false  # Set to true if using Pinata
+        api_key: "<PINATA_API_KEY>"
+        secret_key: "<PINATA_SECRET_KEY>"
+        endpoint: "https://api.pinata.cloud"
+        
+      web3storage:
+        enabled: false  # Set to true if using Web3.Storage
+        token: "<WEB3_STORAGE_TOKEN>"
+        endpoint: "https://api.web3.storage"
+        
+      infura:
+        enabled: false  # Set to true if using Infura IPFS
+        project_id: "<INFURA_PROJECT_ID>"
+        project_secret: "<INFURA_PROJECT_SECRET>"
+        endpoint: "https://ipfs.infura.io:5001"
+        
+  # CID format
+  cid_version: 1  # CIDv1 for modern IPFS
+  
+  # Verification
+  verify_commands:
+    - "ipfs cat <CID> | sha256sum"
+    - "ipfs pin ls <CID>"
+
+# ==============================================================================
+# 4. RELEASE PROVENANCE
+# ==============================================================================
+
+releases:
+  # Example release entry (template - fill in for each release)
+  - tag: "v1.2.0"
+    date: "2025-01-01T00:00:00Z"
+    commit: "<COMMIT_SHA>"
+    
+    # GPG signature
+    gpg_signature:
+      signed: true
+      key_id: "<KEY_ID>"
+      signature_file: "releases/v1.2.0.tar.gz.asc"
+      
+    # OpenTimestamps proof
+    opentimestamps:
+      stamped: true
+      ots_file: "releases/v1.2.0.tar.gz.ots"
+      bitcoin_block: null  # Updated after confirmation
+      bitcoin_tx: null     # Updated after confirmation
+      
+    # IPFS CID
+    ipfs:
+      pinned: true
+      cid: "<IPFS_CID>"  # Replace with actual CID after pinning
+      size_bytes: 0      # Updated after pinning
+      pin_service: "local"  # or "pinata", "web3storage", etc.
+      
+    # Artifact hashes
+    hashes:
+      sha256: "<SHA256_HASH>"
+      sha512: "<SHA512_HASH>"
+      
+    # GitHub release
+    github_release:
+      url: "https://github.com/David33law/ORCHESTRATORSUPER/releases/tag/v1.2.0"
+      published: true
+
+  # Add more releases here as they are created
+  # - tag: "v1.3.0"
+  #   date: "2025-03-01T00:00:00Z"
+  #   ...
+
+# ==============================================================================
+# 5. PROVENANCE WORKFLOW
+# ==============================================================================
+
+workflow:
+  # Steps executed by scripts/provenance-stamp.sh
+  steps:
+    - name: "Create Release Archive"
+      command: "git archive --format=tar.gz --prefix=orchestrator-${TAG}/ ${TAG} > releases/${TAG}.tar.gz"
+      
+    - name: "Generate SHA-256 Hash"
+      command: "sha256sum releases/${TAG}.tar.gz > releases/${TAG}.tar.gz.sha256"
+      
+    - name: "Sign with GPG"
+      command: "gpg --detach-sign --armor releases/${TAG}.tar.gz"
+      
+    - name: "Stamp with OpenTimestamps"
+      command: "ots stamp releases/${TAG}.tar.gz"
+      
+    - name: "Add to IPFS"
+      command: "ipfs add -r releases/${TAG}.tar.gz"
+      
+    - name: "Pin to Remote Services"
+      command: "./scripts/ipfs-pin-remote.sh <CID>"
+      
+    - name: "Update PROVENANCE.yaml"
+      command: "yq -i '.releases += [{\"tag\": \"${TAG}\", ...}]' PROVENANCE.yaml"
+      
+    - name: "Commit Provenance"
+      command: "git add PROVENANCE.yaml releases/ && git commit -S -m 'Add provenance for ${TAG}'"
+
+# ==============================================================================
+# 6. VERIFICATION WORKFLOW
+# ==============================================================================
+
+verification:
+  # Steps executed by scripts/verify-provenance.sh
+  steps:
+    - name: "Verify Git Tag Signature"
+      command: "git verify-tag ${TAG}"
+      
+    - name: "Verify GPG Signature"
+      command: "gpg --verify releases/${TAG}.tar.gz.asc releases/${TAG}.tar.gz"
+      
+    - name: "Verify SHA-256 Hash"
+      command: "sha256sum -c releases/${TAG}.tar.gz.sha256"
+      
+    - name: "Verify OpenTimestamps"
+      command: "ots verify releases/${TAG}.tar.gz.ots"
+      
+    - name: "Verify IPFS CID"
+      command: "ipfs cat <CID> | sha256sum"
+      
+    - name: "Compare IPFS with Local"
+      command: "diff <(ipfs cat <CID>) releases/${TAG}.tar.gz"
+
+# ==============================================================================
+# 7. DEPENDENCY VERIFICATION
+# ==============================================================================
+
+dependencies:
+  # Configuration for deps.lock verification
+  lock_file: "deps.lock"
+  hash_algorithm: "sha256"
+  directory: "third-party/"
+  
+  # Verification script
+  verify_script: "scripts/verify-deps.sh"
+  
+  # Re-generate lock file (for updates only)
+  generate_script: "scripts/generate-deps-lock.sh"
+  
+  # Hermetic build guarantee
+  hermetic:
+    enabled: true
+    no_network: true
+    no_cache: true
+    deterministic_timestamp: 1735689600  # SOURCE_DATE_EPOCH
+
+# ==============================================================================
+# 8. CI/CD INTEGRATION
+# ==============================================================================
+
+ci_cd:
+  # GitHub Actions workflow
+  workflow_file: ".github/workflows/provenance.yml"
+  
+  # Triggers
+  triggers:
+    - "on: push: tags: ['v*']"  # On version tags
+    
+  # Secrets required (configure in GitHub Settings)
+  required_secrets:
+    - "GPG_PRIVATE_KEY"      # For signing
+    - "GPG_PASSPHRASE"       # For unlocking key
+    - "IPFS_API_TOKEN"       # For remote pinning (optional)
+    - "PINATA_API_KEY"       # For Pinata pinning (optional)
+    - "PINATA_SECRET_KEY"    # For Pinata pinning (optional)
+    
+  # Outputs
+  artifacts:
+    - "releases/${TAG}.tar.gz"
+    - "releases/${TAG}.tar.gz.asc"
+    - "releases/${TAG}.tar.gz.sha256"
+    - "releases/${TAG}.tar.gz.ots"
+    - "PROVENANCE.yaml"
+
+# ==============================================================================
+# 9. METADATA
+# ==============================================================================
+
+metadata:
+  version: "1.0.0"
+  created: "2025-01-01"
+  author: "Spyridon Stavropoulos"
+  organization: "STAVROPOULOS LAW"
+  license: "CC-BY-4.0"
+  
+  # Related documents
+  related:
+    - "SEMANTIC-CONTRACT.md"
+    - "deps.lock"
+    - "CHANGELOG.md"
+    
+  # Standards compliance
+  standards:
+    - "OpenTimestamps Protocol"
+    - "IPFS Content Addressing"
+    - "GPG/PGP (RFC 4880)"
+    - "eIDAS (EU 910/2014) - optional"
+
+---
+# END OF PROVENANCE.yaml

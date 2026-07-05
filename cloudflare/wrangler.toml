@@ -1,0 +1,13 @@
+# wrangler.toml — standalone Worker variant (cloudflare/src/worker.ts).
+# For the Pages-Function variant (recommended, cloudflare/functions/_middleware.ts)
+# you do NOT need this file: just deploy the site with `wrangler pages deploy`.
+
+name = "stavropouloslaw-corpus"
+main = "src/worker.ts"
+compatibility_date = "2024-09-23"
+
+# The static tree produced by `orchestrator --emit-site` (SITE_OUTPUT_DIR).
+# Build it, then point this at it.
+[assets]
+directory = "../site"
+binding = "ASSETS"

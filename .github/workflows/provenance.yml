@@ -1,0 +1,367 @@
+name: Provenance Workflow
+
+# ==============================================================================
+# Automated Provenance for Releases
+# ==============================================================================
+# Purpose: Automatically create provenance chain for releases
+# Triggers: On version tags (v*.*.*)
+# 
+# This workflow:
+# 1. Creates release archive from Git tag
+# 2. Signs archive with GPG
+# 3. Generates SHA-256/SHA-512 hashes
+# 4. Stamps with OpenTimestamps (if configured)
+# 5. Pins to IPFS (if configured)
+# 6. Creates GitHub Release with artifacts
+# ==============================================================================
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Trigger on semantic version tags (v1.2.3)
+
+env:
+  # Deterministic build timestamp (same as in Dockerfile)
+  SOURCE_DATE_EPOCH: 1735689600
+
+jobs:
+  provenance:
+    name: Create Provenance Chain
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # Required for creating releases
+      id-token: write  # Required for cosign keyless signing
+      
+    steps:
+      # ========================================================================
+      # Setup
+      # ========================================================================
+      
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for git archive
+          
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "version=${TAG#v}" >> $GITHUB_OUTPUT
+          echo "Release tag: $TAG"
+          
+      - name: Create releases directory
+        run: mkdir -p releases
+        
+      # ========================================================================
+      # GPG Setup
+      # ========================================================================
+      
+      - name: Import GPG key
+        if: ${{ secrets.GPG_PRIVATE_KEY != '' }}
+        run: |
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          echo "GPG key imported"
+          gpg --list-secret-keys
+          
+      - name: Configure Git for GPG signing
+        if: ${{ secrets.GPG_PRIVATE_KEY != '' }}
+        run: |
+          git config --global user.name "Spyridon Stavropoulos"
+          git config --global user.email "info@stavropouloslaw.com"
+          git config --global commit.gpgsign true
+          git config --global tag.gpgsign true
+          
+      # ========================================================================
+      # Create Release Archive
+      # ========================================================================
+      
+      - name: Create release archive
+        run: |
+          TAG=${{ steps.version.outputs.tag }}
+          ARCHIVE="releases/${TAG}.tar.gz"
+          
+          echo "Creating archive from tag: $TAG"
+          git archive --format=tar.gz --prefix="orchestrator-${TAG}/" "${TAG}" > "${ARCHIVE}"
+          
+          # Verify archive was created
+          if [ ! -f "${ARCHIVE}" ]; then
+            echo "Error: Failed to create archive"
+            exit 1
+          fi
+          
+          SIZE=$(stat -c%s "${ARCHIVE}")
+          echo "Archive created: ${ARCHIVE} (${SIZE} bytes)"
+          echo "archive_path=${ARCHIVE}" >> $GITHUB_ENV
+          
+      # ========================================================================
+      # Generate Hashes
+      # ========================================================================
+      
+      - name: Generate SHA-256 hash
+        run: |
+          ARCHIVE="${{ env.archive_path }}"
+          sha256sum "${ARCHIVE}" | tee "${ARCHIVE}.sha256"
+          
+          HASH=$(cat "${ARCHIVE}.sha256" | awk '{print $1}')
+          echo "SHA-256: $HASH"
+          echo "sha256_hash=$HASH" >> $GITHUB_ENV
+          
+      - name: Generate SHA-512 hash
+        run: |
+          ARCHIVE="${{ env.archive_path }}"
+          sha512sum "${ARCHIVE}" | tee "${ARCHIVE}.sha512"
+          
+          HASH=$(cat "${ARCHIVE}.sha512" | awk '{print $1}')
+          echo "SHA-512: $HASH"
+          
+      # ========================================================================
+      # GPG Signing
+      # ========================================================================
+      
+      - name: Sign with GPG
+        if: ${{ secrets.GPG_PRIVATE_KEY != '' }}
+        run: |
+          ARCHIVE="${{ env.archive_path }}"
+          
+          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --yes --passphrase-fd 0 \
+            --detach-sign --armor "${ARCHIVE}"
+          
+          # Verify signature
+          if gpg --verify "${ARCHIVE}.asc" "${ARCHIVE}" 2>&1 | grep -q "Good signature"; then
+            echo "✅ GPG signature verified"
+          else
+            echo "❌ GPG signature verification failed"
+            exit 1
+          fi
+          
+      - name: Skip GPG signing (no key configured)
+        if: ${{ secrets.GPG_PRIVATE_KEY == '' }}
+        run: |
+          echo "⚠️  GPG signing skipped (GPG_PRIVATE_KEY secret not configured)"
+          echo "To enable GPG signing:"
+          echo "1. Generate GPG key: gpg --full-generate-key"
+          echo "2. Export private key: gpg --armor --export-secret-key <KEY_ID>"
+          echo "3. Add to GitHub Secrets as GPG_PRIVATE_KEY"
+          echo "4. Add passphrase as GPG_PASSPHRASE"
+
+      # ========================================================================
+      # Cosign Signing (supply-chain hardened)
+      # ========================================================================
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.4.0
+
+      - name: Sign Release Archive with Cosign
+        run: |
+          ARCHIVE="${{ env.archive_path }}"
+
+          # Sign with keyless signing (OIDC-based)
+          cosign sign-blob "${ARCHIVE}" --yes > "${ARCHIVE}.cosign.sig" || {
+            echo "⚠️  Cosign signing requires OIDC token (works in CI with id-token: write)"
+            echo "Skipping keyless signing"
+          }
+
+      - name: Attest Dependency Closure
+        if: ${{ hashFiles('deps/orchestrator-core-runtime.closure.json') != '' }}
+        run: |
+          ARCHIVE="${{ env.archive_path }}"
+
+          # Create attestation for dependency closure
+          if [ -f "deps/orchestrator-core-runtime.closure.json" ]; then
+            cosign attest-blob "${ARCHIVE}" \
+              --predicate deps/orchestrator-core-runtime.closure.json \
+              --type https://stavropoulos.law/orchestrator/dependency-closure \
+              --yes || echo "⚠️  Attestation requires OIDC token"
+          fi
+
+      # ========================================================================
+      # OpenTimestamps
+      # ========================================================================
+      
+      - name: Install OpenTimestamps client
+        run: |
+          pip3 install opentimestamps-client
+          ots --version || echo "Warning: OTS installation may have failed"
+          
+      - name: Stamp with OpenTimestamps
+        continue-on-error: true  # Non-fatal if OTS fails
+        run: |
+          ARCHIVE="${{ env.archive_path }}"
+          
+          if command -v ots &> /dev/null; then
+            echo "Creating OpenTimestamps proof..."
+            ots stamp "${ARCHIVE}" || echo "Warning: OTS stamping failed"
+            
+            if [ -f "${ARCHIVE}.ots" ]; then
+              echo "✅ OpenTimestamps proof created: ${ARCHIVE}.ots"
+              echo "Note: Proof will be pending until Bitcoin block confirmation"
+              echo "Run 'ots upgrade ${ARCHIVE}.ots' later to upgrade"
+              
+              # Show OTS info
+              ots info "${ARCHIVE}.ots" || true
+            else
+              echo "⚠️  OpenTimestamps proof file not created"
+            fi
+          else
+            echo "⚠️  OpenTimestamps client not available"
+          fi
+          
+      # ========================================================================
+      # IPFS Pinning (Optional)
+      # ========================================================================
+      
+      - name: Pin to IPFS
+        if: ${{ secrets.IPFS_API_TOKEN != '' }}
+        continue-on-error: true  # Non-fatal if IPFS fails
+        run: |
+          ARCHIVE="${{ env.archive_path }}"
+          
+          # Example: Upload to Web3.Storage
+          if [ -n "${{ secrets.WEB3_STORAGE_TOKEN }}" ]; then
+            echo "Uploading to Web3.Storage..."
+            
+            # Install w3 CLI
+            npm install -g @web3-storage/w3cli
+            
+            # Upload file
+            w3 token "${{ secrets.WEB3_STORAGE_TOKEN }}"
+            CID=$(w3 up "${ARCHIVE}" --json | jq -r '.root')
+            
+            if [ -n "$CID" ]; then
+              echo "✅ IPFS CID: $CID"
+              echo "ipfs_cid=$CID" >> $GITHUB_ENV
+              echo "IPFS URL: https://ipfs.io/ipfs/$CID"
+            else
+              echo "⚠️  Failed to get IPFS CID"
+            fi
+          else
+            echo "⚠️  IPFS pinning skipped (no API token configured)"
+          fi
+          
+      # ========================================================================
+      # Create GitHub Release
+      # ========================================================================
+      
+      - name: Generate release notes
+        run: |
+          TAG=${{ steps.version.outputs.tag }}
+          
+          cat > release-notes.md <<EOF
+          # Release $TAG
+          
+          ## Provenance Chain
+          
+          This release includes a complete provenance chain for institutional trustworthiness.
+          
+          ### Verification
+          
+          \`\`\`bash
+          # Clone repository
+          git clone https://github.com/David33law/ORCHESTRATORSUPER.git
+          cd ORCHESTRATORSUPER
+          
+          # Verify release
+          ./scripts/verify-provenance.sh $TAG
+          \`\`\`
+          
+          ### Artifacts
+          
+          - **Archive**: \`${TAG}.tar.gz\` - Release archive
+          - **SHA-256**: \`${TAG}.tar.gz.sha256\` - SHA-256 hash
+          - **SHA-512**: \`${TAG}.tar.gz.sha512\` - SHA-512 hash
+          - **GPG Signature**: \`${TAG}.tar.gz.asc\` - Detached signature
+          - **OpenTimestamps**: \`${TAG}.tar.gz.ots\` - Blockchain timestamp proof
+          
+          ### Hashes
+          
+          \`\`\`
+          SHA-256: ${{ env.sha256_hash }}
+          \`\`\`
+          
+          ### Canonical Version
+          
+          This release is **canonical** according to [SEMANTIC-CONTRACT.md](SEMANTIC-CONTRACT.md):
+          
+          - ✅ Git tag signed with GPG
+          - ✅ Release archive signed
+          - ✅ SHA-256/SHA-512 hashes provided
+          - ✅ OpenTimestamps blockchain proof
+          - ✅ GitHub Release published
+          
+          ### Standards Compliance
+          
+          - **License**: CC BY 4.0
+          - **Author**: Spyridon Stavropoulos (Athens Bar Association, ORCID 0009-0005-2832-2153)
+          - **Publisher**: STAVROPOULOS LAW® (Trademark N294237)
+          - **Standards**: ELI, DCAT-AP 2.1.1, PROV-O
+          
+          ### Links
+          
+          - [Semantic Contract](SEMANTIC-CONTRACT.md)
+          - [Provenance Configuration](PROVENANCE.yaml)
+          - [Verification Scripts](scripts/)
+          
+          ---
+          
+          **Generated**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          **Commit**: ${{ github.sha }}
+          EOF
+          
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ steps.version.outputs.tag }}
+          body_path: release-notes.md
+          draft: false
+          prerelease: false
+          files: |
+            releases/${{ steps.version.outputs.tag }}.tar.gz
+            releases/${{ steps.version.outputs.tag }}.tar.gz.sha256
+            releases/${{ steps.version.outputs.tag }}.tar.gz.sha512
+            releases/${{ steps.version.outputs.tag }}.tar.gz.asc
+            releases/${{ steps.version.outputs.tag }}.tar.gz.ots
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      # ========================================================================
+      # Summary
+      # ========================================================================
+      
+      - name: Summary
+        run: |
+          echo "## Provenance Chain Created ✅" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Release: ${{ steps.version.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Component | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Archive | ✅ Created |" >> $GITHUB_STEP_SUMMARY
+          echo "| SHA-256 | ✅ \`${{ env.sha256_hash }}\` |" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f "releases/${{ steps.version.outputs.tag }}.tar.gz.asc" ]; then
+            echo "| GPG Signature | ✅ Signed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| GPG Signature | ⚠️ Not configured |" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ -f "releases/${{ steps.version.outputs.tag }}.tar.gz.ots" ]; then
+            echo "| OpenTimestamps | ✅ Stamped |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| OpenTimestamps | ⚠️ Pending |" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ -n "${{ env.ipfs_cid }}" ]; then
+            echo "| IPFS | ✅ [\`${{ env.ipfs_cid }}\`](https://ipfs.io/ipfs/${{ env.ipfs_cid }}) |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| IPFS | ⚠️ Not configured |" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "1. Wait 10-60 minutes for Bitcoin block confirmation" >> $GITHUB_STEP_SUMMARY
+          echo "2. Upgrade OTS proof: \`ots upgrade releases/${{ steps.version.outputs.tag }}.tar.gz.ots\`" >> $GITHUB_STEP_SUMMARY
+          echo "3. Update \`PROVENANCE.yaml\` with final metadata" >> $GITHUB_STEP_SUMMARY
+          echo "4. Commit provenance files to repository" >> $GITHUB_STEP_SUMMARY

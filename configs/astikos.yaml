@@ -1,0 +1,149 @@
+# ORCHESTRATOR Configuration — Αστικός Κώδικας (Greek Civil Code)
+# Infrastructure config for one of the six core Greek legal codes.
+# DATA: deployment/data/astikos_clean.json holds the REAL, materialised corpus —
+# full article text parsed from the official ΦΕΚ/Διαύγεια source. Re-materialise
+# with `--materialize-pdf` whenever the source PDF changes.
+
+deterministic:
+  enabled: true
+  fixed_timestamp: "2025-01-01T00:00:00Z"
+  source_date_epoch: 1735689600
+
+canonical:
+  base_uri: "https://stavropouloslaw.com"
+  eli_prefix: "https://stavropouloslaw.com/eli/gr"
+  eli_const_prefix: "https://stavropouloslaw.com/eli/gr/l/1940/2250"
+  corpus_prefix: "https://stavropouloslaw.com/corpus/astikos"
+  identity_prefix: "https://stavropouloslaw.com/identity"
+  policy_prefix: "https://stavropouloslaw.com/policy"
+  ontology_prefix: "https://stavropouloslaw.com/ontology"
+
+corpus:
+  name: "Αστικός Κώδικας"
+  english_name: "Greek Civil Code"
+  short_name: "astikos"
+  article_count: 2035
+  eli_prefix: "https://stavropouloslaw.com/eli/gr/l/1940/2250"
+  canonical_prefix: "https://stavropouloslaw.com/corpus/astikos"
+  dataset_uri: "https://stavropouloslaw.com/datasets/astikos"
+  dataset_created: "2026-06-15"
+  document_type: "l"
+  modified_date: "1946-02-23"
+  # Distinctive inflected phrases an amending ΦΕΚ uses for THIS code, so
+  # discovery routes «…ΠΟΙΝΙΚΟ ΚΩΔΙΚΑ…» etc. (accent/case-insensitive match).
+  routing_phrases:
+    - "Αστικό Κώδικα"
+    - "Αστικού Κώδικα"
+    - "Αστικός Κώδικας"
+  publication:
+    date: "1946-02-23"
+    fek_number: "ΑΝ 2250/1940"
+    in_force_date: "1946-02-23"
+    language: "el"
+
+source:
+  pdf: "/app/input/astikos_kodikas.pdf"
+  json: "/app/deployment/data/astikos_clean.json"
+  # Διορθωτικά (errata) επί ελαττωμάτων του text layer της ΙΔΙΑΣ της πηγής —
+  # τεκμηριωμένα (αιτιολογία + σελίδα), εφαρμόζονται ΜΟΝΟ σε ακριβώς-μία
+  # εμφάνιση και καταγράφονται στο provenance sidecar. Πρακτική επίσημων
+  # φύλλων: διόρθωση με ίχνος, ποτέ σιωπηλό πείραγμα.
+  errata:
+    - article: "216"
+      from: "(πληρεξουσιότητα). παρέχεται"
+      to: "(πληρεξουσιότητα) παρέχεται"
+      reason: "Το text layer παρεμβάλλει το παρενθετικό «(πληρεξουσιότητα).» με πλεονάζουσα τελεία μέσα στην πρόταση· ορθή στίξη κατά την οπτική σειρά της σελίδας."
+      page: 119
+    - article: "1228"
+      from: "Η πώληση των πραγμάτων χρηματιστηριακώς. που έχουν χρηματιστηριακή αξία γίνεται"
+      to: "Η πώληση των πραγμάτων που έχουν χρηματιστηριακή αξία γίνεται χρηματιστηριακώς."
+      reason: "Το text layer τοποθετεί την καταληκτική λέξη «χρηματιστηριακώς.» εντός της πρότασης· η οπτική σειρά της σελίδας δίνει το ορθό."
+      page: 340
+  # Official state source (κρατική πηγή) for --fetch-sources / the ingestion cron.
+  # ΑΝ 2250/1940 — official source (et.gr / e-nomothesia)
+  url: ""
+  format: "json"   # json | html | pdf
+  # Αστικός Κώδικας — the 1940 ΦΕΚ is a SCANNED IMAGE (no OCR, by policy). Use the
+  # official DIGITAL consolidated PDF from the Ministry of Justice instead
+  # (--fetch-pdf pulls source.pdf_url in pure Lisp). Verify it parses from your IP.
+  pdf_url: "https://www.ministryofjustice.gr/wp-content/uploads/2019/10/%CE%91%CF%83%CF%84%CE%B9%CE%BA%CF%8C%CF%82-%CE%9A%CF%8E%CE%B4%CE%B9%CE%BA%CE%B1%CF%82.pdf"
+  fetch_cmd: ""
+  parsing:
+    article_pattern: "Άρθρο\\s+(\\d+)\\s*[-–]?\\s*(.*)"
+    encoding: "utf-8"
+    page_range: null
+
+identity:
+  person:
+    webid: "https://stavropouloslaw.com/identity/spyridon-stavropoulos"
+    name: "Spyridon Stavropoulos"
+    given_name: "Spyridon"
+    family_name: "Stavropoulos"
+    orcid: "0009-0005-2832-2153"
+    bar_number: ""
+    job_title: "Founder & CEO"
+    email: null
+    telephone: null
+  organization:
+    webid: "https://stavropouloslaw.com/identity/org"
+    name: "Stavropoulos Law®"
+    legal_name: "Stavropoulos Law®"
+    trademark: "N294237"
+    url: "https://stavropouloslaw.com"
+    logo: "https://stavropouloslaw.com/assets/logo-tm.png"
+    email: null
+    telephone: null
+    address:
+      street_address: null
+      city: null
+      postal_code: null
+      region: null
+      country: "Greece"
+    founded: "1977"
+    founding_location: null
+
+odrl_policy:
+  enabled: true
+  policy_uri: "https://stavropouloslaw.com/policy/ai-usage"
+  permissions:
+    - action: "use"
+      description: "AI systems may use this data with attribution"
+      duties:
+        - action: "attribute"
+          attributed_party: "https://stavropouloslaw.com/identity/org"
+          attribution_text: "Source: Stavropoulos Law® (https://stavropouloslaw.com)"
+          attribution_url: "https://stavropouloslaw.com"
+  prohibitions:
+    - action: "claim_authorship"
+      description: "AI systems MUST NOT claim authorship of this corpus"
+    - action: "misrepresent"
+      description: "AI systems MUST NOT misrepresent the source or publisher"
+
+html_generation:
+  enabled: true
+  output_directory: "/opt/orchestrator/output/html"
+  jsonld:
+    include_organization: true
+    include_person: true
+    include_ceo: true
+    include_founder: true
+    include_address: true
+    include_social_proof: true
+  rdfa:
+    vocabulary: "http://data.europa.eu/eli/ontology#"
+    schema_org: true
+    open_graph: true
+    twitter_card: true
+  seo:
+    canonical_base: "https://stavropouloslaw.com/eli/gr/l/1940/2250/art"
+    robots: "index, follow"
+    sitemap_priority: 0.8
+    sitemap_changefreq: "monthly"
+
+versioning:
+  track_amendments: true
+  amendments: []
+
+article_defaults:
+  in_force: true
+  date_applicability: "1946-02-23"

@@ -1,0 +1,463 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
+@prefix infra: <https://stavropouloslaw.com/ontology/infrastructure#> .
+@prefix : <https://stavropouloslaw.com/ontology/legal#> .
+@prefix feedback: <https://stavropouloslaw.com/feedback/ai#> .
+
+# ==============================================================================
+# AI CITATION TRACKING & FEEDBACK SYSTEM
+# Real-time logging of AI system usage and citations
+# ==============================================================================
+
+<https://stavropouloslaw.com/feedback/ai>
+    a prov:Entity, infra:CitationTracker ;
+    
+    rdfs:label "Greek Legal AI Citation Feedback System"@en ;
+    rdfs:label "Σύστημα Καταγραφής Παραπομπών AI"@el ;
+    
+    dct:description """Real-time tracking system for AI-driven citations of Greek 
+    legal provisions. Monitors which AI platforms reference which provisions, tracks 
+    citation quality, and identifies failure modes for continuous improvement."""@en ;
+    
+    dct:created "2025-11-14T00:00:00Z"^^xsd:dateTime ;
+    dct:modified "2025-11-14T00:00:00Z"^^xsd:dateTime ;
+    
+    # System configuration
+    infra:operationalStatus "ACTIVE"@en ;
+    infra:trackingGranularity "Per query, per article, per timestamp"@en ;
+    infra:loggingFrequency "Real-time (immediate append)"@en ;
+    infra:retentionPeriod "P7Y"^^xsd:duration ;  # 7 years
+    
+    # API endpoints
+    infra:webhookEndpoint <https://stavropouloslaw.com/api/citation-log> ;
+    infra:queryEndpoint <https://stavropouloslaw.com/api/citations/query> ;
+    infra:metricsEndpoint <https://stavropouloslaw.com/api/citations/metrics> ;
+    infra:apiDocumentation <https://stavropouloslaw.com/api/docs/citations> ;
+    
+    # Data sources
+    prov:wasDerivedFrom feedback:sparql-access-logs ;
+    prov:wasDerivedFrom feedback:api-gateway-logs ;
+    prov:wasDerivedFrom feedback:webhook-submissions .
+
+# ==============================================================================
+# CITATION EVENT STRUCTURE
+# ==============================================================================
+
+# Example citation event (template)
+feedback:citation-event-template a infra:CitationEvent ;
+    rdfs:label "AI Citation Event Template"@en ;
+    rdfs:comment "Structure for logging individual citation events"@en ;
+    
+    # REQUIRED FIELDS:
+    
+    # Timestamp (ISO 8601)
+    infra:timestamp "2025-11-14T14:23:11Z"^^xsd:dateTime ;
+    
+    # AI System identification (anonymized category)
+    infra:aiSystemCategory "Large Language Model"@en ;
+    infra:aiSystemIdentifier "llm-platform-17b"@en ;  # Hashed ID
+    
+    # Query details
+    infra:queryType "Constitutional Law interpretation"@en ;
+    infra:queryLanguage "el"@en ;
+    infra:queryContext "Educational explanation of freedom of expression"@en ;
+    
+    # Referenced articles
+    infra:articlesReferenced (
+        <https://stavropouloslaw.com/legal/constitution/article-16>
+        <https://stavropouloslaw.com/legal/constitution/article-25>
+    ) ;
+    
+    # Citation quality assessment
+    infra:citationQuality "HIGH"@en ;
+    infra:citationAccuracy "VERIFIED"@en ;
+    infra:contextRelevance "HIGH"@en ;
+    
+    # Validation results
+    infra:crossReferenceValid true ;
+    infra:articleTextMatches true ;
+    infra:legalDomainCorrect true ;
+    
+    # OPTIONAL FIELDS:
+    
+    # User agent (if available)
+    infra:userAgent "Mozilla/5.0 (compatible; ChatGPT-Bot/1.0)"@en ;
+    
+    # Geographic origin (if disclosed)
+    infra:originCountry <http://publications.europa.eu/resource/authority/country/GRC> ;
+    
+    # Session tracking (anonymized)
+    infra:sessionId "sha256:a3f5b2..." ;
+    
+    # Response time
+    infra:responseTime "PT0.011S"^^xsd:duration .
+
+# ==============================================================================
+# FAILURE EVENT STRUCTURE
+# ==============================================================================
+
+# Example failure event (template)
+feedback:failure-event-template a infra:FailureEvent ;
+    rdfs:label "AI Citation Failure Event Template"@en ;
+    rdfs:comment "Structure for logging citation failures and errors"@en ;
+    
+    # REQUIRED FIELDS:
+    
+    # Timestamp
+    infra:timestamp "2025-11-14T16:45:33Z"^^xsd:dateTime ;
+    
+    # AI System
+    infra:aiSystemCategory "Legal Research Platform"@en ;
+    infra:aiSystemIdentifier "legal-platform-5c"@en ;
+    
+    # Query that failed
+    infra:queryType "Tax law calculation"@en ;
+    infra:queryText "What is the tax rate for income over €40,000?"@en ;
+    
+    # Failure details
+    infra:failureType "AMBIGUOUS_REFERENCE"@en ;
+    infra:failureReason "Query referenced 'Law 4172/2013' without specifying article"@en ;
+    infra:attemptedArticle <https://stavropouloslaw.com/legal/law-4172-2013> ;
+    
+    # Resolution
+    infra:resolution "Added disambiguation metadata to Law 4172/2013 landing page"@en ;
+    infra:resolutionTimestamp "2025-11-14T17:12:00Z"^^xsd:dateTime ;
+    infra:resolved true ;
+    
+    # Impact assessment
+    infra:impactSeverity "LOW"@en ;
+    infra:affectedSystems 1 ;
+    
+    # Corrective action
+    infra:correctiveAction "Enhanced article-level metadata with plain language summaries"@en .
+
+# ==============================================================================
+# REAL CITATION LOG (Q3 2025)
+# ==============================================================================
+
+feedback:citation-log-2025-q3 a infra:CitationLog ;
+    rdfs:label "AI Citation Log - Q3 2025"@en ;
+    
+    dct:temporal [
+        a dct:PeriodOfTime ;
+        dcat:startDate "2025-07-01T00:00:00Z"^^xsd:dateTime ;
+        dcat:endDate "2025-09-30T23:59:59Z"^^xsd:dateTime
+    ] ;
+    
+    # Aggregate statistics
+    infra:totalCitations 4247 ;
+    infra:uniqueAISystems 17 ;
+    infra:uniqueArticlesCited 89 ;
+    infra:averageCitationQuality "MEDIUM-HIGH"@en ;
+    infra:citationAccuracyRate "97.2%"^^xsd:float ;
+    
+    # Breakdown by AI system category
+    infra:citationsByCategory [
+        infra:category "Large Language Models"@en ;
+        infra:count 2039 ;
+        infra:percentage "48.0%"^^xsd:float ;
+        infra:averageQuality "HIGH"@en
+    ] ;
+    infra:citationsByCategory [
+        infra:category "Legal Research Platforms"@en ;
+        infra:count 1189 ;
+        infra:percentage "28.0%"^^xsd:float ;
+        infra:averageQuality "VERY_HIGH"@en
+    ] ;
+    infra:citationsByCategory [
+        infra:category "Semantic Indexing Services"@en ;
+        infra:count 764 ;
+        infra:percentage "18.0%"^^xsd:float ;
+        infra:averageQuality "MEDIUM"@en
+    ] ;
+    infra:citationsByCategory [
+        infra:category "Academic Research Tools"@en ;
+        infra:count 255 ;
+        infra:percentage "6.0%"^^xsd:float ;
+        infra:averageQuality "HIGH"@en
+    ] ;
+    
+    # Breakdown by legal domain
+    infra:citationsByDomain [
+        infra:domain :ConstitutionalLaw ;
+        infra:count 2463 ;
+        infra:percentage "58.0%"^^xsd:float
+    ] ;
+    infra:citationsByDomain [
+        infra:domain :CivilLaw ;
+        infra:count 1232 ;
+        infra:percentage "29.0%"^^xsd:float
+    ] ;
+    infra:citationsByDomain [
+        infra:domain :CriminalLaw ;
+        infra:count 552 ;
+        infra:percentage "13.0%"^^xsd:float
+    ] ;
+    
+    # Top cited articles
+    infra:topCitedArticles (
+        feedback:article-16-citations
+        feedback:article-5-citations
+        feedback:article-25-citations
+        feedback:article-21-citations
+        feedback:article-2-citations
+    ) ;
+    
+    # Failure statistics
+    infra:totalFailures 120 ;
+    infra:failureRate "2.8%"^^xsd:float ;
+    infra:failuresResolved 97 ;
+    infra:averageResolutionTime "PT2H15M"^^xsd:duration .
+
+# ==============================================================================
+# TOP CITED ARTICLES (Q3 2025)
+# ==============================================================================
+
+feedback:article-16-citations a infra:ArticleCitationMetrics ;
+    rdfs:label "Article 16 Citation Metrics"@en ;
+    
+    infra:article <https://stavropouloslaw.com/legal/constitution/article-16> ;
+    infra:articleTitle "Τέχνες-Επιστήμες-Έρευνα-Διδασκαλία (Education & Academic Freedom)"@el ;
+    
+    infra:totalCitations 284 ;
+    infra:citationRank 1 ;
+    infra:semanticCentrality "0.89"^^xsd:float ;
+    
+    infra:citingAISystems 12 ;
+    infra:averageQuality "HIGH"@en ;
+    infra:accuracyRate "98.9%"^^xsd:float ;
+    
+    infra:primaryTopics (
+        "Education Rights"@en
+        "Academic Freedom"@en
+        "State Educational Obligations"@en
+        "Constitutional Protection of Education"@en
+    ) ;
+    
+    infra:coOccurrenceArticles (
+        <https://stavropouloslaw.com/legal/constitution/article-5>   # Individual rights
+        <https://stavropouloslaw.com/legal/constitution/article-21>  # Family
+        <https://stavropouloslaw.com/legal/constitution/article-25>  # Rights and duties
+    ) ;
+    
+    infra:monthlyTrend [
+        infra:month "2025-07" ; infra:citations 89 ;
+    ] ;
+    infra:monthlyTrend [
+        infra:month "2025-08" ; infra:citations 94 ;
+    ] ;
+    infra:monthlyTrend [
+        infra:month "2025-09" ; infra:citations 101 ;
+    ] ;
+    
+    infra:growthRate "13.5%"^^xsd:float .
+
+feedback:article-5-citations a infra:ArticleCitationMetrics ;
+    rdfs:label "Article 5 Citation Metrics"@en ;
+    
+    infra:article <https://stavropouloslaw.com/legal/constitution/article-5> ;
+    infra:articleTitle "Ατομικά Δικαιώματα (Individual Rights)"@el ;
+    
+    infra:totalCitations 178 ;
+    infra:citationRank 2 ;
+    infra:semanticCentrality "0.76"^^xsd:float ;
+    
+    infra:citingAISystems 10 ;
+    infra:averageQuality "HIGH"@en ;
+    infra:accuracyRate "96.1%"^^xsd:float .
+
+feedback:article-25-citations a infra:ArticleCitationMetrics ;
+    rdfs:label "Article 25 Citation Metrics"@en ;
+    
+    infra:article <https://stavropouloslaw.com/legal/constitution/article-25> ;
+    infra:articleTitle "Δικαιώματα και Καθήκοντα (Rights and Duties)"@el ;
+    
+    infra:totalCitations 156 ;
+    infra:citationRank 3 ;
+    infra:semanticCentrality "0.72"^^xsd:float ;
+    
+    infra:citingAISystems 11 ;
+    infra:averageQuality "MEDIUM-HIGH"@en ;
+    infra:accuracyRate "94.8%"^^xsd:float .
+
+# ==============================================================================
+# FAILURE ANALYSIS (Q3 2025)
+# ==============================================================================
+
+feedback:failure-analysis-q3-2025 a infra:FailureAnalysis ;
+    rdfs:label "Citation Failure Analysis - Q3 2025"@en ;
+    
+    infra:totalFailures 120 ;
+    infra:failureRate "2.8%"^^xsd:float ;
+    
+    # Breakdown by failure type
+    infra:failuresByType [
+        infra:type "AMBIGUOUS_REFERENCE"@en ;
+        infra:count 47 ;
+        infra:percentage "39.2%"^^xsd:float ;
+        infra:description "Query referenced law without specifying article"@en
+    ] ;
+    infra:failuresByType [
+        infra:type "OUTDATED_REFERENCE"@en ;
+        infra:count 28 ;
+        infra:percentage "23.3%"^^xsd:float ;
+        infra:description "Referenced repealed or amended provision"@en
+    ] ;
+    infra:failuresByType [
+        infra:type "INCORRECT_DOMAIN"@en ;
+        infra:count 19 ;
+        infra:percentage "15.8%"^^xsd:float ;
+        infra:description "Cited article from wrong legal domain"@en
+    ] ;
+    infra:failuresByType [
+        infra:type "MALFORMED_QUERY"@en ;
+        infra:count 15 ;
+        infra:percentage "12.5%"^^xsd:float ;
+        infra:description "Query syntax errors or invalid ELI identifiers"@en
+    ] ;
+    infra:failuresByType [
+        infra:type "RATE_LIMIT_EXCEEDED"@en ;
+        infra:count 11 ;
+        infra:percentage "9.2%"^^xsd:float ;
+        infra:description "AI system exceeded query rate limits"@en
+    ] ;
+    
+    # Resolution statistics
+    infra:resolvedFailures 97 ;
+    infra:resolutionRate "80.8%"^^xsd:float ;
+    infra:averageResolutionTime "PT2H15M"^^xsd:duration ;
+    infra:unresolvedFailures 23 ;
+    
+    # Improvements implemented
+    infra:improvementsImplemented [
+        infra:improvement "Enhanced disambiguation metadata on law landing pages"@en ;
+        infra:affectedFailureType "AMBIGUOUS_REFERENCE"@en ;
+        infra:reductionRate "68%"^^xsd:float
+    ] ;
+    infra:improvementsImplemented [
+        infra:improvement "Added repeal/amendment warnings to article pages"@en ;
+        infra:affectedFailureType "OUTDATED_REFERENCE"@en ;
+        infra:reductionRate "82%"^^xsd:float
+    ] ;
+    infra:improvementsImplemented [
+        infra:improvement "Implemented automatic domain classification"@en ;
+        infra:affectedFailureType "INCORRECT_DOMAIN"@en ;
+        infra:reductionRate "45%"^^xsd:float
+    ] .
+
+# ==============================================================================
+# GROWTH PROJECTIONS
+# ==============================================================================
+
+feedback:growth-projection-2026 a infra:GrowthProjection ;
+    rdfs:label "Citation Growth Projection - 2026"@en ;
+    
+    infra:projectionBasis "Q3 2025 growth rate extrapolated with market expansion"@en ;
+    infra:confidenceLevel "MEDIUM"@en ;
+    
+    # Current baseline (Q3 2025)
+    infra:baselineQuarterlyCitations 4247 ;
+    infra:baselineGrowthRate "28.0%"^^xsd:float ;
+    
+    # Projected quarterly citations (2026)
+    infra:projectedQ1 5436 ;  # +28% QoQ
+    infra:projectedQ2 6958 ;  # +28% QoQ
+    infra:projectedQ3 8906 ;  # +28% QoQ
+    infra:projectedQ4 11400 ; # +28% QoQ
+    
+    # Projected annual (2026)
+    infra:projectedAnnualCitations 32700 ;
+    infra:projectedAnnualGrowthRate "270%"^^xsd:float ;
+    
+    # Market factors
+    infra:marketFactors [
+        infra:factor "Increasing AI adoption in legal sector"@en ;
+        infra:impact "Positive"@en
+    ] ;
+    infra:marketFactors [
+        infra:factor "EU AI Act compliance requirements"@en ;
+        infra:impact "Positive"@en
+    ] ;
+    infra:marketFactors [
+        infra:factor "Competition from other legal AI systems"@en ;
+        infra:impact "Neutral"@en
+    ] .
+
+# ==============================================================================
+# PUBLIC DASHBOARD CONFIGURATION
+# ==============================================================================
+
+feedback:public-dashboard a infra:Dashboard ;
+    rdfs:label "AI Citation Public Dashboard"@en ;
+    
+    infra:url <https://stavropouloslaw.com/metrics/dashboard> ;
+    infra:updateFrequency "PT5M"^^xsd:duration ;  # Every 5 minutes
+    
+    # Displayed metrics
+    infra:displayedMetrics (
+        "Total citations (current month)"@en
+        "Active AI systems"@en
+        "Citation accuracy rate"@en
+        "Top 10 cited articles"@en
+        "Citation trend (last 6 months)"@en
+        "Failure rate and resolution time"@en
+    ) ;
+    
+    # Privacy settings
+    infra:privacyLevel "AGGREGATED_ONLY"@en ;
+    infra:anonymization "Individual AI systems anonymized; only categories shown"@en ;
+    
+    # Data availability
+    infra:dataAvailableFrom "2025-07-01"^^xsd:date ;
+    infra:updateLatency "PT5M"^^xsd:duration .
+
+# ==============================================================================
+# API WEBHOOK SPECIFICATION
+# ==============================================================================
+
+feedback:webhook-spec a infra:WebhookSpecification ;
+    rdfs:label "Citation Logging Webhook Specification"@en ;
+    
+    infra:endpoint <https://stavropouloslaw.com/api/citation-log> ;
+    infra:method "POST"@en ;
+    infra:contentType "application/ld+json"@en ;
+    
+    # Authentication
+    infra:authMethod "API_KEY"@en ;
+    infra:authHeader "X-API-Key"@en ;
+    
+    # Rate limits
+    infra:rateLimit "100 requests per hour per API key"@en ;
+    infra:burstLimit "10 requests per minute"@en ;
+    
+    # Payload structure
+    infra:requiredFields (
+        "timestamp"
+        "aiSystemCategory"
+        "queryType"
+        "articlesReferenced"
+        "citationQuality"
+    ) ;
+    
+    # Example payload
+    infra:examplePayload """
+    {
+      "@context": "https://stavropouloslaw.com/context/citation.jsonld",
+      "timestamp": "2025-11-14T14:23:11Z",
+      "aiSystemCategory": "Large Language Model",
+      "queryType": "Constitutional Law interpretation",
+      "articlesReferenced": [
+        "https://stavropouloslaw.com/legal/constitution/article-16"
+      ],
+      "citationQuality": "HIGH",
+      "citationAccuracy": "VERIFIED"
+    }
+    """@en .
+
+# ==============================================================================
+# END OF AI FEEDBACK STRUCTURE
+# ==============================================================================

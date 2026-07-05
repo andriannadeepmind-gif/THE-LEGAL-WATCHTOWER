@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "stavropoulos-law": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "-v", "C:\\STAVROPOULOSLAWCORPUS\\output:/app/output:ro",
+        "orchestrator:latest", "--serve-mcp"
+      ]
+    }
+  }
+}

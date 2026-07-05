@@ -1,0 +1,242 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix delta: <https://stavropouloslaw.com/ontology/delta#> .
+
+# ==============================================================================
+# VERSION LINEAGE GRAPH
+# Constitution of Greece - Complete Version History
+# ==============================================================================
+
+# ROOT VERSION (1.0.0)
+<https://stavropouloslaw.com/eli/gr/const/version/1.0.0> a prov:Entity, eli:LegalResource ;
+    eli:version "1.0.0" ;
+    eli:version_date "1975-06-11"^^xsd:date ;
+    dct:title "Constitution of Greece - Original Version (1975)"@en ;
+    dct:title "Σύνταγμα της Ελλάδας - Αρχική Έκδοση (1975)"@el ;
+    dct:created "1975-06-11T00:00:00"^^xsd:dateTime ;
+    dct:valid "1975-06-11/"^^xsd:date ;
+    prov:generatedAtTime "1975-06-11T00:00:00"^^xsd:dateTime ;
+    prov:wasAttributedTo <https://parliament.gr/#institution> ;
+    dct:description "Original constitution as adopted on June 11, 1975"@en ;
+    eli:type_document "constitution" ;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const> ;
+    dct:hasPart 
+        <https://stavropouloslaw.com/eli/gr/const/1975/article-001>,
+        <https://stavropouloslaw.com/eli/gr/const/1975/article-002>,
+        <https://stavropouloslaw.com/eli/gr/const/1975/article-003>,
+        # ... articles 4-117 ...
+        <https://stavropouloslaw.com/eli/gr/const/1975/article-118>,
+        <https://stavropouloslaw.com/eli/gr/const/1975/article-119>,
+        <https://stavropouloslaw.com/eli/gr/const/1975/article-120> .
+
+# VERSION 1.1.0 (1986 Amendment)
+<https://stavropouloslaw.com/eli/gr/const/version/1.1.0> a prov:Entity, eli:LegalResource ;
+    eli:version "1.1.0" ;
+    eli:version_date "1986-03-07"^^xsd:date ;
+    dct:title "Constitution of Greece - 1986 Amendment"@en ;
+    dct:title "Σύνταγμα της Ελλάδας - Αναθεώρηση 1986"@el ;
+    dct:created "1986-03-07T00:00:00"^^xsd:dateTime ;
+    dct:valid "1986-03-07/2001-04-16"^^xsd:date ;
+    
+    # Version linkage
+    prov:wasRevisionOf <https://stavropouloslaw.com/eli/gr/const/version/1.0.0> ;
+    dct:replaces <https://stavropouloslaw.com/eli/gr/const/version/1.0.0> ;
+    eli:amended_by <https://parliament.gr/resolution/1986-03-07> ;
+    
+    # Attribution and activity
+    prov:wasAttributedTo <https://parliament.gr/#institution> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/eli/gr/const/activity/amendment-1986> ;
+    
+    # Changes description
+    dct:description """Major amendments affecting Presidential powers:
+    - Article 35: Presidential term
+    - Article 37: Presidential election procedure
+    - Article 38: Acting President provisions
+    - Article 43: Presidential decree authority
+    - Article 44: Emergency powers"""@en ;
+    
+    # Semantic anchors for changes
+    delta:hasAnchor [
+        a delta:SemanticAnchor ;
+        delta:anchorType "constitutional_amendment" ;
+        delta:targetArticle 35, 37, 38, 43, 44 ;
+        delta:changeType "modification" ;
+        delta:legalBasis "Parliamentary Resolution 07/03/1986" ;
+        delta:hash "a7f8d9e5b3c1..."
+    ] .
+
+# VERSION 2.0.0 (2001 Amendment)
+<https://stavropouloslaw.com/eli/gr/const/version/2.0.0> a prov:Entity, eli:LegalResource ;
+    eli:version "2.0.0" ;
+    eli:version_date "2001-04-17"^^xsd:date ;
+    dct:title "Constitution of Greece - 2001 Amendment"@en ;
+    dct:title "Σύνταγμα της Ελλάδας - Αναθεώρηση 2001"@el ;
+    dct:created "2001-04-17T00:00:00"^^xsd:dateTime ;
+    dct:valid "2001-04-17/2008-05-27"^^xsd:date ;
+    
+    # Version linkage (full chain)
+    prov:wasRevisionOf <https://stavropouloslaw.com/eli/gr/const/version/1.1.0> ;
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/const/version/1.0.0> ;
+    dct:replaces <https://stavropouloslaw.com/eli/gr/const/version/1.1.0> ;
+    dct:isVersionOf <https://stavropouloslaw.com/eli/gr/const> ;
+    eli:amended_by <https://parliament.gr/resolution/2001-04-17> ;
+    
+    # Attribution
+    prov:wasAttributedTo <https://parliament.gr/#institution> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/eli/gr/const/activity/amendment-2001> ;
+    
+    # Major changes
+    dct:description """Comprehensive revision including:
+    - New fundamental rights provisions
+    - Environmental protection (Article 24)
+    - Data protection (Article 9A)
+    - Transparency requirements
+    - 31 articles amended in total"""@en ;
+    
+    # Multiple semantic anchors
+    delta:hasAnchor [
+        a delta:SemanticAnchor ;
+        delta:anchorType "constitutional_amendment" ;
+        delta:targetArticle 9 ;
+        delta:changeType "addition" ;
+        delta:legalBasis "Addition of Article 9A - Data Protection" ;
+        delta:hash "b8e7c4a2d5f9..."
+    ], [
+        a delta:SemanticAnchor ;
+        delta:anchorType "constitutional_amendment" ;
+        delta:targetArticle 24 ;
+        delta:changeType "modification" ;
+        delta:legalBasis "Enhanced environmental protection" ;
+        delta:hash "c9f8d5b3e7a1..."
+    ] .
+
+# VERSION 2.1.0 (2008 Amendment) 
+<https://stavropouloslaw.com/eli/gr/const/version/2.1.0> a prov:Entity, eli:LegalResource ;
+    eli:version "2.1.0" ;
+    eli:version_date "2008-05-27"^^xsd:date ;
+    dct:title "Constitution of Greece - 2008 Amendment"@en ;
+    dct:title "Σύνταγμα της Ελλάδας - Αναθεώρηση 2008"@el ;
+    dct:created "2008-05-27T00:00:00"^^xsd:dateTime ;
+    dct:valid "2008-05-27/2019-11-25"^^xsd:date ;
+    
+    # Version chain
+    prov:wasRevisionOf <https://stavropouloslaw.com/eli/gr/const/version/2.0.0> ;
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/const/version/1.0.0> ;
+    owl:priorVersion <https://stavropouloslaw.com/eli/gr/const/version/2.0.0> ;
+    dct:replaces <https://stavropouloslaw.com/eli/gr/const/version/2.0.0> ;
+    
+    # Changes
+    dct:description """Limited revision focusing on:
+    - Article 78: Pension system
+    - Article 96: Judicial salaries
+    - Article 100: Court of Auditors
+    - Parliamentary procedures"""@en ;
+    
+    delta:hasAnchor [
+        a delta:SemanticAnchor ;
+        delta:anchorType "constitutional_amendment" ;
+        delta:targetArticle 78, 96, 100 ;
+        delta:changeType "modification" ;
+        delta:legalBasis "Parliamentary Resolution 27/05/2008" ;
+        delta:hash "d1a9f7c3e8b2..."
+    ] .
+
+# VERSION 2.2.0 (2019 Amendment)
+<https://stavropouloslaw.com/eli/gr/const/version/2.2.0> a prov:Entity, eli:LegalResource ;
+    eli:version "2.2.0" ;
+    eli:version_date "2019-11-25"^^xsd:date ;
+    dct:title "Constitution of Greece - 2019 Amendment"@en ;
+    dct:title "Σύνταγμα της Ελλάδας - Αναθεώρηση 2019"@el ;
+    dct:created "2019-11-25T00:00:00"^^xsd:dateTime ;
+    dct:valid "2019-11-25/"^^xsd:date ;  # Currently valid
+    
+    # Complete version chain
+    prov:wasRevisionOf <https://stavropouloslaw.com/eli/gr/const/version/2.1.0> ;
+    prov:wasDerivedFrom 
+        <https://stavropouloslaw.com/eli/gr/const/version/1.0.0>,
+        <https://stavropouloslaw.com/eli/gr/const/version/1.1.0>,
+        <https://stavropouloslaw.com/eli/gr/const/version/2.0.0> ;
+    dct:replaces <https://stavropouloslaw.com/eli/gr/const/version/2.1.0> ;
+    owl:priorVersion <https://stavropouloslaw.com/eli/gr/const/version/2.1.0> ;
+    owl:versionInfo "2.2.0 - Current Version" ;
+    
+    # Current version marker
+    eli:is_current_version true ;
+    dct:isVersionOf <https://stavropouloslaw.com/eli/gr/const> ;
+    
+    # Changes
+    dct:description """Latest constitutional revision including:
+    - Article 3: Church-State relations clarification
+    - Article 16: Non-state universities permitted
+    - Article 32: Electoral law amendments
+    - Article 54: Electoral system
+    - Article 86: Ministerial responsibility
+    - Article 101A: Independent authorities"""@en ;
+    
+    # Blockchain proof
+    delta:blockchainProof [
+        a delta:BlockchainAnchor ;
+        delta:ethereum "0x7f3d9e5b3c1a8f2d6e9c4b7a5e8d3f2a1c9b8e7d" ;
+        delta:arweave "ar://9e8d7c6b5a4f3e2d1c9b8a7f6e5d4c3b2a1" ;
+        delta:ipfs "Qm7a8f9e5d3c1b9a7f6e5d4c3b2a1e9d8c7b6a5f4e3d2"
+    ] .
+
+# ==============================================================================
+# AMENDMENT ACTIVITIES (PROV-O)
+# ==============================================================================
+
+<https://stavropouloslaw.com/eli/gr/const/activity/amendment-1986> a prov:Activity ;
+    prov:startedAtTime "1985-06-01T00:00:00"^^xsd:dateTime ;
+    prov:endedAtTime "1986-03-07T00:00:00"^^xsd:dateTime ;
+    prov:wasAssociatedWith <https://parliament.gr/#institution> ;
+    prov:generated <https://stavropouloslaw.com/eli/gr/const/version/1.1.0> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/const/version/1.0.0> ;
+    dct:description "First constitutional revision process"@en .
+
+<https://stavropouloslaw.com/eli/gr/const/activity/amendment-2001> a prov:Activity ;
+    prov:startedAtTime "2000-01-01T00:00:00"^^xsd:dateTime ;
+    prov:endedAtTime "2001-04-17T00:00:00"^^xsd:dateTime ;
+    prov:wasAssociatedWith <https://parliament.gr/#institution> ;
+    prov:generated <https://stavropouloslaw.com/eli/gr/const/version/2.0.0> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/const/version/1.1.0> ;
+    dct:description "Major constitutional reform"@en .
+
+<https://stavropouloslaw.com/eli/gr/const/activity/amendment-2008> a prov:Activity ;
+    prov:startedAtTime "2007-05-01T00:00:00"^^xsd:dateTime ;
+    prov:endedAtTime "2008-05-27T00:00:00"^^xsd:dateTime ;
+    prov:wasAssociatedWith <https://parliament.gr/#institution> ;
+    prov:generated <https://stavropouloslaw.com/eli/gr/const/version/2.1.0> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/const/version/2.0.0> .
+
+<https://stavropouloslaw.com/eli/gr/const/activity/amendment-2019> a prov:Activity ;
+    prov:startedAtTime "2018-11-01T00:00:00"^^xsd:dateTime ;
+    prov:endedAtTime "2019-11-25T00:00:00"^^xsd:dateTime ;
+    prov:wasAssociatedWith <https://parliament.gr/#institution> ;
+    prov:generated <https://stavropouloslaw.com/eli/gr/const/version/2.2.0> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/const/version/2.1.0> ;
+    dct:description "Latest constitutional amendments"@en .
+
+# ==============================================================================
+# VERSION RELATIONSHIPS SUMMARY
+# ==============================================================================
+
+<https://stavropouloslaw.com/eli/gr/const> a eli:LegalResource, dcat:Dataset ;
+    dct:title "Constitution of Greece"@en ;
+    dct:title "Σύνταγμα της Ελλάδας"@el ;
+    dct:hasVersion 
+        <https://stavropouloslaw.com/eli/gr/const/version/1.0.0>,
+        <https://stavropouloslaw.com/eli/gr/const/version/1.1.0>,
+        <https://stavropouloslaw.com/eli/gr/const/version/2.0.0>,
+        <https://stavropouloslaw.com/eli/gr/const/version/2.1.0>,
+        <https://stavropouloslaw.com/eli/gr/const/version/2.2.0> ;
+    eli:has_current_version <https://stavropouloslaw.com/eli/gr/const/version/2.2.0> ;
+    dct:created "1975-06-11"^^xsd:date ;
+    dct:modified "2019-11-25"^^xsd:date ;
+    owl:versionInfo "5 versions (1975-2019)" .
+
+# ==============================================================================
+# END OF VERSION LINEAGE GRAPH
+# ==============================================================================

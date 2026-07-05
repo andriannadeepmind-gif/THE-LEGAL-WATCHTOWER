@@ -1,0 +1,421 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "Orchestrator SBOM",
+  "documentNamespace": "https://stavropouloslaw.com/spdx/orchestrator-1.2.0",
+  "creationInfo": {
+    "created": "2025-12-15T13:58:00Z",
+    "creators": [
+      "Tool: manual",
+      "Organization: STAVROPOULOS LAW",
+      "Person: Spyridon Stavropoulos"
+    ],
+    "licenseListVersion": "3.21"
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-Orchestrator",
+      "name": "Orchestrator",
+      "versionInfo": "1.2.0",
+      "supplier": "Organization: STAVROPOULOS LAW",
+      "downloadLocation": "https://github.com/David33law/ORCHESTRATORSUPER",
+      "filesAnalyzed": false,
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "Copyright (c) 2025 Spyridon Stavropoulos",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/David33law/ORCHESTRATORSUPER@1.2.0"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-alexandria",
+      "name": "alexandria",
+      "versionInfo": "20241012-git",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "https://gitlab.common-lisp.net/alexandria/alexandria",
+      "filesAnalyzed": false,
+      "licenseConcluded": "Public Domain",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:quicklisp/alexandria@20241012-git"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-babel",
+      "name": "babel",
+      "versionInfo": "20241012-git",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "https://github.com/cl-babel/babel",
+      "filesAnalyzed": false,
+      "licenseConcluded": "MIT",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:quicklisp/babel@20241012-git"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-bordeaux-threads",
+      "name": "bordeaux-threads",
+      "versionInfo": "v0.9.4",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "https://github.com/sionescu/bordeaux-threads",
+      "filesAnalyzed": false,
+      "licenseConcluded": "MIT",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:quicklisp/bordeaux-threads@v0.9.4"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-cffi",
+      "name": "cffi",
+      "versionInfo": "20250622-git",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "https://github.com/cffi/cffi",
+      "filesAnalyzed": false,
+      "licenseConcluded": "MIT",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:quicklisp/cffi@20250622-git"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-chipz",
+      "name": "chipz",
+      "versionInfo": "20230618-git",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "https://github.com/froydnj/chipz",
+      "filesAnalyzed": false,
+      "licenseConcluded": "BSD-3-Clause",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:quicklisp/chipz@20230618-git"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-chunga",
+      "name": "chunga",
+      "versionInfo": "20241012-git",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "https://github.com/edicl/chunga",
+      "filesAnalyzed": false,
+      "licenseConcluded": "BSD-2-Clause",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:quicklisp/chunga@20241012-git"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-cl-ssl",
+      "name": "cl+ssl",
+      "versionInfo": "20250622-git",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "https://github.com/cl-plus-ssl/cl-plus-ssl",
+      "filesAnalyzed": false,
+      "licenseConcluded": "MIT",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:quicklisp/cl+ssl@20250622-git"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-cl-ppcre",
+      "name": "cl-ppcre",
+      "versionInfo": "20250622-git",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "https://github.com/edicl/cl-ppcre",
+      "filesAnalyzed": false,
+      "licenseConcluded": "BSD-2-Clause",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:quicklisp/cl-ppcre@20250622-git"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-cxml",
+      "name": "cxml",
+      "versionInfo": "20250622-git",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "https://github.com/sharplispers/cxml",
+      "filesAnalyzed": false,
+      "licenseConcluded": "LLGPL",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:quicklisp/cxml@20250622-git"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-drakma",
+      "name": "drakma",
+      "versionInfo": "v2.0.10",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "https://github.com/edicl/drakma",
+      "filesAnalyzed": false,
+      "licenseConcluded": "BSD-2-Clause",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:quicklisp/drakma@v2.0.10"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-flexi-streams",
+      "name": "flexi-streams",
+      "versionInfo": "20241012-git",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "https://github.com/edicl/flexi-streams",
+      "filesAnalyzed": false,
+      "licenseConcluded": "BSD-2-Clause",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:quicklisp/flexi-streams@20241012-git"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-ironclad",
+      "name": "ironclad",
+      "versionInfo": "v0.61",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "https://github.com/sharplispers/ironclad",
+      "filesAnalyzed": false,
+      "licenseConcluded": "BSD-3-Clause",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:quicklisp/ironclad@v0.61"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-jonathan",
+      "name": "jonathan",
+      "versionInfo": "20200925-git",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "https://github.com/Rudolph-Miller/jonathan",
+      "filesAnalyzed": false,
+      "licenseConcluded": "MIT",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:quicklisp/jonathan@20200925-git"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-local-time",
+      "name": "local-time",
+      "versionInfo": "20250622-git",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "https://github.com/dlowe-net/local-time",
+      "filesAnalyzed": false,
+      "licenseConcluded": "MIT",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:quicklisp/local-time@20250622-git"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-usocket",
+      "name": "usocket",
+      "versionInfo": "0.8.8",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "https://github.com/usocket/usocket",
+      "filesAnalyzed": false,
+      "licenseConcluded": "MIT",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:quicklisp/usocket@0.8.8"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-yason",
+      "name": "yason",
+      "versionInfo": "20250622-git",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "https://github.com/phmarek/yason",
+      "filesAnalyzed": false,
+      "licenseConcluded": "BSD-3-Clause",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:quicklisp/yason@20250622-git"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-sbcl",
+      "name": "SBCL",
+      "versionInfo": "2.4.0",
+      "supplier": "Organization: SBCL Project",
+      "downloadLocation": "http://www.sbcl.org/",
+      "filesAnalyzed": false,
+      "licenseConcluded": "Public Domain AND BSD-3-Clause",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:generic/sbcl@2.4.0"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-pdfminer",
+      "name": "pdfminer.six",
+      "versionInfo": "20221105",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "https://github.com/pdfminer/pdfminer.six",
+      "filesAnalyzed": false,
+      "licenseConcluded": "MIT",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:pypi/pdfminer.six@20221105"
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-Orchestrator"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Orchestrator",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-alexandria"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Orchestrator",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-babel"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Orchestrator",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-bordeaux-threads"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Orchestrator",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-cffi"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Orchestrator",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-chipz"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Orchestrator",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-chunga"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Orchestrator",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-cl-ssl"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Orchestrator",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-cl-ppcre"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Orchestrator",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-cxml"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Orchestrator",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-drakma"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Orchestrator",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-flexi-streams"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Orchestrator",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-ironclad"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Orchestrator",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-jonathan"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Orchestrator",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-local-time"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Orchestrator",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-usocket"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Orchestrator",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-yason"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Orchestrator",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-sbcl"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-Orchestrator",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-pdfminer"
+    }
+  ]
+}

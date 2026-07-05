@@ -1,0 +1,17 @@
+-----BEGIN PUBLIC KEY-----
+# Placeholder for Cosign public key
+# Generate with: cosign generate-key-pair
+# 
+# This file should contain the public key for verifying
+# container image signatures using Cosign/Sigstore.
+#
+# Example usage:
+#   cosign sign --key cosign.key ${IMAGE}
+#   cosign verify --key cosign.pub ${IMAGE}
+#
+# For production:
+# 1. Generate key pair: cosign generate-key-pair
+# 2. Store private key securely (cosign.key)
+# 3. Replace this placeholder with actual public key
+# 4. Sign images in CI/CD pipeline
+-----END PUBLIC KEY-----

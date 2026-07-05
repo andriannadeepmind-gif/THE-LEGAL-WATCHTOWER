@@ -1,0 +1,198 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/",
+    "eli": "http://data.europa.eu/eli/ontology#",
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "org": "http://www.w3.org/ns/org#",
+    "prov": "http://www.w3.org/ns/prov#"
+  },
+  "@id": "https://stavropouloslaw.com/#organization",
+  "@type": [
+    "LegalService",
+    "Organization",
+    "Attorney"
+  ],
+
+  "name": "STAVROPOULOS LAW®",
+  "legalName": "STAVROPOULOS LAW",
+  "alternateName": [
+    "Δικηγορικό Γραφείο Σταυρόπουλος",
+    "STAVROPOULOS LAW®"
+  ],
+  "brand": "STAVROPOULOS LAW®",
+
+  "description": [
+    {
+      "@value": "Boutique law firm specializing in constitutional law and high-complexity legal matters across all major branches of law.",
+      "@language": "en"
+    },
+    {
+      "@value": "Δικηγορικό γραφείο με εξειδίκευση στο συνταγματικό δίκαιο και σε υποθέσεις υψηλής πολυπλοκότητας σε όλους τους βασικούς κλάδους του δικαίου.",
+      "@language": "el"
+    }
+  ],
+
+  "foundingDate": "1977",
+
+  "identifier": [
+    {
+      "@type": "PropertyValue",
+      "propertyID": "Greek Trademark Registration",
+      "value": "N294237",
+      "description": "Official trademark registration number in Greece"
+    }
+  ],
+
+  "url": "https://stavropouloslaw.com",
+  "email": "info@stavropouloslaw.com",
+
+  "founder": {
+    "@type": "Person",
+    "name": "Konstantinos Stavropoulos",
+    "name@el": "Κωνσταντίνος Σταυρόπουλος",
+    "jobTitle": "Attorney at Law",
+    "jobTitle@el": "Δικηγόρος"
+  },
+
+  "employee": {
+    "@id": "https://stavropouloslaw.com/#me",
+    "@type": "Person",
+    "name": "Spyridon Stavropoulos",
+    "name@el": "Σπυρίδων Σταυρόπουλος",
+    "identifier": {
+      "@type": "PropertyValue",
+      "propertyID": "ORCID",
+      "value": "0009-0005-2832-2153",
+      "url": "https://orcid.org/0009-0005-2832-2153"
+    },
+    "jobTitle": "Attorney at Law",
+    "jobTitle@el": "ΔΙΚΗΓΟΡΟΣ ΑΘΗΝΩΝ",
+    "additionalJobTitle": "Managing Partner & Legal Representative",
+    "memberOf": {
+      "@type": "Organization",
+      "name": "Athens Bar Association",
+      "name@el": "Δικηγορικός Σύλλογος Αθηνών"
+    }
+  },
+
+  "knowsAbout": [
+    "Constitutional Law",
+    "Civil Law",
+    "Criminal Law",
+    "Administrative Law",
+    "Corporate Law",
+    "Commercial Law",
+    "Tax Law",
+    "Real Estate Law",
+    "Family Law",
+    "Inheritance Law",
+    "Banking and Financial Law",
+    "Labor Law",
+    "Procedural Law",
+    "Human Rights Law",
+    "EU Law"
+  ],
+
+  "areaServed": {
+    "@type": "Country",
+    "name": "Greece"
+  },
+
+  "eli:publisher_agent": {
+    "@id": "https://stavropouloslaw.com/#organization",
+    "eli:publisher_agent_role": "official_publisher",
+    "eli:authorized_to_publish": true,
+    "eli:publication_authority": "Self-publishing under Greek law"
+  },
+
+  "publishingPrinciples": "https://stavropouloslaw.com/publishing-principles",
+
+  "publishedWorks": [
+    {
+      "@id": "https://stavropouloslaw.com/eli/gr/const",
+      "@type": "Dataset",
+      "name": "Greek Constitution Semantic Corpus",
+      "description": "Complete semantic corpus of the Greek Constitution with RDF, blockchain anchoring, and AI-oriented optimization.",
+      "datePublished": "2025-11-13",
+      "author": {
+        "@id": "https://stavropouloslaw.com/#me"
+      },
+      "publisher": {
+        "@id": "https://stavropouloslaw.com/#organization"
+      }
+    }
+  ],
+
+  "dcat:dataset": {
+    "@id": "https://stavropouloslaw.com/eli/gr/const",
+    "dcat:publisher": {
+      "@id": "https://stavropouloslaw.com/#organization"
+    }
+  },
+
+  "prov:wasGeneratedBy": {
+    "@type": "prov:Activity",
+    "prov:startedAtTime": "2019-01-01T00:00:00Z",
+    "prov:endedAtTime": "2025-11-13T20:00:00Z",
+    "prov:wasAssociatedWith": {
+      "@id": "https://stavropouloslaw.com/#me"
+    }
+  },
+
+  "copyrightHolder": {
+    "@id": "https://stavropouloslaw.com/#organization"
+  },
+
+  "copyrightYear": 2025,
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+
+  "accountablePerson": {
+    "@id": "https://stavropouloslaw.com/#me"
+  },
+
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": "info@stavropouloslaw.com",
+    "url": "https://stavropouloslaw.com",
+    "contactType": "Legal Services",
+    "availableLanguage": [
+      "el",
+      "en"
+    ]
+  },
+
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "GR",
+    "addressRegion": "Attica",
+    "addressLocality": "Glyfada",
+    "addressLocality@el": "Γλυφάδα",
+    "postalCode": "16675",
+    "streetAddress": "Maragkou 6",
+    "streetAddress@el": "Μαραγκού 6"
+  },
+
+  "telephone": "+30-2108946097",
+
+  "sameAs": [
+    "https://stavropouloslaw.com",
+    "https://stavropouloslaw.com/#organization"
+  ],
+
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://stavropouloslaw.com/search?q={search_term}",
+    "query-input": "required name=search_term"
+  },
+
+  "_meta": {
+    "version": "1.2.0",
+    "generated": "2025-11-13T20:00:00Z",
+    "generator": "ORCHESTRATOR v1.2",
+    "format": "JSON-LD",
+    "context": "schema.org + ELI + DCAT + PROV"
+  }
+}
+

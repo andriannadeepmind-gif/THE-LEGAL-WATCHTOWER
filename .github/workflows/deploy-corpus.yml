@@ -1,0 +1,47 @@
+name: Build & deploy corpus site
+
+# Rebuilds the static corpus site and deploys it to Cloudflare Pages.
+# Runs on demand, on push to the default branch, and daily (to pick up new ΦΕΚ).
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: "30 6 * * *"   # 06:30 UTC daily
+
+concurrency:
+  group: corpus-site
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build orchestrator image
+        run: docker build -t orchestrator:site .
+
+      - name: Generate static site
+        run: |
+          mkdir -p site
+          docker run --rm \
+            -e SITE_OUTPUT_DIR=/app/site \
+            -e CORPUS_BASE_URI=${{ vars.CORPUS_BASE_URI || 'https://stavropouloslaw.com/eli' }} \
+            -e FIRM_NAME=${{ vars.FIRM_NAME || 'Stavropoulos Law' }} \
+            -e FIRM_URL=${{ vars.FIRM_URL || 'https://stavropouloslaw.com' }} \
+            -v "$PWD/site:/app/site" \
+            orchestrator:site --emit-site
+
+      - name: Copy edge middleware into the deploy dir
+        run: |
+          mkdir -p site/functions
+          cp cloudflare/functions/_middleware.ts site/functions/_middleware.ts
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy site --project-name=${{ vars.CF_PAGES_PROJECT }}

@@ -1,0 +1,183 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix cito: <http://purl.org/spar/cito/> .
+@prefix metrics: <https://stavropouloslaw.com/ontology/metrics#> .
+
+# ==============================================================================
+# CITATION GRAPH VALIDATION SHAPE
+# ==============================================================================
+# Purpose: Validate PROV-O citation patterns for AI system citations
+# Source: Extracted from deployment/templates/ai-citation-log.ttl
+# Status: Latent enforcement (activation pending validator)
+# Created: 2025-12-22 (validation-first methodology)
+# ==============================================================================
+
+metrics:CitationEventShape
+    a sh:NodeShape ;
+    sh:targetClass metrics:CitationEvent ;
+    sh:name "Citation Event Validation" ;
+    sh:description """
+        Validates citation events from AI systems citing legal corpus.
+        Ensures provenance completeness and temporal integrity.
+    """ ;
+
+    # MANDATORY PROPERTIES
+    # --------------------------------------------------------------------------
+
+    sh:property [
+        sh:path metrics:citedResource ;
+        sh:name "Cited Resource" ;
+        sh:description "The legal resource being cited (article or corpus)" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:message "Citation event must reference exactly one legal resource" ;
+    ] ;
+
+    sh:property [
+        sh:path metrics:citingAgent ;
+        sh:name "Citing Agent" ;
+        sh:description "The AI system or agent making the citation" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:pattern "^https?://" ;
+        sh:message "Citing agent must be a valid IRI (AI system identifier)" ;
+    ] ;
+
+    sh:property [
+        sh:path metrics:timestamp ;
+        sh:name "Citation Timestamp" ;
+        sh:description "When the citation event occurred" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:message "Citation event must have exactly one timestamp" ;
+    ] ;
+
+    # PROVENANCE PROPERTIES (PROV-O)
+    # --------------------------------------------------------------------------
+
+    sh:property [
+        sh:path prov:wasGeneratedBy ;
+        sh:name "Generation Activity" ;
+        sh:description "PROV-O: Activity that generated this citation event" ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:message "Citation may reference at most one generating activity" ;
+    ] ;
+
+    sh:property [
+        sh:path prov:wasDerivedFrom ;
+        sh:name "Derivation Source" ;
+        sh:description "PROV-O: Source from which citation was derived" ;
+        sh:nodeKind sh:IRI ;
+        sh:message "Derivation source must be an IRI" ;
+    ] ;
+
+    sh:property [
+        sh:path prov:wasAttributedTo ;
+        sh:name "Attribution" ;
+        sh:description "PROV-O: Agent responsible for citation" ;
+        sh:nodeKind sh:IRI ;
+        sh:message "Attribution must be an IRI (agent identifier)" ;
+    ] ;
+
+    # CITATION CONTEXT (CITO)
+    # --------------------------------------------------------------------------
+
+    sh:property [
+        sh:path cito:hasCitationContext ;
+        sh:name "Citation Context" ;
+        sh:description "Context in which citation occurred" ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message "Citation context must be a string" ;
+    ] ;
+
+    sh:property [
+        sh:path cito:hasCitationPurpose ;
+        sh:name "Citation Purpose" ;
+        sh:description "Why the citation was made (e.g., citesAsEvidence)" ;
+        sh:nodeKind sh:IRI ;
+        sh:message "Citation purpose must be an IRI from CITO vocabulary" ;
+    ] ;
+
+    # CONFIDENCE AND VERIFICATION
+    # --------------------------------------------------------------------------
+
+    sh:property [
+        sh:path metrics:confidence ;
+        sh:name "Confidence Score" ;
+        sh:description "Confidence level of citation (0.0-1.0)" ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive 0.0 ;
+        sh:maxInclusive 1.0 ;
+        sh:message "Confidence must be a decimal between 0.0 and 1.0" ;
+    ] ;
+
+    sh:property [
+        sh:path metrics:verificationHash ;
+        sh:name "Verification Hash" ;
+        sh:description "Cryptographic hash for citation verification" ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message "Verification hash must be a string" ;
+    ] .
+
+# ==============================================================================
+# DAILY STATISTICS VALIDATION
+# ==============================================================================
+
+metrics:DailyStatisticsShape
+    a sh:NodeShape ;
+    sh:targetClass metrics:DailyStatistics ;
+    sh:name "Daily Citation Statistics" ;
+    sh:description "Validates aggregated daily citation statistics" ;
+
+    sh:property [
+        sh:path metrics:date ;
+        sh:name "Statistics Date" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:date ;
+        sh:message "Daily statistics must have exactly one date" ;
+    ] ;
+
+    sh:property [
+        sh:path metrics:totalCitations ;
+        sh:name "Total Citations" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:message "Total citations must be a non-negative integer" ;
+    ] ;
+
+    sh:property [
+        sh:path metrics:uniqueArticles ;
+        sh:name "Unique Articles" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:message "Unique articles must be a non-negative integer" ;
+    ] ;
+
+    sh:property [
+        sh:path metrics:uniqueAgents ;
+        sh:name "Unique AI Agents" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:message "Unique agents must be a non-negative integer" ;
+    ] .
+
+# ==============================================================================
+# END OF CITATION VALIDATION SHAPES
+# ==============================================================================

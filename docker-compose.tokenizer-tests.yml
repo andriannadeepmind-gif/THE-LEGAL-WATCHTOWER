@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  tokenizer-verification:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    image: orchestrator-tokenizer-tests:latest
+    container_name: orchestrator-tokenizer-verification
+
+    # Run tokenizer verification tests
+    command: ["sbcl", "--noinform", "--load", "/workspace/tests/tokenizer-verification.lisp"]
+
+    volumes:
+      - .:/workspace:ro
+
+    working_dir: /workspace
+
+    environment:
+      SOURCE_DATE_EPOCH: "1735689600"
+
+    # Exit immediately after tests
+    restart: "no"

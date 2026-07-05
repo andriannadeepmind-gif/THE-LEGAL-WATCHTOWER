@@ -1,0 +1,38 @@
+# ============================================================================
+# Reproducible bytes across platforms — so content hashes (deps.lock) and the
+# signed corpus Merkle root are identical on Linux, macOS and Windows.
+# Without this, Windows' autocrlf rewrites LF→CRLF on checkout, changing every
+# text file's bytes and breaking dependency verification (and any content hash).
+#
+# NOTE on ordering: git applies the LAST matching line per attribute, so the
+# `third-party/** -text` rule is intentionally LAST — vendored dependency bytes
+# must be byte-exact and untouched, overriding every generic rule above.
+# ============================================================================
+
+# Default: treat as text, but ALWAYS check out with LF (never CRLF).
+* text=auto eol=lf
+
+# The lock file and the pure-Lisp hashers: stable LF.
+deps.lock            text eol=lf
+docker/sha256.lisp   text eol=lf
+docker/dep-hash.lisp text eol=lf
+
+# Shell scripts must keep LF to run.
+*.sh text eol=lf
+
+# Binary assets — never apply EOL conversion.
+*.pdf  binary
+*.zip  binary
+*.gz   binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.ico  binary
+*.fasl binary
+*.woff  binary
+*.woff2 binary
+
+# LAST (highest precedence): vendored dependencies are byte-exact on every
+# platform. deps.lock pins their canonical content hash, so nothing — not even
+# the *.sh / eol rules above — may rewrite their bytes.
+third-party/** -text

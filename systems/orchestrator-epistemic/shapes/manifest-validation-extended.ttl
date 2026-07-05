@@ -1,0 +1,273 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix ingest: <https://stavropouloslaw.com/ontology/ingest#> .
+@prefix llm: <https://stavropouloslaw.com/ontology/llm#> .
+
+# ==============================================================================
+# MANIFEST VALIDATION SHAPE (EXTENDED)
+# ==============================================================================
+# Purpose: Validate DCAT manifests for AI ingest and dataset distribution
+# Source: Extracted from deployment/templates/ai-ingest-manifest.ttl
+# Status: Latent enforcement (activation pending validator)
+# Created: 2025-12-22 (validation-first methodology)
+# ==============================================================================
+
+ingest:AIManifestShape
+    a sh:NodeShape ;
+    sh:targetClass ingest:AIManifest, dcat:Dataset ;
+    sh:name "AI Ingest Manifest Validation" ;
+    sh:description """
+        Validates AI ingest manifests for LLM optimization.
+        Ensures DCAT compliance and corpus completeness.
+    """ ;
+
+    # MANDATORY DCAT PROPERTIES
+    # --------------------------------------------------------------------------
+
+    sh:property [
+        sh:path dct:identifier ;
+        sh:name "Manifest Identifier" ;
+        sh:description "Unique identifier for this manifest" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^manifest-" ;
+        sh:message "Manifest must have identifier starting with 'manifest-'" ;
+    ] ;
+
+    sh:property [
+        sh:path dct:title ;
+        sh:name "Manifest Title" ;
+        sh:description "Human-readable title" ;
+        sh:minCount 1 ;
+        sh:datatype rdf:langString ;
+        sh:message "Manifest must have at least one title" ;
+    ] ;
+
+    sh:property [
+        sh:path dct:description ;
+        sh:name "Manifest Description" ;
+        sh:description "Detailed description of manifest purpose" ;
+        sh:minCount 1 ;
+        sh:datatype rdf:langString ;
+        sh:message "Manifest must have at least one description" ;
+    ] ;
+
+    sh:property [
+        sh:path dct:created ;
+        sh:name "Creation Timestamp" ;
+        sh:description "When manifest was created" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:message "Manifest must have exactly one creation timestamp" ;
+    ] ;
+
+    sh:property [
+        sh:path prov:generatedAtTime ;
+        sh:name "Generation Time (PROV-O)" ;
+        sh:description "PROV-O generation timestamp" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:message "Manifest must have exactly one generation timestamp" ;
+    ] ;
+
+    # CORPUS STATISTICS (REQUIRED)
+    # --------------------------------------------------------------------------
+
+    sh:property [
+        sh:path ingest:totalArticles ;
+        sh:name "Total Articles" ;
+        sh:description "Number of articles in corpus" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 1 ;
+        sh:message "Manifest must declare total articles (positive integer)" ;
+    ] ;
+
+    sh:property [
+        sh:path ingest:totalTokens ;
+        sh:name "Total Tokens" ;
+        sh:description "Total token count for LLM planning" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:message "Manifest must declare total tokens (non-negative)" ;
+    ] ;
+
+    sh:property [
+        sh:path ingest:totalURIs ;
+        sh:name "Total URIs" ;
+        sh:description "Total URI count for semantic density" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:message "Manifest must declare total URIs" ;
+    ] ;
+
+    # URI DENSITY METRICS (OPTIONAL BUT RECOMMENDED)
+    # --------------------------------------------------------------------------
+
+    sh:property [
+        sh:path ingest:avgURIDensity ;
+        sh:name "Average URI Density" ;
+        sh:description "Average ratio of URIs to tokens (0.0-1.0)" ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive 0.0 ;
+        sh:maxInclusive 1.0 ;
+        sh:message "URI density must be between 0.0 and 1.0" ;
+    ] ;
+
+    sh:property [
+        sh:path ingest:avgSaturation ;
+        sh:name "Average Saturation" ;
+        sh:description "Semantic saturation metric (0.0-1.0)" ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive 0.0 ;
+        sh:maxInclusive 1.0 ;
+        sh:message "Saturation must be between 0.0 and 1.0" ;
+    ] ;
+
+    # LLM OPTIMIZATION (OPTIONAL)
+    # --------------------------------------------------------------------------
+
+    sh:property [
+        sh:path llm:optimizedFor ;
+        sh:name "LLM Optimizations" ;
+        sh:description "Model-specific optimization parameters" ;
+        sh:nodeKind sh:BlankNodeOrIRI ;
+        sh:message "LLM optimization must be a blank node or IRI" ;
+    ] .
+
+# ==============================================================================
+# DCAT DISTRIBUTION VALIDATION
+# ==============================================================================
+
+ingest:DistributionShape
+    a sh:NodeShape ;
+    sh:targetClass dcat:Distribution ;
+    sh:name "DCAT Distribution Validation" ;
+    sh:description "Validates dataset distributions (RDF, JSON-LD, HTML)" ;
+
+    sh:property [
+        sh:path dcat:accessURL ;
+        sh:name "Access URL" ;
+        sh:description "URL to access distribution" ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:pattern "^https?://" ;
+        sh:message "Distribution must have at least one HTTPS access URL" ;
+    ] ;
+
+    sh:property [
+        sh:path dcat:downloadURL ;
+        sh:name "Download URL" ;
+        sh:description "Direct download URL" ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:pattern "^https?://" ;
+        sh:message "Download URL must be a valid IRI" ;
+    ] ;
+
+    sh:property [
+        sh:path dcat:mediaType ;
+        sh:name "Media Type" ;
+        sh:description "MIME type (e.g., text/turtle, application/ld+json)" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^(text/turtle|application/(ld\\+json|rdf\\+xml)|text/html)$" ;
+        sh:message "Media type must be a valid RDF or HTML MIME type" ;
+    ] ;
+
+    sh:property [
+        sh:path dcat:byteSize ;
+        sh:name "Byte Size" ;
+        sh:description "Size in bytes" ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:nonNegativeInteger ;
+        sh:message "Byte size must be a non-negative integer" ;
+    ] ;
+
+    sh:property [
+        sh:path dct:format ;
+        sh:name "Format" ;
+        sh:description "Distribution format (Turtle, JSON-LD, RDF/XML, HTML)" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Distribution must declare its format" ;
+    ] .
+
+# ==============================================================================
+# VOID DATASET VALIDATION
+# ==============================================================================
+
+ingest:VoidDatasetShape
+    a sh:NodeShape ;
+    sh:targetClass void:Dataset ;
+    sh:name "VoID Dataset Validation" ;
+    sh:description "Validates VoID (Vocabulary of Interlinked Datasets) metadata" ;
+
+    sh:property [
+        sh:path void:triples ;
+        sh:name "Triple Count" ;
+        sh:description "Number of RDF triples in dataset" ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:message "Triple count must be a non-negative integer" ;
+    ] ;
+
+    sh:property [
+        sh:path void:entities ;
+        sh:name "Entity Count" ;
+        sh:description "Number of entities (resources) in dataset" ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:message "Entity count must be a non-negative integer" ;
+    ] ;
+
+    sh:property [
+        sh:path void:properties ;
+        sh:name "Property Count" ;
+        sh:description "Number of distinct properties used" ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:message "Property count must be a non-negative integer" ;
+    ] ;
+
+    sh:property [
+        sh:path void:vocabulary ;
+        sh:name "Vocabularies Used" ;
+        sh:description "Ontologies and vocabularies used in dataset" ;
+        sh:nodeKind sh:IRI ;
+        sh:message "Vocabulary must be an IRI" ;
+    ] ;
+
+    sh:property [
+        sh:path void:sparqlEndpoint ;
+        sh:name "SPARQL Endpoint" ;
+        sh:description "SPARQL query endpoint (if available)" ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:pattern "^https?://" ;
+        sh:message "SPARQL endpoint must be a valid HTTP(S) IRI" ;
+    ] .
+
+# ==============================================================================
+# END OF MANIFEST VALIDATION SHAPES
+# ==============================================================================

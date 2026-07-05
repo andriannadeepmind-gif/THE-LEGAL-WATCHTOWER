@@ -1,0 +1,167 @@
+═══════════════════════════════════════════════════════════════════
+  ORCHESTRATOR v1.3 - UNIFIED SYSTEM HIERARCHY
+═══════════════════════════════════════════════════════════════════
+
+ΚΟΡΥΦΑΙΟ ΣΗΜΕΙΟ ΕΙΣΟΔΟΥ (ONE ENTRY POINT):
+───────────────────────────────────────────────────────────────────
+
+    unified-frbr-generator.lisp
+         │
+         │  Public API:
+         │    • write-unified-article-file(article-number, title, content)
+         │    • make-complete-frbr-stack()
+         │    • generate-unified-article-ttl()
+         │
+         └──────────────────────────────────────────────────────────
+                                │
+                    ┌───────────┴───────────┐
+                    │                       │
+              VALIDATION              GENERATION
+                    │                       │
+    ┌───────────────┴────────┐         ┌───┴────────────────────┐
+    │                        │         │                        │
+frbr-consistency-      rdf-canon-   FRBR LAYERS          PROV-O ACTIVITY
+validator.lisp         icalization  GENERATORS                 │
+    │                  .lisp            │                       │
+    │                    │               │                      │
+    │                    │        ┌──────┴────────┐            │
+    │                    │        │               │            │
+  VALIDATES:        ENFORCES:   article-root   prov-activity   │
+    • URI chains   • Prefix     -generator     -generator      │
+    • Article #    order        -omega.lisp    -omega.lisp     │
+    • Language     • Property                                   │
+    • FRBR chain   order                                        │
+    • Relations    • Unicode                                    │
+                   NFC                                          │
+                                                                │
+         ┌──────────────────────────────────────────────────────┘
+         │
+    FOUNDATION CLASSES
+         │
+    ┌────┴────────────────────────────┐
+    │                                 │
+frbr-classes.lisp            prov-activity.lisp
+    │                                 │
+    │  DEFINES:                       │  DEFINES:
+    │    • frbr-article-root          │    • prov-activity
+    │    • frbr-work                  │    • make-prov-activity
+    │    • frbr-expression            │    • Activity URIs
+    │    • frbr-manifestation         │    • Agent linkage
+    │    • frbr-format                │
+    │    • Constructor functions      │
+    │    • URI patterns (NEW)         │
+    └─────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════
+
+EXECUTION FLOW (ONE PATH ONLY):
+───────────────────────────────────────────────────────────────────
+
+User calls:
+    write-unified-article-file(1, "Άρθρο 1", "Content...")
+         │
+         ▼
+    make-complete-frbr-stack()
+         │  Creates:
+         │    1. Article Root
+         │    2. Work
+         │    3. Expression
+         │    4. Manifestation
+         │    5. Formats (3×)
+         │    6. Activity
+         │
+         ▼
+    validate-frbr-stack()  ◄── frbr-consistency-validator.lisp
+         │  Checks:
+         │    • All URIs
+         │    • All relations
+         │    • All required slots
+         │  FAILS FAST if any error
+         │
+         ▼
+    generate-unified-article-ttl()
+         │  Calls:
+         │    • generate-rdf(article-root)  ◄── article-root-generator
+         │    • generate-rdf(activity)      ◄── prov-activity-generator
+         │    • generate-rdf(work)          ◄── work-generator (UPDATED)
+         │    • generate-rdf(expression)    ◄── expression-generator (UPDATED)
+         │    • generate-rdf(manifestation) ◄── manifestation-generator (UPDATED)
+         │    • generate-rdf(formats)       ◄── format-generator (UPDATED)
+         │
+         ▼
+    Apply canonical ordering  ◄── rdf-canonicalization.lisp
+         │  • Sort prefixes
+         │  • Sort properties
+         │  • Normalize Unicode
+         │
+         ▼
+    Write to: article-001.ttl
+         │
+         ✓ ONE FILE, ONE SYSTEM, ONE FLOW
+
+═══════════════════════════════════════════════════════════════════
+
+OLD vs NEW (COMPATIBILITY):
+───────────────────────────────────────────────────────────────────
+
+OLD SYSTEM (DEPRECATED):
+  • eli-ttl-generator.lisp  ────┐
+  • Separate file writers       │  REPLACED BY
+  • No Article Root             │    ▼
+  • No Activity                 │  unified-frbr-generator.lisp
+  • No validation               │
+  • No canonicalization         │
+  └───────────────────────────────┘
+
+NEW SYSTEM (AUTHORITATIVE):
+  ✓ unified-frbr-generator.lisp  ◄── ONE ENTRY POINT
+  ✓ Article Root architecture
+  ✓ Complete PROV-O Activity
+  ✓ Full validation
+  ✓ Canonical ordering
+  ✓ ONE file per article
+
+═══════════════════════════════════════════════════════════════════
+
+MODULES COUNT:
+───────────────────────────────────────────────────────────────────
+
+Foundation (3):
+  1. frbr-classes.lisp (UPDATED with article-root-uri)
+  2. frbr-article-root.lisp (NEW)
+  3. prov-activity.lisp (NEW)
+
+Generators (4):
+  4. article-root-generator-omega.lisp (NEW)
+  5. prov-activity-generator-omega.lisp (NEW)
+  6. work-generator-omega.lisp (NEEDS UPDATE for eli:partOf)
+  7. expression-generator-omega.lisp (NEEDS UPDATE for eli:partOf)
+
+Orchestration (1):
+  8. unified-frbr-generator.lisp (NEW - ΚΟΡΥΦΑΙΟ)
+
+Validation (2):
+  9. frbr-consistency-validator.lisp (NEW)
+ 10. rdf-canonicalization.lisp (NEW)
+
+Total: 10 modules, ONE unified system
+
+═══════════════════════════════════════════════════════════════════
+
+ΚΟΡΥΦΑΙΑ ΕΓΓΥΗΣΗ:
+───────────────────────────────────────────────────────────────────
+
+Χρησιμοποιείς ΜΟΝΟ:
+    unified-frbr-generator:write-unified-article-file()
+
+Και παίρνεις:
+    ✓ ONE file (article-NNN.ttl)
+    ✓ Complete FRBR stack
+    ✓ Complete PROV-O
+    ✓ Validated
+    ✓ Canonical
+    ✓ AI-ready
+
+ZERO fragmentation. ONE system. ONE truth.
+
+═══════════════════════════════════════════════════════════════════
