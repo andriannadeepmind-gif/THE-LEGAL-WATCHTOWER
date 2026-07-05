@@ -141,7 +141,59 @@
           (if qs
               (loop for q in qs for i from 1
                     do (format s "   ~D. ~A~%" i q))
-              (format s "   Καμία ερώτηση — ο φάκελος επαρκεί για τους κανόνες που αγγίζει.~%")))))))
+              (format s "   Καμία ερώτηση — ο φάκελος επαρκεί για τους κανόνες που αγγίζει.~%")))
+        ;; VII. ΣΤΡΑΤΗΓΙΚΑ ΣΕΝΑΡΙΑ (Ε14) — Η ΕΙΚΑΣΙΑ ΩΣ ΕΙΚΑΣΙΑ: η στρατηγική
+        ;; σκέψη ΕΠΙΤΡΕΠΕΤΑΙ, αρκεί να φοράει την ετικέτα της. Κανένα σενάριο
+        ;; δεν μπαίνει στο έμπιστο μονοπάτι (Σύνταγμα, άρθρο 2) — αλλά ο
+        ;; δικηγόρος βλέπει ΤΙ ΘΑ ΓΙΝΟΤΑΝ: υποθέσεις που στοιχειοθετούν, και
+        ;; κρίσιμα ερείσματα που αν πέσουν, πέφτει η θέση (Σ6, ακριβές ablation).
+        (format s "~%VII. ΣΤΡΑΤΗΓΙΚΑ ΣΕΝΑΡΙΑ — ΕΙΚΑΣΙΕΣ, ΔΗΛΩΜΕΝΕΣ ΩΣ ΤΕΤΟΙΕΣ~%")
+        (let ((any nil))
+          ;; (α) θετικές εικασίες: ΑΝ αποδεικνυόταν το κενό, τι στοιχειοθετείται;
+          (dolist (nm (orchestrator.subsumption:case-norms))
+            (when (orchestrator.deontic:norm-antecedent nm)
+              (multiple-value-bind (have missing)
+                  (orchestrator.subsumption:norm-gaps nm facts)
+                (when (and have missing)
+                  (let* ((assumed (mapcar (lambda (p) (%groundify p)) missing))
+                         (hypo (append facts assumed)))
+                    (multiple-value-bind (engine2)
+                        (orchestrator.subsumption:subsume hypo)
+                      (multiple-value-bind (status2)
+                          (orchestrator.subsumption:conclusion-status engine2 nm hypo)
+                        (when (member status2 '(:in :out))
+                          (setf any t)
+                          (format s "   ◈ ΕΙΚΑΣΙΑ [σενάριο — ΟΧΙ συμπέρασμα]: ΑΝ αποδειχθεί ~{«~A»~^ και ~},~%     ~A ο ~A (άρθρο ~A ~A)~@[ — ΠΡΟΣΟΧΗ: υπό το σενάριο ενεργοποιείται και λόγος άρσης~*~]~%"
+                                  (mapcar #'orchestrator.knowledge:fact->string assumed)
+                                  (if (eq status2 :in) "στοιχειοθετείται" "θα στοιχειοθετούνταν αλλά ΑΙΡΕΤΑΙ")
+                                  (orchestrator.deontic:norm-id nm)
+                                  (orchestrator.deontic:norm-article nm)
+                                  (orchestrator.deontic:norm-corpus nm)
+                                  (eq status2 :out))))))))))
+          ;; (β) κίνδυνοι επί των αποδεδειγμένων: τα ΚΡΙΣΙΜΑ ερείσματα (Σ6)
+          (dolist (p positions)
+            (let* ((datum (car p)) (id (fifth datum))
+                   (nm (and id (orchestrator.deontic:find-norm id))))
+              (when nm
+                (multiple-value-bind (critical idle basis-p)
+                    (orchestrator.counterfactual:critical-facts facts nm)
+                  (declare (ignore idle))
+                  (when (and basis-p critical)
+                    (setf any t)
+                    (format s "   ⚠ ΚΙΝΔΥΝΟΣ: η θέση κατά τον ~A στηρίζεται ΚΡΙΣΙΜΑ σε: ~{«~A»~^ · ~}~%     — αν ο αντίδικος ανατρέψει έστω ένα, η θέση ΠΕΦΤΕΙ (ακριβές ablation Σ6).~%"
+                            (orchestrator.deontic:norm-id nm)
+                            (mapcar #'orchestrator.knowledge:fact->string critical)))))))
+          (unless any
+            (format s "   Κανένα σενάριο — ούτε κενά προς υπόθεση ούτε αποδεδειγμένες θέσεις προς δοκιμασία.~%")))))))
+
+(defun %groundify (pattern)
+  "Γείωσε ένα missing pattern για ΥΠΟΘΕΤΙΚΟ σενάριο: ?μεταβλητές → :άγνωστος.
+   Το αποτέλεσμα μπαίνει ΜΟΝΟ σε υποθετική μηχανή — ποτέ στο έμπιστο μονοπάτι."
+  (cond ((and (symbolp pattern) (plusp (length (symbol-name pattern)))
+              (char= #\? (char (symbol-name pattern) 0)))
+         :άγνωστος)
+        ((consp pattern) (mapcar #'%groundify pattern))
+        (t pattern)))
 
 (defun draft-memo (narrative &key (stream *standard-output*))
   "Τύπωσε το Σημείωμα Υπαγωγής + την ΤΑΥΤΟΤΗΤΑ του (SHA-256 του σώματος).
@@ -156,15 +208,37 @@
 
 (defun run-draft (args)
   "--draft \"αφήγηση\" : το σημείωμα + εγγραφή του αποτυπώματος στη βιογραφία
-   (audit trail: ποτέ παραδοτέο χωρίς ίχνος)."
+   (audit trail) + ΠΕΡΙΕΡΓΕΙΑ (Ε14): κάθε άγνοια του παραδοτέου — αδιάβαστη
+   πρόταση, ανοιχτό κενό κανόνα — γίνεται ΜΑΘΗΜΑ (lessons.jsonl) που τρέφει
+   τον βρόχο αυτομελέτης (--self-extend / βούληση): η άρνηση δεν είναι
+   στατική φόρμα — είναι η ΑΡΧΗ της επόμενης μάθησης."
   (let ((narrative (format nil "~{~A~^ ~}" args)))
     (if (zerop (length (string-trim " " narrative)))
         (progn (format t "χρήση: --draft \"Ο Χ αφαίρεσε το … της Ψ.\"~%") 1)
-        (let ((sha (draft-memo narrative)))
+        (let ((sha (draft-memo narrative))
+              (lessons 0))
+          ;; ΠΕΡΙΕΡΓΕΙΑ: ό,τι ΔΕΝ κατάλαβε/δεν έκλεισε, καταγράφεται προς μάθηση
+          (multiple-value-bind (facts unparsed)
+              (orchestrator.casegrammar:parse-narrative narrative)
+            (dolist (u unparsed)
+              (%lesson "sentence-unread" u "πρόταση παραδοτέου που η γραμματική δεν διάβασε")
+              (incf lessons))
+            (dolist (nm (orchestrator.subsumption:case-norms))
+              (when (orchestrator.deontic:norm-antecedent nm)
+                (multiple-value-bind (have missing)
+                    (orchestrator.subsumption:norm-gaps nm facts)
+                  (when (and have missing)
+                    (%lesson "norm-gap"
+                             (string (orchestrator.deontic:norm-id nm))
+                             (format nil "~{~A~^ · ~}"
+                                     (mapcar #'orchestrator.knowledge:fact->string missing)))
+                    (incf lessons))))))
+          (when (plusp lessons)
+            (format t "~%   ↻ ΠΕΡΙΕΡΓΕΙΑ: ~D μαθήματα καταγράφηκαν προς αυτομελέτη (--lessons / --self-extend)~%" lessons))
           (ignore-errors
             (orchestrator.self-history:record!
              :draft-issued
-             (format nil "Εξέδωσα Σημείωμα Υπαγωγής με αποτύπωμα ~A — κάθε κρίση με απόδειξη, κάθε κενό δηλωμένο." sha)))
+             (format nil "Εξέδωσα Σημείωμα Υπαγωγής με αποτύπωμα ~A — κάθε κρίση με απόδειξη, κάθε κενό δηλωμένο~@[, ~D μαθήματα προς αυτομελέτη~]." sha (and (plusp lessons) lessons))))
           0))))
 
 (register-command "--draft" (lambda (a) (run-draft a)))
@@ -221,6 +295,20 @@
       (let ((m (memo "Ο Ανδρέας αφαίρεσε το ρολόι της Μαρίας. Η βροχή έπεφτε όλη νύχτα.")))
         (check "άσχετη πρόταση: δηλώνεται στο V — ποτέ σιωπηλή απόρριψη"
                (search "ΔΕΝ αξιοποιήθηκε" m)))
+      ;; Ε14: Η ΕΙΚΑΣΙΑ ΩΣ ΕΙΚΑΣΙΑ — στρατηγικά σενάρια με ετικέτα, ποτέ κρυφά
+      (let ((m (memo "Ο Ανδρέας αφαίρεσε το πορτοφόλι της Μαρίας.")))
+        (check "Ε14 ΕΙΚΑΣΙΑ: το σενάριο δηλώνεται [ΟΧΙ συμπέρασμα] και ονομάζει την υπόθεσή του"
+               (and (search "VII. ΣΤΡΑΤΗΓΙΚΑ ΣΕΝΑΡΙΑ" m)
+                    (search "ΕΙΚΑΣΙΑ [σενάριο — ΟΧΙ συμπέρασμα]" m)
+                    (search "ΑΝ αποδειχθεί" m)
+                    (search "σκοπός" m))))
+      (let ((m (memo "Ο Ανδρέας αφαίρεσε το πορτοφόλι της Μαρίας για να το ιδιοποιηθεί.")))
+        (check "Ε14 ΚΙΝΔΥΝΟΣ: τα κρίσιμα ερείσματα της αποδεδειγμένης θέσης ονομάζονται (Σ6)"
+               (and (search "ΚΙΝΔΥΝΟΣ" m) (search "ΚΡΙΣΙΜΑ" m)
+                    (search "η θέση ΠΕΦΤΕΙ" m)))
+        (check "Ε14: η εικασία ΔΕΝ μολύνει την υπαγωγή — το ΙΙΙ μένει μόνο με αποδεδειγμένα"
+               (let ((iii (subseq m (search "ΙΙΙ. ΥΠΑΓΩΓΗ" m) (search "IV. ΕΛΛΕΙΨΕΙΣ" m))))
+                 (not (search "ΕΙΚΑΣΙΑ" iii)))))
       (check "ΝΤΕΤΕΡΜΙΝΙΣΜΟΣ: ίδια αφήγηση ⇒ byte-ίδιο σώμα ⇒ ίδιο αποτύπωμα"
              (let ((n "Ο Ανδρέας αφαίρεσε το πορτοφόλι της Μαρίας για να το ιδιοποιηθεί."))
                (string= (orchestrator.journal:sha256-hex (memo n))
