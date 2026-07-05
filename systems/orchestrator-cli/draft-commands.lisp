@@ -184,7 +184,34 @@
                             (orchestrator.deontic:norm-id nm)
                             (mapcar #'orchestrator.knowledge:fact->string critical)))))))
           (unless any
-            (format s "   Κανένα σενάριο — ούτε κενά προς υπόθεση ούτε αποδεδειγμένες θέσεις προς δοκιμασία.~%")))))))
+            (format s "   Κανένα σενάριο — ούτε κενά προς υπόθεση ούτε αποδεδειγμένες θέσεις προς δοκιμασία.~%")))
+        ;; VIII. ΧΑΡΤΗΣ ΑΝΤΙΔΙΚΟΥ (Επίπεδο 5 — adversarial self-review):
+        ;; το σύστημα ΑΝΤΙΔΙΚΕΙ με τον εαυτό του: για κάθε ιστάμενη θέση,
+        ;; ΤΙ θα επιδιώξει να αποδείξει ο αντίδικος — ντετερμινιστικά, από
+        ;; τους ΕΓΓΕΓΡΑΜΜΕΝΟΥΣ λόγους άρσης του ίδιου του κανόνα (τους ίδιους
+        ;; που ο JTMS θα σεβαστεί αν αποδειχθούν: όχι ρητορική — μηχανική).
+        (format s "~%VIII. ΧΑΡΤΗΣ ΑΝΤΙΔΙΚΟΥ (τι θα αντιτάξει — και τι θα συμβεί αν το αποδείξει)~%")
+        (let ((any8 nil))
+          (dolist (nm (orchestrator.subsumption:case-norms))
+            (when (orchestrator.deontic:norm-antecedent nm)
+              (multiple-value-bind (status datum binding)
+                  (orchestrator.subsumption:conclusion-status engine nm facts)
+                (declare (ignore datum))
+                (when (eq status :in)
+                  (setf any8 t)
+                  (let ((defs (orchestrator.deontic:norm-defeaters nm)))
+                    (if defs
+                        (dolist (d defs)
+                          (format s "   ▸ Κατά της θέσης εκ του ~A (άρθρο ~A ~A): θα επιδιώξει να αποδείξει «~{~A~^ ~}»~%     — αν το αποδείξει, η θέση ΑΙΡΕΤΑΙ ΑΥΤΟΜΑΤΑ (truth maintenance, όχι υπόσχεση).~%"
+                                  (orchestrator.deontic:norm-id nm)
+                                  (orchestrator.deontic:norm-article nm)
+                                  (orchestrator.deontic:norm-corpus nm)
+                                  (mapcar #'%term->el
+                                          (rest (orchestrator.inference:instantiate d binding)))))
+                        (format s "   ▸ ~A: ΚΑΝΕΝΑΣ εγγεγραμμένος λόγος άρσης — μη εγγεγραμμένες εξαιρέσεις: ΔΗΛΩΜΕΝΟ όριο γνώσης.~%"
+                                (orchestrator.deontic:norm-id nm))))))))
+          (unless any8
+            (format s "   Καμία ιστάμενη θέση — ο αντίδικος δεν έχει τι να ανατρέψει (ή εμείς τι να στηρίξουμε).~%")))))))
 
 (defun %groundify (pattern)
   "Γείωσε ένα missing pattern για ΥΠΟΘΕΤΙΚΟ σενάριο: ?μεταβλητές → :άγνωστος.
@@ -308,7 +335,13 @@
                     (search "η θέση ΠΕΦΤΕΙ" m)))
         (check "Ε14: η εικασία ΔΕΝ μολύνει την υπαγωγή — το ΙΙΙ μένει μόνο με αποδεδειγμένα"
                (let ((iii (subseq m (search "ΙΙΙ. ΥΠΑΓΩΓΗ" m) (search "IV. ΕΛΛΕΙΨΕΙΣ" m))))
-                 (not (search "ΕΙΚΑΣΙΑ" iii)))))
+                 (not (search "ΕΙΚΑΣΙΑ" iii))))
+        ;; ΕΠΙΠΕΔΟ 5 — ο χάρτης αντιδίκου από τους λόγους άρσης του κανόνα
+        (check "Λ5 ΧΑΡΤΗΣ ΑΝΤΙΔΙΚΟΥ: ονομάζει τι θα επιδιώξει να αποδείξει (συναίνεση) και τη συνέπεια"
+               (and (search "VIII. ΧΑΡΤΗΣ ΑΝΤΙΔΙΚΟΥ" m)
+                    (search "θα επιδιώξει να αποδείξει" m)
+                    (search "συναίνεση" (string-downcase m))
+                    (search "η θέση ΑΙΡΕΤΑΙ ΑΥΤΟΜΑΤΑ" m))))
       (check "ΝΤΕΤΕΡΜΙΝΙΣΜΟΣ: ίδια αφήγηση ⇒ byte-ίδιο σώμα ⇒ ίδιο αποτύπωμα"
              (let ((n "Ο Ανδρέας αφαίρεσε το πορτοφόλι της Μαρίας για να το ιδιοποιηθεί."))
                (string= (orchestrator.journal:sha256-hex (memo n))

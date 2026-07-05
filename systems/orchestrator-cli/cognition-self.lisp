@@ -15,6 +15,10 @@
 (defclass self-identity-frame     (orchestrator.cognition:frame) ())
 (defclass self-service-frame      (orchestrator.cognition:frame) ())
 (defclass self-status-frame       (orchestrator.cognition:frame) ())
+(defclass system-state-frame      (orchestrator.cognition:frame) ()
+  (:documentation "ΕΠΙΠΕΔΟ 1 (state awareness) ΜΕΣΑ στον διάλογο: έκδοση,
+   πύλες, σώμα, καθεστώς γνώσης — ΟΛΑ υπολογισμένα τη στιγμή της ερώτησης
+   από τα μητρώα, τίποτα αποστηθισμένο."))
 (defclass self-history-frame      (orchestrator.cognition:frame) ())
 (defclass self-constitution-frame (orchestrator.cognition:frame) ())
 (defclass greeting-frame          (orchestrator.cognition:frame) ())
@@ -103,6 +107,12 @@
        ;; «τι μέρα/ημερομηνία/ώρα είναι;» — από το ρολόι του, με τιμιότητα πηγής
        ((cl-ppcre:scan (%cogfold "τι μερα|τι ημερομηνια|ποια ημερομηνια|τι ωρα ειναι") f)
         (make-instance 'time-frame :input input))
+       ;; ΕΠΙΠΕΔΟ 1 — ΚΑΤΑΣΤΑΣΗ ΣΥΣΤΗΜΑΤΟΣ (state awareness ΜΕΣΑ στον διάλογο):
+       ;; «ποια έκδοση; ποιες πύλες; τι corpus; ποια τεστ; τι είναι έμπιστο;» —
+       ;; ΠΡΙΝ την ενδοσκόπηση συμβόλων: η κατάσταση είναι ειδικότερη πρόθεση
+       ;; από το «κατονόμασες σύμβολό μου». Όλα υπολογίζονται τη στιγμή της ερώτησης.
+       ((cl-ppcre:scan (%cogfold "ποια εκδοση|τι εκδοση|ποιεσ πυλεσ|ποσεσ πυλεσ|τι corpus εχεισ|ποια τεστ|τεστ περασαν|εμπιστη και ποια|γνωση σου ειναι εμπιστη|κατασταση σου") f)
+        (make-instance 'system-state-frame :input input))
        ;; ΕΝΔΟΣΚΟΠΗΣΗ (μόνο για τον δημιουργό): «πώς δουλεύεις προγραμματιστικά;»
        ;; ερώτηση για ΣΥΜΒΟΛΟ ΤΟΥ ΚΩΔΙΚΑ μου: λατινικό token που ΥΠΑΡΧΕΙ στη
        ;; ζωντανή εικόνα (καμία λίστα ονομάτων — η ίδια η εικόνα είναι η σκανδάλη)
@@ -142,6 +152,7 @@
               (make-instance (ecase (getf entry :route)
                                (:capabilities 'capabilities-frame)
                                (:status 'self-status-frame)
+                               (:state 'system-state-frame)
                                (:how-i-work 'self-architecture-frame))
                              :input input)
               (make-instance 'self-glossary-frame :input input
@@ -171,6 +182,35 @@
     (if who
         (format nil "Υπηρετώ ~A.~@[~%Διότι: ~A~]" who why)
         "Υπηρετώ τον δημιουργό μου.")))
+
+(defmethod orchestrator.cognition:synthesize ((f system-state-frame) cog)
+  (declare (ignore cog))
+  ;; ΕΠΙΠΕΔΟ 1: κάθε αριθμός βγαίνει ΤΩΡΑ από το αντίστοιχο μητρώο — αν
+  ;; προστεθεί πύλη/πακέτο/πρόταση, η απάντηση αλλάζει ΜΟΝΗ της.
+  (with-output-to-string (s)
+    (let* ((gates (sort (loop for k being the hash-keys of *commands*
+                              when (and (> (length k) 5)
+                                        (string= "-gate" k :start2 (- (length k) 5)))
+                                collect k)
+                        #'string<))
+           (packs (orchestrator.knowledge-packs:active-packs))
+           (open (orchestrator.proposals:open-proposals))
+           (decisions (length (ignore-errors
+                                (directory (merge-pathnames
+                                            "deployment/data/decisions/*/*.json"
+                                            (uiop:getcwd)))))))
+      (format s "Η κατάστασή μου, μετρημένη τη στιγμή που ρωτάς — τίποτα αποστηθισμένο:~%")
+      (format s "• Έκδοση: Orchestrator v~A σε ~A ~A.~%"
+              *version* (lisp-implementation-type) (lisp-implementation-version))
+      (format s "• Μητρώο εντολών: ~D εντολές· πύλες αυτοελέγχου: ~D (~{~A~^, ~}).~%"
+              (hash-table-count *commands*) (length gates) gates)
+      (format s "• Ετυμηγορία των τεστ: ΔΕΝ αποθηκεύω χθεσινά αποτελέσματα — βγαίνει ζωντανά με --gates, μπροστά σου.~%")
+      (format s "• Σώμα: ~D υλοποιημένες αποφάσεις· ~D ενεργά πακέτα γνώσης (έμπιστα, το καθένα με SHA-256).~%"
+              decisions (length packs))
+      (format s "• Γνώση υπό κρίση: ~D ανοιχτές προτάσεις — σκιωδώς δοκιμασμένες, περιμένουν έγκριση· τίποτα δεν υιοθετείται σιωπηλά.~%"
+              (length open))
+      (format s "• Γλώσσα φραγμών: ~D τελεστές, κάθε χρήση με ανεξάρτητα επαληθευμένο πιστοποιητικό.~%"
+              (length (orchestrator.metaeval:op-names))))))
 
 (defmethod orchestrator.cognition:synthesize ((f self-status-frame) cog)
   (declare (ignore cog))
