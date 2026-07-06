@@ -62,7 +62,10 @@
 ;;; το manifest (data-only, *read-eval* NIL) ως την αλήθεια του build.
 
 (defun %manifest-file ()
-  (merge-pathnames "deployment/self/component-manifest.sexp" (uiop:getcwd)))
+  ;; ΕΔΡΑ: η ΡΙΖΑ της εγκατάστασης, ΟΧΙ το deployment/ — το deployment δένεται
+  ;; συχνά ως volume (compose/χειροκίνητα) και θα ΕΚΡΥΒΕ το manifest του build.
+  ;; Το manifest είναι τεχνούργημα του BUILD: ταξιδεύει με το εκτελέσιμο.
+  (merge-pathnames "component-manifest.sexp" (uiop:getcwd)))
 
 (defvar *manifest* nil "cache: σχετική-διαδρομή → plist (:hash :defpackages …)")
 
