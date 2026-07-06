@@ -408,9 +408,16 @@
                                    (orchestrator.knowledge-packs:with-packs-overlay
                                     (list tmp1 tmp2)
                                     (lambda ()
-                                      (zerop (let ((*standard-output* (make-broadcast-stream)))
-                                               (run-subsumption-gate))))))
-                               (error () nil))
+                                      (let ((rc (let ((*standard-output* (make-broadcast-stream)))
+                                                  (run-subsumption-gate))))
+                                        ;; ΤΙΜΙΑ ΑΠΟΡΡΙΨΗ, ποτέ σιωπηλή: ο λόγος φαίνεται
+                                        (unless (zerop rc)
+                                          (format t "  ⚠ όνειρο «~A»: η σκιώδης πύλη υπαγωγής ΑΠΕΤΥΧΕ (rc ~D) — απορρίπτεται~%"
+                                                  lemma rc))
+                                        (zerop rc)))))
+                               (error (e)
+                                 (format t "  ⚠ όνειρο «~A»: σφάλμα στη σκιώδη δίκη — ~A~%" lemma e)
+                                 nil))
                          (let ((id (orchestrator.proposals:propose!
                                 :sig (format nil "self-extension dream ~A" lemma)
                                 :kind :self-extension

@@ -278,8 +278,10 @@ NIL αν τίποτα δεν ταιριάζει. Κώδικες: poinikos, astik
                  (check "όνειρο συμβούλου που εξηγεί τη μαρτυρία ⇒ ΜΙΑ πρόταση καλουπιού (μετά πλήρη σκιώδη πύλη)"
                         (= 1 (dream-grammar '(("προξενει" . 5)))))
                  (let ((p (first (orchestrator.proposals:open-proposals))))
+                   ;; χωρίς πρόταση (η δίκη απέρριψε) ⇒ ΤΙΜΙΟ ✗, ΟΧΙ κατάρρευση
+                   ;; της ολομέλειας — ο λόγος τυπώθηκε ήδη από τον δικαστή
                    (check "έγκριση ονείρου ⇒ γράφονται ΚΑΙ τα δύο πακέτα (πλαίσιο+λήμμα) και το ρήμα διαβάζεται"
-                          (progn
+                          (and p
                             (orchestrator.proposals:approve! (orchestrator.proposals:proposal-id p))
                             (and (orchestrator.citation-authority:known-lemma "προξενεί")
                                  (multiple-value-bind (spec)
