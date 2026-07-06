@@ -227,6 +227,88 @@ history welded into institutional memory. This is the number that answers
 
 ---
 
+## 6. LEARNING BUNDLE FORMAT (= knowledge pack, same loader, same shadow gate)
+
+```
+(:learning-bundle
+ :id "bundle:πκ-tatbestand-2026-07-06-a"      ; content-derived
+ :kind (:tatbestand | :ratio | :concept | :defeater | :procedure | :lexicon)
+ :strategy :conservative                      ; §2.3 tag — meta-learning key
+ :extraction-version "extractor-v1"
+ :items ((:norm … :conditions (…) :defeaters (…) :sanctions (…)
+          :temporal-validity … :source (:corpus "poinikos" :article "372"
+                                        :sentence-hash "sha256:…"))
+         …)
+ :provenance-complete t                        ; every item hash-anchored or bundle invalid
+ :candidate-id nil                             ; filled at build
+ :genealogy (:proposed-by "self-study-night" :night "2026-07-06"))
+```
+No `:provenance-complete` ⇒ the bundle is not even shadow-testable.
+
+## 7. FAILURE HANDLING & RETRY PLANNING
+
+Every stage failure is a first-class object on the lessons stream, never a
+silent skip: `(:study-failure :stage :extract :item "ΠΚ 187Α" :reason
+"απρόσιτη σύνταξη — άγνωστο ρήμα «τρομοκρατώ»" :retry-when
+"lexicon bundle defines the verb" :attempts 2)`. RETRY-LATER verdicts carry the
+retry condition; the runner re-attempts automatically when the condition's
+object (concept, verb, contract) appears in an ADOPTED bundle. Three failed
+retries ⇒ escalation to the morning queue as a named question to the human.
+The ignorance map must shrink monotonically or the night report explains why.
+
+## 8. METRICS (per night, persisted, plotted against generations)
+
+| Metric | Source |
+|---|---|
+| provisions attempted / extracted / failed | observe+extract stages |
+| coverage X/529 (ΠΚ), per-code coverage | study-code counters |
+| ratios extracted / bound to articles | decision-ratio pipeline |
+| competing interpretations generated / surviving shadow | compete+shadow |
+| bundles built / adoptable / rejected / quarantined / retry | decide stage |
+| blind-matter score of stable self | §5.7 benchmark |
+| regression count (MUST be 0 for any adoption) | plenary + locked suites |
+| hallucinated citations (MUST be 0) | citation resolution vs hashed sources |
+| extractor error rate per strategy tag | meta-learning ledger |
+| human decisions pending / signed / rejected | morning queue ledger |
+
+## 9. NIX INTEGRATION & DOCKER/OCI TRANSITION
+
+Per `LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md`: pre-Nix the runner uses
+`with-packs-overlay` in-process and a host scheduler (Windows Task Scheduler /
+cron) fires the container with `--self-study-night`; post-N3 candidates become
+OCI images via `dockerTools`, post-N7 full derivations, post-N8 the trigger is
+`lawmax-selfstudy.timer`. **The runner's interface and outputs never change
+across substrates** — only isolation strength increases.
+
+## 10. ACCEPTANCE TESTS (loop-level)
+
+1. **Slice-1 night** (repo audit §18): 8 ΠΚ provisions + 3 decisions → queue
+   with ≥1 REQUIRES-HUMAN bundle, full genealogy, stable self byte-identical.
+2. **Idempotency:** immediate second night learns nothing new and SAYS SO.
+3. **Honesty:** deliberately corrupt one source hash ⇒ that item refuses to be
+   learnable, appears as failure object, night continues.
+4. **No-signature barrier:** attempt adoption without approval ⇒ denied by
+   can-adopt, ledger records it, gate `--self-study-gate` locks this.
+5. **Regression barrier:** plant a bundle that breaks one subsumption check ⇒
+   candidate REJECTED automatically with the failing check named.
+6. **Full-ΠΚ night:** after slice validation — 529 provisions attempted, report
+   renders, runtime bounded, memory of every failure present.
+
+## 11. STRUCTURE INDEX (per the Ω+ instruction, 19 required chapters)
+
+1 Purpose → header+«supreme requirement» · 2 Existing repo anchors → §1 mapping ·
+3 Corpus scanning → §2.1 · 4 Provision norm extraction → §2.2 ·
+5 Case-law ratio extraction → §2.2 + §5.2 (seat: `decision-ratio`,
+`legal-decisions.lisp:569`) · 6 Competing interpretations → §2.3 ·
+7 Learning bundle format → §6 · 8 Candidate self build → §2.5 ·
+9 Shadow testing → §2.6 · 10 Stable-vs-candidate comparison → §2.7 ·
+11 Adoption queue → §2.8 · 12 Human approval → §2.9–2.10 ·
+13 Memory/genealogy → §2.11 · 14 Failure handling → §7 · 15 Retry planning → §7 ·
+16 Metrics → §8 · 17 Nix integration → §9 · 18 Docker/OCI transition → §9 ·
+19 Acceptance tests → §3 (runner) + §10 (loop).
+
+---
+
 *One line to remember:* **Feed it nothing. Let it study, prove, and ask for a
 signature.** That is LAWMAX Ω — not merely trusted legal AI, but a
 self-teaching, proof-carrying, reversible legal institution.
