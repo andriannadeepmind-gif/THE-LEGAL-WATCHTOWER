@@ -18,7 +18,7 @@
            #:proposal-improvement #:proposal-risk #:proposal-legal-critical
            #:proposal-approvals #:proposal-sandbox #:proposal-rollback
            #:proposal-acceptance #:proposal-old-hashes
-           #:what-if #:report-get))
+           #:what-if #:report-get #:load-proposal-file!))
 
 (in-package :orchestrator.whatif)
 
@@ -58,6 +58,53 @@
   (find (string id) *proposals* :key #'proposal-id :test #'string=))
 
 (defun all-proposals () (copy-list *proposals*))
+
+(defun load-proposal-file! (path)
+  "ΕΞΩΤΕΡΙΚΗ ΠΡΟΤΑΣΗ από αρχείο: data-only ανάγνωση (*read-eval* NIL,
+   keyword package) ενός plist (:id … :type … :rollback …) και δήλωσή του
+   στο μητρώο. ΑΣΦΑΛΕΙΑ: μόνο .sexp, μόνο κάτω από τους εγκεκριμένους
+   φακέλους της εγκατάστασης (output/, deployment/) — ποτέ path traversal.
+   Επιστρέφει (values proposal-id λόγος-άρνησης)."
+  (let* ((root (uiop:getcwd))
+         (true (ignore-errors (truename path))))
+    (cond
+      ((null true) (values nil (format nil "το αρχείο «~A» δεν υπάρχει" path)))
+      ((not (string-equal "sexp" (pathname-type true)))
+       (values nil "δεκτά ΜΟΝΟ αρχεία .sexp — τίποτα εκτελέσιμο"))
+      ((not (or (uiop:subpathp true (merge-pathnames "output/" root))
+                (uiop:subpathp true (merge-pathnames "deployment/" root))))
+       (values nil "εκτός εγκεκριμένων φακέλων (output/, deployment/) — απορρίπτεται"))
+      (t
+       (let ((form (handler-case
+                       (with-open-file (s true :external-format :utf-8)
+                         (let ((*read-eval* nil)
+                               (*package* (find-package :keyword)))
+                           (read s nil nil)))
+                     (error (e) (return-from load-proposal-file!
+                                  (values nil (format nil "μη αναγνώσιμα δεδομένα: ~A" e)))))))
+         (unless (and (listp form) (getf form :id))
+           (return-from load-proposal-file!
+             (values nil "περιμένω plist με :id — δομημένη πρόταση, όχι ελεύθερο κείμενο")))
+         (flet ((s* (x) (and x (string x)))
+                (l* (x) (mapcar #'string (if (listp x) x (list x)))))
+           (declare-proposal! (s* (getf form :id))
+            :type (let ((ty (getf form :type)))
+                    (if (member ty '(:knowledge :contract :component :capability
+                                     :policy :code :corpus :article-identity))
+                        ty :code))
+            :purpose (s* (getf form :purpose))
+            :files (l* (getf form :files))
+            :symbols (l* (getf form :symbols))
+            :capabilities (l* (getf form :capabilities))
+            :improvement (getf form :improvement)
+            :risk (getf form :risk)
+            :legal-critical (getf form :legal-critical)
+            :approvals (getf form :approvals)
+            :sandbox (s* (getf form :sandbox))
+            :rollback (getf form :rollback)
+            :acceptance (l* (getf form :acceptance))
+            :old-hashes (getf form :old-hashes)))
+         (values (string (getf form :id)) nil))))))
 
 (defun %affected-capabilities (proposal)
   "Άμεσες ικανότητες: δηλωμένες + όσων τα συμβόλαια/πάροχοι ταιριάζουν στα

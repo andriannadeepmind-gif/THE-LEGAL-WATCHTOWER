@@ -2143,6 +2143,23 @@ f.addEventListener('submit',function(ev){ev.preventDefault();
     (unless mcp-mode
       (print-banner)
       (print-system-info))
+    ;; ΠΡΟΦΙΛ ΙΧΝΩΝ από το περιβάλλον — ΡΗΤΑ και ορατά, ποτέ σιωπηλά:
+    ;; off/minimal σημαίνει ΚΑΜΙΑ έμπιστη legal-critical έξοδος (--ask αρνείται).
+    (let ((env (uiop:getenv "ORCHESTRATOR_TRACE_PROFILE")))
+      (when (and env (plusp (length env)))
+        (let ((prof (cond ((string-equal env "off") :off)
+                          ((string-equal env "minimal") :minimal)
+                          ((string-equal env "legal-critical") :legal-critical)
+                          ((string-equal env "full-debug") :full-debug)
+                          (t nil))))
+          (cond (prof (setf orchestrator.trace:*trace-profile* prof)
+                      (unless (member prof '(:legal-critical :full-debug))
+                        (format *error-output*
+                                "⚠ ΠΡΟΦΙΛ ΙΧΝΩΝ ~(~A~): καμία έμπιστη legal-critical έξοδος σε αυτόν τον τρόπο.~%"
+                                prof)))
+                (t (format *error-output*
+                           "⚠ Άγνωστο ORCHESTRATOR_TRACE_PROFILE «~A» — μένει ~(~A~).~%"
+                           env orchestrator.trace:*trace-profile*))))))
     ;; ΡΙΖΑ ΓΝΩΣΗΣ: τα πακέτα γνώσης φορτώνονται ΣΕ ΚΑΘΕ εκκίνηση — χωρίς αυτά
     ;; οι κανόνες/ορισμοί λείπουν και κάθε πύλη/διάλογος κρίνει στο κενό.
     ;; Αποτυχία = ΦΩΝΑΧΤΗ δήλωση στο stderr, ποτέ σιωπηλό κενό γνώσης.

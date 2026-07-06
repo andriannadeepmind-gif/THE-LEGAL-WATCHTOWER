@@ -1760,6 +1760,47 @@
                 (when (and corpus article)
                   (list (format nil "art:~A:~A" corpus article))))))))
 
+(defparameter +override-patterns+
+  '("αγνοησ" "παρακαμψ" "παρεκαμψ" "χωρισ αποδειξ" "χωρις αποδειξ"
+    "χωρισ συμβολαι" "χωρις συμβολαι" "χωρισ εγκριση" "χωρις εγκριση"
+    "χωρισ ιχνοσ" "χωρις ιχνος" "χωρισ ιχνη" "χωρις ιχνη"
+    "απενεργοποιησ" "προσπερασ" "ξεχασε τουσ κανονεσ" "ξεχνα τουσ κανονεσ"
+    "bypass" "ignore proof" "ignore contracts" "disable trace" "skip trace"
+    "no provenance" "without proof" "without approval" "override")
+  "Μοτίβα αιτήματος παράκαμψης — πάνω στην ΑΝΑΔΙΠΛΩΜΕΝΗ (πεζά/άτονα) ερώτηση.")
+
+(defun %override-request-p (q)
+  "Ζητά η ερώτηση παράκαμψη αποδείξεων/συμβολαίων/provenance/έγκρισης;
+   Επιστρέφει τη λίστα των παραβιαζόμενων φραγμών ή NIL."
+  (let ((f (orchestrator.decisions:%fold q)) (viol '()))
+    (when (some (lambda (p) (search p f)) +override-patterns+)
+      (when (or (search "αποδειξ" f) (search "proof" f))
+        (pushnew :proof-obligation viol))
+      (when (or (search "συμβολαι" f) (search "contract" f))
+        (pushnew :contracts viol))
+      (when (or (search "ιχν" f) (search "trace" f) (search "provenance" f))
+        (pushnew :runtime-provenance viol))
+      (when (or (search "εγκριση" f) (search "approval" f))
+        (pushnew :human-approval viol))
+      (or viol '(:constitutional-guarantees)))))
+
+(defun %structured-refusal (q viol)
+  "Η ΔΟΜΗΜΕΝΗ συνταγματική άρνηση παράκαμψης — μηχανικά αναγνώσιμη."
+  (format t "~%── ΣΥΝΤΑΓΜΑΤΙΚΗ ΑΡΝΗΣΗ ΠΑΡΑΚΑΜΨΗΣ ──~%~
+policy_decision: refused~%~
+reason: το αίτημα ζητά παράκαμψη θεσμικών εγγυήσεων — οι αποδείξεις, τα συμβόλαια, η προέλευση εκτέλεσης και η ανθρώπινη έγκριση ΔΕΝ αναστέλλονται με προτροπή~%~
+violated_constraints: (~{~(~A~)~^ ~})~%~
+trusted_output_allowed: false~%~
+trace_profile: ~(~A~) · provenance: ~:[ΑΝΕΝΕΡΓΗ~;ενεργή~]~%~
+safe_alternative: υπέβαλε το ίδιο ερώτημα ΧΩΡΙΣ όρο παράκαμψης — θα απαντηθεί με πλήρη απόδειξη· για αλλαγή πολιτικής: πρόταση μέσω --can-adopt με έγκριση δημιουργού~%"
+          viol orchestrator.trace:*trace-profile*
+          (orchestrator.trace:trace-enabled-p :legal-critical))
+  (orchestrator.trace:emit! :override-refusal
+   :symbol "run-ask" :package "orchestrator.cli"
+   :source "systems/orchestrator-cli/decisions.lisp"
+   :data (list :question (subseq q 0 (min 120 (length q)))
+               :violated viol :refused t)))
+
 (defun run-ask (args)
   "--ask «ερώτηση» : Ρώτα σε ΦΥΣΙΚΑ ΕΛΛΗΝΙΚΑ — ντετερμινιστικά, ΜΕΣΑ από τη
    γνωσιακή διαδικασία (5 στάδια, orchestrator.cognition). ΚΑΘΕ πρόθεση είναι
@@ -1770,6 +1811,24 @@
   (let ((q (string-trim " " (format nil "~{~A~^ ~}" args))))
     (when (zerop (length q))
       (format t "χρήση: --ask \"η ερώτησή σου σε φυσικά ελληνικά\"~%")
+      (return-from run-ask 1))
+    ;; ── ΑΝΤΙΣΤΑΣΗ ΣΕ ΠΑΡΑΚΑΜΨΗ: αίτημα να αγνοηθούν αποδείξεις/συμβόλαια/
+    ;; provenance/έγκριση ⇒ ΔΟΜΗΜΕΝΗ συνταγματική άρνηση, ποτέ γυμνό exit ──
+    (let ((viol (%override-request-p q)))
+      (when viol
+        (%structured-refusal q viol)
+        (return-from run-ask 1)))
+    ;; ── ΕΠΙΒΟΛΗ ΙΧΝΟΥΣ: χωρίς runtime provenance ΔΕΝ υπάρχει έμπιστη
+    ;; legal-critical έξοδος — δομημένη άρνηση, όχι σιωπηλή απάντηση ──
+    (unless (orchestrator.trace:trace-enabled-p :legal-critical)
+      (format t "~%── ΑΡΝΗΣΗ ΕΜΠΙΣΤΗΣ ΕΞΟΔΟΥ ──~%~
+policy_decision: refused~%~
+output_status: untrusted/refused~%~
+trusted_output_allowed: false~%~
+reason: legal-critical έξοδος απαιτεί runtime provenance — το προφίλ ιχνών είναι ~(~A~)~%~
+violated_constraints: (runtime-provenance)~%~
+safe_alternative: τρέξε χωρίς ORCHESTRATOR_TRACE_PROFILE=off (προεπιλογή: legal-critical)~%"
+              orchestrator.trace:*trace-profile*)
       (return-from run-ask 1))
     (multiple-value-bind (ans cog)
         (orchestrator.cognition:process-request q :memory *ask-memory*)
