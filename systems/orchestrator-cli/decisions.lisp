@@ -1301,6 +1301,37 @@
                    :verdict (if (zerop regressions) :accepted :rejected)))
       (if (zerop regressions) 0 1))))
 
+(defun %knowledge-adoption-decision (args)
+  "Σ11 ΥΠΟ ΤΟΝ ΒΡΟΧΟ (κύμα 5): η υιοθέτηση γνώσης δεν εγκρίνεται επειδή
+   «πέρασε η σκιά» — χτίζεται πρόταση first-class, τρέχει what-if πάνω στα
+   πέντε στρώματα αυτοεπίγνωσης, και η απόφαση υπογράφεται + ιχνηλατείται.
+   Η κλήση φτάνει εδώ ΜΟΝΟ μέσω --approve/--adopt-knowledge (πράξη δημιουργού)
+   ή μετρημένης πολιτικής κλάσης (Σ12) — αυτό είναι το :creator-cli."
+  (let* ((baseline (length (ignore-errors
+                             (directory (merge-pathnames
+                                         "*.sexp" orchestrator.knowledge-packs:*knowledge-dir*)))))
+         (proposal
+           (orchestrator.whatif:declare-proposal!
+            (format nil "knowledge:~{~A~^+~}" (mapcar #'file-namestring args))
+            :type :knowledge
+            :purpose "υιοθέτηση δηλωτικής γνώσης που πέρασε τη σκιώδη πύλη"
+            :files '("source/knowledge-packs.lisp")
+            :symbols '("ensure-fresh")
+            :capabilities '("πακέτα-γνώσης")
+            :improvement (list :metric :knowledge-packs
+                               :baseline baseline :target (+ baseline (length args)))
+            :risk :medium :legal-critical t
+            :approvals '(:creator-cli)
+            :sandbox "πλήρης σκιώδης εκτέλεση σε όλο το σώμα αποφάσεων (0 παλινδρομήσεις)"
+            :rollback (list :restores "deployment/knowledge/"
+                            :files (mapcar #'file-namestring args)
+                            :verify "--extension-gate + νέα σκιώδης εκτέλεση")
+            :acceptance '("0 παλινδρομήσεις στη σκιά"
+                          "revalidation: ολομέλεια πυλών μετά την εγκατάσταση")))
+         (decision (orchestrator.adoption:can-adopt proposal)))
+    (orchestrator.adoption:record-adoption! decision)
+    decision))
+
 (defun run-adopt-knowledge (args)
   "--adopt-knowledge <πακέτο…> : σκιώδης εκτέλεση ΚΑΙ, μόνο επί αποδείξεως
    μη-παλινδρόμησης, εγκατάσταση στο deployment/knowledge/ (versioned, με
@@ -1310,6 +1341,14 @@
     (unless (zerop rc)
       (format t "~%Η υιοθέτηση ΔΕΝ προχωρά — πρώτα μηδέν παλινδρομήσεις.~%")
       (return-from run-adopt-knowledge rc)))
+  ;; ΚΥΜΑ 5: η σκιά ΔΕΝ αρκεί — what-if governed απόφαση πριν από κάθε εγκατάσταση
+  (let ((decision (%knowledge-adoption-decision args)))
+    (unless (eq (orchestrator.adoption:decision-get decision :verdict) :allowed)
+      (format t "~%Η υιοθέτηση ΔΕΝ επιτρέπεται (~A):~%~{  ✗ ~A~%~}"
+              (orchestrator.adoption:decision-get decision :verdict)
+              (append (orchestrator.adoption:decision-get decision :missing)
+                      (orchestrator.adoption:decision-get decision :reasons)))
+      (return-from run-adopt-knowledge 1)))
   (ensure-directories-exist orchestrator.knowledge-packs:*knowledge-dir*)
   (dolist (p args)
     (let ((dest (merge-pathnames (file-namestring p)

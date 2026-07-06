@@ -403,6 +403,12 @@
       (let ((pv (orchestrator.exec-provenance:validate-provenance)))
         (if pv (format t "▸ ΠΑΡΑΒΑΣΕΙΣ προέλευσης (~D):~%~{    ✗ ~A~%~}" (length pv) pv)
             (format t "▸ Επικύρωση προέλευσης: 0 παραβάσεις στο ζωντανό ρεύμα.~%"))))
+    ;; Ελεγχόμενη αυτοεξέλιξη — καταναλωτής των orchestrator.whatif/adoption.
+    (let ((props (orchestrator.whatif:all-proposals))
+          (recs (orchestrator.adoption:adoption-records))
+          (lv (orchestrator.adoption:validate-adoption-records)))
+      (format t "~%▸ Αυτοεξέλιξη: ~D δηλωμένες προτάσεις αλλαγής · ~D υπογεγραμμένες αποφάσεις · ledger: ~:[~D παραβάσεις ⚠~;καθαρό~]~%"
+              (length props) (length recs) (null lv) (length lv)))
     0))
 
 (defun run-institution ()
