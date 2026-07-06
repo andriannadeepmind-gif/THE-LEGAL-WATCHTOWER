@@ -212,6 +212,92 @@
               (progn (format t "~%⨯ Απορρίφθηκε #~A (προσωρινά — αν αλλάξουν τα στοιχεία, θα ξαναπροταθεί)~%" id) 0)
               (progn (format t "Δεν απορρίφθηκε #~A (~A)~%" id why) 1))))))
 
+;;; ── Η ΘΕΣΜΙΚΗ ΤΑΥΤΟΤΗΤΑ: το Ίδρυμα, οι ρόλοι, το συμβόλαιο ταυτότητας ───
+;;; Ο μηχανισμός ζει στο orchestrator.self-model· εδώ η ΔΗΛΩΣΗ του τομέα:
+;;; ποιο Ίδρυμα είναι αυτό, με ποια όργανα. ΟΧΙ φράση README — αντικείμενα
+;;; που η πύλη του καθρέφτη ελέγχει.
+
+(orchestrator.institution:declare-role! "συντονισμός"
+ :description "ο orchestrator: το ΕΣΩΤΕΡΙΚΟ όργανο συντονισμού — εντολές, dispatch, ολομέλεια πυλών· ΔΕΝ είναι η ταυτότητα του όλου")
+(orchestrator.institution:declare-role! "σύνταγμα"
+ :description "το καταστατικό όργανο: συνταγματικοί φραγμοί, πολιτικές έγκρισης, override με λόγο")
+(orchestrator.institution:declare-role! "νομική-μνήμη"
+ :description "corpus, ταυτότητα άρθρων, νομολογία, πακέτα γνώσης, επεισοδιακή μνήμη")
+(orchestrator.institution:declare-role! "αποδείξεις"
+ :description "συμπερασμός WFS/JTMS, μετακυκλικός αποτιμητής, πιστοποιητικά, υπαγωγή/αντιδικία")
+(orchestrator.institution:declare-role! "γλώσσα"
+ :description "ελληνική αντίληψη (πτώσεις, άρνηση, χρόνος) και γένεση (κλίση, συμφωνία)")
+(orchestrator.institution:declare-role! "νόηση"
+ :description "διάλογος, ρευστή επαγωγή, γνωσιακή ροή — η γενική αντίληψη του Ιδρύματος")
+(orchestrator.institution:declare-role! "έλεγχος"
+ :description "πύλες, μαθήματα, audit, ο καθρέφτης — το όργανο που δεν αφήνει το Ίδρυμα να λέει ψέματα στον εαυτό του")
+(orchestrator.institution:declare-role! "αυτοεξέλιξη"
+ :description "αυτο-προτάσεις, σκιώδης δοκιμή, υιοθέτηση με έγκριση + rollback, σύμβουλος-LLM εκτός εμπιστοσύνης")
+(orchestrator.institution:declare-role! "χειρισμός-υποθέσεων"
+ :description "matters: φάκελοι υποθέσεων, παραδοτέα, προθεσμίες — το μέτωπο προς τον δικηγόρο")
+
+(orchestrator.institution:declare-institution!
+ :name "LAWMAX Legal Institution"
+ :description "Ψηφιακό νομικό Ίδρυμα: θεσμική πολυπρακτορική νοημοσύνη στην υπηρεσία του δημιουργού"
+ :coordination-engine "συντονισμός"
+ :organs '("συντονισμός" "σύνταγμα" "νομική-μνήμη" "αποδείξεις" "γλώσσα"
+           "νόηση" "έλεγχος" "αυτοεξέλιξη" "χειρισμός-υποθέσεων"))
+
+(orchestrator.contracts:defcontract "institutional-identity" :institutional-identity
+ :package :orchestrator.self-model :system "orchestrator-infrastructure"
+ :capability "αυτοεπίγνωση"
+ :purpose "Είμαι το LAWMAX Legal Institution. Ο orchestrator είναι το coordination engine μου — εσωτερικό όργανο, όχι η ταυτότητά μου. Οι πύλες, οι ικανότητες, οι μνήμες, τα proofs και τα adoption gates είναι θεσμικά όργανα/λειτουργίες μου."
+ :postconditions '("η μηχανή συντονισμού είναι δηλωμένος ρόλος, διακριτός από το όνομα του Ιδρύματος"
+                   "κάθε όργανο του Ιδρύματος είναι δηλωμένος ρόλος")
+ :legal-critical t :policy-level :φραγή
+ :tests '("--mirror-gate"))
+
+;;; ── ΤΑΥΤΟΤΗΤΑ ΑΡΘΡΩΝ: θεσμική ικανότητα της νομικής μνήμης ──────────────
+;;; Χωρίς δική της πύλη ακόμη (ΔΗΛΩΜΕΝΟ ΧΡΕΟΣ)· το συμβόλαιό της όμως ξέρει
+;;; ΜΗΧΑΝΙΚΑ τι παρασύρει μια αλλαγή της — αυτό ελέγχει η πύλη του καθρέφτη.
+
+(orchestrator.self-model:declare-capability! "ταυτότητα-άρθρων"
+ :description "η μία ταυτότητα κάθε άρθρου: corpus keying, κανονικοποίηση, ELI/άρθρο URIs, δρομολόγηση ΦΕΚ"
+ :package :orchestrator.legal-id
+ :functions '("build-article-uri" "registry-by-corpus" "normalize-greek")
+ :gate nil :depends-on '())   ; ΧΩΡΙΣ ΠΥΛΗ — δηλωμένο χρέος
+
+(orchestrator.contracts:defcontract "article-identity-management" :protocol
+ :package :orchestrator.uris :system "orchestrator-infrastructure"
+ :capability "ταυτότητα-άρθρων" :role "νομική-μνήμη"   ; Corpus/Legal-Memory Authority — ΟΧΙ utility του συντονιστή
+ :purpose "η ΜΙΑ πηγή ταυτότητας άρθρου — κάθε κλειδί corpus, article/ELI URI και υποκείμενο RDF παράγεται από εδώ (πάροχοι: orchestrator.uris build-article-uri, orchestrator.legal-id registry/normalize)"
+ :inputs '("corpus-id" "κανονική ταυτότητα άρθρου (αριθμός + επίθημα, πχ 100Α)" "κανονικοποιημένο ελληνικό κείμενο")
+ :outputs '("σταθερό κλειδί corpus" "article URI" "ELI URI" "υποκείμενο RDF")
+ :preconditions '("η ταυτότητα άρθρου είναι ΚΑΝΟΝΙΚΟΠΟΙΗΜΕΝΗ πριν από κάθε χρήση"
+                  "ετικέτες με επίθημα ΔΕΝ καταρρέουν: το 100 και το 100Α μένουν ΔΙΑΚΡΙΤΑ"
+                  "τα κλειδιά corpus χρησιμοποιούν την κανονική ταυτότητα, ΟΧΙ τον ωμό αριθμό")
+ :postconditions '("μοναδική κανονική ταυτότητα ανά άρθρο"
+                   "σταθερό ELI/URI — ίδια είσοδος ⇒ ίδια έξοδος, σε κάθε τρέξιμο"
+                   "ΚΑΜΙΑ σιωπηλή αντικατάσταση άρθρου"
+                   "συγκρουόμενη διπλή ταυτότητα αποτυγχάνει ΦΩΝΑΧΤΑ, όχι σιωπηλά")
+ :legal-critical t :policy-level :ανθρώπινη-έγκριση    ; αλλαγή του μοντέλου ταυτότητας ⇒ έγκριση δημιουργού
+ :side-effects '("εγγραφή κλειδιών/URIs στο corpus και στους γράφους RDF")
+ :failure-modes '("διπλή ταυτότητα ίδιου άρθρου" "κατάρρευση 100Α σε 100"
+                  "σιωπηλή αλλαγή κλειδιών σε υπάρχον corpus")
+ :proof-obligations '("τα proof hashes που αναφέρουν άρθρα μένουν επαληθεύσιμα"
+                      "αλλαγή κανονικής ταυτότητας ⇒ αλλάζει το proof hash — ποτέ ίδιο hash για άλλη ταυτότητα")
+ :audit "κάθε αλλαγή πολιτικής ταυτότητας ⇒ audit event + αναφορά επίπτωσης (--impact) ΠΡΙΝ την εφαρμογή"
+ :rollback "αλλαγή πολιτικής ταυτότητας αναστρέψιμη (versioned corpus) — αλλιώς ΜΠΛΟΚΑΡΕΤΑΙ"
+ :tests '("--contract-gate" "--subsumption-gate" "--draft-gate")
+ :dependents '("υπαγωγή" "παραδοτέο" "πρόσληψη-νομολογίας")
+ :impact-tags '(:corpus-storage :corpus-keying :normalized-input :article-uri
+                :eli-uri :canonical-uri :rdf-subjects :shacl-validation
+                :citation-resolver :proof-hashes :temporal-conclusions
+                :regression-gates))
+
+;;; ── ΠΡΟΦΙΛ ΚΕΝΩΝ: τι συμβόλαια απαιτεί μια ικανότητα που ΔΕΝ έχουμε ─────
+(orchestrator.contracts:register-gap-profile! "legal-drafting"
+ '("pleading-artifact" "sentence-provenance" "claim-defense-structure"
+   "court-procedure-model" "adversarial-review-of-draft" "human-approval-of-filing"))
+(orchestrator.contracts:register-gap-profile! "σύνταξη-δικογράφων"
+ '("pleading-artifact" "sentence-provenance" "claim-defense-structure"
+   "court-procedure-model" "adversarial-review-of-draft" "human-approval-of-filing"))
+
 ;;; ── Ο ΚΑΘΡΕΦΤΗΣ: εντολές αυτοεπίγνωσης πάνω στο μητρώο ικανοτήτων ───────
 ;;; Η ουσία ζει στο orchestrator.self-model (μία έδρα)· εδώ ΜΟΝΟ η όψη CLI.
 
@@ -257,7 +343,173 @@
     (when debts
       (format t "▸ Δηλωμένα χρέη (ικανότητες χωρίς πύλη): ~{~A~^, ~}~%"
               (mapcar #'orchestrator.self-model:capability-name debts)))
+    ;; Η θεσμική ταυτότητα + το ισοζύγιο συμβολαίων — από τα μητρώα, τώρα.
+    (let ((inst (orchestrator.institution:the-institution)))
+      (when inst
+        (format t "~%▸ Ίδρυμα: ~A · μηχανή συντονισμού (όργανο): ~A · όργανα: ~{~A~^, ~}~%"
+                (orchestrator.institution:institution-name inst)
+                (orchestrator.institution:institution-coordination-engine inst)
+                (orchestrator.institution:institution-organs inst))))
+    (let* ((cov (orchestrator.self-model:contract-coverage))
+           (violations (orchestrator.self-model:validate-all-contracts :test-exists-p #'find-command)))
+      (format t "~%▸ Συμβόλαια: ~D · πλήρης κάλυψη: ~D ικανότητες~@[ (~{~A~^, ~})~] · μερική: ~{~A~^, ~} · καμία: ~{~A~^, ~}~%"
+              (getf cov :contracts)
+              (length (getf cov :full)) nil
+              (getf cov :partial) (getf cov :none))
+      (when (getf cov :uncovered)
+        (format t "▸ Συναρτήσεις ΧΩΡΙΣ συμβόλαιο (χρέος, ορατό):~%")
+        (dolist (u (getf cov :uncovered))
+          (format t "    ~A: ~{~A~^, ~}~%" (car u) (cdr u))))
+      (when (getf cov :orphans)
+        (format t "▸ ΟΡΦΑΝΑ συμβόλαια (ανύπαρκτη ικανότητα): ~{~A~^, ~}~%" (getf cov :orphans)))
+      (if violations
+          (progn (format t "▸ ΠΑΡΑΒΑΣΕΙΣ συμβολαίων (~D):~%~{    ✗ ~A~%~}"
+                         (length violations) violations))
+          (format t "▸ Επικύρωση συμβολαίων: 0 παραβάσεις.~%")))
     0))
+
+(defun run-institution ()
+  "--institution : η θεσμική αυτο-δήλωση — από το συμβόλαιο ταυτότητας, όχι από πρόζα."
+  (let ((inst (orchestrator.institution:the-institution))
+        (idc (orchestrator.contracts:find-contract "institutional-identity")))
+    (cond
+      ((null inst) (format t "ΔΕΝ έχει δηλωθεί Ίδρυμα — αυτό είναι σφάλμα.~%") 1)
+      (t
+       (format t "~%══ ~A ══~%~A~%" (orchestrator.institution:institution-name inst)
+               (orchestrator.institution:institution-description inst))
+       (when idc
+         (format t "~%«~A»~%" (orchestrator.contracts:contract-purpose idc)))
+       (format t "~%Όργανα/αίθουσες:~%")
+       (dolist (r (orchestrator.institution:all-roles))
+         (format t "  • ~A~:[~; ← μηχανή συντονισμού~] — ~A (~D συμβόλαια)~%"
+                 (orchestrator.institution:role-name r)
+                 (string= (orchestrator.institution:role-name r)
+                          (orchestrator.institution:institution-coordination-engine inst))
+                 (orchestrator.institution:role-description r)
+                 (length (orchestrator.contracts:contracts-for-role
+                          (orchestrator.institution:role-name r)))))
+       0))))
+
+(defun %print-contract (c)
+  (format t "~%── ΣΥΜΒΟΛΑΙΟ «~A» (~(~A~)) ──~%" (orchestrator.contracts:contract-name c)
+          (orchestrator.contracts:contract-kind c))
+  (loop for (label val)
+          in (list (list "έδρα" (format nil "~(~A~) · ~A"
+                                        (orchestrator.contracts:contract-package c)
+                                        (or (orchestrator.contracts:contract-system c) "—")))
+                   (list "ικανότητα" (orchestrator.contracts:contract-capability c))
+                   (list "θεσμικός ρόλος" (orchestrator.contracts:contract-role c))
+                   (list "σκοπός" (orchestrator.contracts:contract-purpose c))
+                   (list "είσοδοι" (orchestrator.contracts:contract-inputs c))
+                   (list "έξοδοι" (orchestrator.contracts:contract-outputs c))
+                   (list "προϋποθέσεις" (orchestrator.contracts:contract-preconditions c))
+                   (list "μετασυνθήκες" (orchestrator.contracts:contract-postconditions c))
+                   (list "παρενέργειες" (or (orchestrator.contracts:contract-side-effects c) "ΚΑΘΑΡΗ"))
+                   (list "legal-critical" (if (orchestrator.contracts:contract-legal-critical c) "ΝΑΙ" "όχι"))
+                   (list "επίπεδο πολιτικής" (orchestrator.contracts:contract-policy-level c))
+                   (list "τρόποι αστοχίας" (orchestrator.contracts:contract-failure-modes c))
+                   (list "συνθήκες/σφάλματα" (orchestrator.contracts:contract-conditions c))
+                   (list "υποχρεώσεις απόδειξης" (orchestrator.contracts:contract-proof-obligations c))
+                   (list "audit/provenance" (orchestrator.contracts:contract-audit c))
+                   (list "τεστ απόδειξης" (orchestrator.contracts:contract-tests c))
+                   (list "κατάντη εξαρτώμενοι" (orchestrator.contracts:contract-dependents c))
+                   (list "ετικέτες επίπτωσης" (orchestrator.contracts:contract-impact-tags c)))
+        when val
+          do (format t "  ~A: ~A~%" label
+                     (if (consp val) (format nil "~{~A~^ · ~}" val) val))))
+
+(defun run-contract (args)
+  "--contract <συνάρτηση|ικανότητα> : το πλήρες συμβόλαιο — ή όλα τα συμβόλαια
+   της ικανότητας. Ντετερμινιστική, δομημένη έξοδος."
+  (let ((name (format nil "~{~A~^ ~}" args)))
+    (cond
+      ((zerop (length name)) (format t "χρήση: --contract <όνομα>~%") 1)
+      ((orchestrator.contracts:find-contract name)
+       (%print-contract (orchestrator.contracts:find-contract name)) 0)
+      ((orchestrator.self-model:find-capability name)
+       (let ((cs (orchestrator.contracts:contracts-for-capability name)))
+         (if cs (progn (mapc #'%print-contract cs) 0)
+             (progn (format t "Η ικανότητα «~A» ΔΕΝ έχει κανένα συμβόλαιο — χρέος.~%" name) 1))))
+      (t (format t "Κανένα συμβόλαιο ή ικανότητα «~A».~%" name) 1))))
+
+(defun run-contracts-missing ()
+  "--contracts-missing : το τίμιο έλλειμμα — τι ΔΕΝ έχει ακόμη συμβόλαιο."
+  (let ((cov (orchestrator.self-model:contract-coverage)))
+    (format t "~%── ΕΛΛΕΙΜΜΑ ΣΥΜΒΟΛΑΙΩΝ ──~%")
+    (if (getf cov :uncovered)
+        (dolist (u (getf cov :uncovered))
+          (format t "  ~A: ~{~A~^, ~}~%" (car u) (cdr u)))
+        (format t "  Καμία ακάλυπτη κρίσιμη συνάρτηση.~%"))
+    (when (getf cov :orphans)
+      (format t "  Ορφανά συμβόλαια: ~{~A~^, ~}~%" (getf cov :orphans)))
+    0))
+
+(defun run-capability-contracts (args)
+  "--capability-contracts <ικανότητα> : τα συμβόλαια που τη στηρίζουν."
+  (run-contract args))
+
+(defun run-impact (args)
+  "--impact <ικανότητα|συμβόλαιο> : η αιτιώδης επίπτωση — ποιες ικανότητες
+   κληρονομούν τον κίνδυνο (depends-on ∪ contract dependents) και ποιες πύλες
+   είναι το ελάχιστο regression. Για συμβόλαιο: μέσω της ικανότητάς του,
+   συν οι ετικέτες επίπτωσής του."
+  (let* ((name (format nil "~{~A~^ ~}" args))
+         (contract (orchestrator.contracts:find-contract name))
+         (cap-name (if contract (orchestrator.contracts:contract-capability contract) name)))
+    (cond
+      ((zerop (length name)) (format t "χρήση: --impact <όνομα>~%") 1)
+      ((and (null contract) (null (orchestrator.self-model:find-capability name)))
+       (format t "Ούτε ικανότητα ούτε συμβόλαιο «~A» — τίμια άγνοια.~%" name) 1)
+      (t
+       (when contract
+         (format t "~%Συμβόλαιο «~A» → ικανότητα «~A»~%" name cap-name)
+         (when (orchestrator.contracts:contract-impact-tags contract)
+           (format t "Ετικέτες επίπτωσης: ~{~(~A~)~^ · ~}~%"
+                   (orchestrator.contracts:contract-impact-tags contract))))
+       (multiple-value-bind (caps gates)
+           (orchestrator.self-model:capability-impact cap-name)
+         (format t "~%Αν αλλάξει «~A», κληρονομούν τον κίνδυνο (~D):~%~{  • ~A~%~}"
+                 cap-name (length caps)
+                 (mapcar #'orchestrator.self-model:capability-name caps))
+         (format t "Ελάχιστο regression — πύλες που ΠΡΕΠΕΙ να τρέξουν: ~{~A~^, ~}~%"
+                 gates))
+       0))))
+
+(defun %contract-field (args field label)
+  "Μία δομημένη όψη ενός πεδίου συμβολαίου — ντετερμινιστική έξοδος."
+  (let* ((name (format nil "~{~A~^ ~}" args))
+         (c (or (orchestrator.contracts:find-contract name)
+                (first (orchestrator.contracts:contracts-for-capability name)))))
+    (if (null c)
+        (progn (format t "Κανένα συμβόλαιο «~A».~%" name) 1)
+        (let ((val (funcall field c)))
+          (format t "~A «~A»: ~A~%" label (orchestrator.contracts:contract-name c)
+                  (cond ((null val) "—")
+                        ((consp val) (format nil "~{~A~^ · ~}" val))
+                        (t val)))
+          0))))
+
+(register-command "--institution" (lambda (a) (declare (ignore a)) (run-institution)))
+(register-command "--ίδρυμα"      (lambda (a) (declare (ignore a)) (run-institution)))
+(register-command "--contract"    (lambda (a) (run-contract a)))
+(register-command "--συμβόλαιο"   (lambda (a) (run-contract a)))
+(register-command "--contracts-missing" (lambda (a) (declare (ignore a)) (run-contracts-missing)))
+(register-command "--capability-contracts" (lambda (a) (run-capability-contracts a)))
+(register-command "--impact"      (lambda (a) (run-impact a)))
+(register-command "--providers"
+  (lambda (a) (let ((cs (orchestrator.contracts:contracts-for-capability
+                         (format nil "~{~A~^ ~}" a))))
+                (if cs (progn (format t "Πάροχοι της «~{~A~^ ~}»: ~{~A~^ · ~}~%"
+                                      a (mapcar #'orchestrator.contracts:contract-name cs)) 0)
+                    (%contract-field a #'orchestrator.contracts:contract-package "Έδρα-πάροχος")))))
+(register-command "--tests"
+  (lambda (a) (%contract-field a #'orchestrator.contracts:contract-tests "Τεστ απόδειξης")))
+(register-command "--policy"
+  (lambda (a) (%contract-field a (lambda (c)
+                                   (format nil "~@[legal-critical · ~*~]~(~A~)"
+                                           (orchestrator.contracts:contract-legal-critical c)
+                                           (or (orchestrator.contracts:contract-policy-level c) "—")))
+                               "Πολιτική")))
 
 (defun run-capability-gap (args)
   "--gap <ικανότητα> : έχω αυτή την ικανότητα; Τίμιο ✔/✘ + τι απαιτεί η
@@ -325,7 +577,8 @@
                (every (lambda (c)
                         (or (orchestrator.self-model:capability-gate c)
                             (member (orchestrator.self-model:capability-name c)
-                                    '("ομοιότητα-υποθέσεων" "πρόσληψη-νομολογίας")
+                                    '("ομοιότητα-υποθέσεων" "πρόσληψη-νομολογίας"
+                                      "ταυτότητα-άρθρων")
                                     :test #'string=)))
                       caps))))
     (format t "~%── ΠΥΛΗ ΚΑΘΡΕΦΤΗ: ~D/~D πέρασαν ──~%" (- total (length fails)) total)

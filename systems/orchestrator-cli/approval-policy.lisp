@@ -288,3 +288,17 @@
  :description "αυτο-έγκριση ΜΟΝΟ ανά κλάση με μετρημένη ακρίβεια σε κλειδωμένη σουίτα"
  :package :orchestrator.cli :functions '("run-policy-approve" "measured-evolution-precision")
  :gate "--policy-gate" :depends-on '("αυτοεπέκταση"))
+
+;;; ── ΣΥΜΒΟΛΑΙΑ ΠΑΡΟΧΩΝ (δεσμευτική αυτοπεριγραφή — βλ. --contract-gate) ──
+
+(orchestrator.contracts:defcontract "approval-policy-protocol" :protocol
+ :package :orchestrator.cli :system "orchestrator-cli"
+ :capability "πολιτικές-έγκρισης" :role "σύνταγμα"
+ :purpose "αυτο-έγκριση ΜΟΝΟ ανά κλάση με μετρημένη ακρίβεια σε κλειδωμένη σουίτα (run-policy-approve)"
+ :side-effects '("έγκριση προτάσεων χωρίς άνθρωπο — μόνο εντός μετρημένης κλάσης")
+ :preconditions '("η ακρίβεια της κλάσης μετρήθηκε στην κλειδωμένη σουίτα")
+ :postconditions '("εκτός κλάσης ⇒ ο άνθρωπος αποφασίζει, πάντα")
+ :legal-critical t :policy-level :ανθρώπινη-έγκριση
+ :audit "κάθε αυτο-έγκριση καταγράφεται με την πολιτική που την επέτρεψε"
+ :rollback "πολιτική ανακαλέσιμη· ό,τι ενέκρινε παραμένει αναστρέψιμο μέσω ledger"
+ :tests '("--policy-gate"))

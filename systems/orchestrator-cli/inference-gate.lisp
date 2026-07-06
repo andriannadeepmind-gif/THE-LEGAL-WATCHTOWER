@@ -465,3 +465,63 @@
  :description "μη-μονότονος συμπερασμός WFS/JTMS με δέντρα απόδειξης και ανάκληση"
  :package :orchestrator.inference :functions '("run-inference" "explain" "query")
  :gate "--inference-gate" :depends-on '("λογισμός-φραγμών"))
+
+;;; ── ΣΥΜΒΟΛΑΙΑ ΠΑΡΟΧΩΝ (δεσμευτική αυτοπεριγραφή — βλ. --contract-gate) ──
+
+(orchestrator.contracts:defcontract "meta-eval" :function
+ :package :orchestrator.metaeval :system "orchestrator-infrastructure"
+ :capability "λογισμός-φραγμών" :role "αποδείξεις"
+ :purpose "μετακυκλική αποτίμηση κλειστής έκφρασης με ορατό ίχνος και καύσιμο"
+ :inputs '("έκφραση της εσωτερικής γλώσσας") :outputs '("τιμή" "ίχνος")
+ :preconditions '("η έκφραση περνά στατικό έλεγχο τύπων")
+ :postconditions '("ίδια έκφραση ⇒ ίδια τιμή· το ίχνος αναπαράγει τον υπολογισμό")
+ :legal-critical t :policy-level :φραγή
+ :failure-modes '("εξάντληση καυσίμου — ρητή, ποτέ σιωπηλή")
+ :tests '("--inference-gate"))
+
+(orchestrator.contracts:defcontract "guards-pass-p" :function
+ :package :orchestrator.metaeval :system "orchestrator-infrastructure"
+ :capability "λογισμός-φραγμών" :role "αποδείξεις"
+ :purpose "κρίση φρουρών κανόνων με πιστοποιητικά υπολογισμού στα γεγονότα"
+ :inputs '("δεσμεύσεις μεταβλητών" "φρουροί") :outputs '("T/NIL" "γεγονότα :υπολογισμός με ίχνος")
+ :postconditions '("κάθε επιτυχής φρουρός φέρει πιστοποιητικό με :επαλήθευση :ανεξάρτητη")
+ :legal-critical t :policy-level :φραγή
+ :proof-obligations '("το πιστοποιητικό επαληθεύεται από τον ανεξάρτητο ελεγκτή")
+ :tests '("--inference-gate"))
+
+(orchestrator.contracts:defcontract "verify-guard" :function
+ :package :orchestrator.metaeval :system "orchestrator-infrastructure"
+ :capability "λογισμός-φραγμών" :role "αποδείξεις"
+ :purpose "ΑΝΕΞΑΡΤΗΤΗ επαλήθευση πιστοποιητικού — δεύτερος αλγόριθμος, όχι ο παραγωγός"
+ :inputs '("πιστοποιητικό") :outputs '("T/NIL")
+ :postconditions '("δεν εμπιστεύεται τον παραγωγό: πλήρης επαναϋπολογισμός + τοπικός έλεγχος κόμβων")
+ :legal-critical t :policy-level :φραγή
+ :tests '("--inference-gate"))
+
+(orchestrator.contracts:defcontract "run-inference" :function
+ :package :orchestrator.inference :system "orchestrator-infrastructure"
+ :capability "συμπερασμός-wfs" :role "αποδείξεις"
+ :purpose "μη-μονότονος συμπερασμός: ημι-αφελής γείωση + well-founded μοντέλο + JTMS"
+ :inputs '("γεγονότα" "κανόνες") :outputs '("συμπεράσματα με δέντρα απόδειξης")
+ :postconditions '("κάθε συμπέρασμα δικαιολογημένο· νέα γνώση ⇒ αυτόματη ανάκληση των εξαρτημένων")
+ :legal-critical t :policy-level :φραγή
+ :failure-modes '("βρόχοι άρνησης ⇒ WFS undefined — δηλωμένο, όχι αυθαίρετο")
+ :tests '("--inference-gate" "--iq-gate"))
+
+(orchestrator.contracts:defcontract "explain" :function
+ :package :orchestrator.inference :system "orchestrator-infrastructure"
+ :capability "συμπερασμός-wfs" :role "αποδείξεις"
+ :purpose "το δέντρο απόδειξης ενός συμπεράσματος — η βάση κάθε νομικής αιτιολογίας"
+ :inputs '("JTMS" "συμπέρασμα") :outputs '("δέντρο απόδειξης με πιστοποιητικά")
+ :postconditions '("κάθε φύλλο = γεγονός ή πιστοποιητικό· ποτέ κρυφό βήμα")
+ :legal-critical t :policy-level :φραγή
+ :tests '("--inference-gate" "--event-gate"))
+
+(orchestrator.contracts:defcontract "query" :function
+ :package :orchestrator.inference :system "orchestrator-infrastructure"
+ :capability "συμπερασμός-wfs" :role "αποδείξεις"
+ :purpose "ερώτημα με μοτίβο στα IN συμπεράσματα της μηχανής"
+ :inputs '("μηχανή" "μοτίβο με μεταβλητές") :outputs '("δεσμεύσεις")
+ :postconditions '("επιστρέφει ΜΟΝΟ όσα είναι IN τώρα — ποτέ ανακληθέντα")
+ :legal-critical t :policy-level :φραγή
+ :tests '("--inference-gate"))

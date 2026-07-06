@@ -393,3 +393,25 @@
  :package :orchestrator.cli :functions '("draft-memo" "gap-questions")
  :gate "--draft-gate"
  :depends-on '("γλωσσική-αντίληψη" "υπαγωγή" "αντιδικία" "υποθετικός-λόγος" "λογισμός-φραγμών"))
+
+;;; ── ΣΥΜΒΟΛΑΙΑ ΠΑΡΟΧΩΝ (δεσμευτική αυτοπεριγραφή — βλ. --contract-gate) ──
+
+(orchestrator.contracts:defcontract "draft-memo" :function
+ :package :orchestrator.cli :system "orchestrator-cli"
+ :capability "παραδοτέο" :role "χειρισμός-υποθέσεων"
+ :purpose "Σημείωμα Υπαγωγής: κάθε πρόταση με απόδειξη ή ετικέτα ΕΙΚΑΣΙΑΣ, ποτέ γυμνός ισχυρισμός"
+ :inputs '("φάκελος υπόθεσης") :outputs '("σημείωμα 8 τμημάτων + SHA-256 ταυτότητα σώματος")
+ :preconditions '("η υπαγωγή/αντιδικία/κρίσιμα έχουν τρέξει στον ίδιο φάκελο")
+ :postconditions '("ντετερμινιστικό σώμα: ίδιος φάκελος ⇒ ίδιο SHA-256"
+                   "άκυρη ημερομηνία ⇒ ΑΠΟΡΡΙΨΗ με λόγο, όχι διόρθωση")
+ :legal-critical t :policy-level :φραγή
+ :proof-obligations '("κάθε νομική πρόταση δείχνει corpus:άρθρο ή κόμβο απόδειξης")
+ :tests '("--draft-gate"))
+
+(orchestrator.contracts:defcontract "gap-questions" :function
+ :package :orchestrator.cli :system "orchestrator-cli"
+ :capability "παραδοτέο" :role "χειρισμός-υποθέσεων"
+ :purpose "τα κενά της υπόθεσης → ερωτήσεις προς τον εντολέα (abduction, περιέργεια)"
+ :outputs '("ερωτήσεις δεμένες σε ονοματισμένα κενά")
+ :legal-critical t :policy-level :φραγή
+ :tests '("--draft-gate"))

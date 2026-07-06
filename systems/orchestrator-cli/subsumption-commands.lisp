@@ -365,3 +365,92 @@
  :description "HYPO/CATO: παράγοντες, διακρίσεις, k-NN διατακτικού"
  :package :orchestrator.hypo :functions '("case-factors" "rank-precedents" "knn-verdict")
  :gate nil :depends-on '("υπαγωγή"))   ; ΧΩΡΙΣ ΠΥΛΗ — δηλωμένο χρέος
+
+;;; ── ΣΥΜΒΟΛΑΙΑ ΠΑΡΟΧΩΝ (δεσμευτική αυτοπεριγραφή — βλ. --contract-gate) ──
+
+(orchestrator.contracts:defcontract "parse-narrative" :function
+ :package :orchestrator.casegrammar :system "orchestrator-infrastructure"
+ :capability "γλωσσική-αντίληψη" :role "γλώσσα"
+ :purpose "αφήγηση → γεγονότα: πλαίσια πτώσεων, άρνηση, συναναφορά, ημερομηνίες"
+ :inputs '("ελληνικό κείμενο αφήγησης") :outputs '("γεγονότα" "ανερμήνευτες προτάσεις" "χρονολόγιο")
+ :postconditions '("ΚΑΝΕΝΑ γεγονός δεν εφευρίσκεται· το ανερμήνευτο δηλώνεται ρητά")
+ :legal-critical t :policy-level :φραγή
+ :failure-modes '("άγνωστο ρήμα ⇒ ανερμήνευτη πρόταση + μάθημα, ποτέ εικασία")
+ :tests '("--subsumption-gate" "--dialogue-gate"))
+
+(orchestrator.contracts:defcontract "greek-perception-protocol" :protocol
+ :package :orchestrator.casegrammar :system "orchestrator-infrastructure"
+ :capability "γλωσσική-αντίληψη" :role "γλώσσα"
+ :purpose "ο κύκλος αντίληψης διατάξεων/ορισμών (parse-provision, parse-definition) — ίδια πειθαρχία με την αφήγηση"
+ :postconditions '("διάταξη → κανόνας με δηλωμένη πηγή· ορισμός → λεξιλόγιο με ταυτότητα")
+ :legal-critical t :policy-level :φραγή
+ :tests '("--subsumption-gate"))
+
+(orchestrator.contracts:defcontract "subsume" :function
+ :package :orchestrator.subsumption :system "orchestrator-infrastructure"
+ :capability "υπαγωγή" :role "αποδείξεις"
+ :purpose "γεγονότα × κανόνες → απόφανση: η καρδιά της νομικής κρίσης"
+ :inputs '("γεγονότα υπόθεσης" "νομικοί κανόνες") :outputs '("απόφανση με δέντρο απόδειξης")
+ :preconditions '("τα γεγονότα προέρχονται από αντίληψη ή ρητή εισαγωγή — ποτέ από εικασία")
+ :postconditions '("θετική απόφανση ⇒ πλήρης απόδειξη· αρνητική ⇒ ονοματισμένο κενό")
+ :legal-critical t :policy-level :φραγή
+ :tests '("--subsumption-gate" "--draft-gate"))
+
+(orchestrator.contracts:defcontract "conclusion-status" :function
+ :package :orchestrator.subsumption :system "orchestrator-infrastructure"
+ :capability "υπαγωγή" :role "αποδείξεις"
+ :purpose "τρίτιμη τύχη συμπεράσματος: αποδεδειγμένο / αναιρεμένο / ανοιχτό"
+ :outputs '("κατάσταση + ασθενέστερος κρίκος")
+ :postconditions '("ποτέ δίτιμη κατάρρευση — το ανοιχτό μένει ανοιχτό")
+ :legal-critical t :policy-level :φραγή
+ :tests '("--subsumption-gate"))
+
+(orchestrator.contracts:defcontract "norm-gaps" :function
+ :package :orchestrator.subsumption :system "orchestrator-infrastructure"
+ :capability "υπαγωγή" :role "αποδείξεις"
+ :purpose "μετα-γνώση: ΤΙ ακριβώς λείπει για να κλείσει η υπαγωγή"
+ :outputs '("ονοματισμένα κενά ανά κανόνα")
+ :postconditions '("κάθε κενό δείχνει το συγκεκριμένο στοιχείο της ειδικής υπόστασης")
+ :legal-critical t :policy-level :φραγή
+ :tests '("--subsumption-gate" "--draft-gate"))
+
+(orchestrator.contracts:defcontract "proof-grade" :function
+ :package :orchestrator.subsumption :system "orchestrator-infrastructure"
+ :capability "υπαγωγή" :role "αποδείξεις"
+ :purpose "βαθμός βεβαιότητας απόδειξης: ο ασθενέστερος κρίκος, ονοματισμένος"
+ :outputs '("βαθμίδα + ο κρίκος που τη χαμηλώνει")
+ :legal-critical t :policy-level :φραγή
+ :tests '("--subsumption-gate"))
+
+(orchestrator.contracts:defcontract "dialectic-report" :function
+ :package :orchestrator.dialectic :system "orchestrator-infrastructure"
+ :capability "αντιδικία" :role "αποδείξεις"
+ :purpose "θέση ↔ ένσταση με grounded semantics: ποιος ίσταται και γιατί"
+ :outputs '("τύχη κάθε θέσης/ένστασης με απόδειξη")
+ :postconditions '("πεσμένη θέση δεν στηρίζει τίποτα κατάντη")
+ :legal-critical t :policy-level :φραγή
+ :tests '("--subsumption-gate"))
+
+(orchestrator.contracts:defcontract "critical-facts" :function
+ :package :orchestrator.counterfactual :system "orchestrator-infrastructure"
+ :capability "υποθετικός-λόγος" :role "αποδείξεις"
+ :purpose "ποια γεγονότα είναι ΚΡΙΣΙΜΑ: η αφαίρεσή τους ρίχνει το συμπέρασμα (ακριβές ablation)"
+ :outputs '("κρίσιμα γεγονότα") :legal-critical t :policy-level :φραγή
+ :tests '("--subsumption-gate" "--draft-gate"))
+
+(orchestrator.contracts:defcontract "minimal-blockers" :function
+ :package :orchestrator.counterfactual :system "orchestrator-infrastructure"
+ :capability "υποθετικός-λόγος" :role "αποδείξεις"
+ :purpose "ελάχιστα σύνολα φραγής — τι αρκεί στον αντίδικο για να μπλοκάρει"
+ :outputs '("ελάχιστα σύνολα") :legal-critical t :policy-level :φραγή
+ :tests '("--subsumption-gate"))
+
+(orchestrator.contracts:defcontract "procedural-planning-protocol" :protocol
+ :package :orchestrator.strategy :system "orchestrator-infrastructure"
+ :capability "δικονομικός-σχεδιασμός" :role "χειρισμός-υποθέσεων"
+ :purpose "STRIPS πλάνα με αποδείξεις εμπροθέσμου (strategy-report, plan-goal, think)"
+ :preconditions '("η αφετηρία προθεσμίας είναι γεγονός — αλλιώς ΑΓΝΩΣΤΗ, δηλωμένη")
+ :postconditions '("κάθε πλάνο φέρει απόδειξη εμπροθέσμου· εκπρόθεσμο ⇒ ΚΑΝΕΝΑ πλάνο + ρητός λόγος")
+ :legal-critical t :policy-level :φραγή
+ :failure-modes '("λάθος προθεσμία = χαμένη υπόθεση — γι αυτό πιστοποιητικά ημερομηνιών παντού")
+ :tests '("--subsumption-gate"))

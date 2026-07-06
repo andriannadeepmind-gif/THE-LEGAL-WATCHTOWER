@@ -353,3 +353,17 @@ NIL αν τίποτα δεν ταιριάζει. Κώδικες: poinikos, astik
  :description "LLM εκτός εμπιστοσύνης: ονειρεύεται προτάσεις, ο συμβολικός δικαστής κρίνει"
  :package :orchestrator.cli :functions '("validate-dream" "install-advisor!")
  :gate "--advisor-gate" :depends-on '("αυτοεπέκταση"))
+
+;;; ── ΣΥΜΒΟΛΑΙΑ ΠΑΡΟΧΩΝ (δεσμευτική αυτοπεριγραφή — βλ. --contract-gate) ──
+
+(orchestrator.contracts:defcontract "advisor-untrusted-protocol" :protocol
+ :package :orchestrator.cli :system "orchestrator-cli"
+ :capability "σύμβουλος" :role "αυτοεξέλιξη"
+ :purpose "LLM ΕΚΤΟΣ εμπιστοσύνης: ονειρεύεται προτάσεις (validate-dream, install-advisor!), ο συμβολικός δικαστής κρίνει"
+ :side-effects '("εγκατάσταση εξωτερικού συμβούλου")
+ :preconditions '("ΤΙΠΟΤΑ από τον σύμβουλο δεν μπαίνει στο έμπιστο μονοπάτι χωρίς συμβολική επικύρωση")
+ :postconditions '("πρόταση που δεν περνά τον δικαστή απορρίπτεται με λόγο")
+ :legal-critical t :policy-level :φραγή
+ :audit "κάθε όνειρο + ετυμηγορία δικαστή καταγράφονται"
+ :rollback "αφαίρεση συμβούλου = μία εντολή· το έμπιστο μονοπάτι δεν τον χρειάστηκε ποτέ"
+ :tests '("--advisor-gate"))

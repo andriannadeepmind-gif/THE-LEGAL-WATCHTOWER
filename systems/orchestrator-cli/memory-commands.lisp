@@ -183,3 +183,15 @@
  :description "επεισοδιακή/προθετική μνήμη + ατζέντα, append-only με ανάκληση"
  :package :orchestrator.memory :functions '("record-episode" "similar-episodes")
  :gate "--memory-gate" :depends-on '())
+
+;;; ── ΣΥΜΒΟΛΑΙΑ ΠΑΡΟΧΩΝ (δεσμευτική αυτοπεριγραφή — βλ. --contract-gate) ──
+
+(orchestrator.contracts:defcontract "episodic-memory-protocol" :protocol
+ :package :orchestrator.memory :system "orchestrator-infrastructure"
+ :capability "μνήμη" :role "νομική-μνήμη"
+ :purpose "βιωματικό ρεύμα (record-episode, similar-episodes): append-only με αλυσίδα ακεραιότητας"
+ :side-effects '("εγγραφή επεισοδίων στο ρεύμα")
+ :postconditions '("η αλυσίδα επαληθεύεται· σπασμένη αλυσίδα δηλώνεται, δεν κρύβεται")
+ :audit "κάθε επεισόδιο δεμένο στην αλυσίδα hash — provenance εγγενές"
+ :rollback "append-only: τίποτα δεν σβήνεται, η διόρθωση είναι νέο επεισόδιο"
+ :policy-level :παρατήρηση :tests '("--memory-gate"))

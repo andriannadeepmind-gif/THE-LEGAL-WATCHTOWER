@@ -637,3 +637,28 @@
  :description "κενά → αυτο-προτάσεις γνώσης, σκιωδώς δοκιμασμένες, υιοθέτηση μόνο με έγκριση + rollback"
  :package :orchestrator.cli :functions '("run-self-extend" "run-evolve" "dream-grammar")
  :gate "--extension-gate" :depends-on '("πακέτα-γνώσης" "υπαγωγή"))
+
+;;; ── ΣΥΜΒΟΛΑΙΑ ΠΑΡΟΧΩΝ (δεσμευτική αυτοπεριγραφή — βλ. --contract-gate) ──
+
+(orchestrator.contracts:defcontract "knowledge-pack-lifecycle" :protocol
+ :package :orchestrator.knowledge-packs :system "orchestrator-infrastructure"
+ :capability "πακέτα-γνώσης" :role "νομική-μνήμη"
+ :purpose "δηλωτική γνώση με SHA-256 (ensure-fresh, with-packs-overlay): εγκατάσταση ατομική, σκιά χωρίς μόλυνση"
+ :side-effects '("εγκατάσταση/αναφόρτωση πακέτων γνώσης")
+ :postconditions '("αποτυχία εγκατάστασης ⇒ πλήρης επαναφορά snapshot — ποτέ μισή γνώση")
+ :legal-critical t :policy-level :φραγή
+ :audit "SHA-256 κάθε πακέτου στη βιογραφία — ποιο ακριβώς κείμενο γνώσης ισχύει"
+ :rollback "snapshot→install→restore-on-error: εγγενής αναστρεψιμότητα"
+ :tests '("--extension-gate"))
+
+(orchestrator.contracts:defcontract "self-extension-adoption" :protocol
+ :package :orchestrator.cli :system "orchestrator-cli"
+ :capability "αυτοεπέκταση" :role "αυτοεξέλιξη"
+ :purpose "κενά → υποψήφια γνώση → ΣΚΙΩΔΗΣ δοκιμή → υιοθέτηση ΜΟΝΟ με έγκριση (run-self-extend, run-evolve, dream-grammar)"
+ :side-effects '("υιοθέτηση γνώσης στο ζωντανό σύστημα")
+ :preconditions '("μηδέν παλινδρομήσεις στη σκιά — αλλιώς η υποψηφιότητα απορρίπτεται")
+ :postconditions '("καμία υιοθέτηση χωρίς ανθρώπινη έγκριση ή μετρημένη πολιτική κλάσης")
+ :legal-critical t :policy-level :ανθρώπινη-έγκριση
+ :audit "κάθε υιοθέτηση γράφεται στη βιογραφία με SHA + αποτέλεσμα σκιάς"
+ :rollback "κάθε υιοθέτηση αναστρέψιμη μέσω του ledger της βιογραφίας"
+ :tests '("--extension-gate" "--policy-gate"))

@@ -212,10 +212,13 @@
   (format nil "~A/anchor/~A" (get-base-uri) id))
 
 (defun build-article-uri (article-number &optional version)
-  "Build an article URI with optional version."
+  "Build an article URI with optional version. ARTICLE-NUMBER is the CANONICAL
+   article identity — integer or suffixed label (e.g. \"100Α\"): suffixes are
+   part of the identity and must never collapse (contract:
+   article-identity-management)."
   (if version
-      (format nil "~A/article/~D/v~A" (get-base-uri) article-number version)
-      (format nil "~A/article/~D" (get-base-uri) article-number)))
+      (format nil "~A/article/~A/v~A" (get-base-uri) article-number version)
+      (format nil "~A/article/~A" (get-base-uri) article-number)))
 
 (defun build-corpus-version-uri (version-string)
   "Build a corpus version URI."

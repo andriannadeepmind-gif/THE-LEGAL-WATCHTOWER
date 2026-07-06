@@ -186,3 +186,12 @@
  :description "κατανόηση ερωτημάτων με τίμια άγνοια, αυτογνωσία κατάστασης, σκέψη σε βήματα"
  :package :orchestrator.cognition :functions '("process-request")
  :gate "--dialogue-gate" :depends-on '("γλωσσική-αντίληψη"))
+
+;;; ── ΣΥΜΒΟΛΑΙΑ ΠΑΡΟΧΩΝ (δεσμευτική αυτοπεριγραφή — βλ. --contract-gate) ──
+
+(orchestrator.contracts:defcontract "dialogue-protocol" :protocol
+ :package :orchestrator.cognition :system "orchestrator-cli"
+ :capability "διάλογος" :role "νόηση"
+ :purpose "ερώτημα → frame → απάντηση από τα ζωντανά μητρώα (process-request) με τίμια άγνοια"
+ :postconditions '("ό,τι δεν καταλαβαίνει το δηλώνει και ρωτά — δεν προσποιείται")
+ :policy-level :συμβουλευτικό :tests '("--dialogue-gate"))

@@ -132,3 +132,12 @@
  :description "επαγωγή προγραμμάτων από παραδείγματα (οικογένεια ARC) με τίμια άρνηση"
  :package :orchestrator.fluid :functions '("solve-task" "all-solutions")
  :gate "--fluid-gate" :depends-on '())
+
+;;; ── ΣΥΜΒΟΛΑΙΑ ΠΑΡΟΧΩΝ (δεσμευτική αυτοπεριγραφή — βλ. --contract-gate) ──
+
+(orchestrator.contracts:defcontract "fluid-induction-protocol" :protocol
+ :package :orchestrator.fluid :system "orchestrator-infrastructure"
+ :capability "ρευστή-επαγωγή" :role "νόηση"
+ :purpose "επαγωγή προγραμμάτων από παραδείγματα (solve-task, all-solutions) με τίμια άρνηση εκτός DSL"
+ :postconditions '("απάντηση ⇒ συνεπής με ΟΛΑ τα παραδείγματα· εκτός DSL ⇒ NIL + δηλωμένος λόγος, ποτέ εικασία")
+ :policy-level :συμβουλευτικό :tests '("--fluid-gate"))

@@ -103,3 +103,14 @@
  :description "event calculus: γεγονότα γεννούν/σβήνουν έννομες καταστάσεις, αδράνεια μέσω WFS"
  :package :orchestrator.eventcalculus :functions '("ec-initiation" "ec-clipping" "ec-holds")
  :gate "--event-gate" :depends-on '("συμπερασμός-wfs" "λογισμός-φραγμών"))
+
+;;; ── ΣΥΜΒΟΛΑΙΑ ΠΑΡΟΧΩΝ (δεσμευτική αυτοπεριγραφή — βλ. --contract-gate) ──
+
+(orchestrator.contracts:defcontract "event-calculus-protocol" :protocol
+ :package :orchestrator.eventcalculus :system "orchestrator-infrastructure"
+ :capability "ιστορία-συμβάντων" :role "αποδείξεις"
+ :purpose "γεγονότα γεννούν/σβήνουν έννομες καταστάσεις με αδράνεια (ec-initiation, ec-clipping, ec-holds)"
+ :preconditions '("οι ημερομηνίες συμβάντων έγκυρες — αλλιώς απορρίπτονται με λόγο")
+ :postconditions '("το μέλλον δεν αποδεικνύει παρόν· clipping ρητά υπαρξιακό· σύμβαση ορίων δηλωμένη")
+ :legal-critical t :policy-level :φραγή
+ :tests '("--event-gate"))

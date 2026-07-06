@@ -97,3 +97,22 @@
  :description "τι ΠΡΟΣΤΑΖΕΙ ο κανόνας (O/F/P): ταξινόμηση + κανονιστική σύγκρουση"
  :package :orchestrator.deontic :functions '("evaluate-deontic" "classify-deontic-sentence")
  :gate "--deontic-gate" :depends-on '("συμπερασμός-wfs"))
+
+;;; ── ΣΥΜΒΟΛΑΙΑ ΠΑΡΟΧΩΝ (δεσμευτική αυτοπεριγραφή — βλ. --contract-gate) ──
+
+(orchestrator.contracts:defcontract "evaluate-deontic" :function
+ :package :orchestrator.deontic :system "orchestrator-infrastructure"
+ :capability "δεοντικό" :role "αποδείξεις"
+ :purpose "τι ΠΡΟΣΤΑΖΕΙ ο κανόνας: επιβολή/απαγόρευση/άδεια πάνω στα γεγονότα"
+ :inputs '("κανόνες με δεοντικό τελεστή" "γεγονότα") :outputs '("δεοντικές κρίσεις + συγκρούσεις")
+ :postconditions '("κανονιστική σύγκρουση ΑΝΙΧΝΕΥΕΤΑΙ και δηλώνεται — ποτέ σιωπηλή επιλογή")
+ :legal-critical t :policy-level :φραγή
+ :tests '("--deontic-gate"))
+
+(orchestrator.contracts:defcontract "classify-deontic-sentence" :function
+ :package :orchestrator.deontic :system "orchestrator-infrastructure"
+ :capability "δεοντικό" :role "γλώσσα"
+ :purpose "ελληνική διάταξη → δεοντικός τελεστής (O/F/P) από τη μορφολογία της"
+ :inputs '("πρόταση διάταξης") :outputs '("τελεστής + ίχνος ταξινόμησης")
+ :legal-critical t :policy-level :φραγή
+ :tests '("--deontic-gate"))

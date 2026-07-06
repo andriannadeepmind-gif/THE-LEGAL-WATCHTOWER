@@ -190,3 +190,12 @@
  :description "ορθότητα πυρήνα συμπερασμού έναντι ΑΝΕΞΑΡΤΗΤΟΥ αφελούς κριτή (100% ή κόκκινο)"
  :package :orchestrator.inference :functions '("run-iq-gate")
  :gate "--iq-gate" :depends-on '("συμπερασμός-wfs"))
+
+;;; ── ΣΥΜΒΟΛΑΙΑ ΠΑΡΟΧΩΝ (δεσμευτική αυτοπεριγραφή — βλ. --contract-gate) ──
+
+(orchestrator.contracts:defcontract "iq-referee-protocol" :protocol
+ :package :orchestrator.inference :system "orchestrator-cli"
+ :capability "πυρήνας-iq" :role "έλεγχος"
+ :purpose "τυχαία προβλήματα κρίνονται από ΑΝΕΞΑΡΤΗΤΟ αφελή κριτή — ο πυρήνας δεν αυτοβαθμολογείται"
+ :postconditions '("διαφωνία πυρήνα/κριτή = κόκκινο, πάντα")
+ :policy-level :φραγή :tests '("--iq-gate"))

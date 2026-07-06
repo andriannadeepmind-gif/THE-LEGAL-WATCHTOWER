@@ -26,7 +26,9 @@
            #:declare-capability! #:find-capability #:all-capabilities
            #:capability-name #:capability-description #:capability-package
            #:capability-functions #:capability-gate #:capability-depends-on
-           #:capability-impact #:capability-gap-report))
+           #:capability-impact #:capability-gap-report
+           ;; Η ΣΥΝΕΝΩΣΗ: κάλυψη ικανοτήτων από συμβόλαια + επικύρωση με πλαίσιο
+           #:contract-coverage #:validate-all-contracts))
 
 (in-package :orchestrator.self-model)
 
@@ -113,18 +115,22 @@
 
 (defun capability-impact (name)
   "ΑΙΤΙΩΔΗΣ ΕΠΙΠΤΩΣΗ: (values επηρεαζόμενες πύλες-που-πρέπει-να-τρέξουν) —
-   μεταβατικό κλείσιμο εξαρτήσεων: όποιος εξαρτάται από το NAME, άμεσα ή
-   έμμεσα, κληρονομεί τον κίνδυνο· οι πύλες τους = το ελάχιστο regression."
+   μεταβατικό κλείσιμο: όποιος εξαρτάται από το NAME (depends-on) Ή δηλώνεται
+   κατάντη στα ΣΥΜΒΟΛΑΙΑ των ικανοτήτων του, κληρονομεί τον κίνδυνο· οι πύλες
+   τους = το ελάχιστο regression."
   (let ((affected '()) (frontier (list (%cap-key name))))
     (loop while frontier
-          do (let ((next '()))
+          do (let ((next '())
+                   (contract-deps (orchestrator.contracts:contract-dependent-names
+                                   frontier)))
                (dolist (c *capabilities*)
                  (let ((k (%cap-key (capability-name c))))
                    (when (and (not (member k affected :test #'string=))
-                              (intersection frontier
-                                            (mapcar #'%cap-key
-                                                    (capability-depends-on c))
-                                            :test #'string=))
+                              (or (intersection frontier
+                                                (mapcar #'%cap-key
+                                                        (capability-depends-on c))
+                                                :test #'string=)
+                                  (member k contract-deps :test #'string=)))
                      (push k affected)
                      (push k next))))
                (setf frontier next)))
@@ -168,8 +174,75 @@
          (when near
            (format stream "  Συγγενέστερες υπάρχουσες: ~{«~A»~^ · ~}~%"
                    (mapcar #'capability-name near)))
-         (format stream "  Απόκτηση = έδρα-πακέτο + κρίσιμες συναρτήσεις + ΠΥΛΗ απόδειξης + δήλωση εξαρτήσεων, με υιοθέτηση ΜΟΝΟ μέσω σκιάς/έγκρισης (Σ11/Φ5).~%"))
+         (let ((profile (orchestrator.contracts:find-gap-profile wanted)))
+           (if profile
+               (progn
+                 (format stream "  Απαιτούμενα ΣΥΜΒΟΛΑΙΑ (δηλωμένο προφίλ, έλεγχος ύπαρξης μηχανικός):~%")
+                 (dolist (req profile)
+                   (format stream "    ~:[✘ ΛΕΙΠΕΙ~;✔ υπάρχει~]: ~A~%"
+                           (orchestrator.contracts:find-contract req) req)))
+               (format stream "  Απόκτηση = έδρα-πακέτο + κρίσιμες συναρτήσεις υπό ΣΥΜΒΟΛΑΙΟ (σκοπός/προ/μετα/παρενέργειες/policy/τεστ/ρόλος) + ΠΥΛΗ απόδειξης + εξαρτήσεις, με υιοθέτηση ΜΟΝΟ μέσω σκιάς/έγκρισης (Σ11/Φ5).~%"))))
        nil))))
+
+
+;;; ============================================================================
+;;; Η ΣΥΝΕΝΩΣΗ — ικανότητες ⋈ συμβόλαια ⋈ θεσμός (η δουλειά του καθρέφτη)
+;;; ============================================================================
+;;;
+;;; Το contract subsystem (orchestrator.contracts) και το Ίδρυμα
+;;; (orchestrator.institution) είναι καθαροί πυρήνες που δεν γνωρίζουν ο ένας
+;;; τον άλλον. ΕΔΩ, στο αυτο-μοντέλο, γίνεται η συνένωση: ποια συμβόλαια
+;;; καλύπτουν ποιες ικανότητες, και η επικύρωση με ΠΛΗΡΕΣ πλαίσιο.
+
+(defun contract-coverage ()
+  "Η ΚΑΛΥΨΗ: plist με το τίμιο ισοζύγιο —
+   :contracts N :full/:partial/:none (ικανότητες κατά βαθμό κάλυψης των
+   κρίσιμων συναρτήσεών τους) :uncovered ((cap . (fn…)) …) :orphans (συμβόλαια
+   που δείχνουν ανύπαρκτη ικανότητα). Συνάρτηση καλύπτεται από ομώνυμο
+   συμβόλαιο ή από συμβόλαιο-ΠΡΩΤΟΚΟΛΛΟ της ικανότητάς της (ομαδικό)."
+  (let ((full '()) (partial '()) (none '()) (uncovered '()))
+    (dolist (cap *capabilities*)
+      (let* ((cn (capability-name cap))
+             (fns (capability-functions cap))
+             (protocol-p (find-if (lambda (c)
+                                    (member (orchestrator.contracts:contract-kind c)
+                                            '(:protocol :capability)))
+                                  (orchestrator.contracts:contracts-for-capability cn)))
+             (missing (if protocol-p '()
+                          (remove-if
+                           (lambda (f)
+                             (let ((c (orchestrator.contracts:find-contract f)))
+                               (and c (orchestrator.contracts:contract-capability c)
+                                    (string= (%cap-key (orchestrator.contracts:contract-capability c))
+                                             (%cap-key cn)))))
+                           fns))))
+        (cond ((null missing) (push cn full))
+              ((= (length missing) (length fns)) (push cn none))
+              (t (push cn partial)))
+        (when missing (push (cons cn missing) uncovered))))
+    (list :contracts (length (orchestrator.contracts:all-contracts))
+          :full (nreverse full) :partial (nreverse partial) :none (nreverse none)
+          :uncovered (nreverse uncovered)
+          :orphans (mapcar #'orchestrator.contracts:contract-name
+                           (remove-if (lambda (c)
+                                        (or (null (orchestrator.contracts:contract-capability c))
+                                            (find-capability (orchestrator.contracts:contract-capability c))))
+                                      (orchestrator.contracts:all-contracts))))))
+
+(defun validate-all-contracts (&key test-exists-p)
+  "Επικύρωση συμβολαίων με ΠΛΗΡΕΣ πλαίσιο: ικανότητες από εδώ, ρόλοι/Ίδρυμα
+   από το orchestrator.institution, ύπαρξη τεστ από τον καλούντα (CLI)."
+  (orchestrator.contracts:validate-contracts
+   :capability-exists-p #'find-capability
+   :role-exists-p #'orchestrator.institution:find-role
+   :test-exists-p test-exists-p
+   :institution (orchestrator.institution:the-institution)
+   :coordination-engine-role-p
+   (lambda ()
+     (let ((inst (orchestrator.institution:the-institution)))
+       (and inst (orchestrator.institution:find-role
+                  (orchestrator.institution:institution-coordination-engine inst)))))))
+
 
 ;;; ── Βοηθός: φύλλα του δέντρου κλάσεων (MOP) ──
 (defun %class-leaves (class)

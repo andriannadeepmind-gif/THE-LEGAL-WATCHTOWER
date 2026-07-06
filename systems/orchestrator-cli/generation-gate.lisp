@@ -98,3 +98,12 @@
  :description "ορθή κλίση/συμφωνία/τελικό-ν + κύκλος γένεση→κατανόηση"
  :package :orchestrator.generation :functions '("inflect" "agree")
  :gate "--generation-gate" :depends-on '())
+
+;;; ── ΣΥΜΒΟΛΑΙΑ ΠΑΡΟΧΩΝ (δεσμευτική αυτοπεριγραφή — βλ. --contract-gate) ──
+
+(orchestrator.contracts:defcontract "greek-generation-protocol" :protocol
+ :package :orchestrator.generation :system "orchestrator-infrastructure"
+ :capability "γένεση-ελληνικών" :role "γλώσσα"
+ :purpose "ορθή κλίση/συμφωνία/τελικό-ν (inflect, agree) — ο δικηγόρος μιλά σωστά"
+ :postconditions '("κύκλος γένεση→κατανόηση κλείνει: ό,τι παράγει το ξανακαταλαβαίνει")
+ :policy-level :συμβουλευτικό :tests '("--generation-gate"))
