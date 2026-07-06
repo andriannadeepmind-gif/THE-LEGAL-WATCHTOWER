@@ -531,6 +531,16 @@
       (error (e) (values nil (format nil "~A" e))))))
 
 (defun verify-guard (closed-expr claimed trace)
+  "Δημόσια είσοδος: %verify-guard-1 + ίχνος :verification (προέλευση της
+   ανεξάρτητης επαλήθευσης — τι ελέγχθηκε, με τι ετυμηγορία)."
+  (multiple-value-bind (ok why) (%verify-guard-1 closed-expr claimed trace)
+    (orchestrator.trace:emit! :verification
+     :symbol "verify-guard" :package "orchestrator.metaeval"
+     :source "source/guard-metaeval.lisp"
+     :data (list :claimed claimed :ok (and ok t) :reason why))
+    (values ok why)))
+
+(defun %verify-guard-1 (closed-expr claimed trace)
   "(values ok-p λόγος): Η ΠΛΗΡΗΣ επαλήθευση de Bruijn ενός φραγμού:
    ① ο ελεγκτής ξαναϋπολογίζει ΟΛΟΚΛΗΡΗ την κλειστή έκφραση από το μηδέν
      (καμία εμπιστοσύνη στη δομή του ίχνους), και

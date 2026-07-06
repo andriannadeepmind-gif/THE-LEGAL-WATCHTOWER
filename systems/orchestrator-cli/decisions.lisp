@@ -1292,6 +1292,13 @@
                        (format t "  + ~A: κέρδος — ~A~%" id w))))))
       (format t "~%Σκιά: ~D κέρδη · ~D παλινδρομήσεις → ~:[ΑΠΟΡΡΙΠΤΕΤΑΙ~;ΑΠΟΔΕΚΤΟ~]~%"
               gains regressions (zerop regressions))
+      ;; ΙΧΝΟΣ ΠΡΟΕΛΕΥΣΗΣ: η κρίση της σκιώδους πύλης — ποια πακέτα, ποια ετυμηγορία
+      (orchestrator.trace:emit! :adoption
+       :symbol "run-shadow-knowledge" :package "orchestrator.cli"
+       :source "systems/orchestrator-cli/decisions.lisp"
+       :data (list :mode :shadow :packs (mapcar #'file-namestring args)
+                   :gains gains :regressions regressions
+                   :verdict (if (zerop regressions) :accepted :rejected)))
       (if (zerop regressions) 0 1))))
 
 (defun run-adopt-knowledge (args)
@@ -1319,7 +1326,14 @@
        :knowledge-adopted
        (format nil "Υιοθέτησα γνώση «~A» (sha ~A) αφού πέρασε τη σκιώδη πύλη με μηδέν παλινδρομήσεις."
                (file-namestring dest)
-               (subseq (orchestrator.knowledge-packs:pack-sha dest) 0 16)))))
+               (subseq (orchestrator.knowledge-packs:pack-sha dest) 0 16)))
+      ;; ΙΧΝΟΣ ΠΡΟΕΛΕΥΣΗΣ: η υιοθέτηση — τι μπήκε στην έμπιστη γνώση, με ποιο SHA
+      (orchestrator.trace:emit! :adoption
+       :symbol "run-adopt-knowledge" :package "orchestrator.cli"
+       :source "systems/orchestrator-cli/decisions.lisp"
+       :data (list :mode :adopt :pack (file-namestring dest)
+                   :sha (orchestrator.knowledge-packs:pack-sha dest)
+                   :gate :shadow-passed))))
   (orchestrator.knowledge-packs:ensure-fresh :stream *standard-output*)
   (orchestrator.knowledge-packs:describe-active)
   0)

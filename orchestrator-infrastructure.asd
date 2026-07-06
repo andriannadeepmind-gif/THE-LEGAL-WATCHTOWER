@@ -32,6 +32,7 @@
     :components
     ((:file "deterministic-time") ; Deterministic timestamp abstraction - MUST be first (used by paths)
      (:file "paths")              ; Path abstraction
+     (:file "execution-trace")    ; ΙΧΝΟΣ ΕΚΤΕΛΕΣΗΣ: legal execution provenance πυρήνας — data-only, append-only, προφίλ κόστους
      (:file "canonical-uris")     ; Canonical URI configuration - Phase C
      (:file "eli-temporal-metadata") ; ELI temporal completeness - Phase D
      (:file "consolidation-engine") ; Codification: apply amendments -> in-force consolidated text
@@ -100,6 +101,7 @@
      (:file "contracts")          ; ΤΑ ΣΥΜΒΟΛΑΙΑ: μηχανικά ελέγξιμες υποσχέσεις των κρίσιμων λειτουργιών + επικυρωτής + προφίλ κενών
      (:file "self-model")
      (:file "component-scan")      ; ΣΑΡΩΤΗΣ: το μητρώο συστατικών χτίζεται από ASDF/εικόνα/sb-introspect + SHA-256 + επικυρωτής         ; ΤΟ ΖΩΝΤΑΝΟ ΑΥΤΟ-ΜΟΝΤΕΛΟ: ενδοσκόπηση MOP/εικόνας (όχι αφήγηση) + φραγμός ακροατηρίου (μόνο στον δημιουργό)
+     (:file "provenance-link")     ; ΔΕΣΜΟΣ ΠΡΟΕΛΕΥΣΗΣ: ίχνη ⋈ συμβόλαια ⋈ συστατικά ⋈ αποδείξεις + επικυρωτής + trace-last-conclusion
      (:file "generation")         ; Η ΓΕΝΕΣΗ ΛΟΓΟΥ: κλιτικά παραδείγματα + συμφωνία + τελικό-ν — συνθέτει, δεν ανασύρει· ΕΝΑ λεξικό, δύο κατευθύνσεις
      (:file "autonomy")           ; Ο ΑΥΤΟΝΟΜΟΣ ΟΔΗΓΟΣ: αποστολή → βήμα-βήμα εκτέλεση με επαλήθευση → ουρά προτάσεων — ορατή σκέψη, ιστορική μαρτυρία
      (:file "knowledge-graph")    ; ΤΟ ΕΝΙΑΙΟ ΥΠΟΣΤΡΩΜΑ: σημασιολογικός meta-graph (CLOS/MOP) — προέλευση εκ κατασκευής + επίπεδα Self/World (anti-confusion)

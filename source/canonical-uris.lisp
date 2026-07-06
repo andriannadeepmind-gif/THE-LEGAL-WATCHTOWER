@@ -216,6 +216,14 @@
    article identity — integer or suffixed label (e.g. \"100Α\"): suffixes are
    part of the identity and must never collapse (contract:
    article-identity-management)."
+  (when (integerp article-number)
+    ;; ΧΡΕΟΣ ΤΑΥΤΟΤΗΤΑΣ (ορατό, ποτέ σιωπηλό): ωμός ακέραιος αντί κανονικής
+    ;; ταυτότητας — ίχνος :identity-debt μέχρι τη Φάση 2 της μετάβασης.
+    (orchestrator.trace:emit! :identity-debt
+     :symbol "build-article-uri" :package "orchestrator.uris"
+     :source "source/canonical-uris.lisp"
+     :data (list :raw article-number
+                 :debt "ωμός αριθμός ως ταυτότητα — Φάση 2: κατανάλωση canonical-article-id")))
   (if version
       (format nil "~A/article/~A/v~A" (get-base-uri) article-number version)
       (format nil "~A/article/~A" (get-base-uri) article-number)))

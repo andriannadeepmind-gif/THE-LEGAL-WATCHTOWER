@@ -22,7 +22,14 @@
     (setf names (sort names #'string<))
     (let ((results
             (mapcar (lambda (name)
-                      (cons name (funcall (gethash name *commands*) nil)))
+                      (let ((rc (funcall (gethash name *commands*) nil)))
+                        ;; ΙΧΝΟΣ ΠΥΛΗΣ: κάθε κρίση της ολομέλειας αφήνει προέλευση
+                        (orchestrator.trace:emit! :gate
+                         :symbol name :package "orchestrator.cli"
+                         :source "systems/orchestrator-cli/gates-runner.lisp"
+                         :data (list :gate name :exit rc
+                                     :verdict (if (eql rc 0) :passed :failed)))
+                        (cons name rc)))
                     names)))
       (format t "~%════ ΟΛΟΜΕΛΕΙΑ ΠΥΛΩΝ (~D) ════~%" (length results))
       (let ((failed nil))

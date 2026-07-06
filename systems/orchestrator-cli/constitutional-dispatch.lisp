@@ -47,13 +47,22 @@
      (format nil "Παράκαμψη [~A] για «~A»: ~A (~A)" token name article reason))))
 
 (defmethod execute-command :around (name fn args)
-  "Ο ΣΥΝΤΑΓΜΑΤΙΚΟΣ ΦΡΑΓΜΟΣ. Κάθε πράξη περνά από εδώ πριν εκτελεστεί."
+  "Ο ΣΥΝΤΑΓΜΑΤΙΚΟΣ ΦΡΑΓΜΟΣ + Η ΡΙΖΑ ΤΟΥ ΙΧΝΟΥΣ. Κάθε πράξη περνά από εδώ:
+   ο φραγμός αποφασίζει, και η απόφασή του (μαζί με τον κωδικό εξόδου) γίνεται
+   το γονικό span ΟΛΩΝ των ιχνών της εκτέλεσης — provenance από τη ρίζα."
   (multiple-value-bind (allowed article reason) (orchestrator.constitution:evaluate name)
-    (if allowed
-        (call-next-method)
-        (multiple-value-bind (ovr token) (orchestrator.constitution:overridden-p args name)
-          (if ovr
-              (progn (%constitutional-override name article reason token)
-                     (call-next-method))
-              (progn (%constitutional-refusal name article reason)
-                     1))))))
+    (orchestrator.trace:with-span
+        (:command :severity :command :symbol (string name)
+         :package "orchestrator.cli" :command (string name)
+         :source "systems/orchestrator-cli/constitutional-dispatch.lisp"
+         :data-fn (lambda (rc)
+                    (list :exit rc :constitutional (if allowed :allowed :blocked)
+                          :article (and (not allowed) article))))
+      (if allowed
+          (call-next-method)
+          (multiple-value-bind (ovr token) (orchestrator.constitution:overridden-p args name)
+            (if ovr
+                (progn (%constitutional-override name article reason token)
+                       (call-next-method))
+                (progn (%constitutional-refusal name article reason)
+                       1)))))))

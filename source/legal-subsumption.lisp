@@ -78,11 +78,26 @@
    Ο ΙΔΙΟΣ κύκλος με τον L5 (evaluate-deontic) — καμία δεύτερη μηχανή."
   (multiple-value-bind (engine positions)
       (orchestrator.deontic:evaluate-deontic (append facts *taxonomy*) norms)
-    (values engine
-            (loop for (datum . nil) in positions
-                  collect (cons datum
-                                (orchestrator.inference:explain
-                                 (orchestrator.inference:engine-jtms engine) datum))))))
+    (let ((out (loop for (datum . nil) in positions
+                     collect (cons datum
+                                   (orchestrator.inference:explain
+                                    (orchestrator.inference:engine-jtms engine) datum)))))
+      ;; ΙΧΝΟΣ ΠΡΟΕΛΕΥΣΗΣ: το νομικό συμπέρασμα δένεται στην ΠΡΑΓΜΑΤΙΚΗ εκτέλεση —
+      ;; γεγονότα-είσοδος, κανόνες που πυροδότησαν, θέσεις, δεσμός απόδειξης.
+      (let ((id (orchestrator.trace:emit! :conclusion
+                 :symbol "subsume" :package "orchestrator.subsumption"
+                 :source "source/legal-subsumption.lisp"
+                 :data (list :facts-count (length facts)
+                             :rules (remove-duplicates
+                                     (loop for (datum . nil) in out
+                                           for tail = (member :by datum)
+                                           when tail collect (second tail))
+                                     :test #'equal)
+                             :positions (mapcar #'car out)
+                             :positions-p (and out t)
+                             :proofs-p (and (every #'cdr out) t)))))
+        (when id (orchestrator.trace:note-conclusion! id)))
+      (values engine out))))
 
 (defun conclusion-status (engine norm facts)
   "Η ΤΡΙΤΙΜΗ τύχη του συμπεράσματος του NORM πάνω στα FACTS: (values status

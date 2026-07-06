@@ -68,8 +68,14 @@
                   (suffix (%canon-suffix (subseq trimmed digits))))
               (if (and suffix (notevery #'alpha-char-p suffix))
                   (values nil (format nil "μη γραμματικό επίθημα «~A»" suffix))
-                  (%make-id :raw trimmed :base base :suffix suffix
-                            :context context)))))))))
+                  (let ((id (%make-id :raw trimmed :base base :suffix suffix
+                                      :context context)))
+                    ;; ΙΧΝΟΣ: κάθε runtime χρήση ταυτότητας άρθρου αφήνει προέλευση
+                    (orchestrator.trace:emit! :identity
+                     :symbol "parse-article-id" :package "orchestrator.article-id"
+                     :source "source/canonical-article-id.lisp"
+                     :data (list :canonical (article-id-string id) :raw trimmed))
+                    id)))))))))
 
 (defun article-id-string (id)
   "Η ΚΑΝΟΝΙΚΗ ΣΕΙΡΙΟΠΟΙΗΣΗ — σταθερή, αυτή καταναλώνουν κλειδιά και URIs.

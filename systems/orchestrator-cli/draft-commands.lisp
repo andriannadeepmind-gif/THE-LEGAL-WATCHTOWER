@@ -252,6 +252,11 @@
     (format stream "~%── ΤΑΥΤΟΤΗΤΑ ΕΓΓΡΑΦΟΥ ──~%")
     (format stream "   SHA-256: ~A~%" sha)
     (format stream "   (ίδια αφήγηση ⇒ ίδιο αποτύπωμα — το παραδοτέο είναι αναπαραγώγιμο)~%")
+    ;; ΙΧΝΟΣ ΠΡΟΕΛΕΥΣΗΣ: το παραδοτέο-τέχνημα δένεται στην εκτέλεση που το γέννησε
+    (orchestrator.trace:emit! :artifact
+     :symbol "draft-memo" :package "orchestrator.cli"
+     :source "systems/orchestrator-cli/draft-commands.lisp"
+     :data (list :artifact :σημείωμα-υπαγωγής :sha sha))
     sha))
 
 (defun run-draft (args)

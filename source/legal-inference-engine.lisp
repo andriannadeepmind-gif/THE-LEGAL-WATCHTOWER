@@ -587,6 +587,27 @@
 (defun add-facts (engine data) (dolist (d data engine) (add-fact engine d)))
 
 (defun run-inference (engine &key (rules (all-legal-rules)))
+  "Δημόσια είσοδος: %run-inference-1 + ΙΧΝΟΣ ΠΡΟΕΛΕΥΣΗΣ. Σε προφίλ
+   :legal-critical, κάθε κλήση που ΓΕΝΝΑ ή ΑΠΟΣΥΡΕΙ έννομες καταστάσεις
+   (well-founded διαφορά πεποιθήσεων πριν/μετά) αφήνει γεγονός :legal-state —
+   «μάθε πώληση ⇒ αποσύρεται κατοχή» με ορατό ίχνος, όχι σιωπηλά."
+  (if (orchestrator.trace:trace-enabled-p :legal-critical)
+      (let ((before (jtms-believed-facts (engine-jtms engine))))
+        (prog1 (%run-inference-1 engine rules)
+          (let* ((after (jtms-believed-facts (engine-jtms engine)))
+                 (created (set-difference after before :test #'equal))
+                 (withdrawn (set-difference before after :test #'equal)))
+            (when (or created withdrawn)
+              (orchestrator.trace:emit! :legal-state
+               :symbol "run-inference" :package "orchestrator.inference"
+               :source "source/legal-inference-engine.lisp"
+               :data (list :created-count (length created)
+                           :withdrawn-count (length withdrawn)
+                           :created (subseq created 0 (min 12 (length created)))
+                           :withdrawn (subseq withdrawn 0 (min 12 (length withdrawn)))))))))
+      (%run-inference-1 engine rules)))
+
+(defun %run-inference-1 (engine rules)
   "Εμπρόσθια αλυσίδωση σε fixpoint + well-founded πεποίθηση, ΧΩΡΙΣΤΑ (Φάση 2):
 
    1. ΓΕΙΩΣΗ, ημι-αφελής (semi-naive) και ΑΥΞΗΤΙΚΗ: οι κανόνες στιγμιοποιούνται

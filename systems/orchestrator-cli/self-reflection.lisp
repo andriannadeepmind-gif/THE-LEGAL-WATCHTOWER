@@ -390,6 +390,19 @@
         (if cv
             (format t "▸ ΠΑΡΑΒΑΣΕΙΣ ταυτοποίησης (~D):~%~{    ✗ ~A~%~}" (length cv) cv)
             (format t "▸ Ταυτοποίηση συστατικών: 0 παραβάσεις.~%"))))
+    ;; Προέλευση εκτέλεσης — καταναλωτής του orchestrator.trace/provenance.
+    (multiple-value-bind (traced via debts silent)
+        (orchestrator.exec-provenance:trace-coverage)
+      (format t "~%▸ Προέλευση εκτέλεσης: προφίλ ~(~A~) · ~D ίχνη στη συνεδρία · τελευταίο συμπέρασμα: ~:[κανένα~;ίχνος #~:*~D~]~%"
+              orchestrator.trace:*trace-profile*
+              (orchestrator.trace:event-count)
+              (orchestrator.trace:last-conclusion-id))
+      (format t "▸ Ενοργάνωση legal-critical: ~D άμεσα · ~D μέσω γονικού span · ~D ρητά χρέη~@[ · ΣΙΩΠΗΛΑ: ~{~A~^, ~} ⚠~]~%"
+              (length traced) (length via) (length debts)
+              silent)
+      (let ((pv (orchestrator.exec-provenance:validate-provenance)))
+        (if pv (format t "▸ ΠΑΡΑΒΑΣΕΙΣ προέλευσης (~D):~%~{    ✗ ~A~%~}" (length pv) pv)
+            (format t "▸ Επικύρωση προέλευσης: 0 παραβάσεις στο ζωντανό ρεύμα.~%"))))
     0))
 
 (defun run-institution ()
