@@ -456,3 +456,12 @@
                   (lambda (a) (declare (ignore a))
                     ;; η γλώσσα των φραγμών περιγράφει ΤΟΝ ΕΑΥΤΟ ΤΗΣ — ζωντανά
                     (orchestrator.metaeval:describe-language) 0))
+
+(orchestrator.self-model:declare-capability! "λογισμός-φραγμών"
+ :description "αριθμητικός/χρονικός λογισμός με πιστοποιητικά de Bruijn (μετακυκλικός αποτιμητής)"
+ :package :orchestrator.metaeval :functions '("meta-eval" "guards-pass-p" "verify-guard")
+ :gate "--inference-gate" :depends-on '())
+(orchestrator.self-model:declare-capability! "συμπερασμός-wfs"
+ :description "μη-μονότονος συμπερασμός WFS/JTMS με δέντρα απόδειξης και ανάκληση"
+ :package :orchestrator.inference :functions '("run-inference" "explain" "query")
+ :gate "--inference-gate" :depends-on '("λογισμός-φραγμών"))

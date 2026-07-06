@@ -178,3 +178,8 @@
 (register-command "--intend"     (lambda (a) (run-intend a)))
 (register-command "--intentions" (lambda (a) (declare (ignore a)) (run-intentions)))
 (register-command "--memory-gate" (lambda (a) (declare (ignore a)) (run-memory-gate)))
+
+(orchestrator.self-model:declare-capability! "μνήμη"
+ :description "επεισοδιακή/προθετική μνήμη + ατζέντα, append-only με ανάκληση"
+ :package :orchestrator.memory :functions '("record-episode" "similar-episodes")
+ :gate "--memory-gate" :depends-on '())

@@ -93,3 +93,8 @@
     (if (plusp fails) 1 0)))
 
 (register-command "--generation-gate" (lambda (a) (declare (ignore a)) (run-generation-gate)))
+
+(orchestrator.self-model:declare-capability! "γένεση-ελληνικών"
+ :description "ορθή κλίση/συμφωνία/τελικό-ν + κύκλος γένεση→κατανόηση"
+ :package :orchestrator.generation :functions '("inflect" "agree")
+ :gate "--generation-gate" :depends-on '())

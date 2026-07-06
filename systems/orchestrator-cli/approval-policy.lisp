@@ -283,3 +283,8 @@
 (register-command "--policy-approve" (lambda (a) (run-policy-approve a)))
 (register-command "--policy-revoke"  (lambda (a) (run-policy-revoke a)))
 (register-command "--policy-gate"    (lambda (a) (declare (ignore a)) (run-policy-gate)))
+
+(orchestrator.self-model:declare-capability! "πολιτικές-έγκρισης"
+ :description "αυτο-έγκριση ΜΟΝΟ ανά κλάση με μετρημένη ακρίβεια σε κλειδωμένη σουίτα"
+ :package :orchestrator.cli :functions '("run-policy-approve" "measured-evolution-precision")
+ :gate "--policy-gate" :depends-on '("αυτοεπέκταση"))

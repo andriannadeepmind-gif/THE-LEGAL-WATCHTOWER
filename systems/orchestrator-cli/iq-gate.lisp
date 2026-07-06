@@ -185,3 +185,8 @@
     (if fails 1 0)))
 
 (register-command "--iq-gate" (lambda (a) (declare (ignore a)) (run-iq-gate)))
+
+(orchestrator.self-model:declare-capability! "πυρήνας-iq"
+ :description "ορθότητα πυρήνα συμπερασμού έναντι ΑΝΕΞΑΡΤΗΤΟΥ αφελούς κριτή (100% ή κόκκινο)"
+ :package :orchestrator.inference :functions '("run-iq-gate")
+ :gate "--iq-gate" :depends-on '("συμπερασμός-wfs"))

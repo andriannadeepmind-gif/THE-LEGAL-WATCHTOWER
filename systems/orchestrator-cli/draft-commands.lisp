@@ -387,3 +387,9 @@
     (if fails 1 0)))
 
 (register-command "--draft-gate" (lambda (a) (declare (ignore a)) (run-draft-gate)))
+
+(orchestrator.self-model:declare-capability! "παραδοτέο"
+ :description "Σημείωμα Υπαγωγής: απόδειξη σε κάθε πρόταση, χρονολόγιο, εικασίες με ετικέτα, χάρτης αντιδίκου, SHA ταυτότητα"
+ :package :orchestrator.cli :functions '("draft-memo" "gap-questions")
+ :gate "--draft-gate"
+ :depends-on '("γλωσσική-αντίληψη" "υπαγωγή" "αντιδικία" "υποθετικός-λόγος" "λογισμός-φραγμών"))

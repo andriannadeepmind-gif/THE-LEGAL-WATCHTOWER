@@ -21,7 +21,12 @@
 (defpackage :orchestrator.self-model
   (:use :cl)
   (:export #:register-self-aspect #:describe-self-model
-           #:*audience* #:creator-p #:with-audience))
+           #:*audience* #:creator-p #:with-audience
+           ;; Ο ΚΑΘΡΕΦΤΗΣ: μητρώο ικανοτήτων με αιτιώδεις εξαρτήσεις
+           #:declare-capability! #:find-capability #:all-capabilities
+           #:capability-name #:capability-description #:capability-package
+           #:capability-functions #:capability-gate #:capability-depends-on
+           #:capability-impact #:capability-gap-report))
 
 (in-package :orchestrator.self-model)
 
@@ -58,6 +63,113 @@
           (dolist (l lines) (format stream "    ~A~%" l))))))
   (format stream "~%  (Τίποτα από τα παραπάνω δεν είναι γραμμένη περιγραφή — όλα ~
 διαβάστηκαν από τα ζωντανά αντικείμενα της εικόνας μου αυτή τη στιγμή.)~%"))
+
+;;; ============================================================================
+;;; Ο ΚΑΘΡΕΦΤΗΣ — ΜΗΤΡΩΟ ΙΚΑΝΟΤΗΤΩΝ (capability registry + causality)
+;;; ============================================================================
+;;;
+;;; «Πριν μάθει τον νόμο, να μάθει τον εαυτό του»: κάθε ικανότητα ΔΗΛΩΝΕΤΑΙ —
+;;; όνομα, πακέτο-έδρα, κρίσιμες συναρτήσεις, η ΠΥΛΗ που την αποδεικνύει, και
+;;; από ποιες άλλες ΕΞΑΡΤΑΤΑΙ. Από τις εξαρτήσεις προκύπτει ο ΑΙΤΙΩΔΗΣ γράφος
+;;; επίπτωσης: «αν αλλάξει το Χ, ποιες ικανότητες κληρονομούν τον κίνδυνο και
+;;; ποιες πύλες ΠΡΕΠΕΙ να τρέξουν» — το ελάχιστο regression, υπολογισμένο.
+;;;
+;;; ΑΡΧΗ ΕΔΡΑΣ: κάθε ικανότητα δηλώνεται στο αρχείο της ΠΥΛΗΣ της — εκεί όπου
+;;; αποδεικνύεται. Ικανότητα ΧΩΡΙΣ πύλη επιτρέπεται μόνο ΡΗΤΑ (:gate nil) και
+;;; ο καθρέφτης τη δείχνει ως ΔΗΛΩΜΕΝΟ ΧΡΕΟΣ — ποτέ σιωπηλά αφρούρητη.
+
+(defvar *capabilities* '()
+  "Διατεταγμένη λίστα capability (σειρά δήλωσης — ντετερμινιστική).")
+
+(defstruct (capability (:constructor %make-capability))
+  name          ; string — το όνομα της ικανότητας
+  description   ; τι κάνει, μία πρόταση
+  package       ; η έδρα-πακέτο
+  functions     ; κρίσιμες συναρτήσεις/εντολές (strings)
+  gate          ; η εντολή-πύλη που την αποδεικνύει (string) ή NIL (ρητό χρέος)
+  depends-on)   ; ονόματα ικανοτήτων από τις οποίες εξαρτάται
+
+(defun %cap-key (name) (string-downcase (string name)))
+
+(defun declare-capability! (name &key description package functions gate
+                                      depends-on)
+  "Δήλωση ικανότητας — αντικατάσταση κατά όνομα (idempotent reload)."
+  (let ((cap (%make-capability :name (string name) :description description
+                               :package package :functions functions
+                               :gate gate
+                               :depends-on (mapcar #'string depends-on))))
+    (setf *capabilities*
+          (append (remove (%cap-key name) *capabilities*
+                          :key (lambda (c) (%cap-key (capability-name c)))
+                          :test #'string=)
+                  (list cap)))
+    cap))
+
+(defun find-capability (name)
+  (find (%cap-key name) *capabilities*
+        :key (lambda (c) (%cap-key (capability-name c))) :test #'string=))
+
+(defun all-capabilities () (copy-list *capabilities*))
+
+(defun capability-impact (name)
+  "ΑΙΤΙΩΔΗΣ ΕΠΙΠΤΩΣΗ: (values επηρεαζόμενες πύλες-που-πρέπει-να-τρέξουν) —
+   μεταβατικό κλείσιμο εξαρτήσεων: όποιος εξαρτάται από το NAME, άμεσα ή
+   έμμεσα, κληρονομεί τον κίνδυνο· οι πύλες τους = το ελάχιστο regression."
+  (let ((affected '()) (frontier (list (%cap-key name))))
+    (loop while frontier
+          do (let ((next '()))
+               (dolist (c *capabilities*)
+                 (let ((k (%cap-key (capability-name c))))
+                   (when (and (not (member k affected :test #'string=))
+                              (intersection frontier
+                                            (mapcar #'%cap-key
+                                                    (capability-depends-on c))
+                                            :test #'string=))
+                     (push k affected)
+                     (push k next))))
+               (setf frontier next)))
+    (let ((caps (remove-if-not
+                 (lambda (c) (member (%cap-key (capability-name c)) affected
+                                     :test #'string=))
+                 *capabilities*)))
+      (values caps
+              (sort (remove-duplicates
+                     (remove nil
+                             (cons (let ((self (find-capability name)))
+                                     (and self (capability-gate self)))
+                                   (mapcar #'capability-gate caps)))
+                     :test #'string=)
+                    #'string<)))))
+
+(defun capability-gap-report (wanted &optional (stream *standard-output*))
+  "Ο ΑΝΑΛΥΤΗΣ ΚΕΝΩΝ: έχω την ικανότητα WANTED; Αν ναι — πού ζει, τι την
+   αποδεικνύει, από τι εξαρτάται. Αν όχι — ΤΙΜΙΑ δήλωση + οι συγγενέστερες
+   υπάρχουσες + τι απαιτεί νέα δήλωση. Επιστρέφει T/NIL — ώστε το κενό να
+   γίνεται ΜΑΘΗΜΑ (περιέργεια), όχι σιωπή."
+  (let ((cap (find-capability wanted)))
+    (cond
+      (cap
+       (format stream "~%✔ Την έχω: «~A» — ~A~%  έδρα: ~A · πύλη: ~A~@[ · εξαρτάται από: ~{~A~^, ~}~]~%"
+               (capability-name cap) (capability-description cap)
+               (capability-package cap)
+               (or (capability-gate cap) "ΧΩΡΙΣ ΠΥΛΗ (δηλωμένο χρέος)")
+               (capability-depends-on cap))
+       t)
+      (t
+       (let* ((words (remove-if (lambda (w) (< (length w) 4))
+                                (uiop:split-string (%cap-key wanted))))
+              (near (remove-if-not
+                     (lambda (c)
+                       (some (lambda (w)
+                               (search w (%cap-key (capability-name c))))
+                             words))
+                     *capabilities*)))
+         (format stream "~%✘ ΔΕΝ την έχω: «~A» — τίμια δήλωση, όχι αυτοσχεδιασμός.~%" wanted)
+         (when near
+           (format stream "  Συγγενέστερες υπάρχουσες: ~{«~A»~^ · ~}~%"
+                   (mapcar #'capability-name near)))
+         (format stream "  Απόκτηση = έδρα-πακέτο + κρίσιμες συναρτήσεις + ΠΥΛΗ απόδειξης + δήλωση εξαρτήσεων, με υιοθέτηση ΜΟΝΟ μέσω σκιάς/έγκρισης (Σ11/Φ5).~%"))
+       nil))))
 
 ;;; ── Βοηθός: φύλλα του δέντρου κλάσεων (MOP) ──
 (defun %class-leaves (class)

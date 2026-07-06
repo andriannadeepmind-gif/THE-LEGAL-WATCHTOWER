@@ -348,3 +348,8 @@ NIL αν τίποτα δεν ταιριάζει. Κώδικες: poinikos, astik
 ;;; Η σύνδεση γίνεται στη φόρτωση: αν υπάρχει LAWMAX_ADVISOR_URL, η υποδοχή
 ;;; γεμίζει· αλλιώς μένει ρητά κενή. Ποτέ σφάλμα εκκίνησης από τον σύμβουλο.
 (ignore-errors (install-advisor!))
+
+(orchestrator.self-model:declare-capability! "σύμβουλος"
+ :description "LLM εκτός εμπιστοσύνης: ονειρεύεται προτάσεις, ο συμβολικός δικαστής κρίνει"
+ :package :orchestrator.cli :functions '("validate-dream" "install-advisor!")
+ :gate "--advisor-gate" :depends-on '("αυτοεπέκταση"))

@@ -212,6 +212,136 @@
               (progn (format t "~%⨯ Απορρίφθηκε #~A (προσωρινά — αν αλλάξουν τα στοιχεία, θα ξαναπροταθεί)~%" id) 0)
               (progn (format t "Δεν απορρίφθηκε #~A (~A)~%" id why) 1))))))
 
+;;; ── Ο ΚΑΘΡΕΦΤΗΣ: εντολές αυτοεπίγνωσης πάνω στο μητρώο ικανοτήτων ───────
+;;; Η ουσία ζει στο orchestrator.self-model (μία έδρα)· εδώ ΜΟΝΟ η όψη CLI.
+
+(defun %gate-names ()
+  "Οι εντολές-πύλες, από το ζωντανό μητρώο — ποτέ χειρόγραφη λίστα."
+  (let ((names '()))
+    (maphash (lambda (k v)
+               (declare (ignore v))
+               (when (and (> (length k) 5)
+                          (string= "-gate" k :start2 (- (length k) 5)))
+                 (push k names)))
+             *commands*)
+    (sort names #'string<)))
+
+(defun run-mirror ()
+  "--mirror : η απογραφή του εαυτού — συστήματα, εντολές, πύλες, ικανότητες
+   με έδρα/πύλη/εξαρτήσεις, ορφανές πύλες, δηλωμένα χρέη. Όλα ΥΠΟΛΟΓΙΣΜΕΝΑ
+   από τη ζωντανή εικόνα τη στιγμή της ερώτησης."
+  (let* ((caps (orchestrator.self-model:all-capabilities))
+         (gates (%gate-names))
+         (declared-gates (remove nil (mapcar #'orchestrator.self-model:capability-gate caps)))
+         (orphans (set-difference gates declared-gates :test #'string=))
+         (debts (remove-if #'orchestrator.self-model:capability-gate caps)))
+    (format t "~%══ ΚΑΘΡΕΦΤΗΣ — ποιος είμαι, διαβασμένο τώρα ══~%")
+    (format t "~%▸ Συστήματα ASDF: ~{~A~^ · ~}~%"
+            (loop for s in '("orchestrator-infrastructure" "orchestrator-cli")
+                  for sys = (ignore-errors (asdf:find-system s))
+                  when sys collect (format nil "~A ~@[v~A~]"
+                                           (asdf:component-name sys)
+                                           (ignore-errors (asdf:component-version sys)))))
+    (format t "▸ Εντολές στο μητρώο: ~D · Πύλες: ~D (~{~A~^, ~})~%"
+            (hash-table-count *commands*) (length gates) gates)
+    (format t "~%▸ Ικανότητες (~D):~%" (length caps))
+    (dolist (c caps)
+      (format t "  • ~A — έδρα ~(~A~) · ~:[ΧΡΕΟΣ: χωρίς πύλη~;πύλη ~:*~A~]~@[ · εξαρτάται: ~{~A~^, ~}~]~%"
+              (orchestrator.self-model:capability-name c)
+              (orchestrator.self-model:capability-package c)
+              (orchestrator.self-model:capability-gate c)
+              (orchestrator.self-model:capability-depends-on c)))
+    (if orphans
+        (format t "~%▸ ΟΡΦΑΝΕΣ πύλες (χωρίς δηλωμένη ικανότητα): ~{~A~^, ~} — ΧΡΕΟΣ.~%" orphans)
+        (format t "~%▸ Καμία ορφανή πύλη — κάθε πύλη αποδεικνύει δηλωμένη ικανότητα.~%"))
+    (when debts
+      (format t "▸ Δηλωμένα χρέη (ικανότητες χωρίς πύλη): ~{~A~^, ~}~%"
+              (mapcar #'orchestrator.self-model:capability-name debts)))
+    0))
+
+(defun run-capability-gap (args)
+  "--gap <ικανότητα> : έχω αυτή την ικανότητα; Τίμιο ✔/✘ + τι απαιτεί η
+   απόκτηση. Το ✘ γίνεται ΜΑΘΗΜΑ (capability-gap) — περιέργεια, όχι σιωπή."
+  (let ((wanted (format nil "~{~A~^ ~}" args)))
+    (if (zerop (length wanted))
+        (progn (format t "χρήση: --gap <ικανότητα>~%") 1)
+        (let ((have (orchestrator.self-model:capability-gap-report wanted)))
+          (unless have
+            (%lesson "capability-gap" wanted
+                     "ζητήθηκε ικανότητα που δεν έχω — υποψήφιο επόμενο κύμα"))
+          0))))
+
+(defun run-mirror-gate ()
+  "--mirror-gate : η αυτοεπίγνωση, κλειδωμένη — ο καθρέφτης δεν λέει ψέματα."
+  (let ((fails '()) (total 0))
+    (labels ((check (label ok)
+               (incf total)
+               (if ok (format t "  ✓ ~A~%" label)
+                   (progn (push label fails) (format t "  ✗ ~A~%" label)))))
+      (format t "~%── ΠΥΛΗ ΚΑΘΡΕΦΤΗ: το σύστημα γνωρίζει τον εαυτό του ──~%")
+      (let* ((caps (orchestrator.self-model:all-capabilities))
+             (gates (%gate-names))
+             (declared (remove nil (mapcar #'orchestrator.self-model:capability-gate caps))))
+        ;; ① πληρότητα: το μητρώο δεν είναι διακοσμητικό
+        (check (format nil "① ≥21 δηλωμένες ικανότητες (τώρα: ~D)" (length caps))
+               (>= (length caps) 21))
+        ;; ② κάθε δηλωμένη πύλη ΥΠΑΡΧΕΙ στο μητρώο εντολών (όχι κρεμασμένα ονόματα)
+        (check "② κάθε δηλωμένη πύλη υπάρχει ως εντολή — καμία κρεμασμένη αναφορά"
+               (every (lambda (g) (find-command g)) declared))
+        ;; ③ ΚΑΜΙΑ ορφανή πύλη: νέα πύλη ⇒ υποχρεωτική δήλωση ικανότητας (ratchet)
+        (check "③ καμία «-gate» εντολή χωρίς δηλωμένη ικανότητα (ratchet αυτοεπίγνωσης)"
+               (null (set-difference gates declared :test #'string=)))
+        ;; ④ κάθε εξάρτηση δείχνει σε ΥΠΑΡΚΤΗ ικανότητα (ο γράφος είναι κλειστός)
+        (check "④ κάθε εξάρτηση δείχνει σε δηλωμένη ικανότητα — κλειστός γράφος"
+               (every (lambda (c)
+                        (every #'orchestrator.self-model:find-capability
+                               (orchestrator.self-model:capability-depends-on c)))
+                      caps))
+        ;; ⑤ αιτιώδης επίπτωση: αλλαγή στον λογισμό φραγμών ⇒ υπαγωγή+παραδοτέο
+        ;;    κληρονομούν τον κίνδυνο και οι πύλες τους μπαίνουν στο regression
+        (multiple-value-bind (affected regression)
+            (orchestrator.self-model:capability-impact "λογισμός-φραγμών")
+          (let ((names (mapcar #'orchestrator.self-model:capability-name affected)))
+            (check "⑤ impact(λογισμός-φραγμών) ⊇ {υπαγωγή, παραδοτέο} — μεταβατικό κλείσιμο"
+                   (and (member "υπαγωγή" names :test #'string=)
+                        (member "παραδοτέο" names :test #'string=)))
+            (check "⑥ το regression της περιλαμβάνει --subsumption-gate και --draft-gate"
+                   (and (member "--subsumption-gate" regression :test #'string=)
+                        (member "--draft-gate" regression :test #'string=)))))
+        ;; ⑦ ανεξάρτητη ικανότητα ΔΕΝ μολύνεται: η ρευστή-επαγωγή δεν εξαρτάται
+        ;;    από τον λογισμό φραγμών ⇒ εκτός του συνόλου επίπτωσης
+        (check "⑦ η ρευστή-επαγωγή ΕΚΤΟΣ impact(λογισμός-φραγμών) — καμία ψευδο-εξάρτηση"
+               (not (member "ρευστή-επαγωγή"
+                            (mapcar #'orchestrator.self-model:capability-name
+                                    (orchestrator.self-model:capability-impact "λογισμός-φραγμών"))
+                            :test #'string=)))
+        ;; ⑧ τίμιο κενό: υπαρκτή ⇒ T, ανύπαρκτη ⇒ NIL (ποτέ ψευδής κατάφαση)
+        (let ((sink (make-broadcast-stream)))
+          (check "⑧ gap-report: «υπαγωγή» ⇒ ✔ T, «τηλεπάθεια» ⇒ ✘ NIL — τίμιος καθρέφτης"
+                 (and (orchestrator.self-model:capability-gap-report "υπαγωγή" sink)
+                      (not (orchestrator.self-model:capability-gap-report "τηλεπάθεια" sink)))))
+        ;; ⑨ τα δηλωμένα χρέη είναι ΡΗΤΑ :gate nil — και υπαρκτά ως γνωστά χρέη
+        (check "⑨ οι ικανότητες χωρίς πύλη είναι δηλωμένο χρέος, ορατό στον --mirror"
+               (every (lambda (c)
+                        (or (orchestrator.self-model:capability-gate c)
+                            (member (orchestrator.self-model:capability-name c)
+                                    '("ομοιότητα-υποθέσεων" "πρόσληψη-νομολογίας")
+                                    :test #'string=)))
+                      caps))))
+    (format t "~%── ΠΥΛΗ ΚΑΘΡΕΦΤΗ: ~D/~D πέρασαν ──~%" (- total (length fails)) total)
+    (if fails 1 0)))
+
+(register-command "--mirror"      (lambda (a) (declare (ignore a)) (run-mirror)))
+(register-command "--καθρέφτης"   (lambda (a) (declare (ignore a)) (run-mirror)))
+(register-command "--gap"         (lambda (a) (run-capability-gap a)))
+(register-command "--mirror-gate" (lambda (a) (declare (ignore a)) (run-mirror-gate)))
+
+(orchestrator.self-model:declare-capability! "αυτοεπίγνωση"
+ :description "ο καθρέφτης: μητρώο ικανοτήτων, αιτιώδης επίπτωση, τίμιος αναλυτής κενών"
+ :package :orchestrator.self-model
+ :functions '("declare-capability!" "capability-impact" "capability-gap-report")
+ :gate "--mirror-gate" :depends-on '())
+
 (register-command "--reflect"  (lambda (a) (declare (ignore a)) (run-reflect)))
 (register-command "--αναστοχασμός" (lambda (a) (declare (ignore a)) (run-reflect)))
 (register-command "--thoughts" (lambda (a) (declare (ignore a)) (run-thoughts)))

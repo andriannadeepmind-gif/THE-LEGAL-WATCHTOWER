@@ -1792,3 +1792,8 @@
 (register-command "--judge-profile"        (lambda (a) (run-judge-profile a)))
 (register-command "--index-decisions"      (lambda (a) (declare (ignore a)) (run-index-decisions)))
 (register-command "--lessons"              (lambda (a) (declare (ignore a)) (run-lessons)))
+
+(orchestrator.self-model:declare-capability! "πρόσληψη-νομολογίας"
+ :description "intake/υλοποίηση/κατανόηση αποφάσεων (OCR, δομή, παραπομπές, μετρημένη κατανόηση)"
+ :package :orchestrator.cli :functions '("run-materialize-decisions" "run-understanding")
+ :gate nil :depends-on '("γλωσσική-αντίληψη"))   ; ΧΩΡΙΣ ΠΥΛΗ — δηλωμένο χρέος

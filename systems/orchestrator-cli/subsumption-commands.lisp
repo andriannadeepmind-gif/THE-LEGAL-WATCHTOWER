@@ -340,3 +340,28 @@
 (register-command "--subsume-text" (lambda (a) (run-subsume-text a)))
 (register-command "--think"    (lambda (a) (run-think a)))
 (register-command "--subsumption-gate" (lambda (a) (declare (ignore a)) (run-subsumption-gate)))
+
+(orchestrator.self-model:declare-capability! "γλωσσική-αντίληψη"
+ :description "αφήγηση/διάταξη → γεγονότα: πλαίσια πτώσεων, άρνηση, μορφολογία, ημερομηνίες"
+ :package :orchestrator.casegrammar :functions '("parse-narrative" "parse-provision" "parse-definition")
+ :gate "--subsumption-gate" :depends-on '())
+(orchestrator.self-model:declare-capability! "υπαγωγή"
+ :description "γεγονότα → κανόνες → απόφανση με απόδειξη + μετα-γνώση του τι λείπει"
+ :package :orchestrator.subsumption :functions '("subsume" "conclusion-status" "norm-gaps" "proof-grade")
+ :gate "--subsumption-gate" :depends-on '("συμπερασμός-wfs" "γλωσσική-αντίληψη" "δεοντικό"))
+(orchestrator.self-model:declare-capability! "αντιδικία"
+ :description "θέση ↔ ένσταση με τρίτιμη τύχη και αποδείξεις (grounded semantics)"
+ :package :orchestrator.dialectic :functions '("dialectic-report")
+ :gate "--subsumption-gate" :depends-on '("υπαγωγή"))
+(orchestrator.self-model:declare-capability! "υποθετικός-λόγος"
+ :description "κρίσιμα γεγονότα + ελάχιστα σύνολα φραγής (ακριβές ablation)"
+ :package :orchestrator.counterfactual :functions '("critical-facts" "minimal-blockers")
+ :gate "--subsumption-gate" :depends-on '("υπαγωγή"))
+(orchestrator.self-model:declare-capability! "δικονομικός-σχεδιασμός"
+ :description "STRIPS τελεστές + πλάνα με αποδείξεις εμπροθέσμου (McCarthy CoT)"
+ :package :orchestrator.strategy :functions '("strategy-report" "plan-goal" "think")
+ :gate "--subsumption-gate" :depends-on '("συμπερασμός-wfs"))
+(orchestrator.self-model:declare-capability! "ομοιότητα-υποθέσεων"
+ :description "HYPO/CATO: παράγοντες, διακρίσεις, k-NN διατακτικού"
+ :package :orchestrator.hypo :functions '("case-factors" "rank-precedents" "knn-verdict")
+ :gate nil :depends-on '("υπαγωγή"))   ; ΧΩΡΙΣ ΠΥΛΗ — δηλωμένο χρέος

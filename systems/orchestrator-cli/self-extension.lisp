@@ -628,3 +628,12 @@
 
 (register-command "--self-extend"    (lambda (a) (declare (ignore a)) (run-self-extend)))
 (register-command "--extension-gate" (lambda (a) (declare (ignore a)) (run-extension-gate)))
+
+(orchestrator.self-model:declare-capability! "πακέτα-γνώσης"
+ :description "δηλωτική γνώση με SHA-256, hot reload και σκιώδη εκτέλεση"
+ :package :orchestrator.knowledge-packs :functions '("ensure-fresh" "with-packs-overlay")
+ :gate "--extension-gate" :depends-on '())
+(orchestrator.self-model:declare-capability! "αυτοεπέκταση"
+ :description "κενά → αυτο-προτάσεις γνώσης, σκιωδώς δοκιμασμένες, υιοθέτηση μόνο με έγκριση + rollback"
+ :package :orchestrator.cli :functions '("run-self-extend" "run-evolve" "dream-grammar")
+ :gate "--extension-gate" :depends-on '("πακέτα-γνώσης" "υπαγωγή"))

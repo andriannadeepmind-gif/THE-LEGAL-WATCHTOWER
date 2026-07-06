@@ -98,3 +98,8 @@
     (if fails 1 0)))
 
 (register-command "--event-gate" (lambda (a) (declare (ignore a)) (run-event-gate)))
+
+(orchestrator.self-model:declare-capability! "ιστορία-συμβάντων"
+ :description "event calculus: γεγονότα γεννούν/σβήνουν έννομες καταστάσεις, αδράνεια μέσω WFS"
+ :package :orchestrator.eventcalculus :functions '("ec-initiation" "ec-clipping" "ec-holds")
+ :gate "--event-gate" :depends-on '("συμπερασμός-wfs" "λογισμός-φραγμών"))

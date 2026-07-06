@@ -127,3 +127,8 @@
 
 (register-command "--fluid-gate" (lambda (a) (declare (ignore a)) (run-fluid-gate)))
 (register-command "--arc-eval"   (lambda (a) (run-arc-eval a)))
+
+(orchestrator.self-model:declare-capability! "ρευστή-επαγωγή"
+ :description "επαγωγή προγραμμάτων από παραδείγματα (οικογένεια ARC) με τίμια άρνηση"
+ :package :orchestrator.fluid :functions '("solve-task" "all-solutions")
+ :gate "--fluid-gate" :depends-on '())

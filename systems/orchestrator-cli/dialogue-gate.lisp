@@ -181,3 +181,8 @@
              1))))
 
 (register-command "--dialogue-gate" (lambda (a) (declare (ignore a)) (run-dialogue-gate)))
+
+(orchestrator.self-model:declare-capability! "διάλογος"
+ :description "κατανόηση ερωτημάτων με τίμια άγνοια, αυτογνωσία κατάστασης, σκέψη σε βήματα"
+ :package :orchestrator.cognition :functions '("process-request")
+ :gate "--dialogue-gate" :depends-on '("γλωσσική-αντίληψη"))

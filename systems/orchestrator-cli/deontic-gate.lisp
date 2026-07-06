@@ -92,3 +92,8 @@
     (if fails 1 0)))
 
 (register-command "--deontic-gate" (lambda (a) (declare (ignore a)) (run-deontic-gate)))
+
+(orchestrator.self-model:declare-capability! "δεοντικό"
+ :description "τι ΠΡΟΣΤΑΖΕΙ ο κανόνας (O/F/P): ταξινόμηση + κανονιστική σύγκρουση"
+ :package :orchestrator.deontic :functions '("evaluate-deontic" "classify-deontic-sentence")
+ :gate "--deontic-gate" :depends-on '("συμπερασμός-wfs"))
