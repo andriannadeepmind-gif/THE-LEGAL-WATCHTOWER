@@ -18,7 +18,8 @@
 (defpackage :orchestrator.component-scan
   (:use :cl)
   (:export #:build-component-registry! #:validate-components
-           #:resolve-critical-symbol #:file-hash #:stale-components))
+           #:resolve-critical-symbol #:file-hash #:stale-components
+           #:freeze-components! #:manifest-count))
 
 (in-package :orchestrator.component-scan)
 
@@ -53,6 +54,57 @@
     (cl-ppcre:do-register-groups (c) ("declare-capability!\\s+\"([^\"]+)\"" text)
       (pushnew c caps :test #'string=))
     (values (nreverse pkgs) (nreverse contracts) (nreverse caps))))
+
+;;; ── MANIFEST: οι ταυτότητες παγώνουν στο BUILD, όταν οι πηγές υπάρχουν ────
+;;; Το runtime image (native executable) ΔΕΝ κουβαλά τα source αρχεία. Χωρίς
+;;; manifest, 250+ αρχεία θα ήταν «αταυτοποίητη ύλη». Το build.lisp καλεί
+;;; freeze-components! με τις πηγές παρούσες· στο runtime το μητρώο διαβάζει
+;;; το manifest (data-only, *read-eval* NIL) ως την αλήθεια του build.
+
+(defun %manifest-file ()
+  (merge-pathnames "deployment/self/component-manifest.sexp" (uiop:getcwd)))
+
+(defvar *manifest* nil "cache: σχετική-διαδρομή → plist (:hash :defpackages …)")
+
+(defun %load-manifest ()
+  (or *manifest*
+      (setf *manifest*
+            (let ((h (make-hash-table :test 'equal)))
+              (ignore-errors
+                (with-open-file (s (%manifest-file) :external-format :utf-8
+                                                    :if-does-not-exist nil)
+                  (when s
+                    (let ((*read-eval* nil))   ; ΜΟΝΟ δεδομένα — ποτέ εκτέλεση
+                      (dolist (e (read s nil nil))
+                        (setf (gethash (getf e :file) h) e))))))
+              h))))
+
+(defun manifest-count () (hash-table-count (%load-manifest)))
+
+(defun freeze-components! ()
+  "Πάγωμα ταυτοτήτων ΟΛΩΝ των αρχείων πηγής (SHA-256 + έδρες δηλώσεων) στο
+   manifest — καλείται στο BUILD. Επιστρέφει πλήθος αρχείων."
+  (let ((rows '()))
+    (dolist (sysname (%lawmax-systems))
+      (dolist (path (%system-files (asdf:find-system sysname)))
+        (let ((h (file-hash path)))
+          (when h
+            (multiple-value-bind (pkgs contracts caps) (%scan-file-text path)
+              (push (list :file (enough-namestring path (uiop:getcwd))
+                          :hash h :defpackages pkgs
+                          :contracts contracts :capabilities caps)
+                    rows))))))
+    (let ((all (nreverse rows)))
+      (ensure-directories-exist (%manifest-file))
+      (with-open-file (s (%manifest-file) :direction :output
+                                          :if-exists :supersede
+                                          :external-format :utf-8)
+        (let ((*print-pretty* nil))
+          (format s ";; ΤΑΥΤΟΤΗΤΕΣ ΣΥΣΤΑΤΙΚΩΝ — παγωμένες στο build (data-only)~%")
+          (prin1 all s)
+          (terpri s)))
+      (setf *manifest* nil)
+      (length all))))
 
 (defun resolve-critical-symbol (name package-designator)
   "Όνομα κρίσιμης συνάρτησης/κλάσης → (values σύμβολο αρχείο-πηγής) ή NIL.
@@ -120,13 +172,23 @@
          :meta (list :version (ignore-errors (asdf:component-version sys))
                      :depends-on (asdf:system-depends-on sys)))
         (dolist (path (%system-files sys))
-          (let ((file-id (format nil "file:~A" (enough-namestring path (uiop:getcwd)))))
-            (multiple-value-bind (pkgs contracts caps) (%scan-file-text path)
+          (let* ((rel (enough-namestring path (uiop:getcwd)))
+                 (file-id (format nil "file:~A" rel))
+                 (disk-hash (file-hash path))
+                 ;; πηγή απούσα (source-less runtime) ⇒ η αλήθεια του BUILD:
+                 ;; το παγωμένο manifest — ποτέ σιωπηλά «αταυτοποίητο»
+                 (m (and (null disk-hash) (gethash rel (%load-manifest)))))
+            (multiple-value-bind (pkgs contracts caps)
+                (if disk-hash
+                    (%scan-file-text path)
+                    (values (getf m :defpackages) (getf m :contracts)
+                            (getf m :capabilities)))
               (orchestrator.components:register-component!
                file-id :file (file-namestring path)
-               :parent sys-id :hash (file-hash path)
+               :parent sys-id :hash (or disk-hash (getf m :hash))
                :meta (list :path (namestring path) :defpackages pkgs
-                           :contracts contracts :capabilities caps))
+                           :contracts contracts :capabilities caps
+                           :from-manifest (and m t)))
               (orchestrator.components:add-edge! :contains sys-id file-id)
               (dolist (p pkgs) (setf (gethash p pkg-home) file-id)))))))
     ;; ② Πακέτα της εικόνας — έδρα από το defpackage mapping
@@ -197,10 +259,13 @@
 
 (defun stale-components ()
   "Συστατικά-αρχεία των οποίων το ΑΠΟΘΗΚΕΥΜΕΝΟ hash ΔΕΝ συμφωνεί με τον δίσκο
-   ΤΩΡΑ — η ανίχνευση απόκλισης μητρώου/πραγματικότητας."
+   ΤΩΡΑ. Πηγή απούσα από τον δίσκο (source-less runtime με manifest) ΔΕΝ είναι
+   stale — το manifest του build είναι η αλήθεια της· η απόκλιση ανιχνεύεται
+   ΜΟΝΟ όταν υπάρχει τι να συγκριθεί."
   (remove-if (lambda (c)
-               (equal (orchestrator.components:component-hash c)
-                      (file-hash (orchestrator.components:meta-get c :path))))
+               (let ((now (file-hash (orchestrator.components:meta-get c :path))))
+                 (or (null now)
+                     (equal (orchestrator.components:component-hash c) now))))
              (orchestrator.components:components-of-kind :file)))
 
 (defun validate-components (&key test-exists-p)

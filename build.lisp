@@ -33,6 +33,12 @@
 ;; Our code: strict compilation, do not muffle anything
 (asdf:load-system :orchestrator-core-runtime)
 
+;; ΚΑΘΡΕΦΤΗΣ: πάγωμα ταυτοτήτων συστατικών (SHA-256 + έδρες δηλώσεων) ΤΩΡΑ,
+;; που οι πηγές υπάρχουν — το runtime image δεν τις κουβαλά· το μητρώο
+;; συστατικών θα διαβάζει το manifest (deployment/self/component-manifest.sexp).
+(format t "~%Freezing component manifest: ~D files~%"
+        (orchestrator.component-scan:freeze-components!))
+
 ;; Build executable (CLI entrypoint)
 (sb-ext:save-lisp-and-die "/app/orchestrator.core"
                           :toplevel #'orchestrator.cli:main

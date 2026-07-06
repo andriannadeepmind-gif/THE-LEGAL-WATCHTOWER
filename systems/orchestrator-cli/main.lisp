@@ -2143,6 +2143,15 @@ f.addEventListener('submit',function(ev){ev.preventDefault();
     (unless mcp-mode
       (print-banner)
       (print-system-info))
+    ;; ΡΙΖΑ ΓΝΩΣΗΣ: τα πακέτα γνώσης φορτώνονται ΣΕ ΚΑΘΕ εκκίνηση — χωρίς αυτά
+    ;; οι κανόνες/ορισμοί λείπουν και κάθε πύλη/διάλογος κρίνει στο κενό.
+    ;; Αποτυχία = ΦΩΝΑΧΤΗ δήλωση στο stderr, ποτέ σιωπηλό κενό γνώσης.
+    (handler-case
+        (orchestrator.knowledge-packs:ensure-fresh
+         :stream (if mcp-mode *error-output* *standard-output*))
+      (error (e)
+        (format *error-output* "~%⚠ ΠΑΚΕΤΑ ΓΝΩΣΗΣ ΔΕΝ ΦΟΡΤΩΘΗΚΑΝ: ~A~%~
+                                ⚠ Το σύστημα τρέχει ΧΩΡΙΣ δηλωτική γνώση — οι κρίσεις θα είναι ελλιπείς.~%" e)))
 
   (let ((exit-code
           (handler-case

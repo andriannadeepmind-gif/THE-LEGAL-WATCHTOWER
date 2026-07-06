@@ -276,6 +276,8 @@ COPY --from=builder /app/orchestrator.core /app/orchestrator.core
 # Copy essential runtime files
 COPY --from=builder /app/configs/ /app/configs/
 COPY --from=builder /app/deployment/data/ /app/deployment/data/
+COPY --from=builder /app/deployment/knowledge/ /app/deployment/knowledge/
+COPY --from=builder /app/deployment/self/ /app/deployment/self/
 # Public verifier assets + PCL-1 spec — published into the static site by
 # --emit-site so the advertised /verify/ and spec URLs actually resolve.
 COPY --from=builder /app/deployment/verify/ /app/deployment/verify/

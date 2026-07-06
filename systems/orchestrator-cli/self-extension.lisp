@@ -546,14 +546,17 @@
                                         (1 "needs-ocr" "x.pdf")))))
       ;; 5 — η έγκριση ΓΡΑΦΕΙ το πακέτο στη γνώση (προσωρινός κατάλογος) και φορτώνει
       (let ((p (first (orchestrator.proposals:open-proposals))))
-        (multiple-value-bind (q status) (orchestrator.proposals:approve!
-                                         (orchestrator.proposals:proposal-id p))
-          (declare (ignore q))
-          (check "έγκριση ⇒ το πακέτο ΓΡΑΦΕΤΑΙ και φορτώνεται ζωντανά"
-                 (and (eq status :approved)
-                      (probe-file (merge-pathnames
-                                   (getf (%self-extension-payload p) :filename)
-                                   tmp-kdir)))))))
+        ;; χωρίς πρόταση (το προηγούμενο βήμα απέτυχε) ⇒ ΤΙΜΙΟ ✗, όχι κατάρρευση
+        (check "έγκριση ⇒ το πακέτο ΓΡΑΦΕΤΑΙ και φορτώνεται ζωντανά"
+               (and p
+                    (multiple-value-bind (q status)
+                        (orchestrator.proposals:approve!
+                         (orchestrator.proposals:proposal-id p))
+                      (declare (ignore q))
+                      (and (eq status :approved)
+                           (probe-file (merge-pathnames
+                                        (getf (%self-extension-payload p) :filename)
+                                        tmp-kdir))))))))
       ;; ── ΑΦΟΜΟΙΩΣΗ: ανάγνωση → γένος → σκιώδης πύλη → έγκριση → ΣΥΛΛΟΓΙΣΜΟΣ ──
     (flet ((check (label ok)
              (incf total)
@@ -569,7 +572,8 @@
         (check "αφομοίωση: η πρόταση κατατίθεται ΜΟΝΟ αφού περάσει ΟΛΟΚΛΗΡΗ τη σκιώδη πύλη υπαγωγής"
                (= 1 (propose-assimilations "βιβλίο" (list (list "ΚΠολΔ 444" sent)))))
         (let ((p (first (orchestrator.proposals:open-proposals))))
-          (orchestrator.proposals:approve! (orchestrator.proposals:proposal-id p))
+          (when p
+            (orchestrator.proposals:approve! (orchestrator.proposals:proposal-id p)))
           (multiple-value-bind (engine)
               (orchestrator.subsumption:subsume
                '((:γεγονός :τεφτέρι :είναι :βιβλίο)

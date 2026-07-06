@@ -212,11 +212,16 @@
                    (some (lambda (m) (search "ghost-fn" m))
                          (orchestrator.component-scan:validate-components)))
                (orchestrator.component-scan:build-component-registry!)))
-      (check "⑬ πειραγμένο hash αρχείου ⇒ ανιχνεύεται ΞΕΠΕΡΑΣΜΕΝΟ (μητρώο ≠ δίσκος)"
-             (let ((f (first (orchestrator.components:components-of-kind :file))))
-               (setf (orchestrator.components:component-hash f) "τίποτα")
-               (prog1 (member f (orchestrator.component-scan:stale-components))
-                 (orchestrator.component-scan:build-component-registry!)))))
+      (check "⑬ πειραγμένο hash αρχείου ⇒ ΞΕΠΕΡΑΣΜΕΝΟ (με πηγές)· χωρίς πηγές ⇒ manifest = η αλήθεια του build"
+             (let ((f (find-if (lambda (c)
+                                 (probe-file (orchestrator.components:meta-get c :path)))
+                               (orchestrator.components:components-of-kind :file))))
+               (if f
+                   (progn (setf (orchestrator.components:component-hash f) "τίποτα")
+                          (prog1 (and (member f (orchestrator.component-scan:stale-components)) t)
+                            (orchestrator.component-scan:build-component-registry!)))
+                   ;; source-less runtime: η ταυτοποίηση οφείλεται στο παγωμένο manifest
+                   (plusp (orchestrator.component-scan:manifest-count))))))
     (format t "~%── ΠΥΛΗ ΣΥΣΤΑΤΙΚΩΝ: ~D/~D πέρασαν ──~%" (- total (length fails)) total)
     (if fails 1 0)))
 
@@ -226,6 +231,11 @@
 (register-command "--symbols-of"   (lambda (a) (run-symbols-of a)))
 (register-command "--files-of"     (lambda (a) (run-files-of a)))
 (register-command "--component-gate" (lambda (a) (declare (ignore a)) (run-component-gate)))
+(register-command "--freeze-components"
+  (lambda (a) (declare (ignore a))
+    (format t "Πάγωμα ταυτοτήτων συστατικών: ~D αρχεία στο manifest.~%"
+            (orchestrator.component-scan:freeze-components!))
+    0))
 
 (orchestrator.self-model:declare-capability! "συστατικά"
  :description "canonical component registry: κάθε όργανο με ταυτότητα, hash, πηγή, ρόλο, ακμές — αλλιώς άγνωστο"
