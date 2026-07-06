@@ -82,8 +82,7 @@
             (let ((src (orchestrator.trace:tevent-source ev))
                   (h (getf (orchestrator.trace:tevent-data ev) :source-hash)))
               (when (and src h)
-                (let ((now (orchestrator.component-scan:file-hash
-                            (merge-pathnames src (uiop:getcwd)))))
+                (let ((now (orchestrator.component-scan:known-file-hash src)))
                   (when (and now (string/= now h))
                     (bad "Ίχνος #~D: αναφέρει ΞΕΠΕΡΑΣΜΕΝΟ hash πηγής «~A»."
                          (orchestrator.trace:tevent-id ev) src)))))))))

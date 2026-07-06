@@ -19,7 +19,7 @@
   (:use :cl)
   (:export #:build-component-registry! #:validate-components
            #:resolve-critical-symbol #:file-hash #:stale-components
-           #:freeze-components! #:manifest-count))
+           #:freeze-components! #:manifest-count #:known-file-hash))
 
 (in-package :orchestrator.component-scan)
 
@@ -80,6 +80,13 @@
               h))))
 
 (defun manifest-count () (hash-table-count (%load-manifest)))
+
+(defun known-file-hash (rel-path)
+  "Η ΓΝΩΣΤΗ αλήθεια για ένα αρχείο πηγής: ο δίσκος αν υπάρχει, αλλιώς το
+   παγωμένο manifest του build — ώστε ο έλεγχος ξεπερασμένων hashes να έχει
+   μέτρο σύγκρισης ΚΑΙ στο source-less runtime."
+  (or (file-hash (merge-pathnames rel-path (uiop:getcwd)))
+      (getf (gethash (string rel-path) (%load-manifest)) :hash)))
 
 (defun freeze-components! ()
   "Πάγωμα ταυτοτήτων ΟΛΩΝ των αρχείων πηγής (SHA-256 + έδρες δηλώσεων) στο
