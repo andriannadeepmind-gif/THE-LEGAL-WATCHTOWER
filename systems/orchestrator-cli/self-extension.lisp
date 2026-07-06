@@ -592,14 +592,19 @@
              (if ok (format t "  ✓ ~A~%" label)
                  (progn (push label fails) (format t "  ✗ ~A~%" label)))))
       (let ((entry (let ((tbl (%article-table "poinikos"))) (and tbl (gethash "372" tbl)))))
-        (multiple-value-bind (spec why)
-            (orchestrator.casegrammar:parse-provision (first entry) :heading (second entry))
-          (declare (ignore why))
-          (check "ανάγνωση του ΠΡΑΓΜΑΤΙΚΟΥ ΠΚ 372: «όποιος…τιμωρείται» ⇒ 4 προϋποθέσεις + πράξη ΚΛΟΠΗ"
-                 (and spec
-                      (= 4 (length (getf spec :antecedent)))
-                      (eq :prohibition (getf spec :modality))
-                      (eq :κλοπή (getf spec :act))))))
+        ;; χωρίς υλοποιημένο corpus (output/ απόν) ⇒ ΤΙΜΙΟ ✗ με λόγο, όχι κατάρρευση
+        (unless entry
+          (format t "  ⚠ το ΠΚ 372 ΔΕΝ βρέθηκε υλοποιημένο (output/poinikos) — τρέξε το pipeline ή δέσε το output volume~%"))
+        (if (null entry)
+            (check "ανάγνωση του ΠΡΑΓΜΑΤΙΚΟΥ ΠΚ 372: «όποιος…τιμωρείται» ⇒ 4 προϋποθέσεις + πράξη ΚΛΟΠΗ" nil)
+            (multiple-value-bind (spec why)
+                (orchestrator.casegrammar:parse-provision (first entry) :heading (second entry))
+              (declare (ignore why))
+              (check "ανάγνωση του ΠΡΑΓΜΑΤΙΚΟΥ ΠΚ 372: «όποιος…τιμωρείται» ⇒ 4 προϋποθέσεις + πράξη ΚΛΟΠΗ"
+                     (and spec
+                          (= 4 (length (getf spec :antecedent)))
+                          (eq :prohibition (getf spec :modality))
+                          (eq :κλοπή (getf spec :act)))))))
       (multiple-value-bind (n why) (propose-norm-from-provision "poinikos" "372")
         (check "ΕΠΑΛΗΘΕΥΣΗ κατά τον χειροποίητο κανόνα: η μηχανή ΣΥΜΦΩΝΕΙ στην ειδική υπόσταση, δηλώνει το όριο των λόγων άρσης"
                (and (zerop n) why
