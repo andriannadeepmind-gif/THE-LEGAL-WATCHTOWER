@@ -57,5 +57,6 @@
      (:file "memory-commands")         ; ΜΝΗΜΗ: --memory/--recall/--agenda/--intend/--intentions + πύλη --memory-gate
      (:file "generation-gate")         ; Η ΠΥΛΗ ΤΗΣ ΓΡΑΜΜΑΤΙΚΗΣ: ορθή κλίση/συμφωνία/τελικό-ν + κύκλος γένεση→κατανόηση (--generation-gate)
      (:file "ingestion-commands")      ; εντολές ΦΕΚ/δαίμονα — ομοίως, μητρώο
+     (:file "component-gate")          ; Η ΠΥΛΗ ΣΥΣΤΑΤΙΚΩΝ: canonical component registry + typed article identity + αρνητικά (--component-gate)
      (:file "contract-gate")           ; Η ΠΥΛΗ ΣΥΜΒΟΛΑΙΩΝ: επικυρωτής + θεσμική ταυτότητα + article-identity εκτελέσιμα + αρνητικά (--contract-gate)
      (:file "gates-runner")))))        ; Η ΟΛΟΜΕΛΕΙΑ: --gates τρέχει ΟΛΕΣ τις πύλες του μητρώου — μία εντολή, μία ετυμηγορία

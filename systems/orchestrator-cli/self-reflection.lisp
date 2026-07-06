@@ -259,8 +259,9 @@
 (orchestrator.self-model:declare-capability! "ταυτότητα-άρθρων"
  :description "η μία ταυτότητα κάθε άρθρου: corpus keying, κανονικοποίηση, ELI/άρθρο URIs, δρομολόγηση ΦΕΚ"
  :package :orchestrator.legal-id
- :functions '("build-article-uri" "registry-by-corpus" "normalize-greek")
- :gate nil :depends-on '())   ; ΧΩΡΙΣ ΠΥΛΗ — δηλωμένο χρέος
+ :functions '("build-article-uri" "registry-by-corpus" "normalize-greek"
+              "parse-article-id" "article-id=" "article-id-string")
+ :gate nil :depends-on '())   ; ΧΩΡΙΣ ΠΥΛΗ — δηλωμένο χρέος· τα εκτελέσιμα τεστ ζουν στο --component-gate
 
 (orchestrator.contracts:defcontract "article-identity-management" :protocol
  :package :orchestrator.uris :system "orchestrator-infrastructure"
@@ -366,6 +367,29 @@
           (progn (format t "▸ ΠΑΡΑΒΑΣΕΙΣ συμβολαίων (~D):~%~{    ✗ ~A~%~}"
                          (length violations) violations))
           (format t "▸ Επικύρωση συμβολαίων: 0 παραβάσεις.~%")))
+    ;; Συστατικά — ο καθρέφτης ΚΑΤΑΝΑΛΩΝΕΙ το component registry (πηγή αλήθειας).
+    (multiple-value-bind (n e) (orchestrator.component-scan:build-component-registry!)
+      (let ((cv (orchestrator.component-scan:validate-components
+                 :test-exists-p #'find-command))
+            (stale (orchestrator.component-scan:stale-components))
+            (orphan-pkgs (remove-if #'orchestrator.components:component-parent
+                                    (orchestrator.components:components-of-kind :package))))
+        (format t "~%▸ Συστατικά: ~D ταυτότητες (~D συστήματα, ~D αρχεία με SHA-256, ~D πακέτα, ~D κρίσιμα σύμβολα) · ~D ακμές~%"
+                n
+                (length (orchestrator.components:components-of-kind :system))
+                (length (orchestrator.components:components-of-kind :file))
+                (length (orchestrator.components:components-of-kind :package))
+                (length (orchestrator.components:components-of-kind :symbol))
+                e)
+        (when orphan-pkgs
+          (format t "▸ ΟΡΦΑΝΑ πακέτα (χωρίς αρχείο-έδρα): ~{~A~^, ~}~%"
+                  (mapcar #'orchestrator.components:component-name orphan-pkgs)))
+        (when stale
+          (format t "▸ ΞΕΠΕΡΑΣΜΕΝΑ hashes: ~{~A~^, ~}~%"
+                  (mapcar #'orchestrator.components:component-id stale)))
+        (if cv
+            (format t "▸ ΠΑΡΑΒΑΣΕΙΣ ταυτοποίησης (~D):~%~{    ✗ ~A~%~}" (length cv) cv)
+            (format t "▸ Ταυτοποίηση συστατικών: 0 παραβάσεις.~%"))))
     0))
 
 (defun run-institution ()
@@ -473,6 +497,26 @@
                  (mapcar #'orchestrator.self-model:capability-name caps))
          (format t "Ελάχιστο regression — πύλες που ΠΡΕΠΕΙ να τρέξουν: ~{~A~^, ~}~%"
                  gates))
+       ;; Και σε επίπεδο ΣΥΣΤΑΤΙΚΩΝ (καταναλωτής του component registry):
+       ;; πάροχοι της ρίζας με τα αρχεία-πηγές τους, συμβόλαιά της, τεστ.
+       (let ((cap (orchestrator.self-model:find-capability cap-name)))
+         (when cap
+           (format t "~%Συστατικά της ρίζας «~A»:~%" cap-name)
+           (dolist (f (orchestrator.self-model:capability-functions cap))
+             (multiple-value-bind (sym src)
+                 (orchestrator.component-scan:resolve-critical-symbol
+                  f (orchestrator.self-model:capability-package cap))
+               (declare (ignore sym))
+               (format t "  • ~A — ~:[ΑΧΑΡΤΟΓΡΑΦΗΤΟ~;~:*~A~]~%"
+                       f (and src (enough-namestring src (uiop:getcwd))))))
+           (let ((cs (orchestrator.contracts:contracts-for-capability cap-name)))
+             (when cs
+               (format t "  Συμβόλαια: ~{~A~^ · ~}~%"
+                       (mapcar #'orchestrator.contracts:contract-name cs))
+               (format t "  Τεστ: ~{~A~^ · ~}~%"
+                       (remove-duplicates
+                        (mapcan (lambda (c) (copy-list (orchestrator.contracts:contract-tests c))) cs)
+                        :test #'string=))))))
        0))))
 
 (defun %contract-field (args field label)
