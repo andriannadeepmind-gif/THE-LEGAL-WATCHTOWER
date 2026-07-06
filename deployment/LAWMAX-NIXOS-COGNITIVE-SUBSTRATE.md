@@ -21,10 +21,39 @@ the creator signs proofs in the morning, not promises.
 
 ## Current state (from repo audit §10–11)
 
-Nix: **zero** (no flake, no nix/). Docker: strong (multi-stage, deps-verify with
-locked hashes, source-less nonroot runtime, SBOM, cosign) and proven on the
-creator's Windows/Docker Desktop. The transition therefore goes THROUGH the
-Docker workflow, never breaks it.
+Nix in repo: **zero** (no flake, no nix/). Docker: strong (multi-stage,
+deps-verify with locked hashes, source-less nonroot runtime, SBOM, cosign).
+**Host: the creator's machine IS NixOS** (Windows/Docker Desktop era ended) —
+Nix is native; no installer, no WSL. The transition still goes THROUGH the
+Docker workflow: it stays operational until the Nix image is proven equivalent.
+
+## NixOS-native staged ingestion (LEVEL 0–8 — the operative ladder)
+
+- **L0 — existing Docker workflow on the NixOS host:** Docker + flakes enabled
+  declaratively; clone; `docker compose build`; run `--gates` / `--mirror` /
+  `--trace-last-conclusion`; run the unchanged audit when available.
+- **L1 — flake skeleton, no logic change:** `flake.nix`, `nix/`, devShell,
+  checks wrappers. Cognition untouched.
+- **L2 — audit pinning:** unchanged CONSCIOUSNESS AUDIT committed under
+  `deployment/verify/consciousness-audit/`; manifest with SHA-256;
+  `nix flake check` verifies the audit hash BEFORE running it.
+- **L3 — env-config refactor:** `LAWMAX_STATE_DIR / OUTPUT_DIR / DEPLOYMENT_DIR /
+  CORPUS_DIR / CONFIG_DIR / LOG_DIR / TRACE_PROFILE / PROPOSAL_DIRS` replace
+  hardcoded `/app`. Path/config only, zero cognitive change, 18/18 identical.
+- **L4 — Nix-built OCI image:** `dockerTools.buildLayeredImage` → `docker load`
+  → byte-parity of gate output vs Dockerfile image. Dockerfile retires only
+  after proven equivalence.
+- **L5 — native package:** `nix run .#lawmax -- --gates` / `-- --mirror`.
+- **L6 — NixOS module:** `services.lawmax.enable`, lawmax user/group, dirs and
+  trace profile declared by service config, hardening with the SBCL MDWE caveat.
+- **L7 — selfstudy timer:** `lawmax-selfstudy.service/.timer` — trigger only,
+  no automatic adoption ever.
+- **L8 — candidate legal minds:** stable untouched; candidate derivations;
+  shadow testing; stable-vs-candidate comparison; morning approval queue;
+  rollback target per adoption.
+
+The N-phases below give the build detail for these levels (L1≈N1, L4≈N3,
+L5≈N2, L6≈N5, L7≈N8, L8≈N7/N9/N10); ordering authority is the LEVEL ladder.
 
 ## Phases
 
