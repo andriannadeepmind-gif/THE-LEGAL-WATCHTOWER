@@ -336,17 +336,45 @@
                     out))
             (nreverse out)))))))
 
+(defparameter +month-genitives+
+  '(("ιανουαριου" . 1) ("φεβρουαριου" . 2) ("μαρτιου" . 3) ("απριλιου" . 4)
+    ("μαιου" . 5) ("ιουνιου" . 6) ("ιουλιου" . 7) ("αυγουστου" . 8)
+    ("σεπτεμβριου" . 9) ("οκτωβριου" . 10) ("νοεμβριου" . 11) ("δεκεμβριου" . 12))
+  "Οι γενικές των μηνών (κανονικοποιημένες) — «στις 10 Ιανουαρίου 2026».")
+
+(defun %sentence-date (sentence)
+  "Η ημερομηνία μιας πρότασης ως ISO «YYYY-MM-DD», ή nil. Μορφές: ISO,
+   ΗΗ/ΜΜ/ΕΕΕΕ, ΗΗ-ΜΜ-ΕΕΕΕ, «ΗΗ Μηνός ΕΕΕΕ». ΔΗΛΩΜΕΝΟ όριο: όχι τελείες
+   (10.01.2026) — η τελεία είναι όριο πρότασης. ΔΕΝ επικυρώνεται εδώ:
+   την εγκυρότητα (2026-02-30;) την κρίνει ο ημερολογιακός λογισμός
+   με το πιστοποιητικό του — μία έδρα επικύρωσης, όχι δύο."
+  (let ((n (normalize-greek sentence)))
+    (or (cl-ppcre:register-groups-bind (y m d)
+            ("(\\d{4})-(\\d{2})-(\\d{2})" n)
+          (format nil "~A-~A-~A" y m d))
+        (cl-ppcre:register-groups-bind (d m y)
+            ("(\\d{1,2})[/-](\\d{1,2})[/-](\\d{4})" n)
+          (format nil "~A-~2,'0D-~2,'0D" y (parse-integer m) (parse-integer d)))
+        (cl-ppcre:register-groups-bind (d mon y)
+            ("(\\d{1,2})(?:ησ?)? +([α-ω]+) +(\\d{4})" n)
+          (let ((mm (cdr (assoc mon +month-genitives+ :test #'string=))))
+            (when mm (format nil "~A-~2,'0D-~2,'0D" y mm (parse-integer d))))))))
+
 (defun parse-narrative (text)
-  "(values γεγονότα μη-αναγνωσμένες-προτάσεις): κάθε πρόταση της αφήγησης
-   περνά από το πλαίσιο πτώσεων· ό,τι δεν αναγνωρίζεται, ΔΗΛΩΝΕΤΑΙ —
-   δεν εφευρίσκεται ποτέ γεγονός."
-  (let ((facts '()) (unparsed '()))
+  "(values γεγονότα μη-αναγνωσμένες-προτάσεις χρονολόγιο): κάθε πρόταση
+   περνά από το πλαίσιο πτώσεων· ό,τι δεν αναγνωρίζεται ΔΗΛΩΝΕΤΑΙ. Το
+   χρονολόγιο: (iso-ημερομηνία . πρόταση) για ΚΑΘΕ πρόταση με ημερομηνία —
+   και τις αδιάβαστες (η χρονική θέση τους είναι γνώση, έστω κι αν η
+   πράξη τους δεν διαβάστηκε ακόμη)."
+  (let ((facts '()) (unparsed '()) (timeline '()))
     (dolist (s (%split-sentences text))
+      (let ((d (%sentence-date s)))
+        (when d (push (cons d s) timeline)))
       (multiple-value-bind (fs ok) (%parse-sentence (tokenize-greek s))
         (if (and ok fs)
             (dolist (f fs) (pushnew f facts :test #'equal))
             (push s unparsed))))
-    (values (nreverse facts) (nreverse unparsed))))
+    (values (nreverse facts) (nreverse unparsed) (nreverse timeline))))
 
 (defun narrative-report (text &key (stream *standard-output*))
   "Αφήγηση → γεγονότα (τυπωμένα) → ΥΠΑΓΩΓΗ. Τα μη-αναγνωσμένα δηλώνονται."
