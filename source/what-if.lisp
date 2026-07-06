@@ -82,29 +82,47 @@
                            (read s nil nil)))
                      (error (e) (return-from load-proposal-file!
                                   (values nil (format nil "μη αναγνώσιμα δεδομένα: ~A" e)))))))
-         (unless (and (listp form) (getf form :id))
+         (unless (ignore-errors
+                   (and (listp form) (evenp (length form))
+                        (loop for k in form by #'cddr always (keywordp k))
+                        t))
            (return-from load-proposal-file!
-             (values nil "περιμένω plist με :id — δομημένη πρόταση, όχι ελεύθερο κείμενο")))
+             (values nil "περιμένω plist πρότασης (:id … :rollback …) — δομημένη πρόταση, όχι ελεύθερο κείμενο")))
+         ;; ΑΝΟΧΗ ΣΤΟ ΣΥΝΟΡΟ, ΜΙΑ ΕΔΡΑ ΚΡΙΣΗΣ: εξωτερικά λεξιλόγια (π.χ.
+         ;; :rollback-plan, :affected-files, :kind) χαρτογραφούνται ΕΔΩ στο
+         ;; κανονικό σχήμα· χωρίς :id, ταυτότητα = το όνομα του αρχείου.
+         ;; Η απόφαση (what-if/can-adopt) κρίνει ΠΑΝΤΑ το περιεχόμενο.
          (flet ((s* (x) (and x (string x)))
-                (l* (x) (mapcar #'string (if (listp x) x (list x)))))
-           (declare-proposal! (s* (getf form :id))
-            :type (let ((ty (getf form :type)))
-                    (if (member ty '(:knowledge :contract :component :capability
-                                     :policy :code :corpus :article-identity))
-                        ty :code))
-            :purpose (s* (getf form :purpose))
-            :files (l* (getf form :files))
-            :symbols (l* (getf form :symbols))
-            :capabilities (l* (getf form :capabilities))
-            :improvement (getf form :improvement)
-            :risk (getf form :risk)
-            :legal-critical (getf form :legal-critical)
-            :approvals (getf form :approvals)
-            :sandbox (s* (getf form :sandbox))
-            :rollback (getf form :rollback)
-            :acceptance (l* (getf form :acceptance))
-            :old-hashes (getf form :old-hashes)))
-         (values (string (getf form :id)) nil))))))
+                (l* (x) (mapcar #'string (if (listp x) x (list x))))
+                ;; υπό *package*=keyword το «nil» του αρχείου διαβάζεται ως
+                ;; keyword :NIL — ΑΛΗΘΕΣ· εδώ ξαναγίνεται ρητή απουσία.
+                (g* (&rest keys)
+                  (loop for k in keys
+                        thereis (let ((v (getf form k)))
+                                  (if (eq v :nil) nil v)))))
+           (let ((id (or (s* (g* :id)) (pathname-name true))))
+             (declare-proposal! id
+              :type (let ((ty (g* :type :kind)))
+                      (when (stringp ty)
+                        (setf ty (intern (string-upcase ty) :keyword)))
+                      (if (member ty '(:knowledge :contract :component :capability
+                                       :policy :code :corpus :article-identity))
+                          ty :code))
+              :purpose (s* (g* :purpose :title :motivation))
+              :files (l* (g* :files :affected-files :affected-components :components))
+              :symbols (l* (g* :symbols))
+              :capabilities (l* (g* :capabilities :affected-capabilities))
+              :improvement (g* :improvement :expected-improvement
+                              :measurable-improvement :improvement-metric)
+              :risk (g* :risk)
+              :legal-critical (g* :legal-critical)
+              :approvals (g* :approvals)
+              :sandbox (s* (g* :sandbox :sandbox-plan :shadow-plan))
+              :rollback (g* :rollback :rollback-plan
+                            :rollback-or-reversion-plan :reversion-plan)
+              :acceptance (l* (g* :acceptance :acceptance-criteria))
+              :old-hashes (g* :old-hashes))
+             (values id nil))))))))
 
 (defun %affected-capabilities (proposal)
   "Άμεσες ικανότητες: δηλωμένες + όσων τα συμβόλαια/πάροχοι ταιριάζουν στα

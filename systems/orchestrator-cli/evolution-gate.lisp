@@ -50,9 +50,41 @@
                1)
         (progn (%print-whatif (orchestrator.whatif:what-if p)) 0))))
 
+(defun %missing->reason (m)
+  "Κανονικοποιημένος μηχανικός λόγος από την ελληνική έλλειψη — υπολογισμός
+   πάνω στο περιεχόμενο της απόφασης, όχι δεύτερη λογική."
+  (let ((m (princ-to-string m)))
+    (cond ((search "rollback" m) "missing rollback")
+        ((search "βελτίωση" m) "missing measurable improvement")
+        ((search "ταυτότητα συστατικού" m) "unknown component")
+        ((search "δεν επιλύεται" m) "unknown component")
+        ((search "ΞΕΠΕΡΑΣΜΕΝΟ" m) "stale component hash")
+        ((search "ανθρώπινη έγκριση" m) "article identity requires human approval")
+        ((search "επανεπικύρωσης" m) "missing proof revalidation plan")
+          ((search "συμβόλαι" m) "missing contract")
+          ((search "σκιώδους" m) "missing sandbox plan")
+          ((search "αρχεία" m) "missing affected components")
+          ((search "Ίδρυμα" m) "missing institutional identity")
+          ((search "PROPOSAL" m) "unknown proposal")
+          (t "missing prerequisite"))))
+
 (defun %print-decision (d)
   (format t "~%── ΑΠΟΦΑΣΗ ΥΙΟΘΕΤΗΣΗΣ «~A» ──~%" (orchestrator.adoption:decision-get d :proposal))
   (format t "  ΕΤΥΜΗΓΟΡΙΑ: ~A~%" (orchestrator.adoption:decision-get d :verdict))
+  ;; μηχανικά αναγνώσιμη μορφή: decision + reason (normalized από τις ελλείψεις)
+  (format t "decision: ~(~A~)~%" (orchestrator.adoption:decision-get d :verdict))
+  (let ((missing (orchestrator.adoption:decision-get d :missing)))
+    (cond (missing
+           (dolist (m missing)
+             (format t "reason: ~A~%" (%missing->reason m))))
+          ((eq (orchestrator.adoption:decision-get d :verdict) :requires-human)
+           (format t "reason: ~A~%"
+                   (if (member "ταυτότητα-άρθρων"
+                               (orchestrator.adoption:decision-get d :affected-capabilities)
+                               :test #'string-equal)
+                       "article identity requires human approval"
+                       "legal-critical change requires human approval")))
+          (t (format t "reason: all prerequisites satisfied~%"))))
   (dolist (r (orchestrator.adoption:decision-get d :reasons))
     (format t "  ∵ ~A~%" r))
   (when (orchestrator.adoption:decision-get d :missing)
@@ -74,14 +106,20 @@
 (defun run-can-adopt (args)
   "--can-adopt <πρόταση|/διαδρομή/πρόταση.sexp> : η πλήρης απόφαση.
    Εξωτερικά αρχεία προτάσεων διαβάζονται data-only από εγκεκριμένους
-   φακέλους — η απόφαση κρίνει το ΠΕΡΙΕΧΟΜΕΝΟ τους."
+   φακέλους — η απόφαση κρίνει το ΠΕΡΙΕΧΟΜΕΝΟ τους. Έξοδος 0 = εκδόθηκε
+   ετυμηγορία (και DENIED — θεσμική πράξη, όχι σφάλμα)· 1 = ΔΕΝ εκδόθηκε
+   (μη αναγνώσιμη/μη ασφαλής είσοδος — σφάλμα εισόδου/συστήματος)."
   (multiple-value-bind (name err) (%resolve-proposal-arg args)
     (when err
-      (format t "~%── ΑΠΟΦΑΣΗ ΥΙΟΘΕΤΗΣΗΣ ──~%  ΕΤΥΜΗΓΟΡΙΑ: DENIED~%  ∵ ~A~%" err)
+      (format t "~%── ΑΠΟΦΑΣΗ ΥΙΟΘΕΤΗΣΗΣ ──~%  ΕΤΥΜΗΓΟΡΙΑ: DENIED~%~
+decision: denied~%~
+reason: unreadable proposal — ~A~%  ∵ ~A~%" err err)
       (return-from run-can-adopt 1))
     (let ((d (orchestrator.adoption:can-adopt name)))
       (%print-decision d)
-      (if (eq (orchestrator.adoption:decision-get d :verdict) :allowed) 0 1))))
+      (if (member (orchestrator.adoption:decision-get d :verdict)
+                  '(:allowed :requires-human :denied))
+          0 1))))
 
 (defun run-training-proposal (args)
   "--training-proposal <ικανότητα-που-λείπει> : από ΚΕΝΟ ικανότητας →
@@ -397,7 +435,29 @@ proposal_id: ~A  →  κρίνεται: --can-adopt ~:*~A~%"
                     (search "human_approval_required: true" out)
                     (search "rollback_plan:" out)
                     (search "trusted_output_policy_after_training:" out)
-                    (search "REQUIRES-HUMAN" (string-upcase out))))))
+                    (search "REQUIRES-HUMAN" (string-upcase out)))))
+      ;; ㉓ ΕΞΩΤΕΡΙΚΗ ΠΡΟΤΑΣΗ ΤΕΛΟΣ-ΣΕ-ΤΕΛΟΣ (run-can-adopt): ξένο λεξιλόγιο
+      ;;    (:title/:kind/:affected-files/:rollback nil, ΧΩΡΙΣ :id) — το «nil»
+      ;;    υπό keyword-reader (:NIL) = ρητή ΑΠΟΥΣΙΑ· η έξοδος φέρει decision+
+      ;;    reason μηχανικά αναγνώσιμα και rc 0: ετυμηγορία = θεσμική πράξη.
+      (check "㉓ εξωτερικό «:rollback nil» (ξένο λεξιλόγιο, χωρίς :id) ⇒ decision: denied + reason: missing rollback + rc 0"
+             (let ((f (merge-pathnames "output/gate-external-nil-rollback.sexp" (uiop:getcwd))))
+               (ensure-directories-exist f)
+               (with-open-file (s f :direction :output :if-exists :supersede
+                                    :external-format :utf-8)
+                 (write-string "(:title \"εξωτερική αλλαγή\" :kind :code :motivation \"δοκιμή\"
+ :affected-files (\"source/legal-subsumption.lisp\")
+ :expected-improvement (:metric :x :baseline 0 :target 1)
+ :sandbox-plan \"σκιά\" :acceptance (\"revalidation: πλήρης\")
+ :rollback nil)" s))
+               (unwind-protect
+                    (let* ((rc nil)
+                           (out (with-output-to-string (*standard-output*)
+                                  (setf rc (run-can-adopt (list (namestring f)))))))
+                      (and (eql rc 0)
+                           (search "decision: denied" out)
+                           (search "reason: missing rollback" out)))
+                 (ignore-errors (delete-file f))))))
     (format t "~%── ΠΥΛΗ ΑΥΤΟΕΞΕΛΙΞΗΣ: ~D/~D πέρασαν ──~%" (- total (length fails)) total)
     (if fails 1 0)))
 

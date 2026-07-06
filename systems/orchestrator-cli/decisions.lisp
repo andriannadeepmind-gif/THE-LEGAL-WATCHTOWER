@@ -1849,6 +1849,21 @@ safe_alternative: υπέβαλε το ίδιο ερώτημα ΧΩΡΙΣ όρο 
                            :key #'orchestrator.trace:tevent-kind) t)
                 nil))))
 
+(defun %training-request-p (q)
+  "Ζητά η ερώτηση πρόταση εκπαίδευσης για ικανότητα που λείπει; Επιστρέφει
+   το όνομα της ικανότητας (από «…» / \"…\" ή μετά το «για») ή NIL."
+  (let ((f (orchestrator.decisions:%fold q)))
+    (when (or (search "training proposal" f) (search "training-proposal" f)
+              (search "προταση εκπαιδευσης" f) (search "πρόταση εκπαίδευσης" q)
+              (and (search "εκπαιδευσ" f)
+                   (or (search "ικανοτητα" f) (search "κενο" f) (search "gap" f)
+                       (search "λειπει" f))))
+      (or (cl-ppcre:register-groups-bind (w) ("[«\"]([^»\"]+)[»\"]" q) w)
+          (cl-ppcre:register-groups-bind (w)
+              ("(?:για|for)\\s+(?:το\\s+|τη[νς]?\\s+)?(?:ικανότητα\\s+)?([^\\s»«\".,·;!?]+)" q)
+            w)
+          "unnamed-capability"))))
+
 (defun run-ask (args)
   "--ask «ερώτηση» : Ρώτα σε ΦΥΣΙΚΑ ΕΛΛΗΝΙΚΑ — ντετερμινιστικά, ΜΕΣΑ από τη
    γνωσιακή διαδικασία (5 στάδια, orchestrator.cognition). ΚΑΘΕ πρόθεση είναι
@@ -1865,7 +1880,21 @@ safe_alternative: υπέβαλε το ίδιο ερώτημα ΧΩΡΙΣ όρο 
     (let ((viol (%override-request-p q)))
       (when viol
         (%structured-refusal q viol)
-        (return-from run-ask 1)))
+        ;; ΘΕΣΜΙΚΗ άρνηση = προβλέψιμη, επιτυχής έξοδος πολιτικής (exit 0)·
+        ;; το exit 1 σημαίνει σφάλμα συστήματος/CLI, ΟΧΙ συνταγματικό «όχι».
+        (return-from run-ask 0)))
+    ;; ── ΑΙΤΗΜΑ ΕΚΠΑΙΔΕΥΣΗΣ/ΚΕΝΟΥ: το --ask δεν δίνει μισό gap — παράγει το
+    ;; ΠΛΗΡΕΣ ελεγχόμενο αντικείμενο πρότασης εκπαίδευσης (ίδια έδρα με το
+    ;; --training-proposal, καμία δεύτερη υλοποίηση) ──
+    (let ((wanted (%training-request-p q)))
+      (when wanted
+        (run-training-proposal (list wanted))
+        (%ask-envelope :input-class :training-proposal-request :policy :allowed
+                       :output-status :diagnostic :q q
+                       :proof-required nil :proof-available nil
+                       :gap-id (format nil "gap:~A" wanted)
+                       :safe-response "η πρόταση εκπαίδευσης δηλώθηκε — κρίνεται με --can-adopt και έγκριση δημιουργού· καμία έμπιστη έξοδος πριν την πύλη της νέας ικανότητας")
+        (return-from run-ask 0)))
     ;; ── ΕΠΙΒΟΛΗ ΙΧΝΟΥΣ: χωρίς runtime provenance ΔΕΝ υπάρχει έμπιστη
     ;; legal-critical έξοδος — δομημένη άρνηση, όχι σιωπηλή απάντηση ──
     (unless (orchestrator.trace:trace-enabled-p :legal-critical)
@@ -1878,7 +1907,7 @@ reason: legal-critical έξοδος απαιτεί runtime provenance — το �
                      :proof-required t :proof-available nil
                      :violated '(:runtime-provenance)
                      :safe-response "τρέξε χωρίς ORCHESTRATOR_TRACE_PROFILE=off (προεπιλογή: legal-critical) για έμπιστη έξοδο με ίχνος")
-      (return-from run-ask 1))
+      (return-from run-ask 0))
     (let ((n0 (let ((ev (orchestrator.trace:last-event)))
                 (if ev (orchestrator.trace:tevent-id ev) 0))))
     (multiple-value-bind (ans cog)
@@ -1918,7 +1947,8 @@ reason: legal-critical έξοδος απαιτεί runtime provenance — το �
                             (list "κατανόηση-αυτής-της-πρόθεσης")
                             :gap-id gap-id
                             :safe-response "καμία έμπιστη απόφανση — διάγνωσα το κενό· ελεγχόμενη απόκτηση: --training-proposal <ικανότητα> → --can-adopt → έγκριση δημιουργού"))
-           1)))))))
+           ;; επιτυχής ΔΙΑΓΝΩΣΗ κενού — όχι σφάλμα συστήματος
+           0)))))))
 
 ;;; ── Η αποστολή του συντάγματος, δεμένη στις ΠΡΑΓΜΑΤΙΚΕΣ μετρήσεις ──
 ;;; Ο αρμόδιος (αυτή η CLI) εγγράφει ΠΩΣ μετριέται κάθε στόχος· το σύνταγμα
