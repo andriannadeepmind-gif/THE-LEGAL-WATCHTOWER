@@ -272,6 +272,8 @@ WORKDIR /app
 
 # Copy compiled executable from builder
 COPY --from=builder /app/orchestrator.core /app/orchestrator.core
+# Το παγωμένο manifest ταυτοτήτων συστατικών ταξιδεύει ΜΑΖΙ με το εκτελέσιμο
+COPY --from=builder /app/component-manifest.sexp /app/component-manifest.sexp
 
 # Copy essential runtime files
 COPY --from=builder /app/configs/ /app/configs/
