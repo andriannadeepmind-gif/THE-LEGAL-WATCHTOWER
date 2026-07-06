@@ -99,6 +99,7 @@
 
 (defun run-subsumption-gate ()
   "--subsumption-gate : οι κλειδωμένες υποθέσεις των Σ4-Σ6. Μία αποτυχία ⇒ 1."
+  (when (require-provenance-or-untrusted "--subsumption-gate") (return-from run-subsumption-gate 1))
   (orchestrator.knowledge-packs:ensure-fresh)
   (let ((fails '()) (total 0))
     (labels ((check (label ok)

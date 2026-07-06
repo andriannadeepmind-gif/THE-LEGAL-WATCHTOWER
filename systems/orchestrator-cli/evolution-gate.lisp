@@ -127,6 +127,7 @@ required_provenance: (κάθε συμπέρασμα της νέας ικανότ
 human_approval_required: true~%~
 rollback_plan: (restores: deployment/knowledge + μητρώο ικανοτήτων · verify: --extension-gate + --mirror-gate)~%~
 trusted_output_policy_after_training: (έμπιστη έξοδος ΜΟΝΟ μετά πράσινη πύλη + provenance ενεργή· ως τότε: σκιά)~%~
+why_training_not_adoption_yet: (η ικανότητα ΔΕΝ υπάρχει — δεν υπάρχει τεχνούργημα προς υιοθέτηση· η υιοθέτηση κρίνει ΥΠΑΡΚΤΗ ύλη με hash/σκιά, η εκπαίδευση τη ΔΗΜΙΟΥΡΓΕΙ υπό σκιά και έγκριση)~%~
 proposal_id: ~A  →  κρίνεται: --can-adopt ~:*~A~%"
               gap-id wanted wanted req-contracts wanted pid)
       ;; και τίμιο gap report + απόφαση-προεπισκόπηση

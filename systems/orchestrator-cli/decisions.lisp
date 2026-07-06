@@ -1785,21 +1785,69 @@
       (or viol '(:constitutional-guarantees)))))
 
 (defun %structured-refusal (q viol)
-  "Η ΔΟΜΗΜΕΝΗ συνταγματική άρνηση παράκαμψης — μηχανικά αναγνώσιμη."
+  "Η ΔΟΜΗΜΕΝΗ συνταγματική άρνηση παράκαμψης — πλήρες trust envelope."
   (format t "~%── ΣΥΝΤΑΓΜΑΤΙΚΗ ΑΡΝΗΣΗ ΠΑΡΑΚΑΜΨΗΣ ──~%~
-policy_decision: refused~%~
 reason: το αίτημα ζητά παράκαμψη θεσμικών εγγυήσεων — οι αποδείξεις, τα συμβόλαια, η προέλευση εκτέλεσης και η ανθρώπινη έγκριση ΔΕΝ αναστέλλονται με προτροπή~%~
-violated_constraints: (~{~(~A~)~^ ~})~%~
-trusted_output_allowed: false~%~
-trace_profile: ~(~A~) · provenance: ~:[ΑΝΕΝΕΡΓΗ~;ενεργή~]~%~
-safe_alternative: υπέβαλε το ίδιο ερώτημα ΧΩΡΙΣ όρο παράκαμψης — θα απαντηθεί με πλήρη απόδειξη· για αλλαγή πολιτικής: πρόταση μέσω --can-adopt με έγκριση δημιουργού~%"
-          viol orchestrator.trace:*trace-profile*
-          (orchestrator.trace:trace-enabled-p :legal-critical))
+safe_alternative: υπέβαλε το ίδιο ερώτημα ΧΩΡΙΣ όρο παράκαμψης — θα απαντηθεί με πλήρη απόδειξη· για αλλαγή πολιτικής: πρόταση μέσω --can-adopt με έγκριση δημιουργού~%")
+  (%ask-envelope :input-class :override-attempt :policy :refused
+                 :output-status :refused :q q
+                 :proof-required t :proof-available nil :violated viol
+                 :safe-response "μόνο untrusted diagnostic ή επανυποβολή με verified inputs — ποτέ έμπιστη έξοδος χωρίς τις εγγυήσεις")
   (orchestrator.trace:emit! :override-refusal
    :symbol "run-ask" :package "orchestrator.cli"
    :source "systems/orchestrator-cli/decisions.lisp"
    :data (list :question (subseq q 0 (min 120 (length q)))
                :violated viol :refused t)))
+
+(defun %ask-envelope (&key input-class policy output-status q
+                           proof-required proof-available
+                           capability contract component
+                           missing-capabilities gap-id safe-response
+                           violated)
+  "ΤΟ ΠΕΡΙΒΛΗΜΑ ΕΜΠΙΣΤΟΣΥΝΗΣ: τυπώνεται σε ΚΑΘΕ έξοδο του --ask, με τιμές
+   ΥΠΟΛΟΓΙΣΜΕΝΕΣ από τον ταξινομητή, τα ζωντανά ίχνη και τα συμβόλαια —
+   ποτέ στατικές. Μηχανικά αναγνώσιμο (key: value)."
+  (format t "~%── TRUST ENVELOPE ──~%")
+  (format t "input_class: ~(~A~)~%" (or input-class :unclassified))
+  (format t "policy_decision: ~(~A~)~%" (or policy :allowed))
+  (format t "trusted_output_allowed: ~:[false~;true~]~%"
+          (eq output-status :trusted))
+  (format t "output_status: ~(~A~)~%" output-status)
+  (format t "trace_profile: ~(~A~) · provenance: ~:[ΑΝΕΝΕΡΓΗ~;ενεργή~]~%"
+          orchestrator.trace:*trace-profile*
+          (orchestrator.trace:trace-enabled-p :legal-critical))
+  (format t "proof_required: ~:[false~;true~] · proof_available: ~:[false~;true~]~%"
+          proof-required proof-available)
+  (when violated
+    (format t "violated_constraints: (~{~(~A~)~^ ~})~%" violated))
+  (format t "capability_used: ~:[—~;~:*~A~] · contract_used: ~:[—~;~:*~A~] · component_used: ~:[—~;~:*~A~]~%"
+          capability contract component)
+  (when missing-capabilities
+    (format t "missing_capabilities: (~{~A~^ ~})~%" missing-capabilities)
+    (format t "missing_contracts: (δηλώνονται με το --training-proposal) · missing_components: (ομοίως)~%"))
+  (when gap-id (format t "gap_id: ~A~%" gap-id))
+  (format t "safe_response: ~A~%"
+          (or safe-response
+              "η απάντηση φέρει τη δηλωμένη της βάση — ό,τι δεν αποδεικνύεται, δηλώνεται")))
+
+(defun %conclusion-links-since (n0)
+  "Ποια ικανότητα/συμβόλαιο/συστατικό ΠΡΑΓΜΑΤΙΚΑ εκτελέστηκαν σε αυτή την
+   ερώτηση: από τα ίχνη :conclusion/:verification που γεννήθηκαν μετά το N0.
+   (values capability contract component proof-available proof-required)"
+  (let* ((new (remove-if (lambda (ev) (<= (orchestrator.trace:tevent-id ev) n0))
+                         (orchestrator.trace:all-events)))
+         (concl (find :conclusion new :key #'orchestrator.trace:tevent-kind
+                                      :from-end t)))
+    (if concl
+        (let ((links (orchestrator.exec-provenance:resolve-event concl)))
+          (values (getf links :capability) (getf links :contract)
+                  (getf links :component-id)
+                  (and (getf (orchestrator.trace:tevent-data concl) :proofs-p) t)
+                  t))
+        (values nil nil nil
+                (and (find :verification new
+                           :key #'orchestrator.trace:tevent-kind) t)
+                nil))))
 
 (defun run-ask (args)
   "--ask «ερώτηση» : Ρώτα σε ΦΥΣΙΚΑ ΕΛΛΗΝΙΚΑ — ντετερμινιστικά, ΜΕΣΑ από τη
@@ -1822,14 +1870,17 @@ safe_alternative: υπέβαλε το ίδιο ερώτημα ΧΩΡΙΣ όρο 
     ;; legal-critical έξοδος — δομημένη άρνηση, όχι σιωπηλή απάντηση ──
     (unless (orchestrator.trace:trace-enabled-p :legal-critical)
       (format t "~%── ΑΡΝΗΣΗ ΕΜΠΙΣΤΗΣ ΕΞΟΔΟΥ ──~%~
-policy_decision: refused~%~
 output_status: untrusted/refused~%~
-trusted_output_allowed: false~%~
-reason: legal-critical έξοδος απαιτεί runtime provenance — το προφίλ ιχνών είναι ~(~A~)~%~
-violated_constraints: (runtime-provenance)~%~
-safe_alternative: τρέξε χωρίς ORCHESTRATOR_TRACE_PROFILE=off (προεπιλογή: legal-critical)~%"
+reason: legal-critical έξοδος απαιτεί runtime provenance — το προφίλ ιχνών είναι ~(~A~)~%"
               orchestrator.trace:*trace-profile*)
+      (%ask-envelope :input-class :legal-critical-question :policy :refused
+                     :output-status :refused :q q
+                     :proof-required t :proof-available nil
+                     :violated '(:runtime-provenance)
+                     :safe-response "τρέξε χωρίς ORCHESTRATOR_TRACE_PROFILE=off (προεπιλογή: legal-critical) για έμπιστη έξοδο με ίχνος")
       (return-from run-ask 1))
+    (let ((n0 (let ((ev (orchestrator.trace:last-event)))
+                (if ev (orchestrator.trace:tevent-id ev) 0))))
     (multiple-value-bind (ans cog)
         (orchestrator.cognition:process-request q :memory *ask-memory*)
       (orchestrator.memory:record-episode :interaction q
@@ -1838,12 +1889,36 @@ safe_alternative: τρέξε χωρίς ORCHESTRATOR_TRACE_PROFILE=off (προε
         ;; και η ΑΠΑΝΤΗΣΗ (περίληψη) — ώστε η συνομιλία να ανασυστήνεται από τα
         ;; επεισόδια, όχι μόνο να καταμετράται
         :props (when ans (list :answer (subseq ans 0 (min 200 (length ans))))))
-      (cond
-        (ans (format t "~%~A~%" ans) 0)
-        (t (format t "~%Δεν κατάλαβα την ερώτηση — τίμια, χωρίς μάντεμα. Καταγράφηκε.~%~
+      (let ((input-class
+              (let ((frame (orchestrator.cognition:cog-frame cog)))
+                (if frame (class-name (class-of frame)) :unclassified))))
+        (cond
+          (ans
+           (format t "~%~A~%" ans)
+           (multiple-value-bind (cap con comp proof-avail proof-req)
+               (%conclusion-links-since n0)
+             (%ask-envelope :input-class input-class :policy :allowed
+                            :output-status
+                            (cond ((and proof-req (not proof-avail)) :untrusted)
+                                  (t :trusted))
+                            :q q :proof-required proof-req
+                            :proof-available proof-avail
+                            :capability cap :contract con :component comp))
+           0)
+          (t
+           (format t "~%Δεν κατάλαβα την ερώτηση — τίμια, χωρίς μάντεμα. Καταγράφηκε.~%~
 Καταλαβαίνω π.χ.:~%  «τι λέει το άρθρο 299 του ποινικού κώδικα»~%  «ποια νομολογία υπάρχει για το άρθρο 559 ΚΠολΔ»~%  «εξήγησέ μου την απόφαση 101/2026»~%  «προφίλ του δικαστή Κοσμίδη»~%")
            (%lesson :question-not-understood q "άγνωστη πρόθεση")
-           1)))))
+           (let ((gap-id (format nil "gap:ask:~A"
+                                 (subseq (orchestrator.journal:sha256-hex q) 0 8))))
+             (%ask-envelope :input-class input-class :policy :allowed
+                            :output-status :diagnostic :q q
+                            :proof-required nil :proof-available nil
+                            :missing-capabilities
+                            (list "κατανόηση-αυτής-της-πρόθεσης")
+                            :gap-id gap-id
+                            :safe-response "καμία έμπιστη απόφανση — διάγνωσα το κενό· ελεγχόμενη απόκτηση: --training-proposal <ικανότητα> → --can-adopt → έγκριση δημιουργού"))
+           1)))))))
 
 ;;; ── Η αποστολή του συντάγματος, δεμένη στις ΠΡΑΓΜΑΤΙΚΕΣ μετρήσεις ──
 ;;; Ο αρμόδιος (αυτή η CLI) εγγράφει ΠΩΣ μετριέται κάθε στόχος· το σύνταγμα

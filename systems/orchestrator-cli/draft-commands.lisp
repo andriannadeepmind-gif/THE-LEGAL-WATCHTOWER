@@ -301,6 +301,7 @@
 (defun run-draft-gate ()
   "--draft-gate : το παραδοτέο, κλειδωμένο — δομή, αποδείξεις, κενά, άρνηση,
    ντετερμινισμός. 100% ή κόκκινο."
+  (when (require-provenance-or-untrusted "--draft-gate") (return-from run-draft-gate 1))
   (orchestrator.knowledge-packs:ensure-fresh)
   (let ((fails '()) (total 0))
     (labels ((check (label ok)

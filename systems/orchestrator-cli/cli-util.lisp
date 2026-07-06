@@ -89,3 +89,14 @@
 ;; every existing caller keeps working with zero behaviour change.
 (defun %read-last-seen () (%read-cursor "fek"))
 (defun %write-last-seen (n) (%write-cursor "fek" n))
+
+(defun require-provenance-or-untrusted (gate-name)
+  "ΕΠΙΒΟΛΗ ΣΤΟ ENTRYPOINT: legal-critical πύλη χωρίς runtime provenance ΔΕΝ
+   παράγει έμπιστη ετυμηγορία — δηλώνει untrusted και αποτυγχάνει. T = μπλόκο."
+  (unless (orchestrator.trace:trace-enabled-p :legal-critical)
+    (format t "~%── ~A ──~%~
+output_status: untrusted~%~
+trusted_output_allowed: false~%~
+reason: legal-critical πύλη απαιτεί runtime provenance — προφίλ ιχνών ~(~A~)~%"
+            gate-name orchestrator.trace:*trace-profile*)
+    t))
