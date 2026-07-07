@@ -8,7 +8,9 @@
 ;;;; ΠΑΡΟΝ = απογραφή με evidence · TARGET = βούληση, :requires-ok ανά φάση.
 
 (:lawmax-cpei-target-spec 2
- :authored-at-commit "47bae07d"
+ :revision :errata-1-crosswalk-50-25
+ :commit-history (:v1 "47bae07d" :v2 "2dd0e538" :v2-errata-1 :this-commit)
+ :authored-at-commit "2dd0e538"
  :status :specification-only
  :target-name "Constitutional Proof-Carrying Epistemic Institution"
  :definition "εκτελέσιμο ψηφιακό νομικό Ίδρυμα που παράγει κάθε έξοδο ως θεσμική πράξη γνώσης — με απόδειξη, αντίλογο, χρονική ισχύ, μνήμη, provenance, governance και rollback"
@@ -306,8 +308,178 @@
    :risk-if-absent "η νομολογία του εαυτού του χαμένη"))
 
  :coverage-map-summary
- (:types 25 :categories 5 :new-stores 0
-  :rule "τα :missing/:partial είναι capabilities-to-be πάνω στο υπόστρωμα — ΟΧΙ αρχεία")
+ (:groups 25 :categories 5 :new-stores 0
+  :rule "τα :missing/:partial είναι capabilities-to-be πάνω στο υπόστρωμα — ΟΧΙ αρχεία"
+  :note "τα 25 είναι ΣΥΜΠΤΥΓΜΕΝΕΣ ΟΙΚΟΓΕΝΕΙΕΣ — ο πλήρης κατάλογος: :agentic-50-crosswalk")
+
+ ;; ══ CROSSWALK: 50 Agentic Memory Types → 25 Coverage Groups ══
+ ;; (blocking clarification, επιλογή Α: 25 = οικογένειες, 50 = 25×2, κανένας δεν χάθηκε)
+ ;; category: :event :object :projection :policy :graph-relation
+ ;; status: :existing :partial :missing · store: πάντα της ομάδας — 0 νέα stores
+ :agentic-50-crosswalk
+ ((:n 1 :type :conversation-turns :group :episodic-interactions :category :event
+   :status :existing :future-sot "unified event ledger (Φ1)" :provenance :sha256-chain
+   :gate "--memory-gate" :phase :Φ0 :risk "καμία εμπειρία")
+  (:n 2 :type :command-invocations-outcomes :group :episodic-interactions :category :event
+   :status :existing :future-sot "unified event ledger (Φ1)" :provenance :sha256-chain
+   :gate "--memory-gate" :phase :Φ0 :risk "αόρατη λειτουργία")
+  (:n 3 :type :not-understood-inputs :group :dialogue-failures :category :event
+   :status :existing :future-sot "ledger υπό turn_id" :provenance :append-plus-readback
+   :gate "--understanding-gate" :phase :Φ0 :risk "ψευδής μνήμη")
+  (:n 4 :type :misclassification-records :group :dialogue-failures :category :event
+   :status :existing :future-sot "ledger υπό turn_id (wrong_behavior/expected_mode)"
+   :provenance :append-plus-readback :gate "--understanding-gate" :phase :Φ0
+   :risk "μη διορθώσιμα λάθη")
+  (:n 5 :type :adoption-rejection-decisions :group :adoption-decisions :category :event
+   :status :existing :future-sot "ίδιο υπό turn_id" :provenance :sha256-signature
+   :gate "--self-evolution-gate" :phase :Φ0 :risk "ανιστόρητη εξέλιξη")
+  (:n 6 :type :policy-grants-revocations :group :adoption-decisions :category :event
+   :status :existing :future-sot "ίδιο υπό turn_id" :provenance :signed-revocation-visible
+   :gate "--policy-gate" :phase :Φ0 :risk "αόρατη εξουσιοδότηση")
+  (:n 7 :type :legal-critical-spans :group :execution-trace :category :event
+   :status :partial :future-sot "persisted spans ανά πράξη" :provenance :provenance-links
+   :gate "--provenance-gate" :phase :Φ1 :risk "πράξη χωρίς ίχνος")
+  (:n 8 :type :gate-run-outcome-history :group :execution-trace :category :event
+   :status :missing :future-sot "persisted gate-results ανά πράξη" :provenance :root-span-link
+   :gate "--provenance-gate extension" :phase :Φ1 :risk "«πέρασε» χωρίς αρχείο")
+  (:n 9 :type :genesis-identity-narrative :group :biographical-genesis :category :object
+   :status :existing :future-sot "history.sexp" :provenance :bootstrap-tracked
+   :gate "architecture-gate ⑨" :phase nil :risk "απώλεια ταυτότητας")
+  (:n 10 :type :constitutional-mission-record :group :biographical-genesis :category :object
+   :status :existing :future-sot "Σύνταγμα + mission measures" :provenance :live-measurement
+   :gate "--architecture-constitution-gate" :phase nil :risk "σύστημα χωρίς σκοπό")
+  (:n 11 :type :source-file-identities :group :component-identity :category :object
+   :status :existing :future-sot "component-manifest" :provenance :sha256-per-file
+   :gate "--component-gate" :phase :declared-debt :risk "αταυτοποίητη ύλη")
+  (:n 12 :type :build-manifest-identity :group :component-identity :category :object
+   :status :existing :future-sot "manifest + NixOS derivation (L4+)" :provenance :build-freeze
+   :gate "--component-gate" :phase :declared-debt :risk "μη αναπαραγώγιμος εαυτός")
+  (:n 13 :type :self-extension-proposals :group :proposals :category :object
+   :status :existing :future-sot "proposals.sexp" :provenance :shadow-results
+   :gate "--extension-gate" :phase nil :risk "κενά χωρίς διέξοδο")
+  (:n 14 :type :advisor-dream-proposals :group :proposals :category :object
+   :status :existing :future-sot "proposals.sexp" :provenance :judge-plus-shadow
+   :gate "--advisor-gate" :phase nil :risk "ανεξέλεγκτα όνειρα")
+  (:n 15 :type :staged-candidate-packs :group :candidate-packs :category :object
+   :status :existing :future-sot "candidates/" :provenance :shadow-plus-revert
+   :gate "--extension-gate" :phase nil :risk "μόλυνση σταθερού εαυτού")
+  (:n 16 :type :shadow-trial-results :group :candidate-packs :category :object
+   :status :partial :future-sot "δεμένα στο candidate record" :provenance :full-gate-in-shadow
+   :gate "--extension-gate" :phase :Ω5 :risk "αόρατη δοκιμή")
+  (:n 17 :type :active-hypotheses :group :hypothesis-workspace-state :category :object
+   :status :partial :future-sot "typed Hypothesis (Ω3/Ω5)" :provenance :judge-verdicts
+   :gate "--advisor-gate" :phase :Ω5 :risk "αθάνατες υποθέσεις")
+  (:n 18 :type :counterfactual-scenarios :group :hypothesis-workspace-state :category :object
+   :status :partial :future-sot "workspace με κύκλο ζωής" :provenance :not-conclusion-marking
+   :gate "draft-gate Ε14" :phase :Ω5 :risk "εικασία μολύνει κρίση")
+  (:n 19 :type :consolidated-episode-patterns :group :semantic-learned-concepts :category :object
+   :status :missing :future-sot "consolidation προτάσεις (Φ4)" :provenance :proposal-plus-approval
+   :gate "νέος (Φ4)" :phase :Φ4 :risk "συμβάντα χωρίς μοτίβα")
+  (:n 20 :type :adopted-concept-definitions :group :semantic-learned-concepts :category :object
+   :status :partial :future-sot "εγκεκριμένα packs" :provenance :article-grounding
+   :gate "--extension-gate" :phase :Φ4 :risk "αγείωτη «γνώση»")
+  (:n 21 :type :adopted-classification-rules :group :procedural-learned-skills :category :object
+   :status :missing :status-note "ΚΑΝΕΝΑΣ υιοθετημένος — learning ΜΗ αποδεδειγμένη"
+   :future-sot "adopted rules μέσω governance" :provenance :shadow-plus-signature
+   :gate "--understanding-gate" :phase :Φ4+ :risk "μόνο χειροποίητη δεξιότητα")
+  (:n 22 :type :declared-capability-procedures :group :procedural-learned-skills :category :object
+   :status :partial :status-note "δηλωμένες, όχι μαθημένες"
+   :future-sot "capability registry" :provenance :registry-plus-gates
+   :gate "--mirror-gate" :phase nil :risk "αόρατες δεξιότητες")
+  (:n 23 :type :agenda-goals :group :prospective-intentions-agenda :category :object
+   :status :existing :future-sot "agenda υπό turn_id" :provenance :episode-link
+   :gate "--memory-gate" :phase nil :risk "ξεχνά στόχους")
+  (:n 24 :type :event-triggered-intentions :group :prospective-intentions-agenda :category :object
+   :status :existing :future-sot "intentions υπό turn_id" :provenance :fire-once
+   :gate "--memory-gate" :phase nil :risk "ξεχνά τι σκόπευε")
+  (:n 25 :type :last-answer-question-binding :group :working-last-answer :category :projection
+   :status :existing :status-note "RAM" :future-sot "projection του ledger (Φ2)"
+   :provenance :ephemeral :gate "dialogue-gate Β" :phase :Φ2 :risk "κανένα follow-up")
+  (:n 26 :type :current-frame-context :group :working-last-answer :category :projection
+   :status :existing :status-note "RAM" :future-sot "projection του ledger (Φ2)"
+   :provenance :ephemeral :gate "--dialogue-gate" :phase :Φ2 :risk "ασυνεχής σκέψη")
+  (:n 27 :type :cross-run-dialogue-state :group :session-continuity :category :projection
+   :status :missing :future-sot "session projection (Φ2)" :provenance :rebuild-from-events
+   :gate "νέος (Φ2)" :phase :Φ2 :risk "κάθε run «χωρίς χθες»")
+  (:n 28 :type :creator-preferences-profile :group :session-continuity :category :projection
+   :status :missing :future-sot "session projection (Φ2)" :provenance :rebuild-from-events
+   :gate "νέος (Φ2)" :phase :Φ2 :risk "ξαναμαθαίνει τον κύριό του")
+  (:n 29 :type :lemma-recall-index :group :recall-index :category :projection
+   :status :missing :future-sot "index παράγωγο episodes (Φ3)" :provenance :rebuild-verified
+   :gate "νέος (Φ3)" :phase :Φ3 :risk "O(n) ανάκληση")
+  (:n 30 :type :case-similarity-index :group :recall-index :category :projection
+   :status :partial :status-note "hypo knn χωρίς πύλη" :future-sot "ίδιο index family (Φ3)"
+   :provenance :rebuild-verified :gate "νέος (Φ3)" :phase :Φ3 :risk "τυφλή αναλογία")
+  (:n 31 :type :reflection-lessons :group :reflection-aggregate :category :projection
+   :status :existing :future-sot "παράγωγο ledger (μακροπρόθεσμα)" :provenance :single-writer-lesson
+   :gate "understanding-gate ⑬" :phase nil :risk "χωρίς αναστοχασμό")
+  (:n 32 :type :mission-distance-measurements :group :reflection-aggregate :category :projection
+   :status :partial :status-note "live, όχι ιστορικό" :future-sot "ιστορικό μετρήσεων ως προβολή"
+   :provenance :live-computation :gate "--mirror-gate" :phase :Φ4 :risk "πρόοδος χωρίς καμπύλη")
+  (:n 33 :type :daemon-cursors :group :progress-cursors :category :projection
+   :status :existing :future-sot "*-last-seen.txt" :provenance :idempotent-overwrite
+   :gate "architecture-gate ⑨" :phase :declared-debt :risk "ξεχνά πού έμεινε")
+  (:n 34 :type :pipeline-checkpoints :group :progress-cursors :category :projection
+   :status :existing :status-note "keyed cursors" :future-sot "ίδιο family"
+   :provenance :idempotent-overwrite :gate "architecture-gate ⑨" :phase :declared-debt
+   :risk "επανάληψη δουλειάς")
+  (:n 35 :type :self-change-history :group :meta-memory :category :projection
+   :status :partial :future-sot "προβολή decisions (Φ4/L9)" :provenance :signed-decisions
+   :gate "--mirror-gate" :phase :Φ4 :risk "τυφλή εξέλιξη")
+  (:n 36 :type :capability-acquisition-history :group :meta-memory :category :projection
+   :status :partial :status-note "git+decisions, όχι πρώτης τάξης"
+   :future-sot "προβολή decisions (Φ4/L9)" :provenance :signed-decisions
+   :gate "--mirror-gate" :phase :Φ4 :risk "δεν ξέρει πώς μεγάλωσε")
+  (:n 37 :type :class-scoped-auto-approval :group :approval-policies :category :policy
+   :status :existing :future-sot "compiled από Σύνταγμα (Ω10)" :provenance :signed-plus-accuracy
+   :gate "--policy-gate" :phase :Ω10 :risk "ανεξέλεγκτη έγκριση")
+  (:n 38 :type :override-force-audit-policy :group :approval-policies :category :policy
+   :status :existing :future-sot "compiled από Σύνταγμα (Ω10)" :provenance :call-scoped-reason
+   :gate "--policy-gate" :phase :Ω10 :risk "σιωπηλή παράκαμψη")
+  (:n 39 :type :pending-review-items :group :review-queue :category :policy
+   :status :existing :future-sot "review-queue.sexp" :provenance nil
+   :gate "architecture-gate ⑨" :phase :declared-debt :risk "εκκρεμότητες χάνονται")
+  (:n 40 :type :escalation-queue :group :review-queue :category :policy
+   :status :partial :status-note "μία ουρά, χωρίς βαθμίδες" :future-sot "ίδιο store, τυποποίηση"
+   :provenance nil :gate "architecture-gate ⑨" :phase :declared-debt
+   :risk "κρίσιμα ισοπεδώνονται")
+  (:n 41 :type :write-durability-policies :group :memory-write-recall-policies :category :policy
+   :status :partial :status-note "spec + P0 invariant" :future-sot "compiled από Σύνταγμα (Ω10)"
+   :provenance :roundtrip-check :gate "--architecture-constitution-gate" :phase :Ω10
+   :risk "πολιτική=αφήγηση")
+  (:n 42 :type :recall-projection-policies :group :memory-write-recall-policies :category :policy
+   :status :partial :future-sot "compiled από Σύνταγμα (Ω10)" :provenance :roundtrip-check
+   :gate "--architecture-constitution-gate" :phase :Ω10 :risk "αυθαίρετες προβολές")
+  (:n 43 :type :knowledge-pack-provenance :group :source-memory :category :graph-relation
+   :status :existing :status-note "hashes στη φόρτωση" :future-sot "epistemic graph edges (Ω2)"
+   :provenance :hash-bound :gate "--provenance-gate" :phase :Ω2 :risk "γνώση χωρίς καταγωγή")
+  (:n 44 :type :citation-authority-links :group :source-memory :category :graph-relation
+   :status :partial :future-sot "epistemic graph edges (Ω2)" :provenance :citation-grammar
+   :gate "--provenance-gate" :phase :Ω2 :risk "ατεκμηρίωτη αυθεντία")
+  (:n 45 :type :law-validity-intervals :group :temporal-validity :category :graph-relation
+   :status :partial :status-note "corpus επίπεδο" :future-sot "bitemporal graph (Ω2)"
+   :provenance :dual-timestamps :gate "--inference-gate extension" :phase :Ω2
+   :risk "κρίση με λάθος δίκαιο")
+  (:n 46 :type :knowledge-acquisition-time :group :temporal-validity :category :graph-relation
+   :status :missing :future-sot "bitemporal graph (Ω2)" :provenance :dual-timestamps
+   :gate "--inference-gate extension" :phase :Ω2 :risk "«τι ήξερε όταν έκρινε» χαμένο")
+  (:n 47 :type :concept-article-grounding :group :concept-grounding :category :graph-relation
+   :status :existing :future-sot "epistemic graph (Ω2)" :provenance :article-binding
+   :gate "--extension-gate" :phase nil :risk "αγείωτοι ορισμοί")
+  (:n 48 :type :ungrounded-concept-mentions :group :concept-grounding :category :graph-relation
+   :status :existing :status-note "δηλώνονται + κενό" :future-sot "ίδιο + gap δεσμός"
+   :provenance :gap-ledger-link :gate "--extension-gate" :phase nil :risk "σιωπηλή άγνοια")
+  (:n 49 :type :act-supports-act-links :group :cross-act-relations :category :graph-relation
+   :status :missing :future-sot "act-graph υπό act_id (μετά Φ1)" :provenance :proof-links
+   :gate "νέος" :phase :after-Φ1 :risk "χαμένη αυτο-νομολογία")
+  (:n 50 :type :precedent-of-self-links :group :cross-act-relations :category :graph-relation
+   :status :missing :future-sot "act-graph υπό act_id (μετά Φ1)" :provenance :proof-links
+   :gate "νέος" :phase :after-Φ1 :risk "ξαναλύνει τα λυμένα"))
+
+ :crosswalk-summary
+ (:types 50 :groups 25 :per-group 2 :groups-covered :all :new-stores 0
+  :status-tally (:existing 26 :partial 15 :missing 9)
+  :rule "κάθε τύπος ζει στο store της οικογένειάς του ή ως capability πάνω στο ενιαίο υπόστρωμα — ΚΑΝΕΝΑΣ από τους 50 δεν χάθηκε, ΚΑΝΕΝΑ νέο store")
 
  ;; ══ Απαγορεύσεις & συμμόρφωση ══
  :does-not

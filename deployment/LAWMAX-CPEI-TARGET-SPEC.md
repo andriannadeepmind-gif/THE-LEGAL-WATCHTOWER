@@ -1,7 +1,7 @@
 # LAWMAX Ω — CONSTITUTIONAL PROOF-CARRYING EPISTEMIC INSTITUTION (CPEI) · v2
 **Specification-only. ΚΑΜΙΑ υλοποίηση, καμία αλλαγή runtime.**
 Ζεύγος: `LAWMAX-CPEI-TARGET-SPEC.sexp` (data-only, `*read-eval*` NIL, keyword package).
-Authored-at-commit: **47bae07d** (v1) → v2 κατά την οδηγία «APPROVE / PROCEED — SPEC ONLY».
+Ιστορικό commits: v1 = **47bae07d** · **v2 = 2dd0e538** · v2-errata-1 (crosswalk 50→25) = το παρόν commit.
 Ιεραρχία κειμένων: **αυτό = target** · OMEGA-PLAN = δρόμος · MEMORY-KERNEL-SPEC = μνήμη ·
 ARCHITECTURE-CONSTITUTION.sexp + gate = **παρόν, επιβαλλόμενο**.
 
@@ -253,8 +253,74 @@ Coverage: ✅ existing · ◐ partial · ✗ missing. Phases: Φ1-Φ5 = Memory K
 | Concept grounding relations | graph-relation | ✅ | concept-grounding packs + graph-snapshot | epistemic graph (Ω2) | άρθρο-δεσμός | extension-gate | — | αγείωτοι ορισμοί |
 | Cross-act relations (ποια πράξη στηρίζει ποια) | graph-relation | ✗ | — | act-graph υπό act_id (μετά Φ1) | proof links | νέος | μετά Φ1 | νομολογία του εαυτού του χαμένη |
 
-**Απαρίθμηση: 25 memory types → 5 κατηγορίες → ΚΑΝΕΝΑ νέο store πέραν των
+**Απαρίθμηση: 25 coverage groups → 5 κατηγορίες → ΚΑΝΕΝΑ νέο store πέραν των
 δηλωμένων.** Τα ✗/◐ είναι capabilities-to-be πάνω στο υπόστρωμα, όχι αρχεία.
+
+### §5α · CROSSWALK: 50 Agentic Memory Types → 25 Coverage Groups
+
+**Διευκρίνιση (blocking clarification, επιλογή Α):** τα 25 του πίνακα §5 είναι
+**συμπτυγμένες οικογένειες** (coverage groups). Ο πλήρης αγεντικός κατάλογος
+είναι 50 τύποι — **ακριβώς 2 ανά ομάδα** — ώστε να φαίνεται ότι ΚΑΝΕΝΑΣ δεν
+χάθηκε. Κάθε τύπος κληρονομεί το store της ομάδας του: **0 νέα stores**.
+(Cat: E=event O=object P=projection Pol=policy G=graph-relation.)
+
+| # | Agentic memory type | Group | Cat | Status | Future SoT | Provenance | Gate | Phase | Risk if absent |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | Γύροι συνομιλίας (ερώτηση↔απάντηση) | episodic-interactions | E | ✅ | unified event ledger (Φ1) | SHA-256 chain | memory-gate | Φ0 | καμία εμπειρία |
+| 2 | Εκτελέσεις εντολών & εκβάσεις | episodic-interactions | E | ✅ | unified event ledger (Φ1) | SHA-256 chain | memory-gate | Φ0 | αόρατη λειτουργία |
+| 3 | Μη-κατανοητές είσοδοι | dialogue-failures | E | ✅ | ledger υπό turn_id | append+read-back | understanding-gate | Φ0 | ψευδής μνήμη |
+| 4 | Λάθος-τρόπος/misclassification records | dialogue-failures | E | ✅ | ledger υπό turn_id (πεδία wrong_behavior/expected_mode) | append+read-back | understanding-gate | Φ0 | μη διορθώσιμα λάθη |
+| 5 | Αποφάσεις υιοθέτησης/απόρριψης | adoption-decisions | E | ✅ | ίδιο υπό turn_id | SHA-256 υπογραφή | self-evolution-gate | Φ0 | ανιστόρητη εξέλιξη |
+| 6 | Χορηγήσεις/ανακλήσεις πολιτικής | adoption-decisions | E | ✅ | ίδιο υπό turn_id | signed + ανάκληση ορατή | policy-gate | Φ0 | αόρατη εξουσιοδότηση |
+| 7 | Legal-critical spans/συμπεράσματα | execution-trace | E | ◐ (RAM) | persisted spans ανά πράξη | provenance links | provenance-gate | Φ1 | πράξη χωρίς ίχνος |
+| 8 | Ιστορικό εκβάσεων πυλών ανά run | execution-trace | E | ✗ | persisted gate-results ανά πράξη | root-span δεσμός | provenance-gate ext | Φ1 | «πέρασε» χωρίς αρχείο |
+| 9 | Αφήγηση γένεσης/ταυτότητας | biographical-genesis | O | ✅ | history.sexp | bootstrap-tracked | Σύνταγμα ⑨ | — | απώλεια ταυτότητας |
+| 10 | Συνταγματική αποστολή/στόχοι | biographical-genesis | O | ✅ | Σύνταγμα + mission measures | ζωντανή μέτρηση | arch-gate | — | σύστημα χωρίς σκοπό |
+| 11 | Ταυτότητες αρχείων πηγής (SHA-256) | component-identity | O | ✅ | component-manifest | SHA-256/αρχείο | component-gate | δηλ.χρέος | αταυτοποίητη ύλη |
+| 12 | Ταυτότητα build/manifest | component-identity | O | ✅ | manifest + NixOS derivation (L4+) | freeze στο build | component-gate | δηλ.χρέος | μη αναπαραγώγιμος εαυτός |
+| 13 | Αυτο-προτάσεις από κενά | proposals | O | ✅ | proposals.sexp | shadow results | extension-gate | — | κενά χωρίς διέξοδο |
+| 14 | Προτάσεις ονείρων συμβούλου | proposals | O | ✅ | proposals.sexp | judge+shadow | advisor-gate | — | ανεξέλεγκτα όνειρα |
+| 15 | Σταδιοποιημένα candidate packs | candidate-packs | O | ✅ | candidates/ | shadow+revert | extension-gate | — | μόλυνση σταθερού εαυτού |
+| 16 | Αποτελέσματα σκιωδών δικών | candidate-packs | O | ◐ | δεμένα στο candidate record | πλήρης πύλη σε σκιά | extension-gate | Ω5 | αόρατη δοκιμή |
+| 17 | Ενεργές υποθέσεις | hypothesis-workspace-state | O | ◐ | typed Hypothesis (Ω3/Ω5) | judge verdicts | advisor-gate | Ω5 | αθάνατες υποθέσεις |
+| 18 | Counterfactual σενάρια | hypothesis-workspace-state | O | ◐ | workspace με κύκλο ζωής | [ΟΧΙ συμπέρασμα] σήμανση | draft-gate Ε14 | Ω5 | εικασία μολύνει κρίση |
+| 19 | Consolidated μοτίβα από επεισόδια | semantic-learned-concepts | O | ✗ | consolidation προτάσεις (Φ4) | proposal+έγκριση | νέος (Φ4) | Φ4 | συμβάντα χωρίς μοτίβα |
+| 20 | Υιοθετημένοι ορισμοί εννοιών | semantic-learned-concepts | O | ◐ | εγκεκριμένα packs | γείωση σε άρθρο | extension-gate | Φ4 | αγείωτη «γνώση» |
+| 21 | Υιοθετημένοι κανόνες ταξινόμησης | procedural-learned-skills | O | ✗ (κανένας — learning ΜΗ αποδεδειγμένη) | adopted rules μέσω governance | shadow+υπογραφή | understanding-gate | Φ4+ | μόνο χειροποίητη δεξιότητα |
+| 22 | Δηλωμένες διαδικασίες ικανοτήτων | procedural-learned-skills | O | ◐ (δηλωμένες, όχι μαθημένες) | capability registry | μητρώο+πύλες | mirror-gate | — | αόρατες δεξιότητες |
+| 23 | Στόχοι ατζέντας | prospective-intentions-agenda | O | ✅ | agenda υπό turn_id | episode δεσμός | memory-gate | — | ξεχνά στόχους |
+| 24 | Προθέσεις με πυροδότηση γεγονότος | prospective-intentions-agenda | O | ✅ | intentions υπό turn_id | άπαξ πυροδότηση | memory-gate | — | ξεχνά τι σκόπευε |
+| 25 | Δέσιμο last-answer/question | working-last-answer | P | ✅ (RAM) | projection του ledger (Φ2) | εφήμερο | dialogue-gate Β | Φ2 | κανένα follow-up |
+| 26 | Τρέχον πλαίσιο (frame) γύρου | working-last-answer | P | ✅ (RAM) | projection του ledger (Φ2) | εφήμερο | dialogue-gate | Φ2 | ασυνεχής σκέψη |
+| 27 | Cross-run κατάσταση διαλόγου | session-continuity | P | ✗ | session projection (Φ2) | rebuild από events | νέος (Φ2) | Φ2 | κάθε run «χωρίς χθες» |
+| 28 | Προφίλ/προτιμήσεις δημιουργού | session-continuity | P | ✗ | session projection (Φ2) | rebuild από events | νέος (Φ2) | Φ2 | ξαναμαθαίνει τον κύριο του |
+| 29 | Ευρετήριο λημμάτων ανάκλησης | recall-index | P | ✗ | index παράγωγο episodes (Φ3) | rebuild-verified | νέος (Φ3) | Φ3 | O(n) ανάκληση |
+| 30 | Ευρετήριο ομοιότητας υποθέσεων | recall-index | P | ◐ (hypo knn, χωρίς πύλη) | ίδιο index family (Φ3) | rebuild-verified | νέος (Φ3) | Φ3 | τυφλή αναλογία |
+| 31 | Μαθήματα αναστοχασμού | reflection-aggregate | P | ✅ | παράγωγο ledger (μακροπρ.) | ένας writer %lesson | understanding-gate ⑬ | — | χωρίς αναστοχασμό |
+| 32 | Μετρήσεις απόστασης αποστολής | reflection-aggregate | P | ◐ (live, όχι ιστορικό) | ιστορικό μετρήσεων ως προβολή | ζωντανός υπολογισμός | mirror-gate | Φ4 | πρόοδος χωρίς καμπύλη |
+| 33 | Δρομείς δαίμονα (ΦΕΚ/ΑΠ) | progress-cursors | P | ✅ | *-last-seen.txt | idempotent overwrite | Σύνταγμα ⑨ | δηλ.χρέος | ξεχνά πού έμεινε |
+| 34 | Checkpoints pipelines | progress-cursors | P | ✅ (keyed cursors) | ίδιο family | idempotent overwrite | Σύνταγμα ⑨ | δηλ.χρέος | επανάληψη δουλειάς |
+| 35 | Ιστορία αυτο-αλλαγών | meta-memory | P | ◐ | προβολή decisions (Φ4/L9) | signed decisions | mirror-gate | Φ4 | τυφλή εξέλιξη |
+| 36 | Ιστορία απόκτησης ικανοτήτων | meta-memory | P | ◐ (git+decisions) | προβολή decisions (Φ4/L9) | signed decisions | mirror-gate | Φ4 | δεν ξέρει πώς μεγάλωσε |
+| 37 | Πολιτικές αυτο-έγκρισης ανά κλάση | approval-policies | Pol | ✅ | compiled από Σύνταγμα (Ω10) | signed+accuracy | policy-gate | Ω10 | ανεξέλεγκτη έγκριση |
+| 38 | Πολιτική override/force με αιτιολογία | approval-policies | Pol | ✅ | compiled από Σύνταγμα (Ω10) | εμβέλεια-η-κλήση | policy-gate | Ω10 | σιωπηλή παράκαμψη |
+| 39 | Εκκρεμή προς επιθεώρηση | review-queue | Pol | ✅ | review-queue.sexp | — | Σύνταγμα ⑨ | δηλ.χρέος | εκκρεμότητες χάνονται |
+| 40 | Ουρά κλιμάκωσης (escalation) | review-queue | Pol | ◐ (μία ουρά, χωρίς βαθμίδες) | ίδιο store, τυποποίηση | — | Σύνταγμα ⑨ | δηλ.χρέος | κρίσιμα ισοπεδώνονται |
+| 41 | Πολιτικές write/durability | memory-write-recall-policies | Pol | ◐ (spec + P0 invariant) | compiled από Σύνταγμα (Ω10) | roundtrip check | arch-gate | Ω10 | πολιτική=αφήγηση |
+| 42 | Πολιτικές recall/projection | memory-write-recall-policies | Pol | ◐ (spec κείμενο) | compiled από Σύνταγμα (Ω10) | roundtrip check | arch-gate | Ω10 | αυθαίρετες προβολές |
+| 43 | Provenance πακέτων γνώσης | source-memory | G | ✅ (hashes στη φόρτωση) | epistemic graph edges (Ω2) | hash-δεμένο | provenance-gate | Ω2 | γνώση χωρίς καταγωγή |
+| 44 | Δεσμοί παραπομπής/αυθεντίας | source-memory | G | ◐ | epistemic graph edges (Ω2) | citation grammar | provenance-gate | Ω2 | ατεκμηρίωτη αυθεντία |
+| 45 | Διαστήματα ισχύος νόμου (valid-time) | temporal-validity | G | ◐ (corpus επίπεδο) | bitemporal graph (Ω2) | dual timestamps | inference-gate ext | Ω2 | κρίση με λάθος δίκαιο |
+| 46 | Χρόνος απόκτησης γνώσης (transaction-time) | temporal-validity | G | ✗ | bitemporal graph (Ω2) | dual timestamps | inference-gate ext | Ω2 | «τι ήξερε όταν έκρινε» χαμένο |
+| 47 | Γειώσεις έννοια→άρθρο | concept-grounding | G | ✅ | epistemic graph (Ω2) | άρθρο-δεσμός | extension-gate | — | αγείωτοι ορισμοί |
+| 48 | Μνείες αγείωτων εννοιών | concept-grounding | G | ✅ (δηλώνονται+κενό) | ίδιο + gap δεσμός | gap ledger δεσμός | extension-gate | — | σιωπηλή άγνοια |
+| 49 | Δεσμοί πράξη-στηρίζει-πράξη | cross-act-relations | G | ✗ | act-graph υπό act_id (μετά Φ1) | proof links | νέος | μετά Φ1 | χαμένη αυτο-νομολογία |
+| 50 | Δεσμοί «προηγούμενο του εαυτού» | cross-act-relations | G | ✗ | act-graph υπό act_id (μετά Φ1) | proof links | νέος | μετά Φ1 | ξαναλύνει τα λυμένα |
+
+**Πληρότητα crosswalk: 50 τύποι = 25 ομάδες × 2, όλες οι ομάδες καλυμμένες,
+0 νέα stores** — κάθε τύπος ζει στο store της οικογένειάς του ή ως capability
+πάνω στο ενιαίο υπόστρωμα (§4). Καταμέτρηση status (μηχανικά επαληθευμένη από
+το .sexp): 26 ✅ · 15 ◐ · 9 ✗.
 
 ---
 
