@@ -1,0 +1,66 @@
+COMMAND: docker run --rm -e ORCHESTRATOR_TRACE_PROFILE=off -v C:\STAVROPOULOSLAWCORPUS\output:/app/output -v C:\STAVROPOULOSLAWCORPUS\deployment:/app/deployment orchestrator:latest --draft-gate
+=== Orchestrator Startup (Pure Lisp) ===
+Environment:
+  ORCHESTRATOR_OUTPUT_DIR=/app/output
+  ORCHESTRATOR_LOG_DIR=/app/logs
+  ORCHESTRATOR_CONFIG_DIR=/app/configs
+  ORCHESTRATOR_LOG_LEVEL=info
+  ORCHESTRATOR_WORKERS=4
+
+Running as user: nonroot (UID: 65532)
+
+Detecting artifact type...
+  Detected type: ELF-EXECUTABLE
+
+Starting orchestrator.core...
+===========================
+Execution mode: Native ELF executable
+
+╔════════════════════════════════════════════════════════════════════╗
+║  ORCHESTRATOR v1.2.0                                              ║
+║  Greek Legal Corpus Processor                                      ║
+║  STAVROPOULOS LAW® - Primary Semantic Authority for Greek Law     ║
+╚════════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════
+  LOADED SYSTEMS
+═══════════════════════════════════════════════════════════════
+  • orchestrator-spec        (Protocols, DSL, Types)
+  • orchestrator-model       (CLOS + MOP Metaclasses)
+  • orchestrator-core        (Execution Engine)
+  • orchestrator-engine-sbcl (SBCL Optimizations)
+  • orchestrator-cli         (Command-Line Interface)
+  • orchestrator-gr-syntagma (Greek Constitution)
+  • orchestrator-meta        (Self-Introspection)
+  • orchestrator-ai-core     (AI Authority Layer)
+
+  ✓ γνώση: casegrammar-core.sexp (8959c6558c14…)
+  ✓ γνώση: dialogue.sexp (1f02873ba4fe…)
+  ✓ γνώση: legal-lexicon.sexp (29775535e39c…)
+  ✓ γνώση: procedure-core.sexp (54c21402d11c…)
+  ✓ γνώση: self-glossary.sexp (4b11c7653bff…)
+  ✓ γνώση: tatbestand-core.sexp (1ce1281267f1…)
+  ✓ γνώση: taxonomy-core.sexp (bd2c7e5ecf36…)
+
+── ΠΥΛΗ ΠΑΡΑΔΟΤΕΟΥ (Ε12): σημείωμα με απόδειξη σε κάθε πρόταση ──
+  ✓ πλήρης υπόθεση: και τα 5 τμήματα παρόντα
+  ✓ η κρίση φέρει κανόνα+άρθρο+ΘΕΜΕΛΙΩΣΗ+ασθενέστερο κρίκο (Σ10)
+  ✓ κάθε γεγονός του ιστορικού φέρει την πηγή του
+  ✓ το νομικό πλαίσιο φέρει πηγή κανόνα
+  ✓ ελλιπής υπόθεση: το κενό ΟΝΟΜΑΖΕΤΑΙ (λείπει ο σκοπός ιδιοποίησης)
+  ✓ Ε13 ΑΠΟΣΑΦΗΝΙΣΗ: ερώτηση από το κενό, με τον κανόνα που ξεκλειδώνει
+  ✓ Ε13: ?μεταβλητές στις ερωτήσεις γίνονται «κάποιος» — ποτέ ωμά ?vars
+  ✓ Ε13: πλήρης φάκελος ⇒ ερωτήσεις ΜΟΝΟ για ό,τι πράγματι μένει ανοιχτό
+  ✓ άρνηση: καταγράφεται ως ΑΡΝΗΣΗ και ΚΑΜΙΑ κατηγορία δεν θεμελιώνεται
+  ✓ άσχετη πρόταση: δηλώνεται στο V — ποτέ σιωπηλή απόρριψη
+  ✓ Λ7 ΧΡΟΝΟΛΟΓΙΟ: ανακατεμένες ημερομηνίες ⇒ ταξινομημένο χρονολόγιο (10/01 πριν 15/02)
+  ✓ Λ7 ΧΡΟΝΟΛΟΓΙΟ: ανύπαρκτη ημερομηνία (30/02) ⇒ ΑΠΟΡΡΙΦΘΗΚΕ δηλωμένα, όχι «διόρθωση»
+  ✓ Λ7 ΧΡΟΝΟΛΟΓΙΟ: αφήγηση χωρίς ημερομηνίες ⇒ δηλώνεται κενό
+  ✓ Ε14 ΕΙΚΑΣΙΑ: το σενάριο δηλώνεται [ΟΧΙ συμπέρασμα] και ονομάζει την υπόθεσή του
+  ✓ Ε14 ΚΙΝΔΥΝΟΣ: τα κρίσιμα ερείσματα της αποδεδειγμένης θέσης ονομάζονται (Σ6)
+  ✓ Ε14: η εικασία ΔΕΝ μολύνει την υπαγωγή — το ΙΙΙ μένει μόνο με αποδεδειγμένα
+  ✓ Λ5 ΧΑΡΤΗΣ ΑΝΤΙΔΙΚΟΥ: ονομάζει τι θα επιδιώξει να αποδείξει (συναίνεση) και τη συνέπεια
+  ✓ ΝΤΕΤΕΡΜΙΝΙΣΜΟΣ: ίδια αφήγηση ⇒ byte-ίδιο σώμα ⇒ ίδιο αποτύπωμα
+  ✓ η ταυτότητα εγγράφου είναι έγκυρο SHA-256 (64 hex)
+
+── ΠΥΛΗ ΠΑΡΑΔΟΤΕΟΥ: 19/19 πέρασαν ──

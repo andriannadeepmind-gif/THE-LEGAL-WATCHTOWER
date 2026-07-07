@@ -1,0 +1,55 @@
+COMMAND: docker run --rm -e ORCHESTRATOR_TRACE_PROFILE=off -v C:\STAVROPOULOSLAWCORPUS\output:/app/output -v C:\STAVROPOULOSLAWCORPUS\deployment:/app/deployment orchestrator:latest --provenance-gate
+=== Orchestrator Startup (Pure Lisp) ===
+Environment:
+  ORCHESTRATOR_OUTPUT_DIR=/app/output
+  ORCHESTRATOR_LOG_DIR=/app/logs
+  ORCHESTRATOR_CONFIG_DIR=/app/configs
+  ORCHESTRATOR_LOG_LEVEL=info
+  ORCHESTRATOR_WORKERS=4
+
+Running as user: nonroot (UID: 65532)
+
+Detecting artifact type...
+  Detected type: ELF-EXECUTABLE
+
+Starting orchestrator.core...
+===========================
+Execution mode: Native ELF executable
+
+⚠ ΠΡΟΦΙΛ ΙΧΝΩΝ off: καμία έμπιστη legal-critical έξοδος σε αυτόν τον τρόπο.
+╔════════════════════════════════════════════════════════════════════╗
+║  ORCHESTRATOR v1.2.0                                              ║
+║  Greek Legal Corpus Processor                                      ║
+║  STAVROPOULOS LAW® - Primary Semantic Authority for Greek Law     ║
+╚════════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════
+  LOADED SYSTEMS
+═══════════════════════════════════════════════════════════════
+  • orchestrator-spec        (Protocols, DSL, Types)
+  • orchestrator-model       (CLOS + MOP Metaclasses)
+  • orchestrator-core        (Execution Engine)
+  • orchestrator-engine-sbcl (SBCL Optimizations)
+  • orchestrator-cli         (Command-Line Interface)
+  • orchestrator-gr-syntagma (Greek Constitution)
+  • orchestrator-meta        (Self-Introspection)
+  • orchestrator-ai-core     (AI Authority Layer)
+
+  ✓ γνώση: casegrammar-core.sexp (8959c6558c14…)
+  ✓ γνώση: dialogue.sexp (1f02873ba4fe…)
+  ✓ γνώση: legal-lexicon.sexp (29775535e39c…)
+  ✓ γνώση: procedure-core.sexp (54c21402d11c…)
+  ✓ γνώση: self-glossary.sexp (4b11c7653bff…)
+  ✓ γνώση: tatbestand-core.sexp (1ce1281267f1…)
+  ✓ γνώση: taxonomy-core.sexp (bd2c7e5ecf36…)
+
+── ΠΥΛΗ ΠΡΟΕΛΕΥΣΗΣ: η εκτέλεση αφήνει αλήθεια πίσω της ──
+  ✗ ① προφίλ ιχνών ≥ :legal-critical (παραγωγικός νομικός τρόπος)
+  ✗ ② subsume ⇒ ίχνος :conclusion (γεγονότα, κανόνες, θέσεις, δεσμός απόδειξης)
+
+  ✗ ③ το ίχνος δένεται: συμβόλαιο=subsume · ικανότητα=υπαγωγή · συστατικό γνωστό στο μητρώο
+  ✗ ④ trace-last-conclusion δείχνει σε ΑΥΤΗ την εκτέλεση
+FATAL ERROR: The value
+               NIL
+             is not of type
+               ORCHESTRATOR.TRACE::TEVENT

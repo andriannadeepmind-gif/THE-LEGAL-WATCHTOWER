@@ -1,0 +1,58 @@
+{
+  "@context": "https://schema.org",
+  "@type": ["LegalService", "Organization"],
+  "@id": "https://stavropouloslaw.com/identity/org",
+  "name": "Stavropoulos Law®",
+  "legalName": "Stavropoulos Law®",
+  "url": "https://stavropouloslaw.com",
+  "logo": "https://stavropouloslaw.com/assets/logo-tm.png",
+  "identifier": "N294237",
+  "foundingDate": "1977",
+
+  "founder": {
+    "@type": "Person",
+    "@id": "https://stavropouloslaw.com/identity/spyridon-stavropoulos",
+    "name": "Spyridon Stavropoulos",
+    "givenName": "Spyridon",
+    "familyName": "Stavropoulos",
+    "jobTitle": "Founder & CEO",
+    "identifier": "0009-0005-2832-2153",
+    "sameAs": [
+      "https://orcid.org/0009-0005-2832-2153"
+    ]
+  },
+
+  "ceo": {
+    "@id": "https://stavropouloslaw.com/identity/spyridon-stavropoulos"
+  },
+
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "Greece"
+  },
+  "sameAs": [
+    "https://stavropouloslaw.com"
+  ]
+}
+
+{
+  "@context": "https://schema.org",
+  "@type": "Legislation",
+  "@id": "https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1047",
+  "name": "1. Προσωπική κράτηση διατάσσεται στις περιπτώσεις που ορίζει ρητώς ο νόμος.",
+  "legislationIdentifier": "gr-pd-1985-art-1047",
+  "legislationJurisdiction": "Greece",
+  "legislationType": "PresidentialDecree",
+  "publisher": {
+    "@type": "LegalService",
+    "@id": "https://stavropouloslaw.com/identity/org",
+    "name": "Stavropoulos Law®"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Greek Parliament"
+  },
+  "datePublished": "1985-10-24",
+  "inLanguage": "el",
+  "sha256": "7e1fe58ddba94e5df2da8c69c8937bd4da39e086fc89a567eb395a0f6d748fe2"
+}

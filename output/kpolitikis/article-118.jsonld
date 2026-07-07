@@ -1,0 +1,58 @@
+{
+  "@context": "https://schema.org",
+  "@type": ["LegalService", "Organization"],
+  "@id": "https://stavropouloslaw.com/identity/org",
+  "name": "Stavropoulos Law®",
+  "legalName": "Stavropoulos Law®",
+  "url": "https://stavropouloslaw.com",
+  "logo": "https://stavropouloslaw.com/assets/logo-tm.png",
+  "identifier": "N294237",
+  "foundingDate": "1977",
+
+  "founder": {
+    "@type": "Person",
+    "@id": "https://stavropouloslaw.com/identity/spyridon-stavropoulos",
+    "name": "Spyridon Stavropoulos",
+    "givenName": "Spyridon",
+    "familyName": "Stavropoulos",
+    "jobTitle": "Founder & CEO",
+    "identifier": "0009-0005-2832-2153",
+    "sameAs": [
+      "https://orcid.org/0009-0005-2832-2153"
+    ]
+  },
+
+  "ceo": {
+    "@id": "https://stavropouloslaw.com/identity/spyridon-stavropoulos"
+  },
+
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "Greece"
+  },
+  "sameAs": [
+    "https://stavropouloslaw.com"
+  ]
+}
+
+{
+  "@context": "https://schema.org",
+  "@type": "Legislation",
+  "@id": "https://stavropouloslaw.com/eli/gr/pd/1985/503/art/118",
+  "name": "Άρθρο 118",
+  "legislationIdentifier": "gr-pd-1985-art-118",
+  "legislationJurisdiction": "Greece",
+  "legislationType": "PresidentialDecree",
+  "publisher": {
+    "@type": "LegalService",
+    "@id": "https://stavropouloslaw.com/identity/org",
+    "name": "Stavropoulos Law®"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Greek Parliament"
+  },
+  "datePublished": "1985-10-24",
+  "inLanguage": "el",
+  "sha256": "42b7f0832c50559177916b2daa9979432e5e1f084060ec6121c6d7dbee84e36b"
+}

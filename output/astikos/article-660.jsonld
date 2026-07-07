@@ -1,0 +1,58 @@
+{
+  "@context": "https://schema.org",
+  "@type": ["LegalService", "Organization"],
+  "@id": "https://stavropouloslaw.com/identity/org",
+  "name": "Stavropoulos Law®",
+  "legalName": "Stavropoulos Law®",
+  "url": "https://stavropouloslaw.com",
+  "logo": "https://stavropouloslaw.com/assets/logo-tm.png",
+  "identifier": "N294237",
+  "foundingDate": "1977",
+
+  "founder": {
+    "@type": "Person",
+    "@id": "https://stavropouloslaw.com/identity/spyridon-stavropoulos",
+    "name": "Spyridon Stavropoulos",
+    "givenName": "Spyridon",
+    "familyName": "Stavropoulos",
+    "jobTitle": "Founder & CEO",
+    "identifier": "0009-0005-2832-2153",
+    "sameAs": [
+      "https://orcid.org/0009-0005-2832-2153"
+    ]
+  },
+
+  "ceo": {
+    "@id": "https://stavropouloslaw.com/identity/spyridon-stavropoulos"
+  },
+
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "Greece"
+  },
+  "sameAs": [
+    "https://stavropouloslaw.com"
+  ]
+}
+
+{
+  "@context": "https://schema.org",
+  "@type": "Legislation",
+  "@id": "https://stavropouloslaw.com/eli/gr/l/1940/2250/art/660",
+  "name": "Ασθένεια του εργαζομένου.",
+  "legislationIdentifier": "gr-l-1946-art-660",
+  "legislationJurisdiction": "Greece",
+  "legislationType": "Statute",
+  "publisher": {
+    "@type": "LegalService",
+    "@id": "https://stavropouloslaw.com/identity/org",
+    "name": "Stavropoulos Law®"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Greek Parliament"
+  },
+  "datePublished": "1946-02-23",
+  "inLanguage": "el",
+  "sha256": "ad2209c0a31d71d1b34bf1624e1f2d1a8bb6b214a9bc8752632ae2da012b986f"
+}

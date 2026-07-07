@@ -1,0 +1,58 @@
+{
+  "@context": "https://schema.org",
+  "@type": ["LegalService", "Organization"],
+  "@id": "https://stavropouloslaw.com/identity/org",
+  "name": "Stavropoulos Law®",
+  "legalName": "Stavropoulos Law®",
+  "url": "https://stavropouloslaw.com",
+  "logo": "https://stavropouloslaw.com/assets/logo-tm.png",
+  "identifier": "N294237",
+  "foundingDate": "1977",
+
+  "founder": {
+    "@type": "Person",
+    "@id": "https://stavropouloslaw.com/identity/spyridon-stavropoulos",
+    "name": "Spyridon Stavropoulos",
+    "givenName": "Spyridon",
+    "familyName": "Stavropoulos",
+    "jobTitle": "Founder & CEO",
+    "identifier": "0009-0005-2832-2153",
+    "sameAs": [
+      "https://orcid.org/0009-0005-2832-2153"
+    ]
+  },
+
+  "ceo": {
+    "@id": "https://stavropouloslaw.com/identity/spyridon-stavropoulos"
+  },
+
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "Greece"
+  },
+  "sameAs": [
+    "https://stavropouloslaw.com"
+  ]
+}
+
+{
+  "@context": "https://schema.org",
+  "@type": "Legislation",
+  "@id": "https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1079",
+  "name": "Άρθρο 1079",
+  "legislationIdentifier": "gr-l-1946-art-1079",
+  "legislationJurisdiction": "Greece",
+  "legislationType": "Statute",
+  "publisher": {
+    "@type": "LegalService",
+    "@id": "https://stavropouloslaw.com/identity/org",
+    "name": "Stavropoulos Law®"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Greek Parliament"
+  },
+  "datePublished": "1946-02-23",
+  "inLanguage": "el",
+  "sha256": "1a04f418ff9fee6a0b22089ce39119b9c40e01b100d427c792a44cace0c10a0a"
+}

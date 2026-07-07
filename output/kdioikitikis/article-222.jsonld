@@ -1,0 +1,58 @@
+{
+  "@context": "https://schema.org",
+  "@type": ["LegalService", "Organization"],
+  "@id": "https://stavropouloslaw.com/identity/org",
+  "name": "Stavropoulos Law®",
+  "legalName": "Stavropoulos Law®",
+  "url": "https://stavropouloslaw.com",
+  "logo": "https://stavropouloslaw.com/assets/logo-tm.png",
+  "identifier": "N294237",
+  "foundingDate": "1977",
+
+  "founder": {
+    "@type": "Person",
+    "@id": "https://stavropouloslaw.com/identity/spyridon-stavropoulos",
+    "name": "Spyridon Stavropoulos",
+    "givenName": "Spyridon",
+    "familyName": "Stavropoulos",
+    "jobTitle": "Founder & CEO",
+    "identifier": "0009-0005-2832-2153",
+    "sameAs": [
+      "https://orcid.org/0009-0005-2832-2153"
+    ]
+  },
+
+  "ceo": {
+    "@id": "https://stavropouloslaw.com/identity/spyridon-stavropoulos"
+  },
+
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "Greece"
+  },
+  "sameAs": [
+    "https://stavropouloslaw.com"
+  ]
+}
+
+{
+  "@context": "https://schema.org",
+  "@type": "Legislation",
+  "@id": "https://stavropouloslaw.com/eli/gr/l/1999/2717/art/222",
+  "name": "Εκδίκαση",
+  "legislationIdentifier": "gr-l-1999-art-222",
+  "legislationJurisdiction": "Greece",
+  "legislationType": "Statute",
+  "publisher": {
+    "@type": "LegalService",
+    "@id": "https://stavropouloslaw.com/identity/org",
+    "name": "Stavropoulos Law®"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Greek Parliament"
+  },
+  "datePublished": "1999-05-17",
+  "inLanguage": "el",
+  "sha256": "d45f8f19922e1b0d55e53a450b3617072280e066063fd1a88d43f8cf6efd7f0a"
+}

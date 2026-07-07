@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "dct": "http://purl.org/dc/terms/"
+  },
+  "@id": "https://stavropouloslaw.com/eli/kpoinikis/catalog",
+  "@type": "dcat:Dataset",
+  "dct:title": "Κώδικας Ποινικής Δικονομίας",
+  "dct:identifier": "kpoinikis",
+  "dct:language": "el",
+  "dcat:itemCount": 595,
+  "dcat:distribution": [
+    {"@type": "dcat:Distribution", "dcat:mediaType": "application/akn+xml", "dcat:downloadURL": "https://stavropouloslaw.com/eli/kpoinikis/consolidated.akn.xml"},
+    {"@type": "dcat:Distribution", "dcat:mediaType": "text/turtle", "dcat:downloadURL": "https://stavropouloslaw.com/eli/kpoinikis/consolidated.ttl"},
+    {"@type": "dcat:Distribution", "dcat:mediaType": "application/jsonl", "dcat:downloadURL": "https://stavropouloslaw.com/eli/kpoinikis/corpus.jsonl"},
+    {"@type": "dcat:Distribution", "dcat:mediaType": "text/plain", "dcat:downloadURL": "https://stavropouloslaw.com/eli/kpoinikis/consolidated.txt"}
+  ]
+}

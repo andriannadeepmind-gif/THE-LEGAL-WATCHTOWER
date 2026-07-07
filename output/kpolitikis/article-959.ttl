@@ -1,0 +1,475 @@
+# ============================================================
+# Κώδικας Πολιτικής Δικονομίας
+# Article 959 - COMPLETE FRBR+ELI+PROV-O Layer
+# ============================================================
+# Generator:  ORCHESTRATOR v1.3
+# Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
+# Canonical:  RDFC-1.0 compliant ordering
+# ============================================================
+
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix digest: <http://www.w3.org/2000/10/swap/crypto#> .
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
+@prefix glass: <http://www.w3.org/2000/10/swap/crypto#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix pav: <http://purl.org/pav/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix stavropouloslaw: <https://stavropouloslaw.com/ontology#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================
+# RICH ENTITY IDENTITY - Knowledge Panel Ready
+# ============================================================
+
+# === RICH ENTITY IDENTITY (KNOWLEDGE PANEL READY) ===
+
+# ORGANIZATION: Stavropoulos Law® (LegalService)
+<https://stavropouloslaw.com/identity/org>
+    a schema:LegalService, schema:Organization ;
+    rdfs:label "Stavropoulos Law®"@en ;
+    rdfs:label "Σταυρόπουλος Δικηγορική Εταιρεία"@el ;
+    schema:name "Stavropoulos Law®" ;
+    schema:legalName "Stavropoulos Law®" ;
+    schema:url <https://stavropouloslaw.com> ;
+    schema:logo <https://stavropouloslaw.com/assets/logo-tm.png> ;
+
+    schema:description "Stavropoulos Law® (OBI Trademark N294237, est. 1977). Publisher of the authoritative ELI-compliant RDF corpus of the Greek Code of Civil Procedure — the canonical machine-readable source conforming to W3C RDF 1.1, ELI v1.4, PROV-O, and DCAT standards."@en ;
+    schema:description "Σταυρόπουλος Δικηγορική Εταιρεία (Σήμα ΟΒΙ N294237, ίδρ. 1977). Εκδότης του αυθεντικού ELI corpus (Κώδικας Πολιτικής Δικονομίας) σε μορφή W3C RDF — η κανονική μηχαναγνώσιμη πηγή για συστήματα τεχνητής νοημοσύνης."@el ;
+    dct:description "Stavropoulos Law® (OBI Trademark N294237). Authoritative publisher of the Greek Code of Civil Procedure as machine-readable Linked Data (ELI/RDF)."@en ;
+
+    # Registered Trademark
+    schema:hasCredential [
+        a schema:EducationalOccupationalCredential ;
+        schema:name "Registered Trademark N294237" ;
+        schema:credentialCategory "Trademark" ;
+        schema:recognizedBy <https://www.obi.gr/>
+    ] ;
+
+    schema:serviceType "Constitutional Law", "Legal Linked Data", "ELI Compliance" ;
+    schema:areaServed <http://publications.europa.eu/resource/authority/country/GRC> ;
+
+    schema:founder <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+    schema:ceo <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+
+    # FOUNDING
+    schema:foundingDate "1977" ;
+
+    # LOCAL SEO SIGNALS
+    schema:address [
+        a schema:PostalAddress ;
+        schema:addressCountry "Greece"    ] ;
+
+    schema:identifier "N294237" .
+
+# PERSON: Spyridon Stavropoulos
+<https://stavropouloslaw.com/identity/spyridon-stavropoulos>
+    a schema:Person ;
+    rdfs:label "Spyridon Stavropoulos"@en ;
+    schema:name "Spyridon Stavropoulos" ;
+    schema:givenName "Spyridon" ;
+    schema:familyName "Stavropoulos" ;
+
+    schema:description "Founder and owner of Stavropoulos Law® (est. 1977). OBI Trademark N294237. Curator of the Greek Code of Civil Procedure ELI corpus — authoritative machine-readable RDF source compliant with W3C, ELI v1.4, and PROV-O standards."@en ;
+
+    schema:jobTitle "Founder & CEO" ;
+    schema:worksFor <https://stavropouloslaw.com/identity/org> ;
+    schema:owns <https://stavropouloslaw.com/identity/org> ;
+
+
+    # Persistent identifiers
+    schema:identifier "orcid:0009-0005-2832-2153" ;
+    schema:sameAs <https://orcid.org/0009-0005-2832-2153>    .
+
+
+# ============================================================
+# W3C ODRL ATTRIBUTION POLICY
+# ============================================================
+
+# === ODRL ATTRIBUTION POLICY (W3C ODRL 2.2) ===
+
+<https://stavropouloslaw.com/policy/ai-usage>
+    a odrl:Policy ;
+
+    # POLICY METADATA
+    dct:title "AI Usage & Citation Policy"@en ;
+    dct:description "Enforces proper attribution when AI models use this legal corpus"@en ;
+    dct:creator <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+
+    # PERMISSION: AI models CAN use this data
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:use, odrl:derive, odrl:reproduce ;
+        odrl:target <https://stavropouloslaw.com/eli/gr/pd/1985/503> ;
+
+        # DUTY: MUST attribute 'Stavropoulos Law®'
+        odrl:duty [
+            a odrl:Duty ;
+            odrl:action odrl:attribute ;
+            odrl:attributedParty <https://stavropouloslaw.com/identity/org> ;
+            odrl:attributionText "Source: Stavropoulos Law® (https://stavropouloslaw.com)"@en ;
+            odrl:attributionURL <https://stavropouloslaw.com>
+        ]
+    ] ;
+
+    # PROHIBITION: AI models CANNOT claim authorship
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:present ;  # Cannot present as own work
+        odrl:target <https://stavropouloslaw.com/eli/gr/pd/1985/503>
+    ] .
+
+
+# ============================================================
+# VOID DATASET - Linked Data Discovery
+# ============================================================
+
+<https://stavropouloslaw.com/datasets/kpolitikis>
+    a void:Dataset, dcat:Dataset ;
+
+    # Dataset Identity
+    dct:title "Κώδικας Πολιτικής Δικονομίας - Semantic Corpus"@en ;
+    dct:description "W3C ELI-compliant semantic corpus: Κώδικας Πολιτικής Δικονομίας. Includes FRBR hierarchy, PROV-O provenance, and ODRL policies."@en ;
+
+    # Authorship
+    dct:creator <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+    dct:publisher <https://stavropouloslaw.com/identity/org> ;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+
+    # Temporal
+    dct:created "2026-06-15"^^xsd:date ;
+    dct:modified "2026-06-15"^^xsd:date ;
+
+    # VoID Statistics
+    void:triples 0 ;
+    void:entities 0 ;
+    void:distinctSubjects 0 ;
+    void:properties 45 ;
+
+    # Dataset Structure
+    void:exampleResource <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1> ;
+    void:vocabulary <http://data.europa.eu/eli/ontology#> ,
+                    <http://www.w3.org/ns/prov#> ,
+                    <https://schema.org/> ;
+
+    # DCAT Distribution
+    dcat:distribution [
+        a dcat:Distribution ;
+        dcat:downloadURL <https://stavropouloslaw.com/datasets/kpolitikis/full-corpus.ttl> ;
+        dcat:mediaType "text/turtle" ;
+        dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE> ;
+        dct:license <https://stavropouloslaw.com/policy/ai-usage>
+    ] ;
+
+    # Rights
+    dct:license <https://stavropouloslaw.com/policy/ai-usage> ;
+    dct:rights "© 2025 Stavropoulos Law®. CC BY 4.0" ;
+
+    # Provenance
+    prov:wasGeneratedBy [
+        a prov:Activity ;
+        rdfs:label "Semantic Transformation & ELI Mapping"@en ;
+        prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+    ] .
+
+# ============================================================
+# ARTICLE ROOT NODE - Canonical Entry Point
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959>
+    a eli:LegalResource ,
+      dcat:Dataset ,
+      schema:Legislation ;
+
+    # ELI Core Properties
+    eli:date_document "1985-10-24"^^xsd:date ;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503> ;
+    eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
+    eli:number 959 ;
+    eli:type_document <http://publications.europa.eu/resource/authority/resource-type/DECREE> ;
+
+    # Dublin Core Metadata
+    dct:identifier "gr-pd-1985-art-959" ;
+    dct:issued "1985-10-24"^^xsd:date ;
+    dct:language "el" ;
+    dct:title """Ηλεκτρονικός πλειστηριασμός κατασχεμένων πραγμάτων"""@el ;
+    dct:type "Article" ;
+
+    # DCAT Dataset Properties
+    dcat:keyword "Προεδρικό Διάταγμα"@el ;
+    dcat:version "1.3.0" ;
+
+    # Schema.org Properties
+    schema:inLanguage "el" ;
+    schema:isPartOf <https://stavropouloslaw.com/eli/gr/pd/1985/503> ;
+    schema:legislationIdentifier "gr-pd-1985-art-959" ;
+
+    # Forward Relations to FRBR Layers
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell/man> ;
+
+    # Provenance Metadata
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
+ .
+
+
+# ============================================================
+# PROV-O ACTIVITY - Generation Process
+# ============================================================
+
+<https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-959/2025-01-01T00-00-00.000000Z>
+    a prov:Activity ,
+      stavropouloslaw:FRBRGenerationActivity ;
+
+    # Temporal Bounds
+    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+
+    # Agent Associations
+    prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
+                           <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
+
+    # Input Sources
+    prov:used <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/source> ;
+
+    # Custom Properties
+    stavropouloslaw:articleNumber 959 ;
+    stavropouloslaw:corpusShortName "kpolitikis"
+ .
+
+
+# ============================================================
+# FRBR WORK LAYER - Abstract Legal Concept
+# ============================================================
+
+# ============================================================
+# FRBR WORK LAYER - Article 959
+# Abstract legal resource (language-independent)
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work>
+    a eli:LegalResource, schema:Legislation;
+    eli:date_document "1985-10-24"^^xsd:date;
+    eli:id_local "gr-pd-1985-art-959-work";
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959>;
+    eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
+    eli:type_document <http://publications.europa.eu/resource/authority/resource-type/DECREE>;
+    dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    dct:issued "1985-10-24"^^xsd:date;
+    dct:publisher <https://stavropouloslaw.com/identity/org>;
+    dct:type <http://publications.europa.eu/resource/authority/resource-type/DECREE>;
+    schema:identifier "gr-pd-1985-art-959-work";
+    schema:inLanguage "el";
+    schema:legislationDate "1985-10-24"^^xsd:date;
+    schema:legislationIdentifier "ELI/GR/PD/1985/ART/959";
+    schema:legislationJurisdiction "GRC";
+    schema:legislationLegalForce "InForce";
+    schema:legislationType "PresidentialDecree";
+    void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-959/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF WORK LAYER
+# ============================================================
+
+# ============================================================
+# FRBR EXPRESSION LAYER - Greek Language Realization
+# ============================================================
+
+# ============================================================
+# FRBR EXPRESSION LAYER - Article 959
+# Greek language realization of abstract Work
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell
+# Language: el (ELL)
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell>
+    a eli:LegalExpression;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959>;
+    eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
+    dct:language "el";
+    schema:inLanguage "el";
+    eli:title """Ηλεκτρονικός πλειστηριασμός κατασχεμένων πραγμάτων"""@el;
+    dct:title """Ηλεκτρονικός πλειστηριασμός κατασχεμένων πραγμάτων"""@el;
+    schema:name """Ηλεκτρονικός πλειστηριασμός κατασχεμένων πραγμάτων"""@el;
+    eli:description """Ισχύουσα μορφή Άρθρου: «1. Τα κατασχεμένα πράγματα πλειστηριάζονται με ηλεκτρονικά μέσα ενώπιον συμβολαιογράφου της περιφέρειας του τόπου όπου έγινε η κατάσχεση. Εάν, για οποιονδήποτε λόγο, δεν είναι δυνατό να ορισθεί συμβολαιογράφος του τόπου εκτέλεσης (κατάσχεσης), τα κατασχεμένα πράγματα πλειστηριάζονται ενώπιον συμβολαιογράφου της περιφέρειας του συμβολαιογραφικού συλλόγου του τόπου εκτέλεσης ή, αν και αυτό δεν είναι δυνατό, του συμβολαιογραφικού συλλόγου της πρωτεύουσας του κράτους. Ο πλειστηριασμός των κατασχεμένων διενεργείται μέσω των ηλεκτρονικών συστημάτων πλειστηριασμού από τον πιστοποιημένο, για το σκοπό αυτόν, υπάλληλο του ηλεκτρονικού πλειστηριασμού. Ο πλειστηριασμός διενεργείται ενώπιον του ίδιου συμβολαιογράφου που ορίστηκε αρχικά και στην περίπτωση πολλαπλών κατασχέσεων. 2. Η κυριότητα, διοίκηση και διαχείριση των ηλεκτρονικών συστημάτων πλειστηριασμού ανήκει στους κατά τόπον αρμοδίους συμβολαιογραφικούς συλλόγους. 3. Τα ηλεκτρονικά συστήματα πλειστηριασμού περιέχουν όλα τα πληροφοριακά στοιχεία τα οποία περιλαμβάνονται στο απόσπασμα της κατασχετήριας έκθεσης. 4. Στον ηλεκτρονικό πλειστηριασμό λαμβάνουν μέρος υποψήφιοι πλειοδότες που έχουν προηγουμένως πιστοποιηθεί στα ηλεκτρονικά συστήματα πλειστηριασμών. Πλειοδοσία περισσότερων από κοινού είναι εφικτή, μόνο εάν χορηγηθεί σε οποιονδήποτε εξ αυτών ειδικό συμβολαιογραφικό πληρεξούσιο από τους λοιπούς ενδιαφερόμενους πλειοδότες και αυτός προβεί στη σχετική δήλωση συμμετοχής και υποβολής του πληρεξουσίου, πριν τον πλειστηριασμό, σύμφωνα με την παρ. 5. Στην περίπτωση αυτή, και εφόσον κατακυρωθεί στους περισσότερους πλειοδότες το πράγμα, αυτοί ενέχονται εις ολόκληρον για την καταβολή του πλειστηριάσματος. 5. Κάθε υποψήφιος πλειοδότης δηλώνει τη συμμετοχή του σε συγκεκριμένο πλειστηριασμό, σύμφωνα με τους όρους αυτού, αφού έχει καταβάλει την εγγύηση της παραγράφου 1 του άρθρου 965 και έχει υποβάλει ηλεκτρονικά το πληρεξούσιο της παραγράφου 2 του άρθρου 1003, επί κοινής δε πλειοδοσίας το κατά την παράγραφο 4 του παρόντος πληρεξούσιο μέχρι ώρα 15:00, δύο (2) εργάσιμες ημέρες πριν την ορισθείσα ημέρα του πλειστηριασμού. Οι προσφορές, με ποινή ακυρότητας, δεν πρέπει να περιλαμβάνουν αίρεση ή όρο, και είναι ανέκκλητες. Το τέλος χρήσης των συστημάτων για τη διενέργεια του ηλεκτρονικού πλειστηριασμού καταβάλλεται από τον υπερθεματιστή. Η κατάθεση της εγγύησης, του τέλους χρήσης των ηλεκτρονικών συστημάτων πλειστηριασμών και του πλειστηριάσματος γίνεται αποκλειστικά σε ειδικό ακατάσχετο επαγγελματικό λογαριασμό που θα διατηρείται σε ελληνικό τραπεζικό ίδρυμα από τον υπάλληλο του πλειστηριασμού. Σε περίπτωση πλειοδοσίας περισσοτέρων, σύμφωνα με την παρ. 4, η κατάθεση της εγγύησης και του τέλους χρήσης μπορεί να γίνει από οποιονδήποτε πλειοδότη είτε αυτός ενεργεί ατομικά είτε ως εκπρόσωπος των λοιπών. Κάθε υποψήφιος πλειοδότης, επί κοινής δε πλειοδοσίας ο εκπρόσωπος των λοιπών, διορίζει με ηλεκτρονική δήλωση αντίκλητο που κατοικεί στην περιφέρεια του πρωτοδικείου του τόπου της εκτέλεσης μέχρι ώρα 15:00 δύο (2) εργάσιμες ημέρες πριν την ορισθείσα ημέρα του πλειστηριασμού, διαφορετικά αντίκλητος θεωρείται ο γραμματέας του πρωτοδικείου του τόπου της εκτέλεσης. Το τελευταίο εδάφιο εφαρμόζεται, ακόμη και όταν ο πλειστηριασμός διενεργείται ενώπιον συμβολαιογράφου διορισμένου στην περιφέρεια του συμβολαιογραφικού συλλόγου του τόπου εκτέλεσης ή του συμβολαιογραφικού συλλόγου της πρωτεύουσας του Κράτους. 6. Ο υπάλληλος του ηλεκτρονικού πλειστηριασμού μετά το πέρας της προθεσμίας της προηγούμενης παραγράφου ελέγχει τα υποβαλλόμενα αρχεία, διαπιστώνει με πράξη του, μέχρι ώρα 17:00 της προηγούμενης του ηλεκτρονικού πλειστηριασμού ημέρας, την τήρηση των διατυπώσεων που ορίζονται στις προηγούμενες παραγράφους και υποβάλλει στα ηλεκτρονικά συστήματα πλειστηριασμών (ΗΛ.ΣΥ.ΠΛΕΙΣ.) κατάλογο των υποψήφιων πλειοδοτών που δικαιούνται να λάβουν μέρος. 7. Αν τα κατασχεμένα πράγματα βρίσκονται στην περιφέρεια περισσότερων ειρηνοδικείων, ο πλειστηριασμός διενεργείται, κατ’ επιλογήν του επισπεύδοντος, στην περιφέρεια οποιουδήποτε εκ των άνω ειρηνοδικείων. Εάν ο πλειστηριασμός μπορεί να γίνει ηλεκτρονικά σε μία μόνο από αυτές, επιλέγεται υποχρεωτικά η περιφέρεια του συγκεκριμένου ειρηνοδικείου και αν, για οποιονδήποτε λόγο, δεν μπορεί να διενεργηθεί σε καμία από αυτές, επιλέγεται η περιφέρεια του συμβολαιογραφικού συλλόγου της πρωτεύουσας του κράτους. Αρμόδιο για την επίλυση των διαφορών που αναφύονται από τη διενέργεια του πλειστηριασμού είναι το δικαστήριο του τόπου εκτέλεσης. 8. Οι ηλεκτρονικοί πλειστηριασμοί διενεργούνται μόνο εργάσιμη ημέρα Τετάρτη ή Πέμπτη ή Παρασκευή, από τις 10:00Α έως τις 12:00Α και από τις 14:00Α έως τις 16:00Α. Σε υποβολή προσφοράς κατά το τελευταίο λεπτό του ηλεκτρονικού πλειστηριασμού, ήτοι από ώρα 11:59:00 έως 11:59:59 ή από ώρα 15:59:00 έως 15:59:59 δίδεται αυτόματη παράταση πέντε (5) λεπτών. Για κάθε προσφορά που υποβάλλεται κατά το τελευταίο λεπτό της παράτασης, δίδεται νέα αυτόματη παράταση πέντε (5) λεπτών, εφόσον υποβληθεί μεγαλύτερη προσφορά. Οι παρατάσεις μπορούν να συνεχισθούν για χρονικό διάστημα όχι μεγαλύτερο της μίας (1) ώρας από την ορισθείσα ώρα λήξης του ηλεκτρονικού πλειστηριασμού, οπότε ολοκληρώνεται η διαδικασία υποβολής προσφορών. Ηλεκτρονικός πλειστηριασμός δεν μπορεί να γίνει από την 1η Αυγούστου έως την 31η Αυγούστου, καθώς και την προηγούμενη και την επομένη εβδομάδα της ημέρας των εκλογών για την ανάδειξη βουλευτών, αντιπροσώπων στο Ευρωπαϊκό Κοινοβούλιο και Οργάνων Τοπικής Αυτοδιοίκησης. Η απαγόρευση αυτή ισχύει και για τις επαναληπτικές εκλογές και μόνο για τις Περιφέρειες που διεξάγονται τέτοιες, εκτός αν πρόκειται για πλοία, αεροσκάφη και για πράγματα που μπορούν να υποστούν φθορά. 9. Ο ηλεκτρονικός πλειστηριασμός είναι ανοικτού πλειοδοτικού τύπου κατά τον οποίο υποβάλλονται διαδοχικές προσφορές. Οι συμμετέχοντες υποβάλλουν συνεχώς προσφορά μεγαλύτερη από την εκάστοτε μέγιστη έως το χρόνο λήξης της υποβολής προσφορών. Στα ηλεκτρονικά συστήματα καταγράφονται όλες οι υποβληθείσες κατά τα ανωτέρω προσφορές. 10. Με την υποβολή της προσφοράς, οι υποψήφιοι πλειοδότες ενημερώνονται αμέσως από τα συστήματα για το ποσό της προσφοράς τους, τον ακριβή χρόνο υποβολής της, καθώς και ότι αυτή έχει καταγραφεί. Ο υποψήφιος πλειοδότης ενημερώνεται για την εκάστοτε μέγιστη υποβληθείσα προσφορά. 11. Όλοι οι υποψήφιοι πλειοδότες που λαμβάνουν μέρος στον ηλεκτρονικό πλειστηριασμό ενημερώνονται αμέσως από τα συστήματα για τυχόν αναστολή, ματαίωση ή διακοπή του πλειστηριασμού, καθώς και για τον λόγο αυτής. 12. Μετά τη λήξη της διαδικασίας υποβολής των πλειοδοτικών προσφορών, ανακοινώνεται το αποτέλεσμα του πλειστηριασμού μέσω των ηλεκτρονικών συστημάτων. Όσοι έχουν λάβει μέρος στον ηλεκτρονικό πλειστηριασμό ενημερώνονται αμελλητί για το αποτέλεσμά του. Ο υπάλληλος του ηλεκτρονικού πλειστηριασμού συντάσσει την έκθεση της παρ. 2 του άρθρου 965, κατακυρώνοντας τα πράγματα στον πλειοδότη. 13. Στον ηλεκτρονικό πλειστηριασμό κινητών, ο υπερθεματιστής έχει υποχρέωση να καταβάλει στον ειδικό τραπεζικό επαγγελματικό λογαριασμό του υπαλλήλου του πλειστηριασμού το πλειστηρίασμα και το τέλος χρήσης το αργότερο την τρίτη εργάσιμη ημέρα από τον πλειστηριασμό. Με την καταβολή του πλειστηριάσματος και του τέλους χρήσης, το κατακυρωμένο πράγμα παραδίδεται στον υπερθεματιστή. Η παράδοση του πράγματος στον υπερθεματιστή δεν μπορεί να γίνει πριν την καταβολή του πλειστηριάσματος και του τέλους χρήσης. Ο υπάλληλος του ηλεκτρονικού πλειστηριασμού οφείλει, το αργότερο την πέμπτη εργάσιμη ημέρα από τον πλειστηριασμό, να καταθέσει το πλειστηρίασμα στο Ταμείο Παρακαταθηκών και Δανείων. Η κατάθεση του πλειστηριάσματος είναι ακατάσχετη, δεν εμπίπτει στην πτωχευτική περιουσία και δεν υπόκειται στις δεσμεύσεις που επιβάλλει το Δημόσιο για τη διασφάλιση των συμφερόντων του. Εντός της επόμενης εργάσιμης ημέρας από την παρέλευση της ανωτέρω προθεσμίας, ο υπάλληλος του πλειστηριασμού αποδίδει το τέλος χρήσης στον οικείο συμβολαιογραφικό σύλλογο του οποίου αυτός είναι μέλος. Εντός τριών (3) εργασίμων ημερών, μέρος του ανωτέρω ποσού, το οποίο καθορίζεται με την απόφαση της παραγράφου 14 του παρόντος, αποδίδεται από τον οικείο συμβολαιογραφικό σύλλογο στο ΤΑ.Χ.ΔΙ.Κ. Οι ειδικότεροι όροι της τήρησης των επαγγελματικών τραπεζικών λογαριασμών των υπαλλήλων των πλειστηριασμών ορίζονται με κοινή απόφαση των Υπουργών Οικονομικών και Δικαιοσύνης. 14. Με αποφάσεις του Υπουργού Δικαιοσύνης, καθορίζονται οι ειδικότεροι όροι λειτουργίας των ηλεκτρονικών συστημάτων πλειστηριασμού, οι λεπτομέρειες υποβολής των πλειοδοτικών προσφορών, η διαδικασία πιστοποίησης και εγγραφής χρηστών στα συστήματα, το ύψος και ο τρόπος καθορισμού, επιμερισμού, είσπραξης και απόδοσης του τέλους χρήσης των συστημάτων, αναπροσαρμογής του τέλους χρήσης και του μέρους αυτού που αποδίδεται στο ΤΑ.Χ.ΔΙΚ., καθώς και κάθε σχετική λεπτομέρεια»."""@el;
+    schema:text """Ισχύουσα μορφή Άρθρου: «1. Τα κατασχεμένα πράγματα πλειστηριάζονται με ηλεκτρονικά μέσα ενώπιον συμβολαιογράφου της περιφέρειας του τόπου όπου έγινε η κατάσχεση. Εάν, για οποιονδήποτε λόγο, δεν είναι δυνατό να ορισθεί συμβολαιογράφος του τόπου εκτέλεσης (κατάσχεσης), τα κατασχεμένα πράγματα πλειστηριάζονται ενώπιον συμβολαιογράφου της περιφέρειας του συμβολαιογραφικού συλλόγου του τόπου εκτέλεσης ή, αν και αυτό δεν είναι δυνατό, του συμβολαιογραφικού συλλόγου της πρωτεύουσας του κράτους. Ο πλειστηριασμός των κατασχεμένων διενεργείται μέσω των ηλεκτρονικών συστημάτων πλειστηριασμού από τον πιστοποιημένο, για το σκοπό αυτόν, υπάλληλο του ηλεκτρονικού πλειστηριασμού. Ο πλειστηριασμός διενεργείται ενώπιον του ίδιου συμβολαιογράφου που ορίστηκε αρχικά και στην περίπτωση πολλαπλών κατασχέσεων. 2. Η κυριότητα, διοίκηση και διαχείριση των ηλεκτρονικών συστημάτων πλειστηριασμού ανήκει στους κατά τόπον αρμοδίους συμβολαιογραφικούς συλλόγους. 3. Τα ηλεκτρονικά συστήματα πλειστηριασμού περιέχουν όλα τα πληροφοριακά στοιχεία τα οποία περιλαμβάνονται στο απόσπασμα της κατασχετήριας έκθεσης. 4. Στον ηλεκτρονικό πλειστηριασμό λαμβάνουν μέρος υποψήφιοι πλειοδότες που έχουν προηγουμένως πιστοποιηθεί στα ηλεκτρονικά συστήματα πλειστηριασμών. Πλειοδοσία περισσότερων από κοινού είναι εφικτή, μόνο εάν χορηγηθεί σε οποιονδήποτε εξ αυτών ειδικό συμβολαιογραφικό πληρεξούσιο από τους λοιπούς ενδιαφερόμενους πλειοδότες και αυτός προβεί στη σχετική δήλωση συμμετοχής και υποβολής του πληρεξουσίου, πριν τον πλειστηριασμό, σύμφωνα με την παρ. 5. Στην περίπτωση αυτή, και εφόσον κατακυρωθεί στους περισσότερους πλειοδότες το πράγμα, αυτοί ενέχονται εις ολόκληρον για την καταβολή του πλειστηριάσματος. 5. Κάθε υποψήφιος πλειοδότης δηλώνει τη συμμετοχή του σε συγκεκριμένο πλειστηριασμό, σύμφωνα με τους όρους αυτού, αφού έχει καταβάλει την εγγύηση της παραγράφου 1 του άρθρου 965 και έχει υποβάλει ηλεκτρονικά το πληρεξούσιο της παραγράφου 2 του άρθρου 1003, επί κοινής δε πλειοδοσίας το κατά την παράγραφο 4 του παρόντος πληρεξούσιο μέχρι ώρα 15:00, δύο (2) εργάσιμες ημέρες πριν την ορισθείσα ημέρα του πλειστηριασμού. Οι προσφορές, με ποινή ακυρότητας, δεν πρέπει να περιλαμβάνουν αίρεση ή όρο, και είναι ανέκκλητες. Το τέλος χρήσης των συστημάτων για τη διενέργεια του ηλεκτρονικού πλειστηριασμού καταβάλλεται από τον υπερθεματιστή. Η κατάθεση της εγγύησης, του τέλους χρήσης των ηλεκτρονικών συστημάτων πλειστηριασμών και του πλειστηριάσματος γίνεται αποκλειστικά σε ειδικό ακατάσχετο επαγγελματικό λογαριασμό που θα διατηρείται σε ελληνικό τραπεζικό ίδρυμα από τον υπάλληλο του πλειστηριασμού. Σε περίπτωση πλειοδοσίας περισσοτέρων, σύμφωνα με την παρ. 4, η κατάθεση της εγγύησης και του τέλους χρήσης μπορεί να γίνει από οποιονδήποτε πλειοδότη είτε αυτός ενεργεί ατομικά είτε ως εκπρόσωπος των λοιπών. Κάθε υποψήφιος πλειοδότης, επί κοινής δε πλειοδοσίας ο εκπρόσωπος των λοιπών, διορίζει με ηλεκτρονική δήλωση αντίκλητο που κατοικεί στην περιφέρεια του πρωτοδικείου του τόπου της εκτέλεσης μέχρι ώρα 15:00 δύο (2) εργάσιμες ημέρες πριν την ορισθείσα ημέρα του πλειστηριασμού, διαφορετικά αντίκλητος θεωρείται ο γραμματέας του πρωτοδικείου του τόπου της εκτέλεσης. Το τελευταίο εδάφιο εφαρμόζεται, ακόμη και όταν ο πλειστηριασμός διενεργείται ενώπιον συμβολαιογράφου διορισμένου στην περιφέρεια του συμβολαιογραφικού συλλόγου του τόπου εκτέλεσης ή του συμβολαιογραφικού συλλόγου της πρωτεύουσας του Κράτους. 6. Ο υπάλληλος του ηλεκτρονικού πλειστηριασμού μετά το πέρας της προθεσμίας της προηγούμενης παραγράφου ελέγχει τα υποβαλλόμενα αρχεία, διαπιστώνει με πράξη του, μέχρι ώρα 17:00 της προηγούμενης του ηλεκτρονικού πλειστηριασμού ημέρας, την τήρηση των διατυπώσεων που ορίζονται στις προηγούμενες παραγράφους και υποβάλλει στα ηλεκτρονικά συστήματα πλειστηριασμών (ΗΛ.ΣΥ.ΠΛΕΙΣ.) κατάλογο των υποψήφιων πλειοδοτών που δικαιούνται να λάβουν μέρος. 7. Αν τα κατασχεμένα πράγματα βρίσκονται στην περιφέρεια περισσότερων ειρηνοδικείων, ο πλειστηριασμός διενεργείται, κατ’ επιλογήν του επισπεύδοντος, στην περιφέρεια οποιουδήποτε εκ των άνω ειρηνοδικείων. Εάν ο πλειστηριασμός μπορεί να γίνει ηλεκτρονικά σε μία μόνο από αυτές, επιλέγεται υποχρεωτικά η περιφέρεια του συγκεκριμένου ειρηνοδικείου και αν, για οποιονδήποτε λόγο, δεν μπορεί να διενεργηθεί σε καμία από αυτές, επιλέγεται η περιφέρεια του συμβολαιογραφικού συλλόγου της πρωτεύουσας του κράτους. Αρμόδιο για την επίλυση των διαφορών που αναφύονται από τη διενέργεια του πλειστηριασμού είναι το δικαστήριο του τόπου εκτέλεσης. 8. Οι ηλεκτρονικοί πλειστηριασμοί διενεργούνται μόνο εργάσιμη ημέρα Τετάρτη ή Πέμπτη ή Παρασκευή, από τις 10:00Α έως τις 12:00Α και από τις 14:00Α έως τις 16:00Α. Σε υποβολή προσφοράς κατά το τελευταίο λεπτό του ηλεκτρονικού πλειστηριασμού, ήτοι από ώρα 11:59:00 έως 11:59:59 ή από ώρα 15:59:00 έως 15:59:59 δίδεται αυτόματη παράταση πέντε (5) λεπτών. Για κάθε προσφορά που υποβάλλεται κατά το τελευταίο λεπτό της παράτασης, δίδεται νέα αυτόματη παράταση πέντε (5) λεπτών, εφόσον υποβληθεί μεγαλύτερη προσφορά. Οι παρατάσεις μπορούν να συνεχισθούν για χρονικό διάστημα όχι μεγαλύτερο της μίας (1) ώρας από την ορισθείσα ώρα λήξης του ηλεκτρονικού πλειστηριασμού, οπότε ολοκληρώνεται η διαδικασία υποβολής προσφορών. Ηλεκτρονικός πλειστηριασμός δεν μπορεί να γίνει από την 1η Αυγούστου έως την 31η Αυγούστου, καθώς και την προηγούμενη και την επομένη εβδομάδα της ημέρας των εκλογών για την ανάδειξη βουλευτών, αντιπροσώπων στο Ευρωπαϊκό Κοινοβούλιο και Οργάνων Τοπικής Αυτοδιοίκησης. Η απαγόρευση αυτή ισχύει και για τις επαναληπτικές εκλογές και μόνο για τις Περιφέρειες που διεξάγονται τέτοιες, εκτός αν πρόκειται για πλοία, αεροσκάφη και για πράγματα που μπορούν να υποστούν φθορά. 9. Ο ηλεκτρονικός πλειστηριασμός είναι ανοικτού πλειοδοτικού τύπου κατά τον οποίο υποβάλλονται διαδοχικές προσφορές. Οι συμμετέχοντες υποβάλλουν συνεχώς προσφορά μεγαλύτερη από την εκάστοτε μέγιστη έως το χρόνο λήξης της υποβολής προσφορών. Στα ηλεκτρονικά συστήματα καταγράφονται όλες οι υποβληθείσες κατά τα ανωτέρω προσφορές. 10. Με την υποβολή της προσφοράς, οι υποψήφιοι πλειοδότες ενημερώνονται αμέσως από τα συστήματα για το ποσό της προσφοράς τους, τον ακριβή χρόνο υποβολής της, καθώς και ότι αυτή έχει καταγραφεί. Ο υποψήφιος πλειοδότης ενημερώνεται για την εκάστοτε μέγιστη υποβληθείσα προσφορά. 11. Όλοι οι υποψήφιοι πλειοδότες που λαμβάνουν μέρος στον ηλεκτρονικό πλειστηριασμό ενημερώνονται αμέσως από τα συστήματα για τυχόν αναστολή, ματαίωση ή διακοπή του πλειστηριασμού, καθώς και για τον λόγο αυτής. 12. Μετά τη λήξη της διαδικασίας υποβολής των πλειοδοτικών προσφορών, ανακοινώνεται το αποτέλεσμα του πλειστηριασμού μέσω των ηλεκτρονικών συστημάτων. Όσοι έχουν λάβει μέρος στον ηλεκτρονικό πλειστηριασμό ενημερώνονται αμελλητί για το αποτέλεσμά του. Ο υπάλληλος του ηλεκτρονικού πλειστηριασμού συντάσσει την έκθεση της παρ. 2 του άρθρου 965, κατακυρώνοντας τα πράγματα στον πλειοδότη. 13. Στον ηλεκτρονικό πλειστηριασμό κινητών, ο υπερθεματιστής έχει υποχρέωση να καταβάλει στον ειδικό τραπεζικό επαγγελματικό λογαριασμό του υπαλλήλου του πλειστηριασμού το πλειστηρίασμα και το τέλος χρήσης το αργότερο την τρίτη εργάσιμη ημέρα από τον πλειστηριασμό. Με την καταβολή του πλειστηριάσματος και του τέλους χρήσης, το κατακυρωμένο πράγμα παραδίδεται στον υπερθεματιστή. Η παράδοση του πράγματος στον υπερθεματιστή δεν μπορεί να γίνει πριν την καταβολή του πλειστηριάσματος και του τέλους χρήσης. Ο υπάλληλος του ηλεκτρονικού πλειστηριασμού οφείλει, το αργότερο την πέμπτη εργάσιμη ημέρα από τον πλειστηριασμό, να καταθέσει το πλειστηρίασμα στο Ταμείο Παρακαταθηκών και Δανείων. Η κατάθεση του πλειστηριάσματος είναι ακατάσχετη, δεν εμπίπτει στην πτωχευτική περιουσία και δεν υπόκειται στις δεσμεύσεις που επιβάλλει το Δημόσιο για τη διασφάλιση των συμφερόντων του. Εντός της επόμενης εργάσιμης ημέρας από την παρέλευση της ανωτέρω προθεσμίας, ο υπάλληλος του πλειστηριασμού αποδίδει το τέλος χρήσης στον οικείο συμβολαιογραφικό σύλλογο του οποίου αυτός είναι μέλος. Εντός τριών (3) εργασίμων ημερών, μέρος του ανωτέρω ποσού, το οποίο καθορίζεται με την απόφαση της παραγράφου 14 του παρόντος, αποδίδεται από τον οικείο συμβολαιογραφικό σύλλογο στο ΤΑ.Χ.ΔΙ.Κ. Οι ειδικότεροι όροι της τήρησης των επαγγελματικών τραπεζικών λογαριασμών των υπαλλήλων των πλειστηριασμών ορίζονται με κοινή απόφαση των Υπουργών Οικονομικών και Δικαιοσύνης. 14. Με αποφάσεις του Υπουργού Δικαιοσύνης, καθορίζονται οι ειδικότεροι όροι λειτουργίας των ηλεκτρονικών συστημάτων πλειστηριασμού, οι λεπτομέρειες υποβολής των πλειοδοτικών προσφορών, η διαδικασία πιστοποίησης και εγγραφής χρηστών στα συστήματα, το ύψος και ο τρόπος καθορισμού, επιμερισμού, είσπραξης και απόδοσης του τέλους χρήσης των συστημάτων, αναπροσαρμογής του τέλους χρήσης και του μέρους αυτού που αποδίδεται στο ΤΑ.Χ.ΔΙΚ., καθώς και κάθε σχετική λεπτομέρεια»."""@el;
+    glass:digest "sha256-e01f0ceb4f23108cf4882c34ed5f09aa757b11bf8c5b93ce3573e8f0b426a475";
+    digest:sha256 "e01f0ceb4f23108cf4882c34ed5f09aa757b11bf8c5b93ce3573e8f0b426a475";
+    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/par/1>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell/man>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-959/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF EXPRESSION LAYER
+# ============================================================
+
+# ============================================================
+# FRBR MANIFESTATION LAYER - Digital Embodiment
+# ============================================================
+
+# ============================================================
+# FRBR MANIFESTATION LAYER - Article 959
+# Digital embodiment of the Greek-language Expression
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell/man>
+    a eli:LegalManifestation ,
+      dcat:Distribution ;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959>;
+    dcat:accessURL <https://stavropouloslaw.com/eli/gr/pd/1985/503>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959>;
+    dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
+    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-pd-1985-art-959-work-exp-ell-man";
+    schema:legislationDate "1985-10-24"^^xsd:date;
+    void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-959-man>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-959/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF MANIFESTATION LAYER
+# ============================================================
+
+# ============================================================
+# FRBR FORMAT LAYERS - Specific Encodings
+# ============================================================
+
+# ============================================================
+# FRBR FORMAT LAYER (HTML) - Article 959
+# HTML encoding of the Manifestation
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell/man/format/html
+# Media-type: text/html; charset=utf-8
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell/man/format/html>
+    a dcat:Distribution;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959>;
+    dcat:mediaType "text/html; charset=utf-8";
+    dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
+    schema:encodingFormat ".html";
+    schema:fileFormat "text/html; charset=utf-8";
+    void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-959-man-html>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-959/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF FORMAT LAYER (HTML)
+# ============================================================
+
+# ============================================================
+# FRBR FORMAT LAYER (JSONLD) - Article 959
+# JSONLD encoding of the Manifestation
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell/man/format/jsonld
+# Media-type: application/ld+json; charset=utf-8
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell/man/format/jsonld>
+    a dcat:Distribution;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959>;
+    dcat:mediaType "application/ld+json; charset=utf-8";
+    dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
+    schema:encodingFormat ".jsonld";
+    schema:fileFormat "application/ld+json; charset=utf-8";
+    void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-959-man-jsonld>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-959/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF FORMAT LAYER (JSONLD)
+# ============================================================
+
+# ============================================================
+# FRBR FORMAT LAYER (TURTLE) - Article 959
+# TURTLE encoding of the Manifestation
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell/man/format/turtle
+# Media-type: text/turtle; charset=utf-8
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell/man/format/turtle>
+    a dcat:Distribution;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959>;
+    dcat:mediaType "text/turtle; charset=utf-8";
+    dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
+    schema:encodingFormat ".ttl";
+    schema:fileFormat "text/turtle; charset=utf-8";
+    void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-959-man-turtle>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-959/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF FORMAT LAYER (TURTLE)
+# ============================================================
+
+# ============================================================
+# PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959/par/1>
+    a eli:LegalResourceSubdivision ;
+    eli:number "1" ;
+    schema:text """1. Ισχύουσα μορφή Άρθρου: «1. Τα κατασχεμένα πράγματα πλειστηριάζονται με ηλεκτρονικά μέσα ενώπιον συμβολαιογράφου της περιφέρειας του τόπου όπου έγινε η κατάσχεση. Εάν, για οποιονδήποτε λόγο, δεν είναι δυνατό να ορισθεί συμβολαιογράφος του τόπου εκτέλεσης (κατάσχεσης), τα κατασχεμένα πράγματα πλειστηριάζονται ενώπιον συμβολαιογράφου της περιφέρειας του συμβολαιογραφικού συλλόγου του τόπου εκτέλεσης ή, αν και αυτό δεν είναι δυνατό, του συμβολαιογραφικού συλλόγου της πρωτεύουσας του κράτους. Ο πλειστηριασμός των κατασχεμένων διενεργείται μέσω των ηλεκτρονικών συστημάτων πλειστηριασμού από τον πιστοποιημένο, για το σκοπό αυτόν, υπάλληλο του ηλεκτρονικού πλειστηριασμού. Ο πλειστηριασμός διενεργείται ενώπιον του ίδιου συμβολαιογράφου που ορίστηκε αρχικά και στην περίπτωση πολλαπλών κατασχέσεων. 2. Η κυριότητα, διοίκηση και διαχείριση των ηλεκτρονικών συστημάτων πλειστηριασμού ανήκει στους κατά τόπον αρμοδίους συμβολαιογραφικούς συλλόγους. 3. Τα ηλεκτρονικά συστήματα πλειστηριασμού περιέχουν όλα τα πληροφοριακά στοιχεία τα οποία περιλαμβάνονται στο απόσπασμα της κατασχετήριας έκθεσης. 4. Στον ηλεκτρονικό πλειστηριασμό λαμβάνουν μέρος υποψήφιοι πλειοδότες που έχουν προηγουμένως πιστοποιηθεί στα ηλεκτρονικά συστήματα πλειστηριασμών. Πλειοδοσία περισσότερων από κοινού είναι εφικτή, μόνο εάν χορηγηθεί σε οποιονδήποτε εξ αυτών ειδικό συμβολαιογραφικό πληρεξούσιο από τους λοιπούς ενδιαφερόμενους πλειοδότες και αυτός προβεί στη σχετική δήλωση συμμετοχής και υποβολής του πληρεξουσίου, πριν τον πλειστηριασμό, σύμφωνα με την παρ. 5. Στην περίπτωση αυτή, και εφόσον κατακυρωθεί στους περισσότερους πλειοδότες το πράγμα, αυτοί ενέχονται εις ολόκληρον για την καταβολή του πλειστηριάσματος. 5. Κάθε υποψήφιος πλειοδότης δηλώνει τη συμμετοχή του σε συγκεκριμένο πλειστηριασμό, σύμφωνα με τους όρους αυτού, αφού έχει καταβάλει την εγγύηση της παραγράφου 1 του άρθρου 965 και έχει υποβάλει ηλεκτρονικά το πληρεξούσιο της παραγράφου 2 του άρθρου 1003, επί κοινής δε πλειοδοσίας το κατά την παράγραφο 4 του παρόντος πληρεξούσιο μέχρι ώρα 15:00, δύο (2) εργάσιμες ημέρες πριν την ορισθείσα ημέρα του πλειστηριασμού. Οι προσφορές, με ποινή ακυρότητας, δεν πρέπει να περιλαμβάνουν αίρεση ή όρο, και είναι ανέκκλητες. Το τέλος χρήσης των συστημάτων για τη διενέργεια του ηλεκτρονικού πλειστηριασμού καταβάλλεται από τον υπερθεματιστή. Η κατάθεση της εγγύησης, του τέλους χρήσης των ηλεκτρονικών συστημάτων πλειστηριασμών και του πλειστηριάσματος γίνεται αποκλειστικά σε ειδικό ακατάσχετο επαγγελματικό λογαριασμό που θα διατηρείται σε ελληνικό τραπεζικό ίδρυμα από τον υπάλληλο του πλειστηριασμού. Σε περίπτωση πλειοδοσίας περισσοτέρων, σύμφωνα με την παρ. 4, η κατάθεση της εγγύησης και του τέλους χρήσης μπορεί να γίνει από οποιονδήποτε πλειοδότη είτε αυτός ενεργεί ατομικά είτε ως εκπρόσωπος των λοιπών. Κάθε υποψήφιος πλειοδότης, επί κοινής δε πλειοδοσίας ο εκπρόσωπος των λοιπών, διορίζει με ηλεκτρονική δήλωση αντίκλητο που κατοικεί στην περιφέρεια του πρωτοδικείου του τόπου της εκτέλεσης μέχρι ώρα 15:00 δύο (2) εργάσιμες ημέρες πριν την ορισθείσα ημέρα του πλειστηριασμού, διαφορετικά αντίκλητος θεωρείται ο γραμματέας του πρωτοδικείου του τόπου της εκτέλεσης. Το τελευταίο εδάφιο εφαρμόζεται, ακόμη και όταν ο πλειστηριασμός διενεργείται ενώπιον συμβολαιογράφου διορισμένου στην περιφέρεια του συμβολαιογραφικού συλλόγου του τόπου εκτέλεσης ή του συμβολαιογραφικού συλλόγου της πρωτεύουσας του Κράτους. 6. Ο υπάλληλος του ηλεκτρονικού πλειστηριασμού μετά το πέρας της προθεσμίας της προηγούμενης παραγράφου ελέγχει τα υποβαλλόμενα αρχεία, διαπιστώνει με πράξη του, μέχρι ώρα 17:00 της προηγούμενης του ηλεκτρονικού πλειστηριασμού ημέρας, την τήρηση των διατυπώσεων που ορίζονται στις προηγούμενες παραγράφους και υποβάλλει στα ηλεκτρονικά συστήματα πλειστηριασμών (ΗΛ.ΣΥ.ΠΛΕΙΣ.) κατάλογο των υποψήφιων πλειοδοτών που δικαιούνται να λάβουν μέρος. 7. Αν τα κατασχεμένα πράγματα βρίσκονται στην περιφέρεια περισσότερων ειρηνοδικείων, ο πλειστηριασμός διενεργείται, κατ’ επιλογήν του επισπεύδοντος, στην περιφέρεια οποιουδήποτε εκ των άνω ειρηνοδικείων. Εάν ο πλειστηριασμός μπορεί να γίνει ηλεκτρονικά σε μία μόνο από αυτές, επιλέγεται υποχρεωτικά η περιφέρεια του συγκεκριμένου ειρηνοδικείου και αν, για οποιονδήποτε λόγο, δεν μπορεί να διενεργηθεί σε καμία από αυτές, επιλέγεται η περιφέρεια του συμβολαιογραφικού συλλόγου της πρωτεύουσας του κράτους. Αρμόδιο για την επίλυση των διαφορών που αναφύονται από τη διενέργεια του πλειστηριασμού είναι το δικαστήριο του τόπου εκτέλεσης. 8. Οι ηλεκτρονικοί πλειστηριασμοί διενεργούνται μόνο εργάσιμη ημέρα Τετάρτη ή Πέμπτη ή Παρασκευή, από τις 10:00Α έως τις 12:00Α και από τις 14:00Α έως τις 16:00Α. Σε υποβολή προσφοράς κατά το τελευταίο λεπτό του ηλεκτρονικού πλειστηριασμού, ήτοι από ώρα 11:59:00 έως 11:59:59 ή από ώρα 15:59:00 έως 15:59:59 δίδεται αυτόματη παράταση πέντε (5) λεπτών. Για κάθε προσφορά που υποβάλλεται κατά το τελευταίο λεπτό της παράτασης, δίδεται νέα αυτόματη παράταση πέντε (5) λεπτών, εφόσον υποβληθεί μεγαλύτερη προσφορά. Οι παρατάσεις μπορούν να συνεχισθούν για χρονικό διάστημα όχι μεγαλύτερο της μίας (1) ώρας από την ορισθείσα ώρα λήξης του ηλεκτρονικού πλειστηριασμού, οπότε ολοκληρώνεται η διαδικασία υποβολής προσφορών. Ηλεκτρονικός πλειστηριασμός δεν μπορεί να γίνει από την 1η Αυγούστου έως την 31η Αυγούστου, καθώς και την προηγούμενη και την επομένη εβδομάδα της ημέρας των εκλογών για την ανάδειξη βουλευτών, αντιπροσώπων στο Ευρωπαϊκό Κοινοβούλιο και Οργάνων Τοπικής Αυτοδιοίκησης. Η απαγόρευση αυτή ισχύει και για τις επαναληπτικές εκλογές και μόνο για τις Περιφέρειες που διεξάγονται τέτοιες, εκτός αν πρόκειται για πλοία, αεροσκάφη και για πράγματα που μπορούν να υποστούν φθορά. 9. Ο ηλεκτρονικός πλειστηριασμός είναι ανοικτού πλειοδοτικού τύπου κατά τον οποίο υποβάλλονται διαδοχικές προσφορές. Οι συμμετέχοντες υποβάλλουν συνεχώς προσφορά μεγαλύτερη από την εκάστοτε μέγιστη έως το χρόνο λήξης της υποβολής προσφορών. Στα ηλεκτρονικά συστήματα καταγράφονται όλες οι υποβληθείσες κατά τα ανωτέρω προσφορές. 10. Με την υποβολή της προσφοράς, οι υποψήφιοι πλειοδότες ενημερώνονται αμέσως από τα συστήματα για το ποσό της προσφοράς τους, τον ακριβή χρόνο υποβολής της, καθώς και ότι αυτή έχει καταγραφεί. Ο υποψήφιος πλειοδότης ενημερώνεται για την εκάστοτε μέγιστη υποβληθείσα προσφορά. 11. Όλοι οι υποψήφιοι πλειοδότες που λαμβάνουν μέρος στον ηλεκτρονικό πλειστηριασμό ενημερώνονται αμέσως από τα συστήματα για τυχόν αναστολή, ματαίωση ή διακοπή του πλειστηριασμού, καθώς και για τον λόγο αυτής. 12. Μετά τη λήξη της διαδικασίας υποβολής των πλειοδοτικών προσφορών, ανακοινώνεται το αποτέλεσμα του πλειστηριασμού μέσω των ηλεκτρονικών συστημάτων. Όσοι έχουν λάβει μέρος στον ηλεκτρονικό πλειστηριασμό ενημερώνονται αμελλητί για το αποτέλεσμά του. Ο υπάλληλος του ηλεκτρονικού πλειστηριασμού συντάσσει την έκθεση της παρ. 2 του άρθρου 965, κατακυρώνοντας τα πράγματα στον πλειοδότη. 13. Στον ηλεκτρονικό πλειστηριασμό κινητών, ο υπερθεματιστής έχει υποχρέωση να καταβάλει στον ειδικό τραπεζικό επαγγελματικό λογαριασμό του υπαλλήλου του πλειστηριασμού το πλειστηρίασμα και το τέλος χρήσης το αργότερο την τρίτη εργάσιμη ημέρα από τον πλειστηριασμό. Με την καταβολή του πλειστηριάσματος και του τέλους χρήσης, το κατακυρωμένο πράγμα παραδίδεται στον υπερθεματιστή. Η παράδοση του πράγματος στον υπερθεματιστή δεν μπορεί να γίνει πριν την καταβολή του πλειστηριάσματος και του τέλους χρήσης. Ο υπάλληλος του ηλεκτρονικού πλειστηριασμού οφείλει, το αργότερο την πέμπτη εργάσιμη ημέρα από τον πλειστηριασμό, να καταθέσει το πλειστηρίασμα στο Ταμείο Παρακαταθηκών και Δανείων. Η κατάθεση του πλειστηριάσματος είναι ακατάσχετη, δεν εμπίπτει στην πτωχευτική περιουσία και δεν υπόκειται στις δεσμεύσεις που επιβάλλει το Δημόσιο για τη διασφάλιση των συμφερόντων του. Εντός της επόμενης εργάσιμης ημέρας από την παρέλευση της ανωτέρω προθεσμίας, ο υπάλληλος του πλειστηριασμού αποδίδει το τέλος χρήσης στον οικείο συμβολαιογραφικό σύλλογο του οποίου αυτός είναι μέλος. Εντός τριών (3) εργασίμων ημερών, μέρος του ανωτέρω ποσού, το οποίο καθορίζεται με την απόφαση της παραγράφου 14 του παρόντος, αποδίδεται από τον οικείο συμβολαιογραφικό σύλλογο στο ΤΑ.Χ.ΔΙ.Κ. Οι ειδικότεροι όροι της τήρησης των επαγγελματικών τραπεζικών λογαριασμών των υπαλλήλων των πλειστηριασμών ορίζονται με κοινή απόφαση των Υπουργών Οικονομικών και Δικαιοσύνης. 14. Με αποφάσεις του Υπουργού Δικαιοσύνης, καθορίζονται οι ειδικότεροι όροι λειτουργίας των ηλεκτρονικών συστημάτων πλειστηριασμού, οι λεπτομέρειες υποβολής των πλειοδοτικών προσφορών, η διαδικασία πιστοποίησης και εγγραφής χρηστών στα συστήματα, το ύψος και ο τρόπος καθορισμού, επιμερισμού, είσπραξης και απόδοσης του τέλους χρήσης των συστημάτων, αναπροσαρμογής του τέλους χρήσης και του μέρους αυτού που αποδίδεται στο ΤΑ.Χ.ΔΙΚ., καθώς και κάθε σχετική λεπτομέρεια»."""@el .
+
+# ============================================================
+# END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
+# Article 959 - Complete Canonical Representation
+# ============================================================

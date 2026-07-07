@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "dct": "http://purl.org/dc/terms/"
+  },
+  "@id": "https://stavropouloslaw.com/eli/poinikos/catalog",
+  "@type": "dcat:Dataset",
+  "dct:title": "Ποινικός Κώδικας",
+  "dct:identifier": "poinikos",
+  "dct:language": "el",
+  "dcat:itemCount": 529,
+  "dcat:distribution": [
+    {"@type": "dcat:Distribution", "dcat:mediaType": "application/akn+xml", "dcat:downloadURL": "https://stavropouloslaw.com/eli/poinikos/consolidated.akn.xml"},
+    {"@type": "dcat:Distribution", "dcat:mediaType": "text/turtle", "dcat:downloadURL": "https://stavropouloslaw.com/eli/poinikos/consolidated.ttl"},
+    {"@type": "dcat:Distribution", "dcat:mediaType": "application/jsonl", "dcat:downloadURL": "https://stavropouloslaw.com/eli/poinikos/corpus.jsonl"},
+    {"@type": "dcat:Distribution", "dcat:mediaType": "text/plain", "dcat:downloadURL": "https://stavropouloslaw.com/eli/poinikos/consolidated.txt"}
+  ]
+}

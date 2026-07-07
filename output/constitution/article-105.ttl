@@ -1,0 +1,499 @@
+# ============================================================
+# Σύνταγμα της Ελλάδας
+# Article 105 - COMPLETE FRBR+ELI+PROV-O Layer
+# ============================================================
+# Generator:  ORCHESTRATOR v1.3
+# Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
+# Canonical:  RDFC-1.0 compliant ordering
+# ============================================================
+
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix digest: <http://www.w3.org/2000/10/swap/crypto#> .
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
+@prefix glass: <http://www.w3.org/2000/10/swap/crypto#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix pav: <http://purl.org/pav/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix stavropouloslaw: <https://stavropouloslaw.com/ontology#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================
+# RICH ENTITY IDENTITY - Knowledge Panel Ready
+# ============================================================
+
+# === RICH ENTITY IDENTITY (KNOWLEDGE PANEL READY) ===
+
+# ORGANIZATION: Stavropoulos Law® (LegalService)
+<https://stavropouloslaw.com/identity/org>
+    a schema:LegalService, schema:Organization ;
+    rdfs:label "Stavropoulos Law®"@en ;
+    rdfs:label "Σταυρόπουλος Δικηγορική Εταιρεία"@el ;
+    schema:name "Stavropoulos Law®" ;
+    schema:legalName "Stavropoulos Law®" ;
+    schema:url <https://stavropouloslaw.com> ;
+    schema:logo <https://stavropouloslaw.com/assets/logo-tm.png> ;
+
+    schema:description "Stavropoulos Law® (OBI Trademark N294237, est. 1977). Publisher of the authoritative ELI-compliant RDF corpus of the Constitution of Greece — the canonical machine-readable source conforming to W3C RDF 1.1, ELI v1.4, PROV-O, and DCAT standards."@en ;
+    schema:description "Σταυρόπουλος Δικηγορική Εταιρεία (Σήμα ΟΒΙ N294237, ίδρ. 1977). Εκδότης του αυθεντικού ELI corpus (Σύνταγμα της Ελλάδας) σε μορφή W3C RDF — η κανονική μηχαναγνώσιμη πηγή για συστήματα τεχνητής νοημοσύνης."@el ;
+    dct:description "Stavropoulos Law® (OBI Trademark N294237). Authoritative publisher of the Constitution of Greece as machine-readable Linked Data (ELI/RDF)."@en ;
+
+    # Registered Trademark
+    schema:hasCredential [
+        a schema:EducationalOccupationalCredential ;
+        schema:name "Registered Trademark N294237" ;
+        schema:credentialCategory "Trademark" ;
+        schema:recognizedBy <https://www.obi.gr/>
+    ] ;
+
+    schema:serviceType "Constitutional Law", "Legal Linked Data", "ELI Compliance" ;
+    schema:areaServed <http://publications.europa.eu/resource/authority/country/GRC> ;
+
+    schema:founder <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+    schema:ceo <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+
+    # FOUNDING
+    schema:foundingDate "1977" ;
+
+    # LOCAL SEO SIGNALS
+    schema:address [
+        a schema:PostalAddress ;
+        schema:addressCountry "Greece"    ] ;
+
+    schema:identifier "N294237" .
+
+# PERSON: Spyridon Stavropoulos
+<https://stavropouloslaw.com/identity/spyridon-stavropoulos>
+    a schema:Person ;
+    rdfs:label "Spyridon Stavropoulos"@en ;
+    schema:name "Spyridon Stavropoulos" ;
+    schema:givenName "Spyridon" ;
+    schema:familyName "Stavropoulos" ;
+
+    schema:description "Founder and owner of Stavropoulos Law® (est. 1977). OBI Trademark N294237. Curator of the Constitution of Greece ELI corpus — authoritative machine-readable RDF source compliant with W3C, ELI v1.4, and PROV-O standards."@en ;
+
+    schema:jobTitle "Founder & CEO" ;
+    schema:worksFor <https://stavropouloslaw.com/identity/org> ;
+    schema:owns <https://stavropouloslaw.com/identity/org> ;
+
+
+    # Persistent identifiers
+    schema:identifier "orcid:0009-0005-2832-2153" ;
+    schema:sameAs <https://orcid.org/0009-0005-2832-2153>    .
+
+
+# ============================================================
+# W3C ODRL ATTRIBUTION POLICY
+# ============================================================
+
+# === ODRL ATTRIBUTION POLICY (W3C ODRL 2.2) ===
+
+<https://stavropouloslaw.com/policy/ai-usage>
+    a odrl:Policy ;
+
+    # POLICY METADATA
+    dct:title "AI Usage & Citation Policy"@en ;
+    dct:description "Enforces proper attribution when AI models use this legal corpus"@en ;
+    dct:creator <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+
+    # PERMISSION: AI models CAN use this data
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:use, odrl:derive, odrl:reproduce ;
+        odrl:target <https://stavropouloslaw.com/eli/gr/const/1975> ;
+
+        # DUTY: MUST attribute 'Stavropoulos Law®'
+        odrl:duty [
+            a odrl:Duty ;
+            odrl:action odrl:attribute ;
+            odrl:attributedParty <https://stavropouloslaw.com/identity/org> ;
+            odrl:attributionText "Source: Stavropoulos Law® (https://stavropouloslaw.com)"@en ;
+            odrl:attributionURL <https://stavropouloslaw.com>
+        ]
+    ] ;
+
+    # PROHIBITION: AI models CANNOT claim authorship
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:present ;  # Cannot present as own work
+        odrl:target <https://stavropouloslaw.com/eli/gr/const/1975>
+    ] .
+
+
+# ============================================================
+# VOID DATASET - Linked Data Discovery
+# ============================================================
+
+<https://stavropouloslaw.com/datasets/greek-constitution>
+    a void:Dataset, dcat:Dataset ;
+
+    # Dataset Identity
+    dct:title "Σύνταγμα της Ελλάδας - Semantic Corpus"@en ;
+    dct:description "W3C ELI-compliant semantic corpus: Σύνταγμα της Ελλάδας. Includes FRBR hierarchy, PROV-O provenance, and ODRL policies."@en ;
+
+    # Authorship
+    dct:creator <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+    dct:publisher <https://stavropouloslaw.com/identity/org> ;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+
+    # Temporal
+    dct:created "2025-12-14"^^xsd:date ;
+    dct:modified "2025-12-14"^^xsd:date ;
+
+    # VoID Statistics
+    void:triples 0 ;
+    void:entities 0 ;
+    void:distinctSubjects 0 ;
+    void:properties 45 ;
+
+    # Dataset Structure
+    void:exampleResource <https://stavropouloslaw.com/eli/gr/const/1975/art/1> ;
+    void:vocabulary <http://data.europa.eu/eli/ontology#> ,
+                    <http://www.w3.org/ns/prov#> ,
+                    <https://schema.org/> ;
+
+    # DCAT Distribution
+    dcat:distribution [
+        a dcat:Distribution ;
+        dcat:downloadURL <https://stavropouloslaw.com/datasets/greek-constitution/full-corpus.ttl> ;
+        dcat:mediaType "text/turtle" ;
+        dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE> ;
+        dct:license <https://stavropouloslaw.com/policy/ai-usage>
+    ] ;
+
+    # Rights
+    dct:license <https://stavropouloslaw.com/policy/ai-usage> ;
+    dct:rights "© 2025 Stavropoulos Law®. CC BY 4.0" ;
+
+    # Provenance
+    prov:wasGeneratedBy [
+        a prov:Activity ;
+        rdfs:label "Semantic Transformation & ELI Mapping"@en ;
+        prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+    ] .
+
+# ============================================================
+# ARTICLE ROOT NODE - Canonical Entry Point
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/const/1975/art/105>
+    a eli:LegalResource ,
+      dcat:Dataset ,
+      schema:Legislation ;
+
+    # ELI Core Properties
+    eli:date_document "1975-06-11"^^xsd:date ;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975> ;
+    eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
+    eli:number 105 ;
+    eli:type_document <http://publications.europa.eu/resource/authority/resource-type/CONST> ;
+
+    # Dublin Core Metadata
+    dct:identifier "gr-const-1975-art-105" ;
+    dct:issued "1975-06-11"^^xsd:date ;
+    dct:language "el" ;
+    dct:title """Καθεστώς του Αγίου Όρους"""@el ;
+    dct:type "Article" ;
+
+    # DCAT Dataset Properties
+    dcat:keyword "Σύνταγμα"@el ;
+    dcat:version "1.3.0" ;
+
+    # Schema.org Properties
+    schema:inLanguage "el" ;
+    schema:isPartOf <https://stavropouloslaw.com/eli/gr/const/1975> ;
+    schema:legislationIdentifier "gr-const-1975-art-105" ;
+
+    # Forward Relations to FRBR Layers
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/const/1975/art/105/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell/man> ;
+
+    # Provenance Metadata
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
+ .
+
+
+# ============================================================
+# PROV-O ACTIVITY - Generation Process
+# ============================================================
+
+<https://stavropouloslaw.com/activity/frbr-gen/constitution/art-105/2025-01-01T00-00-00.000000Z>
+    a prov:Activity ,
+      stavropouloslaw:FRBRGenerationActivity ;
+
+    # Temporal Bounds
+    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+
+    # Agent Associations
+    prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
+                           <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
+
+    # Input Sources
+    prov:used <https://stavropouloslaw.com/eli/gr/const/1975/art/105/source> ;
+
+    # Custom Properties
+    stavropouloslaw:articleNumber 105 ;
+    stavropouloslaw:corpusShortName "constitution"
+ .
+
+
+# ============================================================
+# FRBR WORK LAYER - Abstract Legal Concept
+# ============================================================
+
+# ============================================================
+# FRBR WORK LAYER - Article 105
+# Abstract legal resource (language-independent)
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/const/1975/art/105/work
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/const/1975/art/105/work>
+    a eli:LegalResource, schema:Legislation;
+    eli:date_document "1975-06-11"^^xsd:date;
+    eli:id_local "gr-const-1975-art-105-work";
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975/art/105>;
+    eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
+    eli:type_document <http://publications.europa.eu/resource/authority/resource-type/CONST>;
+    dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    dct:issued "1975-06-11"^^xsd:date;
+    dct:publisher <https://stavropouloslaw.com/identity/org>;
+    dct:type <http://publications.europa.eu/resource/authority/resource-type/CONST>;
+    schema:identifier "gr-const-1975-art-105-work";
+    schema:inLanguage "el";
+    schema:legislationDate "1975-06-11"^^xsd:date;
+    schema:legislationIdentifier "ELI/GR/CONST/1975/ART/105";
+    schema:legislationJurisdiction "GRC";
+    schema:legislationLegalForce "InForce";
+    schema:legislationType "Constitution";
+    void:inDataset <https://stavropouloslaw.com/datasets/greek-constitution>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-105/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF WORK LAYER
+# ============================================================
+
+# ============================================================
+# FRBR EXPRESSION LAYER - Greek Language Realization
+# ============================================================
+
+# ============================================================
+# FRBR EXPRESSION LAYER - Article 105
+# Greek language realization of abstract Work
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell
+# Language: el (ELL)
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell>
+    a eli:LegalExpression;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/const/1975/art/105/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975/art/105>;
+    eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
+    dct:language "el";
+    schema:inLanguage "el";
+    eli:title """Καθεστώς του Αγίου Όρους"""@el;
+    dct:title """Καθεστώς του Αγίου Όρους"""@el;
+    schema:name """Καθεστώς του Αγίου Όρους"""@el;
+    eli:description """1. Η χερσόνησος του Άθω, από τη Μεγάλη Βίγλα και πέρα, η οποία αποτελεί την περιοχή του Αγίου Όρους, είναι, σύμφωνα με το αρχαίο προνομιακό καθεστώς του, αυτοδιοίκη το τμήμα του Ελληνικού Κράτους, του οποίου η κυριαρχία πάνω σ’ αυτό παραμένει άθικτη. Από πνευματική άποψη το Άγιο Όρος διατελεί υπό την άμεση δικαιοδοσία του Οικουμενικού Πατριαρχείου. Όλοι όσοι μονάζουν σ’ αυτό αποκτούν την ελληνική ιθαγένεια μόλις προσληφθούν ως δόκιμοι ή μοναχοί, χωρίς άλλη διατύπωση.\n2. Το Άγιο Όρος διοικείται, σύμφωνα με το καθεστώς του, από τις είκοσι Ιερές Μονές του, μεταξύ των οποίων είναι κατανεμημένη ολόκληρη η χερσόνησος του Άθω, το έδαφος της οποίας είναι αναπαλλοτρίωτο. Η διοίκησή του ασκείται από αντιπροσώπους των Ιερών Μονών, οι οποίοι αποτελούν την Ιερή Κοινότητα. Δεν επιτρέπεται καμία απολύτως μεταβολή στο διοικητικό σύστημα ή στον αριθμό των Μονών του Αγίου Όρους, ούτε στην ιεραρχική τάξη και τη θέση τους προς τα υποτελή τους εξαρτήματα. Απαγορεύεται να εγκαταβιώνουν στο Άγιο Όρος ετερόδοξοι ή σχισματικοί.\n3. Ο λεπτομερής καθορισμός των αγιορειτικών κάθεστώτων και του τρόπου της λειτουργίας τους γίνεται από τον Καταστατικό Χάρτη του Αγίου Όρους, τον οποίο, με σύμπραξη του αντιπροσώπου του Κράτους, συντάσσουν και ψηφίζουν οι είκοσι Ιερές Μονές και τον επικυρώνουν το Οικουμενικό Πατριαρχείο και η Βουλή των Ελλήνων.\n4. Η ακριβής τήρηση των αγιορειτικών καθεστώτων τελεί ως προς το πνευματικό μέρος υπό την ανώτατη εποπτεία του Οικουμενικού Πατριαρχείου και ως προς το διοικητικό μέρος υπό την εποπτεία του Κράτους, στο οποίο ανήκει αποκλειστικά και η διαφύλαξη της δημόσιας τάξης και ασφάλειας.\n5. Οι πιο πάνω εξουσίες του Κράτους ασκούνται από διοικη τη, του οποίου τα δικαιώματα και καθήκοντα καθορίζονται με νόμο. Με νόμο επίσης καθορίζονται η δικαστική εξουσία που ασκούν οι μοναστηριακές αρχές και η Ιερή Κοινότητα, καθώς και τα τελωνειακά και φορολογικά πλεονεκτήματα του Αγίου Όρους."""@el;
+    schema:text """1. Η χερσόνησος του Άθω, από τη Μεγάλη Βίγλα και πέρα, η οποία αποτελεί την περιοχή του Αγίου Όρους, είναι, σύμφωνα με το αρχαίο προνομιακό καθεστώς του, αυτοδιοίκη το τμήμα του Ελληνικού Κράτους, του οποίου η κυριαρχία πάνω σ’ αυτό παραμένει άθικτη. Από πνευματική άποψη το Άγιο Όρος διατελεί υπό την άμεση δικαιοδοσία του Οικουμενικού Πατριαρχείου. Όλοι όσοι μονάζουν σ’ αυτό αποκτούν την ελληνική ιθαγένεια μόλις προσληφθούν ως δόκιμοι ή μοναχοί, χωρίς άλλη διατύπωση.\n2. Το Άγιο Όρος διοικείται, σύμφωνα με το καθεστώς του, από τις είκοσι Ιερές Μονές του, μεταξύ των οποίων είναι κατανεμημένη ολόκληρη η χερσόνησος του Άθω, το έδαφος της οποίας είναι αναπαλλοτρίωτο. Η διοίκησή του ασκείται από αντιπροσώπους των Ιερών Μονών, οι οποίοι αποτελούν την Ιερή Κοινότητα. Δεν επιτρέπεται καμία απολύτως μεταβολή στο διοικητικό σύστημα ή στον αριθμό των Μονών του Αγίου Όρους, ούτε στην ιεραρχική τάξη και τη θέση τους προς τα υποτελή τους εξαρτήματα. Απαγορεύεται να εγκαταβιώνουν στο Άγιο Όρος ετερόδοξοι ή σχισματικοί.\n3. Ο λεπτομερής καθορισμός των αγιορειτικών κάθεστώτων και του τρόπου της λειτουργίας τους γίνεται από τον Καταστατικό Χάρτη του Αγίου Όρους, τον οποίο, με σύμπραξη του αντιπροσώπου του Κράτους, συντάσσουν και ψηφίζουν οι είκοσι Ιερές Μονές και τον επικυρώνουν το Οικουμενικό Πατριαρχείο και η Βουλή των Ελλήνων.\n4. Η ακριβής τήρηση των αγιορειτικών καθεστώτων τελεί ως προς το πνευματικό μέρος υπό την ανώτατη εποπτεία του Οικουμενικού Πατριαρχείου και ως προς το διοικητικό μέρος υπό την εποπτεία του Κράτους, στο οποίο ανήκει αποκλειστικά και η διαφύλαξη της δημόσιας τάξης και ασφάλειας.\n5. Οι πιο πάνω εξουσίες του Κράτους ασκούνται από διοικη τη, του οποίου τα δικαιώματα και καθήκοντα καθορίζονται με νόμο. Με νόμο επίσης καθορίζονται η δικαστική εξουσία που ασκούν οι μοναστηριακές αρχές και η Ιερή Κοινότητα, καθώς και τα τελωνειακά και φορολογικά πλεονεκτήματα του Αγίου Όρους."""@el;
+    glass:digest "sha256-0bc691cc5db3977a9c07c4c3777d89041fd912015a4ef3911ebd07dbdd006d6b";
+    digest:sha256 "0bc691cc5db3977a9c07c4c3777d89041fd912015a4ef3911ebd07dbdd006d6b";
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/105/par/1>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/105/par/2>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/105/par/3>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/105/par/4>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/105/par/5>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell/man>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/const/1975/art/105/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-105/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF EXPRESSION LAYER
+# ============================================================
+
+# ============================================================
+# FRBR MANIFESTATION LAYER - Digital Embodiment
+# ============================================================
+
+# ============================================================
+# FRBR MANIFESTATION LAYER - Article 105
+# Digital embodiment of the Greek-language Expression
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell/man>
+    a eli:LegalManifestation ,
+      dcat:Distribution ;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975/art/105>;
+    dcat:accessURL <https://stavropouloslaw.com/eli/gr/const/1975>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/const/1975/art/105>;
+    dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
+    dct:format <https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-const-1975-art-105-work-exp-ell-man";
+    schema:legislationDate "1975-06-11"^^xsd:date;
+    void:inDataset <https://stavropouloslaw.com/datasets/greek-constitution>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-105-man>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-105/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF MANIFESTATION LAYER
+# ============================================================
+
+# ============================================================
+# FRBR FORMAT LAYERS - Specific Encodings
+# ============================================================
+
+# ============================================================
+# FRBR FORMAT LAYER (HTML) - Article 105
+# HTML encoding of the Manifestation
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell/man/format/html
+# Media-type: text/html; charset=utf-8
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell/man/format/html>
+    a dcat:Distribution;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975/art/105>;
+    dcat:mediaType "text/html; charset=utf-8";
+    dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
+    schema:encodingFormat ".html";
+    schema:fileFormat "text/html; charset=utf-8";
+    void:inDataset <https://stavropouloslaw.com/datasets/greek-constitution>;
+    owl:sameAs <http://www.wikidata.org/entity/Q16519798#constitution-art-105-man-html>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-105/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF FORMAT LAYER (HTML)
+# ============================================================
+
+# ============================================================
+# FRBR FORMAT LAYER (JSONLD) - Article 105
+# JSONLD encoding of the Manifestation
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell/man/format/jsonld
+# Media-type: application/ld+json; charset=utf-8
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell/man/format/jsonld>
+    a dcat:Distribution;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975/art/105>;
+    dcat:mediaType "application/ld+json; charset=utf-8";
+    dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
+    schema:encodingFormat ".jsonld";
+    schema:fileFormat "application/ld+json; charset=utf-8";
+    void:inDataset <https://stavropouloslaw.com/datasets/greek-constitution>;
+    owl:sameAs <http://www.wikidata.org/entity/Q16519798#constitution-art-105-man-jsonld>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-105/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF FORMAT LAYER (JSONLD)
+# ============================================================
+
+# ============================================================
+# FRBR FORMAT LAYER (TURTLE) - Article 105
+# TURTLE encoding of the Manifestation
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell/man/format/turtle
+# Media-type: text/turtle; charset=utf-8
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell/man/format/turtle>
+    a dcat:Distribution;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/const/1975/art/105/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975/art/105>;
+    dcat:mediaType "text/turtle; charset=utf-8";
+    dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
+    schema:encodingFormat ".ttl";
+    schema:fileFormat "text/turtle; charset=utf-8";
+    void:inDataset <https://stavropouloslaw.com/datasets/greek-constitution>;
+    owl:sameAs <http://www.wikidata.org/entity/Q16519798#constitution-art-105-man-turtle>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-105/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF FORMAT LAYER (TURTLE)
+# ============================================================
+
+# ============================================================
+# PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/const/1975/art/105/par/1>
+    a eli:LegalResourceSubdivision ;
+    eli:number "1" ;
+    schema:text """1. Η χερσόνησος του Άθω, από τη Μεγάλη Βίγλα και πέρα, η οποία αποτελεί την περιοχή του Αγίου Όρους, είναι, σύμφωνα με το αρχαίο προνομιακό καθεστώς του, αυτοδιοίκη το τμήμα του Ελληνικού Κράτους, του οποίου η κυριαρχία πάνω σ’ αυτό παραμένει άθικτη. Από πνευματική άποψη το Άγιο Όρος διατελεί υπό την άμεση δικαιοδοσία του Οικουμενικού Πατριαρχείου. Όλοι όσοι μονάζουν σ’ αυτό αποκτούν την ελληνική ιθαγένεια μόλις προσληφθούν ως δόκιμοι ή μοναχοί, χωρίς άλλη διατύπωση."""@el .
+
+<https://stavropouloslaw.com/eli/gr/const/1975/art/105/par/2>
+    a eli:LegalResourceSubdivision ;
+    eli:number "2" ;
+    schema:text """2. Το Άγιο Όρος διοικείται, σύμφωνα με το καθεστώς του, από τις είκοσι Ιερές Μονές του, μεταξύ των οποίων είναι κατανεμημένη ολόκληρη η χερσόνησος του Άθω, το έδαφος της οποίας είναι αναπαλλοτρίωτο. Η διοίκησή του ασκείται από αντιπροσώπους των Ιερών Μονών, οι οποίοι αποτελούν την Ιερή Κοινότητα. Δεν επιτρέπεται καμία απολύτως μεταβολή στο διοικητικό σύστημα ή στον αριθμό των Μονών του Αγίου Όρους, ούτε στην ιεραρχική τάξη και τη θέση τους προς τα υποτελή τους εξαρτήματα. Απαγορεύεται να εγκαταβιώνουν στο Άγιο Όρος ετερόδοξοι ή σχισματικοί."""@el .
+
+<https://stavropouloslaw.com/eli/gr/const/1975/art/105/par/3>
+    a eli:LegalResourceSubdivision ;
+    eli:number "3" ;
+    schema:text """3. Ο λεπτομερής καθορισμός των αγιορειτικών κάθεστώτων και του τρόπου της λειτουργίας τους γίνεται από τον Καταστατικό Χάρτη του Αγίου Όρους, τον οποίο, με σύμπραξη του αντιπροσώπου του Κράτους, συντάσσουν και ψηφίζουν οι είκοσι Ιερές Μονές και τον επικυρώνουν το Οικουμενικό Πατριαρχείο και η Βουλή των Ελλήνων."""@el .
+
+<https://stavropouloslaw.com/eli/gr/const/1975/art/105/par/4>
+    a eli:LegalResourceSubdivision ;
+    eli:number "4" ;
+    schema:text """4. Η ακριβής τήρηση των αγιορειτικών καθεστώτων τελεί ως προς το πνευματικό μέρος υπό την ανώτατη εποπτεία του Οικουμενικού Πατριαρχείου και ως προς το διοικητικό μέρος υπό την εποπτεία του Κράτους, στο οποίο ανήκει αποκλειστικά και η διαφύλαξη της δημόσιας τάξης και ασφάλειας."""@el .
+
+<https://stavropouloslaw.com/eli/gr/const/1975/art/105/par/5>
+    a eli:LegalResourceSubdivision ;
+    eli:number "5" ;
+    schema:text """5. Οι πιο πάνω εξουσίες του Κράτους ασκούνται από διοικη τη, του οποίου τα δικαιώματα και καθήκοντα καθορίζονται με νόμο. Με νόμο επίσης καθορίζονται η δικαστική εξουσία που ασκούν οι μοναστηριακές αρχές και η Ιερή Κοινότητα, καθώς και τα τελωνειακά και φορολογικά πλεονεκτήματα του Αγίου Όρους."""@el .
+
+# ============================================================
+# END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
+# Article 105 - Complete Canonical Representation
+# ============================================================

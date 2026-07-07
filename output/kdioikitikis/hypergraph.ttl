@@ -1,0 +1,767 @@
+@prefix slw: <https://stavropouloslaw.com/ontology/legal#> .
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# kdioikitikis — legal HYPERGRAPH (N-ary hyperedges; W3C n-ary relations pattern).
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-3> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/5> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/3> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-6> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/13>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/14>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/46>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/153>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/1>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/51> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/6> ;
+    slw:memberCount 6 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-10> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/128> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/10> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-11> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/128> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/11> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-15> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/127>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/128> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/15> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-17> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/18>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/11>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/21> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/17> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-18> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/16> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/18> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-19> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/17>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/42> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/19> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-21> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/11> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/21> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-22> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/14>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/21> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/22> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-26> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/28> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/26> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-27> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/7>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/200> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/27> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-30> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/27> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/30> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-37> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/93> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/37> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-45> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/27> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/45> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-46> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/45>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/275> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/46> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-48> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/24>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/28>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/3> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/48> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-51> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/50> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/51> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-52> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/50>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/51> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/52> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-55> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/49>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/52>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/53>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/54> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/55> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-56> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/44> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/56> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-57> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/45>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/47>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/53>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/54> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/57> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-58> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/45> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/58> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-66> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/64> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/66> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-67> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/63> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/67> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-68> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/45>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/63> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/68> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-69> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/200> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/69> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-70> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/28> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/70> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-71> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/69>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/70> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/71> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-73> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/45> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/73> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-77> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/114> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/77> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-78> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/71>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/80> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/78> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-80> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/71>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/212> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/80> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-85> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/102> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/85> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-86> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/84> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/86> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-87> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/45> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/87> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-88> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/200> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/88> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-93> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/206> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/93> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-97> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/79> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/97> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-100> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/114> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/100> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-105Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/44> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/105Α> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-106> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/114> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/106> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-108> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/91> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/108> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-110> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/110> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-114> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/114> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-119> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/117> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/119> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-120> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/117>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/119> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/120> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-122> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/121> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/122> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-124> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/122> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/124> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-126> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/3> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-126Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/12>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/127>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-126Β> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/199>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/29>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/27> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Β> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-127> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/6>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/124> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/127> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-129> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/149>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/128> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/129> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-130> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/16> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/130> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-133> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/128Α> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/133> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-134> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/27> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/134> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-136> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/133> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/136> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-142> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/143>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/189>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/193> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/142> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-144> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/152> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/144> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-145> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/149> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/145> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-146> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/149> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/146> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-149> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/129> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/149> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-150> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/185> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/150> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-152> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/158>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/195> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/152> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-153> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/127> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/153> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-154> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/45>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/127>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/152>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/153>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/13> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/154> ;
+    slw:memberCount 5 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-155> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/42>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/195>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/152> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/155> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-156> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/13> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/156> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-157> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/42> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/157> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-158> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/152> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/158> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-159> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/152> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/159> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-160> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/195> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/160> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-165> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/275>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/22> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/165> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-166> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/42> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/166> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-171> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/148>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/169> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/171> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-174> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/183>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/42> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/174> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-178> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/179>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/180>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/184> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/178> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-179> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/185>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/152> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/179> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-180> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/183> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/180> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-181> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/179>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/195> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/181> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-182> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/42> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/182> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-185> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/184> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/185> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-189> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/93> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/189> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-193> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/135>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/189> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/193> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-194> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/127>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/128>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/139> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/194> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-195> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/189>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/48> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/195> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-198> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/259> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/198> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-199> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/274> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/199> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-201> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/201> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-202> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/203>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/108> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/202> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-203> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/45> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/203> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-205> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/195>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/200>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/202> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/205> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-205Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/201>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/203>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/204> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/205Α> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-207> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/207> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-209> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/203>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/209> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-209Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/206>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/207>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/209> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/209Α> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-210> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/203> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/210> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-212> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/212> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-214> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/45>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/128>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/129>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/131>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/141>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/138> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/214> ;
+    slw:memberCount 7 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-215> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/205>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/214>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/195>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/199> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/215> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-217> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/34>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/62>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/63> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/217> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-218> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/216> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/218> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-219> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/217> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/219> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-220> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/217> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/220> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-221> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/45> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/221> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-222> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/132> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/222> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-223> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/219> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/223> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-226> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/81>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/111> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/226> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-227> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/115>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/63> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/227> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-228> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/217>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/218>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/200> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/228> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-229> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/218>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/203>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/204>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/214> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/229> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-231> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/67> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/231> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-232> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/67> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/232> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-233> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/67> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/233> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-234> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/67> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/234> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-235> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/67> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/235> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-236> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/67> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/236> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-237> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/67> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/237> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-238> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/67> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/238> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-239> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/67> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/239> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-240> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/67> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/240> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-241> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/67> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/241> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-242> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/67> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/242> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-243> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/67> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/243> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-246> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/244> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/246> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-248> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/78>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/57>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/24>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/79>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/39> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/248> ;
+    slw:memberCount 5 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-251> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/45> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/251> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-252> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/250>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/248> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/252> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-253> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/42> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/253> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-256> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/253>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/254>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/248> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/256> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-257> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/184>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/185> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/257> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-258> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/246> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/258> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-259> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/248> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/259> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-261> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/81>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/111>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/260>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/104>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/255>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/253>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/257> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/261> ;
+    slw:memberCount 7 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-262> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/115> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/262> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-264> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/261>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/143> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/264> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-265> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/200>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/215> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/265> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-269> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/267> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/269> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-272Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/3> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Α> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-272Γ> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/27>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/45>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Η> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Γ> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-272Ε> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Η> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-272Η> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/45>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/132>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/112>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/206>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/208> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Η> ;
+    slw:memberCount 6 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-272Θ> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Η>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/101> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Θ> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-272Ι> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Η> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ι> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-273> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/69>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/70> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/273> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-274> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/139Α> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/274> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-275> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/273>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/274>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/110>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/111> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/275> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-276Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/276> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/276Α> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-277> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/139Α>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/246>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/269>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/256>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/217>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/135> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277> ;
+    slw:memberCount 6 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-284> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/285> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/284> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/hyperedge/cites-285> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/99>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/1>, <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/28> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/285> ;
+    slw:memberCount 3 .
+

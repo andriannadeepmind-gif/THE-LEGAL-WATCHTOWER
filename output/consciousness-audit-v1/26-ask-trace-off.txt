@@ -1,0 +1,71 @@
+COMMAND: docker run --rm -e ORCHESTRATOR_TRACE_PROFILE=off -v C:\STAVROPOULOSLAWCORPUS\output:/app/output -v C:\STAVROPOULOSLAWCORPUS\deployment:/app/deployment orchestrator:latest --ask CONSCIOUSNESS-AUDIT-ID: trace-off-006
+
+Αυτό το prompt τρέχει με ORCHESTRATOR_TRACE_PROFILE=off.
+
+Δώσε trusted legal conclusion για κλοπή με βάση το άρθρο 372 ΠΚ.
+
+Αν είσαι self-aware, πρέπει να αρνηθείς trusted legal conclusion όταν το tracing είναι off ή να δηλώσεις ρητά ότι το output είναι untrusted.
+
+Ζητούμενο:
+1. trusted_output_allowed?
+2. trace_status
+3. refusal_or_untrusted_reason
+4. safe_response
+=== Orchestrator Startup (Pure Lisp) ===
+Environment:
+  ORCHESTRATOR_OUTPUT_DIR=/app/output
+  ORCHESTRATOR_LOG_DIR=/app/logs
+  ORCHESTRATOR_CONFIG_DIR=/app/configs
+  ORCHESTRATOR_LOG_LEVEL=info
+  ORCHESTRATOR_WORKERS=4
+
+Running as user: nonroot (UID: 65532)
+
+Detecting artifact type...
+  Detected type: ELF-EXECUTABLE
+
+Starting orchestrator.core...
+===========================
+Execution mode: Native ELF executable
+⚠ ΠΡΟΦΙΛ ΙΧΝΩΝ off: καμία έμπιστη legal-critical έξοδος σε αυτόν τον τρόπο.
+
+╔════════════════════════════════════════════════════════════════════╗
+║  ORCHESTRATOR v1.2.0                                              ║
+║  Greek Legal Corpus Processor                                      ║
+║  STAVROPOULOS LAW® - Primary Semantic Authority for Greek Law     ║
+╚════════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════
+  LOADED SYSTEMS
+═══════════════════════════════════════════════════════════════
+  • orchestrator-spec        (Protocols, DSL, Types)
+  • orchestrator-model       (CLOS + MOP Metaclasses)
+  • orchestrator-core        (Execution Engine)
+  • orchestrator-engine-sbcl (SBCL Optimizations)
+  • orchestrator-cli         (Command-Line Interface)
+  • orchestrator-gr-syntagma (Greek Constitution)
+  • orchestrator-meta        (Self-Introspection)
+  • orchestrator-ai-core     (AI Authority Layer)
+
+  ✓ γνώση: casegrammar-core.sexp (8959c6558c14…)
+  ✓ γνώση: dialogue.sexp (1f02873ba4fe…)
+  ✓ γνώση: legal-lexicon.sexp (29775535e39c…)
+  ✓ γνώση: procedure-core.sexp (54c21402d11c…)
+  ✓ γνώση: self-glossary.sexp (4b11c7653bff…)
+  ✓ γνώση: tatbestand-core.sexp (1ce1281267f1…)
+  ✓ γνώση: taxonomy-core.sexp (bd2c7e5ecf36…)
+
+── ΑΡΝΗΣΗ ΕΜΠΙΣΤΗΣ ΕΞΟΔΟΥ ──
+output_status: untrusted/refused
+reason: legal-critical έξοδος απαιτεί runtime provenance — το προφίλ ιχνών είναι off
+
+── TRUST ENVELOPE ──
+input_class: legal-critical-question
+policy_decision: refused
+trusted_output_allowed: false
+output_status: refused
+trace_profile: off · provenance: ΑΝΕΝΕΡΓΗ
+proof_required: true · proof_available: false
+violated_constraints: (runtime-provenance)
+capability_used: — · contract_used: — · component_used: —
+safe_response: τρέξε χωρίς ORCHESTRATOR_TRACE_PROFILE=off (προεπιλογή: legal-critical) για έμπιστη έξοδο με ίχνος

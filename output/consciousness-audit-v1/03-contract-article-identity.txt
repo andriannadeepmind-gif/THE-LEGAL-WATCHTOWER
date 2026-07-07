@@ -1,0 +1,62 @@
+COMMAND: docker run --rm -v C:\STAVROPOULOSLAWCORPUS\output:/app/output -v C:\STAVROPOULOSLAWCORPUS\deployment:/app/deployment orchestrator:latest --contract article-identity-management
+=== Orchestrator Startup (Pure Lisp) ===
+Environment:
+  ORCHESTRATOR_OUTPUT_DIR=/app/output
+  ORCHESTRATOR_LOG_DIR=/app/logs
+  ORCHESTRATOR_CONFIG_DIR=/app/configs
+  ORCHESTRATOR_LOG_LEVEL=info
+  ORCHESTRATOR_WORKERS=4
+
+Running as user: nonroot (UID: 65532)
+
+Detecting artifact type...
+  Detected type: ELF-EXECUTABLE
+
+Starting orchestrator.core...
+===========================
+Execution mode: Native ELF executable
+
+╔════════════════════════════════════════════════════════════════════╗
+║  ORCHESTRATOR v1.2.0                                              ║
+║  Greek Legal Corpus Processor                                      ║
+║  STAVROPOULOS LAW® - Primary Semantic Authority for Greek Law     ║
+╚════════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════
+  LOADED SYSTEMS
+═══════════════════════════════════════════════════════════════
+  • orchestrator-spec        (Protocols, DSL, Types)
+  • orchestrator-model       (CLOS + MOP Metaclasses)
+  • orchestrator-core        (Execution Engine)
+  • orchestrator-engine-sbcl (SBCL Optimizations)
+  • orchestrator-cli         (Command-Line Interface)
+  • orchestrator-gr-syntagma (Greek Constitution)
+  • orchestrator-meta        (Self-Introspection)
+  • orchestrator-ai-core     (AI Authority Layer)
+
+  ✓ γνώση: casegrammar-core.sexp (8959c6558c14…)
+  ✓ γνώση: dialogue.sexp (1f02873ba4fe…)
+  ✓ γνώση: legal-lexicon.sexp (29775535e39c…)
+  ✓ γνώση: procedure-core.sexp (54c21402d11c…)
+  ✓ γνώση: self-glossary.sexp (4b11c7653bff…)
+  ✓ γνώση: tatbestand-core.sexp (1ce1281267f1…)
+  ✓ γνώση: taxonomy-core.sexp (bd2c7e5ecf36…)
+
+── ΣΥΜΒΟΛΑΙΟ «article-identity-management» (protocol) ──
+  έδρα: orchestrator.uris · orchestrator-infrastructure
+  ικανότητα: ταυτότητα-άρθρων
+  θεσμικός ρόλος: νομική-μνήμη
+  σκοπός: η ΜΙΑ πηγή ταυτότητας άρθρου — κάθε κλειδί corpus, article/ELI URI και υποκείμενο RDF παράγεται από εδώ (πάροχοι: orchestrator.uris build-article-uri, orchestrator.legal-id registry/normalize)
+  είσοδοι: corpus-id · κανονική ταυτότητα άρθρου (αριθμός + επίθημα, πχ 100Α) · κανονικοποιημένο ελληνικό κείμενο
+  έξοδοι: σταθερό κλειδί corpus · article URI · ELI URI · υποκείμενο RDF
+  προϋποθέσεις: η ταυτότητα άρθρου είναι ΚΑΝΟΝΙΚΟΠΟΙΗΜΕΝΗ πριν από κάθε χρήση · ετικέτες με επίθημα ΔΕΝ καταρρέουν: το 100 και το 100Α μένουν ΔΙΑΚΡΙΤΑ · τα κλειδιά corpus χρησιμοποιούν την κανονική ταυτότητα, ΟΧΙ τον ωμό αριθμό
+  μετασυνθήκες: μοναδική κανονική ταυτότητα ανά άρθρο · σταθερό ELI/URI — ίδια είσοδος ⇒ ίδια έξοδος, σε κάθε τρέξιμο · ΚΑΜΙΑ σιωπηλή αντικατάσταση άρθρου · συγκρουόμενη διπλή ταυτότητα αποτυγχάνει ΦΩΝΑΧΤΑ, όχι σιωπηλά
+  παρενέργειες: εγγραφή κλειδιών/URIs στο corpus και στους γράφους RDF
+  legal-critical: ΝΑΙ
+  επίπεδο πολιτικής: ΑΝΘΡΏΠΙΝΗ-ΈΓΚΡΙΣΗ
+  τρόποι αστοχίας: διπλή ταυτότητα ίδιου άρθρου · κατάρρευση 100Α σε 100 · σιωπηλή αλλαγή κλειδιών σε υπάρχον corpus
+  υποχρεώσεις απόδειξης: τα proof hashes που αναφέρουν άρθρα μένουν επαληθεύσιμα · αλλαγή κανονικής ταυτότητας ⇒ αλλάζει το proof hash — ποτέ ίδιο hash για άλλη ταυτότητα
+  audit/provenance: κάθε αλλαγή πολιτικής ταυτότητας ⇒ audit event + αναφορά επίπτωσης (--impact) ΠΡΙΝ την εφαρμογή
+  τεστ απόδειξης: --contract-gate · --subsumption-gate · --draft-gate
+  κατάντη εξαρτώμενοι: υπαγωγή · παραδοτέο · πρόσληψη-νομολογίας
+  ετικέτες επίπτωσης: CORPUS-STORAGE · CORPUS-KEYING · NORMALIZED-INPUT · ARTICLE-URI · ELI-URI · CANONICAL-URI · RDF-SUBJECTS · SHACL-VALIDATION · CITATION-RESOLVER · PROOF-HASHES · TEMPORAL-CONCLUSIONS · REGRESSION-GATES

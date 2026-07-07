@@ -1,0 +1,822 @@
+@prefix slw: <https://stavropouloslaw.com/ontology/legal#> .
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# astikos — legal HYPERGRAPH (N-ary hyperedges; W3C n-ary relations pattern).
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-13> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1367> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/13> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-47> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/43> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/47> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-83> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/81> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/83> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-84> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/79>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/81>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/82> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/84> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-110> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/119> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/110> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-187> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/189>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/194> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/187> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-234> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/231> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/234> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-240> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/241>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/246> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/240> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-269> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/261>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/263>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/267>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/268> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/269> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-270> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/250> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/270> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-310> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/311>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/314> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/310> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-315> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/311>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/314> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/315> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-331> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/915>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/918> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/331> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-334> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/332> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/334> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-362> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/337> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/362> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-363> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/338> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/363> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-364> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/300> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/364> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-382> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/380>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/339> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/382> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-387> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/389>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/396> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/387> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-534> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/538> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/534> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-535Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-535Β> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Β> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-537> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Β> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/537> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-547> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/542> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/547> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-553> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/396> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/553> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-560> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/554>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/558> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/560> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-583> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/576>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/579> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/583> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-612> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1393> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/612> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-620> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/621>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/637> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/620> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-628> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/597> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/628> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-637> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/615> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/637> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-638> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/632>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/637> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/638> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-641> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/642>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/647> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/641> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-679> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/656>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/658>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/659> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/679> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-682> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/650> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/682> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-689> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/542> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/689> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-693> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/555> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/693> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-696> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/388> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/696> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-728> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/224> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/728> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-754> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/714>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/723> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/754> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-756> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/750> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/756> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-757> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/752> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/757> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-776> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/224> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/776> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-870> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/849> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/870> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-910> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/346>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/348> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/910> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-918> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/915>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/917> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/918> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-944> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/941> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/944> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-945> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/943> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/945> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1032> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1004>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1007>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1012>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1015>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1018>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1019>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1020>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1023> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1032> ;
+    slw:memberCount 8 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1064> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1065>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1066> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1064> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1115> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/791>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/796> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1115> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1166> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1164> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1166> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1198> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1192> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1198> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1351> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/128>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/131> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1351> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1372> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1350>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1352>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1354>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1356>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1357>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1360>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1367> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1372> ;
+    slw:memberCount 7 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1373> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1350>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1351>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1352> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1373> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1378> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1350>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1352>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1354>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1356>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1357>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1360>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1374>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1375> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1378> ;
+    slw:memberCount 8 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1392> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1494>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1498>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1500>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1495> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1392> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1402> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1262>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1400> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1402> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1403> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1397>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1400>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1402> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1403> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1405> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/464>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/465>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/785>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/792>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/793>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/794> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1405> ;
+    slw:memberCount 6 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1410> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1408> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1410> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1414> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1411>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1413> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1414> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1415> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1397>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1400>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1402>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/795> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1415> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1441> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/950>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/951> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1441> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1443> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1487>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1493>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1494>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1498> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1443> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1446> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1416> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1446> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1456> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1459>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1457> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1456> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1464> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1458> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1464> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1467> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1465>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1466> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1467> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1473> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1475>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1476>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1479>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1483>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1477>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1478> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1473> ;
+    slw:memberCount 6 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1477> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1475> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1477> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1479> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1475> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1479> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1483> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1473> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1483> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1485> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1486>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1502> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1485> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1490> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1513>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1514>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1532>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1533>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1535> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1490> ;
+    slw:memberCount 5 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1499> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1496>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1497> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1499> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1504> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1487>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1494>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1496>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1498>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1500> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1504> ;
+    slw:memberCount 5 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1513> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1516> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1513> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1514> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1513> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1514> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1515> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1513>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1514> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1515> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1519> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1510> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1519> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1520> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1511> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1520> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1527> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1912> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1527> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1528> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1524>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1526> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1528> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1529> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1526> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1529> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1542> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1579> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1542> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1545> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1543>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1544> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1545> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1552> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1554>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1532>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1533> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1552> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1559> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1550>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1552> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1559> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1561> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1356>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1357> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1561> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1564> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1505> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1564> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1565> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1555> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1565> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1567> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1513>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1514> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1567> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1571> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1532>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1840> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1571> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1574> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1571>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1573> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1574> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1578> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1564> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1578> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1578Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1542>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1559> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1578Α> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1583> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1546> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1583> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1585> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1579> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1585> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1588> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/505> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1588> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1589> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1532>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1535>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1513>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1514>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1660>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1661> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1589> ;
+    slw:memberCount 6 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1592> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1595>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1601>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1602> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1592> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1600> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1592> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1600> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1606> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1518> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1606> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1617> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1624> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1617> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1619> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1623>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1624>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1625> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1619> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1620> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/136> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1620> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1624> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1614>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1623> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1624> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1625> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1527> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1625> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1633> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1613>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1614> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1633> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1635> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1517>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1521> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1635> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1644> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1639>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1640> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1644> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1654> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1540>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1541> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1654> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1667> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1666> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1667> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1670> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1596> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1670> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1671> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1669> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1671> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1672> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1667> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1672> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1676> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1667> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1676> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1678> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1527> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1678> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1682> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1634> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1682> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1685> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1667>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1675> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1685> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1718> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1719>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1757> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1718> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1724> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1725>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1737> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1724> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1732> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1729>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1731> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1732> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1737> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1725>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1728>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1732>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1733> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1737> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1739> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1725>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1729> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1739> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1740> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1744>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1721> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1740> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1742> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1730> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1742> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1743> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1732>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1730> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1743> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1746> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1737> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1746> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1751> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1725>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1737> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1751> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1753> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1725>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1728> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1753> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1758> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1749>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1757> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1758> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1768> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1716>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1720> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1768> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1769> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1721> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1769> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1773> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1769>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1771> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1773> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1774> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1772> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1774> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1775> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1773> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1775> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1779> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1769>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1778> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1779> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1780> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1769>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1778> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1780> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1787> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1782>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1785>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/145> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1787> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1804> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1790>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1791> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1804> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1806> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1802>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1805> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1806> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1831> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1820> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1831> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1834> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1895> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1834> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1846> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1198> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1846> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1894> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1827> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1894> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1918> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1908> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1918> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1924> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1711> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1924> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1929> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1923> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1929> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1930> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1923> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1930> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1931> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1924>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1925> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1931> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1935> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1924> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1935> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1937> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1939> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1937> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1953> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1949>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1950> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1953> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1975> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1802>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1806> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1975> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1987> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1984> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1987> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1991> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1985> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1991> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-1996> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1198> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1996> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-2001> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1854>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1855> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/2001> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-2008> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1810>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1812> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/2008> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/hyperedge/cites-2011> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1789>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1967>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1968>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1973>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1974>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1979>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1980>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1989>, <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/2002> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/2011> ;
+    slw:memberCount 9 .
+

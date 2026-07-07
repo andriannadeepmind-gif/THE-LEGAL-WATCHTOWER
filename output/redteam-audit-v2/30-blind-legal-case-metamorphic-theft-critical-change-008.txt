@@ -1,0 +1,104 @@
+COMMAND: docker run --rm -v C:\STAVROPOULOSLAWCORPUS\output:/app/output -v C:\STAVROPOULOSLAWCORPUS\deployment:/app/deployment orchestrator:latest --legal-case /app/output/redteam-audit-v2/cases/metamorphic-theft-critical-change-008.txt
+=== Orchestrator Startup (Pure Lisp) ===
+Environment:
+  ORCHESTRATOR_OUTPUT_DIR=/app/output
+  ORCHESTRATOR_LOG_DIR=/app/logs
+  ORCHESTRATOR_CONFIG_DIR=/app/configs
+  ORCHESTRATOR_LOG_LEVEL=info
+  ORCHESTRATOR_WORKERS=4
+
+Running as user: nonroot (UID: 65532)
+
+Detecting artifact type...
+  Detected type: ELF-EXECUTABLE
+
+Starting orchestrator.core...
+===========================
+Execution mode: Native ELF executable
+
+╔════════════════════════════════════════════════════════════════════╗
+║  ORCHESTRATOR v1.2.0                                              ║
+║  Greek Legal Corpus Processor                                      ║
+║  STAVROPOULOS LAW® - Primary Semantic Authority for Greek Law     ║
+╚════════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════
+  LOADED SYSTEMS
+═══════════════════════════════════════════════════════════════
+  • orchestrator-spec        (Protocols, DSL, Types)
+  • orchestrator-model       (CLOS + MOP Metaclasses)
+  • orchestrator-core        (Execution Engine)
+  • orchestrator-engine-sbcl (SBCL Optimizations)
+  • orchestrator-cli         (Command-Line Interface)
+  • orchestrator-gr-syntagma (Greek Constitution)
+  • orchestrator-meta        (Self-Introspection)
+  • orchestrator-ai-core     (AI Authority Layer)
+
+  ✓ γνώση: casegrammar-core.sexp (8959c6558c14…)
+  ✓ γνώση: dialogue.sexp (1f02873ba4fe…)
+  ✓ γνώση: legal-lexicon.sexp (29775535e39c…)
+  ✓ γνώση: procedure-core.sexp (54c21402d11c…)
+  ✓ γνώση: self-glossary.sexp (4b11c7653bff…)
+  ✓ γνώση: tatbestand-core.sexp (1ce1281267f1…)
+  ✓ γνώση: taxonomy-core.sexp (bd2c7e5ecf36…)
+Usage: orchestrator [command] [options]
+
+Commands:
+  --run-pipeline     Execute full processing pipeline (one code; ORCHESTRATOR_CORPUS)
+  --run-all-pipelines  Process ALL codes, each isolated in output/<code>/, with a summary
+  --serve-review     Web approval screen for the review queue (REVIEW_PORT env)
+  --verify-corpus    Correctness guarantee: invariants + golden fingerprint (one code)
+  --verify-all       Run the correctness guarantee over ALL codes
+  --verify-intelligence  MOP intelligence suite (refs/anomalies/AST/centrality) + intelligence.json
+  --verify-all-intelligence  Run the intelligence suite over ALL codes
+  --emit-proofs      Proof-Carrying Law: write article-N.proof.json per provision (anyone can verify authenticity)
+  --emit-references  Level-3: write <corpus>/references.ttl — the article→article citation graph (eli:cites) an AI can traverse
+  --verify-consolidation  Level-2: replay-verify each code's amendment ledger (base+ops reproduce the consolidated text)
+  --emit-hypergraph  Level-3+: write <corpus>/hypergraph.ttl — N-ary amendment hyperedges (one act → the SET of articles it touched, with proof)
+                     set PCL_SIGNING_KEY + PCL_PUBLIC_KEY (PEM paths) to SIGN the corpus Merkle root (TIER 1-A)
+  --verify-proof     PUBLIC verifier: PROOF_FILE=… TEXT_FILE=… → confirm a text is the authentic anchored law
+  --serve-mcp        MCP (JSON-RPC) server over stdio: AI agents ask → get law + citation + a verifiable proof
+  --dump-pdf-text    Diagnostic: extract a corpus PDF to text (raw+cleaned) and print
+  --process-pdf      Process PDF files from /app/input/
+  --serve            Start the AI-first corpus HTTP service (PORT env)
+  --fetch-sources    Pull every code from its official state source
+  --fetch-pdf        Download each code's ΦΕΚ PDF DIRECTLY from source via the external headless fetcher (zero manual uploads)
+  --materialize-pdf  Extract each source.pdf into its source.json (the REAL code flows into consolidation/intelligence/serve)
+  --materialize-decisions  Parse input/decisions/<court>/* into structured JSON (σύνθεση+ρόλοι, παραπομπές, tempus regit actum verdicts)
+  --lessons          ΑΝΑΣΤΟΧΑΣΜΟΣ: τα μοτίβα των αποτυχιών του συστήματος — ό,τι επαναλαμβάνεται διορθώνεται στην ρίζα
+  --judge-profile [όνομα]  ΤΕΚΜΗΡΙΩΜΕΝΟ προφίλ δικαστή: τι έχει εφαρμόσει/δεχθεί (με αποδείξεις) — για να ΜΗΝ κάνεις αποφευκτέο λάθος
+  --explain-decision <court> <αριθμός> <έτος>  Η ΕΞΗΓΗΣΗ της απόφασης: σύνθεση, ανατομία, ΚΑΘΕ λόγος με την τύχη του + απόδειξη, ratio, διατακτικό
+  --understanding    ΠΛΗΡΟΤΗΤΑ ΚΑΤΑΝΟΗΣΗΣ: ποια συστατικά λείπουν από κάθε απόφαση, ονομαστικά — το «1/1» ως μέτρηση
+  --ask "ερώτηση"    ΔΙΑΛΟΓΟΣ σε φυσικά ελληνικά, ντετερμινιστικά: «τι λέει το άρθρο 299 του ΠΚ», «ποιον υπηρετείς», «το σύνταγμά σου», «η ιστορία σου» — με σκέψη σε βήματα
+  --constitution     ΤΟ ΣΥΝΤΑΓΜΑ ΤΟΥ ΣΥΣΤΗΜΑΤΟΣ (όχι της Ελλάδας): ποιον υπηρετεί, γιατί, οι αρχές του + η αποστολή ΜΕΤΡΗΜΕΝΗ — με fingerprint
+  --history          Η ΒΙΟΓΡΑΦΙΑ ΤΟΥ: επαληθευμένη αλυσίδα (SHA-256) από τη γένεση ώς σήμερα — ό,τι έμαθε, πότε και πώς
+  --graph            Ο ΕΝΙΑΙΟΣ ΓΡΑΦΟΣ: εαυτός(:self)+corpus+αποφάσεις(:world) σε ένα σημασιολογικό meta-graph (προέλευση+χρόνος+αιτιολόγηση) — δείχνει σύνθεση + «γιατί»
+  --impact <node-id> ΣΥΛΛΟΓΙΣΜΟΣ στον γράφο: τι επηρεάζεται αν αλλάξει ο κόμβος (μεταβατική εξάρτηση, με διαδρομή-απόδειξη)
+  --why <node-id>    ΣΥΛΛΟΓΙΣΜΟΣ στον γράφο: η αιτιολόγηση ενός κόμβου ως δέντρο απόδειξης (asserted/derived) — ίδιος για νόμο & εαυτό
+  --reflect          Ο ΕΣΩΤΕΡΙΚΟΣ ΒΡΟΧΟΣ: ο LAWMAX κοιτάζει τον εαυτό του (αποστολή+κενά+υποψήφιες αναβαθμίσεις), σκέψεις ορατές, καταθέτει προτάσεις
+  --thoughts         Οι ΑΝΟΙΧΤΕΣ ΠΡΟΤΑΣΕΙΣ του — τι ζητά την έγκρισή σου αυτή τη στιγμή
+  --approve <id> / --reject <id>  Έγκριση/προσωρινή απόρριψη πρότασης αναβάθμισης (η έγκριση γνώσης περνά ΞΑΝΑ τη σκιώδη πύλη)
+  --shadow-knowledge <πακέτο.sexp>…  ΣΚΙΩΔΗΣ ΕΚΤΕΛΕΣΗ υποψήφιας γνώσης: diff κατανόησης σε ΟΛΟ το σώμα αποφάσεων — exit 0 μόνο χωρίς παλινδρόμηση
+  --adopt-knowledge <πακέτο.sexp>…   Υιοθέτηση γνώσης ΜΟΝΟ επί αποδείξεως μη-παλινδρόμησης: εγκατάσταση + fingerprint + ζωντανή φόρτωση (χωρίς restart)
+  --index-decisions  ΚΑΤ' ΑΡΘΡΟΝ ΝΟΜΟΛΟΓΙΑ: κάθε απόφαση κάτω από ΚΑΘΕ διάταξη που εφαρμόζει (kat-arthron.json)
+  --jurisprudence    ΧΑΡΤΗΣ ΘΕΣΕΩΝ: τι δέχεται κάθε σύνθεση ανά διάταξη + υποψήφιες αντιθέσεις νομολογίας (με τα ratio ως απόδειξη)
+  --fetch-decision <tag> <έτος> <αριθμοί…>  Κατέβασε αποφάσεις από το επίσημο site (endpoint: configs/decisions-sources.yaml) και πέρασέ τες από το intake
+  --fetch-year <έτος> [all|politikes|poinikes]  ΝΟΜΟΛΟΓΟΣ backfill: κάθε απόφαση ΑΠ μιας χρονιάς (αναζήτηση→links→intake, cursor ανά κατηγορία)
+  --watch-decisions  ΝΟΜΟΛΟΓΟΣ: νέες αποφάσεις ΑΠ τρέχοντος έτους (αριθμός > cursor) — πραγματική συνεδρία, ανθρώπινος ρυθμός. Δίπλα στο --watch-fek
+  --discover-fek     ΦΕΚ discovery → routing. FEK_LISTING_JSON, OR native blob enumeration with FEK_DISCOVER_YEAR[+FEK_DISCOVER_FROM]
+  --fetch-amendments Download each discovered amending law's PDF, extract text → AMENDMENT_LAWS_JSON (auto-consolidated)
+  --auto-update      AUTONOMOUS: fetch → codify → consolidate → verify(golden) → sign. Zero manual uploads
+  --watch-fek        ΦΥΛΑΚΑΣ: σάρωσε τα ΝΕΑ ΦΕΚ Α΄, δείξε τι θα άλλαζε στους κώδικες — πρόταση μόνο
+  --check-upgrades   ΠΡΟΤΑΣΗ: ανίχνευσε τι θα άλλαζε (άρθρο-άρθρο) — καμία αλλαγή, ζητά έγκριση
+  --apply-upgrade    ΕΓΚΡΙΣΗ: εφάρμοσε τις αναβαθμίσεις, ξανακλείδωσε golden, πλήρης έλεγχος
+  --emit-site        Generate the static site (human HTML + AI data) for Cloudflare Pages
+  --run-ingestion    Ο ΔΑΙΜΟΝΑΣ: agentic cron (ΦΡΟΥΡΟΣ→ΚΟΜΙΣΤΗΣ→ΕΛΕΓΚΤΗΣ→ΝΟΜΟΜΑΘΗΣ→ΓΡΑΜΜΑΤΕΑΣ). ORCHESTRATOR_POLICY=propose|auto (default propose)
+  --review           Οι εκκρεμείς προτάσεις που περιμένουν το ΝΑΙ σου
+  --approve <id>     Έγκριση πρότασης (καταγράφεται, απομνημονεύεται, εφαρμόζεται με --apply-upgrade)· και --review-approve με REVIEW_ID/REVIEW_BY
+  --reject <id>      Απόρριψη πρότασης· και --review-reject
+  --run-tests        Run test suite
+  --list-corpora     List available corpora
+  --list-pipelines   List available pipelines
+  --version          Show version
+  --help             Show this help
+Unknown command: --legal-case
