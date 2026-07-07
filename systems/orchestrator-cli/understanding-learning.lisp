@@ -189,33 +189,60 @@
                                       gap-id trace-id reason
                                       (source "live-dialogue"))
   "Κάθε γύρος που γεννά κενό κατανόησης γίνεται ΔΟΜΗΜΕΝΗ εγγραφή αποτυχίας —
-   η πρώτη ύλη του proposal generator. Επιστρέφει το failure_id."
-  (let ((fid (format nil "fail:~A"
-                     (subseq (orchestrator.journal:sha256-hex
-                              (format nil "~A|~A" input (or context ""))) 0 12))))
-    (ignore-errors
-      (let ((path (%failure-ledger-path)))
-        (ensure-directories-exist path)
-        (with-open-file (o path :direction :output :if-exists :append
-                                :if-does-not-exist :create :external-format :utf-8)
-          (write-string
-           (jonathan:to-json
-            (list (cons "failure_id" fid)
-                  (cons "input" input)
-                  (cons "previous_context" (or context ""))
-                  (cons "produced_mode" (string-downcase (princ-to-string (or wrong-mode :none))))
-                  (cons "wrong_behavior" (or reason "misclassification/gap"))
-                  (cons "source" source)
-                  (cons "expected_mode_if_known" (if expected-mode
-                                            (string-downcase (princ-to-string expected-mode))
-                                            "unknown"))
-                  (cons "created_gap" (or gap-id ""))
-                  (cons "trace_id" (princ-to-string (or trace-id "")))
-                  (cons "status" "open")
-                  (cons "ts" (orchestrator.journal:iso-now)))
-            :from :alist) o)
-          (terpri o))))
-    fid))
+   η πρώτη ύλη του proposal generator.
+
+   P0 INVARIANT (trust): επιστρέφει (values failure_id recorded-p path reason-code).
+   Το recorded-p είναι ΑΛΗΘΕΣ ΜΟΝΟ αν ΚΑΙ τα τρία ισχύουν: (1) το append στον
+   canonical ledger πέτυχε, (2) το ΙΔΙΟ failure_id ξαναδιαβάστηκε από τον ΙΔΙΟ
+   ledger (read-back), (3) το path είναι εκείνο που ελέγχθηκε. Αλλιώς recorded-p=NIL
+   με ΡΗΤΟ κωδικό: :ledger_missing :ledger_not_writable :readback_failed
+   :deployment_mount_missing :canonical_store_unavailable. Ο καλών ΔΕΝ επιτρέπεται
+   να πει «Καταγράφηκε» / memory_recorded:true χωρίς recorded-p — τομή του trust bug."
+  (let* ((fid (format nil "fail:~A"
+                      (subseq (orchestrator.journal:sha256-hex
+                               (format nil "~A|~A" input (or context ""))) 0 12)))
+         (path (%failure-ledger-path))
+         (deploy-dir (uiop:pathname-parent-directory-pathname
+                      (uiop:pathname-directory-pathname path)))
+         (recorded-p nil)
+         (reason-code nil))
+    (handler-case
+        (cond
+          ;; (α) ο ΙΔΙΟΣ ο φάκελος deployment απών ⇒ mount δεν προσαρτήθηκε
+          ((not (probe-file deploy-dir))
+           (setf reason-code :deployment_mount_missing))
+          (t
+           (ensure-directories-exist path)
+           (with-open-file (o path :direction :output :if-exists :append
+                                   :if-does-not-exist :create :external-format :utf-8)
+            (write-string
+             (jonathan:to-json
+              (list (cons "failure_id" fid)
+                    (cons "input" input)
+                    (cons "previous_context" (or context ""))
+                    (cons "produced_mode" (string-downcase (princ-to-string (or wrong-mode :none))))
+                    (cons "wrong_behavior" (or reason "misclassification/gap"))
+                    (cons "source" source)
+                    (cons "expected_mode_if_known" (if expected-mode
+                                              (string-downcase (princ-to-string expected-mode))
+                                              "unknown"))
+                    (cons "created_gap" (or gap-id ""))
+                    (cons "trace_id" (princ-to-string (or trace-id "")))
+                    (cons "status" "open")
+                    (cons "ts" (orchestrator.journal:iso-now)))
+              :from :alist) o)
+             (terpri o))
+           ;; READ-BACK από τον ΙΔΙΟ path: η μνήμη είναι αληθινή ΜΟΝΟ αν ξαναδιαβάζεται.
+           (cond
+             ((not (probe-file path)) (setf reason-code :ledger_missing))
+             ((some (lambda (l) (and (search fid l)
+                                     (search "\"status\":\"open\"" l)))
+                    (%raw-lines path))
+              (setf recorded-p t))
+             (t (setf reason-code :readback_failed)))))
+      (file-error () (setf recorded-p nil reason-code :ledger_not_writable))
+      (error () (setf recorded-p nil reason-code :canonical_store_unavailable)))
+    (values fid recorded-p (namestring path) reason-code)))
 
 (defun %raw-lines (path)
   "Raw γραμμές κειμένου (JSONL) — ΟΧΙ το sexp-journal (εκείνο διαβάζει plists)."

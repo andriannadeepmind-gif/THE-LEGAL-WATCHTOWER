@@ -1829,7 +1829,8 @@ safe_alternative: υπέβαλε το ίδιο ερώτημα ΧΩΡΙΣ όρο 
                            missing-capabilities gap-id safe-response
                            violated mode corpus-used
                            (gap-created nil gap-created-p) trace-id
-                           failure-id ledger-ref)
+                           failure-id ledger-ref
+                           (memory-recorded nil) memory-fail-reason)
   "ΤΟ ΠΕΡΙΒΛΗΜΑ ΕΜΠΙΣΤΟΣΥΝΗΣ: τυπώνεται σε ΚΑΘΕ έξοδο του --ask, με τιμές
    ΥΠΟΛΟΓΙΣΜΕΝΕΣ από τον ταξινομητή, τα ζωντανά ίχνη και τα συμβόλαια —
    ποτέ στατικές. Μηχανικά αναγνώσιμο (key: value)."
@@ -1864,9 +1865,20 @@ safe_alternative: υπέβαλε το ίδιο ερώτημα ΧΩΡΙΣ όρο 
   (when gap-id (format t "gap_id: ~A~%" gap-id))
   (when failure-id
     (format t "failure_id: ~A~%" failure-id)
-    (format t "memory_recorded: true~%")
-    (format t "failure_ledger: ~A~%"
-            (or ledger-ref "deployment/state/failure-ledger.jsonl")))
+    ;; P0 INVARIANT: memory_recorded ΥΠΟΛΟΓΙΖΕΤΑΙ από επαληθευμένο append+read-back.
+    ;; Ψεύτικο «true» ήταν ο trust bug που έπιασε το blind test — δεν επαναλαμβάνεται.
+    (if memory-recorded
+        (progn
+          (format t "memory_recorded: true~%")
+          (format t "failure_ledger: ~A~%"
+                  (or ledger-ref "deployment/state/failure-ledger.jsonl")))
+        (progn
+          (format t "memory_recorded: false~%")
+          (format t "failure_record_status: WRITE-FAILED~%")
+          (format t "failure_record_reason: ~(~A~)~%"
+                  (or memory-fail-reason :canonical_store_unavailable))
+          (format t "failure_ledger_attempted: ~A~%"
+                  (or ledger-ref "deployment/state/failure-ledger.jsonl")))))
   (format t "safe_response: ~A~%"
           (or safe-response
               "η απάντηση φέρει τη δηλωμένη της βάση — ό,τι δεν αποδεικνύεται, δηλώνεται")))
@@ -1994,54 +2006,69 @@ reason: legal-critical έξοδος απαιτεί runtime provenance — το �
                         (t nil)))
                     (gid (when gap-reason
                            (format nil "gap:ask:~A"
-                                   (subseq (orchestrator.journal:sha256-hex q) 0 8))))
-                    (fid (when gap-reason
-                           (record-dialogue-failure!
-                            :input q
-                            :context (let ((la (orchestrator.cognition:recall
-                                                *ask-memory* :last-answer)))
-                                       (and la (subseq la 0 (min 200 (length la)))))
-                            :wrong-mode mode :reason gap-reason :gap-id gid
-                            :trace-id tid))))
-               (%ask-envelope :input-class input-class :policy :allowed
-                              :output-status status
-                              :q q :proof-required proof-req
-                              :proof-available proof-avail
-                              :capability cap :contract con :component comp
-                              :mode mode
-                              :corpus-used (and (member mode '(:legal-trusted
-                                                               :legal-diagnostic))
-                                                t)
-                              :gap-id gid :failure-id fid
-                              :trace-id tid)))
-           0)
-          (t
-           (format t "~%Δεν κατάλαβα την ερώτηση — τίμια, χωρίς μάντεμα. Καταγράφηκε.~%~
-Καταλαβαίνω π.χ.:~%  «τι λέει το άρθρο 299 του ποινικού κώδικα»~%  «ποια νομολογία υπάρχει για το άρθρο 559 ΚΠολΔ»~%  «εξήγησέ μου την απόφαση 101/2026»~%  «προφίλ του δικαστή Κοσμίδη»~%")
-           (%lesson :question-not-understood q "άγνωστη πρόθεση")
-           (let* ((gap-id (format nil "gap:ask:~A"
-                                  (subseq (orchestrator.journal:sha256-hex q) 0 8)))
-                  ;; Π0: το «καταγράφηκε» γίνεται ΑΛΗΘΙΝΟ — δομημένη εγγραφή
-                  ;; στον ΥΠΑΡΧΟΝΤΑ ledger (κανένα νέο store), ανακλήσιμη αμέσως.
-                  (last-ev (orchestrator.trace:last-event))
-                  (fid (record-dialogue-failure!
+                                   (subseq (orchestrator.journal:sha256-hex q) 0 8)))))
+               (multiple-value-bind (fid recorded-p ledger-path fail-reason)
+                   (if gap-reason
+                       (record-dialogue-failure!
                         :input q
                         :context (let ((la (orchestrator.cognition:recall
                                             *ask-memory* :last-answer)))
                                    (and la (subseq la 0 (min 200 (length la)))))
-                        :wrong-mode :legal-diagnostic
-                        :reason "άγνωστη πρόθεση — καμία ταξινόμηση σε frame"
-                        :gap-id gap-id
-                        :trace-id (and last-ev
-                                       (orchestrator.trace:tevent-id last-ev)))))
-             (%ask-envelope :input-class input-class :policy :allowed
-                            :output-status :diagnostic :q q
-                            :proof-required nil :proof-available nil
-                            :missing-capabilities
-                            (list "κατανόηση-αυτής-της-πρόθεσης")
-                            :gap-id gap-id :failure-id fid
-                            :mode :legal-diagnostic :corpus-used nil
-                            :safe-response "καμία έμπιστη απόφανση — διάγνωσα το κενό· ελεγχόμενη απόκτηση: --training-proposal <ικανότητα> → --can-adopt → έγκριση δημιουργού"))
+                        :wrong-mode mode :reason gap-reason :gap-id gid
+                        :trace-id tid)
+                       (values nil nil nil nil))
+                 (%ask-envelope :input-class input-class :policy :allowed
+                                :output-status status
+                                :q q :proof-required proof-req
+                                :proof-available proof-avail
+                                :capability cap :contract con :component comp
+                                :mode mode
+                                :corpus-used (and (member mode '(:legal-trusted
+                                                                 :legal-diagnostic))
+                                                  t)
+                                :gap-id gid :failure-id fid
+                                :memory-recorded recorded-p
+                                :memory-fail-reason fail-reason
+                                :ledger-ref ledger-path
+                                :trace-id tid))))
+           0)
+          (t
+           (%lesson :question-not-understood q "άγνωστη πρόθεση")
+           (let* ((gap-id (format nil "gap:ask:~A"
+                                  (subseq (orchestrator.journal:sha256-hex q) 0 8)))
+                  ;; Π0: πρώτα ΕΠΑΛΗΘΕΥΜΕΝΗ εγγραφή στον ΥΠΑΡΧΟΝΤΑ ledger (κανένα νέο
+                  ;; store), μετά το μήνυμα — ώστε το «Καταγράφηκε» να ΜΗΝ ειπωθεί ποτέ
+                  ;; χωρίς αποδεδειγμένο append+read-back (τομή του trust bug).
+                  (last-ev (orchestrator.trace:last-event)))
+             (multiple-value-bind (fid recorded-p ledger-path fail-reason)
+                 (record-dialogue-failure!
+                  :input q
+                  :context (let ((la (orchestrator.cognition:recall
+                                      *ask-memory* :last-answer)))
+                             (and la (subseq la 0 (min 200 (length la)))))
+                  :wrong-mode :legal-diagnostic
+                  :reason "άγνωστη πρόθεση — καμία ταξινόμηση σε frame"
+                  :gap-id gap-id
+                  :trace-id (and last-ev
+                                 (orchestrator.trace:tevent-id last-ev)))
+               (if recorded-p
+                   (format t "~%Δεν κατάλαβα την ερώτηση — τίμια, χωρίς μάντεμα. Καταγράφηκε.~%~
+Καταλαβαίνω π.χ.:~%  «τι λέει το άρθρο 299 του ποινικού κώδικα»~%  «ποια νομολογία υπάρχει για το άρθρο 559 ΚΠολΔ»~%  «εξήγησέ μου την απόφαση 101/2026»~%  «προφίλ του δικαστή Κοσμίδη»~%")
+                   (format t "~%Δεν κατάλαβα την ερώτηση — τίμια, χωρίς μάντεμα.~%~
+⚠ Η ΚΑΤΑΓΡΑΦΗ ΑΠΕΤΥΧΕ (~(~A~)) — δεν ισχυρίζομαι μνήμη που δεν αποδεικνύεται· το κενό ΔΕΝ γράφτηκε στον ledger.~%~
+Καταλαβαίνω π.χ.:~%  «τι λέει το άρθρο 299 του ποινικού κώδικα»~%  «εξήγησέ μου την απόφαση 101/2026»~%"
+                           (or fail-reason :canonical_store_unavailable)))
+               (%ask-envelope :input-class input-class :policy :allowed
+                              :output-status :diagnostic :q q
+                              :proof-required nil :proof-available nil
+                              :missing-capabilities
+                              (list "κατανόηση-αυτής-της-πρόθεσης")
+                              :gap-id gap-id :failure-id fid
+                              :memory-recorded recorded-p
+                              :memory-fail-reason fail-reason
+                              :ledger-ref ledger-path
+                              :mode :legal-diagnostic :corpus-used nil
+                              :safe-response "καμία έμπιστη απόφανση — διάγνωσα το κενό· ελεγχόμενη απόκτηση: --training-proposal <ικανότητα> → --can-adopt → έγκριση δημιουργού")))
            ;; επιτυχής ΔΙΑΓΝΩΣΗ κενού — όχι σφάλμα συστήματος
            0)))))))
 
