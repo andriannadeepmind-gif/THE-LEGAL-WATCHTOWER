@@ -2005,36 +2005,6 @@ reason: legal-critical έξοδος απαιτεί runtime provenance — το �
 (register-command "--ask"                  (lambda (a) (run-ask a)))
 (register-command "--ρώτα"                 (lambda (a) (run-ask a)))
 
-(defun run-chat (args)
-  "--chat : ΜΟΝΙΜΟ παράθυρο συνομιλίας — μία διεργασία, συνεχής διάλογος.
-   ΙΔΙΑ έδρα με το --ask (run-ask, καμία δεύτερη υλοποίηση)· το *ask-memory*
-   ζει όσο το παράθυρο, άρα η συνομιλία έχει συνέχεια και επεισόδια.
-   Έξοδος: «έξοδος»/«τέλος»/exit/quit ή EOF (Ctrl-D). Επιστρέφει 0."
-  (declare (ignore args))
-  (format t "~%── LAWMAX: παράθυρο συνομιλίας ──~%~
-Γράψε την ερώτησή σου και Enter. Έξοδος: «έξοδος» ή Ctrl-D.~%~
-Κάθε απάντηση φέρει το TRUST ENVELOPE της — trusted/untrusted/refused/diagnostic.~%")
-  (loop
-    (format t "~%εσύ> ")
-    (finish-output)
-    (let ((line (read-line *standard-input* nil nil)))
-      (when (null line)                       ; EOF = τίμιο τέλος
-        (format t "~%── τέλος συνομιλίας (EOF) ──~%")
-        (return-from run-chat 0))
-      (let ((q (string-trim " " line)))
-        (cond
-          ((zerop (length q)))                ; κενή γραμμή — συνέχισε
-          ((member (orchestrator.decisions:%fold q)
-                   (mapcar #'orchestrator.decisions:%fold
-                           '("έξοδος" "τέλος" "exit" "quit" "q"))
-                   :test #'string=)
-           (format t "── τέλος συνομιλίας ──~%")
-           (return-from run-chat 0))
-          (t (run-ask (list q))))))))         ; rc ανά ερώτηση: ορατό στο envelope
-
-(register-command "--chat"                 (lambda (a) (run-chat a)))
-(register-command "--συνομιλία"            (lambda (a) (run-chat a)))
-
 (register-command "--fetch-year"           (lambda (a) (run-fetch-year a)))
 (register-command "--watch-decisions"      (lambda (a) (declare (ignore a)) (run-watch-decisions)))
 (register-command "--reason-decision"      (lambda (a) (run-reason-decision a)))
