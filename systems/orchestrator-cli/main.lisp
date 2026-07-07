@@ -563,6 +563,9 @@
  input{flex:1;padding:.65rem;font-size:1rem;border:1px solid #bbb;background:#fff}
  button{padding:.65rem 1.3rem;font-size:1rem;background:#8a6d1a;color:#fff;border:0;cursor:pointer}
  .hint{color:#777;font-size:.8rem;margin-top:.6rem}
+ #ops{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.6rem}
+ #ops button{padding:.35rem .7rem;font-size:.78rem;background:#f3efe4;color:#5a4a14;border:1px solid #c9b878}
+ #ops button:disabled{opacity:.45;cursor:wait}
 </style></head><body>
 <h1>⚖ STAVROPOULOS LAW — Διάλογος με το σύστημα (ντετερμινιστικός)</h1>
 <div id='log'><p class='a'>Ρώτα με σε φυσικά ελληνικά. Κάθε απάντηση προέρχεται από το επαληθευμένο corpus, με την πηγή της. Ό,τι δεν κατανοήσω, το δηλώνω και το καταγράφω — ποτέ δεν μαντεύω.
@@ -573,20 +576,37 @@
   εξήγησέ μου την απόφαση 101/2026
   προφίλ του δικαστή Κοσμίδη</p></div>
 <form id='f'><input id='q' autocomplete='off' autofocus placeholder='η ερώτησή σου…'><button>Ρώτα</button></form>
-<p class='hint'>Καμία γεννήτρια κειμένου: το γράμμα του νόμου σερβίρεται byte-πιστό από το golden-επαληθευμένο corpus.</p>
+<div id='ops'>
+<button data-c='--gates'>Πύλες</button>
+<button data-c='--mirror'>Καθρέφτης</button>
+<button data-c='--failures'>Μητρώο αποτυχιών</button>
+<button data-c='--trace-last-conclusion'>Τελευταίο ίχνος</button>
+<button data-c='--run-all-pipelines'>Εκτύπωση ΟΛΩΝ των κωδίκων</button>
+<button data-c='--emit-proofs'>Αποδείξεις άρθρων</button>
+<button data-c='--emit-references'>Παραπομπές</button>
+<button data-c='--emit-hypergraph'>Υπεργράφος</button>
+<button data-c='--verify-all'>Επαλήθευση ΟΛΩΝ</button>
+</div>
+<p class='hint'>Καμία γεννήτρια κειμένου: το γράμμα του νόμου σερβίρεται byte-πιστό από το golden-επαληθευμένο corpus. Τα κουμπιά εκτελούν τις ΙΔΙΕΣ εντολές του μητρώου (μόνο για τον δημιουργό).</p>
 <script>
 var f=document.getElementById('f'),qi=document.getElementById('q'),log=document.getElementById('log');
-f.addEventListener('submit',function(ev){ev.preventDefault();
- var q=qi.value.trim(); if(!q)return; qi.value='';
- var dq=document.createElement('p');dq.className='q';dq.textContent='εσύ> '+q;log.appendChild(dq);
+function show(label,url,done){ /* ΜΙΑ διαδρομή εμφάνισης για ερωτήσεις ΚΑΙ κουμπιά */
+ var dq=document.createElement('p');dq.className='q';dq.textContent=label;log.appendChild(dq);
  var da=document.createElement('p');da.className='a';da.textContent='…';log.appendChild(da);
  log.scrollTop=log.scrollHeight;
- var key=new URLSearchParams(location.search).get('key');
+ fetch(url).then(function(r){return r.text();})
+   .then(function(t){da.textContent=t;log.scrollTop=log.scrollHeight;if(done)done();})
+   .catch(function(e){da.textContent='σφάλμα επικοινωνίας: '+e;if(done)done();});}
+function keyq(){var k=new URLSearchParams(location.search).get('key');return k?('&key='+encodeURIComponent(k)):'';}
+f.addEventListener('submit',function(ev){ev.preventDefault();
+ var q=qi.value.trim(); if(!q)return; qi.value='';
  var sid=sessionStorage.getItem('lawmax-sid');
  if(!sid){sid=(crypto&&crypto.randomUUID)?crypto.randomUUID():String(Date.now())+Math.random().toString(36).slice(2);sessionStorage.setItem('lawmax-sid',sid);}
- fetch('/ask?q='+encodeURIComponent(q)+'&s='+encodeURIComponent(sid)+(key?('&key='+encodeURIComponent(key)):'')).then(function(r){return r.text();})
-   .then(function(t){da.textContent=t;log.scrollTop=log.scrollHeight;})
-   .catch(function(e){da.textContent='σφάλμα επικοινωνίας: '+e;});});
+ show('εσύ> '+q,'/ask?q='+encodeURIComponent(q)+'&s='+encodeURIComponent(sid)+keyq());});
+document.getElementById('ops').addEventListener('click',function(ev){
+ var b=ev.target.closest('button'); if(!b)return;
+ var c=b.getAttribute('data-c'); b.disabled=true;
+ show('εντολή> '+c,'/cmd?name='+encodeURIComponent(c)+keyq(),function(){b.disabled=false;});});
 </script></body></html>"
   "Η σελίδα συνομιλίας — αυτοδύναμη (μηδέν εξωτερικά assets), σερβίρεται
    από τον ίδιο pure-Lisp HTTP server του corpus-service στο /chat.")
@@ -616,9 +636,19 @@ f.addEventListener('submit',function(ev){ev.preventDefault();
               (setf (gethash sid *chat-sessions*) (cons mem now))
               mem))))))
 
+(defparameter +chat-ops-whitelist+
+  '("--gates" "--mirror" "--failures" "--trace-last-conclusion"
+    "--run-all-pipelines" "--emit-proofs" "--emit-references"
+    "--emit-hypergraph" "--verify-all")
+  "Οι ΜΟΝΕΣ εντολές που εκτελούνται από τα κουμπιά του /chat. Κλειστός
+   κατάλογος αναγνωστικών/παραγωγικών ενεργειών — ΚΑΜΙΑ εντολή έγκρισης/
+   υιοθεσίας/πολιτικής από το web: η κυριαρχία ασκείται μόνο από το CLI.")
+
 (defun %chat-wrap-handler (inner)
-  "Τύλιξε τον handler του corpus-service με τον ΔΙΑΛΟΓΟ: /chat (η σελίδα)
-   και /ask?q=… (η ντετερμινιστική απάντηση του run-ask, με τις πηγές της).
+  "Τύλιξε τον handler του corpus-service με τον ΔΙΑΛΟΓΟ: /chat (η σελίδα),
+   /ask?q=… (η ντετερμινιστική απάντηση του run-ask, με τις πηγές της) και
+   /cmd?name=… (κουμπιά χειριστή: dispatch στο ΙΔΙΟ μητρώο εντολών —
+   find-command — μέσα από κλειστό whitelist, ΜΟΝΟ για τον δημιουργό).
    Κάθε άλλο μονοπάτι περνά ανέγγιχτο στο service."
   (lambda (req)
     (let ((path (orchestrator.http:http-request-path req)))
@@ -648,6 +678,33 @@ f.addEventListener('submit',function(ev){ev.preventDefault();
                             "κενή ερώτηση")))
            (orchestrator.http:respond 200 answer
                                       "Content-Type" "text/plain; charset=utf-8")))
+        ((string= path "/cmd")
+         ;; ΚΟΥΜΠΙΑ ΧΕΙΡΙΣΤΗ: ίδια πύλη ταυτότητας με το /ask (token ⇒ key),
+         ;; κλειστό whitelist, dispatch στο ΕΝΑ μητρώο εντολών — μηδέν δεύτερη
+         ;; υλοποίηση οποιασδήποτε λειτουργίας.
+         (let* ((name (cdr (assoc "name" (orchestrator.http:http-request-query req)
+                                  :test #'string=)))
+                (key (cdr (assoc "key" (orchestrator.http:http-request-query req)
+                                 :test #'string=)))
+                (tok (%non-blank (uiop:getenv "LAWMAX_CREATOR_TOKEN")))
+                (creator-p (or (null tok) (equal key tok))))
+           (cond
+             ((not creator-p)
+              (orchestrator.http:respond 403 "μόνο ο δημιουργός εκτελεί εντολές (λείπει/λάθος key)"
+                                         "Content-Type" "text/plain; charset=utf-8"))
+             ((not (member name +chat-ops-whitelist+ :test #'string=))
+              (orchestrator.http:respond 400
+                                         (format nil "η εντολή ~A δεν είναι στο whitelist των κουμπιών: ~{~A~^ ~}"
+                                                 (or name "(κενή)") +chat-ops-whitelist+)
+                                         "Content-Type" "text/plain; charset=utf-8"))
+             (t
+              (let ((out (with-output-to-string (*standard-output*)
+                           (handler-case
+                               (let ((rc (funcall (find-command name) nil)))
+                                 (format t "~%── exit: ~A ──~%" rc))
+                             (error (e) (format t "σφάλμα: ~A~%" e))))))
+                (orchestrator.http:respond 200 out
+                                           "Content-Type" "text/plain; charset=utf-8"))))))
         (t (funcall inner req))))))
 
 (defun serve-corpus ()
