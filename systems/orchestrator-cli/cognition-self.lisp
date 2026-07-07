@@ -124,6 +124,11 @@
                 (cond ((string= w "επι") '*) ((string= w "πλην") '-) (t '+))
                 (parse-integer b))))))
 
+;;; ⚠ BOOTSTRAP ΣΚΑΛΩΣΙΑ (εντολή δημιουργού 2026-07-07): ό,τι ακολουθεί είναι
+;;; χειροποίητο περιεχόμενο — ΔΕΝ συνιστά μάθηση και δεν επικαλείται ως
+;;; απόδειξη νόησης. Η μάθηση ζει ΜΟΝΟ στη ροή failure→proposal→shadow→
+;;; υπογραφή (understanding-learning.lisp)· οι υιοθετημένοι κανόνες τρέχουν
+;;; ΠΡΙΝ από αυτή τη σκαλωσιά και προορίζονται να την υποκαταστήσουν.
 ;;; Η ΑΝΑΦΟΡΑ ΣΥΝΟΜΙΛΙΑΣ προηγείται του «self»: το «τι εννοείς …;» είναι
 ;;; δέσιμο στο προηγούμενο γύρισμα, όχι ερώτηση περί εαυτού (β' πρόσωπο ≠
 ;;; πρόθεση εαυτού όταν υπάρχει παρακείμενη εκφορά να εξηγηθεί).
@@ -504,7 +509,7 @@
   "Με ρωτάς κάτι για εμένα που δεν έχω ακόμη δομημένη απάντηση — το λέω ευθέως και το καταγράφω για να μάθω.
 Με βεβαιότητα μπορώ να σου απαντήσω: «ποιος είσαι» · «ποιον υπηρετείς» · «πού βρίσκεσαι στην αποστολή σου» (μετρημένα) · «ποια η ιστορία σου» · «τι μπορείς να κάνεις» · «τι σημαίνει [τίμια/μάντεμα/καταγράφηκε/δεν κατάλαβα]».")
 
-;;; ── ΑΥΤΟΚΑΤΑΝΟΗΣΗ/ΣΥΝΟΜΙΛΙΑ (SELF-UNDERSTANDING AUDIT v1) — συνθέσεις ──
+;;; ── ΑΥΤΟΚΑΤΑΝΟΗΣΗ/ΣΥΝΟΜΙΛΙΑ — συνθέσεις (BOOTSTRAP· βλ. σήμανση ανωτέρω) ──
 
 (defmethod orchestrator.cognition:synthesize ((f thinking-frame) cog)
   (let* ((mem (orchestrator.cognition:cog-memory cog))
@@ -578,7 +583,7 @@
 (defmethod orchestrator.cognition:synthesize ((f gap-ledger-frame) cog)
   (declare (ignore cog))
   (let* ((path (merge-pathnames "lessons.jsonl" (%state-dir)))
-         (lines (ignore-errors (orchestrator.journal:read-lines path)))
+         (lines (or (ignore-errors (uiop:read-file-lines path)) '()))
          (tail (last lines 5))
          (eps (orchestrator.memory:episodes))
          (open (orchestrator.proposals:open-proposals)))
