@@ -249,6 +249,17 @@
  ;; αντίγραφα ή read-only). Το command-map καλύπτει ΜΟΝΟ CLI εντολές του
  ;; ζωντανού μητρώου· scripts κάτω από deployment/verify ΔΕΝ απαιτούν
  ;; command-mapping — απαιτούν δήλωση ΕΔΩ.
+ ;; ══ ΠΡΩΤΟΚΟΛΛΟ Ν ΜΥΑΛΩΝ: κάθε AI-συνεργάτης δεσμεύεται εξίσου ══
+ ;; (πλήρης διατύπωση: deployment/LAWMAX-CEILING-CROSSWALK.{md,sexp})
+ :collaboration-protocol
+ ((:r 1 "το Σύνταγμα δεσμεύει ΚΑΘΕ committer — αχαρτογράφητο = κόκκινη πύλη")
+  (:r 2 "branch ανά AI· ποτέ απευθείας main· merge ΜΟΝΟ ο δημιουργός με πράσινη ολομέλεια")
+  (:r 3 "μηδέν διπλός κώδικας: μητρώο + git log -S + Σύνταγμα πριν γραφτεί οτιδήποτε")
+  (:r 4 "AI = συλλέκτης/προτείνων· δημιουργός = υπογράφων")
+  (:r 5 "spec πριν από κώδικα: δέσιμο σε CPEI layer/primitive/πύλη/rollback")
+  (:r 6 "διαφωνία μυαλών: καταγράφονται και τα δύο σκεπτικά, αποφασίζει ο δημιουργός")
+  (:r 7 "κοινή γλώσσα = τα κανονικά κείμενα"))
+
  :verification-artifacts
  ((:script "deployment/verify/consciousness-audit/consciousness-audit-v1.ps1" :kind :external-audit)
   (:script "deployment/verify/self-understanding-audit/self-understanding-audit-v1.sh" :kind :external-audit)
