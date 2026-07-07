@@ -70,6 +70,11 @@ self/state σε ΟΛΟ το δέντρο. (Σημερινό ⑨: self/*.sexp + s
   προσαρμόζεται (μέσω change-proposal, ποτέ silent refactor).
 - **Π3** Κανονικοποίηση: τεκμηρίωση «πότε %fold / πότε normalize-greek» +
   έλεγχος πύλης που πιάνει χρήση της λάθος συνάρτησης σε νέο κώδικα.
+- **P1 (χρέος δημιουργού, 2026-07-07 — ΔΕΝ υλοποιείται χωρίς ρητό ΟΚ):**
+  universal dialogue turn id / root span για ΚΑΘΕ --ask γύρο, ακόμη και
+  μη-legal-critical — ώστε κάθε failure record να φέρει πάντα trace_id.
+  Έδρα: υπάρχον trace core (root-span ιδίωμα του main) + run-ask· primitives:
+  OUTPUT-TRUST + MEMORY. Μέχρι τότε το trace_id μένει τίμια κενό όπου κενό.
 - **Π4** In-memory ledgers χωρίς δίσκο (*adoption-records*, *study-cache*,
   trace events): ήδη δηλωμένα χρέη διάρκειας — παραμένουν, δεμένα στο
   MEMORY primitive, μέχρι το substrate (generations) να δώσει φυσική λύση.
