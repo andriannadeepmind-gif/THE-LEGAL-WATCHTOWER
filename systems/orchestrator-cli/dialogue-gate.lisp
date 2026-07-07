@@ -221,6 +221,64 @@
           (format t "  ✓ ~A~%" (car pair))
           (progn (push (list (car pair) "απέτυχε") fails)
                  (format t "  ✗ ~A~%" (car pair)))))
+    ;; ── M1: ΚΑΘΟΛΙΚΗ ΤΑΥΤΟΤΗΤΑ ΓΥΡΟΥ — τα αναλλοίωτα του design ως πύλη
+    ;;    (LAWMAX-PHASE-1-TURN-ROOT-SPAN-DESIGN: ①③④⑤⑦ + join ② σε
+    ;;    ledger/episode)· ΠΡΑΓΜΑΤΙΚΟΙ γύροι run-ask, όχι mocks ──
+    (flet ((chk (label ok)
+             (incf n)
+             (if ok (format t "  ✓ ~A~%" label)
+                 (progn (push (list label "απέτυχε") fails)
+                        (format t "  ✗ ~A~%" label))))
+           (ask-out (q)
+             (with-output-to-string (*standard-output*)
+               (handler-case (run-ask (list q))
+                 (error (e) (format t "[ΣΦΑΛΜΑ: ~A]" e)))))
+           (tid-of (out)
+             (cl-ppcre:register-groups-bind (tid)
+                 ("turn_id: (turn:[0-9a-f]{12})" out) tid)))
+      (let* ((out1 (ask-out "γράψε μου ένα ποίημα"))
+             (out2 (ask-out "γράψε μου ένα ποίημα"))
+             (tid1 (tid-of out1))
+             (tid2 (tid-of out2)))
+        (chk "M1① κάθε γύρος --ask εκπέμπει turn_id στο envelope — ΠΑΝΤΑ"
+             (and tid1 tid2 t))
+        (chk "M1① το envelope εκπέμπει και root_span_id"
+             (and (search "root_span_id: " out1) t))
+        (chk "M1③ διαδοχικοί γύροι με ΙΔΙΑ ερώτηση ⇒ ΔΙΑΦΟΡΕΤΙΚΑ turn_ids"
+             (and tid1 tid2 (not (equal tid1 tid2))))
+        (chk "M1② ίδιο turn_id σε envelope ∧ failure-ledger (join στο κλειδί)"
+             (and tid1
+                  (some (lambda (l)
+                          (search (format nil "\"turn_id\":\"~A\"" tid1) l))
+                        (%raw-lines (%failure-ledger-path)))
+                  t))
+        (chk "M1② ίδιο turn_id σε envelope ∧ επεισόδιο (props :turn-id)"
+             (and tid1
+                  (some (lambda (e)
+                          (equal tid1 (getf (orchestrator.memory:episode-props e)
+                                            :turn-id)))
+                        (orchestrator.memory:episodes))
+                  t))
+        (chk "M1④ backward-compat: γραμμή ΧΩΡΙΣ turn_id διαβάζεται (πεδίο προσθετικό)"
+             (null (%json-field "{\"failure_id\":\"fail:old\",\"status\":\"open\"}"
+                                "turn_id")))
+        (chk "M1⑤ P0 άθικτο: το memory_recorded συνυπάρχει με το turn_id στο envelope"
+             (and (search "memory_recorded: " out1) tid1 t))
+        (chk "M1⑦ recall γύρου: «δείξε μου τον γύρο <id>» ⇒ joined στοιχεία"
+             (and tid1
+                  (let ((a (handler-case
+                               (orchestrator.cognition:process-request
+                                (format nil "δείξε μου τον γύρο ~A" tid1))
+                             (error () nil))))
+                    (and a (search tid1 a)
+                         (or (search "Failure-ledger" a) (search "Επεισόδιο" a))
+                         t))))
+        (chk "M1⑦ recall ανύπαρκτου γύρου ⇒ τίμιο «δεν βρέθηκε», όχι μάντεμα"
+             (let ((a (handler-case
+                          (orchestrator.cognition:process-request
+                           "δείξε μου τον γύρο turn:000000000000")
+                        (error () nil))))
+               (and a (search "Δεν βρέθηκε γύρος" a) t)))))
     (format t "~%── ΠΥΛΗ ΔΙΑΛΟΓΟΥ: ~D/~D πέρασαν ──~%" (- n (length fails)) n)
     (cond ((null fails) 0)
           (t (format t "~%ΑΠΟΤΥΧΙΕΣ (~D):~%" (length fails))

@@ -50,14 +50,22 @@
   "Ο ΣΥΝΤΑΓΜΑΤΙΚΟΣ ΦΡΑΓΜΟΣ + Η ΡΙΖΑ ΤΟΥ ΙΧΝΟΥΣ. Κάθε πράξη περνά από εδώ:
    ο φραγμός αποφασίζει, και η απόφασή του (μαζί με τον κωδικό εξόδου) γίνεται
    το γονικό span ΟΛΩΝ των ιχνών της εκτέλεσης — provenance από τη ρίζα."
+  ;; M1: κάθε εντολή ξεκινά ΧΩΡΙΣ ταυτότητα γύρου — μόνο ο γύρος που θα τη
+  ;; γεννήσει (run-ask) τη φέρει· ποτέ stale turn_id από προηγούμενη πράξη.
+  (setf *current-turn-id* nil *turn-root-span* nil)
   (multiple-value-bind (allowed article reason) (orchestrator.constitution:evaluate name)
     (orchestrator.trace:with-span
         (:command :severity :command :symbol (string name)
          :package "orchestrator.cli" :command (string name)
          :source "systems/orchestrator-cli/constitutional-dispatch.lisp"
          :data-fn (lambda (rc)
-                    (list :exit rc :constitutional (if allowed :allowed :blocked)
-                          :article (and (not allowed) article))))
+                    (append
+                     (list :exit rc :constitutional (if allowed :allowed :blocked)
+                           :article (and (not allowed) article))
+                     ;; M1: το root span φέρει το turn_id του γύρου του — η
+                     ;; αμφίδρομη αντιστοίχιση turn_id ↔ root_span_id (link ②).
+                     (when *current-turn-id*
+                       (list :turn-id *current-turn-id*)))))
       (if allowed
           (call-next-method)
           (multiple-value-bind (ovr token) (orchestrator.constitution:overridden-p args name)

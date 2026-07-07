@@ -143,6 +143,15 @@
         (destructuring-bind (a op b) (%parse-arith input)
           (make-instance 'arithmetic-frame :input input
                          :slots (list :a a :op op :b b))))
+       ;; M1 (link ⑧): ΑΝΑΚΛΗΣΗ ΓΥΡΟΥ — «δείξε μου τον γύρο turn:abc123def456»
+       ;; ⇒ ίδιο frame (μητρώο άγνοιας/μνήμης), με το turn_id στα slots· join
+       ;; πάνω στο κλειδί ή ΤΙΜΙΟ «δεν βρέθηκε» (invariant ⑦). ΠΡΙΝ από το
+       ;; γενικό pattern ώστε το «δείξε μου» με turn: να πιάνει το κλειδί.
+       ((cl-ppcre:register-groups-bind (tid)
+            ("(turn:[0-9a-fA-F]{12})" input)
+          (when (cl-ppcre:scan (%cogfold "γυρο|γύρο|turn") f)
+            (make-instance 'gap-ledger-frame :input input
+                           :slots (list :turn-id (string-downcase tid))))))
        ;; ΜΗΤΡΩΟ ΑΓΝΟΙΑΣ: «πού το κατέγραψες; δείξε μου το gap/κενό·
        ;; ποια πρόταση μάθησης δημιουργήθηκε; τι έχεις καταγράψει;»
        ((cl-ppcre:scan (%cogfold "που το κατεγραψες|που καταγραφηκε|δειξε (μου )?το (gap|κενο)|ποια προταση μαθησης|τι κατεγραψες|τι εχεις καταγραψει") f)
@@ -580,8 +589,52 @@
       (format s "Ερμηνεία ΠΕΡΑ από το γράμμα του κειμένου δεν δίνω χωρίς γείωση — ~
 ζήτα το πλήρες άρθρο ή δώσε πραγματικά περιστατικά για υπαγωγή."))))
 
+(defun %recall-turn (tid)
+  "M1 (link ⑧/invariant ⑦): ανάκληση γύρου με join στο turn_id πάνω στις
+   ΥΠΑΡΧΟΥΣΕΣ έδρες (episodes, failure-ledger, ζωντανά ίχνη) — ή ΤΙΜΙΟ
+   «δεν βρέθηκε». Κανένα νέο store: μόνο ανάγνωση των τριών μητρώων."
+  (let* ((eps (remove-if-not
+               (lambda (e) (equal tid (getf (orchestrator.memory:episode-props e)
+                                            :turn-id)))
+               (orchestrator.memory:episodes)))
+         (fl (remove-if-not
+              (lambda (l) (search (format nil "\"turn_id\":\"~A\"" tid) l))
+              (%raw-lines (%failure-ledger-path))))
+         (evs (remove-if-not
+               (lambda (ev) (equal tid (getf (orchestrator.trace:tevent-data ev)
+                                             :turn-id)))
+               (orchestrator.trace:all-events))))
+    (if (or eps fl evs)
+        (with-output-to-string (s)
+          (format s "Γύρος ~A — ανασύσταση από τα κανονικά μητρώα (join στο turn_id):~%" tid)
+          (dolist (e eps)
+            (format s "• Επεισόδιο: [~(~A~)] «~A» — ~(~A~)~@[ · απάντηση: ~A~]~%"
+                    (orchestrator.memory:episode-status e)
+                    (orchestrator.memory:episode-text e)
+                    (orchestrator.memory:episode-kind e)
+                    (getf (orchestrator.memory:episode-props e) :answer)))
+          (dolist (l fl)
+            (format s "• Failure-ledger: ~A: ~A · ~A: ~A · ~A: ~A~%"
+                    "failure_id" (or (%json-field l "failure_id") "—")
+                    "input" (or (%json-field l "input") "—")
+                    "created_gap" (or (%json-field l "created_gap") "—")))
+          (dolist (ev evs)
+            (format s "• Root span: tevent ~D (~(~A~) · ~A)~%"
+                    (orchestrator.trace:tevent-id ev)
+                    (orchestrator.trace:tevent-kind ev)
+                    (or (orchestrator.trace:tevent-command ev) "—")))
+          (unless evs
+            (format s "(ίχνη: μόνο in-process — γύρος άλλης διεργασίας δεν έχει ζωντανό span εδώ· τίμια δήλωση)~%"))
+          (format s "(Ό,τι δεν εμφανίζεται παραπάνω, δεν γράφτηκε — καμία ψευδο-ανασύσταση.)"))
+        (format nil "Δεν βρέθηκε γύρος ~A σε ΚΑΝΕΝΑ μητρώο (episodes, failure-ledger, ίχνη) — τίμια δήλωση, όχι μάντεμα.~%~
+Σημείωση: τα turn_ids υπάρχουν για γύρους ΜΕΤΑ την υιοθέτηση του M1· παλαιότεροι γύροι δεν φέρουν κλειδί (προσθετικό πεδίο)." tid))))
+
 (defmethod orchestrator.cognition:synthesize ((f gap-ledger-frame) cog)
   (declare (ignore cog))
+  ;; M1: αν η ερώτηση φέρει turn_id ⇒ ανάκληση ΣΥΓΚΕΚΡΙΜΕΝΟΥ γύρου (join),
+  ;; αλλιώς η γενική επιθεώρηση του μητρώου άγνοιας (η υπάρχουσα συμπεριφορά).
+  (let ((tid (orchestrator.cognition:frame-slot f :turn-id)))
+    (when tid (return-from orchestrator.cognition:synthesize (%recall-turn tid))))
   (let* ((path (merge-pathnames "lessons.jsonl" (%state-dir)))
          (lines (or (ignore-errors (uiop:read-file-lines path)) '()))
          (tail (last lines 5))

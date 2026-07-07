@@ -1836,6 +1836,12 @@ safe_alternative: υπέβαλε το ίδιο ερώτημα ΧΩΡΙΣ όρο 
    ποτέ στατικές. Μηχανικά αναγνώσιμο (key: value)."
   (format t "~%── TRUST ENVELOPE ──~%")
   (format t "input_class: ~(~A~)~%" (or input-class :unclassified))
+  ;; M1 (invariant ①): ΚΑΘΕ έξοδος του --ask εκπέμπει turn_id + root_span_id —
+  ;; answered/not-understood/refused αδιακρίτως. Οι τιμές διαβάζονται από τις
+  ;; per-turn δυναμικές (γέννηση: run-ask) — κανένα call-site δεν τις περνά χέρι.
+  (format t "turn_id: ~:[— (εκτός γύρου --ask)~;~:*~A~]~%" *current-turn-id*)
+  (format t "root_span_id: ~:[— (χωρίς root span σε αυτό το προφίλ ιχνών)~;~:*~D~]~%"
+          *turn-root-span*)
   (when mode
     (format t "mode: ~(~A~)~%" mode)
     (format t "corpus_used: ~:[false~;true~]~%" corpus-used)
@@ -1932,6 +1938,10 @@ safe_alternative: υπέβαλε το ίδιο ερώτημα ΧΩΡΙΣ όρο 
     (when (zerop (length q))
       (format t "χρήση: --ask \"η ερώτησή σου σε φυσικά ελληνικά\"~%")
       (return-from run-ask 1))
+    ;; ── M1: ΓΕΝΝΗΣΗ turn_id στην ΕΙΣΟΔΟ, ΠΡΙΝ από κάθε ταξινόμηση — και το
+    ;; «δεν κατάλαβα» και η άρνηση το φέρουν· ΕΝΑ σημείο γέννησης, ένα κλειδί
+    ;; που διατρέχει envelope/episode/ledger/root-span (invariants ①②③). ──
+    (new-turn-id! q)
     ;; ── ΑΝΤΙΣΤΑΣΗ ΣΕ ΠΑΡΑΚΑΜΨΗ: αίτημα να αγνοηθούν αποδείξεις/συμβόλαια/
     ;; provenance/έγκριση ⇒ ΔΟΜΗΜΕΝΗ συνταγματική άρνηση, ποτέ γυμνό exit ──
     (let ((viol (%override-request-p q)))
@@ -1980,8 +1990,10 @@ reason: legal-critical έξοδος απαιτεί runtime provenance — το �
         :status (if ans :answered :not-understood)
         :topic (%ask-topic cog)
         ;; και η ΑΠΑΝΤΗΣΗ (περίληψη) — ώστε η συνομιλία να ανασυστήνεται από τα
-        ;; επεισόδια, όχι μόνο να καταμετράται
-        :props (when ans (list :answer (subseq ans 0 (min 200 (length ans))))))
+        ;; επεισόδια, όχι μόνο να καταμετράται. M1 (link ④): το :turn-id μπαίνει
+        ;; στο ΑΝΟΙΧΤΟ props plist — το σχήμα του επεισοδίου δεν αλλάζει.
+        :props (append (when *current-turn-id* (list :turn-id *current-turn-id*))
+                       (when ans (list :answer (subseq ans 0 (min 200 (length ans)))))))
       (let ((input-class
               (let ((frame (orchestrator.cognition:cog-frame cog)))
                 (if frame (class-name (class-of frame)) :unclassified))))

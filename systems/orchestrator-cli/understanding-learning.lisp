@@ -228,6 +228,9 @@
                                               "unknown"))
                     (cons "created_gap" (or gap-id ""))
                     (cons "trace_id" (princ-to-string (or trace-id "")))
+                    ;; M1 (link ⑤): το κλειδί του γύρου — ΠΡΟΣΘΕΤΙΚΟ πεδίο·
+                    ;; παλιές γραμμές χωρίς αυτό διαβάζονται κανονικά (inv. ④).
+                    (cons "turn_id" (or *current-turn-id* ""))
                     (cons "status" "open")
                     (cons "ts" (orchestrator.journal:iso-now)))
               :from :alist) o)

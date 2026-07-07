@@ -33,6 +33,48 @@
   (and name (gethash name *commands*)))
 
 ;;; ----------------------------------------------------------------------------
+;;; M1 — ΚΑΘΟΛΙΚΗ ΤΑΥΤΟΤΗΤΑ ΓΥΡΟΥ (turn_id / root span)
+;;; ----------------------------------------------------------------------------
+;;;
+;;; Το turn_id είναι ΠΕΔΙΟ που διατρέχει τις ΥΠΑΡΧΟΥΣΕΣ έδρες (envelope,
+;;; episode, failure-ledger, root-span) — ΟΧΙ νέο store. Οι μεταβλητές ζουν
+;;; εδώ (φορτώνεται πρώτο) ώστε dispatch/decisions/ledger να τις βλέπουν
+;;; χωρίς forward-reference· η ΓΕΝΝΗΣΗ γίνεται σε ΕΝΑ σημείο: είσοδος run-ask.
+;;; Spec: deployment/LAWMAX-PHASE-1-TURN-ROOT-SPAN-DESIGN.{md,sexp}.
+
+(defvar *current-turn-id* nil
+  "Το turn_id του τρέχοντος --ask γύρου (\"turn:<sha256-12>\") ή NIL εκτός
+   γύρου. Μηδενίζεται στην είσοδο ΚΑΘΕ εντολής (dispatch) — ποτέ stale.")
+
+(defvar *turn-root-span* nil
+  "Το tevent-id του root span (:command) του τρέχοντος γύρου, δεμένο 1↔1 με
+   το *current-turn-id* — η αμφίδρομη αντιστοίχιση turn_id ↔ root_span_id.")
+
+(defvar *turn-counter* 0
+  "Αύξων μετρητής γύρων της διεργασίας — μπαίνει στο derivation ώστε διαδοχικοί
+   γύροι με ΙΔΙΑ ερώτηση να παίρνουν ΔΙΑΦΟΡΕΤΙΚΟ turn_id (invariant ③).")
+
+(defvar *turn-nonce* nil
+  "Process nonce (γεννιέται τεμπέλικα στον πρώτο γύρο) — δύο διεργασίες την
+   ίδια στιγμή με ίδια είσοδο δεν συγκρούονται.")
+
+(defun new-turn-id! (input)
+  "Γέννηση turn_id στην είσοδο του γύρου: sha256(input ‖ iso ‖ nonce ‖ counter),
+   μορφή \"turn:<sha256-12>\". Δένει και το root span της στιγμής (αν υπάρχει)."
+  (unless *turn-nonce*
+    (setf *turn-nonce* (format nil "~36R~36R" (get-universal-time)
+                               (get-internal-real-time))))
+  (setf *current-turn-id*
+        (format nil "turn:~A"
+                (subseq (orchestrator.journal:sha256-hex
+                         (format nil "~A|~A|~A|~D" input
+                                 (orchestrator.journal:iso-now)
+                                 *turn-nonce* (incf *turn-counter*)))
+                        0 12))
+        *turn-root-span* orchestrator.trace:*current-span*)
+  *current-turn-id*)
+
+;;; ----------------------------------------------------------------------------
 ;;; string hygiene
 ;;; ----------------------------------------------------------------------------
 
