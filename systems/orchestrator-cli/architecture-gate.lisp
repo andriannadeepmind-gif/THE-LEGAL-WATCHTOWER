@@ -119,8 +119,16 @@
                (and (null bad) (null dead-gates))
                (format nil "χωρίς primitive: ~S · κρεμασμένες: ~S" bad dead-gates)))
         ;; ⑦ envelope canary: το --ask εκπέμπει ΠΡΑΓΜΑΤΙΚΑ envelope+mode τώρα
-        (let ((out (with-output-to-string (*standard-output*)
-                     (run-ask '("ποιος" "είσαι;")))))
+        ;; read-only ΓΝΗΣΙΑ (όρος δημιουργού): το canary δεσμεύει το μονοπάτι
+        ;; επεισοδίων σε scratch αρχείο — καμία εγγραφή στα κανονικά stores.
+        (let* ((scratch (merge-pathnames
+                         (format nil "arch-canary-~D.sexp" (get-universal-time))
+                         (uiop:temporary-directory)))
+               (out (unwind-protect
+                         (let ((orchestrator.memory:*episodes-path* scratch))
+                           (with-output-to-string (*standard-output*)
+                             (run-ask '("ποιος" "είσαι;"))))
+                      (ignore-errors (delete-file scratch)))))
           (chk "⑦ envelope canary: --ask εκπέμπει TRUST ENVELOPE + mode (ζωντανή απόδειξη, όχι δήλωση)"
                (and (search "TRUST ENVELOPE" out) (search "mode:" out))))
         ;; ⑧ ΜΙΑ μηχανή υιοθεσίας: σύμβολα fbound + επιφάνεια υιοθεσίας κλειστή

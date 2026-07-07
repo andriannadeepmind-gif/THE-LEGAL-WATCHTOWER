@@ -592,6 +592,20 @@
       (format s "• Μαθήματα αναστοχασμού: ~A — ~D εγγραφές~%"
               (enough-namestring path (uiop:getcwd)) (length lines))
       (dolist (l tail) (format s "    ~A~%" l))
+      ;; Π0: το ΠΛΗΡΕΣ τελευταίο failure record — input/context/mode/reason/
+      ;; gap/status, όχι μόνο path/count. Αν ο ledger είναι άδειος, το λέει.
+      (let* ((fl (%raw-lines (%failure-ledger-path)))
+             (last-f (car (last fl))))
+        (format s "• Μητρώο αποτυχιών (failure-ledger): ~A — ~D εγγραφές~%"
+                (enough-namestring (%failure-ledger-path) (uiop:getcwd)) (length fl))
+        (if last-f
+            (progn
+              (format s "  Τελευταίο πλήρες record:~%")
+              (dolist (fld '("failure_id" "input" "previous_context"
+                             "produced_mode" "wrong_behavior" "created_gap"
+                             "trace_id" "status" "source" "ts"))
+                (format s "    ~A: ~A~%" fld (or (%json-field last-f fld) "—"))))
+            (format s "  (καμία εγγραφή ακόμη — τίμια δήλωση)~%")))
       (format s "• Βιωματικό ρεύμα: ~D επεισόδια (deployment/self/episodes.sexp, αλυσίδα SHA-256 — δες --memory)~%"
               (length eps))
       (format s "• Ανοιχτές προτάσεις μάθησης προς έγκρισή σου: ~D (δες --thoughts / --reflect / --approve)~%"

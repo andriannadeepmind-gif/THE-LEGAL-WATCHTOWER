@@ -186,7 +186,8 @@
   (merge-pathnames "failure-ledger.jsonl" (%state-dir)))
 
 (defun record-dialogue-failure! (&key input context wrong-mode expected-mode
-                                      gap-id trace-id)
+                                      gap-id trace-id reason
+                                      (source "live-dialogue"))
   "Κάθε γύρος που γεννά κενό κατανόησης γίνεται ΔΟΜΗΜΕΝΗ εγγραφή αποτυχίας —
    η πρώτη ύλη του proposal generator. Επιστρέφει το failure_id."
   (let ((fid (format nil "fail:~A"
@@ -203,7 +204,8 @@
                   (cons "input" input)
                   (cons "previous_context" (or context ""))
                   (cons "produced_mode" (string-downcase (princ-to-string (or wrong-mode :none))))
-                  (cons "wrong_behavior" "misclassification/gap")
+                  (cons "wrong_behavior" (or reason "misclassification/gap"))
+                  (cons "source" source)
                   (cons "expected_mode_if_known" (if expected-mode
                                             (string-downcase (princ-to-string expected-mode))
                                             "unknown"))
@@ -531,7 +533,34 @@
                                               ("has-last-answer" . t))
                          :frame :conversation-reference)))
                     (fr (orchestrator.cognition:decompose "τι εννοείς εκεί;")))
-               (typep fr 'conversation-reference-frame)))))
+               (typep fr 'conversation-reference-frame))))
+      ;; ── Π0 (live failure memory): A/B/C/D του δημιουργού ──
+      (let* ((before (length (%raw-lines (%failure-ledger-path))))
+             (out (with-output-to-string (*standard-output*)
+                    (run-ask '("μπλα" "μπλα" "ακατανόητο" "12345"))))
+             (fid (cl-ppcre:register-groups-bind (w)
+                      ("failure_id: (fail:[0-9a-f]+)" out) w))
+             (lines (%raw-lines (%failure-ledger-path)))
+             (entry (and fid (find-if (lambda (l) (search fid l)) lines))))
+        (chk "⑩ Π0-A: ζωντανό «δεν κατάλαβα» ⇒ failure_id στο envelope + εγγραφή ledger (open, live-dialogue)"
+             (and fid entry (> (length lines) before)
+                  (search "\"status\":\"open\"" entry)
+                  (search "live-dialogue" entry)
+                  (search "memory_recorded: true" out)))
+        (let ((out2 (with-output-to-string (*standard-output*)
+                      (run-ask '("δείξε" "μου" "τι" "κατέγραψες")))))
+          (chk "⑪ Π0-B: «δείξε μου τι κατέγραψες» ⇒ ΠΛΗΡΕΣ record (id/input/mode/reason/gap/status)"
+               (and fid (search fid out2)
+                    (search "μπλα μπλα ακατανόητο 12345" out2)
+                    (search "produced_mode" out2) (search "wrong_behavior" out2)
+                    (search "created_gap" out2) (search "status" out2)))))
+      (let ((before (length (%raw-lines (%failure-ledger-path)))))
+        (with-output-to-string (*standard-output*) (run-ask '("ποιος" "είσαι;")))
+        (chk "⑫ Π0-C: κατανοητή ερώτηση ⇒ ΚΑΜΙΑ νέα εγγραφή στον ledger"
+             (= before (length (%raw-lines (%failure-ledger-path))))))
+      (chk "⑬ Π0-D: %lesson (aggregate) και ledger ΞΕΧΩΡΙΣΤΑ — ένας writer ο καθένας, κανένα δεύτερο store"
+           (and (fboundp '%lesson) (fboundp 'record-dialogue-failure!)
+                (probe-file (%failure-ledger-path)))))
     (format t "~%── ΠΥΛΗ ΜΑΘΗΣΗΣ ΚΑΤΑΝΟΗΣΗΣ: ~D/~D πέρασαν ──~%"
             (- total (length fails)) total)
     (if fails 1 0)))

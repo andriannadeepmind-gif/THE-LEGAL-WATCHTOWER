@@ -226,7 +226,8 @@
  ;; ══ ΚΑΝΟΝΙΚΑ STORES — ένα ανά ρόλο· άγνωστο αρχείο store = παράβαση ══
  :canonical-stores
  ((:path "deployment/self/episodes.sexp"    :role :experiential-stream)
-  (:path "deployment/self/history.sexp"     :role :biography)
+  (:path "deployment/self/history.sexp"     :role :biography
+   :note "GENESIS/bootstrap tracked αρχείο — η ΖΩΝΤΑΝΗ βιογραφία ζει στο runtime volume του δημιουργού, ποτέ σε git cleanup")
   (:path "deployment/self/proposals.sexp"   :role :proposal-queue)
   (:path "deployment/self/graph-snapshot.sexp" :role :graph-snapshot)
   (:path "deployment/state/lessons.jsonl"   :role :reflection-aggregate)

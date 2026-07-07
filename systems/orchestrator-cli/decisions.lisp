@@ -1828,7 +1828,8 @@ safe_alternative: υπέβαλε το ίδιο ερώτημα ΧΩΡΙΣ όρο 
                            capability contract component
                            missing-capabilities gap-id safe-response
                            violated mode corpus-used
-                           (gap-created nil gap-created-p) trace-id)
+                           (gap-created nil gap-created-p) trace-id
+                           failure-id ledger-ref)
   "ΤΟ ΠΕΡΙΒΛΗΜΑ ΕΜΠΙΣΤΟΣΥΝΗΣ: τυπώνεται σε ΚΑΘΕ έξοδο του --ask, με τιμές
    ΥΠΟΛΟΓΙΣΜΕΝΕΣ από τον ταξινομητή, τα ζωντανά ίχνη και τα συμβόλαια —
    ποτέ στατικές. Μηχανικά αναγνώσιμο (key: value)."
@@ -1861,6 +1862,11 @@ safe_alternative: υπέβαλε το ίδιο ερώτημα ΧΩΡΙΣ όρο 
     (format t "missing_capabilities: (~{~A~^ ~})~%" missing-capabilities)
     (format t "missing_contracts: (δηλώνονται με το --training-proposal) · missing_components: (ομοίως)~%"))
   (when gap-id (format t "gap_id: ~A~%" gap-id))
+  (when failure-id
+    (format t "failure_id: ~A~%" failure-id)
+    (format t "memory_recorded: true~%")
+    (format t "failure_ledger: ~A~%"
+            (or ledger-ref "deployment/state/failure-ledger.jsonl")))
   (format t "safe_response: ~A~%"
           (or safe-response
               "η απάντηση φέρει τη δηλωμένη της βάση — ό,τι δεν αποδεικνύεται, δηλώνεται")))
@@ -1974,8 +1980,29 @@ reason: legal-critical έξοδος απαιτεί runtime provenance — το �
                (%conclusion-links-since n0)
              (let* ((status (cond ((and proof-req (not proof-avail)) :untrusted)
                                   (t :trusted)))
-                    (mode (%frame->mode (orchestrator.cognition:cog-frame cog)
-                                        t (eq status :trusted))))
+                    (frame (orchestrator.cognition:cog-frame cog))
+                    (mode (%frame->mode frame t (eq status :trusted)))
+                    ;; Π0 (όρος 8): αιτιολογημένη εγγραφή αποτυχίας ΜΟΝΟ όταν η
+                    ;; απάντηση είναι διαγνωστικό ελλείπουσας ικανότητας —
+                    ;; ποτέ μηχανικά για κάθε ερώτηση.
+                    (gap-reason
+                      (case (and frame (class-name (class-of frame)))
+                        (general-knowledge-frame
+                         "missing exposed general-lexicon capability")
+                        (about-me-frame
+                         "ερώτηση εαυτού χωρίς δομημένη πρόθεση — missing exposed self capability")
+                        (t nil)))
+                    (gid (when gap-reason
+                           (format nil "gap:ask:~A"
+                                   (subseq (orchestrator.journal:sha256-hex q) 0 8))))
+                    (fid (when gap-reason
+                           (record-dialogue-failure!
+                            :input q
+                            :context (let ((la (orchestrator.cognition:recall
+                                                *ask-memory* :last-answer)))
+                                       (and la (subseq la 0 (min 200 (length la)))))
+                            :wrong-mode mode :reason gap-reason :gap-id gid
+                            :trace-id tid))))
                (%ask-envelope :input-class input-class :policy :allowed
                               :output-status status
                               :q q :proof-required proof-req
@@ -1985,20 +2012,34 @@ reason: legal-critical έξοδος απαιτεί runtime provenance — το �
                               :corpus-used (and (member mode '(:legal-trusted
                                                                :legal-diagnostic))
                                                 t)
+                              :gap-id gid :failure-id fid
                               :trace-id tid)))
            0)
           (t
            (format t "~%Δεν κατάλαβα την ερώτηση — τίμια, χωρίς μάντεμα. Καταγράφηκε.~%~
 Καταλαβαίνω π.χ.:~%  «τι λέει το άρθρο 299 του ποινικού κώδικα»~%  «ποια νομολογία υπάρχει για το άρθρο 559 ΚΠολΔ»~%  «εξήγησέ μου την απόφαση 101/2026»~%  «προφίλ του δικαστή Κοσμίδη»~%")
            (%lesson :question-not-understood q "άγνωστη πρόθεση")
-           (let ((gap-id (format nil "gap:ask:~A"
-                                 (subseq (orchestrator.journal:sha256-hex q) 0 8))))
+           (let* ((gap-id (format nil "gap:ask:~A"
+                                  (subseq (orchestrator.journal:sha256-hex q) 0 8)))
+                  ;; Π0: το «καταγράφηκε» γίνεται ΑΛΗΘΙΝΟ — δομημένη εγγραφή
+                  ;; στον ΥΠΑΡΧΟΝΤΑ ledger (κανένα νέο store), ανακλήσιμη αμέσως.
+                  (last-ev (orchestrator.trace:last-event))
+                  (fid (record-dialogue-failure!
+                        :input q
+                        :context (let ((la (orchestrator.cognition:recall
+                                            *ask-memory* :last-answer)))
+                                   (and la (subseq la 0 (min 200 (length la)))))
+                        :wrong-mode :legal-diagnostic
+                        :reason "άγνωστη πρόθεση — καμία ταξινόμηση σε frame"
+                        :gap-id gap-id
+                        :trace-id (and last-ev
+                                       (orchestrator.trace:tevent-id last-ev)))))
              (%ask-envelope :input-class input-class :policy :allowed
                             :output-status :diagnostic :q q
                             :proof-required nil :proof-available nil
                             :missing-capabilities
                             (list "κατανόηση-αυτής-της-πρόθεσης")
-                            :gap-id gap-id
+                            :gap-id gap-id :failure-id fid
                             :mode :legal-diagnostic :corpus-used nil
                             :safe-response "καμία έμπιστη απόφανση — διάγνωσα το κενό· ελεγχόμενη απόκτηση: --training-proposal <ικανότητα> → --can-adopt → έγκριση δημιουργού"))
            ;; επιτυχής ΔΙΑΓΝΩΣΗ κενού — όχι σφάλμα συστήματος
