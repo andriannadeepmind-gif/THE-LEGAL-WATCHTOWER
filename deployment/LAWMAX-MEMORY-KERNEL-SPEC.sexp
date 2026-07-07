@@ -8,10 +8,13 @@
 ;;;; την πηγή/τα ζωντανά μητρώα — ΟΧΙ αφήγηση. Πηγή αλήθειας: :canonical-stores
 ;;;; του Συντάγματος, ο κώδικας, το git.
 
-(:lawmax-memory-kernel-spec 1
+(:lawmax-memory-kernel-spec 2
  :authored-at-commit "191fd15c"
  :status :specification-only
  :source-of-truth (:constitution :canonical-stores :source-code :git)
+ :ultimate-target-seat
+ (:file "LAWMAX-CPEI-TARGET-SPEC.{md,sexp}"
+  :rule "η τελική μορφή (CPEI: 12 στρώματα, InstitutionalAct, compiler, coverage map) ζει ΕΚΕΙ — εδώ ζει ΜΟΝΟ η απογραφή/πολιτική μνήμης· καμία δεύτερη αρχιτεκτονική μνήμης")
 
  :non-negotiables
  ((:one-home-per-memory-kind "καμία έννοια μνήμης δεν έχει δύο σπίτια")

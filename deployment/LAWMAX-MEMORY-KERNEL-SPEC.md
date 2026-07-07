@@ -4,6 +4,11 @@ Runner, καμία υιοθέτηση, κανένα refactor, κανένα νέ�
 Αυθεντικό ζεύγος: `LAWMAX-MEMORY-KERNEL-SPEC.sexp` (μηχανικά αναγνώσιμο).
 Authored-at-commit: **191fd15c** (μετά το Π0 accepted, PASS=30/0 real Docker).
 
+**Ultimate target:** η τελική μηχανική μορφή του Ιδρύματος (LAWMAX Ω — CPEI,
+12 στρώματα, InstitutionalAct, Constitutional Compiler, coverage map) έχει ΜΙΑ
+έδρα: `LAWMAX-CPEI-TARGET-SPEC.{md,sexp}` — αυτό εδώ παραμένει η έδρα της
+απογραφής/πολιτικής μνήμης και ΔΕΝ την επαναλαμβάνει.
+
 Αυτό το κείμενο **χαρτογραφεί ό,τι ήδη υπάρχει** και **ονομάζει ό,τι λείπει** —
 δεν προσθέτει τίποτα. Κάθε ισχυρισμός φέρει evidence (αρχείο:γραμμή) από την
 πηγή ή τα ζωντανά μητρώα. Πηγή αλήθειας: το `--architecture-constitution-gate`
