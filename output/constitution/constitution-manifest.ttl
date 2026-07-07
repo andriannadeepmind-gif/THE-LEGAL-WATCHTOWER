@@ -1,0 +1,166 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix digest: <http://www.w3.org/2000/10/swap/crypto#> .
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
+@prefix glass: <http://www.w3.org/2000/10/swap/crypto#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix pav: <http://purl.org/pav/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix stavropouloslaw: <https://stavropouloslaw.com/ontology#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================
+# CORPUS ROOT - Σύνταγμα της Ελλάδας
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/const/1975>
+    a eli:LegalResource, dcat:Dataset ;
+    dct:title "Σύνταγμα της Ελλάδας"@el ;
+    dct:title "Constitution of Greece"@en ;
+
+    # PROVENANCE & ATTRIBUTION
+    dct:issued "1975-06-11"^^xsd:date ;
+    dct:modified "2019-11-25"^^xsd:date ;
+    dct:publisher <https://stavropouloslaw.com/identity/org> ;
+    dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+    prov:wasAttributedTo <http://data.stavropouloslaw.com/agent/greek-parliament> ;
+
+    # JURISDICTION
+    eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
+
+    # Articles
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/1> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/2> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/3> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/4> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/5> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/6> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/7> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/8> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/9> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/9Α> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/10> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/11> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/12> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/13> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/14> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/15> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/16> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/17> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/18> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/19> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/20> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/21> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/22> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/23> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/24> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/25> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/26> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/27> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/28> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/29> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/30> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/31> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/32> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/33> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/34> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/35> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/36> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/37> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/38> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/39> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/40> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/41> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/42> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/43> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/44> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/45> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/46> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/47> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/48> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/49> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/50> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/51> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/52> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/53> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/54> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/55> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/56> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/57> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/58> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/59> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/60> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/61> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/62> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/63> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/64> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/65> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/66> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/67> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/68> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/69> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/70> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/71> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/72> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/73> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/74> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/75> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/76> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/77> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/78> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/79> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/80> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/81> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/82> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/83> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/84> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/85> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/86> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/87> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/88> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/89> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/90> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/91> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/92> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/93> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/94> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/95> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/96> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/97> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/98> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/99> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/100> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/100Α> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/101> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/101Α> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/102> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/103> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/104> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/105> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/106> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/107> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/108> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/109> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/110> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/111> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/112> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/113> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/114> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/115> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/116> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/117> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/118> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/119> ;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/120> ;
+
+    # Dataset distribution
+    dcat:distribution [
+        a dcat:Distribution ;
+        dcat:downloadURL <https://stavropouloslaw.com/eli/gr/const/1975/downloads/constitution-full.ttl> ;
+        dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>
+    ] .

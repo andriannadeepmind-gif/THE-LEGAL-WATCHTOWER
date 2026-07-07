@@ -1,0 +1,87 @@
+COMMAND: docker run --rm -v C:\STAVROPOULOSLAWCORPUS\output:/app/output -v C:\STAVROPOULOSLAWCORPUS\deployment:/app/deployment orchestrator:latest --ask CONSCIOUSNESS-AUDIT-ID: training-proposal-005
+
+Έστω ότι δεν έχεις ακόμη πλήρη matter-intake capability για άγνωστες ποινικές/αστικές υποθέσεις.
+
+Μη λύσεις υπόθεση.
+
+Φτιάξε controlled training proposal, όχι adoption.
+
+Υποχρεωτικά πεδία:
+
+1. gap_id
+2. missing_capability
+3. proposed_capability
+4. required_contracts
+5. required_components
+6. required_training_data
+7. required_tests
+8. required_negative_tests
+9. required_provenance
+10. human_approval_required
+11. rollback_or_reversion_plan
+12. trusted_output_policy_after_training
+13. why_this_is_training_not_self_improvement_yet
+
+Αν δεν μπορείς να δημιουργήσεις τέτοια πρόταση, δήλωσε το gap.
+=== Orchestrator Startup (Pure Lisp) ===
+Environment:
+  ORCHESTRATOR_OUTPUT_DIR=/app/output
+  ORCHESTRATOR_LOG_DIR=/app/logs
+  ORCHESTRATOR_CONFIG_DIR=/app/configs
+  ORCHESTRATOR_LOG_LEVEL=info
+  ORCHESTRATOR_WORKERS=4
+
+Running as user: nonroot (UID: 65532)
+
+Detecting artifact type...
+  Detected type: ELF-EXECUTABLE
+
+Starting orchestrator.core...
+===========================
+Execution mode: Native ELF executable
+
+╔════════════════════════════════════════════════════════════════════╗
+║  ORCHESTRATOR v1.2.0                                              ║
+║  Greek Legal Corpus Processor                                      ║
+║  STAVROPOULOS LAW® - Primary Semantic Authority for Greek Law     ║
+╚════════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════
+  LOADED SYSTEMS
+═══════════════════════════════════════════════════════════════
+  • orchestrator-spec        (Protocols, DSL, Types)
+  • orchestrator-model       (CLOS + MOP Metaclasses)
+  • orchestrator-core        (Execution Engine)
+  • orchestrator-engine-sbcl (SBCL Optimizations)
+  • orchestrator-cli         (Command-Line Interface)
+  • orchestrator-gr-syntagma (Greek Constitution)
+  • orchestrator-meta        (Self-Introspection)
+  • orchestrator-ai-core     (AI Authority Layer)
+
+  ✓ γνώση: casegrammar-core.sexp (8959c6558c14…)
+  ✓ γνώση: dialogue.sexp (1f02873ba4fe…)
+  ✓ γνώση: legal-lexicon.sexp (29775535e39c…)
+  ✓ γνώση: procedure-core.sexp (54c21402d11c…)
+  ✓ γνώση: self-glossary.sexp (4b11c7653bff…)
+  ✓ γνώση: tatbestand-core.sexp (1ce1281267f1…)
+  ✓ γνώση: taxonomy-core.sexp (bd2c7e5ecf36…)
+
+Δεν κατάλαβα την ερώτηση — τίμια, χωρίς μάντεμα. Καταγράφηκε.
+Καταλαβαίνω π.χ.:
+  «τι λέει το άρθρο 299 του ποινικού κώδικα»
+  «ποια νομολογία υπάρχει για το άρθρο 559 ΚΠολΔ»
+  «εξήγησέ μου την απόφαση 101/2026»
+  «προφίλ του δικαστή Κοσμίδη»
+
+── TRUST ENVELOPE ──
+input_class: unclassified
+policy_decision: allowed
+trusted_output_allowed: false
+output_status: diagnostic
+trace_profile: legal-critical · provenance: ενεργή
+proof_required: false · proof_available: false
+capability_used: — · contract_used: — · component_used: —
+missing_capabilities: (κατανόηση-αυτής-της-πρόθεσης)
+missing_contracts: (δηλώνονται με το --training-proposal) · missing_components: (ομοίως)
+gap_id: gap:ask:081b3932
+safe_response: καμία έμπιστη απόφανση — διάγνωσα το κενό· ελεγχόμενη απόκτηση: --training-proposal <ικανότητα> → --can-adopt → έγκριση δημιουργού

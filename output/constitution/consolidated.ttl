@@ -1,0 +1,604 @@
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+<https://stavropouloslaw.com/eli/art_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_3>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_4>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_5>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_5>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_6>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_7>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_8>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_9>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_9>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_10>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_11>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_12>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_13>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_14>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_15>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_16>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_17>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_18>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_19>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_20>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_21>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_22>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_23>
+    eli:in_force true ;
+    eli:date_applicability "2008-05-27"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2008> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_24>
+    eli:in_force true ;
+    eli:date_applicability "2008-05-27"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2008> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_25>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_26>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_27>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_28>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_29>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_30>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_31>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_32>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_33>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_34>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_35>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_36>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_37>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_38>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_39>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_40>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_41>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_42>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_43>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_44>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_45>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_46>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_47>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_48>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_49>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_50>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_51>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_52>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_53>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_54>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_55>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_56>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_57>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_58>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_59>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_60>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_61>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_62>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_63>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_64>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_65>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_66>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_67>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_68>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_69>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_70>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_71>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_72>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_73>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_74>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_75>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_76>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_77>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_78>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_79>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_80>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_81>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_82>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_83>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_84>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_85>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_86>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_87>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_88>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_89>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_90>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_91>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_92>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_93>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_94>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_95>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_96>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_97>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_98>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_99>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_100>
+    eli:in_force true ;
+    eli:date_applicability "1986-03-11"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/1986> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_100>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_101>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_101>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_102>
+    eli:in_force true ;
+    eli:date_applicability "2001-04-17"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2001> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_103>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_104>
+    eli:in_force true ;
+    eli:date_applicability "1986-03-11"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/1986> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_105>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_106>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_107>
+    eli:in_force true ;
+    eli:date_applicability "1986-03-11"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/1986> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_108>
+    eli:in_force true ;
+    eli:date_applicability "1986-03-11"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/1986> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_109>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_110>
+    eli:in_force true ;
+    eli:date_applicability "1986-03-11"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/1986> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_111>
+    eli:in_force true ;
+    eli:date_applicability "1986-03-11"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/1986> ;
+    prov:value "amended" .
+
+<https://stavropouloslaw.com/eli/art_112>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_113>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_114>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_115>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_116>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_117>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_118>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_119>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_120>
+    eli:in_force true ;
+    eli:date_applicability "2019-11-25"^^xsd:date ;
+    eli:amended_by <https://stavropouloslaw.com/eli/act/2019> ;
+    prov:value "amended" .
+

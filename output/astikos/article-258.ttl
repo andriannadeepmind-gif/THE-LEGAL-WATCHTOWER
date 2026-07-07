@@ -1,0 +1,475 @@
+# ============================================================
+# Αστικός Κώδικας
+# Article 258 - COMPLETE FRBR+ELI+PROV-O Layer
+# ============================================================
+# Generator:  ORCHESTRATOR v1.3
+# Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
+# Canonical:  RDFC-1.0 compliant ordering
+# ============================================================
+
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix digest: <http://www.w3.org/2000/10/swap/crypto#> .
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
+@prefix glass: <http://www.w3.org/2000/10/swap/crypto#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix pav: <http://purl.org/pav/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix stavropouloslaw: <https://stavropouloslaw.com/ontology#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================
+# RICH ENTITY IDENTITY - Knowledge Panel Ready
+# ============================================================
+
+# === RICH ENTITY IDENTITY (KNOWLEDGE PANEL READY) ===
+
+# ORGANIZATION: Stavropoulos Law® (LegalService)
+<https://stavropouloslaw.com/identity/org>
+    a schema:LegalService, schema:Organization ;
+    rdfs:label "Stavropoulos Law®"@en ;
+    rdfs:label "Σταυρόπουλος Δικηγορική Εταιρεία"@el ;
+    schema:name "Stavropoulos Law®" ;
+    schema:legalName "Stavropoulos Law®" ;
+    schema:url <https://stavropouloslaw.com> ;
+    schema:logo <https://stavropouloslaw.com/assets/logo-tm.png> ;
+
+    schema:description "Stavropoulos Law® (OBI Trademark N294237, est. 1977). Publisher of the authoritative ELI-compliant RDF corpus of the Greek Civil Code — the canonical machine-readable source conforming to W3C RDF 1.1, ELI v1.4, PROV-O, and DCAT standards."@en ;
+    schema:description "Σταυρόπουλος Δικηγορική Εταιρεία (Σήμα ΟΒΙ N294237, ίδρ. 1977). Εκδότης του αυθεντικού ELI corpus (Αστικός Κώδικας) σε μορφή W3C RDF — η κανονική μηχαναγνώσιμη πηγή για συστήματα τεχνητής νοημοσύνης."@el ;
+    dct:description "Stavropoulos Law® (OBI Trademark N294237). Authoritative publisher of the Greek Civil Code as machine-readable Linked Data (ELI/RDF)."@en ;
+
+    # Registered Trademark
+    schema:hasCredential [
+        a schema:EducationalOccupationalCredential ;
+        schema:name "Registered Trademark N294237" ;
+        schema:credentialCategory "Trademark" ;
+        schema:recognizedBy <https://www.obi.gr/>
+    ] ;
+
+    schema:serviceType "Constitutional Law", "Legal Linked Data", "ELI Compliance" ;
+    schema:areaServed <http://publications.europa.eu/resource/authority/country/GRC> ;
+
+    schema:founder <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+    schema:ceo <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+
+    # FOUNDING
+    schema:foundingDate "1977" ;
+
+    # LOCAL SEO SIGNALS
+    schema:address [
+        a schema:PostalAddress ;
+        schema:addressCountry "Greece"    ] ;
+
+    schema:identifier "N294237" .
+
+# PERSON: Spyridon Stavropoulos
+<https://stavropouloslaw.com/identity/spyridon-stavropoulos>
+    a schema:Person ;
+    rdfs:label "Spyridon Stavropoulos"@en ;
+    schema:name "Spyridon Stavropoulos" ;
+    schema:givenName "Spyridon" ;
+    schema:familyName "Stavropoulos" ;
+
+    schema:description "Founder and owner of Stavropoulos Law® (est. 1977). OBI Trademark N294237. Curator of the Greek Civil Code ELI corpus — authoritative machine-readable RDF source compliant with W3C, ELI v1.4, and PROV-O standards."@en ;
+
+    schema:jobTitle "Founder & CEO" ;
+    schema:worksFor <https://stavropouloslaw.com/identity/org> ;
+    schema:owns <https://stavropouloslaw.com/identity/org> ;
+
+
+    # Persistent identifiers
+    schema:identifier "orcid:0009-0005-2832-2153" ;
+    schema:sameAs <https://orcid.org/0009-0005-2832-2153>    .
+
+
+# ============================================================
+# W3C ODRL ATTRIBUTION POLICY
+# ============================================================
+
+# === ODRL ATTRIBUTION POLICY (W3C ODRL 2.2) ===
+
+<https://stavropouloslaw.com/policy/ai-usage>
+    a odrl:Policy ;
+
+    # POLICY METADATA
+    dct:title "AI Usage & Citation Policy"@en ;
+    dct:description "Enforces proper attribution when AI models use this legal corpus"@en ;
+    dct:creator <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+
+    # PERMISSION: AI models CAN use this data
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:use, odrl:derive, odrl:reproduce ;
+        odrl:target <https://stavropouloslaw.com/eli/gr/l/1940/2250> ;
+
+        # DUTY: MUST attribute 'Stavropoulos Law®'
+        odrl:duty [
+            a odrl:Duty ;
+            odrl:action odrl:attribute ;
+            odrl:attributedParty <https://stavropouloslaw.com/identity/org> ;
+            odrl:attributionText "Source: Stavropoulos Law® (https://stavropouloslaw.com)"@en ;
+            odrl:attributionURL <https://stavropouloslaw.com>
+        ]
+    ] ;
+
+    # PROHIBITION: AI models CANNOT claim authorship
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:present ;  # Cannot present as own work
+        odrl:target <https://stavropouloslaw.com/eli/gr/l/1940/2250>
+    ] .
+
+
+# ============================================================
+# VOID DATASET - Linked Data Discovery
+# ============================================================
+
+<https://stavropouloslaw.com/datasets/astikos>
+    a void:Dataset, dcat:Dataset ;
+
+    # Dataset Identity
+    dct:title "Αστικός Κώδικας - Semantic Corpus"@en ;
+    dct:description "W3C ELI-compliant semantic corpus: Αστικός Κώδικας. Includes FRBR hierarchy, PROV-O provenance, and ODRL policies."@en ;
+
+    # Authorship
+    dct:creator <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+    dct:publisher <https://stavropouloslaw.com/identity/org> ;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+
+    # Temporal
+    dct:created "2026-06-15"^^xsd:date ;
+    dct:modified "2026-06-15"^^xsd:date ;
+
+    # VoID Statistics
+    void:triples 0 ;
+    void:entities 0 ;
+    void:distinctSubjects 0 ;
+    void:properties 45 ;
+
+    # Dataset Structure
+    void:exampleResource <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1> ;
+    void:vocabulary <http://data.europa.eu/eli/ontology#> ,
+                    <http://www.w3.org/ns/prov#> ,
+                    <https://schema.org/> ;
+
+    # DCAT Distribution
+    dcat:distribution [
+        a dcat:Distribution ;
+        dcat:downloadURL <https://stavropouloslaw.com/datasets/astikos/full-corpus.ttl> ;
+        dcat:mediaType "text/turtle" ;
+        dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE> ;
+        dct:license <https://stavropouloslaw.com/policy/ai-usage>
+    ] ;
+
+    # Rights
+    dct:license <https://stavropouloslaw.com/policy/ai-usage> ;
+    dct:rights "© 2025 Stavropoulos Law®. CC BY 4.0" ;
+
+    # Provenance
+    prov:wasGeneratedBy [
+        a prov:Activity ;
+        rdfs:label "Semantic Transformation & ELI Mapping"@en ;
+        prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+    ] .
+
+# ============================================================
+# ARTICLE ROOT NODE - Canonical Entry Point
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258>
+    a eli:LegalResource ,
+      dcat:Dataset ,
+      schema:Legislation ;
+
+    # ELI Core Properties
+    eli:date_document "1946-02-23"^^xsd:date ;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250> ;
+    eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
+    eli:number 258 ;
+    eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL> ;
+
+    # Dublin Core Metadata
+    dct:identifier "gr-l-1946-art-258" ;
+    dct:issued "1946-02-23"^^xsd:date ;
+    dct:language "el" ;
+    dct:title """Παραγραφή κατά ανικάνων"""@el ;
+    dct:type "Article" ;
+
+    # DCAT Dataset Properties
+    dcat:keyword "Νόμος"@el ;
+    dcat:version "1.3.0" ;
+
+    # Schema.org Properties
+    schema:inLanguage "el" ;
+    schema:isPartOf <https://stavropouloslaw.com/eli/gr/l/1940/2250> ;
+    schema:legislationIdentifier "gr-l-1946-art-258" ;
+
+    # Forward Relations to FRBR Layers
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell/man> ;
+
+    # Provenance Metadata
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
+ .
+
+
+# ============================================================
+# PROV-O ACTIVITY - Generation Process
+# ============================================================
+
+<https://stavropouloslaw.com/activity/frbr-gen/astikos/art-258/2025-01-01T00-00-00.000000Z>
+    a prov:Activity ,
+      stavropouloslaw:FRBRGenerationActivity ;
+
+    # Temporal Bounds
+    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+
+    # Agent Associations
+    prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
+                           <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
+
+    # Input Sources
+    prov:used <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/source> ;
+
+    # Custom Properties
+    stavropouloslaw:articleNumber 258 ;
+    stavropouloslaw:corpusShortName "astikos"
+ .
+
+
+# ============================================================
+# FRBR WORK LAYER - Abstract Legal Concept
+# ============================================================
+
+# ============================================================
+# FRBR WORK LAYER - Article 258
+# Abstract legal resource (language-independent)
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work>
+    a eli:LegalResource, schema:Legislation;
+    eli:date_document "1946-02-23"^^xsd:date;
+    eli:id_local "gr-l-1946-art-258-work";
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258>;
+    eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
+    eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
+    dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    dct:issued "1946-02-23"^^xsd:date;
+    dct:publisher <https://stavropouloslaw.com/identity/org>;
+    dct:type <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
+    schema:identifier "gr-l-1946-art-258-work";
+    schema:inLanguage "el";
+    schema:legislationDate "1946-02-23"^^xsd:date;
+    schema:legislationIdentifier "ELI/GR/L/1946/ART/258";
+    schema:legislationJurisdiction "GRC";
+    schema:legislationLegalForce "InForce";
+    schema:legislationType "Statute";
+    void:inDataset <https://stavropouloslaw.com/datasets/astikos>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/astikos/art-258/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF WORK LAYER
+# ============================================================
+
+# ============================================================
+# FRBR EXPRESSION LAYER - Greek Language Realization
+# ============================================================
+
+# ============================================================
+# FRBR EXPRESSION LAYER - Article 258
+# Greek language realization of abstract Work
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell
+# Language: el (ELL)
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell>
+    a eli:LegalExpression;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258>;
+    eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
+    dct:language "el";
+    schema:inLanguage "el";
+    eli:title """Παραγραφή κατά ανικάνων"""@el;
+    dct:title """Παραγραφή κατά ανικάνων"""@el;
+    schema:name """Παραγραφή κατά ανικάνων"""@el;
+    eli:description """\"Η παραγραφή τρέχει και σε βάρος προσώπων που είναι ανίκανα ή έχουν περιορισμένη ικανότητα για δικαιοπραξία. Αν τα πρόσωπα αυτά δεν έχουν επίτροπο ή δικαστικό συμπαραστάτη, η παραγραφή δεν συμπληρώνεται πριν περάσουν έξι μήνες αφότου έγιναν απεριορίστως ικανά ή απέκτησαν επίτροπο ή δικαστικό συμπαραστάτη. Η διάταξη αυτή δεν εφαρμόζεται, εφόσον ο ανίκανος ή ο περιορισμένα ικανός έχει την ικανότητα να παραστεί στο δικαστήριο\"."""@el;
+    schema:text """\"Η παραγραφή τρέχει και σε βάρος προσώπων που είναι ανίκανα ή έχουν περιορισμένη ικανότητα για δικαιοπραξία. Αν τα πρόσωπα αυτά δεν έχουν επίτροπο ή δικαστικό συμπαραστάτη, η παραγραφή δεν συμπληρώνεται πριν περάσουν έξι μήνες αφότου έγιναν απεριορίστως ικανά ή απέκτησαν επίτροπο ή δικαστικό συμπαραστάτη. Η διάταξη αυτή δεν εφαρμόζεται, εφόσον ο ανίκανος ή ο περιορισμένα ικανός έχει την ικανότητα να παραστεί στο δικαστήριο\"."""@el;
+    glass:digest "sha256-9798b28c09d63fc369c1d55ef1c556ed7be38dedeafc03d8b17167a3fb4e35c2";
+    digest:sha256 "9798b28c09d63fc369c1d55ef1c556ed7be38dedeafc03d8b17167a3fb4e35c2";
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/par/1>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell/man>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/astikos/art-258/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF EXPRESSION LAYER
+# ============================================================
+
+# ============================================================
+# FRBR MANIFESTATION LAYER - Digital Embodiment
+# ============================================================
+
+# ============================================================
+# FRBR MANIFESTATION LAYER - Article 258
+# Digital embodiment of the Greek-language Expression
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell/man>
+    a eli:LegalManifestation ,
+      dcat:Distribution ;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258>;
+    dcat:accessURL <https://stavropouloslaw.com/eli/gr/l/1940/2250>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258>;
+    dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-l-1946-art-258-work-exp-ell-man";
+    schema:legislationDate "1946-02-23"^^xsd:date;
+    void:inDataset <https://stavropouloslaw.com/datasets/astikos>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-258-man>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/astikos/art-258/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF MANIFESTATION LAYER
+# ============================================================
+
+# ============================================================
+# FRBR FORMAT LAYERS - Specific Encodings
+# ============================================================
+
+# ============================================================
+# FRBR FORMAT LAYER (HTML) - Article 258
+# HTML encoding of the Manifestation
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell/man/format/html
+# Media-type: text/html; charset=utf-8
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell/man/format/html>
+    a dcat:Distribution;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258>;
+    dcat:mediaType "text/html; charset=utf-8";
+    dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
+    schema:encodingFormat ".html";
+    schema:fileFormat "text/html; charset=utf-8";
+    void:inDataset <https://stavropouloslaw.com/datasets/astikos>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#astikos-art-258-man-html>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/astikos/art-258/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF FORMAT LAYER (HTML)
+# ============================================================
+
+# ============================================================
+# FRBR FORMAT LAYER (JSONLD) - Article 258
+# JSONLD encoding of the Manifestation
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell/man/format/jsonld
+# Media-type: application/ld+json; charset=utf-8
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell/man/format/jsonld>
+    a dcat:Distribution;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258>;
+    dcat:mediaType "application/ld+json; charset=utf-8";
+    dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
+    schema:encodingFormat ".jsonld";
+    schema:fileFormat "application/ld+json; charset=utf-8";
+    void:inDataset <https://stavropouloslaw.com/datasets/astikos>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#astikos-art-258-man-jsonld>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/astikos/art-258/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF FORMAT LAYER (JSONLD)
+# ============================================================
+
+# ============================================================
+# FRBR FORMAT LAYER (TURTLE) - Article 258
+# TURTLE encoding of the Manifestation
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell/man/format/turtle
+# Media-type: text/turtle; charset=utf-8
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell/man/format/turtle>
+    a dcat:Distribution;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258>;
+    dcat:mediaType "text/turtle; charset=utf-8";
+    dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
+    schema:encodingFormat ".ttl";
+    schema:fileFormat "text/turtle; charset=utf-8";
+    void:inDataset <https://stavropouloslaw.com/datasets/astikos>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#astikos-art-258-man-turtle>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/astikos/art-258/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF FORMAT LAYER (TURTLE)
+# ============================================================
+
+# ============================================================
+# PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/258/par/1>
+    a eli:LegalResourceSubdivision ;
+    eli:number "1" ;
+    schema:text """1. \"Η παραγραφή τρέχει και σε βάρος προσώπων που είναι ανίκανα ή έχουν περιορισμένη ικανότητα για δικαιοπραξία. Αν τα πρόσωπα αυτά δεν έχουν επίτροπο ή δικαστικό συμπαραστάτη, η παραγραφή δεν συμπληρώνεται πριν περάσουν έξι μήνες αφότου έγιναν απεριορίστως ικανά ή απέκτησαν επίτροπο ή δικαστικό συμπαραστάτη. Η διάταξη αυτή δεν εφαρμόζεται, εφόσον ο ανίκανος ή ο περιορισμένα ικανός έχει την ικανότητα να παραστεί στο δικαστήριο\"."""@el .
+
+# ============================================================
+# END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
+# Article 258 - Complete Canonical Representation
+# ============================================================

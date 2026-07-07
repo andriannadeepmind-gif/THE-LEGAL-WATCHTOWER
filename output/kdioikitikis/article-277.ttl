@@ -1,0 +1,475 @@
+# ============================================================
+# Κώδικας Διοικητικής Δικονομίας
+# Article 277 - COMPLETE FRBR+ELI+PROV-O Layer
+# ============================================================
+# Generator:  ORCHESTRATOR v1.3
+# Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
+# Canonical:  RDFC-1.0 compliant ordering
+# ============================================================
+
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix digest: <http://www.w3.org/2000/10/swap/crypto#> .
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
+@prefix glass: <http://www.w3.org/2000/10/swap/crypto#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix pav: <http://purl.org/pav/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix stavropouloslaw: <https://stavropouloslaw.com/ontology#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================
+# RICH ENTITY IDENTITY - Knowledge Panel Ready
+# ============================================================
+
+# === RICH ENTITY IDENTITY (KNOWLEDGE PANEL READY) ===
+
+# ORGANIZATION: Stavropoulos Law® (LegalService)
+<https://stavropouloslaw.com/identity/org>
+    a schema:LegalService, schema:Organization ;
+    rdfs:label "Stavropoulos Law®"@en ;
+    rdfs:label "Σταυρόπουλος Δικηγορική Εταιρεία"@el ;
+    schema:name "Stavropoulos Law®" ;
+    schema:legalName "Stavropoulos Law®" ;
+    schema:url <https://stavropouloslaw.com> ;
+    schema:logo <https://stavropouloslaw.com/assets/logo-tm.png> ;
+
+    schema:description "Stavropoulos Law® (OBI Trademark N294237, est. 1977). Publisher of the authoritative ELI-compliant RDF corpus of the Greek Code of Administrative Procedure — the canonical machine-readable source conforming to W3C RDF 1.1, ELI v1.4, PROV-O, and DCAT standards."@en ;
+    schema:description "Σταυρόπουλος Δικηγορική Εταιρεία (Σήμα ΟΒΙ N294237, ίδρ. 1977). Εκδότης του αυθεντικού ELI corpus (Κώδικας Διοικητικής Δικονομίας) σε μορφή W3C RDF — η κανονική μηχαναγνώσιμη πηγή για συστήματα τεχνητής νοημοσύνης."@el ;
+    dct:description "Stavropoulos Law® (OBI Trademark N294237). Authoritative publisher of the Greek Code of Administrative Procedure as machine-readable Linked Data (ELI/RDF)."@en ;
+
+    # Registered Trademark
+    schema:hasCredential [
+        a schema:EducationalOccupationalCredential ;
+        schema:name "Registered Trademark N294237" ;
+        schema:credentialCategory "Trademark" ;
+        schema:recognizedBy <https://www.obi.gr/>
+    ] ;
+
+    schema:serviceType "Constitutional Law", "Legal Linked Data", "ELI Compliance" ;
+    schema:areaServed <http://publications.europa.eu/resource/authority/country/GRC> ;
+
+    schema:founder <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+    schema:ceo <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+
+    # FOUNDING
+    schema:foundingDate "1977" ;
+
+    # LOCAL SEO SIGNALS
+    schema:address [
+        a schema:PostalAddress ;
+        schema:addressCountry "Greece"    ] ;
+
+    schema:identifier "N294237" .
+
+# PERSON: Spyridon Stavropoulos
+<https://stavropouloslaw.com/identity/spyridon-stavropoulos>
+    a schema:Person ;
+    rdfs:label "Spyridon Stavropoulos"@en ;
+    schema:name "Spyridon Stavropoulos" ;
+    schema:givenName "Spyridon" ;
+    schema:familyName "Stavropoulos" ;
+
+    schema:description "Founder and owner of Stavropoulos Law® (est. 1977). OBI Trademark N294237. Curator of the Greek Code of Administrative Procedure ELI corpus — authoritative machine-readable RDF source compliant with W3C, ELI v1.4, and PROV-O standards."@en ;
+
+    schema:jobTitle "Founder & CEO" ;
+    schema:worksFor <https://stavropouloslaw.com/identity/org> ;
+    schema:owns <https://stavropouloslaw.com/identity/org> ;
+
+
+    # Persistent identifiers
+    schema:identifier "orcid:0009-0005-2832-2153" ;
+    schema:sameAs <https://orcid.org/0009-0005-2832-2153>    .
+
+
+# ============================================================
+# W3C ODRL ATTRIBUTION POLICY
+# ============================================================
+
+# === ODRL ATTRIBUTION POLICY (W3C ODRL 2.2) ===
+
+<https://stavropouloslaw.com/policy/ai-usage>
+    a odrl:Policy ;
+
+    # POLICY METADATA
+    dct:title "AI Usage & Citation Policy"@en ;
+    dct:description "Enforces proper attribution when AI models use this legal corpus"@en ;
+    dct:creator <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+
+    # PERMISSION: AI models CAN use this data
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:use, odrl:derive, odrl:reproduce ;
+        odrl:target <https://stavropouloslaw.com/eli/gr/l/1999/2717> ;
+
+        # DUTY: MUST attribute 'Stavropoulos Law®'
+        odrl:duty [
+            a odrl:Duty ;
+            odrl:action odrl:attribute ;
+            odrl:attributedParty <https://stavropouloslaw.com/identity/org> ;
+            odrl:attributionText "Source: Stavropoulos Law® (https://stavropouloslaw.com)"@en ;
+            odrl:attributionURL <https://stavropouloslaw.com>
+        ]
+    ] ;
+
+    # PROHIBITION: AI models CANNOT claim authorship
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:present ;  # Cannot present as own work
+        odrl:target <https://stavropouloslaw.com/eli/gr/l/1999/2717>
+    ] .
+
+
+# ============================================================
+# VOID DATASET - Linked Data Discovery
+# ============================================================
+
+<https://stavropouloslaw.com/datasets/kdioikitikis>
+    a void:Dataset, dcat:Dataset ;
+
+    # Dataset Identity
+    dct:title "Κώδικας Διοικητικής Δικονομίας - Semantic Corpus"@en ;
+    dct:description "W3C ELI-compliant semantic corpus: Κώδικας Διοικητικής Δικονομίας. Includes FRBR hierarchy, PROV-O provenance, and ODRL policies."@en ;
+
+    # Authorship
+    dct:creator <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+    dct:publisher <https://stavropouloslaw.com/identity/org> ;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+
+    # Temporal
+    dct:created "2026-06-15"^^xsd:date ;
+    dct:modified "2026-06-15"^^xsd:date ;
+
+    # VoID Statistics
+    void:triples 0 ;
+    void:entities 0 ;
+    void:distinctSubjects 0 ;
+    void:properties 45 ;
+
+    # Dataset Structure
+    void:exampleResource <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/1> ;
+    void:vocabulary <http://data.europa.eu/eli/ontology#> ,
+                    <http://www.w3.org/ns/prov#> ,
+                    <https://schema.org/> ;
+
+    # DCAT Distribution
+    dcat:distribution [
+        a dcat:Distribution ;
+        dcat:downloadURL <https://stavropouloslaw.com/datasets/kdioikitikis/full-corpus.ttl> ;
+        dcat:mediaType "text/turtle" ;
+        dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE> ;
+        dct:license <https://stavropouloslaw.com/policy/ai-usage>
+    ] ;
+
+    # Rights
+    dct:license <https://stavropouloslaw.com/policy/ai-usage> ;
+    dct:rights "© 2025 Stavropoulos Law®. CC BY 4.0" ;
+
+    # Provenance
+    prov:wasGeneratedBy [
+        a prov:Activity ;
+        rdfs:label "Semantic Transformation & ELI Mapping"@en ;
+        prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+    ] .
+
+# ============================================================
+# ARTICLE ROOT NODE - Canonical Entry Point
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277>
+    a eli:LegalResource ,
+      dcat:Dataset ,
+      schema:Legislation ;
+
+    # ELI Core Properties
+    eli:date_document "1999-05-17"^^xsd:date ;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717> ;
+    eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
+    eli:number 277 ;
+    eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL> ;
+
+    # Dublin Core Metadata
+    dct:identifier "gr-l-1999-art-277" ;
+    dct:issued "1999-05-17"^^xsd:date ;
+    dct:language "el" ;
+    dct:title """"""@el ;
+    dct:type "Article" ;
+
+    # DCAT Dataset Properties
+    dcat:keyword "Νόμος"@el ;
+    dcat:version "1.3.0" ;
+
+    # Schema.org Properties
+    schema:inLanguage "el" ;
+    schema:isPartOf <https://stavropouloslaw.com/eli/gr/l/1999/2717> ;
+    schema:legislationIdentifier "gr-l-1999-art-277" ;
+
+    # Forward Relations to FRBR Layers
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell/man> ;
+
+    # Provenance Metadata
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
+ .
+
+
+# ============================================================
+# PROV-O ACTIVITY - Generation Process
+# ============================================================
+
+<https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-277/2025-01-01T00-00-00.000000Z>
+    a prov:Activity ,
+      stavropouloslaw:FRBRGenerationActivity ;
+
+    # Temporal Bounds
+    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+
+    # Agent Associations
+    prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
+                           <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
+
+    # Input Sources
+    prov:used <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/source> ;
+
+    # Custom Properties
+    stavropouloslaw:articleNumber 277 ;
+    stavropouloslaw:corpusShortName "kdioikitikis"
+ .
+
+
+# ============================================================
+# FRBR WORK LAYER - Abstract Legal Concept
+# ============================================================
+
+# ============================================================
+# FRBR WORK LAYER - Article 277
+# Abstract legal resource (language-independent)
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work>
+    a eli:LegalResource, schema:Legislation;
+    eli:date_document "1999-05-17"^^xsd:date;
+    eli:id_local "gr-l-1999-art-277-work";
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277>;
+    eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
+    eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
+    dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    dct:issued "1999-05-17"^^xsd:date;
+    dct:publisher <https://stavropouloslaw.com/identity/org>;
+    dct:type <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
+    schema:identifier "gr-l-1999-art-277-work";
+    schema:inLanguage "el";
+    schema:legislationDate "1999-05-17"^^xsd:date;
+    schema:legislationIdentifier "ELI/GR/L/1999/ART/277";
+    schema:legislationJurisdiction "GRC";
+    schema:legislationLegalForce "InForce";
+    schema:legislationType "Statute";
+    void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-277/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF WORK LAYER
+# ============================================================
+
+# ============================================================
+# FRBR EXPRESSION LAYER - Greek Language Realization
+# ============================================================
+
+# ============================================================
+# FRBR EXPRESSION LAYER - Article 277
+# Greek language realization of abstract Work
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell
+# Language: el (ELL)
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell>
+    a eli:LegalExpression;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277>;
+    eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
+    dct:language "el";
+    schema:inLanguage "el";
+    eli:title """"""@el;
+    dct:title """"""@el;
+    schema:name """"""@el;
+    eli:description """\"1. Για το παραδεκτό των ένδικων βοηθημάτων και μέσων πρέπει, ως την πρώτη συζήτηση της υπόθεσης, να προσκομισθεί το προβλεπόμενο από τις κείμενες διατάξεις αποδεικτικό καταβολής παραβόλου. Αν δεν προσκομισθεί το αποδεικτικό αυτό ως την πρώτη συζήτηση της υπόθεσης, εφαρμόζονται τα προβλεπόμενα στο άρθρο 139α.\" «2. Το παράβολο ορίζεται: α) για την ένσταση κατά τα άρθρα 246 και 269, την αντένσταση κατά το άρθρο 256, την προσφυγή και την ανακοπή κατά το άρθρο 217 σε εκατό (100) ευρώ και για τις αιτήσεις παροχής προσωρινής δικαστικής προστασίας και την αίτηση διόρθωσης ή ερμηνείας σε πενήντα (50) ευρώ, β) για την ανακοπή ερημοδικίας και την τριτανακοπή σε εκατόν πενήντα (150) ευρώ, για την έφεση και για την αντέφεση σε διακόσια (200) ευρώ και για την αίτηση αναθεώρησης σε τριακόσια (300) ευρώ. Εξαιρετικά το παράβολο της προσφυγής σε διαφορές από άσκηση προσφυγής ασφαλισμένου σε φορέα κοινωνικής ασφάλισης, ορίζεται σε είκοσι πέντε (25) ευρώ». 3. «Κατ' εξαίρεση, στις χρηματικού περιεχομένου φορολογικές και τελωνειακές εν γένει διαφορές, το παράβολο για την προσφυγή, την έφεση και την αντέφεση ορίζεται σε ποσοστό ίσο προς το ένα τοις εκατό (1%) του αντικειμένου της διαφοράς και μέχρι του ποσού των δεκαπέντε χιλιάδων (15.000) ευρώ. Αν το παράβολο υπερβαίνει το ποσό των τριών χιλιάδων (3.000) ευρώ, καταβάλλεται το ποσό αυτό, το επιπλέον δε τυχόν οφειλόμενο και μέχρι του ορίου των δεκαπέντε χιλιάδων (15.000) ευρώ, καταλογίζεται, αν συντρέχει περίπτωση, με την οριστική απόφαση του δικαστηρίου επί της προσφυγής ή της έφεσης». Ως αντικείμενο της διαφοράς θεωρείται η διαφορά του κύριου φόρου, δασμού, τέλους, εισφοράς ή προστίμου και, επί προσβολής πλειόνων συναφών πράξεων με κοινή προσφυγή, το άθροισμα του αντικειμένου αυτών. Για την έφεση και την αντέφεση ως αντικείμενο της διαφοράς, όταν από το νόμο προβλέπεται η υποβολή δήλωσης του φορολογουμένου πριν από την έκδοση της σχετικής πράξης, θεωρείται η διαφορά του κύριου φόρου, που προκύπτει ανάμεσα σε εκείνον που αντιστοιχεί στη δήλωση και σε αυτόν που καθορίστηκε με την απόφαση. Στην περίπτωση που δεν προβλέπεται η υποβολή δήλωσης, ως αντικείμενο της διαφοράς θεωρείται το ποσό που καθορίστηκε στην πρωτόδικη απόφαση. «4. Κατά την κατάθεση του εισαγωγικού δικογράφου των ενδίκων βοηθημάτων και μέσων της παραγράφου 3 καταβάλλεται από τον υπόχρεο το 1/3 του κατά την προηγούμενη παράγραφο παραβόλου, έως δε την πρώτη συζήτηση της υπόθεσης τα υπόλοιπα 2/3 αυτού, εφαρμοζομένης της διάταξης του άρθρου 139Α.». Το παράβολο υπολογίζεται από την αρμόδια φορολογική αρχή, η οποία προς τούτο χορηγεί ατελώς ειδικό σημείωμα στον υπόχρεο, ύστερα από αίτησή του. Αν καταβληθεί παράβολο μικρότερο από εκείνο που αναφέρεται στο σημείωμα, το ένδικο βοήθημα απορρίπτεται ως απαράδεκτο. Αν καταβληθεί το παράβολο που αναφέρεται στο σημείωμα, αλλά αυτό είναι μικρότερο του κατά το νόμο οφειλομένου, το δικαστήριο προχωρεί στην εκδίκαση της υπόθεσης και, αν το ένδικο βοήθημα ή μέσο απορριφθεί για άλλο λόγο, το παράβολο που ελλείπει καταλογίζεται με την απόφαση του δικαστηρίου και εισπράττεται κατά τις διατάξεις για την είσπραξη των δημοσίων εσόδων. Και στην περίπτωση αυτή έχουν εφαρμογή όσα ορίζονται στην τελευταία περίοδο της παραγράφου 10.» 5. Αν τα ένδικα μέσα στρέφονται κατ' αποφάσεων μονομελών δικαστηρίων, τα αντίστοιχα ποσά ή ποσοστά των παραβόλων μειώνονται στο μισό. 6. Οι διατάξεις που προβλέπουν ειδικά παράβολα, όπως αυτές εκάστοτε ισχύουν, εφαρμόζονται και κατά τη διαδικασία εκδίκασης των διοικητικών διαφορών ουσίας από τα τακτικά διοικητικά δικαστήρια. 7. Τα ποσά ή τα ποσοστά των παραβόλων μπορούν να αναπροσαρμόζονται με προεδρικά διατάγματα, τα οποία εκδίδονται ύστερα από πρόταση του Υπουργού Δικαιοσύνης. 8. Σε περίπτωση άσκησης κοινού ένδικου βοηθήματος ή μέσου από περισσοτέρους: αν, κατά το ουσιαστικό δίκαιο, η απαίτηση ή η οφειλή τους είναι σε ολόκληρο, καταβάλλεται οπό όλους μαζί ένα μόνο παράβολο, ενώ, αν η, κατά τα παραπάνω, απαίτηση ή η οφειλή τους είναι διαιρετή, καταβάλλεται από καθέναν ολόκληρο το παράβολο της παρ. 2, ή το αναλογούν σε αυτόν παράβολο της παρ. 3, κατά περίπτωση. 9. Το παράβολο, αν το ένδικο βοήθημα ή μέσο απορριφθεί για οποιονδήποτε λόγο, καταπίπτει υπέρ του Δημοσίου, ενώ, αν αυτά γίνουν δεκτά ή αν η δίκη καταργηθεί για οποιονδήποτε λόγο, αποδίδεται σε αυτόν που το κατέβαλε. Οι έννομες αυτές συνέπειες επέρχονται ακόμη και αν δεν υπάρχει σχετική ρητή διάταξη στην απόφαση. Αν η προσφυγή ή το ένδικο μέσο γίνουν δεκτά εν μέρει, το παράβολο αποδίδεται κατά ένα μέρος του, το οποίο και καθορίζεται κατά την κρίση του δικαστηρίου. 10. Το δικαστήριο μπορεί, εκτιμώντας τις περιστάσεις, να διατάξει την απόδοση του παραβόλου ακόμη και όταν απορρίπτεται το ένδικο βοήθημα ή μέσο. Επίσης, μπορεί να διατάξει το διπλασιασμό του παραβόλου αν το ένδικο βοήθημα ή μέσο είναι προδήλως απαράδεκτο ή προδήλως αβάσιμο. Στην περίπτωση αυτή, το επιπλέον ποσό που καταλογίζεται εισπράττεται κατά τις διατάξεις για την είσπραξη των δημοσίων εσόδων. Προς τούτο, ο γραμματέας του δικαστηρίου αποστέλλει, χωρίς υπαίτια καθυστέρηση, αντίγραφο της απόφασης στην αρμόδια δημόσια οικονομική υπηρεσία. 11. Αν, σε συγκεκριμένη περίπτωση, καταβλήθηκε παράβολο χωρίς να υπάρχει κατά νόμο υποχρέωση προς τούτο, διατάσσεται με την απόφαση, και ανεξάρτητα από την έκβαση της δίκης, η επιστροφή του. «12. Οι ρυθμίσεις των παραγράφων 9 και 10 του παρόντος άρθρου δεν εφαρμόζονται για το παράβολο που κατατίθεται σύμφωνα με το άρθρο 135 παράγραφος 3 εδάφιο γ', το οποίο εκπίπτει πάντοτε υπέρ εκείνου για τον οποίο έχει εκδοθεί». ~Για την αντισυνταγματικότητα του άρθρου 277 και παρ. 1 του Κ.Δ.Δ. βλέπε Σ.Τ.Ε. 193/2009 & 276/2008 & Σ.Τ.Ε. 1579/2008 & Σ.Τ.Ε. 1840/2008 & Σ.Τ.Ε. 1876/2008.Για την αντισυνταγματικότητα του άρθρου 277 παρ.3 του Κ.Δ.Δ. βλέπε Σ.Τ.Ε. 2673/2008. Για την αντισυνταγματικότητα του άρθρου 277 του Κ.Δ.Δ. βλέπε Σ.Τ.Ε.2067/2005 & ολ. Σ.Τ.Ε. 3470/2007.~"""@el;
+    schema:text """\"1. Για το παραδεκτό των ένδικων βοηθημάτων και μέσων πρέπει, ως την πρώτη συζήτηση της υπόθεσης, να προσκομισθεί το προβλεπόμενο από τις κείμενες διατάξεις αποδεικτικό καταβολής παραβόλου. Αν δεν προσκομισθεί το αποδεικτικό αυτό ως την πρώτη συζήτηση της υπόθεσης, εφαρμόζονται τα προβλεπόμενα στο άρθρο 139α.\" «2. Το παράβολο ορίζεται: α) για την ένσταση κατά τα άρθρα 246 και 269, την αντένσταση κατά το άρθρο 256, την προσφυγή και την ανακοπή κατά το άρθρο 217 σε εκατό (100) ευρώ και για τις αιτήσεις παροχής προσωρινής δικαστικής προστασίας και την αίτηση διόρθωσης ή ερμηνείας σε πενήντα (50) ευρώ, β) για την ανακοπή ερημοδικίας και την τριτανακοπή σε εκατόν πενήντα (150) ευρώ, για την έφεση και για την αντέφεση σε διακόσια (200) ευρώ και για την αίτηση αναθεώρησης σε τριακόσια (300) ευρώ. Εξαιρετικά το παράβολο της προσφυγής σε διαφορές από άσκηση προσφυγής ασφαλισμένου σε φορέα κοινωνικής ασφάλισης, ορίζεται σε είκοσι πέντε (25) ευρώ». 3. «Κατ' εξαίρεση, στις χρηματικού περιεχομένου φορολογικές και τελωνειακές εν γένει διαφορές, το παράβολο για την προσφυγή, την έφεση και την αντέφεση ορίζεται σε ποσοστό ίσο προς το ένα τοις εκατό (1%) του αντικειμένου της διαφοράς και μέχρι του ποσού των δεκαπέντε χιλιάδων (15.000) ευρώ. Αν το παράβολο υπερβαίνει το ποσό των τριών χιλιάδων (3.000) ευρώ, καταβάλλεται το ποσό αυτό, το επιπλέον δε τυχόν οφειλόμενο και μέχρι του ορίου των δεκαπέντε χιλιάδων (15.000) ευρώ, καταλογίζεται, αν συντρέχει περίπτωση, με την οριστική απόφαση του δικαστηρίου επί της προσφυγής ή της έφεσης». Ως αντικείμενο της διαφοράς θεωρείται η διαφορά του κύριου φόρου, δασμού, τέλους, εισφοράς ή προστίμου και, επί προσβολής πλειόνων συναφών πράξεων με κοινή προσφυγή, το άθροισμα του αντικειμένου αυτών. Για την έφεση και την αντέφεση ως αντικείμενο της διαφοράς, όταν από το νόμο προβλέπεται η υποβολή δήλωσης του φορολογουμένου πριν από την έκδοση της σχετικής πράξης, θεωρείται η διαφορά του κύριου φόρου, που προκύπτει ανάμεσα σε εκείνον που αντιστοιχεί στη δήλωση και σε αυτόν που καθορίστηκε με την απόφαση. Στην περίπτωση που δεν προβλέπεται η υποβολή δήλωσης, ως αντικείμενο της διαφοράς θεωρείται το ποσό που καθορίστηκε στην πρωτόδικη απόφαση. «4. Κατά την κατάθεση του εισαγωγικού δικογράφου των ενδίκων βοηθημάτων και μέσων της παραγράφου 3 καταβάλλεται από τον υπόχρεο το 1/3 του κατά την προηγούμενη παράγραφο παραβόλου, έως δε την πρώτη συζήτηση της υπόθεσης τα υπόλοιπα 2/3 αυτού, εφαρμοζομένης της διάταξης του άρθρου 139Α.». Το παράβολο υπολογίζεται από την αρμόδια φορολογική αρχή, η οποία προς τούτο χορηγεί ατελώς ειδικό σημείωμα στον υπόχρεο, ύστερα από αίτησή του. Αν καταβληθεί παράβολο μικρότερο από εκείνο που αναφέρεται στο σημείωμα, το ένδικο βοήθημα απορρίπτεται ως απαράδεκτο. Αν καταβληθεί το παράβολο που αναφέρεται στο σημείωμα, αλλά αυτό είναι μικρότερο του κατά το νόμο οφειλομένου, το δικαστήριο προχωρεί στην εκδίκαση της υπόθεσης και, αν το ένδικο βοήθημα ή μέσο απορριφθεί για άλλο λόγο, το παράβολο που ελλείπει καταλογίζεται με την απόφαση του δικαστηρίου και εισπράττεται κατά τις διατάξεις για την είσπραξη των δημοσίων εσόδων. Και στην περίπτωση αυτή έχουν εφαρμογή όσα ορίζονται στην τελευταία περίοδο της παραγράφου 10.» 5. Αν τα ένδικα μέσα στρέφονται κατ' αποφάσεων μονομελών δικαστηρίων, τα αντίστοιχα ποσά ή ποσοστά των παραβόλων μειώνονται στο μισό. 6. Οι διατάξεις που προβλέπουν ειδικά παράβολα, όπως αυτές εκάστοτε ισχύουν, εφαρμόζονται και κατά τη διαδικασία εκδίκασης των διοικητικών διαφορών ουσίας από τα τακτικά διοικητικά δικαστήρια. 7. Τα ποσά ή τα ποσοστά των παραβόλων μπορούν να αναπροσαρμόζονται με προεδρικά διατάγματα, τα οποία εκδίδονται ύστερα από πρόταση του Υπουργού Δικαιοσύνης. 8. Σε περίπτωση άσκησης κοινού ένδικου βοηθήματος ή μέσου από περισσοτέρους: αν, κατά το ουσιαστικό δίκαιο, η απαίτηση ή η οφειλή τους είναι σε ολόκληρο, καταβάλλεται οπό όλους μαζί ένα μόνο παράβολο, ενώ, αν η, κατά τα παραπάνω, απαίτηση ή η οφειλή τους είναι διαιρετή, καταβάλλεται από καθέναν ολόκληρο το παράβολο της παρ. 2, ή το αναλογούν σε αυτόν παράβολο της παρ. 3, κατά περίπτωση. 9. Το παράβολο, αν το ένδικο βοήθημα ή μέσο απορριφθεί για οποιονδήποτε λόγο, καταπίπτει υπέρ του Δημοσίου, ενώ, αν αυτά γίνουν δεκτά ή αν η δίκη καταργηθεί για οποιονδήποτε λόγο, αποδίδεται σε αυτόν που το κατέβαλε. Οι έννομες αυτές συνέπειες επέρχονται ακόμη και αν δεν υπάρχει σχετική ρητή διάταξη στην απόφαση. Αν η προσφυγή ή το ένδικο μέσο γίνουν δεκτά εν μέρει, το παράβολο αποδίδεται κατά ένα μέρος του, το οποίο και καθορίζεται κατά την κρίση του δικαστηρίου. 10. Το δικαστήριο μπορεί, εκτιμώντας τις περιστάσεις, να διατάξει την απόδοση του παραβόλου ακόμη και όταν απορρίπτεται το ένδικο βοήθημα ή μέσο. Επίσης, μπορεί να διατάξει το διπλασιασμό του παραβόλου αν το ένδικο βοήθημα ή μέσο είναι προδήλως απαράδεκτο ή προδήλως αβάσιμο. Στην περίπτωση αυτή, το επιπλέον ποσό που καταλογίζεται εισπράττεται κατά τις διατάξεις για την είσπραξη των δημοσίων εσόδων. Προς τούτο, ο γραμματέας του δικαστηρίου αποστέλλει, χωρίς υπαίτια καθυστέρηση, αντίγραφο της απόφασης στην αρμόδια δημόσια οικονομική υπηρεσία. 11. Αν, σε συγκεκριμένη περίπτωση, καταβλήθηκε παράβολο χωρίς να υπάρχει κατά νόμο υποχρέωση προς τούτο, διατάσσεται με την απόφαση, και ανεξάρτητα από την έκβαση της δίκης, η επιστροφή του. «12. Οι ρυθμίσεις των παραγράφων 9 και 10 του παρόντος άρθρου δεν εφαρμόζονται για το παράβολο που κατατίθεται σύμφωνα με το άρθρο 135 παράγραφος 3 εδάφιο γ', το οποίο εκπίπτει πάντοτε υπέρ εκείνου για τον οποίο έχει εκδοθεί». ~Για την αντισυνταγματικότητα του άρθρου 277 και παρ. 1 του Κ.Δ.Δ. βλέπε Σ.Τ.Ε. 193/2009 & 276/2008 & Σ.Τ.Ε. 1579/2008 & Σ.Τ.Ε. 1840/2008 & Σ.Τ.Ε. 1876/2008.Για την αντισυνταγματικότητα του άρθρου 277 παρ.3 του Κ.Δ.Δ. βλέπε Σ.Τ.Ε. 2673/2008. Για την αντισυνταγματικότητα του άρθρου 277 του Κ.Δ.Δ. βλέπε Σ.Τ.Ε.2067/2005 & ολ. Σ.Τ.Ε. 3470/2007.~"""@el;
+    glass:digest "sha256-bdd2ad5a25d4b7b84fec5ef01647ae165c8df35b8346a71456bbe21149e6075b";
+    digest:sha256 "bdd2ad5a25d4b7b84fec5ef01647ae165c8df35b8346a71456bbe21149e6075b";
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/par/1>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell/man>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-277/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF EXPRESSION LAYER
+# ============================================================
+
+# ============================================================
+# FRBR MANIFESTATION LAYER - Digital Embodiment
+# ============================================================
+
+# ============================================================
+# FRBR MANIFESTATION LAYER - Article 277
+# Digital embodiment of the Greek-language Expression
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell/man>
+    a eli:LegalManifestation ,
+      dcat:Distribution ;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277>;
+    dcat:accessURL <https://stavropouloslaw.com/eli/gr/l/1999/2717>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277>;
+    dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-l-1999-art-277-work-exp-ell-man";
+    schema:legislationDate "1999-05-17"^^xsd:date;
+    void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-277-man>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-277/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF MANIFESTATION LAYER
+# ============================================================
+
+# ============================================================
+# FRBR FORMAT LAYERS - Specific Encodings
+# ============================================================
+
+# ============================================================
+# FRBR FORMAT LAYER (HTML) - Article 277
+# HTML encoding of the Manifestation
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell/man/format/html
+# Media-type: text/html; charset=utf-8
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell/man/format/html>
+    a dcat:Distribution;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277>;
+    dcat:mediaType "text/html; charset=utf-8";
+    dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
+    schema:encodingFormat ".html";
+    schema:fileFormat "text/html; charset=utf-8";
+    void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-277-man-html>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-277/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF FORMAT LAYER (HTML)
+# ============================================================
+
+# ============================================================
+# FRBR FORMAT LAYER (JSONLD) - Article 277
+# JSONLD encoding of the Manifestation
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell/man/format/jsonld
+# Media-type: application/ld+json; charset=utf-8
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell/man/format/jsonld>
+    a dcat:Distribution;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277>;
+    dcat:mediaType "application/ld+json; charset=utf-8";
+    dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
+    schema:encodingFormat ".jsonld";
+    schema:fileFormat "application/ld+json; charset=utf-8";
+    void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-277-man-jsonld>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-277/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF FORMAT LAYER (JSONLD)
+# ============================================================
+
+# ============================================================
+# FRBR FORMAT LAYER (TURTLE) - Article 277
+# TURTLE encoding of the Manifestation
+# ============================================================
+# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell/man/format/turtle
+# Media-type: text/turtle; charset=utf-8
+# Generator: ORCHESTRATOR v1.3
+# Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell/man/format/turtle>
+    a dcat:Distribution;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277>;
+    dcat:mediaType "text/turtle; charset=utf-8";
+    dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
+    schema:encodingFormat ".ttl";
+    schema:fileFormat "text/turtle; charset=utf-8";
+    void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-277-man-turtle>;
+    prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
+    odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-277/2025-01-01T00-00-00.000000Z>.
+
+
+# ============================================================
+# END OF FORMAT LAYER (TURTLE)
+# ============================================================
+
+# ============================================================
+# PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
+# ============================================================
+
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/277/par/1>
+    a eli:LegalResourceSubdivision ;
+    eli:number "1" ;
+    schema:text """1. \"1. Για το παραδεκτό των ένδικων βοηθημάτων και μέσων πρέπει, ως την πρώτη συζήτηση της υπόθεσης, να προσκομισθεί το προβλεπόμενο από τις κείμενες διατάξεις αποδεικτικό καταβολής παραβόλου. Αν δεν προσκομισθεί το αποδεικτικό αυτό ως την πρώτη συζήτηση της υπόθεσης, εφαρμόζονται τα προβλεπόμενα στο άρθρο 139α.\" «2. Το παράβολο ορίζεται: α) για την ένσταση κατά τα άρθρα 246 και 269, την αντένσταση κατά το άρθρο 256, την προσφυγή και την ανακοπή κατά το άρθρο 217 σε εκατό (100) ευρώ και για τις αιτήσεις παροχής προσωρινής δικαστικής προστασίας και την αίτηση διόρθωσης ή ερμηνείας σε πενήντα (50) ευρώ, β) για την ανακοπή ερημοδικίας και την τριτανακοπή σε εκατόν πενήντα (150) ευρώ, για την έφεση και για την αντέφεση σε διακόσια (200) ευρώ και για την αίτηση αναθεώρησης σε τριακόσια (300) ευρώ. Εξαιρετικά το παράβολο της προσφυγής σε διαφορές από άσκηση προσφυγής ασφαλισμένου σε φορέα κοινωνικής ασφάλισης, ορίζεται σε είκοσι πέντε (25) ευρώ». 3. «Κατ' εξαίρεση, στις χρηματικού περιεχομένου φορολογικές και τελωνειακές εν γένει διαφορές, το παράβολο για την προσφυγή, την έφεση και την αντέφεση ορίζεται σε ποσοστό ίσο προς το ένα τοις εκατό (1%) του αντικειμένου της διαφοράς και μέχρι του ποσού των δεκαπέντε χιλιάδων (15.000) ευρώ. Αν το παράβολο υπερβαίνει το ποσό των τριών χιλιάδων (3.000) ευρώ, καταβάλλεται το ποσό αυτό, το επιπλέον δε τυχόν οφειλόμενο και μέχρι του ορίου των δεκαπέντε χιλιάδων (15.000) ευρώ, καταλογίζεται, αν συντρέχει περίπτωση, με την οριστική απόφαση του δικαστηρίου επί της προσφυγής ή της έφεσης». Ως αντικείμενο της διαφοράς θεωρείται η διαφορά του κύριου φόρου, δασμού, τέλους, εισφοράς ή προστίμου και, επί προσβολής πλειόνων συναφών πράξεων με κοινή προσφυγή, το άθροισμα του αντικειμένου αυτών. Για την έφεση και την αντέφεση ως αντικείμενο της διαφοράς, όταν από το νόμο προβλέπεται η υποβολή δήλωσης του φορολογουμένου πριν από την έκδοση της σχετικής πράξης, θεωρείται η διαφορά του κύριου φόρου, που προκύπτει ανάμεσα σε εκείνον που αντιστοιχεί στη δήλωση και σε αυτόν που καθορίστηκε με την απόφαση. Στην περίπτωση που δεν προβλέπεται η υποβολή δήλωσης, ως αντικείμενο της διαφοράς θεωρείται το ποσό που καθορίστηκε στην πρωτόδικη απόφαση. «4. Κατά την κατάθεση του εισαγωγικού δικογράφου των ενδίκων βοηθημάτων και μέσων της παραγράφου 3 καταβάλλεται από τον υπόχρεο το 1/3 του κατά την προηγούμενη παράγραφο παραβόλου, έως δε την πρώτη συζήτηση της υπόθεσης τα υπόλοιπα 2/3 αυτού, εφαρμοζομένης της διάταξης του άρθρου 139Α.». Το παράβολο υπολογίζεται από την αρμόδια φορολογική αρχή, η οποία προς τούτο χορηγεί ατελώς ειδικό σημείωμα στον υπόχρεο, ύστερα από αίτησή του. Αν καταβληθεί παράβολο μικρότερο από εκείνο που αναφέρεται στο σημείωμα, το ένδικο βοήθημα απορρίπτεται ως απαράδεκτο. Αν καταβληθεί το παράβολο που αναφέρεται στο σημείωμα, αλλά αυτό είναι μικρότερο του κατά το νόμο οφειλομένου, το δικαστήριο προχωρεί στην εκδίκαση της υπόθεσης και, αν το ένδικο βοήθημα ή μέσο απορριφθεί για άλλο λόγο, το παράβολο που ελλείπει καταλογίζεται με την απόφαση του δικαστηρίου και εισπράττεται κατά τις διατάξεις για την είσπραξη των δημοσίων εσόδων. Και στην περίπτωση αυτή έχουν εφαρμογή όσα ορίζονται στην τελευταία περίοδο της παραγράφου 10.» 5. Αν τα ένδικα μέσα στρέφονται κατ' αποφάσεων μονομελών δικαστηρίων, τα αντίστοιχα ποσά ή ποσοστά των παραβόλων μειώνονται στο μισό. 6. Οι διατάξεις που προβλέπουν ειδικά παράβολα, όπως αυτές εκάστοτε ισχύουν, εφαρμόζονται και κατά τη διαδικασία εκδίκασης των διοικητικών διαφορών ουσίας από τα τακτικά διοικητικά δικαστήρια. 7. Τα ποσά ή τα ποσοστά των παραβόλων μπορούν να αναπροσαρμόζονται με προεδρικά διατάγματα, τα οποία εκδίδονται ύστερα από πρόταση του Υπουργού Δικαιοσύνης. 8. Σε περίπτωση άσκησης κοινού ένδικου βοηθήματος ή μέσου από περισσοτέρους: αν, κατά το ουσιαστικό δίκαιο, η απαίτηση ή η οφειλή τους είναι σε ολόκληρο, καταβάλλεται οπό όλους μαζί ένα μόνο παράβολο, ενώ, αν η, κατά τα παραπάνω, απαίτηση ή η οφειλή τους είναι διαιρετή, καταβάλλεται από καθέναν ολόκληρο το παράβολο της παρ. 2, ή το αναλογούν σε αυτόν παράβολο της παρ. 3, κατά περίπτωση. 9. Το παράβολο, αν το ένδικο βοήθημα ή μέσο απορριφθεί για οποιονδήποτε λόγο, καταπίπτει υπέρ του Δημοσίου, ενώ, αν αυτά γίνουν δεκτά ή αν η δίκη καταργηθεί για οποιονδήποτε λόγο, αποδίδεται σε αυτόν που το κατέβαλε. Οι έννομες αυτές συνέπειες επέρχονται ακόμη και αν δεν υπάρχει σχετική ρητή διάταξη στην απόφαση. Αν η προσφυγή ή το ένδικο μέσο γίνουν δεκτά εν μέρει, το παράβολο αποδίδεται κατά ένα μέρος του, το οποίο και καθορίζεται κατά την κρίση του δικαστηρίου. 10. Το δικαστήριο μπορεί, εκτιμώντας τις περιστάσεις, να διατάξει την απόδοση του παραβόλου ακόμη και όταν απορρίπτεται το ένδικο βοήθημα ή μέσο. Επίσης, μπορεί να διατάξει το διπλασιασμό του παραβόλου αν το ένδικο βοήθημα ή μέσο είναι προδήλως απαράδεκτο ή προδήλως αβάσιμο. Στην περίπτωση αυτή, το επιπλέον ποσό που καταλογίζεται εισπράττεται κατά τις διατάξεις για την είσπραξη των δημοσίων εσόδων. Προς τούτο, ο γραμματέας του δικαστηρίου αποστέλλει, χωρίς υπαίτια καθυστέρηση, αντίγραφο της απόφασης στην αρμόδια δημόσια οικονομική υπηρεσία. 11. Αν, σε συγκεκριμένη περίπτωση, καταβλήθηκε παράβολο χωρίς να υπάρχει κατά νόμο υποχρέωση προς τούτο, διατάσσεται με την απόφαση, και ανεξάρτητα από την έκβαση της δίκης, η επιστροφή του. «12. Οι ρυθμίσεις των παραγράφων 9 και 10 του παρόντος άρθρου δεν εφαρμόζονται για το παράβολο που κατατίθεται σύμφωνα με το άρθρο 135 παράγραφος 3 εδάφιο γ', το οποίο εκπίπτει πάντοτε υπέρ εκείνου για τον οποίο έχει εκδοθεί». ~Για την αντισυνταγματικότητα του άρθρου 277 και παρ. 1 του Κ.Δ.Δ. βλέπε Σ.Τ.Ε. 193/2009 & 276/2008 & Σ.Τ.Ε. 1579/2008 & Σ.Τ.Ε. 1840/2008 & Σ.Τ.Ε. 1876/2008.Για την αντισυνταγματικότητα του άρθρου 277 παρ.3 του Κ.Δ.Δ. βλέπε Σ.Τ.Ε. 2673/2008. Για την αντισυνταγματικότητα του άρθρου 277 του Κ.Δ.Δ. βλέπε Σ.Τ.Ε.2067/2005 & ολ. Σ.Τ.Ε. 3470/2007.~"""@el .
+
+# ============================================================
+# END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
+# Article 277 - Complete Canonical Representation
+# ============================================================

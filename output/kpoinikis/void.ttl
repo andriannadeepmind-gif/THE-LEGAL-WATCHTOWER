@@ -1,0 +1,63 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix digest: <http://www.w3.org/2000/10/swap/crypto#> .
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
+@prefix glass: <http://www.w3.org/2000/10/swap/crypto#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix pav: <http://purl.org/pav/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix stavropouloslaw: <https://stavropouloslaw.com/ontology#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://stavropouloslaw.com/datasets/kpoinikis>
+    a void:Dataset, dcat:Dataset ;
+
+    # Dataset Identity
+    dct:title "Κώδικας Ποινικής Δικονομίας - Semantic Corpus"@en ;
+    dct:description "W3C ELI-compliant semantic corpus: Κώδικας Ποινικής Δικονομίας. Includes FRBR hierarchy, PROV-O provenance, and ODRL policies."@en ;
+
+    # Authorship
+    dct:creator <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+    dct:publisher <https://stavropouloslaw.com/identity/org> ;
+    pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+
+    # Temporal
+    dct:created "2026-06-15"^^xsd:date ;
+    dct:modified "2026-06-15"^^xsd:date ;
+
+    # VoID Statistics
+    void:triples 0 ;
+    void:entities 0 ;
+    void:distinctSubjects 0 ;
+    void:properties 45 ;
+
+    # Dataset Structure
+    void:exampleResource <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/1> ;
+    void:vocabulary <http://data.europa.eu/eli/ontology#> ,
+                    <http://www.w3.org/ns/prov#> ,
+                    <https://schema.org/> ;
+
+    # DCAT Distribution
+    dcat:distribution [
+        a dcat:Distribution ;
+        dcat:downloadURL <https://stavropouloslaw.com/datasets/kpoinikis/full-corpus.ttl> ;
+        dcat:mediaType "text/turtle" ;
+        dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE> ;
+        dct:license <https://stavropouloslaw.com/policy/ai-usage>
+    ] ;
+
+    # Rights
+    dct:license <https://stavropouloslaw.com/policy/ai-usage> ;
+    dct:rights "© 2025 Stavropoulos Law®. CC BY 4.0" ;
+
+    # Provenance
+    prov:wasGeneratedBy [
+        a prov:Activity ;
+        rdfs:label "Semantic Transformation & ELI Mapping"@en ;
+        prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
+        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+    ] .

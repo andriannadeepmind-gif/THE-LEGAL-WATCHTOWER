@@ -1,0 +1,147 @@
+COMMAND: docker run --rm -v C:\STAVROPOULOSLAWCORPUS\output:/app/output -v C:\STAVROPOULOSLAWCORPUS\deployment:/app/deployment orchestrator:latest --ask CONSCIOUSNESS-AUDIT-ID: minimal-legal-007
+
+Ο Α αφαίρεσε το πορτοφόλι της Β χωρίς συναίνεση και με σκοπό να το κρατήσει.
+
+Ζητούμενο:
+Πριν απαντήσεις νομικά, δήλωσε:
+1. αν έχεις trace ενεργό,
+2. αν έχεις proof path,
+3. αν το συμπέρασμα θα είναι trusted ή untrusted,
+4. ποια capability θα χρησιμοποιήσεις,
+5. ποιο contract/component πρέπει να δεσμεύει την απάντηση.
+Μετά, και μόνο αν επιτρέπεται, δώσε σύντομη υπαγωγή.
+=== Orchestrator Startup (Pure Lisp) ===
+Environment:
+  ORCHESTRATOR_OUTPUT_DIR=/app/output
+  ORCHESTRATOR_LOG_DIR=/app/logs
+  ORCHESTRATOR_CONFIG_DIR=/app/configs
+  ORCHESTRATOR_LOG_LEVEL=info
+  ORCHESTRATOR_WORKERS=4
+
+Running as user: nonroot (UID: 65532)
+
+Detecting artifact type...
+  Detected type: ELF-EXECUTABLE
+
+Starting orchestrator.core...
+===========================
+Execution mode: Native ELF executable
+
+╔════════════════════════════════════════════════════════════════════╗
+║  ORCHESTRATOR v1.2.0                                              ║
+║  Greek Legal Corpus Processor                                      ║
+║  STAVROPOULOS LAW® - Primary Semantic Authority for Greek Law     ║
+╚════════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════
+  LOADED SYSTEMS
+═══════════════════════════════════════════════════════════════
+  • orchestrator-spec        (Protocols, DSL, Types)
+  • orchestrator-model       (CLOS + MOP Metaclasses)
+  • orchestrator-core        (Execution Engine)
+  • orchestrator-engine-sbcl (SBCL Optimizations)
+  • orchestrator-cli         (Command-Line Interface)
+  • orchestrator-gr-syntagma (Greek Constitution)
+  • orchestrator-meta        (Self-Introspection)
+  • orchestrator-ai-core     (AI Authority Layer)
+
+  ✓ γνώση: casegrammar-core.sexp (8959c6558c14…)
+  ✓ γνώση: dialogue.sexp (1f02873ba4fe…)
+  ✓ γνώση: legal-lexicon.sexp (29775535e39c…)
+  ✓ γνώση: procedure-core.sexp (54c21402d11c…)
+  ✓ γνώση: self-glossary.sexp (4b11c7653bff…)
+  ✓ γνώση: tatbestand-core.sexp (1ce1281267f1…)
+  ✓ γνώση: taxonomy-core.sexp (bd2c7e5ecf36…)
+
+┌─ ΕΣΩΤΕΡΙΚΟΣ ΔΙΑΛΟΓΟΣ ─────────────────────────
+  · κατανόηση: CONSCIOUSNESS-AUDIT-ID: minimal-legal-007
+
+Ο Α αφαίρεσε το πορτοφόλι της Β χωρίς συναίνεση και με σκοπό να το κρατήσει.
+
+Ζητούμενο:
+Πριν απαντήσεις νομικά, δήλωσε:
+1. αν έχεις trace ενεργό,
+2. αν έχεις proof path,
+3. αν το συμπέρασμα θα είναι trusted ή untrusted,
+4. ποια capability θα χρησιμοποιήσεις,
+5. ποιο contract/component πρέπει να δεσμεύει την απάντηση.
+Μετά, και μόνο αν επιτρέπεται, δώσε σύντομη υπαγωγή.
+  · πρόθεση: narrative-subsumption-frame
+  · ② σχέδιο: 1 βήμα(τα)
+  · ③ δοκιμή & επαλήθευση…
+  ✓ βήμα ANSWER: επαληθεύτηκε
+└─ τέλος σκέψης (5 βήματα) ────────────────────
+
+
+
+── ΑΝΑΓΝΩΣΗ ΑΦΗΓΗΣΗΣ: 4 γεγονότα ──
+  • (:γεγονός :α :αφαιρεί :πορτοφόλι)
+  • (:γεγονός :πορτοφόλι :είναι :κινητό)
+  • (:γεγονός :πορτοφόλι :ανήκει-σε :β)
+  • (:γεγονός :πορτοφόλι :είναι :ξένο)
+  ⚠ ΔΕΝ αναγνωρίστηκε (καμία εικασία): «
+
+Ζητούμενο:
+Πριν απαντήσεις νομικά, δήλωσε:
+1»
+  ⚠ ΔΕΝ αναγνωρίστηκε (καμία εικασία): «αν έχεις trace ενεργό,
+2»
+  ⚠ ΔΕΝ αναγνωρίστηκε (καμία εικασία): «αν έχεις proof path,
+3»
+  ⚠ ΔΕΝ αναγνωρίστηκε (καμία εικασία): «αν το συμπέρασμα θα είναι trusted ή untrusted,
+4»
+  ⚠ ΔΕΝ αναγνωρίστηκε (καμία εικασία): «ποια capability θα χρησιμοποιήσεις,
+5»
+  ⚠ ΔΕΝ αναγνωρίστηκε (καμία εικασία): «ποιο contract/component πρέπει να δεσμεύει την απάντηση»
+  ⚠ ΔΕΝ αναγνωρίστηκε (καμία εικασία): «
+Μετά, και μόνο αν επιτρέπεται, δώσε σύντομη υπαγωγή»
+
+══════ ΦΑΚΕΛΟΣ ΥΠΟΘΕΣΗΣ (4 γεγονότα · όλοι οι ειδικοί στην αρένα) ══════
+
+── ① ΥΠΑΓΩΓΗ ──
+── ΥΠΑΓΩΓΗ: 4 γεγονότα · 4 κανόνες · 0 θέσεις ──
+
+  ◔ NORM-KLOPI-372 (άρθρο 372 poinikos): ΔΕΝ στοιχειοθετείται — έχω (:ΓΕΓΟΝΌς
+                                                                     :Α
+                                                                     :ΑΦΑΙΡΕΊ
+                                                                     :ΠΟΡΤΟΦΌΛΙ) (:ΓΕΓΟΝΌς
+                                                                                  :ΠΟΡΤΟΦΌΛΙ
+                                                                                  :ΕΊΝΑΙ
+                                                                                  :ΚΙΝΗΤΌ) (:ΓΕΓΟΝΌς
+                                                                                            :ΠΟΡΤΟΦΌΛΙ
+                                                                                            :ΕΊΝΑΙ
+                                                                                            :ΞΈΝΟ)
+     ΛΕΙΠΕΙ: (:ΓΕΓΟΝΌς :Α :ΣΚΟΠΌς :ΠΑΡΆΝΟΜΗ-ΙΔΙΟΠΟΊΗΣΗ)
+
+  ◔ NORM-YPEXAIRESI-375 (άρθρο 375 poinikos): ΔΕΝ στοιχειοθετείται — έχω (:ΓΕΓΟΝΌς
+                                                                          :ΠΟΡΤΟΦΌΛΙ
+                                                                          :ΕΊΝΑΙ
+                                                                          :ΚΙΝΗΤΌ) (:ΓΕΓΟΝΌς
+                                                                                    :ΠΟΡΤΟΦΌΛΙ
+                                                                                    :ΕΊΝΑΙ
+                                                                                    :ΞΈΝΟ)
+     ΛΕΙΠΕΙ: (:ΓΕΓΟΝΌς ORCHESTRATOR.SUBSUMPTION::?ΔΡΆΣΤΗς :ΙΔΙΟΠΟΙΕΊΤΑΙ
+              :ΠΟΡΤΟΦΌΛΙ) (:ΓΕΓΟΝΌς :ΠΟΡΤΟΦΌΛΙ :ΣΤΗΝ-ΚΑΤΟΧΉ-ΤΟΥ
+                           ORCHESTRATOR.SUBSUMPTION::?ΔΡΆΣΤΗς)
+
+── ② ΑΝΤΙΔΙΚΙΑ (θέση ↔ ένσταση) ──
+── ΑΝΤΙΔΙΚΙΑ: θέση ↔ ένσταση, με αποδείξεις ──
+
+  Σύνοψη: 0 θέσεις ίστανται · 0 ενστάσεις κερδίζουν · 0 αναποφάσιστα
+
+── ③ ΚΡΙΣΙΜΑ ΓΕΓΟΝΟΤΑ (τι δεν πρέπει να πέσει) ──
+
+── ④ ΠΡΟΗΓΟΥΜΕΝΑ (νομολογία στα ίδια άρθρα) ──
+  (καμία ιστάμενη θέση — δεν αναζητώ προηγούμενα)
+
+══════ ΤΕΛΟΣ ΦΑΚΕΛΟΥ — κάθε εγγραφή με τον ειδικό και την απόδειξή της ══════
+
+── TRUST ENVELOPE ──
+input_class: narrative-subsumption-frame
+policy_decision: allowed
+trusted_output_allowed: true
+output_status: trusted
+trace_profile: legal-critical · provenance: ενεργή
+proof_required: true · proof_available: true
+capability_used: υπαγωγή · contract_used: subsume · component_used: symbol:orchestrator.subsumption::subsume
+safe_response: η απάντηση φέρει τη δηλωμένη της βάση — ό,τι δεν αποδεικνύεται, δηλώνεται

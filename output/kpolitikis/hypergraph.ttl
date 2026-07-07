@@ -1,0 +1,2067 @@
+@prefix slw: <https://stavropouloslaw.com/ontology/legal#> .
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# kpolitikis — legal HYPERGRAPH (N-ary hyperedges; W3C n-ary relations pattern).
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-3> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/29> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/3> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-4> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/2>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/3> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/4> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-16> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1003>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1009>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1018>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1020>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1023>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1031>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/834>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/839> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/16> ;
+    slw:memberCount 8 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-18> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/16> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/18> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-19> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/18>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/17> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/19> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-44> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/42>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/43> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/44> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-49> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/307>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/48> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/49> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-56> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/52> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/56> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-57> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/54>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/50> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/57> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-69> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/378> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/69> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-73> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/62>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/72> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/73> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-77> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/76> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/77> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-83> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/76>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/78> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/83> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-86> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/76> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/86> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-91> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/238> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/91> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-96> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/98> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/96> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-98> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/96> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/98> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-105> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/227>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/237> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/105> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-119> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/118> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/119> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-120> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/119> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/120> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-121> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/119> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/121> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-128> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/140> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/128> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-129> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/124>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/128> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/129> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-130> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/128> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/130> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-132> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/128> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/132> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-133> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/128> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/133> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-134Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/134>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/142>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/159> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/134Α> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-135> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/134> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/135> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-136> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/131>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/134>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/135>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/128> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/136> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-138> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/128>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/136> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/138> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-139> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/117>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/128>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/135>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/138> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/139> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-140> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/139>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/122> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/140> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-143> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/96> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/143> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-155> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/237>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/238> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/155> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-157> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/154> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/157> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-158> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/153> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/158> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-163> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/162> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/163> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-165> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/162>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/165> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-167> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/167> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-170> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/169>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/170> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-173> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/323>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/351> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/173> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-174> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/173> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/174> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-181> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/178>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/180> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/181> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-182> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/178>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/180> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/182> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-183> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/176>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/182> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/183> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-186> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/583> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/186> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-188> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/177> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/188> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-190> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/237>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/238> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/190> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-191> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/190> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/191> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-192> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/191>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/614> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/192> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-195> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/194> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/195> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-196> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/194> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/196> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-200> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/97> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/200> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-203> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/190>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/193>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/199>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/202> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/203> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-207> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/155>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/116>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/117> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/207> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-208> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/146>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/159>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/315>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/320> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/208> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-212> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/208> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/212> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-214Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/98> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Α> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-214Β> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/904> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Β> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-215> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/119>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/117>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/237> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/215> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-216> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/118> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/216> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-218> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/46>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/47> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/218> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-220> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/740> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/220> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-221> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/215> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/221> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-226> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/237> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/226> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-230> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/228> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/230> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-237> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/215>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/96>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/227>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/249>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/250>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/241>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/119> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/237> ;
+    slw:memberCount 7 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-238> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/237> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/238> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-252> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/408> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/252> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-263> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/237>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/238> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/263> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-267> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/263> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/267> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-271> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/237>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/238> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/271> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-272> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/271> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/272> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-273> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/272> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/273> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-274> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/271>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/272> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/274> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-275> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/86>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/76> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/275> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-276> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/87> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/276> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-278> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/277> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/278> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-288> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/286> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/288> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-291> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/291> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-293> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Α>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/5>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Β> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/293> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-294> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/237>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/238> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/294> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-297> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/294>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/296> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/297> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-298> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/297> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/298> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-299> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/294>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/298> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/299> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-304> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/305> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/304> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-305> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/55> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/305> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-314> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/313> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/314> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-317> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/118> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/317> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-340> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/393>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/394> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/340> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-349> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/349> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-367> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/205> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/367> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-370> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/370> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-373> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/59>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/63> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/373> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-376> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/52> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/376> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-378> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/378> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-380> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/379> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/380> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-381> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/379>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/380> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/381> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-384> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/379>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/382>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/383> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/384> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-385> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/408> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/385> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-386> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/205> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/386> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-392> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/380> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/392> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-396> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/237>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/238> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/396> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-398> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/205> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/398> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-402> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/401> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/402> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-404> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/205> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/404> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-408> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/253> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/408> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-421> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/422>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/424> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/421> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-423> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/393>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/394>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/398> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/423> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-424> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/421> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/424> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-438> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/13> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/438> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-439> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/438> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/439> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-440> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/438>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/439> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/440> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-441> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/438>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/439> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/441> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-442> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/438>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/439>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/443> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/442> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-447> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/444> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/447> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-448> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/444>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/445> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/448> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-449> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/14> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/449> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-452> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/366>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/450>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/451> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/452> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-466> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/17>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/467>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/471> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/466> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-468> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/215>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/260>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/271>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/272> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/468> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-469> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/242>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/237>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/260>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/271>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/272>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/501>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/415> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/469> ;
+    slw:memberCount 7 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-477> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/473> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/477> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-481> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/480>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/480Α> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/481> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-483> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/482>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/220> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/483> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-484> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/480>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/480Α>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/954>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/955> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/484> ;
+    slw:memberCount 5 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-486> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/480> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/486> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-489> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/480Α> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/489> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-496> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/495> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/496> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-498> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/226> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/498> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-503> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/135> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/503> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-507> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/271> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/507> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-512> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/466>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/471> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/512> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-520> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/118>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/120> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/520> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-524> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/227>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/233>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/236>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/237>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/240>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/312>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/260>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/591>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/528> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/524> ;
+    slw:memberCount 9 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-527> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/237>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/238> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/527> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-535> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/46> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/535> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-538> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/544> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/538> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-545> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/544>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/44> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/545> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-546> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/592> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/546> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-547> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/118>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/120> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/547> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-548> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/227>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/233>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/236>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/237>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/240>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/312>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/591> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/548> ;
+    slw:memberCount 7 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-559> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/47>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/46>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/6> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/559> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-560> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/18> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/560> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-561> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/559> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/561> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-562> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/559> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/562> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-563> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/568> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/563> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-565> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/592> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/565> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-566> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/565> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/566> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-568> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/571> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/568> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-569> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/281>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/571> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/569> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-572> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/568>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/571> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/572> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-573> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/233>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/236> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/573> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-575> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/226>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/565> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/575> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-580> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/559>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/568> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/580> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-581> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/524> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/581> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-585> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/118>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/120> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/585> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-586> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/583> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/586> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-589> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/589> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-591> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/590>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/390>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/242>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/415>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/237>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/645>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/466>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/471> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/591> ;
+    slw:memberCount 9 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-593> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/592> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/593> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-594> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/592> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/594> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-597> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/592> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/597> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-598> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/592>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/545> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/598> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-599> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/592> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/599> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-600> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/592> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/600> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-601> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/592> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/601> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-602> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/592> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/602> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-605> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/592> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/605> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-606> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/592>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/744>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/747> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/606> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-612> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/592> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/612> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-613> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/950> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/613> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-620> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/17> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/620> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-621> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/614> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/621> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-622Β> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/614> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/622Β> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-623> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/624>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/636> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/623> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-624> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/142> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/624> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-626> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/117>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/119> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/626> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-629> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/628> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/629> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-630> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/636> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/630> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-631> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/632>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/724> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/631> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-632> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/614>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/631>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/724>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/218> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/632> ;
+    slw:memberCount 5 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-633> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/631>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/724> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/633> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-635> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/632>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/633> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/635> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-636> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/632>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/633> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/636> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-636Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/621>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/623>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/636>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/614> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/636Α> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-637> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/638>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/645> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/637> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-639> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/117>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/119>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/637>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/627> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/639> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-640> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/616> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/640> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-641> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/639> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/641> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-643> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/643> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-644> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/634>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/633> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/644> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-645> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/638>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/624>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/626> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/645> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-647> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/643>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/648>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/657>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/17> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/647> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-654> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/226>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/649> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/654> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-655> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/648>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/649>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/654> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/655> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-662Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Β> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Α> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-662Β> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/14>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/29> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Β> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-662Γ> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/117>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/119>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Α>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/627> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Γ> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-662Δ> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/659> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-662Ε> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Ε> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-662Ζ> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Ζ> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-662Η> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/634> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Η> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-662Θ> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Α>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/624>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/626> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Θ> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-662ΣΤ> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/648> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662ΣΤ> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-664> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/663> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/664> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-666> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/663>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/643>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/466>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/472> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/666> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-668> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/664>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/676> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/668> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-674> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/668>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/671>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/673> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/674> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-675> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/668>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/674> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/675> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-675Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/669> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/675Α> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-679> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/677> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/679> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-680> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/216> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/680> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-681> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/670>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/671>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/673>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/672>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/666> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681> ;
+    slw:memberCount 5 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-681Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/666>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/667>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/670>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/676> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Α> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-681Β> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/592>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/593>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/612>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/237> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-681Γ> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/598>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/600>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/601>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/605>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/606>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/744>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/759>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/592> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Γ> ;
+    slw:memberCount 9 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-681Δ> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/666>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/249>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/250>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/266>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/982> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Δ> ;
+    slw:memberCount 6 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-682> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/683>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/703> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/682> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-686> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/684>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/117>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/119> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-691Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/713>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/714> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/691Α> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-700> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/728>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/731>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/735>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/691Α> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/700> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-702> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/688>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/690>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/692>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/695>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/699> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/702> ;
+    slw:memberCount 6 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-715> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/711>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/712> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/715> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-717> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/716> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/717> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-718> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/716>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/717> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/718> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-719> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/717> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/719> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-720> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/702> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/720> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-722> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/927>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/926>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/955>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/995>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/702> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/722> ;
+    slw:memberCount 5 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-724> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/702> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/724> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-727> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/709>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/711>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/713>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/714>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/715>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/720>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/721>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/722> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/727> ;
+    slw:memberCount 8 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-729> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/694>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/705>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/728> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/729> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-732Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/731>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/732> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/732Α> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-734> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/226>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/912>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/696> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/734> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-738Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/8>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/11>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/33>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/38>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/13>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/703> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/738Α> ;
+    slw:memberCount 6 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-739> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/782>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/866>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/741>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/781> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/739> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-740> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/739>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/782>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/789>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/790>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/792>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/794>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/797>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/798>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/811>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/813>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/818>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/819> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/740> ;
+    slw:memberCount 12 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-741> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/590>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/591>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/743>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/781> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/741> ;
+    slw:memberCount 5 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-747> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/118>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/776> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/747> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-748> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/226>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/782>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/783>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/784>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/796>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/797>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/799>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/800>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/801>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/747> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/748> ;
+    slw:memberCount 10 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-751> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/776> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/751> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-752> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/747>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/748>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/751> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/752> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-753> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/747>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/748>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/751> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/753> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-758> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/741>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/781>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/776> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/758> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-759> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/591> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/759> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-760> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/748> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/760> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-761> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/748> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/761> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-763> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/776> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/763> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-764> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/242> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/764> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-766> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/776> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/766> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-767> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/748>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/762>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/544> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/767> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-768> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/776> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/768> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-769> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/748>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/762> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/769> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-770> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/565> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/770> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-771> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/770>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/776> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/771> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-772> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/776> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/772> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-773> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/743>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/759> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/773> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-774> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/589> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/774> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-775> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/776> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/775> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-776> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/740>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/781> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/776> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-778> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/739>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/741>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/781> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/778> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-784> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/758>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/773>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/775> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/784> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-785> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/47> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/785> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-787> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/146>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/159> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/787> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-796> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/747>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/781>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/612> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/796> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-798> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/792>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/797> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/798> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-803> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/781> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/803> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-805> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/801>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/802>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/804>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/781>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/803> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/805> ;
+    slw:memberCount 5 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-806> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/763> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/806> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-809> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/808> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/809> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-811> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/205> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/811> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-817> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/814> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/817> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-819> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/146>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/159> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/819> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-822> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/821> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/822> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-824> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/740> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/824> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-828> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/808> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/828> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-830> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/117>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/828>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/829> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/830> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-832> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/838> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/832> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-837> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/117>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/834> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/837> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-839> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/385> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/839> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-840> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/117>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/839>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/3>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/834> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/840> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-848> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/845> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/848> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-849> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/544> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/849> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-854> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/845> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/854> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-857> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/848> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/857> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-859> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/845> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/859> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-862> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/143> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/862> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-867> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/614> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/867> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-870> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/264> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/870> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-873> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/872> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/873> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-874> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/873> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/874> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-878> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/741> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/878> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-880> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/741> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/880> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-882> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/882Α>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/176>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/180>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/183>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/185>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/188>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/480>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/893>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/622Α> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/882> ;
+    slw:memberCount 9 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-882Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/8>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/11>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/882>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/893>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/882Α> ;
+    slw:memberCount 5 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-883> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/52>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/878>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/58>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/60> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/883> ;
+    slw:memberCount 5 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-884> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/878>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/741> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/884> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-885> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/884>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/3> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/885> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-888> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/415>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/420> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/888> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-889> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/715>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/693> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/889> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-892> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/2>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/891> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/892> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-893> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/892> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/893> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-894> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/315>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/316>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/320> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/894> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-896> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/895>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/322>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/324>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/330>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/332>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/334> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/896> ;
+    slw:memberCount 6 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-897> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/886>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/544> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/897> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-898> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/614> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/898> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-899> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/897>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/545>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/899> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-901> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/614>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/901> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-902> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/867>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/900>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/878>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/880>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/886>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/892> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/902> ;
+    slw:memberCount 6 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-905> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/740>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/781>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/323> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/905> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-906> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/903> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/906> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-908> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/614> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/908> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-909> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/592> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/909> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-911> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/908> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/911> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-912> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/908> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/912> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-913> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/908>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/910>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/911>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/909> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/913> ;
+    slw:memberCount 5 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-917> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/614> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/917> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-918> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/915>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/917>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/918> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-919> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/325>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/327> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/919> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-924> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/915> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/924> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-929> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/929> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-930> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/128> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/930> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-933> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/584> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/933> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-934> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/933>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/955>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/995> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/934> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-935> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/933> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/935> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-936> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/220>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/924>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/939> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/936> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-937> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/564>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/568>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/575>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/614> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/937> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-938> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/933>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/936>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/938> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-940> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/914> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/940> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-941> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/943>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/861>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/866> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/941> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-942> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/917> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/942> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-943> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/943> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-944> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/943> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/944> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-947> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/614>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/930> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/947> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-948> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/941>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/947> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/948> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-951> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/62> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/951> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-952> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/861>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/866> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/952> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-953> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/956>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/939>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/953> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-954> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/956>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/117>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/927>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/933>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/954> ;
+    slw:memberCount 5 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-955> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/956> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/955> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-956> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/965>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/956> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-957> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/971> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/957> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-959> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/965>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1003> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-962> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/965> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/962> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-965> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/965> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-966> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/933>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/966> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-971> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/933>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/980> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/971> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-973> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/933>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/973> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-975> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/2> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/975> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-977> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/975>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/976> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/977> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-977Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/976>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/975> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/977Α> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-979> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/933> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/979> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-982> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/41>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/14> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/982> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-983> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/118>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/954> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/983> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-984> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/983>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/956> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/984> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-985> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/982> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/985> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-986> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/985>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/12>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/614> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/986> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-987> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/983> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/987> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-988> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/974>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/955> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/988> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-989> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/988> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/989> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-990> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/986>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/988> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/990> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-991> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/458> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/991> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-991Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/983> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/991Α> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-991Β> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/983> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/991Β> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-992> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/939> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/992> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-993> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/926>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/954> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/993> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-994> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/933>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/994> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-995> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/927>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/972>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/973> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/995> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-996> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/956> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/996> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-997> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1005>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/615>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/995> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/997> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-998> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/933>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/998> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1000> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/933>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1000> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1001Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/994>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/998>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1000> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1001Α> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1002> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/969> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1002> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1003> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/965> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1003> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1004> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/965> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1004> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1005> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/943>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/947>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/927>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/997> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1005> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1006> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/971>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/974>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/979>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/980>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1007>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/973> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1006> ;
+    slw:memberCount 6 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1007> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/975>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/978>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/976>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/977Α> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1007> ;
+    slw:memberCount 4 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1008> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1004> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1008> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1009> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/2> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1009> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1010> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/934> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1010> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1011Α> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/934>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/954>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1000>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/933>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/973> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1011Α> ;
+    slw:memberCount 6 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1012> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1000>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/954> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1012> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1018> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/975>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/976>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/977Α>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1007>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1012> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1018> ;
+    slw:memberCount 5 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1019> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/966>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/972> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1019> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1021> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/955>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/995>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/959>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/998>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/954>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/965>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/966>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/967>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/969>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1002>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1003>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1004>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1005>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1010>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1021> ;
+    slw:memberCount 15 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1022> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/953> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1022> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1023> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1022>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/741> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1023> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1024> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/975> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1024> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1025> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/995>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/984> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1025> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1026> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1023> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1026> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1027> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/776> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1027> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1028> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/741> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1028> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1029> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1023> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1029> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1030> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1023>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/975>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/977> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1030> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1031> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1023>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1030> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1031> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1033> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1023> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1033> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1034> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/226>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/912> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1034> ;
+    slw:memberCount 3 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1038> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/947> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1038> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1039> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/997>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1039> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1040> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1040> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1041> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1034> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1041> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1043> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1042>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/975>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/976>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/977>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1007> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1043> ;
+    slw:memberCount 5 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1044> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1043>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/933> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1044> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1045> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1040> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1045> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1046> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1034>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1036> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1046> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1047> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/614>, <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/947> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1047> ;
+    slw:memberCount 2 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1049> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1047> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1049> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1050> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1050> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1052> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1052> ;
+    slw:memberCount 1 .
+
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/hyperedge/cites-1053> a slw:CitationSet ;
+    slw:involves <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/686> ;
+    slw:citingArticle <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/1053> ;
+    slw:memberCount 1 .
+

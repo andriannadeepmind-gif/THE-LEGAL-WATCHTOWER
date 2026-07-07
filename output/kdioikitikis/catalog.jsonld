@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "dct": "http://purl.org/dc/terms/"
+  },
+  "@id": "https://stavropouloslaw.com/eli/kdioikitikis/catalog",
+  "@type": "dcat:Dataset",
+  "dct:title": "Κώδικας Διοικητικής Δικονομίας",
+  "dct:identifier": "kdioikitikis",
+  "dct:language": "el",
+  "dcat:itemCount": 304,
+  "dcat:distribution": [
+    {"@type": "dcat:Distribution", "dcat:mediaType": "application/akn+xml", "dcat:downloadURL": "https://stavropouloslaw.com/eli/kdioikitikis/consolidated.akn.xml"},
+    {"@type": "dcat:Distribution", "dcat:mediaType": "text/turtle", "dcat:downloadURL": "https://stavropouloslaw.com/eli/kdioikitikis/consolidated.ttl"},
+    {"@type": "dcat:Distribution", "dcat:mediaType": "application/jsonl", "dcat:downloadURL": "https://stavropouloslaw.com/eli/kdioikitikis/corpus.jsonl"},
+    {"@type": "dcat:Distribution", "dcat:mediaType": "text/plain", "dcat:downloadURL": "https://stavropouloslaw.com/eli/kdioikitikis/consolidated.txt"}
+  ]
+}
