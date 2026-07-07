@@ -36,8 +36,8 @@ contract-gate 17/17 πράσινο, 27/27 πυλωμένες ικανότητε�
 
 1. ~~golden-gate ratchet~~ ✅ (e6321e3d)
 2. ~~M1 design~~ ✅
-3. **M1 implementation + gate** ← ΕΠΟΜΕΝΟ, περιμένει «εγκρίνω» του δημιουργού
-4. Understanding Runner **proposal-only** (μπλοκαρισμένο μέχρι το 3)
+3. ~~M1 implementation + gate~~ ✅ (ceeeeade — 9 invariant checks, πύλη διαλόγου 82/82)
+4. Understanding Runner **proposal-only** ← ΕΠΟΜΕΝΟ στη σειρά· παράλληλα εκκρεμεί «εγκρίνω» για το dry-run hook του Κριτή
 5. NixOS L1+ (ξεκλειδωμένο από PASS-CANDIDATE, στη σειρά μετά)
 
 ## Ανοιχτές εκκρεμότητες (με ιδιοκτήτη)
