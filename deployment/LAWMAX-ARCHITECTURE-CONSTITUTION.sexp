@@ -242,6 +242,18 @@
                     "--approve" "--reject" "--policy-approve" "--review-approve"
                     "--review-reject" "--policy-revoke")
 
+ ;; ══ VERIFICATION ARTIFACTS — εξωτερικά scripts πιστοποίησης (ΟΧΙ runtime
+ ;; features: καμία εντολή/έδρα/store — τρέχουν ΕΞΩ από το σύστημα, σε
+ ;; αντίγραφα ή read-only). Το command-map καλύπτει ΜΟΝΟ CLI εντολές του
+ ;; ζωντανού μητρώου· scripts κάτω από deployment/verify ΔΕΝ απαιτούν
+ ;; command-mapping — απαιτούν δήλωση ΕΔΩ.
+ :verification-artifacts
+ ((:script "deployment/verify/consciousness-audit/consciousness-audit-v1.ps1" :kind :external-audit)
+  (:script "deployment/verify/self-understanding-audit/self-understanding-audit-v1.sh" :kind :external-audit)
+  (:script "deployment/verify/blind-failure-test.sh" :kind :blind-verification)
+  (:script "deployment/verify/verify.mjs" :kind :independent-proof-verifier)
+  (:script "deployment/verify/verify.py"  :kind :independent-proof-verifier))
+
  ;; ══ BOOTSTRAP ΣΚΑΛΩΣΙΑ — ΔΕΝ μετρά ως μάθηση (rule :no-bootstrap-as-learning-proof) ══
  :bootstrap-artifacts
  ((:artifact "systems/orchestrator-cli/cognition-self.lisp" :kind :manual-frames  :marker "BOOTSTRAP")
