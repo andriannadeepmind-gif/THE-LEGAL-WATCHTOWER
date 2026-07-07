@@ -1907,7 +1907,12 @@ reason: legal-critical έξοδος απαιτεί runtime provenance — το �
                      :proof-required t :proof-available nil
                      :violated '(:runtime-provenance)
                      :safe-response "τρέξε χωρίς ORCHESTRATOR_TRACE_PROFILE=off (προεπιλογή: legal-critical) για έμπιστη έξοδο με ίχνος")
-      (return-from run-ask 0))
+      ;; exit 2 = ΣΦΑΛΜΑ ΔΙΑΜΟΡΦΩΣΗΣ ΠΕΡΙΒΑΛΛΟΝΤΟΣ (validation class, όπως το
+      ;; DARPA exit 2 του main): η διεργασία ΕΚΚΙΝΗΘΗΚΕ με προφίλ ιχνών που
+      ;; καθιστά αδύνατη κάθε έμπιστη legal-critical έξοδο — προϋπόθεση
+      ;; κλήσης παραβιασμένη, ΟΧΙ συνταγματική ετυμηγορία επί περιεχομένου
+      ;; (εκείνη = 0) και ΟΧΙ σφάλμα συστήματος (εκείνο = 1).
+      (return-from run-ask 2))
     (let ((n0 (let ((ev (orchestrator.trace:last-event)))
                 (if ev (orchestrator.trace:tevent-id ev) 0))))
     (multiple-value-bind (ans cog)
