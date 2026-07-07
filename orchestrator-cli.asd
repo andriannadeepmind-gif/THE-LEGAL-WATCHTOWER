@@ -38,6 +38,7 @@
      (:file "decisions")             ; εντολές νομολογίας — φορτώνονται ΤΕΛΕΥΤΑΙΕΣ, εγγράφονται στο μητρώο
      (:file "self-reflection")       ; ΤΟ ΕΓΩ: εγγραφές τομέα (παρατηρητές+είδη προτάσεων) + εντολές --reflect/--thoughts/--approve/--reject
      (:file "understanding-learning") ; ΜΑΘΗΣΗ ΚΑΤΑΝΟΗΣΗΣ: failure ledger → feature-rule proposals → σκιά → ουρά υπογραφής· διερμηνέας υιοθετημένων κανόνων ΠΡΩΤΟΣ (phrase-patch αδύνατο εκ κατασκευής)
+     (:file "architecture-gate")     ; ΑΡΧΙΤΕΚΤΟΝΙΚΟ ΣΥΝΤΑΓΜΑ: read-only ontological closure (13 primitives, πλήρης χαρτογράφηση, --architecture-constitution-gate)
      (:file "cognition-self")        ; ΓΝΩΣΙΑΚΟ ΠΕΔΙΟ: frames+σύνθεση για τον διάλογο εαυτού (πάνω στα 5 στάδια) — τέλος στο μονολιθικό σεντόνι
      (:file "cognition-legal")       ; ΓΝΩΣΙΑΚΟ ΠΕΔΙΟ: νομικός διάλογος (άρθρα/νομολογία/αποφάσεις/δικαστές) ως frames — τέλος στην παλιά cond
      (:file "advisor")               ; Ο ΣΥΜΒΟΥΛΟΣ (εκτός εμπιστοσύνης): LLM προτείνει πλαίσιο, ο πυρήνας επαληθεύει (--advisor/--advisor-gate)

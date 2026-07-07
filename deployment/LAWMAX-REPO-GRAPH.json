@@ -1,0 +1,3259 @@
+{
+ "commit": "85b8f7f1658d9348ede4dbd116642fcc7b9aa5dd",
+ "nodes": [
+  {
+   "id": "primitive:self",
+   "kind": "primitive"
+  },
+  {
+   "id": "primitive:law",
+   "kind": "primitive"
+  },
+  {
+   "id": "primitive:authority",
+   "kind": "primitive"
+  },
+  {
+   "id": "primitive:fact",
+   "kind": "primitive"
+  },
+  {
+   "id": "primitive:proof",
+   "kind": "primitive"
+  },
+  {
+   "id": "primitive:hypothesis",
+   "kind": "primitive"
+  },
+  {
+   "id": "primitive:argument",
+   "kind": "primitive"
+  },
+  {
+   "id": "primitive:matter",
+   "kind": "primitive"
+  },
+  {
+   "id": "primitive:output-trust",
+   "kind": "primitive"
+  },
+  {
+   "id": "primitive:evolution",
+   "kind": "primitive"
+  },
+  {
+   "id": "primitive:institution",
+   "kind": "primitive"
+  },
+  {
+   "id": "primitive:memory",
+   "kind": "primitive"
+  },
+  {
+   "id": "primitive:substrate",
+   "kind": "primitive"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/advisor.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/approval-policy.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/autonomy-missions.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/case-workspace.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/component-gate.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/contract-gate.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/decisions.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/deontic-gate.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/dialogue-gate.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/draft-commands.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/event-gate.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/evolution-gate.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/fluid-gate.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/gates-runner.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/generation-gate.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/graph-import.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/inference-gate.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/ingestion-commands.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/iq-gate.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/jurisprudence-judge.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/memory-commands.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/provenance-gate.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/self-extension.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/subsumption-commands.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/understanding-learning.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "command:--adopt-knowledge",
+   "kind": "command"
+  },
+  {
+   "id": "command:--adoption-decision",
+   "kind": "command"
+  },
+  {
+   "id": "command:--advisor",
+   "kind": "command"
+  },
+  {
+   "id": "command:--advisor-gate",
+   "kind": "command"
+  },
+  {
+   "id": "command:--affected-proofs",
+   "kind": "command"
+  },
+  {
+   "id": "command:--affected-traces",
+   "kind": "command"
+  },
+  {
+   "id": "command:--agenda",
+   "kind": "command"
+  },
+  {
+   "id": "command:--apply-upgrade",
+   "kind": "command"
+  },
+  {
+   "id": "command:--approve",
+   "kind": "command"
+  },
+  {
+   "id": "command:--arc-eval",
+   "kind": "command"
+  },
+  {
+   "id": "command:--argue",
+   "kind": "command"
+  },
+  {
+   "id": "command:--ask",
+   "kind": "command"
+  },
+  {
+   "id": "command:--auto-update",
+   "kind": "command"
+  },
+  {
+   "id": "command:--autonomous",
+   "kind": "command"
+  },
+  {
+   "id": "command:--can-adopt",
+   "kind": "command"
+  },
+  {
+   "id": "command:--capability-contracts",
+   "kind": "command"
+  },
+  {
+   "id": "command:--case",
+   "kind": "command"
+  },
+  {
+   "id": "command:--check-upgrades",
+   "kind": "command"
+  },
+  {
+   "id": "command:--component",
+   "kind": "command"
+  },
+  {
+   "id": "command:--component-gate",
+   "kind": "command"
+  },
+  {
+   "id": "command:--component-of",
+   "kind": "command"
+  },
+  {
+   "id": "command:--components",
+   "kind": "command"
+  },
+  {
+   "id": "command:--constitution",
+   "kind": "command"
+  },
+  {
+   "id": "command:--contract",
+   "kind": "command"
+  },
+  {
+   "id": "command:--contract-gate",
+   "kind": "command"
+  },
+  {
+   "id": "command:--contracts-missing",
+   "kind": "command"
+  },
+  {
+   "id": "command:--deontic-gate",
+   "kind": "command"
+  },
+  {
+   "id": "command:--dialogue-gate",
+   "kind": "command"
+  },
+  {
+   "id": "command:--discover-fek",
+   "kind": "command"
+  },
+  {
+   "id": "command:--draft",
+   "kind": "command"
+  },
+  {
+   "id": "command:--draft-gate",
+   "kind": "command"
+  },
+  {
+   "id": "command:--dump-pdf-text",
+   "kind": "command"
+  },
+  {
+   "id": "command:--emit-hypergraph",
+   "kind": "command"
+  },
+  {
+   "id": "command:--emit-proofs",
+   "kind": "command"
+  },
+  {
+   "id": "command:--emit-references",
+   "kind": "command"
+  },
+  {
+   "id": "command:--emit-site",
+   "kind": "command"
+  },
+  {
+   "id": "command:--event-gate",
+   "kind": "command"
+  },
+  {
+   "id": "command:--evolve",
+   "kind": "command"
+  },
+  {
+   "id": "command:--explain-decision",
+   "kind": "command"
+  },
+  {
+   "id": "command:--extension-gate",
+   "kind": "command"
+  },
+  {
+   "id": "command:--failures",
+   "kind": "command"
+  },
+  {
+   "id": "command:--fetch-amendments",
+   "kind": "command"
+  },
+  {
+   "id": "command:--fetch-decision",
+   "kind": "command"
+  },
+  {
+   "id": "command:--fetch-pdf",
+   "kind": "command"
+  },
+  {
+   "id": "command:--fetch-sources",
+   "kind": "command"
+  },
+  {
+   "id": "command:--fetch-year",
+   "kind": "command"
+  },
+  {
+   "id": "command:--files-of",
+   "kind": "command"
+  },
+  {
+   "id": "command:--fluid-gate",
+   "kind": "command"
+  },
+  {
+   "id": "command:--freeze-components",
+   "kind": "command"
+  },
+  {
+   "id": "command:--gap",
+   "kind": "command"
+  },
+  {
+   "id": "command:--gates",
+   "kind": "command"
+  },
+  {
+   "id": "command:--generation-gate",
+   "kind": "command"
+  },
+  {
+   "id": "command:--graph",
+   "kind": "command"
+  },
+  {
+   "id": "command:--guard-language",
+   "kind": "command"
+  },
+  {
+   "id": "command:--help",
+   "kind": "command"
+  },
+  {
+   "id": "command:--history",
+   "kind": "command"
+  },
+  {
+   "id": "command:--impact",
+   "kind": "command"
+  },
+  {
+   "id": "command:--index-decisions",
+   "kind": "command"
+  },
+  {
+   "id": "command:--inference-gate",
+   "kind": "command"
+  },
+  {
+   "id": "command:--institution",
+   "kind": "command"
+  },
+  {
+   "id": "command:--intend",
+   "kind": "command"
+  },
+  {
+   "id": "command:--intentions",
+   "kind": "command"
+  },
+  {
+   "id": "command:--iq-gate",
+   "kind": "command"
+  },
+  {
+   "id": "command:--judge",
+   "kind": "command"
+  },
+  {
+   "id": "command:--judge-profile",
+   "kind": "command"
+  },
+  {
+   "id": "command:--jurisprudence",
+   "kind": "command"
+  },
+  {
+   "id": "command:--learn-understanding",
+   "kind": "command"
+  },
+  {
+   "id": "command:--lessons",
+   "kind": "command"
+  },
+  {
+   "id": "command:--list-corpora",
+   "kind": "command"
+  },
+  {
+   "id": "command:--list-pipelines",
+   "kind": "command"
+  },
+  {
+   "id": "command:--materialize-decisions",
+   "kind": "command"
+  },
+  {
+   "id": "command:--materialize-pdf",
+   "kind": "command"
+  },
+  {
+   "id": "command:--memory",
+   "kind": "command"
+  },
+  {
+   "id": "command:--memory-gate",
+   "kind": "command"
+  },
+  {
+   "id": "command:--mirror",
+   "kind": "command"
+  },
+  {
+   "id": "command:--mirror-gate",
+   "kind": "command"
+  },
+  {
+   "id": "command:--policies",
+   "kind": "command"
+  },
+  {
+   "id": "command:--policy",
+   "kind": "command"
+  },
+  {
+   "id": "command:--policy-approve",
+   "kind": "command"
+  },
+  {
+   "id": "command:--policy-gate",
+   "kind": "command"
+  },
+  {
+   "id": "command:--policy-revoke",
+   "kind": "command"
+  },
+  {
+   "id": "command:--process-pdf",
+   "kind": "command"
+  },
+  {
+   "id": "command:--provenance-gate",
+   "kind": "command"
+  },
+  {
+   "id": "command:--providers",
+   "kind": "command"
+  },
+  {
+   "id": "command:--read-provision",
+   "kind": "command"
+  },
+  {
+   "id": "command:--reason",
+   "kind": "command"
+  },
+  {
+   "id": "command:--reason-decision",
+   "kind": "command"
+  },
+  {
+   "id": "command:--recall",
+   "kind": "command"
+  },
+  {
+   "id": "command:--reflect",
+   "kind": "command"
+  },
+  {
+   "id": "command:--reject",
+   "kind": "command"
+  },
+  {
+   "id": "command:--review",
+   "kind": "command"
+  },
+  {
+   "id": "command:--review-approve",
+   "kind": "command"
+  },
+  {
+   "id": "command:--review-reject",
+   "kind": "command"
+  },
+  {
+   "id": "command:--rollback-plan",
+   "kind": "command"
+  },
+  {
+   "id": "command:--run-all-pipelines",
+   "kind": "command"
+  },
+  {
+   "id": "command:--run-ingestion",
+   "kind": "command"
+  },
+  {
+   "id": "command:--run-pipeline",
+   "kind": "command"
+  },
+  {
+   "id": "command:--run-tests",
+   "kind": "command"
+  },
+  {
+   "id": "command:--self-evolution-gate",
+   "kind": "command"
+  },
+  {
+   "id": "command:--self-extend",
+   "kind": "command"
+  },
+  {
+   "id": "command:--serve",
+   "kind": "command"
+  },
+  {
+   "id": "command:--serve-mcp",
+   "kind": "command"
+  },
+  {
+   "id": "command:--serve-review",
+   "kind": "command"
+  },
+  {
+   "id": "command:--shadow-knowledge",
+   "kind": "command"
+  },
+  {
+   "id": "command:--strategy",
+   "kind": "command"
+  },
+  {
+   "id": "command:--study-code",
+   "kind": "command"
+  },
+  {
+   "id": "command:--subsume",
+   "kind": "command"
+  },
+  {
+   "id": "command:--subsume-text",
+   "kind": "command"
+  },
+  {
+   "id": "command:--subsumption-gate",
+   "kind": "command"
+  },
+  {
+   "id": "command:--symbols-of",
+   "kind": "command"
+  },
+  {
+   "id": "command:--tests",
+   "kind": "command"
+  },
+  {
+   "id": "command:--think",
+   "kind": "command"
+  },
+  {
+   "id": "command:--thoughts",
+   "kind": "command"
+  },
+  {
+   "id": "command:--trace",
+   "kind": "command"
+  },
+  {
+   "id": "command:--trace-capability",
+   "kind": "command"
+  },
+  {
+   "id": "command:--trace-command",
+   "kind": "command"
+  },
+  {
+   "id": "command:--trace-component",
+   "kind": "command"
+  },
+  {
+   "id": "command:--trace-last",
+   "kind": "command"
+  },
+  {
+   "id": "command:--trace-last-conclusion",
+   "kind": "command"
+  },
+  {
+   "id": "command:--trace-legal-state",
+   "kind": "command"
+  },
+  {
+   "id": "command:--trace-proof",
+   "kind": "command"
+  },
+  {
+   "id": "command:--training-proposal",
+   "kind": "command"
+  },
+  {
+   "id": "command:--understanding",
+   "kind": "command"
+  },
+  {
+   "id": "command:--understanding-gate",
+   "kind": "command"
+  },
+  {
+   "id": "command:--verify-all",
+   "kind": "command"
+  },
+  {
+   "id": "command:--verify-all-intelligence",
+   "kind": "command"
+  },
+  {
+   "id": "command:--verify-consolidation",
+   "kind": "command"
+  },
+  {
+   "id": "command:--verify-corpus",
+   "kind": "command"
+  },
+  {
+   "id": "command:--verify-intelligence",
+   "kind": "command"
+  },
+  {
+   "id": "command:--verify-proof",
+   "kind": "command"
+  },
+  {
+   "id": "command:--version",
+   "kind": "command"
+  },
+  {
+   "id": "command:--watch-decisions",
+   "kind": "command"
+  },
+  {
+   "id": "command:--watch-fek",
+   "kind": "command"
+  },
+  {
+   "id": "command:--what-if",
+   "kind": "command"
+  },
+  {
+   "id": "command:--why",
+   "kind": "command"
+  },
+  {
+   "id": "command:--ίδρυμα",
+   "kind": "command"
+  },
+  {
+   "id": "command:--αναστοχασμός",
+   "kind": "command"
+  },
+  {
+   "id": "command:--αυτόνομα",
+   "kind": "command"
+  },
+  {
+   "id": "command:--γράφος",
+   "kind": "command"
+  },
+  {
+   "id": "command:--ιστορία",
+   "kind": "command"
+  },
+  {
+   "id": "command:--καθρέφτης",
+   "kind": "command"
+  },
+  {
+   "id": "command:--ρώτα",
+   "kind": "command"
+  },
+  {
+   "id": "command:--σκέψεις",
+   "kind": "command"
+  },
+  {
+   "id": "command:--συμβόλαιο",
+   "kind": "command"
+  },
+  {
+   "id": "command:--σύνταγμα",
+   "kind": "command"
+  },
+  {
+   "id": "command:--υπαγωγή",
+   "kind": "command"
+  },
+  {
+   "id": "command:--φάκελος",
+   "kind": "command"
+  },
+  {
+   "id": "command:-h",
+   "kind": "command"
+  },
+  {
+   "id": "command:-v",
+   "kind": "command"
+  },
+  {
+   "id": "capability:αυτοεπίγνωση",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:μάθηση-κατανόησης",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:σύμβουλος",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:διάλογος",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:δεοντικό",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:λογισμός-φραγμών",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:συμπερασμός-wfs",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:πυρήνας-iq",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:ρευστή-επαγωγή",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:ιστορία-συμβάντων",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:παραδοτέο",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:γλωσσική-αντίληψη",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:υπαγωγή",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:αντιδικία",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:υποθετικός-λόγος",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:δικονομικός-σχεδιασμός",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:πακέτα-γνώσης",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:αυτοεπέκταση",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:πολιτικές-έγκρισης",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:μνήμη",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:γένεση-ελληνικών",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:εκτελεστική-προέλευση",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:ελεγχόμενη-αυτοεξέλιξη",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:συστατικά",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:συμβόλαια",
+   "kind": "capability"
+  },
+  {
+   "id": "contract:institutional-identity",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:article-identity-management",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:understanding-rule-language",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:advisor-untrusted-protocol",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:dialogue-protocol",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:evaluate-deontic",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:classify-deontic-sentence",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:meta-eval",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:guards-pass-p",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:verify-guard",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:run-inference",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:explain",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:query",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:iq-referee-protocol",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:fluid-induction-protocol",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:event-calculus-protocol",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:draft-memo",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:gap-questions",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:parse-narrative",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:greek-perception-protocol",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:subsume",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:conclusion-status",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:norm-gaps",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:proof-grade",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:dialectic-report",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:critical-facts",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:minimal-blockers",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:procedural-planning-protocol",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:knowledge-pack-lifecycle",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:self-extension-adoption",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:approval-policy-protocol",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:episodic-memory-protocol",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:greek-generation-protocol",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:runtime-provenance-protocol",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:adoption-decision-protocol",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:component-registry-protocol",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:parse-article-id",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:contract-registry-protocol",
+   "kind": "contract"
+  },
+  {
+   "id": "contract:mirror-protocol",
+   "kind": "contract"
+  },
+  {
+   "id": "capability:πρόσληψη-νομολογίας",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:ταυτότητα-άρθρων",
+   "kind": "capability"
+  },
+  {
+   "id": "capability:ομοιότητα-υποθέσεων",
+   "kind": "capability"
+  },
+  {
+   "id": "command:--architecture-constitution-gate",
+   "kind": "command"
+  },
+  {
+   "id": "file:systems/orchestrator-cli/architecture-gate.lisp",
+   "kind": "component-file"
+  },
+  {
+   "id": "capability:αρχιτεκτονική-περιφρούρηση",
+   "kind": "capability"
+  }
+ ],
+ "edges": [
+  {
+   "from": "command:--adopt-knowledge",
+   "to": "file:systems/orchestrator-cli/decisions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--adopt-knowledge",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--adoption-decision",
+   "to": "file:systems/orchestrator-cli/evolution-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--adoption-decision",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--advisor",
+   "to": "file:systems/orchestrator-cli/advisor.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--advisor",
+   "to": "primitive:hypothesis",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--advisor-gate",
+   "to": "file:systems/orchestrator-cli/advisor.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--advisor-gate",
+   "to": "primitive:hypothesis",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--affected-proofs",
+   "to": "file:systems/orchestrator-cli/evolution-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--affected-proofs",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--affected-traces",
+   "to": "file:systems/orchestrator-cli/evolution-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--affected-traces",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--agenda",
+   "to": "file:systems/orchestrator-cli/memory-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--agenda",
+   "to": "primitive:institution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--apply-upgrade",
+   "to": "file:systems/orchestrator-cli/ingestion-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--apply-upgrade",
+   "to": "primitive:substrate",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--approve",
+   "to": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--approve",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--arc-eval",
+   "to": "file:systems/orchestrator-cli/fluid-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--arc-eval",
+   "to": "primitive:hypothesis",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--argue",
+   "to": "file:systems/orchestrator-cli/subsumption-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--argue",
+   "to": "primitive:argument",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--ask",
+   "to": "file:systems/orchestrator-cli/decisions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--ask",
+   "to": "primitive:output-trust",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--auto-update",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--auto-update",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--autonomous",
+   "to": "file:systems/orchestrator-cli/autonomy-missions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--autonomous",
+   "to": "primitive:institution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--can-adopt",
+   "to": "file:systems/orchestrator-cli/evolution-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--can-adopt",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--capability-contracts",
+   "to": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--capability-contracts",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--case",
+   "to": "file:systems/orchestrator-cli/case-workspace.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--case",
+   "to": "primitive:matter",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--check-upgrades",
+   "to": "file:systems/orchestrator-cli/ingestion-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--check-upgrades",
+   "to": "primitive:substrate",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--component",
+   "to": "file:systems/orchestrator-cli/component-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--component",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--component-gate",
+   "to": "file:systems/orchestrator-cli/component-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--component-gate",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--component-of",
+   "to": "file:systems/orchestrator-cli/component-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--component-of",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--components",
+   "to": "file:systems/orchestrator-cli/component-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--components",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--constitution",
+   "to": "file:systems/orchestrator-cli/decisions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--constitution",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--contract",
+   "to": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--contract",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--contract-gate",
+   "to": "file:systems/orchestrator-cli/contract-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--contract-gate",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--contracts-missing",
+   "to": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--contracts-missing",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--deontic-gate",
+   "to": "file:systems/orchestrator-cli/deontic-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--deontic-gate",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--dialogue-gate",
+   "to": "file:systems/orchestrator-cli/dialogue-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--dialogue-gate",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--discover-fek",
+   "to": "file:systems/orchestrator-cli/ingestion-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--discover-fek",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--draft",
+   "to": "file:systems/orchestrator-cli/draft-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--draft",
+   "to": "primitive:output-trust",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--draft-gate",
+   "to": "file:systems/orchestrator-cli/draft-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--draft-gate",
+   "to": "primitive:output-trust",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--dump-pdf-text",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--dump-pdf-text",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--emit-hypergraph",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--emit-hypergraph",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--emit-proofs",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--emit-proofs",
+   "to": "primitive:proof",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--emit-references",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--emit-references",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--emit-site",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--emit-site",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--event-gate",
+   "to": "file:systems/orchestrator-cli/event-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--event-gate",
+   "to": "primitive:fact",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--evolve",
+   "to": "file:systems/orchestrator-cli/self-extension.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--evolve",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--explain-decision",
+   "to": "file:systems/orchestrator-cli/decisions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--explain-decision",
+   "to": "primitive:authority",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--extension-gate",
+   "to": "file:systems/orchestrator-cli/self-extension.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--extension-gate",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--failures",
+   "to": "file:systems/orchestrator-cli/understanding-learning.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--failures",
+   "to": "primitive:memory",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--fetch-amendments",
+   "to": "file:systems/orchestrator-cli/ingestion-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--fetch-amendments",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--fetch-decision",
+   "to": "file:systems/orchestrator-cli/decisions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--fetch-decision",
+   "to": "primitive:authority",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--fetch-pdf",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--fetch-pdf",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--fetch-sources",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--fetch-sources",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--fetch-year",
+   "to": "file:systems/orchestrator-cli/decisions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--fetch-year",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--files-of",
+   "to": "file:systems/orchestrator-cli/component-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--files-of",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--fluid-gate",
+   "to": "file:systems/orchestrator-cli/fluid-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--fluid-gate",
+   "to": "primitive:hypothesis",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--freeze-components",
+   "to": "file:systems/orchestrator-cli/component-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--freeze-components",
+   "to": "primitive:substrate",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--gap",
+   "to": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--gap",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--gates",
+   "to": "file:systems/orchestrator-cli/gates-runner.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--gates",
+   "to": "primitive:substrate",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--generation-gate",
+   "to": "file:systems/orchestrator-cli/generation-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--generation-gate",
+   "to": "primitive:output-trust",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--graph",
+   "to": "file:systems/orchestrator-cli/graph-import.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--graph",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--guard-language",
+   "to": "file:systems/orchestrator-cli/inference-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--guard-language",
+   "to": "primitive:proof",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--help",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--help",
+   "to": "primitive:substrate",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--history",
+   "to": "file:systems/orchestrator-cli/decisions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--history",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--impact",
+   "to": "file:systems/orchestrator-cli/graph-import.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--impact",
+   "to": "primitive:proof",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--index-decisions",
+   "to": "file:systems/orchestrator-cli/decisions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--index-decisions",
+   "to": "primitive:authority",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--inference-gate",
+   "to": "file:systems/orchestrator-cli/inference-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--inference-gate",
+   "to": "primitive:proof",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--institution",
+   "to": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--institution",
+   "to": "primitive:institution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--intend",
+   "to": "file:systems/orchestrator-cli/memory-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--intend",
+   "to": "primitive:institution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--intentions",
+   "to": "file:systems/orchestrator-cli/memory-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--intentions",
+   "to": "primitive:institution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--iq-gate",
+   "to": "file:systems/orchestrator-cli/iq-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--iq-gate",
+   "to": "primitive:proof",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--judge",
+   "to": "file:systems/orchestrator-cli/jurisprudence-judge.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--judge",
+   "to": "primitive:authority",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--judge-profile",
+   "to": "file:systems/orchestrator-cli/decisions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--judge-profile",
+   "to": "primitive:authority",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--jurisprudence",
+   "to": "file:systems/orchestrator-cli/decisions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--jurisprudence",
+   "to": "primitive:authority",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--learn-understanding",
+   "to": "file:systems/orchestrator-cli/understanding-learning.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--learn-understanding",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--lessons",
+   "to": "file:systems/orchestrator-cli/decisions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--lessons",
+   "to": "primitive:memory",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--list-corpora",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--list-corpora",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--list-pipelines",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--list-pipelines",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--materialize-decisions",
+   "to": "file:systems/orchestrator-cli/decisions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--materialize-decisions",
+   "to": "primitive:authority",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--materialize-pdf",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--materialize-pdf",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--memory",
+   "to": "file:systems/orchestrator-cli/memory-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--memory",
+   "to": "primitive:memory",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--memory-gate",
+   "to": "file:systems/orchestrator-cli/memory-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--memory-gate",
+   "to": "primitive:memory",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--mirror",
+   "to": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--mirror",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--mirror-gate",
+   "to": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--mirror-gate",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--policies",
+   "to": "file:systems/orchestrator-cli/approval-policy.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--policies",
+   "to": "primitive:institution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--policy",
+   "to": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--policy",
+   "to": "primitive:institution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--policy-approve",
+   "to": "file:systems/orchestrator-cli/approval-policy.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--policy-approve",
+   "to": "primitive:institution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--policy-gate",
+   "to": "file:systems/orchestrator-cli/approval-policy.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--policy-gate",
+   "to": "primitive:institution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--policy-revoke",
+   "to": "file:systems/orchestrator-cli/approval-policy.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--policy-revoke",
+   "to": "primitive:institution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--process-pdf",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--process-pdf",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--provenance-gate",
+   "to": "file:systems/orchestrator-cli/provenance-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--provenance-gate",
+   "to": "primitive:output-trust",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--providers",
+   "to": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--providers",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--read-provision",
+   "to": "file:systems/orchestrator-cli/self-extension.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--read-provision",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--reason",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--reason",
+   "to": "primitive:proof",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--reason-decision",
+   "to": "file:systems/orchestrator-cli/decisions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--reason-decision",
+   "to": "primitive:authority",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--recall",
+   "to": "file:systems/orchestrator-cli/memory-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--recall",
+   "to": "primitive:memory",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--reflect",
+   "to": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--reflect",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--reject",
+   "to": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--reject",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--review",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--review",
+   "to": "primitive:institution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--review-approve",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--review-approve",
+   "to": "primitive:institution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--review-reject",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--review-reject",
+   "to": "primitive:institution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--rollback-plan",
+   "to": "file:systems/orchestrator-cli/evolution-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--rollback-plan",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--run-all-pipelines",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--run-all-pipelines",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--run-ingestion",
+   "to": "file:systems/orchestrator-cli/ingestion-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--run-ingestion",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--run-pipeline",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--run-pipeline",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--run-tests",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--run-tests",
+   "to": "primitive:substrate",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--self-evolution-gate",
+   "to": "file:systems/orchestrator-cli/evolution-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--self-evolution-gate",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--self-extend",
+   "to": "file:systems/orchestrator-cli/self-extension.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--self-extend",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--serve",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--serve",
+   "to": "primitive:output-trust",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--serve-mcp",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--serve-mcp",
+   "to": "primitive:output-trust",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--serve-review",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--serve-review",
+   "to": "primitive:institution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--shadow-knowledge",
+   "to": "file:systems/orchestrator-cli/decisions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--shadow-knowledge",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--strategy",
+   "to": "file:systems/orchestrator-cli/subsumption-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--strategy",
+   "to": "primitive:argument",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--study-code",
+   "to": "file:systems/orchestrator-cli/self-extension.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--study-code",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--subsume",
+   "to": "file:systems/orchestrator-cli/subsumption-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--subsume",
+   "to": "primitive:proof",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--subsume-text",
+   "to": "file:systems/orchestrator-cli/subsumption-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--subsume-text",
+   "to": "primitive:proof",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--subsumption-gate",
+   "to": "file:systems/orchestrator-cli/subsumption-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--subsumption-gate",
+   "to": "primitive:proof",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--symbols-of",
+   "to": "file:systems/orchestrator-cli/component-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--symbols-of",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--tests",
+   "to": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--tests",
+   "to": "primitive:substrate",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--think",
+   "to": "file:systems/orchestrator-cli/subsumption-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--think",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--thoughts",
+   "to": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--thoughts",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--trace",
+   "to": "file:systems/orchestrator-cli/provenance-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--trace",
+   "to": "primitive:output-trust",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--trace-capability",
+   "to": "file:systems/orchestrator-cli/provenance-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--trace-capability",
+   "to": "primitive:output-trust",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--trace-command",
+   "to": "file:systems/orchestrator-cli/provenance-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--trace-command",
+   "to": "primitive:output-trust",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--trace-component",
+   "to": "file:systems/orchestrator-cli/provenance-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--trace-component",
+   "to": "primitive:output-trust",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--trace-last",
+   "to": "file:systems/orchestrator-cli/provenance-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--trace-last",
+   "to": "primitive:output-trust",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--trace-last-conclusion",
+   "to": "file:systems/orchestrator-cli/provenance-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--trace-last-conclusion",
+   "to": "primitive:output-trust",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--trace-legal-state",
+   "to": "file:systems/orchestrator-cli/provenance-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--trace-legal-state",
+   "to": "primitive:output-trust",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--trace-proof",
+   "to": "file:systems/orchestrator-cli/provenance-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--trace-proof",
+   "to": "primitive:proof",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--training-proposal",
+   "to": "file:systems/orchestrator-cli/evolution-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--training-proposal",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--understanding",
+   "to": "file:systems/orchestrator-cli/decisions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--understanding",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--understanding-gate",
+   "to": "file:systems/orchestrator-cli/understanding-learning.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--understanding-gate",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--verify-all",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--verify-all",
+   "to": "primitive:substrate",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--verify-all-intelligence",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--verify-all-intelligence",
+   "to": "primitive:substrate",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--verify-consolidation",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--verify-consolidation",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--verify-corpus",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--verify-corpus",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--verify-intelligence",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--verify-intelligence",
+   "to": "primitive:substrate",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--verify-proof",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--verify-proof",
+   "to": "primitive:proof",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--version",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--version",
+   "to": "primitive:substrate",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--watch-decisions",
+   "to": "file:systems/orchestrator-cli/decisions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--watch-decisions",
+   "to": "primitive:authority",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--watch-fek",
+   "to": "file:systems/orchestrator-cli/ingestion-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--watch-fek",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--what-if",
+   "to": "file:systems/orchestrator-cli/evolution-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--what-if",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--why",
+   "to": "file:systems/orchestrator-cli/graph-import.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--why",
+   "to": "primitive:proof",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--ίδρυμα",
+   "to": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--ίδρυμα",
+   "to": "primitive:institution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--αναστοχασμός",
+   "to": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--αναστοχασμός",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--αυτόνομα",
+   "to": "file:systems/orchestrator-cli/autonomy-missions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--αυτόνομα",
+   "to": "primitive:institution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--γράφος",
+   "to": "file:systems/orchestrator-cli/graph-import.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--γράφος",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--ιστορία",
+   "to": "file:systems/orchestrator-cli/decisions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--ιστορία",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--καθρέφτης",
+   "to": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--καθρέφτης",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--ρώτα",
+   "to": "file:systems/orchestrator-cli/decisions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--ρώτα",
+   "to": "primitive:output-trust",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--σκέψεις",
+   "to": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--σκέψεις",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--συμβόλαιο",
+   "to": "file:systems/orchestrator-cli/self-reflection.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--συμβόλαιο",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--σύνταγμα",
+   "to": "file:systems/orchestrator-cli/decisions.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--σύνταγμα",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--υπαγωγή",
+   "to": "file:systems/orchestrator-cli/subsumption-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--υπαγωγή",
+   "to": "primitive:proof",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--φάκελος",
+   "to": "file:systems/orchestrator-cli/case-workspace.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--φάκελος",
+   "to": "primitive:matter",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:-h",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:-h",
+   "to": "primitive:substrate",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:-v",
+   "to": "file:systems/orchestrator-cli/builtin-commands.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:-v",
+   "to": "primitive:substrate",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:αυτοεπίγνωση",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:αυτοεπίγνωση",
+   "to": "command:--mirror-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:μάθηση-κατανόησης",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:μάθηση-κατανόησης",
+   "to": "command:--understanding-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:σύμβουλος",
+   "to": "primitive:hypothesis",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:σύμβουλος",
+   "to": "command:--advisor-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:διάλογος",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:διάλογος",
+   "to": "command:--dialogue-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:δεοντικό",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:δεοντικό",
+   "to": "command:--deontic-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:λογισμός-φραγμών",
+   "to": "primitive:proof",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:λογισμός-φραγμών",
+   "to": "command:--inference-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:συμπερασμός-wfs",
+   "to": "primitive:proof",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:συμπερασμός-wfs",
+   "to": "command:--inference-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:πυρήνας-iq",
+   "to": "primitive:proof",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:πυρήνας-iq",
+   "to": "command:--iq-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:ρευστή-επαγωγή",
+   "to": "primitive:hypothesis",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:ρευστή-επαγωγή",
+   "to": "command:--fluid-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:ιστορία-συμβάντων",
+   "to": "primitive:fact",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:ιστορία-συμβάντων",
+   "to": "command:--event-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:παραδοτέο",
+   "to": "primitive:output-trust",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:παραδοτέο",
+   "to": "command:--draft-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:γλωσσική-αντίληψη",
+   "to": "primitive:fact",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:γλωσσική-αντίληψη",
+   "to": "command:--subsumption-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:υπαγωγή",
+   "to": "primitive:proof",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:υπαγωγή",
+   "to": "command:--subsumption-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:αντιδικία",
+   "to": "primitive:argument",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:αντιδικία",
+   "to": "command:--subsumption-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:υποθετικός-λόγος",
+   "to": "primitive:hypothesis",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:υποθετικός-λόγος",
+   "to": "command:--subsumption-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:δικονομικός-σχεδιασμός",
+   "to": "primitive:argument",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:δικονομικός-σχεδιασμός",
+   "to": "command:--subsumption-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:πακέτα-γνώσης",
+   "to": "primitive:memory",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:πακέτα-γνώσης",
+   "to": "command:--extension-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:αυτοεπέκταση",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:αυτοεπέκταση",
+   "to": "command:--extension-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:πολιτικές-έγκρισης",
+   "to": "primitive:institution",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:πολιτικές-έγκρισης",
+   "to": "command:--policy-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:μνήμη",
+   "to": "primitive:memory",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:μνήμη",
+   "to": "command:--memory-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:γένεση-ελληνικών",
+   "to": "primitive:output-trust",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:γένεση-ελληνικών",
+   "to": "command:--generation-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:εκτελεστική-προέλευση",
+   "to": "primitive:output-trust",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:εκτελεστική-προέλευση",
+   "to": "command:--provenance-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:ελεγχόμενη-αυτοεξέλιξη",
+   "to": "primitive:evolution",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:ελεγχόμενη-αυτοεξέλιξη",
+   "to": "command:--self-evolution-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:συστατικά",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:συστατικά",
+   "to": "command:--component-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "capability:συμβόλαια",
+   "to": "primitive:self",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:συμβόλαια",
+   "to": "command:--contract-gate",
+   "rel": "proved-by-gate"
+  },
+  {
+   "from": "contract:institutional-identity",
+   "to": "capability:αυτοεπίγνωση",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:institutional-identity",
+   "to": "command:--mirror-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:article-identity-management",
+   "to": "capability:ταυτότητα-άρθρων",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:article-identity-management",
+   "to": "command:--contract-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:article-identity-management",
+   "to": "command:--subsumption-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:article-identity-management",
+   "to": "command:--draft-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:understanding-rule-language",
+   "to": "capability:μάθηση-κατανόησης",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:understanding-rule-language",
+   "to": "command:--understanding-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:advisor-untrusted-protocol",
+   "to": "capability:σύμβουλος",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:advisor-untrusted-protocol",
+   "to": "command:--advisor-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:dialogue-protocol",
+   "to": "capability:διάλογος",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:dialogue-protocol",
+   "to": "command:--dialogue-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:evaluate-deontic",
+   "to": "capability:δεοντικό",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:evaluate-deontic",
+   "to": "command:--deontic-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:classify-deontic-sentence",
+   "to": "capability:δεοντικό",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:classify-deontic-sentence",
+   "to": "command:--deontic-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:meta-eval",
+   "to": "capability:λογισμός-φραγμών",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:meta-eval",
+   "to": "command:--inference-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:guards-pass-p",
+   "to": "capability:λογισμός-φραγμών",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:guards-pass-p",
+   "to": "command:--inference-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:verify-guard",
+   "to": "capability:λογισμός-φραγμών",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:verify-guard",
+   "to": "command:--inference-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:run-inference",
+   "to": "capability:συμπερασμός-wfs",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:run-inference",
+   "to": "command:--inference-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:run-inference",
+   "to": "command:--iq-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:explain",
+   "to": "capability:συμπερασμός-wfs",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:explain",
+   "to": "command:--inference-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:explain",
+   "to": "command:--event-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:query",
+   "to": "capability:συμπερασμός-wfs",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:query",
+   "to": "command:--inference-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:iq-referee-protocol",
+   "to": "capability:πυρήνας-iq",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:iq-referee-protocol",
+   "to": "command:--iq-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:fluid-induction-protocol",
+   "to": "capability:ρευστή-επαγωγή",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:fluid-induction-protocol",
+   "to": "command:--fluid-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:event-calculus-protocol",
+   "to": "capability:ιστορία-συμβάντων",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:event-calculus-protocol",
+   "to": "command:--event-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:draft-memo",
+   "to": "capability:παραδοτέο",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:draft-memo",
+   "to": "command:--draft-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:gap-questions",
+   "to": "capability:παραδοτέο",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:gap-questions",
+   "to": "command:--draft-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:parse-narrative",
+   "to": "capability:γλωσσική-αντίληψη",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:parse-narrative",
+   "to": "command:--subsumption-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:parse-narrative",
+   "to": "command:--dialogue-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:greek-perception-protocol",
+   "to": "capability:γλωσσική-αντίληψη",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:greek-perception-protocol",
+   "to": "command:--subsumption-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:subsume",
+   "to": "capability:υπαγωγή",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:subsume",
+   "to": "command:--subsumption-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:subsume",
+   "to": "command:--draft-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:conclusion-status",
+   "to": "capability:υπαγωγή",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:conclusion-status",
+   "to": "command:--subsumption-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:norm-gaps",
+   "to": "capability:υπαγωγή",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:norm-gaps",
+   "to": "command:--subsumption-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:norm-gaps",
+   "to": "command:--draft-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:proof-grade",
+   "to": "capability:υπαγωγή",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:proof-grade",
+   "to": "command:--subsumption-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:dialectic-report",
+   "to": "capability:αντιδικία",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:dialectic-report",
+   "to": "command:--subsumption-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:critical-facts",
+   "to": "capability:υποθετικός-λόγος",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:critical-facts",
+   "to": "command:--subsumption-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:critical-facts",
+   "to": "command:--draft-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:minimal-blockers",
+   "to": "capability:υποθετικός-λόγος",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:minimal-blockers",
+   "to": "command:--subsumption-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:procedural-planning-protocol",
+   "to": "capability:δικονομικός-σχεδιασμός",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:procedural-planning-protocol",
+   "to": "command:--subsumption-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:knowledge-pack-lifecycle",
+   "to": "capability:πακέτα-γνώσης",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:knowledge-pack-lifecycle",
+   "to": "command:--extension-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:self-extension-adoption",
+   "to": "capability:αυτοεπέκταση",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:self-extension-adoption",
+   "to": "command:--extension-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:self-extension-adoption",
+   "to": "command:--policy-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:approval-policy-protocol",
+   "to": "capability:πολιτικές-έγκρισης",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:approval-policy-protocol",
+   "to": "command:--policy-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:episodic-memory-protocol",
+   "to": "capability:μνήμη",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:episodic-memory-protocol",
+   "to": "command:--memory-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:greek-generation-protocol",
+   "to": "capability:γένεση-ελληνικών",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:greek-generation-protocol",
+   "to": "command:--generation-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:runtime-provenance-protocol",
+   "to": "capability:εκτελεστική-προέλευση",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:runtime-provenance-protocol",
+   "to": "command:--provenance-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:adoption-decision-protocol",
+   "to": "capability:ελεγχόμενη-αυτοεξέλιξη",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:adoption-decision-protocol",
+   "to": "command:--self-evolution-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:component-registry-protocol",
+   "to": "capability:συστατικά",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:component-registry-protocol",
+   "to": "command:--component-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:parse-article-id",
+   "to": "capability:ταυτότητα-άρθρων",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:parse-article-id",
+   "to": "command:--component-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:contract-registry-protocol",
+   "to": "capability:συμβόλαια",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:contract-registry-protocol",
+   "to": "command:--contract-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:mirror-protocol",
+   "to": "capability:αυτοεπίγνωση",
+   "rel": "binds-capability"
+  },
+  {
+   "from": "contract:mirror-protocol",
+   "to": "command:--mirror-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "contract:mirror-protocol",
+   "to": "command:--contract-gate",
+   "rel": "tested-by"
+  },
+  {
+   "from": "capability:πρόσληψη-νομολογίας",
+   "to": "primitive:authority",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:ταυτότητα-άρθρων",
+   "to": "primitive:law",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:ομοιότητα-υποθέσεων",
+   "to": "primitive:authority",
+   "rel": "primitive"
+  },
+  {
+   "from": "command:--architecture-constitution-gate",
+   "to": "file:systems/orchestrator-cli/architecture-gate.lisp",
+   "rel": "handled-in"
+  },
+  {
+   "from": "command:--architecture-constitution-gate",
+   "to": "primitive:substrate",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:αρχιτεκτονική-περιφρούρηση",
+   "to": "primitive:substrate",
+   "rel": "primitive"
+  },
+  {
+   "from": "capability:αρχιτεκτονική-περιφρούρηση",
+   "to": "command:--architecture-constitution-gate",
+   "rel": "proved-by-gate"
+  }
+ ],
+ "edge_semantics": "command→handled-in→file(component) · command/capability→primitive · capability→proved-by-gate(test) · contract→binds-capability/tested-by"
+}
