@@ -577,17 +577,10 @@
   προφίλ του δικαστή Κοσμίδη</p></div>
 <form id='f'><input id='q' autocomplete='off' autofocus placeholder='η ερώτησή σου…'><button>Ρώτα</button></form>
 <div id='ops'>
-<button data-c='--gates'>Πύλες</button>
-<button data-c='--mirror'>Καθρέφτης</button>
+<button data-c='--auto-update'>ΠΛΗΡΗΣ ΚΥΚΛΟΣ — όλα με μία εντολή (αργεί· ζωντανή πρόοδος στο τερματικό)</button>
 <button data-c='--failures'>Μητρώο αποτυχιών</button>
-<button data-c='--trace-last-conclusion'>Τελευταίο ίχνος</button>
-<button data-c='--run-all-pipelines'>Εκτύπωση ΟΛΩΝ των κωδίκων</button>
-<button data-c='--emit-proofs'>Αποδείξεις άρθρων</button>
-<button data-c='--emit-references'>Παραπομπές</button>
-<button data-c='--emit-hypergraph'>Υπεργράφος</button>
-<button data-c='--verify-all'>Επαλήθευση ΟΛΩΝ</button>
 </div>
-<p class='hint'>Καμία γεννήτρια κειμένου: το γράμμα του νόμου σερβίρεται byte-πιστό από το golden-επαληθευμένο corpus. Τα κουμπιά εκτελούν τις ΙΔΙΕΣ εντολές του μητρώου (μόνο για τον δημιουργό).</p>
+<p class='hint'>Καμία γεννήτρια κειμένου: το γράμμα του νόμου σερβίρεται byte-πιστό από το golden-επαληθευμένο corpus. Ο ΠΛΗΡΗΣ ΚΥΚΛΟΣ = fetch→κωδικοποίηση→golden→αποδείξεις→παραπομπές/υπεργράφος/νοημοσύνη→πύλες (η ΙΔΙΑ εντολή --auto-update του μητρώου, μόνο για τον δημιουργό).</p>
 <script>
 var f=document.getElementById('f'),qi=document.getElementById('q'),log=document.getElementById('log');
 function show(label,url,done){ /* ΜΙΑ διαδρομή εμφάνισης για ερωτήσεις ΚΑΙ κουμπιά */
@@ -637,12 +630,11 @@ document.getElementById('ops').addEventListener('click',function(ev){
               mem))))))
 
 (defparameter +chat-ops-whitelist+
-  '("--gates" "--mirror" "--failures" "--trace-last-conclusion"
-    "--run-all-pipelines" "--emit-proofs" "--emit-references"
-    "--emit-hypergraph" "--verify-all")
-  "Οι ΜΟΝΕΣ εντολές που εκτελούνται από τα κουμπιά του /chat. Κλειστός
-   κατάλογος αναγνωστικών/παραγωγικών ενεργειών — ΚΑΜΙΑ εντολή έγκρισης/
-   υιοθεσίας/πολιτικής από το web: η κυριαρχία ασκείται μόνο από το CLI.")
+  '("--auto-update" "--failures")
+  "Οι ΜΟΝΕΣ εντολές που εκτελούνται από τα κουμπιά του /chat: ο ΠΛΗΡΗΣ
+   ΚΥΚΛΟΣ (auto-update — μία εντολή που τα τρέχει όλα, με τελική σφραγίδα
+   πυλών) και το μητρώο αποτυχιών. ΚΑΜΙΑ εντολή έγκρισης/υιοθεσίας/
+   πολιτικής από το web: η κυριαρχία ασκείται μόνο από το CLI.")
 
 (defun %chat-wrap-handler (inner)
   "Τύλιξε τον handler του corpus-service με τον ΔΙΑΛΟΓΟ: /chat (η σελίδα),
@@ -1170,36 +1162,50 @@ document.getElementById('ops').addEventListener('click',function(ev){
     (write-char #\] s)))
 
 (defun auto-update ()
-  "AUTONOMOUS UPDATE — pull every code from its source, codify, consolidate, verify
-   against the golden, and (re)issue SIGNED proofs. ZERO manual uploads: the
-   source is the supplier. Phases are isolated; returns non-zero if codification
-   or the golden verification fails for any code, so cron can alert.
+  "AUTONOMOUS UPDATE — Ο ΠΛΗΡΗΣ ΚΥΚΛΟΣ με ΜΙΑ εντολή: pull every code from its
+   source, codify, consolidate, verify against the golden, (re)issue SIGNED
+   proofs, emit the reasoning substrate (references+hypergraph+intelligence),
+   and SEAL with the full gate plenary. Phases are isolated; returns non-zero
+   if codification, golden verification or the plenary fails, so cron can alert.
      AUTO_UPDATE_FETCH=0    skip the headless fetch (reuse existing source.pdf)
+     AUTO_UPDATE_GATES=0    skip the final gate plenary (fast cycle only)
      AUTO_UPDATE_PUBLISH=1  also emit the static site (signed) at the end
      PCL_SIGNING_KEY/PCL_PUBLIC_KEY  sign the corpus roots (TIER 1-A)"
   (let ((fetch (not (string= "0" (or (uiop:getenv "AUTO_UPDATE_FETCH") "1"))))
+        (gates (not (string= "0" (or (uiop:getenv "AUTO_UPDATE_GATES") "1"))))
         (publish (string= "1" (or (uiop:getenv "AUTO_UPDATE_PUBLISH") "0")))
-        (codify-rc 0) (verify-rc 0))
-    (format t "~%╔══ ΑΥΤΟΝΟΜΗ ΕΝΗΜΕΡΩΣΗ: fetch → codify → consolidate → verify → sign ══╗~%")
+        (codify-rc 0) (verify-rc 0) (gates-rc 0))
+    (format t "~%╔══ ΠΛΗΡΗΣ ΚΥΚΛΟΣ: fetch → codify → verify → sign → substrate → gates ══╗~%")
     (when fetch
-      (format t "~%[1/5] Λήψη ΑΠΕΥΘΕΙΑΣ από την πηγή (headless)~%")
+      (format t "~%[1/7] Λήψη ΑΠΕΥΘΕΙΑΣ από την πηγή (headless)~%")
       (ignore-errors (fetch-pdf-sources)))
-    (format t "~%[2/5] Υλικοποίηση PDF → source.json~%")
+    (format t "~%[2/7] Υλικοποίηση PDF → source.json~%")
     (ignore-errors (materialize-pdf-sources))
-    (format t "~%[3/5] Κωδικοποίηση & ενοποίηση όλων των κωδίκων~%")
+    (format t "~%[3/7] Κωδικοποίηση & ενοποίηση όλων των κωδίκων~%")
     (setf codify-rc (or (ignore-errors (run-all-pipelines)) 1))
-    (format t "~%[4/5] Έλεγχος ορθότητας έναντι golden (drift detection)~%")
+    (format t "~%[4/7] Έλεγχος ορθότητας έναντι golden (drift detection)~%")
     (setf verify-rc (or (ignore-errors (verify-all-corpora)) 1))
-    (format t "~%[5/5] Έκδοση υπογεγραμμένων αποδείξεων (Proof-Carrying Law)~%")
+    (format t "~%[5/7] Έκδοση υπογεγραμμένων αποδείξεων (Proof-Carrying Law)~%")
     (ignore-errors (emit-proofs))
+    (format t "~%[6/7] Υπόστρωμα συλλογισμού: παραπομπές + υπεργράφος + νοημοσύνη~%")
+    (ignore-errors (emit-references))
+    (ignore-errors (emit-hypergraph))
+    (ignore-errors (verify-all-intelligence))
+    (if gates
+        (progn
+          (format t "~%[7/7] ΣΦΡΑΓΙΔΑ: ολομέλεια πυλών~%")
+          (setf gates-rc (or (ignore-errors (run-all-gates)) 1)))
+        (format t "~%[7/7] Πύλες: ΠΑΡΑΛΕΙΦΘΗΚΑΝ (AUTO_UPDATE_GATES=0) — τρέξε --gates χωριστά~%"))
     (when publish
       (format t "~%[+]  Δημοσίευση static site (born-cited, signed)~%")
       (ignore-errors (emit-site)))
     ;; Per-phase status, so the final verdict is never self-contradictory.
-    (let ((rc (max codify-rc verify-rc)))
+    (let ((rc (max codify-rc verify-rc gates-rc)))
       (format t "~%╠══ ΑΝΑΦΟΡΑ ΦΑΣΕΩΝ ══╣~%")
       (format t "  Κωδικοποίηση/ενοποίηση : ~:[✗ ΑΠΕΤΥΧΕ~;✓ ΟΚ~]~%" (zerop codify-rc))
       (format t "  Έλεγχος golden (drift) : ~:[✗ ΑΠΕΤΥΧΕ~;✓ ΟΚ~]~%" (zerop verify-rc))
+      (format t "  Ολομέλεια πυλών        : ~:[✗ ΑΠΕΤΥΧΕ~;✓ ΟΚ~]~@[ (παραλείφθηκε)~]~%"
+              (zerop gates-rc) (and (not gates) t))
       (format t "╚══ Ολοκληρώθηκε — rc=~D ~:[(ΣΦΑΛΜΑ σε φάση παραπάνω)~;(όλα καθαρά)~] ══╝~%"
               rc (zerop rc))
       rc)))
