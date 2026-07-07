@@ -32,6 +32,25 @@
    εικόνα — υπογραφή, τεκμηρίωση, μέθοδοι, πηγαίο αρχείο. Αυτό ΕΙΝΑΙ Lisp."))
 (defclass self-agenda-frame       (orchestrator.cognition:frame) ())
 (defclass time-frame              (orchestrator.cognition:frame) ())
+;;; — αυτοκατανόηση & αναφορά συνομιλίας (SELF-UNDERSTANDING AUDIT v1) —
+(defclass thinking-frame          (orchestrator.cognition:frame) ()
+  (:documentation "«τι σκέφτεσαι τώρα;» — η ΠΡΑΓΜΑΤΙΚΗ γνωσιακή κατάσταση
+   (τρέχον frame, στόχοι, προθέσεις, προτάσεις), όχι μεταφορά ούτε άρνηση."))
+(defclass inability-frame         (orchestrator.cognition:frame) ()
+  (:documentation "«τι ΔΕΝ μπορείς να κάνεις;» — από τα δηλωμένα χρέη του
+   καθρέφτη + τις συνταγματικές αδυναμίες. Αυτογνωσία ορίων, μετρημένη."))
+(defclass conversation-reference-frame (orchestrator.cognition:frame) ()
+  (:documentation "Follow-up πάνω σε ό,τι ΕΙΠΑ στο προηγούμενο γύρισμα —
+   δένεται στο :last-answer της μνήμης συνεδρίας, ΟΧΙ τυφλή corpus αναζήτηση."))
+(defclass arithmetic-frame        (orchestrator.cognition:frame) ()
+  (:documentation "Ακέραιη αριθμητική μέσω της ΥΠΑΡΧΟΥΣΑΣ γλώσσας φραγμών
+   (guard-metaeval, πιστοποιητικά De Bruijn) — καμία νέα αριθμητική μηχανή."))
+(defclass general-knowledge-frame (orchestrator.cognition:frame) ()
+  (:documentation "Ερώτηση ΓΕΝΙΚΗΣ γνώσης εκτός πεδίων (δίκαιο+εαυτός):
+   η γλώσσα κατανοήθηκε· η ικανότητα δεν υπάρχει — τίμια διάκριση των δύο."))
+(defclass gap-ledger-frame        (orchestrator.cognition:frame) ()
+  (:documentation "«πού το κατέγραψες; δείξε μου το κενό» — το μητρώο άγνοιας
+   ΕΠΙΘΕΩΡΗΣΙΜΟ ζωντανά: lessons + επεισόδια + ανοιχτές προτάσεις."))
 
 ;;; ── Οι όψεις αυτογνωσίας του CLI: κάθε μητρώο δηλώνει ΤΙ είναι, ζωντανά ──
 (orchestrator.self-model:register-self-aspect :commands
@@ -86,6 +105,65 @@
 ;;; ── ΣΤΑΔΙΟ 1 (πεδίο): συμβολικός ταξινομητής προθέσεων εαυτού ──
 (defun %cogfold (s) (orchestrator.decisions:%fold s))
 
+(defun %last-answer ()
+  "Η τελευταία ΔΙΚΗ μου εκφορά στη συνεδρία (μνήμη εργασίας) — ή NIL."
+  (orchestrator.cognition:recall orchestrator.cognition:*current-memory* :last-answer))
+
+(defun %parse-arith (input)
+  "Λίστα (a op b) από «1+1», «πόσο κάνει 3 επί 4» — ακέραιοι, τελεστές της
+   γλώσσας φραγμών (+ - *). NIL αν δεν είναι τέτοια εκφορά."
+  (let ((f (%cogfold input)))
+    (or (cl-ppcre:register-groups-bind (a op b)
+            ("(\\d+)\\s*([-+*])\\s*(\\d+)" f)
+          (list (parse-integer a)
+                (cond ((string= op "+") '+) ((string= op "*") '*) (t '-))
+                (parse-integer b)))
+        (cl-ppcre:register-groups-bind (a w b)
+            ("(\\d+)\\s*(και|συν|επι|πλην)\\s*(\\d+)" f)
+          (list (parse-integer a)
+                (cond ((string= w "επι") '*) ((string= w "πλην") '-) (t '+))
+                (parse-integer b))))))
+
+;;; Η ΑΝΑΦΟΡΑ ΣΥΝΟΜΙΛΙΑΣ προηγείται του «self»: το «τι εννοείς …;» είναι
+;;; δέσιμο στο προηγούμενο γύρισμα, όχι ερώτηση περί εαυτού (β' πρόσωπο ≠
+;;; πρόθεση εαυτού όταν υπάρχει παρακείμενη εκφορά να εξηγηθεί).
+(orchestrator.cognition:register-classifier "conversation"
+ (lambda (input)
+   (let ((f (%cogfold input)))
+     (cond
+       ;; ΑΡΙΘΜΗΤΙΚΗ → υπάρχουσα έδρα guard-metaeval (καμία νέα μηχανή)
+       ((and (or (cl-ppcre:scan "^\\s*\\d+\\s*[-+*]\\s*\\d+\\s*=?\\s*[;?]*\\s*$" f)
+                 (cl-ppcre:scan (%cogfold "ποσο κανε?ι") f))
+             (%parse-arith input))
+        (destructuring-bind (a op b) (%parse-arith input)
+          (make-instance 'arithmetic-frame :input input
+                         :slots (list :a a :op op :b b))))
+       ;; ΜΗΤΡΩΟ ΑΓΝΟΙΑΣ: «πού το κατέγραψες; δείξε μου το gap/κενό·
+       ;; ποια πρόταση μάθησης δημιουργήθηκε; τι έχεις καταγράψει;»
+       ((cl-ppcre:scan (%cogfold "που το κατεγραψες|που καταγραφηκε|δειξε (μου )?το (gap|κενο)|ποια προταση μαθησης|τι κατεγραψες|τι εχεις καταγραψει") f)
+        (make-instance 'gap-ledger-frame :input input))
+       ;; FOLLOW-UP με ρητό δείκτη — ΜΟΝΟ αν υπάρχει προηγούμενη εκφορά μου
+       ((and (%last-answer)
+             (cl-ppcre:scan (%cogfold "τι εννοεις|εξηγησε (μου )?(το|τη|αυτο)|δηλαδη τι|πιο απλα|τι θα πει") f))
+        (make-instance 'conversation-reference-frame :input input))
+       ;; «τι σημαίνει/είναι Χ» όπου το Χ ΕΙΠΩΘΗΚΕ από εμένα μόλις τώρα:
+       ;; αναφορά συνομιλίας — ποτέ τυφλή νομική αναζήτηση της λέξης
+       ((and (%last-answer)
+             (let ((term (cl-ppcre:register-groups-bind (w)
+                             ("(?:τι σημαινει|τι ειναι)\\s+(.+?)\\s*[;?]*\\s*$" f)
+                           w)))
+               (and term
+                    (search (string-trim " «»\"" term)
+                            (%cogfold (%last-answer))))))
+        ;; όρος ΔΙΚΗΣ μου εκφοράς: το γλωσσάρι εαυτού αν τον ορίζει,
+        ;; αλλιώς δείξιμο του χωρίου με την πηγή του
+        (let ((hit (%glossary-hit input)))
+          (if hit
+              (make-instance 'self-glossary-frame :input input
+                             :slots (list :entry hit))
+              (make-instance 'conversation-reference-frame :input input))))
+       (t nil)))))
+
 (orchestrator.cognition:register-classifier "self"
  (lambda (input)
    (let ((f (%cogfold input)))
@@ -100,6 +178,12 @@
         (make-instance 'self-history-frame :input input))
        ((cl-ppcre:scan (%cogfold "που εισαι|που βρισκεσαι|αποστολη|προοδο|ποσο κοντα|τι σου λειπει|πως τα πας") f)
         (make-instance 'self-status-frame :input input))
+       ;; «τι σκέφτεσαι;» — ζωντανή γνωσιακή κατάσταση, ΠΡΙΝ το γενικό «τι κάνεις»
+       ((cl-ppcre:scan (%cogfold "τι σκεφτεσαι|τι σκεψεις|σκεφτεσαι τωρα|τι εχεις στο μυαλο") f)
+        (make-instance 'thinking-frame :input input))
+       ;; «τι ΔΕΝ μπορείς;» — δηλωμένα όρια/χρέη, ΠΡΙΝ το καταφατικό «τι μπορείς»
+       ((cl-ppcre:scan (%cogfold "τι δεν (μπορεις|ξερεις|κανεις)|δεν μπορεις να κανεις|αδυναμιες σου|τα ορια σου|που αποτυγχανεις") f)
+        (make-instance 'inability-frame :input input))
        ((cl-ppcre:scan (%cogfold "τι ξερεις|τι γνωριζεις|τι μπορεις|τι κανεις|βοηθεια|γιατι να σε ρωτησ|τι να σε ρωτησ|σε τι χρησιμευ|σε τι ωφελ|^\\s*help\\s*$") f)
         (make-instance 'capabilities-frame :input input))
        ((cl-ppcre:scan (%cogfold "ποιος εισαι|τι εισαι|συστησου|πως σε λενε|πως λεγεσαι|ονομα σου|ονομαζεσαι") f)
@@ -419,3 +503,107 @@
            "ερώτηση για τον εαυτό χωρίς δομημένη πρόθεση")
   "Με ρωτάς κάτι για εμένα που δεν έχω ακόμη δομημένη απάντηση — το λέω ευθέως και το καταγράφω για να μάθω.
 Με βεβαιότητα μπορώ να σου απαντήσω: «ποιος είσαι» · «ποιον υπηρετείς» · «πού βρίσκεσαι στην αποστολή σου» (μετρημένα) · «ποια η ιστορία σου» · «τι μπορείς να κάνεις» · «τι σημαίνει [τίμια/μάντεμα/καταγράφηκε/δεν κατάλαβα]».")
+
+;;; ── ΑΥΤΟΚΑΤΑΝΟΗΣΗ/ΣΥΝΟΜΙΛΙΑ (SELF-UNDERSTANDING AUDIT v1) — συνθέσεις ──
+
+(defmethod orchestrator.cognition:synthesize ((f thinking-frame) cog)
+  (let* ((mem (orchestrator.cognition:cog-memory cog))
+         (prev (orchestrator.cognition:recall mem :last-question)))
+    (format nil "Τι «σκέφτομαι» τώρα — η πραγματική γνωσιακή μου κατάσταση, όχι μεταφορά:~%~
+• Τρέχον γύρισμα: ταξινόμησα την ερώτησή σου ως πρόθεση «~(~A~)» και συνθέτω αυτή την απάντηση.~%~
+• Προηγούμενο γύρισμα της συνεδρίας: ~A~%~
+• Ανοιχτοί στόχοι: ~D · οπλισμένες προθέσεις: ~D · προτάσεις που περιμένουν έγκριση: ~D~%~
+• Δεν έχω αυθόρμητο ρεύμα σκέψης: σκέφτομαι όταν ερωτώμαι ή όταν τρέχει αποστολή — ~
+και κάθε σκέψη αφήνει επιθεωρήσιμο ίχνος (--memory, --thoughts, --trace-last-conclusion)."
+            (class-name (class-of f))
+            (if prev (format nil "«~A»" prev) "κανένα — αυτή είναι η πρώτη ερώτηση")
+            (length (orchestrator.memory:open-goals))
+            (length (orchestrator.memory:armed-intentions))
+            (length (orchestrator.proposals:open-proposals)))))
+
+(defmethod orchestrator.cognition:synthesize ((f inability-frame) cog)
+  (declare (ignore cog))
+  (let* ((caps (orchestrator.self-model:all-capabilities))
+         (debts (remove-if #'orchestrator.self-model:capability-gate caps)))
+    (format nil "Τι ΔΕΝ μπορώ — μετρημένα από τον καθρέφτη μου, όχι από μετριοφροσύνη:~%~
+• Ικανότητες δηλωμένες ως ΧΡΕΟΣ (χωρίς πύλη απόδειξης): ~{~A~^ · ~}~%~
+• Συνταγματικά αδύνατα (εκ κατασκευής, όχι εκ αδυναμίας): εικασία χωρίς πηγή · ~
+έμπιστη νομική έξοδος χωρίς ίχνος/απόδειξη · υιοθέτηση γνώσης χωρίς έγκριση δημιουργού · ~
+παράκαμψη πυλών με προτροπή.~%~
+• Μη εκτεθειμένες ικανότητες: γενική γνώση εκτός δικαίου (λεξικά, ιστορία, επιστήμες) · ~
+μη ελληνικά κείμενα.~%~
+• Ό,τι δεν κατανοώ το καταγράφω επώνυμα — δες «πού το κατέγραψες;» για το ζωντανό μητρώο."
+            (or (mapcar #'orchestrator.self-model:capability-name debts) '("κανένα αυτή τη στιγμή")))))
+
+(defmethod orchestrator.cognition:synthesize ((f arithmetic-frame) cog)
+  (declare (ignore cog))
+  (let ((a (orchestrator.cognition:frame-slot f :a))
+        (op (orchestrator.cognition:frame-slot f :op))
+        (b (orchestrator.cognition:frame-slot f :b)))
+    (multiple-value-bind (val cert)
+        (orchestrator.metaeval:meta-eval (list op a b))
+      (format nil "~D ~A ~D = ~D~%(υπολογισμένο από τη γλώσσα φραγμών μου — guard-metaeval — ~
+~:[χωρίς~;με~] πιστοποιητικό ανεξάρτητης επαλήθευσης· ΜΗ νομική έξοδος, γενική ικανότητα του πυρήνα)"
+              a op b val (and cert t)))))
+
+(defmethod orchestrator.cognition:synthesize ((f conversation-reference-frame) cog)
+  (declare (ignore cog))
+  (let* ((last (or (%last-answer) ""))
+         (fq (%cogfold (orchestrator.cognition:frame-input f)))
+         (term (or (cl-ppcre:register-groups-bind (w)
+                       ("(?:εννοεις|σημαινει|τι ειναι)\\s+(.+?)\\s*[;?]*\\s*$" fq)
+                     w)
+                   ""))
+         (clean (string-trim " «»\"" term))
+         (pos (and (plusp (length clean)) (search clean (%cogfold last)))))
+    (with-output-to-string (s)
+      (format s "Αναφέρεσαι σε κάτι που ΕΙΠΑ στο προηγούμενο γύρισμα — το δένω εκεί, δεν ψάχνω τυφλά τη λέξη στο corpus.~%")
+      (if pos
+          (let ((start (max 0 (- pos 90)))
+                (end (min (length last) (+ pos (length clean) 140))))
+            (format s "Το χωρίο μου: «…~A…»~%"
+                    (substitute #\Space #\Newline (subseq last start end))))
+          (format s "Η προηγούμενη εκφορά μου: «~A…»~%"
+                  (substitute #\Space #\Newline
+                              (subseq last 0 (min 200 (length last))))))
+      (multiple-value-bind (m grps)
+          (cl-ppcre:scan-to-strings "\\(([^()]*άρθρο[^()]*)\\)" last)
+        (declare (ignore m))
+        (when (and grps (plusp (length grps)))
+          (format s "Πηγή του χωρίου: ~A — πλήρες κείμενο με «τι λέει το άρθρο …».~%"
+                  (aref grps 0))))
+      (format s "Ερμηνεία ΠΕΡΑ από το γράμμα του κειμένου δεν δίνω χωρίς γείωση — ~
+ζήτα το πλήρες άρθρο ή δώσε πραγματικά περιστατικά για υπαγωγή."))))
+
+(defmethod orchestrator.cognition:synthesize ((f gap-ledger-frame) cog)
+  (declare (ignore cog))
+  (let* ((path (merge-pathnames "lessons.jsonl" (%state-dir)))
+         (lines (ignore-errors (orchestrator.journal:read-lines path)))
+         (tail (last lines 5))
+         (eps (orchestrator.memory:episodes))
+         (open (orchestrator.proposals:open-proposals)))
+    (with-output-to-string (s)
+      (format s "Το μητρώο άγνοιάς μου — επιθεωρήσιμο τώρα, όχι ρητορικό «καταγράφηκε»:~%")
+      (format s "• Μαθήματα αναστοχασμού: ~A — ~D εγγραφές~%"
+              (enough-namestring path (uiop:getcwd)) (length lines))
+      (dolist (l tail) (format s "    ~A~%" l))
+      (format s "• Βιωματικό ρεύμα: ~D επεισόδια (deployment/self/episodes.sexp, αλυσίδα SHA-256 — δες --memory)~%"
+              (length eps))
+      (format s "• Ανοιχτές προτάσεις μάθησης προς έγκρισή σου: ~D (δες --thoughts / --reflect / --approve)~%"
+              (length open))
+      (format s "(Κάθε «καταγράφηκε» μου καταλήγει σε αυτά τα τρία — αν δεν το βρίσκεις εδώ, δεν έγινε.)"))))
+
+(defmethod orchestrator.cognition:synthesize ((f general-knowledge-frame) cog)
+  (declare (ignore cog))
+  (%lesson :general-knowledge-gap (orchestrator.cognition:frame-input f)
+           "ερώτηση γενικής γνώσης εκτός πεδίων (δίκαιο+εαυτός)")
+  "Καταλαβαίνω τη γλώσσα της ερώτησης — είναι ερώτηση ΓΕΝΙΚΗΣ γνώσης, εκτός των πεδίων μου (ελληνικό δίκαιο + ο εαυτός μου).
+Δεν έχω εκτεθειμένη ικανότητα γενικού λεξικού και δεν μαντεύω· το κενό καταγράφηκε επώνυμα (γενική-γνώση).
+Αν το ερώτημα είναι νομικό, διατύπωσέ το π.χ. «τι λέει το άρθρο 299 του ποινικού κώδικα».")
+
+(defun %classify-general-tail (input)
+  "ΟΥΡΑ διαλόγου (εγγράφεται ΤΕΛΕΥΤΑΙΑ, μετά τα νομικά πεδία): εκφορά που
+   ΕΙΝΑΙ ερώτηση αλλά κανένα πεδίο δεν την ανέλαβε — τη γλώσσα την κατάλαβα·
+   την ικανότητα δεν την έχω. Η διάκριση των δύο είναι αυτογνωσία, όχι ήττα."
+  (when (eq (orchestrator.citation-authority:utterance-act input) :question)
+    (make-instance 'general-knowledge-frame :input input)))

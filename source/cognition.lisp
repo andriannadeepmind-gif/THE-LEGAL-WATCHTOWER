@@ -159,7 +159,13 @@
                    revised)
                   (t
                    (th 'orchestrator.deliberation:rejection "④·5 αυτο-κριτική: ~A" issue)
-                   (format nil "~A~%~%⚠ ΑΥΤΟΚΡΙΤΙΚΗ: ~A" draft issue)))))))))
+                   (format nil "~A~%~%⚠ ΑΥΤΟΚΡΙΤΙΚΗ: ~A" draft issue))))))
+      ;; 4β — η ΤΕΛΙΚΗ εκφορά στη μνήμη συνεδρίας: το επόμενο γύρισμα μπορεί
+      ;; να δέσει «τι εννοείς …;» πάνω σε ό,τι ΠΡΑΓΜΑΤΙΚΑ ειπώθηκε — η αναφορά
+      ;; συνομιλίας γίνεται δεδομένο, όχι εικασία.
+      (when (cog-answer cog)
+        (remember (cog-memory cog) :last-answer (cog-answer cog))
+        (remember (cog-memory cog) :last-question (cog-input cog))))))
 
 ;;; ── Ο ΟΡΧΗΣΤΡΩΤΗΣ: τα στάδια, με αναλογικό βάθος ──
 (defun process-request (input &key memory)

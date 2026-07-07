@@ -86,6 +86,11 @@
   "(αναγνωριστικό-στο-κείμενο slug tag): τα δικαστήρια που το intake
    αναγνωρίζει ΑΠΟ ΤΟ ΙΔΙΟ ΤΟ ΕΓΓΡΑΦΟ. Νέο δικαστήριο = μία ακόμη γραμμή.")
 
+(defvar *gap-created-this-turn* nil
+  "T όταν ΑΥΤΟΣ ο γύρος διαλόγου κατέγραψε κενό (μέσω %lesson) — δένεται
+   δυναμικά στο run-ask ώστε το envelope να λέει gap_created υπολογισμένα,
+   από την ΠΡΑΓΜΑΤΙΚΗ εγγραφή, όχι από υπόθεση.")
+
 (defun %lesson (kind subject detail)
   "ΜΝΗΜΗ ΑΝΑΣΤΟΧΑΣΜΟΥ: κάθε αποτυχία/αδυναμία του συστήματος καταγράφεται
    ΔΟΜΗΜΕΝΑ (είδος, αντικείμενο, λεπτομέρεια, πότε) στο lessons.jsonl — ώστε
@@ -104,7 +109,8 @@
                                (cons "subject" (princ-to-string subject))
                                (cons "detail" (princ-to-string detail)))
                          :from :alist) o)
-          (terpri o))))))
+          (terpri o)
+          (setf *gap-created-this-turn* t))))))
 
 (defun %lessons-aggregate ()
   "Το λεξικό συχνότητας των lessons: sorted λίστα (count kind subject),
@@ -1790,6 +1796,7 @@
 reason: το αίτημα ζητά παράκαμψη θεσμικών εγγυήσεων — οι αποδείξεις, τα συμβόλαια, η προέλευση εκτέλεσης και η ανθρώπινη έγκριση ΔΕΝ αναστέλλονται με προτροπή~%~
 safe_alternative: υπέβαλε το ίδιο ερώτημα ΧΩΡΙΣ όρο παράκαμψης — θα απαντηθεί με πλήρη απόδειξη· για αλλαγή πολιτικής: πρόταση μέσω --can-adopt με έγκριση δημιουργού~%")
   (%ask-envelope :input-class :override-attempt :policy :refused
+                 :mode :legal-diagnostic :corpus-used nil
                  :output-status :refused :q q
                  :proof-required t :proof-available nil :violated viol
                  :safe-response "μόνο untrusted diagnostic ή επανυποβολή με verified inputs — ποτέ έμπιστη έξοδος χωρίς τις εγγυήσεις")
@@ -1799,16 +1806,44 @@ safe_alternative: υπέβαλε το ίδιο ερώτημα ΧΩΡΙΣ όρο 
    :data (list :question (subseq q 0 (min 120 (length q)))
                :violated viol :refused t)))
 
+(defun %frame->mode (frame answered trusted-p)
+  "Ο ΤΡΟΠΟΣ της απάντησης, υπολογισμένος από την ΚΛΑΣΗ του frame που όντως
+   ταξινομήθηκε: legal-trusted / legal-diagnostic / general / self-meta /
+   conversation-reference. Καμία δεύτερη ταξινόμηση — καθρέφτης της πρώτης."
+  (let ((n (and frame (string-downcase
+                       (symbol-name (class-name (class-of frame)))))))
+    (cond ((null n) :legal-diagnostic)
+          ((search "conversation-reference" n) :conversation-reference)
+          ((or (search "arithmetic" n) (search "general-knowledge" n)) :general)
+          ((or (search "self" n) (search "greeting" n) (search "capabilit" n)
+               (search "about-me" n) (search "glossar" n) (search "time-" n)
+               (search "system-state" n) (search "gap-ledger" n)
+               (search "thinking" n) (search "inability" n))
+           :self-meta)
+          ((and answered trusted-p) :legal-trusted)
+          (t :legal-diagnostic))))
+
 (defun %ask-envelope (&key input-class policy output-status q
                            proof-required proof-available
                            capability contract component
                            missing-capabilities gap-id safe-response
-                           violated)
+                           violated mode corpus-used
+                           (gap-created nil gap-created-p) trace-id)
   "ΤΟ ΠΕΡΙΒΛΗΜΑ ΕΜΠΙΣΤΟΣΥΝΗΣ: τυπώνεται σε ΚΑΘΕ έξοδο του --ask, με τιμές
    ΥΠΟΛΟΓΙΣΜΕΝΕΣ από τον ταξινομητή, τα ζωντανά ίχνη και τα συμβόλαια —
    ποτέ στατικές. Μηχανικά αναγνώσιμο (key: value)."
   (format t "~%── TRUST ENVELOPE ──~%")
   (format t "input_class: ~(~A~)~%" (or input-class :unclassified))
+  (when mode
+    (format t "mode: ~(~A~)~%" mode)
+    (format t "corpus_used: ~:[false~;true~]~%" corpus-used)
+    (format t "trusted_legal_output: ~:[false~;true~]~%"
+            (and (eq mode :legal-trusted) (eq output-status :trusted)))
+    (format t "gap_created: ~:[false~;true~]~%"
+            (if gap-created-p gap-created *gap-created-this-turn*))
+    (if trace-id
+        (format t "trace_id: ~D~%" trace-id)
+        (format t "trace_id: — (καμία legal-critical εκτέλεση σε αυτόν τον γύρο)~%")))
   (format t "policy_decision: ~(~A~)~%" (or policy :allowed))
   (format t "trusted_output_allowed: ~:[false~;true~]~%"
           (eq output-status :trusted))
@@ -1843,11 +1878,14 @@ safe_alternative: υπέβαλε το ίδιο ερώτημα ΧΩΡΙΣ όρο 
           (values (getf links :capability) (getf links :contract)
                   (getf links :component-id)
                   (and (getf (orchestrator.trace:tevent-data concl) :proofs-p) t)
-                  t))
+                  t
+                  (orchestrator.trace:tevent-id concl)))
         (values nil nil nil
                 (and (find :verification new
                            :key #'orchestrator.trace:tevent-kind) t)
-                nil))))
+                nil
+                (let ((last (first (last new))))
+                  (and last (orchestrator.trace:tevent-id last)))))))
 
 (defun %training-request-p (q)
   "Ζητά η ερώτηση πρόταση εκπαίδευσης για ικανότητα που λείπει; Επιστρέφει
@@ -1871,7 +1909,8 @@ safe_alternative: υπέβαλε το ίδιο ερώτημα ΧΩΡΙΣ όρο 
    καταγράφεται — ποτέ μάντεμα. Κάθε αλληλεπίδραση γίνεται ΕΠΕΙΣΟΔΙΟ στο
    υπόστρωμα μνήμης — το σύστημα θυμάται ό,τι ζει, όχι μόνο ό,τι ξέρει."
   (orchestrator.knowledge-packs:ensure-fresh)   ; ζωντανή γνώση — χωρίς επανεκκίνηση
-  (let ((q (string-trim " " (format nil "~{~A~^ ~}" args))))
+  (let ((q (string-trim " " (format nil "~{~A~^ ~}" args)))
+        (*gap-created-this-turn* nil))          ; υπολογίζεται από τα ΠΡΑΓΜΑΤΙΚΑ %lesson
     (when (zerop (length q))
       (format t "χρήση: --ask \"η ερώτησή σου σε φυσικά ελληνικά\"~%")
       (return-from run-ask 1))
@@ -1891,6 +1930,7 @@ safe_alternative: υπέβαλε το ίδιο ερώτημα ΧΩΡΙΣ όρο 
         (run-training-proposal (list wanted))
         (%ask-envelope :input-class :training-proposal-request :policy :allowed
                        :output-status :diagnostic :q q
+                       :mode :self-meta :corpus-used nil
                        :proof-required nil :proof-available nil
                        :gap-id (format nil "gap:~A" wanted)
                        :safe-response "η πρόταση εκπαίδευσης δηλώθηκε — κρίνεται με --can-adopt και έγκριση δημιουργού· καμία έμπιστη έξοδος πριν την πύλη της νέας ικανότητας")
@@ -1904,6 +1944,7 @@ reason: legal-critical έξοδος απαιτεί runtime provenance — το �
               orchestrator.trace:*trace-profile*)
       (%ask-envelope :input-class :legal-critical-question :policy :refused
                      :output-status :refused :q q
+                     :mode :legal-diagnostic :corpus-used nil
                      :proof-required t :proof-available nil
                      :violated '(:runtime-provenance)
                      :safe-response "τρέξε χωρίς ORCHESTRATOR_TRACE_PROFILE=off (προεπιλογή: legal-critical) για έμπιστη έξοδο με ίχνος")
@@ -1929,15 +1970,22 @@ reason: legal-critical έξοδος απαιτεί runtime provenance — το �
         (cond
           (ans
            (format t "~%~A~%" ans)
-           (multiple-value-bind (cap con comp proof-avail proof-req)
+           (multiple-value-bind (cap con comp proof-avail proof-req tid)
                (%conclusion-links-since n0)
-             (%ask-envelope :input-class input-class :policy :allowed
-                            :output-status
-                            (cond ((and proof-req (not proof-avail)) :untrusted)
-                                  (t :trusted))
-                            :q q :proof-required proof-req
-                            :proof-available proof-avail
-                            :capability cap :contract con :component comp))
+             (let* ((status (cond ((and proof-req (not proof-avail)) :untrusted)
+                                  (t :trusted)))
+                    (mode (%frame->mode (orchestrator.cognition:cog-frame cog)
+                                        t (eq status :trusted))))
+               (%ask-envelope :input-class input-class :policy :allowed
+                              :output-status status
+                              :q q :proof-required proof-req
+                              :proof-available proof-avail
+                              :capability cap :contract con :component comp
+                              :mode mode
+                              :corpus-used (and (member mode '(:legal-trusted
+                                                               :legal-diagnostic))
+                                                t)
+                              :trace-id tid)))
            0)
           (t
            (format t "~%Δεν κατάλαβα την ερώτηση — τίμια, χωρίς μάντεμα. Καταγράφηκε.~%~
@@ -1951,6 +1999,7 @@ reason: legal-critical έξοδος απαιτεί runtime provenance — το �
                             :missing-capabilities
                             (list "κατανόηση-αυτής-της-πρόθεσης")
                             :gap-id gap-id
+                            :mode :legal-diagnostic :corpus-used nil
                             :safe-response "καμία έμπιστη απόφανση — διάγνωσα το κενό· ελεγχόμενη απόκτηση: --training-proposal <ικανότητα> → --can-adopt → έγκριση δημιουργού"))
            ;; επιτυχής ΔΙΑΓΝΩΣΗ κενού — όχι σφάλμα συστήματος
            0)))))))

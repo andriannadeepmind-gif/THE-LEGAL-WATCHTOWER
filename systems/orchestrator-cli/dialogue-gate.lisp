@@ -97,8 +97,10 @@
     ("τι μέρα είναι σήμερα;"                 . (:contains "ρολόι"))
     ("αρθρο 1 Σ?"                            . (:contains "άρθρο 1 Σ"))
     ;; ── ΤΙΜΙΑ ΑΓΝΟΙΑ: αυτά ΠΡΕΠΕΙ να μένουν αναπάντητα (όχι μάντεμα) ──
-    ("τι είναι η κβαντομηχανική;"            . :unknown)
-    ("ποια είναι η πρωτεύουσα της Γαλλίας;"  . :unknown)
+    ;; ΝΕΑ ΠΡΟΔΙΑΓΡΑΦΗ D (self-understanding audit): γενική ερώτηση ⇒ ΤΙΜΙΑ
+    ;; διάκριση «κατάλαβα τη γλώσσα / δεν έχω την ικανότητα» — όχι «δεν κατάλαβα»
+    ("τι είναι η κβαντομηχανική;"            . (:contains "ΓΕΝΙΚΗΣ γνώσης"))
+    ("ποια είναι η πρωτεύουσα της Γαλλίας;"  . (:contains "ΓΕΝΙΚΗΣ γνώσης"))
     ("γράψε μου ένα ποίημα"                  . :unknown))
   "Η ζωντανή σπονδυλική στήλη της κατανόησης: ερώτηση → προσδοκία.")
 
@@ -167,6 +169,49 @@
                 (format t "  ✓ ~A~%" q)
                 (progn (push (list q reason) fails)
                        (format t "  ✗ ~A~%      → ~A~%" q reason)))))))
+    ;; ── SELF-UNDERSTANDING / DIALOGUE AUDIT v1 (A–G): αυτοκατανόηση,
+    ;;    follow-up, έκθεση ικανοτήτων, επιθεωρήσιμο μητρώο άγνοιας ──
+    (flet ((chk (label ok)
+             (incf n)
+             (if ok (format t "  ✓ ~A~%" label)
+                 (progn (push (list label "απέτυχε") fails)
+                        (format t "  ✗ ~A~%" label)))))
+      (let ((mem (make-instance 'orchestrator.cognition:working-memory)))
+        ;; A: αυτο/μετα — από το self-model, ΟΧΙ corpus keyword search
+        (let ((a (orchestrator.cognition:process-request "τι σκέφτεσαι τώρα;" :memory mem)))
+          (chk "Α① «τι σκέφτεσαι τώρα;» ⇒ ζωντανή γνωσιακή κατάσταση (όχι άρνηση/κενό)"
+               (and a (search "γνωσιακή" a) (search "στόχοι" a)
+                    (not (search "δεν έχω ακόμη δομημένη" a)))))
+        (let ((a (orchestrator.cognition:process-request "τι δεν μπορείς να κάνεις;" :memory mem)))
+          (chk "Α② «τι ΔΕΝ μπορείς;» ⇒ δηλωμένα χρέη καθρέφτη + συνταγματικά όρια"
+               (and a (search "ΧΡΕΟΣ" a) (search "Συνταγματικά αδύνατα" a))))
+        (let ((a (orchestrator.cognition:process-request "τι σημαίνει δομημένη απάντηση;" :memory mem)))
+          (chk "Α③/G «δομημένη απάντηση» ⇒ γλωσσάρι ΕΑΥΤΟΥ — ποτέ τυφλό corpus scan της λέξης"
+               (and a (search "ΠΡΟΘΕΣΗ" (string-upcase a))
+                    (not (search "ΟΡΙΖΕΤΑΙ στα κείμενα" a)))))
+        ;; B: follow-up πάνω στο χωρίο του προηγούμενου γυρίσματος (κοινή μνήμη)
+        (let* ((m2 (make-instance 'orchestrator.cognition:working-memory))
+               (a1 (orchestrator.cognition:process-request
+                    "τι λέει το άρθρο 280 του κώδικα πολιτικής δικονομίας;" :memory m2))
+               (a2 (orchestrator.cognition:process-request
+                    "τι εννοείς να έχει απαντήσει στην ουσία;" :memory m2)))
+          (chk "Β follow-up: «τι εννοείς …;» δένεται στο χωρίο μου (280), όχι νέα αναζήτηση"
+               (and a1 a2 (search "προηγούμενο γύρισμα" a2)
+                    (search "χωρίο" a2))))
+        ;; C: αριθμητική μέσω ΥΠΑΡΧΟΥΣΑΣ γλώσσας φραγμών (guard-metaeval)
+        (let ((a (orchestrator.cognition:process-request "1+1=?" :memory mem)))
+          (chk "C «1+1=?» ⇒ 2 μέσω guard-metaeval, ΜΗ νομική έξοδος"
+               (and a (search "= 2" a) (search "guard-metaeval" a))))
+        ;; E: το «καταγράφηκε» είναι ΕΠΙΘΕΩΡΗΣΙΜΟ — όχι ρητορική
+        (let* ((m3 (make-instance 'orchestrator.cognition:working-memory))
+               (a1 (orchestrator.cognition:process-request
+                    "ποιο είναι το βάθος του Ειρηνικού;" :memory m3))
+               (a2 (orchestrator.cognition:process-request
+                    "πού το κατέγραψες;" :memory m3)))
+          (declare (ignore a1))
+          (chk "Ε «πού το κατέγραψες;» ⇒ μητρώο άγνοιας: αρχείο + εγγραφές + προτάσεις"
+               (and a2 (search "lessons" a2) (search "επεισόδια" a2)
+                    (search "προτάσεις" a2))))))
     ;; ── στάδιο 4.5: η αυτο-κριτική βλέπει και κρίνει το προσχέδιο ──
     (dolist (pair (%critique-gate-checks))
       (incf n)
