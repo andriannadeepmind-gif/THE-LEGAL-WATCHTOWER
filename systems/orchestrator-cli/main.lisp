@@ -1413,6 +1413,17 @@ document.getElementById('ops').addEventListener('click',function(ev){
                                        (uiop:getcwd)))))))
     (merge-pathnames (concatenate 'string short ".fingerprint.sexp") dir)))
 
+(defun %fingerprint-method (manifest)
+  "Ποια ΜΕΘΟΔΟΣ αποτυπώματος είναι ένα manifest — ώστε η σύγκριση golden↔τρέχον να
+   γίνεται LIKE-WITH-LIKE: :emitted (output-manifest — :file-id/:status :emitted) ή
+   :semantic (corpus-fingerprint — :num/:status :original|:amended). Ανιχνεύεται από
+   το σχήμα του πρώτου άρθρου, ώστε το ΙΔΙΟ το golden να ορίζει τη μέθοδο — χωρίς να
+   χρειάζεται καμία αλλαγή στο κλειδωμένο αρχείο golden."
+  (let ((a (first (getf manifest :articles))))
+    (cond ((and a (getf a :file-id)) :emitted)
+          ((and a (getf a :num)) :semantic)
+          (t :emitted))))
+
 (defun verify-corpus (&optional corpus-id)
   "The correctness guarantee, made operational: build the consolidated corpus,
    run the structural invariants, compute its deterministic fingerprint, write
@@ -1478,7 +1489,19 @@ document.getElementById('ops').addEventListener('click',function(ev){
        (format t "✓ Golden καθορίστηκε -> ~A~%" golden-path))
       ((probe-file golden-path)
        (let* ((golden (funcall (find-symbol "READ-FINGERPRINT-MANIFEST" fp) golden-path))
-              (diff (funcall (find-symbol "FINGERPRINT-DIFF" fp) golden manifest)))
+              ;; ΣΥΓΚΡΙΣΗ LIKE-WITH-LIKE: το golden ΟΡΙΖΕΙ τη μέθοδο. Αν κλειδώθηκε
+              ;; σημασιολογικά (corpus-fingerprint) αλλά τώρα υπάρχει output/*.hash,
+              ;; ΜΗΝ το συγκρίνεις με output-manifest (αυτό ήταν η ρίζα του ψευδο-drift
+              ;; μετά το commit του output cb26e5be) — ξαναϋπολόγισε ΤΗΝ ΙΔΙΑ μέθοδο.
+              (gmethod (%fingerprint-method golden))
+              (same (eq gmethod (%fingerprint-method manifest)))
+              (cmp (if same manifest
+                       (ecase gmethod
+                         (:semantic (funcall (find-symbol "CORPUS-FINGERPRINT" fp) doc))
+                         (:emitted  (funcall (find-symbol "OUTPUT-MANIFEST" fp) out-dir :id short)))))
+              (diff (funcall (find-symbol "FINGERPRINT-DIFF" fp) golden cmp)))
+         (unless same
+           (format t "  ℹ σύγκριση golden στη μέθοδο που κλειδώθηκε: ~(~A~)~%" gmethod))
          (format t "~A~%" (funcall (find-symbol "FORMAT-DIFF" fp) diff))
          (unless (funcall (find-symbol "DIFF-CLEAN-P" fp) diff) (setf rc 1))))
       (t (format t "ℹ Δεν υπάρχει golden ακόμη· τρέξε με GOLDEN_WRITE=1 για να καθοριστεί.~%")))
