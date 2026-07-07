@@ -67,6 +67,7 @@
   (:capability "συμβόλαια" :primitive :self)
   (:capability "μάθηση-κατανόησης" :primitive :evolution)
   (:capability "αρχιτεκτονική-περιφρούρηση" :primitive :substrate)
+  (:capability "χρυσή-περιφρούρηση" :primitive :law)
  )
 
  ;; ══ COMMAND → PRIMITIVE/OWNER/ENVELOPE (πλήρης κάλυψη — ελέγχεται αμφίδρομα) ══
@@ -74,6 +75,7 @@
   (:command "--adopt-knowledge" :primitive :evolution :owner-file "systems/orchestrator-cli/decisions.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--adoption-decision" :primitive :evolution :owner-file "systems/orchestrator-cli/evolution-gate.lisp" :envelope (:structured "decision:/reason: ή πλήρες δομημένο αντικείμενο"))
   (:command "--architecture-constitution-gate" :primitive :substrate :owner-file "systems/orchestrator-cli/architecture-gate.lisp" :envelope (:exception "read-only πύλη — τυπώνει ελέγχους, όχι νομική κρίση"))
+  (:command "--golden-gate" :primitive :law :owner-file "systems/orchestrator-cli/golden-gate.lisp" :envelope (:exception "read-only regression ratchet — golden ≡ τρέχον αποτύπωμα, όχι νομική κρίση"))
   (:command "--advisor" :primitive :hypothesis :owner-file "systems/orchestrator-cli/advisor.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--advisor-gate" :primitive :hypothesis :owner-file "systems/orchestrator-cli/advisor.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--affected-proofs" :primitive :evolution :owner-file "systems/orchestrator-cli/evolution-gate.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
