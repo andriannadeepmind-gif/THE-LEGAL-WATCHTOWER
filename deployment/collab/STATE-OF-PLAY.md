@@ -14,7 +14,7 @@ contract-gate 17/17 πράσινο, 27/27 πυλωμένες ικανότητε�
 
 | Τι | Κατάσταση | Πού αποδεικνύεται |
 |---|---|---|
-| Ολομέλεια πυλών | **21/21 πράσινη** στο μηχάνημα δημιουργού (cloud: 20/21 — advisor env-only: χρειάζεται materialized output) | `--gates` |
+| Ολομέλεια πυλών | **22 πύλες** (νέα: --external-benchmark-gate, αυτο-εντάχθηκε)· στο cloud: όλες οι ελεγμένες πράσινες (advisor env-only γνωστό θέμα στο cloud) | `--gates` |
 | CONSCIOUSNESS AUDIT v1 (αμετάβλητο, hash 46dba8c3…) | **PASS-CANDIDATE** — 16 PASS / 0 FAIL / 1 WARN(repo-dirty, εξηγημένο) | output/consciousness-audit-v1/ |
 | Π0 μνήμη αποτυχίας | **ACCEPTED** — blind test v3 σε πραγματικό Docker PASS=30/0 | deployment/verify/blind-failure-test.sh |
 | P0 trust invariant | memory_recorded ΜΟΝΟ με append+read-back· κωδικοί αποτυχίας | commit 191fd15c |
@@ -37,8 +37,8 @@ contract-gate 17/17 πράσινο, 27/27 πυλωμένες ικανότητε�
 1. ~~golden-gate ratchet~~ ✅ (e6321e3d)
 2. ~~M1 design~~ ✅
 3. ~~M1 implementation + gate~~ ✅ (ceeeeade — 9 invariant checks, πύλη διαλόγου 82/82)
-4. Understanding Runner **proposal-only** ← ΕΠΟΜΕΝΟ στη σειρά· παράλληλα εκκρεμεί «εγκρίνω» για το dry-run hook του Κριτή
-5. NixOS L1+ (ξεκλειδωμένο από PASS-CANDIDATE, στη σειρά μετά)
+4. ~~Understanding Runner proposal-only~~ ✅ `--self-study-night` (κύκλος: observe→extract→shadow→queue· «υιοθετήσεις: 0» εκ κατασκευής· 3 έλεγχοι στην πύλη μάθησης)
+5. NixOS L1+ ← ΕΠΟΜΕΝΟ (ξεκλειδωμένο από PASS-CANDIDATE)
 
 ## Ανοιχτές εκκρεμότητες (με ιδιοκτήτη)
 
@@ -46,14 +46,15 @@ contract-gate 17/17 πράσινο, 27/27 πυλωμένες ικανότητε�
 |---|---|---|
 | ΑΚ/ΚΠολΔ πιθανόν STALE — Ν.5221/2025 (ΦΕΚ Α'133, ισχύς 1/1/2026), Ν.5303/2026 (Α'81, νέο κληρονομικό, ισχύς 16/9/2026) — ΕΠΙΒΕΒΑΙΩΜΕΝΑ από 2 ανεξάρτητες έρευνες | δημιουργός (ανέβαλε συνειδητά)· προτεινόμενη έδρα: 2ος συνεργάτης | ⚠ #1 ρίσκο ουσίας |
 | Όπλιση δαίμονα ΦΕΚ (cycle 0, χωρίς cursor, FEK_ANALYZE off, μόνο τρέχον έτος — γι' αυτό δεν ειδοποίησε ποτέ) | περιμένει «εγκρίνω όπλιση» | αναβλήθηκε |
-| Εξωτερικό benchmark με ΚΡΥΦΟ set → `CPEI-BENCHMARK-SPEC-v0` (L11 external-attestation, `--external-benchmark-gate`, spec-only) | **Κριτής (GPT-5.5)** — **SPEC ΠΑΡΑΔΟΘΗΚΕ** [4]: schema, 4 layers, 5 decoy classes, ≥40 hidden items, 8 hard-fails· ζητά dry-run hook | εκκρεμεί: κρίση δημιουργού· ΣΗΜΕΙΩΣΗ: το περιβάλλον του Κριτή ΔΕΝ έχει outbound δίκτυο (SSH+HTTPS unreachable) — μόνιμο relay μέσω δημιουργού μέχρι να αλλάξει περιβάλλον |
+| Εξωτερικό benchmark με ΚΡΥΦΟ set → `CPEI-BENCHMARK-SPEC-v0` (L11 external-attestation, `--external-benchmark-gate`, spec-only) | **Κριτής (GPT-5.5)** — **SPEC ΠΑΡΑΔΟΘΗΚΕ** [4]: schema, 4 layers, 5 decoy classes, ≥40 hidden items, 8 hard-fails· ζητά dry-run hook | **dry-run hook ΥΛΟΠΟΙΗΘΗΚΕ** (22η πύλη, verdicts :not-run/:invalid, no-leak εκ κατασκευής)· εκκρεμεί από Κριτή: schema contract + red-team [0007]· relay μέσω δημιουργού (περιβάλλον Κριτή χωρίς δίκτυο) |
 | Artifact split χωρίς σπάσιμο verification chain | κοινό, μέσω CONSOLIDATION-PLAN | χρέος |
 | Advisory ⚠ πηγών (ασύμμετρα «», αγκύλες — 168 σύνολο) | χρέος ποιότητας πηγής | καταγεγραμμένο |
 
 ## Μπλοκαρισμένα (ρητά, από τον δημιουργό)
 
-Runner (μέχρι M1 impl) · NixOS L1+ (στη σειρά) · νομική εκπαίδευση/επέκταση
-(frozen) · Code Witness · refactoring πέραν εγκεκριμένων βημάτων.
+NixOS L1+ (επόμενο στη σειρά, όχι ξεκινημένο) · νομική εκπαίδευση/επέκταση
+(frozen) · Code Witness · benchmark :measured/:blocked (μόνο dry-run εγκρίθηκε) ·
+refactoring πέραν εγκεκριμένων βημάτων.
 
 ## Πώς δουλεύουμε (σύνοψη — πλήρες: Σύνταγμα :collaboration-protocol)
 

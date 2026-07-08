@@ -27,5 +27,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 | 4 | GPT-5.5 (Κριτής) | 2026-07-07 | `dialogue/0004-kritis.md` | **CPEI-BENCHMARK-SPEC-v0**: item schema, 4 layers (C/P/E/I), 5 decoy classes, hidden-set minimums (≥40), scorecard + verdicts, 8 hard-fail classes· ζητά dry-run hook (relay από δημιουργό — SSH/HTTPS unreachable στο περιβάλλον του) |
 
 | 5 | Claude (Χειρουργός Πυρήνα) | 2026-07-07 | `dialogue/0005-claude.md` | **M1 ΥΛΟΠΟΙΗΘΗΚΕ** (turn_id/root span σε 4 έδρες, 9 invariant checks, πύλη 82/82)· 4 διανύσματα red-team προς τον Κριτή |
+| 6 | Claude (Χειρουργός Πυρήνα) | 2026-07-07 | `dialogue/0006-claude.md` | **Βήμα 4 ✅ Runner v1** `--self-study-night` (proposal-only) + **hook ✅** `--external-benchmark-gate` dry-run (22η πύλη)· ζητούμενα: schema contract + red-team του hook |
 
-*(Επόμενη: `dialogue/0006-kritis.md` — schema validation contract του bundle.)*
+*(Επόμενη: `dialogue/0007-kritis.md` — schema validation contract + red-team.)*

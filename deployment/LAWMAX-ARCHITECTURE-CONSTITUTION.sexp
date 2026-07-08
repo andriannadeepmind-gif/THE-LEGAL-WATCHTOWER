@@ -68,6 +68,7 @@
   (:capability "μάθηση-κατανόησης" :primitive :evolution)
   (:capability "αρχιτεκτονική-περιφρούρηση" :primitive :substrate)
   (:capability "χρυσή-περιφρούρηση" :primitive :law)
+  (:capability "εξωτερική-μαρτυρία" :primitive :hypothesis)
  )
 
  ;; ══ COMMAND → PRIMITIVE/OWNER/ENVELOPE (πλήρης κάλυψη — ελέγχεται αμφίδρομα) ══
@@ -141,6 +142,8 @@
   (:command "--judge-profile" :primitive :authority :owner-file "systems/orchestrator-cli/decisions.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--jurisprudence" :primitive :authority :owner-file "systems/orchestrator-cli/decisions.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--learn-understanding" :primitive :evolution :owner-file "systems/orchestrator-cli/understanding-learning.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
+  (:command "--self-study-night" :primitive :evolution :owner-file "systems/orchestrator-cli/understanding-learning.lisp" :envelope (:exception "Runner v1 proposal-only: κύκλος αυτομελέτης κατανόησης — ΜΟΝΟ προτάσεις στην ουρά υπογραφής, καμία υιοθέτηση/μετάλλαξη"))
+  (:command "--external-benchmark-gate" :primitive :hypothesis :owner-file "systems/orchestrator-cli/external-benchmark-gate.lisp" :envelope (:exception "CPEI L11 external attestation dry-run: read-only επικύρωση σχήματος/αποτυπώματος bundle — δεν εκτελεί items, δεν εκφέρει νομική κρίση"))
   (:command "--lessons" :primitive :memory :owner-file "systems/orchestrator-cli/decisions.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--list-corpora" :primitive :law :owner-file "systems/orchestrator-cli/builtin-commands.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--list-pipelines" :primitive :law :owner-file "systems/orchestrator-cli/builtin-commands.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))

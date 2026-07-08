@@ -430,27 +430,122 @@
         (when (getf p :shadow)
           (format t "  σκιά: ~S~%" (getf p :shadow)))
         (when (eq (getf p :decision) :requires-human)
-          (orchestrator.proposals:propose!
-           :sig (format nil "understanding-rule ~A" (getf p :failure-id))
-           :kind :understanding-rule
-           :why (format nil "μάθηση κατανόησης από ~A: «~A» → ~(~A~) (γενικός κανόνας: ~{~A~^+~})"
-                        (getf p :failure-id) (getf p :input) (getf p :expected-mode)
-                        (mapcar #'car (getf (getf p :rule) :when)))
-           :payload (prin1-to-string
-                     (list :filename (format nil "understanding-~A.sexp"
-                                             (subseq (orchestrator.journal:sha256-hex
-                                                      (getf p :failure-id)) 0 8))
-                           :pack-text (with-output-to-string (o)
-                                        (let ((*print-pretty* nil))
-                                          (format o "(:knowledge-pack :understanding-rules 1~%")
-                                          (format o " ;; ΑΥΤΟ-ΠΡΟΤΑΘΗΚΕ από αποτυχία ~A — feature-based, όχι phrase~%"
-                                                  (getf p :failure-id))
-                                          (format o " (:understanding-rule ~{~S ~}))~%"
-                                                  (getf p :rule))))
-                           :proposal p)))
+          (%queue-understanding-proposal! p)
           (format t "  → ΚΑΤΑΤΕΘΗΚΕ στην ουρά έγκρισης (--thoughts / --approve)~%"))))
     0))
 (register-command "--learn-understanding" (lambda (a) (run-learn-understanding a)))
+
+(defun %queue-understanding-proposal! (p)
+  "Η ΜΙΑ κατάθεση πρότασης κατανόησης στην ΥΠΑΡΧΟΥΣΑ ουρά έγκρισης — κοινή
+   έδρα για --learn-understanding ΚΑΙ τον Runner (κανένας δεύτερος writer)."
+  (orchestrator.proposals:propose!
+   :sig (format nil "understanding-rule ~A" (getf p :failure-id))
+   :kind :understanding-rule
+   :why (format nil "μάθηση κατανόησης από ~A: «~A» → ~(~A~) (γενικός κανόνας: ~{~A~^+~})"
+                (getf p :failure-id) (getf p :input) (getf p :expected-mode)
+                (mapcar #'car (getf (getf p :rule) :when)))
+   :payload (prin1-to-string
+             (list :filename (format nil "understanding-~A.sexp"
+                                     (subseq (orchestrator.journal:sha256-hex
+                                              (getf p :failure-id)) 0 8))
+                   :pack-text (with-output-to-string (o)
+                                (let ((*print-pretty* nil))
+                                  (format o "(:knowledge-pack :understanding-rules 1~%")
+                                  (format o " ;; ΑΥΤΟ-ΠΡΟΤΑΘΗΚΕ από αποτυχία ~A — feature-based, όχι phrase~%"
+                                          (getf p :failure-id))
+                                  (format o " (:understanding-rule ~{~S ~}))~%"
+                                          (getf p :rule))))
+                   :proposal p))))
+
+;;; ── RUNNER v1 — ΝΥΧΤΕΡΙΝΗ ΑΥΤΟΜΕΛΕΤΗ ΚΑΤΑΝΟΗΣΗΣ (proposal-only) ─────────
+;;;
+;;; Βήμα 4 της κλειδωμένης σειράς (ρητό ΟΚ δημιουργού). Κατά το
+;;; LAWMAX-AUTODIDACTIC-LOOP §3: observe → extract → shadow → decide →
+;;; morning queue + memory. v1 = το υπόστρωμα ΚΑΤΑΝΟΗΣΗΣ μόνο (ο πλήρης
+;;; νυχτερινός κύκλος corpus/bundles έρχεται με τις επόμενες φάσεις — το
+;;; interface ΔΕΝ θα αλλάξει). ΘΕΜΕΛΙΩΔΕΣ: ΜΟΝΟ προτάσεις — ουρά υπογραφής·
+;;; μηδενική υιοθέτηση, μηδενική μετάλλαξη του σταθερού εαυτού.
+
+(defun %queued-understanding-sigs ()
+  "Οι υπογραφές ΟΛΩΝ των understanding-rule προτάσεων στο μητρώο (κάθε status)
+   — ο Runner δεν διπλο-καταθέτει ποτέ την ίδια αποτυχία."
+  (loop for p in (orchestrator.proposals:proposals)
+        when (eq (orchestrator.proposals:proposal-kind p) :understanding-rule)
+          collect (orchestrator.proposals:proposal-sig p)))
+
+(defun %self-study-cycle (lines &key expected
+                                     (queue-fn #'%queue-understanding-proposal!)
+                                     (queued-sigs (%queued-understanding-sigs)))
+  "Ο ΕΝΑΣ κύκλος αυτομελέτης πάνω σε LINES (raw ledger γραμμές): για κάθε
+   αποτυχία → πρόταση (generator+σκιά) → απόφαση → κατάθεση ΜΟΝΟ αν
+   :requires-human ΚΑΙ δεν είναι ήδη κατατεθειμένη. Επιστρέφει (values counts
+   errors). Καθαρός πυρήνας: η ουρά περνιέται ως QUEUE-FN ώστε η πύλη να τον
+   ελέγχει ΧΩΡΙΣ να μολύνει το πραγματικό μητρώο προτάσεων."
+  (let ((n-queued 0) (n-dup 0) (n-quar 0) (n-den 0) (n-err 0) (errors '()))
+    (dolist (fl lines)
+      (let ((sig (format nil "understanding-rule ~A"
+                         (or (%json-field fl "failure_id") "—"))))
+        (if (member sig queued-sigs :test #'string=)
+            (incf n-dup)                ; ήδη στην ουρά — δεν ξαναξοδεύεται σκιά
+            (handler-case
+                (let* ((p (generate-understanding-proposal fl :expected-mode expected))
+                       (dec (getf p :decision)))
+                  (case dec
+                    (:requires-human
+                     (funcall queue-fn p)
+                     (push sig queued-sigs)
+                     (incf n-queued))
+                    (:quarantine (incf n-quar))
+                    (t (incf n-den))))
+              (error (e)
+                (incf n-err)
+                (push (format nil "~A: ~A" sig e) errors))))))
+    (values (list :examined (length lines) :queued n-queued :duplicates n-dup
+                  :quarantined n-quar :denied n-den :errors n-err)
+            (nreverse errors))))
+
+(defun run-self-study-night (args)
+  "--self-study-night [expected-mode] : Runner v1 (ΜΟΝΟ προτάσεις) — ένας
+   πλήρης κύκλος αυτομελέτης πάνω σε ΟΛΕΣ τις ανοιχτές αποτυχίες του ledger,
+   με πρωινή αναφορά, ίχνη ανά στάδιο και επεισόδιο μνήμης. ΚΑΜΙΑ υιοθέτηση:
+   ό,τι επιζεί της σκιάς καταθέτεται στην ουρά υπογραφής του δημιουργού."
+  (let* ((expected (and args (intern (string-upcase (first args)) :keyword)))
+         (rules-before *learned-rules*)
+         (cap 200)
+         (fails (open-failures))
+         (work (last fails cap))
+         (truncated (- (length fails) (length work))))
+    (format t "~%── ΝΥΧΤΕΡΙΝΗ ΑΥΤΟΜΕΛΕΤΗ (Runner v1 · ΜΟΝΟ προτάσεις — καμία υιοθέτηση) ──~%")
+    (orchestrator.trace:emit! :self-study :symbol "observe" :package "orchestrator.cli"
+                              :data (list :stage :observe :open-failures (length fails)
+                                          :examined (length work)))
+    (format t "παρατήρηση: ~D ανοιχτές αποτυχίες~@[ · ⚠ όριο ~D — ~D παλαιότερες εκτός κύκλου (τίμια αποκοπή)~]~%"
+            (length fails) (and (plusp truncated) cap) (and (plusp truncated) truncated))
+    (multiple-value-bind (counts errors) (%self-study-cycle work :expected expected)
+      (orchestrator.trace:emit! :self-study :symbol "decide" :package "orchestrator.cli"
+                                :data (append (list :stage :decide) counts))
+      ;; ── ΠΡΩΙΝΗ ΑΝΑΦΟΡΑ — πλήρης λογοδοσία, ποτέ σιωπηλό skip ──
+      (format t "~%── ΠΡΩΙΝΗ ΑΝΑΦΟΡΑ ──~%")
+      (format t "εξετάστηκαν: ~D~%" (getf counts :examined))
+      (format t "κατατέθηκαν στην ουρά υπογραφής: ~D (--thoughts / --approve)~%"
+              (getf counts :queued))
+      (format t "διπλότυπα (ήδη στην ουρά): ~D~%" (getf counts :duplicates))
+      (format t "καραντίνα (expected άγνωστο — θέλουν σχολιασμό δημιουργού): ~D~%"
+              (getf counts :quarantined))
+      (format t "απορρίφθηκαν από τη σκιά: ~D~%" (getf counts :denied))
+      (format t "σφάλματα σταδίων: ~D~%" (getf counts :errors))
+      (dolist (e errors) (format t "  ⚠ ~A~%" e))
+      (format t "υιοθετήσεις: 0 — ΕΚ ΚΑΤΑΣΚΕΥΗΣ (*learned-rules* αμετάβλητο: ~:[ΟΧΙ — ΣΦΑΛΜΑ~;ναι~])~%"
+              (eq rules-before *learned-rules*))
+      (orchestrator.memory:record-episode :self-study "νυχτερινή αυτομελέτη κατανόησης"
+        :status (if errors :with-errors :ok)
+        :topic "understanding-runner"
+        :props (append counts (list :adopted 0)))
+      (cond ((not (eq rules-before *learned-rules*))
+             (format t "✗ ΠΑΡΑΒΙΑΣΗ proposal-only — άγνωστη μετάλλαξη κανόνων~%") 1)
+            (errors 1)
+            (t 0)))))
+(register-command "--self-study-night" (lambda (a) (run-self-study-night a)))
 
 ;;; ── ΔΗΛΩΣΗ ΣΤΟΝ ΚΑΘΡΕΦΤΗ (ratchet) ──────────────────────────────────────
 
@@ -458,7 +553,8 @@
  :description "learning substrate διαλόγου: failure ledger → feature-based rule proposal → shadow (positives/negatives/held-out/regression) → ουρά υπογραφής· phrase-patch αδύνατο εκ κατασκευής"
  :package :orchestrator.cli
  :functions '("record-dialogue-failure!" "generate-understanding-proposal"
-              "shadow-evaluate-rule" "validate-understanding-rule")
+              "shadow-evaluate-rule" "validate-understanding-rule"
+              "run-self-study-night" "%self-study-cycle")
  :gate "--understanding-gate"
  :depends-on '("διάλογος" "πακέτα-γνώσης" "πολιτικές-έγκρισης"))
 
@@ -590,7 +686,53 @@
              (= before (length (%raw-lines (%failure-ledger-path))))))
       (chk "⑬ Π0-D: %lesson (aggregate) και ledger ΞΕΧΩΡΙΣΤΑ — ένας writer ο καθένας, κανένα δεύτερο store"
            (and (fboundp '%lesson) (fboundp 'record-dialogue-failure!)
-                (probe-file (%failure-ledger-path)))))
+                (probe-file (%failure-ledger-path))))
+      ;; ── RUNNER v1 (βήμα 4 — proposal-only): οι εγγυήσεις του ως πύλη ──
+      ;; ⑭ ο κύκλος ΔΕΝ αγγίζει το πραγματικό μητρώο: queue-fn injectable —
+      ;;    ένα synthetic requires-human καταλήγει ΜΟΝΟ στον collector.
+      (let* ((line (jonathan:to-json
+                    (list (cons "failure_id" "fail:runner-t1")
+                          (cons "input" "τι εννοείς να έχει απαντήσει στην ουσία;")
+                          (cons "context" "…χωρίς να έχει απαντήσει στην ουσία… (ΚΠολΔ άρθρο 280)")
+                          (cons "wrong_mode" "self-meta")
+                          (cons "expected_mode_if_known" "conversation-reference")
+                          (cons "status" "open"))
+                    :from :alist))
+             (collected '()))
+        (multiple-value-bind (counts errs)
+            (%self-study-cycle (list line)
+                               :queue-fn (lambda (p) (push p collected))
+                               :queued-sigs '())
+          (declare (ignore errs))
+          (chk "⑭ Runner: κύκλος πάνω σε αποτυχία ⇒ πρόταση στον injected collector (όχι στο μητρώο)"
+               (and (= 1 (getf counts :examined))
+                    (or (and (= 1 (getf counts :queued)) (= 1 (length collected)))
+                        ;; αν η σκιά την απορρίψει/καραντινάρει, ΚΑΜΙΑ κατάθεση
+                        (and (zerop (getf counts :queued)) (null collected))))))
+        ;; ⑮ dedup: η ΙΔΙΑ αποτυχία με τη sig ήδη στην ουρά ⇒ διπλότυπο, ΟΧΙ
+        ;;    δεύτερη κατάθεση, ΟΧΙ δεύτερη (ακριβή) σκιά.
+        (let ((collected2 '()))
+          (multiple-value-bind (counts2 errs2)
+              (%self-study-cycle (list line)
+                                 :queue-fn (lambda (p) (push p collected2))
+                                 :queued-sigs '("understanding-rule fail:runner-t1"))
+            (declare (ignore errs2))
+            (chk "⑮ Runner: ήδη κατατεθειμένη sig ⇒ duplicate=1, queued=0 (καμία διπλο-κατάθεση)"
+                 (and (= 1 (getf counts2 :duplicates))
+                      (zerop (getf counts2 :queued))
+                      (null collected2))))))
+      ;; ⑯ ο ΠΡΑΓΜΑΤΙΚΟΣ Runner: proposal-only εγγύηση + πρωινή αναφορά +
+      ;;    exit 0 + κανόνες ΑΜΕΤΑΒΛΗΤΟΙ (ζωντανό ledger — όλα expected
+      ;;    unknown ⇒ καραντίνα, καμία εγγραφή στο μητρώο προτάσεων).
+      (let* ((rules-before *learned-rules*)
+             (rc nil)
+             (out (with-output-to-string (*standard-output*)
+                    (setf rc (run-self-study-night nil)))))
+        (chk "⑯ Runner: --self-study-night ⇒ exit 0 · πρωινή αναφορά · «υιοθετήσεις: 0» · κανόνες αμετάβλητοι"
+             (and (zerop rc)
+                  (search "ΠΡΩΙΝΗ ΑΝΑΦΟΡΑ" out)
+                  (search "υιοθετήσεις: 0" out)
+                  (eq rules-before *learned-rules*)))))
     (format t "~%── ΠΥΛΗ ΜΑΘΗΣΗΣ ΚΑΤΑΝΟΗΣΗΣ: ~D/~D πέρασαν ──~%"
             (- total (length fails)) total)
     (if fails 1 0)))
