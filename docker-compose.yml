@@ -68,11 +68,14 @@ services:
       # IPFS_API: ${IPFS_API:-/ip4/127.0.0.1/tcp/5001}
 
     healthcheck:
-      test: ["CMD-SHELL", "test -f /tmp/orchestrator-health || exit 1"]
+      # ΣΗΜΑΣΙΟΛΟΓΙΚΗ ετοιμότητα: το αρχείο το γράφει ο ΙΔΙΟΣ ο orchestrator
+      # στο τέλος επιτυχούς pipeline (write-health-file) — όχι ο wrapper στην
+      # εκκίνηση. start_period μεγάλο: το pipeline παίρνει λεπτά.
+      test: ["CMD-SHELL", "test -f /app/output/.healthy || exit 1"]
       interval: 30s
       timeout: 5s
-      retries: 3
-      start_period: 10s
+      retries: 5
+      start_period: 600s
 
     networks:
       - orchestrator-net

@@ -246,6 +246,10 @@
   (format t "  INITIALIZING~%")
   (format t "═══════════════════════════════════════════════════════════════~%~%")
 
+  ;; Η υγεία είναι ΑΝΑ ΕΚΤΕΛΕΣΗ: σβήσε τυχόν παλιό σήμα ώστε το healthcheck
+  ;; να μη δείχνει «υγιές» από προηγούμενο run (audit 0012 — semantic readiness).
+  (ignore-errors (delete-file *health-file*))
+
   ;; Select corpus (explicit id, else ORCHESTRATOR_CORPUS env, else default).
   ;; Must happen before any config-get call or corpus registration.
   (orchestrator.spec:select-corpus corpus-id)

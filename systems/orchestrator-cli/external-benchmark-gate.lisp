@@ -89,8 +89,9 @@
   "Πραγματική ISO ημερομηνία Gregorian (0009 §1.2.3) — όχι μόνο regex:
    το 2026-99-99 απορρίπτεται, τα δίσεκτα υπολογίζονται."
   (and (stringp s)
+       (= 10 (length s))  ; \A…\z + μήκος: το "2026-07-07\n" ΔΕΝ είναι ημερομηνία
        (cl-ppcre:register-groups-bind ((#'parse-integer y m d))
-           ("^(\\d{4})-(\\d{2})-(\\d{2})$" s)
+           ("\\A(\\d{4})-(\\d{2})-(\\d{2})\\z" s)
          (and (<= 1 m 12)
               (<= 1 d (let ((days #(31 28 31 30 31 30 31 31 30 31 30 31)))
                         (if (and (= m 2)
@@ -129,7 +130,7 @@
     (cond ((not (%ebg-proper-plist-p item)) :item_not_plist)
           ((not (and (stringp (f :id)) (plusp (length (f :id)))))
            :item_id_missing)
-          ((gethash (f :id) seen-ids) :item_id_duplicate)
+          ((gethash (f :id) seen-ids) :schema_duplicate_id)
           ((not (member (f :layer) +ebg-layers+)) :item_layer_invalid)
           ((not (eq (f :jurisdiction) :gr)) :item_jurisdiction_invalid)
           ((not (member (f :source-class) +ebg-source-classes+))
@@ -142,13 +143,17 @@
                  (let ((c (f :required-citations)))
                    (if (eq c +ebg-missing+) '#:not-a-list c))))
            :item_required_citations_invalid)
-          ;; κενές παραπομπές ΜΟΝΟ όταν το αναμενόμενο είναι τίμια άγνοια
-          ;; (0009 §2.2) — το hidden-expected ΔΙΑΒΑΖΕΤΑΙ, δεν τυπώνεται ποτέ.
+          ;; κενές παραπομπές ΜΟΝΟ όταν το ΑΝΑΜΕΝΟΜΕΝΟ VERDICT του item είναι
+          ;; τίμια άγνοια (0009 §2.2 κατά γράμμα): το hidden-expected πρέπει να
+          ;; είναι plist με :verdict ∈ {unknown-source-needed, blocked-…} —
+          ;; marker θαμμένο αλλού στο δέντρο (π.χ. σε distractors) ΔΕΝ αρκεί.
+          ;; Το hidden-expected ΔΙΑΒΑΖΕΤΑΙ, δεν τυπώνεται ποτέ.
           ((and (null (f :required-citations))
-                (not (or (%ebg-tree-contains (f :hidden-expected)
-                                             :unknown-source-needed)
-                         (%ebg-tree-contains (f :hidden-expected)
-                                             :blocked-insufficient-provenance))))
+                (not (let ((he (f :hidden-expected)))
+                       (and (%ebg-proper-plist-p he)
+                            (member (getf he :verdict)
+                                    '(:unknown-source-needed
+                                      :blocked-insufficient-provenance))))))
            :item_required_citations_invalid)
           ((not (%ebg-booleanish-p (f :stale-law-decoy-p)))
            :item_stale_law_decoy_p_invalid)
@@ -176,7 +181,7 @@
               (return-from validate (values :invalid :bundle_too_large nil))))
           (unless fingerprint
             (return-from validate (values :invalid :fingerprint_missing nil)))
-          (unless (cl-ppcre:scan "^sha256:[0-9a-f]{64}$" (string-downcase fingerprint))
+          (unless (cl-ppcre:scan "\\Asha256:[0-9a-f]{64}\\z" (string-downcase fingerprint))
             (return-from validate (values :invalid :fingerprint_format nil)))
           (let ((computed (%ebg-file-fingerprint bundle-path)))
             (unless (string= computed (string-downcase fingerprint))
@@ -259,7 +264,7 @@
 
 (defun %ebg-selftest ()
   "Αυτο-έλεγχος του επικυρωτή v1 με συνθετικά bundles (temp, εκτός repo):
-   tamper, πλήρες schema floor, no-leak, ντετερμινισμός — 16 έλεγχοι."
+   tamper, πλήρες schema floor, no-leak, ντετερμινισμός — 18 έλεγχοι."
   (let ((dir (merge-pathnames "lawmax-ebg-selftest/" (uiop:temporary-directory)))
         (fails '()) (total 0))
     (ensure-directories-exist dir)
@@ -355,7 +360,7 @@
                 "(:external-benchmark-bundle 1 :owner \"x\" :as-of-date \"2026-07-07\" :jurisdiction :gr :bundle-purpose :dry-run :items ())"
                 :invalid :schema_items_empty)
         ;; διπλότυπο id (0008): δύο πλήρη items με ίδιο :id
-        (expect "⑭ διπλότυπο item :id ⇒ :invalid / schema_item_invalid (item_id_duplicate)"
+        (expect "⑭ διπλότυπο item :id ⇒ :invalid / schema_item_invalid (schema_duplicate_id — 0008)"
                 "(:external-benchmark-bundle 1 :owner \"x\" :as-of-date \"2026-07-07\" :jurisdiction :gr :bundle-purpose :dry-run
  :items ((:id \"DUP\" :layer :currentness :jurisdiction :gr :source-class :fek :visible-prompt \"a\" :as-of-date \"2026-07-07\" :required-citations (\"c\") :stale-law-decoy-p nil :scoring (:max 1) :hidden-expected (:x))
          (:id \"DUP\" :layer :dialectic :jurisdiction :gr :source-class :eu :visible-prompt \"b\" :as-of-date \"2026-07-07\" :required-citations (\"c\") :stale-law-decoy-p t :scoring (:max 1) :hidden-expected (:x))))"
@@ -369,7 +374,17 @@
         (expect "⑯ κενές :required-citations χωρίς unknown-source-needed ⇒ :invalid (κανόνας 0009 §2.2)"
                 "(:external-benchmark-bundle 1 :owner \"x\" :as-of-date \"2026-07-07\" :jurisdiction :gr :bundle-purpose :dry-run
  :items ((:id \"C\" :layer :currentness :jurisdiction :gr :source-class :fek :visible-prompt \"a\" :as-of-date \"2026-07-07\" :required-citations () :stale-law-decoy-p nil :scoring (:max 1) :hidden-expected (:answer \"y\"))))"
-                :invalid :schema_item_invalid))
+                :invalid :schema_item_invalid)
+        ;; marker ΘΑΜΜΕΝΟ σε distractors ≠ expected verdict — δεν περνά (εύρημα σκεπτικιστή)
+        (expect "⑰ κενές citations με marker ΜΟΝΟ σε distractors (όχι :verdict) ⇒ :invalid"
+                "(:external-benchmark-bundle 1 :owner \"x\" :as-of-date \"2026-07-07\" :jurisdiction :gr :bundle-purpose :dry-run
+ :items ((:id \"D\" :layer :currentness :jurisdiction :gr :source-class :fek :visible-prompt \"a\" :as-of-date \"2026-07-07\" :required-citations () :stale-law-decoy-p nil :scoring (:max 1) :hidden-expected (:verdict :provision-found :distractors (:unknown-source-needed)))))"
+                :invalid :schema_item_invalid)
+        ;; trailing newline σε ημερομηνία = ΟΧΙ ημερομηνία (εύρημα σκεπτικιστή: το $ της
+        ;; cl-ppcre δεχόταν τελικό \n και ο control χαρακτήρας ηχούσε στην αναφορά)
+        (expect "⑱ :as-of-date με trailing newline ⇒ :invalid / schema_as_of_date"
+                (format nil "(:external-benchmark-bundle 1 :owner \"x\" :as-of-date \"2026-07-07~C\" :jurisdiction :gr :bundle-purpose :dry-run :items ((:id \"N\")))" #\Newline)
+                :invalid :schema_as_of_date))
       (format t "~%── ΠΥΛΗ ΕΞΩΤΕΡΙΚΟΥ BENCHMARK: ~D/~D αυτο-έλεγχοι πέρασαν · verdict: :not-run (κανένα bundle δεν προσκομίστηκε) ──~%"
               (- total (length fails)) total)
       (if fails 1 0))))

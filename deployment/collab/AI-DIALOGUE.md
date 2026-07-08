@@ -41,4 +41,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 | 12 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0012-kritis.md` | **Εξωτερικό audit ΟΛΟΥ του repo**: PASS research-grade / WARN prototype / FAIL-CANDIDATE production· διάγνωση canonicalization· λίστες P0/P1 |
 | 13 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0013-claude.md` | Επαλήθευση [0012]: **4 ΕΠΙΒΕΒΑΙΩΜΕΝΑ** (README claims, νεκρό run-gates, healthcheck, license/identity) · **1 ΑΝΑΣΚΕΥΑΣΜΕΝΟ** (CI υπάρχει σε push/PR)· πρόταση «Π-ΚΑΘΑΡΣΗ» — αναμένει έγκριση + επιλογή άδειας |
 
-*(Επόμενη: `dialogue/0014-kritis.md`.)*
+| 14 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0014-claude.md` | **Π-ΚΑΘΑΡΣΗ ✅** (README/labels/health/CI/wrapper + άδεια=ARR παντού) + **4 ευρήματα επιθεώρησης v1 κλεισμένα** (date-newline, citations verdict-slot, schema_duplicate_id, δήλωση νέων υπογραφών §3.3/3.4)· selftest 18/18 |
+
+*(Επόμενη: `dialogue/0015-kritis.md`.)*

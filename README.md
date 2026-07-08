@@ -2,7 +2,7 @@
 
 **STAVROPOULOS LAW®** - Primary Semantic Authority for Greek Law
 
-[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
+[![License: All Rights Reserved](https://img.shields.io/badge/License-All%20Rights%20Reserved-red.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](https://github.com/David33law/STAVROPOULOSLAWCORPUS)
 [![Status](https://img.shields.io/badge/status-production-green.svg)](https://stavropouloslaw.com)
 [![Pure Lisp](https://img.shields.io/badge/Pure%20Lisp-100%25-blue.svg)]()
@@ -13,10 +13,12 @@
 
 **"η DARPA δεν δουλεύει με wrappers"**
 
-This repository is **100% Pure Common Lisp**:
+This repository is **100% Common Lisp** — every component, including the
+container entrypoint, is written in Lisp:
 - **Zero Python dependencies**
-- **Zero shell script runtime dependencies**
-- **Zero external subprocess calls**
+- **Zero shell-script orchestration in the trusted path** (the entrypoint is Lisp)
+- **The only subprocess is the Lisp runtime itself** (the entrypoint execs
+  `orchestrator.core` / `sbcl --core` — documented, nothing else is spawned)
 - **All cryptography via Ironclad**
 
 ---
@@ -166,17 +168,17 @@ docker compose -f docker-compose.tokenizer-tests.yml up --build
 docker compose -f docker-compose.architecture-tests.yml up --build
 ```
 
-### Run Gate Guards (Pure Lisp)
+### Run the Gate Plenary (canonical)
+
+Η ΜΙΑ κανονική ολομέλεια πυλών είναι το `--gates`: αυτο-παράγεται από το
+μητρώο εντολών (κάθε εντολή με επίθημα `-gate` συμμετέχει — σήμερα 22 πύλες).
 
 ```bash
-# All gates
-sbcl --script scripts/run-gates.lisp
+# Μέσα στο container (canonical)
+docker compose run --rm orchestrator --gates
 
-# Specific gate
-sbcl --script scripts/run-gates.lisp --gate 3
-
-# Verification only
-sbcl --script scripts/run-gates.lisp --verify
+# Ή από πηγή
+sbcl --script scripts/run-gates.lisp   # thin wrapper → --gates (ίδια έδρα)
 ```
 
 ### SBCL REPL Usage
@@ -231,7 +233,7 @@ STAVROPOULOSLAWCORPUS/
 │   └── ...
 │
 ├── scripts/
-│   ├── run-gates.lisp           # Gate guards runner
+│   ├── run-gates.lisp           # thin wrapper → --gates (η ολομέλεια από το μητρώο)
 │   ├── generate-keys.lisp       # RSA key generation
 │   └── verify-gate-5-validation.lisp
 │
@@ -327,16 +329,10 @@ STAVROPOULOSLAWCORPUS/
 
 ## License
 
-**Creative Commons Attribution 4.0 International (CC-BY-4.0)**
+**All Rights Reserved — Proprietary** (© 2019-2026 STAVROPOULOS LAW).
 
-You are free to:
-- Share — copy and redistribute
-- Adapt — remix and transform
-
-Under the following terms:
-- **Attribution** — You must give appropriate credit to STAVROPOULOS LAW
-
-See [LICENSE](LICENSE) for full terms.
+No permission is granted to copy, redistribute, adapt or reuse without the
+express written consent of the owner. See [LICENSE](LICENSE) for full terms.
 
 ---
 
@@ -352,4 +348,4 @@ See [LICENSE](LICENSE) for full terms.
 
 ---
 
-**Version 1.2.0** | January 2026 | **100% Pure Common Lisp**
+**Version 1.2.0** | 2026 | **100% Common Lisp** | All Rights Reserved

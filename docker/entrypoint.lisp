@@ -23,7 +23,6 @@
 ;;; CONFIGURATION
 ;;; ============================================================================
 
-(defparameter *health-file* (or (sb-ext:posix-getenv "HEALTH_FILE") "/tmp/orchestrator-health"))
 (defparameter *artifact-path* "/app/orchestrator.core")
 
 ;;; ============================================================================
@@ -33,14 +32,6 @@
 (defun getenv (name &optional default)
   "Get environment variable (SBCL-native)"
   (or (sb-ext:posix-getenv name) default))
-
-(defun create-health-file ()
-  "Create health file for container healthchecks"
-  (with-open-file (stream *health-file*
-                          :direction :output
-                          :if-exists :supersede
-                          :if-does-not-exist :create)
-    (format stream "healthy~%")))
 
 (defun read-file-bytes (path n)
   "Read first N bytes of file"
@@ -168,7 +159,9 @@
 
 (defun main ()
   "Main entrypoint function"
-  (create-health-file)
+  ;; ΚΑΜΙΑ εγγραφή health από τον wrapper: η υγεία σημαίνει ΣΗΜΑΣΙΟΛΟΓΙΚΗ
+  ;; ετοιμότητα και τη γράφει ΜΟΝΟ ο orchestrator (/app/output/.healthy,
+  ;; write-health-file) στο τέλος επιτυχούς δουλειάς — εύρημα audit 0012.
   ;; Get command line arguments (skip sbcl and script args)
   (let ((args (cdr sb-ext:*posix-argv*)))
     (when (and args (string= (first args) "--script"))

@@ -226,12 +226,12 @@ LABEL org.opencontainers.image.title="Orchestrator" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="STAVROPOULOS LAW" \
       org.opencontainers.image.authors="Spyridon Stavropoulos <contact@stavropouloslaw.com>" \
-      org.opencontainers.image.licenses="MIT" \
-      org.opencontainers.image.source="https://github.com/David33law/ORCHESTRATORSUPER" \
+      org.opencontainers.image.licenses="LicenseRef-All-Rights-Reserved" \
+      org.opencontainers.image.source="https://github.com/David33law/STAVROPOULOSLAWCORPUS" \
       org.opencontainers.image.revision="${GIT_COMMIT}" \
       org.opencontainers.image.created="${BUILD_DATE}" \
       org.opencontainers.image.url="https://stavropouloslaw.com" \
-      org.opencontainers.image.documentation="https://github.com/David33law/ORCHESTRATORSUPER/blob/main/README.md"
+      org.opencontainers.image.documentation="https://github.com/David33law/STAVROPOULOSLAWCORPUS/blob/main/README.md"
 
 ENV DEBIAN_FRONTEND=noninteractive \
     LC_ALL=C.UTF-8 \
@@ -315,7 +315,7 @@ USER nonroot:nonroot
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD test -f /tmp/orchestrator-health || exit 1
+    CMD test -f /app/output/.healthy || exit 1
 
 # Entrypoint with proper signal handling (PURE LISP)
 # DARPA-GRADE: No shell scripts, Pure Common Lisp entrypoint

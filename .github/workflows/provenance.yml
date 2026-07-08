@@ -259,8 +259,8 @@ jobs:
           
           \`\`\`bash
           # Clone repository
-          git clone https://github.com/David33law/ORCHESTRATORSUPER.git
-          cd ORCHESTRATORSUPER
+          git clone https://github.com/David33law/STAVROPOULOSLAWCORPUS.git
+          cd STAVROPOULOSLAWCORPUS
           
           # Verify release
           ./scripts/verify-provenance.sh $TAG

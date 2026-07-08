@@ -128,6 +128,20 @@ jobs:
         name: orchestrator-sbom
         path: sbom.spdx.json
 
+    - name: 🏛️ Gate plenary (--gates) inside the built image
+      run: |
+        # Η ΜΙΑ κανονική ολομέλεια (22 πύλες, αυτο-παραγόμενη από το μητρώο)
+        # τρέχει στο ΙΔΙΟ image που θα τρέξει και παραγωγικά — audit 0012 P0γ.
+        docker run --rm orchestrator:test --gates 2>&1 | tee gates.log
+        exit ${PIPESTATUS[0]}
+
+    - name: 📋 Upload gate plenary log
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: orchestrator-gates-log
+        path: gates.log
+
     - name: 🔎 Smoke test orchestrator loading
       run: |
         docker run --rm orchestrator:test sbcl \

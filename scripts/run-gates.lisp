@@ -1,93 +1,29 @@
 #!/usr/bin/env -S sbcl --script
 ;;;; scripts/run-gates.lisp
 ;;;; ============================================================================
-;;;; UNIFIED GATE RUNNER - Pure Common Lisp
+;;;; THIN WRAPPER → --gates (η ΜΙΑ κανονική ολομέλεια)
 ;;;; ============================================================================
 ;;;;
-;;;; Replaces ALL shell-based gate guards with Pure Lisp.
+;;;; Το ιστορικό gate-guards runner (5 πύλες, source/gate-guards.lisp) δεν
+;;;; υπάρχει πια — εύρημα εξωτερικού audit (dialogue 0012): το script φόρτωνε
+;;;; ανύπαρκτο αρχείο. Η κανονική ολομέλεια είναι το --gates: αυτο-παράγεται
+;;;; από το μητρώο εντολών (κάθε εντολή με επίθημα -gate συμμετέχει), ίδια
+;;;; έδρα με το CLI — καμία δεύτερη λίστα πυλών πουθενά.
 ;;;;
-;;;; Usage:
-;;;;   sbcl --script scripts/run-gates.lisp
-;;;;   sbcl --script scripts/run-gates.lisp --gate 3
-;;;;   sbcl --script scripts/run-gates.lisp --verify
-;;;;   sbcl --script scripts/run-gates.lisp --all
-;;;;
-;;;; Exit codes:
-;;;;   0 = All checks passed
-;;;;   1 = Violations found
-;;;;
-;;;; DARPA-GRADE: No bash, no grep, no external tools.
-;;;; ============================================================================
+;;;; Χρήση (από τη ρίζα του repo):  sbcl --script scripts/run-gates.lisp
 
 (require :asdf)
+(require :sb-posix)
+(require :sb-bsd-sockets)
 
-;;; Configure ASDF paths
-(push (truename ".") asdf:*central-registry*)
-(push (truename "source/") asdf:*central-registry*)
-(push (truename "systems/") asdf:*central-registry*)
+(asdf:initialize-source-registry
+ `(:source-registry (:tree ,(uiop:getcwd))
+                    (:tree ,(merge-pathnames "third-party/" (uiop:getcwd)))
+                    :inherit-configuration))
 
-;;; Load gate-guards
-(load "source/gate-guards.lisp")
+(handler-case (asdf:load-system :orchestrator-cli)
+  (error (e)
+    (format *error-output* "~%✗ Αποτυχία φόρτωσης orchestrator-cli: ~A~%" e)
+    (sb-ext:exit :code 1)))
 
-;;; Parse command line arguments
-(defun get-arg (name args)
-  "Get argument value from command line"
-  (let ((pos (position name args :test #'string=)))
-    (when (and pos (< (1+ pos) (length args)))
-      (nth (1+ pos) args))))
-
-(defun has-arg (name args)
-  "Check if argument present"
-  (member name args :test #'string=))
-
-;;; Main entry point
-(let* ((args (uiop:command-line-arguments))
-       (gate-num (get-arg "--gate" args))
-       (verify-only (has-arg "--verify" args))
-       (run-all (or (has-arg "--all" args) (null args))))
-
-  (format t "~%═══════════════════════════════════════════════════════════════~%")
-  (format t "  ORCHESTRATOR GATE GUARDS - Pure Common Lisp~%")
-  (format t "  \"η DARPA δεν δουλεύει με bash scripts\"~%")
-  (format t "═══════════════════════════════════════════════════════════════~%~%")
-
-  (handler-case
-      (cond
-        ;; Run specific gate
-        (gate-num
-         (let ((n (parse-integer gate-num)))
-           (case n
-             (1 (orchestrator.gate-guards:run-gate-1-time-guard))
-             (2 (orchestrator.gate-guards:run-gate-2-write-guard))
-             (3 (orchestrator.gate-guards:run-gate-3-hash-guard))
-             (4 (orchestrator.gate-guards:run-gate-4-pipeline-guard))
-             (5 (orchestrator.gate-guards:run-gate-5-validation-guard))
-             (t (format t "Unknown gate: ~A~%" n)
-                (sb-ext:exit :code 1)))))
-
-        ;; Run verifications only
-        (verify-only
-         (orchestrator.gate-guards:run-all-verifications))
-
-        ;; Run all gates and verifications
-        (run-all
-         (orchestrator.gate-guards:run-all-gates)
-         (orchestrator.gate-guards:run-all-verifications)))
-
-    (orchestrator.gate-guards:gate-violation (e)
-      (format t "~%~%GATE VIOLATION: ~A~%" e)
-      (sb-ext:exit :code 1))
-
-    (orchestrator.gate-guards:verification-failure (e)
-      (format t "~%~%VERIFICATION FAILURE: ~A~%" e)
-      (sb-ext:exit :code 1))
-
-    (error (e)
-      (format t "~%~%UNEXPECTED ERROR: ~A~%" e)
-      (sb-ext:exit :code 1)))
-
-  (format t "~%═══════════════════════════════════════════════════════════════~%")
-  (format t "  ALL CHECKS PASSED ✓~%")
-  (format t "═══════════════════════════════════════════════════════════════~%~%")
-
-  (sb-ext:exit :code 0))
+(sb-ext:exit :code (funcall (find-symbol "RUN-ALL-GATES" :orchestrator.cli)))
