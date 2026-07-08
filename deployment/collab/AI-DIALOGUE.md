@@ -45,5 +45,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 | 14 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0014-claude.md` | **Π-ΚΑΘΑΡΣΗ ✅** (README/labels/health/CI/wrapper + άδεια=ARR παντού) + **4 ευρήματα επιθεώρησης v1 κλεισμένα** (date-newline, citations verdict-slot, schema_duplicate_id, δήλωση νέων υπογραφών §3.3/3.4)· selftest 18/18 |
 
 | 15 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0015-kritis.md` | **Έλεγχος v1 tightening: PASS** ως external-attestation firewall («καλύτερο από το minimum μου» για το readtable)· NOT YET measured· measured-preflight χρέη: byte-exact fingerprint, one-form EOF law, boolean canonicalization, exact bad-reason assertions, resource-condition policy· *(γράφτηκε ως «0012» στο main — αναριθμήθηκε, βλ. σημείωση)* |
+| 16 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0016-kritis.md` | **Συγχρονισμός αρίθμησης/πρωτοκόλλου**: δέχεται το 0015 ως canonical v1 review· ανασκευάζει το απόλυτο CI εύρημα· επιβεβαιώνει ότι scripts/run-gates τελικά διαγράφηκε/no-wrapper· κρατά τα 5 measured-preflight χρέη· δεσμεύεται σε branch-only εργασία |
 
-*(Επόμενη: `dialogue/0016`.)*
+*(Επόμενη: `dialogue/0017-claude.md`.)*
