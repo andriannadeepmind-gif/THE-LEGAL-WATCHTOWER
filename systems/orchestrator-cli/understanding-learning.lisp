@@ -473,35 +473,54 @@
         when (eq (orchestrator.proposals:proposal-kind p) :understanding-rule)
           collect (orchestrator.proposals:proposal-sig p)))
 
+(defparameter *self-study-max-shadows* 25
+  "Άνω φράγμα ΣΚΙΩΝ ανά κύκλο. Κάθε σκιά τρέχει ΠΛΗΡΗ regression διαλόγου —
+   χωρίς φράγμα, ένα ledger με πολλές σχολιασμένες αποτυχίες θα έκανε τον
+   κύκλο (και την ολομέλεια που τον ελέγχει) τετραγωνικά ακριβό. Ό,τι δεν
+   χωρά, ΑΝΑΒΑΛΛΕΤΑΙ ρητά στην πρωινή αναφορά — ποτέ σιωπηλά.")
+
 (defun %self-study-cycle (lines &key expected
                                      (queue-fn #'%queue-understanding-proposal!)
-                                     (queued-sigs (%queued-understanding-sigs)))
+                                     (queued-sigs (%queued-understanding-sigs))
+                                     (max-shadows *self-study-max-shadows*))
   "Ο ΕΝΑΣ κύκλος αυτομελέτης πάνω σε LINES (raw ledger γραμμές): για κάθε
    αποτυχία → πρόταση (generator+σκιά) → απόφαση → κατάθεση ΜΟΝΟ αν
    :requires-human ΚΑΙ δεν είναι ήδη κατατεθειμένη. Επιστρέφει (values counts
    errors). Καθαρός πυρήνας: η ουρά περνιέται ως QUEUE-FN ώστε η πύλη να τον
-   ελέγχει ΧΩΡΙΣ να μολύνει το πραγματικό μητρώο προτάσεων."
-  (let ((n-queued 0) (n-dup 0) (n-quar 0) (n-den 0) (n-err 0) (errors '()))
+   ελέγχει ΧΩΡΙΣ να μολύνει το πραγματικό μητρώο προτάσεων· το MAX-SHADOWS
+   φράσσει τις ακριβές σκιές (πλήρης regression η καθεμία)."
+  (let ((n-queued 0) (n-dup 0) (n-quar 0) (n-den 0) (n-err 0) (n-def 0)
+        (shadows 0) (errors '()))
     (dolist (fl lines)
-      (let ((sig (format nil "understanding-rule ~A"
-                         (or (%json-field fl "failure_id") "—"))))
-        (if (member sig queued-sigs :test #'string=)
-            (incf n-dup)                ; ήδη στην ουρά — δεν ξαναξοδεύεται σκιά
-            (handler-case
-                (let* ((p (generate-understanding-proposal fl :expected-mode expected))
-                       (dec (getf p :decision)))
-                  (case dec
-                    (:requires-human
-                     (funcall queue-fn p)
-                     (push sig queued-sigs)
-                     (incf n-queued))
-                    (:quarantine (incf n-quar))
-                    (t (incf n-den))))
-              (error (e)
-                (incf n-err)
-                (push (format nil "~A: ~A" sig e) errors))))))
+      (let* ((sig (format nil "understanding-rule ~A"
+                          (or (%json-field fl "failure_id") "—")))
+             ;; θα τρέξει σκιά μόνο αν το expected είναι γνωστό (arg ή πεδίο)
+             (known (or expected
+                        (let ((e (%json-field fl "expected_mode_if_known")))
+                          (and e (not (string= e "unknown")))))))
+        (cond
+          ((member sig queued-sigs :test #'string=)
+           (incf n-dup))               ; ήδη στην ουρά — δεν ξαναξοδεύεται σκιά
+          ((and known (>= shadows max-shadows))
+           (incf n-def))               ; φράγμα κόστους — ρητή αναβολή
+          (t
+           (handler-case
+               (let* ((p (progn (when known (incf shadows))
+                                (generate-understanding-proposal fl :expected-mode expected)))
+                      (dec (getf p :decision)))
+                 (case dec
+                   (:requires-human
+                    (funcall queue-fn p)
+                    (push sig queued-sigs)
+                    (incf n-queued))
+                   (:quarantine (incf n-quar))
+                   (t (incf n-den))))
+             (error (e)
+               (incf n-err)
+               (push (format nil "~A: ~A" sig e) errors)))))))
     (values (list :examined (length lines) :queued n-queued :duplicates n-dup
-                  :quarantined n-quar :denied n-den :errors n-err)
+                  :quarantined n-quar :denied n-den :deferred n-def
+                  :errors n-err)
             (nreverse errors))))
 
 (defun run-self-study-night (args)
@@ -533,13 +552,17 @@
       (format t "καραντίνα (expected άγνωστο — θέλουν σχολιασμό δημιουργού): ~D~%"
               (getf counts :quarantined))
       (format t "απορρίφθηκαν από τη σκιά: ~D~%" (getf counts :denied))
+      (format t "ανεβλήθησαν (φράγμα ~D σκιών/κύκλο): ~D~%"
+              *self-study-max-shadows* (getf counts :deferred))
       (format t "σφάλματα σταδίων: ~D~%" (getf counts :errors))
       (dolist (e errors) (format t "  ⚠ ~A~%" e))
       (format t "υιοθετήσεις: 0 — ΕΚ ΚΑΤΑΣΚΕΥΗΣ (*learned-rules* αμετάβλητο: ~:[ΟΧΙ — ΣΦΑΛΜΑ~;ναι~])~%"
               (eq rules-before *learned-rules*))
+      ;; :topic = ΛΙΣΤΑ πάντα — string εδώ δηλητηριάζει το similar-episodes
+      ;; (union/intersection επί (episode-topic e)) και ρίχνει το --recall.
       (orchestrator.memory:record-episode :self-study "νυχτερινή αυτομελέτη κατανόησης"
         :status (if errors :with-errors :ok)
-        :topic "understanding-runner"
+        :topic '("understanding-runner")
         :props (append counts (list :adopted 0)))
       (cond ((not (eq rules-before *learned-rules*))
              (format t "✗ ΠΑΡΑΒΙΑΣΗ proposal-only — άγνωστη μετάλλαξη κανόνων~%") 1)
@@ -721,18 +744,29 @@
                  (and (= 1 (getf counts2 :duplicates))
                       (zerop (getf counts2 :queued))
                       (null collected2))))))
-      ;; ⑯ ο ΠΡΑΓΜΑΤΙΚΟΣ Runner: proposal-only εγγύηση + πρωινή αναφορά +
-      ;;    exit 0 + κανόνες ΑΜΕΤΑΒΛΗΤΟΙ (ζωντανό ledger — όλα expected
-      ;;    unknown ⇒ καραντίνα, καμία εγγραφή στο μητρώο προτάσεων).
+      ;; ⑯ ο ΠΡΑΓΜΑΤΙΚΟΣ Runner σε ΠΛΗΡΗ ΑΠΟΜΟΝΩΣΗ: η πύλη ΔΕΝ γράφει ποτέ
+      ;;    στα πραγματικά μητρώα — proposals/episodes δεσμεύονται σε temp
+      ;;    (προηγούμενο: advisor Σ13α, run-policy-gate, memory-gate) και οι
+      ;;    σκιές μηδενίζονται (κάθε σκιά = πλήρης regression· σχολιασμένο
+      ;;    ledger θα έκανε την ολομέλεια τετραγωνικά ακριβή — εύρημα Κριτή-
+      ;;    κύκλου επιθεώρησης). Proposal-only εγγύηση + αναφορά + exit 0.
       (let* ((rules-before *learned-rules*)
-             (rc nil)
-             (out (with-output-to-string (*standard-output*)
-                    (setf rc (run-self-study-night nil)))))
-        (chk "⑯ Runner: --self-study-night ⇒ exit 0 · πρωινή αναφορά · «υιοθετήσεις: 0» · κανόνες αμετάβλητοι"
-             (and (zerop rc)
-                  (search "ΠΡΩΙΝΗ ΑΝΑΦΟΡΑ" out)
-                  (search "υιοθετήσεις: 0" out)
-                  (eq rules-before *learned-rules*)))))
+             (tmp (merge-pathnames "lawmax-understanding-gate/"
+                                   (uiop:temporary-directory)))
+             (rc nil))
+        (ensure-directories-exist tmp)
+        (let ((orchestrator.proposals:*proposals-path*
+                (merge-pathnames "proposals.sexp" tmp))
+              (orchestrator.memory:*episodes-path*
+                (merge-pathnames "episodes.sexp" tmp))
+              (*self-study-max-shadows* 0))
+          (let ((out (with-output-to-string (*standard-output*)
+                       (setf rc (run-self-study-night nil)))))
+            (chk "⑯ Runner (απομονωμένος): exit 0 · πρωινή αναφορά · «υιοθετήσεις: 0» · κανόνες αμετάβλητοι"
+                 (and (zerop rc)
+                      (search "ΠΡΩΙΝΗ ΑΝΑΦΟΡΑ" out)
+                      (search "υιοθετήσεις: 0" out)
+                      (eq rules-before *learned-rules*)))))))
     (format t "~%── ΠΥΛΗ ΜΑΘΗΣΗΣ ΚΑΤΑΝΟΗΣΗΣ: ~D/~D πέρασαν ──~%"
             (- total (length fails)) total)
     (if fails 1 0)))

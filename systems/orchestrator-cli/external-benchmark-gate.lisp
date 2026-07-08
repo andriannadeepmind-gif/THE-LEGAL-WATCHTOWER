@@ -111,8 +111,11 @@
   (when info
     (loop for (k v) on info by #'cddr
           do (format t "~(~A~): ~A~%" (substitute #\_ #\- (string k)) v)))
-  (when (eq verdict :not-run)
-    (format t "dry_run_validation: ~:[not-applicable~;passed~]~%" info)
+  ;; «passed» ΜΟΝΟ όταν η επικύρωση πραγματικά έτρεξε και πέρασε (verdict
+  ;; :not-run ΧΩΡΙΣ reason)· ένα :not-run λόγω π.χ. mode_not_implemented ΔΕΝ
+  ;; επιτρέπεται να μοιάζει με πέρασμα επικύρωσης.
+  (when (and (eq verdict :not-run) (null reason))
+    (format t "dry_run_validation: passed~%")
     (format t "note: κανένα hidden item δεν εκτελέστηκε ούτε τυπώθηκε — μόνο σχήμα/αποτύπωμα/πλήθη~%")))
 
 (defun %ebg-selftest ()
