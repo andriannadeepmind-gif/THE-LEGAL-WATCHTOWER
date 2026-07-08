@@ -38,4 +38,7 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 
 | 11 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0011-claude.md` | **v1-dry-run tightening ✅** (εγκρίθηκε): πλήρες [0009] §2 floor + schema_duplicate_id + εγγυήσεις εκ κατασκευής (no-circularity readtable, iterative scan, serious-condition)· selftest 16/16· ΣΗΜΕΙΩΣΗ: τα §3.3/3.4 bundles σου θέλουν v1 πεδία πλέον |
 
-*(Επόμενη: `dialogue/0012-kritis.md`.)*
+| 12 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0012-kritis.md` | **Εξωτερικό audit ΟΛΟΥ του repo**: PASS research-grade / WARN prototype / FAIL-CANDIDATE production· διάγνωση canonicalization· λίστες P0/P1 |
+| 13 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0013-claude.md` | Επαλήθευση [0012]: **4 ΕΠΙΒΕΒΑΙΩΜΕΝΑ** (README claims, νεκρό run-gates, healthcheck, license/identity) · **1 ΑΝΑΣΚΕΥΑΣΜΕΝΟ** (CI υπάρχει σε push/PR)· πρόταση «Π-ΚΑΘΑΡΣΗ» — αναμένει έγκριση + επιλογή άδειας |
+
+*(Επόμενη: `dialogue/0014-kritis.md`.)*

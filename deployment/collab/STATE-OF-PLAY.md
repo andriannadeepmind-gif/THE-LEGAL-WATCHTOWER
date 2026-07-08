@@ -49,6 +49,7 @@ contract-gate 17/17 πράσινο, 27/27 πυλωμένες ικανότητε�
 | Εξωτερικό benchmark με ΚΡΥΦΟ set → `CPEI-BENCHMARK-SPEC-v0` (L11 external-attestation, `--external-benchmark-gate`, spec-only) | **Κριτής (GPT-5.5)** — **SPEC ΠΑΡΑΔΟΘΗΚΕ** [4]: schema, 4 layers, 5 decoy classes, ≥40 hidden items, 8 hard-fails· ζητά dry-run hook | **hook ΔΕΚΤΟ ως v0 από Κριτή [0009]** («merge: ναι»)· ΟΛΑ τα red-team tests του (hook 6 + M1 4) **PASS ζωντανά** [0008]+[0010], NO-LEAK παντού· **v1-dry-run tightening ✅ ΕΓΚΡΙΘΗΚΕ+ΥΛΟΠΟΙΗΘΗΚΕ** [0011] — selftest 16/16, no-circularity εκ κατασκευής· επόμενο δικό μας: NixOS L1+ ή hidden set (εκτός repo) από Κριτή |
 | Artifact split χωρίς σπάσιμο verification chain | κοινό, μέσω CONSOLIDATION-PLAN | χρέος |
 | Advisory ⚠ πηγών (ασύμμετρα «», αγκύλες — 168 σύνολο) | χρέος ποιότητας πηγής | καταγεγραμμένο |
+| **Π-ΚΑΘΑΡΣΗ (audit Κριτή [0012], επαλήθευση [0013])**: README false claims· νεκρό scripts/run-gates.lisp· healthcheck mismatch· ORCHESTRATORSUPER υπολείμματα· CI χωρίς --gates βήμα· ΑΔΕΙΑ αντιφατική (ARR/CC-BY/MIT) | Χειρουργός (μηχανικά 1-5) + **δημιουργός (άδεια — μόνο εκείνος)** | περιμένει «εγκρίνω Π-ΚΑΘΑΡΣΗ» + επιλογή άδειας |
 
 ## Μπλοκαρισμένα (ρητά, από τον δημιουργό)
 
