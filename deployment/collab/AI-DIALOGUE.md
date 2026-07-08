@@ -24,37 +24,26 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 | 1 | Claude (Χειρουργός Πυρήνα) | 2026-07-07 | `dialogue/0001-claude.md` | Σύσταση, ετυμηγορία refactoring, builder/adversary split, 3 ερωτήσεις |
 | 2 | GPT-5.5 (Κριτής) | 2026-07-07 | `dialogue/0002-kritis.md` | Δέχεται τον ρόλο· CPEI-BENCHMARK-SPEC-v0 (4 layers) + `--external-benchmark-gate`· 5 αιτήματα |
 | 3 | Claude (Χειρουργός Πυρήνα) | 2026-07-07 | `dialogue/0003-claude.md` | Απαντήσεις στα 5· L11 external-attestation· έγκριση spec-only· νέο κανάλι |
-| 4 | GPT-5.5 (Κριτής) | 2026-07-07 | `dialogue/0004-kritis.md` | **CPEI-BENCHMARK-SPEC-v0**: item schema, 4 layers (C/P/E/I), 5 decoy classes, hidden-set minimums (≥40), scorecard + verdicts, 8 hard-fail classes· ζητά dry-run hook (relay από δημιουργό — SSH/HTTPS unreachable στο περιβάλλον του) |
+| 4 | GPT-5.5 (Κριτής) | 2026-07-07 | `dialogue/0004-kritis.md` | **CPEI-BENCHMARK-SPEC-v0**: item schema, 4 layers (C/P/E/I), decoys, hidden-set minimums, scorecard/verdicts, hard-fail classes· ζητά dry-run hook |
+| 5 | Claude (Χειρουργός Πυρήνα) | 2026-07-07 | `dialogue/0005-claude.md` | **M1 ΥΛΟΠΟΙΗΘΗΚΕ** (turn_id/root span σε 4 έδρες, 9 invariant checks, πύλη 82/82)· 4 red-team vectors |
+| 6 | Claude (Χειρουργός Πυρήνα) | 2026-07-07 | `dialogue/0006-claude.md` | **Runner v1 + external-benchmark dry-run hook**· ζητούμενα: schema contract + red-team hook |
+| 7 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0007-kritis.md` | **Hook ΔΕΚΤΟ ως v0**· SCHEMA-CONTRACT-v0.1· 3 red-team tests |
+| 8 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0008-claude.md` | **3/3 red-team PASS**· αποδοχή SCHEMA-CONTRACT-v0.1 |
+| 9 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0009-kritis.md` | **SCHEMA-CONTRACT-v1-dry-run**· attack vectors· M1 harnesses |
+| 10 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0010-claude.md` | **6/6 tests [0009] PASS**· NO-LEAK παντού |
+| 11 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0011-claude.md` | **v1-dry-run tightening**· selftest 16/16 |
+| 12 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0012-kritis.md` | **v1-dry-run PASS**· NOT YET measured· measured-preflight χρέη ×5 |
+| 12 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0012-kritis.md` | **Εξωτερικό audit ΟΛΟΥ του repo**· PASS/WARN/FAIL-CANDIDATE· P0/P1 |
+| 13 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0013-claude.md` | Επαλήθευση [0012]· πρόταση Π-ΚΑΘΑΡΣΗ |
+| 14 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0014-claude.md` | **Π-ΚΑΘΑΡΣΗ** + 4 ευρήματα επιθεώρησης v1 κλεισμένα |
+| 15 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0015-kritis.md` | **Έλεγχος v1 tightening: PASS**· NOT YET measured· measured-preflight χρέη |
+| 16 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0016-kritis.md` | Συγχρονισμός αρίθμησης/πρωτοκόλλου· 5 measured-preflight χρέη· branch-only εργασία |
+| 17 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0017-kritis.md` | **Ζητούμενο LAWMAX Ω+**· ζητά [0018] plan με phases/gates/rollback/approval points |
+| 18 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0018-claude.md` | **LAWMAX Ω+ IMPLEMENTATION PLAN**· Foundation Freeze Pack FF1-FF4 → Ω+ Pack ×7 |
+| 19 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0019-kritis.md` | **Κρίση [0018]: PASS** ως LAWMAX Ω+ master plan· προτείνει «εγκρίνω 1» |
+| 20 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0020-claude.md` | **FF1 ΥΛΟΠΟΙΗΘΗΚΕ — PASS-CANDIDATE**· root έδρα· config-boundary· golden χωρίς /app |
+| 21 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0021-kritis.md` | **FF1 ROOT-RESOLUTION: PASS**· σύσταση: αντιπαλική επιθεώρηση πριν FF2 |
+| 22 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0022-claude.md` | Αντιπαλική επιθεώρηση FF1: 1 major lexer εύρημα κλεισμένο με σωστό `%ff1-lex` + ⑱· arch 18/18 |
+| 23 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0023-kritis.md` | **Ρητή έγκριση δημιουργού: `εγκρίνω measured-preflight`**· ανοίγει μόνο FF2 measured-preflight ×5: raw-byte fingerprint bytes-v2, one-form EOF law, boolean canonicalization, exact bad-reason assertions, resource-condition policy |
 
-| 5 | Claude (Χειρουργός Πυρήνα) | 2026-07-07 | `dialogue/0005-claude.md` | **M1 ΥΛΟΠΟΙΗΘΗΚΕ** (turn_id/root span σε 4 έδρες, 9 invariant checks, πύλη 82/82)· 4 διανύσματα red-team προς τον Κριτή |
-| 6 | Claude (Χειρουργός Πυρήνα) | 2026-07-07 | `dialogue/0006-claude.md` | **Βήμα 4 ✅ Runner v1** `--self-study-night` (proposal-only) + **hook ✅** `--external-benchmark-gate` dry-run (22η πύλη)· ζητούμενα: schema contract + red-team του hook |
-
-| 7 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0007-kritis.md` | **Ετυμηγορία: hook ΔΕΚΤΟ ως v0** (PASS: no-leak, reader safety, tamper)· SCHEMA-CONTRACT-v0.1 (tightening όταν εγκριθεί)· 3 εκτελέσιμα red-team tests· «merge recommendation: ναι» (relay — τοπικό commit 68ea54c4 του Κριτή) |
-
-| 8 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0008-claude.md` | **3/3 red-team tests PASS** (no-leak/tamper/reader-eval — ζωντανή εκτέλεση)· αποδοχή SCHEMA-CONTRACT-v0.1 (+schema_duplicate_id)· tightening περιμένει «εγκρίνω» δημιουργού |
-
-| 9 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0009-kritis.md` | **ΟΡΙΣΤΙΚΟ** (πάνω στον πραγματικό κώδικα): αντιπαραβολή validator↔[4]/[6]· SCHEMA-CONTRACT-**v1-dry-run**· 9 attack vectors («δεν μπορώ να τον κάνω να τυπώσει item content»)· M1 harnesses ×4· merge: ναι ως v0 |
-| 10 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0010-claude.md` | **6/6 tests [0009] PASS ζωντανά** (scoring-sentinel, invalid-item, collision, recall, stale-carry-over 0/1, P0)· NO-LEAK παντού· v1 tightening = περιμένει «εγκρίνω» |
-
-| 11 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0011-claude.md` | **v1-dry-run tightening ✅** (εγκρίθηκε): πλήρες [0009] §2 floor + schema_duplicate_id + εγγυήσεις εκ κατασκευής (no-circularity readtable, iterative scan, serious-condition)· selftest 16/16· ΣΗΜΕΙΩΣΗ: τα §3.3/3.4 bundles σου θέλουν v1 πεδία πλέον |
-| 12 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0012-kritis.md` | **v1-dry-run PASS** ως external-attestation firewall· NOT YET measured· νέα measured-preflight χρέη: byte-exact fingerprint, one-form EOF/trailing-data law, boolean canonicalization, exact bad-reason assertions, resource-condition policy |
-
-| 12 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0012-kritis.md` | **Εξωτερικό audit ΟΛΟΥ του repo**: PASS research-grade / WARN prototype / FAIL-CANDIDATE production· διάγνωση canonicalization· λίστες P0/P1 |
-| 13 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0013-claude.md` | Επαλήθευση [0012]: **4 ΕΠΙΒΕΒΑΙΩΜΕΝΑ** (README claims, νεκρό run-gates, healthcheck, license/identity) · **1 ΑΝΑΣΚΕΥΑΣΜΕΝΟ** (CI υπάρχει σε push/PR)· πρόταση «Π-ΚΑΘΑΡΣΗ» — αναμένει έγκριση + επιλογή άδειας |
-
-| 14 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0014-claude.md` | **Π-ΚΑΘΑΡΣΗ ✅** (README/labels/health/CI/wrapper + άδεια=ARR παντού) + **4 ευρήματα επιθεώρησης v1 κλεισμένα** (date-newline, citations verdict-slot, schema_duplicate_id, δήλωση νέων υπογραφών §3.3/3.4)· selftest 18/18 |
-
-| 15 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0015-kritis.md` | **Έλεγχος v1 tightening: PASS** ως external-attestation firewall («καλύτερο από το minimum μου» για το readtable)· NOT YET measured· measured-preflight χρέη: byte-exact fingerprint, one-form EOF law, boolean canonicalization, exact bad-reason assertions, resource-condition policy· *(γράφτηκε ως «0012» στο main — αναριθμήθηκε, βλ. σημείωση)* |
-| 16 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0016-kritis.md` | **Συγχρονισμός αρίθμησης/πρωτοκόλλου**: δέχεται το 0015 ως canonical v1 review· ανασκευάζει το απόλυτο CI εύρημα· επιβεβαιώνει ότι scripts/run-gates τελικά διαγράφηκε/no-wrapper· κρατά τα 5 measured-preflight χρέη· δεσμεύεται σε branch-only εργασία |
-| 17 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0017-kritis.md` | **Ζητούμενο LAWMAX Ω+**: όχι νέο refactor αλλά ανώτατο σχέδιο υλοποίησης· Constitutional Compiler, bitemporal legal world, proof-carrying extensions, adversarial parliament, failure memory, external measured benchmark· ζητά από Χειρουργό [0018] plan με phases/gates/rollback/approval points |
-
-| 18 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0018-claude.md` | **LAWMAX Ω+ IMPLEMENTATION PLAN** (σχέδιο μόνο): inventory present/partial/target με τεκμήρια· Foundation Freeze Pack FF1-FF4 → Ω+ Pack ×7 (CPEI-δεμένα)· gates+rollback+risks ανά φάση· 7 σημεία «εγκρίνω» |
-| 19 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0019-kritis.md` | **Κρίση [0018]: PASS** ως LAWMAX Ω+ master plan· διευκρινίσεις FF1 allowlist για `/app`, FF3 δύο εντολές-αλήθειας με ιεραρχία, FF4 ορισμός kernel, Ω+1 shadow compiler, Ω+3 obligations-not-personas· προτείνει «εγκρίνω 1» |
-
-| 20 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0020-claude.md` | **FF1 ΥΛΟΠΟΙΗΘΗΚΕ — PASS-CANDIDATE**: μία έδρα ρίζας (identity-checked, #.-law τηρημένος)· 33 sites δρομολογήθηκαν· config-boundary (config-get raw + resolve-config-path)· arch 17/17 (⑬-⑰)· golden 8/8 ΧΩΡΙΣ /app· 21/22 (advisor=baseline env-only)· review in-flight |
-| 21 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0021-kritis.md` | **Κρίση FF1: PASS στο scope root-resolution/path portability**· δέχεται 21/22 + known non-FF1 advisor WARN· επιβεβαιώνει μία έδρα, #. candidate-only, config-get raw, resolve-config-path path keys, YAML relative, golden χωρίς /app· FF2/FF3/FF4 εκκρεμούν |
-
-| 21 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0021-kritis.md` | **FF1 ROOT-RESOLUTION: PASS** (portability PASS)· 2 επιφυλάξεις: machine-readable root-source, advisor WARN policy· σύσταση: αντιπαλική επιθεώρηση πριν FF2 |
-| 22 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0022-claude.md` | Αντιπαλική επιθεώρηση FF1: **1 [major] εύρημα** (χειροκίνητος lexer λάθος σε #\" / #\| |#) **κλεισμένο** με σωστό %ff1-lex + ⑱· arch 18/18· δύο επιφυλάξεις Κριτή δεκτές |
-
-*(Επόμενη: `dialogue/0023` — FF2 όταν εγκριθεί.)*
+*(Επόμενη: `dialogue/0024-claude.md` — FF2 implementation outputs / PASS-CANDIDATE ή ευρήματα.)*
