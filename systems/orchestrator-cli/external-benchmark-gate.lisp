@@ -38,10 +38,18 @@
 (defparameter +ebg-max-items+ 4096
   "Άνω φράγμα items ανά bundle — μαζί με το size cap, τα μόνα όρια όγκου.")
 
+(defparameter +ebg-fingerprint-law+ "bytes-v2"
+  "FF2 §2.1: το αποτύπωμα υπολογίζεται πάνω στα RAW BYTES του αρχείου —
+   ΠΟΤΕ μέσω UTF-8 string normalization ή Lisp string path. Δηλώνεται ρητά
+   στην αναφορά ώστε κανένα legacy-string hash να μη συγχέεται με bytes-v2.")
+
 (defun %ebg-file-fingerprint (path)
-  "Αποτύπωμα των bytes του bundle: sha256 του πλήρους κειμένου του αρχείου."
+  "bytes-v2 (FF2 §2.1): sha256 πάνω στα RAW BYTES του αρχείου μέσω
+   ironclad:digest-file — καμία UTF-8 αποκωδικοποίηση. Δύο ίδια byte streams
+   ⇒ ίδιο hash· αλλαγή 1 byte ⇒ διαφορετικό· ίδιο Unicode κείμενο με
+   ΔΙΑΦΟΡΕΤΙΚΑ bytes (π.χ. NFC vs NFD) ⇒ ΔΙΑΦΟΡΕΤΙΚΟ hash (string-norm trap)."
   (format nil "sha256:~A"
-          (orchestrator.journal:sha256-hex (uiop:read-file-string path))))
+          (ironclad:byte-array-to-hex-string (ironclad:digest-file :sha256 path))))
 
 (defparameter +ebg-readtable+
   (let ((rt (copy-readtable nil)))
@@ -60,13 +68,41 @@
   "Data-only readtable του bundle: ό,τι δεν είναι απλό datum, αρνείται.")
 
 (defun %ebg-read-data (path)
-  "Data-only ανάγνωση: *read-eval* NIL (κανένα #.), +ebg-readtable+ (καμία
-   κυκλική/κατασκευαστική σύνταξη), keyword package — ποτέ εκτέλεση."
+  "Data-only ανάγνωση + ONE-FORM EOF LAW (FF2 §2.2). Επιστρέφει (values form
+   status) όπου status ∈ {:ok :empty :trailing}:
+     • διαβάζει ΑΚΡΙΒΩΣ ένα top-level form (data-only: *read-eval* NIL,
+       +ebg-readtable+, keyword package — ποτέ εκτέλεση)·
+     • ΔΕΥΤΕΡΟ read πρέπει να είναι EOF ⇒ :ok· αλλιώς :trailing.
+   Ο reader παραλείπει σχόλια/whitespace, άρα «comment-trick που κρύβει δεύτερη
+   φόρμα» ΠΙΑΝΕΤΑΙ (το δεύτερο read επιστρέφει τη φόρμα, όχι EOF)."
   (with-open-file (s path :external-format :utf-8)
     (let ((*read-eval* nil)
           (*readtable* +ebg-readtable+)
-          (*package* (find-package :keyword)))
-      (read s nil nil))))
+          (*package* (find-package :keyword))
+          (eof '#:eof))
+      (let ((form (read s nil eof)))
+        (if (eq form eof)
+            (values nil :empty)
+            (if (eq (read s nil eof) eof)
+                (values form :ok)
+                (values form :trailing)))))))
+
+(defun %ebg-classify-condition (c)
+  "RESOURCE-CONDITION POLICY (FF2 §2.5): διακρίνει καθαρά πόρους από
+   αναγνωσιμότητα. storage-condition (εξάντληση μνήμης/στοίβας/χώρου) ⇒
+   :resource_exhausted· κάθε άλλη serious-condition ⇒ :unreadable.
+   Σε μελλοντικό measured: resource event ⇒ ΑΚΥΡΟ run, ποτέ μερικό scorecard."
+  (if (typep c 'storage-condition) :resource_exhausted :unreadable))
+
+(defun %ebg-canon-bool (v)
+  "BOOLEAN CANONICALIZATION (FF2 §2.3): ΑΜΕΣΩΣ μετά το read. Επιστρέφει
+   (values canonical valid-p): :T/T→T· :NIL/NIL→NIL (και τα δύο valid)·
+   ΟΤΙΔΗΠΟΤΕ ΑΛΛΟ ⇒ (values NIL NIL). ΚΡΙΣΙΜΟ: το :NIL είναι truthy σύμβολο
+   στο keyword package — downstream ΔΕΝ επιτρέπεται να αποφασίζει boolean από
+   symbol truthiness· χρησιμοποιεί ΜΟΝΟ την canonical τιμή."
+  (cond ((member v '(t :t)) (values t t))
+        ((member v '(nil :nil)) (values nil t))
+        (t (values nil nil))))
 
 (defun %ebg-proper-list-length (l)
   "Μήκος proper list ή NIL για dotted/μη-λίστα. Τερματισμός ΕΓΓΥΗΜΕΝΟΣ:
@@ -99,11 +135,6 @@
                                      (zerop (mod y 400))))
                             29
                             (aref days (1- m)))))))))
-
-(defun %ebg-booleanish-p (v)
-  "Δεκτό boolean πεδίου bundle: T/NIL — ΚΑΙ :T/:NIL, γιατί η data-only
-   ανάγνωση γίνεται στο keyword package όπου το γυμνό «t» διαβάζεται ως :T."
-  (member v '(t nil :t :nil)))
 
 (defun %ebg-tree-contains (tree kw)
   "Υπάρχει το keyword KW οπουδήποτε στο δέντρο; ΕΠΑΝΑΛΗΠΤΙΚΑ με ρητή στοίβα
@@ -155,7 +186,9 @@
                                     '(:unknown-source-needed
                                       :blocked-insufficient-provenance))))))
            :item_required_citations_invalid)
-          ((not (%ebg-booleanish-p (f :stale-law-decoy-p)))
+          ;; boolean canonicalization (FF2 §2.3): valid-p ΜΟΝΟ αν :T/:NIL/T/NIL·
+          ;; το :NIL ΔΕΝ περνά ως truthy — ελέγχεται η valid-p, όχι η truthiness.
+          ((not (nth-value 1 (%ebg-canon-bool (f :stale-law-decoy-p))))
            :item_stale_law_decoy_p_invalid)
           ((not (%ebg-proper-list-length
                  (let ((sc (f :scoring)))
@@ -187,7 +220,13 @@
             (unless (string= computed (string-downcase fingerprint))
               (return-from validate
                 (values :invalid :fingerprint_mismatch (list :computed computed))))
-            (let ((form (%ebg-read-data bundle-path)))
+            (multiple-value-bind (form rstatus) (%ebg-read-data bundle-path)
+              ;; one-form EOF law (FF2 §2.2): κενό ⇒ not-bundle· trailing ⇒
+              ;; ρητό schema_trailing_data (ποτέ σιωπηλή αποδοχή δεύτερης φόρμας).
+              (when (eq rstatus :empty)
+                (return-from validate (values :invalid :schema_not_bundle nil)))
+              (when (eq rstatus :trailing)
+                (return-from validate (values :invalid :schema_trailing_data nil)))
               (unless (and (consp form)
                            (eq (first form) :external-benchmark-bundle)
                            (consp (cdr form)))
@@ -238,11 +277,11 @@
                                           collect (cons l (count l items
                                                                  :key (lambda (it)
                                                                         (getf it :layer))))))))))))))
-      ;; SERIOUS-CONDITION, όχι σκέτο ERROR: και η εξάντληση στοίβας/χώρου
-      ;; (storage-condition) από εχθρικό input καταλήγει σε κλειστό
-      ;; :unreadable — ποτέ crash, ποτέ raw λεπτομέρεια που ηχεί περιεχόμενο.
-      (serious-condition ()
-        (values :invalid :unreadable nil)))))
+      ;; RESOURCE-CONDITION POLICY (FF2 §2.5): κάθε serious-condition πιάνεται
+      ;; χωρίς crash/leak, αλλά ΔΙΑΚΡΙΝΕΤΑΙ: storage-condition (πόροι) ⇒
+      ;; :resource_exhausted· οτιδήποτε άλλο ⇒ :unreadable. Ποτέ raw λεπτομέρεια.
+      (serious-condition (c)
+        (values :invalid (%ebg-classify-condition c) nil)))))
 
 (defun %ebg-report (verdict reason info mode)
   "Η αναφορά — μηχανικά αναγνώσιμη, ΧΩΡΙΣ κανένα περιεχόμενο item. Το MODE
@@ -259,12 +298,13 @@
   ;; :not-run ΧΩΡΙΣ reason)· ένα :not-run λόγω π.χ. mode_not_implemented ΔΕΝ
   ;; επιτρέπεται να μοιάζει με πέρασμα επικύρωσης.
   (when (and (eq verdict :not-run) (null reason))
+    (format t "fingerprint_law: ~A~%" +ebg-fingerprint-law+)
     (format t "dry_run_validation: passed~%")
     (format t "note: κανένα hidden item δεν εκτελέστηκε ούτε τυπώθηκε — μόνο σχήμα/αποτύπωμα/πλήθη~%")))
 
 (defun %ebg-selftest ()
   "Αυτο-έλεγχος του επικυρωτή v1 με συνθετικά bundles (temp, εκτός repo):
-   tamper, πλήρες schema floor, no-leak, ντετερμινισμός — 18 έλεγχοι."
+   tamper, schema floor, no-leak, ντετερμινισμός + FF2 measured-preflight (bytes-v2, EOF law, boolean canon, resource policy) — 25 έλεγχοι."
   (let ((dir (merge-pathnames "lawmax-ebg-selftest/" (uiop:temporary-directory)))
         (fails '()) (total 0))
     (ensure-directories-exist dir)
@@ -384,8 +424,52 @@
         ;; cl-ppcre δεχόταν τελικό \n και ο control χαρακτήρας ηχούσε στην αναφορά)
         (expect "⑱ :as-of-date με trailing newline ⇒ :invalid / schema_as_of_date"
                 (format nil "(:external-benchmark-bundle 1 :owner \"x\" :as-of-date \"2026-07-07~C\" :jurisdiction :gr :bundle-purpose :dry-run :items ((:id \"N\")))" #\Newline)
-                :invalid :schema_as_of_date))
-      (format t "~%── ΠΥΛΗ ΕΞΩΤΕΡΙΚΟΥ BENCHMARK: ~D/~D αυτο-έλεγχοι πέρασαν · verdict: :not-run (κανένα bundle δεν προσκομίστηκε) ──~%"
+                :invalid :schema_as_of_date)
+        ;; ══ FF2 measured-preflight ×5 (acceptance gates B-G του [0023]) ══
+        ;; ⑲ (B) raw-byte fingerprint: ίδια bytes ⇒ ίδιο hash· 1 byte ⇒ διαφορετικό
+        (let* ((a (wr "fp-a.bin" "byte-stream-XYZ"))
+               (b (wr "fp-b.bin" "byte-stream-XYZ"))
+               (c (wr "fp-c.bin" "byte-stream-XYZ!")))
+          (chk "⑲ (B) bytes-v2: ίδια byte streams ⇒ ίδιο hash· αλλαγή 1 byte ⇒ διαφορετικό"
+               (and (string= (%ebg-file-fingerprint a) (%ebg-file-fingerprint b))
+                    (not (string= (%ebg-file-fingerprint a) (%ebg-file-fingerprint c))))))
+        ;; ⑳ (C) string-normalization trap: ίδιο Unicode κείμενο (é), ΔΙΑΦΟΡΕΤΙΚΑ bytes
+        ;;     (NFC U+00E9 vs NFD e+U+0301) ⇒ ΔΙΑΦΟΡΕΤΙΚΟ hash (δεν εξισώνει)
+        (let* ((nfc (wr "nfc.bin" (string (code-char #x00E9))))
+               (nfd (wr "nfd.bin" (coerce (list (code-char #x65) (code-char #x0301)) 'string))))
+          (chk "⑳ (C) string-norm trap: ίδιο render (é), διαφορετικά bytes ⇒ ΔΙΑΦΟΡΕΤΙΚΟ hash"
+               (not (string= (%ebg-file-fingerprint nfc) (%ebg-file-fingerprint nfd)))))
+        ;; ㉑ (D) one-form EOF law: έγκυρο bundle + trailing δεύτερη φόρμα ⇒ schema_trailing_data
+        (expect "㉑ (D) trailing δεύτερη top-level φόρμα ⇒ :invalid / schema_trailing_data"
+                "(:external-benchmark-bundle 1 :owner \"x\" :as-of-date \"2026-07-07\" :jurisdiction :gr :bundle-purpose :dry-run :items ((:id \"A\")))
+(:sneaky-second-form 42)"
+                :invalid :schema_trailing_data)
+        ;; ㉒ (D′) comment-trick που κρύβει δεύτερη φόρμα ⇒ ΠΙΑΝΕΤΑΙ (ο reader παραλείπει σχόλιο)
+        (expect "㉒ (D′) block comment ΠΡΙΝ από κρυφή δεύτερη φόρμα ⇒ schema_trailing_data"
+                "(:external-benchmark-bundle 1 :owner \"x\" :as-of-date \"2026-07-07\" :jurisdiction :gr :bundle-purpose :dry-run :items ((:id \"A\")))
+#| αθώο σχόλιο |# (:hidden 1)"
+                :invalid :schema_trailing_data)
+        ;; ㉓ (E) boolean canonicalization: :NIL ΔΕΝ περνά ως truthy· :maybe άκυρο
+        (chk "㉓ (E) boolean canon: :NIL→NIL (όχι truthy)· :T→T· :maybe→invalid"
+             (and (null (nth-value 0 (%ebg-canon-bool :nil)))    ; :NIL → NIL (falsy!)
+                  (nth-value 1 (%ebg-canon-bool :nil))            ; valid
+                  (eq t (nth-value 0 (%ebg-canon-bool :t)))       ; :T → T
+                  (not (nth-value 1 (%ebg-canon-bool :maybe)))))  ; :maybe → invalid
+        ;; ㉔ (E′) bundle item με μη-boolean stale-law-decoy-p ⇒ schema_item_invalid
+        (expect "㉔ (E′) item :stale-law-decoy-p :maybe (μη-boolean) ⇒ :invalid / schema_item_invalid"
+                "(:external-benchmark-bundle 1 :owner \"x\" :as-of-date \"2026-07-07\" :jurisdiction :gr :bundle-purpose :dry-run
+ :items ((:id \"B\" :layer :provision :jurisdiction :gr :source-class :kodikas :visible-prompt \"a\" :as-of-date \"2026-07-07\" :required-citations (\"c\") :stale-law-decoy-p :maybe :scoring (:max 1) :hidden-expected (:x))))"
+                :invalid :schema_item_invalid)
+        ;; ㉕ (G) resource-condition policy: storage-condition ξεχωρίζει από unreadable
+        (chk "㉕ (G) resource policy: storage-condition→:resource_exhausted, error→:unreadable (διακριτά)"
+             (and (eq :resource_exhausted
+                      (%ebg-classify-condition (make-condition 'storage-condition)))
+                  (eq :unreadable
+                      (%ebg-classify-condition (make-condition 'simple-error)))
+                  (not (eq :resource_exhausted :unreadable)))))
+      ;; (F) exact bad-reason: ΚΑΘΕ negative expect παραπάνω ελέγχει ΑΚΡΙΒΩΣ το
+      ;;     why-code (ο macro expect συγκρίνει με eq) — «απέτυχε άρα καλά» αδύνατο.
+      (format t "~%── ΠΥΛΗ ΕΞΩΤΕΡΙΚΟΥ BENCHMARK: ~D/~D αυτο-έλεγχοι πέρασαν · verdict: :not-run (κανένα bundle δεν προσκομίστηκε) · fingerprint_law: bytes-v2 ──~%"
               (- total (length fails)) total)
       (if fails 1 0))))
 
