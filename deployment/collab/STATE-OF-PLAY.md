@@ -38,7 +38,8 @@ exact bad-reason assertions, resource-condition policy.*
 2. ~~M1 design~~ ✅
 3. ~~M1 implementation + gate~~ ✅ (ceeeeade — 9 invariant checks, πύλη διαλόγου 82/82)
 4. ~~Understanding Runner proposal-only~~ ✅ `--self-study-night` (κύκλος: observe→extract→shadow→queue· «υιοθετήσεις: 0» εκ κατασκευής· 3 έλεγχοι στην πύλη μάθησης)
-5. NixOS L1+ ← ΕΠΟΜΕΝΟ (ξεκλειδωμένο από PASS-CANDIDATE)
+5. **LAWMAX Ω+ PLAN [0018]** ← σε κρίση Κριτή· εκτέλεση φάση-φάση ΜΟΝΟ με «εγκρίνω» (FF1 root-resolution → FF2 measured-preflight → FF3 verify-truth → FF4 kernel freeze → Ω+1..7)
+6. NixOS L1+ — ΜΕΤΑ το Foundation Freeze (εντολή δημιουργού: «όταν είναι έτοιμο αρχιτεκτονικά»)
 
 ## Ανοιχτές εκκρεμότητες (με ιδιοκτήτη)
 
