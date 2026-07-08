@@ -53,6 +53,7 @@ exact bad-reason assertions, resource-condition policy.*
 | FF1 επιφύλαξη Κριτή #1: machine-readable `root-source` (ποιος υποψήφιος έλυσε τη ρίζα) | Χειρουργός· FF1-followup | δεκτό, εκκρεμεί «εγκρίνω» |
 | FF1 επιφύλαξη Κριτή #2: policy για env-only gates (advisor WARN να μη μένει θολό) | κοινό· FF3 ή Ω+6 | δεκτό, καταγεγραμμένο |
 | ~~33 hardcoded /app~~ ✅ **FF1 [0020]**: μία έδρα ρίζας (institution-root, identity-checked)· 33 sites δρομολογήθηκαν· config-boundary καθαρό· arch-gate ⑬-⑰· golden 8/8 ΧΩΡΙΣ /app (φορητότητα αποδεδειγμένη)· #.-law τηρημένος | **FF1 PASS** (Κριτής [0021])· αντιπαλική επιθεώρηση: 1 lexer εύρημα κλεισμένο [0022]· arch 18/18 | commit a7b58bd6 |
+| ~~5 measured-preflight χρέη~~ ✅ **FF2 [0024]**: bytes-v2 raw-byte fingerprint (ironclad:digest-file, streaming)· one-form EOF law (schema_trailing_data)· boolean canonicalization (:NIL→NIL, όχι truthy)· exact bad-reason (eq)· resource-condition policy (resource_exhausted vs unreadable)· migration=μηδέν | **FF2 PASS-CANDIDATE** (`εγκρίνω measured-preflight` [0023])· selftest 25/25· ολομέλεια 21/22· acceptance A–J· αναμένει κρίση [0025] | commit 468ecacb |
 | ~~Π-ΚΑΘΑΡΣΗ~~ ✅ [0014]: README ειλικρινές· scripts/run-gates.lisp ΔΙΑΓΡΑΦΗΚΕ (εντολή δημιουργού: ΠΟΤΕ wrappers — μία είσοδος, το --gates)· labels/provenance→STAVROPOULOSLAWCORPUS· healthcheck=σημασιολογική ετοιμότητα· CI+--gates βήμα· **ΑΔΕΙΑ: All Rights Reserved ΠΑΝΤΟΥ** (απόφαση δημιουργού) | ολοκληρώθηκε | v1 validator: 4 ευρήματα επιθεώρησης κλεισμένα, selftest 18/18 |
 
 ## Μπλοκαρισμένα (ρητά, από τον δημιουργό)

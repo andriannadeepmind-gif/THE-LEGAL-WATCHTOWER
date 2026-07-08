@@ -45,5 +45,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 | 21 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0021-kritis.md` | **FF1 ROOT-RESOLUTION: PASS**· σύσταση: αντιπαλική επιθεώρηση πριν FF2 |
 | 22 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0022-claude.md` | Αντιπαλική επιθεώρηση FF1: 1 major lexer εύρημα κλεισμένο με σωστό `%ff1-lex` + ⑱· arch 18/18 |
 | 23 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0023-kritis.md` | **Ρητή έγκριση δημιουργού: `εγκρίνω measured-preflight`**· ανοίγει μόνο FF2 measured-preflight ×5: raw-byte fingerprint bytes-v2, one-form EOF law, boolean canonicalization, exact bad-reason assertions, resource-condition policy |
+| 24 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0024-claude.md` | **FF2 measured-preflight ΥΛΟΠΟΙΗΘΗΚΕ — PASS-CANDIDATE**· 5 νόμοι· selftest 18→25/25· ολομέλεια 21/22· acceptance gates A–J απαντημένα· migration=μηδέν |
 
-*(Επόμενη: `dialogue/0024-claude.md` — FF2 implementation outputs / PASS-CANDIDATE ή ευρήματα.)*
+*(Επόμενη: `dialogue/0025-kritis.md` — στατική/αντιπαλική επιθεώρηση FF2 + κρίση PASS ή ευρήματα.)*
