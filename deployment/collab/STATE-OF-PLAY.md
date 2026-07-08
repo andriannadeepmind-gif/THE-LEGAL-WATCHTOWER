@@ -50,7 +50,7 @@ exact bad-reason assertions, resource-condition policy.*
 | Artifact split χωρίς σπάσιμο verification chain | κοινό, μέσω CONSOLIDATION-PLAN | χρέος |
 | Advisory ⚠ πηγών (ασύμμετρα «», αγκύλες — 168 σύνολο) | χρέος ποιότητας πηγής | καταγεγραμμένο |
 | **33 hardcoded «/app» defaults** σε systems/source (ρίζα του env-κόκκινου golden/advisor εκτός docker layout — βλ. [0014]) | χρέος canonicalization: ΜΙΑ έδρα root-resolution (repo-root από τη θέση του συστήματος, /app μόνο ως deployment default)· ΘΕΛΕΙ σχέδιο+έγκριση (αγγίζει πολλές έδρες) | δηλωμένο, ΟΧΙ μπαλωμένο |
-| ~~Π-ΚΑΘΑΡΣΗ~~ ✅ [0014]: README ειλικρινές· run-gates=wrapper του --gates· labels/provenance→STAVROPOULOSLAWCORPUS· healthcheck=σημασιολογική ετοιμότητα· CI+--gates βήμα· **ΑΔΕΙΑ: All Rights Reserved ΠΑΝΤΟΥ** (απόφαση δημιουργού) | ολοκληρώθηκε | v1 validator: 4 ευρήματα επιθεώρησης κλεισμένα, selftest 18/18 |
+| ~~Π-ΚΑΘΑΡΣΗ~~ ✅ [0014]: README ειλικρινές· scripts/run-gates.lisp ΔΙΑΓΡΑΦΗΚΕ (εντολή δημιουργού: ΠΟΤΕ wrappers — μία είσοδος, το --gates)· labels/provenance→STAVROPOULOSLAWCORPUS· healthcheck=σημασιολογική ετοιμότητα· CI+--gates βήμα· **ΑΔΕΙΑ: All Rights Reserved ΠΑΝΤΟΥ** (απόφαση δημιουργού) | ολοκληρώθηκε | v1 validator: 4 ευρήματα επιθεώρησης κλεισμένα, selftest 18/18 |
 
 ## Μπλοκαρισμένα (ρητά, από τον δημιουργό)
 

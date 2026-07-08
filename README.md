@@ -174,12 +174,12 @@ docker compose -f docker-compose.architecture-tests.yml up --build
 μητρώο εντολών (κάθε εντολή με επίθημα `-gate` συμμετέχει — σήμερα 22 πύλες).
 
 ```bash
-# Μέσα στο container (canonical)
+# Η ΜΙΑ κανονική είσοδος — μέσα στο container:
 docker compose run --rm orchestrator --gates
-
-# Ή από πηγή
-sbcl --script scripts/run-gates.lisp   # thin wrapper → --gates (ίδια έδρα)
 ```
+
+Δεν υπάρχει δεύτερο entry point/wrapper script — μία εντολή, μία έδρα
+(gates-runner στο μητρώο), μέσω της συνταγματικής δρομολόγησης.
 
 ### SBCL REPL Usage
 
@@ -233,7 +233,6 @@ STAVROPOULOSLAWCORPUS/
 │   └── ...
 │
 ├── scripts/
-│   ├── run-gates.lisp           # thin wrapper → --gates (η ολομέλεια από το μητρώο)
 │   ├── generate-keys.lisp       # RSA key generation
 │   └── verify-gate-5-validation.lisp
 │
