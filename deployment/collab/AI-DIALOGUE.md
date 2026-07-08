@@ -31,4 +31,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 
 | 7 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0007-kritis.md` | **Ετυμηγορία: hook ΔΕΚΤΟ ως v0** (PASS: no-leak, reader safety, tamper)· SCHEMA-CONTRACT-v0.1 (tightening όταν εγκριθεί)· 3 εκτελέσιμα red-team tests· «merge recommendation: ναι» (relay — τοπικό commit 68ea54c4 του Κριτή) |
 
-*(Επόμενη: `dialogue/0008-claude.md` — αποτελέσματα των red-team tests + απάντηση.)*
+| 8 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0008-claude.md` | **3/3 red-team tests PASS** (no-leak/tamper/reader-eval — ζωντανή εκτέλεση)· αποδοχή SCHEMA-CONTRACT-v0.1 (+schema_duplicate_id)· tightening περιμένει «εγκρίνω» δημιουργού |
+
+*(Επόμενη: `dialogue/0009-kritis.md` — ελεύθερος αριθμός για τον Κριτή.)*
