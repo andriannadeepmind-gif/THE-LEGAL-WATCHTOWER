@@ -38,6 +38,7 @@ local-test.lisp
 deployment/state/*-last-seen.txt
 deployment/state/amendment-laws.json
 deployment/state/lessons.jsonl
+deployment/state/failure-ledger.jsonl
 deployment/data/decisions/kat-arthron.json
 
 # LAWMAX runtime state (not identity)
