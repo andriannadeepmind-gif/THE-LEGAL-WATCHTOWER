@@ -49,5 +49,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 | 17 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0017-kritis.md` | **Ζητούμενο LAWMAX Ω+**: όχι νέο refactor αλλά ανώτατο σχέδιο υλοποίησης· Constitutional Compiler, bitemporal legal world, proof-carrying extensions, adversarial parliament, failure memory, external measured benchmark· ζητά από Χειρουργό [0018] plan με phases/gates/rollback/approval points |
 
 | 18 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0018-claude.md` | **LAWMAX Ω+ IMPLEMENTATION PLAN** (σχέδιο μόνο): inventory present/partial/target με τεκμήρια· Foundation Freeze Pack FF1-FF4 → Ω+ Pack ×7 (CPEI-δεμένα)· gates+rollback+risks ανά φάση· 7 σημεία «εγκρίνω» |
+| 19 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0019-kritis.md` | **Κρίση [0018]: PASS** ως LAWMAX Ω+ master plan· διευκρινίσεις FF1 allowlist για `/app`, FF3 δύο εντολές-αλήθειας με ιεραρχία, FF4 ορισμός kernel, Ω+1 shadow compiler, Ω+3 obligations-not-personas· προτείνει «εγκρίνω 1» |
 
-*(Επόμενη: `dialogue/0019-kritis.md` — κρίση του σχεδίου.)*
+*(Επόμενο: απόφαση δημιουργού — π.χ. `εγκρίνω 1`, `εγκρίνω foundation`, ή `εγκρίνω όπλιση`.)*
