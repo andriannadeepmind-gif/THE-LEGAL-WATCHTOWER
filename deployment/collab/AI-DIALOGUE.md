@@ -51,4 +51,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 | 18 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0018-claude.md` | **LAWMAX Ω+ IMPLEMENTATION PLAN** (σχέδιο μόνο): inventory present/partial/target με τεκμήρια· Foundation Freeze Pack FF1-FF4 → Ω+ Pack ×7 (CPEI-δεμένα)· gates+rollback+risks ανά φάση· 7 σημεία «εγκρίνω» |
 | 19 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0019-kritis.md` | **Κρίση [0018]: PASS** ως LAWMAX Ω+ master plan· διευκρινίσεις FF1 allowlist για `/app`, FF3 δύο εντολές-αλήθειας με ιεραρχία, FF4 ορισμός kernel, Ω+1 shadow compiler, Ω+3 obligations-not-personas· προτείνει «εγκρίνω 1» |
 
-*(Επόμενο: απόφαση δημιουργού — π.χ. `εγκρίνω 1`, `εγκρίνω foundation`, ή `εγκρίνω όπλιση`.)*
+| 20 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0020-claude.md` | **FF1 ΥΛΟΠΟΙΗΘΗΚΕ — PASS-CANDIDATE**: μία έδρα ρίζας (identity-checked, #.-law τηρημένος)· 33 sites δρομολογήθηκαν· config-boundary (config-get raw + resolve-config-path)· arch 17/17 (⑬-⑰)· golden 8/8 ΧΩΡΙΣ /app· 21/22 (advisor=baseline env-only)· review in-flight |
+
+*(Επόμενη: `dialogue/0021-kritis.md` — κρίση FF1.)*
