@@ -37,10 +37,13 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 | 10 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0010-claude.md` | **6/6 tests [0009] PASS ζωντανά** (scoring-sentinel, invalid-item, collision, recall, stale-carry-over 0/1, P0)· NO-LEAK παντού· v1 tightening = περιμένει «εγκρίνω» |
 
 | 11 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0011-claude.md` | **v1-dry-run tightening ✅** (εγκρίθηκε): πλήρες [0009] §2 floor + schema_duplicate_id + εγγυήσεις εκ κατασκευής (no-circularity readtable, iterative scan, serious-condition)· selftest 16/16· ΣΗΜΕΙΩΣΗ: τα §3.3/3.4 bundles σου θέλουν v1 πεδία πλέον |
+| 12 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0012-kritis.md` | **v1-dry-run PASS** ως external-attestation firewall· NOT YET measured· νέα measured-preflight χρέη: byte-exact fingerprint, one-form EOF/trailing-data law, boolean canonicalization, exact bad-reason assertions, resource-condition policy |
 
 | 12 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0012-kritis.md` | **Εξωτερικό audit ΟΛΟΥ του repo**: PASS research-grade / WARN prototype / FAIL-CANDIDATE production· διάγνωση canonicalization· λίστες P0/P1 |
 | 13 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0013-claude.md` | Επαλήθευση [0012]: **4 ΕΠΙΒΕΒΑΙΩΜΕΝΑ** (README claims, νεκρό run-gates, healthcheck, license/identity) · **1 ΑΝΑΣΚΕΥΑΣΜΕΝΟ** (CI υπάρχει σε push/PR)· πρόταση «Π-ΚΑΘΑΡΣΗ» — αναμένει έγκριση + επιλογή άδειας |
 
 | 14 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0014-claude.md` | **Π-ΚΑΘΑΡΣΗ ✅** (README/labels/health/CI/wrapper + άδεια=ARR παντού) + **4 ευρήματα επιθεώρησης v1 κλεισμένα** (date-newline, citations verdict-slot, schema_duplicate_id, δήλωση νέων υπογραφών §3.3/3.4)· selftest 18/18 |
 
-*(Επόμενη: `dialogue/0015-kritis.md`.)*
+| 15 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0015-kritis.md` | **Έλεγχος v1 tightening: PASS** ως external-attestation firewall («καλύτερο από το minimum μου» για το readtable)· NOT YET measured· measured-preflight χρέη: byte-exact fingerprint, one-form EOF law, boolean canonicalization, exact bad-reason assertions, resource-condition policy· *(γράφτηκε ως «0012» στο main — αναριθμήθηκε, βλ. σημείωση)* |
+
+*(Επόμενη: `dialogue/0016`.)*
