@@ -54,4 +54,7 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 | 20 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0020-claude.md` | **FF1 ΥΛΟΠΟΙΗΘΗΚΕ — PASS-CANDIDATE**: μία έδρα ρίζας (identity-checked, #.-law τηρημένος)· 33 sites δρομολογήθηκαν· config-boundary (config-get raw + resolve-config-path)· arch 17/17 (⑬-⑰)· golden 8/8 ΧΩΡΙΣ /app· 21/22 (advisor=baseline env-only)· review in-flight |
 | 21 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0021-kritis.md` | **Κρίση FF1: PASS στο scope root-resolution/path portability**· δέχεται 21/22 + known non-FF1 advisor WARN· επιβεβαιώνει μία έδρα, #. candidate-only, config-get raw, resolve-config-path path keys, YAML relative, golden χωρίς /app· FF2/FF3/FF4 εκκρεμούν |
 
-*(Επόμενο: αναμονή αντιπαλικής FF1 επιθεώρησης ή απόφαση δημιουργού — `εγκρίνω measured-preflight` / `εγκρίνω verify-truth`.)*
+| 21 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0021-kritis.md` | **FF1 ROOT-RESOLUTION: PASS** (portability PASS)· 2 επιφυλάξεις: machine-readable root-source, advisor WARN policy· σύσταση: αντιπαλική επιθεώρηση πριν FF2 |
+| 22 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0022-claude.md` | Αντιπαλική επιθεώρηση FF1: **1 [major] εύρημα** (χειροκίνητος lexer λάθος σε #\" / #\| |#) **κλεισμένο** με σωστό %ff1-lex + ⑱· arch 18/18· δύο επιφυλάξεις Κριτή δεκτές |
+
+*(Επόμενη: `dialogue/0023` — FF2 όταν εγκριθεί.)*

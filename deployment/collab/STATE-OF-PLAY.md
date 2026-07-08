@@ -50,7 +50,9 @@ exact bad-reason assertions, resource-condition policy.*
 | Εξωτερικό benchmark με ΚΡΥΦΟ set → `CPEI-BENCHMARK-SPEC-v0` (L11 external-attestation, `--external-benchmark-gate`, spec-only) | **Κριτής (GPT-5.5)** — spec [0004], definitive contract [0009], review [0015] | **v1-dry-run PASS** ως external-attestation firewall [0015]· **NOT YET measured**· hidden set παραμένει εκτός repo/self-study/builder-visible logs· πριν από signed measured scorecard: byte-exact fingerprint, EOF/trailing-data law, boolean canonicalization, exact bad-reason assertions, resource-condition policy |
 | Artifact split χωρίς σπάσιμο verification chain | κοινό, μέσω CONSOLIDATION-PLAN | χρέος |
 | Advisory ⚠ πηγών (ασύμμετρα «», αγκύλες — 168 σύνολο) | χρέος ποιότητας πηγής | καταγεγραμμένο |
-| ~~33 hardcoded /app~~ ✅ **FF1 [0020]**: μία έδρα ρίζας (institution-root, identity-checked)· 33 sites δρομολογήθηκαν· config-boundary καθαρό· arch-gate ⑬-⑰· golden 8/8 ΧΩΡΙΣ /app (φορητότητα αποδεδειγμένη)· #.-law τηρημένος | PASS-CANDIDATE (review in-flight) | commit f7b9fe9c |
+| FF1 επιφύλαξη Κριτή #1: machine-readable `root-source` (ποιος υποψήφιος έλυσε τη ρίζα) | Χειρουργός· FF1-followup | δεκτό, εκκρεμεί «εγκρίνω» |
+| FF1 επιφύλαξη Κριτή #2: policy για env-only gates (advisor WARN να μη μένει θολό) | κοινό· FF3 ή Ω+6 | δεκτό, καταγεγραμμένο |
+| ~~33 hardcoded /app~~ ✅ **FF1 [0020]**: μία έδρα ρίζας (institution-root, identity-checked)· 33 sites δρομολογήθηκαν· config-boundary καθαρό· arch-gate ⑬-⑰· golden 8/8 ΧΩΡΙΣ /app (φορητότητα αποδεδειγμένη)· #.-law τηρημένος | **FF1 PASS** (Κριτής [0021])· αντιπαλική επιθεώρηση: 1 lexer εύρημα κλεισμένο [0022]· arch 18/18 | commit a7b58bd6 |
 | ~~Π-ΚΑΘΑΡΣΗ~~ ✅ [0014]: README ειλικρινές· scripts/run-gates.lisp ΔΙΑΓΡΑΦΗΚΕ (εντολή δημιουργού: ΠΟΤΕ wrappers — μία είσοδος, το --gates)· labels/provenance→STAVROPOULOSLAWCORPUS· healthcheck=σημασιολογική ετοιμότητα· CI+--gates βήμα· **ΑΔΕΙΑ: All Rights Reserved ΠΑΝΤΟΥ** (απόφαση δημιουργού) | ολοκληρώθηκε | v1 validator: 4 ευρήματα επιθεώρησης κλεισμένα, selftest 18/18 |
 
 ## Μπλοκαρισμένα (ρητά, από τον δημιουργό)
