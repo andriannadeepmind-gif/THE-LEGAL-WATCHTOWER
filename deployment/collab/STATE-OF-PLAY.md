@@ -4,11 +4,11 @@
 ετυμηγορίες, εκκρεμότητες, μπλοκαρίσματα. Ο διάλογος: `AI-DIALOGUE.md`.
 Πηγή αλήθειας παραμένουν τα gates/μητρώα — αυτό είναι ΣΥΝΟΨΗ, όχι απόδειξη.
 
-*Τελευταία ενημέρωση: Claude · 2026-07-07 · ο Κριτής (GPT-5.5) μπήκε στον διάλογο [2]·
-απάντηση [3]· διάλογος → lock-free (ένα αρχείο ανά καταχώρηση, dialogue/NNNN)·
-ΜΕΤΡΗΜΕΝΟ ζωντανά: 21 πύλες (το --gates είναι δρομέας)· --inference-gate μέσα στις 21·
-contract-gate 17/17 πράσινο, 27/27 πυλωμένες ικανότητες· τα «2» = μη-πυλωμένες ικανότητες
-(χρέος ορατό, όχι παραβάσεις)· legal-drafting = τίμιο δηλωμένο NIL*
+*Τελευταία ενημέρωση: Κριτής (GPT-5.5) · 2026-07-08 · διάβασα [0011] και τον πραγματικό
+`external-benchmark-gate.lisp` στο main· ετυμηγορία [0012]: **v1-dry-run PASS** ως
+external-attestation firewall, **NOT YET measured**· νέα measured-preflight χρέη:
+byte-exact fingerprint, one-form EOF/trailing-data law, boolean canonicalization,
+exact bad-reason assertions, resource-condition policy.*
 
 ## Κατάσταση συστήματος (τελευταία μετρημένη)
 
@@ -24,7 +24,7 @@ contract-gate 17/17 πράσινο, 27/27 πυλωμένες ικανότητε�
 
 ## Κανονικά κείμενα (η κοινή γλώσσα — διάβασέ τα με αυτή τη σειρά)
 
-1. `deployment/collab/AI-DIALOGUE.md` — ο διάλογός μας (εκκρεμεί απάντησή σου στο [1])
+1. `deployment/collab/AI-DIALOGUE.md` — ο διάλογός μας
 2. `deployment/LAWMAX-CEILING-CROSSWALK.md` — τα 15 επίπεδά σου ↔ CPEI + πρωτόκολλο Ν μυαλών
 3. `deployment/LAWMAX-CPEI-TARGET-SPEC.md` — ο σκελετός-στόχος (12 layers, InstitutionalAct 18 πεδία)
 4. `deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp` — ο νόμος του repo (ΕΠΙΒΑΛΛΕΤΑΙ από gate· δες :collaboration-protocol)
@@ -46,7 +46,7 @@ contract-gate 17/17 πράσινο, 27/27 πυλωμένες ικανότητε�
 |---|---|---|
 | ΑΚ/ΚΠολΔ πιθανόν STALE — Ν.5221/2025 (ΦΕΚ Α'133, ισχύς 1/1/2026), Ν.5303/2026 (Α'81, νέο κληρονομικό, ισχύς 16/9/2026) — ΕΠΙΒΕΒΑΙΩΜΕΝΑ από 2 ανεξάρτητες έρευνες | δημιουργός (ανέβαλε συνειδητά)· προτεινόμενη έδρα: 2ος συνεργάτης | ⚠ #1 ρίσκο ουσίας |
 | Όπλιση δαίμονα ΦΕΚ (cycle 0, χωρίς cursor, FEK_ANALYZE off, μόνο τρέχον έτος — γι' αυτό δεν ειδοποίησε ποτέ) | περιμένει «εγκρίνω όπλιση» | αναβλήθηκε |
-| Εξωτερικό benchmark με ΚΡΥΦΟ set → `CPEI-BENCHMARK-SPEC-v0` (L11 external-attestation, `--external-benchmark-gate`, spec-only) | **Κριτής (GPT-5.5)** — **SPEC ΠΑΡΑΔΟΘΗΚΕ** [4]: schema, 4 layers, 5 decoy classes, ≥40 hidden items, 8 hard-fails· ζητά dry-run hook | **hook ΔΕΚΤΟ ως v0 από Κριτή [0009]** («merge: ναι»)· ΟΛΑ τα red-team tests του (hook 6 + M1 4) **PASS ζωντανά** [0008]+[0010], NO-LEAK παντού· **v1-dry-run tightening ✅ ΕΓΚΡΙΘΗΚΕ+ΥΛΟΠΟΙΗΘΗΚΕ** [0011] — selftest 16/16, no-circularity εκ κατασκευής· επόμενο δικό μας: NixOS L1+ ή hidden set (εκτός repo) από Κριτή |
+| Εξωτερικό benchmark με ΚΡΥΦΟ set → `CPEI-BENCHMARK-SPEC-v0` (L11 external-attestation, `--external-benchmark-gate`, spec-only) | **Κριτής (GPT-5.5)** — spec [0004], definitive contract [0009], review [0012] | **v1-dry-run PASS** ως external-attestation firewall [0012]· **NOT YET measured**· hidden set παραμένει εκτός repo/self-study/builder-visible logs· πριν από signed measured scorecard: byte-exact fingerprint, EOF/trailing-data law, boolean canonicalization, exact bad-reason assertions, resource-condition policy |
 | Artifact split χωρίς σπάσιμο verification chain | κοινό, μέσω CONSOLIDATION-PLAN | χρέος |
 | Advisory ⚠ πηγών (ασύμμετρα «», αγκύλες — 168 σύνολο) | χρέος ποιότητας πηγής | καταγεγραμμένο |
 
