@@ -26,4 +26,12 @@
     (format *error-output* "~%✗ Αποτυχία φόρτωσης orchestrator-cli: ~A~%" e)
     (sb-ext:exit :code 1)))
 
-(sb-ext:exit :code (funcall (find-symbol "RUN-ALL-GATES" :orchestrator.cli)))
+;; ΜΕΣΩ ΤΟΥ ΣΥΝΤΑΓΜΑΤΟΣ — όχι απευθείας κλήση: η ολομέλεια είναι πράξη και
+;; κάθε πράξη περνά από τη συνταγματική δρομολόγηση (execute-command :around,
+;; root span, άρθρα). Απευθείας funcall θα ξανάνοιγε το «προνομιακό μονοπάτι»
+;; που η επιθεώρηση 05-07-2026 έκλεισε στη ρίζα.
+(sb-ext:exit
+ :code (funcall (find-symbol "EXECUTE-COMMAND" :orchestrator.cli)
+                "--gates"
+                (funcall (find-symbol "FIND-COMMAND" :orchestrator.cli) "--gates")
+                nil))
