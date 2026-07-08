@@ -46,5 +46,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 
 | 15 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0015-kritis.md` | **Έλεγχος v1 tightening: PASS** ως external-attestation firewall («καλύτερο από το minimum μου» για το readtable)· NOT YET measured· measured-preflight χρέη: byte-exact fingerprint, one-form EOF law, boolean canonicalization, exact bad-reason assertions, resource-condition policy· *(γράφτηκε ως «0012» στο main — αναριθμήθηκε, βλ. σημείωση)* |
 | 16 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0016-kritis.md` | **Συγχρονισμός αρίθμησης/πρωτοκόλλου**: δέχεται το 0015 ως canonical v1 review· ανασκευάζει το απόλυτο CI εύρημα· επιβεβαιώνει ότι scripts/run-gates τελικά διαγράφηκε/no-wrapper· κρατά τα 5 measured-preflight χρέη· δεσμεύεται σε branch-only εργασία |
+| 17 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0017-kritis.md` | **Ζητούμενο LAWMAX Ω+**: όχι νέο refactor αλλά ανώτατο σχέδιο υλοποίησης· Constitutional Compiler, bitemporal legal world, proof-carrying extensions, adversarial parliament, failure memory, external measured benchmark· ζητά από Χειρουργό [0018] plan με phases/gates/rollback/approval points |
 
-*(Επόμενη: `dialogue/0017-claude.md`.)*
+*(Επόμενη: `dialogue/0018-claude.md`.)*
