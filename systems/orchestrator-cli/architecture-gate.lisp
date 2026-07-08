@@ -52,42 +52,54 @@
   "(σχετικό-path . αιτιολογία): τα ΜΟΝΑ αρχεία όπου literal ρίζα-path
    επιτρέπεται. Ελάχιστο· κάθε εγγραφή φέρει αιτιολογία (κανόνας Κριτή §2.1).")
 
-(defun %ff1-string-literals (text)
-  "Τα ΠΕΡΙΕΧΟΜΕΝΑ όλων των string literals του TEXT (Lisp), με σεβασμό σε
-   escapes και σε ; comments (comment έξω από string ⇒ αγνοείται ως το EOL).
-   Έτσι /app σε σχόλιο ΔΕΝ μετριέται — μόνο πραγματικά string literals."
-  (let ((out '()) (i 0) (n (length text)) (in-str nil) (buf nil))
-    (loop while (< i n) for ch = (char text i) do
-      (cond
-        (in-str
-         (cond ((char= ch #\\) (push ch buf)
-                                (when (< (1+ i) n) (push (char text (1+ i)) buf))
-                                (incf i))
-               ((char= ch #\") (push (coerce (nreverse buf) 'string) out)
-                               (setf in-str nil buf nil))
-               (t (push ch buf))))
-        ((char= ch #\") (setf in-str t buf nil))
-        ((char= ch #\;) (loop while (and (< i n) (char/= (char text i) #\Newline))
-                              do (incf i))
-                        (decf i)))
-      (incf i))
-    (nreverse out)))
-
-(defun %ff1-code-without-strings (text)
-  "Το TEXT με strings ΚΑΙ comments αφαιρεμένα — για σάρωση συμβόλων κώδικα
-   (π.χ. compile-time root) χωρίς ψευδώς-θετικά μέσα σε strings/σχόλια."
-  (let ((out (make-string-output-stream)) (i 0) (n (length text)) (in-str nil))
-    (loop while (< i n) for ch = (char text i) do
-      (cond
-        (in-str (cond ((char= ch #\\) (incf i))
-                      ((char= ch #\") (setf in-str nil))))
-        ((char= ch #\") (setf in-str t))
-        ((char= ch #\;) (loop while (and (< i n) (char/= (char text i) #\Newline))
-                              do (incf i))
-                        (decf i))
-        (t (write-char ch out)))
-      (incf i))
-    (get-output-stream-string out)))
+(defun %ff1-lex (text)
+  "ΣΩΣΤΟΣ Lisp lexer. Επιστρέφει (values string-contents code-χωρίς-strings/σχόλια).
+   Χειρίζεται ΟΛΑ όσα ο πρώτος χειροκίνητος walker αγνοούσε (και ο αντιπαλικός
+   έλεγχος απέδειξε λανθασμένα):
+     • string escapes (\\)
+     • ; line comments (ως EOL)
+     • #|...|# ΕΜΦΩΛΕΥΜΕΝΑ block comments
+     • #\\<char> char literals — ΩΣΤΕ #\\\" και #\\; να ΜΗΝ αναστρέφουν το
+       string-parity (false negative) ούτε να ανοίγουν ψευτο-comment.
+   Έτσι /app σε σχόλιο/char-literal ΔΕΝ μετριέται, και /app σε πραγματικό
+   string literal ΔΕΝ ξεφεύγει — ό,τι κι αν προηγείται."
+  (let ((strings '())
+        (code (make-string-output-stream))
+        (i 0) (n (length text)))
+    (flet ((peek (k) (let ((j (+ i k))) (and (< j n) (char text j)))))
+      (loop while (< i n) do
+        (let ((ch (char text i)))
+          (cond
+            ;; #\<c> char literal: κράτα # \ και τον ΕΠΟΜΕΝΟ literal χαρακτήρα
+            ((and (char= ch #\#) (eql (peek 1) #\\))
+             (write-char ch code) (write-char #\\ code)
+             (when (peek 2) (write-char (peek 2) code))
+             (incf i 3))
+            ;; #|...|# block comment (εμφωλευμένα)
+            ((and (char= ch #\#) (eql (peek 1) #\|))
+             (incf i 2)
+             (loop with depth = 1
+                   while (and (> depth 0) (< i n)) do
+                     (cond ((and (char= (char text i) #\#) (eql (peek 1) #\|))
+                            (incf depth) (incf i 2))
+                           ((and (char= (char text i) #\|) (eql (peek 1) #\#))
+                            (decf depth) (incf i 2))
+                           (t (incf i)))))
+            ;; ; line comment
+            ((char= ch #\;)
+             (loop while (and (< i n) (char/= (char text i) #\Newline)) do (incf i)))
+            ;; "..." string literal (με escapes)
+            ((char= ch #\")
+             (incf i)
+             (let ((buf (make-string-output-stream)))
+               (loop while (and (< i n) (char/= (char text i) #\")) do
+                 (if (and (char= (char text i) #\\) (< (1+ i) n))
+                     (progn (write-char (char text (1+ i)) buf) (incf i 2))
+                     (progn (write-char (char text i) buf) (incf i))))
+               (incf i)  ; κλείσιμο "
+               (push (get-output-stream-string buf) strings)))
+            (t (write-char ch code) (incf i))))))
+    (values (nreverse strings) (get-output-stream-string code))))
 
 (defun %ff1-app-path-p (s)
   "Περιέχει το S τη ρίζα-default ΩΣ path segment (ακολουθεί «/» ή τέλος-string);
@@ -302,13 +314,13 @@
             (let* ((rel (%ff1-rel f root))
                    (text (ignore-errors (uiop:read-file-string f))))
               (when text
-                ;; (α) literal /app-path σε string literal, εκτός allowlist
-                (unless (assoc rel +ff1-app-allowlist+ :test #'string=)
-                  (when (some #'%ff1-app-path-p (%ff1-string-literals text))
-                    (push rel app-violations)))
-                ;; (β) compile-time root truth εκτός της έδρας
-                (unless (string= rel +ff1-root-seat+)
-                  (let ((code (%ff1-code-without-strings text)))
+                (multiple-value-bind (lits code) (%ff1-lex text)
+                  ;; (α) literal /app-path σε string literal, εκτός allowlist
+                  (unless (assoc rel +ff1-app-allowlist+ :test #'string=)
+                    (when (some #'%ff1-app-path-p lits)
+                      (push rel app-violations)))
+                  ;; (β) compile-time root truth εκτός της έδρας
+                  (unless (string= rel +ff1-root-seat+)
                     (when (or (search "*compile-file-truename*" code)
                               (search "*load-truename*" code)
                               (search "*load-pathname*" code))
@@ -352,7 +364,20 @@
                     (not (%yaml-abs-path-value-p "json: \"deployment/data/x.json\"")) ; relative ⇒ NIL
                     (not (%yaml-abs-path-value-p "url: \"https://example.com/a/b\"")) ; URL ⇒ NIL
                     (not (%yaml-abs-path-value-p "pdf_url: \"https://x/y.pdf\""))     ; web id ⇒ NIL
-                    (not (%yaml-abs-path-value-p "format: \"json\"")))))            ; metadata ⇒ NIL
+                    (not (%yaml-abs-path-value-p "format: \"json\""))))            ; metadata ⇒ NIL
+          ;; ⑱ ΑΠΟΔΕΙΞΗ ΟΡΘΟΤΗΤΑΣ ΤΟΥ LEXER — κλειδώνει το εύρημα του αντιπαλικού
+          ;;    ελέγχου (f7b9fe9c): #\" char-literal ΔΕΝ κρύβει επόμενο /app string·
+          ;;    /app σε #|...|# block comment ΔΕΝ ψευδο-κοκκινίζει· #\; δεν σκοτώνει
+          ;;    το υπόλοιπο ως comment. Το /app-path κατασκευάζεται από το needle
+          ;;    (μηδέν literal /app σε αυτό το αρχείο).
+          (let* ((p (concatenate 'string +ff1-app-needle+ "/input/z.pdf"))
+                 (after-charq (format nil "(case c (#\\~C (f)))~%(x ~S)" #\" p))
+                 (in-block    (format nil "#| example: ~S |#" p))
+                 (after-semi  (format nil "(list #\\~C ~S)" #\; p)))
+            (chk "⑱ FF1: ο lexer ΣΩΣΤΟΣ (#\\\" δεν κρύβει path· #| |# δεν ψευδο-κοκκινίζει· #\\; ασφαλές)"
+                 (and (some #'%ff1-app-path-p (%ff1-lex after-charq))       ; path ΜΕΤΑ από #\" ⇒ πιάνεται
+                      (not (some #'%ff1-app-path-p (%ff1-lex in-block)))    ; block comment ⇒ ΟΧΙ
+                      (some #'%ff1-app-path-p (%ff1-lex after-semi))))))    ; path μετά #\; ⇒ πιάνεται
         (format t "~%── ΠΥΛΗ ΑΡΧΙΤΕΚΤΟΝΙΚΟΥ ΣΥΝΤΑΓΜΑΤΟΣ: ~D/~D πέρασαν ──~%"
                 (- total (length fails)) total)
         (if fails 1 0)))))
