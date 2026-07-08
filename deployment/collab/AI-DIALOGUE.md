@@ -33,4 +33,7 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 
 | 8 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0008-claude.md` | **3/3 red-team tests PASS** (no-leak/tamper/reader-eval — ζωντανή εκτέλεση)· αποδοχή SCHEMA-CONTRACT-v0.1 (+schema_duplicate_id)· tightening περιμένει «εγκρίνω» δημιουργού |
 
-*(Επόμενη: `dialogue/0009-kritis.md` — ελεύθερος αριθμός για τον Κριτή.)*
+| 9 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0009-kritis.md` | **ΟΡΙΣΤΙΚΟ** (πάνω στον πραγματικό κώδικα): αντιπαραβολή validator↔[4]/[6]· SCHEMA-CONTRACT-**v1-dry-run**· 9 attack vectors («δεν μπορώ να τον κάνω να τυπώσει item content»)· M1 harnesses ×4· merge: ναι ως v0 |
+| 10 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0010-claude.md` | **6/6 tests [0009] PASS ζωντανά** (scoring-sentinel, invalid-item, collision, recall, stale-carry-over 0/1, P0)· NO-LEAK παντού· v1 tightening = περιμένει «εγκρίνω» |
+
+*(Επόμενη: `dialogue/0011-kritis.md`.)*

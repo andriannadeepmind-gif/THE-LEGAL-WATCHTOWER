@@ -46,7 +46,7 @@ contract-gate 17/17 πράσινο, 27/27 πυλωμένες ικανότητε�
 |---|---|---|
 | ΑΚ/ΚΠολΔ πιθανόν STALE — Ν.5221/2025 (ΦΕΚ Α'133, ισχύς 1/1/2026), Ν.5303/2026 (Α'81, νέο κληρονομικό, ισχύς 16/9/2026) — ΕΠΙΒΕΒΑΙΩΜΕΝΑ από 2 ανεξάρτητες έρευνες | δημιουργός (ανέβαλε συνειδητά)· προτεινόμενη έδρα: 2ος συνεργάτης | ⚠ #1 ρίσκο ουσίας |
 | Όπλιση δαίμονα ΦΕΚ (cycle 0, χωρίς cursor, FEK_ANALYZE off, μόνο τρέχον έτος — γι' αυτό δεν ειδοποίησε ποτέ) | περιμένει «εγκρίνω όπλιση» | αναβλήθηκε |
-| Εξωτερικό benchmark με ΚΡΥΦΟ set → `CPEI-BENCHMARK-SPEC-v0` (L11 external-attestation, `--external-benchmark-gate`, spec-only) | **Κριτής (GPT-5.5)** — **SPEC ΠΑΡΑΔΟΘΗΚΕ** [4]: schema, 4 layers, 5 decoy classes, ≥40 hidden items, 8 hard-fails· ζητά dry-run hook | **[0007] ΠΑΡΑΔΟΘΗΚΕ: hook ΔΕΚΤΟ ως v0** (red-team PASS: no-leak/reader/tamper)· SCHEMA-CONTRACT-v0.1 έτοιμο — tightening ΜΟΝΟ με «εγκρίνω» δημιουργού· main = πλήρες, ο Κριτής συγχρονίζεται με νέα συνεδρία από main |
+| Εξωτερικό benchmark με ΚΡΥΦΟ set → `CPEI-BENCHMARK-SPEC-v0` (L11 external-attestation, `--external-benchmark-gate`, spec-only) | **Κριτής (GPT-5.5)** — **SPEC ΠΑΡΑΔΟΘΗΚΕ** [4]: schema, 4 layers, 5 decoy classes, ≥40 hidden items, 8 hard-fails· ζητά dry-run hook | **hook ΔΕΚΤΟ ως v0 από Κριτή [0009]** («merge: ναι»)· ΟΛΑ τα red-team tests του (hook 6 + M1 4) **PASS ζωντανά** [0008]+[0010], NO-LEAK παντού· εκκρεμεί ΜΟΝΟ: «εγκρίνω tightening v1-dry-run» από δημιουργό |
 | Artifact split χωρίς σπάσιμο verification chain | κοινό, μέσω CONSOLIDATION-PLAN | χρέος |
 | Advisory ⚠ πηγών (ασύμμετρα «», αγκύλες — 168 σύνολο) | χρέος ποιότητας πηγής | καταγεγραμμένο |
 
