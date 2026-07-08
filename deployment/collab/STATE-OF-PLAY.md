@@ -5,7 +5,7 @@
 Πηγή αλήθειας παραμένουν τα gates/μητρώα — αυτό είναι ΣΥΝΟΨΗ, όχι απόδειξη.
 
 *Τελευταία ενημέρωση: Κριτής (GPT-5.5) · 2026-07-08 · διάβασα [0011] και τον πραγματικό
-`external-benchmark-gate.lisp` στο main· ετυμηγορία [0012]: **v1-dry-run PASS** ως
+`external-benchmark-gate.lisp` στο main· ετυμηγορία [0015, πρώην «0012»]: **v1-dry-run PASS** ως
 external-attestation firewall, **NOT YET measured**· νέα measured-preflight χρέη:
 byte-exact fingerprint, one-form EOF/trailing-data law, boolean canonicalization,
 exact bad-reason assertions, resource-condition policy.*
@@ -46,7 +46,7 @@ exact bad-reason assertions, resource-condition policy.*
 |---|---|---|
 | ΑΚ/ΚΠολΔ πιθανόν STALE — Ν.5221/2025 (ΦΕΚ Α'133, ισχύς 1/1/2026), Ν.5303/2026 (Α'81, νέο κληρονομικό, ισχύς 16/9/2026) — ΕΠΙΒΕΒΑΙΩΜΕΝΑ από 2 ανεξάρτητες έρευνες | δημιουργός (ανέβαλε συνειδητά)· προτεινόμενη έδρα: 2ος συνεργάτης | ⚠ #1 ρίσκο ουσίας |
 | Όπλιση δαίμονα ΦΕΚ (cycle 0, χωρίς cursor, FEK_ANALYZE off, μόνο τρέχον έτος — γι' αυτό δεν ειδοποίησε ποτέ) | περιμένει «εγκρίνω όπλιση» | αναβλήθηκε |
-| Εξωτερικό benchmark με ΚΡΥΦΟ set → `CPEI-BENCHMARK-SPEC-v0` (L11 external-attestation, `--external-benchmark-gate`, spec-only) | **Κριτής (GPT-5.5)** — spec [0004], definitive contract [0009], review [0012] | **v1-dry-run PASS** ως external-attestation firewall [0012]· **NOT YET measured**· hidden set παραμένει εκτός repo/self-study/builder-visible logs· πριν από signed measured scorecard: byte-exact fingerprint, EOF/trailing-data law, boolean canonicalization, exact bad-reason assertions, resource-condition policy |
+| Εξωτερικό benchmark με ΚΡΥΦΟ set → `CPEI-BENCHMARK-SPEC-v0` (L11 external-attestation, `--external-benchmark-gate`, spec-only) | **Κριτής (GPT-5.5)** — spec [0004], definitive contract [0009], review [0015] | **v1-dry-run PASS** ως external-attestation firewall [0015]· **NOT YET measured**· hidden set παραμένει εκτός repo/self-study/builder-visible logs· πριν από signed measured scorecard: byte-exact fingerprint, EOF/trailing-data law, boolean canonicalization, exact bad-reason assertions, resource-condition policy |
 | Artifact split χωρίς σπάσιμο verification chain | κοινό, μέσω CONSOLIDATION-PLAN | χρέος |
 | Advisory ⚠ πηγών (ασύμμετρα «», αγκύλες — 168 σύνολο) | χρέος ποιότητας πηγής | καταγεγραμμένο |
 | **33 hardcoded «/app» defaults** σε systems/source (ρίζα του env-κόκκινου golden/advisor εκτός docker layout — βλ. [0014]) | χρέος canonicalization: ΜΙΑ έδρα root-resolution (repo-root από τη θέση του συστήματος, /app μόνο ως deployment default)· ΘΕΛΕΙ σχέδιο+έγκριση (αγγίζει πολλές έδρες) | δηλωμένο, ΟΧΙ μπαλωμένο |
