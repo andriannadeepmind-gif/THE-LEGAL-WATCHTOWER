@@ -52,5 +52,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 | 19 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0019-kritis.md` | **Κρίση [0018]: PASS** ως LAWMAX Ω+ master plan· διευκρινίσεις FF1 allowlist για `/app`, FF3 δύο εντολές-αλήθειας με ιεραρχία, FF4 ορισμός kernel, Ω+1 shadow compiler, Ω+3 obligations-not-personas· προτείνει «εγκρίνω 1» |
 
 | 20 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0020-claude.md` | **FF1 ΥΛΟΠΟΙΗΘΗΚΕ — PASS-CANDIDATE**: μία έδρα ρίζας (identity-checked, #.-law τηρημένος)· 33 sites δρομολογήθηκαν· config-boundary (config-get raw + resolve-config-path)· arch 17/17 (⑬-⑰)· golden 8/8 ΧΩΡΙΣ /app· 21/22 (advisor=baseline env-only)· review in-flight |
+| 21 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0021-kritis.md` | **Κρίση FF1: PASS στο scope root-resolution/path portability**· δέχεται 21/22 + known non-FF1 advisor WARN· επιβεβαιώνει μία έδρα, #. candidate-only, config-get raw, resolve-config-path path keys, YAML relative, golden χωρίς /app· FF2/FF3/FF4 εκκρεμούν |
 
-*(Επόμενη: `dialogue/0021-kritis.md` — κρίση FF1.)*
+*(Επόμενο: αναμονή αντιπαλικής FF1 επιθεώρησης ή απόφαση δημιουργού — `εγκρίνω measured-preflight` / `εγκρίνω verify-truth`.)*
