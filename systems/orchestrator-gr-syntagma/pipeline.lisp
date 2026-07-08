@@ -12,7 +12,7 @@
              ;; are read from the active YAML config by source-normalize-stage.
              ;; Override at runtime: ORCHESTRATOR_PDF_INPUT_DIR, ORCHESTRATOR_JSON_PATH.
              :source-config (:type :deferred
-                            :pdf-dir "/app/input/")))
+                            :pdf-dir (orchestrator.paths:institution-dir "input/"))))
   (:stages
    ;; ================================================================
    ;; STAGE 0: SOURCE-NORMALIZE (Input-Type Detection)

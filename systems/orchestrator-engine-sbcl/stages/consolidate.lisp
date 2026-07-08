@@ -49,7 +49,7 @@
    configured amendments, and write consolidated.ttl + consolidated.txt."
   (let ((articles (orchestrator.core:get-context-value context :articles))
         (output-dir (or (orchestrator.core:get-context-value context :output-dir)
-                        "/app/output")))
+                        (orchestrator.paths:institution-dir "output"))))
     (unless articles
       (error 'orchestrator.spec:config-error
              :message "No articles to consolidate"

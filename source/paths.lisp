@@ -18,7 +18,10 @@
            #:*path-registry*
            #:ensure-directory
            #:with-temp-file
-           #:make-relative-path))
+           #:make-relative-path
+           ;; FF1 — Η ΜΙΑ έδρα ρίζας του Ιδρύματος (φορητή)
+           #:institution-root
+           #:institution-dir))
 
 (in-package :orchestrator.paths)
 
@@ -27,10 +30,96 @@
 ;;;; ========================================================================
 
 (defparameter +default-base-path+ "/app"
-  "Default base path for application")
+  "Deployment default — ΜΟΝΟ τελευταία λύση (docker). Ποτέ ξανά ως σκληρή
+   αλήθεια σε runtime path decision εκτός αυτής της έδρας (FF1).")
 
 (defparameter +max-path-components+ 20
   "Maximum number of path components to merge")
+
+;;;; ========================================================================
+;;;; FF1 — ΡΙΖΑ ΤΟΥ ΙΔΡΥΜΑΤΟΣ: Η ΜΙΑ ΑΛΗΘΕΙΑ, ΦΟΡΗΤΗ
+;;;; ========================================================================
+;;;;
+;;;; Πριν το FF1: 33 runtime path decisions είχαν το καθένα δικό του literal
+;;;; "/app" — μη-φορητό, docker-δεμένο. Τώρα υπάρχει ΜΙΑ έδρα· τα υπόλοιπα
+;;;; γίνονται καταναλωτές της. Ιεραρχία επίλυσης (INSTITUTION-ROOT):
+;;;;   1. LAWMAX_ROOT        — ρητή παράκαμψη
+;;;;   2. ORCHESTRATOR_ROOT  — legacy, τιμάται
+;;;;   3. φυσική θέση του κώδικα, ΑΝ υπάρχει στον δίσκο — φορητότητα
+;;;;   4. /app               — deployment default, τελευταία λύση
+
+(defparameter +seat-source-file+
+  #.(or *compile-file-truename* *load-truename* *load-pathname*)
+  "Η ΦΥΣΙΚΗ θέση αυτού του αρχείου, αποτυπωμένη τη ΣΤΙΓΜΗ ΤΗΣ ΜΕΤΑΓΛΩΤΤΙΣΗΣ.
+   ΚΑΝΟΝΑΣ ΚΡΙΤΗ (0021): το #. ΒΟΗΘΑ να βρεθεί πού ΧΤΙΣΤΗΚΕ το σύστημα —
+   ΔΕΝ αποφασίζει πού ΖΕΙ το Ίδρυμα. Είναι μόνο ΥΠΟΨΗΦΙΟ, όχι έμπιστη ρίζα:
+   το fasl μπορεί να μεταφέρθηκε, το checkout να είναι stale. Περνά ΤΟΝ ΙΔΙΟ
+   έλεγχο ταυτότητας με κάθε άλλο υποψήφιο.")
+
+(defparameter +institution-sentinels+
+  '("orchestrator-cli.asd"
+    "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp")
+  "Αρχεία-ΤΑΥΤΟΤΗΤΑ: η ύπαρξη ΟΛΩΝ αποδεικνύει ότι ένας κατάλογος είναι ρίζα
+   ΑΥΤΟΥ του LAWMAX — όχι απλώς ένας κατάλογος που τυχαίνει να υπάρχει
+   (παλιό/λάθος checkout, stale build root). Η ταυτότητα ΓΕΝΙΑΣ (ποια έκδοση)
+   είναι δουλειά του kernel-freeze manifest (FF4)· εδώ: «είναι LAWMAX ρίζα;».")
+
+(defun %nonblank-env (name)
+  "Η τιμή env NAME αν δεν είναι NIL/κενή/whitespace, αλλιώς NIL."
+  (let ((v (getenv name)))
+    (and v (stringp v)
+         (plusp (length (string-trim '(#\Space #\Tab #\Newline #\Return) v)))
+         v)))
+
+(defun %verified-root (candidate)
+  "Ο ΕΛΕΓΧΟΣ ΤΑΥΤΟΤΗΤΑΣ (όχι απλή ύπαρξη): ο CANDIDATE είναι ρίζα LAWMAX
+   ΜΟΝΟ αν ΟΛΑ τα sentinel αρχεία υπάρχουν από κάτω του. Επιστρέφει το
+   ensure-directory pathname ή NIL. Ρίζα που δεν αποδεικνύεται ⇒ ΔΕΝ
+   εμπιστεύεται, ό,τι κι αν είναι η πηγή της (env/asdf/#./default)."
+  (when candidate
+    (let ((dir (ignore-errors (uiop:ensure-directory-pathname candidate))))
+      (when (and dir
+                 (every (lambda (s) (probe-file (merge-pathnames* s dir)))
+                        +institution-sentinels+))
+        dir))))
+
+(defun %compile-time-candidate ()
+  "source/paths.lisp → source/ → <root> από το compile-time #. — ΥΠΟΨΗΦΙΟ
+   μόνο. Επιστρέφει το pathname (ο έλεγχος ταυτότητας γίνεται χωριστά)."
+  (when +seat-source-file+
+    (uiop:pathname-parent-directory-pathname
+     (uiop:pathname-directory-pathname +seat-source-file+))))
+
+(defun %asdf-runtime-candidate ()
+  "Πού φορτώθηκε ΟΝΤΩΣ το .asd αυτού του LAWMAX τη ΣΤΙΓΜΗ ΕΚΤΕΛΕΣΗΣ —
+   ΥΠΟΨΗΦΙΟ (πιο αξιόπιστο από το #. γιατί αντανακλά το runtime load), αλλά
+   περνά κι αυτό έλεγχο ταυτότητας. NIL αν το σύστημα δεν είναι φορτωμένο."
+  (ignore-errors
+    (let ((sys (asdf:find-system :orchestrator-cli nil)))
+      (and sys (asdf:system-source-directory sys)))))
+
+(defun institution-root ()
+  "Η ΜΙΑ αλήθεια για τη ρίζα του Ιδρύματος — με ΕΛΕΓΧΟ ΤΑΥΤΟΤΗΤΑΣ σε ΚΑΘΕ
+   υποψήφιο (κανόνας Κριτή 0021: ύπαρξη δεν αρκεί). Σειρά προτεραιότητας:
+     1. LAWMAX_ROOT          — ρητή παράκαμψη, ΑΝ περνά ταυτότητα
+     2. ORCHESTRATOR_ROOT    — legacy, ΑΝ περνά ταυτότητα
+     3. ASDF runtime location — πού φορτώθηκε το .asd, ΑΝ περνά ταυτότητα
+     4. compile-time #.       — candidate μόνο, ΑΝ περνά ταυτότητα
+     5. /app                 — deployment default, τελευταία λύση (χωρίς
+                               ταυτότητα: είναι ο δηλωμένος default, όχι εικασία)
+   Ένας ρητός override (1/2) που ΑΠΟΤΥΓΧΑΝΕΙ στην ταυτότητα ΔΕΝ γίνεται
+   έμπιστος — προσπερνιέται σιωπηλά προς τον επόμενο αποδεδειγμένο."
+  (or (%verified-root (%nonblank-env "LAWMAX_ROOT"))
+      (%verified-root (%nonblank-env "ORCHESTRATOR_ROOT"))
+      (%verified-root (%asdf-runtime-candidate))
+      (%verified-root (%compile-time-candidate))
+      (uiop:ensure-directory-pathname +default-base-path+)))
+
+(defun institution-dir (subpath)
+  "Namestring καταλόγου/αρχείου κάτω από τη ρίζα. SUBPATH σχετικό, π.χ.
+   \"output/\", \"keys/private.pem\". Ο ΜΟΝΟΣ τρόπος να μιλήσει runtime
+   κώδικας για θέση κάτω από τη ρίζα (FF1 — κανένα literal /app αλλού)."
+  (namestring (merge-pathnames* subpath (institution-root))))
 
 ;;;; ========================================================================
 ;;;; PATH REGISTRY
@@ -141,10 +230,11 @@
   "Initialize path registry with defaults or config-provided values"
   (declare (type (or null string pathname) base-dir))
   (declare (optimize (speed 3) (safety 1)))
-  (let ((root (or base-dir
-                  (getenv "ORCHESTRATOR_ROOT")
-                  "/app"
-                  (getcwd))))
+  ;; FF1: η ρίζα έρχεται από τη ΜΙΑ έδρα (institution-root) — τέλος στο
+  ;; «/app πάντα, getcwd νεκρός κώδικας». Ρητό base-dir υπερισχύει.
+  (let ((root (if base-dir
+                  (uiop:ensure-directory-pathname base-dir)
+                  (institution-root))))
     (setf *default-paths*
           `((:base    . ,(pathname root))
             (:config  . ,(merge-pathnames* "configs/" root))

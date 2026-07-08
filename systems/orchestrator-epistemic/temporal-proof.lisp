@@ -290,7 +290,7 @@
   ;; Certificate is required for CT logs (auto-generated on first run)
   (unless certificate-path
     (error "CT log submission requires X.509 certificate.~%~
-            Certificate should be auto-generated at /app/keys/certificate.pem"))
+            Certificate should be auto-generated in the institution keys dir"))
 
   (unless (probe-file certificate-path)
     (error "Certificate not found: ~A" certificate-path))

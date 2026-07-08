@@ -4,7 +4,7 @@
 (in-package :orchestrator.cli)
 
 (defparameter *version* "1.2.0")
-(defparameter *health-file* "/app/output/.healthy")
+(defparameter *health-file* (orchestrator.paths:institution-dir "output/.healthy"))
 
 (define-condition orchestrator-cli-error (error)
   ((message :initarg :message :reader error-message)
@@ -86,7 +86,7 @@
   (format t "  --verify-proof     PUBLIC verifier: PROOF_FILE=… TEXT_FILE=… → confirm a text is the authentic anchored law~%")
   (format t "  --serve-mcp        MCP (JSON-RPC) server over stdio: AI agents ask → get law + citation + a verifiable proof~%")
   (format t "  --dump-pdf-text    Diagnostic: extract a corpus PDF to text (raw+cleaned) and print~%")
-  (format t "  --process-pdf      Process PDF files from /app/input/~%")
+  (format t "  --process-pdf      Process PDF files from the input directory~%")
   (format t "  --serve            Start the AI-first corpus HTTP service (PORT env)~%")
   (format t "  --fetch-sources    Pull every code from its official state source~%")
   (format t "  --fetch-pdf        Download each code's ΦΕΚ PDF DIRECTLY from source via the external headless fetcher (zero manual uploads)~%")
@@ -135,8 +135,8 @@
   (format t "  PDF PROCESSING MODE~%")
   (format t "═══════════════════════════════════════════════════════════════~%~%")
 
-  (let* ((input-dir (or (uiop:getenv "ORCHESTRATOR_INPUT_DIR") "/app/input/"))
-         (output-dir (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") "/app/output/"))
+  (let* ((input-dir (or (uiop:getenv "ORCHESTRATOR_INPUT_DIR") (orchestrator.paths:institution-dir "input/")))
+         (output-dir (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/")))
          ;; SBCL-compatible wildcard pattern
          (pdf-pattern (make-pathname :directory (pathname-directory (pathname input-dir))
                                      :name :wild
@@ -257,17 +257,17 @@
   ;; PDF mode is only enabled when the active corpus config declares source.pdf.
   ;; This prevents a Constitution PDF in input/ from being processed when running
   ;; a different corpus (e.g. poinikos) that has no PDF source configured.
-  (let* ((input-dir (or (uiop:getenv "ORCHESTRATOR_INPUT_DIR") "/app/input/"))
+  (let* ((input-dir (or (uiop:getenv "ORCHESTRATOR_INPUT_DIR") (orchestrator.paths:institution-dir "input/")))
          ;; Per-corpus output: each κώδικας lands in its own subdirectory so
          ;; runs of different corpora never overwrite or mix.
          (output-dir (corpus-output-dir
-                      (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") "/app/output/")))
+                      (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/"))))
          ;; Process ONLY this corpus's declared source PDF — never glob the
          ;; shared input/ directory, which may hold other corpora's PDFs (e.g.
          ;; both the Constitution and the Penal Code). This is what keeps each
          ;; κώδικας from mixing with another. ORCHESTRATOR_PDF_PATH overrides.
          (corpus-pdf-path (or (uiop:getenv "ORCHESTRATOR_PDF_PATH")
-                              (orchestrator.spec:config-get "source.pdf")))
+                              (orchestrator.spec:resolve-config-path "source.pdf")))
          (corpus-pdf-configured corpus-pdf-path)
          (pdf-files (when (and corpus-pdf-path (probe-file corpus-pdf-path))
                       (list (pathname corpus-pdf-path)))))
@@ -307,7 +307,7 @@
                ;; parliament-crawl): load-json-source reads :sources FIRST, so an
                ;; explicit json source bypasses the source-type/format dispatch that
                ;; would otherwise skip JSON loading. Mirrors PDF mode's :sources wiring.
-               (let* ((json-path (orchestrator.spec:config-get "source.json"))
+               (let* ((json-path (orchestrator.spec:resolve-config-path "source.json"))
                       (corpus-id (orchestrator.spec:pipeline-corpus pipeline))
                       (corpus (orchestrator.meta:get-corpus corpus-id))
                       (context (make-instance 'orchestrator.core:pipeline-context
@@ -375,7 +375,7 @@
                 ;; code HAS materialised JSON, that is the authoritative text — fall
                 ;; back to it instead of failing the whole code.
                 (if (%source-json-populated-p
-                     (ignore-errors (orchestrator.spec:config-get "source.json")))
+                     (ignore-errors (orchestrator.spec:resolve-config-path "source.json")))
                     (progn
                       (format t "~%  ⚠ PDF mode produced no usable articles (~A)~%" e)
                       (run-json-mode "PDF yielded no articles"))
@@ -472,7 +472,7 @@
    discovered laws (AMENDMENT_LAWS_JSON), so the corpus updates itself."
   (orchestrator.spec:select-corpus corpus-id)
   (orchestrator.gr-syntagma:register-active-corpus)
-  (let* ((json-path (or (orchestrator.spec:config-get "source.json")
+  (let* ((json-path (or (orchestrator.spec:resolve-config-path "source.json")
                         (error "corpus ~A has no source.json configured" corpus-id)))
          (raw (uiop:read-file-string json-path :external-format :utf-8))
          (objs (jonathan:parse raw :as :alist))
@@ -752,7 +752,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
                   (fmt (intern (string-upcase
                                 (or (orchestrator.spec:config-get "source.format") "json"))
                                :keyword))
-                  (json (orchestrator.spec:config-get "source.json")))
+                  (json (orchestrator.spec:resolve-config-path "source.json")))
               (cond
                 ((not (and url (stringp url) (plusp (length url))))
                  (format t "  – ~A: no source.url configured~%" id))
@@ -804,12 +804,12 @@ document.getElementById('ops').addEventListener('click',function(ev){
       (handler-case
           (progn
             (orchestrator.spec:select-corpus id)
-            (let* ((pdf (ignore-errors (orchestrator.spec:config-get "source.pdf")))
+            (let* ((pdf (ignore-errors (orchestrator.spec:resolve-config-path "source.pdf")))
                    (cmd (ignore-errors (orchestrator.spec:config-get "source.fetch_cmd")))
                    (pdfurl (ignore-errors (orchestrator.spec:config-get "source.pdf_url")))
                    (fekstr (ignore-errors (orchestrator.spec:config-get "corpus.publication.fek_number")))
                    (fek (and parse-fek fekstr (funcall parse-fek fekstr)))
-                   (docx    (ignore-errors (orchestrator.spec:config-get "source.docx")))
+                   (docx    (ignore-errors (orchestrator.spec:resolve-config-path "source.docx")))
                    (docxurl (ignore-errors (orchestrator.spec:config-get "source.docx_url"))))
               (cond
                 ;; 0) AUTHORITATIVE DIGITAL .docx wins (e.g. Υπ. Δικαιοσύνης ΚΠολΔ):
@@ -1015,9 +1015,9 @@ document.getElementById('ops').addEventListener('click',function(ev){
           (progn
             (orchestrator.spec:select-corpus id)
             (ignore-errors (orchestrator.gr-syntagma:register-active-corpus))
-            (let* ((docx (ignore-errors (orchestrator.spec:config-get "source.docx")))
-                   (pdf  (ignore-errors (orchestrator.spec:config-get "source.pdf")))
-                   (json (ignore-errors (orchestrator.spec:config-get "source.json")))
+            (let* ((docx (ignore-errors (orchestrator.spec:resolve-config-path "source.docx")))
+                   (pdf  (ignore-errors (orchestrator.spec:resolve-config-path "source.pdf")))
+                   (json (ignore-errors (orchestrator.spec:resolve-config-path "source.json")))
                    ;; Authoritative DIGITAL source wins: a .docx (real text — e.g. the
                    ;; Υπ. Δικαιοσύνης ΚΠολΔ) over a source.pdf that may be a scanned ΦΕΚ.
                    (src  (cond ((and docx (plusp (length docx)) (probe-file docx)) docx)
@@ -1231,8 +1231,8 @@ document.getElementById('ops').addEventListener('click',function(ev){
   (handler-case
       (let* ((root (uiop:ensure-directory-pathname site-dir))
              (vsrc (uiop:ensure-directory-pathname
-                    (or (%non-blank (uiop:getenv "VERIFY_ASSETS_DIR")) "/app/deployment/verify/")))
-             (spec (or (%non-blank (uiop:getenv "PCL_SPEC_FILE")) "/app/deployment/PROOF-CARRYING-LAW.md"))
+                    (or (%non-blank (uiop:getenv "VERIFY_ASSETS_DIR")) (orchestrator.paths:institution-dir "deployment/verify/"))))
+             (spec (or (%non-blank (uiop:getenv "PCL_SPEC_FILE")) (orchestrator.paths:institution-dir "deployment/PROOF-CARRYING-LAW.md")))
              (vdir (uiop:ensure-directory-pathname (merge-pathnames "verify/" root))))
         (ensure-directories-exist vdir)
         (dolist (f '("verify.py" "verify.mjs" "README.md"))
@@ -1261,7 +1261,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
   "Generate the complete Cloudflare-Pages-ready static site (human HTML + AI
    structured data) for every served code. SITE_OUTPUT_DIR, CORPUS_BASE_URI,
    FIRM_NAME and FIRM_URL are read from the environment."
-  (let ((out (or (uiop:getenv "SITE_OUTPUT_DIR") "/app/site"))
+  (let ((out (or (uiop:getenv "SITE_OUTPUT_DIR") (orchestrator.paths:institution-dir "site")))
         (base (or (uiop:getenv "CORPUS_BASE_URI") "https://stavropouloslaw.com/eli")))
     (let ((fn (uiop:getenv "FIRM_NAME")) (fu (uiop:getenv "FIRM_URL")))
       (when fn (setf orchestrator.static-site:*firm-name* fn))
@@ -1296,7 +1296,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
    directory — corpora can never read each other's source or overwrite each
    other's output. Continues past any single failure and prints a per-code
    summary so a missing input PDF (placeholder fallback) is obvious at a glance."
-  (let ((base (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") "/app/output/"))
+  (let ((base (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/")))
         (rows '()))
     (dolist (id *served-corpora*)
       (format t "~%~A~%  CODE: ~A~%~A~%"
@@ -1335,7 +1335,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
   (or (uiop:getenv "REVIEW_QUEUE_FILE")
       (namestring (merge-pathnames "review-queue.sexp"
                                    (uiop:ensure-directory-pathname
-                                    (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") "/app/output/"))))))
+                                    (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/")))))))
 
 (defun load-review-queue ()
   (let ((q (funcall (find-symbol "MAKE-REVIEW-QUEUE" :orchestrator.review)))
@@ -1440,7 +1440,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
   (multiple-value-bind (short doc) (build-consolidated-for corpus-id)
    (let* ((fp (find-package :orchestrator.fingerprint))
           (out-dir (corpus-output-dir
-                    (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") "/app/output/")))
+                    (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/"))))
           (manifest-path (merge-pathnames (concatenate 'string short ".fingerprint.sexp")
                                           (uiop:ensure-directory-pathname out-dir)))
           (golden-path (%corpus-golden-file short))
@@ -1598,7 +1598,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
            (json  (find-symbol "INTELLIGENCE-JSON" pkg))
            (clean (find-symbol "REPORT-CLEAN-P" pkg))
            (out-dir (corpus-output-dir
-                     (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") "/app/output/")))
+                     (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/"))))
            (json-path (merge-pathnames (concatenate 'string short ".intelligence.json")
                                        (uiop:ensure-directory-pathname out-dir))))
       (format t "~%═══ ΝΟΗΜΟΣΥΝΗ ΚΩΔΙΚΑ: ~A ═══~%" short)
@@ -1669,8 +1669,8 @@ document.getElementById('ops').addEventListener('click',function(ev){
              (pfek  (find-symbol "PARSE-FEK-REF" :orchestrator.legal-id))
              (fekstr (ignore-errors (orchestrator.spec:config-get "corpus.publication.fek_number")))
              (fek   (and pfek fekstr (funcall pfek fekstr)))
-             (src   (or (ignore-errors (orchestrator.spec:config-get "source.docx"))
-                        (ignore-errors (orchestrator.spec:config-get "source.pdf"))))
+             (src   (or (ignore-errors (orchestrator.spec:resolve-config-path "source.docx"))
+                        (ignore-errors (orchestrator.spec:resolve-config-path "source.pdf"))))
              (method (if (and src (string-equal (or (pathname-type src) "") "docx"))
                          "docx-adapter+raw-text-fsm@1"
                          "pdf-adapter+raw-text-fsm@1"))
@@ -1709,7 +1709,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
                    (abbr (or (ignore-errors (orchestrator.spec:config-get "corpus.citation_abbrev"))
                              (or (ignore-errors (orchestrator.spec:config-get "corpus.short_name")) "")))
                    (out-dir (corpus-output-dir
-                             (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") "/app/output/")))
+                             (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/"))))
                    (provisions
                      (loop for p in provs
                            for eid = (funcall eid-fn p)
@@ -1766,7 +1766,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
             (let* ((graph (funcall rg doc))
                    (eli   (or (ignore-errors (orchestrator.spec:config-get "corpus.eli_prefix")) ""))
                    (out-dir (corpus-output-dir
-                             (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") "/app/output/")))
+                             (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/"))))
                    (path  (merge-pathnames "references.ttl"
                                            (uiop:ensure-directory-pathname out-dir)))
                    (n 0))
@@ -1863,7 +1863,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
                    (result  (second _bl))
                    (eli     (or (ignore-errors (orchestrator.spec:config-get "corpus.eli_prefix")) ""))
                    (out-dir (corpus-output-dir
-                             (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") "/app/output/")))
+                             (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/"))))
                    (path    (merge-pathnames "hypergraph.ttl"
                                              (uiop:ensure-directory-pathname out-dir)))
                    (by-act  (make-hash-table :test 'equal))
@@ -2097,11 +2097,11 @@ document.getElementById('ops').addEventListener('click',function(ev){
   (orchestrator.gr-syntagma:register-active-corpus)
   (let* ((short (or (ignore-errors (orchestrator.spec:config-get "corpus.short_name")) "corpus"))
          (pdf (or (uiop:getenv "ORCHESTRATOR_PDF_PATH")
-                  (orchestrator.spec:config-get "source.pdf")))
+                  (orchestrator.spec:resolve-config-path "source.pdf")))
          (n (let ((p (uiop:getenv "DUMP_LINES")))
               (or (and p (parse-integer p :junk-allowed t)) 150)))
          (out-dir (corpus-output-dir
-                   (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") "/app/output/"))))
+                   (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/")))))
     (unless (and pdf (probe-file pdf))
       (format t "✗ Δεν βρέθηκε PDF για ~A: ~A~%" short pdf)
       (return-from dump-pdf-text 1))

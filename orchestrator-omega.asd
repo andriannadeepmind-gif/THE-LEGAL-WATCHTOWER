@@ -17,7 +17,8 @@
   ;; ══════════════════════════════════════════════════════════
   ;; DEPENDENCIES - Core CL libraries for ΟΜΕΓΑ implementation
   ;; ══════════════════════════════════════════════════════════
-  :depends-on (#:orchestrator-meta   ; Metrics package
+  :depends-on (#:orchestrator-infrastructure ; FF1: orchestrator.paths (ρίζα Ιδρύματος)
+               #:orchestrator-meta   ; Metrics package
                #:alexandria          ; Utilities
                #:serapeum            ; Extended utilities
                #:closer-mop          ; MOP portability

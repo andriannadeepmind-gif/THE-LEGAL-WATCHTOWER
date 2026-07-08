@@ -100,7 +100,7 @@
              :config-key :articles))
 
     (unless output-dir
-      (setf output-dir "/app/output"))
+      (setf output-dir (orchestrator.paths:institution-dir "output")))
 
     (log:info () "Deploying ~D articles to ~A (5 formats per article + 3 dataset files)" (length articles) output-dir)
 

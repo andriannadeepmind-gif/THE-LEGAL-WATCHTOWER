@@ -331,14 +331,14 @@
                                               (not (search ".." env-path))
                                               (not (search "~" env-path)))
                                          env-path
-                                         "/app/keys/private.pem")))
-         (default-public-key-path "/app/keys/public.pem")
+                                         (orchestrator.paths:institution-dir "keys/private.pem"))))
+         (default-public-key-path (orchestrator.paths:institution-dir "keys/public.pem"))
          (default-cert-path (let ((env-path (uiop:getenv "RELEASE_CERT_PATH")))
                               (if (and env-path
                                        (not (search ".." env-path))
                                        (not (search "~" env-path)))
                                   env-path
-                                  "/app/keys/certificate.pem")))
+                                  (orchestrator.paths:institution-dir "keys/certificate.pem"))))
          (dev-mode (dev-mode-p)))
 
     ;; DARPA-GRADE: Auto-generate crypto keys if missing (Pure Lisp)

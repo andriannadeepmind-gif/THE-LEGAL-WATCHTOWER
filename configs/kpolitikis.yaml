@@ -45,8 +45,8 @@ source:
   # kodikas_politikis_dikonomias.pdf (πραγματικό κείμενο). Το docx είναι κενό, ώστε
   # το --materialize-pdf να διαβάζει τον PDF μέσω pdf-adapter → source.json.
   docx: ""
-  pdf: "/app/input/kodikas_politikis_dikonomias.pdf"
-  json: "/app/deployment/data/kpolitikis_clean.json"
+  pdf: "input/kodikas_politikis_dikonomias.pdf"
+  json: "deployment/data/kpolitikis_clean.json"
   # Official state source (κρατική πηγή) for --fetch-sources / the ingestion cron.
   # ΠΔ 503/1985 — επίσημο αρχείο Υπ. Δικαιοσύνης (.docx· το ΦΕΚ 1985 στο et.gr είναι σαρωμένο).
   # Documentation only: format stays json + pdf_url empty (manual ΙΣΟΚΡΑΤΗΣ PDF, see below).

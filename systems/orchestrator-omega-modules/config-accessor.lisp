@@ -17,7 +17,7 @@
 (defvar *loaded-config* nil
   "Cached configuration hash table loaded from the active corpus config")
 
-(defvar *config-path* "/app/configs/constitution.yaml"
+(defvar *config-path* (orchestrator.paths:institution-dir "configs/constitution.yaml")
   "Path to active corpus config file. Changed by select-corpus.")
 
 ;;; ============================================================
@@ -31,7 +31,7 @@
     ("astikos"      . "astikos.yaml")             ; Αστικός Κώδικας
     ("kpolitikis"   . "kpolitikis.yaml")          ; Κώδικας Πολιτικής Δικονομίας
     ("kdioikitikis" . "kdioikitikis.yaml"))       ; Κώδικας Διοικητικής Δικονομίας
-  "Maps corpus ID string → config filename in /app/configs/. The six core Greek
+  "Maps corpus ID string → config filename under the institution configs dir. The six core Greek
    legal codes. Add an entry here when a new corpus YAML config is created.")
 
 (defun select-corpus (&optional corpus-id)
@@ -52,7 +52,7 @@
          (filename (or (cdr (assoc resolved *corpus-config-registry* :test #'string=))
                        (error "Unknown corpus '~A'. Known corpora: ~{~A~^, ~}"
                               resolved (mapcar #'car *corpus-config-registry*))))
-         (path (format nil "/app/configs/~A" filename)))
+         (path (orchestrator.paths:institution-dir (format nil "configs/~A" filename))))
     (setf *config-path* path)
     (setf *loaded-config* nil)    ; Force reload on next ensure-config-loaded call
     (load-constitution-config path)
@@ -115,7 +115,33 @@
           (setf current (gethash key current))  ; Use string keys
           (return-from config-get default)))
 
+    ;; ΚΑΘΑΡΟ boundary (κανόνας Κριτή 0021): το config-get επιστρέφει RAW τιμή —
+    ;; ΠΟΤΕ δεν «πειράζει» strings. URLs/URIs/format/prefixes μένουν άθικτα.
+    ;; Η επίλυση filesystem paths γίνεται ΜΟΝΟ μέσω resolve-config-path, και
+    ;; ΜΟΝΟ για δηλωμένα path-valued keys.
     current))
+
+(defparameter +config-path-keys+
+  '("source.json" "source.pdf" "source.docx")
+  "Τα ΜΟΝΑ config keys που είναι filesystem paths — επιλύονται μέσω της ρίζας
+   του Ιδρύματος. ΟΛΑ τα άλλα source.* (url, format, …) είναι web
+   identifiers/metadata και ΔΕΝ αγγίζονται ποτέ από root resolver.")
+
+(defun resolve-config-path (key &optional default)
+  "Path-aware accessor για δηλωμένα filesystem-path keys ΜΟΝΟ (+config-path-keys+):
+     • σχετική τιμή  ⇒ επίλυση μέσω institution-root (φορητότητα)
+     • absolute path ⇒ ως έχει (ρητό external/user override)
+     • μη-path key   ⇒ raw (ασφάλεια αν κληθεί λάθος· URL/format ΔΕΝ αγγίζεται)
+   Η ΜΙΑ κανονική οδός επίλυσης — οι καταναλωτές path fields ΔΕΝ κάνουν δική
+   τους root λογική (κανόνας Κριτή)."
+  (let ((raw (config-get key default)))
+    (if (and (stringp raw) (plusp (length raw))
+             (member key +config-path-keys+ :test #'string=)
+             (not (char= (char raw 0) #\/)))
+        (orchestrator.paths:institution-dir raw)
+        raw)))
+
+(export 'resolve-config-path :orchestrator.spec)
 
 ;;; ============================================================
 ;;; REQUIRED CONFIG INFRASTRUCTURE

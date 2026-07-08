@@ -37,7 +37,7 @@
 
   Context Requirements (from previous stages):
     :articles - List of article objects (with all formats generated)
-    :output-dir - Base output directory (optional, defaults to /app/output)
+    :output-dir - Base output directory (optional, defaults to the institution output dir)
     :blockchain-proof - Blockchain anchor from anchor-blockchain stage (optional)
 
   Context Updates:
@@ -49,7 +49,7 @@
 
   (let* ((articles (orchestrator.core:get-context-value context :articles))
          (output-dir (or (orchestrator.core:get-context-value context :output-dir)
-                        "/app/output"))
+                        (orchestrator.paths:institution-dir "output")))
          (blockchain-proof (orchestrator.core:get-context-value context :blockchain-proof))
          (blockchain-anchor (if blockchain-proof
                                (getf blockchain-proof :merkle-root)

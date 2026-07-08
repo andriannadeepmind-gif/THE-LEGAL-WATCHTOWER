@@ -19,8 +19,8 @@
    there is no digital source or it yields nothing."
   (orchestrator.spec:select-corpus id)
   (ignore-errors (orchestrator.gr-syntagma:register-active-corpus))
-  (let* ((docx (ignore-errors (orchestrator.spec:config-get "source.docx")))
-         (pdf  (ignore-errors (orchestrator.spec:config-get "source.pdf")))
+  (let* ((docx (ignore-errors (orchestrator.spec:resolve-config-path "source.docx")))
+         (pdf  (ignore-errors (orchestrator.spec:resolve-config-path "source.pdf")))
          (src  (cond ((and docx (plusp (length docx)) (probe-file docx)) docx)
                      ((and pdf (plusp (length pdf)) (probe-file pdf)) pdf)
                      (t nil))))
@@ -43,7 +43,7 @@
   (handler-case
       (progn
         (orchestrator.spec:select-corpus id)
-        (let* ((jp (orchestrator.spec:config-get "source.json"))
+        (let* ((jp (orchestrator.spec:resolve-config-path "source.json"))
                (objs (jonathan:parse (uiop:read-file-string jp :external-format :utf-8)
                                      :as :alist)))
           (loop for o in objs
@@ -444,7 +444,7 @@
          (base-doc (build-active-consolidated-document))
          ;; per-corpus output (build-active-consolidated-document ran select-corpus)
          (output-dir (corpus-output-dir
-                      (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") "/app/output")))
+                      (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output"))))
          ;; The initial production feed is ΦΕΚ (laws). INGEST_SOURCE=diavgeia
          ;; switches to decision-level ingestion; INGEST_SOURCE=consensus runs the
          ;; full ranked acquisition stack (institutional > open-data > eu-cellar >

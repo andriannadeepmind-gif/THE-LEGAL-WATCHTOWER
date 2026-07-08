@@ -111,7 +111,7 @@
     "Default: read the emitted proof + text from output/<corpus>/."
     (let* ((base (or (and (find-package :uiop)
                           (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR"))
-                     "/app/output/"))
+                     (orchestrator.paths:institution-dir "output/")))
            (dir (format nil "~A~A/" (string-right-trim "/" base) corpus))
            (proof-path (format nil "~Aarticle-~A.proof.json" dir id))
            (text-path  (format nil "~Aarticle-~A.txt" dir id)))

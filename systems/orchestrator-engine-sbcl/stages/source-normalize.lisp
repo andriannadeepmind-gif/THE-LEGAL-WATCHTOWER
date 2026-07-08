@@ -91,9 +91,9 @@
                (log:info () "source-normalize: Deferred source config → detecting at runtime")
                (let* ((pdf-dir        (getf source-config :pdf-dir))
                       ;; Corpus-specific source document (never glob input/).
-                      (pdf-path-config (orchestrator.spec:config-get "source.pdf"))
+                      (pdf-path-config (orchestrator.spec:resolve-config-path "source.pdf"))
                       (json-path-config (or (getf source-config :json-path)
-                                            (orchestrator.spec:config-get "source.json")))
+                                            (orchestrator.spec:resolve-config-path "source.json")))
                       (runtime-config (orchestrator.core:get-runtime-source-config
                                        :pdf-dir pdf-dir
                                        :pdf-path pdf-path-config

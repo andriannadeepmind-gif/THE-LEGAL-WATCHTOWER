@@ -18,7 +18,7 @@
   (handler-case
       (progn
         (orchestrator.spec:select-corpus corpus-id)
-        (let* ((json-path (orchestrator.spec:config-get "source.json"))
+        (let* ((json-path (orchestrator.spec:resolve-config-path "source.json"))
                (objs (jonathan:parse (uiop:read-file-string json-path :external-format :utf-8)
                                      :as :alist))
                (table (make-hash-table :test 'equal)))

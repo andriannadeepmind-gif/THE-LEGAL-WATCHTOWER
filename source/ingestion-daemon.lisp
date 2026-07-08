@@ -97,7 +97,7 @@
           (funcall (find-symbol "ENQUEUE" :orchestrator.review) review-queue ri))
         (when save-review-fn (funcall save-review-fn review-queue))))))
 
-(defun run-update-daemon (&key base-document source (output-dir "/app/output")
+(defun run-update-daemon (&key base-document source (output-dir (orchestrator.paths:institution-dir "output"))
                                (interval 3600) max-polls state save-state-fn
                                (write-fn *default-artifact-writer*)
                                review-queue save-review-fn

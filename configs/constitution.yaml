@@ -61,8 +61,8 @@ source:
   # 5Α, 9Α, 100Α, 101Α της αναθεώρησης) με το ΙΣΧΥΟΝ κείμενο — το παλαιό
   # syntagma_clean.json είχε 120, προ-2019 κείμενο σε τροποποιημένα άρθρα και
   # web-scrape κατάλοιπα («<< Προηγούμενο», υποσημειώσεις).
-  pdf: "/app/input/syntagma_2019.pdf"
-  json: "/app/deployment/data/syntagma_clean.json"
+  pdf: "input/syntagma_2019.pdf"
+  json: "deployment/data/syntagma_clean.json"
   # Official state source (κρατική πηγή) for --fetch-sources / the ingestion cron.
   # Hellenic Parliament — official Constitution text
   url: "https://www.hellenicparliament.gr/Vouli-ton-Ellinon/To-Politevma/Syntagma/"

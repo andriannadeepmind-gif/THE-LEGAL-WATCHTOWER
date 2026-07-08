@@ -42,8 +42,8 @@ corpus:
     language: "el"
 
 source:
-  pdf: "/app/input/astikos_kodikas.pdf"
-  json: "/app/deployment/data/astikos_clean.json"
+  pdf: "input/astikos_kodikas.pdf"
+  json: "deployment/data/astikos_clean.json"
   # Διορθωτικά (errata) επί ελαττωμάτων του text layer της ΙΔΙΑΣ της πηγής —
   # τεκμηριωμένα (αιτιολογία + σελίδα), εφαρμόζονται ΜΟΝΟ σε ακριβώς-μία
   # εμφάνιση και καταγράφονται στο provenance sidecar. Πρακτική επίσημων

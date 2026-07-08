@@ -97,9 +97,9 @@
 (defun %state-dir ()
   "Το ΕΝΑ σπίτι της μόνιμης κατάστασης (cursors, heartbeat). Ζει κάτω από το
    deployment/ επειδή αυτό είναι ήδη bind-mounted στο docker-compose — ένα
-   /app/state ΕΚΤΟΣ mount θα πέθαινε με κάθε --rm container και ο δαίμονας θα
+   ένα state ΕΚΤΟΣ του mount θα πέθαινε με κάθε --rm container και ο δαίμονας θα
    ξεχνούσε πού έμεινε (αυτό ακριβώς συνέβη: ο cursor δεν επιβίωνε στον host)."
-  (or (%non-blank (uiop:getenv "STATE_DIR")) "/app/deployment/state/"))
+  (or (%non-blank (uiop:getenv "STATE_DIR")) (orchestrator.paths:institution-dir "deployment/state/")))
 
 (defun %cursor-path (key)
   "File holding the last-seen number for cursor KEY. The legacy \"fek\" key keeps

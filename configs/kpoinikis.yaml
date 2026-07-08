@@ -40,8 +40,8 @@ corpus:
     language: "el"
 
 source:
-  pdf: "/app/input/kodikas_poinikis_dikonomias.pdf"
-  json: "/app/deployment/data/kpoinikis_clean.json"
+  pdf: "input/kodikas_poinikis_dikonomias.pdf"
+  json: "deployment/data/kpoinikis_clean.json"
   # Διορθωτικά (errata) επί ελαττωμάτων του text layer της ΙΔΙΑΣ της πηγής —
   # τεκμηριωμένα (αιτιολογία + σελίδα), εφαρμόζονται ΜΟΝΟ σε ακριβώς-μία
   # εμφάνιση και καταγράφονται στο provenance sidecar. Πρακτική επίσημων

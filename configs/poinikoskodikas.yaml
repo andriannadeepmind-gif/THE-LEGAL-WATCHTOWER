@@ -67,8 +67,8 @@ corpus:
 source:
   # Real source document for THIS corpus only (processed exactly, never globbed),
   # with the clean JSON as a deterministic fallback if the PDF is absent.
-  pdf: "/app/input/poinikos_kodikas.pdf"
-  json: "/app/deployment/data/poinikoskodikas_clean.json"
+  pdf: "input/poinikos_kodikas.pdf"
+  json: "deployment/data/poinikoskodikas_clean.json"
   # Official state source (κρατική πηγή) for --fetch-sources / the ingestion cron.
   # set to the official ΦΕΚ/e-nomothesia endpoint that returns the code
   url: ""

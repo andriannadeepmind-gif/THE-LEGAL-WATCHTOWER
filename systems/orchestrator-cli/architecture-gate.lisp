@@ -30,6 +30,106 @@
     :output-trust :evolution :institution :memory :substrate)
   "ΚΛΕΙΔΩΜΕΝΑ. Αλλαγή εδώ = συνταγματική τροποποίηση με έγκριση δημιουργού.")
 
+;;; ── FF1: μία έδρα ρίζας — καμία δεύτερη root αλήθεια στον κώδικα ──────────
+;;;
+;;; Κανόνας Κριτή (0021): «η πύλη FF1 πρέπει να κόβει κάθε runtime path
+;;; decision που κρατά δικό του literal /app Ή δική του compile-time root
+;;; αλήθεια εκτός της μίας έδρας.» ΟΧΙ τυφλό grep (§2.1): allowlist ΜΕ
+;;; αιτιολογία — comment-aware, string-aware.
+
+(defparameter +ff1-root-seat+ "source/paths.lisp"
+  "Η ΜΙΑ έδρα ρίζας. ΜΟΝΟ εδώ επιτρέπεται ο δηλωμένος deployment default
+   + compile-time root candidate.")
+
+(defparameter +ff1-app-needle+ (coerce (list #\/ #\a #\p #\p) 'string)
+  "Το μοτίβο ρίζας-default, ΚΑΤΑΣΚΕΥΑΣΜΕΝΟ από χαρακτήρες ώστε ΑΥΤΟ το αρχείο
+   (ο ανιχνευτής FF1) να ΜΗΝ περιέχει το ίδιο literal που απαγορεύει — μηδέν
+   self-exemption, καμία ανάγκη να allowlistάρει τον εαυτό του.")
+
+(defparameter +ff1-app-allowlist+
+  '(("source/paths.lisp"
+     . "η έδρα ρίζας: ο δηλωμένος deployment default + τα docstrings της"))
+  "(σχετικό-path . αιτιολογία): τα ΜΟΝΑ αρχεία όπου literal ρίζα-path
+   επιτρέπεται. Ελάχιστο· κάθε εγγραφή φέρει αιτιολογία (κανόνας Κριτή §2.1).")
+
+(defun %ff1-string-literals (text)
+  "Τα ΠΕΡΙΕΧΟΜΕΝΑ όλων των string literals του TEXT (Lisp), με σεβασμό σε
+   escapes και σε ; comments (comment έξω από string ⇒ αγνοείται ως το EOL).
+   Έτσι /app σε σχόλιο ΔΕΝ μετριέται — μόνο πραγματικά string literals."
+  (let ((out '()) (i 0) (n (length text)) (in-str nil) (buf nil))
+    (loop while (< i n) for ch = (char text i) do
+      (cond
+        (in-str
+         (cond ((char= ch #\\) (push ch buf)
+                                (when (< (1+ i) n) (push (char text (1+ i)) buf))
+                                (incf i))
+               ((char= ch #\") (push (coerce (nreverse buf) 'string) out)
+                               (setf in-str nil buf nil))
+               (t (push ch buf))))
+        ((char= ch #\") (setf in-str t buf nil))
+        ((char= ch #\;) (loop while (and (< i n) (char/= (char text i) #\Newline))
+                              do (incf i))
+                        (decf i)))
+      (incf i))
+    (nreverse out)))
+
+(defun %ff1-code-without-strings (text)
+  "Το TEXT με strings ΚΑΙ comments αφαιρεμένα — για σάρωση συμβόλων κώδικα
+   (π.χ. compile-time root) χωρίς ψευδώς-θετικά μέσα σε strings/σχόλια."
+  (let ((out (make-string-output-stream)) (i 0) (n (length text)) (in-str nil))
+    (loop while (< i n) for ch = (char text i) do
+      (cond
+        (in-str (cond ((char= ch #\\) (incf i))
+                      ((char= ch #\") (setf in-str nil))))
+        ((char= ch #\") (setf in-str t))
+        ((char= ch #\;) (loop while (and (< i n) (char/= (char text i) #\Newline))
+                              do (incf i))
+                        (decf i))
+        (t (write-char ch out)))
+      (incf i))
+    (get-output-stream-string out)))
+
+(defun %ff1-app-path-p (s)
+  "Περιέχει το S τη ρίζα-default ΩΣ path segment (ακολουθεί «/» ή τέλος-string);
+   — ΟΧΙ λέξεις όπως approve/application. Το μοτίβο κατασκευάζεται (needle)."
+  (let ((needle +ff1-app-needle+))
+    (loop for p = (search needle s) then (search needle s :start2 (1+ p))
+          while p
+          thereis (let ((after (+ p (length needle))))
+                    (or (>= after (length s))
+                        (char= (char s after) #\/))))))
+
+(defun %ff1-lisp-sources (root)
+  "Όλα τα .lisp κάτω από systems/ και source/ της ρίζας."
+  (append (directory (merge-pathnames "systems/**/*.lisp" root))
+          (directory (merge-pathnames "source/**/*.lisp" root))))
+
+(defun %ff1-rel (path root)
+  "Σχετικό (posix) path ενός αρχείου ως προς τη ρίζα."
+  (let ((rp (enough-namestring path root)))
+    (substitute #\/ #\\ rp)))
+
+(defun %prefix-p (prefix s)
+  "Ξεκινά το S με το PREFIX;"
+  (and (>= (length s) (length prefix))
+       (string= prefix s :end2 (length prefix))))
+
+(defun %yaml-abs-path-value-p (trimmed-line)
+  "Η τιμή ενός YAML key:value γραμμής είναι ABSOLUTE filesystem path (ξεκινά με
+   «/»); — ΟΧΙ URL/URI, ΟΧΙ σχετική, ΟΧΙ κενή. Απομονώνει τη τιμή μέσα στα «\"»
+   (ή μετά το «:») και κοιτά τον πρώτο χαρακτήρα. Web ids (http…, urn:) ΔΕΝ
+   ξεκινούν με «/» ⇒ δεν πιάνονται (διάκριση path vs identifier)."
+  (let* ((colon (position #\: trimmed-line))
+         (rest (and colon (string-trim '(#\Space #\Tab #\Return)
+                                       (subseq trimmed-line (1+ colon)))))
+         ;; ξεκόλλα εισαγωγικά αν υπάρχουν
+         (val (and rest (plusp (length rest))
+                   (if (char= (char rest 0) #\")
+                       (let ((end (position #\" rest :start 1)))
+                         (and end (subseq rest 1 end)))
+                       rest))))
+    (and val (plusp (length val)) (char= (char val 0) #\/))))
+
 (defun run-architecture-constitution-gate ()
   "--architecture-constitution-gate : ontological closure, read-only."
   (multiple-value-bind (c err) (%load-architecture-constitution)
@@ -193,6 +293,66 @@
              (every (lambda (j) (and (getf j :area) (stringp (getf j :why))
                                      (getf j :implementations)))
                     (getf c :justified-multiplicity)))
+        ;; ── FF1: μία έδρα ρίζας του Ιδρύματος (κανόνας Κριτή 0021) ──
+        (let* ((root (orchestrator.paths:institution-root))
+               (sources (%ff1-lisp-sources root))
+               (app-violations '())
+               (root-truth-violations '()))
+          (dolist (f sources)
+            (let* ((rel (%ff1-rel f root))
+                   (text (ignore-errors (uiop:read-file-string f))))
+              (when text
+                ;; (α) literal /app-path σε string literal, εκτός allowlist
+                (unless (assoc rel +ff1-app-allowlist+ :test #'string=)
+                  (when (some #'%ff1-app-path-p (%ff1-string-literals text))
+                    (push rel app-violations)))
+                ;; (β) compile-time root truth εκτός της έδρας
+                (unless (string= rel +ff1-root-seat+)
+                  (let ((code (%ff1-code-without-strings text)))
+                    (when (or (search "*compile-file-truename*" code)
+                              (search "*load-truename*" code)
+                              (search "*load-pathname*" code))
+                      (push rel root-truth-violations)))))))
+          ;; ⑬ καμία δεύτερη literal /app-αλήθεια σε runtime κώδικα
+          (chk "⑬ FF1: κανένα literal /app-path εκτός της έδρας+allowlist (μία ρίζα)"
+               (null app-violations)
+               (when app-violations
+                 (format nil "παραβάσεις: ~{~A~^, ~}" app-violations)))
+          ;; ⑭ καμία δεύτερη compile-time root αλήθεια εκτός της έδρας
+          (chk "⑭ FF1: καμία compile-time root αλήθεια (#./load-truename) εκτός source/paths.lisp"
+               (null root-truth-violations)
+               (when root-truth-violations
+                 (format nil "παραβάσεις: ~{~A~^, ~}" root-truth-violations)))
+          ;; ⑮ η έδρα ΑΠΟΔΕΙΚΝΥΕΙ ταυτότητα: η επιλυμένη ρίζα φέρει τα sentinels
+          (chk "⑮ FF1: institution-root περνά έλεγχο ΤΑΥΤΟΤΗΤΑΣ (sentinel αρχεία, όχι απλή ύπαρξη)"
+               (every (lambda (s) (probe-file (merge-pathnames s root)))
+                      orchestrator.paths::+institution-sentinels+))
+          ;; ⑯ committed YAML: τα filesystem-path keys είναι ΣΧΕΤΙΚΑ (όχι
+          ;;    absolute /... ούτε /app)· URLs/format ΔΙΑΚΡΙΝΟΝΤΑΙ και δεν
+          ;;    ελέγχονται (κανόνας Κριτή: πύλη ξεχωρίζει paths από web ids).
+          (let ((yaml-abs '()))
+            (dolist (y (directory (merge-pathnames "configs/*.yaml" root)))
+              (let ((txt (ignore-errors (uiop:read-file-string y))))
+                (when txt
+                  (dolist (line (uiop:split-string txt :separator '(#\Newline)))
+                    (let ((tl (string-left-trim '(#\Space #\Tab) line)))
+                      (when (and (or (%prefix-p "json:" tl) (%prefix-p "pdf:" tl)
+                                     (%prefix-p "docx:" tl))
+                                 (%yaml-abs-path-value-p tl))
+                        (push (%ff1-rel y root) yaml-abs)))))))
+            (chk "⑯ FF1: committed YAML source paths ΣΧΕΤΙΚΑ (όχι absolute /app)· URLs άθικτα"
+                 (null yaml-abs)
+                 (when yaml-abs (format nil "absolute σε: ~{~A~^, ~}"
+                                        (remove-duplicates yaml-abs :test #'string=)))))
+          ;; ⑰ ΑΠΟΔΕΙΞΗ ΔΙΑΚΡΙΣΗΣ path-vs-webid: ο διαχωριστής πιάνει absolute
+          ;;    filesystem path, αγνοεί relative, αγνοεί URL, αγνοεί metadata.
+          ;;    (κανόνας Κριτή: η πύλη πρέπει να ΑΠΟΔΕΙΚΝΥΕΙ τη διάκριση.)
+          (chk "⑰ FF1: ο διαχωριστής path/web-id αποδεδειγμένος (absolute=κόκκινο, relative/URL/metadata=OK)"
+               (and (%yaml-abs-path-value-p "json: \"/some/abs/data/x.json\"")   ; absolute path ⇒ T
+                    (not (%yaml-abs-path-value-p "json: \"deployment/data/x.json\"")) ; relative ⇒ NIL
+                    (not (%yaml-abs-path-value-p "url: \"https://example.com/a/b\"")) ; URL ⇒ NIL
+                    (not (%yaml-abs-path-value-p "pdf_url: \"https://x/y.pdf\""))     ; web id ⇒ NIL
+                    (not (%yaml-abs-path-value-p "format: \"json\"")))))            ; metadata ⇒ NIL
         (format t "~%── ΠΥΛΗ ΑΡΧΙΤΕΚΤΟΝΙΚΟΥ ΣΥΝΤΑΓΜΑΤΟΣ: ~D/~D πέρασαν ──~%"
                 (- total (length fails)) total)
         (if fails 1 0)))))
