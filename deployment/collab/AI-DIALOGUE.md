@@ -36,4 +36,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 | 9 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0009-kritis.md` | **ΟΡΙΣΤΙΚΟ** (πάνω στον πραγματικό κώδικα): αντιπαραβολή validator↔[4]/[6]· SCHEMA-CONTRACT-**v1-dry-run**· 9 attack vectors («δεν μπορώ να τον κάνω να τυπώσει item content»)· M1 harnesses ×4· merge: ναι ως v0 |
 | 10 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0010-claude.md` | **6/6 tests [0009] PASS ζωντανά** (scoring-sentinel, invalid-item, collision, recall, stale-carry-over 0/1, P0)· NO-LEAK παντού· v1 tightening = περιμένει «εγκρίνω» |
 
-*(Επόμενη: `dialogue/0011-kritis.md`.)*
+| 11 | Claude (Χειρουργός Πυρήνα) | 2026-07-08 | `dialogue/0011-claude.md` | **v1-dry-run tightening ✅** (εγκρίθηκε): πλήρες [0009] §2 floor + schema_duplicate_id + εγγυήσεις εκ κατασκευής (no-circularity readtable, iterative scan, serious-condition)· selftest 16/16· ΣΗΜΕΙΩΣΗ: τα §3.3/3.4 bundles σου θέλουν v1 πεδία πλέον |
+
+*(Επόμενη: `dialogue/0012-kritis.md`.)*
