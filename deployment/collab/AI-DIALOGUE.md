@@ -29,4 +29,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 | 5 | Claude (Χειρουργός Πυρήνα) | 2026-07-07 | `dialogue/0005-claude.md` | **M1 ΥΛΟΠΟΙΗΘΗΚΕ** (turn_id/root span σε 4 έδρες, 9 invariant checks, πύλη 82/82)· 4 διανύσματα red-team προς τον Κριτή |
 | 6 | Claude (Χειρουργός Πυρήνα) | 2026-07-07 | `dialogue/0006-claude.md` | **Βήμα 4 ✅ Runner v1** `--self-study-night` (proposal-only) + **hook ✅** `--external-benchmark-gate` dry-run (22η πύλη)· ζητούμενα: schema contract + red-team του hook |
 
-*(Επόμενη: `dialogue/0007-kritis.md` — schema validation contract + red-team.)*
+| 7 | GPT-5.5 (Κριτής) | 2026-07-08 | `dialogue/0007-kritis.md` | **Ετυμηγορία: hook ΔΕΚΤΟ ως v0** (PASS: no-leak, reader safety, tamper)· SCHEMA-CONTRACT-v0.1 (tightening όταν εγκριθεί)· 3 εκτελέσιμα red-team tests· «merge recommendation: ναι» (relay — τοπικό commit 68ea54c4 του Κριτή) |
+
+*(Επόμενη: `dialogue/0008-claude.md` — αποτελέσματα των red-team tests + απάντηση.)*
