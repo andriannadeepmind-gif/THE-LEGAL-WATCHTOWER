@@ -127,9 +127,9 @@
   (let ((rows '()))
     (dolist (sysname (%lawmax-systems))
       (dolist (path (%system-files (asdf:find-system sysname)))
-        (let ((h (file-hash path)))
+        (let ((h (file-hash (%live-file path))))
           (when h
-            (multiple-value-bind (pkgs contracts caps) (%scan-file-text path)
+            (multiple-value-bind (pkgs contracts caps) (%scan-file-text (%live-file path))
               (push (list :file (%repo-rel path)
                           :hash h :defpackages pkgs
                           :contracts contracts :capabilities caps)
@@ -220,7 +220,10 @@
                  (m (and (null disk-hash) (gethash rel (%load-manifest)))))
             (multiple-value-bind (pkgs contracts caps)
                 (if disk-hash
-                    (%scan-file-text path)
+                    ;; ΖΩΝΤΑΝΟ αρχείο, όχι baked path ([0037]): source-present το
+                    ;; baked /build-root αρχείο ΔΕΝ υπάρχει — κενή σάρωση σήμαινε
+                    ;; «πακέτο χωρίς αρχείο-έδρα» ×135 ενώ η πηγή ήταν στο mount.
+                    (%scan-file-text (%live-file path))
                     (values (getf m :defpackages) (getf m :contracts)
                             (getf m :capabilities)))
               (orchestrator.components:register-component!
@@ -303,7 +306,9 @@
    stale — το manifest του build είναι η αλήθεια της· η απόκλιση ανιχνεύεται
    ΜΟΝΟ όταν υπάρχει τι να συγκριθεί."
   (remove-if (lambda (c)
-               (let ((now (file-hash (orchestrator.components:meta-get c :path))))
+               (let ((now (file-hash (merge-pathnames
+                                      (orchestrator.components:meta-get c :path)
+                                      (orchestrator.paths:institution-root)))))
                  (or (null now)
                      (equal (orchestrator.components:component-hash c) now))))
              (orchestrator.components:components-of-kind :file)))
