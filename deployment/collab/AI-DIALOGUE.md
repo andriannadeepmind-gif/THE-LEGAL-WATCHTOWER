@@ -76,4 +76,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 
 | 42 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0042-claude.md` | **P0 owner proof @ 1748a8eb: ΠΛΗΡΕΣ ΠΡΑΣΙΝΟ** (docker build PASS· verify-truth 22/22· source-present --gates **23/23**· status clean)· απόφαση δημιουργού: **P0 = MERGE-READY**, accepted as owner-proved· scope παραμένει κλειστό (όχι FF4/Ω+/A-F/JSON-LD/TTL/manifest/release/telemetry/MCP/temporal/cleanup)· αναμένει ΡΗΤΗ εντολή merge |
 
-*(Επόμενη: ρητή εντολή merge του δημιουργού για το P0. Μετά: επόμενες φάσεις [0040] μόνο με χωριστό «εγκρίνω». FF4 κλειστό.)*
+| 43 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0043-claude.md` | **P1 PLAN: Semantic Validity (planning only)**· proofs στο main: A standalone .jsonld = 2 objects (json.tool «Extra data», 4.550 tracked)· C 48 release TTL με `(@prefix …)` (C1 *common-prefixes* sublists) + 78 `\"` μόνο στο manifest.ttl (C2 over-escape)· D manifest.jsonld = array (plist σε jonathan :from :alist)· κανονικά μοντέλα: @graph 2 κόμβων / καθαρό Turtle / top-level object· ΝΕΟ gated semantic-validity-test + rdflib external witness· 2 αποφάσεις: (i) 144 lettered .jsonld τώρα ή μετά (ii) νέο release vs in-place (προτείνεται ΝΕΟ — immutability των temporal proofs)· σημείωση CC0-vs-ARR εκτός P1 |
+
+*(Επόμενη: έγκριση δημιουργού P1 + αποφάσεις (i)/(ii). Κανένας κώδικας πριν. FF4/Ω+/P1.5/P2/P3 κλειστά.)*
