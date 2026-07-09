@@ -283,7 +283,11 @@
     :source-type source-type
     :source-path source-path
     :extraction-confidence 1.0
-    :article-label (format nil "~D" (article-number article))))
+    ;; P0 [0041]: διατήρησε το ΠΡΑΓΜΑΤΙΚΟ label (π.χ. «5Α») όταν υπάρχει — το
+    ;; παλιό (format ~D number) πετούσε το γράμμα, και ένα lettered άρθρο θα
+    ;; κατέρρεε στη βασική ταυτότητα για όποιον caller περνά από εδώ.
+    :article-label (or (article-label article)
+                       (format nil "~D" (article-number article)))))
 
 ;;; ============================================================
 ;;; EXPORTS
