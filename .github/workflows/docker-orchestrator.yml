@@ -128,13 +128,26 @@ jobs:
         name: orchestrator-sbom
         path: sbom.spdx.json
 
+    - name: 🏭 FF3 materialization — output/poinikos πριν την ολομέλεια (επιλογή A)
+      run: |
+        # Απόφαση δημιουργού [0035] επιλογή A: πύλες που χρειάζονται materialized
+        # pipeline output (π.χ. --extension-gate → output/poinikos) ΔΕΝ γίνονται
+        # αποδεκτό κόκκινο baseline — το output ΠΑΡΑΓΕΤΑΙ πριν κριθούν. Τρέχουμε
+        # το πραγματικό pipeline (poinikos) με έξοδο στο mounted checkout.
+        docker run --rm -v "${{ github.workspace }}":/src -w /src -e LAWMAX_ROOT=/src \
+          -e ORCHESTRATOR_OUTPUT_DIR=/src/output -e ORCHESTRATOR_CORPUS=poinikos \
+          orchestrator:test --run-pipeline 2>&1 | tee materialize-poinikos.log
+        test -d "${{ github.workspace }}/output/poinikos" || {
+          echo "::error::Το materialization ΔΕΝ παρήγαγε output/poinikos."; exit 1; }
+
     - name: 🏛️ FF3 AUTHORITATIVE plenary — source-present --gates
       run: |
         # Η ΕΓΚΥΡΗ (authoritative) ολομέλεια του FF3. source-present: το checkout
         # mounted ως /src, cwd=/src (-w) ΚΑΙ LAWMAX_ROOT=/src, ώστε ΟΛΕΣ οι πύλες
-        # να βλέπουν source + docs (κάποιες πύλες αναλύουν πηγές μέσω getcwd).
-        # ΓΝΩΣΤΟ env-only baseline: ΜΟΝΟ το --advisor-gate (materialized decisions,
-        # χρειάζεται pipeline output). ΚΑΘΕ ΑΛΛΗ κόκκινη πύλη = κόκκινο job.
+        # να βλέπουν source + docs (κάποιες πύλες αναλύουν πηγές μέσω getcwd), και
+        # με το output/ ΗΔΗ materialized (βήμα A παραπάνω) ώστε το --extension-gate
+        # να κριθεί πραγματικά. ΓΝΩΣΤΟ env-only baseline: ΜΟΝΟ το --advisor-gate.
+        # ΚΑΘΕ ΑΛΛΗ κόκκινη πύλη = κόκκινο job.
         docker run --rm -v "${{ github.workspace }}":/src -w /src -e LAWMAX_ROOT=/src \
           orchestrator:test --gates 2>&1 | tee gates-source-present.log
         if grep 'gate: ΑΠΕΤΥΧΕ' gates-source-present.log | grep -qv 'advisor-gate'; then

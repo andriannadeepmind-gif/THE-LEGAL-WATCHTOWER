@@ -183,13 +183,17 @@
   (check "output-codified-p detects emitted hashes" (output-codified-p dir))
   (let ((m (output-manifest dir :id "emitted")))
     (check "output manifest counts every emitted article" (= 4 (manifest-count m)))
+    ;; ΚΑΝΟΝΙΚΑ eIds: art_<αριθμός ΧΩΡΙΣ padding><επίθημα> — η σύμβαση του
+    ;; %file-id-eid (και των πραγματικών goldens/corpus: art_1, art_10, art_1001Α·
+    ;; ΚΑΝΕΝΑ padded art_0… στα δεδομένα). Οι παλιές προσδοκίες padded (art_001)
+    ;; ήταν stale ως προς την κανονικοποίηση — pre-existing CI-unblocker [0035].
     (check "articles are ordered by real number (1,2,2Α,10)"
-           (equal '("art_001" "art_002" "art_002Α" "art_010")
+           (equal '("art_1" "art_2" "art_2Α" "art_10")
                   (mapcar (lambda (r) (getf r :eid)) (manifest-articles m))))
     (check "lettered 2Α preserved distinctly from 2"
-           (and (member "art_002Α" (mapcar (lambda (r) (getf r :eid)) (manifest-articles m))
+           (and (member "art_2Α" (mapcar (lambda (r) (getf r :eid)) (manifest-articles m))
                         :test #'string=)
-                (member "art_002" (mapcar (lambda (r) (getf r :eid)) (manifest-articles m))
+                (member "art_2" (mapcar (lambda (r) (getf r :eid)) (manifest-articles m))
                         :test #'string=)))
     (check "output manifest passes invariants (no gap among 1,2,10? -> gap 2..10)"
            ;; 1,2,10 DOES have a gap (3..9). allow-gaps to assert the happy fields.
@@ -204,7 +208,7 @@
       (write-string "ZZZZ9999" s))
     (let ((diff (fingerprint-diff m (output-manifest dir :id "emitted"))))
       (check "re-emitted change is located to the exact article"
-             (equal '("art_002") (getf diff :changed))))))
+             (equal '("art_2") (getf diff :changed))))))
 
 (format t "~%========================================~%")
 (format t "Corpus fingerprint tests: ~D passed, ~D failed~%" *pass* *fail*)
