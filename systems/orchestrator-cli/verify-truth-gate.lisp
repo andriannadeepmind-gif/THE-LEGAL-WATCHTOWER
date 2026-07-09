@@ -23,6 +23,10 @@
   "Η ΜΙΑ κανονική εντολή ορθότητας — η ολομέλεια πυλών (gates-runner).")
 (defparameter +vt-tests-command+ "--target standalone-test"
   "Η ΜΙΑ κανονική εντολή tests — το gated docker standalone-test stage.")
+(defparameter +vt-tests-command-2+ "--target verifier-conformance"
+  "Η ΔΕΥΤΕΡΗ κανονική CI test διαδρομή (cross-language verifier). Αφού το README
+   την τεκμηριώνει ως canonical, ΠΡΕΠΕΙ κι αυτή να είναι εντός του φρουρού
+   (εύρημα Codex PR#2: αλλιώς μια documented CI test path μένει αφύλαχτη).")
 (defparameter +vt-escape-suite-token+ "escape-sequences"
   "Η escape σουίτα, απορροφημένη στο standalone-test loop (FF3).")
 (defparameter +vt-retired-tokens+
@@ -41,6 +45,26 @@
 (defun %vt-has (haystack needle)
   "Το NEEDLE υπάρχει (ως substring) στο HAYSTACK; NIL-safe."
   (and haystack needle (search needle haystack) t))
+
+(defun %vt-strip-yaml-comments (text)
+  "Αφαιρεί YAML σχόλια (# … έως τέλος γραμμής) ώστε ο έλεγχος «το CI ΤΡΕΧΕΙ την
+   εντολή» να ΜΗΝ ικανοποιείται από αναφορά σε σχόλιο (εύρημα Codex PR#2: ένα
+   σχόλιο που μνημονεύει --gates δεν σημαίνει ότι το CI τρέχει --gates). NIL-safe.
+   Full-line σχόλιο (^\\s*#) φεύγει ολόκληρο· inline « #…» κόβεται από το κενό+#."
+  (when text
+    (with-output-to-string (out)
+      (with-input-from-string (in text)
+        (loop for line = (read-line in nil nil)
+              while line
+              do (let* ((trimmed (string-left-trim '(#\Space #\Tab) line))
+                        (kept (cond
+                                ;; full-line comment ⇒ κενή γραμμή
+                                ((and (plusp (length trimmed))
+                                      (char= (char trimmed 0) #\#)) "")
+                                ;; inline « #» ⇒ κόψε από εκεί
+                                (t (let ((p (search " #" line)))
+                                     (if p (subseq line 0 p) line))))))
+                   (write-line kept out)))))))
 
 (defun %vt-gate-counts-in (text)
   "Όλοι οι ρητοί αριθμοί-πλήθους πυλών σε κείμενο: κάθε «N πύλες» / «N gates».
@@ -62,14 +86,21 @@
     (unless readme     (return-from check (values :invalid :readme_missing)))
     (unless ci         (return-from check (values :invalid :ci_missing)))
     (unless dockerfile (return-from check (values :invalid :dockerfile_missing)))
-    ;; L1 ΟΡΘΟΤΗΤΑ κανονική: το CI ΤΡΕΧΕΙ --gates ΚΑΙ το README το τεκμηριώνει
-    (unless (and (%vt-has ci +vt-correctness-command+)
-                 (%vt-has readme +vt-correctness-command+))
-      (return-from check (values :invalid :correctness_command_divergent)))
-    ;; L2 TESTS κανονικά: το CI ΧΤΙΖΕΙ --target standalone-test ΚΑΙ το README το τεκμηριώνει
-    (unless (and (%vt-has ci +vt-tests-command+)
-                 (%vt-has readme +vt-tests-command+))
-      (return-from check (values :invalid :tests_command_divergent)))
+    ;; Το «το CI ΤΡΕΧΕΙ Χ» ελέγχεται στο CI ΧΩΡΙΣ σχόλια (εύρημα Codex PR#2): ένα
+    ;; σχόλιο που μνημονεύει την εντολή δεν σημαίνει ότι το CI την τρέχει.
+    (let ((ci-code (%vt-strip-yaml-comments ci)))
+      ;; L1 ΟΡΘΟΤΗΤΑ κανονική: το CI ΤΡΕΧΕΙ --gates ΚΑΙ το README το τεκμηριώνει
+      (unless (and (%vt-has ci-code +vt-correctness-command+)
+                   (%vt-has readme +vt-correctness-command+))
+        (return-from check (values :invalid :correctness_command_divergent)))
+      ;; L2 TESTS κανονικά: το CI ΧΤΙΖΕΙ --target standalone-test ΚΑΙ το README το τεκμηριώνει
+      (unless (and (%vt-has ci-code +vt-tests-command+)
+                   (%vt-has readme +vt-tests-command+))
+        (return-from check (values :invalid :tests_command_divergent)))
+      ;; L2b: η ΔΕΥΤΕΡΗ documented CI test path (verifier-conformance) — CI τρέχει ≡ README τεκμηριώνει
+      (unless (and (%vt-has ci-code +vt-tests-command-2+)
+                   (%vt-has readme +vt-tests-command-2+))
+        (return-from check (values :invalid :tests_command_2_divergent))))
     ;; L3 κανένας αποσυρμένος μηχανισμός δεν διαφημίζεται στο README
     (dolist (tok +vt-retired-tokens+)
       (when (%vt-has readme tok)
@@ -129,8 +160,10 @@
                    (format t "  ✓ ~A~%" label)
                    (progn (push label fails)
                           (format t "  ✗ ~A (πήρα ~A/~A)~%" label v w))))))
-      (let ((ok-readme (format nil "run --gates· δες docker build ~A" +vt-tests-command+))
-            (ok-ci (format nil "docker run … --gates~%docker build ~A ." +vt-tests-command+))
+      (let ((ok-readme (format nil "run --gates· δες docker build ~A· και ~A"
+                               +vt-tests-command+ +vt-tests-command-2+))
+            (ok-ci (format nil "docker run … --gates~%docker build ~A .~%docker build ~A ."
+                           +vt-tests-command+ +vt-tests-command-2+))
             (ok-df (format nil "for t in … ~A …; do sbcl …; done" +vt-escape-suite-token+)))
         ;; θετικό: docs≡CI, escape gated, driver αποσυρμένος
         (expect "① docs≡CI πλήρες ⇒ :ok" ok-readme ok-ci ok-df nil :ok nil)
@@ -180,7 +213,27 @@
                 (format nil "~A· σήμερα 23 πύλες" ok-readme) ok-ci ok-df nil
                 :ok nil 23)
         (expect "⑬δ κανένας στατικός αριθμός (self-describing) ⇒ :ok"
-                ok-readme ok-ci ok-df nil :ok nil 23)))
+                ok-readme ok-ci ok-df nil :ok nil 23)
+        ;; #1 (Codex): verifier-conformance documented αλλά ΟΧΙ στο CI ⇒ divergent
+        (expect "⑭α CI χωρίς verifier-conformance ⇒ :tests_command_2_divergent"
+                ok-readme (format nil "docker run … --gates~%docker build ~A ." +vt-tests-command+)
+                ok-df nil :invalid :tests_command_2_divergent)
+        ;; #1: README χωρίς verifier-conformance ενώ το CI το τρέχει ⇒ divergent
+        (expect "⑭β README χωρίς verifier-conformance ⇒ :tests_command_2_divergent"
+                (format nil "run --gates· docker build ~A" +vt-tests-command+) ok-ci ok-df nil
+                :invalid :tests_command_2_divergent)
+        ;; #2 (Codex): το --gates ΜΟΝΟ σε YAML σχόλιο ⇒ ΔΕΝ μετρά ως «το CI τρέχει»
+        (expect "⑮α --gates μόνο σε CI σχόλιο (# …) ⇒ :correctness_command_divergent"
+                ok-readme
+                (format nil "# comment: το --gates τρέχει εδώ~%steps:~%  run: docker build ~A .~%  run: docker build ~A ."
+                        +vt-tests-command+ +vt-tests-command-2+)
+                ok-df nil :invalid :correctness_command_divergent)
+        ;; #2: standalone-test ΜΟΝΟ σε inline σχόλιο ⇒ ΔΕΝ μετρά
+        (expect "⑮β standalone-test μόνο σε inline σχόλιο ( #…) ⇒ :tests_command_divergent"
+                ok-readme
+                (format nil "run: docker run --gates  # δες ~A αργότερα~%run: docker build ~A ."
+                        +vt-tests-command+ +vt-tests-command-2+)
+                ok-df nil :invalid :tests_command_divergent)))
     (values fails total)))
 
 (defun run-verify-truth-gate ()
