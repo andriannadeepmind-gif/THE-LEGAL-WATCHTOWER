@@ -45,7 +45,9 @@
       \"subject\":\"Ανακοίνωση διενέργειας ηλεκτρονικού διαγωνισμού προμηθειών.\"}
    ]}")
 
-(let ((srv (orchestrator.http:start-server
+;; [0036] Δ1: ο ΤΟΠΙΚΟΣ test server είναι loopback — ρητό, scoped binding (unwind ⇒ ξανά ΚΛΕΙΣΤΟ)
+(let ((orchestrator.document-fetch:*allow-loopback-fetch* t)
+      (srv (orchestrator.http:start-server
             (lambda (req) (declare (ignore req))
               (orchestrator.http:respond 200 *decisions-json*
                                          "Content-Type" "application/json"))

@@ -17,8 +17,12 @@
        (string= (html->text "<style>x{}</style><p>Κείμενο</p><script>y()</script>") "Κείμενο"))
 (check "decodes guillemet entities"
        (search "«άρθρο»" (html->text "<i>&laquo;άρθρο&raquo;</i>")))
-(check "collapses whitespace"
-       (string= (html->text (format nil "<p>α   β~%~C γ</p>" #\Tab)) "α β γ"))
+;; documented behavior (docstring html->text): collapse ΜΕΣΑ στη γραμμή ΜΟΝΟ —
+;; block tags/αλλαγές γραμμής διατηρούν τη δομή παραγράφων. Η παλιά προσδοκία
+;; flatten «α β γ» ήταν stale — pre-existing CI-unblocker [0036].
+(check "collapses whitespace ΜΕΣΑ στη γραμμή· η δομή γραμμών διατηρείται"
+       (string= (html->text (format nil "<p>α   β~%~C γ</p>" #\Tab))
+                (format nil "α β~%γ")))
 
 (format t "~%== parse-fek-listing-html ==~%")
 (let ((entries (parse-fek-listing-html

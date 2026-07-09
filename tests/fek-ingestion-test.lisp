@@ -54,7 +54,9 @@
         ((search "4999" path) *law-4999-html*)
         (t *listing-html*)))
 
-(let ((srv (orchestrator.http:start-server
+;; [0036] Δ1: ο ΤΟΠΙΚΟΣ test server είναι loopback — ρητό, scoped binding (unwind ⇒ ξανά ΚΛΕΙΣΤΟ)
+(let ((orchestrator.document-fetch:*allow-loopback-fetch* t)
+      (srv (orchestrator.http:start-server
             (lambda (req)
               (orchestrator.http:respond
                200 (route (orchestrator.http:http-request-path req))

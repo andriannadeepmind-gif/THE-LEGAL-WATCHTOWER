@@ -85,6 +85,27 @@
             (search "/fek/04/" (fek-blob-url "Δ" 1 2020))))
 (check "Latin 'A' is accepted as τεύχος Α" (search "/fek/01/" (fek-blob-url "A" 1 2020)))
 
+;; ── SSRF guard invariant ([0036] Δ1): default ΚΛΕΙΣΤΟ loopback· ΜΟΝΟ ρητή
+;;    test-scoped dynamic binding το ανοίγει, και ΜΟΝΟ για loopback ──
+(format t "~%== SSRF guard: loopback invariant (Δ1) ==~%")
+(check "DEFAULT: url-fetch-allowed-p 127.0.0.1 ⇒ NIL (παραγωγική πολιτική ΑΘΙΚΤΗ)"
+       (not (url-fetch-allowed-p "http://127.0.0.1:8080/x")))
+(check "DEFAULT: localhost ⇒ NIL"
+       (not (url-fetch-allowed-p "http://localhost:8080/x")))
+(check "ΜΕ test binding: loopback ⇒ T (μόνο για τοπικό test server)"
+       (let ((*allow-loopback-fetch* t))
+         (and (url-fetch-allowed-p "http://127.0.0.1:8080/x")
+              (url-fetch-allowed-p "http://localhost:8080/x"))))
+(check "ΜΕ binding: private/metadata ΠΑΝΤΑ μπλοκαρισμένα (10/8, 192.168, 169.254 metadata)"
+       (let ((*allow-loopback-fetch* t))
+         (and (not (url-fetch-allowed-p "http://10.0.0.5/x"))
+              (not (url-fetch-allowed-p "http://192.168.1.1/x"))
+              (not (url-fetch-allowed-p "http://169.254.169.254/latest/meta-data")))))
+(check "ΜΕΤΑ το unwind: default ξανά ΚΛΕΙΣΤΟ (τίποτα δεν «ξεχνιέται»)"
+       (not (url-fetch-allowed-p "http://127.0.0.1:8080/x")))
+(check "δημόσιο DNS hostname επιτρέπεται όπως πριν (default)"
+       (url-fetch-allowed-p "https://www.et.gr/fek"))
+
 ;; cleanup
 (ignore-errors (uiop:delete-directory-tree (pathname *dir*) :validate t))
 

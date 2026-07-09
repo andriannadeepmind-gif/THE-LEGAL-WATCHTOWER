@@ -26,6 +26,7 @@
   (:export #:fetch-pdf #:run-fetch-command #:pdf-file-p #:docx-file-p #:%substitute-out
            #:fek-blob-url #:fetch-fek-blob #:fetch-url-pdf #:fetch-url-docx #:*fek-blob-base*
            #:fek-blob-exists-p #:enumerate-new-fek #:url-fetch-allowed-p
+           #:*allow-loopback-fetch*
            #:content-magic-kind))
 
 (in-package :orchestrator.document-fetch)
@@ -224,17 +225,35 @@
                           "^(?i)(https?)://([^/:?#]+)" s)
       (when m (string-downcase (aref groups 1))))))
 
+(defvar *allow-loopback-fetch* nil
+  "ΜΟΝΟ για test harnesses που σηκώνουν ΤΟΠΙΚΟ test server (127.0.0.1): όταν
+   δεθεί δυναμικά σε T, ο SSRF φρουρός επιτρέπει ΑΠΟΚΛΕΙΣΤΙΚΑ loopback (127/8,
+   localhost) — τα private/link-local/metadata (10/8, 172.16/12, 192.168/16,
+   169.254/16, 0/8, multicast) μένουν ΠΑΝΤΑ μπλοκαρισμένα. Default NIL: η
+   παραγωγική πολιτική ΑΜΕΤΑΒΛΗΤΗ. Απόφαση δημιουργού [0036] Δ1: dynamic
+   binding με εμβέλεια το test, ΟΧΙ env flag (δεν «ξεχνιέται» σε παραγωγή —
+   ένα unwind και επανέρχεται NIL).")
+
+(defun %loopback-host-p (host)
+  "Το HOST είναι loopback; (localhost ή 127/8 literal)."
+  (or (string= host "localhost")
+      (let ((octets (%ipv4-octets host)))
+        (and octets (= (first octets) 127)))))
+
 (defun url-fetch-allowed-p (url)
   "Gate an outbound fetch URL: require http/https and reject internal/loopback/
    link-local/metadata hosts (by IP literal). A non-IP hostname is allowed (public
    DNS names are the normal case); the residual DNS-rebinding vector is out of scope
-   for a batch fetcher but the obvious literal-IP SSRF payloads are blocked."
+   for a batch fetcher but the obvious literal-IP SSRF payloads are blocked.
+   Εξαίρεση ΜΟΝΟ υπό *allow-loopback-fetch* (test-scoped binding): loopback
+   επιτρέπεται· κάθε ΑΛΛΟ private/metadata host μένει μπλοκαρισμένο."
   (let ((host (%url-host url)))
     (and host
          (plusp (length host))
-         (not (string= host "localhost"))
-         (let ((octets (%ipv4-octets host)))
-           (or (null octets) (not (%private-ipv4-p octets)))))))
+         (if (%loopback-host-p host)
+             (and *allow-loopback-fetch* t)
+             (let ((octets (%ipv4-octets host)))
+               (or (null octets) (not (%private-ipv4-p octets))))))))
 
 (defun %fetch-url-to-file (url out-path validator not-a-status &key (timeout 180))
   "GET URL (pure Lisp drakma) and write the body to OUT-PATH, accepting it ONLY when

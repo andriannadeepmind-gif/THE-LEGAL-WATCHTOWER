@@ -12,7 +12,9 @@
            (progn (incf *fail*) (format t "  FAIL ~A~%" ,name)))
      (error (e) (incf *fail*) (format t "  FAIL ~A (error: ~A)~%" ,name e))))
 
-(let* ((sample "[{\"title\":\"Άρθρο 1\",\"content\":[\"Κείμενο από την πηγή.\"]},{\"title\":\"Άρθρο 2\",\"content\":[\"Δεύτερο.\"]}]")
+;; [0036] Δ1: ο ΤΟΠΙΚΟΣ test server είναι loopback — ρητό, scoped binding (unwind ⇒ ξανά ΚΛΕΙΣΤΟ)
+(let* ((orchestrator.document-fetch:*allow-loopback-fetch* t)
+       (sample "[{\"title\":\"Άρθρο 1\",\"content\":[\"Κείμενο από την πηγή.\"]},{\"title\":\"Άρθρο 2\",\"content\":[\"Δεύτερο.\"]}]")
        (srv (orchestrator.http:start-server
              (lambda (req) (declare (ignore req))
                (orchestrator.http:respond 200 sample "Content-Type" "application/json"))

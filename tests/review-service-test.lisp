@@ -41,8 +41,10 @@
   (check "renders the duplicate summary (Greek)" (search "Διπλό άρθρο art_10" html))
   (check "has an Έγκριση action" (search "Έγκριση" html))
   (check "has an Απόρριψη action" (search "Απόρριψη" html))
+  ;; hardened UI ([0036]): οι ενέργειες είναι data-attributes + POST με token
+  ;; (CSRF sign-once) — όχι ωμά GET links. Το test ακολουθεί το συμβόλαιο.
   (check "decision links carry the item id + action"
-         (and (search "action=approve" html) (search "action=reject" html)))
+         (and (search "data-action=\"approve\"" html) (search "data-action=\"reject\"" html)))
   (check "HTML-escapes payload markup (no raw <b> injected)"
          (not (search "new <b>article</b>" html))))
 
@@ -56,9 +58,10 @@
 (let* ((handler (review-service-handler *svc*))
        (id (orchestrator.review:item-id (first (orchestrator.review:queue-items *q*))))
        (req (funcall (find-symbol "MAKE-HTTP-REQUEST" :orchestrator.http)
-                     :method "GET" :path "/decide"
+                     :method "POST" :path "/decide"
                      :query (list (cons "id" id) (cons "action" "approve")
-                                  (cons "by" "Σ. Σταυρόπουλος"))))
+                                  (cons "by" "Σ. Σταυρόπουλος")
+                                  (cons "token" *decide-token*))))
        (before *saved*)
        (resp (funcall handler req)))
   (check "decide returns 200"
@@ -74,8 +77,9 @@
 (format t "~%== Unknown id is reported, not applied ==~%")
 (let* ((handler (review-service-handler *svc*))
        (req (funcall (find-symbol "MAKE-HTTP-REQUEST" :orchestrator.http)
-                     :method "GET" :path "/decide"
-                     :query (list (cons "id" "does-not-exist") (cons "action" "approve"))))
+                     :method "POST" :path "/decide"
+                     :query (list (cons "id" "does-not-exist") (cons "action" "approve")
+                                  (cons "token" *decide-token*))))
        (resp (funcall handler req)))
   (check "unknown id still 200 with warning banner"
          (and (= 200 (funcall (find-symbol "HTTP-RESPONSE-STATUS" :orchestrator.http) resp))
