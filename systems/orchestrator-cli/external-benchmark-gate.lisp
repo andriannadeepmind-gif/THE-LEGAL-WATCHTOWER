@@ -51,6 +51,33 @@
   (format nil "sha256:~A"
           (ironclad:byte-array-to-hex-string (ironclad:digest-file :sha256 path))))
 
+(defparameter +ebg-sidecar-max-chars+ 512
+  "Άνω φράγμα ανάγνωσης του detached sidecar <bundle>.sha256: ένα fingerprint
+   είναι ~71 chars (sha256:<64hex>). Bounded read ΠΡΙΝ από κάθε validation ώστε
+   κακόβουλο πολυ-gigabyte sidecar να μη φορτώνεται ΠΟΤΕ — ίδιο πνεύμα με το
+   +ebg-max-bundle-bytes+ size cap (0009 §5.3, 'size caps πριν από κάθε ανάγνωση').")
+
+(defun %ebg-read-sidecar-fingerprint (bundle-path)
+  "Detached fingerprint από sidecar: η ΠΡΩΤΗ γραμμή του <bundle>.sha256,
+   ΦΡΑΓΜΕΝΗ σε +ebg-sidecar-max-chars+ και ΧΕΙΡΙΣΜΕΝΗ (serious-condition ⇒ NIL,
+   ποτέ crash/leak). ΠΟΤΕ unbounded slurp: read-sequence σε buffer σταθερού
+   μήκους — ό,τι ξεπερνά το φράγμα δεν διαβάζεται. Επιστρέφει trimmed string ή
+   NIL (δεν υπάρχει/δεν διαβάζεται). Ο έλεγχος μορφής sha256:<64hex> γίνεται
+   κατάντη στο %ebg-validate — εδώ μόνο η ΦΡΑΓΜΕΝΗ, ασφαλής ανάγνωση."
+  (let ((side (probe-file (concatenate 'string (namestring bundle-path) ".sha256"))))
+    (when side
+      (handler-case
+          (with-open-file (s side :external-format :utf-8)
+            (let* ((buf (make-string +ebg-sidecar-max-chars+))
+                   (n (read-sequence buf s))
+                   (chunk (subseq buf 0 n))
+                   (nl (position #\Newline chunk))
+                   (line (if nl (subseq chunk 0 nl) chunk)))
+              (string-trim '(#\Space #\Tab #\Return #\Newline) line)))
+        ;; serious-condition, όχι σκέτο error: και storage/χώρου εξάντληση από
+        ;; εχθρικό sidecar καταλήγει σε κλειστό NIL — κατάντη fingerprint_missing.
+        (serious-condition () nil)))))
+
 (defparameter +ebg-readtable+
   (let ((rt (copy-readtable nil)))
     (flet ((deny (stream char arg)
@@ -304,7 +331,7 @@
 
 (defun %ebg-selftest ()
   "Αυτο-έλεγχος του επικυρωτή v1 με συνθετικά bundles (temp, εκτός repo):
-   tamper, schema floor, no-leak, ντετερμινισμός + FF2 measured-preflight (bytes-v2, EOF law, boolean canon, resource policy) — 25 έλεγχοι."
+   tamper, schema floor, no-leak, ντετερμινισμός + FF2 measured-preflight (bytes-v2, EOF law, boolean canon, resource policy, exact item-why, invalid-UTF-8) — 26 έλεγχοι."
   (let ((dir (merge-pathnames "lawmax-ebg-selftest/" (uiop:temporary-directory)))
         (fails '()) (total 0))
     (ensure-directories-exist dir)
@@ -317,13 +344,34 @@
                (with-open-file (o p :direction :output :if-exists :supersede
                                     :external-format :utf-8)
                  (write-string text o))
+               p))
+           (wrb (name bytes)
+             ;; ΩΜΑ BYTES — παρακάμπτει κάθε external-format ώστε να γραφτούν
+             ;; ΜΗ-έγκυρα UTF-8 fixtures (απόδειξη bytes-v2 σε non-text input).
+             (let ((p (merge-pathnames name dir)))
+               (with-open-file (o p :direction :output :if-exists :supersede
+                                    :element-type '(unsigned-byte 8))
+                 (write-sequence bytes o))
                p)))
       (macrolet ((expect (label file-text want-verdict want-reason)
                    `(let* ((p (wr (format nil "~D.sexp" total) ,file-text))
                            (fp (%ebg-file-fingerprint p)))
                       (multiple-value-bind (v r) (%ebg-validate p fp)
                         (chk ,label (and (eq v ,want-verdict)
-                                         (or (null ,want-reason) (eq r ,want-reason))))))))
+                                         (or (null ,want-reason) (eq r ,want-reason)))))))
+                 ;; exact bad-reason ΠΛΗΡΕΣ (FF2 §2.4, εύρημα [0025]): για item-level
+                 ;; ακυρότητες δεν αρκεί το top-level :schema_item_invalid — απαιτεί
+                 ;; ΤΑΥΤΟΧΡΟΝΑ verdict=:invalid, reason=:schema_item_invalid ΚΑΙ το
+                 ;; :why του ΠΡΩΤΟΥ κακού item = want-item-why (eq). Αλλαγή του
+                 ;; εσωτερικού why-code ⇒ κόκκινο.
+                 (expect-item-why (label file-text want-item-why)
+                   `(let* ((p (wr (format nil "~D.sexp" total) ,file-text))
+                           (fp (%ebg-file-fingerprint p)))
+                      (multiple-value-bind (v r i) (%ebg-validate p fp)
+                        (let ((first-why (getf (first (getf i :bad-items)) :why)))
+                          (chk ,label (and (eq v :invalid)
+                                           (eq r :schema_item_invalid)
+                                           (eq first-why ,want-item-why))))))))
         (let* ((valid-text
                  "(:external-benchmark-bundle 1
  :owner \"kritis-selftest\"
@@ -399,27 +447,27 @@
         (expect "⑬ κενά items ⇒ :invalid / schema_items_empty"
                 "(:external-benchmark-bundle 1 :owner \"x\" :as-of-date \"2026-07-07\" :jurisdiction :gr :bundle-purpose :dry-run :items ())"
                 :invalid :schema_items_empty)
-        ;; διπλότυπο id (0008): δύο πλήρη items με ίδιο :id
-        (expect "⑭ διπλότυπο item :id ⇒ :invalid / schema_item_invalid (schema_duplicate_id — 0008)"
+        ;; διπλότυπο id (0008): δύο πλήρη items με ίδιο :id — exact item :why
+        (expect-item-why "⑭ διπλότυπο item :id ⇒ :schema_item_invalid · item :why=:schema_duplicate_id (0008)"
                 "(:external-benchmark-bundle 1 :owner \"x\" :as-of-date \"2026-07-07\" :jurisdiction :gr :bundle-purpose :dry-run
  :items ((:id \"DUP\" :layer :currentness :jurisdiction :gr :source-class :fek :visible-prompt \"a\" :as-of-date \"2026-07-07\" :required-citations (\"c\") :stale-law-decoy-p nil :scoring (:max 1) :hidden-expected (:x))
          (:id \"DUP\" :layer :dialectic :jurisdiction :gr :source-class :eu :visible-prompt \"b\" :as-of-date \"2026-07-07\" :required-citations (\"c\") :stale-law-decoy-p t :scoring (:max 1) :hidden-expected (:x))))"
-                :invalid :schema_item_invalid)
-        ;; item χωρίς scoring
-        (expect "⑮ item χωρίς :scoring ⇒ :invalid / schema_item_invalid (item_scoring_missing)"
+                :schema_duplicate_id)
+        ;; item χωρίς scoring — exact item :why
+        (expect-item-why "⑮ item χωρίς :scoring ⇒ :schema_item_invalid · item :why=:item_scoring_missing"
                 "(:external-benchmark-bundle 1 :owner \"x\" :as-of-date \"2026-07-07\" :jurisdiction :gr :bundle-purpose :dry-run
  :items ((:id \"S\" :layer :provision :jurisdiction :gr :source-class :kodikas :visible-prompt \"a\" :as-of-date \"2026-07-07\" :required-citations (\"c\") :stale-law-decoy-p nil :hidden-expected (:x))))"
-                :invalid :schema_item_invalid)
-        ;; κενές citations ΧΩΡΙΣ τίμια-άγνοια στο hidden-expected
-        (expect "⑯ κενές :required-citations χωρίς unknown-source-needed ⇒ :invalid (κανόνας 0009 §2.2)"
+                :item_scoring_missing)
+        ;; κενές citations ΧΩΡΙΣ τίμια-άγνοια στο hidden-expected — exact item :why
+        (expect-item-why "⑯ κενές :required-citations χωρίς unknown-source-needed ⇒ item :why=:item_required_citations_invalid (0009 §2.2)"
                 "(:external-benchmark-bundle 1 :owner \"x\" :as-of-date \"2026-07-07\" :jurisdiction :gr :bundle-purpose :dry-run
  :items ((:id \"C\" :layer :currentness :jurisdiction :gr :source-class :fek :visible-prompt \"a\" :as-of-date \"2026-07-07\" :required-citations () :stale-law-decoy-p nil :scoring (:max 1) :hidden-expected (:answer \"y\"))))"
-                :invalid :schema_item_invalid)
-        ;; marker ΘΑΜΜΕΝΟ σε distractors ≠ expected verdict — δεν περνά (εύρημα σκεπτικιστή)
-        (expect "⑰ κενές citations με marker ΜΟΝΟ σε distractors (όχι :verdict) ⇒ :invalid"
+                :item_required_citations_invalid)
+        ;; marker ΘΑΜΜΕΝΟ σε distractors ≠ expected verdict — exact item :why (εύρημα σκεπτικιστή)
+        (expect-item-why "⑰ κενές citations με marker ΜΟΝΟ σε distractors (όχι :verdict) ⇒ item :why=:item_required_citations_invalid"
                 "(:external-benchmark-bundle 1 :owner \"x\" :as-of-date \"2026-07-07\" :jurisdiction :gr :bundle-purpose :dry-run
  :items ((:id \"D\" :layer :currentness :jurisdiction :gr :source-class :fek :visible-prompt \"a\" :as-of-date \"2026-07-07\" :required-citations () :stale-law-decoy-p nil :scoring (:max 1) :hidden-expected (:verdict :provision-found :distractors (:unknown-source-needed)))))"
-                :invalid :schema_item_invalid)
+                :item_required_citations_invalid)
         ;; trailing newline σε ημερομηνία = ΟΧΙ ημερομηνία (εύρημα σκεπτικιστή: το $ της
         ;; cl-ppcre δεχόταν τελικό \n και ο control χαρακτήρας ηχούσε στην αναφορά)
         (expect "⑱ :as-of-date με trailing newline ⇒ :invalid / schema_as_of_date"
@@ -455,20 +503,37 @@
                   (nth-value 1 (%ebg-canon-bool :nil))            ; valid
                   (eq t (nth-value 0 (%ebg-canon-bool :t)))       ; :T → T
                   (not (nth-value 1 (%ebg-canon-bool :maybe)))))  ; :maybe → invalid
-        ;; ㉔ (E′) bundle item με μη-boolean stale-law-decoy-p ⇒ schema_item_invalid
-        (expect "㉔ (E′) item :stale-law-decoy-p :maybe (μη-boolean) ⇒ :invalid / schema_item_invalid"
+        ;; ㉔ (E′) bundle item με μη-boolean stale-law-decoy-p ⇒ exact item :why
+        (expect-item-why "㉔ (E′) item :stale-law-decoy-p :maybe (μη-boolean) ⇒ item :why=:item_stale_law_decoy_p_invalid"
                 "(:external-benchmark-bundle 1 :owner \"x\" :as-of-date \"2026-07-07\" :jurisdiction :gr :bundle-purpose :dry-run
  :items ((:id \"B\" :layer :provision :jurisdiction :gr :source-class :kodikas :visible-prompt \"a\" :as-of-date \"2026-07-07\" :required-citations (\"c\") :stale-law-decoy-p :maybe :scoring (:max 1) :hidden-expected (:x))))"
-                :invalid :schema_item_invalid)
+                :item_stale_law_decoy_p_invalid)
         ;; ㉕ (G) resource-condition policy: storage-condition ξεχωρίζει από unreadable
         (chk "㉕ (G) resource policy: storage-condition→:resource_exhausted, error→:unreadable (διακριτά)"
              (and (eq :resource_exhausted
                       (%ebg-classify-condition (make-condition 'storage-condition)))
                   (eq :unreadable
                       (%ebg-classify-condition (make-condition 'simple-error)))
-                  (not (eq :resource_exhausted :unreadable)))))
-      ;; (F) exact bad-reason: ΚΑΘΕ negative expect παραπάνω ελέγχει ΑΚΡΙΒΩΣ το
-      ;;     why-code (ο macro expect συγκρίνει με eq) — «απέτυχε άρα καλά» αδύνατο.
+                  (not (eq :resource_exhausted :unreadable))))
+        ;; ㉖ (C′) ΜΗ-έγκυρα UTF-8 bytes ([0025] note #2): bytes-v2 fingerprint
+        ;;     λειτουργεί σε input που ΔΕΝ αποκωδικοποιείται ως UTF-8 — απόδειξη
+        ;;     ότι το digest-file δουλεύει στα ΩΜΑ bytes (string-slurp θα έριχνε
+        ;;     decoding error). Ίδια bytes ⇒ ίδιο· 1 byte ⇒ διαφορετικό.
+        (let* ((raw (coerce '(#xFF #xFE #x00 #x80 #xC3 #x28 #xA0 #xA1)
+                            '(vector (unsigned-byte 8))))
+               (raw2 (coerce '(#xFF #xFE #x00 #x80 #xC3 #x28 #xA0 #xA1)
+                             '(vector (unsigned-byte 8))))
+               (raw3 (coerce '(#xFF #xFE #x00 #x80 #xC3 #x29 #xA0 #xA1)
+                             '(vector (unsigned-byte 8))))
+               (ba (wrb "bad-utf8-a.bin" raw))
+               (bb (wrb "bad-utf8-b.bin" raw2))
+               (bc (wrb "bad-utf8-c.bin" raw3)))
+          (chk "㉖ (C′) invalid-UTF-8 bytes: bytes-v2 δουλεύει σε non-text· ίδια bytes ⇒ ίδιο· 1 byte ⇒ διαφορετικό"
+               (and (string= (%ebg-file-fingerprint ba) (%ebg-file-fingerprint bb))
+                    (not (string= (%ebg-file-fingerprint ba) (%ebg-file-fingerprint bc)))))))
+      ;; (F) exact bad-reason ΠΛΗΡΕΣ: κάθε bundle-level negative μέσω `expect`
+      ;;     (eq στο reason) ΚΑΙ κάθε item-level negative μέσω `expect-item-why`
+      ;;     (eq στο ΕΣΩΤΕΡΙΚΟ item :why) — «απέτυχε άρα καλά» αδύνατο σε ΚΑΘΕ επίπεδο.
       (format t "~%── ΠΥΛΗ ΕΞΩΤΕΡΙΚΟΥ BENCHMARK: ~D/~D αυτο-έλεγχοι πέρασαν · verdict: :not-run (κανένα bundle δεν προσκομίστηκε) · fingerprint_law: bytes-v2 ──~%"
               (- total (length fails)) total)
       (if fails 1 0))))
@@ -495,12 +560,9 @@
                       :unsupported)
          1)
         (t
-         ;; detached fingerprint: όρισμα ή sidecar <path>.sha256 (πρώτη γραμμή)
-         (let ((fingerprint
-                 (or fp
-                     (let ((side (probe-file (concatenate 'string bundle ".sha256"))))
-                       (and side (string-trim " \t\r\n"
-                                              (or (first (uiop:read-file-lines side)) "")))))))
+         ;; detached fingerprint: όρισμα ή sidecar <path>.sha256 (πρώτη γραμμή,
+         ;; ΦΡΑΓΜΕΝΗ+ΧΕΙΡΙΣΜΕΝΗ ανάγνωση — %ebg-read-sidecar-fingerprint).
+         (let ((fingerprint (or fp (%ebg-read-sidecar-fingerprint bundle))))
            (multiple-value-bind (verdict reason info)
                (%ebg-validate bundle (and fingerprint
                                           (plusp (length fingerprint))
