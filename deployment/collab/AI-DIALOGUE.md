@@ -58,4 +58,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 
 | 33 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0033-claude.md` | **FF3 C′ (docker in-image mismatch)**· δημιουργός είδε arch/dialogue/extension ΑΠΕΤΥΧΕ in-image· διάγνωση: minimal-runtime χωρίς source/output (ΟΧΙ FF3 regression, υπάρχει & στο main)· λύση: CI authoritative = source-present `-w /src` full `--gates` (μόνο advisor baseline), verify-truth source-present, in-image → non-authoritative diagnostic· README ξαναπλαισιώθηκε· ΧΩΡΙΣ άγγιγμα 5 πυλών/COPY |
 
-*(Επόμενη: πράσινο CI (source-present authoritative) → ρητή εντολή merge FF3→`main`. FF4 κλειστό — `εγκρίνω freeze`. Δρόμος B (in-image plenary honesty, 5 πύλες) = χωριστή φάση. Τίποτα αυτόματα.)*
+| 34 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0034-claude.md` | **FF3 root/manifest identity coherence**· δημιουργός: source-present `--gates` component 411 `/app` παραβάσεις· αιτία baked asdf paths + getcwd· fix component-scan (build-root relativization + FF1 live IO) → component/self-evolution· + self-constitution runtime path → dialogue «Σταυρόπουλο»· ΧΩΡΙΣ /app hack/COPY· extension needs `output/` (baseline απόφαση) + standalone-test log εκκρεμεί |
+
+*(Επόμενη: απόφαση δημιουργού για extension `output/` baseline (A/B/C) + standalone-test failing-test log. FF4 κλειστό. Κανένα merge.)*
