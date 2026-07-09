@@ -177,20 +177,20 @@
 
       ;; DCAT Catalog
       (format out "<~A> a dcat:Catalog ;~%" release-iri)
-      (format out "    dcterms:title \\\"Greek Constitutional Law Corpus - Release ~A\\\"@en ;~%"
+      (format out "    dcterms:title \"Greek Constitutional Law Corpus - Release ~A\"@en ;~%"
               timestamp-iso)
-      (format out "    dcterms:title \\\"Σώμα Ελληνικού Συνταγματικού Δικαίου - Έκδοση ~A\\\"@el ;~%"
+      (format out "    dcterms:title \"Σώμα Ελληνικού Συνταγματικού Δικαίου - Έκδοση ~A\"@el ;~%"
               timestamp-iso)
-      (format out "    dcterms:created \\\"~A\\\"^^xsd:dateTime ;~%" timestamp-iso)
+      (format out "    dcterms:created \"~A\"^^xsd:dateTime ;~%" timestamp-iso)
       (format out "    dcterms:publisher <https://stavropouloslaw.com/identity/org> ;~%")
       (format out "    dcterms:license <https://creativecommons.org/publicdomain/zero/1.0/> ;~%")
       (format out "    dcat:dataset <~A/dataset> ;~%" release-iri)
-      (format out "    slw:releaseTimestamp \\\"~A\\\"^^xsd:dateTime ;~%" timestamp-iso)
-      (format out "    slw:merkleRoot \\\"~A\\\" ;~%" (or merkle-root "pending"))
-      (format out "    slw:systemCommitHash \\\"~A\\\" ;~%" (or system-commit-hash "pending"))
+      (format out "    slw:releaseTimestamp \"~A\"^^xsd:dateTime ;~%" timestamp-iso)
+      (format out "    slw:merkleRoot \"~A\" ;~%" (or merkle-root "pending"))
+      (format out "    slw:systemCommitHash \"~A\" ;~%" (or system-commit-hash "pending"))
       (format out "    slw:totalArticles ~D ;~%" total-articles)
       (format out "    slw:totalArtifacts ~D ;~%" total-artifacts)
-      (format out "    slw:pipelineVersion \\\"~A\\\" ;~%" orchestrator.spec:+version+)
+      (format out "    slw:pipelineVersion \"~A\" ;~%" orchestrator.spec:+version+)
       (format out "    slw:blockchainIsNotAuthority true ;~%")
 
       ;; Temporal proof references
@@ -202,16 +202,16 @@
         (dolist (ct-proof ct-proofs)
           (format out "    slw:ctProof <~A/~A> ;~%" release-iri (file-namestring ct-proof))))
 
-      (format out "    rdfs:comment \\\"\\\"\\\"Immutable timestamped release of Greek Constitutional\\n")
+      (format out "    rdfs:comment \"\"\"Immutable timestamped release of Greek Constitutional\\n")
       (format out "        Law corpus. This manifest provides cryptographic commitment via Merkle root,\\n")
       (format out "        temporal proof via RFC 3161 + Certificate Transparency, and integrity\\n")
-      (format out "        verification via JWS signature.\\\"\\\"\\\"@en .~%~%")
+      (format out "        verification via JWS signature.\"\"\"@en .~%~%")
 
       ;; VoID Dataset Description
       (format out "<~A/dataset> a void:Dataset, dcat:Dataset ;~%" release-iri)
-      (format out "    dcterms:title \\\"Greek Constitutional Law RDF Dataset\\\"@en ;~%")
-      (format out "    dcterms:description \\\"\\\"\\\"Complete RDF representation of Greek Constitution\\n")
-      (format out "        articles with identity-only semantics and PROV-O lineage tracking.\\\"\\\"\\\"@en ;~%")
+      (format out "    dcterms:title \"Greek Constitutional Law RDF Dataset\"@en ;~%")
+      (format out "    dcterms:description \"\"\"Complete RDF representation of Greek Constitution\\n")
+      (format out "        articles with identity-only semantics and PROV-O lineage tracking.\"\"\"@en ;~%")
       (format out "    void:triples ~D ;~%"
               (* total-articles 50)) ; Approximate triples per article
       (format out "    void:entities ~D ;~%" total-articles)
@@ -230,27 +230,27 @@
       (format out "# === DCAT Distributions ===~%~%")
 
       (format out "<~A/distribution/turtle> a dcat:Distribution ;~%" release-iri)
-      (format out "    dcterms:format \\\"text/turtle\\\" ;~%")
-      (format out "    dcat:mediaType \\\"text/turtle\\\" ;~%")
-      (format out "    dcterms:title \\\"RDF Turtle Format\\\"@en ;~%")
+      (format out "    dcterms:format \"text/turtle\" ;~%")
+      (format out "    dcat:mediaType \"text/turtle\" ;~%")
+      (format out "    dcterms:title \"RDF Turtle Format\"@en ;~%")
       (format out "    dcat:accessURL <~A/articles/> .~%~%" release-iri)
 
       (format out "<~A/distribution/jsonld> a dcat:Distribution ;~%" release-iri)
-      (format out "    dcterms:format \\\"application/ld+json\\\" ;~%")
-      (format out "    dcat:mediaType \\\"application/ld+json\\\" ;~%")
-      (format out "    dcterms:title \\\"JSON-LD Format\\\"@en ;~%")
+      (format out "    dcterms:format \"application/ld+json\" ;~%")
+      (format out "    dcat:mediaType \"application/ld+json\" ;~%")
+      (format out "    dcterms:title \"JSON-LD Format\"@en ;~%")
       (format out "    dcat:accessURL <~A/articles/> .~%~%" release-iri)
 
       (format out "<~A/distribution/html> a dcat:Distribution ;~%" release-iri)
-      (format out "    dcterms:format \\\"text/html\\\" ;~%")
-      (format out "    dcat:mediaType \\\"text/html\\\" ;~%")
-      (format out "    dcterms:title \\\"HTML with RDFa + JSON-LD\\\"@en ;~%")
+      (format out "    dcterms:format \"text/html\" ;~%")
+      (format out "    dcat:mediaType \"text/html\" ;~%")
+      (format out "    dcterms:title \"HTML with RDFa + JSON-LD\"@en ;~%")
       (format out "    dcat:accessURL <~A/articles/> .~%~%" release-iri)
 
       (format out "<~A/distribution/pdf> a dcat:Distribution ;~%" release-iri)
-      (format out "    dcterms:format \\\"application/pdf\\\" ;~%")
-      (format out "    dcat:mediaType \\\"application/pdf\\\" ;~%")
-      (format out "    dcterms:title \\\"PDF Format\\\"@en ;~%")
+      (format out "    dcterms:format \"application/pdf\" ;~%")
+      (format out "    dcat:mediaType \"application/pdf\" ;~%")
+      (format out "    dcterms:title \"PDF Format\"@en ;~%")
       (format out "    dcat:accessURL <~A/articles/> .~%~%" release-iri)
 
       ;; Artifact Inventory (ALL files with hash + byteSize)
@@ -268,8 +268,8 @@
             for idx from 0
             do (format out "<~A/artifact/~D> a dcat:Distribution ;~%"
                       release-iri idx)
-               (format out "    dcterms:identifier \\\"~A\\\" ;~%" rel-path)
-               (format out "    slw:sha256Hash \\\"~A\\\" ;~%" hash)
+               (format out "    dcterms:identifier \"~A\" ;~%" rel-path)
+               (format out "    slw:sha256Hash \"~A\" ;~%" hash)
                (format out "    dcat:byteSize ~D ;~%" byte-size)
                (format out "    dcat:accessURL <~A/~A> .~%~%"
                       release-iri rel-path)))))
@@ -320,4 +320,6 @@
        :|totalArtifacts| ,total-artifacts
        :|pipelineVersion| ,orchestrator.spec:+version+
        :|blockchainIsNotAuthority| t)
-     :from :alist)))
+     ;; P1 [0043] D: τα δεδομένα είναι PLIST — το «:from :alist» τα σειριοποιούσε
+     ;; ως JSON ARRAY εναλλασσόμενων keys/values αντί για top-level object.
+     :from :plist)))

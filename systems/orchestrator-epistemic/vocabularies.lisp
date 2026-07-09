@@ -25,18 +25,21 @@
 ;;; PREFIX DEFINITIONS
 ;;; ============================================================================
 
+;; P1 [0043] C1: επίπεδη λίστα STRINGS. Το παλιό σχήμα είχε κάθε prefix
+;; τυλιγμένο σε δική του λίστα, οπότε το ~A του format-prefixes τύπωνε
+;; «(@prefix …)» — παρενθέσεις = άκυρο Turtle σε ΟΛΑ τα epistemic αρχεία.
 (defparameter *common-prefixes*
-  '(("@prefix owl: <http://www.w3.org/2002/07/owl#> .")
-    ("@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .")
-    ("@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .")
-    ("@prefix dcterms: <http://purl.org/dc/terms/> .")
-    ("@prefix prov: <http://www.w3.org/ns/prov#> .")
-    ("@prefix dcat: <http://www.w3.org/ns/dcat#> .")
-    ("@prefix void: <http://rdfs.org/ns/void#> .")
-    ("@prefix eli: <http://data.europa.eu/eli/ontology#> .")
-    ("@prefix sh: <http://www.w3.org/ns/shacl#> .")
-    ("@prefix odrl: <http://www.w3.org/ns/odrl/2/> .")
-    ("@prefix slw: <https://stavropouloslaw.com/ontology/legal#> ."))
+  '("@prefix owl: <http://www.w3.org/2002/07/owl#> ."
+    "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ."
+    "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> ."
+    "@prefix dcterms: <http://purl.org/dc/terms/> ."
+    "@prefix prov: <http://www.w3.org/ns/prov#> ."
+    "@prefix dcat: <http://www.w3.org/ns/dcat#> ."
+    "@prefix void: <http://rdfs.org/ns/void#> ."
+    "@prefix eli: <http://data.europa.eu/eli/ontology#> ."
+    "@prefix sh: <http://www.w3.org/ns/shacl#> ."
+    "@prefix odrl: <http://www.w3.org/ns/odrl/2/> ."
+    "@prefix slw: <https://stavropouloslaw.com/ontology/legal#> .")
   "Standard RDF prefixes for all epistemic files")
 
 ;;; ============================================================================

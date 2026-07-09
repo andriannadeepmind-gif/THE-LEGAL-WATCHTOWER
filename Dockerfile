@@ -178,7 +178,7 @@ RUN set -e; \
              government-source parliament-html-wiring constitution-crawler fek-discovery amendment-routing amendment-state ingestion-daemon ingestion-e2e isokratis-parser \
              legislation-ingestion multi-corpus-service review-service shacl-validator \
              hash-authority write-authority time-unified blockchain-authority \
-             escape-sequences turtle-nil-omit corpus-identity \
+             escape-sequences turtle-nil-omit corpus-identity semantic-validity \
              cross-language-verifier; do \
       echo "=== running $t-test.lisp ==="; \
       sbcl --script /app/docker/run-standalone-test.lisp "/app/tests/$t-test.lisp"; \
@@ -203,11 +203,18 @@ COPY docker/run-standalone-test.lisp /app/docker/
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
+    python3-rdflib \
     nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 RUN sbcl --script /app/docker/run-standalone-test.lisp \
       /app/tests/cross-language-verifier-test.lisp
+
+# P1 [0043]: με python3+rdflib παρόντα, οι εξωτερικοί μάρτυρες του
+# semantic-validity-test (json.tool + rdflib Turtle/JSON-LD parse) γίνονται
+# ΣΚΛΗΡΟ gate εδώ — στο SBCL-only standalone stage κάνουν τίμιο SKIP.
+RUN sbcl --script /app/docker/run-standalone-test.lisp \
+      /app/tests/semantic-validity-test.lisp
 
 CMD ["echo", "Cross-language verifier conformance passed"]
 

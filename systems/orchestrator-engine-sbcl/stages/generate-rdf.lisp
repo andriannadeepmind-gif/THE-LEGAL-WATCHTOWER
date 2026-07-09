@@ -213,21 +213,37 @@
 ;;; ============================================================
 
 (defun render-canonical-jsonld (article)
-  "Render article as JSON-LD with LEVEL 300 config-driven metadata
+  "Render article as ONE valid JSON-LD document (top-level @graph)
 
    Uses orchestrator.spec:generate-jsonld-organization and generate-jsonld-article
-   which pull metadata from constitution.yaml (CEO, founded date, etc.)"
+   which pull metadata from constitution.yaml (CEO, founded date, etc.)
+
+   P1 [0043] A: το παλιό σχήμα συνένωνε ΔΥΟ top-level JSON objects — κανένας
+   JSON/JSON-LD parser δεν το δέχεται («Extra data»). Τώρα: ΕΝΑ document με
+   @graph[Organization, Legislation]. Οι κόμβοι εκπέμπονται ΑΥΤΟΥΣΙΟΙ από τις
+   έδρες τους (μία έδρα ανά κόμβο — τα embedded <script> του HTML θέλουν τα
+   αυτοτελή objects με το node-scoped @context, που είναι έγκυρο JSON-LD).
+   Κάθε @id (org WebID + ELI URI άρθρου, μαζί με lettered labels) μένει
+   byte-ίδιο — καμία αλλαγή νομικής ταυτότητας."
   (let* ((article-num (or (orchestrator.model:article-label article)
                           (princ-to-string (orchestrator.model:article-number article))))
          (title (extract-title-only (orchestrator.model:article-title article)))
          (content (orchestrator.model:article-content article))
          (content-hash (orchestrator.spec:calculate-sha256-hash content)))
 
-    ;; Combine organization and article JSON-LD
     (with-output-to-string (s)
-      (write-string (orchestrator.spec:generate-jsonld-organization) s)
-      (terpri s)
-      (write-string (orchestrator.spec:generate-jsonld-article article-num title content-hash) s))))
+      (format s "{~%")
+      (format s "  \"@context\": \"https://schema.org\",~%")
+      (format s "  \"@graph\": [~%")
+      (write-string (string-right-trim '(#\Newline)
+                                       (orchestrator.spec:generate-jsonld-organization))
+                    s)
+      (format s ",~%")
+      (write-string (string-right-trim '(#\Newline)
+                                       (orchestrator.spec:generate-jsonld-article
+                                        article-num title content-hash))
+                    s)
+      (format s "~%  ]~%}~%"))))
 
 ;;; ============================================================
 ;;; HTML RENDERER - CANONICAL FORMAT
