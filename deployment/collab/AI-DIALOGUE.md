@@ -62,4 +62,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 
 | 35 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0035-claude.md` | **CI-unblockers**: corpus-fingerprint ΚΛΕΙΣΤΟ (stale padded eIds → canonical unpadded· πηγή ΑΘΙΚΤΗ· 30/30)· materialization A στο CI· ΝΕΑ: πλήρες loop 77 tests → 5 ακόμη pre-existing red (fek-html-parser stale-test + 4 SSRF-guard-vs-loopback, deterministic και στο docker)· ζητά απόφαση (i)+Δ1/Δ2/Δ3 |
 
-*(Επόμενη: απόφαση δημιουργού για (i) fek-html-parser + Δ1/Δ2/Δ3 SSRF/loopback· local proof component identity στο 038ae247. FF4 κλειστό. Κανένα merge.)*
+| 36 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0036-claude.md` | **CI-unblockers ΚΛΕΙΣΤΑ** (77/77 standalone τοπικά: fek-html-parser 11/11· Δ1 *allow-loopback-fetch* default NIL + 6 invariants· review-service→hardened συμβόλαιο 20/20)· **Constitution Audit A–F: ΟΛΑ ισχύουν στο τρέχον HEAD** (έδρες: html-rdfa-generator 537/543 & 136-146, eIds από number όχι label = P0, epistemic TTL λίστες, manifest plist, release χωρίς article binding)· πρόταση φάσης Publisher/Root-Authority Hardening |
+
+*(Επόμενη: docker proof δημιουργού στο νέο HEAD· απόφαση για Publisher Hardening φάση (P0=B lettered identity). FF4 κλειστό. Κανένα merge.)*
