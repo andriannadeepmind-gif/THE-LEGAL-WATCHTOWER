@@ -1,5 +1,8 @@
 {
   "@context": "https://schema.org",
+  "@graph": [
+{
+  "@context": "https://schema.org",
   "@type": ["LegalService", "Organization"],
   "@id": "https://stavropouloslaw.com/identity/org",
   "name": "Stavropoulos Law®",
@@ -33,8 +36,7 @@
   "sameAs": [
     "https://stavropouloslaw.com"
   ]
-}
-
+},
 {
   "@context": "https://schema.org",
   "@type": "Legislation",
@@ -55,4 +57,6 @@
   "datePublished": "1985-10-24",
   "inLanguage": "el",
   "sha256": "6b627932f2c080521b259bfdc105481a75e02080c0723d72acaf3338f603fed6"
+}
+  ]
 }
