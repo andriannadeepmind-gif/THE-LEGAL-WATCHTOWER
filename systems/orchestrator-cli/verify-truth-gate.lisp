@@ -42,11 +42,21 @@
   "Το NEEDLE υπάρχει (ως substring) στο HAYSTACK; NIL-safe."
   (and haystack needle (search needle haystack) t))
 
-(defun %vt-check (readme ci dockerfile run-tests-docker-present)
+(defun %vt-gate-counts-in (text)
+  "Όλοι οι ρητοί αριθμοί-πλήθους πυλών σε κείμενο: κάθε «N πύλες» / «N gates».
+   Επιστρέφει λίστα integers (κενή αν κανένας). NIL-safe. Χρησιμεύει ώστε
+   κανένας στατικός αριθμός πυλών στο README/CI να μη μένει stale (FF3 εύρημα
+   [0029] #1): αν υπάρχει, ΠΡΕΠΕΙ να ταυτίζεται με τον ζωντανό αριθμό."
+  (when text
+    (mapcar #'parse-integer
+            (cl-ppcre:all-matches-as-strings "\\d+(?=\\s*(?:πύλες|gates))" text))))
+
+(defun %vt-check (readme ci dockerfile run-tests-docker-present live-gate-count)
   "Ο ΚΑΘΑΡΟΣ κανόνας τιμιότητας (testable). Επιστρέφει (values verdict why):
    verdict :ok (docs≡CI) ή :invalid (κλειστός why). Καμία παρενέργεια/IO.
      • README/CI/Dockerfile: το πλήρες κείμενο (ή NIL αν λείπει).
-     • run-tests-docker-present: υπάρχει ο αποσυρμένος escape driver;"
+     • run-tests-docker-present: υπάρχει ο αποσυρμένος escape driver;
+     • live-gate-count: ο ΖΩΝΤΑΝΟΣ αριθμός πυλών (μητρώο) — L5."
   (block check
     ;; 0. τα τρία αρχεία-πηγές πρέπει να ΥΠΑΡΧΟΥΝ
     (unless readme     (return-from check (values :invalid :readme_missing)))
@@ -69,7 +79,26 @@
       (return-from check (values :invalid :escape_suite_ungated)))
     (when run-tests-docker-present
       (return-from check (values :invalid :retired_driver_present)))
+    ;; L5 κανένας stale αριθμός πυλών: κάθε ρητό «N πύλες» σε README/CI ≡ ζωντανός
+    ;; αριθμός (μητρώο). Προτίμηση: μηδενικός στατικός αριθμός (self-describing)·
+    ;; αλλά αν κάποιος γράψει αριθμό, ΠΡΕΠΕΙ να είναι σωστός — αλλιώς κόκκινο.
+    (dolist (txt (list readme ci))
+      (dolist (claimed (%vt-gate-counts-in txt))
+        (unless (= claimed live-gate-count)
+          (return-from check (values :invalid :stale_gate_count)))))
     (values :ok nil)))
+
+(defun %vt-live-gate-count ()
+  "Ο ΖΩΝΤΑΝΟΣ αριθμός πυλών: εντολές του μητρώου που λήγουν σε «-gate» (ίδια
+   λογική με την ολομέλεια run-all-gates). Η ΜΙΑ αλήθεια του πλήθους."
+  (let ((n 0))
+    (maphash (lambda (k v)
+               (declare (ignore v))
+               (when (and (> (length k) 5)
+                          (string= "-gate" k :start2 (- (length k) 5)))
+                 (incf n)))
+             *commands*)
+    n))
 
 (defun %vt-live ()
   "Εφαρμογή του κανόνα στα ΖΩΝΤΑΝΑ αρχεία του repo. (values verdict why),
@@ -87,15 +116,15 @@
         (rtd (and (%vt-slurp "run-tests-docker.lisp") t)))
     (if (and (null readme) (null ci) (null dockerfile))
         (values :skipped :source_tree_absent)
-        (%vt-check readme ci dockerfile rtd))))
+        (%vt-check readme ci dockerfile rtd (%vt-live-gate-count)))))
 
 (defun %vt-selftest ()
   "Απόδειξη φρουρού: synthetic fixtures με ΑΚΡΙΒΗ why-codes (θετικό + κάθε
    αρνητικό). Επιστρέφει (values fails total)."
   (let ((fails '()) (total 0))
-    (flet ((expect (label readme ci df rtd want-verdict want-why)
+    (flet ((expect (label readme ci df rtd want-verdict want-why &optional (gc 23))
              (incf total)
-             (multiple-value-bind (v w) (%vt-check readme ci df rtd)
+             (multiple-value-bind (v w) (%vt-check readme ci df rtd gc)
                (if (and (eq v want-verdict) (eq w want-why))
                    (format t "  ✓ ~A~%" label)
                    (progn (push label fails)
@@ -139,7 +168,19 @@
                 :invalid :escape_suite_ungated)
         ;; L4: ο αποσυρμένος driver υπάρχει ακόμη
         (expect "⑫ run-tests-docker.lisp παρών ⇒ :retired_driver_present"
-                ok-readme ok-ci ok-df t :invalid :retired_driver_present)))
+                ok-readme ok-ci ok-df t :invalid :retired_driver_present)
+        ;; L5: stale αριθμός πυλών ([0029] #1) — «N πύλες» ≠ ζωντανός ⇒ κόκκινο
+        (expect "⑬α README «22 πύλες» ενώ ζωντανά 23 ⇒ :stale_gate_count"
+                (format nil "~A· σήμερα 22 πύλες" ok-readme) ok-ci ok-df nil
+                :invalid :stale_gate_count 23)
+        (expect "⑬β CI comment «22 πύλες» ενώ ζωντανά 23 ⇒ :stale_gate_count"
+                ok-readme (format nil "~A· 22 πύλες" ok-ci) ok-df nil
+                :invalid :stale_gate_count 23)
+        (expect "⑬γ README «23 πύλες» == ζωντανά 23 ⇒ :ok (σωστός αριθμός επιτρέπεται)"
+                (format nil "~A· σήμερα 23 πύλες" ok-readme) ok-ci ok-df nil
+                :ok nil 23)
+        (expect "⑬δ κανένας στατικός αριθμός (self-describing) ⇒ :ok"
+                ok-readme ok-ci ok-df nil :ok nil 23)))
     (values fails total)))
 
 (defun run-verify-truth-gate ()
@@ -153,9 +194,9 @@
       ;; image) μετρούν ως πέρασμα· μόνο :invalid (γνήσια απόκλιση) κοκκινίζει.
       (let ((live-ok (member verdict '(:ok :skipped))))
         (case verdict
-          (:ok      (format t "  ✓ ⑬ ζωντανά αρχεία repo: README ≡ CI (ορθότητα=--gates, tests=--target standalone-test)~%"))
-          (:skipped (format t "  ⊘ ⑬ source tree απόν (minimal image) — verify-truth επιβάλλεται στο source, όχι εδώ~%"))
-          (t        (format t "  ✗ ⑬ ζωντανά αρχεία repo: ΑΠΟΚΛΙΣΗ ⇒ ~A~%" why)))
+          (:ok      (format t "  ✓ ⑭ ζωντανά αρχεία repo: README ≡ CI (ορθότητα=--gates, tests=--target standalone-test, ~D πύλες)~%" (%vt-live-gate-count)))
+          (:skipped (format t "  ⊘ ⑭ source tree απόν (minimal image) — verify-truth επιβάλλεται στο source, όχι εδώ~%"))
+          (t        (format t "  ✗ ⑭ ζωντανά αρχεία repo: ΑΠΟΚΛΙΣΗ ⇒ ~A~%" why)))
         (let ((total+1 (1+ total))
               (ok-count (+ (- total (length fails)) (if live-ok 1 0))))
           (format t "── ΤΙΜΙΟΤΗΤΑ ΕΠΑΛΗΘΕΥΣΗΣ: ~D/~D · canonical: ορθότητα=~A tests=~A ──~%"
