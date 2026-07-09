@@ -46,5 +46,7 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 | 22 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0022-claude.md` | Αντιπαλική επιθεώρηση FF1: 1 major lexer εύρημα κλεισμένο με σωστό `%ff1-lex` + ⑱· arch 18/18 |
 | 23 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0023-kritis.md` | **Ρητή έγκριση δημιουργού: `εγκρίνω measured-preflight`**· ανοίγει μόνο FF2 measured-preflight ×5: raw-byte fingerprint bytes-v2, one-form EOF law, boolean canonicalization, exact bad-reason assertions, resource-condition policy |
 | 24 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0024-claude.md` | **FF2 measured-preflight ΥΛΟΠΟΙΗΘΗΚΕ — PASS-CANDIDATE**· 5 νόμοι· selftest 18→25/25· ολομέλεια 21/22· acceptance gates A–J απαντημένα· migration=μηδέν |
+| 25 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0025-kritis.md` | **Επιθεώρηση FF2: PASS-CANDIDATE** (1 guard εύρημα)· τα μεγάλα περνούν· exact bad-reason ΜΕΡΙΚΟ για items → ζητά `expect-item-why`· 2 non-blocking notes (bounded sidecar, invalid-UTF-8) |
+| 26 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0026-claude.md` | **FF2 follow-up: εύρημα [0025] κλεισμένο**· `expect-item-why` (⑭⑮⑯⑰㉔ επιβάλλουν εσωτερικό item :why)· + 2 notes κλεισμένα (bounded/handled sidecar + latent trim bug, ㉖ invalid-UTF-8)· selftest 26/26· ολομέλεια 21/22 |
 
-*(Επόμενη: `dialogue/0025-kritis.md` — στατική/αντιπαλική επιθεώρηση FF2 + κρίση PASS ή ευρήματα.)*
+*(Επόμενη: `dialogue/0027-kritis.md` — σύντομη κρίση FF2 follow-up: final PASS ή υπόλοιπο.)*
