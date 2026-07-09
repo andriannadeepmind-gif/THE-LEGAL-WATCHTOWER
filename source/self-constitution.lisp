@@ -32,7 +32,8 @@
 (defun %constitution-path ()
   "Θέση του SYSTEM-CONSTITUTION.sexp μέσω FF1 institution-root — επιλύεται στο
    RUNTIME (εύρημα δημιουργού [0034]). Το παλιό baked (merge getcwd στο LOAD)
-   πάγωνε /app/... στο build και δεν έβρισκε το αρχείο source-present (cwd=/src)."
+   πάγωνε τη ρίζα ΚΑΤΑΣΚΕΥΗΣ στο build και δεν έβρισκε το αρχείο source-present
+   (cwd = mounted checkout, όπου η build-ρίζα δεν υπάρχει)."
   (or *constitution-path*
       (orchestrator.paths:institution-dir "deployment/SYSTEM-CONSTITUTION.sexp")))
 
