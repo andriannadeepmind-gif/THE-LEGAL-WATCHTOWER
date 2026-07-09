@@ -72,11 +72,22 @@
     (values :ok nil)))
 
 (defun %vt-live ()
-  "Εφαρμογή του κανόνα στα ΖΩΝΤΑΝΑ αρχεία του repo. (values verdict why)."
-  (%vt-check (%vt-slurp "README.md")
-             (%vt-slurp ".github/workflows/docker-orchestrator.yml")
-             (%vt-slurp "Dockerfile")
-             (and (%vt-slurp "run-tests-docker.lisp") t)))
+  "Εφαρμογή του κανόνα στα ΖΩΝΤΑΝΑ αρχεία του repo. (values verdict why),
+   verdict ∈ {:ok :invalid :skipped}.
+   SOURCE-TREE GATE: όταν ΚΑΝΕΝΑ doc/CI αρχείο-πηγή δεν υπάρχει (π.χ. μέσα στο
+   minimal runtime image, όπου το repo source ΔΕΝ αντιγράφεται — ίδια
+   ανεκτικότητα με το architecture-gate στο απόν constitution), ο κανόνας ΔΕΝ
+   εφαρμόζεται ΕΔΩ· επιβάλλεται όπου υπάρχει source tree (dev/CI checkout). Έτσι
+   η in-image ολομέλεια δεν κοκκινίζει ψευδώς, ενώ κάθε απόκλιση στο source
+   πιάνεται. Μερική παρουσία (README ναι, CI όχι) ⇒ γνήσιο :invalid (σπασμένο
+   checkout), όχι skip."
+  (let ((readme (%vt-slurp "README.md"))
+        (ci (%vt-slurp ".github/workflows/docker-orchestrator.yml"))
+        (dockerfile (%vt-slurp "Dockerfile"))
+        (rtd (and (%vt-slurp "run-tests-docker.lisp") t)))
+    (if (and (null readme) (null ci) (null dockerfile))
+        (values :skipped :source_tree_absent)
+        (%vt-check readme ci dockerfile rtd))))
 
 (defun %vt-selftest ()
   "Απόδειξη φρουρού: synthetic fixtures με ΑΚΡΙΒΗ why-codes (θετικό + κάθε
@@ -119,6 +130,9 @@
         (expect "⑩ README αναφέρει scripts/run-gates.lisp ⇒ :retired_mechanism_advertised"
                 (format nil "~A· τρέξε scripts/run-gates.lisp" ok-readme) ok-ci ok-df nil
                 :invalid :retired_mechanism_advertised)
+        (expect "⑩β README αναφέρει run-tests-docker.lisp ⇒ :retired_mechanism_advertised"
+                (format nil "~A· δες run-tests-docker.lisp" ok-readme) ok-ci ok-df nil
+                :invalid :retired_mechanism_advertised)
         ;; L4: escape σουίτα ΔΕΝ είναι στο loop
         (expect "⑪ Dockerfile χωρίς escape-sequences ⇒ :escape_suite_ungated"
                 ok-readme ok-ci "for t in source-profile …; do …; done" nil
@@ -135,10 +149,13 @@
   (format t "~%── ΠΥΛΗ ΤΙΜΙΟΤΗΤΑΣ ΕΠΑΛΗΘΕΥΣΗΣ (FF3): docs ≡ CI ──~%")
   (multiple-value-bind (fails total) (%vt-selftest)
     (multiple-value-bind (verdict why) (%vt-live)
-      (let ((live-ok (eq verdict :ok)))
-        (if live-ok
-            (format t "  ✓ ⑬ ζωντανά αρχεία repo: README ≡ CI (ορθότητα=--gates, tests=--target standalone-test)~%")
-            (format t "  ✗ ⑬ ζωντανά αρχεία repo: ΑΠΟΚΛΙΣΗ ⇒ ~A~%" why))
+      ;; :ok (source tree, ταυτίζεται) ΚΑΙ :skipped (source tree απόν — minimal
+      ;; image) μετρούν ως πέρασμα· μόνο :invalid (γνήσια απόκλιση) κοκκινίζει.
+      (let ((live-ok (member verdict '(:ok :skipped))))
+        (case verdict
+          (:ok      (format t "  ✓ ⑬ ζωντανά αρχεία repo: README ≡ CI (ορθότητα=--gates, tests=--target standalone-test)~%"))
+          (:skipped (format t "  ⊘ ⑬ source tree απόν (minimal image) — verify-truth επιβάλλεται στο source, όχι εδώ~%"))
+          (t        (format t "  ✗ ⑬ ζωντανά αρχεία repo: ΑΠΟΚΛΙΣΗ ⇒ ~A~%" why)))
         (let ((total+1 (1+ total))
               (ok-count (+ (- total (length fails)) (if live-ok 1 0))))
           (format t "── ΤΙΜΙΟΤΗΤΑ ΕΠΑΛΗΘΕΥΣΗΣ: ~D/~D · canonical: ορθότητα=~A tests=~A ──~%"
