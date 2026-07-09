@@ -181,11 +181,16 @@
 ;;; ============================================================
 
 (defun canonical-literal (text &key lang datatype)
-  "Format RDF literal in canonical form.
+  "Format RDF literal in canonical form, or NIL when TEXT is NIL.
 
    escape-turtle-string is defined canonically in orchestrator-spec/escaping.lisp.
-   This function composes on top of it for typed and language-tagged literals."
+   This function composes on top of it for typed and language-tagged literals.
 
+   HONEST-IGNORANCE ([0030]): NIL text ⇒ NIL (no literal) — a caller must OMIT the
+   triple rather than emit a fabricated \"NIL\"/\"\"\"NIL\"\"\" literal. Never
+   fabricates a value for an absent one."
+
+  (when (null text) (return-from canonical-literal nil))
   (let ((normalized (normalize-unicode-string text)))
     (cond
       (lang

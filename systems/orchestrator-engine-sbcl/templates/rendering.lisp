@@ -8,15 +8,23 @@
 ;;; ============================================================================
 
 (defun render-turtle (article corpus)
-  "Render article as RDF Turtle
-  
+  "Render article as RDF Turtle.
+
+  HONEST-IGNORANCE (εύρημα Codex PR#2, απόφαση δημιουργού [0030]): nil τίτλος ή
+  περιεχόμενο σημαίνει ΝΟΜΙΜΗ ΑΠΟΥΣΙΑ γνωστής τιμής — το αντίστοιχο triple
+  (eli:title / eli:description) ΔΕΝ εκπέμπεται καθόλου· ΠΟΤΕ ψεύτικο \"NIL\"
+  literal. Το escape-turtle-string διατηρεί nil→nil· η ευθύνη παράλειψης είναι
+  ΕΔΩ (conditional triple emission), όχι στον escaper ή στο model invariant.
+
   Args:
     article: Article object
     corpus: Corpus object
-  
+
   Returns:
     Turtle string"
-  (format nil "
+  (let ((title (article-title article))
+        (content (article-content article)))
+    (format nil "
 @prefix eli: <http://data.europa.eu/eli/ontology#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix schema: <https://schema.org/> .
@@ -24,9 +32,7 @@
 
 <~A> a eli:LegalResource ;
     eli:id_local \"~A\" ;
-    eli:number ~D ;
-    eli:title \"~A\"@el ;
-    eli:description \"\"\"~A\"\"\"@el ;
+    eli:number ~D ;~A~A
     eli:language <http://publications.europa.eu/resource/authority/language/ELL> ;
     eli:publisher <https://stavropouloslaw.com/#org> ;
     dct:creator <~A> ;
@@ -34,14 +40,20 @@
     schema:author <~A> ;
     schema:inLanguage \"el\" .
 "
-          (article-eli-uri article)
-          (article-base-filename article)
-          (article-number article)
-          (escape-turtle-string (article-title article))
-          (escape-turtle-string (article-content article))
-          (corpus-webid corpus)
-          (format-date (orchestrator.time:now :source :system))
-          (corpus-webid corpus)))
+            (article-eli-uri article)
+            (article-base-filename article)
+            (article-number article)
+            ;; eli:title — μόνο αν υπάρχει τίτλος (αλλιώς καθόλου triple)
+            (if title
+                (format nil "~%    eli:title \"~A\"@el ;" (escape-turtle-string title))
+                "")
+            ;; eli:description — μόνο αν υπάρχει περιεχόμενο
+            (if content
+                (format nil "~%    eli:description \"\"\"~A\"\"\"@el ;" (escape-turtle-string content))
+                "")
+            (corpus-webid corpus)
+            (format-date (orchestrator.time:now :source :system))
+            (corpus-webid corpus))))
 
 ;;; ============================================================================
 ;;; JSON-LD RENDERING
