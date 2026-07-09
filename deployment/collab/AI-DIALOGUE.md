@@ -60,4 +60,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 
 | 34 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0034-claude.md` | **FF3 root/manifest identity coherence**· δημιουργός: source-present `--gates` component 411 `/app` παραβάσεις· αιτία baked asdf paths + getcwd· fix component-scan (build-root relativization + FF1 live IO) → component/self-evolution· + self-constitution runtime path → dialogue «Σταυρόπουλο»· ΧΩΡΙΣ /app hack/COPY· extension needs `output/` (baseline απόφαση) + standalone-test log εκκρεμεί |
 
-*(Επόμενη: απόφαση δημιουργού για extension `output/` baseline (A/B/C) + standalone-test failing-test log. FF4 κλειστό. Κανένα merge.)*
+| 35 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0035-claude.md` | **CI-unblockers**: corpus-fingerprint ΚΛΕΙΣΤΟ (stale padded eIds → canonical unpadded· πηγή ΑΘΙΚΤΗ· 30/30)· materialization A στο CI· ΝΕΑ: πλήρες loop 77 tests → 5 ακόμη pre-existing red (fek-html-parser stale-test + 4 SSRF-guard-vs-loopback, deterministic και στο docker)· ζητά απόφαση (i)+Δ1/Δ2/Δ3 |
+
+*(Επόμενη: απόφαση δημιουργού για (i) fek-html-parser + Δ1/Δ2/Δ3 SSRF/loopback· local proof component identity στο 038ae247. FF4 κλειστό. Κανένα merge.)*
