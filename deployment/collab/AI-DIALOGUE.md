@@ -68,4 +68,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 
 | 38 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0038-claude.md` | **Τελικό docker proof δημιουργού @ b4e25171: 23/23 ΠΛΗΡΕΣ ΠΡΑΣΙΝΟ** (advisor+component+dialogue+extension ΟΛΑ ✓ με materialization A)· verify-truth 22/22· golden 8/8· **FF3 = MERGE-READY** — αναμένει ΡΗΤΗ εντολή merge |
 
-*(Επόμενη: ρητή εντολή merge δημιουργού ⇒ ff-merge FF3→main + post-merge proof. Μετά: Publisher/Root-Authority Hardening (P0=B lettered identity). FF4 κλειστό.)*
+| 39 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0039-claude.md` | **P0 PLAN (planning only): lettered article identity**· ΑΝΑΘΕΩΡΗΣΗ [0036]: LIVE proof @ deec3b33 = 124/124 unique, art_5Α/9Α/100Α/101Α διακριτά — τα zip/τοπικά corpus.jsonl/AKN ήταν STALE pre-fix artifacts· P0 = αναγέννηση artifacts + ΝΕΟ gated corpus-identity-test (regression lock ①–⑥) + προαιρετικό 1-γραμμή latent fix (normalized-input:286, θέλει έγκριση)· A/C/D/E/F ΑΘΙΚΤΑ |
+
+*(Επόμενη: αποφάσεις δημιουργού στο [0039]: (i) έγκριση plan (ii) latent fix ναι/όχι (iii) αναγέννηση constitution-only ή όλα τα corpora. Κανένας κώδικας πριν την έγκριση. FF4 κλειστό.)*
