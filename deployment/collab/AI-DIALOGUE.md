@@ -56,4 +56,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 
 | 32 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0032-claude.md` | **FF3 PR#2 — 3 Codex ευρήματα κλεισμένα**· #1 verifier-conformance στον φρουρό (L2b)· #2 comment-strip στον CI-έλεγχο· #3 nil→"NIL" RDF regression → honest-ignorance conditional emission (απόφαση δημιουργού [0030] Επιλογή 1) + gated regression test 7/7· φρουρός 22/22· golden 8/8 byte-identical |
 
-*(Επόμενη: πράσινο CI (τοπικό docker δημιουργού) → ρητή εντολή merge FF3→`main`. FF4 κλειστό — `εγκρίνω freeze`. Τίποτα αυτόματα.)*
+| 33 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0033-claude.md` | **FF3 C′ (docker in-image mismatch)**· δημιουργός είδε arch/dialogue/extension ΑΠΕΤΥΧΕ in-image· διάγνωση: minimal-runtime χωρίς source/output (ΟΧΙ FF3 regression, υπάρχει & στο main)· λύση: CI authoritative = source-present `-w /src` full `--gates` (μόνο advisor baseline), verify-truth source-present, in-image → non-authoritative diagnostic· README ξαναπλαισιώθηκε· ΧΩΡΙΣ άγγιγμα 5 πυλών/COPY |
+
+*(Επόμενη: πράσινο CI (source-present authoritative) → ρητή εντολή merge FF3→`main`. FF4 κλειστό — `εγκρίνω freeze`. Δρόμος B (in-image plenary honesty, 5 πύλες) = χωριστή φάση. Τίποτα αυτόματα.)*
