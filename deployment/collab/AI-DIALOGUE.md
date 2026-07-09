@@ -48,5 +48,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 | 24 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0024-claude.md` | **FF2 measured-preflight ΥΛΟΠΟΙΗΘΗΚΕ — PASS-CANDIDATE**· 5 νόμοι· selftest 18→25/25· ολομέλεια 21/22· acceptance gates A–J απαντημένα· migration=μηδέν |
 | 25 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0025-kritis.md` | **Επιθεώρηση FF2: PASS-CANDIDATE** (1 guard εύρημα)· τα μεγάλα περνούν· exact bad-reason ΜΕΡΙΚΟ για items → ζητά `expect-item-why`· 2 non-blocking notes (bounded sidecar, invalid-UTF-8) |
 | 26 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0026-claude.md` | **FF2 follow-up: εύρημα [0025] κλεισμένο**· `expect-item-why` (⑭⑮⑯⑰㉔ επιβάλλουν εσωτερικό item :why)· + 2 notes κλεισμένα (bounded/handled sidecar + latent trim bug, ㉖ invalid-UTF-8)· selftest 26/26· ολομέλεια 21/22 |
+| 27 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0027-kritis.md` | **FF2 measured-preflight = PASS (final)**· implementation/guard/selftests PASS· 26/26· 21/22 + known advisor WARN· scope discipline PASS· **Foundation Freeze: FF1–FF2 complete**· FF3 δεν ανοίγει χωρίς `εγκρίνω verify-truth` |
 
-*(Επόμενη: `dialogue/0027-kritis.md` — σύντομη κρίση FF2 follow-up: final PASS ή υπόλοιπο.)*
+*(Επόμενη: αναμονή ρητής εντολής δημιουργού — `εγκρίνω verify-truth` (FF3) ή απόφαση merge στο `main`. Τίποτα δεν ανοίγει αυτόματα.)*

@@ -38,7 +38,7 @@ exact bad-reason assertions, resource-condition policy.*
 2. ~~M1 design~~ ✅
 3. ~~M1 implementation + gate~~ ✅ (ceeeeade — 9 invariant checks, πύλη διαλόγου 82/82)
 4. ~~Understanding Runner proposal-only~~ ✅ `--self-study-night` (κύκλος: observe→extract→shadow→queue· «υιοθετήσεις: 0» εκ κατασκευής· 3 έλεγχοι στην πύλη μάθησης)
-5. **LAWMAX Ω+ PLAN [0018]** ← σε κρίση Κριτή· εκτέλεση φάση-φάση ΜΟΝΟ με «εγκρίνω» (FF1 root-resolution → FF2 measured-preflight → FF3 verify-truth → FF4 kernel freeze → Ω+1..7)
+5. **LAWMAX Ω+ PLAN [0018]** — εκτέλεση φάση-φάση ΜΟΝΟ με «εγκρίνω»: ✅ **FF1 root-resolution PASS** [0021] → ✅ **FF2 measured-preflight PASS** [0027] → ⏳ FF3 verify-truth (χρειάζεται `εγκρίνω verify-truth`) → FF4 kernel freeze → Ω+1..7. **Foundation Freeze: FF1–FF2 complete.** (Επίσης εκκρεμεί χωριστή απόφαση merge FF1+FF2 στο `main`.)
 6. NixOS L1+ — ΜΕΤΑ το Foundation Freeze (εντολή δημιουργού: «όταν είναι έτοιμο αρχιτεκτονικά»)
 
 ## Ανοιχτές εκκρεμότητες (με ιδιοκτήτη)
@@ -47,13 +47,13 @@ exact bad-reason assertions, resource-condition policy.*
 |---|---|---|
 | ΑΚ/ΚΠολΔ πιθανόν STALE — Ν.5221/2025 (ΦΕΚ Α'133, ισχύς 1/1/2026), Ν.5303/2026 (Α'81, νέο κληρονομικό, ισχύς 16/9/2026) — ΕΠΙΒΕΒΑΙΩΜΕΝΑ από 2 ανεξάρτητες έρευνες | δημιουργός (ανέβαλε συνειδητά)· προτεινόμενη έδρα: 2ος συνεργάτης | ⚠ #1 ρίσκο ουσίας |
 | Όπλιση δαίμονα ΦΕΚ (cycle 0, χωρίς cursor, FEK_ANALYZE off, μόνο τρέχον έτος — γι' αυτό δεν ειδοποίησε ποτέ) | περιμένει «εγκρίνω όπλιση» | αναβλήθηκε |
-| Εξωτερικό benchmark με ΚΡΥΦΟ set → `CPEI-BENCHMARK-SPEC-v0` (L11 external-attestation, `--external-benchmark-gate`, spec-only) | **Κριτής (GPT-5.5)** — spec [0004], definitive contract [0009], review [0015] | **v1-dry-run PASS** ως external-attestation firewall [0015]· **NOT YET measured**· hidden set παραμένει εκτός repo/self-study/builder-visible logs· πριν από signed measured scorecard: byte-exact fingerprint, EOF/trailing-data law, boolean canonicalization, exact bad-reason assertions, resource-condition policy |
+| Εξωτερικό benchmark με ΚΡΥΦΟ set → `CPEI-BENCHMARK-SPEC-v0` (L11 external-attestation, `--external-benchmark-gate`, spec-only) | **Κριτής (GPT-5.5)** — spec [0004], definitive contract [0009], review [0015] | **v1-dry-run PASS** [0015]· ✅ **measured-preflight ×5 = FF2 PASS [0027]** (byte-exact fingerprint, EOF/trailing-data law, boolean canon, exact bad-reason πλήρες, resource-condition policy — ΟΛΑ κλεισμένα)· **NOT YET measured**· hidden set παραμένει εκτός repo/self-study/builder-visible logs· signed measured scorecard = μελλοντικό, χωριστή έγκριση δημιουργού |
 | Artifact split χωρίς σπάσιμο verification chain | κοινό, μέσω CONSOLIDATION-PLAN | χρέος |
 | Advisory ⚠ πηγών (ασύμμετρα «», αγκύλες — 168 σύνολο) | χρέος ποιότητας πηγής | καταγεγραμμένο |
 | FF1 επιφύλαξη Κριτή #1: machine-readable `root-source` (ποιος υποψήφιος έλυσε τη ρίζα) | Χειρουργός· FF1-followup | δεκτό, εκκρεμεί «εγκρίνω» |
 | FF1 επιφύλαξη Κριτή #2: policy για env-only gates (advisor WARN να μη μένει θολό) | κοινό· FF3 ή Ω+6 | δεκτό, καταγεγραμμένο |
 | ~~33 hardcoded /app~~ ✅ **FF1 [0020]**: μία έδρα ρίζας (institution-root, identity-checked)· 33 sites δρομολογήθηκαν· config-boundary καθαρό· arch-gate ⑬-⑰· golden 8/8 ΧΩΡΙΣ /app (φορητότητα αποδεδειγμένη)· #.-law τηρημένος | **FF1 PASS** (Κριτής [0021])· αντιπαλική επιθεώρηση: 1 lexer εύρημα κλεισμένο [0022]· arch 18/18 | commit a7b58bd6 |
-| ~~5 measured-preflight χρέη~~ ✅ **FF2 [0024]+[0026]**: bytes-v2 raw-byte fingerprint (ironclad:digest-file, streaming)· one-form EOF law· boolean canon (:NIL→NIL)· exact bad-reason ΠΛΗΡΕΣ (bundle `expect` + item `expect-item-why` με εσωτερικό :why)· resource-condition policy· bounded/handled sidecar read (+ latent trim bug)· ㉖ invalid-UTF-8 fixture· migration=μηδέν | **FF2 PASS-CANDIDATE** (Κριτής [0025]: 1 guard εύρημα + 2 notes — ΟΛΑ κλεισμένα [0026])· selftest 26/26· ολομέλεια 21/22· αναμένει κρίση [0027] | commits 468ecacb, b4ace527 |
+| ~~5 measured-preflight χρέη~~ ✅ **FF2 [0024]+[0026]**: bytes-v2 raw-byte fingerprint (ironclad:digest-file, streaming)· one-form EOF law· boolean canon (:NIL→NIL)· exact bad-reason ΠΛΗΡΕΣ (bundle `expect` + item `expect-item-why` με εσωτερικό :why)· resource-condition policy· bounded/handled sidecar read (+ latent trim bug)· ㉖ invalid-UTF-8 fixture· migration=μηδέν | **FF2 PASS** (Κριτής [0027]: implementation/guard/selftests/scope PASS· 1 guard εύρημα + 2 notes κλεισμένα [0026])· selftest 26/26· ολομέλεια 21/22 | commits 468ecacb, b4ace527 |
 | ~~Π-ΚΑΘΑΡΣΗ~~ ✅ [0014]: README ειλικρινές· scripts/run-gates.lisp ΔΙΑΓΡΑΦΗΚΕ (εντολή δημιουργού: ΠΟΤΕ wrappers — μία είσοδος, το --gates)· labels/provenance→STAVROPOULOSLAWCORPUS· healthcheck=σημασιολογική ετοιμότητα· CI+--gates βήμα· **ΑΔΕΙΑ: All Rights Reserved ΠΑΝΤΟΥ** (απόφαση δημιουργού) | ολοκληρώθηκε | v1 validator: 4 ευρήματα επιθεώρησης κλεισμένα, selftest 18/18 |
 
 ## Μπλοκαρισμένα (ρητά, από τον δημιουργό)
