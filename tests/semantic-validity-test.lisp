@@ -167,10 +167,28 @@
                            (%svt-run-ok-p
                             (list "python3" "-c"
                                   (format nil "from rdflib import Graph; Graph().parse('~A', format='turtle')" ttl))))
-                (svt-check "⑤δ rdflib: article.jsonld parse-άρεται ως JSON-LD"
-                           (%svt-run-ok-p
-                            (list "python3" "-c"
-                                  (format nil "from rdflib import Graph; Graph().parse('~A', format='json-ld')" jsonld))))))))
+                ;; ΟFFLINE μάρτυρας: το «https://schema.org» remote @context θα
+                ;; απαιτούσε ΔΙΚΤΥΟ από τον rdflib (φλαμπέ και εκτός αρχών) —
+                ;; αντικαθίσταται τοπικά με το ισοδύναμο {"@vocab": …} πριν το
+                ;; parse, ώστε ο έλεγχος δομής JSON-LD→RDF να είναι αιτιοκρατικός.
+                (let ((py (spit "jsonld-witness.py" "
+import json, sys
+from rdflib import Graph
+d = json.load(open(sys.argv[1], encoding='utf-8'))
+ctx = {'@vocab': 'https://schema.org/'}
+def sub(o):
+    if isinstance(o, dict):
+        if o.get('@context') == 'https://schema.org':
+            o['@context'] = ctx
+        for v in o.values(): sub(v)
+    elif isinstance(o, list):
+        for v in o: sub(v)
+sub(d)
+g = Graph(); g.parse(data=json.dumps(d), format='json-ld')
+assert len(g) > 0
+")))
+                  (svt-check "⑤δ rdflib: article.jsonld parse-άρεται ως JSON-LD (offline context)"
+                             (%svt-run-ok-p (list "python3" py jsonld))))))))
       (ignore-errors (uiop:delete-directory-tree dir :validate (constantly t)))))
 
 (format t "~%========================================~%")
