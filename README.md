@@ -156,13 +156,25 @@ output/releases/latest/
     └── public.jwk
 ```
 
-### Run Tests
+### Run Tests (canonical — exactly what CI runs)
+
+CI (`.github/workflows/docker-orchestrator.yml`) runs **exactly** these — there
+is no other "hidden" test path. The `--verify-truth-gate` plenary gate locks
+this doc↔CI equivalence (a divergence turns the plenary red).
 
 ```bash
-# All tests
-docker compose -f docker-compose.test.yml up --build
+# The ONE gated suite — every tests/*-test.lisp (the escape-sequence suite is
+# absorbed here as tests/escape-sequences-test.lisp). One failing check = red.
+docker build --target standalone-test .
 
-# Specific test suites
+# Cross-language verifier conformance (python3/node verifiers ≡ the Lisp emitter):
+docker build --target verifier-conformance .
+```
+
+Focused, **NOT-CI-gated** manual suites (not part of `--gates`/CI — recorded as
+follow-up debt to fold into the gated path):
+
+```bash
 docker compose -f docker-compose.citation-tests.yml up --build
 docker compose -f docker-compose.tokenizer-tests.yml up --build
 docker compose -f docker-compose.architecture-tests.yml up --build
@@ -236,9 +248,11 @@ STAVROPOULOSLAWCORPUS/
 │   ├── generate-keys.lisp       # RSA key generation
 │   └── verify-gate-5-validation.lisp
 │
-├── docker-compose.yml           # Main pipeline (auto-generates keys)
-└── docker-compose.test.yml      # Test runner
+└── docker-compose.yml           # Main pipeline (auto-generates keys)
 ```
+
+Tests are a Docker build target, not a compose service: `docker build --target
+standalone-test .` (the one gated suite — see "Run Tests" above).
 
 ---
 

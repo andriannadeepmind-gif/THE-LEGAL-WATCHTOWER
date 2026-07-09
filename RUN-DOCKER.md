@@ -9,10 +9,10 @@ docker compose build
 # Run full pipeline
 docker compose up
 
-# Run tests
-docker compose -f docker-compose.test.yml up --build
+# Run tests (canonical — the one gated suite, exactly what CI runs)
+docker build --target standalone-test .
 
-# Run specific test suites
+# Run specific (NOT-CI-gated, manual) suites
 docker compose -f docker-compose.citation-tests.yml up --build
 docker compose -f docker-compose.tokenizer-tests.yml up --build
 docker compose -f docker-compose.architecture-tests.yml up --build

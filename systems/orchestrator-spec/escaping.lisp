@@ -45,9 +45,15 @@
     \\  -> \\\\
     \\n -> \\n (newline)
     \\r -> \\r (carriage return)
-    \\t -> \\t (tab)"
+    \\t -> \\t (tab)
 
-  (with-output-to-string (s)
+  NIL → NIL (total function): μια απούσα τιμή escape-άρει σε απούσα τιμή,
+  ΟΜΟΙΟΜΟΡΦΑ με escape-html/escape-json-string. Χωρίς αυτό, ένα nil optional
+  πεδίο στο RDF path (loop … across nil) θα προκαλούσε TYPE-ERROR crash ενώ το
+  ίδιο nil στο HTML path περνά αθόρυβα — ασύμμετρη, λανθάνουσα αστοχία."
+
+  (when text
+   (with-output-to-string (s)
     (loop for char across text
           do (case char
                (#\" (write-string "\\\"" s))
@@ -59,7 +65,7 @@
                (#\Page (write-string "\\f" s))
                (otherwise (if (< (char-code char) #x20)
                               (format s "\\u~4,'0x" (char-code char))
-                              (write-char char s)))))))
+                              (write-char char s))))))))
 
 ;;; ============================================================
 ;;; JSON ESCAPING - Defense-in-Depth for JSON-LD in HTML

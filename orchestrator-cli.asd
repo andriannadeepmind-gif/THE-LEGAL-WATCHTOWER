@@ -65,4 +65,5 @@
      (:file "evolution-gate")          ; Η ΠΥΛΗ ΑΥΤΟΕΞΕΛΙΞΗΣ: what-if governed adoption + αρνητικά (--self-evolution-gate)
      (:file "component-gate")          ; Η ΠΥΛΗ ΣΥΣΤΑΤΙΚΩΝ: canonical component registry + typed article identity + αρνητικά (--component-gate)
      (:file "contract-gate")           ; Η ΠΥΛΗ ΣΥΜΒΟΛΑΙΩΝ: επικυρωτής + θεσμική ταυτότητα + article-identity εκτελέσιμα + αρνητικά (--contract-gate)
+     (:file "verify-truth-gate")       ; FF3 Η ΠΥΛΗ ΤΙΜΙΟΤΗΤΑΣ ΕΠΑΛΗΘΕΥΣΗΣ: README ≡ CI (ορθότητα=--gates, tests=--target standalone-test) — καμία ψευδής documented διαδρομή (--verify-truth-gate)
      (:file "gates-runner")))))        ; Η ΟΛΟΜΕΛΕΙΑ: --gates τρέχει ΟΛΕΣ τις πύλες του μητρώου — μία εντολή, μία ετυμηγορία

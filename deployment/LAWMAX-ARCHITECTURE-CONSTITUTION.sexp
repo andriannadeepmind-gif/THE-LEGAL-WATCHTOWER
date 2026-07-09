@@ -69,6 +69,7 @@
   (:capability "αρχιτεκτονική-περιφρούρηση" :primitive :substrate)
   (:capability "χρυσή-περιφρούρηση" :primitive :law)
   (:capability "εξωτερική-μαρτυρία" :primitive :hypothesis)
+  (:capability "τιμιότητα-επαλήθευσης" :primitive :substrate)
  )
 
  ;; ══ COMMAND → PRIMITIVE/OWNER/ENVELOPE (πλήρης κάλυψη — ελέγχεται αμφίδρομα) ══
@@ -207,6 +208,7 @@
   (:command "--verify-corpus" :primitive :law :owner-file "systems/orchestrator-cli/builtin-commands.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--verify-intelligence" :primitive :substrate :owner-file "systems/orchestrator-cli/builtin-commands.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--verify-proof" :primitive :proof :owner-file "systems/orchestrator-cli/builtin-commands.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
+  (:command "--verify-truth-gate" :primitive :substrate :owner-file "systems/orchestrator-cli/verify-truth-gate.lisp" :envelope (:exception "FF3 read-only πύλη τιμιότητας: ελέγχει README↔CI ταύτιση (docs≡CI), δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--version" :primitive :substrate :owner-file "systems/orchestrator-cli/builtin-commands.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--watch-decisions" :primitive :authority :owner-file "systems/orchestrator-cli/decisions.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--watch-fek" :primitive :law :owner-file "systems/orchestrator-cli/ingestion-commands.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))

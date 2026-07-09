@@ -1,4 +1,4 @@
-;;;; tests/test-escape-sequences.lisp
+;;;; tests/escape-sequences-test.lisp
 ;;;; Unit tests for escape sequence logic
 ;;;;
 ;;;; FORENSIC NOTE: Tests extracted from rendering.lisp escape functions
@@ -222,3 +222,9 @@
           nil))))
 
 ;;; End of file
+
+;;; ── FF3: absorbed into the gated standalone-test suite ──
+;;; Runs under docker/run-standalone-test.lisp (same harness as every other
+;;; tests/<name>-test.lisp): self-exit 0/1 so a single failing check fails the
+;;; Docker build — no separate compose file, no wrapper (one gated path).
+(sb-ext:exit :code (if (orchestrator.tests.escape:run-escape-tests) 0 1))
