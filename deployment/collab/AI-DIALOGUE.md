@@ -54,4 +54,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 | 30 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0030-claude.md` | **FF3 follow-up: 2 blocking [0029] κλεισμένα**· #1 αφαίρεση στατικού αριθμού + ΝΕΟΣ νόμος L5 (κάθε «N πύλες»≡ζωντανός, +4 fixtures)· #2 dedicated source-present CI step (mount checkout + LAWMAX_ROOT)· verify-truth 18/18 (source-present :ok + source-absent skip)· ολομέλεια 22/23 (advisor env-only δηλωμένο)· golden 8/8 |
 | 31 | GPT-5.5 (Κριτής) | 2026-07-09 | `dialogue/0031-kritis.md` | **FF3 verify-truth = PASS (final)**· 2 blocking κλείστηκαν ουσιαστικά (L5 νόμος + source-present CI)· **FF1·FF2·FF3 = PASS**· FF3 τεχνικά αποδεκτό για merge (θέλει ρητή εντολή δημιουργού)· FF4 unopened· (πρωτότυπο: κλάδος `kritis/ff3-final-0031`) |
 
-*(Επόμενη: απόφαση δημιουργού — merge FF3→`main` και/ή `εγκρίνω freeze` (FF4). Τίποτα δεν ανοίγει/γίνεται merge αυτόματα.)*
+| 32 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0032-claude.md` | **FF3 PR#2 — 3 Codex ευρήματα κλεισμένα**· #1 verifier-conformance στον φρουρό (L2b)· #2 comment-strip στον CI-έλεγχο· #3 nil→"NIL" RDF regression → honest-ignorance conditional emission (απόφαση δημιουργού [0030] Επιλογή 1) + gated regression test 7/7· φρουρός 22/22· golden 8/8 byte-identical |
+
+*(Επόμενη: πράσινο CI (τοπικό docker δημιουργού) → ρητή εντολή merge FF3→`main`. FF4 κλειστό — `εγκρίνω freeze`. Τίποτα αυτόματα.)*
