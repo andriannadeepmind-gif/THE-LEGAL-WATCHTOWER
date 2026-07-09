@@ -64,4 +64,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 
 | 36 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0036-claude.md` | **CI-unblockers ΚΛΕΙΣΤΑ** (77/77 standalone τοπικά: fek-html-parser 11/11· Δ1 *allow-loopback-fetch* default NIL + 6 invariants· review-service→hardened συμβόλαιο 20/20)· **Constitution Audit A–F: ΟΛΑ ισχύουν στο τρέχον HEAD** (έδρες: html-rdfa-generator 537/543 & 136-146, eIds από number όχι label = P0, epistemic TTL λίστες, manifest plist, release χωρίς article binding)· πρόταση φάσης Publisher/Root-Authority Hardening |
 
-*(Επόμενη: docker proof δημιουργού στο νέο HEAD· απόφαση για Publisher Hardening φάση (P0=B lettered identity). FF4 κλειστό. Κανένα merge.)*
+| 37 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0037-claude.md` | **Package-seat mapping κλεισμένο** (τελευταίο FF3 blocker)· αιτία: %scan-file-text διάβαζε baked path ⇒ 135× «χωρίς αρχείο-έδρα» source-present· fix: live-file σάρωση παντού + stale-components στην institution-root· απόδειξη: 13/13 τοπικά ΚΑΙ σε baked≠live προσομοίωση |
+
+*(Επόμενη: τελικό docker proof δημιουργού στο e5679c27 → αν acceptable ⇒ FF3 MERGE-READY, ρητή εντολή merge. Μετά: Publisher/Root-Authority Hardening (P0=B). FF4 κλειστό.)*
