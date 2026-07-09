@@ -66,4 +66,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 
 | 37 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0037-claude.md` | **Package-seat mapping κλεισμένο** (τελευταίο FF3 blocker)· αιτία: %scan-file-text διάβαζε baked path ⇒ 135× «χωρίς αρχείο-έδρα» source-present· fix: live-file σάρωση παντού + stale-components στην institution-root· απόδειξη: 13/13 τοπικά ΚΑΙ σε baked≠live προσομοίωση |
 
-*(Επόμενη: τελικό docker proof δημιουργού στο e5679c27 → αν acceptable ⇒ FF3 MERGE-READY, ρητή εντολή merge. Μετά: Publisher/Root-Authority Hardening (P0=B). FF4 κλειστό.)*
+| 38 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0038-claude.md` | **Τελικό docker proof δημιουργού @ b4e25171: 23/23 ΠΛΗΡΕΣ ΠΡΑΣΙΝΟ** (advisor+component+dialogue+extension ΟΛΑ ✓ με materialization A)· verify-truth 22/22· golden 8/8· **FF3 = MERGE-READY** — αναμένει ΡΗΤΗ εντολή merge |
+
+*(Επόμενη: ρητή εντολή merge δημιουργού ⇒ ff-merge FF3→main + post-merge proof. Μετά: Publisher/Root-Authority Hardening (P0=B lettered identity). FF4 κλειστό.)*
