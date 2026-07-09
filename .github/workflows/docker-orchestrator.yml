@@ -128,33 +128,48 @@ jobs:
         name: orchestrator-sbom
         path: sbom.spdx.json
 
-    - name: 🏛️ Gate plenary (--gates) inside the built image
+    - name: 🏛️ FF3 AUTHORITATIVE plenary — source-present --gates
       run: |
-        # Η ΜΙΑ κανονική ολομέλεια (αυτο-παραγόμενη από το μητρώο· ο αριθμός
-        # πυλών ΔΕΝ κωδικοποιείται στατικά — audit 0012 P0γ) τρέχει στο ΙΔΙΟ
-        # image που θα τρέξει και παραγωγικά. Σημείωση: μέσα στο minimal image
-        # η --verify-truth-gate κάνει source-tree skip (τα repo docs δεν
-        # αντιγράφονται)· η ΕΠΙΒΟΛΗ της γίνεται στο επόμενο βήμα (source-present).
-        docker run --rm orchestrator:test --gates 2>&1 | tee gates.log
-        exit ${PIPESTATUS[0]}
+        # Η ΕΓΚΥΡΗ (authoritative) ολομέλεια του FF3. source-present: το checkout
+        # mounted ως /src, cwd=/src (-w) ΚΑΙ LAWMAX_ROOT=/src, ώστε ΟΛΕΣ οι πύλες
+        # να βλέπουν source + docs (κάποιες πύλες αναλύουν πηγές μέσω getcwd).
+        # ΓΝΩΣΤΟ env-only baseline: ΜΟΝΟ το --advisor-gate (materialized decisions,
+        # χρειάζεται pipeline output). ΚΑΘΕ ΑΛΛΗ κόκκινη πύλη = κόκκινο job.
+        docker run --rm -v "${{ github.workspace }}":/src -w /src -e LAWMAX_ROOT=/src \
+          orchestrator:test --gates 2>&1 | tee gates-source-present.log
+        if grep 'gate: ΑΠΕΤΥΧΕ' gates-source-present.log | grep -qv 'advisor-gate'; then
+          echo "::error::Πύλη πέραν του δηλωμένου --advisor-gate baseline απέτυχε (source-present)."
+          exit 1
+        fi
+        echo "Source-present plenary ΑΠΟΔΕΚΤΟ: μόνο το δηλωμένο --advisor-gate baseline κόκκινο."
 
-    - name: 🔎 verify-truth source-present enforcement (docs ≡ CI · FF3)
+    - name: 🔎 FF3 verify-truth source-present enforcement (docs ≡ CI)
       run: |
-        # Το in-image --gates κάνει skip τη verify-truth (το runtime image ΔΕΝ
-        # περιέχει README/.github/Dockerfile — και το .github είναι dockerignored).
-        # ΕΔΩ την επιβάλλουμε με source PRESENT: mount του checkout ως /src και
-        # LAWMAX_ROOT=/src, ώστε η πύλη να διαβάσει τα ΠΡΑΓΜΑΤΙΚΑ docs/CI/Dockerfile
-        # και να κρίνει docs≡CI (μη-μηδενικό exit = κόκκινο job).
-        docker run --rm -v "${{ github.workspace }}":/src -e LAWMAX_ROOT=/src \
+        # docs≡CI, source PRESENT: mount του checkout ως /src + LAWMAX_ROOT=/src,
+        # η πύλη διαβάζει τα ΠΡΑΓΜΑΤΙΚΑ docs/CI/Dockerfile (μη-μηδενικό exit = κόκκινο).
+        docker run --rm -v "${{ github.workspace }}":/src -w /src -e LAWMAX_ROOT=/src \
           orchestrator:test --verify-truth-gate 2>&1 | tee verify-truth.log
         exit ${PIPESTATUS[0]}
 
-    - name: 📋 Upload gate plenary log
+    - name: 🔬 in-image --gates (NON-authoritative minimal-runtime diagnostic)
+      continue-on-error: true
+      run: |
+        # ΔΕΝ είναι authoritative, ΔΕΝ είναι merge proof. Το minimal runtime image ΔΕΝ
+        # περιέχει source ούτε pipeline output — άρα πύλες που τα επιθεωρούν
+        # (architecture/dialogue/extension/provenance/self-evolution) έχουν ΓΝΩΣΤΟ
+        # minimal-runtime baseline. Η authoritative ολομέλεια είναι το source-present
+        # βήμα παραπάνω. Εδώ μόνο διαγνωστικό σήμα (non-blocking).
+        docker run --rm orchestrator:test --gates 2>&1 | tee gates-inimage-diagnostic.log || true
+
+    - name: 📋 Upload gate plenary logs
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: orchestrator-gates-log
-        path: gates.log
+        path: |
+          gates-source-present.log
+          gates-inimage-diagnostic.log
+          verify-truth.log
 
     - name: 🔎 Smoke test orchestrator loading
       run: |

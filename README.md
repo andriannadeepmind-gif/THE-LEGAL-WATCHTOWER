@@ -180,17 +180,28 @@ docker compose -f docker-compose.tokenizer-tests.yml up --build
 docker compose -f docker-compose.architecture-tests.yml up --build
 ```
 
-### Run the Gate Plenary (canonical)
+### Run the Gate Plenary (`--gates`)
 
-Η ΜΙΑ κανονική ολομέλεια πυλών είναι το `--gates`: αυτο-παράγεται από το
-μητρώο εντολών (κάθε εντολή με επίθημα `-gate` συμμετέχει). Ο αριθμός των πυλών
-**δεν κωδικοποιείται στατικά** εδώ (για να μην παλιώνει)· αυτο-παράγεται από το
-μητρώο και αναφέρεται ζωντανά από το `--verify-truth-gate`.
+Η ολομέλεια πυλών είναι το `--gates`: αυτο-παράγεται από το μητρώο εντολών (κάθε
+εντολή με επίθημα `-gate` συμμετέχει). Ο αριθμός των πυλών **δεν κωδικοποιείται
+στατικά** εδώ (για να μην παλιώνει)· αναφέρεται ζωντανά από το `--verify-truth-gate`.
+
+**AUTHORITATIVE (η έγκυρη ολομέλεια — source-present).** Το checkout είναι
+mounted ως `/src` με cwd εκεί, ώστε ΟΛΕΣ οι πύλες να βλέπουν source + docs
+(κάποιες αναλύουν πηγές μέσω `getcwd`). Αυτό είναι το τελικό correctness proof:
 
 ```bash
-# Η ΜΙΑ κανονική είσοδος — μέσα στο container:
-docker compose run --rm orchestrator --gates
+docker run --rm -v "$PWD":/src -w /src -e LAWMAX_ROOT=/src orchestrator:test --gates
 ```
+
+Γνωστό env-only baseline: **μόνο** το `--advisor-gate` (materialized decisions —
+χρειάζεται pipeline output). Κάθε άλλη κόκκινη πύλη = πραγματική αποτυχία.
+
+**NON-authoritative (minimal-runtime diagnostic).** Το in-image `docker run --rm
+orchestrator:test --gates` τρέχει στο minimal production image, που **δεν** περιέχει
+source ούτε pipeline output — άρα οι πύλες που τα επιθεωρούν (architecture /
+dialogue / extension / provenance / self-evolution) έχουν **γνωστές απουσίες**.
+Είναι διαγνωστικό σήμα, **όχι** τελικό correctness proof.
 
 Δεν υπάρχει δεύτερο entry point/wrapper script — μία εντολή, μία έδρα
 (gates-runner στο μητρώο), μέσω της συνταγματικής δρομολόγησης.
