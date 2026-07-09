@@ -38,7 +38,7 @@ exact bad-reason assertions, resource-condition policy.*
 2. ~~M1 design~~ ✅
 3. ~~M1 implementation + gate~~ ✅ (ceeeeade — 9 invariant checks, πύλη διαλόγου 82/82)
 4. ~~Understanding Runner proposal-only~~ ✅ `--self-study-night` (κύκλος: observe→extract→shadow→queue· «υιοθετήσεις: 0» εκ κατασκευής· 3 έλεγχοι στην πύλη μάθησης)
-5. **LAWMAX Ω+ PLAN [0018]** — εκτέλεση φάση-φάση ΜΟΝΟ με «εγκρίνω»: ✅ **FF1 PASS** [0021] → ✅ **FF2 PASS** [0027] (στο `main`) → ✅ **FF3 verify-truth PASS** [0031] (τεχνικά αποδεκτό για merge· θέλει ρητή εντολή δημιουργού) → ⏳ FF4 kernel freeze (`εγκρίνω freeze`) → Ω+1..7. **Foundation Freeze: FF1–FF2 στο main· FF3 PASS, εκκρεμεί merge.**
+5. **LAWMAX Ω+ PLAN [0018]** — εκτέλεση φάση-φάση ΜΟΝΟ με «εγκρίνω»: ✅ **FF1 PASS** [0021] → ✅ **FF2 PASS** [0027] → ✅ **FF3 verify-truth PASS** [0031]+[0038] — **ΣΥΓΧΩΝΕΥΜΕΝΟ στο main (deec3b33, docker δημιουργού 23/23)** → ⏳ FF4 kernel freeze (`εγκρίνω freeze`) → Ω+1..7. **Foundation Freeze: FF1–FF2–FF3 στο main.** Τρέχουσα ανοιχτή φάση: **Publisher/Root-Authority Hardening — P0 Identity Lock** (εγκρίθηκε [0039]· υλοποίηση [0041]· χάρτης [0040] planning-only).
 6. NixOS L1+ — ΜΕΤΑ το Foundation Freeze (εντολή δημιουργού: «όταν είναι έτοιμο αρχιτεκτονικά»)
 
 ## Ανοιχτές εκκρεμότητες (με ιδιοκτήτη)
