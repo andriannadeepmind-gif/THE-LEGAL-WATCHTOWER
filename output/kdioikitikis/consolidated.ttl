@@ -18,6 +18,14 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_4__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_4__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_5>
     eli:in_force true ;
     prov:value "original" .
@@ -27,6 +35,14 @@
     prov:value "original" .
 
 <https://stavropouloslaw.com/eli/art_7>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_7__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_7__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -42,11 +58,59 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_10__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_10__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_10__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_10__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_10__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_11>
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_11__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_11__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_11__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_11__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_12>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_12__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_12__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_12__para_3>
     eli:in_force true ;
     prov:value "original" .
 
@@ -58,7 +122,31 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_14__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_14__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_14__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_15>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_15__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_15__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_15__para_3>
     eli:in_force true ;
     prov:value "original" .
 
@@ -66,7 +154,47 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_16__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_16__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_16__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_17>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_17__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_17__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_17__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_17__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_17__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_17__para_6>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_17__para_7>
     eli:in_force true ;
     prov:value "original" .
 
@@ -74,11 +202,59 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_18__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_18__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_18__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_18__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_18__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_18__para_6>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_19>
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_19__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_19__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_19__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_19__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_20>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_20__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_20__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -98,6 +274,22 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_24__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_24__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_24__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_24__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_25>
     eli:in_force true ;
     prov:value "original" .
@@ -110,7 +302,43 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_27__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_27__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_27__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_28>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_28__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_28__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_28__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_28__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_28__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_28__para_6>
     eli:in_force true ;
     prov:value "original" .
 
@@ -118,7 +346,43 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_29__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_29__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_30>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_30__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_30__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_30__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_30__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_30__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_30__para_6>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_30__para_7>
     eli:in_force true ;
     prov:value "original" .
 
@@ -127,6 +391,22 @@
     prov:value "original" .
 
 <https://stavropouloslaw.com/eli/art_32>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_32__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_32__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_32__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_32__para_4>
     eli:in_force true ;
     prov:value "original" .
 
@@ -146,7 +426,23 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_36__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_36__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_37>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_37__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_37__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -155,6 +451,14 @@
     prov:value "original" .
 
 <https://stavropouloslaw.com/eli/art_39>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_39__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_39__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -174,7 +478,35 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_43__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_43__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_44>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_44__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_44__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_44__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_44__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_44__para_5>
     eli:in_force true ;
     prov:value "original" .
 
@@ -190,6 +522,26 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_47__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_47__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_47__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_47__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_47__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_48>
     eli:in_force true ;
     prov:value "original" .
@@ -198,7 +550,31 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_49__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_49__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_49__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_49__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_50>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_50__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_50__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -206,11 +582,43 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_51__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_51__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_51__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_52>
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_52__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_52__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_53>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_53__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_53__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_53__para_3>
     eli:in_force true ;
     prov:value "original" .
 
@@ -226,7 +634,31 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_56__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_56__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_56__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_56__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_57>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_57__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_57__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -234,7 +666,31 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_58__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_58__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_58__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_58__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_59>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_59__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_59__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -242,7 +698,59 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_60__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_60__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_60__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_60__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_60__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_60__para_6>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_60__para_7>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_61>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_61__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_61__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_61__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_61__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_61__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_61__para_6>
     eli:in_force true ;
     prov:value "original" .
 
@@ -250,7 +758,55 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_62__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_62__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_62__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_62__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_63>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_63__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_63__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_63__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_63__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_63__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_63__para_6>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_63__para_7>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_63__para_8>
     eli:in_force true ;
     prov:value "original" .
 
@@ -262,6 +818,14 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_65__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_65__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_66>
     eli:in_force true ;
     prov:value "original" .
@@ -270,11 +834,47 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_67__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_67__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_68>
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_68__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_68__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_68__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_68__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_69>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_69__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_69__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_69__para_3>
     eli:in_force true ;
     prov:value "original" .
 
@@ -286,6 +886,22 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_71__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_71__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_71__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_71__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_72>
     eli:in_force true ;
     prov:value "original" .
@@ -294,7 +910,23 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_73__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_73__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_74>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_74__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_74__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -310,6 +942,14 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_77__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_77__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_78>
     eli:in_force true ;
     prov:value "original" .
@@ -322,7 +962,23 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_80__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_80__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_81>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_81__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_81__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -330,7 +986,23 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_82__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_82__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_83>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_83__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_83__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -338,11 +1010,43 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_84__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_84__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_85>
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_85__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_85__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_86>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_86__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_86__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_86__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_86__para_4>
     eli:in_force true ;
     prov:value "original" .
 
@@ -362,6 +1066,14 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_90__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_90__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_91>
     eli:in_force true ;
     prov:value "original" .
@@ -370,7 +1082,35 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_92__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_92__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_92__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_92__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_92__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_93>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_93__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_93__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -386,7 +1126,27 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_96__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_96__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_96__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_97>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_97__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_97__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -394,11 +1154,55 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_98__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_98__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_98__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_98__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_98__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_99>
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_99__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_99__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_100>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_100__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_100__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_100__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_100__para_4>
     eli:in_force true ;
     prov:value "original" .
 
@@ -410,7 +1214,23 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_102__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_102__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_103>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_103__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_103__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -418,11 +1238,39 @@
     eli:in_force true ;
     prov:value "original" .
 
-<https://stavropouloslaw.com/eli/art_105>
+<https://stavropouloslaw.com/eli/art_104__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_104__para_2>
     eli:in_force true ;
     prov:value "original" .
 
 <https://stavropouloslaw.com/eli/art_105>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_105__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_105__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_105Α>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_105Α__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_105Α__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_105Α__para_3>
     eli:in_force true ;
     prov:value "original" .
 
@@ -430,7 +1278,27 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_106__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_106__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_106__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_107>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_107__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_107__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -442,6 +1310,14 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_109__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_109__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_110>
     eli:in_force true ;
     prov:value "original" .
@@ -450,7 +1326,27 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_111__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_111__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_111__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_112>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_112__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_112__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -458,7 +1354,35 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_113__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_113__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_113__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_114>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_114__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_114__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_114__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_114__para_4>
     eli:in_force true ;
     prov:value "original" .
 
@@ -467,6 +1391,18 @@
     prov:value "original" .
 
 <https://stavropouloslaw.com/eli/art_116>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_116__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_116__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_116__para_3>
     eli:in_force true ;
     prov:value "original" .
 
@@ -502,6 +1438,14 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_124__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_124__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_125>
     eli:in_force true ;
     prov:value "original" .
@@ -510,11 +1454,35 @@
     eli:in_force true ;
     prov:value "original" .
 
-<https://stavropouloslaw.com/eli/art_126>
+<https://stavropouloslaw.com/eli/art_126__para_1>
     eli:in_force true ;
     prov:value "original" .
 
-<https://stavropouloslaw.com/eli/art_126>
+<https://stavropouloslaw.com/eli/art_126__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_126__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_126__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_126__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_126__para_6>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_126Α>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_126Β>
     eli:in_force true ;
     prov:value "original" .
 
@@ -522,7 +1490,23 @@
     eli:in_force true ;
     prov:value "original" .
 
-<https://stavropouloslaw.com/eli/art_127>
+<https://stavropouloslaw.com/eli/art_127Α>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_127Α__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_127Α__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_127Α__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_127Α__para_4>
     eli:in_force true ;
     prov:value "original" .
 
@@ -530,7 +1514,31 @@
     eli:in_force true ;
     prov:value "original" .
 
-<https://stavropouloslaw.com/eli/art_128>
+<https://stavropouloslaw.com/eli/art_128__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_128__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_128Α>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_128Α__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_128Α__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_128Α__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_128Α__para_4>
     eli:in_force true ;
     prov:value "original" .
 
@@ -538,7 +1546,39 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_129__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_129__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_129__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_129__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_129__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_129__para_6>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_130>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_130__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_130__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -546,7 +1586,23 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_131__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_131__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_132>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_132__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_132__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -566,7 +1622,27 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_136__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_136__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_136__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_137>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_137__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_137__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -574,11 +1650,27 @@
     eli:in_force true ;
     prov:value "original" .
 
-<https://stavropouloslaw.com/eli/art_139>
+<https://stavropouloslaw.com/eli/art_138__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_138__para_2>
     eli:in_force true ;
     prov:value "original" .
 
 <https://stavropouloslaw.com/eli/art_139>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_139Α>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_139Α__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_139Α__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -586,7 +1678,51 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_140__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_140__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_140__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_140__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_140__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_140__para_6>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_140__para_7>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_141>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_141__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_141__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_141__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_141__para_4>
     eli:in_force true ;
     prov:value "original" .
 
@@ -598,11 +1734,71 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_143__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_143__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_143__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_143__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_143__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_143__para_6>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_143__para_7>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_143__para_8>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_144>
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_144__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_144__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_144__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_144__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_145>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_145__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_145__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_145__para_3>
     eli:in_force true ;
     prov:value "original" .
 
@@ -614,6 +1810,18 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_147__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_147__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_147__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_148>
     eli:in_force true ;
     prov:value "original" .
@@ -622,7 +1830,27 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_149__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_149__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_149__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_150>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_150__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_150__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -634,6 +1862,30 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_152__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_152__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_152__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_152__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_152__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_152__para_6>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_153>
     eli:in_force true ;
     prov:value "original" .
@@ -642,7 +1894,35 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_154__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_154__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_154__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_154__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_154__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_155>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_155__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_155__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -650,7 +1930,27 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_156__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_156__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_157>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_157__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_157__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_157__para_3>
     eli:in_force true ;
     prov:value "original" .
 
@@ -658,7 +1958,35 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_158__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_158__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_158__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_159>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_159__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_159__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_159__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_159__para_4>
     eli:in_force true ;
     prov:value "original" .
 
@@ -666,7 +1994,39 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_160__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_160__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_160__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_160__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_160__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_161>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_161__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_161__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_161__para_3>
     eli:in_force true ;
     prov:value "original" .
 
@@ -678,11 +2038,51 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_163__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_163__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_163__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_163__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_164>
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_164__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_164__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_164__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_165>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_165__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_165__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_165__para_3>
     eli:in_force true ;
     prov:value "original" .
 
@@ -694,11 +2094,39 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_167__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_167__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_167__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_167__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_168>
     eli:in_force true ;
     prov:value "original" .
 
 <https://stavropouloslaw.com/eli/art_169>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_169__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_169__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_169__para_3>
     eli:in_force true ;
     prov:value "original" .
 
@@ -710,6 +2138,30 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_171__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_171__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_171__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_171__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_171__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_171__para_6>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_172>
     eli:in_force true ;
     prov:value "original" .
@@ -718,7 +2170,31 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_173__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_173__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_174>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_174__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_174__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_174__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_174__para_4>
     eli:in_force true ;
     prov:value "original" .
 
@@ -726,11 +2202,43 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_175__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_175__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_175__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_176>
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_176__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_176__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_176__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_177>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_177__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_177__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -742,7 +2250,27 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_179__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_179__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_180>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_180__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_180__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_180__para_3>
     eli:in_force true ;
     prov:value "original" .
 
@@ -750,7 +2278,27 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_181__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_181__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_181__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_182>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_182__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_182__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -762,7 +2310,47 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_184__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_184__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_184__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_184__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_184__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_184__para_6>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_184__para_7>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_185>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_185__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_185__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_185__para_3>
     eli:in_force true ;
     prov:value "original" .
 
@@ -774,7 +2362,35 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_187__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_187__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_188>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_188__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_188__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_188__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_188__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_188__para_5>
     eli:in_force true ;
     prov:value "original" .
 
@@ -794,7 +2410,47 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_192__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_192__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_193>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_193__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_193__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_193__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_193__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_193__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_193__para_6>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_193__para_7>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_193__para_8>
     eli:in_force true ;
     prov:value "original" .
 
@@ -802,7 +2458,27 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_194__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_194__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_194__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_195>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_195__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_195__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -814,11 +2490,39 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_197__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_197__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_197__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_198>
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_198__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_198__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_199>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_199__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_199__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -842,11 +2546,39 @@
     eli:in_force true ;
     prov:value "original" .
 
-<https://stavropouloslaw.com/eli/art_205>
+<https://stavropouloslaw.com/eli/art_204__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_204__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_204__para_3>
     eli:in_force true ;
     prov:value "original" .
 
 <https://stavropouloslaw.com/eli/art_205>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_205__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_205__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_205Α>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_205Α__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_205Α__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -862,15 +2594,43 @@
     eli:in_force true ;
     prov:value "original" .
 
-<https://stavropouloslaw.com/eli/art_209>
+<https://stavropouloslaw.com/eli/art_208__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_208__para_2>
     eli:in_force true ;
     prov:value "original" .
 
 <https://stavropouloslaw.com/eli/art_209>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_209Α>
     eli:in_force true ;
     prov:value "original" .
 
 <https://stavropouloslaw.com/eli/art_210>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_210__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_210__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_210__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_210__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_210__para_5>
     eli:in_force true ;
     prov:value "original" .
 
@@ -890,6 +2650,22 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_214__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_214__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_214__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_214__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_215>
     eli:in_force true ;
     prov:value "original" .
@@ -902,11 +2678,31 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_217__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_217__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_217__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_218>
     eli:in_force true ;
     prov:value "original" .
 
 <https://stavropouloslaw.com/eli/art_219>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_219__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_219__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -918,7 +2714,23 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_221__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_221__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_222>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_222__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_222__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -930,6 +2742,26 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_224__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_224__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_224__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_224__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_224__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_225>
     eli:in_force true ;
     prov:value "original" .
@@ -938,7 +2770,23 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_226__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_226__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_227>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_227__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_227__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -947,6 +2795,18 @@
     prov:value "original" .
 
 <https://stavropouloslaw.com/eli/art_229>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_229__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_229__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_229__para_3>
     eli:in_force true ;
     prov:value "original" .
 
@@ -1022,7 +2882,31 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_247__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_247__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_248>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_248__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_248__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_248__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_248__para_4>
     eli:in_force true ;
     prov:value "original" .
 
@@ -1030,7 +2914,23 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_249__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_249__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_250>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_250__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_250__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -1050,6 +2950,18 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_254__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_254__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_254__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_255>
     eli:in_force true ;
     prov:value "original" .
@@ -1062,6 +2974,18 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_257__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_257__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_257__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_258>
     eli:in_force true ;
     prov:value "original" .
@@ -1070,11 +2994,71 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_259__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_259__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_259__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_259__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_259__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_259__para_6>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_260>
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_260__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_260__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_260__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_261>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_261__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_261__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_261__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_261__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_261__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_261__para_6>
     eli:in_force true ;
     prov:value "original" .
 
@@ -1087,6 +3071,18 @@
     prov:value "original" .
 
 <https://stavropouloslaw.com/eli/art_264>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_264__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_264__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_264__para_3>
     eli:in_force true ;
     prov:value "original" .
 
@@ -1106,7 +3102,27 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_268__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_268__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_269>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_269__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_269__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_269__para_3>
     eli:in_force true ;
     prov:value "original" .
 
@@ -1114,11 +3130,23 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_270__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_270__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_271>
     eli:in_force true ;
     prov:value "original" .
 
-<https://stavropouloslaw.com/eli/art_272>
+<https://stavropouloslaw.com/eli/art_271__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_271__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -1126,39 +3154,103 @@
     eli:in_force true ;
     prov:value "original" .
 
-<https://stavropouloslaw.com/eli/art_272>
+<https://stavropouloslaw.com/eli/art_272Α>
     eli:in_force true ;
     prov:value "original" .
 
-<https://stavropouloslaw.com/eli/art_272>
+<https://stavropouloslaw.com/eli/art_272Β>
     eli:in_force true ;
     prov:value "original" .
 
-<https://stavropouloslaw.com/eli/art_272>
+<https://stavropouloslaw.com/eli/art_272Γ>
     eli:in_force true ;
     prov:value "original" .
 
-<https://stavropouloslaw.com/eli/art_272>
+<https://stavropouloslaw.com/eli/art_272Δ>
     eli:in_force true ;
     prov:value "original" .
 
-<https://stavropouloslaw.com/eli/art_272>
+<https://stavropouloslaw.com/eli/art_272Δ__para_1>
     eli:in_force true ;
     prov:value "original" .
 
-<https://stavropouloslaw.com/eli/art_272>
+<https://stavropouloslaw.com/eli/art_272Δ__para_2>
     eli:in_force true ;
     prov:value "original" .
 
-<https://stavropouloslaw.com/eli/art_272>
+<https://stavropouloslaw.com/eli/art_272Δ__para_3>
     eli:in_force true ;
     prov:value "original" .
 
-<https://stavropouloslaw.com/eli/art_272>
+<https://stavropouloslaw.com/eli/art_272Δ__para_4>
     eli:in_force true ;
     prov:value "original" .
 
-<https://stavropouloslaw.com/eli/art_272>
+<https://stavropouloslaw.com/eli/art_272Ε>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_272Ε__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_272Ε__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_272Ζ>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_272Η>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_272Η__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_272Η__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_272Η__para_3>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_272Η__para_4>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_272Η__para_5>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_272Η__para_6>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_272Η__para_7>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_272Θ>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_272Θ__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_272Θ__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_272Ι>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_272ΣΤ>
     eli:in_force true ;
     prov:value "original" .
 
@@ -1178,7 +3270,15 @@
     eli:in_force true ;
     prov:value "original" .
 
-<https://stavropouloslaw.com/eli/art_276>
+<https://stavropouloslaw.com/eli/art_276Α>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_276Α__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_276Α__para_2>
     eli:in_force true ;
     prov:value "original" .
 
@@ -1214,7 +3314,23 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_284__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_284__para_2>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_285>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_285__para_1>
+    eli:in_force true ;
+    prov:value "original" .
+
+<https://stavropouloslaw.com/eli/art_285__para_2>
     eli:in_force true ;
     prov:value "original" .
 
