@@ -26,9 +26,15 @@
 
 (in-package :orchestrator.self)
 
-(defvar *constitution-path*
-  (merge-pathnames "deployment/SYSTEM-CONSTITUTION.sexp" (uiop:getcwd))
-  "Το κείμενο του συντάγματος του συστήματος — versioned στο repo.")
+(defvar *constitution-path* nil
+  "Ρητό override θέσης συντάγματος· NIL ⇒ επιλύεται ΣΤΟ RUNTIME στη ζωντανή ρίζα.")
+
+(defun %constitution-path ()
+  "Θέση του SYSTEM-CONSTITUTION.sexp μέσω FF1 institution-root — επιλύεται στο
+   RUNTIME (εύρημα δημιουργού [0034]). Το παλιό baked (merge getcwd στο LOAD)
+   πάγωνε /app/... στο build και δεν έβρισκε το αρχείο source-present (cwd=/src)."
+  (or *constitution-path*
+      (orchestrator.paths:institution-dir "deployment/SYSTEM-CONSTITUTION.sexp")))
 
 (defvar *constitution* nil "plist (:version :sha :serves :because :articles :missions).")
 (defvar *measures* (make-hash-table :test 'eq)
@@ -58,7 +64,7 @@
     (list :version (second form) :serves serves :because because
           :articles (nreverse articles) :missions (nreverse missions))))
 
-(defun ensure-constitution (&key (path *constitution-path*) (stream nil))
+(defun ensure-constitution (&key (path (%constitution-path)) (stream nil))
   "Φόρτωσε/ξαναφόρτωσε το σύνταγμα αν άλλαξε (κατά SHA). Άκυρο κείμενο ⇒
    κρατιέται το ισχύον και το σφάλμα ΔΗΛΩΝΕΤΑΙ. Επιστρέφει το ενεργό plist."
   (when (probe-file path)
@@ -111,7 +117,7 @@
   "Το πλήρες σύνταγμα με την ταυτότητά του — και η αποστολή ΜΕΤΡΗΜΕΝΗ."
   (let ((c (ensure-constitution)))
     (unless c
-      (format stream "~%(δεν βρέθηκε σύνταγμα συστήματος στο ~A)~%" *constitution-path*)
+      (format stream "~%(δεν βρέθηκε σύνταγμα συστήματος στο ~A)~%" (%constitution-path))
       (return-from describe-constitution 1))
     (format stream "~%── ΤΟ ΣΥΝΤΑΓΜΑ ΤΟΥ ΣΥΣΤΗΜΑΤΟΣ · v~D · sha ~A… ──~%"
             (getf c :version) (subseq (getf c :sha) 0 16))
