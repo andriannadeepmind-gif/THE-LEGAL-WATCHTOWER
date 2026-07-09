@@ -61,11 +61,41 @@
 ;;; freeze-components! με τις πηγές παρούσες· στο runtime το μητρώο διαβάζει
 ;;; το manifest (data-only, *read-eval* NIL) ως την αλήθεια του build.
 
+;;; ── ROOT COHERENCE (εύρημα δημιουργού [0034]) ──────────────────────────────
+;;; Τα baked component-pathnames (asdf:component-pathname) είναι ψημένα στη ρίζα
+;;; ΚΑΤΑΣΚΕΥΗΣ (π.χ. /app). Στο source-present runtime (cwd/LAWMAX_ROOT=/src) το
+;;; enough-namestring ως προς getcwd ΔΕΝ τα relativize-άρει (διαφορετική ρίζα) και
+;;; παράγει absolute «file:/app/...» κλειδιά που ΔΕΝ ταιριάζουν με το manifest και
+;;; δεν βρίσκουν το live αρχείο. Θεραπεία, ΧΩΡΙΣ hardcoded /app:
+;;;   • RELATIVIZATION ως προς τη σταθερή build-root (asdf source-directory —
+;;;     ψημένη, ΙΔΙΑ σε build & runtime) ⇒ coherent repo-relative κλειδί.
+;;;   • LIVE IO ως προς την FF1 institution-root ⇒ βρίσκει τα αρχεία εκεί που
+;;;     ζουν ΤΩΡΑ (source-present mount ή /app).
+
+(defvar *build-root* nil "cache: η ρίζα κατασκευής (asdf source-directory).")
+(defun %build-root ()
+  "Η ρίζα ΚΑΤΑΣΚΕΥΗΣ: ο κατάλογος όπου φορτώθηκαν τα .asd (ψημένος). ΣΤΑΘΕΡΟ
+   anchor — τα baked component-pathnames είναι κάτω από αυτόν σε build ΚΑΙ runtime,
+   ανεξάρτητα από cwd/LAWMAX_ROOT. ΜΟΝΟ για relativization, ΠΟΤΕ για live IO."
+  (or *build-root*
+      (setf *build-root*
+            (asdf:system-source-directory (asdf:find-system :orchestrator-cli)))))
+
+(defun %repo-rel (path)
+  "Repo-relative διαδρομή baked component path — coherent σε build & runtime.
+   π.χ. <build-root>/source/foo.lisp ⇒ \"source/foo.lisp\"."
+  (enough-namestring path (%build-root)))
+
+(defun %live-file (path)
+  "Η ΤΡΕΧΟΥΣΑ θέση ενός baked component path: repo-relative κάτω από τη ζωντανή
+   ρίζα του Ιδρύματος (FF1 institution-root) — εκεί ζουν ΤΩΡΑ τα αρχεία."
+  (merge-pathnames (%repo-rel path) (orchestrator.paths:institution-root)))
+
 (defun %manifest-file ()
-  ;; ΕΔΡΑ: η ΡΙΖΑ της εγκατάστασης, ΟΧΙ το deployment/ — το deployment δένεται
-  ;; συχνά ως volume (compose/χειροκίνητα) και θα ΕΚΡΥΒΕ το manifest του build.
-  ;; Το manifest είναι τεχνούργημα του BUILD: ταξιδεύει με το εκτελέσιμο.
-  (merge-pathnames "component-manifest.sexp" (uiop:getcwd)))
+  ;; ΕΔΡΑ: η ΖΩΝΤΑΝΗ ρίζα του Ιδρύματος (FF1), ΟΧΙ το getcwd — ώστε source-present
+  ;; (cwd=/src) και in-image (/app) να δείχνουν συνεπώς στη σωστή ρίζα. Το manifest
+  ;; είναι τεχνούργημα του BUILD· ταξιδεύει με το εκτελέσιμο στη ρίζα.
+  (merge-pathnames "component-manifest.sexp" (orchestrator.paths:institution-root)))
 
 (defvar *manifest* nil "cache: σχετική-διαδρομή → plist (:hash :defpackages …)")
 
@@ -88,7 +118,7 @@
   "Η ΓΝΩΣΤΗ αλήθεια για ένα αρχείο πηγής: ο δίσκος αν υπάρχει, αλλιώς το
    παγωμένο manifest του build — ώστε ο έλεγχος ξεπερασμένων hashes να έχει
    μέτρο σύγκρισης ΚΑΙ στο source-less runtime."
-  (or (file-hash (merge-pathnames rel-path (uiop:getcwd)))
+  (or (file-hash (merge-pathnames rel-path (orchestrator.paths:institution-root)))
       (getf (gethash (string rel-path) (%load-manifest)) :hash)))
 
 (defun freeze-components! ()
@@ -100,7 +130,7 @@
         (let ((h (file-hash path)))
           (when h
             (multiple-value-bind (pkgs contracts caps) (%scan-file-text path)
-              (push (list :file (enough-namestring path (uiop:getcwd))
+              (push (list :file (%repo-rel path)
                           :hash h :defpackages pkgs
                           :contracts contracts :capabilities caps)
                     rows))))))
@@ -182,9 +212,9 @@
          :meta (list :version (ignore-errors (asdf:component-version sys))
                      :depends-on (asdf:system-depends-on sys)))
         (dolist (path (%system-files sys))
-          (let* ((rel (enough-namestring path (uiop:getcwd)))
+          (let* ((rel (%repo-rel path))
                  (file-id (format nil "file:~A" rel))
-                 (disk-hash (file-hash path))
+                 (disk-hash (file-hash (%live-file path)))
                  ;; πηγή απούσα (source-less runtime) ⇒ η αλήθεια του BUILD:
                  ;; το παγωμένο manifest — ποτέ σιωπηλά «αταυτοποίητο»
                  (m (and (null disk-hash) (gethash rel (%load-manifest)))))
@@ -196,7 +226,7 @@
               (orchestrator.components:register-component!
                file-id :file (file-namestring path)
                :parent sys-id :hash (or disk-hash (getf m :hash))
-               :meta (list :path (namestring path) :defpackages pkgs
+               :meta (list :path rel :defpackages pkgs
                            :contracts contracts :capabilities caps
                            :from-manifest (and m t)))
               (orchestrator.components:add-edge! :contains sys-id file-id)
@@ -233,7 +263,7 @@
                :role (let ((c (orchestrator.contracts:find-contract name)))
                        (and c (orchestrator.contracts:contract-role c)))
                :meta (list :capability cap :contract contract-p
-                           :source (and src (enough-namestring src (uiop:getcwd)))
+                           :source (and src (%repo-rel src))
                            :resolved (and sym t))))
             (when real-pkg
               (orchestrator.components:add-edge!
@@ -241,7 +271,7 @@
             (when src
               (orchestrator.components:add-edge!
                :defined-in sym-id
-               (format nil "file:~A" (enough-namestring src (uiop:getcwd)))))
+               (format nil "file:~A" (%repo-rel src))))
             (when (orchestrator.contracts:find-contract name)
               (orchestrator.components:add-edge!
                :bound-by sym-id (format nil "contract:~A" name)))
