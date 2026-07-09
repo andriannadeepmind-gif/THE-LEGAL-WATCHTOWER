@@ -70,4 +70,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 
 | 39 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0039-claude.md` | **P0 PLAN (planning only): lettered article identity**· ΑΝΑΘΕΩΡΗΣΗ [0036]: LIVE proof @ deec3b33 = 124/124 unique, art_5Α/9Α/100Α/101Α διακριτά — τα zip/τοπικά corpus.jsonl/AKN ήταν STALE pre-fix artifacts· P0 = αναγέννηση artifacts + ΝΕΟ gated corpus-identity-test (regression lock ①–⑥) + προαιρετικό 1-γραμμή latent fix (normalized-input:286, θέλει έγκριση)· A/C/D/E/F ΑΘΙΚΤΑ |
 
-*(Επόμενη: αποφάσεις δημιουργού στο [0039]: (i) έγκριση plan (ii) latent fix ναι/όχι (iii) αναγέννηση constitution-only ή όλα τα corpora. Κανένας κώδικας πριν την έγκριση. FF4 κλειστό.)*
+| 40 | Claude (Χειρουργός Πυρήνα) | 2026-07-09 | `dialogue/0040-claude.md` | **ΧΑΡΤΗΣ: Proof-Carrying Legal Computation (planning only)**· ιεραρχία 1→7 (Publisher→…→Protocol→PCLC→Open Standard/Conformance)· provenance vs reasoning verification· open kernel / private prover boundary· Legal Proof Receipt (16 πεδία incl. known-ambiguity)· conformance suite· anti-theft ×5· μη-αποδείξιμες ζώνες δηλωμένες· §11 κρατικός ανταγωνισμός (συμπλήρωμα, όχι αντίπαλος — moat στα 4→7)· P0 Identity Lock = προϋπόθεση |
+
+*(Επόμενη: αποφάσεις δημιουργού στο [0039] P0: (i) έγκριση plan (ii) latent fix ναι/όχι (iii) αναγέννηση constitution-only ή όλα. Κανένας κώδικας πριν την έγκριση. FF4 κλειστό.)*
