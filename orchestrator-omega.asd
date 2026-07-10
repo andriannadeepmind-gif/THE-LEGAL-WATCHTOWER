@@ -102,12 +102,6 @@
    (:file "manifestation-generator-omega")      ; ΟΜΕΓΑ primary method: frbr-manifestation
    (:file "format-generator-omega")             ; ΟΜΕΓΑ primary method: frbr-format
    
-   ;;; ────────────────────────────────────────────────────────
-   ;;; LAYER 5.5: ELI TTL Generator - Deterministic FRBR+ELI+PROV
-   ;;; Supreme generator for complete article RDF output
-   ;;; Uses: turtle-dsl, frbr-classes, frbr-protocol exclusively
-   ;;; Provides: make-frbr-stack-for-article, render-frbr-eli-for-article
-   ;;; ────────────────────────────────────────────────────────
    
    ;;; ────────────────────────────────────────────────────────
    ;;; LAYER 5.8: Validation & Canonicalization

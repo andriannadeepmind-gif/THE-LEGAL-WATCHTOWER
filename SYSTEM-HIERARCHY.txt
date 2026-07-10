@@ -105,7 +105,7 @@ OLD vs NEW (COMPATIBILITY):
 ───────────────────────────────────────────────────────────────────
 
 OLD SYSTEM (DEPRECATED):
-  • eli-ttl-generator.lisp  ────┐
+  • eli-ttl-generator.lisp (ΔΙΑΓΡΑΦΗΚΕ [0052]) ┐
   • Separate file writers       │  REPLACED BY
   • No Article Root             │    ▼
   • No Activity                 │  unified-frbr-generator.lisp
