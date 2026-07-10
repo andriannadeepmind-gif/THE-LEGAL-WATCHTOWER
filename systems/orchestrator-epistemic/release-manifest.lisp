@@ -77,8 +77,11 @@
   '("meta-ontology.ttl" "lineage-graph.ttl" "negation.ttl"
     "stability-policy.ttl" "stability-policy.md"
     "shapes/article-shape.ttl" "shapes/manifest-shape.ttl"
-    "shapes/lineage-shape.ttl")
-  "Η ΜΙΑ έδρα του canonical συνόλου (8 αρχεία) που ορίζει την ταυτότητα release.")
+    "shapes/lineage-shape.ttl"
+    ;; [P1.5-B] Το 9ο canonical: Artifact Census (census-1) — δένει per-article
+    ;; artifacts + pcl_text_root + prev_release_root + materials στο release root.
+    "census.json")
+  "Η ΜΙΑ έδρα του canonical συνόλου (9 αρχεία) που ορίζει την ταυτότητα release.")
 
 (defun collect-epistemic-artifacts (staging-dir)
   "Collect ONLY epistemic layer artifacts for canonical Merkle root
@@ -86,7 +89,7 @@
   DARPA-GRADE PROVENANCE: This function defines the CANONICAL set of artifacts
   that form the release-root-hash. NO temporal proofs, NO manifests, NO verification kit.
 
-  Collects EXACTLY 8 files (deterministic):
+  Collects EXACTLY 9 files (deterministic):
     1. meta-ontology.ttl
     2. lineage-graph.ttl
     3. negation.ttl
@@ -95,12 +98,13 @@
     6. shapes/article-shape.ttl
     7. shapes/manifest-shape.ttl
     8. shapes/lineage-shape.ttl
+    9. census.json (Artifact Census, P1.5)
 
   Args:
     staging-dir: Staging directory path
 
   Returns:
-    List of 8 absolute file paths (sorted)"
+    List of 9 absolute file paths (sorted)"
 
   (let ((files '()))
     (dolist (filename +epistemic-canonical-files+)
@@ -111,8 +115,8 @@
 
     ;; Sort for deterministic ordering
     (let ((sorted (sort files #'string< :key #'namestring)))
-      (unless (= (length sorted) 8)
-        (error "CRITICAL: Expected 8 epistemic artifacts, found ~D" (length sorted)))
+      (unless (= (length sorted) 9)
+        (error "CRITICAL: Expected 9 epistemic artifacts, found ~D" (length sorted)))
       sorted)))
 
 (defun %root->release-id (root-hash)

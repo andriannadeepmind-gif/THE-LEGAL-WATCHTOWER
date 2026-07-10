@@ -42,11 +42,14 @@
    (:file "primary-anchor" :depends-on ("package" "merkle-tree"))
    (:file "temporal-proof" :depends-on ("package" "merkle-tree"))
    (:file "release-manifest" :depends-on ("vocabularies" "merkle-tree"))
+   ;; [P1.5-B] Artifact Census: το 9ο canonical αρχείο (census-1)
+   (:file "artifact-census" :depends-on ("package" "release-manifest"))
    (:file "shacl-shapes" :depends-on ("vocabularies"))
    (:file "deploy-epistemic" :depends-on ("meta-ontology"
                                           "lineage-authority"
                                           "negation-layer"
                                           "stability-policy"
                                           "release-manifest"
+                                          "artifact-census"
                                           "temporal-proof"
                                           "shacl-shapes"))))

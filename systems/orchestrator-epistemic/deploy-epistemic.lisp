@@ -1149,6 +1149,23 @@ No fallbacks, no partial validity - strict proof gates.
         (format t "  Manifest shape: ~A~%" (getf shape-paths :manifest-shape))
         (format t "  Lineage shape: ~A~%" (getf shape-paths :lineage-shape))
 
+        ;; Step 3β [P1.5-B]: Artifact Census — το 9ο canonical αρχείο. Δένει
+        ;; per-article artifacts + text-σπονδυλική + prev-root + materials στο
+        ;; release root. Γράφεται ΠΡΙΝ το Merkle build ώστε να γίνει φύλλο του.
+        (format t "~%Step 3β: Writing artifact census (9th canonical file)...~%")
+        (let ((census (write-artifact-census
+                       articles
+                       (or (ignore-errors (orchestrator.spec:config-get "corpus.short_name"))
+                           "corpus")
+                       base-output-dir
+                       staging-dir
+                       (merge-pathnames "releases/"
+                                        (uiop:ensure-directory-pathname base-output-dir)))))
+          (format t "  Census: ~D άρθρα, pcl_text_root ~A, prev ~A~%"
+                  (getf census :count)
+                  (subseq (getf census :pcl-text-root) 0 20)
+                  (or (getf census :prev-release-root) "null (πρώτο της αλυσίδας)")))
+
         ;; Step 4: Compute system commit hash
         (format t "~%Step 4: Computing system commit hash...~%")
         (let ((system-hash (compute-and-update-system-commit-hash layer-paths)))
@@ -1224,6 +1241,8 @@ No fallbacks, no partial validity - strict proof gates.
                          "stability-policy.md"
                          "manifest.ttl"
                          "manifest.jsonld"
+                         ;; [P1.5-B] Το census είναι canonical (id-δεσμευτικό).
+                         "census.json"
                          "shapes/article-shape.ttl"
                          "shapes/manifest-shape.ttl"
                          "shapes/lineage-shape.ttl"
