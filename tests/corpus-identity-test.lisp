@@ -350,6 +350,40 @@
                   (search "άρθρων 9" (first parts))
                   (search "Συνέχεια" (first parts)))))
 
+;;; ㉓ P1.4 [0054]#1: ASN.1 gate — ψευδο-πιστοποιητικό δομικά αδύνατο σε release.
+(cit-check "㉓ valid-x509: ψευδο-blob ⇒ NIL· γνήσιο self-signed ⇒ T"
+           (let* ((fake "-----BEGIN CERTIFICATE-----
+MIIGQDCCBSigAwIBAgIJAI+F9s9cXyXyMA0GCSqGSIb3DQEBCwUAMIGwMQswCQYD
+C2N2CWKbYQK7VqKJnCWmYQq1GfFQGw==
+-----END CERTIFICATE-----")
+                  (kp (orchestrator.jws-authority:generate-rsa-keypair :bits 2048))
+                  (real-der (orchestrator.x509-authority:generate-self-signed-certificate
+                             :private-key (getf kp :private-key)
+                             :public-key (getf kp :public-key)
+                             :common-name "T" :organization "T" :country "GR" :days 365)))
+             (and (not (orchestrator.x509-authority:valid-x509-certificate-der-p
+                        (orchestrator.x509-authority:pem->der fake "CERTIFICATE")))
+                  (orchestrator.x509-authority:valid-x509-certificate-der-p real-der)
+                  (handler-case (progn (orchestrator.x509-authority:assert-valid-x509-pem fake) nil)
+                    (error () t)))))
+
+;;; ㉔ P1.4 [0054]#7: transaction-time capture — ρητό ή ντετερμινιστική σφραγίδα.
+(cit-check "㉔ recorded-at: ρητό recorded_at τιμάται· χωρίς ⇒ ντετ. σφραγίδα (όχι NIL)"
+           (let* ((mk (lambda (extra)
+                        (let ((h (make-hash-table :test 'equal)))
+                          (setf (gethash "id" h) "N" (gethash "date" h) "2019-01-01"
+                                (gethash "articles_amended" h) '(5))
+                          (when extra (setf (gethash "recorded_at" h) extra))
+                          h)))
+                  (a1 (orchestrator.consolidation.bridge::amendment-record->act
+                       (funcall mk "2020-06-06T00:00:00Z")))
+                  (a2 (orchestrator.consolidation.bridge::amendment-record->act
+                       (funcall mk nil))))
+             (and (equal "2020-06-06T00:00:00Z"
+                         (orchestrator.consolidation:amending-act-recorded a1))
+                  (let ((r (orchestrator.consolidation:amending-act-recorded a2)))
+                    (and r (plusp (length r)))))))
+
 (format t "~%========================================~%")
 (format t "Corpus identity tests: ~D passed, ~D failed~%" *cit-pass* *cit-fail*)
 (format t "========================================~%")

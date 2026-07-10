@@ -260,26 +260,81 @@
 ;;; AUTO-GENERATE CRYPTO KEYS (PURE LISP - DARPA-GRADE)
 ;;; ============================================================================
 
+(defun %operator-tsa-ca-source ()
+  "Η ΜΙΑ πηγή γνήσιας TSA CA αλυσίδας που ο χειριστής παρέχει: env TSA_CA_BUNDLE
+   (ρητό μονοπάτι) ή <institution>/keys/tsa-ca.pem. Επιστρέφει pathname ή NIL."
+  (let ((env (uiop:getenv "TSA_CA_BUNDLE")))
+    (cond
+      ((and env (plusp (length env)) (probe-file env)) (pathname env))
+      (t (let ((p (orchestrator.paths:institution-dir "keys/tsa-ca.pem")))
+           (and (probe-file p) p))))))
+
+(defun %emit-tsa-ca-or-honest-note (tsa-ca-path)
+  "Γράφει tsa-ca.pem ΜΟΝΟ από γνήσια, δομικά επικυρωμένη X.509 CA αλυσίδα του
+   χειριστή. Αν δεν υπάρχει έγκυρη, ΔΕΝ γράφει ψευδο-cert — γράφει τίμια
+   σημείωση (tsa-ca.MISSING.txt) που εξηγεί ότι η πλήρης RFC-3161 CA
+   επαλήθευση απαιτεί την pinned CA του χειριστή. Άκυρη παρεχόμενη CA ⇒
+   ΣΦΑΛΜΑ (ο χειριστής έδωσε σκουπίδι — δεν το κρύβουμε)."
+  (let ((src (%operator-tsa-ca-source))
+        (note-path (merge-pathnames "tsa-ca.MISSING.txt"
+                                    (uiop:pathname-directory-pathname tsa-ca-path))))
+    (cond
+      (src
+       (let ((pem (uiop:read-file-string src)))
+         ;; Δομική φραγή: γνήσιο X.509 ή σφάλμα — ποτέ ψευδο-blob σε release.
+         (orchestrator.x509-authority:assert-valid-x509-pem pem "tsa-ca.pem")
+         (alexandria:write-string-into-file pem tsa-ca-path :if-exists :supersede)
+         (when (probe-file note-path) (ignore-errors (delete-file note-path)))
+         (log:info () "tsa-ca.pem: γνήσια CA αλυσίδα του χειριστή (επικυρωμένη X.509) από ~A" src)
+         t))
+      (t
+       (when (probe-file tsa-ca-path) (ignore-errors (delete-file tsa-ca-path)))
+       (alexandria:write-string-into-file
+        (format nil "TSA CA certificate ΔΕΝ διανέμεται με αυτό το release.~%~%~
+Η ΠΛΗΡΗΣ RFC-3161 επαλήθευση της χρονοσφραγίδας (αλυσίδα CA → TSA) απαιτεί την~%~
+pinned CA αλυσίδα που παρέχει ο χειριστής (env TSA_CA_BUNDLE ή keys/tsa-ca.pem).~%~
+Το σύστημα ΑΡΝΕΙΤΑΙ να διανείμει ψευδο/ληγμένο πιστοποιητικό ως υλικό~%~
+επαλήθευσης — τίμια άγνοια αντί για παραίσθηση ασφάλειας.~%~%~
+Οι δεσμοί που ΕΠΑΛΗΘΕΥΟΝΤΑΙ ΧΩΡΙΣ αυτό: Merkle root ≡ ταυτότητα release,~%~
+JWS υπογραφή, ύπαρξη/imprint-binding του RFC-3161 receipt (timestamp.tsr).~%~
+Η πλήρης κρυπτογραφική επαλήθευση της αλυσίδας TSA είναι δηλωμένη φάση P4+.~%")
+        note-path :if-exists :supersede)
+       (log:info () "tsa-ca.pem: καμία γνήσια CA — γράφτηκε τίμια σημείωση (καμία ψευδο-διανομή)")
+       nil))))
+
+(defun %key-genesis-explicitly-allowed-p ()
+  "T ΜΟΝΟ όταν ο χειριστής ζητά ΡΗΤΑ γένεση κλειδιού (LAWMAX_ALLOW_KEY_GENESIS=1),
+   που προορίζεται ΑΠΟΚΛΕΙΣΤΙΚΑ για dev/init σε ΚΕΝΟ περιβάλλον. Η ΜΙΑ έδρα
+   πολιτικής κλειδιών: εκτός αυτού του ρητού opt-in, ένα trust root ΔΕΝ
+   γεννιέται ποτέ σιωπηλά — φορτώνεται ή σφάλλει (fail-closed)."
+  (let ((v (uiop:getenv "LAWMAX_ALLOW_KEY_GENESIS")))
+    (and v (member v '("1" "true" "yes" "ΝΑΙ") :test #'string-equal))))
+
 (defun ensure-crypto-keys-exist (private-key-path public-key-path cert-path)
-  "Auto-generate RSA keypair and X.509 certificate if missing
+  "Load the release-authority signing material· FAIL-CLOSED αν λείπει.
 
-   Uses Pure Common Lisp (Ironclad) - NO OpenSSL, NO external tools.
-
-   Args:
-     private-key-path: Path for private key PEM
-     public-key-path: Path for public key PEM
-     cert-path: Path for X.509 certificate PEM
+   P1.4 [0054]#3: ΤΕΛΟΣ η σιωπηλή αυτο-γένεση. Ένα δημοσιευμένο trust root
+   ΔΕΝ επιτρέπεται να προκύψει από κλειδί που εμφανίστηκε μόνο του σε αυτό το
+   run — αλλιώς η υπογραφή του release αποδεικνύει μόνο εσωτερική συνέπεια,
+   ΟΧΙ σταθερή αρχή. Λείπει κλειδί ⇒ ΣΦΑΛΜΑ, εκτός αν ο χειριστής ζητήσει
+   ΡΗΤΑ γένεση (LAWMAX_ALLOW_KEY_GENESIS=1, μόνο για dev/init) — και τότε με
+   ηχηρή προειδοποίηση ότι το κλειδί αυτό ΔΕΝ πρέπει να υπογράψει δημόσιο
+   release. Uses Pure Common Lisp (Ironclad) — NO OpenSSL.
 
    Returns:
-     Plist with :private-key-path :public-key-path :cert-path"
+     Plist με :private-key-path :public-key-path :cert-path"
 
   (let ((key-exists (and (probe-file private-key-path)
                          (not (uiop:directory-exists-p private-key-path)))))
 
     (unless key-exists
+      (unless (%key-genesis-explicitly-allowed-p)
+        (error 'orchestrator.spec:validation-error
+               :message (format nil "Λείπει το ιδιωτικό κλειδί αρχής εκδόσεων (~A) και η αυτο-γένεση ΔΕΝ επιτράπηκε ρητά. Το trust root ΔΕΝ γεννιέται σιωπηλά ανά run. Πάροχε σταθερό κλειδί, ή για dev/init σε ΚΕΝΟ περιβάλλον όρισε LAWMAX_ALLOW_KEY_GENESIS=1 (το κλειδί αυτό ΔΕΝ πρέπει να υπογράψει δημόσιο release)."
+                              private-key-path)))
       (format t "~%═══════════════════════════════════════════════════════════════~%")
-      (format t "  AUTO-GENERATING CRYPTO KEYS (Pure Lisp - Ironclad)~%")
-      (format t "  DARPA-GRADE: No OpenSSL, No external tools~%")
+      (format t "  ⚠ ΡΗΤΗ ΓΕΝΕΣΗ ΚΛΕΙΔΙΟΥ (LAWMAX_ALLOW_KEY_GENESIS) — dev/init ΜΟΝΟ~%")
+      (format t "  ⚠ ΤΟ ΚΛΕΙΔΙ ΑΥΤΟ ΔΕΝ ΠΡΕΠΕΙ ΝΑ ΥΠΟΓΡΑΨΕΙ ΔΗΜΟΣΙΟ RELEASE~%")
       (format t "═══════════════════════════════════════════════════════════════~%~%")
 
       ;; Ensure directories exist
@@ -468,45 +523,14 @@
     (unless (probe-file public-jwk-path)
       (log:warn () "public.jwk not found at ~A - JWS signing may have failed" public-jwk-path))
 
-    ;; tsa-ca.pem - TSA CA certificate (FreeTSA)
-    ;; Source: https://freetsa.org/files/cacert.pem
-    (alexandria:write-string-into-file
-     "-----BEGIN CERTIFICATE-----
-MIIGQDCCBSigAwIBAgIJAI+F9s9cXyXyMA0GCSqGSIb3DQEBCwUAMIGwMQswCQYD
-VQQGEwJBVDETMBEGA1UECAwKU29tZS1TdGF0ZTEhMB8GA1UECgwYSW50ZXJuZXQg
-V2lkZ2l0cyBQdHkgTHRkMRAwDgYDVQQDDAdGcmVlVFNBMRwwGgYJKoZIhvcNAQkB
-Fg1mcmVldHNhQGF0Lm9yZzEZMBcGA1UEBRMQZnJlZXRzYSAxMDAwMDAwMDEeMBwG
-A1UEYwwVaHR0cHM6Ly93d3cuZnJlZXRzYS5vcmcwHhcNMTYwMzEzMTEwNTMxWhcN
-MjYwMzExMTEwNTMxWjCBsDELMAkGA1UEBhMCQVQxEzARBgNVBAgMClNvbWUtU3Rh
-dGUxITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDEQMA4GA1UEAwwH
-RnJlZVRTQTEcMBoGCSqGSIb3DQEJARYNZnJlZXRzYUBhdC5vcmcxGTAXBgNVBAUT
-EGZyZWV0c2EgMTAwMDAwMDAxHjAcBgNVBGMMFWh0dHBzOi8vd3d3LmZyZWV0c2Eu
-b3JnMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyDkYpW/YlT0JLLcO
-DQwEhq/WqnT0ZuX0gAJHQLgXqYBOYgaFVaZmhRMaD/YqN3irgqKVNBIr/VYHLtQp
-8gd2cTLh6zT8G7uN+LvLJhEX6dRFD6VMUX+hCLAy+lO8f7LJpXJKAzVJcG8kVPHg
-hOhRjbHhMEwF9n3nEYFXL8D9VYlqh8m0pxJlSJQPLJNsYKxRaD+yHfcLwqR+kIhE
-qLvvHnJjNqQC1cWqNkxLDsEGLzJDdz8cWqpnPxNjHVwwIGd3sBYqPxqSxBKPdtFG
-rqRfFGQXuCsxbLcEqVPSwKDdlTgbSLKUZVVJdTLJdLfq4pPwEy0SxDLNfJlGNBbW
-mE0PGwIDAQABo4ICGTCCAhUwgZ4GA1UdIwSBljCBk6GBtqSBszCBsDELMAkGA1UE
-BhMCQVQxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoMGEludGVybmV0IFdp
-ZGdpdHMgUHR5IEx0ZDEQMA4GA1UEAwwHRnJlZVRTQTEcMBoGCSqGSIb3DQEJARYN
-ZnJlZXRzYUBhdC5vcmcxGTAXBgNVBAUTEGZyZWV0c2EgMTAwMDAwMDCCCQCPhfbP
-XF8l8jAdBgNVHQ4EFgQU/JKblC+ySeLWUMBpADYqR2VjRaIwDAYDVR0TBAUwAwEB
-/zALBgNVHQ8EBAMCAQYwEwYDVR0lBAwwCgYIKwYBBQUHAwgwgdsGA1UdHwSB0zCB
-0DCBzaCBxqCBw4aBwGxkYXA6Ly9sZGFwLmZyZWV0c2Eub3JnL2NuPUZyZWVUU0Es
-T1U9RnJlZVRTQSBUaW1lc3RhbXAgU2lnbmluZyBVbml0LE89RnJlZVRTQSxDPUFU
-P2NlcnRpZmljYXRlUmV2b2NhdGlvbkxpc3Q/YmFzZT9vYmplY3RDbGFzcz1jUkxE
-aXN0cmlidXRpb25Qb2ludD8/P2NlcnRpZmljYXRlUmV2b2NhdGlvbkxpc3Q/YmFz
-ZT9vYmplY3RDbGFzcz1jUkxEaXN0cmlidXRpb25Qb2ludDANBgkqhkiG9w0BAQsF
-AAOCAQEAEUIVLbLa4dDMXqbPvLRPBExxIWXJd2YdewEJGQNcRqI0LIDcOW2WqJN2
-IELt0y9KWOaXJLPPnPWrBaeLXOp3s6gT0KLKAGCxQx0pEfEAJjwhSqPrC8k0vNNs
-2ZlD0YHnXEIIGR0SKRnZP8bEFwdHlbvNrQnNqEKdQNF1pFPqTBHlSECBQJBCPWKv
-5YG4bCtFXKQFJODlGFBvHbdLJJCBWKB2FVHLLFPDHuBTVKS5+wLBKqWKfqLGNzxX
-Y8LGGxGF8xxMm0hSdKiBgiqnCpqvNFqgPfLXtQSq5qG9vVyGBKPq8NM9VjVnHFNf
-C2N2CWKbYQK7VqKJnCWmYQq1GfFQGw==
------END CERTIFICATE-----"
-     tsa-ca-path
-     :if-exists :supersede)
+    ;; tsa-ca.pem — TSA CA certificate για πλήρη RFC-3161 επαλήθευση.
+    ;; P1.4 [0054]#1: ΤΕΛΟΣ το hardcoded ψευδο-blob (μη-parseable, ληγμένο).
+    ;; Γράφεται ΜΟΝΟ γνήσια CA αλυσίδα που ο χειριστής παρέχει (env
+    ;; TSA_CA_BUNDLE ή <institution>/keys/tsa-ca.pem) ΚΑΙ επικυρώνεται δομικά
+    ;; ως X.509 (assert-valid-x509-pem). Αλλιώς ΔΕΝ γράφεται ψευδο-cert — το
+    ;; verify kit δηλώνει τίμια ότι η πλήρης TSR-CA επαλήθευση απαιτεί την
+    ;; pinned CA του χειριστή (δηλωμένο P4+ residual). Ποτέ ψέμα για το τι κρατά.
+    (%emit-tsa-ca-or-honest-note tsa-ca-path)
 
     ;; verify.sh - Bash verification script (fallback)
     (alexandria:write-string-into-file
@@ -795,7 +819,12 @@ For full cryptographic verification, use the Pure Lisp script.
 - `verify.sh` - Bash script (basic checks)
 - `verify.ps1` - PowerShell script (basic checks)
 - `public.jwk` - JWK public key for JWS verification
-- `tsa-ca.pem` - TSA CA certificate
+- `tsa-ca.pem` - Γνήσια, δομικά επικυρωμένη (X.509) TSA CA αλυσίδα του χειριστή
+  για ΠΛΗΡΗ RFC-3161 επαλήθευση. Παρών ΜΟΝΟ όταν ο χειριστής την παρέχει
+  (env TSA_CA_BUNDLE ή keys/tsa-ca.pem). Αν λείπει, βλ. `tsa-ca.MISSING.txt`:
+  το σύστημα ΑΡΝΕΙΤΑΙ να διανείμει ψευδο/ληγμένο πιστοποιητικό — τίμια άγνοια
+  αντί για παραίσθηση ασφάλειας. Οι δεσμοί που επαληθεύονται ΧΩΡΙΣ αυτό:
+  Merkle root ≡ ταυτότητα, JWS, ύπαρξη/imprint-binding του RFC-3161 receipt.
 
 ## Dependencies for Pure Lisp Verification
 
@@ -1160,8 +1189,11 @@ No fallbacks, no partial validity - strict proof gates.
                          ;; P1R [0046]: το timestamp.tsr είναι ATTESTATION (προσαρτάται
                          ;; append-only, ίσως μετά το publish) — η ΕΞΟΥΣΙΑ το απαιτεί
                          ;; στο promote-latest!, όχι η πληρότητα του commitment.
-                         ;; Core verification files (always required)
-                         "verify/tsa-ca.pem"
+                         ;; Core verification files (always required).
+                         ;; P1.4 [0054]#1: το tsa-ca.pem ΔΕΝ είναι πλέον
+                         ;; always-required — γράφεται ΜΟΝΟ όταν ο χειριστής
+                         ;; παρέχει γνήσια, δομικά επικυρωμένη CA· αλλιώς
+                         ;; τίμια σημείωση tsa-ca.MISSING.txt (ποτέ ψευδο-cert).
                          "verify/verify.sh"
                          "verify/verify.ps1"
                          "verify/verify.lisp"

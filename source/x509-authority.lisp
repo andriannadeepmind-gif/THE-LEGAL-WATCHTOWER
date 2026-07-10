@@ -27,6 +27,10 @@
    ;; Certificate generation
    #:generate-self-signed-certificate
    #:save-certificate-pem
+   ;; Structural validation (P1.4 [0054]#1: ασπίδα ψευδο-πιστοποιητικού)
+   #:pem->der
+   #:valid-x509-certificate-der-p
+   #:assert-valid-x509-pem
    ;; Utility
    #:make-distinguished-name
    ;; Conditions
@@ -552,6 +556,100 @@
                       collect (subseq base64 i (min (+ i 64) (length base64))))))
     (format nil "-----BEGIN ~A-----~%~{~A~%~}-----END ~A-----~%"
             label lines label)))
+
+;;; ============================================================================
+;;; ASN.1 DER STRUCTURAL VALIDATION (P1.4 [0054]#1)
+;;;
+;;; Κάνει ΔΟΜΙΚΑ αδύνατο να διανεμηθεί μη-parseable «πιστοποιητικό» ως υλικό
+;;; επαλήθευσης σε release. ΔΕΝ επαληθεύει υπογραφή/αλυσίδα (αυτό είναι P4:
+;;; πλήρης RFC-3161 CA verification) — επιβεβαιώνει ότι τα bytes είναι ΟΝΤΩΣ
+;;; μια καλοσχηματισμένη X.509 δομή, ώστε το verify kit να μη λέει ψέματα για
+;;; το τι κρατά. Ελάχιστος, ανεξάρτητος decoder — ο σπόρος του L6 kernel.
+;;; ============================================================================
+
+(defun pem->der (pem-string label)
+  "Αποκωδικοποίηση PEM (μπλοκ «-----BEGIN <LABEL>-----» … END) σε DER bytes.
+   Σφάλμα αν λείπουν οι φρουροί ή το base64 είναι άκυρο."
+  (let* ((begin (format nil "-----BEGIN ~A-----" label))
+         (end   (format nil "-----END ~A-----" label))
+         (b (search begin pem-string))
+         (e (search end pem-string)))
+    (unless (and b e (< b e))
+      (error 'x509-error :message (format nil "PEM: λείπουν οι φρουροί ~A" label)))
+    (let* ((body (subseq pem-string (+ b (length begin)) e))
+           (b64 (remove-if (lambda (c) (member c '(#\Newline #\Return #\Space #\Tab))) body)))
+      (handler-case (cl-base64:base64-string-to-usb8-array b64)
+        (error (ex) (error 'x509-error :message (format nil "PEM: άκυρο base64 (~A)" ex)))))))
+
+(defun %der-read-tlv (bytes offset)
+  "Διάβασε ΕΝΑ ASN.1 TLV στο OFFSET. Επιστρέφει (values tag content-start
+   content-len next-offset). Σφάλμα σε κακοσχηματισμένο μήκος/υπερχείλιση."
+  (let ((len (length bytes)))
+    (when (>= offset len)
+      (error 'x509-error :message "DER: πρόωρο τέλος (tag)"))
+    (let* ((tag (aref bytes offset))
+           (p (1+ offset)))
+      (when (= (logand tag #x1f) #x1f)
+        (error 'x509-error :message "DER: multi-byte tags δεν υποστηρίζονται (μη-X.509)"))
+      (when (>= p len)
+        (error 'x509-error :message "DER: πρόωρο τέλος (length)"))
+      (let ((len-byte (aref bytes p)))
+        (incf p)
+        (let ((content-len
+                (if (< len-byte #x80)
+                    len-byte
+                    (let ((num (logand len-byte #x7f)))
+                      (when (zerop num)
+                        (error 'x509-error :message "DER: μη-καθορισμένο μήκος (μη-DER)"))
+                      (when (> num 4)
+                        (error 'x509-error :message "DER: υπερμέγεθες πεδίο μήκους"))
+                      (when (> (+ p num) len)
+                        (error 'x509-error :message "DER: πρόωρο τέλος (long length)"))
+                      (let ((acc 0))
+                        (dotimes (i num) (setf acc (logior (ash acc 8) (aref bytes (+ p i)))))
+                        (incf p num)
+                        acc)))))
+          (when (> (+ p content-len) len)
+            (error 'x509-error :message "DER: το μήκος περιεχομένου υπερβαίνει το buffer"))
+          (values tag p content-len (+ p content-len)))))))
+
+(defun valid-x509-certificate-der-p (der)
+  "T αν τα DER bytes είναι καλοσχηματισμένη X.509 Certificate δομή:
+   SEQUENCE { tbsCertificate SEQUENCE, signatureAlgorithm SEQUENCE,
+   signatureValue BIT STRING }, με το εξωτερικό μήκος να ταιριάζει ΑΚΡΙΒΩΣ με
+   το buffer (καμία ουρά). Επιστρέφει (values NIL reason) σε αποτυχία."
+  (handler-case
+      (multiple-value-bind (tag cstart clen next) (%der-read-tlv der 0)
+        (cond
+          ((/= tag #x30) (values nil "εξωτερικό tag ≠ SEQUENCE"))
+          ((/= next (length der)) (values nil "ουρά bytes μετά το certificate SEQUENCE"))
+          (t
+           ;; Τρία παιδιά: tbs SEQUENCE, sigAlg SEQUENCE, sig BIT STRING
+           (multiple-value-bind (t1 s1 l1 n1) (%der-read-tlv der cstart)
+             (declare (ignore s1 l1))
+             (multiple-value-bind (t2 s2 l2 n2) (%der-read-tlv der n1)
+               (declare (ignore s2 l2))
+               (multiple-value-bind (t3 s3 l3 n3) (%der-read-tlv der n2)
+                 (declare (ignore s3 l3))
+                 (cond
+                   ((/= t1 #x30) (values nil "tbsCertificate ≠ SEQUENCE"))
+                   ((/= t2 #x30) (values nil "signatureAlgorithm ≠ SEQUENCE"))
+                   ((/= t3 #x03) (values nil "signatureValue ≠ BIT STRING"))
+                   ((/= n3 (+ cstart clen)) (values nil "τα 3 πεδία δεν γεμίζουν το certificate SEQUENCE"))
+                   (t t))))))))
+    (x509-error (e) (values nil (x509-error-message e)))
+    (error (e) (values nil (format nil "~A" e)))))
+
+(defun assert-valid-x509-pem (pem-string &optional (where "certificate"))
+  "Επικυρώνει ότι το PEM-STRING είναι ΟΝΤΩΣ έγκυρη X.509 δομή· σφάλμα αλλιώς.
+   Η φραγή που κάνει το ψευδο-πιστοποιητικό δομικά αδύνατο σε release."
+  (let ((der (pem->der pem-string "CERTIFICATE")))
+    (multiple-value-bind (ok reason) (valid-x509-certificate-der-p der)
+      (unless ok
+        (error 'x509-error
+               :message (format nil "~A: ΔΕΝ είναι έγκυρο X.509 πιστοποιητικό (~A) — άρνηση διανομής ψευδο-υλικού επαλήθευσης"
+                                where reason)))
+      t)))
 
 (defun save-certificate-pem (certificate-der output-path)
   "Save DER certificate as PEM file"

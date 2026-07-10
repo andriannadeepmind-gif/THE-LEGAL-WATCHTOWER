@@ -128,6 +128,15 @@
          (amended (%rget record "articles_amended"))
          (repealed (%rget record "articles_repealed"))
          (explicit (%rget record "operations"))
+         ;; P1.4 [0054]#7: transaction-time capture (θεμέλιο Ω2 bitemporal).
+         ;; Ρητό record field «recorded_at» = η αληθινή στιγμή γνώσης· αλλιώς
+         ;; σφραγίζεται από την ΝΤΕΤΕΡΜΙΝΙΣΤΙΚΗ έδρα χρόνου (:deterministic —
+         ;; pinned epoch σε reproducible build, γνήσιο now σε live serving).
+         ;; Ο χρόνος γνώσης δεν χάνεται· δεν είναι πλαστή νομική ημερομηνία
+         ;; αλλά τίμια σφραγίδα συστημικού γεγονότος εισαγωγής.
+         (recorded (or (%rget record "recorded_at")
+                       (orchestrator.time:format-iso8601
+                        (orchestrator.time:now :source :deterministic))))
          (ops '()))
     ;; Repeals first (strongest status), then amendment provenance.
     ;; These are derived from amendment METADATA (article lists), so a target
@@ -144,6 +153,7 @@
      :fek (and fek (princ-to-string fek))
      :enacted (and date (princ-to-string date))
      :effective (and applic (princ-to-string applic))
+     :recorded (and recorded (princ-to-string recorded))
      :operations ops)))
 
 (defun amendment-records->acts (records)

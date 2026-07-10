@@ -27,16 +27,21 @@
 ;;; AI INGEST ONTOLOGY
 ;;; ============================================================================
 
-;; P1b [0052]: τα prefixes υπολογίζονται ΟΨΙΜΑ (συνάρτηση, όχι load-time
-;; defparameter) ώστε το base URI να προέρχεται ΠΑΝΤΑ από τη διαμορφωμένη
-;; έδρα (get-base-uri) — το παλιό load-time (or (ignore-errors …) hardcoded)
-;; έγραφε σιωπηλά hardcoded URI σε εκπεμπόμενα prefixes όταν το config δεν
-;; είχε ακόμη φορτωθεί. Χωρίς config ⇒ τίμιο σφάλμα του get-base-uri.
+;; P1.4 [0055]: τα ontology namespaces του Ιδρύματος (llm/ingest/metrics) είναι
+;; ΣΤΑΘΕΡΑ ΔΗΜΟΣΙΕΥΜΕΝΑ vocabulary IRIs — ΔΕΝ είναι corpus-δεδομένα και ΔΕΝ
+;; μετακινούνται με το config. Είναι ρητή, ονομασμένη σταθερά (η μία έδρα του
+;; published vocabulary root) — ΟΧΙ get-base-uri (που τα συνέδεε λανθασμένα με
+;; mutable corpus config και έσπαγε το corpus-service /dataset.ttl) ΟΥΤΕ
+;; σιωπηλό (ignore-errors) fallback. Ένα RDF prefix ΟΦΕΙΛΕΙ να είναι σταθερό.
+(defparameter +institution-vocabulary-base+ "https://stavropouloslaw.com"
+  "Η ρίζα των δημοσιευμένων ontology namespaces του Ιδρύματος (σταθερό, versioned
+   vocabulary IRI· ανεξάρτητο από corpus/service base). Μία έδρα.")
+
 (defun ingest-prefixes ()
-  `(("llm" . ,(format nil "~A/ontology/llm#" (orchestrator.uris:get-base-uri)))
+  `(("llm" . ,(format nil "~A/ontology/llm#" +institution-vocabulary-base+))
     ("hf" . "https://huggingface.co/ontology#")
-    ("ingest" . ,(format nil "~A/ontology/ingest#" (orchestrator.uris:get-base-uri)))
-    ("metrics" . ,(format nil "~A/ontology/metrics#" (orchestrator.uris:get-base-uri)))
+    ("ingest" . ,(format nil "~A/ontology/ingest#" +institution-vocabulary-base+))
+    ("metrics" . ,(format nil "~A/ontology/metrics#" +institution-vocabulary-base+))
     ("schema" . "https://schema.org/")
     ("dcat" . "http://www.w3.org/ns/dcat#")
     ("dct" . "http://purl.org/dc/terms/")
@@ -516,7 +521,7 @@
   year={2025},
   publisher={STAVROPOULOS LAW},
   url={~A/corpus}
-}" (orchestrator.uris:get-base-uri)))))
+}" +institution-vocabulary-base+))))
 
 (defmethod export-huggingface-dataset ((formatter huggingface-formatter) 
                                        manifest articles output-dir)

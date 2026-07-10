@@ -4,7 +4,7 @@
 ετυμηγορίες, εκκρεμότητες, μπλοκαρίσματα. Ο διάλογος: `AI-DIALOGUE.md`.
 Πηγή αλήθειας παραμένουν τα gates/μητρώα — αυτό είναι ΣΥΝΟΨΗ, όχι απόδειξη.
 
-*Τελευταία ενημέρωση: Claude · 2026-07-10 · P1b ΚΛΕΙΣΤΟ cloud-side + έλεγχος Νο3 (2 ελεγκτές: διαγραφές=ΤΙΠΟΤΑ χαμένο· υπεροχή=CONFIRMED κλεισμένα στην έδρα, 683f43d9, E2E diffs=0)· identity locks 49/49· [0053] = ΣΧΕΔΙΟ P1.5 Proof Spine (planning only): Artifact Census 9ο κανονικό ⇒ release δένει ΚΑΘΕ per-article artifact + PCL text-spine, verify kit v2 per-article (πρόδρομος L6 kernel), release-gate v2 — κατατεθειμένο, περιμένει «εγκρίνω P1.5». Εκκρεμεί owner: docker proof + attest ×6 (ρητά ids [0052]) + ετυμηγορία merge P1b.*
+*Τελευταία ενημέρωση: Claude · 2026-07-10 · **P1.4 Trust Hardening υλοποιήθηκε** [0055] (αρχιτεκτονική-πρώτα, μετά την επιθεώρηση υπεροχής [0054]): ASN.1 X.509 gate (ψευδο-cert δομικά αδύνατο· σπόρος L6 kernel), fail-closed trust root (τέλος σιωπηλή γένεση κλειδιού), recorded-at transaction-time (θεμέλιο Ω2), 3 specs (key-lifecycle/threat-model/proof-object) δεμένα στην πορεία L6/L7. Proof: identity 51/51, loop 80/80, release-gate 73/73, E2E diffs=0. Εκκρεμεί απόφαση δημιουργού: έγκριση P1.4· A/B για ψευδο-blob σε committed releases (σύγκρουση immutability)· γνήσια TSA CA + σταθερό root κλειδί owner-side· owner docker + attest ×6 + merge P1b → P1.5 Proof Spine [0053].*
 
 ## Κατάσταση συστήματος (τελευταία μετρημένη)
 
