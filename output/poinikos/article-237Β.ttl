@@ -1,6 +1,6 @@
 # ============================================================
 # Ποινικός Κώδικας
-# Article 237 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 237002 - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,14 +174,14 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
 # ARTICLE ROOT NODE - Canonical Entry Point
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β>
     a eli:LegalResource ,
       dcat:Dataset ,
       schema:Legislation ;
@@ -190,11 +190,11 @@
     eli:date_document "2019-06-11"^^xsd:date ;
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619> ;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
-    eli:number 237 ;
+    eli:number 237002 ;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL> ;
 
     # Dublin Core Metadata
-    dct:identifier "gr-l-2019-art-237Β" ;
+    dct:identifier "gr-l-2019-art-237002Β" ;
     dct:issued "2019-06-11"^^xsd:date ;
     dct:language "el" ;
     dct:title """"""@el ;
@@ -207,12 +207,12 @@
     # Schema.org Properties
     schema:inLanguage "el" ;
     schema:isPartOf <https://stavropouloslaw.com/eli/gr/l/2019/4619> ;
-    schema:legislationIdentifier "gr-l-2019-art-237Β" ;
+    schema:legislationIdentifier "gr-l-2019-art-237002Β" ;
 
     # Forward Relations to FRBR Layers
-    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work> ;
-    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell> ;
-    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell/man> ;
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell/man> ;
 
     # Provenance Metadata
     prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
@@ -223,23 +223,23 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-237/2025-01-01T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-237002/2026-07-09T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
                            <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
 
     # Input Sources
-    prov:used <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/source> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/source> ;
 
     # Custom Properties
-    stavropouloslaw:articleNumber 237 ;
+    stavropouloslaw:articleNumber 237002 ;
     stavropouloslaw:corpusShortName "poinikos"
  .
 
@@ -249,31 +249,31 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 237
+# FRBR WORK LAYER - Article 237002
 # Abstract legal resource (language-independent)
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work>
     a eli:LegalResource, schema:Legislation;
     eli:date_document "2019-06-11"^^xsd:date;
-    eli:id_local "gr-l-2019-art-237Β-work";
+    eli:id_local "gr-l-2019-art-237002Β-work";
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619>;
-    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β>;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
     dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     dct:issued "2019-06-11"^^xsd:date;
     dct:publisher <https://stavropouloslaw.com/identity/org>;
     dct:type <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
-    schema:identifier "gr-l-2019-art-237Β-work";
+    schema:identifier "gr-l-2019-art-237002Β-work";
     schema:inLanguage "el";
     schema:legislationDate "2019-06-11"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/2019/ART/237";
+    schema:legislationIdentifier "ELI/GR/L/2019/ART/237002";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-237/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-237002/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,19 +293,19 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 237
+# FRBR EXPRESSION LAYER - Article 237002
 # Greek language realization of abstract Work
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell
 # Language: el (ELL)
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell>
     a eli:LegalExpression;
-    eli:realizes <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β>;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β>;
     eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
     dct:language "el";
     schema:inLanguage "el";
@@ -316,11 +316,11 @@
     schema:text """«Για την εφαρμογή των άρθρων 235 και 236, υπάλληλοι θεωρούνται και όσοι υπηρετούν μόνιμα ή μη και με οποιαδήποτε ιδιότητα ή σχέση σε οργανισμούς ή επιχειρήσεις οποιασδήποτε νομικής μορφής που ανήκουν εξ ολοκλήρου ή κατά την πλειοψηφία των μετοχών τους στο Κράτος, σε οργανισμούς τοπικής αυτοδιοίκησης ή σε νομικά πρόσωπα δημοσίου δικαίου ή των οποίων τη διοίκηση διορίζει εξ ολοκλήρου ή κατά πλειοψηφία το Κράτος ή οι οργανισμοί τοπικής αυτοδιοίκησης ή τα νομικά πρόσωπα δημοσίου δικαίου.»"""@el;
     glass:digest "sha256-869224f84327efb8109603e10ebc8d48e4d0081b454466483ddb5bc62e52d054";
     digest:sha256 "869224f84327efb8109603e10ebc8d48e4d0081b454466483ddb5bc62e52d054";
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/par/1>;
-    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell/man>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/par/1>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
-    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-237/2025-01-01T00-00-00.000000Z>.
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-237002/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -332,34 +332,34 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 237
+# FRBR MANIFESTATION LAYER - Article 237002
 # Digital embodiment of the Greek-language Expression
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell/man
-# Expression: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell/man>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell/man>
     a eli:LegalManifestation ,
       dcat:Distribution ;
-    eli:embodies <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β>;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β>;
     dcat:accessURL <https://stavropouloslaw.com/eli/gr/l/2019/4619>;
-    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β>;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell/man/format/html>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell/man/format/jsonld>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell/man/format/turtle>;
-    schema:identifier "gr-l-2019-art-237Β-work-exp-ell-man";
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-l-2019-art-237002Β-work-exp-ell-man";
     schema:legislationDate "2019-06-11"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-237Β-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-237002Β-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-237/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-237002/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -371,29 +371,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 237
+# FRBR FORMAT LAYER (HTML) - Article 237002
 # HTML encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell/man/format/html
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell/man/format/html
 # Media-type: text/html; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell/man/format/html>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell/man/format/html>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β>;
     dcat:mediaType "text/html; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-237Β-man-html>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-237002Β-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-237/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-237002/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -401,29 +401,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 237
+# FRBR FORMAT LAYER (JSONLD) - Article 237002
 # JSONLD encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell/man/format/jsonld
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell/man/format/jsonld
 # Media-type: application/ld+json; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell/man/format/jsonld>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell/man/format/jsonld>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β>;
     dcat:mediaType "application/ld+json; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-237Β-man-jsonld>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-237002Β-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-237/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-237002/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -431,29 +431,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 237
+# FRBR FORMAT LAYER (TURTLE) - Article 237002
 # TURTLE encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell/man/format/turtle
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell/man/format/turtle
 # Media-type: text/turtle; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell/man/format/turtle>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell/man/format/turtle>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β>;
     dcat:mediaType "text/turtle; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-237Β-man-turtle>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-237002Β-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-237/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-237002/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -464,12 +464,12 @@
 # PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237Β/par/1>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/237002Β/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
     schema:text """1. «Για την εφαρμογή των άρθρων 235 και 236, υπάλληλοι θεωρούνται και όσοι υπηρετούν μόνιμα ή μη και με οποιαδήποτε ιδιότητα ή σχέση σε οργανισμούς ή επιχειρήσεις οποιασδήποτε νομικής μορφής που ανήκουν εξ ολοκλήρου ή κατά την πλειοψηφία των μετοχών τους στο Κράτος, σε οργανισμούς τοπικής αυτοδιοίκησης ή σε νομικά πρόσωπα δημοσίου δικαίου ή των οποίων τη διοίκηση διορίζει εξ ολοκλήρου ή κατά πλειοψηφία το Κράτος ή οι οργανισμοί τοπικής αυτοδιοίκησης ή τα νομικά πρόσωπα δημοσίου δικαίου.»"""@el .
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 237 - Complete Canonical Representation
+# Article 237002 - Complete Canonical Representation
 # ============================================================

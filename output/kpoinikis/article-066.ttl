@@ -174,7 +174,7 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
@@ -223,13 +223,13 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-66/2025-01-01T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-66/2026-07-09T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-66/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-66/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -312,15 +312,15 @@
     eli:title """Παθητική νομιμοποίηση."""@el;
     dct:title """Παθητική νομιμοποίηση."""@el;
     schema:name """Παθητική νομιμοποίηση."""@el;
-    eli:description """Η παράσταση προς υποστήριξη κατηγορουμένου. της κατηγορίας ασκείται εναντίον του"""@el;
-    schema:text """Η παράσταση προς υποστήριξη κατηγορουμένου. της κατηγορίας ασκείται εναντίον του"""@el;
-    glass:digest "sha256-0f6d8c3aea2dea105c80c7a272fb9fdd183b78bec20d00b76d2e8db472b7c466";
-    digest:sha256 "0f6d8c3aea2dea105c80c7a272fb9fdd183b78bec20d00b76d2e8db472b7c466";
+    eli:description """Η παράσταση προς υποστήριξη της κατηγορίας ασκείται εναντίον του κατηγορουμένου."""@el;
+    schema:text """Η παράσταση προς υποστήριξη της κατηγορίας ασκείται εναντίον του κατηγορουμένου."""@el;
+    glass:digest "sha256-533fd592a2ce1fa7b270dbd7aa12441cca9a5ff06bf53b013bca134410e8636d";
+    digest:sha256 "533fd592a2ce1fa7b270dbd7aa12441cca9a5ff06bf53b013bca134410e8636d";
     eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/66/par/1>;
     eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/66/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/66/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-66/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-66/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -359,7 +359,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-66/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-66/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -393,7 +393,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-66/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-66/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -423,7 +423,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-66/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-66/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -453,7 +453,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-66/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-66/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -467,7 +467,7 @@
 <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/66/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
-    schema:text """1. Η παράσταση προς υποστήριξη κατηγορουμένου. της κατηγορίας ασκείται εναντίον του"""@el .
+    schema:text """1. Η παράσταση προς υποστήριξη της κατηγορίας ασκείται εναντίον του κατηγορουμένου."""@el .
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT

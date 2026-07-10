@@ -1,6 +1,6 @@
 # ============================================================
 # Κώδικας Πολιτικής Δικονομίας
-# Article 871 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 871001 - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,14 +174,14 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
 # ARTICLE ROOT NODE - Canonical Entry Point
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α>
     a eli:LegalResource ,
       dcat:Dataset ,
       schema:Legislation ;
@@ -190,11 +190,11 @@
     eli:date_document "1985-10-24"^^xsd:date ;
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503> ;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
-    eli:number 871 ;
+    eli:number 871001 ;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/DECREE> ;
 
     # Dublin Core Metadata
-    dct:identifier "gr-pd-1985-art-871Α" ;
+    dct:identifier "gr-pd-1985-art-871001Α" ;
     dct:issued "1985-10-24"^^xsd:date ;
     dct:language "el" ;
     dct:title """"""@el ;
@@ -207,12 +207,12 @@
     # Schema.org Properties
     schema:inLanguage "el" ;
     schema:isPartOf <https://stavropouloslaw.com/eli/gr/pd/1985/503> ;
-    schema:legislationIdentifier "gr-pd-1985-art-871Α" ;
+    schema:legislationIdentifier "gr-pd-1985-art-871001Α" ;
 
     # Forward Relations to FRBR Layers
-    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work> ;
-    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell> ;
-    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell/man> ;
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell/man> ;
 
     # Provenance Metadata
     prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
@@ -223,23 +223,23 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-871/2025-01-01T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-871001/2026-07-09T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
                            <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
 
     # Input Sources
-    prov:used <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/source> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/source> ;
 
     # Custom Properties
-    stavropouloslaw:articleNumber 871 ;
+    stavropouloslaw:articleNumber 871001 ;
     stavropouloslaw:corpusShortName "kpolitikis"
  .
 
@@ -249,31 +249,31 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 871
+# FRBR WORK LAYER - Article 871001
 # Abstract legal resource (language-independent)
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work>
     a eli:LegalResource, schema:Legislation;
     eli:date_document "1985-10-24"^^xsd:date;
-    eli:id_local "gr-pd-1985-art-871Α-work";
+    eli:id_local "gr-pd-1985-art-871001Α-work";
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503>;
-    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α>;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/DECREE>;
     dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     dct:issued "1985-10-24"^^xsd:date;
     dct:publisher <https://stavropouloslaw.com/identity/org>;
     dct:type <http://publications.europa.eu/resource/authority/resource-type/DECREE>;
-    schema:identifier "gr-pd-1985-art-871Α-work";
+    schema:identifier "gr-pd-1985-art-871001Α-work";
     schema:inLanguage "el";
     schema:legislationDate "1985-10-24"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/PD/1985/ART/871";
+    schema:legislationIdentifier "ELI/GR/PD/1985/ART/871001";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "PresidentialDecree";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-871/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-871001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,19 +293,19 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 871
+# FRBR EXPRESSION LAYER - Article 871001
 # Greek language realization of abstract Work
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell
 # Language: el (ELL)
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell>
     a eli:LegalExpression;
-    eli:realizes <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α>;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α>;
     eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
     dct:language "el";
     schema:inLanguage "el";
@@ -316,18 +316,18 @@
     schema:text """1. Ο ορισμός δικαστικών λειτουργών ως διαιτητών ή επιδιαιτητών διέπεται από τις διατάξεις των επόμενων παραγράφων.\n2. Δικαστικός λειτουργός μπορεί να είναι μόνο μοναδικός διαιτητής (μονομελής διαιτησία) η επιδιαιτητής. Δεν μπορεί να ασκήσει διαιτητικά έργα ο δικαστικός λειτουργός που δεν έχει συμπληρώσει πενταετή τουλάχιστον συνολική δικαστική υπηρεσία.\n3. Αν η διαιτησία, κατά τη συμφωνία των μερών, προβλέπεται ότι θα διεξαχθεί από δικαστικό λειτουργό ορισμένου δικαστηρίου, αυτός είναι ο εκάστοτε εκ περιτροπής καλούμενος κατά τη σειρά αρχαιότητας μεταξύ των υπηρετούντων στο δικαστήριο αυτό προέδρων και δικαστών την ημέρα κατάθεσης της αίτησης. Το όνομα του δικαστικού αυτού λειτουργού γνωστοποιείται στον αιτούντα από τον πρόεδρο του δικαστηρίου ή από τον πρόεδρο του τριμελούς συμβουλίου που διευθύνει το δικαστήριο.\n4. Ορισμός συγκεκριμένου δικαστικού λειτουργού ως διαιτητή ή επιδιαιτητή, είτε ονομαστικά είτε έμμεσα, με κριτήριο τη θέση ή ιδιότητα που έχει ή θα έχει στο μέλλον, είναι άκυρος. Η ακυρότητα αυτή δεν επιδρά στη συμφωνία για τη διαιτησία. Στην περίπτωση αυτή διαιτητής ή επιδιαιτητής είναι ο κατά την προηγούμενη παράγραφο καλούμενος από το δικαστήριο, στο οποίο ο συγκεκριμένος δικαστικός λειτουργός υπηρετούσε κατά την κατάρτιση της διαιτητικής συμφωνίας.\n5. Αν η διαιτησία, κατά τη συμφωνία των μερών, προβλέπεται ότι θα διεξαχθεί από δικαστικό λειτουργό, χωρίς όμως να καθορίζεται με την ίδια ή με μεταγενέστερη συμφωνία το δικαστήριο από το οποίο θα προέλθει, θεωρείται ότι τα μέρη απέβλεψαν στο δικαστήριο του τόπου όπου καταρτίστηκε η συμφωνία για τη διαιτησία. Αν στον τόπο κατάρτισης της συμφωνίας λειτουργούν δικαστήρια διαφόρων δικαιοδοσιών ή βαθμών και δεν προκύπτει από τη συμφωνία εκείνο στο οποίο απέβλεψαν τα μέρη, θεωρείται ότι απέβλεψαν στο πολιτικό πρωτοδικείο και, αν πρόκειται για διοικητική διαφορά, στο διοικητικό πρωτοδικείο.\n6. Σε κάθε δικαστήριο τηρείται από τη γραμματεία ιδιαίτερο βιβλίο, στο οποίο καταχωρίζονται για καθεμία από τις διαιτησίες και σε χωριστή στήλη, τα ονοματεπώνυμα των διαδίκων, καθώς και του μοναδικού διαιτητή ή επιδιαιτητή, οι χρονολογίες έκδοσης της απόφασης και της κατάθεσής της, καθώς και ο αριθμός της.\n7. Ο κατά τις προηγούμενες διατάξεις καλούμενος δικαστικός λειτουργός υποχρεούται να διεξαγάγει τη διαιτησία η οποία αποτελεί μέρος των δικαστικών του καθηκόντων. Σε περίπτωση νόμιμου κωλύματος ή λόγου εξαίρεσης καλείται ο κατά σειράν επόμενος. Μεταγενέστερη μεταβολή στην υπηρεσιακή κατάσταση του δικαστικού λειτουργού δεν επιδρά στην ιδιότητά του ως μοναδικού διαιτητή ή επιδιαιτητή.\n8. Οι διατάξεις των προηγούμενων παραγράφων εφαρμόζονται ανάλογα και όταν με τη συμφωνία των μερών προβλέπεται ότι ο διαιτητής ή ο επιδιαιτητής θα είναι εισαγγελικός λειτουργός."""@el;
     glass:digest "sha256-df06003a7849131aa19da3a6ddfc638603ae88691ba966661f5bbf6aece210f0";
     digest:sha256 "df06003a7849131aa19da3a6ddfc638603ae88691ba966661f5bbf6aece210f0";
-    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/par/1>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/par/2>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/par/3>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/par/4>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/par/5>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/par/6>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/par/7>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/par/8>;
-    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell/man>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/par/1>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/par/2>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/par/3>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/par/4>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/par/5>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/par/6>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/par/7>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/par/8>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
-    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-871/2025-01-01T00-00-00.000000Z>.
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-871001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -339,34 +339,34 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 871
+# FRBR MANIFESTATION LAYER - Article 871001
 # Digital embodiment of the Greek-language Expression
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell/man
-# Expression: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell/man>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell/man>
     a eli:LegalManifestation ,
       dcat:Distribution ;
-    eli:embodies <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α>;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α>;
     dcat:accessURL <https://stavropouloslaw.com/eli/gr/pd/1985/503>;
-    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α>;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
-    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell/man/format/html>;
-    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell/man/format/jsonld>;
-    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell/man/format/turtle>;
-    schema:identifier "gr-pd-1985-art-871Α-work-exp-ell-man";
+    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-pd-1985-art-871001Α-work-exp-ell-man";
     schema:legislationDate "1985-10-24"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-871Α-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-871001Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-871/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-871001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -378,29 +378,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 871
+# FRBR FORMAT LAYER (HTML) - Article 871001
 # HTML encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell/man/format/html
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell/man/format/html
 # Media-type: text/html; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell/man/format/html>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell/man/format/html>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α>;
     dcat:mediaType "text/html; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-871Α-man-html>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-871001Α-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-871/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-871001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -408,29 +408,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 871
+# FRBR FORMAT LAYER (JSONLD) - Article 871001
 # JSONLD encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell/man/format/jsonld
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell/man/format/jsonld
 # Media-type: application/ld+json; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell/man/format/jsonld>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell/man/format/jsonld>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α>;
     dcat:mediaType "application/ld+json; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-871Α-man-jsonld>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-871001Α-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-871/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-871001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -438,29 +438,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 871
+# FRBR FORMAT LAYER (TURTLE) - Article 871001
 # TURTLE encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell/man/format/turtle
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell/man/format/turtle
 # Media-type: text/turtle; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell/man/format/turtle>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell/man/format/turtle>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α>;
     dcat:mediaType "text/turtle; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-871Α-man-turtle>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-871001Α-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-871/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-871001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -471,47 +471,47 @@
 # PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/par/1>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
     schema:text """1. Ο ορισμός δικαστικών λειτουργών ως διαιτητών ή επιδιαιτητών διέπεται από τις διατάξεις των επόμενων παραγράφων."""@el .
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/par/2>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/par/2>
     a eli:LegalResourceSubdivision ;
     eli:number "2" ;
     schema:text """2. Δικαστικός λειτουργός μπορεί να είναι μόνο μοναδικός διαιτητής (μονομελής διαιτησία) η επιδιαιτητής. Δεν μπορεί να ασκήσει διαιτητικά έργα ο δικαστικός λειτουργός που δεν έχει συμπληρώσει πενταετή τουλάχιστον συνολική δικαστική υπηρεσία."""@el .
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/par/3>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/par/3>
     a eli:LegalResourceSubdivision ;
     eli:number "3" ;
     schema:text """3. Αν η διαιτησία, κατά τη συμφωνία των μερών, προβλέπεται ότι θα διεξαχθεί από δικαστικό λειτουργό ορισμένου δικαστηρίου, αυτός είναι ο εκάστοτε εκ περιτροπής καλούμενος κατά τη σειρά αρχαιότητας μεταξύ των υπηρετούντων στο δικαστήριο αυτό προέδρων και δικαστών την ημέρα κατάθεσης της αίτησης. Το όνομα του δικαστικού αυτού λειτουργού γνωστοποιείται στον αιτούντα από τον πρόεδρο του δικαστηρίου ή από τον πρόεδρο του τριμελούς συμβουλίου που διευθύνει το δικαστήριο."""@el .
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/par/4>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/par/4>
     a eli:LegalResourceSubdivision ;
     eli:number "4" ;
     schema:text """4. Ορισμός συγκεκριμένου δικαστικού λειτουργού ως διαιτητή ή επιδιαιτητή, είτε ονομαστικά είτε έμμεσα, με κριτήριο τη θέση ή ιδιότητα που έχει ή θα έχει στο μέλλον, είναι άκυρος. Η ακυρότητα αυτή δεν επιδρά στη συμφωνία για τη διαιτησία. Στην περίπτωση αυτή διαιτητής ή επιδιαιτητής είναι ο κατά την προηγούμενη παράγραφο καλούμενος από το δικαστήριο, στο οποίο ο συγκεκριμένος δικαστικός λειτουργός υπηρετούσε κατά την κατάρτιση της διαιτητικής συμφωνίας."""@el .
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/par/5>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/par/5>
     a eli:LegalResourceSubdivision ;
     eli:number "5" ;
     schema:text """5. Αν η διαιτησία, κατά τη συμφωνία των μερών, προβλέπεται ότι θα διεξαχθεί από δικαστικό λειτουργό, χωρίς όμως να καθορίζεται με την ίδια ή με μεταγενέστερη συμφωνία το δικαστήριο από το οποίο θα προέλθει, θεωρείται ότι τα μέρη απέβλεψαν στο δικαστήριο του τόπου όπου καταρτίστηκε η συμφωνία για τη διαιτησία. Αν στον τόπο κατάρτισης της συμφωνίας λειτουργούν δικαστήρια διαφόρων δικαιοδοσιών ή βαθμών και δεν προκύπτει από τη συμφωνία εκείνο στο οποίο απέβλεψαν τα μέρη, θεωρείται ότι απέβλεψαν στο πολιτικό πρωτοδικείο και, αν πρόκειται για διοικητική διαφορά, στο διοικητικό πρωτοδικείο."""@el .
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/par/6>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/par/6>
     a eli:LegalResourceSubdivision ;
     eli:number "6" ;
     schema:text """6. Σε κάθε δικαστήριο τηρείται από τη γραμματεία ιδιαίτερο βιβλίο, στο οποίο καταχωρίζονται για καθεμία από τις διαιτησίες και σε χωριστή στήλη, τα ονοματεπώνυμα των διαδίκων, καθώς και του μοναδικού διαιτητή ή επιδιαιτητή, οι χρονολογίες έκδοσης της απόφασης και της κατάθεσής της, καθώς και ο αριθμός της."""@el .
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/par/7>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/par/7>
     a eli:LegalResourceSubdivision ;
     eli:number "7" ;
     schema:text """7. Ο κατά τις προηγούμενες διατάξεις καλούμενος δικαστικός λειτουργός υποχρεούται να διεξαγάγει τη διαιτησία η οποία αποτελεί μέρος των δικαστικών του καθηκόντων. Σε περίπτωση νόμιμου κωλύματος ή λόγου εξαίρεσης καλείται ο κατά σειράν επόμενος. Μεταγενέστερη μεταβολή στην υπηρεσιακή κατάσταση του δικαστικού λειτουργού δεν επιδρά στην ιδιότητά του ως μοναδικού διαιτητή ή επιδιαιτητή."""@el .
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871Α/par/8>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/871001Α/par/8>
     a eli:LegalResourceSubdivision ;
     eli:number "8" ;
     schema:text """8. Οι διατάξεις των προηγούμενων παραγράφων εφαρμόζονται ανάλογα και όταν με τη συμφωνία των μερών προβλέπεται ότι ο διαιτητής ή ο επιδιαιτητής θα είναι εισαγγελικός λειτουργός."""@el .
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 871 - Complete Canonical Representation
+# Article 871001 - Complete Canonical Representation
 # ============================================================

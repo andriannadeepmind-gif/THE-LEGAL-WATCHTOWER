@@ -1,6 +1,6 @@
 # ============================================================
 # Ποινικός Κώδικας
-# Article 80 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 80001 - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,14 +174,14 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
 # ARTICLE ROOT NODE - Canonical Entry Point
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α>
     a eli:LegalResource ,
       dcat:Dataset ,
       schema:Legislation ;
@@ -190,11 +190,11 @@
     eli:date_document "2019-06-11"^^xsd:date ;
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619> ;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
-    eli:number 80 ;
+    eli:number 80001 ;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL> ;
 
     # Dublin Core Metadata
-    dct:identifier "gr-l-2019-art-080Α" ;
+    dct:identifier "gr-l-2019-art-80001Α" ;
     dct:issued "2019-06-11"^^xsd:date ;
     dct:language "el" ;
     dct:title """Επιμέτρηση και απότιση χρηματικής ποινής"""@el ;
@@ -207,12 +207,12 @@
     # Schema.org Properties
     schema:inLanguage "el" ;
     schema:isPartOf <https://stavropouloslaw.com/eli/gr/l/2019/4619> ;
-    schema:legislationIdentifier "gr-l-2019-art-080Α" ;
+    schema:legislationIdentifier "gr-l-2019-art-80001Α" ;
 
     # Forward Relations to FRBR Layers
-    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work> ;
-    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell> ;
-    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell/man> ;
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell/man> ;
 
     # Provenance Metadata
     prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
@@ -223,23 +223,23 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-80/2025-01-01T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-80001/2026-07-09T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
                            <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
 
     # Input Sources
-    prov:used <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/source> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/source> ;
 
     # Custom Properties
-    stavropouloslaw:articleNumber 80 ;
+    stavropouloslaw:articleNumber 80001 ;
     stavropouloslaw:corpusShortName "poinikos"
  .
 
@@ -249,31 +249,31 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 80
+# FRBR WORK LAYER - Article 80001
 # Abstract legal resource (language-independent)
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work>
     a eli:LegalResource, schema:Legislation;
     eli:date_document "2019-06-11"^^xsd:date;
-    eli:id_local "gr-l-2019-art-080Α-work";
+    eli:id_local "gr-l-2019-art-80001Α-work";
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619>;
-    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α>;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
     dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     dct:issued "2019-06-11"^^xsd:date;
     dct:publisher <https://stavropouloslaw.com/identity/org>;
     dct:type <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
-    schema:identifier "gr-l-2019-art-080Α-work";
+    schema:identifier "gr-l-2019-art-80001Α-work";
     schema:inLanguage "el";
     schema:legislationDate "2019-06-11"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/2019/ART/80";
+    schema:legislationIdentifier "ELI/GR/L/2019/ART/80001";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-80/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-80001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,19 +293,19 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 80
+# FRBR EXPRESSION LAYER - Article 80001
 # Greek language realization of abstract Work
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell
 # Language: el (ELL)
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell>
     a eli:LegalExpression;
-    eli:realizes <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α>;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α>;
     eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
     dct:language "el";
     schema:inLanguage "el";
@@ -316,14 +316,14 @@
     schema:text """1. Κάθε ποινή φυλάκισης μέχρι δύο (2) ετών, αν το δικαστήριο κρίνει ότι δεν υπάγεται στις προϋποθέσεις εφαρμογής των άρθρων 99 και 104 Α, μετατρέπεται σε χρηματική ποινή, υπολογίζοντας κάθε ημέρα σε ποσό από δέκα (10) έως εκατό (100) ευρώ, εκτός αν το δικαστήριο, με την απόφασή του, κρίνει ότι απαιτείται η πραγματική της έκτιση εν όλω ή εν μέρει, για να αποτραπεί ο δράστης από την τέλεση νέων αξιόποινων πράξεων. Η παρ. 1 του άρθρου 80 για το ύψος της μετατροπής εφαρμόζεται αναλόγως.\n2. Αν ο καταδικασθείς αδυνατεί να καταβάλει αμέσως το σύνολο της χρηματικής ποινής ή η καταβολή της συνεπάγεται την αδυναμία καταβολής της αποζημίωσης στο θύμα, το δικαστήριο καθορίζει, και αυτεπαγγέλτως, προθεσμία, όχι μεγαλύτερη από τρία (3) έτη, ώστε μέσα σε αυτήν να καταβάλει σε δόσεις ή εφάπαξ την ποινή του.\n3. Αν η αδυναμία καταβολής της χρηματικής ποινής ή των δόσεων αυτής οφείλεται σε ουσιώδη αλλαγή των όρων της προσωπικής και οικονομικής κατάστασης του καταδικασθέντος μετά την επιβολή της ποινής, ο καταδικασθείς μπορεί να ζητήσει από το δικαστήριο που εξέδωσε την απόφαση: α) προθεσμία καταβολής της χρηματικής ποινής ή επέκταση αυτής, η οποία δεν μπορεί να υπερβαίνει συνολικά τα πέντε (5) έτη, ή β) αντικατάσταση της χρηματικής ποινής από την προσφορά κοινωφελούς εργασίας, στο μέτρο που ορίζει το δικαστήριο σύμφωνα με το άρθρο 104Α. Κάθε συγκεκριμένο αίτημα μπορεί να υποβληθεί μία (1) μόνο φορά.\n4. Σε περίπτωση εφάπαξ καταβολής της χρηματικής ποινής που προέρχεται από μετατροπή ποινής φυλάκισης, χωρίς εφαρμογή των παρ. 2 και 3, δεν εφαρμόζονται οι διατάξεις που προβλέπουν προσαύξησή της."""@el;
     glass:digest "sha256-03960195f91a26bedadfcae4e1c70a20b42cb00f2abf1939d37f7440e9488775";
     digest:sha256 "03960195f91a26bedadfcae4e1c70a20b42cb00f2abf1939d37f7440e9488775";
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/par/1>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/par/2>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/par/3>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/par/4>;
-    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell/man>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/par/1>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/par/2>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/par/3>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/par/4>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
-    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-80/2025-01-01T00-00-00.000000Z>.
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-80001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -335,34 +335,34 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 80
+# FRBR MANIFESTATION LAYER - Article 80001
 # Digital embodiment of the Greek-language Expression
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell/man
-# Expression: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell/man>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell/man>
     a eli:LegalManifestation ,
       dcat:Distribution ;
-    eli:embodies <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α>;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α>;
     dcat:accessURL <https://stavropouloslaw.com/eli/gr/l/2019/4619>;
-    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α>;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell/man/format/html>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell/man/format/jsonld>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell/man/format/turtle>;
-    schema:identifier "gr-l-2019-art-080Α-work-exp-ell-man";
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-l-2019-art-80001Α-work-exp-ell-man";
     schema:legislationDate "2019-06-11"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-80Α-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-80001Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-80/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-80001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -374,29 +374,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 80
+# FRBR FORMAT LAYER (HTML) - Article 80001
 # HTML encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell/man/format/html
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell/man/format/html
 # Media-type: text/html; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell/man/format/html>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell/man/format/html>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α>;
     dcat:mediaType "text/html; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-80Α-man-html>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-80001Α-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-80/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-80001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -404,29 +404,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 80
+# FRBR FORMAT LAYER (JSONLD) - Article 80001
 # JSONLD encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell/man/format/jsonld
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell/man/format/jsonld
 # Media-type: application/ld+json; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell/man/format/jsonld>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell/man/format/jsonld>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α>;
     dcat:mediaType "application/ld+json; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-80Α-man-jsonld>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-80001Α-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-80/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-80001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -434,29 +434,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 80
+# FRBR FORMAT LAYER (TURTLE) - Article 80001
 # TURTLE encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell/man/format/turtle
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell/man/format/turtle
 # Media-type: text/turtle; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell/man/format/turtle>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell/man/format/turtle>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α>;
     dcat:mediaType "text/turtle; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-80Α-man-turtle>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-80001Α-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-80/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-80001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -467,27 +467,27 @@
 # PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/par/1>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
     schema:text """1. Κάθε ποινή φυλάκισης μέχρι δύο (2) ετών, αν το δικαστήριο κρίνει ότι δεν υπάγεται στις προϋποθέσεις εφαρμογής των άρθρων 99 και 104 Α, μετατρέπεται σε χρηματική ποινή, υπολογίζοντας κάθε ημέρα σε ποσό από δέκα (10) έως εκατό (100) ευρώ, εκτός αν το δικαστήριο, με την απόφασή του, κρίνει ότι απαιτείται η πραγματική της έκτιση εν όλω ή εν μέρει, για να αποτραπεί ο δράστης από την τέλεση νέων αξιόποινων πράξεων. Η παρ. 1 του άρθρου 80 για το ύψος της μετατροπής εφαρμόζεται αναλόγως."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/par/2>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/par/2>
     a eli:LegalResourceSubdivision ;
     eli:number "2" ;
     schema:text """2. Αν ο καταδικασθείς αδυνατεί να καταβάλει αμέσως το σύνολο της χρηματικής ποινής ή η καταβολή της συνεπάγεται την αδυναμία καταβολής της αποζημίωσης στο θύμα, το δικαστήριο καθορίζει, και αυτεπαγγέλτως, προθεσμία, όχι μεγαλύτερη από τρία (3) έτη, ώστε μέσα σε αυτήν να καταβάλει σε δόσεις ή εφάπαξ την ποινή του."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/par/3>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/par/3>
     a eli:LegalResourceSubdivision ;
     eli:number "3" ;
     schema:text """3. Αν η αδυναμία καταβολής της χρηματικής ποινής ή των δόσεων αυτής οφείλεται σε ουσιώδη αλλαγή των όρων της προσωπικής και οικονομικής κατάστασης του καταδικασθέντος μετά την επιβολή της ποινής, ο καταδικασθείς μπορεί να ζητήσει από το δικαστήριο που εξέδωσε την απόφαση: α) προθεσμία καταβολής της χρηματικής ποινής ή επέκταση αυτής, η οποία δεν μπορεί να υπερβαίνει συνολικά τα πέντε (5) έτη, ή β) αντικατάσταση της χρηματικής ποινής από την προσφορά κοινωφελούς εργασίας, στο μέτρο που ορίζει το δικαστήριο σύμφωνα με το άρθρο 104Α. Κάθε συγκεκριμένο αίτημα μπορεί να υποβληθεί μία (1) μόνο φορά."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80Α/par/4>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/80001Α/par/4>
     a eli:LegalResourceSubdivision ;
     eli:number "4" ;
     schema:text """4. Σε περίπτωση εφάπαξ καταβολής της χρηματικής ποινής που προέρχεται από μετατροπή ποινής φυλάκισης, χωρίς εφαρμογή των παρ. 2 και 3, δεν εφαρμόζονται οι διατάξεις που προβλέπουν προσαύξησή της."""@el .
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 80 - Complete Canonical Representation
+# Article 80001 - Complete Canonical Representation
 # ============================================================

@@ -1,6 +1,6 @@
 # ============================================================
 # Ποινικός Κώδικας
-# Article 292 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 292001 - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,14 +174,14 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
 # ARTICLE ROOT NODE - Canonical Entry Point
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α>
     a eli:LegalResource ,
       dcat:Dataset ,
       schema:Legislation ;
@@ -190,11 +190,11 @@
     eli:date_document "2019-06-11"^^xsd:date ;
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619> ;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
-    eli:number 292 ;
+    eli:number 292001 ;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL> ;
 
     # Dublin Core Metadata
-    dct:identifier "gr-l-2019-art-292Α" ;
+    dct:identifier "gr-l-2019-art-292001Α" ;
     dct:issued "2019-06-11"^^xsd:date ;
     dct:language "el" ;
     dct:title """Εγκλήματα κατά της ασφάλειας των τηλεφωνικών επικοινωνιών"""@el ;
@@ -207,12 +207,12 @@
     # Schema.org Properties
     schema:inLanguage "el" ;
     schema:isPartOf <https://stavropouloslaw.com/eli/gr/l/2019/4619> ;
-    schema:legislationIdentifier "gr-l-2019-art-292Α" ;
+    schema:legislationIdentifier "gr-l-2019-art-292001Α" ;
 
     # Forward Relations to FRBR Layers
-    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work> ;
-    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell> ;
-    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell/man> ;
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell/man> ;
 
     # Provenance Metadata
     prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
@@ -223,23 +223,23 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-292/2025-01-01T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-292001/2026-07-09T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
                            <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
 
     # Input Sources
-    prov:used <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/source> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/source> ;
 
     # Custom Properties
-    stavropouloslaw:articleNumber 292 ;
+    stavropouloslaw:articleNumber 292001 ;
     stavropouloslaw:corpusShortName "poinikos"
  .
 
@@ -249,31 +249,31 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 292
+# FRBR WORK LAYER - Article 292001
 # Abstract legal resource (language-independent)
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work>
     a eli:LegalResource, schema:Legislation;
     eli:date_document "2019-06-11"^^xsd:date;
-    eli:id_local "gr-l-2019-art-292Α-work";
+    eli:id_local "gr-l-2019-art-292001Α-work";
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619>;
-    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α>;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
     dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     dct:issued "2019-06-11"^^xsd:date;
     dct:publisher <https://stavropouloslaw.com/identity/org>;
     dct:type <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
-    schema:identifier "gr-l-2019-art-292Α-work";
+    schema:identifier "gr-l-2019-art-292001Α-work";
     schema:inLanguage "el";
     schema:legislationDate "2019-06-11"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/2019/ART/292";
+    schema:legislationIdentifier "ELI/GR/L/2019/ART/292001";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-292/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-292001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,19 +293,19 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 292
+# FRBR EXPRESSION LAYER - Article 292001
 # Greek language realization of abstract Work
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell
 # Language: el (ELL)
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell>
     a eli:LegalExpression;
-    eli:realizes <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α>;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α>;
     eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
     dct:language "el";
     schema:inLanguage "el";
@@ -316,15 +316,15 @@
     schema:text """1. Όποιος χωρίς δικαίωμα αποκτά πρόσβαση σε σύνδεση ή σε δίκτυο παροχής υπηρεσιών τηλεφωνίας ή σε σύστημα υλικού ή λογισμικού, που χρησιμοποιείται για την παροχή τέτοιων υπηρεσιών, και με τον τρόπο αυτόν θέτει σε κίνδυνο την ασφάλεια των τηλεφωνικών επικοινωνιών, τιμωρείται με φυλάκιση τουλάχιστον ενός (1) έτους και χρηματική ποινή. Αν ο υπαίτιος της πράξης του προηγούμενου εδαφίου είναι ο εργαζόμενος ή συνεργάτης του παρόχου υπηρεσιών τηλεφωνίας, τιμωρείται με φυλάκιση τουλάχιστον δύο (2) ετών και χρηματική ποινή. Με την ποινή του προηγουμένου εδαφίου τιμωρείται και ο πάροχος υπηρεσιών τηλεφωνίας ή ο νόμιμος εκπρόσωπός του ο οποίος αθέμιτα θέτει σε κίνδυνο την ασφάλεια των τηλεφωνικών επικοινωνιών.\n2. Ο πάροχος υπηρεσιών τηλεφωνίας ή ο νόμιμος εκπρόσωπος αυτού, ο οποίος παραβιάζει διάταξη κανονισμού της Αρχής Διασφάλισης του Απορρήτου των Επικοινωνιών (ΑΔΑΕ) ή όρο της Γενικής Άδειας ή του δικαιώματος χρήσης ραδιοσυχνότητας ή του δικαιώματος χρήσης αριθμού, που αναφέρονται στην ασφάλεια των ηλεκτρονικών επικοινωνιών, τιμωρείται με φυλάκιση τουλάχιστον δύο (2) ετών και χρηματική ποινή.\n3. Ο πάροχος υπηρεσιών τηλεφωνίας ή ο νόμιμος εκπρόσωπος αυτού ή ο κατά τον νόμο υπεύθυνος για τη διασφάλιση του απορρήτου των επικοινωνιών, που παραλείπει να λάβει τα αναγκαία μέτρα για την αποτροπή πράξης της παρ. 1, τιμωρείται με φυλάκιση τουλάχιστον δύο (2) ετών και χρηματική ποινή, εφόσον η πράξη τελέστηκε ή έγινε απόπειρα τέλεσής της, ανεξάρτητα αν θα τιμωρηθεί ο υπαίτιος.\n4. Αν ο υπαίτιος των πράξεων των προηγούμενων παραγράφων είχε σκοπό να προσπορίσει στον εαυτό του ή σε άλλον παράνομο περιουσιακό όφελος ή να προκαλέσει περιουσιακή ζημία σε άλλον, τιμωρείται με φυλάκιση τουλάχιστον τριών (3) ετών και χρηματική ποινή. Εφόσον το συνολικό όφελος ή η συνολική ζημία υπερβαίνουν το ποσό των εκατόν είκοσι χιλιάδων (120.000) ευρώ, ο υπαίτιος τιμωρείται με κάθειρξη έως δέκα (10) έτη και χρηματική ποινή. Αν από τις πράξεις των προηγούμενων παραγράφων μπορεί να τεθούν σε κίνδυνο θεμελιώδεις αρχές και θεσμοί του Πολιτεύματος, όπως μνημονεύονται στο άρθρο 134 του Ποινικού Κώδικα ή απόρρητο που αναφέρεται στην ασφάλεια του κράτους ή στην ασφάλεια εγκαταστάσεων κοινής ωφέλειας, επιβάλλεται κάθειρξη.\n5. Όποιος αθέμιτα διαθέτει στο εμπόριο ή με άλλον τρόπο προσφέρει προς εγκατάσταση ειδικά τεχνικά μέσα για την τέλεση των πράξεων της παρ. 1 ή δημόσια διαφημίζει ή προσφέρει τις υπηρεσίες του για την τέλεσή τους τιμωρείται με φυλάκιση έως δύο (2) έτη ή χρηματική ποινή»."""@el;
     glass:digest "sha256-9b91c9250d7da7d96116d01a4f35fa5fc7ad4c729fcedc2e9b34cf8d806057ad";
     digest:sha256 "9b91c9250d7da7d96116d01a4f35fa5fc7ad4c729fcedc2e9b34cf8d806057ad";
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/par/1>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/par/2>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/par/3>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/par/4>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/par/5>;
-    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell/man>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/par/1>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/par/2>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/par/3>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/par/4>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/par/5>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
-    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-292/2025-01-01T00-00-00.000000Z>.
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-292001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -336,34 +336,34 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 292
+# FRBR MANIFESTATION LAYER - Article 292001
 # Digital embodiment of the Greek-language Expression
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell/man
-# Expression: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell/man>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell/man>
     a eli:LegalManifestation ,
       dcat:Distribution ;
-    eli:embodies <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α>;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α>;
     dcat:accessURL <https://stavropouloslaw.com/eli/gr/l/2019/4619>;
-    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α>;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell/man/format/html>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell/man/format/jsonld>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell/man/format/turtle>;
-    schema:identifier "gr-l-2019-art-292Α-work-exp-ell-man";
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-l-2019-art-292001Α-work-exp-ell-man";
     schema:legislationDate "2019-06-11"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-292Α-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-292001Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-292/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-292001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -375,29 +375,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 292
+# FRBR FORMAT LAYER (HTML) - Article 292001
 # HTML encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell/man/format/html
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell/man/format/html
 # Media-type: text/html; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell/man/format/html>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell/man/format/html>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α>;
     dcat:mediaType "text/html; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-292Α-man-html>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-292001Α-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-292/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-292001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -405,29 +405,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 292
+# FRBR FORMAT LAYER (JSONLD) - Article 292001
 # JSONLD encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell/man/format/jsonld
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell/man/format/jsonld
 # Media-type: application/ld+json; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell/man/format/jsonld>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell/man/format/jsonld>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α>;
     dcat:mediaType "application/ld+json; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-292Α-man-jsonld>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-292001Α-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-292/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-292001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -435,29 +435,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 292
+# FRBR FORMAT LAYER (TURTLE) - Article 292001
 # TURTLE encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell/man/format/turtle
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell/man/format/turtle
 # Media-type: text/turtle; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell/man/format/turtle>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell/man/format/turtle>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α>;
     dcat:mediaType "text/turtle; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-292Α-man-turtle>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-292001Α-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-292/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-292001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -468,32 +468,32 @@
 # PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/par/1>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
     schema:text """1. Όποιος χωρίς δικαίωμα αποκτά πρόσβαση σε σύνδεση ή σε δίκτυο παροχής υπηρεσιών τηλεφωνίας ή σε σύστημα υλικού ή λογισμικού, που χρησιμοποιείται για την παροχή τέτοιων υπηρεσιών, και με τον τρόπο αυτόν θέτει σε κίνδυνο την ασφάλεια των τηλεφωνικών επικοινωνιών, τιμωρείται με φυλάκιση τουλάχιστον ενός (1) έτους και χρηματική ποινή. Αν ο υπαίτιος της πράξης του προηγούμενου εδαφίου είναι ο εργαζόμενος ή συνεργάτης του παρόχου υπηρεσιών τηλεφωνίας, τιμωρείται με φυλάκιση τουλάχιστον δύο (2) ετών και χρηματική ποινή. Με την ποινή του προηγουμένου εδαφίου τιμωρείται και ο πάροχος υπηρεσιών τηλεφωνίας ή ο νόμιμος εκπρόσωπός του ο οποίος αθέμιτα θέτει σε κίνδυνο την ασφάλεια των τηλεφωνικών επικοινωνιών."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/par/2>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/par/2>
     a eli:LegalResourceSubdivision ;
     eli:number "2" ;
     schema:text """2. Ο πάροχος υπηρεσιών τηλεφωνίας ή ο νόμιμος εκπρόσωπος αυτού, ο οποίος παραβιάζει διάταξη κανονισμού της Αρχής Διασφάλισης του Απορρήτου των Επικοινωνιών (ΑΔΑΕ) ή όρο της Γενικής Άδειας ή του δικαιώματος χρήσης ραδιοσυχνότητας ή του δικαιώματος χρήσης αριθμού, που αναφέρονται στην ασφάλεια των ηλεκτρονικών επικοινωνιών, τιμωρείται με φυλάκιση τουλάχιστον δύο (2) ετών και χρηματική ποινή."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/par/3>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/par/3>
     a eli:LegalResourceSubdivision ;
     eli:number "3" ;
     schema:text """3. Ο πάροχος υπηρεσιών τηλεφωνίας ή ο νόμιμος εκπρόσωπος αυτού ή ο κατά τον νόμο υπεύθυνος για τη διασφάλιση του απορρήτου των επικοινωνιών, που παραλείπει να λάβει τα αναγκαία μέτρα για την αποτροπή πράξης της παρ. 1, τιμωρείται με φυλάκιση τουλάχιστον δύο (2) ετών και χρηματική ποινή, εφόσον η πράξη τελέστηκε ή έγινε απόπειρα τέλεσής της, ανεξάρτητα αν θα τιμωρηθεί ο υπαίτιος."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/par/4>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/par/4>
     a eli:LegalResourceSubdivision ;
     eli:number "4" ;
     schema:text """4. Αν ο υπαίτιος των πράξεων των προηγούμενων παραγράφων είχε σκοπό να προσπορίσει στον εαυτό του ή σε άλλον παράνομο περιουσιακό όφελος ή να προκαλέσει περιουσιακή ζημία σε άλλον, τιμωρείται με φυλάκιση τουλάχιστον τριών (3) ετών και χρηματική ποινή. Εφόσον το συνολικό όφελος ή η συνολική ζημία υπερβαίνουν το ποσό των εκατόν είκοσι χιλιάδων (120.000) ευρώ, ο υπαίτιος τιμωρείται με κάθειρξη έως δέκα (10) έτη και χρηματική ποινή. Αν από τις πράξεις των προηγούμενων παραγράφων μπορεί να τεθούν σε κίνδυνο θεμελιώδεις αρχές και θεσμοί του Πολιτεύματος, όπως μνημονεύονται στο άρθρο 134 του Ποινικού Κώδικα ή απόρρητο που αναφέρεται στην ασφάλεια του κράτους ή στην ασφάλεια εγκαταστάσεων κοινής ωφέλειας, επιβάλλεται κάθειρξη."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292Α/par/5>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/292001Α/par/5>
     a eli:LegalResourceSubdivision ;
     eli:number "5" ;
     schema:text """5. Όποιος αθέμιτα διαθέτει στο εμπόριο ή με άλλον τρόπο προσφέρει προς εγκατάσταση ειδικά τεχνικά μέσα για την τέλεση των πράξεων της παρ. 1 ή δημόσια διαφημίζει ή προσφέρει τις υπηρεσίες του για την τέλεσή τους τιμωρείται με φυλάκιση έως δύο (2) έτη ή χρηματική ποινή»."""@el .
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 292 - Complete Canonical Representation
+# Article 292001 - Complete Canonical Representation
 # ============================================================

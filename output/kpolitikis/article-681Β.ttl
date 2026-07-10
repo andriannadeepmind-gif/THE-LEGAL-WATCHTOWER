@@ -1,6 +1,6 @@
 # ============================================================
 # Κώδικας Πολιτικής Δικονομίας
-# Article 681 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 681002 - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,14 +174,14 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
 # ARTICLE ROOT NODE - Canonical Entry Point
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β>
     a eli:LegalResource ,
       dcat:Dataset ,
       schema:Legislation ;
@@ -190,11 +190,11 @@
     eli:date_document "1985-10-24"^^xsd:date ;
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503> ;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
-    eli:number 681 ;
+    eli:number 681002 ;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/DECREE> ;
 
     # Dublin Core Metadata
-    dct:identifier "gr-pd-1985-art-681Β" ;
+    dct:identifier "gr-pd-1985-art-681002Β" ;
     dct:issued "1985-10-24"^^xsd:date ;
     dct:language "el" ;
     dct:title """1. Με την ειδική διαδικασία των άρθρων 666 παρ. 1, 667, 670, 671 παρ. 1 έως 3 και"""@el ;
@@ -207,12 +207,12 @@
     # Schema.org Properties
     schema:inLanguage "el" ;
     schema:isPartOf <https://stavropouloslaw.com/eli/gr/pd/1985/503> ;
-    schema:legislationIdentifier "gr-pd-1985-art-681Β" ;
+    schema:legislationIdentifier "gr-pd-1985-art-681002Β" ;
 
     # Forward Relations to FRBR Layers
-    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work> ;
-    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell> ;
-    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell/man> ;
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell/man> ;
 
     # Provenance Metadata
     prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
@@ -223,23 +223,23 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-681/2025-01-01T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-681002/2026-07-09T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
                            <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
 
     # Input Sources
-    prov:used <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/source> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/source> ;
 
     # Custom Properties
-    stavropouloslaw:articleNumber 681 ;
+    stavropouloslaw:articleNumber 681002 ;
     stavropouloslaw:corpusShortName "kpolitikis"
  .
 
@@ -249,31 +249,31 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 681
+# FRBR WORK LAYER - Article 681002
 # Abstract legal resource (language-independent)
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work>
     a eli:LegalResource, schema:Legislation;
     eli:date_document "1985-10-24"^^xsd:date;
-    eli:id_local "gr-pd-1985-art-681Β-work";
+    eli:id_local "gr-pd-1985-art-681002Β-work";
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503>;
-    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β>;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/DECREE>;
     dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     dct:issued "1985-10-24"^^xsd:date;
     dct:publisher <https://stavropouloslaw.com/identity/org>;
     dct:type <http://publications.europa.eu/resource/authority/resource-type/DECREE>;
-    schema:identifier "gr-pd-1985-art-681Β-work";
+    schema:identifier "gr-pd-1985-art-681002Β-work";
     schema:inLanguage "el";
     schema:legislationDate "1985-10-24"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/PD/1985/ART/681";
+    schema:legislationIdentifier "ELI/GR/PD/1985/ART/681002";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "PresidentialDecree";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-681/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-681002/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,19 +293,19 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 681
+# FRBR EXPRESSION LAYER - Article 681002
 # Greek language realization of abstract Work
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell
 # Language: el (ELL)
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell>
     a eli:LegalExpression;
-    eli:realizes <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β>;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β>;
     eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
     dct:language "el";
     schema:inLanguage "el";
@@ -316,11 +316,11 @@
     schema:text """672 έως 676 δικάζονται οι διαφορές που αφορούν: α) Τον καθορισμό, τη μείωση ή την αύξηση της συνεισφοράς του καθενός από τους συζύγους για τις ανάγκες της οικογένειας, της διατροφής που οφείλεται λόγω γάμου, διαζυγίου ή συγγένειας, των δαπανών τοκετού και της διατροφής της άγαμης μητέρας, καθώς και της διατροφής της μητέρας από την κληρονομική μερίδα που έχει επαχθεί στο τέκνο που αυτή κυοφορεί, «β) την άσκηση ή αφαίρεση της γονικής μέριμνας αναφορικά με το τέκνο κατά τη διάρκεια του γάμου και σε περίπτωση διαζυγίου ή ακύρωση του γάμου ή όταν πρόκειται για τέκνο χωρίς γάμο των γονέων του, τη διαφωνία των γονέων κατά την κοινή άσκηση από αυτούς της γονικής μέριμνας, καθώς και την επικοινωνία των γονέων και των υπολοίπων ανιόντων με το τέκνο». γ) τη ρύθμιση της χρήσης της οικογενειακής στέγης και της κατανομής των κινητών μεταξύ συζύγων. 2. Οι διαφορές της πρώτης παραγράφου, αν ενωθούν με οποιαδήποτε από τις διαφορές των άρθρων 592 παράγρ. 1 ή 614 παράγρ. 1, μπορεί να εισάγονται, και στα «μονομελή» πρωτοδικεία και να δικάζονται με την ειδική διαδικασία των άρθρων 593 έως 612 ή 616 έως 622. 3. Η ανταγωγή συνεκδικάζεται με την αγωγή, είτε παρίσταται ο ενάγων είτε ερημοδικεί, μόνο αν πέντε τουλάχιστον εργάσιμες ημέρες πριν από τη συζήτηση στο ακροατήριο, κοινοποιήθηκε στον ενάγοντα το σχετικό δικόγραφο ή κατατέθηκαν οι προτάσεις που περιέχουν την ανταγωγή και αυτό βεβαιώνεται σύμφωνα με το άρθρο 237 παρ. 1."""@el;
     glass:digest "sha256-e0b7933641a7abcad92f21769a02b4f6a09f8b7febd7353a77c2f9c59fb1ee17";
     digest:sha256 "e0b7933641a7abcad92f21769a02b4f6a09f8b7febd7353a77c2f9c59fb1ee17";
-    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/par/1>;
-    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell/man>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/par/1>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
-    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-681/2025-01-01T00-00-00.000000Z>.
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-681002/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -332,34 +332,34 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 681
+# FRBR MANIFESTATION LAYER - Article 681002
 # Digital embodiment of the Greek-language Expression
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell/man
-# Expression: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell/man>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell/man>
     a eli:LegalManifestation ,
       dcat:Distribution ;
-    eli:embodies <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β>;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β>;
     dcat:accessURL <https://stavropouloslaw.com/eli/gr/pd/1985/503>;
-    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β>;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
-    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell/man/format/html>;
-    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell/man/format/jsonld>;
-    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell/man/format/turtle>;
-    schema:identifier "gr-pd-1985-art-681Β-work-exp-ell-man";
+    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-pd-1985-art-681002Β-work-exp-ell-man";
     schema:legislationDate "1985-10-24"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-681Β-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-681002Β-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-681/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-681002/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -371,29 +371,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 681
+# FRBR FORMAT LAYER (HTML) - Article 681002
 # HTML encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell/man/format/html
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell/man/format/html
 # Media-type: text/html; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell/man/format/html>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell/man/format/html>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β>;
     dcat:mediaType "text/html; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-681Β-man-html>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-681002Β-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-681/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-681002/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -401,29 +401,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 681
+# FRBR FORMAT LAYER (JSONLD) - Article 681002
 # JSONLD encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell/man/format/jsonld
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell/man/format/jsonld
 # Media-type: application/ld+json; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell/man/format/jsonld>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell/man/format/jsonld>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β>;
     dcat:mediaType "application/ld+json; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-681Β-man-jsonld>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-681002Β-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-681/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-681002/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -431,29 +431,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 681
+# FRBR FORMAT LAYER (TURTLE) - Article 681002
 # TURTLE encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell/man/format/turtle
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell/man/format/turtle
 # Media-type: text/turtle; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell/man/format/turtle>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell/man/format/turtle>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β>;
     dcat:mediaType "text/turtle; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-681Β-man-turtle>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-681002Β-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-681/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-681002/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -464,12 +464,12 @@
 # PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681Β/par/1>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/681002Β/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
     schema:text """1. 672 έως 676 δικάζονται οι διαφορές που αφορούν: α) Τον καθορισμό, τη μείωση ή την αύξηση της συνεισφοράς του καθενός από τους συζύγους για τις ανάγκες της οικογένειας, της διατροφής που οφείλεται λόγω γάμου, διαζυγίου ή συγγένειας, των δαπανών τοκετού και της διατροφής της άγαμης μητέρας, καθώς και της διατροφής της μητέρας από την κληρονομική μερίδα που έχει επαχθεί στο τέκνο που αυτή κυοφορεί, «β) την άσκηση ή αφαίρεση της γονικής μέριμνας αναφορικά με το τέκνο κατά τη διάρκεια του γάμου και σε περίπτωση διαζυγίου ή ακύρωση του γάμου ή όταν πρόκειται για τέκνο χωρίς γάμο των γονέων του, τη διαφωνία των γονέων κατά την κοινή άσκηση από αυτούς της γονικής μέριμνας, καθώς και την επικοινωνία των γονέων και των υπολοίπων ανιόντων με το τέκνο». γ) τη ρύθμιση της χρήσης της οικογενειακής στέγης και της κατανομής των κινητών μεταξύ συζύγων. 2. Οι διαφορές της πρώτης παραγράφου, αν ενωθούν με οποιαδήποτε από τις διαφορές των άρθρων 592 παράγρ. 1 ή 614 παράγρ. 1, μπορεί να εισάγονται, και στα «μονομελή» πρωτοδικεία και να δικάζονται με την ειδική διαδικασία των άρθρων 593 έως 612 ή 616 έως 622. 3. Η ανταγωγή συνεκδικάζεται με την αγωγή, είτε παρίσταται ο ενάγων είτε ερημοδικεί, μόνο αν πέντε τουλάχιστον εργάσιμες ημέρες πριν από τη συζήτηση στο ακροατήριο, κοινοποιήθηκε στον ενάγοντα το σχετικό δικόγραφο ή κατατέθηκαν οι προτάσεις που περιέχουν την ανταγωγή και αυτό βεβαιώνεται σύμφωνα με το άρθρο 237 παρ. 1."""@el .
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 681 - Complete Canonical Representation
+# Article 681002 - Complete Canonical Representation
 # ============================================================

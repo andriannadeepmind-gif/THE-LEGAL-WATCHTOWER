@@ -1,6 +1,6 @@
 # ============================================================
 # Κώδικας Ποινικής Δικονομίας
-# Article 238 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 238001 - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,14 +174,14 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
 # ARTICLE ROOT NODE - Canonical Entry Point
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α>
+<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α>
     a eli:LegalResource ,
       dcat:Dataset ,
       schema:Legislation ;
@@ -190,11 +190,11 @@
     eli:date_document "2019-06-11"^^xsd:date ;
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4620> ;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
-    eli:number 238 ;
+    eli:number 238001 ;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL> ;
 
     # Dublin Core Metadata
-    dct:identifier "gr-l-2019-art-238Α" ;
+    dct:identifier "gr-l-2019-art-238001Α" ;
     dct:issued "2019-06-11"^^xsd:date ;
     dct:language "el" ;
     dct:title """Εξέταση με τεχνολογικά μέσα"""@el ;
@@ -207,12 +207,12 @@
     # Schema.org Properties
     schema:inLanguage "el" ;
     schema:isPartOf <https://stavropouloslaw.com/eli/gr/l/2019/4620> ;
-    schema:legislationIdentifier "gr-l-2019-art-238Α" ;
+    schema:legislationIdentifier "gr-l-2019-art-238001Α" ;
 
     # Forward Relations to FRBR Layers
-    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work> ;
-    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell> ;
-    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man> ;
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell/man> ;
 
     # Provenance Metadata
     prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
@@ -223,23 +223,23 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-238/2025-01-01T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-238001/2026-07-09T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
                            <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
 
     # Input Sources
-    prov:used <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/source> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/source> ;
 
     # Custom Properties
-    stavropouloslaw:articleNumber 238 ;
+    stavropouloslaw:articleNumber 238001 ;
     stavropouloslaw:corpusShortName "kpoinikis"
  .
 
@@ -249,31 +249,31 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 238
+# FRBR WORK LAYER - Article 238001
 # Abstract legal resource (language-independent)
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work>
+<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work>
     a eli:LegalResource, schema:Legislation;
     eli:date_document "2019-06-11"^^xsd:date;
-    eli:id_local "gr-l-2019-art-238Α-work";
+    eli:id_local "gr-l-2019-art-238001Α-work";
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4620>;
-    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α>;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
     dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     dct:issued "2019-06-11"^^xsd:date;
     dct:publisher <https://stavropouloslaw.com/identity/org>;
     dct:type <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
-    schema:identifier "gr-l-2019-art-238Α-work";
+    schema:identifier "gr-l-2019-art-238001Α-work";
     schema:inLanguage "el";
     schema:legislationDate "2019-06-11"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/2019/ART/238";
+    schema:legislationIdentifier "ELI/GR/L/2019/ART/238001";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-238/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-238001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,19 +293,19 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 238
+# FRBR EXPRESSION LAYER - Article 238001
 # Greek language realization of abstract Work
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell
 # Language: el (ELL)
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell>
+<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell>
     a eli:LegalExpression;
-    eli:realizes <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α>;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α>;
     eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
     dct:language "el";
     schema:inLanguage "el";
@@ -316,14 +316,14 @@
     schema:text """1. Οποιαδήποτε κατάθεση κάθε προσώπου, όπως μάρτυρα, πραγματογνώμονα, τεχνικού συμβούλου, διερμηνέα, παρισταμένου προς υποστήριξη της κατηγορίας, ανωμοτί εξηγήσεις υπόπτου ή απολογία κατηγορουμένου, ή αυτοπρόσωπη εμφάνιση ενώπιον δικαστηρίου ή δικαστικού συμβουλίου, μπορεί να διεξαχθεί με τη χρήση τεχνολογικών μέσων, χωρίς τη φυσική παρουσία του προσώπου αυτού στο πλαίσιο διεξαγωγής δίκης, ή ανάκρισης, ή προανάκρισης, ή προκαταρκτικής εξέτασης, ή εμφάνισης ενώπιον του δικαστικού συμβουλίου, ή διαδικασίας δικαστικής συνδρομής, όταν υπάρχει σοβαρό κώλυμα εμφάνισης ή κίνδυνος από την αναβολή ή για την ασφαλή διεξαγωγή της διαδικασίας.\n2. Η εξέταση των προσώπων της παρ. 1 διενεργείται με τον ανωτέρω τρόπο είτε αυτεπαγγέλτως είτε κατόπιν αιτήματος του υπό εξέταση προσώπου. Αν καλείται αυτεπαγγέλτως, η κλήση για την εμφάνιση ή την εξέταση κοινοποιείται στο ενδιαφερόμενο πρόσωπο τουλάχιστον είκοσι (20) ημέρες πριν από την ημερομηνία εμφάνισης ή διεξαγωγής της εξέτασης ή της συνεδρίασης. Αν η απομακρυσμένη εξέταση ζητείται από το εξεταζόμενο πρόσωπο, το αίτημα υποβάλλεται έως και είκοσι (20) ημέρες πριν από την ημερομηνία εμφάνισης ή διεξαγωγής της εξέτασης ή της συνεδρίασης. Η απόφαση για την αποδοχή ή την απόρριψη αιτήματος κοινοποιείται στον αιτούντα μέσω μηνύματος ηλεκτρονικού ταχυδρομείου, τουλάχιστον δέκα (10) ημέρες πριν από την ημερομηνία εμφάνισης ή τη διεξαγωγή της εξέτασης ή της συνεδρίασης.\n3. Η εμφάνιση και η λήψη της απολογίας από τον κατηγορούμενο διενεργούνται με τον ανωτέρω τρόπο, μόνον εφόσον το αιτηθεί ή δεν αντιλέξει εντός προθεσμίας πέντε (5) ημερών από τη λήψη της κλήσης, ο κατηγορούμενος ή ο συνήγορος που τον εκπροσωπεί. Αποκλεισμός της φυσικής παρουσίας του κατηγορούμενου στο ακροατήριο μπορεί να αποφασιστεί μόνο σε περίπτωση κακουργήματος και ιδίως σε πολυπρόσωπες δίκες ή δίκες που αφορούν στην οργανωμένη εγκληματικότητα ή έχουν σοβαρό κοινωνικό αντίκτυπο, από τον εισαγγελέα με αιτιολογημένη διάταξη που επιδίδεται στον κατηγορούμενο τουλάχιστον τριάντα (30) ημέρες πριν από την ημερομηνία έναρξης της συνεδρίασης. Κατά της διάταξης του δευτέρου εδαφίου ο κατηγορούμενος έχει δικαίωμα προσφυγής εντός προθεσμίας πέντε (5) ημερών από την επίδοση ενώπιον του αρμοδίου δικαστικού συμβουλίου, το οποίο αποφαίνεται αμετάκλητα. Σε κάθε περίπτωση, η ανωτέρω απόφαση μπορεί να ανακληθεί, κατά την πρόοδο της συζήτησης της υπόθεσης, από το δικαστήριο αυτεπαγγέλτως ή κατόπιν αιτήσεως του εισαγγελέα, του κατηγορούμενου ή του συνηγόρου του και να αποφασιστεί η συνέχιση της δίκης με φυσική παρουσία του κατηγορούμενου.\n4. Η εξέταση με τον ανωτέρω τρόπο γίνεται με την παρουσία σωφρονιστικού ή ανακριτικού ή προανακριτικού ή προξενικού υπαλλήλου ή δικαστικού γραμματέα στο πλησιέστερο στον τόπο κατοικίας του προσώπου της παρ. 1 ειδικά διαμορφωμένο χώρο, το οποίο διαθέτει τις κατάλληλες τεχνικές προδιαγραφές για τη διενέργεια της εικονοτηλεδιάσκεψης, όπως ρυθμίζονται με κοινή απόφαση των Υπουργών Δικαιοσύνης, Εξωτερικών, Προστασίας του Πολίτη και Ψηφιακής Διακυβέρνησης, η οποία καθορίζει όλες τις λεπτομέρειες εφαρμογής της στην ποινική διαδικασία. Σε κάθε περίπτωση διασφαλίζεται ότι ο κατηγορούμενος παρακολουθεί τη διαδικασία χωρίς διακοπές και έχει αποτελεσματική και εμπιστευτική επικοινωνία με τον συνήγορό του.»"""@el;
     glass:digest "sha256-0779eaaa6c2982fb7cc23729bd8e8a78d5e8776495d0a427025ec53527e57bee";
     digest:sha256 "0779eaaa6c2982fb7cc23729bd8e8a78d5e8776495d0a427025ec53527e57bee";
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/par/1>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/par/2>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/par/3>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/par/4>;
-    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/par/1>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/par/2>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/par/3>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/par/4>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
-    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-238/2025-01-01T00-00-00.000000Z>.
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-238001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -335,34 +335,34 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 238
+# FRBR MANIFESTATION LAYER - Article 238001
 # Digital embodiment of the Greek-language Expression
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man
-# Expression: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man>
+<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell/man>
     a eli:LegalManifestation ,
       dcat:Distribution ;
-    eli:embodies <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α>;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α>;
     dcat:accessURL <https://stavropouloslaw.com/eli/gr/l/2019/4620>;
-    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α>;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man/format/html>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man/format/jsonld>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man/format/turtle>;
-    schema:identifier "gr-l-2019-art-238Α-work-exp-ell-man";
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-l-2019-art-238001Α-work-exp-ell-man";
     schema:legislationDate "2019-06-11"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/kpoinikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-238Α-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-238001Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-238/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-238001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -374,29 +374,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 238
+# FRBR FORMAT LAYER (HTML) - Article 238001
 # HTML encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man/format/html
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell/man/format/html
 # Media-type: text/html; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man/format/html>
+<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell/man/format/html>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α>;
     dcat:mediaType "text/html; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpoinikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpoinikis-art-238Α-man-html>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpoinikis-art-238001Α-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-238/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-238001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -404,29 +404,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 238
+# FRBR FORMAT LAYER (JSONLD) - Article 238001
 # JSONLD encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man/format/jsonld
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell/man/format/jsonld
 # Media-type: application/ld+json; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man/format/jsonld>
+<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell/man/format/jsonld>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α>;
     dcat:mediaType "application/ld+json; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpoinikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpoinikis-art-238Α-man-jsonld>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpoinikis-art-238001Α-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-238/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-238001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -434,29 +434,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 238
+# FRBR FORMAT LAYER (TURTLE) - Article 238001
 # TURTLE encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man/format/turtle
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell/man/format/turtle
 # Media-type: text/turtle; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man/format/turtle>
+<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell/man/format/turtle>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α>;
     dcat:mediaType "text/turtle; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpoinikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpoinikis-art-238Α-man-turtle>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpoinikis-art-238001Α-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-238/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-238001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -467,27 +467,27 @@
 # PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/par/1>
+<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
     schema:text """1. Οποιαδήποτε κατάθεση κάθε προσώπου, όπως μάρτυρα, πραγματογνώμονα, τεχνικού συμβούλου, διερμηνέα, παρισταμένου προς υποστήριξη της κατηγορίας, ανωμοτί εξηγήσεις υπόπτου ή απολογία κατηγορουμένου, ή αυτοπρόσωπη εμφάνιση ενώπιον δικαστηρίου ή δικαστικού συμβουλίου, μπορεί να διεξαχθεί με τη χρήση τεχνολογικών μέσων, χωρίς τη φυσική παρουσία του προσώπου αυτού στο πλαίσιο διεξαγωγής δίκης, ή ανάκρισης, ή προανάκρισης, ή προκαταρκτικής εξέτασης, ή εμφάνισης ενώπιον του δικαστικού συμβουλίου, ή διαδικασίας δικαστικής συνδρομής, όταν υπάρχει σοβαρό κώλυμα εμφάνισης ή κίνδυνος από την αναβολή ή για την ασφαλή διεξαγωγή της διαδικασίας."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/par/2>
+<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/par/2>
     a eli:LegalResourceSubdivision ;
     eli:number "2" ;
     schema:text """2. Η εξέταση των προσώπων της παρ. 1 διενεργείται με τον ανωτέρω τρόπο είτε αυτεπαγγέλτως είτε κατόπιν αιτήματος του υπό εξέταση προσώπου. Αν καλείται αυτεπαγγέλτως, η κλήση για την εμφάνιση ή την εξέταση κοινοποιείται στο ενδιαφερόμενο πρόσωπο τουλάχιστον είκοσι (20) ημέρες πριν από την ημερομηνία εμφάνισης ή διεξαγωγής της εξέτασης ή της συνεδρίασης. Αν η απομακρυσμένη εξέταση ζητείται από το εξεταζόμενο πρόσωπο, το αίτημα υποβάλλεται έως και είκοσι (20) ημέρες πριν από την ημερομηνία εμφάνισης ή διεξαγωγής της εξέτασης ή της συνεδρίασης. Η απόφαση για την αποδοχή ή την απόρριψη αιτήματος κοινοποιείται στον αιτούντα μέσω μηνύματος ηλεκτρονικού ταχυδρομείου, τουλάχιστον δέκα (10) ημέρες πριν από την ημερομηνία εμφάνισης ή τη διεξαγωγή της εξέτασης ή της συνεδρίασης."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/par/3>
+<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/par/3>
     a eli:LegalResourceSubdivision ;
     eli:number "3" ;
     schema:text """3. Η εμφάνιση και η λήψη της απολογίας από τον κατηγορούμενο διενεργούνται με τον ανωτέρω τρόπο, μόνον εφόσον το αιτηθεί ή δεν αντιλέξει εντός προθεσμίας πέντε (5) ημερών από τη λήψη της κλήσης, ο κατηγορούμενος ή ο συνήγορος που τον εκπροσωπεί. Αποκλεισμός της φυσικής παρουσίας του κατηγορούμενου στο ακροατήριο μπορεί να αποφασιστεί μόνο σε περίπτωση κακουργήματος και ιδίως σε πολυπρόσωπες δίκες ή δίκες που αφορούν στην οργανωμένη εγκληματικότητα ή έχουν σοβαρό κοινωνικό αντίκτυπο, από τον εισαγγελέα με αιτιολογημένη διάταξη που επιδίδεται στον κατηγορούμενο τουλάχιστον τριάντα (30) ημέρες πριν από την ημερομηνία έναρξης της συνεδρίασης. Κατά της διάταξης του δευτέρου εδαφίου ο κατηγορούμενος έχει δικαίωμα προσφυγής εντός προθεσμίας πέντε (5) ημερών από την επίδοση ενώπιον του αρμοδίου δικαστικού συμβουλίου, το οποίο αποφαίνεται αμετάκλητα. Σε κάθε περίπτωση, η ανωτέρω απόφαση μπορεί να ανακληθεί, κατά την πρόοδο της συζήτησης της υπόθεσης, από το δικαστήριο αυτεπαγγέλτως ή κατόπιν αιτήσεως του εισαγγελέα, του κατηγορούμενου ή του συνηγόρου του και να αποφασιστεί η συνέχιση της δίκης με φυσική παρουσία του κατηγορούμενου."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/par/4>
+<https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238001Α/par/4>
     a eli:LegalResourceSubdivision ;
     eli:number "4" ;
     schema:text """4. Η εξέταση με τον ανωτέρω τρόπο γίνεται με την παρουσία σωφρονιστικού ή ανακριτικού ή προανακριτικού ή προξενικού υπαλλήλου ή δικαστικού γραμματέα στο πλησιέστερο στον τόπο κατοικίας του προσώπου της παρ. 1 ειδικά διαμορφωμένο χώρο, το οποίο διαθέτει τις κατάλληλες τεχνικές προδιαγραφές για τη διενέργεια της εικονοτηλεδιάσκεψης, όπως ρυθμίζονται με κοινή απόφαση των Υπουργών Δικαιοσύνης, Εξωτερικών, Προστασίας του Πολίτη και Ψηφιακής Διακυβέρνησης, η οποία καθορίζει όλες τις λεπτομέρειες εφαρμογής της στην ποινική διαδικασία. Σε κάθε περίπτωση διασφαλίζεται ότι ο κατηγορούμενος παρακολουθεί τη διαδικασία χωρίς διακοπές και έχει αποτελεσματική και εμπιστευτική επικοινωνία με τον συνήγορό του.»"""@el .
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 238 - Complete Canonical Representation
+# Article 238001 - Complete Canonical Representation
 # ============================================================

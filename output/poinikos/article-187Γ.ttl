@@ -1,6 +1,6 @@
 # ============================================================
 # Ποινικός Κώδικας
-# Article 187 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 187003 - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,14 +174,14 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
 # ARTICLE ROOT NODE - Canonical Entry Point
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ>
     a eli:LegalResource ,
       dcat:Dataset ,
       schema:Legislation ;
@@ -190,11 +190,11 @@
     eli:date_document "2019-06-11"^^xsd:date ;
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619> ;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
-    eli:number 187 ;
+    eli:number 187003 ;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL> ;
 
     # Dublin Core Metadata
-    dct:identifier "gr-l-2019-art-187Γ" ;
+    dct:identifier "gr-l-2019-art-187003Γ" ;
     dct:issued "2019-06-11"^^xsd:date ;
     dct:language "el" ;
     dct:title """Ευνοϊκά μέτρα"""@el ;
@@ -207,12 +207,12 @@
     # Schema.org Properties
     schema:inLanguage "el" ;
     schema:isPartOf <https://stavropouloslaw.com/eli/gr/l/2019/4619> ;
-    schema:legislationIdentifier "gr-l-2019-art-187Γ" ;
+    schema:legislationIdentifier "gr-l-2019-art-187003Γ" ;
 
     # Forward Relations to FRBR Layers
-    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work> ;
-    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell> ;
-    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man> ;
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell/man> ;
 
     # Provenance Metadata
     prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
@@ -223,23 +223,23 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187/2025-01-01T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187003/2026-07-09T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
                            <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
 
     # Input Sources
-    prov:used <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/source> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/source> ;
 
     # Custom Properties
-    stavropouloslaw:articleNumber 187 ;
+    stavropouloslaw:articleNumber 187003 ;
     stavropouloslaw:corpusShortName "poinikos"
  .
 
@@ -249,31 +249,31 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 187
+# FRBR WORK LAYER - Article 187003
 # Abstract legal resource (language-independent)
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work>
     a eli:LegalResource, schema:Legislation;
     eli:date_document "2019-06-11"^^xsd:date;
-    eli:id_local "gr-l-2019-art-187Γ-work";
+    eli:id_local "gr-l-2019-art-187003Γ-work";
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619>;
-    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ>;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
     dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     dct:issued "2019-06-11"^^xsd:date;
     dct:publisher <https://stavropouloslaw.com/identity/org>;
     dct:type <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
-    schema:identifier "gr-l-2019-art-187Γ-work";
+    schema:identifier "gr-l-2019-art-187003Γ-work";
     schema:inLanguage "el";
     schema:legislationDate "2019-06-11"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/2019/ART/187";
+    schema:legislationIdentifier "ELI/GR/L/2019/ART/187003";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187003/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,19 +293,19 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 187
+# FRBR EXPRESSION LAYER - Article 187003
 # Greek language realization of abstract Work
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell
 # Language: el (ELL)
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell>
     a eli:LegalExpression;
-    eli:realizes <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ>;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ>;
     eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
     dct:language "el";
     schema:inLanguage "el";
@@ -316,17 +316,17 @@
     schema:text """1. Αν κάποιος από τους υπαιτίους των πράξεων των παρ. 1 έως 3 του άρθρου 187 ή των παραγράφων 2 έως 4 του άρθρου 187Α καταστήσει δυνατή με αναγγελία στην αρχή την πρόληψη της διάπραξης ενός από τα σχεδιαζόμενα εγκλήματα, ή με τον ίδιο τρόπο συμβάλλει ουσιωδώς στην εξάρθρωση της οργάνωσης ή στην πλήρη εξιχνίαση εγκλήματος της οργάνωσης που τελέστηκε από άλλον, απαλλάσσεται από την ποινή για τις πράξεις αυτές. Αν δεν έχει ακόμη ασκηθεί ποινική δίωξη, ο εισαγγελέας πλημμελειοδικών με αιτιολογημένη διάταξή του απέχει από την άσκησή της και υποβάλλει τη δικογραφία στον εισαγγελέα εφετών, ο οποίος ενεργεί σύμφωνα με το δεύτερο εδάφιο της παρ. 4 του άρθρου 43 του Κώδικα Ποινικής Δικονομίας. Η ως άνω διάταξη μαζί με τη σύμφωνη γνώμη κοινοποιείται στον Εισαγγελέα, που εποπτεύει τη Διεύθυνση Αντιμετώπισης Οργανωμένου Εγκλήματος και τη Διεύθυνση Αντιμετώπισης Ειδικών Εγκλημάτων Βίας της Ελληνικής Αστυνομίας, για την ενημέρωσή του.\n2. Αν στην περίπτωση της παρ. 1 ο υπαίτιος έχει τελέσει κάποιο από τα επιδιωκόμενα εγκλήματα ή έχει τελέσει κάποιο από τα εγκλήματα της παρ. 1 του άρθρου 187Α, το δικαστήριο του επιβάλλει μειωμένη ποινή (άρθρο 83). Το δικαστήριο μπορεί να διατάξει την αναστολή αυτής της ποινής, εκτιμώντας ιδίως την έκταση της συμμετοχής του υπαιτίου στην οργάνωση και τον βαθμό της συμβολής του στην εξάρθρωσή της ή την πλήρη εξιχνίαση του ιδίου ή άλλου εγκλήματός της.\n3. Για όποιον καταγγέλλει αξιόποινες πράξεις που τελέστηκαν σε βάρος του από εγκληματική οργάνωση, ο εισαγγελέας πλημμελειοδικών μπορεί, εφόσον η καταγγελία πιθανολογείται βάσιμη, ύστερα από έγκριση του εισαγγελέα εφετών, να απόσχει προσωρινά από την ποινική δίωξη για παραβάσεις του νόμου περί αλλοδαπών και περί εκδιδομένων με αμοιβή προσώπων, ώσπου να εκδοθεί αμετάκλητη απόφαση για τις πράξεις που καταγγέλθηκαν. Αν η κατηγορία αποδειχθεί βάσιμη, η αποχή από την ποινική δίωξη γίνεται οριστική.\n4. Η απέλαση αλλοδαπών που βρίσκονται παράνομα στη χώρα και καταγγέλλουν αξιόποινες πράξεις που τελέσθηκαν από εγκληματική ή τρομοκρατική οργάνωση αναστέλλεται μέχρι να εκδοθεί αμετάκλητη απόφαση για τις πράξεις που καταγγέλθηκαν. Όσο χρόνο διαρκεί η αναστολή της απέλασης χορηγείται στους αλλοδαπούς άδεια παραμονής κατά παρέκκλιση από την ισχύουσα νομοθεσία περί αλλοδαπών.\n5. Με την επιφύλαξη ειδικότερων διατάξεων, αν ο υπαίτιος πλημμελήματος ή κακουργήματος που τιμωρείται με ποινή πρόσκαιρης κάθειρξης πλην εκείνων που προβλέπονται στις διατάξεις του 19ου Κεφαλαίου του Ειδικού Μέρους του Ποινικού Κώδικα, πριν από την αμετάκλητη καταδίκη του και με δική του πρωτοβουλία συντελέσει ουσιωδώς, με την παροχή πληροφοριών, στην εξάρθρωση εγκληματικής ή τρομοκρατικής οργάνωσης ή την πλήρη εξιχνίαση κακουργήματος των άρθρων 187 και 187Α του Ποινικού Κώδικα, ή την πλήρη εξιχνίαση εγκλήματός της ή οποιουδήποτε άλλου κακουργήματος, ή την ανακάλυψη και σύλληψη δράστη τους, το δικαστήριο του επιβάλλει μειωμένη ποινή (άρθρο 83) εφόσον η βαρύτητα της πράξης του και ο βαθμός ενοχής του είναι προδήλως υποδεέστερα σε σύγκριση με τη βαρύτητα των πράξεων και τον βαθμό ενοχής των δραστών, που αφορούσαν οι πληροφορίες. Σε εξαιρετικές περιπτώσεις και αν η πράξη του υπαιτίου αφορά πλημμέλημα, το δικαστήριο μπορεί να τον απαλλάξει από τη ποινή. Επιπλέον, μπορεί να διατάξει τη μερική ή την πλήρη αναστολή της ποινής φυλάκισης, που του επιβλήθηκε, ή την έκτισή της στην κατοικία του ή τη μετατροπή της σε χρηματική ή σε κοινωφελή εργασία, ανεξάρτητα από τη συνδρομή των όρων που προβλέπονται στα άρθρα 82Α, 99, 104Α και 105. Αν οι ανωτέρω όροι συντρέξουν μετά την αμετάκλητη καταδίκη του υπαιτίου, το αρμόδιο συμβούλιο μπορεί να διατάξει την απόλυσή του από τις φυλακές υπό όρο, ανεξάρτητα από τη συνδρομή των προϋποθέσεων που προβλέπονται στο άρθρο 105Β.\n6. Αν για την εξάρθρωση εγκληματικής ή τρομοκρατικής οργάνωσης ή την πλήρη εξιχνίαση κακουργήματος των άρθρων 187 και 187Α του Ποινικού Κώδικα, ή την πλήρη εξιχνίαση εγκλήματός της ή οιουδήποτε άλλου κακουργήματος, ή την ανακάλυψη και σύλληψη δράστη τους, είναι αναγκαία η προσωρινή αποφυλάκιση του ανωτέρω υπαιτίου, το αρμόδιο Συμβούλιο μπορεί, ύστερα από κατά περίπτωση αίτηση της Διεύθυνσης Αντιμετώπισης Οργανωμένου Εγκλήματος ή της Διεύθυνσης Αντιμετώπισης Ειδικών Εγκλημάτων Βίας της Ελληνικής Αστυνομίας και πρόταση του οικείου Εισαγγελέα, να διατάξει την προσωρινή, για ορισμένο χρόνο απόλυσή του από τη φυλακή, εφόσον τούτη κρίνεται αναγκαία για την επαλήθευση της πληροφορίας. Μετά την πάροδο του ορισθέντος χρόνου συνεχίζεται η φυλάκιση του υπαιτίου.\n7. Για την αναγγελία που προβλέπεται στις παραγράφους 1 και 2 και την παροχή πληροφοριών που ορίζεται στην παρ. 5 του άρθρου 187Γ, συντάσσεται έκθεση από ανακριτικούς υπαλλήλους της Διεύθυνσης Αντιμετώπισης Οργανωμένου Εγκλήματος ή της Διεύθυνσης Αντιμετώπισης Ειδικών Εγκλημάτων Βίας της Ελληνικής Αστυνομίας, κατά περίπτωση, η οποία υπογράφεται από τον δηλούντα και υποβάλλεται στον Εισαγγελέα που εποπτεύει την εν λόγω διεύθυνση, ο οποίος την τηρεί σε ειδικό, απόρρητο αρχείο και αναθέτει στην αρμόδια διεύθυνση τη διακρίβωση της βασιμότητας των ισχυρισμών του. Η αναφορά της διεύθυνσης με τα αποτελέσματα της έρευνας συσχετίζεται με την έκθεση και υποβάλλονται μαζί στο Δικαστήριο, που δικάζει το κακούργημα ή το πλημμέλημα εκείνου που παρείχε τις πληροφορίες, κατόπιν αιτήσεώς του. Το δικάζον Δικαστήριο λαμβάνει γνώση των ανωτέρω εγγράφων και συνεδριάζει σε Συμβούλιο προκειμένου να αποφανθεί για τη χορήγηση ή μη των ανωτέρω ευεργετημάτων. Στην αιτιολογία της απόφασης γίνεται μνεία μόνο του διαβιβαστικού εγγράφου του ως άνω Εισαγγελέα και της νομικής βάσης της χορήγησης ή μη του ευεργετήματος χωρίς αναφορά σε συγκεκριμένα πραγματικά περιστατικά"""@el;
     glass:digest "sha256-608a623f1c2f2f4276f47c6bfc9763a38adaaf3c72be413ec0b3aecf8a9a08f2";
     digest:sha256 "608a623f1c2f2f4276f47c6bfc9763a38adaaf3c72be413ec0b3aecf8a9a08f2";
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/par/1>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/par/2>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/par/3>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/par/4>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/par/5>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/par/6>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/par/7>;
-    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/par/1>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/par/2>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/par/3>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/par/4>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/par/5>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/par/6>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/par/7>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
-    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187/2025-01-01T00-00-00.000000Z>.
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187003/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -338,34 +338,34 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 187
+# FRBR MANIFESTATION LAYER - Article 187003
 # Digital embodiment of the Greek-language Expression
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man
-# Expression: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell/man>
     a eli:LegalManifestation ,
       dcat:Distribution ;
-    eli:embodies <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ>;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ>;
     dcat:accessURL <https://stavropouloslaw.com/eli/gr/l/2019/4619>;
-    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ>;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man/format/html>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man/format/jsonld>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man/format/turtle>;
-    schema:identifier "gr-l-2019-art-187Γ-work-exp-ell-man";
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-l-2019-art-187003Γ-work-exp-ell-man";
     schema:legislationDate "2019-06-11"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-187Γ-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-187003Γ-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187003/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -377,29 +377,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 187
+# FRBR FORMAT LAYER (HTML) - Article 187003
 # HTML encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man/format/html
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell/man/format/html
 # Media-type: text/html; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man/format/html>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell/man/format/html>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ>;
     dcat:mediaType "text/html; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-187Γ-man-html>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-187003Γ-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187003/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -407,29 +407,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 187
+# FRBR FORMAT LAYER (JSONLD) - Article 187003
 # JSONLD encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man/format/jsonld
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell/man/format/jsonld
 # Media-type: application/ld+json; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man/format/jsonld>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell/man/format/jsonld>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ>;
     dcat:mediaType "application/ld+json; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-187Γ-man-jsonld>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-187003Γ-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187003/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -437,29 +437,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 187
+# FRBR FORMAT LAYER (TURTLE) - Article 187003
 # TURTLE encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man/format/turtle
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell/man/format/turtle
 # Media-type: text/turtle; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man/format/turtle>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell/man/format/turtle>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ>;
     dcat:mediaType "text/turtle; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-187Γ-man-turtle>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-187003Γ-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187003/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -470,42 +470,42 @@
 # PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/par/1>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
     schema:text """1. Αν κάποιος από τους υπαιτίους των πράξεων των παρ. 1 έως 3 του άρθρου 187 ή των παραγράφων 2 έως 4 του άρθρου 187Α καταστήσει δυνατή με αναγγελία στην αρχή την πρόληψη της διάπραξης ενός από τα σχεδιαζόμενα εγκλήματα, ή με τον ίδιο τρόπο συμβάλλει ουσιωδώς στην εξάρθρωση της οργάνωσης ή στην πλήρη εξιχνίαση εγκλήματος της οργάνωσης που τελέστηκε από άλλον, απαλλάσσεται από την ποινή για τις πράξεις αυτές. Αν δεν έχει ακόμη ασκηθεί ποινική δίωξη, ο εισαγγελέας πλημμελειοδικών με αιτιολογημένη διάταξή του απέχει από την άσκησή της και υποβάλλει τη δικογραφία στον εισαγγελέα εφετών, ο οποίος ενεργεί σύμφωνα με το δεύτερο εδάφιο της παρ. 4 του άρθρου 43 του Κώδικα Ποινικής Δικονομίας. Η ως άνω διάταξη μαζί με τη σύμφωνη γνώμη κοινοποιείται στον Εισαγγελέα, που εποπτεύει τη Διεύθυνση Αντιμετώπισης Οργανωμένου Εγκλήματος και τη Διεύθυνση Αντιμετώπισης Ειδικών Εγκλημάτων Βίας της Ελληνικής Αστυνομίας, για την ενημέρωσή του."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/par/2>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/par/2>
     a eli:LegalResourceSubdivision ;
     eli:number "2" ;
     schema:text """2. Αν στην περίπτωση της παρ. 1 ο υπαίτιος έχει τελέσει κάποιο από τα επιδιωκόμενα εγκλήματα ή έχει τελέσει κάποιο από τα εγκλήματα της παρ. 1 του άρθρου 187Α, το δικαστήριο του επιβάλλει μειωμένη ποινή (άρθρο 83). Το δικαστήριο μπορεί να διατάξει την αναστολή αυτής της ποινής, εκτιμώντας ιδίως την έκταση της συμμετοχής του υπαιτίου στην οργάνωση και τον βαθμό της συμβολής του στην εξάρθρωσή της ή την πλήρη εξιχνίαση του ιδίου ή άλλου εγκλήματός της."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/par/3>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/par/3>
     a eli:LegalResourceSubdivision ;
     eli:number "3" ;
     schema:text """3. Για όποιον καταγγέλλει αξιόποινες πράξεις που τελέστηκαν σε βάρος του από εγκληματική οργάνωση, ο εισαγγελέας πλημμελειοδικών μπορεί, εφόσον η καταγγελία πιθανολογείται βάσιμη, ύστερα από έγκριση του εισαγγελέα εφετών, να απόσχει προσωρινά από την ποινική δίωξη για παραβάσεις του νόμου περί αλλοδαπών και περί εκδιδομένων με αμοιβή προσώπων, ώσπου να εκδοθεί αμετάκλητη απόφαση για τις πράξεις που καταγγέλθηκαν. Αν η κατηγορία αποδειχθεί βάσιμη, η αποχή από την ποινική δίωξη γίνεται οριστική."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/par/4>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/par/4>
     a eli:LegalResourceSubdivision ;
     eli:number "4" ;
     schema:text """4. Η απέλαση αλλοδαπών που βρίσκονται παράνομα στη χώρα και καταγγέλλουν αξιόποινες πράξεις που τελέσθηκαν από εγκληματική ή τρομοκρατική οργάνωση αναστέλλεται μέχρι να εκδοθεί αμετάκλητη απόφαση για τις πράξεις που καταγγέλθηκαν. Όσο χρόνο διαρκεί η αναστολή της απέλασης χορηγείται στους αλλοδαπούς άδεια παραμονής κατά παρέκκλιση από την ισχύουσα νομοθεσία περί αλλοδαπών."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/par/5>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/par/5>
     a eli:LegalResourceSubdivision ;
     eli:number "5" ;
     schema:text """5. Με την επιφύλαξη ειδικότερων διατάξεων, αν ο υπαίτιος πλημμελήματος ή κακουργήματος που τιμωρείται με ποινή πρόσκαιρης κάθειρξης πλην εκείνων που προβλέπονται στις διατάξεις του 19ου Κεφαλαίου του Ειδικού Μέρους του Ποινικού Κώδικα, πριν από την αμετάκλητη καταδίκη του και με δική του πρωτοβουλία συντελέσει ουσιωδώς, με την παροχή πληροφοριών, στην εξάρθρωση εγκληματικής ή τρομοκρατικής οργάνωσης ή την πλήρη εξιχνίαση κακουργήματος των άρθρων 187 και 187Α του Ποινικού Κώδικα, ή την πλήρη εξιχνίαση εγκλήματός της ή οποιουδήποτε άλλου κακουργήματος, ή την ανακάλυψη και σύλληψη δράστη τους, το δικαστήριο του επιβάλλει μειωμένη ποινή (άρθρο 83) εφόσον η βαρύτητα της πράξης του και ο βαθμός ενοχής του είναι προδήλως υποδεέστερα σε σύγκριση με τη βαρύτητα των πράξεων και τον βαθμό ενοχής των δραστών, που αφορούσαν οι πληροφορίες. Σε εξαιρετικές περιπτώσεις και αν η πράξη του υπαιτίου αφορά πλημμέλημα, το δικαστήριο μπορεί να τον απαλλάξει από τη ποινή. Επιπλέον, μπορεί να διατάξει τη μερική ή την πλήρη αναστολή της ποινής φυλάκισης, που του επιβλήθηκε, ή την έκτισή της στην κατοικία του ή τη μετατροπή της σε χρηματική ή σε κοινωφελή εργασία, ανεξάρτητα από τη συνδρομή των όρων που προβλέπονται στα άρθρα 82Α, 99, 104Α και 105. Αν οι ανωτέρω όροι συντρέξουν μετά την αμετάκλητη καταδίκη του υπαιτίου, το αρμόδιο συμβούλιο μπορεί να διατάξει την απόλυσή του από τις φυλακές υπό όρο, ανεξάρτητα από τη συνδρομή των προϋποθέσεων που προβλέπονται στο άρθρο 105Β."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/par/6>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/par/6>
     a eli:LegalResourceSubdivision ;
     eli:number "6" ;
     schema:text """6. Αν για την εξάρθρωση εγκληματικής ή τρομοκρατικής οργάνωσης ή την πλήρη εξιχνίαση κακουργήματος των άρθρων 187 και 187Α του Ποινικού Κώδικα, ή την πλήρη εξιχνίαση εγκλήματός της ή οιουδήποτε άλλου κακουργήματος, ή την ανακάλυψη και σύλληψη δράστη τους, είναι αναγκαία η προσωρινή αποφυλάκιση του ανωτέρω υπαιτίου, το αρμόδιο Συμβούλιο μπορεί, ύστερα από κατά περίπτωση αίτηση της Διεύθυνσης Αντιμετώπισης Οργανωμένου Εγκλήματος ή της Διεύθυνσης Αντιμετώπισης Ειδικών Εγκλημάτων Βίας της Ελληνικής Αστυνομίας και πρόταση του οικείου Εισαγγελέα, να διατάξει την προσωρινή, για ορισμένο χρόνο απόλυσή του από τη φυλακή, εφόσον τούτη κρίνεται αναγκαία για την επαλήθευση της πληροφορίας. Μετά την πάροδο του ορισθέντος χρόνου συνεχίζεται η φυλάκιση του υπαιτίου."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/par/7>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187003Γ/par/7>
     a eli:LegalResourceSubdivision ;
     eli:number "7" ;
     schema:text """7. Για την αναγγελία που προβλέπεται στις παραγράφους 1 και 2 και την παροχή πληροφοριών που ορίζεται στην παρ. 5 του άρθρου 187Γ, συντάσσεται έκθεση από ανακριτικούς υπαλλήλους της Διεύθυνσης Αντιμετώπισης Οργανωμένου Εγκλήματος ή της Διεύθυνσης Αντιμετώπισης Ειδικών Εγκλημάτων Βίας της Ελληνικής Αστυνομίας, κατά περίπτωση, η οποία υπογράφεται από τον δηλούντα και υποβάλλεται στον Εισαγγελέα που εποπτεύει την εν λόγω διεύθυνση, ο οποίος την τηρεί σε ειδικό, απόρρητο αρχείο και αναθέτει στην αρμόδια διεύθυνση τη διακρίβωση της βασιμότητας των ισχυρισμών του. Η αναφορά της διεύθυνσης με τα αποτελέσματα της έρευνας συσχετίζεται με την έκθεση και υποβάλλονται μαζί στο Δικαστήριο, που δικάζει το κακούργημα ή το πλημμέλημα εκείνου που παρείχε τις πληροφορίες, κατόπιν αιτήσεώς του. Το δικάζον Δικαστήριο λαμβάνει γνώση των ανωτέρω εγγράφων και συνεδριάζει σε Συμβούλιο προκειμένου να αποφανθεί για τη χορήγηση ή μη των ανωτέρω ευεργετημάτων. Στην αιτιολογία της απόφασης γίνεται μνεία μόνο του διαβιβαστικού εγγράφου του ως άνω Εισαγγελέα και της νομικής βάσης της χορήγησης ή μη του ευεργετήματος χωρίς αναφορά σε συγκεκριμένα πραγματικά περιστατικά"""@el .
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 187 - Complete Canonical Representation
+# Article 187003 - Complete Canonical Representation
 # ============================================================

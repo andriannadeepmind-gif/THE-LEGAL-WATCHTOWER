@@ -1,6 +1,6 @@
 # ============================================================
 # Κώδικας Πολιτικής Δικονομίας
-# Article 214 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 214003 - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,14 +174,14 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
 # ARTICLE ROOT NODE - Canonical Entry Point
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ>
     a eli:LegalResource ,
       dcat:Dataset ,
       schema:Legislation ;
@@ -190,11 +190,11 @@
     eli:date_document "1985-10-24"^^xsd:date ;
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503> ;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
-    eli:number 214 ;
+    eli:number 214003 ;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/DECREE> ;
 
     # Dublin Core Metadata
-    dct:identifier "gr-pd-1985-art-214Γ" ;
+    dct:identifier "gr-pd-1985-art-214003Γ" ;
     dct:issued "1985-10-24"^^xsd:date ;
     dct:language "el" ;
     dct:title """Προσφυγή σε διαδικασία διαμεσολάβησης"""@el ;
@@ -207,12 +207,12 @@
     # Schema.org Properties
     schema:inLanguage "el" ;
     schema:isPartOf <https://stavropouloslaw.com/eli/gr/pd/1985/503> ;
-    schema:legislationIdentifier "gr-pd-1985-art-214Γ" ;
+    schema:legislationIdentifier "gr-pd-1985-art-214003Γ" ;
 
     # Forward Relations to FRBR Layers
-    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work> ;
-    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell> ;
-    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell/man> ;
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell/man> ;
 
     # Provenance Metadata
     prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
@@ -223,23 +223,23 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-214/2025-01-01T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-214003/2026-07-09T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
                            <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
 
     # Input Sources
-    prov:used <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/source> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/source> ;
 
     # Custom Properties
-    stavropouloslaw:articleNumber 214 ;
+    stavropouloslaw:articleNumber 214003 ;
     stavropouloslaw:corpusShortName "kpolitikis"
  .
 
@@ -249,31 +249,31 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 214
+# FRBR WORK LAYER - Article 214003
 # Abstract legal resource (language-independent)
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work>
     a eli:LegalResource, schema:Legislation;
     eli:date_document "1985-10-24"^^xsd:date;
-    eli:id_local "gr-pd-1985-art-214Γ-work";
+    eli:id_local "gr-pd-1985-art-214003Γ-work";
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503>;
-    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ>;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/DECREE>;
     dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     dct:issued "1985-10-24"^^xsd:date;
     dct:publisher <https://stavropouloslaw.com/identity/org>;
     dct:type <http://publications.europa.eu/resource/authority/resource-type/DECREE>;
-    schema:identifier "gr-pd-1985-art-214Γ-work";
+    schema:identifier "gr-pd-1985-art-214003Γ-work";
     schema:inLanguage "el";
     schema:legislationDate "1985-10-24"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/PD/1985/ART/214";
+    schema:legislationIdentifier "ELI/GR/PD/1985/ART/214003";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "PresidentialDecree";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-214/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-214003/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,19 +293,19 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 214
+# FRBR EXPRESSION LAYER - Article 214003
 # Greek language realization of abstract Work
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell
 # Language: el (ELL)
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell>
     a eli:LegalExpression;
-    eli:realizes <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ>;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ>;
     eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
     dct:language "el";
     schema:inLanguage "el";
@@ -316,11 +316,11 @@
     schema:text """« Το δικαστήριο προτείνει στους διαδίκους την προσφυγή σε διαδικασία διαμεσολάβησης αν αυτό ενδείκνυται με βάση τις περιστάσεις της υποθέσεως, όπως ο νόμος ορίζει. Σε περίπτωση αποδοχής της πρότασης η συζήτηση της υπόθεσης αναβάλλεται για χρονικό διάστημα τριών (3) έως έξι (6) μηνών»"""@el;
     glass:digest "sha256-84aeabb391fd192f971e82fdfb6242f8a053d20bf77b04328e7fc1234ed81d7a";
     digest:sha256 "84aeabb391fd192f971e82fdfb6242f8a053d20bf77b04328e7fc1234ed81d7a";
-    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/par/1>;
-    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell/man>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/par/1>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
-    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-214/2025-01-01T00-00-00.000000Z>.
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-214003/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -332,34 +332,34 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 214
+# FRBR MANIFESTATION LAYER - Article 214003
 # Digital embodiment of the Greek-language Expression
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell/man
-# Expression: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell/man>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell/man>
     a eli:LegalManifestation ,
       dcat:Distribution ;
-    eli:embodies <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ>;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ>;
     dcat:accessURL <https://stavropouloslaw.com/eli/gr/pd/1985/503>;
-    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ>;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
-    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell/man/format/html>;
-    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell/man/format/jsonld>;
-    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell/man/format/turtle>;
-    schema:identifier "gr-pd-1985-art-214Γ-work-exp-ell-man";
+    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-pd-1985-art-214003Γ-work-exp-ell-man";
     schema:legislationDate "1985-10-24"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-214Γ-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-214003Γ-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-214/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-214003/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -371,29 +371,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 214
+# FRBR FORMAT LAYER (HTML) - Article 214003
 # HTML encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell/man/format/html
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell/man/format/html
 # Media-type: text/html; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell/man/format/html>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell/man/format/html>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ>;
     dcat:mediaType "text/html; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-214Γ-man-html>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-214003Γ-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-214/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-214003/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -401,29 +401,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 214
+# FRBR FORMAT LAYER (JSONLD) - Article 214003
 # JSONLD encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell/man/format/jsonld
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell/man/format/jsonld
 # Media-type: application/ld+json; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell/man/format/jsonld>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell/man/format/jsonld>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ>;
     dcat:mediaType "application/ld+json; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-214Γ-man-jsonld>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-214003Γ-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-214/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-214003/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -431,29 +431,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 214
+# FRBR FORMAT LAYER (TURTLE) - Article 214003
 # TURTLE encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell/man/format/turtle
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell/man/format/turtle
 # Media-type: text/turtle; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell/man/format/turtle>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell/man/format/turtle>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ>;
     dcat:mediaType "text/turtle; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-214Γ-man-turtle>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-214003Γ-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-214/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-214003/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -464,12 +464,12 @@
 # PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214Γ/par/1>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/214003Γ/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
     schema:text """1. « Το δικαστήριο προτείνει στους διαδίκους την προσφυγή σε διαδικασία διαμεσολάβησης αν αυτό ενδείκνυται με βάση τις περιστάσεις της υποθέσεως, όπως ο νόμος ορίζει. Σε περίπτωση αποδοχής της πρότασης η συζήτηση της υπόθεσης αναβάλλεται για χρονικό διάστημα τριών (3) έως έξι (6) μηνών»"""@el .
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 214 - Complete Canonical Representation
+# Article 214003 - Complete Canonical Representation
 # ============================================================

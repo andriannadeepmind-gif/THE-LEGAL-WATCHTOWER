@@ -1,6 +1,6 @@
 # ============================================================
 # Κώδικας Πολιτικής Δικονομίας
-# Article 662 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 662004 - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,14 +174,14 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
 # ARTICLE ROOT NODE - Canonical Entry Point
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ>
     a eli:LegalResource ,
       dcat:Dataset ,
       schema:Legislation ;
@@ -190,11 +190,11 @@
     eli:date_document "1985-10-24"^^xsd:date ;
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503> ;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
-    eli:number 662 ;
+    eli:number 662004 ;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/DECREE> ;
 
     # Dublin Core Metadata
-    dct:identifier "gr-pd-1985-art-662Δ" ;
+    dct:identifier "gr-pd-1985-art-662004Δ" ;
     dct:issued "1985-10-24"^^xsd:date ;
     dct:language "el" ;
     dct:title """"""@el ;
@@ -207,12 +207,12 @@
     # Schema.org Properties
     schema:inLanguage "el" ;
     schema:isPartOf <https://stavropouloslaw.com/eli/gr/pd/1985/503> ;
-    schema:legislationIdentifier "gr-pd-1985-art-662Δ" ;
+    schema:legislationIdentifier "gr-pd-1985-art-662004Δ" ;
 
     # Forward Relations to FRBR Layers
-    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work> ;
-    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell> ;
-    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell/man> ;
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell/man> ;
 
     # Provenance Metadata
     prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
@@ -223,23 +223,23 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-662/2025-01-01T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-662004/2026-07-09T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
                            <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
 
     # Input Sources
-    prov:used <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/source> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/source> ;
 
     # Custom Properties
-    stavropouloslaw:articleNumber 662 ;
+    stavropouloslaw:articleNumber 662004 ;
     stavropouloslaw:corpusShortName "kpolitikis"
  .
 
@@ -249,31 +249,31 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 662
+# FRBR WORK LAYER - Article 662004
 # Abstract legal resource (language-independent)
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work>
     a eli:LegalResource, schema:Legislation;
     eli:date_document "1985-10-24"^^xsd:date;
-    eli:id_local "gr-pd-1985-art-662Δ-work";
+    eli:id_local "gr-pd-1985-art-662004Δ-work";
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503>;
-    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ>;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/DECREE>;
     dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     dct:issued "1985-10-24"^^xsd:date;
     dct:publisher <https://stavropouloslaw.com/identity/org>;
     dct:type <http://publications.europa.eu/resource/authority/resource-type/DECREE>;
-    schema:identifier "gr-pd-1985-art-662Δ-work";
+    schema:identifier "gr-pd-1985-art-662004Δ-work";
     schema:inLanguage "el";
     schema:legislationDate "1985-10-24"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/PD/1985/ART/662";
+    schema:legislationIdentifier "ELI/GR/PD/1985/ART/662004";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "PresidentialDecree";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-662/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-662004/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,19 +293,19 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 662
+# FRBR EXPRESSION LAYER - Article 662004
 # Greek language realization of abstract Work
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell
 # Language: el (ELL)
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell>
     a eli:LegalExpression;
-    eli:realizes <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ>;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ>;
     eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
     dct:language "el";
     schema:inLanguage "el";
@@ -316,11 +316,11 @@
     schema:text """\"1. Αν η αίτηση είναι νόμιμη και τα απαιτούμενα σε κάθε περίπτωση περιστατικά αποδεικνύονται εγγράφως, ο δικαστής εκδίδει διάταξη με την οποία υποχρεώνει τον καθ' ου να αποδώσει στον αιτούντα τη χρήση του μισθίου, και τον καταδικάζει στα δικαστικά έξοδα. 2. Η διαταγή καταρτίζεται εγγράφως και περιέχει: α) το ονοματεπώνυμο του δικαστή που την εκδίδει, β) το ονοματεπώνυμο, πατρώνυμο και κατοικία του αιτούντος και του καθ' ου η αίτηση, γ) περιγραφή του μισθίου, δ) την αιτία της απόδοσης με έκθεση των αναγκαίων περιστατικών και μνεία της έκθεσης επίδοσης της όχλησης, ε) διαταγή απόδοσης της χρήσης του μισθίου, στ) υπόμνηση στον καθ' ου ότι μετά την πάροδο \"είκοσι ημερών\" από την προς αυτόν επίδοση η διαταγή θα αποτελεί τίτλο εκτελεστό και ότι δικαιούται να ασκήσει κατ' αυτής ανακοπή μέσα σε προθεσμία δεκαπέντε ημερών από της επιδόσεως και ζ) υπογραφή του δικαστή που την εξέδωσε. «3. Η διαταγή αποτελεί τίτλο εκτελεστό. Η εκτέλεσή της μπορεί να πραγματοποιηθεί αφού παρέλθουν είκοσι (20) ημέρες από την επίδοση αντιγράφου εξ απογράφου με επιταγή προς εκτέλεση, χωρίς να απαιτείται η προηγούμενη επίδοση αντιγράφου της. Η διαταγή εκτελείται και κατά των προσώπων που αναφέρονται στο άρθρο 659.»"""@el;
     glass:digest "sha256-a36b85d72e60c2ea6efc17a8914d1d08e4a0a91baf2ca321d4cd23c45b5e5d78";
     digest:sha256 "a36b85d72e60c2ea6efc17a8914d1d08e4a0a91baf2ca321d4cd23c45b5e5d78";
-    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/par/1>;
-    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell/man>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/par/1>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
-    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-662/2025-01-01T00-00-00.000000Z>.
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-662004/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -332,34 +332,34 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 662
+# FRBR MANIFESTATION LAYER - Article 662004
 # Digital embodiment of the Greek-language Expression
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell/man
-# Expression: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell/man>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell/man>
     a eli:LegalManifestation ,
       dcat:Distribution ;
-    eli:embodies <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ>;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ>;
     dcat:accessURL <https://stavropouloslaw.com/eli/gr/pd/1985/503>;
-    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ>;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
-    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell/man/format/html>;
-    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell/man/format/jsonld>;
-    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell/man/format/turtle>;
-    schema:identifier "gr-pd-1985-art-662Δ-work-exp-ell-man";
+    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-pd-1985-art-662004Δ-work-exp-ell-man";
     schema:legislationDate "1985-10-24"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-662Δ-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-662004Δ-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-662/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-662004/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -371,29 +371,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 662
+# FRBR FORMAT LAYER (HTML) - Article 662004
 # HTML encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell/man/format/html
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell/man/format/html
 # Media-type: text/html; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell/man/format/html>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell/man/format/html>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ>;
     dcat:mediaType "text/html; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-662Δ-man-html>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-662004Δ-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-662/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-662004/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -401,29 +401,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 662
+# FRBR FORMAT LAYER (JSONLD) - Article 662004
 # JSONLD encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell/man/format/jsonld
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell/man/format/jsonld
 # Media-type: application/ld+json; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell/man/format/jsonld>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell/man/format/jsonld>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ>;
     dcat:mediaType "application/ld+json; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-662Δ-man-jsonld>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-662004Δ-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-662/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-662004/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -431,29 +431,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 662
+# FRBR FORMAT LAYER (TURTLE) - Article 662004
 # TURTLE encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell/man/format/turtle
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell/man/format/turtle
 # Media-type: text/turtle; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell/man/format/turtle>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell/man/format/turtle>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ>;
     dcat:mediaType "text/turtle; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-662Δ-man-turtle>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-662004Δ-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-662/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-662004/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -464,12 +464,12 @@
 # PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662Δ/par/1>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/662004Δ/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
     schema:text """1. \"1. Αν η αίτηση είναι νόμιμη και τα απαιτούμενα σε κάθε περίπτωση περιστατικά αποδεικνύονται εγγράφως, ο δικαστής εκδίδει διάταξη με την οποία υποχρεώνει τον καθ' ου να αποδώσει στον αιτούντα τη χρήση του μισθίου, και τον καταδικάζει στα δικαστικά έξοδα. 2. Η διαταγή καταρτίζεται εγγράφως και περιέχει: α) το ονοματεπώνυμο του δικαστή που την εκδίδει, β) το ονοματεπώνυμο, πατρώνυμο και κατοικία του αιτούντος και του καθ' ου η αίτηση, γ) περιγραφή του μισθίου, δ) την αιτία της απόδοσης με έκθεση των αναγκαίων περιστατικών και μνεία της έκθεσης επίδοσης της όχλησης, ε) διαταγή απόδοσης της χρήσης του μισθίου, στ) υπόμνηση στον καθ' ου ότι μετά την πάροδο \"είκοσι ημερών\" από την προς αυτόν επίδοση η διαταγή θα αποτελεί τίτλο εκτελεστό και ότι δικαιούται να ασκήσει κατ' αυτής ανακοπή μέσα σε προθεσμία δεκαπέντε ημερών από της επιδόσεως και ζ) υπογραφή του δικαστή που την εξέδωσε. «3. Η διαταγή αποτελεί τίτλο εκτελεστό. Η εκτέλεσή της μπορεί να πραγματοποιηθεί αφού παρέλθουν είκοσι (20) ημέρες από την επίδοση αντιγράφου εξ απογράφου με επιταγή προς εκτέλεση, χωρίς να απαιτείται η προηγούμενη επίδοση αντιγράφου της. Η διαταγή εκτελείται και κατά των προσώπων που αναφέρονται στο άρθρο 659.»"""@el .
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 662 - Complete Canonical Representation
+# Article 662004 - Complete Canonical Representation
 # ============================================================

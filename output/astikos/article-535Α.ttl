@@ -1,6 +1,6 @@
 # ============================================================
 # Αστικός Κώδικας
-# Article 535 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 535001 - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,14 +174,14 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
 # ARTICLE ROOT NODE - Canonical Entry Point
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α>
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α>
     a eli:LegalResource ,
       dcat:Dataset ,
       schema:Legislation ;
@@ -190,11 +190,11 @@
     eli:date_document "1946-02-23"^^xsd:date ;
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250> ;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
-    eli:number 535 ;
+    eli:number 535001 ;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL> ;
 
     # Dublin Core Metadata
-    dct:identifier "gr-l-1946-art-535Α" ;
+    dct:identifier "gr-l-1946-art-535001Α" ;
     dct:issued "1946-02-23"^^xsd:date ;
     dct:language "el" ;
     dct:title """Υποκειμενικές απαιτήσεις ανταπόκρισης"""@el ;
@@ -207,12 +207,12 @@
     # Schema.org Properties
     schema:inLanguage "el" ;
     schema:isPartOf <https://stavropouloslaw.com/eli/gr/l/1940/2250> ;
-    schema:legislationIdentifier "gr-l-1946-art-535Α" ;
+    schema:legislationIdentifier "gr-l-1946-art-535001Α" ;
 
     # Forward Relations to FRBR Layers
-    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work> ;
-    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell> ;
-    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man> ;
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell/man> ;
 
     # Provenance Metadata
     prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
@@ -223,23 +223,23 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/astikos/art-535/2025-01-01T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/astikos/art-535001/2026-07-09T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
                            <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
 
     # Input Sources
-    prov:used <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/source> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/source> ;
 
     # Custom Properties
-    stavropouloslaw:articleNumber 535 ;
+    stavropouloslaw:articleNumber 535001 ;
     stavropouloslaw:corpusShortName "astikos"
  .
 
@@ -249,31 +249,31 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 535
+# FRBR WORK LAYER - Article 535001
 # Abstract legal resource (language-independent)
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work
+# URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work>
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work>
     a eli:LegalResource, schema:Legislation;
     eli:date_document "1946-02-23"^^xsd:date;
-    eli:id_local "gr-l-1946-art-535Α-work";
+    eli:id_local "gr-l-1946-art-535001Α-work";
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250>;
-    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α>;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
     dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     dct:issued "1946-02-23"^^xsd:date;
     dct:publisher <https://stavropouloslaw.com/identity/org>;
     dct:type <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
-    schema:identifier "gr-l-1946-art-535Α-work";
+    schema:identifier "gr-l-1946-art-535001Α-work";
     schema:inLanguage "el";
     schema:legislationDate "1946-02-23"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/1946/ART/535";
+    schema:legislationIdentifier "ELI/GR/L/1946/ART/535001";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/astikos/art-535/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/astikos/art-535001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,19 +293,19 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 535
+# FRBR EXPRESSION LAYER - Article 535001
 # Greek language realization of abstract Work
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell
 # Language: el (ELL)
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell>
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell>
     a eli:LegalExpression;
-    eli:realizes <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α>;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α>;
     eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
     dct:language "el";
     schema:inLanguage "el";
@@ -316,11 +316,11 @@
     schema:text """«Ο πωλητής εκπληρώνει την υποχρέωση του άρθρου 535, όταν το πράγμα έχει τις ιδιότητες που έχουν συμφωνήσει τα μέρη και ιδίως: 1. αντιστοιχεί στην περιγραφή, το είδος, την ποσότητα και την ποιότητα και διαθέτει τη λειτουργικότητα και τα λοιπά χαρακτηριστικά που προβλέπονται στη σύμβαση, 2. είναι κατάλληλο για την ειδική χρήση που προβλέπεται στη σύμβαση, 3. παραδίδεται με όλα τα εξαρτήματα, τις συσκευασίες και τις οδηγίες που προβλέπονται στη σύμβαση, 4. διαθέτει την ικανότητα να λειτουργεί με υλισμικό ή λογισμικό με το οποίο χρησιμοποιούνται κατά κανόνα τα πράγματα του ίδιου είδους, χωρίς να απαιτείται η μετατροπή των πραγμάτων, του υλισμικού ή του λογισμικού (συμβατότητα), καθώς και την ικανότητα να λειτουργεί με υλισμικό ή λογισμικό διαφορετικό από εκείνο με το οποίο χρησιμοποιούνται κατά κανόνα τα πράγματα του ίδιου είδους (διαλειτουργικότητα), όπως προβλέπεται στη σύμβαση, και 5. επικαιροποιείται με τις ενημερώσεις που προβλέπονται στη σύμβαση»."""@el;
     glass:digest "sha256-a7e33af4ac189e4f2279aee7ee05d72e5f5f885a72809f81226c87287fd01ad1";
     digest:sha256 "a7e33af4ac189e4f2279aee7ee05d72e5f5f885a72809f81226c87287fd01ad1";
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/par/1>;
-    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/par/1>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
-    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/astikos/art-535/2025-01-01T00-00-00.000000Z>.
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/astikos/art-535001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -332,34 +332,34 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 535
+# FRBR MANIFESTATION LAYER - Article 535001
 # Digital embodiment of the Greek-language Expression
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man
-# Expression: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man>
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell/man>
     a eli:LegalManifestation ,
       dcat:Distribution ;
-    eli:embodies <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α>;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α>;
     dcat:accessURL <https://stavropouloslaw.com/eli/gr/l/1940/2250>;
-    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α>;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man/format/html>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man/format/jsonld>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man/format/turtle>;
-    schema:identifier "gr-l-1946-art-535Α-work-exp-ell-man";
+    dct:format <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-l-1946-art-535001Α-work-exp-ell-man";
     schema:legislationDate "1946-02-23"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/astikos>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-535Α-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-535001Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/astikos/art-535/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/astikos/art-535001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -371,29 +371,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 535
+# FRBR FORMAT LAYER (HTML) - Article 535001
 # HTML encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man/format/html
+# URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell/man/format/html
 # Media-type: text/html; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man/format/html>
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell/man/format/html>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α>;
     dcat:mediaType "text/html; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/astikos>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#astikos-art-535Α-man-html>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#astikos-art-535001Α-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/astikos/art-535/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/astikos/art-535001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -401,29 +401,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 535
+# FRBR FORMAT LAYER (JSONLD) - Article 535001
 # JSONLD encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man/format/jsonld
+# URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell/man/format/jsonld
 # Media-type: application/ld+json; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man/format/jsonld>
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell/man/format/jsonld>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α>;
     dcat:mediaType "application/ld+json; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/astikos>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#astikos-art-535Α-man-jsonld>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#astikos-art-535001Α-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/astikos/art-535/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/astikos/art-535001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -431,29 +431,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 535
+# FRBR FORMAT LAYER (TURTLE) - Article 535001
 # TURTLE encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man/format/turtle
+# URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell/man/format/turtle
 # Media-type: text/turtle; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man/format/turtle>
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell/man/format/turtle>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α>;
     dcat:mediaType "text/turtle; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/astikos>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#astikos-art-535Α-man-turtle>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#astikos-art-535001Α-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/astikos/art-535/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/astikos/art-535001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -464,12 +464,12 @@
 # PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/par/1>
+<https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535001Α/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
     schema:text """1. «Ο πωλητής εκπληρώνει την υποχρέωση του άρθρου 535, όταν το πράγμα έχει τις ιδιότητες που έχουν συμφωνήσει τα μέρη και ιδίως: 1. αντιστοιχεί στην περιγραφή, το είδος, την ποσότητα και την ποιότητα και διαθέτει τη λειτουργικότητα και τα λοιπά χαρακτηριστικά που προβλέπονται στη σύμβαση, 2. είναι κατάλληλο για την ειδική χρήση που προβλέπεται στη σύμβαση, 3. παραδίδεται με όλα τα εξαρτήματα, τις συσκευασίες και τις οδηγίες που προβλέπονται στη σύμβαση, 4. διαθέτει την ικανότητα να λειτουργεί με υλισμικό ή λογισμικό με το οποίο χρησιμοποιούνται κατά κανόνα τα πράγματα του ίδιου είδους, χωρίς να απαιτείται η μετατροπή των πραγμάτων, του υλισμικού ή του λογισμικού (συμβατότητα), καθώς και την ικανότητα να λειτουργεί με υλισμικό ή λογισμικό διαφορετικό από εκείνο με το οποίο χρησιμοποιούνται κατά κανόνα τα πράγματα του ίδιου είδους (διαλειτουργικότητα), όπως προβλέπεται στη σύμβαση, και 5. επικαιροποιείται με τις ενημερώσεις που προβλέπονται στη σύμβαση»."""@el .
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 535 - Complete Canonical Representation
+# Article 535001 - Complete Canonical Representation
 # ============================================================

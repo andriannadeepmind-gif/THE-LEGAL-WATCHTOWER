@@ -1,6 +1,6 @@
 # ============================================================
 # Ποινικός Κώδικας
-# Article 323 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 323001 - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,14 +174,14 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
 # ARTICLE ROOT NODE - Canonical Entry Point
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α>
     a eli:LegalResource ,
       dcat:Dataset ,
       schema:Legislation ;
@@ -190,11 +190,11 @@
     eli:date_document "2019-06-11"^^xsd:date ;
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619> ;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
-    eli:number 323 ;
+    eli:number 323001 ;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL> ;
 
     # Dublin Core Metadata
-    dct:identifier "gr-l-2019-art-323Α" ;
+    dct:identifier "gr-l-2019-art-323001Α" ;
     dct:issued "2019-06-11"^^xsd:date ;
     dct:language "el" ;
     dct:title """Εμπορία ανθρώπων"""@el ;
@@ -207,12 +207,12 @@
     # Schema.org Properties
     schema:inLanguage "el" ;
     schema:isPartOf <https://stavropouloslaw.com/eli/gr/l/2019/4619> ;
-    schema:legislationIdentifier "gr-l-2019-art-323Α" ;
+    schema:legislationIdentifier "gr-l-2019-art-323001Α" ;
 
     # Forward Relations to FRBR Layers
-    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work> ;
-    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell> ;
-    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell/man> ;
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell/man> ;
 
     # Provenance Metadata
     prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
@@ -223,23 +223,23 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-323/2025-01-01T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-323001/2026-07-09T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
                            <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
 
     # Input Sources
-    prov:used <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/source> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/source> ;
 
     # Custom Properties
-    stavropouloslaw:articleNumber 323 ;
+    stavropouloslaw:articleNumber 323001 ;
     stavropouloslaw:corpusShortName "poinikos"
  .
 
@@ -249,31 +249,31 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 323
+# FRBR WORK LAYER - Article 323001
 # Abstract legal resource (language-independent)
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work>
     a eli:LegalResource, schema:Legislation;
     eli:date_document "2019-06-11"^^xsd:date;
-    eli:id_local "gr-l-2019-art-323Α-work";
+    eli:id_local "gr-l-2019-art-323001Α-work";
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619>;
-    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α>;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
     dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     dct:issued "2019-06-11"^^xsd:date;
     dct:publisher <https://stavropouloslaw.com/identity/org>;
     dct:type <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
-    schema:identifier "gr-l-2019-art-323Α-work";
+    schema:identifier "gr-l-2019-art-323001Α-work";
     schema:inLanguage "el";
     schema:legislationDate "2019-06-11"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/2019/ART/323";
+    schema:legislationIdentifier "ELI/GR/L/2019/ART/323001";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-323/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-323001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,19 +293,19 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 323
+# FRBR EXPRESSION LAYER - Article 323001
 # Greek language realization of abstract Work
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell
 # Language: el (ELL)
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell>
     a eli:LegalExpression;
-    eli:realizes <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α>;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α>;
     eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
     dct:language "el";
     schema:inLanguage "el";
@@ -316,18 +316,18 @@
     schema:text """1. Όποιος με τη χρήση βίας, απειλής βίας ή άλλων εξαναγκαστικών μέσων ή με επιβολή ή κατάχρηση εξουσίας, στρατολογεί, απάγει, μεταφέρει, κατακρατεί παράνομα, υποθάλπει, παραδίδει ή παραλαμβάνει άλλον με σκοπό την εκμετάλλευσή του, τιμωρείται με κάθειρξη και χρηματική ποινή.\n2. Με την ίδια ποινή τιμωρείται ο υπαίτιος και αν, για να επιτύχει τον ίδιο σκοπό, τελεί τις πράξεις της προηγούμενης παραγράφου αποσπώντας τη συναίνεση άλλου με τη χρήση απατηλών μέσων ή παρασύροντάς τον εκμεταλλευόμενος την ευάλωτη θέση στην οποία βρίσκεται.\n3. Με κάθειρξη τουλάχιστον δέκα (10) ετών και χρηματική ποινή τιμωρείται η πράξη των προηγούμενων παραγράφων όταν: α) τελείται κατ' επάγγελμα, β) τελείται από υπάλληλο ο οποίος κατά την άσκηση της υπηρεσίας του ή επωφελούμενος από την ιδιότητά του αυτή διαπράττει ή συμμετέχει με οποιονδήποτε τρόπο στην πράξη, γ) συνδέεται με την παράνομη είσοδο, παραμονή ή έξοδο του παθόντος από τη χώρα ή δ) είχε ως αποτέλεσμα τη βαριά σωματική βλάβη του παθόντος. Επιβάλλεται ισόβια κάθειρξη, αν η πράξη είχε ως αποτέλεσμα το θάνατο.\n4. Με τις ποινές της προηγούμενης παραγράφου τιμωρείται η πράξη των παρ. 1 και 2 όταν στρέφεται κατά ανηλίκου, ακόμα κι όταν τελείται χωρίς τη χρήση των μέσων που αναφέρονται σε αυτές. Με τις ίδιες ποινές τιμωρείται και όποιος, με τα μέσα των παρ. 1 και 2 στρατολογεί ανήλικο με σκοπό τη χρησιμοποίησή του σε ένοπλες επιχειρήσεις.\n5. Η έννοια της εκμετάλλευσης στις προηγούμενες παραγράφους περιλαμβάνει τον πορισμό παράνομου περιουσιακού οφέλους από: α) την υπαγωγή του σε καθεστώς δουλείας ή σε παρεμφερείς προς τη δουλεία πρακτικές, β) την υπαγωγή του σε καθεστώς ειλωτείας, γ) την εργασία ή την επαιτεία του θύματος (εργασιακή εκμετάλλευση), δ) την τέλεση εγκληματικών πράξεων από αυτό, ε) την αφαίρεση κυττάρων, ιστών ή οργάνων του σώματός του, στ) την τέλεση από αυτό γενετήσιων πράξεων, πραγματικών ή προσποιητών, ή την παροχή εργασίας ή υπηρεσιών που έχουν ως αποκλειστικό σκοπό τη γενετήσια διέγερση (γενετήσια εκμετάλλευση) ή ζ) τον εξαναγκασμό του σε τέλεση γάμου.\n6. Με φυλάκιση τουλάχιστον τριών (3) ετών και χρηματική ποινή τιμωρείται όποιος εν γνώσει, χωρίς να χρησιμοποιεί τα μέσα των παρ. 1 και 2, προσλαμβάνει στην εργασία του πρόσωπο που είναι θύμα εμπορίας, δέχεται τις υπηρεσίες του προσώπου αυτού, τελεί μαζί του γενετήσια πράξη ή δέχεται τα έσοδα από την εκμετάλλευσή του.\n7. Τιμωρείται με φυλάκιση και χρηματική ποινή όποιος, χωρίς να χρησιμοποιεί τα μέσα των παρ. 1 και 2, εξωθεί σε επαιτεία ανηλίκους, με σκοπό την εκμετάλλευση των εσόδων τους.\n8. Για όποιον καταγγέλλει αξιόποινες πράξεις που τελέστηκαν σε βάρος του από υπαιτίους των πράξεων των προηγούμενων παραγράφων, ο εισαγγελέας πλημμελειοδικών μπορεί, εφόσον η καταγγελία πιθανολογείται βάσιμη, ύστερα από έγκριση του εισαγγελέα εφετών, να απόσχει προσωρινά από την ποινική δίωξη για παραβάσεις του νόμου περί αλλοδαπών και περί εκδιδομένων με αμοιβή προσώπων, καθώς και για παραβάσεις λόγω συμμετοχής τους σε εγκληματικές δραστηριότητες, εφόσον η συμμετοχή αυτή ήταν άμεση συνέπεια του γεγονότος ότι ήταν παθόντες των αδικημάτων των προηγούμενων παραγράφων, ώσπου να εκδοθεί αμετάκλητη απόφαση για τις πράξεις που καταγγέλθηκαν. Αν η καταγγελία αποδειχθεί βάσιμη, η αποχή από την ποινική δίωξη γίνεται οριστική"""@el;
     glass:digest "sha256-e6c139fc89684a976d282e49fbc0d711124ba72fce1f53e9f04b7e1a13ffd334";
     digest:sha256 "e6c139fc89684a976d282e49fbc0d711124ba72fce1f53e9f04b7e1a13ffd334";
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/par/1>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/par/2>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/par/3>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/par/4>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/par/5>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/par/6>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/par/7>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/par/8>;
-    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell/man>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/par/1>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/par/2>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/par/3>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/par/4>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/par/5>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/par/6>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/par/7>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/par/8>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
-    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-323/2025-01-01T00-00-00.000000Z>.
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-323001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -339,34 +339,34 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 323
+# FRBR MANIFESTATION LAYER - Article 323001
 # Digital embodiment of the Greek-language Expression
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell/man
-# Expression: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell/man>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell/man>
     a eli:LegalManifestation ,
       dcat:Distribution ;
-    eli:embodies <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α>;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α>;
     dcat:accessURL <https://stavropouloslaw.com/eli/gr/l/2019/4619>;
-    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α>;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell/man/format/html>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell/man/format/jsonld>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell/man/format/turtle>;
-    schema:identifier "gr-l-2019-art-323Α-work-exp-ell-man";
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-l-2019-art-323001Α-work-exp-ell-man";
     schema:legislationDate "2019-06-11"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-323Α-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-323001Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-323/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-323001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -378,29 +378,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 323
+# FRBR FORMAT LAYER (HTML) - Article 323001
 # HTML encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell/man/format/html
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell/man/format/html
 # Media-type: text/html; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell/man/format/html>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell/man/format/html>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α>;
     dcat:mediaType "text/html; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-323Α-man-html>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-323001Α-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-323/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-323001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -408,29 +408,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 323
+# FRBR FORMAT LAYER (JSONLD) - Article 323001
 # JSONLD encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell/man/format/jsonld
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell/man/format/jsonld
 # Media-type: application/ld+json; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell/man/format/jsonld>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell/man/format/jsonld>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α>;
     dcat:mediaType "application/ld+json; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-323Α-man-jsonld>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-323001Α-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-323/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-323001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -438,29 +438,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 323
+# FRBR FORMAT LAYER (TURTLE) - Article 323001
 # TURTLE encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell/man/format/turtle
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell/man/format/turtle
 # Media-type: text/turtle; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell/man/format/turtle>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell/man/format/turtle>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α>;
     dcat:mediaType "text/turtle; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-323Α-man-turtle>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-323001Α-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-323/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-323001/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -471,47 +471,47 @@
 # PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/par/1>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
     schema:text """1. Όποιος με τη χρήση βίας, απειλής βίας ή άλλων εξαναγκαστικών μέσων ή με επιβολή ή κατάχρηση εξουσίας, στρατολογεί, απάγει, μεταφέρει, κατακρατεί παράνομα, υποθάλπει, παραδίδει ή παραλαμβάνει άλλον με σκοπό την εκμετάλλευσή του, τιμωρείται με κάθειρξη και χρηματική ποινή."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/par/2>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/par/2>
     a eli:LegalResourceSubdivision ;
     eli:number "2" ;
     schema:text """2. Με την ίδια ποινή τιμωρείται ο υπαίτιος και αν, για να επιτύχει τον ίδιο σκοπό, τελεί τις πράξεις της προηγούμενης παραγράφου αποσπώντας τη συναίνεση άλλου με τη χρήση απατηλών μέσων ή παρασύροντάς τον εκμεταλλευόμενος την ευάλωτη θέση στην οποία βρίσκεται."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/par/3>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/par/3>
     a eli:LegalResourceSubdivision ;
     eli:number "3" ;
     schema:text """3. Με κάθειρξη τουλάχιστον δέκα (10) ετών και χρηματική ποινή τιμωρείται η πράξη των προηγούμενων παραγράφων όταν: α) τελείται κατ' επάγγελμα, β) τελείται από υπάλληλο ο οποίος κατά την άσκηση της υπηρεσίας του ή επωφελούμενος από την ιδιότητά του αυτή διαπράττει ή συμμετέχει με οποιονδήποτε τρόπο στην πράξη, γ) συνδέεται με την παράνομη είσοδο, παραμονή ή έξοδο του παθόντος από τη χώρα ή δ) είχε ως αποτέλεσμα τη βαριά σωματική βλάβη του παθόντος. Επιβάλλεται ισόβια κάθειρξη, αν η πράξη είχε ως αποτέλεσμα το θάνατο."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/par/4>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/par/4>
     a eli:LegalResourceSubdivision ;
     eli:number "4" ;
     schema:text """4. Με τις ποινές της προηγούμενης παραγράφου τιμωρείται η πράξη των παρ. 1 και 2 όταν στρέφεται κατά ανηλίκου, ακόμα κι όταν τελείται χωρίς τη χρήση των μέσων που αναφέρονται σε αυτές. Με τις ίδιες ποινές τιμωρείται και όποιος, με τα μέσα των παρ. 1 και 2 στρατολογεί ανήλικο με σκοπό τη χρησιμοποίησή του σε ένοπλες επιχειρήσεις."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/par/5>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/par/5>
     a eli:LegalResourceSubdivision ;
     eli:number "5" ;
     schema:text """5. Η έννοια της εκμετάλλευσης στις προηγούμενες παραγράφους περιλαμβάνει τον πορισμό παράνομου περιουσιακού οφέλους από: α) την υπαγωγή του σε καθεστώς δουλείας ή σε παρεμφερείς προς τη δουλεία πρακτικές, β) την υπαγωγή του σε καθεστώς ειλωτείας, γ) την εργασία ή την επαιτεία του θύματος (εργασιακή εκμετάλλευση), δ) την τέλεση εγκληματικών πράξεων από αυτό, ε) την αφαίρεση κυττάρων, ιστών ή οργάνων του σώματός του, στ) την τέλεση από αυτό γενετήσιων πράξεων, πραγματικών ή προσποιητών, ή την παροχή εργασίας ή υπηρεσιών που έχουν ως αποκλειστικό σκοπό τη γενετήσια διέγερση (γενετήσια εκμετάλλευση) ή ζ) τον εξαναγκασμό του σε τέλεση γάμου."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/par/6>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/par/6>
     a eli:LegalResourceSubdivision ;
     eli:number "6" ;
     schema:text """6. Με φυλάκιση τουλάχιστον τριών (3) ετών και χρηματική ποινή τιμωρείται όποιος εν γνώσει, χωρίς να χρησιμοποιεί τα μέσα των παρ. 1 και 2, προσλαμβάνει στην εργασία του πρόσωπο που είναι θύμα εμπορίας, δέχεται τις υπηρεσίες του προσώπου αυτού, τελεί μαζί του γενετήσια πράξη ή δέχεται τα έσοδα από την εκμετάλλευσή του."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/par/7>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/par/7>
     a eli:LegalResourceSubdivision ;
     eli:number "7" ;
     schema:text """7. Τιμωρείται με φυλάκιση και χρηματική ποινή όποιος, χωρίς να χρησιμοποιεί τα μέσα των παρ. 1 και 2, εξωθεί σε επαιτεία ανηλίκους, με σκοπό την εκμετάλλευση των εσόδων τους."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323Α/par/8>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/323001Α/par/8>
     a eli:LegalResourceSubdivision ;
     eli:number "8" ;
     schema:text """8. Για όποιον καταγγέλλει αξιόποινες πράξεις που τελέστηκαν σε βάρος του από υπαιτίους των πράξεων των προηγούμενων παραγράφων, ο εισαγγελέας πλημμελειοδικών μπορεί, εφόσον η καταγγελία πιθανολογείται βάσιμη, ύστερα από έγκριση του εισαγγελέα εφετών, να απόσχει προσωρινά από την ποινική δίωξη για παραβάσεις του νόμου περί αλλοδαπών και περί εκδιδομένων με αμοιβή προσώπων, καθώς και για παραβάσεις λόγω συμμετοχής τους σε εγκληματικές δραστηριότητες, εφόσον η συμμετοχή αυτή ήταν άμεση συνέπεια του γεγονότος ότι ήταν παθόντες των αδικημάτων των προηγούμενων παραγράφων, ώσπου να εκδοθεί αμετάκλητη απόφαση για τις πράξεις που καταγγέλθηκαν. Αν η καταγγελία αποδειχθεί βάσιμη, η αποχή από την ποινική δίωξη γίνεται οριστική"""@el .
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 323 - Complete Canonical Representation
+# Article 323001 - Complete Canonical Representation
 # ============================================================
