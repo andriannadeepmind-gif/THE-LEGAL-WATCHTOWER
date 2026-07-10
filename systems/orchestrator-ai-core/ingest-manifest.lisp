@@ -86,7 +86,9 @@
 (defun manifest-entry-to-json (entry)
   "Convert manifest entry (plist/alist) to compact JSON string.
    Uses jonathan for high-performance serialization."
-  (jonathan:to-json entry :from :alist))
+  ;; P1b [0049]: τα entries είναι PLIST — το «:from :alist» τα σειριοποιούσε
+  ;; ως JSON ARRAY εναλλασσόμενων keys/values (ίδια κλάση με το P1-D).
+  (jonathan:to-json entry :from :plist))
 
 ;;; ============================================================================
 ;;; CORPUS-LEVEL MANIFEST GENERATION

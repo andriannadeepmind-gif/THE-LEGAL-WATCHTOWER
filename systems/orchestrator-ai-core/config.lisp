@@ -226,10 +226,12 @@
                        (orchestrator.model:article-html article)))
          (base-uri (config-canonical-base-uri config)))
     
-    `(:|id| ,(format nil "~A/~A/article/~D" 
+    ;; P1b [0049]: label-aware ταυτότητα — ποτέ ο συνθετικός αριθμός στο id
+    `(:|id| ,(format nil "~A/~A/article/~A"
                      base-uri
                      (orchestrator.model:corpus-short-name corpus)
-                     number)
+                     (orchestrator.model:article-uri-id
+                      number (orchestrator.model:article-label article)))
       :|canonical_source| ,eli-uri
       :|corpus| ,(orchestrator.model:corpus-short-name corpus)
       :|article_number| ,number

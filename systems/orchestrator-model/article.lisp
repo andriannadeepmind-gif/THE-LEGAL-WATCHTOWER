@@ -162,6 +162,17 @@
 ;;; the two functions below; nothing reimplements the padding/suffix rule.
 ;;; ----------------------------------------------------------------------------
 
+(defun %article-base (number suffix-or-label)
+  "Η αριθμητική ΒΑΣΗ μιας ταυτότητας άρθρου. Όταν το SUFFIX-OR-LABEL είναι
+   ΠΛΗΡΕΣ label με ψηφία («100Α»), η βάση προκύπτει από ΑΥΤΟ — τη μία πηγή
+   αλήθειας ταυτότητας — και ΟΧΙ από το NUMBER, που για lettered άρθρα είναι
+   εσωτερικός συνθετικός αριθμός αποσαφήνισης (5Α ⇒ 5001). Γυμνό επίθημα
+   («Α») ή NIL ⇒ NUMBER."
+  (or (and suffix-or-label
+           (stringp (string suffix-or-label))
+           (parse-integer (string suffix-or-label) :junk-allowed t))
+      number))
+
 (defun %article-suffix (suffix-or-label)
   "The letter suffix from SUFFIX-OR-LABEL, which may be a bare suffix (\"Α\"), a
    full label (\"100Α\"), NIL, or a number. Returns \"\" when there is none."
@@ -173,19 +184,21 @@
   "Canonical PADDED article id (filesystem ids + eIds): NUMBER zero-padded to 3
    digits, with any letter suffix preserved. 70 -> \"070\", (70 \"Α\") -> \"070Α\",
    (100 \"100Α\") -> \"100Α\". THE single source of truth — do not reimplement."
-  (let ((suffix (%article-suffix suffix-or-label)))
+  (let ((suffix (%article-suffix suffix-or-label))
+        (base (%article-base number suffix-or-label)))
     (if (plusp (length suffix))
-        (format nil "~3,'0D~A" number suffix)
-        (format nil "~3,'0D" number))))
+        (format nil "~3,'0D~A" base suffix)
+        (format nil "~3,'0D" base))))
 
 (defun article-uri-id (number &optional suffix-or-label)
   "Canonical UNPADDED article id for URI/ELI path segments (.../art/100Α): NUMBER
    with any letter suffix preserved, NOT zero-padded. 70 -> \"70\", (70 \"Α\") ->
    \"70Α\". THE single source of truth for URI path ids — do not reimplement."
-  (let ((suffix (%article-suffix suffix-or-label)))
+  (let ((suffix (%article-suffix suffix-or-label))
+        (base (%article-base number suffix-or-label)))
     (if (plusp (length suffix))
-        (format nil "~D~A" number suffix)
-        (format nil "~D" number))))
+        (format nil "~D~A" base suffix)
+        (format nil "~D" base))))
 
 (defun article-file-id (article)
   "Canonical filesystem/eId identifier for ARTICLE that PRESERVES a letter
@@ -197,10 +210,7 @@
    που για lettered άρθρα είναι εσωτερικός συνθετικός αριθμός αποσαφήνισης
    (5Α ⇒ number 5001) και μόλυνε τα ονόματα αρχείων (article-5001Α αντί του
    κανονικού article-005Α)."
-  (let* ((label (article-label article))
-         (base (or (and label (parse-integer (string label) :junk-allowed t))
-                   (article-number article))))
-    (pad-article-id base label)))
+  (pad-article-id (article-number article) (article-label article)))
 
 (defun article-live-p (article)
   "Check if article is in live state"
