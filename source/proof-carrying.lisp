@@ -24,85 +24,21 @@
 
 (defpackage :orchestrator.proof-carrying
   (:use :cl)
-  (:export #:leaf-hash #:hash-concat #:build-merkle-root #:merkle-path
-           #:verify-merkle-path #:make-provision-proof #:verify-provision-proof
+  ;; [P1.5-A] Η Merkle άλγεβρα ζει ΜΟΝΟ στην orchestrator.merkle (RFC 6962):
+  ;; domain-separated φύλλα/κόμβοι + unbalanced split (ΟΧΙ duplicate-last). Το
+  ;; proof-carrying την ΚΑΤΑΝΑΛΩΝΕΙ — δεν έχει δική του Merkle υλοποίηση.
+  (:import-from :orchestrator.merkle
+                #:hash-leaf-string
+                #:hash-node
+                #:merkle-tree-hash
+                #:inclusion-path
+                #:verify-inclusion)
+  (:export #:make-provision-proof #:verify-provision-proof
            #:proof-plist->json #:cite-as
            #:write-provision-proofs #:verify-proof-json #:corpus-proof-json
            #:sign-root #:verify-signed-root #:verify-corpus-anchor #:verify-full-chain))
 
 (in-package :orchestrator.proof-carrying)
-
-;;; ----------------------------------------------------------------------------
-;;; hashing (same convention as orchestrator.epistemic's Merkle tree)
-;;; ----------------------------------------------------------------------------
-
-(defun %sha256-hex (bytes)
-  (format nil "sha256:~(~{~2,'0x~}~)"
-          (coerce (ironclad:digest-sequence :sha256 bytes) 'list)))
-
-;; RFC 6962 §2.1 domain separation: a leaf is hashed with a 0x00 prefix and an
-;; internal node with a 0x01 prefix, so a leaf's preimage can never be reinterpreted
-;; as an internal node (and vice-versa). Without this, a 64-byte leaf input could
-;; collide with an internal node's (left‖right) input (second-preimage hardening).
-(defparameter +leaf-prefix+ #(#x00))
-(defparameter +node-prefix+ #(#x01))
-
-(defun leaf-hash (string)
-  "sha256:HEX of 0x00 ‖ STRING's UTF-8 bytes — a domain-separated Merkle leaf."
-  (%sha256-hex (concatenate '(vector (unsigned-byte 8))
-                            +leaf-prefix+
-                            (babel:string-to-octets (or string "") :encoding :utf-8))))
-
-(defun hash-concat (h1 h2)
-  "Internal Merkle node: sha256 of 0x01 ‖ raw(H1) ‖ raw(H2) — domain-separated
-   from leaves, and order-sensitive."
-  (let ((b1 (ironclad:hex-string-to-byte-array (subseq h1 7)))
-        (b2 (ironclad:hex-string-to-byte-array (subseq h2 7))))
-    (%sha256-hex (concatenate '(vector (unsigned-byte 8)) +node-prefix+ b1 b2))))
-
-;;; ----------------------------------------------------------------------------
-;;; Merkle tree over an ORDERED list of leaf hashes (odd node duplicates itself)
-;;; ----------------------------------------------------------------------------
-
-(defun %levels (leaves)
-  "All tree levels bottom-up: level 0 = LEAVES, last = (root). An odd node at a
-   level is paired with itself (standard duplication)."
-  (let ((levels (list leaves)))
-    (loop for cur = (first levels)
-          while (> (length cur) 1)
-          do (let ((cur* (coerce cur 'vector)) (nxt '()))
-               (loop for i from 0 below (length cur*) by 2
-                     for a = (aref cur* i)
-                     for b = (if (< (1+ i) (length cur*)) (aref cur* (1+ i)) a)
-                     do (push (hash-concat a b) nxt))
-               (push (nreverse nxt) levels)))
-    (nreverse levels)))
-
-(defun build-merkle-root (leaves)
-  "The Merkle root over an ordered list of LEAF hashes."
-  (unless leaves (error "build-merkle-root: empty leaf list"))
-  (first (car (last (%levels leaves)))))
-
-(defun merkle-path (leaves index)
-  "The inclusion path for leaf INDEX: a list of (SIDE . SIBLING-HASH) where SIDE
-   is :left when the sibling sits to the left of the running hash, :right when to
-   the right. Walks leaves → root."
-  (let ((levels (%levels leaves)) (idx index) (path '()))
-    (dolist (level (butlast levels) (nreverse path))
-      (let* ((v (coerce level 'vector))
-             (n (length v))
-             (sib (if (evenp idx) (1+ idx) (1- idx)))
-             (sib (if (>= sib n) idx sib))           ; odd duplication → sibling is self
-             (side (if (evenp idx) :right :left)))    ; even idx ⇒ sibling on the right
-        (push (cons side (aref v sib)) path)
-        (setf idx (floor idx 2))))))
-
-(defun verify-merkle-path (leaf path root)
-  "Recompute the root from LEAF + PATH and compare to ROOT. T iff it matches."
-  (let ((cur leaf))
-    (dolist (step path (string= cur root))
-      (destructuring-bind (side . sib) step
-        (setf cur (if (eq side :left) (hash-concat sib cur) (hash-concat cur sib)))))))
 
 ;;; ----------------------------------------------------------------------------
 ;;; portable per-provision proof
@@ -124,8 +60,8 @@
         :id (princ-to-string article-id)
         :eli eli
         :cite-as cite
-        :leaf (leaf-hash canonical-text)
-        :path (merkle-path leaves index)
+        :leaf (hash-leaf-string canonical-text)
+        :path (inclusion-path leaves index)
         :merkle-root root
         :anchored-at anchored-at
         :primary-anchor primary-anchor))
@@ -135,10 +71,10 @@
    text to a leaf, confirm it equals the proof's leaf, then walk the inclusion
    path to the signed root. Returns (values ok-p reason). A single tampered byte
    ⇒ (NIL :text-hash-mismatch); a forged path ⇒ (NIL :inclusion-failed)."
-  (let ((leaf (leaf-hash canonical-text)))
+  (let ((leaf (hash-leaf-string canonical-text)))
     (cond
       ((not (string= leaf (getf proof :leaf))) (values nil :text-hash-mismatch))
-      ((not (verify-merkle-path leaf (getf proof :path) (getf proof :merkle-root)))
+      ((not (verify-inclusion leaf (getf proof :path) (getf proof :merkle-root)))
        (values nil :inclusion-failed))
       (t (values t :ok)))))
 
@@ -247,8 +183,8 @@
    text→leaf→path→root→signature is verifiable. Returns (values root count signature)."
   (let* ((dir (uiop:ensure-directory-pathname output-dir))
          (texts (mapcar (lambda (p) (or (getf p :text) "")) provisions))
-         (leaves (mapcar #'leaf-hash texts))
-         (root (and leaves (build-merkle-root leaves)))
+         (leaves (mapcar #'hash-leaf-string texts))
+         (root (and leaves (merkle-tree-hash leaves)))
          (signature (and root private-key (sign-root root private-key))))
     (ensure-directories-exist dir)
     (loop for p in provisions for i from 0

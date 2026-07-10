@@ -44,8 +44,8 @@
 
 (format t "~%== verify_provision: a REAL proof, checked through the tool ==~%")
 (let* ((texts (list "Ανθρωποκτονία με πρόθεση." "Κλοπή." "Απάτη."))
-       (leaves (mapcar #'orchestrator.proof-carrying:leaf-hash texts))
-       (root (orchestrator.proof-carrying:build-merkle-root leaves))
+       (leaves (mapcar #'orchestrator.merkle:hash-leaf-string texts))
+       (root (orchestrator.merkle:merkle-tree-hash leaves))
        (proof (orchestrator.proof-carrying:make-provision-proof
                "299" (first texts) leaves 0 root))
        (proof-json (orchestrator.proof-carrying:proof-plist->json proof)))
