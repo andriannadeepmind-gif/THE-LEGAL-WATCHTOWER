@@ -6,21 +6,21 @@
         <FRBRWork>
           <FRBRthis value="/akn/gr/act/kpoinikis/main"/>
           <FRBRuri value="/akn/gr/act/kpoinikis"/>
-          <FRBRdate date="1970-01-01" name="generation"/>
+          <FRBRdate date="2019-06-11" name="generation"/>
           <FRBRauthor href="#stavropoulosLaw"/>
           <FRBRcountry value="gr"/>
         </FRBRWork>
         <FRBRExpression>
           <FRBRthis value="/akn/gr/act/kpoinikis/el@/main"/>
           <FRBRuri value="/akn/gr/act/kpoinikis/el@"/>
-          <FRBRdate date="1970-01-01" name="generation"/>
+          <FRBRdate date="2019-06-11" name="generation"/>
           <FRBRauthor href="#stavropoulosLaw"/>
           <FRBRlanguage language="el"/>
         </FRBRExpression>
         <FRBRManifestation>
           <FRBRthis value="/akn/gr/act/kpoinikis/el@/main.xml"/>
           <FRBRuri value="/akn/gr/act/kpoinikis/el@/main.xml"/>
-          <FRBRdate date="1970-01-01" name="generation"/>
+          <FRBRdate date="2019-06-11" name="generation"/>
           <FRBRauthor href="#stavropoulosLaw"/>
           <FRBRformat value="application/akn+xml"/>
         </FRBRManifestation>

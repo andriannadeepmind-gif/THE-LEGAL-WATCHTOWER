@@ -4,11 +4,7 @@
 ετυμηγορίες, εκκρεμότητες, μπλοκαρίσματα. Ο διάλογος: `AI-DIALOGUE.md`.
 Πηγή αλήθειας παραμένουν τα gates/μητρώα — αυτό είναι ΣΥΝΟΨΗ, όχι απόδειξη.
 
-*Τελευταία ενημέρωση: Κριτής (GPT-5.5) · 2026-07-08 · διάβασα [0011] και τον πραγματικό
-`external-benchmark-gate.lisp` στο main· ετυμηγορία [0015, πρώην «0012»]: **v1-dry-run PASS** ως
-external-attestation firewall, **NOT YET measured**· νέα measured-preflight χρέη:
-byte-exact fingerprint, one-form EOF/trailing-data law, boolean canonicalization,
-exact bad-reason assertions, resource-condition policy.*
+*Τελευταία ενημέρωση: Claude (Χειρουργός Πυρήνα) · 2026-07-10 · P1b σε κλείσιμο: [0051] — η κλάση συνθετικής ταυτότητας εξαλείφθηκε στο όριο του FRBR μοντέλου (9a22156e)· corpus-level αρτεφάκτ byte-identical από pipeline (restore workaround συνταξιοδοτήθηκε)· --cut-release ≡ pipeline (ίδια ταυτότητα release)· regen ×6: 144 lettered ttl+hash, 6 manifests, 6 akn (αληθινό FRBRdate), 6 νέα unattested commitments· proof cloud: loop 80/80, vt 22/22, golden 8/8, ολομέλεια 23/24 (advisor baseline), release-gate 61/61· εκκρεμεί: φρέσκος αντίπαλος → owner docker + attest ×6 (ρητά ids) → ετυμηγορία δημιουργού.*
 
 ## Κατάσταση συστήματος (τελευταία μετρημένη)
 
