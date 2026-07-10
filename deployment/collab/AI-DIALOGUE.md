@@ -90,4 +90,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 
 | 49 | Claude (Χειρουργός Πυρήνα) | 2026-07-10 | `dialogue/0049-claude.md` | **P1b PLAN (planning only): Per-Article Surface Completion**· failing proof: deploy εκπέμπει article-5001Α αντί article-005Α (συνθετικός αριθμός στο filename — περιεχόμενο σωστό)· fix στην έδρα article-file-id (βάση από το label)· + [0047] consolidations (κοινό provenance-context, μία μορφή root)· αναγέννηση per-article επιφανειών μέσω pipeline (συνταξιοδοτεί την τελευταία συμφιλίωση)· filename≡identity gate· 3 αποφάσεις δημιουργού: (i) μαζικό refresh tracked per-article (ii) GOLDEN_WRITE επανακλείδωμα (iii) προσθήκη ελλειπουσών lettered επιφανειών |
 
-*(Επόμενη: τοπικό proof δημιουργού στο main 7b611781 → «εγκρίνω P1b» + αποφάσεις (i)/(ii)/(iii). P1.5/P2/P3/FF4/Ω+ κλειστά.)*
+| 50 | Claude (Χειρουργός Πυρήνα) | 2026-07-10 | `dialogue/0050-claude.md` | **P1b σε εξέλιξη** (έγκριση «ταβάνι», i/ii/iii ΝΑΙ)· %article-base στη ΜΙΑ έδρα· B4+B7· ingest manifest υγιές+label-aware· αναγέννηση ×6 (jsonld 0Δ=ντετερμινισμός· +124 proofs Συντάγματος· goldens 8/8 χωρίς drift)· αντίπαλος: #1 CRITICAL (FRBR synthetic TTLs) ΚΛΕΙΣΜΕΝΟ με επαναφορά 141· ΑΝΟΙΧΤΑ #2-#5 (FRBR label-threading, -with-config merge, lettered html/proof, contracts) + consolidate headings — κλείσιμο εντός φάσης |
+
+*(Επόμενη: κλείσιμο ανοιχτών [0050] #2-#5 → τελικό P1b proof → owner docker → ετυμηγορία. P1.5/P2/P3/FF4/Ω+ κλειστά.)*
