@@ -302,6 +302,32 @@ JWS υπογραφή, ύπαρξη/imprint-binding του RFC-3161 receipt (time
        (log:info () "tsa-ca.pem: καμία γνήσια CA — γράφτηκε τίμια σημείωση (καμία ψευδο-διανομή)")
        nil))))
 
+(defun %tsa-ca-material-ok-p (release-dir)
+  "Το αναλλοίωτο υλικού TSA CA ενός release: ΑΚΡΙΒΩΣ ένα από
+   {verify/tsa-ca.pem που περνά τη δομική φραγή X.509,
+    verify/tsa-ca.MISSING.txt (τίμια σημείωση)}.
+   Η έδρα εκπομπής (%emit-tsa-ca-or-honest-note) το διατηρεί εκ κατασκευής —
+   αυτή η πύλη το ΕΛΕΓΧΕΙ ανεξάρτητα, ώστε παράκαμψη της εκπομπής να μην
+   περνά σιωπηλά. Αυστηρά ισχυρότερο και από το προ-P1.4 (παρουσία-μόνο, που
+   δεχόταν ψευδο-blob) και από το ενδιάμεσο P1.4 (που επέτρεπε κανένα από τα
+   δύο). Επιστρέφει T ή (values NIL αιτία)."
+  (let* ((pem-path  (merge-pathnames "verify/tsa-ca.pem" release-dir))
+         (note-path (merge-pathnames "verify/tsa-ca.MISSING.txt" release-dir))
+         (pem-p  (probe-file pem-path))
+         (note-p (probe-file note-path)))
+    (cond
+      ((and pem-p note-p)
+       (values nil "και tsa-ca.pem ΚΑΙ tsa-ca.MISSING.txt — διφορούμενο υλικό επαλήθευσης"))
+      ((and (not pem-p) (not note-p))
+       (values nil "ούτε tsa-ca.pem ούτε tsa-ca.MISSING.txt — σιωπηλή παράλειψη υλικού επαλήθευσης"))
+      (note-p t)
+      (t (handler-case
+             (progn
+               (orchestrator.x509-authority:assert-valid-x509-pem
+                (uiop:read-file-string pem-path) "verify/tsa-ca.pem")
+               t)
+           (error (e) (values nil (format nil "~A" e))))))))
+
 (defun %key-genesis-explicitly-allowed-p ()
   "T ΜΟΝΟ όταν ο χειριστής ζητά ΡΗΤΑ γένεση κλειδιού (LAWMAX_ALLOW_KEY_GENESIS=1),
    που προορίζεται ΑΠΟΚΛΕΙΣΤΙΚΑ για dev/init σε ΚΕΝΟ περιβάλλον. Η ΜΙΑ έδρα
@@ -1190,10 +1216,11 @@ No fallbacks, no partial validity - strict proof gates.
                          ;; append-only, ίσως μετά το publish) — η ΕΞΟΥΣΙΑ το απαιτεί
                          ;; στο promote-latest!, όχι η πληρότητα του commitment.
                          ;; Core verification files (always required).
-                         ;; P1.4 [0054]#1: το tsa-ca.pem ΔΕΝ είναι πλέον
-                         ;; always-required — γράφεται ΜΟΝΟ όταν ο χειριστής
-                         ;; παρέχει γνήσια, δομικά επικυρωμένη CA· αλλιώς
-                         ;; τίμια σημείωση tsa-ca.MISSING.txt (ποτέ ψευδο-cert).
+                         ;; P1.4 [0054]#1 + [0056]: το υλικό TSA CA ΔΕΝ είναι
+                         ;; απλή παρουσία αρχείου — ελέγχεται ξεχωριστά κάτω
+                         ;; από το exactly-one-of gate (%tsa-ca-material-ok-p):
+                         ;; ΑΚΡΙΒΩΣ ένα από {δομικά έγκυρο tsa-ca.pem,
+                         ;; τίμια σημείωση tsa-ca.MISSING.txt}.
                          "verify/verify.sh"
                          "verify/verify.ps1"
                          "verify/verify.lisp"
@@ -1209,6 +1236,13 @@ No fallbacks, no partial validity - strict proof gates.
           unless exists
             do (format t "✗ MISSING: ~A~%" filename)
                (return-from validate-epistemic-stage nil))
+
+    ;; [0056]: υλικό TSA CA — ΑΚΡΙΒΩΣ ένα από {δομικά έγκυρο tsa-ca.pem,
+    ;; tsa-ca.MISSING.txt}. Κανένα / και τα δύο / ψευδο-pem ⇒ FAIL.
+    (multiple-value-bind (ok reason) (%tsa-ca-material-ok-p release-dir)
+      (unless ok
+        (format t "✗ TSA-CA GATE: ~A~%" reason)
+        (return-from validate-epistemic-stage nil)))
 
     ;; Check optional files (warn if missing, don't fail)
     (loop for filename in optional-files

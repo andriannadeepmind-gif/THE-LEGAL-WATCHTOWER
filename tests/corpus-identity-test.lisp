@@ -362,7 +362,7 @@ C2N2CWKbYQK7VqKJnCWmYQq1GfFQGw==
                              :public-key (getf kp :public-key)
                              :common-name "T" :organization "T" :country "GR" :days 365)))
              (and (not (orchestrator.x509-authority:valid-x509-certificate-der-p
-                        (orchestrator.x509-authority:pem->der fake "CERTIFICATE")))
+                        (orchestrator.asn1:pem->der fake "CERTIFICATE")))
                   (orchestrator.x509-authority:valid-x509-certificate-der-p real-der)
                   (handler-case (progn (orchestrator.x509-authority:assert-valid-x509-pem fake) nil)
                     (error () t)))))
@@ -383,6 +383,43 @@ C2N2CWKbYQK7VqKJnCWmYQq1GfFQGw==
                          (orchestrator.consolidation:amending-act-recorded a1))
                   (let ((r (orchestrator.consolidation:amending-act-recorded a2)))
                     (and r (plusp (length r)))))))
+
+;;; ㉕ [0056]: exactly-one-of gate — υλικό TSA CA release: ΑΚΡΙΒΩΣ ένα από
+;;; {δομικά έγκυρο tsa-ca.pem, tsa-ca.MISSING.txt}. Αυστηρά ισχυρότερο από το
+;;; προ-P1.4 (παρουσία-μόνο, δεχόταν ψευδο-blob) ΚΑΙ από το ενδιάμεσο P1.4
+;;; (επέτρεπε σιωπηλά κανένα από τα δύο).
+(cit-check "㉕ tsa-ca gate: κανένα⇒NIL· δύο⇒NIL· ψευδο⇒NIL· note⇒T· γνήσιο⇒T"
+           (let* ((base (merge-pathnames "cit-tsa-gate/" (uiop:temporary-directory)))
+                  (fake "-----BEGIN CERTIFICATE-----
+MIIGQDCCBSigAwIBAgIJAI+F9s9cXyXyMA0GCSqGSIb3DQEBCwUAMIGwMQswCQYD
+C2N2CWKbYQK7VqKJnCWmYQq1GfFQGw==
+-----END CERTIFICATE-----")
+                  (mk (lambda (name pem-string note-p)
+                        (let* ((dir (merge-pathnames (format nil "~A/" name) base))
+                               (vdir (merge-pathnames "verify/" dir)))
+                          (ensure-directories-exist vdir)
+                          (when pem-string
+                            (alexandria:write-string-into-file
+                             pem-string (merge-pathnames "tsa-ca.pem" vdir)
+                             :if-exists :supersede))
+                          (when note-p
+                            (alexandria:write-string-into-file
+                             "τίμια σημείωση" (merge-pathnames "tsa-ca.MISSING.txt" vdir)
+                             :if-exists :supersede))
+                          dir)))
+                  (gate (lambda (dir) (orchestrator.epistemic::%tsa-ca-material-ok-p dir)))
+                  (kp (orchestrator.jws-authority:generate-rsa-keypair :bits 2048))
+                  (real-pem (orchestrator.asn1:der->pem
+                             (orchestrator.x509-authority:generate-self-signed-certificate
+                              :private-key (getf kp :private-key)
+                              :public-key (getf kp :public-key)
+                              :common-name "T" :organization "T" :country "GR" :days 365)
+                             "CERTIFICATE")))
+             (and (not (funcall gate (funcall mk "none" nil nil)))
+                  (not (funcall gate (funcall mk "both" fake t)))
+                  (not (funcall gate (funcall mk "fake" fake nil)))
+                  (funcall gate (funcall mk "note" nil t))
+                  (funcall gate (funcall mk "real" real-pem nil)))))
 
 (format t "~%========================================~%")
 (format t "Corpus identity tests: ~D passed, ~D failed~%" *cit-pass* *cit-fail*)

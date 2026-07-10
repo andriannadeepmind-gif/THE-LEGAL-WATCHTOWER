@@ -16,6 +16,13 @@
 
 (defpackage :orchestrator.timestamp-authority
   (:use :cl)
+  (:import-from :orchestrator.asn1
+                #:encode-asn1-sequence
+                #:encode-asn1-integer
+                #:encode-asn1-octet-string
+                #:encode-asn1-boolean
+                #:encode-asn1-null
+                #:encode-asn1-oid)
   (:export
    ;; Core timestamping
    #:request-timestamp
@@ -242,101 +249,8 @@
      (list (encode-asn1-oid oid)
            (encode-asn1-null)))))
 
-;;; ============================================================================
-;;; ASN.1 DER ENCODING
-;;; ============================================================================
-
-(defun encode-asn1-sequence (elements)
-  "Encode list of DER elements as SEQUENCE"
-  (let ((content (apply #'concatenate '(vector (unsigned-byte 8)) elements)))
-    (concatenate '(vector (unsigned-byte 8))
-                 (vector #x30)  ; SEQUENCE tag
-                 (encode-asn1-length (length content))
-                 content)))
-
-(defun encode-asn1-integer (value)
-  "Encode integer as ASN.1 INTEGER"
-  (let* ((bytes (if (zerop value)
-                    (vector 0)
-                    (integer-to-bytes-unsigned value)))
-         ;; Add leading zero if high bit set
-         (padded (if (and (> (length bytes) 0)
-                          (>= (aref bytes 0) 128))
-                     (concatenate '(vector (unsigned-byte 8)) (vector 0) bytes)
-                     bytes)))
-    (concatenate '(vector (unsigned-byte 8))
-                 (vector #x02)  ; INTEGER tag
-                 (encode-asn1-length (length padded))
-                 padded)))
-
-(defun encode-asn1-octet-string (bytes)
-  "Encode bytes as ASN.1 OCTET STRING"
-  (concatenate '(vector (unsigned-byte 8))
-               (vector #x04)  ; OCTET STRING tag
-               (encode-asn1-length (length bytes))
-               bytes))
-
-(defun encode-asn1-boolean (value)
-  "Encode boolean as ASN.1 BOOLEAN"
-  (vector #x01 #x01 (if value #xff #x00)))
-
-(defun encode-asn1-null ()
-  "Encode ASN.1 NULL"
-  (vector #x05 #x00))
-
-(defun encode-asn1-oid (components)
-  "Encode OID as ASN.1 OBJECT IDENTIFIER"
-  (let ((encoded (make-array 0 :element-type '(unsigned-byte 8)
-                               :adjustable t :fill-pointer 0)))
-    ;; First two components: 40*first + second
-    (vector-push-extend (+ (* 40 (first components)) (second components)) encoded)
-    ;; Remaining components use base-128 encoding
-    (dolist (c (cddr components))
-      (encode-base128 c encoded))
-    (concatenate '(vector (unsigned-byte 8))
-                 (vector #x06)  ; OID tag
-                 (encode-asn1-length (length encoded))
-                 encoded)))
-
-(defun encode-base128 (value array)
-  "Encode integer in base-128 format for OID"
-  (if (zerop value)
-      (vector-push-extend 0 array)
-      (let ((bytes nil))
-        (loop while (> value 0)
-              do (push (logand value #x7f) bytes)
-                 (setf value (ash value -7)))
-        ;; Set high bit on all but last byte
-        (loop for i from 0 below (1- (length bytes))
-              do (setf (nth i bytes) (logior (nth i bytes) #x80)))
-        (dolist (b bytes)
-          (vector-push-extend b array)))))
-
-(defun encode-asn1-length (length)
-  "Encode ASN.1 length field"
-  (cond
-    ((< length 128)
-     (vector length))
-    ((< length 256)
-     (vector #x81 length))
-    ((< length 65536)
-     (vector #x82 (ash length -8) (logand length #xff)))
-    (t
-     (let* ((bytes (integer-to-bytes-unsigned length))
-            (num-bytes (length bytes)))
-       (concatenate '(vector (unsigned-byte 8))
-                    (vector (logior #x80 num-bytes))
-                    bytes)))))
-
-(defun integer-to-bytes-unsigned (n)
-  "Convert positive integer to big-endian bytes"
-  (if (zerop n)
-      (vector 0)
-      (let ((bytes nil))
-        (loop while (> n 0)
-              do (push (logand n #xff) bytes)
-                 (setf n (ash n -8)))
-        (coerce bytes '(vector (unsigned-byte 8))))))
+;;; (Κωδικοποίηση ASN.1 DER: orchestrator.asn1 — Η έδρα. Εδώ μένει ΜΟΝΟ η
+;;; RFC-3161 σημασιολογία: TimeStampReq/MessageImprint/AlgorithmIdentifier.)
 
 ;;; ============================================================================
 ;;; TIMESTAMP VERIFICATION

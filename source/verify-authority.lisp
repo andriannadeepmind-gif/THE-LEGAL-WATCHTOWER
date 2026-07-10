@@ -241,52 +241,9 @@
 ;;;    statusString  PKIFreeText OPTIONAL,
 ;;;    failInfo      PKIFailureInfo OPTIONAL  }
 
-(defun parse-asn1-length (bytes offset)
-  "Parse ASN.1 DER length field
-   Returns: (values length bytes-consumed) or NIL on error"
-  (when (>= offset (length bytes))
-    (return-from parse-asn1-length nil))
-  (let ((first-byte (aref bytes offset)))
-    (cond
-      ;; Short form: length < 128
-      ((< first-byte 128)
-       (values first-byte 1))
-      ;; Long form: first byte indicates number of length octets
-      (t
-       (let ((num-octets (logand first-byte #x7f)))
-         (when (or (zerop num-octets) (> num-octets 4))  ; Sanity check
-           (return-from parse-asn1-length nil))
-         (when (> (+ offset 1 num-octets) (length bytes))
-           (return-from parse-asn1-length nil))
-         (let ((len 0))
-           (loop for i from 1 to num-octets
-                 do (setf len (+ (ash len 8) (aref bytes (+ offset i)))))
-           (values len (1+ num-octets))))))))
-
-(defun parse-asn1-element (bytes offset)
-  "Parse ASN.1 DER element at offset
-   Returns: (values tag content-bytes new-offset) or NIL on error"
-  (when (>= offset (length bytes))
-    (return-from parse-asn1-element nil))
-  (let ((tag (aref bytes offset)))
-    (multiple-value-bind (len len-bytes)
-        (parse-asn1-length bytes (1+ offset))
-      (unless len
-        (return-from parse-asn1-element nil))
-      (let* ((content-start (+ offset 1 len-bytes))
-             (content-end (+ content-start len)))
-        (when (> content-end (length bytes))
-          (return-from parse-asn1-element nil))
-        (values tag
-                (subseq bytes content-start content-end)
-                content-end)))))
-
-(defun parse-asn1-integer (bytes)
-  "Parse ASN.1 INTEGER content to integer value"
-  (let ((result 0))
-    (loop for byte across bytes
-          do (setf result (+ (ash result 8) byte)))
-    result))
+;;; (Αποκωδικοποίηση ASN.1 DER: orchestrator.asn1 — Η έδρα. Εδώ ζει ΜΟΝΟ η
+;;; RFC-3161 σημασιολογία επαλήθευσης. Το συμβόλαιο NIL-σε-κακοσχηματισμένο
+;;; διατηρείται: κακό TSR ⇒ τίμια αποτυχία επαλήθευσης, όχι κατάρρευση.)
 
 (defun parse-tsr-status (tsr-bytes)
   "Parse RFC 3161 TimeStampResp and extract PKIStatus
@@ -299,39 +256,33 @@
      3 = waiting
      4 = revocationWarning
      5 = revocationNotification"
-  (multiple-value-bind (outer-tag outer-content next-offset)
-      (parse-asn1-element tsr-bytes 0)
-    (declare (ignore next-offset))
-    ;; Must be SEQUENCE (0x30)
-    (unless (and outer-tag (= outer-tag #x30))
-      (return-from parse-tsr-status nil))
-
-    ;; Parse PKIStatusInfo (first element)
-    (multiple-value-bind (status-info-tag status-info-content next-pos)
-        (parse-asn1-element outer-content 0)
-      (declare (ignore next-pos))
-      ;; Must be SEQUENCE (0x30)
-      (unless (and status-info-tag (= status-info-tag #x30))
-        (return-from parse-tsr-status nil))
-
-      ;; Parse PKIStatus (first element of PKIStatusInfo)
-      (multiple-value-bind (status-tag status-content next-pos2)
-          (parse-asn1-element status-info-content 0)
-        (declare (ignore next-pos2))
-        ;; Must be INTEGER (0x02)
-        (unless (and status-tag (= status-tag #x02))
+  (handler-case
+      ;; TimeStampResp SEQUENCE → PKIStatusInfo SEQUENCE → PKIStatus INTEGER
+      (multiple-value-bind (outer-tag outer-start)
+          (orchestrator.asn1:der-read-tlv tsr-bytes 0)
+        (unless (= outer-tag #x30)
           (return-from parse-tsr-status nil))
-
-        (let* ((status-value (parse-asn1-integer status-content))
-               (status-name (case status-value
-                              (0 "granted")
-                              (1 "grantedWithMods")
-                              (2 "rejection")
-                              (3 "waiting")
-                              (4 "revocationWarning")
-                              (5 "revocationNotification")
-                              (t "unknown"))))
-          (values status-value status-name))))))
+        (multiple-value-bind (info-tag info-start)
+            (orchestrator.asn1:der-read-tlv tsr-bytes outer-start)
+          (unless (= info-tag #x30)
+            (return-from parse-tsr-status nil))
+          (multiple-value-bind (status-tag status-start status-len)
+              (orchestrator.asn1:der-read-tlv tsr-bytes info-start)
+            (unless (= status-tag #x02)
+              (return-from parse-tsr-status nil))
+            (let* ((status-value (orchestrator.asn1:der-integer-value
+                                  (subseq tsr-bytes status-start
+                                          (+ status-start status-len))))
+                   (status-name (case status-value
+                                  (0 "granted")
+                                  (1 "grantedWithMods")
+                                  (2 "rejection")
+                                  (3 "waiting")
+                                  (4 "revocationWarning")
+                                  (5 "revocationNotification")
+                                  (t "unknown"))))
+              (values status-value status-name)))))
+    (orchestrator.asn1:asn1-error () nil)))
 
 (defun verify-timestamp-structure (release-dir)
   "Verify RFC 3161 TimeStampResp structure with proper ASN.1 parsing

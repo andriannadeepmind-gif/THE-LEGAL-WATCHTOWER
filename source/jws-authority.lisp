@@ -16,6 +16,15 @@
 
 (defpackage :orchestrator.jws-authority
   (:use :cl)
+  (:import-from :orchestrator.asn1
+                #:pem->der
+                #:der-sequence-elements
+                #:der-integer-value
+                #:encode-asn1-sequence
+                #:encode-asn1-integer
+                #:encode-asn1-bit-string
+                #:encode-asn1-oid
+                #:encode-asn1-null)
   (:export
    ;; Core signing
    #:sign-jws
@@ -110,7 +119,9 @@
            :message (format nil "Private key not found: ~A" pem-path)))
 
   (let* ((pem-content (alexandria:read-file-into-string pem-path))
-         (der-bytes (pem-to-der pem-content :private)))
+         ;; PKCS#1 ή PKCS#8 label — η έδρα PEM (orchestrator.asn1) απαιτεί
+         ;; ζεύγος φρουρών με ρητό label, όχι σιωπηλή αφαίρεση γραμμών.
+         (der-bytes (pem->der pem-content '("RSA PRIVATE KEY" "PRIVATE KEY"))))
     (parse-rsa-private-key der-bytes)))
 
 (defun load-rsa-public-key (pem-path)
@@ -126,30 +137,8 @@
            :message (format nil "Public key not found: ~A" pem-path)))
 
   (let* ((pem-content (alexandria:read-file-into-string pem-path))
-         (der-bytes (pem-to-der pem-content :public)))
+         (der-bytes (pem->der pem-content "PUBLIC KEY")))
     (parse-rsa-public-key der-bytes)))
-
-(defun pem-to-der (pem-content key-type)
-  "Extract DER bytes from PEM content
-
-   Args:
-     pem-content: PEM file content as string
-     key-type: :private or :public
-
-   Returns:
-     DER encoded bytes"
-  (let* ((lines (uiop:split-string pem-content :separator '(#\Newline)))
-         ;; Filter out header/footer lines and empty lines
-         (b64-lines (remove-if (lambda (line)
-                                 (or (search "-----BEGIN" line)
-                                     (search "-----END" line)
-                                     (string= (string-trim '(#\Space #\Tab #\Return) line) "")))
-                               lines))
-         ;; Join and decode
-         (b64-content (apply #'concatenate 'string
-                             (mapcar (lambda (l) (string-trim '(#\Space #\Tab #\Return) l))
-                                     b64-lines))))
-    (cl-base64:base64-string-to-usb8-array b64-content)))
 
 (defun parse-rsa-private-key (der-bytes)
   "Parse DER-encoded RSA private key
@@ -181,7 +170,7 @@
 
    Returns:
      Ironclad RSA private key"
-  (let* ((parsed (parse-asn1-sequence der-bytes))
+  (let* ((parsed (der-sequence-elements der-bytes))
          ;; PKCS#8 detection: has 3 elements, second is a list (nested SEQUENCE = AlgorithmIdentifier)
          ;; PKCS#1 has 9 elements (version + 8 key components), all vectors
          (is-pkcs8 (and (= (length parsed) 3)
@@ -190,16 +179,16 @@
          (key-data (if is-pkcs8
                        ;; PKCS#8: third element is OCTET STRING containing PKCS#1
                        (let ((inner (third parsed)))
-                         (parse-asn1-sequence (if (vectorp inner) inner
-                                                  (coerce inner '(vector (unsigned-byte 8))))))
+                         (der-sequence-elements (if (vectorp inner) inner
+                                                    (coerce inner '(vector (unsigned-byte 8))))))
                        ;; PKCS#1: direct
                        parsed)))
     ;; Extract components (skip version at index 0)
-    (let ((n (asn1-integer-to-bignum (nth 1 key-data)))       ; modulus
-          (e (asn1-integer-to-bignum (nth 2 key-data)))       ; public exponent
-          (d (asn1-integer-to-bignum (nth 3 key-data)))       ; private exponent
-          (p (asn1-integer-to-bignum (nth 4 key-data)))       ; prime1
-          (q (asn1-integer-to-bignum (nth 5 key-data))))      ; prime2
+    (let ((n (der-integer-value (nth 1 key-data)))       ; modulus
+          (e (der-integer-value (nth 2 key-data)))       ; public exponent
+          (d (der-integer-value (nth 3 key-data)))       ; private exponent
+          (p (der-integer-value (nth 4 key-data)))       ; prime1
+          (q (der-integer-value (nth 5 key-data))))      ; prime2
       (ironclad:make-private-key :rsa :n n :e e :d d :p p :q q))))
 
 (defun parse-rsa-public-key (der-bytes)
@@ -210,7 +199,7 @@
 
    Returns:
      Ironclad RSA public key"
-  (let* ((parsed (parse-asn1-sequence der-bytes))
+  (let* ((parsed (der-sequence-elements der-bytes))
          ;; SubjectPublicKeyInfo wraps the key
          (key-bytes (if (= (length parsed) 2)
                         ;; Unwrap BIT STRING
@@ -219,97 +208,10 @@
                               (subseq bit-string 1)  ; Skip unused bits byte
                               bit-string))
                         der-bytes))
-         (key-data (parse-asn1-sequence key-bytes)))
-    (let ((n (asn1-integer-to-bignum (nth 0 key-data)))
-          (e (asn1-integer-to-bignum (nth 1 key-data))))
+         (key-data (der-sequence-elements key-bytes)))
+    (let ((n (der-integer-value (nth 0 key-data)))
+          (e (der-integer-value (nth 1 key-data))))
       (ironclad:make-public-key :rsa :n n :e e))))
-
-;;; ============================================================================
-;;; ASN.1 DER PARSING (Minimal implementation for RSA keys)
-;;; ============================================================================
-
-(defun parse-asn1-sequence (bytes &optional (offset 0))
-  "Parse ASN.1 SEQUENCE from DER bytes
-
-   Returns list of parsed elements"
-  (when (>= offset (length bytes))
-    (return-from parse-asn1-sequence nil))
-
-  (let ((tag (aref bytes offset)))
-    (unless (= tag #x30)  ; SEQUENCE tag
-      (error 'jws-error :message (format nil "Expected SEQUENCE (0x30), got 0x~2,'0X" tag)))
-
-    (multiple-value-bind (length new-offset)
-        (parse-asn1-length bytes (1+ offset))
-      (let ((end (+ new-offset length))
-            (elements nil)
-            (pos new-offset))
-        (loop while (< pos end)
-              do (multiple-value-bind (element next-pos)
-                     (parse-asn1-element bytes pos)
-                   (push element elements)
-                   (setf pos next-pos)))
-        (nreverse elements)))))
-
-(defun parse-asn1-element (bytes offset)
-  "Parse single ASN.1 element
-
-   Returns: (values element new-offset)"
-  (let ((tag (aref bytes offset)))
-    (multiple-value-bind (length data-offset)
-        (parse-asn1-length bytes (1+ offset))
-      (let ((data-end (+ data-offset length)))
-        (values
-         (cond
-           ;; INTEGER
-           ((= tag #x02)
-            (subseq bytes data-offset data-end))
-           ;; BIT STRING
-           ((= tag #x03)
-            (subseq bytes data-offset data-end))
-           ;; OCTET STRING
-           ((= tag #x04)
-            (subseq bytes data-offset data-end))
-           ;; NULL
-           ((= tag #x05)
-            nil)
-           ;; OBJECT IDENTIFIER
-           ((= tag #x06)
-            (subseq bytes data-offset data-end))
-           ;; SEQUENCE
-           ((= tag #x30)
-            (parse-asn1-sequence bytes offset))
-           ;; Context-specific or other
-           (t
-            (subseq bytes data-offset data-end)))
-         data-end)))))
-
-(defun parse-asn1-length (bytes offset)
-  "Parse ASN.1 length field
-
-   Returns: (values length new-offset)"
-  (let ((first-byte (aref bytes offset)))
-    (if (< first-byte 128)
-        ;; Short form
-        (values first-byte (1+ offset))
-        ;; Long form
-        (let* ((num-octets (logand first-byte #x7f))
-               (length 0))
-          (loop for i from 1 to num-octets
-                do (setf length (+ (ash length 8) (aref bytes (+ offset i)))))
-          (values length (+ offset 1 num-octets))))))
-
-(defun asn1-integer-to-bignum (bytes)
-  "Convert ASN.1 INTEGER bytes to Lisp bignum
-
-   Handles leading zero byte for positive numbers"
-  (let ((result 0)
-        (start (if (and (> (length bytes) 1) (zerop (aref bytes 0)))
-                   1  ; Skip leading zero
-                   0)))
-    (loop for i from start below (length bytes)
-          do (setf result (+ (ash result 8) (aref bytes i))))
-    result))
 
 ;;; ============================================================================
 ;;; JWS SIGNING (RFC 7515)
@@ -723,81 +625,6 @@
              (encode-asn1-bit-string rsa-key-seq))))))
 
 ;;; ============================================================================
-;;; ASN.1 DER ENCODING
-;;; ============================================================================
-
-(defun encode-asn1-sequence (elements)
-  "Encode list of DER elements as SEQUENCE"
-  (let ((content (apply #'concatenate '(vector (unsigned-byte 8)) elements)))
-    (concatenate '(vector (unsigned-byte 8))
-                 (vector #x30)  ; SEQUENCE tag
-                 (encode-asn1-length (length content))
-                 content)))
-
-(defun encode-asn1-integer (value)
-  "Encode integer as ASN.1 INTEGER"
-  (let* ((bytes (if (zerop value)
-                    (vector 0)
-                    (ironclad:integer-to-octets value)))
-         ;; Add leading zero if high bit set (to keep positive)
-         (padded (if (and (> (length bytes) 0)
-                          (>= (aref bytes 0) 128))
-                     (concatenate '(vector (unsigned-byte 8)) (vector 0) bytes)
-                     bytes)))
-    (concatenate '(vector (unsigned-byte 8))
-                 (vector #x02)  ; INTEGER tag
-                 (encode-asn1-length (length padded))
-                 padded)))
-
-(defun encode-asn1-bit-string (content)
-  "Encode bytes as ASN.1 BIT STRING"
-  (let ((with-unused (concatenate '(vector (unsigned-byte 8))
-                                  (vector 0)  ; 0 unused bits
-                                  content)))
-    (concatenate '(vector (unsigned-byte 8))
-                 (vector #x03)  ; BIT STRING tag
-                 (encode-asn1-length (length with-unused))
-                 with-unused)))
-
-(defun encode-asn1-oid (components)
-  "Encode OID as ASN.1 OBJECT IDENTIFIER"
-  (let ((encoded (make-array 0 :element-type '(unsigned-byte 8) :adjustable t :fill-pointer 0)))
-    ;; First two components combined: 40*first + second
-    (vector-push-extend (+ (* 40 (first components)) (second components)) encoded)
-    ;; Remaining components use base-128 encoding
-    (dolist (c (cddr components))
-      (let ((bytes nil))
-        (if (zerop c)
-            (push 0 bytes)
-            (loop while (> c 0)
-                  do (push (logior (if bytes #x80 0) (logand c #x7f)) bytes)
-                     (setf c (ash c -7))))
-        (dolist (b bytes)
-          (vector-push-extend b encoded))))
-    (concatenate '(vector (unsigned-byte 8))
-                 (vector #x06)  ; OID tag
-                 (encode-asn1-length (length encoded))
-                 encoded)))
-
-(defun encode-asn1-null ()
-  "Encode ASN.1 NULL"
-  (vector #x05 #x00))
-
-(defun encode-asn1-length (length)
-  "Encode ASN.1 length field"
-  (cond
-    ((< length 128)
-     (vector length))
-    ((< length 256)
-     (vector #x81 length))
-    ((< length 65536)
-     (vector #x82 (ash length -8) (logand length #xff)))
-    (t
-     (let ((bytes (ironclad:integer-to-octets length)))
-       (concatenate '(vector (unsigned-byte 8))
-                    (vector (logior #x80 (length bytes)))
-                    bytes)))))
-
-;;; ============================================================================
 ;;; END OF JWS-AUTHORITY.LISP
+;;; (Κωδικοποίηση/αποκωδικοποίηση ASN.1 DER: orchestrator.asn1 — Η έδρα.)
 ;;; ============================================================================

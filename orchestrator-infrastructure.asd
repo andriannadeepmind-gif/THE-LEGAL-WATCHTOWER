@@ -115,6 +115,7 @@
      (:file "canonical-representation") ; GATE-14: Deterministic serialization for JWS
      (:file "validation-authority") ; GATE-5: Deterministic contract validation
      (:file "blockchain-authority") ; GATE-6: Pure Lisp blockchain anchoring (Ethereum/Arweave/IPFS)
+     (:file "asn1-der")           ; Η ΜΙΑ έδρα ASN.1 DER (X.690): encoders + αυστηρός decoder + PEM↔DER
      (:file "jws-authority")      ; GATE-7: Pure Lisp JWS signing (RFC 7515)
      (:file "timestamp-authority") ; GATE-8: Pure Lisp RFC 3161 timestamps (multi-TSA)
      (:file "archive-authority")  ; GATE-8b: Archive.org 100-year proof
