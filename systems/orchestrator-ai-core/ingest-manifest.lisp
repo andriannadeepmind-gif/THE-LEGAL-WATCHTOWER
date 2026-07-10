@@ -53,12 +53,17 @@
          (has-html (and (slot-boundp article 'orchestrator.model::html)
                        (orchestrator.model:article-html article))))
     
-    `(:|id| ,(format nil "~A/article/~D" 
+    ;; P1b [0049]: label-aware ταυτότητα — ποτέ ο συνθετικός αριθμός στο id
+    `(:|id| ,(format nil "~A/article/~A"
                      (orchestrator.model:corpus-eli-prefix corpus)
-                     number)
+                     (orchestrator.model:article-uri-id
+                      number (orchestrator.model:article-label article)))
       :|canonical_source| ,eli-uri
       :|corpus| ,(orchestrator.model:corpus-short-name corpus)
-      :|article_number| ,number
+      ;; article_number = η ΠΡΑΓΜΑΤΙΚΗ κανονική ταυτότητα (label-aware string,
+      ;; «5Α»/«70») — ο εσωτερικός συνθετικός αριθμός δεν διαφεύγει σε καταναλωτές
+      :|article_number| ,(orchestrator.model:article-uri-id
+                          number (orchestrator.model:article-label article))
       :|title| ,(orchestrator.model:article-title article)
       :|language| ,(orchestrator.model:corpus-language corpus)
       :|content_hash| ,hash
@@ -72,9 +77,10 @@
       :|authority| (:|name| "STAVROPOULOS LAW"
                     :|webid| ,(orchestrator.model:corpus-webid corpus)
                     :|orcid| ,(orchestrator.model:corpus-orcid corpus))
-      :|citation_template| ,(format nil "~A, Article ~D (~A)"
+      :|citation_template| ,(format nil "~A, Article ~A (~A)"
                                    (orchestrator.model:corpus-name corpus)
-                                   number
+                                   (orchestrator.model:article-uri-id
+                                    number (orchestrator.model:article-label article))
                                    (orchestrator.model:corpus-publication-date corpus))
       :|last_updated| ,(current-build-timestamp)
       :|eli_uri| ,eli-uri)))
