@@ -1,6 +1,6 @@
 # ============================================================
 # Ποινικός Κώδικας
-# Article 105002 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 105 - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,14 +174,14 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
 # ARTICLE ROOT NODE - Canonical Entry Point
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β>
     a eli:LegalResource ,
       dcat:Dataset ,
       schema:Legislation ;
@@ -190,11 +190,11 @@
     eli:date_document "2019-06-11"^^xsd:date ;
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619> ;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
-    eli:number 105002 ;
+    eli:number 105 ;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL> ;
 
     # Dublin Core Metadata
-    dct:identifier "gr-l-2019-art-105002Β" ;
+    dct:identifier "gr-l-2019-art-105Β" ;
     dct:issued "2019-06-11"^^xsd:date ;
     dct:language "el" ;
     dct:title """Απόλυση υπό τον όρο της ανάκλησης"""@el ;
@@ -207,12 +207,12 @@
     # Schema.org Properties
     schema:inLanguage "el" ;
     schema:isPartOf <https://stavropouloslaw.com/eli/gr/l/2019/4619> ;
-    schema:legislationIdentifier "gr-l-2019-art-105002Β" ;
+    schema:legislationIdentifier "gr-l-2019-art-105Β" ;
 
     # Forward Relations to FRBR Layers
-    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work> ;
-    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell> ;
-    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell/man> ;
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell/man> ;
 
     # Provenance Metadata
     prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
@@ -223,23 +223,23 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-105002/2026-07-09T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-105/2025-01-01T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
                            <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
 
     # Input Sources
-    prov:used <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/source> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/source> ;
 
     # Custom Properties
-    stavropouloslaw:articleNumber 105002 ;
+    stavropouloslaw:articleNumber 105 ;
     stavropouloslaw:corpusShortName "poinikos"
  .
 
@@ -249,31 +249,31 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 105002
+# FRBR WORK LAYER - Article 105
 # Abstract legal resource (language-independent)
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work>
     a eli:LegalResource, schema:Legislation;
     eli:date_document "2019-06-11"^^xsd:date;
-    eli:id_local "gr-l-2019-art-105002Β-work";
+    eli:id_local "gr-l-2019-art-105Β-work";
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619>;
-    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β>;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
     dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     dct:issued "2019-06-11"^^xsd:date;
     dct:publisher <https://stavropouloslaw.com/identity/org>;
     dct:type <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
-    schema:identifier "gr-l-2019-art-105002Β-work";
+    schema:identifier "gr-l-2019-art-105Β-work";
     schema:inLanguage "el";
     schema:legislationDate "2019-06-11"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/2019/ART/105002";
+    schema:legislationIdentifier "ELI/GR/L/2019/ART/105";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-105002/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-105/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,19 +293,19 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 105002
+# FRBR EXPRESSION LAYER - Article 105
 # Greek language realization of abstract Work
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell
 # Language: el (ELL)
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell>
     a eli:LegalExpression;
-    eli:realizes <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β>;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β>;
     eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
     dct:language "el";
     schema:inLanguage "el";
@@ -316,11 +316,11 @@
     schema:text """«1. Όσοι καταδικάστηκαν σε στερητική της ελευθερίας ποινής μπορούν να απολυθούν υπό τον όρο της ανάκλησης, σύμφωνα με τις πιο κάτω διατάξεις, εφόσον έχουν εκτίσει: α) σε περίπτωση φυλάκισης τα δύο πέμπτα (2/5) αυτής ή πρόσκαιρης κάθειρξης τα τρία πέμπτα (3/5) αυτής, β) σε περίπτωση πρόσκαιρης κάθειρξης για τα εγκλήματα του δευτέρου εδαφίου της παρ. 6, τα τέσσερα πέμπτα (4/5) αυτής και γ) σε περίπτωση ισόβιας κάθειρξης τουλάχιστον είκοσι (20) έτη. 2. Για τη χορήγηση της υπό όρο απόλυσης δεν απαιτείται να έχει καταστεί η καταδίκη αμετάκλητη. 3. Στην περίπτωση που συντρέχουν σωρευτικά περισσότερες ποινές, ο καταδικασθείς μπορεί να απολυθεί αν έχει εκτίσει το άθροισμα των τμημάτων των ποινών, που προβλέπεται στην παρ. 1. Σε κάθε περίπτωση, ο καταδικασθείς μπορεί να απολυθεί αν έχει εκτίσει είκοσι πέντε (25) έτη και όταν το παραπάνω άθροισμα υπερβαίνει το όριο αυτό. 4. Αν ο καταδικασθείς εργάζεται, κάθε ημέρα εργασίας υπολογίζεται σύμφωνα με τις σχετικές διατάξεις της σωφρονιστικής νομοθεσίας. Κάθε ημέρα κράτησης κρατουμένων που έχουν ημιπληγία ή παραπληγία, σκλήρυνση κατά πλάκας ή έχουν υποβληθεί σε επέμβαση μεταμόσχευσης καρδιάς, ήπατος, νεφρού ή μυελού των οστών ή είναι φορείς του συνδρόμου επίκτητης ανοσοποιητικής ανεπάρκειας ή έχουν κακοήθη νεοπλάσματα ή νεφρική ανεπάρκεια για την οποία γίνεται τακτική αιμοκάθαρση ή φυματίωση κατά τη διάρκεια της θεραπείας της, υπολογίζεται ευεργετικά ως δύο (2) ημέρες εκτιόμενης ποινής. Το ίδιο ισχύει και για: α) κρατουμένους με ποσοστό αναπηρίας πενήντα τοις εκατό (50%) και άνω, που δεν μπορούν να εργαστούν, εφόσον κρίνεται ότι η παραμονή τους στο κατάστημα κράτησης καθίσταται ιδιαίτερα επαχθής λόγω αδυναμίας αυτοεξυπηρέτησης, β) κρατουμένους με ποσοστό αναπηρίας εξήντα επτά τοις εκατό (67%) και άνω, γ) κρατούμενους στους οποίους απαγορεύεται ύστερα από γνωμάτευση από Κέντρο Πιστοποίησης Αναπηρίας (ΚΕ.Π.Α.) η ανάληψη εργασίας ή απασχόλησης που μπορεί βάσιμα να προκαλέσει σοβαρή και μόνιμη βλάβη στην υγεία τους, δ) κρατούμενους οι οποίοι νοσηλεύονται σε θεραπευτικά καταστήματα ή νοσοκομεία εφόσον η νοσηλεία τους έχει διαρκέσει τουλάχιστον τέσσερις (4) μήνες, ε) κρατούμενες μητέρες για όσο διάστημα έχουν μαζί τους τα ανήλικα τέκνα τους, στ) κρατούμενους που συμμετέχουν σε θεραπευτικό πρόγραμμα ψυχικής απεξάρτησης από ναρκωτικά εγκεκριμένου, κατά το άρθρο 51 του ν. 4139/2013 οργανισμού και ζ) κρατούμενους για όσο διάστημα διαρκεί η κράτησή τους σε χώρους αστυνομικών τμημάτων ή αστυνομικών διευθύνσεων. Η διακρίβωση των ασθενειών του δεύτερου εδαφίου, καθώς και της αναπηρίας στις περ. α’ και β’ γίνεται με τη διαδικασία της παρ. 2 του άρθρου 105. 5. Για τη χορήγηση της υπό όρο απόλυσης, ως ποινή που εκτίθηκε θεωρείται αυτή που υπολογίστηκε ευεργετικά είτε κατά την προηγούμενη παράγραφο είτε κατά τις ειδικές διατάξεις που προβλέπουν αντίστοιχο υπολογισμό. 6. Προκειμένου για ποινές κάθειρξης δεν μπορεί να χορηγηθεί στον καταδικασθέντα απόλυση υπό όρο, αν δεν έχει παραμείνει, δίχως τον ευεργετικό υπολογισμό, στο σωφρονιστικό κατάστημα για χρονικό διάστημα ίσο με τα δύο πέμπτα (2/5) της ποινής που του επιβλήθηκε και, σε περίπτωση ισόβιας κάθειρξης, δεκαέξι (16) έτη. Προκειμένου για ποινές κάθειρξης που επιβλήθηκαν για τα κακουργήματα των άρθρων 22 και 23 του ν. 4139/2013, του άρθρου 30 του Κώδικα Μετανάστευσης και Κοινωνικής Ένταξης (ν. 4251/2014, Α’ 80), των άρθρων 134, 187, 187 Α, των περ. γ’ και δ’ της παρ. 1 του άρθρου 265, της παρ. 1 του άρθρου 299, των άρθρων 323Α, 324, 380, 385, καθώς και γι’ αυτά του 19ου Κεφαλαίου του Ειδικού Μέρους του παρόντος Κώδικα, απόλυση υπό όρο δεν μπορεί να χορηγηθεί στον καταδικασθέντα αν αυτός δεν έχει παραμείνει, δίχως τον ευεργετικό υπολογισμό, στο σωφρονιστικό κατάστημα για χρονικό διάστημα ίσο με τα τρία πέμπτα (3/5) της ποινής που του επιβλήθηκε, και σε περίπτωση ισόβιας κάθειρξης δεκαοχτώ (18) ετών. Το παραπάνω κατά περίπτωση χρονικό διάστημα προσαυξάνεται κατά το ένα τρίτο (1/3) των λοιπών ποινών που τυχόν έχουν επιβληθεί, στην περίπτωση που αυτές συντρέχουν σωρευτικά. Σε κάθε περίπτωση, όμως, ο καταδικασθείς μπορεί να απολυθεί αν έχει παραμείνει στο κατάστημα είκοσι (20) έτη και αν εκτίει περισσότερες ποινές ισόβιας κάθειρξης, αν έχει παραμείνει είκοσι πέντε (25) έτη. Στις περιπτώσεις συνολικής ποινής πρόσκαιρης κάθειρξης για τα εγκλήματα του δευτέρου εδαφίου που όπως επιβλήθηκε υπερβαίνει κατά τουλάχιστον δέκα (10) έτη το ανώτατο όριο της συνολικής ποινής κάθειρξης, η υφ’ όρον απόλυση δύναται να χορηγείται, εφόσον ο κατάδικος έχει εκτίσει πραγματικά δεκαεπτά (17) έτη.»"""@el;
     glass:digest "sha256-4629ff6b04be78e3894360a77a8c822ccabfe445723ec764237956423508094e";
     digest:sha256 "4629ff6b04be78e3894360a77a8c822ccabfe445723ec764237956423508094e";
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/par/1>;
-    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell/man>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/par/1>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
-    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-105002/2026-07-09T00-00-00.000000Z>.
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-105/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -332,34 +332,34 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 105002
+# FRBR MANIFESTATION LAYER - Article 105
 # Digital embodiment of the Greek-language Expression
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell/man
-# Expression: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell/man>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell/man>
     a eli:LegalManifestation ,
       dcat:Distribution ;
-    eli:embodies <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β>;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β>;
     dcat:accessURL <https://stavropouloslaw.com/eli/gr/l/2019/4619>;
-    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β>;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell/man/format/html>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell/man/format/jsonld>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell/man/format/turtle>;
-    schema:identifier "gr-l-2019-art-105002Β-work-exp-ell-man";
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-l-2019-art-105Β-work-exp-ell-man";
     schema:legislationDate "2019-06-11"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-105002Β-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-105Β-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-105002/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-105/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -371,29 +371,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 105002
+# FRBR FORMAT LAYER (HTML) - Article 105
 # HTML encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell/man/format/html
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell/man/format/html
 # Media-type: text/html; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell/man/format/html>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell/man/format/html>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β>;
     dcat:mediaType "text/html; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-105002Β-man-html>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-105Β-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-105002/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-105/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -401,29 +401,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 105002
+# FRBR FORMAT LAYER (JSONLD) - Article 105
 # JSONLD encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell/man/format/jsonld
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell/man/format/jsonld
 # Media-type: application/ld+json; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell/man/format/jsonld>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell/man/format/jsonld>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β>;
     dcat:mediaType "application/ld+json; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-105002Β-man-jsonld>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-105Β-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-105002/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-105/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -431,29 +431,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 105002
+# FRBR FORMAT LAYER (TURTLE) - Article 105
 # TURTLE encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell/man/format/turtle
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell/man/format/turtle
 # Media-type: text/turtle; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell/man/format/turtle>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell/man/format/turtle>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β>;
     dcat:mediaType "text/turtle; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-105002Β-man-turtle>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-105Β-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-105002/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-105/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -464,12 +464,12 @@
 # PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105002Β/par/1>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/105Β/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
     schema:text """1. «1. Όσοι καταδικάστηκαν σε στερητική της ελευθερίας ποινής μπορούν να απολυθούν υπό τον όρο της ανάκλησης, σύμφωνα με τις πιο κάτω διατάξεις, εφόσον έχουν εκτίσει: α) σε περίπτωση φυλάκισης τα δύο πέμπτα (2/5) αυτής ή πρόσκαιρης κάθειρξης τα τρία πέμπτα (3/5) αυτής, β) σε περίπτωση πρόσκαιρης κάθειρξης για τα εγκλήματα του δευτέρου εδαφίου της παρ. 6, τα τέσσερα πέμπτα (4/5) αυτής και γ) σε περίπτωση ισόβιας κάθειρξης τουλάχιστον είκοσι (20) έτη. 2. Για τη χορήγηση της υπό όρο απόλυσης δεν απαιτείται να έχει καταστεί η καταδίκη αμετάκλητη. 3. Στην περίπτωση που συντρέχουν σωρευτικά περισσότερες ποινές, ο καταδικασθείς μπορεί να απολυθεί αν έχει εκτίσει το άθροισμα των τμημάτων των ποινών, που προβλέπεται στην παρ. 1. Σε κάθε περίπτωση, ο καταδικασθείς μπορεί να απολυθεί αν έχει εκτίσει είκοσι πέντε (25) έτη και όταν το παραπάνω άθροισμα υπερβαίνει το όριο αυτό. 4. Αν ο καταδικασθείς εργάζεται, κάθε ημέρα εργασίας υπολογίζεται σύμφωνα με τις σχετικές διατάξεις της σωφρονιστικής νομοθεσίας. Κάθε ημέρα κράτησης κρατουμένων που έχουν ημιπληγία ή παραπληγία, σκλήρυνση κατά πλάκας ή έχουν υποβληθεί σε επέμβαση μεταμόσχευσης καρδιάς, ήπατος, νεφρού ή μυελού των οστών ή είναι φορείς του συνδρόμου επίκτητης ανοσοποιητικής ανεπάρκειας ή έχουν κακοήθη νεοπλάσματα ή νεφρική ανεπάρκεια για την οποία γίνεται τακτική αιμοκάθαρση ή φυματίωση κατά τη διάρκεια της θεραπείας της, υπολογίζεται ευεργετικά ως δύο (2) ημέρες εκτιόμενης ποινής. Το ίδιο ισχύει και για: α) κρατουμένους με ποσοστό αναπηρίας πενήντα τοις εκατό (50%) και άνω, που δεν μπορούν να εργαστούν, εφόσον κρίνεται ότι η παραμονή τους στο κατάστημα κράτησης καθίσταται ιδιαίτερα επαχθής λόγω αδυναμίας αυτοεξυπηρέτησης, β) κρατουμένους με ποσοστό αναπηρίας εξήντα επτά τοις εκατό (67%) και άνω, γ) κρατούμενους στους οποίους απαγορεύεται ύστερα από γνωμάτευση από Κέντρο Πιστοποίησης Αναπηρίας (ΚΕ.Π.Α.) η ανάληψη εργασίας ή απασχόλησης που μπορεί βάσιμα να προκαλέσει σοβαρή και μόνιμη βλάβη στην υγεία τους, δ) κρατούμενους οι οποίοι νοσηλεύονται σε θεραπευτικά καταστήματα ή νοσοκομεία εφόσον η νοσηλεία τους έχει διαρκέσει τουλάχιστον τέσσερις (4) μήνες, ε) κρατούμενες μητέρες για όσο διάστημα έχουν μαζί τους τα ανήλικα τέκνα τους, στ) κρατούμενους που συμμετέχουν σε θεραπευτικό πρόγραμμα ψυχικής απεξάρτησης από ναρκωτικά εγκεκριμένου, κατά το άρθρο 51 του ν. 4139/2013 οργανισμού και ζ) κρατούμενους για όσο διάστημα διαρκεί η κράτησή τους σε χώρους αστυνομικών τμημάτων ή αστυνομικών διευθύνσεων. Η διακρίβωση των ασθενειών του δεύτερου εδαφίου, καθώς και της αναπηρίας στις περ. α’ και β’ γίνεται με τη διαδικασία της παρ. 2 του άρθρου 105. 5. Για τη χορήγηση της υπό όρο απόλυσης, ως ποινή που εκτίθηκε θεωρείται αυτή που υπολογίστηκε ευεργετικά είτε κατά την προηγούμενη παράγραφο είτε κατά τις ειδικές διατάξεις που προβλέπουν αντίστοιχο υπολογισμό. 6. Προκειμένου για ποινές κάθειρξης δεν μπορεί να χορηγηθεί στον καταδικασθέντα απόλυση υπό όρο, αν δεν έχει παραμείνει, δίχως τον ευεργετικό υπολογισμό, στο σωφρονιστικό κατάστημα για χρονικό διάστημα ίσο με τα δύο πέμπτα (2/5) της ποινής που του επιβλήθηκε και, σε περίπτωση ισόβιας κάθειρξης, δεκαέξι (16) έτη. Προκειμένου για ποινές κάθειρξης που επιβλήθηκαν για τα κακουργήματα των άρθρων 22 και 23 του ν. 4139/2013, του άρθρου 30 του Κώδικα Μετανάστευσης και Κοινωνικής Ένταξης (ν. 4251/2014, Α’ 80), των άρθρων 134, 187, 187 Α, των περ. γ’ και δ’ της παρ. 1 του άρθρου 265, της παρ. 1 του άρθρου 299, των άρθρων 323Α, 324, 380, 385, καθώς και γι’ αυτά του 19ου Κεφαλαίου του Ειδικού Μέρους του παρόντος Κώδικα, απόλυση υπό όρο δεν μπορεί να χορηγηθεί στον καταδικασθέντα αν αυτός δεν έχει παραμείνει, δίχως τον ευεργετικό υπολογισμό, στο σωφρονιστικό κατάστημα για χρονικό διάστημα ίσο με τα τρία πέμπτα (3/5) της ποινής που του επιβλήθηκε, και σε περίπτωση ισόβιας κάθειρξης δεκαοχτώ (18) ετών. Το παραπάνω κατά περίπτωση χρονικό διάστημα προσαυξάνεται κατά το ένα τρίτο (1/3) των λοιπών ποινών που τυχόν έχουν επιβληθεί, στην περίπτωση που αυτές συντρέχουν σωρευτικά. Σε κάθε περίπτωση, όμως, ο καταδικασθείς μπορεί να απολυθεί αν έχει παραμείνει στο κατάστημα είκοσι (20) έτη και αν εκτίει περισσότερες ποινές ισόβιας κάθειρξης, αν έχει παραμείνει είκοσι πέντε (25) έτη. Στις περιπτώσεις συνολικής ποινής πρόσκαιρης κάθειρξης για τα εγκλήματα του δευτέρου εδαφίου που όπως επιβλήθηκε υπερβαίνει κατά τουλάχιστον δέκα (10) έτη το ανώτατο όριο της συνολικής ποινής κάθειρξης, η υφ’ όρον απόλυση δύναται να χορηγείται, εφόσον ο κατάδικος έχει εκτίσει πραγματικά δεκαεπτά (17) έτη.»"""@el .
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 105002 - Complete Canonical Representation
+# Article 105 - Complete Canonical Representation
 # ============================================================

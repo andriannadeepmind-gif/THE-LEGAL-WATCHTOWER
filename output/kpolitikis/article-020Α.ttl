@@ -1,6 +1,6 @@
 # ============================================================
 # Κώδικας Πολιτικής Δικονομίας
-# Article 20001 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 20 - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,14 +174,14 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
 # ARTICLE ROOT NODE - Canonical Entry Point
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α>
     a eli:LegalResource ,
       dcat:Dataset ,
       schema:Legislation ;
@@ -190,11 +190,11 @@
     eli:date_document "1985-10-24"^^xsd:date ;
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503> ;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
-    eli:number 20001 ;
+    eli:number 20 ;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/DECREE> ;
 
     # Dublin Core Metadata
-    dct:identifier "gr-pd-1985-art-20001Α" ;
+    dct:identifier "gr-pd-1985-art-020Α" ;
     dct:issued "1985-10-24"^^xsd:date ;
     dct:language "el" ;
     dct:title """"""@el ;
@@ -207,12 +207,12 @@
     # Schema.org Properties
     schema:inLanguage "el" ;
     schema:isPartOf <https://stavropouloslaw.com/eli/gr/pd/1985/503> ;
-    schema:legislationIdentifier "gr-pd-1985-art-20001Α" ;
+    schema:legislationIdentifier "gr-pd-1985-art-020Α" ;
 
     # Forward Relations to FRBR Layers
-    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work> ;
-    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell> ;
-    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell/man> ;
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell/man> ;
 
     # Provenance Metadata
     prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
@@ -223,23 +223,23 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-20001/2026-07-09T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-20/2025-01-01T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
                            <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
 
     # Input Sources
-    prov:used <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/source> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/source> ;
 
     # Custom Properties
-    stavropouloslaw:articleNumber 20001 ;
+    stavropouloslaw:articleNumber 20 ;
     stavropouloslaw:corpusShortName "kpolitikis"
  .
 
@@ -249,31 +249,31 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 20001
+# FRBR WORK LAYER - Article 20
 # Abstract legal resource (language-independent)
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work>
     a eli:LegalResource, schema:Legislation;
     eli:date_document "1985-10-24"^^xsd:date;
-    eli:id_local "gr-pd-1985-art-20001Α-work";
+    eli:id_local "gr-pd-1985-art-020Α-work";
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503>;
-    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α>;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/DECREE>;
     dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     dct:issued "1985-10-24"^^xsd:date;
     dct:publisher <https://stavropouloslaw.com/identity/org>;
     dct:type <http://publications.europa.eu/resource/authority/resource-type/DECREE>;
-    schema:identifier "gr-pd-1985-art-20001Α-work";
+    schema:identifier "gr-pd-1985-art-020Α-work";
     schema:inLanguage "el";
     schema:legislationDate "1985-10-24"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/PD/1985/ART/20001";
+    schema:legislationIdentifier "ELI/GR/PD/1985/ART/20";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "PresidentialDecree";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-20001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-20/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,19 +293,19 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 20001
+# FRBR EXPRESSION LAYER - Article 20
 # Greek language realization of abstract Work
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell
 # Language: el (ELL)
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell>
     a eli:LegalExpression;
-    eli:realizes <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α>;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α>;
     eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
     dct:language "el";
     schema:inLanguage "el";
@@ -316,16 +316,16 @@
     schema:text """1. Οποιοδήποτε ένδικο βοήθημα ή μέσο που ασκήθηκε ενώπιον οποιουδήποτε πολιτικού δικαστηρίου μπορεί να εισαχθεί στην πλήρη ολομέλεια του Αρείου Πάγου με απλή πράξη τριμελούς επιτροπής, που αποτελείται από τον Πρόεδρό του, τον αρχαιότερο Αντιπρόεδρο και τον Πρόεδρο του αρμόδιου καθ’ ύλην Τμήματος, ύστερα από αίτημα ενός εκ των διαδίκων που κατατίθεται ενώπιον της η ύστερα από προδικαστικό ερώτημα που υποβάλλεται από το δικαστήριο της ουσίας, με απόφαση που δεν υπόκειται σε ένδικα μέσα, όταν με αυτό τίθεται νέο δυσχερές ερμηνευτικό νομικό ζήτημα γενικότερου ενδιαφέροντος που έχει συνέπειες για ευρύτερο κύκλο προσώπων. Τα ως άνω ένδικα βοηθήματα ή μέσα μπορούν να εισαχθούν και απευθείας στην πλήρη ολομέλεια του Αρείου Πάγου με απλή πράξη του Εισαγγελέα του Αρείου Πάγου. Η πλήρης ολομέλεια του Αρείου Πάγου εκδίδει την απόφασή της σε προθεσμία έξι (6) μηνών. Η ως άνω διαδικασία δεν εφαρμόζεται όταν εκκρεμεί αναίρεση για το νομικό αυτό ζήτημα.\n2. Τα αιτήματα των διαδίκων υπογράφονται επί ποινή απαραδέκτου από δικηγόρο και συνοδεύονται από παράβολο τριακοσίων (300) ευρώ, το οποίο καταπίπτει υπέρ του Δημοσίου σε περίπτωση απόρριψης του αιτήματος. Το ύψος του ποσού μπορεί να αναπροσαρμόζεται με κοινή απόφαση των Υπουργών Οικονομικών και Δικαιοσύνης. Πριν από την έκδοση της πράξης, η Επιτροπή καλεί όλους τους διαδίκους, να εμφανισθούν ενώπιόν της και να εκθέσουν τις απόψεις τους αυτοπροσώπως ή με υπόμνημα, που κατατίθεται σε οριζόμενη από αυτήν προθεσμία.\n3. Η πράξη της Επιτροπής ή του Εισαγγελέα του Αρείου Πάγου δημοσιεύεται σε δύο (2) ημερήσιες εφημερίδες των Αθηνών και συνεπάγεται την αναστολή της εκδίκασης των εκκρεμών υποθέσεων, στις οποίες τίθεται το ίδιο ζήτημα, με απόφαση των κατά περίπτωση επιλαμβανομένων δικαστηρίων της ουσίας. Η αναστολή δεν καταλαμβάνει την προσωρινή δικαστική προστασία.\n4. Στη δίκη ενώπιον της πλήρους ολομέλειας του Αρείου Πάγου μπορεί να παρέμβει κάθε διάδικος σε εκκρεμή δίκη, στην οποία τίθεται το ίδιο ως άνω ζήτημα, και να προβάλει τους ισχυρισμούς του σχετικά με το ζήτημα αυτό. Για την εν λόγω παρέμβαση δεν καταλογίζεται δικαστική δαπάνη, η δε μη άσκησή της δεν δημιουργεί δικαίωμα άσκησης ανακοπής ή τριτανακοπής.\n5. Μετά από την επίλυση του ζητήματος, η πλήρης ολομέλεια του Αρείου Πάγου παραπέμπει το ένδικο μέσο ή βοήθημα στο αρμόδιο δικαστήριο. Η απόφαση της πλήρους ολομέλειας του Αρείου Πάγου δεσμεύει τους διαδίκους της ενώπιόν του δίκης, στους οποίους περιλαμβάνονται και οι παρεμβάντες.\n6. Μετά από την επίλυση του ζητήματος κατά την παρ. 1, οι υποθέσεις, των οποίων είχε ανασταλεί η εκδίκαση, επαναφέρονται για συζήτηση σε νέα δικάσιμο με κλήση, η οποία κατατίθεται με επιμέλεια οποιουδήποτε διαδίκου στη γραμματεία του αρμόδιου δικαστηρίου."""@el;
     glass:digest "sha256-337597a8007c5159671bfc6edd8a06ee8dccf3ac62a9ff9d13da573e34e994f2";
     digest:sha256 "337597a8007c5159671bfc6edd8a06ee8dccf3ac62a9ff9d13da573e34e994f2";
-    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/par/1>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/par/2>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/par/3>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/par/4>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/par/5>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/par/6>;
-    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell/man>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/par/1>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/par/2>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/par/3>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/par/4>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/par/5>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/par/6>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
-    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-20001/2026-07-09T00-00-00.000000Z>.
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-20/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -337,34 +337,34 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 20001
+# FRBR MANIFESTATION LAYER - Article 20
 # Digital embodiment of the Greek-language Expression
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell/man
-# Expression: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell/man>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell/man>
     a eli:LegalManifestation ,
       dcat:Distribution ;
-    eli:embodies <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α>;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α>;
     dcat:accessURL <https://stavropouloslaw.com/eli/gr/pd/1985/503>;
-    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α>;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
-    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell/man/format/html>;
-    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell/man/format/jsonld>;
-    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell/man/format/turtle>;
-    schema:identifier "gr-pd-1985-art-20001Α-work-exp-ell-man";
+    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-pd-1985-art-020Α-work-exp-ell-man";
     schema:legislationDate "1985-10-24"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-20001Α-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-20Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-20001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-20/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -376,29 +376,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 20001
+# FRBR FORMAT LAYER (HTML) - Article 20
 # HTML encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell/man/format/html
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell/man/format/html
 # Media-type: text/html; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell/man/format/html>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell/man/format/html>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α>;
     dcat:mediaType "text/html; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-20001Α-man-html>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-20Α-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-20001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-20/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -406,29 +406,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 20001
+# FRBR FORMAT LAYER (JSONLD) - Article 20
 # JSONLD encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell/man/format/jsonld
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell/man/format/jsonld
 # Media-type: application/ld+json; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell/man/format/jsonld>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell/man/format/jsonld>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α>;
     dcat:mediaType "application/ld+json; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-20001Α-man-jsonld>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-20Α-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-20001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-20/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -436,29 +436,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 20001
+# FRBR FORMAT LAYER (TURTLE) - Article 20
 # TURTLE encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell/man/format/turtle
+# URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell/man/format/turtle
 # Media-type: text/turtle; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell/man/format/turtle>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell/man/format/turtle>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α>;
     dcat:mediaType "text/turtle; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-20001Α-man-turtle>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-20Α-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-20001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-20/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -469,37 +469,37 @@
 # PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/par/1>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
     schema:text """1. Οποιοδήποτε ένδικο βοήθημα ή μέσο που ασκήθηκε ενώπιον οποιουδήποτε πολιτικού δικαστηρίου μπορεί να εισαχθεί στην πλήρη ολομέλεια του Αρείου Πάγου με απλή πράξη τριμελούς επιτροπής, που αποτελείται από τον Πρόεδρό του, τον αρχαιότερο Αντιπρόεδρο και τον Πρόεδρο του αρμόδιου καθ’ ύλην Τμήματος, ύστερα από αίτημα ενός εκ των διαδίκων που κατατίθεται ενώπιον της η ύστερα από προδικαστικό ερώτημα που υποβάλλεται από το δικαστήριο της ουσίας, με απόφαση που δεν υπόκειται σε ένδικα μέσα, όταν με αυτό τίθεται νέο δυσχερές ερμηνευτικό νομικό ζήτημα γενικότερου ενδιαφέροντος που έχει συνέπειες για ευρύτερο κύκλο προσώπων. Τα ως άνω ένδικα βοηθήματα ή μέσα μπορούν να εισαχθούν και απευθείας στην πλήρη ολομέλεια του Αρείου Πάγου με απλή πράξη του Εισαγγελέα του Αρείου Πάγου. Η πλήρης ολομέλεια του Αρείου Πάγου εκδίδει την απόφασή της σε προθεσμία έξι (6) μηνών. Η ως άνω διαδικασία δεν εφαρμόζεται όταν εκκρεμεί αναίρεση για το νομικό αυτό ζήτημα."""@el .
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/par/2>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/par/2>
     a eli:LegalResourceSubdivision ;
     eli:number "2" ;
     schema:text """2. Τα αιτήματα των διαδίκων υπογράφονται επί ποινή απαραδέκτου από δικηγόρο και συνοδεύονται από παράβολο τριακοσίων (300) ευρώ, το οποίο καταπίπτει υπέρ του Δημοσίου σε περίπτωση απόρριψης του αιτήματος. Το ύψος του ποσού μπορεί να αναπροσαρμόζεται με κοινή απόφαση των Υπουργών Οικονομικών και Δικαιοσύνης. Πριν από την έκδοση της πράξης, η Επιτροπή καλεί όλους τους διαδίκους, να εμφανισθούν ενώπιόν της και να εκθέσουν τις απόψεις τους αυτοπροσώπως ή με υπόμνημα, που κατατίθεται σε οριζόμενη από αυτήν προθεσμία."""@el .
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/par/3>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/par/3>
     a eli:LegalResourceSubdivision ;
     eli:number "3" ;
     schema:text """3. Η πράξη της Επιτροπής ή του Εισαγγελέα του Αρείου Πάγου δημοσιεύεται σε δύο (2) ημερήσιες εφημερίδες των Αθηνών και συνεπάγεται την αναστολή της εκδίκασης των εκκρεμών υποθέσεων, στις οποίες τίθεται το ίδιο ζήτημα, με απόφαση των κατά περίπτωση επιλαμβανομένων δικαστηρίων της ουσίας. Η αναστολή δεν καταλαμβάνει την προσωρινή δικαστική προστασία."""@el .
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/par/4>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/par/4>
     a eli:LegalResourceSubdivision ;
     eli:number "4" ;
     schema:text """4. Στη δίκη ενώπιον της πλήρους ολομέλειας του Αρείου Πάγου μπορεί να παρέμβει κάθε διάδικος σε εκκρεμή δίκη, στην οποία τίθεται το ίδιο ως άνω ζήτημα, και να προβάλει τους ισχυρισμούς του σχετικά με το ζήτημα αυτό. Για την εν λόγω παρέμβαση δεν καταλογίζεται δικαστική δαπάνη, η δε μη άσκησή της δεν δημιουργεί δικαίωμα άσκησης ανακοπής ή τριτανακοπής."""@el .
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/par/5>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/par/5>
     a eli:LegalResourceSubdivision ;
     eli:number "5" ;
     schema:text """5. Μετά από την επίλυση του ζητήματος, η πλήρης ολομέλεια του Αρείου Πάγου παραπέμπει το ένδικο μέσο ή βοήθημα στο αρμόδιο δικαστήριο. Η απόφαση της πλήρους ολομέλειας του Αρείου Πάγου δεσμεύει τους διαδίκους της ενώπιόν του δίκης, στους οποίους περιλαμβάνονται και οι παρεμβάντες."""@el .
 
-<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20001Α/par/6>
+<https://stavropouloslaw.com/eli/gr/pd/1985/503/art/20Α/par/6>
     a eli:LegalResourceSubdivision ;
     eli:number "6" ;
     schema:text """6. Μετά από την επίλυση του ζητήματος κατά την παρ. 1, οι υποθέσεις, των οποίων είχε ανασταλεί η εκδίκαση, επαναφέρονται για συζήτηση σε νέα δικάσιμο με κλήση, η οποία κατατίθεται με επιμέλεια οποιουδήποτε διαδίκου στη γραμματεία του αρμόδιου δικαστηρίου."""@el .
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 20001 - Complete Canonical Representation
+# Article 20 - Complete Canonical Representation
 # ============================================================

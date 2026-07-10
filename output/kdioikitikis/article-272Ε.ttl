@@ -1,6 +1,6 @@
 # ============================================================
 # Κώδικας Διοικητικής Δικονομίας
-# Article 272005 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 272 - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,14 +174,14 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
 # ARTICLE ROOT NODE - Canonical Entry Point
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε>
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε>
     a eli:LegalResource ,
       dcat:Dataset ,
       schema:Legislation ;
@@ -190,11 +190,11 @@
     eli:date_document "1999-05-17"^^xsd:date ;
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717> ;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
-    eli:number 272005 ;
+    eli:number 272 ;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL> ;
 
     # Dublin Core Metadata
-    dct:identifier "gr-l-1999-art-272005Ε" ;
+    dct:identifier "gr-l-1999-art-272Ε" ;
     dct:issued "1999-05-17"^^xsd:date ;
     dct:language "el" ;
     dct:title """Περιεχόμενο διαταγής πληρωμής"""@el ;
@@ -207,12 +207,12 @@
     # Schema.org Properties
     schema:inLanguage "el" ;
     schema:isPartOf <https://stavropouloslaw.com/eli/gr/l/1999/2717> ;
-    schema:legislationIdentifier "gr-l-1999-art-272005Ε" ;
+    schema:legislationIdentifier "gr-l-1999-art-272Ε" ;
 
     # Forward Relations to FRBR Layers
-    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work> ;
-    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell> ;
-    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell/man> ;
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell/man> ;
 
     # Provenance Metadata
     prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
@@ -223,23 +223,23 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-272005/2026-07-09T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-272/2025-01-01T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
                            <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
 
     # Input Sources
-    prov:used <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/source> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/source> ;
 
     # Custom Properties
-    stavropouloslaw:articleNumber 272005 ;
+    stavropouloslaw:articleNumber 272 ;
     stavropouloslaw:corpusShortName "kdioikitikis"
  .
 
@@ -249,31 +249,31 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 272005
+# FRBR WORK LAYER - Article 272
 # Abstract legal resource (language-independent)
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work
+# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work>
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work>
     a eli:LegalResource, schema:Legislation;
     eli:date_document "1999-05-17"^^xsd:date;
-    eli:id_local "gr-l-1999-art-272005Ε-work";
+    eli:id_local "gr-l-1999-art-272Ε-work";
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717>;
-    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε>;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
     dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     dct:issued "1999-05-17"^^xsd:date;
     dct:publisher <https://stavropouloslaw.com/identity/org>;
     dct:type <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
-    schema:identifier "gr-l-1999-art-272005Ε-work";
+    schema:identifier "gr-l-1999-art-272Ε-work";
     schema:inLanguage "el";
     schema:legislationDate "1999-05-17"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/1999/ART/272005";
+    schema:legislationIdentifier "ELI/GR/L/1999/ART/272";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-272005/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-272/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,19 +293,19 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 272005
+# FRBR EXPRESSION LAYER - Article 272
 # Greek language realization of abstract Work
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell
 # Language: el (ELL)
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell>
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell>
     a eli:LegalExpression;
-    eli:realizes <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε>;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε>;
     eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
     dct:language "el";
     schema:inLanguage "el";
@@ -316,12 +316,12 @@
     schema:text """1. Η διαταγή πληρωμής καταρτίζεται εγγράφως και πρέπει να περιέχει: α) το ονοματεπώνυμο του δικαστή που την εκδίδει, β) το ονοματεπώνυμο, το πατρώνυμο, τη διεύθυνση κατοικίας, καθώς και τον αριθμό φορολογικού μητρώου εκείνου που ζήτησε την έκδοσή της και, εάν πρόκειται για νομικό πρόσωπο, την επωνυμία, τη διεύθυνση της έδρας και τον αριθμό φορολογικού μητρώου, γ) τα πλήρη στοιχεία του καθ' ου, δ) την αιτία της πληρωμής, ε) το ποσό που πρέπει να καταβληθεί, στ) διαταγή πληρωμής, ζ) υπόμνηση προς τον καθ' ου ότι έχει το δικαίωμα να ασκήσει ανακοπή μέσα στην προθεσμία που ορίζεται στο άρθρο 272Η και η) υπογραφή του δικαστή.\n2. Υπόδειγμα διαταγής πληρωμής με το ως άνω περιεχόμενο μπορεί να καθορίζεται από τον Γενικό Επίτροπο της Επικρατείας των Τακτικών Διοικητικών Δικαστηρίων και να αναρτάται σε πίνακα ανακοινώσεων ή στην ιστοσελίδα των τακτικών διοικητικών δικαστηρίων."""@el;
     glass:digest "sha256-483b05911c9110aaafe2be5cf4117829dc8380cc9f4d898ea3d8138d92c7dde3";
     digest:sha256 "483b05911c9110aaafe2be5cf4117829dc8380cc9f4d898ea3d8138d92c7dde3";
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/par/1>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/par/2>;
-    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell/man>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/par/1>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/par/2>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
-    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-272005/2026-07-09T00-00-00.000000Z>.
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-272/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -333,34 +333,34 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 272005
+# FRBR MANIFESTATION LAYER - Article 272
 # Digital embodiment of the Greek-language Expression
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell/man
-# Expression: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell/man>
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell/man>
     a eli:LegalManifestation ,
       dcat:Distribution ;
-    eli:embodies <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε>;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε>;
     dcat:accessURL <https://stavropouloslaw.com/eli/gr/l/1999/2717>;
-    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε>;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell/man/format/html>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell/man/format/jsonld>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell/man/format/turtle>;
-    schema:identifier "gr-l-1999-art-272005Ε-work-exp-ell-man";
+    dct:format <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-l-1999-art-272Ε-work-exp-ell-man";
     schema:legislationDate "1999-05-17"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-272005Ε-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-272Ε-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-272005/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-272/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -372,29 +372,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 272005
+# FRBR FORMAT LAYER (HTML) - Article 272
 # HTML encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell/man/format/html
+# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell/man/format/html
 # Media-type: text/html; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell/man/format/html>
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell/man/format/html>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε>;
     dcat:mediaType "text/html; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-272005Ε-man-html>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-272Ε-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-272005/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-272/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -402,29 +402,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 272005
+# FRBR FORMAT LAYER (JSONLD) - Article 272
 # JSONLD encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell/man/format/jsonld
+# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell/man/format/jsonld
 # Media-type: application/ld+json; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell/man/format/jsonld>
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell/man/format/jsonld>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε>;
     dcat:mediaType "application/ld+json; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-272005Ε-man-jsonld>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-272Ε-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-272005/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-272/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -432,29 +432,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 272005
+# FRBR FORMAT LAYER (TURTLE) - Article 272
 # TURTLE encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell/man/format/turtle
+# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell/man/format/turtle
 # Media-type: text/turtle; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell/man/format/turtle>
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell/man/format/turtle>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε>;
     dcat:mediaType "text/turtle; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-272005Ε-man-turtle>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-272Ε-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-272005/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-272/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -465,17 +465,17 @@
 # PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/par/1>
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
     schema:text """1. Η διαταγή πληρωμής καταρτίζεται εγγράφως και πρέπει να περιέχει: α) το ονοματεπώνυμο του δικαστή που την εκδίδει, β) το ονοματεπώνυμο, το πατρώνυμο, τη διεύθυνση κατοικίας, καθώς και τον αριθμό φορολογικού μητρώου εκείνου που ζήτησε την έκδοσή της και, εάν πρόκειται για νομικό πρόσωπο, την επωνυμία, τη διεύθυνση της έδρας και τον αριθμό φορολογικού μητρώου, γ) τα πλήρη στοιχεία του καθ' ου, δ) την αιτία της πληρωμής, ε) το ποσό που πρέπει να καταβληθεί, στ) διαταγή πληρωμής, ζ) υπόμνηση προς τον καθ' ου ότι έχει το δικαίωμα να ασκήσει ανακοπή μέσα στην προθεσμία που ορίζεται στο άρθρο 272Η και η) υπογραφή του δικαστή."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272005Ε/par/2>
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Ε/par/2>
     a eli:LegalResourceSubdivision ;
     eli:number "2" ;
     schema:text """2. Υπόδειγμα διαταγής πληρωμής με το ως άνω περιεχόμενο μπορεί να καθορίζεται από τον Γενικό Επίτροπο της Επικρατείας των Τακτικών Διοικητικών Δικαστηρίων και να αναρτάται σε πίνακα ανακοινώσεων ή στην ιστοσελίδα των τακτικών διοικητικών δικαστηρίων."""@el .
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 272005 - Complete Canonical Representation
+# Article 272 - Complete Canonical Representation
 # ============================================================

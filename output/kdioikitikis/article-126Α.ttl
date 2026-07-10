@@ -1,6 +1,6 @@
 # ============================================================
 # Κώδικας Διοικητικής Δικονομίας
-# Article 126001 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 126 - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,14 +174,14 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
 # ARTICLE ROOT NODE - Canonical Entry Point
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α>
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α>
     a eli:LegalResource ,
       dcat:Dataset ,
       schema:Legislation ;
@@ -190,11 +190,11 @@
     eli:date_document "1999-05-17"^^xsd:date ;
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717> ;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
-    eli:number 126001 ;
+    eli:number 126 ;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL> ;
 
     # Dublin Core Metadata
-    dct:identifier "gr-l-1999-art-126001Α" ;
+    dct:identifier "gr-l-1999-art-126Α" ;
     dct:issued "1999-05-17"^^xsd:date ;
     dct:language "el" ;
     dct:title """"""@el ;
@@ -207,12 +207,12 @@
     # Schema.org Properties
     schema:inLanguage "el" ;
     schema:isPartOf <https://stavropouloslaw.com/eli/gr/l/1999/2717> ;
-    schema:legislationIdentifier "gr-l-1999-art-126001Α" ;
+    schema:legislationIdentifier "gr-l-1999-art-126Α" ;
 
     # Forward Relations to FRBR Layers
-    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work> ;
-    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell> ;
-    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell/man> ;
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell/man> ;
 
     # Provenance Metadata
     prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
@@ -223,23 +223,23 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-126001/2026-07-09T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-126/2025-01-01T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
                            <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
 
     # Input Sources
-    prov:used <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/source> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/source> ;
 
     # Custom Properties
-    stavropouloslaw:articleNumber 126001 ;
+    stavropouloslaw:articleNumber 126 ;
     stavropouloslaw:corpusShortName "kdioikitikis"
  .
 
@@ -249,31 +249,31 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 126001
+# FRBR WORK LAYER - Article 126
 # Abstract legal resource (language-independent)
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work
+# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work>
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work>
     a eli:LegalResource, schema:Legislation;
     eli:date_document "1999-05-17"^^xsd:date;
-    eli:id_local "gr-l-1999-art-126001Α-work";
+    eli:id_local "gr-l-1999-art-126Α-work";
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717>;
-    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α>;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
     dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     dct:issued "1999-05-17"^^xsd:date;
     dct:publisher <https://stavropouloslaw.com/identity/org>;
     dct:type <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
-    schema:identifier "gr-l-1999-art-126001Α-work";
+    schema:identifier "gr-l-1999-art-126Α-work";
     schema:inLanguage "el";
     schema:legislationDate "1999-05-17"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/1999/ART/126001";
+    schema:legislationIdentifier "ELI/GR/L/1999/ART/126";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-126001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-126/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,19 +293,19 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 126001
+# FRBR EXPRESSION LAYER - Article 126
 # Greek language realization of abstract Work
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell
 # Language: el (ELL)
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell>
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell>
     a eli:LegalExpression;
-    eli:realizes <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α>;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α>;
     eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
     dct:language "el";
     schema:inLanguage "el";
@@ -316,11 +316,11 @@
     schema:text """«1. Το δικαστήριο, με απόφαση που λαμβάνεται σε συμβούλιο, και σε υποθέσεις αρμοδιότητας μονομελούς δικαστηρίου ο οριζόμενος δικαστής, με απόφασή του μπορεί να απορρίπτει ένδικα βοηθήματα και μέσα που είναι προδήλως απαράδεκτα ή αβάσιμα και να παραπέμπει, όταν συντρέχουν οι περιπτώσεις του άρθρου 12 παράγραφος 2, στο αρμόδιο δικαστήριο υποθέσεις οι οποίες έχουν εισαχθεί σε αυτό αναρμοδίως. Με την ίδια απόφαση απορρίπτεται ή παραπέμπεται κατά περίπτωση και η τυχόν εκκρεμής αίτηση παροχής προσωρινής δικαστικής προστασίας.» 2. Το ίδιο δικαστήριο μπορεί να δέχεται, εν όλω ή εν μέρει, ένδικα βοηθήματα ή μέσα, που είναι προδήλως βάσιμα. 3. Ο πρόεδρος του συμβουλίου διοίκησης ή ο δικαστής που διευθύνει το δικαστήριο ή ο οριζόμενος από αυτούς δικαστής, με πράξη του στο εισαγωγικό της δίκης δικόγραφο, η οποία δεν κοινοποιείται στους διαδίκους, ορίζει το τμήμα ή το δικαστή για την κατά τις προηγούμενες παραγράφους εκδίκαση της υπόθεσης. Για τις υποθέσεις για τις οποίες έχει προσδιορισθεί δικάσιμος, η ως άνω αρμοδιότητα ανήκει στον πρόεδρο του οικείου τμήματος ο οποίος, με την ίδια πράξη, διατάζει και τη διαγραφή τους από το πινάκιο.«Την κατά τα ανωτέρω εκδίκαση ενδίκου βοηθήματος ή μέσου μπορεί να προτείνει στον πρόεδρο και ο ορισθείς κατά το άρθρο 127 ως εισηγητής». 4. Στην περίπτωση της παραγράφου 2 ο εισηγητής ζητεί εγγράφως ή προφορικώς ή με οποιοδήποτε πρόσφορο μέσο από τον υπογράφοντα δικηγόρο στη δηλωθείσα από αυτόν διεύθυνση ή στα λοιπά δηλωθέντα από αυτόν στοιχεία επικοινωνίας, την προσκόμιση στοιχείων νομιμοποίησης, καθώς και το προβλεπόμενο από το άρθρο 277 αποδεικτικό καταβολής παραβόλου. Αν αυτά δεν προσκομισθούν σε προθεσμία τριάντα (30) ημερών από την αποστολή του εγγράφου ή την ειδοποίηση, το ένδικο βοήθημα ή μέσο απορρίπτεται ως απαράδεκτο για το λόγο αυτόν. 5. «Οι κατά τις παραγράφους 1 και 2 αποφάσεις λαμβάνονται μόνον ομοφώνως και μετά την αποστολή του φακέλου από τη διοίκηση, όταν τούτο κρίνεται απαραίτητο». Άλλως, η υπόθεση εισάγεται για συζήτηση με την τακτική διαδικασία. Οι διατάξεις για την παρέμβαση και την τριτανακοπή εφαρμόζονται και εν προκειμένω. Οι αποφάσεις είναι συνοπτικά διατυπωμένες και περιέχουν, κυρίως, την απάντηση επί των προβαλλόμενων ισχυρισμών. 6. Η απορριπτική απόφαση κοινοποιείται στον διάδικο που άσκησε το ένδικο βοήθημα ή μέσο. «Ο τελευταίος μπορεί, με αίτησή του, που κατατίθεται εντός προθεσμίας εξήντα (60) ημερών από την κοινοποίηση, και πάντως όχι μετά την πάροδο δεκαοκτώ (18) μηνών από την έκδοση της απόφασης, να ζητήσει τη συζήτηση της υπόθεσης στο ακροατήριο, καταβάλλοντας τριπλάσιο του κατά το άρθρο 277 οριζόμενου παραβόλου ή, όταν η υπόθεση έχει εισαχθεί με το ένδικο βοήθημα της αγωγής, τριπλάσιο του οριζόμενου στην περίπτωση α' της παραγράφου 2 του άρθρου 277 παραβόλου για την προσφυγή». Στην περίπτωση αυτή, η απόφαση που ελήφθη σε συμβούλιο παύει να ισχύει και η υπόθεση εισάγεται για συζήτηση με την τακτική διαδικασία. 7. Σε περίπτωση αποδοχής, κατά την παράγραφο 2, ενδίκου βοηθήματος ή μέσου, οι ορισμοί της προηγούμενης παραγράφου ισχύουν και για εκείνον κατά του οποίου εστρέφετο το ένδικο βοήθημα ή μέσο, καθώς και για τον παρεμβαίνοντα ή τον έχοντα δικαίωμα παρεμβάσεως. Η Αρχή καταβάλλει το τριπλάσιο του προβλεπόμενου για τον ιδιώτη παραβόλου. Στην περίπτωση αυτή, στην απόφαση σημειώνεται ότι η παραδοχή καθίσταται οριστική μετά την τήρηση της διαδικασίας της επόμενης παραγράφου. 8. Ο Πρόεδρος του οικείου Τμήματος ή ο δικαστής του μονομελούς δικαστηρίου με πράξη του διαπιστώνει την άπρακτη πάροδο των προθεσμιών της παραγράφου 6. Από την ημερομηνία σύνταξης της πράξεως αυτής παράγεται το αποτέλεσμα της απόφασης. Αν διαπιστώσει πλημμέλεια στην κοινοποίηση, διατάσσει την ενέργεια νέας. 9. Στις υποθέσεις που εκδικάζονται σε συμβούλιο, δικαστική δαπάνη επιδικάζεται για τη σύνταξη του δικογράφου. Αν, μετά από αίτημα του διαδίκου, η υπόθεση εισαχθεί στην τακτική διαδικασία και το διατακτικό της αποφάσεως είναι, κατά τα ουσιώδη σημεία του, το ίδιο με αυτό της απόφασης σε συμβούλιο ο διάδικος που προκάλεσε τη νέα συζήτηση καταδικάζεται να καταβάλει στο νικήσαντα διάδικο ποσό ίσο με το πενταπλάσιο της εκάστοτε οριζόμενης δικαστικής δαπάνης. Για το καταβαλλόμενο κατά τις παραγράφους 6 και 7 ειδικό παράβολο εφαρμόζονται αναλόγως οι διατάξεις του άρθρου 277. Το παράβολο των παραγράφων 6 και 7 καταπίπτει υπέρ του αντιδίκου.» «10. Υποθέσεις που έχουν εισαχθεί αναρμοδίως μπορούν να παραπέμπονται στο αρμόδιο διοικητικό δικαστήριο είτε με πράξη του προέδρου του συμβουλίου διεύθυνσης ή του δικαστή που διευθύνει το δικαστήριο είτε με τη διαδικασία της παραγράφου 1. Με τον ίδιο τρόπο παραπέμπεται και η τυχόν εκκρεμής αίτηση αναστολής»."""@el;
     glass:digest "sha256-fbcdf645babc2d2f605669e67d88b6acad41ee44b31c2262fb3f21cb139fdcd9";
     digest:sha256 "fbcdf645babc2d2f605669e67d88b6acad41ee44b31c2262fb3f21cb139fdcd9";
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/par/1>;
-    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell/man>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/par/1>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
-    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-126001/2026-07-09T00-00-00.000000Z>.
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-126/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -332,34 +332,34 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 126001
+# FRBR MANIFESTATION LAYER - Article 126
 # Digital embodiment of the Greek-language Expression
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell/man
-# Expression: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell/man>
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell/man>
     a eli:LegalManifestation ,
       dcat:Distribution ;
-    eli:embodies <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α>;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α>;
     dcat:accessURL <https://stavropouloslaw.com/eli/gr/l/1999/2717>;
-    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α>;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell/man/format/html>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell/man/format/jsonld>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell/man/format/turtle>;
-    schema:identifier "gr-l-1999-art-126001Α-work-exp-ell-man";
+    dct:format <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-l-1999-art-126Α-work-exp-ell-man";
     schema:legislationDate "1999-05-17"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-126001Α-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-126Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-126001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-126/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -371,29 +371,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 126001
+# FRBR FORMAT LAYER (HTML) - Article 126
 # HTML encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell/man/format/html
+# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell/man/format/html
 # Media-type: text/html; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell/man/format/html>
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell/man/format/html>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α>;
     dcat:mediaType "text/html; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-126001Α-man-html>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-126Α-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-126001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-126/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -401,29 +401,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 126001
+# FRBR FORMAT LAYER (JSONLD) - Article 126
 # JSONLD encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell/man/format/jsonld
+# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell/man/format/jsonld
 # Media-type: application/ld+json; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell/man/format/jsonld>
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell/man/format/jsonld>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α>;
     dcat:mediaType "application/ld+json; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-126001Α-man-jsonld>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-126Α-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-126001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-126/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -431,29 +431,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 126001
+# FRBR FORMAT LAYER (TURTLE) - Article 126
 # TURTLE encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell/man/format/turtle
+# URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell/man/format/turtle
 # Media-type: text/turtle; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell/man/format/turtle>
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell/man/format/turtle>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α>;
     dcat:mediaType "text/turtle; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-126001Α-man-turtle>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-126Α-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-126001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-126/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -464,12 +464,12 @@
 # PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126001Α/par/1>
+<https://stavropouloslaw.com/eli/gr/l/1999/2717/art/126Α/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
     schema:text """1. «1. Το δικαστήριο, με απόφαση που λαμβάνεται σε συμβούλιο, και σε υποθέσεις αρμοδιότητας μονομελούς δικαστηρίου ο οριζόμενος δικαστής, με απόφασή του μπορεί να απορρίπτει ένδικα βοηθήματα και μέσα που είναι προδήλως απαράδεκτα ή αβάσιμα και να παραπέμπει, όταν συντρέχουν οι περιπτώσεις του άρθρου 12 παράγραφος 2, στο αρμόδιο δικαστήριο υποθέσεις οι οποίες έχουν εισαχθεί σε αυτό αναρμοδίως. Με την ίδια απόφαση απορρίπτεται ή παραπέμπεται κατά περίπτωση και η τυχόν εκκρεμής αίτηση παροχής προσωρινής δικαστικής προστασίας.» 2. Το ίδιο δικαστήριο μπορεί να δέχεται, εν όλω ή εν μέρει, ένδικα βοηθήματα ή μέσα, που είναι προδήλως βάσιμα. 3. Ο πρόεδρος του συμβουλίου διοίκησης ή ο δικαστής που διευθύνει το δικαστήριο ή ο οριζόμενος από αυτούς δικαστής, με πράξη του στο εισαγωγικό της δίκης δικόγραφο, η οποία δεν κοινοποιείται στους διαδίκους, ορίζει το τμήμα ή το δικαστή για την κατά τις προηγούμενες παραγράφους εκδίκαση της υπόθεσης. Για τις υποθέσεις για τις οποίες έχει προσδιορισθεί δικάσιμος, η ως άνω αρμοδιότητα ανήκει στον πρόεδρο του οικείου τμήματος ο οποίος, με την ίδια πράξη, διατάζει και τη διαγραφή τους από το πινάκιο.«Την κατά τα ανωτέρω εκδίκαση ενδίκου βοηθήματος ή μέσου μπορεί να προτείνει στον πρόεδρο και ο ορισθείς κατά το άρθρο 127 ως εισηγητής». 4. Στην περίπτωση της παραγράφου 2 ο εισηγητής ζητεί εγγράφως ή προφορικώς ή με οποιοδήποτε πρόσφορο μέσο από τον υπογράφοντα δικηγόρο στη δηλωθείσα από αυτόν διεύθυνση ή στα λοιπά δηλωθέντα από αυτόν στοιχεία επικοινωνίας, την προσκόμιση στοιχείων νομιμοποίησης, καθώς και το προβλεπόμενο από το άρθρο 277 αποδεικτικό καταβολής παραβόλου. Αν αυτά δεν προσκομισθούν σε προθεσμία τριάντα (30) ημερών από την αποστολή του εγγράφου ή την ειδοποίηση, το ένδικο βοήθημα ή μέσο απορρίπτεται ως απαράδεκτο για το λόγο αυτόν. 5. «Οι κατά τις παραγράφους 1 και 2 αποφάσεις λαμβάνονται μόνον ομοφώνως και μετά την αποστολή του φακέλου από τη διοίκηση, όταν τούτο κρίνεται απαραίτητο». Άλλως, η υπόθεση εισάγεται για συζήτηση με την τακτική διαδικασία. Οι διατάξεις για την παρέμβαση και την τριτανακοπή εφαρμόζονται και εν προκειμένω. Οι αποφάσεις είναι συνοπτικά διατυπωμένες και περιέχουν, κυρίως, την απάντηση επί των προβαλλόμενων ισχυρισμών. 6. Η απορριπτική απόφαση κοινοποιείται στον διάδικο που άσκησε το ένδικο βοήθημα ή μέσο. «Ο τελευταίος μπορεί, με αίτησή του, που κατατίθεται εντός προθεσμίας εξήντα (60) ημερών από την κοινοποίηση, και πάντως όχι μετά την πάροδο δεκαοκτώ (18) μηνών από την έκδοση της απόφασης, να ζητήσει τη συζήτηση της υπόθεσης στο ακροατήριο, καταβάλλοντας τριπλάσιο του κατά το άρθρο 277 οριζόμενου παραβόλου ή, όταν η υπόθεση έχει εισαχθεί με το ένδικο βοήθημα της αγωγής, τριπλάσιο του οριζόμενου στην περίπτωση α' της παραγράφου 2 του άρθρου 277 παραβόλου για την προσφυγή». Στην περίπτωση αυτή, η απόφαση που ελήφθη σε συμβούλιο παύει να ισχύει και η υπόθεση εισάγεται για συζήτηση με την τακτική διαδικασία. 7. Σε περίπτωση αποδοχής, κατά την παράγραφο 2, ενδίκου βοηθήματος ή μέσου, οι ορισμοί της προηγούμενης παραγράφου ισχύουν και για εκείνον κατά του οποίου εστρέφετο το ένδικο βοήθημα ή μέσο, καθώς και για τον παρεμβαίνοντα ή τον έχοντα δικαίωμα παρεμβάσεως. Η Αρχή καταβάλλει το τριπλάσιο του προβλεπόμενου για τον ιδιώτη παραβόλου. Στην περίπτωση αυτή, στην απόφαση σημειώνεται ότι η παραδοχή καθίσταται οριστική μετά την τήρηση της διαδικασίας της επόμενης παραγράφου. 8. Ο Πρόεδρος του οικείου Τμήματος ή ο δικαστής του μονομελούς δικαστηρίου με πράξη του διαπιστώνει την άπρακτη πάροδο των προθεσμιών της παραγράφου 6. Από την ημερομηνία σύνταξης της πράξεως αυτής παράγεται το αποτέλεσμα της απόφασης. Αν διαπιστώσει πλημμέλεια στην κοινοποίηση, διατάσσει την ενέργεια νέας. 9. Στις υποθέσεις που εκδικάζονται σε συμβούλιο, δικαστική δαπάνη επιδικάζεται για τη σύνταξη του δικογράφου. Αν, μετά από αίτημα του διαδίκου, η υπόθεση εισαχθεί στην τακτική διαδικασία και το διατακτικό της αποφάσεως είναι, κατά τα ουσιώδη σημεία του, το ίδιο με αυτό της απόφασης σε συμβούλιο ο διάδικος που προκάλεσε τη νέα συζήτηση καταδικάζεται να καταβάλει στο νικήσαντα διάδικο ποσό ίσο με το πενταπλάσιο της εκάστοτε οριζόμενης δικαστικής δαπάνης. Για το καταβαλλόμενο κατά τις παραγράφους 6 και 7 ειδικό παράβολο εφαρμόζονται αναλόγως οι διατάξεις του άρθρου 277. Το παράβολο των παραγράφων 6 και 7 καταπίπτει υπέρ του αντιδίκου.» «10. Υποθέσεις που έχουν εισαχθεί αναρμοδίως μπορούν να παραπέμπονται στο αρμόδιο διοικητικό δικαστήριο είτε με πράξη του προέδρου του συμβουλίου διεύθυνσης ή του δικαστή που διευθύνει το δικαστήριο είτε με τη διαδικασία της παραγράφου 1. Με τον ίδιο τρόπο παραπέμπεται και η τυχόν εκκρεμής αίτηση αναστολής»."""@el .
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 126001 - Complete Canonical Representation
+# Article 126 - Complete Canonical Representation
 # ============================================================

@@ -1,6 +1,6 @@
 # ============================================================
 # Ποινικός Κώδικας
-# Article 137001 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 137 - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,14 +174,14 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
 # ARTICLE ROOT NODE - Canonical Entry Point
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α>
     a eli:LegalResource ,
       dcat:Dataset ,
       schema:Legislation ;
@@ -190,11 +190,11 @@
     eli:date_document "2019-06-11"^^xsd:date ;
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619> ;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
-    eli:number 137001 ;
+    eli:number 137 ;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL> ;
 
     # Dublin Core Metadata
-    dct:identifier "gr-l-2019-art-137001Α" ;
+    dct:identifier "gr-l-2019-art-137Α" ;
     dct:issued "2019-06-11"^^xsd:date ;
     dct:language "el" ;
     dct:title """Βασανιστήρια"""@el ;
@@ -207,12 +207,12 @@
     # Schema.org Properties
     schema:inLanguage "el" ;
     schema:isPartOf <https://stavropouloslaw.com/eli/gr/l/2019/4619> ;
-    schema:legislationIdentifier "gr-l-2019-art-137001Α" ;
+    schema:legislationIdentifier "gr-l-2019-art-137Α" ;
 
     # Forward Relations to FRBR Layers
-    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work> ;
-    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell> ;
-    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell/man> ;
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell/man> ;
 
     # Provenance Metadata
     prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
@@ -223,23 +223,23 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-137001/2026-07-09T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-137/2025-01-01T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
                            <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
 
     # Input Sources
-    prov:used <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/source> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/source> ;
 
     # Custom Properties
-    stavropouloslaw:articleNumber 137001 ;
+    stavropouloslaw:articleNumber 137 ;
     stavropouloslaw:corpusShortName "poinikos"
  .
 
@@ -249,31 +249,31 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 137001
+# FRBR WORK LAYER - Article 137
 # Abstract legal resource (language-independent)
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work>
     a eli:LegalResource, schema:Legislation;
     eli:date_document "2019-06-11"^^xsd:date;
-    eli:id_local "gr-l-2019-art-137001Α-work";
+    eli:id_local "gr-l-2019-art-137Α-work";
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619>;
-    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α>;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
     dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     dct:issued "2019-06-11"^^xsd:date;
     dct:publisher <https://stavropouloslaw.com/identity/org>;
     dct:type <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
-    schema:identifier "gr-l-2019-art-137001Α-work";
+    schema:identifier "gr-l-2019-art-137Α-work";
     schema:inLanguage "el";
     schema:legislationDate "2019-06-11"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/2019/ART/137001";
+    schema:legislationIdentifier "ELI/GR/L/2019/ART/137";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-137001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-137/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,19 +293,19 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 137001
+# FRBR EXPRESSION LAYER - Article 137
 # Greek language realization of abstract Work
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell
 # Language: el (ELL)
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell>
     a eli:LegalExpression;
-    eli:realizes <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α>;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α>;
     eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
     dct:language "el";
     schema:inLanguage "el";
@@ -316,20 +316,20 @@
     schema:text """1. Υπάλληλος ή στρατιωτικός, στα καθήκοντα του οποίου ανάγεται η δίωξη, η ανάκριση ή η εξέταση αξιόποινων πράξεων ή πειθαρχικών παραπτωμάτων ή η εκτέλεση ποινών ή η φύλαξη ή η επιμέλεια κρατουμένων, τιμωρείται με κάθειρξη έως δέκα έτη, εάν υποβάλλει σε βασανιστήρια κατά την εκτέλεση αυτών των καθηκόντων πρόσωπο που βρίσκεται στην εξουσία του με σκοπό: α) να αποσπάσει από αυτό ή από τρίτο πρόσωπο ομολογία, κατάθεση, πληροφορία ή δήλωση ιδίως αποκήρυξης ή αποδοχής πολιτικής ή άλλης ιδεολογίας, β) να το τιμωρήσει ή γ) να εκφοβίσει αυτό ή τρίτα πρόσωπα. Με την ίδια ποινή τιμωρείται υπάλληλος ή στρατιωτικός, που με εντολή των προϊσταμένων του ή αυτοβούλως σφετερίζεται τέτοια καθήκοντα και τελεί τις πράξεις του προηγούμενου εδαφίου.\n2. Με την ίδια ποινή τιμωρούνται τα βασανιστήρια τα οποία τελούνται από τα πρόσωπα και υπό τις περιστάσεις που προβλέπει η προηγούμενη παράγραφος ακόμη και χωρίς τον αναφερόμενο σε αυτή σκοπό, εφόσον η επιλογή του παθόντος γίνεται λόγω των χαρακτηριστικών φυλής, χρώματος, εθνικής ή εθνοτικής καταγωγής, γενεαλογικών καταβολών, θρησκείας, αναπηρίας, γενετήσιου προσανατολισμού, ταυτότητας ή χαρακτηριστικών φύλου. Στην περίπτωση αυτή δεν εφαρμόζεται το άρθρο 82 Α.\n3. Επιβάλλεται κάθειρξη τουλάχιστον δέκα ετών αν οι πράξεις των προηγούμενων παραγράφων: α) τελούνται με μέσα ή τρόπους συστηματικού βασανισμού, ιδίως κτυπήματα στα πέλματα του θύματος (φάλαγγα), ηλεκτροσόκ, εικονική εκτέλεση ή παραισθησιογόνες ουσίες ή β) έχουν ως αποτέλεσμα τη βαριά σωματική βλάβη του θύματος. Η ποινή αυτή επιβάλλεται και όταν ο υπαίτιος, ως προϊστάμενος, έδωσε την εντολή τέλεσής τους.\n4. Σωματική κάκωση, βλάβη της υγείας, άσκηση παράνομης σωματικής ή ψυχολογικής βίας και κάθε άλλη σοβαρή προσβολή της ανθρώπινης αξιοπρέπειας, που τελείται από τα πρόσωπα και υπό τις περιστάσεις που προβλέπουν οι παράγραφοι 1 και 2, εφόσον δεν υπάγεται στην έννοια των βασανιστηρίων, τιμωρείται με φυλάκιση τουλάχιστον τριών ετών και χρηματική ποινή, αν δεν τιμωρείται βαρύτερα με άλλη διάταξη. Επιβάλλεται κάθειρξη έως δέκα έτη αν συντρέχει η περίπτωση β' της προηγούμενης παραγράφου. Ως προσβολές της ανθρώπινης αξιοπρέπειας θεωρούνται ιδίως: α) η χρησιμοποίηση ανιχνευτή αλήθειας, β) η παρατεταμένη απομόνωση, γ) η σοβαρή προσβολή της γενετήσιας αξιοπρέπειας.\n5. Αν οι πράξεις των προηγούμενων παραγράφων επέφεραν τον θάνατο του παθόντος, επιβάλλεται κάθειρξη ισόβια ή πρόσκαιρη τουλάχιστον δέκα ετών.\n6. Βασανιστήρια συνιστούν, κατά το άρθρο αυτό, κάθε εσκεμμένη πρόκληση έντονου σωματικού πόνου ή σωματικής εξάντλησης επικίνδυνης για την υγεία ή ψυχικού πόνου ικανού να επιφέρει σοβαρή ψυχική βλάβη, καθώς και κάθε παράνομη χρησιμοποίηση χημικών, ναρκωτικών ή άλλων φυσικών ή τεχνικών μέσων με σκοπό να κάμψουν τη βούληση του παθόντος. Δεν υπάγονται στην έννοια των βασανιστηρίων πράξεις ή συνέπειες συμφυείς προς τη νόμιμη εκτέλεση ποινής ή άλλου νόμιμου περιορισμού της ελευθερίας ή προς άλλο νόμιμο μέτρο δικονομικού καταναγκασμού.\n7. Η καταδίκη για τις πράξεις των παραγράφων 1 έως 5 συνεπάγεται αυτοδίκαιη αποστέρηση αξιωμάτων και θέσεων, που επέρχεται μόλις η καταδικαστική απόφαση γίνεται αμετάκλητη.\n8. Σε περίπτωση που οι πράξεις των παραγράφων 1 έως 5 τελούνται υπό καθεστώς σφετερισμού της λαϊκής κυριαρχίας, η προθεσμία της παραγραφής αρχίζει μόλις αποκατασταθεί η νόμιμη εξουσία.\n9. Η συνδρομή των όρων των άρθρων 20 έως 25 ουδέποτε αίρει τον άδικο χαρακτήρα των πράξεων αυτού του άρθρου.\n10. Ο παθών των πράξεων του άρθρου αυτού δικαιούται να απαιτήσει από τον αμετακλήτως καταδικασθέντα και από το δημόσιο, που ευθύνονται σε ολόκληρο, αποζημίωση για τις ζημίες που υπέστη και χρηματική ικανοποίηση για ψυχική οδύνη ή περιουσιακή βλάβη."""@el;
     glass:digest "sha256-07bd5bd1ad7de0744a9efe19ce08f50d0c798162a905bbc9ad849827f14a37c2";
     digest:sha256 "07bd5bd1ad7de0744a9efe19ce08f50d0c798162a905bbc9ad849827f14a37c2";
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/1>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/2>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/3>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/4>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/5>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/6>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/7>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/8>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/9>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/10>;
-    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell/man>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/1>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/2>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/3>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/4>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/5>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/6>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/7>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/8>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/9>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/10>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
-    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-137001/2026-07-09T00-00-00.000000Z>.
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-137/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -341,34 +341,34 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 137001
+# FRBR MANIFESTATION LAYER - Article 137
 # Digital embodiment of the Greek-language Expression
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell/man
-# Expression: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell/man>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell/man>
     a eli:LegalManifestation ,
       dcat:Distribution ;
-    eli:embodies <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α>;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α>;
     dcat:accessURL <https://stavropouloslaw.com/eli/gr/l/2019/4619>;
-    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α>;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell/man/format/html>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell/man/format/jsonld>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell/man/format/turtle>;
-    schema:identifier "gr-l-2019-art-137001Α-work-exp-ell-man";
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-l-2019-art-137Α-work-exp-ell-man";
     schema:legislationDate "2019-06-11"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-137001Α-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-137Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-137001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-137/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -380,29 +380,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 137001
+# FRBR FORMAT LAYER (HTML) - Article 137
 # HTML encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell/man/format/html
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell/man/format/html
 # Media-type: text/html; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell/man/format/html>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell/man/format/html>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α>;
     dcat:mediaType "text/html; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-137001Α-man-html>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-137Α-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-137001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-137/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -410,29 +410,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 137001
+# FRBR FORMAT LAYER (JSONLD) - Article 137
 # JSONLD encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell/man/format/jsonld
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell/man/format/jsonld
 # Media-type: application/ld+json; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell/man/format/jsonld>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell/man/format/jsonld>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α>;
     dcat:mediaType "application/ld+json; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-137001Α-man-jsonld>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-137Α-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-137001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-137/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -440,29 +440,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 137001
+# FRBR FORMAT LAYER (TURTLE) - Article 137
 # TURTLE encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell/man/format/turtle
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell/man/format/turtle
 # Media-type: text/turtle; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell/man/format/turtle>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell/man/format/turtle>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α>;
     dcat:mediaType "text/turtle; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-137001Α-man-turtle>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-137Α-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-137001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-137/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -473,57 +473,57 @@
 # PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/1>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
     schema:text """1. Υπάλληλος ή στρατιωτικός, στα καθήκοντα του οποίου ανάγεται η δίωξη, η ανάκριση ή η εξέταση αξιόποινων πράξεων ή πειθαρχικών παραπτωμάτων ή η εκτέλεση ποινών ή η φύλαξη ή η επιμέλεια κρατουμένων, τιμωρείται με κάθειρξη έως δέκα έτη, εάν υποβάλλει σε βασανιστήρια κατά την εκτέλεση αυτών των καθηκόντων πρόσωπο που βρίσκεται στην εξουσία του με σκοπό: α) να αποσπάσει από αυτό ή από τρίτο πρόσωπο ομολογία, κατάθεση, πληροφορία ή δήλωση ιδίως αποκήρυξης ή αποδοχής πολιτικής ή άλλης ιδεολογίας, β) να το τιμωρήσει ή γ) να εκφοβίσει αυτό ή τρίτα πρόσωπα. Με την ίδια ποινή τιμωρείται υπάλληλος ή στρατιωτικός, που με εντολή των προϊσταμένων του ή αυτοβούλως σφετερίζεται τέτοια καθήκοντα και τελεί τις πράξεις του προηγούμενου εδαφίου."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/2>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/2>
     a eli:LegalResourceSubdivision ;
     eli:number "2" ;
     schema:text """2. Με την ίδια ποινή τιμωρούνται τα βασανιστήρια τα οποία τελούνται από τα πρόσωπα και υπό τις περιστάσεις που προβλέπει η προηγούμενη παράγραφος ακόμη και χωρίς τον αναφερόμενο σε αυτή σκοπό, εφόσον η επιλογή του παθόντος γίνεται λόγω των χαρακτηριστικών φυλής, χρώματος, εθνικής ή εθνοτικής καταγωγής, γενεαλογικών καταβολών, θρησκείας, αναπηρίας, γενετήσιου προσανατολισμού, ταυτότητας ή χαρακτηριστικών φύλου. Στην περίπτωση αυτή δεν εφαρμόζεται το άρθρο 82 Α."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/3>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/3>
     a eli:LegalResourceSubdivision ;
     eli:number "3" ;
     schema:text """3. Επιβάλλεται κάθειρξη τουλάχιστον δέκα ετών αν οι πράξεις των προηγούμενων παραγράφων: α) τελούνται με μέσα ή τρόπους συστηματικού βασανισμού, ιδίως κτυπήματα στα πέλματα του θύματος (φάλαγγα), ηλεκτροσόκ, εικονική εκτέλεση ή παραισθησιογόνες ουσίες ή β) έχουν ως αποτέλεσμα τη βαριά σωματική βλάβη του θύματος. Η ποινή αυτή επιβάλλεται και όταν ο υπαίτιος, ως προϊστάμενος, έδωσε την εντολή τέλεσής τους."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/4>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/4>
     a eli:LegalResourceSubdivision ;
     eli:number "4" ;
     schema:text """4. Σωματική κάκωση, βλάβη της υγείας, άσκηση παράνομης σωματικής ή ψυχολογικής βίας και κάθε άλλη σοβαρή προσβολή της ανθρώπινης αξιοπρέπειας, που τελείται από τα πρόσωπα και υπό τις περιστάσεις που προβλέπουν οι παράγραφοι 1 και 2, εφόσον δεν υπάγεται στην έννοια των βασανιστηρίων, τιμωρείται με φυλάκιση τουλάχιστον τριών ετών και χρηματική ποινή, αν δεν τιμωρείται βαρύτερα με άλλη διάταξη. Επιβάλλεται κάθειρξη έως δέκα έτη αν συντρέχει η περίπτωση β' της προηγούμενης παραγράφου. Ως προσβολές της ανθρώπινης αξιοπρέπειας θεωρούνται ιδίως: α) η χρησιμοποίηση ανιχνευτή αλήθειας, β) η παρατεταμένη απομόνωση, γ) η σοβαρή προσβολή της γενετήσιας αξιοπρέπειας."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/5>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/5>
     a eli:LegalResourceSubdivision ;
     eli:number "5" ;
     schema:text """5. Αν οι πράξεις των προηγούμενων παραγράφων επέφεραν τον θάνατο του παθόντος, επιβάλλεται κάθειρξη ισόβια ή πρόσκαιρη τουλάχιστον δέκα ετών."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/6>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/6>
     a eli:LegalResourceSubdivision ;
     eli:number "6" ;
     schema:text """6. Βασανιστήρια συνιστούν, κατά το άρθρο αυτό, κάθε εσκεμμένη πρόκληση έντονου σωματικού πόνου ή σωματικής εξάντλησης επικίνδυνης για την υγεία ή ψυχικού πόνου ικανού να επιφέρει σοβαρή ψυχική βλάβη, καθώς και κάθε παράνομη χρησιμοποίηση χημικών, ναρκωτικών ή άλλων φυσικών ή τεχνικών μέσων με σκοπό να κάμψουν τη βούληση του παθόντος. Δεν υπάγονται στην έννοια των βασανιστηρίων πράξεις ή συνέπειες συμφυείς προς τη νόμιμη εκτέλεση ποινής ή άλλου νόμιμου περιορισμού της ελευθερίας ή προς άλλο νόμιμο μέτρο δικονομικού καταναγκασμού."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/7>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/7>
     a eli:LegalResourceSubdivision ;
     eli:number "7" ;
     schema:text """7. Η καταδίκη για τις πράξεις των παραγράφων 1 έως 5 συνεπάγεται αυτοδίκαιη αποστέρηση αξιωμάτων και θέσεων, που επέρχεται μόλις η καταδικαστική απόφαση γίνεται αμετάκλητη."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/8>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/8>
     a eli:LegalResourceSubdivision ;
     eli:number "8" ;
     schema:text """8. Σε περίπτωση που οι πράξεις των παραγράφων 1 έως 5 τελούνται υπό καθεστώς σφετερισμού της λαϊκής κυριαρχίας, η προθεσμία της παραγραφής αρχίζει μόλις αποκατασταθεί η νόμιμη εξουσία."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/9>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/9>
     a eli:LegalResourceSubdivision ;
     eli:number "9" ;
     schema:text """9. Η συνδρομή των όρων των άρθρων 20 έως 25 ουδέποτε αίρει τον άδικο χαρακτήρα των πράξεων αυτού του άρθρου."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137001Α/par/10>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/137Α/par/10>
     a eli:LegalResourceSubdivision ;
     eli:number "10" ;
     schema:text """10. Ο παθών των πράξεων του άρθρου αυτού δικαιούται να απαιτήσει από τον αμετακλήτως καταδικασθέντα και από το δημόσιο, που ευθύνονται σε ολόκληρο, αποζημίωση για τις ζημίες που υπέστη και χρηματική ικανοποίηση για ψυχική οδύνη ή περιουσιακή βλάβη."""@el .
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 137001 - Complete Canonical Representation
+# Article 137 - Complete Canonical Representation
 # ============================================================

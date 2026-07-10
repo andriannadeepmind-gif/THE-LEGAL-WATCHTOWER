@@ -1,6 +1,6 @@
 # ============================================================
 # Ποινικός Κώδικας
-# Article 104001 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 104 - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,14 +174,14 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
 # ARTICLE ROOT NODE - Canonical Entry Point
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α>
     a eli:LegalResource ,
       dcat:Dataset ,
       schema:Legislation ;
@@ -190,11 +190,11 @@
     eli:date_document "2019-06-11"^^xsd:date ;
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619> ;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
-    eli:number 104001 ;
+    eli:number 104 ;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL> ;
 
     # Dublin Core Metadata
-    dct:identifier "gr-l-2019-art-104001Α" ;
+    dct:identifier "gr-l-2019-art-104Α" ;
     dct:issued "2019-06-11"^^xsd:date ;
     dct:language "el" ;
     dct:title """Μετατροπή της φυλάκισης σε κοινωφελή εργασία"""@el ;
@@ -207,12 +207,12 @@
     # Schema.org Properties
     schema:inLanguage "el" ;
     schema:isPartOf <https://stavropouloslaw.com/eli/gr/l/2019/4619> ;
-    schema:legislationIdentifier "gr-l-2019-art-104001Α" ;
+    schema:legislationIdentifier "gr-l-2019-art-104Α" ;
 
     # Forward Relations to FRBR Layers
-    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work> ;
-    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell> ;
-    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell/man> ;
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man> ;
 
     # Provenance Metadata
     prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
@@ -223,23 +223,23 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-104001/2026-07-09T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-104/2025-01-01T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
                            <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
 
     # Input Sources
-    prov:used <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/source> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/source> ;
 
     # Custom Properties
-    stavropouloslaw:articleNumber 104001 ;
+    stavropouloslaw:articleNumber 104 ;
     stavropouloslaw:corpusShortName "poinikos"
  .
 
@@ -249,31 +249,31 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 104001
+# FRBR WORK LAYER - Article 104
 # Abstract legal resource (language-independent)
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work>
     a eli:LegalResource, schema:Legislation;
     eli:date_document "2019-06-11"^^xsd:date;
-    eli:id_local "gr-l-2019-art-104001Α-work";
+    eli:id_local "gr-l-2019-art-104Α-work";
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619>;
-    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α>;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
     dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     dct:issued "2019-06-11"^^xsd:date;
     dct:publisher <https://stavropouloslaw.com/identity/org>;
     dct:type <http://publications.europa.eu/resource/authority/resource-type/LAW_NATIONAL>;
-    schema:identifier "gr-l-2019-art-104001Α-work";
+    schema:identifier "gr-l-2019-art-104Α-work";
     schema:inLanguage "el";
     schema:legislationDate "2019-06-11"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/2019/ART/104001";
+    schema:legislationIdentifier "ELI/GR/L/2019/ART/104";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-104001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-104/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,19 +293,19 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 104001
+# FRBR EXPRESSION LAYER - Article 104
 # Greek language realization of abstract Work
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell
 # Language: el (ELL)
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell>
     a eli:LegalExpression;
-    eli:realizes <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α>;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α>;
     eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
     dct:language "el";
     schema:inLanguage "el";
@@ -316,14 +316,14 @@
     schema:text """1. Όταν επιβάλλεται φυλάκιση που δεν υπερβαίνει τα δύο (2) έτη και δεν συντρέχει περίπτωση εφαρμογής του άρθρου 99, η ποινή μετατρέπεται σε παροχή κοινωφελούς εργασίας (άρθρο 81), εκτός αν το δικαστήριο κρίνει, με ειδική αιτιολογία, ότι αυτή δεν είναι αρκετή για να αποτρέψει τον δράστη από την τέλεση άλλων εγκλημάτων. Κάθε ημέρα φυλάκισης δεν μπορεί να αντιστοιχεί σε περισσότερες από δύο (2) ώρες κοινωφελούς εργασίας. Σε κάθε περίπτωση, η διάρκεια της κοινωφελούς εργασίας δεν μπορεί να υπερβαίνει τις χίλιες διακόσιες ώρες (1.200) και σε περίπτωση που έχει καθοριστεί συνολική ποινή, τις τρεις χιλιάδες εξακόσιες ώρες (3.600), ούτε να έχει διάρκεια μεγαλύτερη των τριών (3) ετών.\n2. Η μετατροπή δεν είναι εφικτή αν ο καταδικασθείς δεν συναινεί ή δεν είναι παρών. Αν ο καταδικασθείς δεν ήταν παρών, μπορεί να ζητήσει τη μετατροπή της ποινής του σε παροχή κοινωφελούς εργασίας με αυτοτελή αίτησή του.\n3. Αν επήλθε ουσιώδης αλλαγή των όρων της παρ. 1, ο καταδικασθείς μπορεί να ζητήσει νέο υπολογισμό της παρεχόμενης κοινωφελούς εργασίας με αυτοτελή αίτησή του.\n4. Η παρ. 3 του άρθρου 81 ισχύει και στην περίπτωση αυτή. Αν η εργασία παρέχεται από εκείνον που καταδικάστηκε ελλιπώς ή πλημμελώς με δική του υπαιτιότητα, ο εισαγγελέας εκτέλεσης της ποινής, αφού λάβει υπόψη τη συχνότητα και σοβαρότητα της παραβίασης των υποχρεώσεων από τον καταδικασθέντα, τον βαθμό της υπαιτιότητάς του και το τμήμα της ποινής που εκτίθηκε, μπορεί: α) να προβεί σε προειδοποίηση εκείνου που καταδικάστηκε, β) να παρατείνει την προθεσμία για την εκτέλεση της εργασίας μέχρι ένα (1) επιπλέον έτος, γ) να εισαγάγει την υπόθεση στο δικαστήριο εκτέλεσης της ποινής με αναλογική εφαρμογή της παρ. 4 του άρθρου 99, το οποίο μπορεί να διατάξει την έκτιση της στερητικής της ελευθερίας ποινής που είχε επιβληθεί πριν από τη μετατροπή αφού αφαιρέσει την εκτιθείσα ποινή και τον χρόνο παροχής κοινωφελούς εργασίας υπολογίζοντας αυτόν σύμφωνα με την παρ. 1"""@el;
     glass:digest "sha256-b8afa0d261d847e42588d4e2955c253101e1c2fab1eaa6409573f12b249c8c0f";
     digest:sha256 "b8afa0d261d847e42588d4e2955c253101e1c2fab1eaa6409573f12b249c8c0f";
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/par/1>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/par/2>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/par/3>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/par/4>;
-    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell/man>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/par/1>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/par/2>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/par/3>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/par/4>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
-    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-104001/2026-07-09T00-00-00.000000Z>.
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-104/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -335,34 +335,34 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 104001
+# FRBR MANIFESTATION LAYER - Article 104
 # Digital embodiment of the Greek-language Expression
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell/man
-# Expression: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell/man>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man>
     a eli:LegalManifestation ,
       dcat:Distribution ;
-    eli:embodies <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α>;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α>;
     dcat:accessURL <https://stavropouloslaw.com/eli/gr/l/2019/4619>;
-    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α>;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell/man/format/html>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell/man/format/jsonld>;
-    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell/man/format/turtle>;
-    schema:identifier "gr-l-2019-art-104001Α-work-exp-ell-man";
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-l-2019-art-104Α-work-exp-ell-man";
     schema:legislationDate "2019-06-11"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-104001Α-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-104Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-104001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-104/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -374,29 +374,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 104001
+# FRBR FORMAT LAYER (HTML) - Article 104
 # HTML encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell/man/format/html
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man/format/html
 # Media-type: text/html; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell/man/format/html>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man/format/html>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α>;
     dcat:mediaType "text/html; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-104001Α-man-html>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-104Α-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-104001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-104/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -404,29 +404,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 104001
+# FRBR FORMAT LAYER (JSONLD) - Article 104
 # JSONLD encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell/man/format/jsonld
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man/format/jsonld
 # Media-type: application/ld+json; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell/man/format/jsonld>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man/format/jsonld>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α>;
     dcat:mediaType "application/ld+json; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-104001Α-man-jsonld>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-104Α-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-104001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-104/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -434,29 +434,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 104001
+# FRBR FORMAT LAYER (TURTLE) - Article 104
 # TURTLE encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell/man/format/turtle
+# URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man/format/turtle
 # Media-type: text/turtle; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell/man/format/turtle>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man/format/turtle>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α>;
     dcat:mediaType "text/turtle; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-104001Α-man-turtle>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-104Α-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-104001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-104/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -467,27 +467,27 @@
 # PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/par/1>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
     schema:text """1. Όταν επιβάλλεται φυλάκιση που δεν υπερβαίνει τα δύο (2) έτη και δεν συντρέχει περίπτωση εφαρμογής του άρθρου 99, η ποινή μετατρέπεται σε παροχή κοινωφελούς εργασίας (άρθρο 81), εκτός αν το δικαστήριο κρίνει, με ειδική αιτιολογία, ότι αυτή δεν είναι αρκετή για να αποτρέψει τον δράστη από την τέλεση άλλων εγκλημάτων. Κάθε ημέρα φυλάκισης δεν μπορεί να αντιστοιχεί σε περισσότερες από δύο (2) ώρες κοινωφελούς εργασίας. Σε κάθε περίπτωση, η διάρκεια της κοινωφελούς εργασίας δεν μπορεί να υπερβαίνει τις χίλιες διακόσιες ώρες (1.200) και σε περίπτωση που έχει καθοριστεί συνολική ποινή, τις τρεις χιλιάδες εξακόσιες ώρες (3.600), ούτε να έχει διάρκεια μεγαλύτερη των τριών (3) ετών."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/par/2>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/par/2>
     a eli:LegalResourceSubdivision ;
     eli:number "2" ;
     schema:text """2. Η μετατροπή δεν είναι εφικτή αν ο καταδικασθείς δεν συναινεί ή δεν είναι παρών. Αν ο καταδικασθείς δεν ήταν παρών, μπορεί να ζητήσει τη μετατροπή της ποινής του σε παροχή κοινωφελούς εργασίας με αυτοτελή αίτησή του."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/par/3>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/par/3>
     a eli:LegalResourceSubdivision ;
     eli:number "3" ;
     schema:text """3. Αν επήλθε ουσιώδης αλλαγή των όρων της παρ. 1, ο καταδικασθείς μπορεί να ζητήσει νέο υπολογισμό της παρεχόμενης κοινωφελούς εργασίας με αυτοτελή αίτησή του."""@el .
 
-<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104001Α/par/4>
+<https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/par/4>
     a eli:LegalResourceSubdivision ;
     eli:number "4" ;
     schema:text """4. Η παρ. 3 του άρθρου 81 ισχύει και στην περίπτωση αυτή. Αν η εργασία παρέχεται από εκείνον που καταδικάστηκε ελλιπώς ή πλημμελώς με δική του υπαιτιότητα, ο εισαγγελέας εκτέλεσης της ποινής, αφού λάβει υπόψη τη συχνότητα και σοβαρότητα της παραβίασης των υποχρεώσεων από τον καταδικασθέντα, τον βαθμό της υπαιτιότητάς του και το τμήμα της ποινής που εκτίθηκε, μπορεί: α) να προβεί σε προειδοποίηση εκείνου που καταδικάστηκε, β) να παρατείνει την προθεσμία για την εκτέλεση της εργασίας μέχρι ένα (1) επιπλέον έτος, γ) να εισαγάγει την υπόθεση στο δικαστήριο εκτέλεσης της ποινής με αναλογική εφαρμογή της παρ. 4 του άρθρου 99, το οποίο μπορεί να διατάξει την έκτιση της στερητικής της ελευθερίας ποινής που είχε επιβληθεί πριν από τη μετατροπή αφού αφαιρέσει την εκτιθείσα ποινή και τον χρόνο παροχής κοινωφελούς εργασίας υπολογίζοντας αυτόν σύμφωνα με την παρ. 1"""@el .
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 104001 - Complete Canonical Representation
+# Article 104 - Complete Canonical Representation
 # ============================================================

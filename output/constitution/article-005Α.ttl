@@ -1,6 +1,6 @@
 # ============================================================
 # Σύνταγμα της Ελλάδας
-# Article 5001 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 5 - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,14 +174,14 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
 # ARTICLE ROOT NODE - Canonical Entry Point
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α>
+<https://stavropouloslaw.com/eli/gr/const/1975/art/5Α>
     a eli:LegalResource ,
       dcat:Dataset ,
       schema:Legislation ;
@@ -190,11 +190,11 @@
     eli:date_document "1975-06-11"^^xsd:date ;
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975> ;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC> ;
-    eli:number 5001 ;
+    eli:number 5 ;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/CONST> ;
 
     # Dublin Core Metadata
-    dct:identifier "gr-const-1975-art-5001Α" ;
+    dct:identifier "gr-const-1975-art-005Α" ;
     dct:issued "1975-06-11"^^xsd:date ;
     dct:language "el" ;
     dct:title """Δικαίωμα στην πληροφόρηση"""@el ;
@@ -207,12 +207,12 @@
     # Schema.org Properties
     schema:inLanguage "el" ;
     schema:isPartOf <https://stavropouloslaw.com/eli/gr/const/1975> ;
-    schema:legislationIdentifier "gr-const-1975-art-5001Α" ;
+    schema:legislationIdentifier "gr-const-1975-art-005Α" ;
 
     # Forward Relations to FRBR Layers
-    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work> ;
-    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell> ;
-    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell/man> ;
+    stavropouloslaw:hasWork <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work> ;
+    stavropouloslaw:hasExpression <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell> ;
+    stavropouloslaw:hasManifestation <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man> ;
 
     # Provenance Metadata
     prov:wasAttributedTo <https://stavropouloslaw.com/identity#spyridon-stavropoulos>
@@ -223,23 +223,23 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/constitution/art-5001/2026-07-09T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/constitution/art-5/2025-01-01T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
                            <https://stavropouloslaw.com/identity#spyridon-stavropoulos> ;
 
     # Input Sources
-    prov:used <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/source> ;
+    prov:used <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/source> ;
 
     # Custom Properties
-    stavropouloslaw:articleNumber 5001 ;
+    stavropouloslaw:articleNumber 5 ;
     stavropouloslaw:corpusShortName "constitution"
  .
 
@@ -249,31 +249,31 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 5001
+# FRBR WORK LAYER - Article 5
 # Abstract legal resource (language-independent)
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work
+# URI: https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, Schema.org
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work>
+<https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work>
     a eli:LegalResource, schema:Legislation;
     eli:date_document "1975-06-11"^^xsd:date;
-    eli:id_local "gr-const-1975-art-5001Α-work";
+    eli:id_local "gr-const-1975-art-005Α-work";
     eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975>;
-    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α>;
+    eli:is_realized_by <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α>;
     eli:jurisdiction <http://publications.europa.eu/resource/authority/country/GRC>;
     eli:type_document <http://publications.europa.eu/resource/authority/resource-type/CONST>;
     dct:contributor <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     dct:issued "1975-06-11"^^xsd:date;
     dct:publisher <https://stavropouloslaw.com/identity/org>;
     dct:type <http://publications.europa.eu/resource/authority/resource-type/CONST>;
-    schema:identifier "gr-const-1975-art-5001Α-work";
+    schema:identifier "gr-const-1975-art-005Α-work";
     schema:inLanguage "el";
     schema:legislationDate "1975-06-11"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/CONST/1975/ART/5001";
+    schema:legislationIdentifier "ELI/GR/CONST/1975/ART/5";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Constitution";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-5001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-5/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,19 +293,19 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 5001
+# FRBR EXPRESSION LAYER - Article 5
 # Greek language realization of abstract Work
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell
 # Language: el (ELL)
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell>
+<https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell>
     a eli:LegalExpression;
-    eli:realizes <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α>;
+    eli:realizes <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α>;
     eli:language <http://publications.europa.eu/resource/authority/language/ELL>;
     dct:language "el";
     schema:inLanguage "el";
@@ -316,12 +316,12 @@
     schema:text """1. Καθένας έχει δικαίωμα στην πληροφόρηση, όπως νόμος ορίζει. Περιορισμοί στο δικαίωμα αυτό είναι δυνατον να επιβληθούν με νόμο μόνο εφόσον είναι απολύτως αναγκαίοι και δικαιολογούνται για λόγους εθνικής ασφάλειας, καταπολέμησης του εγκλήματος ή προστασίας δικαιωμάτων και συμφερόν των τρίτων.\n2. Καθένας έχει δικαίωμα συμμετοχής στην Κοινωνία της Πληροφορίας. Η διευκόλυνση της πρόσβασης στις πληροφορίες που διακινούνται ηλεκτρονικά, καθώς και της παραγωγής, ανταλλαγής και διάδοσής τους αποτελεί υποχρέωση του Κράτους, τηρουμένων πάντοτε των εγγυήσεων των άρθρων 9, 9Α και 19."""@el;
     glass:digest "sha256-052135857756af91af30606fe718f2083b448262ea794d6ce7ddf094e700cb77";
     digest:sha256 "052135857756af91af30606fe718f2083b448262ea794d6ce7ddf094e700cb77";
-    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/par/1>;
-    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/par/2>;
-    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell/man>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/par/1>;
+    eli:has_part <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/par/2>;
+    eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
-    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-5001/2026-07-09T00-00-00.000000Z>.
+    prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work> ;
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-5/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -333,34 +333,34 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 5001
+# FRBR MANIFESTATION LAYER - Article 5
 # Digital embodiment of the Greek-language Expression
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell/man
-# Expression: https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell
+# URI: https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man
+# Expression: https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell/man>
+<https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man>
     a eli:LegalManifestation ,
       dcat:Distribution ;
-    eli:embodies <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α>;
+    eli:embodies <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α>;
     dcat:accessURL <https://stavropouloslaw.com/eli/gr/const/1975>;
-    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α>;
+    dcat:downloadURL <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α>;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/>;
-    dct:format <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell/man/format/html>;
-    dct:format <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell/man/format/jsonld>;
-    dct:format <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell/man/format/turtle>;
-    schema:identifier "gr-const-1975-art-5001Α-work-exp-ell-man";
+    dct:format <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man/format/html>;
+    dct:format <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man/format/jsonld>;
+    dct:format <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man/format/turtle>;
+    schema:identifier "gr-const-1975-art-005Α-work-exp-ell-man";
     schema:legislationDate "1975-06-11"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/greek-constitution>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-5001Α-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-5Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-5001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-5/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -372,29 +372,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 5001
+# FRBR FORMAT LAYER (HTML) - Article 5
 # HTML encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell/man/format/html
+# URI: https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man/format/html
 # Media-type: text/html; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell/man/format/html>
+<https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man/format/html>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α>;
     dcat:mediaType "text/html; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/HTML>;
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-constitution>;
-    owl:sameAs <http://www.wikidata.org/entity/Q16519798#constitution-art-5001Α-man-html>;
+    owl:sameAs <http://www.wikidata.org/entity/Q16519798#constitution-art-5Α-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-5001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-5/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -402,29 +402,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 5001
+# FRBR FORMAT LAYER (JSONLD) - Article 5
 # JSONLD encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell/man/format/jsonld
+# URI: https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man/format/jsonld
 # Media-type: application/ld+json; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell/man/format/jsonld>
+<https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man/format/jsonld>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α>;
     dcat:mediaType "application/ld+json; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/JSON_LD>;
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-constitution>;
-    owl:sameAs <http://www.wikidata.org/entity/Q16519798#constitution-art-5001Α-man-jsonld>;
+    owl:sameAs <http://www.wikidata.org/entity/Q16519798#constitution-art-5Α-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-5001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-5/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -432,29 +432,29 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 5001
+# FRBR FORMAT LAYER (TURTLE) - Article 5
 # TURTLE encoding of the Manifestation
 # ============================================================
-# URI: https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell/man/format/turtle
+# URI: https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man/format/turtle
 # Media-type: text/turtle; charset=utf-8
 # Generator: ORCHESTRATOR v1.3
 # Standards: W3C RDF 1.1, ELI v1.4, FRBR, DCAT, PROV-O
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell/man/format/turtle>
+<https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man/format/turtle>
     a dcat:Distribution;
-    dcat:accessService <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/work/exp/ell/man>;
-    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α>;
+    dcat:accessService <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man>;
+    eli:is_part_of <https://stavropouloslaw.com/eli/gr/const/1975/art/5Α>;
     dcat:mediaType "text/turtle; charset=utf-8";
     dct:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE>;
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/greek-constitution>;
-    owl:sameAs <http://www.wikidata.org/entity/Q16519798#constitution-art-5001Α-man-turtle>;
+    owl:sameAs <http://www.wikidata.org/entity/Q16519798#constitution-art-5Α-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-5001/2026-07-09T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-5/2025-01-01T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -465,17 +465,17 @@
 # PARAGRAPH SUBDIVISIONS - Atomic Content Nodes
 # ============================================================
 
-<https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/par/1>
+<https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
     schema:text """1. Καθένας έχει δικαίωμα στην πληροφόρηση, όπως νόμος ορίζει. Περιορισμοί στο δικαίωμα αυτό είναι δυνατον να επιβληθούν με νόμο μόνο εφόσον είναι απολύτως αναγκαίοι και δικαιολογούνται για λόγους εθνικής ασφάλειας, καταπολέμησης του εγκλήματος ή προστασίας δικαιωμάτων και συμφερόν των τρίτων."""@el .
 
-<https://stavropouloslaw.com/eli/gr/const/1975/art/5001Α/par/2>
+<https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/par/2>
     a eli:LegalResourceSubdivision ;
     eli:number "2" ;
     schema:text """2. Καθένας έχει δικαίωμα συμμετοχής στην Κοινωνία της Πληροφορίας. Η διευκόλυνση της πρόσβασης στις πληροφορίες που διακινούνται ηλεκτρονικά, καθώς και της παραγωγής, ανταλλαγής και διάδοσής τους αποτελεί υποχρέωση του Κράτους, τηρουμένων πάντοτε των εγγυήσεων των άρθρων 9, 9Α και 19."""@el .
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 5001 - Complete Canonical Representation
+# Article 5 - Complete Canonical Representation
 # ============================================================
