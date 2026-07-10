@@ -58,8 +58,11 @@
               (getf result :release-dir))
       0)))
 
-(defun run-attest-release (corpus-id &key (tsa-fn nil))
-  "--attest-release : προσάρτηση χρονικής απόδειξης σε ΥΠΑΡΧΟΝ commitment.
+(defun run-attest-release (corpus-id &key (tsa-fn nil) (release-id-arg nil))
+  "--attest-release <corpus> [release-id] : προσάρτηση χρονικής απόδειξης σε
+   ΥΠΑΡΧΟΝ commitment. Η επιλογή στόχου είναι ΝΤΕΤΕΡΜΙΝΙΣΤΙΚΗ, ποτέ ευρετική:
+   ρητό release-id, αλλιώς ο ΜΟΝΑΔΙΚΟΣ υποψήφιος· με πολλούς ⇒ ΣΦΑΛΜΑ με
+   πλήρη λίστα (ο δημιουργός ονομάζει, το σύστημα δεν μαντεύει).
    ① επαλήθευση: recomputed root των 8 canonical ≡ ταυτότητα καταλόγου
    ② RFC-3161 receipts (append-only: υπάρχοντα receipts ΔΕΝ αγγίζονται)
    ③ προαγωγή latest (μόνο τότε). TSA-FN injectable ΜΟΝΟ για offline test."
@@ -76,8 +79,19 @@
                       (uiop:subdirectories releases-dir))))
     (unless candidates
       (error "attest-release ~A: κανένα content-addressed release στο ~A" corpus-id releases-dir))
-    (let* ((release-dir (first (sort candidates #'> :key
-                                     (lambda (d) (or (ignore-errors (file-write-date d)) 0)))))
+    (let* ((release-dir
+             (cond
+               (release-id-arg
+                (or (find release-id-arg candidates
+                          :key (lambda (d) (car (last (pathname-directory d))))
+                          :test #'equal)
+                    (error "attest-release ~A: ανύπαρκτο release ~A~%  υπαρκτά:~{~%  ~A~}"
+                           corpus-id release-id-arg
+                           (mapcar (lambda (d) (car (last (pathname-directory d)))) candidates))))
+               ((null (rest candidates)) (first candidates))
+               (t (error "attest-release ~A: ~D υποψήφια commitments — δώσε ΡΗΤΟ release-id:~{~%  ~A~}"
+                         corpus-id (length candidates)
+                         (mapcar (lambda (d) (car (last (pathname-directory d)))) candidates)))))
            (release-id (car (last (pathname-directory release-dir))))
            (fp (find-package :orchestrator.epistemic))
            (canonical (funcall (find-symbol "COLLECT-EPISTEMIC-ARTIFACTS" fp) release-dir))
@@ -104,7 +118,8 @@
 (register-command "--cut-release"
   (lambda (args) (run-cut-release (or (first args) (uiop:getenv "ORCHESTRATOR_CORPUS")))))
 (register-command "--attest-release"
-  (lambda (args) (run-attest-release (or (first args) (uiop:getenv "ORCHESTRATOR_CORPUS")))))
+  (lambda (args) (run-attest-release (or (first args) (uiop:getenv "ORCHESTRATOR_CORPUS"))
+                                     :release-id-arg (second args))))
 
 (orchestrator.self-model:declare-capability! "εξουσία-εκδόσεων"
  :description "content-addressed release authority: ταυτότητα = Merkle root του περιεχομένου (overwrite δομικά αδύνατο)· χρόνος = append-only RFC-3161 attestation πάνω στο commitment· latest προάγεται ΜΟΝΟ σε attested· παραγωγικές είσοδοι --cut-release/--attest-release, κανένα wrapper"

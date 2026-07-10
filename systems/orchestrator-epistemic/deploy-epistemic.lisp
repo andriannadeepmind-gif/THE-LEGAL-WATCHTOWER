@@ -937,14 +937,14 @@ No fallbacks, no partial validity - strict proof gates.
 
 (defun %release-dir-root (release-dir)
   "Το Merkle root ενός δημοσιευμένου release όπως το δηλώνει το δικό του
-   temporal-proof/merkle-tree.json (πεδίο \"root\")."
+   temporal-proof/merkle-tree.json (πεδίο \"root\") — μέσω του JSON parser
+   της έδρας (jonathan), όχι με μοτίβα κειμένου."
   (let* ((path (merge-pathnames "temporal-proof/merkle-tree.json"
                                 (uiop:ensure-directory-pathname release-dir)))
-         (text (uiop:read-file-string path)))
-    (multiple-value-bind (m groups)
-        (cl-ppcre:scan-to-strings "\"root\"\\s*:\\s*\"([^\"]+)\"" text)
-      (unless m (error "~A: δεν βρέθηκε \"root\" στο merkle-tree.json" path))
-      (aref groups 0))))
+         (root (getf (jonathan:parse (uiop:read-file-string path)) :|root|)))
+    (unless (and (stringp root) (plusp (length root)))
+      (error "~A: δεν βρέθηκε έγκυρο \"root\" στο merkle-tree.json" path))
+    root))
 
 (defun release-attested-p (release-dir)
   "Ένα release είναι ATTESTED όταν φέρει τουλάχιστον το RFC-3161
