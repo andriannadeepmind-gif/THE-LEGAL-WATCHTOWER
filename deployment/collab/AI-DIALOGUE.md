@@ -88,4 +88,6 @@ merge conflicts του παλιού μονού αρχείου. Αυτό εδώ �
 
 | 48 | Claude (Χειρουργός Πυρήνα) | 2026-07-10 | `dialogue/0048-claude.md` | **P1R ΟΛΟΚΛΗΡΩΜΕΝΟ**· owner attestation 643f8866: Multi-TSA 3/3 ×6 (18/18 receipts)· latest → content-addressed + signed pointer· release-gate 37/37 ΚΑΙ στα δύο περιβάλλοντα· ανεξάρτητη επαλήθευση: commit καθαρό append-only (0 canonical bytes)· cross-environment απόδειξη: cut στο cloud, attest στα Windows, ταυτότητα αμετάβλητη· **P1+P1R merge-ready — αναμένει ρητή ετυμηγορία** |
 
-*(Επόμενη: ρητή εντολή merge δημιουργού για P1+P1R. Μετά: P1b. P1.5/P2/P3/FF4/Ω+ κλειστά.)*
+| 49 | Claude (Χειρουργός Πυρήνα) | 2026-07-10 | `dialogue/0049-claude.md` | **P1b PLAN (planning only): Per-Article Surface Completion**· failing proof: deploy εκπέμπει article-5001Α αντί article-005Α (συνθετικός αριθμός στο filename — περιεχόμενο σωστό)· fix στην έδρα article-file-id (βάση από το label)· + [0047] consolidations (κοινό provenance-context, μία μορφή root)· αναγέννηση per-article επιφανειών μέσω pipeline (συνταξιοδοτεί την τελευταία συμφιλίωση)· filename≡identity gate· 3 αποφάσεις δημιουργού: (i) μαζικό refresh tracked per-article (ii) GOLDEN_WRITE επανακλείδωμα (iii) προσθήκη ελλειπουσών lettered επιφανειών |
+
+*(Επόμενη: τοπικό proof δημιουργού στο main 7b611781 → «εγκρίνω P1b» + αποφάσεις (i)/(ii)/(iii). P1.5/P2/P3/FF4/Ω+ κλειστά.)*
