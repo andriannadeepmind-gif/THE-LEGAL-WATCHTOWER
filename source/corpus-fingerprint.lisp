@@ -92,13 +92,14 @@
                  child-hashes))))
 
 (defun %merkle-root (leaves)
-  "Deterministic binary Merkle fold of leaf hex hashes into one root hash.
-   Empty -> hash of the empty string; single leaf -> itself."
-  (cond ((null leaves) (%sha ""))
-        ((null (cdr leaves)) (car leaves))
-        (t (%merkle-root
-            (loop for (a b) on leaves by #'cddr
-                  collect (%sha (concatenate 'string a (or b a))))))))
+  "RFC-6962 Merkle root (ΜΙΑ έδρα orchestrator.merkle: domain-separated φύλλα
+   0x00 / κόμβοι 0x01 + unbalanced split) πάνω στα bare-hex provision hashes ως
+   δεδομένα φύλλων· επιστρέφει bare hex (η μορφή του fingerprint). [P1.5-A] Το
+   προηγούμενο string-concat + duplicate-last (CVE-2012-2459) αντικαταστάθηκε.
+   Κενό -> hash κενού (format-compat)."
+  (if (null leaves)
+      (%sha "")
+      (subseq (orchestrator.merkle:merkle-root-of-strings leaves) 7)))
 
 ;;; ----------------------------------------------------------------------------
 ;;; the manifest

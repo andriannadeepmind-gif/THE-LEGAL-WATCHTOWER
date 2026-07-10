@@ -131,28 +131,23 @@
         (ironclad:byte-array-to-hex-string hash))))
 
 (defun compute-merkle-root (hashes)
-  "Compute Merkle root from list of hash strings
+  "Merkle root των article hashes μέσω της ΜΙΑΣ έδρας orchestrator.merkle
+   (RFC 6962: domain-separated φύλλα 0x00 / κόμβοι 0x01 + unbalanced split).
 
-   Uses SHA-256 for internal nodes.
+   [P1.5-A] Η προηγούμενη τοπική υλοποίηση έκανε duplicate-last στον περιττό
+   κόμβο — η κλάση CVE-2012-2459 ([a b c] και [a b c c] έδιναν ΙΔΙΑ ρίζα) —
+   και δεν είχε domain separation. Αντικαταστάθηκε από την έδρα.
 
    Args:
-     hashes: List of hex hash strings
+     hashes: List of hex hash strings (bare hex)
 
    Returns:
-     Merkle root as hex string"
+     Merkle root as bare hex string (η μορφή του anchor path)"
   (if (null hashes)
-      ;; Empty tree = hash of empty string
+      ;; Empty tree = hash of empty string (format-compat για κενό corpus)
       (ironclad:byte-array-to-hex-string
        (ironclad:digest-sequence :sha256 #()))
-      (loop with current = (mapcar #'ironclad:hex-string-to-byte-array hashes)
-            while (> (length current) 1)
-            do (setf current
-                    (loop for (left right) on current by #'cddr
-                          collect (let ((right (or right left))) ; Duplicate if odd
-                                    (ironclad:digest-sequence
-                                     :sha256
-                                     (concatenate '(vector (unsigned-byte 8)) left right)))))
-            finally (return (ironclad:byte-array-to-hex-string (first current))))))
+      (subseq (orchestrator.merkle:merkle-root-of-strings hashes) 7)))
 
 (defun anchor-to-chain (merkle-root chain)
   "Anchor Merkle root to specific chain
