@@ -167,14 +167,17 @@
 
    Uses SBCL's sb-unicode:normalize-string for production-grade normalization."
 
+  ;; P1b [0052]: αποτυχία NFC ⇒ ΣΦΑΛΜΑ — η έδρα κανονικοποίησης τροφοδοτεί
+  ;; hashes/ταυτότητες· σιωπηλή επιστροφή ΑΚΑΝΟΝΙΚΟΠΟΙΗΤΟΥ κειμένου ήταν
+  ;; ακριβώς η απαγορευμένη κλάση (πλαστό «κανονικό» σε νομικό αρτεφάκτ).
   #+sbcl
   (handler-case
       (sb-unicode:normalize-string text :nfc)
     (error (e)
-      text))
+      (error "NFC normalization failed — refusing to emit non-canonical text into legal artifacts: ~A" e)))
 
   #-sbcl
-  text)
+  (error "normalize-unicode-string: NFC απαιτεί SBCL (sb-unicode) — καμία σιωπηλή παράκαμψη κανονικοποίησης"))
 
 ;;; ============================================================
 ;;; CANONICAL LITERAL FORMATTING

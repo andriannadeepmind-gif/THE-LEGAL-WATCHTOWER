@@ -192,7 +192,9 @@
    «ΙΑ» ⇒ 11, «ΙΣΤ» ⇒ 16. Η ΜΙΑ έδρα της σειράς ΚΑΙ της εγκυρότητας
    επιθημάτων: άγνωστο/μη-ελληνικό/πεζό επίθημα ⇒ ΣΦΑΛΜΑ (τίμια άγνοια —
    το string< κατέτασσε το ΣΤ μετά το Ι, παραποιώντας τη νομική σειρά,
-   και το λατινικό ομόγλυφο «A» περνούσε σιωπηλά ως άλλη ταυτότητα)."
+   και το λατινικό ομόγλυφο «A» περνούσε σιωπηλά ως άλλη ταυτότητα).
+   ΔΗΛΩΜΕΝΟ ΟΡΙΟ: ο πίνακας δεκάδων φτάνει ως το Π (=80) ⇒ μέγιστο ΠΘ=89·
+   90ό+ επίθημα (ανύπαρκτο στη νομοθετική πράξη) σηματοδοτεί τίμιο σφάλμα."
   (let ((s (string suffix)))
     (cond
       ((zerop (length s)) 0)
@@ -214,13 +216,18 @@
 
    Συμβόλαιο: αριθμός ΔΕΝ είναι label — (STRING 5) σηματοδοτεί TYPE-ERROR.
    Το επίθημα ΕΠΙΚΥΡΩΝΕΤΑΙ από τη μία έδρα (article-suffix-ordinal): «Α5»,
-   «5Α », «5A» (λατινικό), «5α» ⇒ ΣΦΑΛΜΑ αντί για σιωπηλή ψευδοταυτότητα."
+   «5Α », «5A» (λατινικό), «5α» ⇒ ΣΦΑΛΜΑ αντί για σιωπηλή ψευδοταυτότητα.
+   P1b [0052]#1β: κενό ΜΕΣΑ στο label («5 Α») ⇒ ΣΦΑΛΜΑ — το αριστερό trim
+   το κανονικοποιούσε σιωπηλά σε «Α», αποδίδοντας ταυτότητα σε άκυρη μορφή."
   (if (null suffix-or-label)
       ""
-      (let ((suffix (string-left-trim "0123456789 "
-                                      (string suffix-or-label))))
-        (article-suffix-ordinal suffix)   ; επικύρωση — σφάλμα αν άκυρο
-        suffix)))
+      (let ((s (string suffix-or-label)))
+        (when (find #\Space s)
+          (error 'orchestrator.spec:validation-error
+                 :message (format nil "Άκυρο label/επίθημα άρθρου ~S — περιέχει κενό· η κανονική μορφή είναι «5Α»/«Α» χωρίς κενά" s)))
+        (let ((suffix (string-left-trim "0123456789" s)))
+          (article-suffix-ordinal suffix)   ; επικύρωση — σφάλμα αν άκυρο
+          suffix))))
 
 (defun pad-article-id (number &optional suffix-or-label)
   "Canonical PADDED article id (filesystem ids + eIds): NUMBER zero-padded to 3

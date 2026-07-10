@@ -162,50 +162,11 @@
 
   t)
 
-;;; ============================================================
-;;; UTILITY - WRITE ARTICLE ROOT TO FILE
-;;; ============================================================
+;;; P1b [0052]: ο νεκρός write-article-root-layer διαγράφηκε — δίδυμος του
+;;; write-prov-activity-layer (ίδιο σκεπτικό θανάτου): 0 callers, handler-case
+;;; που κατάπινε κάθε σφάλμα σε σιωπηλό NIL. Η εκπομπή του Article Root ζει
+;;; ΜΟΝΟ μέσα στο unified άρθρο-αρχείο (Single Emission Law).
 
-(defun write-article-root-layer (article output-dir &key authority)
-  "Write Article Root RDF to file
-
-   Generates: article-NNN.root.ttl
-
-   Arguments:
-     article:    frbr-article-root instance
-     output-dir: Output directory path
-     authority:  REQUIRED - :canonical or :provenance
-
-   Returns:
-     File path if successful, NIL if failed"
-
-  (unless authority
-    (error "AUTHORITY parameter is required. Use :authority :canonical or :authority :provenance"))
-
-  (handler-case
-      (let* (;; Suffix-safe filename via the single source of truth (100Α ≠ 100).
-             (filename (format nil "article-~A.root.ttl" (orchestrator.model:article-file-id article)))
-             (filepath (merge-pathnames filename output-dir))
-             (rdf-content (generate-rdf article)))
-
-        ;; Validate RDF content
-        (unless (search "eli:LegalResource" rdf-content)
-          (error "Generated RDF missing eli:LegalResource type"))
-
-        (unless (search "stavropouloslaw:hasWork" rdf-content)
-          (error "Generated RDF missing stavropouloslaw:hasWork relation"))
-
-        ;; Write file via unified authority
-        (orchestrator.write-authority:emit-graph rdf-content filepath :authority authority)
-
-        (format *error-output* "~&INFO: Article Root written: ~A~%" filepath)
-        filepath)
-
-    (error (e)
-      (format *error-output* "~&ERROR:  Failed to write Article Root for article ~A: ~A~%"
-              (orchestrator.model:frbr-article-id article)
-              e)
-      nil)))
 
 ;;; ============================================================
 ;;; EXPORTS

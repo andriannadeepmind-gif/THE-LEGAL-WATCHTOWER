@@ -31,9 +31,23 @@
   (let* ((title (gethash "title" json-item))
          (content-list (gethash "content" json-item))
          (date (gethash "date" json-item))
-         ;; Extract label from "Άρθρο N - Title" format (e.g. "5", "5Α", "9Α")
-         (title-parts (cl-ppcre:split "\\s+" title))
-         (label (when (>= (length title-parts) 2) (second title-parts)))
+         ;; P1b [0052]#Α1: ΑΥΣΤΗΡΗ γραμματική «Άρθρο <ψηφία><επίθημα;> [- τίτλος]»
+         ;; — ίδια συμπεριφορά με το CLI (%parse-article-title): το επίθημα
+         ;; κολλάει ΑΜΕΣΑ στα ψηφία. Το παλιό split-σε-κενά ΠΕΤΟΥΣΕ σιωπηλά
+         ;; επίθημα χωρισμένο με κενό («Άρθρο 5 Α» ⇒ ταυτότητα 5!) ενώ το CLI
+         ;; το δεχόταν — ο ίδιος τίτλος έπαιρνε ΔΙΑΦΟΡΕΤΙΚΗ ταυτότητα ανά
+         ;; μονοπάτι. Τίτλος που ξεκινά «Άρθρο <ψηφία>» αλλά δεν είναι
+         ;; κανονικός ⇒ ΣΦΑΛΜΑ (ποτέ σιωπηλή επανερμηνεία ταυτότητας).
+         (label (multiple-value-bind (m g)
+                    (cl-ppcre:scan-to-strings
+                     "^\\s*[Άά]ρθρο\\s+(\\d+[Α-ΩA-Zα-ω]*)\\s*(?:[-–—].*)?$" title)
+                  (cond
+                    (m (aref g 0))
+                    ((cl-ppcre:scan "^\\s*[Άά]ρθρο\\s+\\d+" (or title ""))
+                     (error 'orchestrator.spec:stage-error
+                            :stage-name :json-adapter
+                            :message (format nil "Μη-κανονικός τίτλος άρθρου ~S — αναγνωρίσιμος αριθμός με άκυρη μορφή (π.χ. κενό πριν το επίθημα)" title)))
+                    (t nil))))
          ;; Numeric base: parse-integer stops at the first non-digit (e.g. "5Α" → 5)
          (base-number (when label (parse-integer label :junk-allowed t)))
          ;; For articles with a letter suffix (e.g. "5Α"), encode as base*1000 + ordinal

@@ -229,8 +229,9 @@
    επίθημα — η κλάση πεθαίνει με την εξάλειψη της δεύτερης έδρας."
   (let* ((base-entry (generate-article-manifest-entry article corpus))
          (short-name (orchestrator.model:corpus-short-name corpus))
-         (art-id (getf base-entry :|article_number|)))
-    `(:|id| ,(format nil "~A/~A/article/~A"
+         (art-id (getf base-entry :|article_number|))
+         (entry
+          `(:|id| ,(format nil "~A/~A/article/~A"
                      (config-canonical-base-uri config) short-name art-id)
       :|canonical_source| ,(getf base-entry :|canonical_source|)
       :|corpus| ,(getf base-entry :|corpus|)
@@ -267,6 +268,13 @@
                           (current-build-timestamp))
 
       :|eli_uri| ,(getf base-entry :|eli_uri|))))
+    ;; P1b [0052]#Β6: ΦΡΑΓΗ ΠΛΗΡΟΤΗΤΑΣ — κάθε πεδίο της μίας έδρας (base
+    ;; entry) ΠΡΕΠΕΙ να υπάρχει και εδώ. Νέο πεδίο στη βάση που δεν
+    ;; διαδίδεται ⇒ ΣΦΑΛΜΑ, όχι σιωπηλή απόθεση από το config-manifest.
+    (loop for (key nil) on base-entry by #'cddr
+          unless (member key entry)
+            do (error "generate-article-manifest-entry-with-config: το πεδίο ~S της μίας έδρας δεν διαδίδεται στο config-manifest — πρόσθεσέ το ρητά" key))
+    entry))
 
 ;;; ============================================================================
 ;;; CONFIG-AWARE WRITE FUNCTIONS

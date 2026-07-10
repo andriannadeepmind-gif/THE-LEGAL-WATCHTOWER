@@ -207,9 +207,11 @@
 (defun corpus-output-dir (base)
   "Return BASE/<corpus-short-name>/ so each corpus (κώδικας) is written in its
    own organized space and corpora can never overwrite or mix with each other.
-   Requires that select-corpus has already run."
-  (let ((short (or (ignore-errors (orchestrator.spec:config-get "corpus.short_name"))
-                   "corpus")))
+   Requires that select-corpus has already run.
+
+   P1b [0052]: η ταυτότητα corpus ΔΕΝ μαντεύεται — το παλιό σιωπηλό «corpus»
+   έστελνε artifacts (και RELEASES, μέσω cut-release) σε πλαστό κατάλογο."
+  (let ((short (orchestrator.spec:required-config "corpus.short_name")))
     (namestring (merge-pathnames (concatenate 'string short "/")
                                  (uiop:ensure-directory-pathname base)))))
 
@@ -454,19 +456,27 @@
   (multiple-value-bind (m groups)
       (cl-ppcre:scan-to-strings
        ;; the ONE article-suffix grammar (engine), so a new letter form can
-       ;; never again be recognised by the extractor but dropped here
+       ;; never again be recognised by the extractor but dropped here.
+       ;; P1b [0052]#Α1: το επίθημα κολλάει ΑΜΕΣΑ στα ψηφία (καμία ανοχή
+       ;; κενού «5 Α») — η παλιά \\s* ανοχή εδώ, με τον json-adapter να ΠΕΤΑ
+       ;; το επίθημα, έδινε ΔΙΑΦΟΡΕΤΙΚΗ ταυτότητα στον ίδιο τίτλο ανά μονοπάτι.
        (load-time-value
         (cl-ppcre:create-scanner
-         (format nil "^\\s*[Άά]ρθρο\\s+(\\d+)\\s*~A?\\s*(?:[-–—]\\s*(.*))?$"
+         (format nil "^\\s*[Άά]ρθρο\\s+(\\d+)~A?\\s*(?:[-–—]\\s*(.*))?$"
                  orchestrator.engine.sbcl:+article-suffix-regex+)
          :case-insensitive-mode nil))
        (or title ""))
-    (if m
-        (values (concatenate 'string (aref groups 0)
-                             ;; suffix may be one letter or the digraph ΣΤ (370ΣΤ)
-                             (let ((s (aref groups 1))) (if s (string-upcase s) "")))
-                (or (aref groups 2) ""))
-        (values nil title))))
+    (cond
+      (m (values (concatenate 'string (aref groups 0)
+                              ;; suffix: γράμμα(τα) της νομοθετικής ακολουθίας (Α, ΣΤ, ΙΑ…)
+                              (let ((s (aref groups 1))) (if s (string-upcase s) "")))
+                 (or (aref groups 2) "")))
+      ;; Τίτλος που ΞΕΚΙΝΑ ως «Άρθρο <αριθμός>» αλλά δεν είναι κανονικός ⇒
+      ;; ΣΦΑΛΜΑ (όχι σιωπηλή αρίθμηση κατά θέση): το fallback είναι ΜΟΝΟ για
+      ;; τίτλους χωρίς αναγνωρίσιμο αριθμό άρθρου.
+      ((cl-ppcre:scan "^\\s*[Άά]ρθρο\\s+\\d+" (or title ""))
+       (error "Μη-κανονικός τίτλος άρθρου ~S — αναγνωρίσιμος αριθμός με άκυρη μορφή (π.χ. κενό πριν το επίθημα)· άρνηση σιωπηλής επανερμηνείας ταυτότητας" title))
+      (t (values nil title)))))
 
 (defun %auto-amendment-records (corpus-id)
   "Auto-extracted amendment records for CORPUS-ID from the discovered amending laws
@@ -513,7 +523,9 @@
                                   (list (or aid n) (if aid heading title) content))))
          ;; Configured amendments + auto-extracted from the discovered laws — the
          ;; corpus consolidates itself from et.gr without hand-authored records.
-         (records (append (ignore-errors (orchestrator.spec:config-get "versioning.amendments"))
+         ;; config-get επιστρέφει NIL για απόν κλειδί ΧΩΡΙΣ σφάλμα — το
+         ;; ignore-errors μόνο έκρυβε πραγματικές βλάβες φόρτωσης config.
+         (records (append (orchestrator.spec:config-get "versioning.amendments")
                           (%auto-amendment-records corpus-id)
                           ;; πράξεις που ΕΓΚΡΙΝΕΣ στην ουρά review: γίνονται
                           ;; κανονικό amendment record — η έγκρισή σου ΕΙΝΑΙ η
@@ -1051,8 +1063,10 @@ document.getElementById('ops').addEventListener('click',function(ev){
                 (t (let* ((iirs (if (string-equal (or (pathname-type src) "") "docx")
                                     (orchestrator.engine.sbcl:docx-adapter src)
                                     (orchestrator.engine.sbcl:pdf-adapter src)))
-                          (date (or (ignore-errors (orchestrator.spec:config-get "corpus.publication.date"))
-                                    (ignore-errors (orchestrator.spec:config-get "corpus.modified_date")))))
+                          ;; Ρητή αλυσίδα δηλωμένων config τιμών (όχι κατασκευή)·
+                          ;; το config-get δεν σηματοδοτεί για απόν κλειδί.
+                          (date (or (orchestrator.spec:config-get "corpus.publication.date")
+                                    (orchestrator.spec:config-get "corpus.modified_date"))))
                      (cond
                        ;; 0 articles → the PDF has no text layer (scanned ΦΕΚ). NEVER
                        ;; overwrite a populated corpus with an empty one.

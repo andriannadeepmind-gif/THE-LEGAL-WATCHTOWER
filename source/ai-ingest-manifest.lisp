@@ -27,11 +27,16 @@
 ;;; AI INGEST ONTOLOGY
 ;;; ============================================================================
 
-(defparameter *ingest-prefixes*
-  `(("llm" . ,(format nil "~A/ontology/llm#" (or (ignore-errors (orchestrator.uris:get-base-uri)) "https://stavropouloslaw.com")))
+;; P1b [0052]: τα prefixes υπολογίζονται ΟΨΙΜΑ (συνάρτηση, όχι load-time
+;; defparameter) ώστε το base URI να προέρχεται ΠΑΝΤΑ από τη διαμορφωμένη
+;; έδρα (get-base-uri) — το παλιό load-time (or (ignore-errors …) hardcoded)
+;; έγραφε σιωπηλά hardcoded URI σε εκπεμπόμενα prefixes όταν το config δεν
+;; είχε ακόμη φορτωθεί. Χωρίς config ⇒ τίμιο σφάλμα του get-base-uri.
+(defun ingest-prefixes ()
+  `(("llm" . ,(format nil "~A/ontology/llm#" (orchestrator.uris:get-base-uri)))
     ("hf" . "https://huggingface.co/ontology#")
-    ("ingest" . ,(format nil "~A/ontology/ingest#" (or (ignore-errors (orchestrator.uris:get-base-uri)) "https://stavropouloslaw.com")))
-    ("metrics" . ,(format nil "~A/ontology/metrics#" (or (ignore-errors (orchestrator.uris:get-base-uri)) "https://stavropouloslaw.com")))
+    ("ingest" . ,(format nil "~A/ontology/ingest#" (orchestrator.uris:get-base-uri)))
+    ("metrics" . ,(format nil "~A/ontology/metrics#" (orchestrator.uris:get-base-uri)))
     ("schema" . "https://schema.org/")
     ("dcat" . "http://www.w3.org/ns/dcat#")
     ("dct" . "http://purl.org/dc/terms/")
@@ -39,8 +44,7 @@
     ("void" . "http://rdfs.org/ns/void#")
     ("prov" . "http://www.w3.org/ns/prov#")
     ("eli" . "http://data.europa.eu/eli/ontology#")
-    ("rdfs" . "http://www.w3.org/2000/01/rdf-schema#"))
-  "Prefixes for AI ingestion")
+    ("rdfs" . "http://www.w3.org/2000/01/rdf-schema#")))
 
 (defparameter *saturation-factors*
   '((:rdfa . 0.20)           ; RDFa annotations present
@@ -512,7 +516,7 @@
   year={2025},
   publisher={STAVROPOULOS LAW},
   url={~A/corpus}
-}" (or (ignore-errors (orchestrator.uris:get-base-uri)) "https://stavropouloslaw.com")))))
+}" (orchestrator.uris:get-base-uri)))))
 
 (defmethod export-huggingface-dataset ((formatter huggingface-formatter) 
                                        manifest articles output-dir)
@@ -836,7 +840,7 @@ cross-reference and backlink counts, and a per-article LLM-readiness score.~%~%"
   "Serialize manifest as RDF for AI pipelines"
   (with-output-to-string (stream)
     ;; Prefixes
-    (dolist (prefix *ingest-prefixes*)
+    (dolist (prefix (ingest-prefixes))
       (format stream "@prefix ~A: <~A> .~%" (car prefix) (cdr prefix)))
     
     (format stream "~%# AI INGEST MANIFEST - RDF SERIALIZATION~%")

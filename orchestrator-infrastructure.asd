@@ -158,7 +158,6 @@
      (:file "pdf-authority")      ; GATE-13: Pure Lisp PDF via libpoppler CFFI
      (:file "embeddings-authority") ; GATE-10: Pure Lisp text embeddings
      (:file "signed-embedding-manifest") ; GATE-12: Signed embedding manifests with provenance
-     (:file "ai-discovery")       ; GATE-11: AI-friendly robots.txt, sitemap, manifest
      (:file "rdfs-inference")     ; GATE-15: Pure Lisp RDFS inference engine
      (:file "reasoning-authority") ; Pure Lisp OWL 2 RL reasoner + ontology consistency (superset of RDFS)
      (:file "corpus-intelligence") ; CLOS/MOP suite: discovers + runs every analysis layer as one report

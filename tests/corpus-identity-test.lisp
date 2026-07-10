@@ -275,6 +275,81 @@
                   (member "VALIDATE-SHACL" names :test #'equal)
                   (member "GENERATE-RDF" names :test #'equal))))
 
+;;; ⑱ P1b [0052]#Ε6: wikidata ΜΟΝΟ με ρητό qid — ποτέ δεσμός σε λάθος οντότητα.
+(cit-check "⑱ syntagma (με qid): owl:sameAs → Q16519798, ΚΑΝΕΝΑ ψευδές Q41"
+           (and (search "Q16519798" *cit-frbr-ttl*)
+                (not (search "Q41#" *cit-frbr-ttl*))))
+(orchestrator.spec:select-corpus "kpolitikis")
+(orchestrator.gr-syntagma:register-active-corpus)
+(let ((yaml (orchestrator.spec:ensure-config-loaded)))
+  (when yaml (orchestrator.uris:load-canonical-uris-from-config yaml)))
+(defparameter *cit-noqid-ttl*
+  (handler-case
+      (orchestrator.engine.sbcl::generate-frbr-unified-from-iir
+       (orchestrator.model:make-normalized-article-input
+        :article-number 7 :article-label "7"
+        :article-title "Άρθρο 7 - Δοκιμή" :article-content "1. Κείμενο."
+        :source-type :json :source-path "test.json"))
+    (error (e) (format nil "GENERATION-ERROR: ~A" e))))
+(cit-check "⑱β kpolitikis (ΧΩΡΙΣ qid): το owl:sameAs wikidata ΠΑΡΑΛΕΙΠΕΤΑΙ ολόκληρο"
+           (not (search "wikidata.org" *cit-noqid-ttl*)))
+
+;;; ⑲ P1b [0052]: manifest γραμμή = JSON OBJECT (όχι array εναλλασσόμενων
+;;; keys/values — η κλάση P1-D) + provenance_url ≡ έδρα ονόματος.
+(let* ((corpus (orchestrator.model:make-corpus
+                :name "Δοκιμή" :short-name "test" :eli-prefix "https://x/eli"
+                :publication-date "2000-01-01" :webid "https://x/id" :orcid "0"))
+       (a (orchestrator.model:make-article :number 5001 :label "5Α"
+                                           :title "Άρθρο 5Α - Χ" :content "κ"))
+       (cfg (orchestrator.ai-core:make-ai-export-config))
+       (line (orchestrator.ai-core:manifest-entry-to-json
+              (orchestrator.ai-core:generate-article-manifest-entry-with-config
+               a corpus cfg))))
+  (cit-check "⑲ config-manifest entry: JSON object με «\"id\"» + provenance_url από την έδρα"
+             (and (char= #\{ (char line 0))
+                  (search "\"id\":" line)
+                  (search "article-005Α-provenance.json" line)
+                  (not (search "5001" line)))))
+
+;;; ⑳ P1b [0052]#Ε7: deterministic export ΧΩΡΙΣ δηλωμένη αρχή χρόνου ⇒ ΣΦΑΛΜΑ.
+(cit-check "⑳ effective-deterministic-timestamp: χωρίς fixed & χωρίς αρχή ⇒ σφάλμα· με fixed ⇒ τιμή"
+           (let ((cfg (orchestrator.ai-core:make-ai-export-config)))
+             (and (let ((orchestrator.time:*deterministic-mode* nil))
+                    (handler-case
+                        (progn (orchestrator.ai-core:effective-deterministic-timestamp cfg) nil)
+                      (error () t)))
+                  (progn (setf (orchestrator.ai-core:config-fixed-timestamp cfg) 12345)
+                         (= 12345 (orchestrator.ai-core:effective-deterministic-timestamp cfg))))))
+
+;;; ㉑ P1b [0052]#Α1: ΜΙΑ συμπεριφορά γραμματικής τίτλου και στα ΔΥΟ μονοπάτια —
+;;; «5 Α» (κενό πριν το επίθημα) = ΑΚΥΡΟ ΠΑΝΤΟΥ, ποτέ σιωπηλή επανερμηνεία.
+(cit-check "㉑ label «5 Α» ⇒ σφάλμα στην έδρα (όχι σιωπηλή κανονικοποίηση σε «Α»)"
+           (handler-case (progn (orchestrator.model:article-label-suffix "5 Α") nil)
+             (error () t)))
+(cit-check "㉑β CLI τίτλος «Άρθρο 5Α - Τ» ⇒ id «5Α»· «Άρθρο 5 Α - Τ» ⇒ ΣΦΑΛΜΑ"
+           (and (equal "5Α" (orchestrator.cli::%parse-article-title "Άρθρο 5Α - Τ"))
+                (handler-case (progn (orchestrator.cli::%parse-article-title "Άρθρο 5 Α - Τ") nil)
+                  (error () t))))
+(cit-check "㉑γ json-adapter «Άρθρο 5 Α - Τ» ⇒ ΣΦΑΛΜΑ (όχι σιωπηλή ταυτότητα «5»)"
+           (let ((h (make-hash-table :test 'equal)))
+             (setf (gethash "title" h) "Άρθρο 5 Α - Τ"
+                   (gethash "content" h) (list "1. Κ.")
+                   (gethash "date" h) "2000-01-01")
+             (handler-case
+                 (progn (orchestrator.engine.sbcl::json-item->normalized-input h "t.json") nil)
+               (error () t))))
+(cit-check "㉑δ CLI αναγνωρίζει πολυγράμματο επίθημα: «Άρθρο 80ΙΓ - Τ» ⇒ «80ΙΓ»"
+           (equal "80ΙΓ" (orchestrator.cli::%parse-article-title "Άρθρο 80ΙΓ - Τ")))
+
+;;; ㉒ P1b [0052]#Ε10: το gr-syntagma split περνά από την έδρα ορίου —
+;;; ενδοκειμενική αναφορά ΔΕΝ κόβεται, newline-αγκυρωμένη παράγραφος κόβεται.
+(cit-check "㉒ split-into-paragraphs: «άρθρων 9, 9Α και 19.» δεν κόβεται· «\\n2. » κόβεται"
+           (let ((parts (orchestrator.gr-syntagma:split-into-paragraphs
+                         (format nil "1. Κατά τα άρθρων 9, 9Α και 19. Συνέχεια.~%2. Δεύτερη."))))
+             (and (= 2 (length parts))
+                  (search "άρθρων 9" (first parts))
+                  (search "Συνέχεια" (first parts)))))
+
 (format t "~%========================================~%")
 (format t "Corpus identity tests: ~D passed, ~D failed~%" *cit-pass* *cit-fail*)
 (format t "========================================~%")

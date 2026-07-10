@@ -12,24 +12,32 @@
 
 (in-package :orchestrator.cli)
 
-(defun %stage-reaches-p (stage-name target-string by-name)
+(defun %stage-reaches-p (stage-name target-string by-name &optional seen)
   "T όταν το STAGE-NAME φτάνει (μεταβατικά, μέσω εξαρτήσεων) το στάδιο με
    symbol-name TARGET-STRING. Σύγκριση με string= — τα ονόματα σταδίων είναι
-   σύμβολα του πακέτου ορισμού του pipeline, όχι του καλούντος."
-  (or (string= (symbol-name stage-name) target-string)
-      (let ((stage (gethash (symbol-name stage-name) by-name)))
-        (and stage
-             (some (lambda (dep) (%stage-reaches-p dep target-string by-name))
-                   (orchestrator.spec:stage-dependencies stage))))))
+   σύμβολα του πακέτου ορισμού του pipeline, όχι του καλούντος. Κύκλος στον
+   ορισμό ⇒ ΣΦΑΛΜΑ (ποτέ σιωπηλή άρνηση/βρόχος)."
+  (let ((key (symbol-name stage-name)))
+    (when (member key seen :test #'string=)
+      (error "cut-release: κύκλος εξαρτήσεων στον pipeline γύρω από το στάδιο ~A" key))
+    (or (string= key target-string)
+        (let ((stage (gethash key by-name)))
+          (and stage
+               (some (lambda (dep)
+                       (%stage-reaches-p dep target-string by-name (cons key seen)))
+                     (orchestrator.spec:stage-dependencies stage)))))))
 
 (defun %release-stage-chain ()
-  "P1b [0052]#Ε4: η αλυσίδα σταδίων του release παράγεται από ΤΟΝ ΙΔΙΟ ορισμό
-   pipeline (defpipeline greek-constitution) — ΟΧΙ χειροκίνητο αντίγραφο.
-   Περπατά τις εξαρτήσεις ΑΝΑΠΟΔΑ από το hash-artifacts μέχρι το
-   load-json-source (ο json κλάδος), οπότε νέο ενδιάμεσο στάδιο του pipeline
-   μπαίνει ΑΥΤΟΜΑΤΑ και στο --cut-release — τα δύο παραγωγικά μονοπάτια δεν
-   μπορούν πλέον να αποκλίνουν σιωπηλά (η κλάση του «identityHash NIL»,
-   σταδίου που έλειπε από το αντίγραφο, εξαλείφεται δομικά).
+  "P1b [0052]#Ε4/#Β1: η αλυσίδα σταδίων του release παράγεται από ΤΟΝ ΙΔΙΟ
+   ορισμό pipeline (defpipeline greek-constitution) — ΟΧΙ χειροκίνητο
+   αντίγραφο. Υπολογίζει το ΚΛΕΙΣΙΜΟ του υπο-DAG
+     {S : hash-artifacts ⟶* S ΚΑΙ S ⟶* load-json-source}
+   (ΟΛΑ τα στάδια πάνω σε ΟΠΟΙΟΔΗΠΟΤΕ μονοπάτι από την είσοδο json ως το
+   hashing — όχι ένα μονοπάτι: ρόμβος στον ορισμό δεν αφήνει ΠΟΤΕ κλάδο
+   σιωπηλά απ' έξω) και το διατάσσει τοπολογικά κατά τις εξαρτήσεις.
+   Έτσι νέο ενδιάμεσο στάδιο του pipeline μπαίνει ΑΥΤΟΜΑΤΑ και στο
+   --cut-release — τα δύο παραγωγικά μονοπάτια δεν μπορούν να αποκλίνουν
+   σιωπηλά (η κλάση του «identityHash NIL» εξαλείφεται δομικά).
    Επιστρέφει λίστα stage objects σε σειρά εκτέλεσης."
   (let* ((pkg (or (find-package :orchestrator.gr-syntagma)
                   (error "cut-release: το πακέτο orchestrator.gr-syntagma δεν είναι φορτωμένο")))
@@ -41,23 +49,43 @@
          (by-name (make-hash-table :test 'equal)))
     (dolist (s stages)
       (setf (gethash (symbol-name (orchestrator.spec:stage-name s)) by-name) s))
-    (unless (gethash "HASH-ARTIFACTS" by-name)
-      (error "cut-release: το στάδιο hash-artifacts λείπει από τον pipeline"))
-    (let ((chain '())
-          (cursor "HASH-ARTIFACTS"))
-      (loop while cursor do
-        (let ((stage (gethash cursor by-name)))
-          (push stage chain)
-          (setf cursor
-                (if (string= cursor "LOAD-JSON-SOURCE")
-                    nil
-                    (let ((next (find-if (lambda (dep)
-                                           (%stage-reaches-p dep "LOAD-JSON-SOURCE" by-name))
-                                         (orchestrator.spec:stage-dependencies stage))))
-                      (unless next
-                        (error "cut-release: το στάδιο ~A δεν φτάνει το load-json-source — ο json κλάδος του pipeline άλλαξε δομή" cursor))
-                      (symbol-name next))))))
-      chain)))
+    (dolist (endpoint '("HASH-ARTIFACTS" "LOAD-JSON-SOURCE"))
+      (unless (gethash endpoint by-name)
+        (error "cut-release: το στάδιο ~A λείπει από τον pipeline" endpoint)))
+    ;; Μέλη του υπο-DAG: S πάνω σε μονοπάτι load-json-source → … → hash-artifacts,
+    ;; δηλ. S ⟶* load-json-source ΚΑΙ hash-artifacts ⟶* S.
+    (let* ((hash-name (orchestrator.spec:stage-name (gethash "HASH-ARTIFACTS" by-name)))
+           (in-subdag
+             (remove-if-not
+              (lambda (s)
+                (let ((sname (orchestrator.spec:stage-name s)))
+                  (and (%stage-reaches-p sname "LOAD-JSON-SOURCE" by-name)
+                       (%stage-reaches-p hash-name (symbol-name sname) by-name))))
+              stages))
+           (member-names (mapcar (lambda (s)
+                                   (symbol-name (orchestrator.spec:stage-name s)))
+                                 in-subdag)))
+      ;; Τοπολογική διάταξη ΜΕΣΑ στο υπο-DAG (Kahn πάνω στις εξαρτήσεις).
+      (let ((ordered '())
+            (pending (copy-list in-subdag)))
+        (loop while pending do
+          (let ((ready (find-if
+                        (lambda (s)
+                          (every (lambda (dep)
+                                   (or (not (member (symbol-name dep) member-names
+                                                    :test #'string=))
+                                       (member (symbol-name dep)
+                                               (mapcar (lambda (o)
+                                                         (symbol-name (orchestrator.spec:stage-name o)))
+                                                       ordered)
+                                               :test #'string=)))
+                                 (orchestrator.spec:stage-dependencies s)))
+                        pending)))
+            (unless ready
+              (error "cut-release: αδύνατη τοπολογική διάταξη του release υπο-DAG — κύκλος στον ορισμό του pipeline;"))
+            (push ready ordered)
+            (setf pending (remove ready pending))))
+        (nreverse ordered)))))
 
 (defun %release-corpus-context (corpus-id)
   "Articles για release μέσω των παραγωγικών εδρών: select-corpus →
