@@ -116,12 +116,16 @@
       sorted)))
 
 (defun %root->release-id (root-hash)
-  "Κανονική ταυτότητα release από Merkle root: «sha256-<hex>» (τυχόν πρόθεμα
-   «sha256:» της αναπαράστασης manifest αφαιρείται)."
-  (let ((hex (if (and (stringp root-hash) (eql 0 (search "sha256:" root-hash)))
-                 (subseq root-hash 7)
-                 root-hash)))
-    (format nil "sha256-~A" hex)))
+  "Κανονική ταυτότητα release από Merkle root. B7 [0047]/[0049]: ΜΙΑ μορφή
+   root στο σύστημα — αυτή που εκπέμπει η έδρα merkle-tree-root
+   («sha256:<64-hex>»). Οτιδήποτε άλλο = ΣΦΑΛΜΑ, όχι σιωπηλή «συγχώρεση»
+   δεύτερης μορφής."
+  (unless (and (stringp root-hash)
+               (eql 0 (search "sha256:" root-hash))
+               (= (length root-hash) 71)
+               (every (lambda (c) (digit-char-p c 16)) (subseq root-hash 7)))
+    (error "%root->release-id: μη κανονική μορφή root ~S — αναμένεται «sha256:<64-hex>» (η μία έδρα: merkle-tree-root)" root-hash))
+  (format nil "sha256-~A" (subseq root-hash 7)))
 
 ;;; ============================================================================
 ;;; RELEASE MANIFEST GENERATION

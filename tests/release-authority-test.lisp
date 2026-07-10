@@ -34,9 +34,12 @@
              (integerp (orchestrator.time:require-deterministic-time))))
 
 ;;; ② Κανονική ταυτότητα από root
-(rat-check "② %root->release-id: «sha256:abc»→«sha256-abc», γυμνό hex→«sha256-hex»"
-           (and (equal "sha256-abc" (orchestrator.epistemic::%root->release-id "sha256:abc"))
-                (equal "sha256-def" (orchestrator.epistemic::%root->release-id "def"))))
+(rat-check "② %root->release-id: ΜΟΝΟ κανονική μορφή «sha256:<64-hex>»· άλλη μορφή ⇒ σφάλμα"
+           (and (equal (concatenate 'string "sha256-" (make-string 64 :initial-element #\a))
+                       (orchestrator.epistemic::%root->release-id
+                        (concatenate 'string "sha256:" (make-string 64 :initial-element #\a))))
+                (handler-case (progn (orchestrator.epistemic::%root->release-id "γυμνό-hex") nil)
+                  (error () t))))
 
 ;;; Βοηθός: φτιάξε staging με τα 8 canonical + δηλωμένο root (πραγματικές έδρες)
 (defun %rat-make-staging (base tag)
@@ -110,7 +113,8 @@
                  (orchestrator.epistemic::release-attested-p
                   final (orchestrator.epistemic::%release-recomputed-root final)))
       (rat-check "⑦β2 receipt με ΞΕΝΟ imprint ⇒ ΔΕΝ μετρά ως attested για αυτό το root"
-                 (not (orchestrator.epistemic::release-attested-p final "sha256:deadbeef")))
+                 (not (orchestrator.epistemic::release-attested-p
+                       final (concatenate 'string "sha256:" (make-string 64 :initial-element #\d)))))
       (orchestrator.epistemic::promote-latest! base id)
       (rat-check "⑦γ latest symlink + latest.json δείχνουν στην ταυτότητα, attested:true"
                  (let ((ptr (uiop:read-file-string

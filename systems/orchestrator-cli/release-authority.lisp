@@ -26,12 +26,11 @@
          (output-dir (corpus-output-dir
                       (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR")
                           (orchestrator.paths:institution-dir "output/"))))
-         (json-path (orchestrator.spec:resolve-config-path "source.json"))
+         ;; B4 [0047]/[0049]: η ΙΔΙΑ έδρα provenance-checked πηγής με το pipeline
+         (json-path (or (provenance-checked-json-source corpus-id)
+                        (error "cut-release ~A: source.json ΧΩΡΙΣ έγκυρο provenance — δεν κόβεται release από μη επαληθευμένη πηγή" corpus-id)))
          (context (make-instance 'orchestrator.core:pipeline-context
                                  :pipeline nil :config nil)))
-    (unless (or (%source-provenance-valid-p json-path)
-                (uiop:getenvp "ORCHESTRATOR_ALLOW_UNVERIFIED_JSON"))
-      (error "cut-release ~A: source.json ΧΩΡΙΣ έγκυρο provenance — δεν κόβεται release από μη επαληθευμένη πηγή" corpus-id))
     (orchestrator.core:set-context-value
      context :sources (list (list :type :json :path json-path)))
     (orchestrator.core:set-context-value

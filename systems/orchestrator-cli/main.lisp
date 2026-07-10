@@ -250,6 +250,26 @@
       (t nil)))
   (ensure-directories-exist (uiop:ensure-directory-pathname output-dir)))
 
+(defun provenance-checked-json-source (corpus-label)
+  "Η ΜΙΑ έδρα ανάλυσης του αυθεντικού source.json για τον ΕΝΕΡΓΟ κώδικα.
+   O-3 PROVENANCE GATE: ποτέ προαγωγή unstamped/tampered/foreign source.json
+   σε «authoritative corpus». Έγκυρο sidecar απαιτείται·
+   ORCHESTRATOR_ALLOW_UNVERIFIED_JSON=1 = συνειδητή, καταγεγραμμένη παράκαμψη.
+   Επιστρέφει το json-path ή NIL (με τυπωμένη αιτία) όταν απορρίπτεται."
+  (let ((json-path (orchestrator.spec:resolve-config-path "source.json")))
+    (cond
+      ((or (%source-provenance-valid-p json-path)
+           (uiop:getenvp "ORCHESTRATOR_ALLOW_UNVERIFIED_JSON"))
+       (when (and (uiop:getenvp "ORCHESTRATOR_ALLOW_UNVERIFIED_JSON")
+                  (not (%source-provenance-valid-p json-path)))
+         (format t "~%  ⚠ ~A: προωθείται ΜΗ-ΕΠΑΛΗΘΕΥΜΕΝΟ source.json (ORCHESTRATOR_ALLOW_UNVERIFIED_JSON).~%"
+                 corpus-label))
+       json-path)
+      (t
+       (format t "~%  ⛔ ~A: source.json ΧΩΡΙΣ έγκυρο provenance (unstamped/tampered/foreign) — ΔΕΝ προωθείται ως authoritative. Τρέξε --materialize-pdf για stamp, ή θέσε ORCHESTRATOR_ALLOW_UNVERIFIED_JSON=1 για ρητή παράκαμψη.~%"
+               corpus-label)
+       nil))))
+
 (defun run-pipeline (&optional corpus-id)
   "Execute full processing pipeline - PDF first (if corpus declares source.pdf), JSON fallback.
    CORPUS-ID selects the corpus explicitly (used by --run-all-pipelines); when
@@ -319,26 +339,14 @@
                ;; parliament-crawl): load-json-source reads :sources FIRST, so an
                ;; explicit json source bypasses the source-type/format dispatch that
                ;; would otherwise skip JSON loading. Mirrors PDF mode's :sources wiring.
-               (let* ((json-path (orchestrator.spec:resolve-config-path "source.json"))
-                      (corpus-id (orchestrator.spec:pipeline-corpus pipeline))
+               (let* ((corpus-id (orchestrator.spec:pipeline-corpus pipeline))
+                      ;; B4 [0047]/[0049]: η ΜΙΑ έδρα provenance-checked πηγής
+                      (json-path (or (provenance-checked-json-source corpus-id)
+                                     (return-from run-json-mode nil)))
                       (corpus (orchestrator.meta:get-corpus corpus-id))
                       (context (make-instance 'orchestrator.core:pipeline-context
                                              :pipeline pipeline
                                              :config nil)))
-                 ;; O-3 PROVENANCE GATE: never promote an unstamped/tampered/foreign
-                 ;; source.json to "authoritative corpus". A valid sidecar (content hash
-                 ;; matches) is required; ORCHESTRATOR_ALLOW_UNVERIFIED_JSON=1 overrides
-                 ;; for a deliberate, logged exception (e.g. a legacy corpus not yet
-                 ;; re-materialised).
-                 (unless (or (%source-provenance-valid-p json-path)
-                             (uiop:getenvp "ORCHESTRATOR_ALLOW_UNVERIFIED_JSON"))
-                   (format t "~%  ⛔ ~A: source.json ΧΩΡΙΣ έγκυρο provenance (unstamped/tampered/foreign) — ΔΕΝ προωθείται ως authoritative. Τρέξε --materialize-pdf για stamp, ή θέσε ORCHESTRATOR_ALLOW_UNVERIFIED_JSON=1 για ρητή παράκαμψη.~%"
-                           corpus-id)
-                   (return-from run-json-mode nil))
-                 (when (and (uiop:getenvp "ORCHESTRATOR_ALLOW_UNVERIFIED_JSON")
-                            (not (%source-provenance-valid-p json-path)))
-                   (format t "~%  ⚠ ~A: προωθείται ΜΗ-ΕΠΑΛΗΘΕΥΜΕΝΟ source.json (ORCHESTRATOR_ALLOW_UNVERIFIED_JSON).~%"
-                           corpus-id))
                  (orchestrator.core:set-context-value
                   context :sources (list (list :type :json :path json-path)))
                  (orchestrator.core:set-context-value context :corpus corpus)
