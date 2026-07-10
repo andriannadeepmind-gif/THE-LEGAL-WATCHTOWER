@@ -1,6 +1,6 @@
 # ============================================================
 # Κώδικας Πολιτικής Δικονομίας
-# Article 622 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 622Α - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -249,7 +249,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 622
+# FRBR WORK LAYER - Article 622Α
 # Abstract legal resource (language-independent)
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/622Α/work
@@ -273,7 +273,7 @@
     schema:identifier "gr-pd-1985-art-622Α-work";
     schema:inLanguage "el";
     schema:legislationDate "1985-10-24"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/PD/1985/ART/622";
+    schema:legislationIdentifier "ELI/GR/PD/1985/ART/622Α";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "PresidentialDecree";
@@ -293,7 +293,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 622
+# FRBR EXPRESSION LAYER - Article 622Α
 # Greek language realization of abstract Work
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/622Α/work/exp/ell
@@ -337,7 +337,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 622
+# FRBR MANIFESTATION LAYER - Article 622Α
 # Digital embodiment of the Greek-language Expression
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/622Α/work/exp/ell/man
@@ -360,7 +360,6 @@
     schema:identifier "gr-pd-1985-art-622Α-work-exp-ell-man";
     schema:legislationDate "1985-10-24"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-622Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -376,7 +375,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 622
+# FRBR FORMAT LAYER (HTML) - Article 622Α
 # HTML encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/622Α/work/exp/ell/man/format/html
@@ -394,7 +393,6 @@
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-622Α-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -406,7 +404,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 622
+# FRBR FORMAT LAYER (JSONLD) - Article 622Α
 # JSONLD encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/622Α/work/exp/ell/man/format/jsonld
@@ -424,7 +422,6 @@
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-622Α-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -436,7 +433,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 622
+# FRBR FORMAT LAYER (TURTLE) - Article 622Α
 # TURTLE encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/622Α/work/exp/ell/man/format/turtle
@@ -454,7 +451,6 @@
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-622Α-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -501,5 +497,5 @@
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 622 - Complete Canonical Representation
+# Article 622Α - Complete Canonical Representation
 # ============================================================

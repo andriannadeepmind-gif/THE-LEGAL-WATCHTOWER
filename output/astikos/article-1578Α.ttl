@@ -1,6 +1,6 @@
 # ============================================================
 # Αστικός Κώδικας
-# Article 1578 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 1578Α - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -249,7 +249,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 1578
+# FRBR WORK LAYER - Article 1578Α
 # Abstract legal resource (language-independent)
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1578Α/work
@@ -273,7 +273,7 @@
     schema:identifier "gr-l-1946-art-1578Α-work";
     schema:inLanguage "el";
     schema:legislationDate "1946-02-23"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/1946/ART/1578";
+    schema:legislationIdentifier "ELI/GR/L/1946/ART/1578Α";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -293,7 +293,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 1578
+# FRBR EXPRESSION LAYER - Article 1578Α
 # Greek language realization of abstract Work
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1578Α/work/exp/ell
@@ -332,7 +332,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 1578
+# FRBR MANIFESTATION LAYER - Article 1578Α
 # Digital embodiment of the Greek-language Expression
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1578Α/work/exp/ell/man
@@ -355,7 +355,6 @@
     schema:identifier "gr-l-1946-art-1578Α-work-exp-ell-man";
     schema:legislationDate "1946-02-23"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/astikos>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-1578Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -371,7 +370,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 1578
+# FRBR FORMAT LAYER (HTML) - Article 1578Α
 # HTML encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1578Α/work/exp/ell/man/format/html
@@ -389,7 +388,6 @@
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/astikos>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#astikos-art-1578Α-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -401,7 +399,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 1578
+# FRBR FORMAT LAYER (JSONLD) - Article 1578Α
 # JSONLD encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1578Α/work/exp/ell/man/format/jsonld
@@ -419,7 +417,6 @@
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/astikos>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#astikos-art-1578Α-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -431,7 +428,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 1578
+# FRBR FORMAT LAYER (TURTLE) - Article 1578Α
 # TURTLE encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/1578Α/work/exp/ell/man/format/turtle
@@ -449,7 +446,6 @@
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/astikos>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#astikos-art-1578Α-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -471,5 +467,5 @@
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 1578 - Complete Canonical Representation
+# Article 1578Α - Complete Canonical Representation
 # ============================================================

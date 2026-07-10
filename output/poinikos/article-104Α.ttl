@@ -1,6 +1,6 @@
 # ============================================================
 # Ποινικός Κώδικας
-# Article 104 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 104Α - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -249,7 +249,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 104
+# FRBR WORK LAYER - Article 104Α
 # Abstract legal resource (language-independent)
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work
@@ -273,7 +273,7 @@
     schema:identifier "gr-l-2019-art-104Α-work";
     schema:inLanguage "el";
     schema:legislationDate "2019-06-11"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/2019/ART/104";
+    schema:legislationIdentifier "ELI/GR/L/2019/ART/104Α";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -293,7 +293,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 104
+# FRBR EXPRESSION LAYER - Article 104Α
 # Greek language realization of abstract Work
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell
@@ -335,7 +335,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 104
+# FRBR MANIFESTATION LAYER - Article 104Α
 # Digital embodiment of the Greek-language Expression
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man
@@ -358,7 +358,7 @@
     schema:identifier "gr-l-2019-art-104Α-work-exp-ell-man";
     schema:legislationDate "2019-06-11"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-104Α-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-104Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -374,7 +374,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 104
+# FRBR FORMAT LAYER (HTML) - Article 104Α
 # HTML encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man/format/html
@@ -404,7 +404,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 104
+# FRBR FORMAT LAYER (JSONLD) - Article 104Α
 # JSONLD encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man/format/jsonld
@@ -434,7 +434,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 104
+# FRBR FORMAT LAYER (TURTLE) - Article 104Α
 # TURTLE encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/104Α/work/exp/ell/man/format/turtle
@@ -489,5 +489,5 @@
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 104 - Complete Canonical Representation
+# Article 104Α - Complete Canonical Representation
 # ============================================================

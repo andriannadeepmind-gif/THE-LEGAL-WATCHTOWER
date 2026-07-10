@@ -362,7 +362,7 @@
     schema:identifier "gr-const-1975-art-018-work-exp-ell-man";
     schema:legislationDate "1975-06-11"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/greek-constitution>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-18-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q16519798#constitution-art-18-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;

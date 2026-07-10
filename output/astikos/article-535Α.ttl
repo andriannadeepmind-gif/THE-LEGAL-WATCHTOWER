@@ -1,6 +1,6 @@
 # ============================================================
 # Αστικός Κώδικας
-# Article 535 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 535Α - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -249,7 +249,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 535
+# FRBR WORK LAYER - Article 535Α
 # Abstract legal resource (language-independent)
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work
@@ -273,7 +273,7 @@
     schema:identifier "gr-l-1946-art-535Α-work";
     schema:inLanguage "el";
     schema:legislationDate "1946-02-23"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/1946/ART/535";
+    schema:legislationIdentifier "ELI/GR/L/1946/ART/535Α";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -293,7 +293,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 535
+# FRBR EXPRESSION LAYER - Article 535Α
 # Greek language realization of abstract Work
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell
@@ -332,7 +332,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 535
+# FRBR MANIFESTATION LAYER - Article 535Α
 # Digital embodiment of the Greek-language Expression
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man
@@ -355,7 +355,6 @@
     schema:identifier "gr-l-1946-art-535Α-work-exp-ell-man";
     schema:legislationDate "1946-02-23"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/astikos>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-535Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -371,7 +370,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 535
+# FRBR FORMAT LAYER (HTML) - Article 535Α
 # HTML encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man/format/html
@@ -389,7 +388,6 @@
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/astikos>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#astikos-art-535Α-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -401,7 +399,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 535
+# FRBR FORMAT LAYER (JSONLD) - Article 535Α
 # JSONLD encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man/format/jsonld
@@ -419,7 +417,6 @@
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/astikos>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#astikos-art-535Α-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -431,7 +428,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 535
+# FRBR FORMAT LAYER (TURTLE) - Article 535Α
 # TURTLE encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/1940/2250/art/535Α/work/exp/ell/man/format/turtle
@@ -449,7 +446,6 @@
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/astikos>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#astikos-art-535Α-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -471,5 +467,5 @@
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 535 - Complete Canonical Representation
+# Article 535Α - Complete Canonical Representation
 # ============================================================

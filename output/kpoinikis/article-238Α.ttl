@@ -1,6 +1,6 @@
 # ============================================================
 # Κώδικας Ποινικής Δικονομίας
-# Article 238 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 238Α - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -249,7 +249,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 238
+# FRBR WORK LAYER - Article 238Α
 # Abstract legal resource (language-independent)
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work
@@ -273,7 +273,7 @@
     schema:identifier "gr-l-2019-art-238Α-work";
     schema:inLanguage "el";
     schema:legislationDate "2019-06-11"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/2019/ART/238";
+    schema:legislationIdentifier "ELI/GR/L/2019/ART/238Α";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -293,7 +293,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 238
+# FRBR EXPRESSION LAYER - Article 238Α
 # Greek language realization of abstract Work
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell
@@ -335,7 +335,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 238
+# FRBR MANIFESTATION LAYER - Article 238Α
 # Digital embodiment of the Greek-language Expression
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man
@@ -358,7 +358,6 @@
     schema:identifier "gr-l-2019-art-238Α-work-exp-ell-man";
     schema:legislationDate "2019-06-11"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/kpoinikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-238Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -374,7 +373,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 238
+# FRBR FORMAT LAYER (HTML) - Article 238Α
 # HTML encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man/format/html
@@ -392,7 +391,6 @@
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpoinikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpoinikis-art-238Α-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -404,7 +402,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 238
+# FRBR FORMAT LAYER (JSONLD) - Article 238Α
 # JSONLD encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man/format/jsonld
@@ -422,7 +420,6 @@
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpoinikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpoinikis-art-238Α-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -434,7 +431,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 238
+# FRBR FORMAT LAYER (TURTLE) - Article 238Α
 # TURTLE encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4620/art/238Α/work/exp/ell/man/format/turtle
@@ -452,7 +449,6 @@
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpoinikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpoinikis-art-238Α-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -489,5 +485,5 @@
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 238 - Complete Canonical Representation
+# Article 238Α - Complete Canonical Representation
 # ============================================================

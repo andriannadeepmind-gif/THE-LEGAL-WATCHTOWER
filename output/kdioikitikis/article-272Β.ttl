@@ -1,6 +1,6 @@
 # ============================================================
 # Κώδικας Διοικητικής Δικονομίας
-# Article 272 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 272Β - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -249,7 +249,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 272
+# FRBR WORK LAYER - Article 272Β
 # Abstract legal resource (language-independent)
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Β/work
@@ -273,7 +273,7 @@
     schema:identifier "gr-l-1999-art-272Β-work";
     schema:inLanguage "el";
     schema:legislationDate "1999-05-17"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/1999/ART/272";
+    schema:legislationIdentifier "ELI/GR/L/1999/ART/272Β";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -293,7 +293,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 272
+# FRBR EXPRESSION LAYER - Article 272Β
 # Greek language realization of abstract Work
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Β/work/exp/ell
@@ -332,7 +332,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 272
+# FRBR MANIFESTATION LAYER - Article 272Β
 # Digital embodiment of the Greek-language Expression
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Β/work/exp/ell/man
@@ -355,7 +355,6 @@
     schema:identifier "gr-l-1999-art-272Β-work-exp-ell-man";
     schema:legislationDate "1999-05-17"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-272Β-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -371,7 +370,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 272
+# FRBR FORMAT LAYER (HTML) - Article 272Β
 # HTML encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Β/work/exp/ell/man/format/html
@@ -389,7 +388,6 @@
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-272Β-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -401,7 +399,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 272
+# FRBR FORMAT LAYER (JSONLD) - Article 272Β
 # JSONLD encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Β/work/exp/ell/man/format/jsonld
@@ -419,7 +417,6 @@
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-272Β-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -431,7 +428,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 272
+# FRBR FORMAT LAYER (TURTLE) - Article 272Β
 # TURTLE encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/1999/2717/art/272Β/work/exp/ell/man/format/turtle
@@ -449,7 +446,6 @@
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-272Β-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -471,5 +467,5 @@
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 272 - Complete Canonical Representation
+# Article 272Β - Complete Canonical Representation
 # ============================================================

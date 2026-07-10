@@ -1,6 +1,6 @@
 # ============================================================
 # Ποινικός Κώδικας
-# Article 394 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 394Α - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -249,7 +249,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 394
+# FRBR WORK LAYER - Article 394Α
 # Abstract legal resource (language-independent)
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/394Α/work
@@ -273,7 +273,7 @@
     schema:identifier "gr-l-2019-art-394Α-work";
     schema:inLanguage "el";
     schema:legislationDate "2019-06-11"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/2019/ART/394";
+    schema:legislationIdentifier "ELI/GR/L/2019/ART/394Α";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -293,7 +293,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 394
+# FRBR EXPRESSION LAYER - Article 394Α
 # Greek language realization of abstract Work
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/394Α/work/exp/ell
@@ -333,7 +333,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 394
+# FRBR MANIFESTATION LAYER - Article 394Α
 # Digital embodiment of the Greek-language Expression
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/394Α/work/exp/ell/man
@@ -356,7 +356,7 @@
     schema:identifier "gr-l-2019-art-394Α-work-exp-ell-man";
     schema:legislationDate "2019-06-11"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-394Α-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-394Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -372,7 +372,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 394
+# FRBR FORMAT LAYER (HTML) - Article 394Α
 # HTML encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/394Α/work/exp/ell/man/format/html
@@ -402,7 +402,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 394
+# FRBR FORMAT LAYER (JSONLD) - Article 394Α
 # JSONLD encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/394Α/work/exp/ell/man/format/jsonld
@@ -432,7 +432,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 394
+# FRBR FORMAT LAYER (TURTLE) - Article 394Α
 # TURTLE encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/394Α/work/exp/ell/man/format/turtle
@@ -477,5 +477,5 @@
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 394 - Complete Canonical Representation
+# Article 394Α - Complete Canonical Representation
 # ============================================================

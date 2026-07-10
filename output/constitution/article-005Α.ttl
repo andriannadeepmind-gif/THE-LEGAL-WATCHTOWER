@@ -1,6 +1,6 @@
 # ============================================================
 # Σύνταγμα της Ελλάδας
-# Article 5 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 5Α - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -249,7 +249,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 5
+# FRBR WORK LAYER - Article 5Α
 # Abstract legal resource (language-independent)
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work
@@ -273,7 +273,7 @@
     schema:identifier "gr-const-1975-art-005Α-work";
     schema:inLanguage "el";
     schema:legislationDate "1975-06-11"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/CONST/1975/ART/5";
+    schema:legislationIdentifier "ELI/GR/CONST/1975/ART/5Α";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Constitution";
@@ -293,7 +293,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 5
+# FRBR EXPRESSION LAYER - Article 5Α
 # Greek language realization of abstract Work
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell
@@ -333,7 +333,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 5
+# FRBR MANIFESTATION LAYER - Article 5Α
 # Digital embodiment of the Greek-language Expression
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man
@@ -356,7 +356,7 @@
     schema:identifier "gr-const-1975-art-005Α-work-exp-ell-man";
     schema:legislationDate "1975-06-11"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/greek-constitution>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-5Α-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q16519798#constitution-art-5Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
@@ -372,7 +372,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 5
+# FRBR FORMAT LAYER (HTML) - Article 5Α
 # HTML encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man/format/html
@@ -402,7 +402,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 5
+# FRBR FORMAT LAYER (JSONLD) - Article 5Α
 # JSONLD encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man/format/jsonld
@@ -432,7 +432,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 5
+# FRBR FORMAT LAYER (TURTLE) - Article 5Α
 # TURTLE encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/const/1975/art/5Α/work/exp/ell/man/format/turtle
@@ -477,5 +477,5 @@
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 5 - Complete Canonical Representation
+# Article 5Α - Complete Canonical Representation
 # ============================================================
