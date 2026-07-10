@@ -43,10 +43,7 @@
   (let* ((staging (merge-pathnames (format nil "releases/.staging-~A/" tag) base)))
     (ensure-directories-exist (merge-pathnames "shapes/" staging))
     (ensure-directories-exist (merge-pathnames "temporal-proof/" staging))
-    (dolist (f '("meta-ontology.ttl" "lineage-graph.ttl" "negation.ttl"
-                 "stability-policy.ttl" "stability-policy.md"
-                 "shapes/article-shape.ttl" "shapes/manifest-shape.ttl"
-                 "shapes/lineage-shape.ttl"))
+    (dolist (f orchestrator.epistemic::+epistemic-canonical-files+)
       (with-open-file (o (merge-pathnames f staging) :direction :output
                          :if-exists :supersede :external-format :utf-8)
         (format o "~A περιεχόμενο ~A~%" f tag)))
@@ -86,7 +83,8 @@
         (rat-check "⑤ υπάρχων κατάλογος με ΞΕΝΟ root ⇒ validation-error (όχι σιωπηλή αντικατάσταση)"
                    (handler-case
                        (progn (orchestrator.epistemic::atomic-publish-release base staging3 id) nil)
-                     (error () t))))
+                     (orchestrator.spec:validation-error () t)
+                     (error () nil))))
       ;; ⑥ Διαφορετικό περιεχόμενο ⇒ ΑΛΛΟΣ κατάλογος, το ιστορικό άθικτο
       (multiple-value-bind (staging4 root4 id4) (%rat-make-staging base "b2")
         (declare (ignore root4))
@@ -97,19 +95,29 @@
       (rat-check "⑦ latest σε UNATTESTED ⇒ αρνείται (η εξουσία θέλει χρονική απόδειξη)"
                  (handler-case
                      (progn (orchestrator.epistemic::promote-latest! base id) nil)
-                   (error () t)))
-      (with-open-file (o (merge-pathnames "temporal-proof/timestamp.tsr" final)
-                         :direction :output :if-exists :supersede)
-        (write-string "tsr" o))
-      (rat-check "⑦β attested ⇒ release-attested-p"
-                 (orchestrator.epistemic::release-attested-p final))
+                   (orchestrator.spec:validation-error () t)
+                   (error () nil)))
+      ;; Το receipt πρέπει να ΔΕΝΕΙ το root: γράφουμε tsr που περιέχει το
+      ;; messageImprint (SHA-256 του recomputed root string) — όπως ένα γνήσιο.
+      (let* ((root (orchestrator.epistemic::%release-recomputed-root final))
+             (imprint (ironclad:digest-sequence
+                       :sha256 (babel:string-to-octets root :encoding :utf-8))))
+        (with-open-file (o (merge-pathnames "temporal-proof/timestamp.tsr" final)
+                           :direction :output :if-exists :supersede
+                           :element-type '(unsigned-byte 8))
+          (write-sequence imprint o)))
+      (rat-check "⑦β attested ⇒ receipt δεμένο στο recomputed root"
+                 (orchestrator.epistemic::release-attested-p
+                  final (orchestrator.epistemic::%release-recomputed-root final)))
+      (rat-check "⑦β2 receipt με ΞΕΝΟ imprint ⇒ ΔΕΝ μετρά ως attested για αυτό το root"
+                 (not (orchestrator.epistemic::release-attested-p final "sha256:deadbeef")))
       (orchestrator.epistemic::promote-latest! base id)
       (rat-check "⑦γ latest symlink + latest.json δείχνουν στην ταυτότητα, attested:true"
                  (let ((ptr (uiop:read-file-string
                              (merge-pathnames "releases/latest.json" base))))
                    (and (probe-file (merge-pathnames "releases/latest" base))
                         (search id ptr)
-                        (search "\"attested\": true" ptr))))))
+                        (search "\"attested\":true" ptr))))))
 
   ;; ⑧ Ο καθαρισμός output ΔΕΝ αγγίζει το releases/
   (with-open-file (o (merge-pathnames "junk.txt" base) :direction :output

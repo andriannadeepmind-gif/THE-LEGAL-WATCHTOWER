@@ -73,6 +73,13 @@
     ;; Sort for deterministic ordering
     (sort files #'string< :key #'namestring)))
 
+(defparameter +epistemic-canonical-files+
+  '("meta-ontology.ttl" "lineage-graph.ttl" "negation.ttl"
+    "stability-policy.ttl" "stability-policy.md"
+    "shapes/article-shape.ttl" "shapes/manifest-shape.ttl"
+    "shapes/lineage-shape.ttl")
+  "Η ΜΙΑ έδρα του canonical συνόλου (8 αρχεία) που ορίζει την ταυτότητα release.")
+
 (defun collect-epistemic-artifacts (staging-dir)
   "Collect ONLY epistemic layer artifacts for canonical Merkle root
 
@@ -96,21 +103,10 @@
     List of 8 absolute file paths (sorted)"
 
   (let ((files '()))
-    ;; Epistemic layer files (5 files)
-    (dolist (filename '("meta-ontology.ttl" "lineage-graph.ttl" "negation.ttl"
-                       "stability-policy.ttl" "stability-policy.md"))
+    (dolist (filename +epistemic-canonical-files+)
       (let ((path (merge-pathnames filename staging-dir)))
         (unless (probe-file path)
-          (error "CRITICAL: Missing epistemic artifact: ~A" path))
-        (push path files)))
-
-    ;; SHACL shapes (3 files)
-    (dolist (filename '("shapes/article-shape.ttl"
-                       "shapes/manifest-shape.ttl"
-                       "shapes/lineage-shape.ttl"))
-      (let ((path (merge-pathnames filename staging-dir)))
-        (unless (probe-file path)
-          (error "CRITICAL: Missing SHACL shape: ~A" path))
+          (error "CRITICAL: Missing canonical epistemic artifact: ~A" path))
         (push path files)))
 
     ;; Sort for deterministic ordering

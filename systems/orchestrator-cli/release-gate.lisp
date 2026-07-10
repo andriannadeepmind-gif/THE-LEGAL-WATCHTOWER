@@ -16,16 +16,15 @@
 (defun %rg-verify-release (dir chk)
   (let* ((leaf (car (last (pathname-directory dir))))
          (fp (find-package :orchestrator.epistemic))
-         (declared (ignore-errors
-                    (funcall (find-symbol "%RELEASE-DIR-ROOT" fp) dir)))
-         (recomputed (ignore-errors
-                      (funcall (find-symbol "MERKLE-TREE-ROOT" fp)
-                               (funcall (find-symbol "BUILD-MERKLE-TREE" fp)
-                                        (funcall (find-symbol "COLLECT-EPISTEMIC-ARTIFACTS" fp)
-                                                 dir))))))
+         (err nil)
+         (declared (handler-case (funcall (find-symbol "%RELEASE-DIR-ROOT" fp) dir)
+                     (error (e) (setf err e) nil)))
+         (recomputed (handler-case
+                         (funcall (find-symbol "%RELEASE-RECOMPUTED-ROOT" fp) dir)
+                       (error (e) (setf err e) nil))))
     (funcall chk (format nil "~A: recomputed root ≡ δηλωμένο" leaf)
              (and declared recomputed (equal declared recomputed))
-             (format nil "δηλωμένο=~A recomputed=~A" declared recomputed))
+             (format nil "δηλωμένο=~A recomputed=~A~@[ (σφάλμα: ~A)~]" declared recomputed err))
     (when (and (stringp leaf) (eql 0 (search "sha256-" leaf)))
       (funcall chk (format nil "~A: όνομα ≡ περιεχόμενο (content-addressed)" leaf)
                (and recomputed
@@ -45,7 +44,11 @@
                         (format t "  ✗ ~A~@[~%      → ~A~]~%" label detail)))))
       (format t "~%── ΠΥΛΗ ΑΜΕΤΑΒΛΗΤΩΝ ΕΚΔΟΣΕΩΝ (content-addressed, read-only) ──~%")
       (let ((found 0))
-        (dolist (corpus-dir (ignore-errors (uiop:subdirectories output-root)))
+        ;; I/O σφάλμα σε read-only audit = ΑΠΟΤΥΧΙΑ πύλης, ποτέ σιωπηλό πράσινο
+        (dolist (corpus-dir (handler-case (uiop:subdirectories output-root)
+                              (error (e)
+                                (chk "ανάγνωση output root" nil (princ-to-string e))
+                                nil)))
           (let ((releases-dir (merge-pathnames "releases/" corpus-dir)))
             (when (probe-file releases-dir)
               (dolist (rel (uiop:subdirectories releases-dir))
@@ -65,14 +68,29 @@
                     (chk (format nil "~A: latest → υπαρκτό release (~A)" corpus tleaf)
                          (and target tleaf))
                     (when (and (stringp tleaf) (eql 0 (search "sha256-" tleaf)))
-                      (chk (format nil "~A: latest είναι ATTESTED" corpus)
+                      (chk (format nil "~A: latest είναι ATTESTED (receipt δεμένο στο recomputed root)" corpus)
                            (funcall (find-symbol "RELEASE-ATTESTED-P"
                                                  (find-package :orchestrator.epistemic))
-                                    target)
-                           "content-addressed latest χωρίς timestamp.tsr"))))))))
+                                    target
+                                    (handler-case
+                                        (funcall (find-symbol "%RELEASE-RECOMPUTED-ROOT"
+                                                              (find-package :orchestrator.epistemic))
+                                                 target)
+                                      (error () nil)))
+                           "content-addressed latest χωρίς δεμένο timestamp.tsr")
+                      ;; Ο υπογεγραμμένος δείκτης ΕΛΕΓΧΕΤΑΙ, δεν διακοσμεί:
+                      ;; latest.json.release ≡ στόχος symlink + attested:true
+                      (let ((ptr (merge-pathnames "latest.json" releases-dir)))
+                        (chk (format nil "~A: latest.json ≡ symlink στόχος + attested" corpus)
+                             (handler-case
+                                 (let ((d (jonathan:parse (uiop:read-file-string ptr))))
+                                   (and (equal (getf d :|release|) tleaf)
+                                        (eq (getf d :|attested|) t)))
+                               (error () nil))
+                             "latest.json απόν/ασύμφωνο με τον στόχο του symlink")))))))))
         (chk (format nil "σαρώθηκαν ~D δημοσιευμένα releases (≥1 απαιτείται όταν υπάρχει output)" found)
              (or (plusp found)
-                 (null (ignore-errors (uiop:subdirectories output-root))))))
+                 (null (probe-file output-root)))))
       (format t "~%── ΠΥΛΗ ΑΜΕΤΑΒΛΗΤΩΝ ΕΚΔΟΣΕΩΝ: ~D/~D πέρασαν ──~%"
               (- total (length fails)) total)
       (if fails 1 0))))

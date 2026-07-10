@@ -7,7 +7,7 @@
 ;;; META-ONTOLOGY GENERATOR
 ;;; ============================================================================
 
-(defun generate-meta-ontology (&key (timestamp (orchestrator.time:now :source :system))
+(defun generate-meta-ontology (&key (timestamp (orchestrator.time:require-deterministic-time))
                                     (blockchain-anchor nil)
                                     (system-commit-hash nil))
   "Generate OWL 2 DL meta-ontology defining the epistemic system

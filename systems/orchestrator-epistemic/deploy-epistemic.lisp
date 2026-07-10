@@ -80,8 +80,11 @@
   (let* ((timestamp-str (orchestrator.time:format-iso8601 timestamp))
          ;; DARPA-GRADE: Ensure base-output-dir is treated as directory
          (base-dir-pathname (uiop:ensure-directory-pathname base-output-dir))
+         ;; Μοναδικό staging ανά διεργασία: με ντετερμινιστικό timestamp δύο
+         ;; παράλληλα cuts θα μοιράζονταν το ΙΔΙΟ staging και θα διαπλέκονταν.
          (staging-dir (merge-pathnames
-                      (format nil "releases/.staging-~A/" timestamp-str)
+                      (format nil "releases/.staging-~A-p~D/" timestamp-str
+                              #+sbcl (sb-posix:getpid) #-sbcl 0)
                       base-dir-pathname))
          (articles-dir (merge-pathnames "articles/" staging-dir))
          (shapes-dir (merge-pathnames "shapes/" staging-dir))
@@ -388,16 +391,13 @@
       ;; ως UNATTESTED (τα receipts προσαρτώνται μετά με --attest-release) και
       ;; το `latest` ΔΕΝ προάγεται σε αυτό — η πύλη εξουσίας ζει στο latest,
       ;; δεν αδυνατίζει: δημόσια «τρέχουσα έκδοση» χωρίς temporal proof δεν υπάρχει.
+      ;; ΜΙΑ έδρα απόκτησης TSA: το request-multi-tsa-timestamps δοκιμάζει ήδη
+      ;; όλες τις TSAs — κανένα δεύτερο «single» μονοπάτι.
       (let ((rfc3161-results (handler-case
                                  (request-multi-tsa-timestamps release-root-hash temporal-dir)
                                (error (e)
-                                 (format t "⚠ Multi-TSA failed (~A) — trying single TSA...~%" e)
-                                 (handler-case
-                                     (list (request-rfc3161-timestamp release-root-hash timestamp-path))
-                                   (error (e2)
-                                     (format t "⚠ ALL TSAs failed: ~A~%   ⇒ release κόβεται ΩΣ UNATTESTED COMMITMENT — πρόσαρτησε receipts με --attest-release~%" e2)
-                                     nil))))))
-        (declare (ignorable dev-mode))
+                                 (format t "⚠ ALL TSAs failed: ~A~%   ⇒ release κόβεται ΩΣ UNATTESTED COMMITMENT — πρόσαρτησε receipts με --attest-release~%" e)
+                                 nil))))
         (if rfc3161-results
             (format t "✓ RFC 3161 timestamps: ~D TSAs — ATTESTED~%" (length rfc3161-results))
             (format t "⚠ UNATTESTED commitment (κανένα RFC-3161 receipt)~%")))
@@ -922,12 +922,15 @@ No fallbacks, no partial validity - strict proof gates.
                :details (format nil "staging-root=~A ≠ id=~A" staging-root release-id))))
     (cond
       ((probe-file (uiop:ensure-directory-pathname final-dir))
-       (let ((existing-root (%release-dir-root final-dir)))
+       ;; ΔΕΝ εμπιστευόμαστε το ΔΗΛΩΜΕΝΟ root του υπάρχοντος καταλόγου (θα
+       ;; επέτρεπε pre-seed poisoning): ΕΠΑΝΑΫΠΟΛΟΓΙΖΟΥΜΕ το Merkle root από
+       ;; τα ίδια τα canonical αρχεία του πριν δεχθούμε ταύτιση.
+       (let ((existing-root (%release-recomputed-root final-dir)))
          (unless (equal (%root->release-id existing-root) release-id)
            (error 'orchestrator.spec:validation-error
-                  :message "Release directory exists with FOREIGN content — refusing to touch it"
-                  :details (format nil "~A: dir-root=~A ≠ id=~A" final-dir existing-root release-id)))
-         (format t "  ✓ Release ~A already published (identical content) — reusing, staging discarded~%"
+                  :message "Release directory exists with FOREIGN content — refusing to touch it (staging preserved)"
+                  :details (format nil "~A: recomputed=~A ≠ id=~A" final-dir existing-root release-id)))
+         (format t "  ✓ Release ~A already published (recomputed-identical content) — reusing, staging discarded~%"
                  release-id)
          (uiop:delete-directory-tree (uiop:ensure-directory-pathname staging-dir)
                                      :validate (constantly t))))
@@ -946,13 +949,31 @@ No fallbacks, no partial validity - strict proof gates.
       (error "~A: δεν βρέθηκε έγκυρο \"root\" στο merkle-tree.json" path))
     root))
 
-(defun release-attested-p (release-dir)
-  "Ένα release είναι ATTESTED όταν φέρει τουλάχιστον το RFC-3161
-   temporal-proof/timestamp.tsr (η χρονική απόδειξη είναι προσάρτημα —
-   attestation — ΠΑΝΩ στο commitment, όχι συστατικό της ταυτότητάς του)."
-  (and (probe-file (merge-pathnames "temporal-proof/timestamp.tsr"
-                                    (uiop:ensure-directory-pathname release-dir)))
-       t))
+(defun %release-recomputed-root (release-dir)
+  "Το Merkle root ενός release ΕΠΑΝΑΫΠΟΛΟΓΙΣΜΕΝΟ από τα canonical αρχεία του —
+   ποτέ από τη δική του δήλωση."
+  (merkle-tree-root
+   (build-merkle-tree
+    (collect-epistemic-artifacts (uiop:ensure-directory-pathname release-dir)))))
+
+(defun release-attested-p (release-dir &optional root)
+  "Ένα release είναι ATTESTED όταν φέρει RFC-3161 timestamp.tsr — και όταν
+   είναι γνωστό το ROOT, το receipt πρέπει να ΔΕΝΕΙ αυτό ακριβώς το root:
+   το messageImprint του TSR είναι το SHA-256 του root string, και τα 32
+   αυτά bytes οφείλουν να εμφανίζονται στο DER σώμα του receipt. (Πλήρης
+   κρυπτογραφική επαλήθευση υπογραφής TSR = δηλωμένη επόμενη βαθμίδα —
+   καταγεγραμμένη, όχι σιωπηλή.)"
+  (let ((tsr (merge-pathnames "temporal-proof/timestamp.tsr"
+                              (uiop:ensure-directory-pathname release-dir))))
+    (and (probe-file tsr)
+         (or (null root)
+             (let ((imprint (ironclad:digest-sequence
+                             :sha256 (babel:string-to-octets root :encoding :utf-8)))
+                   (body (alexandria:read-file-into-byte-vector tsr)))
+               (and (>= (length body) (length imprint))
+                    (loop for i from 0 to (- (length body) (length imprint))
+                            thereis (not (mismatch imprint body :start2 i
+                                                   :end2 (+ i (length imprint)))))))))))
 
 (defun promote-latest! (base-output-dir release-id)
   "Προαγωγή του `latest` στο RELEASE-ID — ΜΟΝΟ αν το release είναι attested.
@@ -967,10 +988,17 @@ No fallbacks, no partial validity - strict proof gates.
          (pointer-path (merge-pathnames "latest.json" releases-dir)))
     (unless (probe-file (uiop:ensure-directory-pathname release-dir))
       (error "promote-latest!: ανύπαρκτο release ~A" release-id))
-    (unless (release-attested-p release-dir)
-      (error 'orchestrator.spec:validation-error
-             :message "promote-latest!: το release ΔΕΝ είναι attested (λείπει timestamp.tsr) — το latest προάγεται μόνο σε χρονικά αποδεδειγμένη έκδοση"
-             :details release-id))
+    ;; Η προαγωγή σε εξουσία επαληθεύει ΚΑΙ την ακεραιότητα ΚΑΙ το δέσιμο της
+    ;; χρονικής απόδειξης στο ΣΥΓΚΕΚΡΙΜΕΝΟ περιεχόμενο — όχι απλή ύπαρξη αρχείου.
+    (let ((recomputed (%release-recomputed-root release-dir)))
+      (unless (equal (%root->release-id recomputed) release-id)
+        (error 'orchestrator.spec:validation-error
+               :message "promote-latest!: ΔΙΑΦΘΟΡΑ — recomputed root ≠ ταυτότητα"
+               :details (format nil "~A ≠ ~A" recomputed release-id)))
+      (unless (release-attested-p release-dir recomputed)
+        (error 'orchestrator.spec:validation-error
+               :message "promote-latest!: το release ΔΕΝ φέρει RFC-3161 receipt δεμένο στο δικό του root — το latest προάγεται μόνο σε χρονικά αποδεδειγμένη έκδοση"
+               :details release-id)))
     (when (probe-file latest-symlink) (delete-file latest-symlink))
     #+sbcl (sb-posix:symlink release-id (namestring latest-symlink))
     #-sbcl (error "Symlink creation not implemented for this Lisp implementation")
@@ -978,8 +1006,12 @@ No fallbacks, no partial validity - strict proof gates.
                  (when (probe-file p)
                    (string-trim '(#\Space #\Newline) (uiop:read-file-string p))))))
       (with-open-file (o pointer-path :direction :output :if-exists :supersede)
-        (format o "{\"release\": ~S, \"attested\": true~@[, \"signature_jws\": ~S~]}~%"
-                release-id jws)))
+        (write-string (jonathan:to-json
+                       (append (list :|release| release-id :|attested| t)
+                               (when jws (list :|signature_jws| jws)))
+                       :from :plist)
+                      o)
+        (terpri o)))
     (format t "✓ latest → ~A (attested, signed pointer)~%" release-id)
     latest-symlink))
 
@@ -988,7 +1020,7 @@ No fallbacks, no partial validity - strict proof gates.
 ;;; ============================================================================
 
 (defun deploy-epistemic-stage (articles base-output-dir
-                               &key (timestamp (orchestrator.time:now :source :system))
+                               &key (timestamp (orchestrator.time:require-deterministic-time))
                                     (blockchain-anchor "pending"))
   "Deploy complete epistemic authority system with STRICT PROOF GATES
 
@@ -1083,7 +1115,7 @@ No fallbacks, no partial validity - strict proof gates.
                 (format t "~%Step 9: Content-addressed publish...~%")
                 (let* ((release-id (%root->release-id release-root-hash))
                        (final-dir (atomic-publish-release base-output-dir staging-dir release-id))
-                       (attested (release-attested-p final-dir)))
+                       (attested (release-attested-p final-dir release-root-hash)))
                   (if attested
                       (promote-latest! base-output-dir release-id)
                       (format t "⚠ latest ΔΕΝ προάγεται: unattested commitment ~A (χρήση --attest-release)~%"
