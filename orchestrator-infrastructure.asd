@@ -122,6 +122,7 @@
      (:file "x509-authority")     ; Pure Lisp X.509 certificate generation
      ;; CT Log removed: public CT logs require CA-issued certificates (not self-signed)
      (:file "verify-authority")   ; Pure Lisp release verification
+     (:file "merkle-authority")   ; Η ΜΙΑ έδρα Merkle (RFC 6962): domain-separated leaves/nodes + unbalanced split + audit path
      (:file "proof-carrying")     ; Proof-Carrying Law: portable per-provision Merkle proof + verifier
      (:file "mcp-server")         ; MCP (JSON-RPC) server: AI agents ask → get law + citation + verifiable proof
      ;; Restored capabilities (never remove functionality) — depend on
