@@ -4,7 +4,7 @@
 ετυμηγορίες, εκκρεμότητες, μπλοκαρίσματα. Ο διάλογος: `AI-DIALOGUE.md`.
 Πηγή αλήθειας παραμένουν τα gates/μητρώα — αυτό είναι ΣΥΝΟΨΗ, όχι απόδειξη.
 
-*Τελευταία ενημέρωση: Claude · 2026-07-10 · P1b ΚΛΕΙΣΤΟ cloud-side: [0052] — αντιπαλική Νο2 ανασκεύασε το «πέθανε δομικά», όλα τα ευρήματα ΞΑΝΑΚΛΕΙΣΤΗΚΑΝ στην έδρα (frbr-article-id, article-suffix-ordinal=ΝΟΜΙΚΗ σειρά ΣΤ, τέλος ψευδές Q41/σιωπηλά fallbacks, cut-release παράγωγο του defpipeline ⇒ ίδια ταυτότητα, +13 locks). Regen ×6 ΟΛΩΝ των TTL + 6 νέα unattested commitments (constitution 0ee2ecc4, poinikos e8384152, kpoinikis b53a6dfa, astikos 1129ac1e, kpolitikis aaf60c01, kdioikitikis a8d87d7f). Proof: loop 80/80 αρχεία, corpus-identity 40/40, vt 22/22, golden 8/8, ολομέλεια 23/24 (advisor baseline), release-gate 73/73. Δηλωμένα με φάση θανάτου: corpus-spec δεύτερη έδρα + σειρά πηγής (272ΣΤ μετά το Ι ΜΕΣΑ στο source.json)· lettered temporal provenance = απόφαση δημιουργού· v2 number-not-initarg. Εκκρεμεί: owner docker + attest ×6 (ρητά ids) → ετυμηγορία merge.*
+*Τελευταία ενημέρωση: Claude · 2026-07-10 · P1b ΚΛΕΙΣΤΟ cloud-side + έλεγχος Νο3 (2 ελεγκτές: διαγραφές=ΤΙΠΟΤΑ χαμένο· υπεροχή=CONFIRMED κλεισμένα στην έδρα, 683f43d9, E2E diffs=0)· identity locks 49/49· [0053] = ΣΧΕΔΙΟ P1.5 Proof Spine (planning only): Artifact Census 9ο κανονικό ⇒ release δένει ΚΑΘΕ per-article artifact + PCL text-spine, verify kit v2 per-article (πρόδρομος L6 kernel), release-gate v2 — κατατεθειμένο, περιμένει «εγκρίνω P1.5». Εκκρεμεί owner: docker proof + attest ×6 (ρητά ids [0052]) + ετυμηγορία merge P1b.*
 
 ## Κατάσταση συστήματος (τελευταία μετρημένη)
 
