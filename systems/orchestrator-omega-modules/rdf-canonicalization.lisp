@@ -351,13 +351,14 @@
 
    Arguments:
      stream:         Output stream
-     article-number: Integer
+     article-number: Η ΚΑΝΟΝΙΚΗ ταυτότητα άρθρου («5», «5Α» — frbr-article-id),
+                     ΟΧΙ η γυμνή αριθμητική βάση (θα ταύτιζε το 5 με το 5Α)
      layer:          String (e.g., 'ARTICLE ROOT', 'WORK', 'EXPRESSION')
      timestamp:      ISO-8601 timestamp string"
 
   (format stream "# ============================================================~%")
   (format stream "# ~A~%" (or (config-get "corpus.name") "GREEK LEGAL CORPUS"))
-  (format stream "# Article ~D - ~A Layer~%" article-number layer)
+  (format stream "# Article ~A - ~A Layer~%" article-number layer)
   (format stream "# ============================================================~%")
   (format stream "# Generator:  ORCHESTRATOR v1.3~%")
   (when timestamp

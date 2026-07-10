@@ -203,7 +203,7 @@
 
     (error (e)
       (format *error-output* "~&ERROR:  Failed to write Article Root for article ~A: ~A~%"
-              (orchestrator.model:article-number article)
+              (orchestrator.model:frbr-article-id article)
               e)
       nil)))
 

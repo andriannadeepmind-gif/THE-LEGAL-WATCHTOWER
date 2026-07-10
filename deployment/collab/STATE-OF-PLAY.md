@@ -4,7 +4,7 @@
 ετυμηγορίες, εκκρεμότητες, μπλοκαρίσματα. Ο διάλογος: `AI-DIALOGUE.md`.
 Πηγή αλήθειας παραμένουν τα gates/μητρώα — αυτό είναι ΣΥΝΟΨΗ, όχι απόδειξη.
 
-*Τελευταία ενημέρωση: Claude (Χειρουργός Πυρήνα) · 2026-07-10 · P1b σε κλείσιμο: [0051] — η κλάση συνθετικής ταυτότητας εξαλείφθηκε στο όριο του FRBR μοντέλου (9a22156e)· corpus-level αρτεφάκτ byte-identical από pipeline (restore workaround συνταξιοδοτήθηκε)· --cut-release ≡ pipeline (ίδια ταυτότητα release)· regen ×6: 144 lettered ttl+hash, 6 manifests, 6 akn (αληθινό FRBRdate), 6 νέα unattested commitments· proof cloud: loop 80/80, vt 22/22, golden 8/8, ολομέλεια 23/24 (advisor baseline), release-gate 61/61· εκκρεμεί: φρέσκος αντίπαλος → owner docker + attest ×6 (ρητά ids) → ετυμηγορία δημιουργού.*
+*Τελευταία ενημέρωση: Claude · 2026-07-10 · P1b ΚΛΕΙΣΤΟ cloud-side: [0052] — αντιπαλική Νο2 ανασκεύασε το «πέθανε δομικά», όλα τα ευρήματα ΞΑΝΑΚΛΕΙΣΤΗΚΑΝ στην έδρα (frbr-article-id, article-suffix-ordinal=ΝΟΜΙΚΗ σειρά ΣΤ, τέλος ψευδές Q41/σιωπηλά fallbacks, cut-release παράγωγο του defpipeline ⇒ ίδια ταυτότητα, +13 locks). Regen ×6 ΟΛΩΝ των TTL + 6 νέα unattested commitments (constitution 0ee2ecc4, poinikos e8384152, kpoinikis b53a6dfa, astikos 1129ac1e, kpolitikis aaf60c01, kdioikitikis a8d87d7f). Proof: loop 80/80 αρχεία, corpus-identity 40/40, vt 22/22, golden 8/8, ολομέλεια 23/24 (advisor baseline), release-gate 73/73. Δηλωμένα με φάση θανάτου: corpus-spec δεύτερη έδρα + σειρά πηγής (272ΣΤ μετά το Ι ΜΕΣΑ στο source.json)· lettered temporal provenance = απόφαση δημιουργού· v2 number-not-initarg. Εκκρεμεί: owner docker + attest ×6 (ρητά ids) → ετυμηγορία merge.*
 
 ## Κατάσταση συστήματος (τελευταία μετρημένη)
 

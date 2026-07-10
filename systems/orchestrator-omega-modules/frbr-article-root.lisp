@@ -28,7 +28,9 @@
   ((article-number :accessor article-number
                    :initarg :article-number
                    :type integer
-                   :documentation "Article number (1-120)")
+                   :documentation "Η αριθμητική ΒΑΣΗ του άρθρου (κανονικοποιημένη στο όριο:
+                    5 και για το 5Α) — ΠΟΤΕ συνθετικός αριθμός, ΠΟΤΕ μόνη
+                    της ταυτότητα (βλ. frbr-article-id).")
 
    (article-letter-suffix :accessor article-letter-suffix
                           :initarg :article-suffix
@@ -117,10 +119,13 @@
    This is the TOP-LEVEL canonical node for an article.
    All FRBR layers will point back to this via eli:is_part_of.
 
-   URI Pattern: {eli-prefix}/art/{N}
+   URI Pattern: {eli-prefix}/art/{id} — id από τη ΜΙΑ έδρα article-uri-id
+   («5», «5Α»)· τα slots κανονικοποιούνται σε (αληθινή βάση, γυμνό επίθημα).
 
    Arguments:
-     article-number  — positive integer
+     article-number  — integer (δέχεται ΚΑΙ τον εσωτερικό συνθετικό — η βάση
+                       ανακτάται από το article-suffix όταν είναι πλήρες label)
+     article-suffix  — γυμνό επίθημα («Α») Ή πλήρες label («5Α»)· \"\" για απλό
      article-title   — title string in primary language
      eli-prefix      — ELI law prefix (e.g. https://stavropouloslaw.com/eli/gr/const/1975)
      document-type   — ELI type code string: \"const\", \"l\", \"pd\", etc.

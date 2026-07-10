@@ -204,6 +204,15 @@
 (defvar *current-ai-config* nil
   "Dynamically bound AI configuration for use during export")
 
+(defun effective-deterministic-timestamp (config)
+  "Η ΜΙΑ έδρα «δηλωμένη ντετερμινιστική χρονοσφραγίδα AI export»: ρητό
+   fixed-timestamp του CONFIG, αλλιώς η δηλωμένη αρχή χρόνου του συστήματος
+   (require-deterministic-time / SOURCE_DATE_EPOCH). Χωρίς ΚΑΜΙΑ από τις δύο
+   ⇒ ΣΦΑΛΜΑ — ποτέ σιωπηλός μαγικός αριθμός (το παλιό 1700000000 έγραφε
+   κρυφά «2023-11-14» ως last_updated σε deterministic exports)."
+  (or (config-fixed-timestamp config)
+      (orchestrator.time:require-deterministic-time)))
+
 (defgeneric generate-article-manifest-entry-with-config (article corpus config)
   (:documentation "Generate manifest entry with explicit configuration"))
 
@@ -230,7 +239,7 @@
       :|language| ,(getf base-entry :|language|)
       :|content_hash| ,(getf base-entry :|content_hash|)
       :|state| ,(getf base-entry :|state|)
-      :|formats_available| ,(remove nil (getf base-entry :|formats_available|))
+      :|formats_available| ,(getf base-entry :|formats_available|)
       :|blockchain_anchored| ,(getf base-entry :|blockchain_anchored|)
       :|blockchain_proofs| ,(getf base-entry :|blockchain_proofs|)
 
@@ -245,16 +254,16 @@
 
       :|citation_template| ,(getf base-entry :|citation_template|)
 
-      ;; Provenance URL: κανονικό padded όνομα ΜΕ επίθημα από τη μία έδρα
-      ;; (article-file-id): article-005Α-provenance.json — ποτέ ~3,'0D του
-      ;; συνθετικού αριθμού.
-      :|provenance_url| ,(format nil "~A/~A/article-~A-provenance.json"
+      ;; Provenance URL: από την ΙΔΙΑ έδρα ονόματος με τους writers
+      ;; (article-provenance-file-name) — σύνδεσμος και αρχείο δεν μπορούν
+      ;; να αποκλίνουν.
+      :|provenance_url| ,(format nil "~A/~A/~A.json"
                                  (config-provenance-subdir config)
                                  short-name
-                                 (orchestrator.model:article-file-id article))
+                                 (article-provenance-file-name article))
 
       :|last_updated| ,(if (config-deterministic config)
-                          (or (config-fixed-timestamp config) 1700000000)
+                          (effective-deterministic-timestamp config)
                           (current-build-timestamp))
 
       :|eli_uri| ,(getf base-entry :|eli_uri|))))
@@ -271,10 +280,10 @@
      (config ai-export-config))
   "Write manifest with configuration-driven output location and metadata"
   
-  ;; Apply deterministic settings
+  ;; Apply deterministic settings — χρόνος ΜΟΝΟ από δηλωμένη αρχή (Ε7).
   (when (config-deterministic config)
-    (setf *build-timestamp-override* 
-          (or (config-fixed-timestamp config) +default-deterministic-timestamp+)))
+    (setf *build-timestamp-override*
+          (effective-deterministic-timestamp config)))
   
   (let ((output-path (merge-pathnames
                       (make-pathname :name (pathname-name 
@@ -290,12 +299,12 @@
                             :if-exists :supersede
                             :if-does-not-exist :create)
       
-      (let ((articles (sort (orchestrator.model::get-corpus-articles corpus)
-                           #'<
-                           :key #'orchestrator.model:article-number)))
-        
+      ;; P1b [0052]#Ε2: κανονική διάταξη από τη ΜΙΑ έδρα — όχι συνθετικός.
+      (let ((articles (orchestrator.model:articles-in-identity-order
+                       (orchestrator.model::get-corpus-articles corpus))))
+
         (loop for article in articles
-              for entry = (generate-article-manifest-entry-with-config 
+              for entry = (generate-article-manifest-entry-with-config
                           article corpus config)
               for json-line = (manifest-entry-to-json entry)
               do (progn
@@ -311,27 +320,28 @@
      (config ai-export-config))
   "Write provenance with configuration-driven output location"
   
-  ;; Apply deterministic settings
+  ;; Apply deterministic settings — χρόνος ΜΟΝΟ από δηλωμένη αρχή (Ε7).
   (when (config-deterministic config)
-    (setf *build-timestamp-override* 
-          (or (config-fixed-timestamp config) +default-deterministic-timestamp+)))
+    (setf *build-timestamp-override*
+          (effective-deterministic-timestamp config)))
   
+  ;; P1b [0052]#Ε3: όνομα αρχείου ΚΑΙ διάταξη από τις μίες έδρες — το παλιό
+  ;; ~3,'0D πάνω στον ωμό αριθμό έγραφε article-5001-provenance.json ενώ το
+  ;; manifest entry του ΙΔΙΟΥ αρχείου έδειχνε article-005Α-provenance.json.
   (let ((provenance-base-dir (merge-pathnames
-                              (make-pathname 
+                              (make-pathname
                                :directory `(:relative ,(config-provenance-subdir config)))
                               (config-output-root config)))
-        (articles (sort (orchestrator.model::get-corpus-articles corpus)
-                       #'<
-                       :key #'orchestrator.model:article-number)))
-    
+        (articles (orchestrator.model:articles-in-identity-order
+                   (orchestrator.model::get-corpus-articles corpus))))
+
     (loop for article in articles
-          for number = (orchestrator.model:article-number article)
           for output-path = (merge-pathnames
                             (make-pathname
-                             :name (format nil "article-~3,'0D-provenance" number)
+                             :name (article-provenance-file-name article)
                              :type "json")
                             provenance-base-dir)
-          collect (cons number
+          collect (cons (orchestrator.model:article-file-id article)
                        (write-article-provenance article corpus output-path
                                                 :ensure-directory t)))))
 

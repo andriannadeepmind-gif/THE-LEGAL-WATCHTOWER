@@ -100,49 +100,7 @@
 
   t)
 
-;;; ============================================================
-;;; UTILITY - WRITE ACTIVITY TO FILE
-;;; ============================================================
+;;; P1b [0052]#Ε12: ο νεκρός write-prov-activity-layer διαγράφηκε — έγραφε
+;;; article-~3,'0D.activity.ttl ΧΩΡΙΣ επίθημα (το 100Α θα συγκρουόταν με το
+;;; 100) και κατάπινε κάθε σφάλμα με σιωπηλό NIL. Καμία έδρα δεν τον καλούσε.
 
-(defun write-prov-activity-layer (activity output-dir &key authority)
-  "Write PROV-O Activity RDF to file
-
-   Generates: article-NNN.activity.ttl
-
-   Arguments:
-     activity:   prov-activity instance
-     output-dir: Output directory path
-     authority:  REQUIRED - :canonical or :provenance
-
-   Returns:
-     File path if successful, NIL if failed"
-
-  (unless authority
-    (error "AUTHORITY parameter is required. Use :authority :canonical or :authority :provenance"))
-
-  (handler-case
-      (let* ((article-num (orchestrator.model:activity-article-number activity))
-             (filename (format nil "article-~3,'0D.activity.ttl" article-num))
-             (filepath (merge-pathnames filename output-dir))
-             (rdf-content (generate-rdf activity)))
-
-        ;; Validate RDF content
-        (unless (search "prov:Activity" rdf-content)
-          (error "Generated RDF missing prov:Activity type"))
-
-        (unless (search "prov:startedAtTime" rdf-content)
-          (error "Generated RDF missing prov:startedAtTime"))
-
-        ;; Write file via unified authority
-        (orchestrator.write-authority:emit-graph rdf-content filepath :authority authority)
-
-        filepath)
-
-    (error (e)
-      nil)))
-
-;;; ============================================================
-;;; EXPORTS
-;;; ============================================================
-
-(export '(write-prov-activity-layer))

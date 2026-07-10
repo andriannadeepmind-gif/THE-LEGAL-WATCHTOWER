@@ -43,16 +43,17 @@
                             (string-trim '(#\Space #\Newline #\Tab) c))
                           (orchestrator.spec:split-article-paragraph-chunks
                            (orchestrator.model:article-content a)))))
-          (sort (copy-list articles) #'orchestrator.model:article-identity<)))
+          (orchestrator.model:articles-in-identity-order articles)))
 
 (defun %consolidation-amendment-records ()
   "Return the configured amendment records, or NIL if none are configured.
 
    Primary source is the active corpus config (versioning.amendments in the
-   YAML), read via config-get; this returns a list of records (hash-tables)
-   that the bridge understands. Falls back to
+   YAML), read via config-get — που επιστρέφει NIL για απόν κλειδί ΧΩΡΙΣ να
+   σηματοδοτεί, οπότε δεν χρειάζεται (και δεν επιτρέπεται) ignore-errors:
+   πραγματική βλάβη φόρτωσης config πρέπει να ΣΚΑΕΙ. Falls back to
    orchestrator.eli-temporal:*amendments-config* if the config path is absent."
-  (or (ignore-errors (orchestrator.spec:config-get "versioning.amendments"))
+  (or (orchestrator.spec:config-get "versioning.amendments")
       (let ((sym (and (find-package :orchestrator.eli-temporal)
                       (find-symbol "*AMENDMENTS-CONFIG*" :orchestrator.eli-temporal))))
         (when (and sym (boundp sym))
@@ -69,11 +70,14 @@
              :message "No articles to consolidate"
              :config-key :articles))
 
+    ;; P1b [0052]#Ε6/Ε8: ταυτότητα corpus + νομική ημερομηνία από την έδρα
+    ;; required-config — ΠΟΤΕ σιωπηλά «"corpus"»/πλαστές τιμές, ΠΟΤΕ
+    ;; ignore-errors γύρω από config-get (που δεν σηματοδοτεί για απόν κλειδί
+    ;; — κατάπινε μόνο πραγματικές βλάβες φόρτωσης).
     (let* ((triples (%consolidation-articles->triples articles))
            (records (%consolidation-amendment-records))
-           (corpus-id (or (ignore-errors (orchestrator.spec:config-get "corpus.short_name"))
-                          "corpus"))
-           (corpus-title (ignore-errors (orchestrator.spec:config-get "corpus.name")))
+           (corpus-id (orchestrator.spec:required-config "corpus.short_name"))
+           (corpus-title (orchestrator.spec:required-config "corpus.name"))
            (consolidated
              (orchestrator.consolidation.bridge:consolidate-corpus
               triples records :id corpus-id :title corpus-title))
@@ -85,11 +89,7 @@
            ;; ημερομηνία σε νομικό αρτεφάκτ (Akoma Ntoso FRBRdate).
            (akn (orchestrator.akoma-ntoso:emit-akoma-ntoso
                  consolidated
-                 :work-date (or (ignore-errors
-                                 (orchestrator.spec:config-get "corpus.publication.date"))
-                                (error 'orchestrator.spec:config-error
-                                       :message "consolidate-stage: corpus.publication.date is not configured — refusing to fabricate a legal date for Akoma Ntoso FRBRdate"
-                                       :config-key :corpus.publication.date))))
+                 :work-date (orchestrator.spec:required-config "corpus.publication.date")))
            (dir (uiop:ensure-directory-pathname output-dir)))
 
       (log:info () "Consolidating ~D articles with ~D amending act(s)"

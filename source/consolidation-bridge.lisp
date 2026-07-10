@@ -81,8 +81,12 @@
                                       :kind :paragraph :num (princ-to-string m)
                                       :text p)))))))
 
-(defun articles->document (articles &key (id "corpus") title (language "el"))
-  "Build a LEGAL-DOCUMENT from ARTICLES, a list of (number title content)."
+(defun articles->document (articles &key id title (language "el"))
+  "Build a LEGAL-DOCUMENT from ARTICLES, a list of (number title content).
+   Το ID είναι ΥΠΟΧΡΕΩΤΙΚΟ — η ταυτότητα corpus δεν μαντεύεται ποτέ (το παλιό
+   σιωπηλό default «corpus» έγραφε πλαστή ταυτότητα εγγράφου)."
+  (unless (and (stringp id) (plusp (length id)))
+    (error "articles->document: το :id (ταυτότητα corpus) είναι υποχρεωτικό — δόθηκε ~S" id))
   (make-legal-document
    :id id :title title :language language
    :provisions
@@ -151,12 +155,13 @@
 ;;; ============================================================================
 
 (defun consolidate-corpus (articles amendment-records
-                           &key as-of-date (id "corpus") title)
+                           &key as-of-date id title)
   "Consolidate a corpus end-to-end.
 
    ARTICLES:          list of (number title content).
    AMENDMENT-RECORDS: list of ELI-temporal config-shaped records.
    AS-OF-DATE:        optional ISO date; consolidate as it stood on that date.
+   ID:                ΥΠΟΧΡΕΩΤΙΚΗ ταυτότητα corpus (βλ. articles->document).
 
    Returns the consolidated LEGAL-DOCUMENT."
   (consolidate (articles->document articles :id id :title title)

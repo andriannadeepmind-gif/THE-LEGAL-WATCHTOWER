@@ -70,14 +70,14 @@
   (let* ((man (orchestrator.model:format-manifestation fmt))
          (expr (orchestrator.model:manifestation-expression man))
          (work (orchestrator.model:expression-work expr))
-         (article-num (orchestrator.model:article-number work))
+         (article-id (orchestrator.model:frbr-article-id work))
          (type-name (string-downcase (symbol-name (orchestrator.model:format-type fmt)))))
 
     (orchestrator.dsl.turtle:emit-separator)
     (orchestrator.dsl.turtle:emit-comment
       (format nil "FRBR FORMAT LAYER (~A) - Article ~A"
               (string-upcase type-name)
-              article-num))
+              article-id))
     (orchestrator.dsl.turtle:emit-comment
       (format nil "~A encoding of the Manifestation" (string-upcase type-name)))
     (orchestrator.dsl.turtle:emit-separator)
@@ -182,19 +182,22 @@
 
     ;; ──────────────────────────────────────────────────────
     ;; SECTION 8: OWL Identity / Cross-Reference
-    ;; Wikidata fragment uses corpus short_name for corpus-agnostic URIs
+    ;; P1b [0052]#Ε6: ΜΟΝΟ με ΡΗΤΑ διαμορφωμένο wikidata_qid — το σιωπηλό
+    ;; fallback «41» (= η οντότητα «Ελλάδα») έγραφε ΨΕΥΔΗ διασταύρωση στα
+    ;; corpora χωρίς qid. Χωρίς qid, το triple ΠΑΡΑΛΕΙΠΕΤΑΙ.
     ;; ──────────────────────────────────────────────────────
-    (let ((corpus-slug (or (orchestrator.spec:config-get "corpus.short_name") "corpus")))
-      (emit-triple-indent
-        "owl:sameAs"
-        (format nil "<http://www.wikidata.org/entity/Q~A#~A-art-~A-man-~A>"
-                (or (orchestrator.spec:config-get "corpus.wikidata_qid") "41")
-                corpus-slug
-                ;; Suffix-safe id so a lettered article (100Α) never collapses
-                ;; onto its base number (100) in this cross-reference.
-                (orchestrator.model:article-uri-id
-                 article-num (orchestrator.model:article-letter-suffix work))
-                type-name)))
+    (let ((qid (orchestrator.spec:config-get "corpus.wikidata_qid"))
+          (corpus-slug (orchestrator.spec:required-config "corpus.short_name")))
+      (when qid
+        (emit-triple-indent
+          "owl:sameAs"
+          (format nil "<http://www.wikidata.org/entity/Q~A#~A-art-~A-man-~A>"
+                  qid
+                  corpus-slug
+                  ;; Suffix-safe id so a lettered article (100Α) never collapses
+                  ;; onto its base number (100) in this cross-reference.
+                  (orchestrator.model:frbr-article-id work)
+                  type-name))))
 
     ;; ──────────────────────────────────────────────────────
     ;; SECTION 9: PROV-O Provenance

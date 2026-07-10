@@ -12,6 +12,53 @@
 
 (in-package :orchestrator.cli)
 
+(defun %stage-reaches-p (stage-name target-string by-name)
+  "T όταν το STAGE-NAME φτάνει (μεταβατικά, μέσω εξαρτήσεων) το στάδιο με
+   symbol-name TARGET-STRING. Σύγκριση με string= — τα ονόματα σταδίων είναι
+   σύμβολα του πακέτου ορισμού του pipeline, όχι του καλούντος."
+  (or (string= (symbol-name stage-name) target-string)
+      (let ((stage (gethash (symbol-name stage-name) by-name)))
+        (and stage
+             (some (lambda (dep) (%stage-reaches-p dep target-string by-name))
+                   (orchestrator.spec:stage-dependencies stage))))))
+
+(defun %release-stage-chain ()
+  "P1b [0052]#Ε4: η αλυσίδα σταδίων του release παράγεται από ΤΟΝ ΙΔΙΟ ορισμό
+   pipeline (defpipeline greek-constitution) — ΟΧΙ χειροκίνητο αντίγραφο.
+   Περπατά τις εξαρτήσεις ΑΝΑΠΟΔΑ από το hash-artifacts μέχρι το
+   load-json-source (ο json κλάδος), οπότε νέο ενδιάμεσο στάδιο του pipeline
+   μπαίνει ΑΥΤΟΜΑΤΑ και στο --cut-release — τα δύο παραγωγικά μονοπάτια δεν
+   μπορούν πλέον να αποκλίνουν σιωπηλά (η κλάση του «identityHash NIL»,
+   σταδίου που έλειπε από το αντίγραφο, εξαλείφεται δομικά).
+   Επιστρέφει λίστα stage objects σε σειρά εκτέλεσης."
+  (let* ((pkg (or (find-package :orchestrator.gr-syntagma)
+                  (error "cut-release: το πακέτο orchestrator.gr-syntagma δεν είναι φορτωμένο")))
+         (pipeline-name (or (find-symbol "GREEK-CONSTITUTION" pkg)
+                            (error "cut-release: ο pipeline greek-constitution δεν ορίζεται")))
+         (pipeline (or (orchestrator.spec:find-pipeline pipeline-name)
+                       (error "cut-release: ο pipeline greek-constitution δεν είναι καταχωρισμένος")))
+         (stages (orchestrator.spec:pipeline-stages pipeline))
+         (by-name (make-hash-table :test 'equal)))
+    (dolist (s stages)
+      (setf (gethash (symbol-name (orchestrator.spec:stage-name s)) by-name) s))
+    (unless (gethash "HASH-ARTIFACTS" by-name)
+      (error "cut-release: το στάδιο hash-artifacts λείπει από τον pipeline"))
+    (let ((chain '())
+          (cursor "HASH-ARTIFACTS"))
+      (loop while cursor do
+        (let ((stage (gethash cursor by-name)))
+          (push stage chain)
+          (setf cursor
+                (if (string= cursor "LOAD-JSON-SOURCE")
+                    nil
+                    (let ((next (find-if (lambda (dep)
+                                           (%stage-reaches-p dep "LOAD-JSON-SOURCE" by-name))
+                                         (orchestrator.spec:stage-dependencies stage))))
+                      (unless next
+                        (error "cut-release: το στάδιο ~A δεν φτάνει το load-json-source — ο json κλάδος του pipeline άλλαξε δομή" cursor))
+                      (symbol-name next))))))
+      chain)))
+
 (defun %release-corpus-context (corpus-id)
   "Articles για release μέσω των παραγωγικών εδρών: select-corpus →
    provenance-checked source.json → load-json-source-stage. Επιστρέφει
@@ -35,35 +82,37 @@
      context :sources (list (list :type :json :path json-path)))
     (orchestrator.core:set-context-value
      context :corpus (orchestrator.meta:get-corpus :gr-syntagma))
-    ;; ΙΔΙΑ παραγωγικά stages ΚΑΙ πύλες με το pipeline μέχρι το hashing:
-    ;; IIR φόρτωση → IIR→article (FRBR) → escaping tests → SHACL → SHA-512.
-    ;; Χωρίς το hashing stage το lineage έγραφε identityHash "NIL" (σιωπηλή
-    ;; άγνοια σε νομικό αρτεφάκτ) και τα δύο παραγωγικά μονοπάτια
-    ;; (--cut-release / --run-pipeline) παρήγαγαν ΔΙΑΦΟΡΕΤΙΚΟ canonical
-    ;; περιεχόμενο ⇒ διαφορετική ταυτότητα release για το ίδιο corpus.
-    ;; Μία ταυτότητα ανά περιεχόμενο, από όποιο μονοπάτι.
-    (orchestrator.engine.sbcl:load-json-source-stage context)
-    (orchestrator.engine.sbcl:generate-rdf-stage context)
-    (orchestrator.engine.sbcl:test-escaping-stage context)
-    (orchestrator.engine.sbcl:validate-shacl-stage context)
-    (orchestrator.engine.sbcl:hash-artifacts-stage context)
+    ;; ΙΔΙΑ παραγωγικά stages ΚΑΙ πύλες με το pipeline μέχρι το hashing,
+    ;; ΠΑΡΑΓΟΜΕΝΑ από τον ορισμό του pipeline (βλ. %release-stage-chain) —
+    ;; όχι χειροκίνητο αντίγραφο. Χωρίς το hashing stage το lineage έγραφε
+    ;; identityHash "NIL" και τα δύο μονοπάτια παρήγαγαν διαφορετική
+    ;; ταυτότητα release. Μία ταυτότητα ανά περιεχόμενο, από όποιο μονοπάτι.
+    (dolist (stage (%release-stage-chain))
+      (funcall (orchestrator.spec:stage-function stage) context))
     (let ((articles (orchestrator.core:get-context-value context :articles)))
       (unless articles (error "cut-release ~A: καμία διάταξη από το source.json" corpus-id))
-      (values articles output-dir short))))
+      (values articles output-dir short context))))
 
 (defun run-cut-release (corpus-id)
   "--cut-release : κόψιμο content-addressed release-commitment για CORPUS-ID.
    Χρόνος metadata ΜΟΝΟ από δηλωμένη αρχή (require-deterministic-time)· TSA
-   αποτυχία ⇒ τίμιο UNATTESTED commitment (latest ΔΕΝ προάγεται)."
-  (multiple-value-bind (articles output-dir short) (%release-corpus-context corpus-id)
+   αποτυχία ⇒ τίμιο UNATTESTED commitment (latest ΔΕΝ προάγεται).
+   P1b [0052]#Ε4: το deploy γίνεται μέσω της ΙΔΙΑΣ έδρας stage με τον
+   pipeline (orchestrator.engine.sbcl:deploy-epistemic-stage) — μαζί με την
+   επαλήθευση του execution proof του test-escaping· το release μονοπάτι δεν
+   παρακάμπτει ΚΑΜΙΑ πύλη."
+  (multiple-value-bind (articles output-dir short context)
+      (%release-corpus-context corpus-id)
     (format t "~%── CUT-RELEASE ~A (~A): ~D διατάξεις ──~%" corpus-id short (length articles))
-    (let ((result (orchestrator.epistemic:deploy-epistemic-stage
-                   articles output-dir
-                   :timestamp (orchestrator.time:require-deterministic-time))))
+    (orchestrator.core:set-context-value context :output-dir output-dir)
+    (orchestrator.engine.sbcl:deploy-epistemic-stage context)
+    (let ((release-id (orchestrator.core:get-context-value context :epistemic-release-id))
+          (attested (orchestrator.core:get-context-value context :epistemic-attested))
+          (release-dir (orchestrator.core:get-context-value context :epistemic-release-dir)))
       (format t "~%RELEASE: ~A~%ATTESTED: ~A~%DIR: ~A~%"
-              (getf result :release-id)
-              (if (getf result :attested) "ΝΑΙ (latest προήχθη)" "ΟΧΙ — χρήση --attest-release")
-              (getf result :release-dir))
+              release-id
+              (if attested "ΝΑΙ (latest προήχθη)" "ΟΧΙ — χρήση --attest-release")
+              release-dir)
       0)))
 
 (defun run-attest-release (corpus-id &key (tsa-fn nil) (release-id-arg nil))

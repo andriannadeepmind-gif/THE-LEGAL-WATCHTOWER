@@ -42,7 +42,9 @@
    #:article-uri-id
    #:article-base-number
    #:article-label-suffix
+   #:article-suffix-ordinal
    #:article-identity<
+   #:articles-in-identity-order
    #:article-title
    #:article-content
    #:article-processing-state

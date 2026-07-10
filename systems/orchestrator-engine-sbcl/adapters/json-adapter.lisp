@@ -36,15 +36,18 @@
          (label (when (>= (length title-parts) 2) (second title-parts)))
          ;; Numeric base: parse-integer stops at the first non-digit (e.g. "5Α" → 5)
          (base-number (when label (parse-integer label :junk-allowed t)))
-         ;; For articles with a letter suffix (e.g. "5Α"), encode as base*1000 + letter-index
-         ;; so that "5" → 5 and "5Α" → 5001, avoiding integer collision while staying positive.
-         ;; letter-index: 0 for pure-numeric, 1 for 'Α', 2 for 'Β', etc.
-         (letter-suffix (when (and label (> (length label) (length (format nil "~D" base-number))))
+         ;; For articles with a letter suffix (e.g. "5Α"), encode as base*1000 + ordinal
+         ;; so that "5" → 5 and "5Α" → 5001 — internal disambiguation only (the
+         ;; synthetic never escapes into identities/artifacts).
+         ;; P1b [0052]: ordinal ΑΠΟ ΤΗ ΜΙΑ ΕΔΡΑ article-suffix-ordinal — το παλιό
+         ;; «πρώτο γράμμα − Α» κατέρρεε τα δίγραφα (ΙΑ↔Ι ίδιο index, ΣΤ ως 19)
+         ;; και δεχόταν σιωπηλά λατινικά ομόγλυφα/πεζά ως αρνητικά/λάθος indexes.
+         ;; Άκυρο επίθημα ⇒ ΣΦΑΛΜΑ εδώ, στο κατώφλι της εισόδου.
+         (letter-suffix (when (and label base-number
+                                   (> (length label) (length (format nil "~D" base-number))))
                           (subseq label (length (format nil "~D" base-number)))))
          (letter-index (if letter-suffix
-                           (let ((ch (char label (length (format nil "~D" base-number)))))
-                             ;; Position of the Greek capital letter relative to 'Α' (U+0391)
-                             (1+ (- (char-code ch) (char-code #\U+0391))))
+                           (orchestrator.model:article-suffix-ordinal letter-suffix)
                            0))
          (number (when base-number
                    (if (zerop letter-index)

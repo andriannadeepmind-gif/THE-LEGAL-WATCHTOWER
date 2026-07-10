@@ -7,10 +7,6 @@
 ;;; DETERMINISTIC TIME CONTROL
 ;;; ============================================================================
 
-(defconstant +default-deterministic-timestamp+ 1700000000
-  "Default fixed timestamp for deterministic builds (2023-11-14T22:13:20Z).
-   Used when deterministic mode is enabled but no specific timestamp is provided.")
-
 (defvar *build-timestamp-override* nil
   "Override for build timestamp for reproducibility.
    When NIL, uses (orchestrator.time:now :source :deterministic). When set, uses this value.")
@@ -131,11 +127,11 @@
                           :if-exists :supersede
                           :if-does-not-exist :create)
     
-    ;; P1b [0050]#3: κανονική διάταξη από τη ΜΙΑ έδρα (article-identity<):
-    ;; βάση, μετά επίθημα (5, 5Α, 6, …) — η διάταξη με τον συνθετικό αριθμό
+    ;; P1b [0052]: κανονική διάταξη από τη ΜΙΑ έδρα (articles-in-identity-order):
+    ;; βάση, μετά νομοθετικό επίθημα — η διάταξη με τον συνθετικό αριθμό
     ;; έστελνε τα lettered άρθρα στο τέλος του manifest.
-    (let ((articles (sort (copy-list (orchestrator.model::get-corpus-articles corpus))
-                          #'orchestrator.model:article-identity<)))
+    (let ((articles (orchestrator.model:articles-in-identity-order
+                     (orchestrator.model::get-corpus-articles corpus))))
       
       (restart-case
           (loop for article in articles

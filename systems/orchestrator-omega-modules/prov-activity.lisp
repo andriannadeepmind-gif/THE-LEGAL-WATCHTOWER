@@ -104,9 +104,12 @@
   (unless start-time
     (error "start-time is required for provenance activity"))
 
+  ;; P1b [0052]#Ε6: η ταυτότητα corpus ΔΕΝ μαντεύεται — ρητό όρισμα ή ρητό
+  ;; config, αλλιώς ΣΦΑΛΜΑ. Το παλιό σιωπηλό «"corpus"» έγραφε πλαστή
+  ;; ταυτότητα σε PROV URI (…/frbr-gen/corpus/…) — ίδια κλάση με το
+  ;; FRBRdate-1970 που σκοτώθηκε στο [0051].
   (let* ((corpus (or corpus-name
-                     (ignore-errors (orchestrator.spec:config-get "corpus.short_name"))
-                     "corpus"))
+                     (orchestrator.spec:required-config "corpus.short_name")))
          (timestamp-slug (format-timestamp-slug start-time))
          (uri (format nil "https://stavropouloslaw.com/activity/frbr-gen/~A/art-~A/~A"
                       corpus

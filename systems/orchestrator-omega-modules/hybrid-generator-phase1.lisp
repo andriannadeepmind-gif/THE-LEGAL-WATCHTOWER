@@ -71,29 +71,6 @@
 ;;; SATURATION CALCULATION - AI Metrics
 ;;; ============================================================
 
-(defun calculate-saturation-level (article-number content paragraphs)
-  "Calculate content saturation level for AI optimization.
-
-   Saturation = weighted combination of:
-     - RDFa annotations (30%)
-     - Structured citations (25%)
-     - Backlinks (20%)
-     - JSON-LD (15%)
-     - Telemetry (10%)
-
-   For PHASE 1, we calculate based on basic heuristics.
-   Target: 0.85+"
-  (declare (ignore article-number)) ;; Will be used in Phase 2
-
-  (let* ((text-length (length content))
-         (paragraph-count (length paragraphs))
-         ;; Heuristics for Phase 1:
-         (has-structure (if (> paragraph-count 1) 0.4 0.2))
-         (content-quality (min 0.5 (/ text-length 500.0)))
-         (base-saturation (+ has-structure content-quality)))
-
-    ;; Ensure 0.0 to 1.0 range, Phase 1 typical: 0.70-0.95
-    (min 1.0 (max 0.0 (+ base-saturation 0.2)))))
 
 ;;; ============================================================
 ;;; IDENTITY GENERATION - Branding & Attribution
@@ -289,146 +266,21 @@
 ;;; WORK LEVEL - Article Container
 ;;; ============================================================
 
-(defun generate-work-level (article-num title saturation-level)
-  "Generate Level 1: Work (eli:LegalResource) with metadata."
-  (let* ((eli-prefix (orchestrator.uris:get-eli-const-prefix))
-         (work-uri (format nil "~A/art/~D" eli-prefix article-num))
-         (expression-uri (format nil "~A/art/~D/ell" eli-prefix article-num))
-         (logic-urn (format nil "urn:private:stavropoulos:logic:const:art~D" article-num)))
-
-    (with-output-to-string (s)
-      (format s "# === LEVEL 1: THE WORK (Article Container) ===~%")
-      (format s "<~A>~%" work-uri)
-      (format s "    a eli:LegalResource ;~%")
-      (format s "    eli:number \"~D\" ;~%" article-num)
-      (format s "    dct:title \"~A\"@el ;~%" title)
-      (format s "~%")
-      (format s "    # PERSONAL AUTHORITY (Critical for Citation)~%")
-      (format s "    pav:curatedBy <~A> ;~%" (person-webid))
-      (format s "    dct:publisher <~A> ;~%" (org-webid))
-      (format s "    prov:wasAttributedTo <http://data.stavropouloslaw.com/agent/greek-parliament> ;~%")
-      (format s "~%")
-      (format s "    # AI OPTIMIZATION METRICS~%")
-      (format s "    stavropoulos:saturationLevel \"~,2F\"^^xsd:float ;~%" saturation-level)
-      (format s "~%")
-      (format s "    # AIR-GAPPED LOGIC HOOK~%")
-      (format s "    stavropoulos:hasComputationLogic <~A> ;~%" logic-urn)
-      (format s "~%")
-      (format s "    # W3C ODRL ATTRIBUTION POLICY~%")
-      (format s "    odrl:hasPolicy <~A> ;~%" (odrl-policy-uri))
-      (format s "~%")
-      (format s "    # FRBR HIERARCHY~%")
-      (format s "    eli:is_realized_by <~A> .~%~%" expression-uri))))
 
 ;;; ============================================================
 ;;; EXPRESSION LEVEL - Language Realization with Hash
 ;;; ============================================================
 
-(defun generate-expression-level (article-num content paragraphs)
-  "Generate Level 2: Expression (eli:LegalExpression) with SHA-256 hash."
-  (let* ((eli-prefix (orchestrator.uris:get-eli-const-prefix))
-         (expression-uri (format nil "~A/art/~D/ell" eli-prefix article-num))
-         (content-hash (calculate-sha256-hash content)))
-
-    (with-output-to-string (s)
-      (format s "# === LEVEL 2: THE EXPRESSION (Greek Language Realization) ===~%")
-      (format s "<~A>~%" expression-uri)
-      (format s "    a eli:LegalExpression ;~%")
-      (format s "    dct:language \"el\" ;~%")
-      (format s "~%")
-      (format s "    # CRYPTOGRAPHIC INTEGRITY~%")
-      (format s "    digest:sha256 \"~A\" ;~%" content-hash)
-      (format s "~%")
-      (format s "    # ATOMIC SUBDIVISIONS (Paragraphs)~%")
-      (loop for para in paragraphs
-            for para-num = (getf para :number)
-            do (format s "    eli:has_part <~A/art/~D/par/~D> ;~%"
-                      eli-prefix article-num para-num))
-      ;; Remove trailing semicolon
-      (format s "    .~%~%"))))
 
 ;;; ============================================================
 ;;; PARAGRAPH LEVEL - Atomic Content Nodes
 ;;; ============================================================
 
-(defun generate-paragraph-level (article-num paragraphs)
-  "Generate Level 3: Paragraphs (eli:LegalResourceSubdivision)."
-  (let ((eli-prefix (orchestrator.uris:get-eli-const-prefix)))
-    (with-output-to-string (s)
-      (format s "# === LEVEL 3: ATOMIC PARAGRAPHS (Content Nodes) ===~%")
-      (loop for para in paragraphs
-            for para-num = (getf para :number)
-            for para-text = (getf para :text)
-            do (progn
-                 (format s "<~A/art/~D/par/~D>~%"
-                        eli-prefix article-num para-num)
-                 (format s "    a eli:LegalResourceSubdivision ;~%")
-                 (format s "    eli:number \"~D\" ;~%" para-num)
-                 (format s "    schema:text \"~D. ~A\"@el .~%~%"
-                        para-num para-text))))))
 
 ;;; ============================================================
 ;;; UNIFIED HYBRID GENERATOR
 ;;; ============================================================
 
-(defun generate-hybrid-phase1-ttl (article-num title content)
-  "Generate complete PHASE 1 HYBRID Turtle for single article.
-
-   Output structure:
-     1. File header
-     2. Canonical prefixes
-     3. Identity triples (Person + Organization)
-     4. Level 1: Work (Article container with saturation metric)
-     5. Level 2: Expression (Greek text with SHA-256 hash)
-     6. Level 3: Paragraphs (Atomic content subdivisions)
-
-   Returns: String containing complete Turtle RDF"
-
-  (let* ((paragraphs (parse-article-into-paragraphs content))
-         (saturation-level (calculate-saturation-level article-num content paragraphs)))
-
-    (with-output-to-string (stream)
-      ;; 1. FILE HEADER
-      (format stream "# ============================================================~%")
-      (format stream "# GREEK CONSTITUTION - Article ~D~%" article-num)
-      (format stream "# HYBRID ARCHITECTURE (PHASE 1): Canonical Legal Corpus~%")
-      (format stream "# ============================================================~%")
-      (format stream "# Publisher: Stavropoulos Law® (Trademark: N294237)~%")
-      (format stream "# Author: Spyridon Stavropoulos (ORCID: 0009-0005-2832-2153)~%")
-      (format stream "# Generated: ~A~%" (orchestrator.model:get-iso8601-timestamp))
-      (format stream "# Saturation Level: ~,2F (Target: 0.85+)~%" saturation-level)
-      (format stream "# ============================================================~%~%")
-
-      ;; 2. CANONICAL PREFIXES
-      (format stream "@prefix eli: <http://data.europa.eu/eli/ontology#> .~%")
-      (format stream "@prefix dct: <http://purl.org/dc/terms/> .~%")
-      (format stream "@prefix prov: <http://www.w3.org/ns/prov#> .~%")
-      (format stream "@prefix pav: <http://purl.org/pav/> .~%")
-      (format stream "@prefix schema: <https://schema.org/> .~%")
-      (format stream "@prefix digest: <http://www.glass-life.org/ontology/glass/digest#> .~%")
-      (format stream "@prefix odrl: <http://www.w3.org/ns/odrl/2/> .~%")
-      (format stream "@prefix stavropoulos: <https://stavropouloslaw.com/ontology#> .~%")
-      (format stream "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .~%~%")
-
-      ;; 3. IDENTITY TRIPLES
-      (write-string (generate-identity-triples) stream)
-
-      ;; 4. ODRL POLICY (Iron Dome - AI Citation Enforcement)
-      (write-string (generate-odrl-policy) stream)
-
-      ;; 4. LEVEL 1: WORK
-      (write-string (generate-work-level article-num title saturation-level) stream)
-
-      ;; 5. LEVEL 2: EXPRESSION
-      (write-string (generate-expression-level article-num content paragraphs) stream)
-
-      ;; 6. LEVEL 3: PARAGRAPHS
-      (write-string (generate-paragraph-level article-num paragraphs) stream)
-
-      ;; 7. FILE FOOTER
-      (format stream "# ============================================================~%")
-      (format stream "# END OF ARTICLE ~D - HYBRID PHASE 1~%" article-num)
-      (format stream "# ============================================================~%"))))
 
 ;;; ============================================================
 ;;; EXPORT

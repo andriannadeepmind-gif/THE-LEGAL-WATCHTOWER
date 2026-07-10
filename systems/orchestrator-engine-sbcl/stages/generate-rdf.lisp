@@ -158,7 +158,9 @@
 
       (error (e)
         (error 'orchestrator.spec:rdf-error
-               :message (format nil "RDF generation failed for article ~D: ~A" article-num e)
+               :message (format nil "RDF generation failed for article ~A: ~A"
+                                (orchestrator.model:article-uri-id article-num article-label)
+                                e)
                :article article-num)))))
 
 ;;; ============================================================

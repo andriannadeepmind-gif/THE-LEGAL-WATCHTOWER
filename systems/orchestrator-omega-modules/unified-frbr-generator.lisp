@@ -71,8 +71,9 @@
          ;; A fabricated legal date is worse than a build failure.
          (resolved-issued     (or issued-date
                                   (config-get "corpus.publication.date")
-                                  (error "make-complete-frbr-stack: issued-date not provided and corpus.publication.date absent from config — refusing to fabricate a legal date for article ~D"
-                                         article-number)))
+                                  (error "make-complete-frbr-stack: issued-date not provided and corpus.publication.date absent from config — refusing to fabricate a legal date for article ~A"
+                                         (orchestrator.model:article-uri-id
+                                          article-number article-suffix))))
          (resolved-year       (or law-year (subseq resolved-issued 0 4)))
 
          ;; Parse content into paragraphs for atomic granularity
@@ -217,11 +218,13 @@
      12. File footer"
 
   (with-output-to-string (stream)
-    (let ((article-num (orchestrator.model:article-number article-root)))
+    ;; Η ταυτότητα των banners από τη ΜΙΑ έδρα (frbr-article-id): «5Α», ποτέ
+    ;; μόνο η βάση «5» (που ταύτιζε οπτικά το 5 με το 5Α).
+    (let ((article-id (orchestrator.model:frbr-article-id article-root)))
 
       ;; 1. FILE HEADER
       (emit-canonical-file-header stream
-                                   :article-number article-num
+                                   :article-number article-id
                                    :layer "COMPLETE FRBR+ELI+PROV-O")
 
       ;; 2. CANONICAL PREFIXES
@@ -335,7 +338,7 @@
       ;; 13. FILE FOOTER
       (format stream "# ============================================================~%")
       (format stream "# END OF UNIFIED FRBR+ELI+PROV-O OUTPUT~%")
-      (format stream "# Article ~D - Complete Canonical Representation~%" article-num)
+      (format stream "# Article ~A - Complete Canonical Representation~%" article-id)
       (format stream "# ============================================================~%"))))
 
 ;;; ============================================================
@@ -377,7 +380,7 @@
    GATE-5: Validation is UNCONDITIONAL (no :validate parameter)
 
    Arguments:
-     article-number: Integer (1-120)
+     article-number: Integer (δέχεται ΚΑΙ συνθετικό — βλ. article-suffix)
      title:          Greek title
      content:        Greek content
      output-dir:     Output directory path
@@ -453,12 +456,12 @@
         ;; Emit full diagnostic log before re-signaling.
         (format *error-output*
                 "~&~%FATAL: write-unified-article-file FAILED~%~
-                 ~&FATAL: Article number : ~D~%~
+                 ~&FATAL: Article        : ~A~%~
                  ~&FATAL: Intended output: ~A~%~
                  ~&FATAL: Condition type : ~S~%~
                  ~&FATAL: Condition      : ~A~%~
                  ~&FATAL: No output file written — pipeline integrity preserved.~%~%"
-                article-number
+                (orchestrator.model:article-uri-id article-number article-suffix)
                 intended-filepath
                 (type-of e)
                 e)
@@ -470,8 +473,8 @@
                :cause e
                :output-path intended-filepath
                :message (format nil
-                                "Unified article file generation failed for article ~D: ~A"
-                                article-number
+                                "Unified article file generation failed for article ~A: ~A"
+                                (orchestrator.model:article-uri-id article-number article-suffix)
                                 e))))))
 
 (defun normalize-ttl-content (ttl-content)

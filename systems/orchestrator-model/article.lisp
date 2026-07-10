@@ -175,14 +175,52 @@
            (parse-integer (string suffix-or-label) :junk-allowed t))
       number))
 
+(defparameter +article-suffix-units+
+  '(("Α" . 1) ("Β" . 2) ("Γ" . 3) ("Δ" . 4) ("Ε" . 5)
+    ("ΣΤ" . 6) ("Ζ" . 7) ("Η" . 8) ("Θ" . 9))
+  "Μονάδες της νομοθετικής γραμματοσειράς επιθημάτων (ελληνικός αριθμητικός
+   τρόπος με το δίγραμμα ΣΤ για το 6 — ποτέ λεξικογραφική προσέγγιση).")
+
+(defparameter +article-suffix-tens+
+  '((#\Ι . 10) (#\Κ . 20) (#\Λ . 30) (#\Μ . 40)
+    (#\Ν . 50) (#\Ξ . 60) (#\Ο . 70) (#\Π . 80))
+  "Δεκάδες της νομοθετικής γραμματοσειράς επιθημάτων (Ι=10, Κ=20, …).")
+
+(defun article-suffix-ordinal (suffix)
+  "Η τακτική θέση του γράμμα-επιθήματος στη ΝΟΜΟΘΕΤΙΚΗ ακολουθία
+   Α,Β,Γ,Δ,Ε,ΣΤ,Ζ,Η,Θ,Ι,ΙΑ,…,ΙΣΤ,…: \"\" ⇒ 0, «Α» ⇒ 1, «ΣΤ» ⇒ 6, «Ι» ⇒ 10,
+   «ΙΑ» ⇒ 11, «ΙΣΤ» ⇒ 16. Η ΜΙΑ έδρα της σειράς ΚΑΙ της εγκυρότητας
+   επιθημάτων: άγνωστο/μη-ελληνικό/πεζό επίθημα ⇒ ΣΦΑΛΜΑ (τίμια άγνοια —
+   το string< κατέτασσε το ΣΤ μετά το Ι, παραποιώντας τη νομική σειρά,
+   και το λατινικό ομόγλυφο «A» περνούσε σιωπηλά ως άλλη ταυτότητα)."
+  (let ((s (string suffix)))
+    (cond
+      ((zerop (length s)) 0)
+      ((string= s "ΣΤ") 6)
+      (t (let* ((tens (cdr (assoc (char s 0) +article-suffix-tens+)))
+                (unit-part (if tens (subseq s 1) s)))
+           (cond
+             ((and tens (zerop (length unit-part))) tens)
+             (t (let ((unit (cdr (assoc unit-part +article-suffix-units+
+                                        :test #'string=))))
+                  (unless unit
+                    (error 'orchestrator.spec:validation-error
+                           :message (format nil "Άκυρο γράμμα-επίθημα άρθρου: ~S — η νομοθετική ακολουθία είναι Α..Ε,ΣΤ,Ζ..Θ,Ι,ΙΑ,… (ελληνικά κεφαλαία· όχι λατινικά ομόγλυφα/πεζά/κενά)" s)))
+                  (+ (or tens 0) unit)))))))))
+
 (defun article-label-suffix (suffix-or-label)
   "Το γράμμα-επίθημα από το SUFFIX-OR-LABEL: γυμνό επίθημα (\"Α\"), πλήρες
    label (\"100Α\"), σύμβολο/χαρακτήρας, ή NIL. Επιστρέφει \"\" όταν δεν υπάρχει.
 
-   Συμβόλαιο: αριθμός ΔΕΝ είναι label — (STRING 5) σηματοδοτεί TYPE-ERROR."
+   Συμβόλαιο: αριθμός ΔΕΝ είναι label — (STRING 5) σηματοδοτεί TYPE-ERROR.
+   Το επίθημα ΕΠΙΚΥΡΩΝΕΤΑΙ από τη μία έδρα (article-suffix-ordinal): «Α5»,
+   «5Α », «5A» (λατινικό), «5α» ⇒ ΣΦΑΛΜΑ αντί για σιωπηλή ψευδοταυτότητα."
   (if (null suffix-or-label)
       ""
-      (string-left-trim "0123456789 " (string suffix-or-label))))
+      (let ((suffix (string-left-trim "0123456789 "
+                                      (string suffix-or-label))))
+        (article-suffix-ordinal suffix)   ; επικύρωση — σφάλμα αν άκυρο
+        suffix)))
 
 (defun pad-article-id (number &optional suffix-or-label)
   "Canonical PADDED article id (filesystem ids + eIds): NUMBER zero-padded to 3
@@ -217,16 +255,24 @@
   (pad-article-id (article-number article) (article-label article)))
 
 (defun article-identity< (a b)
-  "Κανονική ολική διάταξη άρθρων: αριθμητική ΒΑΣΗ, μετά γράμμα-επίθημα
-   (5, 5Α, 6, …). Η ΜΙΑ έδρα διάταξης για καταλόγους/manifests/consolidation —
-   ΠΟΤΕ διάταξη με τον εσωτερικό συνθετικό αριθμό (5Α ⇒ 5001), που έστελνε τα
-   lettered άρθρα στο τέλος, μακριά από τη βάση τους."
+  "Κανονική ολική διάταξη άρθρων: αριθμητική ΒΑΣΗ, μετά η ΝΟΜΟΘΕΤΙΚΗ τακτική
+   θέση του επιθήματος μέσω article-suffix-ordinal (5, 5Α, …, 5Ε, 5ΣΤ, 5Ζ, …).
+   Η ΜΙΑ έδρα διάταξης για καταλόγους/manifests/consolidation — ΠΟΤΕ διάταξη
+   με τον εσωτερικό συνθετικό αριθμό (5Α ⇒ 5001) ούτε λεξικογραφικό string<
+   (που έστελνε το ΣΤ μετά το Ι, παραποιώντας τη νομική σειρά)."
   (let ((base-a (article-base-number (article-number a) (article-label a)))
         (base-b (article-base-number (article-number b) (article-label b))))
     (or (< base-a base-b)
         (and (= base-a base-b)
-             (string< (article-label-suffix (article-label a))
-                      (article-label-suffix (article-label b)))))))
+             (< (article-suffix-ordinal (article-label-suffix (article-label a)))
+                (article-suffix-ordinal (article-label-suffix (article-label b))))))))
+
+(defun articles-in-identity-order (articles)
+  "Η ΜΙΑ έδρα «κατάλογος άρθρων σε κανονική σειρά»: φρέσκια λίστα των ARTICLES
+   σε σταθερή (stable) κανονική διάταξη article-identity<. Κάθε καταναλωτής
+   που σειριοποιεί άρθρα (deploy manifest, ai manifests, provenance, consolidate)
+   περνά από εδώ — το λάθος κλειδί ταξινόμησης δεν μπορεί να ξαναγραφτεί."
+  (stable-sort (copy-list articles) #'article-identity<))
 
 (defun article-live-p (article)
   "Check if article is in live state"

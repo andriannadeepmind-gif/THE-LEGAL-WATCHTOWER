@@ -25,12 +25,12 @@
 
   (let ((canonical-ttl (orchestrator.model:article-rdf-turtle article)))
     (unless canonical-ttl
-      (error "Cannot hash article ~D: no canonical TTL content"
-             (orchestrator.model:article-number article)))
+      (error "Cannot hash article ~A: no canonical TTL content"
+             (orchestrator.model:article-file-id article)))
 
     (let ((hash (orchestrator.hash-authority:compute-hash canonical-ttl :algorithm :sha512)))
       (setf (orchestrator.model:article-hash article) hash)
-      (log:info () "Article ~D hash: ~A"
-                (orchestrator.model:article-number article) hash)
+      (log:info () "Article ~A hash: ~A"
+                (orchestrator.model:article-file-id article) hash)
       (orchestrator.spec:transition article :anchoring)
       article)))

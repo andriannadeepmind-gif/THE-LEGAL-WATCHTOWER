@@ -46,11 +46,11 @@
   "Emit Expression layer header"
   
   (let* ((work (orchestrator.model:expression-work expr))
-         (article-num (orchestrator.model:article-number work)))
-    
+         (article-id (orchestrator.model:frbr-article-id work)))
+
     (orchestrator.dsl.turtle:emit-separator)
-    (orchestrator.dsl.turtle:emit-comment 
-      (format nil "FRBR EXPRESSION LAYER - Article ~A" article-num))
+    (orchestrator.dsl.turtle:emit-comment
+      (format nil "FRBR EXPRESSION LAYER - Article ~A" article-id))
     (orchestrator.dsl.turtle:emit-comment 
       "Greek language realization of abstract Work")
     (orchestrator.dsl.turtle:emit-separator)
@@ -167,8 +167,7 @@
     ;; Atomic Subdivisions (Paragraphs) - if present
     ;; ──────────────────────────────────────────────────────
     (when (slot-boundp expr 'orchestrator.model::paragraphs)
-      (let ((paragraphs (orchestrator.model:paragraphs expr))
-            (article-num (orchestrator.model:article-number work)))
+      (let ((paragraphs (orchestrator.model:paragraphs expr)))
         (when paragraphs
           (loop for para in paragraphs
                 for para-num = (getf para :number)

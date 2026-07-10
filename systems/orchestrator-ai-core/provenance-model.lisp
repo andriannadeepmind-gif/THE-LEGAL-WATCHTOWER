@@ -276,27 +276,34 @@
                                        :if-exists :supersede)
     output-path))
 
+(defun article-provenance-file-name (article)
+  "Η ΜΙΑ έδρα του ονόματος provenance αρχείου: «article-005Α-provenance»
+   (χωρίς type) πάνω στο κανονικό padded id (article-file-id). Καταναλωτές:
+   ΚΑΘΕ provenance writer ΚΑΙ το provenance_url του manifest — ώστε ο
+   σύνδεσμος και το αρχείο να μην μπορούν να αποκλίνουν (το παλιό ~3,'0D
+   πάνω στον ωμό αριθμό έγραφε article-5001-provenance.json ενώ το manifest
+   έδειχνε article-005Α-provenance.json)."
+  (format nil "article-~A-provenance" (orchestrator.model:article-file-id article)))
+
 (defun write-corpus-provenance (corpus output-dir)
   "Write provenance files for all articles in corpus.
    Creates one JSON file per article.
-   
+
    Args:
      corpus: Corpus object
      output-dir: Base directory for outputs
-   
+
    Returns:
-     List of (article-number . provenance-path) pairs"
-  (let ((articles (sort (orchestrator.model::get-corpus-articles corpus)
-                       #'<
-                       :key #'orchestrator.model:article-number)))
+     List of (article-id . provenance-path) pairs"
+  (let ((articles (orchestrator.model:articles-in-identity-order
+                   (orchestrator.model::get-corpus-articles corpus))))
     (loop for article in articles
-          for number = (orchestrator.model:article-number article)
           for output-path = (merge-pathnames
                             (make-pathname
-                             :name (format nil "article-~3,'0D-provenance" number)
+                             :name (article-provenance-file-name article)
                              :type "json"
                              :directory '(:relative "ai" "provenance"))
                             output-dir)
-          collect (cons number
+          collect (cons (orchestrator.model:article-file-id article)
                        (write-article-provenance article corpus output-path
                                                 :ensure-directory t)))))

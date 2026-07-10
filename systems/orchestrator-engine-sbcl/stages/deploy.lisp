@@ -6,7 +6,7 @@
 ;;;; 1. Writes .ttl (RDF/Turtle - machine-readable semantic data)
 ;;;; 2. Writes .jsonld (Standalone JSON-LD - AI ingestion)
 ;;;; 3. Writes .html (HTML+RDFa+JSON-LD - human & machine readable)
-;;;; 4. Writes .hash (SHA-256 cryptographic hash)
+;;;; 4. Writes .hash (SHA-512 cryptographic hash — hash-artifacts stage)
 ;;;;
 ;;;; GUARANTEES:
 ;;;; - Single writer (write-corpus-files)
@@ -62,10 +62,9 @@
   Returns:
     NDJSON string (newline-delimited JSON)"
   (with-output-to-string (stream)
-    ;; P1b [0050]#3: κανονική διάταξη από τη ΜΙΑ έδρα (article-identity<):
-    ;; βάση, μετά επίθημα (5, 5Α, 6, …) — όχι ο συνθετικός αριθμός.
-    (let ((sorted-articles (sort (copy-list articles)
-                                 #'orchestrator.model:article-identity<)))
+    ;; P1b [0052]: κανονική διάταξη από τη ΜΙΑ έδρα (articles-in-identity-order):
+    ;; βάση, μετά νομοθετικό επίθημα — όχι ο συνθετικός αριθμός.
+    (let ((sorted-articles (orchestrator.model:articles-in-identity-order articles)))
       (loop for article in sorted-articles
             for entry = (orchestrator.ai-core:generate-article-manifest-entry article corpus)
             for json-line = (orchestrator.ai-core:manifest-entry-to-json entry)
@@ -85,7 +84,7 @@
     - article-N.ttl (RDF/Turtle)
     - article-N.jsonld (Standalone JSON-LD - byte-identical to embedded)
     - article-N.html (HTML+RDFa+embedded JSON-LD)
-    - article-N.hash (SHA-256)
+    - article-N.hash (SHA-512)
 
   WRITES DATASET-LEVEL (3 files):
     - {corpus.short_name}-manifest.ttl (Corpus root node)

@@ -49,7 +49,9 @@
   ((article-number :accessor article-number
                    :initarg :article-number
                    :type integer
-                   :documentation "Article number (1-120)")
+                   :documentation "Η αριθμητική ΒΑΣΗ του άρθρου (κανονικοποιημένη στο όριο:
+                    5 και για το 5Α) — ΠΟΤΕ συνθετικός αριθμός, ΠΟΤΕ μόνη
+                    της ταυτότητα (βλ. frbr-article-id).")
 
    (article-letter-suffix :accessor article-letter-suffix
                           :initarg :article-suffix
@@ -259,7 +261,9 @@
    Callers must supply the ELI context explicitly to support any Greek law type.
 
    Arguments:
-     article-number  — positive integer
+     article-number  — integer (δέχεται ΚΑΙ τον εσωτερικό συνθετικό — η βάση
+                       ανακτάται από το article-suffix όταν είναι πλήρες label)
+     article-suffix  — γυμνό επίθημα («Α») Ή πλήρες label («5Α»)· κενό για απλό
      article-root-uri — pre-computed article root URI (optional; derived from eli-prefix if absent)
      eli-prefix      — ELI law prefix, e.g. https://stavropouloslaw.com/eli/gr/const/1975
                        (use orchestrator.uris:get-eli-const-prefix for Constitution,
@@ -269,7 +273,7 @@
      issued-date     — xsd:date string: \"1975-06-11\", \"2019-09-27\", etc.
      dataset-uri     — VoID dataset URI for this corpus
 
-   URI Pattern: {eli-prefix}/art/{N}/work"
+   URI Pattern: {eli-prefix}/art/{id}/work — id από τη ΜΙΑ έδρα article-uri-id («5», «5Α»)"
 
   (check-type article-number integer)
   (unless eli-prefix
@@ -302,6 +306,17 @@
                    :law-year year
                    :issued-date issued-date
                    :dataset-uri dataset-uri)))
+
+(defun frbr-article-id (resource)
+  "Η ΚΑΝΟΝΙΚΗ ταυτότητα άρθρου («5», «5Α») ενός FRBR resource που φέρει τα
+   κανονικοποιημένα slots (article-root, work) — από τη ΜΙΑ έδρα
+   article-uri-id. Κάθε renderer που τυπώνει «ποιο άρθρο είναι αυτό»
+   (banners, legislationIdentifier, cross-references) περνά ΑΠΟΚΛΕΙΣΤΙΚΑ
+   από εδώ: το γυμνό article-number slot είναι αριθμητική ΒΑΣΗ, ΟΧΙ
+   μορφοποιήσιμη ταυτότητα (5 και 5Α μοιράζονται βάση 5)."
+  (article-uri-id (article-number resource) (article-letter-suffix resource)))
+
+(export 'frbr-article-id)
 
 (defun make-frbr-expression (work &key title content paragraphs)
   "Create FRBR Expression instance for given Work

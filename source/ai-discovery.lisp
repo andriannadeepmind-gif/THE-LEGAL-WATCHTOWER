@@ -140,9 +140,14 @@ Sitemap: ~A
       (format out "    <priority>1.0</priority>~%")
       (format out "  </url>~%")
 
-      ;; Each article
+      ;; Each article — όνομα από τη ΜΙΑ έδρα ταυτότητας (article-file-id):
+      ;; label-aware padded id («005Α»), ποτέ ~3,'0D πάνω σε ωμό αριθμό
+      ;; (P1b [0052]#Α4). Όψιμη σύνδεση: το infrastructure δεν εξαρτάται
+      ;; στατικά από το orchestrator-model.
       (dolist (article articles)
-        (let ((article-url (format nil "~A/article-~3,'0D" url (article-number article))))
+        (let* ((file-id-fn (or (find-symbol "ARTICLE-FILE-ID" :orchestrator.model)
+                               (error "ai-discovery: η έδρα article-file-id δεν είναι διαθέσιμη")))
+               (article-url (format nil "~A/article-~A" url (funcall file-id-fn article))))
           (format out "  <url>~%")
           (format out "    <loc>~A.html</loc>~%" article-url)
           (format out "    <changefreq>monthly</changefreq>~%")

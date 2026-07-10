@@ -54,7 +54,7 @@
         :operations *ops*))
 
 (format t "~%== 2) consolidate (current): the article carries the NEW text ==~%")
-(let ((doc (orchestrator.consolidation.bridge:consolidate-corpus *articles* (list *record*))))
+(let ((doc (orchestrator.consolidation.bridge:consolidate-corpus *articles* (list *record*) :id "test-corpus")))
   (check "art_92 replaced by the new consolidated text"
          (let ((tx (art92-text doc)))
            (and tx (search "δημόσια αρχή." tx) (not (search "ΠΑΛΑΙΟ" tx)))))
@@ -62,9 +62,9 @@
 
 (format t "~%== 3) point-in-time: time-travel around the effective date ==~%")
 (let ((before (orchestrator.consolidation.bridge:consolidate-corpus
-               *articles* (list *record*) :as-of-date "2024-01-01"))
+               *articles* (list *record*) :as-of-date "2024-01-01" :id "test-corpus"))
       (after  (orchestrator.consolidation.bridge:consolidate-corpus
-               *articles* (list *record*) :as-of-date "2024-12-31")))
+               *articles* (list *record*) :as-of-date "2024-12-31" :id "test-corpus")))
   (check "BEFORE 2024-02-24 → the OLD text still stands"
          (search "ΠΑΛΑΙΟ" (art92-text before)))
   (check "AFTER  2024-02-24 → the NEW text is in force"

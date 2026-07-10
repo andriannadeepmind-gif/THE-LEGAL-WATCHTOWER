@@ -123,13 +123,22 @@
                     :documentation "Ingestion statistics")))
 
 (defclass article-saturation ()
-  ((article-uri :initarg :article-uri 
+  ((article-uri :initarg :article-uri
                 :accessor article-uri
                 :type string)
-   
-   (article-number :initarg :article-number 
+
+   (article-number :initarg :article-number
                    :accessor article-number
-                   :type integer)
+                   :type integer
+                   :documentation "Η αριθμητική ΒΑΣΗ του άρθρου (5 και για το
+                    5Α) — η πλήρης ταυτότητα ζει στο article-id/eid.")
+
+   (article-id :initarg :article-id
+               :accessor saturation-article-id
+               :type string
+               :initform ""
+               :documentation "Η ΚΑΝΟΝΙΚΗ ταυτότητα («5», «5Α») από το
+                provision num — πηγή της κανονικής διάταξης.")
    
    (token-count :initarg :token-count 
                 :accessor token-count
@@ -618,12 +627,31 @@ cross-reference and backlink counts, and a per-article LLM-readiness score.~%~%"
 `saturation_level`, `structured_citations`, `backlinks`, `json_ld`, ~
 `ingestion_ready`, `eli_uri`, `status`.~%")))
 
+(defun %saturation-suffix-ordinal (sat)
+  "Η νομοθετική τακτική θέση του επιθήματος του SAT, από τις έδρες του
+   μοντέλου (article-label-suffix + article-suffix-ordinal) — όψιμη σύνδεση
+   (find-symbol) με το ίδιο ιδίωμα του %prov, γιατί το infrastructure δεν
+   εξαρτάται στατικά από το orchestrator-model."
+  (let ((suffix-fn (find-symbol "ARTICLE-LABEL-SUFFIX" :orchestrator.model))
+        (ordinal-fn (find-symbol "ARTICLE-SUFFIX-ORDINAL" :orchestrator.model)))
+    (unless (and suffix-fn ordinal-fn)
+      (error "ai-ingest: οι έδρες ταυτότητας του orchestrator.model δεν είναι διαθέσιμες — άρνηση μη-κανονικής διάταξης"))
+    (funcall ordinal-fn (funcall suffix-fn (saturation-article-id sat)))))
+
+(defun %saturation-identity< (a b)
+  "Κανονική διάταξη saturation εγγραφών: αριθμητική βάση, μετά νομοθετική
+   θέση επιθήματος (5, 5Α, …, 5Ε, 5ΣΤ, 5Ζ, …) — ποτέ ισοπαλίες που «λύνει»
+   η σειρά του maphash (το 5 και το 5Α ισοβαθμούσαν στη βάση)."
+  (or (< (article-number a) (article-number b))
+      (and (= (article-number a) (article-number b))
+           (< (%saturation-suffix-ordinal a) (%saturation-suffix-ordinal b)))))
+
 (defun manifest-articles-ordered (manifest)
-  "Return the ARTICLE-SATURATION objects in stable article-number order so every
-   serialization (JSONL splits, JSON, RDF) is deterministic."
+  "Return the ARTICLE-SATURATION objects in stable canonical identity order so
+   every serialization (JSONL splits, JSON, RDF) is deterministic."
   (let ((acc '()))
     (maphash (lambda (k v) (declare (ignore k)) (push v acc)) (article-metadata manifest))
-    (stable-sort acc #'< :key #'article-number)))
+    (stable-sort acc #'%saturation-identity<)))
 
 ;;; ============================================================================
 ;;; AI MANIFEST GENERATION
@@ -688,17 +716,22 @@ cross-reference and backlink counts, and a per-article LLM-readiness score.~%~%"
         (dolist (tx all-texts n)
           (when (search needle tx) (incf n))))))
 
-(defun %provision-number (p index)
-  "Parse the article number to an integer; fall back to the 1-based INDEX."
-  (or (ignore-errors (parse-integer (or (%provision-num* p) "") :junk-allowed t))
-      index))
+(defun %provision-number (p)
+  "Η αριθμητική ΒΑΣΗ του provision («5Α» ⇒ 5). Provision χωρίς αριθμητική
+   βάση ⇒ ΣΦΑΛΜΑ — το παλιό σιωπηλό fallback στο 1-based INDEX έγραφε ΨΕΥΔΗ
+   article_number στο dataset."
+  (let ((num-string (%provision-num* p)))
+    (or (and num-string (parse-integer num-string :junk-allowed t))
+        (error "ai-ingest: provision ~S χωρίς αριθμητική βάση — άρνηση ψευδούς article_number"
+               num-string))))
 
 (defun provision->saturation (p index base-uri all-texts)
   "Build a fully-populated, deterministic ARTICLE-SATURATION from provision P."
+  (declare (ignore index))
   (let* ((text (%article-full-text p))
          (tokens (%count-tokens text))
          (citations (%count-citations text))
-         (num (%provision-number p index))
+         (num (%provision-number p))
          (backlinks (%count-backlinks (%provision-num* p) all-texts))
          ;; URIs associated with the article: its own ELI URI plus one resolvable
          ;; URI per outgoing statutory citation.
@@ -710,6 +743,7 @@ cross-reference and backlink counts, and a per-article LLM-readiness score.~%~%"
                              :content (string-right-trim " " text)
                              :status (or (%provision-status* p) :original)
                              :article-number num
+                             :article-id (%provision-num* p)
                              :token-count tokens
                              :uri-count uris)))
     (setf (structured-citations sat) citations
@@ -971,11 +1005,11 @@ cross-reference and backlink counts, and a per-article LLM-readiness score.~%~%"
     (jonathan:to-json json-data)))
 
 (defun hash-table-to-alist (hash-table)
-  "Convert hash table to an alist for JSON serialization (article-number order)."
+  "Convert hash table to an alist for JSON serialization (canonical identity order)."
   (let ((acc '()))
     (maphash (lambda (k v) (push (cons k v) acc)) hash-table)
     (mapcar (lambda (cell) (cons (car cell) (saturation-to-json (cdr cell))))
-            (stable-sort acc #'< :key (lambda (c) (article-number (cdr c)))))))
+            (stable-sort acc #'%saturation-identity< :key #'cdr))))
 
 (defun saturation-to-json (saturation)
   "Convert a saturation object to a JSON-serializable plist."

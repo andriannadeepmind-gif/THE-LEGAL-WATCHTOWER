@@ -108,7 +108,6 @@
    ;;; Uses: turtle-dsl, frbr-classes, frbr-protocol exclusively
    ;;; Provides: make-frbr-stack-for-article, render-frbr-eli-for-article
    ;;; ────────────────────────────────────────────────────────
-   (:file "eli-ttl-generator")
    
    ;;; ────────────────────────────────────────────────────────
    ;;; LAYER 5.8: Validation & Canonicalization

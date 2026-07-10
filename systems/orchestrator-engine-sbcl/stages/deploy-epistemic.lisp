@@ -94,6 +94,15 @@
       (orchestrator.core:set-context-value
        context :epistemic-latest (getf result :latest-symlink))
 
+      ;; P1b [0052]#Ε4: ταυτότητα + κατάσταση attestation στο context, ώστε
+      ;; ΚΑΘΕ καταναλωτής του stage (pipeline, --cut-release) να διαβάζει το
+      ;; αποτέλεσμα από την ΙΔΙΑ έδρα — χωρίς δεύτερη κλήση του inner deploy.
+      (orchestrator.core:set-context-value
+       context :epistemic-release-id (getf result :release-id))
+
+      (orchestrator.core:set-context-value
+       context :epistemic-attested (getf result :attested))
+
       (log:info () "~%=== EPISTEMIC DEPLOYMENT COMPLETE ===")
       (log:info () "Release directory: ~A" (getf result :release-dir))
       (log:info () "Merkle root: ~A" (getf result :merkle-root))

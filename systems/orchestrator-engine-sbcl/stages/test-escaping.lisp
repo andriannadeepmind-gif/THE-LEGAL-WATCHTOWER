@@ -287,13 +287,10 @@ Paragraph 2: Δοκιμή \"quotes\" \\ backslash."
     ;; Call SAME production function as pipeline (render-canonical-html)
     (let ((html (render-canonical-html adversarial-article)))
 
-      ;; DEBUG: Write full HTML to /tmp (always writable, container-local)
-      (with-open-file (out "/tmp/DEBUG-adversarial.html"
-                          :direction :output
-                          :if-exists :supersede
-                          :if-does-not-exist :create)
-        (write-string html out))
-      (log:info () "  DEBUG: Wrote full HTML to /tmp/DEBUG-adversarial.html")
+      ;; P1b [0052]#Α8: ΚΑΝΕΝΑ debug side-effect σε παραγωγικό stage — το
+      ;; παλιό γράψιμο /tmp/DEBUG-adversarial.html έτρεχε σε ΚΑΘΕ παραγωγικό
+      ;; run (και στο --cut-release). Τα assertions αρκούν· σε αποτυχία το
+      ;; σφάλμα φέρει το δείγμα.
 
       ;; ASSERTION 1: No bare ampersands (skip ALL script tags including JSON-LD)
       ;; Remove script blocks line-by-line (cl-ppcre multiline regex doesn't work reliably)
