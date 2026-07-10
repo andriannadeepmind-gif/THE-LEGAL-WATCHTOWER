@@ -162,20 +162,24 @@
 ;;; the two functions below; nothing reimplements the padding/suffix rule.
 ;;; ----------------------------------------------------------------------------
 
-(defun %article-base (number suffix-or-label)
+(defun article-base-number (number suffix-or-label)
   "Η αριθμητική ΒΑΣΗ μιας ταυτότητας άρθρου. Όταν το SUFFIX-OR-LABEL είναι
    ΠΛΗΡΕΣ label με ψηφία («100Α»), η βάση προκύπτει από ΑΥΤΟ — τη μία πηγή
    αλήθειας ταυτότητας — και ΟΧΙ από το NUMBER, που για lettered άρθρα είναι
    εσωτερικός συνθετικός αριθμός αποσαφήνισης (5Α ⇒ 5001). Γυμνό επίθημα
-   («Α») ή NIL ⇒ NUMBER."
+   («Α»), κενό string ή NIL ⇒ NUMBER.
+
+   Συμβόλαιο: SUFFIX-OR-LABEL ∈ {NIL, string, symbol, character}. Αριθμός
+   ΔΕΝ είναι label — (STRING 5) σηματοδοτεί TYPE-ERROR, δυνατά και τίμια."
   (or (and suffix-or-label
-           (stringp (string suffix-or-label))
            (parse-integer (string suffix-or-label) :junk-allowed t))
       number))
 
-(defun %article-suffix (suffix-or-label)
-  "The letter suffix from SUFFIX-OR-LABEL, which may be a bare suffix (\"Α\"), a
-   full label (\"100Α\"), NIL, or a number. Returns \"\" when there is none."
+(defun article-label-suffix (suffix-or-label)
+  "Το γράμμα-επίθημα από το SUFFIX-OR-LABEL: γυμνό επίθημα (\"Α\"), πλήρες
+   label (\"100Α\"), σύμβολο/χαρακτήρας, ή NIL. Επιστρέφει \"\" όταν δεν υπάρχει.
+
+   Συμβόλαιο: αριθμός ΔΕΝ είναι label — (STRING 5) σηματοδοτεί TYPE-ERROR."
   (if (null suffix-or-label)
       ""
       (string-left-trim "0123456789 " (string suffix-or-label))))
@@ -184,8 +188,8 @@
   "Canonical PADDED article id (filesystem ids + eIds): NUMBER zero-padded to 3
    digits, with any letter suffix preserved. 70 -> \"070\", (70 \"Α\") -> \"070Α\",
    (100 \"100Α\") -> \"100Α\". THE single source of truth — do not reimplement."
-  (let ((suffix (%article-suffix suffix-or-label))
-        (base (%article-base number suffix-or-label)))
+  (let ((suffix (article-label-suffix suffix-or-label))
+        (base (article-base-number number suffix-or-label)))
     (if (plusp (length suffix))
         (format nil "~3,'0D~A" base suffix)
         (format nil "~3,'0D" base))))
@@ -194,8 +198,8 @@
   "Canonical UNPADDED article id for URI/ELI path segments (.../art/100Α): NUMBER
    with any letter suffix preserved, NOT zero-padded. 70 -> \"70\", (70 \"Α\") ->
    \"70Α\". THE single source of truth for URI path ids — do not reimplement."
-  (let ((suffix (%article-suffix suffix-or-label))
-        (base (%article-base number suffix-or-label)))
+  (let ((suffix (article-label-suffix suffix-or-label))
+        (base (article-base-number number suffix-or-label)))
     (if (plusp (length suffix))
         (format nil "~D~A" base suffix)
         (format nil "~D" base))))
@@ -211,6 +215,18 @@
    (5Α ⇒ number 5001) και μόλυνε τα ονόματα αρχείων (article-5001Α αντί του
    κανονικού article-005Α)."
   (pad-article-id (article-number article) (article-label article)))
+
+(defun article-identity< (a b)
+  "Κανονική ολική διάταξη άρθρων: αριθμητική ΒΑΣΗ, μετά γράμμα-επίθημα
+   (5, 5Α, 6, …). Η ΜΙΑ έδρα διάταξης για καταλόγους/manifests/consolidation —
+   ΠΟΤΕ διάταξη με τον εσωτερικό συνθετικό αριθμό (5Α ⇒ 5001), που έστελνε τα
+   lettered άρθρα στο τέλος, μακριά από τη βάση τους."
+  (let ((base-a (article-base-number (article-number a) (article-label a)))
+        (base-b (article-base-number (article-number b) (article-label b))))
+    (or (< base-a base-b)
+        (and (= base-a base-b)
+             (string< (article-label-suffix (article-label a))
+                      (article-label-suffix (article-label b)))))))
 
 (defun article-live-p (article)
   "Check if article is in live state"

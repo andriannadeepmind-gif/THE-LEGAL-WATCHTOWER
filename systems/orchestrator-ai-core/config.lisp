@@ -207,71 +207,57 @@
 (defgeneric generate-article-manifest-entry-with-config (article corpus config)
   (:documentation "Generate manifest entry with explicit configuration"))
 
-(defmethod generate-article-manifest-entry-with-config 
+(defmethod generate-article-manifest-entry-with-config
     ((article orchestrator.model:article)
      (corpus orchestrator.model:corpus)
      (config ai-export-config))
-  "Generate manifest entry using configuration for metadata"
-  (let* ((number (orchestrator.model:article-number article))
-         (eli-uri (when (slot-boundp article 'orchestrator.model::eli-uri)
-                   (orchestrator.model:article-eli-uri article)))
-         (hash (orchestrator.model:article-hash article))
-         (state (orchestrator.model:article-processing-state article))
-         (blockchain-proof (orchestrator.model:article-blockchain-proof article))
-         (has-rdf (and (slot-boundp article 'orchestrator.model::rdf-turtle)
-                      (orchestrator.model:article-rdf-turtle article)))
-         (has-json-ld (and (slot-boundp article 'orchestrator.model::json-ld)
-                          (orchestrator.model:article-json-ld article)))
-         (has-html (and (slot-boundp article 'orchestrator.model::html)
-                       (orchestrator.model:article-html article)))
-         (base-uri (config-canonical-base-uri config)))
-    
-    ;; P1b [0049]: label-aware ταυτότητα — ποτέ ο συνθετικός αριθμός στο id
+  "P1b [0050]#3: ΜΙΑ έδρα πεδίων άρθρου. Όλη η αλήθεια επιπέδου άρθρου
+   (ταυτότητα, τίτλος, hash, παραπομπή, μορφές) αντλείται από το
+   GENERATE-ARTICLE-MANIFEST-ENTRY — εδώ προστίθενται/παρακάμπτονται ΜΟΝΟ τα
+   config-driven πεδία (dataset, publisher, provenance_url, last_updated,
+   id πάνω στο config base-uri). Η παλιά δεύτερη παραγωγή έγραφε τον
+   ΣΥΝΘΕΤΙΚΟ αριθμό σε article_number/citation και provenance_url χωρίς
+   επίθημα — η κλάση πεθαίνει με την εξάλειψη της δεύτερης έδρας."
+  (let* ((base-entry (generate-article-manifest-entry article corpus))
+         (short-name (orchestrator.model:corpus-short-name corpus))
+         (art-id (getf base-entry :|article_number|)))
     `(:|id| ,(format nil "~A/~A/article/~A"
-                     base-uri
-                     (orchestrator.model:corpus-short-name corpus)
-                     (orchestrator.model:article-uri-id
-                      number (orchestrator.model:article-label article)))
-      :|canonical_source| ,eli-uri
-      :|corpus| ,(orchestrator.model:corpus-short-name corpus)
-      :|article_number| ,number
-      :|title| ,(orchestrator.model:article-title article)
-      :|language| ,(orchestrator.model:corpus-language corpus)
-      :|content_hash| ,hash
-      :|state| ,(string-downcase (symbol-name state))
-      :|formats_available| ,(remove nil
-                                    (list
-                                     (when has-rdf "rdf-turtle")
-                                     (when has-json-ld "json-ld")
-                                     (when has-html "html-rdfa")))
-      :|blockchain_anchored| ,(if blockchain-proof t :false)
-      :|blockchain_proofs| ,(coerce blockchain-proof 'vector)
-      
+                     (config-canonical-base-uri config) short-name art-id)
+      :|canonical_source| ,(getf base-entry :|canonical_source|)
+      :|corpus| ,(getf base-entry :|corpus|)
+      :|article_number| ,art-id
+      :|title| ,(getf base-entry :|title|)
+      :|language| ,(getf base-entry :|language|)
+      :|content_hash| ,(getf base-entry :|content_hash|)
+      :|state| ,(getf base-entry :|state|)
+      :|formats_available| ,(remove nil (getf base-entry :|formats_available|))
+      :|blockchain_anchored| ,(getf base-entry :|blockchain_anchored|)
+      :|blockchain_proofs| ,(getf base-entry :|blockchain_proofs|)
+
       ;; Config-driven metadata
       :|dataset| (:|name| ,(config-dataset-name config)
                   :|version| ,(config-dataset-version config)
                   :|publisher| ,(config-publisher config))
-      
+
       :|authority| (:|name| ,(config-publisher config)
                     :|webid| ,(orchestrator.model:corpus-webid corpus)
                     :|orcid| ,(orchestrator.model:corpus-orcid corpus))
-      
-      :|citation_template| ,(format nil "~A, Article ~D (~A)"
-                                   (orchestrator.model:corpus-name corpus)
-                                   number
-                                   (orchestrator.model:corpus-publication-date corpus))
-      
-      ;; Provenance URL constructed from config
-      :|provenance_url| ,(format nil "~A/~A/article-~3,'0D-provenance.json"
+
+      :|citation_template| ,(getf base-entry :|citation_template|)
+
+      ;; Provenance URL: κανονικό padded όνομα ΜΕ επίθημα από τη μία έδρα
+      ;; (article-file-id): article-005Α-provenance.json — ποτέ ~3,'0D του
+      ;; συνθετικού αριθμού.
+      :|provenance_url| ,(format nil "~A/~A/article-~A-provenance.json"
                                  (config-provenance-subdir config)
-                                 (orchestrator.model:corpus-short-name corpus)
-                                 number)
-      
+                                 short-name
+                                 (orchestrator.model:article-file-id article))
+
       :|last_updated| ,(if (config-deterministic config)
                           (or (config-fixed-timestamp config) 1700000000)
                           (current-build-timestamp))
-      
-      :|eli_uri| ,eli-uri)))
+
+      :|eli_uri| ,(getf base-entry :|eli_uri|))))
 
 ;;; ============================================================================
 ;;; CONFIG-AWARE WRITE FUNCTIONS

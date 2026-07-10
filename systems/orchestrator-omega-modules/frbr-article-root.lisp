@@ -141,17 +141,26 @@
     (error "issued-date is required for make-frbr-article-root"))
 
   (let* ((year (or law-year (subseq issued-date 0 4)))
-         ;; Suffix kept so a lettered article (100Α) never collapses onto its
-         ;; base (100): art/100Α, gr-l-2019-art-100Α — distinct resources.
-         (uri (format nil "~A/art/~D~A" eli-prefix article-number article-suffix))
-         (eli-id (format nil "gr-~A-~A-art-~3,'0D~A" document-type year article-number article-suffix))
+         ;; P1b [0050]#2: ΚΑΝΟΝΙΚΟΠΟΙΗΣΗ ΣΤΟ ΟΡΙΟ ΤΟΥ FRBR ΜΟΝΤΕΛΟΥ.
+         ;; Το ARTICLE-SUFFIX δέχεται γυμνό επίθημα («Α») Ή πλήρες label
+         ;; («5Α»)· τα slots κρατούν ΠΑΝΤΑ την αληθινή βάση + γυμνό επίθημα,
+         ;; ώστε συνθετικός αριθμός αποσαφήνισης (5Α ⇒ 5001) να μην μπορεί
+         ;; ΔΟΜΙΚΑ να υπάρξει μέσα στο FRBR μοντέλο — κάθε renderer των slots
+         ;; βλέπει μόνο την αληθινή ταυτότητα. URI/eli-id: μέσα από τη ΜΙΑ
+         ;; έδρα (article-uri-id / pad-article-id), όχι τοπική συγκόλληση.
+         (base (article-base-number article-number article-suffix))
+         (suffix (article-label-suffix article-suffix))
+         (uri (format nil "~A/art/~A" eli-prefix
+                      (article-uri-id article-number article-suffix)))
+         (eli-id (format nil "gr-~A-~A-art-~A" document-type year
+                         (pad-article-id article-number article-suffix)))
          (work-uri (format nil "~A/work" uri)))
 
     (make-instance 'frbr-article-root
                    :uri uri
                    :eli-identifier eli-id
-                   :article-number article-number
-                   :article-suffix article-suffix
+                   :article-number base
+                   :article-suffix suffix
                    :article-title article-title
                    :document-type document-type
                    :issued-date issued-date

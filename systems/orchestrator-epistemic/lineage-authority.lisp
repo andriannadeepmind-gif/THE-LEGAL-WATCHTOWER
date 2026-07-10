@@ -90,43 +90,48 @@
     Turtle string with genesis assertion"
 
   (let* ((eli-uri (orchestrator.model:article-eli-uri article))
-         (num (orchestrator.model:article-number article))
+         ;; P1b [0050]#2: η ΚΑΝΟΝΙΚΗ ταυτότητα («5Α», όχι ο συνθετικός 5001)
+         ;; από τη ΜΙΑ έδρα — τα labels/σχόλια του lineage φέρουν την αληθινή
+         ;; ταυτότητα, όπως ήδη τα URIs (article-eli-uri).
+         (art-id (orchestrator.model:article-uri-id
+                  (orchestrator.model:article-number article)
+                  (orchestrator.model:article-label article)))
          (hash (orchestrator.model:article-hash article))
          (genesis-iri (format nil "~A/genesis" eli-uri))
          (timestamp-iso (orchestrator.time:format-iso8601 genesis-timestamp)))
 
-    (format nil "# === Article ~D Genesis ===
+    (format nil "# === Article ~A Genesis ===
 
 <~A> a prov:Entity, slw:LegalArticleIdentity ;
-    rdfs:label \"Article ~D Identity\"@en ;
+    rdfs:label \"Article ~A Identity\"@en ;
     prov:wasGeneratedBy <~A> ;
     slw:identityHash \"~A\" ;
     slw:genesisProof \"~A\" ;
     dcterms:identifier <~A> .
 
 <~A> a prov:Activity, slw:OriginAssertion ;
-    rdfs:label \"Article ~D Genesis Event\"@en ;
+    rdfs:label \"Article ~A Genesis Event\"@en ;
     prov:startedAtTime \"~A\"^^xsd:dateTime ;
     prov:endedAtTime \"~A\"^^xsd:dateTime ;
     slw:blockchainAnchor \"~A\" ;
     slw:blockchainIsNotAuthority true ;
     prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> ;
-    rdfs:comment \"\"\"Genesis event for Article ~D. Blockchain anchor serves
+    rdfs:comment \"\"\"Genesis event for Article ~A. Blockchain anchor serves
         as timestamp witness, NOT as truth authority.\"\"\"@en .
 "
-            num
+            art-id
             eli-uri
-            num
+            art-id
             genesis-iri
             hash
             blockchain-anchor
             eli-uri
             genesis-iri
-            num
+            art-id
             timestamp-iso
             timestamp-iso
             blockchain-anchor
-            num)))
+            art-id)))
 
 ;;; ============================================================================
 ;;; MUTATION EVENT (Version Change)
@@ -154,7 +159,10 @@
     Turtle string with mutation event"
 
   (let* ((eli-uri (orchestrator.model:article-eli-uri article))
-         (num (orchestrator.model:article-number article))
+         ;; P1b [0050]#2: κανονική ταυτότητα από τη ΜΙΑ έδρα — ποτέ συνθετικός.
+         (art-id (orchestrator.model:article-uri-id
+                  (orchestrator.model:article-number article)
+                  (orchestrator.model:article-label article)))
          (current-iri (format nil "~A#version-~A" eli-uri current-hash))
          (previous-iri (format nil "~A#version-~A" eli-uri previous-hash))
          (mutation-iri (format nil "~A/mutation/~A"
@@ -163,16 +171,16 @@
          (timestamp-iso (orchestrator.time:format-iso8601 timestamp))
          (change-str (string-downcase (symbol-name change-type))))
 
-    (format nil "# === Article ~D Mutation ===
+    (format nil "# === Article ~A Mutation ===
 
 <~A> a prov:Entity, slw:LegalArticleIdentity ;
-    rdfs:label \"Article ~D (Version ~A)\"@en ;
+    rdfs:label \"Article ~A (Version ~A)\"@en ;
     prov:wasDerivedFrom <~A> ;
     prov:wasGeneratedBy <~A> ;
     slw:identityHash \"~A\" .
 
 <~A> a prov:Activity, slw:MutationEvent ;
-    rdfs:label \"Article ~D Mutation (~A)\"@en ;
+    rdfs:label \"Article ~A Mutation (~A)\"@en ;
     slw:mutationType \"~A\" ;
     slw:hashBefore \"~A\" ;
     slw:hashAfter \"~A\" ;
@@ -184,15 +192,15 @@
     slw:blockchainIsNotAuthority true ;
     prov:wasAssociatedWith <https://stavropouloslaw.com/identity/org> .
 "
-            num
+            art-id
             current-iri
-            num
+            art-id
             (subseq current-hash 0 (min 8 (length current-hash)))
             previous-iri
             mutation-iri
             current-hash
             mutation-iri
-            num
+            art-id
             change-str
             change-str
             previous-hash

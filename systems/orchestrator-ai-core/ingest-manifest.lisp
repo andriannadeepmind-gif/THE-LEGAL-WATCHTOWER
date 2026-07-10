@@ -68,10 +68,11 @@
       :|language| ,(orchestrator.model:corpus-language corpus)
       :|content_hash| ,hash
       :|state| ,(string-downcase (symbol-name state))
-      :|formats_available| ,(list
-                            (when has-rdf "rdf-turtle")
-                            (when has-json-ld "json-ld")
-                            (when has-html "html-rdfa"))
+      :|formats_available| ,(remove nil
+                                    (list
+                                     (when has-rdf "rdf-turtle")
+                                     (when has-json-ld "json-ld")
+                                     (when has-html "html-rdfa")))
       :|blockchain_anchored| ,(if blockchain-proof t :false)
       :|blockchain_proofs| ,(coerce blockchain-proof 'vector)
       :|authority| (:|name| "STAVROPOULOS LAW"
@@ -130,9 +131,11 @@
                           :if-exists :supersede
                           :if-does-not-exist :create)
     
-    (let ((articles (sort (orchestrator.model::get-corpus-articles corpus)
-                         #'<
-                         :key #'orchestrator.model:article-number)))
+    ;; P1b [0050]#3: κανονική διάταξη από τη ΜΙΑ έδρα (article-identity<):
+    ;; βάση, μετά επίθημα (5, 5Α, 6, …) — η διάταξη με τον συνθετικό αριθμό
+    ;; έστελνε τα lettered άρθρα στο τέλος του manifest.
+    (let ((articles (sort (copy-list (orchestrator.model::get-corpus-articles corpus))
+                          #'orchestrator.model:article-identity<)))
       
       (restart-case
           (loop for article in articles

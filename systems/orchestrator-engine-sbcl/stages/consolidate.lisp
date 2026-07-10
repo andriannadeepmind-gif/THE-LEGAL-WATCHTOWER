@@ -22,14 +22,28 @@
 (in-package :orchestrator.engine.sbcl)
 
 (defun %consolidation-articles->triples (articles)
-  "Map article model objects to (number title content) triples in deterministic
-   article-number order."
+  "Map article model objects to (id title content) triples in deterministic
+   canonical order.
+
+   P1b [0050]#2: το id είναι η ΚΑΝΟΝΙΚΗ ταυτότητα από τη ΜΙΑ έδρα
+   (article-uri-id): «5», «5Α» — ΠΟΤΕ ο εσωτερικός συνθετικός αριθμός
+   αποσαφήνισης (5Α ⇒ 5001), που μόλυνε τα eIds (art_5001) και έστελνε τα
+   lettered άρθρα στο τέλος της ταξινόμησης. Σειρά: αριθμητική βάση, μετά
+   γράμμα-επίθημα (5, 5Α, 6, …). Ο τίτλος περνά από την ΙΔΙΑ έδρα καθαρισμού
+   με το RDF (extract-title-only): γυμνός τίτλος, όχι raw «Άρθρο Ν - …»."
   (mapcar (lambda (a)
-            (list (orchestrator.model:article-number a)
-                  (orchestrator.model:article-title a)
-                  (orchestrator.model:article-content a)))
-          (sort (copy-list articles) #'<
-                :key #'orchestrator.model:article-number)))
+            (list (orchestrator.model:article-uri-id
+                   (orchestrator.model:article-number a)
+                   (orchestrator.model:article-label a))
+                  (extract-title-only (orchestrator.model:article-title a))
+                  ;; Παράγραφοι από τη ΜΙΑ έδρα του κανόνα ορίου
+                  ;; (split-article-paragraph-chunks) ώστε το consolidated
+                  ;; να έχει ατομικά art_N__para_M όπως το RDF μονοπάτι.
+                  (mapcar (lambda (c)
+                            (string-trim '(#\Space #\Newline #\Tab) c))
+                          (orchestrator.spec:split-article-paragraph-chunks
+                           (orchestrator.model:article-content a)))))
+          (sort (copy-list articles) #'orchestrator.model:article-identity<)))
 
 (defun %consolidation-amendment-records ()
   "Return the configured amendment records, or NIL if none are configured.
@@ -66,11 +80,16 @@
            (ttl (orchestrator.consolidation:render-consolidation-provenance-ttl
                  consolidated))
            (txt (orchestrator.consolidation:render-consolidated-text consolidated))
+           ;; Νομική ημερομηνία ΠΟΤΕ δεν μαντεύεται: ρητά από το config ή
+           ;; ΣΦΑΛΜΑ. Το παλιό σιωπηλό «1970-01-01» έγραφε πλαστή Unix-epoch
+           ;; ημερομηνία σε νομικό αρτεφάκτ (Akoma Ntoso FRBRdate).
            (akn (orchestrator.akoma-ntoso:emit-akoma-ntoso
                  consolidated
                  :work-date (or (ignore-errors
                                  (orchestrator.spec:config-get "corpus.publication.date"))
-                                "1970-01-01")))
+                                (error 'orchestrator.spec:config-error
+                                       :message "consolidate-stage: corpus.publication.date is not configured — refusing to fabricate a legal date for Akoma Ntoso FRBRdate"
+                                       :config-key :corpus.publication.date))))
            (dir (uiop:ensure-directory-pathname output-dir)))
 
       (log:info () "Consolidating ~D articles with ~D amending act(s)"

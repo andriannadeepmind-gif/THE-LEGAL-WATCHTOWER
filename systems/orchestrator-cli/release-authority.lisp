@@ -35,9 +35,18 @@
      context :sources (list (list :type :json :path json-path)))
     (orchestrator.core:set-context-value
      context :corpus (orchestrator.meta:get-corpus :gr-syntagma))
-    ;; ΙΔΙΑ παραγωγικά stages με το pipeline: IIR φόρτωση + IIR→article (FRBR)
+    ;; ΙΔΙΑ παραγωγικά stages ΚΑΙ πύλες με το pipeline μέχρι το hashing:
+    ;; IIR φόρτωση → IIR→article (FRBR) → escaping tests → SHACL → SHA-512.
+    ;; Χωρίς το hashing stage το lineage έγραφε identityHash "NIL" (σιωπηλή
+    ;; άγνοια σε νομικό αρτεφάκτ) και τα δύο παραγωγικά μονοπάτια
+    ;; (--cut-release / --run-pipeline) παρήγαγαν ΔΙΑΦΟΡΕΤΙΚΟ canonical
+    ;; περιεχόμενο ⇒ διαφορετική ταυτότητα release για το ίδιο corpus.
+    ;; Μία ταυτότητα ανά περιεχόμενο, από όποιο μονοπάτι.
     (orchestrator.engine.sbcl:load-json-source-stage context)
     (orchestrator.engine.sbcl:generate-rdf-stage context)
+    (orchestrator.engine.sbcl:test-escaping-stage context)
+    (orchestrator.engine.sbcl:validate-shacl-stage context)
+    (orchestrator.engine.sbcl:hash-artifacts-stage context)
     (let ((articles (orchestrator.core:get-context-value context :articles)))
       (unless articles (error "cut-release ~A: καμία διάταξη από το source.json" corpus-id))
       (values articles output-dir short))))

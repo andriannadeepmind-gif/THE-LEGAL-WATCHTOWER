@@ -75,23 +75,30 @@
 ;;; ============================================================
 
 (defun make-prov-activity (&key article-number
+                                 (article-suffix "")
                                  corpus-name
                                  start-time
                                  end-time
                                  source-text-uri)
   "Create PROV-O Activity instance
 
-   URI Pattern: .../activity/frbr-gen/{corpus}/art-{N}/{timestamp}
+   URI Pattern: .../activity/frbr-gen/{corpus}/art-{id}/{timestamp}
 
    Arguments:
-     article-number:   Integer (1-120)
+     article-number:   Integer (η αληθινή βάση — βλ. article-base-number)
+     article-suffix:   Γράμμα-επίθημα ή πλήρες label lettered άρθρου (\"Α\"/\"5Α\")
      corpus-name:      String (e.g., 'syntagma')
      start-time:       ISO-8601 timestamp string
      end-time:         ISO-8601 timestamp string
      source-text-uri:  URI of source text
 
    Returns:
-     prov-activity instance"
+     prov-activity instance
+
+   P1b [0050]#2: η ταυτότητα του activity χτίζεται από τη ΜΙΑ έδρα
+   (article-uri-id / pad-article-id) ώστε το lettered άρθρο (5Α) να έχει
+   ΔΙΚΟ ΤΟΥ activity (art-5Α) — αλλιώς τα 5 και 5Α μοιράζονται URI
+   δραστηριότητας και η συγχώνευση των γράφων τους παράγει αντιφατικό PROV."
 
   (check-type article-number integer)
   (unless start-time
@@ -101,18 +108,20 @@
                      (ignore-errors (orchestrator.spec:config-get "corpus.short_name"))
                      "corpus"))
          (timestamp-slug (format-timestamp-slug start-time))
-         (uri (format nil "https://stavropouloslaw.com/activity/frbr-gen/~A/art-~D/~A"
+         (uri (format nil "https://stavropouloslaw.com/activity/frbr-gen/~A/art-~A/~A"
                       corpus
-                      article-number
+                      (article-uri-id article-number article-suffix)
                       timestamp-slug))
-         (eli-id (format nil "activity-~A-art-~3,'0D-~A" corpus article-number timestamp-slug))
+         (eli-id (format nil "activity-~A-art-~A-~A" corpus
+                         (pad-article-id article-number article-suffix)
+                         timestamp-slug))
          (start start-time)
          (end (or end-time start)))
 
     (make-instance 'prov-activity
                    :uri uri
                    :eli-identifier eli-id
-                   :article-number article-number
+                   :article-number (article-base-number article-number article-suffix)
                    :corpus-name corpus
                    :start-time start
                    :end-time end

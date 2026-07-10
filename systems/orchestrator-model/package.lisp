@@ -40,6 +40,9 @@
    #:article-file-id
    #:pad-article-id
    #:article-uri-id
+   #:article-base-number
+   #:article-label-suffix
+   #:article-identity<
    #:article-title
    #:article-content
    #:article-processing-state

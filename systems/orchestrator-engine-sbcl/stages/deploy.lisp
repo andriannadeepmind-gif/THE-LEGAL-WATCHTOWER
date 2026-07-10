@@ -62,9 +62,10 @@
   Returns:
     NDJSON string (newline-delimited JSON)"
   (with-output-to-string (stream)
+    ;; P1b [0050]#3: κανονική διάταξη από τη ΜΙΑ έδρα (article-identity<):
+    ;; βάση, μετά επίθημα (5, 5Α, 6, …) — όχι ο συνθετικός αριθμός.
     (let ((sorted-articles (sort (copy-list articles)
-                                #'<
-                                :key #'orchestrator.model:article-number)))
+                                 #'orchestrator.model:article-identity<)))
       (loop for article in sorted-articles
             for entry = (orchestrator.ai-core:generate-article-manifest-entry article corpus)
             for json-line = (orchestrator.ai-core:manifest-entry-to-json entry)

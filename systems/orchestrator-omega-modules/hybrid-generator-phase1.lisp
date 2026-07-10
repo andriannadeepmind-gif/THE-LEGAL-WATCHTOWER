@@ -16,20 +16,27 @@
 ;;; PARAGRAPH PARSING - Atomic Granularity
 ;;; ============================================================
 
+(defun split-article-paragraph-chunks (content)
+  "Η ΜΙΑ έδρα του κανόνα ορίου παραγράφου: σπάει το CONTENT σε ωμά τμήματα
+   παραγράφων, στα σημεία newline + «ψηφία. » (π.χ. «\\n2. »). Κάθε τμήμα
+   ΚΡΑΤΑ το πρόθεμά του («2. …») — καμία απώλεια πρωτότυπων bytes. Ενδοκειμενικές
+   αναφορές («άρθρων 9, 9Α και 19.») δεν κόβονται ποτέ: δεν έπονται newline.
+   Καταναλωτές: parse-article-into-paragraphs (FRBR/RDF) και consolidate-stage
+   (bridge provisions) — ο κανόνας ζει ΜΟΝΟ εδώ."
+  (cl-ppcre:split "\\n(?=\\d+\\.\\s)" content))
+
 (defun parse-article-into-paragraphs (content)
   "Parse article content into numbered paragraphs using cl-ppcre.
 
-   Splits at newline-anchored paragraph boundaries only: a newline followed
-   by digit(s) + \". \" (e.g., \"\\n2. \").  In-text references such as
-   \"άρθρων 9, 9Α και 19.\" are never mistaken for paragraph starts because
-   they are not preceded by a newline.
+   Splits at newline-anchored paragraph boundaries only (via the single seat
+   SPLIT-ARTICLE-PARAGRAPH-CHUNKS): a newline followed by digit(s) + \". \"
+   (e.g., \"\\n2. \").  In-text references such as \"άρθρων 9, 9Α και 19.\"
+   are never mistaken for paragraph starts because they are not preceded by
+   a newline.
 
    Returns list of plists: (:number N :text \"...\")"
 
-  ;; Split at newline that is immediately followed by a numbered paragraph marker.
-  ;; \\n(?=\\d+\\.\\s) avoids the previous (?=\\s\\d+\\.) bug that split on
-  ;; in-sentence article references like \" 19.\" or \" 101.\".
-  (let* ((raw-chunks (cl-ppcre:split "\\n(?=\\d+\\.\\s)" content))
+  (let* ((raw-chunks (split-article-paragraph-chunks content))
          (paragraphs '())
          (paragraph-number 1))
 

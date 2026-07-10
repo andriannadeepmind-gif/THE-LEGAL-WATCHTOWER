@@ -117,9 +117,12 @@
          (format-jsonld (orchestrator.model:make-frbr-format manifestation :jsonld))
          (formats (list format-html format-turtle format-jsonld))
 
-         ;; Create PROV-O Activity
+         ;; Create PROV-O Activity — η ταυτότητά του από τα ΚΑΝΟΝΙΚΟΠΟΙΗΜΕΝΑ
+         ;; slots του root (αληθινή βάση + γυμνό επίθημα), ποτέ από το ωμό
+         ;; article-number του καλούντος (P1b [0050]#2).
          (activity (orchestrator.model:make-prov-activity
-                     :article-number article-number
+                     :article-number (orchestrator.model:article-number article-root)
+                     :article-suffix (orchestrator.model:article-letter-suffix article-root)
                      :corpus-name corpus-name
                      :start-time activity-start-time
                      :end-time activity-end-time

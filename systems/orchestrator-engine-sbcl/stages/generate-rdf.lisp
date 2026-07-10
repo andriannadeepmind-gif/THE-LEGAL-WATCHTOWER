@@ -190,10 +190,13 @@
      String containing complete Turtle RDF (UNIFIED FRBR+ELI+PROV-O)"
 
   (let* ((article-num (orchestrator.model:article-number normalized-input))
-         ;; Letter suffix (e.g. "Α" for 100Α) derived from the label, so the FRBR
-         ;; URIs/eIds keep 100 and 100Α distinct. "" for a plain article.
-         (article-suffix (let ((lbl (orchestrator.model:article-label normalized-input)))
-                           (if lbl (string-left-trim "0123456789 " lbl) "")))
+         ;; P1b [0050]#2: το ΠΛΗΡΕΣ label διαπερνά το FRBR stack (το συμβόλαιο
+         ;; του :article-suffix δέχεται full labels). Το παλιό ΓΥΜΝΟ επίθημα
+         ;; πετούσε την αριθμητική βάση ⇒ κάθε downstream pad/uri-id έπεφτε
+         ;; στον ΣΥΝΘΕΤΙΚΟ αριθμό (5Α ⇒ art/5001Α στα TTL). Με το label, το
+         ;; article-base-number αποδίδει την ΑΛΗΘΙΝΗ βάση σε όλους τους
+         ;; καταναλωτές — η κλάση σφάλματος εξαλείφεται, δεν περιφράσσεται.
+         (article-suffix (or (orchestrator.model:article-label normalized-input) ""))
          (title (extract-title-only (orchestrator.model:article-title normalized-input)))
          (content (orchestrator.model:article-content normalized-input)))
 
