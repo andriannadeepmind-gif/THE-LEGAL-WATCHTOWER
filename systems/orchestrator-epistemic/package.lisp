@@ -199,8 +199,7 @@
                 #:now
                 #:format-iso8601)
   (:import-from #:orchestrator.hash-authority
-                #:compute-hash
-                #:merkle-root)
+                #:compute-hash)
   (:export
    ;; Vocabularies
    #:+slw-namespace+

@@ -539,8 +539,8 @@
     (format stream "    bc:anchoredData <~A> ;~%" (corpus-uri assertion))
     (format stream "    bc:anchorTimestamp \"~A\"^^xsd:dateTime ;~%" (created-at assertion))
     
-    (format stream "    bc:merkleRoot \"~A\" ;~%" 
-            (compute-merkle-root assertion))
+    (format stream "    bc:merkleRoot \"~A\" ;~%"
+            (compute-assertion-digest assertion))
     
     (format stream "    bc:verificationEndpoint \"https://etherscan.io/tx/0xabc123...\" ;~%")
     (format stream "    bc:smartContract <https://github.com/stavropoulos/corpus-anchor-contract> .~%~%")))
@@ -650,8 +650,11 @@
                         (qes-hash assertion))))
     (orchestrator.hash-authority:compute-hash content :algorithm :sha512)))
 
-(defun compute-merkle-root (assertion)
-  "Compute Merkle root for blockchain"
+(defun compute-assertion-digest (assertion)
+  "Flat SHA-512 content digest 3 πεδίων (content-hash ‖ qes-hash ‖ created-at).
+   [P1.5-A] ΔΕΝ είναι Merkle δέντρο (καμία μεταβλητή λίστα φύλλων, κανένα
+   inclusion proof) — το προηγούμενο όνομα «compute-merkle-root» ήταν ψευδώνυμο.
+   Η ΜΙΑ Merkle έδρα είναι orchestrator.merkle· αυτό είναι απλός digest."
   (let* ((hashes (list (compute-content-hash assertion)
                       (or (qes-hash assertion) "")
                       (format nil "~A" (created-at assertion))))
