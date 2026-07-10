@@ -54,9 +54,11 @@
          (blockchain-anchor (if blockchain-proof
                                (getf blockchain-proof :merkle-root)
                                "pending"))
-         ;; Output-bound: drives the immutable release directory name and
-         ;; epistemic receipts, so it must be reproducible across runs.
-         (timestamp (orchestrator.time:now :source :deterministic)))
+         ;; P1R [0046]: output-bound χρόνος (release metadata) ΜΟΝΟ από δηλωμένη
+         ;; αρχή — χωρίς ενεργό deterministic mode το require- ΣΦΑΛΛΕΙ αντί να
+         ;; πέσει σιωπηλά στο ρολόι. Η ΤΑΥΤΟΤΗΤΑ του release είναι πλέον
+         ;; content-addressed και δεν εξαρτάται από αυτό το timestamp.
+         (timestamp (orchestrator.time:require-deterministic-time)))
 
     (unless articles
       (error 'orchestrator.spec:config-error

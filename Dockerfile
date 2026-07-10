@@ -177,7 +177,7 @@ RUN set -e; \
              corpus-service corpus-sparql dsanet-chrome fek-html-parser fek-ingestion \
              government-source parliament-html-wiring constitution-crawler fek-discovery amendment-routing amendment-state ingestion-daemon ingestion-e2e isokratis-parser \
              legislation-ingestion multi-corpus-service review-service shacl-validator \
-             hash-authority write-authority time-unified blockchain-authority \
+             hash-authority write-authority time-unified blockchain-authority release-authority \
              escape-sequences turtle-nil-omit corpus-identity semantic-validity \
              cross-language-verifier; do \
       echo "=== running $t-test.lisp ==="; \

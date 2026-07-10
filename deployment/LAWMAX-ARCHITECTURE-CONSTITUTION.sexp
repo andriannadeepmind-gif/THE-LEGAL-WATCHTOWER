@@ -70,6 +70,8 @@
   (:capability "χρυσή-περιφρούρηση" :primitive :law)
   (:capability "εξωτερική-μαρτυρία" :primitive :hypothesis)
   (:capability "τιμιότητα-επαλήθευσης" :primitive :substrate)
+  (:capability "εξουσία-εκδόσεων" :primitive :law)
+  (:capability "περιφρούρηση-εκδόσεων" :primitive :law)
  )
 
  ;; ══ COMMAND → PRIMITIVE/OWNER/ENVELOPE (πλήρης κάλυψη — ελέγχεται αμφίδρομα) ══
@@ -208,6 +210,9 @@
   (:command "--verify-corpus" :primitive :law :owner-file "systems/orchestrator-cli/builtin-commands.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--verify-intelligence" :primitive :substrate :owner-file "systems/orchestrator-cli/builtin-commands.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--verify-proof" :primitive :proof :owner-file "systems/orchestrator-cli/builtin-commands.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
+  (:command "--cut-release" :primitive :law :owner-file "systems/orchestrator-cli/release-authority.lisp" :envelope (:exception "κόβει content-addressed release-commitment από επαληθευμένη πηγή — εσωτερική πράξη δημοσίευσης, δεν εκφέρει νομική κρίση προς τρίτο"))
+  (:command "--attest-release" :primitive :proof :owner-file "systems/orchestrator-cli/release-authority.lisp" :envelope (:exception "προσαρτά RFC-3161 χρονική απόδειξη σε υπάρχον commitment (append-only) και προάγει το latest — δεν εκφέρει νομική κρίση προς τρίτο"))
+  (:command "--release-gate" :primitive :law :owner-file "systems/orchestrator-cli/release-gate.lisp" :envelope (:exception "read-only πύλη αμεταβλητότητας εκδόσεων: recomputed Merkle root ≡ δηλωμένο ≡ όνομα — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--verify-truth-gate" :primitive :substrate :owner-file "systems/orchestrator-cli/verify-truth-gate.lisp" :envelope (:exception "FF3 read-only πύλη τιμιότητας: ελέγχει README↔CI ταύτιση (docs≡CI), δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--version" :primitive :substrate :owner-file "systems/orchestrator-cli/builtin-commands.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--watch-decisions" :primitive :authority :owner-file "systems/orchestrator-cli/decisions.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))

@@ -383,23 +383,24 @@
 
       ;; GATE 2: RFC 3161 Timestamps (MULTI-TSA for 100-year proof)
       (format t "~%PROOF GATE 2: Requesting RFC 3161 timestamps (multi-TSA)...~%")
+      ;; P1R [0046]: η χρονική απόδειξη είναι ATTESTATION πάνω στο commitment,
+      ;; όχι προϋπόθεση ύπαρξής του. Αποτυχία TSA ⇒ το release κόβεται ΤΙΜΙΑ
+      ;; ως UNATTESTED (τα receipts προσαρτώνται μετά με --attest-release) και
+      ;; το `latest` ΔΕΝ προάγεται σε αυτό — η πύλη εξουσίας ζει στο latest,
+      ;; δεν αδυνατίζει: δημόσια «τρέχουσα έκδοση» χωρίς temporal proof δεν υπάρχει.
       (let ((rfc3161-results (handler-case
                                  (request-multi-tsa-timestamps release-root-hash temporal-dir)
                                (error (e)
-                                 (if dev-mode
-                                     (progn
-                                       (format t "⚠ DEV MODE: Multi-TSA failed, trying single TSA...~%")
-                                       ;; Fallback to single TSA in dev mode
-                                       (handler-case
-                                           (list (request-rfc3161-timestamp release-root-hash timestamp-path))
-                                         (error (e2)
-                                           (format t "⚠ DEV MODE: All TSAs failed: ~A~%" e2)
-                                           nil)))
-                                     (error 'orchestrator.spec:validation-error
-                                            :message "RFC 3161 timestamp REQUIRED but all TSAs failed"
-                                            :details (format nil "~A" e)))))))
-        (when rfc3161-results
-          (format t "✓ RFC 3161 timestamps: ~D TSAs~%" (length rfc3161-results))))
+                                 (format t "⚠ Multi-TSA failed (~A) — trying single TSA...~%" e)
+                                 (handler-case
+                                     (list (request-rfc3161-timestamp release-root-hash timestamp-path))
+                                   (error (e2)
+                                     (format t "⚠ ALL TSAs failed: ~A~%   ⇒ release κόβεται ΩΣ UNATTESTED COMMITMENT — πρόσαρτησε receipts με --attest-release~%" e2)
+                                     nil))))))
+        (declare (ignorable dev-mode))
+        (if rfc3161-results
+            (format t "✓ RFC 3161 timestamps: ~D TSAs — ATTESTED~%" (length rfc3161-results))
+            (format t "⚠ UNATTESTED commitment (κανένα RFC-3161 receipt)~%")))
 
       ;; NOTE: CT Logs removed - public CT logs require CA-issued certificates
       ;; Self-signed certificates are rejected by Google/Cloudflare CT logs.
@@ -887,57 +888,100 @@ No fallbacks, no partial validity - strict proof gates.
 ;;; ATOMIC PUBLISH (STAGING → FINAL)
 ;;; ============================================================================
 
-(defun atomic-publish-release (base-output-dir staging-dir timestamp)
-  "Atomically publish release from staging to final directory
-
-  Renames staging directory to final timestamped directory,
-  then updates 'latest' symlink.
-
-  This ensures release is either complete or absent (no partial releases).
+(defun atomic-publish-release (base-output-dir staging-dir release-id)
+  "Atomically publish release from staging to its CONTENT-ADDRESSED directory.
 
   Args:
     base-output-dir: Base output directory
     staging-dir: Staging directory path
-    timestamp: Release timestamp
+    release-id: Content identity «sha256-<Merkle root hex>» (%root->release-id)
 
   Returns:
-    Path to final release directory"
+    Path to final release directory (existing identical dir is REUSED, never
+    deleted; foreign content under the same id signals validation-error)."
 
-  (let* ((timestamp-str (orchestrator.time:format-iso8601 timestamp))
-         ;; DARPA-GRADE: Ensure base-output-dir is treated as directory
-         (base-dir-pathname (uiop:ensure-directory-pathname base-output-dir))
+  ;; P1R [0046] — CONTENT-ADDRESSED PUBLISH. Η ταυτότητα του release είναι το
+  ;; ίδιο του το περιεχόμενο (releases/<release-id>/, id = sha256-<Merkle root
+  ;; των 8 canonical>). Overwrite ΔΟΜΙΚΑ αδύνατο: ίδιο περιεχόμενο ⇒ ίδιος
+  ;; κατάλογος ⇒ το publish επαληθεύει και επαναχρησιμοποιεί (ΠΟΤΕ delete)·
+  ;; διαφορετικό περιεχόμενο ⇒ άλλος κατάλογος· υπάρχων κατάλογος με ξένο root
+  ;; ⇒ διαφθορά ⇒ ΣΦΑΛΜΑ. Το `latest` προάγεται ΜΟΝΟ από promote-latest! σε
+  ;; attested release — ποτέ από εδώ.
+  (let* ((base-dir-pathname (uiop:ensure-directory-pathname base-output-dir))
          (releases-dir (merge-pathnames "releases/" base-dir-pathname))
-         (final-dir (merge-pathnames
-                    (format nil "releases/~A/" timestamp-str)
-                    base-dir-pathname))
-         (latest-symlink (merge-pathnames "latest" releases-dir)))
-
+         (final-dir (merge-pathnames (format nil "releases/~A/" release-id)
+                                     base-dir-pathname)))
     (ensure-directories-exist releases-dir)
-
-    ;; Atomic rename: staging → final. With deterministic timestamps every run
-    ;; targets the SAME release directory, so a re-run must REPLACE the previous
-    ;; one — rename cannot overwrite a non-empty directory. Remove the prior
-    ;; release first so the publish is idempotent.
-    (format t "~%Atomic publish: staging → ~A~%" final-dir)
-    (when (probe-file (uiop:ensure-directory-pathname final-dir))
-      (format t "  (replacing existing release ~A)~%" timestamp-str)
-      (uiop:delete-directory-tree (uiop:ensure-directory-pathname final-dir)
-                                  :validate (constantly t)))
-    (rename-file staging-dir final-dir)
-
-    ;; Update 'latest' symlink
-    (when (probe-file latest-symlink)
-      (delete-file latest-symlink))
-
-    #+sbcl
-    (sb-posix:symlink (format nil "~A" timestamp-str)
-                     (namestring latest-symlink))
-    #-sbcl
-    (error "Symlink creation not implemented for this Lisp implementation")
-
-    (format t "✓ Latest symlink: ~A → ~A~%~%" latest-symlink timestamp-str)
-
+    (format t "~%Content-addressed publish: staging → ~A~%" final-dir)
+    ;; Η ταυτότητα ΔΕΝ είναι δήλωση καλής πίστης: το staging πρέπει ΤΟ ΙΔΙΟ να
+    ;; αποδεικνύει ότι το περιεχόμενό του παράγει το RELEASE-ID.
+    (let ((staging-root (%release-dir-root staging-dir)))
+      (unless (equal (%root->release-id staging-root) release-id)
+        (error 'orchestrator.spec:validation-error
+               :message "Content-addressed publish: το staging ΔΕΝ αντιστοιχεί στη δηλωμένη ταυτότητα"
+               :details (format nil "staging-root=~A ≠ id=~A" staging-root release-id))))
+    (cond
+      ((probe-file (uiop:ensure-directory-pathname final-dir))
+       (let ((existing-root (%release-dir-root final-dir)))
+         (unless (equal (%root->release-id existing-root) release-id)
+           (error 'orchestrator.spec:validation-error
+                  :message "Release directory exists with FOREIGN content — refusing to touch it"
+                  :details (format nil "~A: dir-root=~A ≠ id=~A" final-dir existing-root release-id)))
+         (format t "  ✓ Release ~A already published (identical content) — reusing, staging discarded~%"
+                 release-id)
+         (uiop:delete-directory-tree (uiop:ensure-directory-pathname staging-dir)
+                                     :validate (constantly t))))
+      (t (rename-file staging-dir final-dir)
+         (format t "  ✓ Published ~A~%" release-id)))
     final-dir))
+
+(defun %release-dir-root (release-dir)
+  "Το Merkle root ενός δημοσιευμένου release όπως το δηλώνει το δικό του
+   temporal-proof/merkle-tree.json (πεδίο \"root\")."
+  (let* ((path (merge-pathnames "temporal-proof/merkle-tree.json"
+                                (uiop:ensure-directory-pathname release-dir)))
+         (text (uiop:read-file-string path)))
+    (multiple-value-bind (m groups)
+        (cl-ppcre:scan-to-strings "\"root\"\\s*:\\s*\"([^\"]+)\"" text)
+      (unless m (error "~A: δεν βρέθηκε \"root\" στο merkle-tree.json" path))
+      (aref groups 0))))
+
+(defun release-attested-p (release-dir)
+  "Ένα release είναι ATTESTED όταν φέρει τουλάχιστον το RFC-3161
+   temporal-proof/timestamp.tsr (η χρονική απόδειξη είναι προσάρτημα —
+   attestation — ΠΑΝΩ στο commitment, όχι συστατικό της ταυτότητάς του)."
+  (and (probe-file (merge-pathnames "temporal-proof/timestamp.tsr"
+                                    (uiop:ensure-directory-pathname release-dir)))
+       t))
+
+(defun promote-latest! (base-output-dir release-id)
+  "Προαγωγή του `latest` στο RELEASE-ID — ΜΟΝΟ αν το release είναι attested.
+   Γράφει: symlink `latest` (ευκολία πλοήγησης) + `latest.json` επαληθεύσιμο
+   δείκτη {release, attested, signature_jws} όπου το JWS είναι η υπογραφή του
+   ίδιου του root (temporal-proof/signature.jws) — ο δείκτης δένεται στο
+   περιεχόμενο, όχι σε όνομα."
+  (let* ((base (uiop:ensure-directory-pathname base-output-dir))
+         (releases-dir (merge-pathnames "releases/" base))
+         (release-dir (merge-pathnames (format nil "releases/~A/" release-id) base))
+         (latest-symlink (merge-pathnames "latest" releases-dir))
+         (pointer-path (merge-pathnames "latest.json" releases-dir)))
+    (unless (probe-file (uiop:ensure-directory-pathname release-dir))
+      (error "promote-latest!: ανύπαρκτο release ~A" release-id))
+    (unless (release-attested-p release-dir)
+      (error 'orchestrator.spec:validation-error
+             :message "promote-latest!: το release ΔΕΝ είναι attested (λείπει timestamp.tsr) — το latest προάγεται μόνο σε χρονικά αποδεδειγμένη έκδοση"
+             :details release-id))
+    (when (probe-file latest-symlink) (delete-file latest-symlink))
+    #+sbcl (sb-posix:symlink release-id (namestring latest-symlink))
+    #-sbcl (error "Symlink creation not implemented for this Lisp implementation")
+    (let ((jws (let ((p (merge-pathnames "temporal-proof/signature.jws" release-dir)))
+                 (when (probe-file p)
+                   (string-trim '(#\Space #\Newline) (uiop:read-file-string p))))))
+      (with-open-file (o pointer-path :direction :output :if-exists :supersede)
+        (format o "{\"release\": ~S, \"attested\": true~@[, \"signature_jws\": ~S~]}~%"
+                release-id jws)))
+    (format t "✓ latest → ~A (attested, signed pointer)~%" release-id)
+    latest-symlink))
 
 ;;; ============================================================================
 ;;; MAIN DEPLOYMENT FUNCTION (STRICT PROOF GATES)
@@ -1035,13 +1079,20 @@ No fallbacks, no partial validity - strict proof gates.
                          :details "Release does not conform to shapes"))
                 (format t "✓ SHACL validation passed~%")
 
-                ;; Step 9: Atomic publish (staging → final)
-                (format t "~%Step 9: Atomic publish (staging → final)...~%")
-                (let ((final-dir (atomic-publish-release base-output-dir staging-dir timestamp)))
-
+                ;; Step 9: Content-addressed publish + promote latest ΜΟΝΟ αν attested
+                (format t "~%Step 9: Content-addressed publish...~%")
+                (let* ((release-id (%root->release-id release-root-hash))
+                       (final-dir (atomic-publish-release base-output-dir staging-dir release-id))
+                       (attested (release-attested-p final-dir)))
+                  (if attested
+                      (promote-latest! base-output-dir release-id)
+                      (format t "⚠ latest ΔΕΝ προάγεται: unattested commitment ~A (χρήση --attest-release)~%"
+                              release-id))
                   (format t "~%=== EPISTEMIC DEPLOYMENT COMPLETE ===~%~%")
 
                   (list :release-dir final-dir
+                        :release-id release-id
+                        :attested attested
                         :merkle-root release-root-hash
                         :system-commit-hash system-hash
                         :manifest-path (getf manifest-paths :manifest-ttl)
@@ -1074,7 +1125,9 @@ No fallbacks, no partial validity - strict proof gates.
                          "shapes/manifest-shape.ttl"
                          "shapes/lineage-shape.ttl"
                          "temporal-proof/merkle-tree.json"
-                         "temporal-proof/timestamp.tsr"
+                         ;; P1R [0046]: το timestamp.tsr είναι ATTESTATION (προσαρτάται
+                         ;; append-only, ίσως μετά το publish) — η ΕΞΟΥΣΙΑ το απαιτεί
+                         ;; στο promote-latest!, όχι η πληρότητα του commitment.
                          ;; Core verification files (always required)
                          "verify/tsa-ca.pem"
                          "verify/verify.sh"

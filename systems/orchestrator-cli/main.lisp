@@ -232,8 +232,20 @@
             (stringp (car (last dirs)))
             (plusp (length (car (last dirs)))))
        (handler-case
-           (progn (uiop:delete-directory-tree dir :validate t :if-does-not-exist :ignore)
-                  (format t "  ✓ καθαρός φάκελος εξόδου: ~A~%" dir))
+           ;; P1R [0046]: το output είναι αναγεννήσιμη μνήμη, το releases/ είναι
+           ;; APPEND-ONLY δημοσίευση — ο καθαρισμός δεν το αγγίζει ΠΟΤΕ.
+           (progn
+             (dolist (child (append (uiop:subdirectories dir)
+                                    (uiop:directory-files dir)))
+               (let ((leaf (car (last (pathname-directory
+                                       (uiop:ensure-directory-pathname child))))))
+                 (unless (and (uiop:directory-pathname-p child)
+                              (equal leaf "releases"))
+                   (if (uiop:directory-pathname-p child)
+                       (uiop:delete-directory-tree child :validate t
+                                                         :if-does-not-exist :ignore)
+                       (delete-file child)))))
+             (format t "  ✓ καθαρός φάκελος εξόδου (releases/ ΑΘΙΚΤΟ): ~A~%" dir))
          (error (e) (format t "  ⚠ δεν καθαρίστηκε ~A: ~A~%" dir e))))
       (t nil)))
   (ensure-directories-exist (uiop:ensure-directory-pathname output-dir)))

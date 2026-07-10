@@ -27,7 +27,11 @@
   Returns:
     Turtle string with complete lineage graph"
 
-  (let ((genesis-timestamp (orchestrator.time:now :source :system))
+  ;; P1R [0046]: output-bound timestamp (σειριοποιείται στο canonical
+  ;; lineage-graph.ttl ⇒ συμμετέχει στην content-addressed ταυτότητα) —
+  ;; ΠΡΕΠΕΙ :deterministic κατά τον νόμο GATE-1, αλλιώς δύο πανομοιότυπα
+  ;; cuts θα έπαιρναν διαφορετική ταυτότητα από θόρυβο ρολογιού.
+  (let ((genesis-timestamp (orchestrator.time:now :source :deterministic))
         (bc-map (or blockchain-anchors (make-hash-table :test 'eql))))
 
     (with-output-to-string (out)

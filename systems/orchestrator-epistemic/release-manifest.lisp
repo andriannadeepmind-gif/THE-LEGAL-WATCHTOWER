@@ -119,6 +119,14 @@
         (error "CRITICAL: Expected 8 epistemic artifacts, found ~D" (length sorted)))
       sorted)))
 
+(defun %root->release-id (root-hash)
+  "Κανονική ταυτότητα release από Merkle root: «sha256-<hex>» (τυχόν πρόθεμα
+   «sha256:» της αναπαράστασης manifest αφαιρείται)."
+  (let ((hex (if (and (stringp root-hash) (eql 0 (search "sha256:" root-hash)))
+                 (subseq root-hash 7)
+                 root-hash)))
+    (format nil "sha256-~A" hex)))
+
 ;;; ============================================================================
 ;;; RELEASE MANIFEST GENERATION
 ;;; ============================================================================
@@ -152,8 +160,13 @@
   Returns:
     Turtle string with complete manifest"
 
+  ;; P1R [0046]: content-addressed IRI — η ταυτότητα του release είναι το
+  ;; περιεχόμενό του (sha256-<Merkle root>), όχι όνομα από ρολόι· fallback στο
+  ;; timestamp μόνο όταν δεν υπάρχει root (π.χ. δοκιμαστική κλήση).
   (let ((release-iri (format nil "https://stavropouloslaw.com/releases/~A"
-                            (orchestrator.time:format-iso8601 timestamp)))
+                            (if (and merkle-root (not (equal merkle-root "pending")))
+                                (%root->release-id merkle-root)
+                                (orchestrator.time:format-iso8601 timestamp))))
         (timestamp-iso (orchestrator.time:format-iso8601 timestamp))
         (all-files (collect-all-release-files output-dir))
         (total-articles (length articles))
@@ -292,8 +305,13 @@
   Returns:
     JSON-LD string"
 
+  ;; P1R [0046]: content-addressed IRI — η ταυτότητα του release είναι το
+  ;; περιεχόμενό του (sha256-<Merkle root>), όχι όνομα από ρολόι· fallback στο
+  ;; timestamp μόνο όταν δεν υπάρχει root (π.χ. δοκιμαστική κλήση).
   (let ((release-iri (format nil "https://stavropouloslaw.com/releases/~A"
-                            (orchestrator.time:format-iso8601 timestamp)))
+                            (if (and merkle-root (not (equal merkle-root "pending")))
+                                (%root->release-id merkle-root)
+                                (orchestrator.time:format-iso8601 timestamp))))
         (timestamp-iso (orchestrator.time:format-iso8601 timestamp))
         (all-files (collect-all-release-files output-dir))
         (total-articles (length articles))

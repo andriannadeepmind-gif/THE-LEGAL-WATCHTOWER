@@ -1,0 +1,102 @@
+;;;; systems/orchestrator-cli/release-gate.lisp
+;;;; ============================================================================
+;;;; ΠΥΛΗ ΑΜΕΤΑΒΛΗΤΩΝ ΕΚΔΟΣΕΩΝ: --release-gate — P1R [0046]
+;;;; ============================================================================
+;;;; Για ΚΑΘΕ δημοσιευμένο release κάτω από output/<corpus>/releases/:
+;;;;   · content-addressed (sha256-*): recomputed Merkle root των 8 canonical
+;;;;     ≡ όνομα καταλόγου ≡ δηλωμένο root στο merkle-tree.json
+;;;;   · legacy (timestamp-named, π.χ. 2025-01-01…): recomputed root ≡ δηλωμένο
+;;;;     root — το ιστορικό ΔΕΝ ξαναγράφεται, μόνο επαληθεύεται
+;;;;   · latest: δείχνει σε υπαρκτό release· αν είναι content-addressed, πρέπει
+;;;;     να είναι ATTESTED (temporal-proof/timestamp.tsr παρόν)
+;;;; Read-only πύλη — δεν γράφει ΤΙΠΟΤΑ.
+
+(in-package :orchestrator.cli)
+
+(defun %rg-verify-release (dir chk)
+  (let* ((leaf (car (last (pathname-directory dir))))
+         (fp (find-package :orchestrator.epistemic))
+         (declared (ignore-errors
+                    (funcall (find-symbol "%RELEASE-DIR-ROOT" fp) dir)))
+         (recomputed (ignore-errors
+                      (funcall (find-symbol "MERKLE-TREE-ROOT" fp)
+                               (funcall (find-symbol "BUILD-MERKLE-TREE" fp)
+                                        (funcall (find-symbol "COLLECT-EPISTEMIC-ARTIFACTS" fp)
+                                                 dir))))))
+    (funcall chk (format nil "~A: recomputed root ≡ δηλωμένο" leaf)
+             (and declared recomputed (equal declared recomputed))
+             (format nil "δηλωμένο=~A recomputed=~A" declared recomputed))
+    (when (and (stringp leaf) (eql 0 (search "sha256-" leaf)))
+      (funcall chk (format nil "~A: όνομα ≡ περιεχόμενο (content-addressed)" leaf)
+               (and recomputed
+                    (equal leaf (funcall (find-symbol "%ROOT->RELEASE-ID" fp) recomputed)))
+               recomputed))))
+
+(defun run-release-gate ()
+  "--release-gate : καμία δημοσιευμένη έκδοση χωρίς επαληθεύσιμη αμεταβλητότητα."
+  (let ((total 0) (fails '())
+        (output-root (uiop:ensure-directory-pathname
+                      (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR")
+                          (orchestrator.paths:institution-dir "output/")))))
+    (flet ((chk (label ok &optional detail)
+             (incf total)
+             (if ok (format t "  ✓ ~A~%" label)
+                 (progn (push label fails)
+                        (format t "  ✗ ~A~@[~%      → ~A~]~%" label detail)))))
+      (format t "~%── ΠΥΛΗ ΑΜΕΤΑΒΛΗΤΩΝ ΕΚΔΟΣΕΩΝ (content-addressed, read-only) ──~%")
+      (let ((found 0))
+        (dolist (corpus-dir (ignore-errors (uiop:subdirectories output-root)))
+          (let ((releases-dir (merge-pathnames "releases/" corpus-dir)))
+            (when (probe-file releases-dir)
+              (dolist (rel (uiop:subdirectories releases-dir))
+                (let ((leaf (car (last (pathname-directory rel)))))
+                  (unless (or (not (stringp leaf))
+                              (eql 0 (search ".staging" leaf))
+                              (equal leaf "latest")) ; το symlink ελέγχεται χωριστά ως δείκτης
+                    (incf found)
+                    (%rg-verify-release rel #'chk))))
+              ;; latest: υπαρκτός στόχος· content-addressed στόχος ⇒ attested
+              (let ((latest (merge-pathnames "latest" releases-dir)))
+                (when (probe-file latest)
+                  (let* ((target (probe-file latest))
+                         (tleaf (and target (car (last (pathname-directory
+                                                        (uiop:ensure-directory-pathname target))))))
+                         (corpus (car (last (pathname-directory corpus-dir)))))
+                    (chk (format nil "~A: latest → υπαρκτό release (~A)" corpus tleaf)
+                         (and target tleaf))
+                    (when (and (stringp tleaf) (eql 0 (search "sha256-" tleaf)))
+                      (chk (format nil "~A: latest είναι ATTESTED" corpus)
+                           (funcall (find-symbol "RELEASE-ATTESTED-P"
+                                                 (find-package :orchestrator.epistemic))
+                                    target)
+                           "content-addressed latest χωρίς timestamp.tsr"))))))))
+        (chk (format nil "σαρώθηκαν ~D δημοσιευμένα releases (≥1 απαιτείται όταν υπάρχει output)" found)
+             (or (plusp found)
+                 (null (ignore-errors (uiop:subdirectories output-root))))))
+      (format t "~%── ΠΥΛΗ ΑΜΕΤΑΒΛΗΤΩΝ ΕΚΔΟΣΕΩΝ: ~D/~D πέρασαν ──~%"
+              (- total (length fails)) total)
+      (if fails 1 0))))
+
+(register-command "--release-gate"
+  (lambda (a) (declare (ignore a)) (run-release-gate)))
+
+(orchestrator.self-model:declare-capability! "περιφρούρηση-εκδόσεων"
+ :description "read-only πύλη ολομέλειας: κάθε δημοσιευμένο release (content-addressed ή legacy) έχει recomputed Merkle root ταυτόσημο με το δηλωμένο· content-addressed ⇒ όνομα ≡ περιεχόμενο· latest ⇒ υπαρκτό και (για content-addressed) attested"
+ :package :orchestrator.cli
+ :functions '("run-release-gate" "%rg-verify-release")
+ :gate "--release-gate"
+ :depends-on '("εξουσία-εκδόσεων"))
+
+(orchestrator.contracts:defcontract "release-immutability-guard" :protocol
+ :package :orchestrator.cli :system "orchestrator-cli"
+ :capability "περιφρούρηση-εκδόσεων" :role "έλεγχος"
+ :purpose "drift ή αλλοίωση σε ΟΠΟΙΟΔΗΠΟΤΕ δημοσιευμένο release (και στα ιστορικά legacy) κοκκινίζει την ολομέλεια — η αμεταβλητότητα επαληθεύεται, δεν υποτίθεται"
+ :inputs '("output/*/releases/** (committed δημοσιεύσεις)")
+ :outputs '("ετυμηγορία ανά release + ονομαστική απόκλιση")
+ :preconditions '("η ταυτότητα content-addressed release ορίζεται από %root->release-id")
+ :postconditions '("η πύλη δεν έγραψε τίποτα — read-only")
+ :side-effects '("καμία")
+ :legal-critical t :policy-level :φραγή
+ :audit "ανά release: δηλωμένο root, recomputed root, όνομα, attestation state"
+ :rollback "revert του commit εισαγωγής"
+ :tests '("--release-gate"))

@@ -32,6 +32,7 @@
 
    ;; GATE-1: Unified API with explicit source control
    #:now
+   #:require-deterministic-time
    #:format-iso8601
    #:parse-iso8601
    #:*mock-time*
@@ -159,6 +160,20 @@
      (unless *mock-time*
        (error "Mock time requested but *mock-time* is nil. Set it before calling (now :source :mock)."))
      *mock-time*)))
+
+(defun require-deterministic-time ()
+  "P1R [0046] — timestamp authority for OUTPUT-BOUND uses (release metadata,
+   serialized artifacts). Returns the fixed universal-time ONLY when
+   deterministic mode is active (SOURCE_DATE_EPOCH or
+   configure-deterministic-time). Otherwise SIGNALS AN ERROR — never a silent
+   wall-clock fallback: a published time claim must come from a DECLARED
+   authority, not from whatever clock happened to run the build."
+  (if (and *deterministic-mode* *fixed-timestamp*)
+      (local-time:timestamp-to-universal *fixed-timestamp*)
+      (error "require-deterministic-time: deterministic mode is NOT active — ~
+              set SOURCE_DATE_EPOCH (or call configure-deterministic-time) ~
+              before any output-bound timestamp use. Silent wall-clock ~
+              fallback is forbidden (P1R timestamp authority).")))
 
 (defun format-iso8601 (universal-time)
   "Format universal-time as ISO8601 string (UTC).
