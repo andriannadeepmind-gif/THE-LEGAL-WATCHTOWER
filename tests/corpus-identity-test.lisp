@@ -138,6 +138,16 @@
   (cit-check "⑧β χωρίς label ⇒ fallback στον αριθμό «7» (συμβατότητα)"
              (equal "7" (orchestrator.model:article-label n))))
 
+;;; ⑨ P1b [0049]: filename ≡ identity — το όνομα αρχείου προκύπτει από το LABEL,
+;;; ποτέ από τον εσωτερικό συνθετικό αριθμό αποσαφήνισης (5Α ⇒ number 5001).
+(let ((a (orchestrator.model:make-article :number 5001 :title "Άρθρο 5Α - Χ" :content "y")))
+  (setf (orchestrator.model:article-label a) "5Α")
+  (cit-check "⑨ file-id lettered: label «5Α» + συνθετικό number 5001 ⇒ «005Α» (όχι «5001Α»)"
+             (equal "005Α" (orchestrator.model:article-file-id a))))
+(let ((b (orchestrator.model:make-article :number 70 :title "Άρθρο 70" :content "y")))
+  (cit-check "⑨β file-id απλό: number 70 χωρίς label ⇒ «070»"
+             (equal "070" (orchestrator.model:article-file-id b))))
+
 (format t "~%========================================~%")
 (format t "Corpus identity tests: ~D passed, ~D failed~%" *cit-pass* *cit-fail*)
 (format t "========================================~%")

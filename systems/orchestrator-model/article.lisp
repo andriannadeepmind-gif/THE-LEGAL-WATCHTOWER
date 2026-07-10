@@ -190,8 +190,17 @@
 (defun article-file-id (article)
   "Canonical filesystem/eId identifier for ARTICLE that PRESERVES a letter
    suffix: '070' for article 70, '070Α' for article 70Α. Delegates to the single
-   source of truth PAD-ARTICLE-ID."
-  (pad-article-id (article-number article) (article-label article)))
+   source of truth PAD-ARTICLE-ID.
+
+   P1b [0049]: όταν υπάρχει LABEL, η αριθμητική ΒΑΣΗ του ονόματος προκύπτει
+   από το label (τη ΜΙΑ πηγή αλήθειας ταυτότητας) — ΟΧΙ από το article-number,
+   που για lettered άρθρα είναι εσωτερικός συνθετικός αριθμός αποσαφήνισης
+   (5Α ⇒ number 5001) και μόλυνε τα ονόματα αρχείων (article-5001Α αντί του
+   κανονικού article-005Α)."
+  (let* ((label (article-label article))
+         (base (or (and label (parse-integer (string label) :junk-allowed t))
+                   (article-number article))))
+    (pad-article-id base label)))
 
 (defun article-live-p (article)
   "Check if article is in live state"
