@@ -269,19 +269,27 @@
       (t (let ((p (orchestrator.paths:institution-dir "keys/tsa-ca.pem")))
            (and (probe-file p) p))))))
 
+(defparameter +tsa-ca-missing-sentinel+
+  "LAWMAX-TSA-CA-MISSING-v1"
+  "Κανονικό αποτύπωμα της τίμιας σημείωσης απουσίας TSA CA. Γράφεται από την
+   έδρα εκπομπής και ΑΠΑΙΤΕΙΤΑΙ από την πύλη, ώστε ένα αυθαίρετο/κενό/
+   παραπλανητικό tsa-ca.MISSING.txt (π.χ. «η επαλήθευση πέρασε») να ΜΗΝ
+   γίνεται δεκτό ως έγκυρος δείκτης απουσίας.")
+
 (defun %emit-tsa-ca-or-honest-note (tsa-ca-path)
   "Γράφει tsa-ca.pem ΜΟΝΟ από γνήσια, δομικά επικυρωμένη X.509 CA αλυσίδα του
-   χειριστή. Αν δεν υπάρχει έγκυρη, ΔΕΝ γράφει ψευδο-cert — γράφει τίμια
-   σημείωση (tsa-ca.MISSING.txt) που εξηγεί ότι η πλήρης RFC-3161 CA
-   επαλήθευση απαιτεί την pinned CA του χειριστή. Άκυρη παρεχόμενη CA ⇒
-   ΣΦΑΛΜΑ (ο χειριστής έδωσε σκουπίδι — δεν το κρύβουμε)."
+   χειριστή (ΚΑΘΕ block της αλυσίδας επικυρώνεται — όχι μόνο η κεφαλή). Αν δεν
+   υπάρχει έγκυρη, ΔΕΝ γράφει ψευδο-cert — γράφει τίμια σημείωση
+   (tsa-ca.MISSING.txt με κανονικό sentinel). Άκυρη παρεχόμενη CA ⇒ ΣΦΑΛΜΑ
+   (ο χειριστής έδωσε σκουπίδι — δεν το κρύβουμε)."
   (let ((src (%operator-tsa-ca-source))
         (note-path (merge-pathnames "tsa-ca.MISSING.txt"
                                     (uiop:pathname-directory-pathname tsa-ca-path))))
     (cond
       (src
        (let ((pem (uiop:read-file-string src)))
-         ;; Δομική φραγή: γνήσιο X.509 ή σφάλμα — ποτέ ψευδο-blob σε release.
+         ;; Δομική φραγή: ΚΑΘΕ cert της αλυσίδας γνήσιο X.509 ή σφάλμα —
+         ;; ποτέ ψευδο-blob (ούτε στην ουρά του bundle) σε release.
          (orchestrator.x509-authority:assert-valid-x509-pem pem "tsa-ca.pem")
          (alexandria:write-string-into-file pem tsa-ca-path :if-exists :supersede)
          (when (probe-file note-path) (ignore-errors (delete-file note-path)))
@@ -290,14 +298,15 @@
       (t
        (when (probe-file tsa-ca-path) (ignore-errors (delete-file tsa-ca-path)))
        (alexandria:write-string-into-file
-        (format nil "TSA CA certificate ΔΕΝ διανέμεται με αυτό το release.~%~%~
+        (format nil "~A~%TSA CA certificate ΔΕΝ διανέμεται με αυτό το release.~%~%~
 Η ΠΛΗΡΗΣ RFC-3161 επαλήθευση της χρονοσφραγίδας (αλυσίδα CA → TSA) απαιτεί την~%~
 pinned CA αλυσίδα που παρέχει ο χειριστής (env TSA_CA_BUNDLE ή keys/tsa-ca.pem).~%~
 Το σύστημα ΑΡΝΕΙΤΑΙ να διανείμει ψευδο/ληγμένο πιστοποιητικό ως υλικό~%~
 επαλήθευσης — τίμια άγνοια αντί για παραίσθηση ασφάλειας.~%~%~
 Οι δεσμοί που ΕΠΑΛΗΘΕΥΟΝΤΑΙ ΧΩΡΙΣ αυτό: Merkle root ≡ ταυτότητα release,~%~
 JWS υπογραφή, ύπαρξη/imprint-binding του RFC-3161 receipt (timestamp.tsr).~%~
-Η πλήρης κρυπτογραφική επαλήθευση της αλυσίδας TSA είναι δηλωμένη φάση P4+.~%")
+Η πλήρης κρυπτογραφική επαλήθευση της αλυσίδας TSA είναι δηλωμένη φάση P4+.~%"
+                +tsa-ca-missing-sentinel+)
         note-path :if-exists :supersede)
        (log:info () "tsa-ca.pem: καμία γνήσια CA — γράφτηκε τίμια σημείωση (καμία ψευδο-διανομή)")
        nil))))
@@ -320,9 +329,16 @@ JWS υπογραφή, ύπαρξη/imprint-binding του RFC-3161 receipt (time
        (values nil "και tsa-ca.pem ΚΑΙ tsa-ca.MISSING.txt — διφορούμενο υλικό επαλήθευσης"))
       ((and (not pem-p) (not note-p))
        (values nil "ούτε tsa-ca.pem ούτε tsa-ca.MISSING.txt — σιωπηλή παράλειψη υλικού επαλήθευσης"))
-      (note-p t)
+      (note-p
+       ;; Η σημείωση απουσίας πρέπει να φέρει το κανονικό sentinel — κενό ή
+       ;; παραπλανητικό περιεχόμενο («η επαλήθευση πέρασε») ΔΕΝ γίνεται δεκτό.
+       (if (search +tsa-ca-missing-sentinel+ (uiop:read-file-string note-path))
+           t
+           (values nil "tsa-ca.MISSING.txt χωρίς κανονικό sentinel — μη-έγκυρος δείκτης απουσίας")))
       (t (handler-case
              (progn
+               ;; ΚΑΘΕ block της αλυσίδας επικυρώνεται (assert-valid-x509-pem
+               ;; είναι πλέον chain-aware) — όχι μόνο η κεφαλή του bundle.
                (orchestrator.x509-authority:assert-valid-x509-pem
                 (uiop:read-file-string pem-path) "verify/tsa-ca.pem")
                t)

@@ -14,14 +14,35 @@ claim+hash+signature): αρκετά ώστε ΤΡΙΤΟΣ να ΞΑΝΑΫΠΟΛ�
 audit-άρει ο καθένας σε ένα απόγευμα.
 
 ## 1 · Merkle criterion (ΜΙΑ έδρα, RFC-6962)
-ΟΛΑ τα Merkle δέντρα του συστήματος υπακούν σε ΕΝΑ κανόνα (ενοποίηση στο
-P1.5· σήμερα η `proof-carrying.lisp` συμμορφή, η `merkle-tree.lisp` όχι):
+ΟΛΑ τα Merkle δέντρα του συστήματος υπακούν σε ΕΝΑ κανόνα (ενοποίηση στο P1.5):
 - **leaf** = SHA-256( 0x00 ‖ bytes ) — domain separation
 - **node** = SHA-256( 0x01 ‖ left ‖ right ) — domain separation
 - περιττός κόμβος: **unbalanced split** (RFC-6962), ΟΧΙ duplicate-last
   (η κλάση CVE-2012-2459: διαφορετικά φύλλα ⇒ ίδιο root).
 Χωρίς domain separation ένα 64-byte φύλλο είναι second-preimage εσωτερικού
 κόμβου — απαράδεκτο όταν εκδίδουμε inclusion proofs σε τρίτους.
+
+**Απογραφή εδρών προς ένωση (τίμια, πλήρης — [0057] αντιπαλικός γύρος).** Η
+ένωση P1.5 πρέπει να απορροφήσει ΟΛΕΣ τις παρακάτω, όχι μόνο το ζεύγος που
+δηλωνόταν αρχικά. Ο αντίπαλος [0057] απέδειξε ότι στα ΙΔΙΑ φύλλα δίνουν
+**αποκλίνουσες ρίζες** — μη-αποδεκτό για ΜΙΑ έννοια:
+- `proof-carrying.lisp` — RFC-6962-**συμμορφή** (η αναφορά).
+- `systems/orchestrator-epistemic/…merkle-tree.lisp` — release Merkle root· ΜΗ
+  domain-separated (άλλαγμα ⇒ νέα release ids ⇒ ανήκει στη γενιά P1.5).
+- `source/corpus-fingerprint.lisp:94` `%merkle-root` — SHA-256, odd→self-pair.
+- `source/legal-audit-system.lisp:571/576` `compute-merkle-root`/
+  `compute-merkle-tree-root` — SHA-512, odd→promote.
+- `systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:133`
+  `compute-merkle-root` — SHA-256, **duplicate-last** (η ίδια CVE-2012-2459
+  κλάση που το κριτήριο καταδικάζει).
+- `source/semantic-authority.lisp:653` `compute-merkle-root` — concat+SHA-512
+  (ΔΕΝ είναι δέντρο· ψευδώνυμο· μετονομασία/θάνατος).
+- `source/hash-authority.lisp:55` `merkle-root` — exported tombstone που πάντα
+  σφάλλει (νεκρό δημόσιο API· διαγραφή).
+Γιατί ΟΧΙ τώρα: η ένωση αλλάζει proof bytes (⇒ νέες release ids) και απαιτεί
+τον RFC-6962 σχεδιασμό αυτού του §1 — είναι φάση P1.5 με έγκριση δημιουργού,
+όχι artifact-neutral διόρθωση. Η δήλωση εδώ την κάνει **δομικά αδύνατο να
+ξεχαστεί** καμία έδρα κατά την ένωση.
 
 ## 2 · Artifact Census (9ο κανονικό αρχείο, P1.5) — σχήμα
 ```

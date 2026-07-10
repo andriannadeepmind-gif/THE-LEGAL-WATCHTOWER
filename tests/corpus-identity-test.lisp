@@ -384,17 +384,19 @@ C2N2CWKbYQK7VqKJnCWmYQq1GfFQGw==
                   (let ((r (orchestrator.consolidation:amending-act-recorded a2)))
                     (and r (plusp (length r)))))))
 
-;;; ㉕ [0056]: exactly-one-of gate — υλικό TSA CA release: ΑΚΡΙΒΩΣ ένα από
-;;; {δομικά έγκυρο tsa-ca.pem, tsa-ca.MISSING.txt}. Αυστηρά ισχυρότερο από το
-;;; προ-P1.4 (παρουσία-μόνο, δεχόταν ψευδο-blob) ΚΑΙ από το ενδιάμεσο P1.4
-;;; (επέτρεπε σιωπηλά κανένα από τα δύο).
-(cit-check "㉕ tsa-ca gate: κανένα⇒NIL· δύο⇒NIL· ψευδο⇒NIL· note⇒T· γνήσιο⇒T"
+;;; ㉕ [0056]/[0057]: exactly-one-of gate — υλικό TSA CA release: ΑΚΡΙΒΩΣ ένα από
+;;; {δομικά έγκυρο tsa-ca.pem, tsa-ca.MISSING.txt με ΚΑΝΟΝΙΚΟ sentinel}. Αυστηρά
+;;; ισχυρότερο από το προ-P1.4 (παρουσία-μόνο, δεχόταν ψευδο-blob), το ενδιάμεσο
+;;; P1.4 (επέτρεπε σιωπηλά κανένα) ΚΑΙ το [0056] (η σημείωση δεχόταν αυθαίρετο
+;;; περιεχόμενο).
+(cit-check "㉕ tsa-ca gate: κανένα/δύο/ψευδο/note-χωρίς-sentinel⇒NIL· note+sentinel/γνήσιο⇒T"
            (let* ((base (merge-pathnames "cit-tsa-gate/" (uiop:temporary-directory)))
+                  (sentinel orchestrator.epistemic::+tsa-ca-missing-sentinel+)
                   (fake "-----BEGIN CERTIFICATE-----
 MIIGQDCCBSigAwIBAgIJAI+F9s9cXyXyMA0GCSqGSIb3DQEBCwUAMIGwMQswCQYD
 C2N2CWKbYQK7VqKJnCWmYQq1GfFQGw==
 -----END CERTIFICATE-----")
-                  (mk (lambda (name pem-string note-p)
+                  (mk (lambda (name pem-string note-content)
                         (let* ((dir (merge-pathnames (format nil "~A/" name) base))
                                (vdir (merge-pathnames "verify/" dir)))
                           (ensure-directories-exist vdir)
@@ -402,9 +404,9 @@ C2N2CWKbYQK7VqKJnCWmYQq1GfFQGw==
                             (alexandria:write-string-into-file
                              pem-string (merge-pathnames "tsa-ca.pem" vdir)
                              :if-exists :supersede))
-                          (when note-p
+                          (when note-content
                             (alexandria:write-string-into-file
-                             "τίμια σημείωση" (merge-pathnames "tsa-ca.MISSING.txt" vdir)
+                             note-content (merge-pathnames "tsa-ca.MISSING.txt" vdir)
                              :if-exists :supersede))
                           dir)))
                   (gate (lambda (dir) (orchestrator.epistemic::%tsa-ca-material-ok-p dir)))
@@ -414,12 +416,58 @@ C2N2CWKbYQK7VqKJnCWmYQq1GfFQGw==
                               :private-key (getf kp :private-key)
                               :public-key (getf kp :public-key)
                               :common-name "T" :organization "T" :country "GR" :days 365)
-                             "CERTIFICATE")))
+                             "CERTIFICATE"))
+                  (good-note (format nil "~A~%τίμια σημείωση απουσίας" sentinel)))
              (and (not (funcall gate (funcall mk "none" nil nil)))
-                  (not (funcall gate (funcall mk "both" fake t)))
+                  (not (funcall gate (funcall mk "both" fake good-note)))
                   (not (funcall gate (funcall mk "fake" fake nil)))
-                  (funcall gate (funcall mk "note" nil t))
+                  ;; [0057]: σημείωση χωρίς κανονικό sentinel ⇒ NIL
+                  (not (funcall gate (funcall mk "note-bad" nil "η επαλήθευση πέρασε")))
+                  (funcall gate (funcall mk "note" nil good-note))
                   (funcall gate (funcall mk "real" real-pem nil)))))
+
+;;; ㉖ [0057]: αντιπαλικός γύρος — ΜΙΑ έδρα ASN.1 (αυστηρό minimal DER + όριο
+;;; βάθους) + chain-aware X.509 φραγή. Κλείνει τα ευρήματα του κριτή:
+;;;   #10 μη-ελάχιστο long-form ⇒ σφάλμα· #9 βαθιά εμφώλευση ⇒ asn1-error (όχι
+;;;   crash)· #7/#12 bundle με σκουπίδι ουρά ⇒ σφάλμα· #11 κούφιο shaped cert ⇒ NIL.
+(cit-check "㉖ asn1 αυστηρό+βαθος + x509 chain-aware (5 επιθέσεις κλεισμένες)"
+           (flet ((rej-tlv (bytes)
+                    (handler-case
+                        (progn (orchestrator.asn1:der-read-tlv
+                                (coerce bytes '(vector (unsigned-byte 8))) 0) nil)
+                      (orchestrator.asn1:asn1-error () t))))
+             (let* ((deep (let ((cur (coerce '(#x30 #x00) '(vector (unsigned-byte 8)))))
+                            (dotimes (i 199 cur)
+                              (setf cur (concatenate '(vector (unsigned-byte 8))
+                                                     (vector #x30)
+                                                     (orchestrator.asn1:encode-asn1-length (length cur))
+                                                     cur)))))
+                    (kp (orchestrator.jws-authority:generate-rsa-keypair :bits 2048))
+                    (der (orchestrator.x509-authority:generate-self-signed-certificate
+                          :private-key (getf kp :private-key) :public-key (getf kp :public-key)
+                          :common-name "T" :organization "T" :country "GR" :days 365))
+                    (one (orchestrator.asn1:der->pem der "CERTIFICATE"))
+                    (head-garbage (concatenate 'string one
+                                               "-----BEGIN CERTIFICATE-----
+Tm90QUNlcnQ=
+-----END CERTIFICATE-----
+"))
+                    (hollow (orchestrator.asn1:encode-asn1-sequence
+                             (list (orchestrator.asn1:encode-asn1-sequence nil)
+                                   (orchestrator.asn1:encode-asn1-sequence nil)
+                                   (orchestrator.asn1:encode-asn1-bit-string #())))))
+               (and ;; #10 μη-ελάχιστο μήκος
+                    (rej-tlv '(#x04 #x81 #x05 0 0 0 0 0))
+                    (rej-tlv '(#x04 #x82 #x00 #xC8))
+                    ;; #9 βαθιά εμφώλευση ⇒ asn1-error, όχι crash
+                    (handler-case (progn (orchestrator.asn1:der-sequence-elements deep 0) nil)
+                      (orchestrator.asn1:asn1-error () t))
+                    ;; #7/#12 chain: γνήσιο μονό ⇒ T· κεφαλή+σκουπίδι ⇒ error
+                    (orchestrator.x509-authority:assert-valid-x509-pem one)
+                    (handler-case (progn (orchestrator.x509-authority:assert-valid-x509-pem head-garbage) nil)
+                      (error () t))
+                    ;; #11 κούφιο shaped cert ⇒ NIL
+                    (not (orchestrator.x509-authority:valid-x509-certificate-der-p hollow))))))
 
 (format t "~%========================================~%")
 (format t "Corpus identity tests: ~D passed, ~D failed~%" *cit-pass* *cit-fail*)

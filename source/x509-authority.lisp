@@ -330,17 +330,16 @@
 ;;; ============================================================================
 
 (defun sign-tbs-certificate (tbs-bytes private-key)
-  "Sign TBSCertificate with RSA-SHA256"
-  (let* ((digest (ironclad:digest-sequence :sha256 tbs-bytes))
-         ;; DigestInfo for SHA-256: SEQUENCE { AlgorithmIdentifier, OCTET STRING }
-         (digest-info (encode-asn1-sequence
-                       (list (encode-asn1-sequence
-                              (list (encode-asn1-oid '(2 16 840 1 101 3 4 2 1))  ; SHA-256
-                                    (encode-asn1-null)))
-                             (encode-asn1-octet-string digest))))
-         ;; PKCS#1 v1.5 padding and signing
-         (signature (ironclad:sign-message private-key digest-info)))
-    signature))
+  "Sign TBSCertificate with sha256WithRSAEncryption.
+
+   [0057]: ΜΙΑ έδρα υπογραφής — orchestrator.jws-authority:sign-rsa-sha256,
+   που χτίζει το ΠΛΗΡΕΣ EMSA-PKCS1-v1_5 encoded message (0x00 0x01 PS 0x00
+   DigestInfo) πριν την raw RSA πράξη (RFC 8017 §8.2.1). Η προηγούμενη τοπική
+   υλοποίηση περνούσε ΓΥΜΝΟ το DigestInfo στο ironclad:sign-message (raw RSA,
+   ΧΩΡΙΣ padding) ⇒ μη-συμμορφείς υπογραφές που κανένα εξωτερικό εργαλείο δεν
+   επαλήθευε· ταυτόχρονα διπλασίαζε το DigestInfo/σταθερά SHA-256 του
+   jws-authority. Και τα δύο κλείνουν εδώ, στη ΜΙΑ έδρα."
+  (orchestrator.jws-authority:sign-rsa-sha256 tbs-bytes private-key))
 
 ;;; ============================================================================
 ;;; CERTIFICATE GENERATION
@@ -434,7 +433,11 @@
   "T αν τα DER bytes είναι καλοσχηματισμένη X.509 Certificate δομή:
    SEQUENCE { tbsCertificate SEQUENCE, signatureAlgorithm SEQUENCE,
    signatureValue BIT STRING }, με το εξωτερικό μήκος να ταιριάζει ΑΚΡΙΒΩΣ με
-   το buffer (καμία ουρά). Επιστρέφει (values NIL reason) σε αποτυχία."
+   το buffer (καμία ουρά). Επιπλέον δομικοί έλεγχοι (ώστε κούφιο shaped ψευδο-
+   cert να ΜΗΝ περνά): tbsCertificate μη-κενό με πρώτο στοιχείο version[0]
+   (0xA0) ή serialNumber INTEGER (0x02)· signatureAlgorithm ξεκινά με OID
+   (0x06)· signatureValue BIT STRING μη-κενό. ΔΕΝ επαληθεύει υπογραφή/αλυσίδα
+   εμπιστοσύνης — αυτό είναι δηλωμένη φάση P4. Επιστρέφει (values NIL reason)."
   (handler-case
       (multiple-value-bind (tag cstart clen next) (der-read-tlv der 0)
         (cond
@@ -442,36 +445,50 @@
           ((/= next (length der)) (values nil "ουρά bytes μετά το certificate SEQUENCE"))
           (t
            ;; Τρία παιδιά: tbs SEQUENCE, sigAlg SEQUENCE, sig BIT STRING
-           (multiple-value-bind (t1 s1 l1 n1) (der-read-tlv der cstart)
-             (declare (ignore s1 l1))
-             (multiple-value-bind (t2 s2 l2 n2) (der-read-tlv der n1)
-               (declare (ignore s2 l2))
-               (multiple-value-bind (t3 s3 l3 n3) (der-read-tlv der n2)
-                 (declare (ignore s3 l3))
+           (multiple-value-bind (t1 c1 cl1 n1) (der-read-tlv der cstart)
+             (multiple-value-bind (t2 c2 cl2 n2) (der-read-tlv der n1)
+               (declare (ignore cl2))
+               (multiple-value-bind (t3 c3 cl3 n3) (der-read-tlv der n2)
                  (cond
                    ((/= t1 #x30) (values nil "tbsCertificate ≠ SEQUENCE"))
                    ((/= t2 #x30) (values nil "signatureAlgorithm ≠ SEQUENCE"))
                    ((/= t3 #x03) (values nil "signatureValue ≠ BIT STRING"))
                    ((/= n3 (+ cstart clen)) (values nil "τα 3 πεδία δεν γεμίζουν το certificate SEQUENCE"))
-                   (t t))))))))
+                   ((zerop cl1) (values nil "tbsCertificate κενό"))
+                   ((zerop cl3) (values nil "signatureValue (BIT STRING) κενό"))
+                   (t
+                    ;; tbs: πρώτο στοιχείο = version[0] (0xA0) ή serial INTEGER (0x02)
+                    (let ((tbs-first (der-read-tlv der c1))
+                          ;; sigAlg: πρώτο στοιχείο = OID (0x06)
+                          (sigalg-first (der-read-tlv der c2)))
+                      (cond
+                        ((not (or (= tbs-first #xA0) (= tbs-first #x02)))
+                         (values nil "tbsCertificate: πρώτο στοιχείο ≠ version[0]/serial INTEGER"))
+                        ((/= sigalg-first #x06)
+                         (values nil "signatureAlgorithm: δεν ξεκινά με OID"))
+                        (t t)))))))))))
     (asn1-error (e) (values nil (orchestrator.asn1:asn1-error-message e)))
     (error (e) (values nil (format nil "~A" e)))))
 
 (defun assert-valid-x509-pem (pem-string &optional (where "certificate"))
-  "Επικυρώνει ότι το PEM-STRING είναι ΟΝΤΩΣ έγκυρη X.509 δομή· σφάλμα X509-ERROR
-   αλλιώς (και για άκυρο PEM περίβλημα — ενιαίος τύπος συνθήκης της φραγής).
-   Η φραγή που κάνει το ψευδο-πιστοποιητικό δομικά αδύνατο σε release."
-  (let ((der (handler-case (pem->der pem-string "CERTIFICATE")
-               (asn1-error (e)
+  "Επικυρώνει ότι το PEM-STRING είναι ΑΛΥΣΙΔΑ (≥1) έγκυρων X.509 δομών: ΚΑΘΕ
+   CERTIFICATE block περνά το valid-x509-certificate-der-p ΚΑΙ δεν υπάρχουν
+   non-whitespace bytes εκτός των blocks. Σφάλμα X509-ERROR αλλιώς (και για
+   άκυρο PEM περίβλημα — ενιαίος τύπος συνθήκης της φραγής). Κλείνει την τρύπα
+   «μόνο το πρώτο block»: bundle με καλή κεφαλή αλλά σκουπίδι ουρά ΑΠΟΡΡΙΠΤΕΤΑΙ."
+  (let ((blocks (handler-case (orchestrator.asn1:pem->der-all-blocks pem-string "CERTIFICATE")
+                  (asn1-error (e)
+                    (error 'x509-error
+                           :message (format nil "~A: ~A" where
+                                            (orchestrator.asn1:asn1-error-message e)))))))
+    (loop for der in blocks
+          for i from 1
+          do (multiple-value-bind (ok reason) (valid-x509-certificate-der-p der)
+               (unless ok
                  (error 'x509-error
-                        :message (format nil "~A: ~A" where
-                                         (orchestrator.asn1:asn1-error-message e)))))))
-    (multiple-value-bind (ok reason) (valid-x509-certificate-der-p der)
-      (unless ok
-        (error 'x509-error
-               :message (format nil "~A: ΔΕΝ είναι έγκυρο X.509 πιστοποιητικό (~A) — άρνηση διανομής ψευδο-υλικού επαλήθευσης"
-                                where reason)))
-      t)))
+                        :message (format nil "~A: block #~D ΔΕΝ είναι έγκυρο X.509 πιστοποιητικό (~A) — άρνηση διανομής ψευδο-υλικού επαλήθευσης"
+                                         where i reason)))))
+    t))
 
 (defun save-certificate-pem (certificate-der output-path)
   "Save DER certificate as PEM file"

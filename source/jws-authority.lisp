@@ -18,6 +18,7 @@
   (:use :cl)
   (:import-from :orchestrator.asn1
                 #:pem->der
+                #:der->pem
                 #:der-sequence-elements
                 #:der-integer-value
                 #:encode-asn1-sequence
@@ -39,6 +40,10 @@
    ;; JWS utilities
    #:base64url-encode
    #:base64url-decode
+   ;; RSASSA-PKCS1-v1_5 / SHA-256 — Η ΜΙΑ έδρα υπογραφής (RFC 8017 §8.2)·
+   ;; την καταναλώνει και το x509-authority (αντί για raw-RSA χωρίς padding).
+   #:sign-rsa-sha256
+   #:verify-rsa-sha256
    ;; Conditions
    #:jws-error
    #:key-not-found
@@ -507,18 +512,11 @@
 
    Returns:
      PEM string"
-  (let* ((der-bytes (rsa-key-to-der key type :public-key public-key))
-         (b64 (cl-base64:usb8-array-to-base64-string der-bytes))
-         ;; Split into 64-char lines
-         (lines (loop for i from 0 below (length b64) by 64
-                      collect (subseq b64 i (min (+ i 64) (length b64)))))
-         (header (if (eq type :private)
-                     "-----BEGIN RSA PRIVATE KEY-----"
-                     "-----BEGIN PUBLIC KEY-----"))
-         (footer (if (eq type :private)
-                     "-----END RSA PRIVATE KEY-----"
-                     "-----END PUBLIC KEY-----")))
-    (format nil "~A~%~{~A~%~}~A~%" header lines footer)))
+  ;; [0057]: ΜΙΑ έδρα PEM-encode — orchestrator.asn1:der->pem (RFC 7468,
+  ;; γραμμές 64 χαρ.). Το προηγούμενο χειροποίητο base64+φρουροί ήταν 3ο
+  ;; αντίγραφο του der->pem.
+  (der->pem (rsa-key-to-der key type :public-key public-key)
+            (if (eq type :private) "RSA PRIVATE KEY" "PUBLIC KEY")))
 
 (defun rsa-key-to-der (key type &key public-key)
   "Convert RSA key to DER format

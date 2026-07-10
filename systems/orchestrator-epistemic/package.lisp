@@ -258,9 +258,10 @@
    #:immutable-slot-error
 
    ;; Temporal proof
-   #:request-rfc3161-timestamp
+   ;; [0057]: request-rfc3161-timestamp αφαιρέθηκε (ΜΙΑ έδρα RFC-3161 =
+   ;; orchestrator.timestamp-authority)· submit-to-multiple-ct-logs ήταν
+   ;; orphan export (καμία υλοποίηση).
    #:submit-to-ct-log
-   #:submit-to-multiple-ct-logs
    #:sign-manifest-jws
 
    ;; SHACL shapes

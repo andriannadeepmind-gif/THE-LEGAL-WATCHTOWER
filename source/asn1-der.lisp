@@ -43,6 +43,7 @@
    #:encode-asn1-context-specific
    ;; PEM ↔ DER (RFC 7468)
    #:pem->der
+   #:pem->der-all-blocks
    #:der->pem))
 
 (in-package :orchestrator.asn1)
@@ -60,10 +61,18 @@
 ;;; ΑΥΣΤΗΡΗ ΑΠΟΚΩΔΙΚΟΠΟΙΗΣΗ DER
 ;;; ============================================================================
 
+(defparameter +der-max-depth+ 64
+  "Ανώτατο βάθος εμφώλευσης SEQUENCE που αποκωδικοποιεί η έδρα. Κάθε γνήσια
+   δομή του συστήματος (X.509 ~8, RSA κλειδιά ~3, RFC-3161 ~5) είναι πολύ κάτω
+   από αυτό· το όριο υπάρχει ώστε κακόβουλη βαθιά εμφώλευση να εγείρει ASN1-ERROR
+   ΠΡΙΝ εξαντληθεί η στοίβα ελέγχου (θανατηφόρα, μη-ανακτήσιμη κατάρρευση
+   διεργασίας). Εξάλειψη της κλάσης σφάλματος, όχι φρουρός γύρω της.")
+
 (defun der-read-tlv (bytes offset)
   "Διάβασε ΕΝΑ ASN.1 TLV στο OFFSET. Επιστρέφει (values tag content-start
    content-len next-offset). Σφάλμα ASN1-ERROR σε κακοσχηματισμένο tag/μήκος,
-   αόριστο μήκος (BER), πεδίο μήκους >4 bytes ή υπέρβαση buffer."
+   αόριστο μήκος (BER), ΜΗ-ΕΛΑΧΙΣΤΟ μήκος (X.690 §10.1: leading zero octet ή
+   long-form για <128 — μη-DER), πεδίο μήκους >4 bytes ή υπέρβαση buffer."
   (let ((len (length bytes)))
     (when (>= offset len)
       (error 'asn1-error :message "DER: πρόωρο τέλος (tag)"))
@@ -85,20 +94,32 @@
                         (error 'asn1-error :message "DER: υπερμέγεθες πεδίο μήκους"))
                       (when (> (+ p num) len)
                         (error 'asn1-error :message "DER: πρόωρο τέλος (long length)"))
+                      ;; X.690 §10.1: ελάχιστη κωδικοποίηση μήκους — κανένα
+                      ;; προπορευόμενο μηδενικό octet.
+                      (when (zerop (aref bytes p))
+                        (error 'asn1-error :message "DER: μη-ελάχιστο μήκος (leading zero octet)"))
                       (let ((acc 0))
                         (dotimes (i num) (setf acc (logior (ash acc 8) (aref bytes (+ p i)))))
                         (incf p num)
+                        ;; X.690 §10.1: long-form επιτρέπεται ΜΟΝΟ για μήκος ≥ 128.
+                        (when (< acc 128)
+                          (error 'asn1-error :message "DER: μη-ελάχιστο μήκος (long-form για <128)"))
                         acc)))))
           (when (> (+ p content-len) len)
             (error 'asn1-error :message "DER: το μήκος περιεχομένου υπερβαίνει το buffer"))
           (values tag p content-len (+ p content-len)))))))
 
-(defun der-sequence-elements (bytes &optional (offset 0))
+(defun der-sequence-elements (bytes &optional (offset 0) (depth 0))
   "Αποκωδικοποίησε ένα SEQUENCE στο OFFSET σε λίστα στοιχείων:
      NULL ⇒ NIL · εμφωλευμένο SEQUENCE ⇒ λίστα (αναδρομικά) ·
      κάθε άλλο tag (INTEGER/BIT STRING/OCTET STRING/OID/…) ⇒ τα content bytes.
-   Σφάλμα ASN1-ERROR αν το OFFSET δεν δείχνει SEQUENCE ή αν παιδί υπερβαίνει
-   το όριο του SEQUENCE (αυστηρό DER — καμία σιωπηλή αποκοπή)."
+   Σφάλμα ASN1-ERROR αν το OFFSET δεν δείχνει SEQUENCE, αν παιδί υπερβαίνει το
+   όριο του SEQUENCE (αυστηρό DER — καμία σιωπηλή αποκοπή), ή αν το βάθος
+   εμφώλευσης ξεπεράσει το +DER-MAX-DEPTH+ (προστασία στοίβας)."
+  (when (> depth +der-max-depth+)
+    (error 'asn1-error
+           :message (format nil "DER: βάθος εμφώλευσης > ~D — άρνηση (προστασία στοίβας)"
+                            +der-max-depth+)))
   (multiple-value-bind (tag content-start content-len)
       (der-read-tlv bytes offset)
     (unless (= tag #x30)
@@ -114,7 +135,7 @@
                    (error 'asn1-error :message "DER: στοιχείο υπερβαίνει το όριο του SEQUENCE"))
                  (push (cond ((= ctag #x05) nil)                      ; NULL
                              ((= ctag #x30)                           ; nested SEQUENCE
-                              (der-sequence-elements bytes pos))
+                              (der-sequence-elements bytes pos (1+ depth)))
                              (t (subseq bytes cstart (+ cstart clen))))
                        elements)
                  (setf pos cnext)))
@@ -295,6 +316,47 @@
                 (error (ex)
                   (error 'asn1-error
                          :message (format nil "PEM ~A: άκυρο base64 (~A)" label ex)))))))))))
+
+(defun %pem-whitespace-p (c)
+  (member c '(#\Newline #\Return #\Space #\Tab #\Page)))
+
+(defun pem->der-all-blocks (pem-string label)
+  "ΟΛΑ τα DER blocks με το δοσμένο LABEL, με τη σειρά εμφάνισης, ως λίστα από
+   (vector (unsigned-byte 8)). Σφάλμα ASN1-ERROR αν: κανένα block δεν βρεθεί,
+   ένα base64 είναι άκυρο, ένα BEGIN δεν έχει αντίστοιχο END, ή υπάρχουν
+   non-whitespace bytes ΕΚΤΟΣ των blocks (καμία λαθραία κεφαλή/ουρά/ενδιάμεσο).
+   Αυτή είναι η ΜΙΑ έδρα ανάγνωσης αλυσίδας PEM — κλείνει την τρύπα «μόνο το
+   πρώτο block» του pem->der, ώστε ένα CA bundle να επικυρώνεται ΟΛΟΚΛΗΡΟ."
+  (let ((begin (format nil "-----BEGIN ~A-----" label))
+        (end   (format nil "-----END ~A-----" label))
+        (blocks nil)
+        (cursor 0))
+    (loop
+      (let ((b (search begin pem-string :start2 cursor)))
+        (cond
+          ((null b)
+           (when (find-if-not #'%pem-whitespace-p pem-string :start cursor)
+             (error 'asn1-error
+                    :message (format nil "PEM ~A: non-whitespace bytes εκτός block (ουρά)" label)))
+           (return))
+          (t
+           (when (find-if-not #'%pem-whitespace-p pem-string :start cursor :end b)
+             (error 'asn1-error
+                    :message (format nil "PEM ~A: non-whitespace bytes εκτός block (πριν BEGIN)" label)))
+           (let ((e (search end pem-string :start2 (+ b (length begin)))))
+             (unless e
+               (error 'asn1-error :message (format nil "PEM ~A: BEGIN χωρίς END" label)))
+             (let* ((body (subseq pem-string (+ b (length begin)) e))
+                    (b64 (remove-if #'%pem-whitespace-p body)))
+               (push (handler-case (cl-base64:base64-string-to-usb8-array b64)
+                       (error (ex)
+                         (error 'asn1-error
+                                :message (format nil "PEM ~A: άκυρο base64 (~A)" label ex))))
+                     blocks))
+             (setf cursor (+ e (length end))))))))
+    (when (null blocks)
+      (error 'asn1-error :message (format nil "PEM: λείπουν οι φρουροί ~A" label)))
+    (nreverse blocks)))
 
 (defun der->pem (der-bytes label)
   "Κωδικοποίηση DER bytes σε PEM μπλοκ με το δοσμένο LABEL (γραμμές 64 χαρ.)."
