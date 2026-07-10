@@ -1308,7 +1308,9 @@ document.getElementById('ops').addEventListener('click',function(ev){
         (when priv (format t "  🔑 Root authority key loaded — site corpus roots will be SIGNED.~%"))
         (orchestrator.static-site:emit-static-site
          docs out :base-uri base :private-key priv :public-jwk pub-jwk
-         :anchored-at "2025-01-01T00:00:00Z")
+         :anchored-at ;; [P1.5-C] commitment-time από την έδρα χρόνου (ΟΧΙ ψεύτικη σταθερά)·
+                          ;; ο ΑΠΟΔΕΔΕΙΓΜΕΝΟΣ χρόνος ζει στο RFC-3161 receipt του release.
+                          (orchestrator.time:format-iso8601 (orchestrator.time:require-deterministic-time)))
         (publish-verifier-assets out pub-jwk))
       (format t "~%✓ Static site emitted to ~A  (~D corpora, base ~A)~%" out (length docs) base)
       (format t "  Deploy: wrangler pages deploy ~A~%" out)
@@ -1718,7 +1720,8 @@ document.getElementById('ops').addEventListener('click',function(ev){
         (when (and mk asrt plist src (probe-file src))
           (let ((anchor (funcall mk :fek fek :source-file src :source-uri uri
                                  :articles articles :extraction-method method
-                                 :retrieved-at "2025-01-01T00:00:00Z")))
+                                 :retrieved-at ;; [P1.5-C] commitment-time από την έδρα χρόνου (ΟΧΙ ψεύτικη σταθερά)
+                                 (orchestrator.time:format-iso8601 (orchestrator.time:require-deterministic-time)))))
             ;; GATE on the DERIVATION: the served text must reproduce extraction-digest.
             (funcall asrt anchor :articles articles)
             (funcall plist anchor))))
@@ -1758,7 +1761,9 @@ document.getElementById('ops').addEventListener('click',function(ev){
                                                        (and (plusp (length abbr)) abbr))))))
               (multiple-value-bind (root count sig)
                   (funcall (find-symbol "WRITE-PROVISION-PROOFS" :orchestrator.proof-carrying)
-                           provisions out-dir :anchored-at "2025-01-01T00:00:00Z"
+                           provisions out-dir :anchored-at ;; [P1.5-C] commitment-time από την έδρα χρόνου (ΟΧΙ ψεύτικη σταθερά)·
+                          ;; ο ΑΠΟΔΕΔΕΙΓΜΕΝΟΣ χρόνος ζει στο RFC-3161 receipt του release.
+                          (orchestrator.time:format-iso8601 (orchestrator.time:require-deterministic-time))
                            :private-key priv :public-jwk pub-jwk
                            ;; Level-1: each proof embeds the primary-source (ΦΕΚ) anchor,
                            ;; whose extraction-digest is bound to THESE served provisions.
@@ -2015,7 +2020,9 @@ document.getElementById('ops').addEventListener('click',function(ev){
                  (proof (funcall make-fn id text (getf entry :leaves) idx (getf entry :root)
                                  :eli (format nil "~A/art/~A" eli id)
                                  :cite (format nil "Άρθρο ~A~@[ ~A~]" id (and (plusp (length abbr)) abbr))
-                                 :anchored-at "2025-01-01T00:00:00Z")))
+                                 :anchored-at ;; [P1.5-C] commitment-time από την έδρα χρόνου (ΟΧΙ ψεύτικη σταθερά)·
+                          ;; ο ΑΠΟΔΕΔΕΙΓΜΕΝΟΣ χρόνος ζει στο RFC-3161 receipt του release.
+                          (orchestrator.time:format-iso8601 (orchestrator.time:require-deterministic-time)))))
             (list :text text
                   :cite (format nil "Άρθρο ~A~@[ ~A~]" id (and (plusp (length abbr)) abbr))
                   :eli (format nil "~A/art/~A" eli id)
