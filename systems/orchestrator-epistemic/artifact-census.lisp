@@ -17,6 +17,32 @@
 
 (defparameter +census-version+ "census-1")
 
+(defparameter +per-article-formats+ '("ttl" "jsonld" "html" "txt" "hash")
+  "Οι μορφές per-article που κάνουν το release SELF-CONTAINED: αντιγράφονται
+   στο release/articles/ ώστε ΤΡΙΤΟΣ να επαληθεύει το census από ΤΑ ΙΔΙΑ bytes
+   που διανέμονται (χωρίς πρόσβαση στο base output).")
+
+(defun stage-per-article-artifacts (articles base-output-dir staging-dir)
+  "Αντιγράφει article-<file-id>.<fmt> από το BASE-OUTPUT-DIR στο
+   STAGING-DIR/articles/ για ΚΑΘΕ άρθρο (identity order δεν χρειάζεται εδώ —
+   ονόματα αρχείων). Έτσι το release είναι αυτοτελές proof object. Λείπον
+   υποχρεωτικό artifact (ttl/jsonld/html/txt) ⇒ ΣΦΑΛΜΑ (κανένα σιωπηλό κενό)·
+   το .hash είναι προαιρετικό (codification sidecar). Επιστρέφει το πλήθος."
+  (let ((adir (merge-pathnames "articles/" (uiop:ensure-directory-pathname staging-dir)))
+        (n 0))
+    (ensure-directories-exist adir)
+    (dolist (a articles n)
+      (let ((fid (orchestrator.model:article-file-id a)))
+        (dolist (fmt +per-article-formats+)
+          (let ((src (merge-pathnames (format nil "article-~A.~A" fid fmt)
+                                      (uiop:ensure-directory-pathname base-output-dir))))
+            (cond
+              ((probe-file src)
+               (uiop:copy-file src (merge-pathnames (format nil "article-~A.~A" fid fmt) adir))
+               (when (string= fmt "txt") (incf n)))
+              ((string= fmt "hash") nil)          ; προαιρετικό
+              (t (error "self-contained release: λείπει per-article artifact ~A" src)))))))))
+
 (defun %sha512-file-prefixed (path)
   "«sha512:<hex>» των ωμών bytes του αρχείου (per-article artifact digest)."
   (format nil "sha512:~A"
@@ -37,7 +63,7 @@
 
 (defun %jstr (s) (if s (format nil "\"~A\"" (%json-escape s)) "null"))
 
-(defun build-artifact-census (articles corpus-short-name output-dir
+(defun build-artifact-census (articles corpus-short-name articles-dir
                               &key prev-release-root materials)
   "Κατασκευή του census plist από τα ΑΡΘΡΑ (identity order μέσω της έδρας) και
    τα ΠΡΑΓΜΑΤΙΚΑ per-article artifacts στο OUTPUT-DIR (article-<file-id>.{ttl,
@@ -58,7 +84,7 @@
                  (flet ((artifact (ext)
                           (let ((p (merge-pathnames
                                     (format nil "article-~A.~A" fid ext)
-                                    (uiop:ensure-directory-pathname output-dir))))
+                                    (uiop:ensure-directory-pathname articles-dir))))
                             (unless (probe-file p)
                               (error "census: λείπει per-article artifact ~A" p))
                             p)))
@@ -136,12 +162,17 @@
             (when (and end (= 64 (- end start)))
               (format nil "sha256:~A" (subseq s start end)))))))))
 
-(defun write-artifact-census (articles corpus-short-name output-dir staging-dir
+(defun write-artifact-census (articles corpus-short-name base-output-dir staging-dir
                               releases-dir)
-  "Γράφει το census.json στο STAGING-DIR (πριν το Merkle build ⇒ γίνεται το 9ο
-   canonical φύλλο). Επιστρέφει το census plist."
+  "SELF-CONTAINED release: (1) αντιγράφει τα per-article artifacts από το
+   BASE-OUTPUT-DIR στο STAGING-DIR/articles/· (2) χτίζει το census ΔΙΑΒΑΖΟΝΤΑΣ
+   τα IN-RELEASE αντίγραφα (ώστε το census να δείχνει αρχεία που ΥΠΑΡΧΟΥΝ στο
+   release)· (3) γράφει το census.json στο STAGING-DIR (9ο canonical φύλλο, πριν
+   το Merkle build). Επιστρέφει το census plist."
+  (stage-per-article-artifacts articles base-output-dir staging-dir)
   (let ((census (build-artifact-census
-                 articles corpus-short-name output-dir
+                 articles corpus-short-name
+                 (merge-pathnames "articles/" (uiop:ensure-directory-pathname staging-dir))
                  :prev-release-root (%prev-release-root releases-dir)
                  :materials (%census-materials))))
     (alexandria:write-string-into-file
