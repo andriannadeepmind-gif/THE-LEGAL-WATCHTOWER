@@ -34,18 +34,21 @@
       title
       (format nil "Άρθρο ~A" article-num)))
 
+(defun %article-id-base (id)
+  "Η αριθμητική ΒΑΣΗ ενός article id string («100Α» ⇒ 100) μέσα από τη ΜΙΑ
+   έδρα (article-base-number σε label-mode). Id χωρίς αριθμητική βάση ⇒
+   ΣΦΑΛΜΑ — ποτέ σιωπηλό 0 σε νομικό αρτεφάκτ."
+  (or (orchestrator.model:article-base-number nil (princ-to-string id))
+      (error 'orchestrator.spec:validation-error
+             :message (format nil "article id χωρίς αριθμητική βάση: ~S" id))))
+
 (defun %pad-article-id (id)
   "Zero-pad the numeric prefix of an article id to 3 digits, preserving any
-   letter suffix: 1 -> \"001\", \"100Α\" -> \"100Α\". Used for the stable
-   legislationIdentifier, matching the on-disk article-file-id. Delegates to the
-   single source of truth ORCHESTRATOR.MODEL:PAD-ARTICLE-ID (no reimplementation)."
-  (let* ((s (princ-to-string id))
-         (end (or (position-if-not #'digit-char-p s) (length s)))
-         (digits (subseq s 0 end))
-         (suffix (subseq s end)))
-    (if (plusp (length digits))
-        (orchestrator.model:pad-article-id (parse-integer digits) suffix)
-        s)))
+   letter suffix: 1 -> \"001\", \"100Α\" -> \"100Α\". Delegates ΟΛΟΚΛΗΡΩΤΙΚΑ to
+   the single source of truth ORCHESTRATOR.MODEL:PAD-ARTICLE-ID (label-mode:
+   βάση ΚΑΙ επίθημα από το ίδιο το id — καμία τοπική ανάλυση ψηφίων)."
+  (let ((s (princ-to-string id)))
+    (orchestrator.model:pad-article-id (%article-id-base s) s)))
 
 ;;; ============================================================
 ;;; CONFIGURATION - LEVEL 300: Reads from constitution.yaml
@@ -421,9 +424,10 @@
     (format s "~%")
     (format s "    <!-- Metadata -->~%")
     ;; eli:number is the base integer (xsd:integer); the letter suffix lives in
-    ;; the URI / title / legislationIdentifier.
+    ;; the URI / title / legislationIdentifier. Βάση από τη ΜΙΑ έδρα — ποτέ
+    ;; σιωπηλό 0.
     (format s "    <meta property=\"eli:number\" content=\"~D\">~%"
-            (or (parse-integer (princ-to-string article-num) :junk-allowed t) 0))
+            (%article-id-base article-num))
     (format s "    <meta property=\"dct:language\" content=\"el\">~%")
     (format s "    <meta property=\"digest:sha256\" content=\"~A\">~%" content-hash)
     (format s "~%")

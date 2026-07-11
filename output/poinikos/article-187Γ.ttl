@@ -1,6 +1,6 @@
 # ============================================================
 # Ποινικός Κώδικας
-# Article 187 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 187Γ - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,7 +174,7 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
@@ -223,13 +223,13 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187/2025-01-01T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187Γ/2026-07-09T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
@@ -249,7 +249,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 187
+# FRBR WORK LAYER - Article 187Γ
 # Abstract legal resource (language-independent)
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work
@@ -273,7 +273,7 @@
     schema:identifier "gr-l-2019-art-187Γ-work";
     schema:inLanguage "el";
     schema:legislationDate "2019-06-11"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/2019/ART/187";
+    schema:legislationIdentifier "ELI/GR/L/2019/ART/187Γ";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187Γ/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,7 +293,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 187
+# FRBR EXPRESSION LAYER - Article 187Γ
 # Greek language realization of abstract Work
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell
@@ -326,7 +326,7 @@
     eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187Γ/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -338,7 +338,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 187
+# FRBR MANIFESTATION LAYER - Article 187Γ
 # Digital embodiment of the Greek-language Expression
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man
@@ -361,11 +361,11 @@
     schema:identifier "gr-l-2019-art-187Γ-work-exp-ell-man";
     schema:legislationDate "2019-06-11"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-187Γ-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-187Γ-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187Γ/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -377,7 +377,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 187
+# FRBR FORMAT LAYER (HTML) - Article 187Γ
 # HTML encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man/format/html
@@ -399,7 +399,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187Γ/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -407,7 +407,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 187
+# FRBR FORMAT LAYER (JSONLD) - Article 187Γ
 # JSONLD encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man/format/jsonld
@@ -429,7 +429,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187Γ/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -437,7 +437,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 187
+# FRBR FORMAT LAYER (TURTLE) - Article 187Γ
 # TURTLE encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/187Γ/work/exp/ell/man/format/turtle
@@ -459,7 +459,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-187Γ/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -507,5 +507,5 @@
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 187 - Complete Canonical Representation
+# Article 187Γ - Complete Canonical Representation
 # ============================================================

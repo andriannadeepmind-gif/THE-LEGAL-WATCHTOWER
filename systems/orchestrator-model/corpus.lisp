@@ -94,8 +94,19 @@
 ;;; ============================================================================
 
 (defmethod orchestrator.spec:add-article ((corpus corpus) (article article))
-  "Add an article to the corpus"
-  (setf (gethash (article-number article) (corpus-articles corpus)) article)
+  "Add an article to the corpus.
+
+   P1b [0052]#Α3: κατειλημμένο κλειδί από ΑΛΛΟ άρθρο ⇒ ΣΦΑΛΜΑ — η σιωπηλή
+   αντικατάσταση έκρυβε συγκρούσεις ταυτότητας/συνθετικού σχήματος (π.χ.
+   δίγραμμα επιθήματος ή γνήσιο 4ψήφιο άρθρο πάνω σε συνθετικό αριθμό).
+   Η επανακαταχώριση του ΙΔΙΟΥ αντικειμένου είναι ιδεμποτής."
+  (let* ((key (article-number article))
+         (existing (gethash key (corpus-articles corpus))))
+    (when (and existing (not (eq existing article)))
+      (error 'orchestrator.spec:validation-error
+             :message (format nil "add-article: το κλειδί ~D κατέχεται ήδη από άλλο άρθρο (~A) — σιωπηλή αντικατάσταση απαγορεύεται"
+                              key (article-file-id existing))))
+    (setf (gethash key (corpus-articles corpus)) article))
   article)
 
 (defmethod orchestrator.spec:get-article ((corpus corpus) (number integer))

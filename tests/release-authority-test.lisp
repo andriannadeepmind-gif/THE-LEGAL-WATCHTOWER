@@ -34,14 +34,18 @@
              (integerp (orchestrator.time:require-deterministic-time))))
 
 ;;; ② Κανονική ταυτότητα από root
-(rat-check "② %root->release-id: «sha256:abc»→«sha256-abc», γυμνό hex→«sha256-hex»"
-           (and (equal "sha256-abc" (orchestrator.epistemic::%root->release-id "sha256:abc"))
-                (equal "sha256-def" (orchestrator.epistemic::%root->release-id "def"))))
+(rat-check "② %root->release-id: ΜΟΝΟ κανονική μορφή «sha256:<64-hex>»· άλλη μορφή ⇒ σφάλμα"
+           (and (equal (concatenate 'string "sha256-" (make-string 64 :initial-element #\a))
+                       (orchestrator.epistemic::%root->release-id
+                        (concatenate 'string "sha256:" (make-string 64 :initial-element #\a))))
+                (handler-case (progn (orchestrator.epistemic::%root->release-id "γυμνό-hex") nil)
+                  (error () t))))
 
-;;; Βοηθός: φτιάξε staging με τα 8 canonical + δηλωμένο root (πραγματικές έδρες)
+;;; Βοηθός: φτιάξε staging με ΟΛΑ τα canonical + δηλωμένο root (πραγματικές έδρες)
 (defun %rat-make-staging (base tag)
   (let* ((staging (merge-pathnames (format nil "releases/.staging-~A/" tag) base)))
     (ensure-directories-exist (merge-pathnames "shapes/" staging))
+    (ensure-directories-exist (merge-pathnames "verify/" staging))
     (ensure-directories-exist (merge-pathnames "temporal-proof/" staging))
     (dolist (f orchestrator.epistemic::+epistemic-canonical-files+)
       (with-open-file (o (merge-pathnames f staging) :direction :output
@@ -52,7 +56,7 @@
                    (orchestrator.epistemic::collect-epistemic-artifacts staging)))))
       (with-open-file (o (merge-pathnames "temporal-proof/merkle-tree.json" staging)
                          :direction :output :if-exists :supersede)
-        (format o "{\"root\":~S,\"totalFiles\":8}~%" root))
+        (format o "{\"root\":~S,\"totalFiles\":~D}~%" root (length orchestrator.epistemic::+epistemic-canonical-files+)))
       (values staging root (orchestrator.epistemic::%root->release-id root)))))
 
 (let ((base (uiop:ensure-directory-pathname
@@ -110,7 +114,8 @@
                  (orchestrator.epistemic::release-attested-p
                   final (orchestrator.epistemic::%release-recomputed-root final)))
       (rat-check "⑦β2 receipt με ΞΕΝΟ imprint ⇒ ΔΕΝ μετρά ως attested για αυτό το root"
-                 (not (orchestrator.epistemic::release-attested-p final "sha256:deadbeef")))
+                 (not (orchestrator.epistemic::release-attested-p
+                       final (concatenate 'string "sha256:" (make-string 64 :initial-element #\d)))))
       (orchestrator.epistemic::promote-latest! base id)
       (rat-check "⑦γ latest symlink + latest.json δείχνουν στην ταυτότητα, attested:true"
                  (let ((ptr (uiop:read-file-string
@@ -127,6 +132,31 @@
   (rat-check "⑧ clean-corpus-output-dir: junk ΦΕΥΓΕΙ, releases/ ΜΕΝΕΙ (append-only δημοσίευση)"
              (and (not (probe-file (merge-pathnames "junk.txt" base)))
                   (probe-file (merge-pathnames "releases/latest.json" base))))
+  (ignore-errors (uiop:delete-directory-tree base :validate (constantly t))))
+
+;;; ⑨ [P1.5-D κριτής#1] Epoch-downgrade: sha256-named ΧΩΡΙΣ census ΚΑΙ εκτός
+;;;    frozen legacy ⇒ ΣΦΑΛΜΑ (stripped-census downgrade δομικά αδύνατο).
+(let* ((ep (find-package :orchestrator.epistemic))
+       (frozen (first (symbol-value (find-symbol "+FROZEN-LEGACY-RELEASE-IDS+" ep))))
+       (fake-id "sha256-deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef")
+       (base (uiop:ensure-directory-pathname
+              (merge-pathnames (format nil "epoch-dg-~D/" (get-universal-time))
+                               (uiop:temporary-directory)))))
+  ;; frozen legacy id ⇒ επιτρέπεται legacy εποχή (χωρίς census)
+  (let ((d (merge-pathnames (format nil "~A/" frozen) base)))
+    (ensure-directories-exist d)
+    (rat-check "⑨α frozen legacy id ⇒ legacy-8 εποχή (επιτρεπτό)"
+               (equal (funcall (find-symbol "%RELEASE-CANONICAL-ERA" ep) d)
+                      (symbol-value (find-symbol "+EPISTEMIC-CANONICAL-FILES-LEGACY8+" ep)))))
+  ;; μη-frozen sha256 id ΧΩΡΙΣ census ⇒ ΣΦΑΛΜΑ (downgrade)
+  (let ((d (merge-pathnames (format nil "~A/" fake-id) base)))
+    (ensure-directories-exist d)
+    (rat-check "⑨β μη-frozen sha256 χωρίς census ⇒ ΣΦΑΛΜΑ (epoch-downgrade)"
+               (handler-case (progn (funcall (find-symbol "%RELEASE-CANONICAL-ERA" ep) d) nil)
+                 (error () t))))
+  (rat-check "⑨γ frozen-legacy-release-id-p: frozen=T, fake=NIL"
+             (and (funcall (find-symbol "FROZEN-LEGACY-RELEASE-ID-P" ep) frozen)
+                  (not (funcall (find-symbol "FROZEN-LEGACY-RELEASE-ID-P" ep) fake-id))))
   (ignore-errors (uiop:delete-directory-tree base :validate (constantly t))))
 
 (format t "~%========================================~%")

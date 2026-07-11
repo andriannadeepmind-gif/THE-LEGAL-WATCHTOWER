@@ -94,11 +94,11 @@
         (setf (orchestrator.ai-core:config-fixed-timestamp effective-ai-config) 
               timestamp-override))
       
-      ;; Set up deterministic mode if requested
+      ;; Set up deterministic mode if requested — χρόνος ΜΟΝΟ από δηλωμένη
+      ;; αρχή (ρητό fixed-timestamp ή SOURCE_DATE_EPOCH), ποτέ μαγικός αριθμός.
       (when (orchestrator.ai-core:config-deterministic effective-ai-config)
         (setf orchestrator.ai-core:*build-timestamp-override*
-              (or (orchestrator.ai-core:config-fixed-timestamp effective-ai-config)
-                  orchestrator.ai-core:+default-deterministic-timestamp+)))
+              (orchestrator.ai-core:effective-deterministic-timestamp effective-ai-config)))
       
       (handler-case
           (progn
@@ -225,11 +225,10 @@
     (when timestamp-override
       (setf (orchestrator.ai-core:config-fixed-timestamp ai-config) timestamp-override))
     
-    ;; Apply deterministic mode
+    ;; Apply deterministic mode — χρόνος ΜΟΝΟ από δηλωμένη αρχή.
     (when (orchestrator.ai-core:config-deterministic ai-config)
       (setf orchestrator.ai-core:*build-timestamp-override*
-            (or (orchestrator.ai-core:config-fixed-timestamp ai-config) 
-                orchestrator.ai-core:+default-deterministic-timestamp+)))
+            (orchestrator.ai-core:effective-deterministic-timestamp ai-config)))
     
     ;; Get corpus
     (let ((corpus (orchestrator.meta:get-corpus corpus-name)))

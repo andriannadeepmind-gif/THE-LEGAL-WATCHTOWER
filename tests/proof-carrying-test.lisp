@@ -13,31 +13,31 @@
      (error (e) (incf *fail*) (format t "  FAIL ~A (error: ~A)~%" ,name e))))
 
 (defun texts (n) (loop for i from 1 to n collect (format nil "Άρθρο ~D — αυθεντικό κείμενο διάταξης." i)))
-(defun leaves-of (texts) (mapcar #'leaf-hash texts))
+(defun leaves-of (texts) (mapcar #'hash-leaf-string texts))
 
 (format t "~%== leaf hashing (deterministic, sha256: convention) ==~%")
-(check "leaf-hash carries the sha256: prefix" (eql 0 (search "sha256:" (leaf-hash "x"))))
-(check "leaf-hash is deterministic" (string= (leaf-hash "Άρθρο 299") (leaf-hash "Άρθρο 299")))
-(check "different text → different leaf" (not (string= (leaf-hash "α") (leaf-hash "β"))))
-(check "hash-concat is order-sensitive (a‖b ≠ b‖a)"
-       (not (string= (hash-concat (leaf-hash "a") (leaf-hash "b"))
-                     (hash-concat (leaf-hash "b") (leaf-hash "a")))))
+(check "hash-leaf-string carries the sha256: prefix" (eql 0 (search "sha256:" (hash-leaf-string "x"))))
+(check "hash-leaf-string is deterministic" (string= (hash-leaf-string "Άρθρο 299") (hash-leaf-string "Άρθρο 299")))
+(check "different text → different leaf" (not (string= (hash-leaf-string "α") (hash-leaf-string "β"))))
+(check "hash-node is order-sensitive (a‖b ≠ b‖a)"
+       (not (string= (hash-node (hash-leaf-string "a") (hash-leaf-string "b"))
+                     (hash-node (hash-leaf-string "b") (hash-leaf-string "a")))))
 
 (format t "~%== a single-leaf tree: leaf IS the root ==~%")
-(let* ((tx (texts 1)) (lv (leaves-of tx)) (root (build-merkle-root lv)))
+(let* ((tx (texts 1)) (lv (leaves-of tx)) (root (merkle-tree-hash lv)))
   (check "root of one leaf equals that leaf" (string= root (first lv)))
-  (check "its (empty) path verifies" (verify-merkle-path (first lv) (merkle-path lv 0) root)))
+  (check "its (empty) path verifies" (verify-inclusion (first lv) (inclusion-path lv 0) root)))
 
 (format t "~%== every leaf's inclusion path verifies to the root (2,3,4,5,536) ==~%")
 (dolist (n '(2 3 4 5 536))
-  (let* ((tx (texts n)) (lv (leaves-of tx)) (root (build-merkle-root lv))
+  (let* ((tx (texts n)) (lv (leaves-of tx)) (root (merkle-tree-hash lv))
          (all-ok t))
     (dotimes (i n)
-      (unless (verify-merkle-path (nth i lv) (merkle-path lv i) root) (setf all-ok nil)))
+      (unless (verify-inclusion (nth i lv) (inclusion-path lv i) root) (setf all-ok nil)))
     (check (format nil "all ~D leaves prove inclusion (odd-count safe)" n) all-ok)))
 
 (format t "~%== full provision proof: make + verify ==~%")
-(let* ((tx (texts 536)) (lv (leaves-of tx)) (root (build-merkle-root lv))
+(let* ((tx (texts 536)) (lv (leaves-of tx)) (root (merkle-tree-hash lv))
        (idx 298)                                   ; the famous art. 299 is index 298
        (proof (make-provision-proof "299" (nth idx tx) lv idx root
                                     :eli "https://stavropouloslaw.com/eli/gr/l/2019/4619/art/299"
@@ -63,7 +63,7 @@
   (let ((forged (copy-list proof)))
     ;; corrupt one sibling hash in the path → inclusion must fail
     (setf (getf forged :path)
-          (cons (cons (car (first (getf proof :path))) (leaf-hash "forged-sibling"))
+          (cons (cons (car (first (getf proof :path))) (hash-leaf-string "forged-sibling"))
                 (rest (getf proof :path))))
     (multiple-value-bind (ok reason) (verify-provision-proof (nth idx tx) forged)
       (check "a forged inclusion path FAILS" (not ok))
@@ -85,18 +85,18 @@
          (format nil "sha256:~(~{~2,'0x~}~)"
                  (coerce (ironclad:digest-sequence :sha256
                           (concatenate '(vector (unsigned-byte 8)) prefix bytes)) 'list))))
-  (check "leaf-hash prepends the 0x00 leaf domain byte"
-         (string= (leaf-hash "x") (raw-sha #(#x00) (babel:string-to-octets "x" :encoding :utf-8))))
-  (check "hash-concat prepends the 0x01 node domain byte"
-         (let ((a (leaf-hash "a")) (b (leaf-hash "b")))
-           (string= (hash-concat a b)
+  (check "hash-leaf-string prepends the 0x00 leaf domain byte"
+         (string= (hash-leaf-string "x") (raw-sha #(#x00) (babel:string-to-octets "x" :encoding :utf-8))))
+  (check "hash-node prepends the 0x01 node domain byte"
+         (let ((a (hash-leaf-string "a")) (b (hash-leaf-string "b")))
+           (string= (hash-node a b)
                     (raw-sha #(#x01) (concatenate '(vector (unsigned-byte 8))
                                                   (ironclad:hex-string-to-byte-array (subseq a 7))
                                                   (ironclad:hex-string-to-byte-array (subseq b 7)))))))
   ;; A leaf and an internal node over the SAME 64 raw bytes must NOT collide.
   (check "a leaf can never be reinterpreted as an internal node"
-         (let* ((a (leaf-hash "a")) (b (leaf-hash "b"))
-                (node (hash-concat a b))
+         (let* ((a (hash-leaf-string "a")) (b (hash-leaf-string "b"))
+                (node (hash-node a b))
                 (sixtyfour (concatenate '(vector (unsigned-byte 8))
                                         (ironclad:hex-string-to-byte-array (subseq a 7))
                                         (ironclad:hex-string-to-byte-array (subseq b 7))))
@@ -111,8 +111,8 @@
     (check "a path longer than 64 fails fast" (and (not ok) (eq :path-too-long reason)))))
 
 (format t "~%== determinism: same corpus → same root & proofs ==~%")
-(let ((a (build-merkle-root (leaves-of (texts 64))))
-      (b (build-merkle-root (leaves-of (texts 64)))))
+(let ((a (merkle-tree-hash (leaves-of (texts 64))))
+      (b (merkle-tree-hash (leaves-of (texts 64)))))
   (check "the Merkle root is deterministic" (string= a b)))
 
 (format t "~%== emit per-provision proof files + verify them back from JSON ==~%")
@@ -157,7 +157,7 @@
     (declare (ignore count))
     (check "the root gets a signature" (and (stringp sig) (plusp (length sig))))
     (check "verify-signed-root accepts the genuine signature" (verify-signed-root root sig pub))
-    (check "verify-signed-root rejects a tampered root" (not (verify-signed-root (leaf-hash "x") sig pub)))
+    (check "verify-signed-root rejects a tampered root" (not (verify-signed-root (hash-leaf-string "x") sig pub)))
     (let ((art (uiop:read-file-string (format nil "~Aarticle-299.proof.json" dir) :external-format :utf-8))
           (cp  (uiop:read-file-string (format nil "~Acorpus-proof.json" dir) :external-format :utf-8)))
       (check "corpus-proof.json carries the signature + public key"
@@ -172,6 +172,14 @@
         (multiple-value-bind (ok reason) (verify-full-chain "Ανθρωποκτονία με πρόθεση." art cp pub2)
           (check "the WRONG public key → signature fails" (and (not ok) (eq :bad-signature reason)))))))
   (ignore-errors (uiop:delete-directory-tree (pathname dir) :validate t :if-does-not-exist :ignore)))
+
+(format t "~%== self-description honesty: emitted algorithm string ==~%")
+;; Κλείδωμα κριτή: το corpus-proof.json ΔΕΝ επιτρέπεται να αυτο-περιγράφεται
+;; ως raw-concat ενώ χτίζει RFC-6962 δέντρο (0x00/0x01, unbalanced split).
+(check "corpus-proof.json declares rfc6962 (όχι raw-concat)"
+       (let ((json (corpus-proof-json "sha256:ab" 1 :anchored-at "t")))
+         (and (search "sha256-merkle/rfc6962+RS256" json)
+              (not (search "raw-concat" json)))))
 
 (format t "~%========================================~%")
 (format t "Proof-carrying tests: ~D passed, ~D failed~%" *pass* *fail*)

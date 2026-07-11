@@ -77,16 +77,25 @@
   '("meta-ontology.ttl" "lineage-graph.ttl" "negation.ttl"
     "stability-policy.ttl" "stability-policy.md"
     "shapes/article-shape.ttl" "shapes/manifest-shape.ttl"
-    "shapes/lineage-shape.ttl")
-  "Η ΜΙΑ έδρα του canonical συνόλου (8 αρχεία) που ορίζει την ταυτότητα release.")
+    "shapes/lineage-shape.ttl"
+    ;; [P1.5-B] Το 9ο canonical: Artifact Census (census-1) — δένει per-article
+    ;; artifacts + pcl_text_root + prev_release_root + materials στο release root.
+    "census.json"
+    ;; [P1.5-C] Το 10ο canonical: ο L6 πυρήνας που ΔΙΑΝΕΜΕΤΑΙ μέσα στο release
+    ;; (verify/verify.lisp = αντίγραφο του deployment/verify/kernel-verify.lisp,
+    ;; staged ΠΡΙΝ το Merkle build). Μέσα στην ταυτότητα ⇒ λοβοτομημένος
+    ;; verifier αλλάζει το root και προδίδεται από το όνομα καταλόγου/pin.
+    "verify/verify.lisp")
+  "Η ΜΙΑ έδρα του canonical συνόλου (10 αρχεία) που ορίζει την ταυτότητα release.")
 
 (defun collect-epistemic-artifacts (staging-dir)
   "Collect ONLY epistemic layer artifacts for canonical Merkle root
 
   DARPA-GRADE PROVENANCE: This function defines the CANONICAL set of artifacts
-  that form the release-root-hash. NO temporal proofs, NO manifests, NO verification kit.
+  that form the release-root-hash. NO temporal proofs, NO manifests — and from
+  the verification kit ONLY verify.lisp (the L6 kernel), which IS canonical.
 
-  Collects EXACTLY 8 files (deterministic):
+  Collects EXACTLY 10 files (deterministic):
     1. meta-ontology.ttl
     2. lineage-graph.ttl
     3. negation.ttl
@@ -95,12 +104,14 @@
     6. shapes/article-shape.ttl
     7. shapes/manifest-shape.ttl
     8. shapes/lineage-shape.ttl
+    9. census.json (Artifact Census, P1.5)
+   10. verify/verify.lisp (L6 kernel, P1.5-C)
 
   Args:
     staging-dir: Staging directory path
 
   Returns:
-    List of 8 absolute file paths (sorted)"
+    List of 10 absolute file paths (sorted)"
 
   (let ((files '()))
     (dolist (filename +epistemic-canonical-files+)
@@ -111,17 +122,22 @@
 
     ;; Sort for deterministic ordering
     (let ((sorted (sort files #'string< :key #'namestring)))
-      (unless (= (length sorted) 8)
-        (error "CRITICAL: Expected 8 epistemic artifacts, found ~D" (length sorted)))
+      (unless (= (length sorted) (length +epistemic-canonical-files+))
+        (error "CRITICAL: Expected ~D epistemic artifacts, found ~D"
+               (length +epistemic-canonical-files+) (length sorted)))
       sorted)))
 
 (defun %root->release-id (root-hash)
-  "Κανονική ταυτότητα release από Merkle root: «sha256-<hex>» (τυχόν πρόθεμα
-   «sha256:» της αναπαράστασης manifest αφαιρείται)."
-  (let ((hex (if (and (stringp root-hash) (eql 0 (search "sha256:" root-hash)))
-                 (subseq root-hash 7)
-                 root-hash)))
-    (format nil "sha256-~A" hex)))
+  "Κανονική ταυτότητα release από Merkle root. B7 [0047]/[0049]: ΜΙΑ μορφή
+   root στο σύστημα — αυτή που εκπέμπει η έδρα merkle-tree-root
+   («sha256:<64-hex>»). Οτιδήποτε άλλο = ΣΦΑΛΜΑ, όχι σιωπηλή «συγχώρεση»
+   δεύτερης μορφής."
+  (unless (and (stringp root-hash)
+               (eql 0 (search "sha256:" root-hash))
+               (= (length root-hash) 71)
+               (every (lambda (c) (digit-char-p c 16)) (subseq root-hash 7)))
+    (error "%root->release-id: μη κανονική μορφή root ~S — αναμένεται «sha256:<64-hex>» (η μία έδρα: merkle-tree-root)" root-hash))
+  (format nil "sha256-~A" (subseq root-hash 7)))
 
 ;;; ============================================================================
 ;;; RELEASE MANIFEST GENERATION

@@ -168,11 +168,17 @@
             do (let* ((entry (jonathan:parse line :as :alist))
                       (article-num (cdr (assoc :|article_number| entry))))
                  
-                 ;; Corresponding provenance file should exist
-                 (let ((provenance-path 
+                 ;; Corresponding provenance file should exist — όνομα από τις
+                 ;; έδρες ταυτότητας (το article_number είναι πλέον κανονικό
+                 ;; label-aware string, π.χ. «5Α»).
+                 (let ((provenance-path
                         (merge-pathnames
                          (make-pathname
-                          :name (format nil "article-~3,'0D-provenance" article-num)
+                          :name (format nil "article-~A-provenance"
+                                        (orchestrator.model:pad-article-id
+                                         (orchestrator.model:article-base-number
+                                          nil (string article-num))
+                                         (string article-num)))
                           :type "json"
                           :directory '(:relative "ai" "provenance"))
                          *integration-output-dir*)))

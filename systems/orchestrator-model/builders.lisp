@@ -7,23 +7,26 @@
 ;;; ARTICLE BUILDERS
 ;;; ============================================================================
 
-(defun make-article (&key number title content state metadata)
+(defun make-article (&key number label title content state metadata)
   "Create an article instance with validation
-  
+
   Args:
     number: Article number (required, positive integer)
+    label:  Πλήρες label ταυτότητας για lettered άρθρα (π.χ. \"5Α\") — χωρίς
+            αυτό ένα lettered άρθρο ΔΕΝ κατασκευάζεται σωστά (P1b [0052]#Α7)
     title: Article title (string)
     content: Article content (string)
     state: Initial state (defaults to :queued)
     metadata: Additional metadata (plist)
-  
+
   Returns:
     Article instance"
   (unless (and (integerp number) (> number 0))
     (error "Article number must be a positive integer"))
-  
+
   (make-instance 'article
                  :number number
+                 :label label
                  :title (or title "")
                  :content (or content "")
                  :state (or state :queued)
@@ -141,6 +144,10 @@
     ;; Copy all slots
     (when (slot-boundp article 'number)
       (setf (article-number new-article) (article-number article)))
+    ;; P1b [0052]#Α7: το label ΕΙΝΑΙ ταυτότητα — ο κλώνος χωρίς label έχανε
+    ;; το επίθημα (100Α ⇒ 100, σιωπηλή σύμπτυξη ταυτότητας).
+    (when (slot-boundp article 'label)
+      (setf (article-label new-article) (article-label article)))
     (when (slot-boundp article 'title)
       (setf (article-title new-article) (article-title article)))
     (when (slot-boundp article 'content)

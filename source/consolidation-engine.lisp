@@ -39,7 +39,7 @@
    #:legal-document-provisions
    #:amending-act #:make-amending-act #:amending-act-p
    #:amending-act-id #:amending-act-fek #:amending-act-enacted
-   #:amending-act-effective #:amending-act-operations
+   #:amending-act-effective #:amending-act-recorded #:amending-act-operations
    ;; Tree utilities
    #:find-provision #:copy-document
    ;; Engine
@@ -108,13 +108,20 @@
 (defstruct (amending-act (:copier nil))
   "An act that amends a base text.
 
-   EFFECTIVE is the date the amendment becomes applicable (ELI
-   date_applicability); it drives point-in-time consolidation and the total
-   order. OPERATIONS is an ordered list of operation plists (see APPLY-OPERATION)."
+   ΔΙΤΕΜΠΟΡΙΚΟΙ ΑΞΟΝΕΣ (P1.4 [0054]#7, θεμέλιο Ω2):
+     EFFECTIVE  = valid-time: πότε ΙΣΧΥΕΙ η τροπολογία (ELI date_applicability)·
+                  οδηγεί το point-in-time consolidation και τη total order.
+     ENACTED    = πότε ΨΗΦΙΣΤΗΚΕ (ΦΕΚ).
+     RECORDED   = transaction-time: πότε ΜΑΘΑΜΕ/εισήχθη το γεγονός στο σύστημα.
+                  Ρητό record field «recorded_at» αν υπάρχει (η αληθινή στιγμή
+                  γνώσης), αλλιώς σφραγίζεται από την ΝΤΕΤΕΡΜΙΝΙΣΤΙΚΗ έδρα
+                  χρόνου κατά την εισαγωγή — ο χρόνος γνώσης δεν χάνεται ποτέ.
+   OPERATIONS είναι ordered list operation plists (βλ. APPLY-OPERATION)."
   (id         nil :type (or null string))
   (fek        nil :type (or null string))
   (enacted    nil :type (or null string))
   (effective  nil :type (or null string))
+  (recorded   nil :type (or null string))
   (operations nil :type list))
 
 ;;; ============================================================================

@@ -3,33 +3,105 @@
 ;;;; ΠΥΛΗ ΑΜΕΤΑΒΛΗΤΩΝ ΕΚΔΟΣΕΩΝ: --release-gate — P1R [0046]
 ;;;; ============================================================================
 ;;;; Για ΚΑΘΕ δημοσιευμένο release κάτω από output/<corpus>/releases/:
-;;;;   · content-addressed (sha256-*): recomputed Merkle root των 8 canonical
-;;;;     ≡ όνομα καταλόγου ≡ δηλωμένο root στο merkle-tree.json
-;;;;   · legacy (timestamp-named, π.χ. 2025-01-01…): recomputed root ≡ δηλωμένο
-;;;;     root — το ιστορικό ΔΕΝ ξαναγράφεται, μόνο επαληθεύεται
+;;;;
+;;;; ΔΥΟ ΕΠΟΧΕΣ, ΡΗΤΑ (P1.5-D, πρότυπο CT/Trillian — ποτέ rewrite ιστορίας):
+;;;;   · census-εποχή (census.json παρόν): recomputed RFC-6962 root των 10
+;;;;     canonical ≡ όνομα ≡ δηλωμένο + ΠΛΗΡΕΣ spine (census+αλυσίδα+JWS)
+;;;;     + ΓΕΦΥΡΑ: μη-null prev_release_root ⇒ ο στόχος ΥΠΑΡΧΕΙ στο corpus
+;;;;     (η παλιά εποχή σφραγίζεται ΜΕΣΑ στη νέα αλυσίδα).
+;;;;   · legacy-εποχή (προ-P1.5, χωρίς census): SEALED — ο αλγόριθμος
+;;;;     ταυτότητάς τους (χωρίς domain separation, duplicate-last) πέθανε
+;;;;     ΣΚΟΠΙΜΑ στο [P1.5-A.2]/15555e9b· ΔΕΝ ανα-υπολογίζεται με τον νέο
+;;;;     (θα ήταν ψευδο-κόκκινο) ούτε κρατάμε δεύτερη ζωντανή Merkle έδρα.
+;;;;     Ελέγχεται: δηλωμένο root παρόν + όνομα ≡ δηλωμένο id + TSR δεμένο
+;;;;     στο δηλωμένο root (owner attestation [0058]). Ο verifier της εποχής
+;;;;     τους είναι αρχειοθετημένος ΜΕΣΑ τους (verify/verify.lisp).
 ;;;;   · latest: δείχνει σε υπαρκτό release· αν είναι content-addressed, πρέπει
 ;;;;     να είναι ATTESTED (temporal-proof/timestamp.tsr παρόν)
 ;;;; Read-only πύλη — δεν γράφει ΤΙΠΟΤΑ.
 
 (in-package :orchestrator.cli)
 
+(defun %rg-census-prev-root (dir)
+  "Το prev_release_root του census (string «sha256:<hex>») ή NIL (null/απόν)."
+  (let ((cpath (merge-pathnames "census.json" dir)))
+    (when (probe-file cpath)
+      (ignore-errors
+        (gethash "prev_release_root"
+                 (jonathan:parse (uiop:read-file-string cpath) :as :hash-table))))))
+
 (defun %rg-verify-release (dir chk)
   (let* ((leaf (car (last (pathname-directory dir))))
          (fp (find-package :orchestrator.epistemic))
+         (census-era (probe-file (merge-pathnames "census.json" dir)))
+         (sha256-named (and (stringp leaf) (eql 0 (search "sha256-" leaf))))
+         ;; ΚΛΕΙΣΙΜΟ κριτή P1.5-D#1 (epoch-downgrade): legacy ελέγχους παίρνει
+         ;; ΜΟΝΟ id στο παγωμένο σύνολο ή timestamp-named ιστορικό. sha256-named
+         ;; ΧΩΡΙΣ census ΚΑΙ εκτός frozen = απόπειρα stripped-census downgrade.
+         (frozen-legacy (funcall (find-symbol "FROZEN-LEGACY-RELEASE-ID-P" fp) leaf))
          (err nil)
          (declared (handler-case (funcall (find-symbol "%RELEASE-DIR-ROOT" fp) dir)
-                     (error (e) (setf err e) nil)))
-         (recomputed (handler-case
-                         (funcall (find-symbol "%RELEASE-RECOMPUTED-ROOT" fp) dir)
-                       (error (e) (setf err e) nil))))
-    (funcall chk (format nil "~A: recomputed root ≡ δηλωμένο" leaf)
-             (and declared recomputed (equal declared recomputed))
-             (format nil "δηλωμένο=~A recomputed=~A~@[ (σφάλμα: ~A)~]" declared recomputed err))
-    (when (and (stringp leaf) (eql 0 (search "sha256-" leaf)))
-      (funcall chk (format nil "~A: όνομα ≡ περιεχόμενο (content-addressed)" leaf)
-               (and recomputed
-                    (equal leaf (funcall (find-symbol "%ROOT->RELEASE-ID" fp) recomputed)))
-               recomputed))))
+                     (error (e) (setf err e) nil))))
+    (when (and (not census-era) sha256-named (not frozen-legacy))
+      (funcall chk (format nil "~A: sha256-named χωρίς census ΚΑΙ εκτός frozen legacy (epoch-downgrade)" leaf)
+               nil "απόπειρα stripped-census downgrade — απαιτείται census.json ή frozen id")
+      (return-from %rg-verify-release))
+    (if (not census-era)
+        ;; ── LEGACY-ΕΠΟΧΗ (προ-P1.5, frozen/ιστορικό): SEALED, όχι recompute ──
+        (progn
+          (funcall chk (format nil "~A: legacy-epoch (pre-P1.5) — δηλωμένο root παρόν" leaf)
+                   (and declared t)
+                   (format nil "~@[σφάλμα: ~A~]" err))
+          (when (and (stringp leaf) (eql 0 (search "sha256-" leaf)))
+            (funcall chk (format nil "~A: legacy-epoch — όνομα ≡ δηλωμένο id" leaf)
+                     (and declared
+                          (equal leaf (handler-case
+                                          (funcall (find-symbol "%ROOT->RELEASE-ID" fp) declared)
+                                        (error () nil))))
+                     declared)
+            ;; Η σφραγίδα της εποχής: TSR (όπου υπάρχει) δεμένο στο ΔΗΛΩΜΕΝΟ
+            ;; root (imprint) — το owner attestation [0058] είναι η αλήθεια των
+            ;; legacy releases. Legacy ΧΩΡΙΣ TSR = ξεπερασμένη ιστορία (τίμια
+            ;; δηλωμένο)· ΜΟΝΟ το latest απαιτεί attestation (χωριστός έλεγχος).
+            (if (probe-file (merge-pathnames "temporal-proof/timestamp.tsr" dir))
+                (funcall chk (format nil "~A: legacy-epoch — TSR δεμένο στο δηλωμένο root (attested seal)" leaf)
+                         (and declared
+                              (funcall (find-symbol "RELEASE-ATTESTED-P" fp) dir declared))
+                         "TSR παρόν αλλά ΔΕΝ δένει το δηλωμένο root")
+                (funcall chk (format nil "~A: legacy-epoch — χωρίς TSR: ξεπερασμένη ιστορία (μόνο το latest απαιτεί attestation)" leaf)
+                         t))))
+        ;; ── CENSUS-ΕΠΟΧΗ: πλήρης RFC-6962 recompute + spine + γέφυρα ──
+        (let ((recomputed (handler-case
+                              (funcall (find-symbol "%RELEASE-RECOMPUTED-ROOT" fp) dir)
+                            (error (e) (setf err e) nil))))
+          (funcall chk (format nil "~A: recomputed root ≡ δηλωμένο" leaf)
+                   (and declared recomputed (equal declared recomputed))
+                   (format nil "δηλωμένο=~A recomputed=~A~@[ (σφάλμα: ~A)~]" declared recomputed err))
+          (when (and (stringp leaf) (eql 0 (search "sha256-" leaf)))
+            (funcall chk (format nil "~A: όνομα ≡ περιεχόμενο (content-addressed)" leaf)
+                     (and recomputed
+                          (equal leaf (funcall (find-symbol "%ROOT->RELEASE-ID" fp) recomputed)))
+                     recomputed)
+            ;; [P1.5-D] gate v2: ΠΛΗΡΗΣ spine (census membership + text-σπονδυλική
+            ;; + αλυσίδα + JWS πάνω στο recomputed root) — όχι μόνο root recompute.
+            (multiple-value-bind (ok failures)
+                (handler-case
+                    (funcall (find-symbol "VERIFY-RELEASE-SPINE" fp) dir :root recomputed)
+                  (error (e) (values nil (list (princ-to-string e)))))
+              (funcall chk (format nil "~A: spine (census+αλυσίδα+JWS)" leaf)
+                       ok (and failures (format nil "~{~A~^ · ~}" failures))))
+            ;; ΓΕΦΥΡΑ ΕΠΟΧΩΝ (πρότυπο CT): μη-null prev_release_root ⇒ ο στόχος
+            ;; ΥΠΑΡΧΕΙ ως δημοσιευμένο release του corpus — η παλιά εποχή είναι
+            ;; σφραγισμένη ΜΕΣΑ στη νέα αλυσίδα, όχι ξεχασμένη.
+            (let ((prev (%rg-census-prev-root dir)))
+              (when prev
+                (let* ((target-id (format nil "sha256-~A" (subseq prev 7)))
+                       (target-dir (merge-pathnames
+                                    (format nil "../~A/" target-id) dir)))
+                  (funcall chk (format nil "~A: γέφυρα εποχών — prev ~A… υπαρκτό" leaf
+                                       (subseq target-id 0 19))
+                           (and (probe-file target-dir) t)
+                           (format nil "prev_release_root δείχνει σε ανύπαρκτο ~A" target-id))))))))))
 
 (defun run-release-gate ()
   "--release-gate : καμία δημοσιευμένη έκδοση χωρίς επαληθεύσιμη αμεταβλητότητα."
@@ -68,15 +140,18 @@
                     (chk (format nil "~A: latest → υπαρκτό release (~A)" corpus tleaf)
                          (and target tleaf))
                     (when (and (stringp tleaf) (eql 0 (search "sha256-" tleaf)))
-                      (chk (format nil "~A: latest είναι ATTESTED (receipt δεμένο στο recomputed root)" corpus)
-                           (funcall (find-symbol "RELEASE-ATTESTED-P"
-                                                 (find-package :orchestrator.epistemic))
-                                    target
-                                    (handler-case
-                                        (funcall (find-symbol "%RELEASE-RECOMPUTED-ROOT"
-                                                              (find-package :orchestrator.epistemic))
-                                                 target)
-                                      (error () nil)))
+                      ;; Ρίζα ΤΗΣ ΕΠΟΧΗΣ του στόχου: census-εποχή ⇒ recomputed
+                      ;; RFC-6962· legacy-εποχή ⇒ το ΔΗΛΩΜΕΝΟ root (ο παλιός
+                      ;; αλγόριθμος πέθανε σκόπιμα — δεν ανα-υπολογίζεται).
+                      (chk (format nil "~A: latest είναι ATTESTED (receipt δεμένο στη ρίζα της εποχής του)" corpus)
+                           (let* ((ep (find-package :orchestrator.epistemic))
+                                  (troot (handler-case
+                                             (if (probe-file (merge-pathnames "census.json"
+                                                                              (uiop:ensure-directory-pathname target)))
+                                                 (funcall (find-symbol "%RELEASE-RECOMPUTED-ROOT" ep) target)
+                                                 (funcall (find-symbol "%RELEASE-DIR-ROOT" ep) target))
+                                           (error () nil))))
+                             (funcall (find-symbol "RELEASE-ATTESTED-P" ep) target troot))
                            "content-addressed latest χωρίς δεμένο timestamp.tsr")
                       ;; Ο υπογεγραμμένος δείκτης ΕΛΕΓΧΕΤΑΙ, δεν διακοσμεί:
                       ;; latest.json.release ≡ στόχος symlink + attested:true
@@ -99,7 +174,7 @@
   (lambda (a) (declare (ignore a)) (run-release-gate)))
 
 (orchestrator.self-model:declare-capability! "περιφρούρηση-εκδόσεων"
- :description "read-only πύλη ολομέλειας: κάθε δημοσιευμένο release (content-addressed ή legacy) έχει recomputed Merkle root ταυτόσημο με το δηλωμένο· content-addressed ⇒ όνομα ≡ περιεχόμενο· latest ⇒ υπαρκτό και (για content-addressed) attested"
+ :description "read-only πύλη ολομέλειας δύο εποχών (πρότυπο CT — ποτέ rewrite ιστορίας): census-εποχή ⇒ recomputed RFC-6962 root ≡ όνομα ≡ δηλωμένο + πλήρες spine (census+αλυσίδα+JWS) + γέφυρα εποχών (prev_release_root ⇒ υπαρκτός στόχος)· legacy-εποχή (προ-P1.5) ⇒ sealed: δηλωμένο root + όνομα ≡ id + TSR δεμένο στο δηλωμένο root· latest ⇒ υπαρκτό και attested"
  :package :orchestrator.cli
  :functions '("run-release-gate" "%rg-verify-release")
  :gate "--release-gate"
@@ -108,7 +183,7 @@
 (orchestrator.contracts:defcontract "release-immutability-guard" :protocol
  :package :orchestrator.cli :system "orchestrator-cli"
  :capability "περιφρούρηση-εκδόσεων" :role "έλεγχος"
- :purpose "drift ή αλλοίωση σε ΟΠΟΙΟΔΗΠΟΤΕ δημοσιευμένο release (και στα ιστορικά legacy) κοκκινίζει την ολομέλεια — η αμεταβλητότητα επαληθεύεται, δεν υποτίθεται"
+ :purpose "drift ή αλλοίωση σε ΟΠΟΙΟΔΗΠΟΤΕ δημοσιευμένο release κοκκινίζει την ολομέλεια — census-εποχή με πλήρες spine, legacy-εποχή sealed μέσω attested TSR στο δηλωμένο root· η αμεταβλητότητα επαληθεύεται, δεν υποτίθεται"
  :inputs '("output/*/releases/** (committed δημοσιεύσεις)")
  :outputs '("ετυμηγορία ανά release + ονομαστική απόκλιση")
  :preconditions '("η ταυτότητα content-addressed release ορίζεται από %root->release-id")

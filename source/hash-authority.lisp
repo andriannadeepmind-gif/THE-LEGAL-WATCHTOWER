@@ -4,8 +4,7 @@
 (defpackage #:orchestrator.hash-authority
   (:use :cl)
   (:export #:compute-hash
-           #:compute-hash-prefixed
-           #:merkle-root))
+           #:compute-hash-prefixed))
 
 (in-package :orchestrator.hash-authority)
 
@@ -52,7 +51,5 @@
   (let ((hex (compute-hash content :algorithm algorithm)))
     (format nil "~(~A~):~A" algorithm hex)))
 
-(defun merkle-root (hashes)
-  "Placeholder for Merkle root computation.
-   Real implementation is in orchestrator-epistemic/merkle-tree.lisp"
-  (error "Use orchestrator.epistemic:build-merkle-tree instead"))
+;;; [P1.5-A] Το νεκρό tombstone export `merkle-root` (0 καλούντες, εγειρε πάντα
+;;; σφάλμα) ΔΙΑΓΡΑΦΗΚΕ. Η ΜΙΑ Merkle έδρα είναι orchestrator.merkle (RFC 6962).

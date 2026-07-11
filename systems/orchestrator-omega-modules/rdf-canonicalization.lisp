@@ -167,14 +167,17 @@
 
    Uses SBCL's sb-unicode:normalize-string for production-grade normalization."
 
+  ;; P1b [0052]: αποτυχία NFC ⇒ ΣΦΑΛΜΑ — η έδρα κανονικοποίησης τροφοδοτεί
+  ;; hashes/ταυτότητες· σιωπηλή επιστροφή ΑΚΑΝΟΝΙΚΟΠΟΙΗΤΟΥ κειμένου ήταν
+  ;; ακριβώς η απαγορευμένη κλάση (πλαστό «κανονικό» σε νομικό αρτεφάκτ).
   #+sbcl
   (handler-case
       (sb-unicode:normalize-string text :nfc)
     (error (e)
-      text))
+      (error "NFC normalization failed — refusing to emit non-canonical text into legal artifacts: ~A" e)))
 
   #-sbcl
-  text)
+  (error "normalize-unicode-string: NFC απαιτεί SBCL (sb-unicode) — καμία σιωπηλή παράκαμψη κανονικοποίησης"))
 
 ;;; ============================================================
 ;;; CANONICAL LITERAL FORMATTING
@@ -351,13 +354,14 @@
 
    Arguments:
      stream:         Output stream
-     article-number: Integer
+     article-number: Η ΚΑΝΟΝΙΚΗ ταυτότητα άρθρου («5», «5Α» — frbr-article-id),
+                     ΟΧΙ η γυμνή αριθμητική βάση (θα ταύτιζε το 5 με το 5Α)
      layer:          String (e.g., 'ARTICLE ROOT', 'WORK', 'EXPRESSION')
      timestamp:      ISO-8601 timestamp string"
 
   (format stream "# ============================================================~%")
   (format stream "# ~A~%" (or (config-get "corpus.name") "GREEK LEGAL CORPUS"))
-  (format stream "# Article ~D - ~A Layer~%" article-number layer)
+  (format stream "# Article ~A - ~A Layer~%" article-number layer)
   (format stream "# ============================================================~%")
   (format stream "# Generator:  ORCHESTRATOR v1.3~%")
   (when timestamp

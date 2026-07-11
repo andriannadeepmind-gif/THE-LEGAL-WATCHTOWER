@@ -6,21 +6,21 @@
         <FRBRWork>
           <FRBRthis value="/akn/gr/act/kdioikitikis/main"/>
           <FRBRuri value="/akn/gr/act/kdioikitikis"/>
-          <FRBRdate date="1970-01-01" name="generation"/>
+          <FRBRdate date="1999-05-17" name="generation"/>
           <FRBRauthor href="#stavropoulosLaw"/>
           <FRBRcountry value="gr"/>
         </FRBRWork>
         <FRBRExpression>
           <FRBRthis value="/akn/gr/act/kdioikitikis/el@/main"/>
           <FRBRuri value="/akn/gr/act/kdioikitikis/el@"/>
-          <FRBRdate date="1970-01-01" name="generation"/>
+          <FRBRdate date="1999-05-17" name="generation"/>
           <FRBRauthor href="#stavropoulosLaw"/>
           <FRBRlanguage language="el"/>
         </FRBRExpression>
         <FRBRManifestation>
           <FRBRthis value="/akn/gr/act/kdioikitikis/el@/main.xml"/>
           <FRBRuri value="/akn/gr/act/kdioikitikis/el@/main.xml"/>
-          <FRBRdate date="1970-01-01" name="generation"/>
+          <FRBRdate date="1999-05-17" name="generation"/>
           <FRBRauthor href="#stavropoulosLaw"/>
           <FRBRformat value="application/akn+xml"/>
         </FRBRManifestation>
@@ -4632,6 +4632,13 @@
           </content>
         </paragraph>
       </article>
+      <article eId="art_272ΣΤ">
+        <num>272ΣΤ</num>
+        <heading>Επίδοση της διαταγής πληρωμής</heading>
+        <content>
+          <p>Η διαταγή πληρωμής επιδίδεται στον καθ' ου, μέσα σε προθεσμία τριάντα (30) ημερών από την έκδοσή της, με επιμέλεια του αιτούντος. Όταν αντισυμβαλλόμενος φορέας είναι το Δημόσιο, η διαταγή πληρωμής επιδίδεται και στον Υπουργό Οικονομικών, μέσα στην ίδια προθεσμία. Αν η επίδοση δεν γίνει μέσα στην παραπάνω προθεσμία, η διαταγή πληρωμής παύει αυτοδικαίως να ισχύει. Αντίγραφο της σχετικής έκθεσης επίδοσης κατατίθεται, μέσα στην ίδια προθεσμία, στη γραμματεία του Δικαστηρίου, ο δικαστής του οποίου εξέδωσε τη διαταγή πληρωμής. Ο αρμόδιος γραμματέας υποχρεούται να καταχωρίσει την ημεροχρονολογία της επίδοσης της διαταγής πληρωμής στο οικείο βιβλίο δημοσιεύσεων.</p>
+        </content>
+      </article>
       <article eId="art_272Ζ">
         <num>272Ζ</num>
         <heading>Εκτελεστότητα της διαταγής πληρωμής</heading>
@@ -4706,13 +4713,6 @@
         <heading>Διακοπή και αναστολή της παραγραφής</heading>
         <content>
           <p>"1. Η επίδοση της διαταγής πληρωμής διακόπτει την παραγραφή της σχετικής αξίωσης. 2. Αν ακυρωθεί η διαταγή πληρωμής, η παραγραφή θεωρείται ότι έχει ανασταλεί από την επίδοση της διαταγής πληρωμής έως τη δημοσίευση οριστικής απόφασης επί της ανακοπής του άρθρου 272Η.»</p>
-        </content>
-      </article>
-      <article eId="art_272ΣΤ">
-        <num>272ΣΤ</num>
-        <heading>Επίδοση της διαταγής πληρωμής</heading>
-        <content>
-          <p>Η διαταγή πληρωμής επιδίδεται στον καθ' ου, μέσα σε προθεσμία τριάντα (30) ημερών από την έκδοσή της, με επιμέλεια του αιτούντος. Όταν αντισυμβαλλόμενος φορέας είναι το Δημόσιο, η διαταγή πληρωμής επιδίδεται και στον Υπουργό Οικονομικών, μέσα στην ίδια προθεσμία. Αν η επίδοση δεν γίνει μέσα στην παραπάνω προθεσμία, η διαταγή πληρωμής παύει αυτοδικαίως να ισχύει. Αντίγραφο της σχετικής έκθεσης επίδοσης κατατίθεται, μέσα στην ίδια προθεσμία, στη γραμματεία του Δικαστηρίου, ο δικαστής του οποίου εξέδωσε τη διαταγή πληρωμής. Ο αρμόδιος γραμματέας υποχρεούται να καταχωρίσει την ημεροχρονολογία της επίδοσης της διαταγής πληρωμής στο οικείο βιβλίο δημοσιεύσεων.</p>
         </content>
       </article>
       <article eId="art_273">

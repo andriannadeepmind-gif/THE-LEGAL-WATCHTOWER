@@ -49,9 +49,9 @@
   "Emit Turtle file header with metadata"
   
   (orchestrator.dsl.turtle:emit-separator)
-  (orchestrator.dsl.turtle:emit-comment 
-    (format nil "FRBR WORK LAYER - Article ~A" 
-            (orchestrator.model:article-number work)))
+  (orchestrator.dsl.turtle:emit-comment
+    (format nil "FRBR WORK LAYER - Article ~A"
+            (orchestrator.model:frbr-article-id work)))
   (orchestrator.dsl.turtle:emit-comment
     "Abstract legal resource (language-independent)")
   (orchestrator.dsl.turtle:emit-separator)
@@ -79,9 +79,8 @@
    5. FRBR relationships
    6. Provenance metadata"
   
-  (let ((uri (orchestrator.model:resource-uri work))
-        (article-num (orchestrator.model:article-number work)))
-    
+  (let ((uri (orchestrator.model:resource-uri work)))
+
     ;; Main resource
     (format t "<~A>~%" uri)
     
@@ -159,12 +158,15 @@
       "schema:legislationDate"
       (format-literal (orchestrator.model:issued-date work) :datatype "xsd:date"))
 
+    ;; P1b [0052]#Ε1: η ΚΑΝΟΝΙΚΗ ταυτότητα (ART/5Α) — το γυμνό ~D της βάσης
+    ;; εξέπεμπε ΤΟ ΙΔΙΟ legislationIdentifier για το 5 και το 5Α (σύγκρουση
+    ;; ταυτότητας δύο διαφορετικών νομικών οντοτήτων).
     (emit-triple-indent
       "schema:legislationIdentifier"
-      (format-literal (format nil "ELI/GR/~A/~A/ART/~D"
+      (format-literal (format nil "ELI/GR/~A/~A/ART/~A"
                               (string-upcase (orchestrator.model:document-type work))
                               (orchestrator.model:law-year work)
-                              article-num)))
+                              (orchestrator.model:frbr-article-id work))))
 
     (emit-triple-indent
       "schema:legislationJurisdiction"

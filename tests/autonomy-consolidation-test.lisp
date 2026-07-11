@@ -52,8 +52,8 @@
 (format t "~%== consolidate each code from its AUTO-extracted records ==~%")
 (let* ((rk (laws->records (list *law*) "kpoinikis"))
        (rp (laws->records (list *law*) "poinikos"))
-       (dk (consolidate-corpus '((92 "παλαιός" "ΠΑΛΑΙΟ κείμενο 92.")) rk))
-       (dp (consolidate-corpus '((15 "παλαιός" "ΠΑΛΑΙΟ κείμενο 15.")) rp)))
+       (dk (consolidate-corpus '((92 "παλαιός" "ΠΑΛΑΙΟ κείμενο 92.")) rk :id "test-corpus"))
+       (dp (consolidate-corpus '((15 "παλαιός" "ΠΑΛΑΙΟ κείμενο 15.")) rp :id "test-corpus")))
   (check "ΚΠΔ art_92 now carries the new text"
          (and (search "αυτοπροσώπως" (ptext dk "art_92"))
               (not (search "ΠΑΛΑΙΟ" (ptext dk "art_92")))))
@@ -64,8 +64,8 @@
 
 (format t "~%== point-in-time still holds through the autonomous path ==~%")
 (let* ((rk (laws->records (list *law*) "kpoinikis"))
-       (before (consolidate-corpus '((92 "π" "ΠΑΛΑΙΟ κείμενο 92.")) rk :as-of-date "2024-01-01"))
-       (after  (consolidate-corpus '((92 "π" "ΠΑΛΑΙΟ κείμενο 92.")) rk :as-of-date "2024-12-31")))
+       (before (consolidate-corpus '((92 "π" "ΠΑΛΑΙΟ κείμενο 92.")) rk :as-of-date "2024-01-01" :id "test-corpus"))
+       (after  (consolidate-corpus '((92 "π" "ΠΑΛΑΙΟ κείμενο 92.")) rk :as-of-date "2024-12-31" :id "test-corpus")))
   (check "before the effective date → OLD text" (search "ΠΑΛΑΙΟ" (ptext before "art_92")))
   (check "after the effective date → NEW text" (search "αυτοπροσώπως" (ptext after "art_92"))))
 

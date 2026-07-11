@@ -49,7 +49,7 @@
    #:*build-timestamp-override*
    #:current-build-timestamp
    #:deterministic-hash
-   #:+default-deterministic-timestamp+
+   #:effective-deterministic-timestamp
    
    ;; === AI CONFIGURATION ===
    #:ai-export-config

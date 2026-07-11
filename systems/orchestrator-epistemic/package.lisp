@@ -199,8 +199,7 @@
                 #:now
                 #:format-iso8601)
   (:import-from #:orchestrator.hash-authority
-                #:compute-hash
-                #:merkle-root)
+                #:compute-hash)
   (:export
    ;; Vocabularies
    #:+slw-namespace+
@@ -258,9 +257,9 @@
    #:immutable-slot-error
 
    ;; Temporal proof
-   #:request-rfc3161-timestamp
-   #:submit-to-ct-log
-   #:submit-to-multiple-ct-logs
+   ;; [0057]: request-rfc3161-timestamp αφαιρέθηκε (ΜΙΑ έδρα RFC-3161 =
+   ;; orchestrator.timestamp-authority)· submit-to-multiple-ct-logs ήταν
+   ;; orphan export (καμία υλοποίηση).
    #:sign-manifest-jws
 
    ;; SHACL shapes
@@ -271,4 +270,8 @@
 
    ;; Main deploy
    #:deploy-epistemic-stage
-   #:validate-epistemic-stage))
+   #:validate-epistemic-stage
+
+   ;; [P1.5-D] Release spine verification (release-gate v2)
+   #:verify-release-spine
+   #:frozen-legacy-release-id-p))

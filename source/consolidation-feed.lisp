@@ -26,7 +26,7 @@
   (:import-from :orchestrator.consolidation
                 #:consolidate #:amending-act-p #:legal-document-p)
   (:import-from :orchestrator.consolidation.bridge
-                #:amendment-records->acts #:articles->document)
+                #:amendment-records->acts)
   (:import-from :orchestrator.ingestion
                 #:ingest-item-payload #:ingest-item-id #:ingest-item-date)
   (:export

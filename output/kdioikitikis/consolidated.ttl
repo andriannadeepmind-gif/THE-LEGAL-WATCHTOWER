@@ -3198,6 +3198,10 @@
     eli:in_force true ;
     prov:value "original" .
 
+<https://stavropouloslaw.com/eli/art_272ΣΤ>
+    eli:in_force true ;
+    prov:value "original" .
+
 <https://stavropouloslaw.com/eli/art_272Ζ>
     eli:in_force true ;
     prov:value "original" .
@@ -3247,10 +3251,6 @@
     prov:value "original" .
 
 <https://stavropouloslaw.com/eli/art_272Ι>
-    eli:in_force true ;
-    prov:value "original" .
-
-<https://stavropouloslaw.com/eli/art_272ΣΤ>
     eli:in_force true ;
     prov:value "original" .
 

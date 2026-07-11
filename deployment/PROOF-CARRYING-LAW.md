@@ -60,7 +60,7 @@ For a leaf at index `i`, the path is the list of sibling hashes from leaf to roo
 The corpus-level anchor — `corpus-proof.json`:
 
 ```json
-{ "version":"pcl-1", "algorithm":"sha256-merkle/raw-concat",
+{ "version":"pcl-1", "algorithm":"sha256-merkle/rfc6962+RS256",
   "merkle_root":"sha256:…", "count":536, "anchored_at":"2025-01-01T00:00:00Z",
   "signature":"<detached RS256 JWS over merkle_root>",
   "public_key":{ "kty":"RSA", "alg":"RS256", "kid":"stavropoulos-law-root", "n":"…", "e":"AQAB" } }

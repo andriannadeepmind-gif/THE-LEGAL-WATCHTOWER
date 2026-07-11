@@ -113,14 +113,14 @@
 
     (format t "~%== Point-in-time consolidation on real data ==~%")
     ;; Before any amendment: article 3 present and original.
-    (let ((c2000 (consolidate-corpus articles records :as-of-date "2000-01-01")))
+    (let ((c2000 (consolidate-corpus articles records :as-of-date "2000-01-01" :id "test-corpus")))
       (check "2000: art_3 still original"
              (eq (provision-status (find-provision c2000 "art_3")) :original))
       (check "2000: art_1 not yet amended"
              (eq (provision-status (find-provision c2000 "art_1")) :original)))
 
     ;; As of 2015: 2010 act applied, 2019 act not.
-    (let ((c2015 (consolidate-corpus articles records :as-of-date "2015-01-01")))
+    (let ((c2015 (consolidate-corpus articles records :as-of-date "2015-01-01" :id "test-corpus")))
       (check "2015: art_3 repealed by L3904-2010"
              (and (eq (provision-status (find-provision c2015 "art_3")) :repealed)
                   (string= (provision-source-act (find-provision c2015 "art_3"))
@@ -133,7 +133,7 @@
              (eq (provision-status (find-provision c2015 "art_1")) :original)))
 
     ;; Current consolidation (all acts).
-    (let ((current (consolidate-corpus articles records)))
+    (let ((current (consolidate-corpus articles records :id "test-corpus")))
       (check "current: art_1 amended by L4619-2019"
              (string= (provision-source-act (find-provision current "art_1"))
                       "L4619-2019"))
@@ -159,8 +159,8 @@
 
     (format t "~%== Determinism on real data ==~%")
     (check "consolidated text identical across runs"
-           (string= (render-consolidated-text (consolidate-corpus articles records))
-                    (render-consolidated-text (consolidate-corpus articles records))))
+           (string= (render-consolidated-text (consolidate-corpus articles records :id "test-corpus"))
+                    (render-consolidated-text (consolidate-corpus articles records :id "test-corpus"))))
     (check "base articles list not mutated"
            (eq (provision-status (find-provision doc "art_3")) :original))))
 

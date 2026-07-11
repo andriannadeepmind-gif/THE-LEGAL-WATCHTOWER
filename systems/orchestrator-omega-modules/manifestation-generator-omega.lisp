@@ -70,11 +70,11 @@
 
   (let* ((expr (orchestrator.model:manifestation-expression man))
          (work (orchestrator.model:expression-work expr))
-         (article-num (orchestrator.model:article-number work)))
+         (article-id (orchestrator.model:frbr-article-id work)))
 
     (orchestrator.dsl.turtle:emit-separator)
     (orchestrator.dsl.turtle:emit-comment
-      (format nil "FRBR MANIFESTATION LAYER - Article ~A" article-num))
+      (format nil "FRBR MANIFESTATION LAYER - Article ~A" article-id))
     (orchestrator.dsl.turtle:emit-comment
       "Digital embodiment of the Greek-language Expression")
     (orchestrator.dsl.turtle:emit-separator)
@@ -197,14 +197,21 @@
 
     ;; ──────────────────────────────────────────────────────
     ;; SECTION 8: OWL Identity / Cross-Reference
+    ;; P1b [0052]#Ε6: ΜΟΝΟ με ΡΗΤΑ διαμορφωμένο wikidata_qid — το παλιό
+    ;; hardcoded Q41 (= η οντότητα «Ελλάδα») με πρόθεμα «const-» έγραφε
+    ;; ΨΕΥΔΗ διασταύρωση σε ΚΑΘΕ corpus. Χωρίς qid, το triple ΠΑΡΑΛΕΙΠΕΤΑΙ —
+    ;; ποτέ δεν κατασκευάζεται δεσμός σε λάθος οντότητα.
     ;; ──────────────────────────────────────────────────────
-    (emit-triple-indent
-      "owl:sameAs"
-      (format nil "<http://www.wikidata.org/entity/Q41#const-art-~A-man>"
-              ;; Suffix-safe id so a lettered article (100Α) never collapses onto
-              ;; its base number (100) in this cross-reference.
-              (orchestrator.model:article-uri-id
-               article-num (orchestrator.model:article-letter-suffix work))))
+    (let ((qid (orchestrator.spec:config-get "corpus.wikidata_qid"))
+          (corpus-slug (orchestrator.spec:required-config "corpus.short_name")))
+      (when qid
+        (emit-triple-indent
+          "owl:sameAs"
+          (format nil "<http://www.wikidata.org/entity/Q~A#~A-art-~A-man>"
+                  qid corpus-slug
+                  ;; Suffix-safe id so a lettered article (100Α) never collapses
+                  ;; onto its base number (100) in this cross-reference.
+                  (orchestrator.model:frbr-article-id work)))))
 
     ;; ──────────────────────────────────────────────────────
     ;; SECTION 9: PROV-O Provenance

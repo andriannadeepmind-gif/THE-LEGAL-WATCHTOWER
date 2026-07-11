@@ -16,6 +16,16 @@
 
 (defpackage :orchestrator.jws-authority
   (:use :cl)
+  (:import-from :orchestrator.asn1
+                #:pem->der
+                #:der->pem
+                #:der-sequence-elements
+                #:der-integer-value
+                #:encode-asn1-sequence
+                #:encode-asn1-integer
+                #:encode-asn1-bit-string
+                #:encode-asn1-oid
+                #:encode-asn1-null)
   (:export
    ;; Core signing
    #:sign-jws
@@ -24,12 +34,18 @@
    #:load-rsa-private-key
    #:load-rsa-public-key
    #:export-jwk
+   #:jwk-thumbprint
    #:export-jwk-to-file
    #:generate-rsa-keypair
    #:save-rsa-keypair
    ;; JWS utilities
    #:base64url-encode
    #:base64url-decode
+   #:constant-time-string=
+   ;; RSASSA-PKCS1-v1_5 / SHA-256 — Η ΜΙΑ έδρα υπογραφής (RFC 8017 §8.2)·
+   ;; την καταναλώνει και το x509-authority (αντί για raw-RSA χωρίς padding).
+   #:sign-rsa-sha256
+   #:verify-rsa-sha256
    ;; Conditions
    #:jws-error
    #:key-not-found
@@ -71,6 +87,18 @@
     ;; serialization, which splits on #\. (header.payload.signature).
     (string-right-trim "=." b64)))
 
+(defun constant-time-string= (a b)
+  "Σύγκριση σταθερού χρόνου (timing-attack resistant). Η ΜΙΑ έδρα —
+   μετακινήθηκε εδώ από το νεκρό verify-authority ([P1.5 κριτής #2])."
+  (if (not (= (length a) (length b)))
+      nil
+      (let ((result 0))
+        (loop for i from 0 below (length a)
+              do (setf result (logior result
+                                      (logxor (char-code (char a i))
+                                              (char-code (char b i))))))
+        (zerop result))))
+
 (defun base64url-decode (string)
   "Decode Base64url string to bytes
 
@@ -110,7 +138,9 @@
            :message (format nil "Private key not found: ~A" pem-path)))
 
   (let* ((pem-content (alexandria:read-file-into-string pem-path))
-         (der-bytes (pem-to-der pem-content :private)))
+         ;; PKCS#1 ή PKCS#8 label — η έδρα PEM (orchestrator.asn1) απαιτεί
+         ;; ζεύγος φρουρών με ρητό label, όχι σιωπηλή αφαίρεση γραμμών.
+         (der-bytes (pem->der pem-content '("RSA PRIVATE KEY" "PRIVATE KEY"))))
     (parse-rsa-private-key der-bytes)))
 
 (defun load-rsa-public-key (pem-path)
@@ -126,30 +156,8 @@
            :message (format nil "Public key not found: ~A" pem-path)))
 
   (let* ((pem-content (alexandria:read-file-into-string pem-path))
-         (der-bytes (pem-to-der pem-content :public)))
+         (der-bytes (pem->der pem-content "PUBLIC KEY")))
     (parse-rsa-public-key der-bytes)))
-
-(defun pem-to-der (pem-content key-type)
-  "Extract DER bytes from PEM content
-
-   Args:
-     pem-content: PEM file content as string
-     key-type: :private or :public
-
-   Returns:
-     DER encoded bytes"
-  (let* ((lines (uiop:split-string pem-content :separator '(#\Newline)))
-         ;; Filter out header/footer lines and empty lines
-         (b64-lines (remove-if (lambda (line)
-                                 (or (search "-----BEGIN" line)
-                                     (search "-----END" line)
-                                     (string= (string-trim '(#\Space #\Tab #\Return) line) "")))
-                               lines))
-         ;; Join and decode
-         (b64-content (apply #'concatenate 'string
-                             (mapcar (lambda (l) (string-trim '(#\Space #\Tab #\Return) l))
-                                     b64-lines))))
-    (cl-base64:base64-string-to-usb8-array b64-content)))
 
 (defun parse-rsa-private-key (der-bytes)
   "Parse DER-encoded RSA private key
@@ -181,7 +189,7 @@
 
    Returns:
      Ironclad RSA private key"
-  (let* ((parsed (parse-asn1-sequence der-bytes))
+  (let* ((parsed (der-sequence-elements der-bytes))
          ;; PKCS#8 detection: has 3 elements, second is a list (nested SEQUENCE = AlgorithmIdentifier)
          ;; PKCS#1 has 9 elements (version + 8 key components), all vectors
          (is-pkcs8 (and (= (length parsed) 3)
@@ -190,16 +198,16 @@
          (key-data (if is-pkcs8
                        ;; PKCS#8: third element is OCTET STRING containing PKCS#1
                        (let ((inner (third parsed)))
-                         (parse-asn1-sequence (if (vectorp inner) inner
-                                                  (coerce inner '(vector (unsigned-byte 8))))))
+                         (der-sequence-elements (if (vectorp inner) inner
+                                                    (coerce inner '(vector (unsigned-byte 8))))))
                        ;; PKCS#1: direct
                        parsed)))
     ;; Extract components (skip version at index 0)
-    (let ((n (asn1-integer-to-bignum (nth 1 key-data)))       ; modulus
-          (e (asn1-integer-to-bignum (nth 2 key-data)))       ; public exponent
-          (d (asn1-integer-to-bignum (nth 3 key-data)))       ; private exponent
-          (p (asn1-integer-to-bignum (nth 4 key-data)))       ; prime1
-          (q (asn1-integer-to-bignum (nth 5 key-data))))      ; prime2
+    (let ((n (der-integer-value (nth 1 key-data)))       ; modulus
+          (e (der-integer-value (nth 2 key-data)))       ; public exponent
+          (d (der-integer-value (nth 3 key-data)))       ; private exponent
+          (p (der-integer-value (nth 4 key-data)))       ; prime1
+          (q (der-integer-value (nth 5 key-data))))      ; prime2
       (ironclad:make-private-key :rsa :n n :e e :d d :p p :q q))))
 
 (defun parse-rsa-public-key (der-bytes)
@@ -210,7 +218,7 @@
 
    Returns:
      Ironclad RSA public key"
-  (let* ((parsed (parse-asn1-sequence der-bytes))
+  (let* ((parsed (der-sequence-elements der-bytes))
          ;; SubjectPublicKeyInfo wraps the key
          (key-bytes (if (= (length parsed) 2)
                         ;; Unwrap BIT STRING
@@ -219,97 +227,10 @@
                               (subseq bit-string 1)  ; Skip unused bits byte
                               bit-string))
                         der-bytes))
-         (key-data (parse-asn1-sequence key-bytes)))
-    (let ((n (asn1-integer-to-bignum (nth 0 key-data)))
-          (e (asn1-integer-to-bignum (nth 1 key-data))))
+         (key-data (der-sequence-elements key-bytes)))
+    (let ((n (der-integer-value (nth 0 key-data)))
+          (e (der-integer-value (nth 1 key-data))))
       (ironclad:make-public-key :rsa :n n :e e))))
-
-;;; ============================================================================
-;;; ASN.1 DER PARSING (Minimal implementation for RSA keys)
-;;; ============================================================================
-
-(defun parse-asn1-sequence (bytes &optional (offset 0))
-  "Parse ASN.1 SEQUENCE from DER bytes
-
-   Returns list of parsed elements"
-  (when (>= offset (length bytes))
-    (return-from parse-asn1-sequence nil))
-
-  (let ((tag (aref bytes offset)))
-    (unless (= tag #x30)  ; SEQUENCE tag
-      (error 'jws-error :message (format nil "Expected SEQUENCE (0x30), got 0x~2,'0X" tag)))
-
-    (multiple-value-bind (length new-offset)
-        (parse-asn1-length bytes (1+ offset))
-      (let ((end (+ new-offset length))
-            (elements nil)
-            (pos new-offset))
-        (loop while (< pos end)
-              do (multiple-value-bind (element next-pos)
-                     (parse-asn1-element bytes pos)
-                   (push element elements)
-                   (setf pos next-pos)))
-        (nreverse elements)))))
-
-(defun parse-asn1-element (bytes offset)
-  "Parse single ASN.1 element
-
-   Returns: (values element new-offset)"
-  (let ((tag (aref bytes offset)))
-    (multiple-value-bind (length data-offset)
-        (parse-asn1-length bytes (1+ offset))
-      (let ((data-end (+ data-offset length)))
-        (values
-         (cond
-           ;; INTEGER
-           ((= tag #x02)
-            (subseq bytes data-offset data-end))
-           ;; BIT STRING
-           ((= tag #x03)
-            (subseq bytes data-offset data-end))
-           ;; OCTET STRING
-           ((= tag #x04)
-            (subseq bytes data-offset data-end))
-           ;; NULL
-           ((= tag #x05)
-            nil)
-           ;; OBJECT IDENTIFIER
-           ((= tag #x06)
-            (subseq bytes data-offset data-end))
-           ;; SEQUENCE
-           ((= tag #x30)
-            (parse-asn1-sequence bytes offset))
-           ;; Context-specific or other
-           (t
-            (subseq bytes data-offset data-end)))
-         data-end)))))
-
-(defun parse-asn1-length (bytes offset)
-  "Parse ASN.1 length field
-
-   Returns: (values length new-offset)"
-  (let ((first-byte (aref bytes offset)))
-    (if (< first-byte 128)
-        ;; Short form
-        (values first-byte (1+ offset))
-        ;; Long form
-        (let* ((num-octets (logand first-byte #x7f))
-               (length 0))
-          (loop for i from 1 to num-octets
-                do (setf length (+ (ash length 8) (aref bytes (+ offset i)))))
-          (values length (+ offset 1 num-octets))))))
-
-(defun asn1-integer-to-bignum (bytes)
-  "Convert ASN.1 INTEGER bytes to Lisp bignum
-
-   Handles leading zero byte for positive numbers"
-  (let ((result 0)
-        (start (if (and (> (length bytes) 1) (zerop (aref bytes 0)))
-                   1  ; Skip leading zero
-                   0)))
-    (loop for i from start below (length bytes)
-          do (setf result (+ (ash result 8) (aref bytes i))))
-    result))
 
 ;;; ============================================================================
 ;;; JWS SIGNING (RFC 7515)
@@ -451,10 +372,25 @@
            ;; Detached JWS: the payload was base64url(UTF-8 octets) at signing time,
            ;; so re-encode it the SAME way here (encoding a STRING directly would not
            ;; match what SIGN-JWS produced and verification would always fail).
-           (payload-b64 (or (and (> (length (second parts)) 0) (second parts))
-                            (base64url-encode (if (stringp payload)
-                                                  (babel:string-to-octets payload :encoding :utf-8)
-                                                  payload))))
+           ;; [P1.5 F1] Όταν ο καλών ΔΙΝΕΙ payload, η υπογραφή δένεται ΣΕ ΑΥΤΟ:
+           ;; token με ΜΗ-ΚΕΝΟ ενσωματωμένο segment γίνεται δεκτό ΜΟΝΟ αν
+           ;; ταυτίζεται byte-προς-byte με το αναμενόμενο — αλλιώς ένας
+           ;; επιτιθέμενος θα υπέβαλλε οποιοδήποτε έγκυρα υπογεγραμμένο token
+           ;; και ο έλεγχος δεν θα αφορούσε ποτέ το αναμενόμενο payload.
+           (expected-b64 (and payload
+                              (base64url-encode (if (stringp payload)
+                                                    (babel:string-to-octets payload :encoding :utf-8)
+                                                    payload))))
+           (payload-b64 (cond
+                          ((and expected-b64 (plusp (length (second parts))))
+                           (unless (string= (second parts) expected-b64)
+                             (error 'invalid-signature
+                                    :message "JWS: ενσωματωμένο payload ≠ αναμενόμενο (payload substitution)"))
+                           expected-b64)
+                          (expected-b64 expected-b64)
+                          ((plusp (length (second parts))) (second parts))
+                          (t (error 'jws-error
+                                    :message "JWS: detached token χωρίς αναμενόμενο payload"))))
            (signature-b64 (third parts))
 
            ;; Reconstruct signing input
@@ -495,51 +431,76 @@
 ;;; JWK EXPORT (RFC 7517)
 ;;; ============================================================================
 
-(defun export-jwk (key &key (kid "orchestrator-key") (use "sig"))
-  "Export RSA key as JWK
+(defun %rsa-private-key-p (k)
+  "T αν το K είναι ironclad RSA ΙΔΙΩΤΙΚΟ κλειδί (έχει πρώτο p). Τα δημόσια
+   κλειδιά δεν έχουν — σφάλμα/NIL."
+  (and (ignore-errors (ironclad:rsa-key-prime-p k)) t))
+
+(defun export-jwk (key &key (kid "orchestrator-key") (use "sig") public-key)
+  "Export RSA ΔΗΜΟΣΙΟ κλειδί ως JWK (RS256).
+
+   ΚΡΙΣΙΜΟ (fail-closed): το «e» ΠΟΤΕ δεν εξάγεται από ΙΔΙΩΤΙΚΟ κλειδί —
+   ironclad:rsa-key-exponent σε ιδιωτικό κλειδί επιστρέφει το d (ΙΔΙΩΤΙΚΟ
+   εκθέτη), που (α) θα ΔΙΕΡΡΕΕ το ιδιωτικό κλειδί μέσα στο δημόσιο JWK
+   (n + d ⇒ ανακατασκευή) και (β) θα έκανε την επαλήθευση αδύνατη. Αν δοθεί
+   ιδιωτικό κλειδί, ΑΠΑΙΤΕΙΤΑΙ το αντίστοιχο δημόσιο (:public-key ή public PEM
+   path)· αλλιώς ΣΦΑΛΜΑ.
 
    Args:
-     key: Ironclad RSA key (public or private) or path to PEM
-     kid: Key ID
-     use: Key use ('sig' or 'enc')
-
-   Returns:
-     JWK as alist"
-  ;; Handle path input
-  (let ((key-obj (etypecase key
-                   (pathname (handler-case
-                                 (load-rsa-public-key key)
-                               (error () (load-rsa-private-key key))))
-                   (string (handler-case
-                               (load-rsa-public-key key)
-                             (error () (load-rsa-private-key key))))
-                   (t key))))
-
-    ;; Extract key components
-    (let* ((n (ironclad:rsa-key-modulus key-obj))
-           (e (ironclad:rsa-key-exponent key-obj))
-           ;; Convert to bytes
-           (n-bytes (ironclad:integer-to-octets n))
-           (e-bytes (ironclad:integer-to-octets e)))
-
+     key: Ironclad RSA κλειδί (δημόσιο ή ιδιωτικό) ή PEM path.
+     public-key: το ΔΗΜΟΣΙΟ κλειδί/PEM path — υποχρεωτικό όταν KEY είναι ιδιωτικό.
+     kid, use: JWK πεδία."
+  (flet ((as-key (x public-p)
+           (etypecase x
+             (pathname (if public-p (load-rsa-public-key x) (load-rsa-private-key x)))
+             (string   (if public-p (load-rsa-public-key x) (load-rsa-private-key x)))
+             (t x))))
+    ;; Η ΠΗΓΗ του δημόσιου εκθέτη: αποκλειστικά δημόσιο κλειδί.
+    (let* ((pub (cond
+                  (public-key (as-key public-key t))
+                  ;; PEM path για το KEY: δοκίμασε δημόσιο πρώτα (σωστό e)· αν
+                  ;; είναι ιδιωτικό PEM χωρίς :public-key ⇒ σφάλμα παρακάτω.
+                  ((or (pathnamep key) (stringp key))
+                   (handler-case (as-key key t)
+                     (error () (error 'jws-error
+                                      :message "export-jwk: ιδιωτικό PEM απαιτεί :public-key (ΠΟΤΕ d ως e)"))))
+                  ((%rsa-private-key-p key)
+                   (error 'jws-error
+                          :message "export-jwk: ιδιωτικό κλειδί απαιτεί :public-key — ironclad:rsa-key-exponent σε ιδιωτικό επιστρέφει d (διαρροή + άκυρο e)"))
+                  (t key)))              ; ήδη δημόσιο κλειδί
+           (n (ironclad:rsa-key-modulus pub))
+           ;; Ο δημόσιος εκθέτης ΑΠΟ ΤΟ ΔΗΜΟΣΙΟ κλειδί. ΣΗΜ: το ironclad
+           ;; generate-key-pair παράγει ΜΕΓΑΛΟ e (όχι 65537), οπότε ΔΕΝ υπάρχει
+           ;; φραγή μεγέθους — η προστασία διαρροής είναι ΔΟΜΙΚΗ (ποτέ από
+           ;; ιδιωτικό κλειδί, όπου rsa-key-exponent = d).
+           (e (ironclad:rsa-key-exponent pub)))
       `(:|kty| "RSA"
         :|use| ,use
         :|kid| ,kid
         :|alg| "RS256"
-        :|n| ,(base64url-encode n-bytes)
-        :|e| ,(base64url-encode e-bytes)))))
+        :|n| ,(base64url-encode (ironclad:integer-to-octets n))
+        :|e| ,(base64url-encode (ironclad:integer-to-octets e))))))
 
-(defun export-jwk-to-file (key output-path &key (kid "orchestrator-key"))
-  "Export key as JWK to file
+(defun jwk-thumbprint (public-key)
+  "RFC 7638 JWK thumbprint του ΔΗΜΟΣΙΟΥ RSA κλειδιού: base64url(SHA-256(
+   {\"e\":…,\"kty\":\"RSA\",\"n\":…})) με λεξικογραφική σειρά κλειδιών και
+   χωρίς κενά — το ΚΑΝΟΝΙΚΟ, επαληθεύσιμο kid. Τίμια προέλευση: παράγεται
+   ΑΠΟ το κλειδί, δεν δηλώνεται ως αυθαίρετο brand string."
+  (when (%rsa-private-key-p public-key)
+    (error 'jws-error :message "jwk-thumbprint: δώσε ΔΗΜΟΣΙΟ κλειδί"))
+  (let* ((n (base64url-encode (ironclad:integer-to-octets
+                               (ironclad:rsa-key-modulus public-key))))
+         (e (base64url-encode (ironclad:integer-to-octets
+                               (ironclad:rsa-key-exponent public-key))))
+         (canonical (format nil "{\"e\":\"~A\",\"kty\":\"RSA\",\"n\":\"~A\"}" e n)))
+    (base64url-encode
+     (ironclad:digest-sequence :sha256
+                               (babel:string-to-octets canonical :encoding :utf-8)))))
 
-   Args:
-     key: RSA key or path to PEM
-     output-path: Output file path
-     kid: Key ID
-
-   Returns:
-     Path to written file"
-  (let ((jwk (export-jwk key :kid kid)))
+(defun export-jwk-to-file (key output-path &key (kid "orchestrator-key") public-key)
+  "Export ΔΗΜΟΣΙΟ key as JWK to file. Αν το KEY είναι ιδιωτικό, δώσε :public-key
+   (fail-closed — βλ. export-jwk· ποτέ d ως e)."
+  (let ((jwk (export-jwk key :kid kid :public-key public-key)))
     (ensure-directories-exist output-path)
     (alexandria:write-string-into-file
      (jonathan:to-json jwk)
@@ -605,18 +566,11 @@
 
    Returns:
      PEM string"
-  (let* ((der-bytes (rsa-key-to-der key type :public-key public-key))
-         (b64 (cl-base64:usb8-array-to-base64-string der-bytes))
-         ;; Split into 64-char lines
-         (lines (loop for i from 0 below (length b64) by 64
-                      collect (subseq b64 i (min (+ i 64) (length b64)))))
-         (header (if (eq type :private)
-                     "-----BEGIN RSA PRIVATE KEY-----"
-                     "-----BEGIN PUBLIC KEY-----"))
-         (footer (if (eq type :private)
-                     "-----END RSA PRIVATE KEY-----"
-                     "-----END PUBLIC KEY-----")))
-    (format nil "~A~%~{~A~%~}~A~%" header lines footer)))
+  ;; [0057]: ΜΙΑ έδρα PEM-encode — orchestrator.asn1:der->pem (RFC 7468,
+  ;; γραμμές 64 χαρ.). Το προηγούμενο χειροποίητο base64+φρουροί ήταν 3ο
+  ;; αντίγραφο του der->pem.
+  (der->pem (rsa-key-to-der key type :public-key public-key)
+            (if (eq type :private) "RSA PRIVATE KEY" "PUBLIC KEY")))
 
 (defun rsa-key-to-der (key type &key public-key)
   "Convert RSA key to DER format
@@ -723,81 +677,6 @@
              (encode-asn1-bit-string rsa-key-seq))))))
 
 ;;; ============================================================================
-;;; ASN.1 DER ENCODING
-;;; ============================================================================
-
-(defun encode-asn1-sequence (elements)
-  "Encode list of DER elements as SEQUENCE"
-  (let ((content (apply #'concatenate '(vector (unsigned-byte 8)) elements)))
-    (concatenate '(vector (unsigned-byte 8))
-                 (vector #x30)  ; SEQUENCE tag
-                 (encode-asn1-length (length content))
-                 content)))
-
-(defun encode-asn1-integer (value)
-  "Encode integer as ASN.1 INTEGER"
-  (let* ((bytes (if (zerop value)
-                    (vector 0)
-                    (ironclad:integer-to-octets value)))
-         ;; Add leading zero if high bit set (to keep positive)
-         (padded (if (and (> (length bytes) 0)
-                          (>= (aref bytes 0) 128))
-                     (concatenate '(vector (unsigned-byte 8)) (vector 0) bytes)
-                     bytes)))
-    (concatenate '(vector (unsigned-byte 8))
-                 (vector #x02)  ; INTEGER tag
-                 (encode-asn1-length (length padded))
-                 padded)))
-
-(defun encode-asn1-bit-string (content)
-  "Encode bytes as ASN.1 BIT STRING"
-  (let ((with-unused (concatenate '(vector (unsigned-byte 8))
-                                  (vector 0)  ; 0 unused bits
-                                  content)))
-    (concatenate '(vector (unsigned-byte 8))
-                 (vector #x03)  ; BIT STRING tag
-                 (encode-asn1-length (length with-unused))
-                 with-unused)))
-
-(defun encode-asn1-oid (components)
-  "Encode OID as ASN.1 OBJECT IDENTIFIER"
-  (let ((encoded (make-array 0 :element-type '(unsigned-byte 8) :adjustable t :fill-pointer 0)))
-    ;; First two components combined: 40*first + second
-    (vector-push-extend (+ (* 40 (first components)) (second components)) encoded)
-    ;; Remaining components use base-128 encoding
-    (dolist (c (cddr components))
-      (let ((bytes nil))
-        (if (zerop c)
-            (push 0 bytes)
-            (loop while (> c 0)
-                  do (push (logior (if bytes #x80 0) (logand c #x7f)) bytes)
-                     (setf c (ash c -7))))
-        (dolist (b bytes)
-          (vector-push-extend b encoded))))
-    (concatenate '(vector (unsigned-byte 8))
-                 (vector #x06)  ; OID tag
-                 (encode-asn1-length (length encoded))
-                 encoded)))
-
-(defun encode-asn1-null ()
-  "Encode ASN.1 NULL"
-  (vector #x05 #x00))
-
-(defun encode-asn1-length (length)
-  "Encode ASN.1 length field"
-  (cond
-    ((< length 128)
-     (vector length))
-    ((< length 256)
-     (vector #x81 length))
-    ((< length 65536)
-     (vector #x82 (ash length -8) (logand length #xff)))
-    (t
-     (let ((bytes (ironclad:integer-to-octets length)))
-       (concatenate '(vector (unsigned-byte 8))
-                    (vector (logior #x80 (length bytes)))
-                    bytes)))))
-
-;;; ============================================================================
 ;;; END OF JWS-AUTHORITY.LISP
+;;; (Κωδικοποίηση/αποκωδικοποίηση ASN.1 DER: orchestrator.asn1 — Η έδρα.)
 ;;; ============================================================================

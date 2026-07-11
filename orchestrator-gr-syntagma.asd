@@ -22,7 +22,6 @@
     :components
     ((:file "package")
      (:file "corpus")
-     (:file "metadata")
      (:file "structure")
      (:file "parsing")
      (:file "validation")

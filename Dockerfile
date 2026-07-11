@@ -178,6 +178,7 @@ RUN set -e; \
              government-source parliament-html-wiring constitution-crawler fek-discovery amendment-routing amendment-state ingestion-daemon ingestion-e2e isokratis-parser \
              legislation-ingestion multi-corpus-service review-service shacl-validator \
              hash-authority write-authority time-unified blockchain-authority release-authority \
+             merkle-authority kernel-conformance artifact-census release-vector-conformance \
              escape-sequences turtle-nil-omit corpus-identity semantic-validity \
              cross-language-verifier; do \
       echo "=== running $t-test.lisp ==="; \
@@ -209,6 +210,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN sbcl --script /app/docker/run-standalone-test.lisp \
       /app/tests/cross-language-verifier-test.lisp
+
+# L7-A: με python3 παρόν, το release-vector-conformance γίνεται ΣΚΛΗΡΟ gate εδώ
+# (spine έδρα + Python verifier ≡ INDEX σε ΚΑΘΕ vector, incl. όλα τα αντιπαλικά).
+# Στο SBCL-only stage ελέγχεται ΜΟΝΟ η spine έδρα (Python SKIP, safe).
+RUN sbcl --script /app/docker/run-standalone-test.lisp \
+      /app/tests/release-vector-conformance-test.lisp
 
 # P1 [0043]: με python3+rdflib παρόντα, οι εξωτερικοί μάρτυρες του
 # semantic-validity-test (json.tool + rdflib Turtle/JSON-LD parse) γίνονται

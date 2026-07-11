@@ -22,23 +22,38 @@
 (in-package :orchestrator.engine.sbcl)
 
 (defun %consolidation-articles->triples (articles)
-  "Map article model objects to (number title content) triples in deterministic
-   article-number order."
+  "Map article model objects to (id title content) triples in deterministic
+   canonical order.
+
+   P1b [0050]#2: το id είναι η ΚΑΝΟΝΙΚΗ ταυτότητα από τη ΜΙΑ έδρα
+   (article-uri-id): «5», «5Α» — ΠΟΤΕ ο εσωτερικός συνθετικός αριθμός
+   αποσαφήνισης (5Α ⇒ 5001), που μόλυνε τα eIds (art_5001) και έστελνε τα
+   lettered άρθρα στο τέλος της ταξινόμησης. Σειρά: αριθμητική βάση, μετά
+   γράμμα-επίθημα (5, 5Α, 6, …). Ο τίτλος περνά από την ΙΔΙΑ έδρα καθαρισμού
+   με το RDF (extract-title-only): γυμνός τίτλος, όχι raw «Άρθρο Ν - …»."
   (mapcar (lambda (a)
-            (list (orchestrator.model:article-number a)
-                  (orchestrator.model:article-title a)
-                  (orchestrator.model:article-content a)))
-          (sort (copy-list articles) #'<
-                :key #'orchestrator.model:article-number)))
+            (list (orchestrator.model:article-uri-id
+                   (orchestrator.model:article-number a)
+                   (orchestrator.model:article-label a))
+                  (extract-title-only (orchestrator.model:article-title a))
+                  ;; Παράγραφοι από τη ΜΙΑ έδρα του κανόνα ορίου
+                  ;; (split-article-paragraph-chunks) ώστε το consolidated
+                  ;; να έχει ατομικά art_N__para_M όπως το RDF μονοπάτι.
+                  (mapcar (lambda (c)
+                            (string-trim '(#\Space #\Newline #\Tab) c))
+                          (orchestrator.spec:split-article-paragraph-chunks
+                           (orchestrator.model:article-content a)))))
+          (orchestrator.model:articles-in-identity-order articles)))
 
 (defun %consolidation-amendment-records ()
   "Return the configured amendment records, or NIL if none are configured.
 
    Primary source is the active corpus config (versioning.amendments in the
-   YAML), read via config-get; this returns a list of records (hash-tables)
-   that the bridge understands. Falls back to
+   YAML), read via config-get — που επιστρέφει NIL για απόν κλειδί ΧΩΡΙΣ να
+   σηματοδοτεί, οπότε δεν χρειάζεται (και δεν επιτρέπεται) ignore-errors:
+   πραγματική βλάβη φόρτωσης config πρέπει να ΣΚΑΕΙ. Falls back to
    orchestrator.eli-temporal:*amendments-config* if the config path is absent."
-  (or (ignore-errors (orchestrator.spec:config-get "versioning.amendments"))
+  (or (orchestrator.spec:config-get "versioning.amendments")
       (let ((sym (and (find-package :orchestrator.eli-temporal)
                       (find-symbol "*AMENDMENTS-CONFIG*" :orchestrator.eli-temporal))))
         (when (and sym (boundp sym))
@@ -55,22 +70,26 @@
              :message "No articles to consolidate"
              :config-key :articles))
 
+    ;; P1b [0052]#Ε6/Ε8: ταυτότητα corpus + νομική ημερομηνία από την έδρα
+    ;; required-config — ΠΟΤΕ σιωπηλά «"corpus"»/πλαστές τιμές, ΠΟΤΕ
+    ;; ignore-errors γύρω από config-get (που δεν σηματοδοτεί για απόν κλειδί
+    ;; — κατάπινε μόνο πραγματικές βλάβες φόρτωσης).
     (let* ((triples (%consolidation-articles->triples articles))
            (records (%consolidation-amendment-records))
-           (corpus-id (or (ignore-errors (orchestrator.spec:config-get "corpus.short_name"))
-                          "corpus"))
-           (corpus-title (ignore-errors (orchestrator.spec:config-get "corpus.name")))
+           (corpus-id (orchestrator.spec:required-config "corpus.short_name"))
+           (corpus-title (orchestrator.spec:required-config "corpus.name"))
            (consolidated
              (orchestrator.consolidation.bridge:consolidate-corpus
               triples records :id corpus-id :title corpus-title))
            (ttl (orchestrator.consolidation:render-consolidation-provenance-ttl
                  consolidated))
            (txt (orchestrator.consolidation:render-consolidated-text consolidated))
+           ;; Νομική ημερομηνία ΠΟΤΕ δεν μαντεύεται: ρητά από το config ή
+           ;; ΣΦΑΛΜΑ. Το παλιό σιωπηλό «1970-01-01» έγραφε πλαστή Unix-epoch
+           ;; ημερομηνία σε νομικό αρτεφάκτ (Akoma Ntoso FRBRdate).
            (akn (orchestrator.akoma-ntoso:emit-akoma-ntoso
                  consolidated
-                 :work-date (or (ignore-errors
-                                 (orchestrator.spec:config-get "corpus.publication.date"))
-                                "1970-01-01")))
+                 :work-date (orchestrator.spec:required-config "corpus.publication.date")))
            (dir (uiop:ensure-directory-pathname output-dir)))
 
       (log:info () "Consolidating ~D articles with ~D amending act(s)"

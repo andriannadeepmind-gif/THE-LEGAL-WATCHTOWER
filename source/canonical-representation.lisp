@@ -55,7 +55,6 @@
    #:canonical-vector-hash
    ;; Payload preparation
    #:prepare-jws-payload
-   #:prepare-signing-input
    ;; Verification
    #:verify-canonical-hash
    ;; Configuration
@@ -465,37 +464,10 @@
     ;; Other - return as-is
     (t obj)))
 
-(defun prepare-signing-input (header payload)
-  "Prepare JWS signing input per RFC 7515
-
-   SigningInput = ASCII(BASE64URL(UTF8(JWS Protected Header)) || '.' ||
-                        BASE64URL(JWS Payload))
-
-   Args:
-     header: JWS header plist
-     payload: Payload object
-
-   Returns:
-     Signing input string"
-
-  (let ((header-b64 (base64url-encode (canonical-json-bytes header)))
-        (payload-b64 (base64url-encode
-                      (if (stringp payload)
-                          (babel:string-to-octets payload :encoding :utf-8)
-                          (canonical-json-bytes payload)))))
-    (format nil "~A.~A" header-b64 payload-b64)))
-
-(defun base64url-encode (bytes)
-  "Base64url encode bytes (RFC 4648 §5)"
-  (let ((b64 (cl-base64:usb8-array-to-base64-string bytes)))
-    ;; Convert to URL-safe: + → - / → _ remove padding
-    (cl-ppcre:regex-replace-all
-     "=+$"
-     (cl-ppcre:regex-replace-all
-      "/"
-      (cl-ppcre:regex-replace-all "\\+" b64 "-")
-      "_")
-     "")))
+;;; [0057]: prepare-signing-input + τοπικό base64url-encode ΔΙΑΓΡΑΦΗΚΑΝ —
+;;; ήταν νεκρή (0 καλούντες) παράλληλη υλοποίηση του JWS signing input, με 2η
+;;; έδρα base64url. Η ΜΙΑ έδρα JWS/base64url είναι το orchestrator.jws-authority
+;;; (sign-jws χτίζει το signing input, base64url-encode/-decode RFC 4648 §5).
 
 ;;; ============================================================================
 ;;; SEMANTIC OBJECT STRUCTURE

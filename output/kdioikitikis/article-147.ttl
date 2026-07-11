@@ -174,7 +174,7 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
@@ -223,13 +223,13 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-147/2025-01-01T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-147/2026-07-09T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-147/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-147/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -312,17 +312,17 @@
     eli:title """Αποδεικτικά μέσα"""@el;
     dct:title """Αποδεικτικά μέσα"""@el;
     schema:name """Αποδεικτικά μέσα"""@el;
-    eli:description """1. Αποδεικτικά μέσα είναι: α) η αυτοψία, β) η πραγματογνωμοσύνη, γ) τα έγγραφα, δ) η ομολογία του ιδιώτη διαδίκου, ΔΙΑΔΙΚΩΝ ΓΙΑ ε) οι εξηγήσεις των διαδίκων, στ) οι μάρτυρες και ζ) τα δικαστικά τεκμήρια.\n2. Είναι δυνατός ο αποκλεισμός ενός ή περισσότερων αποδεικτικών μέσων, αν τούτο ορίζει ρητώς ο νόμος που διέπει την ένδικη σχέση.\n3. Τα αποδεικτικά μέσα που προσάγει και επικαλείται ένας διάδικος καθίστανται κοινά και για τους άλλους."""@el;
-    schema:text """1. Αποδεικτικά μέσα είναι: α) η αυτοψία, β) η πραγματογνωμοσύνη, γ) τα έγγραφα, δ) η ομολογία του ιδιώτη διαδίκου, ΔΙΑΔΙΚΩΝ ΓΙΑ ε) οι εξηγήσεις των διαδίκων, στ) οι μάρτυρες και ζ) τα δικαστικά τεκμήρια.\n2. Είναι δυνατός ο αποκλεισμός ενός ή περισσότερων αποδεικτικών μέσων, αν τούτο ορίζει ρητώς ο νόμος που διέπει την ένδικη σχέση.\n3. Τα αποδεικτικά μέσα που προσάγει και επικαλείται ένας διάδικος καθίστανται κοινά και για τους άλλους."""@el;
-    glass:digest "sha256-348224c4978117598e616e1e5e61403bb0dcf5f10134d6e5ef1a6cb9bba5b24a";
-    digest:sha256 "348224c4978117598e616e1e5e61403bb0dcf5f10134d6e5ef1a6cb9bba5b24a";
+    eli:description """1. Αποδεικτικά μέσα είναι: α) η αυτοψία, β) η πραγματογνωμοσύνη, γ) τα έγγραφα, δ) η ομολογία του ιδιώτη διαδίκου, ε) οι εξηγήσεις των διαδίκων, στ) οι μάρτυρες και ζ) τα δικαστικά τεκμήρια.\n2. Είναι δυνατός ο αποκλεισμός ενός ή περισσότερων αποδεικτικών μέσων, αν τούτο ορίζει ρητώς ο νόμος που διέπει την ένδικη σχέση.\n3. Τα αποδεικτικά μέσα που προσάγει και επικαλείται ένας διάδικος καθίστανται κοινά και για τους άλλους."""@el;
+    schema:text """1. Αποδεικτικά μέσα είναι: α) η αυτοψία, β) η πραγματογνωμοσύνη, γ) τα έγγραφα, δ) η ομολογία του ιδιώτη διαδίκου, ε) οι εξηγήσεις των διαδίκων, στ) οι μάρτυρες και ζ) τα δικαστικά τεκμήρια.\n2. Είναι δυνατός ο αποκλεισμός ενός ή περισσότερων αποδεικτικών μέσων, αν τούτο ορίζει ρητώς ο νόμος που διέπει την ένδικη σχέση.\n3. Τα αποδεικτικά μέσα που προσάγει και επικαλείται ένας διάδικος καθίστανται κοινά και για τους άλλους."""@el;
+    glass:digest "sha256-b0958d75581b26e38c9e79ad4654798030e0a8c350e25a0d205881755247e84d";
+    digest:sha256 "b0958d75581b26e38c9e79ad4654798030e0a8c350e25a0d205881755247e84d";
     eli:has_part <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/147/par/1>;
     eli:has_part <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/147/par/2>;
     eli:has_part <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/147/par/3>;
     eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/147/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/147/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-147/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-147/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -357,11 +357,10 @@
     schema:identifier "gr-l-1999-art-147-work-exp-ell-man";
     schema:legislationDate "1999-05-17"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-147-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-147/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-147/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -391,11 +390,10 @@
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-147-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-147/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-147/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -421,11 +419,10 @@
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-147-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-147/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-147/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -451,11 +448,10 @@
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kdioikitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kdioikitikis-art-147-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-147/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kdioikitikis/art-147/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -469,7 +465,7 @@
 <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/147/par/1>
     a eli:LegalResourceSubdivision ;
     eli:number "1" ;
-    schema:text """1. Αποδεικτικά μέσα είναι: α) η αυτοψία, β) η πραγματογνωμοσύνη, γ) τα έγγραφα, δ) η ομολογία του ιδιώτη διαδίκου, ΔΙΑΔΙΚΩΝ ΓΙΑ ε) οι εξηγήσεις των διαδίκων, στ) οι μάρτυρες και ζ) τα δικαστικά τεκμήρια."""@el .
+    schema:text """1. Αποδεικτικά μέσα είναι: α) η αυτοψία, β) η πραγματογνωμοσύνη, γ) τα έγγραφα, δ) η ομολογία του ιδιώτη διαδίκου, ε) οι εξηγήσεις των διαδίκων, στ) οι μάρτυρες και ζ) τα δικαστικά τεκμήρια."""@el .
 
 <https://stavropouloslaw.com/eli/gr/l/1999/2717/art/147/par/2>
     a eli:LegalResourceSubdivision ;

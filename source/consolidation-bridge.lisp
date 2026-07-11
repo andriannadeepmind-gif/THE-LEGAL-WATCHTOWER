@@ -81,8 +81,12 @@
                                       :kind :paragraph :num (princ-to-string m)
                                       :text p)))))))
 
-(defun articles->document (articles &key (id "corpus") title (language "el"))
-  "Build a LEGAL-DOCUMENT from ARTICLES, a list of (number title content)."
+(defun articles->document (articles &key id title (language "el"))
+  "Build a LEGAL-DOCUMENT from ARTICLES, a list of (number title content).
+   Το ID είναι ΥΠΟΧΡΕΩΤΙΚΟ — η ταυτότητα corpus δεν μαντεύεται ποτέ (το παλιό
+   σιωπηλό default «corpus» έγραφε πλαστή ταυτότητα εγγράφου)."
+  (unless (and (stringp id) (plusp (length id)))
+    (error "articles->document: το :id (ταυτότητα corpus) είναι υποχρεωτικό — δόθηκε ~S" id))
   (make-legal-document
    :id id :title title :language language
    :provisions
@@ -124,6 +128,15 @@
          (amended (%rget record "articles_amended"))
          (repealed (%rget record "articles_repealed"))
          (explicit (%rget record "operations"))
+         ;; P1.4 [0054]#7: transaction-time capture (θεμέλιο Ω2 bitemporal).
+         ;; Ρητό record field «recorded_at» = η αληθινή στιγμή γνώσης· αλλιώς
+         ;; σφραγίζεται από την ΝΤΕΤΕΡΜΙΝΙΣΤΙΚΗ έδρα χρόνου (:deterministic —
+         ;; pinned epoch σε reproducible build, γνήσιο now σε live serving).
+         ;; Ο χρόνος γνώσης δεν χάνεται· δεν είναι πλαστή νομική ημερομηνία
+         ;; αλλά τίμια σφραγίδα συστημικού γεγονότος εισαγωγής.
+         (recorded (or (%rget record "recorded_at")
+                       (orchestrator.time:format-iso8601
+                        (orchestrator.time:now :source :deterministic))))
          (ops '()))
     ;; Repeals first (strongest status), then amendment provenance.
     ;; These are derived from amendment METADATA (article lists), so a target
@@ -140,6 +153,7 @@
      :fek (and fek (princ-to-string fek))
      :enacted (and date (princ-to-string date))
      :effective (and applic (princ-to-string applic))
+     :recorded (and recorded (princ-to-string recorded))
      :operations ops)))
 
 (defun amendment-records->acts (records)
@@ -151,12 +165,13 @@
 ;;; ============================================================================
 
 (defun consolidate-corpus (articles amendment-records
-                           &key as-of-date (id "corpus") title)
+                           &key as-of-date id title)
   "Consolidate a corpus end-to-end.
 
    ARTICLES:          list of (number title content).
    AMENDMENT-RECORDS: list of ELI-temporal config-shaped records.
    AS-OF-DATE:        optional ISO date; consolidate as it stood on that date.
+   ID:                ΥΠΟΧΡΕΩΤΙΚΗ ταυτότητα corpus (βλ. articles->document).
 
    Returns the consolidated LEGAL-DOCUMENT."
   (consolidate (articles->document articles :id id :title title)

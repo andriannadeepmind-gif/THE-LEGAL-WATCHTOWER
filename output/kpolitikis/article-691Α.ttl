@@ -1,6 +1,6 @@
 # ============================================================
 # Κώδικας Πολιτικής Δικονομίας
-# Article 691 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 691Α - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,7 +174,7 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
@@ -223,13 +223,13 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-691/2025-01-01T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-691Α/2026-07-09T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
@@ -249,7 +249,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 691
+# FRBR WORK LAYER - Article 691Α
 # Abstract legal resource (language-independent)
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/691Α/work
@@ -273,7 +273,7 @@
     schema:identifier "gr-pd-1985-art-691Α-work";
     schema:inLanguage "el";
     schema:legislationDate "1985-10-24"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/PD/1985/ART/691";
+    schema:legislationIdentifier "ELI/GR/PD/1985/ART/691Α";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "PresidentialDecree";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-691/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-691Α/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,7 +293,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 691
+# FRBR EXPRESSION LAYER - Article 691Α
 # Greek language realization of abstract Work
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/691Α/work/exp/ell
@@ -322,7 +322,7 @@
     eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/691Α/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/pd/1985/503/art/691Α/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-691/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-691Α/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -334,7 +334,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 691
+# FRBR MANIFESTATION LAYER - Article 691Α
 # Digital embodiment of the Greek-language Expression
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/691Α/work/exp/ell/man
@@ -357,11 +357,10 @@
     schema:identifier "gr-pd-1985-art-691Α-work-exp-ell-man";
     schema:legislationDate "1985-10-24"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-691Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-691/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-691Α/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -373,7 +372,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 691
+# FRBR FORMAT LAYER (HTML) - Article 691Α
 # HTML encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/691Α/work/exp/ell/man/format/html
@@ -391,11 +390,10 @@
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-691Α-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-691/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-691Α/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -403,7 +401,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 691
+# FRBR FORMAT LAYER (JSONLD) - Article 691Α
 # JSONLD encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/691Α/work/exp/ell/man/format/jsonld
@@ -421,11 +419,10 @@
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-691Α-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-691/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-691Α/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -433,7 +430,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 691
+# FRBR FORMAT LAYER (TURTLE) - Article 691Α
 # TURTLE encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/pd/1985/503/art/691Α/work/exp/ell/man/format/turtle
@@ -451,11 +448,10 @@
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpolitikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpolitikis-art-691Α-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-691/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpolitikis/art-691Α/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -483,5 +479,5 @@
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 691 - Complete Canonical Representation
+# Article 691Α - Complete Canonical Representation
 # ============================================================

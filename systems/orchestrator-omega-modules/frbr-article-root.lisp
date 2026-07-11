@@ -28,7 +28,9 @@
   ((article-number :accessor article-number
                    :initarg :article-number
                    :type integer
-                   :documentation "Article number (1-120)")
+                   :documentation "Η αριθμητική ΒΑΣΗ του άρθρου (κανονικοποιημένη στο όριο:
+                    5 και για το 5Α) — ΠΟΤΕ συνθετικός αριθμός, ΠΟΤΕ μόνη
+                    της ταυτότητα (βλ. frbr-article-id).")
 
    (article-letter-suffix :accessor article-letter-suffix
                           :initarg :article-suffix
@@ -117,10 +119,13 @@
    This is the TOP-LEVEL canonical node for an article.
    All FRBR layers will point back to this via eli:is_part_of.
 
-   URI Pattern: {eli-prefix}/art/{N}
+   URI Pattern: {eli-prefix}/art/{id} — id από τη ΜΙΑ έδρα article-uri-id
+   («5», «5Α»)· τα slots κανονικοποιούνται σε (αληθινή βάση, γυμνό επίθημα).
 
    Arguments:
-     article-number  — positive integer
+     article-number  — integer (δέχεται ΚΑΙ τον εσωτερικό συνθετικό — η βάση
+                       ανακτάται από το article-suffix όταν είναι πλήρες label)
+     article-suffix  — γυμνό επίθημα («Α») Ή πλήρες label («5Α»)· \"\" για απλό
      article-title   — title string in primary language
      eli-prefix      — ELI law prefix (e.g. https://stavropouloslaw.com/eli/gr/const/1975)
      document-type   — ELI type code string: \"const\", \"l\", \"pd\", etc.
@@ -141,17 +146,26 @@
     (error "issued-date is required for make-frbr-article-root"))
 
   (let* ((year (or law-year (subseq issued-date 0 4)))
-         ;; Suffix kept so a lettered article (100Α) never collapses onto its
-         ;; base (100): art/100Α, gr-l-2019-art-100Α — distinct resources.
-         (uri (format nil "~A/art/~D~A" eli-prefix article-number article-suffix))
-         (eli-id (format nil "gr-~A-~A-art-~3,'0D~A" document-type year article-number article-suffix))
+         ;; P1b [0050]#2: ΚΑΝΟΝΙΚΟΠΟΙΗΣΗ ΣΤΟ ΟΡΙΟ ΤΟΥ FRBR ΜΟΝΤΕΛΟΥ.
+         ;; Το ARTICLE-SUFFIX δέχεται γυμνό επίθημα («Α») Ή πλήρες label
+         ;; («5Α»)· τα slots κρατούν ΠΑΝΤΑ την αληθινή βάση + γυμνό επίθημα,
+         ;; ώστε συνθετικός αριθμός αποσαφήνισης (5Α ⇒ 5001) να μην μπορεί
+         ;; ΔΟΜΙΚΑ να υπάρξει μέσα στο FRBR μοντέλο — κάθε renderer των slots
+         ;; βλέπει μόνο την αληθινή ταυτότητα. URI/eli-id: μέσα από τη ΜΙΑ
+         ;; έδρα (article-uri-id / pad-article-id), όχι τοπική συγκόλληση.
+         (base (article-base-number article-number article-suffix))
+         (suffix (article-label-suffix article-suffix))
+         (uri (format nil "~A/art/~A" eli-prefix
+                      (article-uri-id article-number article-suffix)))
+         (eli-id (format nil "gr-~A-~A-art-~A" document-type year
+                         (pad-article-id article-number article-suffix)))
          (work-uri (format nil "~A/work" uri)))
 
     (make-instance 'frbr-article-root
                    :uri uri
                    :eli-identifier eli-id
-                   :article-number article-number
-                   :article-suffix article-suffix
+                   :article-number base
+                   :article-suffix suffix
                    :article-title article-title
                    :document-type document-type
                    :issued-date issued-date

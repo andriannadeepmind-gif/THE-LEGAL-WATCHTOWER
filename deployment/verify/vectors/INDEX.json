@@ -1,0 +1,13 @@
+{
+"schema":"lawmax-release-vectors-1",
+"vectors":[
+{"name":"sha256-9977ffdaf9f2548f83abfbedf039fdf6767b1d212aafa4b806de280919333460","verdict":"pass","reason":"γνήσια έγκυρο census-εποχής release"}
+,{"name":"sha256-9977ffdaf9f2548f83abfbedf039fdf6767b1d212aafa4b806de280919333460--tampered-article","verdict":"fail","reason":"πειραγμένο article-001.txt (text_leaf/root αναντιστοιχία)"}
+,{"name":"sha256-9977ffdaf9f2548f83abfbedf039fdf6767b1d212aafa4b806de280919333460--tampered-ttl","verdict":"fail","reason":"πειραγμένο article-002.ttl (census sha512 αναντιστοιχία)"}
+,{"name":"sha256-9977ffdaf9f2548f83abfbedf039fdf6767b1d212aafa4b806de280919333460--stripped-census","verdict":"fail","reason":"αφαιρεμένο census.json (epoch-downgrade — sha256 dir εκτός frozen)"}
+,{"name":"sha256-9977ffdaf9f2548f83abfbedf039fdf6767b1d212aafa4b806de280919333460--stripped-signature","verdict":"fail","reason":"αφαιρεμένη signature.jws+public.jwk (signature stripping, F2)"}
+,{"name":"sha256-9977ffdaf9f2548f83abfbedf039fdf6767b1d212aafa4b806de280919333460--attached-payload-jws","verdict":"fail","reason":"JWS με μη-κενό ενσωματωμένο payload (payload substitution, F1)"}
+,{"name":"sha256-9977ffdaf9f2548f83abfbedf039fdf6767b1d212aafa4b806de280919333460--tampered-verifier","verdict":"fail","reason":"πειραγμένο verify/verify.lisp (10ο canonical ⇒ root ≠ όνομα)"}
+,{"name":"sha256-9977ffdaf9f2548f83abfbedf039fdf6767b1d212aafa4b806de280919333460--wrong-key","verdict":"fail","reason":"ξένο verify/public.jwk (η υπογραφή του root δεν επαληθεύεται)"}
+]
+}

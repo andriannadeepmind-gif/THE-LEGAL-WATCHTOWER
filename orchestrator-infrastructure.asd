@@ -61,6 +61,7 @@
      (:file "logging")            ; Structured logging
      (:file "write-authority")    ; GATE-2: Write authority unification
      (:file "hash-authority")     ; GATE-3: Hash authority unification
+     (:file "merkle-authority")   ; Η ΜΙΑ έδρα Merkle (RFC 6962): domain-separated leaves/nodes + unbalanced split + audit path — φορτώνεται νωρίς (θεμελιώδης, μόνο ironclad/babel)
      (:file "corpus-fingerprint") ; Correctness guarantee: deterministic fingerprint + invariant gate
      (:file "legal-references")   ; Intelligence: legal cross-reference graph + integrity
      (:file "legal-hypergraph")   ; Level-3+: N-ary legal hypergraph model (CLOS/MOP, polymorphic RDF)
@@ -115,12 +116,12 @@
      (:file "canonical-representation") ; GATE-14: Deterministic serialization for JWS
      (:file "validation-authority") ; GATE-5: Deterministic contract validation
      (:file "blockchain-authority") ; GATE-6: Pure Lisp blockchain anchoring (Ethereum/Arweave/IPFS)
+     (:file "asn1-der")           ; Η ΜΙΑ έδρα ASN.1 DER (X.690): encoders + αυστηρός decoder + PEM↔DER
      (:file "jws-authority")      ; GATE-7: Pure Lisp JWS signing (RFC 7515)
      (:file "timestamp-authority") ; GATE-8: Pure Lisp RFC 3161 timestamps (multi-TSA)
      (:file "archive-authority")  ; GATE-8b: Archive.org 100-year proof
      (:file "x509-authority")     ; Pure Lisp X.509 certificate generation
      ;; CT Log removed: public CT logs require CA-issued certificates (not self-signed)
-     (:file "verify-authority")   ; Pure Lisp release verification
      (:file "proof-carrying")     ; Proof-Carrying Law: portable per-provision Merkle proof + verifier
      (:file "mcp-server")         ; MCP (JSON-RPC) server: AI agents ask → get law + citation + verifiable proof
      ;; Restored capabilities (never remove functionality) — depend on
@@ -158,7 +159,6 @@
      (:file "pdf-authority")      ; GATE-13: Pure Lisp PDF via libpoppler CFFI
      (:file "embeddings-authority") ; GATE-10: Pure Lisp text embeddings
      (:file "signed-embedding-manifest") ; GATE-12: Signed embedding manifests with provenance
-     (:file "ai-discovery")       ; GATE-11: AI-friendly robots.txt, sitemap, manifest
      (:file "rdfs-inference")     ; GATE-15: Pure Lisp RDFS inference engine
      (:file "reasoning-authority") ; Pure Lisp OWL 2 RL reasoner + ontology consistency (superset of RDFS)
      (:file "corpus-intelligence") ; CLOS/MOP suite: discovers + runs every analysis layer as one report

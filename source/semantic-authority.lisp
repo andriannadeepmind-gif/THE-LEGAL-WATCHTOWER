@@ -106,6 +106,15 @@
                    :accessor blockchain-uri
                    :type string
                    :documentation "Blockchain anchor URI")
+
+   (anchor-result :initarg :anchor-result
+                  :accessor anchor-result
+                  :initform nil
+                  :documentation "ΠΡΑΓΜΑΤΙΚΟ αποτέλεσμα αγκύρωσης από την έδρα
+                   orchestrator.blockchain-authority (plist :tx-hash :chain
+                   :chain-id :block-number :merkle-root :timestamp) ή NIL αν δεν
+                   έχει γίνει αγκύρωση. [P1.5-A] Εκπέμπονται ΜΟΝΟ πραγματικά
+                   πεδία — ποτέ fake παραδείγματα (τίμια άγνοια).")
    
    (ipfs-hash :initarg :ipfs-hash
               :accessor ipfs-hash
@@ -525,39 +534,54 @@
   (format stream "    ] .~%~%"))
 
 (defun write-blockchain-anchor (stream assertion)
-  "Write blockchain anchor information"
+  "Εκπομπή blockchain anchor RDF ΜΟΝΟ από ΠΡΑΓΜΑΤΙΚΑ δεδομένα. [P1.5-A] Οι
+   προηγούμενες hardcoded «Example» τιμές (contract 0x742d…, block 18500000,
+   tx 0xabc123…, etherscan endpoint) ήταν ψευδο-artifacts σε εκπεμπόμενο RDF —
+   ΔΙΑΓΡΑΦΗΚΑΝ. Πηγή αλήθειας: το anchor-result plist από την έδρα
+   orchestrator.blockchain-authority (:tx-hash :chain :chain-id :block-number
+   :timestamp). Πεδίο απόν ⇒ ΔΕΝ εκπέμπεται (τίμια άγνοια — ποτέ μαντεψιά).
+   Το bc:merkleRoot είναι πάντα το πραγματικό RFC-6962 root της βεβαίωσης."
   (format stream "~%# BLOCKCHAIN ANCHOR~%")
   (format stream "# ==============================================================================~%~%")
-  
+
   (when (blockchain-uri assertion)
-    (format stream "<~A> a bc:BlockchainAnchor ;~%" (blockchain-uri assertion))
-    (format stream "    bc:blockchain \"Ethereum\" ;~%")
-    (format stream "    bc:network \"mainnet\" ;~%")
-    (format stream "    bc:contractAddress \"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb7\" ;~%")  ; Example
-    (format stream "    bc:blockNumber \"18500000\" ;~%")  ; Example
-    (format stream "    bc:transactionHash \"0xabc123...\" ;~%")  ; Example
-    (format stream "    bc:anchoredData <~A> ;~%" (corpus-uri assertion))
-    (format stream "    bc:anchorTimestamp \"~A\"^^xsd:dateTime ;~%" (created-at assertion))
-    
-    (format stream "    bc:merkleRoot \"~A\" ;~%" 
-            (compute-merkle-root assertion))
-    
-    (format stream "    bc:verificationEndpoint \"https://etherscan.io/tx/0xabc123...\" ;~%")
-    (format stream "    bc:smartContract <https://github.com/stavropoulos/corpus-anchor-contract> .~%~%")))
+    (let* ((a (anchor-result assertion))
+           (tx (getf a :tx-hash))
+           (chain (getf a :chain))
+           (chain-id (getf a :chain-id))
+           (block-no (getf a :block-number)))
+      (format stream "<~A> a bc:BlockchainAnchor ;~%" (blockchain-uri assertion))
+      (when chain
+        (format stream "    bc:blockchain ~S ;~%" (string-capitalize (string chain))))
+      (when chain-id
+        (format stream "    bc:chainId ~S ;~%" (princ-to-string chain-id)))
+      (when block-no
+        (format stream "    bc:blockNumber ~S ;~%" (princ-to-string block-no)))
+      (when tx
+        (format stream "    bc:transactionHash ~S ;~%" tx)
+        ;; Λειτουργικό verification endpoint, παραγόμενο από το ΠΡΑΓΜΑΤΙΚΟ tx
+        ;; (μόνο για ethereum — άλλα chains δηλώνουν μόνο το tx-hash).
+        (when (eq chain :ethereum)
+          (format stream "    bc:verificationEndpoint \"https://etherscan.io/tx/~A\" ;~%" tx)))
+      (format stream "    bc:anchoredData <~A> ;~%" (corpus-uri assertion))
+      (format stream "    bc:anchorTimestamp \"~A\"^^xsd:dateTime ;~%" (created-at assertion))
+      (format stream "    bc:merkleRoot \"~A\" .~%~%" (compute-merkle-root assertion)))))
 
 (defun write-ipfs-reference (stream assertion)
   "Write IPFS reference information"
   (format stream "~%# IPFS REFERENCE~%")
   (format stream "# ==============================================================================~%~%")
   
+  ;; [P1.5-A] Εκπέμπονται ΜΟΝΟ επαληθεύσιμα πεδία: το hash, τι περιέχει, και το
+  ;; λειτουργικό gateway URL (παραγόμενο από το hash). Οι προηγούμενοι fabricated
+  ;; ισχυρισμοί (pinned true / pinnedBy infura,pinata,fleek / replicationFactor 5)
+  ;; ήταν αναπόδεικτοι — ΔΙΑΓΡΑΦΗΚΑΝ (τίμια άγνοια: pin status = εξωτερικό
+  ;; γεγονός που δεν βεβαιώνεται από εδώ χωρίς πραγματικό έλεγχο).
   (when (ipfs-hash assertion)
     (format stream "<ipfs:~A> a ipfs:Content ;~%" (ipfs-hash assertion))
     (format stream "    ipfs:hash \"~A\" ;~%" (ipfs-hash assertion))
     (format stream "    ipfs:contains <~A> ;~%" (corpus-uri assertion))
-    (format stream "    ipfs:gateway \"https://ipfs.io/ipfs/~A\" ;~%" (ipfs-hash assertion))
-    (format stream "    ipfs:pinned true ;~%")
-    (format stream "    ipfs:pinnedBy \"infura\", \"pinata\", \"fleek\" ;~%")
-    (format stream "    ipfs:replicationFactor 5 .~%~%")))
+    (format stream "    ipfs:gateway \"https://ipfs.io/ipfs/~A\" .~%~%" (ipfs-hash assertion))))
 
 (defun write-verification-chain (stream assertion)
   "Write verification chain"
@@ -651,12 +675,17 @@
     (orchestrator.hash-authority:compute-hash content :algorithm :sha512)))
 
 (defun compute-merkle-root (assertion)
-  "Compute Merkle root for blockchain"
-  (let* ((hashes (list (compute-content-hash assertion)
-                      (or (qes-hash assertion) "")
-                      (format nil "~A" (created-at assertion))))
-         (combined (format nil "~{~A~}" hashes)))
-    (orchestrator.hash-authority:compute-hash combined :algorithm :sha512)))
+  "ΠΡΑΓΜΑΤΙΚΟ Merkle root (RFC 6962, ΜΙΑ έδρα orchestrator.merkle) πάνω στα
+   επαληθεύσιμα συστατικά της βεβαίωσης ως φύλλα, με σταθερή τεκμηριωμένη σειρά:
+     leaf[0] = content-hash · leaf[1] = qes-hash (ή κενό) · leaf[2] = created-at.
+   Domain-separated φύλλα/κόμβοι + inclusion proofs διαθέσιμα από την έδρα —
+   κάθε συστατικό μπορεί να αποδείξει τη συμμετοχή του στο root. [P1.5-A] Η
+   προηγούμενη υλοποίηση ήταν flat digest με ψευδώνυμο «merkle» — τώρα το
+   bc:merkleRoot ΕΙΝΑΙ Merkle root. Μορφή: «sha256:<hex>» (η μορφή της έδρας)."
+  (orchestrator.merkle:merkle-root-of-strings
+   (list (compute-content-hash assertion)
+         (or (qes-hash assertion) "")
+         (format nil "~A" (created-at assertion)))))
 
 (defun compute-authority-hash (assertion)
   "Compute overall authority hash"
@@ -666,13 +695,17 @@
 ;;; PUBLIC API
 ;;; ============================================================================
 
-(defun create-authority-assertion (&key corpus-uri qes-hash blockchain-uri ipfs-hash)
-  "Create new authority assertion"
+(defun create-authority-assertion (&key corpus-uri qes-hash blockchain-uri ipfs-hash
+                                        anchor-result)
+  "Create new authority assertion. ANCHOR-RESULT: το ΠΡΑΓΜΑΤΙΚΟ plist από την
+   έδρα orchestrator.blockchain-authority (π.χ. ethereum-anchor) — μόνο έτσι
+   εκπέμπονται tx/block/chain πεδία στο RDF (ποτέ fake τιμές)."
   (make-instance 'authority-assertion
                 :corpus-uri (or corpus-uri (or (ignore-errors (orchestrator.uris:get-eli-const-prefix)) "https://stavropouloslaw.com/eli/gr"))
                 :qes-hash qes-hash
                 :blockchain-uri blockchain-uri
-                :ipfs-hash ipfs-hash))
+                :ipfs-hash ipfs-hash
+                :anchor-result anchor-result))
 
 (defun add-qualified-attribution (assertion agent role activity)
   "Add qualified attribution to assertion"
@@ -720,7 +753,8 @@
     
     (values (every #'cdr checks) checks)))
 
-(defun generate-authority-manifest (corpus-uri &key qes-hash blockchain-uri ipfs-hash)
+(defun generate-authority-manifest (corpus-uri &key qes-hash blockchain-uri ipfs-hash
+                                               anchor-result)
   "Generate complete authority manifest.
 
    DARPA-GRADE: All cryptographic hashes must be provided - no hardcoded defaults.
@@ -729,14 +763,17 @@
      corpus-uri: URI of the corpus
      qes-hash: QES (Qualified Electronic Signature) hash
      blockchain-uri: Blockchain transaction URI for anchoring
-     ipfs-hash: IPFS content hash"
+     ipfs-hash: IPFS content hash
+     anchor-result: ΠΡΑΓΜΑΤΙΚΟ plist αγκύρωσης από orchestrator.blockchain-authority
+                    (:tx-hash :chain :chain-id :block-number :timestamp) ή NIL"
   (unless (and qes-hash blockchain-uri)
     (error "generate-authority-manifest requires :qes-hash and :blockchain-uri parameters"))
   (let ((assertion (create-authority-assertion
                    :corpus-uri corpus-uri
                    :qes-hash qes-hash
                    :blockchain-uri blockchain-uri
-                   :ipfs-hash ipfs-hash)))
+                   :ipfs-hash ipfs-hash
+                   :anchor-result anchor-result)))
     
     ;; Add attribution
     (add-qualified-attribution assertion

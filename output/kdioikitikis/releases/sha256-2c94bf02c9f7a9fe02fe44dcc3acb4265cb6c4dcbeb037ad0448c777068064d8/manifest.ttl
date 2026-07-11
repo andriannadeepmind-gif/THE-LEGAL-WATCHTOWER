@@ -1,0 +1,232 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix slw: <https://stavropouloslaw.com/ontology/legal#> .
+
+
+# ==============================================================================
+# STAVROPOULOS LAW - IMMUTABLE RELEASE MANIFEST
+# ==============================================================================
+# RELEASE: 2026-07-09T00:00:00Z
+# PURPOSE: Cryptographically committed release manifest
+# STANDARD: DCAT 2.0 + VoID + W3C PROV
+# TEMPORAL PROOF: RFC 3161 + CT + JWS
+# ==============================================================================
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8> a dcat:Catalog ;
+    dcterms:title "Greek Constitutional Law Corpus - Release 2026-07-09T00:00:00Z"@en ;
+    dcterms:title "Σώμα Ελληνικού Συνταγματικού Δικαίου - Έκδοση 2026-07-09T00:00:00Z"@el ;
+    dcterms:created "2026-07-09T00:00:00Z"^^xsd:dateTime ;
+    dcterms:publisher <https://stavropouloslaw.com/identity/org> ;
+    dcterms:license <https://creativecommons.org/publicdomain/zero/1.0/> ;
+    dcat:dataset <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/dataset> ;
+    slw:releaseTimestamp "2026-07-09T00:00:00Z"^^xsd:dateTime ;
+    slw:merkleRoot "sha256:2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8" ;
+    slw:systemCommitHash "sha256:c3963cb2eff405a785825e21af61d01ce4031d9cd9ec036dc28a99fd341fe19e" ;
+    slw:totalArticles 304 ;
+    slw:totalArtifacts 1226 ;
+    slw:pipelineVersion "1.2.0" ;
+    slw:blockchainIsNotAuthority true ;
+    slw:timestampReceipt <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/timestamp.tsr> ;
+    slw:signatureJWS <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/signature.jws> ;
+    rdfs:comment """Immutable timestamped release of Greek Constitutional\n        Law corpus. This manifest provides cryptographic commitment via Merkle root,\n        temporal proof via RFC 3161 + Certificate Transparency, and integrity\n        verification via JWS signature."""@en .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/dataset> a void:Dataset, dcat:Dataset ;
+    dcterms:title "Greek Constitutional Law RDF Dataset"@en ;
+    dcterms:description """Complete RDF representation of Greek Constitution\n        articles with identity-only semantics and PROV-O lineage tracking."""@en ;
+    void:triples 15200 ;
+    void:entities 304 ;
+    void:properties 25 ;
+    void:distinctSubjects 304 ;
+    void:vocabulary <https://stavropouloslaw.com/ontology/legal> ;
+    void:vocabulary <http://data.europa.eu/eli/ontology#> ;
+    void:vocabulary <http://www.w3.org/ns/prov#> ;
+    dcat:distribution <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/distribution/turtle> ,
+                      <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/distribution/jsonld> ,
+                      <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/distribution/html> ,
+                      <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/distribution/pdf> ;
+    slw:conformsToSystem <https://stavropouloslaw.com/system/legal-representation/2025> .
+
+# === DCAT Distributions ===
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/distribution/turtle> a dcat:Distribution ;
+    dcterms:format "text/turtle" ;
+    dcat:mediaType "text/turtle" ;
+    dcterms:title "RDF Turtle Format"@en ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/articles/> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/distribution/jsonld> a dcat:Distribution ;
+    dcterms:format "application/ld+json" ;
+    dcat:mediaType "application/ld+json" ;
+    dcterms:title "JSON-LD Format"@en ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/articles/> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/distribution/html> a dcat:Distribution ;
+    dcterms:format "text/html" ;
+    dcat:mediaType "text/html" ;
+    dcterms:title "HTML with RDFa + JSON-LD"@en ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/articles/> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/distribution/pdf> a dcat:Distribution ;
+    dcterms:format "application/pdf" ;
+    dcat:mediaType "application/pdf" ;
+    dcterms:title "PDF Format"@en ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/articles/> .
+
+# === ARTIFACT INVENTORY ===
+
+# Individual artifact hashes for Merkle tree verification
+
+# Includes ALL files: articles, epistemic layers, shapes, temporal-proof, verify
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/0> a dcat:Distribution ;
+    dcterms:identifier "lineage-graph.ttl" ;
+    slw:sha256Hash "sha256:71575d641313079c2bd505e582fa94da2bfc7e11a747e873a2e56439b21680b1" ;
+    dcat:byteSize 334081 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/lineage-graph.ttl> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/1> a dcat:Distribution ;
+    dcterms:identifier "meta-ontology.ttl" ;
+    slw:sha256Hash "sha256:7f94ff8669c6c660621329aaee228dc9ad58b8d094ee47cf8d8745e708e9368b" ;
+    dcat:byteSize 7359 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/meta-ontology.ttl> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/2> a dcat:Distribution ;
+    dcterms:identifier "negation.ttl" ;
+    slw:sha256Hash "sha256:787605b0975f00689eaf1aa0db0243abe247941565ed6f33f41c6ce863fb67a9" ;
+    dcat:byteSize 3921 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/negation.ttl> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/3> a dcat:Distribution ;
+    dcterms:identifier "shapes/article-shape.ttl" ;
+    slw:sha256Hash "sha256:8fb098ae573278efcc7925a37276e90678d8bbdc383a03d65862cc9ca549253b" ;
+    dcat:byteSize 3738 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/shapes/article-shape.ttl> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/4> a dcat:Distribution ;
+    dcterms:identifier "shapes/lineage-shape.ttl" ;
+    slw:sha256Hash "sha256:977892174bc1e19d23eefd4afe9c2e60420555ef40c90d84a339e050c38a46fa" ;
+    dcat:byteSize 5130 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/shapes/lineage-shape.ttl> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/5> a dcat:Distribution ;
+    dcterms:identifier "shapes/manifest-shape.ttl" ;
+    slw:sha256Hash "sha256:2c0e700912fa8828ed9073a15873d08073806a5e416b84271ad22306ef3e40cf" ;
+    dcat:byteSize 4190 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/shapes/manifest-shape.ttl> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/6> a dcat:Distribution ;
+    dcterms:identifier "stability-policy.md" ;
+    slw:sha256Hash "sha256:aba395920a389727c613b450e8385c5fc0ec527acf0b672c38faef6245d0daee" ;
+    dcat:byteSize 3635 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/stability-policy.md> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/7> a dcat:Distribution ;
+    dcterms:identifier "stability-policy.ttl" ;
+    slw:sha256Hash "sha256:ec9e7e297c400a264025a0aea164bcaf1d96088a7408ca144e32f6f989dc2c88" ;
+    dcat:byteSize 3335 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/stability-policy.ttl> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/8> a dcat:Distribution ;
+    dcterms:identifier "temporal-proof/inclusion-proofs/article-shape.ttl.json" ;
+    slw:sha256Hash "sha256:1dcef2af11409b7c23333f92901f148c4e56019c46d80587633305074e377bc6" ;
+    dcat:byteSize 411 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/temporal-proof/inclusion-proofs/article-shape.ttl.json> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/9> a dcat:Distribution ;
+    dcterms:identifier "temporal-proof/inclusion-proofs/lineage-graph.ttl.json" ;
+    slw:sha256Hash "sha256:6cd3cd80fab8631c001fe1d149803d63a67eb463330191ffbf366e1e3ede60e5" ;
+    dcat:byteSize 310 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/temporal-proof/inclusion-proofs/lineage-graph.ttl.json> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/10> a dcat:Distribution ;
+    dcterms:identifier "temporal-proof/inclusion-proofs/lineage-shape.ttl.json" ;
+    slw:sha256Hash "sha256:d5eed5cdadd434d2d14a19d3a3efd9b13c351096d9e9b11545240b440b2349d2" ;
+    dcat:byteSize 617 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/temporal-proof/inclusion-proofs/lineage-shape.ttl.json> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/11> a dcat:Distribution ;
+    dcterms:identifier "temporal-proof/inclusion-proofs/manifest-shape.ttl.json" ;
+    slw:sha256Hash "sha256:2b803cd7e690a5f0d93ad2c34ddd0bdcc290b45ca5294cc865b9e41a620e9bae" ;
+    dcat:byteSize 616 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/temporal-proof/inclusion-proofs/manifest-shape.ttl.json> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/12> a dcat:Distribution ;
+    dcterms:identifier "temporal-proof/inclusion-proofs/meta-ontology.ttl.json" ;
+    slw:sha256Hash "sha256:78453bdd72306c3e39327f6744f4c6ad2f2630801d97aeeacda271f191176c67" ;
+    dcat:byteSize 309 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/temporal-proof/inclusion-proofs/meta-ontology.ttl.json> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/13> a dcat:Distribution ;
+    dcterms:identifier "temporal-proof/inclusion-proofs/negation.ttl.json" ;
+    slw:sha256Hash "sha256:13ca6971daec26d024433b189c9524337dccfba0a3a121bd7b95d5fb01140801" ;
+    dcat:byteSize 412 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/temporal-proof/inclusion-proofs/negation.ttl.json> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/14> a dcat:Distribution ;
+    dcterms:identifier "temporal-proof/inclusion-proofs/stability-policy.md.json" ;
+    slw:sha256Hash "sha256:2b91ebb6f49508c1071726a6a761d55cf71d140b8595965903a8d8f45d171b8a" ;
+    dcat:byteSize 719 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/temporal-proof/inclusion-proofs/stability-policy.md.json> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/15> a dcat:Distribution ;
+    dcterms:identifier "temporal-proof/inclusion-proofs/stability-policy.ttl.json" ;
+    slw:sha256Hash "sha256:901d7a1d7ad16e6438ab6fdaef80fc5f228da499e16b96b4b7c7e0bc8709e53e" ;
+    dcat:byteSize 718 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/temporal-proof/inclusion-proofs/stability-policy.ttl.json> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/16> a dcat:Distribution ;
+    dcterms:identifier "temporal-proof/merkle-tree.json" ;
+    slw:sha256Hash "sha256:c746a4f8fcdc628255d1210b543e659b841457dc00c5a1cb92bed881451133d8" ;
+    dcat:byteSize 132 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/temporal-proof/merkle-tree.json> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/17> a dcat:Distribution ;
+    dcterms:identifier "temporal-proof/signature.jws" ;
+    slw:sha256Hash "sha256:33c341e37f720291c3221668fc59df710782c1ce5ed1ad9f1ae141e42c817f93" ;
+    dcat:byteSize 827 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/temporal-proof/signature.jws> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/18> a dcat:Distribution ;
+    dcterms:identifier "verify/README-VERIFY.md" ;
+    slw:sha256Hash "sha256:67f7a493683e9928eab186b02bb643c2a0a85dd7b8889de99f3898f391e17a96" ;
+    dcat:byteSize 1661 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/verify/README-VERIFY.md> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/19> a dcat:Distribution ;
+    dcterms:identifier "verify/public.jwk" ;
+    slw:sha256Hash "sha256:7998c55dc8f4adbc6e9b452cd6cc020c2a428c8d9361f7e8b550d743951efd1b" ;
+    dcat:byteSize 1448 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/verify/public.jwk> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/20> a dcat:Distribution ;
+    dcterms:identifier "verify/tsa-ca.pem" ;
+    slw:sha256Hash "sha256:96fa64ebb3a1fd49b3758d9a9c2ba1d40745628facf6315ebc8caeb2ffd96508" ;
+    dcat:byteSize 2101 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/verify/tsa-ca.pem> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/21> a dcat:Distribution ;
+    dcterms:identifier "verify/verify.lisp" ;
+    slw:sha256Hash "sha256:d5968a967e9cf952a0b08b8bcd2e6c9007fec57ee70341236d1c6c1fbf24ceec" ;
+    dcat:byteSize 6352 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/verify/verify.lisp> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/22> a dcat:Distribution ;
+    dcterms:identifier "verify/verify.ps1" ;
+    slw:sha256Hash "sha256:ec97c29b89c21aa42dbffa0d7df68f3b045c5616a0992480e680ed56e01a9f11" ;
+    dcat:byteSize 2326 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/verify/verify.ps1> .
+
+<https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/artifact/23> a dcat:Distribution ;
+    dcterms:identifier "verify/verify.sh" ;
+    slw:sha256Hash "sha256:4d9ba5228bfbea16d0b21347dc22e480bb21d0dfe034463a39f32089b01a535e" ;
+    dcat:byteSize 1558 ;
+    dcat:accessURL <https://stavropouloslaw.com/releases/sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8/verify/verify.sh> .
+

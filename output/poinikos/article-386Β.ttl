@@ -1,6 +1,6 @@
 # ============================================================
 # Ποινικός Κώδικας
-# Article 386 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 386Β - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,7 +174,7 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
@@ -223,13 +223,13 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-386/2025-01-01T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-386Β/2026-07-09T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
@@ -249,7 +249,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 386
+# FRBR WORK LAYER - Article 386Β
 # Abstract legal resource (language-independent)
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/386Β/work
@@ -273,7 +273,7 @@
     schema:identifier "gr-l-2019-art-386Β-work";
     schema:inLanguage "el";
     schema:legislationDate "2019-06-11"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/L/2019/ART/386";
+    schema:legislationIdentifier "ELI/GR/L/2019/ART/386Β";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Statute";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-386/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-386Β/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,7 +293,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 386
+# FRBR EXPRESSION LAYER - Article 386Β
 # Greek language realization of abstract Work
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/386Β/work/exp/ell
@@ -321,7 +321,7 @@
     eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/386Β/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4619/art/386Β/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-386/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-386Β/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -333,7 +333,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 386
+# FRBR MANIFESTATION LAYER - Article 386Β
 # Digital embodiment of the Greek-language Expression
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/386Β/work/exp/ell/man
@@ -356,11 +356,11 @@
     schema:identifier "gr-l-2019-art-386Β-work-exp-ell-man";
     schema:legislationDate "2019-06-11"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/greek-penal-code>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-386Β-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q28145273#poinikos-art-386Β-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-386/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-386Β/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -372,7 +372,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 386
+# FRBR FORMAT LAYER (HTML) - Article 386Β
 # HTML encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/386Β/work/exp/ell/man/format/html
@@ -394,7 +394,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-386/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-386Β/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -402,7 +402,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 386
+# FRBR FORMAT LAYER (JSONLD) - Article 386Β
 # JSONLD encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/386Β/work/exp/ell/man/format/jsonld
@@ -424,7 +424,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-386/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-386Β/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -432,7 +432,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 386
+# FRBR FORMAT LAYER (TURTLE) - Article 386Β
 # TURTLE encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/l/2019/4619/art/386Β/work/exp/ell/man/format/turtle
@@ -454,7 +454,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-386/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/poinikos/art-386Β/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -477,5 +477,5 @@
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 386 - Complete Canonical Representation
+# Article 386Β - Complete Canonical Representation
 # ============================================================

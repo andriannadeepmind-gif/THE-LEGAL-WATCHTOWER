@@ -23,10 +23,31 @@
 
 (defpackage :orchestrator.x509-authority
   (:use :cl)
+  (:import-from :orchestrator.asn1
+                #:asn1-error
+                #:der-read-tlv
+                #:pem->der
+                #:der->pem
+                #:encode-asn1-length
+                #:encode-asn1-sequence
+                #:encode-asn1-set
+                #:encode-asn1-integer
+                #:encode-asn1-bit-string
+                #:encode-asn1-octet-string
+                #:encode-asn1-null
+                #:encode-asn1-oid
+                #:encode-asn1-utf8-string
+                #:encode-asn1-utc-time
+                #:encode-asn1-generalized-time
+                #:encode-asn1-boolean
+                #:encode-asn1-context-specific)
   (:export
    ;; Certificate generation
    #:generate-self-signed-certificate
    #:save-certificate-pem
+   ;; Structural validation (P1.4 [0054]#1: ασπίδα ψευδο-πιστοποιητικού)
+   #:valid-x509-certificate-der-p
+   #:assert-valid-x509-pem
    ;; Utility
    #:make-distinguished-name
    ;; Conditions
@@ -43,151 +64,8 @@
   (:report (lambda (c s)
              (format s "X.509 Error: ~A" (x509-error-message c)))))
 
-;;; ============================================================================
-;;; ASN.1 DER ENCODING (Extended for X.509)
-;;; ============================================================================
-
-(defun encode-asn1-length (length)
-  "Encode ASN.1 length field"
-  (cond
-    ((< length 128)
-     (vector length))
-    ((< length 256)
-     (vector #x81 length))
-    ((< length 65536)
-     (vector #x82 (ash length -8) (logand length #xff)))
-    (t
-     (let* ((bytes (ironclad:integer-to-octets length))
-            (len (length bytes)))
-       (concatenate '(vector (unsigned-byte 8))
-                    (vector (logior #x80 len))
-                    bytes)))))
-
-(defun encode-asn1-sequence (elements)
-  "Encode list of DER elements as SEQUENCE"
-  (let ((content (apply #'concatenate '(vector (unsigned-byte 8)) elements)))
-    (concatenate '(vector (unsigned-byte 8))
-                 (vector #x30)  ; SEQUENCE tag
-                 (encode-asn1-length (length content))
-                 content)))
-
-(defun encode-asn1-set (elements)
-  "Encode list of DER elements as SET"
-  (let ((content (apply #'concatenate '(vector (unsigned-byte 8)) elements)))
-    (concatenate '(vector (unsigned-byte 8))
-                 (vector #x31)  ; SET tag
-                 (encode-asn1-length (length content))
-                 content)))
-
-(defun encode-asn1-integer (value)
-  "Encode integer as ASN.1 INTEGER"
-  (let* ((bytes (if (zerop value)
-                    (vector 0)
-                    (ironclad:integer-to-octets value)))
-         ;; Add leading zero if high bit set (to keep positive)
-         (padded (if (and (> (length bytes) 0)
-                          (>= (aref bytes 0) 128))
-                     (concatenate '(vector (unsigned-byte 8)) (vector 0) bytes)
-                     bytes)))
-    (concatenate '(vector (unsigned-byte 8))
-                 (vector #x02)  ; INTEGER tag
-                 (encode-asn1-length (length padded))
-                 padded)))
-
-(defun encode-asn1-bit-string (content)
-  "Encode bytes as ASN.1 BIT STRING"
-  (let ((with-unused (concatenate '(vector (unsigned-byte 8))
-                                  (vector 0)  ; 0 unused bits
-                                  content)))
-    (concatenate '(vector (unsigned-byte 8))
-                 (vector #x03)  ; BIT STRING tag
-                 (encode-asn1-length (length with-unused))
-                 with-unused)))
-
-(defun encode-asn1-octet-string (content)
-  "Encode bytes as ASN.1 OCTET STRING"
-  (concatenate '(vector (unsigned-byte 8))
-               (vector #x04)  ; OCTET STRING tag
-               (encode-asn1-length (length content))
-               content))
-
-(defun encode-asn1-null ()
-  "Encode ASN.1 NULL"
-  (vector #x05 #x00))
-
-(defun encode-asn1-oid (components)
-  "Encode OID as ASN.1 OBJECT IDENTIFIER"
-  (let ((encoded (make-array 0 :element-type '(unsigned-byte 8) :adjustable t :fill-pointer 0)))
-    ;; First two components combined: 40*first + second
-    (vector-push-extend (+ (* 40 (first components)) (second components)) encoded)
-    ;; Remaining components use base-128 encoding
-    (dolist (c (cddr components))
-      (let ((bytes nil))
-        (if (zerop c)
-            (push 0 bytes)
-            (loop while (> c 0)
-                  do (push (logior (if bytes #x80 0) (logand c #x7f)) bytes)
-                     (setf c (ash c -7))))
-        (dolist (b bytes)
-          (vector-push-extend b encoded))))
-    (concatenate '(vector (unsigned-byte 8))
-                 (vector #x06)  ; OID tag
-                 (encode-asn1-length (length encoded))
-                 encoded)))
-
-(defun encode-asn1-printable-string (string)
-  "Encode string as ASN.1 PrintableString"
-  (let ((bytes (babel:string-to-octets string :encoding :ascii)))
-    (concatenate '(vector (unsigned-byte 8))
-                 (vector #x13)  ; PrintableString tag
-                 (encode-asn1-length (length bytes))
-                 bytes)))
-
-(defun encode-asn1-utf8-string (string)
-  "Encode string as ASN.1 UTF8String"
-  (let ((bytes (babel:string-to-octets string :encoding :utf-8)))
-    (concatenate '(vector (unsigned-byte 8))
-                 (vector #x0c)  ; UTF8String tag
-                 (encode-asn1-length (length bytes))
-                 bytes)))
-
-(defun encode-asn1-utc-time (universal-time)
-  "Encode time as ASN.1 UTCTime (YYMMDDhhmmssZ)"
-  (multiple-value-bind (sec min hour day month year)
-      (decode-universal-time universal-time 0)
-    (let* ((time-string (format nil "~2,'0D~2,'0D~2,'0D~2,'0D~2,'0D~2,'0DZ"
-                                (mod year 100) month day hour min sec))
-           (bytes (babel:string-to-octets time-string :encoding :ascii)))
-      (concatenate '(vector (unsigned-byte 8))
-                   (vector #x17)  ; UTCTime tag
-                   (encode-asn1-length (length bytes))
-                   bytes))))
-
-(defun encode-asn1-generalized-time (universal-time)
-  "Encode time as ASN.1 GeneralizedTime (YYYYMMDDhhmmssZ)"
-  (multiple-value-bind (sec min hour day month year)
-      (decode-universal-time universal-time 0)
-    (let* ((time-string (format nil "~4,'0D~2,'0D~2,'0D~2,'0D~2,'0D~2,'0DZ"
-                                year month day hour min sec))
-           (bytes (babel:string-to-octets time-string :encoding :ascii)))
-      (concatenate '(vector (unsigned-byte 8))
-                   (vector #x18)  ; GeneralizedTime tag
-                   (encode-asn1-length (length bytes))
-                   bytes))))
-
-(defun encode-asn1-boolean (value)
-  "Encode ASN.1 BOOLEAN"
-  (vector #x01 #x01 (if value #xff #x00)))
-
-(defun encode-asn1-context-specific (tag-number content &key (constructed nil))
-  "Encode context-specific tagged value [n]"
-  (let ((tag (logior #xa0  ; Context-specific class
-                     (if constructed #x20 #x00)
-                     tag-number)))
-    (concatenate '(vector (unsigned-byte 8))
-                 (vector tag)
-                 (encode-asn1-length (length content))
-                 content)))
+;;; (Κωδικοποίηση/αποκωδικοποίηση ASN.1 DER: orchestrator.asn1 — Η έδρα.
+;;; Εδώ μένει ΜΟΝΟ η σημασιολογία X.509: OIDs, DN, TBS, υπογραφή, επικύρωση.)
 
 ;;; ============================================================================
 ;;; X.509 OBJECT IDENTIFIERS
@@ -452,17 +330,16 @@
 ;;; ============================================================================
 
 (defun sign-tbs-certificate (tbs-bytes private-key)
-  "Sign TBSCertificate with RSA-SHA256"
-  (let* ((digest (ironclad:digest-sequence :sha256 tbs-bytes))
-         ;; DigestInfo for SHA-256: SEQUENCE { AlgorithmIdentifier, OCTET STRING }
-         (digest-info (encode-asn1-sequence
-                       (list (encode-asn1-sequence
-                              (list (encode-asn1-oid '(2 16 840 1 101 3 4 2 1))  ; SHA-256
-                                    (encode-asn1-null)))
-                             (encode-asn1-octet-string digest))))
-         ;; PKCS#1 v1.5 padding and signing
-         (signature (ironclad:sign-message private-key digest-info)))
-    signature))
+  "Sign TBSCertificate with sha256WithRSAEncryption.
+
+   [0057]: ΜΙΑ έδρα υπογραφής — orchestrator.jws-authority:sign-rsa-sha256,
+   που χτίζει το ΠΛΗΡΕΣ EMSA-PKCS1-v1_5 encoded message (0x00 0x01 PS 0x00
+   DigestInfo) πριν την raw RSA πράξη (RFC 8017 §8.2.1). Η προηγούμενη τοπική
+   υλοποίηση περνούσε ΓΥΜΝΟ το DigestInfo στο ironclad:sign-message (raw RSA,
+   ΧΩΡΙΣ padding) ⇒ μη-συμμορφείς υπογραφές που κανένα εξωτερικό εργαλείο δεν
+   επαλήθευε· ταυτόχρονα διπλασίαζε το DigestInfo/σταθερά SHA-256 του
+   jws-authority. Και τα δύο κλείνουν εδώ, στη ΜΙΑ έδρα."
+  (orchestrator.jws-authority:sign-rsa-sha256 tbs-bytes private-key))
 
 ;;; ============================================================================
 ;;; CERTIFICATE GENERATION
@@ -542,20 +419,80 @@
            (encode-asn1-bit-string signature)))))
 
 ;;; ============================================================================
-;;; PEM ENCODING
+;;; ASN.1 DER STRUCTURAL VALIDATION (P1.4 [0054]#1)
+;;;
+;;; Κάνει ΔΟΜΙΚΑ αδύνατο να διανεμηθεί μη-parseable «πιστοποιητικό» ως υλικό
+;;; επαλήθευσης σε release. ΔΕΝ επαληθεύει υπογραφή/αλυσίδα (αυτό είναι P4:
+;;; πλήρης RFC-3161 CA verification) — επιβεβαιώνει ότι τα bytes είναι ΟΝΤΩΣ
+;;; μια καλοσχηματισμένη X.509 δομή, ώστε το verify kit να μη λέει ψέματα για
+;;; το τι κρατά. Ο decoder είναι η έδρα orchestrator.asn1 (der-read-tlv) —
+;;; εδώ ζει ΜΟΝΟ το X.509 κριτήριο δομής.
 ;;; ============================================================================
 
-(defun der-to-pem (der-bytes label)
-  "Convert DER bytes to PEM format"
-  (let* ((base64 (cl-base64:usb8-array-to-base64-string der-bytes))
-         (lines (loop for i from 0 below (length base64) by 64
-                      collect (subseq base64 i (min (+ i 64) (length base64))))))
-    (format nil "-----BEGIN ~A-----~%~{~A~%~}-----END ~A-----~%"
-            label lines label)))
+(defun valid-x509-certificate-der-p (der)
+  "T αν τα DER bytes είναι καλοσχηματισμένη X.509 Certificate δομή:
+   SEQUENCE { tbsCertificate SEQUENCE, signatureAlgorithm SEQUENCE,
+   signatureValue BIT STRING }, με το εξωτερικό μήκος να ταιριάζει ΑΚΡΙΒΩΣ με
+   το buffer (καμία ουρά). Επιπλέον δομικοί έλεγχοι (ώστε κούφιο shaped ψευδο-
+   cert να ΜΗΝ περνά): tbsCertificate μη-κενό με πρώτο στοιχείο version[0]
+   (0xA0) ή serialNumber INTEGER (0x02)· signatureAlgorithm ξεκινά με OID
+   (0x06)· signatureValue BIT STRING μη-κενό. ΔΕΝ επαληθεύει υπογραφή/αλυσίδα
+   εμπιστοσύνης — αυτό είναι δηλωμένη φάση P4. Επιστρέφει (values NIL reason)."
+  (handler-case
+      (multiple-value-bind (tag cstart clen next) (der-read-tlv der 0)
+        (cond
+          ((/= tag #x30) (values nil "εξωτερικό tag ≠ SEQUENCE"))
+          ((/= next (length der)) (values nil "ουρά bytes μετά το certificate SEQUENCE"))
+          (t
+           ;; Τρία παιδιά: tbs SEQUENCE, sigAlg SEQUENCE, sig BIT STRING
+           (multiple-value-bind (t1 c1 cl1 n1) (der-read-tlv der cstart)
+             (multiple-value-bind (t2 c2 cl2 n2) (der-read-tlv der n1)
+               (declare (ignore cl2))
+               (multiple-value-bind (t3 c3 cl3 n3) (der-read-tlv der n2)
+                 (cond
+                   ((/= t1 #x30) (values nil "tbsCertificate ≠ SEQUENCE"))
+                   ((/= t2 #x30) (values nil "signatureAlgorithm ≠ SEQUENCE"))
+                   ((/= t3 #x03) (values nil "signatureValue ≠ BIT STRING"))
+                   ((/= n3 (+ cstart clen)) (values nil "τα 3 πεδία δεν γεμίζουν το certificate SEQUENCE"))
+                   ((zerop cl1) (values nil "tbsCertificate κενό"))
+                   ((zerop cl3) (values nil "signatureValue (BIT STRING) κενό"))
+                   (t
+                    ;; tbs: πρώτο στοιχείο = version[0] (0xA0) ή serial INTEGER (0x02)
+                    (let ((tbs-first (der-read-tlv der c1))
+                          ;; sigAlg: πρώτο στοιχείο = OID (0x06)
+                          (sigalg-first (der-read-tlv der c2)))
+                      (cond
+                        ((not (or (= tbs-first #xA0) (= tbs-first #x02)))
+                         (values nil "tbsCertificate: πρώτο στοιχείο ≠ version[0]/serial INTEGER"))
+                        ((/= sigalg-first #x06)
+                         (values nil "signatureAlgorithm: δεν ξεκινά με OID"))
+                        (t t)))))))))))
+    (asn1-error (e) (values nil (orchestrator.asn1:asn1-error-message e)))
+    (error (e) (values nil (format nil "~A" e)))))
+
+(defun assert-valid-x509-pem (pem-string &optional (where "certificate"))
+  "Επικυρώνει ότι το PEM-STRING είναι ΑΛΥΣΙΔΑ (≥1) έγκυρων X.509 δομών: ΚΑΘΕ
+   CERTIFICATE block περνά το valid-x509-certificate-der-p ΚΑΙ δεν υπάρχουν
+   non-whitespace bytes εκτός των blocks. Σφάλμα X509-ERROR αλλιώς (και για
+   άκυρο PEM περίβλημα — ενιαίος τύπος συνθήκης της φραγής). Κλείνει την τρύπα
+   «μόνο το πρώτο block»: bundle με καλή κεφαλή αλλά σκουπίδι ουρά ΑΠΟΡΡΙΠΤΕΤΑΙ."
+  (let ((blocks (handler-case (orchestrator.asn1:pem->der-all-blocks pem-string "CERTIFICATE")
+                  (asn1-error (e)
+                    (error 'x509-error
+                           :message (format nil "~A: ~A" where
+                                            (orchestrator.asn1:asn1-error-message e)))))))
+    (loop for der in blocks
+          for i from 1
+          do (multiple-value-bind (ok reason) (valid-x509-certificate-der-p der)
+               (unless ok
+                 (error 'x509-error
+                        :message (format nil "~A: block #~D ΔΕΝ είναι έγκυρο X.509 πιστοποιητικό (~A) — άρνηση διανομής ψευδο-υλικού επαλήθευσης"
+                                         where i reason)))))
+    t))
 
 (defun save-certificate-pem (certificate-der output-path)
   "Save DER certificate as PEM file"
-  (let ((pem (der-to-pem certificate-der "CERTIFICATE")))
+  (let ((pem (der->pem certificate-der "CERTIFICATE")))
     (with-open-file (stream output-path
                             :direction :output
                             :if-exists :supersede

@@ -1565,11 +1565,14 @@
 ;;; downstream (validation, IIR, RDF, HTML) works unchanged.
 
 (defparameter +article-suffix-regex+
-  "(ΣΤ|[Α-ΩA-Zα-ω])"
-  "The ONE grammar of a Greek article-letter suffix: a single letter (Greek or
-   its Latin homoglyph) or the DIGRAPH ΣΤ (the sixth: …Ε, ΣΤ, Ζ…). Every place
-   that recognises an article label MUST use this — the ΣΤ blind spot existed
-   precisely because this knowledge was duplicated per call-site.")
+  "([Α-ΩA-Zα-ω]+)"
+  "Η ΜΙΑ γραμματική ΑΝΑΓΝΩΡΙΣΗΣ γράμμα-επιθήματος σε ΒΡΩΜΙΚΕΣ πηγές
+   (PDF/Isokratis): μία ή περισσότερες αλφαβητικές (ελληνικά, ή λατινικά
+   ομόγλυφα που κανονικοποιούνται στον καταναλωτή της κεφαλίδας). ΦΙΛΕΛΕΥΘΕΡΗ
+   ΩΣ ΣΧΗΜΑ ώστε να πιάνει ΚΑΘΕ νομοθετικό επίθημα (Α, ΣΤ, ΙΑ, ΙΣΤ, ΚΑ…) —
+   η ΕΓΚΥΡΟΤΗΤΑ/σειρά κρίνεται ΑΠΟΚΛΕΙΣΤΙΚΑ από την έδρα
+   orchestrator.model:article-suffix-ordinal (μονογράμματο pattern εδώ είχε
+   αφήσει το ΣΤ τυφλό σημείο· η ίδια κλάση θα ξαναχτυπούσε στα ΙΑ/ΚΑ).")
 
 (defparameter *isokratis-article-scanner*
   ;; the suffix letter may be a LATIN homoglyph («Αρθρο: 105A») — accepted here

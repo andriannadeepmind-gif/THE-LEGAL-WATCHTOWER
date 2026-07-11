@@ -175,18 +175,21 @@
 
    NFC ensures canonical representation (precomposed form).
 
-   Implementation: Uses SBCL's sb-unicode:normalize-string or fallback."
+   Implementation: SBCL sb-unicode:normalize-string.
+
+   P1.5-pre [0054]: αποτυχία NFC ⇒ ΣΦΑΛΜΑ, ΠΟΤΕ «χρήση αρχικού». Αυτή είναι
+   η έδρα IIR — το ΚΑΝΟΝΙΚΟΠΟΙΗΜΕΝΟ κείμενο σφραγίζεται ΑΝΕΞΙΤΗΛΑ με SHA-512/
+   RFC-3161 στα releases· ακανονικοποίητα bytes σε νομικό αρτεφάκτ (ή σε
+   περιβάλλον χωρίς sb-unicode) ήταν ακριβώς η απαγορευμένη κλάση σιωπηλού
+   fallback (δίδυμο του rdf-canonicalization που ήδη κλείστηκε στο [0052])."
   #+sbcl
   (handler-case
       (sb-unicode:normalize-string text :nfc)
     (error (e)
-      (warn "Unicode NFC normalization failed: ~A (using original text)" e)
-      text))
+      (error "IIR NFC normalization failed — refusing to seal non-canonical text into legal identity: ~A" e)))
 
   #-sbcl
-  (progn
-    (warn "Unicode NFC normalization not available on this Lisp implementation")
-    text))
+  (error "unicode-nfc-normalize: NFC απαιτεί SBCL (sb-unicode) — καμία σιωπηλή παράκαμψη κανονικοποίησης στην έδρα IIR"))
 
 (defun dehyphenate-greek (text)
   "Remove Greek word hyphenation as final safety net.

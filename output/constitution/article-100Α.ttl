@@ -1,6 +1,6 @@
 # ============================================================
 # Σύνταγμα της Ελλάδας
-# Article 100 - COMPLETE FRBR+ELI+PROV-O Layer
+# Article 100Α - COMPLETE FRBR+ELI+PROV-O Layer
 # ============================================================
 # Generator:  ORCHESTRATOR v1.3
 # Standards:  W3C RDF 1.1, ELI v1.4, FRBR, PROV-O, DCAT
@@ -174,7 +174,7 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
@@ -223,13 +223,13 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/constitution/art-100/2025-01-01T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/constitution/art-100Α/2026-07-09T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
@@ -249,7 +249,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR WORK LAYER - Article 100
+# FRBR WORK LAYER - Article 100Α
 # Abstract legal resource (language-independent)
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/const/1975/art/100Α/work
@@ -273,7 +273,7 @@
     schema:identifier "gr-const-1975-art-100Α-work";
     schema:inLanguage "el";
     schema:legislationDate "1975-06-11"^^xsd:date;
-    schema:legislationIdentifier "ELI/GR/CONST/1975/ART/100";
+    schema:legislationIdentifier "ELI/GR/CONST/1975/ART/100Α";
     schema:legislationJurisdiction "GRC";
     schema:legislationLegalForce "InForce";
     schema:legislationType "Constitution";
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-100/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-100Α/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -293,7 +293,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR EXPRESSION LAYER - Article 100
+# FRBR EXPRESSION LAYER - Article 100Α
 # Greek language realization of abstract Work
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/const/1975/art/100Α/work/exp/ell
@@ -320,7 +320,7 @@
     eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/const/1975/art/100Α/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/const/1975/art/100Α/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-100/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-100Α/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -332,7 +332,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR MANIFESTATION LAYER - Article 100
+# FRBR MANIFESTATION LAYER - Article 100Α
 # Digital embodiment of the Greek-language Expression
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/const/1975/art/100Α/work/exp/ell/man
@@ -355,11 +355,11 @@
     schema:identifier "gr-const-1975-art-100Α-work-exp-ell-man";
     schema:legislationDate "1975-06-11"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/greek-constitution>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-100Α-man>;
+    owl:sameAs <http://www.wikidata.org/entity/Q16519798#constitution-art-100Α-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-100/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-100Α/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -371,7 +371,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (HTML) - Article 100
+# FRBR FORMAT LAYER (HTML) - Article 100Α
 # HTML encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/const/1975/art/100Α/work/exp/ell/man/format/html
@@ -393,7 +393,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-100/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-100Α/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -401,7 +401,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (JSONLD) - Article 100
+# FRBR FORMAT LAYER (JSONLD) - Article 100Α
 # JSONLD encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/const/1975/art/100Α/work/exp/ell/man/format/jsonld
@@ -423,7 +423,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-100/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-100Α/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -431,7 +431,7 @@
 # ============================================================
 
 # ============================================================
-# FRBR FORMAT LAYER (TURTLE) - Article 100
+# FRBR FORMAT LAYER (TURTLE) - Article 100Α
 # TURTLE encoding of the Manifestation
 # ============================================================
 # URI: https://stavropouloslaw.com/eli/gr/const/1975/art/100Α/work/exp/ell/man/format/turtle
@@ -453,7 +453,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-100/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/constitution/art-100Α/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -471,5 +471,5 @@
 
 # ============================================================
 # END OF UNIFIED FRBR+ELI+PROV-O OUTPUT
-# Article 100 - Complete Canonical Representation
+# Article 100Α - Complete Canonical Representation
 # ============================================================

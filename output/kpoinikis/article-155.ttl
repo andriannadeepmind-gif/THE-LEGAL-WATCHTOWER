@@ -174,7 +174,7 @@
         a prov:Activity ;
         rdfs:label "Semantic Transformation & ELI Mapping"@en ;
         prov:wasAssociatedWith <https://stavropouloslaw.com/identity/spyridon-stavropoulos> ;
-        prov:endedAtTime "2025-01-01T00:00:00Z"^^xsd:dateTime
+        prov:endedAtTime "2026-07-09T00:00:00Z"^^xsd:dateTime
     ] .
 
 # ============================================================
@@ -223,13 +223,13 @@
 # PROV-O ACTIVITY - Generation Process
 # ============================================================
 
-<https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-155/2025-01-01T00-00-00.000000Z>
+<https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-155/2026-07-09T00-00-00.000000Z>
     a prov:Activity ,
       stavropouloslaw:FRBRGenerationActivity ;
 
     # Temporal Bounds
-    prov:endedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
-    prov:startedAtTime "2025-01-01T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:endedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
+    prov:startedAtTime "2026-07-09T00:00:00.000000Z"^^xsd:dateTime ;
 
     # Agent Associations
     prov:wasAssociatedWith <https://stavropouloslaw.com/software/orchestrator/v1.3> ,
@@ -281,7 +281,7 @@
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-155/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-155/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -323,7 +323,7 @@
     eli:is_embodied_by <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/155/work/exp/ell/man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     prov:wasDerivedFrom <https://stavropouloslaw.com/eli/gr/l/2019/4620/art/155/work> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-155/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-155/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -358,11 +358,10 @@
     schema:identifier "gr-l-2019-art-155-work-exp-ell-man";
     schema:legislationDate "2019-06-11"^^xsd:date;
     void:inDataset <https://stavropouloslaw.com/datasets/kpoinikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#const-art-155-man>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-155/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-155/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -392,11 +391,10 @@
     schema:encodingFormat ".html";
     schema:fileFormat "text/html; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpoinikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpoinikis-art-155-man-html>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-155/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-155/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -422,11 +420,10 @@
     schema:encodingFormat ".jsonld";
     schema:fileFormat "application/ld+json; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpoinikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpoinikis-art-155-man-jsonld>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-155/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-155/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================
@@ -452,11 +449,10 @@
     schema:encodingFormat ".ttl";
     schema:fileFormat "text/turtle; charset=utf-8";
     void:inDataset <https://stavropouloslaw.com/datasets/kpoinikis>;
-    owl:sameAs <http://www.wikidata.org/entity/Q41#kpoinikis-art-155-man-turtle>;
     prov:wasAttributedTo <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     pav:curatedBy <https://stavropouloslaw.com/identity/spyridon-stavropoulos>;
     odrl:hasPolicy <https://stavropouloslaw.com/policy/ai-usage> ;
-    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-155/2025-01-01T00-00-00.000000Z>.
+    prov:wasGeneratedBy <https://stavropouloslaw.com/activity/frbr-gen/kpoinikis/art-155/2026-07-09T00-00-00.000000Z>.
 
 
 # ============================================================

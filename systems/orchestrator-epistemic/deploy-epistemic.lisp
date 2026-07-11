@@ -27,7 +27,7 @@
 ;;;;
 ;;;; OUTPUT:
 ;;;; - Staging directory with all artifacts
-;;;; - SHACL validation (REQUIRED - fail if invalid)
+;;;; - Material gate (REQUIRED - fail if invalid; shapes shipped for third-party SHACL)
 ;;;; - Atomic publish: staging → final release
 ;;;; - 'latest' symlink update
 
@@ -50,8 +50,6 @@
       stability-policy.md
       manifest.ttl
       manifest.jsonld
-      void.ttl
-      ai-manifest.jsonld
       shapes/
         article-shape.ttl
         manifest-shape.ttl
@@ -60,7 +58,6 @@
         merkle-tree.json
         inclusion-proofs/
         timestamp.tsr
-        ct-proof-*.json
         signature.jws
       verify/
         public.jwk
@@ -260,26 +257,123 @@
 ;;; AUTO-GENERATE CRYPTO KEYS (PURE LISP - DARPA-GRADE)
 ;;; ============================================================================
 
+(defun %operator-tsa-ca-source ()
+  "Η ΜΙΑ πηγή γνήσιας TSA CA αλυσίδας που ο χειριστής παρέχει: env TSA_CA_BUNDLE
+   (ρητό μονοπάτι) ή <institution>/keys/tsa-ca.pem. Επιστρέφει pathname ή NIL."
+  (let ((env (uiop:getenv "TSA_CA_BUNDLE")))
+    (cond
+      ((and env (plusp (length env)) (probe-file env)) (pathname env))
+      (t (let ((p (orchestrator.paths:institution-dir "keys/tsa-ca.pem")))
+           (and (probe-file p) p))))))
+
+(defparameter +tsa-ca-missing-sentinel+
+  "LAWMAX-TSA-CA-MISSING-v1"
+  "Κανονικό αποτύπωμα της τίμιας σημείωσης απουσίας TSA CA. Γράφεται από την
+   έδρα εκπομπής και ΑΠΑΙΤΕΙΤΑΙ από την πύλη, ώστε ένα αυθαίρετο/κενό/
+   παραπλανητικό tsa-ca.MISSING.txt (π.χ. «η επαλήθευση πέρασε») να ΜΗΝ
+   γίνεται δεκτό ως έγκυρος δείκτης απουσίας.")
+
+(defun %emit-tsa-ca-or-honest-note (tsa-ca-path)
+  "Γράφει tsa-ca.pem ΜΟΝΟ από γνήσια, δομικά επικυρωμένη X.509 CA αλυσίδα του
+   χειριστή (ΚΑΘΕ block της αλυσίδας επικυρώνεται — όχι μόνο η κεφαλή). Αν δεν
+   υπάρχει έγκυρη, ΔΕΝ γράφει ψευδο-cert — γράφει τίμια σημείωση
+   (tsa-ca.MISSING.txt με κανονικό sentinel). Άκυρη παρεχόμενη CA ⇒ ΣΦΑΛΜΑ
+   (ο χειριστής έδωσε σκουπίδι — δεν το κρύβουμε)."
+  (let ((src (%operator-tsa-ca-source))
+        (note-path (merge-pathnames "tsa-ca.MISSING.txt"
+                                    (uiop:pathname-directory-pathname tsa-ca-path))))
+    (cond
+      (src
+       (let ((pem (uiop:read-file-string src)))
+         ;; Δομική φραγή: ΚΑΘΕ cert της αλυσίδας γνήσιο X.509 ή σφάλμα —
+         ;; ποτέ ψευδο-blob (ούτε στην ουρά του bundle) σε release.
+         (orchestrator.x509-authority:assert-valid-x509-pem pem "tsa-ca.pem")
+         (alexandria:write-string-into-file pem tsa-ca-path :if-exists :supersede)
+         (when (probe-file note-path) (ignore-errors (delete-file note-path)))
+         (log:info () "tsa-ca.pem: γνήσια CA αλυσίδα του χειριστή (επικυρωμένη X.509) από ~A" src)
+         t))
+      (t
+       (when (probe-file tsa-ca-path) (ignore-errors (delete-file tsa-ca-path)))
+       (alexandria:write-string-into-file
+        (format nil "~A~%TSA CA certificate ΔΕΝ διανέμεται με αυτό το release.~%~%~
+Η ΠΛΗΡΗΣ RFC-3161 επαλήθευση της χρονοσφραγίδας (αλυσίδα CA → TSA) απαιτεί την~%~
+pinned CA αλυσίδα που παρέχει ο χειριστής (env TSA_CA_BUNDLE ή keys/tsa-ca.pem).~%~
+Το σύστημα ΑΡΝΕΙΤΑΙ να διανείμει ψευδο/ληγμένο πιστοποιητικό ως υλικό~%~
+επαλήθευσης — τίμια άγνοια αντί για παραίσθηση ασφάλειας.~%~%~
+Οι δεσμοί που ΕΠΑΛΗΘΕΥΟΝΤΑΙ ΧΩΡΙΣ αυτό: Merkle root ≡ ταυτότητα release,~%~
+JWS υπογραφή, ύπαρξη/imprint-binding του RFC-3161 receipt (timestamp.tsr).~%~
+Η πλήρης κρυπτογραφική επαλήθευση της αλυσίδας TSA είναι δηλωμένη φάση P4+.~%"
+                +tsa-ca-missing-sentinel+)
+        note-path :if-exists :supersede)
+       (log:info () "tsa-ca.pem: καμία γνήσια CA — γράφτηκε τίμια σημείωση (καμία ψευδο-διανομή)")
+       nil))))
+
+(defun %tsa-ca-material-ok-p (release-dir)
+  "Το αναλλοίωτο υλικού TSA CA ενός release: ΑΚΡΙΒΩΣ ένα από
+   {verify/tsa-ca.pem που περνά τη δομική φραγή X.509,
+    verify/tsa-ca.MISSING.txt (τίμια σημείωση)}.
+   Η έδρα εκπομπής (%emit-tsa-ca-or-honest-note) το διατηρεί εκ κατασκευής —
+   αυτή η πύλη το ΕΛΕΓΧΕΙ ανεξάρτητα, ώστε παράκαμψη της εκπομπής να μην
+   περνά σιωπηλά. Αυστηρά ισχυρότερο και από το προ-P1.4 (παρουσία-μόνο, που
+   δεχόταν ψευδο-blob) και από το ενδιάμεσο P1.4 (που επέτρεπε κανένα από τα
+   δύο). Επιστρέφει T ή (values NIL αιτία)."
+  (let* ((pem-path  (merge-pathnames "verify/tsa-ca.pem" release-dir))
+         (note-path (merge-pathnames "verify/tsa-ca.MISSING.txt" release-dir))
+         (pem-p  (probe-file pem-path))
+         (note-p (probe-file note-path)))
+    (cond
+      ((and pem-p note-p)
+       (values nil "και tsa-ca.pem ΚΑΙ tsa-ca.MISSING.txt — διφορούμενο υλικό επαλήθευσης"))
+      ((and (not pem-p) (not note-p))
+       (values nil "ούτε tsa-ca.pem ούτε tsa-ca.MISSING.txt — σιωπηλή παράλειψη υλικού επαλήθευσης"))
+      (note-p
+       ;; Η σημείωση απουσίας πρέπει να φέρει το κανονικό sentinel — κενό ή
+       ;; παραπλανητικό περιεχόμενο («η επαλήθευση πέρασε») ΔΕΝ γίνεται δεκτό.
+       (if (search +tsa-ca-missing-sentinel+ (uiop:read-file-string note-path))
+           t
+           (values nil "tsa-ca.MISSING.txt χωρίς κανονικό sentinel — μη-έγκυρος δείκτης απουσίας")))
+      (t (handler-case
+             (progn
+               ;; ΚΑΘΕ block της αλυσίδας επικυρώνεται (assert-valid-x509-pem
+               ;; είναι πλέον chain-aware) — όχι μόνο η κεφαλή του bundle.
+               (orchestrator.x509-authority:assert-valid-x509-pem
+                (uiop:read-file-string pem-path) "verify/tsa-ca.pem")
+               t)
+           (error (e) (values nil (format nil "~A" e))))))))
+
+(defun %key-genesis-explicitly-allowed-p ()
+  "T ΜΟΝΟ όταν ο χειριστής ζητά ΡΗΤΑ γένεση κλειδιού (LAWMAX_ALLOW_KEY_GENESIS=1),
+   που προορίζεται ΑΠΟΚΛΕΙΣΤΙΚΑ για dev/init σε ΚΕΝΟ περιβάλλον. Η ΜΙΑ έδρα
+   πολιτικής κλειδιών: εκτός αυτού του ρητού opt-in, ένα trust root ΔΕΝ
+   γεννιέται ποτέ σιωπηλά — φορτώνεται ή σφάλλει (fail-closed)."
+  (let ((v (uiop:getenv "LAWMAX_ALLOW_KEY_GENESIS")))
+    (and v (member v '("1" "true" "yes" "ΝΑΙ") :test #'string-equal))))
+
 (defun ensure-crypto-keys-exist (private-key-path public-key-path cert-path)
-  "Auto-generate RSA keypair and X.509 certificate if missing
+  "Load the release-authority signing material· FAIL-CLOSED αν λείπει.
 
-   Uses Pure Common Lisp (Ironclad) - NO OpenSSL, NO external tools.
-
-   Args:
-     private-key-path: Path for private key PEM
-     public-key-path: Path for public key PEM
-     cert-path: Path for X.509 certificate PEM
+   P1.4 [0054]#3: ΤΕΛΟΣ η σιωπηλή αυτο-γένεση. Ένα δημοσιευμένο trust root
+   ΔΕΝ επιτρέπεται να προκύψει από κλειδί που εμφανίστηκε μόνο του σε αυτό το
+   run — αλλιώς η υπογραφή του release αποδεικνύει μόνο εσωτερική συνέπεια,
+   ΟΧΙ σταθερή αρχή. Λείπει κλειδί ⇒ ΣΦΑΛΜΑ, εκτός αν ο χειριστής ζητήσει
+   ΡΗΤΑ γένεση (LAWMAX_ALLOW_KEY_GENESIS=1, μόνο για dev/init) — και τότε με
+   ηχηρή προειδοποίηση ότι το κλειδί αυτό ΔΕΝ πρέπει να υπογράψει δημόσιο
+   release. Uses Pure Common Lisp (Ironclad) — NO OpenSSL.
 
    Returns:
-     Plist with :private-key-path :public-key-path :cert-path"
+     Plist με :private-key-path :public-key-path :cert-path"
 
   (let ((key-exists (and (probe-file private-key-path)
                          (not (uiop:directory-exists-p private-key-path)))))
 
     (unless key-exists
+      (unless (%key-genesis-explicitly-allowed-p)
+        (error 'orchestrator.spec:validation-error
+               :message (format nil "Λείπει το ιδιωτικό κλειδί αρχής εκδόσεων (~A) και η αυτο-γένεση ΔΕΝ επιτράπηκε ρητά. Το trust root ΔΕΝ γεννιέται σιωπηλά ανά run. Πάροχε σταθερό κλειδί, ή για dev/init σε ΚΕΝΟ περιβάλλον όρισε LAWMAX_ALLOW_KEY_GENESIS=1 (το κλειδί αυτό ΔΕΝ πρέπει να υπογράψει δημόσιο release)."
+                              private-key-path)))
       (format t "~%═══════════════════════════════════════════════════════════════~%")
-      (format t "  AUTO-GENERATING CRYPTO KEYS (Pure Lisp - Ironclad)~%")
-      (format t "  DARPA-GRADE: No OpenSSL, No external tools~%")
+      (format t "  ⚠ ΡΗΤΗ ΓΕΝΕΣΗ ΚΛΕΙΔΙΟΥ (LAWMAX_ALLOW_KEY_GENESIS) — dev/init ΜΟΝΟ~%")
+      (format t "  ⚠ ΤΟ ΚΛΕΙΔΙ ΑΥΤΟ ΔΕΝ ΠΡΕΠΕΙ ΝΑ ΥΠΟΓΡΑΨΕΙ ΔΗΜΟΣΙΟ RELEASE~%")
       (format t "═══════════════════════════════════════════════════════════════~%~%")
 
       ;; Ensure directories exist
@@ -364,9 +458,12 @@
 
       ;; Write Merkle tree
       (alexandria:write-string-into-file
+       ;; Ντετερμινιστικός χρόνος (SOURCE_DATE_EPOCH): το merkle-tree.json δεν
+       ;; είναι canonical, αλλά ρολόι συστήματος θα έσπαγε το byte-reproducible
+       ;; release directory (εύρημα κριτή).
        (jonathan:to-json `(:|root| ,release-root-hash
                           :|timestamp| ,(orchestrator.time:format-iso8601
-                                        (orchestrator.time:now :source :system))
+                                        (orchestrator.time:require-deterministic-time))
                           :|totalFiles| ,(length canonical-files)))
        merkle-tree-path
        :if-exists :supersede)
@@ -412,6 +509,7 @@
       (let ((jws-result (handler-case
                             (sign-manifest-jws release-root-hash jws-path
                                               :private-key-path private-key-path
+                                              :public-key-path default-public-key-path
                                               :public-key-jwk-path public-jwk-path)
                           (error (e)
                             (if dev-mode
@@ -435,7 +533,7 @@
 ;;; VERIFICATION KIT GENERATION
 ;;; ============================================================================
 
-(defun generate-verification-kit (release-dir temporal-proof-artifacts)
+(defun generate-verification-kit (release-dir)
   "Generate verification kit for deterministic release verification
 
   Creates:
@@ -448,7 +546,6 @@
 
   Args:
     release-dir: Release directory path
-    temporal-proof-artifacts: Plist with proof artifact paths
 
   Returns:
     Plist with verification kit paths"
@@ -468,334 +565,131 @@
     (unless (probe-file public-jwk-path)
       (log:warn () "public.jwk not found at ~A - JWS signing may have failed" public-jwk-path))
 
-    ;; tsa-ca.pem - TSA CA certificate (FreeTSA)
-    ;; Source: https://freetsa.org/files/cacert.pem
-    (alexandria:write-string-into-file
-     "-----BEGIN CERTIFICATE-----
-MIIGQDCCBSigAwIBAgIJAI+F9s9cXyXyMA0GCSqGSIb3DQEBCwUAMIGwMQswCQYD
-VQQGEwJBVDETMBEGA1UECAwKU29tZS1TdGF0ZTEhMB8GA1UECgwYSW50ZXJuZXQg
-V2lkZ2l0cyBQdHkgTHRkMRAwDgYDVQQDDAdGcmVlVFNBMRwwGgYJKoZIhvcNAQkB
-Fg1mcmVldHNhQGF0Lm9yZzEZMBcGA1UEBRMQZnJlZXRzYSAxMDAwMDAwMDEeMBwG
-A1UEYwwVaHR0cHM6Ly93d3cuZnJlZXRzYS5vcmcwHhcNMTYwMzEzMTEwNTMxWhcN
-MjYwMzExMTEwNTMxWjCBsDELMAkGA1UEBhMCQVQxEzARBgNVBAgMClNvbWUtU3Rh
-dGUxITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDEQMA4GA1UEAwwH
-RnJlZVRTQTEcMBoGCSqGSIb3DQEJARYNZnJlZXRzYUBhdC5vcmcxGTAXBgNVBAUT
-EGZyZWV0c2EgMTAwMDAwMDAxHjAcBgNVBGMMFWh0dHBzOi8vd3d3LmZyZWV0c2Eu
-b3JnMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyDkYpW/YlT0JLLcO
-DQwEhq/WqnT0ZuX0gAJHQLgXqYBOYgaFVaZmhRMaD/YqN3irgqKVNBIr/VYHLtQp
-8gd2cTLh6zT8G7uN+LvLJhEX6dRFD6VMUX+hCLAy+lO8f7LJpXJKAzVJcG8kVPHg
-hOhRjbHhMEwF9n3nEYFXL8D9VYlqh8m0pxJlSJQPLJNsYKxRaD+yHfcLwqR+kIhE
-qLvvHnJjNqQC1cWqNkxLDsEGLzJDdz8cWqpnPxNjHVwwIGd3sBYqPxqSxBKPdtFG
-rqRfFGQXuCsxbLcEqVPSwKDdlTgbSLKUZVVJdTLJdLfq4pPwEy0SxDLNfJlGNBbW
-mE0PGwIDAQABo4ICGTCCAhUwgZ4GA1UdIwSBljCBk6GBtqSBszCBsDELMAkGA1UE
-BhMCQVQxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoMGEludGVybmV0IFdp
-ZGdpdHMgUHR5IEx0ZDEQMA4GA1UEAwwHRnJlZVRTQTEcMBoGCSqGSIb3DQEJARYN
-ZnJlZXRzYUBhdC5vcmcxGTAXBgNVBAUTEGZyZWV0c2EgMTAwMDAwMDCCCQCPhfbP
-XF8l8jAdBgNVHQ4EFgQU/JKblC+ySeLWUMBpADYqR2VjRaIwDAYDVR0TBAUwAwEB
-/zALBgNVHQ8EBAMCAQYwEwYDVR0lBAwwCgYIKwYBBQUHAwgwgdsGA1UdHwSB0zCB
-0DCBzaCBxqCBw4aBwGxkYXA6Ly9sZGFwLmZyZWV0c2Eub3JnL2NuPUZyZWVUU0Es
-T1U9RnJlZVRTQSBUaW1lc3RhbXAgU2lnbmluZyBVbml0LE89RnJlZVRTQSxDPUFU
-P2NlcnRpZmljYXRlUmV2b2NhdGlvbkxpc3Q/YmFzZT9vYmplY3RDbGFzcz1jUkxE
-aXN0cmlidXRpb25Qb2ludD8/P2NlcnRpZmljYXRlUmV2b2NhdGlvbkxpc3Q/YmFz
-ZT9vYmplY3RDbGFzcz1jUkxEaXN0cmlidXRpb25Qb2ludDANBgkqhkiG9w0BAQsF
-AAOCAQEAEUIVLbLa4dDMXqbPvLRPBExxIWXJd2YdewEJGQNcRqI0LIDcOW2WqJN2
-IELt0y9KWOaXJLPPnPWrBaeLXOp3s6gT0KLKAGCxQx0pEfEAJjwhSqPrC8k0vNNs
-2ZlD0YHnXEIIGR0SKRnZP8bEFwdHlbvNrQnNqEKdQNF1pFPqTBHlSECBQJBCPWKv
-5YG4bCtFXKQFJODlGFBvHbdLJJCBWKB2FVHLLFPDHuBTVKS5+wLBKqWKfqLGNzxX
-Y8LGGxGF8xxMm0hSdKiBgiqnCpqvNFqgPfLXtQSq5qG9vVyGBKPq8NM9VjVnHFNf
-C2N2CWKbYQK7VqKJnCWmYQq1GfFQGw==
------END CERTIFICATE-----"
-     tsa-ca-path
-     :if-exists :supersede)
+    ;; tsa-ca.pem — TSA CA certificate για πλήρη RFC-3161 επαλήθευση.
+    ;; P1.4 [0054]#1: ΤΕΛΟΣ το hardcoded ψευδο-blob (μη-parseable, ληγμένο).
+    ;; Γράφεται ΜΟΝΟ γνήσια CA αλυσίδα που ο χειριστής παρέχει (env
+    ;; TSA_CA_BUNDLE ή <institution>/keys/tsa-ca.pem) ΚΑΙ επικυρώνεται δομικά
+    ;; ως X.509 (assert-valid-x509-pem). Αλλιώς ΔΕΝ γράφεται ψευδο-cert — το
+    ;; verify kit δηλώνει τίμια ότι η πλήρης TSR-CA επαλήθευση απαιτεί την
+    ;; pinned CA του χειριστή (δηλωμένο P4+ residual). Ποτέ ψέμα για το τι κρατά.
+    (%emit-tsa-ca-or-honest-note tsa-ca-path)
 
-    ;; verify.sh - Bash verification script (fallback)
+    ;; verify.sh — ΛΕΠΤΟΣ delegator στον L6 πυρήνα. ΚΑΜΙΑ δική του «επαλήθευση»:
+    ;; ένα presence-only script που τυπώνει «PASSED» είναι σιωπηλό fallback
+    ;; (εύρημα κριτή)· εδώ είτε τρέχει ο πυρήνας είτε exit 1 με τίμια οδηγία.
     (alexandria:write-string-into-file
      "#!/bin/bash
-# Epistemic Release Verification Script
-# Usage: ./verify.sh <release-dir>
-#
-# NOTE: For DARPA-GRADE verification, use verify.lisp instead:
-#   sbcl --script verify.lisp <release-dir>
+# LAWMAX release verification — delegates to the L6 kernel (verify.lisp).
+# Usage: ./verify.sh [release-dir] [pinned-root-hex]
+# This script performs NO verification itself. Cryptographic verification
+# happens ONLY in verify.lisp (RFC-6962 root, census, JWS). No fallbacks.
 
-set -e
+RELEASE_DIR=\"${1:-..}\"
+PINNED=\"${2:-}\"
+KERNEL=\"$(dirname \"$0\")/verify.lisp\"
 
-RELEASE_DIR=\"${1:-.}\"
+if ! command -v sbcl >/dev/null 2>&1; then
+    echo \"✗ sbcl not found. Install SBCL (https://www.sbcl.org) and re-run:\" >&2
+    echo \"    sbcl --script $KERNEL $RELEASE_DIR $PINNED\" >&2
+    echo \"  No weaker fallback exists by design: presence checks are not verification.\" >&2
+    exit 1
+fi
 
-echo \"=== EPISTEMIC RELEASE VERIFICATION ===\"
-echo \"Release: $RELEASE_DIR\"
-echo \"NOTE: For Pure Lisp verification, use: sbcl --script verify.lisp $RELEASE_DIR\"
-echo
-
-# Check if files exist
-echo \"[1/4] Checking manifests...\"
-[ -f \"$RELEASE_DIR/manifest.ttl\" ] && echo \"  ✓ manifest.ttl\" || { echo \"  ✗ manifest.ttl missing\"; exit 1; }
-[ -f \"$RELEASE_DIR/manifest.jsonld\" ] && echo \"  ✓ manifest.jsonld\" || { echo \"  ✗ manifest.jsonld missing\"; exit 1; }
-echo
-
-echo \"[2/4] Checking JWS signature...\"
-[ -f \"$RELEASE_DIR/temporal-proof/signature.jws\" ] && echo \"  ✓ signature.jws\" || echo \"  ⚠ signature.jws not found\"
-[ -f \"$RELEASE_DIR/verify/public.jwk\" ] && echo \"  ✓ public.jwk\" || echo \"  ⚠ public.jwk not found\"
-echo
-
-echo \"[3/4] Checking RFC 3161 timestamp...\"
-[ -f \"$RELEASE_DIR/temporal-proof/timestamp.tsr\" ] && echo \"  ✓ timestamp.tsr\" || echo \"  ⚠ timestamp.tsr not found\"
-echo
-
-echo \"[4/4] Checking Merkle tree...\"
-[ -f \"$RELEASE_DIR/temporal-proof/merkle-tree.json\" ] && echo \"  ✓ merkle-tree.json\" || echo \"  ⚠ merkle-tree.json not found\"
-echo
-
-echo \"===========================================\"
-echo \"✓ BASIC VERIFICATION PASSED\"
-echo \"\"
-echo \"For cryptographic verification, use Pure Lisp:\"
-echo \"  sbcl --script verify.lisp $RELEASE_DIR\"
-echo \"===========================================\"
+exec sbcl --script \"$KERNEL\" \"$RELEASE_DIR\" $PINNED
 "
      verify-sh-path
      :if-exists :supersede)
 
-    ;; verify.ps1 - PowerShell verification script (fallback)
+    ;; verify.ps1 — ίδιος λεπτός delegator για Windows. Καμία ψευδο-επαλήθευση.
     (alexandria:write-string-into-file
-     "# Epistemic Release Verification Script (PowerShell)
-# Usage: .\\verify.ps1 <release-dir>
-#
-# NOTE: For DARPA-GRADE verification, use verify.lisp instead:
-#   sbcl --script verify.lisp <release-dir>
+     "# LAWMAX release verification — delegates to the L6 kernel (verify.lisp).
+# Usage: .\\verify.ps1 [release-dir] [pinned-root-hex]
+# This script performs NO verification itself. Cryptographic verification
+# happens ONLY in verify.lisp (RFC-6962 root, census, JWS). No fallbacks.
 
 param(
-    [string]$ReleaseDir = \".\"
+    [string]$ReleaseDir = \"..\",
+    [string]$Pinned = \"\"
 )
 
-Write-Host \"=== EPISTEMIC RELEASE VERIFICATION ===\" -ForegroundColor Cyan
-Write-Host \"Release: $ReleaseDir\"
-Write-Host \"NOTE: For Pure Lisp verification, use: sbcl --script verify.lisp $ReleaseDir\" -ForegroundColor Gray
-Write-Host
+$Kernel = Join-Path $PSScriptRoot \"verify.lisp\"
 
-# Check if files exist
-Write-Host \"[1/4] Checking manifests...\" -ForegroundColor Yellow
-if (Test-Path \"$ReleaseDir/manifest.ttl\") { Write-Host \"  ✓ manifest.ttl\" -ForegroundColor Green }
-else { Write-Host \"  ✗ manifest.ttl missing\" -ForegroundColor Red; exit 1 }
-if (Test-Path \"$ReleaseDir/manifest.jsonld\") { Write-Host \"  ✓ manifest.jsonld\" -ForegroundColor Green }
-else { Write-Host \"  ✗ manifest.jsonld missing\" -ForegroundColor Red; exit 1 }
-Write-Host
+if (-not (Get-Command sbcl -ErrorAction SilentlyContinue)) {
+    Write-Error \"sbcl not found. Install SBCL (https://www.sbcl.org) and re-run: sbcl --script $Kernel $ReleaseDir $Pinned. No weaker fallback exists by design: presence checks are not verification.\"
+    exit 1
+}
 
-Write-Host \"[2/4] Checking JWS signature...\" -ForegroundColor Yellow
-if (Test-Path \"$ReleaseDir/temporal-proof/signature.jws\") { Write-Host \"  ✓ signature.jws\" -ForegroundColor Green }
-else { Write-Host \"  ⚠ signature.jws not found\" -ForegroundColor Yellow }
-if (Test-Path \"$ReleaseDir/verify/public.jwk\") { Write-Host \"  ✓ public.jwk\" -ForegroundColor Green }
-else { Write-Host \"  ⚠ public.jwk not found\" -ForegroundColor Yellow }
-Write-Host
-
-Write-Host \"[3/4] Checking RFC 3161 timestamp...\" -ForegroundColor Yellow
-if (Test-Path \"$ReleaseDir/temporal-proof/timestamp.tsr\") { Write-Host \"  ✓ timestamp.tsr\" -ForegroundColor Green }
-else { Write-Host \"  ⚠ timestamp.tsr not found\" -ForegroundColor Yellow }
-Write-Host
-
-Write-Host \"[4/4] Checking Merkle tree...\" -ForegroundColor Yellow
-if (Test-Path \"$ReleaseDir/temporal-proof/merkle-tree.json\") { Write-Host \"  ✓ merkle-tree.json\" -ForegroundColor Green }
-else { Write-Host \"  ⚠ merkle-tree.json not found\" -ForegroundColor Yellow }
-Write-Host
-
-Write-Host \"===========================================\" -ForegroundColor Cyan
-Write-Host \"✓ BASIC VERIFICATION PASSED\" -ForegroundColor Green
-Write-Host \"\"
-Write-Host \"For cryptographic verification, use Pure Lisp:\"
-Write-Host \"  sbcl --script verify.lisp $ReleaseDir\" -ForegroundColor White
-Write-Host \"===========================================\" -ForegroundColor Cyan
+if ($Pinned) { sbcl --script $Kernel $ReleaseDir $Pinned }
+else { sbcl --script $Kernel $ReleaseDir }
+exit $LASTEXITCODE
 "
      verify-ps1-path
      :if-exists :supersede)
 
-    ;; verify.lisp - Pure Lisp verification script (DARPA-GRADE)
-    (alexandria:write-string-into-file
-     ";;;; verify.lisp - Pure Lisp Epistemic Release Verification
-;;;; ============================================================================
-;;;; DARPA-GRADE: No OpenSSL, No external tools
-;;;; Usage: sbcl --script verify.lisp [release-dir]
-;;;; ============================================================================
-
-(require :asdf)
-
-;; Load minimal dependencies
-(handler-case
-    (progn
-      (asdf:load-system :ironclad)
-      (asdf:load-system :babel)
-      (asdf:load-system :yason)
-      (asdf:load-system :cl-base64))
-  (error (e)
-    (format t \"ERROR: Missing dependencies. Install: ironclad, babel, yason, cl-base64~%\")
-    (format t \"Details: ~A~%\" e)
-    (sb-ext:exit :code 1)))
-
-;;; Base64URL decoding
-(defun b64url-decode (string)
-  (let* ((padded (concatenate 'string string
-                              (make-string (mod (- 4 (mod (length string) 4)) 4)
-                                          :initial-element #\\=)))
-         (standard (map 'string (lambda (c)
-                                  (case c (#\\- #\\+) (#\\_ #\\/) (t c)))
-                        padded)))
-    (cl-base64:base64-string-to-usb8-array standard)))
-
-;;; File utilities
-(defun read-file-bytes (path)
-  (with-open-file (s path :element-type '(unsigned-byte 8))
-    (let ((bytes (make-array (file-length s) :element-type '(unsigned-byte 8))))
-      (read-sequence bytes s)
-      bytes)))
-
-(defun read-file-string (path)
-  (with-open-file (s path)
-    (let ((str (make-string (file-length s))))
-      (read-sequence str s)
-      str)))
-
-;;; JWS verification
-(defun verify-jws (jws-string payload public-key)
-  (let* ((parts (split-string jws-string #\\.))
-         (header-b64 (first parts))
-         (payload-b64 (second parts))
-         (signature-b64 (third parts))
-         (signing-input (format nil \"~A.~A\" header-b64 payload-b64))
-         (signature (b64url-decode signature-b64))
-         (digest (ironclad:digest-sequence :sha256
-                   (babel:string-to-octets signing-input :encoding :utf-8))))
-    (let ((digest-info (concatenate '(vector (unsigned-byte 8))
-                         #(#x30 #x31 #x30 #x0d #x06 #x09 #x60 #x86 #x48 #x01
-                           #x65 #x03 #x04 #x02 #x01 #x05 #x00 #x04 #x20)
-                         digest)))
-      (handler-case
-          (progn
-            (ironclad:verify-signature public-key digest-info signature)
-            t)
-        (error () nil)))))
-
-(defun split-string (string char)
-  (loop for start = 0 then (1+ end)
-        for end = (position char string :start start)
-        collect (subseq string start (or end (length string)))
-        while end))
-
-;;; Main verification
-(defun verify-release (release-dir)
-  (format t \"~%═══════════════════════════════════════════════════════════════~%\")
-  (format t \"  EPISTEMIC RELEASE VERIFICATION (Pure Lisp)~%\")
-  (format t \"  DARPA-GRADE: No OpenSSL, No external tools~%\")
-  (format t \"═══════════════════════════════════════════════════════════════~%\")
-  (format t \"Release: ~A~%~%\" release-dir)
-
-  (let ((errors 0))
-    ;; Check manifest
-    (format t \"[1/4] Checking manifests...~%\")
-    (if (and (probe-file (merge-pathnames \"manifest.ttl\" release-dir))
-             (probe-file (merge-pathnames \"manifest.jsonld\" release-dir)))
-        (format t \"  ✓ Manifests present~%~%\")
-        (progn (format t \"  ✗ Manifests missing~%~%\") (incf errors)))
-
-    ;; Check JWS
-    (format t \"[2/4] Verifying JWS signature...~%\")
-    (let ((jws-path (merge-pathnames \"temporal-proof/signature.jws\" release-dir))
-          (jwk-path (merge-pathnames \"verify/public.jwk\" release-dir))
-          (manifest-path (merge-pathnames \"manifest.ttl\" release-dir)))
-      (if (and (probe-file jws-path) (probe-file jwk-path) (probe-file manifest-path))
-          (handler-case
-              (let* ((jws (string-trim '(#\\Space #\\Newline) (read-file-string jws-path)))
-                     (jwk (yason:parse (read-file-string jwk-path)))
-                     (manifest (read-file-string manifest-path))
-                     (n (ironclad:octets-to-integer (b64url-decode (gethash \"n\" jwk))))
-                     (e (ironclad:octets-to-integer (b64url-decode (gethash \"e\" jwk))))
-                     (pubkey (ironclad:make-public-key :rsa :n n :e e)))
-                (if (verify-jws jws manifest pubkey)
-                    (format t \"  ✓ JWS signature valid~%~%\")
-                    (progn (format t \"  ✗ JWS signature INVALID~%~%\") (incf errors))))
-            (error (e)
-              (format t \"  ✗ JWS error: ~A~%~%\" e)
-              (incf errors)))
-          (format t \"  ⚠ JWS files not found (skipped)~%~%\")))
-
-    ;; Check timestamp
-    (format t \"[3/4] Checking RFC 3161 timestamp...~%\")
-    (let ((tsr-path (merge-pathnames \"temporal-proof/timestamp.tsr\" release-dir)))
-      (if (probe-file tsr-path)
-          (let ((size (with-open-file (s tsr-path) (file-length s))))
-            (format t \"  ✓ Timestamp present (~D bytes)~%~%\" size))
-          (format t \"  ⚠ Timestamp not found (skipped)~%~%\")))
-
-    ;; Check Merkle
-    (format t \"[4/4] Checking Merkle tree...~%\")
-    (let ((merkle-path (merge-pathnames \"temporal-proof/merkle-tree.json\" release-dir)))
-      (if (probe-file merkle-path)
-          (format t \"  ✓ Merkle tree present~%~%\")
-          (format t \"  ⚠ Merkle tree not found (skipped)~%~%\")))
-
-    ;; Summary
-    (format t \"═══════════════════════════════════════════════════════════════~%\")
-    (if (zerop errors)
-        (format t \"  ✓ VERIFICATION PASSED~%\")
-        (format t \"  ✗ VERIFICATION FAILED (~D errors)~%\" errors))
-    (format t \"═══════════════════════════════════════════════════════════════~%\")
-
-    (zerop errors)))
-
-;; Entry point
-(let ((release-dir (or (second sb-ext:*posix-argv*) \".\")))
-  (if (verify-release release-dir)
-      (sb-ext:exit :code 0)
-      (sb-ext:exit :code 1)))
-"
-     verify-lisp-path
-     :if-exists :supersede)
+    ;; verify.lisp — Ο L6 ΠΥΡΗΝΑΣ. ΔΕΝ γράφεται εδώ: είναι το 10ο canonical
+    ;; αρχείο, ήδη staged στο Step 3γ ΠΡΙΝ το Merkle build (ώστε το release
+    ;; root να δεσμεύει και τον verifier). Εδώ ΜΟΝΟ fail-closed έλεγχος ότι
+    ;; υπάρχει — ξαναγράψιμο μετά τη ρίζα θα άλλαζε την ταυτότητα σιωπηλά.
+    (unless (probe-file verify-lisp-path)
+      (error "verify.lisp (L6 kernel, 10ο canonical) απών από το staging — ~
+              το Step 3γ δεν έτρεξε: ~A" verify-lisp-path))
 
     ;; README-VERIFY.md - Verification instructions
     (alexandria:write-string-into-file
      "# Epistemic Release Verification
 
-This directory contains all tools needed to verify the epistemic integrity of this release.
+This directory contains the L6 verification kernel for this release.
 
-## DARPA-GRADE: Pure Lisp Verification (Recommended)
+## L6 Kernel Verification (the ONLY verification path)
 
 ```bash
 cd verify
-sbcl --script verify.lisp ..
+sbcl --script verify.lisp .. [pinned-root-hex]
 ```
 
-**No OpenSSL required.** The Pure Lisp verification script performs full cryptographic
-verification using only Common Lisp libraries (Ironclad).
+**No OpenSSL required.** The kernel is a small standalone Common Lisp program
+(ironclad + babel + cl-base64 + yason only) — read it in an afternoon, then run it.
 
-## What Gets Verified
+## What Gets Verified (kernel v2)
 
-1. **Manifest Integrity**: Presence of manifest.ttl and manifest.jsonld
-2. **JWS Signature**: RSA-SHA256 digital signature verification (Pure Lisp)
-3. **RFC 3161 Timestamp**: Presence and structure verification
-4. **Merkle Tree**: Presence verification
+1. **Release identity**: RFC-6962 Merkle root of the 10 canonical files recomputed
+   and compared to the release directory name (and to your out-of-band pinned
+   root, if you pass one — RECOMMENDED). `verify.lisp` itself is one of the 10:
+   the identity binds the verifier you are running.
+2. **Artifact census**: every per-article ttl/jsonld/html sha512 and every
+   text_leaf recomputed from the in-release bytes; pcl_text_root ≡ MTH(text
+   leaves); prev_release_root present (anti-equivocation chain; null only for
+   the first release of a chain).
+3. **JWS signature**: detached RS256 over the release root, full
+   EMSA-PKCS1-v1_5 padding. Missing signature = FAIL (no unsigned downgrade).
+4. **RFC 3161 receipt**: existence (full cryptographic TSR verification is the
+   declared P4 phase; see tsa-ca notes below).
 
-## Alternative Verification Methods
+## Trust note (read this)
 
-### Bash (basic checks only)
-```bash
-cd verify
-chmod +x verify.sh
-./verify.sh ..
-```
+A tampered release could also ship a tampered `verify.lisp` — but that changes
+the Merkle root, so the directory name and any pinned root no longer match.
+For full independence, obtain the kernel out-of-band (from the source
+repository: `deployment/verify/kernel-verify.lisp`) and/or always pass your
+pinned root as the second argument.
 
-### PowerShell (basic checks only)
-```powershell
-cd verify
-.\\verify.ps1 ..
-```
+## Convenience wrappers
 
-Note: Shell scripts perform basic file presence checks only.
-For full cryptographic verification, use the Pure Lisp script.
+`verify.sh` (bash) and `verify.ps1` (PowerShell) only exec the kernel via sbcl;
+they perform NO verification themselves and fail honestly if sbcl is absent.
 
 ## Files in this Directory
 
-- `verify.lisp` - **Primary** Pure Lisp verification (DARPA-GRADE)
-- `verify.sh` - Bash script (basic checks)
-- `verify.ps1` - PowerShell script (basic checks)
+- `verify.lisp` - The L6 kernel (canonical file #10 — inside the release identity)
+- `verify.sh` - Thin wrapper: exec sbcl --script verify.lisp
+- `verify.ps1` - Thin wrapper: exec sbcl --script verify.lisp
 - `public.jwk` - JWK public key for JWS verification
-- `tsa-ca.pem` - TSA CA certificate
+- `tsa-ca.pem` - Γνήσια, δομικά επικυρωμένη (X.509) TSA CA αλυσίδα του χειριστή
+  για ΠΛΗΡΗ RFC-3161 επαλήθευση. Παρών ΜΟΝΟ όταν ο χειριστής την παρέχει
+  (env TSA_CA_BUNDLE ή keys/tsa-ca.pem). Αν λείπει, βλ. `tsa-ca.MISSING.txt`:
+  το σύστημα ΑΡΝΕΙΤΑΙ να διανείμει ψευδο/ληγμένο πιστοποιητικό — τίμια άγνοια
+  αντί για παραίσθηση ασφάλειας. Οι δεσμοί που επαληθεύονται ΧΩΡΙΣ αυτό:
+  Merkle root ≡ ταυτότητα, JWS, ύπαρξη/imprint-binding του RFC-3161 receipt.
 
 ## Dependencies for Pure Lisp Verification
 
@@ -902,7 +796,7 @@ No fallbacks, no partial validity - strict proof gates.
 
   ;; P1R [0046] — CONTENT-ADDRESSED PUBLISH. Η ταυτότητα του release είναι το
   ;; ίδιο του το περιεχόμενο (releases/<release-id>/, id = sha256-<Merkle root
-  ;; των 8 canonical>). Overwrite ΔΟΜΙΚΑ αδύνατο: ίδιο περιεχόμενο ⇒ ίδιος
+  ;; των 10 canonical>). Overwrite ΔΟΜΙΚΑ αδύνατο: ίδιο περιεχόμενο ⇒ ίδιος
   ;; κατάλογος ⇒ το publish επαληθεύει και επαναχρησιμοποιεί (ΠΟΤΕ delete)·
   ;; διαφορετικό περιεχόμενο ⇒ άλλος κατάλογος· υπάρχων κατάλογος με ξένο root
   ;; ⇒ διαφθορά ⇒ ΣΦΑΛΜΑ. Το `latest` προάγεται ΜΟΝΟ από promote-latest! σε
@@ -949,12 +843,77 @@ No fallbacks, no partial validity - strict proof gates.
       (error "~A: δεν βρέθηκε έγκυρο \"root\" στο merkle-tree.json" path))
     root))
 
+(defparameter +epistemic-canonical-files-legacy8+
+  '("meta-ontology.ttl" "lineage-graph.ttl" "negation.ttl"
+    "stability-policy.ttl" "stability-policy.md"
+    "shapes/article-shape.ttl" "shapes/manifest-shape.ttl"
+    "shapes/lineage-shape.ttl")
+  "Το canonical σύνολο ΠΡΟ-P1.5 (8 αρχεία): η ταυτότητα των ΙΣΤΟΡΙΚΩΝ
+   δεσμευμένων releases που κόπηκαν πριν το census. ΠΑΓΩΜΕΝΟ — δεν
+   ξαναγράφεται· υπάρχει ΜΟΝΟ για να επαληθεύεται η εποχή τους.")
+
+(defparameter +frozen-legacy-release-ids+
+  '("sha256-0ee2ecc4e0efab7342908876454df179fb60187654338832cb05058903883825"
+    "sha256-5d4b546c1cda1e1a66f4b8d20fac5fe583f294abd0e6bf8fbf9a079092f972ff"
+    "sha256-7e3acace23f5907085f1a266a6e2a49016fffaa4366398ddc97af7fffdd3acae"
+    "sha256-a8185ecdef637b8300efba8f113a7a73443ae286de08f5025b90cbca0b3c6e86"
+    "sha256-de72263b908fe7dc680a6ffb046c38951b5ccfd6a3acb46d8739a4766b260a80"
+    "sha256-e8384152d401efc82566f9c5628c8b37a0a074ed1f95dea598334d0d8217dca6"
+    "sha256-57a6994c231a5e1356c4afab778c3ecab84d5f507d2750b63a21b1419e4f4f27"
+    "sha256-a4f674790a62d5cc35782fd646e49163412d12351944c66a4b51a8386b6bd433"
+    "sha256-b53a6dfa5dd49cf8acfb61d000fa0dc9d7bfd4fc4b8d145fcac1a2e36018a47c"
+    "sha256-1129ac1e0453c9c98744f7c2ca6af138a611d8c706a2bc2d345c802132eaa30d"
+    "sha256-bdb1b83d4b3d60459048e4364d7ab9b8baa240e72f5a7c5fd09816d5196c7b0a"
+    "sha256-c552b49c352b8df33d3928b75083fdcac61838cebec2f9f8c0ffa46963d35e46"
+    "sha256-1c85246b2af9b0704e103f4aaacf1a0bac974eb6cd985fd7ee1cb372fa6d6d18"
+    "sha256-34e236806b990128ae799554158c38c197bdffe67ad82260461c29623a1840cd"
+    "sha256-aaf60c01d1bfec2a01ef4e914476f184771cc686c6dc8aa08bd1d067e5c3727f"
+    "sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8"
+    "sha256-743c8882bc1d48ccfe9ffc3fc677778164f4611db72c4e1d10c90bc8cbe9c19a"
+    "sha256-a8d87d7ff439e524f403c7e1135c620055faadab657075354bfe8481a3416e93")
+  "ΠΑΓΩΜΕΝΟ, ΠΕΠΕΡΑΣΜΕΝΟ σύνολο των content-addressed ids της ΠΡΟ-P1.5 εποχής
+   (18 δεσμευμένα releases, [0058]). Το P1.5-A.2 σκότωσε ΣΚΟΠΙΜΑ τον παλιό
+   αλγόριθμο ταυτότητας· αυτά τα ids δεν αναπαράγονται πια, άρα ΑΠΑΡΙΘΜΟΥΝΤΑΙ.
+   ΚΡΙΣΙΜΟ (κλείσιμο κριτή P1.5-D#1, epoch-downgrade): ΜΟΝΟ αυτά τα ids
+   επιτρέπεται να επαληθεύονται με τους ασθενέστερους legacy ελέγχους. Κάθε
+   ΑΛΛΟ sha256-named release ΠΡΕΠΕΙ να είναι census-εποχής (census.json
+   υποχρεωτικό)· αφαίρεση του census.json από νεότερο release ΔΕΝ το υποβιβάζει
+   σε legacy — είναι ΣΦΑΛΜΑ (η κλάση σφάλματος εξαλείφεται δομικά).")
+
+(defun frozen-legacy-release-id-p (id)
+  "T μόνο αν το ID ανήκει στο παγωμένο σύνολο της προ-P1.5 εποχής."
+  (and (stringp id) (member id +frozen-legacy-release-ids+ :test #'string=) t))
+
+(defun %release-canonical-era (release-dir)
+  "Ποιο canonical σύνολο ορίζει την ταυτότητα ΑΥΤΟΥ του release. Διάκριση
+   εποχής ΡΗΤΗ: census.json παρόν ⇒ census-εποχή (10 canonical, verify.lisp
+   μέσα στην ταυτότητα)· αλλιώς ⇒ legacy-8 — ΑΛΛΑ ΜΟΝΟ αν το id ανήκει στο
+   παγωμένο legacy σύνολο. sha256-named χωρίς census ΚΑΙ εκτός frozen ⇒ ΣΦΑΛΜΑ
+   (απόπειρα epoch-downgrade: stripped census)."
+  (let* ((dir (uiop:ensure-directory-pathname release-dir))
+         (leaf (car (last (pathname-directory dir)))))
+    (cond
+      ((probe-file (merge-pathnames "census.json" dir)) +epistemic-canonical-files+)
+      ((frozen-legacy-release-id-p leaf) +epistemic-canonical-files-legacy8+)
+      ((and (stringp leaf) (eql 0 (search "sha256-" leaf)))
+       (error "~A: sha256-named χωρίς census.json ΚΑΙ εκτός frozen legacy ⇒ ~
+               απόπειρα epoch-downgrade (stripped census)" leaf))
+      (t +epistemic-canonical-files-legacy8+)))) ; timestamp-named ιστορικά
+
 (defun %release-recomputed-root (release-dir)
-  "Το Merkle root ενός release ΕΠΑΝΑΫΠΟΛΟΓΙΣΜΕΝΟ από τα canonical αρχεία του —
-   ποτέ από τη δική του δήλωση."
-  (merkle-tree-root
-   (build-merkle-tree
-    (collect-epistemic-artifacts (uiop:ensure-directory-pathname release-dir)))))
+  "Το Merkle root ενός release ΕΠΑΝΑΫΠΟΛΟΓΙΣΜΕΝΟ από τα canonical αρχεία της
+   ΕΠΟΧΗΣ ΤΟΥ (βλ. %release-canonical-era) — ποτέ από τη δική του δήλωση,
+   ποτέ από «όσα αρχεία τυχαίνει να υπάρχουν». Λείπον canonical της εποχής ⇒
+   ΣΦΑΛΜΑ (η ταυτότητα δεν συμπληρώνεται σιωπηλά)."
+  (let* ((dir (uiop:ensure-directory-pathname release-dir))
+         (era (%release-canonical-era dir))
+         (paths (mapcar (lambda (f) (merge-pathnames f dir)) era))
+         (missing (remove-if #'probe-file paths)))
+    (when missing
+      (error "~A: λείπουν canonical της εποχής: ~{~A ~}"
+             dir (mapcar #'file-namestring missing)))
+    (merkle-tree-root
+     (build-merkle-tree (sort paths #'string< :key #'namestring)))))
 
 (defun release-attested-p (release-dir &optional root)
   "Ένα release είναι ATTESTED όταν φέρει RFC-3161 timestamp.tsr — και όταν
@@ -1031,7 +990,7 @@ No fallbacks, no partial validity - strict proof gates.
     4. Generate temporal proof pack (ALL REQUIRED - fail if any unavailable)
     5. Generate verification kit
     6. Generate release manifests
-    7. SHACL validation (REQUIRED - fail if invalid)
+    7. Material gate (REQUIRED - fail if invalid)
     8. Atomic publish: staging → final
     9. Update 'latest' symlink
 
@@ -1078,6 +1037,37 @@ No fallbacks, no partial validity - strict proof gates.
         (format t "  Manifest shape: ~A~%" (getf shape-paths :manifest-shape))
         (format t "  Lineage shape: ~A~%" (getf shape-paths :lineage-shape))
 
+        ;; Step 3β [P1.5-B]: Artifact Census — το 9ο canonical αρχείο. Δένει
+        ;; per-article artifacts + text-σπονδυλική + prev-root + materials στο
+        ;; release root. Γράφεται ΠΡΙΝ το Merkle build ώστε να γίνει φύλλο του.
+        (format t "~%Step 3β: Writing artifact census (9th canonical file)...~%")
+        (let ((census (write-artifact-census
+                       articles
+                       (or (ignore-errors (orchestrator.spec:config-get "corpus.short_name"))
+                           "corpus")
+                       base-output-dir
+                       staging-dir
+                       (merge-pathnames "releases/"
+                                        (uiop:ensure-directory-pathname base-output-dir)))))
+          (format t "  Census: ~D άρθρα, pcl_text_root ~A, prev ~A~%"
+                  (getf census :count)
+                  (subseq (getf census :pcl-text-root) 0 20)
+                  (or (getf census :prev-release-root) "null (πρώτο της αλυσίδας)")))
+
+        ;; Step 3γ [P1.5-C]: Ο L6 πυρήνας ΜΕΣΑ στην ταυτότητα — 10ο canonical
+        ;; αρχείο. Αντιγράφεται ΠΡΙΝ το Merkle build ώστε το release root να
+        ;; δεσμεύει ΚΑΙ τον verifier που διανέμεται: παραποιημένος verify.lisp
+        ;; ⇒ αλλάζει το root ⇒ δεν ταιριάζει με το όνομα καταλόγου/pin.
+        (format t "~%Step 3γ: Staging L6 kernel as 10th canonical file...~%")
+        (let ((kernel-src (orchestrator.paths:institution-dir
+                           "deployment/verify/kernel-verify.lisp"))
+              (kernel-dst (merge-pathnames "verify/verify.lisp" staging-dir)))
+          (unless (probe-file kernel-src)
+            (error "L6 kernel source not found: ~A" kernel-src))
+          (ensure-directories-exist (merge-pathnames "verify/" staging-dir))
+          (uiop:copy-file kernel-src kernel-dst)
+          (format t "  Kernel: ~A~%" kernel-dst))
+
         ;; Step 4: Compute system commit hash
         (format t "~%Step 4: Computing system commit hash...~%")
         (let ((system-hash (compute-and-update-system-commit-hash layer-paths)))
@@ -1090,7 +1080,7 @@ No fallbacks, no partial validity - strict proof gates.
 
             ;; Step 6: Generate verification kit
             (format t "~%Step 6: Generating verification kit...~%")
-            (let ((verify-paths (generate-verification-kit staging-dir temporal-artifacts)))
+            (let ((verify-paths (generate-verification-kit staging-dir)))
               (format t "  Public JWK: ~A~%" (getf verify-paths :public-jwk))
               (format t "  TSA CA: ~A~%" (getf verify-paths :tsa-ca))
               (format t "  Verify scripts: sh, ps1, lisp~%")
@@ -1103,13 +1093,15 @@ No fallbacks, no partial validity - strict proof gates.
                 (format t "  Manifest (Turtle): ~A~%" (getf manifest-paths :manifest-ttl))
                 (format t "  Manifest (JSON-LD): ~A~%" (getf manifest-paths :manifest-jsonld))
 
-                ;; Step 8: SHACL validation (REQUIRED)
-                (format t "~%Step 8: SHACL validation (REQUIRED)...~%")
+                ;; Step 8: Material gate (REQUIRED). ΤΙΜΙΑ ονοματολογία: δεν
+                ;; τρέχει SHACL processor εδώ — τα shapes διανέμονται για
+                ;; ΤΡΙΤΟΥΣ, η σημασιολογική επικύρωση ζει στα CI gates.
+                (format t "~%Step 8: Release material gate (REQUIRED)...~%")
                 (unless (validate-epistemic-stage staging-dir)
                   (error 'orchestrator.spec:validation-error
-                         :message "SHACL validation REQUIRED but failed"
-                         :details "Release does not conform to shapes"))
-                (format t "✓ SHACL validation passed~%")
+                         :message "Release material gate failed"
+                         :details "Missing required artifacts / TSA-CA gate / signature"))
+                (format t "✓ Material gate passed (required files + TSA-CA + signature)~%")
 
                 ;; Step 9: Content-addressed publish + promote latest ΜΟΝΟ αν attested
                 (format t "~%Step 9: Content-addressed publish...~%")
@@ -1135,16 +1127,19 @@ No fallbacks, no partial validity - strict proof gates.
 ;;; ============================================================================
 
 (defun validate-epistemic-stage (release-dir)
-  "Validate epistemic stage output using SHACL shapes
+  "MATERIAL GATE του release: ύπαρξη ΟΛΩΝ των απαιτούμενων αρχείων + TSA-CA
+   exactly-one-of + fail-closed υπογραφή (εκτός dev-mode).
 
-  CRITICAL: This is self-validation - the corpus validates itself
-  using the SHACL shapes it generates.
+  ΤΙΜΙΑ ΟΝΟΜΑΤΟΛΟΓΙΑ (εύρημα κριτή): αυτό ΔΕΝ είναι SHACL validation — δεν
+  εκτελείται SHACL processor εδώ. Τα shapes διανέμονται στο release ώστε
+  ΤΡΙΤΟΣ να τρέξει pySHACL/Jena πάνω στα ΙΔΙΑ bytes· η δική μας σημασιολογική
+  επικύρωση ζει στα semantic-validity/shacl-validator tests (CI gates).
 
   Args:
     release-dir: Path to release directory (staging or final)
 
   Returns:
-    T if validation passes, NIL otherwise"
+    T if the gate passes, NIL otherwise"
 
   (let ((required-files '("meta-ontology.ttl"
                          "lineage-graph.ttl"
@@ -1153,6 +1148,8 @@ No fallbacks, no partial validity - strict proof gates.
                          "stability-policy.md"
                          "manifest.ttl"
                          "manifest.jsonld"
+                         ;; [P1.5-B] Το census είναι canonical (id-δεσμευτικό).
+                         "census.json"
                          "shapes/article-shape.ttl"
                          "shapes/manifest-shape.ttl"
                          "shapes/lineage-shape.ttl"
@@ -1160,15 +1157,21 @@ No fallbacks, no partial validity - strict proof gates.
                          ;; P1R [0046]: το timestamp.tsr είναι ATTESTATION (προσαρτάται
                          ;; append-only, ίσως μετά το publish) — η ΕΞΟΥΣΙΑ το απαιτεί
                          ;; στο promote-latest!, όχι η πληρότητα του commitment.
-                         ;; Core verification files (always required)
-                         "verify/tsa-ca.pem"
+                         ;; Core verification files (always required).
+                         ;; P1.4 [0054]#1 + [0056]: το υλικό TSA CA ΔΕΝ είναι
+                         ;; απλή παρουσία αρχείου — ελέγχεται ξεχωριστά κάτω
+                         ;; από το exactly-one-of gate (%tsa-ca-material-ok-p):
+                         ;; ΑΚΡΙΒΩΣ ένα από {δομικά έγκυρο tsa-ca.pem,
+                         ;; τίμια σημείωση tsa-ca.MISSING.txt}.
                          "verify/verify.sh"
                          "verify/verify.ps1"
                          "verify/verify.lisp"
                          "verify/README-VERIFY.md"))
-        ;; Optional files (only required if JWS signing was enabled)
-        (optional-files '("temporal-proof/signature.jws"
-                         "verify/public.jwk")))
+        ;; FAIL-CLOSED υπογραφή (εύρημα κριτή F2): εκτός dev-mode, release
+        ;; ΧΩΡΙΣ signature.jws/public.jwk δεν περνά — ο L6 πυρήνας απορρίπτει
+        ;; signature stripping, άρα και η πύλη παραγωγής (ίδια αλήθεια).
+        (signature-files '("temporal-proof/signature.jws"
+                           "verify/public.jwk")))
 
     ;; Check required files
     (loop for filename in required-files
@@ -1178,14 +1181,20 @@ No fallbacks, no partial validity - strict proof gates.
             do (format t "✗ MISSING: ~A~%" filename)
                (return-from validate-epistemic-stage nil))
 
-    ;; Check optional files (warn if missing, don't fail)
-    (loop for filename in optional-files
-          for path = (merge-pathnames filename release-dir)
-          for exists = (probe-file path)
-          unless exists
-            do (format t "⚠ OPTIONAL MISSING: ~A (JWS signing disabled)~%" filename))
+    ;; [0056]: υλικό TSA CA — ΑΚΡΙΒΩΣ ένα από {δομικά έγκυρο tsa-ca.pem,
+    ;; tsa-ca.MISSING.txt}. Κανένα / και τα δύο / ψευδο-pem ⇒ FAIL.
+    (multiple-value-bind (ok reason) (%tsa-ca-material-ok-p release-dir)
+      (unless ok
+        (format t "✗ TSA-CA GATE: ~A~%" reason)
+        (return-from validate-epistemic-stage nil)))
 
-    ;; NOTE: Full SHACL validation requires external SHACL processor
-    ;; For production: integrate Apache Jena SHACL, pySHACL, or TopQuadrant SHACL API
+    ;; Υπογραφή: fail-closed εκτός dev-mode (μόνο εκεί επιτρέπεται τίμιο ⚠).
+    (loop for filename in signature-files
+          for path = (merge-pathnames filename release-dir)
+          unless (probe-file path)
+            do (if (dev-mode-p)
+                   (format t "⚠ DEV MODE: ~A απών (unsigned dev release)~%" filename)
+                   (progn (format t "✗ MISSING SIGNATURE MATERIAL: ~A~%" filename)
+                          (return-from validate-epistemic-stage nil))))
 
     t))

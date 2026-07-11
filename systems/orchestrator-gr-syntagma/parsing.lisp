@@ -959,9 +959,16 @@
              (cl-ppcre:split "\\s+" text)))
 
 (defun split-into-paragraphs (text)
-  "Split article text into paragraphs"
+  "Split article text into paragraphs.
+
+   P1b [0052]#Ε10: το όριο αριθμημένης παραγράφου προέρχεται από τη ΜΙΑ έδρα
+   (orchestrator.spec:split-article-paragraph-chunks — newline-αγκυρωμένο).
+   Το παλιό τοπικό (?=\\d+\\.\\s) χωρίς αγκύρωση έκοβε ενδοκειμενικές
+   αναφορές («άρθρων 9, 9Α και 19.») — η ίδια κλάση σφάλματος που η έδρα
+   αποκλείει. Δευτερεύον όριο για raw πηγές: κενή γραμμή."
   (declare (type string text))
-  (let ((parts (cl-ppcre:split "(?=\\d+\\.\\s)|(?:\\n\\s*\\n)" text)))
+  (let ((parts (loop for chunk in (orchestrator.spec:split-article-paragraph-chunks text)
+                     append (cl-ppcre:split "\\n\\s*\\n" chunk))))
     (remove-if (lambda (s)
                  (zerop (length (string-trim '(#\Space #\Tab #\Newline) s))))
                parts)))

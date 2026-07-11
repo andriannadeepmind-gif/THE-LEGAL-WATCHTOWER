@@ -561,7 +561,7 @@
                                        (entry-actor entry)
                                        content)))
          ;; Use constant-time comparison to prevent timing attacks
-         (orchestrator.verify-authority::constant-time-string= signature expected-legacy)))
+         (orchestrator.jws-authority:constant-time-string= signature expected-legacy)))
 
       ;; Unknown format
       (t
@@ -569,27 +569,15 @@
        nil))))
 
 (defun compute-merkle-root (trail)
-  "Compute Merkle root of all entries"
+  "Merkle root της αλυσίδας audit entries μέσω της ΜΙΑΣ έδρας orchestrator.merkle
+   (RFC 6962: domain-separated φύλλα/κόμβοι + unbalanced split). [P1.5-A] Το
+   προηγούμενο SHA-512 string-concat δέντρο (compute-merkle-tree-root + hash-pair,
+   με odd-node malleability) αντικαταστάθηκε. Κενή αλυσίδα -> NIL (format-compat).
+   Επιστρέφει bare hex (η μορφή του audit trail)."
   (let ((hashes (mapcar #'entry-hash (trail-entries trail))))
-    (compute-merkle-tree-root hashes)))
-
-(defun compute-merkle-tree-root (hashes)
-  "Build Merkle tree and return root"
-  (cond
-    ((null hashes) nil)
-    ((= 1 (length hashes)) (first hashes))
-    (t (let ((next-level nil))
-         (loop for (h1 h2) on hashes by #'cddr
-               do (push (if h2
-                           (hash-pair h1 h2)
-                           h1)
-                       next-level))
-         (compute-merkle-tree-root (nreverse next-level))))))
-
-(defun hash-pair (h1 h2)
-  "Hash two hashes together"
-  (let ((combined (concatenate 'string h1 h2)))
-    (orchestrator.hash-authority:compute-hash combined :algorithm :sha512)))
+    (if (null hashes)
+        nil
+        (subseq (orchestrator.merkle:merkle-root-of-strings hashes) 7))))
 
 ;;; ============================================================================
 ;;; AUDIT REPORTS

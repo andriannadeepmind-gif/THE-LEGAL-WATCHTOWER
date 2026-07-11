@@ -197,8 +197,8 @@
    #:calculate-sha256-hash
 
    ;; Hybrid generator functions
-   #:generate-hybrid-phase1-ttl
    #:parse-article-into-paragraphs
+   #:split-article-paragraph-chunks
    #:generate-identity-triples
    #:generate-odrl-policy
 

@@ -7,10 +7,6 @@
 ;;; DETERMINISTIC TIME CONTROL
 ;;; ============================================================================
 
-(defconstant +default-deterministic-timestamp+ 1700000000
-  "Default fixed timestamp for deterministic builds (2023-11-14T22:13:20Z).
-   Used when deterministic mode is enabled but no specific timestamp is provided.")
-
 (defvar *build-timestamp-override* nil
   "Override for build timestamp for reproducibility.
    When NIL, uses (orchestrator.time:now :source :deterministic). When set, uses this value.")
@@ -53,28 +49,35 @@
          (has-html (and (slot-boundp article 'orchestrator.model::html)
                        (orchestrator.model:article-html article))))
     
-    `(:|id| ,(format nil "~A/article/~D" 
+    ;; P1b [0049]: label-aware ταυτότητα — ποτέ ο συνθετικός αριθμός στο id
+    `(:|id| ,(format nil "~A/article/~A"
                      (orchestrator.model:corpus-eli-prefix corpus)
-                     number)
+                     (orchestrator.model:article-uri-id
+                      number (orchestrator.model:article-label article)))
       :|canonical_source| ,eli-uri
       :|corpus| ,(orchestrator.model:corpus-short-name corpus)
-      :|article_number| ,number
+      ;; article_number = η ΠΡΑΓΜΑΤΙΚΗ κανονική ταυτότητα (label-aware string,
+      ;; «5Α»/«70») — ο εσωτερικός συνθετικός αριθμός δεν διαφεύγει σε καταναλωτές
+      :|article_number| ,(orchestrator.model:article-uri-id
+                          number (orchestrator.model:article-label article))
       :|title| ,(orchestrator.model:article-title article)
       :|language| ,(orchestrator.model:corpus-language corpus)
       :|content_hash| ,hash
       :|state| ,(string-downcase (symbol-name state))
-      :|formats_available| ,(list
-                            (when has-rdf "rdf-turtle")
-                            (when has-json-ld "json-ld")
-                            (when has-html "html-rdfa"))
+      :|formats_available| ,(remove nil
+                                    (list
+                                     (when has-rdf "rdf-turtle")
+                                     (when has-json-ld "json-ld")
+                                     (when has-html "html-rdfa")))
       :|blockchain_anchored| ,(if blockchain-proof t :false)
       :|blockchain_proofs| ,(coerce blockchain-proof 'vector)
       :|authority| (:|name| "STAVROPOULOS LAW"
                     :|webid| ,(orchestrator.model:corpus-webid corpus)
                     :|orcid| ,(orchestrator.model:corpus-orcid corpus))
-      :|citation_template| ,(format nil "~A, Article ~D (~A)"
+      :|citation_template| ,(format nil "~A, Article ~A (~A)"
                                    (orchestrator.model:corpus-name corpus)
-                                   number
+                                   (orchestrator.model:article-uri-id
+                                    number (orchestrator.model:article-label article))
                                    (orchestrator.model:corpus-publication-date corpus))
       :|last_updated| ,(current-build-timestamp)
       :|eli_uri| ,eli-uri)))
@@ -86,7 +89,9 @@
 (defun manifest-entry-to-json (entry)
   "Convert manifest entry (plist/alist) to compact JSON string.
    Uses jonathan for high-performance serialization."
-  (jonathan:to-json entry :from :alist))
+  ;; P1b [0049]: τα entries είναι PLIST — το «:from :alist» τα σειριοποιούσε
+  ;; ως JSON ARRAY εναλλασσόμενων keys/values (ίδια κλάση με το P1-D).
+  (jonathan:to-json entry :from :plist))
 
 ;;; ============================================================================
 ;;; CORPUS-LEVEL MANIFEST GENERATION
@@ -122,9 +127,11 @@
                           :if-exists :supersede
                           :if-does-not-exist :create)
     
-    (let ((articles (sort (orchestrator.model::get-corpus-articles corpus)
-                         #'<
-                         :key #'orchestrator.model:article-number)))
+    ;; P1b [0052]: κανονική διάταξη από τη ΜΙΑ έδρα (articles-in-identity-order):
+    ;; βάση, μετά νομοθετικό επίθημα — η διάταξη με τον συνθετικό αριθμό
+    ;; έστελνε τα lettered άρθρα στο τέλος του manifest.
+    (let ((articles (orchestrator.model:articles-in-identity-order
+                     (orchestrator.model::get-corpus-articles corpus))))
       
       (restart-case
           (loop for article in articles
