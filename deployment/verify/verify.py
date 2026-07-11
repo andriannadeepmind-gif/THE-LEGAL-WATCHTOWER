@@ -20,7 +20,8 @@ TRUST MODEL — read this:
 The hashing convention (must match source/proof-carrying.lisp byte-for-byte):
   leaf      = "sha256:" + hex(SHA256( 0x00 ‖ UTF-8(text) ))          # RFC 6962 leaf
   node(a,b) = "sha256:" + hex(SHA256( 0x01 ‖ raw(a) ‖ raw(b) ))      # RFC 6962 node
-  root      = Merkle root over the ordered leaves (odd node duplicates itself)
+  root      = RFC-6962 Merkle root over the ordered leaves (unbalanced split:
+              largest power of two below n — NOT duplicate-last / CVE-2012-2459)
 
 Usage:
   verify.py [--key JWK] inclusion <article.proof.json> <text-file>
