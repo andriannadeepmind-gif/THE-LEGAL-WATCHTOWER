@@ -7,7 +7,7 @@
 ;;;;   - jws-authority: PEM→DER κλειδιών, RSAPrivateKey/SubjectPublicKeyInfo
 ;;;;   - timestamp-authority: RFC 3161 TimeStampReq
 ;;;;   - x509-authority: X.509 δομές + δομική επικύρωση πιστοποιητικών
-;;;;   - verify-authority: RFC 3161 TimeStampResp (PKIStatus)
+;;;;   ([P1.5] το verify-authority πέθανε — καταναλωτής πλέον ανύπαρκτος)
 ;;;;
 ;;;; ΝΟΜΟΣ: μία έδρα ανά έννοια. Δεύτερος DER encoder/decoder ΔΕΝ γράφεται
 ;;;; πουθενά — επεκτείνεται ΑΥΤΟΣ.

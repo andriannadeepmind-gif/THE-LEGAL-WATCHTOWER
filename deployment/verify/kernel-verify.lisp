@@ -7,11 +7,13 @@
 ;;;;   sbcl --script kernel-verify.lisp <release-dir> [pinned-root-hex]
 ;;;;
 ;;;; Επαληθεύει, ΧΩΡΙΣ να εμπιστεύεται κανέναν — μόνο μαθηματικά + το ΦΕΚ-δέσιμο:
-;;;;   1. Release root ≡ όνομα καταλόγου: RFC-6962 MTH των 9 canonical αρχείων.
+;;;;   1. Release root ≡ όνομα καταλόγου: RFC-6962 MTH των 10 canonical αρχείων
+;;;;      (συμπεριλαμβανομένου ΑΥΤΟΥ του αρχείου — ο verifier μέσα στην ταυτότητα).
 ;;;;   2. Census self-consistency: pcl_text_root ≡ MTH των text-leaves· κάθε
 ;;;;      per-article ttl/jsonld/html sha512 ≡ το πραγματικό αρχείο του release·
 ;;;;      κάθε text_leaf ≡ hash-leaf του article-*.txt (self-contained release).
-;;;;   3. JWS υπογραφή manifest (RSASSA-PKCS1-v1_5/SHA-256, ΠΛΗΡΕΣ padding).
+;;;;   3. JWS υπογραφή του RELEASE ROOT (detached RS256, ΠΛΗΡΕΣ EMSA padding)·
+;;;;      απούσα υπογραφή = ΑΠΟΤΥΧΙΑ (όχι «unsigned» downgrade).
 ;;;;   4. prev_release_root παρόν (αλυσίδα anti-equivocation).
 ;;;;   5. (προαιρετικά) release root ≡ out-of-band PINNED-ROOT.
 ;;;;
@@ -55,8 +57,11 @@
     (let ((b (make-array (file-length s) :element-type '(unsigned-byte 8))))
       (read-sequence b s) b)))
 (defun read-str (path)
-  (with-open-file (s path) (let ((str (make-string (file-length s))))
-                             (read-sequence str s) str)))
+  ;; file-length = bytes, όχι chars: με UTF-8 πολυβυτικά (ελληνικά ids) το
+  ;; buffer περισσεύει — κόβεται στο ΠΡΑΓΜΑΤΙΚΟ πλήθος chars που διαβάστηκαν.
+  (with-open-file (s path :external-format :utf-8)
+    (let ((str (make-string (file-length s))))
+      (subseq str 0 (read-sequence str s)))))
 (defun sha512-hex (path)
   (format nil "sha512:~(~{~2,'0x~}~)"
           (coerce (ironclad:digest-sequence :sha512 (read-bytes path)) 'list)))
@@ -64,8 +69,11 @@
 (defparameter +canonical+
   '("census.json" "lineage-graph.ttl" "meta-ontology.ttl" "negation.ttl"
     "shapes/article-shape.ttl" "shapes/lineage-shape.ttl" "shapes/manifest-shape.ttl"
-    "stability-policy.md" "stability-policy.ttl")
-  "Τα 9 canonical αρχεία, ΤΑΞΙΝΟΜΗΜΕΝΑ (string<) — η ΙΔΙΑ διάταξη με την έδρα.")
+    "stability-policy.md" "stability-policy.ttl" "verify/verify.lisp")
+  "Τα 10 canonical αρχεία, ΤΑΞΙΝΟΜΗΜΕΝΑ (string<) — η ΙΔΙΑ διάταξη με την έδρα.
+   Το verify/verify.lisp είναι ΑΥΤΟΣ ο πυρήνας (διανέμεται μέσα στο release):
+   η ταυτότητα δεσμεύει και τον verifier — καμία κυκλικότητα, hashάρονται τα
+   bytes του αρχείου, όχι το αποτέλεσμά του.")
 
 ;;; --- JWS RS256 (πλήρες EMSA-PKCS1-v1_5, ΟΧΙ raw) ---
 (defun b64url->bytes (s)
@@ -87,11 +95,14 @@
                  #(#x00) tt)))
 (defun verify-jws (jws payload-string pub)
   "Επαλήθευση JWS RS256. Detached (RFC 7797): το payload ΔΕΝ είναι στο token —
-   είναι το PAYLOAD-STRING (εδώ: το release root που υπέγραψε ο εκδότης). Ο
-   verifier το ξανα-κωδικοποιεί base64url και επαληθεύει header.payload."
+   είναι ΠΑΝΤΑ το PAYLOAD-STRING (εδώ: το release root που υπέγραψε ο εκδότης).
+   Token με ΜΗ-ΚΕΝΟ payload segment ΑΠΟΡΡΙΠΤΕΤΑΙ: αλλιώς ένας επιτιθέμενος θα
+   έβαζε δικό του (έγκυρα υπογεγραμμένο αλλού) payload και η υπογραφή δεν θα
+   δενόταν ποτέ στο root αυτού του release."
   (let* ((p (loop for a = 0 then (1+ b) for b = (position #\. jws :start a)
                   collect (subseq jws a (or b (length jws))) while b))
-         (payload-b64 (if (plusp (length (second p))) (second p)
+         (payload-b64 (if (plusp (length (second p)))
+                          (return-from verify-jws nil) ; attached-payload token: ΑΚΥΡΟ εδώ
                           (bytes->b64url (babel:string-to-octets payload-string :encoding :utf-8))))
          (si (format nil "~A.~A" (first p) payload-b64))
          (k (ceiling (integer-length (ironclad:rsa-key-modulus pub)) 8))
@@ -112,7 +123,7 @@
       (format t "~%═══ LAWMAX L6 KERNEL — VERIFY ~A ═══~%" leaf)
 
       ;; 1. release root ≡ όνομα καταλόγου
-      (format t "[1] Release root (RFC-6962, 9 canonical)...~%")
+      (format t "[1] Release root (RFC-6962, 10 canonical)...~%")
       (let* ((paths (mapcar (lambda (r) (merge-pathnames r dir)) +canonical+))
              (missing (remove-if #'probe-file paths)))
         (if missing (chk (fail "λείπουν canonical: ~{~A ~}" (mapcar #'file-namestring missing)))
@@ -133,8 +144,16 @@
                    (arts (gethash "articles" c))
                    (adir (merge-pathnames "articles/" dir))
                    (bad 0))
-              (chk (if (gethash "prev_release_root" c) (ok "prev_release_root παρόν (αλυσίδα)")
-                       (fail "prev_release_root απών")))
+              ;; Αλυσίδα anti-equivocation: το ΚΛΕΙΔΙ πρέπει να υπάρχει στο census.
+              ;; Τιμή null = ΤΙΜΙΟ πρώτο release της αλυσίδας (όχι αποτυχία)·
+              ;; τιμή sha256:<64hex> = δείκτης στο προηγούμενο attested latest.
+              (multiple-value-bind (prev presentp) (gethash "prev_release_root" c)
+                (chk (cond ((not presentp) (fail "κλειδί prev_release_root απών από το census"))
+                           ((null prev) (ok "prev_release_root: null (πρώτο της αλυσίδας)"))
+                           ((and (stringp prev) (= 71 (length prev))
+                                 (string= "sha256:" (subseq prev 0 7)))
+                            (ok "prev_release_root παρόν (αλυσίδα): ~A…" (subseq prev 0 19)))
+                           (t (fail "prev_release_root άκυρης μορφής: ~S" prev)))))
               (let ((leaves '()))
                 (dolist (a arts)
                   (let* ((id (gethash "id" a))
@@ -158,15 +177,16 @@
       ;; 3. JWS
       (format t "[3] JWS υπογραφή (RS256, πλήρες padding)...~%")
       (let ((jp (merge-pathnames "temporal-proof/signature.jws" dir))
-            (kp (merge-pathnames "verify/public.jwk" dir))
-            (mp (merge-pathnames "manifest.ttl" dir)))
+            (kp (merge-pathnames "verify/public.jwk" dir)))
         (if (not (and (probe-file jp) (probe-file kp)))
-            (format t "  ⚠ JWS απών (unsigned release) — παραλείπεται~%")
+            ;; FAIL-CLOSED: το σβήσιμο της υπογραφής ΔΕΝ είναι downgrade σε
+            ;; «unsigned» — είναι αποτυχία. Κάθε release αυτού του σχήματος
+            ;; εκδίδεται υπογεγραμμένο· απουσία = παραποίηση ή ακρωτηριασμός.
+            (chk (fail "signature.jws/public.jwk απόντα (signature stripping)"))
             (let* ((jwk (yason:parse (read-str kp)))
                    (pub (ironclad:make-public-key :rsa
                           :n (ironclad:octets-to-integer (b64url->bytes (gethash "n" jwk)))
                           :e (ironclad:octets-to-integer (b64url->bytes (gethash "e" jwk))))))
-              (declare (ignore mp))
               ;; Το υπογεγραμμένο payload είναι το RELEASE ROOT (detached JWS),
               ;; όχι το manifest — ο εκδότης υπογράφει την ταυτότητα του release.
               (chk (if (and root (verify-jws (string-trim '(#\Space #\Newline #\Return) (read-str jp))

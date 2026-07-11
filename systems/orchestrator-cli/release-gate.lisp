@@ -3,7 +3,7 @@
 ;;;; ΠΥΛΗ ΑΜΕΤΑΒΛΗΤΩΝ ΕΚΔΟΣΕΩΝ: --release-gate — P1R [0046]
 ;;;; ============================================================================
 ;;;; Για ΚΑΘΕ δημοσιευμένο release κάτω από output/<corpus>/releases/:
-;;;;   · content-addressed (sha256-*): recomputed Merkle root των 8 canonical
+;;;;   · content-addressed (sha256-*): recomputed Merkle root των 10 canonical
 ;;;;     ≡ όνομα καταλόγου ≡ δηλωμένο root στο merkle-tree.json
 ;;;;   · legacy (timestamp-named, π.χ. 2025-01-01…): recomputed root ≡ δηλωμένο
 ;;;;     root — το ιστορικό ΔΕΝ ξαναγράφεται, μόνο επαληθεύεται

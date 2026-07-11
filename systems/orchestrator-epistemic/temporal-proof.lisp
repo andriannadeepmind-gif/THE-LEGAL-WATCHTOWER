@@ -30,82 +30,6 @@
 ;;; ============================================================================
 
 ;;; ============================================================================
-;;; CERTIFICATE TRANSPARENCY (Pure Lisp)
-;;; ============================================================================
-
-(defun submit-to-ct-log (root-hash-string output-path
-                         &key (ct-log-url "https://ct.googleapis.com/logs/argon2023/ct/v1/add-chain")
-                              (certificate-path nil))
-  "Submit to Certificate Transparency log using pure Lisp
-
-   DARPA-GRADE: Uses Drakma HTTP client, no curl subprocess.
-
-   Args:
-     root-hash-string: Merkle root hash (for reference)
-     output-path: Where to write ct-proof.json
-     ct-log-url: CT log endpoint
-     certificate-path: Path to X.509 certificate (PEM format)
-
-   Returns:
-     Plist with :sct, :proof-path, :log-url, :root-hash"
-
-  ;; Certificate is required for CT logs (auto-generated on first run)
-  (unless certificate-path
-    (error "CT log submission requires X.509 certificate.~%~
-            Certificate should be auto-generated in the institution keys dir"))
-
-  (unless (probe-file certificate-path)
-    (error "Certificate not found: ~A" certificate-path))
-
-  (ensure-directories-exist
-   (make-pathname :directory (pathname-directory output-path)
-                  :name nil :type nil))
-
-  (log:info () "Submitting to CT log (pure Lisp): ~A" ct-log-url)
-
-  ;; Read and prepare certificate
-  (let* ((cert-pem (alexandria:read-file-into-string certificate-path))
-         (cert-lines (remove-if (lambda (line)
-                                  (or (search "-----BEGIN" line)
-                                      (search "-----END" line)
-                                      (string= line "")))
-                                (uiop:split-string cert-pem :separator '(#\Newline))))
-         (cert-b64 (apply #'concatenate 'string cert-lines))
-         (payload (jonathan:to-json `(:|chain| (,cert-b64)))))
-
-    ;; Submit via Drakma
-    (handler-case
-        (multiple-value-bind (response-body status headers)
-            (drakma:http-request ct-log-url
-                                 :method :post
-                                 :content-type "application/json"
-                                 :content payload
-                                 :force-binary nil
-                                 :connection-timeout 30)
-          (declare (ignore headers))
-
-          (unless (= status 200)
-            (error "CT log returned HTTP ~A: ~A" status response-body))
-
-          ;; Save response
-          (let ((response-str (if (stringp response-body)
-                                  response-body
-                                  (babel:octets-to-string response-body))))
-            (alexandria:write-string-into-file response-str
-                                               (namestring output-path)
-                                               :if-exists :supersede)
-
-            (log:info () "✓ SCT received: ~A" output-path)
-
-            (list :sct (jonathan:parse response-str :as :alist)
-                  :proof-path output-path
-                  :log-url ct-log-url
-                  :root-hash root-hash-string)))
-
-      (error (e)
-        (error "CT log submission failed: ~A" e)))))
-
-;;; ============================================================================
 ;;; JWS SIGNATURE (Reuses jws-authority - Pure Lisp)
 ;;; ============================================================================
 
@@ -154,8 +78,17 @@
   (log:info () "Creating JWS signature (pure Lisp)...")
 
   ;; Load private key using our pure Lisp loader
-  (let ((private-key (orchestrator.jws-authority:load-rsa-private-key
-                      private-key-path)))
+  (let* ((private-key (orchestrator.jws-authority:load-rsa-private-key
+                       private-key-path))
+         (pub-path (or public-key-path (%public-pem-sibling private-key-path)))
+         (public-key (orchestrator.jws-authority:load-rsa-public-key pub-path))
+         ;; ΤΙΜΙΟ kid (εύρημα κριτή): RFC 7638 JWK thumbprint — παράγεται ΑΠΟ
+         ;; το κλειδί που ΠΡΑΓΜΑΤΙ υπογράφει, όχι αυθαίρετο brand string που
+         ;; θα έντυνε και dev-genesis κλειδιά. x5u ΜΟΝΟ αν το δηλώσει ο
+         ;; χειριστής (env LAWMAX_X5U) — καμία επινοημένη προέλευση.
+         (kid (orchestrator.jws-authority:jwk-thumbprint public-key))
+         (x5u (let ((v (uiop:getenv "LAWMAX_X5U")))
+                (and v (plusp (length v)) v))))
 
     ;; Create JWS using pure Lisp
     ;; sign-jws signature: (payload private-key &key ...)
@@ -163,9 +96,9 @@
                     root-hash-string    ; payload (data to sign)
                     private-key         ; private-key (RSA key object)
                     :algorithm :rs256
-                    :kid "stavropouloslaw-2025"
+                    :kid kid
                     :detached t
-                    :extra-headers '(:|x5u| "https://stavropouloslaw.com/keys/2025.pem")))
+                    :extra-headers (when x5u (list :|x5u| x5u))))
            (jws (getf result :jws)))
 
       ;; Write JWS
@@ -176,12 +109,10 @@
       (log:info () "✓ JWS signature: ~A" signature-output-path)
 
       ;; Export public key as JWK — ΑΠΟ ΤΟ ΔΗΜΟΣΙΟ ΚΛΕΙΔΙ (fail-closed: ποτέ d
-      ;; ως e· βλ. jws-authority:export-jwk). Πηγή: ρητό public-key-path ή το
-      ;; αδερφό public.pem του private-key-path.
-      (let* ((pub-path (or public-key-path (%public-pem-sibling private-key-path)))
-             (jwk-json (orchestrator.jws-authority:export-jwk
-                        (orchestrator.jws-authority:load-rsa-public-key pub-path)
-                        :kid "stavropouloslaw-2025")))
+      ;; ως e· βλ. jws-authority:export-jwk). kid = RFC 7638 thumbprint (ίδιο
+      ;; με το JWS header — ένας επαληθευτής ταιριάζει kid↔κλειδί δομικά).
+      (let* ((jwk-json (orchestrator.jws-authority:export-jwk
+                        public-key :kid kid)))
         (alexandria:write-string-into-file
          (jonathan:to-json jwk-json)
          (namestring public-key-jwk-path)

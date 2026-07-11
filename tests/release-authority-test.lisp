@@ -41,10 +41,11 @@
                 (handler-case (progn (orchestrator.epistemic::%root->release-id "γυμνό-hex") nil)
                   (error () t))))
 
-;;; Βοηθός: φτιάξε staging με τα 8 canonical + δηλωμένο root (πραγματικές έδρες)
+;;; Βοηθός: φτιάξε staging με ΟΛΑ τα canonical + δηλωμένο root (πραγματικές έδρες)
 (defun %rat-make-staging (base tag)
   (let* ((staging (merge-pathnames (format nil "releases/.staging-~A/" tag) base)))
     (ensure-directories-exist (merge-pathnames "shapes/" staging))
+    (ensure-directories-exist (merge-pathnames "verify/" staging))
     (ensure-directories-exist (merge-pathnames "temporal-proof/" staging))
     (dolist (f orchestrator.epistemic::+epistemic-canonical-files+)
       (with-open-file (o (merge-pathnames f staging) :direction :output
@@ -55,7 +56,7 @@
                    (orchestrator.epistemic::collect-epistemic-artifacts staging)))))
       (with-open-file (o (merge-pathnames "temporal-proof/merkle-tree.json" staging)
                          :direction :output :if-exists :supersede)
-        (format o "{\"root\":~S,\"totalFiles\":8}~%" root))
+        (format o "{\"root\":~S,\"totalFiles\":~D}~%" root (length orchestrator.epistemic::+epistemic-canonical-files+)))
       (values staging root (orchestrator.epistemic::%root->release-id root)))))
 
 (let ((base (uiop:ensure-directory-pathname

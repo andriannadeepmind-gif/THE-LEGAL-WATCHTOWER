@@ -168,7 +168,7 @@
    (JWK) that verifies it. The root + signature are what an RFC-3161 TSA stamps."
   (format nil "{~A:~A,~A:~A,~A:~A,~A:~D,~A:~A~@[,~A:~A~]~@[,~A:~A~]}"
           (%j "version") (%j "pcl-1")
-          (%j "algorithm") (%j "sha256-merkle/raw-concat+RS256")
+          (%j "algorithm") (%j "sha256-merkle/rfc6962+RS256")
           (%j "merkle_root") (%j root)
           (%j "count") count
           (%j "anchored_at") (%j anchored-at)

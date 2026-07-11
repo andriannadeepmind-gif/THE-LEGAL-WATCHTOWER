@@ -34,12 +34,14 @@
    #:load-rsa-private-key
    #:load-rsa-public-key
    #:export-jwk
+   #:jwk-thumbprint
    #:export-jwk-to-file
    #:generate-rsa-keypair
    #:save-rsa-keypair
    ;; JWS utilities
    #:base64url-encode
    #:base64url-decode
+   #:constant-time-string=
    ;; RSASSA-PKCS1-v1_5 / SHA-256 — Η ΜΙΑ έδρα υπογραφής (RFC 8017 §8.2)·
    ;; την καταναλώνει και το x509-authority (αντί για raw-RSA χωρίς padding).
    #:sign-rsa-sha256
@@ -84,6 +86,18 @@
     ;; canonical, unpadded base64url. Leaving #\. in place corrupts JWS compact
     ;; serialization, which splits on #\. (header.payload.signature).
     (string-right-trim "=." b64)))
+
+(defun constant-time-string= (a b)
+  "Σύγκριση σταθερού χρόνου (timing-attack resistant). Η ΜΙΑ έδρα —
+   μετακινήθηκε εδώ από το νεκρό verify-authority ([P1.5 κριτής #2])."
+  (if (not (= (length a) (length b)))
+      nil
+      (let ((result 0))
+        (loop for i from 0 below (length a)
+              do (setf result (logior result
+                                      (logxor (char-code (char a i))
+                                              (char-code (char b i))))))
+        (zerop result))))
 
 (defun base64url-decode (string)
   "Decode Base64url string to bytes
@@ -451,6 +465,22 @@
         :|alg| "RS256"
         :|n| ,(base64url-encode (ironclad:integer-to-octets n))
         :|e| ,(base64url-encode (ironclad:integer-to-octets e))))))
+
+(defun jwk-thumbprint (public-key)
+  "RFC 7638 JWK thumbprint του ΔΗΜΟΣΙΟΥ RSA κλειδιού: base64url(SHA-256(
+   {\"e\":…,\"kty\":\"RSA\",\"n\":…})) με λεξικογραφική σειρά κλειδιών και
+   χωρίς κενά — το ΚΑΝΟΝΙΚΟ, επαληθεύσιμο kid. Τίμια προέλευση: παράγεται
+   ΑΠΟ το κλειδί, δεν δηλώνεται ως αυθαίρετο brand string."
+  (when (%rsa-private-key-p public-key)
+    (error 'jws-error :message "jwk-thumbprint: δώσε ΔΗΜΟΣΙΟ κλειδί"))
+  (let* ((n (base64url-encode (ironclad:integer-to-octets
+                               (ironclad:rsa-key-modulus public-key))))
+         (e (base64url-encode (ironclad:integer-to-octets
+                               (ironclad:rsa-key-exponent public-key))))
+         (canonical (format nil "{\"e\":\"~A\",\"kty\":\"RSA\",\"n\":\"~A\"}" e n)))
+    (base64url-encode
+     (ironclad:digest-sequence :sha256
+                               (babel:string-to-octets canonical :encoding :utf-8)))))
 
 (defun export-jwk-to-file (key output-path &key (kid "orchestrator-key") public-key)
   "Export ΔΗΜΟΣΙΟ key as JWK to file. Αν το KEY είναι ιδιωτικό, δώσε :public-key

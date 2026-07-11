@@ -173,6 +173,14 @@
           (check "the WRONG public key → signature fails" (and (not ok) (eq :bad-signature reason)))))))
   (ignore-errors (uiop:delete-directory-tree (pathname dir) :validate t :if-does-not-exist :ignore)))
 
+(format t "~%== self-description honesty: emitted algorithm string ==~%")
+;; Κλείδωμα κριτή: το corpus-proof.json ΔΕΝ επιτρέπεται να αυτο-περιγράφεται
+;; ως raw-concat ενώ χτίζει RFC-6962 δέντρο (0x00/0x01, unbalanced split).
+(check "corpus-proof.json declares rfc6962 (όχι raw-concat)"
+       (let ((json (corpus-proof-json "sha256:ab" 1 :anchored-at "t")))
+         (and (search "sha256-merkle/rfc6962+RS256" json)
+              (not (search "raw-concat" json)))))
+
 (format t "~%========================================~%")
 (format t "Proof-carrying tests: ~D passed, ~D failed~%" *pass* *fail*)
 (format t "========================================~%")

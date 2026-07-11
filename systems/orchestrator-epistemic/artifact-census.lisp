@@ -153,14 +153,18 @@
   (let ((lj (merge-pathnames "latest.json"
                              (uiop:ensure-directory-pathname releases-dir))))
     (when (probe-file lj)
-      (let* ((s (uiop:read-file-string lj))
-             (k "\"release\":\"sha256-")
-             (p (search k s)))
-        (when p
-          (let* ((start (+ p (length k)))
-                 (end (position #\" s :start start)))
-            (when (and end (= 64 (- end start)))
-              (format nil "sha256:~A" (subseq s start end)))))))))
+      ;; ΠΡΑΓΜΑΤΙΚΟΣ JSON parser (εύρημα κριτή: όχι μοτίβα κειμένου). Υπάρχον
+      ;; latest.json που ΔΕΝ δίνει έγκυρη ρίζα = ΣΦΑΛΜΑ, ποτέ σιωπηλό NIL —
+      ;; αλλιώς σπασμένος δείκτης αλυσίδας μεταμφιέζεται σε «πρώτο release».
+      (let* ((doc (handler-case (jonathan:parse (uiop:read-file-string lj) :as :hash-table)
+                    (error (e) (error "census: μη αναγνώσιμο latest.json ~A: ~A" lj e))))
+             (rel (gethash "release" doc)))
+        (unless (and (stringp rel)
+                     (= 71 (length rel))
+                     (string= "sha256-" (subseq rel 0 7))
+                     (every (lambda (c) (digit-char-p c 16)) (subseq rel 7)))
+          (error "census: latest.json χωρίς έγκυρο πεδίο release (sha256-<64hex>): ~S" rel))
+        (format nil "sha256:~A" (subseq rel 7))))))
 
 (defun write-artifact-census (articles corpus-short-name base-output-dir staging-dir
                               releases-dir)

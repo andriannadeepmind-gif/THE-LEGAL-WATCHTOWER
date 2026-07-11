@@ -91,6 +91,27 @@
           (handler-case (progn (build-artifact-census arts "x" base2) nil)
             (error () t))))))
 
+(format t "~%== %prev-release-root: JSON parser, fail-closed (εύρημα κριτή #4) ==~%")
+(let ((rd (uiop:ensure-directory-pathname
+           (merge-pathnames "census-prev-root-test/" (uiop:temporary-directory)))))
+  (ensure-directories-exist rd)
+  (ck "χωρίς latest.json ⇒ NIL (τίμιο πρώτο της αλυσίδας)"
+      (null (%prev-release-root rd)))
+  (alexandria:write-string-into-file
+   (format nil "{\"release\":\"sha256-~A\",\"attested\":true}" (make-string 64 :initial-element #\b))
+   (merge-pathnames "latest.json" rd) :if-exists :supersede)
+  (ck "έγκυρο latest.json ⇒ sha256:<hex> μέσω JSON parser"
+      (string= (%prev-release-root rd)
+               (format nil "sha256:~A" (make-string 64 :initial-element #\b))))
+  (alexandria:write-string-into-file
+   "{\"releaze\":\"τίποτα\"}" (merge-pathnames "latest.json" rd) :if-exists :supersede)
+  (ck "latest.json ΧΩΡΙΣ έγκυρο release ⇒ ΣΦΑΛΜΑ (όχι σιωπηλό NIL)"
+      (handler-case (progn (%prev-release-root rd) nil) (error () t)))
+  (alexandria:write-string-into-file
+   "οχι JSON" (merge-pathnames "latest.json" rd) :if-exists :supersede)
+  (ck "άκυρο JSON ⇒ ΣΦΑΛΜΑ"
+      (handler-case (progn (%prev-release-root rd) nil) (error () t))))
+
 (format t "~%========================================~%")
 (format t "Artifact census tests: ~D passed, ~D failed~%" *p* *f*)
 (format t "========================================~%")

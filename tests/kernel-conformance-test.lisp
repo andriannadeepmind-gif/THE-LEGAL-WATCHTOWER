@@ -99,7 +99,56 @@
                      (orchestrator.merkle:merkle-tree-hash (list a b c c))))
         (ck "kernel: MTH([a,b,c]) ≠ MTH([a,b,c,c]) (ανθεκτικό στο CVE)"
             (not (string= (funcall k-mth (list a b c))
-                          (funcall k-mth (list a b c c)))))))))
+                          (funcall k-mth (list a b c c))))))
+
+      ;; %pad ≡ pad-article-id: το kernel ανασυνθέτει το file-id από το census
+      ;; id (article-uri-id). Vectors: απλά, lettered (5Α/70Α/100Α), δίγραφα (5ΣΤ).
+      (format t "~%== %pad ≡ pad-article-id (census id → file id) ==~%")
+      (let ((k-pad (k "%PAD")))
+        (dolist (v '((5 nil) (70 nil) (100 nil) (5 "Α") (70 "Α") (100 "Α")
+                     (5 "ΣΤ") (12 "Β") (299 nil)))
+          (destructuring-bind (num suffix) v
+            (let* ((uri-id (orchestrator.model:article-uri-id num suffix))
+                   (want (orchestrator.model:pad-article-id num suffix)))
+              (ck (format nil "%pad(~S) = ~S ≡ έδρα" uri-id want)
+                  (string= (funcall k-pad uri-id) want))))))
+
+      ;; b64url: kernel bytes->b64url / b64url->bytes ≡ έδρα jws-authority
+      (format t "~%== base64url kernel ≡ jws-authority ==~%")
+      (let ((k-enc (k "BYTES->B64URL"))
+            (k-dec (k "B64URL->BYTES")))
+        (dotimes (n 12)
+          (let ((bytes (make-array n :element-type '(unsigned-byte 8))))
+            (dotimes (i n) (setf (aref bytes i) (mod (* 73 (1+ i)) 256)))
+            (let ((seat (orchestrator.jws-authority:base64url-encode bytes)))
+              (ck (format nil "b64url enc |~D| ≡ έδρα" n)
+                  (string= (funcall k-enc bytes) seat))
+              (ck (format nil "b64url dec |~D| round-trip" n)
+                  (equalp (funcall k-dec seat) bytes))))))
+
+      ;; EMSA/JWS: υπογραφή από την έδρα ⇒ ο kernel verify-jws την επαληθεύει
+      ;; (ΚΑΙ απορρίπτει λάθος payload + attached-payload token — F1 lock).
+      (format t "~%== JWS: έδρα υπογράφει ⇒ kernel επαληθεύει ==~%")
+      (let* ((kp (orchestrator.jws-authority:generate-rsa-keypair :bits 2048))
+             (priv (getf kp :private-key))
+             (pub (getf kp :public-key))
+             (payload "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")
+             (jws (getf (orchestrator.jws-authority:sign-jws
+                         payload priv :algorithm :rs256 :detached t) :jws))
+             (k-verify (k "VERIFY-JWS")))
+        (ck "kernel verify-jws δέχεται υπογραφή της έδρας (detached RS256+EMSA)"
+            (funcall k-verify jws payload pub))
+        (ck "kernel verify-jws απορρίπτει ΛΑΘΟΣ payload"
+            (not (funcall k-verify jws "sha256:0000000000000000000000000000000000000000000000000000000000000000" pub)))
+        (ck "kernel verify-jws απορρίπτει attached-payload token (F1)"
+            (let* ((dot1 (position #\. jws))
+                   (dot2 (position #\. jws :start (1+ dot1)))
+                   (attacker-payload
+                     (funcall (k "BYTES->B64URL")
+                              (babel:string-to-octets "attacker" :encoding :utf-8)))
+                   (attached (concatenate 'string (subseq jws 0 (1+ dot1))
+                                          attacker-payload (subseq jws dot2))))
+              (not (funcall k-verify attached payload pub))))))))
 
 (format t "~%════════════════════════════════════════════~%")
 (format t "kernel-conformance: ~D pass, ~D fail~%" *pass* *fail*)

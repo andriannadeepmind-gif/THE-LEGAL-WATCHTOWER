@@ -561,7 +561,7 @@
                                        (entry-actor entry)
                                        content)))
          ;; Use constant-time comparison to prevent timing attacks
-         (orchestrator.verify-authority::constant-time-string= signature expected-legacy)))
+         (orchestrator.jws-authority:constant-time-string= signature expected-legacy)))
 
       ;; Unknown format
       (t

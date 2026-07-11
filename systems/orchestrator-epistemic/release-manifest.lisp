@@ -80,16 +80,22 @@
     "shapes/lineage-shape.ttl"
     ;; [P1.5-B] Το 9ο canonical: Artifact Census (census-1) — δένει per-article
     ;; artifacts + pcl_text_root + prev_release_root + materials στο release root.
-    "census.json")
-  "Η ΜΙΑ έδρα του canonical συνόλου (9 αρχεία) που ορίζει την ταυτότητα release.")
+    "census.json"
+    ;; [P1.5-C] Το 10ο canonical: ο L6 πυρήνας που ΔΙΑΝΕΜΕΤΑΙ μέσα στο release
+    ;; (verify/verify.lisp = αντίγραφο του deployment/verify/kernel-verify.lisp,
+    ;; staged ΠΡΙΝ το Merkle build). Μέσα στην ταυτότητα ⇒ λοβοτομημένος
+    ;; verifier αλλάζει το root και προδίδεται από το όνομα καταλόγου/pin.
+    "verify/verify.lisp")
+  "Η ΜΙΑ έδρα του canonical συνόλου (10 αρχεία) που ορίζει την ταυτότητα release.")
 
 (defun collect-epistemic-artifacts (staging-dir)
   "Collect ONLY epistemic layer artifacts for canonical Merkle root
 
   DARPA-GRADE PROVENANCE: This function defines the CANONICAL set of artifacts
-  that form the release-root-hash. NO temporal proofs, NO manifests, NO verification kit.
+  that form the release-root-hash. NO temporal proofs, NO manifests — and from
+  the verification kit ONLY verify.lisp (the L6 kernel), which IS canonical.
 
-  Collects EXACTLY 9 files (deterministic):
+  Collects EXACTLY 10 files (deterministic):
     1. meta-ontology.ttl
     2. lineage-graph.ttl
     3. negation.ttl
@@ -99,12 +105,13 @@
     7. shapes/manifest-shape.ttl
     8. shapes/lineage-shape.ttl
     9. census.json (Artifact Census, P1.5)
+   10. verify/verify.lisp (L6 kernel, P1.5-C)
 
   Args:
     staging-dir: Staging directory path
 
   Returns:
-    List of 9 absolute file paths (sorted)"
+    List of 10 absolute file paths (sorted)"
 
   (let ((files '()))
     (dolist (filename +epistemic-canonical-files+)
@@ -115,8 +122,9 @@
 
     ;; Sort for deterministic ordering
     (let ((sorted (sort files #'string< :key #'namestring)))
-      (unless (= (length sorted) 9)
-        (error "CRITICAL: Expected 9 epistemic artifacts, found ~D" (length sorted)))
+      (unless (= (length sorted) (length +epistemic-canonical-files+))
+        (error "CRITICAL: Expected ~D epistemic artifacts, found ~D"
+               (length +epistemic-canonical-files+) (length sorted)))
       sorted)))
 
 (defun %root->release-id (root-hash)
