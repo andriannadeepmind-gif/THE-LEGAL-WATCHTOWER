@@ -134,6 +134,31 @@
                   (probe-file (merge-pathnames "releases/latest.json" base))))
   (ignore-errors (uiop:delete-directory-tree base :validate (constantly t))))
 
+;;; ⑨ [P1.5-D κριτής#1] Epoch-downgrade: sha256-named ΧΩΡΙΣ census ΚΑΙ εκτός
+;;;    frozen legacy ⇒ ΣΦΑΛΜΑ (stripped-census downgrade δομικά αδύνατο).
+(let* ((ep (find-package :orchestrator.epistemic))
+       (frozen (first (symbol-value (find-symbol "+FROZEN-LEGACY-RELEASE-IDS+" ep))))
+       (fake-id "sha256-deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef")
+       (base (uiop:ensure-directory-pathname
+              (merge-pathnames (format nil "epoch-dg-~D/" (get-universal-time))
+                               (uiop:temporary-directory)))))
+  ;; frozen legacy id ⇒ επιτρέπεται legacy εποχή (χωρίς census)
+  (let ((d (merge-pathnames (format nil "~A/" frozen) base)))
+    (ensure-directories-exist d)
+    (rat-check "⑨α frozen legacy id ⇒ legacy-8 εποχή (επιτρεπτό)"
+               (equal (funcall (find-symbol "%RELEASE-CANONICAL-ERA" ep) d)
+                      (symbol-value (find-symbol "+EPISTEMIC-CANONICAL-FILES-LEGACY8+" ep)))))
+  ;; μη-frozen sha256 id ΧΩΡΙΣ census ⇒ ΣΦΑΛΜΑ (downgrade)
+  (let ((d (merge-pathnames (format nil "~A/" fake-id) base)))
+    (ensure-directories-exist d)
+    (rat-check "⑨β μη-frozen sha256 χωρίς census ⇒ ΣΦΑΛΜΑ (epoch-downgrade)"
+               (handler-case (progn (funcall (find-symbol "%RELEASE-CANONICAL-ERA" ep) d) nil)
+                 (error () t))))
+  (rat-check "⑨γ frozen-legacy-release-id-p: frozen=T, fake=NIL"
+             (and (funcall (find-symbol "FROZEN-LEGACY-RELEASE-ID-P" ep) frozen)
+                  (not (funcall (find-symbol "FROZEN-LEGACY-RELEASE-ID-P" ep) fake-id))))
+  (ignore-errors (uiop:delete-directory-tree base :validate (constantly t))))
+
 (format t "~%========================================~%")
 (format t "Release authority tests: ~D passed, ~D failed~%" *rat-pass* *rat-fail*)
 (format t "========================================~%")

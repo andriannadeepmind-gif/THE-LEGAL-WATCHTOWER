@@ -34,11 +34,20 @@
   (let* ((leaf (car (last (pathname-directory dir))))
          (fp (find-package :orchestrator.epistemic))
          (census-era (probe-file (merge-pathnames "census.json" dir)))
+         (sha256-named (and (stringp leaf) (eql 0 (search "sha256-" leaf))))
+         ;; ΚΛΕΙΣΙΜΟ κριτή P1.5-D#1 (epoch-downgrade): legacy ελέγχους παίρνει
+         ;; ΜΟΝΟ id στο παγωμένο σύνολο ή timestamp-named ιστορικό. sha256-named
+         ;; ΧΩΡΙΣ census ΚΑΙ εκτός frozen = απόπειρα stripped-census downgrade.
+         (frozen-legacy (funcall (find-symbol "FROZEN-LEGACY-RELEASE-ID-P" fp) leaf))
          (err nil)
          (declared (handler-case (funcall (find-symbol "%RELEASE-DIR-ROOT" fp) dir)
                      (error (e) (setf err e) nil))))
+    (when (and (not census-era) sha256-named (not frozen-legacy))
+      (funcall chk (format nil "~A: sha256-named χωρίς census ΚΑΙ εκτός frozen legacy (epoch-downgrade)" leaf)
+               nil "απόπειρα stripped-census downgrade — απαιτείται census.json ή frozen id")
+      (return-from %rg-verify-release))
     (if (not census-era)
-        ;; ── LEGACY-ΕΠΟΧΗ (προ-P1.5): SEALED, όχι recompute με νέο αλγόριθμο ──
+        ;; ── LEGACY-ΕΠΟΧΗ (προ-P1.5, frozen/ιστορικό): SEALED, όχι recompute ──
         (progn
           (funcall chk (format nil "~A: legacy-epoch (pre-P1.5) — δηλωμένο root παρόν" leaf)
                    (and declared t)

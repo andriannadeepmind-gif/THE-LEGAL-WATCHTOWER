@@ -852,16 +852,53 @@ No fallbacks, no partial validity - strict proof gates.
    δεσμευμένων releases που κόπηκαν πριν το census. ΠΑΓΩΜΕΝΟ — δεν
    ξαναγράφεται· υπάρχει ΜΟΝΟ για να επαληθεύεται η εποχή τους.")
 
+(defparameter +frozen-legacy-release-ids+
+  '("sha256-0ee2ecc4e0efab7342908876454df179fb60187654338832cb05058903883825"
+    "sha256-5d4b546c1cda1e1a66f4b8d20fac5fe583f294abd0e6bf8fbf9a079092f972ff"
+    "sha256-7e3acace23f5907085f1a266a6e2a49016fffaa4366398ddc97af7fffdd3acae"
+    "sha256-a8185ecdef637b8300efba8f113a7a73443ae286de08f5025b90cbca0b3c6e86"
+    "sha256-de72263b908fe7dc680a6ffb046c38951b5ccfd6a3acb46d8739a4766b260a80"
+    "sha256-e8384152d401efc82566f9c5628c8b37a0a074ed1f95dea598334d0d8217dca6"
+    "sha256-57a6994c231a5e1356c4afab778c3ecab84d5f507d2750b63a21b1419e4f4f27"
+    "sha256-a4f674790a62d5cc35782fd646e49163412d12351944c66a4b51a8386b6bd433"
+    "sha256-b53a6dfa5dd49cf8acfb61d000fa0dc9d7bfd4fc4b8d145fcac1a2e36018a47c"
+    "sha256-1129ac1e0453c9c98744f7c2ca6af138a611d8c706a2bc2d345c802132eaa30d"
+    "sha256-bdb1b83d4b3d60459048e4364d7ab9b8baa240e72f5a7c5fd09816d5196c7b0a"
+    "sha256-c552b49c352b8df33d3928b75083fdcac61838cebec2f9f8c0ffa46963d35e46"
+    "sha256-1c85246b2af9b0704e103f4aaacf1a0bac974eb6cd985fd7ee1cb372fa6d6d18"
+    "sha256-34e236806b990128ae799554158c38c197bdffe67ad82260461c29623a1840cd"
+    "sha256-aaf60c01d1bfec2a01ef4e914476f184771cc686c6dc8aa08bd1d067e5c3727f"
+    "sha256-2c94bf02c9f7a9fe02fe44dcc3acb4265cb6c4dcbeb037ad0448c777068064d8"
+    "sha256-743c8882bc1d48ccfe9ffc3fc677778164f4611db72c4e1d10c90bc8cbe9c19a"
+    "sha256-a8d87d7ff439e524f403c7e1135c620055faadab657075354bfe8481a3416e93")
+  "ΠΑΓΩΜΕΝΟ, ΠΕΠΕΡΑΣΜΕΝΟ σύνολο των content-addressed ids της ΠΡΟ-P1.5 εποχής
+   (18 δεσμευμένα releases, [0058]). Το P1.5-A.2 σκότωσε ΣΚΟΠΙΜΑ τον παλιό
+   αλγόριθμο ταυτότητας· αυτά τα ids δεν αναπαράγονται πια, άρα ΑΠΑΡΙΘΜΟΥΝΤΑΙ.
+   ΚΡΙΣΙΜΟ (κλείσιμο κριτή P1.5-D#1, epoch-downgrade): ΜΟΝΟ αυτά τα ids
+   επιτρέπεται να επαληθεύονται με τους ασθενέστερους legacy ελέγχους. Κάθε
+   ΑΛΛΟ sha256-named release ΠΡΕΠΕΙ να είναι census-εποχής (census.json
+   υποχρεωτικό)· αφαίρεση του census.json από νεότερο release ΔΕΝ το υποβιβάζει
+   σε legacy — είναι ΣΦΑΛΜΑ (η κλάση σφάλματος εξαλείφεται δομικά).")
+
+(defun frozen-legacy-release-id-p (id)
+  "T μόνο αν το ID ανήκει στο παγωμένο σύνολο της προ-P1.5 εποχής."
+  (and (stringp id) (member id +frozen-legacy-release-ids+ :test #'string=) t))
+
 (defun %release-canonical-era (release-dir)
   "Ποιο canonical σύνολο ορίζει την ταυτότητα ΑΥΤΟΥ του release. Διάκριση
-   εποχής ΡΗΤΗ (όχι «όσα αρχεία τυχαίνει να υπάρχουν»): census.json παρόν ⇒
-   census-εποχή (τα 10 canonical, με verify/verify.lisp μέσα στην ταυτότητα)·
-   αλλιώς ⇒ ιστορική εποχή των 8 (τα προ-P1.5 releases είχαν verify/verify.lisp
-   ΕΚΤΟΣ ταυτότητας — δεν το βάζουμε αναδρομικά μέσα)."
-  (if (probe-file (merge-pathnames "census.json"
-                                   (uiop:ensure-directory-pathname release-dir)))
-      +epistemic-canonical-files+
-      +epistemic-canonical-files-legacy8+))
+   εποχής ΡΗΤΗ: census.json παρόν ⇒ census-εποχή (10 canonical, verify.lisp
+   μέσα στην ταυτότητα)· αλλιώς ⇒ legacy-8 — ΑΛΛΑ ΜΟΝΟ αν το id ανήκει στο
+   παγωμένο legacy σύνολο. sha256-named χωρίς census ΚΑΙ εκτός frozen ⇒ ΣΦΑΛΜΑ
+   (απόπειρα epoch-downgrade: stripped census)."
+  (let* ((dir (uiop:ensure-directory-pathname release-dir))
+         (leaf (car (last (pathname-directory dir)))))
+    (cond
+      ((probe-file (merge-pathnames "census.json" dir)) +epistemic-canonical-files+)
+      ((frozen-legacy-release-id-p leaf) +epistemic-canonical-files-legacy8+)
+      ((and (stringp leaf) (eql 0 (search "sha256-" leaf)))
+       (error "~A: sha256-named χωρίς census.json ΚΑΙ εκτός frozen legacy ⇒ ~
+               απόπειρα epoch-downgrade (stripped census)" leaf))
+      (t +epistemic-canonical-files-legacy8+)))) ; timestamp-named ιστορικά
 
 (defun %release-recomputed-root (release-dir)
   "Το Merkle root ενός release ΕΠΑΝΑΫΠΟΛΟΓΙΣΜΕΝΟ από τα canonical αρχεία της

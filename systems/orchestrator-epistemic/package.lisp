@@ -273,4 +273,5 @@
    #:validate-epistemic-stage
 
    ;; [P1.5-D] Release spine verification (release-gate v2)
-   #:verify-release-spine))
+   #:verify-release-spine
+   #:frozen-legacy-release-id-p))

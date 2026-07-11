@@ -16,7 +16,9 @@
 ;;;;   2. prev_release_root: κλειδί ΥΠΟΧΡΕΩΤΙΚΟ· null = τίμιο πρώτο της
 ;;;;      αλυσίδας· αλλιώς μορφή sha256:<64hex>.
 ;;;;   3. JWS detached RS256 πάνω στο RECOMPUTED root — απούσα υπογραφή =
-;;;;      ΑΠΟΤΥΧΙΑ (F2: όχι «unsigned» downgrade).
+;;;;      ΑΠΟΤΥΧΙΑ (F2: όχι «unsigned» downgrade). ΣΗΜ: consistency, όχι
+;;;;      authenticity — το κλειδί είναι in-release· η αυθεντικότητα ζει στο
+;;;;      out-of-band pinned root + owner TSR attestation (βλ. %spine-jws-check).
 ;;;;
 ;;;; Προ-census release (ιστορικό δεσμευμένο, 8 canonical): ΔΕΝ κρίνεται με
 ;;;; μεταγενέστερο σχήμα — ελέγχεται ΜΟΝΟ η JWS αν υπάρχει (ιστορική
@@ -36,7 +38,16 @@
 (defun %spine-jws-check (dir root fail-fn &key fail-closed)
   "JWS έλεγχος του release: detached RS256 πάνω στο ROOT μέσω της έδρας
    jws-authority (F1-σκληρυμένη: ενσωματωμένο payload ≠ αναμενόμενο ⇒ σφάλμα).
-   FAIL-CLOSED: απόντα αρχεία υπογραφής = αποτυχία (census-1 σχήμα)."
+   FAIL-CLOSED: απόντα αρχεία υπογραφής = αποτυχία (census-1 σχήμα).
+
+   ΤΙΜΙΑ ΕΜΒΕΛΕΙΑ (κλείσιμο κριτή P1.5-D#2): το public.jwk διαβάζεται ΜΕΣΑ
+   από το ίδιο το release — άρα αυτός ο έλεγχος αποδεικνύει ΣΥΝΕΠΕΙΑ (όποιος
+   συνάρμοσε το release υπέγραψε το recomputed root του), ΟΧΙ αυθεντικότητα.
+   Η ΑΥΘΕΝΤΙΚΟΤΗΤΑ στηρίζεται σε out-of-band άγκυρα: το PINNED root που δίνει
+   ο ελεγκτής (kernel-verify.lisp <dir> <pinned>) + το owner attestation
+   (RFC-3161 TSR). Χωρίς pinned root/TSR, ένας κατασκευαστής μπορεί να φτιάξει
+   αυτο-συνεπές release με δικό του κλειδί — γι' αυτό το latest απαιτεί
+   attestation και η δημόσια ταυτότητα δηλώνεται out-of-band."
   (let ((jp (merge-pathnames "temporal-proof/signature.jws" dir))
         (kp (merge-pathnames "verify/public.jwk" dir)))
     (cond
