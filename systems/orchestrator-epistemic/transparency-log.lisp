@@ -16,6 +16,15 @@
 ;;;; ένας εξωτερικός verifier που κράτησε ΟΠΟΙΟΔΗΠΟΤΕ παλιό log_root
 ;;;; αποδεικνύει με το proof ότι το σημερινό log τον επεκτείνει.
 ;;;;
+;;;; ΤΙΜΙΑ ΕΜΒΕΛΕΙΑ (εύρημα κριτή A1/A2 — διάβασέ το πριν βασιστείς στο log):
+;;;; το tlog-verify αποδεικνύει ΕΣΩΤΕΡΙΚΗ συνέπεια (root ≡ MTH(entries) +
+;;;; κάθε αποθηκευμένο checkpoint επεκτείνεται). ΔΕΝ αποδεικνύει από μόνο του
+;;;; append-only ιστορία: ολική αντικατάσταση Ή διαγραφή του αρχείου μέσα στο
+;;;; repo περνά τον εσωτερικό έλεγχο. Την πιάνουν: (α) η πύλη release-gate
+;;;; (κάθε census-era attested root ΟΦΕΙΛΕΙ να ∈ entries όταν υπάρχει log —
+;;;; διαγραφή+αναγέννηση ⇒ ΚΟΚΚΙΝΟ), (β) ο ΕΞΩΤΕΡΙΚΟΣ μάρτυρας που κρατά
+;;;; παλιό log_root (out-of-band, ίδιο πρότυπο με pinned roots), (γ) το git.
+;;;;
 ;;;; ΜΙΑ έδρα: κανένα άλλο σημείο του συστήματος δεν ορίζει log/checkpoint/
 ;;;; consistency. Τα Merkle μαθηματικά ζουν ΜΟΝΟ στο orchestrator.merkle.
 ;;;; ============================================================================
@@ -62,6 +71,13 @@
                                    (or checkpoints '())))))))
 
 (defun %tlog-write (path entries log-root checkpoints)
+  ;; Ατομική εγγραφή (εύρημα κριτή A3, ίδια πειθαρχία με atomic-publish-release):
+  ;; γράψε σε .tmp και rename — μισογραμμένο log από crash = δομικά αδύνατο.
+  (let ((tmp (merge-pathnames (format nil "~A.tmp" (file-namestring path)) path)))
+    (%tlog-write-1 tmp entries log-root checkpoints)
+    (rename-file tmp path)))
+
+(defun %tlog-write-1 (path entries log-root checkpoints)
   (with-open-file (o path :direction :output :if-exists :supersede)
     ;; Χειροποίητο ντετερμινιστικό JSON (ίδια πειθαρχία με census->json):
     ;; σταθερή σειρά κλειδιών, καμία εξάρτηση από hash-table iteration.
@@ -74,14 +90,48 @@
                               (car cp) (cdr cp)))
                     checkpoints))))
 
+(defun %tlog-census-chain (releases-dir tip-root)
+  "Η αλυσίδα census-era roots που καταλήγει στο TIP-ROOT (σειρά παλαιό→νέο),
+   ακολουθώντας τα prev_release_root των census.json προς τα πίσω όσο ο
+   πρόγονος υπάρχει ως census-era release στο δίσκο (legacy πρόγονος = τέλος —
+   η legacy εποχή είναι sealed και δεν μπαίνει στο log)."
+  (let ((chain (list tip-root))
+        (seen (list tip-root)))
+    (loop
+      (let* ((cur (first chain))
+             (census (merge-pathnames
+                      (format nil "sha256-~A/census.json" (subseq cur 7))
+                      (uiop:ensure-directory-pathname releases-dir))))
+        (unless (probe-file census) (return))
+        (let* ((doc (handler-case (jonathan:parse (uiop:read-file-string census)
+                                                  :as :hash-table)
+                      (error () (return))))
+               (prev (gethash "prev_release_root" doc)))
+          (unless (and (stringp prev)
+                       (eql 0 (search "sha256:" prev))
+                       (= (length prev) 71)
+                       (not (member prev seen :test #'equal))
+                       (probe-file
+                        (merge-pathnames
+                         (format nil "sha256-~A/census.json" (subseq prev 7))
+                         (uiop:ensure-directory-pathname releases-dir))))
+            (return))
+          (push prev chain)
+          (push prev seen))))
+    chain))
+
 (defun tlog-append-root! (releases-dir release-root)
   "Append του RELEASE-ROOT στο transparency log του RELEASES-DIR.
-   Ιδεμποτές για το ΤΕΛΕΥΤΑΙΟ entry (re-attest ίδιου root δεν διπλογράφει).
+   Ιδεμποτές ΜΟΝΟ ως προς το ΤΕΛΕΥΤΑΙΟ entry (άμεσο re-promote ίδιου root
+   δεν διπλογράφει· re-promote ΠΑΛΑΙΟΤΕΡΟΥ root καταγράφεται ως νέο γεγονός
+   προαγωγής — το log είναι ημερολόγιο γεγονότων, όχι σύνολο).
    Πριν από κάθε εγγραφή: PROOF(old,new) επαληθεύεται με verify-consistency —
    αποτυχία ⇒ ΣΦΑΛΜΑ και το αρχείο μένει ανέγγιχτο. Επιστρέφει το νέο log_root."
   (unless (and (stringp release-root)
                (eql 0 (search "sha256:" release-root))
-               (= (length release-root) 71))
+               (= (length release-root) 71)
+               (every (lambda (c) (find c "0123456789abcdef"))
+                      (subseq release-root 7)))
     (error 'validation-error
            :message "tlog-append-root!: μη έγκυρο release root"
            :details (format nil "~S" release-root)))
@@ -94,7 +144,17 @@
       ((and old-entries (equal (car (last old-entries)) release-root))
        old-root)
       (t
-       (let* ((new-entries (append old-entries (list release-root)))
+       (let* ((seed (if old
+                        old-entries
+                        ;; ΓΕΝΕΣΗ (εύρημα κριτή A1/B3): το log δεν ξεκινά ποτέ
+                        ;; «από το μηδέν» όταν υπάρχει ήδη census-era ιστορία —
+                        ;; bootstrap από την ανεξάρτητη έδρα ιστορίας (census
+                        ;; prev_release_root αλυσίδα). Έτσι διαγραφή του
+                        ;; αρχείου ΔΕΝ παράγει συνεπές-αλλά-κολοβό log: η
+                        ;; αναγέννηση ξαναχτίζει ΟΛΗ την αλυσίδα, και η πύλη
+                        ;; απαιτεί κάθε census-era attested root ∈ entries.
+                        (butlast (%tlog-census-chain releases-dir release-root))))
+              (new-entries (append seed (list release-root)))
               (leaves (mapcar #'%tlog-leaf new-entries))
               (new-root (orchestrator.merkle:merkle-tree-hash leaves))
               (m (length old-entries))
@@ -151,7 +211,8 @@
                 (unless (orchestrator.merkle:verify-consistency
                          m n old-root recomputed proof)
                   (error 'validation-error
-                         :message "transparency log: checkpoint ΔΕΝ επεκτείνεται από το τρέχον δέντρο — η ιστορία ξαναγράφτηκε"
+                         :message "transparency log: αποθηκευμένο checkpoint ΔΕΝ επεκτείνεται από το τρέχον δέντρο (ασυνέπεια εντός αρχείου)"
                          :details (format nil "size=~D root=~A" m old-root))))))
           (values t (list :tree-size n :log-root recomputed
-                          :checkpoints (length (getf log :checkpoints))))))))
+                          :checkpoints (length (getf log :checkpoints))
+                          :entries entries))))))

@@ -184,8 +184,11 @@
 (defun verify-consistency (m n old-root new-root proof)
   "RFC 9162 §2.1.4.2: T ανν το PROOF αποδεικνύει MTH_m = OLD-ROOT ⊑ MTH_n =
    NEW-ROOT (το n-δέντρο επεκτείνει το m-δέντρο). Καθαρά μαθηματικά — ο
-   verifier δεν βλέπει κανένα φύλλο. NIL σε ΚΑΘΕ απόκλιση (fail-closed)."
-  (cond
+   verifier δεν βλέπει κανένα φύλλο. NIL σε ΚΑΘΕ απόκλιση (fail-closed) —
+   και σε κακοσχηματισμένα hash strings (εύρημα κριτή A5: η υπόσχεση αυτή
+   ισχύει ΚΥΡΙΟΛΕΚΤΙΚΑ, όχι μόνο για καλοσχηματισμένη είσοδο)."
+  (handler-case
+   (cond
     ((or (< m 1) (> m n)) nil)
     ((= m n) (and (null proof) (string= old-root new-root)))
     (t
@@ -207,7 +210,8 @@
              (and ok
                   (zerop sn)
                   (string= fr old-root)
-                  (string= sr new-root)))))))))
+                  (string= sr new-root))))))))
+   (error () nil)))
 
 (defun verify-inclusion (leaf-hash path root)
   "Επανυπολόγισε τη ρίζα από LEAF-HASH + PATH (φύλλο→ρίζα) και σύγκρινε με ROOT.

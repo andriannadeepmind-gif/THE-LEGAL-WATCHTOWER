@@ -40,6 +40,20 @@
               (incf bad)))))))
   (ck (format nil "~D θετικές + 3× αρνητικές περιπτώσεις, 0 αποκλίσεις" cases)
       (zerop bad)))
+(ck "υπερμήκες proof (έξτρα κόμβος στην ουρά) ⇒ NIL (εύρημα κριτή A0)"
+    (let* ((leaves (loop for i below 7 collect
+                         (orchestrator.merkle:hash-leaf-string (format nil "L~D" i))))
+           (old (orchestrator.merkle:merkle-tree-hash (subseq leaves 0 3)))
+           (new (orchestrator.merkle:merkle-tree-hash leaves))
+           (proof (orchestrator.merkle:consistency-proof leaves 3)))
+      (not (orchestrator.merkle:verify-consistency
+            3 7 old new (append proof (list (orchestrator.merkle:hash-leaf-string "junk")))))))
+(ck "κακοσχηματισμένο hash string στο proof ⇒ NIL, ΟΧΙ σφάλμα (εύρημα κριτή A5)"
+    (let* ((leaves (list (orchestrator.merkle:hash-leaf-string "a")
+                         (orchestrator.merkle:hash-leaf-string "b")))
+           (new (orchestrator.merkle:merkle-tree-hash leaves)))
+      (null (orchestrator.merkle:verify-consistency
+             1 2 (first leaves) new (list "sha256:ΟΧΙ-hex")))))
 (ck "m>n ⇒ NIL" (not (orchestrator.merkle:verify-consistency 5 3 "sha256:aa" "sha256:bb" '())))
 (ck "m=n ⇒ μόνο ταυτότητα ριζών + κενό proof"
     (let* ((l (list (orchestrator.merkle:hash-leaf-string "a")))
@@ -50,7 +64,9 @@
 
 (format t "~%== [2] tlog: γένεση, ιδεμποτές append, checkpoints ==~%")
 (defun mk-root (i)
-  (format nil "sha256:~64,'0X" i))
+  ;; πεζά hex — ΙΔΙΑ μορφή με την παραγωγή (%sha256-hex)· εύρημα κριτή B1:
+  ;; τα fixtures δεν αποκλίνουν ποτέ από το πραγματικό σχήμα.
+  (string-downcase (format nil "sha256:~64,'0X" i)))
 (let ((rd (uiop:ensure-directory-pathname
            (merge-pathnames "tlog-test/" (uiop:temporary-directory)))))
   (uiop:delete-directory-tree rd :validate t :if-does-not-exist :ignore)
@@ -70,6 +86,12 @@
     (ck "checkpoints = 2 (μεγέθη 1 και 2)" (= 2 (getf info :checkpoints))))
   (ck "άκυρο root string ⇒ ΣΦΑΛΜΑ (fail-closed)"
       (handler-case (progn (tlog-append-root! rd "sha256:κοντό") nil)
+        (error () t)))
+  (ck "μη-hex χαρακτήρες (σωστό μήκος) ⇒ ΣΦΑΛΜΑ (εύρημα κριτή A4)"
+      (handler-case
+          (progn (tlog-append-root!
+                  rd (concatenate 'string "sha256:" (make-string 64 :initial-element #\g)))
+                 nil)
         (error () t)))
 
   (format t "~%== [3] tlog: ΚΑΘΕ διαφθορά αρχείου ⇒ ΚΟΚΚΙΝΟ ==~%")
@@ -93,6 +115,16 @@
      path :if-exists :supersede)
     (ck "αλλοιωμένο log_root ⇒ ΣΦΑΛΜΑ"
         (handler-case (progn (tlog-verify rd) nil) (error () t)))
+    ;; (β2) αλλοιωμένο checkpoint root (εύρημα κριτή B2)
+    (let ((pos (search "\"checkpoints\":[{\"size\":1,\"log_root\":\"sha256:" genuine)))
+      (when pos
+        (let* ((s2 (copy-seq genuine))
+               (i (+ pos (length "\"checkpoints\":[{\"size\":1,\"log_root\":\"sha256:") 3)))
+          (setf (char s2 i) (if (char= (char s2 i) #\f) #\e #\f))
+          (alexandria:write-string-into-file s2 path :if-exists :supersede)))
+      (ck "αλλοιωμένο checkpoint ⇒ ΣΦΑΛΜΑ"
+          (or (null pos)
+              (handler-case (progn (tlog-verify rd) nil) (error () t)))))
     ;; (γ) σκουπίδι
     (alexandria:write-string-into-file "όχι JSON" path :if-exists :supersede)
     (ck "άκυρο JSON ⇒ ΣΦΑΛΜΑ (ποτέ σιωπηλή επανεκκίνηση ιστορίας)"
@@ -107,6 +139,33 @@
       (ck "μετά την επαναφορά: n=4, 3 checkpoints, όλα συνεπή"
           (and (eq ok t) (= 4 (getf info :tree-size))
                (= 3 (getf info :checkpoints)))))))
+
+(format t "~%== [3.5] Γένεση με bootstrap από census αλυσίδα (εύρημα κριτή A1/B3) ==~%")
+(let* ((rd (uiop:ensure-directory-pathname
+            (merge-pathnames "tlog-genesis-test/" (uiop:temporary-directory))))
+       (r1 (mk-root 101)) (r2 (mk-root 102)) (r3 (mk-root 103)))
+  (uiop:delete-directory-tree rd :validate t :if-does-not-exist :ignore)
+  ;; Ψεύτικη census-era ιστορία στο δίσκο: r1 ← r2 ← r3 (prev chain)
+  (flet ((mkrel (root prev)
+           (let ((d (merge-pathnames (format nil "sha256-~A/" (subseq root 7)) rd)))
+             (ensure-directories-exist d)
+             (alexandria:write-string-into-file
+              (format nil "{\"prev_release_root\":~A}"
+                      (if prev (format nil "\"~A\"" prev) "null"))
+              (merge-pathnames "census.json" d) :if-exists :supersede))))
+    (mkrel r1 nil) (mkrel r2 r1) (mkrel r3 r2))
+  (tlog-append-root! rd r3)
+  (multiple-value-bind (ok info) (tlog-verify rd)
+    (ck "γένεση με tip r3 ⇒ bootstrap ΟΛΗΣ της αλυσίδας (n=3, σειρά r1,r2,r3)"
+        (and (eq ok t)
+             (equal (getf info :entries) (list r1 r2 r3)))))
+  ;; Επίθεση διαγραφής: σβήσε το log, ξανα-promote r3 ⇒ η αλυσίδα ΞΑΝΑΧΤΙΖΕΤΑΙ
+  (delete-file (%tlog-path rd))
+  (tlog-append-root! rd r3)
+  (multiple-value-bind (ok info) (tlog-verify rd)
+    (ck "διαγραφή log + αναγέννηση ⇒ ΠΛΗΡΗΣ αλυσίδα ξανά (όχι κολοβό n=1)"
+        (and (eq ok t)
+             (equal (getf info :entries) (list r1 r2 r3))))))
 
 (format t "~%== [4] Εξωτερικός verifier: παλιό log_root ⊑ σημερινό (η ΟΥΣΙΑ) ==~%")
 (let* ((roots (loop for i from 1 to 7 collect (mk-root i)))
