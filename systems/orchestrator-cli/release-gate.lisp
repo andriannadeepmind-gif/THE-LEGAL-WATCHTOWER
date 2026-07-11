@@ -130,6 +130,24 @@
                               (equal leaf "latest")) ; το symlink ελέγχεται χωριστά ως δείκτης
                     (incf found)
                     (%rg-verify-release rel #'chk))))
+              ;; [L7-B] Transparency log: αν υπάρχει, επαληθεύεται ΠΛΗΡΩΣ
+              ;; (log_root ≡ MTH(entries) + ΚΑΘΕ checkpoint consistency, RFC
+              ;; 6962 §2.1.2). Απόν = τίμιο (προ-L7-B εποχή)· άκυρο = ΚΟΚΚΙΝΟ.
+              (let ((corpus (car (last (pathname-directory corpus-dir)))))
+                (multiple-value-bind (status info)
+                    (handler-case
+                        (funcall (find-symbol "TLOG-VERIFY"
+                                              (find-package :orchestrator.epistemic))
+                                 releases-dir)
+                      (error (e) (values :invalid (princ-to-string e))))
+                  (case status
+                    (:absent nil) ; προ-L7-B releases: δηλωμένο, όχι σιωπηλό
+                    ((t) (chk (format nil "~A: transparency log συνεπές (n=~D, ~D checkpoints)"
+                                      corpus (getf info :tree-size)
+                                      (getf info :checkpoints))
+                              t))
+                    (otherwise
+                     (chk (format nil "~A: transparency log" corpus) nil info)))))
               ;; latest: υπαρκτός στόχος· content-addressed στόχος ⇒ attested
               (let ((latest (merge-pathnames "latest" releases-dir)))
                 (when (probe-file latest)

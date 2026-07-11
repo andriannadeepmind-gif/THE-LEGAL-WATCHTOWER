@@ -971,6 +971,12 @@ No fallbacks, no partial validity - strict proof gates.
                        :from :plist)
                       o)
         (terpri o)))
+    ;; [L7-B] Transparency log: κάθε προαγωγή σε εξουσία καταγράφεται ως φύλλο
+    ;; στο append-only log του corpus — με consistency proof (RFC 6962 §2.1.2)
+    ;; επαληθευμένο ΠΡΙΝ γραφτεί byte. Η ΜΙΑ έδρα: tlog-append-root!.
+    (let ((root (%release-recomputed-root release-dir)))
+      (tlog-append-root! releases-dir root)
+      (format t "✓ transparency log: ~A καταγράφηκε (consistency proof OK)~%" root))
     (format t "✓ latest → ~A (attested, signed pointer)~%" release-id)
     latest-symlink))
 
