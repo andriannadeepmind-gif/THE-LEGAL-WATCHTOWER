@@ -155,8 +155,21 @@ def verify_release(d, pinned=None):
         c = json.loads(read_bytes(cpath).decode("utf-8"))
         arts = c.get("articles", [])
         adir = os.path.join(d, "articles")
-        errors += (not (ok("prev_release_root present (chain)")
-                        if "prev_release_root" in c else fail("prev_release_root absent")))
+        # Parity with the Lisp kernel: key REQUIRED; null = honest first-of-chain;
+        # else it MUST be "sha256:"+64 hex — a malformed pointer is a FAIL, never
+        # a silently accepted chain break. (N-version conformance, forced by the
+        # vector corpus.)
+        if "prev_release_root" not in c:
+            errors += (not fail("prev_release_root key absent"))
+        else:
+            prev = c["prev_release_root"]
+            if prev is None:
+                ok("prev_release_root: null (first of chain)")
+            elif (isinstance(prev, str) and len(prev) == 71 and prev.startswith("sha256:")
+                  and all(ch in "0123456789abcdefABCDEF" for ch in prev[7:])):
+                ok(f"prev_release_root present (chain): {prev[:19]}…")
+            else:
+                errors += (not fail(f"prev_release_root malformed: {prev!r}"))
         bad = 0
         leaves = []
         for a in arts:

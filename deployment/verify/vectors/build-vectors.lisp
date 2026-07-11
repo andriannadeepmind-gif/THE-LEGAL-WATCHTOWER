@@ -28,6 +28,7 @@
                     (orchestrator.paths:institution-root))))
 
 (defparameter *vec-key-dir* (merge-pathnames "test-key/" *vec-root*))
+(defparameter *vec-attacker-key-dir* (merge-pathnames "attacker-key/" *vec-root*))
 (defparameter *vec-work* (merge-pathnames ".work/" *vec-root*))
 
 ;;; --- σταθερό test κλειδί (fixtures ΜΟΝΟ) ---
@@ -39,6 +40,17 @@
       (let ((kp (orchestrator.jws-authority:generate-rsa-keypair :bits 2048)))
         (orchestrator.jws-authority:save-rsa-keypair kp priv pub)))
     (values priv pub)))
+
+;;; --- σταθερό «ξένο» κλειδί για το wrong-key vector (fixtures ΜΟΝΟ, γεννιέται
+;;;     μία φορά + δεσμεύεται ⇒ ντετερμινιστικά bytes στα regenerations) ---
+(defun %ensure-attacker-public-pem ()
+  (let ((priv (merge-pathnames "private.pem" *vec-attacker-key-dir*))
+        (pub  (merge-pathnames "public.pem"  *vec-attacker-key-dir*)))
+    (unless (and (probe-file priv) (probe-file pub))
+      (ensure-directories-exist *vec-attacker-key-dir*)
+      (let ((kp (orchestrator.jws-authority:generate-rsa-keypair :bits 2048)))
+        (orchestrator.jws-authority:save-rsa-keypair kp priv pub)))
+    pub))
 
 ;;; --- τα 8 βασικά canonical με ΣΤΑΘΕΡΟ μικρό περιεχόμενο (η εγκυρότητα ενός
 ;;;     vector = εσωτερική συνέπεια, όχι το «νόημα» της μετα-οντολογίας) ---
@@ -200,7 +212,20 @@
                  (lambda (d)
                    (with-open-file (s (merge-pathnames "verify/verify.lisp" d)
                                       :direction :output :if-exists :append)
-                     (format s "~%;; tamper~%")))))))
+                     (format s "~%;; tamper~%"))))
+            ;; wrong-key: ξένο (έγκυρο) public.jwk — η υπογραφή του root έγινε με
+            ;; το test-key, άρα ΔΕΝ επαληθεύεται με άλλο κλειδί. Το public.jwk ΔΕΝ
+            ;; είναι canonical (μόνο verify/verify.lisp είναι), οπότε root≡όνομα
+            ;; ισχύει — ο έλεγχος που το πιάνει είναι η ΙΔΙΑ η υπογραφή: αποδεικνύει
+            ;; ότι η αυθεντικότητα δεν προκύπτει από το in-release κλειδί (key
+            ;; substitution άμυνα — γι' αυτό η άγκυρα είναι το pinned root/TSR).
+            (neg "wrong-key"
+                 "ξένο verify/public.jwk (η υπογραφή του root δεν επαληθεύεται)"
+                 (lambda (d)
+                   (orchestrator.jws-authority:export-jwk-to-file
+                    (%ensure-attacker-public-pem)
+                    (merge-pathnames "verify/public.jwk" d)
+                    :kid "attacker"))))))
       ;; --- INDEX.json ---
       (let ((idx (with-output-to-string (o)
                    (format o "{~%\"schema\":\"lawmax-release-vectors-1\",~%\"vectors\":[~%")
