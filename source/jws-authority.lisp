@@ -402,51 +402,60 @@
 ;;; JWK EXPORT (RFC 7517)
 ;;; ============================================================================
 
-(defun export-jwk (key &key (kid "orchestrator-key") (use "sig"))
-  "Export RSA key as JWK
+(defun %rsa-private-key-p (k)
+  "T αν το K είναι ironclad RSA ΙΔΙΩΤΙΚΟ κλειδί (έχει πρώτο p). Τα δημόσια
+   κλειδιά δεν έχουν — σφάλμα/NIL."
+  (and (ignore-errors (ironclad:rsa-key-prime-p k)) t))
+
+(defun export-jwk (key &key (kid "orchestrator-key") (use "sig") public-key)
+  "Export RSA ΔΗΜΟΣΙΟ κλειδί ως JWK (RS256).
+
+   ΚΡΙΣΙΜΟ (fail-closed): το «e» ΠΟΤΕ δεν εξάγεται από ΙΔΙΩΤΙΚΟ κλειδί —
+   ironclad:rsa-key-exponent σε ιδιωτικό κλειδί επιστρέφει το d (ΙΔΙΩΤΙΚΟ
+   εκθέτη), που (α) θα ΔΙΕΡΡΕΕ το ιδιωτικό κλειδί μέσα στο δημόσιο JWK
+   (n + d ⇒ ανακατασκευή) και (β) θα έκανε την επαλήθευση αδύνατη. Αν δοθεί
+   ιδιωτικό κλειδί, ΑΠΑΙΤΕΙΤΑΙ το αντίστοιχο δημόσιο (:public-key ή public PEM
+   path)· αλλιώς ΣΦΑΛΜΑ.
 
    Args:
-     key: Ironclad RSA key (public or private) or path to PEM
-     kid: Key ID
-     use: Key use ('sig' or 'enc')
-
-   Returns:
-     JWK as alist"
-  ;; Handle path input
-  (let ((key-obj (etypecase key
-                   (pathname (handler-case
-                                 (load-rsa-public-key key)
-                               (error () (load-rsa-private-key key))))
-                   (string (handler-case
-                               (load-rsa-public-key key)
-                             (error () (load-rsa-private-key key))))
-                   (t key))))
-
-    ;; Extract key components
-    (let* ((n (ironclad:rsa-key-modulus key-obj))
-           (e (ironclad:rsa-key-exponent key-obj))
-           ;; Convert to bytes
-           (n-bytes (ironclad:integer-to-octets n))
-           (e-bytes (ironclad:integer-to-octets e)))
-
+     key: Ironclad RSA κλειδί (δημόσιο ή ιδιωτικό) ή PEM path.
+     public-key: το ΔΗΜΟΣΙΟ κλειδί/PEM path — υποχρεωτικό όταν KEY είναι ιδιωτικό.
+     kid, use: JWK πεδία."
+  (flet ((as-key (x public-p)
+           (etypecase x
+             (pathname (if public-p (load-rsa-public-key x) (load-rsa-private-key x)))
+             (string   (if public-p (load-rsa-public-key x) (load-rsa-private-key x)))
+             (t x))))
+    ;; Η ΠΗΓΗ του δημόσιου εκθέτη: αποκλειστικά δημόσιο κλειδί.
+    (let* ((pub (cond
+                  (public-key (as-key public-key t))
+                  ;; PEM path για το KEY: δοκίμασε δημόσιο πρώτα (σωστό e)· αν
+                  ;; είναι ιδιωτικό PEM χωρίς :public-key ⇒ σφάλμα παρακάτω.
+                  ((or (pathnamep key) (stringp key))
+                   (handler-case (as-key key t)
+                     (error () (error 'jws-error
+                                      :message "export-jwk: ιδιωτικό PEM απαιτεί :public-key (ΠΟΤΕ d ως e)"))))
+                  ((%rsa-private-key-p key)
+                   (error 'jws-error
+                          :message "export-jwk: ιδιωτικό κλειδί απαιτεί :public-key — ironclad:rsa-key-exponent σε ιδιωτικό επιστρέφει d (διαρροή + άκυρο e)"))
+                  (t key)))              ; ήδη δημόσιο κλειδί
+           (n (ironclad:rsa-key-modulus pub))
+           ;; Ο δημόσιος εκθέτης ΑΠΟ ΤΟ ΔΗΜΟΣΙΟ κλειδί. ΣΗΜ: το ironclad
+           ;; generate-key-pair παράγει ΜΕΓΑΛΟ e (όχι 65537), οπότε ΔΕΝ υπάρχει
+           ;; φραγή μεγέθους — η προστασία διαρροής είναι ΔΟΜΙΚΗ (ποτέ από
+           ;; ιδιωτικό κλειδί, όπου rsa-key-exponent = d).
+           (e (ironclad:rsa-key-exponent pub)))
       `(:|kty| "RSA"
         :|use| ,use
         :|kid| ,kid
         :|alg| "RS256"
-        :|n| ,(base64url-encode n-bytes)
-        :|e| ,(base64url-encode e-bytes)))))
+        :|n| ,(base64url-encode (ironclad:integer-to-octets n))
+        :|e| ,(base64url-encode (ironclad:integer-to-octets e))))))
 
-(defun export-jwk-to-file (key output-path &key (kid "orchestrator-key"))
-  "Export key as JWK to file
-
-   Args:
-     key: RSA key or path to PEM
-     output-path: Output file path
-     kid: Key ID
-
-   Returns:
-     Path to written file"
-  (let ((jwk (export-jwk key :kid kid)))
+(defun export-jwk-to-file (key output-path &key (kid "orchestrator-key") public-key)
+  "Export ΔΗΜΟΣΙΟ key as JWK to file. Αν το KEY είναι ιδιωτικό, δώσε :public-key
+   (fail-closed — βλ. export-jwk· ποτέ d ως e)."
+  (let ((jwk (export-jwk key :kid kid :public-key public-key)))
     (ensure-directories-exist output-path)
     (alexandria:write-string-into-file
      (jonathan:to-json jwk)

@@ -509,6 +509,7 @@ JWS υπογραφή, ύπαρξη/imprint-binding του RFC-3161 receipt (time
       (let ((jws-result (handler-case
                             (sign-manifest-jws release-root-hash jws-path
                                               :private-key-path private-key-path
+                                              :public-key-path default-public-key-path
                                               :public-key-jwk-path public-jwk-path)
                           (error (e)
                             (if dev-mode

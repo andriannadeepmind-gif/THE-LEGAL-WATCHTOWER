@@ -109,9 +109,24 @@
 ;;; JWS SIGNATURE (Reuses jws-authority - Pure Lisp)
 ;;; ============================================================================
 
+(defun %public-pem-sibling (private-key-path)
+  "Το αδερφό public.pem δίπλα στο private-key-path (private.pem → public.pem)."
+  (let* ((name (pathname-name private-key-path)))
+    (merge-pathnames (make-pathname :name (if (and name (search "private" name))
+                                              (with-output-to-string (o)
+                                                (loop with n = (search "private" name)
+                                                      for i from 0 below (length name)
+                                                      do (if (= i n) (progn (write-string "public" o)
+                                                                            (incf i (1- (length "private"))))
+                                                             (write-char (char name i) o))))
+                                              "public")
+                                    :type (pathname-type private-key-path))
+                     private-key-path)))
+
 (defun sign-manifest-jws (root-hash-string signature-output-path
                          &key (private-key-path "private.pem")
-                              (public-key-jwk-path "verify/public.jwk"))
+                              (public-key-jwk-path "verify/public.jwk")
+                              (public-key-path nil))
   "Sign manifest using pure Lisp JWS (reuses jws-authority module)
 
    DARPA-GRADE: Uses Ironclad for RSA signing, no OpenSSL subprocess.
@@ -160,10 +175,13 @@
 
       (log:info () "✓ JWS signature: ~A" signature-output-path)
 
-      ;; Export public key as JWK
-      (let ((jwk-json (orchestrator.jws-authority:export-jwk
-                       private-key
-                       :kid "stavropouloslaw-2025")))
+      ;; Export public key as JWK — ΑΠΟ ΤΟ ΔΗΜΟΣΙΟ ΚΛΕΙΔΙ (fail-closed: ποτέ d
+      ;; ως e· βλ. jws-authority:export-jwk). Πηγή: ρητό public-key-path ή το
+      ;; αδερφό public.pem του private-key-path.
+      (let* ((pub-path (or public-key-path (%public-pem-sibling private-key-path)))
+             (jwk-json (orchestrator.jws-authority:export-jwk
+                        (orchestrator.jws-authority:load-rsa-public-key pub-path)
+                        :kid "stavropouloslaw-2025")))
         (alexandria:write-string-into-file
          (jonathan:to-json jwk-json)
          (namestring public-key-jwk-path)
