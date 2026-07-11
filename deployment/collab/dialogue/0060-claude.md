@@ -81,8 +81,51 @@ kernel-conformance +36 checks (%pad/b64url/EMSA/JWS anti-drift + F1 lock).
 4. Τα 6 νέα release ids ΔΕΝ δεσμεύονται/δημοσιεύονται — κλειδώνουν ΜΟΝΟ με
    μηδέν λάθος (εντολή δημιουργού).
 
+## Πύλη δύο εποχών (απόφαση δημιουργού: «τι θα έκανε η DeepMind» ⇒ ναι)
+
+Πρότυπο CT/Trillian: ποτέ rewrite ιστορίας· ρητές εποχές· κρυπτογραφική
+γέφυρα. census-εποχή = πλήρες spine + γέφυρα (prev_release_root ⇒ υπαρκτός
+στόχος)· legacy-εποχή = sealed (δηλωμένο root + όνομα ≡ id + TSR δεμένο στο
+δηλωμένο· ο verifier της εποχής αρχειοθετημένος in-release). Proof:
+**--release-gate 121/121** πάνω σε ΟΛΟ το output. Commits d6aa79c2, 5b57e9e2.
+
+## OWNER PROOF — εντολές (PowerShell, C:\STAVROPOULOSLAWCORPUS)
+
+```powershell
+git pull origin claude/ministry-justice-url-candidates-twghsj
+
+# 1. Πλήρες docker build (gates 45/45 + standalone suite)
+docker build -t orchestrator:latest .
+docker build --target standalone-test .
+
+# 2. ΑΝΑΓΕΝΝΗΣΗ ΚΛΕΙΔΙΩΝ (τα υπάρχοντα public.jwk της buggy γενιάς είχαν
+#    d-ως-e· τα private/public.pem παράγονται ξανά με τον διορθωμένο κώδικα)
+#    — φύλαξε τα παλιά ΕΚΤΟΣ repo πριν:
+Move-Item keys\private.pem keys-backup-$(Get-Date -Format yyyyMMdd)\ -Force
+Move-Item keys\public.pem  keys-backup-$(Get-Date -Format yyyyMMdd)\ -Force
+# το επόμενο cut-release τα ξαναγεννά αυτόματα (ensure-crypto-keys-exist)
+
+# 3. Αναγέννηση ×6 (νέα RFC-6962 ids) + attestation με πραγματικές TSAs
+docker run --rm -v ${PWD}:/app orchestrator:latest --cut-release syntagma
+docker run --rm -v ${PWD}:/app orchestrator:latest --cut-release poinikos
+docker run --rm -v ${PWD}:/app orchestrator:latest --cut-release kpoinikis
+docker run --rm -v ${PWD}:/app orchestrator:latest --cut-release astikos
+docker run --rm -v ${PWD}:/app orchestrator:latest --cut-release kpolitikis
+docker run --rm -v ${PWD}:/app orchestrator:latest --cut-release kdioikitikis
+# attest + promote latest (ένα ανά corpus, με το sha256-id που τύπωσε το cut):
+docker run --rm -v ${PWD}:/app orchestrator:latest --attest-release <corpus> <sha256-id>
+
+# 4. Πύλες
+docker run --rm -v ${PWD}:/app orchestrator:latest --release-gate
+
+# 5. Ανεξάρτητη επαλήθευση με τον L6 πυρήνα (per release):
+sbcl --script deployment\verify\kernel-verify.lisp output\<corpus>\releases\<sha256-id> <root-hex>
+```
+
+Τα ids ΔΕΝ κλειδώνουν/δημοσιεύονται μέχρι ρητή δήλωση μηδέν-λάθους.
+
 ## Εκκρεμεί απόφαση δημιουργού
 
 - Ρητό «εγκρίνω P1.5» (merge) ή διορθώσεις.
-- Owner-side docker proof (build + gated standalone-test + attest ×6) όπως
-  στο [0058], με τον νέο κώδικα.
+- Εκτέλεση του παραπάνω owner proof (build + gated tests + regen κλειδιών +
+  attest ×6 + release-gate + kernel verify).
