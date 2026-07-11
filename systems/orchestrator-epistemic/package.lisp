@@ -270,4 +270,7 @@
 
    ;; Main deploy
    #:deploy-epistemic-stage
-   #:validate-epistemic-stage))
+   #:validate-epistemic-stage
+
+   ;; [P1.5-D] Release spine verification (release-gate v2)
+   #:verify-release-spine))

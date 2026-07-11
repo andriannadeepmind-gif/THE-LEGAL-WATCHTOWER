@@ -372,10 +372,25 @@
            ;; Detached JWS: the payload was base64url(UTF-8 octets) at signing time,
            ;; so re-encode it the SAME way here (encoding a STRING directly would not
            ;; match what SIGN-JWS produced and verification would always fail).
-           (payload-b64 (or (and (> (length (second parts)) 0) (second parts))
-                            (base64url-encode (if (stringp payload)
-                                                  (babel:string-to-octets payload :encoding :utf-8)
-                                                  payload))))
+           ;; [P1.5 F1] Όταν ο καλών ΔΙΝΕΙ payload, η υπογραφή δένεται ΣΕ ΑΥΤΟ:
+           ;; token με ΜΗ-ΚΕΝΟ ενσωματωμένο segment γίνεται δεκτό ΜΟΝΟ αν
+           ;; ταυτίζεται byte-προς-byte με το αναμενόμενο — αλλιώς ένας
+           ;; επιτιθέμενος θα υπέβαλλε οποιοδήποτε έγκυρα υπογεγραμμένο token
+           ;; και ο έλεγχος δεν θα αφορούσε ποτέ το αναμενόμενο payload.
+           (expected-b64 (and payload
+                              (base64url-encode (if (stringp payload)
+                                                    (babel:string-to-octets payload :encoding :utf-8)
+                                                    payload))))
+           (payload-b64 (cond
+                          ((and expected-b64 (plusp (length (second parts))))
+                           (unless (string= (second parts) expected-b64)
+                             (error 'invalid-signature
+                                    :message "JWS: ενσωματωμένο payload ≠ αναμενόμενο (payload substitution)"))
+                           expected-b64)
+                          (expected-b64 expected-b64)
+                          ((plusp (length (second parts))) (second parts))
+                          (t (error 'jws-error
+                                    :message "JWS: detached token χωρίς αναμενόμενο payload"))))
            (signature-b64 (third parts))
 
            ;; Reconstruct signing input

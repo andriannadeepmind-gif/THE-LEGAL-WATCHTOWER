@@ -843,12 +843,40 @@ No fallbacks, no partial validity - strict proof gates.
       (error "~A: δεν βρέθηκε έγκυρο \"root\" στο merkle-tree.json" path))
     root))
 
+(defparameter +epistemic-canonical-files-legacy8+
+  '("meta-ontology.ttl" "lineage-graph.ttl" "negation.ttl"
+    "stability-policy.ttl" "stability-policy.md"
+    "shapes/article-shape.ttl" "shapes/manifest-shape.ttl"
+    "shapes/lineage-shape.ttl")
+  "Το canonical σύνολο ΠΡΟ-P1.5 (8 αρχεία): η ταυτότητα των ΙΣΤΟΡΙΚΩΝ
+   δεσμευμένων releases που κόπηκαν πριν το census. ΠΑΓΩΜΕΝΟ — δεν
+   ξαναγράφεται· υπάρχει ΜΟΝΟ για να επαληθεύεται η εποχή τους.")
+
+(defun %release-canonical-era (release-dir)
+  "Ποιο canonical σύνολο ορίζει την ταυτότητα ΑΥΤΟΥ του release. Διάκριση
+   εποχής ΡΗΤΗ (όχι «όσα αρχεία τυχαίνει να υπάρχουν»): census.json παρόν ⇒
+   census-εποχή (τα 10 canonical, με verify/verify.lisp μέσα στην ταυτότητα)·
+   αλλιώς ⇒ ιστορική εποχή των 8 (τα προ-P1.5 releases είχαν verify/verify.lisp
+   ΕΚΤΟΣ ταυτότητας — δεν το βάζουμε αναδρομικά μέσα)."
+  (if (probe-file (merge-pathnames "census.json"
+                                   (uiop:ensure-directory-pathname release-dir)))
+      +epistemic-canonical-files+
+      +epistemic-canonical-files-legacy8+))
+
 (defun %release-recomputed-root (release-dir)
-  "Το Merkle root ενός release ΕΠΑΝΑΫΠΟΛΟΓΙΣΜΕΝΟ από τα canonical αρχεία του —
-   ποτέ από τη δική του δήλωση."
-  (merkle-tree-root
-   (build-merkle-tree
-    (collect-epistemic-artifacts (uiop:ensure-directory-pathname release-dir)))))
+  "Το Merkle root ενός release ΕΠΑΝΑΫΠΟΛΟΓΙΣΜΕΝΟ από τα canonical αρχεία της
+   ΕΠΟΧΗΣ ΤΟΥ (βλ. %release-canonical-era) — ποτέ από τη δική του δήλωση,
+   ποτέ από «όσα αρχεία τυχαίνει να υπάρχουν». Λείπον canonical της εποχής ⇒
+   ΣΦΑΛΜΑ (η ταυτότητα δεν συμπληρώνεται σιωπηλά)."
+  (let* ((dir (uiop:ensure-directory-pathname release-dir))
+         (era (%release-canonical-era dir))
+         (paths (mapcar (lambda (f) (merge-pathnames f dir)) era))
+         (missing (remove-if #'probe-file paths)))
+    (when missing
+      (error "~A: λείπουν canonical της εποχής: ~{~A ~}"
+             dir (mapcar #'file-namestring missing)))
+    (merkle-tree-root
+     (build-merkle-tree (sort paths #'string< :key #'namestring)))))
 
 (defun release-attested-p (release-dir &optional root)
   "Ένα release είναι ATTESTED όταν φέρει RFC-3161 timestamp.tsr — και όταν

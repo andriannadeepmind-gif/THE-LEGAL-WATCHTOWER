@@ -29,7 +29,15 @@
       (funcall chk (format nil "~A: όνομα ≡ περιεχόμενο (content-addressed)" leaf)
                (and recomputed
                     (equal leaf (funcall (find-symbol "%ROOT->RELEASE-ID" fp) recomputed)))
-               recomputed))))
+               recomputed)
+      ;; [P1.5-D] gate v2: ΠΛΗΡΗΣ spine (census membership + text-σπονδυλική +
+      ;; αλυσίδα + JWS πάνω στο recomputed root) — όχι μόνο root recompute.
+      (multiple-value-bind (ok failures)
+          (handler-case
+              (funcall (find-symbol "VERIFY-RELEASE-SPINE" fp) dir :root recomputed)
+            (error (e) (values nil (list (princ-to-string e)))))
+        (funcall chk (format nil "~A: spine (census+αλυσίδα+JWS)" leaf)
+                 ok (and failures (format nil "~{~A~^ · ~}" failures)))))))
 
 (defun run-release-gate ()
   "--release-gate : καμία δημοσιευμένη έκδοση χωρίς επαληθεύσιμη αμεταβλητότητα."
