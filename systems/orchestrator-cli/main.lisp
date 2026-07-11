@@ -908,16 +908,21 @@ document.getElementById('ops').addEventListener('click',function(ev){
 ;;; ----------------------------------------------------------------------------
 
 (defun %sha256-string (s)
-  "SHA-256 (hex) of string S — reuses the epistemic module's primitive (no duplicate
-   hashing). Returns NIL if the module is unavailable."
-  (let ((fn (find-symbol "COMPUTE-SHA256-STRING" :orchestrator.epistemic)))
-    (when fn (funcall fn s))))
+  "«sha256:<hex>» του UTF-8 του S — η έδρα content-hash της provenance (ΔΙΑΚΡΙΤΗ
+   έννοια από το Merkle: ωμό sha256, χωρίς domain prefix 0x00). [P1.5-A] Πριν
+   έδειχνε μέσω find-symbol στο διαγραμμένο COMPUTE-SHA256-STRING ⇒ σιωπηλά NIL·
+   τώρα υπολογίζει άμεσα (ironclad)."
+  (format nil "sha256:~(~{~2,'0x~}~)"
+          (coerce (ironclad:digest-sequence
+                   :sha256 (babel:string-to-octets s :encoding :utf-8))
+                  'list)))
 
 (defun %sha256-file (path)
-  "SHA-256 (hex) of the raw bytes of the file at PATH (correct for binary sources like
-   .docx) — reuses COMPUTE-SHA256-FILE. Returns NIL if unavailable."
-  (let ((fn (find-symbol "COMPUTE-SHA256-FILE" :orchestrator.epistemic)))
-    (when (and fn (probe-file path)) (ignore-errors (funcall fn path)))))
+  "«sha256:<hex>» των ΩΜΩΝ bytes του PATH (σωστό για binary πηγές, π.χ. .docx).
+   NIL μόνο αν το αρχείο δεν υπάρχει (τίμιο απόν, όχι σιωπηλή αποτυχία seat)."
+  (when (probe-file path)
+    (format nil "sha256:~(~{~2,'0x~}~)"
+            (coerce (ironclad:digest-file :sha256 path) 'list))))
 
 (defun %source-prov-path (json-path)
   (concatenate 'string (namestring json-path) ".prov.json"))
@@ -1993,8 +1998,12 @@ document.getElementById('ops').addEventListener('click',function(ev){
                   (let* ((cons-pkg :orchestrator.consolidation)
                          (provs (funcall (find-symbol "LEGAL-DOCUMENT-PROVISIONS" cons-pkg) doc))
                          (eid-fn (find-symbol "PROVISION-EID" cons-pkg))
-                         (leaf-fn (find-symbol "LEAF-HASH" :orchestrator.proof-carrying))
-                         (root-fn (find-symbol "BUILD-MERKLE-ROOT" :orchestrator.proof-carrying))
+                         ;; [P1.5-A] seat rename: LEAF-HASH→HASH-LEAF-STRING,
+                         ;; BUILD-MERKLE-ROOT→MERKLE-TREE-HASH (orchestrator.merkle,
+                         ;; re-exported από proof-carrying). Τα παλιά ονόματα
+                         ;; έδιναν NIL ⇒ ο live resolver σιωπηλά επέστρεφε :error.
+                         (leaf-fn (find-symbol "HASH-LEAF-STRING" :orchestrator.proof-carrying))
+                         (root-fn (find-symbol "MERKLE-TREE-HASH" :orchestrator.proof-carrying))
                          (eli (or (ignore-errors (orchestrator.spec:config-get "corpus.eli_prefix")) ""))
                          (abbr (or (ignore-errors (orchestrator.spec:config-get "corpus.citation_abbrev"))
                                    (ignore-errors (orchestrator.spec:config-get "corpus.short_name")) ""))

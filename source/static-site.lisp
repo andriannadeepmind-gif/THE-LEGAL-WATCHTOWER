@@ -277,7 +277,12 @@ footer a{color:#1f6feb;text-decoration:none}
    the same text the page publishes. When PRIVATE-KEY is supplied the corpus root
    is SIGNED. Best-effort: never let proof emission break the site."
   (ignore-errors
-    (let* ((leaf-hash (%pc "LEAF-HASH")) (build-root (%pc "BUILD-MERKLE-ROOT"))
+    ;; [P1.5-A] Τα Merkle πρωτόγονα ενοποιήθηκαν στην orchestrator.merkle και
+    ;; ΕΠΑΝΕΞΑΓΟΝΤΑΙ από την proof-carrying: LEAF-HASH→HASH-LEAF-STRING,
+    ;; BUILD-MERKLE-ROOT→MERKLE-TREE-HASH. Τα παλιά ονόματα επέστρεφαν NIL μέσω
+    ;; find-symbol ⇒ ο guard σιωπηλά παρέλειπε την έκδοση proofs (σιωπηλό
+    ;; fallback — κλεισμένο).
+    (let* ((leaf-hash (%pc "HASH-LEAF-STRING")) (build-root (%pc "MERKLE-TREE-HASH"))
            (make-proof (%pc "MAKE-PROVISION-PROOF")) (proof-json (%pc "PROOF-PLIST->JSON"))
            (sign-root (%pc "SIGN-ROOT")) (corpus-json (%pc "CORPUS-PROOF-JSON")))
       (when (and leaf-hash build-root make-proof proof-json corpus-json)
