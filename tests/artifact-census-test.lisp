@@ -85,6 +85,7 @@
     (format t "~%== negative: λείπον artifact ⇒ ΣΦΑΛΜΑ ==~%")
     (let ((base2 (uiop:ensure-directory-pathname
                   (merge-pathnames "census-test-missing/" (uiop:temporary-directory)))))
+      (uiop:delete-directory-tree base2 :validate t :if-does-not-exist :ignore)
       (ensure-directories-exist base2)
       (write-artifacts base2 (first arts))  ; μόνο ενός άρθρου
       (ck "λείπον per-article artifact ⇒ error"
@@ -94,6 +95,10 @@
 (format t "~%== %prev-release-root: JSON parser, fail-closed (εύρημα κριτή #4) ==~%")
 (let ((rd (uiop:ensure-directory-pathname
            (merge-pathnames "census-prev-root-test/" (uiop:temporary-directory)))))
+  ;; ΙDEMPOTENCY: καθάρισε τυχόν κατάλοιπο προηγούμενης εκτέλεσης (το τεστ
+  ;; γράφει διαδοχικά latest.json· χωρίς καθάρισμα, η 1η υπόθεση «χωρίς
+  ;; latest.json» θα έβρισκε παλιό αρχείο και θα έσπαγε στη re-run).
+  (uiop:delete-directory-tree rd :validate t :if-does-not-exist :ignore)
   (ensure-directories-exist rd)
   (ck "χωρίς latest.json ⇒ NIL (τίμιο πρώτο της αλυσίδας)"
       (null (%prev-release-root rd)))

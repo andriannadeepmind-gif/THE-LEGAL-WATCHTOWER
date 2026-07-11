@@ -20,8 +20,8 @@
 ;; Seed the live-consolidation cache with a deterministic mini-corpus (same shape
 ;; build-consolidated-for produces), exercising the real proof-building path.
 (let* ((pc :orchestrator.proof-carrying)
-       (leaf (find-symbol "LEAF-HASH" pc))
-       (root (find-symbol "BUILD-MERKLE-ROOT" pc))
+       (leaf (find-symbol "HASH-LEAF-STRING" pc))
+       (root (find-symbol "MERKLE-TREE-HASH" pc))
        (texts (list "Καμία ποινή χωρίς νόμο." "Αναστολή υπό επιτήρηση." "Ανθρωποκτονία με πρόθεση."))
        (ids   (list "1" "100Α" "299"))               ; lettered id stays distinct from base
        (leaves (mapcar (lambda (tx) (funcall leaf tx)) texts)))
