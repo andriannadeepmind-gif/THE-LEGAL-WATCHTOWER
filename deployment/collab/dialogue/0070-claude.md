@@ -34,3 +34,29 @@ Gated: fek-backtest-report στο Dockerfile.
 fetch μένει owner-run (δίκτυο — proxy 403 από εδώ). Ο owner run με FEK_DISCOVER_ONLY
 + FEK_BACKTEST_REPORT παράγει backtest-report.json ΑΠΟ την ίδια έδρα. N-version
 differential (measure-extraction ≡ 2ος extractor) = δηλωμένη επόμενη φάση.
+
+---
+
+## ΠΡΟΣΘΗΚΗ: κλείσιμο ευρημάτων αντιπαλικού κριτή (φρέσκο πλαίσιο)
+
+Ο κριτής (πάνω στην προ-fix έκδοση) βρήκε — όλα κλειστά:
+- **B (HIGH, «0 διπλά» ΨΕΥΔΕΣ):** το `&key ops` του measure-extraction ήταν
+  νεκρό (clobber) ΚΑΙ ο caller δεν το περνούσε ⇒ διπλή εξαγωγή ανά ΦΕΚ +
+  split-brain (buckets vs routed από 2 εξαγωγές). ΚΛΕΙΣΤΟ: `(or ops …)` +
+  ο caller περνά `:ops ops` ⇒ ΜΙΑ εξαγωγή, log+report από τις ΙΔΙΕΣ πράξεις.
+- **A (4ος JSON emitter):** ΚΛΕΙΣΤΟ ΔΟΜΙΚΑ — ΜΙΑ cli scalar έδρα
+  `%json-scalar` (cli-util) + το `%json-escape` ΜΕΤΑΚΙΝΗΘΗΚΕ εκεί (μία θέση).
+  Και τα δύο cli emitters (`%laws->json`, `%backtest-report->json`) την
+  καταναλώνουν· `%laws->json` byte-stable (επαληθεύτηκε, ingestion-e2e 10/10).
+  Διαπακετικό (epistemic census->json/%tlog + το 2ο %json-escape/%jstr) =
+  ΔΗΛΩΜΕΝΗ ξεχωριστή φάση (release-identity-critical bytes — αλλαγή θέλει
+  απόδειξη ότι τα release ids ΔΕΝ μετακινούνται· release-vector-conformance).
+- **C (silent-accept):** ΚΛΕΙΣΤΟ — whole-token θετικός ακέραιος· «103abc»/«-5»/
+  «0» ΑΠΟΡΡΙΠΤΟΝΤΑΙ (test locks: 16/16).
+- **D/E/G:** επιβεβαιωμένα ΣΩΣΤΑ από τον κριτή (cursor non-advance, NULL≠0,
+  τίμιο framing) — credit.
+- **F (integration gap):** το FEK_DISCOVER_ONLY→nums flow είναι network-coupled
+  (enum/fetch) ⇒ δηλωμένο ως owner-edge, όχι CI-testable· οι καθαρές helpers gated.
+
+Proof: fek-backtest-report 16/16, amendment-backtest 12, amendment-extractor 23,
+auto-consolidate 22, autonomy-consolidation 10, consolidation-bridge 18, ingestion-e2e 10.

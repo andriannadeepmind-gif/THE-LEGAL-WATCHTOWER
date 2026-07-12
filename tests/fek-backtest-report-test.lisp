@@ -19,6 +19,13 @@
     (equal '(103 105 239) (%fek-discover-only)))
 (sb-posix:setenv "FEK_DISCOVER_ONLY" "abc xyz" 1)
 (ck "σκουπίδια → NIL (τίμιο, όχι crash)" (null (%fek-discover-only)))
+;; εύρημα κριτή C: whole-token θετικός ακέραιος — καμία σιωπηλή αναδιαμόρφωση
+(sb-posix:setenv "FEK_DISCOVER_ONLY" "103abc, 105" 1)
+(ck "«103abc» ΑΠΟΡΡΙΠΤΕΤΑΙ (όχι σιωπηλό 103)· κρατά μόνο το έγκυρο 105"
+    (equal '(105) (%fek-discover-only)))
+(sb-posix:setenv "FEK_DISCOVER_ONLY" "-5, 0, 007, 12" 1)
+(ck "αρνητικό/μηδέν ΑΠΟΡΡΙΠΤΟΝΤΑΙ· «007»→7 (leading zeros ΟΚ)"
+    (equal '(7 12) (%fek-discover-only)))
 (sb-posix:unsetenv "FEK_DISCOVER_ONLY")
 (ck "χωρίς env → NIL (walk mode)" (null (%fek-discover-only)))
 

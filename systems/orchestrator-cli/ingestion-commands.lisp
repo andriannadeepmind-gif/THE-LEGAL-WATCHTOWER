@@ -156,10 +156,16 @@
    FEK-COMPILER φάση β': μόνιμο, φθηνό, χωρίς walk."
   (let ((s (%non-blank (uiop:getenv "FEK_DISCOVER_ONLY"))))
     (when s
-      (sort (remove-duplicates
-             (remove nil (mapcar (lambda (x) (ignore-errors (parse-integer x :junk-allowed t)))
-                                 (uiop:split-string s :separator '(#\, #\Space #\Tab #\Newline)))))
-            #'<))))
+      (flet ((whole-pos (tok)
+               ;; ΟΛΟΚΛΗΡΟ θετικό ακέραιο (εύρημα κριτή C): «103abc»/«-5»/«1.5»
+               ;; ΑΠΟΡΡΙΠΤΟΝΤΑΙ (NIL) αντί για σιωπηλή αναδιαμόρφωση σε 103/-5/1.
+               (let ((tok (string-trim '(#\Space #\Tab) tok)))
+                 (when (and (plusp (length tok)) (every #'digit-char-p tok))
+                   (let ((n (parse-integer tok))) (and (plusp n) n))))))
+        (sort (remove-duplicates
+               (remove nil (mapcar #'whole-pos
+                                   (uiop:split-string s :separator '(#\, #\Space #\Tab #\Newline)))))
+              #'<)))))
 
 (defun %backtest-entry (fek-label measurement buckets)
   "Μία εγγραφή report ΑΠΟ ΤΗΝ ΕΔΡΑ measure-extraction (ΟΧΙ log-grep): structured
@@ -178,24 +184,21 @@
 
 (defun %backtest-report->json (entries)
   "Ντετερμινιστικό JSON του backtest report (λίστα από %backtest-entry). Καθαρή
-   συνάρτηση — gated-testable χωρίς δίκτυο."
+   συνάρτηση — gated-testable χωρίς δίκτυο. Καταναλώνει ΤΗ ΜΙΑ cli scalar έδρα
+   %json-scalar (καμία inline null/string/number διάκριση — νόμος «0 διπλά»)."
   (with-output-to-string (s)
     (write-char #\[ s)
     (loop for e in entries for first = t then nil do
       (unless first (write-char #\, s))
-      (flet ((j (v) (cond ((null v) "null")
-                          ((stringp v) (format nil "\"~A\"" (%json-escape v)))
-                          ((floatp v) (format nil "~,4F" v))
-                          (t (princ-to-string v)))))
+      (flet ((j (k) (%json-scalar (getf e k))))
         (format s "{\"fek\":~A,\"extracted\":~A,\"routed\":~A,\"unrouted\":~A,~
                    \"self_reference\":~A,\"identity_contradicted\":~A,~
                    \"census_consistency\":~A,\"ops_per_structural_verb\":~A,~
                    \"routed_buckets\":~A,\"buckets\":[~{~A~^,~}]}"
-                (j (getf e :fek)) (j (getf e :extracted)) (j (getf e :routed))
-                (j (getf e :unrouted)) (j (getf e :self-reference))
-                (j (getf e :identity-contradicted)) (j (getf e :census-consistency))
-                (j (getf e :ops-per-structural-verb)) (j (getf e :routed-buckets))
-                (mapcar (lambda (b) (format nil "\"~A\"" (%json-escape b))) (getf e :buckets)))))
+                (j :fek) (j :extracted) (j :routed) (j :unrouted) (j :self-reference)
+                (j :identity-contradicted) (j :census-consistency)
+                (j :ops-per-structural-verb) (j :routed-buckets)
+                (mapcar #'%json-scalar (getf e :buckets)))))
     (write-char #\] s)))
 
 (defun %census-article-oracle ()
@@ -332,7 +335,9 @@
                        (when (and report-path measure)
                          (push (%backtest-entry
                                 (format nil "~A' ~D/~D" series n year)
-                                (funcall measure text :code-resolver resolver
+                                ;; «0 διπλά»: ΟΙ ΙΔΙΕΣ ops του log — καμία 2η εξαγωγή
+                                (funcall measure text :ops ops
+                                                      :code-resolver resolver
                                                       :article-exists-fn art-exists)
                                 touches)
                                report))

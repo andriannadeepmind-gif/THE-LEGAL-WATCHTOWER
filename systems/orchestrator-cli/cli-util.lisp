@@ -142,3 +142,31 @@ trusted_output_allowed: false~%~
 reason: legal-critical πύλη απαιτεί runtime provenance — προφίλ ιχνών ~(~A~)~%"
             gate-name orchestrator.trace:*trace-profile*)
     t))
+
+;;; ── Η ΜΙΑ έδρα ντετερμινιστικής JSON εκπομπής (cli) ─────────────────────────
+;;; Νόμος «0 διπλά»: κανένας cli emitter δεν ξαναϋλοποιεί escape/scalar διάκριση.
+;;; (Οι epistemic emitters — census->json/%tlog — είναι release-identity-critical
+;;;  bytes σε ΑΛΛΟ package· η διαπακετική ένωση είναι δηλωμένη ξεχωριστή φάση με
+;;;  απόδειξη ότι τα release ids δεν μετακινούνται.)
+
+(defun %json-escape (s)
+  "Escape ενός scalar σε ασφαλές JSON string body (χωρίς τα εξωτερικά \")."
+  (with-output-to-string (o)
+    (loop for c across (princ-to-string (or s "")) do
+      (case c (#\" (write-string "\\\"" o)) (#\\ (write-string "\\\\" o))
+              (#\Newline (write-string "\\n" o)) (#\Return (write-string "\\r" o))
+              (#\Tab (write-string "\\t" o)) (#\Backspace (write-string "\\b" o))
+              (#\Page (write-string "\\f" o))
+              (t (if (< (char-code c) #x20)
+                     (format o "\\u~4,'0x" (char-code c))
+                     (write-char c o)))))))
+
+(defun %json-scalar (v)
+  "Η ΜΙΑ cli scalar→JSON: NIL→null· float→~,4F (ντετ., locale-independent)·
+   ακέραιος/λόγος→δεκαδική αναπαράσταση· αλλιώς \"escaped-string\". Κάθε cli
+   deterministic emitter την ΚΑΤΑΝΑΛΩΝΕΙ — καμία inline επανάληψη της διάκρισης."
+  (cond ((null v) "null")
+        ((floatp v) (format nil "~,4F" v))
+        ((integerp v) (princ-to-string v))
+        ((rationalp v) (format nil "~,4F" (float v 1d0)))
+        (t (format nil "\"~A\"" (%json-escape v)))))

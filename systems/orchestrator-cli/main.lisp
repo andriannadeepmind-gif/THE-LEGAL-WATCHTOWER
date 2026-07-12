@@ -1207,25 +1207,14 @@ document.getElementById('ops').addEventListener('click',function(ev){
           (t (cl-ppcre:register-groups-bind (mo d y) ("^(\\d{1,2})/(\\d{1,2})/(\\d{4})" s)
                (format nil "~A-~2,'0D-~2,'0D" y (parse-integer mo) (parse-integer d)))))))
 
-(defun %json-escape (s)
-  (with-output-to-string (o)
-    (loop for c across (princ-to-string (or s "")) do
-      (case c (#\" (write-string "\\\"" o)) (#\\ (write-string "\\\\" o))
-              (#\Newline (write-string "\\n" o)) (#\Return (write-string "\\r" o))
-              (#\Tab (write-string "\\t" o)) (#\Backspace (write-string "\\b" o))
-              (#\Page (write-string "\\f" o))
-              (t (if (< (char-code c) #x20)
-                     (format o "\\u~4,'0x" (char-code c))
-                     (write-char c o)))))))
-
 (defun %laws->json (laws)
   "Serialize [(\"id\".. \"date\".. \"fek\".. \"text\"..) …] to a clean JSON array."
   (with-output-to-string (s)
     (write-char #\[ s)
     (loop for law in laws for first = t then nil do
       (unless first (write-char #\, s))
-      (flet ((g (k) (%json-escape (cdr (assoc k law :test #'string=)))))
-        (format s "{\"id\":\"~A\",\"date\":\"~A\",\"fek\":\"~A\",\"text\":\"~A\"}"
+      (flet ((g (k) (%json-scalar (or (cdr (assoc k law :test #'string=)) ""))))
+        (format s "{\"id\":~A,\"date\":~A,\"fek\":~A,\"text\":~A}"
                 (g "id") (g "date") (g "fek") (g "text"))))
     (write-char #\] s)))
 
