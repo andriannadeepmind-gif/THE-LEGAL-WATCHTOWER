@@ -170,7 +170,7 @@ RUN set -e; \
              source-materialize clean-output source-detect proof-carrying mcp-server \
              mcp-live-resolver legal-id-registry legal-id-routing fek-article-header article-number-fidelity repeal-polish \
              pdf-column-reflow fek-rubric fek-noise amended-split isokratis-amended clean-json-format greek-homoglyph seam-detector deps-hash \
-             amendment-extractor amendment-accuracy amendment-consolidation-e2e autonomy-consolidation \
+             amendment-extractor amendment-accuracy amendment-consolidation-e2e autonomy-consolidation amendment-backtest \
              consolidation-bridge consolidation-engine auto-consolidate static-site \
              ai-corpus-dump ai-ingest-manifest akoma-ntoso-emitter codification-validation \
              consolidation-feed corpus-diff corpus-eu-links corpus-provenance corpus-search \

@@ -26,7 +26,9 @@
            #:operation-applicable-p #:split-operations #:summarize-operations
            #:diavgeia-decision->record
            ;; [FEK-COMPILER] registry-driven scope routing (η λίστα φράσεων πέθανε)
-           #:make-registry-resolver))
+           #:make-registry-resolver
+           ;; [BACKTEST] αυτο-επαληθευόμενη μέτρηση ακρίβειας (census + δομή)
+           #:measure-extraction))
 
 (in-package :orchestrator.amendment-extractor)
 
@@ -467,6 +469,64 @@
         (push op (gethash code by-code))))
     (loop for code in (nreverse order)
           collect (cons code (nreverse (gethash code by-code))))))
+
+;;; ── [BACKTEST] Αυτο-επαληθευόμενη μέτρηση ακρίβειας (self-supervision) ────────
+;;; Η DeepMind απάντηση στο «πώς έχεις ground truth χωρίς ετικέτες»: το ίδιο το
+;;; σώμα βαθμολογεί τον εαυτό του πάνω σε ΗΔΗ ΑΛΗΘΕΙΣ αναλλοίωτες — καμία
+;;; χειροκίνητη ετικέτα, κανένα κατέβασμα:
+;;;   (Α) Precision ταυτότητας: κάθε ΔΡΟΜΟΛΟΓΗΜΕΝΗ πράξη ελέγχεται κατά του
+;;;       committed census του κώδικα-στόχου (article-exists-fn). Route σε κώδικα
+;;;       που ΔΕΝ έχει το άρθρο = μετρημένο σφάλμα (:identity :contradicted).
+;;;       Ακριβές, όχι προσεγγιστικό.
+;;;   (Β) Δομικό recall: τα νομοτεχνικά ρήματα του κειμένου ΕΙΝΑΙ οι πράξεις-
+;;;       αλήθεια. Τα ΙΔΙΑ scanners του extractor μετρούν πόσα υπάρχουν
+;;;       (πάνω στο μασκαρισμένο κείμενο — παράθεση «…» δεν προσμετράται).
+;;; N-version (2ος extractor) + round-trip ανακατασκευή = δηλωμένες επόμενες φάσεις.
+
+(defun %count-operation-verbs (masked-text)
+  "Πλήθος νομοτεχνικών ρημάτων πράξης στο ΜΑΣΚΑΡΙΣΜΕΝΟ κείμενο — ΤΑ ΙΔΙΑ scanners
+   που οδηγούν την εξαγωγή (καμία νέα regex). ΑΝΩ ΦΡΑΓΜΑ των πράξεων: κάθε πράξη
+   έχει ρήμα, αλλά όχι κάθε αντιστοίχιση ρήματος είναι πράξη σε served κώδικα
+   (π.χ. «Καταργούμενες διατάξεις» κεφαλίδα, ονοματικοί τύποι). Άρα το
+   δομικό-recall (extracted/verbs) είναι ΚΑΤΩ ΦΡΑΓΜΑ — δηλωμένο τίμια."
+  (let ((n 0))
+    (dolist (sc (list +replace-clause+ +repeal-verb+ +amend-verb+ +add-verb+) n)
+      ;; all-matches → flat (start1 end1 start2 end2 …)· ζεύγη ⇒ μήκος/2 = πλήθος
+      (incf n (floor (length (cl-ppcre:all-matches sc masked-text)) 2)))))
+
+(defun measure-extraction (text &key code-resolver article-exists-fn)
+  "Αυτο-επαληθευόμενη μέτρηση του extractor πάνω σε ΠΡΑΓΜΑΤΙΚΟ κείμενο TEXT.
+   Καταναλώνει τα verdicts της extract-operations (καμία διπλή λογική) και τα
+   αναλλοίωτα του σώματος. Επιστρέφει plist:
+     :structural-verbs   — άνω φράγμα πράξεων (νομοτεχνικά ρήματα, masked)
+     :extracted          — σύνολο εξαγόμενων πράξεων
+     :routed             — πράξεις με :code (δρομολογημένες σε served κώδικα)
+     :unrouted           — πράξεις χωρίς :code (ξένος νόμος / αδρομολόγητο)
+     :self-reference     — πράξεις-αυτοαναφορές (άρθρο του ΙΔΙΟΥ του νόμου)
+     :identity-verified  — δρομολογημένες που το census ΕΠΙΒΕΒΑΙΩΝΕΙ
+     :identity-contradicted — δρομολογημένες που το census ΔΙΑΨΕΥΔΕΙ (σφάλμα)
+     :identity-checked   — verified + contradicted (όσες πήραν ετυμηγορία census)
+     :identity-precision — verified / identity-checked (NIL αν 0· ΑΚΡΙΒΕΣ)
+     :structural-recall  — extracted / structural-verbs (NIL αν 0· κάτω φράγμα)."
+  (let* ((ops (extract-operations text :code-resolver code-resolver
+                                       :article-exists-fn article-exists-fn))
+         (masked (%mask-spans (or text "") (%all-quoted-spans (or text ""))))
+         (verbs (%count-operation-verbs masked))
+         (routed (count-if (lambda (o) (getf o :code)) ops))
+         (self-ref (count-if (lambda (o) (getf o :self-reference)) ops))
+         (verified (count-if (lambda (o) (eq (getf o :identity) :verified)) ops))
+         (contradicted (count-if (lambda (o) (eq (getf o :identity) :contradicted)) ops))
+         (checked (+ verified contradicted)))
+    (list :structural-verbs verbs
+          :extracted (length ops)
+          :routed routed
+          :unrouted (- (length ops) routed)
+          :self-reference self-ref
+          :identity-verified verified
+          :identity-contradicted contradicted
+          :identity-checked checked
+          :identity-precision (and (plusp checked) (/ verified checked))
+          :structural-recall (and (plusp verbs) (/ (length ops) verbs)))))
 
 (defun operation-applicable-p (op)
   "True when OP is high-confidence AND an operation the consolidation engine
