@@ -501,10 +501,13 @@
       ;; all-matches → flat (start1 end1 start2 end2 …)· ζεύγη ⇒ μήκος/2 = πλήθος
       (incf n (floor (length (cl-ppcre:all-matches sc masked-text)) 2)))))
 
-(defun measure-extraction (text &key code-resolver article-exists-fn)
+(defun measure-extraction (text &key code-resolver article-exists-fn ops)
   "Αυτο-επαληθευόμενη μέτρηση του extractor πάνω σε ΠΡΑΓΜΑΤΙΚΟ κείμενο TEXT.
    Καταναλώνει τα verdicts της extract-operations (καμία διπλή λογική) και τα
-   αναλλοίωτα του σώματος. Επιστρέφει plist:
+   αναλλοίωτα του σώματος. Αν δοθεί OPS (ήδη-εξαγμένες πράξεις του ΙΔΙΟΥ TEXT),
+   ΔΕΝ ξανα-εξάγει — «0 διπλά»: ο καλών που ήδη έχει τις πράξεις (π.χ. discover-
+   fek) τις περνά, ώστε log + report να προέρχονται από την ΙΔΙΑ εξαγωγή (κανένα
+   split-brain). Επιστρέφει plist:
      :structural-verbs   — άνω φράγμα πράξεων (νομοτεχνικά ρήματα, masked)
      :extracted          — σύνολο εξαγόμενων πράξεων
      :routed             — πράξεις με :code (δρομολογημένες σε served κώδικα)
@@ -517,8 +520,8 @@
                            out-of-range σφάλματος, ΟΧΙ routing-precision (Α/b)
      :ops-per-structural-verb — extracted / structural-verbs (NIL αν 0)· λόγος
                                 κάλυψης με θορυβώδη παρονομαστή, ΟΧΙ recall (Β)."
-  (let* ((ops (extract-operations text :code-resolver code-resolver
-                                       :article-exists-fn article-exists-fn))
+  (let* ((ops (or ops (extract-operations text :code-resolver code-resolver
+                                               :article-exists-fn article-exists-fn)))
          (masked (%mask-spans (or text "") (%all-quoted-spans (or text ""))))
          (verbs (%count-operation-verbs masked))
          (routed (count-if (lambda (o) (getf o :code)) ops))

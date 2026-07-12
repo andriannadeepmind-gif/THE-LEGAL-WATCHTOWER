@@ -149,6 +149,55 @@
     (format t "~%✓ Αναβάθμιση εφαρμόστηκε & κλειδώθηκε. Κάνε git commit/push για μονιμότητα.~%")
     rc))
 
+(defun %fek-discover-only ()
+  "Bounded ΝΤΕΤΕΡΜΙΝΙΣΤΙΚΗ ανακάλυψη: FEK_DISCOVER_ONLY=103,105,239 → (103 105 239)
+   ταξινομημένα/χωρίς διπλότυπα· NIL αν άδειο. Μετατρέπει το backtest από walk
+   (μη-ντετερμινιστικό, δικτυακά ευρύ) σε στοχευμένο σύνολο — το §Superior του
+   FEK-COMPILER φάση β': μόνιμο, φθηνό, χωρίς walk."
+  (let ((s (%non-blank (uiop:getenv "FEK_DISCOVER_ONLY"))))
+    (when s
+      (sort (remove-duplicates
+             (remove nil (mapcar (lambda (x) (ignore-errors (parse-integer x :junk-allowed t)))
+                                 (uiop:split-string s :separator '(#\, #\Space #\Tab #\Newline)))))
+            #'<))))
+
+(defun %backtest-entry (fek-label measurement buckets)
+  "Μία εγγραφή report ΑΠΟ ΤΗΝ ΕΔΡΑ measure-extraction (ΟΧΙ log-grep): structured
+   metrics ενός ΦΕΚ. Οι ρητοί λόγοι → double για JSON."
+  (flet ((r (k) (let ((v (getf measurement k))) (and v (float v 1d0)))))
+    (list :fek fek-label
+          :extracted (getf measurement :extracted)
+          :routed (getf measurement :routed)
+          :unrouted (getf measurement :unrouted)
+          :self-reference (getf measurement :self-reference)
+          :identity-contradicted (getf measurement :identity-contradicted)
+          :census-consistency (r :census-consistency)
+          :ops-per-structural-verb (r :ops-per-structural-verb)
+          :routed-buckets (length buckets)
+          :buckets buckets)))
+
+(defun %backtest-report->json (entries)
+  "Ντετερμινιστικό JSON του backtest report (λίστα από %backtest-entry). Καθαρή
+   συνάρτηση — gated-testable χωρίς δίκτυο."
+  (with-output-to-string (s)
+    (write-char #\[ s)
+    (loop for e in entries for first = t then nil do
+      (unless first (write-char #\, s))
+      (flet ((j (v) (cond ((null v) "null")
+                          ((stringp v) (format nil "\"~A\"" (%json-escape v)))
+                          ((floatp v) (format nil "~,4F" v))
+                          (t (princ-to-string v)))))
+        (format s "{\"fek\":~A,\"extracted\":~A,\"routed\":~A,\"unrouted\":~A,~
+                   \"self_reference\":~A,\"identity_contradicted\":~A,~
+                   \"census_consistency\":~A,\"ops_per_structural_verb\":~A,~
+                   \"routed_buckets\":~A,\"buckets\":[~{~A~^,~}]}"
+                (j (getf e :fek)) (j (getf e :extracted)) (j (getf e :routed))
+                (j (getf e :unrouted)) (j (getf e :self-reference))
+                (j (getf e :identity-contradicted)) (j (getf e :census-consistency))
+                (j (getf e :ops-per-structural-verb)) (j (getf e :routed-buckets))
+                (mapcar (lambda (b) (format nil "\"~A\"" (%json-escape b))) (getf e :buckets)))))
+    (write-char #\] s)))
+
 (defun %census-article-oracle ()
   "Μαντείο ταυτότητας: (corpus-id base-article-id) → T / NIL / :unknown, από τα
    census.json των ΤΕΛΕΥΤΑΙΩΝ attested releases (η κρυπτογραφημένη ταυτότητα του
@@ -225,11 +274,15 @@
              (from (or (ignore-errors (parse-integer (or (%non-blank (uiop:getenv "FEK_DISCOVER_FROM")) "")))
                        (let ((ls (%read-last-seen))) (and ls (1+ ls)))
                        1))
-             (series (or (%non-blank (uiop:getenv "FEK_DISCOVER_SERIES")) "Α")))
+             (series (or (%non-blank (uiop:getenv "FEK_DISCOVER_SERIES")) "Α"))
+             (only (%fek-discover-only)))     ; bounded ντετερμινιστικό σύνολο ή NIL
         (cond
           ((and enum url-of year)
-           (format t "~%[native] Ανακάλυψη ΦΕΚ ~A' ~D από #~D (blob enumeration)…~%" series year from)
-           (let ((nums (funcall enum series year :from from))
+           (if only
+               (format t "~%[native] Bounded backtest ΦΕΚ ~A' ~D: {~{~D~^, ~}} (ντετερμινιστικό)…~%"
+                       series year only)
+               (format t "~%[native] Ανακάλυψη ΦΕΚ ~A' ~D από #~D (blob enumeration)…~%" series year from))
+           (let ((nums (or only (funcall enum series year :from from)))
                  ;; FEK_ANALYZE=1 closes the loop: fetch each new gazette, extract its
                  ;; text, run the amendment extractor, and — when AMENDMENT_LAWS_JSON is
                  ;; set — RECORD every gazette that amends a served code, which
@@ -247,6 +300,11 @@
                                                  :orchestrator.amendment-extractor)
                                     registry))
                  (art-exists (%census-article-oracle))
+                 ;; [FEK-COMPILER β'] Structured backtest report ΑΠΟ ΤΗΝ ΕΔΡΑ
+                 ;; measure-extraction (ΟΧΙ log-grep). FEK_BACKTEST_REPORT=<path>.
+                 (report-path (%non-blank (uiop:getenv "FEK_BACKTEST_REPORT")))
+                 (measure (find-symbol "MEASURE-EXTRACTION" :orchestrator.amendment-extractor))
+                 (report '())
                  (new-laws '()))
              (dolist (n nums)
                (format t "  + ΦΕΚ ~A' ~D/~D → ~A~%" series n year (funcall url-of series n year))
@@ -254,10 +312,12 @@
                  (let ((tmp (format nil "/tmp/fek-~A-~D-~D.pdf" series n year)))
                    (when (funcall blob-fetch series n year tmp)
                      (let* ((text (ignore-errors (funcall extract-txt tmp)))
-                            (summary (and text (funcall summarize
-                                                        (funcall extract-ops text
-                                                                 :code-resolver resolver
-                                                                 :article-exists-fn art-exists))))
+                            ;; «0 διπλά»: ΜΙΑ εξαγωγή ανά ΦΕΚ — log (summarize) ΚΑΙ
+                            ;; report (measure-extraction) από τις ΙΔΙΕΣ ops.
+                            (ops (and text (funcall extract-ops text
+                                                    :code-resolver resolver
+                                                    :article-exists-fn art-exists)))
+                            (summary (and ops (funcall summarize ops)))
                             ;; buckets with a real (non-NIL) code → this ΦΕΚ amends a served code
                             (touches (remove nil (mapcar #'car summary))))
                        (if summary
@@ -268,6 +328,14 @@
                                                                  (getf o :target) (getf o :op)))
                                              (cdr g))))
                            (format t "      ⮑ (καμία τροποποίηση κώδικα)~%"))
+                       ;; [β'] structured metrics ΑΠΟ ΤΗΝ ΕΔΡΑ (όχι log-grep)
+                       (when (and report-path measure)
+                         (push (%backtest-entry
+                                (format nil "~A' ~D/~D" series n year)
+                                (funcall measure text :code-resolver resolver
+                                                      :article-exists-fn art-exists)
+                                touches)
+                               report))
                        ;; record the amending law's TEXT so consolidation auto-folds it
                        (when (and laws-out touches text)
                          (push (list (cons "id"   (format nil "ΦΕΚ ~A' ~D/~D" series n year))
@@ -286,9 +354,17 @@
                                               :if-does-not-exist :create :external-format :utf-8)
                     (write-string (%laws->json merged) o)))
                  (format t "  ✎ ~D τροποποιητικά → ~A (σύνολο ~D)~%" (length new-laws) laws-out (length merged))))
-             (when nums (%write-last-seen (reduce #'max nums)))
-             (format t "~%~D νέα ΦΕΚ· ~D αγγίζουν κώδικες.~:[~; --auto-update τα ενοποιεί & υπογράφει.~]~%"
-                     (length nums) (length new-laws) (and analyze laws-out))
+             ;; Bounded backtest ΔΕΝ προχωρά τον cursor (στοχευμένο, όχι forward scan).
+             (when (and nums (not only)) (%write-last-seen (reduce #'max nums)))
+             ;; [β'] γράψε το structured report ΑΠΟ ΤΗΝ ΕΔΡΑ (deterministic JSON)
+             (when (and report-path report)
+               (ensure-directories-exist report-path)
+               (with-open-file (o report-path :direction :output :if-exists :supersede
+                                              :if-does-not-exist :create :external-format :utf-8)
+                 (write-string (%backtest-report->json (nreverse report)) o))
+               (format t "  ⎘ backtest report (~D ΦΕΚ) → ~A~%" (length report) report-path))
+             (format t "~%~D ~:[νέα ΦΕΚ~;ΦΕΚ (bounded)~]· ~D αγγίζουν κώδικες.~:[~; --auto-update τα ενοποιεί & υπογράφει.~]~%"
+                     (length nums) only (length new-laws) (and analyze laws-out))
              (return-from discover-fek 0)))
           (t
            (format t "~%ℹ Δώσε FEK_LISTING_JSON=<JSON [{title,url}]>, Ή FEK_DISCOVER_YEAR=<έτος> [FEK_DISCOVER_FROM=<αριθμός>]~%")

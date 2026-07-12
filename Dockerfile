@@ -175,7 +175,7 @@ RUN set -e; \
              ai-corpus-dump ai-ingest-manifest akoma-ntoso-emitter codification-validation \
              consolidation-feed corpus-diff corpus-eu-links corpus-provenance corpus-search \
              corpus-service corpus-sparql dsanet-chrome fek-html-parser fek-ingestion \
-             government-source parliament-html-wiring constitution-crawler fek-discovery amendment-routing amendment-state ingestion-daemon ingestion-e2e isokratis-parser \
+             government-source parliament-html-wiring constitution-crawler fek-discovery fek-backtest-report amendment-routing amendment-state ingestion-daemon ingestion-e2e isokratis-parser \
              legislation-ingestion multi-corpus-service review-service shacl-validator \
              hash-authority write-authority time-unified blockchain-authority release-authority \
              merkle-authority kernel-conformance artifact-census release-vector-conformance \
