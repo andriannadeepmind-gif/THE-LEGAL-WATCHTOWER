@@ -478,21 +478,46 @@
        (error "Μη-κανονικός τίτλος άρθρου ~S — αναγνωρίσιμος αριθμός με άκυρη μορφή (π.χ. κενό πριν το επίθημα)· άρνηση σιωπηλής επανερμηνείας ταυτότητας" title))
       (t (values nil title)))))
 
+(defvar *amendment-router* :unbuilt
+  "Μνημονευμένο (resolver . oracle) για τη δρομολόγηση auto-amendments — χτίζεται
+   ΜΙΑ φορά από build-legal-id-registry (configs) + %census-article-oracle
+   (attested census). :unbuilt μέχρι την πρώτη χρήση.")
+
+(defun %amendment-router ()
+  "Return (values code-resolver article-exists-fn) για τον extractor στην
+   κατανάλωση. ΠΡΟΣΟΧΗ: build-legal-id-registry επιλέγει διαδοχικά κάθε corpus
+   και ΔΕΝ επαναφέρει — ο καλών ΟΦΕΙΛΕΙ να ξανα-επιλέξει το δικό του corpus μετά."
+  (when (eq *amendment-router* :unbuilt)
+    (let* ((registry (build-legal-id-registry))
+           (resolver (funcall (find-symbol "MAKE-REGISTRY-RESOLVER"
+                                            :orchestrator.amendment-extractor)
+                              registry))
+           (oracle (%census-article-oracle)))
+      (setf *amendment-router* (cons resolver oracle))))
+  (values (car *amendment-router*) (cdr *amendment-router*)))
+
 (defun %auto-amendment-records (corpus-id)
   "Auto-extracted amendment records for CORPUS-ID from the discovered amending laws
    in AMENDMENT_LAWS_JSON (a JSON array of {id,date,fek,text} the discovery+fetch edge
    writes). Each law's text is parsed into operations and only those targeting THIS
-   code are kept (consolidation-bridge:laws->records). Empty when the env/file is
-   absent — the configured amendments still apply. This is the κούμπωμα that closes
-   discover → route → fetch → EXTRACT → consolidate without a human."
+   code are kept (consolidation-bridge:laws->records) — μέσω της ΙΔΙΑΣ δρομολόγησης
+   FEK-COMPILER (registry resolver + census identity), όχι πλέον αδρομολόγητα (που
+   θα εφάρμοζαν κάθε πράξη σε κάθε corpus). Empty when the env/file is absent — the
+   configured amendments still apply. Κλείνει discover → route → fetch → EXTRACT →
+   consolidate χωρίς άνθρωπο."
   (let ((path (%non-blank (uiop:getenv "AMENDMENT_LAWS_JSON"))))
     (when (and path (probe-file path))
       (handler-case
-          (let* ((raw (uiop:read-file-string path :external-format :utf-8))
-                 (laws (jonathan:parse raw :as :alist))
-                 ;; a single object parses to one alist; normalize to a list of laws
-                 (laws (if (and laws (consp (car laws)) (stringp (caar laws))) (list laws) laws)))
-            (orchestrator.consolidation.bridge:laws->records laws corpus-id))
+          (multiple-value-bind (resolver oracle) (%amendment-router)
+            ;; build-legal-id-registry άλλαξε το επιλεγμένο corpus — επανάφερέ το
+            ;; ώστε τα επόμενα config-get του corpus-spec να διαβάζουν το σωστό.
+            (orchestrator.spec:select-corpus corpus-id)
+            (let* ((raw (uiop:read-file-string path :external-format :utf-8))
+                   (laws (jonathan:parse raw :as :alist))
+                   ;; a single object parses to one alist; normalize to a list of laws
+                   (laws (if (and laws (consp (car laws)) (stringp (caar laws))) (list laws) laws)))
+              (orchestrator.consolidation.bridge:laws->records
+               laws corpus-id :code-resolver resolver :article-exists-fn oracle)))
         (error (e) (format t "  ⚠ ~A: αδυναμία auto-amendments (~A)~%" corpus-id e) nil)))))
 
 (defun corpus-spec (corpus-id)

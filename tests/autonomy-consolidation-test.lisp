@@ -21,6 +21,19 @@
   (let ((p (orchestrator.consolidation:find-provision doc eid)))
     (and p (orchestrator.consolidation:provision-text p))))
 
+;; [FEK-COMPILER] Η δρομολόγηση προέρχεται ΜΟΝΟ από το registry (configs) — δεν
+;; υπάρχει πλέον hardcoded λίστα φράσεων. Ο resolver περνά στο laws->records ώστε
+;; κάθε κώδικας να παίρνει ΜΟΝΟ τις δικές του πράξεις.
+(defparameter *rr*
+  (orchestrator.amendment-extractor:make-registry-resolver
+   (list (orchestrator.legal-id:make-registry-entry "kpoinikis"
+          :law-number 4620 :year 2019 :name "Κώδικας Ποινικής Δικονομίας"
+          :aliases '("Ποινικής Δικονομίας"))
+         (orchestrator.legal-id:make-registry-entry "poinikos"
+          :law-number 4619 :year 2019 :name "Ποινικός Κώδικας"
+          :aliases '("Ποινικό Κώδικα" "Ποινικού Κώδικα")))))
+(defun l->r (corpus) (laws->records (list *law*) corpus :code-resolver *rr*))
+
 ;; A real-shaped law (alist, exactly as the discovery JSON delivers it) amending
 ;; TWO codes — and the ΚΠΔ payload nests its own « » quote.
 (defparameter *law*
@@ -32,9 +45,9 @@
                 "Άρθρο 2. Το άρθρο 15 του Ποινικού Κώδικα καταργείται."))))
 
 (format t "~%== one act → records split per corpus (only its own ops) ==~%")
-(let ((rk (laws->records (list *law*) "kpoinikis"))
-      (rp (laws->records (list *law*) "poinikos"))
-      (rx (laws->records (list *law*) "astikos")))
+(let ((rk (l->r "kpoinikis"))
+      (rp (l->r "poinikos"))
+      (rx (l->r "astikos")))
   (check "kpoinikis gets exactly one record" (= 1 (length rk)))
   (check "kpoinikis op is replace of art_92 (its ΚΠΔ clause)"
          (let ((o (first (getf (first rk) :operations))))
@@ -50,8 +63,8 @@
   (check "a code the act does not touch gets no record" (null rx)))
 
 (format t "~%== consolidate each code from its AUTO-extracted records ==~%")
-(let* ((rk (laws->records (list *law*) "kpoinikis"))
-       (rp (laws->records (list *law*) "poinikos"))
+(let* ((rk (l->r "kpoinikis"))
+       (rp (l->r "poinikos"))
        (dk (consolidate-corpus '((92 "παλαιός" "ΠΑΛΑΙΟ κείμενο 92.")) rk :id "test-corpus"))
        (dp (consolidate-corpus '((15 "παλαιός" "ΠΑΛΑΙΟ κείμενο 15.")) rp :id "test-corpus")))
   (check "ΚΠΔ art_92 now carries the new text"
@@ -63,7 +76,7 @@
              :repealed)))
 
 (format t "~%== point-in-time still holds through the autonomous path ==~%")
-(let* ((rk (laws->records (list *law*) "kpoinikis"))
+(let* ((rk (l->r "kpoinikis"))
        (before (consolidate-corpus '((92 "π" "ΠΑΛΑΙΟ κείμενο 92.")) rk :as-of-date "2024-01-01" :id "test-corpus"))
        (after  (consolidate-corpus '((92 "π" "ΠΑΛΑΙΟ κείμενο 92.")) rk :as-of-date "2024-12-31" :id "test-corpus")))
   (check "before the effective date → OLD text" (search "ΠΑΛΑΙΟ" (ptext before "art_92")))

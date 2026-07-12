@@ -251,21 +251,31 @@
 ;;; The extractor is looked up at runtime so the bridge carries no load-order
 ;;; dependency on it.
 
-(defun %extract-ops (text)
+(defun %extract-ops (text &key code-resolver article-exists-fn)
+  "Extract operations from amending TEXT, threading the registry CODE-RESOLVER and
+   census ARTICLE-EXISTS-FN so routing/identity apply on THIS (consolidation) path
+   too — not only on discovery. Χωρίς resolver, ΚΑΘΕ πράξη μένει αδρομολόγητη
+   (:code NIL) και το law->record τη θεωρεί «sole» ⇒ θα εφαρμοζόταν σε ΚΑΘΕ κώδικα·
+   ο resolver το κόβει στη ρίζα (η δρομολόγηση του FEK-COMPILER δένεται εδώ)."
   (let ((f (find-symbol "EXTRACT-OPERATIONS" :orchestrator.amendment-extractor)))
-    (and f text (funcall f text))))
+    (and f text (funcall f text :code-resolver code-resolver
+                                :article-exists-fn article-exists-fn))))
 
 (defun %op-applicable (op)
   (let ((f (find-symbol "OPERATION-APPLICABLE-P" :orchestrator.amendment-extractor)))
     (and f (funcall f op))))
 
-(defun law->record (law corpus-id)
+(defun law->record (law corpus-id &key code-resolver article-exists-fn)
   "LAW (alist/plist with \"id\",\"date\",\"fek\",\"text\") → an amendment RECORD whose
    \"operations\" are the law's APPLICABLE operations that target CORPUS-ID, or NIL if
    the law does not amend this corpus. A clause whose code did not resolve is taken
    ONLY when CORPUS-ID is the law's sole code — never guessed across a multi-code act.
-   Recognised-but-not-auto-applicable operations are kept under \"review\"."
-  (let ((ops (%extract-ops (%rget law "text"))))
+   Recognised-but-not-auto-applicable operations are kept under \"review\".
+   CODE-RESOLVER/ARTICLE-EXISTS-FN: περνούν στον extractor ώστε η δρομολόγηση ανά
+   κώδικα + η επαλήθευση ταυτότητας να ισχύουν ΚΑΙ εδώ (χωρίς αυτά, κάθε πράξη
+   θεωρείται sole-unrouted ⇒ θα εφαρμοζόταν σε ΚΑΘΕ corpus)."
+  (let ((ops (%extract-ops (%rget law "text") :code-resolver code-resolver
+                                              :article-exists-fn article-exists-fn)))
     (when ops
       (let* ((codes (remove nil (remove-duplicates
                                  (mapcar (lambda (o) (getf o :code)) ops) :test #'equal)))
@@ -282,9 +292,12 @@
                   :date_applicability (or (s "date_applicability") (s "date"))
                   :operations applicable :review review)))))))
 
-(defun laws->records (laws corpus-id)
+(defun laws->records (laws corpus-id &key code-resolver article-exists-fn)
   "Map amending LAWS to the records that apply to CORPUS-ID (laws not touching it are
-   dropped), in deterministic chronological order."
+   dropped), in deterministic chronological order. CODE-RESOLVER/ARTICLE-EXISTS-FN
+   are threaded to each law->record (per-code routing + identity verification)."
   (let ((recs (loop for law in laws
-                    for r = (law->record law corpus-id) when r collect r)))
+                    for r = (law->record law corpus-id :code-resolver code-resolver
+                                         :article-exists-fn article-exists-fn)
+                    when r collect r)))
     (stable-sort recs #'string< :key (lambda (r) (or (getf r :date_applicability) "")))))

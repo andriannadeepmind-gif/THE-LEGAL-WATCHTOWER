@@ -103,6 +103,28 @@
         (check "mark-amended σε ΑΝΕΓΓΙΧΤΟ άρθρο ⇒ MISMATCHED (status :original)"
                (and (null v2) (= 1 (length m2))))))))
 
+;;; [FEK-COMPILER regression] Η δρομολόγηση ΟΦΕΙΛΕΙ να δένει ΚΑΙ στην κατανάλωση
+;;; (law->record/laws->records) — όχι μόνο στη discovery. Χωρίς resolver, μια
+;;; πράξη σε ΕΝΑΝ κώδικα εφαρμοζόταν σε ΚΑΘΕ κώδικα (sole-unrouted).
+(format t "~%== law->record: per-code routing δένει στην κατανάλωση ==~%")
+(let* ((rr (orchestrator.amendment-extractor:make-registry-resolver
+            (list (orchestrator.legal-id:make-registry-entry "poinikos"
+                   :law-number 4619 :year 2019 :name "Ποινικός Κώδικας"
+                   :aliases '("Ποινικό Κώδικα" "Ποινικού Κώδικα"))
+                  (orchestrator.legal-id:make-registry-entry "astikos"
+                   :law-number 2250 :year 1940 :name "Αστικός Κώδικας"
+                   :aliases '("Αστικό Κώδικα" "Αστικού Κώδικα")))))
+       (law (list (cons "id" "ν. 5000/2025") (cons "date" "2025-01-01")
+                  (cons "fek" "Α' 1/2025")
+                  (cons "text" "Το άρθρο 5 του Ποινικού Κώδικα καταργείται."))))
+  (check "ΜΕ resolver: η πράξη (poinikos) παράγει record ΓΙΑ poinikos"
+         (law->record law "poinikos" :code-resolver rr))
+  (check "ΜΕ resolver: η ΙΔΙΑ πράξη ΔΕΝ παράγει record για astikos (δεν διαρρέει)"
+         (null (law->record law "astikos" :code-resolver rr)))
+  (check "ΧΩΡΙΣ resolver (το παλιό σφάλμα): η αδρομολόγητη πράξη ΘΑ εφαρμοζόταν και στα δύο"
+         (and (law->record law "poinikos")
+              (law->record law "astikos"))))
+
 (format t "~%========================================~%")
 (format t "Auto-consolidate (closed loop) tests: ~D passed, ~D failed~%" *pass* *fail*)
 (format t "========================================~%")
