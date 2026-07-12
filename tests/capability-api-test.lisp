@@ -54,6 +54,23 @@
     (ck ":flag δηλώνεται advisor"
         (string= "advisor" (getf (find "flag" caps :key (lambda (c) (getf c :name)) :test #'string=) :trust)))))
 
+(format t "~%== [5] require-trust: ΔΟΜΙΚΗ επιβολή «κανένα advisor σε trusted επιφάνεια» ==~%")
+;; Χωρίς require-trust: advisor εκτελείται (η projection είναι γενική υποδομή) — ίδιο με [2].
+(multiple-value-bind (st pl) (api-dispatch "/api/flag" '(("on" . "ναι")))
+  (ck "χωρίς require-trust: advisor :flag εκτελείται (200)" (and (eql 200 st) (getf pl :result))))
+;; Με require-trust t (ό,τι περνά ο cockpit): advisor ΑΡΝΕΙΤΑΙ (403) — δεν φτάνει στο :fn.
+(multiple-value-bind (st pl) (api-dispatch "/api/flag" '(("on" . "ναι")) :require-trust t)
+  (ck "require-trust t: advisor :flag → 403 (δεν εκτελείται)"
+      (and (eql 403 st) (getf pl :error))))
+;; Με require-trust t: trusted δυνατότητα περνά κανονικά.
+(multiple-value-bind (st pl) (api-dispatch "/api/add" '(("a" . "40") ("b" . "2")) :require-trust t)
+  (ck "require-trust t: trusted :add περνά (200)" (and (eql 200 st) (eql 42 (getf pl :result)))))
+;; catalog με require-trust t: ΔΕΝ διαφημίζει advisor caps (καμία διαρροή ύπαρξης).
+(multiple-value-bind (st pl) (api-catalog :require-trust t)
+  (let ((names (mapcar (lambda (c) (getf c :name)) (getf pl :capabilities))))
+    (ck "catalog require-trust t: μόνο trusted (add,ask· όχι flag)"
+        (and (eql 200 st) (equal '("add" "ask") names)))))
+
 (format t "~%========================================~%")
 (format t "capability-api: ~D passed, ~D failed~%" *p* *f*)
 (format t "========================================~%")

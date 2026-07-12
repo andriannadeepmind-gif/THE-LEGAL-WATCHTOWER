@@ -82,6 +82,15 @@
   "Return S unless it is NIL or blank/whitespace-only (env vars arrive as \"\")."
   (and s (stringp s) (plusp (length (string-trim '(#\Space #\Tab #\Newline #\Return) s))) s))
 
+(defun %creator-request-authorised-p (key)
+  "Η ΜΙΑ έδρα ταυτότητας δημιουργού για ΚΑΘΕ HTTP επιφάνεια (/ask, /cmd, cockpit):
+   χωρίς LAWMAX_CREATOR_TOKEN (προσωπική τοπική εγκατάσταση) η θύρα ΕΙΝΑΙ ο
+   δημιουργός· με token, απαιτείται KEY (από ?key=…) που ταιριάζει ΑΚΡΙΒΩΣ.
+   KEY είναι το raw string της query (ή NIL αν λείπει). Καμία δεύτερη υλοποίηση
+   αυτού του ελέγχου δεν επιτρέπεται — όλες οι επιφάνειες την ΚΑΤΑΝΑΛΩΝΟΥΝ."
+  (let ((tok (%non-blank (uiop:getenv "LAWMAX_CREATOR_TOKEN"))))
+    (or (null tok) (equal tok key))))
+
 (defun %normspace (s)
   (string-trim " " (cl-ppcre:regex-replace-all "\\s+" (or s "") " ")))
 

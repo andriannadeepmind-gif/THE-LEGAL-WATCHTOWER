@@ -15,9 +15,13 @@
 ;;;;   /api/catalog αυτο-περιγραφή (για UI/MCP)
 ;;;;
 ;;;; Το AI (advisor) συνδέεται ΕΚΤΟΣ trusted path μέσω του υπάρχοντος --serve-mcp.
+;;;; Η επιφάνεια είναι ΔΟΜΙΚΑ trusted-only: κάθε /api κλήση περνά require-trust —
+;;;; μια advisor δυνατότητα ΔΕΝ εκτελείται εδώ (403), δεν φτάνει καν στο :fn.
+;;;;
 ;;;; Υβριδικό: COCKPIT_HOST=127.0.0.1 (τοπικά, default) ή 0.0.0.0 (όπου θες).
-;;;; Auth: με LAWMAX_CREATOR_TOKEN, κάθε /api θέλει ?key=…· χωρίς token (προσωπική
-;;;; τοπική εγκατάσταση) η θύρα ΕΙΝΑΙ ο δημιουργός — ίδιο μοντέλο με το /ask.
+;;;; Auth: η ΜΙΑ έδρα %creator-request-authorised-p (ίδιο μοντέλο με /ask, /cmd).
+;;;; CSRF: κάθε /api απαιτεί Host-allowlist (θάνατος DNS-rebinding) + custom header
+;;;; X-LAWMAX-Cockpit (θάνατος simple-CORS CSRF από <img>/<form>/<script>).
 ;;;; ============================================================================
 
 (in-package :orchestrator.cli)
@@ -29,12 +33,15 @@
   :params ((:q :string t) (:session :string nil))
   :result :string :trust :trusted :proof t
   :fn (lambda (&key q session)
+        ;; μνήμη ΑΝΑ συνεδρία· ακροατήριο :creator (η θύρα έχει ήδη πιστοποιηθεί
+        ;; στον handler). Καμία κατάπνιξη σφάλματος: αποτυχία run-ask ⇒ διαφεύγει
+        ;; ⇒ api-dispatch το γυρίζει 500 (fail-closed, ίδιο με κάθε δυνατότητα).
         (let ((*ask-memory* (if (and session (plusp (length session)))
                                 (%session-memory session)
                                 *ask-memory*)))
-          (with-output-to-string (*standard-output*)
-            (handler-case (run-ask (list q))
-              (error (e) (format t "σφάλμα: ~A~%" e)))))))
+          (orchestrator.self-model:with-audience (:creator)
+            (with-output-to-string (*standard-output*)
+              (run-ask (list q)))))))
 
 (orchestrator.capability:define-capability :pending
   :summary "Τι έφερε ο δαίμονας: εκκρεμείς προτάσεις που περιμένουν την έγκρισή σου"
@@ -54,49 +61,57 @@
   :params ((:id :string t) (:action :string t) (:by :string nil))
   :result :string :trust :trusted
   :fn (lambda (&key id action by)
-        (let ((decision (cond ((string-equal action "approve") :approved)
-                              ((string-equal action "reject")  :rejected)
+        ;; Το ΡΗΜΑ της πράξης (:approve|:reject) — ΑΚΡΙΒΩΣ ό,τι δέχεται η έδρα
+        ;; orchestrator.review:decide (apply-decision: (ecase (:approve :approved)
+        ;; (:reject :rejected))). read-modify-write υπό ΜΙΑ κλειδαριά (κανένα
+        ;; lost-update μεταξύ ταυτόχρονων ανθρώπινων αποφάσεων).
+        (let ((decision (cond ((string-equal action "approve") :approve)
+                              ((string-equal action "reject")  :reject)
                               (t (error "action: approve ή reject")))))
-          (let* ((q (load-review-queue))
-                 (item (orchestrator.review:decide q id decision :by (or by "creator"))))
-            (if item
-                (progn (save-review-queue q)
-                       (format nil "~A → ~A" id (string-downcase (symbol-name decision))))
-                (format nil "δεν βρέθηκε εκκρεμές: ~A" id))))))
+          (with-review-queue-lock
+            (let* ((q (load-review-queue))
+                   (item (orchestrator.review:decide q id decision :by (or by "creator"))))
+              (if item
+                  (progn (save-review-queue q)
+                         (format nil "~A → ~A" id
+                                 (string-downcase (symbol-name (orchestrator.review:item-status item)))))
+                  (format nil "δεν βρέθηκε εκκρεμές: ~A" id)))))))
 
 (orchestrator.capability:define-capability :publish
   :summary "Δημοσίευση: παραγωγή στατικού site (human HTML + AI data + υπογεγραμμένες ρίζες)"
   :params ()
   :result :string :trust :trusted :proof t
   :fn (lambda ()
+        ;; Καμία κατάπνιξη: αποτυχία emit-site ⇒ διαφεύγει ⇒ 500 (μια αποτυχημένη
+        ;; δημοσίευση ΔΕΝ πρέπει ΠΟΤΕ να μοιάζει επιτυχία στον καταναλωτή).
         (with-output-to-string (*standard-output*)
-          (handler-case (emit-site)
-            (error (e) (format t "σφάλμα δημοσίευσης: ~A~%" e))))))
+          (emit-site))))
 
-;;; ── Ελάχιστος ντετερμινιστικός JSON emitter για το payload (%json-escape=έδρα) ──
+;;; ── Ελάχιστη σύνθεση JSON: scalars ΑΠΟΚΛΕΙΣΤΙΚΑ μέσω της ΜΙΑΣ έδρας %json-scalar ──
 
 (defun %cockpit-json (x)
+  "Σύνθεση JSON για το payload: t→true· plist→object· list→array· ΚΑΘΕ scalar
+   (null/αριθμός/string/keyword) περνά από τη ΜΙΑ cli έδρα %json-scalar — καμία
+   επανάληψη της scalar διάκρισης (νόμος «0 διπλά», [0070])."
   (cond
-    ((null x) "null")
     ((eq x t) "true")
-    ((stringp x) (format nil "\"~A\"" (%json-escape x)))
-    ((integerp x) (princ-to-string x))
-    ((and (rationalp x) (not (integerp x))) (format nil "~,6F" (coerce x 'double-float)))
-    ((realp x) (format nil "~,6F" x))
-    ((keywordp x) (format nil "\"~A\"" (%json-escape (string-downcase (symbol-name x)))))
+    ((keywordp x) (%json-scalar (string-downcase (symbol-name x))))
     ((and (consp x) (keywordp (car x)))                 ; plist → object
      (with-output-to-string (o)
        (write-char #\{ o)
        (loop for (k v) on x by #'cddr for first = t then nil
              do (unless first (write-char #\, o))
-                (format o "\"~A\":~A"
-                        (%json-escape (string-downcase (symbol-name k)))
+                (format o "~A:~A"
+                        (%json-scalar (string-downcase (symbol-name k)))
                         (%cockpit-json v)))
        (write-char #\} o)))
-    ((listp x) (format nil "[~{~A~^,~}]" (mapcar #'%cockpit-json x)))   ; list → array
-    (t (format nil "\"~A\"" (%json-escape (princ-to-string x))))))
+    ((consp x) (format nil "[~{~A~^,~}]" (mapcar #'%cockpit-json x)))   ; list → array
+    (t (%json-scalar x))))                              ; nil→null, αριθμός, string
 
-;;; ── Η επαγγελματική σελίδα (self-contained· καλεί το /api/*) ──
+;;; ── Η επαγγελματική σελίδα (self-contained· καλεί ΜΟΝΟ το /api/*) ──
+;;; XSS-ασφαλής εκ κατασκευής: μηδέν innerHTML-string-interpolation δεδομένων.
+;;; Κάθε τιμή μπαίνει με textContent/dataset· τα κουμπιά φέρουν data-id/data-action
+;;; και ένα ΕΝΑ delegated listener — καμία inline onclick με παρεμβολή id.
 
 (defparameter +cockpit-page+
   "<!doctype html><html lang=el><head><meta charset=utf-8>
@@ -127,58 +142,113 @@ button.ghost{background:var(--panel);color:var(--ink);border:1px solid var(--edg
 <main>
   <section class='view on' id=ask>
     <textarea id=q placeholder='π.χ. τι λέει το άρθρο 299 του Ποινικού Κώδικα;'></textarea>
-    <div class=row><button onclick=ask()>Ρώτα</button><span class=muted>ντετερμινιστική απάντηση με πηγές — καμία παραίσθηση</span></div>
+    <div class=row><button id=askbtn>Ρώτα</button><span class=muted>ντετερμινιστική απάντηση με πηγές — καμία παραίσθηση</span></div>
     <div class=out id=ans></div>
   </section>
   <section class=view id=daemon>
-    <div class=row><button class=ghost onclick=loadPending()>Ανανέωση</button><span class=muted id=dcount></span></div>
+    <div class=row><button class=ghost id=refbtn>Ανανέωση</button><span class=muted id=dcount></span></div>
     <div id=dlist></div>
   </section>
   <section class=view id=review>
     <div class=row><input id=by placeholder='όνομα εγκρίνοντος (προαιρετικό)'></div>
-    <div class=row><button class=ghost onclick=loadPending()>Φόρτωσε εκκρεμή</button><span class=muted>εσύ αποφασίζεις — ένα κλικ</span></div>
+    <div class=row><button class=ghost id=refbtn2>Φόρτωσε εκκρεμή</button><span class=muted>εσύ αποφασίζεις — ένα κλικ</span></div>
     <div id=rlist></div>
   </section>
   <section class=view id=publish>
-    <div class=row><button onclick=publish()>Δημοσίευση site</button><span class=muted>human HTML + AI data + υπογεγραμμένες ρίζες</span></div>
+    <div class=row><button id=pubbtn>Δημοσίευση site</button><span class=muted>human HTML + AI data + υπογεγραμμένες ρίζες</span></div>
     <div class=out id=pout></div>
   </section>
 </main>
 <script>
-var KEY=new URLSearchParams(location.search).get('key');function k(){return KEY?('&key='+encodeURIComponent(KEY)):''}
-function j(p){return fetch(p+(p.indexOf('?')<0?'?':'&')+'_=1'+k()).then(r=>r.json())}
-document.querySelectorAll('.tab').forEach(t=>t.onclick=function(){
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
-  document.getElementById(t.dataset.v).classList.add('on');
-  if(t.dataset.v=='daemon'||t.dataset.v=='review')loadPending();});
-function ask(){var q=document.getElementById('q').value;document.getElementById('ans').textContent='…';
-  j('/api/ask?q='+encodeURIComponent(q)).then(d=>document.getElementById('ans').textContent=(d.result||d.error||''));}
+var KEY=new URLSearchParams(location.search).get('key');
+function k(){return KEY?('&key='+encodeURIComponent(KEY)):''}
+// custom header ⇒ ένα <img>/<form> ΔΕΝ μπορεί να το θέσει· cross-origin fetch ⇒ preflight
+function j(p){return fetch(p+(p.indexOf('?')<0?'?':'&')+'_=1'+k(),
+  {headers:{'X-LAWMAX-Cockpit':'1'}}).then(function(r){return r.json()})}
+function show(id){var el=document.getElementById(id);el.textContent='';return el}
+function ask(){document.getElementById('ans').textContent='…';
+  j('/api/ask?q='+encodeURIComponent(document.getElementById('q').value))
+    .then(function(d){document.getElementById('ans').textContent=(d.result||d.error||'')})}
 function publish(){document.getElementById('pout').textContent='…';
-  j('/api/publish').then(d=>document.getElementById('pout').textContent=(d.result||d.error||''));}
-function loadPending(){j('/api/pending').then(d=>{var xs=d.result||[];
+  j('/api/publish').then(function(d){document.getElementById('pout').textContent=(d.result||d.error||'')})}
+function decide(id,a){var by=document.getElementById('by').value||'';
+  j('/api/decide?id='+encodeURIComponent(id)+'&action='+encodeURIComponent(a)+'&by='+encodeURIComponent(by))
+    .then(function(d){alert(d.result||d.error||'');loadPending()})}
+function card(it){ // DOM δόμηση — καμία string-παρεμβολή ⇒ αδύνατο XSS εκ κατασκευής
+  var c=document.createElement('div');c.className='card';
+  var h=document.createElement('h4');h.textContent=it.summary||it.id;c.appendChild(h);
+  var s=document.createElement('div');s.className='sev';s.textContent=(it.kind||'')+' · '+(it.severity||'');c.appendChild(s);
+  var r=document.createElement('div');r.className='row';
+  var ap=document.createElement('button');ap.textContent='Έγκριση';ap.dataset.id=it.id;ap.dataset.action='approve';
+  var rj=document.createElement('button');rj.className='ghost';rj.textContent='Απόρριψη';rj.dataset.id=it.id;rj.dataset.action='reject';
+  r.appendChild(ap);r.appendChild(rj);c.appendChild(r);return c}
+function loadPending(){j('/api/pending').then(function(d){var xs=d.result||[];
   document.getElementById('dcount').textContent=xs.length+' εκκρεμή';
-  var html=xs.length?'':'<div class=muted>κανένα εκκρεμές — ο δαίμονας δεν έφερε κάτι που να χρειάζεται απόφαση</div>';
-  xs.forEach(function(it){html+='<div class=card><h4>'+esc(it.summary||it.id)+'</h4>'+
-    '<div class=sev>'+esc(it.kind||'')+' · '+esc(it.severity||'')+'</div>'+
-    '<div class=row><button onclick=\"decide(\\''+esc(it.id)+'\\',\\'approve\\')\">Έγκριση</button>'+
-    '<button class=ghost onclick=\"decide(\\''+esc(it.id)+'\\',\\'reject\\')\">Απόρριψη</button></div></div>';});
-  document.getElementById('dlist').innerHTML=html;document.getElementById('rlist').innerHTML=html;});}
-function decide(id,a){var by=encodeURIComponent(document.getElementById('by').value||'');
-  j('/api/decide?id='+encodeURIComponent(id)+'&action='+a+'&by='+by).then(d=>{alert(d.result||d.error||'');loadPending();});}
-function esc(s){return String(s).replace(/[&<>\"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c]})}
+  ['dlist','rlist'].forEach(function(id){var el=show(id);
+    if(!xs.length){var m=document.createElement('div');m.className='muted';
+      m.textContent='κανένα εκκρεμές — ο δαίμονας δεν έφερε κάτι που να χρειάζεται απόφαση';el.appendChild(m);return}
+    xs.forEach(function(it){el.appendChild(card(it))})})})}
+document.querySelectorAll('.tab').forEach(function(t){t.onclick=function(){
+  document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});t.classList.add('on');
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('on')});
+  document.getElementById(t.dataset.v).classList.add('on');
+  if(t.dataset.v=='daemon'||t.dataset.v=='review')loadPending()}});
+document.getElementById('askbtn').onclick=ask;
+document.getElementById('pubbtn').onclick=publish;
+document.getElementById('refbtn').onclick=loadPending;
+document.getElementById('refbtn2').onclick=loadPending;
+document.addEventListener('click',function(e){var b=e.target.closest?e.target.closest('button[data-action]'):null;
+  if(b){decide(b.dataset.id,b.dataset.action)}});
 </script></body></html>"
   "Η self-contained επαγγελματική σελίδα του cockpit· καλεί ΜΟΝΟ το /api/*.")
 
-;;; ── HTTP προβολή: /api/* → api-dispatch· / → σελίδα· auth ίδιο μοντέλο με /ask ──
+;;; ── Φρουροί της επιφάνειας (fail-closed· η ΜΙΑ έδρα ταυτότητας για το key) ──
+
+(defun %cockpit-host-ok-p (req)
+  "Host-allowlist — θάνατος DNS-rebinding στην τοπική εγκατάσταση. Επιτρεπτά:
+   COCKPIT_ALLOWED_HOSTS (comma-sep) αν οριστεί· αλλιώς, για loopback bind, ΜΟΝΟ
+   localhost/127.0.0.1/::1· για ρητά μη-loopback bind (0.0.0.0/δημόσιο) χωρίς
+   allowlist δεν φράσσει (ρητή επιλογή «όπου θες» — φρουρούν header + token)."
+  (let* ((hdr (or (orchestrator.http:http-request-header req "host") ""))
+         (host-only (string-downcase (subseq hdr 0 (or (position #\: hdr) (length hdr)))))
+         (allowed (%non-blank (uiop:getenv "COCKPIT_ALLOWED_HOSTS")))
+         (bind (or (%non-blank (uiop:getenv "COCKPIT_HOST")) "127.0.0.1")))
+    (cond
+      (allowed
+       (and (member host-only
+                    (mapcar (lambda (s) (string-downcase (string-trim " " s)))
+                            (uiop:split-string allowed :separator '(#\,)))
+                    :test #'string=)
+            t))
+      ((member bind '("127.0.0.1" "localhost" "::1") :test #'string=)
+       (and (member host-only '("127.0.0.1" "localhost" "::1") :test #'string=) t))
+      (t t))))
+
+(defun %cockpit-csrf-ok-p (req)
+  "Απαιτεί το custom header X-LAWMAX-Cockpit: ένα <img>/<form>/<script> ΔΕΝ μπορεί
+   να το θέσει, και ένα cross-origin fetch που το θέτει πυροδοτεί preflight που δεν
+   εγκρίνουμε ⇒ ο browser το φράζει. Θάνατος της κλάσης simple-CORS CSRF."
+  (and (orchestrator.http:http-request-header req "x-lawmax-cockpit") t))
 
 (defun %cockpit-authorised-p (req)
-  "Χωρίς LAWMAX_CREATOR_TOKEN (προσωπική τοπική εγκατάσταση): η θύρα ΕΙΝΑΙ ο
-   δημιουργός. Με token: απαιτείται ?key=… που ταιριάζει."
-  (let ((tok (%non-blank (uiop:getenv "LAWMAX_CREATOR_TOKEN"))))
-    (or (null tok)
-        (equal tok (cdr (assoc "key" (orchestrator.http:http-request-query req)
-                               :test #'string=))))))
+  "Ταυτότητα δημιουργού για το key — μέσω της ΜΙΑΣ έδρας (cli-util), καμία
+   δεύτερη υλοποίηση του ελέγχου."
+  (%creator-request-authorised-p
+   (cdr (assoc "key" (orchestrator.http:http-request-query req) :test #'string=))))
+
+(defun %cockpit-api-guard (req)
+  "Fail-closed πύλη κάθε /api αιτήματος. Επιστρέφει (values nil nil) αν περνά,
+   αλλιώς (values STATUS MSG). Σειρά: Host (rebinding) → header (CSRF) → key."
+  (cond
+    ((not (%cockpit-host-ok-p req))
+     (values 403 "μη επιτρεπτό Host (πιθανό DNS-rebinding)"))
+    ((not (%cockpit-csrf-ok-p req))
+     (values 403 "λείπει X-LAWMAX-Cockpit (προστασία CSRF)"))
+    ((not (%cockpit-authorised-p req))
+     (values 403 "μόνο ο δημιουργός (λείπει/λάθος key)"))
+    (t (values nil nil))))
+
+;;; ── HTTP προβολή: /api/* → api-dispatch (require-trust)· / → σελίδα ──
 
 (defun %json-response (status payload)
   (orchestrator.http:respond (if (integerp status) status 200)
@@ -193,17 +263,19 @@ function esc(s){return String(s).replace(/[&<>\"']/g,function(c){return{'&':'&am
        (orchestrator.http:respond 200 +cockpit-page+
                                   "Content-Type" "text/html; charset=utf-8"))
       ((and (>= (length path) (length pfx)) (string= pfx path :end2 (length pfx)))
-       (if (not (%cockpit-authorised-p req))
-           (%json-response 403 (list :error "μόνο ο δημιουργός (λείπει/λάθος key)"))
-           (if (string= path "/api/catalog")
-               (multiple-value-bind (st pl) (orchestrator.capability-api:api-catalog)
-                 (%json-response st pl))
-               (multiple-value-bind (st pl)
-                   (orchestrator.capability-api:api-dispatch
-                    path (orchestrator.http:http-request-query req))
-                 (if (eq st :not-api)
-                     (%json-response 404 (list :error "άγνωστη διαδρομή"))
-                     (%json-response st pl))))))
+       (multiple-value-bind (gstatus gmsg) (%cockpit-api-guard req)
+         (if gstatus
+             (%json-response gstatus (list :error gmsg))
+             (if (string= path "/api/catalog")
+                 (multiple-value-bind (st pl)
+                     (orchestrator.capability-api:api-catalog :require-trust t)
+                   (%json-response st pl))
+                 (multiple-value-bind (st pl)
+                     (orchestrator.capability-api:api-dispatch
+                      path (orchestrator.http:http-request-query req) :require-trust t)
+                   (if (eq st :not-api)
+                       (%json-response 404 (list :error "άγνωστη διαδρομή"))
+                       (%json-response st pl)))))))
       (t (orchestrator.http:respond 404 "not found"
                                     "Content-Type" "text/plain; charset=utf-8")))))
 

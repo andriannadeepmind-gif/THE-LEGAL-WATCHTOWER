@@ -63,14 +63,21 @@
         when s
           append (list pname (%coerce-one cap pname ptype s))))
 
-(defun api-dispatch (path query)
+(defun api-dispatch (path query &key require-trust)
   "Δρομολόγηση ΕΝΟΣ αιτήματος. Επιστρέφει (values STATUS PAYLOAD):
      :not-api                       — δεν είναι /api/… (ο μεταφορέας σερβίρει αλλού)
      200 (:result <αποτέλεσμα>)     — επιτυχία
+     403 (:error …)                 — REQUIRE-TRUST και η δυνατότητα δεν είναι :trusted
      404 (:error …)                 — άγνωστη δυνατότητα
      400 (:error … :capability n)   — παράβαση συμβολαίου (λείπον/λάθος τύπος)
      500 (:error …)                 — απρόβλεπτο σφάλμα της domain έδρας
-   Καμία εξαίρεση δεν διαφεύγει (fail-closed, ίδια σε κάθε επιφάνεια)."
+   Καμία εξαίρεση δεν διαφεύγει (fail-closed, ίδια σε κάθε επιφάνεια).
+
+   REQUIRE-TRUST t ⇒ η ΔΟΜΙΚΗ επιβολή «κανένα advisor/LLM στο trusted path» για
+   ΑΥΤΗ την επιφάνεια: μια μη-:trusted δυνατότητα ΔΕΝ εκτελείται (403) — δεν
+   φτάνει καν στο :fn. Ο trusted cockpit το περνά t· μια ρητά advisor projection
+   το αφήνει nil. Η άμυνα είναι διπλή: pre-check εδώ + :require-trust στο
+   invoke-capability (η έδρα αρνείται ξανά)."
   (if (not (%prefixp *api-prefix* path))
       (values :not-api nil)
       (let* ((name-part (subseq path (length *api-prefix*)))
@@ -80,9 +87,14 @@
         (cond
           ((null cap)
            (values 404 (list :error "άγνωστη δυνατότητα" :name name-part)))
+          ((and require-trust (not (trusted-capability-p cap)))
+           (values 403 (list :error "advisor-only δυνατότητα σε trusted επιφάνεια — άρνηση"
+                             :capability (string-downcase (symbol-name capname))
+                             :trust (string-downcase (symbol-name (capability-trust cap))))))
           (t
            (handler-case
-               (let ((result (invoke-capability capname (coerce-args cap query))))
+               (let ((result (invoke-capability capname (coerce-args cap query)
+                                                :require-trust require-trust)))
                  (values 200 (list :result result
                                    :capability (string-downcase (symbol-name capname))
                                    :trust (string-downcase (symbol-name (capability-trust cap))))))
@@ -93,9 +105,11 @@
                (values 500 (list :error (format nil "εσωτερικό σφάλμα: ~A" e)
                                  :capability (string-downcase (symbol-name capname)))))))))))
 
-(defun api-catalog ()
-  "Αυτο-περιγραφή: όλες οι δυνατότητες ως δεδομένα (για UI/MCP tools/list).
-   (values 200 (:capabilities ((:name … :summary … :trust … :proof … :params …) …)))."
+(defun api-catalog (&key require-trust)
+  "Αυτο-περιγραφή: δυνατότητες ως δεδομένα (για UI/MCP tools/list).
+   (values 200 (:capabilities ((:name … :summary … :trust … :proof … :params …) …))).
+   REQUIRE-TRUST t ⇒ μια trusted επιφάνεια ΔΕΝ διαφημίζει advisor δυνατότητες
+   που θα αρνιόταν έτσι κι αλλιώς (καμία διαρροή ύπαρξης· ίδια στάση με api-dispatch)."
   (values
    200
    (list :capabilities
@@ -110,4 +124,6 @@
                                           :type (string-downcase (symbol-name (param-type p)))
                                           :required (and (param-required-p p) t)))
                                   (capability-params c))))
-          (all-capabilities)))))
+          (if require-trust
+              (remove-if-not #'trusted-capability-p (all-capabilities))
+              (all-capabilities))))))

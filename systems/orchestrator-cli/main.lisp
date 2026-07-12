@@ -720,8 +720,8 @@ document.getElementById('ops').addEventListener('click',function(ev){
                                  :test #'string=)))
                 (sid (cdr (assoc "s" (orchestrator.http:http-request-query req)
                                  :test #'string=)))
-                (tok (%non-blank (uiop:getenv "LAWMAX_CREATOR_TOKEN")))
-                (audience (if (or (null tok) (equal key tok)) :creator :guest))
+                ;; Η ΜΙΑ έδρα ταυτότητας δημιουργού (cli-util) — καμία inline επανάληψη
+                (audience (if (%creator-request-authorised-p key) :creator :guest))
                 ;; μνήμη ΑΝΑ συνεδρία — ο διάλογος του ενός δεν αγγίζει του άλλου
                 (*ask-memory* (if sid (%session-memory sid) *ask-memory*))
                 (answer (if (and q (plusp (length q)))
@@ -740,8 +740,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
                                   :test #'string=)))
                 (key (cdr (assoc "key" (orchestrator.http:http-request-query req)
                                  :test #'string=)))
-                (tok (%non-blank (uiop:getenv "LAWMAX_CREATOR_TOKEN")))
-                (creator-p (or (null tok) (equal key tok))))
+                (creator-p (%creator-request-authorised-p key)))
            (cond
              ((not creator-p)
               (orchestrator.http:respond 403 "μόνο ο δημιουργός εκτελεί εντολές (λείπει/λάθος key)"
@@ -1393,6 +1392,15 @@ document.getElementById('ops').addEventListener('click',function(ev){
                                    (uiop:ensure-directory-pathname
                                     (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/")))))))
 
+;; ΜΙΑ σειριοποίηση για το read-modify-write της ουράς εγκρίσεων: πολλά ταυτόχρονα
+;; νήματα HTTP (cockpit) ή CLI+cockpit στην ΙΔΙΑ διεργασία δεν πατούν το ένα την
+;; απόφαση του άλλου (lost update). Ενδο-διεργασιακό — η δια-διεργασιακή ασφάλεια
+;; (δαίμονας σε ξεχωριστό process) είναι ρητά άλλη φάση (file-level CAS).
+(defvar *review-queue-lock* (sb-thread:make-mutex :name "review-queue"))
+
+(defmacro with-review-queue-lock (&body body)
+  `(sb-thread:with-mutex (*review-queue-lock*) ,@body))
+
 (defun load-review-queue ()
   (let ((q (funcall (find-symbol "MAKE-REVIEW-QUEUE" :orchestrator.review)))
         (f (%review-queue-file)))
@@ -1435,29 +1443,31 @@ document.getElementById('ops').addEventListener('click',function(ev){
    και σημείωση, ΑΠΟΜΝΗΜΟΝΕΥΕΤΑΙ (η ίδια μελλοντική πρόταση αποφασίζεται
    αυτόματα όπως αποφάσισες εσύ) και — για εγκρίσεις — η πράξη εφαρμόζεται
    μέσω του κανονικού consolidation στο επόμενο --apply-upgrade.
-   DECISION είναι :approved ή :rejected — τα keywords που ελέγχει η ουρά
-   (το ιστορικό :approve δεν μετρούσε ποτέ στα approved-operations)."
+   DECISION είναι το ΡΗΜΑ της πράξης :approve ή :reject — ΑΚΡΙΒΩΣ ό,τι δέχεται
+   η έδρα orchestrator.review:decide (apply-decision: (ecase decision (:approve
+   :approved) (:reject :rejected))). Το status γίνεται :approved/:rejected· η
+   πράξη είναι :approve/:reject. (Παλιότερα εδώ περνούσε :approved → ecase
+   CASE-FAILURE, σιωπηλά καταπινόμενο ⇒ «δεν βρέθηκε» σε ΥΠΑΡΚΤΟ item.)"
   (let* ((id (or (first args) (uiop:getenv "REVIEW_ID")))
          (by (or (uiop:getenv "REVIEW_BY") "user"))
          (note (when (rest args) (format nil "~{~A~^ ~}" (rest args)))))
     (unless (and id (plusp (length id)))
       (format t "χρήση: --approve|--reject <id> [σημείωση]   (τα id: --review)~%")
       (return-from review-decide 1))
-    (let* ((q (load-review-queue))
-           (item (handler-case
-                     (funcall (find-symbol "DECIDE" :orchestrator.review)
-                              q id decision :by by :note note)
-                   (error (e) (format t "  ✗ ~A~%" e) nil))))
-      (if item
-          (progn (save-review-queue q)
-                 (format t "  ~A ~A (από ~A)~%"
-                         (if (eq decision :approved) "✓ ΕΓΚΡΙΘΗΚΕ" "✗ ΑΠΟΡΡΙΦΘΗΚΕ")
-                         (funcall (find-symbol "ITEM-SUMMARY" :orchestrator.review) item)
-                         by)
-                 (when (eq decision :approved)
-                   (format t "  ➤ Εφαρμογή & νέο golden: --apply-upgrade~%"))
-                 0)
-          (progn (format t "Δεν βρέθηκε item με id=~A~%" id) 1)))))
+    (with-review-queue-lock
+      (let* ((q (load-review-queue))
+             (item (funcall (find-symbol "DECIDE" :orchestrator.review)
+                            q id decision :by by :note note)))
+        (if item
+            (progn (save-review-queue q)
+                   (format t "  ~A ~A (από ~A)~%"
+                           (if (eq decision :approve) "✓ ΕΓΚΡΙΘΗΚΕ" "✗ ΑΠΟΡΡΙΦΘΗΚΕ")
+                           (funcall (find-symbol "ITEM-SUMMARY" :orchestrator.review) item)
+                           by)
+                   (when (eq decision :approve)
+                     (format t "  ➤ Εφαρμογή & νέο golden: --apply-upgrade~%"))
+                   0)
+            (progn (format t "Δεν βρέθηκε item με id=~A~%" id) 1))))))
 
 ;;; ── Correctness guarantee (invariants + golden fingerprint) ────────────────
 
