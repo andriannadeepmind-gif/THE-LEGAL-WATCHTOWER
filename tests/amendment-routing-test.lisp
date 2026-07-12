@@ -66,8 +66,10 @@
          (equal "astikos" (getf (op-for ops "art_241") :code)))
   (check "ενότητα ΧΩΡΙΣ ονομασία κώδικα ⇒ αδρομολόγητη (τίμια, ΟΧΙ διαρροή scope)"
          (null (getf (op-for ops "art_3") :code)))
-  (check "3 κουβάδες: kpolitikis, astikos, NIL"
-         (equal '("kpolitikis" "astikos") (remove nil (mapcar #'car summary)))))
+  (check "3 κουβάδες: kpolitikis, astikos, ΚΑΙ ρητός NIL (το αδρομολόγητο ΥΠΑΡΧΕΙ)"
+         (and (= 3 (length summary))
+              (equal '("kpolitikis" "astikos") (remove nil (mapcar #'car summary)))
+              (member nil (mapcar #'car summary)))))
 
 ;;; (3) το scope ΔΕΝ διαρρέει μέσα από παράθεση «…»
 (format t "~%== (3) μάσκα παράθεσης: «…» δεν ορίζει scope ==~%")
@@ -119,6 +121,41 @@
          (null (getf (op-for ops "art_187") :code))))
 
 ;;; (8) μη-τροποποιητικό κείμενο ⇒ τίποτα
+(format t "~%== (9) κριτής #9: κεφαλίδα ΑΡΘΡΟ/ΆΡΘΡΟ κεφαλαία ⇒ όριο ενότητας ==~%")
+(let* ((fek (format nil "ΑΡΘΡΟ 4~%Τροποποιήσεις Κώδικα Πολιτικής Δικονομίας~%1. Το άρθρο 773 καταργείται.~%ΆΡΘΡΟ 5~%Τροποποιήσεις Αστικού Κώδικα~%1. Το άρθρο 241 καταργείται."))
+       (ops (xops fek)))
+  (check "ΑΡΘΡΟ (άτονα κεφαλαία) κεφαλίδα ⇒ scope kpolitikis"
+         (equal "kpolitikis" (getf (op-for ops "art_773") :code)))
+  (check "ΆΡΘΡΟ (τονισμένα κεφαλαία) κεφαλίδα ⇒ νέα ενότητα, scope astikos"
+         (equal "astikos" (getf (op-for ops "art_241") :code))))
+
+(format t "~%== (10) κριτής #4: «Άρθρο Ν» ΜΕΣΑ σε πολύγραμμη παράθεση ≠ κεφαλίδα ==~%")
+(let* ((fek (format nil "Άρθρο 1~%Τροποποιήσεις Ποινικού Κώδικα~%1. Το άρθρο 5 αντικαθίσταται ως εξής: «Άρθρο 5.~%Νέο κείμενο πρώτης παραγράφου.~%2. Δεύτερη παράγραφος.»~%2. Το άρθρο 6 καταργείται."))
+       (ops (xops fek)))
+  (check "quoted «Άρθρο 5.» σε αρχή γραμμής ΔΕΝ άνοιξε ψευδο-ενότητα — art_6 → poinikos"
+         (equal "poinikos" (getf (op-for ops "art_6") :code))))
+
+(format t "~%== (11) κριτής #6: παραπομπή σε ξένη ρήτρα ΔΕΝ κάνει hijack ==~%")
+(let* ((fek (format nil "Άρθρο 1~%Τροποποιήσεις Ποινικού Κώδικα~%1. Το άρθρο 5 αντικαθίσταται ως εξής: «Νέο.»~%2. Η εκτέλεση χωρεί κατά τα άρθρα 176 του Κώδικα Πολιτικής Δικονομίας όπως ισχύουν.~%3. Το άρθρο 20 καταργείται."))
+       (ops (xops fek)))
+  (check "art_20 → poinikos (η παραπομπή σε ΚΠολΔ σε ΑΛΛΗ ρήτρα δεν ορίζει scope)"
+         (equal "poinikos" (getf (op-for ops "art_20") :code))))
+
+(format t "~%== (12) κριτής #1: ΑΔΡΟΜΟΛΟΓΗΤΕΣ ρήτρες ίδιου art_N ΔΕΝ συγχωνεύονται ==~%")
+(let ((ops (extract-operations
+            (concatenate 'string
+              "Άρθρο 1. Το άρθρο 92 αντικαθίσταται ως εξής: «Πρώτο.» "
+              "Άρθρο 2. Το άρθρο 92 αντικαθίσταται ως εξής: «Δεύτερο.»"))))
+  (check "2 πράξεις επιβιώνουν χωρίς resolver (καμία σιωπηλή συγχώνευση)"
+         (and (= 2 (length ops))
+              (equal '("Πρώτο." "Δεύτερο.")
+                     (mapcar (lambda (o) (getf o :text)) ops)))))
+
+(format t "~%== (13) κριτής #5: «ν.» συντομογραφία δεν κόβει το παράθυρο ==~%")
+(let ((ops (xops "Το άρθρο 5 του ν. 4619/2019 (Α' 95) αντικαθίσταται ως εξής: «Χ.»")))
+  (check "law-citation με «ν.» τελεία ⇒ δρομολογείται (poinikos)"
+         (equal "poinikos" (getf (op-for ops "art_5") :code))))
+
 (format t "~%== (8) ordinary text → no operations ==~%")
 (check "plain article text yields no operations"
        (null (xops "Άρθρο 1. Η Ελλάδα είναι Προεδρευόμενη Κοινοβουλευτική Δημοκρατία.")))

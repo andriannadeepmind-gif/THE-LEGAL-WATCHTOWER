@@ -81,16 +81,27 @@
   (multiple-value-bind (updated applied deferred) (apply-extracted-amendments base ops)
     (declare (ignore deferred))
     (check "και οι 3 πράξεις ήταν auto-applicable" (= 3 (length applied)))
-    (multiple-value-bind (verified silent) (round-trip-report updated applied)
-      (check "replace art_5 ⇒ VERIFIED (κείμενο ≡ ΦΕΚ, χαρακτήρα-προς-χαρακτήρα)"
+    (multiple-value-bind (verified skipped mismatched) (round-trip-report updated applied)
+      (check "replace art_5 ⇒ VERIFIED (κείμενο ≡ op text)"
              (member "art_5" verified :key (lambda (o) (getf o :target)) :test #'equal))
       (check "repeal art_10 ⇒ VERIFIED (status :repealed)"
              (member "art_10" verified :key (lambda (o) (getf o :target)) :test #'equal))
-      (check "repeal art_999 ⇒ SILENT (προσπεράστηκε — ΑΝΑΦΕΡΕΤΑΙ, δεν χάνεται)"
-             (and (= 1 (length silent))
-                  (equal "art_999" (getf (first silent) :target))))
-      (check "verified + silent = applied (καμία πράξη αόρατη)"
-             (= (length applied) (+ (length verified) (length silent)))))))
+      (check "repeal art_999 ⇒ SKIPPED (προσπεράστηκε — ΑΝΑΦΕΡΕΤΑΙ, δεν χάνεται)"
+             (and (= 1 (length skipped))
+                  (equal "art_999" (getf (first skipped) :target))))
+      (check "καμία MISMATCHED (η μηχανή εφάρμοσε ό,τι ανέλαβε)"
+             (null mismatched))
+      (check "verified+skipped+mismatched = applied (καμία πράξη αόρατη)"
+             (= (length applied)
+                (+ (length verified) (length skipped) (length mismatched))))
+      ;; mark-amended: επαληθεύεται από STATUS, όχι από σκέτη ύπαρξη (όχι ταυτολογία)
+      (multiple-value-bind (v2 s2 m2)
+          (round-trip-report updated
+                             (list (list :op :mark-amended :target "art_8"
+                                         :if-missing :skip :confidence :high)))
+        (declare (ignore s2))
+        (check "mark-amended σε ΑΝΕΓΓΙΧΤΟ άρθρο ⇒ MISMATCHED (status :original)"
+               (and (null v2) (= 1 (length m2))))))))
 
 (format t "~%========================================~%")
 (format t "Auto-consolidate (closed loop) tests: ~D passed, ~D failed~%" *pass* *fail*)

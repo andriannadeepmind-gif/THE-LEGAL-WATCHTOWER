@@ -176,12 +176,16 @@
 ;;; τυφλή στην κληρονομιά — έχανε 39/40 πράξεις σε κωδικοποιημένη μεταρρύθμιση).
 
 (defparameter +amending-article-header+
-  (cl-ppcre:create-scanner
-   (format nil "(?m)^[ \\t]*(?:Άρθρο|ΑΡΘΡΟ|Αρθρο)\\s+\\d+~A?" "[Α-Ω]")
-   :case-insensitive-mode nil)
+  (cl-ppcre:create-scanner "(?m)^[ \\t]*ΑΡΘΡΟ\\s+\\d+[Α-Ω]?\\b")
   "Κεφαλίδα άρθρου ΤΟΥ ΤΡΟΠΟΠΟΙΗΤΙΚΟΥ νόμου σε αρχή γραμμής — όριο ενότητας
-   (segment) για την κληρονομιά scope. Στην αρχή γραμμής ΜΟΝΟ: οι αναφορές
-   «…το άρθρο 5 του Κώδικα…» μέσα σε πρόταση δεν είναι κεφαλίδες.")
+   (segment) για την κληρονομιά scope. Ταιριάζει πάνω σε NORMALIZE-GREEK
+   κείμενο (κεφαλαία, χωρίς τόνους — length-preserving), οπότε ΜΙΑ κανονική
+   μορφή «ΑΡΘΡΟ» καλύπτει δομικά Άρθρο/ΆΡΘΡΟ/Αρθρο/ΑΡΘΡΟ — εξάλειψη της
+   κλάσης «λίστα παραλλαγών» (εύρημα κριτή #9). Στην αρχή γραμμής ΜΟΝΟ: οι
+   αναφορές «…το άρθρο 5 του Κώδικα…» μέσα σε πρόταση δεν είναι κεφαλίδες.")
+
+(defun %ngz (s)
+  (funcall (find-symbol "NORMALIZE-GREEK" :orchestrator.legal-id) s))
 
 (defun make-registry-resolver (registry)
   "Resolver πάνω στη ΜΙΑ έδρα δρομολόγησης (orchestrator.legal-id): δέχεται
@@ -195,15 +199,29 @@
 (defun %all-quoted-spans (txt)
   "ΟΛΑ τα balanced «…» spans του TXT ως ((start . end) …). Χρησιμεύει ως ΜΑΣΚΑ
    στη διαχείριση scope: κείμενο ΜΕΣΑ σε παράθεση (νέο κείμενο άρθρου) δεν
-   επιτρέπεται να ορίσει τον κώδικα-στόχο των ΕΠΟΜΕΝΩΝ πράξεων."
-  (let ((spans '()) (pos 0))
+   επιτρέπεται να ορίσει τον κώδικα-στόχο των ΕΠΟΜΕΝΩΝ πράξεων.
+   ΑΖΥΓΙΣΤΗ « (OCR): το span φράσσεται στην ΕΠΟΜΕΝΗ κεφαλίδα «ΑΡΘΡΟ Ν» του
+   τροποποιητικού αντί για το EOF — ένας χαλασμένος χαρακτήρας δεν επιτρέπεται
+   να σβήσει το scope ΟΛΟΥ του υπόλοιπου εγγράφου (εύρημα κριτή #10)."
+  (let ((spans '()) (pos 0) (nz (%ngz txt)))
     (loop
       (let ((open (position +laquo+ txt :start pos)))
         (unless open (return (nreverse spans)))
         (multiple-value-bind (payload end) (%balanced-quote txt open)
           (declare (ignore payload))
-          (push (cons open end) spans)
-          (setf pos (max end (1+ open))))))))
+          (let* ((balanced-p (and (> end open)
+                                  (< end (length txt))
+                                  (char= (char txt (1- end)) +raquo+)))
+                 (end (if (or balanced-p (>= (length txt) end))
+                          (if (and (not balanced-p) (= end (length txt)))
+                              ;; unbalanced-to-EOF: φράξε στην επόμενη κεφαλίδα
+                              (or (cl-ppcre:scan +amending-article-header+ nz
+                                                 :start (min (1+ open) (length nz)))
+                                  end)
+                              end)
+                          end)))
+            (push (cons open end) spans)
+            (setf pos (max end (1+ open)))))))))
 
 (defun %mask-spans (txt spans)
   "Αντίγραφο του TXT με τα SPANS σβησμένα (κενά) — ίδιο μήκος, ίδιες θέσεις,
@@ -212,34 +230,88 @@
     (dolist (s spans masked)
       (fill masked #\Space :start (car s) :end (min (length masked) (cdr s))))))
 
-(defun %segment-starts (txt)
-  "Θέσεις έναρξης των ενοτήτων του τροποποιητικού (κεφαλίδες «Άρθρο Ν» σε αρχή
-   γραμμής), με το 0 πάντα πρώτο (προοίμιο/τίτλος = πρώτη ενότητα)."
+(defun %segment-starts (masked-nz)
+  "Θέσεις έναρξης των ενοτήτων του τροποποιητικού (κεφαλίδες «ΑΡΘΡΟ Ν» σε αρχή
+   γραμμής), με το 0 πάντα πρώτο (προοίμιο/τίτλος = πρώτη ενότητα).
+   Σαρώνει το ΜΑΣΚΑΡΙΣΜΕΝΟ+normalized κείμενο (εύρημα κριτή #4): κεφαλίδα
+   «Άρθρο Ν» ΜΕΣΑ σε παρατιθέμενο νέο κείμενο («…\\nΆρθρο 92.…») ΔΕΝ ανοίγει
+   ψευδο-ενότητα — η μάσκα εφαρμόζεται εκεί ακριβώς όπου συμβαίνει το hijack."
   (let ((starts (list 0)))
-    (cl-ppcre:do-matches (ms me +amending-article-header+ txt)
+    (cl-ppcre:do-matches (ms me +amending-article-header+ masked-nz)
       (declare (ignore me))
       (when (plusp ms) (push ms starts)))
     (sort (remove-duplicates starts) #'<)))
 
+(defun %sentence-boundary-after (masked pos)
+  "Η θέση ΜΕΤΑ την τελεία που κλείνει την πρόταση που περιέχει το POS, ή NIL.
+   Τελεία πρότασης = «.» ακολουθούμενη από (κενά+) ΚΕΦΑΛΑΙΟ ή αλλαγή γραμμής ή
+   τέλος κειμένου — «ν. 4619», «παρ. 2», «άρθρ. 5» (πεζό/ψηφίο μετά) ΔΕΝ κόβουν
+   (εύρημα κριτή #5: η συντομογραφία δεν είναι όριο πρότασης)."
+  (loop with n = (length masked)
+        for dot = (position #\. masked :start pos) then (position #\. masked :start (1+ dot))
+        while dot
+        do (let ((next (position-if (lambda (c) (not (member c '(#\Space #\Tab)))) masked
+                                    :start (1+ dot))))
+             (when (or (null next)
+                       (char= (char masked next) #\Newline)
+                       (and (> next (1+ dot)) (upper-case-p (char masked next)))
+                       (and (upper-case-p (char masked next))
+                            (find #\Newline masked :start (1+ dot) :end next)))
+               (return (1+ dot))))
+        finally (return nil)))
+
+(defun %sentence-start-before (masked pos)
+  "Η αρχή της πρότασης που περιέχει το POS (μετά την προηγούμενη τελεία-όριο ή
+   αλλαγή γραμμής), φραγμένη στα 240 πίσω."
+  (let* ((lo (max 0 (- pos 240))) (best lo))
+    ;; τελευταία αλλαγή γραμμής πριν το pos
+    (let ((nl (position #\Newline masked :from-end t :end pos :start lo)))
+      (when nl (setf best (max best (1+ nl)))))
+    ;; τελευταία τελεία-όριο πριν το pos
+    (loop for dot = (position #\. masked :start best :end pos)
+            then (position #\. masked :start (1+ dot) :end pos)
+          while dot
+          do (let ((next (position-if (lambda (c) (not (member c '(#\Space #\Tab)))) masked
+                                      :start (1+ dot) :end pos)))
+               (when (and next (upper-case-p (char masked next)))
+                 (setf best next))))
+    best))
+
 (defun %scope-at (masked segment-starts resolver pos txt-len)
-  "Ο κώδικας-στόχος που ισχύει για πράξη στη θέση POS: rightmost ΡΗΤΗ ονομασία
-   served κώδικα μέσα στην ΤΡΕΧΟΥΣΑ ενότητα, από την κεφαλίδα της έως το τέλος
-   της ΠΡΟΤΑΣΗΣ της πράξης (postfix μνεία «…καταργείται ο Κώδικας Χ» καλύπτεται·
-   η ΕΠΟΜΕΝΗ πρόταση/ενότητα ΔΕΝ διαρρέει προς τα πίσω). Παράθεση «…»
-   μασκαρισμένη. NIL αν η ενότητα δεν ονομάζει κώδικα πουθενά ως εκεί (τίμιο
-   αδρομολόγητο). Η κληρονομιά είναι ΑΥΣΤΗΡΑ ενδο-ενοτική: νέο «Άρθρο Ν» του
-   τροποποιητικού μηδενίζει το scope — ποτέ διαρροή στόχου μεταξύ ενοτήτων."
+  "Ο κώδικας-στόχος για πράξη στη θέση POS — ΜΟΝΟ από θέσεις με ΝΟΜΟΤΕΧΝΙΚΗ
+   υπόσταση (εύρημα κριτή #6: όχι «οποιαδήποτε μνεία» — μια παραπομπή
+   «…κατά τα άρθρα 176 του ΚΠολΔ…» σε ξένη ρήτρα ΔΕΝ επιτρέπεται να
+   ξαναδρομολογήσει τις επόμενες πράξεις της ενότητας):
+     (α) η ΠΡΟΤΑΣΗ ΤΗΣ ΙΔΙΑΣ ΤΗΣ ΠΡΑΞΗΣ («Το άρθρο 5 ΤΟΥ ΚΩΔΙΚΑ Χ
+         αντικαθίσταται…», «Στον Κώδικα Χ, το άρθρο Ν…») — rightmost·
+     (β) αλλιώς, η ΖΩΝΗ ΚΕΦΑΛΙΔΑΣ της ενότητας (τίτλος «Τροποποιήσεις …» +
+         εισαγωγική περίοδος έως «:» ή τέλος 1ης πρότασης, cap 400) — εκεί
+         δηλώνεται ο στόχος μιας κωδικοποιημένης μεταρρύθμισης.
+   Παράθεση «…» μασκαρισμένη. NIL αν τίποτα από τα δύο (τίμιο αδρομολόγητο).
+   Κληρονομιά ΑΥΣΤΗΡΑ ενδο-ενοτική — νέο «ΑΡΘΡΟ Ν» μηδενίζει το scope."
   (when resolver
     (let* ((seg-start 0) (seg-end txt-len))
       (dolist (b segment-starts)
         (cond ((<= b pos) (setf seg-start b))
               (t (setf seg-end b) (return))))
-      (let* ((dot (position #\. masked :start (min pos txt-len)))
-             (hi (min seg-end
-                      (+ pos 80)
-                      (if dot (1+ dot) txt-len))))
-        (when (< seg-start hi)
-          (funcall resolver (subseq masked seg-start hi)))))))
+      (or
+       ;; (α) η πρόταση της πράξης
+       (let* ((s-start (max seg-start (%sentence-start-before masked pos)))
+              (s-end (min seg-end
+                          (or (%sentence-boundary-after masked pos) seg-end)
+                          (+ pos 160)))
+              (win (and (< s-start s-end) (subseq masked s-start s-end))))
+         (and win (funcall resolver win)))
+       ;; (β) η ζώνη κεφαλίδας της ενότητας
+       (let* ((z-cap (min seg-end (+ seg-start 400)))
+              (colon (position #\: masked :start seg-start :end z-cap))
+              (z-end (min z-cap
+                          (or (and colon (1+ colon)) z-cap)
+                          (or (%sentence-boundary-after
+                               masked (min (+ seg-start 1) txt-len))
+                              z-cap)))
+              (zone (and (< seg-start z-end) (subseq masked seg-start z-end))))
+         (and zone (<= seg-start pos) (funcall resolver zone)))))))
 
 (defun %base-article-id (eid)
   "Ο βασικός αριθμός άρθρου ενός eId: art_134__para_1 → «134», art_5Α → «5Α»,
@@ -273,7 +345,7 @@
          (txt (or text ""))
          (all-quotes (%all-quoted-spans txt))
          (masked (%mask-spans txt all-quotes))
-         (segments (%segment-starts txt)))
+         (segments (%segment-starts (%ngz masked))))
     (labels ((codeat (pos)
                (%scope-at masked segments code-resolver pos (length txt)))
              (take (key) (and key (not (gethash key handled)) (setf (gethash key handled) t)))
@@ -288,8 +360,22 @@
                      (values nil conf))))
              (emit (op eid pos &key text (conf :high) note)
                (let ((code (codeat pos)))
-                 ;; dedup per (code . eid): the same article in two codes both stand.
-                 (when (and eid (take (cons code eid)))
+                 ;; Κανόνες dedup (εύρημα κριτή #1, χωρίς να χαθεί η παλιά
+                 ;; σημασιολογία):
+                 ;;  • :mark-amended σε στόχο με ΗΔΗ εκδοθείσα πράξη (ίδιο
+                 ;;    code.eid) απορροφάται — provenance, όχι νέα ουσία.
+                 ;;  • Δρομολογημένες πράξεις: dedup ανά (code . eid) — το ίδιο
+                 ;;    art_N σε ΔΥΟ κώδικες στέκει δύο φορές.
+                 ;;  • ΑΔΡΟΜΟΛΟΓΗΤΕΣ ουσιαστικές πράξεις: κλειδί η ΘΕΣΗ της
+                 ;;    ρήτρας — δύο ρήτρες στο ίδιο art_N (πιθανόν διαφορετικοί
+                 ;;    νόμοι!) ΔΕΝ συγχωνεύονται ποτέ σιωπηλά.
+                 (when (and eid
+                            (not (and (eq op :mark-amended)
+                                      (gethash (cons code eid) handled)))
+                            (take (if code
+                                      (cons code eid)
+                                      (list :unrouted op eid pos)))
+                            (progn (setf (gethash (cons code eid) handled) t) t))
                    (multiple-value-bind (identity adj-conf) (verify code eid conf)
                      (push (append (list :op op :target eid :if-missing :skip
                                          :confidence adj-conf)
@@ -361,18 +447,23 @@
   (and (eq (getf op :confidence) :high)
        (member (getf op :op) '(:replace-text :replace :repeal :mark-amended))))
 
-(defun split-operations (text)
+(defun split-operations (text &key code-resolver article-exists-fn)
   "Return (values applicable flagged): high-confidence engine operations vs.
-   everything recognised but needing human review."
-  (let ((all (extract-operations text)))
+   everything recognised but needing human review. Ο resolver/oracle περνούν
+   ΑΥΤΟΥΣΙΟΙ στον extractor (εύρημα κριτή #8: μία υπογραφή, καμία σιωπηλά
+   αδρομολόγητη διαδρομή)."
+  (let ((all (extract-operations text :code-resolver code-resolver
+                                      :article-exists-fn article-exists-fn)))
     (values (remove-if-not #'operation-applicable-p all)
             (remove-if #'operation-applicable-p all))))
 
-(defun extract-amendment-record (text &key id date fek)
+(defun extract-amendment-record (text &key id date fek code-resolver article-exists-fn)
   "Build a config-shaped amendment RECORD from amending TEXT. \"operations\" holds
    only the auto-applicable (high-confidence) operations; \"review\" holds the
    flagged ones (additions, new articles, whole-law) for human confirmation."
-  (multiple-value-bind (applicable flagged) (split-operations text)
+  (multiple-value-bind (applicable flagged)
+      (split-operations text :code-resolver code-resolver
+                             :article-exists-fn article-exists-fn)
     (list (cons "id" (and id (princ-to-string id)))
           (cons "date" (and date (princ-to-string date)))
           (cons "fek" (and fek (princ-to-string fek)))
@@ -389,13 +480,15 @@
          (cdr (assoc key decision :test #'equal)))
         (t nil)))
 
-(defun diavgeia-decision->record (decision &key text)
+(defun diavgeia-decision->record (decision &key text code-resolver article-exists-fn)
   "Turn a parsed Διαύγεια decision (alist/hash) into an amendment record. The
    amending TEXT may be supplied explicitly (e.g. fetched from documentUrl) or
    is taken from the decision's subject/text fields. Returns NIL when no
    operations can be extracted (so the feed safely ignores a pure announcement)."
   (let* ((body (or text (%dget decision "text") (%dget decision "subject") "")))
-    (multiple-value-bind (applicable flagged) (split-operations body)
+    (multiple-value-bind (applicable flagged)
+        (split-operations body :code-resolver code-resolver
+                               :article-exists-fn article-exists-fn)
       (when (or applicable flagged)
         (list (cons "id" (or (%dget decision "ada") (%dget decision "id")))
               (cons "date" (or (%dget decision "submissionTimestamp")

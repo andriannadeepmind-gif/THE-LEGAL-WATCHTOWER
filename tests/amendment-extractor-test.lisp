@@ -40,10 +40,18 @@
 ;; Like Ν.5090/2024 («…ΠΟΙΝΙΚΟ ΚΩΔΙΚΑ ΚΑΙ ΤΟΝ ΚΩΔΙΚΑ ΠΟΙΝΙΚΗΣ ΔΙΚΟΝΟΜΙΑΣ…»): the
 ;; same article number in two codes must NOT collide — proximity code-resolution
 ;; tags each operation, and dedup is per (code . eId).
-(let* ((ops (extract-operations
+(let* ((rr (make-registry-resolver
+            (list (orchestrator.legal-id:make-registry-entry "kpoinikis"
+                   :law-number 4620 :year 2019 :name "Κώδικας Ποινικής Δικονομίας"
+                   :aliases '("Ποινικής Δικονομίας"))
+                  (orchestrator.legal-id:make-registry-entry "poinikos"
+                   :law-number 4619 :year 2019 :name "Ποινικός Κώδικας"
+                   :aliases '("Ποινικό Κώδικα" "Ποινικού Κώδικα")))))
+       (ops (extract-operations
              (concatenate 'string
                "Άρθρο 1. Το άρθρο 92 του Κώδικα Ποινικής Δικονομίας αντικαθίσταται ως εξής: «Άρθρο 92. Νέο ΚΠΔ.» "
-               "Άρθρο 2. Το άρθρο 92 του Ποινικού Κώδικα αντικαθίσταται ως εξής: «Άρθρο 92. Νέο ΠΚ.»")))
+               "Άρθρο 2. Το άρθρο 92 του Ποινικού Κώδικα αντικαθίσταται ως εξής: «Άρθρο 92. Νέο ΠΚ.»")
+             :code-resolver rr))
        (by-code (lambda (c) (find c ops :key (lambda (o) (getf o :code)) :test #'equal))))
   (check "both art_92 operations survive (no eId collision)" (= 2 (length ops)))
   (check "ΚΠΔ clause → kpoinikis with the ΚΠΔ text"

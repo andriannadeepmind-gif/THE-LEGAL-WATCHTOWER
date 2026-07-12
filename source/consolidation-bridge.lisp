@@ -207,33 +207,39 @@
             applied deferred)))
 
 (defun round-trip-report (consolidated applied-ops)
-  "[FEK-COMPILER] Απόδειξη round-trip: για ΚΑΘΕ auto-applied πράξη, το
-   ενοποιημένο έγγραφο πρέπει να τη φέρει ΠΡΑΓΜΑΤΙΚΑ — :replace-text ⇒ το
-   provision υπάρχει ΚΑΙ το κείμενό του ≡ το παρατεθειμένο νέο κείμενο του ΦΕΚ
-   (χαρακτήρα-προς-χαρακτήρα)· :repeal/:mark-amended ⇒ ο στόχος υπήρχε ώστε η
-   πράξη να είχε υπόσταση. Επιστρέφει (values verified silent) όπου SILENT οι
-   πράξεις που η μηχανή ΠΡΟΣΠΕΡΑΣΕ σιωπηλά (:if-missing :skip σε ανύπαρκτο
-   στόχο) ή που το αποτέλεσμα δεν ταιριάζει με το ΦΕΚ. ΚΑΜΙΑ πράξη δεν
-   επιτρέπεται να χαθεί αόρατα: ο καλών ΟΦΕΙΛΕΙ να αναφέρει τις SILENT — αυτό
-   μετατρέπει το «εφαρμόστηκε» από ισχυρισμό σε ελεγμένο γεγονός."
-  (let ((verified '()) (silent '()))
+  "[FEK-COMPILER] Έλεγχος εφαρμογής (application audit) των auto-applied
+   πράξεων πάνω στο ενοποιημένο έγγραφο. ΤΙΜΙΑ ΕΜΒΕΛΕΙΑ (εύρημα κριτή #7):
+   επαληθεύει ότι η μηχανή ΠΡΑΓΜΑΤΙ εφάρμοσε κάθε πράξη — ΔΕΝ ξαναδιαβάζει το
+   ΦΕΚ ανεξάρτητα· η ισότητα κειμένου κληρονομεί την εγγύηση του extractor ότι
+   το op :text είναι το αυτούσιο παράθεμα του ΦΕΚ (balanced «…»).
+     :replace-text ⇒ provision παρόν ΚΑΙ κείμενο ≡ op :text·
+     :repeal       ⇒ provision παρόν ΚΑΙ status :repealed·
+     :mark-amended ⇒ provision παρόν ΚΑΙ status ≠ :original (η σφράγιση έγινε —
+                     όχι σκέτη ύπαρξη, που θα ήταν ταυτολογία).
+   Επιστρέφει (values verified skipped mismatched):
+     SKIPPED    = ο στόχος ΔΕΝ υπάρχει (η μηχανή τον προσπέρασε με
+                  :if-missing :skip) — αναφέρεται ΠΑΝΤΑ, ποτέ αόρατος·
+     MISMATCHED = ο στόχος υπάρχει αλλά το αποτέλεσμα ΔΕΝ φέρει την πράξη —
+                  εσωτερικό ελάττωμα, ΔΙΑΦΟΡΕΤΙΚΗ κλάση από το skip.
+   verified+skipped+mismatched ≡ applied-ops — καμία πράξη αόρατη."
+  (let ((verified '()) (skipped '()) (mismatched '()))
     (dolist (op applied-ops)
       (let* ((eid (getf op :target))
              (prov (and eid (find-provision consolidated eid))))
-        (case (getf op :op)
-          (:replace-text
-           (if (and prov (equal (provision-text prov) (getf op :text)))
-               (push op verified)
-               (push op silent)))
-          (:repeal
-           ;; ο engine ΔΙΑΤΗΡΕΙ το provision με status :repealed (ELI temporal
-           ;; μοντέλο)· απόν provision = ο στόχος δεν υπήρξε ποτέ ⇒ η πράξη
-           ;; προσπεράστηκε σιωπηλά από το :if-missing :skip ⇒ SILENT.
-           (if (and prov (eq (provision-status prov) :repealed))
-               (push op verified)
-               (push op silent)))
-          (t (if prov (push op verified) (push op silent))))))
-    (values (nreverse verified) (nreverse silent))))
+        (cond
+          ((null prov) (push op skipped))
+          (t (case (getf op :op)
+               (:replace-text
+                (if (equal (provision-text prov) (getf op :text))
+                    (push op verified) (push op mismatched)))
+               (:repeal
+                (if (eq (provision-status prov) :repealed)
+                    (push op verified) (push op mismatched)))
+               (:mark-amended
+                (if (not (eq (provision-status prov) :original))
+                    (push op verified) (push op mismatched)))
+               (t (push op verified)))))))
+    (values (nreverse verified) (nreverse skipped) (nreverse mismatched))))
 
 ;;; ============================================================================
 ;;; AUTONOMY: amending-law TEXT -> per-corpus amendment records (auto-extracted)

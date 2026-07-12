@@ -163,10 +163,27 @@
              (multiple-value-bind (v present) (gethash code cache)
                (if present v
                    (setf (gethash code cache)
-                         (let* ((latest (merge-pathnames
-                                         (format nil "~A/releases/latest/census.json" code)
-                                         root))
-                                (path (probe-file latest)))
+                         ;; Μέσω latest.json (ΟΧΙ symlink — φορητό και σε Windows
+                         ;; checkout όπου το symlink είναι αρχείο) + ΜΟΝΟ αν
+                         ;; attested:true (εύρημα κριτή #3: το docstring οφείλει
+                         ;; να είναι αληθές). Legacy-era latest χωρίς census ⇒
+                         ;; NIL ⇒ :unknown — τίμια προ-census εποχή.
+                         (let* ((lj (merge-pathnames
+                                     (format nil "~A/releases/latest.json" code) root))
+                                (rel (and (probe-file lj)
+                                          (handler-case
+                                              (let ((d (jonathan:parse
+                                                        (uiop:read-file-string lj)
+                                                        :as :hash-table)))
+                                                (and (eq (gethash "attested" d) t)
+                                                     (gethash "release" d)))
+                                            (error () nil))))
+                                (path (and (stringp rel)
+                                           (probe-file
+                                            (merge-pathnames
+                                             (format nil "~A/releases/~A/census.json"
+                                                     code rel)
+                                             root)))))
                            (when path
                              (handler-case
                                  (let* ((doc (jonathan:parse (uiop:read-file-string path)

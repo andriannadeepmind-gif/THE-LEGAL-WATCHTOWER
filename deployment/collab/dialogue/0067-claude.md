@@ -1,0 +1,68 @@
+# [0067] FEK-COMPILER — ο τροποποιητικός νόμος ως πρόγραμμα (επίπεδο DeepMind)
+
+**Ποιος/πότε:** Claude — 2026-07-12. Εντολή δημιουργού: «θα πρέπει να πιάνει τα
+πάντα επειδή είναι έξυπνο, όχι επειδή κάθε φορά θα προσθέτεις ad hoc κάτι» +
+«τι θα έκανε η deep mind;» + «ωραία υλοποίησέ το σε επίπεδο deep mind».
+
+## Το πρόβλημα (αποδεδειγμένο ζωντανά από τον δημιουργό)
+
+Live run στα ΦΕΚ 2026: το Α'103 (μεγάλη μεταρρύθμιση ΚΠολΔ/ΑΚ) δρομολόγησε
+1/~40 πράξεις· το Α'105 (ΚΠολΔ εκτέλεση) βγήκε ΟΛΟΚΛΗΡΟ αδρομολόγητο και το
+κείμενό του ΔΕΝ αποθηκεύτηκε καν. Αιτία: hardcoded λίστα φράσεων + παράθυρο
+240 χαρακτήρων — τυφλά στη νομοτεχνική δομή (ο κώδικας ονομάζεται ΜΙΑ φορά
+στην κεφαλίδα και κληρονομείται).
+
+## Η υλοποίηση (εξάλειψη της κλάσης, όχι φρουρός)
+
+1. **ΘΑΝΑΤΟΣ της *code-phrases*** (ad hoc λίστα, διπλή έδρα). Η αναγνώριση
+   κωδίκων ζει ΜΟΝΟ στο orchestrator.legal-id: νέα έδρα %entry-mention-position
+   (registry των configs: ονόματα, routing_phrases, νόμος/έτος με αριθμητικά
+   όρια)· classify-text & resolve-code-rightmost = προβολές της (ένα matching).
+2. **Δομική κληρονομιά scope**: κεφαλίδες «ΑΡΘΡΟ Ν» του τροποποιητικού (σε
+   NORMALIZE-GREEK κείμενο — μία κανονική μορφή, όχι λίστα παραλλαγών) ορίζουν
+   ενότητες. Scope πράξης: (α) η πρόταση της ΙΔΙΑΣ της πράξης, αλλιώς (β) η
+   ζώνη κεφαλίδας της ενότητας. Παραπομπές σε ξένες ρήτρες ΔΕΝ κάνουν hijack
+   (νομοτεχνικά τοποθετημένες άγκυρες, όχι «οποιαδήποτε μνεία»). Παραθέσεις
+   «…» μασκαρισμένες ΚΑΙ στον εντοπισμό κεφαλίδων (quoted «Άρθρο Ν» ≠ ενότητα).
+   Συντομογραφίες (ν./παρ.) δεν κόβουν πρόταση· αζύγιστη « φράσσεται στην
+   επόμενη κεφαλίδα (όχι blast μέχρι EOF).
+3. **Επαλήθευση κατά ταυτότητας**: article-exists-fn από τα census.json των
+   attested releases (μέσω latest.json — attested:true, φορητό χωρίς symlink)·
+   αντίφαση ⇒ :identity :contradicted + :low (ΠΟΤΕ αυτο-εφαρμογή)· χωρίς
+   census ⇒ :unknown (τίμια άγνοια). Στο repo: kpolitikis census έχει 773 και
+   933 — θα είχε ΕΠΙΒΕΒΑΙΩΣΕΙ τις δρομολογήσεις των Α'103/Α'239.
+4. **Round-trip audit** (consolidation-bridge:round-trip-report): verified /
+   skipped / mismatched — κάθε applied πράξη αποδεικνύεται στο ενοποιημένο
+   (replace ⇒ κείμενο ≡ op text· repeal ⇒ status :repealed· mark-amended ⇒
+   status ≠ :original, όχι ταυτολογία ύπαρξης)· καμία πράξη αόρατη.
+5. **Μία υπογραφή παντού**: resolver+oracle περνούν μέσα από split-operations/
+   extract-amendment-record/diavgeia-decision->record· το discover-fek τα
+   περνά από το registry+census.
+
+## Αντιπαλικός κριτής (φρέσκο πλαίσιο) — 13 ευρήματα, ΟΛΑ κλεισμένα στην έδρα
+
+#1 σιωπηλή συγχώνευση αδρομολόγητων → κλειδί θέσης (+ mark-amended απορρόφηση)·
+#2 2 σπασμένα legacy τεστ → διορθώθηκαν+τρέχουν· #3 νεκρό μαντείο (latest χωρίς
+census) → latest.json+attested· #4 segments σε raw → σε masked+normalized·
+#5 «ν.» τελεία έκοβε παράθυρο → όριο πρότασης = τελεία+κεφαλαίο· #6 cross-ref
+hijack → νομοτεχνικές ζώνες (α)/(β)· #7 round-trip υπερδήλωση → τίμια εμβέλεια
++3 κλάσεις· #8 unrouted regression στα APIs → threading· #9 ΆΡΘΡΟ variants →
+normalized μία μορφή· #10 unbalanced « blast → φραγή σε κεφαλίδα· #11 διπλό
+matching classify/resolve → μία έδρα-προβολές· #13 κενά τεστ → 6 νέα locks.
+
+## Proof (session μηχάνημα)
+
+amendment-routing **27/27** (νέα: Α'103-κληρονομιά, ΑΡΘΡΟ/ΆΡΘΡΟ κεφαλίδες,
+quoted-header ψευδο-ενότητα, cross-ref hijack, unrouted no-merge, «ν.» όριο,
+ταυτότητα verified/contradicted/unknown)· amendment-extractor 23/23·
+e2e 7/7· accuracy 8/8 guaranteed· auto-consolidate 19/19 (+round-trip 3-κλάσεις)·
+legal-id-registry 27/27· fek-discovery 7/7· orchestrator-cli φορτώνει καθαρά.
+
+## Δηλωμένα υπόλοιπα (φάση β')
+
+- Backtest harness σε ΠΡΑΓΜΑΤΙΚΑ ΦΕΚ (owner docker: ξανά Α'103/Α'105/Α'239
+  με τον νέο extractor — αναμένεται πλήρης δρομολόγηση· + αρίθμηση recall).
+- Corpus test με πραγματικό PDF text-layer (line-glue κεφαλίδων).
+- N-version δεύτερος extractor (Python) — χωριστή φάση, πρότυπο L7-A.
+- Ιστορικό backtest (ανακατασκευή σημερινών κωδίκων από βάση+ιστορικά ΦΕΚ) —
+  απαιτεί ιστορικά κείμενα βάσης· απόφαση δημιουργού για την πηγή τους.

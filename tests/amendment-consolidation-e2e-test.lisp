@@ -38,7 +38,12 @@
     "«Άρθρο 92. Θεωρείται «δημόσιο έγγραφο» κάθε έγγραφο που συντάσσεται από δημόσια αρχή.»"))
 
 (format t "~%== 1) extract: law text → structured operation ==~%")
-(defparameter *ops* (extract-operations *law-text*))
+(defparameter *rr*
+  (orchestrator.amendment-extractor:make-registry-resolver
+   (list (orchestrator.legal-id:make-registry-entry "poinikos"
+          :law-number 4619 :year 2019 :name "Ποινικός Κώδικας"
+          :aliases '("Ποινικό Κώδικα" "Ποινικού Κώδικα")))))
+(defparameter *ops* (extract-operations *law-text* :code-resolver *rr*))
 (check "one replace-text operation" (= 1 (length *ops*)))
 (check "targets art_92 of poinikos"
        (and (string= (getf (first *ops*) :target) "art_92")

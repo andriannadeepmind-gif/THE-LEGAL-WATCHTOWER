@@ -142,27 +142,6 @@
   (and (stringp haystack) (stringp needle) (plusp (length needle))
        (search (%normalize-greek needle) (%normalize-greek haystack))))
 
-(defun %law-cited-p (text num year)
-  "T iff TEXT cites law NUM/YEAR as a WHOLE number/year — with non-digit boundaries
-   and tolerant of spaces around the slash. This is what stops «4619/2019» from
-   matching inside «14619/2019» (a different law) or «4619/20199» (a typo)."
-  (and num year (stringp text)
-       (cl-ppcre:scan (format nil "(?<![0-9])~D\\s*/\\s*~D(?![0-9])" num year) text)
-       t))
-
-(defun classify-text (registry text)
-  "Return the list of corpus-ids whose code TEXT appears to amend, by the strong
-   signal of an explicit statutory citation (the code's own law-number/year,
-   matched on numeric boundaries — never a substring) and the secondary signals of
-   its canonical name / aliases. Conservative: a code is only routed on a concrete
-   hit, never guessed. Order follows REGISTRY."
-  (when (stringp text)
-    (loop for e in registry
-          when (or (%law-cited-p text (entry-law-number e) (entry-year e))
-                   (%contains text (entry-name e))
-                   (some (lambda (a) (%contains text a)) (entry-aliases e)))
-            collect (registry-entry-corpus-id e))))
-
 (defun %law-cited-position (text num year)
   "Η θέση (ή NIL) της ΤΕΛΕΥΤΑΙΑΣ αναφοράς του νόμου NUM/YEAR στο TEXT — ολόκληρος
    αριθμός/έτος με αριθμητικά όρια (βλ. %law-cited-p), ποτέ substring."
@@ -173,28 +152,48 @@
         (setf last ms))
       last)))
 
+(defun %law-cited-p (text num year)
+  "T iff TEXT cites law NUM/YEAR as a WHOLE number/year — προβολή της
+   %law-cited-position (μία υλοποίηση της οριοθετημένης αναζήτησης)."
+  (not (null (%law-cited-position text num year))))
+
+(defun %entry-mention-position (e text nz)
+  "Η ΜΙΑ έδρα αντιστοίχισης entry↔κείμενο: η θέση της ΤΕΛΕΥΤΑΙΑΣ (rightmost)
+   ρητής μνείας του κώδικα E στο TEXT — μέσω αναφοράς νόμου (αριθμητικά όρια),
+   ονόματος ή alias (routing_phrases). NZ = το NORMALIZE-GREEK του TEXT
+   (length-preserving ⇒ οι θέσεις ισχύουν στο πρωτότυπο). NIL = καμία μνεία.
+   Τα classify-text και resolve-code-rightmost είναι ΠΡΟΒΟΛΕΣ αυτής της έδρας
+   (εύρημα κριτή: όχι δύο παράλληλες υλοποιήσεις του ίδιου matching)."
+  (let ((best nil))
+    (flet ((consider (pos) (when (and pos (or (null best) (> pos best)))
+                             (setf best pos))))
+      (consider (%law-cited-position text (entry-law-number e) (entry-year e)))
+      (dolist (needle (cons (entry-name e) (entry-aliases e)))
+        (when (and (stringp needle) (plusp (length needle)))
+          (consider (search (normalize-greek needle) nz :from-end t)))))
+    best))
+
+(defun classify-text (registry text)
+  "Return the list of corpus-ids whose code TEXT appears to amend — προβολή της
+   %entry-mention-position (ένα matching, δύο όψεις). Conservative: a code is
+   only routed on a concrete hit, never guessed. Order follows REGISTRY."
+  (when (stringp text)
+    (let ((nz (normalize-greek text)))
+      (loop for e in registry
+            when (%entry-mention-position e text nz)
+              collect (registry-entry-corpus-id e)))))
+
 (defun resolve-code-rightmost (registry text)
   "(values corpus-id position) του served κώδικα που το TEXT ονομάζει ΡΗΤΑ
-   πλησιέστερα στο τέλος του (rightmost mention) — μέσω ονόματος, alias
-   (routing_phrases των configs) ή αναφοράς νόμου (ν. Χ/ΕΕΕΕ σε αριθμητικά όρια).
-   NIL όταν κανένας κώδικας δεν ονομάζεται — ΠΟΤΕ μαντεψιά. Αυτή είναι η ΜΙΑ
-   έδρα θέσης-ευαίσθητης δρομολόγησης: ο amendment extractor την καταναλώνει
-   για scope resolution, το discovery για ταξινόμηση· καμία λίστα φράσεων δεν
-   ζει πουθενά αλλού (η γνώση κατάγεται από τα configs)."
+   πλησιέστερα στο τέλος του (rightmost mention) — προβολή argmax της ΜΙΑΣ
+   έδρας %entry-mention-position. NIL όταν κανένας κώδικας δεν ονομάζεται —
+   ΠΟΤΕ μαντεψιά."
   (when (and (stringp text) (plusp (length text)))
     (let ((nz (normalize-greek text)) (best -1) (best-code nil))
-      (flet ((consider (pos code)
-               (when (and pos (> pos best))
-                 (setf best pos best-code code))))
-        (dolist (e registry)
-          (let ((code (registry-entry-corpus-id e)))
-            ;; (α) ρητή αναφορά του νόμου-φορέα (ισχυρό σήμα)
-            (consider (%law-cited-position text (entry-law-number e) (entry-year e)) code)
-            ;; (β) κανονικό όνομα + aliases/routing_phrases (NORMALIZE-GREEK είναι
-            ;; length-preserving ⇒ οι θέσεις στο nz ταυτίζονται με το text)
-            (dolist (needle (cons (entry-name e) (entry-aliases e)))
-              (when (and (stringp needle) (plusp (length needle)))
-                (consider (search (normalize-greek needle) nz :from-end t) code))))))
+      (dolist (e registry)
+        (let ((pos (%entry-mention-position e text nz)))
+          (when (and pos (> pos best))
+            (setf best pos best-code (registry-entry-corpus-id e)))))
       (when best-code (values best-code best)))))
 
 (defun route-listing (registry listing &key fetch-text-fn)
