@@ -74,6 +74,7 @@
   (format t "  --run-pipeline     Execute full processing pipeline (one code; ORCHESTRATOR_CORPUS)~%")
   (format t "  --run-all-pipelines  Process ALL codes, each isolated in output/<code>/, with a summary~%")
   (format t "  --serve-review     Web approval screen for the review queue (REVIEW_PORT env)~%")
+  (format t "  --cockpit          ΕΝΟΠΟΙΗΜΕΝΗ ΕΠΙΦΑΝΕΙΑ: Συνομιλία·Δαίμονας·Αμφισβήτηση·Δημοσίευση σε μία θύρα — δυνατότητες ως προβολές της capability-registry (COCKPIT_HOST/COCKPIT_PORT· υβριδικό, default 127.0.0.1:8090)~%")
   (format t "  --verify-corpus    Correctness guarantee: invariants + golden fingerprint (one code)~%")
   (format t "  --verify-all       Run the correctness guarantee over ALL codes~%")
   (format t "  --verify-intelligence  MOP intelligence suite (refs/anomalies/AST/centrality) + intelligence.json~%")
