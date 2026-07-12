@@ -47,6 +47,7 @@
      (:file "government-source")  ; Pull each code from its official state source
      (:file "document-fetch")     ; Pure-Lisp orchestration of an external (headless) document fetcher
      (:file "ingestion-daemon")   ; Deployment: source -> feed -> scheduler -> artifacts
+     (:file "capability-registry"); Η ΜΙΑ έδρα δυνατοτήτων — HTTP/MCP/CLI είναι προβολές της (trust ως ιδιότητα)
      (:file "http-server")        ; Pure-Lisp HTTP/1.1 server (usocket)
      (:file "corpus-service")     ; AI-first corpus HTTP service (CLOS + MOP negotiation)
      (:file "corpus-sparql")      ; Live SPARQL over the consolidated corpus (reuses sparql-endpoint)
