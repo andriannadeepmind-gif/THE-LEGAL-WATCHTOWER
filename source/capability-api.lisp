@@ -1,0 +1,113 @@
+;;;; source/capability-api.lisp
+;;;; ============================================================================
+;;;; CAPABILITY API PROJECTION — transport-agnostic προβολή της ΜΙΑΣ έδρας
+;;;; ============================================================================
+;;;;
+;;;; Η προβολή που μετατρέπει ένα αίτημα (path + query key/value strings) σε κλήση
+;;;; δυνατότητας: `/api/<name>` → coerce query σε typed args (κατά το δηλωμένο
+;;;; συμβόλαιο) → invoke-capability → αποτέλεσμα. Καμία εξάρτηση από HTTP/MCP/CLI:
+;;;; ο HTTP cockpit, το MCP-plug και το CLI είναι ΛΕΠΤΑ όρια μεταφοράς που καλούν
+;;;; ΑΥΤΗ. Έτσι η δρομολόγηση+coercion+σφάλματα ζουν ΜΙΑ φορά, όχι ανά επιφάνεια.
+;;;;
+;;;; Η query είναι πάντα strings (HTTP)· εδώ γίνεται η ΝΤΕΤΕΡΜΙΝΙΣΤΙΚΗ μετατροπή
+;;;; σε τύπους κατά το συμβόλαιο — αποτυχία coercion = 400 (fail-closed), ποτέ
+;;;; σιωπηλή αποδοχή λάθος τύπου.
+;;;; ============================================================================
+
+(defpackage :orchestrator.capability-api
+  (:use :cl :orchestrator.capability)
+  (:export #:*api-prefix* #:api-dispatch #:coerce-args #:api-catalog
+           #:api-status #:api-payload))
+
+(in-package :orchestrator.capability-api)
+
+(defparameter *api-prefix* "/api/"
+  "Το πρόθεμα κάτω από το οποίο κάθε δυνατότητα εκτίθεται ως /api/<name>.")
+
+(defun %prefixp (prefix s)
+  (and (>= (length s) (length prefix))
+       (string= prefix s :end2 (length prefix))))
+
+(defun %query-get (query key)
+  "Τιμή (string) του KEY (string) στη QUERY (alist string.string), ή NIL."
+  (cdr (assoc key query :test #'string=)))
+
+(define-condition coercion-error (capability-error) ())
+
+(defun %coerce-one (cap pname ptype s)
+  "Μετατρέπει το string S στον τύπο PTYPE. Αποτυχία ⇒ coercion-error (→400)."
+  (flet ((bad (want)
+           (error 'coercion-error :cap (capability-name cap)
+                  :reason (format nil "όρισμα ~A: μη έγκυρο ~A (~S)" pname want s))))
+    (case ptype
+      (:string  s)
+      (:keyword s)                       ; κρατιέται string· η δυνατότητα ερμηνεύει
+      (:any     s)
+      (:integer (or (ignore-errors (parse-integer s :junk-allowed nil)) (bad :integer)))
+      (:number  (let* ((*read-eval* nil)
+                       (v (ignore-errors (read-from-string s))))
+                  (if (realp v) v (bad :number))))
+      (:boolean (cond ((member (string-downcase s) '("true" "1" "yes" "ναι") :test #'string=) t)
+                      ((member (string-downcase s) '("false" "0" "no" "όχι" "οχι") :test #'string=) nil)
+                      (t (bad :boolean))))
+      (t s))))
+
+(defun coerce-args (cap query)
+  "QUERY (alist string.string) → args plist τυποποιημένο κατά το συμβόλαιο του CAP.
+   Μόνο δηλωμένα ορίσματα περνούν (extra query keys αγνοούνται)· λείπον υποχρεωτικό
+   το πιάνει το invoke-capability· λάθος τύπος ⇒ coercion-error εδώ."
+  (loop for spec in (capability-params cap)
+        for pname = (param-name spec)
+        for ptype = (param-type spec)
+        for s = (%query-get query (string-downcase (symbol-name pname)))
+        when s
+          append (list pname (%coerce-one cap pname ptype s))))
+
+(defun api-dispatch (path query)
+  "Δρομολόγηση ΕΝΟΣ αιτήματος. Επιστρέφει (values STATUS PAYLOAD):
+     :not-api                       — δεν είναι /api/… (ο μεταφορέας σερβίρει αλλού)
+     200 (:result <αποτέλεσμα>)     — επιτυχία
+     404 (:error …)                 — άγνωστη δυνατότητα
+     400 (:error … :capability n)   — παράβαση συμβολαίου (λείπον/λάθος τύπος)
+     500 (:error …)                 — απρόβλεπτο σφάλμα της domain έδρας
+   Καμία εξαίρεση δεν διαφεύγει (fail-closed, ίδια σε κάθε επιφάνεια)."
+  (if (not (%prefixp *api-prefix* path))
+      (values :not-api nil)
+      (let* ((name-part (subseq path (length *api-prefix*)))
+             (capname (and (plusp (length name-part))
+                           (intern (string-upcase name-part) :keyword)))
+             (cap (and capname (find-capability capname))))
+        (cond
+          ((null cap)
+           (values 404 (list :error "άγνωστη δυνατότητα" :name name-part)))
+          (t
+           (handler-case
+               (let ((result (invoke-capability capname (coerce-args cap query))))
+                 (values 200 (list :result result
+                                   :capability (string-downcase (symbol-name capname))
+                                   :trust (string-downcase (symbol-name (capability-trust cap))))))
+             (capability-error (e)
+               (values 400 (list :error (capability-error-reason e)
+                                 :capability (string-downcase (symbol-name capname)))))
+             (error (e)
+               (values 500 (list :error (format nil "εσωτερικό σφάλμα: ~A" e)
+                                 :capability (string-downcase (symbol-name capname)))))))))))
+
+(defun api-catalog ()
+  "Αυτο-περιγραφή: όλες οι δυνατότητες ως δεδομένα (για UI/MCP tools/list).
+   (values 200 (:capabilities ((:name … :summary … :trust … :proof … :params …) …)))."
+  (values
+   200
+   (list :capabilities
+         (mapcar
+          (lambda (c)
+            (list :name (string-downcase (symbol-name (capability-name c)))
+                  :summary (capability-summary c)
+                  :trust (string-downcase (symbol-name (capability-trust c)))
+                  :proof (and (capability-proof c) t)
+                  :params (mapcar (lambda (p)
+                                    (list :name (string-downcase (symbol-name (param-name p)))
+                                          :type (string-downcase (symbol-name (param-type p)))
+                                          :required (and (param-required-p p) t)))
+                                  (capability-params c))))
+          (all-capabilities)))))
