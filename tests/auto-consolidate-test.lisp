@@ -121,9 +121,12 @@
          (law->record law "poinikos" :code-resolver rr))
   (check "ΜΕ resolver: η ΙΔΙΑ πράξη ΔΕΝ παράγει record για astikos (δεν διαρρέει)"
          (null (law->record law "astikos" :code-resolver rr)))
-  (check "ΧΩΡΙΣ resolver (το παλιό σφάλμα): η αδρομολόγητη πράξη ΘΑ εφαρμοζόταν και στα δύο"
-         (and (law->record law "poinikos")
-              (law->record law "astikos"))))
+  ;; FAIL-CLOSED (εύρημα κριτή C): χωρίς resolver, καμία πράξη δεν είναι
+  ;; δρομολογημένη ⇒ ΤΙΠΟΤΑ δεν αυτο-εφαρμόζεται (ούτε καν στον «sole» κώδικα)·
+  ;; law->record → NIL και στους δύο. Δομικά αδύνατη η τυφλή εφαρμογή.
+  (check "ΧΩΡΙΣ resolver: ΚΑΜΙΑ αυτο-εφαρμογή (NIL και στους δύο — fail-closed)"
+         (and (null (law->record law "poinikos"))
+              (null (law->record law "astikos")))))
 
 (format t "~%========================================~%")
 (format t "Auto-consolidate (closed loop) tests: ~D passed, ~D failed~%" *pass* *fail*)

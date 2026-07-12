@@ -474,21 +474,28 @@
 ;;; Η DeepMind απάντηση στο «πώς έχεις ground truth χωρίς ετικέτες»: το ίδιο το
 ;;; σώμα βαθμολογεί τον εαυτό του πάνω σε ΗΔΗ ΑΛΗΘΕΙΣ αναλλοίωτες — καμία
 ;;; χειροκίνητη ετικέτα, κανένα κατέβασμα:
-;;;   (Α) Precision ταυτότητας: κάθε ΔΡΟΜΟΛΟΓΗΜΕΝΗ πράξη ελέγχεται κατά του
-;;;       committed census του κώδικα-στόχου (article-exists-fn). Route σε κώδικα
-;;;       που ΔΕΝ έχει το άρθρο = μετρημένο σφάλμα (:identity :contradicted).
-;;;       Ακριβές, όχι προσεγγιστικό.
-;;;   (Β) Δομικό recall: τα νομοτεχνικά ρήματα του κειμένου ΕΙΝΑΙ οι πράξεις-
-;;;       αλήθεια. Τα ΙΔΙΑ scanners του extractor μετρούν πόσα υπάρχουν
-;;;       (πάνω στο μασκαρισμένο κείμενο — παράθεση «…» δεν προσμετράται).
+;;;   (Α) Συνέπεια ταυτότητας (census-consistency): κάθε ΔΡΟΜΟΛΟΓΗΜΕΝΗ πράξη
+;;;       ελέγχεται κατά του committed census του κώδικα-στόχου. Route σε κώδικα
+;;;       που ΔΕΝ έχει το άρθρο ⇒ βεβαιωμένο σφάλμα (:identity :contradicted).
+;;;       ΤΙΜΙΟ ΟΡΙΟ (εύρημα κριτή A/b): αυτό ΑΝΙΧΝΕΥΕΙ out-of-range λάθος
+;;;       δρομολόγηση — η ύπαρξη του άρθρου στον κώδικα είναι ΑΝΑΓΚΑΙΑ αλλά ΟΧΙ
+;;;       ΙΚΑΝΗ για ορθή δρομολόγηση (μια πράξη σε ξένο νόμο με ίδιο αριθμό
+;;;       άρθρου θα «περνούσε»). ΔΕΝ είναι routing-precision· είναι ανιχνευτής
+;;;       σφάλματος εύρους. Πλήρης routing-precision ⇒ labeled oracle (απών —
+;;;       δηλωμένο) ή N-version συμφωνία (επόμενη φάση).
+;;;   (Β) Δομική κάλυψη (ops-per-structural-verb): τα νομοτεχνικά ρήματα του
+;;;       κειμένου μετρώνται με ΤΑ ΙΔΙΑ scanners του extractor (masked). ΛΟΓΟΣ
+;;;       κάλυψης, ΟΧΙ recall: ο παρονομαστής έχει θόρυβο (ονοματικοί τύποι,
+;;;       κεφαλίδες «Καταργούμενες») και ο λόγος μπορεί να ξεπεράσει το 1
+;;;       (πολλαπλός στόχος «τα άρθρα Ν και Κ» = 2 πράξεις/1 ρήμα).
 ;;; N-version (2ος extractor) + round-trip ανακατασκευή = δηλωμένες επόμενες φάσεις.
 
 (defun %count-operation-verbs (masked-text)
   "Πλήθος νομοτεχνικών ρημάτων πράξης στο ΜΑΣΚΑΡΙΣΜΕΝΟ κείμενο — ΤΑ ΙΔΙΑ scanners
    που οδηγούν την εξαγωγή (καμία νέα regex). ΑΝΩ ΦΡΑΓΜΑ των πράξεων: κάθε πράξη
    έχει ρήμα, αλλά όχι κάθε αντιστοίχιση ρήματος είναι πράξη σε served κώδικα
-   (π.χ. «Καταργούμενες διατάξεις» κεφαλίδα, ονοματικοί τύποι). Άρα το
-   δομικό-recall (extracted/verbs) είναι ΚΑΤΩ ΦΡΑΓΜΑ — δηλωμένο τίμια."
+   (π.χ. «Καταργούμενες διατάξεις» κεφαλίδα, ονοματικοί τύποι). Άρα ο λόγος
+   ops-per-structural-verb ΔΕΝ είναι recall — δηλωμένο τίμια (εύρημα κριτή Β)."
   (let ((n 0))
     (dolist (sc (list +replace-clause+ +repeal-verb+ +amend-verb+ +add-verb+) n)
       ;; all-matches → flat (start1 end1 start2 end2 …)· ζεύγη ⇒ μήκος/2 = πλήθος
@@ -506,8 +513,10 @@
      :identity-verified  — δρομολογημένες που το census ΕΠΙΒΕΒΑΙΩΝΕΙ
      :identity-contradicted — δρομολογημένες που το census ΔΙΑΨΕΥΔΕΙ (σφάλμα)
      :identity-checked   — verified + contradicted (όσες πήραν ετυμηγορία census)
-     :identity-precision — verified / identity-checked (NIL αν 0· ΑΚΡΙΒΕΣ)
-     :structural-recall  — extracted / structural-verbs (NIL αν 0· κάτω φράγμα)."
+     :census-consistency — verified / identity-checked (NIL αν 0)· ΑΝΙΧΝΕΥΤΗΣ
+                           out-of-range σφάλματος, ΟΧΙ routing-precision (Α/b)
+     :ops-per-structural-verb — extracted / structural-verbs (NIL αν 0)· λόγος
+                                κάλυψης με θορυβώδη παρονομαστή, ΟΧΙ recall (Β)."
   (let* ((ops (extract-operations text :code-resolver code-resolver
                                        :article-exists-fn article-exists-fn))
          (masked (%mask-spans (or text "") (%all-quoted-spans (or text ""))))
@@ -525,8 +534,8 @@
           :identity-verified verified
           :identity-contradicted contradicted
           :identity-checked checked
-          :identity-precision (and (plusp checked) (/ verified checked))
-          :structural-recall (and (plusp verbs) (/ (length ops) verbs)))))
+          :census-consistency (and (plusp checked) (/ verified checked))
+          :ops-per-structural-verb (and (plusp verbs) (/ (length ops) verbs)))))
 
 (defun operation-applicable-p (op)
   "True when OP is high-confidence AND an operation the consolidation engine

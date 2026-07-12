@@ -64,39 +64,51 @@
        (ops (extract-operations text :code-resolver *rr* :article-exists-fn #'oracle))
        (m (measure-extraction text :code-resolver *rr* :article-exists-fn #'oracle)))
   (format t "  μέτρηση: ~S~%" m)
-  ;; Η ΕΓΓΥΗΣΗ: ένας ΞΕΝΟΣ νόμος (a103 δεν τροποποιεί served κώδικα) ⇒ ΜΗΔΕΝ
-  ;; auto-applicable πράξεις σε served κώδικα. Fail-closed σε ΠΡΑΓΜΑΤΙΚΟ κείμενο.
-  (ck "ΜΗΔΕΝ auto-applicable πράξη δρομολογημένη σε served κώδικα"
-      (zerop (count-if (lambda (o) (and (getf o :code) (operation-applicable-p o))) ops)))
+  ;; ΔΟΜΙΚΟ INVARIANT (εύρημα κριτή C — όχι ατύχημα fixture): η consolidation
+  ;; αυτο-εφαρμόζει ΜΟΝΟ ΔΡΟΜΟΛΟΓΗΜΕΝΕΣ πράξεις (law->record). Άρα η ΠΡΑΓΜΑΤΙΚΗ
+  ;; έδρα εφαρμογής είναι το law->record — και ελέγχεται εδώ, όχι μόνο το
+  ;; operation-applicable-p. Ξένος νόμος (a103) ⇒ 0 records σε ΚΑΘΕ served κώδικα.
+  (ck "law->record: 0 auto-applied records σε ΟΛΟΥΣ τους 6 served κώδικες (fail-closed δομικά)"
+      (every (lambda (code)
+               (null (orchestrator.consolidation.bridge:law->record
+                      (list (cons "text" text) (cons "id" "a103") (cons "date" "2026")
+                            (cons "fek" "Α' 103/2026"))
+                      code :code-resolver *rr* :article-exists-fn #'oracle)))
+             '("poinikos" "kpoinikis" "kpolitikis" "astikos" "kdioikitikis" "syntagma")))
   ;; Η self-supervision: ο census ΕΠΙΑΣΕ μόνος του τη λάθος δρομολόγηση (773∉kpoinikis).
-  (ck "census oracle ΕΠΙΑΣΕ ≥1 λάθος δρομολόγηση (contradicted) — αυτόματα, χωρίς ετικέτα"
+  (ck "census ΕΠΙΑΣΕ ≥1 out-of-range δρομολόγηση (contradicted) — αυτόματα, χωρίς ετικέτα"
       (plusp (getf m :identity-contradicted)))
-  (ck "κάθε contradicted πράξη είναι :low ΚΑΙ ΟΧΙ auto-applicable"
+  (ck "κάθε contradicted πράξη είναι :low ΚΑΙ ΟΧΙ operation-applicable-p"
       (every (lambda (o) (or (not (eq (getf o :identity) :contradicted))
                              (and (eq (getf o :confidence) :low)
                                   (not (operation-applicable-p o)))))
              ops))
-  ;; Αυτο-αναφορές (δικά του άρθρα) εντοπίστηκαν σε πραγματικό κείμενο.
   (ck "αυτο-αναφορές δικών-του άρθρων εντοπίστηκαν (self-reference ≥2)"
       (>= (getf m :self-reference) 2))
-  (ck "δομικό recall + verbs μετρήθηκαν (αριθμοί, όχι ισχυρισμός)"
-      (and (plusp (getf m :structural-verbs)) (getf m :structural-recall))))
+  (ck "δομική κάλυψη + verbs μετρήθηκαν (αριθμοί, ΟΧΙ threshold-ισχυρισμός)"
+      (and (plusp (getf m :structural-verbs)) (getf m :ops-per-structural-verb))))
 
-(format t "~%== [2] ΘΕΤΙΚΗ κατεύθυνση: γνήσια τροποποίηση ⇒ identity-precision 100% ==~%")
+(format t "~%== [2] ΘΕΤΙΚΗ κατεύθυνση: γνήσια τροποποίηση ⇒ census ΕΠΙΒΕΒΑΙΩΝΕΙ ==~%")
 (let* ((text "Το άρθρο 5 του Ποινικού Κώδικα καταργείται.")
        (m (measure-extraction text :code-resolver *rr* :article-exists-fn #'oracle)))
   (ck "1 δρομολογημένη σε poinikos" (= 1 (getf m :routed)))
   (ck "census ΕΠΙΒΕΒΑΙΩΝΕΙ (art_5 ∈ poinikos) ⇒ identity-verified=1"
       (= 1 (getf m :identity-verified)))
-  (ck "identity-precision = 1 (100%)" (eql 1 (getf m :identity-precision))))
+  (ck "census-consistency = 1 (η δρομολόγηση δεν διαψεύστηκε από το census)"
+      (eql 1 (getf m :census-consistency)))
+  ;; ΚΑΙ πραγματικά αυτο-εφαρμόζεται στον σωστό κώδικα (θετική εφαρμογή)
+  (ck "law->record: παράγει record ΓΙΑ poinikos (γνήσια εφαρμογή)"
+      (orchestrator.consolidation.bridge:law->record
+       (list (cons "text" text) (cons "id" "x") (cons "date" "2026") (cons "fek" "Α'1"))
+       "poinikos" :code-resolver *rr* :article-exists-fn #'oracle)))
 
-(format t "~%== [3] ΑΝΙΧΝΕΥΣΗ ΣΦΑΛΜΑΤΟΣ: λάθος στόχος ⇒ contradicted, precision<1 ==~%")
+(format t "~%== [3] ΑΝΙΧΝΕΥΣΗ ΣΦΑΛΜΑΤΟΣ: out-of-range στόχος ⇒ contradicted ==~%")
 (let* ((text "Το άρθρο 9999 του Ποινικού Κώδικα καταργείται.")
        (ops (extract-operations text :code-resolver *rr* :article-exists-fn #'oracle))
        (m (measure-extraction text :code-resolver *rr* :article-exists-fn #'oracle)))
   (ck "art_9999 ∉ poinikos ⇒ identity-contradicted=1" (= 1 (getf m :identity-contradicted)))
-  (ck "identity-precision = 0 (η μία δρομολόγηση διαψεύστηκε)"
-      (eql 0 (getf m :identity-precision)))
+  (ck "census-consistency = 0 (η μία δρομολόγηση διαψεύστηκε)"
+      (eql 0 (getf m :census-consistency)))
   (ck "η contradicted πράξη ΔΕΝ αυτο-εφαρμόζεται (fail-closed)"
       (notany #'operation-applicable-p ops)))
 

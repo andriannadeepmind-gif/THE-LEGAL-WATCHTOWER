@@ -280,12 +280,20 @@
       (let* ((codes (remove nil (remove-duplicates
                                  (mapcar (lambda (o) (getf o :code)) ops) :test #'equal)))
              (sole (or (null codes) (equal codes (list corpus-id))))
-             (here (remove-if-not
-                    (lambda (o) (let ((c (getf o :code)))
-                                  (or (equal c corpus-id) (and (null c) sole))))
-                    ops))
-             (applicable (remove-if-not #'%op-applicable here))
-             (review (remove-if #'%op-applicable here)))
+             ;; FAIL-CLOSED (εύρημα κριτή C/BONUS): ΜΟΝΟ ΔΡΟΜΟΛΟΓΗΜΕΝΕΣ σε ΑΥΤΟΝ
+             ;; τον κώδικα πράξεις αυτο-εφαρμόζονται. Αδρομολόγητη πράξη (:code
+             ;; NIL) — ακόμη κι όταν ο νόμος αγγίζει μόνο αυτόν τον κώδικα (sole)
+             ;; — ΔΕΝ αυτο-εφαρμόζεται ποτέ· πάει στο review. Το «sole» δεν είναι
+             ;; πλέον άδεια εφαρμογής, μόνο κριτήριο για το τι εμφανίζεται στο
+             ;; review αυτού του κώδικα. Έτσι το fail-closed είναι ΔΟΜΙΚΟ, όχι
+             ;; ατύχημα του κειμένου: καμία πράξη χωρίς αποδεδειγμένη δρομολόγηση.
+             (routed-here (remove-if-not
+                           (lambda (o) (equal (getf o :code) corpus-id)) ops))
+             (unrouted-sole (when sole
+                              (remove-if (lambda (o) (getf o :code)) ops)))
+             (applicable (remove-if-not #'%op-applicable routed-here))
+             (review (append (remove-if #'%op-applicable routed-here)
+                             unrouted-sole)))
         (when applicable
           (flet ((s (k) (let ((v (%rget law k))) (and v (princ-to-string v)))))
             (list :id (s "id") :fek (s "fek") :date (s "date")
