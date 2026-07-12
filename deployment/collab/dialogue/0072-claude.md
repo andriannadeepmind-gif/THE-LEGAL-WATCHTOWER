@@ -79,5 +79,29 @@ capabilities (φάση θανάτου των παλιών εδρών). Εκκρ�
   18/18, review-queue 30/30, review-service 20/20, fek-ingestion 10/10.
 - Empirical seat-proof του M1: `:approved`→CASE-FAILURE, `:approve`→APPROVED.
 
+## ΕΠΙΒΕΒΑΙΩΤΙΚΟ PASS (3 ανεξάρτητοι verifiers στον ΔΙΟΡΘΩΜΕΝΟ κώδικα)
+Οι διορθώσεις ΚΡΑΤΗΣΑΝ (cleared: M4 γνήσια delegation, M5 μοναδική έδρα auth,
+require-trust δομικό διπλής άμυνας, CSRF header, καμία test-ταυτολογία, macro
+load-order ασφαλής). Βρέθηκαν 3 ΝΕΑ πραγματικά ελαττώματα — κλείστηκαν:
+- **V1 HIGH (S1 residue):** μη-loopback bind (`COCKPIT_HOST=0.0.0.0`) ΧΩΡΙΣ token &
+  ΧΩΡΙΣ allowlist κατέρρεε τον φρουρό σε «ύπαρξη header» (που ένας curl θέτει
+  ελεύθερα) ⇒ δημόσια πρόσβαση σε `/api/decide`,`/api/publish`. **Κλείσιμο:** ο
+  host-guard ΑΡΝΕΙΤΑΙ (fail-closed) δημόσιο bind χωρίς token ή allowlist — καμία
+  δημόσια θύρα ανοιχτή by default.
+- **V2 LOW:** `COCKPIT_ALLOWED_HOSTS` με κενή καταχώρηση (trailing/double comma) +
+  IPv6 `[::1]` parsing. **Κλείσιμο:** `%cockpit-allowed-hosts` αγνοεί κενές·
+  `%cockpit-host-only` χειρίζεται `[::1]:port`.
+- **V3 MEDIUM (fail-open):** `load-review-queue` κατάπινε read-errors ⇒ αλλοιωμένο
+  αρχείο ουράς → «άδεια ουρά» → ο άνθρωπος βλέπει «κανένα εκκρεμές» αντί σφάλματος
+  (οι προτάσεις του δαίμονα εξαφανίζονται). **Κλείσιμο:** το `read` σηματοδοτεί σε
+  αλλοιωμένο s-expr (κενό αρχείο = νόμιμα άδειο)· /api/pending → 500.
+
+M6-συγγενή ευρήματα (2ος lock `*decide-lock*`, action→verb map & `%json-string`
+στο review-service, ζωντανά `--serve-review`/`--serve`) = ΤΙΜΙΑ ΔΗΛΩΜΕΝΑ υπόλοιπα
+του M6 (ο verifier το επιβεβαίωσε ρητά: «HONEST scope declaration»). Φάση δημιουργού.
+
+Proof v2: cockpit **35/35** (+7 locks V1/V2/V3), 0 compile warnings, κανένα
+regression (review-service 20, review-queue 30, fek-ingestion 10, capability-api 16).
+
 Εκκρεμεί: owner docker proof (`docker build` χτίζει cockpit μέσω core-runtime· `--target
 standalone-test` τρέχει το gated cockpit-test) + ρητό «εγκρίνω» + απόφαση M6.

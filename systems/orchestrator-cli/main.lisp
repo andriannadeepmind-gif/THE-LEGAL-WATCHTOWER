@@ -1406,7 +1406,10 @@ document.getElementById('ops').addEventListener('click',function(ev){
         (f (%review-queue-file)))
     (when (probe-file f)
       (with-open-file (s f :external-format :utf-8)
-        (let ((state (ignore-errors (read s nil nil))))
+        ;; FAIL-CLOSED: κενό αρχείο ⇒ nil (νόμιμα άδεια ουρά)· ΑΛΛΟΙΩΜΕΝΟ s-expr ⇒
+        ;; το read ΣΗΜΑΤΟΔΟΤΕΙ (καμία σιωπηλή «άδεια ουρά» που κρύβει τις προτάσεις
+        ;; του δαίμονα από τον άνθρωπο-αυθεντία — [0072] verify V3).
+        (let ((state (read s nil nil)))
           (when state
             (funcall (find-symbol "RESTORE-QUEUE-STATE" :orchestrator.review) q state)))))
     q))

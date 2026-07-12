@@ -204,25 +204,44 @@ document.addEventListener('click',function(e){var b=e.target.closest?e.target.cl
 
 ;;; ── Φρουροί της επιφάνειας (fail-closed· η ΜΙΑ έδρα ταυτότητας για το key) ──
 
+(defparameter +loopback-hosts+ '("127.0.0.1" "localhost" "::1"))
+
+(defun %cockpit-host-only (req)
+  "Το host χωρίς port (πεζά), με σωστό χειρισμό IPv6 literal «[::1]:port»."
+  (let ((hdr (or (orchestrator.http:http-request-header req "host") "")))
+    (string-downcase
+     (cond
+       ((zerop (length hdr)) "")
+       ((char= (char hdr 0) #\[)                       ; [::1] ή [::1]:port
+        (let ((rb (position #\] hdr))) (if rb (subseq hdr 1 rb) hdr)))
+       (t (subseq hdr 0 (or (position #\: hdr) (length hdr))))))))
+
+(defun %cockpit-allowed-hosts ()
+  "COCKPIT_ALLOWED_HOSTS → λίστα (πεζά, ΚΕΝΕΣ καταχωρήσεις αγνοούνται — καμία
+   σιωπηλή fail-open σε trailing/double comma)."
+  (let ((raw (%non-blank (uiop:getenv "COCKPIT_ALLOWED_HOSTS"))))
+    (when raw
+      (remove "" (mapcar (lambda (s) (string-downcase (string-trim '(#\Space #\Tab) s)))
+                         (uiop:split-string raw :separator '(#\,)))
+              :test #'string=))))
+
 (defun %cockpit-host-ok-p (req)
-  "Host-allowlist — θάνατος DNS-rebinding στην τοπική εγκατάσταση. Επιτρεπτά:
-   COCKPIT_ALLOWED_HOSTS (comma-sep) αν οριστεί· αλλιώς, για loopback bind, ΜΟΝΟ
-   localhost/127.0.0.1/::1· για ρητά μη-loopback bind (0.0.0.0/δημόσιο) χωρίς
-   allowlist δεν φράσσει (ρητή επιλογή «όπου θες» — φρουρούν header + token)."
-  (let* ((hdr (or (orchestrator.http:http-request-header req "host") ""))
-         (host-only (string-downcase (subseq hdr 0 (or (position #\: hdr) (length hdr)))))
-         (allowed (%non-blank (uiop:getenv "COCKPIT_ALLOWED_HOSTS")))
-         (bind (or (%non-blank (uiop:getenv "COCKPIT_HOST")) "127.0.0.1")))
+  "Host-guard — θάνατος DNS-rebinding + FAIL-CLOSED δημόσιο bind:
+   · COCKPIT_ALLOWED_HOSTS ⇒ μόνο αυτά (κενές καταχωρήσεις αγνοούνται)·
+   · loopback bind (default) ⇒ μόνο localhost/127.0.0.1/::1·
+   · μη-loopback bind (0.0.0.0/δημόσιο) ΧΩΡΙΣ allowlist ⇒ επιτρέπεται ΜΟΝΟ αν
+     υπάρχει LAWMAX_CREATOR_TOKEN (η αυθεντικοποίηση)· αλλιώς ΑΡΝΗΣΗ — καμία
+     δημόσια θύρα χωρίς token ή allowlist (το custom header ΔΕΝ είναι auth:
+     ένας μη-browser client το θέτει ελεύθερα)."
+  (let ((host (%cockpit-host-only req))
+        (allowed (%cockpit-allowed-hosts))
+        (bind (or (%non-blank (uiop:getenv "COCKPIT_HOST")) "127.0.0.1")))
     (cond
-      (allowed
-       (and (member host-only
-                    (mapcar (lambda (s) (string-downcase (string-trim " " s)))
-                            (uiop:split-string allowed :separator '(#\,)))
-                    :test #'string=)
-            t))
-      ((member bind '("127.0.0.1" "localhost" "::1") :test #'string=)
-       (and (member host-only '("127.0.0.1" "localhost" "::1") :test #'string=) t))
-      (t t))))
+      (allowed (and (member host allowed :test #'string=) t))
+      ((member bind +loopback-hosts+ :test #'string=)
+       (and (member host +loopback-hosts+ :test #'string=) t))
+      ((%non-blank (uiop:getenv "LAWMAX_CREATOR_TOKEN")) t)
+      (t nil))))
 
 (defun %cockpit-csrf-ok-p (req)
   "Απαιτεί το custom header X-LAWMAX-Cockpit: ένα <img>/<form>/<script> ΔΕΝ μπορεί

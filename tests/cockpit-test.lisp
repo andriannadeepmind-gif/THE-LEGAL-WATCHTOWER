@@ -136,6 +136,47 @@
                                          :headers *ok-headers*)))))
 (ignore-errors (sb-posix:unsetenv "LAWMAX_CREATOR_TOKEN"))
 
+(format t "~%== δημόσιο bind FAIL-CLOSED (verify V1) ==~%")
+(sb-posix:setenv "COCKPIT_HOST" "0.0.0.0" 1)
+;; μη-loopback bind χωρίς token/allowlist ⇒ ΑΡΝΗΣΗ ακόμη και με header+Host (το
+;; custom header ΔΕΝ είναι auth: ένας curl το θέτει ελεύθερα).
+(check "0.0.0.0 χωρίς token/allowlist → 403 (καμία δημόσια θύρα ανοιχτή)"
+       (= 403 (st (%cockpit-handler
+                   (req "/api/pending"
+                        :headers '(("host" . "any.example") ("x-lawmax-cockpit" . "1")))))))
+(sb-posix:setenv "LAWMAX_CREATOR_TOKEN" "s3cr3t" 1)
+(check "0.0.0.0 + token + σωστό key → 200 (το token αυθεντικοποιεί)"
+       (= 200 (st (%cockpit-handler
+                   (req "/api/pending" :query '(("key" . "s3cr3t"))
+                        :headers '(("host" . "any.example") ("x-lawmax-cockpit" . "1")))))))
+(check "0.0.0.0 + token + λάθος key → 403"
+       (= 403 (st (%cockpit-handler
+                   (req "/api/pending" :query '(("key" . "no"))
+                        :headers '(("host" . "any.example") ("x-lawmax-cockpit" . "1")))))))
+(ignore-errors (sb-posix:unsetenv "LAWMAX_CREATOR_TOKEN"))
+(sb-posix:setenv "COCKPIT_ALLOWED_HOSTS" "cockpit.internal," 1)   ; trailing comma (verify V2)
+(check "allowlist: δηλωμένο host → 200"
+       (= 200 (st (%cockpit-handler
+                   (req "/api/pending"
+                        :headers '(("host" . "cockpit.internal") ("x-lawmax-cockpit" . "1")))))))
+(check "allowlist: άλλο host → 403"
+       (= 403 (st (%cockpit-handler
+                   (req "/api/pending"
+                        :headers '(("host" . "evil.com") ("x-lawmax-cockpit" . "1")))))))
+(check "allowlist: κενή καταχώρηση ΔΕΝ ανοίγει σε άδειο Host (V2)"
+       (= 403 (st (%cockpit-handler
+                   (req "/api/pending" :headers '(("x-lawmax-cockpit" . "1")))))))
+(ignore-errors (sb-posix:unsetenv "COCKPIT_ALLOWED_HOSTS"))
+(ignore-errors (sb-posix:unsetenv "COCKPIT_HOST"))
+
+(format t "~%== corrupt queue ⇒ FAIL-CLOSED, όχι σιωπηλά άδειο (verify V3) ==~%")
+(with-open-file (s "/tmp/cockpit-test-queue.sexp" :direction :output :if-exists :supersede
+                     :if-does-not-exist :create)
+  (write-string "(:this is ( unbalanced" s))
+(check "αλλοιωμένο REVIEW_QUEUE_FILE ⇒ /api/pending → 500 (όχι 200 άδειο)"
+       (= 500 (st (%cockpit-handler (req "/api/pending" :headers *ok-headers*)))))
+(ignore-errors (delete-file "/tmp/cockpit-test-queue.sexp"))
+
 (format t "~%========================================~%")
 (format t "COCKPIT tests: ~D passed, ~D failed~%" *pass* *fail*)
 (format t "========================================~%")
