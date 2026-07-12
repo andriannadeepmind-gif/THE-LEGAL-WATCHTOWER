@@ -46,6 +46,7 @@
    ;; την καταναλώνει και το x509-authority (αντί για raw-RSA χωρίς padding).
    #:sign-rsa-sha256
    #:verify-rsa-sha256
+   #:verify-rsa-pkcs1
    ;; Conditions
    #:jws-error
    #:key-not-found
@@ -317,23 +318,38 @@
   "Byte length k of the RSA modulus — the size of a conforming signature/EM."
   (ceiling (integer-length (ironclad:rsa-key-modulus key)) 8))
 
-(defun %emsa-pkcs1-v15-sha256 (message k)
+(defparameter +digest-info-prefixes+
+  `((:sha256 . ,+sha256-digest-info-prefix+)
+    ;; DigestInfo DER prefixes (RFC 8017 §9.2 note 1) για SHA-384/SHA-512 —
+    ;; χρειάζονται στην επαλήθευση TSR (οι TSAs υπογράφουν συχνά με SHA-384/512).
+    (:sha384 . #(#x30 #x41 #x30 #x0d #x06 #x09 #x60 #x86 #x48 #x01 #x65 #x03
+                 #x04 #x02 #x02 #x05 #x00 #x04 #x30))
+    (:sha512 . #(#x30 #x51 #x30 #x0d #x06 #x09 #x60 #x86 #x48 #x01 #x65 #x03
+                 #x04 #x02 #x03 #x05 #x00 #x04 #x40)))
+  "Η ΜΙΑ έδρα των DigestInfo prefixes για EMSA-PKCS1-v1_5.")
+
+(defun %emsa-pkcs1-v15 (message k &optional (digest-alg :sha256))
   "Build the encoded message EM per RFC 8017 §9.2 (EMSA-PKCS1-v1_5):
      EM = 0x00 || 0x01 || PS || 0x00 || T,
-   where T = DigestInfo(SHA-256, H(message)) and PS is 0xFF padding (>= 8 bytes)
-   filling EM to exactly K bytes. ironclad:sign-message/verify-signature are the
-   RAW RSA primitive (no padding), so we MUST construct the full EM ourselves —
-   otherwise the output is non-standard and no JOSE library can verify it."
-  (let* ((digest (ironclad:digest-sequence :sha256 message))
-         (tt (concatenate '(vector (unsigned-byte 8)) +sha256-digest-info-prefix+ digest))
+   where T = DigestInfo(DIGEST-ALG, H(message)) and PS is 0xFF padding (>= 8
+   bytes) filling EM to exactly K bytes. ironclad:sign-message/verify-signature
+   are the RAW RSA primitive (no padding), so we MUST construct the full EM
+   ourselves — otherwise the output is non-standard."
+  (let* ((prefix (or (cdr (assoc digest-alg +digest-info-prefixes+))
+                     (error 'jws-error :message (format nil "EMSA: μη υποστηριζόμενο digest ~S" digest-alg))))
+         (digest (ironclad:digest-sequence digest-alg message))
+         (tt (concatenate '(vector (unsigned-byte 8)) prefix digest))
          (ps-len (- k 3 (length tt))))
     (when (< ps-len 8)
-      (error 'jws-error :message "RSA modulus too small for RSASSA-PKCS1-v1_5/SHA-256"))
+      (error 'jws-error :message "RSA modulus too small for RSASSA-PKCS1-v1_5"))
     (concatenate '(vector (unsigned-byte 8))
                  #(#x00 #x01)
                  (make-array ps-len :element-type '(unsigned-byte 8) :initial-element #xFF)
                  #(#x00)
                  tt)))
+
+(defun %emsa-pkcs1-v15-sha256 (message k)
+  (%emsa-pkcs1-v15 message k :sha256))
 
 (defun sign-rsa-sha256 (message private-key)
   "Sign MESSAGE with RSASSA-PKCS1-v1_5 / SHA-256 (RFC 8017 §8.2.1), producing a
@@ -407,6 +423,21 @@
                :message (format nil "JWS header invalid or alg not RS256 (got ~S)" alg)))
       ;; Verify with RSA-SHA256
       (verify-rsa-sha256 signing-bytes signature key))))
+
+(defun verify-rsa-pkcs1 (message signature public-key &key (digest :sha256))
+  "Verify a STANDARD RSASSA-PKCS1-v1_5 signature (RFC 8017 §8.2.2) με DIGEST
+   :sha256/:sha384/:sha512 — η ΜΙΑ έδρα επαλήθευσης PKCS#1 (καταναλώνεται από
+   JWS, x509 και TSR). Returns T, or signals INVALID-SIGNATURE."
+  (let ((em (%emsa-pkcs1-v15 message (%rsa-modulus-bytes public-key) digest)))
+    (handler-case
+        (if (ironclad:verify-signature public-key em signature)
+            t
+            (error 'invalid-signature
+                   :message "Signature verification failed: signature does not match"))
+      (invalid-signature (e) (error e))
+      (error (e)
+        (error 'invalid-signature
+               :message (format nil "Signature verification failed: ~A" e))))))
 
 (defun verify-rsa-sha256 (message signature public-key)
   "Verify a STANDARD RSASSA-PKCS1-v1_5 / SHA-256 signature (RFC 8017 §8.2.2):

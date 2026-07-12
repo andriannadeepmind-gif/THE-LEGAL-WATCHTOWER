@@ -274,4 +274,8 @@
 
    ;; [P1.5-D] Release spine verification (release-gate v2)
    #:verify-release-spine
-   #:frozen-legacy-release-id-p))
+   #:frozen-legacy-release-id-p
+
+   ;; [L7-B] Transparency log των release roots (RFC 6962 §2.1.2)
+   #:tlog-append-root!
+   #:tlog-verify))

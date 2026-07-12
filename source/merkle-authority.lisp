@@ -36,6 +36,9 @@
    #:merkle-root-of-files
    #:inclusion-path               ; audit path για δείκτη
    #:verify-inclusion             ; επανυπολογισμός ρίζας από φύλλο+path
+   ;; RFC 6962 §2.1.2 / RFC 9162 §2.1.4.2 — consistency proofs (L7-B)
+   #:consistency-proof            ; PROOF(m, D[n]) από τα φύλλα
+   #:verify-consistency           ; έλεγχος old-root⊑new-root ΧΩΡΙΣ τα φύλλα
    ;; Σταθερές (audit)
    #:+leaf-prefix+
    #:+node-prefix+))
@@ -144,6 +147,71 @@
                            (append (path mid hi m)
                                    (list (cons :left (mth lo mid))))))))))
       (path 0 (length v) index))))
+
+;;; ============================================================================
+;;; RFC 6962 §2.1.2 — CONSISTENCY PROOF (L7-B: append-only απόδειξη)
+;;; ============================================================================
+;;; PROOF(m, D[n]) αποδεικνύει ότι το δέντρο μεγέθους n είναι ΕΠΕΚΤΑΣΗ του
+;;; δέντρου μεγέθους m (ίδια πρώτα m φύλλα) — ο verifier κρατά ΜΟΝΟ τις δύο
+;;; ρίζες, ποτέ τα φύλλα. Αυτό είναι το θεμέλιο του transparency log:
+;;; ιστορία που ΔΕΝ ξαναγράφεται γίνεται μαθηματικά ελέγξιμη ιδιότητα.
+
+(defun consistency-proof (leaf-hashes m)
+  "RFC 6962 §2.1.2: PROOF(M, D[n]) — λίστα κόμβων ώστε ένας verifier με μόνο
+   MTH(D[0:M]) και MTH(D[n]) να επαληθεύσει ότι το n-δέντρο επεκτείνει το M-δέντρο.
+   Απαιτεί 1 ≤ M ≤ n. Για M = n επιστρέφει '() (ταυτότητα)."
+  (let* ((v (coerce leaf-hashes 'vector))
+         (n (length v)))
+    (unless (<= 1 m n)
+      (error "consistency-proof: απαιτείται 1 ≤ m(~D) ≤ n(~D)" m n))
+    (labels ((mth (lo hi)
+               (if (= (- hi lo) 1) (aref v lo)
+                   (let ((k (%largest-power-of-two-below (- hi lo))))
+                     (hash-node (mth lo (+ lo k)) (mth (+ lo k) hi)))))
+             (subproof (m lo hi complete-p) ; SUBPROOF(m, D[lo:hi], b)
+               (let ((n (- hi lo)))
+                 (cond
+                   ((and (= m n) complete-p) '())
+                   ((= m n) (list (mth lo hi)))
+                   (t (let ((k (%largest-power-of-two-below n)))
+                        (if (<= m k)
+                            (append (subproof m lo (+ lo k) complete-p)
+                                    (list (mth (+ lo k) hi)))
+                            (append (subproof (- m k) (+ lo k) hi nil)
+                                    (list (mth lo (+ lo k)))))))))))
+      (if (= m n) '() (subproof m 0 n t)))))
+
+(defun verify-consistency (m n old-root new-root proof)
+  "RFC 9162 §2.1.4.2: T ανν το PROOF αποδεικνύει MTH_m = OLD-ROOT ⊑ MTH_n =
+   NEW-ROOT (το n-δέντρο επεκτείνει το m-δέντρο). Καθαρά μαθηματικά — ο
+   verifier δεν βλέπει κανένα φύλλο. NIL σε ΚΑΘΕ απόκλιση (fail-closed) —
+   και σε κακοσχηματισμένα hash strings (εύρημα κριτή A5: η υπόσχεση αυτή
+   ισχύει ΚΥΡΙΟΛΕΚΤΙΚΑ, όχι μόνο για καλοσχηματισμένη είσοδο)."
+  (handler-case
+   (cond
+    ((or (< m 1) (> m n)) nil)
+    ((= m n) (and (null proof) (string= old-root new-root)))
+    (t
+     ;; Αν m = ακριβής δύναμη του 2, η old-root ΕΙΝΑΙ ο πρώτος κόμβος του path.
+     (let ((path (if (zerop (logand m (1- m))) (cons old-root proof) proof)))
+       (when path
+         (let ((fn (1- m)) (sn (1- n)))
+           (loop while (oddp fn) do (setf fn (ash fn -1) sn (ash sn -1)))
+           (let ((fr (first path)) (sr (first path)) (ok t))
+             (dolist (c (rest path))
+               (when (zerop sn) (setf ok nil) (return))
+               (cond ((or (oddp fn) (= fn sn))
+                      (setf fr (hash-node c fr)
+                            sr (hash-node c sr))
+                      (loop while (and (not (zerop fn)) (evenp fn))
+                            do (setf fn (ash fn -1) sn (ash sn -1))))
+                     (t (setf sr (hash-node sr c))))
+               (setf fn (ash fn -1) sn (ash sn -1)))
+             (and ok
+                  (zerop sn)
+                  (string= fr old-root)
+                  (string= sr new-root))))))))
+   (error () nil)))
 
 (defun verify-inclusion (leaf-hash path root)
   "Επανυπολόγισε τη ρίζα από LEAF-HASH + PATH (φύλλο→ρίζα) και σύγκρινε με ROOT.

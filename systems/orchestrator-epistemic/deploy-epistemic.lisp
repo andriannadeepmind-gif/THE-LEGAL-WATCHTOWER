@@ -958,6 +958,12 @@ No fallbacks, no partial validity - strict proof gates.
         (error 'orchestrator.spec:validation-error
                :message "promote-latest!: το release ΔΕΝ φέρει RFC-3161 receipt δεμένο στο δικό του root — το latest προάγεται μόνο σε χρονικά αποδεδειγμένη έκδοση"
                :details release-id)))
+    ;; [L7-B] Transparency log ΠΡΩΤΑ (εύρημα κριτή A3-ordering): αν το append
+    ;; αποτύχει, ΤΙΠΟΤΑ δεν προάγεται — ποτέ promoted release εκτός log.
+    ;; Η ΜΙΑ έδρα: tlog-append-root! (consistency proof πριν από κάθε byte).
+    (let ((root (%release-recomputed-root release-dir)))
+      (tlog-append-root! releases-dir root)
+      (format t "✓ transparency log: ~A καταγράφηκε (consistency proof OK)~%" root))
     (when (probe-file latest-symlink) (delete-file latest-symlink))
     #+sbcl (sb-posix:symlink release-id (namestring latest-symlink))
     #-sbcl (error "Symlink creation not implemented for this Lisp implementation")
