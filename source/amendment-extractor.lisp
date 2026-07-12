@@ -230,6 +230,20 @@
     (dolist (s spans masked)
       (fill masked #\Space :start (car s) :end (min (length masked) (cdr s))))))
 
+(defun %own-article-numbers (masked-nz)
+  "Το ΣΥΝΟΛΟ των αριθμών άρθρων ΤΟΥ ΙΔΙΟΥ του νόμου (από τις κεφαλίδες του,
+   στο μασκαρισμένο+normalized κείμενο). Θεμέλιο του διαχωρισμού που δίδαξε το
+   ΦΕΚ Α'103/2026 (νέος Κώδικας Τοπ. Αυτοδιοίκησης με ΔΙΚΑ του άρθρα 1-773+):
+   «καταργείται με το άρθρο 773» εκεί είναι ΑΥΤΟ-ΑΝΑΦΟΡΑ στο δικό του άρθρο
+   καταργουμένων — ΟΧΙ πράξη πάνω σε ξένο κώδικα. Ένας στόχος χωρίς ξένη
+   δρομολόγηση που συμπίπτει με δικό του άρθρο είναι δομικά ύποπτος αυτο-
+   αναφοράς και ΔΕΝ επιτρέπεται να μετρήσει ως τροποποίηση."
+  (let ((set (make-hash-table :test 'equal)))
+    (cl-ppcre:do-register-groups (num)
+        ("(?m)^[ \\t]*ΑΡΘΡΟ\\s+(\\d+[Α-Ω]?)\\b" masked-nz)
+      (setf (gethash num set) t))
+    set))
+
 (defun %segment-starts (masked-nz)
   "Θέσεις έναρξης των ενοτήτων του τροποποιητικού (κεφαλίδες «ΑΡΘΡΟ Ν» σε αρχή
    γραμμής), με το 0 πάντα πρώτο (προοίμιο/τίτλος = πρώτη ενότητα).
@@ -345,10 +359,18 @@
          (txt (or text ""))
          (all-quotes (%all-quoted-spans txt))
          (masked (%mask-spans txt all-quotes))
-         (segments (%segment-starts (%ngz masked))))
+         (masked-nz (%ngz masked))
+         (segments (%segment-starts masked-nz))
+         (own-articles (%own-article-numbers masked-nz)))
     (labels ((codeat (pos)
                (%scope-at masked segments code-resolver pos (length txt)))
              (take (key) (and key (not (gethash key handled)) (setf (gethash key handled) t)))
+             (self-ref-p (code eid)
+               ;; Αδρομολόγητος στόχος που συμπίπτει με ΔΙΚΟ του άρθρο του
+               ;; τροποποιητικού = δομικά ύποπτη αυτο-αναφορά (μάθημα Α'103).
+               (and (null code)
+                    (let ((base (%base-article-id eid)))
+                      (and base (gethash base own-articles)))))
              (verify (code eid conf)
                ;; (values identity-claim adjusted-conf)
                (let ((base (%base-article-id eid)))
@@ -377,8 +399,13 @@
                                       (list :unrouted op eid pos)))
                             (progn (setf (gethash (cons code eid) handled) t) t))
                    (multiple-value-bind (identity adj-conf) (verify code eid conf)
+                     (when (self-ref-p code eid)
+                       (setf adj-conf :low
+                             note (or note "αυτο-αναφορά: άρθρο του ΙΔΙΟΥ του νόμου — όχι τροποποίηση ξένου κώδικα")))
                      (push (append (list :op op :target eid :if-missing :skip
                                          :confidence adj-conf)
+                                   (when (self-ref-p code eid)
+                                     (list :self-reference t))
                                    (when code (list :code code))
                                    (when identity (list :identity identity))
                                    (when (eq identity :contradicted)
