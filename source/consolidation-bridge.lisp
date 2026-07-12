@@ -28,6 +28,7 @@
    #:amendment-records->acts
    #:consolidate-corpus
    #:apply-extracted-amendments #:auto-applicable-operation-p
+   #:round-trip-report
    #:law->record #:laws->records))
 
 (in-package :orchestrator.consolidation.bridge)
@@ -204,6 +205,35 @@
          (act (make-amending-act :id id :effective effective :operations applied)))
     (values (consolidate document (list act) :as-of-date as-of-date)
             applied deferred)))
+
+(defun round-trip-report (consolidated applied-ops)
+  "[FEK-COMPILER] Απόδειξη round-trip: για ΚΑΘΕ auto-applied πράξη, το
+   ενοποιημένο έγγραφο πρέπει να τη φέρει ΠΡΑΓΜΑΤΙΚΑ — :replace-text ⇒ το
+   provision υπάρχει ΚΑΙ το κείμενό του ≡ το παρατεθειμένο νέο κείμενο του ΦΕΚ
+   (χαρακτήρα-προς-χαρακτήρα)· :repeal/:mark-amended ⇒ ο στόχος υπήρχε ώστε η
+   πράξη να είχε υπόσταση. Επιστρέφει (values verified silent) όπου SILENT οι
+   πράξεις που η μηχανή ΠΡΟΣΠΕΡΑΣΕ σιωπηλά (:if-missing :skip σε ανύπαρκτο
+   στόχο) ή που το αποτέλεσμα δεν ταιριάζει με το ΦΕΚ. ΚΑΜΙΑ πράξη δεν
+   επιτρέπεται να χαθεί αόρατα: ο καλών ΟΦΕΙΛΕΙ να αναφέρει τις SILENT — αυτό
+   μετατρέπει το «εφαρμόστηκε» από ισχυρισμό σε ελεγμένο γεγονός."
+  (let ((verified '()) (silent '()))
+    (dolist (op applied-ops)
+      (let* ((eid (getf op :target))
+             (prov (and eid (find-provision consolidated eid))))
+        (case (getf op :op)
+          (:replace-text
+           (if (and prov (equal (provision-text prov) (getf op :text)))
+               (push op verified)
+               (push op silent)))
+          (:repeal
+           ;; ο engine ΔΙΑΤΗΡΕΙ το provision με status :repealed (ELI temporal
+           ;; μοντέλο)· απόν provision = ο στόχος δεν υπήρξε ποτέ ⇒ η πράξη
+           ;; προσπεράστηκε σιωπηλά από το :if-missing :skip ⇒ SILENT.
+           (if (and prov (eq (provision-status prov) :repealed))
+               (push op verified)
+               (push op silent)))
+          (t (if prov (push op verified) (push op silent))))))
+    (values (nreverse verified) (nreverse silent))))
 
 ;;; ============================================================================
 ;;; AUTONOMY: amending-law TEXT -> per-corpus amendment records (auto-extracted)

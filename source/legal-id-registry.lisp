@@ -25,7 +25,10 @@
            #:entry-source-pdf #:entry-fetch-cmd
            #:parse-fek-ref #:parse-law-ref #:normalize-greek
            #:registry-by-corpus #:registry-by-law #:registry-by-fek
-           #:classify-text #:route-listing))
+           #:classify-text #:route-listing
+           ;; [FEK-COMPILER] Η ΜΙΑ έδρα θέσης-ευαίσθητης δρομολόγησης: ποιον
+           ;; served κώδικα ονομάζει το κείμενο, και ΠΟΥ (rightmost mention).
+           #:resolve-code-rightmost))
 
 (in-package :orchestrator.legal-id)
 
@@ -159,6 +162,40 @@
                    (%contains text (entry-name e))
                    (some (lambda (a) (%contains text a)) (entry-aliases e)))
             collect (registry-entry-corpus-id e))))
+
+(defun %law-cited-position (text num year)
+  "Η θέση (ή NIL) της ΤΕΛΕΥΤΑΙΑΣ αναφοράς του νόμου NUM/YEAR στο TEXT — ολόκληρος
+   αριθμός/έτος με αριθμητικά όρια (βλ. %law-cited-p), ποτέ substring."
+  (when (and num year (stringp text))
+    (let ((last nil))
+      (cl-ppcre:do-matches (ms me (format nil "(?<![0-9])~D\\s*/\\s*~D(?![0-9])" num year) text)
+        (declare (ignore me))
+        (setf last ms))
+      last)))
+
+(defun resolve-code-rightmost (registry text)
+  "(values corpus-id position) του served κώδικα που το TEXT ονομάζει ΡΗΤΑ
+   πλησιέστερα στο τέλος του (rightmost mention) — μέσω ονόματος, alias
+   (routing_phrases των configs) ή αναφοράς νόμου (ν. Χ/ΕΕΕΕ σε αριθμητικά όρια).
+   NIL όταν κανένας κώδικας δεν ονομάζεται — ΠΟΤΕ μαντεψιά. Αυτή είναι η ΜΙΑ
+   έδρα θέσης-ευαίσθητης δρομολόγησης: ο amendment extractor την καταναλώνει
+   για scope resolution, το discovery για ταξινόμηση· καμία λίστα φράσεων δεν
+   ζει πουθενά αλλού (η γνώση κατάγεται από τα configs)."
+  (when (and (stringp text) (plusp (length text)))
+    (let ((nz (normalize-greek text)) (best -1) (best-code nil))
+      (flet ((consider (pos code)
+               (when (and pos (> pos best))
+                 (setf best pos best-code code))))
+        (dolist (e registry)
+          (let ((code (registry-entry-corpus-id e)))
+            ;; (α) ρητή αναφορά του νόμου-φορέα (ισχυρό σήμα)
+            (consider (%law-cited-position text (entry-law-number e) (entry-year e)) code)
+            ;; (β) κανονικό όνομα + aliases/routing_phrases (NORMALIZE-GREEK είναι
+            ;; length-preserving ⇒ οι θέσεις στο nz ταυτίζονται με το text)
+            (dolist (needle (cons (entry-name e) (entry-aliases e)))
+              (when (and (stringp needle) (plusp (length needle)))
+                (consider (search (normalize-greek needle) nz :from-end t) code))))))
+      (when best-code (values best-code best)))))
 
 (defun route-listing (registry listing &key fetch-text-fn)
   "Route a ΦΕΚ search LISTING (a list of alists with at least \"title\" and

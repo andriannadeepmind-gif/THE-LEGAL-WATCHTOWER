@@ -134,8 +134,8 @@
      (:file "ai-ingest-manifest")        ; HuggingFace dataset / AI ingest manifest
      (:file "corpus-provenance")         ; PROV-O provenance (wires legal-audit to consolidation)
      (:file "corpus-eu-links")           ; National↔EU linking (CELEX/ELI/EUR-Lex, wires eu-interop)
-     (:file "amendment-extractor")       ; Greek nomotechnic formulas -> consolidation operations
      (:file "legal-id-registry")         ; Routes a discovered ΦΕΚ/law to the code it amends (autonomy brain)
+     (:file "amendment-extractor" :depends-on ("legal-id-registry")) ; nomotechnic formulas -> ops (scope routing μέσω legal-id)
      (:file "static-site")               ; Cloudflare-Pages-ready static site generator (human + AI)
      (:file "review-queue")              ; CLOS/MOP human-in-the-loop review queue (approve/reject)
      (:file "review-service")            ; Web approval screen over the review queue (lawyer UI)

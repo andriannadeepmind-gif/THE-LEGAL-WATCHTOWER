@@ -24,7 +24,9 @@
   (:use :cl)
   (:export #:extract-operations #:extract-amendment-record
            #:operation-applicable-p #:split-operations #:summarize-operations
-           #:diavgeia-decision->record))
+           #:diavgeia-decision->record
+           ;; [FEK-COMPILER] registry-driven scope routing (η λίστα φράσεων πέθανε)
+           #:make-registry-resolver))
 
 (in-package :orchestrator.amendment-extractor)
 
@@ -162,61 +164,143 @@
 (defun %in-spans-p (pos spans)
   (some (lambda (s) (and (>= pos (car s)) (< pos (cdr s)))) spans))
 
-;;; ── per-operation code resolution (which served corpus a clause amends) ──────
-;;; A single act commonly amends several codes; each clause names its target
-;;; («…του Κώδικα Ποινικής Δικονομίας…», «…του Ποινικού Κώδικα…»). Tagging every
-;;; operation with that code lets the consolidation apply it to the RIGHT corpus —
-;;; and stops two codes' «art_92» from colliding. Mirrors the routing phrases;
-;;; accent/case/final-σ-insensitive via legal-id NORMALIZE-GREEK.
-(defparameter *code-phrases*
-  '(("ΚΩΔΙΚΑ ΠΟΙΝΙΚΗΣ ΔΙΚΟΝΟΜΙΑΣ"    . "kpoinikis") ("ΠΟΙΝΙΚΗΣ ΔΙΚΟΝΟΜΙΑΣ"   . "kpoinikis")
-    ("ΚΩΔΙΚΑ ΠΟΛΙΤΙΚΗΣ ΔΙΚΟΝΟΜΙΑΣ"   . "kpolitikis") ("ΠΟΛΙΤΙΚΗΣ ΔΙΚΟΝΟΜΙΑΣ" . "kpolitikis")
-    ("ΚΩΔΙΚΑ ΔΙΟΙΚΗΤΙΚΗΣ ΔΙΚΟΝΟΜΙΑΣ" . "kdioikitikis") ("ΔΙΟΙΚΗΤΙΚΗΣ ΔΙΚΟΝΟΜΙΑΣ" . "kdioikitikis")
-    ("ΠΟΙΝΙΚΟ ΚΩΔΙΚΑ" . "poinikos") ("ΠΟΙΝΙΚΟΥ ΚΩΔΙΚΑ" . "poinikos") ("ΠΟΙΝΙΚΟΝ ΚΩΔΙΚΑ" . "poinikos")
-    ("ΑΣΤΙΚΟ ΚΩΔΙΚΑ" . "astikos") ("ΑΣΤΙΚΟΥ ΚΩΔΙΚΑ" . "astikos")
-    ("4619/2019" . "poinikos") ("4620/2019" . "kpoinikis")
-    ("2717/1999" . "kdioikitikis") ("503/1985" . "kpolitikis") ("2250/1940" . "astikos"))
-  "(phrase . corpus). NORMALIZE-GREEK is length-preserving, so the code whose
-   phrase appears RIGHTMOST (nearest the operation verb) in the context wins.")
+;;; ── [FEK-COMPILER] per-operation code resolution — ΔΟΜΙΚΟ scope, όχι λίστα ────
+;;; Ο τροποποιητικός νόμος είναι πρόγραμμα: οι κεφαλίδες «Άρθρο Ν» του ΙΔΙΟΥ
+;;; του τροποποιητικού ορίζουν ενότητες, η ονομασία του κώδικα-στόχου (μία
+;;; φορά, στην κεφαλίδα ή στην εισαγωγική πρόταση) ορίζει SCOPE, και κάθε
+;;; επιμέρους πράξη («Το άρθρο 773 καταργείται») τον ΚΛΗΡΟΝΟΜΕΙ μέχρι το
+;;; επόμενο όριο. Η αναγνώριση των ονομάτων ΔΕΝ ζει εδώ: η ΜΙΑ έδρα είναι το
+;;; orchestrator.legal-id (resolve-code-rightmost πάνω στο registry που
+;;; παράγεται από τα configs — ονόματα, routing_phrases, νόμος/έτος). Καμία
+;;; hardcoded λίστα φράσεων: η παλιά *code-phrases* ΠΕΘΑΝΕ (διπλή, ad hoc,
+;;; τυφλή στην κληρονομιά — έχανε 39/40 πράξεις σε κωδικοποιημένη μεταρρύθμιση).
 
-(defun %resolve-code (context)
-  "The served corpus short-name CONTEXT names (its code/statute), by PROXIMITY —
-   the phrase nearest the end of CONTEXT (i.e. nearest the verb) wins. NIL if none."
-  (when (and context (plusp (length context)))
-    (let ((nz (funcall (find-symbol "NORMALIZE-GREEK" :orchestrator.legal-id) context))
-          (best -1) (best-code nil))
-      (loop for (p . c) in *code-phrases*
-            for at = (search (funcall (find-symbol "NORMALIZE-GREEK" :orchestrator.legal-id) p)
-                             nz :from-end t)
-            when (and at (> at best)) do (setf best at best-code c))
-      best-code)))
+(defparameter +amending-article-header+
+  (cl-ppcre:create-scanner
+   (format nil "(?m)^[ \\t]*(?:Άρθρο|ΑΡΘΡΟ|Αρθρο)\\s+\\d+~A?" "[Α-Ω]")
+   :case-insensitive-mode nil)
+  "Κεφαλίδα άρθρου ΤΟΥ ΤΡΟΠΟΠΟΙΗΤΙΚΟΥ νόμου σε αρχή γραμμής — όριο ενότητας
+   (segment) για την κληρονομιά scope. Στην αρχή γραμμής ΜΟΝΟ: οι αναφορές
+   «…το άρθρο 5 του Κώδικα…» μέσα σε πρόταση δεν είναι κεφαλίδες.")
 
-(defun extract-operations (text &key (code-resolver #'%resolve-code))
+(defun make-registry-resolver (registry)
+  "Resolver πάνω στη ΜΙΑ έδρα δρομολόγησης (orchestrator.legal-id): δέχεται
+   CONTEXT string, επιστρέφει (values corpus-id position) της rightmost ρητής
+   ονομασίας served κώδικα, ή NIL (τίμια άγνοια — ποτέ μαντεψιά)."
+  (let ((resolve (find-symbol "RESOLVE-CODE-RIGHTMOST" :orchestrator.legal-id)))
+    (unless resolve
+      (error "make-registry-resolver: η έδρα orchestrator.legal-id δεν είναι φορτωμένη"))
+    (lambda (context) (funcall resolve registry context))))
+
+(defun %all-quoted-spans (txt)
+  "ΟΛΑ τα balanced «…» spans του TXT ως ((start . end) …). Χρησιμεύει ως ΜΑΣΚΑ
+   στη διαχείριση scope: κείμενο ΜΕΣΑ σε παράθεση (νέο κείμενο άρθρου) δεν
+   επιτρέπεται να ορίσει τον κώδικα-στόχο των ΕΠΟΜΕΝΩΝ πράξεων."
+  (let ((spans '()) (pos 0))
+    (loop
+      (let ((open (position +laquo+ txt :start pos)))
+        (unless open (return (nreverse spans)))
+        (multiple-value-bind (payload end) (%balanced-quote txt open)
+          (declare (ignore payload))
+          (push (cons open end) spans)
+          (setf pos (max end (1+ open))))))))
+
+(defun %mask-spans (txt spans)
+  "Αντίγραφο του TXT με τα SPANS σβησμένα (κενά) — ίδιο μήκος, ίδιες θέσεις,
+   ώστε οι θέσεις του resolver να παραμένουν έγκυρες στο αρχικό κείμενο."
+  (let ((masked (copy-seq txt)))
+    (dolist (s spans masked)
+      (fill masked #\Space :start (car s) :end (min (length masked) (cdr s))))))
+
+(defun %segment-starts (txt)
+  "Θέσεις έναρξης των ενοτήτων του τροποποιητικού (κεφαλίδες «Άρθρο Ν» σε αρχή
+   γραμμής), με το 0 πάντα πρώτο (προοίμιο/τίτλος = πρώτη ενότητα)."
+  (let ((starts (list 0)))
+    (cl-ppcre:do-matches (ms me +amending-article-header+ txt)
+      (declare (ignore me))
+      (when (plusp ms) (push ms starts)))
+    (sort (remove-duplicates starts) #'<)))
+
+(defun %scope-at (masked segment-starts resolver pos txt-len)
+  "Ο κώδικας-στόχος που ισχύει για πράξη στη θέση POS: rightmost ΡΗΤΗ ονομασία
+   served κώδικα μέσα στην ΤΡΕΧΟΥΣΑ ενότητα, από την κεφαλίδα της έως το τέλος
+   της ΠΡΟΤΑΣΗΣ της πράξης (postfix μνεία «…καταργείται ο Κώδικας Χ» καλύπτεται·
+   η ΕΠΟΜΕΝΗ πρόταση/ενότητα ΔΕΝ διαρρέει προς τα πίσω). Παράθεση «…»
+   μασκαρισμένη. NIL αν η ενότητα δεν ονομάζει κώδικα πουθενά ως εκεί (τίμιο
+   αδρομολόγητο). Η κληρονομιά είναι ΑΥΣΤΗΡΑ ενδο-ενοτική: νέο «Άρθρο Ν» του
+   τροποποιητικού μηδενίζει το scope — ποτέ διαρροή στόχου μεταξύ ενοτήτων."
+  (when resolver
+    (let* ((seg-start 0) (seg-end txt-len))
+      (dolist (b segment-starts)
+        (cond ((<= b pos) (setf seg-start b))
+              (t (setf seg-end b) (return))))
+      (let* ((dot (position #\. masked :start (min pos txt-len)))
+             (hi (min seg-end
+                      (+ pos 80)
+                      (if dot (1+ dot) txt-len))))
+        (when (< seg-start hi)
+          (funcall resolver (subseq masked seg-start hi)))))))
+
+(defun %base-article-id (eid)
+  "Ο βασικός αριθμός άρθρου ενός eId: art_134__para_1 → «134», art_5Α → «5Α»,
+   law-… → NIL (δεν είναι άρθρο)."
+  (when (and (stringp eid) (eql 0 (search "art_" eid)))
+    (let* ((rest (subseq eid 4))
+           (cut (search "__" rest)))
+      (if cut (subseq rest 0 cut) rest))))
+
+(defun extract-operations (text &key code-resolver article-exists-fn)
   "Return the operations implied by amending TEXT. Each operation plist carries
    a :CONFIDENCE — :high (article/paragraph replace/repeal/amend, applied
    automatically), :medium (structural additions / new articles) or :low
    (whole-law). Lower-confidence operations are RECOGNISED, never silently
-   dropped, so the validation layer can flag them for human review."
-  (let ((handled (make-hash-table :test 'equal))
-        (ops '())
-        (quoted '())
-        (txt (or text "")))
+   dropped, so the validation layer can flag them for human review.
+
+   CODE-RESOLVER: (context) → corpus-id — φτιάχνεται με MAKE-REGISTRY-RESOLVER
+   πάνω στο registry των configs. Χωρίς resolver ΚΑΜΙΑ πράξη δεν δρομολογείται
+   (:code NIL, τίμια) — ποτέ κρυφή λίστα. Η δρομολόγηση κληρονομείται ΔΟΜΙΚΑ:
+   κεφαλίδες «Άρθρο Ν» του τροποποιητικού ορίζουν ενότητες, το scope ρέει από
+   την ονομασία του κώδικα προς όλες τις πράξεις της ενότητας.
+
+   ARTICLE-EXISTS-FN: (corpus-id base-article-id) → T / NIL / :unknown —
+   επαλήθευση κατά της ΤΑΥΤΟΤΗΤΑΣ του served κώδικα (τα eIds που πράγματι
+   κατέχει). Αντίφαση (scope λέει κώδικα Χ, το άρθρο ΔΕΝ υπάρχει στον Χ) ⇒ η
+   πράξη ΔΕΝ αυτο-εφαρμόζεται: :identity :contradicted + :confidence :low.
+   Επιβεβαίωση ⇒ :identity :verified. :unknown ⇒ κανένας ισχυρισμός."
+  (let* ((handled (make-hash-table :test 'equal))
+         (ops '())
+         (quoted '())
+         (txt (or text ""))
+         (all-quotes (%all-quoted-spans txt))
+         (masked (%mask-spans txt all-quotes))
+         (segments (%segment-starts txt)))
     (labels ((codeat (pos)
-               ;; the code is named just before the verb («άρθρο 92 του ΚΠΔ …»),
-               ;; so resolve over a window ending at POS.
-               (and code-resolver
-                    (funcall code-resolver
-                             (subseq txt (max 0 (- pos 240)) (min (length txt) (+ pos 60))))))
+               (%scope-at masked segments code-resolver pos (length txt)))
              (take (key) (and key (not (gethash key handled)) (setf (gethash key handled) t)))
+             (verify (code eid conf)
+               ;; (values identity-claim adjusted-conf)
+               (let ((base (%base-article-id eid)))
+                 (if (and article-exists-fn code base)
+                     (let ((r (funcall article-exists-fn code base)))
+                       (cond ((eq r t) (values :verified conf))
+                             ((null r) (values :contradicted :low))
+                             (t (values nil conf))))   ; :unknown — καμία αξίωση
+                     (values nil conf))))
              (emit (op eid pos &key text (conf :high) note)
                (let ((code (codeat pos)))
                  ;; dedup per (code . eid): the same article in two codes both stand.
                  (when (and eid (take (cons code eid)))
-                   (push (append (list :op op :target eid :if-missing :skip :confidence conf)
-                                 (when code (list :code code))
-                                 (when text (list :text text))
-                                 (when note (list :note note)))
-                         ops)))))
+                   (multiple-value-bind (identity adj-conf) (verify code eid conf)
+                     (push (append (list :op op :target eid :if-missing :skip
+                                         :confidence adj-conf)
+                                   (when code (list :code code))
+                                   (when identity (list :identity identity))
+                                   (when (eq identity :contradicted)
+                                     (list :identity-note
+                                           "ταυτότητα: το άρθρο ΔΕΝ υπάρχει στον κώδικα του scope — απαιτεί άνθρωπο"))
+                                   (when text (list :text text))
+                                   (when note (list :note note)))
+                           ops))))))
       ;; 1) Replacements with explicit text (article or paragraph level). The new
       ;;    text is the BALANCED «…» after the anchor — captured whole even when it
       ;;    nests « » quotes (a naive [^»]* truncated it).

@@ -149,6 +149,40 @@
     (format t "~%✓ Αναβάθμιση εφαρμόστηκε & κλειδώθηκε. Κάνε git commit/push για μονιμότητα.~%")
     rc))
 
+(defun %census-article-oracle ()
+  "Μαντείο ταυτότητας: (corpus-id base-article-id) → T / NIL / :unknown, από τα
+   census.json των ΤΕΛΕΥΤΑΙΩΝ attested releases (η κρυπτογραφημένη ταυτότητα του
+   κάθε served κώδικα — ό,τι πράγματι περιέχει, όχι ό,τι υποθέτουμε). :unknown
+   όταν δεν υπάρχει census για τον κώδικα (π.χ. καθαρό checkout) — τίμια άγνοια,
+   ο extractor τότε ΔΕΝ προβάλλει αξίωση ταυτότητας."
+  (let ((cache (make-hash-table :test 'equal))
+        (root (uiop:ensure-directory-pathname
+               (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR")
+                   (orchestrator.paths:institution-dir "output")))))
+    (flet ((ids-for (code)
+             (multiple-value-bind (v present) (gethash code cache)
+               (if present v
+                   (setf (gethash code cache)
+                         (let* ((latest (merge-pathnames
+                                         (format nil "~A/releases/latest/census.json" code)
+                                         root))
+                                (path (probe-file latest)))
+                           (when path
+                             (handler-case
+                                 (let* ((doc (jonathan:parse (uiop:read-file-string path)
+                                                             :as :hash-table))
+                                        (arts (gethash "articles" doc))
+                                        (set (make-hash-table :test 'equal)))
+                                   (dolist (a arts set)
+                                     (let ((id (gethash "id" a)))
+                                       (when (stringp id) (setf (gethash id set) t)))))
+                               (error () nil)))))))))
+      (lambda (code base-id)
+        (let ((set (ids-for code)))
+          (cond ((null set) :unknown)
+                ((gethash base-id set) t)
+                (t nil)))))))
+
 (defun discover-fek ()
   "ΦΕΚ DISCOVERY → routing: given a listing of recently published gazettes, decide
    which served code(s) each one amends, using the legal-id registry. This is the
@@ -189,6 +223,13 @@
                  (extract-txt (find-symbol "EXTRACT-TEXT-FROM-PDF" :orchestrator.pdf-authority))
                  (extract-ops (find-symbol "EXTRACT-OPERATIONS" :orchestrator.amendment-extractor))
                  (summarize (find-symbol "SUMMARIZE-OPERATIONS" :orchestrator.amendment-extractor))
+                 ;; [FEK-COMPILER] Δρομολόγηση από τη ΜΙΑ έδρα (registry των
+                 ;; configs) με ΔΟΜΙΚΗ κληρονομιά scope + επαλήθευση κατά της
+                 ;; ταυτότητας του served corpus (τα eIds του census του).
+                 (resolver (funcall (find-symbol "MAKE-REGISTRY-RESOLVER"
+                                                 :orchestrator.amendment-extractor)
+                                    registry))
+                 (art-exists (%census-article-oracle))
                  (new-laws '()))
              (dolist (n nums)
                (format t "  + ΦΕΚ ~A' ~D/~D → ~A~%" series n year (funcall url-of series n year))
@@ -196,7 +237,10 @@
                  (let ((tmp (format nil "/tmp/fek-~A-~D-~D.pdf" series n year)))
                    (when (funcall blob-fetch series n year tmp)
                      (let* ((text (ignore-errors (funcall extract-txt tmp)))
-                            (summary (and text (funcall summarize (funcall extract-ops text))))
+                            (summary (and text (funcall summarize
+                                                        (funcall extract-ops text
+                                                                 :code-resolver resolver
+                                                                 :article-exists-fn art-exists))))
                             ;; buckets with a real (non-NIL) code → this ΦΕΚ amends a served code
                             (touches (remove nil (mapcar #'car summary))))
                        (if summary

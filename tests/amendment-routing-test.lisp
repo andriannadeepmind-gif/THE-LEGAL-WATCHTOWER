@@ -1,8 +1,9 @@
 ;;;; tests/amendment-routing-test.lisp
-;;;; THE hard semantic step, end-to-end on realistic ΦΕΚ nomotechnic text: read an
-;;;; amending gazette and produce the STRUCTURED picture — which code, which
-;;;; article, which operation — then GROUP it by code so the discovery loop can
-;;;; report and the consolidator can route. extract-operations + summarize-operations.
+;;;; [FEK-COMPILER] Ο τροποποιητικός νόμος ως πρόγραμμα: ενότητες («Άρθρο Ν» του
+;;;; τροποποιητικού), ΔΟΜΙΚΗ κληρονομιά scope, δρομολόγηση ΜΟΝΟ από το registry
+;;;; (configs — καμία hardcoded λίστα), επαλήθευση κατά ταυτότητας (census eIds).
+;;;; Κλειδώνει την κλάση αποτυχίας των ΦΕΚ Α'103/Α'105 2026: κωδικοποιημένη
+;;;; μεταρρύθμιση που ονομάζει τον κώδικα ΜΙΑ φορά στην κεφαλίδα.
 
 (in-package :orchestrator.amendment-extractor)
 
@@ -16,10 +17,28 @@
 (defun op-for (ops target)
   (find target ops :key (lambda (o) (getf o :target)) :test #'equal))
 
-;;; (1) one gazette, three operations on the Penal Code
-(format t "~%== (1) ΦΕΚ amending the Penal Code (replace / insert / repeal) ==~%")
+;;; Registry ΟΠΩΣ το παράγει build-legal-id-registry από τα configs (δείγμα) —
+;;; το τεστ αποδεικνύει ότι η δρομολόγηση κατάγεται ΜΟΝΟ από αυτά τα δεδομένα.
+(defvar *reg*
+  (list (orchestrator.legal-id:make-registry-entry "poinikos"
+         :law-number 4619 :year 2019 :name "Ποινικός Κώδικας"
+         :aliases '("Ποινικό Κώδικα" "Ποινικού Κώδικα"))
+        (orchestrator.legal-id:make-registry-entry "kpolitikis"
+         :law-number 503 :year 1985 :name "Κώδικας Πολιτικής Δικονομίας"
+         :aliases '("Πολιτικής Δικονομίας"))
+        (orchestrator.legal-id:make-registry-entry "astikos"
+         :law-number 2250 :year 1940 :name "Αστικός Κώδικας"
+         :aliases '("Αστικό Κώδικα" "Αστικού Κώδικα"))))
+
+(defvar *rr* (make-registry-resolver *reg*))
+
+(defun xops (text &key exists)
+  (extract-operations text :code-resolver *rr* :article-exists-fn exists))
+
+;;; (1) inline ονομασία δίπλα στην πράξη (η εύκολη περίπτωση — Α'239 style)
+(format t "~%== (1) inline: ονομασία κώδικα δίπλα σε κάθε πράξη ==~%")
 (let* ((fek "Άρθρο 1. Το άρθρο 5 του Ποινικού Κώδικα (ν. 4619/2019) αντικαθίσταται ως εξής: «Άρθρο 5. Όποιος τελεί την πράξη τιμωρείται με κάθειρξη.» Άρθρο 2. Το άρθρο 10 του Ποινικού Κώδικα καταργείται. Άρθρο 3. Στο άρθρο 8 του Ποινικού Κώδικα προστίθεται παράγραφος 4 ως εξής: «4. Η νέα παράγραφος.»")
-       (ops (extract-operations fek)))
+       (ops (xops fek)))
   (check "three operations extracted" (= 3 (length ops)))
   (check "art_5 → REPLACE-TEXT, code poinikos, high"
          (let ((o (op-for ops "art_5")))
@@ -31,35 +50,78 @@
          (let ((o (op-for ops "art_10"))) (and o (eq :repeal (getf o :op)) (equal "poinikos" (getf o :code)))))
   (check "art_8 → INSERT (new paragraph), flagged medium"
          (let ((o (op-for ops "art_8"))) (and o (eq :insert (getf o :op)) (eq :medium (getf o :confidence)))))
-  ;; the routing view
   (let ((summary (summarize-operations ops)))
-    (check "summary groups all under a single code: poinikos"
-           (and (= 1 (length summary)) (equal "poinikos" (caar summary))))
-    (check "that bucket lists the 3 affected articles"
-           (equal '("art_5" "art_8" "art_10")
-                  (mapcar (lambda (o) (getf o :target)) (cdr (first summary)))))))
+    (check "summary: όλα σε ΕΝΑΝ κουβά poinikos"
+           (and (= 1 (length summary)) (equal "poinikos" (caar summary))))))
 
-;;; (2) one gazette touching TWO codes → two buckets, correctly split
-(format t "~%== (2) ΦΕΚ touching two codes → routed separately ==~%")
-(let* ((fek "Άρθρο 1. Το άρθρο 3 του Αστικού Κώδικα αντικαθίσταται ως εξής: «Άρθρο 3. Νέα διάταξη.» Άρθρο 2. Το άρθρο 7 του Ποινικού Κώδικα καταργείται.")
-       (summary (summarize-operations (extract-operations fek)))
-       (codes (mapcar #'car summary)))
-  (check "two code buckets" (= 2 (length summary)))
-  (check "astikos present" (member "astikos" codes :test #'equal))
-  (check "poinikos present" (member "poinikos" codes :test #'equal))
-  (check "astikos bucket = art_3 (replace)"
-         (let ((b (cdr (assoc "astikos" summary :test #'equal))))
-           (and (= 1 (length b)) (equal "art_3" (getf (first b) :target))
-                (eq :replace-text (getf (first b) :op)))))
-  (check "poinikos bucket = art_7 (repeal)"
-         (let ((b (cdr (assoc "poinikos" summary :test #'equal))))
-           (and (= 1 (length b)) (equal "art_7" (getf (first b) :target))
-                (eq :repeal (getf (first b) :op))))))
+;;; (2) ΔΟΜΙΚΗ κληρονομιά — η κλάση Α'103/Α'105: ο κώδικας ονομάζεται ΜΙΑ φορά
+(format t "~%== (2) ΔΟΜΙΚΟ scope: κωδικοποιημένη μεταρρύθμιση (Α'103 class) ==~%")
+(let* ((fek (format nil "Άρθρο 4~%Τροποποιήσεις Κώδικα Πολιτικής Δικονομίας~%1. Το άρθρο 773 καταργείται.~%2. Το άρθρο 727 καταργείται.~%3. Το άρθρο 768 τροποποιείται.~%4. Το άρθρο 537 καταργείται.~%Άρθρο 5~%Τροποποιήσεις Αστικού Κώδικα~%1. Το άρθρο 241 καταργείται.~%Άρθρο 6~%Έναρξη ισχύος~%Το άρθρο 3 τροποποιείται."))
+       (ops (xops fek))
+       (summary (summarize-operations ops)))
+  (check "ΟΛΕΣ οι πράξεις της ενότητας ΚΠολΔ κληρονόμησαν το scope"
+         (every (lambda (tgt) (equal "kpolitikis" (getf (op-for ops tgt) :code)))
+                '("art_773" "art_727" "art_768" "art_537")))
+  (check "η ενότητα ΑΚ δρομολογήθηκε χωριστά (art_241 → astikos)"
+         (equal "astikos" (getf (op-for ops "art_241") :code)))
+  (check "ενότητα ΧΩΡΙΣ ονομασία κώδικα ⇒ αδρομολόγητη (τίμια, ΟΧΙ διαρροή scope)"
+         (null (getf (op-for ops "art_3") :code)))
+  (check "3 κουβάδες: kpolitikis, astikos, NIL"
+         (equal '("kpolitikis" "astikos") (remove nil (mapcar #'car summary)))))
 
-;;; (3) non-amending text → nothing
-(format t "~%== (3) ordinary text → no operations ==~%")
+;;; (3) το scope ΔΕΝ διαρρέει μέσα από παράθεση «…»
+(format t "~%== (3) μάσκα παράθεσης: «…» δεν ορίζει scope ==~%")
+(let* ((fek (format nil "Άρθρο 1~%Τροποποιήσεις Ποινικού Κώδικα~%1. Το άρθρο 5 αντικαθίσταται ως εξής: «Άρθρο 5. Κατά τον Αστικό Κώδικα κρίνεται η αποζημίωση.»~%2. Το άρθρο 6 καταργείται."))
+       (ops (xops fek)))
+  (check "art_6 έμεινε στο poinikos (η μνεία «Αστικό Κώδικα» ΜΕΣΑ στο «…» δεν μετρά)"
+         (equal "poinikos" (getf (op-for ops "art_6") :code))))
+
+;;; (4) αλλαγή scope ΜΕΣΑ στην ενότητα (ρητή νέα ονομασία)
+(format t "~%== (4) ρητή νέα ονομασία μέσα στην ενότητα αλλάζει το scope ==~%")
+(let* ((fek (format nil "Άρθρο 1~%1. Το άρθρο 12 του Ποινικού Κώδικα καταργείται.~%2. Στον Αστικό Κώδικα, το άρθρο 200 τροποποιείται."))
+       (ops (xops fek)))
+  (check "art_12 → poinikos" (equal "poinikos" (getf (op-for ops "art_12") :code)))
+  (check "art_200 → astikos (rightmost ρητή ονομασία υπερισχύει)"
+         (equal "astikos" (getf (op-for ops "art_200") :code))))
+
+;;; (5) ΧΩΡΙΣ resolver ⇒ ΚΑΜΙΑ δρομολόγηση (τίμια — καμία κρυφή λίστα)
+(format t "~%== (5) χωρίς resolver ⇒ :code NIL παντού ==~%")
+(let ((ops (extract-operations "Το άρθρο 5 του Ποινικού Κώδικα καταργείται.")))
+  (check "χωρίς resolver: πράξη εξάγεται, code NIL"
+         (and (= 1 (length ops)) (null (getf (first ops) :code)))))
+
+;;; (6) επαλήθευση κατά ταυτότητας (census oracle)
+(format t "~%== (6) ταυτότητα: το άρθρο υπάρχει/δεν υπάρχει στον κώδικα ==~%")
+(let* ((oracle (lambda (code base)
+                 (cond ((not (equal code "kpolitikis")) :unknown)
+                       ((member base '("773" "727") :test #'equal) t)
+                       (t nil))))
+       (fek (format nil "Άρθρο 1~%Τροποποιήσεις Κώδικα Πολιτικής Δικονομίας~%1. Το άρθρο 773 καταργείται.~%2. Το άρθρο 9999 καταργείται."))
+       (ops (xops fek :exists oracle)))
+  (check "υπαρκτό άρθρο ⇒ :identity :verified, μένει :high"
+         (let ((o (op-for ops "art_773")))
+           (and (eq :verified (getf o :identity)) (eq :high (getf o :confidence)))))
+  (check "ΑΝΥΠΑΡΚΤΟ άρθρο ⇒ :identity :contradicted + ΥΠΟΒΙΒΑΣΜΟΣ σε :low (όχι αυτο-εφαρμογή)"
+         (let ((o (op-for ops "art_9999")))
+           (and (eq :contradicted (getf o :identity)) (eq :low (getf o :confidence))
+                (not (operation-applicable-p o)))))
+  (check ":unknown ⇒ καμία αξίωση ταυτότητας"
+         (let* ((fek2 "Το άρθρο 5 του Ποινικού Κώδικα καταργείται.")
+                (o (first (xops fek2 :exists oracle))))
+           (and (null (getf o :identity)) (eq :high (getf o :confidence))))))
+
+;;; (7) δρομολόγηση από αναφορά νόμου (ν. 4619/2019) με αριθμητικά όρια
+(format t "~%== (7) law-number routing + όρια ==~%")
+(let ((ops (xops "Στον ν. 4619/2019, το άρθρο 187 τροποποιείται.")))
+  (check "ν. 4619/2019 → poinikos" (equal "poinikos" (getf (op-for ops "art_187") :code))))
+(let ((ops (xops "Στον ν. 14619/2019, το άρθρο 187 τροποποιείται.")))
+  (check "14619/2019 ΔΕΝ είναι 4619/2019 (όρια αριθμών) ⇒ αδρομολόγητο"
+         (null (getf (op-for ops "art_187") :code))))
+
+;;; (8) μη-τροποποιητικό κείμενο ⇒ τίποτα
+(format t "~%== (8) ordinary text → no operations ==~%")
 (check "plain article text yields no operations"
-       (null (extract-operations "Άρθρο 1. Η Ελλάδα είναι Προεδρευόμενη Κοινοβουλευτική Δημοκρατία.")))
+       (null (xops "Άρθρο 1. Η Ελλάδα είναι Προεδρευόμενη Κοινοβουλευτική Δημοκρατία.")))
 (check "summary of nothing is empty" (null (summarize-operations '())))
 
 (format t "~%========================================~%")

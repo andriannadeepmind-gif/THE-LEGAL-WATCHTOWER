@@ -69,6 +69,29 @@
     (check "render unchanged"
            (string= (render-consolidated-text (build-pk)) (render-consolidated-text updated)))))
 
+;;; [FEK-COMPILER] round-trip: κάθε applied πράξη ΑΠΟΔΕΙΚΝΥΕΤΑΙ στο αποτέλεσμα,
+;;; κάθε σιωπηλά προσπερασμένη (:if-missing :skip) ΑΝΑΦΕΡΕΤΑΙ — ποτέ αόρατη.
+(format t "~%== round-trip report: applied ⇒ verified, skipped ⇒ SILENT ==~%")
+(let* ((base (build-pk))
+       (ops (list (list :op :replace-text :target "art_5" :if-missing :skip
+                        :confidence :high :text "Νέο κείμενο πέντε.")
+                  (list :op :repeal :target "art_10" :if-missing :skip :confidence :high)
+                  ;; στόχος που ΔΕΝ υπάρχει στο corpus — ο engine τον προσπερνά
+                  (list :op :repeal :target "art_999" :if-missing :skip :confidence :high))))
+  (multiple-value-bind (updated applied deferred) (apply-extracted-amendments base ops)
+    (declare (ignore deferred))
+    (check "και οι 3 πράξεις ήταν auto-applicable" (= 3 (length applied)))
+    (multiple-value-bind (verified silent) (round-trip-report updated applied)
+      (check "replace art_5 ⇒ VERIFIED (κείμενο ≡ ΦΕΚ, χαρακτήρα-προς-χαρακτήρα)"
+             (member "art_5" verified :key (lambda (o) (getf o :target)) :test #'equal))
+      (check "repeal art_10 ⇒ VERIFIED (status :repealed)"
+             (member "art_10" verified :key (lambda (o) (getf o :target)) :test #'equal))
+      (check "repeal art_999 ⇒ SILENT (προσπεράστηκε — ΑΝΑΦΕΡΕΤΑΙ, δεν χάνεται)"
+             (and (= 1 (length silent))
+                  (equal "art_999" (getf (first silent) :target))))
+      (check "verified + silent = applied (καμία πράξη αόρατη)"
+             (= (length applied) (+ (length verified) (length silent)))))))
+
 (format t "~%========================================~%")
 (format t "Auto-consolidate (closed loop) tests: ~D passed, ~D failed~%" *pass* *fail*)
 (format t "========================================~%")
