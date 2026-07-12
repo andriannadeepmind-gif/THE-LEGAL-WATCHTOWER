@@ -177,6 +177,39 @@
        (= 500 (st (%cockpit-handler (req "/api/pending" :headers *ok-headers*)))))
 (ignore-errors (delete-file "/tmp/cockpit-test-queue.sexp"))
 
+(format t "~%== hybrid: ensure-artifacts γράφει το corpus.jsonl όταν λείπει, ΠΟΤΕ overwrite ==~%")
+;; (α) υπάρχον αρχείο ⇒ ο provider ΔΕΝ καλείται (golden άθικτο)
+(let* ((dir (merge-pathnames "output/__cockpit_test_corpus__/" (uiop:getcwd)))
+       (path (merge-pathnames "corpus.jsonl" dir)))
+  (ensure-directories-exist path)
+  (with-open-file (s path :direction :output :if-exists :supersede :if-does-not-exist :create)
+    (write-string "GOLDEN" s))
+  (%cockpit-ensure-corpus-artifacts
+   (list (cons "__cockpit_test_corpus__"
+               (lambda () (error "ο provider κλήθηκε ενώ υπήρχε golden αρχείο!")))))
+  (check "υπάρχον corpus.jsonl ΔΕΝ ξαναγράφεται (golden άθικτο)"
+         (string= "GOLDEN" (with-open-file (s path) (read-line s))))
+  (ignore-errors (delete-file path))
+  (ignore-errors (uiop:delete-empty-directory dir)))
+;; (β) λείπον αρχείο ⇒ γράφεται από emit-corpus-jsonl, με το «number» που διαβάζει το /ask
+(let* ((mp (find-symbol "MAKE-PROVISION" :orchestrator.consolidation))
+       (md (find-symbol "MAKE-LEGAL-DOCUMENT" :orchestrator.consolidation))
+       (doc (funcall md :id "tc" :title "Δοκιμαστικός" :language "el"
+                     :provisions (list (funcall mp :eid "art_288" :kind :article
+                                                :num "288" :heading "Καλή πίστη"
+                                                :text "Ο οφειλέτης εκπληρώνει με καλή πίστη."))))
+       (dir (merge-pathnames "output/__cockpit_test_corpus__/" (uiop:getcwd)))
+       (path (merge-pathnames "corpus.jsonl" dir)))
+  (ignore-errors (delete-file path))
+  (%cockpit-ensure-corpus-artifacts (list (cons "__cockpit_test_corpus__" (lambda () doc))))
+  (check "λείπον corpus.jsonl γράφεται με number 288 (το /ask θα το βρει)"
+         (and (probe-file path)
+              (with-open-file (s path)
+                (loop for line = (read-line s nil nil) while line
+                      thereis (search "\"number\":\"288\"" line)))))
+  (ignore-errors (delete-file path))
+  (ignore-errors (uiop:delete-empty-directory dir)))
+
 (format t "~%========================================~%")
 (format t "COCKPIT tests: ~D passed, ~D failed~%" *pass* *fail*)
 (format t "========================================~%")

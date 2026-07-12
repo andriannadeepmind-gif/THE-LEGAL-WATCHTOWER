@@ -300,6 +300,27 @@ document.addEventListener('click',function(e){var b=e.target.closest?e.target.cl
 
 ;;; ── run-cockpit + εγγραφή εντολής (μία είσοδος) ──
 
+(defun %cockpit-ensure-corpus-artifacts (corpora)
+  "Υβριδικό «όπου θες»: το /ask διαβάζει το ΕΚΔΟΜΕΝΟ output/<c>/corpus.jsonl (η
+   golden-επαληθευμένη πηγή). Αν λείπει (π.χ. docker runtime image που δεν
+   κουβαλά το output/), το ΓΡΑΦΟΥΜΕ από την ΙΔΙΑ έδρα που παράγει τα golden
+   αρχεία (orchestrator.ai-dump:emit-corpus-jsonl), από τα ήδη-χτισμένα corpora.
+   ΠΟΤΕ overwrite υπάρχοντος golden — μόνο συμπλήρωση όταν λείπει (καμία
+   σιωπηλή «κανένα άρθρο» επειδή το artifact δεν ταξίδεψε με την εικόνα)."
+  (dolist (pair corpora)
+    (let* ((short (car pair))
+           (path (merge-pathnames (format nil "output/~A/corpus.jsonl" (%corpus-outdir short))
+                                  (uiop:getcwd))))
+      (unless (probe-file path)
+        (handler-case
+            (let ((doc (funcall (cdr pair))))
+              (ensure-directories-exist path)
+              (with-open-file (s path :direction :output :external-format :utf-8
+                                      :if-exists :supersede :if-does-not-exist :create)
+                (write-string (orchestrator.ai-dump:emit-corpus-jsonl doc) s))
+              (format t "  ✎ corpus.jsonl → ~A~%" (namestring path)))
+          (error (e) (format t "  ⚠ corpus.jsonl ~A: ~A~%" short e)))))))
+
 (defun run-cockpit ()
   "Υβριδικό cockpit: ένας server, όλες οι δυνατότητες ως προβολές της registry.
    COCKPIT_HOST (default 127.0.0.1 = τοπικά· 0.0.0.0 = όπου θες), COCKPIT_PORT."
@@ -307,7 +328,10 @@ document.addEventListener('click',function(e){var b=e.target.closest?e.target.cl
                 (or (and p (parse-integer p :junk-allowed t)) 8090)))
         (host (or (%non-blank (uiop:getenv "COCKPIT_HOST")) "127.0.0.1")))
     (format t "~%Building corpora for cockpit...~%")
-    (handler-case (progn (build-all-corpora) (%graph-ensure))
+    (handler-case
+        (let ((corpora (build-all-corpora)))
+          (%cockpit-ensure-corpus-artifacts corpora)   ; /ask δουλεύει όπου θες
+          (%graph-ensure))
       (error (e) (format t "  ⚠ corpora/graph: ~A~%" e)))
     (format t "~%LAWMAX cockpit → http://~A:~D~%" host port)
     (format t "  Συνομιλία · Δαίμονας · Αμφισβήτηση · Δημοσίευση (άνθρωπος αποφασίζει)~%")
