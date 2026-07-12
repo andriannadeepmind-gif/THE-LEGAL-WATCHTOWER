@@ -268,3 +268,64 @@ receipt format· όσοι αρνηθούν μένουν η μη-επαληθεύ
 **Κατάσταση:** §1–§7 + §9-όροι = πέρασαν αντιπαλική φωτιά αυτής της συνεδρίας
 (κλειδωμένα ως σχεδίαση). §8 = PROPOSED, εκκρεμεί [0047]. Καμία υλοποίηση πριν
 ρητό «εγκρίνω <φάση>».
+
+---
+
+## §10 · ΔΙΟΡΘΩΣΗ — backtest downgrade (αντιπαλικός [0047]) + OCR εύρημα (μετρημένο, append-only)
+
+**Αντιπαλικός γύρος (3 ανεξάρτητοι κριτές, φρέσκο πλαίσιο): ΟΜΟΦΩΝΑ `confirm-overread`.**
+Η ζωντανή ανάγνωση «time-sealing CONFIRMED across decades and scale, buildable via
+time-sealing alone» ήταν **υπερ-δηλωμένη**. Η §3 μένει ως ιστορικό· εδώ η διόρθωση.
+
+**Μετρημένο (owner-side, 5 cohorts):** Α'/2000 (max 299), Α'/2010 (248), Α'/2023 (218)
+— φυσικός τερματισμός (25 συνεχόμενα 404), **0 κενά** στο 1..max. Β'/2023 (≥700),
+Δ'/2023 (≥400) — **hit cap, ΜΗ τερματισμένα**, πυκνά μόνο στο πρόθεμα.
+
+**Τίμια ετυμηγορία:** η πυκνότητα του **εσωτερικού** (δοσμένο 1..M χωρίς κενά ⇒ πλήρες
+ως M) είναι **SUPPORTED** για χαμηλού-όγκου born-digital Α' — **ΟΧΙ** CONFIRMED-invariant
+«across decades AND scale». ΔΕΝ τεκμηριώθηκαν: (i) κλίμακα (Β'/Δ' hit cap, αληθινό max
+άγνωστο)· (ii) %PDF ανά αριθμό (ο walk εμπιστεύτηκε status· ο `fek-blob-exists-p`
+`document-fetch.lisp:155-173` απαιτεί 200/206+%PDF — placeholder/stub = false-present)·
+(iii) transients (μη-{200,404} προχωρά τον 25-stop ⇒ πιθανή υποτίμηση max)· (iv) ασφάλεια
+25-stop (κυκλικό — δεν βλέπει νόμιμο κενό ≥25)· (v) χρονικός ορισμός «σφραγισμένου»
+(settling-time αμέτρητο)· (vi) content-immutability (η **διόρθωση σφάλματος** μπορεί να
+ξαναανεβάσει bytes σε σταθερό URL — το πιάνει ο `primary-anchor` SOURCE-DIGEST ⇒ BLOCK, §7).
+
+**ΑΝΑΚΛΗΣΗ:** το «no external witness needed» ισχύει **μόνο για το εσωτερικό**· για την
+**ουρά** (το max), χωρίς authoritative per-(series,year) max-witness, το «ABSENT-CONFIRMED
+στο N» δεν ξεχωρίζει «τρύπα» / «πέρα από το max μου» / «νόμιμα αποσυρμένο». Ο μάρτυρας-ουράς
+**δεν** είναι προαιρετικός.
+
+**ΝΕΑ ΒΑΘΜΙΔΑ (scoped gate — εξάλειψη κλάσης, όχι φραγμός):** ABSENT-CONFIRMED (blocking)
+**μόνο** για (τεύχος,έτος) που: (α) τερμάτισε φυσικά (αληθινό max), (β) πέρασε settling-time
+margin, (γ) κάθε present %PDF-validated, (δ) μηδέν ανεπίλυτο transient, (ε) διασταύρωση max
+με ζωντανό μάρτυρα. Αλλιώς → **ABSENT-UNCONFIRMED** (τίμια άγνοια, warning, μη-blocking).
+Ανέβασμα σε CONFIRMED μόνο μετά: uncap true-max + 25-stop calibration + settling-time +
+content-hash (ETag/Last-Modified) + ζωντανός μάρτυρας.
+
+**OCR — μετρημένο (heuristic /Font vs image-filters, δείγμα #1/έτος):**
+
+| έτος | KB | κείμενο; | εκτίμηση |
+|---|---|---|---|
+| 2023 | 116 | /Font | TEXT (no OCR) |
+| 2010 | 92 | /Font | TEXT (no OCR) |
+| 2000 | 1293 | image | SCANNED (OCR) |
+| 1995 | 370 | /Font+image | MIXED |
+| 1990/1980/1970/1960 | 509/963/333/180 | image | SCANNED (OCR) |
+
+Ευρήματα: (α) το blob **έχει το αρχείο ως το 1960** (όλα υπάρχουν)· (β) μετάβαση
+born-digital→scanned **μεταξύ 2000 (scanned) και 2010 (text)** — ό,τι πριν ~2005 = σάρωση·
+(γ) τα πριν το 1982 είναι **πολυτονικά** ⇒ δυσκολότερο OCR. **Το OCR ΧΡΕΙΑΖΕΤΑΙ** για το
+ιστορικό (όπου ζει τεράστιο μέρος του εν ισχύ δικαίου — ΚΙΝΔ 1958 κ.λπ.), και είναι **ΝΕΑ
+δυνατότητα** (καμία έδρα OCR· υπάρχει μόνο text-layer extraction `pdf-authority`/`pdf-adapter`).
+
+**ΝΕΑ ΚΛΑΣΗ ΣΦΑΛΜΑΤΟΣ (OCR) — δηλωμένη:** το OCR είναι lossy/αβέβαιο· **κανένα OCR στο
+trusted path χωρίς επαλήθευση** (νόμος: καμία μαντεψιά στο trusted path). Η απόδειξη
+αγκυρώνει τα **bytes της εικόνας** (SOURCE-DIGEST του σαρωμένου PDF)· το εξαγόμενο **κείμενο**
+είναι derived artifact ⇒ **per-document provenance-confidence labeling**: `born-digital-extracted`
+(πιστό) vs `ocr-derived` (αβέβαιο, flagged, απαιτεί dual-OCR-agreement ‖ ανθρώπινη επαλήθευση).
+Ανοιχτό follow-up: μήπως τα σαρωμένα έχουν ήδη κρυφό OCR text-layer του Τυπογραφείου (το 1995
+«MIXED» το υπαινίσσεται) — αν ναι, εξάγεται με ρητά δηλωμένο *δικό τους* confidence αντί να
+το κάνουμε εμείς. Δηλωμένο, όχι λυμένο.
+
+**Κατάσταση §10:** μετρημένο + αντιπαλικά ελεγμένο. Αντικαθιστά τη ζωντανή υπερ-δήλωση της §3.
