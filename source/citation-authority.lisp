@@ -71,6 +71,9 @@
    #:normalize-greek #:add-lemma-forms #:known-lemma #:lemmatize-greek
    #:lexicon-snapshot #:lexicon-restore #:lemma-forms #:content-lemma-p
    #:surface-stem
+   ;; Τίμια μορφολογία χαρακτηριστικών (greek-lemmatizer.lisp) — μηχανή στελέχους+κλίσης
+   #:morph-analyze #:morph-lemma #:register-paradigm #:register-lexeme
+   #:feats #:feat-case #:feat-number #:feat-gender
    ;; Πράξεις λόγου από κλειστές γραμματικές κλάσεις (greek-lemmatizer.lisp)
    #:utterance-act #:second-person-p #:verbum-dicendi-p))
 

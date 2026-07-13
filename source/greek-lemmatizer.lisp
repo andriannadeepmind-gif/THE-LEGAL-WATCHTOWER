@@ -533,6 +533,114 @@
   (hash-table-count *legal-lemmas*))
 
 ;;; ============================================================================
+;;; ΤΙΜΙΑ ΜΟΡΦΟΛΟΓΙΑ ΧΑΡΑΚΤΗΡΙΣΤΙΚΩΝ — μηχανή στελέχους+κλίσης (feature morphology)
+;;; ============================================================================
+;;; ΓΙΑΤΙ ΝΕΑ ΕΔΡΑ (και ΟΧΙ lemmatize-greek): το lemmatize-greek είναι lossy μάντης —
+;;; ΖΩΝΤΑΝΑ επαληθευμένο [0077]: άμυνα→άμυνο, κατόχου→κατόχος, βάση/κλιτός → διαφορετικά
+;;; σκουπίδια (καμία σταθερότητα κλίσης). Στο trusted path αυτό ΠΑΡΑΒΙΑΖΕΙ «τίμια άγνοια».
+;;; Εδώ: ΚΑΜΙΑ εικασία — δεικτοδοτούνται ΜΟΝΟ τύποι που παράγονται από δηλωμένο
+;;; παράδειγμα κλίσης πάνω σε δηλωμένο στέλεχος· οτιδήποτε άλλο → :unknown. Κάθε τύπος
+;;; φέρει (case,number,gender), ώστε η ΓΡΑΜΜΑΤΙΚΗ ΣΥΣΤΑΤΙΚΩΝ (επόμενη φάση, [0076])
+;;; να ελέγχει ΣΥΜΦΩΝΙΑ άρθρου-ουσιαστικού-επιθέτου ΔΟΜΙΚΑ, όχι με heuristics.
+;;; Διαφορά από add-lemma-forms: εκείνο = επίπεδο λεξικό form→lemma χωρίς
+;;; χαρακτηριστικά/στέλεχος/κλίση· εδώ = παραγωγική μηχανή (στέλεχος + παράδειγμα) με
+;;; χαρακτηριστικά και τίμιο :unknown. Ο θάνατος του άμυνα→άμυνο είναι lock (test).
+
+(defstruct (feats (:constructor feats (case number gender)) (:conc-name feat-))
+  "Μορφολογικά χαρακτηριστικά ενός τύπου: πτώση, αριθμός, γένος."
+  case number gender)
+
+(defparameter *paradigms* (make-hash-table :test 'eq)
+  "Όνομα-κλίσης → λίστα slots (ending case number). Το γένος έρχεται από το lexeme.")
+
+(defun register-paradigm (name slots)
+  (setf (gethash name *paradigms*) slots))
+
+(defparameter *morph-index* (make-hash-table :test 'equal)
+  "normalize(τύπος) → λίστα (lemma . feats). Χτίζεται ΜΟΝΟ από δηλωμένα lexemes.")
+
+(defun register-lexeme (lemma paradigm-name stem gender &optional overrides extra)
+  "Παράγει ΚΑΘΕ τύπο του LEMMA από STEM + PARADIGM-NAME και τον δεικτοδοτεί με τα
+   χαρακτηριστικά του. OVERRIDES: alist ((case number) . surface) — αντικαθιστά τον
+   παραγόμενο τύπο σε slots με μετακίνηση τόνου/ανωμαλία. EXTRA: λίστα (surface case
+   number) — επιπλέον τύποι (π.χ. καθαρεύουσα gen.sg -εως). Καμία εικασία εκτός
+   δηλωμένων slots/overrides/extra."
+  (let ((slots (or (gethash paradigm-name *paradigms*)
+                   (error "Άγνωστο παράδειγμα κλίσης: ~S" paradigm-name))))
+    (flet ((idx (surface case number)
+             (pushnew (cons lemma (feats case number gender))
+                      (gethash (normalize-greek surface) *morph-index*)
+                      :test #'equalp)))
+      (dolist (slot slots)
+        (destructuring-bind (ending case number) slot
+          (let ((ov (cdr (assoc (list case number) overrides :test #'equal))))
+            (idx (or ov (concatenate 'string stem ending)) case number))))
+      (dolist (e extra)
+        (destructuring-bind (surface case number) e
+          (idx surface case number))))))
+
+(defun morph-analyze (word)
+  "→ λίστα (lemma . feats) για ΚΑΘΕ δηλωμένη ανάγνωση του τύπου· NIL αν άγνωστος.
+   Καμία εικασία — μόνο τύποι δηλωμένων παραδειγμάτων."
+  (gethash (normalize-greek word) *morph-index*))
+
+(defun morph-lemma (word)
+  "Το ΜΟΝΑΔΙΚΟ λήμμα του τύπου· :unknown αν άγνωστος· :ambiguous αν πολλαπλά λήμματα.
+   ΠΟΤΕ λάθος λήμμα (τίμια άγνοια αντί μάντεμα) — ο θάνατος του άμυνα→άμυνο."
+  (let ((hits (morph-analyze word)))
+    (cond ((null hits) :unknown)
+          ((every (lambda (h) (string= (car h) (car (first hits)))) hits)
+           (car (first hits)))
+          (t :ambiguous))))
+
+;;; ── Παραδείγματα κλίσης (κλειστά, τεκμηριωμένα στη γραμματική της ελληνικής) ──
+(register-paradigm :fem-a            ; θηλυκά 1ης κλ. -α (ενικός σταθερός τόνος)
+  '(("α" :nom :sg) ("ας" :gen :sg) ("α" :acc :sg) ("α" :voc :sg)
+    ("ες" :nom :pl) ("ών" :gen :pl) ("ες" :acc :pl)))
+(register-paradigm :fem-si           ; θηλυκά 3ης κλ. -ση (ενικός σταθερός)
+  '(("η" :nom :sg) ("ης" :gen :sg) ("η" :acc :sg)
+    ("εις" :nom :pl) ("εων" :gen :pl) ("εις" :acc :pl)))
+(register-paradigm :os-2             ; αρσ./θηλ. 2ης κλ. -ος
+  '(("ος" :nom :sg) ("ου" :gen :sg) ("ο" :acc :sg) ("ε" :voc :sg)
+    ("οι" :nom :pl) ("ων" :gen :pl) ("ους" :acc :pl)))
+(register-paradigm :o-2n             ; ουδέτερα 2ης κλ. -ο
+  '(("ο" :nom :sg) ("ου" :gen :sg) ("ο" :acc :sg)
+    ("α" :nom :pl) ("ων" :gen :pl) ("α" :acc :pl)))
+(register-paradigm :adj-os-fem       ; επίθετα -ος/-η/-ο, ΘΗΛΥΚΟ
+  '(("η" :nom :sg) ("ης" :gen :sg) ("η" :acc :sg)
+    ("ες" :nom :pl) ("ων" :gen :pl) ("ες" :acc :pl)))
+(register-paradigm :adj-os-masc      ; επίθετα -ος/-η/-ο, ΑΡΣΕΝΙΚΟ
+  '(("ος" :nom :sg) ("ου" :gen :sg) ("ο" :acc :sg) ("ε" :voc :sg)
+    ("οι" :nom :pl) ("ων" :gen :pl) ("ους" :acc :pl)))
+(register-paradigm :adj-os-neut      ; επίθετα -ος/-η/-ο, ΟΥΔΕΤΕΡΟ
+  '(("ο" :nom :sg) ("ου" :gen :sg) ("ο" :acc :sg)
+    ("α" :nom :pl) ("ων" :gen :pl) ("α" :acc :pl)))
+
+;;; ── Λεξικά στοιχεία κρίσιμα για τη νομική γείωση (χειρο-επαληθευμένοι τύποι) ──
+;; άμυνα (η άμυνα, της άμυνας…· gen.pl μετακ. τόνου → override)
+(register-lexeme "άμυνα" :fem-a "άμυν" :fem '(((:gen :pl) . "αμυνών")))
+;; ιδιοποίηση (-σης/-σεως gen.sg· πληθ. μετακ. τόνου → overrides + καθαρ. gen.sg)
+(register-lexeme "ιδιοποίηση" :fem-si "ιδιοποίησ" :fem
+  '(((:nom :pl) . "ιδιοποιήσεις") ((:gen :pl) . "ιδιοποιήσεων") ((:acc :pl) . "ιδιοποιήσεις"))
+  '(("ιδιοποιήσεως" :gen :sg)))
+;; συναίνεση (ίδιο σχήμα)
+(register-lexeme "συναίνεση" :fem-si "συναίνεσ" :fem
+  '(((:nom :pl) . "συναινέσεις") ((:gen :pl) . "συναινέσεων") ((:acc :pl) . "συναινέσεις"))
+  '(("συναινέσεως" :gen :sg)))
+;; κάτοχος (μετακ. τόνου στη γενική/πληθ.)
+(register-lexeme "κάτοχος" :os-2 "κάτοχ" :masc
+  '(((:gen :sg) . "κατόχου") ((:gen :pl) . "κατόχων") ((:acc :pl) . "κατόχους")))
+;; εργαλείο (σταθερός τόνος)
+(register-lexeme "εργαλείο" :o-2n "εργαλεί" :neut)
+;; νόμιμος / παράνομος (επίθετα· και τα τρία γένη, ώστε «νόμιμη άμυνα» ↔ «νόμιμης άμυνας»)
+(register-lexeme "νόμιμος" :adj-os-fem "νόμιμ" :fem)
+(register-lexeme "νόμιμος" :adj-os-masc "νόμιμ" :masc)
+(register-lexeme "νόμιμος" :adj-os-neut "νόμιμ" :neut)
+(register-lexeme "παράνομος" :adj-os-fem "παράνομ" :fem)
+(register-lexeme "παράνομος" :adj-os-masc "παράνομ" :masc)
+(register-lexeme "παράνομος" :adj-os-neut "παράνομ" :neut)
+
+;;; ============================================================================
 ;;; ΠΡΑΞΕΙΣ ΛΟΓΟΥ — από ΚΛΕΙΣΤΕΣ γραμματικές κλάσεις της ελληνικής, όχι λίστες
 ;;; ============================================================================
 ;;;
