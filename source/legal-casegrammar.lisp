@@ -173,6 +173,50 @@
   (loop for i from lo below hi
         when (%content-token-p (nth i tokens)) collect i))
 
+(defparameter +prepositions+
+  '("με" "σε" "από" "για" "προς" "κατά" "χωρίς" "μετά" "πριν" "ως" "έως" "μέχρι"
+    "παρά" "αντί" "στη" "στην" "στο" "στον" "στα" "στους" "στις" "εκ" "εξ" "ενώ")
+  "Κλειστή κλάση: προθέσεις/σύνδεσμοι που ΟΡΙΖΟΥΝ το τέλος μιας ονοματικής φράσης
+   αντικειμένου (η επόμενη φράση είναι εμπρόθετος/δευτερεύουσα, όχι η κεφαλή).")
+
+(defparameter +genitive-articles+ '("του" "της" "των")
+  "Οριστικά άρθρα ΓΕΝΙΚΗΣ — σημαίνουν ΚΤΗΤΟΡΑ (το επόμενο περιεχόμενο ανήκει-σε).")
+
+(defun %post-verb-np (tokens vpos)
+  "(values κεφαλή-index τροποποιητές-indices ΟΛΟΙ-οι-δείκτες): η ΠΡΩΤΗ ονοματική
+   φράση ΑΝΤΙΚΕΙΜΕΝΟΥ αμέσως μετά το ρήμα (άρθρα ονομ./αιτ. αγνοούνται, επίθετα+
+   κεφαλή) ΩΣΠΟΥ πρόθεση / άρθρο ΓΕΝΙΚΗΣ (κτήτορας = χωριστή φράση) / δείκτης /
+   άλλο ρηματικό πλαίσιο. ΚΕΦΑΛΗ = ΤΕΛΕΥΤΑΙΑ λέξη περιεχομένου του NP (όχι η πρώτη
+   — το bug: «τα ξένα κινητά εργαλεία» έδινε θέμα «ξένα»). nil αν δεν υπάρχει NP
+   αμέσως (πχ πρόθεση) — τότε ισχύει η μορφολογική διαδρομή. Ο καλών κάνει
+   membership-έλεγχο: refine ΜΟΝΟ αν το μορφολογικό θέμα ανήκει σε ΑΥΤΟ το NP."
+  (let ((content '()))
+    (loop for i from (1+ vpos) below (length tokens)
+          for tk = (nth i tokens)
+          for l = (known-lemma tk)
+          do (cond
+               ((or (member (normalize-greek tk) +prepositions+
+                            :key #'normalize-greek :test #'string=)
+                    (member (normalize-greek tk) +genitive-articles+
+                            :key #'normalize-greek :test #'string=)
+                    (and l (assoc l *markers* :test #'string=))
+                    (and l (assoc l *verb-frames* :test #'string=)))
+                (return))                       ; όριο NR — σταμάτα (κενό ⇒ nil)
+               ((%content-token-p tk) (push i content))
+               (t nil)))                        ; άρθρο ονομ./αιτ. εντός NP: αγνόησε
+    (let ((idxs (nreverse content)))
+      (values (car (last idxs)) (butlast idxs) idxs))))
+
+(defun %genitive-owner-index (tokens vpos)
+  "Δείκτης ΚΤΗΤΟΡΑ: πρώτο περιεχόμενο μετά το ρήμα με ΠΡΟΗΓΟΥΜΕΝΟ άρθρο γενικής
+   (του/της/των). ΟΧΙ «δεύτερο περιεχόμενο» (που έπαιρνε επίθετο ως κτήτορα)."
+  (loop for i from (1+ vpos) below (length tokens)
+        when (and (%content-token-p (nth i tokens))
+                  (> i 0)
+                  (member (normalize-greek (nth (1- i) tokens))
+                          +genitive-articles+ :key #'normalize-greek :test #'string=))
+          return i))
+
 (defun %role-indices (tokens vpos before after)
   "(values δείκτης-δράστη δείκτης-θέματος): πρώτα ΜΟΡΦΟΛΟΓΙΚΑ (ονομαστική=
    δράστης, αιτιατική=θέμα — «τον Α σκότωσε ο Β» σωστά), αλλιώς ΘΕΣΙΑΚΑ (δράστης=
@@ -203,12 +247,24 @@
                (before (subseq tokens 0 vpos))
                (after  (subseq tokens (1+ vpos)))
                (negated (%negated-p before))
-               (owner-i (second (%content-indices tokens (1+ vpos) (length tokens))))
+               (owner-i (%genitive-owner-index tokens vpos))
                (owner-tok (and owner-i (nth owner-i tokens)))
                (facts '()))
-          (multiple-value-bind (agent-i theme-i)
+          (multiple-value-bind (agent-i theme-i0)
               (%role-indices tokens vpos before after)
-            (when (and agent-i theme-i)
+            ;; ΚΕΦΑΛΗ ΝΡ: αν υπάρχει εμπρόθετη-ελεύθερη φράση αντικειμένου μετά το
+            ;; ρήμα, το θέμα είναι η ΚΕΦΑΛΗ της (όχι το πρώτο επίθετο)· αλλιώς η
+            ;; μορφολογική/θεσιακή θέση (πχ προ-ρηματικό «τον Α»).
+            (multiple-value-bind (np-head np-mods np-idxs) (%post-verb-np tokens vpos)
+             (declare (ignore np-idxs))
+             ;; ΘΕΜΑ: προ-ρηματικό αιτιατικό = fronted αντικείμενο (OVS «Τον Α σκότωσε
+             ;; ο Β») ⇒ κράτα το. Αλλιώς = η ΚΕΦΑΛΗ του ΠΡΩΤΟΥ post-verb NP (το άμεσο
+             ;; αντικείμενο) — αγνοώντας μεταγενέστερα ΠΛΑΓΙΑ αιτιατικά (πχ «την
+             ;; παράνομη ιδιοποίηση» μέσα στη φράση σκοπού). Τα επίθετα του NP → κλάσεις.
+             (let* ((frontedp (and theme-i0 (< theme-i0 vpos)))
+                    (theme-i (if frontedp theme-i0 (or np-head theme-i0)))
+                    (np-mods (if (and (not frontedp) np-head) np-mods '())))
+             (when (and agent-i theme-i)
               (let ((agent (%entity* tokens agent-i))
                     (theme (%entity* tokens theme-i))
                     (theme-tok (nth theme-i tokens)))
@@ -232,13 +288,20 @@
                                                     *verb-frames* :test #'string=)))))
                         (push (list :γεγονός theme :ανήκει-σε (%entity* tokens owner-i)) facts)
                         (push (list :γεγονός theme :είναι :ξένο) facts))
+                      ;; ΕΠΙΘΕΤΑ της ονοματικής φράσης → κατηγορήματα κλάσης του θέματος
+                      ;; («ξένα κινητά εργαλεία» ⇒ εργαλεία ∧ ξένο ∧ κινητό)
+                      (dolist (mi np-mods)
+                        (let* ((ml (known-lemma (nth mi tokens)))
+                               (cls (and ml (cdr (assoc ml *adjectives* :test #'string=)))))
+                          (when cls
+                            (pushnew (list :γεγονός theme :είναι cls) facts :test #'equal))))
                       ;; δείκτες (σκοπός/τρόπος) οπουδήποτε → γεγονός ΔΡΑΣΤΗ
                       (dolist (tk tokens)
                         (let* ((l (known-lemma tk))
                                (m (and l (assoc l *markers* :test #'string=))))
                           (when m
                             (pushnew (list :γεγονός agent (second m) (third m)) facts
-                                     :test #'equal))))))))
+                                     :test #'equal))))))))))
             (values (nreverse facts) t))))))
 
 (defparameter +definitional-markers+
