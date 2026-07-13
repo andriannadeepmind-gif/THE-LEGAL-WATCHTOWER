@@ -36,13 +36,15 @@
          (= eng-pos pos-tot))
 
   (format t "~%== ② end-to-end: ο ΤΙΜΙΟΣ αριθμός (με held-out), RATCHET (≥) ==~%")
-  ;; [0075 verify] Ο κριτής έδειξε: το exact-substring MWE ΔΕΝ γενικεύει· προστέθηκαν
-  ;; held-out (παράφραση/κλίση/άλλο-αντικείμενο) + αφαιρέθηκε η εφεύρεση :theme.
-  ;; ΤΙΜΙΟΣ αριθμός: e2e-ok 7/13· ⊕ 5/11 = 45.5% (όχι η in-distribution 62.5%).
-  (check "end-to-end (όλα): ≥ 7/13 (ratchet — δεν πέφτει σιωπηλά)"
-         (>= e2e-ok 7))
-  (check "end-to-end ΑΠΑΙΤΗΤΙΚΟ (:in/:out, ΜΕ held-out): ≥ 5/11 (45.5%)"
-         (>= e2e-pos 5))
+  ;; [0079] ΓΡΑΜΜΑΤΙΚΗ ΣΥΣΤΑΤΙΚΩΝ: αντικατέστησε τα μπαλώματα (article-heuristics +
+  ;; exact-substring MWE) με NP-συστατικά + ΣΥΜΦΩΝΙΑ πτώσης + concepts κλειδωμένα σε
+  ;; ΛΗΜΜΑΤΑ. Η γενίκευση στην κλίση ΓΥΡΙΣΕ το held-out «νόμιμης άμυνας»
+  ;; (defeater-inflected) → e2e-ok 7→8/13· ⊕ 5→6/11 = 54.5% (ΓΝΗΣΙΑ γενίκευση, όχι
+  ;; capture). Το ratchet ΑΝΕΒΗΚΕ — κλειδώνει το κέρδος, δεν το αφήνει να ξεφύγει.
+  (check "end-to-end (όλα): ≥ 8/13 (ratchet — ανεβασμένο μετά τη γραμματική συστατικών)"
+         (>= e2e-ok 8))
+  (check "end-to-end ΑΠΑΙΤΗΤΙΚΟ (:in/:out, ΜΕ held-out): ≥ 6/11 (54.5%)"
+         (>= e2e-pos 6))
   (check "υπάρχουν held-out υποθέσεις (μετρούν ΓΕΝΙΚΕΥΣΗ, όχι in-distribution capture)"
          (some (lambda (row) (member :held-out (getf row :tags))) (getf r :rows)))
 

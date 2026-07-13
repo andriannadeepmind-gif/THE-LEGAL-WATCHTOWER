@@ -1,30 +1,36 @@
 ;;;; source/legal-casegrammar.lisp
 ;;;; ============================================================================
-;;;; Σ4β — ΓΡΑΜΜΑΤΙΚΗ ΠΤΩΣΕΩΝ (Fillmore): από ΑΦΗΓΗΣΗ σε γεγονότα υπόθεσης
+;;;; Σ4β — ΓΡΑΜΜΑΤΙΚΗ ΣΥΣΤΑΤΙΚΩΝ (feature grammar): από ΑΦΗΓΗΣΗ σε γεγονότα
 ;;;; ============================================================================
 ;;;;
-;;;; Η υπαγωγή (Σ4) δέχεται γεγονότα-tuples· εδώ χτίζεται η γέφυρα από τα
-;;;; φυσικά ελληνικά: κάθε ρήμα-κατηγόρημα φέρει ΠΛΑΙΣΙΟ ΠΤΩΣΕΩΝ (case frame)
-;;;; — δράστης (ονομαστική προ του ρήματος), θέμα (αιτιατική μετά), κτήτορας
-;;;; (γενική μετά το θέμα) — και χαρτογραφείται σε κατηγόρημα της γλώσσας
-;;;; γεγονότων (:γεγονός <υποκείμενο> <κατηγόρημα> <αντικείμενο>).
+;;;; Η υπαγωγή (Σ4) δέχεται γεγονότα-tuples· εδώ χτίζεται η γέφυρα από τα φυσικά
+;;;; ελληνικά. Η ανάθεση ρόλων ΔΕΝ γίνεται με ευρετικές (article-heuristics) ούτε με
+;;;; exact-substring (MWE) — ΑΥΤΑ ΗΤΑΝ ΜΠΑΛΩΜΑΤΑ γύρω από την απουσία έδρας
+;;;; «συστατικού». Εδώ: αναγνώριση ΟΝΟΜΑΤΙΚΩΝ ΦΡΑΣΕΩΝ ως ΣΥΣΤΑΤΙΚΑ με ΣΥΜΦΩΝΙΑ
+;;;; πτώσης/αριθμού/γένους (μέσω της έδρας μορφολογίας-χαρακτηριστικών
+;;;; orchestrator.citation-authority:morph-analyze). Η πτώση δίνει τον ρόλο δομικά:
+;;;; ονομαστική=δράστης, αιτιατική=θέμα, γενική=κτήτορας. Η ουδέτερη αμφισημία
+;;;; (το/τα = ονομ.=αιτ.) αίρεται με ΑΠΟΚΛΕΙΣΜΟ στην πρόταση (αν ο δράστης είναι
+;;;; μονοσήμαντα ονομαστικός, το αμφίσημο ουδέτερο ΕΙΝΑΙ το αντικείμενο). Τα
+;;;; αντικείμενα προθέσεων (PP) είναι ΠΛΑΓΙΑ, όχι πυρηνικά ορίσματα — έτσι το
+;;;; μεταγενέστερο πλάγιο αιτιατικό ΔΕΝ κλέβει το θέμα ΔΟΜΙΚΑ. Οι νομικοί όροι-τέχνης
+;;;; («νόμιμη άμυνα») είναι ΝΡ των οποίων η κεφαλή+επίθετα ταιριάζουν σε ΛΗΜΜΑΤΑ
+;;;; (γενίκευση στην κλίση) — όχι σε επιφανειακή ακολουθία.
 ;;;;
-;;;; ΟΛΗ η γλωσσική γνώση είναι ΔΗΛΩΤΙΚΗ (πακέτο :verb-frames): ρήμα→κατηγόρημα,
-;;;; ουσιαστικό→κατηγορία (τροφοδοτεί τις Κατηγορίες του Οργάνου), δείκτες
-;;;; σκοπού/τρόπου. Το λημματικό υπόστρωμα είναι Η ΜΙΑ έδρα γλώσσας
-;;;; (orchestrator.citation-authority) — καμία δεύτερη μορφολογία εδώ.
+;;;; ΟΛΗ η γλωσσική γνώση ΔΗΛΩΤΙΚΗ (πακέτο :verb-frames): ρήμα→κατηγόρημα,
+;;;; ουσιαστικό→κατηγορία, επίθετο→κατηγορία, δείκτες, concepts. Η μορφολογία και τα
+;;;; λήμματα είναι Η ΜΙΑ έδρα γλώσσας (orchestrator.citation-authority).
 ;;;;
-;;;; ΤΙΜΙΟΤΗΤΑ: ό,τι δεν αναγνωρίζεται, ΔΗΛΩΝΕΤΑΙ ως μη-αναγνωσμένο — ποτέ
-;;;; δεν εφευρίσκονται γεγονότα. Δογματική χαρτογράφηση: κτήτορας ≠ δράστης
-;;;; ⇒ το πράγμα είναι ΞΕΝΟ ως προς τον δράστη (η έννοια του «ξένου» στα
-;;;; περιουσιακά αδικήματα).
+;;;; ΤΙΜΙΟΤΗΤΑ: ό,τι δεν αναγνωρίζεται ΔΗΛΩΝΕΤΑΙ — ποτέ δεν εφευρίσκονται γεγονότα.
+;;;; Δογματική χαρτογράφηση: κτήτορας ≠ δράστης ⇒ το πράγμα είναι ΞΕΝΟ.
 
 (defpackage :orchestrator.casegrammar
   (:use :cl)
   (:import-from :orchestrator.citation-authority
                 #:tokenize-greek #:known-lemma #:normalize-greek #:content-lemma-p
-                #:surface-stem)
-  (:export #:*verb-frames* #:*noun-classes* #:*markers* #:*phrase-markers*
+                #:surface-stem
+                #:morph-analyze #:morph-lemma #:feat-case #:feat-number #:feat-gender)
+  (:export #:*verb-frames* #:*noun-classes* #:*markers* #:*concepts*
            #:parse-narrative #:narrative-report
            #:parse-definition #:+definitional-markers+
            #:parse-provision #:*adjectives*))
@@ -39,24 +45,22 @@
   "λίστα (λήμμα κατηγόρημα τιμή): δείκτες που γεννούν γεγονός για τον ΔΡΑΣΤΗ
    (πχ «ιδιοποιηθεί» ⇒ (:γεγονός Δ :σκοπός :παράνομη-ιδιοποίηση)).")
 (defvar *adjectives* '()
-  "alist: επιθετικό λήμμα → κατηγορία (πχ \"ξένος\" → :ξένο). Τα επίθετα
-   της ονοματικής φράσης του νόμου ΕΙΝΑΙ κατηγορήματα του αντικειμένου —
-   «ξένο κινητό πράγμα» = πράγμα ∧ ξένο ∧ κινητό (οι Κατηγορίες στη σύνταξη).")
+  "alist: επιθετικό λήμμα → κατηγορία (πχ \"ξένος\" → :ξένο). Τα επίθετα της
+   ονοματικής φράσης ΕΙΝΑΙ κατηγορήματα του αντικειμένου — «ξένο κινητό πράγμα» =
+   πράγμα ∧ ξένο ∧ κινητό (οι Κατηγορίες στη σύνταξη).")
 
-(defvar *phrase-markers* '()
-  "λίστα (ΚΑΝΟΝΙΚΟΠΟΙΗΜΕΝΑ-tokens κατηγόρημα τιμή): ΠΟΛΥΛΕΚΤΙΚΟΙ ΟΡΟΙ-ΤΕΧΝΗΣ του
-   δικαίου — «νόμιμη άμυνα», «παράνομη ιδιοποίηση» — ως ΕΝΟΤΗΤΑ, όχι μεμονωμένα
-   ουσιαστικά (τα νομικά concepts ΕΙΝΑΙ φράσεις). Ταιριάζουν ως ΣΥΝΕΧΟΜΕΝΗ
-   υπακολουθία στα κανονικοποιημένα tokens (τόνος/πεζά/τελικό-σ) και γεννούν
-   γεγονός ΔΡΑΣΤΗ. Μία δήλωση ανά έννοια. ΔΗΛΩΜΕΝΑ ΟΡΙΑ (ΟΧΙ overclaim): (α)
-   ΟΧΙ stemming — κλίση που αλλάζει το θέμα (πχ «συναινέσεως») δεν πιάνεται· (β)
-   ΜΟΝΟ συνεχόμενο span — παρεμβαλλόμενη λέξη σπάει το ταίριασμα· (γ) αναιρετής
-   («χωρίς») ΠΡΙΝ τη φράση την ακυρώνει. Το πλήρες κάλυμμα ρέει από γραμματική
-   συστατικών (δηλωμένη ανώτερη φάση, [0075] verify).")
+(defvar *concepts* '()
+  "λίστα ((head-lemma . sorted-adj-lemmas) pred value): ΝΟΜΙΚΟΙ ΟΡΟΙ-ΤΕΧΝΗΣ ως
+   ΣΥΣΤΑΤΙΚΑ — «νόμιμη άμυνα» = ΝΡ με κεφαλή-λήμμα «άμυνα» + επίθετο-λήμμα «νόμιμος».
+   Κλειδωμένο σε ΛΗΜΜΑΤΑ (μέσω morph-analyze) ⇒ ΓΕΝΙΚΕΥΕΙ στην κλίση: «νόμιμης
+   άμυνας» ≡ «νόμιμη άμυνα». Αντικαθιστά το exact-substring MWE (που ΗΤΑΝ μπάλωμα:
+   δεν γενίκευε, [0076] verify). Η άρνηση («χωρίς»/«δεν») ρέει από τη ΔΟΜΗ (PP
+   αποκλεισμού / clause negation), όχι από ad-hoc look-back.")
 
 (orchestrator.knowledge-packs:define-knowledge-kind :verb-frames
- :doc "Πλαίσια πτώσεων: (:frame ΡΗΜΑ-ΛΗΜΜΑ ΚΑΤΗΓΟΡΗΜΑ) · (:noun-class ΛΗΜΜΑ
- ΚΑΤΗΓΟΡΙΑ) · (:marker ΛΗΜΜΑ ΚΑΤΗΓΟΡΗΜΑ ΤΙΜΗ) — η γέφυρα αφήγησης→γεγονότων."
+ :doc "Γλωσσική γνώση: (:frame ΡΗΜΑ ΚΑΤΗΓΟΡΗΜΑ) · (:noun-class ΛΗΜΜΑ ΚΑΤΗΓΟΡΙΑ) ·
+ (:marker ΛΗΜΜΑ ΚΑΤΗΓΟΡΗΜΑ ΤΙΜΗ) · (:adjective ΛΗΜΜΑ ΚΑΤΗΓΟΡΙΑ) · (:concept
+ ΚΕΦΑΛΗ-ΛΗΜΜΑ (ΕΠΙΘΕΤΟ-ΛΗΜΜΑΤΑ…) ΚΑΤΗΓΟΡΗΜΑ ΤΙΜΗ) — η γέφυρα αφήγησης→γεγονότων."
  :install
  (lambda (entries)
    (dolist (e entries)
@@ -81,23 +85,22 @@
                      (setf *adjectives*
                            (cons (cons lemma cat)
                                  (remove lemma *adjectives* :key #'car :test #'string=)))))
-       (:phrase (destructuring-bind (k phrase pred value) e
-                  (declare (ignore k))
-                  (let ((toks (mapcar #'normalize-greek (tokenize-greek phrase))))
-                    (setf *phrase-markers*
-                          (cons (list toks pred value)
-                                (remove toks *phrase-markers*
-                                        :key #'first :test #'equal)))))))))
+       (:concept (destructuring-bind (k head adj-lemmas pred value) e
+                   (declare (ignore k))
+                   (let ((key (cons head (sort (copy-list adj-lemmas) #'string<))))
+                     (setf *concepts*
+                           (cons (list key pred value)
+                                 (remove key *concepts* :key #'first :test #'equal)))))))))
  :snapshot (lambda () (list (copy-tree *verb-frames*)
                             (copy-tree *noun-classes*)
                             (copy-tree *markers*)
                             (copy-tree *adjectives*)
-                            (copy-tree *phrase-markers*)))
- :restore  (lambda (st) (destructuring-bind (vf nc mk &optional aj pm) st
+                            (copy-tree *concepts*)))
+ :restore  (lambda (st) (destructuring-bind (vf nc mk &optional aj cn) st
                           (setf *verb-frames* vf *noun-classes* nc
-                                *markers* mk *adjectives* aj *phrase-markers* pm))))
+                                *markers* mk *adjectives* aj *concepts* cn))))
 
-;;; ── Ανάλυση ──
+;;; ── Τμηματοποίηση ──
 
 (defun %split-sentences (text)
   (let ((sentences '()) (start 0))
@@ -110,52 +113,49 @@
       (when (plusp (length s)) (push s sentences)))
     (nreverse sentences)))
 
-(defun %entity (token)
-  "Οντότητα από επιφανειακή λέξη: το ΛΗΜΜΑ αν είναι γνωστό (ταυτότητα έννοιας,
-   όχι γράμματα), αλλιώς η κανονικοποιημένη μορφή (κύρια ονόματα)."
-  (let ((l (or (known-lemma token) (normalize-greek token))))
-    (intern (string-upcase l) :keyword)))
+(defun %split-clauses (sentence)
+  "Τμήματα πρότασης στα κόμματα — ΚΑΘΕ κόμμα ορίζει όριο πρότασης/παρενθετικού
+   (η κύρια SVO πρόταση + επιρρηματικές/μετοχικές «ενώ …», «δεν …»)."
+  (let ((out '()) (start 0))
+    (loop for i below (length sentence)
+          when (char= (char sentence i) #\,)
+            do (push (subseq sentence start i) out) (setf start (1+ i)))
+    (push (subseq sentence start) out)
+    (mapcar (lambda (s) (string-trim " " s)) (nreverse out))))
 
 (defun %content-token-p (token)
-  "Λέξη ΠΕΡΙΕΧΟΜΕΝΟΥ: η διάκριση γίνεται στην έδρα της γλώσσας (κλειστές
-   γραμματικές κλάσεις), πάνω στο λήμμα αν υπάρχει, αλλιώς στη μορφή."
+  "Λέξη ΠΕΡΙΕΧΟΜΕΝΟΥ (κλειστές γραμματικές κλάσεις στην έδρα της γλώσσας)."
   (content-lemma-p (or (known-lemma token) token)))
 
 (defparameter +negation-lemmas+
   '("δεν" "μη" "μην" "ουδείς" "ουδέν" "ουδέποτε" "ούτε"
     "κανείς" "κανένας" "καμία" "κανένα" "ποτέ")
   "Οι δείκτες ΑΡΝΗΣΗΣ της ελληνικής (μόρια + αρνητικές αντωνυμίες/επιρρήματα).
-   Χωρίς αυτούς, «ο Χ ΔΕΝ αφαίρεσε» παρήγαγε ΚΑΤΑΦΑΤΙΚΟ γεγονός — ενεργός
-   κίνδυνος ορθότητας (εσωτερικός έλεγχος 05-07-2026). Κλειστή κλάση.")
+   Κλειστή κλάση.")
 
 (defparameter +accusative-articles+ '("τον" "την")
-  "Οριστικά άρθρα ΑΙΤΙΑΤΙΚΗΣ (μονοσήμαντα) — σημαίνουν ΑΝΤΙΚΕΙΜΕΝΟ. Τα ουδέτερα
-   «το/τα» είναι αμφίσημα (ονομ.=αιτ.) και ΔΕΝ οδηγούν ρόλο — δηλωμένο όριο.")
+  "Οριστικά άρθρα ΑΙΤΙΑΤΙΚΗΣ (μονοσήμαντα).")
 (defparameter +nominative-articles+ '("ο" "η" "οι")
-  "Οριστικά άρθρα ΟΝΟΜΑΣΤΙΚΗΣ (μονοσήμαντα) — σημαίνουν ΥΠΟΚΕΙΜΕΝΟ (δράστη).")
+  "Οριστικά άρθρα ΟΝΟΜΑΣΤΙΚΗΣ (μονοσήμαντα).")
+(defparameter +genitive-articles+ '("του" "της" "των")
+  "Οριστικά άρθρα ΓΕΝΙΚΗΣ.")
+(defparameter +prepositions+
+  '("με" "σε" "από" "για" "προς" "κατά" "χωρίς" "δίχως" "μετά" "πριν" "ως" "έως"
+    "μέχρι" "παρά" "αντί" "λόγω" "ένεκα" "στη" "στην" "στο" "στον" "στα" "στους"
+    "στις" "εκ" "εξ" "ενώ")
+  "Κλειστή κλάση προθέσεων/συνδέσμων: ΟΡΙΖΟΥΝ πλάγια φράση (PP) — το αντικείμενό
+   τους ΔΕΝ είναι πυρηνικό όρισμα.")
+(defparameter +phrase-negators+ '("χωρίς" "δίχως")
+  "Προθέσεις ΑΠΟΚΛΕΙΣΜΟΥ: «χωρίς τη συναίνεση» ΑΝΑΙΡΕΙ τον όρο (καμία σιωπηλή
+   αθώωση) — δομικά ένα PP που c-command-άρει τον όρο.")
 
-(defun %negated-p (before)
-  "Άρνηση του ρήματος: δείκτης άρνησης ΠΡΙΝ το ρήμα-πλαίσιο (στην ίδια πρόταση)."
-  (some (lambda (tk)
-          (member (normalize-greek (or (known-lemma tk) tk))
-                  +negation-lemmas+ :key #'normalize-greek :test #'string=))
-        before))
-
-(defun %case-of (tokens i)
-  "Μορφολογική πτώση του περιεχομένου-token στη θέση I από το ΠΡΟΗΓΟΥΜΕΝΟ
-   οριστικό άρθρο (μονοσήμαντο): :acc | :nom | nil (καμία σήμανση)."
-  (when (> i 0)
-    (let ((a (normalize-greek (nth (1- i) tokens))))
-      (cond ((member a +accusative-articles+ :key #'normalize-greek :test #'string=) :acc)
-            ((member a +nominative-articles+  :key #'normalize-greek :test #'string=) :nom)
-            (t nil)))))
+;;; ── Ονοματοδοσία οντοτήτων (ΑΜΕΤΑΒΛΗΤΗ σύμβαση: λήμμα-λεξικού ή ανάκτηση
+;;;    ονομαστικής κύριου ονόματος, ΚΑΝΟΝΙΚΟΠΟΙΗΜΕΝΗ) ──
 
 (defun %recover-nominative (surface article)
   "Ανακτά την ΟΝΟΜΑΣΤΙΚΗ κύριου ονόματος από πλάγια πτώση, με βάση το οριστικό
-   άρθρο (κλιτική ελληνικών κυρίων ονομάτων). Ώστε ο ΙΔΙΟΣ διάδικος — «ο
-   Γιώργος» (υποκ.), «τον Γιώργο» (αντικ.), «του Γιώργου» (γεν.) — να είναι
-   ΜΙΑ οντότητα (συναναφορά) και να ονομάζεται σωστά. ΔΗΛΩΜΕΝΑ best-effort για
-   κύρια ονόματα (τα λήμματα κανονικοποιούνται ήδη)· άγνωστο άρθρο ⇒ αμετάβλητο."
+   άρθρο — ώστε «ο Γιώργος»/«τον Γιώργο»/«του Γιώργου» = ΜΙΑ οντότητα (συναναφορά).
+   ΔΗΛΩΜΕΝΑ best-effort για κύρια ονόματα· άγνωστο άρθρο ⇒ αμετάβλητο."
   (let ((n (normalize-greek surface))
         (a (and article (normalize-greek article)))
         (len (length surface)))
@@ -164,19 +164,15 @@
            (chop (k) (subseq surface 0 (- len k))))
       (cond
         ((or (null a) (zerop len)) surface)
-        ;; αιτιατική αρσενικού (τον Γιώργο→Γιώργος, τον Γιάννη→Γιάννης)
         ((string= a "τον")
          (if (find (char n (1- (length n))) "αεηιουω")
              (concatenate 'string surface "ς") surface))
-        ;; γενική αρσενικού: -ου → -ος (του Γιώργου→Γιώργος)
         ((and (string= a "του") (ends "ου")) (concatenate 'string (chop 2) "ος"))
-        ;; γενική θηλυκού: -ας→-α, -ης→-η (της Μαρίας→Μαρία, της Ελένης→Ελένη)
         ((and (string= a "της") (or (ends "ας") (ends "ης"))) (chop 1))
-        ;; ονομαστική / αιτιατική θηλυκού / λοιπά: αμετάβλητο
         (t surface)))))
 
 (defun %entity* (tokens i)
-  "Οντότητα από τη θέση I, ΚΑΝΟΝΙΚΟΠΟΙΗΜΕΝΗ σε ονομαστική: λήμμα αν είναι
+  "Οντότητα από τη θέση I, ΚΑΝΟΝΙΚΟΠΟΙΗΜΕΝΗ σε ονομαστική: λήμμα-λεξικού αν είναι
    γνωστό, αλλιώς ανάκτηση ονομαστικής κύριου ονόματος από το προηγούμενο άρθρο."
   (let* ((token (nth i tokens))
          (l (known-lemma token)))
@@ -187,206 +183,203 @@
                   (%recover-nominative token (when (> i 0) (nth (1- i) tokens)))))
                 :keyword))))
 
-(defun %content-indices (tokens lo hi)
-  "Δείκτες λέξεων περιεχομένου στο [LO, HI) — με τη σειρά τους."
-  (loop for i from lo below hi
-        when (%content-token-p (nth i tokens)) collect i))
+;;; ── Λεξικό άρθρων με ΠΛΗΡΗ χαρακτηριστικά (η ΜΙΑ έδρα του, feature-bearing) ──
+(defparameter *article-table*
+  (let ((h (make-hash-table :test 'equal)))
+    (flet ((a (k &rest cases) (setf (gethash (normalize-greek k) h) cases)))
+      (a "ο" :nom)   (a "η" :nom)   (a "οι" :nom)
+      (a "τον" :acc) (a "την" :acc) (a "τους" :acc) (a "τις" :acc)
+      (a "το" :nom :acc) (a "τα" :nom :acc)          ; ουδέτερα αμφίσημα (nom=acc)
+      (a "του" :gen) (a "της" :gen) (a "των" :gen)
+      (a "τη" :acc))                                 ; «τη συναίνεση» (καθομιλουμένη)
+    h)
+  "normalize(άρθρο) → σύνολο πτώσεων. Τα ουδέτερα «το/τα» φέρουν {nom,acc}: η
+   αμφισημία αίρεται δομικά στην πρόταση (αποκλεισμός), όχι με ευρετική.")
 
-(defparameter +prepositions+
-  '("με" "σε" "από" "για" "προς" "κατά" "χωρίς" "μετά" "πριν" "ως" "έως" "μέχρι"
-    "παρά" "αντί" "στη" "στην" "στο" "στον" "στα" "στους" "στις" "εκ" "εξ" "ενώ")
-  "Κλειστή κλάση: προθέσεις/σύνδεσμοι που ΟΡΙΖΟΥΝ το τέλος μιας ονοματικής φράσης
-   αντικειμένου (η επόμενη φράση είναι εμπρόθετος/δευτερεύουσα, όχι η κεφαλή).")
+;;; ── Λεξική ταξινόμηση ──
+(defun %morph-lemma (surface)
+  "Λήμμα από τη μορφολογία-χαρακτηριστικών αν είναι μονοσήμαντο, αλλιώς από το
+   λεξικό known-lemma, αλλιώς nil. ΓΙΑ ΤΑΙΡΙΑΣΜΑ (concepts/noun-class/adj) — ΟΧΙ για
+   ονοματοδοσία (εκείνη μένει %entity*)."
+  (let ((m (morph-lemma surface)))
+    (if (stringp m) m (known-lemma surface))))
 
-(defparameter +genitive-articles+ '("του" "της" "των")
-  "Οριστικά άρθρα ΓΕΝΙΚΗΣ — σημαίνουν ΚΤΗΤΟΡΑ (το επόμενο περιεχόμενο ανήκει-σε).")
+(defparameter *concept-adj-lemmas* '()
+  "Cache: όλα τα επίθετα-λήμματα που εμφανίζονται σε *concepts* — ώστε να
+   αναγνωρίζονται δομικά ως επίθετα ακόμη κι αν δεν φέρουν κατηγορία στο *adjectives*.")
+(defun %refresh-concept-adjs ()
+  (setf *concept-adj-lemmas*
+        (remove-duplicates (loop for (key pred value) in *concepts* append (cdr key))
+                           :test #'string=)))
+(defun %adj-lemma-p (lemma)
+  (and lemma (or (assoc lemma *adjectives* :test #'string=)
+                 (member lemma *concept-adj-lemmas* :test #'string=))))
 
-(defun %post-verb-np (tokens vpos)
-  "(values κεφαλή-index τροποποιητές-indices ΟΛΟΙ-οι-δείκτες): η ΠΡΩΤΗ ονοματική
-   φράση ΑΝΤΙΚΕΙΜΕΝΟΥ αμέσως μετά το ρήμα (άρθρα ονομ./αιτ. αγνοούνται, επίθετα+
-   κεφαλή) ΩΣΠΟΥ πρόθεση / άρθρο ΓΕΝΙΚΗΣ (κτήτορας = χωριστή φράση) / δείκτης /
-   άλλο ρηματικό πλαίσιο. ΚΕΦΑΛΗ = ΤΕΛΕΥΤΑΙΑ λέξη περιεχομένου του NP (όχι η πρώτη
-   — το bug: «τα ξένα κινητά εργαλεία» έδινε θέμα «ξένα»). nil αν δεν υπάρχει NP
-   αμέσως (πχ πρόθεση) — τότε ισχύει η μορφολογική διαδρομή. Ο καλών κάνει
-   membership-έλεγχο: refine ΜΟΝΟ αν το μορφολογικό θέμα ανήκει σε ΑΥΤΟ το NP."
-  (let ((content '()))
-    (loop for i from (1+ vpos) below (length tokens)
-          for tk = (nth i tokens)
-          for l = (known-lemma tk)
-          do (cond
-               ((or (member (normalize-greek tk) +prepositions+
-                            :key #'normalize-greek :test #'string=)
-                    (member (normalize-greek tk) +genitive-articles+
-                            :key #'normalize-greek :test #'string=)
-                    (and l (assoc l *markers* :test #'string=))
-                    (and l (assoc l *verb-frames* :test #'string=)))
-                (return))                       ; όριο NR — σταμάτα (κενό ⇒ nil)
-               ((%content-token-p tk) (push i content))
-               (t nil)))                        ; άρθρο ονομ./αιτ. εντός NP: αγνόησε
-    (let ((idxs (nreverse content)))
-      (values (car (last idxs)) (butlast idxs) idxs))))
+(defun %morph-cases (surface)
+  "Σύνολο πιθανών πτώσεων του τύπου από τη μορφολογία, ή nil (άγνωστο)."
+  (let ((rds (morph-analyze surface)))
+    (when rds (remove-duplicates (mapcar (lambda (h) (feat-case (cdr h))) rds)))))
 
-(defun %genitive-owner-index (tokens vpos)
-  "Δείκτης ΚΤΗΤΟΡΑ: πρώτο περιεχόμενο μετά το ρήμα με ΠΡΟΗΓΟΥΜΕΝΟ άρθρο γενικής
-   (του/της/των). ΟΧΙ «δεύτερο περιεχόμενο» (που έπαιρνε επίθετο ως κτήτορα)."
-  (loop for i from (1+ vpos) below (length tokens)
-        when (and (%content-token-p (nth i tokens))
-                  (> i 0)
-                  (member (normalize-greek (nth (1- i) tokens))
-                          +genitive-articles+ :key #'normalize-greek :test #'string=))
-          return i))
+(defun %classify (surface)
+  "Λεξικό cell: όλες οι λειτουργικές/λεξικές ιδιότητες του τύπου (context-free)."
+  (let* ((n (normalize-greek surface))
+         (art (gethash n *article-table*))
+         (lem (%morph-lemma surface))
+         (verb (and lem (cdr (assoc lem *verb-frames* :test #'string=))))
+         (pos (cond ((%adj-lemma-p lem) :adj)
+                    (verb :verb)
+                    ((or (and lem (assoc lem *noun-classes* :test #'string=))
+                         (%content-token-p surface)) :noun)
+                    (t nil))))
+    (list :surface surface :norm n :art art :lemma lem :pos pos :verb verb
+          :prep (and (member n +prepositions+ :key #'normalize-greek :test #'string=) t)
+          :negprep (and (member n +phrase-negators+ :key #'normalize-greek :test #'string=) t)
+          :negpart (and (member n +negation-lemmas+ :key #'normalize-greek :test #'string=) t)
+          :cases (or art (%morph-cases surface)))))
 
-(defun %subseq-start (needle haystack)
-  "Θέση όπου το NEEDLE (λίστα strings) εμφανίζεται ως ΣΥΝΕΧΟΜΕΝΗ υπακολουθία στο
-   HAYSTACK, ή nil."
-  (let ((n (length needle)) (h (length haystack)))
-    (and (plusp n) (<= n h)
-         (loop for start from 0 to (- h n)
-               when (loop for i from 0 below n
-                          always (string= (nth i needle) (nth (+ start i) haystack)))
-                 return start))))
+;;; ── Ονοματική φράση ως ΣΥΣΤΑΤΙΚΟ (Det? Adj* Head) με ΣΥΜΦΩΝΙΑ πτώσης ──
+(defstruct np head-index head-lemma adj-lemmas adj-classes cases start end oblique owner)
 
-(defparameter +phrase-negators+ '("χωρίς" "δίχως")
-  "Προθέσεις ΑΠΟΚΛΕΙΣΜΟΥ: «χωρίς τη συναίνεση» ΑΝΑΙΡΕΙ τον όρο — αλλιώς το phrase
-   marker θα έδινε αθώωση εκεί που στοιχειοθετείται η πράξη ([0075] verify Q2a).")
+(defun %intersect-cases (a b) (if (and a b) (intersection a b) (or a b)))
 
-(defun %article-skip-p (tok)
-  "Οριστικό άρθρο (κάθε πτώση + ουδέτερα) — προσπερνιέται όταν ψάχνουμε πίσω τον
-   αναιρετή μιας ονοματικής φράσης όρου-τέχνης."
-  (let ((n (normalize-greek tok)))
-    (or (member n '("το" "τα" "τη" "την") :key #'normalize-greek :test #'string=)
-        (member n +accusative-articles+ :key #'normalize-greek :test #'string=)
-        (member n +nominative-articles+ :key #'normalize-greek :test #'string=)
-        (member n +genitive-articles+   :key #'normalize-greek :test #'string=))))
+(defun %parse-np (cells i)
+  "(values np next-index) ή nil: Det? Adj* Head. Πτώση = ΤΟΜΗ των γνωστών συνόλων
+   πτώσης (Det+επίθετα+κεφαλή) = ΣΥΜΦΩΝΙΑ. Head-index = απόλυτη θέση της κεφαλής.
+   Το oblique το ορίζει ο καλών (%parse-nps) — ΜΙΑ πηγή αλήθειας."
+  (let ((j i) (cases nil) (adjl '()) (adjc '()) (head-i nil) (found nil))
+    (let ((c (nth j cells)))                                   ; Det
+      (when (getf c :art) (setf cases (getf c :cases)) (incf j)))
+    (loop for c = (nth j cells)                                ; Adj*
+          while (and c (eq (getf c :pos) :adj))
+          do (push (getf c :lemma) adjl)
+             (let ((ac (cdr (assoc (getf c :lemma) *adjectives* :test #'string=))))
+               (when ac (push ac adjc)))
+             (setf cases (%intersect-cases cases (getf c :cases)))
+             (incf j))
+    (let ((c (nth j cells)))                                   ; Head (nominal)
+      (when (and c (or (eq (getf c :pos) :noun)
+                       (and (null (getf c :art)) (not (getf c :prep))
+                            (not (getf c :verb)) (not (getf c :negpart))
+                            (getf c :lemma))))
+        (setf head-i j found t cases (%intersect-cases cases (getf c :cases)))
+        (incf j)))
+    (when found
+      (values (make-np :head-index head-i :head-lemma (getf (nth head-i cells) :lemma)
+                       :adj-lemmas (nreverse adjl) :adj-classes (nreverse adjc)
+                       :cases (or cases '(:nom :acc :gen)) :start i :end j
+                       :oblique nil :owner nil)
+              j))))
 
-(defun %phrase-negated-p (tokens start)
-  "ΠΡΙΝ τη φράση (θέση START), εντός της άμεσης εμβέλειας άρνησης, υπάρχει αναιρετής
-   («χωρίς/δίχως») ή δείκτης άρνησης («δεν/μη/…»); ⇒ ο όρος ΔΕΝ ισχύει καταφατικά.
-   Εμβέλεια (bounded, ΔΕΝ διασχίζει πρόταση): προσπερνά άρθρα + προθέσεις + ΕΝΑ
-   κυβερνών ρήμα («δεν τελούσε σε νόμιμη άμυνα»)· σταματά στην πρώτη ΑΛΛΗ λέξη.
-   Θάνατος του Q2a: «χωρίς τη συναίνεση»/«δεν τελούσε σε άμυνα» ⇒ καμία σιωπηλή αθώωση."
-  (let ((budget 1))                                    ; ΕΝΑ αυθαίρετο token (κυβερνών ρήμα/βοηθητικό)
-    (loop for i from (1- start) downto 0
-          for tok = (nth i tokens)
-          do (cond
-               ((or (member (normalize-greek tok) +phrase-negators+
-                            :key #'normalize-greek :test #'string=)
-                    (member (normalize-greek tok) +negation-lemmas+
-                            :key #'normalize-greek :test #'string=))
-                (return t))
-               ((%article-skip-p tok))                ; άρθρο → πίσω (ελεύθερα)
-               ((member (normalize-greek tok) +prepositions+
-                        :key #'normalize-greek :test #'string=))   ; πρόθεση → πίσω (ελεύθερα)
-               ((plusp budget) (decf budget))          ; προσπέρασε ΕΝΑ ρήμα («δεν ΤΕΛΟΥΣΕ σε…»)
-               (t (return nil))))))                    ; εκτός άμεσης εμβέλειας άρνησης
+(defun %parse-nps (cells)
+  "Όλα τα NP: σήμανση oblique (αντικείμενο πρόθεσης) + σύνδεση κτήτορα (post-head
+   γενική ΧΩΡΙΣ κυβερνώσα πρόθεση) στο προηγούμενο NP."
+  (let ((nps '()) (i 0) (n (length cells)) (prep-before nil) (seen-prep nil))
+    (loop while (< i n) for c = (nth i cells) do
+      (cond
+        ((getf c :prep) (setf prep-before (getf c :norm) seen-prep t) (incf i))
+        (t (multiple-value-bind (np j) (%parse-np cells i)
+             (cond
+               (np
+                ;; oblique = υπό πρόθεση ΚΑΙ όχι καθαρά ονομαστικό: το υποκείμενο
+                ;; (ονομαστική) ΔΕΝ είναι ποτέ αντικείμενο πρόθεσης — «…με δόλο ο
+                ;; δράστης» ⇒ ο δράστης πυρηνικός (OVS), όχι μέρος του PP.
+                (setf (np-oblique np) (and seen-prep (not (equal (np-cases np) '(:nom)))))
+                (if (and nps (null prep-before) (equal (np-cases np) '(:gen)))
+                    (setf (np-owner (first nps)) np)     ; κτήτορας post-head, όχι PP
+                    (push np nps))
+                (setf prep-before nil i j))
+               (t (setf prep-before nil i (1+ i))))))))
+    (nreverse nps)))
 
-(defun %phrase-marker-facts (tokens agent)
-  "Γεγονότα από ΠΟΛΥΛΕΚΤΙΚΟΥΣ όρους-τέχνης: κάθε *phrase-markers* που ταιριάζει ως
-   συνεχόμενη υπακολουθία στα κανονικοποιημένα tokens → (:γεγονός ΔΡΑΣΤΗΣ pred value),
-   ΕΚΤΟΣ αν προηγείται αναιρετής/«χωρίς» (τότε ο όρος αναιρείται — καμία εφεύρεση
-   καταφατικού). Ταίριασμα κανονικοποιημένο (τόνος/πεζά/τελικό-σ)· ΟΧΙ stemming —
-   κλίση που αλλάζει το θέμα δεν πιάνεται (δηλωμένο όριο). ΤΟ VALUE ΕΙΝΑΙ ΚΥΡΙΟΛΕΚΤΙΚΟ:
-   ΔΕΝ εφευρίσκεται co-reference προς το θέμα ([0075] verify Q3/D1 — το παλιό slot
-   :theme κατασκεύαζε «συναίνεση για το θέμα» ακόμη κι όταν το κείμενο έλεγε ΑΛΛΟ
-   αντικείμενο· η ανάλυση αντικειμένου-όρου ρέει από τη γραμματική συστατικών, όχι
-   από εδώ — τίμια άγνοια αντί εφεύρεσης)."
-  (let ((norm (mapcar #'normalize-greek tokens)) (facts '()))
-    (dolist (pm *phrase-markers* facts)
-      (destructuring-bind (phrase pred value) pm
-        (let ((start (%subseq-start phrase norm)))
-          (when (and start (not (%phrase-negated-p tokens start)))
-            (pushnew (list :γεγονός agent pred value) facts :test #'equal)))))))
+;;; ── Ρόλοι από ΠΤΩΣΗ (μόνο πυρηνικά NP· δομική άρση ουδέτερης αμφισημίας) ──
+(defun %pure (np cse) (equal (np-cases np) (list cse)))
+(defun %ambiguous-na (np) (and (member :nom (np-cases np)) (member :acc (np-cases np))))
+(defun %assign-roles (core-nps)
+  "(values agent theme): agent = καθαρό nom (αλλιώς αμφίσημο)· theme = καθαρό acc
+   (αλλιώς το εναπομείναν αμφίσημο). «ο δράστης»(nom)+«τα εργαλεία»(nom/acc) ⇒
+   theme=εργαλεία ΔΟΜΙΚΑ (αποκλεισμός), χωρίς καμία θέση-ευρετική."
+  (let* ((agent (or (find-if (lambda (x) (%pure x :nom)) core-nps)
+                    (find-if #'%ambiguous-na core-nps)))
+         (theme (or (find-if (lambda (x) (%pure x :acc)) core-nps)
+                    (find-if (lambda (x) (and (not (eq x agent)) (%ambiguous-na x))) core-nps))))
+    (values agent theme)))
 
-(defun %role-indices (tokens vpos before after)
-  "(values δείκτης-δράστη δείκτης-θέματος): πρώτα ΜΟΡΦΟΛΟΓΙΚΑ (ονομαστική=
-   δράστης, αιτιατική=θέμα — «τον Α σκότωσε ο Β» σωστά), αλλιώς ΘΕΣΙΑΚΑ (δράστης=
-   τελευταίο περιεχόμενο πριν το ρήμα, θέμα=πρώτο μετά). Η θεσιακή διαδρομή είναι
-   ΑΚΡΙΒΩΣ η προηγούμενη — καμία παλινδρόμηση όπου δεν υπάρχει άρθρο."
-  (let (nom acc)
-    (loop for i from 0 below (length tokens)
-          when (and (/= i vpos) (%content-token-p (nth i tokens)))
-            do (case (%case-of tokens i)
-                 (:nom (unless nom (setf nom i)))
-                 (:acc (unless acc (setf acc i)))))
-    (values (or nom (let ((cs (%content-indices tokens 0 vpos))) (car (last cs))))
-            (or acc (first (%content-indices tokens (1+ vpos) (length tokens)))))))
+;;; ── Άρνηση όρου (concept) από τη ΔΟΜΗ ──
+(defun %clause-negated-p (cells) (some (lambda (c) (getf c :negpart)) cells))
+(defun %np-term-negated (np cells)
+  "Ο όρος αναιρείται αν (α) το NP είναι αντικείμενο neg-prep (χωρίς/δίχως) ή (β)
+   υπάρχει δείκτης άρνησης ΠΡΙΝ το NP στην ΙΔΙΑ πρόταση (clause negation)."
+  (let ((s (np-start np)))
+    (or (and (> s 0) (getf (nth (1- s) cells) :negprep))
+        (loop for k below s thereis (getf (nth k cells) :negpart)))))
 
-(defun %parse-sentence (tokens)
-  "(values γεγονότα αναγνωρίστηκε-p): πλαίσιο πτώσεων SVO(G) — δράστης/θέμα
-   κατά ΜΟΡΦΟΛΟΓΙΑ (άρθρο ονομαστικής/αιτιατικής) με θεσιακή εφεδρεία·
-   κτήτορας (επόμενο περιεχόμενο μετά το θέμα)· ΑΡΝΗΣΗ ρητή (δεν εφευρίσκεται
-   καταφατικό γεγονός για αρνημένη πράξη)."
-  (let* ((vpos (position-if (lambda (tk)
-                              (let ((l (known-lemma tk)))
-                                (and l (assoc l *verb-frames* :test #'string=))))
-                            tokens)))
-    (if (null vpos)
-        (values '() nil)
-        (let* ((verb-lemma (known-lemma (nth vpos tokens)))
-               (pred (cdr (assoc verb-lemma *verb-frames* :test #'string=)))
-               (before (subseq tokens 0 vpos))
-               (after  (subseq tokens (1+ vpos)))
-               (negated (%negated-p before))
-               (owner-i (%genitive-owner-index tokens vpos))
-               (owner-tok (and owner-i (nth owner-i tokens)))
-               (facts '()))
-          (multiple-value-bind (agent-i theme-i0)
-              (%role-indices tokens vpos before after)
-            ;; ΚΕΦΑΛΗ ΝΡ: αν υπάρχει εμπρόθετη-ελεύθερη φράση αντικειμένου μετά το
-            ;; ρήμα, το θέμα είναι η ΚΕΦΑΛΗ της (όχι το πρώτο επίθετο)· αλλιώς η
-            ;; μορφολογική/θεσιακή θέση (πχ προ-ρηματικό «τον Α»).
-            (multiple-value-bind (np-head np-mods np-idxs) (%post-verb-np tokens vpos)
-             (declare (ignore np-idxs))
-             ;; ΘΕΜΑ: προ-ρηματικό αιτιατικό = fronted αντικείμενο (OVS «Τον Α σκότωσε
-             ;; ο Β») ⇒ κράτα το. Αλλιώς = η ΚΕΦΑΛΗ του ΠΡΩΤΟΥ post-verb NP (το άμεσο
-             ;; αντικείμενο) — αγνοώντας μεταγενέστερα ΠΛΑΓΙΑ αιτιατικά (πχ «την
-             ;; παράνομη ιδιοποίηση» μέσα στη φράση σκοπού). Τα επίθετα του NP → κλάσεις.
-             (let* ((frontedp (and theme-i0 (< theme-i0 vpos)))
-                    (theme-i (if frontedp theme-i0 (or np-head theme-i0)))
-                    (np-mods (if (and (not frontedp) np-head) np-mods '())))
-             (when (and agent-i theme-i)
-              (let ((agent (%entity* tokens agent-i))
-                    (theme (%entity* tokens theme-i))
-                    (theme-tok (nth theme-i tokens)))
-                (if negated
-                    ;; ΑΡΝΗΣΗ: το μόνο γεγονός είναι ότι η πράξη ΔΕΝ έγινε —
-                    ;; κανένα καταφατικό/παράγωγο (ξένο, δείκτες). Τίμια στάση.
-                    (setf facts (list (list :άρνηση agent pred theme)))
-                    (progn
-                      (push (list :γεγονός agent pred theme) facts)
-                      ;; κατηγορία θέματος → τροφοδοτεί τις Κατηγορίες (Barbara)
-                      (let* ((tl (known-lemma theme-tok))
-                             (class (and tl (cdr (assoc tl *noun-classes* :test #'string=)))))
-                        (when class (push (list :γεγονός theme :είναι class) facts)))
-                      ;; κτήτορας ≠ δράστης ⇒ ΞΕΝΟ (δογματική χαρτογράφηση)
-                      (when (and owner-i
-                                 (let ((ol (%entity* tokens owner-i)))
-                                   (and (not (eq ol agent))
-                                        (not (assoc (or (known-lemma owner-tok) "")
-                                                    *markers* :test #'string=))
-                                        (not (assoc (or (known-lemma owner-tok) "")
-                                                    *verb-frames* :test #'string=)))))
-                        (push (list :γεγονός theme :ανήκει-σε (%entity* tokens owner-i)) facts)
-                        (push (list :γεγονός theme :είναι :ξένο) facts))
-                      ;; ΕΠΙΘΕΤΑ της ονοματικής φράσης → κατηγορήματα κλάσης του θέματος
-                      ;; («ξένα κινητά εργαλεία» ⇒ εργαλεία ∧ ξένο ∧ κινητό)
-                      (dolist (mi np-mods)
-                        (let* ((ml (known-lemma (nth mi tokens)))
-                               (cls (and ml (cdr (assoc ml *adjectives* :test #'string=)))))
-                          (when cls
-                            (pushnew (list :γεγονός theme :είναι cls) facts :test #'equal))))
-                      ;; δείκτες (σκοπός/τρόπος) οπουδήποτε → γεγονός ΔΡΑΣΤΗ
-                      (dolist (tk tokens)
-                        (let* ((l (known-lemma tk))
-                               (m (and l (assoc l *markers* :test #'string=))))
-                          (when m
-                            (pushnew (list :γεγονός agent (second m) (third m)) facts
-                                     :test #'equal))))
-                      ;; ΠΟΛΥΛΕΚΤΙΚΟΙ όροι-τέχνης («νόμιμη άμυνα») → γεγονός ΔΡΑΣΤΗ,
-                      ;; ανεξάρτητα από lemmatizer (τα concepts είναι φράσεις)
-                      (dolist (f (%phrase-marker-facts tokens agent))
-                        (pushnew f facts :test #'equal))))))))
-            (values (nreverse facts) t))))))
+(defun %concept-fact (np agent)
+  "Γεγονός ΔΡΑΣΤΗ αν (κεφαλή-λήμμα . ταξιν-επίθετα-λήμματα) ταιριάζει concept."
+  (let ((key (cons (np-head-lemma np) (sort (copy-list (np-adj-lemmas np)) #'string<))))
+    (loop for (ckey pred value) in *concepts*
+          when (equal ckey key) return (list :γεγονός agent pred value))))
+
+;;; ── Ανάλυση πρότασης (clause) ──
+(defun %parse-clause (tokens main-agent)
+  "(values facts agent recognized-p): αν υπάρχει ρήμα-πλαίσιο, SVO(G) + κλάσεις +
+   κτήτορας + δείκτες· πάντα οι όροι-concept (με δομική άρνηση). MAIN-AGENT για
+   pro-drop επιρρηματικές προτάσεις («ενώ τελούσε …» = ο κύριος δράστης)."
+  (%refresh-concept-adjs)
+  (let* ((cells (mapcar #'%classify tokens))
+         (nps (%parse-nps cells))
+         (vpos (position-if (lambda (c) (getf c :verb)) cells))
+         (facts '()) (agent main-agent) (recognized nil))
+    (when vpos
+      (setf recognized t)
+      (let* ((pred (getf (nth vpos cells) :verb))
+             (core (remove-if (lambda (np) (or (np-oblique np) (equal (np-cases np) '(:gen)))) nps)))
+        (multiple-value-bind (ag th) (%assign-roles core)
+          (when ag (setf agent (%entity* tokens (np-head-index ag))))
+          (when (and ag th)
+            (let ((themek (%entity* tokens (np-head-index th))))
+              (if (%clause-negated-p cells)
+                  (push (list :άρνηση agent pred themek) facts)   ; τίμια άρνηση, κανένα παράγωγο
+                  (progn
+                    (push (list :γεγονός agent pred themek) facts)
+                    (let ((hc (cdr (assoc (np-head-lemma th) *noun-classes* :test #'string=))))
+                      (when hc (pushnew (list :γεγονός themek :είναι hc) facts :test #'equal)))
+                    (dolist (ac (np-adj-classes th))
+                      (pushnew (list :γεγονός themek :είναι ac) facts :test #'equal))
+                    (when (np-owner th)
+                      (let ((ok (%entity* tokens (np-head-index (np-owner th)))))
+                        (unless (eq ok agent)
+                          (pushnew (list :γεγονός themek :ανήκει-σε ok) facts :test #'equal)
+                          (pushnew (list :γεγονός themek :είναι :ξένο) facts :test #'equal))))
+                    (dolist (c cells)                              ; δείκτες (markers)
+                      (let ((m (and (getf c :lemma)
+                                    (assoc (getf c :lemma) *markers* :test #'string=))))
+                        (when m (pushnew (list :γεγονός agent (second m) (third m))
+                                         facts :test #'equal)))))))))))
+    ;; όροι-concept: ακόμη και σε επιρρηματική clause χωρίς κύριο ρήμα (pro-drop agent)·
+    ;; ΟΧΙ αν η κύρια πράξη είναι αρνημένη (τότε μόνο η :άρνηση στέκει)
+    ;; όροι-concept: ΚΑΙ στα κύρια NP ΚΑΙ στους post-head γενικούς προσδιορισμούς
+    ;; («σε κατάσταση νόμιμης άμυνας» — το «νόμιμης άμυνας» είναι κτήτορας-modifier
+    ;; της «κατάσταση», αλλά φέρει τον νομικό όρο· η γενίκευση κλίσης το πιάνει).
+    (when (and agent (not (and vpos (%clause-negated-p cells))))
+      (dolist (np (append nps (remove nil (mapcar #'np-owner nps))))
+        (unless (%np-term-negated np cells)
+          (let ((cf (%concept-fact np agent)))
+            (when cf (pushnew cf facts :test #'equal))))))
+    (values (nreverse facts) agent recognized)))
+
+(defun %parse-sentence (sentence)
+  "(values γεγονότα αναγνωρίστηκε-p): γραμματική συστατικών ανά clause (κόμμα).
+   Ο δράστης της κύριας clause δίνεται pro-drop στις επόμενες (συναναφορά)."
+  (let ((all '()) (agent nil) (any nil))
+    (dolist (cl (%split-clauses sentence))
+      (when (plusp (length cl))
+        (multiple-value-bind (fs ag ok) (%parse-clause (tokenize-greek cl) agent)
+          (when ag (setf agent ag))
+          (when ok (setf any t))
+          (dolist (f fs) (pushnew f all :test #'equal)))))
+    (values (nreverse all) any)))
+
+;;; ── Σ12β: ΟΡΙΣΜΟΙ ΝΟΜΟΥ (ταξινομία γένους-είδους) ──
 
 (defparameter +definitional-markers+
   '("νοειται" "νοουνται" "θεωρειται" "θεωρουνται" "λογιζεται" "λογιζονται"
@@ -394,20 +387,13 @@
   "Οι κλειστές ελληνικές ΟΡΙΣΤΙΚΕΣ διατυπώσεις του νόμου — η ΜΙΑ έδρα τους.")
 
 (defun %def-entity (token)
-  "Οντότητα ορισμού: λήμμα αν είναι γνωστό (ενικός, σωστός τόνος), αλλιώς η
-   λέξη όπως στο κείμενο — ΔΗΛΩΜΕΝΑ ανεπιμέλητη· ο δημιουργός κρίνει στην
-   έγκριση."
+  "Οντότητα ορισμού: λήμμα αν είναι γνωστό, αλλιώς η λέξη όπως στο κείμενο."
   (or (known-lemma token) (string-downcase token)))
 
 (defun parse-definition (sentence term)
-  "Από ΟΡΙΣΤΙΚΗ πρόταση νόμου («Γένος θεωρούνται (και) τα Είδη που…»):
-   υποψήφια γεγονότα ταξινομίας (:γένος είδος γένος). Η δομή: το ΓΕΝΟΣ
-   στην αντίθετη πλευρά του οριστικού ρήματος από το ΕΙΔΟΣ (τον όρο).
-   ΔΗΛΩΜΕΝΟ ΟΡΙΟ: ονοματική φράση γένους ≤ 2 λέξεις περιεχομένου
-   (προσδιορισμός+κεφαλή — γένος και διαφορά κατά τις Κατηγορίες)·
-   επιπλέον δεσμός κεφαλής όταν η κεφαλή είναι γνωστό λήμμα.
-   Επιστρέφει λίστα tuples με keywords — ΠΟΤΕ δεν υιοθετούνται χωρίς
-   έγκριση του δημιουργού (Σ11)."
+  "Από ΟΡΙΣΤΙΚΗ πρόταση νόμου («Γένος θεωρούνται (και) τα Είδη που…»): υποψήφια
+   γεγονότα ταξινομίας (:γένος είδος γένος). ΔΗΛΩΜΕΝΟ ΟΡΙΟ: ονοματική φράση γένους
+   ≤ 2 λέξεις περιεχομένου. Επιστρέφει tuples — ΠΟΤΕ χωρίς έγκριση δημιουργού (Σ11)."
   (let* ((stem (or (surface-stem term) (normalize-greek term)))
          (toks (tokenize-greek sentence))
          (folded (mapcar #'normalize-greek toks))
@@ -422,18 +408,16 @@
       (let* ((species (intern (string-upcase (or (known-lemma (nth tpos toks))
                                                  (string-downcase term)))
                               :keyword))
-             ;; το γένος: η συστάδα λέξεων ΠΕΡΙΕΧΟΜΕΝΟΥ αμέσως δίπλα στο ρήμα,
-             ;; στην αντίθετη πλευρά από τον όρο
              (genus-toks
                (if (> tpos vpos)
-                   (let ((acc '()))   ; …Γ Γ ΡΗΜΑ … όρος → πίσω από το ρήμα
+                   (let ((acc '()))
                      (loop for i downfrom (1- vpos) to 0
                            for tk = (nth i toks)
                            while (< (length acc) 2)
                            do (if (%content-token-p tk) (push tk acc) (return))
                            finally (return))
                      acc)
-                   (let ((acc '()))   ; όρος … ΡΗΜΑ Γ Γ → μπροστά από το ρήμα
+                   (let ((acc '()))
                      (loop for i from (1+ vpos) below (length toks)
                            for tk = (nth i toks)
                            while (< (length acc) 2)
@@ -445,10 +429,6 @@
                  (genus (intern (string-upcase (format nil "~{~A~^-~}" parts)) :keyword))
                  (head-tok (first (last genus-toks)))
                  (head-lemma (known-lemma head-tok))
-                 ;; Η ΔΙΑΦΟΡΑ: αναφορική «που ΡΗΜΑ ΥΠΟΚΕΙΜΕΝΟ» μετά τον όρο ⇒
-                 ;; ο δεσμός γένους ισχύει ΥΠΟ ΟΡΟ (:γένος-όταν … κατηγόρημα τιμή).
-                 ;; Κατηγόρημα: παθητικό σχήμα «-είται-από» από το λήμμα του
-                 ;; ρήματος — ΔΗΛΩΜΕΝΑ σχηματικό· ο δημιουργός κρίνει στην έγκριση.
                  (differentia
                    (let ((rel (position "που" folded :test #'string=
                                         :start (1+ tpos)
@@ -476,7 +456,6 @@
                  (out (list (if differentia
                                 (list* :γένος-όταν species genus differentia)
                                 (list :γένος species genus)))))
-            ;; γένος και διαφορά: «ιδιωτικό-έγγραφο» ⊂ «έγγραφο» (αναλυτικός δεσμός)
             (when (and (> (length parts) 1) head-lemma)
               (push (list :γένος genus
                           (intern (string-upcase head-lemma) :keyword))
@@ -490,11 +469,8 @@
   "Οι γενικές των μηνών (κανονικοποιημένες) — «στις 10 Ιανουαρίου 2026».")
 
 (defun %sentence-date (sentence)
-  "Η ημερομηνία μιας πρότασης ως ISO «YYYY-MM-DD», ή nil. Μορφές: ISO,
-   ΗΗ/ΜΜ/ΕΕΕΕ, ΗΗ-ΜΜ-ΕΕΕΕ, «ΗΗ Μηνός ΕΕΕΕ». ΔΗΛΩΜΕΝΟ όριο: όχι τελείες
-   (10.01.2026) — η τελεία είναι όριο πρότασης. ΔΕΝ επικυρώνεται εδώ:
-   την εγκυρότητα (2026-02-30;) την κρίνει ο ημερολογιακός λογισμός
-   με το πιστοποιητικό του — μία έδρα επικύρωσης, όχι δύο."
+  "Η ημερομηνία μιας πρότασης ως ISO «YYYY-MM-DD», ή nil. ΔΕΝ επικυρώνεται εδώ —
+   την εγκυρότητα την κρίνει ο ημερολογιακός λογισμός (μία έδρα επικύρωσης)."
   (let ((n (normalize-greek sentence)))
     (or (cl-ppcre:register-groups-bind (y m d)
             ("(\\d{4})-(\\d{2})-(\\d{2})" n)
@@ -508,16 +484,14 @@
             (when mm (format nil "~A-~2,'0D-~2,'0D" y mm (parse-integer d))))))))
 
 (defun parse-narrative (text)
-  "(values γεγονότα μη-αναγνωσμένες-προτάσεις χρονολόγιο): κάθε πρόταση
-   περνά από το πλαίσιο πτώσεων· ό,τι δεν αναγνωρίζεται ΔΗΛΩΝΕΤΑΙ. Το
-   χρονολόγιο: (iso-ημερομηνία . πρόταση) για ΚΑΘΕ πρόταση με ημερομηνία —
-   και τις αδιάβαστες (η χρονική θέση τους είναι γνώση, έστω κι αν η
-   πράξη τους δεν διαβάστηκε ακόμη)."
+  "(values γεγονότα μη-αναγνωσμένες-προτάσεις χρονολόγιο): κάθε πρόταση περνά από τη
+   γραμματική συστατικών· ό,τι δεν αναγνωρίζεται ΔΗΛΩΝΕΤΑΙ. Το χρονολόγιο:
+   (iso-ημερομηνία . πρόταση) για ΚΑΘΕ πρόταση με ημερομηνία."
   (let ((facts '()) (unparsed '()) (timeline '()))
     (dolist (s (%split-sentences text))
       (let ((d (%sentence-date s)))
         (when d (push (cons d s) timeline)))
-      (multiple-value-bind (fs ok) (%parse-sentence (tokenize-greek s))
+      (multiple-value-bind (fs ok) (%parse-sentence s)
         (if (and ok fs)
             (dolist (f fs) (pushnew f facts :test #'equal))
             (push s unparsed))))
@@ -535,12 +509,6 @@
         (progn (orchestrator.subsumption:subsumption-report facts) 0))))
 
 ;;; ── Σ12α: ΑΝΑΓΝΩΣΗ ΔΙΑΤΑΞΗΣ ΣΕ ΚΑΝΟΝΑ — η σύνταξη του νομοθέτη ──
-;;; «Όποιος ΡΗΜΑ [επίθετα…] ΟΥΣΙΑΣΤΙΚΟ … (με σκοπό να …) ΤΙΜΩΡΕΙΤΑΙ …»
-;;; Το «όποιος» δένει καθολικό δράστη (?δράστης)· τα επίθετα της ονοματικής
-;;; φράσης είναι κατηγορήματα του αντικειμένου (?πράγμα)· οι δείκτες σκοπού
-;;; γεννούν γεγονός δράστη· το ρήμα κύρωσης δίνει την τροπικότητα.
-;;; ΔΗΛΩΜΕΝΑ ΟΡΙΑ (α΄ κύμα): ένας δράστης/ένα αντικείμενο· λόγοι άρσης
-;;; («εκτός αν…») ΔΕΝ διαβάζονται αυτόματα — δηλώνονται στον δημιουργό.
 
 (defparameter +sanction-modality+
   '(("τιμωρειται" . :prohibition) ("τιμωρουνται" . :prohibition)
@@ -549,9 +517,8 @@
   "Ρήμα κύρωσης → δεοντική τροπικότητα (κλειστή τάξη).")
 
 (defun %strip-parentheticals (text)
-  "Οι παρενθέσεις του νομοθέτη («ξένο (ολικά ή εν μέρει) κινητό») είναι
-   παρεμβολές — αφαιρούνται ΔΗΛΩΜΕΝΑ πριν τη συντακτική ανάλυση (α΄ κύμα:
-   δεν διαβάζονται, δεν σπάνε την ονοματική φράση)."
+  "Οι παρενθέσεις του νομοθέτη είναι παρεμβολές — αφαιρούνται ΔΗΛΩΜΕΝΑ πριν τη
+   συντακτική ανάλυση (α΄ κύμα: δεν διαβάζονται, δεν σπάνε την ονοματική φράση)."
   (with-output-to-string (o)
     (let ((depth 0))
       (loop for ch across text
@@ -560,9 +527,8 @@
                      ((zerop depth) (write-char ch o)))))))
 
 (defun parse-provision (text* &key heading)
-  "(values spec|nil λόγος): SPEC = plist (:modality :antecedent :consequent
-   :act :caveats) από τη σύνταξη «όποιος … κύρωση». Ό,τι δεν διαβάζεται,
-   ΟΝΟΜΑΖΕΤΑΙ στον λόγο — ποτέ μισοδιαβασμένος κανόνας χωρίς δήλωση."
+  "(values spec|nil λόγος): SPEC = plist (:modality :antecedent :consequent :act
+   :caveats) από τη σύνταξη «όποιος … κύρωση». Ό,τι δεν διαβάζεται ΟΝΟΜΑΖΕΤΑΙ."
   (let* ((text (%strip-parentheticals text*))
          (toks (tokenize-greek text))
          (folded (mapcar #'normalize-greek toks))
@@ -582,15 +548,12 @@
               (pred (and vpos (cdr (assoc (known-lemma (nth vpos toks))
                                           *verb-frames* :test #'string=)))))
          (if (null vpos)
-             ;; τρίτη τιμή: ο ΥΠΟΨΗΦΙΟΣ ρηματικός τύπος — ώστε η αυτο-μελέτη
-             ;; να ΜΕΤΡΗΣΕΙ ποια ρήματα αξίζει να μάθει πρώτα
              (values nil "κανένα γνωστό ρήμα-πλαίσιο μετά το «όποιος» — χρειάζεται :frame στο πακέτο"
                      (loop for i from (1+ opos) below spos
                            for tk = (nth i toks)
                            when (%content-token-p tk)
                              return (normalize-greek tk)))
              (let ((cats '()) (head nil) (facts '()) (caveats '()))
-               ;; ονοματική φράση αντικειμένου: επίθετα* + κεφαλή, έως δείκτη/κύρωση
                (loop for i from (1+ vpos) below spos
                      for tk = (nth i toks)
                      for l = (known-lemma tk)
@@ -606,13 +569,11 @@
                (push (list :γεγονός :?δράστης pred :?πράγμα) facts)
                (dolist (c (nreverse cats))
                  (push (list :γεγονός :?πράγμα :είναι c) facts))
-               ;; δείκτες σκοπού/τρόπου σε ΟΛΟ το εύρος έως την κύρωση
                (loop for i from (1+ vpos) below spos
                      for l = (known-lemma (nth i toks))
                      for m = (and l (assoc l *markers* :test #'string=))
                      when m do (pushnew (list :γεγονός :?δράστης (second m) (third m))
                                         facts :test #'equal))
-               ;; «εκτός αν» υπάρχει; ⇒ δηλωμένη εκκρεμότητα προς τον δημιουργό
                (when (search "εκτοσ αν" (format nil "~{~A ~}" folded))
                  (push "η διάταξη έχει «εκτός αν …» — οι λόγοι άρσης θέλουν χέρι δημιουργού" caveats))
                (values (list :modality modality
@@ -624,8 +585,8 @@
                        nil))))))))
 
 (defun %act-keyword (heading pred)
-  "Το όνομα της πράξης: το πρώτο λήμμα περιεχομένου του ΤΙΤΛΟΥ του άρθρου
-   (πχ «Κλοπή»), αλλιώς από το κατηγόρημα του ρήματος."
+  "Το όνομα της πράξης: το πρώτο λήμμα περιεχομένου του ΤΙΤΛΟΥ του άρθρου, αλλιώς
+   από το κατηγόρημα του ρήματος."
   (or (and heading
            (loop for tk in (tokenize-greek heading)
                  for l = (known-lemma tk)
