@@ -270,7 +270,10 @@
                (roles (mapcar (lambda (s) (getf s :role)) stores))
                (declared (remove nil (mapcar (lambda (s) (getf s :path)) stores)))
                (globs (remove nil (mapcar (lambda (s) (getf s :path-glob)) stores)))
-               (root (orchestrator.paths:institution-root))
+               ;; [0086+] truename: το directory επιστρέφει truenames — αν η ρίζα
+               ;; είναι symlink, το enough-namestring θα γύριζε απόλυτα paths
+               (root (or (ignore-errors (truename (orchestrator.paths:institution-root)))
+                         (orchestrator.paths:institution-root)))
                (on-disk (mapcar (lambda (p) (enough-namestring p root))
                                 (append
                                  (directory (merge-pathnames "deployment/self/*.sexp" root))
@@ -340,7 +343,11 @@
                   (unless (string= rel +ff1-root-seat+)
                     (when (or (search "*compile-file-truename*" code)
                               (search "*load-truename*" code)
-                              (search "*load-pathname*" code))
+                              (search "*load-pathname*" code)
+                              ;; [0086+] και το cwd είναι root-αλήθεια εκτός έδρας
+                              ;; (η αστυνομία πηγών έχει ΜΙΑ έδρα: εδώ, όχι στα tests)
+                              (search "uiop:getcwd" code)
+                              (search "(getcwd" code))
                       (push rel root-truth-violations)))))))
           ;; ⑬ καμία δεύτερη literal /app-αλήθεια σε runtime κώδικα
           (chk "⑬ FF1: κανένα literal /app-path εκτός της έδρας+allowlist (μία ρίζα)"

@@ -16,7 +16,7 @@
   (:use :cl)
   (:export #:can-adopt #:decision-get #:record-adoption!
            #:adoption-records #:validate-adoption-records
-           #:*adoptions-path* #:adoption-not-durable))
+           #:*adoptions-path*))
 
 (in-package :orchestrator.adoption)
 
@@ -78,26 +78,9 @@
 
 (defun decision-get (decision key) (getf decision key))
 
-(defvar *adoptions-path* nil
-  "Override του ημερολογίου υιοθετήσεων (τα gates το δένουν σε tmp). NIL ⇒
-   deployment/self/adoptions.sexp κάτω από το institution-root — ΤΕΜΠΕΛΙΚΑ,
-   ποτέ παγωμένο από getcwd/saved image.")
-
-(defun %adoptions-path ()
-  "Η ΜΙΑ θέση του ΔΙΑΡΚΟΥΣ ledger υιοθετήσεων. [0086]: το παλιό RAM-only
-   *adoption-records* (η διακυβέρνηση κυβερνούσε αυστηρότερα απ' όσο κατέγραφε
-   μόνιμα τον εαυτό της) είναι ΝΕΚΡΟ — το ledger ζει στον δίσκο, με receipt."
-  (or *adoptions-path*
-      (merge-pathnames "deployment/self/adoptions.sexp"
-                       (orchestrator.paths:institution-root))))
-
-(define-condition adoption-not-durable (error)
-  ((receipt :initarg :receipt :reader adoption-persistence-receipt))
-  (:report (lambda (c s)
-             (format s "ΑΠΟΦΑΣΗ ΥΙΟΘΕΤΗΣΗΣ ΧΩΡΙΣ ΔΙΑΡΚΗ ΕΓΓΡΑΦΗ (receipt: ~S) — ~
-                        το θεσμικό γεγονός «τι κρίθηκε/εγκρίθηκε/γιατί/rollback» ~
-                        ΔΕΝ επιτρέπεται να χαθεί σε επανεκκίνηση ([0086])."
-                     (adoption-persistence-receipt c)))))
+(orchestrator.paths:define-store-path %adoptions-path *adoptions-path*
+  "deployment/self/adoptions.sexp"
+  "[0086] Το ΔΙΑΡΚΕΣ ledger υιοθετήσεων — το RAM-only πέθανε.")
 
 (defun record-adoption! (decision)
   "Υπογεγραμμένο αρχείο απόφασης: SHA-256 πάνω στη σειριοποίηση (data-only)
@@ -113,10 +96,7 @@
     (multiple-value-bind (line receipt)
         (orchestrator.journal:append-line (%adoptions-path) record :verify t)
       (declare (ignore line))
-      (unless (or (orchestrator.journal:durable-p receipt)
-                  (eq (orchestrator.journal:receipt-durability receipt)
-                      :ephemeral-replica))
-        (error 'adoption-not-durable :receipt receipt))
+      (orchestrator.journal:require-durable! receipt :adoption)
       (let ((tid (orchestrator.trace:emit! :adoption-decision
                   :symbol "can-adopt" :package "orchestrator.adoption"
                   :source "source/adoption-decision.lisp"

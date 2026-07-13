@@ -36,15 +36,8 @@
 
 (in-package :orchestrator.knowledge-packs)
 
-(defvar *knowledge-dir* nil
-  "Override του καταλόγου γνώσης (gates→tmp). NIL ⇒ deployment/knowledge/
-   κάτω από το institution-root — ΤΕΜΠΕΛΙΚΑ ([0086] ΜΙΑ ρίζα).")
-
-(defun knowledge-dir ()
-  "Η ΜΙΑ θέση των ενεργών πακέτων γνώσης (override ή institution-root)."
-  (or *knowledge-dir*
-      (merge-pathnames "deployment/knowledge/"
-                       (orchestrator.paths:institution-root))))
+(orchestrator.paths:define-store-path knowledge-dir *knowledge-dir*
+  "deployment/knowledge/" "Τα ενεργά πακέτα γνώσης — versioned όπως ο νόμος.")
 
 (defvar *kinds* (make-hash-table :test 'eq)
   "kind → plist (:install fn :snapshot fn :restore fn :doc string).")

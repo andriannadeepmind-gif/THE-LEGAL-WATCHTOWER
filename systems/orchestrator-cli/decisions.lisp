@@ -1358,7 +1358,7 @@
   (ensure-directories-exist (orchestrator.knowledge-packs:knowledge-dir))
   (dolist (p args)
     (let ((dest (merge-pathnames (file-namestring p)
-                                 orchestrator.knowledge-packs:*knowledge-dir*)))
+                                 (orchestrator.knowledge-packs:knowledge-dir))))
       (unless (equal (namestring (truename p)) (ignore-errors (namestring (truename dest))))
         (uiop:copy-file p dest))
       (format t "  ✓ υιοθετήθηκε: ~A · sha ~A~%"

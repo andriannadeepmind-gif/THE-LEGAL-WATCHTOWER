@@ -46,6 +46,7 @@ deployment/self/proposals.sexp
 deployment/self/episodes.sexp
 deployment/self/graph-snapshot.sexp
 deployment/self/policies.sexp
+deployment/self/adoptions.sexp
 
 # build artifact: παγωμένες ταυτότητες συστατικών (γράφεται από build.lisp)
 component-manifest.sexp

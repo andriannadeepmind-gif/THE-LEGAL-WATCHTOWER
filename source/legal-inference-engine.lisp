@@ -357,10 +357,12 @@
                 (setf (node-label n) (if (gethash n k2) :in :out)))
               ;; [0086] το τελικό U = A(K∞) = U∞ — το αναποφάσιστο σύνολο
               ;; αποθηκεύεται ΠΡΙΝ την επιλογή support (την τροφοδοτεί).
-              (let ((undef (jtms-undefined-set jtms)))
-                (clrhash undef)
+              ;; [0086+] φρέσκος πίνακας + swap (όχι clrhash-in-place): αναγνώστης
+              ;; που κρατά την παλιά αναφορά βλέπει ΣΥΝΕΠΕΣ παλιό σύνολο, ποτέ μισοάδειο
+              (let ((undef (make-hash-table :test 'eq)))
                 (loop for n being the hash-keys of u
-                      unless (gethash n k2) do (setf (gethash n undef) t)))
+                      unless (gethash n k2) do (setf (gethash n undef) t))
+                (setf (jtms-undefined-set jtms) undef))
               (dolist (n (jtms-nodes jtms))
                 (setf (node-support n)
                       (cond ((node-premise-p n) :premise)

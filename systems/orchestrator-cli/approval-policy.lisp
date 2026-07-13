@@ -17,14 +17,17 @@
 
 (in-package :orchestrator.cli)
 
-(defvar *policies-path* nil
-  "Override του ημερολογίου πολιτικών (gates→tmp). NIL ⇒ institution-root
-   ([0086] ΜΙΑ ρίζα, τεμπέλικα).")
+(orchestrator.paths:define-store-path %policies-path *policies-path*
+  "deployment/self/policies.sexp" "Πολιτικές έγκρισης — αποφάσεις δημιουργού.")
 
-(defun %policies-path ()
-  (or *policies-path*
-      (merge-pathnames "deployment/self/policies.sexp"
-                       (orchestrator.paths:institution-root))))
+(defun %policy-append! (plist)
+  "[0086+] Ο ΕΝΑΣ θεσμικός συγγραφέας πολιτικών: verify + require-durable! —
+   «✓ Πολιτική ΕΝΕΡΓΗ» χωρίς durable εγγραφή ήταν αδύνατο να ξαναειπωθεί
+   (εύρημα κριτή Β-A2: η απόφαση δημιουργού δεν χάνεται σιωπηλά)."
+  (multiple-value-bind (line receipt)
+      (orchestrator.journal:append-line (%policies-path) plist :verify t)
+    (declare (ignore line))
+    (orchestrator.journal:require-durable! receipt :policy)))
 
 (defun %policy-events () (orchestrator.journal:read-lines (%policies-path)))
 
@@ -160,7 +163,7 @@
       (when (zerop tot)
         (format t "ΑΡΝΗΣΗ: καμία μετρημένη περίπτωση για ~(~A~) στη σουίτα — δεν ενεργοποιώ πολιτική χωρίς μέτρηση.~%" m)
         (return-from run-policy-approve 1))
-      (orchestrator.journal:append-line (%policies-path)
+      (%policy-append!
         (list :at (orchestrator.journal:iso-now) :modality m
               :precision (format nil "~D/~D" c tot) :status :active))
       (format t "~%✓ Πολιτική ~(~A~) ΕΝΕΡΓΗ — μετρημένη ακρίβεια κλάσης: ~D/~D (~,1F%)~%"
@@ -189,7 +192,7 @@
     (unless m
       (format t "χρήση: --policy-revoke prohibition|obligation|permission~%")
       (return-from run-policy-revoke 1))
-    (orchestrator.journal:append-line (%policies-path)
+    (%policy-append!
       (list :at (orchestrator.journal:iso-now) :modality m :status :revoked))
     (format t "⨯ Πολιτική ~(~A~) ΑΝΑΚΛΗΘΗΚΕ — ατομική έγκριση στο εξής.~%" m)
     0))
@@ -228,7 +231,7 @@
                (and id (not (%maybe-auto-approve id :prohibition))
                     (= 1 (length (orchestrator.proposals:open-proposals))))))
       ;; 3 — ενεργοποίηση πολιτικής: γράφεται, διαβάζεται, φαίνεται ενεργή
-      (orchestrator.journal:append-line (%policies-path)
+      (%policy-append!
         (list :at (orchestrator.journal:iso-now) :modality :prohibition
               :precision "x/y" :status :active))
       (check "η πολιτική ενεργή μετά την καταγραφή" (and (policy-active-p :prohibition) t))
@@ -245,7 +248,7 @@
         (check "η πολιτική ΔΕΝ διαρρέει σε άλλη κλάση"
                (and id (not (%maybe-auto-approve id :obligation)))))
       ;; 6 — ανάκληση: νέες προτάσεις ξαναπεριμένουν
-      (orchestrator.journal:append-line (%policies-path)
+      (%policy-append!
         (list :at (orchestrator.journal:iso-now) :modality :prohibition :status :revoked))
       (let ((id (orchestrator.proposals:propose!
                  :sig "polgate δ" :kind :norm-classification :why "τεστ"

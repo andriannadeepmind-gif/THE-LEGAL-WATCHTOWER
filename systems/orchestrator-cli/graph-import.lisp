@@ -182,8 +182,8 @@
 ;;; και διαρκώς μεταβαλλόμενη, δεν σφραγίζεται. Είσοδοι άλλαξαν ⇒ το στιγμιότυπο
 ;;; αγνοείται και ο γράφος ξαναχτίζεται — ποτέ μπαγιάτικη αλήθεια σιωπηλά.
 
-(defparameter *graph-snapshot-path*
-  (merge-pathnames "deployment/self/graph-snapshot.sexp" (orchestrator.paths:institution-root))
+(orchestrator.paths:define-store-path %graph-snapshot-path *graph-snapshot-path*
+  "deployment/self/graph-snapshot.sexp"
   "Runtime κατάσταση του αντιτύπου (gitignored) — όχι του repo.")
 
 (defun %graph-input-files ()
@@ -220,7 +220,7 @@
   (%graph-import-citations)   ; παραπομπές άρθρο→άρθρο (από τους ίδιους τους νόμους)
   ;; στιγμιότυπο ΠΡΙΝ την εμπειρία — αυτή εισάγεται φρέσκια σε κάθε φόρτωση
   (handler-case
-      (orchestrator.graph:save-graph *graph-snapshot-path*
+      (orchestrator.graph:save-graph (%graph-snapshot-path)
                                      :meta (list :stamp (%graph-stamp)))
     (error (e)
       (format t "  ⚠ το στιγμιότυπο γράφου ΔΕΝ γράφτηκε (~A) — ο γράφος ζει μόνο σε αυτή τη διεργασία~%" e)))
@@ -235,7 +235,7 @@
     (let ((loaded nil))
       (handler-case
           (multiple-value-bind (g nn ne meta)
-              (orchestrator.graph:load-graph *graph-snapshot-path*)
+              (orchestrator.graph:load-graph (%graph-snapshot-path))
             (when (and g (equal (getf meta :stamp) (%graph-stamp)))
               (setf orchestrator.graph:*graph* g)
               (%graph-import-episodes)

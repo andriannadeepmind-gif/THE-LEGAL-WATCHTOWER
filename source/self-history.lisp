@@ -20,15 +20,8 @@
 
 (in-package :orchestrator.self-history)
 
-(defvar *history-path* nil
-  "Override της βιογραφίας (gates→tmp). NIL ⇒ deployment/self/history.sexp
-   κάτω από το institution-root — ΤΕΜΠΕΛΙΚΑ ([0086] ΜΙΑ ρίζα).")
-
-(defun history-path ()
-  "Η ΜΙΑ θέση της βιογραφίας (override ή institution-root)."
-  (or *history-path*
-      (merge-pathnames "deployment/self/history.sexp"
-                       (orchestrator.paths:institution-root))))
+(orchestrator.paths:define-store-path history-path *history-path*
+  "deployment/self/history.sexp" "Η βιογραφία — SHA-256 αλυσίδα.")
 
 (defparameter +genesis-entries+
   '((:genesis
@@ -51,16 +44,21 @@
   ;; ΑΤΟΜΙΚΗ πράξη αλυσίδας στον ΕΝΑΝ συγγραφέα (journal): seq+prev διαβάζονται
   ;; και γράφονται κάτω από το ίδιο κλείδωμα — καμία πλήρης επανανάγνωση, καμία
   ;; κούρσα δύο νημάτων πάνω στο ίδιο :prev.
-  (getf (orchestrator.journal:chained-append
-         (history-path)
-         (lambda (last)
-           (let* ((seq (if last (1+ (getf last :seq)) 0))
-                  (prev (if last (getf last :hash)
-                            (make-string 64 :initial-element #\0)))
-                  (at (orchestrator.journal:iso-now))
-                  (hash (%entry-hash seq at kind text prev)))
-             (list :seq seq :at at :kind kind :text text :prev prev :hash hash))))
-        :seq))
+  (multiple-value-bind (entry receipt)
+      (orchestrator.journal:chained-append
+       (history-path)
+       (lambda (last)
+         (let* ((seq (if last (1+ (getf last :seq)) 0))
+                (prev (if last (getf last :hash)
+                          (make-string 64 :initial-element #\0)))
+                (at (orchestrator.journal:iso-now))
+                (hash (%entry-hash seq at kind text prev)))
+           (list :seq seq :at at :kind kind :text text :prev prev :hash hash)))
+       :verify t)
+    ;; [0086+] η βιογραφία είναι ΘΕΣΜΙΚΟ ledger (εύρημα κριτή Β-A3):
+    ;; seq χωρίς durable+verified εγγραφή δεν εκδίδεται
+    (orchestrator.journal:require-durable! receipt :biography)
+    (getf entry :seq)))
 
 (defun ensure-genesis ()
   "Γράψε την γένεση ΜΟΝΟ αν η βιογραφία δεν υπάρχει ακόμη. Επιστρέφει

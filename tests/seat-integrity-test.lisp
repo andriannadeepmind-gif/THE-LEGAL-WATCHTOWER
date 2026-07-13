@@ -43,10 +43,16 @@
          ok))
 
 (format t "~%== Β. ΜΙΑ έδρα export-provenance-json (chain) ==~%")
-(check "η export-provenance-json είναι fbound και η τεκμηρίωσή της μιλά για chain"
-       (and (fboundp 'orchestrator.ai-core:export-provenance-json)
-            (let ((d (documentation 'orchestrator.ai-core:export-provenance-json 'function)))
-              (and d (search "chain" (string-downcase d))))))
+(check "ΑΚΡΙΒΩΣ ΕΝΑΣ ορισμός export-provenance-json σε όλο το δέντρο (source scan)"
+       (= 1 (let ((n 0))
+              (dolist (dir '("source/" "systems/") n)
+                (dolist (f (directory (merge-pathnames
+                                       (format nil "~A**/*.lisp" dir)
+                                       (orchestrator.paths:institution-root))))
+                  (with-open-file (s f :external-format :utf-8)
+                    (loop for l = (read-line s nil nil) while l
+                          when (search "(defun export-provenance-json" l)
+                            do (incf n))))))))
 
 (format t "~%== Γ. Persistence Receipt: id ⟺ durable ==~%")
 (let ((tmp (merge-pathnames (format nil "seat-receipt-~D.sexp" (sb-unix:unix-getpid))
@@ -67,12 +73,39 @@
                         :key #'orchestrator.proposals:proposal-id :test #'equal))))
   (ignore-errors (delete-file orchestrator.proposals:*proposals-path*)))
 (let ((orchestrator.proposals:*proposals-path* #p"/proc/lawmax-αδύνατο/props.sexp"))
-  (check "propose! σε ΜΗ εγγράψιμο ⇒ PROPOSAL-NOT-DURABLE (ΚΑΝΕΝΑ σιωπηλό id)"
+  (check "propose! σε ΜΗ εγγράψιμο ⇒ journal:NOT-DURABLE (η ΜΙΑ έδρα — ΚΑΝΕΝΑ σιωπηλό id)"
          (handler-case
              (progn (orchestrator.proposals:propose!
                      :sig "seat-degraded-πρόταση" :kind :test :why "x")
                     nil)
-           (orchestrator.proposals::proposal-not-durable () t))))
+           (orchestrator.journal:not-durable (c)
+             (eq (orchestrator.journal:not-durable-context c) :proposal)))))
+;; [0086+] Γραμμή-δηλητήριο: απορρίπτεται ΠΡΙΝ τον δίσκο, το αρχείο ΔΕΝ ρυπαίνεται
+(let ((tmp (merge-pathnames (format nil "seat-poison-~D.sexp" (sb-unix:unix-getpid))
+                            (uiop:temporary-directory))))
+  (orchestrator.journal:append-line tmp '(:ok 1))
+  (check "μη-σειριοποιήσιμο plist ⇒ UNSERIALIZABLE-RECORD ΠΡΙΝ τον δίσκο (0 ρύπανση)"
+         (and (handler-case
+                  (progn (orchestrator.journal:append-line
+                          tmp (list :bad (make-hash-table)) :verify t)
+                         nil)
+                (orchestrator.journal:unserializable-record () t))
+              (= 1 (length (orchestrator.journal:read-lines tmp)))))
+  ;; [0086+] Ανθεκτικός αναγνώστης: κακή γραμμή ΠΡΟΣΠΕΡΝΙΕΤΑΙ, οι επόμενες ΖΟΥΝ
+  (with-open-file (s tmp :direction :output :if-exists :append :external-format :utf-8)
+    (write-line "(:σκουπίδι #<UNREADABLE" s))
+  (orchestrator.journal:append-line tmp '(:ok 2))
+  (check "κακή γραμμή στη μέση ⇒ ΠΡΟΣΠΕΡΝΙΕΤΑΙ· οι μεταγενέστερες γραμμές ΟΡΑΤΕΣ (θάνατος «μαύρης τρύπας»)"
+         (equal '((:ok 1) (:ok 2))
+                (remove-if-not (lambda (f) (getf f :ok))
+                               (orchestrator.journal:read-lines tmp))))
+  (ignore-errors (delete-file tmp)))
+;; [0086+] B-A1 lock: η ροή adopt-knowledge δεν ξανασπάει με NIL override
+(check "knowledge-dir accessor: non-NIL υπό ρίζα και merge-pathnames λειτουργεί (lock του σπασμένου --adopt-knowledge)"
+       (let ((d (orchestrator.knowledge-packs:knowledge-dir)))
+         (and d (pathnamep (merge-pathnames "x.sexp" d))
+              (search (namestring (orchestrator.paths:institution-root))
+                      (namestring d)))))
 (let ((orchestrator.adoption:*adoptions-path*
         (merge-pathnames (format nil "seat-adopt-~D.sexp" (sb-unix:unix-getpid))
                          (uiop:temporary-directory))))
@@ -88,19 +121,9 @@
                       :key (lambda (r) (getf r :sha)) :test #'equal))))
   (ignore-errors (delete-file orchestrator.adoption:*adoptions-path*)))
 
-(format t "~%== Δ. ΜΙΑ ρίζα (institution-root) — source scan ==~%")
-(check "κανένα uiop:getcwd σε source/ + systems/ (πλην σχολίων) — η ρίζα δεν διχάζεται"
-       (let ((bad '()))
-         (dolist (dir '("source/" "systems/") (null bad))
-           (dolist (f (directory (merge-pathnames
-                                  (format nil "~A**/*.lisp" dir)
-                                  (orchestrator.paths:institution-root))))
-             (with-open-file (s f :external-format :utf-8)
-               (loop for l = (read-line s nil nil) while l
-                     when (and (search "uiop:getcwd" l)
-                               (let ((c (position #\; l)))
-                                 (or (null c) (< (or (search "uiop:getcwd" l) 0) c))))
-                       do (push (file-namestring f) bad)))))))
+(format t "~%== Δ. ΜΙΑ ρίζα (institution-root) — accessors ==~%")
+;; Η αστυνομία πηγών «κανένα getcwd» έχει ΜΙΑ έδρα: architecture-gate ⑭ ([0086+]
+;; εύρημα κριτή Β-Γ2 — το τεστ δεν κρατά δεύτερο αντίγραφο του ίδιου ελέγχου).
 (check "episodes/history/proposals/adoptions paths ΟΛΑ κάτω από institution-root"
        (let ((root (namestring (orchestrator.paths:institution-root))))
          (every (lambda (p) (search root (namestring p)))

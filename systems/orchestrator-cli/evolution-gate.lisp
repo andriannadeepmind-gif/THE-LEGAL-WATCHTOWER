@@ -374,7 +374,7 @@ proposal_id: ~A  →  κρίνεται: --can-adopt ~:*~A~%"
       ;; ⑮ πλαστό αρχείο απόφασης (ανύπαρκτη πρόταση) ⇒ ο ελεγκτής ledger το πιάνει
       (check "⑮ πλαστό αρχείο απόφασης σε ΑΝΥΠΑΡΚΤΗ πρόταση ⇒ παράβαση ledger (σκιά)"
              (let ((orchestrator.adoption:*adoptions-path*
-                     (%fresh-gate-ledger "output/gate-adoptions-neg.sexp")))
+                     (%fresh-gate-ledger "output/gate-adoptions-neg15.sexp")))
                (orchestrator.adoption:record-adoption!
                 (list :verdict :allowed :proposal "ανύπαρκτη-πρόταση" :whatif '(:x t)))
                (some (lambda (m) (search "ΑΝΥΠΑΡΚΤΗ" m))
@@ -382,7 +382,7 @@ proposal_id: ~A  →  κρίνεται: --can-adopt ~:*~A~%"
       ;; ⑯ απόφαση ΧΩΡΙΣ what-if μέσα της ⇒ παράβαση ledger (η παράκαμψη αδύνατη)
       (check "⑯ αρχείο απόφασης ΧΩΡΙΣ what-if ⇒ παράβαση ledger"
              (let ((orchestrator.adoption:*adoptions-path*
-                     (%fresh-gate-ledger "output/gate-adoptions-neg.sexp")))
+                     (%fresh-gate-ledger "output/gate-adoptions-neg16.sexp")))
                (orchestrator.adoption:record-adoption!
                 (list :verdict :allowed :proposal "gate:καλή-πρόταση" :whatif nil))
                (some (lambda (m) (search "what-if" m))

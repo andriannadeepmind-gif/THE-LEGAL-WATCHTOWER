@@ -99,3 +99,41 @@ U∞ caching, current-load-file/fasl, root fallback· β: κυνήγι μετρ�
   (constitutional-dispatch.lisp:76 επιστρέφει 1 σε block). Δεν αγγίχτηκε χωρίς εντολή.
 - Γέφυρα των δύο capability registries (Δ3 [0083]) — χωριστή φάση.
 - execution-trace durability — δηλωμένο χρέος, φάση receipt-2.
+
+---
+
+## [0086+] ΚΛΕΙΣΙΜΟ ΕΥΡΗΜΑΤΩΝ ΚΡΙΤΩΝ (2 ανεξάρτητοι, φρέσκο πλαίσιο)
+
+**Κριτής Α (σπάσιμο σχεδίασης):** 2 CRITICAL, 7 MAJOR, 5 MINOR. **Κριτής Β
+(μετριότητα):** 4 MAJOR, 5 MINOR/NOTE. Όλα τα ουσιώδη κλείστηκαν ΣΤΗΝ ΕΔΡΑ:
+
+| Εύρημα | Σοβ. | Κλείσιμο |
+|---|---|---|
+| A1 cross-process race ⇒ ψευδές failed-verification | CRIT | Επαλήθευση με **ΜΕΛΟΣ** (η εγγραφή μου durable ΜΕΣΑ στο ledger), ΟΧΙ με σειρά — σωστό υπό κάθε interleaving, χωρίς lock. (flock ήταν undefined στο build — η membership-σημασιολογία είναι ανώτερη: δεν χρειάζεται cross-process lock.) |
+| A2 γραμμή-δηλητήριο ⇒ ρύπανση + «μαύρη τρύπα» | CRIT | (α) `%validate-serializable` ΠΡΙΝ τον δίσκο ⇒ `unserializable-record` (0 ρύπανση)· (β) ανθεκτικός αναγνώστης με **resync**: κακή γραμμή προσπερνιέται, οι επόμενες ΖΟΥΝ. Lock στο test. |
+| A3 equalp πολύ χαλαρό | MAJOR | `equal` (case-sensitive) στο membership. |
+| A5 cache επεκτείνεται σε failed-verification | MAJOR | Η cache **δεν** επεκτείνεται όταν `verify∧¬verified` (ο δίσκος=αυθεντία). |
+| A6 cache staleness (1s file-write-date) | MAJOR | Κλειδί φρεσκάδας = (write-date **∧ file-size**). |
+| B1/B2 basename ταυτότητα + fasl≡source | MAJOR | Ταυτότητα = «γονικός-κατάλογος/όνομα» ΧΩΡΙΣ type ⇒ fasl≡source & δύο ομώνυμα σε άλλους καταλόγους διακρίνονται. |
+| Γ1 μόνιμο `*degraded*` trap | MAJOR | Το μόνιμο skip **πέθανε** (+ νεκρό defvar διαγράφηκε): κάθε κλήση ξαναδοκιμάζει· per-call ειλικρινής υποβάθμιση. |
+| Δ1 clrhash race στο U∞ | MINOR | Φρέσκος πίνακας + **swap** (αναγνώστης βλέπει συνεπές παλιό). |
+| Ε1 truename root | MINOR | Η πύλη ⑨ χρησιμοποιεί `truename` της ρίζας. |
+| **Β-A1** σπασμένο `--adopt-knowledge` (NIL merge) | MAJOR | `knowledge-dir` accessor· lock στο test. |
+| **Β-A2** πολιτικές χωρίς receipt | MAJOR | `%policy-append!` (verify+require-durable!) — 4 sites. |
+| **Β-A3** βιογραφία χωρίς receipt | MAJOR | `%append-entry` → `chained-append :verify t` + `require-durable!`. |
+| **Β-Γ1** 6πλό copy-paste path-pattern | MAJOR | **Η ΜΙΑ έδρα** `paths:define-store-path` — 7 seats την καταναλώνουν. |
+| **Β-Γ2** διπλή αστυνομία source-scan | NOTE→κλειστό | Ο «getcwd» έλεγχος μετακόμισε στην πύλη ⑭ (ΜΙΑ έδρα)· το import νεκρώθηκε δομικά. |
+| **Β-Δ1** τεστ-ταυτολογία (docstring) | MINOR | Αντικαταστάθηκε με **source-scan μοναδικότητας** (ακριβώς 1 ορισμός). |
+| **Β-Ε1** adoptions.sexp εκτός .gitignore | MAJOR | Προστέθηκε στο .gitignore. |
+| B-B3/Γ2 (θεωρητικά, μη-παραλληλισμένα gates) | MINOR | Δηλωμένα· κανένα gate δεν κάνει make-thread στο δυναμικό εύρος. |
+| WFS ορθότητα/κόστος/retract | ΔΕΝ ΕΣΠΑΣΕ | Ο κριτής Α επιβεβαίωσε μαθηματικά την πληρότητα (K∞=A(U∞)). |
+
+**Ρητά υπόλοιπα (όχι σιωπηλά):** execution-trace durability = φάση receipt-2
+(δηλωμένο)· «<runtime>» owner-ταυτότητα για δυναμικές εγγραφές (δηλωμένο όριο,
+καμία load-time έδρα δεν επηρεάζεται)· output/gate-*.sexp εκτός scan ⑨ (gitignored
+δοκιμαστικά, όχι θεσμικά stores).
+
+Proof [0086+]: seat-integrity **18/18** (+5 νέα locks: unserializable, μαύρη-τρύπα,
+adopt-knowledge, source-scan μοναδικότητας)· 13 standalone σουίτες 0 failed·
+7 runtime πύλες πράσινες (self-evolution/policy/memory/contract/architecture/
+subsumption/inference).

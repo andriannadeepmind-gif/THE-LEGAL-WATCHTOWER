@@ -8,7 +8,6 @@
                 #:hash-table-keys)
   (:import-from :uiop
                 #:getenv
-                #:getcwd
                 #:merge-pathnames*
                 #:default-temporary-directory)
   (:export #:resolve-path
@@ -21,6 +20,8 @@
            #:make-relative-path
            ;; [0086] ταυτότητα φορτωνόμενου αρχείου (ΟΧΙ ρίζα) — για μητρώα ιδιοκτησίας
            #:current-load-file
+           ;; [0086+] Η ΜΙΑ έδρα του μοτίβου store-path (override + τεμπέλικη ρίζα)
+           #:define-store-path
            ;; FF1 — Η ΜΙΑ έδρα ρίζας του Ιδρύματος (φορητή)
            #:institution-root
            #:institution-dir))
@@ -327,10 +328,29 @@
 
 
 (defun current-load-file ()
-  "Το ΟΝΟΜΑ (file-namestring) του αρχείου που φορτώνεται/μεταγλωττίζεται ΤΩΡΑ,
-   ή \"<runtime>\" εκτός φόρτωσης. [0086] ΤΑΥΤΟΤΗΤΑ ΜΟΝΟ — ποτέ ρίζα/διαδρομή:
-   επιστρέφει basename, δεν συμμετέχει σε επίλυση paths. Ζει ΕΔΩ γιατί το
-   load-truename είναι compile/load-time αλήθεια και η ΜΙΑ άδεια χρήσης της
-   είναι αυτή η έδρα (FF1 ⑭). Καταναλωτής: μητρώο ιδιοκτησίας εντολών CLI."
+  "[0086+] Ταυτότητα έδρας του αρχείου που φορτώνεται/μεταγλωττίζεται ΤΩΡΑ:
+   «γονικός-κατάλογος/όνομα» ΧΩΡΙΣ type — το ASDF output translation διατηρεί
+   τη δομή καταλόγων, άρα fasl ≡ source (ίδια ταυτότητα, κανένα ψευδο-collision
+   σε hot reload) ΚΑΙ δύο ομώνυμα αρχεία σε ΑΛΛΟΥΣ καταλόγους διακρίνονται.
+   \"<runtime>\" εκτός φόρτωσης — ΔΗΛΩΜΕΝΟ όριο: οι runtime εγγραφές μοιράζονται
+   αυτή την ταυτότητα. ΤΑΥΤΟΤΗΤΑ ΜΟΝΟ, ποτέ ρίζα/διαδρομή (FF1 ⑭: το
+   load-truename ζει ΜΟΝΟ σε αυτή την έδρα)."
   (let ((p (or *load-truename* *compile-file-truename*)))
-    (if p (file-namestring p) "<runtime>")))
+    (if p
+        (format nil "~A/~A"
+                (or (car (last (pathname-directory p))) "")
+                (pathname-name p))
+        "<runtime>")))
+
+(defmacro define-store-path (accessor var relpath &optional (doc ""))
+  "[0086+] Η ΜΙΑ έδρα του μοτίβου «διαρκές store κάτω από τη ρίζα»: ορίζει
+   override-var (NIL ⇒ κανονική θέση· τα gates το δένουν σε tmp) + ΤΕΜΠΕΛΙΚΟ
+   accessor μέσω institution-root (ποτέ παγωμένο από load/saved-image/ξένο cwd).
+   Πριν: το ίδιο σχήμα copy-paste ×6 — διπλή έδρα έννοιας, νεκρή εδώ."
+  `(progn
+     (defvar ,var nil
+       ,(format nil "Override του store (gates→tmp). NIL ⇒ ~A υπό institution-root (τεμπέλικα). ~A"
+                relpath doc))
+     (defun ,accessor ()
+       ,(format nil "Η ΜΙΑ θέση του store ~A (override ή institution-root). ~A" relpath doc)
+       (or ,var (merge-pathnames ,relpath (institution-root))))))

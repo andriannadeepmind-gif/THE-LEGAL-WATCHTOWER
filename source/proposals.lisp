@@ -28,17 +28,8 @@
 
 (in-package :orchestrator.proposals)
 
-(defvar *proposals-path* nil
-  "Override του ημερολογίου προτάσεων (τα αρνητικά gates το δένουν σε tmp).
-   NIL ⇒ η κανονική θέση κάτω από τη ΜΙΑ ρίζα (institution-root) — υπολογίζεται
-   ΤΕΜΠΕΛΙΚΑ σε κάθε χρήση, ΠΟΤΕ παγωμένη από getcwd/φόρτωση/saved image.")
-
-(defun %proposals-path ()
-  "Η ΜΙΑ θέση του ημερολογίου προτάσεων: override αν έχει δεθεί, αλλιώς
-   deployment/self/proposals.sexp κάτω από το institution-root."
-  (or *proposals-path*
-      (merge-pathnames "deployment/self/proposals.sexp"
-                       (orchestrator.paths:institution-root))))
+(orchestrator.paths:define-store-path %proposals-path *proposals-path*
+  "deployment/self/proposals.sexp" "Η συνταγματική είσοδος αλλαγής.")
 
 (defvar *kinds* (make-hash-table :test 'eq)
   "kind → plist (:on-approve fn :on-reject fn :describe fn). Ορίζεται από
@@ -69,27 +60,15 @@
 
 (defun %now () (orchestrator.journal:iso-now))
 
-(define-condition proposal-not-durable (error)
-  ((receipt :initarg :receipt :reader proposal-persistence-receipt))
-  (:report (lambda (c s)
-             (format s "ΠΡΟΤΑΣΗ ΧΩΡΙΣ ΔΙΑΡΚΗ ΕΓΓΡΑΦΗ: το ημερολόγιο δεν ~
-                        επιβεβαίωσε αποθήκευση (receipt: ~S). Η πρόταση είναι η ~
-                        ΣΥΝΤΑΓΜΑΤΙΚΗ είσοδος αλλαγής — id χωρίς durable εγγραφή ~
-                        ΔΕΝ εκδίδεται ([0086] Persistence Receipt)."
-                     (proposal-persistence-receipt c)))))
-
 (defun %append-event (plist)
   "Διαρκής εγγραφή θεσμικού γεγονότος με READ-BACK VERIFICATION. Το παλιό
    (ignore-errors …) ΕΚΔΙΔΕ id χωρίς εγγύηση αποθήκευσης — νεκρό ([0086]).
-   Εξαίρεση μόνο το δηλωμένο αντίγραφο ανάγνωσης (LAWMAX_REPLICA=1)."
+   Επιβολή από τη ΜΙΑ έδρα: journal:require-durable! ([0086+] — οι bespoke
+   conditions ανά store πέθαναν· εξαίρεση μόνο το δηλωμένο replica)."
   (multiple-value-bind (line receipt)
       (orchestrator.journal:append-line (%proposals-path) plist :verify t)
     (declare (ignore line))
-    (unless (or (orchestrator.journal:durable-p receipt)
-                (eq (orchestrator.journal:receipt-durability receipt)
-                    :ephemeral-replica))
-      (error 'proposal-not-durable :receipt receipt))
-    receipt))
+    (orchestrator.journal:require-durable! receipt :proposal)))
 
 (defun %events () (orchestrator.journal:read-lines (%proposals-path)))
 

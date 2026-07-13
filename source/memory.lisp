@@ -42,16 +42,8 @@
 
 (in-package :orchestrator.memory)
 
-(defvar *episodes-path* nil
-  "Override του βιωματικού ημερολογίου (τα gates το δένουν σε tmp). NIL ⇒
-   deployment/self/episodes.sexp κάτω από το institution-root — ΤΕΜΠΕΛΙΚΑ,
-   ποτέ παγωμένο από getcwd/φόρτωση/saved image ([0086] ΜΙΑ ρίζα).")
-
-(defun episodes-path ()
-  "Η ΜΙΑ θέση του βιωματικού ημερολογίου (override ή institution-root)."
-  (or *episodes-path*
-      (merge-pathnames "deployment/self/episodes.sexp"
-                       (orchestrator.paths:institution-root))))
+(orchestrator.paths:define-store-path episodes-path *episodes-path*
+  "deployment/self/episodes.sexp" "Hot-path ρεύμα επεισοδίων (gitignored).")
 
 (defvar *session*
   (format nil "s~36R" (get-universal-time))
