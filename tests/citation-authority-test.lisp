@@ -62,6 +62,23 @@
        (string= "ξζ" (lemmatize-greek "ξζ")))
 (check "the legal vocabulary is populated" (plusp (legal-vocabulary-size)))
 
+(format t "~%== ΜΙΑ έδρα ΑΡΝΗΣΗΣ (+negators+) — αποσύγχυση από +adversatives+ ==~%")
+;; [0080] Η άρνηση έχει ΜΙΑ έδρα· οι αντιθετικοί σύνδεσμοι ΑΛΛΗ. Καμία επικάλυψη.
+(check "+negators+ ∩ +adversatives+ = ∅ (καμία σύγχυση εννοιών)"
+       (null (intersection +negators+ +adversatives+ :test #'string=)))
+(check "οι αρνητές δεν περιέχουν αντιθετικούς (μα/αλλά/όμως)"
+       (notany (lambda (w) (member w +negators+ :test #'string=))
+               (mapcar #'normalize-greek '("μα" "αλλά" "όμως"))))
+;; ΔΟΜΙΚΗ ΕΓΓΥΗΣΗ κανονικοποίησης: κάθε εγγραφή είναι ΗΔΗ σε κανονική μορφή (τελικό σ)
+;; ⇒ ταιριάζει άμεσα με normalize-greek token. Ο θάνατος του «ομως(ς)≠ομωσ(σ)».
+(check "κάθε αρνητής/αντιθετικός είναι ΗΔΗ κανονικοποιημένος (idempotent normalize)"
+       (every (lambda (w) (string= w (normalize-greek w)))
+              (append +negators+ +adversatives+ +interrogatives+)))
+(check "utterance-act(«Όμως …») = :objection (η ς-fold διόρθωση, ζωντανή)"
+       (eq :objection (utterance-act "Όμως αυτό είναι λάθος.")))
+(check "utterance-act(«Δεν …») = :objection μέσω +negators+ (μία έδρα)"
+       (eq :objection (utterance-act "Δεν συμφωνώ.")))
+
 (format t "~%== determinism: same graph, same analytics ==~%")
 (let ((g (make-citation-graph)))
   (add-article g 10) (add-article g 20) (add-citation g 10 20)

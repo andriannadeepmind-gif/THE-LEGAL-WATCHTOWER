@@ -75,7 +75,8 @@
    #:morph-analyze #:morph-lemma #:register-paradigm #:register-lexeme
    #:feats #:feat-case #:feat-number #:feat-gender
    ;; Πράξεις λόγου από κλειστές γραμματικές κλάσεις (greek-lemmatizer.lisp)
-   #:utterance-act #:second-person-p #:verbum-dicendi-p))
+   #:utterance-act #:second-person-p #:verbum-dicendi-p
+   #:+negators+))
 
 (in-package :orchestrator.citation-authority)
 

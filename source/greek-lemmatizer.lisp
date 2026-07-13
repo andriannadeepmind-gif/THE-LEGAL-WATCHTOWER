@@ -651,14 +651,28 @@
 ;;; (ερώτηση ΠΡΟΣ το σύστημα) από την κλειστή κλιτική μορφολογία (-εις/-εσαι)
 ;;; και τις αντωνυμίες — όχι από μαντεψιά.
 
+;; ΔΟΜΙΚΗ ΕΓΓΥΗΣΗ: οι κλειστές κλάσεις αποθηκεύονται ΗΔΗ κανονικοποιημένες (mapcar
+;; normalize-greek) — ΙΔΙΑ κανονική μορφή με κάθε token που συγκρίνεται (τελικό σ,
+;; άτονα). Έτσι το σφάλμα «ομως(ς) ≠ ομωσ(σ)» γίνεται ΔΟΜΙΚΑ αδύνατο, όχι απαγορευμένο.
 (defparameter +interrogatives+
-  '("τι" "ποιος" "ποια" "ποιο" "ποιοι" "ποιες" "ποιον" "ποιαν"
-    "που" "πως" "ποτε" "γιατι" "μηπως" "αραγε" "ποσο" "ποσα" "ποσοι" "ποσες")
-  "Ερωτηματικές αντωνυμίες/επιρρήματα/μόρια (κανονικοποιημένα, άτονα).")
+  (mapcar #'normalize-greek
+    '("τι" "ποιος" "ποια" "ποιο" "ποιοι" "ποιες" "ποιον" "ποιαν"
+      "που" "πως" "ποτε" "γιατι" "μηπως" "αραγε" "ποσο" "ποσα" "ποσοι" "ποσες"))
+  "Ερωτηματικές αντωνυμίες/επιρρήματα/μόρια (κανονικοποιημένες μέσω normalize-greek).")
+
+(defparameter +negators+
+  (mapcar #'normalize-greek
+    '("δεν" "μη" "μην" "όχι" "ουδείς" "ουδέν" "ουδέποτε" "ούτε"
+      "κανείς" "κανένας" "καμία" "κανένα" "ποτέ"))
+  "Η ΜΙΑ έδρα ΑΡΝΗΣΗΣ της ελληνικής: μόρια + αρνητικές αντωνυμίες/επιρρήματα
+   (κλειστή κλάση, κανονικοποιημένες). Την καταναλώνουν ΚΑΙ η πραγματολογία
+   (utterance-act ένσταση) ΚΑΙ η σύνταξη (casegrammar clause negation) — καμία δεύτερη
+   λίστα άρνησης. Οι αρνητές ΔΕΝ είναι αντιθετικοί σύνδεσμοι (εκείνοι: +adversatives+).")
 
 (defparameter +adversatives+
-  '("μα" "αλλα" "ομως" "ωστοσο" "εντουτοις" "οχι" "δεν")
-  "Εναντιωματικά/αρνητικά στην ΚΕΦΑΛΗ πρότασης ⇒ ένσταση/αντίρρηση.")
+  (mapcar #'normalize-greek '("μα" "αλλά" "όμως" "ωστόσο" "εντούτοις"))
+  "ΕΝΑΝΤΙΩΜΑΤΙΚΟΙ ΣΥΝΔΕΣΜΟΙ στην ΚΕΦΑΛΗ πρότασης ⇒ ένσταση/αντίρρηση. ΚΑΘΑΡΑ
+   αντιθετικοί — οι αρνητές (δεν/όχι/μη…) ζουν στο +negators+ (μία έδρα, όχι σύγχυση).")
 
 (defun %norm-tokens (text)
   (remove "" (uiop:split-string (normalize-greek text)
@@ -672,12 +686,14 @@
   (let* ((toks (%norm-tokens text))
          (first-tok (first toks))
          (question-mark (position-if (lambda (c) (member c '(#\; #\?))) text))
+         ;; «κεφαλή ένστασης» = εναντιωματικός σύνδεσμος Ή αρνητής (οι δύο έδρες μαζί)
+         (objection-head (or (member first-tok +adversatives+ :test #'string=)
+                             (member first-tok +negators+ :test #'string=)))
          (interrogative (or (member first-tok +interrogatives+ :test #'string=)
-                            (and (second toks)
-                                 (member first-tok +adversatives+ :test #'string=)
+                            (and (second toks) objection-head
                                  (member (second toks) +interrogatives+ :test #'string=)))))
     (cond ((or question-mark interrogative) :question)
-          ((member first-tok +adversatives+ :test #'string=) :objection)
+          (objection-head :objection)
           (t :assertion))))
 
 (defun second-person-p (text)

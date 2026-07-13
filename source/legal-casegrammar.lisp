@@ -29,7 +29,8 @@
   (:import-from :orchestrator.citation-authority
                 #:tokenize-greek #:known-lemma #:normalize-greek #:content-lemma-p
                 #:surface-stem
-                #:morph-analyze #:morph-lemma #:feat-case #:feat-number #:feat-gender)
+                #:morph-analyze #:morph-lemma #:feat-case #:feat-number #:feat-gender
+                #:+negators+)
   (:export #:*verb-frames* #:*noun-classes* #:*markers* #:*concepts*
            #:parse-narrative #:narrative-report
            #:parse-definition #:+definitional-markers+
@@ -127,14 +128,10 @@
   "Λέξη ΠΕΡΙΕΧΟΜΕΝΟΥ (κλειστές γραμματικές κλάσεις στην έδρα της γλώσσας)."
   (content-lemma-p (or (known-lemma token) token)))
 
-(defparameter +negation-lemmas+
-  '("δεν" "μη" "μην" "ουδείς" "ουδέν" "ουδέποτε" "ούτε"
-    "κανείς" "κανένας" "καμία" "κανένα" "ποτέ")
-  "Οι δείκτες ΑΡΝΗΣΗΣ της ελληνικής (μόρια + αρνητικές αντωνυμίες/επιρρήματα).
-   Κλειστή κλάση.")
-
-;; Η γνώση άρθρο→πτώση ζει ΑΠΟΚΛΕΙΣΤΙΚΑ στο *article-table* (μία έδρα). Οι παλιές
-;; λίστες +accusative/+nominative/+genitive-articles+ ΔΙΑΓΡΑΦΗΚΑΝ ως διπλή έδρα.
+;; Η άρνηση έχει ΜΙΑ έδρα: orchestrator.citation-authority:+negators+ (γλωσσική
+;; βάση). Η παλιά τοπική +negation-lemmas+ ΔΙΑΓΡΑΦΗΚΕ (διπλή έδρα). Ομοίως η γνώση
+;; άρθρο→πτώση ζει ΑΠΟΚΛΕΙΣΤΙΚΑ στο *article-table*· οι +accusative/+nominative/
+;; +genitive-articles+ ΔΙΑΓΡΑΦΗΚΑΝ.
 (defparameter +prepositions+
   '("με" "σε" "από" "για" "προς" "κατά" "χωρίς" "δίχως" "μετά" "πριν" "ως" "έως"
     "μέχρι" "παρά" "αντί" "λόγω" "ένεκα" "στη" "στην" "στο" "στον" "στα" "στους"
@@ -230,7 +227,7 @@
     (list :surface surface :norm n :art art :lemma lem :pos pos :verb verb
           :prep (and (member n +prepositions+ :key #'normalize-greek :test #'string=) t)
           :negprep (and (member n +phrase-negators+ :key #'normalize-greek :test #'string=) t)
-          :negpart (and (member n +negation-lemmas+ :key #'normalize-greek :test #'string=) t)
+          :negpart (and (member n +negators+ :test #'string=) t)   ; ΜΙΑ έδρα άρνησης
           :cases (or art (%morph-cases surface)))))
 
 ;;; ── Ονοματική φράση ως ΣΥΣΤΑΤΙΚΟ (Det? Adj* Head) με ΣΥΜΦΩΝΙΑ πτώσης ──
