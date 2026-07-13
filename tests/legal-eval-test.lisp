@@ -26,18 +26,25 @@
        (e2e-ok (getf r :e2e-ok))
        (pos-tot (getf r :pos-total))  (eng-pos (getf r :engine-pos)) (e2e-pos (getf r :e2e-pos)))
 
-  (format t "~%== ① ο συμβολικός δικαστής είναι τέλειος στα gold (μηχανή+labels συνεπή) ==~%")
-  (check "μηχανή-σε-gold: ΟΛΑ τα expect σωστά (engine-ok = engine-total)"
+  (format t "~%== ① gold-consistency (validity check, ΟΧΙ ανεξάρτητη ικανότητα) ==~%")
+  ;; ΤΙΜΙΟ [0075 verify Q4]: τα gold είναι στιγμιότυπα των ΝΟΡΜΩΝ· το ①=100% δείχνει
+  ;; ΜΟΝΟ ότι οι ετικέτες μας είναι συνεπείς με τη μηχανή (καμία gold-λάθος), ΟΧΙ
+  ;; ανεξάρτητη «εξυπνάδα». Ο πραγματικός δείκτης είναι το ② end-to-end.
+  (check "gold-consistency: ΟΛΑ τα expect σωστά στα gold (engine-ok = engine-total)"
          (= eng-ok eng-tot))
-  (check "μηχανή στα απαιτητικά :in/:out: 8/8 (καμία gold-ετικέτα ασυνεπής με τη μηχανή)"
-         (and (= 8 pos-tot) (= 8 eng-pos)))
+  (check "gold-consistency στα :in/:out: engine-pos = pos-total (καμία ασυνεπής ετικέτα)"
+         (= eng-pos pos-tot))
 
-  (format t "~%== ② end-to-end: ο σημερινός αριθμός, κλειδωμένος ως RATCHET (≥) ==~%")
-  ;; [0074→0075] ΑΝΕΒΗΚΕ: 4/10→7/10, ⊕ 2/8→5/8 (bug ρόλων + MWE phrase-markers).
-  (check "end-to-end (όλα): ≥ 7/10 (ratchet — δεν πέφτει σιωπηλά)"
+  (format t "~%== ② end-to-end: ο ΤΙΜΙΟΣ αριθμός (με held-out), RATCHET (≥) ==~%")
+  ;; [0075 verify] Ο κριτής έδειξε: το exact-substring MWE ΔΕΝ γενικεύει· προστέθηκαν
+  ;; held-out (παράφραση/κλίση/άλλο-αντικείμενο) + αφαιρέθηκε η εφεύρεση :theme.
+  ;; ΤΙΜΙΟΣ αριθμός: e2e-ok 7/13· ⊕ 5/11 = 45.5% (όχι η in-distribution 62.5%).
+  (check "end-to-end (όλα): ≥ 7/13 (ratchet — δεν πέφτει σιωπηλά)"
          (>= e2e-ok 7))
-  (check "end-to-end ΑΠΑΙΤΗΤΙΚΟ (:in/:out): ≥ 5/8 (62.5%)"
+  (check "end-to-end ΑΠΑΙΤΗΤΙΚΟ (:in/:out, ΜΕ held-out): ≥ 5/11 (45.5%)"
          (>= e2e-pos 5))
+  (check "υπάρχουν held-out υποθέσεις (μετρούν ΓΕΝΙΚΕΥΣΗ, όχι in-distribution capture)"
+         (some (lambda (row) (member :held-out (getf row :tags))) (getf r :rows)))
 
   (format t "~%== ③ το harness ΑΝΙΧΝΕΥΕΙ το χάσμα γείωσης — ΣΥΝΘΕΤΙΚΑ (όχι από την πρόοδο) ==~%")
   ;; Anti-tautology BY CONSTRUCTION: υπόθεση με ακατάληπτη αφήγηση (0 εξαγωγή) αλλά
@@ -58,7 +65,7 @@
          (and (= (getf r :engine-ok) (getf r2 :engine-ok))
               (= (getf r :e2e-ok) (getf r2 :e2e-ok))
               (= (getf r :e2e-pos) (getf r2 :e2e-pos))))
-  (check "9 υποθέσεις στο σπόρο-benchmark" (= 9 (length (getf r :rows)))))
+  (check "12 υποθέσεις στο benchmark (9 core/adversarial + 3 held-out)" (= 12 (length (getf r :rows)))))
 
 (format t "~%========================================~%")
 (format t "LEGAL-EVAL (μετρημένη σκάλα): ~D passed, ~D failed~%" *pass* *fail*)

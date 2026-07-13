@@ -47,8 +47,12 @@
   "λίστα (ΚΑΝΟΝΙΚΟΠΟΙΗΜΕΝΑ-tokens κατηγόρημα τιμή): ΠΟΛΥΛΕΚΤΙΚΟΙ ΟΡΟΙ-ΤΕΧΝΗΣ του
    δικαίου — «νόμιμη άμυνα», «παράνομη ιδιοποίηση» — ως ΕΝΟΤΗΤΑ, όχι μεμονωμένα
    ουσιαστικά (τα νομικά concepts ΕΙΝΑΙ φράσεις). Ταιριάζουν ως ΣΥΝΕΧΟΜΕΝΗ
-   υπακολουθία στα κανονικοποιημένα tokens και γεννούν γεγονός ΔΡΑΣΤΗ. Ανώτερη
-   έδρα από lemmatizer-patching: robust στην κλίση, μία δήλωση ανά έννοια.")
+   υπακολουθία στα κανονικοποιημένα tokens (τόνος/πεζά/τελικό-σ) και γεννούν
+   γεγονός ΔΡΑΣΤΗ. Μία δήλωση ανά έννοια. ΔΗΛΩΜΕΝΑ ΟΡΙΑ (ΟΧΙ overclaim): (α)
+   ΟΧΙ stemming — κλίση που αλλάζει το θέμα (πχ «συναινέσεως») δεν πιάνεται· (β)
+   ΜΟΝΟ συνεχόμενο span — παρεμβαλλόμενη λέξη σπάει το ταίριασμα· (γ) αναιρετής
+   («χωρίς») ΠΡΙΝ τη φράση την ακυρώνει. Το πλήρες κάλυμμα ρέει από γραμματική
+   συστατικών (δηλωμένη ανώτερη φάση, [0075] verify).")
 
 (orchestrator.knowledge-packs:define-knowledge-kind :verb-frames
  :doc "Πλαίσια πτώσεων: (:frame ΡΗΜΑ-ΛΗΜΜΑ ΚΑΤΗΓΟΡΗΜΑ) · (:noun-class ΛΗΜΜΑ
@@ -232,26 +236,66 @@
                           +genitive-articles+ :key #'normalize-greek :test #'string=))
           return i))
 
-(defun %subseq-match-p (needle haystack)
-  "Το NEEDLE (λίστα strings) εμφανίζεται ως ΣΥΝΕΧΟΜΕΝΗ υπακολουθία στο HAYSTACK."
+(defun %subseq-start (needle haystack)
+  "Θέση όπου το NEEDLE (λίστα strings) εμφανίζεται ως ΣΥΝΕΧΟΜΕΝΗ υπακολουθία στο
+   HAYSTACK, ή nil."
   (let ((n (length needle)) (h (length haystack)))
     (and (plusp n) (<= n h)
          (loop for start from 0 to (- h n)
-               thereis (loop for i from 0 below n
-                             always (string= (nth i needle) (nth (+ start i) haystack)))))))
+               when (loop for i from 0 below n
+                          always (string= (nth i needle) (nth (+ start i) haystack)))
+                 return start))))
 
-(defun %phrase-marker-facts (tokens agent theme)
+(defparameter +phrase-negators+ '("χωρίς" "δίχως")
+  "Προθέσεις ΑΠΟΚΛΕΙΣΜΟΥ: «χωρίς τη συναίνεση» ΑΝΑΙΡΕΙ τον όρο — αλλιώς το phrase
+   marker θα έδινε αθώωση εκεί που στοιχειοθετείται η πράξη ([0075] verify Q2a).")
+
+(defun %article-skip-p (tok)
+  "Οριστικό άρθρο (κάθε πτώση + ουδέτερα) — προσπερνιέται όταν ψάχνουμε πίσω τον
+   αναιρετή μιας ονοματικής φράσης όρου-τέχνης."
+  (let ((n (normalize-greek tok)))
+    (or (member n '("το" "τα" "τη" "την") :key #'normalize-greek :test #'string=)
+        (member n +accusative-articles+ :key #'normalize-greek :test #'string=)
+        (member n +nominative-articles+ :key #'normalize-greek :test #'string=)
+        (member n +genitive-articles+   :key #'normalize-greek :test #'string=))))
+
+(defun %phrase-negated-p (tokens start)
+  "ΠΡΙΝ τη φράση (θέση START), εντός της άμεσης εμβέλειας άρνησης, υπάρχει αναιρετής
+   («χωρίς/δίχως») ή δείκτης άρνησης («δεν/μη/…»); ⇒ ο όρος ΔΕΝ ισχύει καταφατικά.
+   Εμβέλεια (bounded, ΔΕΝ διασχίζει πρόταση): προσπερνά άρθρα + προθέσεις + ΕΝΑ
+   κυβερνών ρήμα («δεν τελούσε σε νόμιμη άμυνα»)· σταματά στην πρώτη ΑΛΛΗ λέξη.
+   Θάνατος του Q2a: «χωρίς τη συναίνεση»/«δεν τελούσε σε άμυνα» ⇒ καμία σιωπηλή αθώωση."
+  (let ((budget 1))                                    ; ΕΝΑ αυθαίρετο token (κυβερνών ρήμα/βοηθητικό)
+    (loop for i from (1- start) downto 0
+          for tok = (nth i tokens)
+          do (cond
+               ((or (member (normalize-greek tok) +phrase-negators+
+                            :key #'normalize-greek :test #'string=)
+                    (member (normalize-greek tok) +negation-lemmas+
+                            :key #'normalize-greek :test #'string=))
+                (return t))
+               ((%article-skip-p tok))                ; άρθρο → πίσω (ελεύθερα)
+               ((member (normalize-greek tok) +prepositions+
+                        :key #'normalize-greek :test #'string=))   ; πρόθεση → πίσω (ελεύθερα)
+               ((plusp budget) (decf budget))          ; προσπέρασε ΕΝΑ ρήμα («δεν ΤΕΛΟΥΣΕ σε…»)
+               (t (return nil))))))                    ; εκτός άμεσης εμβέλειας άρνησης
+
+(defun %phrase-marker-facts (tokens agent)
   "Γεγονότα από ΠΟΛΥΛΕΚΤΙΚΟΥΣ όρους-τέχνης: κάθε *phrase-markers* που ταιριάζει ως
-   συνεχόμενη υπακολουθία στα κανονικοποιημένα tokens → (:γεγονός ΔΡΑΣΤΗΣ pred value).
-   Το value ΜΠΟΡΕΙ να είναι το slot :theme (γεμίζει με το ΘΕΜΑ της πράξης) — ώστε
-   «συναίνεση του κατόχου» να αφορά ΤΟ ΙΔΙΟ αντικείμενο (co-reference που απαιτεί
-   ο defeater), όχι σταθερά. Κάθε άλλο value είναι κυριολεκτικό."
+   συνεχόμενη υπακολουθία στα κανονικοποιημένα tokens → (:γεγονός ΔΡΑΣΤΗΣ pred value),
+   ΕΚΤΟΣ αν προηγείται αναιρετής/«χωρίς» (τότε ο όρος αναιρείται — καμία εφεύρεση
+   καταφατικού). Ταίριασμα κανονικοποιημένο (τόνος/πεζά/τελικό-σ)· ΟΧΙ stemming —
+   κλίση που αλλάζει το θέμα δεν πιάνεται (δηλωμένο όριο). ΤΟ VALUE ΕΙΝΑΙ ΚΥΡΙΟΛΕΚΤΙΚΟ:
+   ΔΕΝ εφευρίσκεται co-reference προς το θέμα ([0075] verify Q3/D1 — το παλιό slot
+   :theme κατασκεύαζε «συναίνεση για το θέμα» ακόμη κι όταν το κείμενο έλεγε ΑΛΛΟ
+   αντικείμενο· η ανάλυση αντικειμένου-όρου ρέει από τη γραμματική συστατικών, όχι
+   από εδώ — τίμια άγνοια αντί εφεύρεσης)."
   (let ((norm (mapcar #'normalize-greek tokens)) (facts '()))
     (dolist (pm *phrase-markers* facts)
       (destructuring-bind (phrase pred value) pm
-        (when (%subseq-match-p phrase norm)
-          (pushnew (list :γεγονός agent pred (if (eq value :theme) theme value))
-                   facts :test #'equal))))))
+        (let ((start (%subseq-start phrase norm)))
+          (when (and start (not (%phrase-negated-p tokens start)))
+            (pushnew (list :γεγονός agent pred value) facts :test #'equal)))))))
 
 (defun %role-indices (tokens vpos before after)
   "(values δείκτης-δράστη δείκτης-θέματος): πρώτα ΜΟΡΦΟΛΟΓΙΚΑ (ονομαστική=
@@ -340,7 +384,7 @@
                                      :test #'equal))))
                       ;; ΠΟΛΥΛΕΚΤΙΚΟΙ όροι-τέχνης («νόμιμη άμυνα») → γεγονός ΔΡΑΣΤΗ,
                       ;; ανεξάρτητα από lemmatizer (τα concepts είναι φράσεις)
-                      (dolist (f (%phrase-marker-facts tokens agent theme))
+                      (dolist (f (%phrase-marker-facts tokens agent))
                         (pushnew f facts :test #'equal))))))))
             (values (nreverse facts) t))))))
 
