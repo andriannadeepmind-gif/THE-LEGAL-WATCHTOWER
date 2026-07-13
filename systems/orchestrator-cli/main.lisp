@@ -258,21 +258,35 @@
   "Η ΜΙΑ έδρα ανάλυσης του αυθεντικού source.json για τον ΕΝΕΡΓΟ κώδικα.
    O-3 PROVENANCE GATE: ποτέ προαγωγή unstamped/tampered/foreign source.json
    σε «authoritative corpus». Έγκυρο sidecar απαιτείται·
-   ORCHESTRATOR_ALLOW_UNVERIFIED_JSON=1 = συνειδητή, καταγεγραμμένη παράκαμψη.
-   Επιστρέφει το json-path ή NIL (με τυπωμένη αιτία) όταν απορρίπτεται."
+   ORCHESTRATOR_ALLOW_UNVERIFIED_JSON=1 = συνειδητή, καταγεγραμμένη παράκαμψη
+   (ισχύει ΜΟΝΟ για υπαρκτό αρχείο — απόν αρχείο δεν «παρακάμπτεται»).
+   Επιστρέφει το json-path ή NIL· κάθε άρνηση τυπώνεται ΑΠΟΔΙΔΟΜΕΝΗ: ποιο
+   αρχείο, ποια ετυμηγορία (unstamped/tampered/missing), want/have hashes και
+   η διόρθωση — ώστε ένα κόκκινο docker log να ονομάζει μόνο του την αιτία."
   (let ((json-path (orchestrator.spec:resolve-config-path "source.json")))
-    (cond
-      ((or (%source-provenance-valid-p json-path)
-           (uiop:getenvp "ORCHESTRATOR_ALLOW_UNVERIFIED_JSON"))
-       (when (and (uiop:getenvp "ORCHESTRATOR_ALLOW_UNVERIFIED_JSON")
-                  (not (%source-provenance-valid-p json-path)))
-         (format t "~%  ⚠ ~A: προωθείται ΜΗ-ΕΠΑΛΗΘΕΥΜΕΝΟ source.json (ORCHESTRATOR_ALLOW_UNVERIFIED_JSON).~%"
-                 corpus-label))
-       json-path)
-      (t
-       (format t "~%  ⛔ ~A: source.json ΧΩΡΙΣ έγκυρο provenance (unstamped/tampered/foreign) — ΔΕΝ προωθείται ως authoritative. Τρέξε --materialize-pdf για stamp, ή θέσε ORCHESTRATOR_ALLOW_UNVERIFIED_JSON=1 για ρητή παράκαμψη.~%"
-               corpus-label)
-       nil))))
+    (multiple-value-bind (status want have) (%source-provenance-status json-path)
+      (cond
+        ((eq status :valid) json-path)
+        ((and (uiop:getenvp "ORCHESTRATOR_ALLOW_UNVERIFIED_JSON")
+              (not (eq status :missing)))
+         (format t "~%  ⚠ ~A: προωθείται ΜΗ-ΕΠΑΛΗΘΕΥΜΕΝΟ source.json (~(~A~), ORCHESTRATOR_ALLOW_UNVERIFIED_JSON).~%"
+                 corpus-label status)
+         json-path)
+        (t
+         (format t "~%  ⛔ ~A: source.json ~A — ΔΕΝ προωθείται ως authoritative.~%~
+                    ~4T αρχείο: ~A~%~
+                    ~@[~4T σφραγισμένο hash (sidecar): ~A~%~]~
+                    ~@[~4T τρέχοντα bytes           : ~A~%~]~
+                    ~4T Διόρθωση: επανάφερε το αρχείο στο committed περιεχόμενο (git restore <αρχείο>)~%~
+                    ~4T ή ξανασφράγισε από την πηγή (--materialize-pdf)· ρητή παράκαμψη: ORCHESTRATOR_ALLOW_UNVERIFIED_JSON=1.~%"
+                 corpus-label
+                 (ecase status
+                   (:missing   "ΑΠΟΝ (μη ρυθμισμένο ή ανύπαρκτο αρχείο)")
+                   (:unstamped "ΧΩΡΙΣ provenance sidecar (unstamped/foreign)")
+                   (:tampered  "με HASH MISMATCH έναντι του sidecar (tampered/substituted/stale working copy)"))
+                 (or json-path "<μη ρυθμισμένο source.json>")
+                 want have)
+         nil)))))
 
 (defun run-pipeline (&optional corpus-id)
   "Execute full processing pipeline - PDF first (if corpus declares source.pdf), JSON fallback.
@@ -529,8 +543,14 @@
    discovered laws (AMENDMENT_LAWS_JSON), so the corpus updates itself."
   (orchestrator.spec:select-corpus corpus-id)
   (orchestrator.gr-syntagma:register-active-corpus)
-  (let* ((json-path (or (orchestrator.spec:resolve-config-path "source.json")
-                        (error "corpus ~A has no source.json configured" corpus-id)))
+  ;; [0087] O-3 ΣΤΗΝ ΕΙΣΟΔΟ ΤΟΥ HUB: το corpus-spec τρέφει consolidation /
+  ;; serve / intelligence / κάθε identity test — δεν καταναλώνει ΠΟΤΕ bytes
+  ;; που δεν πέρασαν το provenance gate. Πριν, διάβαζε το source.json
+  ;; απευθείας: ένα stale/υποκατεστημένο αρχείο (π.χ. working copy που το
+  ;; git pull δεν ξαναγράφει) γινόταν σιωπηλά «authoritative corpus» και
+  ;; κοκκίνιζε μόνο 6 identity checks πιο κάτω, χωρίς απόδοση αιτίας.
+  (let* ((json-path (or (provenance-checked-json-source corpus-id)
+                        (error "corpus ~A: το source.json απορρίφθηκε από το O-3 provenance gate (βλ. ⛔ αιτία με hashes παραπάνω) — ΔΕΝ χτίζεται authoritative corpus από μη επαληθευμένη πηγή" corpus-id)))
          (raw (uiop:read-file-string json-path :external-format :utf-8))
          (objs (jonathan:parse raw :as :alist))
          ;; Use the REAL article id parsed from the title («Άρθρο 299 - …» → "299",
@@ -1046,18 +1066,30 @@ document.getElementById('ops').addEventListener('click',function(ev){
            o))
         chash))))
 
-(defun %source-provenance-valid-p (json-path)
-  "T iff JSON-PATH has a provenance sidecar whose recorded content hash matches the
-   file's CURRENT bytes — i.e. the file is stamped AND untampered since stamping. A
-   missing sidecar (foreign/legacy file) or a hash mismatch (tampered/substituted)
-   returns NIL, so the fallback can refuse to promote it."
-  (ignore-errors
-    (let* ((prov (%source-prov-path json-path)))
-      (and (probe-file prov)
-           (let* ((rec   (jonathan:parse (uiop:read-file-string prov) :as :plist))
-                  (want  (getf rec :|content_sha256|))
-                  (have  (%sha256-string (uiop:read-file-string json-path))))
-             (and want have (string= want have)))))))
+(defun %source-provenance-status (json-path)
+  "Η ΜΙΑ ετυμηγορία provenance του source.json — (values STATUS WANT HAVE):
+     :valid     sidecar παρόν ΚΑΙ το content_sha256 του ταυτίζεται με τα τρέχοντα bytes
+     :unstamped κανένα sidecar (foreign/legacy αρχείο — ποτέ δεν σφραγίστηκε)
+     :tampered  sidecar παρόν αλλά hash mismatch (αλλαγμένο/υποκατεστημένο αρχείο —
+                π.χ. stale working copy που το git pull δεν ξαναγράφει)
+     :missing   το ίδιο το json απουσιάζει (ή δεν είναι καν ρυθμισμένο)
+   WANT = ο σφραγισμένος hash του sidecar, HAVE = ο hash των τρεχόντων bytes (όπου
+   ορίζονται). Κάθε καταναλωτής provenance κρίνει ΜΕΣΩ αυτής της έδρας — ποτέ με
+   δική του σύγκριση hash."
+  (cond
+    ((or (null json-path) (not (probe-file json-path)))
+     (values :missing nil nil))
+    ((not (probe-file (%source-prov-path json-path)))
+     (values :unstamped nil (%sha256-string (uiop:read-file-string json-path))))
+    (t
+     (let* ((rec  (ignore-errors
+                    (jonathan:parse (uiop:read-file-string (%source-prov-path json-path))
+                                    :as :plist)))
+            (want (and rec (getf rec :|content_sha256|)))
+            (have (%sha256-string (uiop:read-file-string json-path))))
+       (if (and want have (string= want have))
+           (values :valid want have)
+           (values :tampered want have))))))
 
 (defun %title-key (title)
   (multiple-value-bind (id) (%parse-article-title title) (or id title)))
@@ -1106,7 +1138,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
                             (progn
                               ;; preserve the existing corpus AND ensure it carries a
                               ;; provenance record (origin not re-derived this run).
-                              (unless (%source-provenance-valid-p json)
+                              (unless (eq :valid (%source-provenance-status json))
                                 (%write-source-provenance json :extraction-method "preserved-no-digital-source" :date date))
                               (format t "  ⚠ ~A: 0 άρθρα (scanned PDF / χωρίς text layer) — ΔΙΑΤΗΡΕΙΤΑΙ το υπάρχον ~A [provenance ok]. Χρειάζεται ΨΗΦΙΑΚΗ πηγή (Υπ. Δικαιοσύνης/Ισοκράτης).~%" id json))
                             (format t "  – ~A: 0 άρθρα (scanned PDF / χωρίς text layer) — χρειάζεται ΨΗΦΙΑΚΗ πηγή (Υπ. Δικαιοσύνης/Ισοκράτης).~%" id)))
@@ -1121,7 +1153,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
                                (< new (floor old 2))
                                (not (uiop:getenvp "ORCHESTRATOR_ALLOW_SHRINK"))))
                         (progn
-                          (unless (%source-provenance-valid-p json)
+                          (unless (eq :valid (%source-provenance-status json))
                             (%write-source-provenance json :extraction-method "preserved-shrink-guard" :date date))
                           (format t "  ⚠ ~A: εξαγωγή ~D άρθρων ενώ το υπάρχον ~A έχει ~D — ΥΠΟΠΤΗ ΣΥΡΡΙΚΝΩΣΗ, ΔΙΑΤΗΡΕΙΤΑΙ το υπάρχον (θέσε ORCHESTRATOR_ALLOW_SHRINK=1 για παράκαμψη).~%"
                                   id (length iirs) json (%source-json-count json))))

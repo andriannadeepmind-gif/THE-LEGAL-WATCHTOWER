@@ -469,6 +469,43 @@ Tm90QUNlcnQ=
                     ;; #11 κούφιο shaped cert ⇒ NIL
                     (not (orchestrator.x509-authority:valid-x509-certificate-der-p hollow))))))
 
+;;; ㉗ [0087] O-3 ΣΤΗΝ ΕΙΣΟΔΟ ΤΟΥ HUB: η ΜΙΑ ετυμηγορία provenance του source.json
+;;; (:valid/:unstamped/:tampered/:missing) — αυτή που έκανε το docker failure
+;;; «120 άρθρα χωρίς αιτία» αδύνατο: stale bytes πλέον αρνούνται ΟΝΟΜΑΣΤΙΚΑ
+;;; (αρχείο + want/have hashes) πριν χτιστεί οτιδήποτε «authoritative».
+(cit-check "㉗ %source-provenance-status: unstamped→valid→tampered→missing (πλήρης ετυμηγορία)"
+           (let* ((dir (merge-pathnames (format nil "cit-prov-~D/" (get-universal-time))
+                                        (uiop:temporary-directory)))
+                  (j (merge-pathnames "s.json" dir)))
+             (ensure-directories-exist dir)
+             (alexandria:write-string-into-file
+              "[{\"title\":\"Άρθρο 1 - Τ\",\"content\":\"κ\"}]" j :if-exists :supersede)
+             (unwind-protect
+                  (and (eq :unstamped (%source-provenance-status j))
+                       (progn (%write-source-provenance j :date "2000-01-01")
+                              (eq :valid (%source-provenance-status j)))
+                       (progn (alexandria:write-string-into-file
+                               "[{\"title\":\"Άρθρο 1 - Αλλαγμένο\",\"content\":\"x\"}]"
+                               j :if-exists :supersede)
+                              (multiple-value-bind (st want have) (%source-provenance-status j)
+                                (and (eq :tampered st) want have (not (string= want have)))))
+                       (eq :missing (%source-provenance-status (merge-pathnames "absent.json" dir)))
+                       (eq :missing (%source-provenance-status nil)))
+               (ignore-errors (uiop:delete-directory-tree dir :validate (constantly t))))))
+
+;;; ㉗β source-scan: το corpus-spec ΠΕΡΝΑ από το O-3 gate — αφαίρεση της
+;;; καλωδίωσης (επιστροφή στο ωμό resolve-config-path) κοκκινίζει ΕΔΩ.
+(cit-check "㉗β corpus-spec → provenance-checked-json-source (η είσοδος του hub είναι gated)"
+           (let* ((src (uiop:read-file-string
+                        (orchestrator.paths:institution-dir "systems/orchestrator-cli/main.lisp")
+                        :external-format :utf-8))
+                  (start (search "(defun corpus-spec " src))
+                  (end   (and start (search "(defun build-consolidated-for " src :start2 start)))
+                  (body  (and start end (subseq src start end))))
+             (and body
+                  (search "provenance-checked-json-source" body)
+                  (not (search "resolve-config-path" body)))))
+
 (format t "~%========================================~%")
 (format t "Corpus identity tests: ~D passed, ~D failed~%" *cit-pass* *cit-fail*)
 (format t "========================================~%")

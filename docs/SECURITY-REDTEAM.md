@@ -71,10 +71,13 @@ Materialize now writes a provenance sidecar `<source.json>.prov.json`
 (`%write-source-provenance`) binding the file's content SHA-256 to the primary
 `source_digest` + `extraction_method` + date; the preserve branches (scanned ΦΕΚ /
 shrink-guard) stamp the existing file too, so every served corpus carries a record.
-The JSON fallback (`run-json-mode`) now **refuses** to promote a `source.json` whose
-sidecar is missing (foreign/legacy) or whose content hash no longer matches
-(tampered/substituted) — `%source-provenance-valid-p`. Override for a deliberate,
-logged exception: `ORCHESTRATOR_ALLOW_UNVERIFIED_JSON=1`. Hashing reuses the epistemic
+The JSON fallback (`run-json-mode`) **and the consolidation/serve hub (`corpus-spec`
+— since [0087])** refuse to promote a `source.json` whose sidecar is missing
+(foreign/legacy) or whose content hash no longer matches (tampered/substituted) —
+verdict seat `%source-provenance-status` (`:valid/:unstamped/:tampered/:missing`,
+refusals print the file, the verdict and the want/have hashes). Override for a
+deliberate, logged exception: `ORCHESTRATOR_ALLOW_UNVERIFIED_JSON=1` (existing
+files only — a missing file cannot be "promoted"). Hashing reuses the epistemic
 `compute-sha256-*` primitives (no duplicate hashing). **Validate under a build**; note a
 one-time `--materialize-pdf` run is needed to stamp existing corpora.
 
