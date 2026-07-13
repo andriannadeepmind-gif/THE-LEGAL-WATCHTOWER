@@ -108,3 +108,28 @@ by digest): ΦΕΚ Α΄111/1975 (βάση)· Ψηφίσματα ΦΕΚ Α΄23/19
 **Επόμενο βήμα**: Φ0 era-1 seal (καταγραφή υπαρχόντων attested roots) + Φ1 (canonical
 serialization + identity). Η εντολή «Δεν εγκρίνω αποσπασματικό… Προχώρα τώρα» καλύπτει
 τη συνεχή εκτέλεση Φ0→Φ6· το Φ7 εξαρτάται από την κτήση πηγών· το τελικό merge = δημιουργός.
+
+---
+
+## Φ0 — ERA-1 SEAL (receipt)
+
+Καταγεγραμμένη κατάσταση era-1 στο HEAD της φάσης (μετά το [0088+] commit):
+
+| Corpus | latest release (attested:true) |
+|---|---|
+| constitution | `sha256-0ee2ecc4e0efab7342908876454df179fb60187654338832cb05058903883825` |
+| poinikos | `sha256-e8384152d401efc82566f9c5628c8b37a0a074ed1f95dea598334d0d8217dca6` |
+| kpoinikis | `sha256-b53a6dfa5dd49cf8acfb61d000fa0dc9d7bfd4fc4b8d145fcac1a2e36018a47c` |
+| astikos | `sha256-1129ac1e0453c9c98744f7c2ca6af138a611d8c706a2bc2d345c802132eaa30d` |
+| kpolitikis | `sha256-aaf60c01d1bfec2a01ef4e914476f184771cc686c6dc8aa08bd1d067e5c3727f` |
+| kdioikitikis | `sha256-a8d87d7ff439e524f403c7e1135c620055faadab657075354bfe8481a3416e93` |
+
+Αυτά είναι τα ids που το πρώτο era-2 census θα δεσμεύσει ως `prev_release_root` ανά σώμα —
+η αλυσίδα συνεχίζεται, η ιστορία δεν ξαναγράφεται (releases/ = append-only, [0058] owner attest ×6).
+
+**Τίμια δήλωση**: per-corpus `transparency-log.json` ΔΕΝ υπάρχει ακόμη στο repo — η L7-B έδρα
+(transparency-log.lisp, tests 23/23) γράφει το log στο `promote-latest!`· κανένα attested promote
+δεν έχει τρέξει από τότε. Το era-1 seal εδώ = τα attested latest ids· το tlog ξεκινά τη ζωή του
+με το πρώτο promote (era-2 cut ή owner-side), και το consistency-proof καθεστώς του σχεδίου (G6)
+ισχύει από το πρώτο entry και μετά. Κανένα «νέο cut» δεν κόβεται από το cloud (τα signing/TSA
+είναι owner-side από σχεδίαση) — το Φ0 είναι καταγραφή, όχι παραγωγή.
