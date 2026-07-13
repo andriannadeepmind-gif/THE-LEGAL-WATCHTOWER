@@ -261,7 +261,7 @@
   (declare (ignore args))
   (let ((lines (%raw-lines (%failure-ledger-path))))
     (format t "~%── FAILURE LEDGER (~A) — ~D εγγραφές ──~%"
-            (enough-namestring (%failure-ledger-path) (uiop:getcwd)) (length lines))
+            (enough-namestring (%failure-ledger-path) (orchestrator.paths:institution-root)) (length lines))
     (dolist (l (last lines 20)) (format t "  ~A~%" l))
     0))
 (register-command "--failures" (lambda (a) (run-failures a)))

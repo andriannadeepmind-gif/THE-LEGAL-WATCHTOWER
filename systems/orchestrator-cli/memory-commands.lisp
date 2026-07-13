@@ -151,7 +151,7 @@
       ;; πρέπει να βγει ΑΚΕΡΑΙΗ και πλήρης (ο ένας-συγγραφέας του journal)
       ;; τα dynamic bindings ΔΕΝ περνούν σε θυγατρικά νήματα — δένουμε το path
       ;; ΜΕΣΑ σε κάθε νήμα (στο tmp), αλλιώς θα μόλυναν το πραγματικό αρχείο
-      (let* ((path orchestrator.memory:*episodes-path*)
+      (let* ((path (orchestrator.memory:episodes-path))
              (before (length (orchestrator.memory:episodes :fold nil)))
              (threads (loop for i from 1 to 4
                             collect (let ((tid i))

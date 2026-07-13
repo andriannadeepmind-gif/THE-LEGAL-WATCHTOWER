@@ -17,7 +17,7 @@
    ((δικαστήριο αριθμός έτος)…) από τα δεσίματα παραπομπών τους."
   (let ((out '()))
     (dolist (dir (uiop:subdirectories
-                  (merge-pathnames "deployment/data/decisions/" (uiop:getcwd))) out)
+                  (merge-pathnames "deployment/data/decisions/" (orchestrator.paths:institution-root))) out)
       (dolist (f (uiop:directory-files dir))
         (when (and (string= (pathname-type f) "json")
                    (not (search ".prov" (pathname-name f))))

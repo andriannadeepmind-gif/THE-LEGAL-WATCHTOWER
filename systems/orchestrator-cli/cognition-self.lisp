@@ -296,7 +296,7 @@
            (decisions (length (ignore-errors
                                 (directory (merge-pathnames
                                             "deployment/data/decisions/*/*.json"
-                                            (uiop:getcwd)))))))
+                                            (orchestrator.paths:institution-root)))))))
       (format s "Η κατάστασή μου, μετρημένη τη στιγμή που ρωτάς — τίποτα αποστηθισμένο:~%")
       (format s "• Έκδοση: Orchestrator v~A σε ~A ~A.~%"
               *version* (lisp-implementation-type) (lisp-implementation-version))
@@ -377,7 +377,7 @@
     (let ((srcs (sb-introspect:find-definition-sources-by-name sym kind)))
       (when srcs
         (let ((p (sb-introspect:definition-source-pathname (first srcs))))
-          (when p (enough-namestring p (uiop:getcwd))))))))
+          (when p (enough-namestring p (orchestrator.paths:institution-root))))))))
 
 (defun %describe-own-symbol (sym s)
   "Περιέγραψε το ΣΥΜΒΟΛΟ από τη ζωντανή εικόνα: τι είναι, υπογραφή, τεκμηρίωση,
@@ -643,14 +643,14 @@
     (with-output-to-string (s)
       (format s "Το μητρώο άγνοιάς μου — επιθεωρήσιμο τώρα, όχι ρητορικό «καταγράφηκε»:~%")
       (format s "• Μαθήματα αναστοχασμού: ~A — ~D εγγραφές~%"
-              (enough-namestring path (uiop:getcwd)) (length lines))
+              (enough-namestring path (orchestrator.paths:institution-root)) (length lines))
       (dolist (l tail) (format s "    ~A~%" l))
       ;; Π0: το ΠΛΗΡΕΣ τελευταίο failure record — input/context/mode/reason/
       ;; gap/status, όχι μόνο path/count. Αν ο ledger είναι άδειος, το λέει.
       (let* ((fl (%raw-lines (%failure-ledger-path)))
              (last-f (car (last fl))))
         (format s "• Μητρώο αποτυχιών (failure-ledger): ~A — ~D εγγραφές~%"
-                (enough-namestring (%failure-ledger-path) (uiop:getcwd)) (length fl))
+                (enough-namestring (%failure-ledger-path) (orchestrator.paths:institution-root)) (length fl))
         (if last-f
             (progn
               (format s "  Τελευταίο πλήρες record:~%")

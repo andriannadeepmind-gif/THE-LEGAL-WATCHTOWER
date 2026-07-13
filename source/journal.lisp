@@ -23,7 +23,9 @@
   (:use :cl)
   (:export #:iso-now #:sha256-hex #:append-line #:read-lines
            #:chained-append #:write-file-atomic #:with-journal-lock
-           #:replica-p))
+           #:replica-p
+           ;; [0086] Persistence Receipt — η μηχανική διάκριση «γράφτηκε;»
+           #:receipt-durability #:receipt-verified-p #:durable-p))
 
 (in-package :orchestrator.journal)
 
@@ -132,12 +134,40 @@
           (setf (gethash key *cache*) new)
           new))))
 
-(defun append-line (path plist)
+;;; ── [0086] PERSISTENCE RECEIPT — η ΜΗΧΑΝΙΚΗ διάκριση «αποθηκεύτηκε;» ──
+;;; Η επιστροφή τιμής ΔΕΝ σημαίνει «γράφτηκε». Κάθε append επιστρέφει (values
+;;; plist receipt) όπου receipt = plist με :durability ∈ {:durable,
+;;; :ephemeral-replica, :degraded-memory-only, :failed-verification} +
+;;; :content-hash + :readback-verified + :path + :at. Οι ΘΕΣΜΙΚΟΙ συγγραφείς
+;;; (προτάσεις, υιοθετήσεις) καλούν με :verify t (φρέσκια επανανάγνωση από τον
+;;; δίσκο, όχι cache) και ΑΡΝΟΥΝΤΑΙ id χωρίς :durable — οι hot-path συγγραφείς
+;;; (επεισόδια) πληρώνουν μόνο το φθηνό receipt.
+
+(defun receipt-durability (receipt) (getf receipt :durability))
+(defun receipt-verified-p (receipt) (getf receipt :readback-verified))
+(defun durable-p (receipt)
+  "Τ ⇔ η εγγραφή είναι ΣΤΟΝ ΔΙΣΚΟ (fsynced) — η μόνη έννοια «αποθηκεύτηκε»."
+  (eq (getf receipt :durability) :durable))
+
+(defun %readback-last-form (path)
+  "ΦΡΕΣΚΙΑ ανάγνωση της τελευταίας φόρμας του PATH από τον δίσκο — παρακάμπτει
+   ΣΚΟΠΙΜΑ την cache (το verification δεν εμπιστεύεται ό,τι μόλις έγραψε)."
+  (car (last (%load-lines path))))
+
+(defun append-line (path plist &key verify)
   "Πρόσθεσε ΜΙΑ γραμμή-plist στο PATH — υπό το κλείδωμα του ημερολογίου, με
-   fsync (η εγγραφή που γύρισε, ΕΓΙΝΕ — και σε crash). Η cache μεγαλώνει Ο(1)."
+   fsync. Επιστρέφει (values plist receipt): το receipt φέρει τη ΜΗΧΑΝΙΚΗ
+   αλήθεια της αποθήκευσης (ποτέ σιωπηλό «μάλλον γράφτηκε»). Με VERIFY, η
+   εγγραφή επαληθεύεται με φρέσκια επανανάγνωση από τον δίσκο (read-back)."
   (with-journal-lock (path)
-    (let ((c (%cache-of path))
-          (wrote nil))                     ; πριν τη γραφή — συνεπής βάση
+    (let* ((c (%cache-of path))
+           (wrote nil)
+           (line (let ((*package* (find-package :keyword))
+                       (*print-readably* nil) (*print-escape* t)
+                       (*print-pretty* nil) (*print-circle* nil))
+                   (format nil "~S" plist)))
+           (chash (sha256-hex line))
+           (verified nil))
       (unless (or *ephemeral*              ; αντίγραφο ανάγνωσης: μόνο μνήμη
                   (gethash (namestring path) *degraded*))
         (handler-case
@@ -146,10 +176,8 @@
               (with-open-file (s path :direction :output
                                  :if-exists :append :if-does-not-exist :create
                                  :external-format :utf-8)
-                (let ((*package* (find-package :keyword))
-                      (*print-readably* nil) (*print-escape* t)
-                      (*print-pretty* nil) (*print-circle* nil))
-                  (format s "~S~%" plist))
+                (write-string line s)
+                (terpri s)
                 (%fsync s))
               (setf wrote t))
           (error (e)
@@ -159,6 +187,8 @@
             (format *error-output*
                     "~&⚠ ημερολόγιο ~A: ΜΗ ΕΓΓΡΑΨΙΜΟ (~A) — συνεχίζω ΕΦΗΜΕΡΑ στη μνήμη· η κατάσταση δεν θα επιβιώσει επανεκκίνησης~%"
                     (file-namestring path) e))))
+      (when (and wrote verify)
+        (setf verified (equalp (%readback-last-form path) plist)))
       ;; Ο(1) επέκταση της cache με ουρά-δείκτη + νέο αποτύπωμα αρχείου
       (let ((cell (list plist)))
         (if (jcache-tail c)
@@ -167,15 +197,25 @@
         (setf (jcache-tail c) cell
               (jcache-count c) (1+ (jcache-count c)))
         (when wrote
-          (setf (jcache-fwd c) (file-write-date path))))))
-  plist)
+          (setf (jcache-fwd c) (file-write-date path))))
+      (values plist
+              (list :durability (cond ((and wrote verify (not verified))
+                                       :failed-verification)
+                                      (wrote :durable)
+                                      (*ephemeral* :ephemeral-replica)
+                                      (t :degraded-memory-only))
+                    :path (namestring path)
+                    :content-hash chash
+                    :readback-verified verified
+                    :at (iso-now))))))
 
-(defun chained-append (path build-fn)
+(defun chained-append (path build-fn &key verify)
   "Η ΑΤΟΜΙΚΗ πράξη της αλυσίδας: υπό το κλείδωμα, δες την ουρά (cache, Ο(1)),
    κάλεσε (BUILD-FN τελευταίο-plist|nil) → νέο plist, γράψε το. Δύο νήματα ΔΕΝ
-   χτίζουν ποτέ πάνω στο ίδιο :prev/:seq — η αλυσίδα μένει αληθινή."
+   χτίζουν ποτέ πάνω στο ίδιο :prev/:seq. Επιστρέφει (values plist receipt)."
   (with-journal-lock (path)
-    (append-line path (funcall build-fn (car (jcache-tail (%cache-of path)))))))
+    (append-line path (funcall build-fn (car (jcache-tail (%cache-of path))))
+                 :verify verify)))
 
 (defun read-lines (path)
   "Όλες οι γραμμές-plists του PATH, με τη σειρά τους — από τη ζωντανή cache

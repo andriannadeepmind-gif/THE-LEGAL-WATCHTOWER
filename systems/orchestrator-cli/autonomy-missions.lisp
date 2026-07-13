@@ -53,7 +53,7 @@
 (defun %corpus-articles (corpus)
   "Τα άρθρα ενός κώδικα ως ((num . text)…) από το materialized corpus.jsonl."
   (let ((path (merge-pathnames (format nil "output/~A/corpus.jsonl" (%corpus-outdir corpus))
-                               (uiop:getcwd)))
+                               (orchestrator.paths:institution-root)))
         (acc '()))
     (when (probe-file path)
       (with-open-file (s path :external-format :utf-8)

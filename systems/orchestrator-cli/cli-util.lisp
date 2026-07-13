@@ -23,14 +23,45 @@
 (defvar *commands* (make-hash-table :test 'equal)
   "\"--foo\" → (lambda (user-args) → exit-code). Τα modules εγγράφουν εδώ.")
 
+(defvar *command-owners* (make-hash-table :test 'equal)
+  "\"--foo\" → namestring του αρχείου-ΙΔΙΟΚΤΗΤΗ (η έδρα της εντολής). Μία εντολή,
+   ΕΝΑΣ ιδιοκτήτης — η σιωπηλή αντικατάσταση έδρας είναι ΔΟΜΙΚΑ αδύνατη.")
+
+(define-condition command-seat-collision (error)
+  ((name :initarg :name :reader collision-command-name)
+   (owner :initarg :owner :reader collision-existing-owner)
+   (claimant :initarg :claimant :reader collision-claimant))
+  (:report (lambda (c s)
+             (format s "ΣΥΓΚΡΟΥΣΗ ΕΔΡΑΣ ΕΝΤΟΛΗΣ «~A»: ιδιοκτήτης ~A, διεκδικητής ~A — ~
+                        μία εντολή έχει ΜΙΑ έδρα· μετονόμασε τη νέα εντολή στην έδρα της."
+                     (collision-command-name c)
+                     (collision-existing-owner c)
+                     (collision-claimant c)))))
+
+(defun %registration-site ()
+  "Το αρχείο-έδρα της τρέχουσας εγγραφής — από τη ΜΙΑ άδεια load-time αλήθειας
+   (orchestrator.paths:current-load-file, FF1 ⑭: identity-only, ποτέ ρίζα)."
+  (orchestrator.paths:current-load-file))
+
 (defun register-command (name fn)
   "Εγγραφή εντολής NAME με χειριστή FN που λαμβάνει τα ορίσματα ΜΕΤΑ την εντολή
-   (λίστα) και επιστρέφει exit-code."
-  (setf (gethash name *commands*) fn))
+   (λίστα) και επιστρέφει exit-code. ΝΟΜΟΣ ΜΙΑΣ ΕΔΡΑΣ: αν το NAME ανήκει ήδη σε
+   ΑΛΛΟ αρχείο, σφάλμα COMMAND-SEAT-COLLISION (καμία σιωπηλή αντικατάσταση) —
+   επανεγγραφή από το ΙΔΙΟ αρχείο επιτρέπεται (idempotent reload)."
+  (let ((site (%registration-site))
+        (owner (gethash name *command-owners*)))
+    (when (and owner (string/= owner site))
+      (error 'command-seat-collision :name name :owner owner :claimant site))
+    (setf (gethash name *command-owners*) site
+          (gethash name *commands*) fn)))
 
 (defun find-command (name)
   "Ο χειριστής της εντολής NAME, ή NIL όταν δεν είναι στο μητρώο."
   (and name (gethash name *commands*)))
+
+(defun command-owner (name)
+  "Το αρχείο-έδρα της εντολής NAME, ή NIL."
+  (gethash name *command-owners*))
 
 ;;; ----------------------------------------------------------------------------
 ;;; M1 — ΚΑΘΟΛΙΚΗ ΤΑΥΤΟΤΗΤΑ ΓΥΡΟΥ (turn_id / root span)

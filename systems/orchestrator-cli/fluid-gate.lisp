@@ -94,7 +94,7 @@
          (files (ignore-errors
                   (remove-if-not (lambda (f) (string= (pathname-type f) "json"))
                                  (uiop:directory-files
-                                  (merge-pathnames dir (uiop:getcwd)))))))
+                                  (merge-pathnames dir (orchestrator.paths:institution-root)))))))
     (if (null files)
         (progn (format t "~%Κανένα ARC task στο ~A — κατέβασε τα επίσημα JSON (fchollet/ARC-AGI) εκεί.~%" dir) 1)
         (let ((solved 0) (attempted 0) (declined 0)

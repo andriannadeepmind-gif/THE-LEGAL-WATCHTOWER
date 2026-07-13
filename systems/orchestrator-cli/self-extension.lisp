@@ -48,7 +48,7 @@
      (dolist (f files)
        (orchestrator.journal:write-file-atomic
         (merge-pathnames (%assert-safe-pack-filename (first f))
-                         orchestrator.knowledge-packs:*knowledge-dir*)
+                         (orchestrator.knowledge-packs:knowledge-dir))
         (second f)))
      (orchestrator.knowledge-packs:ensure-fresh)
      (orchestrator.self-history:record!
@@ -335,7 +335,7 @@
 (defun %study-cached (corpus)
   "Η ξηρή αυτομελέτη του CORPUS, με cache κατά write-date του corpus.jsonl."
   (let* ((path (merge-pathnames (format nil "output/~A/corpus.jsonl" (%corpus-outdir corpus))
-                                (uiop:getcwd)))
+                                (orchestrator.paths:institution-root)))
          (fwd (and (probe-file path) (file-write-date path)))
          (hit (gethash corpus *study-cache*)))
     (cond ((null fwd) nil)

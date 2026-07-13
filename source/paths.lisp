@@ -19,6 +19,8 @@
            #:ensure-directory
            #:with-temp-file
            #:make-relative-path
+           ;; [0086] ταυτότητα φορτωνόμενου αρχείου (ΟΧΙ ρίζα) — για μητρώα ιδιοκτησίας
+           #:current-load-file
            ;; FF1 — Η ΜΙΑ έδρα ρίζας του Ιδρύματος (φορητή)
            #:institution-root
            #:institution-dir))
@@ -322,3 +324,13 @@
 
 ;; Initialize with defaults when loaded
 (initialize-paths)
+
+
+(defun current-load-file ()
+  "Το ΟΝΟΜΑ (file-namestring) του αρχείου που φορτώνεται/μεταγλωττίζεται ΤΩΡΑ,
+   ή \"<runtime>\" εκτός φόρτωσης. [0086] ΤΑΥΤΟΤΗΤΑ ΜΟΝΟ — ποτέ ρίζα/διαδρομή:
+   επιστρέφει basename, δεν συμμετέχει σε επίλυση paths. Ζει ΕΔΩ γιατί το
+   load-truename είναι compile/load-time αλήθεια και η ΜΙΑ άδεια χρήσης της
+   είναι αυτή η έδρα (FF1 ⑭). Καταναλωτής: μητρώο ιδιοκτησίας εντολών CLI."
+  (let ((p (or *load-truename* *compile-file-truename*)))
+    (if p (file-namestring p) "<runtime>")))

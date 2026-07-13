@@ -479,7 +479,7 @@
    εκκρεμείς εγκρίσεις, προτάσεις ανά κώδικα. Ο άνθρωπος (ή ένα UI) βλέπει
    με μια ματιά τι περιμένει το ΝΑΙ του."
   (ignore-errors
-    (let ((path (merge-pathnames "deployment/state/daemon-status.json" (uiop:getcwd))))
+    (let ((path (merge-pathnames "deployment/state/daemon-status.json" (orchestrator.paths:institution-root))))
       (ensure-directories-exist path)
       (multiple-value-bind (sec min hr day mo yr) (decode-universal-time (get-universal-time) 0)
         (with-open-file (o path :direction :output :if-exists :supersede

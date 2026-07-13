@@ -40,7 +40,7 @@
         (unless (member corpus seen :test #'string=)
           (push corpus seen)
           (let ((path (merge-pathnames (format nil "output/~A/corpus.jsonl" (%corpus-outdir corpus))
-                                       (uiop:getcwd))))
+                                       (orchestrator.paths:institution-root))))
             (when (probe-file path)
               (orchestrator.graph:with-origin (:world)
                 (with-open-file (s path :external-format :utf-8)
@@ -59,7 +59,7 @@
 (defun %graph-import-decisions ()
   "Αποφάσεις ως κόμβοι :world + σχέσεις «εφαρμόζει» (αιτιολόγηση :derived)."
   (let ((n 0) (e 0))
-    (dolist (dir (uiop:subdirectories (merge-pathnames "deployment/data/decisions/" (uiop:getcwd))))
+    (dolist (dir (uiop:subdirectories (merge-pathnames "deployment/data/decisions/" (orchestrator.paths:institution-root))))
       (dolist (f (uiop:directory-files dir))
         (when (and (string= (pathname-type f) "json") (not (search ".prov" (pathname-name f))))
           (let ((rec (ignore-errors (jonathan:parse (uiop:read-file-string f :external-format :utf-8)
@@ -183,7 +183,7 @@
 ;;; αγνοείται και ο γράφος ξαναχτίζεται — ποτέ μπαγιάτικη αλήθεια σιωπηλά.
 
 (defparameter *graph-snapshot-path*
-  (merge-pathnames "deployment/self/graph-snapshot.sexp" (uiop:getcwd))
+  (merge-pathnames "deployment/self/graph-snapshot.sexp" (orchestrator.paths:institution-root))
   "Runtime κατάσταση του αντιτύπου (gitignored) — όχι του repo.")
 
 (defun %graph-input-files ()
@@ -194,9 +194,9 @@
         (unless (member corpus seen :test #'string=)
           (push corpus seen)
           (let ((p (merge-pathnames (format nil "output/~A/corpus.jsonl" (%corpus-outdir corpus))
-                                    (uiop:getcwd))))
+                                    (orchestrator.paths:institution-root))))
             (when (probe-file p) (push p files))))))
-    (dolist (dir (uiop:subdirectories (merge-pathnames "deployment/data/decisions/" (uiop:getcwd))))
+    (dolist (dir (uiop:subdirectories (merge-pathnames "deployment/data/decisions/" (orchestrator.paths:institution-root))))
       (dolist (f (uiop:directory-files dir))
         (when (string= (pathname-type f) "json") (push f files))))
     files))

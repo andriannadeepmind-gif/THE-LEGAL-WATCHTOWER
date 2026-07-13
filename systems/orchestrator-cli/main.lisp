@@ -1484,7 +1484,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
               (or (uiop:getenv "GOLDEN_DIR")
                   (merge-pathnames "deployment/verify/golden/"
                                    (or (uiop:getenv "ORCHESTRATOR_ROOT")
-                                       (uiop:getcwd)))))))
+                                       (orchestrator.paths:institution-root)))))))
     (merge-pathnames (concatenate 'string short ".fingerprint.sexp") dir)))
 
 (defun %fingerprint-method (manifest)

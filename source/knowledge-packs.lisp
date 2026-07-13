@@ -31,14 +31,20 @@
 (defpackage :orchestrator.knowledge-packs
   (:use :cl)
   (:export #:define-knowledge-kind #:ensure-fresh #:with-packs-overlay
-           #:active-packs #:describe-active #:*knowledge-dir*
+           #:active-packs #:describe-active #:*knowledge-dir* #:knowledge-dir
            #:pack-sha #:load-pack))
 
 (in-package :orchestrator.knowledge-packs)
 
-(defvar *knowledge-dir*
-  (merge-pathnames "deployment/knowledge/" (uiop:getcwd))
-  "Ο κατάλογος των ενεργών πακέτων γνώσης — versioned στο repo, όπως ο νόμος.")
+(defvar *knowledge-dir* nil
+  "Override του καταλόγου γνώσης (gates→tmp). NIL ⇒ deployment/knowledge/
+   κάτω από το institution-root — ΤΕΜΠΕΛΙΚΑ ([0086] ΜΙΑ ρίζα).")
+
+(defun knowledge-dir ()
+  "Η ΜΙΑ θέση των ενεργών πακέτων γνώσης (override ή institution-root)."
+  (or *knowledge-dir*
+      (merge-pathnames "deployment/knowledge/"
+                       (orchestrator.paths:institution-root))))
 
 (defvar *kinds* (make-hash-table :test 'eq)
   "kind → plist (:install fn :snapshot fn :restore fn :doc string).")
@@ -103,7 +109,7 @@
   "Ένας εγκαταστάτης γνώσης τη φορά — το ensure-fresh καλείται σε ΚΑΘΕ /ask και
    δύο ταυτόχρονα αιτήματα δεν επιτρέπεται να ξανεγκαθιστούν πακέτα μαζί (Φάση 0).")
 
-(defun ensure-fresh (&key (dir *knowledge-dir*) (stream nil))
+(defun ensure-fresh (&key (dir (knowledge-dir)) (stream nil))
   "Φόρτωσε/ξαναφόρτωσε ό,τι πακέτο άλλαξε (κατά SHA). Άκυρο πακέτο ⇒ μένει
    η προηγούμενη γνώση και το σφάλμα ΔΗΛΩΝΕΤΑΙ. Επιστρέφει πλήθος αλλαγών.
    Thread-safe: ένας εγκαταστάτης τη φορά (αναδρομικό κλείδωμα)."

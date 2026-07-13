@@ -114,7 +114,7 @@
   "Υποψήφια γνώση στο deployment/self/candidates/*.sexp που ΠΕΡΝΑΕΙ τη σκιώδη
    δοκιμή (0 παλινδρομήσεις) → πρόταση υιοθέτησης, με το sha της στο sig ώστε
    αλλαγή του αρχείου να γεννά νέα πρόταση. Η σκιά τρέχει σιωπηλά εδώ."
-  (let ((cdir (merge-pathnames "deployment/self/candidates/" (uiop:getcwd)))
+  (let ((cdir (merge-pathnames "deployment/self/candidates/" (orchestrator.paths:institution-root)))
         (out '()))
     (when (probe-file cdir)
       (dolist (f (directory (merge-pathnames "*.sexp" cdir)))
@@ -492,7 +492,7 @@
   (run-contract args))
 
 (defun run-impact (args)
-  "--impact <ικανότητα|συμβόλαιο> : η αιτιώδης επίπτωση — ποιες ικανότητες
+  "--capability-impact <ικανότητα|συμβόλαιο> : η αιτιώδης επίπτωση — ποιες ικανότητες
    κληρονομούν τον κίνδυνο (depends-on ∪ contract dependents) και ποιες πύλες
    είναι το ελάχιστο regression. Για συμβόλαιο: μέσω της ικανότητάς του,
    συν οι ετικέτες επίπτωσής του."
@@ -500,7 +500,7 @@
          (contract (orchestrator.contracts:find-contract name))
          (cap-name (if contract (orchestrator.contracts:contract-capability contract) name)))
     (cond
-      ((zerop (length name)) (format t "χρήση: --impact <όνομα>~%") 1)
+      ((zerop (length name)) (format t "χρήση: --capability-impact <όνομα>~%") 1)
       ((and (null contract) (null (orchestrator.self-model:find-capability name)))
        (format t "Ούτε ικανότητα ούτε συμβόλαιο «~A» — τίμια άγνοια.~%" name) 1)
       (t
@@ -527,7 +527,7 @@
                   f (orchestrator.self-model:capability-package cap))
                (declare (ignore sym))
                (format t "  • ~A — ~:[ΑΧΑΡΤΟΓΡΑΦΗΤΟ~;~:*~A~]~%"
-                       f (and src (enough-namestring src (uiop:getcwd))))))
+                       f (and src (enough-namestring src (orchestrator.paths:institution-root))))))
            (let ((cs (orchestrator.contracts:contracts-for-capability cap-name)))
              (when cs
                (format t "  Συμβόλαια: ~{~A~^ · ~}~%"
@@ -558,7 +558,7 @@
 (register-command "--συμβόλαιο"   (lambda (a) (run-contract a)))
 (register-command "--contracts-missing" (lambda (a) (declare (ignore a)) (run-contracts-missing)))
 (register-command "--capability-contracts" (lambda (a) (run-capability-contracts a)))
-(register-command "--impact"      (lambda (a) (run-impact a)))
+(register-command "--capability-impact" (lambda (a) (run-impact a)))
 (register-command "--providers"
   (lambda (a) (let ((cs (orchestrator.contracts:contracts-for-capability
                          (format nil "~{~A~^ ~}" a))))

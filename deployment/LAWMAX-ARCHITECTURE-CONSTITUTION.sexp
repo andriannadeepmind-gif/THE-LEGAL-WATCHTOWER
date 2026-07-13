@@ -128,6 +128,8 @@
   (:command "--fluid-gate" :primitive :hypothesis :owner-file "systems/orchestrator-cli/fluid-gate.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--freeze-components" :primitive :substrate :owner-file "systems/orchestrator-cli/component-gate.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--gap" :primitive :self :owner-file "systems/orchestrator-cli/self-reflection.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
+  (:command "--cockpit" :primitive :output-trust :owner-file "systems/orchestrator-cli/cockpit.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
+  (:command "--legal-eval" :primitive :substrate :owner-file "systems/orchestrator-cli/legal-eval.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--gates" :primitive :substrate :owner-file "systems/orchestrator-cli/gates-runner.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--generation-gate" :primitive :output-trust :owner-file "systems/orchestrator-cli/generation-gate.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--graph" :primitive :law :owner-file "systems/orchestrator-cli/graph-import.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
@@ -217,7 +219,11 @@
   (:command "--version" :primitive :substrate :owner-file "systems/orchestrator-cli/builtin-commands.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--watch-decisions" :primitive :authority :owner-file "systems/orchestrator-cli/decisions.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--watch-fek" :primitive :law :owner-file "systems/orchestrator-cli/ingestion-commands.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
-  (:command "--what-if" :primitive :evolution :owner-file "systems/orchestrator-cli/evolution-gate.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
+  (:command "--what-if" :primitive :proof :owner-file "systems/orchestrator-cli/subsumption-commands.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
+  ;; [0086] η σύγκρουση έδρας πέθανε: το νομικό counterfactual κράτησε το --what-if,
+  ;; η αυτοεξέλιξη μετονομάστηκε --self-what-if· το --capability-impact αναστήθηκε.
+  (:command "--self-what-if" :primitive :evolution :owner-file "systems/orchestrator-cli/evolution-gate.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
+  (:command "--capability-impact" :primitive :proof :owner-file "systems/orchestrator-cli/self-reflection.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--why" :primitive :proof :owner-file "systems/orchestrator-cli/graph-import.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--ίδρυμα" :primitive :institution :owner-file "systems/orchestrator-cli/self-reflection.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--αναστοχασμός" :primitive :evolution :owner-file "systems/orchestrator-cli/self-reflection.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
@@ -245,7 +251,17 @@
   (:path "deployment/state/lessons.jsonl"   :role :reflection-aggregate)
   (:path "deployment/state/failure-ledger.jsonl" :role :dialogue-failure-ledger)
   (:path "deployment/self/policies.sexp"    :role :approval-policies)
-  (:path "deployment/self/candidates/"      :role :candidate-pack-staging))
+  (:path "deployment/self/candidates/"      :role :candidate-pack-staging)
+  ;; [0086] Persistence Receipt: το ledger υιοθετήσεων έγινε ΔΙΑΡΚΕΣ (πριν: RAM-only)
+  (:path "deployment/self/adoptions.sexp"   :role :adoption-ledger
+   :note "[0086] κάθε record-adoption! γράφεται εδώ με read-back verified receipt — το θεσμικό γεγονός δεν χάνεται σε επανεκκίνηση")
+  ;; [0086] stores που ΥΠΗΡΧΑΝ αλλά ο scanner της πύλης ⑨ δεν έβλεπε (τυφλά σημεία)
+  (:path "component-manifest.sexp"          :role :component-manifest
+   :note "root-level μητρώο συστατικών (orchestrator.component-scan) — δηλωμένο [0086]")
+  (:path "deployment/state/daemon-status.json" :role :ingestion-daemon-status)
+  (:path "output/review-queue.sexp"         :role :human-review-queue)
+  (:path-glob "deployment/state/*-last-seen.txt" :role :ingestion-cursors
+   :note "cursors ροών (fek κ.ά.) — μεταβλητά ονόματα, δηλωμένα ως glob [0086]"))
 
  ;; ══ Η ΜΙΑ ΜΗΧΑΝΗ ΥΙΟΘΕΣΙΑΣ + η επιτρεπτή επιφάνειά της ══
  :adoption-engine (:decision "orchestrator.adoption:can-adopt"

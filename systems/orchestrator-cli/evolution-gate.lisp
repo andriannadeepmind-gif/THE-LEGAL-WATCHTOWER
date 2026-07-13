@@ -4,7 +4,7 @@
 ;;;; ============================================================================
 ;;;;
 ;;;; Καταναλωτής των orchestrator.whatif/adoption (πηγή αλήθειας). Εδώ οι
-;;;; όψεις CLI (--what-if, --can-adopt, --adoption-decision, --rollback-plan,
+;;;; όψεις CLI (--self-what-if, --can-adopt, --adoption-decision, --rollback-plan,
 ;;;; --affected-proofs, --affected-traces) και το κλείδωμα: η απόφαση
 ;;;; υιοθέτησης ΚΑΤΑΝΑΛΩΝΕΙ υποχρεωτικά ταυτότητα+ικανότητες+συμβόλαια+
 ;;;; συστατικά+impact+ίχνη+αποδείξεις+πολιτικές+έγκριση+rollback — και τα
@@ -40,8 +40,10 @@
           (orchestrator.whatif:report-get r :identity-debt-baseline))
   (format t "  ΕΙΣΗΓΗΣΗ: ~A~%" (orchestrator.whatif:report-get r :recommendation)))
 
-(defun run-what-if (args)
-  "--what-if <πρόταση> : dry-run ανάλυση επίπτωσης — δομημένη, ντετερμινιστική."
+(defun run-self-what-if (args)
+  "--self-what-if <πρόταση> : dry-run ανάλυση επίπτωσης ΑΥΤΟΕΞΕΛΙΞΗΣ — δομημένη,
+   ντετερμινιστική. (Το --what-if είναι το ΝΟΜΙΚΟ counterfactual υπόθεσης, έδρα
+   subsumption-commands — η σύγκρουση ονόματος/συμβόλου πέθανε στο [0086].)"
   (let ((p (orchestrator.whatif:find-proposal (format nil "~{~A~^ ~}" args))))
     (if (null p)
         (progn (format t "Ανύπαρκτη πρόταση. Δηλωμένες: ~{~A~^ · ~}~%"
@@ -194,7 +196,7 @@ proposal_id: ~A  →  κρίνεται: --can-adopt ~:*~A~%"
           (format t "~A: ~:[κανένα~;~:*~{#~D~^ · ~}~]~%" label ids)
           0))))
 
-(register-command "--what-if"   (lambda (a) (run-what-if a)))
+(register-command "--self-what-if" (lambda (a) (run-self-what-if a)))
 (register-command "--can-adopt" (lambda (a) (run-can-adopt a)))
 (register-command "--adoption-decision"
   (lambda (a) (let ((d (orchestrator.adoption:can-adopt (format nil "~{~A~^ ~}" a))))
@@ -225,9 +227,20 @@ proposal_id: ~A  →  κρίνεται: --can-adopt ~:*~A~%"
    :rollback '(:restores "source/legal-subsumption.lisp" :verify "--subsumption-gate + --draft-gate")
    :acceptance '("29/29 πύλη υπαγωγής" "revalidation: όλα τα stale proofs ξανατρέχουν στην ολομέλεια")))
 
+(defun %fresh-gate-ledger (rel)
+  "Φρέσκο ΔΟΚΙΜΑΣΤΙΚΟ ledger υιοθετήσεων για την πύλη, κάτω από τη ΜΙΑ ρίζα —
+   αδειασμένο πριν τη χρήση. Η πύλη αποδεικνύει συμπεριφορά· ΔΕΝ γράφει ποτέ
+   στο πραγματικό θεσμικό ledger ([0086])."
+  (let ((p (merge-pathnames rel (orchestrator.paths:institution-root))))
+    (ensure-directories-exist p)
+    (uiop:delete-file-if-exists p)
+    p))
+
 (defun run-self-evolution-gate ()
   "--self-evolution-gate : controlled self-evolution, κλειδωμένο."
-  (let ((fails '()) (total 0))
+  (let ((fails '()) (total 0)
+        (orchestrator.adoption:*adoptions-path*
+          (%fresh-gate-ledger "output/gate-adoptions.sexp")))
     (labels ((check (label ok)
                (incf total)
                (if ok (format t "  ✓ ~A~%" label)
@@ -360,16 +373,16 @@ proposal_id: ~A  →  κρίνεται: --can-adopt ~:*~A~%"
                       (integerp (orchestrator.whatif:report-get r :identity-debt-baseline))))))
       ;; ⑮ πλαστό αρχείο απόφασης (ανύπαρκτη πρόταση) ⇒ ο ελεγκτής ledger το πιάνει
       (check "⑮ πλαστό αρχείο απόφασης σε ΑΝΥΠΑΡΚΤΗ πρόταση ⇒ παράβαση ledger (σκιά)"
-             (let ((orchestrator.adoption::*adoption-records*
-                     (copy-list orchestrator.adoption::*adoption-records*)))
+             (let ((orchestrator.adoption:*adoptions-path*
+                     (%fresh-gate-ledger "output/gate-adoptions-neg.sexp")))
                (orchestrator.adoption:record-adoption!
                 (list :verdict :allowed :proposal "ανύπαρκτη-πρόταση" :whatif '(:x t)))
                (some (lambda (m) (search "ΑΝΥΠΑΡΚΤΗ" m))
                      (orchestrator.adoption:validate-adoption-records))))
       ;; ⑯ απόφαση ΧΩΡΙΣ what-if μέσα της ⇒ παράβαση ledger (η παράκαμψη αδύνατη)
       (check "⑯ αρχείο απόφασης ΧΩΡΙΣ what-if ⇒ παράβαση ledger"
-             (let ((orchestrator.adoption::*adoption-records*
-                     (copy-list orchestrator.adoption::*adoption-records*)))
+             (let ((orchestrator.adoption:*adoptions-path*
+                     (%fresh-gate-ledger "output/gate-adoptions-neg.sexp")))
                (orchestrator.adoption:record-adoption!
                 (list :verdict :allowed :proposal "gate:καλή-πρόταση" :whatif nil))
                (some (lambda (m) (search "what-if" m))
@@ -382,7 +395,7 @@ proposal_id: ~A  →  κρίνεται: --can-adopt ~:*~A~%"
                   (null (orchestrator.adoption:validate-adoption-records))))
       ;; ⑱ ΕΞΩΤΕΡΙΚΗ ΠΡΟΤΑΣΗ από αρχείο (data-only): χωρίς rollback ⇒ denied
       (check "⑱ εξωτερικό αρχείο πρότασης (data-only ingest) ΧΩΡΙΣ rollback ⇒ denied: missing rollback"
-             (let ((f (merge-pathnames "output/gate-external-proposal.sexp" (uiop:getcwd))))
+             (let ((f (merge-pathnames "output/gate-external-proposal.sexp" (orchestrator.paths:institution-root))))
                (ensure-directories-exist f)
                (with-open-file (s f :direction :output :if-exists :supersede
                                     :external-format :utf-8)
@@ -441,7 +454,7 @@ proposal_id: ~A  →  κρίνεται: --can-adopt ~:*~A~%"
       ;;    υπό keyword-reader (:NIL) = ρητή ΑΠΟΥΣΙΑ· η έξοδος φέρει decision+
       ;;    reason μηχανικά αναγνώσιμα και rc 0: ετυμηγορία = θεσμική πράξη.
       (check "㉓ εξωτερικό «:rollback nil» (ξένο λεξιλόγιο, χωρίς :id) ⇒ decision: denied + reason: missing rollback + rc 0"
-             (let ((f (merge-pathnames "output/gate-external-nil-rollback.sexp" (uiop:getcwd))))
+             (let ((f (merge-pathnames "output/gate-external-nil-rollback.sexp" (orchestrator.paths:institution-root))))
                (ensure-directories-exist f)
                (with-open-file (s f :direction :output :if-exists :supersede
                                     :external-format :utf-8)

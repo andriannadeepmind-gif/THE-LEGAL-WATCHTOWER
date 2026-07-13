@@ -156,7 +156,7 @@
    το συμβατικό όνομα. Ό,τι ΔΕΝ κατανοεί το αναφέρει ρητά με τον λόγο:
    σαρωμένο χωρίς text layer (χρειάζεται OCR), άγνωστο δικαστήριο, ή μη
    ευρέσιμη ταυτότητα — ποτέ σιωπηλή απόρριψη, ποτέ μάντεμα."
-  (let ((root (merge-pathnames "input/decisions/" (uiop:getcwd))))
+  (let ((root (merge-pathnames "input/decisions/" (orchestrator.paths:institution-root))))
     (dolist (f (uiop:directory-files root))
       (let ((type (string-downcase (or (pathname-type f) ""))))
         (when (member type '("pdf" "html" "txt") :test #'string=)
@@ -221,7 +221,7 @@
    the endpoint lives in CONFIG (state sites change paths without notice;
    a fix is one line there, never a rebuild)."
   (handler-case
-      (let* ((path (merge-pathnames "configs/decisions-sources.yaml" (uiop:getcwd)))
+      (let* ((path (merge-pathnames "configs/decisions-sources.yaml" (orchestrator.paths:institution-root)))
              (doc (cl-yaml:parse (uiop:read-file-string path :external-format :utf-8)))
              (courts (gethash "courts" doc))
              (entry (and courts (gethash tag courts))))
@@ -244,7 +244,7 @@
       (unless template
         (format t "  ✗ άγνωστο δικαστήριο «~A» στο configs/decisions-sources.yaml~%" tag)
         (return-from run-fetch-decision 1))
-      (let ((root (merge-pathnames "input/decisions/" (uiop:getcwd))) (ok 0))
+      (let ((root (merge-pathnames "input/decisions/" (orchestrator.paths:institution-root))) (ok 0))
         (dolist (num arithmoi)
           (let* ((url (cl-ppcre:regex-replace-all
                        "\\{arithmos\\}"
@@ -288,7 +288,7 @@
 (defun %ap-config ()
   "Το 'ap' court entry (μαζί με το search block) από το decisions-sources.yaml."
   (handler-case
-      (let* ((path (merge-pathnames "configs/decisions-sources.yaml" (uiop:getcwd)))
+      (let* ((path (merge-pathnames "configs/decisions-sources.yaml" (orchestrator.paths:institution-root)))
              (doc (cl-yaml:parse (uiop:read-file-string path :external-format :utf-8)))
              (courts (gethash "courts" doc)))
         (and courts (gethash "ap" courts)))
@@ -414,7 +414,7 @@
          (enc (let ((e (gethash "encoding" cfg)))
                 (if (and e (string-equal e "utf-8")) :utf-8 :cp1253)))
          (jar (%ap-jar))
-         (root (merge-pathnames "input/decisions/" (uiop:getcwd)))
+         (root (merge-pathnames "input/decisions/" (orchestrator.paths:institution-root)))
          (downloaded '()) (maxnum (or from 0))
          (visited (make-hash-table :test 'equal))
          (pages 0)
@@ -540,7 +540,7 @@
     (labels ((rec (name) (or (gethash name judges)
                              (setf (gethash name judges)
                                    (list :parts 0 :rapp 0 :chambers '() :evidence '())))))
-      (dolist (dir (uiop:subdirectories (merge-pathnames "deployment/data/decisions/" (uiop:getcwd))))
+      (dolist (dir (uiop:subdirectories (merge-pathnames "deployment/data/decisions/" (orchestrator.paths:institution-root))))
         (dolist (f (uiop:directory-files dir))
           (when (and (string= (pathname-type f) "json") (not (search ".prov" (pathname-name f))))
             (handler-case
@@ -602,7 +602,7 @@
    — το ευρετήριο που απαντά «ποια νομολογία υπάρχει για το άρθρο Χ;» σε ένα
    βλέμμα, με τις αποφάσεις-αποδείξεις."
   (let ((index (make-hash-table :test 'equal)) (ndec 0))
-    (dolist (dir (uiop:subdirectories (merge-pathnames "deployment/data/decisions/" (uiop:getcwd))))
+    (dolist (dir (uiop:subdirectories (merge-pathnames "deployment/data/decisions/" (orchestrator.paths:institution-root))))
       (dolist (f (uiop:directory-files dir))
         (when (and (string= (pathname-type f) "json")
                    (not (search ".prov" (pathname-name f))))
@@ -640,7 +640,7 @@
                                         (< (or (parse-integer (second a) :junk-allowed t) 0)
                                            (or (parse-integer (second b) :junk-allowed t) 0))
                                         (string< (first a) (first b))))))
-          (out (merge-pathnames "deployment/data/decisions/kat-arthron.json" (uiop:getcwd))))
+          (out (merge-pathnames "deployment/data/decisions/kat-arthron.json" (orchestrator.paths:institution-root))))
       (with-open-file (o out :direction :output :if-exists :supersede
                              :if-does-not-exist :create :external-format :utf-8)
         (write-string
@@ -656,7 +656,7 @@
             for entries = (gethash k index)
             when (>= (length entries) 2)
             do (format t "  ~A άρθρο ~A — ~D αποφάσεις~%" (first k) (second k) (length entries)))
-      (format t "~%✎ ~A~%" (enough-namestring out (uiop:getcwd))))
+      (format t "~%✎ ~A~%" (enough-namestring out (orchestrator.paths:institution-root))))
     0))
 
 (defun run-jurisprudence ()
@@ -676,7 +676,7 @@
         (outcomes (make-hash-table :test 'equal))   ; όχημα → κρίσεις επί λόγων
         (premises (make-hash-table :test 'equal))   ; όχημα → μείζονες σκέψεις
         (seen-oc (make-hash-table :test 'equal)))   ; ΜΙΑ ψήφος ανά (απόφαση, λόγο)
-    (dolist (dir (uiop:subdirectories (merge-pathnames "deployment/data/decisions/" (uiop:getcwd))))
+    (dolist (dir (uiop:subdirectories (merge-pathnames "deployment/data/decisions/" (orchestrator.paths:institution-root))))
       (dolist (f (uiop:directory-files dir))
         (when (and (string= (pathname-type f) "json")
                    (not (search ".prov" (pathname-name f))))
@@ -807,7 +807,7 @@
    Επιστρέφει (values perfect total gaps-hash). RECORD-LESSONS: αν t,
    κάθε κενό γράφεται στην μνήμη αναστοχασμού."
   (let ((total 0) (perfect 0) (gaps (make-hash-table :test 'equal)))
-    (dolist (dir (uiop:subdirectories (merge-pathnames "deployment/data/decisions/" (uiop:getcwd))))
+    (dolist (dir (uiop:subdirectories (merge-pathnames "deployment/data/decisions/" (orchestrator.paths:institution-root))))
       (dolist (f (uiop:directory-files dir))
         (when (and (string= (pathname-type f) "json")
                    (not (search ".prov" (pathname-name f))))
@@ -885,7 +885,7 @@
       (format t "χρήση: --reason-decision <court> <αριθμός> <έτος>~%")
       (return-from run-reason-decision 1))
     (let* ((path (merge-pathnames
-                  (format nil "deployment/data/decisions/~A/" court) (uiop:getcwd)))
+                  (format nil "deployment/data/decisions/~A/" court) (orchestrator.paths:institution-root)))
            (file (find-if (lambda (f)
                             (search (format nil "_~A_~A" year num) (pathname-name f)))
                           (uiop:directory-files path))))
@@ -929,7 +929,7 @@
       (format t "χρήση: --explain-decision <court> <αριθμός> <έτος>~%")
       (return-from run-explain-decision 1))
     (let* ((path (merge-pathnames
-                  (format nil "deployment/data/decisions/~A/" court) (uiop:getcwd)))
+                  (format nil "deployment/data/decisions/~A/" court) (orchestrator.paths:institution-root)))
            (file (find-if (lambda (f)
                             (and (string= (pathname-type f) "json")
                                  (not (search ".prov" (pathname-name f)))
@@ -1036,7 +1036,7 @@
           (format t "~%• ΕΦΑΡΜΟΖΕΙ ~D διατάξεις~@[ — ⚠ ~D τροποποιήθηκαν ΜΕΤΑ την απόφαση (βλ. --reason-decision)~]~%"
                   (length cits) (and (plusp amended) amended)))
         (format t "~%(κάθε στοιχείο προέρχεται από το ίδιο το κείμενο — offsets στο ~A)~%"
-                (enough-namestring file (uiop:getcwd)))
+                (enough-namestring file (orchestrator.paths:institution-root)))
         0))))
 
 (defun run-materialize-decisions ()
@@ -1054,7 +1054,7 @@
                  (if hit v (setf (gethash corpus date-cache)
                                  (%served-article-dates corpus))))))
       (dolist (dir (uiop:subdirectories (merge-pathnames "input/decisions/"
-                                                         (uiop:getcwd))))
+                                                         (orchestrator.paths:institution-root))))
         (let ((court (car (last (pathname-directory dir)))))
           (dolist (f (uiop:directory-files dir))
             (let ((type (string-downcase (or (pathname-type f) ""))))
@@ -1076,7 +1076,7 @@
                                       :source-file (namestring f)))
                              (out-dir (merge-pathnames
                                        (format nil "deployment/data/decisions/~A/" court)
-                                       (uiop:getcwd)))
+                                       (orchestrator.paths:institution-root)))
                              (out (merge-pathnames
                                    (format nil "~A.json" (pathname-name f)) out-dir))
                              (flags 0) (mitior 0)
@@ -1239,7 +1239,7 @@
   "Όλα τα κείμενα αποφάσεων από το input/ — το σώμα πάνω στο οποίο
    αποδεικνύεται η μη-παλινδρόμηση. (id . text), σαρωμένα PDF εκτός."
   (let (out)
-    (dolist (dir (uiop:subdirectories (merge-pathnames "input/decisions/" (uiop:getcwd))))
+    (dolist (dir (uiop:subdirectories (merge-pathnames "input/decisions/" (orchestrator.paths:institution-root))))
       (dolist (f (uiop:directory-files dir))
         (let ((type (string-downcase (or (pathname-type f) ""))))
           (when (member type '("txt" "html" "pdf") :test #'string=)
@@ -1315,7 +1315,7 @@
    ή μετρημένης πολιτικής κλάσης (Σ12) — αυτό είναι το :creator-cli."
   (let* ((baseline (length (ignore-errors
                              (directory (merge-pathnames
-                                         "*.sexp" orchestrator.knowledge-packs:*knowledge-dir*)))))
+                                         "*.sexp" (orchestrator.knowledge-packs:knowledge-dir))))))
          (proposal
            (orchestrator.whatif:declare-proposal!
             (format nil "knowledge:~{~A~^+~}" (mapcar #'file-namestring args))
@@ -1355,7 +1355,7 @@
               (append (orchestrator.adoption:decision-get decision :missing)
                       (orchestrator.adoption:decision-get decision :reasons)))
       (return-from run-adopt-knowledge 1)))
-  (ensure-directories-exist orchestrator.knowledge-packs:*knowledge-dir*)
+  (ensure-directories-exist (orchestrator.knowledge-packs:knowledge-dir))
   (dolist (p args)
     (let ((dest (merge-pathnames (file-namestring p)
                                  orchestrator.knowledge-packs:*knowledge-dir*)))
@@ -1449,7 +1449,7 @@
    δεν υπάρχει εκδομένο corpus.jsonl. number → (text heading)."
   (sb-thread:with-mutex (*article-index-lock*)
     (let* ((path (merge-pathnames (format nil "output/~A/corpus.jsonl" (%corpus-outdir corpus))
-                                  (uiop:getcwd)))
+                                  (orchestrator.paths:institution-root)))
            (fwd (and (probe-file path) (file-write-date path)))
            (cached (gethash corpus *article-index*)))
       (cond ((null fwd) nil)
@@ -1659,7 +1659,7 @@
 
 (defun %ask-decisions-for (corpus article tag)
   "Η κατ' άρθρον νομολογία από το ευρετήριο — με τμήμα και φορά όπου υπάρχει."
-  (let ((path (merge-pathnames "deployment/data/decisions/kat-arthron.json" (uiop:getcwd))))
+  (let ((path (merge-pathnames "deployment/data/decisions/kat-arthron.json" (orchestrator.paths:institution-root))))
     (if (probe-file path)
         (let* ((idx (jonathan:parse (uiop:read-file-string path :external-format :utf-8) :as :alist))
                (entry (find-if (lambda (e)
@@ -1676,7 +1676,7 @@
                           (let ((st (cdr (assoc "stance" d :test #'string=))))
                             (and (stringp st) (if (equal st "upholds") "▲ δέχεται" "▼ απορρίπτει")))))
                 (format t "~%(πηγή: ~A — λεπτομέρεια: --explain-decision)~%"
-                        (enough-namestring path (uiop:getcwd))))
+                        (enough-namestring path (orchestrator.paths:institution-root))))
               (format t "Καμία καταχωρισμένη απόφαση για ~A άρθρο ~A στο ευρετήριο.~%" tag article)))
         (format t "Δεν υπάρχει ακόμη κατ' άρθρον ευρετήριο — τρέξε --index-decisions.~%"))
     0))
@@ -1721,7 +1721,7 @@
 
 (defun %ask-decisions-count ()
   (let ((n 0))
-    (dolist (dir (uiop:subdirectories (merge-pathnames "deployment/data/decisions/" (uiop:getcwd))))
+    (dolist (dir (uiop:subdirectories (merge-pathnames "deployment/data/decisions/" (orchestrator.paths:institution-root))))
       (dolist (f (uiop:directory-files dir))
         (when (and (string= (pathname-type f) "json")
                    (not (search ".prov" (pathname-name f))))

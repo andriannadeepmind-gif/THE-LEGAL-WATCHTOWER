@@ -310,7 +310,7 @@ document.addEventListener('click',function(e){var b=e.target.closest?e.target.cl
   (dolist (pair corpora)
     (let* ((short (car pair))
            (path (merge-pathnames (format nil "output/~A/corpus.jsonl" (%corpus-outdir short))
-                                  (uiop:getcwd))))
+                                  (orchestrator.paths:institution-root))))
       (unless (probe-file path)
         (handler-case
             (let ((doc (funcall (cdr pair))))

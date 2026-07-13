@@ -65,7 +65,7 @@
    στο μητρώο. ΑΣΦΑΛΕΙΑ: μόνο .sexp, μόνο κάτω από τους εγκεκριμένους
    φακέλους της εγκατάστασης (output/, deployment/) — ποτέ path traversal.
    Επιστρέφει (values proposal-id λόγος-άρνησης)."
-  (let* ((root (uiop:getcwd))
+  (let* ((root (orchestrator.paths:institution-root))
          (true (ignore-errors (truename path))))
     (cond
       ((null true) (values nil (format nil "το αρχείο «~A» δεν υπάρχει" path)))

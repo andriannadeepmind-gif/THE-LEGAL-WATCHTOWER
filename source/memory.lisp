@@ -26,7 +26,7 @@
 
 (defpackage :orchestrator.memory
   (:use :cl)
-  (:export #:*episodes-path* #:*session*
+  (:export #:*episodes-path* #:episodes-path #:*session*
            #:record-episode #:episodes #:recent-episodes #:find-episodes
            #:episode-id #:episode-kind #:episode-text #:episode-topic
            #:episode-status #:episode-props #:episode-at #:episode-session
@@ -42,9 +42,16 @@
 
 (in-package :orchestrator.memory)
 
-(defvar *episodes-path*
-  (merge-pathnames "deployment/self/episodes.sexp" (uiop:getcwd))
-  "Το βιωματικό ημερολόγιο — runtime κατάσταση του αντιτύπου (gitignored).")
+(defvar *episodes-path* nil
+  "Override του βιωματικού ημερολογίου (τα gates το δένουν σε tmp). NIL ⇒
+   deployment/self/episodes.sexp κάτω από το institution-root — ΤΕΜΠΕΛΙΚΑ,
+   ποτέ παγωμένο από getcwd/φόρτωση/saved image ([0086] ΜΙΑ ρίζα).")
+
+(defun episodes-path ()
+  "Η ΜΙΑ θέση του βιωματικού ημερολογίου (override ή institution-root)."
+  (or *episodes-path*
+      (merge-pathnames "deployment/self/episodes.sexp"
+                       (orchestrator.paths:institution-root))))
 
 (defvar *session*
   (format nil "s~36R" (get-universal-time))
@@ -54,7 +61,7 @@
 
 (defun %now () (orchestrator.journal:iso-now))
 (defun %sha256 (s) (orchestrator.journal:sha256-hex s))
-(defun %events () (orchestrator.journal:read-lines *episodes-path*))
+(defun %events () (orchestrator.journal:read-lines (episodes-path)))
 
 ;; Η ουρά της αλυσίδας ζει στον ΕΝΑΝ συγγραφέα (journal) — καμία ανάγνωση
 ;; όλου του αρχείου ανά εγγραφή, καμία δεύτερη cache εδώ.
@@ -94,7 +101,7 @@
     ;; ΑΤΟΜΙΚΗ πράξη αλυσίδας στον ΕΝΑΝ συγγραφέα: κανένα δεύτερο νήμα δεν
     ;; μπορεί να χτίσει πάνω στο ίδιο :prev — η αλυσίδα μένει αληθινή.
     (orchestrator.journal:chained-append
-     *episodes-path*
+     (episodes-path)
      (lambda (tail)
        (let* ((prev (if tail (getf tail :hash) (make-string 64 :initial-element #\0)))
               ;; 16 hex (64 bits — τα 12 hex συγκρούονται πολύ νωρίτερα)· το PREV

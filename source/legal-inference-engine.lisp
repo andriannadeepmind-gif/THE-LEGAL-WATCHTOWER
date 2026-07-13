@@ -229,7 +229,11 @@
    (nodes :initform nil :accessor jtms-nodes)
    ;; Φάση 2: όλες οι αιτιολογήσεις σε μία λίστα — το %derive αρχικοποιεί τους
    ;; μετρητές του σε Ο(ΣJ) χωρίς να διασχίζει κόμβο-κόμβο
-   (justs :initform nil :accessor jtms-justs)))
+   (justs :initform nil :accessor jtms-justs)
+   ;; [0086] U∞\K∞ — το ΑΝΑΠΟΦΑΣΙΣΤΟ σύνολο του well-founded μοντέλου,
+   ;; υπολογισμένο ΜΙΑ φορά στο recompute-beliefs (το τελικό u ΕΙΝΑΙ το A(K∞)).
+   ;; Καταναλωτές: επιλογή support/EXPLAIN (WFS-έντιμα proofs) + fact-status.
+   (undefined :initform (make-hash-table :test 'eq) :accessor jtms-undefined-set)))
 
 (defun make-jtms () (make-instance 'jtms))
 (defun tms-find (jtms datum) (gethash datum (jtms-index jtms)))
@@ -324,13 +328,21 @@
   (and (= (hash-table-count a) (hash-table-count b))
        (loop for k being the hash-keys of a always (gethash k b))))
 
-(defun %valid-justification (n)
-  "A justification of N whose in-list are all :in and out-list all :out — the current
-   well-founded support (for EXPLAIN); NIL if none."
-  (find-if (lambda (j)
-             (and (every (lambda (a) (eq (node-label a) :in)) (justification-in-list j))
-                  (every (lambda (a) (eq (node-label a) :out)) (justification-out-list j))))
-           (node-justifications n)))
+(defun %valid-justification (jtms n)
+  "Justification του N με in-list όλα :in και out-list όλα ΓΝΗΣΙΑ ΨΕΥΔΗ — δηλαδή
+   :out ΚΑΙ εκτός του αναποφάσιστου U∞ ([0086] WFS proof-honesty: ένας defeater
+   που είναι :undefined ΔΕΝ λογίζεται «απών»· το επιλεγμένο proof δεν επιτρέπεται
+   να είναι ισχυρότερο από τη WFS σημασιολογία). Για ΚΑΘΕ :in κόμβο τέτοια
+   justification ΥΠΑΡΧΕΙ εκ κατασκευής: K∞ = A(U∞) — η παραγωγή του χρησιμοποιεί
+   μόνο defeaters εκτός U∞. NIL αν καμία."
+  (let ((undef (jtms-undefined-set jtms)))
+    (find-if (lambda (j)
+               (and (every (lambda (a) (eq (node-label a) :in))
+                           (justification-in-list j))
+                    (every (lambda (a) (and (eq (node-label a) :out)
+                                            (not (gethash a undef))))
+                           (justification-out-list j))))
+             (node-justifications n))))
 
 (defun recompute-beliefs (jtms)
   "Label every node :in/:out as the canonical WELL-FOUNDED model (alternating
@@ -343,25 +355,26 @@
             (progn
               (dolist (n (jtms-nodes jtms))
                 (setf (node-label n) (if (gethash n k2) :in :out)))
+              ;; [0086] το τελικό U = A(K∞) = U∞ — το αναποφάσιστο σύνολο
+              ;; αποθηκεύεται ΠΡΙΝ την επιλογή support (την τροφοδοτεί).
+              (let ((undef (jtms-undefined-set jtms)))
+                (clrhash undef)
+                (loop for n being the hash-keys of u
+                      unless (gethash n k2) do (setf (gethash n undef) t)))
               (dolist (n (jtms-nodes jtms))
                 (setf (node-support n)
                       (cond ((node-premise-p n) :premise)
-                            ((eq (node-label n) :in) (%valid-justification n))
+                            ((eq (node-label n) :in) (%valid-justification jtms n))
                             (t nil))))
               (return jtms))
             (setf k k2))))))
 
 (defun %undefined-set (jtms)
-  "Το ΑΝΑΠΟΦΑΣΙΣΤΟ τμήμα του well-founded μοντέλου: U∞ = A(K∞) — ό,τι είναι
+  "Το ΑΝΑΠΟΦΑΣΙΣΤΟ τμήμα του well-founded μοντέλου: U∞\\K∞ — ό,τι είναι
    αισιόδοξα παραγώγιμο πάνω από τα βέβαια αλλά ΔΕΝ είναι βέβαιο. Στη νομική
-   ανάγνωση (Σ5): η ισοπαλία επιχειρημάτων, δηλωμένη — ποτέ κρυμμένη ως «όχι»."
-  (let ((k (make-hash-table :test 'eq)))
-    (dolist (n (jtms-nodes jtms))
-      (when (node-believed-p n) (setf (gethash n k) t)))
-    (let ((u (%derive jtms k)) (out '()))
-      (dolist (n (jtms-nodes jtms) out)
-        (when (and (gethash n u) (not (node-believed-p n)))
-          (push n out))))))
+   ανάγνωση (Σ5): η ισοπαλία επιχειρημάτων, δηλωμένη — ποτέ κρυμμένη ως «όχι».
+   [0086]: διαβάζει το cached σύνολο του recompute-beliefs (ΜΙΑ θέση υπολογισμού)."
+  (loop for n being the hash-keys of (jtms-undefined-set jtms) collect n))
 
 (defun jtms-undefined-facts (jtms)
   "Τα ΑΝΑΠΟΦΑΣΙΣΤΑ γεγονότα (τρίτη τιμή του well-founded μοντέλου)."
@@ -407,7 +420,7 @@
                (cond ((or (null n) (not (node-believed-p n))) (list :unsupported datum))
                      ((node-premise-p n) (list :premise datum))
                      ((member n seen) (list :cycle datum))
-                     (t (let ((j (%valid-justification n))
+                     (t (let ((j (%valid-justification jtms n))
                               (seen* (cons n seen)))
                           (if j
                               (list :derived datum :by (justification-informant j)

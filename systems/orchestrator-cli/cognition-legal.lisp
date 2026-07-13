@@ -344,7 +344,7 @@
          (multiple-value-bind (text heading path) (%ask-article-text corpus article)
            (format nil "(μόνο ο ~A έχει άρθρο ~A — γι' αυτό απαντώ αυτό, χωρίς να ρωτήσω)~%~%— ~A —~%~%~A~%~%(πηγή: ~A · νομολογία: --ask \"νομολογία για το άρθρο ~A ~A\")"
                    tag article (or heading (format nil "~A άρθρο ~A" tag article)) text
-                   (enough-namestring path (uiop:getcwd)) article tag))))
+                   (enough-namestring path (orchestrator.paths:institution-root)) article tag))))
       (t
        (setf (%dialogue :article) article (%dialogue :awaiting) :which-code
              ;; θυμάμαι ΤΙ πρότεινα — για το «αυτόν που ανέφερες» της επόμενης στροφής
@@ -362,7 +362,7 @@
       (if text
           (format nil "— ~A —~%~%~A~%~%(πηγή: ~A · νομολογία: --ask \"νομολογία για το άρθρο ~A ~A\")"
                   (or heading (format nil "~A άρθρο ~A" tag article)) text
-                  (enough-namestring path (uiop:getcwd)) article tag)
+                  (enough-namestring path (orchestrator.paths:institution-root)) article tag)
           (format nil "Δεν βρέθηκε άρθρο ~A στον ~A — έλεγξε τον αριθμό." article tag)))))
 
 (defmethod orchestrator.cognition:synthesize ((f jurisprudence-frame) cog)
@@ -427,7 +427,7 @@
                            (format nil "— ~A μνημονεύει, δεν ~A ορίζει" pron pron))))
                 (live (%live-provision-facts corpus article)))
            (format nil "~A~%~%~A~@[~%~%~A~]~%~%(πηγή: ~A)"
-                   opener text live (enough-namestring path (uiop:getcwd)))))
+                   opener text live (enough-namestring path (orchestrator.paths:institution-root)))))
         (t
          (%lesson :question-not-understood (format nil "ορισμός «~A»" concept)
                   "έννοια θεμελιωμένη σε άρθρο που δεν επαληθεύεται στο κείμενο")

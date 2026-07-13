@@ -30,7 +30,7 @@
   (let ((output-dir (get-context-value context :output-dir)))
     (ensure-output-directory
      (or output-dir
-         (merge-pathnames "outputs/" (uiop:getcwd))))))
+         (merge-pathnames "outputs/" (orchestrator.paths:institution-root))))))
 
 (defun get-temp-directory ()
   "Get temporary directory

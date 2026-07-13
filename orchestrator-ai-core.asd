@@ -30,5 +30,4 @@
      (:file "citation-strategy")
      (:file "provenance-model")
      (:file "config")                   ; NEW: AI configuration
-     (:file "exporters")
      (:file "feeds")))))

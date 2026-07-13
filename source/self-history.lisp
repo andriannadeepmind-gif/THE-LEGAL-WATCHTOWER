@@ -15,14 +15,20 @@
 
 (defpackage :orchestrator.self-history
   (:use :cl)
-  (:export #:*history-path* #:ensure-genesis #:record! #:entries
+  (:export #:*history-path* #:history-path #:ensure-genesis #:record! #:entries
            #:verify-chain #:history-report))
 
 (in-package :orchestrator.self-history)
 
-(defvar *history-path*
-  (merge-pathnames "deployment/self/history.sexp" (uiop:getcwd))
-  "Η βιογραφία — versioned στο repo, append-only.")
+(defvar *history-path* nil
+  "Override της βιογραφίας (gates→tmp). NIL ⇒ deployment/self/history.sexp
+   κάτω από το institution-root — ΤΕΜΠΕΛΙΚΑ ([0086] ΜΙΑ ρίζα).")
+
+(defun history-path ()
+  "Η ΜΙΑ θέση της βιογραφίας (override ή institution-root)."
+  (or *history-path*
+      (merge-pathnames "deployment/self/history.sexp"
+                       (orchestrator.paths:institution-root))))
 
 (defparameter +genesis-entries+
   '((:genesis
@@ -39,14 +45,14 @@
 
 (defun entries ()
   "Όλες οι εγγραφές, με την σειρά τους. Ανάγνωση ασφαλής (*READ-EVAL* nil)."
-  (orchestrator.journal:read-lines *history-path*))
+  (orchestrator.journal:read-lines (history-path)))
 
 (defun %append-entry (kind text)
   ;; ΑΤΟΜΙΚΗ πράξη αλυσίδας στον ΕΝΑΝ συγγραφέα (journal): seq+prev διαβάζονται
   ;; και γράφονται κάτω από το ίδιο κλείδωμα — καμία πλήρης επανανάγνωση, καμία
   ;; κούρσα δύο νημάτων πάνω στο ίδιο :prev.
   (getf (orchestrator.journal:chained-append
-         *history-path*
+         (history-path)
          (lambda (last)
            (let* ((seq (if last (1+ (getf last :seq)) 0))
                   (prev (if last (getf last :hash)

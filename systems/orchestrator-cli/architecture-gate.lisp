@@ -16,7 +16,7 @@
 (defun %load-architecture-constitution ()
   "Data-only ανάγνωση του συντάγματος. (values plist error)."
   (let ((path (merge-pathnames "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp"
-                               (uiop:getcwd))))
+                               (orchestrator.paths:institution-root))))
     (if (not (probe-file path))
         (values nil (format nil "ΔΕΝ βρέθηκε: ~A" path))
         (handler-case
@@ -183,7 +183,7 @@
           (dolist (e cmd-map)
             (let ((f (getf e :owner-file)))
               (unless (and (stringp f)
-                           (or (probe-file (merge-pathnames f (uiop:getcwd)))
+                           (or (probe-file (merge-pathnames f (orchestrator.paths:institution-root)))
                                (orchestrator.component-scan:known-file-hash f)))
                 (push (format nil "~A(owner:~A)" (getf e :command) f) bad))
               (unless (member (getf e :primitive) +the-13-primitives+)
@@ -260,17 +260,34 @@
           (chk "⑧ μηχανή υιοθεσίας: can-adopt fbound + κάθε adopt/approve/reject εντολή στη δηλωμένη επιφάνεια"
                (and sym (fboundp sym) (null outside))
                (format nil "εκτός επιφάνειας: ~S" outside)))
-        ;; ⑨ κανονικά stores: μοναδικοί ρόλοι + κανένα ΑΓΝΩΣΤΟ store στον δίσκο
+        ;; ⑨ κανονικά stores: μοναδικοί ρόλοι + κανένα ΑΓΝΩΣΤΟ store στον δίσκο.
+        ;; [0086] Ο scanner καλύπτει ΟΛΕΣ τις πραγματικές οικογένειες stores
+        ;; (πριν: μόνο self/*.sexp + state/*.jsonl — η πύλη ΔΕΝ αποδείκνυε το
+        ;; invariant που δήλωνε): + state/*.json + state/*.txt (cursors) +
+        ;; root component-manifest.sexp + output/review-queue.sexp. Δηλώσεις
+        ;; με :path (ακριβής) ή :path-glob (μεταβλητά ονόματα, πχ cursors).
         (let* ((stores (getf c :canonical-stores))
                (roles (mapcar (lambda (s) (getf s :role)) stores))
-               (declared (mapcar (lambda (s) (getf s :path)) stores))
-               (on-disk (append
-                         (mapcar (lambda (p) (enough-namestring p (uiop:getcwd)))
-                                 (append (directory (merge-pathnames "deployment/self/*.sexp" (uiop:getcwd)))
-                                         (directory (merge-pathnames "deployment/state/*.jsonl" (uiop:getcwd)))))))
-               (unknown (remove-if (lambda (p) (member p declared :test #'equal))
-                                   on-disk)))
-          (chk "⑨ stores: ένας ρόλος ανά store, κανένα αδήλωτο store στον δίσκο"
+               (declared (remove nil (mapcar (lambda (s) (getf s :path)) stores)))
+               (globs (remove nil (mapcar (lambda (s) (getf s :path-glob)) stores)))
+               (root (orchestrator.paths:institution-root))
+               (on-disk (mapcar (lambda (p) (enough-namestring p root))
+                                (append
+                                 (directory (merge-pathnames "deployment/self/*.sexp" root))
+                                 (directory (merge-pathnames "deployment/state/*.jsonl" root))
+                                 (directory (merge-pathnames "deployment/state/*.json" root))
+                                 (directory (merge-pathnames "deployment/state/*.txt" root))
+                                 (directory (merge-pathnames "component-manifest.sexp" root))
+                                 (directory (merge-pathnames "output/review-queue.sexp" root)))))
+               (unknown (remove-if
+                         (lambda (p)
+                           (or (member p declared :test #'equal)
+                               (some (lambda (g)
+                                       (pathname-match-p (merge-pathnames p root)
+                                                         (merge-pathnames g root)))
+                                     globs)))
+                         on-disk)))
+          (chk "⑨ stores: ένας ρόλος ανά store, κανένα αδήλωτο store στον δίσκο (πλήρης σάρωση [0086])"
                (and (= (length roles) (length (remove-duplicates roles)))
                     (null unknown))
                (format nil "αδήλωτα: ~S" unknown)))
@@ -278,7 +295,7 @@
         (let ((bad '()) (unverifiable 0))
           (dolist (b (getf c :bootstrap-artifacts))
             (let* ((f (getf b :artifact))
-                   (path (merge-pathnames f (uiop:getcwd)))
+                   (path (merge-pathnames f (orchestrator.paths:institution-root)))
                    (marker (getf b :marker)))
               (cond ((not (probe-file path))
                      (incf unverifiable))   ; source-less runtime: δηλωμένο, μη επαληθεύσιμο εδώ

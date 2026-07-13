@@ -28,9 +28,17 @@
 
 (in-package :orchestrator.proposals)
 
-(defvar *proposals-path*
-  (merge-pathnames "deployment/self/proposals.sexp" (uiop:getcwd))
-  "Το ημερολόγιο προτάσεων — append-only, versioned στο repo.")
+(defvar *proposals-path* nil
+  "Override του ημερολογίου προτάσεων (τα αρνητικά gates το δένουν σε tmp).
+   NIL ⇒ η κανονική θέση κάτω από τη ΜΙΑ ρίζα (institution-root) — υπολογίζεται
+   ΤΕΜΠΕΛΙΚΑ σε κάθε χρήση, ΠΟΤΕ παγωμένη από getcwd/φόρτωση/saved image.")
+
+(defun %proposals-path ()
+  "Η ΜΙΑ θέση του ημερολογίου προτάσεων: override αν έχει δεθεί, αλλιώς
+   deployment/self/proposals.sexp κάτω από το institution-root."
+  (or *proposals-path*
+      (merge-pathnames "deployment/self/proposals.sexp"
+                       (orchestrator.paths:institution-root))))
 
 (defvar *kinds* (make-hash-table :test 'eq)
   "kind → plist (:on-approve fn :on-reject fn :describe fn). Ορίζεται από
@@ -61,11 +69,29 @@
 
 (defun %now () (orchestrator.journal:iso-now))
 
-(defun %append-event (plist)
-  ;; σκόπιμα ανεκτικό: αποτυχία εγγραφής δεν ρίχνει τη ροή που πρότεινε
-  (ignore-errors (orchestrator.journal:append-line *proposals-path* plist)))
+(define-condition proposal-not-durable (error)
+  ((receipt :initarg :receipt :reader proposal-persistence-receipt))
+  (:report (lambda (c s)
+             (format s "ΠΡΟΤΑΣΗ ΧΩΡΙΣ ΔΙΑΡΚΗ ΕΓΓΡΑΦΗ: το ημερολόγιο δεν ~
+                        επιβεβαίωσε αποθήκευση (receipt: ~S). Η πρόταση είναι η ~
+                        ΣΥΝΤΑΓΜΑΤΙΚΗ είσοδος αλλαγής — id χωρίς durable εγγραφή ~
+                        ΔΕΝ εκδίδεται ([0086] Persistence Receipt)."
+                     (proposal-persistence-receipt c)))))
 
-(defun %events () (orchestrator.journal:read-lines *proposals-path*))
+(defun %append-event (plist)
+  "Διαρκής εγγραφή θεσμικού γεγονότος με READ-BACK VERIFICATION. Το παλιό
+   (ignore-errors …) ΕΚΔΙΔΕ id χωρίς εγγύηση αποθήκευσης — νεκρό ([0086]).
+   Εξαίρεση μόνο το δηλωμένο αντίγραφο ανάγνωσης (LAWMAX_REPLICA=1)."
+  (multiple-value-bind (line receipt)
+      (orchestrator.journal:append-line (%proposals-path) plist :verify t)
+    (declare (ignore line))
+    (unless (or (orchestrator.journal:durable-p receipt)
+                (eq (orchestrator.journal:receipt-durability receipt)
+                    :ephemeral-replica))
+      (error 'proposal-not-durable :receipt receipt))
+    receipt))
+
+(defun %events () (orchestrator.journal:read-lines (%proposals-path)))
 
 (defun proposals ()
   "Η τρέχουσα κατάσταση: μία πρόταση ανά id, με το ΤΕΛΕΥΤΑΙΟ της status
