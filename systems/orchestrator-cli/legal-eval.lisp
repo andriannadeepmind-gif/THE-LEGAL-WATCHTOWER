@@ -152,7 +152,7 @@
           :pos-total ptot :engine-pos epok :e2e-pos tpok   ; ΤΟ ΑΠΑΙΤΗΤΙΚΟ (:in/:out μόνο)
           :rows rows)))
 
-(defun %pct (n d) (if (zerop d) 0 (/ (* 100 n) d)))
+(defun %pct (n d) (if (zerop d) 0.0 (float (/ (* 100 n) d))))
 
 (defun run-legal-eval ()
   "--legal-eval : η μετρημένη σκάλα. Τυπώνει ①μηχανή-σε-gold ②end-to-end ③χάσμα,
@@ -170,14 +170,14 @@
               (getf r :unparsed-n) (getf r :id) (getf r :tags)
               (and (< (getf r :e2e-ok) (getf r :engine-ok)))))
     (let ((ptot (getf res :pos-total)) (epok (getf res :engine-pos)) (tpok (getf res :e2e-pos)))
-      (format t "~%  ① ΜΗΧΑΝΗ-ΣΕ-GOLD (ο συμβολικός δικαστής): ~D/~D = ~D%~%"
+      (format t "~%  ① ΜΗΧΑΝΗ-ΣΕ-GOLD (ο συμβολικός δικαστής): ~D/~D = ~,1F%~%"
               eok etot (%pct eok etot))
-      (format t "  ② END-TO-END (ο πραγματικός αριθμός σήμερα): ~D/~D = ~D%~%"
+      (format t "  ② END-TO-END (ο πραγματικός αριθμός σήμερα): ~D/~D = ~,1F%~%"
               tok (getf res :e2e-total) (%pct tok (getf res :e2e-total)))
-      (format t "  ③ ΧΑΣΜΑ ΓΕΙΩΣΗΣ ①−② = ~D μονάδες — ΑΚΡΙΒΩΣ το κόστος γλώσσα→γεγονότα~%"
+      (format t "  ③ ΧΑΣΜΑ ΓΕΙΩΣΗΣ ①−② = ~,1F μονάδες — ΑΚΡΙΒΩΣ το κόστος γλώσσα→γεγονότα~%"
               (- (%pct eok etot) (%pct tok (getf res :e2e-total))))
       (format t "~%  ⊕ ΑΠΑΙΤΗΤΙΚΟ (μόνο :in/:out — καμία ψευδής πίστωση από :not-triggered):~%")
-      (format t "     μηχανή ~D/~D=~D%  ·  end-to-end ~D/~D=~D%  ·  χάσμα ~D μονάδες~%"
+      (format t "     μηχανή ~D/~D=~,1F%  ·  end-to-end ~D/~D=~,1F%  ·  χάσμα ~,1F μονάδες~%"
               epok ptot (%pct epok ptot) tpok ptot (%pct tpok ptot)
               (- (%pct epok ptot) (%pct tpok ptot))))
     0))

@@ -24,7 +24,7 @@
   (:import-from :orchestrator.citation-authority
                 #:tokenize-greek #:known-lemma #:normalize-greek #:content-lemma-p
                 #:surface-stem)
-  (:export #:*verb-frames* #:*noun-classes* #:*markers*
+  (:export #:*verb-frames* #:*noun-classes* #:*markers* #:*phrase-markers*
            #:parse-narrative #:narrative-report
            #:parse-definition #:+definitional-markers+
            #:parse-provision #:*adjectives*))
@@ -42,6 +42,13 @@
   "alist: επιθετικό λήμμα → κατηγορία (πχ \"ξένος\" → :ξένο). Τα επίθετα
    της ονοματικής φράσης του νόμου ΕΙΝΑΙ κατηγορήματα του αντικειμένου —
    «ξένο κινητό πράγμα» = πράγμα ∧ ξένο ∧ κινητό (οι Κατηγορίες στη σύνταξη).")
+
+(defvar *phrase-markers* '()
+  "λίστα (ΚΑΝΟΝΙΚΟΠΟΙΗΜΕΝΑ-tokens κατηγόρημα τιμή): ΠΟΛΥΛΕΚΤΙΚΟΙ ΟΡΟΙ-ΤΕΧΝΗΣ του
+   δικαίου — «νόμιμη άμυνα», «παράνομη ιδιοποίηση» — ως ΕΝΟΤΗΤΑ, όχι μεμονωμένα
+   ουσιαστικά (τα νομικά concepts ΕΙΝΑΙ φράσεις). Ταιριάζουν ως ΣΥΝΕΧΟΜΕΝΗ
+   υπακολουθία στα κανονικοποιημένα tokens και γεννούν γεγονός ΔΡΑΣΤΗ. Ανώτερη
+   έδρα από lemmatizer-patching: robust στην κλίση, μία δήλωση ανά έννοια.")
 
 (orchestrator.knowledge-packs:define-knowledge-kind :verb-frames
  :doc "Πλαίσια πτώσεων: (:frame ΡΗΜΑ-ΛΗΜΜΑ ΚΑΤΗΓΟΡΗΜΑ) · (:noun-class ΛΗΜΜΑ
@@ -69,14 +76,22 @@
                      (declare (ignore k))
                      (setf *adjectives*
                            (cons (cons lemma cat)
-                                 (remove lemma *adjectives* :key #'car :test #'string=))))))))
+                                 (remove lemma *adjectives* :key #'car :test #'string=)))))
+       (:phrase (destructuring-bind (k phrase pred value) e
+                  (declare (ignore k))
+                  (let ((toks (mapcar #'normalize-greek (tokenize-greek phrase))))
+                    (setf *phrase-markers*
+                          (cons (list toks pred value)
+                                (remove toks *phrase-markers*
+                                        :key #'first :test #'equal)))))))))
  :snapshot (lambda () (list (copy-tree *verb-frames*)
                             (copy-tree *noun-classes*)
                             (copy-tree *markers*)
-                            (copy-tree *adjectives*)))
- :restore  (lambda (st) (destructuring-bind (vf nc mk &optional aj) st
+                            (copy-tree *adjectives*)
+                            (copy-tree *phrase-markers*)))
+ :restore  (lambda (st) (destructuring-bind (vf nc mk &optional aj pm) st
                           (setf *verb-frames* vf *noun-classes* nc
-                                *markers* mk *adjectives* aj))))
+                                *markers* mk *adjectives* aj *phrase-markers* pm))))
 
 ;;; ── Ανάλυση ──
 
@@ -217,6 +232,27 @@
                           +genitive-articles+ :key #'normalize-greek :test #'string=))
           return i))
 
+(defun %subseq-match-p (needle haystack)
+  "Το NEEDLE (λίστα strings) εμφανίζεται ως ΣΥΝΕΧΟΜΕΝΗ υπακολουθία στο HAYSTACK."
+  (let ((n (length needle)) (h (length haystack)))
+    (and (plusp n) (<= n h)
+         (loop for start from 0 to (- h n)
+               thereis (loop for i from 0 below n
+                             always (string= (nth i needle) (nth (+ start i) haystack)))))))
+
+(defun %phrase-marker-facts (tokens agent theme)
+  "Γεγονότα από ΠΟΛΥΛΕΚΤΙΚΟΥΣ όρους-τέχνης: κάθε *phrase-markers* που ταιριάζει ως
+   συνεχόμενη υπακολουθία στα κανονικοποιημένα tokens → (:γεγονός ΔΡΑΣΤΗΣ pred value).
+   Το value ΜΠΟΡΕΙ να είναι το slot :theme (γεμίζει με το ΘΕΜΑ της πράξης) — ώστε
+   «συναίνεση του κατόχου» να αφορά ΤΟ ΙΔΙΟ αντικείμενο (co-reference που απαιτεί
+   ο defeater), όχι σταθερά. Κάθε άλλο value είναι κυριολεκτικό."
+  (let ((norm (mapcar #'normalize-greek tokens)) (facts '()))
+    (dolist (pm *phrase-markers* facts)
+      (destructuring-bind (phrase pred value) pm
+        (when (%subseq-match-p phrase norm)
+          (pushnew (list :γεγονός agent pred (if (eq value :theme) theme value))
+                   facts :test #'equal))))))
+
 (defun %role-indices (tokens vpos before after)
   "(values δείκτης-δράστη δείκτης-θέματος): πρώτα ΜΟΡΦΟΛΟΓΙΚΑ (ονομαστική=
    δράστης, αιτιατική=θέμα — «τον Α σκότωσε ο Β» σωστά), αλλιώς ΘΕΣΙΑΚΑ (δράστης=
@@ -301,7 +337,11 @@
                                (m (and l (assoc l *markers* :test #'string=))))
                           (when m
                             (pushnew (list :γεγονός agent (second m) (third m)) facts
-                                     :test #'equal))))))))))
+                                     :test #'equal))))
+                      ;; ΠΟΛΥΛΕΚΤΙΚΟΙ όροι-τέχνης («νόμιμη άμυνα») → γεγονός ΔΡΑΣΤΗ,
+                      ;; ανεξάρτητα από lemmatizer (τα concepts είναι φράσεις)
+                      (dolist (f (%phrase-marker-facts tokens agent theme))
+                        (pushnew f facts :test #'equal))))))))
             (values (nreverse facts) t))))))
 
 (defparameter +definitional-markers+

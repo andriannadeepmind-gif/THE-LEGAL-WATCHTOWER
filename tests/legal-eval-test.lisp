@@ -33,10 +33,11 @@
          (and (= 8 pos-tot) (= 8 eng-pos)))
 
   (format t "~%== ② end-to-end: ο σημερινός αριθμός, κλειδωμένος ως RATCHET (≥) ==~%")
-  (check "end-to-end (όλα): ≥ 4/10 σήμερα (δεν πέφτει σιωπηλά)"
-         (>= e2e-ok 4))
-  (check "end-to-end ΑΠΑΙΤΗΤΙΚΟ (:in/:out): ≥ 2/8 σήμερα"
-         (>= e2e-pos 2))
+  ;; [0074→0075] ΑΝΕΒΗΚΕ: 4/10→7/10, ⊕ 2/8→5/8 (bug ρόλων + MWE phrase-markers).
+  (check "end-to-end (όλα): ≥ 7/10 (ratchet — δεν πέφτει σιωπηλά)"
+         (>= e2e-ok 7))
+  (check "end-to-end ΑΠΑΙΤΗΤΙΚΟ (:in/:out): ≥ 5/8 (62.5%)"
+         (>= e2e-pos 5))
 
   (format t "~%== ③ το harness ΑΝΙΧΝΕΥΕΙ το χάσμα γείωσης — ΣΥΝΘΕΤΙΚΑ (όχι από την πρόοδο) ==~%")
   ;; Anti-tautology BY CONSTRUCTION: υπόθεση με ακατάληπτη αφήγηση (0 εξαγωγή) αλλά
