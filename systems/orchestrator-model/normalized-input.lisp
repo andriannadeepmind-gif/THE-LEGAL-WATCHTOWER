@@ -21,6 +21,15 @@
                   :type string
                   :documentation "Full article label, e.g. '5' or '5Α' or '9Α'")
 
+   (identity-segment :accessor article-identity
+                     :initarg :identity
+                     :initform nil
+                     :documentation "[0088 Φ6γ-Α] TYPED ταυτότητα από την έδρα
+                      orchestrator.identity: article-segment (:article ΒΑΣΗ
+                      ΤΑΚΤΙΚΗ-ΘΕΣΗ), υπολογισμένο στην κατασκευή από το
+                      resolved label — το IIR κουβαλά την ταυτότητα typed
+                      μέσα στο FRBR μονοπάτι.")
+
    (article-title :accessor article-title
                   :initarg :article-title
                   :type string
@@ -120,6 +129,9 @@
     (make-instance 'normalized-article-input
                    :article-number article-number
                    :article-label resolved-label
+                   ;; [0088 Φ6γ-Α] typed ταυτότητα ΣΤΗ γέννηση του IIR — από
+                   ;; την έδρα, με το ΙΔΙΟ συμβόλαιο σφάλματος του builder
+                   :identity (%article-identity-segment-for resolved-label article-number)
                    :article-title normalized-title
                    :article-content normalized-content
                    :source-type source-type
