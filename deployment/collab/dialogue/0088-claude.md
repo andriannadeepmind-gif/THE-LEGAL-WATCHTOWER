@@ -393,3 +393,32 @@ bijection 4694/0/0 + commit): Δ-slot → Β-γεννήτορες → Α-προ�
 φάσης — ΔΕΝ ξεκινά χωρίς (α) owner docker πράσινο του τρέχοντος diff και
 (β) ρητό «εγκρίνω Φ6γ» (η [0083]/⑬ πύλη απαιτεί ανθρώπινη έγκριση για
 μετάβαση ταυτότητας άρθρων — ο ίδιος ο φραγμός που κλειδώσαμε).
+
+---
+
+## [0088-ΕΝΤΟΛΗ-2] ΝΕΑ ΔΙΕΠΟΥΣΑ ΕΝΤΟΛΗ ΔΗΜΙΟΥΡΓΟΥ (2026-07-14, μετά το Φ6β)
+
+Ο δημιουργός παρέδωσε αυστηρή συνολική κρίση (Authority Publisher σήμερα
+70-75/100, weakest-link λογική για το τελικό 96-98) και ΝΕΑ εντολή:
+
+«Ολοκλήρωσε πρώτα το Φ6β/Φ6γ και τη μοναδική identity seat. Έπειτα ενσωμάτωσε
+τα οκτώ ceiling capabilities ως first-class, formally specified θεσμούς — όχι
+wrappers/παράλληλα modules. Κατόπιν το ίδιο επίπεδο specification/independent
+verification/adversarial evaluation/receipts/rollback σε ΚΑΘΕ κρίσιμο
+subsystem.»
+
+Νέα ακολουθία φάσεων (δεσμευτική): Φ6γ (identity slot + migration + θάνατοι
+readers) → Φ7 Formal Temporal Semantics (conditional commencement AST,
+interval algebra, scope dimensions, suspension/revival) → Φ8 Fine-Grained
+Identity & character-level provenance → Φ9 Verified Kernel (Lean/Isabelle/Coq
+certificates) → Φ10 Witnessed Authority Network (threshold attestation) →
+Φ11 Independent Reference Implementation (χωριστό repo/γλώσσα/διακυβέρνηση) →
+Φ12 National Adversarial Legal Corpus → Φ13 Whole-System 98 Programme.
+Επταπλό συμβόλαιο ανά subsystem: spec → μία έδρα → independent verifier →
+adversarial corpus → formal invariants → signed receipt → rollback drill.
+
+ΣΗΜΕΙΩΣΗ ΚΑΤΑΣΤΑΣΗΣ: το Φ6β είχε ΗΔΗ κλείσει (06d5586d) πριν την αξιολόγηση.
+Η παρούσα εντολή = η ανθρώπινη έγκριση της μετάβασης ταυτότητας άρθρων που
+απαιτεί ο φραγμός ⑬ ⇒ το Φ6γ ΞΕΚΙΝΑ (κατά το κατατεθειμένο σχέδιο ομάδων
+Α-Δ, με proof ανά βήμα). Ο ίδιος ο δημιουργός επισημαίνει: το Φ5 δεν
+θεωρείται πλήρως αποδεδειγμένο πριν το owner docker — παραμένει ζητούμενο.
