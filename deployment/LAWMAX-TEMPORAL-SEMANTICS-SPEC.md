@@ -1,130 +1,158 @@
-# LAWMAX Φ7 — FORMAL TEMPORAL SEMANTICS (spec, προ-υλοποίησης)
+# LAWMAX Φ7 — FORMAL TEMPORAL SEMANTICS (spec v2 — μετά τον αντιπαλικό κριτή)
 
-Κατά την [0088-ΕΝΤΟΛΗ-2] (ceiling capabilities #1 + #2). Καθεστώς: ΣΧΕΔΙΟ —
-καμία γραμμή παραγωγικού κώδικα δεν γράφεται πριν (α) κριθούν οι εναλλακτικές
-από ανεξάρτητους κριτές, (β) ρητό «εγκρίνω Φ7» του δημιουργού για την τελική
-σύλληψη. Έδρα-στόχος: orchestrator.version-graph (ΚΑΜΙΑ νέα παράλληλη έδρα).
+Κατά την [0088-ΕΝΤΟΛΗ-2]. v2: κλείνει ΟΛΑ τα ευρήματα του ανεξάρτητου κριτή
+σχεδίου (Ε-1…Ε-13, κατάθεση στο 0088-claude.md). Καθεστώς: ΣΧΕΔΙΟ — καμία
+γραμμή κώδικα πριν από ρητό «εγκρίνω Φ7». Έδρα-στόχος: orchestrator.version-graph.
 
-## 0. Πρόβλημα (τι ΔΕΝ εκφράζεται σήμερα)
+## 0. Πρόβλημα
+(αμετάβλητο από v1) Conditional commencement, αναστολές, παρατάσεις,
+επαναφορές, αναδρομικότητα, scoped ισχύς δεν εκφράζονται — καταλήγουν σε
+καραντίνα. Στόχος: first-class, αποδεικτό, fail-closed, μονότονο.
 
-Ο γράφος απαιτεί enacted/effective/fek-date ως συγκεκριμένες legal-dates.
-Ορθό για απλές πράξεις· αδύνατο για: «ισχύει μετά την έκδοση ΥΑ», «όταν
-λειτουργήσει το πληροφοριακό σύστημα», «υπό όρο έγκρισης ΕΕ», «6 μήνες μετά
-το γεγονός Χ», αναστολές, παρατάσεις, επαναφορές, αναδρομικότητα, μερική
-ισχύ ανά παράγραφο/πρόσωπο/περιοχή/αντικείμενο. Σήμερα αυτά καταλήγουν σε
-καραντίνα (:unknown-effective) — τίμιο αλλά όχι σημασιολογία. Στόχος: το
-«πότε/πού/σε ποιον ισχύει» να γίνει first-class, αποδεικτό, fail-closed.
+## 1. EFFECTIVITY-CONDITION — formal AST (v2)
 
-## 1. EFFECTIVITY-CONDITION — formal AST
-
-### 1.1 Γραμματική (typed, κλειστή — άγνωστος κόμβος = σφάλμα κατασκευής)
-
+### 1.1 Γραμματική — ΜΟΝΟΤΟΝΗ (κλείνει Ε-1, Ε-3)
 ```
-condition := (:date-reached DATE)                     ; ισχύς από ημερομηνία
-           | (:event-occurred EVENT-ID)               ; δηλωμένο γεγονός
-           | (:act-published ACT-REF)                 ; δημοσίευση πράξης (ΥΑ/ΠΔ)
-           | (:decision-issued DECISION-REF)          ; έκδοση απόφασης
-           | (:system-operational SYSTEM-ID)          ; θέση σε λειτουργία
-           | (:approval-granted AUTHORITY-REF)        ; έγκριση αρχής (π.χ. ΕΕ)
-           | (:after DURATION condition)              ; Χ διάστημα ΜΕΤΑ την ικανοποίηση
+condition := (:date-reached DATE)
+           | (:instrument-event KIND REF)     ; ΕΝΑΣ κόμβος θεσμικού γεγονότος·
+                                              ; KIND από ΚΛΕΙΣΤΟ data-μητρώο
+                                              ; (instrument-kind-registry: :ya,
+                                              ; :pd, :decision, :eu-approval,
+                                              ; :system-operational, :event, …)
+                                              ; — όχι 5 ad-hoc κόμβοι με
+                                              ; επικαλυπτόμενες κατηγορίες/
+                                              ; equivocation στα condition-ids
+           | (:after DURATION condition)
            | (:and condition+) | (:or condition+)
-           | (:not condition) | (:unless condition condition)
-DURATION  := (:days N) | (:months N) | (:years N)     ; ελληνικός ημερολογιακός κανόνας
+DURATION  := (:days N) | (:months N) | (:years N)
+```
+- **ΤΑ :not/:unless ΔΕΝ ΥΠΑΡΧΟΥΝ** (Ε-1: μη-μονότονα, σπάνε τη σταθερότητα
+  του snapshot). Η ελληνική πραγματικότητα των αιρέσεων μοντελοποιείται με
+  ΚΛΑΣΗ στη δήλωση: `:suspensive` (αναβλητική — η ισχύς αρχίζει όταν
+  ικανοποιηθεί) | `:resolutory` (διαλυτική — η ισχύς ΠΑΥΕΙ όταν ικανοποιηθεί·
+  π.χ. ΠΝΠ μη κυρωθείσα, άρθ. 44§1 Σ). Κάθε ατομικό condition μένει μονότονο
+  pending→satisfied|refuted· η «άρνηση» είναι δομικά αδύνατη, όχι φρουρημένη.
+- **«Από τη δημοσίευση» ΔΕΝ είναι condition** (Ε-3): όταν το ΦΕΚ είναι
+  γνωστό, είναι συγκεκριμένη ημερομηνία (fek-date ± DURATION) — κανόνας
+  μετάπτωσης στο import, δηλωμένος εδώ ρητά.
+
+### 1.2 Denotational ορισμός sat — ολική συνάρτηση (κλείνει Ε-2)
+```
+sat : condition × live-events(known-at) → :pending | (:satisfied AT) | (:refuted AT)
+sat(:date-reached d)        = (:satisfied d)                    ; πάντα
+sat(:instrument-event k r)  = από το ΜΟΝΑΔΙΚΟ live event (βλ. 1.3)· αλλιώς :pending
+sat(:after dur c)           = αν sat(c)=(:satisfied t) ⇒ (:satisfied (date+ t dur))
+                              αλλιώς sat(c)
+sat(:and cs)                = αν ∀ (:satisfied tᵢ) ⇒ (:satisfied (max tᵢ))
+                              αν ∃ (:refuted t) ⇒ (:refuted (min t των refuted))
+                              αλλιώς :pending
+sat(:or cs)                 = αν ∃ (:satisfied tᵢ) ⇒ (:satisfied (min tᵢ))
+                              αν ∀ (:refuted tᵢ) ⇒ (:refuted (max tᵢ))
+                              αλλιώς :pending
+```
+`date+` = η ΜΙΑ ολική συνάρτηση ελληνικής προθεσμίας (κλείνει Ε-8): ΑΚ 241-243
+— μη προσμέτρηση ημέρας έναρξης· μήνες/έτη λήγουν την αντίστοιχη ημερομηνία,
+ελλείψει αυτής την τελευταία του μήνα (31/1+1μ ⇒ 28-29/2)· ΧΩΡΙΣ κανόνα
+αργιών στη Φ7 (δηλωμένο όριο — αφορά δικονομικές προθεσμίες, όχι έναρξη
+ισχύος νόμων)· πλήρη edge-case tests + ίδια συνάρτηση στον python verifier.
+
+### 1.3 ΚΑΜΙΑ αποθηκευμένη κατάσταση — παράγωγη από διτεμπορικά events (κλείνει Ε-4)
+- `:condition-declared` record: condition-id = canonical hash (JCS) του
+  (AST + class)· δηλώνεται ΠΡΙΝ αναφερθεί από ακμή (declare-before-reference
+  — δομική απόρριψη dangling, Ε3β φρουρός).
+- `:condition-event` record: (condition-id, instrument-kind, ref, outcome
+  :satisfied|:refuted, at (legal-date), evidence {source_digest/act-ref/FEK},
+  verifier, :at) — ΔΙΤΕΜΠΟΡΙΚΟ (recorded-from/until όπως text-versions).
+- Η κατάσταση ΔΕΝ αποθηκεύεται πουθενά: υπολογίζεται ΠΑΝΤΑ ως
+  sat(AST, events recorded-live κατά known-at) — retract ικανοποίησης =
+  G5 κλείσιμο recorded-until του event ⇒ κάθε snapshot συνεπές αυτόματα,
+  καμία μετάλλαξη, καμία «απο-ικανοποίηση» εκ των υστέρων.
+- Υ2 πύλη παντού: event μετρά μόνο αν recorded ≤ known-at.
+
+### 1.4 Ακμές υπό αίρεση — συμφιλίωση με G2/admit-edge! (κλείνει Ε-6)
+- Τύπος πεδίου: `effective := legal-date | (:conditional condition-id)` —
+  ΚΛΕΙΣΤΟ sum, το NIL εξακολουθεί να μην χωράει στον τύπο.
+- G2 διάταξη: conditional ακμές ταξινομούνται με (fek-date, act-seq, edge-id)
+  ΜΕΧΡΙ την ικανοποίηση· μετά, με το derived effective (από sat) — και οι
+  δύο φάσεις ντετερμινιστικές, journaled.
+- Το admit-edge! για conditional ακμή ΔΕΝ κλείνει την προηγούμενη validity:
+  το κλείσιμο γίνεται με ΝΕΟ journaled γεγονός `:validity-close-on-satisfaction`
+  όταν καταγραφεί (:satisfied t) — valid-until = t, recorded = τότε. Η
+  προηγούμενη έκδοση παραμένει in-force μέχρι τότε (νομικά ορθό — Ε1β).
+
+### 1.5 Αποτέλεσμα version-at — TYPED τριών σκελών (κλείνει Ε-7, Ε1-δίλημμα)
+```
+version-at ⇒ (values v :complete)                        ; in-force έκδοση
+           | (values v (:not-yet-effective cid since))   ; ΠΡΟΫΠΑΡΧΟΥΣΑ in-force,
+                                                         ; νέα ψηφισμένη με pending
+                                                         ; cid γνωστό από since —
+                                                         ; αξιοποιεί το υπάρχον
+                                                         ; tv-status :not-yet-effective
+           | (values nil :no-version-in-force)           ; + ονομαστικό pending αν
+                                                         ; fresh :insert υπό αίρεση
+           | temporal-uncertainty                        ; ΜΟΝΟ γνήσια αδυναμία
+                                                         ; ανακατασκευής — ΠΟΤΕ για
+                                                         ; γνωστό pending (ψευδής
+                                                         ; άγνοια απαγορεύεται)
 ```
 
-### 1.2 Ταυτότητα & δέσμευση
-- condition-id = canonical hash (JCS έδρα) ΟΛΟΚΛΗΡΟΥ του AST — ίδιο AST ⇒ ίδια
-  ταυτότητα· μπαίνει στο edge payload ⇒ δεσμεύεται από payload-hash/chain/
-  graph_root/census (καμία νέα ρίζα).
-- Κατάσταση: :pending | :satisfied | :refuted | :unknown — ΠΟΤΕ default.
-- Μετάβαση κατάστασης = ΜΟΝΟ journaled γεγονός (:condition-event) με:
-  evidence (source_digest/prov stamp/act-ref/FEK), satisfied-at (legal-date ή
-  legal-instant), recorded-from (:at της γραμμής — Υ3 πειθαρχία), verifier
-  (ποιος/τι επαλήθευσε), αλυσιδωτές εξαρτήσεις.
-- ΔΙΤΕΜΠΟΡΙΚΟ: η ικανοποίηση μετρά σε ερώτημα ΜΟΝΟ αν recorded ≤ known-at
-  (Υ2 πύλη — μελλοντική γνώση δεν αγγίζει παλιό snapshot).
+## 2. REGIME EDGES & INTERVAL ALGEBRA (v2)
+- **Ξεχωριστός τύπος `regime-edge`** (ετυμηγορία Ε2α): :suspend/:extend/
+  :expire/:revive/:retroact — ΔΕΝ παράγουν to-versions· υπότυπος του
+  amendment-edge θα ξανάφερνε NIL-σχήμα πεδία. Ίδιο journal/Κ2/γράφος, άλλο
+  record kind (όπως quarantined-edge ≠ amendment-edge). Το `:transitional`
+  ΔΙΑΓΡΑΦΗΚΕ από τα regime ops (Ε-9): μεταβατικές διατάξεις = text-versions
+  με παράθυρο ισχύος, όχι καθεστωτική πράξη.
+- Allen άλγεβρα πάνω σε typed [legal-date, legal-date|:open) με %time-key —
+  χρήσεις: συνέπεια καθεστώτων (επικαλύψεις/κενά) + in-force predicate:
+  valid-καλύπτεται ∧ recorded-live ∧ ∄ γνωστή-κατά-known τέμνουσα αναστολή ∧
+  suspensive conditions satisfied ∧ resolutory conditions ¬satisfied.
+- Υ2β: τα knowledge-gaps αποκτούν διάστημα [from, until|:open) — το κενό
+  παύει να είναι σημείο.
+- Scope-sets §2.3 v1 αμετάβλητο (κρίθηκε ΟΚ) + όρος Ε-11: όπου scoped
+  καθεστώς θα μπορούσε να αλλάξει την απάντηση, η δήλωση μπαίνει ΜΕΣΑ στο
+  δεσμευμένο τεκμήριο (attestation §3), όχι μόνο στο JSON.
 
-### 1.3 Σημασιολογία επιλογής έκδοσης
-Ακμή με condition ≠ :satisfied στην τομή (valid-at, known-at) ⇒ οι to-versions
-ΔΕΝ είναι in-force· αν η ύπαρξη της ακμής είναι γνωστή (recorded ≤ known):
-version-at ⇒ temporal-uncertainty με ΟΝΟΜΑΣΤΙΚΟ pending condition (τίμια
-δήλωση «ψηφισμένο αλλά όχι σε ισχύ — εκκρεμεί Χ»), εκτός αν η προϋπάρχουσα
-έκδοση καλύπτει πλήρως (τότε: προϋπάρχουσα + δηλωμένο pending στο receipt.
-Επιλογή μεταξύ των δύο = κρίσιμο σημείο για τους κριτές — βλ. §4 Ε1).
+## 3. ΔΕΣΜΕΥΣΗ — ΔΥΟ ΣΤΡΩΜΑΤΑ (κλείνει Ε-5)
+- **Receipt έκδοσης (intrinsic, αμετάβλητο)**: στο receipt-id μπαίνουν ΜΟΝΟ
+  τα query-ανεξάρτητα: condition-ids + class + regime-edge-ids που αφορούν
+  την έκδοση. Ένα receipt ανά έκδοση, σταθερό Merkle φύλλο — το receipt-set
+  root ΜΕΝΕΙ σταθερό ανά release.
+- **Effectivity-attestation (ανά ερώτημα)**: ξεχωριστό τεκμήριο που δεσμεύει
+  ρητά (valid-at, known-at, receipt-id, sat-καταστάσεις, τέμνοντα καθεστώτα,
+  scoped δηλώσεις) — canonical hash, επιστρέφεται από /as-known/verifier·
+  ΔΕΝ μπαίνει στο Merkle των receipts.
+- /as-known JSON (κλείνει Ε-10): typed κορυφαίο πεδίο `in_force: true|false`
+  + `basis` (complete | pending-condition | suspended | …) — caller που
+  διαβάζει μόνο το text ΔΕΝ μπορεί να παρερμηνεύσει pending ως ισχύον, γιατί
+  το text συνοδεύεται από in_force=false όταν δεν ισχύει.
 
-## 2. INTERVAL ALGEBRA & ΚΑΘΕΣΤΩΤΑ ΙΣΧΥΟΣ
+## 4. JOURNAL/REPLAY (κλείνει Ε-12)
+Semantic hash ανά νέο kind (επίπεδο ③ replay):
+- :condition-declared → record-id = condition-id = hash(AST+class).
+- :condition-event → record-id = hash(condition-id, kind, ref, outcome, at,
+  evidence digest) — επανυπολογίσιμο από τα πεδία.
+- :regime-edge → record-id = hash(op, target, span, act-ref, act-seq,
+  enacted, fek-date) (ανάλογο %edge-hash).
+- :validity-close-on-satisfaction → hash(version, condition-id, derived-t).
+Παλαιά binaries σκάνε fail-closed σε νέα kinds (δηλωμένη συνέπεια)· ο python
+verifier (Π6) επεκτείνεται ΣΤΟ ΙΔΙΟ gate με την υλοποίηση, όχι follow-up.
 
-### 2.1 Πράξεις καθεστώτος (νέα ops στον γράφο — journaled, typed)
-:suspend (αναστολή [from,until|:open))· :extend (παράταση λήξης)· :expire
-(λήξη χωρίς κατάργηση)· :revive (επαναφορά — ρητός δεσμός στο αρχικό)·
-:retroact (αναδρομική ισχύς — valid-from < enacted, ΔΗΛΩΜΕΝΗ κλάση)·
-:transitional (μεταβατική διάταξη με δικό της παράθυρο).
-Κάθε μία = amendment-edge υπότυπος με πλήρη payload δέσμευση — όχι flags.
+## 5. ΠΑΡΑΔΟΤΕΑ & COUNTERS
+Π1 AST+registry+sat (ολική, με date+ και edge-case tests). Π2 condition
+records + declare-before-reference + G5 retract ροή. Π3 conditional ακμές
+(effective sum type, G2 δύο φάσεων, validity-close-on-satisfaction).
+Π4 regime-edges + Allen + version-at τριών σκελών + Υ2β διαστήματα.
+Π5 receipts intrinsic + effectivity-attestation + /as-known in_force.
+Π6 python verifier ΙΔΙΟ gate. Π7 gated tests σε ΠΡΑΓΜΑΤΙΚΑ ελληνικά μοτίβα
+(«με ΥΑ ορίζεται η έναρξη· άλλως 6 μήνες από δημοσίευση» = :or/:after,
+ΠΝΠ resolutory, αναστολή+known-at ζεύγη, retract ικανοποίησης, tamper).
+Counters: condition_state_defaults=0 · unverified_satisfactions=0 ·
+silent_scope_omissions=0 · replay_mismatches=0 · false_uncertainty=0 (νέο —
+κανένα temporal-uncertainty όπου η απάντηση είναι γνωστή).
 
-### 2.2 Αλγεβρα
-Οι 13 σχέσεις Allen υλοποιούνται ΣΤΟΝ γράφο πάνω σε typed διαστήματα
-[legal-date, legal-date|:open) με %time-key σύγκριση (η Υ1 έδρα — ΟΧΙ η
-διαγραμμένη string-based εκδοχή). Χρήσεις: (α) έλεγχος συνέπειας καθεστώτων
-μιας διάταξης (επικαλύψεις αναστολών, κενά)· (β) version-at: in-force ⟺
-valid-καλύπτεται ∧ recorded-ζωντανό ∧ ∄ γνωστή-κατά-known αναστολή που τέμνει
-το valid-at ∧ conditions satisfied. Κλείνει και το Υ2β (gaps με άνω όριο:
-το κενό γνώσης γίνεται διάστημα, όχι σημείο).
-
-### 2.3 Scope dimensions (temporal × territorial × personal × material × procedural)
-Το in-force παύει να είναι boolean: γίνεται συνάρτηση scope. Αναπαράσταση:
-κάθε έκδοση/καθεστώς φέρει προαιρετικό scope-set {(:territory …) (:persons …)
-(:matter …) (:procedure …)} με ΚΛΕΙΣΤΟ λεξιλόγιο ανά διάσταση από δηλωμένο
-μητρώο (data, όπως το body-kind-registry). Ερώτημα χωρίς scope ⇒ απαντά για
-το ΚΑΘΟΛΙΚΟ scope και ΔΗΛΩΝΕΙ τυχόν scoped καθεστώτα (ποτέ σιωπηλή παράλειψη).
-ΟΡΙΟ Φ7 (τίμιο): πλήρης άλγεβρα τομής scopes = Φ8+ ύλη· στη Φ7 τα scoped
-καθεστώτα καταγράφονται typed + δηλώνονται στα ερωτήματα, χωρίς αυτόματη
-scope-επίλυση.
-
-## 3. ΕΝΤΑΞΗ ΣΤΙΣ ΥΠΑΡΧΟΥΣΕΣ ΕΔΡΕΣ (καμία νέα ρίζα/έδρα)
-- journal σχήμα: νέα kinds :condition-declared / :condition-event /
-  :regime-edge — ίδιο payload-hash/chain (Κ2), ίδιο replay (semantic hash ανά
-  kind), παλαιά journals συμβατά (νέα kinds προστίθενται, δεν αλλάζουν παλιά).
-- receipts: το LegalAuthorityReceipt αποκτά πεδίο effectivity (conditions +
-  καταστάσεις στην τομή + καθεστώτα που την τέμνουν) — μπαίνει στη δέσμευση
-  receipt-id. Το census/graph_root κληρονομεί αυτόματα.
-- /as-known: όταν η απάντηση εξαρτάται από pending condition ⇒ ρητό πεδίο
-  effectivity_pending στο JSON (όχι νέο status code — 200 με δηλωμένη
-  εκκρεμότητα, 422 μόνο για γνήσια αβεβαιότητα ανακατασκευής).
-- import Φ3 path: υπάρχουσες καραντίνες :unknown-effective μπορούν να
-  ΜΕΤΑΤΑΧΘΟΥΝ σε typed conditions με νέα journaled γεγονότα (ποτέ επανεγγραφή).
-
-## 4. ΣΧΕΔΙΑΣΤΙΚΕΣ ΕΝΑΛΛΑΚΤΙΚΕΣ (κρίνονται με απόλυτα κριτήρια [0082+])
-- **Ε1 Pending σημασιολογία**: (α) pending ⇒ πάντα temporal-uncertainty·
-  (β) pending ⇒ προϋπάρχουσα έκδοση in-force + δηλωμένο pending στο
-  receipt/απάντηση. [Η (β) είναι νομικά ορθότερη — ό,τι δεν άρχισε να ισχύει
-  δεν θολώνει το ισχύον — αλλά απαιτεί αυστηρό έλεγχο ότι η ακμή ΔΕΝ έκλεισε
-  την προηγούμενη validity πριν την ικανοποίηση.]
-- **Ε2 Καθεστώτα**: (α) ξεχωριστός τύπος regime-edge δίπλα στο amendment-edge·
-  (β) υπότυποι του amendment-edge με op ∈ {:suspend …}. [Η (β) κρατά ΜΙΑ
-  ταξινόμηση πράξεων· η (α) καθαρότερη σημασιολογικά — οι αναστολές δεν
-  παράγουν νέο κείμενο.]
-- **Ε3 Conditions αποθήκευση**: (α) μέσα στο edge payload· (β) ξεχωριστά
-  :condition-declared records με αναφορά από το edge. [Η (β) επιτρέπει κοινό
-  condition σε πολλές ακμές (μία ΥΑ ενεργοποιεί δεκάδες διατάξεις) — ΜΙΑ
-  έδρα γεγονότος, όχι αντίγραφα.]
-Κριτήρια (απόλυτα, ανά εναλλακτική): δομική αδυναμία σφάλματος· μία έδρα·
-τίμια άγνοια· διτεμπορική ορθότητα· δεσμευσιμότητα (payload/receipt/census)·
-replay ταυτότητα· συμβατότητα υπαρχόντων journals· απλότητα verifier·
-επεκτασιμότητα σε Φ8/Φ9 (fine-grained ids, Lean kernel).
-
-## 5. ΠΑΡΑΔΟΤΕΑ Φ7 (όταν εγκριθεί)
-Π1 condition AST + ταυτότητα + lifecycle (journaled) στο version-graph.
-Π2 regime ops + Allen άλγεβρα + version-at ενσωμάτωση (Υ2β κλείσιμο).
-Π3 scope-sets typed καταγραφή + δήλωση στα ερωτήματα (όριο §2.3).
-Π4 receipts/census/as-known effectivity δέσμευση.
-Π5 gated tests: πραγματικά ελληνικά παραδείγματα (conditional commencement
-   από υπαρκτούς νόμους — π.χ. διατάξεις «με απόφαση του Υπουργού ορίζεται
-   η έναρξη»), tamper vectors σε conditions, bitemporal ζεύγη, replay parity.
-Π6 verifier επέκταση (python) για τα νέα journal kinds.
-Acceptance counters: condition_state_defaults=0 · unverified_satisfactions=0 ·
-silent_scope_omissions=0 · replay_mismatches=0.
-
-## 6. ΔΗΛΩΜΕΝΑ ΟΡΙΑ Φ7
-Πλήρης scope-τομή άλγεβρα → Φ8. Formal proofs των invariants → Φ9 (το AST
-σχεδιάζεται Lean-friendly: κλειστή γραμματική, ολικές συναρτήσεις). Δικαστική
-κρίση εγκυρότητας όρων → εκτός (μόνο ΚΑΤΑΓΡΑΦΗ ικανοποίησης με τεκμήρια).
+## 6. ΟΡΙΑ Φ7 (δηλωμένα)
+Scope-τομή άλγεβρα → Φ8. Lean proofs → Φ9 (v2 = κλειστή γραμματική, ολικές
+συναρτήσεις, μονότονα διτεμπορικά events — άμεσα μηχανοποιήσιμο). Κανόνας
+αργιών στο date+ → μελλοντική δικονομική επέκταση, ΕΚΤΟΣ έναρξης ισχύος.
+Δικαστική κρίση εγκυρότητας όρων → εκτός (μόνο καταγραφή με τεκμήρια).

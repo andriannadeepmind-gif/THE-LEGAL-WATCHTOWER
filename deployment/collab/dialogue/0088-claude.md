@@ -537,3 +537,32 @@ API = ένα τελικό βήμα (σβήσιμο legacy else-branches + 2 μι
 end-to-end, corpus rekey). Το δηλωμένο όριο ήρθη ⇒ **ανοίγει το Φ7 Formal
 Temporal Semantics** κατά την ΕΝΤΟΛΗ-2. Εκκρεμεί ακόμη: απόφαση Γ-νησιών
 (Α/Β/Γ) — παραμένουν άθικτα.
+
+---
+
+## [0088 Φ7-κριτής] ΑΝΤΙΠΑΛΙΚΗ ΚΡΙΣΗ SPEC v1 → ΑΝΑΘΕΩΡΗΣΗ v2 (όλα κλειστά ΣΤΗ ΣΥΛΛΗΨΗ)
+
+Ανεξάρτητος κριτής σχεδίου (φρέσκο πλαίσιο, απόλυτα rubrics) έκρινε το v1:
+**ΔΕΝ έτοιμο** — 2 WRONG + 4 SERIOUS + 3 MINOR. Όλα κλείστηκαν στο v2:
+
+| Εύρημα | Βαθμός | Κλείσιμο στο v2 |
+|---|---|---|
+| Ε-1 :not/:unless μη-μονότονα | WRONG | ΔΙΑΓΡΑΦΗΚΑΝ· κλάση αίρεσης :suspensive/:resolutory (ΑΚ 201-202, ΠΝΠ 44§1Σ) — μονοτονία δομική |
+| Ε-5 receipt-id αστάθεια από query-εξαρτώμενο effectivity | WRONG | Δύο στρώματα: intrinsic στο receipt (σταθερό φύλλο)· effectivity-attestation ανά ερώτημα (δεσμεύει valid/known/sat) ΕΚΤΟΣ Merkle |
+| Ε-2 satisfied-at σύνθετων απροσδιόριστο | SERIOUS | Denotational sat: ολική συνάρτηση ανά κόμβο (or=min, and=max, refuted κανόνες) |
+| Ε-3 λεξιλόγιο κόμβων/«από δημοσίευση» | SERIOUS | ΕΝΑΣ (:instrument-event KIND REF) με κλειστό data-μητρώο· «από δημοσίευση» = κανόνας μετάπτωσης σε date, ΟΧΙ condition |
+| Ε-4 retract/αποθηκευμένη κατάσταση | SERIOUS | ΚΑΜΙΑ αποθηκευμένη κατάσταση — sat fold πάνω σε διτεμπορικά :condition-event records· retract = G5 recorded-until |
+| Ε-6 συμφιλίωση G2/admit-edge! | SERIOUS | effective := date \| (:conditional cid) sum type· G2 δύο φάσεων· :validity-close-on-satisfaction journaled γεγονός |
+| Ε-7 ψευδής αβεβαιότητα για pending | SERIOUS→ | version-at ΤΡΙΩΝ ΣΚΕΛΩΝ typed (αξιοποιεί το υπάρχον :not-yet-effective status)· νέος counter false_uncertainty=0 |
+| Ε-8 DURATION απροσδιόριστο | MINOR | date+ ολική κατά ΑΚ 241-243 + edge cases + ίδια στον verifier |
+| Ε-9 :transitional κατηγοριακά λάθος | MINOR | Διαγράφηκε — μεταβατικές = text-versions με παράθυρο |
+| Ε-10 /as-known παρερμηνεία pending | MINOR | typed in_force:true/false + basis κορυφαία πεδία |
+| Ε-12 semantic hash νέων kinds | MINOR | Ορίστηκε ανά kind (§4)· python verifier ΣΤΟ ΙΔΙΟ gate |
+
+Ετυμηγορίες εναλλακτικών (κριτής + αποδοχή): **Ε1β** (με τον Ε-6 μηχανισμό
+και το τρίτο typed σκέλος), **Ε2α** (ξεχωριστός regime-edge — υπότυπος θα
+ξανάφερνε NIL-σχήμα), **Ε3β** (κοινόχρηστα :condition-declared + φρουρός
+declare-before-reference).
+
+**ΑΝΑΜΟΝΗ: ρητό «εγκρίνω Φ7» του δημιουργού πάνω στο v2** — μετά ξεκινά η
+υλοποίηση Π1→Π7 με proof ανά βήμα. (Εκκρεμεί και η απόφαση Γ-νησιών Α/Β/Γ.)
