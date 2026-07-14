@@ -216,8 +216,10 @@
                (#\Tab (write-string "\\t" out))
                (otherwise
                 (if (< (char-code char) 32)
-                    ;; Control characters as \uXXXX
-                    (format out "\\u~4,'0X" (char-code char))
+                    ;; Control characters as \u00xx — RFC 8785 §3.2.2.2 απαιτεί
+                    ;; ΠΕΖΑ hex ([0088] Φ1β: τα κεφαλαία ήταν μη-συμμόρφωση που
+                    ;; θα απέκλινε από κάθε ξένη JCS υλοποίηση στο ίδιο input)
+                    (format out "\\u~(~4,'0X~)" (char-code char))
                     (write-char char out)))))
     (write-char #\" out)))
 

@@ -179,7 +179,7 @@ RUN set -e; \
              legislation-ingestion multi-corpus-service review-service shacl-validator \
              hash-authority write-authority time-unified blockchain-authority release-authority \
              merkle-authority kernel-conformance artifact-census release-vector-conformance \
-             tsr-crypto-verify transparency-log capability-registry capability-api cockpit legal-eval casegrammar greek-morphology seat-integrity legal-identity \
+             tsr-crypto-verify transparency-log capability-registry capability-api cockpit legal-eval casegrammar greek-morphology seat-integrity legal-identity canonical-serialization \
              escape-sequences turtle-nil-omit corpus-identity semantic-validity \
              cross-language-verifier; do \
       echo "=== running $t-test.lisp ==="; \
@@ -217,6 +217,11 @@ RUN sbcl --script /app/docker/run-standalone-test.lisp \
 # Στο SBCL-only stage ελέγχεται ΜΟΝΟ η spine έδρα (Python SKIP, safe).
 RUN sbcl --script /app/docker/run-standalone-test.lisp \
       /app/tests/release-vector-conformance-test.lisp
+
+# [0088] Φ1β: δεύτερη-γλώσσα συμμόρφωση canonical serialization — τα ΙΔΙΑ
+# vectors που κλειδώνει το lisp gated test επαληθεύονται από pure-stdlib python
+# (spec: deployment/verify/canonical-serialization-spec.md). Fail-closed.
+RUN python3 /app/deployment/verify/verify-canonical.py
 
 # P1 [0043]: με python3+rdflib παρόντα, οι εξωτερικοί μάρτυρες του
 # semantic-validity-test (json.tool + rdflib Turtle/JSON-LD parse) γίνονται
