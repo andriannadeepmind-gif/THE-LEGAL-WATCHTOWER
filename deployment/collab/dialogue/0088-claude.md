@@ -928,3 +928,67 @@ docker build --no-cache --progress=plain --build-arg GIT_COMMIT=<HEAD-SHA> -t la
 αθροίσματα (78/78, 30 vectors/0 διαφωνίες κ.λπ.) και μετά το runtime
 stage. Επαλήθευση μέσα στο image:
 `docker run --rm --entrypoint cat lawmax:<tag> /app/proof/standalone-proof.json`
+
+---
+
+## [0088 Φ7-HARDENING — εκτέλεση εντολής δημιουργού 2026-07-14, 7/8 σημεία]
+
+Εντολή: «Εγκρίνω τη συνέχιση του Φ7… πριν από το Π7 εκτέλεσε μία τελική φάση
+Φ7-HARDENING (8 σημεία)». GAAF-1 = design baseline ΜΟΝΟ, runtime παγωμένο.
+
+**Κλεισμένα (commits 4498d1f9 → 393a9798):**
+
+1. **#1 typed commencement** (4498d1f9): θάνατος sentinel `conditional:<cid>`
+   στο valid-from — sum type `(:fixed d)|(:conditional cid)` ως Η έδρα·
+   tv-valid-from = ημερομηνιακή ΠΡΟΒΟΛΗ (date|NIL — τίμια άγνοια)·
+   journal/hashes δεσμεύουν την κανονική string προβολή ⇒ ΚΑΜΙΑ byte-migration
+   (append-only journals δεν ξαναγράφονται — schema receipt: commencement-key/
+   parse-commencement fail-closed ζεύγος)· locks Η1α-Η1ε.
+2. **#2 scope-set** (870b99b3): μητρώο scope-tag-registry.sexp (4 διαστάσεις,
+   *read-eval* nil, /1)· canon-scope-set/scope-covers-p (T|NIL|:unknown)/
+   scope-intersects-p· scope ΣΤΟ regime hash/journal· version-at
+   :scope-context (εκτός πλαισίου ⇒ δεν εφαρμόζεται, :unknown ⇒
+   υπερ-προσεκτική εφαρμογή + ονομαστική δέσμευση)· ΔΙΟΡΘΩΣΗ: το load-graph
+   έριχνε σιωπηλά το :scope. Δηλωμένο όριο: πλήρης άλγεβρα (ενώσεις/διαφορές/
+   μερική κατάργηση) = Φ8· το /as-known δεν εκθέτει ακόμη scope-context
+   παράμετρο (Φ8 API).
+3. **#3 resolutory first-class** (870b99b3): regime edge με condition-id =
+   ΜΟΝΟ :resolutory· span-from :on-satisfaction ⇒ αφετηρία ΠΑΡΑΓΕΤΑΙ από sat
+   (:expire ⇒ λήξη ΣΤΟ σημείο ικανοποίησης, until :open υποχρεωτικό)·
+   %re-active-span = Η ΜΙΑ έδρα ενεργοποίησης, πλήρως διτεμπορική· revive
+   conditional suspend = δηλωμένο όριο (retract). Python verifier: scope +
+   on-satisfaction στο regime_hash (31 vectors).
+4. **#5 /as-known TRA** (f3388a56): ΚΑΘΕ απάντηση (200/404) φέρει tra/1
+   (canonical/hash/αγκυρωτικά/receipt-id) + tra_assurance
+   release-anchored|provisional-unanchored + tra_unanchored_reasons.
+5. **#6 παραγόμενα αγκυρωτικά** (f3388a56): release-anchor-for = Η ΜΙΑ έδρα —
+   attested latest.json ⇒ root· census graph_root ≡ ζωντανή chain-head·
+   root ∈ transparency log (tlog-verify + membership)· κάθε αποτυχία
+   ονομαστική. temporal-verifier-hash = sha256 verify-temporal.py.
+6. **#7 release-scoped receipts** (c9e91c97): receipt schema /2 με
+   effectivity_as_of = graph-latest-at (ντετερμινιστικό ΜΕΓΙΣΤΟ journal :at)·
+   verify-receipt επανυπολογίζει στο ΔΙΚΟ ΤΟΥ cut ⇒ μεταγενέστερο
+   retract/regime event ΔΕΝ μεταλλάσσει παλαιό receipt· πλαστό as-of ⇒
+   receipt-id-mismatch. Δηλωμένο όριο: κοκκίωση 1s (journal :at).
+   ΣΥΝΕΠΕΙΑ: receipts με effectivity αλλάζουν ids (νέο schema) — τα
+   receipt_set_roots ξαναδένουν στο επόμενο release cut.
+7. **#8 Docker σκλήρυνση** (393a9798): GIT_COMMIT υποχρεωτικά 40-hex αλλιώς
+   build failure (CI: github.sha)· docker/verify-proof-manifest.py =
+   dedicated gate ΜΕΣΑ στο build (ακριβές suite set από tests/*, ΚΑΘΕ σουίτα
+   μη-κενό parseable failed=0, 64-hex hashes, gates λίστα, git_commit
+   ταύτιση — sandbox-validated θετικό+3 αρνητικά)· source_tree_sha256
+   +configs/data/knowledge/input/docker· runtime: 0 COPY --from=builder
+   (όλα από verifier-conformance). Δηλωμένο όριο: δέσμευση image digest +
+   proof digest στην Approval/Release πράξη = owner-side βήμα.
+
+**Proof (τοπικό, ανά commit):** temporal-semantics 92/92 · temporal-verifier
+2/2 (31 vectors) · version-graph 18/18 · receipt 15/15 · parity 31/31 ·
+corpus-service 53/53 · as-known-e2e 27/27 — 0 failed παντού.
+
+**ΑΝΟΙΧΤΟ — #4 (δηλωμένο, ΔΕΝ ξεκίνησε):** επέκταση του ανεξάρτητου verifier
+σε δεύτερη βαθμίδα που καταναλώνει ΟΛΟΚΛΗΡΟ proof bundle (πραγματικό journal
+replay, official source artifact bytes, evidence digests, receipt membership
+στο receipt_set_root, release census, transparency consistency, TRA
+αναπαραγωγή) — όχι μόνο Lisp-παραγόμενα vectors. Επόμενο βήμα πριν το Π7.
+Μετά το #4: Π7 (declarative registry 9 ΦΕΚ, αυτόματο download, oracles,
+adjudication) → 2 νέοι αντιπαλικοί κριτές → owner gated proof #5.
