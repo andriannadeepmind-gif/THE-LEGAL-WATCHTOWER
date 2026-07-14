@@ -117,6 +117,7 @@
      (:file "eu-interop-layer")   ; EUR-Lex / CELLAR integration (EU official legal data)
      (:file "canonical-representation") ; GATE-14: Deterministic serialization for JWS
      (:file "version-graph")      ; [0088] Φ2: διτεμπορικός γράφος εκδόσεων — text-version/amendment-edge/quarantined-edge, admit-edge!=replay-then-append, journal+chain-hash, version-at με recorded ΣΤΟ predicate
+     (:file "legal-authority-receipt") ; [0088] Φ4: receipt-id = hash ΟΛΟΚΛΗΡΟΥ receipt (ταυτότητα+χρόνοι+γενεαλογία ΜΕΣΑ στη δέσμευση — PCL-01/PROV-01)
      (:file "validation-authority") ; GATE-5: Deterministic contract validation
      (:file "blockchain-authority") ; GATE-6: Pure Lisp blockchain anchoring (Ethereum/Arweave/IPFS)
      (:file "asn1-der")           ; Η ΜΙΑ έδρα ASN.1 DER (X.690): encoders + αυστηρός decoder + PEM↔DER
