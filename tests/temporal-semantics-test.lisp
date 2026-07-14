@@ -74,11 +74,15 @@
             (and (equal (funcall id (list :and a b c)) (funcall id (list :and c b a)))
                  (equal (funcall id (list :and a b c)) (funcall id (list :and a a b c)))
                  (equal (funcall id (list :and a b c)) (funcall id (list :and a (list :and b c)))))))
-(ts-check "②γ domain separation: το tag ζει ΜΕΣΑ στο hashed υλικό (id ≠ γυμνό hash class+ast)"
-          (let ((cond1 (orchestrator.version-graph:make-effectivity-condition
-                        :suspensive '(:date-reached "2027-01-01"))))
-            (not (equal (orchestrator.version-graph:condition-id cond1)
-                        (orchestrator.journal:sha256-hex "x")))))
+(ts-check "②γ domain separation ΠΡΑΓΜΑΤΙΚΟ: id ≠ hash του ΠΡΟ-tag σχήματος (cons class ast) — αφαίρεση του tag ΘΑ έσπαγε το τεστ"
+          (let* ((ast '(:date-reached "2027-01-01"))
+                 (cond1 (orchestrator.version-graph:make-effectivity-condition
+                         :suspensive ast))
+                 (untagged (orchestrator.journal:sha256-hex
+                            (with-output-to-string (out)
+                              (orchestrator.version-graph::%canon-sexp
+                               (cons :suspensive ast) out)))))
+            (not (equal (orchestrator.version-graph:condition-id cond1) untagged))))
 (ts-check "②δ μητρώο /2 TYPED: κάθε kind με authority-class + evidence schema"
           (let ((e (orchestrator.version-graph:instrument-kind-entry :ya)))
             (and (eq :ministerial (getf e :authority-class))
@@ -199,6 +203,28 @@
                '((:kind :ya :ref "ΥΑ-1" :outcome :satisfied :at "2026-04-01")
                  (:kind :ya :ref "ΥΑ-1" :outcome :satisfied :at "2026-03-10")))
             (and (eq :satisfied st) (equal "2026-03-10" at))))
+
+(ts-check "④ο [A#9] ΜΗ-scoped αποτίμηση με cid-φέρον event ⇒ ΣΦΑΛΜΑ (μείξη απαγορεύεται αμφίδρομα)"
+          (handler-case
+              (progn (orchestrator.version-graph:sat
+                      '(:instrument-event :ya "ΥΑ-1")
+                      '((:condition-id "cid-x" :kind :ya :ref "ΥΑ-1"
+                         :outcome :satisfied :at "2026-03-10")))
+                     nil)
+            (orchestrator.version-graph:invalid-condition () t)))
+(ts-check "④π [A#12] evidence ΕΚΤΟΣ schema μητρώου ⇒ ΣΦΑΛΜΑ (τα schemas ΕΠΙΒΑΛΛΟΝΤΑΙ)"
+          (handler-case
+              (progn (orchestrator.version-graph:sat
+                      '(:instrument-event :ya "ΥΑ-1")
+                      '((:kind :ya :ref "ΥΑ-1" :outcome :satisfied :at "2026-03-10"
+                         :evidence (:τηλεφωνημα "x"))))
+                     nil)
+            (orchestrator.version-graph:invalid-condition () t)))
+(ts-check "④ρ evidence ΕΝΤΟΣ schema (source-digest για :ya) ⇒ δεκτό"
+          (eq :satisfied (orchestrator.version-graph:sat
+                          '(:instrument-event :ya "ΥΑ-1")
+                          '((:kind :ya :ref "ΥΑ-1" :outcome :satisfied
+                             :at "2026-03-10" :evidence (:source-digest "abc"))))))
 
 ;;; ⑤ Ντετερμινισμός sat (ίδια είσοδος ⇒ ίδια έξοδος — θεμέλιο replay/verifier)
 (ts-check "⑤ sat ντετερμινιστικό σε σύνθετο AST"

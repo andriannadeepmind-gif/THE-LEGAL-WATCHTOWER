@@ -63,10 +63,12 @@
          (letter-index (if letter-suffix
                            (orchestrator.model:article-suffix-ordinal letter-suffix)
                            0))
+         ;; [Δ³-κριτής A] το συνθετικό σχήμα από τη ΜΙΑ έδρα — όχι inline
          (number (when base-number
                    (if (zerop letter-index)
                        base-number
-                       (+ (* base-number 1000) letter-index)))))
+                       (orchestrator.model:synthetic-article-number
+                        base-number letter-index)))))
 
     ;; Validate extracted number
     (unless (and (integerp number) (plusp number))

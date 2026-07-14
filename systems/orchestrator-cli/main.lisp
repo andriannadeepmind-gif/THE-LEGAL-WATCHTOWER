@@ -1917,7 +1917,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
                                          ;; ONE canonical text (full article incl.
                                          ;; paragraphs) — same as the site & MCP.
                                          :text (orchestrator.static-site:article-canonical-text p)
-                                         :eli (format nil "~A/art/~A" eli-prefix aid)
+                                         :eli (orchestrator.model:eli-art-uri eli-prefix aid)
                                          :cite (format nil "Άρθρο ~A~@[ ~A~]" aid
                                                        (and (plusp (length abbr)) abbr))))))
               (multiple-value-bind (root count sig)
@@ -2206,14 +2206,14 @@ document.getElementById('ops').addEventListener('click',function(ev){
                  (make-fn (find-symbol "MAKE-PROVISION-PROOF" :orchestrator.proof-carrying))
                  (json-fn (find-symbol "PROOF-PLIST->JSON" :orchestrator.proof-carrying))
                  (proof (funcall make-fn id text (getf entry :leaves) idx (getf entry :root)
-                                 :eli (format nil "~A/art/~A" eli id)
+                                 :eli (orchestrator.model:eli-art-uri eli id)
                                  :cite (format nil "Άρθρο ~A~@[ ~A~]" id (and (plusp (length abbr)) abbr))
                                  :anchored-at ;; [P1.5-C] commitment-time από την έδρα χρόνου (ΟΧΙ ψεύτικη σταθερά)·
                           ;; ο ΑΠΟΔΕΔΕΙΓΜΕΝΟΣ χρόνος ζει στο RFC-3161 receipt του release.
                           (orchestrator.time:format-iso8601 (orchestrator.time:require-deterministic-time)))))
             (list :text text
                   :cite (format nil "Άρθρο ~A~@[ ~A~]" id (and (plusp (length abbr)) abbr))
-                  :eli (format nil "~A/art/~A" eli id)
+                  :eli (orchestrator.model:eli-art-uri eli id)
                   :proof (funcall json-fn proof))))))))
 
 (defparameter *latin-homoglyph-chars* "ABEZHIKMNOPTYXo"

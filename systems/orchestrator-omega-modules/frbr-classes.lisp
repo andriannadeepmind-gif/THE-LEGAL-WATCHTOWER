@@ -296,7 +296,7 @@
          (base (second seg))
          (suffix (orchestrator.identity:ordinal-suffix (third seg) :sequence :upper))
          (article-root (or article-root-uri
-                           (format nil "~A/art/~A" eli-prefix (segment-uri-id seg))))
+                           (eli-art-uri eli-prefix (segment-uri-id seg))))
          (uri (format nil "~A/work" article-root))
          (year (or law-year (subseq issued-date 0 4)))
          (eli-id (format nil "gr-~A-~A-art-~A-work" document-type year (segment-file-id seg))))

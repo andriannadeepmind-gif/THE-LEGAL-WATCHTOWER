@@ -162,34 +162,57 @@
   (format nil "~3,'0D~A" (second seg)
           (orchestrator.identity:ordinal-suffix (third seg) :sequence :upper)))
 
-(defun %recompute-article-identity! (article)
-  "[0088 Φ6γ-Δ³] Ο ΜΟΝΑΔΙΚΟΣ δίαυλος εγγραφής του identity slot: υπολογίζει
-   από την έδρα βάσει (label, number). ΔΕΜΕΝΟ number χωρίς υπολογίσιμη
-   ταυτότητα ⇒ typed σφάλμα — article χωρίς νόμιμη ταυτότητα είναι ΔΟΜΙΚΑ
-   αδύνατο (το unresolved υλικό ανήκει σε καραντίνα, όχι σε article)."
-  (let* ((label (and (slot-boundp article 'label) (article-label article)))
-         (number (and (slot-boundp article 'number) (article-number article)))
-         (seg (%article-identity-segment-for label number)))
+(defun synthetic-article-number (base ord)
+  "[Δ³-κριτής A] Η ΜΙΑ έδρα του συνθετικού σχήματος αποσαφήνισης lettered
+   άρθρων: base×1000+ord (5Α ⇒ 5001, 70Α ⇒ 70001, 272Ε ⇒ 272005) — ο
+   json-adapter την ΚΑΤΑΝΑΛΩΝΕΙ, δεν την ξαναορίζει."
+  (+ (* base 1000) ord))
+
+(defun %set-identity-slot! (obj label number context)
+  "[0088 Φ6γ-Δ³] Ο ΜΟΝΑΔΙΚΟΣ δίαυλος εγγραφής identity slot (article ΚΑΙ
+   IIR): υπολογίζει από την έδρα βάσει (label, number)· ΔΕΜΕΝΟ number
+   χωρίς υπολογίσιμη ταυτότητα ⇒ typed σφάλμα (unresolved = καραντίνα)·
+   [κριτής A#2] ΣΥΝΟΧΗ number↔ταυτότητα: με label παρόν, το number
+   πρέπει να είναι η ΒΑΣΗ ή ο συνθετικός της έδρας — αποκλίνον ζεύγος
+   (6001,«5Α») δεν μπορεί να ΥΠΑΡΞΕΙ, ούτε με setf ούτε με reinitialize."
+  (let ((seg (%article-identity-segment-for label number)))
     (when (and number (null seg))
       (error 'orchestrator.spec:validation-error
-             :message (format nil "article χωρίς νόμιμη ταυτότητα: number=~S label=~S — συνθετικός αριθμός απαιτεί label· unresolved υλικό = καραντίνα, όχι article"
-                              number label)))
-    (setf (slot-value article 'identity-segment) seg)))
+             :message (format nil "~A χωρίς νόμιμη ταυτότητα: number=~S label=~S — συνθετικός αριθμός απαιτεί label· unresolved υλικό = καραντίνα"
+                              context number label)))
+    (when (and number seg label)
+      (let ((base (second seg)) (ord (third seg)))
+        (unless (or (= number base)
+                    (= number (synthetic-article-number base ord)))
+          (error 'orchestrator.spec:validation-error
+                 :message (format nil "~A: ασυνεπές ζεύγος number=~D ↔ label=~S (ταυτότητα βάση=~D θέση=~D) — νόμιμα: ~D ή ~D"
+                                  context number label base ord
+                                  base (synthetic-article-number base ord))))))
+    (setf (slot-value obj 'identity-segment) seg)))
 
-(defmethod initialize-instance :after ((article article) &key)
-  "[0088 Φ6γ-Δ³] Η typed ταυτότητα υπάρχει ΑΠΟ ΤΗ ΓΕΝΝΗΣΗ: υπολογίζεται
-   ΠΑΝΤΑ από την έδρα — δεν υπάρχει :identity initarg (injection ΑΔΥΝΑΤΟ:
-   άγνωστο initarg ⇒ σφάλμα του CLOS — ΚΑΝΕΝΑ &allow-other-keys εδώ),
-   δεν υπάρχει δημόσιο setf."
+(defun %recompute-article-identity! (article)
+  (%set-identity-slot! article
+                       (and (slot-boundp article 'label) (article-label article))
+                       (and (slot-boundp article 'number) (article-number article))
+                       "article"))
+
+(defmethod shared-initialize :after ((article article) slot-names &key)
+  "[0088 Φ6γ-Δ³ + κριτής A#3] Η typed ταυτότητα υπολογίζεται σε ΚΑΘΕ
+   δίαυλο αρχικοποίησης του CLOS πρωτοκόλλου — make-instance,
+   reinitialize-instance, change-class, update-instance-* — όχι μόνο στη
+   γέννηση: stale ταυτότητα μέσω reinitialize είναι δομικά αδύνατη.
+   Κανένα :identity initarg (άγνωστο ⇒ σφάλμα CLOS), κανένα
+   &allow-other-keys, κανένα δημόσιο setf."
+  (declare (ignore slot-names))
   (%recompute-article-identity! article))
 
 (defmethod (setf article-number) :after (new-number (article article))
-  "Η ταυτότητα ΠΑΡΑΚΟΛΟΥΘΕΙ το number — stale segment δομικά αδύνατο."
+  "Η ταυτότητα ΠΑΡΑΚΟΛΟΥΘΕΙ το number — stale/ασυνεπές δομικά αδύνατο."
   (declare (ignore new-number))
   (%recompute-article-identity! article))
 
 (defmethod (setf article-label) :after (new-label (article article))
-  "Η ταυτότητα ΠΑΡΑΚΟΛΟΥΘΕΙ το label — stale segment δομικά αδύνατο."
+  "Η ταυτότητα ΠΑΡΑΚΟΛΟΥΘΕΙ το label — stale/ασυνεπές δομικά αδύνατο."
   (declare (ignore new-label))
   (%recompute-article-identity! article))
 
@@ -363,9 +386,9 @@
    με το uri-id ΑΠΟ ΤΗΝ ΕΔΡΑ (uri-id<-provision-id πάνω στο typed
    provision-id) — όχι χωριστή σύνθεση. Το eli-prefix είναι ΤΟΠΟΘΕΣΙΑ
    δημοσίευσης· η ταυτότητα είναι το typed provision-id."
-  (format nil "~A/art/~A"
-          (corpus-eli-prefix corpus)
-          (orchestrator.identity:uri-id<-provision-id (provision-id corpus article))))
+  (eli-art-uri (corpus-eli-prefix corpus)
+               (orchestrator.identity:uri-id<-provision-id
+                (provision-id corpus article))))
 
 (defun %article-order-key (a)
   "(βάση . τακτική-θέση) — από το typed slot· [Δ³] χωρίς ταυτότητα ⇒ σφάλμα."

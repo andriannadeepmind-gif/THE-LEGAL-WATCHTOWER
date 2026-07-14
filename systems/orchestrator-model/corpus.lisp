@@ -21,7 +21,7 @@
     :documentation "Short identifier (e.g., 'constitution')")
    
    (legal-body-id
-    :accessor corpus-legal-body-id
+    :reader corpus-legal-body-id
     :initarg :legal-body-id
     :initform nil
     :documentation "[0088 Φ6γ-Δ³] Η TYPED ταυτότητα του νομικού σώματος —
@@ -93,10 +93,12 @@
   (:metaclass corpus-class)
   (:documentation "Legal corpus container"))
 
-(defmethod initialize-instance :after ((corpus corpus) &key)
-  "[0088 Φ6γ-Δ³] Το legal-body-id είναι TYPED ή τίποτα: string/ELI URI/
-   οτιδήποτε μη-typed απορρίπτεται ΣΤΗ ΓΕΝΝΗΣΗ — body-id/ELI drift είναι
-   δομικά αδύνατο γιατί η ταυτότητα δεν μπορεί καν να ΕΙΝΑΙ URI string."
+(defmethod shared-initialize :after ((corpus corpus) slot-names &key)
+  "[0088 Φ6γ-Δ³ + κριτής A#5] Το legal-body-id είναι TYPED ή τίποτα, σε
+   ΚΑΘΕ δίαυλο αρχικοποίησης (make/reinitialize/change-class) — και το
+   slot είναι :reader (κανένα δημόσιο setf): αντικείμενο corpus με string
+   body δεν μπορεί να ΥΠΑΡΞΕΙ, όχι απλώς να γεννηθεί."
+  (declare (ignore slot-names))
   (let ((body (and (slot-boundp corpus 'legal-body-id)
                    (slot-value corpus 'legal-body-id))))
     (when (and body (not (orchestrator.identity:body-id-p body)))

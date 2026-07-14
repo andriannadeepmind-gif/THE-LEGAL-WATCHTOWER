@@ -841,12 +841,20 @@
                   (unless entries
                     (error 'invalid-condition
                            :reason "μητρώο instrument-kinds: κενό"))
-                  (dolist (e entries entries)
+                  (dolist (e entries)
                     (unless (and (keywordp (getf e :kind))
                                  (keywordp (getf e :authority-class))
                                  (consp (getf e :evidence)))
                       (error 'invalid-condition
-                             :reason (format nil "μητρώο instrument-kinds: ελλιπής typed εγγραφή ~S — κάθε kind απαιτεί :authority-class + :evidence schema" e))))))))))
+                             :reason (format nil "μητρώο instrument-kinds: ελλιπής typed εγγραφή ~S — κάθε kind απαιτεί :authority-class + :evidence schema" e))))
+                  ;; [κριτής A#12] μοναδικότητα kinds — διπλή εγγραφή δεν
+                  ;; επιλύεται σιωπηλά στην πρώτη
+                  (unless (= (length entries)
+                             (length (remove-duplicates
+                                      entries :key (lambda (e) (getf e :kind)))))
+                    (error 'invalid-condition
+                           :reason "μητρώο instrument-kinds: διπλότυπο kind"))
+                  entries))))))
 
 (defun instrument-kinds ()
   "Τα keys του typed μητρώου — για membership ελέγχους γραμματικής."
@@ -975,8 +983,12 @@
 ;;; το sat είναι ΚΑΘΑΡΗ συνάρτηση, δεν αγγίζει χρόνο εγγραφής.
 
 (defun %validate-condition-event (e)
-  "[Φ6γ-Δ³] TYPED επικύρωση ΚΑΘΕ event πριν μπει στην trusted αποτίμηση —
-   raw plists με άκυρο kind/outcome/at/ref δεν φτάνουν ΠΟΤΕ στο sat."
+  "[Φ6γ-Δ³ + κριτής A#12] TYPED επικύρωση ΚΑΘΕ event πριν μπει στην
+   trusted αποτίμηση — raw plists με άκυρο kind/outcome/at/ref δεν φτάνουν
+   ΠΟΤΕ στο sat· το :condition-id (αν υπάρχει) πρέπει να είναι μη κενό
+   string· το :evidence (αν υπάρχει) ΕΠΙΚΥΡΩΝΕΤΑΙ κατά το evidence schema
+   του kind στο μητρώο /2 — τα schemas ΔΕΝ είναι διακοσμητικά. Πλήρης
+   υποχρεωτικότητα evidence: στην Π2 έδρα record-condition-event! (spec §3.2)."
   (unless (and (consp e)
                (member (getf e :kind) (instrument-kinds))
                (stringp (getf e :ref)) (plusp (length (getf e :ref)))
@@ -984,6 +996,18 @@
                (legal-date-p (getf e :at)))
     (error 'invalid-condition
            :reason (format nil "άκυρο condition event ~S — απαιτείται (:kind∈μητρώο :ref string+ :outcome :satisfied|:refuted :at legal-date)" e)))
+  (let ((cid (getf e :condition-id)))
+    (when (and cid (not (and (stringp cid) (plusp (length cid)))))
+      (error 'invalid-condition
+             :reason (format nil "άκυρο :condition-id ~S σε event" cid))))
+  (let ((ev (getf e :evidence)))
+    (when ev
+      (let ((allowed (getf (instrument-kind-entry (getf e :kind)) :evidence)))
+        (unless (and (consp ev)
+                     (some (lambda (k) (getf ev k)) allowed))
+          (error 'invalid-condition
+                 :reason (format nil "evidence ~S εκτός schema ~S του kind ~S — το μητρώο /2 ΕΠΙΒΑΛΛΕΤΑΙ"
+                                 ev allowed (getf e :kind)))))))
   e)
 
 (defun %sat-instrument (kind ref live-events condition-id)
@@ -1019,6 +1043,15 @@
    κανόνες κατά spec §1.2. [Φ6γ-Δ³] ΚΑΘΕ event επικυρώνεται typed πριν την
    αποτίμηση· με CONDITION-ID τα events δένονται δομικά στη δήλωση."
   (mapc #'%validate-condition-event live-events)
+  ;; [κριτής A#9] Η μείξη είναι ΣΦΑΛΜΑ και προς τις δύο κατευθύνσεις:
+  ;; σε ΜΗ-scoped αποτίμηση, event που φέρει :condition-id απορρίπτεται —
+  ;; scoped δεδομένα δεν «μετράνε» ποτέ σιωπηλά εκτός του cid τους. Η
+  ;; παραγωγική είσοδος (Π2 condition-status) είναι ΠΑΝΤΑ cid-scoped.
+  (when (null condition-id)
+    (dolist (e live-events)
+      (when (getf e :condition-id)
+        (error 'invalid-condition
+               :reason (format nil "event με :condition-id σε ΜΗ-scoped αποτίμηση: ~S — δώσε :condition-id στο sat ή αφαίρεσε το πεδίο" e)))))
   (%sat-1 ast live-events condition-id))
 
 (defun %sat-1 (ast live-events condition-id)

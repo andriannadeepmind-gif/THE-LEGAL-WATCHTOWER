@@ -665,3 +665,23 @@ Proof: article-identity 49/49 · temporal-semantics 31/31 · corpus-identity
 | Β-7 MINOR: generic :event θυρίδα | §2.1: κριτήριο + counter generic_event_uses ανά release |
 | Β-8 MINOR: context packs αόριστα | 0090 §3: σταθερή λίστα πεδίων ανά βαθμίδα + κανόνας περικοπής + gate field-list conformance |
 | Β-9 MINOR: verified-integration χωρίς ταυτότητα δράστη | 0090 §7: κορυφαία βαθμίδα = authenticated ∧ verifying· δηλώσεις μόνο από αυθεντικοποιημένες βαθμίδες |
+
+## [0088 Δ³-κριτής Α] Αντιπαλική επιθεώρηση RUNTIME (diff 13ffb7a6..6c7a1271, εμπειρικά εκτελεσμένα σενάρια): 1 WRONG + 7 SERIOUS + 3 MINOR — κλείσιμο
+
+| Εύρημα | Κλείσιμο |
+|---|---|
+| #1 WRONG: clone σπάει για lettered ≥10 (number πριν το label ⇒ ενδιάμεση ασυνεπής κατάσταση) | clone-article = ΕΝΑ βήμα make-instance (number+label ΜΑΖΙ)· lock A#1 (70001,«70Α») |
+| #2 SERIOUS: setf number σε labeled = σιωπηλό no-op, αποκλίνον ζεύγος αναπαραστάσιμο | ΣΥΝΟΧΗ number↔ταυτότητα ΣΤΟΝ δίαυλο εγγραφής: number = βάση Ή synthetic-article-number(βάση,θέση) — ΝΕΑ έδρα του σχήματος (ο json-adapter την ΚΑΤΑΝΑΛΩΝΕΙ πλέον, δεν το ξαναορίζει)· αποκλίνον ζεύγος δεν ΥΠΑΡΧΕΙ (γέννηση/setf/clone/reinitialize ⇒ σφάλμα)· locks A#2/A#2β |
+| #3 SERIOUS: reinitialize-instance = stale κανάλι | initialize-instance ⇒ **shared-initialize :after** (καλύπτει make/reinitialize/change-class/update-instance-*) και σε article ΚΑΙ σε corpus ΚΑΙ σε IIR· locks A#3/A#3β |
+| #4 SERIOUS: IIR injectable+mutable | IIR: ΚΑΝΕΝΑ :identity initarg, shared-initialize :after + number/label :after hooks — ίδιο καθεστώς με article· ΕΝΑΣ κοινός δίαυλος %set-identity-slot! (με τον ίδιο έλεγχο συνοχής)· locks A#4/A#4β |
+| #5 SERIOUS: corpus setf body δεκτό string | corpus-legal-body-id ⇒ :reader (κανένα δημόσιο setf) + shared-initialize validation· lock A#5 |
+| #6 MINOR: συνθετικοί ≤9999 χωρίς label = ψευδοταυτότητα | ΔΗΛΩΜΕΝΟ όριο: 5001 χωρίς label είναι μη διακρίσιμος μηχανικά από γνήσιο άρθρο 5001 — με label ο έλεγχος συνοχής πιάνει ΚΑΘΕ απόκλιση· πλήρης θάνατος με τον θάνατο των συνθετικών (εγκρινόμενο κύμα) |
+| #8 MINOR: declared-body σιωπηλό default config | ΔΗΛΩΜΕΝΟ: κληρονομεί τη σημασιολογία ενεργού config του config-accessor (προϋπάρχουσα)· η έδρα καλείται ΠΑΝΤΑ μετά από select-corpus στα παραγωγικά μονοπάτια |
+| #9 SERIOUS: cid-binding opt-in ⇒ σιωπηλή διαρροή στο default | Μείξη = ΣΦΑΛΜΑ αμφίδρομα: ΜΗ-scoped sat ΑΠΟΡΡΙΠΤΕΙ cid-φέροντα events (η διαρροή δεν μπορεί να συμβεί σιωπηλά)· scoped απαιτεί δεμένα· :condition-id validated· lock ④ο· παραγωγική είσοδος Π2 = πάντα scoped (spec) |
+| #11 SERIOUS: τεστ-ταυτολογία ②γ | Πραγματικό τεστ: id ≠ hash του ΠΡΟ-tag σχήματος (cons class ast) — αφαίρεση tag σπάει το τεστ |
+| #12 SERIOUS: evidence schemas διακοσμητικά + διπλότυπα kinds | %validate-condition-event ΕΠΙΒΑΛΛΕΙ το schema όταν υπάρχει :evidence (locks ④π/④ρ)· uniqueness gate στο μητρώο· ΠΛΗΡΗΣ υποχρεωτικότητα στο Π2 record-condition-event! (spec §3.2, δηλωμένο) |
+| #13 SERIOUS: 5η σύνθεση /art/ + νεκρός API όγκος | ΝΕΑ ΜΙΑ έδρα join eli-art-uri — τη διατρέχουν build-eli-article-uri, FRBR root/work, provision-uri, CLI manifests (×3): 5 inline joins ⇒ 1 έδρα· lock A#13· provision-id/uri = έδρες GAAF/Φ8 (δηλωμένοι επερχόμενοι καταναλωτές) |
+| #14 MINOR: clone t-branch raw δίαυλος | Whitelist initargs — άγνωστο slot ⇒ typed σφάλμα, ΚΑΝΕΝΑ slot-value κανάλι |
+| (α)(2)/(α)(4)/(α)(6) | ΚΑΝΕΝΑ ΕΥΡΗΜΑ (επιβεβαίωση κριτή — initargs, declared-body ισοδυναμία στα 6 configs, canon idempotent/ολικό κλειδί) |
+
+Proof μετά τα κλεισίματα: article-identity **59/59** · temporal-semantics **34/34** · corpus-identity 55/55 · legal-identity 19/19 · kernel-conformance 107/107 · artifact-census 21/21 · version-graph 18/18 · graph-import-parity 31/31 · as-known-e2e 26/26 — 0 failed.

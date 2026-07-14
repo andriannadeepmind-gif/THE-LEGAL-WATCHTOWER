@@ -147,42 +147,28 @@
   
   Returns:
     Cloned article instance"
-  (let ((new-article (make-instance 'article)))
-    ;; Copy all slots
-    (when (slot-boundp article 'number)
-      (setf (article-number new-article) (article-number article)))
-    ;; P1b [0052]#Α7: το label ΕΙΝΑΙ ταυτότητα — ο κλώνος χωρίς label έχανε
-    ;; το επίθημα (100Α ⇒ 100, σιωπηλή σύμπτυξη ταυτότητας).
-    (when (slot-boundp article 'label)
-      (setf (article-label new-article) (article-label article)))
-    ;; [0088 Φ6γ-Δ³] το identity ΔΕΝ αντιγράφεται: είναι ΠΑΡΑΓΩΓΟ και έχει
-    ;; ήδη επανυπολογιστεί από τα setf number/label πιο πάνω — αντιγραφή θα
-    ;; ήταν δεύτερος δίαυλος εγγραφής.
-    (when (slot-boundp article 'title)
-      (setf (article-title new-article) (article-title article)))
-    (when (slot-boundp article 'content)
-      (setf (article-content new-article) (article-content article)))
-    (when (slot-boundp article 'state)
-      (setf (article-processing-state new-article) (article-processing-state article)))
-    (when (slot-boundp article 'metadata)
-      (setf (article-metadata new-article) (copy-list (article-metadata article))))
-    
-    ;; [0088 κριτής-δημιουργού #3] Overrides ΜΕΣΩ των accessors — τα :after
-    ;; invariants (number/label ⇒ επανυπολογισμός identity) ισχύουν ΚΑΙ στον
-    ;; κλώνο· το raw slot-value bypass ΠΕΘΑΝΕ για identity-φέροντα slots.
-    ;; Override του ΠΑΡΑΓΩΓΟΥ identity-segment απαγορεύεται ρητά (fail-closed):
-    ;; η ταυτότητα προκύπτει ΜΟΝΟ από την έδρα, ποτέ από τον καλούντα.
-    (loop for (slot value) on override-slots by #'cddr
-          do (case slot
-               (identity-segment
-                (error 'orchestrator.spec:validation-error
-                       :message "clone-article: το identity-segment είναι ΠΑΡΑΓΩΓΟ της έδρας — override απαγορεύεται· δώσε number/label"))
-               (number (setf (article-number new-article) value))
-               (label (setf (article-label new-article) value))
-               (title (setf (article-title new-article) value))
-               (content (setf (article-content new-article) value))
-               (state (setf (article-processing-state new-article) value))
-               (metadata (setf (article-metadata new-article) value))
-               (t (setf (slot-value new-article slot) value))))
-
-    new-article))
+  ;; [Δ³-κριτής A#1/#14] ΕΝΑ βήμα κατασκευής: number+label μπαίνουν ΜΑΖΙ στο
+  ;; make-instance — ο lettered κλώνος (70001,«70Α») δεν περνά ΠΟΤΕ από
+  ;; ενδιάμεση ασυνεπή κατάσταση (number-χωρίς-label που έσκαγε). Overrides
+  ;; ΜΟΝΟ από whitelist initargs· άγνωστο slot ⇒ typed σφάλμα — ΚΑΝΕΝΑ raw
+  ;; slot-value κανάλι (ούτε t-branch). Η ταυτότητα είναι ΠΑΡΑΓΩΓΗ: δεν
+  ;; αντιγράφεται, δεν γίνεται override.
+  (let ((args '()))
+    (flet ((put (k v) (setf (getf args k) v)))
+      (when (slot-boundp article 'number) (put :number (article-number article)))
+      (when (slot-boundp article 'label) (put :label (article-label article)))
+      (when (slot-boundp article 'title) (put :title (article-title article)))
+      (when (slot-boundp article 'content) (put :content (article-content article)))
+      (when (slot-boundp article 'state) (put :state (article-processing-state article)))
+      (when (slot-boundp article 'metadata) (put :metadata (copy-list (article-metadata article))))
+      (loop for (slot value) on override-slots by #'cddr
+            do (case slot
+                 (number (put :number value))
+                 (label (put :label value))
+                 (title (put :title value))
+                 (content (put :content value))
+                 (state (put :state value))
+                 (metadata (put :metadata value))
+                 (t (error 'orchestrator.spec:validation-error
+                           :message (format nil "clone-article: μη επιτρεπτό override slot ~S — μόνο {number label title content state metadata}· η ταυτότητα είναι ΠΑΡΑΓΩΓΗ της έδρας" slot))))))
+    (apply #'make-instance 'article args)))

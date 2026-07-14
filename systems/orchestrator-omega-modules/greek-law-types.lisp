@@ -248,8 +248,15 @@
 
    Returns: \"https://.../eli/gr/{type}/{year}/art/{N}{suffix}\"
 
-   Delegates the article id to the single source of truth ARTICLE-URI-ID."
-  (format nil "~A/art/~A" eli-prefix (article-uri-id article-number suffix-or-label)))
+   Delegates the article id to the single source of truth ARTICLE-URI-ID
+   and the join to the ONE seat ELI-ART-URI."
+  (eli-art-uri eli-prefix (article-uri-id article-number suffix-or-label)))
+
+(defun eli-art-uri (eli-prefix uri-id)
+  "[Δ³-κριτής A#13] Η ΜΙΑ έδρα σύνθεσης {eli-prefix}/art/{uri-id} — ΚΑΘΕ
+   παραγωγός article URI (FRBR root/work, provision-uri, CLI manifests,
+   build-eli-article-uri) περνά από εδώ· ο κανόνας join δεν ξαναγράφεται."
+  (format nil "~A/art/~A" eli-prefix uri-id))
 
 ;;; ============================================================
 ;;; EXPORTS

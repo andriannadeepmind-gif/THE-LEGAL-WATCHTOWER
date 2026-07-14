@@ -46,6 +46,8 @@
    #:provision-id
    #:provision-uri
    #:corpus-legal-body-id
+   #:eli-art-uri
+   #:synthetic-article-number
    #:article-base-number
    #:article-label-suffix
    #:article-suffix-ordinal

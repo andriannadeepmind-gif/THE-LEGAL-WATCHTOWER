@@ -208,6 +208,50 @@
                     nil)
            (orchestrator.spec:validation-error () t))))
 
+(format t "~%== [Δ³-κριτής A] lettered clone ≥10 · συνοχή number↔label · reinitialize · IIR · corpus setf ==~%")
+(check "A#1: clone lettered με βάση ≥10 (70001,«70Α») ΔΟΥΛΕΥΕΙ — ένα βήμα κατασκευής"
+       (let ((c (clone-article (make-article :number 70001 :label "70Α" :title "x"))))
+         (and (string= "70Α" (article-uri c))
+              (equal '(:article 70 1) (article-identity c)))))
+(check "A#2: (setf article-number) ασυνεπές με label ⇒ typed ΣΦΑΛΜΑ (όχι σιωπηλό no-op)"
+       (let ((a (make-article :number 5001 :label "5Α")))
+         (handler-case (progn (setf (article-number a) 6001) nil)
+           (orchestrator.spec:validation-error () t))))
+(check "A#2β: γέννηση με ασυνεπές ζεύγος (6001,«5Α») ⇒ ΔΕΝ κατασκευάζεται"
+       (handler-case (progn (make-article :number 6001 :label "5Α") nil)
+         (orchestrator.spec:validation-error () t)))
+(check "A#3: reinitialize-instance με ΣΥΝΕΠΕΣ ζεύγος ⇒ ταυτότητα ΠΑΡΑΚΟΛΟΥΘΕΙ"
+       (let ((a (make-article :number 5001 :label "5Α")))
+         (reinitialize-instance a :number 9001 :label "9Α")
+         (equal '(:article 9 1) (article-identity a))))
+(check "A#3β: reinitialize-instance που θα άφηνε ασυνεπές ζεύγος ⇒ ΣΦΑΛΜΑ (κανένα stale κανάλι)"
+       (let ((a (make-article :number 5001 :label "5Α")))
+         (handler-case (progn (reinitialize-instance a :label "9Α") nil)
+           (orchestrator.spec:validation-error () t))))
+(check "A#4: IIR :identity initarg ΔΕΝ ΥΠΑΡΧΕΙ (injection αδύνατο και στο trusted path)"
+       (handler-case
+           (progn (make-instance 'normalized-article-input
+                                 :article-number 5 :article-label "5"
+                                 :identity '(:article 99 0))
+                  nil)
+         (error () t)))
+(check "A#4β: IIR (setf article-label) ⇒ ταυτότητα παρακολουθεί (όχι stale)"
+       (let ((iir (make-normalized-article-input
+                   :article-number 5 :article-label "5Α" :article-title "τ"
+                   :article-content "κ" :source-type :json :source-path "p"
+                   :extraction-timestamp "2026-01-01T00:00:00Z")))
+         (setf (article-label iir) "5Β")
+         (equal '(:article 5 2) (article-identity iir))))
+(check "A#5: κανένα δημόσιο (setf corpus-legal-body-id) — string body ΔΕΝ μπορεί να ΥΠΑΡΞΕΙ"
+       (not (fboundp '(setf corpus-legal-body-id))))
+(check "A#13: eli-art-uri = Η ΜΙΑ έδρα join· build-eli-article-uri τη διατρέχει"
+       (and (string= "https://e/art/5Α" (eli-art-uri "https://e" "5Α"))
+            (string= (build-eli-article-uri "https://e" 5 "Α")
+                     (eli-art-uri "https://e" (article-uri-id 5 "Α")))))
+(check "A: synthetic-article-number = Η ΜΙΑ έδρα σχήματος (5Α⇒5001, 272Ε⇒272005)"
+       (and (= 5001 (synthetic-article-number 5 1))
+            (= 272005 (synthetic-article-number 272 5))))
+
 (format t "~%========================================~%")
 (format t "Article identity tests: ~D passed, ~D failed~%" *pass* *fail*)
 (format t "========================================~%")

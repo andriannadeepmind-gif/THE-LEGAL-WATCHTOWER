@@ -21,15 +21,14 @@
                   :type string
                   :documentation "Full article label, e.g. '5' or '5Α' or '9Α'")
 
-   ;; [Δ³] :reader ΜΟΝΟ — κανένα δημόσιο (setf article-identity) πουθενά
+   ;; [Δ³-κριτής A#4] ΙΔΙΟ καθεστώς με το article: ΠΑΡΑΓΩΓΗ, όχι injectable
+   ;; (ΚΑΝΕΝΑ :identity initarg), όχι mutable (reader + :after hooks στα
+   ;; number/label) — το IIR είναι trusted path προς το FRBR.
    (identity-segment :reader article-identity
-                     :initarg :identity
                      :initform nil
-                     :documentation "[0088 Φ6γ-Α] TYPED ταυτότητα από την έδρα
-                      orchestrator.identity: article-segment (:article ΒΑΣΗ
-                      ΤΑΚΤΙΚΗ-ΘΕΣΗ), υπολογισμένο στην κατασκευή από το
-                      resolved label — το IIR κουβαλά την ταυτότητα typed
-                      μέσα στο FRBR μονοπάτι.")
+                     :documentation "[0088 Φ6γ-Δ³] TYPED ταυτότητα από την
+                      έδρα — υπολογίζεται ΠΑΝΤΑ σε shared-initialize και
+                      παρακολουθεί number/label· ποτέ από τον καλούντα.")
 
    (article-title :accessor article-title
                   :initarg :article-title
@@ -83,6 +82,26 @@
 ;;; CONSTRUCTOR
 ;;; ============================================================
 
+(defun %recompute-iir-identity! (iir)
+  (%set-identity-slot! iir
+                       (and (slot-boundp iir 'article-label) (article-label iir))
+                       (and (slot-boundp iir 'article-number) (article-number iir))
+                       "normalized-article-input"))
+
+(defmethod shared-initialize :after ((iir normalized-article-input) slot-names &key)
+  "[Δ³-κριτής A#4] Ταυτότητα ΠΑΡΑΓΩΓΗ σε ΚΑΘΕ δίαυλο αρχικοποίησης —
+   injection/stale δομικά αδύνατα και στο IIR (trusted path προς FRBR)."
+  (declare (ignore slot-names))
+  (%recompute-iir-identity! iir))
+
+(defmethod (setf article-number) :after (new-number (iir normalized-article-input))
+  (declare (ignore new-number))
+  (%recompute-iir-identity! iir))
+
+(defmethod (setf article-label) :after (new-label (iir normalized-article-input))
+  (declare (ignore new-label))
+  (%recompute-iir-identity! iir))
+
 (defun make-normalized-article-input (&key
                                       article-number
                                       article-label
@@ -130,9 +149,8 @@
     (make-instance 'normalized-article-input
                    :article-number article-number
                    :article-label resolved-label
-                   ;; [0088 Φ6γ-Α] typed ταυτότητα ΣΤΗ γέννηση του IIR — από
-                   ;; την έδρα, με το ΙΔΙΟ συμβόλαιο σφάλματος του builder
-                   :identity (%article-identity-segment-for resolved-label article-number)
+                   ;; [Δ³] η ταυτότητα υπολογίζεται στη shared-initialize
+                   ;; έδρα — κανένα :identity initarg δεν υπάρχει πλέον
                    :article-title normalized-title
                    :article-content normalized-content
                    :source-type source-type
