@@ -295,3 +295,34 @@ HTTP boundary (καμία injection, %parse-q-value ασφαλής). Ευρήμ�
 **Φ5-πλήρες**: ΔΕΝ ανακηρύσσεται πλήρες πριν owner docker proof (νέα gates
 as-known-e2e + όλα τα υπόλοιπα) στο μηχάνημα του δημιουργού. Επόμενο: Φ6 θάνατοι
 adapters.
+
+---
+
+## [0088 Φ6α] ΘΑΝΑΤΟΙ TEMPORAL ΝΗΣΙΩΝ — 2026-07-14 (commit 17c81f59)
+
+Κατά την εντολή Φ6 «καθένας με grep-gate 0 καταναλωτών»:
+
+1. **eli-temporal-metadata — ΟΛΟΚΛΗΡΗ η έδρα διαγράφηκε** (224 γραμμές).
+   Grep-gate: μοναδική «χρήση» = σιωπηλό fallback του consolidate stage στο
+   `*amendments-config*` που ΚΑΝΕΙΣ δεν έγραφε πια (νεκρή δεύτερη πηγή αλήθειας
+   δίπλα στο config). Το consolidate διαβάζει ΜΟΝΟ `versioning.amendments`.
+2. **legal-temporal — η L3 versioning μηχανή διαγράφηκε** (temporal-version,
+   versions-in-force-at, point-in-time(-proof), temporal-anomalies,
+   in-force-facts, allen-relation, defeasible ultra-activity rule)· grep-gate
+   0 καταναλωτές. Η διτεμπορική σημασιολογία = ΜΙΑ έδρα (version-graph).
+   Μένει ΜΟΝΟ ημερολογιακή αριθμητική (date-plus-days/date<=/date-in-interval-p
+   — ζωντανοί καταναλωτές: legal-strategy Σ9, knowledge-graph validity).
+3. Locks ⑨/⑨β/⑨γ στο gated as-known-e2e: αρχείο+πακέτο ανύπαρκτα, κανένα
+   fallback, μηχανή νεκρή/αριθμητική ζωντανή.
+
+Proofs: corpus-identity 55/55 · version-graph 18/18 · parity 31/31 ·
+receipt 15/15 · corpus-service 53/53 · as-known-e2e 26/26. Σύνολο: −412 γραμμές.
+
+**Φ6β (επόμενο, δηλωμένο)**: θάνατος adapter `orchestrator.article-id` —
+ΔΕΝ είναι μηχανικός: δεμένος σε θεσμικά μητρώα (capability «ταυτότητα-άρθρων»
+στο evolution-gate, self-reflection whitelist, provenance-gate trace, gates
+⑥-⑨ του component-gate που κλειδώνουν ΜΕΣΩ του adapter). Ανώτατη μορφή: gates
++ μητρώα δείχνουν απευθείας στην identity έδρα, μετά ο adapter πεθαίνει.
+**Φ6γ (δηλωμένο, το μεγάλο)**: article-number/label readers (58 αρχεία) +
+integer get-article — απαιτούν το slot-restructure (identity slot στο article)·
+χωριστό βήμα με δικό του σχέδιο & proof.
