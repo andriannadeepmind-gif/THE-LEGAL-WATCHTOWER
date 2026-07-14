@@ -65,7 +65,7 @@ jobs:
         # Builds the gate stage; its RUN step emits a signed corpus from Lisp and
         # verifies it with deployment/verify/{verify.py,verify.mjs}. A mismatch
         # (or a tampered byte slipping through) fails the build.
-        docker build --target verifier-conformance --tag orchestrator:verifier-conformance .
+        docker build --build-arg GIT_COMMIT=${{ github.sha }} --target verifier-conformance --tag orchestrator:verifier-conformance .
 
   standalone-tests:
     needs: [dependency-policy-gate]
@@ -84,7 +84,7 @@ jobs:
         # Builds the standalone-test stage. Each tests/*-test.lisp runs under
         # docker/run-standalone-test.lisp and calls (sb-ext:exit 1) on any failed
         # check, so a single failing assertion fails this build — and the CI job.
-        docker build --target standalone-test --tag orchestrator:standalone-test .
+        docker build --build-arg GIT_COMMIT=${{ github.sha }} --target standalone-test --tag orchestrator:standalone-test .
 
   build-and-test:
     needs: [dependency-policy-gate, verifier-conformance, standalone-tests]
@@ -109,7 +109,7 @@ jobs:
     - name: 📆 Build Docker image
       id: build
       run: |
-        docker build --cache-from type=local,src=/tmp/.buildx-cache --tag orchestrator:test .
+        docker build --build-arg GIT_COMMIT=${{ github.sha }} --cache-from type=local,src=/tmp/.buildx-cache --tag orchestrator:test .
         echo "digest=$(docker inspect orchestrator:test --format='{{.Id}}')" >> $GITHUB_OUTPUT
 
     - name: 📦 Generate SBOM (supply-chain manifest)

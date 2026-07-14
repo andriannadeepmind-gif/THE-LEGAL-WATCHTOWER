@@ -158,11 +158,17 @@ FROM builder AS standalone-test
 # αλυσίδας builder → standalone-test → verifier-conformance → runtime:
 # runtime image ΔΕΝ κατασκευάζεται χωρίς να έχουν περάσει ΟΛΑ τα gates,
 # και το machine-readable proof manifest ταξιδεύει ΜΕΣΑ στο runtime.
-ARG GIT_COMMIT=unspecified-pass-build-arg
+ARG GIT_COMMIT
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
+# [Φ7-HARDENING #8] ΑΚΥΡΟ/ΑΠΡΟΣΔΙΟΡΙΣΤΟ GIT_COMMIT = build failure: το proof
+# χωρίς δεσμευμένο 40-hex HEAD δεν είναι proof. (Owner/CI: --build-arg
+# GIT_COMMIT=$(git rev-parse HEAD) σε ΚΑΘΑΡΟ δέντρο.)
+RUN echo "${GIT_COMMIT}" | grep -Eq '^[0-9a-f]{40}$' \
+    || { echo "FATAL: GIT_COMMIT build-arg πρέπει να είναι το ακριβές 40-hex clean HEAD (δόθηκε: '${GIT_COMMIT}')"; exit 1; }
+
 COPY tests/ /app/tests/
-COPY docker/run-standalone-test.lisp docker/sha256.lisp docker/dep-hash.lisp /app/docker/
+COPY docker/run-standalone-test.lisp docker/sha256.lisp docker/dep-hash.lisp docker/verify-proof-manifest.py /app/docker/
 
 # Each script (sb-ext:exit 1 on failure) fails the build if any check fails.
 # The four *-authority/time FiveAM suites are now gated too: run-standalone-test
@@ -191,6 +197,7 @@ RUN set -e; \
              cross-language-verifier; do \
       echo "=== running $t-test.lisp ==="; \
       mkdir -p /app/proof/logs; \
+      echo "$t" >> /app/proof/suites-run.txt; \
       sbcl --script /app/docker/run-standalone-test.lisp "/app/tests/$t-test.lisp" 2>&1 \
         | tee "/app/proof/logs/$t.log"; \
     done
@@ -201,7 +208,7 @@ RUN set -e; \
 RUN set -e; \
     CORE=$(sha256sum /app/orchestrator.core | cut -d' ' -f1); \
     CM=$(sha256sum /app/component-manifest.sexp | cut -d' ' -f1); \
-    SRC=$(find /app/source /app/systems /app/tests /app/deployment/verify -type f | LC_ALL=C sort | xargs sha256sum | sha256sum | cut -d' ' -f1); \
+    SRC=$(find /app/source /app/systems /app/tests /app/deployment/verify /app/configs /app/deployment/data /app/deployment/knowledge /app/input /app/docker -type f | LC_ALL=C sort | xargs sha256sum | sha256sum | cut -d' ' -f1); \
     LOGS=$(cat /app/proof/logs/*.log | sha256sum | cut -d' ' -f1); \
     { echo '{'; \
       echo "  \"proof\": \"lawmax/standalone-proof/1\","; \
@@ -239,7 +246,7 @@ FROM standalone-test AS verifier-conformance
 
 # [0088 assurance] Δεύτερος υποχρεωτικός κρίκος: κληρονομεί το ΠΕΡΑΣΜΕΝΟ
 # standalone-test (tests/logs ήδη μέσα) και προσθέτει τα cross-language gates.
-ARG GIT_COMMIT=unspecified-pass-build-arg
+ARG GIT_COMMIT
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
@@ -286,6 +293,12 @@ RUN set -e; \
       echo '  "gates": ["cross-language-verifier", "release-vector-conformance", "verify-canonical", "semantic-validity", "temporal-verifier"]'; \
       echo '}'; \
     } > /app/proof/verifier-proof.json
+
+# [Φ7-HARDENING #8] Dedicated verifier του proof manifest ΜΕΣΑ στο build:
+# ακριβές αναμενόμενο suite set (ΚΑΘΕ tests/*-test.lisp πλην δηλωμένων
+# εξαιρέσεων), κάθε σουίτα με μη κενό parseable failed=0, 40-hex commit,
+# 64-hex hashes, ακριβή gates — αλλιώς ΤΟ RUNTIME ΔΕΝ ΧΤΙΖΕΤΑΙ.
+RUN python3 /app/docker/verify-proof-manifest.py /app/proof /app/tests
 
 CMD ["echo", "Cross-language verifier conformance passed"]
 
@@ -356,18 +369,18 @@ WORKDIR /app
 COPY --from=verifier-conformance /app/orchestrator.core /app/orchestrator.core
 COPY --from=verifier-conformance /app/proof/ /app/proof/
 # Το παγωμένο manifest ταυτοτήτων συστατικών ταξιδεύει ΜΑΖΙ με το εκτελέσιμο
-COPY --from=builder /app/component-manifest.sexp /app/component-manifest.sexp
+COPY --from=verifier-conformance /app/component-manifest.sexp /app/component-manifest.sexp
 
 # Copy essential runtime files
-COPY --from=builder /app/configs/ /app/configs/
-COPY --from=builder /app/deployment/data/ /app/deployment/data/
-COPY --from=builder /app/deployment/knowledge/ /app/deployment/knowledge/
-COPY --from=builder /app/deployment/self/ /app/deployment/self/
+COPY --from=verifier-conformance /app/configs/ /app/configs/
+COPY --from=verifier-conformance /app/deployment/data/ /app/deployment/data/
+COPY --from=verifier-conformance /app/deployment/knowledge/ /app/deployment/knowledge/
+COPY --from=verifier-conformance /app/deployment/self/ /app/deployment/self/
 # Public verifier assets + PCL-1 spec — published into the static site by
 # --emit-site so the advertised /verify/ and spec URLs actually resolve.
-COPY --from=builder /app/deployment/verify/ /app/deployment/verify/
-COPY --from=builder /app/deployment/PROOF-CARRYING-LAW.md /app/deployment/PROOF-CARRYING-LAW.md
-COPY --from=builder /app/input/ /app/input/
+COPY --from=verifier-conformance /app/deployment/verify/ /app/deployment/verify/
+COPY --from=verifier-conformance /app/deployment/PROOF-CARRYING-LAW.md /app/deployment/PROOF-CARRYING-LAW.md
+COPY --from=verifier-conformance /app/input/ /app/input/
 COPY docker/entrypoint.lisp /app/entrypoint.lisp
 COPY docker/sbom.json /app/sbom.json
 
