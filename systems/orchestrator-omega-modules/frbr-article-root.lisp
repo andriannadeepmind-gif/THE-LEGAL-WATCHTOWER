@@ -154,23 +154,21 @@
          ;; ΔΟΜΙΚΑ να υπάρξει μέσα στο FRBR μοντέλο — κάθε renderer των slots
          ;; βλέπει μόνο την αληθινή ταυτότητα. URI/eli-id: μέσα από τη ΜΙΑ
          ;; έδρα (article-uri-id / pad-article-id), όχι τοπική συγκόλληση.
-         ;; [0088 Φ6γ-Α2] Με typed IDENTITY-SEGMENT (από IIR/έδρα): base/suffix/
-         ;; προβολές ΑΠΟ ΤΟ SEGMENT — ίδια format strings, byte-identical·
-         ;; χωρίς segment: legacy όριο-κανονικοποίηση (πεθαίνει στους Δ-θανάτους).
-         (base (if identity-segment (second identity-segment)
-                   (article-base-number article-number article-suffix)))
-         (suffix (if identity-segment
-                     (orchestrator.identity:ordinal-suffix
-                      (third identity-segment) :sequence :upper)
-                     (article-label-suffix article-suffix)))
-         (uid (if identity-segment
-                  (format nil "~D~A" base suffix)
-                  (article-uri-id article-number article-suffix)))
+         ;; [0088 Φ6γ-Δ] ΤΟ SEGMENT ΕΙΝΑΙ ΥΠΟΧΡΕΩΤΙΚΟ: όταν δεν δοθεί από
+         ;; IIR/builder, παράγεται στο όριο από τη ΜΙΑ έδρα
+         ;; (article-identity-segment) — καμία raw παράλληλη παραγωγή
+         ;; base/suffix/uid/eli-id δεν υπάρχει πλέον. Άρθρο χωρίς νόμιμη
+         ;; ταυτότητα δεν μπορεί ΔΟΜΙΚΑ να μπει στο FRBR μοντέλο.
+         (seg (or identity-segment
+                  (article-identity-segment article-number article-suffix)
+                  (error 'orchestrator.spec:validation-error
+                         :message (format nil "make-frbr-article-root: άρθρο χωρίς νόμιμη ταυτότητα (number=~S suffix=~S)"
+                                          article-number article-suffix))))
+         (base (second seg))
+         (suffix (orchestrator.identity:ordinal-suffix (third seg) :sequence :upper))
+         (uid (format nil "~D~A" base suffix))
          (uri (format nil "~A/art/~A" eli-prefix uid))
-         (eli-id (format nil "gr-~A-~A-art-~A" document-type year
-                         (if identity-segment
-                             (format nil "~3,'0D~A" base suffix)
-                             (pad-article-id article-number article-suffix))))
+         (eli-id (format nil "gr-~A-~A-art-~3,'0D~A" document-type year base suffix))
          (work-uri (format nil "~A/work" uri)))
 
     (make-instance 'frbr-article-root

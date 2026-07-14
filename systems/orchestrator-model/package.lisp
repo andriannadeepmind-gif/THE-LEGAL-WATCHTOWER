@@ -40,6 +40,7 @@
    #:article-file-id
    #:pad-article-id
    #:article-uri-id
+   #:article-identity-segment
    #:article-base-number
    #:article-label-suffix
    #:article-suffix-ordinal

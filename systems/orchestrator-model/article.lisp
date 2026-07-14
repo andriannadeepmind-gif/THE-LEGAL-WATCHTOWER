@@ -30,9 +30,10 @@
                     orchestrator.identity: article-segment (:article ΒΑΣΗ
                     ΤΑΚΤΙΚΗ-ΘΕΣΗ), υπολογισμένο ΜΙΑ φορά στην κατασκευή
                     (make-article) — όχι επανα-parse του label ανά χρήση.
-                    NIL μόνο σε αντικείμενα που κατασκευάστηκαν εκτός του
-                    builder (tests) — μαζί με τους Δ-θανάτους της Φ6γ το
-                    NIL πεθαίνει και το slot γίνεται υποχρεωτικό.")
+                    [0088 Φ6γ-Δ] ΥΠΟΛΟΓΙΖΕΤΑΙ ΠΑΝΤΑ στην κατασκευή
+                    (initialize-instance :after) — slot-less αντικείμενα
+                    είναι ΔΟΜΙΚΑ αδύνατα. NIL σημαίνει ΜΟΝΟ το δηλωμένο
+                    identity-debt: συνθετικός αριθμός >9999 χωρίς label.")
 
    (title
     :accessor article-title
@@ -126,6 +127,33 @@
     ((and (integerp number) (<= 1 number 9999))
      (orchestrator.identity:article-segment number 0))
     (t nil)))
+
+(defun article-identity-segment (number &optional suffix-or-label)
+  "[0088 Φ6γ-Δ] Η ΜΙΑ δημόσια παραγωγή typed segment από raw ζεύγος
+   (NUMBER, SUFFIX-OR-LABEL) στα όρια των μοντέλων (FRBR κ.λπ.):
+   — πλήρες label («5Α») ⇒ parse από την έδρα ταυτότητας·
+   — γυμνό επίθημα («Α») ⇒ ο NUMBER ΕΙΝΑΙ η αληθινή βάση (συμβόλαιο των
+     καλούντων από το [0050]#2) και σχηματίζεται label «~D~A»·
+   — κενό ⇒ segment κανονικού αριθμού 1..9999, αλλιώς NIL (δηλωμένο debt).
+   Άκυρη είσοδος ⇒ orchestrator.spec:validation-error — ποτέ σιωπηλά."
+  (let ((s (and suffix-or-label (string suffix-or-label))))
+    (if (and s (plusp (length s)))
+        (%article-identity-segment-for
+         (if (char<= #\0 (char s 0) #\9) s (format nil "~D~A" number s))
+         nil)
+        (%article-identity-segment-for nil number))))
+
+(defmethod initialize-instance :after ((article article) &key (identity nil identity-p) &allow-other-keys)
+  "[0088 Φ6γ-Δ] Η typed ταυτότητα υπάρχει ΑΠΟ ΤΗ ΓΕΝΝΗΣΗ κάθε αντικειμένου:
+   όταν δεν δόθηκε ρητά (:identity από τον builder), υπολογίζεται εδώ από
+   την έδρα — αντικείμενο άρθρου χωρίς υπολογισμένη ταυτότητα είναι ΔΟΜΙΚΑ
+   αδύνατο, όχι απαγορευμένο."
+  (declare (ignore identity))
+  (unless identity-p
+    (setf (slot-value article 'identity-segment)
+          (%article-identity-segment-for
+           (and (slot-boundp article 'label) (article-label article))
+           (and (slot-boundp article 'number) (article-number article))))))
 
 (defmethod (setf article-label) :after (new-label (article article))
   "[0088 Φ6γ] Η typed ταυτότητα ΠΑΡΑΚΟΛΟΥΘΕΙ το label: κάθε αλλαγή label
@@ -275,34 +303,35 @@
    που για lettered άρθρα είναι εσωτερικός συνθετικός αριθμός αποσαφήνισης
    (5Α ⇒ number 5001) και μόλυνε τα ονόματα αρχείων (article-5001Α αντί του
    κανονικού article-005Α)."
-  ;; [0088 Φ6γ] το typed slot προηγείται (καμία επανερμηνεία label)· το
-  ;; legacy μονοπάτι επιζεί ΜΟΝΟ για slot-less test αντικείμενα (πεθαίνει
-  ;; με τους Δ-θανάτους). Η ισοδυναμία κλειδώνεται στο bijection gate 4694/0/0.
+  ;; [0088 Φ6γ-Δ] το typed slot υπάρχει ΠΑΝΤΑ (initialize-instance :after)·
+  ;; NIL = ΜΟΝΟ το δηλωμένο identity-debt (συνθετικός >9999 ΧΩΡΙΣ label),
+  ;; όπου εξ ορισμού δεν υπάρχει επίθημα — προβολή της γυμνής βάσης, καμία
+  ;; raw επανερμηνεία. Η ισοδυναμία κλειδώθηκε στο bijection gate 4694/0/0.
   (let ((seg (article-identity article)))
     (if seg
         (format nil "~3,'0D~A" (second seg)
                 (orchestrator.identity:ordinal-suffix (third seg) :sequence :upper))
-        (pad-article-id (article-number article) (article-label article)))))
+        (format nil "~3,'0D" (article-number article)))))
 
 (defun article-uri (article)
   "[0088 Φ6γ-Δ2] Η κανονική UNPADDED uri ταυτότητα ΕΝΟΣ ΑΝΤΙΚΕΙΜΕΝΟΥ άρθρου
-   («5», «5Α») — από το typed identity slot (η έδρα, μία φορά στην κατασκευή)·
-   legacy (number,label) μονοπάτι ΜΟΝΟ για slot-less test αντικείμενα
-   (δηλωμένος θάνατος με τους Δ-θανάτους). Καταναλωτές με το ΑΝΤΙΚΕΙΜΕΝΟ
+   («5», «5Α») — από το typed identity slot (η έδρα, ΠΑΝΤΑ υπολογισμένο στην
+   κατασκευή)· NIL = ΜΟΝΟ δηλωμένο identity-debt (συνθετικός χωρίς label,
+   άρα χωρίς επίθημα) ⇒ προβολή γυμνής βάσης. Καταναλωτές με το ΑΝΤΙΚΕΙΜΕΝΟ
    περνούν από εδώ — όχι από το raw ζεύγος (number,label)."
   (let ((seg (article-identity article)))
     (if seg
         (format nil "~D~A" (second seg)
                 (orchestrator.identity:ordinal-suffix (third seg) :sequence :upper))
-        (article-uri-id (article-number article) (article-label article)))))
+        (format nil "~D" (article-number article)))))
 
 (defun %article-order-key (a)
-  "(βάση . τακτική-θέση) — από το typed slot όταν υπάρχει, αλλιώς legacy."
+  "(βάση . τακτική-θέση) — από το typed slot (ΠΑΝΤΑ υπολογισμένο)· NIL =
+   δηλωμένο identity-debt χωρίς label ⇒ (γυμνή βάση . 0)."
   (let ((seg (article-identity a)))
     (if seg
         (cons (second seg) (third seg))
-        (cons (article-base-number (article-number a) (article-label a))
-              (article-suffix-ordinal (article-label-suffix (article-label a)))))))
+        (cons (article-number a) 0))))
 
 (defun article-identity< (a b)
   "Κανονική ολική διάταξη άρθρων: αριθμητική ΒΑΣΗ, μετά η ΝΟΜΟΘΕΤΙΚΗ τακτική

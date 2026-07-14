@@ -287,25 +287,21 @@
   ;; P1b [0050]#2: ΚΑΝΟΝΙΚΟΠΟΙΗΣΗ ΣΤΟ ΟΡΙΟ ΤΟΥ FRBR ΜΟΝΤΕΛΟΥ (βλ.
   ;; make-frbr-article-root): slots = αληθινή βάση + γυμνό επίθημα, URI/eli-id
   ;; μέσα από τη ΜΙΑ έδρα — συνθετικός αριθμός δεν υπάρχει μέσα στο μοντέλο.
-  ;; [0088 Φ6γ-Α2] Με typed IDENTITY-SEGMENT: όλα από τις προβολές του
-  ;; segment (ίδια format ⇒ byte-identical)· αλλιώς legacy όριο.
-  (let* ((base (if identity-segment (second identity-segment)
-                   (article-base-number article-number article-suffix)))
-         (suffix (if identity-segment
-                     (orchestrator.identity:ordinal-suffix
-                      (third identity-segment) :sequence :upper)
-                     (article-label-suffix article-suffix)))
+  ;; [0088 Φ6γ-Δ] ΤΟ SEGMENT ΕΙΝΑΙ ΥΠΟΧΡΕΩΤΙΚΟ (βλ. make-frbr-article-root):
+  ;; όταν δεν δοθεί, παράγεται στο όριο από τη ΜΙΑ έδρα — καμία raw
+  ;; παράλληλη παραγωγή δεν υπάρχει πλέον.
+  (let* ((seg (or identity-segment
+                  (article-identity-segment article-number article-suffix)
+                  (error 'orchestrator.spec:validation-error
+                         :message (format nil "make-frbr-work: άρθρο χωρίς νόμιμη ταυτότητα (number=~S suffix=~S)"
+                                          article-number article-suffix))))
+         (base (second seg))
+         (suffix (orchestrator.identity:ordinal-suffix (third seg) :sequence :upper))
          (article-root (or article-root-uri
-                           (format nil "~A/art/~A" eli-prefix
-                                   (if identity-segment
-                                       (format nil "~D~A" base suffix)
-                                       (article-uri-id article-number article-suffix)))))
+                           (format nil "~A/art/~D~A" eli-prefix base suffix)))
          (uri (format nil "~A/work" article-root))
          (year (or law-year (subseq issued-date 0 4)))
-         (eli-id (format nil "gr-~A-~A-art-~A-work" document-type year
-                         (if identity-segment
-                             (format nil "~3,'0D~A" base suffix)
-                             (pad-article-id article-number article-suffix)))))
+         (eli-id (format nil "gr-~A-~A-art-~3,'0D~A-work" document-type year base suffix)))
     (make-instance 'frbr-work
                    :uri uri
                    :eli-identifier eli-id

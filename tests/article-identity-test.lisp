@@ -84,6 +84,42 @@
                        (article-uri-id (article-number lettered)
                                        (article-letter-suffix lettered))))))
 
+(format t "~%== [0088 Φ6γ-Δ] identity ΑΠΟ ΤΗ ΓΕΝΝΗΣΗ + FRBR χωρίς raw else-branches ==~%")
+(let ((a (make-instance 'article :number 5 :label "5Α")))
+  (check "make-instance ΧΩΡΙΣ builder ⇒ typed segment υπολογισμένο στη γέννηση"
+         (equal '(:article 5 1) (article-identity a)))
+  (check "article-uri από το segment"  (string= "5Α" (article-uri a)))
+  (check "article-file-id από το segment" (string= "005Α" (article-file-id a))))
+(let ((debt (make-instance 'article :number 272005)))
+  (check "συνθετικός >9999 χωρίς label ⇒ ΔΗΛΩΜΕΝΟ debt (NIL segment)"
+         (null (article-identity debt)))
+  (check "debt-προβολή: γυμνή βάση, χωρίς raw επανερμηνεία"
+         (string= "272005" (article-uri debt))))
+(let ((prefix "https://stavropouloslaw.com/eli/gr/const/1975"))
+  (let ((w-raw (make-frbr-work :article-number 100 :article-suffix "Α"
+                               :eli-prefix prefix :document-type "const"
+                               :law-year "1975" :issued-date "1975-06-11"))
+        (w-seg (make-frbr-work :article-number 100 :article-suffix "Α"
+                               :identity-segment '(:article 100 1)
+                               :eli-prefix prefix :document-type "const"
+                               :law-year "1975" :issued-date "1975-06-11")))
+    (check "FRBR Work: raw ζεύγος και ρητό segment ⇒ BYTE-IDENTICAL uri+eli-id"
+           (and (string= (resource-uri w-raw) (resource-uri w-seg))
+                (string= (eli-identifier w-raw) (eli-identifier w-seg)))))
+  (check "FRBR Work: άκυρο label ⇒ typed σφάλμα (fail-closed, όχι σιωπηλό URI)"
+         (handler-case
+             (progn (make-frbr-work :article-number 5 :article-suffix "5 Α"
+                                    :eli-prefix prefix :document-type "const"
+                                    :law-year "1975" :issued-date "1975-06-11")
+                    nil)
+           (orchestrator.spec:validation-error () t)))
+  (check "FRBR Article Root: raw ζεύγος περνά από την έδρα segment (uid «5Α»)"
+         (let ((r (make-frbr-article-root :article-number 5 :article-suffix "Α"
+                                          :article-title "T" :eli-prefix prefix
+                                          :document-type "const" :law-year "1975"
+                                          :issued-date "1975-06-11")))
+           (search "/art/5Α" (resource-uri r)))))
+
 (format t "~%========================================~%")
 (format t "Article identity tests: ~D passed, ~D failed~%" *pass* *fail*)
 (format t "========================================~%")
