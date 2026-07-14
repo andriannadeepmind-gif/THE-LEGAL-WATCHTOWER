@@ -326,3 +326,41 @@ receipt 15/15 · corpus-service 53/53 · as-known-e2e 26/26. Σύνολο: −41
 **Φ6γ (δηλωμένο, το μεγάλο)**: article-number/label readers (58 αρχεία) +
 integer get-article — απαιτούν το slot-restructure (identity slot στο article)·
 χωριστό βήμα με δικό του σχέδιο & proof.
+
+---
+
+## [0088 Φ6β] ΘΑΝΑΤΟΣ ADAPTER orchestrator.article-id (commit 06d5586d)
+
+Ο δηλωμένος adapter διαγράφηκε ΟΡΙΣΤΙΚΑ — όχι μηχανικά αλλά με πλήρη θεσμική
+επανακαλωδίωση στην έδρα orchestrator.identity: gates ⑥-⑨ του component-gate
+(typed identity-parse-error, provision-id=/hash, uri-id<-provision-id),
+συμβόλαιο «parse-article-label», provenance-gate whitelist+trace lock
+(το :identity ίχνος εκπέμπεται πλέον από την ΕΔΡΑ), evolution-gate ⑬/⑭,
+self-reflection capability «ταυτότητα-άρθρων». Lock θανάτου ⑤γ (πακέτο
+ανύπαρκτο). Proofs: legal-identity 19/19 (bijection 4694/0/0),
+component-gate rc=0, provenance-gate rc=0, self-evolution ⑬/⑭ ✓. −144/+84.
+
+## ΚΑΤΑΣΤΑΣΗ ΦΑΣΗΣ / ΠΑΡΑΔΟΤΕΟ ΠΡΟΣ ΔΗΜΙΟΥΡΓΟ (σύνοψη §7 — χωρίς υπερβολή)
+
+ΚΛΕΙΣΤΑ με τοπικά proofs (όλα pushed, HEAD 06d5586d):
+- Φ0-Φ5μ (owner docker ΠΡΑΣΙΝΟ, image 1dc1083d)· Φ5α census-2/PCL-02·
+  Φ5β /as-known· Φ5γ grounded-impact/TRUST-01· Φ5δ serving cutover
+  (document-as-of — TEMP-03 νεκρό στο serving)
+- 10/10 ευρήματα αυστηρού ελέγχου δημιουργού (Κ1/Κ2/Υ1-Υ6/Μ1/Μ2) ΣΤΙΣ ΕΔΡΕΣ
+- 8/8 ευρήματα 2 αντιπαλικών κριτών (814f7287)
+- Φ6α θάνατοι νησιών (eli-temporal-metadata ΟΛΟΚΛΗΡΟ, legal-temporal
+  versioning μηχανή)· Φ6β θάνατος orchestrator.article-id
+
+ΕΚΚΡΕΜΗ (δηλωμένα, με φάση):
+- OWNER DOCKER PROOF όλου του σωρευμένου diff (νέο gate: as-known-e2e στο
+  loop — 26 locks). Η επόμενη μαζική τομή ΔΕΝ ξεκινά πριν το πράσινο.
+- Φ6γ (το μεγάλο): article-number/label readers (58 αρχεία) + integer
+  get-article ⇒ απαιτούν slot-restructure (identity slot στο article) —
+  χωριστό σχέδιο & proof, ΜΕΤΑ το owner docker
+- Υ2β interval model στα knowledge-gaps (δηλωμένο υπόλοιπο, υπερ-προσεκτικό
+  σήμερα)· clean.json → sealed source artifact (με το Φ6γ)
+- Φ7 benchmark: αναμένει τα 9 ΦΕΚ στο input/ από τον δημιουργό
+
+Owner εντολή docker: όπως το προηγούμενο πράσινο run
+(docker compose build → gated loop· αναμενόμενα νέα: as-known-e2e 26/26,
+legal-identity 19/19, corpus-service 53/53, parity 31/31).
