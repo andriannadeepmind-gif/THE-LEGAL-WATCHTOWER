@@ -643,7 +643,131 @@
                 (progn (orchestrator.version-graph::load-graph tb) nil)
               (orchestrator.version-graph:journal-corruption () t))))
 
+;;; ═══ [Φ7 κριτής Π2-Π4] Locks των κλεισιμάτων — TILING σημασιολογία ═══
+(defparameter *ts-pid4* "gr/nomos/2020/9997#art:4")
+(defparameter *ts-ref4* "ya-per:gr/nomos/2020/9997#art:4")
+(defparameter *ts-cond4*
+  (orchestrator.version-graph:declare-condition!
+   *ts-g* (orchestrator.version-graph:make-effectivity-condition
+           :suspensive (list :instrument-event :ya *ts-ref4*))))
+(defparameter *ts-cid4* (orchestrator.version-graph:condition-id *ts-cond4*))
+;; αλυσίδα: v1 (2026-01-01) → conditional v2 → ΚΑΝΟΝΙΚΗ v3 (2026-05-01)
+(defparameter *ts-v1*
+  (multiple-value-bind (e vs)
+      (orchestrator.version-graph::admit-edge!
+       *ts-g* (list :op :insert :target *ts-pid4* :from-versions nil
+                    :to-specs (list (list :provision-id *ts-pid4* :text "V1" :heading nil
+                                          :valid-from "2026-01-01" :status :in-force
+                                          :assurance :verified))
+                    :act-ref "gr/nomos/2020/9997" :act-internal-seq 4
+                    :enacted "2026-01-01" :effective "2026-01-01"
+                    :fek-date "2026-01-01" :assurance :verified :confidence 100))
+    (declare (ignore e)) (first vs)))
+(defparameter *ts-v2*
+  (multiple-value-bind (e vs)
+      (orchestrator.version-graph::admit-edge!
+       *ts-g* (list :op :replace :target *ts-pid4*
+                    :from-versions (list (orchestrator.version-graph::tv-version-hash *ts-v1*))
+                    :to-specs (list (list :provision-id *ts-pid4* :text "V2-COND" :heading nil
+                                          :valid-from (orchestrator.version-graph::%conditional-valid-from *ts-cid4*)
+                                          :status :not-yet-effective :assurance :verified))
+                    :act-ref "gr/nomos/2026/0004" :act-internal-seq 1
+                    :enacted "2026-02-01" :effective (list :conditional *ts-cid4*)
+                    :fek-date "2026-02-01" :assurance :verified :confidence 100))
+    (declare (ignore e)) (first vs)))
+(defparameter *ts-v3*
+  (multiple-value-bind (e vs)
+      (orchestrator.version-graph::admit-edge!
+       *ts-g* (list :op :replace :target *ts-pid4*
+                    :from-versions (list (orchestrator.version-graph::tv-version-hash *ts-v2*))
+                    :to-specs (list (list :provision-id *ts-pid4* :text "V3" :heading nil
+                                          :valid-from "2026-05-01" :status :in-force
+                                          :assurance :verified))
+                    :act-ref "gr/nomos/2026/0005" :act-internal-seq 1
+                    :enacted "2026-04-01" :effective "2026-05-01"
+                    :fek-date "2026-04-01" :assurance :verified :confidence 100))
+    (declare (ignore e)) (first vs)))
+
+(ts-check "⑰ [#2] conditional+ΚΑΝΟΝΙΚΗ ακμή, αίρεση PENDING: v1 ψαλιδίζεται στο v3.from — ΚΑΜΙΑ ψευδο-επικάλυψη/422"
+          (and (multiple-value-bind (v basis)
+                   (orchestrator.version-graph:version-at
+                    *ts-g* *ts-pid4* :valid-at "2026-06-01" :known-at "2033-01-01T00:00:00Z")
+                 (declare (ignore basis))
+                 (and v (equal "V3" (orchestrator.version-graph::tv-text v))))
+               (multiple-value-bind (v basis)
+                   (orchestrator.version-graph:version-at
+                    *ts-g* *ts-pid4* :valid-at "2026-03-01" :known-at "2033-01-01T00:00:00Z")
+                 (and v (equal "V1" (orchestrator.version-graph::tv-text v))
+                      (consp basis) (eq :not-yet-effective (first basis))))))
+(ts-check "⑰β [#1] αίρεση SATISFIED @2026-03-10: tiling — V1 έως 2026-03-10, V2 έως 2026-05-01, V3 μετά (η νεκρή V2 ΔΕΝ νικά)"
+          (progn
+            (orchestrator.version-graph:record-condition-event!
+             *ts-g* *ts-cid4* :kind :ya :ref *ts-ref4* :outcome :satisfied
+             :at "2026-03-10" :evidence '(:source-digest "sha256:ya4") :verifier "ts")
+            (flet ((txt (valid)
+                     (multiple-value-bind (v basis)
+                         (orchestrator.version-graph:version-at
+                          *ts-g* *ts-pid4* :valid-at valid :known-at "2033-01-01T00:00:00Z")
+                       (declare (ignore basis))
+                       (and v (orchestrator.version-graph::tv-text v)))))
+              (and (equal "V1" (txt "2026-02-01"))
+                   (equal "V2-COND" (txt "2026-04-01"))
+                   (equal "V3" (txt "2026-06-01"))))))
+(ts-check "⑰γ [#4] regime :expire ΣΤΗΝ υπό-αίρεση έκδοση ⇒ ΕΝΕΡΓΟ (τα rewrites δεν αγνοούνται πια)"
+          (progn
+            (orchestrator.version-graph:admit-regime-edge!
+             *ts-g* :op :expire :target *ts-pid4*
+             :version (orchestrator.version-graph::tv-version-hash *ts-v2*)
+             :span-from "2026-03-10" :span-until "2026-04-15"
+             :act-ref "gr/nomos/2026/0006" :act-seq 1 :enacted "2026-04-10" :fek-date "2026-04-10")
+            (multiple-value-bind (v basis)
+                (orchestrator.version-graph:version-at
+                 *ts-g* *ts-pid4* :valid-at "2026-04-20" :known-at "2033-01-01T00:00:00Z")
+              (declare (ignore basis))
+              ;; V2 πλέον λήγει 2026-04-15 < 2026-05-01 ⇒ στο 2026-04-20 ΚΑΜΙΑ
+              (null v))))
+(ts-check "⑰δ [#3] conditional ακμή με :resolutory αίρεση ⇒ invalid-edge (αντεστραμμένη σημασιολογία ΜΗ αναπαραστάσιμη)"
+          (let* ((rc (orchestrator.version-graph:declare-condition!
+                      *ts-g* (orchestrator.version-graph:make-effectivity-condition
+                              :resolutory (list :instrument-event :ratification "ΠΝΠ-ts"))))
+                 (rcid (orchestrator.version-graph:condition-id rc)))
+            (handler-case
+                (progn (orchestrator.version-graph::admit-edge!
+                        *ts-g* (list :op :replace :target *ts-pid4*
+                                     :from-versions (list (orchestrator.version-graph::tv-version-hash *ts-v3*))
+                                     :to-specs (list (list :provision-id *ts-pid4* :text "x"
+                                                           :valid-from (orchestrator.version-graph::%conditional-valid-from rcid)
+                                                           :status :not-yet-effective :assurance :verified))
+                                     :act-ref "a" :act-internal-seq 1
+                                     :enacted "2026-06-01" :effective (list :conditional rcid)
+                                     :fek-date "2026-06-01" :assurance :verified :confidence 100))
+                       nil)
+              (orchestrator.version-graph:invalid-edge () t))))
+(ts-check "⑰ε [#6] κενό regime span (from=until) ⇒ invalid-edge· interval-relation σε κενό ⇒ ΣΦΑΛΜΑ"
+          (and (handler-case
+                   (progn (orchestrator.version-graph:admit-regime-edge!
+                           *ts-g* :op :suspend :target *ts-pid4*
+                           :span-from "2026-06-01" :span-until "2026-06-01"
+                           :act-ref "a" :act-seq 1 :enacted "2026-06-01" :fek-date "2026-06-01")
+                          nil)
+                 (orchestrator.version-graph:invalid-edge () t))
+               (handler-case
+                   (progn (orchestrator.version-graph:interval-relation
+                           "2026-06-01" "2026-06-01" "2026-01-01" "2026-12-01")
+                          nil)
+                 (orchestrator.version-graph:invalid-edge () t))))
+(ts-check "⑰στ [#1-#4] RESTART PARITY του tiling: φρέσκο load-graph ⇒ ταυτόσημα V1/V2/κενό/V3"
+          (let ((g2 (orchestrator.version-graph::load-graph *ts-body*)))
+            (flet ((txt (g valid)
+                     (multiple-value-bind (v basis)
+                         (orchestrator.version-graph:version-at
+                          g *ts-pid4* :valid-at valid :known-at "2033-01-01T00:00:00Z")
+                       (declare (ignore basis))
+                       (and v (orchestrator.version-graph::tv-text v)))))
+              (every (lambda (valid) (equal (txt *ts-g* valid) (txt g2 valid)))
+                     '("2026-02-01" "2026-04-01" "2026-04-20" "2026-06-01")))))
+
 (format t "~%========================================~%")
-(format t "TEMPORAL-SEMANTICS [0088 Φ7 Π1-Π4]: ~D passed, ~D failed~%" *ts-pass* *ts-fail*)
+(format t "TEMPORAL-SEMANTICS [0088 Φ7 Π1-Π4+κριτής]: ~D passed, ~D failed~%" *ts-pass* *ts-fail*)
 (format t "========================================~%")
 (sb-ext:exit :code (if (zerop *ts-fail*) 0 1))

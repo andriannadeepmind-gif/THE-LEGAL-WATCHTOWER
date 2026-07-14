@@ -781,3 +781,23 @@ Locks ⑪-⑯β (temporal-semantics 54→67): 13 Allen, suspend/revive κύκλ�
 Proof: temporal-semantics **67/67** + 8 σουίτες 0 failed (403 checks).
 ΕΠΟΜΕΝΟ: αντιπαλικός κριτής Π2-Π4 → κλείσιμο → Π5 (receipts/attestation/
 as-known in_force).
+
+## [0088 Φ7 κριτής Π2-Π4] Αντιπαλική επιθεώρηση (εμπειρικά εκτελεσμένα probes): 3 WRONG + 2 SERIOUS + 8 MINOR/β — ΟΛΑ κλεισμένα
+
+| Εύρημα | Κλείσιμο |
+|---|---|
+| #1 WRONG: νεκρή υπό-αίρεση έκδοση νικά μεταγενέστερη κανονική ακμή | ΕΞΑΛΕΙΨΗ ΚΛΑΣΗΣ — **TILING**: το version-at υπολογίζει παράγωγα όρια ΚΑΘΕ live έκδοσης (conditional από sat, όλα με rewrites) και ψαλιδίζει ΚΑΘΕ until στο from της επόμενης — το «παράγωγο κλείσιμο» είναι πλέον σημασιολογία του μοντέλου, ΟΧΙ προτεραιότητα διαδρομής· ίδιο fold live/replay. Lock ⑰β (V1→V2-COND→V3 πλήρης αλυσίδα) |
+| #2 WRONG: ψευδής αβεβαιότητα (422) όταν κανονική ακμή ακολουθεί conditional | Λύνεται από το ΙΔΙΟ tiling (V1 ψαλιδίζεται στο V3.from με pending αίρεση)· lock ⑰ |
+| #3 WRONG: resolutory σημασιολογία ΑΝΕΣΤΡΑΜΜΕΝΗ | Το αντεστραμμένο ΔΕΝ είναι πλέον αναπαραστάσιμο: admit-edge! απορρίπτει conditional ακμή με :resolutory cid (typed) — ΔΗΛΩΜΕΝΟ όριο: διαλυτικές = regime σχήμα μελλοντικής φάσης· lock ⑰δ |
+| #4 WRONG/S: regime rewrites σε υπό-αίρεση έκδοση σιωπηλά ανενεργά | Το tiling εφαρμόζει %rewritten-bounds ΚΑΙ στις conditional εκδόσεις (retroact from υπερισχύει της παραγωγής)· lock ⑰γ (expire ενεργό) |
+| #5 SERIOUS: ονομαστικό pending χανόταν στο null-live | Τρίτη τιμή (:not-yet-effective cid since) στο (values nil :no-version-in-force …) — προσθετικό, κανείς καταναλωτής δεν σπάει |
+| #6 MINOR: Allen/spans εκφυλισμένα | interval-relation fail-closed σε κενά/ανεστραμμένα· admit-regime-edge! απαιτεί from < until αυστηρά· locks ⑰ε |
+| #7 MINOR: pending-note μη ντετερμινιστικό | Ελάχιστο (since, cid) — σταθερό ανεξαρτήτως σειράς εισαγωγής |
+| #8 MINOR: act-seq ανεπικύρωτο + gap rid χωρίς until | Validation (integer ή ζεύγος)· gap rid δεσμεύει ΚΑΙ το until |
+| #9 β: 3 έδρες liveness | ΜΙΑ έδρα %live-at-p — versions/events/regimes τη διατρέχουν |
+| #10 β: νεκρές %valid-covers-p/-known-p | ΔΙΑΓΡΑΦΗΚΑΝ (το tiling είναι η μόνη κάλυψη) |
+| #11 β: scope/condition-id placeholders αδήλωτα | ΔΗΛΩΜΕΝΑ ρητά στο struct: δεσμευμένα στο hash, τιμές στο Π4β/Φ8 — μη-NIL ⇒ νέα ταυτότητα, όχι drift |
+| #12 β: evidence 2 έδρες + υπερδήλωση | ΜΙΑ έδρα %check-evidence + τίμιο δηλωμένο όριο (πλήρης τυποποίηση τιμών στο Π5) |
+| #13 β: τεστ-κενά | Locks ⑰-⑰στ ακριβώς στις περιοχές των ευρημάτων + restart parity του tiling |
+
+Proof: temporal-semantics **73/73** + 8 σουίτες 0 failed (409 checks).

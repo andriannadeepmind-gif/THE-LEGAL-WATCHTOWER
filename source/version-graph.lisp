@@ -464,7 +464,8 @@
    — μπλοκάρει μόνο τομές μέσα του· χωρίς UNTIL: όλη η ακάλυπτη περίοδος."
   (%require-date effective "effective (κενού γνώσης)")
   (when until (%require-date until "until (κενού γνώσης)"))
-  (let* ((rid (format nil "gap:~A@~A:~A" provision-id effective (or act-ref "")))
+  (let* ((rid (format nil "gap:~A@~A..~A:~A" provision-id effective
+                      (or until "open") (or act-ref "")))
          (line (%journal! graph (list :kind :knowledge-gap :record-id rid
                                       :provision-id provision-id :act-ref act-ref
                                       :gap-kind kind :effective effective
@@ -536,10 +537,17 @@
     ;; (:conditional cid) με ΔΗΛΩΜΕΝΟ cid (declare-before-reference).
     (cond
       ((%conditional-effective-p effective)
-       (unless (graph-condition graph (second effective))
-         (error 'invalid-edge
-                :reason (format nil "conditional ακμή με ΑΔΗΛΩΤΟ condition-id ~A — declare-condition! πρώτα"
-                                (second effective))))
+       (let ((c (graph-condition graph (second effective))))
+         (unless c
+           (error 'invalid-edge
+                  :reason (format nil "conditional ακμή με ΑΔΗΛΩΤΟ condition-id ~A — declare-condition! πρώτα"
+                                  (second effective))))
+         ;; [κριτής Π2-Π4 #3] resolutory commencement ΔΕΝ υποστηρίζεται εδώ:
+         ;; η διαλυτική αίρεση κλείνει ισχύ (σχήμα Π5/regime) — αντεστραμμένη
+         ;; σημασιολογία δεν επιτρέπεται να είναι καν αναπαραστάσιμη.
+         (when (eq (condition-class c) :resolutory)
+           (error 'invalid-edge
+                  :reason "conditional ακμή έναρξης με :resolutory αίρεση — ΔΗΛΩΜΕΝΟ όριο: μόνο :suspensive εδώ· διαλυτικές = μελλοντικό regime σχήμα")))
        ;; οι υπό αίρεση νέες εκδόσεις: sentinel valid-from + :not-yet-effective
        ;; — ημερομηνία ισχύος ΔΕΝ υπάρχει πριν την ικανοποίηση (παράγωγη, §4)
        (dolist (vs (getf espec :to-specs))
@@ -674,28 +682,17 @@
 ;;; Διτεμπορικά ερωτήματα — το recorded ΣΥΜΜΕΤΕΧΕΙ στην επιλογή (TEMP-03 νεκρό)
 ;;; ----------------------------------------------------------------------------
 
+(defun %live-at-p (recorded-from recorded-until known-at)
+  "[κριτής Π2-Π4 #9] Η ΜΙΑ έδρα του διτεμπορικού liveness κατηγορήματος:
+   recorded-from ≤ known-at < recorded-until|:current — versions, condition
+   events και regime edges τη διατρέχουν ΟΛΑ."
+  (and (%time<= recorded-from known-at "recorded-from" "known-at")
+       (or (eq :current recorded-until)
+           (< (%time-key known-at "known-at")
+              (%time-key recorded-until "recorded-until")))))
+
 (defun %recorded-live-p (v known-at)
-  (and (%time<= (tv-recorded-from v) known-at "recorded-from" "known-at")
-       (or (eq :current (tv-recorded-until v))
-           (not (%time<= (tv-recorded-until v) known-at "recorded-until" "known-at")))))
-
-(defun %valid-covers-p (v valid-at)
-  ;; [Φ7 Π3] Έκδοση ΥΠΟ ΑΙΡΕΣΗ (sentinel valid-from) ΔΕΝ καλύπτει ποτέ μέσω
-  ;; της γενικής διαδρομής — η ισχύς της είναι ΠΑΡΑΓΩΓΗ του sat (version-at).
-  (and (not (%tv-conditional-cid v))
-       (%time<= (tv-valid-from v) valid-at "valid-from" "valid-at")
-       (or (eq :open (tv-valid-until v))
-           (not (%time<= (tv-valid-until v) valid-at "valid-until" "valid-at")))))
-
-(defun %valid-covers-known-p (graph v valid-at known-at)
-  "[Φ7 Π4] Κάλυψη valid-at με τα όρια ΟΠΩΣ ΓΝΩΡΙΖΟΝΤΑΝ κατά known-at
-   (live :extend/:expire/:retroact ξαναγράφουν διτεμπορικά — %rewritten-bounds)·
-   υπό-αίρεση εκδόσεις εξαιρούνται (παράγωγη ισχύς, Π3)."
-  (and (not (%tv-conditional-cid v))
-       (multiple-value-bind (from until) (%rewritten-bounds graph v known-at)
-         (and (%time<= from valid-at "valid-from" "valid-at")
-              (or (eq :open until)
-                  (not (%time<= until valid-at "valid-until" "valid-at")))))))
+  (%live-at-p (tv-recorded-from v) (tv-recorded-until v) known-at))
 
 (defun %finish-version (graph pid valid-at known-at v basis)
   "[Φ7 Π4] Τελικό βήμα version-at: live αναστολή που καλύπτει το valid-at
@@ -740,48 +737,74 @@
         (error 'temporal-uncertainty :provision pid
                :why (format nil "ακμή σε καραντίνα (~A, καταγεγραμμένη ~A)"
                             (qe-reason q) (qe-recorded-from q)))))
-    ;; [Φ7 Π3 — spec §4] ΠΑΡΑΓΩΓΟ κλείσιμο/έναρξη υπό αίρεση: για κάθε
-    ;; recorded-live έκδοση με sentinel valid-from, η ισχύς προκύπτει από
-    ;; sat(canon-AST, events live κατά known-at) — ΚΑΜΙΑ αποθηκευμένη
-    ;; κατάσταση. suspensive αγκύρωση (§5): satisfied t ≤ valid-at ⇒ η υπό
-    ;; αίρεση έκδοση in-force από t ΚΑΙ η προηγούμενη συμπεριφέρεται ΣΑΝ
-    ;; valid-until = t· t > valid-at ή pending/refuted ⇒ δεν ισχύει (ακόμη).
-    (let* ((cond-live (loop for v in records
-                            when (and (%tv-conditional-cid v)
-                                      (%recorded-live-p v known-at))
-                              collect v))
-           (satisfied-covering '())
-           (pending-note nil))
-      (dolist (cv cond-live)
-        (let ((cid (%tv-conditional-cid cv)))
-          (multiple-value-bind (st at) (condition-status graph cid :known-at known-at)
-            (cond
-              ((and (eq st :satisfied)
-                    (%time<= at valid-at "satisfied-at" "valid-at"))
-               (push (cons cv at) satisfied-covering))
-              ((eq st :pending)
-               (setf pending-note (list :not-yet-effective cid (tv-recorded-from cv))))
-              ;; :refuted ή satisfied στο μέλλον του valid-at ⇒ απλώς όχι in-force
-              (t nil)))))
-      (when (rest satisfied-covering)
-        (error 'temporal-uncertainty :provision pid
-               :why (format nil "~D υπό-αίρεση εκδόσεις ταυτόχρονα ικανοποιημένες στην τομή — ασυνεπής γράφος"
-                            (length satisfied-covering))))
-      (when satisfied-covering
-        (return-from version-at
-          (%finish-version graph pid valid-at known-at
-                           (car (first satisfied-covering)) :complete)))
-      ;; καμία ικανοποιημένη-καλύπτουσα: γενική διαδρομή· pending αίρεση
-      ;; ΔΕΝ είναι άγνοια — επιστρέφεται ΩΣ ΤΥΠΩΜΕΝΟ basis (ποτέ 422 εδώ).
-      (let ((live (loop for v in records
-                        when (and (%recorded-live-p v known-at)
-                                  (%valid-covers-known-p graph v valid-at known-at))
-                          collect v)))
-        (cond
-          ((= 1 (length live))
-           (%finish-version graph pid valid-at known-at
-                            (first live) (or pending-note :complete)))
-          ((null live)
+    ;; [Φ7 Π3/Π4 — spec §4, ΕΝΑΣ ΜΗΧΑΝΙΣΜΟΣ (κλείσιμο κριτή Π2-Π4 #1/#2/#4)]
+    ;; TILING: κάθε recorded-live έκδοση αποκτά ΠΑΡΑΓΩΓΑ όρια —
+    ;; • conditional (sentinel valid-from): sat(cid, known-at) ⇒ satisfied
+    ;;   ⇒ from = t (ή το from ρητού retroact) — τα regime rewrites
+    ;;   ΕΦΑΡΜΟΖΟΝΤΑΙ ΚΑΙ εδώ· pending/refuted ⇒ ΕΚΤΟΣ ισχύος·
+    ;; • κανονική: %rewritten-bounds (διτεμπορικά rewrites).
+    ;; Μετά, ΚΑΘΕ until ψαλιδίζεται στο from της ΕΠΟΜΕΝΗΣ (κατά from)
+    ;; έκδοσης — το κλείσιμο της προηγούμενης είναι ΣΗΜΑΣΙΟΛΟΓΙΑ του
+    ;; μοντέλου, όχι προτεραιότητα διαδρομής: τρίτες/κανονικές ακμές μετά
+    ;; από conditional δεν παράγουν ούτε ψευδο-επικαλύψεις ούτε νεκρές
+    ;; νικήτριες εκδόσεις. Ίδιο fold live και στο replay (καμία κατάσταση).
+    (let ((tiles '())          ; στοιχεία (v from until)
+          (pending '()))       ; στοιχεία (cid . since) — ΟΛΑ τα pending
+      (dolist (v records)
+        (when (%recorded-live-p v known-at)
+          (let ((cid (%tv-conditional-cid v)))
+            (if cid
+                (multiple-value-bind (st at)
+                    (condition-status graph cid :known-at known-at)
+                  (case st
+                    (:satisfied
+                     (multiple-value-bind (f u) (%rewritten-bounds graph v known-at)
+                       ;; ρητό retroact υπερισχύει της παραγωγής· αλλιώς from = t
+                       (push (list v (if (equal f (tv-valid-from v)) at f) u)
+                             tiles)))
+                    (:pending (push (cons cid (tv-recorded-from v)) pending))
+                    (t nil)))
+                (multiple-value-bind (f u) (%rewritten-bounds graph v known-at)
+                  (push (list v f u) tiles))))))
+      ;; ντετερμινιστική επιλογή pending σημείωσης: ελάχιστο (since, cid)
+      (let ((pending-note
+              (when pending
+                (let ((best (first (sort (copy-list pending)
+                                         (lambda (a b)
+                                           (or (< (%time-key (cdr a) "since")
+                                                  (%time-key (cdr b) "since"))
+                                               (and (= (%time-key (cdr a) "since")
+                                                       (%time-key (cdr b) "since"))
+                                                    (string< (car a) (car b)))))))))
+                  (list :not-yet-effective (car best) (cdr best))))))
+        (setf tiles (sort tiles (lambda (a b)
+                                  (< (%time-key (second a) "from")
+                                     (%time-key (second b) "from")))))
+        ;; ίδια from σε δύο εκδόσεις = μη επιλύσιμη διαμάχη
+        (loop for (a b) on tiles while b
+              do (when (= (%time-key (second a) "from") (%time-key (second b) "from"))
+                   (error 'temporal-uncertainty :provision pid
+                          :why "δύο εκδόσεις με ΙΔΙΟ σημείο έναρξης ισχύος στην τομή — ασυνεπής γράφος")))
+        ;; ψαλίδισμα: until_i := min(until_i, from_{i+1})
+        (loop for (a b) on tiles while b
+              do (when (or (eq (third a) :open)
+                           (> (%time-key (third a) "until")
+                              (%time-key (second b) "from")))
+                   (setf (third a) (second b))))
+        (let ((live (remove-if-not
+                     (lambda (tile)
+                       (destructuring-bind (v f u) tile
+                         (declare (ignore v))
+                         (and (%time<= f valid-at "from" "valid-at")
+                              (or (eq u :open)
+                                  (< (%time-key valid-at "valid-at")
+                                     (%time-key u "until"))))))
+                     tiles)))
+          (cond
+            ((= 1 (length live))
+             (%finish-version graph pid valid-at known-at
+                              (first (first live)) (or pending-note :complete)))
+            ((null live)
          ;; ΚΕΝΟ ΓΝΩΣΗΣ (text-less ιστορικό): μετρά ΜΟΝΟ αν ήταν ήδη
          ;; καταγεγραμμένο κατά known-at (Υ2) — αλλιώς το snapshot εκείνης της
          ;; γνώσης απλώς δεν είχε καμία έκδοση (:no-version-in-force, τίμιο).
@@ -798,9 +821,13 @@
                (error 'temporal-uncertainty :provision pid
                       :why (format nil "δηλωμένο κενό γνώσης (~A ~A, καταγεγραμμένο ~A): το κείμενο της περιόδου δεν ανακατασκευάζεται από τις διαθέσιμες πηγές"
                                    (kg-kind g) (kg-effective g) (kg-recorded-from g)))
-               (values nil :no-version-in-force))))
+               ;; [κριτής Π2-Π4 #5] το ονομαστικό pending ΔΕΝ χάνεται:
+               ;; τρίτη τιμή (:not-yet-effective cid since) όταν υπάρχει
+               ;; δηλωμένη επικείμενη διάταξη — προσθετικό, κανένας
+               ;; καταναλωτής του (values nil :no-version-in-force) δεν σπάει.
+               (values nil :no-version-in-force pending-note))))
         (t (error 'temporal-uncertainty :provision pid
-                  :why (format nil "~D επικαλυπτόμενες εκδόσεις στην τομή — ασυνεπής γράφος" (length live)))))))))
+                  :why (format nil "~D επικαλυπτόμενες εκδόσεις στην τομή — ασυνεπής γράφος" (length live))))))))))
 
 (defun snapshot-at (graph &key valid-at known-at)
   "Ολόκληρο το σώμα στην τομή (valid-at, known-at): alist pid→text-version,
@@ -1223,14 +1250,19 @@
       (error 'invalid-condition
              :reason (format nil "άκυρο :condition-id ~S σε event" cid))))
   (let ((ev (getf e :evidence)))
-    (when ev
-      (let ((allowed (getf (instrument-kind-entry (getf e :kind)) :evidence)))
-        (unless (and (consp ev)
-                     (some (lambda (k) (getf ev k)) allowed))
-          (error 'invalid-condition
-                 :reason (format nil "evidence ~S εκτός schema ~S του kind ~S — το μητρώο /2 ΕΠΙΒΑΛΛΕΤΑΙ"
-                                 ev allowed (getf e :kind)))))))
+    (when ev (%check-evidence (getf e :kind) ev)))
   e)
+
+(defun %check-evidence (kind evidence)
+  "[κριτής Π2-Π4 #12] Η ΜΙΑ έδρα ελέγχου evidence κατά το schema του kind
+   (μητρώο /2): απαιτείται plist με ≥1 από τα επιτρεπτά keys. ΔΗΛΩΜΕΝΟ
+   όριο: πλήρης τυποποίηση τιμών/ξένων keys στο Π5 (verifier-level)."
+  (let ((allowed (getf (instrument-kind-entry kind) :evidence)))
+    (unless (and (consp evidence) (some (lambda (k) (getf evidence k)) allowed))
+      (error 'invalid-condition
+             :reason (format nil "evidence ~S εκτός/χωρίς schema ~S του kind ~S — καμία ικανοποίηση χωρίς τεκμήριο"
+                             evidence allowed kind)))
+    evidence))
 
 (defun %sat-instrument (kind ref live-events condition-id)
   "Το αποτέλεσμα για (:instrument-event KIND REF): από το ΜΟΝΑΔΙΚΟ live
@@ -1393,10 +1425,7 @@
       (error 'invalid-condition :reason (format nil "άκυρο outcome ~S" outcome)))
     (unless (legal-date-p at)
       (error 'invalid-condition :reason (format nil "άκυρο event at ~S — απαιτείται legal-date" at)))
-    (let ((allowed (getf (instrument-kind-entry kind) :evidence)))
-      (unless (and (consp evidence) (some (lambda (k) (getf evidence k)) allowed))
-        (error 'invalid-condition
-               :reason (format nil "evidence ~S εκτός/χωρίς schema ~S του kind ~S — καμία ικανοποίηση χωρίς τεκμήριο" evidence allowed kind))))
+    (%check-evidence kind evidence)
     (let* ((eid (%condition-event-hash cid kind ref outcome at (%evidence-digest evidence)))
            (live (find-if (lambda (e) (and (equal (ce-event-id e) eid)
                                            (eq (ce-recorded-until e) :current)))
@@ -1439,11 +1468,8 @@
       ce)))
 
 (defun %ce-live-p (ce known-at)
-  "Υ2 πύλη: το event μετρά ΜΟΝΟ αν recorded-from ≤ known-at < recorded-until."
-  (and (%time<= (ce-recorded-from ce) known-at "recorded-from" "known-at")
-       (or (eq (ce-recorded-until ce) :current)
-           (< (%time-key known-at "known-at")
-              (%time-key (ce-recorded-until ce) "recorded-until")))))
+  "Υ2 πύλη — μέσω της ΜΙΑΣ liveness έδρας."
+  (%live-at-p (ce-recorded-from ce) (ce-recorded-until ce) known-at))
 
 (defun condition-status (graph cid &key known-at)
   "(values :pending|:satisfied|:refuted at-ή-nil) — Η ΜΙΑ είσοδος ερώτησης
@@ -1481,6 +1507,9 @@
    (:open = +∞) — ολική, ντετερμινιστική, σε %time-key ακέραιους (spec §5)."
   (let ((a- (%ikey a-from "a-from")) (a+ (%ikey a-until "a-until"))
         (b- (%ikey b-from "b-from")) (b+ (%ikey b-until "b-until")))
+    (when (or (>= a- a+) (>= b- b+))
+      (error 'invalid-edge
+             :reason "interval-relation: κενό/ανεστραμμένο διάστημα — οι 13 σχέσεις ορίζονται μόνο σε μη κενά [from, until)"))
     (cond
       ((and (= a- b-) (= a+ b+)) :equals)
       ((< a+ b-) :before)
@@ -1518,7 +1547,11 @@
   version        ; version-hash | NIL — ΥΠΟΧΡΕΩΤΙΚΟ για :extend/:expire/:retroact
   span-from      ; legal-date — για rewrites: το ΝΕΟ valid-from (retroact) / υπάρχον
   span-until     ; legal-date | :open — για rewrites: το ΝΕΟ valid-until
-  condition-id   ; string | NIL (υπό αίρεση καθεστώς — αποτίμηση μελλοντική φάση)
+  condition-id   ; string | NIL — ΔΗΛΩΜΕΝΟ όριο: αποτίμηση σε μελλοντική φάση
+                 ; (δεσμεύεται ήδη στο hash ώστε να μην αλλάξει ποτέ σιωπηλά)·
+                 ; ομοίως το scope πεδίο του hash είναι ΔΕΣΜΕΥΜΕΝΟ placeholder
+                 ; (πάντα NIL στο Π4) — τα scope-sets έρχονται στο Π4β/Φ8 και
+                 ; κάθε μη-NIL τιμή θα παράγει ΝΕΑ ταυτότητα ακμής, όχι drift
   act-ref act-seq enacted fek-date
   prior-edge-id  ; ΥΠΟΧΡΕΩΤΙΚΟ για :revive — το suspend που αναιρεί
   recorded-from recorded-until)
@@ -1533,10 +1566,7 @@
                   out))))
 
 (defun %re-live-p (re known-at)
-  (and (%time<= (re-recorded-from re) known-at "recorded-from" "known-at")
-       (or (eq (re-recorded-until re) :current)
-           (< (%time-key known-at "known-at")
-              (%time-key (re-recorded-until re) "recorded-until")))))
+  (%live-at-p (re-recorded-from re) (re-recorded-until re) known-at))
 
 (defun graph-regimes (graph) (vg-regimes graph))
 
@@ -1561,8 +1591,12 @@
   (unless (or (eq span-until :open) (legal-date-p span-until))
     (error 'invalid-edge :reason (format nil "regime span-until: legal-date ή :open, όχι ~S" span-until)))
   (when (and (legal-date-p span-until)
-             (not (%time<= span-from span-until "span-from" "span-until")))
-    (error 'invalid-edge :reason "regime span: from > until"))
+             (not (< (%time-key span-from "span-from")
+                     (%time-key span-until "span-until"))))
+    (error 'invalid-edge :reason "regime span: απαιτείται from < until — κενό/ανεστραμμένο διάστημα δεν είναι καθεστωτική πράξη"))
+  (unless (or (integerp act-seq)
+              (and (consp act-seq) (= 2 (length act-seq)) (every #'integerp act-seq)))
+    (error 'invalid-edge :reason "regime act-seq: integer ή (άρθρο σειρά) integers"))
   (%require-date enacted "regime enacted") (%require-date fek-date "regime fek-date")
   (unless (and (stringp act-ref) (plusp (length act-ref)))
     (error 'invalid-edge :reason "regime act-ref: μη κενό string"))
