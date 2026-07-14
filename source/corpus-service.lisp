@@ -179,12 +179,22 @@
                                    (lambda () doc-provider))
                  :base-uri base-uri))
 
+(define-condition as-of-unavailable (error)
+  ((date :initarg :date :reader as-of-date)
+   (cause :initarg :cause :reader as-of-cause))
+  (:report (lambda (c s)
+             (format s "Αδύνατη η ιστορική ανασυγκρότηση για ~A: ~A"
+                     (as-of-date c) (as-of-cause c)))))
+
 (defun document-at (service &optional as-of)
   "The consolidated document, optionally as it stood on AS-OF (ISO date).
-   Providers that ignore the argument simply return the current document."
+   [0088 Φ5 — TEMP honesty]: αποτυχία ιστορικής ανασυγκρότησης ⇒ typed
+   AS-OF-UNAVAILABLE — ΠΟΤΕ σιωπηλά το ΤΡΕΧΟΝ κείμενο μεταμφιεσμένο σε
+   ιστορικό (το παλιό fallback σέρβιρε το σήμερα ως χθες χωρίς ίχνος)."
   (let ((p (service-doc-provider service)))
     (if as-of
-        (handler-case (funcall p as-of) (error () (funcall p)))
+        (handler-case (funcall p as-of)
+          (error (e) (error 'as-of-unavailable :date as-of :cause e)))
         (funcall p))))
 
 (defun current-document (service) (document-at service))
@@ -280,10 +290,17 @@ Allow: /
            (let ((from (cdr (assoc "from" (funcall (find-symbol "HTTP-REQUEST-QUERY" http) req) :test #'string=)))
                  (to (cdr (assoc "to" (funcall (find-symbol "HTTP-REQUEST-QUERY" http) req) :test #'string=))))
              (if (and from to (plusp (length from)) (plusp (length to)))
-                 (resp 200 (funcall (find-symbol "CORPUS-DIFF" :orchestrator.corpus-diff)
-                                    (document-at service from) (document-at service to)
-                                    from to :base-uri base)
-                       "application/json; charset=utf-8")
+                 (handler-case
+                     (resp 200 (funcall (find-symbol "CORPUS-DIFF" :orchestrator.corpus-diff)
+                                        (document-at service from) (document-at service to)
+                                        from to :base-uri base)
+                           "application/json; charset=utf-8")
+                   ;; [0088 Φ5] τίμιο 422: η αποτυχία ανασυγκρότησης ΔΗΛΩΝΕΤΑΙ,
+                   ;; δεν σερβίρεται το σήμερα μεταμφιεσμένο σε ιστορικό diff
+                   (as-of-unavailable (e)
+                     (resp 422 (format nil "{\"error\":\"as-of reconstruction unavailable\",\"date\":\"~A\"}"
+                                       (as-of-date e))
+                           "application/json; charset=utf-8")))
                  (resp 200 "{\"error\":\"missing ?from= and ?to= (ISO dates)\"}"
                        "application/json; charset=utf-8"))))
 

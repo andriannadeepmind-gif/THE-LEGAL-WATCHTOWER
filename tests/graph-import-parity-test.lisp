@@ -104,7 +104,22 @@
           (handler-case (progn (import-corpus->graph! "syntagma") nil)
             (error () t)))
 
+;;; ⑤ [Φ5] text-as-known — η διτεμπορική απάντηση από τον ΔΙΣΚΟ (load-graph)
+(gp-check "⑤ text-as-known(syntagma art:2, σήμερα, τώρα): κείμενο ≡ γράφου, basis :complete"
+          (let ((r (text-as-known "syntagma" "2"
+                                  :valid-at (subseq (orchestrator.journal:iso-now) 0 10)
+                                  :known-at "9999-12-31T23:59:59Z")))
+            (and (eq :complete (getf r :basis))
+                 (stringp (getf r :text)) (plusp (length (getf r :text)))
+                 (equal "1975-06-11" (getf r :valid-from)))))
+(gp-check "⑤β text-as-known(art:16, valid 1990) ⇒ temporal-uncertainty ΚΑΙ από το δισκο-φορτωμένο μονοπάτι"
+          (handler-case
+              (progn (text-as-known "syntagma" "16"
+                                    :valid-at "1990-01-01" :known-at "9999-12-31T23:59:59Z")
+                     nil)
+            (orchestrator.version-graph:temporal-uncertainty () t)))
+
 (format t "~%========================================~%")
-(format t "GRAPH-IMPORT-PARITY [0088 Φ3]: ~D passed, ~D failed~%" *gp-pass* *gp-fail*)
+(format t "GRAPH-IMPORT-PARITY [0088 Φ3+Φ5]: ~D passed, ~D failed~%" *gp-pass* *gp-fail*)
 (format t "========================================~%")
 (sb-ext:exit :code (if (zerop *gp-fail*) 0 1))

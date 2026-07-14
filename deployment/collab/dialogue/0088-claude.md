@@ -133,3 +133,40 @@ serialization + identity). Η εντολή «Δεν εγκρίνω αποσπα�
 με το πρώτο promote (era-2 cut ή owner-side), και το consistency-proof καθεστώς του σχεδίου (G6)
 ισχύει από το πρώτο entry και μετά. Κανένα «νέο cut» δεν κόβεται από το cloud (τα signing/TSA
 είναι owner-side από σχεδίαση) — το Φ0 είναι καταγραφή, όχι παραγωγή.
+
+---
+
+## [0088++] ΠΡΟΟΔΟΣ ΥΛΟΠΟΙΗΣΗΣ Φ0-Φ5μ (2026-07-14) — receipt με αριθμούς
+
+| Βήμα | Commit | Παραδοτέο | Proof |
+|---|---|---|---|
+| Φ0 | (0088) | Era-1 seal — 6 attested roots ως prev_release_root βάση | receipt §Φ0 |
+| Φ1α | 9dbbd7d9 | Η ΜΙΑ έδρα ταυτότητας orchestrator.identity + αυστηρός adapter + article.lisp delegation + component-gate νέα αλήθεια | legal-identity 18/18 · **bijection 4694/0/0** · cit 55/55 · seat 18/18 |
+| Φ1β | db956717 | Canonical serialization spec + 8 vectors + verify-canonical.py + πεδίο τιμών χωρίς floats/booleans (jonathan false≡null — δομική εξάλειψη) + RFC8785 πεζά hex | Lisp 12/12 · Python 8/8 |
+| Φ2 | 8d89d61e | Διτεμπορικός γράφος: legal-date τύπος (TEMP-02 δεν κατασκευάζεται), quarantined-edge ΤΥΠΟΣ, G1 replay-then-append, chain-hash journal ([0086] έδρα), version-at με recorded ΣΤΟ predicate, ΓΝΗΣΙΑ supersession | version-graph 18/18 |
+| Φ3 | ebbf2d94 | Import 6 σωμάτων (genesis+κενά γνώσης) + FOLD-PARITY gate + δηλωμένα body_identity (κυρωτικές πράξεις) + lettered κληρονομιά βάσης | graph-import-parity 24/24 — 4694/4694 byte-ίδια, 0 αποκλίσεις |
+| Φ4α | 0b8fad15 | LegalAuthorityReceipt: receipt-id = hash ΟΛΟΚΛΗΡΟΥ receipt, γενεαλογία replay | 11/11 — 124/124 receipts, 6/6 tampers FAIL |
+| Φ4β | 3747082c | Θάνατος PCL-03 υποβαθμίσεων ×3 + trust_status typed + emit-proofs exit≠0 | 15/15 · κανείς καταναλωτής δεν έσπασε (45/45·45/45·12/12·16/16) |
+| Φ5μ | (παρόν) | as-of fallback ΝΕΚΡΟ (typed as-of-unavailable + HTTP 422) + text-as-known από τον δίσκο | corpus-service 45/45 · parity 26/26 |
+
+**Τα 14 ευρήματα — τίμια κατάσταση:**
+- ΚΛΕΙΣΤΑ ΣΤΟ ΝΕΟ ΜΟΝΟΠΑΤΙ: AUTH-01 (μία έδρα — adapters με θάνατο Φ6), TEMP-01/
+  TEMP-02/TEMP-04 (γράφος: κείμενο-φέρουσες εκδόσεις, τύπος χωρίς NIL, τίμια
+  valid-from + κενά γνώσης), TEMP-03 (recorded στο predicate + text-as-known),
+  PROV-01 (πλήρης γενεαλογία στο receipt), PCL-01 (leaf = hash όλου του receipt),
+  PCL-03 (υποβαθμίσεις νεκρές, trust_status typed).
+- ΜΕΡΙΚΩΣ: AUTH-02 (source-artifact/κανάλι ΜΕΣΑ στο receipt· το ΝΟΜΟΛΟΓΙΑΚΟ
+  βάρος = εκτός εμβέλειας κώδικα-σωμάτων, δηλωμένο υπόλοιπο)· ANCHOR-01
+  (ANCHOR failure πλέον σφάλμα· η hermetic ΕΠΑΝΕΚΤΕΛΕΣΗ extractor = §1.4
+  verify-derivation, εκκρεμεί — δένει σε P4 substrate)· PCL-02 (receipts
+  υπάρχουν· η ένταξη receipt-set-root στο era-2 canonical set = Φ5-πλήρες).
+- ΑΝΟΙΧΤΑ: TRUST-01 (reasoning premises με receipt-ids — Φ5-πλήρες)·
+  CONS-01/CONS-02 στο ΠΑΛΙΟ consolidation-proof (πεθαίνει με το cutover —
+  ο γράφος ήδη κάνει per-record replay+chain)· TEMP-03 στο ΠΑΛΙΟ select-acts
+  (ζει μέχρι το cutover Φ5-πλήρες/Φ6).
+- Φ7 benchmark: αναμένει τα 9 ΦΕΚ (λίστα §[0088+]).
+
+**ΤΙΜΙΟ ΟΡΙΟ ΣΥΝΕΧΕΙΑΣ:** το υπόλοιπο Φ5 (cutover emitters/serving στον γράφο)
+και το Φ6 (θάνατοι adapters/παλαιών εδρών) αλλάζουν το ΣΕΡΒΙΡΙΖΟΜΕΝΟ μονοπάτι —
+δεν προχωρούν χωρίς owner docker proof του σωρευμένου έργου (5 νέα gated tests
+στο loop). Η φάση παύει εδώ μέχρι το docker πράσινο ή νέα εντολή.

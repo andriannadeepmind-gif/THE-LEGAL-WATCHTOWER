@@ -172,3 +172,27 @@
             (orchestrator.version-graph:unknown-provision ()
               (push (list eid :unknown-in-graph) divergences)))))
       (values divergences checked))))
+
+(defun text-as-known (corpus-id article-label &key valid-at known-at)
+  "«Τι ήξερε το LAWMAX κατά KNOWN-AT για το άρθρο ARTICLE-LABEL κατά VALID-AT;»
+   — η διτεμπορική απάντηση ΑΠΟ ΤΟΝ ΓΡΑΦΟ (πλήρες replay από τον δίσκο, με
+   επαλήθευση αλυσίδας). Επιστρέφει plist (:text :heading :valid-from
+   :valid-until :assurance :basis) ή σηματοδοτεί temporal-uncertainty /
+   unknown-provision — ποτέ σιωπηλό «τρέχον». Δηλωμένο επόμενο βήμα (Φ5-
+   πλήρες): έκθεση ως HTTP endpoint /as-known?article=…&valid=…&known=…"
+  (let* ((body (%graph-body-for corpus-id))
+         (graph (orchestrator.version-graph:load-graph
+                 (orchestrator.identity:body-id-string body)))
+         (pid (orchestrator.identity:provision-id-string
+               (orchestrator.identity:article-provision-id body article-label))))
+    (multiple-value-bind (v basis)
+        (orchestrator.version-graph:version-at graph pid
+                                               :valid-at valid-at :known-at known-at)
+      (if (null v)
+          (list :text nil :basis basis)
+          (list :text (orchestrator.version-graph:tv-text v)
+                :heading (orchestrator.version-graph:tv-heading v)
+                :valid-from (orchestrator.version-graph:tv-valid-from v)
+                :valid-until (orchestrator.version-graph:tv-valid-until v)
+                :assurance (orchestrator.version-graph:tv-assurance v)
+                :basis basis)))))
