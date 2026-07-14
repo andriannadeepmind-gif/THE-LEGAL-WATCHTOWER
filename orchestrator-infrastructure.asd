@@ -116,6 +116,7 @@
      (:file "legal-qa")           ; Intelligence: deterministic legal reasoning over the graph
      (:file "eu-interop-layer")   ; EUR-Lex / CELLAR integration (EU official legal data)
      (:file "canonical-representation") ; GATE-14: Deterministic serialization for JWS
+     (:file "version-graph")      ; [0088] Φ2: διτεμπορικός γράφος εκδόσεων — text-version/amendment-edge/quarantined-edge, admit-edge!=replay-then-append, journal+chain-hash, version-at με recorded ΣΤΟ predicate
      (:file "validation-authority") ; GATE-5: Deterministic contract validation
      (:file "blockchain-authority") ; GATE-6: Pure Lisp blockchain anchoring (Ethereum/Arweave/IPFS)
      (:file "asn1-der")           ; Η ΜΙΑ έδρα ASN.1 DER (X.690): encoders + αυστηρός decoder + PEM↔DER

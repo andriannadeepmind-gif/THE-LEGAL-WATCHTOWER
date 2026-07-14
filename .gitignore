@@ -50,3 +50,4 @@ deployment/self/adoptions.sexp
 
 # build artifact: παγωμένες ταυτότητες συστατικών (γράφεται από build.lisp)
 component-manifest.sexp
+deployment/data/version-graph/
