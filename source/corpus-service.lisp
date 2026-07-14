@@ -29,6 +29,8 @@
    #:multi-corpus-service #:make-multi-corpus-service #:multi-service-handler
    ;; [0088 Φ5β] /as-known — διτεμπορικό boundary contract του service
    #:as-known-uncertain #:as-known-unknown #:as-known-bad-request #:as-known-why
+   ;; as-of ιστορική ανασυγκρότηση — το boundary contract του /diff & providers
+   #:as-of-unavailable #:as-of-date #:as-of-cause
    ;; [0088 Φ5-κριτής Μ] typed corpus runtime — ΜΙΑ εγγραφή ανά σώμα
    #:corpus-runtime #:make-corpus-runtime #:corpus-runtime-p
    #:cr-name #:cr-corpus-id #:cr-doc-provider #:cr-as-known-provider))
@@ -215,14 +217,13 @@
 
 (defun document-at (service &optional as-of)
   "The consolidated document, optionally as it stood on AS-OF (ISO date).
-   [0088 Φ5 — TEMP honesty]: αποτυχία ιστορικής ανασυγκρότησης ⇒ typed
-   AS-OF-UNAVAILABLE — ΠΟΤΕ σιωπηλά το ΤΡΕΧΟΝ κείμενο μεταμφιεσμένο σε
-   ιστορικό (το παλιό fallback σέρβιρε το σήμερα ως χθες χωρίς ίχνος)."
+   [0088 Φ5 — TEMP honesty]: η ΑΠΟΤΥΧΙΑ ιστορικής ανασυγκρότησης είναι ΕΥΘΥΝΗ
+   ΤΟΥ PROVIDER να τη σηματοδοτήσει ως AS-OF-UNAVAILABLE — ΠΟΤΕ σιωπηλά το
+   τρέχον κείμενο ως ιστορικό. [κριτής Β 3.1]: το document-at ΔΕΝ τυλίγει πια
+   ΚΑΘΕ error σε as-of-unavailable — ένα προγραμματιστικό bug (NIL-funcall)
+   ΔΕΝ είναι «άγνοια»· ανεβαίνει ως 500. Bug ≠ τίμια άγνοια."
   (let ((p (service-doc-provider service)))
-    (if as-of
-        (handler-case (funcall p as-of)
-          (error (e) (error 'as-of-unavailable :date as-of :cause e)))
-        (funcall p))))
+    (if as-of (funcall p as-of) (funcall p))))
 
 (defun current-document (service) (document-at service))
 

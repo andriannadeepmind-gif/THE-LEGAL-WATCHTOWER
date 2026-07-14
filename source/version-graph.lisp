@@ -40,7 +40,7 @@
    #:legal-date #:legal-date-p #:legal-instant #:legal-instant-p
    #:text-version #:text-version-p #:amendment-edge #:amendment-edge-p
    #:quarantined-edge #:quarantined-edge-p #:knowledge-gap #:knowledge-gap-p
-   #:temporal-uncertainty #:unknown-provision #:invalid-edge
+   #:temporal-uncertainty #:unknown-provision #:invalid-edge #:journal-corruption
    ;; text-version αναγνώστες
    #:tv-version-hash #:tv-provision-id #:tv-text #:tv-heading
    #:tv-valid-from #:tv-valid-until #:tv-recorded-from #:tv-recorded-until
@@ -73,10 +73,16 @@
     (t 0)))
 
 (defun %digits-int (s start end)
+  "Ακέραιος από ASCII ψηφία [START,END) — ΜΟΝΟ #\\0..#\\9. [0088 Φ5-κριτής Ε1]:
+   το digit-char-p δεχόταν ΚΑΘΕ Unicode decimal (fullwidth ５, Arabic-Indic ٥),
+   ανοίγοντας equivocation surface (ίδιο %time-key, διαφορετικό hash/bytes). Ο
+   canonical-UTC τύπος πρέπει να είναι ASCII-only ΔΟΜΙΚΑ, για ΟΛΟΥΣ τους
+   καλούντες (date/instant/time-key) ταυτόχρονα."
   (loop with n = 0
         for i from start below end
-        for d = (digit-char-p (char s i))
-        do (unless d (return nil)) (setf n (+ (* 10 n) d))
+        for c = (char s i)
+        do (unless (char<= #\0 c #\9) (return nil))
+           (setf n (+ (* 10 n) (- (char-code c) 48)))
         finally (return n)))
 
 (defun legal-date-p (x)
@@ -125,6 +131,14 @@
 (define-condition invalid-edge (error)
   ((reason :initarg :reason :reader invalid-edge-reason))
   (:report (lambda (c s) (format s "Άκυρη ακμή: ~A" (invalid-edge-reason c)))))
+
+(define-condition journal-corruption (error)
+  ;; [0088 Φ5-κριτής Ε2] ΞΕΧΩΡΙΣΤΟΣ τύπος από invalid-edge: η αλλοίωση/ρήξη
+  ;; ΑΠΟΘΗΚΕΥΜΕΝΟΥ journal είναι server-integrity αποτυχία (⇒ 500), ΠΟΤΕ
+  ;; client «άκυρη είσοδος» (⇒ 400). Η invalid-edge σημαίνει «κακό υποψήφιο
+  ;; υλικό»· αυτή σημαίνει «η ίδια η καταγεγραμμένη αλήθεια πειράχτηκε».
+  ((reason :initarg :reason :reader journal-corruption-reason))
+  (:report (lambda (c s) (format s "ΔΙΕΦΘΑΡΜΕΝΟ journal: ~A" (journal-corruption-reason c)))))
 
 (define-condition temporal-uncertainty (error)
   ((provision :initarg :provision :reader uncertainty-provision)
@@ -263,9 +277,15 @@
      (write-char #\" out))
     (integer (format out "~D" x))
     (cons (write-char #\( out)
-     (loop for (e . rest) on x
-           do (%canon-sexp e out)
-              (when rest (write-char #\Space out)))
+     ;; [Ε3] χειρισμός ΚΑΙ improper lists (dotted pair): το `on` σκόνταφτε σε
+     ;; endp πάνω σε atom (type-error αντί fail-closed etypecase). Κανένα
+     ;; journaled payload δεν είναι dotted σήμερα, αλλά η ταυτότητα δεν
+     ;; επιτρέπεται να έχει «σχεδόν σωστή» σειριοποίηση.
+     (loop for tail = x then (cdr tail)
+           while (consp tail)
+           do (%canon-sexp (car tail) out)
+              (cond ((consp (cdr tail)) (write-char #\Space out))
+                    ((cdr tail) (write-string " . " out) (%canon-sexp (cdr tail) out))))
      (write-char #\) out))))
 
 (defun %payload-hash (plist)
@@ -668,8 +688,9 @@
         του payload (κάθε πεδίο) ≡ αποθηκευμένο :payload-hash — αλλοίωση
         ΟΠΟΙΟΥΔΗΠΟΤΕ πεδίου με αμετάβλητο record-id ΣΠΑΕΙ εδώ·
      ② chain: sha256(prev ‖ 0x1F ‖ payload-hash) ≡ αποθηκευμένο :chain.
-   Γραμμή χωρίς :payload-hash = παλαιό σχήμα (προ-Κ2) ⇒ ΡΗΤΟ σφάλμα με οδηγία
-   (τα journals είναι runtime κατασκευάσματα: διαγραφή + reimport)."
+   Γραμμή χωρίς :payload-hash = παλαιό σχήμα (προ-Κ2) ⇒ journal-corruption με
+   οδηγία (τα journals είναι runtime κατασκευάσματα: διαγραφή + reimport).
+   ΚΑΘΕ ρήξη ⇒ journal-corruption (server-integrity, ΟΧΙ invalid-edge/client)."
   (let ((graph (make-graph body-string)))
     (dolist (line (orchestrator.journal:read-lines (vg-path graph)))
       (let* ((rid (getf line :record-id))
@@ -677,22 +698,22 @@
              (ph (%payload-hash (%strip-envelope line)))
              (expect (%chain-next (vg-chain graph) ph)))
         (unless stored-ph
-          (error 'invalid-edge
+          (error 'journal-corruption
                  :reason (format nil "γραμμή ~A χωρίς :payload-hash — παλαιό σχήμα journal (προ-Κ2): διέγραψε το ~A και ξανακάνε import"
                                  rid (vg-path graph))))
         (unless (equal ph stored-ph)
-          (error 'invalid-edge
+          (error 'journal-corruption
                  :reason (format nil "ΑΛΛΟΙΩΣΗ PAYLOAD στο ~A: recomputed ~A ≠ αποθηκευμένο ~A — κάποιο πεδίο του record πειράχτηκε"
                                  rid ph stored-ph)))
         (unless (equal expect (getf line :chain))
-          (error 'invalid-edge
+          (error 'journal-corruption
                  :reason (format nil "σπασμένη αλυσίδα στο ~A: περίμενα ~A βρήκα ~A"
                                  rid expect (getf line :chain))))
         (setf (vg-chain graph) expect)
         ;; ③ semantic record hash ανά kind: το record-id ΞΑΝΑΒΓΑΙΝΕΙ από τα
         ;; πεδία — relabeling/πλαστό id αδύνατο ακόμη κι αν το payload-hash
         ;; ξαναγραφόταν συνεπές.
-        (ecase (getf line :kind)
+        (case (getf line :kind)
           (:text-version
            (let ((semantic (%version-hash (getf line :provision-id) (getf line :text)
                                           (getf line :heading) (getf line :valid-from)
@@ -700,7 +721,7 @@
                                           (if (equal (getf line :previous) "genesis")
                                               :genesis (getf line :previous)))))
              (unless (equal semantic rid)
-               (error 'invalid-edge
+               (error 'journal-corruption
                       :reason (format nil "text-version ~A: semantic hash ~A ≠ record-id — πλαστή ταυτότητα έκδοσης" rid semantic))))
            (%install-version graph
                              (make-text-version
@@ -721,7 +742,7 @@
                                        (getf line :enacted) (getf line :effective)
                                        (getf line :fek-date) (getf line :span))))
              (unless (equal semantic rid)
-               (error 'invalid-edge
+               (error 'journal-corruption
                       :reason (format nil "amendment-edge ~A: semantic hash ~A ≠ record-id — πλαστή ταυτότητα ακμής" rid semantic))))
            (setf (gethash rid (vg-edges graph))
                  (make-amendment-edge
@@ -752,7 +773,10 @@
                  (vg-gaps graph)))
           (:retract
            (let ((v (gethash (getf line :version) (vg-versions graph))))
-             (when v (setf (tv-recorded-until v) (%recorded-of line))))))))
+             (when v (setf (tv-recorded-until v) (%recorded-of line)))))
+          (t (error 'journal-corruption
+                    :reason (format nil "άγνωστο :kind ~S στη γραμμή ~A — διεφθαρμένο/μελλοντικό σχήμα"
+                                    (getf line :kind) rid))))))
     graph))
 
 (defun verify-chain (body-string)

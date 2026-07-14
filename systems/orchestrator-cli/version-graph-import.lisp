@@ -180,11 +180,9 @@
    :valid-until :assurance :basis) ή σηματοδοτεί temporal-uncertainty /
    unknown-provision — ποτέ σιωπηλό «τρέχον». Δηλωμένο επόμενο βήμα (Φ5-
    πλήρες): έκθεση ως HTTP endpoint /as-known?article=…&valid=…&known=…"
-  (let* ((body (%graph-body-for corpus-id))
-         (graph (orchestrator.version-graph:load-graph
-                 (orchestrator.identity:body-id-string body)))
-         (pid (orchestrator.identity:provision-id-string
-               (orchestrator.identity:article-provision-id body article-label))))
+  (multiple-value-bind (graph body) (%ensure-graph corpus-id :if-missing :error)
+    (let ((pid (orchestrator.identity:provision-id-string
+                (orchestrator.identity:article-provision-id body article-label))))
     (multiple-value-bind (v basis)
         (orchestrator.version-graph:version-at graph pid
                                                :valid-at valid-at :known-at known-at)
@@ -195,7 +193,7 @@
                 :valid-from (orchestrator.version-graph:tv-valid-from v)
                 :valid-until (orchestrator.version-graph:tv-valid-until v)
                 :assurance (orchestrator.version-graph:tv-assurance v)
-                :basis basis)))))
+                :basis basis))))))
 
 (defun %source-artifact-for (corpus-id)
   "Η ταυτότητα της πηγής ΜΕΣΑ στη δέσμευση (AUTH-02 ροή): content_sha256 +
@@ -209,16 +207,24 @@
       (list (cons "content_sha256" (cdr (assoc "content_sha256" prov :test #'string=)))
             (cons "source_digest" (cdr (assoc "source_digest" prov :test #'string=)))))))
 
-(defun %ensure-graph (corpus-id)
-  "Ο γράφος του CORPUS-ID: load-graph (πλήρες replay + επαλήθευση αλυσίδας) αν
-   υπάρχει journal, αλλιώς import από την provenance-ελεγμένη πηγή. Η ΜΙΑ
-   είσοδος «δώσε μου τον γράφο» — commitment/serving/reasoning τη μοιράζονται."
+(defun %ensure-graph (corpus-id &key (if-missing :import))
+  "Η ΜΙΑ ΕΙΣΟΔΟΣ «δώσε μου τον γράφο» — commitment/serving/reasoning τη
+   μοιράζονται ΟΛΑ (κριτής Β 1.1: πριν, serving έγραφε inline load-graph).
+   Επιστρέφει (values graph typed-body body-string). IF-MISSING:
+     :import — απόν journal ⇒ import από την provenance-ελεγμένη πηγή (χτίσιμο)·
+     :error  — απόν journal ⇒ ΣΦΑΛΜΑ (serving: δεν χτίζουμε ποτέ mid-serve).
+   load-graph = πλήρες replay + payload/chain/semantic επαλήθευση κάθε γραμμής."
   (let* ((body (%graph-body-for corpus-id))
-         (body-string (orchestrator.identity:body-id-string body)))
-    (let ((probe (orchestrator.version-graph:make-graph body-string)))
-      (if (probe-file (orchestrator.version-graph::vg-path probe))
-          (orchestrator.version-graph:load-graph body-string)
-          (import-corpus->graph! corpus-id)))))
+         (body-string (orchestrator.identity:body-id-string body))
+         (probe (orchestrator.version-graph:make-graph body-string))
+         (present (probe-file (orchestrator.version-graph::vg-path probe))))
+    (values
+     (cond
+       (present (orchestrator.version-graph:load-graph body-string))
+       ((eq if-missing :import) (import-corpus->graph! corpus-id))
+       (t (error "graph ~A: απόν journal (~A) και if-missing=:error — δεν χτίζεται mid-serve"
+                 corpus-id (orchestrator.version-graph::vg-path probe))))
+     body body-string)))
 
 (defun corpus-temporal-commitment (corpus-id)
   "[0088 Φ5] Η ΜΙΑ έδρα του temporal commitment ενός corpus — ό,τι δένεται στο
@@ -231,9 +237,7 @@
    FAIL-CLOSED: απόν journal ⇒ import από την provenance-ελεγμένη πηγή· κάθε
    receipt επανεπαληθεύεται (0 failures ή ΣΦΑΛΜΑ)· αβέβαιη διάταξη ΣΗΜΕΡΑ ⇒
    ΣΦΑΛΜΑ (δείχνει σφάλμα import, όχι αποδεκτή άγνοια). Επιστρέφει plist."
-  (let* ((body (%graph-body-for corpus-id))
-         (body-string (orchestrator.identity:body-id-string body))
-         (graph (%ensure-graph corpus-id)))
+  (multiple-value-bind (graph body body-string) (%ensure-graph corpus-id)
     (multiple-value-bind (ok head n) (orchestrator.version-graph:verify-chain body-string)
       (unless (and ok (plusp n)
                    (equal head (orchestrator.version-graph:graph-chain-head graph)))
@@ -283,20 +287,20 @@
    έγγραφο (ονομαστική λίστα) — μερικό «ιστορικό» έγγραφο δεν σερβίρεται.
    Διατάξεις χωρίς κάλυψη στην τομή (π.χ. δεν είχαν εισαχθεί ακόμη)
    παραλείπονται ΤΙΜΙΑ — δεν υπήρχαν τότε. Επιστρέφει legal-document."
-  (let* ((body (%graph-body-for corpus-id))
-         (graph (orchestrator.version-graph:load-graph
-                 (orchestrator.identity:body-id-string body)))
+  (let* ((graph (%ensure-graph corpus-id :if-missing :error))
          (short (or (orchestrator.spec:config-get "corpus.short_name") corpus-id))
          (title (orchestrator.spec:config-get "corpus.name")))
     (multiple-value-bind (snap uncertain)
         (orchestrator.version-graph:snapshot-at
          graph :valid-at as-of :known-at "9999-12-31T23:59:59Z")
       (when uncertain
-        (error 'orchestrator.version-graph:temporal-uncertainty
-               :provision (format nil "~A (~D διατάξεις)" corpus-id (length uncertain))
-               :why (format nil "as-of ~A: κενά γνώσης σε ~D διατάξεις (πρώτες: ~{~A~^, ~}) — ιστορική ανασυγκρότηση ΔΕΝ σερβίρεται μερική"
-                            as-of (length uncertain)
-                            (mapcar #'car (subseq uncertain 0 (min 5 (length uncertain)))))))
+        ;; ο provider σηματοδοτεί το boundary contract του service ΑΠΕΥΘΕΙΑΣ
+        ;; (as-of-unavailable) — μερικό ιστορικό έγγραφο δεν σερβίρεται
+        (error 'orchestrator.corpus-service:as-of-unavailable
+               :date as-of
+               :cause (format nil "κενά γνώσης σε ~D διατάξεις (πρώτες: ~{~A~^, ~}) — ιστορική ανασυγκρότηση ΔΕΝ σερβίρεται μερική"
+                              (length uncertain)
+                              (mapcar #'car (subseq uncertain 0 (min 5 (length uncertain)))))))
       (let ((rows
               (sort (mapcar (lambda (pair)
                               (let* ((pid (car pair)) (v (cdr pair))

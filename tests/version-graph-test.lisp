@@ -214,8 +214,10 @@
                (orchestrator.version-graph::vg-path g)
                (list :kind :retract :record-id "tampered" :version "x"
                      :chain "ΨΕΥΤΙΚΗ" :at "2026-01-01T00:00:00Z"))
+              ;; [κριτής Ε2] ξένη/παραποιημένη γραμμή = journal-corruption
+              ;; (server-integrity), ΟΧΙ invalid-edge (client input)
               (handler-case (progn (orchestrator.version-graph:load-graph body) nil)
-                (orchestrator.version-graph:invalid-edge () t)))))
+                (orchestrator.version-graph:journal-corruption () t)))))
 
 ;;; ⑨ Ντετερμινισμός ταυτοτήτων: ίδιο περιεχόμενο ⇒ ίδια version/edge hashes
 (vg-check "⑨ δύο ανεξάρτητοι γράφοι, ίδιες πράξεις ⇒ ΙΔΙΑ version-hashes (bit-reproducible σύνολο)"

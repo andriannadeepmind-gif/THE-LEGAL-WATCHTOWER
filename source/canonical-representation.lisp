@@ -45,6 +45,7 @@
    #:canonicalize-json
    #:canonical-json-bytes
    #:canonical-hash
+   #:canonical-json-string   ; RFC 8785 escaping ΜΙΑ φορά (κριτής Β 2.1)
    ;; ID generation
    #:generate-canonical-id
    #:generate-embedding-id

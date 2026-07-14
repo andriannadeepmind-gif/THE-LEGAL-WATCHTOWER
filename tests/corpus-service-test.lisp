@@ -166,13 +166,20 @@
 (format t "~%========================================~%")
 ;;; [0088 Φ5] TEMP honesty lock: αποτυχία as-of ⇒ typed as-of-unavailable —
 ;;; ΠΟΤΕ σιωπηλά το τρέχον έγγραφο μεταμφιεσμένο σε ιστορικό.
-(check "[0088] document-at με provider που αποτυγχάνει στο as-of ⇒ AS-OF-UNAVAILABLE (όχι το τρέχον)"
+(check "[0088] provider σηματοδοτεί AS-OF-UNAVAILABLE ⇒ document-at το προπαγάνδει (όχι το τρέχον)"
        (let ((svc (make-corpus-service
                    (lambda (&optional as-of)
-                     (if as-of (error "no history") :current-doc)))))
+                     (if as-of (error 'as-of-unavailable :date as-of :cause "no history")
+                         :current-doc)))))
          (and (eq :current-doc (document-at svc))
               (handler-case (progn (document-at svc "1990-01-01") nil)
                 (as-of-unavailable (e) (equal "1990-01-01" (as-of-date e)))))))
+(check "[κριτής Β 3.1] προγραμματιστικό bug στον provider ⇒ ΔΕΝ μεταμφιέζεται σε as-of-unavailable (ανεβαίνει)"
+       (let ((svc (make-corpus-service
+                   (lambda (&optional as-of) (declare (ignore as-of)) (car 5)))))
+         (handler-case (progn (document-at svc "1990-01-01") nil)
+           (as-of-unavailable () nil)   ; ΛΑΘΟΣ αν το πιάσει εδώ
+           (error () t))))              ; σωστό: bug ανεβαίνει ως γενικό error (⇒ 500)
 
 ;;; [0088 Φ5β] /as-known — το διτεμπορικό boundary contract του service
 (format t "~%== [0088 Φ5β] /as-known ==~%")

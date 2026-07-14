@@ -50,18 +50,12 @@
            (ironclad:digest-sequence
             :sha512 (alexandria:read-file-into-byte-vector path)))))
 
-(defun %json-escape (s)
-  (with-output-to-string (o)
-    (loop for c across s
-          do (case c
-               (#\" (write-string "\\\"" o))
-               (#\\ (write-string "\\\\" o))
-               (#\Newline (write-string "\\n" o))
-               (#\Return (write-string "\\r" o))
-               (#\Tab (write-string "\\t" o))
-               (t (write-char c o))))))
-
-(defun %jstr (s) (if s (format nil "\"~A\"" (%json-escape s)) "null"))
+(defun %jstr (s)
+  "[κριτής Β 2.1] JSON string ΜΟΝΟ μέσω της ΜΙΑΣ RFC-8785 έδρας
+   (canonical-json-string — πλήρες escaping ΟΛΩΝ των control chars ως \\u00xx),
+   ΟΧΙ δεύτερος ασθενέστερος escaper. Το census είναι id-δεσμευτικά bytes: το
+   escaping της συμβολοσειράς έχει ΜΙΑ έδρα σε όλο το σύστημα."
+  (if s (orchestrator.canonical-representation:canonical-json-string s) "null"))
 
 (defun build-artifact-census (articles corpus-short-name articles-dir
                               &key prev-release-root materials temporal-commitment)

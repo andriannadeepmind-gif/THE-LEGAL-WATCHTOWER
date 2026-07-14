@@ -19,9 +19,15 @@
   (:use :cl)
   (:export #:reference-facts #:reason-impact #:impact-report
            ;; [0088 Φ5γ] TRUST-01: θεμελιωμένος συλλογισμός με receipt-ids
-           #:grounded-impact))
+           #:grounded-impact #:ungrounded-reasoning #:ungrounded-why))
 
 (in-package :orchestrator.reasoning)
+
+(define-condition ungrounded-reasoning (error)
+  ;; [0088 Φ5-κριτής Β 4.1] TYPED: ο αθεμελίωτος συλλογισμός δεν είναι γενικό
+  ;; error — είναι ρητή άρνηση εκτέλεσης πάνω σε μη-δεσμευμένο θεμέλιο.
+  ((why :initarg :why :reader ungrounded-why))
+  (:report (lambda (c s) (format s "Αθεμελίωτος συλλογισμός: ~A" (ungrounded-why c)))))
 
 (defun reference-facts (doc code)
   "Every resolved article→article citation in DOC as an engine fact
@@ -103,12 +109,14 @@
    συμπέρασμα. Το ΙΔΙΟ το ερωτώμενο άρθρο πρέπει να θεμελιώνεται, αλλιώς
    σφάλμα — συλλογισμός πάνω σε ανύπαρκτη-στην-τομή διάταξη δεν εκτελείται."
   (unless (and body graph receipts valid-at known-at)
-    (error "grounded-impact: body/graph/receipts/valid-at/known-at ΟΛΑ υποχρεωτικά — αθεμελίωτος συλλογισμός δεν εκτελείται (TRUST-01)"))
+    (error 'ungrounded-reasoning
+           :why "body/graph/receipts/valid-at/known-at ΟΛΑ υποχρεωτικά — δεν εκτελείται (TRUST-01)"))
   (unless (equal (orchestrator.identity:body-id-string body)
                  (orchestrator.version-graph:graph-body graph))
-    (error "grounded-impact: BODY ~A ≠ σώμα του γράφου ~A"
-           (orchestrator.identity:body-id-string body)
-           (orchestrator.version-graph:graph-body graph)))
+    (error 'ungrounded-reasoning
+           :why (format nil "BODY ~A ≠ σώμα του γράφου ~A"
+                        (orchestrator.identity:body-id-string body)
+                        (orchestrator.version-graph:graph-body graph))))
   (let* ((index (if (hash-table-p receipts)
                     receipts
                     (let ((h (make-hash-table :test 'equal)))
@@ -149,8 +157,9 @@
       ;; το ερωτώμενο άρθρο ΠΡΕΠΕΙ να θεμελιώνεται
       (multiple-value-bind (g why) (ground article)
         (unless g
-          (error "grounded-impact: το ερωτώμενο άρθρο ~A δεν θεμελιώνεται στην τομή (~A, ~A): ~A"
-                 article valid-at known-at why)))
+          (error 'ungrounded-reasoning
+                 :why (format nil "το ερωτώμενο άρθρο ~A δεν θεμελιώνεται στην τομή (~A, ~A): ~A"
+                              article valid-at known-at why))))
       (dolist (r (reason-impact doc code article))
         (multiple-value-bind (g why) (ground (car r))
           (if g

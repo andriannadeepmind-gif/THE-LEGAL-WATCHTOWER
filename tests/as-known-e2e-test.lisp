@@ -153,6 +153,12 @@
 (e2-check "⑤γ 2024-02-29 (δίσεκτο) δεκτό, 2023-02-29 ΟΧΙ"
           (and (orchestrator.version-graph:legal-date-p "2024-02-29")
                (not (orchestrator.version-graph:legal-date-p "2023-02-29"))))
+(e2-check "⑤δ [κριτής Ε1] Unicode ψηφία (fullwidth ５, Arabic-Indic ٥) ΑΠΟΡΡΙΠΤΟΝΤΑΙ — ASCII-only canonical"
+          (and (not (orchestrator.version-graph:legal-date-p
+                     (concatenate 'string (string (code-char #xFF15)) "026-01-01")))
+               (not (orchestrator.version-graph:legal-instant-p
+                     (concatenate 'string (string (code-char #x0665)) "026-01-01T00:00:00Z")))
+               (orchestrator.version-graph:legal-date-p "2026-01-01")))
 
 ;;; ─────────── ΜΕΡΟΣ Β: ΠΛΗΡΕΣ HTTP E2E πάνω στο ΠΡΑΓΜΑΤΙΚΟ syntagma ───────────
 
@@ -225,6 +231,11 @@
                  (cdr (assoc "why" (e2-json r) :test #'string=)))))
 (e2-check "⑦β known=zzzz ⇒ 400 typed"
           (= 400 (e2-status (e2-get "/constitution/as-known?article=2&valid=2020-01-01&known=zzzz"))))
+(e2-check "⑦γ [κριτής Ε1] fullwidth ψηφίο στο known ⇒ 400 (ΟΧΙ 200 με μη-canonical string στην απάντηση)"
+          (= 400 (e2-status
+                  (e2-get (concatenate 'string
+                                       "/constitution/as-known?article=2&valid=2020-01-01&known="
+                                       (string (code-char #xFF12)) "026-01-01T00:00:00Z")))))
 
 ;;; ⑧ [Κ1] Ο παλιός provider ΚΑΙΓΕΤΑΙ — το /as-known μένει πράσινο
 (e2-check "⑧ route-first: /broken/as-known ⇒ 200 ενώ ο consolidated provider σκάει"
