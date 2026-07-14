@@ -22,6 +22,18 @@
                     NIL for plain numeric articles; used so lettered articles do
                     not collide with their base number in filenames/URIs.")
 
+   (identity-segment
+    :accessor article-identity
+    :initarg :identity
+    :initform nil
+    :documentation "[0088 Φ6γ] TYPED ταυτότητα άρθρου από την έδρα
+                    orchestrator.identity: article-segment (:article ΒΑΣΗ
+                    ΤΑΚΤΙΚΗ-ΘΕΣΗ), υπολογισμένο ΜΙΑ φορά στην κατασκευή
+                    (make-article) — όχι επανα-parse του label ανά χρήση.
+                    NIL μόνο σε αντικείμενα που κατασκευάστηκαν εκτός του
+                    builder (tests) — μαζί με τους Δ-θανάτους της Φ6γ το
+                    NIL πεθαίνει και το slot γίνεται υποχρεωτικό.")
+
    (title
     :accessor article-title
     :initarg :title
@@ -97,6 +109,32 @@
     :documentation "Additional metadata as plist"))
   (:metaclass article-class)
   (:documentation "Legal article with full processing metadata"))
+
+(defun %article-identity-segment-for (label number)
+  "Το typed identity segment για LABEL (ή, χωρίς label, για κανονικό NUMBER
+   1..9999· συνθετικός αριθμός χωρίς label ⇒ NIL — δηλωμένο identity-debt).
+   Άκυρο label ⇒ orchestrator.spec:validation-error (το δημόσιο συμβόλαιο)."
+  (cond
+    (label
+     (handler-case
+         (multiple-value-bind (base ord)
+             (orchestrator.identity:parse-article-label (string label))
+           (orchestrator.identity:article-segment base ord))
+       (orchestrator.identity:identity-parse-error (e)
+         (error 'orchestrator.spec:validation-error
+                :message (princ-to-string e)))))
+    ((and (integerp number) (<= 1 number 9999))
+     (orchestrator.identity:article-segment number 0))
+    (t nil)))
+
+(defmethod (setf article-label) :after (new-label (article article))
+  "[0088 Φ6γ] Η typed ταυτότητα ΠΑΡΑΚΟΛΟΥΘΕΙ το label: κάθε αλλαγή label
+   επανυπολογίζει το identity segment από την έδρα — stale/αποκλίνουσα
+   ταυτότητα είναι ΔΟΜΙΚΑ αδύνατη (όχι φρουρημένη)."
+  (setf (article-identity article)
+        (%article-identity-segment-for
+         new-label
+         (and (slot-boundp article 'number) (article-number article)))))
 
 (defmethod print-object ((article article) stream)
   "Print article in readable format"
@@ -237,20 +275,31 @@
    που για lettered άρθρα είναι εσωτερικός συνθετικός αριθμός αποσαφήνισης
    (5Α ⇒ number 5001) και μόλυνε τα ονόματα αρχείων (article-5001Α αντί του
    κανονικού article-005Α)."
-  (pad-article-id (article-number article) (article-label article)))
+  ;; [0088 Φ6γ] το typed slot προηγείται (καμία επανερμηνεία label)· το
+  ;; legacy μονοπάτι επιζεί ΜΟΝΟ για slot-less test αντικείμενα (πεθαίνει
+  ;; με τους Δ-θανάτους). Η ισοδυναμία κλειδώνεται στο bijection gate 4694/0/0.
+  (let ((seg (article-identity article)))
+    (if seg
+        (format nil "~3,'0D~A" (second seg)
+                (orchestrator.identity:ordinal-suffix (third seg) :sequence :upper))
+        (pad-article-id (article-number article) (article-label article)))))
+
+(defun %article-order-key (a)
+  "(βάση . τακτική-θέση) — από το typed slot όταν υπάρχει, αλλιώς legacy."
+  (let ((seg (article-identity a)))
+    (if seg
+        (cons (second seg) (third seg))
+        (cons (article-base-number (article-number a) (article-label a))
+              (article-suffix-ordinal (article-label-suffix (article-label a)))))))
 
 (defun article-identity< (a b)
   "Κανονική ολική διάταξη άρθρων: αριθμητική ΒΑΣΗ, μετά η ΝΟΜΟΘΕΤΙΚΗ τακτική
-   θέση του επιθήματος μέσω article-suffix-ordinal (5, 5Α, …, 5Ε, 5ΣΤ, 5Ζ, …).
-   Η ΜΙΑ έδρα διάταξης για καταλόγους/manifests/consolidation — ΠΟΤΕ διάταξη
-   με τον εσωτερικό συνθετικό αριθμό (5Α ⇒ 5001) ούτε λεξικογραφικό string<
-   (που έστελνε το ΣΤ μετά το Ι, παραποιώντας τη νομική σειρά)."
-  (let ((base-a (article-base-number (article-number a) (article-label a)))
-        (base-b (article-base-number (article-number b) (article-label b))))
-    (or (< base-a base-b)
-        (and (= base-a base-b)
-             (< (article-suffix-ordinal (article-label-suffix (article-label a)))
-                (article-suffix-ordinal (article-label-suffix (article-label b))))))))
+   θέση του επιθήματος (5, 5Α, …, 5Ε, 5ΣΤ, 5Ζ, …) — [0088 Φ6γ] από το typed
+   identity slot (η έδρα, μία φορά στην κατασκευή)· ΠΟΤΕ ο εσωτερικός
+   συνθετικός αριθμός (5Α ⇒ 5001) ούτε λεξικογραφικό string<."
+  (let ((ka (%article-order-key a)) (kb (%article-order-key b)))
+    (or (< (car ka) (car kb))
+        (and (= (car ka) (car kb)) (< (cdr ka) (cdr kb))))))
 
 (defun articles-in-identity-order (articles)
   "Η ΜΙΑ έδρα «κατάλογος άρθρων σε κανονική σειρά»: φρέσκια λίστα των ARTICLES
