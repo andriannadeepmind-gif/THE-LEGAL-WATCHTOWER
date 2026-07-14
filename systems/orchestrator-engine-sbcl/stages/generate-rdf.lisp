@@ -126,16 +126,19 @@
                (canonical-uri (make-canonical-uri article-num "" article-label))
                (turtle-rdf (generate-frbr-unified-from-iir normalized-input))
 
-               ;; Create Article instance with FRBR results
-               (article (make-instance 'orchestrator.model:article
-                                      :number article-num
-                                      :label article-label
-                                      :title title
-                                      :content content
-                                      :state :generating  ; Start in :generating state (IIR already parsed)
-                                      :metadata (append (list :source-type source-type
-                                                              :source-path source-path)
-                                                        extraction-metadata))))
+               ;; Create Article instance with FRBR results — [0088 Φ6γ-Β]
+               ;; ΜΟΝΟ μέσω του builder (make-article): εκεί γεννιέται το typed
+               ;; identity slot από την έδρα· το direct make-instance παρέκαμπτε
+               ;; τον builder και άφηνε το pipeline ΧΩΡΙΣ typed ταυτότητα.
+               (article (orchestrator.model:make-article
+                         :number article-num
+                         :label article-label
+                         :title title
+                         :content content
+                         :state :generating  ; Start in :generating state (IIR already parsed)
+                         :metadata (append (list :source-type source-type
+                                                 :source-path source-path)
+                                           extraction-metadata))))
 
           ;; Set canonical URI
           (setf (orchestrator.model:article-eli-uri article) canonical-uri)

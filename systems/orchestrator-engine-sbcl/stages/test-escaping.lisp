@@ -218,7 +218,7 @@
   (log:info () "TEST: Negative control (fault injection)")
 
   ;; Create article with known-bad content
-  (let* ((bad-article (make-instance 'orchestrator.model:article
+  (let* ((bad-article (orchestrator.model:make-article
                                     :number 9999
                                     :title "Negative Control"
                                     :content "Test & ampersand"
@@ -276,7 +276,7 @@
   (log:info () "TEST: Adversarial escaping injection")
 
   ;; Create adversarial article
-  (let* ((adversarial-article (make-instance 'orchestrator.model:article
+  (let* ((adversarial-article (orchestrator.model:make-article
                                             :number 999
                                             :title "Test & \"Escaping\" <script>"
                                             :content "Paragraph 1: A & B <script>alert('XSS')</script>
@@ -343,7 +343,7 @@ Paragraph 2: Δοκιμή \"quotes\" \\ backslash."
 
   (log:info () "TEST: Adversarial JSON-LD escaping")
 
-  (let* ((adversarial-article (make-instance 'orchestrator.model:article
+  (let* ((adversarial-article (orchestrator.model:make-article
                                             :number 999
                                             :title "Test & \"Escaping\" <script>"
                                             :content "Paragraph 1: A & B <script>alert('XSS')</script>
