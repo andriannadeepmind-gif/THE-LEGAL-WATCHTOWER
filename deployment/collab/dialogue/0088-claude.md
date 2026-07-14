@@ -364,3 +364,32 @@ component-gate rc=0, provenance-gate rc=0, self-evolution ⑬/⑭ ✓. −144/+8
 Owner εντολή docker: όπως το προηγούμενο πράσινο run
 (docker compose build → gated loop· αναμενόμενα νέα: as-known-e2e 26/26,
 legal-identity 19/19, corpus-service 53/53, parity 31/31).
+
+---
+
+## [0088 Φ6γ — ΣΧΕΔΙΟ, ΟΧΙ ΥΛΟΠΟΙΗΣΗ] Slot-restructure ταυτότητας άρθρου (αναμένει owner docker + ρητό «εγκρίνω Φ6γ»)
+
+Αποτύπωμα (μετρημένο, HEAD 54ead635): **398 χρήσεις article-number/label σε 67
+αρχεία** + 20 κλήσεις integer get-article. Ομαδοποίηση καταναλωτών:
+
+- **Ομάδα Β — γεννήτορες** (~8: pdf/json/raw-text adapters, gr-syntagma
+  parsing, normalized-input): εκεί γεννιέται το άρθρο ⇒ ΕΚΕΙ γεννιέται και το
+  νέο slot `identity` (article-provision-id body label) — ΜΙΑ φορά, στην πηγή.
+- **Ομάδα Α — emit path** (~25: generate-rdf, FRBR ×5, AKN, templates,
+  lineage-authority, census, ai-ingest): number+label χρησιμοποιούνται ΜΟΝΟ
+  για uri-id/file-id/eid ⇒ αντικαθίστανται από τις προβολές της έδρας
+  (uri-id/file-id/eid<-provision-id) πάνω στο slot.
+- **Ομάδα Γ — intelligence** (~10: citation-authority, legal-ast,
+  semantic-versioning, embeddings, ai-citation): number ως ΚΛΕΙΔΙ ⇒ rekey σε
+  provision-id-string (όπως προβλέπει το σχέδιο §2 για corpus.lisp).
+- **Ομάδα Δ — model core** (article.lisp, corpus.lisp, artifact.lisp):
+  slot identity προστίθεται· number/label γίνονται proven adapters·
+  integer get-article πεθαίνει· στο τέλος θάνατοι readers με grep-gate 0.
+
+Σειρά εκτέλεσης (κάθε βήμα: πλήρης τοπική σουίτα + fold-parity byte-ίδιο +
+bijection 4694/0/0 + commit): Δ-slot → Β-γεννήτορες → Α-προβολές → Γ-rekey →
+Δ-θάνατοι → clean.json sealed source artifact + απόσυρση parity gate (μαζί).
+Τελικό proof: owner docker ΟΛΟΥ του loop. Κόστος: η μεγαλύτερη τομή της
+φάσης — ΔΕΝ ξεκινά χωρίς (α) owner docker πράσινο του τρέχοντος diff και
+(β) ρητό «εγκρίνω Φ6γ» (η [0083]/⑬ πύλη απαιτεί ανθρώπινη έγκριση για
+μετάβαση ταυτότητας άρθρων — ο ίδιος ο φραγμός που κλειδώσαμε).
