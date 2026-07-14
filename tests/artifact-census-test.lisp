@@ -1,6 +1,7 @@
 ;;;; tests/artifact-census-test.lisp
-;;;; Artifact Census (census-1) — το 9ο canonical αρχείο δένει per-article
-;;;; artifacts + text-σπονδυλική + prev-root + materials στο release root.
+;;;; Artifact Census (census-2) — το 9ο canonical αρχείο δένει per-article
+;;;; artifacts + text-σπονδυλική + prev-root + materials + [0088 Φ5/PCL-02]
+;;;; τη διτεμπορική δέσμευση (graph_root + receipt_set_root) στο release root.
 
 (in-package :orchestrator.epistemic)
 
@@ -35,11 +36,25 @@
   (dolist (a arts) (write-artifacts base a))
 
   (format t "~%== build-artifact-census ==~%")
+  (defparameter *tc*
+    (list :body "gr/test" :graph-root (make-string 64 :initial-element #\c)
+          :graph-records 7
+          :receipt-set-root (make-string 64 :initial-element #\d)
+          :receipt-count 3 :valid-at "2026-07-14" :known-at "9999-12-31T23:59:59Z"))
   (let ((c (build-artifact-census arts "test-corpus" base
                                   :prev-release-root "sha256:aa"
                                   :materials (list :git-commit "abc" :deps-lock "sha256:dd"
-                                                   :sbcl-version "9.9" :base-image nil))))
-    (ck "version = census-1" (string= (getf c :version) "census-1"))
+                                                   :sbcl-version "9.9" :base-image nil)
+                                  :temporal-commitment *tc*)))
+    (ck "version = census-2" (string= (getf c :version) "census-2"))
+    (ck "[PCL-02] ΧΩΡΙΣ temporal commitment ⇒ ΣΦΑΛΜΑ (fail-closed, όχι null)"
+        (handler-case (progn (build-artifact-census arts "x" base) nil)
+          (error () t)))
+    (ck "[PCL-02] ΕΛΛΙΠΕΣ commitment (χωρίς receipt_set_root) ⇒ ΣΦΑΛΜΑ"
+        (handler-case (progn (build-artifact-census
+                              arts "x" base
+                              :temporal-commitment '(:graph-root "x")) nil)
+          (error () t)))
     (ck "count = 3" (= 3 (getf c :count)))
     (ck "pcl_text_root είναι sha256:" (eql 0 (search "sha256:" (getf c :pcl-text-root))))
     (ck "άρθρα σε identity order (1, 2, 2Α)"
@@ -80,7 +95,12 @@
       (ck "JSON έχει pcl_text_root" (search "pcl_text_root" j1))
       (ck "JSON έχει prev_release_root=sha256:aa" (search "\"prev_release_root\":\"sha256:aa\"" j1))
       (ck "JSON materials.base_image=null (τίμιο)" (search "\"base_image\":null" j1))
-      (ck "JSON count=3" (search "\"count\":3" j1)))
+      (ck "JSON count=3" (search "\"count\":3" j1))
+      (ck "[PCL-02] JSON έχει temporal.graph_root ΚΑΙ receipt_set_root δεσμευμένα"
+          (and (search (format nil "\"graph_root\":\"~A\"" (getf *tc* :graph-root)) j1)
+               (search (format nil "\"receipt_set_root\":\"~A\"" (getf *tc* :receipt-set-root)) j1)
+               (search "\"receipt_count\":3" j1)
+               (search "\"body\":\"gr/test\"" j1))))
 
     (format t "~%== negative: λείπον artifact ⇒ ΣΦΑΛΜΑ ==~%")
     (let ((base2 (uiop:ensure-directory-pathname
@@ -89,7 +109,8 @@
       (ensure-directories-exist base2)
       (write-artifacts base2 (first arts))  ; μόνο ενός άρθρου
       (ck "λείπον per-article artifact ⇒ error"
-          (handler-case (progn (build-artifact-census arts "x" base2) nil)
+          (handler-case (progn (build-artifact-census arts "x" base2
+                                                      :temporal-commitment *tc*) nil)
             (error () t))))))
 
 (format t "~%== %prev-release-root: JSON parser, fail-closed (εύρημα κριτή #4) ==~%")

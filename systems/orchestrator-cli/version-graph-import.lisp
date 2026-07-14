@@ -196,3 +196,64 @@
                 :valid-until (orchestrator.version-graph:tv-valid-until v)
                 :assurance (orchestrator.version-graph:tv-assurance v)
                 :basis basis)))))
+
+(defun %source-artifact-for (corpus-id)
+  "Η ταυτότητα της πηγής ΜΕΣΑ στη δέσμευση (AUTH-02 ροή): content_sha256 +
+   source_digest από το O-3-ελεγμένο prov stamp. Χωρίς έγκυρο stamp ⇒ ΣΦΑΛΜΑ."
+  (let ((json-path (or (provenance-checked-json-source corpus-id)
+                       (error "temporal-commitment ~A: source.json απορρίφθηκε από το O-3 gate"
+                              corpus-id))))
+    (let ((prov (jonathan:parse
+                 (uiop:read-file-string (format nil "~A.prov.json" (namestring json-path))
+                                        :external-format :utf-8) :as :alist)))
+      (list (cons "content_sha256" (cdr (assoc "content_sha256" prov :test #'string=)))
+            (cons "source_digest" (cdr (assoc "source_digest" prov :test #'string=)))))))
+
+(defun corpus-temporal-commitment (corpus-id)
+  "[0088 Φ5] Η ΜΙΑ έδρα του temporal commitment ενός corpus — ό,τι δένεται στο
+   census (census-2) ώστε το release root να δεσμεύει ΚΑΙ τη διτεμπορική
+   ιστορία ΚΑΙ το σύνολο των LegalAuthorityReceipts (κλείσιμο PCL-02):
+     graph_root        = κεφαλή της chain-hash αλυσίδας του journal (πλήρες
+                         replay από τον δίσκο — verify-chain, ποτέ live μνήμη)
+     receipt_set_root  = RFC-6962 MTH πάνω στα receipt-ids στη σημερινή τομή,
+                         σε ντετερμινιστική σειρά provision-id
+   FAIL-CLOSED: απόν journal ⇒ import από την provenance-ελεγμένη πηγή· κάθε
+   receipt επανεπαληθεύεται (0 failures ή ΣΦΑΛΜΑ)· αβέβαιη διάταξη ΣΗΜΕΡΑ ⇒
+   ΣΦΑΛΜΑ (δείχνει σφάλμα import, όχι αποδεκτή άγνοια). Επιστρέφει plist."
+  (let* ((body (%graph-body-for corpus-id))
+         (body-string (orchestrator.identity:body-id-string body))
+         (graph (let ((probe (orchestrator.version-graph:make-graph body-string)))
+                  (if (probe-file (orchestrator.version-graph::vg-path probe))
+                      (orchestrator.version-graph:load-graph body-string)
+                      (import-corpus->graph! corpus-id)))))
+    (multiple-value-bind (ok head n) (orchestrator.version-graph:verify-chain body-string)
+      (unless (and ok (plusp n)
+                   (equal head (orchestrator.version-graph:graph-chain-head graph)))
+        (error "temporal-commitment ~A: verify-chain απέτυχε ή κεφαλή ≠ ζωντανής (~A ≠ ~A)"
+               corpus-id head (orchestrator.version-graph:graph-chain-head graph)))
+      (let ((valid-at (subseq (orchestrator.journal:iso-now) 0 10))
+            (known-at "9999-12-31T23:59:59Z")
+            (src (%source-artifact-for corpus-id)))
+        (multiple-value-bind (receipts uncertain)
+            (orchestrator.legal-receipt:build-receipts-for-graph
+             graph :source-artifact src :valid-at valid-at :known-at known-at)
+          (when uncertain
+            (error "temporal-commitment ~A: ~D διατάξεις αβέβαιες ΣΤΗ ΣΗΜΕΡΙΝΗ τομή — σφάλμα import: ~S"
+                   corpus-id (length uncertain) (subseq uncertain 0 (min 5 (length uncertain)))))
+          (let ((failures '()))
+            (dolist (r receipts)
+              (multiple-value-bind (rok why)
+                  (orchestrator.legal-receipt:verify-receipt graph r)
+                (unless rok
+                  (push (list (orchestrator.legal-receipt:lr-provision-id r) why) failures))))
+            (when failures
+              (error "temporal-commitment ~A: ~D receipt verification failures: ~S"
+                     corpus-id (length failures) (subseq failures 0 (min 5 (length failures))))))
+          (list :body body-string
+                :graph-root head
+                :graph-records n
+                :receipt-set-root (orchestrator.merkle:merkle-root-of-strings
+                                   (mapcar #'orchestrator.legal-receipt:lr-receipt-id receipts))
+                :receipt-count (length receipts)
+                :valid-at valid-at
+                :known-at known-at))))))

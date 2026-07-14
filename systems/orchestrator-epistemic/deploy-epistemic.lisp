@@ -986,7 +986,8 @@ No fallbacks, no partial validity - strict proof gates.
 
 (defun deploy-epistemic-stage (articles base-output-dir
                                &key (timestamp (orchestrator.time:require-deterministic-time))
-                                    (blockchain-anchor "pending"))
+                                    (blockchain-anchor "pending")
+                                    temporal-commitment)
   "Deploy complete epistemic authority system with STRICT PROOF GATES
 
   CRITICAL FLOW (NO FALLBACKS):
@@ -1054,7 +1055,8 @@ No fallbacks, no partial validity - strict proof gates.
                        base-output-dir
                        staging-dir
                        (merge-pathnames "releases/"
-                                        (uiop:ensure-directory-pathname base-output-dir)))))
+                                        (uiop:ensure-directory-pathname base-output-dir))
+                       :temporal-commitment temporal-commitment)))
           (format t "  Census: ~D άρθρα, pcl_text_root ~A, prev ~A~%"
                   (getf census :count)
                   (subseq (getf census :pcl-text-root) 0 20)

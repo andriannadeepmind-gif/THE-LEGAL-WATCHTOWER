@@ -119,6 +119,23 @@
                      nil)
             (orchestrator.version-graph:temporal-uncertainty () t)))
 
+;;; ⑥ [Φ5/PCL-02] corpus-temporal-commitment — η δέσμευση που μπαίνει στο census-2
+(gp-check "⑥ commitment(syntagma): graph_root = κεφαλή verify-chain, 124 receipts, ρίζα RFC-6962 αναπαραγώγιμη"
+          (let ((tc (corpus-temporal-commitment "syntagma")))
+            (multiple-value-bind (ok head n)
+                (orchestrator.version-graph:verify-chain (getf tc :body))
+              (declare (ignore n))
+              (and ok
+                   (equal head (getf tc :graph-root))
+                   (= 124 (getf tc :receipt-count))
+                   (stringp (getf tc :receipt-set-root))
+                   (plusp (length (getf tc :receipt-set-root)))))))
+(gp-check "⑥β commitment ντετερμινιστικό: δεύτερη κλήση ⇒ ΙΔΙΕΣ ρίζες (ίδιο journal, ίδια τομή)"
+          (let ((a (corpus-temporal-commitment "syntagma"))
+                (b (corpus-temporal-commitment "syntagma")))
+            (and (equal (getf a :graph-root) (getf b :graph-root))
+                 (equal (getf a :receipt-set-root) (getf b :receipt-set-root)))))
+
 (format t "~%========================================~%")
 (format t "GRAPH-IMPORT-PARITY [0088 Φ3+Φ5]: ~D passed, ~D failed~%" *gp-pass* *gp-fail*)
 (format t "========================================~%")

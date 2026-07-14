@@ -38,7 +38,7 @@
 (defun %spine-jws-check (dir root fail-fn &key fail-closed)
   "JWS έλεγχος του release: detached RS256 πάνω στο ROOT μέσω της έδρας
    jws-authority (F1-σκληρυμένη: ενσωματωμένο payload ≠ αναμενόμενο ⇒ σφάλμα).
-   FAIL-CLOSED: απόντα αρχεία υπογραφής = αποτυχία (census-1 σχήμα).
+   FAIL-CLOSED: απόντα αρχεία υπογραφής = αποτυχία (census-1/2 σχήμα — το census-2 προσθέτει το temporal block, τα κοινά πεδία κρίνονται ίδια).
 
    ΤΙΜΙΑ ΕΜΒΕΛΕΙΑ (κλείσιμο κριτή P1.5-D#2): το public.jwk διαβάζεται ΜΕΣΑ
    από το ίδιο το release — άρα αυτός ο έλεγχος αποδεικνύει ΣΥΝΕΠΕΙΑ (όποιος
@@ -121,6 +121,6 @@
                                               (subseq prev 7))))
                              (fail "census: prev_release_root άκυρης μορφής: ~S" prev)))))
                 (error (e) (fail "census: μη αναγνώσιμο: ~A" e)))
-              ;; 3. JWS fail-closed (census-1 σχήμα)
+              ;; 3. JWS fail-closed (census-1/2 σχήμα — το census-2 προσθέτει το temporal block, τα κοινά πεδία κρίνονται ίδια)
               (%spine-jws-check dir root #'fail :fail-closed t)))))
     (values (null failures) (nreverse failures))))

@@ -31,14 +31,8 @@
 (defparameter *lr-today* (subseq (orchestrator.journal:iso-now) 0 10))
 (defparameter *lr-now* "9999-12-31T23:59:59Z")
 
-;; source-artifact από το prov stamp (η αλήθεια της πηγής μέσα στο receipt)
-(defparameter *lr-src*
-  (let* ((jp (provenance-checked-json-source "syntagma"))
-         (prov (jonathan:parse
-                (uiop:read-file-string (format nil "~A.prov.json" (namestring jp))
-                                       :external-format :utf-8) :as :alist)))
-    (list (cons "content_sha256" (cdr (assoc "content_sha256" prov :test #'string=)))
-          (cons "source_digest" (cdr (assoc "source_digest" prov :test #'string=))))))
+;; source-artifact από την ΕΔΡΑ (η ίδια που τροφοδοτεί το temporal commitment)
+(defparameter *lr-src* (%source-artifact-for "syntagma"))
 
 ;;; ① Receipts για ΟΛΟ το σώμα στη σημερινή τομή — 0 verification failures
 (multiple-value-bind (receipts uncertain)

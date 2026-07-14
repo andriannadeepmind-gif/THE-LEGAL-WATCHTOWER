@@ -133,6 +133,10 @@
       (%release-corpus-context corpus-id)
     (format t "~%── CUT-RELEASE ~A (~A): ~D διατάξεις ──~%" corpus-id short (length articles))
     (orchestrator.core:set-context-value context :output-dir output-dir)
+    ;; [0088 Φ5/PCL-02]: το cut-release περνά από την ΙΔΙΑ πύλη — census-2
+    ;; μόνο με δεσμευμένη διτεμπορική ιστορία από τη ΜΙΑ έδρα.
+    (orchestrator.core:set-context-value
+     context :temporal-commitment (corpus-temporal-commitment corpus-id))
     (orchestrator.engine.sbcl:deploy-epistemic-stage context)
     (let ((release-id (orchestrator.core:get-context-value context :epistemic-release-id))
           (attested (orchestrator.core:get-context-value context :epistemic-attested))

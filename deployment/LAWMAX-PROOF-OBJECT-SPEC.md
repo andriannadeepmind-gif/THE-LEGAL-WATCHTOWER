@@ -47,7 +47,7 @@ audit-άρει ο καθένας σε ένα απόγευμα.
 ## 2 · Artifact Census (9ο κανονικό αρχείο, P1.5) — σχήμα
 ```
 {
-  "version": "census-1",
+  "version": "census-2",
   "corpus": "<short_name>",
   "count": <int>,
   "merkle": { "leaf": "sha256/0x00", "node": "sha256/0x01", "odd": "rfc6962-split" },
@@ -58,6 +58,15 @@ audit-άρει ο καθένας σε ένα απόγευμα.
     "deps_lock": "sha256:<hex>",
     "sbcl_version": "<x.y.z>",
     "base_image": "sha256:<digest>|null"
+  },
+  "temporal": {                            // ← [0088 Φ5/PCL-02] census-2: η διτεμπορική
+    "body": "gr/<σώμα>",                   //   ιστορία + τα LegalAuthorityReceipts ΜΕΣΑ
+    "graph_root": "<hex>",                 //   στο release root. graph_root = κεφαλή της
+    "graph_records": <int>,                //   chain-hash αλυσίδας του version-graph journal
+    "receipt_set_root": "<hex>",           //   (verify-chain replay)· receipt_set_root =
+    "receipt_count": <int>,                //   RFC-6962 MTH των receipt-ids (σειρά provision-id)
+    "valid_at": "YYYY-MM-DD",              //   στην τομή (valid_at, known_at).
+    "known_at": "<iso>"                    //   ΥΠΟΧΡΕΩΤΙΚΟ — census χωρίς αυτό δεν κόβεται.
   },
   "articles": [
     { "id": "<canonical π.χ. 5Α>",         // ← article-uri-id (μία έδρα)

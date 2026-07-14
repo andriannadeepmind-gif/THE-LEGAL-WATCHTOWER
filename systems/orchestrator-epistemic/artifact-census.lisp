@@ -15,7 +15,7 @@
 
 (in-package :orchestrator.epistemic)
 
-(defparameter +census-version+ "census-1")
+(defparameter +census-version+ "census-2")
 
 (defparameter +per-article-formats+ '("ttl" "jsonld" "html" "txt" "hash")
   "Οι μορφές per-article που κάνουν το release SELF-CONTAINED: αντιγράφονται
@@ -64,7 +64,7 @@
 (defun %jstr (s) (if s (format nil "\"~A\"" (%json-escape s)) "null"))
 
 (defun build-artifact-census (articles corpus-short-name articles-dir
-                              &key prev-release-root materials)
+                              &key prev-release-root materials temporal-commitment)
   "Κατασκευή του census plist από τα ΑΡΘΡΑ (identity order μέσω της έδρας) και
    τα ΠΡΑΓΜΑΤΙΚΑ per-article artifacts στο OUTPUT-DIR (article-<file-id>.{ttl,
    jsonld,html,txt}). text_leaf = RFC-6962 φύλλο των ωμών bytes του .txt
@@ -98,12 +98,19 @@
                        (orchestrator.merkle:merkle-tree-hash
                         (mapcar (lambda (r) (getf r :text-leaf)) rows))
                        (error "census: κενό σύνολο άρθρων"))))
+    ;; [0088 Φ5/PCL-02] Το census-2 δεσμεύει ΚΑΙ τη διτεμπορική ιστορία:
+    ;; χωρίς temporal commitment ΔΕΝ κόβεται census — fail-closed, όχι null.
+    (unless (and temporal-commitment
+                 (getf temporal-commitment :graph-root)
+                 (getf temporal-commitment :receipt-set-root))
+      (error "census: απόν/ελλιπές temporal commitment (graph_root + receipt_set_root) — το census-2 δεν κόβεται χωρίς δεσμευμένη διτεμπορική ιστορία"))
     (list :version +census-version+
           :corpus corpus-short-name
           :count (length rows)
           :pcl-text-root pcl-root
           :prev-release-root prev-release-root
           :materials materials
+          :temporal-commitment temporal-commitment
           :articles rows)))
 
 (defun census->json (census)
@@ -121,6 +128,12 @@
       (format o "\"materials\":{\"git_commit\":~A,\"deps_lock\":~A,\"sbcl_version\":~A,\"base_image\":~A},~%"
               (%jstr (getf m :git-commit)) (%jstr (getf m :deps-lock))
               (%jstr (getf m :sbcl-version)) (%jstr (getf m :base-image))))
+    (let ((tc (getf census :temporal-commitment)))
+      (format o "\"temporal\":{\"body\":~A,\"graph_root\":~A,\"graph_records\":~D,\"receipt_set_root\":~A,\"receipt_count\":~D,\"valid_at\":~A,\"known_at\":~A},~%"
+              (%jstr (getf tc :body)) (%jstr (getf tc :graph-root))
+              (getf tc :graph-records) (%jstr (getf tc :receipt-set-root))
+              (getf tc :receipt-count) (%jstr (getf tc :valid-at))
+              (%jstr (getf tc :known-at))))
     (format o "\"articles\":[~%")
     (loop for (row . rest) on (getf census :articles)
           do (format o "{\"id\":~A,\"ttl\":~A,\"jsonld\":~A,\"html\":~A,\"text_leaf\":~A}~:[~;,~]~%"
@@ -167,7 +180,7 @@
         (format nil "sha256:~A" (subseq rel 7))))))
 
 (defun write-artifact-census (articles corpus-short-name base-output-dir staging-dir
-                              releases-dir)
+                              releases-dir &key temporal-commitment)
   "SELF-CONTAINED release: (1) αντιγράφει τα per-article artifacts από το
    BASE-OUTPUT-DIR στο STAGING-DIR/articles/· (2) χτίζει το census ΔΙΑΒΑΖΟΝΤΑΣ
    τα IN-RELEASE αντίγραφα (ώστε το census να δείχνει αρχεία που ΥΠΑΡΧΟΥΝ στο
@@ -178,7 +191,8 @@
                  articles corpus-short-name
                  (merge-pathnames "articles/" (uiop:ensure-directory-pathname staging-dir))
                  :prev-release-root (%prev-release-root releases-dir)
-                 :materials (%census-materials))))
+                 :materials (%census-materials)
+                 :temporal-commitment temporal-commitment)))
     (alexandria:write-string-into-file
      (census->json census)
      (merge-pathnames "census.json" (uiop:ensure-directory-pathname staging-dir))

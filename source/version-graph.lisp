@@ -51,7 +51,7 @@
    #:graph-versions-of #:graph-quarantine #:graph-gaps #:graph-edge-count
    #:submit-genesis! #:admit-edge! #:quarantine! #:retract-knowledge!
    #:add-knowledge-gap! #:kg-provision-id #:kg-effective #:kg-kind
-   #:version-at #:snapshot-at #:verify-chain
+   #:version-at #:snapshot-at #:verify-chain #:graph-chain-head
    #:make-edge-spec #:make-version-spec))
 
 (in-package :orchestrator.version-graph)
@@ -607,6 +607,11 @@
   (let ((g (load-graph body-string)))
     (values t (vg-chain g)
             (length (orchestrator.journal:read-lines (vg-path g))))))
+
+(defun graph-chain-head (graph)
+  "Η κεφαλή της chain-hash αλυσίδας του journal — η δεσμευτική ρίζα ΟΛΗΣ της
+   καταγεγραμμένης ιστορίας του γράφου (κάθε record αλυσοδεμένο sha256)."
+  (vg-chain graph))
 
 ;;; βοηθητικά για tests/επιθεώρηση
 (defun graph-versions-of (graph pid)

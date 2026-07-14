@@ -71,12 +71,23 @@
     (log:info () "Blockchain anchor: ~A" blockchain-anchor)
     (log:info () "Timestamp: ~A" (orchestrator.time:format-iso8601 timestamp))
 
+    ;; [0088 Φ5/PCL-02] Το temporal commitment (graph_root + receipt_set_root)
+    ;; έρχεται από τον καλούντα (cli: corpus-temporal-commitment — η ΜΙΑ έδρα)
+    ;; μέσω του context. Χωρίς αυτό ΔΕΝ κόβεται release — fail-closed εδώ ΚΑΙ
+    ;; στο census (καμία σιωπηλή έκδοση χωρίς δεσμευμένη διτεμπορική ιστορία).
+    (let ((temporal-commitment
+            (orchestrator.core:get-context-value context :temporal-commitment)))
+      (unless temporal-commitment
+        (error 'orchestrator.spec:validation-error
+               :message "deploy-epistemic: απόν :temporal-commitment στο context — το census-2 απαιτεί graph_root + receipt_set_root"))
+
     ;; Deploy epistemic system
     (let ((result (orchestrator.epistemic:deploy-epistemic-stage
                    articles
                    output-dir
                    :timestamp timestamp
-                   :blockchain-anchor blockchain-anchor)))
+                   :blockchain-anchor blockchain-anchor
+                   :temporal-commitment temporal-commitment)))
 
       ;; Store results in context
       (orchestrator.core:set-context-value
@@ -144,4 +155,4 @@
           (log:info () "✓ Epistemic validation passed~%")
           (log:warn () "✗ Epistemic validation failed - some files may be missing~%"))
 
-      context)))
+      context))))

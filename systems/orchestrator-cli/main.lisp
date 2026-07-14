@@ -302,7 +302,10 @@
 
   ;; Select corpus (explicit id, else ORCHESTRATOR_CORPUS env, else default).
   ;; Must happen before any config-get call or corpus registration.
-  (orchestrator.spec:select-corpus corpus-id)
+  ;; Κρατάμε το ΕΠΙΛΥΜΕΝΟ string id (select-corpus το επιστρέφει) — το
+  ;; χρειάζεται το temporal commitment ([0088 Φ5]) μέσα στα modes, όπου το
+  ;; τοπικό corpus-id είναι το keyword του pipeline, όχι το string.
+  (setf corpus-id (orchestrator.spec:select-corpus corpus-id))
 
   ;; PDF mode is only enabled when the active corpus config declares source.pdf.
   ;; This prevents a Constitution PDF in input/ from being processed when running
@@ -345,6 +348,7 @@
       ;; (a scanned ΦΕΚ / non-matching layout). The materialised source.json is the
       ;; canonical clean text, so a 0-article PDF must never error out a code that
       ;; HAS real JSON — e.g. syntagma (parliament-crawl) or kpolitikis (the .docx).
+      (let ((resolved-corpus corpus-id)) ; string id — τα modes σκιάζουν το corpus-id με το keyword του pipeline
       (flet ((run-json-mode (&optional reason)
                (format t "═══════════════════════════════════════════════════════════════~%")
                (format t "  EXECUTING PIPELINE (JSON MODE)~%")
@@ -369,6 +373,10 @@
                   context :sources (list (list :type :json :path json-path)))
                  (orchestrator.core:set-context-value context :corpus corpus)
                  (orchestrator.core:set-context-value context :output-dir output-dir)
+                 ;; [0088 Φ5/PCL-02]: το census-2 απαιτεί δεσμευμένη διτεμπορική
+                 ;; ιστορία — υπολογίζεται από τη ΜΙΑ έδρα ΠΡΙΝ τρέξει ο pipeline.
+                 (orchestrator.core:set-context-value
+                  context :temporal-commitment (corpus-temporal-commitment resolved-corpus))
                  (orchestrator.spec:run-pipeline pipeline context)
                  (format t "~%═══════════════════════════════════════════════════════════════~%")
                  (format t "  PIPELINE COMPLETE (JSON MODE)~%")
@@ -394,6 +402,10 @@
                     (orchestrator.core:set-context-value context :sources sources)
                     (orchestrator.core:set-context-value context :output-dir output-dir)
                     (orchestrator.core:set-context-value context :corpus corpus)
+                    ;; [0088 Φ5/PCL-02]: ίδια απαίτηση και στο PDF μονοπάτι —
+                    ;; καμία έκδοση χωρίς δεσμευμένη διτεμπορική ιστορία.
+                    (orchestrator.core:set-context-value
+                     context :temporal-commitment (corpus-temporal-commitment resolved-corpus))
                     (format t "  Sources configured:~%")
                     (dolist (src sources)
                       (format t "    • ~A~%" (getf src :path)))
@@ -418,7 +430,7 @@
                       (format t "~%  ⚠ PDF mode produced no usable articles (~A)~%" e)
                       (run-json-mode "PDF yielded no articles"))
                     (error e))))
-            (run-json-mode))))
+            (run-json-mode)))))
 
     (write-health-file)
     0))

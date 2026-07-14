@@ -104,7 +104,17 @@
     ;; 8 βασικά canonical στο staging
     (loop for (rel . body) in +vec-base-files+ do (%write-fixed staging rel body))
     ;; census.json (9ο) — η έδρα σταθμεύει τα per-article στο staging/articles/
-    (write-artifact-census arts "vector" base staging releases)
+    (write-artifact-census arts "vector" base staging releases
+                           ;; συνθετικό — τα vectors ασκούν το release σχήμα,
+                           ;; όχι τον ζωντανό γράφο· fail-closed παραμένει
+                           :temporal-commitment
+                           (list :body "gr/vector"
+                                 :graph-root (make-string 64 :initial-element #\a)
+                                 :graph-records 1
+                                 :receipt-set-root (make-string 64 :initial-element #\b)
+                                 :receipt-count 2
+                                 :valid-at "2026-01-01"
+                                 :known-at "9999-12-31T23:59:59Z"))
     ;; verify/verify.lisp (10ο canonical) = ο L6 πυρήνας
     (let ((kern (merge-pathnames "deployment/verify/kernel-verify.lisp"
                                  (orchestrator.paths:institution-root))))
