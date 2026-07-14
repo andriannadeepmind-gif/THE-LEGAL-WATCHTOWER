@@ -13,10 +13,10 @@
 ;;;; Deterministic: the consolidation engine deep-copies the base, applies a
 ;;;; total order over acts, and uses no wall-clock, so two runs are identical.
 ;;;;
-;;;; Amendments are read from the active corpus configuration
-;;;; (orchestrator.eli-temporal:*amendments-config*, populated from the YAML
-;;;; versioning.amendments section). A corpus with no configured amendments
-;;;; consolidates to its base text, which is the correct identity behaviour.
+;;;; Amendments are read from the active corpus configuration (the YAML
+;;;; versioning.amendments section) — Η ΜΙΑ πηγή. A corpus with no configured
+;;;; amendments consolidates to its base text, which is the correct identity
+;;;; behaviour.
 ;;;; ============================================================================
 
 (in-package :orchestrator.engine.sbcl)
@@ -48,16 +48,14 @@
 (defun %consolidation-amendment-records ()
   "Return the configured amendment records, or NIL if none are configured.
 
-   Primary source is the active corpus config (versioning.amendments in the
-   YAML), read via config-get — που επιστρέφει NIL για απόν κλειδί ΧΩΡΙΣ να
-   σηματοδοτεί, οπότε δεν χρειάζεται (και δεν επιτρέπεται) ignore-errors:
-   πραγματική βλάβη φόρτωσης config πρέπει να ΣΚΑΕΙ. Falls back to
-   orchestrator.eli-temporal:*amendments-config* if the config path is absent."
-  (or (orchestrator.spec:config-get "versioning.amendments")
-      (let ((sym (and (find-package :orchestrator.eli-temporal)
-                      (find-symbol "*AMENDMENTS-CONFIG*" :orchestrator.eli-temporal))))
-        (when (and sym (boundp sym))
-          (symbol-value sym)))))
+   Η ΜΙΑ πηγή: το active corpus config (versioning.amendments στο YAML), μέσω
+   config-get — που επιστρέφει NIL για απόν κλειδί ΧΩΡΙΣ να σηματοδοτεί, οπότε
+   δεν χρειάζεται (και δεν επιτρέπεται) ignore-errors: πραγματική βλάβη
+   φόρτωσης config πρέπει να ΣΚΑΕΙ.
+   [0088 Φ6]: το σιωπηλό fallback στο orchestrator.eli-temporal:*amendments-config*
+   ΠΕΘΑΝΕ μαζί με ολόκληρη την eli-temporal-metadata έδρα (grep-gate: ΚΑΝΕΙΣ
+   δεν το έγραφε πια — ήταν νεκρή δεύτερη πηγή αλήθειας δίπλα στο config)."
+  (orchestrator.spec:config-get "versioning.amendments"))
 
 (defun consolidate-stage (context)
   "Build the consolidated in-force corpus from the parsed articles and the

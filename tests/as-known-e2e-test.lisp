@@ -247,6 +247,26 @@
 (e2-check "⑧γ /broken/robots.txt ⇒ 200 (κανένα route χωρίς ανάγκη doc δεν αγγίζει τον provider)"
           (= 200 (e2-status (e2-get "/broken/robots.txt"))))
 
+;;; ⑨ [Φ6] ΘΑΝΑΤΟΙ με grep-gate: οι νεκρές temporal έδρες ΔΕΝ ανασταίνονται
+(format t "~%── [0088 Φ6] Θάνατοι παλαιών temporal εδρών ──~%")
+(e2-check "⑨ eli-temporal-metadata: αρχείο ΔΙΑΓΡΑΜΜΕΝΟ, πακέτο ΑΝΥΠΑΡΚΤΟ (η δεύτερη πηγή amendments νεκρή)"
+          (and (not (probe-file (orchestrator.paths:institution-dir "source/eli-temporal-metadata.lisp")))
+               (not (find-package :orchestrator.eli-temporal))))
+(e2-check "⑨β consolidate: ΚΑΜΙΑ αναφορά-κλήση στο νεκρό fallback (μόνο config = η ΜΙΑ πηγή)"
+          (let ((src (uiop:read-file-string
+                      (orchestrator.paths:institution-dir
+                       "systems/orchestrator-engine-sbcl/stages/consolidate.lisp")
+                      :external-format :utf-8)))
+            (not (search "(find-package :orchestrator.eli-temporal" src))))
+(e2-check "⑨γ legal-temporal: η L3 versioning μηχανή ΝΕΚΡΗ (temporal-version/point-in-time/allen απόντα)· η ημερολογιακή αριθμητική ΖΕΙ"
+          (and (null (find-symbol "MAKE-TEMPORAL-VERSION" :orchestrator.temporal))
+               (null (find-symbol "POINT-IN-TIME" :orchestrator.temporal))
+               (null (find-symbol "ALLEN-RELATION" :orchestrator.temporal))
+               (find-symbol "DATE-PLUS-DAYS" :orchestrator.temporal)
+               (equal "2026-03-01"
+                      (funcall (find-symbol "DATE-PLUS-DAYS" :orchestrator.temporal)
+                               "2026-02-28" 1))))
+
 (format t "~%========================================~%")
 (format t "AS-KNOWN-E2E [0088 #9]: ~D passed, ~D failed~%" *e2-pass* *e2-fail*)
 (format t "========================================~%")

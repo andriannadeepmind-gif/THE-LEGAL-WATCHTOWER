@@ -34,7 +34,6 @@
      (:file "paths")              ; Path abstraction
      (:file "execution-trace")    ; ΙΧΝΟΣ ΕΚΤΕΛΕΣΗΣ: legal execution provenance πυρήνας — data-only, append-only, προφίλ κόστους
      (:file "canonical-uris")     ; Canonical URI configuration - Phase C
-     (:file "eli-temporal-metadata") ; ELI temporal completeness - Phase D
      (:file "consolidation-engine") ; Codification: apply amendments -> in-force consolidated text
      (:file "consolidation-bridge") ; Bridge corpus articles + config amendments -> consolidation
      (:file "consolidation-proof")  ; Level-2: replayable amendment ledger (provably-correct consolidation)
@@ -71,7 +70,7 @@
      (:file "legal-inference-engine") ; BRAIN L1: forward-chaining production system + JTMS + rule DSL (deterministic, proof-carrying reasoning)
      (:file "greek-legislation-ontology") ; BRAIN TBox: formal Greek-legislation domain ontology (CLOS class graph = OWL/RDFS, ELI/Akoma-Ntoso aligned)
      (:file "legal-conflict-resolution") ; BRAIN L2: lex-superior conflict resolution + hierarchy validity (ontology ranks → JTMS proofs)
-     (:file "legal-temporal")     ; BRAIN L3: point-in-time law — interval calculus (Allen), version timelines, gaps/overlaps, defeasible ultra-activity
+     (:file "legal-temporal")     ; Ημερολογιακή αριθμητική ημερομηνιών (Σ9 προθεσμίες, validity intervals) — η L3 versioning μηχανή ΠΕΘΑΝΕ [0088 Φ6]: διτεμπορική σημασιολογία = ΜΟΝΟ version-graph
      (:file "legal-event-calculus") ; BRAIN L3β: EVENT CALCULUS — γεγονότα γεννούν/σβήνουν έννομες καταστάσεις, αδράνεια μέσω WFS (η αντίληψη ΙΣΤΟΡΙΑΣ)
      (:file "legal-penalty")      ; Το μέτρο του «επιεικέστερου» (2 ΠΚ): πλέγμα βαρύτητας κυρίων ποινών ΠΚ, ντετερμινιστικό, με λόγο
      (:file "legal-decisions")     ; ΝΟΜΟΛΟΓΙΑ: decisions corpus — structured σύνθεση (δικαστές+ρόλοι), citations with law tags, tempus-regit-actum anchoring
