@@ -260,3 +260,38 @@ as-known-e2e 21/21.
 as-known-e2e στο loop) και οι 2 ανεξάρτητοι αντιπαλικοί κριτές. Υπολείμματα
 δηλωμένα: Υ2β (interval model των gaps), conformance ζεύγη σε ΟΛΟ το σώμα
 (transaction_time_query_failures=0 ως gate), Φ6 θάνατοι adapters.
+
+---
+
+## [0088-κριτές-Φ5] 2 ΑΝΕΞΑΡΤΗΤΟΙ ΑΝΤΙΠΑΛΙΚΟΙ ΚΡΙΤΕΣ (πρότυπο [0047]) — 2026-07-14
+
+Εξαπολύθηκαν 2 agents με φρέσκο πλαίσιο, χωρίς πρόσβαση στο σκεπτικό μου, απόλυτα
+rubrics [0082+]. Άξονας Α: επίθεση μοντέλο/ασφάλεια. Άξονας Β: κυνήγι μετριότητας.
+
+**Κριτής Α** — πυρήνες κρίθηκαν OK: Full-record chain integrity (Κ2 payload-hash
+δεσμεύει ΟΛΑ τα πεδία, %canon-sexp injective, τριπλός έλεγχος), bitemporal
+σημασιολογία (μελλοντική καταγραφή δεν δηλητηριάζει παλιό snapshot, version-at
+μονότονο), route-first (Κ1), authority readiness fail-closed, canonical JSON /
+HTTP boundary (καμία injection, %parse-q-value ασφαλής). Ευρήματα: **Ε1 SERIOUS**
+(Unicode ψηφία), **Ε2 MINOR** (corruption ως 400), **Ε3 MINOR latent** (dotted pair).
+
+**Κριτής Β** — τίμια άγνοια/silent-fallbacks/e2e-πυρήνας OK. Ευρήματα:
+**1.1 SERIOUS** (%ensure-graph ψευδής «μία είσοδος»), **2.1 SERIOUS** (census
+χειροποίητο JSON escaping vs Υ4 νόμος), **3.1 MINOR** (document-at bug-masking),
+**4.1 MINOR** (bare error), **4.2 MINOR** (ασθενής ⑦β).
+
+Και τα 8 ΚΛΕΙΣΤΗΚΑΝ στις έδρες (commit 814f7287), κανένας νέος adapter — βλ.
+πίνακα στο μήνυμα commit. Καμία WRONG παράδοση από κανέναν κριτή.
+
+**Δηλωμένα υπόλοιπα (τίμια, όχι κρυμμένα):**
+- Υ2β: knowledge-gaps χωρίς άνω όριο valid-διαστήματος (υπερ-προσεκτικό — αβεβαιότητα
+  ποτέ ψευδής βεβαιότητα)· interval model = επόμενη φάση.
+- 2 ακόμη %json-escape έδρες εκτός Φ5 scope (cli-util.lisp debug output,
+  corpus-intelligence.lisp findings) — ΟΧΙ id-δεσμευτικά release bytes· η καθολική
+  ενοποίηση JSON-escaping σε ΜΙΑ έδρα είναι χωριστή εργασία (δηλωμένο).
+- Chain χωρίς κρυπτο-άγκυρα ΜΕΣΑ στο αρχείο — αγκυρώνεται εξωτερικά μέσω
+  graph_root→census-2→signed release (συνεπές με σχεδίαση).
+
+**Φ5-πλήρες**: ΔΕΝ ανακηρύσσεται πλήρες πριν owner docker proof (νέα gates
+as-known-e2e + όλα τα υπόλοιπα) στο μηχάνημα του δημιουργού. Επόμενο: Φ6 θάνατοι
+adapters.
