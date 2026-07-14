@@ -65,6 +65,12 @@
    #:condition-event #:ce-event-id #:ce-condition-id #:ce-kind #:ce-ref
    #:ce-outcome #:ce-at #:ce-evidence #:ce-verifier
    #:ce-recorded-from #:ce-recorded-until
+   ;; [Φ7 Π4] regime edges + Allen έδρα + Υ2β
+   #:admit-regime-edge! #:retract-regime-edge! #:graph-regimes
+   #:regime-edge #:re-edge-id #:re-op #:re-target #:re-version
+   #:re-span-from #:re-span-until #:re-condition-id #:re-prior-edge-id
+   #:re-recorded-from #:re-recorded-until
+   #:interval-relation #:interval-intersects-p #:interval-covers-p
    #:date+ #:sat
    #:invalid-condition))
 
@@ -217,7 +223,11 @@
   recorded-from)
 
 (defstruct (knowledge-gap (:conc-name kg-))
-  provision-id act-ref kind effective recorded-from)
+  provision-id act-ref kind effective
+  until          ; [Υ2β] legal-date | NIL — δηλωμένο ΑΝΩ όριο του κενού:
+                 ; με until, το κενό μπλοκάρει ΜΟΝΟ valid-at ∈ [effective, until)·
+                 ; NIL = ως τώρα (όλη η ακάλυπτη περίοδος — υπερ-προσεκτικό)
+  recorded-from)
 
 ;;; ----------------------------------------------------------------------------
 ;;; Κανονικά hashes — ΜΟΝΟ μέσω της έδρας canonical serialization (Φ1β spec)
@@ -285,6 +295,7 @@
   gaps                  ; λίστα knowledge-gap
   conditions            ; [Φ7 Π2] condition-id → effectivity-condition (equal)
   cond-events           ; [Φ7 Π2] condition-id → λίστα condition-event (equal)
+  regimes               ; [Φ7 Π4] λίστα regime-edge (σειρά εισαγωγής, νεότερο πρώτο)
   chain)                ; τρέχον chain-hash (κεφαλή αλυσίδας)
 
 (defun %graph-path (body-string)
@@ -299,7 +310,7 @@
                :edges (make-hash-table :test 'equal)
                :conditions (make-hash-table :test 'equal)
                :cond-events (make-hash-table :test 'equal)
-               :quarantine '() :gaps '() :chain "genesis"))
+               :quarantine '() :gaps '() :regimes '() :chain "genesis"))
 
 (defun %canon-sexp (x out)
   "Κανονική σειριοποίηση sexp ΤΙΜΩΝ — συνάρτηση της ΑΞΙΑΣ, ποτέ της
@@ -430,7 +441,10 @@
    υποψήφιο με άγνωστη ισχύ ΔΕΝ κατασκευάζεται καν: πήγαινε στο quarantine!."
   (unless (member op +edge-ops+)
     (error 'invalid-edge :reason (format nil "άγνωστη πράξη ~S" op)))
-  (%require-date enacted "enacted") (%require-date effective "effective")
+  (%require-date enacted "enacted")
+  ;; [Φ7 Π3] effective sum type: legal-date | (:conditional cid)
+  (unless (%conditional-effective-p effective)
+    (%require-date effective "effective"))
   (%require-date fek-date "fek-date")
   (unless (and (consp act-internal-seq) (= 2 (length act-internal-seq))
                (every #'integerp act-internal-seq))
@@ -443,18 +457,22 @@
         :enacted enacted :effective effective :fek-date fek-date
         :assurance assurance :confidence confidence))
 
-(defun add-knowledge-gap! (graph &key provision-id act-ref kind effective)
+(defun add-knowledge-gap! (graph &key provision-id act-ref kind effective until)
   "ΤΙΜΙΑ ΑΓΝΟΙΑ πρώτης τάξης: δηλωμένο κενό ανακατασκευής (π.χ. text-less
-   αναθεώρηση) — journaled, ορατό σε κάθε ερώτημα που πέφτει στο κενό."
+   αναθεώρηση) — journaled, ορατό σε κάθε ερώτημα που πέφτει στο κενό.
+   [Υ2β] Με UNTIL (legal-date): το κενό γίνεται ΔΙΑΣΤΗΜΑ [effective, until)
+   — μπλοκάρει μόνο τομές μέσα του· χωρίς UNTIL: όλη η ακάλυπτη περίοδος."
   (%require-date effective "effective (κενού γνώσης)")
+  (when until (%require-date until "until (κενού γνώσης)"))
   (let* ((rid (format nil "gap:~A@~A:~A" provision-id effective (or act-ref "")))
          (line (%journal! graph (list :kind :knowledge-gap :record-id rid
                                       :provision-id provision-id :act-ref act-ref
                                       :gap-kind kind :effective effective
+                                      :gap-until until
                                       :at (orchestrator.journal:iso-now))
                           :verify nil))
          (g (make-knowledge-gap :provision-id provision-id :act-ref act-ref
-                                :kind kind :effective effective
+                                :kind kind :effective effective :until until
                                 :recorded-from (%recorded-of line))))
     (push g (vg-gaps graph))
     g))
@@ -669,6 +687,25 @@
        (or (eq :open (tv-valid-until v))
            (not (%time<= (tv-valid-until v) valid-at "valid-until" "valid-at")))))
 
+(defun %valid-covers-known-p (graph v valid-at known-at)
+  "[Φ7 Π4] Κάλυψη valid-at με τα όρια ΟΠΩΣ ΓΝΩΡΙΖΟΝΤΑΝ κατά known-at
+   (live :extend/:expire/:retroact ξαναγράφουν διτεμπορικά — %rewritten-bounds)·
+   υπό-αίρεση εκδόσεις εξαιρούνται (παράγωγη ισχύς, Π3)."
+  (and (not (%tv-conditional-cid v))
+       (multiple-value-bind (from until) (%rewritten-bounds graph v known-at)
+         (and (%time<= from valid-at "valid-from" "valid-at")
+              (or (eq :open until)
+                  (not (%time<= until valid-at "valid-until" "valid-at")))))))
+
+(defun %finish-version (graph pid valid-at known-at v basis)
+  "[Φ7 Π4] Τελικό βήμα version-at: live αναστολή που καλύπτει το valid-at
+   (χωρίς revive εκεί) ⇒ typed basis (:suspended edge-id) — ΓΝΩΣΤΗ απάντηση,
+   ποτέ 422."
+  (let ((s (and v (%active-suspension graph pid valid-at known-at))))
+    (if s
+        (values v (list :suspended (re-edge-id s)))
+        (values v basis))))
+
 (defun %known-by-p (recorded-from known-at)
   "T όταν κάτι με RECORDED-FROM ήταν ήδη ΓΝΩΣΤΟ κατά KNOWN-AT — η
    transaction-time πύλη για καραντίνες/κενά (Υ2): μελλοντική καταγραφή δεν
@@ -731,23 +768,31 @@
                :why (format nil "~D υπό-αίρεση εκδόσεις ταυτόχρονα ικανοποιημένες στην τομή — ασυνεπής γράφος"
                             (length satisfied-covering))))
       (when satisfied-covering
-        (return-from version-at (values (car (first satisfied-covering)) :complete)))
+        (return-from version-at
+          (%finish-version graph pid valid-at known-at
+                           (car (first satisfied-covering)) :complete)))
       ;; καμία ικανοποιημένη-καλύπτουσα: γενική διαδρομή· pending αίρεση
       ;; ΔΕΝ είναι άγνοια — επιστρέφεται ΩΣ ΤΥΠΩΜΕΝΟ basis (ποτέ 422 εδώ).
       (let ((live (loop for v in records
                         when (and (%recorded-live-p v known-at)
-                                  (%valid-covers-p v valid-at))
+                                  (%valid-covers-known-p graph v valid-at known-at))
                           collect v)))
         (cond
           ((= 1 (length live))
-           (values (first live) (or pending-note :complete)))
+           (%finish-version graph pid valid-at known-at
+                            (first live) (or pending-note :complete)))
           ((null live)
          ;; ΚΕΝΟ ΓΝΩΣΗΣ (text-less ιστορικό): μετρά ΜΟΝΟ αν ήταν ήδη
          ;; καταγεγραμμένο κατά known-at (Υ2) — αλλιώς το snapshot εκείνης της
          ;; γνώσης απλώς δεν είχε καμία έκδοση (:no-version-in-force, τίμιο).
+         ;; [Υ2β] gap με δηλωμένο until = ΔΙΑΣΤΗΜΑ [effective, until): μπλοκάρει
+         ;; ΜΟΝΟ τομές μέσα του· χωρίς until: όλη η ακάλυπτη περίοδος (ως τώρα).
          (let ((g (find-if (lambda (g)
                              (and (equal pid (kg-provision-id g))
-                                  (%known-by-p (kg-recorded-from g) known-at)))
+                                  (%known-by-p (kg-recorded-from g) known-at)
+                                  (or (null (kg-until g))
+                                      (interval-covers-p (kg-effective g)
+                                                         (kg-until g) valid-at))))
                            (vg-gaps graph))))
            (if g
                (error 'temporal-uncertainty :provision pid
@@ -867,6 +912,7 @@
                                      :act-ref (getf line :act-ref)
                                      :kind (getf line :gap-kind)
                                      :effective (getf line :effective)
+                                     :until (getf line :gap-until)
                                      :recorded-from (%recorded-of line))
                  (vg-gaps graph)))
           (:retract
@@ -912,6 +958,39 @@
                     :recorded-from (%recorded-of line)
                     :recorded-until :current)
                    (gethash cid (vg-cond-events graph)))))
+          ;; [Φ7 Π4] regime edges — semantic check ③
+          (:regime-edge
+           (let ((semantic (%regime-hash (getf line :op) (getf line :target)
+                                         (getf line :version)
+                                         (getf line :span-from) (getf line :span-until)
+                                         (getf line :scope) (getf line :condition-id)
+                                         (getf line :act-ref) (getf line :act-seq)
+                                         (getf line :enacted) (getf line :fek-date)
+                                         (getf line :prior))))
+             (unless (equal semantic rid)
+               (error 'journal-corruption
+                      :reason (format nil "regime-edge ~A: semantic hash ~A ≠ record-id — πλαστή καθεστωτική πράξη" rid semantic)))
+             (%install-regime graph
+                              (make-regime-edge
+                               :edge-id rid :op (getf line :op)
+                               :target (getf line :target) :version (getf line :version)
+                               :span-from (getf line :span-from)
+                               :span-until (getf line :span-until)
+                               :condition-id (getf line :condition-id)
+                               :act-ref (getf line :act-ref) :act-seq (getf line :act-seq)
+                               :enacted (getf line :enacted) :fek-date (getf line :fek-date)
+                               :prior-edge-id (getf line :prior)
+                               :recorded-from (%recorded-of line)
+                               :recorded-until :current))))
+          (:regime-retract
+           (let* ((eid (getf line :edge))
+                  (re (find-if (lambda (r) (and (equal (re-edge-id r) eid)
+                                                (eq (re-recorded-until r) :current)))
+                               (vg-regimes graph))))
+             (unless re
+               (error 'journal-corruption
+                      :reason (format nil "regime-retract ~A: ανύπαρκτο/κλεισμένο edge ~A" rid eid)))
+             (setf (re-recorded-until re) (%recorded-of line))))
           (:condition-event-retract
            (let* ((eid (getf line :event))
                   (ce (loop for events being the hash-values of (vg-cond-events graph)
@@ -1385,3 +1464,214 @@
                                :outcome (ce-outcome ce) :at (ce-at ce)
                                :evidence (ce-evidence ce)))
          :condition-id cid)))
+
+;;; ============================================================================
+;;; [0088 Φ7 Π4] REGIME EDGES + ALLEN ΕΔΡΑ + Υ2β — spec v3 §5
+;;; Καθεστωτικές πράξεις (αναστολή/παράταση/λήξη/επαναφορά/αναδρομή) ως
+;;; ΞΕΧΩΡΙΣΤΟΣ τύπος (όχι υπότυπος amendment-edge), διτεμπορικές, journaled.
+;;; ============================================================================
+
+;;; ── Allen άλγεβρα: Η ΜΙΑ έδρα σχέσεων typed διαστημάτων [from, until|:open) ──
+
+(defun %ikey (x what)
+  (if (eq x :open) most-positive-fixnum (%time-key x what)))
+
+(defun interval-relation (a-from a-until b-from b-until)
+  "Η ΜΙΑ από τις 13 Allen σχέσεις των [A-FROM, A-UNTIL) και [B-FROM, B-UNTIL)
+   (:open = +∞) — ολική, ντετερμινιστική, σε %time-key ακέραιους (spec §5)."
+  (let ((a- (%ikey a-from "a-from")) (a+ (%ikey a-until "a-until"))
+        (b- (%ikey b-from "b-from")) (b+ (%ikey b-until "b-until")))
+    (cond
+      ((and (= a- b-) (= a+ b+)) :equals)
+      ((< a+ b-) :before)
+      ((> a- b+) :after)
+      ((= a+ b-) :meets)
+      ((= b+ a-) :met-by)
+      ((and (= a- b-) (< a+ b+)) :starts)
+      ((and (= a- b-) (> a+ b+)) :started-by)
+      ((and (= a+ b+) (> a- b-)) :finishes)
+      ((and (= a+ b+) (< a- b-)) :finished-by)
+      ((and (> a- b-) (< a+ b+)) :during)
+      ((and (< a- b-) (> a+ b+)) :contains)
+      ((and (< a- b-) (< b- a+) (< a+ b+)) :overlaps)
+      ((and (< b- a-) (< a- b+) (< b+ a+)) :overlapped-by)
+      (t (error 'invalid-edge :reason "αδύνατη Allen περίπτωση — μη ολικό κλειδί")))))
+
+(defun interval-intersects-p (a-from a-until b-from b-until)
+  (not (member (interval-relation a-from a-until b-from b-until)
+               '(:before :after :meets :met-by))))
+
+(defun interval-covers-p (from until at)
+  "T ανν AT ∈ [FROM, UNTIL|:open)."
+  (and (%time<= from at "from" "at")
+       (or (eq until :open)
+           (< (%time-key at "at") (%time-key until "until")))))
+
+;;; ── Regime edge — typed, διτεμπορικό ──
+
+(defparameter +regime-ops+ '(:suspend :extend :expire :revive :retroact))
+
+(defstruct (regime-edge (:conc-name re-))
+  edge-id
+  op             ; ∈ +regime-ops+
+  target         ; provision-id-string
+  version        ; version-hash | NIL — ΥΠΟΧΡΕΩΤΙΚΟ για :extend/:expire/:retroact
+  span-from      ; legal-date — για rewrites: το ΝΕΟ valid-from (retroact) / υπάρχον
+  span-until     ; legal-date | :open — για rewrites: το ΝΕΟ valid-until
+  condition-id   ; string | NIL (υπό αίρεση καθεστώς — αποτίμηση μελλοντική φάση)
+  act-ref act-seq enacted fek-date
+  prior-edge-id  ; ΥΠΟΧΡΕΩΤΙΚΟ για :revive — το suspend που αναιρεί
+  recorded-from recorded-until)
+
+(defun %regime-hash (op target version span-from span-until scope cid
+                     act-ref act-seq enacted fek-date prior)
+  (orchestrator.journal:sha256-hex
+   (with-output-to-string (out)
+     (%canon-sexp (list :lawmax/regime-edge/1 op target version
+                        span-from (if (eq span-until :open) "open" span-until)
+                        scope cid act-ref act-seq enacted fek-date prior)
+                  out))))
+
+(defun %re-live-p (re known-at)
+  (and (%time<= (re-recorded-from re) known-at "recorded-from" "known-at")
+       (or (eq (re-recorded-until re) :current)
+           (< (%time-key known-at "known-at")
+              (%time-key (re-recorded-until re) "recorded-until")))))
+
+(defun graph-regimes (graph) (vg-regimes graph))
+
+(defun %install-regime (graph re) (push re (vg-regimes graph)) re)
+
+(defun admit-regime-edge! (graph &key op target version span-from span-until
+                                      condition-id act-ref act-seq enacted
+                                      fek-date prior-edge-id)
+  "Εισδοχή καθεστωτικής πράξης — fail-closed πύλες (spec v3 §5):
+   • op ∈ {:suspend :extend :expire :revive :retroact}·
+   • span typed: [legal-date, legal-date|:open) με from ≤ until·
+   • :extend/:expire/:retroact ⇒ ΥΠΟΧΡΕΩΤΙΚΟ υπάρχον VERSION (τα όρια
+     ξαναγράφονται ΔΙΤΕΜΠΟΡΙΚΑ — ορατά μόνο από known-at ≥ recorded)·
+   • :revive ⇒ ΥΠΟΧΡΕΩΤΙΚΟ PRIOR-EDGE-ID: live :suspend ΙΔΙΟΥ target με
+     ΤΕΜΝΟΝ span (revive χωρίς τι να αναιρέσει = σφάλμα)·
+   • conditional-id (αν δοθεί) ⇒ ΔΗΛΩΜΕΝΟ (declare-before-reference)·
+   • σύγκρουση: live ίδιου op/target/version με ΤΕΜΝΟΝΤΑ spans και
+     ΔΙΑΦΟΡΕΤΙΚΑ όρια ⇒ invalid-edge — επίλυση ΜΟΝΟ με journaled retract."
+  (unless (member op +regime-ops+)
+    (error 'invalid-edge :reason (format nil "άγνωστο regime op ~S" op)))
+  (%require-date span-from "regime span-from")
+  (unless (or (eq span-until :open) (legal-date-p span-until))
+    (error 'invalid-edge :reason (format nil "regime span-until: legal-date ή :open, όχι ~S" span-until)))
+  (when (and (legal-date-p span-until)
+             (not (%time<= span-from span-until "span-from" "span-until")))
+    (error 'invalid-edge :reason "regime span: from > until"))
+  (%require-date enacted "regime enacted") (%require-date fek-date "regime fek-date")
+  (unless (and (stringp act-ref) (plusp (length act-ref)))
+    (error 'invalid-edge :reason "regime act-ref: μη κενό string"))
+  (when (member op '(:extend :expire :retroact))
+    (unless (and version (gethash version (vg-versions graph)))
+      (error 'invalid-edge
+             :reason (format nil "~S απαιτεί ΥΠΑΡΧΟΝ version-hash στόχο — βρέθηκε ~S" op version))))
+  (when condition-id
+    (unless (graph-condition graph condition-id)
+      (error 'invalid-edge
+             :reason (format nil "regime edge με ΑΔΗΛΩΤΟ condition-id ~A" condition-id))))
+  (when (eq op :revive)
+    (let ((prior (find-if (lambda (re)
+                            (and (equal (re-edge-id re) prior-edge-id)
+                                 (eq (re-op re) :suspend)
+                                 (equal (re-target re) target)
+                                 (eq (re-recorded-until re) :current)))
+                          (vg-regimes graph))))
+      (unless prior
+        (error 'invalid-edge
+               :reason (format nil ":revive απαιτεί prior-edge-id live :suspend του ίδιου target — ~S δεν βρέθηκε" prior-edge-id)))
+      (unless (interval-intersects-p span-from span-until
+                                     (re-span-from prior) (re-span-until prior))
+        (error 'invalid-edge
+               :reason ":revive span ΔΕΝ τέμνει το span του suspend που αναιρεί"))))
+  ;; σύγκρουση live ίδιου op/target/version
+  (dolist (re (vg-regimes graph))
+    (when (and (eq (re-op re) op)
+               (equal (re-target re) target)
+               (equal (re-version re) version)
+               (eq (re-recorded-until re) :current)
+               (interval-intersects-p span-from span-until
+                                      (re-span-from re) (re-span-until re))
+               (not (and (equal (re-span-from re) span-from)
+                         (equal (re-span-until re) span-until))))
+      (error 'invalid-edge
+             :reason (format nil "συγκρουόμενο live ~S στο ~A με τέμνον span και διαφορετικά όρια (~A) — επίλυση ΜΟΝΟ με retract-regime-edge!"
+                             op target (re-edge-id re)))))
+  (let* ((eid (%regime-hash op target version span-from span-until nil
+                            condition-id act-ref act-seq enacted fek-date prior-edge-id))
+         (live (find-if (lambda (re) (and (equal (re-edge-id re) eid)
+                                          (eq (re-recorded-until re) :current)))
+                        (vg-regimes graph))))
+    (or live
+        (let ((line (%journal! graph (list :kind :regime-edge :record-id eid
+                                           :op op :target target :version version
+                                           :span-from span-from :span-until span-until
+                                           :scope nil :condition-id condition-id
+                                           :act-ref act-ref :act-seq act-seq
+                                           :enacted enacted :fek-date fek-date
+                                           :prior prior-edge-id
+                                           :at (orchestrator.journal:iso-now)))))
+          (%install-regime graph
+                           (make-regime-edge
+                            :edge-id eid :op op :target target :version version
+                            :span-from span-from :span-until span-until
+                            :condition-id condition-id :act-ref act-ref
+                            :act-seq act-seq :enacted enacted :fek-date fek-date
+                            :prior-edge-id prior-edge-id
+                            :recorded-from (%recorded-of line)
+                            :recorded-until :current))))))
+
+(defun retract-regime-edge! (graph edge-id)
+  "G5: κλείνει recorded-until live regime edge — ΝΕΑ γραμμή, καμία επανεγγραφή."
+  (let ((re (find-if (lambda (r) (and (equal (re-edge-id r) edge-id)
+                                      (eq (re-recorded-until r) :current)))
+                     (vg-regimes graph))))
+    (unless re
+      (error 'invalid-edge
+             :reason (format nil "retract ανύπαρκτου/κλεισμένου regime edge ~A" edge-id)))
+    (let ((line (%journal! graph (list :kind :regime-retract
+                                       :record-id (format nil "re-retract:~A" edge-id)
+                                       :edge edge-id
+                                       :at (orchestrator.journal:iso-now)))))
+      (setf (re-recorded-until re) (%recorded-of line))
+      re)))
+
+(defun %active-suspension (graph pid valid-at known-at)
+  "Το live-κατά-known-at :suspend του PID που καλύπτει το VALID-AT και ΔΕΝ
+   αναιρείται εκεί από live :revive — αλλιώς NIL. Γνωστή αναστολή = ΓΝΩΣΤΗ
+   απάντηση (:suspended basis), ποτέ ψευδής αβεβαιότητα."
+  (find-if
+   (lambda (s)
+     (and (eq (re-op s) :suspend)
+          (equal (re-target s) pid)
+          (%re-live-p s known-at)
+          (interval-covers-p (re-span-from s) (re-span-until s) valid-at)
+          (not (find-if (lambda (r)
+                          (and (eq (re-op r) :revive)
+                               (equal (re-prior-edge-id r) (re-edge-id s))
+                               (%re-live-p r known-at)
+                               (interval-covers-p (re-span-from r) (re-span-until r)
+                                                  valid-at)))
+                        (vg-regimes graph)))))
+   (vg-regimes graph)))
+
+(defun %rewritten-bounds (graph v known-at)
+  "(values valid-from valid-until) της έκδοσης V όπως ΓΝΩΡΙΖΟΝΤΑΝ κατά
+   KNOWN-AT: live :extend/:expire ξαναγράφουν το until, live :retroact
+   ξαναγράφει from ΚΑΙ until — διτεμπορικά (πριν την καταγραφή: τα παλαιά).
+   Εφαρμογή σε χρονική σειρά καταγραφής (νεότερο υπερισχύει)."
+  (let ((from (tv-valid-from v)) (until (tv-valid-until v)))
+    (dolist (re (reverse (vg-regimes graph)))
+      (when (and (re-version re)
+                 (equal (re-version re) (tv-version-hash v))
+                 (%re-live-p re known-at))
+        (case (re-op re)
+          ((:extend :expire) (setf until (re-span-until re)))
+          (:retroact (setf from (re-span-from re)
+                           until (re-span-until re)))
+          (t nil))))
+    (values from until)))

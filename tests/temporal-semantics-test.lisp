@@ -465,7 +465,185 @@
                    (equal (ans *ts-g* "2026-02-15" "2031-01-01T00:00:00Z")
                           (ans g2 "2026-02-15" "2031-01-01T00:00:00Z"))))))
 
+;;; ═══ [Φ7 Π4] ALLEN ΕΔΡΑ + REGIME EDGES + Υ2β ═══
+(ts-check "⑪ Allen: και οι 13 σχέσεις σωστές σε typed [from, until|:open)"
+          (flet ((rel (af au bf bu)
+                   (orchestrator.version-graph:interval-relation af au bf bu)))
+            (and (eq :equals       (rel "2026-01-01" "2026-06-01" "2026-01-01" "2026-06-01"))
+                 (eq :before       (rel "2026-01-01" "2026-02-01" "2026-03-01" "2026-04-01"))
+                 (eq :after        (rel "2026-03-01" "2026-04-01" "2026-01-01" "2026-02-01"))
+                 (eq :meets        (rel "2026-01-01" "2026-02-01" "2026-02-01" "2026-03-01"))
+                 (eq :met-by       (rel "2026-02-01" "2026-03-01" "2026-01-01" "2026-02-01"))
+                 (eq :starts       (rel "2026-01-01" "2026-02-01" "2026-01-01" "2026-03-01"))
+                 (eq :started-by   (rel "2026-01-01" "2026-03-01" "2026-01-01" "2026-02-01"))
+                 (eq :finishes     (rel "2026-02-01" "2026-03-01" "2026-01-01" "2026-03-01"))
+                 (eq :finished-by  (rel "2026-01-01" "2026-03-01" "2026-02-01" "2026-03-01"))
+                 (eq :during       (rel "2026-02-01" "2026-03-01" "2026-01-01" "2026-04-01"))
+                 (eq :contains     (rel "2026-01-01" "2026-04-01" "2026-02-01" "2026-03-01"))
+                 (eq :overlaps     (rel "2026-01-01" "2026-03-01" "2026-02-01" "2026-04-01"))
+                 (eq :overlapped-by(rel "2026-02-01" "2026-04-01" "2026-01-01" "2026-03-01"))
+                 (eq :starts       (rel "2026-01-01" "2026-02-01" "2026-01-01" :open))
+                 (orchestrator.version-graph:interval-covers-p "2026-01-01" :open "2030-01-01"))))
+
+(defparameter *ts-susp*
+  (orchestrator.version-graph:admit-regime-edge!
+   *ts-g* :op :suspend :target *ts-pid2*
+   :span-from "2026-04-01" :span-until "2026-05-01"
+   :act-ref "gr/ya/2026/100" :act-seq 1 :enacted "2026-03-20" :fek-date "2026-03-20"))
+
+(ts-check "⑫ suspend: τομή ΕΝΤΟΣ span ⇒ typed basis (:suspended eid) — γνωστή απάντηση, ΟΧΙ 422"
+          (multiple-value-bind (v basis)
+              (orchestrator.version-graph:version-at
+               *ts-g* *ts-pid2* :valid-at "2026-04-15" :known-at "2033-01-01T00:00:00Z")
+            (and v (consp basis) (eq :suspended (first basis))
+                 (equal (orchestrator.version-graph:re-edge-id *ts-susp*) (second basis)))))
+(ts-check "⑫β εκτός span ⇒ κανονικό basis (χωρίς αναστολή)"
+          (multiple-value-bind (v basis)
+              (orchestrator.version-graph:version-at
+               *ts-g* *ts-pid2* :valid-at "2026-03-15" :known-at "2033-01-01T00:00:00Z")
+            (declare (ignore v))
+            (not (and (consp basis) (eq :suspended (first basis))))))
+(ts-check "⑫γ Υ2: known-at ΠΡΙΝ την καταγραφή του suspend ⇒ καμία αναστολή στο παλαιό snapshot"
+          (multiple-value-bind (v basis)
+              (orchestrator.version-graph:version-at
+               *ts-g* *ts-pid2* :valid-at "2026-04-15" :known-at "2026-02-02T00:00:00Z")
+            (declare (ignore v))
+            (not (and (consp basis) (eq :suspended (first basis))))))
+(ts-check "⑬ revive (prior=suspend, τέμνον span) ⇒ ξανά χωρίς αναστολή στο revive παράθυρο"
+          (progn
+            (orchestrator.version-graph:admit-regime-edge!
+             *ts-g* :op :revive :target *ts-pid2*
+             :span-from "2026-04-20" :span-until "2026-05-01"
+             :act-ref "gr/ya/2026/101" :act-seq 1 :enacted "2026-04-18" :fek-date "2026-04-18"
+             :prior-edge-id (orchestrator.version-graph:re-edge-id *ts-susp*))
+            (multiple-value-bind (v basis)
+                (orchestrator.version-graph:version-at
+                 *ts-g* *ts-pid2* :valid-at "2026-04-25" :known-at "2033-01-01T00:00:00Z")
+              (declare (ignore v))
+              (not (and (consp basis) (eq :suspended (first basis)))))))
+(ts-check "⑬β πριν το revive παράθυρο η αναστολή ΙΣΧΥΕΙ ακόμη"
+          (multiple-value-bind (v basis)
+              (orchestrator.version-graph:version-at
+               *ts-g* *ts-pid2* :valid-at "2026-04-10" :known-at "2033-01-01T00:00:00Z")
+            (declare (ignore v))
+            (and (consp basis) (eq :suspended (first basis)))))
+(ts-check "⑬γ revive ΧΩΡΙΣ έγκυρο prior ⇒ invalid-edge"
+          (handler-case
+              (progn (orchestrator.version-graph:admit-regime-edge!
+                      *ts-g* :op :revive :target *ts-pid2*
+                      :span-from "2026-04-20" :span-until "2026-05-01"
+                      :act-ref "a" :act-seq 1 :enacted "2026-04-18" :fek-date "2026-04-18"
+                      :prior-edge-id "re-ανύπαρκτο")
+                     nil)
+            (orchestrator.version-graph:invalid-edge () t)))
+(ts-check "⑭ expire: διτεμπορική μετάθεση valid-until — μετά-known η κάλυψη σταματά στο νέο όριο"
+          (progn
+            (orchestrator.version-graph:admit-regime-edge!
+             *ts-g* :op :expire :target *ts-pid2*
+             :version (orchestrator.version-graph::tv-version-hash *ts-old*)
+             :span-from "2026-01-01" :span-until "2026-08-01"
+             :act-ref "gr/nomos/2026/0002" :act-seq 1 :enacted "2026-06-01" :fek-date "2026-06-01")
+            (multiple-value-bind (v basis)
+                (orchestrator.version-graph:version-at
+                 *ts-g* *ts-pid2* :valid-at "2026-09-01" :known-at "2033-01-01T00:00:00Z")
+              (and (null v) (eq basis :no-version-in-force)))))
+(ts-check "⑭β retroact: νέο valid-from ορατό ΜΟΝΟ σε known-at ≥ καταγραφή (διτεμπορικά)"
+          (progn
+            (orchestrator.version-graph:admit-regime-edge!
+             *ts-g* :op :retroact :target *ts-pid2*
+             :version (orchestrator.version-graph::tv-version-hash *ts-old*)
+             :span-from "2025-06-01" :span-until "2026-08-01"
+             :act-ref "gr/nomos/2026/0003" :act-seq 1 :enacted "2026-06-15" :fek-date "2026-06-15")
+            (and
+             ;; μετά-known: καλύπτει και το 2025-08-01
+             (multiple-value-bind (v basis)
+                 (orchestrator.version-graph:version-at
+                  *ts-g* *ts-pid2* :valid-at "2025-08-01" :known-at "2033-01-01T00:00:00Z")
+               (declare (ignore basis))
+               (and v (equal "παλαιό κείμενο" (orchestrator.version-graph::tv-text v))))
+             ;; πριν-known: το 2025-08-01 ΔΕΝ καλυπτόταν
+             (multiple-value-bind (v basis)
+                 (orchestrator.version-graph:version-at
+                  *ts-g* *ts-pid2* :valid-at "2025-08-01" :known-at "2026-02-02T00:00:00Z")
+               (declare (ignore basis))
+               (null v)))))
+(ts-check "⑭γ συγκρουόμενο live ίδιου op/target/version με τέμνον span + άλλα όρια ⇒ invalid-edge"
+          (handler-case
+              (progn (orchestrator.version-graph:admit-regime-edge!
+                      *ts-g* :op :expire :target *ts-pid2*
+                      :version (orchestrator.version-graph::tv-version-hash *ts-old*)
+                      :span-from "2026-01-01" :span-until "2026-07-01"
+                      :act-ref "x" :act-seq 1 :enacted "2026-06-01" :fek-date "2026-06-01")
+                     nil)
+            (orchestrator.version-graph:invalid-edge () t)))
+(ts-check "⑮ Υ2β: gap με ΔΙΑΣΤΗΜΑ μπλοκάρει ΜΟΝΟ ακάλυπτες τομές ΕΝΤΟΣ του — εκτός: τίμιο :no-version-in-force, όχι μόλυνση"
+          (let ((pid3 "gr/nomos/2020/9997#art:3"))
+            ;; έκδοση που καλύπτει ΑΠΟ το 2023 — οι περίοδοι 2021/2022 ακάλυπτες
+            (orchestrator.version-graph::admit-edge!
+             *ts-g* (list :op :insert :target pid3 :from-versions nil
+                          :to-specs (list (list :provision-id pid3 :text "τ3" :heading nil
+                                                :valid-from "2023-01-01"
+                                                :status :in-force :assurance :verified))
+                          :act-ref "gr/nomos/2020/9997" :act-internal-seq 3
+                          :enacted "2023-01-01" :effective "2023-01-01"
+                          :fek-date "2023-01-01" :assurance :verified :confidence 100))
+            (orchestrator.version-graph:add-knowledge-gap!
+             *ts-g* :provision-id pid3 :act-ref "gr/nomos/2022/1111" :kind :text-less
+             :effective "2022-01-01" :until "2023-01-01")
+            (and
+             ;; ακάλυπτη τομή ΕΝΤΟΣ [2022-01-01, 2023-01-01) ⇒ τίμια αβεβαιότητα
+             (handler-case
+                 (progn (orchestrator.version-graph:version-at
+                         *ts-g* pid3 :valid-at "2022-06-01" :known-at "2033-01-01T00:00:00Z")
+                        nil)
+               (orchestrator.version-graph:temporal-uncertainty () t))
+             ;; ακάλυπτη τομή ΕΚΤΟΣ διαστήματος ⇒ :no-version-in-force (το
+             ;; κενό ΔΕΝ μολύνει όλη την ακάλυπτη ιστορία — αυτό είναι το Υ2β)
+             (multiple-value-bind (v basis)
+                 (orchestrator.version-graph:version-at
+                  *ts-g* pid3 :valid-at "2021-06-01" :known-at "2033-01-01T00:00:00Z")
+               (and (null v) (eq basis :no-version-in-force)))
+             ;; καλυπτόμενη τομή ⇒ κανονική απάντηση
+             (multiple-value-bind (v basis)
+                 (orchestrator.version-graph:version-at
+                  *ts-g* pid3 :valid-at "2024-06-01" :known-at "2033-01-01T00:00:00Z")
+               (declare (ignore basis))
+               (and v (equal "τ3" (orchestrator.version-graph::tv-text v)))))))
+(ts-check "⑯ RESTART PARITY Π4: φρέσκο load-graph ⇒ ταυτόσημες απαντήσεις (suspend/revive/expire/retroact/gap)"
+          (let ((g2 (orchestrator.version-graph::load-graph *ts-body*)))
+            (flet ((ans (g pid valid known)
+                     (handler-case
+                         (multiple-value-bind (v basis)
+                             (orchestrator.version-graph:version-at g pid :valid-at valid :known-at known)
+                           (list (and v (orchestrator.version-graph::tv-text v))
+                                 (if (consp basis) (first basis) basis)))
+                       (orchestrator.version-graph:temporal-uncertainty () :uncertain))))
+              (every (lambda (args)
+                       (equal (apply #'ans *ts-g* args) (apply #'ans g2 args)))
+                     (list (list *ts-pid2* "2026-04-15" "2033-01-01T00:00:00Z")
+                           (list *ts-pid2* "2026-04-25" "2033-01-01T00:00:00Z")
+                           (list *ts-pid2* "2026-09-01" "2033-01-01T00:00:00Z")
+                           (list *ts-pid2* "2025-08-01" "2033-01-01T00:00:00Z")
+                           (list "gr/nomos/2020/9997#art:3" "2022-06-01" "2033-01-01T00:00:00Z")
+                           (list "gr/nomos/2020/9997#art:3" "2021-06-01" "2033-01-01T00:00:00Z"))))))
+(ts-check "⑯β TAMPER regime-edge πεδίου ⇒ load-graph ΣΦΑΛΜΑ (φρέσκο path)"
+          (let* ((p (orchestrator.version-graph::%graph-path *ts-body*))
+                 (tb (orchestrator.identity:body-id-string
+                      (orchestrator.identity:make-body :gr :nomos :year 2020 :number 9995 :slug "ts-p4t")))
+                 (p2 (orchestrator.version-graph::%graph-path tb))
+                 (original (with-open-file (s p :external-format :utf-8)
+                             (let ((str (make-string (file-length s))))
+                               (read-sequence str s) str)))
+                 (pos (search "2026-04-01" original)))
+            (when (probe-file p2) (delete-file p2))
+            (with-open-file (s p2 :direction :output :if-exists :supersede
+                               :if-does-not-exist :create :external-format :utf-8)
+              (write-string (substitute #\9 #\4 original :count 1 :start pos) s))
+            (handler-case
+                (progn (orchestrator.version-graph::load-graph tb) nil)
+              (orchestrator.version-graph:journal-corruption () t))))
+
 (format t "~%========================================~%")
-(format t "TEMPORAL-SEMANTICS [0088 Φ7 Π1+Π2+Π3]: ~D passed, ~D failed~%" *ts-pass* *ts-fail*)
+(format t "TEMPORAL-SEMANTICS [0088 Φ7 Π1-Π4]: ~D passed, ~D failed~%" *ts-pass* *ts-fail*)
 (format t "========================================~%")
 (sb-ext:exit :code (if (zerop *ts-fail*) 0 1))

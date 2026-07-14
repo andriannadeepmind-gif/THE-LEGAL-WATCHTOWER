@@ -748,3 +748,36 @@ snapshot, retract ⇒ επιστροφή, αδήλωτο cid ⇒ σφάλμα, d
 
 Proof: temporal-semantics **54/54** + 8 σουίτες 0 failed (390 checks).
 ΕΠΟΜΕΝΟ: Π4 (regime-edges/Allen/Υ2β) → αντιπαλικός κριτής Π2-Π4 → Π5.
+
+## [0088 Φ7 Π4] Regime edges + Allen έδρα + Υ2β ΥΛΟΠΟΙΗΜΕΝΑ
+
+Στην έδρα version-graph, κατά spec v3 §5 (με τη σημασιολογία ανά op των
+κλεισιμάτων Β-2/Β-6):
+- **regime-edge** ΞΕΧΩΡΙΣΤΟΣ τύπος: ops {:suspend :extend :expire :revive
+  :retroact}, typed span [from, until|:open), version-στόχος για τα
+  rewrites, prior-edge-id για revive· semantic hash domain-separated
+  (:lawmax/regime-edge/1 …) — replay check ③· admit-regime-edge! με
+  fail-closed πύλες (revive⇒live τέμνον prior suspend· rewrites⇒υπάρχον
+  version· αδήλωτο condition-id ⇒ σφάλμα· συγκρουόμενα live ίδιου
+  op/target/version με τέμνοντα spans+άλλα όρια ⇒ invalid-edge — επίλυση
+  ΜΟΝΟ με retract-regime-edge!/G5)· ιδεμποτής σε live διπλότυπο.
+- **Allen έδρα**: interval-relation (και οι 13 σχέσεις, ολική σε %time-key,
+  :open=+∞) + interval-intersects-p + interval-covers-p — εξαγόμενες,
+  κλειδωμένες όλες στο ⑪.
+- **version-at**: (α) live suspend που καλύπτει το valid-at χωρίς revive
+  εκεί ⇒ typed basis (:suspended edge-id) — ΓΝΩΣΤΗ απάντηση, ποτέ 422·
+  (β) :extend/:expire/:retroact ξαναγράφουν τα όρια ΔΙΤΕΜΠΟΡΙΚΑ
+  (%rewritten-bounds — ορατά ΜΟΝΟ από known-at ≥ καταγραφή· πριν: τα
+  παλαιά — η αναδρομικότητα ορατή μόνο ως προς το πότε έγινε γνωστή).
+- **Υ2β**: knowledge-gap με προαιρετικό until ⇒ ΔΙΑΣΤΗΜΑ [effective,
+  until): μπλοκάρει ΜΟΝΟ ακάλυπτες τομές εντός του — το κενό παύει να
+  μολύνει όλη την ακάλυπτη ιστορία· χωρίς until: ως τώρα (συμβατό).
+- make-edge-spec δέχεται πλέον το effective sum type (Π3 συνέπεια).
+
+Locks ⑪-⑯β (temporal-semantics 54→67): 13 Allen, suspend/revive κύκλος με
+Υ2, expire/retroact διτεμπορικά, συγκρούσεις/revive-χωρίς-prior ⇒ σφάλμα,
+Υ2β τρία σκέλη, restart parity 6 τομών, tamper ⇒ corruption.
+
+Proof: temporal-semantics **67/67** + 8 σουίτες 0 failed (403 checks).
+ΕΠΟΜΕΝΟ: αντιπαλικός κριτής Π2-Π4 → κλείσιμο → Π5 (receipts/attestation/
+as-known in_force).
