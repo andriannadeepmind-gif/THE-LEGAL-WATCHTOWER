@@ -142,3 +142,10 @@ versioning:
 article_defaults:
   in_force: true
   date_applicability: "1999-05-17"
+
+# [0088] Δηλωμένη ΚΑΝΟΝΙΚΗ ταυτότητα σώματος (orchestrator.identity) —
+# Κώδικας Διοικητικής Δικονομίας — κυρωτικός Ν.2717/1999 (ΦΕΚ Α΄ 97)
+body_identity:
+  kind: kodikas
+  year: 1999
+  number: 2717

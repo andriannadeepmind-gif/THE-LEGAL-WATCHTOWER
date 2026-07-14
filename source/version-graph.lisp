@@ -50,6 +50,7 @@
    #:version-graph #:make-graph #:graph-body #:load-graph
    #:graph-versions-of #:graph-quarantine #:graph-gaps #:graph-edge-count
    #:submit-genesis! #:admit-edge! #:quarantine! #:retract-knowledge!
+   #:add-knowledge-gap! #:kg-provision-id #:kg-effective #:kg-kind
    #:version-at #:snapshot-at #:verify-chain
    #:make-edge-spec #:make-version-spec))
 
@@ -196,9 +197,11 @@
   (orchestrator.journal:sha256-hex
    (format nil "~A~C~A" prev (code-char 31) record-id)))
 
-(defun %journal! (graph plist)
-  "Μία γραμμή στο journal της έδρας [0086]: chained-append + :verify +
-   require-durable! — id/αλυσίδα ΜΟΝΟ για durable+verified εγγραφή."
+(defun %journal! (graph plist &key (verify t))
+  "Μία γραμμή στο journal της έδρας [0086]: chained-append + require-durable!.
+   Με VERIFY (προεπιλογή) γίνεται και read-back επαλήθευση ανά γραμμή· σε
+   ΜΑΖΙΚΟ import η ανά-γραμμή επανανάγνωση είναι O(n²) — εκεί VERIFY NIL και
+   η αλήθεια επαληθεύεται στο τέλος με ΠΛΗΡΕΣ replay (verify-chain, O(n))."
   (let ((next-chain (%chain-next (vg-chain graph) (getf plist :record-id))))
     (multiple-value-bind (line receipt)
         (orchestrator.journal:chained-append
@@ -206,7 +209,7 @@
          (lambda (last)
            (declare (ignore last))
            (append plist (list :chain next-chain)))
-         :verify t)
+         :verify verify)
       (orchestrator.journal:require-durable! receipt :version-graph)
       (setf (vg-chain graph) next-chain)
       line)))
@@ -280,8 +283,27 @@
         :enacted enacted :effective effective :fek-date fek-date
         :assurance assurance :confidence confidence))
 
+(defun add-knowledge-gap! (graph &key provision-id act-ref kind effective)
+  "ΤΙΜΙΑ ΑΓΝΟΙΑ πρώτης τάξης: δηλωμένο κενό ανακατασκευής (π.χ. text-less
+   αναθεώρηση) — journaled, ορατό σε κάθε ερώτημα που πέφτει στο κενό."
+  (%require-date effective "effective (κενού γνώσης)")
+  (let* ((rid (format nil "gap:~A@~A:~A" provision-id effective (or act-ref "")))
+         (line (%journal! graph (list :kind :knowledge-gap :record-id rid
+                                      :provision-id provision-id :act-ref act-ref
+                                      :gap-kind kind :effective effective
+                                      :at (orchestrator.journal:iso-now))
+                          :verify nil))
+         (g (make-knowledge-gap :provision-id provision-id :act-ref act-ref
+                                :kind kind :effective effective
+                                :recorded-from (%recorded-of line))))
+    (push g (vg-gaps graph))
+    g))
+
 (defun submit-genesis! (graph vspec &key derivation)
-  "Εισδοχή έκδοσης-γένεσης (bootstrap/import) — δεν προέρχεται από ακμή."
+  "Εισδοχή έκδοσης-γένεσης (bootstrap/import) — δεν προέρχεται από ακμή.
+   Ο έλεγχος σύγκρουσης (G4) προηγείται ΚΑΘΕ εγγραφής — κανένα ορφανό record."
+  (when (%open-version graph (getf vspec :provision-id))
+    (error 'invalid-edge :reason (format nil "genesis σε διάταξη με ΑΝΟΙΧΤΗ έκδοση: ~A (σύγκρουση ταυτότητας — G4)" (getf vspec :provision-id))))
   (let* ((vh (%version-hash (getf vspec :provision-id) (getf vspec :text)
                             (getf vspec :heading) (getf vspec :valid-from)
                             (getf vspec :status) :genesis))
@@ -295,7 +317,8 @@
                                 :previous "genesis"
                                 :created-by (or derivation "bootstrap")
                                 :assurance (getf vspec :assurance)
-                                :at (orchestrator.journal:iso-now))))
+                                :at (orchestrator.journal:iso-now))
+                          :verify nil))
          (v (make-text-version
              :version-hash vh :provision-id (getf vspec :provision-id)
              :text (getf vspec :text) :heading (getf vspec :heading)
@@ -304,8 +327,6 @@
              :status (getf vspec :status) :previous-version-hash :genesis
              :created-by (or derivation "bootstrap")
              :assurance (getf vspec :assurance))))
-    (when (%open-version graph (getf vspec :provision-id))
-      (error 'invalid-edge :reason (format nil "genesis σε διάταξη με ΑΝΟΙΧΤΗ έκδοση: ~A (σύγκρουση ταυτότητας — G4)" (getf vspec :provision-id))))
     (%install-version graph v)
     v))
 
@@ -471,23 +492,31 @@
     (error 'invalid-edge :reason "known-at υποχρεωτικό (ISO timestamp/ημερομηνία)"))
   (let ((records (gethash pid (vg-by-provision graph))))
     (unless records (error 'unknown-provision :provision pid))
-    ;; καραντίνα/κενά που αφορούν τη διάταξη ⇒ ΔΗΛΩΜΕΝΗ αβεβαιότητα
+    ;; ΚΑΡΑΝΤΙΝΑ που στοχεύει τη διάταξη = ΜΗ εφαρμοσμένη γνωστή αλλαγή ⇒ και
+    ;; το ΤΡΕΧΟΝ κείμενο αναξιόπιστο — ολική αβεβαιότητα για τη διάταξη.
     (let ((q (find-if (lambda (q)
                         (let ((m (qe-edge q)))
                           (equal pid (getf m :target))))
-                      (vg-quarantine graph)))
-          (g (find pid (vg-gaps graph) :key #'kg-provision-id :test #'equal)))
-      (when (or q g)
+                      (vg-quarantine graph))))
+      (when q
         (error 'temporal-uncertainty :provision pid
-               :why (if q (format nil "ακμή σε καραντίνα (~A)" (qe-reason q))
-                        "δηλωμένο κενό γνώσης"))))
+               :why (format nil "ακμή σε καραντίνα (~A)" (qe-reason q)))))
     (let ((live (loop for v in records
                       when (and (%recorded-live-p v known-at)
                                 (%valid-covers-p v valid-at))
                         collect v)))
       (cond
-        ((null live) (values nil :no-version-in-force))
         ((= 1 (length live)) (values (first live) :complete))
+        ((null live)
+         ;; ΚΕΝΟ ΓΝΩΣΗΣ (text-less ιστορικό — π.χ. αναθεωρήσεις χωρίς κείμενο):
+         ;; το ερώτημα πέφτει σε περίοδο που ΔΕΝ ανακατασκευάζεται ⇒ ΡΗΤΗ
+         ;; αβεβαιότητα, όχι σιωπηλό «καμία έκδοση» (TEMP-01/TEMP-04 honesty).
+         (let ((g (find pid (vg-gaps graph) :key #'kg-provision-id :test #'equal)))
+           (if g
+               (error 'temporal-uncertainty :provision pid
+                      :why (format nil "δηλωμένο κενό γνώσης (~A ~A): το κείμενο της περιόδου δεν ανακατασκευάζεται από τις διαθέσιμες πηγές"
+                                   (kg-kind g) (kg-effective g)))
+               (values nil :no-version-in-force))))
         (t (error 'temporal-uncertainty :provision pid
                   :why (format nil "~D επικαλυπτόμενες εκδόσεις στην τομή — ασυνεπής γράφος" (length live))))))))
 

@@ -266,3 +266,10 @@ deployment:
   cloudflare_api_key: ${CLOUDFLARE_API_KEY}
   purge_cache: true
   update_sitemap: true
+
+# [0088] Δηλωμένη ΚΑΝΟΝΙΚΗ ταυτότητα σώματος (orchestrator.identity) —
+# Ποινικός Κώδικας — κυρωτικός Ν.4619/2019 (ΦΕΚ Α΄ 95)
+body_identity:
+  kind: kodikas
+  year: 2019
+  number: 4619

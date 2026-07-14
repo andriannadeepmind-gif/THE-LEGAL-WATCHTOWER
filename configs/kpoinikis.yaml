@@ -138,3 +138,10 @@ versioning:
 article_defaults:
   in_force: true
   date_applicability: "2019-07-01"
+
+# [0088] Δηλωμένη ΚΑΝΟΝΙΚΗ ταυτότητα σώματος (orchestrator.identity) —
+# Κώδικας Ποινικής Δικονομίας — κυρωτικός Ν.4620/2019 (ΦΕΚ Α΄ 96)
+body_identity:
+  kind: kodikas
+  year: 2019
+  number: 4620

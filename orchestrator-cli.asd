@@ -45,6 +45,7 @@
      (:file "cognition-legal")       ; ΓΝΩΣΙΑΚΟ ΠΕΔΙΟ: νομικός διάλογος (άρθρα/νομολογία/αποφάσεις/δικαστές) ως frames — τέλος στην παλιά cond
      (:file "advisor")               ; Ο ΣΥΜΒΟΥΛΟΣ (εκτός εμπιστοσύνης): LLM προτείνει πλαίσιο, ο πυρήνας επαληθεύει (--advisor/--advisor-gate)
      (:file "graph-import")           ; ΕΙΣΑΓΩΓΗ στον ενιαίο γράφο (εαυτός+corpus+αποφάσεις) + εντολή --graph
+     (:file "version-graph-import")   ; [0088] Φ3: 6 σώματα → διτεμπορικός γράφος (genesis+κενά γνώσης) + fold-parity gate
      (:file "dialogue-gate")           ; Η ΠΥΛΗ ΤΟΥ ΔΙΑΛΟΓΟΥ: εκτελέσιμη μη-παλινδρόμηση της κατανόησης (--dialogue-gate)
      (:file "deontic-gate")            ; Η ΠΥΛΗ ΤΟΥ ΔΕΟΝΤΙΚΟΥ: τα πρότυπα αστοχίας των κριτών, κλειδωμένα ως tests (--deontic-gate)
      (:file "inference-gate")          ; Η ΠΥΛΗ ΤΟΥ ΣΥΜΠΕΡΑΣΜΟΥ: μηχανή L1/JTMS + BFS επιπτώσεων, κλειδωμένα (--inference-gate)

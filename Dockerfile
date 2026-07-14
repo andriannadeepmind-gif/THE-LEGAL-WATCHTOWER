@@ -179,7 +179,7 @@ RUN set -e; \
              legislation-ingestion multi-corpus-service review-service shacl-validator \
              hash-authority write-authority time-unified blockchain-authority release-authority \
              merkle-authority kernel-conformance artifact-census release-vector-conformance \
-             tsr-crypto-verify transparency-log capability-registry capability-api cockpit legal-eval casegrammar greek-morphology seat-integrity legal-identity canonical-serialization version-graph \
+             tsr-crypto-verify transparency-log capability-registry capability-api cockpit legal-eval casegrammar greek-morphology seat-integrity legal-identity canonical-serialization version-graph graph-import-parity \
              escape-sequences turtle-nil-omit corpus-identity semantic-validity \
              cross-language-verifier; do \
       echo "=== running $t-test.lisp ==="; \

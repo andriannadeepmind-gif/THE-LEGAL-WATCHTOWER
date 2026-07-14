@@ -147,3 +147,10 @@ versioning:
 article_defaults:
   in_force: true
   date_applicability: "1946-02-23"
+
+# [0088] Δηλωμένη ΚΑΝΟΝΙΚΗ ταυτότητα σώματος (orchestrator.identity) —
+# Αστικός Κώδικας — απόδοση στη δημοτική π.δ. 456/1984 (ΦΕΚ Α΄ 164)
+body_identity:
+  kind: kodikas
+  year: 1984
+  number: 456

@@ -26,7 +26,10 @@
                 #:provision-eid #:provision-num #:provision-heading #:provision-text
                 #:provision-children #:provision-status #:provision-source-act
                 #:provision-source-date)
-  (:export #:emit-corpus-jsonl #:emit-corpus-catalog))
+  (:export #:emit-corpus-jsonl #:emit-corpus-catalog
+           ;; [0088] Φ3: η ΜΙΑ έδρα «πλήρες in-force κείμενο άρθρου» —
+           ;; την καταναλώνει και ο version-graph importer/parity gate
+           #:article-text))
 
 (in-package :orchestrator.ai-dump)
 

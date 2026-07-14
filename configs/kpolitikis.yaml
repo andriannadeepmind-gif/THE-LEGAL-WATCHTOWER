@@ -140,3 +140,10 @@ versioning:
 article_defaults:
   in_force: true
   date_applicability: "1985-12-12"
+
+# [0088] Δηλωμένη ΚΑΝΟΝΙΚΗ ταυτότητα σώματος (orchestrator.identity) —
+# Κώδικας Πολιτικής Δικονομίας — απόδοση στη δημοτική π.δ. 503/1985 (ΦΕΚ Α΄ 182)
+body_identity:
+  kind: kodikas
+  year: 1985
+  number: 503
