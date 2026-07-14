@@ -28,6 +28,7 @@
 (defun make-complete-frbr-stack (article-number title content
                                  &key
                                  (article-suffix "")
+                                 identity-segment
                                  (corpus-name (config-get "corpus.short_name"))
                                  (activity-start-time (orchestrator.model:get-iso8601-timestamp))
                                  (activity-end-time activity-start-time)
@@ -83,6 +84,7 @@
          (article-root (orchestrator.model:make-frbr-article-root
                          :article-number article-number
                          :article-suffix article-suffix
+                         :identity-segment identity-segment
                          :article-title title
                          :eli-prefix resolved-eli-prefix
                          :document-type resolved-doc-type
@@ -95,6 +97,7 @@
          (work (orchestrator.model:make-frbr-work
                  :article-number article-number
                  :article-suffix article-suffix
+                 :identity-segment identity-segment
                  :article-root-uri article-root-uri
                  :eli-prefix resolved-eli-prefix
                  :document-type resolved-doc-type

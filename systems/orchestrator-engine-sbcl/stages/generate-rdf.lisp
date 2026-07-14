@@ -210,6 +210,9 @@
     (multiple-value-bind (article-root work expression manifestation formats activity)
         (orchestrator.spec:make-complete-frbr-stack article-num title content
                                                      :article-suffix article-suffix
+                                                     ;; [0088 Φ6γ-Α2] typed ταυτότητα από το IIR — τα FRBR
+                                                     ;; URIs/eli-ids βγαίνουν από τις προβολές του segment
+                                                     :identity-segment (orchestrator.model:article-identity normalized-input)
                                                      :corpus-name (orchestrator.spec:config-get "corpus.short_name"))
 
       ;; Generate complete unified TTL

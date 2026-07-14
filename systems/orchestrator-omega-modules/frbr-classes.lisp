@@ -249,6 +249,7 @@
 
 (defun make-frbr-work (&key article-number
                              (article-suffix "")
+                             identity-segment
                              article-root-uri
                              eli-prefix
                              document-type
@@ -286,15 +287,25 @@
   ;; P1b [0050]#2: ΚΑΝΟΝΙΚΟΠΟΙΗΣΗ ΣΤΟ ΟΡΙΟ ΤΟΥ FRBR ΜΟΝΤΕΛΟΥ (βλ.
   ;; make-frbr-article-root): slots = αληθινή βάση + γυμνό επίθημα, URI/eli-id
   ;; μέσα από τη ΜΙΑ έδρα — συνθετικός αριθμός δεν υπάρχει μέσα στο μοντέλο.
-  (let* ((article-root (or article-root-uri
+  ;; [0088 Φ6γ-Α2] Με typed IDENTITY-SEGMENT: όλα από τις προβολές του
+  ;; segment (ίδια format ⇒ byte-identical)· αλλιώς legacy όριο.
+  (let* ((base (if identity-segment (second identity-segment)
+                   (article-base-number article-number article-suffix)))
+         (suffix (if identity-segment
+                     (orchestrator.identity:ordinal-suffix
+                      (third identity-segment) :sequence :upper)
+                     (article-label-suffix article-suffix)))
+         (article-root (or article-root-uri
                            (format nil "~A/art/~A" eli-prefix
-                                   (article-uri-id article-number article-suffix))))
+                                   (if identity-segment
+                                       (format nil "~D~A" base suffix)
+                                       (article-uri-id article-number article-suffix)))))
          (uri (format nil "~A/work" article-root))
          (year (or law-year (subseq issued-date 0 4)))
-         (base (article-base-number article-number article-suffix))
-         (suffix (article-label-suffix article-suffix))
          (eli-id (format nil "gr-~A-~A-art-~A-work" document-type year
-                         (pad-article-id article-number article-suffix))))
+                         (if identity-segment
+                             (format nil "~3,'0D~A" base suffix)
+                             (pad-article-id article-number article-suffix)))))
     (make-instance 'frbr-work
                    :uri uri
                    :eli-identifier eli-id
