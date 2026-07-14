@@ -685,3 +685,36 @@ Proof: article-identity 49/49 · temporal-semantics 31/31 · corpus-identity
 | (α)(2)/(α)(4)/(α)(6) | ΚΑΝΕΝΑ ΕΥΡΗΜΑ (επιβεβαίωση κριτή — initargs, declared-body ισοδυναμία στα 6 configs, canon idempotent/ολικό κλειδί) |
 
 Proof μετά τα κλεισίματα: article-identity **59/59** · temporal-semantics **34/34** · corpus-identity 55/55 · legal-identity 19/19 · kernel-conformance 107/107 · artifact-census 21/21 · version-graph 18/18 · graph-import-parity 31/31 · as-known-e2e 26/26 — 0 failed.
+
+## [0088 Φ7 Π2] Condition records ΥΛΟΠΟΙΗΜΕΝΑ (μετά το «ωραία πράσινα προχωρά»)
+
+Στην έδρα version-graph, κατά spec v3 §3 όπως διορθώθηκε από τους κριτές:
+- `declare-condition!` — journal :condition-declared, record-id = cid,
+  journaled ast = ΚΑΝΟΝΙΚΟ· ιδεμποτής (ίδιο cid ⇒ καμία νέα γραμμή, ίδιο
+  αντικείμενο — κλειδωμένο με chain-head ισότητα).
+- `record-condition-event!` — fail-closed πύλες: declare-before-reference·
+  (kind,ref) ⊆ instrument κόμβοι του canon AST (Α5-1i — καμία σιωπηλή
+  απόκλιση)· outcome/at typed· evidence ΥΠΟΧΡΕΩΤΙΚΟ κατά μητρώο /2
+  (unverified_satisfactions=0)· event-id = domain-separated semantic hash
+  (:lawmax/condition-event/1 cid kind ref outcome at evidence-digest)·
+  διτεμπορικό (recorded-from = line :at)· ιδεμποτής σε live διπλότυπο.
+- `retract-condition-event!` — G5: κλείνει recorded-until με νέα γραμμή·
+  ανύπαρκτο/κλεισμένο ⇒ ΣΦΑΛΜΑ.
+- `condition-status` — Η ΜΙΑ είσοδος: ΚΑΜΙΑ αποθηκευμένη κατάσταση,
+  sat(canon-AST, events live κατά known-at) cid-scoped· known-at
+  ΥΠΟΧΡΕΩΤΙΚΟ legal-instant (ποτέ σιωπηλό «τώρα»)· Υ2 πύλη.
+- load-graph replay: 3 νέα kinds με semantic check ③ (cid επανυπολογισμός
+  από class+ast + έλεγχος ότι το journaled ast ΕΙΝΑΙ κανονικό· event hash
+  επανυπολογισμός· retract σε ανύπαρκτο ⇒ corruption)· ΚΑΝΕΝΑ
+  :validity-close-on-satisfaction (διαγραμμένο από τη σχεδίαση — Α6-1).
+- ΚΑΝΕΝΑ vg struct πεδίο κατάστασης αιρέσεων — μόνο δηλώσεις+events.
+
+Locks ⑥-⑨ (temporal-semantics 34→45): δύο known-at (πριν=pending/
+μετά=satisfied), παλαιό snapshot αναλλοίωτο, retract ⇒ ξανά pending,
+dangling cid/εκτός-AST ref/κενό+εκτός-schema evidence/retract ανύπαρκτου ⇒
+ΣΦΑΛΜΑ, restart parity (live ≡ replayed recorded-from/until + ίδιο
+status), tamper πεδίου ⇒ journal-corruption σε φρέσκο path.
+
+Proof: temporal-semantics **45/45** + 8 σουίτες 0 failed (381 checks).
+ΕΠΟΜΕΝΟ: Π3 conditional ακμές (effective sum type, G2 δύο φάσεων,
+ΠΑΡΑΓΩΓΟ κλείσιμο validity κατά §4).

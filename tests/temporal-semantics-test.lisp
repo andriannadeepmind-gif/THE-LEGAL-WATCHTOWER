@@ -234,7 +234,118 @@
             (equal (multiple-value-list (orchestrator.version-graph:sat ast *ts-ev*))
                    (multiple-value-list (orchestrator.version-graph:sat ast *ts-ev*)))))
 
+;;; ═══ [Φ7 Π2] CONDITION RECORDS — πραγματικό journal, διτεμπορικά ═══
+(defparameter *ts-body*
+  (orchestrator.identity:body-id-string
+   (orchestrator.identity:make-body :gr :nomos :year 2020 :number 9997 :slug "ts-p2")))
+(let ((p (orchestrator.version-graph::%graph-path *ts-body*)))
+  (when (probe-file p) (delete-file p)))
+
+(defparameter *ts-g* (orchestrator.version-graph::make-graph *ts-body*))
+(defparameter *ts-ref* "ya-per:gr/nomos/2020/9997#art:1")
+(defparameter *ts-cond*
+  (orchestrator.version-graph:make-effectivity-condition
+   :suspensive (list :instrument-event :ya *ts-ref*)))
+(defparameter *ts-cid* (orchestrator.version-graph:condition-id *ts-cond*))
+
+(ts-check "⑥ declare-condition!: journal + ιδεμποτής (2η κλήση = ίδιο αντικείμενο, καμία νέα γραμμή)"
+          (let* ((c1 (orchestrator.version-graph:declare-condition! *ts-g* *ts-cond*))
+                 (head1 (orchestrator.version-graph:graph-chain-head *ts-g*))
+                 (c2 (orchestrator.version-graph:declare-condition! *ts-g* *ts-cond*)))
+            (and (eq c1 c2)
+                 (equal head1 (orchestrator.version-graph:graph-chain-head *ts-g*)))))
+(ts-check "⑥β status ΠΡΙΝ από κάθε καταγραφή (παλαιό known-at) ⇒ :pending — τίμια εκκρεμότητα"
+          (eq :pending (orchestrator.version-graph:condition-status
+                        *ts-g* *ts-cid* :known-at "2020-01-01T00:00:00Z")))
+(ts-check "⑥γ record-condition-event! με evidence κατά μητρώο ⇒ status ΜΕΤΑ ⇒ (:satisfied at)"
+          (progn
+            (orchestrator.version-graph:record-condition-event!
+             *ts-g* *ts-cid* :kind :ya :ref *ts-ref* :outcome :satisfied
+             :at "2026-03-10" :evidence '(:source-digest "sha256:abc") :verifier "ts")
+            (multiple-value-bind (st at)
+                (orchestrator.version-graph:condition-status
+                 *ts-g* *ts-cid* :known-at "2030-01-01T00:00:00Z")
+              (and (eq :satisfied st) (equal "2026-03-10" at)))))
+(ts-check "⑥δ το ΠΑΛΑΙΟ snapshot μένει αναλλοίωτο: known-at πριν την καταγραφή ⇒ :pending (Υ2)"
+          (eq :pending (orchestrator.version-graph:condition-status
+                        *ts-g* *ts-cid* :known-at "2020-01-01T00:00:00Z")))
+
+(ts-check "⑦ retract-condition-event! (G5) ⇒ μεταγενέστερο known-at ξανά :pending"
+          (let ((eid (orchestrator.version-graph:ce-event-id
+                      (first (orchestrator.version-graph:graph-condition-events
+                              *ts-g* *ts-cid*)))))
+            (orchestrator.version-graph:retract-condition-event! *ts-g* eid)
+            (eq :pending (orchestrator.version-graph:condition-status
+                          *ts-g* *ts-cid* :known-at "2030-01-01T00:00:00Z"))))
+
+(ts-check "⑧ dangling cid ⇒ ΣΦΑΛΜΑ (declare-before-reference)"
+          (handler-case
+              (progn (orchestrator.version-graph:record-condition-event!
+                      *ts-g* "cid-ανύπαρκτο" :kind :ya :ref "x" :outcome :satisfied
+                      :at "2026-01-01" :evidence '(:source-digest "d"))
+                     nil)
+            (orchestrator.version-graph:invalid-condition () t)))
+(ts-check "⑧β (kind,ref) ΕΚΤΟΣ του canon AST της δήλωσης ⇒ ΣΦΑΛΜΑ (καμία σιωπηλή απόκλιση)"
+          (handler-case
+              (progn (orchestrator.version-graph:record-condition-event!
+                      *ts-g* *ts-cid* :kind :ya :ref "ΑΛΛΟ-REF" :outcome :satisfied
+                      :at "2026-01-01" :evidence '(:source-digest "d"))
+                     nil)
+            (orchestrator.version-graph:invalid-condition () t)))
+(ts-check "⑧γ κενό/εκτός-schema evidence ⇒ ΣΦΑΛΜΑ (unverified_satisfactions=0)"
+          (and (handler-case
+                   (progn (orchestrator.version-graph:record-condition-event!
+                           *ts-g* *ts-cid* :kind :ya :ref *ts-ref* :outcome :satisfied
+                           :at "2026-01-01" :evidence nil)
+                          nil)
+                 (orchestrator.version-graph:invalid-condition () t))
+               (handler-case
+                   (progn (orchestrator.version-graph:record-condition-event!
+                           *ts-g* *ts-cid* :kind :ya :ref *ts-ref* :outcome :satisfied
+                           :at "2026-01-01" :evidence '(:σημειωμα "x"))
+                          nil)
+                 (orchestrator.version-graph:invalid-condition () t))))
+(ts-check "⑧δ retract ανύπαρκτου event ⇒ ΣΦΑΛΜΑ"
+          (handler-case
+              (progn (orchestrator.version-graph:retract-condition-event! *ts-g* "eid-x") nil)
+            (orchestrator.version-graph:invalid-condition () t)))
+
+(ts-check "⑨ RESTART PARITY: φρέσκο load-graph ⇒ ίδια δήλωση, ίδια events (live≡replayed recorded-from), ίδιο status"
+          (let* ((g2 (orchestrator.version-graph::load-graph *ts-body*))
+                 (c2 (orchestrator.version-graph:graph-condition g2 *ts-cid*))
+                 (e1 (first (orchestrator.version-graph:graph-condition-events *ts-g* *ts-cid*)))
+                 (e2 (find (orchestrator.version-graph:ce-event-id e1)
+                           (orchestrator.version-graph:graph-condition-events g2 *ts-cid*)
+                           :key #'orchestrator.version-graph:ce-event-id :test #'equal)))
+            (and c2 e2
+                 (equal (orchestrator.version-graph:ce-recorded-from e1)
+                        (orchestrator.version-graph:ce-recorded-from e2))
+                 (equal (orchestrator.version-graph:ce-recorded-until e1)
+                        (orchestrator.version-graph:ce-recorded-until e2))
+                 (eq (orchestrator.version-graph:condition-status
+                      g2 *ts-cid* :known-at "2030-01-01T00:00:00Z")
+                     (orchestrator.version-graph:condition-status
+                      *ts-g* *ts-cid* :known-at "2030-01-01T00:00:00Z")))))
+(ts-check "⑨β TAMPER: αλλοίωση πεδίου condition-event ⇒ load-graph ΣΦΑΛΜΑ (φρέσκο path — η journal cache δεν κρύβει τίποτα)"
+          (let* ((p (orchestrator.version-graph::%graph-path *ts-body*))
+                 (tampered-body (orchestrator.identity:body-id-string
+                                 (orchestrator.identity:make-body
+                                  :gr :nomos :year 2020 :number 9996 :slug "ts-p2t")))
+                 (p2 (orchestrator.version-graph::%graph-path tampered-body))
+                 (original (with-open-file (s p :external-format :utf-8)
+                             (let ((str (make-string (file-length s))))
+                               (read-sequence str s) str))))
+            (when (probe-file p2) (delete-file p2))
+            (with-open-file (s p2 :direction :output :if-exists :supersede
+                               :if-does-not-exist :create :external-format :utf-8)
+              (write-string (substitute #\9 #\3 original :count 1
+                                        :start (search "2026-03-10" original))
+                            s))
+            (handler-case
+                (progn (orchestrator.version-graph::load-graph tampered-body) nil)
+              (orchestrator.version-graph:journal-corruption () t))))
+
 (format t "~%========================================~%")
-(format t "TEMPORAL-SEMANTICS [0088 Φ7 Π1]: ~D passed, ~D failed~%" *ts-pass* *ts-fail*)
+(format t "TEMPORAL-SEMANTICS [0088 Φ7 Π1+Π2]: ~D passed, ~D failed~%" *ts-pass* *ts-fail*)
 (format t "========================================~%")
 (sb-ext:exit :code (if (zerop *ts-fail*) 0 1))

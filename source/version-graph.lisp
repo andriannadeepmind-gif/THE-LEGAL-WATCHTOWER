@@ -59,6 +59,12 @@
    #:make-effectivity-condition #:condition-id #:condition-ast #:condition-class
    #:valid-condition-ast-p #:instrument-kinds
    #:instrument-kind-entries #:instrument-kind-entry
+   ;; [Φ7 Π2] condition records — διτεμπορικά, ΚΑΜΙΑ αποθηκευμένη κατάσταση
+   #:declare-condition! #:record-condition-event! #:retract-condition-event!
+   #:condition-status #:graph-condition #:graph-condition-events
+   #:condition-event #:ce-event-id #:ce-condition-id #:ce-kind #:ce-ref
+   #:ce-outcome #:ce-at #:ce-evidence #:ce-verifier
+   #:ce-recorded-from #:ce-recorded-until
    #:date+ #:sat
    #:invalid-condition))
 
@@ -252,6 +258,8 @@
   edges                 ; edge-id → amendment-edge
   quarantine            ; λίστα quarantined-edge
   gaps                  ; λίστα knowledge-gap
+  conditions            ; [Φ7 Π2] condition-id → effectivity-condition (equal)
+  cond-events           ; [Φ7 Π2] condition-id → λίστα condition-event (equal)
   chain)                ; τρέχον chain-hash (κεφαλή αλυσίδας)
 
 (defun %graph-path (body-string)
@@ -264,6 +272,8 @@
                :versions (make-hash-table :test 'equal)
                :by-provision (make-hash-table :test 'equal)
                :edges (make-hash-table :test 'equal)
+               :conditions (make-hash-table :test 'equal)
+               :cond-events (make-hash-table :test 'equal)
                :quarantine '() :gaps '() :chain "genesis"))
 
 (defun %canon-sexp (x out)
@@ -780,6 +790,57 @@
           (:retract
            (let ((v (gethash (getf line :version) (vg-versions graph))))
              (when v (setf (tv-recorded-until v) (%recorded-of line)))))
+          ;; [Φ7 Π2] condition records — semantic hash ③ ανά kind
+          (:condition-declared
+           (let* ((class (getf line :class))
+                  (ast (getf line :ast))
+                  (semantic (orchestrator.journal:sha256-hex
+                             (with-output-to-string (out)
+                               (%canon-sexp (list :lawmax/effectivity-condition/1
+                                                  class ast)
+                                            out)))))
+             (unless (equal semantic rid)
+               (error 'journal-corruption
+                      :reason (format nil "condition-declared ~A: semantic hash ~A ≠ record-id — πλαστή ταυτότητα αίρεσης" rid semantic)))
+             ;; το journaled ast οφείλει να ΕΙΝΑΙ κανονικό (spec §3.1)
+             (valid-condition-ast-p ast)
+             (unless (equal ast (%canon-condition-ast ast))
+               (error 'journal-corruption
+                      :reason (format nil "condition-declared ~A: journaled ast ΔΕΝ είναι κανονικό — διεφθαρμένη δήλωση" rid)))
+             (setf (gethash rid (vg-conditions graph))
+                   (%make-condition :id rid :class class :ast ast))))
+          (:condition-event
+           (let* ((cid (getf line :condition-id))
+                  (semantic (%condition-event-hash
+                             cid (getf line :ikind) (getf line :ref)
+                             (getf line :outcome) (getf line :event-at)
+                             (%evidence-digest (getf line :evidence)))))
+             (unless (equal semantic rid)
+               (error 'journal-corruption
+                      :reason (format nil "condition-event ~A: semantic hash ~A ≠ record-id — πλαστή ταυτότητα γεγονότος" rid semantic)))
+             (unless (gethash cid (vg-conditions graph))
+               (error 'journal-corruption
+                      :reason (format nil "condition-event ~A αναφέρει αδήλωτο cid ~A — σπασμένο declare-before-reference" rid cid)))
+             (push (make-condition-event
+                    :event-id rid :condition-id cid
+                    :kind (getf line :ikind) :ref (getf line :ref)
+                    :outcome (getf line :outcome) :at (getf line :event-at)
+                    :evidence (getf line :evidence)
+                    :verifier (getf line :verifier)
+                    :recorded-from (%recorded-of line)
+                    :recorded-until :current)
+                   (gethash cid (vg-cond-events graph)))))
+          (:condition-event-retract
+           (let* ((eid (getf line :event))
+                  (ce (loop for events being the hash-values of (vg-cond-events graph)
+                            thereis (find-if (lambda (e)
+                                               (and (equal (ce-event-id e) eid)
+                                                    (eq (ce-recorded-until e) :current)))
+                                             events))))
+             (unless ce
+               (error 'journal-corruption
+                      :reason (format nil "condition-event-retract ~A: ανύπαρκτο/ήδη κλεισμένο event ~A" rid eid)))
+             (setf (ce-recorded-until ce) (%recorded-of line))))
           (t (error 'journal-corruption
                     :reason (format nil "άγνωστο :kind ~S στη γραμμή ~A — διεφθαρμένο/μελλοντικό σχήμα"
                                     (getf line :kind) rid))))))
@@ -1089,3 +1150,156 @@
                       (reduce (lambda (a b) (if (%time<= a b) b a))
                               (mapcar #'second results))))
              (t (values :pending nil)))))))
+
+;;; ============================================================================
+;;; [0088 Φ7 Π2] CONDITION RECORDS — διτεμπορικά, ΚΑΜΙΑ αποθηκευμένη κατάσταση
+;;; Spec v3 §3: declare-before-reference, (kind,ref)⊆canon-AST πειθαρχία,
+;;; evidence ΥΠΟΧΡΕΩΤΙΚΟ κατά μητρώο /2, retract κατά G5, condition-status =
+;;; sat(canon-AST, events live κατά known-at) cid-scoped — ποτέ κατάσταση.
+;;; ============================================================================
+
+(defstruct (condition-event (:conc-name ce-))
+  event-id       ; semantic hash (βλ. %condition-event-hash)
+  condition-id   ; η δήλωση στην οποία είναι ΔΕΜΕΝΟ
+  kind ref       ; instrument (kind ∈ μητρώο /2, ref = προσδιοριστής)
+  outcome        ; :satisfied | :refuted
+  at             ; legal-date — ΠΟΤΕ συνέβη νομικά
+  evidence       ; plist κατά το evidence schema του kind
+  verifier       ; string | NIL
+  recorded-from  ; legal-instant — πότε το έμαθε το σύστημα (line :at)
+  recorded-until); :current | legal-instant (G5 retract)
+
+(defun %evidence-digest (evidence)
+  (orchestrator.journal:sha256-hex
+   (with-output-to-string (out) (%canon-sexp evidence out))))
+
+(defun %condition-event-hash (cid kind ref outcome at evidence-digest)
+  "Semantic ταυτότητα event (spec §3.3β): ίδια πεδία ⇒ ΙΔΙΟ γεγονός."
+  (orchestrator.journal:sha256-hex
+   (with-output-to-string (out)
+     (%canon-sexp (list :lawmax/condition-event/1
+                        cid kind ref outcome at evidence-digest)
+                  out))))
+
+(defun graph-condition (graph cid)
+  "Η δηλωμένη αίρεση CID ή NIL."
+  (gethash cid (vg-conditions graph)))
+
+(defun graph-condition-events (graph cid)
+  "ΟΛΑ τα events του CID (και τα διτεμπορικά κλεισμένα)."
+  (gethash cid (vg-cond-events graph)))
+
+(defun %ast-instrument-nodes (ast)
+  "Τα (kind . ref) ζεύγη ΟΛΩΝ των :instrument-event κόμβων του AST."
+  (ecase (first ast)
+    (:date-reached '())
+    (:instrument-event (list (cons (second ast) (third ast))))
+    (:after (%ast-instrument-nodes (third ast)))
+    ((:and :or) (loop for c in (rest ast) append (%ast-instrument-nodes c)))))
+
+(defun declare-condition! (graph condition)
+  "Journal της δήλωσης αίρεσης (kind :condition-declared, record-id =
+   condition-id, journaled ast = ΚΑΝΟΝΙΚΟ — spec §3.1). Ιδεμποτής: ήδη
+   δηλωμένο ίδιο cid ⇒ επιστρέφεται το υπάρχον χωρίς νέα γραμμή."
+  (check-type condition effectivity-condition)
+  (let ((cid (condition-id condition)))
+    (or (gethash cid (vg-conditions graph))
+        (progn
+          (%journal! graph (list :kind :condition-declared
+                                 :record-id cid
+                                 :class (condition-class condition)
+                                 :ast (condition-ast condition)
+                                 :at (orchestrator.journal:iso-now)))
+          (setf (gethash cid (vg-conditions graph)) condition)))))
+
+(defun record-condition-event! (graph cid &key kind ref outcome at evidence verifier)
+  "Διτεμπορική καταγραφή θεσμικού γεγονότος ΔΕΜΕΝΟΥ στη δήλωση CID.
+   Fail-closed πύλες (spec §3.2): (α) declare-before-reference — αδήλωτο
+   cid ⇒ ΣΦΑΛΜΑ· (β) το (KIND,REF) πρέπει να ΥΠΑΡΧΕΙ ως :instrument-event
+   κόμβος στο canon AST της δήλωσης — ορθογραφική απόκλιση δεν γίνεται
+   σιωπηλό αιώνιο :pending· (γ) OUTCOME ∈ {:satisfied :refuted}, AT
+   legal-date· (δ) EVIDENCE ΥΠΟΧΡΕΩΤΙΚΟ κατά το evidence schema του kind
+   στο μητρώο /2 (unverified_satisfactions=0). Ιδεμποτής στο ίδιο event-id
+   όσο το event είναι live. recorded-from = το :at της γραμμής journal."
+  (let ((cond (or (gethash cid (vg-conditions graph))
+                  (error 'invalid-condition
+                         :reason (format nil "αδήλωτο condition-id ~A — declare-before-reference" cid)))))
+    (unless (member (cons kind ref) (%ast-instrument-nodes (condition-ast cond))
+                    :test #'equal)
+      (error 'invalid-condition
+             :reason (format nil "(~S ~S) δεν υπάρχει ως :instrument-event κόμβος στη δήλωση ~A — απόκλιση από το AST δεν καταγράφεται" kind ref cid)))
+    (unless (member outcome '(:satisfied :refuted))
+      (error 'invalid-condition :reason (format nil "άκυρο outcome ~S" outcome)))
+    (unless (legal-date-p at)
+      (error 'invalid-condition :reason (format nil "άκυρο event at ~S — απαιτείται legal-date" at)))
+    (let ((allowed (getf (instrument-kind-entry kind) :evidence)))
+      (unless (and (consp evidence) (some (lambda (k) (getf evidence k)) allowed))
+        (error 'invalid-condition
+               :reason (format nil "evidence ~S εκτός/χωρίς schema ~S του kind ~S — καμία ικανοποίηση χωρίς τεκμήριο" evidence allowed kind))))
+    (let* ((eid (%condition-event-hash cid kind ref outcome at (%evidence-digest evidence)))
+           (live (find-if (lambda (e) (and (equal (ce-event-id e) eid)
+                                           (eq (ce-recorded-until e) :current)))
+                          (gethash cid (vg-cond-events graph)))))
+      (or live
+          (let* ((line (%journal! graph (list :kind :condition-event
+                                              :record-id eid
+                                              :condition-id cid
+                                              :ikind kind :ref ref
+                                              :outcome outcome :event-at at
+                                              :evidence evidence
+                                              :verifier verifier
+                                              :at (orchestrator.journal:iso-now))))
+                 (ce (make-condition-event
+                      :event-id eid :condition-id cid :kind kind :ref ref
+                      :outcome outcome :at at :evidence evidence
+                      :verifier verifier
+                      :recorded-from (%recorded-of line)
+                      :recorded-until :current)))
+            (push ce (gethash cid (vg-cond-events graph)))
+            ce)))))
+
+(defun retract-condition-event! (graph event-id)
+  "G5 πρότυπο: κλείνει το recorded-until του LIVE event — η «απο-ικανοποίηση»
+   υπάρχει ΜΟΝΟ ως προς μεταγενέστερο known-at· κάθε παλαιό snapshot μένει
+   αναλλοίωτο. Ανύπαρκτο/ήδη κλεισμένο event ⇒ ΣΦΑΛΜΑ (spec §3.3)."
+  (let ((ce (loop for events being the hash-values of (vg-cond-events graph)
+                  thereis (find-if (lambda (e)
+                                     (and (equal (ce-event-id e) event-id)
+                                          (eq (ce-recorded-until e) :current)))
+                                   events))))
+    (unless ce
+      (error 'invalid-condition
+             :reason (format nil "retract ανύπαρκτου/κλεισμένου event ~A" event-id)))
+    (let ((line (%journal! graph (list :kind :condition-event-retract
+                                       :record-id (format nil "ce-retract:~A" event-id)
+                                       :event event-id
+                                       :at (orchestrator.journal:iso-now)))))
+      (setf (ce-recorded-until ce) (%recorded-of line))
+      ce)))
+
+(defun %ce-live-p (ce known-at)
+  "Υ2 πύλη: το event μετρά ΜΟΝΟ αν recorded-from ≤ known-at < recorded-until."
+  (and (%time<= (ce-recorded-from ce) known-at "recorded-from" "known-at")
+       (or (eq (ce-recorded-until ce) :current)
+           (< (%time-key known-at "known-at")
+              (%time-key (ce-recorded-until ce) "recorded-until")))))
+
+(defun condition-status (graph cid &key known-at)
+  "(values :pending|:satisfied|:refuted at-ή-nil) — Η ΜΙΑ είσοδος ερώτησης
+   κατάστασης αίρεσης: ΚΑΜΙΑ αποθηκευμένη κατάσταση, ΠΑΝΤΑ sat πάνω στα
+   events live κατά KNOWN-AT (Υ2), cid-scoped (spec §3.4). KNOWN-AT:
+   ΥΠΟΧΡΕΩΤΙΚΟ legal-instant — ποτέ σιωπηλό «τώρα»."
+  (unless (legal-instant-p known-at)
+    (error 'invalid-condition
+           :reason (format nil "condition-status: άκυρο known-at ~S — απαιτείται legal-instant (UTC Z)" known-at)))
+  (let ((cond (or (gethash cid (vg-conditions graph))
+                  (error 'invalid-condition
+                         :reason (format nil "αδήλωτο condition-id ~A" cid)))))
+    (sat (condition-ast cond)
+         (loop for ce in (gethash cid (vg-cond-events graph))
+               when (%ce-live-p ce known-at)
+                 collect (list :condition-id (ce-condition-id ce)
+                               :kind (ce-kind ce) :ref (ce-ref ce)
+                               :outcome (ce-outcome ce) :at (ce-at ce)
+                               :evidence (ce-evidence ce)))
+         :condition-id cid)))
