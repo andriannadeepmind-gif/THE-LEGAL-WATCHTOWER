@@ -149,21 +149,21 @@
                  (and (member "capability:υπαγωγή" fwd :test #'string=)
                       (member "contract:subsume" fwd :test #'string=)
                       (some (lambda (id) (eql 0 (search "file:" id))) fwd)))))
-      ;; ⑥-⑨ Ο ΤΥΠΟΣ canonical-article-id — η ταυτότητα ως αντικείμενο
-      (check "⑥ parse: «100Α» ⇒ βάση 100, επίθημα Α· «100 α» κανονικοποιείται ΙΔΙΑ· raw διατηρείται ως display"
-             (let ((a (orchestrator.article-id:parse-article-id "100Α"))
-                   (b (orchestrator.article-id:parse-article-id "100 α")))
-               (and a b (= 100 (orchestrator.article-id:article-id-base a))
+      ;; ⑥-⑨ Ο ΤΥΠΟΣ canonical-article-id — [0088] adapter πάνω στην ΑΥΣΤΗΡΗ
+      ;; έδρα orchestrator.identity: η χαλαρή αποδοχή («100 α»/«100α»/λατινικά/
+      ;; «ΒΙΣ») ΠΕΘΑΝΕ — εδώ κλειδώνεται η νέα fail-closed αλήθεια.
+      (check "⑥ parse: «100Α» ⇒ βάση 100, επίθημα Α· «100 α»/«100α»/«100A»(λατ.)/«100ΒΙΣ» ⇒ NIL+λόγος"
+             (let ((a (orchestrator.article-id:parse-article-id "100Α")))
+               (and a (= 100 (orchestrator.article-id:article-id-base a))
                     (equal "Α" (orchestrator.article-id:article-id-suffix a))
-                    (orchestrator.article-id:article-id= a b)
-                    (string= (orchestrator.article-id:article-id-string a)
-                             (orchestrator.article-id:article-id-string b))
-                    (string/= (orchestrator.article-id:article-id-display a)
-                              (orchestrator.article-id:article-id-display b)))))
+                    (loop for bad in '("100 α" "100α" "100A" "100ΒΙΣ")
+                          always (multiple-value-bind (id reason)
+                                     (orchestrator.article-id:parse-article-id bad)
+                                   (and (null id) (stringp reason)))))))
       (check "⑦ 100 ≠ 100Α ως ΤΑΥΤΟΤΗΤΕΣ· ίδια ⇒ ίδιο hash, διαφορετικές ⇒ διαφορετικό"
              (let ((a (orchestrator.article-id:parse-article-id "100"))
                    (b (orchestrator.article-id:parse-article-id "100Α"))
-                   (b2 (orchestrator.article-id:parse-article-id "100α")))
+                   (b2 (orchestrator.article-id:parse-article-id "100Α")))
                (and (not (orchestrator.article-id:article-id= a b))
                     (orchestrator.article-id:article-id= b b2)
                     (= (orchestrator.article-id:article-id-hash b)
@@ -181,7 +181,7 @@
                          orchestrator.uris:*canonical-config*
                          (let ((h (make-hash-table :test 'equal)))
                            (setf (gethash "base_uri" h) "https://gate.test") h))))
-               (let ((id (orchestrator.article-id:parse-article-id "100 α")))
+               (let ((id (orchestrator.article-id:parse-article-id "100Α")))
                  (search "/article/100Α"
                          (orchestrator.uris:build-article-uri
                           (orchestrator.article-id:article-id-string id))))))

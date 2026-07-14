@@ -175,40 +175,18 @@
            (parse-integer (string suffix-or-label) :junk-allowed t))
       number))
 
-(defparameter +article-suffix-units+
-  '(("Α" . 1) ("Β" . 2) ("Γ" . 3) ("Δ" . 4) ("Ε" . 5)
-    ("ΣΤ" . 6) ("Ζ" . 7) ("Η" . 8) ("Θ" . 9))
-  "Μονάδες της νομοθετικής γραμματοσειράς επιθημάτων (ελληνικός αριθμητικός
-   τρόπος με το δίγραμμα ΣΤ για το 6 — ποτέ λεξικογραφική προσέγγιση).")
-
-(defparameter +article-suffix-tens+
-  '((#\Ι . 10) (#\Κ . 20) (#\Λ . 30) (#\Μ . 40)
-    (#\Ν . 50) (#\Ξ . 60) (#\Ο . 70) (#\Π . 80))
-  "Δεκάδες της νομοθετικής γραμματοσειράς επιθημάτων (Ι=10, Κ=20, …).")
-
 (defun article-suffix-ordinal (suffix)
   "Η τακτική θέση του γράμμα-επιθήματος στη ΝΟΜΟΘΕΤΙΚΗ ακολουθία
-   Α,Β,Γ,Δ,Ε,ΣΤ,Ζ,Η,Θ,Ι,ΙΑ,…,ΙΣΤ,…: \"\" ⇒ 0, «Α» ⇒ 1, «ΣΤ» ⇒ 6, «Ι» ⇒ 10,
-   «ΙΑ» ⇒ 11, «ΙΣΤ» ⇒ 16. Η ΜΙΑ έδρα της σειράς ΚΑΙ της εγκυρότητας
-   επιθημάτων: άγνωστο/μη-ελληνικό/πεζό επίθημα ⇒ ΣΦΑΛΜΑ (τίμια άγνοια —
-   το string< κατέτασσε το ΣΤ μετά το Ι, παραποιώντας τη νομική σειρά,
-   και το λατινικό ομόγλυφο «A» περνούσε σιωπηλά ως άλλη ταυτότητα).
-   ΔΗΛΩΜΕΝΟ ΟΡΙΟ: ο πίνακας δεκάδων φτάνει ως το Π (=80) ⇒ μέγιστο ΠΘ=89·
-   90ό+ επίθημα (ανύπαρκτο στη νομοθετική πράξη) σηματοδοτεί τίμιο σφάλμα."
-  (let ((s (string suffix)))
-    (cond
-      ((zerop (length s)) 0)
-      ((string= s "ΣΤ") 6)
-      (t (let* ((tens (cdr (assoc (char s 0) +article-suffix-tens+)))
-                (unit-part (if tens (subseq s 1) s)))
-           (cond
-             ((and tens (zerop (length unit-part))) tens)
-             (t (let ((unit (cdr (assoc unit-part +article-suffix-units+
-                                        :test #'string=))))
-                  (unless unit
-                    (error 'orchestrator.spec:validation-error
-                           :message (format nil "Άκυρο γράμμα-επίθημα άρθρου: ~S — η νομοθετική ακολουθία είναι Α..Ε,ΣΤ,Ζ..Θ,Ι,ΙΑ,… (ελληνικά κεφαλαία· όχι λατινικά ομόγλυφα/πεζά/κενά)" s)))
-                  (+ (or tens 0) unit)))))))))
+   Α,Β,Γ,Δ,Ε,ΣΤ,Ζ,Η,Θ,Ι,ΙΑ,…: \"\" ⇒ 0, «Α» ⇒ 1, «ΣΤ» ⇒ 6, «ΙΑ» ⇒ 11.
+   [0088] Η έδρα της ακολουθίας ΚΑΙ της εγκυρότητας ζει πλέον στο
+   orchestrator.identity (suffix-ordinal, :upper) — εδώ ΔΗΛΩΜΕΝΟΣ adapter
+   (θάνατος: Φ6 του LAWMAX-TEMPORAL-IDENTITY-DESIGN) που διατηρεί το
+   δημόσιο συμβόλαιο σήματος: άκυρο επίθημα ⇒ orchestrator.spec:validation-error."
+  (handler-case
+      (orchestrator.identity:suffix-ordinal (string suffix) :sequence :upper)
+    (orchestrator.identity:identity-parse-error (e)
+      (error 'orchestrator.spec:validation-error
+             :message (princ-to-string e)))))
 
 (defun article-label-suffix (suffix-or-label)
   "Το γράμμα-επίθημα από το SUFFIX-OR-LABEL: γυμνό επίθημα (\"Α\"), πλήρες
