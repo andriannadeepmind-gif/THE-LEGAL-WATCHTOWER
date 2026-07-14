@@ -136,6 +136,49 @@
             (and (equal (getf a :graph-root) (getf b :graph-root))
                  (equal (getf a :receipt-set-root) (getf b :receipt-set-root)))))
 
+;;; ⑦ [Φ5γ/TRUST-01] grounded-impact — συλλογισμός ΜΟΝΟ πάνω σε receipts
+(let ((tc (corpus-temporal-commitment "syntagma"))
+      (doc (nth-value 1 (build-consolidated-for "syntagma"))))
+  (gp-check "⑦ grounded-impact ΧΩΡΙΣ τομή/γράφο ⇒ ΣΦΑΛΜΑ (αθεμελίωτος συλλογισμός δεν εκτελείται)"
+            (handler-case
+                (progn (orchestrator.reasoning:grounded-impact doc "syntagma" "16") nil)
+              (error () t)))
+  ;; μη-ταυτολογικό: βρες άρθρο με ΠΡΑΓΜΑΤΙΚΕΣ εισερχόμενες παραπομπές, ώστε
+  ;; το impact set να είναι ΜΗ ΚΕΝΟ και η θεμελίωση να ασκηθεί σε αληθινά μέλη
+  (defparameter *gp-cited*
+    (let ((facts (orchestrator.reasoning:reference-facts doc "syntagma")))
+      (or (fifth (first facts))
+          (error "κανένα citation fact στο σύνταγμα — αδύνατο"))))
+  (gp-check (format nil "⑦β grounded-impact(~A — έχει εισερχόμενες παραπομπές): impact ΜΗ ΚΕΝΟ και ΚΑΘΕ συμπέρασμα φέρει receipt-id που επαληθεύεται στον γράφο" *gp-cited*)
+            (multiple-value-bind (grounded ungrounded)
+                (orchestrator.reasoning:grounded-impact
+                 doc "syntagma" *gp-cited*
+                 :body (getf tc :typed-body) :graph (getf tc :graph)
+                 :receipts (getf tc :receipts)
+                 :valid-at (getf tc :valid-at) :known-at (getf tc :known-at))
+              (format t "    (θεμελιωμένα ~D, αθεμελίωτα ~D)~%"
+                      (length grounded) (length ungrounded))
+              (and (listp ungrounded)
+                   (plusp (length grounded))
+                   (every (lambda (g)
+                            (let ((r (find (getf g :provision-id) (getf tc :receipts)
+                                           :key #'orchestrator.legal-receipt:lr-provision-id
+                                           :test #'equal)))
+                              (and r
+                                   (equal (getf g :receipt-id)
+                                          (orchestrator.legal-receipt:lr-receipt-id r))
+                                   (orchestrator.legal-receipt:verify-receipt (getf tc :graph) r))))
+                          grounded))))
+  (gp-check "⑦γ grounded-impact με valid-at σε κενό γνώσης (1990/άρθρο 16) ⇒ ΣΦΑΛΜΑ — όχι συλλογισμός πάνω σε αβέβαιο θεμέλιο"
+            (handler-case
+                (progn (orchestrator.reasoning:grounded-impact
+                        doc "syntagma" "16"
+                        :body (getf tc :typed-body) :graph (getf tc :graph)
+                        :receipts (getf tc :receipts)
+                        :valid-at "1990-01-01" :known-at "9999-12-31T23:59:59Z")
+                       nil)
+              (error () t))))
+
 (format t "~%========================================~%")
 (format t "GRAPH-IMPORT-PARITY [0088 Φ3+Φ5]: ~D passed, ~D failed~%" *gp-pass* *gp-fail*)
 (format t "========================================~%")

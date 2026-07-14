@@ -1981,7 +1981,28 @@ document.getElementById('ops').addEventListener('click',function(ev){
      (handler-case
          (multiple-value-bind (short doc) (build-consolidated-for corpus)
            (declare (ignore short))
-           (orchestrator.reasoning:impact-report doc corpus article)
+           ;; [0088 Φ5γ — TRUST-01 νεκρό εδώ]: ΚΑΘΕ συμπέρασμα θεμελιωμένο στη
+           ;; διτεμπορική τομή με receipt-id — αθεμελίωτο άρθρο ΔΗΛΩΝΕΤΑΙ.
+           (let ((tc (corpus-temporal-commitment corpus)))
+             (multiple-value-bind (grounded ungrounded)
+                 (orchestrator.reasoning:grounded-impact
+                  doc corpus article
+                  :body (getf tc :typed-body) :graph (getf tc :graph)
+                  :receipts (getf tc :receipts)
+                  :valid-at (getf tc :valid-at) :known-at (getf tc :known-at))
+               (format t "~&── ΘΕΜΕΛΙΩΜΕΝΗ ΑΝΑΛΥΣΗ ΕΠΙΠΤΩΣΗΣ: ~A άρθρο ~A @ (~A, ~A) ──~%"
+                       corpus article (getf tc :valid-at) (getf tc :known-at))
+               (dolist (g grounded)
+                 (format t "  • άρθρο ~A  [receipt ~A  hash ~A  valid-from ~A]~%~A"
+                         (getf g :article)
+                         (subseq (getf g :receipt-id) 0 16)
+                         (subseq (getf g :content-hash) 0 16)
+                         (getf g :valid-from)
+                         (orchestrator.inference:explanation->string (getf g :proof) 4)))
+               (dolist (u ungrounded)
+                 (format t "  ✗ ΑΘΕΜΕΛΙΩΤΟ άρθρο ~A: ~A~%" (getf u :article) (getf u :why)))
+               (format t "  Σύνολο: ~D θεμελιωμένα, ~D δηλωμένα αθεμελίωτα~%"
+                       (length grounded) (length ungrounded))))
            0)
        (error (e) (format t "  ✗ ~A: ~A~%" corpus e) 1)))))
 

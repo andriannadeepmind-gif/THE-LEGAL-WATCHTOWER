@@ -73,7 +73,6 @@
      (:file "legal-conflict-resolution") ; BRAIN L2: lex-superior conflict resolution + hierarchy validity (ontology ranks → JTMS proofs)
      (:file "legal-temporal")     ; BRAIN L3: point-in-time law — interval calculus (Allen), version timelines, gaps/overlaps, defeasible ultra-activity
      (:file "legal-event-calculus") ; BRAIN L3β: EVENT CALCULUS — γεγονότα γεννούν/σβήνουν έννομες καταστάσεις, αδράνεια μέσω WFS (η αντίληψη ΙΣΤΟΡΙΑΣ)
-     (:file "legal-reasoning-bridge") ; BRAIN wiring: lift the live citation graph into engine facts + run impact analysis (no reasoning logic duplicated)
      (:file "legal-penalty")      ; Το μέτρο του «επιεικέστερου» (2 ΠΚ): πλέγμα βαρύτητας κυρίων ποινών ΠΚ, ντετερμινιστικό, με λόγο
      (:file "legal-decisions")     ; ΝΟΜΟΛΟΓΙΑ: decisions corpus — structured σύνθεση (δικαστές+ρόλοι), citations with law tags, tempus-regit-actum anchoring
      (:file "legal-precedent")     ; BRAIN L4: δεδικασμένο×χρόνος στον JTMS — defeasible precedent verdicts με δέντρα απόδειξης
@@ -118,6 +117,7 @@
      (:file "canonical-representation") ; GATE-14: Deterministic serialization for JWS
      (:file "version-graph")      ; [0088] Φ2: διτεμπορικός γράφος εκδόσεων — text-version/amendment-edge/quarantined-edge, admit-edge!=replay-then-append, journal+chain-hash, version-at με recorded ΣΤΟ predicate
      (:file "legal-authority-receipt") ; [0088] Φ4: receipt-id = hash ΟΛΟΚΛΗΡΟΥ receipt (ταυτότητα+χρόνοι+γενεαλογία ΜΕΣΑ στη δέσμευση — PCL-01/PROV-01)
+     (:file "legal-reasoning-bridge") ; BRAIN wiring: citation graph → engine facts + [0088 Φ5γ] grounded-impact με receipt-ids/διτεμπορική τομή (μετά τον γράφο/receipts — TRUST-01)
      (:file "validation-authority") ; GATE-5: Deterministic contract validation
      (:file "blockchain-authority") ; GATE-6: Pure Lisp blockchain anchoring (Ethereum/Arweave/IPFS)
      (:file "asn1-der")           ; Η ΜΙΑ έδρα ASN.1 DER (X.690): encoders + αυστηρός decoder + PEM↔DER

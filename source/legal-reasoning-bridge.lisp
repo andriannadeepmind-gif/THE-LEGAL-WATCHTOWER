@@ -17,7 +17,9 @@
 
 (defpackage :orchestrator.reasoning
   (:use :cl)
-  (:export #:reference-facts #:reason-impact #:impact-report))
+  (:export #:reference-facts #:reason-impact #:impact-report
+           ;; [0088 Φ5γ] TRUST-01: θεμελιωμένος συλλογισμός με receipt-ids
+           #:grounded-impact))
 
 (in-package :orchestrator.reasoning)
 
@@ -79,6 +81,84 @@
              (orchestrator.inference:affected-by engine code article))
         (orchestrator.inference:tms-retract-premise
          (orchestrator.inference:engine-jtms engine) changed)))))
+
+(defun %bare-label (id)
+  "eId «art_299»/«299» → «299» (η μία κανονικοποίηση προς την identity έδρα)."
+  (let ((s (princ-to-string (or id ""))))
+    (if (and (>= (length s) 4) (string-equal "art_" (subseq s 0 4))) (subseq s 4) s)))
+
+(defun grounded-impact (doc code article &key body graph receipts valid-at known-at)
+  "[0088 Φ5γ — θάνατος TRUST-01] Impact analysis όπου ΚΑΘΕ συμπέρασμα είναι
+   ΘΕΜΕΛΙΩΜΕΝΟ στη διτεμπορική τομή (VALID-AT, KNOWN-AT):
+     • η δομή (ποιος παραπέμπει ποιον) έρχεται από το reason-impact (JTMS proof),
+     • η ΥΠΟΣΤΑΣΗ κάθε εμπλεκόμενης διάταξης επιλύεται με version-at στον
+       ΓΡΑΦΟ (όχι γυμνό citation graph) και δένεται με το receipt της:
+       {provision-id, receipt-id, content-hash, valid-from}.
+   ΟΛΑ τα keys ΥΠΟΧΡΕΩΤΙΚΑ (καμία σιωπηλή «τώρα»/αθεμελίωτη τομή). RECEIPTS:
+   λίστα ή hash provision-id→receipt (π.χ. από build-receipts-for-graph στην
+   ΙΔΙΑ τομή). Επιστρέφει (values grounded ungrounded), όπου grounded =
+   plists (:article :provision-id :receipt-id :content-hash :valid-from
+   :proof) και ungrounded = plists (:article :provision-id :why) — διάταξη
+   χωρίς επιλύσιμη έκδοση/receipt στην τομή ΔΗΛΩΝΕΤΑΙ, δεν σερβίρεται ως
+   συμπέρασμα. Το ΙΔΙΟ το ερωτώμενο άρθρο πρέπει να θεμελιώνεται, αλλιώς
+   σφάλμα — συλλογισμός πάνω σε ανύπαρκτη-στην-τομή διάταξη δεν εκτελείται."
+  (unless (and body graph receipts valid-at known-at)
+    (error "grounded-impact: body/graph/receipts/valid-at/known-at ΟΛΑ υποχρεωτικά — αθεμελίωτος συλλογισμός δεν εκτελείται (TRUST-01)"))
+  (unless (equal (orchestrator.identity:body-id-string body)
+                 (orchestrator.version-graph:graph-body graph))
+    (error "grounded-impact: BODY ~A ≠ σώμα του γράφου ~A"
+           (orchestrator.identity:body-id-string body)
+           (orchestrator.version-graph:graph-body graph)))
+  (let* ((index (if (hash-table-p receipts)
+                    receipts
+                    (let ((h (make-hash-table :test 'equal)))
+                      (dolist (r receipts h)
+                        (setf (gethash (orchestrator.legal-receipt:lr-provision-id r) h) r)))))
+         (grounded '()) (ungrounded '()))
+    (flet ((ground (label)
+             ;; (values plist-ή-nil why) για ΜΙΑ διάταξη στην τομή
+             (let ((pid (handler-case
+                            (orchestrator.identity:provision-id-string
+                             (orchestrator.identity:article-provision-id
+                              body (%bare-label label)))
+                          (error (e) (return-from ground
+                                       (values nil (format nil "άκυρη ταυτότητα: ~A" e)))))))
+               (handler-case
+                   (multiple-value-bind (v basis)
+                       (orchestrator.version-graph:version-at
+                        graph pid :valid-at valid-at :known-at known-at)
+                     (declare (ignore basis))
+                     (if (null v)
+                         (values nil (format nil "~A: καμία έκδοση στην τομή" pid))
+                         (let ((r (gethash pid index)))
+                           (cond
+                             ((null r)
+                              (values nil (format nil "~A: χωρίς receipt στην τομή" pid)))
+                             ((not (equal (orchestrator.legal-receipt:lr-content-hash r)
+                                          (orchestrator.version-graph:tv-version-hash v)))
+                              (values nil (format nil "~A: receipt ≠ έκδοση τομής" pid)))
+                             (t (values (list :provision-id pid
+                                              :receipt-id (orchestrator.legal-receipt:lr-receipt-id r)
+                                              :content-hash (orchestrator.version-graph:tv-version-hash v)
+                                              :valid-from (orchestrator.version-graph:tv-valid-from v))
+                                        nil))))))
+                 (orchestrator.version-graph:temporal-uncertainty (e)
+                   (values nil (format nil "~A: δηλωμένη αβεβαιότητα (~A)" pid e)))
+                 (orchestrator.version-graph:unknown-provision ()
+                   (values nil (format nil "~A: άγνωστη διάταξη στον γράφο" pid)))))))
+      ;; το ερωτώμενο άρθρο ΠΡΕΠΕΙ να θεμελιώνεται
+      (multiple-value-bind (g why) (ground article)
+        (unless g
+          (error "grounded-impact: το ερωτώμενο άρθρο ~A δεν θεμελιώνεται στην τομή (~A, ~A): ~A"
+                 article valid-at known-at why)))
+      (dolist (r (reason-impact doc code article))
+        (multiple-value-bind (g why) (ground (car r))
+          (if g
+              (push (append (list :article (%bare-label (car r))) g
+                            (list :proof (cdr r)))
+                    grounded)
+              (push (list :article (%bare-label (car r)) :why why) ungrounded))))
+      (values (nreverse grounded) (nreverse ungrounded)))))
 
 (defun impact-report (doc code article &optional (stream *standard-output*))
   "Human-readable impact analysis for CODE/ARTICLE: the affected provisions and, for

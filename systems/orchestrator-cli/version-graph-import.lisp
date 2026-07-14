@@ -250,6 +250,12 @@
               (error "temporal-commitment ~A: ~D receipt verification failures: ~S"
                      corpus-id (length failures) (subseq failures 0 (min 5 (length failures))))))
           (list :body body-string
+                ;; in-memory extras (ΔΕΝ σειριοποιούνται στο census json — το
+                ;; census->json διαβάζει μόνο τα scalar πεδία): για grounded
+                ;; reasoning/επιθεώρηση χωρίς δεύτερη ανακατασκευή
+                :typed-body body
+                :graph graph
+                :receipts receipts
                 :graph-root head
                 :graph-records n
                 :receipt-set-root (orchestrator.merkle:merkle-root-of-strings
