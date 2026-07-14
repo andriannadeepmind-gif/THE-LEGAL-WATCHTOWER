@@ -22,8 +22,10 @@
    
    (articles
     :accessor corpus-articles
-    :initform (make-hash-table :test 'eql)
-    :documentation "Hash table of article-number -> article")
+    :initform (make-hash-table :test 'equal)
+    :documentation "[0088 Φ6γ-Δ3] Hash table: κανονικό uri-id string («5»,«5Α»)
+     → article — το κλειδί είναι η ΤΑΥΤΟΤΗΤΑ από την έδρα (article-uri), ποτέ
+     ο εσωτερικός συνθετικός αριθμός.")
    
    (eli-prefix
     :accessor corpus-eli-prefix
@@ -100,18 +102,27 @@
    αντικατάσταση έκρυβε συγκρούσεις ταυτότητας/συνθετικού σχήματος (π.χ.
    δίγραμμα επιθήματος ή γνήσιο 4ψήφιο άρθρο πάνω σε συνθετικό αριθμό).
    Η επανακαταχώριση του ΙΔΙΟΥ αντικειμένου είναι ιδεμποτής."
-  (let* ((key (article-number article))
+  (let* ((key (article-uri article))   ; [0088 Φ6γ-Δ3] Η ΤΑΥΤΟΤΗΤΑ ως κλειδί
          (existing (gethash key (corpus-articles corpus))))
     (when (and existing (not (eq existing article)))
       (error 'orchestrator.spec:validation-error
-             :message (format nil "add-article: το κλειδί ~D κατέχεται ήδη από άλλο άρθρο (~A) — σιωπηλή αντικατάσταση απαγορεύεται"
+             :message (format nil "add-article: το κλειδί ~A κατέχεται ήδη από άλλο άρθρο (~A) — σιωπηλή αντικατάσταση απαγορεύεται"
                               key (article-file-id existing))))
     (setf (gethash key (corpus-articles corpus)) article))
   article)
 
+(defmethod orchestrator.spec:get-article ((corpus corpus) (id string))
+  "[0088 Φ6γ-Δ3] Ανάκτηση με την ΚΑΝΟΝΙΚΗ ταυτότητα («5», «5Α») — το ΜΟΝΟ
+   κλειδί. Ο παλιός integer τρόπος ΠΕΘΑΝΕ: ωμός αριθμός ΔΕΝ είναι ταυτότητα
+   (5 ≠ 5Α ενώ ο συνθετικός 5001 τα μπέρδευε)."
+  (gethash id (corpus-articles corpus)))
+
 (defmethod orchestrator.spec:get-article ((corpus corpus) (number integer))
-  "Retrieve article by number"
-  (gethash number (corpus-articles corpus)))
+  "[0088 Φ6γ-Δ3 ΘΑΝΑΤΟΣ] Ο integer τρόπος αρνείται ΡΗΤΑ — typed σφάλμα,
+   ποτέ σιωπηλή ψευδοταυτότητα από συνθετικό αριθμό."
+  (declare (ignore number))
+  (error 'orchestrator.spec:validation-error
+         :message "get-article με ωμό ακέραιο ΠΕΘΑΝΕ [0088 Φ6γ] — χρησιμοποίησε την κανονική string ταυτότητα («5», «5Α»)"))
 
 (defmethod orchestrator.spec:corpus-article-count ((corpus corpus))
   "Total number of articles in corpus"

@@ -11,5 +11,5 @@
     (orchestrator.spec:add-article corpus *test-article-1*)
     (orchestrator.spec:add-article corpus *test-article-2*)
     (is (= 2 (orchestrator.spec:corpus-article-count corpus)))
-    (is (not (null (orchestrator.spec:get-article corpus 1))))
-    (is (not (null (orchestrator.spec:get-article corpus 2))))))
+    (is (not (null (orchestrator.spec:get-article corpus "1"))))
+    (is (not (null (orchestrator.spec:get-article corpus "2"))))))
