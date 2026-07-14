@@ -110,11 +110,14 @@ def condition_event_hash(cid, kind, ref, outcome, at, evidence_digest):
 
 def regime_hash(op, target, version, span_from, span_until, scope, cid,
                 act_ref, act_seq, enacted, fek_date, prior):
+    # [Φ7-HARDENING #2/#3] scope = tagged-sexp scope-set (ή None=καθολικό)·
+    # span_from δέχεται και "on-satisfaction" (resolutory παραγόμενη αφετηρία)
     def opt(v): return st(v) if v is not None else nil()
     payload = lst(kw("LAWMAX/REGIME-EDGE/1"), kw(op.upper()), st(target),
                   opt(version), st(span_from),
                   st("open") if span_until == "open" else st(span_until),
-                  nil() if scope is None else st(scope),
+                  nil() if scope is None
+                  else (scope if isinstance(scope, dict) else st(scope)),
                   opt(cid), st(act_ref),
                   {"t": "i", "v": act_seq} if isinstance(act_seq, int)
                   else lst(*[{"t": "i", "v": i} for i in act_seq]),

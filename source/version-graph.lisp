@@ -72,11 +72,14 @@
    ;; [Φ7 Π4] regime edges + Allen έδρα + Υ2β
    #:admit-regime-edge! #:retract-regime-edge! #:graph-regimes
    #:regime-edge #:re-edge-id #:re-op #:re-target #:re-version
-   #:re-span-from #:re-span-until #:re-condition-id #:re-prior-edge-id
+   #:re-span-from #:re-span-until #:re-scope #:re-condition-id #:re-prior-edge-id
    #:re-recorded-from #:re-recorded-until
    #:interval-relation #:interval-intersects-p #:interval-covers-p
    ;; [Φ7 Π5] deterministic effectivity attestation
    #:make-effectivity-attestation
+   ;; [Φ7-HARDENING #2] scope model — Η ΜΙΑ έδρα
+   #:scope-dimension-entries #:scope-dimension-tags
+   #:canon-scope-set #:scope-covers-p #:scope-intersects-p
    #:date+ #:sat
    #:invalid-condition))
 
@@ -641,7 +644,7 @@
          ;; σημασιολογία δεν επιτρέπεται να είναι καν αναπαραστάσιμη.
          (when (eq (condition-class c) :resolutory)
            (error 'invalid-edge
-                  :reason "conditional ακμή έναρξης με :resolutory αίρεση — ΔΗΛΩΜΕΝΟ όριο: μόνο :suspensive εδώ· διαλυτικές = μελλοντικό regime σχήμα")))
+                  :reason "conditional ακμή έναρξης με :resolutory αίρεση — η διαλυτική ΚΛΕΙΝΕΙ ισχύ: χρησιμοποίησε admit-regime-edge! (:expire/:suspend με condition-id, [#3])")))
        ;; [Φ7-HARDENING #1] οι υπό αίρεση νέες εκδόσεις: typed commencement
        ;; (:conditional cid) + :not-yet-effective — ημερομηνία ισχύος ΔΕΝ
        ;; υπάρχει πριν την ικανοποίηση (παράγωγη, §4)· κανένα sentinel.
@@ -790,11 +793,11 @@
 (defun %recorded-live-p (v known-at)
   (%live-at-p (tv-recorded-from v) (tv-recorded-until v) known-at))
 
-(defun %finish-version (graph pid valid-at known-at v basis)
+(defun %finish-version (graph pid valid-at known-at v basis &optional scope-context)
   "[Φ7 Π4] Τελικό βήμα version-at: live αναστολή που καλύπτει το valid-at
    (χωρίς revive εκεί) ⇒ typed basis (:suspended edge-id) — ΓΝΩΣΤΗ απάντηση,
    ποτέ 422."
-  (let ((s (and v (%active-suspension graph pid valid-at known-at))))
+  (let ((s (and v (%active-suspension graph pid valid-at known-at scope-context))))
     (if s
         (values v (list :suspended (re-edge-id s)))
         (values v basis))))
@@ -805,7 +808,7 @@
    δηλητηριάζει παλαιότερο epistemic snapshot."
   (%time<= recorded-from known-at "recorded-from" "known-at"))
 
-(defun version-at (graph pid &key valid-at known-at)
+(defun version-at (graph pid &key valid-at known-at scope-context)
   "Η έκδοση του PID που (α) ήταν ΓΝΩΣΤΗ στο σύστημα κατά KNOWN-AT και
    (β) ΙΣΧΥΕ κατά VALID-AT. ΚΑΙ ΤΑ ΔΥΟ ΥΠΟΧΡΕΩΤΙΚΑ ΚΑΙ TYPED: valid-at =
    legal-date, known-at = legal-instant (canonical UTC) — καμία λεξικογραφική
@@ -854,14 +857,14 @@
                     (condition-status graph cid :known-at known-at)
                   (case st
                     (:satisfied
-                     (multiple-value-bind (f u) (%rewritten-bounds graph v known-at)
+                     (multiple-value-bind (f u) (%rewritten-bounds graph v known-at scope-context)
                        ;; [#1] conditional βάση from = NIL (καμία ημερομηνία στην
                        ;; έδρα)· ρητό retroact την ξαναγράφει σε date — αλλιώς
                        ;; from = το παράγωγο sat at (spec §4).
                        (push (list v (or f at) u) tiles)))
                     (:pending (push (cons cid (tv-recorded-from v)) pending))
                     (t nil)))
-                (multiple-value-bind (f u) (%rewritten-bounds graph v known-at)
+                (multiple-value-bind (f u) (%rewritten-bounds graph v known-at scope-context)
                   (push (list v f u) tiles))))))
       ;; ντετερμινιστική επιλογή pending σημείωσης: ελάχιστο (since, cid)
       (let ((pending-note
@@ -900,7 +903,8 @@
           (cond
             ((= 1 (length live))
              (%finish-version graph pid valid-at known-at
-                              (first (first live)) (or pending-note :complete)))
+                              (first (first live)) (or pending-note :complete)
+                              scope-context))
             ((null live)
          ;; ΚΕΝΟ ΓΝΩΣΗΣ (text-less ιστορικό): μετρά ΜΟΝΟ αν ήταν ήδη
          ;; καταγεγραμμένο κατά known-at (Υ2) — αλλιώς το snapshot εκείνης της
@@ -1101,6 +1105,7 @@
                                :target (getf line :target) :version (getf line :version)
                                :span-from (getf line :span-from)
                                :span-until (getf line :span-until)
+                               :scope (getf line :scope) ; [#2] το scope ΦΟΡΤΩΝΕΤΑΙ (πριν: σιωπηλό drop)
                                :condition-id (getf line :condition-id)
                                :act-ref (getf line :act-ref) :act-seq (getf line :act-seq)
                                :enacted (getf line :enacted) :fek-date (getf line :fek-date)
@@ -1213,6 +1218,117 @@
   (or (find kind (instrument-kind-entries) :key (lambda (e) (getf e :kind)))
       (error 'invalid-condition
              :reason (format nil "άγνωστο instrument kind ~S" kind))))
+
+;;; ── [Φ7-HARDENING #2] SCOPE MODEL — Η ΜΙΑ έδρα (spec v3 §5) ──
+;;; scope-set = πεπερασμένο σύνολο δηλώσεων στις 4 διαστάσεις
+;;; {:territorial :personal :material :procedural}. NIL = καθολική ισχύς.
+;;; Canonical μορφή: ((:dimension tag…)…) — διαστάσεις σε σταθερή σειρά,
+;;; tags ταξινομημένα, χωρίς διπλότυπα. Tags ΜΟΝΟ από το κλειστό data-μητρώο.
+
+(defparameter +scope-dimensions+
+  '(:territorial :personal :material :procedural)
+  "Η σταθερή σειρά διαστάσεων της canonical μορφής.")
+
+(defun %scope-registry-path ()
+  (orchestrator.paths:institution-dir "deployment/data/scope-tag-registry.sexp"))
+
+(let ((cache nil))
+  (defun scope-dimension-entries ()
+    "Το ΚΛΕΙΣΤΟ TYPED μητρώο scope tags (schema /1): λίστα plists
+     (:dimension :tags :doc). Reader safety: *read-eval* ΡΗΤΑ nil.
+     Απόν/άκυρο/ελλιπές/διπλότυπο ⇒ ΣΦΑΛΜΑ — ποτέ σιωπηλή αποδοχή."
+    (or cache
+        (setf cache
+              (let ((plist (with-open-file (s (%scope-registry-path)
+                                              :external-format :utf-8)
+                             (let ((*package* (find-package :keyword))
+                                   (*read-eval* nil))
+                               (read s)))))
+                (unless (eq (getf plist :schema) :scope-tag-registry/1)
+                  (error 'invalid-condition
+                         :reason "μητρώο scope-tags: άγνωστο schema (απαιτείται /1)"))
+                (let ((entries (getf plist :dimensions)))
+                  (unless entries
+                    (error 'invalid-condition :reason "μητρώο scope-tags: κενό"))
+                  (dolist (e entries)
+                    (unless (and (member (getf e :dimension) +scope-dimensions+)
+                                 (consp (getf e :tags))
+                                 (every #'keywordp (getf e :tags)))
+                      (error 'invalid-condition
+                             :reason (format nil "μητρώο scope-tags: ελλιπής/άκυρη εγγραφή ~S" e)))
+                    (unless (= (length (getf e :tags))
+                               (length (remove-duplicates (getf e :tags))))
+                      (error 'invalid-condition
+                             :reason (format nil "μητρώο scope-tags: διπλότυπο tag στη διάσταση ~S" (getf e :dimension)))))
+                  (unless (= (length entries)
+                             (length (remove-duplicates
+                                      entries :key (lambda (e) (getf e :dimension)))))
+                    (error 'invalid-condition
+                           :reason "μητρώο scope-tags: διπλότυπη διάσταση"))
+                  entries))))))
+
+(defun scope-dimension-tags (dimension)
+  "Τα επιτρεπτά tags μιας διάστασης — άγνωστη διάσταση ⇒ typed σφάλμα."
+  (let ((e (find dimension (scope-dimension-entries)
+                 :key (lambda (e) (getf e :dimension)))))
+    (unless e
+      (error 'invalid-condition
+             :reason (format nil "άγνωστη scope διάσταση ~S — επιτρεπτές: ~S"
+                             dimension +scope-dimensions+)))
+    (getf e :tags)))
+
+(defun canon-scope-set (scope-set)
+  "Επικύρωση + κανονικοποίηση scope-set: NIL = καθολική· αλλιώς λίστα
+   (διάσταση tag…) — κάθε διάσταση ≤1 φορά, κάθε tag στο μητρώο της.
+   Canonical: διαστάσεις κατά +scope-dimensions+, tags ταξινομημένα κατά
+   όνομα, χωρίς διπλότυπα. Οτιδήποτε άλλο ⇒ invalid-edge (fail-closed)."
+  (when (null scope-set) (return-from canon-scope-set nil))
+  (unless (consp scope-set)
+    (error 'invalid-edge :reason (format nil "scope-set: λίστα δηλώσεων ή NIL — βρέθηκε ~S" scope-set)))
+  (let ((seen '()))
+    (dolist (decl scope-set)
+      (unless (and (consp decl) (keywordp (first decl)) (rest decl)
+                   (every #'keywordp (rest decl)))
+        (error 'invalid-edge :reason (format nil "scope δήλωση: (διάσταση tag+) — βρέθηκε ~S" decl)))
+      (let ((dim (first decl)))
+        (when (member dim seen)
+          (error 'invalid-edge :reason (format nil "scope-set: διπλή διάσταση ~S" dim)))
+        (push dim seen)
+        (let ((allowed (scope-dimension-tags dim)))
+          (dolist (tag (rest decl))
+            (unless (member tag allowed)
+              (error 'invalid-edge
+                     :reason (format nil "scope tag ~S εκτός μητρώου διάστασης ~S" tag dim)))))))
+    (loop for dim in +scope-dimensions+
+          for decl = (find dim scope-set :key #'first)
+          when decl
+            collect (cons dim (sort (remove-duplicates (rest decl))
+                                    #'string< :key #'symbol-name)))))
+
+(defun scope-covers-p (scope-set context)
+  "scope-set × ερώτημα-πλαίσιο → T | NIL | :unknown (spec §5).
+   Απούσα διάσταση στο scope-set = καθολική. Παρούσα διάσταση: αν το
+   πλαίσιο δεν τη δηλώνει ⇒ :unknown (τίμια άγνοια — ΠΟΤΕ σιωπηλό ναι)·
+   αλλιώς κάλυψη ⇔ ΟΛΑ τα tags του πλαισίου ∈ tags της δήλωσης.
+   CONTEXT: λίστα (διάσταση tag+) — περνά την ίδια επικύρωση μητρώου."
+  (let ((s (canon-scope-set scope-set))
+        (c (canon-scope-set context))
+        (unknown nil))
+    (dolist (decl s)
+      (let ((ctx (find (first decl) c :key #'first)))
+        (cond ((null ctx) (setf unknown t))
+              ((not (subsetp (rest ctx) (rest decl))) (return-from scope-covers-p nil)))))
+    (if unknown :unknown t)))
+
+(defun scope-intersects-p (s1 s2)
+  "Δύο scope-sets: ανά διάσταση — universal τέμνει τα πάντα· αλλιώς
+   απαιτείται μη κενή τομή tags. NIL scope-set = καθολικό."
+  (let ((a (canon-scope-set s1)) (b (canon-scope-set s2)))
+    (dolist (dim +scope-dimensions+ t)
+      (let ((da (find dim a :key #'first))
+            (db (find dim b :key #'first)))
+        (when (and da db (null (intersection (rest da) (rest db))))
+          (return nil))))))
 
 (defun valid-condition-ast-p (ast)
   "T ή σφάλμα invalid-condition με ΛΟΓΟ — ποτέ σιωπηλό NIL για άκυρη μορφή.
@@ -1643,13 +1759,13 @@
   op             ; ∈ +regime-ops+
   target         ; provision-id-string
   version        ; version-hash | NIL — ΥΠΟΧΡΕΩΤΙΚΟ για :extend/:expire/:retroact
-  span-from      ; legal-date — για rewrites: το ΝΕΟ valid-from (retroact) / υπάρχον
+  span-from      ; legal-date | :on-satisfaction [#3] — το τελευταίο ΜΟΝΟ με
+                 ; :resolutory condition-id (η αφετηρία ΠΑΡΑΓΕΤΑΙ από το sat)
   span-until     ; legal-date | :open — για rewrites: το ΝΕΟ valid-until
-  condition-id   ; string | NIL — ΔΗΛΩΜΕΝΟ όριο: αποτίμηση σε μελλοντική φάση
-                 ; (δεσμεύεται ήδη στο hash ώστε να μην αλλάξει ποτέ σιωπηλά)·
-                 ; ομοίως το scope πεδίο του hash είναι ΔΕΣΜΕΥΜΕΝΟ placeholder
-                 ; (πάντα NIL στο Π4) — τα scope-sets έρχονται στο Π4β/Φ8 και
-                 ; κάθε μη-NIL τιμή θα παράγει ΝΕΑ ταυτότητα ακμής, όχι drift
+  scope          ; [#2] canonical scope-set | NIL(=καθολική) — έδρα canon-scope-set
+  condition-id   ; [#3] string | NIL — ΔΗΛΩΜΕΝΗ :resolutory αίρεση: η ακμή
+                 ; ενεργοποιείται ΜΟΝΟ όταν sat(cid,known-at)=:satisfied
+                 ; (first-class διαλυτική σημασιολογία — όχι πια placeholder)
   act-ref act-seq enacted fek-date
   prior-edge-id  ; ΥΠΟΧΡΕΩΤΙΚΟ για :revive — το suspend που αναιρεί
   recorded-from recorded-until)
@@ -1659,36 +1775,76 @@
   (orchestrator.journal:sha256-hex
    (with-output-to-string (out)
      (%canon-sexp (list :lawmax/regime-edge/1 op target version
-                        span-from (if (eq span-until :open) "open" span-until)
+                        (if (eq span-from :on-satisfaction) "on-satisfaction" span-from)
+                        (if (eq span-until :open) "open" span-until)
                         scope cid act-ref act-seq enacted fek-date prior)
                   out))))
 
 (defun %re-live-p (re known-at)
   (%live-at-p (re-recorded-from re) (re-recorded-until re) known-at))
 
+(defun %re-active-span (graph re known-at)
+  "[#3] Η ΜΙΑ έδρα ενεργοποίησης regime edge: (values from until active-p).
+   Χωρίς condition-id: το δηλωμένο span, πάντα ενεργό (εφόσον live).
+   Με :resolutory condition-id: ενεργό ΜΟΝΟ όταν sat(cid,known-at) =
+   :satisfied — και αν span-from = :on-satisfaction, from := το sat at
+   (η αφετηρία ΠΑΡΑΓΕΤΑΙ, ποτέ δεν προϋπάρχει της ικανοποίησης)."
+  (if (null (re-condition-id re))
+      (values (re-span-from re) (re-span-until re) t)
+      (multiple-value-bind (st at)
+          (condition-status graph (re-condition-id re) :known-at known-at)
+        (if (eq st :satisfied)
+            (values (if (eq (re-span-from re) :on-satisfaction)
+                        at (re-span-from re))
+                    (re-span-until re) t)
+            (values nil nil nil)))))
+
+(defun %re-scope-applies-p (re scope-context)
+  "[#2] Εφαρμογή scope στο ερώτημα: T (καλύπτει) ή :unknown (το πλαίσιο δεν
+   δηλώνει τη διάσταση — υπερ-προσεκτικά ΕΦΑΡΜΟΖΕΤΑΙ και δηλώνεται μέσω του
+   δεσμευμένου edge-id) ⇒ ισχύει· NIL (αποδεδειγμένα εκτός) ⇒ όχι."
+  (not (null (scope-covers-p (re-scope re) scope-context))))
+
 (defun graph-regimes (graph) (vg-regimes graph))
 
 (defun %install-regime (graph re) (push re (vg-regimes graph)) re)
 
 (defun admit-regime-edge! (graph &key op target version span-from span-until
-                                      condition-id act-ref act-seq enacted
+                                      scope condition-id act-ref act-seq enacted
                                       fek-date prior-edge-id)
   "Εισδοχή καθεστωτικής πράξης — fail-closed πύλες (spec v3 §5):
    • op ∈ {:suspend :extend :expire :revive :retroact}·
-   • span typed: [legal-date, legal-date|:open) με from ≤ until·
+   • span typed: [legal-date|:on-satisfaction, legal-date|:open) με from<until·
+   • [#2] SCOPE: scope-set κατά μητρώο (canon-scope-set) — NIL = καθολική·
+     δεσμεύεται στο hash/journal, εφαρμόζεται στο ερώτημα (scope-covers-p)·
+   • [#3] CONDITION-ID: ΔΗΛΩΜΕΝΗ :resolutory αίρεση — η ακμή ενεργοποιείται
+     ΜΟΝΟ όταν sat=:satisfied (first-class διαλυτική σημασιολογία)·
+     span-from :on-satisfaction ⇒ η αφετηρία ΠΑΡΑΓΕΤΑΙ από το sat at
+     (μόνο :suspend/:expire· για :expire απαιτείται span-until :open —
+     η ισχύς λήγει ΣΤΟ σημείο ικανοποίησης)· suspensive αίρεση σε regime
+     edge = invalid-edge (η αναβλητική ανήκει στο commencement — μία έδρα)·
    • :extend/:expire/:retroact ⇒ ΥΠΟΧΡΕΩΤΙΚΟ υπάρχον VERSION (τα όρια
      ξαναγράφονται ΔΙΤΕΜΠΟΡΙΚΑ — ορατά μόνο από known-at ≥ recorded)·
    • :revive ⇒ ΥΠΟΧΡΕΩΤΙΚΟ PRIOR-EDGE-ID: live :suspend ΙΔΙΟΥ target με
-     ΤΕΜΝΟΝ span (revive χωρίς τι να αναιρέσει = σφάλμα)·
-   • conditional-id (αν δοθεί) ⇒ ΔΗΛΩΜΕΝΟ (declare-before-reference)·
+     ΤΕΜΝΟΝ span (revive χωρίς τι να αναιρέσει = σφάλμα)· revive
+     conditional suspend = ΔΗΛΩΜΕΝΟ όριο (επίλυση με retract)·
    • σύγκρουση: live ίδιου op/target/version με ΤΕΜΝΟΝΤΑ spans και
      ΔΙΑΦΟΡΕΤΙΚΑ όρια ⇒ invalid-edge — επίλυση ΜΟΝΟ με journaled retract."
   (unless (member op +regime-ops+)
     (error 'invalid-edge :reason (format nil "άγνωστο regime op ~S" op)))
-  (%require-date span-from "regime span-from")
+  (setf scope (canon-scope-set scope))
+  (cond
+    ((eq span-from :on-satisfaction)
+     (unless condition-id
+       (error 'invalid-edge :reason ":on-satisfaction span-from ΧΩΡΙΣ condition-id — η αφετηρία παράγεται από το sat ΔΗΛΩΜΕΝΗΣ αίρεσης"))
+     (unless (member op '(:suspend :expire))
+       (error 'invalid-edge :reason (format nil ":on-satisfaction επιτρέπεται μόνο σε :suspend/:expire — όχι ~S" op)))
+     (when (and (eq op :expire) (not (eq span-until :open)))
+       (error 'invalid-edge :reason ":expire :on-satisfaction απαιτεί span-until :open — η λήξη ΕΙΝΑΙ το σημείο ικανοποίησης")))
+    (t (%require-date span-from "regime span-from")))
   (unless (or (eq span-until :open) (legal-date-p span-until))
     (error 'invalid-edge :reason (format nil "regime span-until: legal-date ή :open, όχι ~S" span-until)))
-  (when (and (legal-date-p span-until)
+  (when (and (legal-date-p span-until) (legal-date-p span-from)
              (not (< (%time-key span-from "span-from")
                      (%time-key span-until "span-until"))))
     (error 'invalid-edge :reason "regime span: απαιτείται from < until — κενό/ανεστραμμένο διάστημα δεν είναι καθεστωτική πράξη"))
@@ -1703,9 +1859,16 @@
       (error 'invalid-edge
              :reason (format nil "~S απαιτεί ΥΠΑΡΧΟΝ version-hash στόχο — βρέθηκε ~S" op version))))
   (when condition-id
-    (unless (graph-condition graph condition-id)
-      (error 'invalid-edge
-             :reason (format nil "regime edge με ΑΔΗΛΩΤΟ condition-id ~A" condition-id))))
+    (let ((c (graph-condition graph condition-id)))
+      (unless c
+        (error 'invalid-edge
+               :reason (format nil "regime edge με ΑΔΗΛΩΤΟ condition-id ~A" condition-id)))
+      ;; [#3] regime edges ΚΛΕΙΝΟΥΝ/περιορίζουν ισχύ ⇒ μόνο :resolutory·
+      ;; η αναβλητική (suspensive) ανήκει στο commencement — ΜΙΑ έδρα ανά ρόλο.
+      (unless (eq (condition-class c) :resolutory)
+        (error 'invalid-edge
+               :reason (format nil "regime edge με ~S αίρεση — μόνο :resolutory εδώ (η suspensive είναι commencement, όχι καθεστώς)"
+                               (condition-class c))))))
   (when (eq op :revive)
     (let ((prior (find-if (lambda (re)
                             (and (equal (re-edge-id re) prior-edge-id)
@@ -1716,16 +1879,27 @@
       (unless prior
         (error 'invalid-edge
                :reason (format nil ":revive απαιτεί prior-edge-id live :suspend του ίδιου target — ~S δεν βρέθηκε" prior-edge-id)))
+      ;; [#3] revive conditional suspend = ΔΗΛΩΜΕΝΟ όριο: η αφετηρία του
+      ;; prior δεν είναι συγκρίσιμη πριν το sat — επίλυση με retract.
+      (when (eq (re-span-from prior) :on-satisfaction)
+        (error 'invalid-edge
+               :reason ":revive πάνω σε conditional (:on-satisfaction) suspend — ΔΗΛΩΜΕΝΟ όριο: retract-regime-edge! αντί revive"))
+      (when (eq span-from :on-satisfaction)
+        (error 'invalid-edge :reason ":revive με :on-satisfaction span — μη υποστηριζόμενο"))
       (unless (interval-intersects-p span-from span-until
                                      (re-span-from prior) (re-span-until prior))
         (error 'invalid-edge
                :reason ":revive span ΔΕΝ τέμνει το span του suspend που αναιρεί"))))
-  ;; σύγκρουση live ίδιου op/target/version
+  ;; σύγκρουση live ίδιου op/target/version — spans συγκρίσιμα ΜΟΝΟ όταν
+  ;; και τα δύο έχουν συγκεκριμένη αφετηρία ([#3]: conditional edges με
+  ;; ταυτόσημα πεδία συμπίπτουν σε eid — το live-dedup τα πιάνει).
   (dolist (re (vg-regimes graph))
     (when (and (eq (re-op re) op)
                (equal (re-target re) target)
                (equal (re-version re) version)
                (eq (re-recorded-until re) :current)
+               (legal-date-p span-from)
+               (legal-date-p (re-span-from re))
                (interval-intersects-p span-from span-until
                                       (re-span-from re) (re-span-until re))
                (not (and (equal (re-span-from re) span-from)
@@ -1733,7 +1907,7 @@
       (error 'invalid-edge
              :reason (format nil "συγκρουόμενο live ~S στο ~A με τέμνον span και διαφορετικά όρια (~A) — επίλυση ΜΟΝΟ με retract-regime-edge!"
                              op target (re-edge-id re)))))
-  (let* ((eid (%regime-hash op target version span-from span-until nil
+  (let* ((eid (%regime-hash op target version span-from span-until scope
                             condition-id act-ref act-seq enacted fek-date prior-edge-id))
          (live (find-if (lambda (re) (and (equal (re-edge-id re) eid)
                                           (eq (re-recorded-until re) :current)))
@@ -1742,7 +1916,7 @@
         (let ((line (%journal! graph (list :kind :regime-edge :record-id eid
                                            :op op :target target :version version
                                            :span-from span-from :span-until span-until
-                                           :scope nil :condition-id condition-id
+                                           :scope scope :condition-id condition-id
                                            :act-ref act-ref :act-seq act-seq
                                            :enacted enacted :fek-date fek-date
                                            :prior prior-edge-id
@@ -1751,6 +1925,7 @@
                            (make-regime-edge
                             :edge-id eid :op op :target target :version version
                             :span-from span-from :span-until span-until
+                            :scope scope
                             :condition-id condition-id :act-ref act-ref
                             :act-seq act-seq :enacted enacted :fek-date fek-date
                             :prior-edge-id prior-edge-id
@@ -1772,16 +1947,20 @@
       (setf (re-recorded-until re) (%recorded-of line))
       re)))
 
-(defun %active-suspension (graph pid valid-at known-at)
+(defun %active-suspension (graph pid valid-at known-at &optional scope-context)
   "Το live-κατά-known-at :suspend του PID που καλύπτει το VALID-AT και ΔΕΝ
    αναιρείται εκεί από live :revive — αλλιώς NIL. Γνωστή αναστολή = ΓΝΩΣΤΗ
-   απάντηση (:suspended basis), ποτέ ψευδής αβεβαιότητα."
+   απάντηση (:suspended basis), ποτέ ψευδής αβεβαιότητα.
+   [#2] scoped suspend εκτός πλαισίου (scope-covers-p = NIL) ΔΕΝ εφαρμόζεται·
+   [#3] conditional suspend εφαρμόζεται μόνο ενεργό (sat-παραγόμενο span)."
   (find-if
    (lambda (s)
      (and (eq (re-op s) :suspend)
           (equal (re-target s) pid)
           (%re-live-p s known-at)
-          (interval-covers-p (re-span-from s) (re-span-until s) valid-at)
+          (%re-scope-applies-p s scope-context)
+          (multiple-value-bind (f u active) (%re-active-span graph s known-at)
+            (and active (interval-covers-p f u valid-at)))
           (not (find-if (lambda (r)
                           (and (eq (re-op r) :revive)
                                (equal (re-prior-edge-id r) (re-edge-id s))
@@ -1791,23 +1970,29 @@
                         (vg-regimes graph)))))
    (vg-regimes graph)))
 
-(defun %rewritten-bounds (graph v known-at)
+(defun %rewritten-bounds (graph v known-at &optional scope-context)
   "(values valid-from valid-until) της έκδοσης V όπως ΓΝΩΡΙΖΟΝΤΑΝ κατά
    KNOWN-AT: live :extend/:expire ξαναγράφουν το until, live :retroact
    ξαναγράφει from ΚΑΙ until — διτεμπορικά (πριν την καταγραφή: τα παλαιά).
    Εφαρμογή σε χρονική σειρά καταγραφής (νεότερο υπερισχύει).
    [#1] Για conditional έκδοση η βάση from είναι NIL (τίμια: δεν υπάρχει
-   ημερομηνία στην έδρα) — ο καλών παράγει το from από το sat."
+   ημερομηνία στην έδρα) — ο καλών παράγει το from από το sat.
+   [#2] scoped rewrite εκτός πλαισίου ΔΕΝ εφαρμόζεται· [#3] conditional
+   (:resolutory) rewrite εφαρμόζεται μόνο ενεργό — :expire :on-satisfaction
+   κλείνει την ισχύ ΣΤΟ σημείο ικανοποίησης (until := sat at)."
   (let ((from (tv-valid-from v)) (until (tv-valid-until v)))
     (dolist (re (reverse (vg-regimes graph)))
       (when (and (re-version re)
                  (equal (re-version re) (tv-version-hash v))
-                 (%re-live-p re known-at))
-        (case (re-op re)
-          ((:extend :expire) (setf until (re-span-until re)))
-          (:retroact (setf from (re-span-from re)
-                           until (re-span-until re)))
-          (t nil))))
+                 (%re-live-p re known-at)
+                 (%re-scope-applies-p re scope-context))
+        (multiple-value-bind (f u active) (%re-active-span graph re known-at)
+          (when active
+            (case (re-op re)
+              (:expire (setf until (if (eq (re-span-from re) :on-satisfaction) f u)))
+              (:extend (setf until u))
+              (:retroact (setf from f until u))
+              (t nil))))))
     (values from until)))
 
 ;;; ============================================================================

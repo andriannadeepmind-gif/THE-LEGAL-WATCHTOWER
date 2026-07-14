@@ -201,7 +201,14 @@
                                   (%tvj-str *tv-pid*)
                                   (%tvj-str (orchestrator.version-graph::%regime-hash
                                              :suspend *tv-pid* nil "2026-07-01" "2026-08-01"
-                                             nil nil "gr/ya/2026/900" 1 "2026-06-20" "2026-06-20" nil))))))
+                                             nil nil "gr/ya/2026/900" 1 "2026-06-20" "2026-06-20" nil)))
+                          ;; [Φ7-HARDENING #2/#3] scoped + resolutory (:on-satisfaction)
+                          (format nil "{\"op\":\"expire\",\"target\":~A,\"version\":\"vh-x\",\"span_from\":\"on-satisfaction\",\"span_until\":\"open\",\"scope\":{\"t\":\"l\",\"v\":[{\"t\":\"l\",\"v\":[{\"t\":\"kw\",\"v\":\"TERRITORIAL\"},{\"t\":\"kw\",\"v\":\"ATTIKI\"}]}]},\"cid\":\"cid-r\",\"act_ref\":\"gr/nomos/2026/901\",\"act_seq\":1,\"enacted\":\"2026-06-20\",\"fek_date\":\"2026-06-20\",\"prior\":null,\"expect\":~A}"
+                                  (%tvj-str *tv-pid*)
+                                  (%tvj-str (orchestrator.version-graph::%regime-hash
+                                             :expire *tv-pid* "vh-x" :on-satisfaction :open
+                                             '((:territorial :attiki)) "cid-r"
+                                             "gr/nomos/2026/901" 1 "2026-06-20" "2026-06-20" nil))))))
            (flet ((att-json (valid)
                     (let* ((a (orchestrator.version-graph:make-effectivity-attestation
                                *tv-g* *tv-pid* :valid-at valid :known-at "2033-01-01T00:00:00Z"

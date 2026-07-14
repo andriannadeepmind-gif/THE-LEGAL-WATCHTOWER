@@ -879,7 +879,178 @@
                           nil)
                  (orchestrator.version-graph:invalid-edge () t))))
 
+;;; ── [Φ7-HARDENING #2] scope-set: μητρώο, κάλυψη, εφαρμογή στο ερώτημα ──
+
+(ts-check "Η2α canon-scope-set: tag εκτός μητρώου ⇒ invalid-edge· διπλή διάσταση ⇒ invalid-edge· canonical σειρά/ταξινόμηση/dedup"
+          (and (handler-case
+                   (progn (orchestrator.version-graph:canon-scope-set '((:territorial :atlantis))) nil)
+                 (orchestrator.version-graph:invalid-edge () t))
+               (handler-case
+                   (progn (orchestrator.version-graph:canon-scope-set
+                           '((:territorial :attiki) (:territorial :gr))) nil)
+                 (orchestrator.version-graph:invalid-edge () t))
+               (equal '((:territorial :attiki :gr) (:material :poiniko))
+                      (orchestrator.version-graph:canon-scope-set
+                       '((:material :poiniko) (:territorial :gr :attiki :gr))))))
+
+(ts-check "Η2β scope-covers-p: universal ⇒ T· δηλωμένη κάλυψη ⇒ T· εκτός ⇒ NIL· αδήλωτη διάσταση στο πλαίσιο ⇒ :unknown (τίμια άγνοια)· scope-intersects-p"
+          (and (eq t (orchestrator.version-graph:scope-covers-p nil '((:territorial :attiki))))
+               (eq t (orchestrator.version-graph:scope-covers-p
+                      '((:territorial :attiki)) '((:territorial :attiki))))
+               (null (orchestrator.version-graph:scope-covers-p
+                      '((:territorial :attiki)) '((:territorial :thessaloniki))))
+               (eq :unknown (orchestrator.version-graph:scope-covers-p
+                             '((:territorial :attiki)) nil))
+               (eq t (orchestrator.version-graph:scope-intersects-p
+                      '((:territorial :attiki :gr)) '((:territorial :gr))))
+               (null (orchestrator.version-graph:scope-intersects-p
+                      '((:territorial :attiki)) '((:territorial :thessaloniki))))))
+
+(defparameter *ts-pid6* (format nil "~A/art:60" *ts-body*))
+(defparameter *ts-v60*
+  (multiple-value-bind (e vs)
+      (orchestrator.version-graph::admit-edge!
+       *ts-g* (list :op :insert :target *ts-pid6* :from-versions nil
+                    :to-specs (list (list :provision-id *ts-pid6* :text "Κ60"
+                                          :heading nil :valid-from "2026-01-01"
+                                          :status :in-force :assurance :verified))
+                    :act-ref "gr/nomos/2026/0060" :act-internal-seq 1
+                    :enacted "2026-01-01" :effective "2026-01-01"
+                    :fek-date "2026-01-01" :assurance :verified :confidence 100))
+    (declare (ignore e)) (first vs)))
+
+(defparameter *ts-scoped-suspend*
+  (orchestrator.version-graph:admit-regime-edge!
+   *ts-g* :op :suspend :target *ts-pid6*
+   :span-from "2026-03-01" :span-until "2026-12-01"
+   :scope '((:territorial :attiki))
+   :act-ref "gr/ya/2026/60" :act-seq 1
+   :enacted "2026-02-20" :fek-date "2026-02-20"))
+
+(ts-check "Η2γ scoped suspend: πλαίσιο ΕΚΤΟΣ scope ⇒ ΔΕΝ αναστέλλεται· πλαίσιο ΕΝΤΟΣ ⇒ :suspended· ΧΩΡΙΣ πλαίσιο ⇒ :suspended (υπερ-προσεκτικό :unknown, ονομαστικά δεσμευμένο)"
+          (flet ((basis (ctx)
+                   (multiple-value-bind (v b)
+                       (orchestrator.version-graph:version-at
+                        *ts-g* *ts-pid6* :valid-at "2026-06-01"
+                        :known-at "2033-01-01T00:00:00Z" :scope-context ctx)
+                     (declare (ignore v)) b)))
+            (and (eq :complete (basis '((:territorial :thessaloniki))))
+                 (let ((b (basis '((:territorial :attiki)))))
+                   (and (consp b) (eq :suspended (first b))
+                        (equal (orchestrator.version-graph:re-edge-id *ts-scoped-suspend*)
+                               (second b))))
+                 (let ((b (basis nil)))
+                   (and (consp b) (eq :suspended (first b)))))))
+
+(ts-check "Η2δ scope ΣΤΗΝ ταυτότητα + restart parity: ίδια πεδία με ΑΛΛΟ scope ⇒ ΑΛΛΟ edge-id· φρέσκο load-graph διατηρεί το scope (θάνατος σιωπηλού drop)"
+          (let ((e2 (orchestrator.version-graph:admit-regime-edge!
+                     *ts-g* :op :suspend :target *ts-pid6*
+                     :span-from "2026-03-01" :span-until "2026-12-01"
+                     :scope '((:territorial :thessaloniki))
+                     :act-ref "gr/ya/2026/60" :act-seq 1
+                     :enacted "2026-02-20" :fek-date "2026-02-20")))
+            (and (not (equal (orchestrator.version-graph:re-edge-id e2)
+                             (orchestrator.version-graph:re-edge-id *ts-scoped-suspend*)))
+                 (let* ((g2 (orchestrator.version-graph:load-graph *ts-body*))
+                        (re (find (orchestrator.version-graph:re-edge-id *ts-scoped-suspend*)
+                                  (orchestrator.version-graph:graph-regimes g2)
+                                  :key #'orchestrator.version-graph:re-edge-id
+                                  :test #'equal)))
+                   (and re (equal '((:territorial :attiki))
+                                  (orchestrator.version-graph:re-scope re)))))))
+
+;;; ── [Φ7-HARDENING #3] first-class resolutory regime semantics ──
+
+(defparameter *ts-rcond*
+  (orchestrator.version-graph:declare-condition!
+   *ts-g* (orchestrator.version-graph:make-effectivity-condition
+           :resolutory (list :instrument-event :ratification "gr/pnp/2026/60"))))
+(defparameter *ts-rcid* (orchestrator.version-graph:condition-id *ts-rcond*))
+
+(ts-check "Η3α suspensive αίρεση σε regime edge ⇒ invalid-edge· :on-satisfaction χωρίς cid ⇒ invalid-edge· :expire :on-satisfaction με until date ⇒ invalid-edge"
+          (and (handler-case
+                   (progn (orchestrator.version-graph:admit-regime-edge!
+                           *ts-g* :op :expire :target *ts-pid6*
+                           :version (orchestrator.version-graph::tv-version-hash *ts-v60*)
+                           :span-from :on-satisfaction :span-until :open
+                           :condition-id *ts-cid* ; suspensive
+                           :act-ref "a" :act-seq 1 :enacted "2026-06-01" :fek-date "2026-06-01")
+                          nil)
+                 (orchestrator.version-graph:invalid-edge () t))
+               (handler-case
+                   (progn (orchestrator.version-graph:admit-regime-edge!
+                           *ts-g* :op :expire :target *ts-pid6*
+                           :version (orchestrator.version-graph::tv-version-hash *ts-v60*)
+                           :span-from :on-satisfaction :span-until :open
+                           :act-ref "a" :act-seq 1 :enacted "2026-06-01" :fek-date "2026-06-01")
+                          nil)
+                 (orchestrator.version-graph:invalid-edge () t))
+               (handler-case
+                   (progn (orchestrator.version-graph:admit-regime-edge!
+                           *ts-g* :op :expire :target *ts-pid6*
+                           :version (orchestrator.version-graph::tv-version-hash *ts-v60*)
+                           :span-from :on-satisfaction :span-until "2026-12-31"
+                           :condition-id *ts-rcid*
+                           :act-ref "a" :act-seq 1 :enacted "2026-06-01" :fek-date "2026-06-01")
+                          nil)
+                 (orchestrator.version-graph:invalid-edge () t))))
+
+(defparameter *ts-rexpire*
+  (orchestrator.version-graph:admit-regime-edge!
+   *ts-g* :op :expire :target *ts-pid6*
+   :version (orchestrator.version-graph::tv-version-hash *ts-v60*)
+   :span-from :on-satisfaction :span-until :open
+   :condition-id *ts-rcid*
+   :act-ref "gr/nomos/2026/0061" :act-seq 1
+   :enacted "2026-06-01" :fek-date "2026-06-01"))
+
+(ts-check "Η3β resolutory :expire PENDING ⇒ η ισχύς ΔΕΝ αγγίζεται (εκτός Αττικής, χωρίς αναστολή)"
+          (multiple-value-bind (v b)
+              (orchestrator.version-graph:version-at
+               *ts-g* *ts-pid6* :valid-at "2027-06-01"
+               :known-at "2033-01-01T00:00:00Z"
+               :scope-context '((:territorial :thessaloniki)))
+            (and v (eq b :complete))))
+
+(ts-check "Η3γ resolutory SATISFIED @2026-08-01 ⇒ ισχύς ΚΛΕΙΝΕΙ στο σημείο ικανοποίησης: πριν in-force, μετά no-version — με ΠΛΗΡΗ διτεμπορική αγκύρωση (παλαιό known-at ⇒ αναλλοίωτο)"
+          (progn
+            (orchestrator.version-graph:record-condition-event!
+             *ts-g* *ts-rcid* :kind :ratification :ref "gr/pnp/2026/60"
+             :outcome :satisfied :at "2026-08-01"
+             :evidence '(:fek-ref "ΦΕΚ Α 160/2026" :source-digest "sha256:60")
+             :verifier "ts")
+            (flet ((q (valid known)
+                     (multiple-value-bind (v b)
+                         (orchestrator.version-graph:version-at
+                          *ts-g* *ts-pid6* :valid-at valid :known-at known
+                          :scope-context '((:territorial :nisia-aigaiou)))
+                       (list (and v t) b))))
+              (and (equal '(t :complete) (q "2026-07-01" "2033-01-01T00:00:00Z"))
+                   (equal '(nil :no-version-in-force) (q "2027-06-01" "2033-01-01T00:00:00Z"))
+                   ;; known-at πριν από ΚΑΘΕ καταγραφή (όλα γράφτηκαν in-run):
+                   ;; το snapshot εκείνης της γνώσης δεν είχε καν την έκδοση
+                   ;; (Υ2 — τίμιο :no-version, όχι αναχρονιστική ισχύς/λήξη)
+                   (equal '(nil :no-version-in-force) (q "2027-06-01" "2026-07-01T00:00:00Z"))
+                   ;; και η αίρεση: pending σε εκείνο το snapshot
+                   (eq :pending (orchestrator.version-graph:condition-status
+                                 *ts-g* *ts-rcid* :known-at "2026-07-01T00:00:00Z"))))))
+
+(ts-check "Η3δ RESTART PARITY Η2/Η3: φρέσκο load-graph ⇒ ταυτόσημες απαντήσεις (scoped suspend + resolutory expire)"
+          (let ((g2 (orchestrator.version-graph:load-graph *ts-body*)))
+            (flet ((q (g valid ctx)
+                     (multiple-value-bind (v b)
+                         (orchestrator.version-graph:version-at
+                          g *ts-pid6* :valid-at valid
+                          :known-at "2033-01-01T00:00:00Z" :scope-context ctx)
+                       (list (and v (orchestrator.version-graph::tv-text v)) b))))
+              (and (equal (q *ts-g* "2026-06-01" '((:territorial :attiki)))
+                          (q g2 "2026-06-01" '((:territorial :attiki))))
+                   (equal (q *ts-g* "2027-06-01" '((:territorial :thessaloniki)))
+                          (q g2 "2027-06-01" '((:territorial :thessaloniki))))
+                   (equal (q *ts-g* "2026-07-01" '((:territorial :thessaloniki)))
+                          (q g2 "2026-07-01" '((:territorial :thessaloniki))))))))
+
 (format t "~%========================================~%")
-(format t "TEMPORAL-SEMANTICS [0088 Φ7 Π1-Π5+Η1]: ~D passed, ~D failed~%" *ts-pass* *ts-fail*)
+(format t "TEMPORAL-SEMANTICS [0088 Φ7 Π1-Π5+Η1-Η3]: ~D passed, ~D failed~%" *ts-pass* *ts-fail*)
 (format t "========================================~%")
 (sb-ext:exit :code (if (zerop *ts-fail*) 0 1))
