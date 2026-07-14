@@ -1734,22 +1734,30 @@ document.getElementById('ops').addEventListener('click',function(ev){
      PCL_SIGNING_KEY  path to the RSA private key PEM (the secret signing key)
      PCL_PUBLIC_KEY   path to the RSA public key PEM (published as JWK)
 
-   Returns (values private-key public-jwk-json) when both are present and load,
-   else (values nil nil) so emit falls back to unsigned proofs."
+   [0088 Φ4β — PCL-03 fail-closed]: επιστρέφει (values private-key public-jwk)
+   ΜΟΝΟ όταν το υλικό υπάρχει και φορτώνει. Απόν υλικό ⇒ ΣΦΑΛΜΑ, εκτός αν
+   ORCHESTRATOR_ALLOW_DEGRADED_PROOFS=1 (ρητή, τυπωμένη παράκαμψη ⇒ (values
+   nil nil) και τα proofs φέρουν trust_status «unsigned-explicit»). Υλικό
+   παρόν αλλά ΑΧΡΗΣΤΟ ⇒ ΣΦΑΛΜΑ ΠΑΝΤΑ — ρυθμισμένα κλειδιά που δεν φορτώνουν
+   δεν «υποβαθμίζονται», διορθώνονται."
   (let ((priv-path (%non-blank (uiop:getenv "PCL_SIGNING_KEY")))
         (pub-path  (%non-blank (uiop:getenv "PCL_PUBLIC_KEY"))))
-    (if (and priv-path pub-path)
-        (handler-case
-            (let* ((jws :orchestrator.jws-authority)
-                   (priv (funcall (find-symbol "LOAD-RSA-PRIVATE-KEY" jws) priv-path))
-                   (pub  (funcall (find-symbol "LOAD-RSA-PUBLIC-KEY" jws) pub-path))
-                   (jwk  (funcall (find-symbol "EXPORT-JWK" jws) pub
-                                  :kid "stavropoulos-law-root")))
-              (values priv (jonathan:to-json jwk)))
-          (error (e)
-            (format t "  ⚠ PCL signing keys present but unusable (~A) — emitting UNSIGNED.~%" e)
-            (values nil nil)))
-        (values nil nil))))
+    (cond
+      ((and priv-path pub-path)
+       (handler-case
+           (let* ((jws :orchestrator.jws-authority)
+                  (priv (funcall (find-symbol "LOAD-RSA-PRIVATE-KEY" jws) priv-path))
+                  (pub  (funcall (find-symbol "LOAD-RSA-PUBLIC-KEY" jws) pub-path))
+                  (jwk  (funcall (find-symbol "EXPORT-JWK" jws) pub
+                                 :kid "stavropoulos-law-root")))
+             (values priv (jonathan:to-json jwk)))
+         (error (e)
+           (error "PCL signing υλικό ΡΥΘΜΙΣΜΕΝΟ αλλά ΑΧΡΗΣΤΟ (~A) — καμία σιωπηλή υποβάθμιση σε unsigned· διόρθωσε τα κλειδιά" e))))
+      ((uiop:getenvp "ORCHESTRATOR_ALLOW_DEGRADED_PROOFS")
+       (format t "  ⚠ ΡΗΤΗ παράκαμψη ORCHESTRATOR_ALLOW_DEGRADED_PROOFS: εκπομπή UNSIGNED proofs (trust_status: unsigned-explicit).~%")
+       (values nil nil))
+      (t
+       (error "PCL signing υλικό ΑΠΟΝ (PCL_SIGNING_KEY/PCL_PUBLIC_KEY) — τα proofs ΔΕΝ εκπέμπονται unsigned σιωπηλά. Θέσε τα κλειδιά, ή ρητά ORCHESTRATOR_ALLOW_DEGRADED_PROOFS=1")))))
 
 (defun %corpus-anchor-plist (provisions)
   "Level-1: build the PRIMARY-SOURCE anchor plist for the ACTIVE corpus and bind it to
@@ -1763,7 +1771,14 @@ document.getElementById('ops').addEventListener('click',function(ev){
    module → proofs stay valid without the anchor).
 
    EXTRACTION-METHOD names the adapter chain so a third party knows exactly what to
-   re-run over the primary bytes to reproduce EXTRACTION-DIGEST."
+   re-run over the primary bytes to reproduce EXTRACTION-DIGEST.
+
+   [0088 Φ4β — PCL-03]: η ΑΠΟΤΥΧΙΑ κατασκευής/assert του anchor ΔΕΝ
+   καταπίνεται πια (η ολική error-κατάπια πέθανε) — σφάλμα σημαίνει ότι το
+   σερβιριζόμενο κείμενο ΔΕΝ αναπαράγεται από την πηγή και πρέπει να
+   κοκκινίσει· ΜΟΝΟ η ρητή ORCHESTRATOR_ALLOW_DEGRADED_PROOFS=1 επιτρέπει
+   proofs χωρίς anchor (τυπωμένο). NIL επιστρέφεται ΜΟΝΟ για τίμια απουσία
+   πηγής/module (δηλωμένη στα προαπαιτούμενα, όχι κατάπια σφάλματος)."
   (handler-case
       (let* ((mk    (find-symbol "MAKE-PRIMARY-ANCHOR" :orchestrator.epistemic))
              (asrt  (find-symbol "ANCHOR-ASSERT" :orchestrator.epistemic))
@@ -1791,7 +1806,12 @@ document.getElementById('ops').addEventListener('click',function(ev){
             ;; GATE on the DERIVATION: the served text must reproduce extraction-digest.
             (funcall asrt anchor :articles articles)
             (funcall plist anchor))))
-    (error () nil)))
+    (error (e)
+      (if (uiop:getenvp "ORCHESTRATOR_ALLOW_DEGRADED_PROOFS")
+          (progn
+            (format t "  ⚠ ΡΗΤΗ παράκαμψη: αποτυχία primary anchor (~A) — proofs ΧΩΡΙΣ anchor.~%" e)
+            nil)
+          (error "Αποτυχία primary-source anchor: ~A — τα proofs ΔΕΝ εκπέμπονται χωρίς αγκύρωση σιωπηλά (ORCHESTRATOR_ALLOW_DEGRADED_PROOFS=1 για ρητή παράκαμψη)" e)))))
 
 (defun emit-proofs ()
   "Proof-Carrying Law: emit a portable proof per provision for every served code —
@@ -1800,7 +1820,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
    When PCL_SIGNING_KEY/PCL_PUBLIC_KEY are set, the root is SIGNED (TIER 1-A)."
   (multiple-value-bind (priv pub-jwk) (%pcl-signing-material)
     (when priv (format t "  🔑 Root authority key loaded — corpus roots will be SIGNED.~%"))
-   (let ((total 0))
+   (let ((total 0) (failures '()))
     (dolist (id *served-corpora*)
       (handler-case
           (multiple-value-bind (short doc) (build-consolidated-for id)
@@ -1845,9 +1865,11 @@ document.getElementById('ops').addEventListener('click',function(ev){
                 (format t "  ✓ ~A: ~D proofs → ~A  (root ~A…)~A~%"
                         id count out-dir (subseq (or root "") 0 (min 23 (length (or root ""))))
                         (if sig "  [SIGNED]" "")))))
-        (error (e) (format t "  ✗ ~A: ~A~%" id e))))
-    (format t "~%Proof-Carrying Law: ~D αποδείξεις εκπέμφθηκαν.~%" total)
-    0)))
+        (error (e) (push (cons id e) failures)
+               (format t "  ✗ ~A: ~A~%" id e))))
+    (format t "~%Proof-Carrying Law: ~D αποδείξεις εκπέμφθηκαν~@[, ~D σώματα ΑΠΕΤΥΧΑΝ~].~%"
+            total (and failures (length failures)))
+    (if failures 1 0))))
 
 (defun emit-references ()
   "Level-3 reasoning substrate: for every served code emit <corpus>/references.ttl —

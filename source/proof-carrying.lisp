@@ -165,13 +165,17 @@
 (defun corpus-proof-json (root count &key anchored-at signature public-jwk)
   "The corpus-level proof descriptor: the Merkle ROOT every provision proof chains
    to, plus (when signed) the detached JWS SIGNATURE over it and the public key
-   (JWK) that verifies it. The root + signature are what an RFC-3161 TSA stamps."
-  (format nil "{~A:~A,~A:~A,~A:~A,~A:~D,~A:~A~@[,~A:~A~]~@[,~A:~A~]}"
+   (JWK) that verifies it. The root + signature are what an RFC-3161 TSA stamps.
+   [0088 Φ4β — PCL-03]: ΡΗΤΟ trust_status ΜΕΣΑ στο JSON — «signed» ⟺ υπάρχει
+   υπογραφή, αλλιώς «unsigned-explicit»· ο καταναλωτής δεν μαντεύει ποτέ από
+   την απουσία πεδίων ποια βαθμίδα εγγύησης κρατά."
+  (format nil "{~A:~A,~A:~A,~A:~A,~A:~D,~A:~A,~A:~A~@[,~A:~A~]~@[,~A:~A~]}"
           (%j "version") (%j "pcl-1")
           (%j "algorithm") (%j "sha256-merkle/rfc6962+RS256")
           (%j "merkle_root") (%j root)
           (%j "count") count
           (%j "anchored_at") (%j anchored-at)
+          (%j "trust_status") (%j (if signature "signed" "unsigned-explicit"))
           (and signature (%j "signature")) (and signature (%j signature))
           (and public-jwk (%j "public_key")) (and public-jwk public-jwk)))
 

@@ -124,7 +124,41 @@
           (every (lambda (r) (eq :unsigned-explicit (orchestrator.legal-receipt:lr-trust-status r)))
                  *lr-receipts*))
 
+;;; ⑤ [Φ4β] PCL-03 — οι σιωπηλές υποβαθμίσεις είναι ΝΕΚΡΕΣ (locks)
+(lr-check "⑤ %pcl-signing-material ΧΩΡΙΣ κλειδιά/χωρίς παράκαμψη ⇒ ΣΦΑΛΜΑ (όχι σιωπηλό unsigned)"
+          (progn (sb-posix:unsetenv "PCL_SIGNING_KEY")
+                 (sb-posix:unsetenv "PCL_PUBLIC_KEY")
+                 (sb-posix:unsetenv "ORCHESTRATOR_ALLOW_DEGRADED_PROOFS")
+                 (handler-case (progn (orchestrator.cli::%pcl-signing-material) nil)
+                   (error () t))))
+(lr-check "⑤β με ΡΗΤΟ ORCHESTRATOR_ALLOW_DEGRADED_PROOFS=1 ⇒ (values NIL NIL) — δηλωμένη υποβάθμιση"
+          (unwind-protect
+               (progn (sb-posix:setenv "ORCHESTRATOR_ALLOW_DEGRADED_PROOFS" "1" 1)
+                      (multiple-value-bind (priv jwk) (orchestrator.cli::%pcl-signing-material)
+                        (and (null priv) (null jwk))))
+            (sb-posix:unsetenv "ORCHESTRATOR_ALLOW_DEGRADED_PROOFS")))
+(lr-check "⑤γ corpus-proof.json: ΡΗΤΟ trust_status — unsigned ⇒ «unsigned-explicit», signed ⇒ «signed»"
+          (let ((u (orchestrator.proof-carrying:corpus-proof-json "r00t" 3 :anchored-at "2026-01-01T00:00:00Z"))
+                (s (orchestrator.proof-carrying:corpus-proof-json "r00t" 3 :anchored-at "2026-01-01T00:00:00Z"
+                                                                  :signature "sig")))
+            (and (search "\"trust_status\":\"unsigned-explicit\"" u)
+                 (search "\"trust_status\":\"signed\"" s))))
+(lr-check "⑤δ source-scan: το ignore-errors στο %emit-corpus-proofs και το (error () nil) στο anchor ΠΕΘΑΝΑΝ"
+          (let ((site (uiop:read-file-string
+                       (orchestrator.paths:institution-dir "source/static-site.lisp")
+                       :external-format :utf-8))
+                (main (uiop:read-file-string
+                       (orchestrator.paths:institution-dir "systems/orchestrator-cli/main.lisp")
+                       :external-format :utf-8)))
+            (flet ((defun-body (src name)
+                     (let* ((start (search (format nil "(defun ~A" name) src))
+                            (end (search "(defun " src :start2 (1+ start))))
+                       (subseq src start (or end (length src))))))
+              (and (not (search "(ignore-errors" (defun-body site "%emit-corpus-proofs")))
+                   (not (search "(error () nil)" (defun-body main "%corpus-anchor-plist")))
+                   (search "ORCHESTRATOR_ALLOW_DEGRADED_PROOFS" (defun-body main "%pcl-signing-material"))))))
+
 (format t "~%========================================~%")
-(format t "LEGAL-AUTHORITY-RECEIPT [0088 Φ4α]: ~D passed, ~D failed~%" *lr-pass* *lr-fail*)
+(format t "LEGAL-AUTHORITY-RECEIPT [0088 Φ4]: ~D passed, ~D failed~%" *lr-pass* *lr-fail*)
 (format t "========================================~%")
 (sb-ext:exit :code (if (zerop *lr-fail*) 0 1))

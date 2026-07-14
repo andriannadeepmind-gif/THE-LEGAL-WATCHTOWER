@@ -275,8 +275,10 @@ footer a{color:#1f6feb;text-decoration:none}
    plus the corpus anchor (corpus-proof.json), so the born-cited JSON-LD links
    actually resolve to verifiable proofs. Leaves hash %ARTICLE-CANONICAL-TEXT —
    the same text the page publishes. When PRIVATE-KEY is supplied the corpus root
-   is SIGNED. Best-effort: never let proof emission break the site."
-  (ignore-errors
+   is SIGNED. [0088 Φ4β — PCL-03]: το «best-effort» κάλυμμα σφαλμάτων ΠΕΘΑΝΕ —
+   αποτυχία εκπομπής proof ΚΟΚΚΙΝΙΖΕΙ το site build (ένα site χωρίς τα
+   proofs που υπόσχεται είναι ελαττωματικό παραδοτέο, όχι «best effort»)."
+  (progn
     ;; [P1.5-A] Τα Merkle πρωτόγονα ενοποιήθηκαν στην orchestrator.merkle και
     ;; ΕΠΑΝΕΞΑΓΟΝΤΑΙ από την proof-carrying: LEAF-HASH→HASH-LEAF-STRING,
     ;; BUILD-MERKLE-ROOT→MERKLE-TREE-HASH. Τα παλιά ονόματα επέστρεφαν NIL μέσω
