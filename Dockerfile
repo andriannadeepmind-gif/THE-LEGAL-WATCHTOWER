@@ -154,6 +154,13 @@ CMD ["echo", "Test stage completed successfully"]
 # =============================================================================
 FROM builder AS standalone-test
 
+# [0088 assurance] ΤΟ GATED STAGE ΕΙΝΑΙ ΠΛΕΟΝ ΥΠΟΧΡΕΩΤΙΚΟΣ ΚΡΙΚΟΣ της
+# αλυσίδας builder → standalone-test → verifier-conformance → runtime:
+# runtime image ΔΕΝ κατασκευάζεται χωρίς να έχουν περάσει ΟΛΑ τα gates,
+# και το machine-readable proof manifest ταξιδεύει ΜΕΣΑ στο runtime.
+ARG GIT_COMMIT=unspecified-pass-build-arg
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 COPY tests/ /app/tests/
 COPY docker/run-standalone-test.lisp docker/sha256.lisp docker/dep-hash.lisp /app/docker/
 
@@ -183,8 +190,38 @@ RUN set -e; \
              escape-sequences turtle-nil-omit corpus-identity semantic-validity \
              cross-language-verifier; do \
       echo "=== running $t-test.lisp ==="; \
-      sbcl --script /app/docker/run-standalone-test.lisp "/app/tests/$t-test.lisp"; \
+      mkdir -p /app/proof/logs; \
+      sbcl --script /app/docker/run-standalone-test.lisp "/app/tests/$t-test.lisp" 2>&1 \
+        | tee "/app/proof/logs/$t.log"; \
     done
+
+# [0088 assurance] Machine-readable proof manifest: δεσμεύει commit, hashes
+# πυρήνα/πηγών, ΟΝΟΜΑΣΤΙΚΕΣ σουίτες με τις γραμμές αποτελεσμάτων τους και
+# το log digest — παράγεται ΜΟΝΟ αν ΟΛΕΣ οι σουίτες βγήκαν 0.
+RUN set -e; \
+    CORE=$(sha256sum /app/orchestrator.core | cut -d' ' -f1); \
+    CM=$(sha256sum /app/component-manifest.sexp | cut -d' ' -f1); \
+    SRC=$(find /app/source /app/systems /app/tests /app/deployment/verify -type f | LC_ALL=C sort | xargs sha256sum | sha256sum | cut -d' ' -f1); \
+    LOGS=$(cat /app/proof/logs/*.log | sha256sum | cut -d' ' -f1); \
+    { echo '{'; \
+      echo "  \"proof\": \"lawmax/standalone-proof/1\","; \
+      echo "  \"git_commit\": \"${GIT_COMMIT}\","; \
+      echo "  \"source_date_epoch\": \"${SOURCE_DATE_EPOCH:-1735689600}\","; \
+      echo "  \"orchestrator_core_sha256\": \"$CORE\","; \
+      echo "  \"component_manifest_sha256\": \"$CM\","; \
+      echo "  \"source_tree_sha256\": \"$SRC\","; \
+      echo "  \"logs_sha256\": \"$LOGS\","; \
+      echo '  "suites": ['; \
+      first=1; \
+      for f in /app/proof/logs/*.log; do \
+        t=$(basename "$f" .log); \
+        line=$(grep -h -a -E "passed, [0-9]+ failed|[0-9]+ pass, [0-9]+ fail|διαφωνίες" "$f" | tail -1 | sed 's/\\/\\\\/g; s/"/\\"/g'); \
+        if [ $first -eq 0 ]; then echo ','; fi; first=0; \
+        printf '    {"suite": "%s", "result": "%s"}' "$t" "$line"; \
+      done; \
+      echo ''; echo '  ]'; echo '}'; \
+    } > /app/proof/standalone-proof.json; \
+    grep -q '"suites"' /app/proof/standalone-proof.json
 
 CMD ["echo", "Standalone tests passed"]
 
@@ -198,10 +235,11 @@ CMD ["echo", "Standalone tests passed"]
 # (genuine passes; tampered text and wrong key fail) — locking the trust root
 # against silent cross-language drift.
 #   docker build --target verifier-conformance .
-FROM builder AS verifier-conformance
+FROM standalone-test AS verifier-conformance
 
-COPY tests/ /app/tests/
-COPY docker/run-standalone-test.lisp /app/docker/
+# [0088 assurance] Δεύτερος υποχρεωτικός κρίκος: κληρονομεί το ΠΕΡΑΣΜΕΝΟ
+# standalone-test (tests/logs ήδη μέσα) και προσθέτει τα cross-language gates.
+ARG GIT_COMMIT=unspecified-pass-build-arg
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
@@ -228,6 +266,26 @@ RUN python3 /app/deployment/verify/verify-canonical.py
 # ΣΚΛΗΡΟ gate εδώ — στο SBCL-only standalone stage κάνουν τίμιο SKIP.
 RUN sbcl --script /app/docker/run-standalone-test.lisp \
       /app/tests/semantic-validity-test.lisp
+
+# [0088 Φ7 Π6] Το temporal N-version gate ξανά ΚΑΙ εδώ με ρητό python3 —
+# διπλή εγγύηση ότι ο verifier-conformance κρίκος καλύπτει και τα temporal.
+RUN sbcl --script /app/docker/run-standalone-test.lisp \
+      /app/tests/temporal-verifier-test.lisp
+
+# [0088 assurance] verifier-proof manifest: δεσμεύει τα hashes ΟΛΩΝ των
+# δημόσιων verifiers που αποτέλεσαν gate σε αυτόν τον κρίκο.
+RUN set -e; \
+    { echo '{'; \
+      echo "  \"proof\": \"lawmax/verifier-proof/1\","; \
+      echo "  \"git_commit\": \"${GIT_COMMIT}\","; \
+      echo "  \"verify_py_sha256\": \"$(sha256sum /app/deployment/verify/verify.py | cut -d' ' -f1)\","; \
+      echo "  \"verify_mjs_sha256\": \"$(sha256sum /app/deployment/verify/verify.mjs | cut -d' ' -f1)\","; \
+      echo "  \"verify_canonical_py_sha256\": \"$(sha256sum /app/deployment/verify/verify-canonical.py | cut -d' ' -f1)\","; \
+      echo "  \"verify_temporal_py_sha256\": \"$(sha256sum /app/deployment/verify/verify-temporal.py | cut -d' ' -f1)\","; \
+      echo "  \"verify_release_py_sha256\": \"$(sha256sum /app/deployment/verify/verify-release.py | cut -d' ' -f1)\","; \
+      echo '  "gates": ["cross-language-verifier", "release-vector-conformance", "verify-canonical", "semantic-validity", "temporal-verifier"]'; \
+      echo '}'; \
+    } > /app/proof/verifier-proof.json
 
 CMD ["echo", "Cross-language verifier conformance passed"]
 
@@ -292,7 +350,11 @@ RUN groupadd -g 65532 nonroot && \
 WORKDIR /app
 
 # Copy compiled executable from builder
-COPY --from=builder /app/orchestrator.core /app/orchestrator.core
+# [0088 assurance] Ο πυρήνας ΚΑΙ το proof έρχονται από τον ΤΕΛΕΥΤΑΙΟ κρίκο
+# της αποδεικτικής αλυσίδας — το runtime ΔΕΝ μπορεί να κατασκευαστεί χωρίς
+# να έχουν περάσει standalone-test + verifier-conformance.
+COPY --from=verifier-conformance /app/orchestrator.core /app/orchestrator.core
+COPY --from=verifier-conformance /app/proof/ /app/proof/
 # Το παγωμένο manifest ταυτοτήτων συστατικών ταξιδεύει ΜΑΖΙ με το εκτελέσιμο
 COPY --from=builder /app/component-manifest.sexp /app/component-manifest.sexp
 

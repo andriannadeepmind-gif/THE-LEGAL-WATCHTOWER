@@ -879,3 +879,52 @@ sha256:8746ad42ad46b685daccd567b49a06957eb8ff466eadc69ad0c70140ff48cdb7.
 ΑΝΟΙΧΤΑ (όλα αποφάσεις δημιουργού): Π7 ⇐ 9 ΦΕΚ· «εγκρίνω GAAF-1»·
 Γ-νησιά Α/Β/Γ· Deferred License Policy· training-bots πολιτική·
 Φ8-Φ13 ακολουθία κατά ΕΝΤΟΛΗ-2.
+
+## [0088 ΑΝΑΚΛΗΣΗ proof #4 + ΔΟΜΙΚΗ ΔΙΟΡΘΩΣΗ assurance] — εύρημα δημιουργού ΕΠΙΒΕΒΑΙΩΜΕΝΟ
+
+**ΑΝΑΚΛΗΣΗ**: Η καταγραφή «owner docker proof #4» (8dae9387) ήταν ΛΑΘΟΣ
+συμπέρασμα δικό μου και ΑΝΑΚΑΛΕΙΤΑΙ — αναχαρακτηρίζεται **BUILD-ONLY**,
+ΟΧΙ owner-gated-proof. Επαληθεύτηκε στο ίδιο το Dockerfile: τα
+standalone-test (γρ. 155) και verifier-conformance ήταν SIBLING stages
+του builder· το runtime αντέγραφε ΜΟΝΟ `--from=builder`, άρα το επιτυχές
+runtime build ΔΕΝ αποδεικνύει εκτέλεση κανενός gate. Owner runtime build:
+ΠΡΑΣΙΝΟ. Owner gated/verifier proof: ΔΕΝ ΑΠΟΔΕΙΧΘΗΚΕ. Το τοπικό (cloud)
+proof των σουιτών παραμένει έγκυρο, αλλά owner-side gated απόδειξη στο
+HEAD ΕΚΚΡΕΜΕΙ.
+
+**ΔΟΜΙΚΗ ΔΙΟΡΘΩΣΗ (εξάλειψη της κλάσης, όχι διαδικαστική οδηγία)**:
+Το Dockerfile έγινε ΥΠΟΧΡΕΩΤΙΚΗ αποδεικτική αλυσίδα —
+`builder → standalone-test → verifier-conformance → runtime`:
+- verifier-conformance: `FROM standalone-test` (κληρονομεί ΠΕΡΑΣΜΕΝΟ το
+  test loop) + προστέθηκε ρητό temporal-verifier gate με python3.
+- runtime: `COPY --from=verifier-conformance` για τον πυρήνα ΚΑΙ το
+  `/app/proof/` — runtime image ΔΕΝ κατασκευάζεται πλέον χωρίς να έχουν
+  περάσει ΟΛΑ τα gates. Δομικά αδύνατο, όχι συμβατικό.
+- Machine-readable manifests ΜΕΣΑ στο runtime:
+  `standalone-proof.json` (git_commit build-arg, core/component/source-tree/
+  logs sha256, ΟΝΟΜΑΣΤΙΚΕΣ σουίτες με τις γραμμές αποτελεσμάτων τους από
+  tee logs — pipefail bash shell) + `verifier-proof.json` (hashes ΟΛΩΝ των
+  δημόσιων verifiers + gates λίστα). Τα scripts επικυρώθηκαν σε sandbox
+  (json.tool VALID).
+Δηλωμένα όρια manifest: το dirty-tree status δεν είναι ορατό μέσα στο
+container — δεσμεύεται το source_tree_sha256 (ό,τι ΠΡΑΓΜΑΤΙΚΑ μπήκε) +
+το GIT_COMMIT που δηλώνει ο owner· η αντιπαραβολή commit↔tree γίνεται
+εκτός (verifier βήμα σε επόμενη φάση).
+
+**Αποδεκτοί περιορισμοί διατύπωσης (καταγράφονται ρητά)**: «Φ7 Π1-Π6
+πλήρη» ⇒ «Π1-Π6 υλοποιημένα ΜΕ δηλωμένα όρια»: resolutory = fail-closed
+μη-αναπαραστάσιμο (μελλοντικό regime σχήμα)· scope values = placeholder
+(Φ8)· python verifier = N-version agreement των temporal σημασιολογιών,
+ΟΧΙ όλης της trusted chain (registry/evidence Lisp-side)· Π7 ΑΠΟΝ (9 ΦΕΚ).
+GAAF-1: design baseline ΜΟΝΟ — runtime 0%, παγωμένο.
+
+**Owner εντολή για ΕΓΚΥΡΟ proof #5** (καθαρό tree, ακριβές HEAD):
+```
+git status --porcelain          # πρέπει ΚΕΝΟ
+git rev-parse HEAD
+docker build --no-cache --progress=plain --build-arg GIT_COMMIT=<HEAD-SHA> -t lawmax:<HEAD-short> .
+```
+Στο log πρέπει να φαίνονται ρητά τα «=== running <t>-test.lisp ===» με τα
+αθροίσματα (78/78, 30 vectors/0 διαφωνίες κ.λπ.) και μετά το runtime
+stage. Επαλήθευση μέσα στο image:
+`docker run --rm --entrypoint cat lawmax:<tag> /app/proof/standalone-proof.json`
