@@ -233,11 +233,36 @@
          (cons "text" text)
          (cons "valid_from" valid-from))))
 
+;;; [Φ7 Π3] effective sum type: legal-date | (:conditional condition-id) —
+;;; ΚΛΕΙΣΤΟ, το NIL δεν χωράει (spec §4). Στο hash/σειριοποίηση το conditional
+;;; προβάλλεται ως "conditional:<cid>" (value-canonical string).
+
+(defun %conditional-effective-p (e)
+  (and (consp e) (eq (first e) :conditional)
+       (stringp (second e)) (plusp (length (second e)))
+       (null (cddr e))))
+
+(defun %effective-key (e)
+  "Η κανονική string προβολή του effective για hash/ταξινόμηση."
+  (if (%conditional-effective-p e)
+      (format nil "conditional:~A" (second e))
+      e))
+
+(defun %conditional-valid-from (cid)
+  (format nil "conditional:~A" cid))
+
+(defun %tv-conditional-cid (v)
+  "Το condition-id μιας ΥΠΟ ΑΙΡΕΣΗ έκδοσης (sentinel valid-from), αλλιώς NIL."
+  (let ((vf (tv-valid-from v)))
+    (and (stringp vf) (> (length vf) 12)
+         (string= "conditional:" vf :end2 12)
+         (subseq vf 12))))
+
 (defun %edge-hash (op target from to act-ref act-seq enacted effective fek-date span)
   (orchestrator.canonical-representation:canonical-hash
    (list (cons "act_ref" act-ref)
          (cons "act_seq" act-seq)
-         (cons "effective" effective)
+         (cons "effective" (%effective-key effective))
          (cons "enacted" enacted)
          (cons "fek_date" fek-date)
          (cons "from" from)
@@ -484,10 +509,30 @@
    (values NIL quarantined-edge) όταν το replay διαψεύδει το υλικό. ΠΟΤΕ μισή
    εφαρμογή, ΠΟΤΕ σιωπηλή αποδοχή."
   (let ((op (getf espec :op))
-        (target (getf espec :target)))
+        (target (getf espec :target))
+        (effective (getf espec :effective)))
     (unless (member op +supported-ops+)
       (return-from admit-edge!
         (values nil (quarantine! graph espec :unsupported-op))))
+    ;; [Φ7 Π3] effective sum type — typed, ποτέ nullable: legal-date Ή
+    ;; (:conditional cid) με ΔΗΛΩΜΕΝΟ cid (declare-before-reference).
+    (cond
+      ((%conditional-effective-p effective)
+       (unless (graph-condition graph (second effective))
+         (error 'invalid-edge
+                :reason (format nil "conditional ακμή με ΑΔΗΛΩΤΟ condition-id ~A — declare-condition! πρώτα"
+                                (second effective))))
+       ;; οι υπό αίρεση νέες εκδόσεις: sentinel valid-from + :not-yet-effective
+       ;; — ημερομηνία ισχύος ΔΕΝ υπάρχει πριν την ικανοποίηση (παράγωγη, §4)
+       (dolist (vs (getf espec :to-specs))
+         (unless (and (equal (getf vs :valid-from)
+                             (%conditional-valid-from (second effective)))
+                      (eq (getf vs :status) :not-yet-effective))
+           (error 'invalid-edge
+                  :reason (format nil "conditional ακμή: κάθε to-spec απαιτεί :valid-from ~S και :status :not-yet-effective — βρέθηκε (~S ~S)"
+                                  (%conditional-valid-from (second effective))
+                                  (getf vs :valid-from) (getf vs :status))))))
+      (t (%require-date effective "effective")))
     (let* ((cur (%open-version graph target))
            (from (getf espec :from-versions)))
       ;; προϋποθέσεις ανά πράξη — αποτυχία = καραντίνα με ΛΟΓΟ, όχι error
@@ -560,9 +605,11 @@
                       :confidence (getf espec :confidence)))
                (new-versions '()))
           (setf (gethash eid (vg-edges graph)) edge)
-          ;; κλείσιμο ισχύος προηγούμενης — ΔΙΤΕΜΠΟΡΙΚΗ supersession (journaled):
-          ;; η παλιά πεποίθηση «:open» παραμένει ορατή σε as-known ερωτήματα
-          (when cur
+          ;; κλείσιμο ισχύος προηγούμενης — ΔΙΤΕΜΠΟΡΙΚΗ supersession (journaled).
+          ;; [Φ7 Π3 — spec §4] Για CONDITIONAL ακμή ΔΕΝ γράφεται κανένα κλείσιμο:
+          ;; η προηγούμενη μένει :open και το version-at παράγει το κλείσιμο
+          ;; από το sat στην τομή (valid-at, known-at) — ΕΝΑΣ μηχανισμός.
+          (when (and cur (not (%conditional-effective-p effective)))
             (let ((at (orchestrator.journal:iso-now)))
               (%journal! graph (list :kind :close-validity
                                      :record-id (format nil "close:~A@~A" (tv-version-hash cur) eid)
@@ -615,7 +662,10 @@
            (not (%time<= (tv-recorded-until v) known-at "recorded-until" "known-at")))))
 
 (defun %valid-covers-p (v valid-at)
-  (and (%time<= (tv-valid-from v) valid-at "valid-from" "valid-at")
+  ;; [Φ7 Π3] Έκδοση ΥΠΟ ΑΙΡΕΣΗ (sentinel valid-from) ΔΕΝ καλύπτει ποτέ μέσω
+  ;; της γενικής διαδρομής — η ισχύς της είναι ΠΑΡΑΓΩΓΗ του sat (version-at).
+  (and (not (%tv-conditional-cid v))
+       (%time<= (tv-valid-from v) valid-at "valid-from" "valid-at")
        (or (eq :open (tv-valid-until v))
            (not (%time<= (tv-valid-until v) valid-at "valid-until" "valid-at")))))
 
@@ -653,13 +703,45 @@
         (error 'temporal-uncertainty :provision pid
                :why (format nil "ακμή σε καραντίνα (~A, καταγεγραμμένη ~A)"
                             (qe-reason q) (qe-recorded-from q)))))
-    (let ((live (loop for v in records
-                      when (and (%recorded-live-p v known-at)
-                                (%valid-covers-p v valid-at))
-                        collect v)))
-      (cond
-        ((= 1 (length live)) (values (first live) :complete))
-        ((null live)
+    ;; [Φ7 Π3 — spec §4] ΠΑΡΑΓΩΓΟ κλείσιμο/έναρξη υπό αίρεση: για κάθε
+    ;; recorded-live έκδοση με sentinel valid-from, η ισχύς προκύπτει από
+    ;; sat(canon-AST, events live κατά known-at) — ΚΑΜΙΑ αποθηκευμένη
+    ;; κατάσταση. suspensive αγκύρωση (§5): satisfied t ≤ valid-at ⇒ η υπό
+    ;; αίρεση έκδοση in-force από t ΚΑΙ η προηγούμενη συμπεριφέρεται ΣΑΝ
+    ;; valid-until = t· t > valid-at ή pending/refuted ⇒ δεν ισχύει (ακόμη).
+    (let* ((cond-live (loop for v in records
+                            when (and (%tv-conditional-cid v)
+                                      (%recorded-live-p v known-at))
+                              collect v))
+           (satisfied-covering '())
+           (pending-note nil))
+      (dolist (cv cond-live)
+        (let ((cid (%tv-conditional-cid cv)))
+          (multiple-value-bind (st at) (condition-status graph cid :known-at known-at)
+            (cond
+              ((and (eq st :satisfied)
+                    (%time<= at valid-at "satisfied-at" "valid-at"))
+               (push (cons cv at) satisfied-covering))
+              ((eq st :pending)
+               (setf pending-note (list :not-yet-effective cid (tv-recorded-from cv))))
+              ;; :refuted ή satisfied στο μέλλον του valid-at ⇒ απλώς όχι in-force
+              (t nil)))))
+      (when (rest satisfied-covering)
+        (error 'temporal-uncertainty :provision pid
+               :why (format nil "~D υπό-αίρεση εκδόσεις ταυτόχρονα ικανοποιημένες στην τομή — ασυνεπής γράφος"
+                            (length satisfied-covering))))
+      (when satisfied-covering
+        (return-from version-at (values (car (first satisfied-covering)) :complete)))
+      ;; καμία ικανοποιημένη-καλύπτουσα: γενική διαδρομή· pending αίρεση
+      ;; ΔΕΝ είναι άγνοια — επιστρέφεται ΩΣ ΤΥΠΩΜΕΝΟ basis (ποτέ 422 εδώ).
+      (let ((live (loop for v in records
+                        when (and (%recorded-live-p v known-at)
+                                  (%valid-covers-p v valid-at))
+                          collect v)))
+        (cond
+          ((= 1 (length live))
+           (values (first live) (or pending-note :complete)))
+          ((null live)
          ;; ΚΕΝΟ ΓΝΩΣΗΣ (text-less ιστορικό): μετρά ΜΟΝΟ αν ήταν ήδη
          ;; καταγεγραμμένο κατά known-at (Υ2) — αλλιώς το snapshot εκείνης της
          ;; γνώσης απλώς δεν είχε καμία έκδοση (:no-version-in-force, τίμιο).
@@ -673,7 +755,7 @@
                                    (kg-kind g) (kg-effective g) (kg-recorded-from g)))
                (values nil :no-version-in-force))))
         (t (error 'temporal-uncertainty :provision pid
-                  :why (format nil "~D επικαλυπτόμενες εκδόσεις στην τομή — ασυνεπής γράφος" (length live))))))))
+                  :why (format nil "~D επικαλυπτόμενες εκδόσεις στην τομή — ασυνεπής γράφος" (length live)))))))))
 
 (defun snapshot-at (graph &key valid-at known-at)
   "Ολόκληρο το σώμα στην τομή (valid-at, known-at): alist pid→text-version,

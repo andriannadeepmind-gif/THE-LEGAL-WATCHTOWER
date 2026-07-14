@@ -718,3 +718,33 @@ status), tamper πεδίου ⇒ journal-corruption σε φρέσκο path.
 Proof: temporal-semantics **45/45** + 8 σουίτες 0 failed (381 checks).
 ΕΠΟΜΕΝΟ: Π3 conditional ακμές (effective sum type, G2 δύο φάσεων,
 ΠΑΡΑΓΩΓΟ κλείσιμο validity κατά §4).
+
+## [0088 Φ7 Π3] Conditional ακμές ΥΛΟΠΟΙΗΜΕΝΕΣ — παράγωγο κλείσιμο, ποτέ ψευδής άγνοια
+
+Στην έδρα version-graph, κατά spec v3 §4/§5:
+- **effective sum type**: legal-date | (:conditional cid) — typed, ποτέ
+  nullable· conditional ⇒ ΔΗΛΩΜΕΝΟ cid (αδήλωτο ⇒ invalid-edge)· στο
+  %edge-hash προβάλλεται ως "conditional:<cid>" (%effective-key) — τα ids
+  των date-ακμών ΑΜΕΤΑΒΛΗΤΑ (parity 31/31).
+- **Υπό αίρεση εκδόσεις**: sentinel valid-from "conditional:<cid>" +
+  status :not-yet-effective ΥΠΟΧΡΕΩΤΙΚΑ στο to-spec (ημερομηνία ⇒
+  invalid-edge — η ισχύς είναι ΠΑΡΑΓΩΓΗ)· εξαιρούνται δομικά από τη
+  γενική %valid-covers-p.
+- **ΚΑΝΕΝΑ journaled κλείσιμο σε conditional**: η προηγούμενη μένει :open·
+  το version-at υπολογίζει στην τομή (valid-at, known-at):
+  condition-status(cid) ⇒ (:satisfied t) ∧ t ≤ valid-at ⇒ η υπό αίρεση
+  έκδοση :complete (η παλαιά συμπεριφέρεται ΣΑΝ valid-until=t)·
+  t > valid-at ⇒ παλαιά :complete (χρονική αγκύρωση §5 — καμία αναδρομή)·
+  :pending ⇒ (παλαιά, (:not-yet-effective cid since)) — ΤΥΠΩΜΕΝΟ basis,
+  ΠΟΤΕ 422 (false_uncertainty=0)· :refuted ⇒ παλαιά :complete· ≥2
+  ταυτόχρονα ικανοποιημένες ⇒ temporal-uncertainty.
+- G2 δύο φάσεων: conditional ακμές ταξινομούνται με (fek-date, act-seq,
+  edge-id) — το derived effective χρησιμοποιείται ΜΟΝΟ σε ερωτήματα.
+
+Locks ⑩-⑩θ (temporal-semantics 45→54): sum type + no-close, pending basis,
+ικανοποίηση ⇒ νέα έκδοση στο ΙΔΙΟ valid-at, χρονική αγκύρωση, Υ2 παλαιό
+snapshot, retract ⇒ επιστροφή, αδήλωτο cid ⇒ σφάλμα, date-to-spec ⇒
+σφάλμα, restart parity σε 3 τομές.
+
+Proof: temporal-semantics **54/54** + 8 σουίτες 0 failed (390 checks).
+ΕΠΟΜΕΝΟ: Π4 (regime-edges/Allen/Υ2β) → αντιπαλικός κριτής Π2-Π4 → Π5.

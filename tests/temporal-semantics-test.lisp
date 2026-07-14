@@ -345,7 +345,127 @@
                 (progn (orchestrator.version-graph::load-graph tampered-body) nil)
               (orchestrator.version-graph:journal-corruption () t))))
 
+;;; ═══ [Φ7 Π3] CONDITIONAL ΑΚΜΕΣ — παράγωγο κλείσιμο, ποτέ ψευδής άγνοια ═══
+(defparameter *ts-pid2* "gr/nomos/2020/9997#art:2")
+(defparameter *ts-ref2* "ya-per:gr/nomos/2020/9997#art:2")
+(defparameter *ts-cond2*
+  (orchestrator.version-graph:declare-condition!
+   *ts-g* (orchestrator.version-graph:make-effectivity-condition
+           :suspensive (list :instrument-event :ya *ts-ref2*))))
+(defparameter *ts-cid2* (orchestrator.version-graph:condition-id *ts-cond2*))
+(defparameter *ts-old*
+  (multiple-value-bind (edge vs)
+      (orchestrator.version-graph::admit-edge!
+       *ts-g* (list :op :insert :target *ts-pid2* :from-versions nil
+                    :to-specs (list (list :provision-id *ts-pid2* :text "παλαιό κείμενο"
+                                          :heading nil :valid-from "2026-01-01"
+                                          :status :in-force :assurance :verified))
+                    :act-ref "gr/nomos/2020/9997" :act-internal-seq 1
+                    :enacted "2026-01-01" :effective "2026-01-01"
+                    :fek-date "2026-01-01" :assurance :verified :confidence 100))
+    (declare (ignore edge))
+    (first vs)))
+
+(ts-check "⑩ conditional ακμή: sum type δεκτό, sentinel to-spec, εγκατάσταση χωρίς close-validity"
+          (multiple-value-bind (edge vs)
+              (orchestrator.version-graph::admit-edge!
+               *ts-g* (list :op :replace :target *ts-pid2*
+                            :from-versions (list (orchestrator.version-graph::tv-version-hash *ts-old*))
+                            :to-specs (list (list :provision-id *ts-pid2* :text "νέο κείμενο"
+                                                  :heading nil
+                                                  :valid-from (orchestrator.version-graph::%conditional-valid-from *ts-cid2*)
+                                                  :status :not-yet-effective :assurance :verified))
+                            :act-ref "gr/nomos/2026/0001" :act-internal-seq 1
+                            :enacted "2026-02-01" :effective (list :conditional *ts-cid2*)
+                            :fek-date "2026-02-01" :assurance :verified :confidence 100))
+            (and edge (= 1 (length vs))
+                 ;; η παλαιά ΔΕΝ έκλεισε journaled — μένει :open (παράγωγο κλείσιμο)
+                 (eq :open (orchestrator.version-graph::tv-valid-until *ts-old*)))))
+(ts-check "⑩β pending αίρεση ⇒ (παλαιά, (:not-yet-effective cid …)) — 200 με in_force σημασιολογία, ΟΧΙ 422 (false_uncertainty=0)"
+          (multiple-value-bind (v basis)
+              (orchestrator.version-graph:version-at
+               *ts-g* *ts-pid2* :valid-at "2026-06-01" :known-at "2030-01-01T00:00:00Z")
+            (and v (equal "παλαιό κείμενο" (orchestrator.version-graph::tv-text v))
+                 (consp basis) (eq :not-yet-effective (first basis))
+                 (equal *ts-cid2* (second basis)))))
+(ts-check "⑩γ ικανοποίηση (ΥΑ@2026-03-10) ⇒ ΙΔΙΟ valid-at, ΜΕΤΑ-known ⇒ η ΝΕΑ έκδοση :complete"
+          (progn
+            (orchestrator.version-graph:record-condition-event!
+             *ts-g* *ts-cid2* :kind :ya :ref *ts-ref2* :outcome :satisfied
+             :at "2026-03-10" :evidence '(:source-digest "sha256:ya2") :verifier "ts")
+            (multiple-value-bind (v basis)
+                (orchestrator.version-graph:version-at
+                 *ts-g* *ts-pid2* :valid-at "2026-06-01" :known-at "2031-01-01T00:00:00Z")
+              (and (eq basis :complete)
+                   (equal "νέο κείμενο" (orchestrator.version-graph::tv-text v))))))
+(ts-check "⑩δ χρονική αγκύρωση: valid-at ΠΡΙΝ το satisfied-at ⇒ η ΠΑΛΑΙΑ :complete (καμία αναδρομή)"
+          (multiple-value-bind (v basis)
+              (orchestrator.version-graph:version-at
+               *ts-g* *ts-pid2* :valid-at "2026-02-15" :known-at "2031-01-01T00:00:00Z")
+            (and (eq basis :complete)
+                 (equal "παλαιό κείμενο" (orchestrator.version-graph::tv-text v)))))
+(ts-check "⑩ε Υ2: known-at ΠΡΙΝ την καταγραφή του event ⇒ ξανά (παλαιά, :not-yet-effective) — το παλαιό snapshot αμετάβλητο"
+          (multiple-value-bind (v basis)
+              (orchestrator.version-graph:version-at
+               *ts-g* *ts-pid2* :valid-at "2026-06-01" :known-at "2026-02-02T00:00:00Z")
+            (declare (ignore v))
+            ;; τα πάντα εδώ καταγράφηκαν «σήμερα» — σε τομή γνώσης πριν από
+            ;; την καταγραφή της ακμής δεν υπάρχει καμία έκδοση (τίμιο)
+            (or (eq basis :no-version-in-force)
+                (and (consp basis) (eq :not-yet-effective (first basis))))))
+(ts-check "⑩στ retract της ικανοποίησης ⇒ σε ΝΕΟΤΕΡΟ known-at ξανά (παλαιά, :not-yet-effective)"
+          (let ((eid (orchestrator.version-graph:ce-event-id
+                      (find :current (orchestrator.version-graph:graph-condition-events
+                                      *ts-g* *ts-cid2*)
+                            :key #'orchestrator.version-graph:ce-recorded-until))))
+            (orchestrator.version-graph:retract-condition-event! *ts-g* eid)
+            (multiple-value-bind (v basis)
+                (orchestrator.version-graph:version-at
+                 *ts-g* *ts-pid2* :valid-at "2026-06-01" :known-at "2032-01-01T00:00:00Z")
+              (and v (equal "παλαιό κείμενο" (orchestrator.version-graph::tv-text v))
+                   (consp basis) (eq :not-yet-effective (first basis))))))
+(ts-check "⑩ζ conditional ακμή με ΑΔΗΛΩΤΟ cid ⇒ invalid-edge (declare-before-reference)"
+          (handler-case
+              (progn (orchestrator.version-graph::admit-edge!
+                      *ts-g* (list :op :replace :target *ts-pid2*
+                                   :from-versions (list (orchestrator.version-graph::tv-version-hash *ts-old*))
+                                   :to-specs (list (list :provision-id *ts-pid2* :text "x"
+                                                         :valid-from "conditional:cid-x"
+                                                         :status :not-yet-effective :assurance :verified))
+                                   :act-ref "a" :act-internal-seq 1
+                                   :enacted "2026-02-01" :effective '(:conditional "cid-x")
+                                   :fek-date "2026-02-01" :assurance :verified :confidence 100))
+                     nil)
+            (orchestrator.version-graph:invalid-edge () t)))
+(ts-check "⑩η conditional ακμή με ΗΜΕΡΟΜΗΝΙΑ valid-from στο to-spec ⇒ invalid-edge (η ισχύς είναι ΠΑΡΑΓΩΓΗ)"
+          (handler-case
+              (progn (orchestrator.version-graph::admit-edge!
+                      *ts-g* (list :op :replace :target *ts-pid2*
+                                   :from-versions (list (orchestrator.version-graph::tv-version-hash *ts-old*))
+                                   :to-specs (list (list :provision-id *ts-pid2* :text "x"
+                                                         :valid-from "2026-05-01"
+                                                         :status :not-yet-effective :assurance :verified))
+                                   :act-ref "a" :act-internal-seq 1
+                                   :enacted "2026-02-01" :effective (list :conditional *ts-cid2*)
+                                   :fek-date "2026-02-01" :assurance :verified :confidence 100))
+                     nil)
+            (orchestrator.version-graph:invalid-edge () t)))
+(ts-check "⑩θ RESTART PARITY Π3: φρέσκο load-graph ⇒ ταυτόσημες απαντήσεις version-at στις ίδιες τομές"
+          (let ((g2 (orchestrator.version-graph::load-graph *ts-body*)))
+            (flet ((ans (g valid known)
+                     (multiple-value-bind (v basis)
+                         (orchestrator.version-graph:version-at g *ts-pid2*
+                                                                :valid-at valid :known-at known)
+                       (list (and v (orchestrator.version-graph::tv-text v))
+                             (if (consp basis) (subseq basis 0 2) basis)))))
+              (and (equal (ans *ts-g* "2026-06-01" "2032-01-01T00:00:00Z")
+                          (ans g2 "2026-06-01" "2032-01-01T00:00:00Z"))
+                   (equal (ans *ts-g* "2026-06-01" "2031-01-01T00:00:00Z")
+                          (ans g2 "2026-06-01" "2031-01-01T00:00:00Z"))
+                   (equal (ans *ts-g* "2026-02-15" "2031-01-01T00:00:00Z")
+                          (ans g2 "2026-02-15" "2031-01-01T00:00:00Z"))))))
+
 (format t "~%========================================~%")
-(format t "TEMPORAL-SEMANTICS [0088 Φ7 Π1+Π2]: ~D passed, ~D failed~%" *ts-pass* *ts-fail*)
+(format t "TEMPORAL-SEMANTICS [0088 Φ7 Π1+Π2+Π3]: ~D passed, ~D failed~%" *ts-pass* *ts-fail*)
 (format t "========================================~%")
 (sb-ext:exit :code (if (zerop *ts-fail*) 0 1))
