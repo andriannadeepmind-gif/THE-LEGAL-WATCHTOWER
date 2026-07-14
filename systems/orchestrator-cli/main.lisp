@@ -618,12 +618,10 @@
    κείμενο είναι καθαρή συνάρτησή τους — υπολογίζεται ΜΙΑ φορά (μνημοποίηση,
    όχι ανασυγκρότηση ανά αίτημα). Τα ιστορικά as-of μένουν κατά ζήτηση: είναι
    σπάνια, και cache με κλειδί από παράμετρο URL θα ήταν απύθμενη (DoS)."
-  (let ((out '())
-        (short->id '()))   ; [0088 Φ5β] short name → corpus-id (για το /as-known wiring)
+  (let ((out '()))
     (dolist (id *served-corpora*)
       (handler-case
           (multiple-value-bind (short triples records title) (corpus-spec id)
-            (push (cons short id) short->id)
             (let ((provider
                     (let ((tr triples) (rc records) (sh short) (ti title) (cid id)
                           (lock (sb-thread:make-mutex :name (format nil "corpus-~A" short)))
@@ -640,20 +638,35 @@
                                   (setf current
                                         (orchestrator.consolidation.bridge:consolidate-corpus
                                          tr rc :id sh :title ti)))))))))
-              (push (cons short provider) out)
+              ;; [Μ] ΜΙΑ typed εγγραφή ανά σώμα: identity + providers μαζί —
+              ;; καμία δεύτερη alist που ξανασυνδέεται με assoc.
+              (push (orchestrator.corpus-service:make-corpus-runtime
+                     :name short :corpus-id id
+                     :doc-provider provider
+                     :as-known-provider (%as-known-provider-for id))
+                    out)
               ;; η καταμέτρηση της εκκίνησης ζεσταίνει την ΙΔΙΑ cache — καμία
               ;; δεύτερη ενοποίηση για τον ίδιο λόγο
               (format t "  ✓ ~A → ~A (~D articles)~%" id short
                       (length (orchestrator.consolidation:legal-document-provisions
                                (funcall provider))))))
         (error (e) (format t "  ✗ ~A skipped: ~A~%" id e))))
-    (values (nreverse out) short->id)))
+    (nreverse out)))
 
 (defun %as-known-provider-for (corpus-id)
   "[0088 Φ5β] /as-known provider πάνω στην ΕΔΡΑ text-as-known: μεταφράζει τις
    typed συνθήκες του γράφου στο boundary contract του service — η αβεβαιότητα
-   ΔΗΛΩΝΕΤΑΙ (422/404), δεν σερβίρεται ποτέ κείμενο στη θέση της."
+   ΔΗΛΩΝΕΤΑΙ (422/404), άκυρες χρονικές παράμετροι ⇒ typed 400 (ποτέ 500),
+   και δεν σερβίρεται ΠΟΤΕ κείμενο στη θέση αβεβαιότητας."
   (lambda (article-label valid-at known-at)
+    ;; [Υ1 boundary] typed έλεγχος χρόνου ΠΡΙΝ αγγίξουμε τον γράφο — η ΜΙΑ
+    ;; έδρα τύπων χρόνου είναι το version-graph, εδώ μόνο μετάφραση σε 400.
+    (unless (orchestrator.version-graph:legal-date-p valid-at)
+      (error 'orchestrator.corpus-service:as-known-bad-request
+             :why (format nil "valid=~S δεν είναι έγκυρη γρηγοριανή YYYY-MM-DD" valid-at)))
+    (unless (orchestrator.version-graph:legal-instant-p known-at)
+      (error 'orchestrator.corpus-service:as-known-bad-request
+             :why (format nil "known=~S δεν είναι legal-instant YYYY-MM-DDTHH:MM:SSZ (canonical UTC)" known-at)))
     (handler-case
         (text-as-known corpus-id article-label :valid-at valid-at :known-at known-at)
       (orchestrator.version-graph:temporal-uncertainty (e)
@@ -661,6 +674,9 @@
                :why (format nil "~A" e)))
       (orchestrator.version-graph:unknown-provision (e)
         (error 'orchestrator.corpus-service:as-known-unknown
+               :why (format nil "~A" e)))
+      (orchestrator.version-graph:invalid-edge (e)
+        (error 'orchestrator.corpus-service:as-known-bad-request
                :why (format nil "~A" e)))
       (orchestrator.identity:identity-parse-error (e)
         (error 'orchestrator.corpus-service:as-known-unknown
@@ -823,18 +839,36 @@ document.getElementById('ops').addEventListener('click',function(ev){
                  (or (and p (parse-integer p :junk-allowed t)) 8080)))
          (base (or (uiop:getenv "CORPUS_BASE_URI") "https://stavropouloslaw.com/eli")))
     (format t "~%Building corpora...~%")
-    (multiple-value-bind (corpora short->id) (build-all-corpora) ; (short . provider) — provider supports as-of
-    (let* ((multi (orchestrator.corpus-service:make-multi-corpus-service
-                   corpora :base-uri base
-                   ;; [0088 Φ5β] διτεμπορικό /as-known ανά σώμα — provider μόνο
-                   ;; όταν το short αντιστοιχεί σε γνωστό corpus-id (αλλιώς 501)
-                   :as-known-provider-fn
-                   (lambda (short)
-                     (let ((cid (cdr (assoc short short->id :test #'string=))))
-                       (and cid (%as-known-provider-for cid))))))
+    (let* ((corpora (build-all-corpora))   ; λίστα corpus-runtime (typed — Μ)
+           (profile (let ((p (or (uiop:getenv "ORCHESTRATOR_SERVE_PROFILE") "authority")))
+                      (cond ((string= p "authority") :authority)
+                            ((string= p "migration") :migration)
+                            (t (error "serve: άγνωστο ORCHESTRATOR_SERVE_PROFILE ~S (authority|migration)" p)))))
+           (multi (orchestrator.corpus-service:make-multi-corpus-service
+                   corpora :base-uri base))
            (handler (%chat-wrap-handler
                      (orchestrator.corpus-service:multi-service-handler multi))))
       (when (null corpora) (error "serve: no corpora could be built"))
+      ;; [Υ6 READINESS — production fail-closed]: στο authority profile ΚΑΝΕΝΑ
+      ;; σώμα δεν σερβίρεται χωρίς (α) bitemporal provider, (β) γράφο που
+      ;; φορτώνει με πλήρη επαλήθευση payload/chain, (γ) receipts που
+      ;; επαληθεύονται ΟΛΑ (corpus-temporal-commitment), (δ) FOLD-PARITY ≡
+      ;; consolidated byte-προς-byte. Το 501/παράλειψη επιτρέπεται ΜΟΝΟ σε
+      ;; ρητό migration profile.
+      (when (eq profile :authority)
+        (format t "~%Authority readiness gate (fail-closed)...~%")
+        (dolist (rt corpora)
+          (let ((cid (orchestrator.corpus-service:cr-corpus-id rt)))
+            (unless (orchestrator.corpus-service:cr-as-known-provider rt)
+              (error "serve[authority]: ~A χωρίς bitemporal provider — δεν δημοσιεύεται" cid))
+            (let ((tc (corpus-temporal-commitment cid)))
+              (multiple-value-bind (div checked) (graph-parity-report cid (getf tc :graph))
+                (when div
+                  (error "serve[authority]: ~A FOLD-PARITY απέτυχε (~D αποκλίσεις σε ~D): ~S"
+                         cid (length div) checked (subseq div 0 (min 5 (length div)))))
+                (format t "  ✓ ~A: graph_root ~A · ~D receipts · parity ~D/~D~%"
+                        cid (subseq (getf tc :graph-root) 0 12)
+                        (getf tc :receipt-count) checked checked))))))
       ;; Φάση 3: ο ΕΝΙΑΙΟΣ ΓΡΑΦΟΣ ζει ΚΑΙ στον server — το /ask απαντά με
       ;; ζωντανά δομικά γεγονότα (%live-provision-facts), όχι σιωπηλό τίποτα.
       ;; Από στιγμιότυπο όταν οι είσοδοι είναι αμετάβλητες, αλλιώς χτίζεται.
@@ -845,7 +879,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
                          (orchestrator.graph:node-count) (orchestrator.graph:edge-count)))
         (error (e) (format t "  ⚠ γράφος μη διαθέσιμος: ~A~%" e)))
       (format t "~%AI-first multi-corpus service: http://0.0.0.0:~D  (~{~A~^, ~})~%"
-              port (mapcar #'car corpora))
+              port (mapcar #'orchestrator.corpus-service:cr-name corpora))
       (format t "  GET /chat                           Ο ΔΙΑΛΟΓΟΣ — μίλα του από τον browser~%")
       (format t "  GET /ask?q=…                        μία ερώτηση, μία τεκμηριωμένη απάντηση~%")
       (format t "  GET /catalog.jsonld                 catalog of ALL codes~%")
@@ -856,7 +890,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
       (format t "  GET /<corpus>/ (Accept: akn+xml|turtle|ld+json|jsonl|plain)~%")
       (format t "  GET /robots.txt, /.well-known/ai-corpus.json~%")
       (orchestrator.http:start-server handler :port port :host "0.0.0.0")
-      (loop (sleep 3600))))))
+      (loop (sleep 3600)))))
 
 (defun materialize-served-corpora ()
   "Pull every served code from its official state source (source.url in each

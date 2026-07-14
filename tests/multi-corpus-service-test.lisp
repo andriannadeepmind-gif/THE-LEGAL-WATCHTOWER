@@ -27,8 +27,10 @@
 (let* ((docP (doc "poinikos" "Ποινικός Κώδικας" "Εγκλήματα" "Εγκλήματα στην ημεδαπή."))
        (docS (doc "constitution" "Σύνταγμα" "Δικαίωμα" "Δικαίωμα στην πληροφόρηση."))
        (multi (make-multi-corpus-service
-               (list (cons "poinikos" (lambda () docP))
-                     (cons "constitution" (lambda () docS)))))
+               (list (make-corpus-runtime :name "poinikos" :corpus-id "poinikos"
+                                          :doc-provider (lambda () docP))
+                     (make-corpus-runtime :name "constitution" :corpus-id "syntagma"
+                                          :doc-provider (lambda () docS)))))
        (h (multi-service-handler multi)))
 
   (format t "~%== Top index / catalog ==~%")
@@ -66,6 +68,15 @@
   (check "base URIs are per-corpus (no cross-link)"
          (let ((b (rbody (funcall h (req "/poinikos/corpus.jsonl")))))
            (and (search "/poinikos/art_5" b) (null (search "/constitution/art_5" b))))))
+
+;;; [0088 Φ5-κριτής Μ] uniqueness gate: διπλό short name = ΣΦΑΛΜΑ κατασκευής
+(check "[Μ] διπλά short names ⇒ ΣΦΑΛΜΑ (καμία σιωπηλή σκίαση route)"
+       (handler-case
+           (progn (make-multi-corpus-service
+                   (list (make-corpus-runtime :name "x" :corpus-id "a" :doc-provider (lambda () nil))
+                         (make-corpus-runtime :name "x" :corpus-id "b" :doc-provider (lambda () nil))))
+                  nil)
+         (error () t)))
 
 (format t "~%========================================~%")
 (format t "Multi-corpus service tests: ~D passed, ~D failed~%" *pass* *fail*)

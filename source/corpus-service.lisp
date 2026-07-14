@@ -28,7 +28,10 @@
    #:available-representations #:negotiate
    #:multi-corpus-service #:make-multi-corpus-service #:multi-service-handler
    ;; [0088 Φ5β] /as-known — διτεμπορικό boundary contract του service
-   #:as-known-uncertain #:as-known-unknown #:as-known-why))
+   #:as-known-uncertain #:as-known-unknown #:as-known-bad-request #:as-known-why
+   ;; [0088 Φ5-κριτής Μ] typed corpus runtime — ΜΙΑ εγγραφή ανά σώμα
+   #:corpus-runtime #:make-corpus-runtime #:corpus-runtime-p
+   #:cr-name #:cr-corpus-id #:cr-doc-provider #:cr-as-known-provider))
 
 (in-package :orchestrator.corpus-service)
 
@@ -199,6 +202,9 @@
 (define-condition as-known-unknown (error)
   ((why :initarg :why :initform nil :reader as-known-why))
   (:report (lambda (c s) (format s "unknown provision: ~A" (as-known-why c)))))
+(define-condition as-known-bad-request (error)
+  ((why :initarg :why :initform nil :reader as-known-why))
+  (:report (lambda (c s) (format s "invalid temporal parameters: ~A" (as-known-why c)))))
 
 (define-condition as-of-unavailable (error)
   ((date :initarg :date :reader as-of-date)
@@ -269,8 +275,14 @@ Allow: /
            (method (funcall (find-symbol "HTTP-REQUEST-METHOD" http) req))
            (accept (funcall (find-symbol "HTTP-REQUEST-HEADER" http) req "accept"))
            (base (service-base-uri service))
-           (doc (current-document service)))
-      (flet ((resp (status body ct &rest extra)
+           ;; [Κ1 route-first]: ΚΑΜΙΑ φόρτωση του consolidated document πριν
+           ;; αναγνωριστεί το route — το /as-known (και κάθε route που δεν το
+           ;; χρειάζεται) λειτουργεί ακόμη κι αν ο παλιός provider αποτυγχάνει.
+           (doc-memo :unset))
+      (flet ((doc () (if (eq doc-memo :unset)
+                         (setf doc-memo (current-document service))
+                         doc-memo))
+             (resp (status body ct &rest extra)
                (apply (find-symbol "MAKE-HTTP-RESPONSE" http)
                       :status status :body body
                       :headers (append (list (cons "Content-Type" ct))
@@ -287,23 +299,23 @@ Allow: /
            (resp 200 (ai-discovery-json service) "application/json; charset=utf-8"))
 
           ((or (string= path "/catalog.jsonld") (string= path "/catalog"))
-           (resp 200 (serialize (make-instance 'catalog-representation) doc base)
+           (resp 200 (serialize (make-instance 'catalog-representation) (doc) base)
                  "application/ld+json; charset=utf-8"))
 
           ((string= path "/corpus.jsonl")
-           (resp 200 (serialize (make-instance 'jsonl-representation) doc base)
+           (resp 200 (serialize (make-instance 'jsonl-representation) (doc) base)
                  "application/jsonl; charset=utf-8"))
 
           ((string= path "/consolidated.akn.xml")
-           (resp 200 (serialize (make-instance 'akn-representation) doc base)
+           (resp 200 (serialize (make-instance 'akn-representation) (doc) base)
                  "application/akn+xml; charset=utf-8"))
 
           ((string= path "/consolidated.ttl")
-           (resp 200 (serialize (make-instance 'turtle-representation) doc base)
+           (resp 200 (serialize (make-instance 'turtle-representation) (doc) base)
                  "text/turtle; charset=utf-8"))
 
           ((string= path "/consolidated.txt")
-           (resp 200 (serialize (make-instance 'text-representation) doc base)
+           (resp 200 (serialize (make-instance 'text-representation) (doc) base)
                  "text/plain; charset=utf-8"))
 
           ;; /diff?from=DATE&to=DATE — what changed in the law between two dates
@@ -345,37 +357,46 @@ Allow: /
                 (resp 400 "{\"error\":\"missing ?article= &valid= (ISO date) &known= (ISO datetime)\"}"
                       "application/json; charset=utf-8"))
                (t
-                (handler-case
-                    (let ((r (funcall provider article valid known)))
-                      (if (getf r :text)
-                          (resp 200 (with-output-to-string (o)
-                                      (format o "{\"article\":~S,\"valid_at\":~S,\"known_at\":~S,"
-                                              article valid known)
-                                      (format o "\"basis\":~S,"
-                                              (string-downcase (symbol-name (getf r :basis))))
-                                      (format o "\"valid_from\":~S,\"valid_until\":~A,"
-                                              (getf r :valid-from)
-                                              (let ((vu (getf r :valid-until)))
-                                                (if (stringp vu) (format nil "~S" vu) "null")))
-                                      (format o "\"assurance\":~S,"
-                                              (string-downcase (symbol-name (getf r :assurance))))
-                                      (format o "\"heading\":~A,"
-                                              (let ((h (getf r :heading)))
-                                                (if h (format nil "~S" h) "null")))
-                                      (format o "\"text\":~S}" (getf r :text)))
-                                "application/json; charset=utf-8")
-                          ;; τίμιο κενό: καμία έκδοση δεν καλύπτει την τομή
-                          (resp 404 (format nil "{\"error\":\"no version covers the requested cut\",\"basis\":~S}"
-                                            (string-downcase (symbol-name (or (getf r :basis) :none))))
-                                "application/json; charset=utf-8")))
-                  (as-known-uncertain (e)
-                    (resp 422 (format nil "{\"error\":\"temporal uncertainty — declared, not guessed\",\"why\":~S}"
-                                      (format nil "~A" (or (as-known-why e) "")))
-                          "application/json; charset=utf-8"))
-                  (as-known-unknown (e)
-                    (resp 404 (format nil "{\"error\":\"unknown provision\",\"why\":~S}"
-                                      (format nil "~A" (or (as-known-why e) "")))
-                          "application/json; charset=utf-8")))))))
+                ;; [Υ4] JSON ΜΟΝΟ μέσω της ΜΙΑΣ canonical serialization έδρας
+                ;; (RFC 8785 JCS) — κανένα χειροποίητο format/~S: εγγυημένο
+                ;; escaping για ΚΑΘΕ control char/quote/backslash, ίδια μορφή
+                ;; με κάθε άλλο canonical JSON του συστήματος.
+                (flet ((cjson (alist)
+                         (funcall (find-symbol "CANONICALIZE-JSON"
+                                               :orchestrator.canonical-representation)
+                                  alist)))
+                  (handler-case
+                      (let ((r (funcall provider article valid known)))
+                        (if (getf r :text)
+                            (resp 200 (cjson
+                                       (list (cons "article" article)
+                                             (cons "assurance" (string-downcase (symbol-name (getf r :assurance))))
+                                             (cons "basis" (string-downcase (symbol-name (getf r :basis))))
+                                             (cons "heading" (or (getf r :heading) :null))
+                                             (cons "known_at" known)
+                                             (cons "text" (getf r :text))
+                                             (cons "valid_at" valid)
+                                             (cons "valid_from" (getf r :valid-from))
+                                             (cons "valid_until" (let ((vu (getf r :valid-until)))
+                                                                   (if (stringp vu) vu :null)))))
+                                  "application/json; charset=utf-8")
+                            ;; τίμιο κενό: καμία έκδοση δεν καλύπτει την τομή
+                            (resp 404 (cjson
+                                       (list (cons "basis" (string-downcase (symbol-name (or (getf r :basis) :none))))
+                                             (cons "error" "no version covers the requested cut")))
+                                  "application/json; charset=utf-8")))
+                    (as-known-bad-request (e)
+                      (resp 400 (cjson (list (cons "error" "invalid temporal parameters")
+                                             (cons "why" (format nil "~A" (or (as-known-why e) "")))))
+                            "application/json; charset=utf-8"))
+                    (as-known-uncertain (e)
+                      (resp 422 (cjson (list (cons "error" "temporal uncertainty — declared, not guessed")
+                                             (cons "why" (format nil "~A" (or (as-known-why e) "")))))
+                            "application/json; charset=utf-8"))
+                    (as-known-unknown (e)
+                      (resp 404 (cjson (list (cons "error" "unknown provision")
+                                             (cons "why" (format nil "~A" (or (as-known-why e) "")))))
+                            "application/json; charset=utf-8"))))))))
 
           ;; /search?q=...  — Greek full-text search over the corpus
           ((string= path "/search")
@@ -383,7 +404,7 @@ Allow: /
                                  :test #'string=))))
              (if (and qq (plusp (length qq)))
                  (resp 200 (funcall (find-symbol "SEARCH-CORPUS" :orchestrator.corpus-search)
-                                    doc qq :base-uri base)
+                                    (doc) qq :base-uri base)
                        "application/json; charset=utf-8")
                  (resp 200 "{\"error\":\"missing ?q= (search terms)\"}"
                        "application/json; charset=utf-8"))))
@@ -394,7 +415,7 @@ Allow: /
                                 :test #'string=))))
              (if (and q (plusp (length q)))
                  (resp 200 (funcall (find-symbol "SPARQL-QUERY" :orchestrator.corpus-sparql)
-                                    doc base q)
+                                    (doc) base q)
                        "application/sparql-results+json; charset=utf-8")
                  (resp 200 "{\"error\":\"missing ?query= (SPARQL SELECT)\"}"
                        "application/json; charset=utf-8"))))
@@ -406,7 +427,7 @@ Allow: /
                (string= path "/dataset.jsonl") (string= path "/dataset.ttl")
                (and (>= (length path) 9) (string= (subseq path 0 9) "/dataset/")))
            (let ((mfst (funcall (find-symbol "BUILD-CORPUS-MANIFEST" :orchestrator.ai-ingest)
-                                doc :base-uri base)))
+                                (doc) :base-uri base)))
              (cond
                ((string= path "/dataset.jsonl")
                 (resp 200 (funcall (find-symbol "DATASET-JSONL-STRING" :orchestrator.ai-ingest)
@@ -445,21 +466,21 @@ Allow: /
                         (:json-ld "application/ld+json; charset=utf-8")
                         (:xml "application/xml; charset=utf-8"))))
              (resp 200 (funcall (find-symbol "CORPUS-PROVENANCE" :orchestrator.corpus-provenance)
-                                doc :base-uri base :format fmt)
+                                (doc) :base-uri base :format fmt)
                    ct)))
 
           ;; /eu-references — link each article to the EU law it cites,
           ;; via official CELEX / ELI / EUR-Lex identifiers.
           ((or (string= path "/eu-references") (string= path "/eu-links"))
            (resp 200 (funcall (find-symbol "CORPUS-EU-REFERENCES" :orchestrator.corpus-eu-links)
-                              doc :base-uri base)
+                              (doc) :base-uri base)
                  "application/json; charset=utf-8"))
 
           ;; /article/{eId}
           ((and (>= (length path) 9) (string= (subseq path 0 9) "/article/"))
            (let* ((eid (subseq path 9))
                   (line (find-article-json
-                         (serialize (make-instance 'jsonl-representation) doc base) eid)))
+                         (serialize (make-instance 'jsonl-representation) (doc) base) eid)))
              (if line
                  (resp 200 line "application/json; charset=utf-8")
                  (resp 404 (format nil "{\"error\":\"article not found\",\"eId\":\"~A\"}" eid)
@@ -468,7 +489,7 @@ Allow: /
           ;; root: content negotiation (AI-first default)
           ((or (string= path "/") (string= path ""))
            (let ((rep (negotiate accept)))
-             (resp 200 (serialize rep doc base)
+             (resp 200 (serialize rep (doc) base)
                    (format nil "~A; charset=utf-8" (representation-media-type rep)))))
 
           (t (resp 404 "{\"error\":\"not found\"}" "application/json; charset=utf-8")))))))
@@ -490,22 +511,32 @@ Allow: /
   ((services :initarg :services :accessor multi-services)   ; alist (name . corpus-service)
    (base-uri :initarg :base-uri :accessor multi-base-uri)))
 
-(defun make-multi-corpus-service (corpora &key (base-uri "https://stavropouloslaw.com/eli")
-                                               as-known-provider-fn)
-  "CORPORA is an alist (corpus-name-string . doc-provider). Each corpus is
-   served under /<corpus-name>/ with its own base URI. AS-KNOWN-PROVIDER-FN
-   ([0088 Φ5β]): fn (corpus-name) → /as-known provider ή NIL (⇒ 501 δηλωμένο)."
+;;; [0088 Φ5-κριτής Μ] Η ΜΙΑ typed περιγραφή ενός σερβιριζόμενου σώματος —
+;;; identity + providers δεμένα σε ΜΙΑ εγγραφή κατά την κατασκευή (καμία
+;;; δεύτερη παράλληλη alist που ξανασυνδέεται με assoc — drift αδύνατο).
+(defstruct (corpus-runtime (:conc-name cr-))
+  name              ; δημόσιο short name (URL prefix) — string, μοναδικό
+  corpus-id         ; εσωτερικό corpus id (config registry) — string
+  doc-provider      ; fn (&optional as-of) → legal-document
+  as-known-provider); fn (article valid known) → plist | NIL (μόνο migration profile)
+
+(defun make-multi-corpus-service (runtimes &key (base-uri "https://stavropouloslaw.com/eli"))
+  "RUNTIMES: λίστα corpus-runtime — Η typed αλήθεια κάθε σώματος (όνομα,
+   ταυτότητα, providers) σε ΜΙΑ εγγραφή. Uniqueness gate στα ονόματα:
+   διπλό short name = ΣΦΑΛΜΑ κατασκευής, όχι σιωπηλή σκίαση route."
+  (let ((names (mapcar #'cr-name runtimes)))
+    (unless (= (length names) (length (remove-duplicates names :test #'equal)))
+      (error "multi-corpus-service: διπλά short names ~S — η ταυτότητα route δεν επιτρέπεται να σκιάζεται"
+             names)))
   (make-instance 'multi-corpus-service
                  :base-uri base-uri
-                 :services (mapcar (lambda (pair)
-                                     (cons (car pair)
+                 :services (mapcar (lambda (rt)
+                                     (cons (cr-name rt)
                                            (make-corpus-service
-                                            (cdr pair)
-                                            :base-uri (format nil "~A/~A" base-uri (car pair))
-                                            :as-known-provider
-                                            (and as-known-provider-fn
-                                                 (funcall as-known-provider-fn (car pair))))))
-                                   corpora)))
+                                            (cr-doc-provider rt)
+                                            :base-uri (format nil "~A/~A" base-uri (cr-name rt))
+                                            :as-known-provider (cr-as-known-provider rt))))
+                                   runtimes)))
 
 (defun %split-corpus-path (path)
   "For \"/corpus/rest...\" return (values corpus rest-path). REST-PATH starts

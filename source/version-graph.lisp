@@ -246,17 +246,36 @@
                :edges (make-hash-table :test 'equal)
                :quarantine '() :gaps '() :chain "genesis"))
 
+(defun %canon-sexp (x out)
+  "Κανονική σειριοποίηση sexp ΤΙΜΩΝ — συνάρτηση της ΑΞΙΑΣ, ποτέ της
+   αναπαράστασης (το prin1 τύπωνε non-simple strings ως #A(...) — η ταυτότητα
+   δεν επιτρέπεται να εξαρτάται από το αν ένα string είναι simple array).
+   Επιτρεπτό πεδίο = ό,τι επιτρέπει το sexp journal: NIL, keyword, string,
+   integer, λίστα αυτών. Οτιδήποτε άλλο ⇒ ΣΦΑΛΜΑ (fail-closed — όχι σιωπηλή
+   «κάπως» σειριοποίηση)."
+  (etypecase x
+    (null (write-string "NIL" out))
+    (keyword (write-char #\: out) (write-string (symbol-name x) out))
+    (string (write-char #\" out)
+     (loop for c across x
+           do (when (or (char= c #\") (char= c #\\)) (write-char #\\ out))
+              (write-char c out))
+     (write-char #\" out))
+    (integer (format out "~D" x))
+    (cons (write-char #\( out)
+     (loop for (e . rest) on x
+           do (%canon-sexp e out)
+              (when rest (write-char #\Space out)))
+     (write-char #\) out))))
+
 (defun %payload-hash (plist)
   "[0088 Φ5 Κ2] sha256 της ΚΑΝΟΝΙΚΗΣ σειριοποίησης ΟΛΟΚΛΗΡΟΥ του journal
    payload (κάθε πεδίο — text/status/effective/assurance/reason/at/…), ΟΧΙ
-   μόνο του semantic record-id. Κανονική μορφή sexp δεδομένων: prin1 υπό
-   with-standard-io-syntax (ντετερμινιστικό για strings/keywords/integers/
-   λίστες — ό,τι ακριβώς επιτρέπει το sexp journal). Το chain αλυσοδένει ΑΥΤΟ:
-   αλλοίωση ΟΠΟΙΟΥΔΗΠΟΤΕ byte με αμετάβλητο record-id/chain ⇒ ρήξη στο replay."
+   μόνο του semantic record-id — μέσω του %canon-sexp (value-canonical).
+   Το chain αλυσοδένει ΑΥΤΟ: αλλοίωση ΟΠΟΙΟΥΔΗΠΟΤΕ byte με αμετάβλητο
+   record-id/chain ⇒ ρήξη στο replay."
   (orchestrator.journal:sha256-hex
-   (with-standard-io-syntax
-     (let ((*print-readably* t))
-       (prin1-to-string plist)))))
+   (with-output-to-string (out) (%canon-sexp plist out))))
 
 (defun %strip-envelope (line)
   "Το payload μιας γραμμής = η γραμμή ΧΩΡΙΣ τα envelope πεδία (:chain,
