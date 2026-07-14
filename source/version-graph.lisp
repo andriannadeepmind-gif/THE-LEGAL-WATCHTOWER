@@ -57,7 +57,7 @@
    #:graph-versions-of #:graph-quarantine #:graph-gaps #:graph-edge-count
    #:submit-genesis! #:admit-edge! #:quarantine! #:retract-knowledge!
    #:add-knowledge-gap! #:kg-provision-id #:kg-effective #:kg-kind
-   #:version-at #:snapshot-at #:verify-chain #:graph-chain-head
+   #:version-at #:snapshot-at #:verify-chain #:graph-chain-head #:graph-latest-at
    #:make-edge-spec #:make-version-spec
    ;; [0088 Φ7 Π1] Formal Temporal Semantics — effectivity conditions
    #:make-effectivity-condition #:condition-id #:condition-ast #:condition-class
@@ -370,7 +370,9 @@
   conditions            ; [Φ7 Π2] condition-id → effectivity-condition (equal)
   cond-events           ; [Φ7 Π2] condition-id → λίστα condition-event (equal)
   regimes               ; [Φ7 Π4] λίστα regime-edge (σειρά εισαγωγής, νεότερο πρώτο)
-  chain)                ; τρέχον chain-hash (κεφαλή αλυσίδας)
+  chain                 ; τρέχον chain-hash (κεφαλή αλυσίδας)
+  (latest-at "1970-01-01T00:00:00Z")) ; [#7] το ΜΕΓΙΣΤΟ journal :at — παράγωγο
+                        ; του journal (ντετερμινιστικό), το as-of των receipts
 
 (defun %graph-path (body-string)
   (orchestrator.paths:institution-dir
@@ -385,6 +387,16 @@
                :conditions (make-hash-table :test 'equal)
                :cond-events (make-hash-table :test 'equal)
                :quarantine '() :gaps '() :regimes '() :chain "genesis"))
+
+(defun graph-latest-at (graph)
+  "[Φ7-HARDENING #7] Το transaction-time στιγμιότυπο «ό,τι ξέρει το journal»
+   — μέγιστο :at όλων των γραμμών: ντετερμινιστική συνάρτηση του journal,
+   ΟΧΙ ρολόι build (τα receipt ids μένουν αναπαραγώγιμα ανά journal state)."
+  (vg-latest-at graph))
+
+(defun %note-latest-at! (graph at)
+  (when (and (stringp at) (string> at (vg-latest-at graph)))
+    (setf (vg-latest-at graph) at)))
 
 (defun %canon-sexp (x out)
   "Κανονική σειριοποίηση sexp ΤΙΜΩΝ — συνάρτηση της ΑΞΙΑΣ, ποτέ της
@@ -452,6 +464,7 @@
          :verify verify)
       (orchestrator.journal:require-durable! receipt :version-graph)
       (setf (vg-chain graph) next-chain)
+      (%note-latest-at! graph (getf plist :at))
       line)))
 
 (defun %recorded-of (line)
@@ -981,6 +994,7 @@
                  :reason (format nil "σπασμένη αλυσίδα στο ~A: περίμενα ~A βρήκα ~A"
                                  rid expect (getf line :chain))))
         (setf (vg-chain graph) expect)
+        (%note-latest-at! graph (getf line :at))
         ;; ③ semantic record hash ανά kind: το record-id ΞΑΝΑΒΓΑΙΝΕΙ από τα
         ;; πεδία — relabeling/πλαστό id αδύνατο ακόμη κι αν το payload-hash
         ;; ξαναγραφόταν συνεπές.

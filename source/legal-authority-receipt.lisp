@@ -22,7 +22,7 @@
   (:export #:legal-authority-receipt #:receipt-p
            #:build-receipt #:build-receipts-for-graph
            #:verify-receipt #:receipt-alist
-           #:lr-receipt-id #:lr-provision-id #:lr-effectivity #:lr-valid-from #:lr-valid-until
+           #:lr-receipt-id #:lr-provision-id #:lr-effectivity #:lr-effectivity-as-of #:lr-valid-from #:lr-valid-until
            #:lr-recorded-from #:lr-content-hash #:lr-genealogy
            #:lr-assurance #:lr-trust-status #:lr-source-artifact))
 
@@ -42,6 +42,10 @@
   release-generation    ; alist (era seq) | :unreleased
   assurance
   trust-status          ; :signed | :unsigned-explicit
+  effectivity-as-of     ; [Φ7-HARDENING #7] legal-instant: το graph-latest-at
+                        ; ΤΗ ΣΤΙΓΜΗ ΤΗΣ ΔΕΣΜΕΥΣΗΣ — το receipt επαληθεύεται
+                        ; ΓΙΑ ΠΑΝΤΑ απέναντι σε ΑΥΤΟ το graph cut: μεταγενέστερο
+                        ; retract/regime event ΔΕΝ το μεταβάλλει (release-scoped)
   effectivity)          ; [Φ7 Π5] alist condition_id/condition_class/regime_edge_ids
                         ; — query-ΑΝΕΞΑΡΤΗΤΑ intrinsic πεδία (spec §6)· NIL όταν
                         ; η έκδοση δεν φέρει αιρέσεις/καθεστώτα ⇒ ΤΑΥΤΟΣΗΜΟ
@@ -59,6 +63,8 @@
    ;; αιρέσεις/καθεστώτα διατηρούν byte-ίδια κανονική μορφή (ids σταθερά)
    (when (lr-effectivity r) (list (cons "effectivity" (lr-effectivity r))))
    (list (cons "assurance" (string-downcase (symbol-name (lr-assurance r))))
+         ;; [#7] το as-of ΔΕΣΜΕΥΕΤΑΙ πάντα (schema receipt/2 — νέα ids)
+         (cons "effectivity_as_of" (lr-effectivity-as-of r))
          (cons "content_hash" (lr-content-hash r))
          (cons "derivation" (lr-derivation r))
          (cons "expression" (lr-expression r))
@@ -90,14 +96,19 @@
             (error "σπασμένη γενεαλογία: previous ~A ΔΕΝ υπάρχει στον γράφο" prev))
           (setf cur pv))))))
 
-(defun %effectivity-of (graph version)
-  "[Φ7 Π5] Τα query-ΑΝΕΞΑΡΤΗΤΑ effectivity πεδία της έκδοσης: condition-id
-   + class (αν είναι υπό αίρεση) + live regime edge-ids που τη στοχεύουν
-   (κατά pid ή version) — ταξινομημένα, ντετερμινιστικά. NIL όταν τίποτα."
+(defun %effectivity-of (graph version as-of)
+  "[Φ7 Π5 + HARDENING #7] Τα query-ΑΝΕΞΑΡΤΗΤΑ effectivity πεδία της έκδοσης
+   ΟΠΩΣ ΗΤΑΝ ΓΝΩΣΤΑ κατά AS-OF (legal-instant): condition-id + class + τα
+   live-κατά-AS-OF regime edge-ids που τη στοχεύουν — ταξινομημένα,
+   ντετερμινιστικά. NIL όταν τίποτα. Το AS-OF κάνει το receipt αμετάβλητο
+   απέναντι σε ΜΕΤΑΓΕΝΕΣΤΕΡΑ events (release-scoped verification)."
   (let* ((cid (orchestrator.version-graph::%tv-conditional-cid version))
          (cnd (and cid (orchestrator.version-graph:graph-condition graph cid)))
          (redges (sort (loop for re in (orchestrator.version-graph:graph-regimes graph)
-                             when (and (eq (orchestrator.version-graph:re-recorded-until re) :current)
+                             when (and (orchestrator.version-graph::%live-at-p
+                                        (orchestrator.version-graph:re-recorded-from re)
+                                        (orchestrator.version-graph:re-recorded-until re)
+                                        as-of)
                                        ;; version-στοχευμένα rewrites δένουν ΜΟΝΟ
                                        ;; στη δική τους έκδοση· pid-επίπεδα
                                        ;; (suspend/revive) σε ΟΛΕΣ του pid
@@ -138,7 +149,10 @@
              :release-generation :unreleased
              :assurance (orchestrator.version-graph:tv-assurance version)
              :trust-status :unsigned-explicit
-             :effectivity (%effectivity-of graph version))))
+             :effectivity-as-of (orchestrator.version-graph:graph-latest-at graph)
+             :effectivity (%effectivity-of
+                           graph version
+                           (orchestrator.version-graph:graph-latest-at graph)))))
     (setf (lr-receipt-id r)
           (orchestrator.canonical-representation:canonical-hash
            (receipt-alist r :without-id t)))
@@ -181,8 +195,13 @@
       (let ((v (gethash (lr-content-hash r)
                         (orchestrator.version-graph::vg-versions graph))))
         (unless v (fail :version-not-in-graph))
-        ;; [Π5] τα effectivity πεδία ΕΠΑΝΥΠΟΛΟΓΙΖΟΝΤΑΙ από τον γράφο
-        (unless (equal (lr-effectivity r) (%effectivity-of graph v))
+        ;; [Π5+#7] τα effectivity πεδία ΕΠΑΝΥΠΟΛΟΓΙΖΟΝΤΑΙ στο ΔΙΚΟ ΤΟΥ
+        ;; graph cut (effectivity_as_of) — μεταγενέστερο retract/regime
+        ;; event ΔΕΝ ακυρώνει/μεταλλάσσει παλαιό receipt (release-scoped).
+        (unless (orchestrator.version-graph:legal-instant-p (lr-effectivity-as-of r))
+          (fail :effectivity-as-of-missing))
+        (unless (equal (lr-effectivity r)
+                       (%effectivity-of graph v (lr-effectivity-as-of r)))
           (fail :effectivity-mismatch))
         (unless (equal (lr-provision-id r)
                        (orchestrator.version-graph:tv-provision-id v))

@@ -1050,7 +1050,34 @@
                    (equal (q *ts-g* "2026-07-01" '((:territorial :thessaloniki)))
                           (q g2 "2026-07-01" '((:territorial :thessaloniki))))))))
 
+;;; ── [Φ7-HARDENING #7] release-scoped receipts: αμετάβλητα σε μελλοντικά events ──
+
+(ts-check "Η7 receipt δεσμεύει effectivity_as_of: ΜΕΤΑΓΕΝΕΣΤΕΡΟ regime event ΔΕΝ μεταβάλλει/ακυρώνει παλαιό receipt· πλαστό as-of ⇒ FAIL"
+          (let ((r (orchestrator.legal-receipt:build-receipt *ts-g* *ts-v60*)))
+            (and (multiple-value-bind (ok why) (orchestrator.legal-receipt:verify-receipt *ts-g* r)
+                   (declare (ignore why)) ok)
+                 (progn
+                   (sleep 1.2) ; δηλωμένο όριο θωράκισης: 1s (granularity journal :at)
+                   (orchestrator.version-graph:admit-regime-edge!
+                    *ts-g* :op :suspend :target *ts-pid6*
+                    :span-from "2027-01-01" :span-until "2027-06-01"
+                    :act-ref "gr/ya/2027/1" :act-seq 1
+                    :enacted "2026-12-20" :fek-date "2026-12-20")
+                   ;; το ΠΑΛΑΙΟ receipt εξακολουθεί να επαληθεύεται στο cut ΤΟΥ
+                   (multiple-value-bind (ok why) (orchestrator.legal-receipt:verify-receipt *ts-g* r)
+                     (declare (ignore why)) ok))
+                 ;; φρέσκο receipt στο ΝΕΟ cut = διαφορετικό effectivity/ids
+                 (let ((r2 (orchestrator.legal-receipt:build-receipt *ts-g* *ts-v60*)))
+                   (not (equal (orchestrator.legal-receipt:lr-receipt-id r)
+                               (orchestrator.legal-receipt:lr-receipt-id r2))))
+                 ;; πλαστό as-of ⇒ receipt-id-mismatch (το πεδίο είναι ΔΕΣΜΕΥΜΕΝΟ)
+                 (progn (setf (orchestrator.legal-receipt:lr-effectivity-as-of r)
+                              "2030-01-01T00:00:00Z")
+                        (multiple-value-bind (ok why)
+                            (orchestrator.legal-receipt:verify-receipt *ts-g* r)
+                          (and (not ok) why))))))
+
 (format t "~%========================================~%")
-(format t "TEMPORAL-SEMANTICS [0088 Φ7 Π1-Π5+Η1-Η3]: ~D passed, ~D failed~%" *ts-pass* *ts-fail*)
+(format t "TEMPORAL-SEMANTICS [0088 Φ7 Π1-Π5+Η1-Η3+Η7]: ~D passed, ~D failed~%" *ts-pass* *ts-fail*)
 (format t "========================================~%")
 (sb-ext:exit :code (if (zerop *ts-fail*) 0 1))
