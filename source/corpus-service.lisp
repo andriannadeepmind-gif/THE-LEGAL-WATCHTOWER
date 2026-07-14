@@ -194,6 +194,27 @@
                  :as-known-provider as-known-provider
                  :base-uri base-uri))
 
+(defun %tra-json-fields (r)
+  "[Φ7-HARDENING #5] Τα tra/1 πεδία της /as-known απάντησης — ΠΑΝΤΑ παρόντα:
+   canonical+hash του deterministic attestation, assurance
+   release-anchored|provisional-unanchored, ονομαστικοί λόγοι όταν
+   unanchored, και τα αγκυρωτικά (release_root, graph_chain_head,
+   verifier_hash) ώστε ο καταναλωτής να ΑΝΑΠΑΡΑΓΕΙ και να ελέγξει."
+  (let ((tra (getf r :tra)))
+    (when tra
+      (append
+       (list (cons "tra"
+                   (list (cons "canonical" (getf tra :canonical))
+                         (cons "graph_chain_head" (getf tra :graph-chain-head))
+                         (cons "hash" (getf tra :hash))
+                         (cons "protocol" (getf tra :protocol))
+                         (cons "receipt_id" (or (getf tra :receipt-id) ""))
+                         (cons "release_root" (or (getf tra :release-root) ""))
+                         (cons "verifier_hash" (or (getf tra :verifier-hash) ""))))
+             (cons "tra_assurance" (getf r :tra-assurance)))
+       (let ((why (getf r :tra-reasons)))
+         (when why (list (cons "tra_unanchored_reasons" why))))))))
+
 ;;; [0088 Φ5β] Το boundary contract του /as-known: ο provider (καλωδιωμένος στο
 ;;; cli πάνω στην έδρα text-as-known) μεταφράζει τις συνθήκες του γράφου σε
 ;;; ΑΥΤΕΣ τις typed συνθήκες — το service δεν γνωρίζει τον γράφο, γνωρίζει το
@@ -396,7 +417,8 @@ Allow: /
                                                         (list (cons "condition_id" (getf p :condition-id))
                                                               (cons "since" (getf p :since)))))))
                                         (let ((sb (getf r :suspended-by)))
-                                          (when sb (list (cons "suspended_by" sb))))))
+                                          (when sb (list (cons "suspended_by" sb))))
+                                        (%tra-json-fields r)))
                                   "application/json; charset=utf-8")
                             ;; τίμιο κενό: καμία έκδοση δεν καλύπτει την τομή
                             (resp 404 (cjson
@@ -412,7 +434,8 @@ Allow: /
                                           (when p
                                             (list (cons "pending_condition"
                                                         (list (cons "condition_id" (getf p :condition-id))
-                                                              (cons "since" (getf p :since)))))))))
+                                                              (cons "since" (getf p :since)))))))
+                                        (%tra-json-fields r)))
                                   "application/json; charset=utf-8")))
                     (as-known-bad-request (e)
                       (resp 400 (cjson (list (cons "error" "invalid temporal parameters")

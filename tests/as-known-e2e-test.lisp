@@ -210,6 +210,22 @@
                    (and (equal "complete" (cdr (assoc "basis" j :test #'string=)))
                         (equal "1975-06-11" (cdr (assoc "valid_from" j :test #'string=)))
                         (plusp (length (cdr (assoc "text" j :test #'string=)))))))))
+(e2-check "⑥τ [Φ7-HARDENING #5] ΚΑΘΕ 200 φέρει tra/1: canonical+hash+αγκυρωτικά + assurance ∈ {release-anchored, provisional-unanchored} (+ονομαστικοί λόγοι όταν unanchored)"
+          (let ((r (e2-get "/constitution/as-known?article=2&valid=2020-01-01&known=9999-12-31T23:59:59Z")))
+            (and (= 200 (e2-status r))
+                 (let* ((j (e2-json r))
+                        (tra (cdr (assoc "tra" j :test #'string=)))
+                        (ass (cdr (assoc "tra_assurance" j :test #'string=))))
+                   (and tra
+                        (equal "lawmax/attestation/1"
+                               (cdr (assoc "protocol" tra :test #'string=)))
+                        (= 64 (length (cdr (assoc "hash" tra :test #'string=))))
+                        (plusp (length (cdr (assoc "canonical" tra :test #'string=))))
+                        (plusp (length (cdr (assoc "graph_chain_head" tra :test #'string=))))
+                        (or (equal ass "release-anchored")
+                            (and (equal ass "provisional-unanchored")
+                                 (consp (cdr (assoc "tra_unanchored_reasons" j
+                                                    :test #'string=))))))))))
 (e2-check "⑥β ΙΔΙΟ άρθρο, known 2001 (πριν το import) ⇒ 404 «καμία έκδοση» — το σύστημα ΔΕΝ το ήξερε τότε"
           (let ((r (e2-get "/constitution/as-known?article=2&valid=2020-01-01&known=2001-01-01T00:00:00Z")))
             (and (= 404 (e2-status r))

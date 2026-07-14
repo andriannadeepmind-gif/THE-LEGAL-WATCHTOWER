@@ -167,6 +167,82 @@
               (push (list eid :unknown-in-graph) divergences)))))
       (values divergences checked))))
 
+;;; ── [Φ7-HARDENING #5/#6] Release-αγκύρωση της serving απάντησης ──
+
+(let ((cache nil))
+  (defun temporal-verifier-hash ()
+    "sha256 του canonical ανεξάρτητου temporal verifier (deployment/verify/
+     verify-temporal.py) — το verifier-hash πεδίο του TRA. Απόν αρχείο ⇒ ΣΦΑΛΜΑ."
+    (or cache
+        (setf cache
+              (let ((p (orchestrator.paths:institution-dir
+                        "deployment/verify/verify-temporal.py")))
+                (unless (probe-file p)
+                  (error "temporal-verifier-hash: απόν ~A" p))
+                (format nil "sha256:~A"
+                        (ironclad:byte-array-to-hex-string
+                         (ironclad:digest-file :sha256 p))))))))
+
+(defun release-anchor-for (corpus-id graph)
+  "[#6] Η ΜΙΑ έδρα αγκύρωσης: ΔΕΝ εμπιστεύεται caller-supplied roots — τα
+   ΠΑΡΑΓΕΙ από τις έδρες και τα ΕΛΕΓΧΕΙ επί τόπου:
+     (α) attested latest.json ⇒ release root·
+     (β) census.json του release ⇒ temporal.graph_root ≡ ζωντανή chain-head·
+     (γ) release root ∈ transparency log (tlog-verify + membership).
+   Επιστρέφει plist (:assurance \"release-anchored\"|\"provisional-unanchored\"
+   :release-root str|NIL :reasons (ονομαστικοί λόγοι)). ΚΑΘΕ αποτυχία =
+   ονομαστικός λόγος — ποτέ σιωπηλό downgrade σε «anchored»."
+  (let* ((root-dir (uiop:ensure-directory-pathname
+                    (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR")
+                        (orchestrator.paths:institution-dir "output"))))
+         (releases-dir (merge-pathnames (format nil "~A/releases/" corpus-id) root-dir))
+         (lj (merge-pathnames "latest.json" releases-dir))
+         (reasons '())
+         (release-root nil))
+    (flet ((fail (r) (push r reasons)))
+      (if (not (probe-file lj))
+          (fail "no-attested-latest-release")
+          (handler-case
+              (let* ((d (jonathan:parse (uiop:read-file-string lj) :as :hash-table))
+                     (rel (gethash "release" d)))
+                (cond
+                  ((not (eq (gethash "attested" d) t))
+                   (fail "latest-release-not-attested"))
+                  ((not (and (stringp rel) (= 71 (length rel))
+                             (string= "sha256-" (subseq rel 0 7))))
+                   (fail "latest-release-malformed"))
+                  (t
+                   (setf release-root (format nil "sha256:~A" (subseq rel 7)))
+                   (let ((cj (merge-pathnames (format nil "~A/census.json" rel)
+                                              releases-dir)))
+                     (if (not (probe-file cj))
+                         (fail "release-census-missing")
+                         (handler-case
+                             (let* ((cd (jonathan:parse (uiop:read-file-string cj)
+                                                        :as :hash-table))
+                                    (tc (gethash "temporal" cd))
+                                    (groot (and (hash-table-p tc)
+                                                (gethash "graph_root" tc))))
+                               (cond
+                                 ((not (stringp groot))
+                                  (fail "census-without-graph-root"))
+                                 ((not (equal groot
+                                              (orchestrator.version-graph:graph-chain-head graph)))
+                                  (fail "graph-head-not-bound-by-release"))))
+                           (error () (fail "release-census-unreadable")))))
+                   (handler-case
+                       (multiple-value-bind (ok info)
+                           (orchestrator.epistemic:tlog-verify releases-dir)
+                         (cond ((eq ok :absent) (fail "transparency-log-absent"))
+                               ((not (member release-root (getf info :entries)
+                                             :test #'equal))
+                                (fail "release-root-not-in-transparency-log"))))
+                     (error () (fail "transparency-log-invalid"))))))
+            (error () (fail "latest-release-unreadable")))))
+    (list :assurance (if reasons "provisional-unanchored" "release-anchored")
+          :release-root release-root
+          :reasons (nreverse reasons))))
+
 (defun text-as-known (corpus-id article-label &key valid-at known-at)
   "«Τι ήξερε το LAWMAX κατά KNOWN-AT για το άρθρο ARTICLE-LABEL κατά VALID-AT;»
    — η διτεμπορική απάντηση ΑΠΟ ΤΟΝ ΓΡΑΦΟ (πλήρες replay από τον δίσκο, με
@@ -182,12 +258,35 @@
                                                :valid-at valid-at :known-at known-at)
       ;; [Φ7 Π5] typed in_force/basis-kind: ο καταναλωτής ΔΕΝ μπορεί να
       ;; παρερμηνεύσει αναστολή/εκκρεμότητα ως ισχύον κείμενο (spec §6).
+      ;; [Φ7-HARDENING #5/#6] ΚΑΘΕ απάντηση φέρει tra/1: deterministic
+      ;; attestation με ΠΑΡΑΓΟΜΕΝΑ (όχι caller-supplied) αγκυρωτικά +
+      ;; assurance release-anchored|provisional-unanchored + ονομαστικούς
+      ;; λόγους — καμία «verified» ένδειξη χωρίς επιβεβαιωμένο release root.
+      (let* ((anchor (release-anchor-for corpus-id graph))
+             (receipt-id
+               (if v
+                   (orchestrator.legal-receipt:lr-receipt-id
+                    (orchestrator.legal-receipt:build-receipt
+                     graph v :source-artifact (%source-artifact-for corpus-id)))
+                   ""))
+             (tra (orchestrator.version-graph:make-effectivity-attestation
+                   graph pid :valid-at valid-at :known-at known-at
+                   :corpus-id corpus-id
+                   :release-root (or (getf anchor :release-root) "")
+                   :receipt-id receipt-id
+                   :verifier-hash (temporal-verifier-hash)))
+             (tra-fields (list :tra tra
+                               :tra-assurance (getf anchor :assurance)
+                               :tra-reasons (getf anchor :reasons))))
       (if (null v)
-          (list :text nil :basis basis
-                :in-force nil :basis-kind "no-version-in-force"
-                :pending (when (and (consp note)
-                                    (eq (first note) :not-yet-effective))
-                           (list :condition-id (second note) :since (third note))))
+          (append
+           (list :text nil :basis basis
+                 :in-force nil :basis-kind "no-version-in-force"
+                 :pending (when (and (consp note)
+                                     (eq (first note) :not-yet-effective))
+                            (list :condition-id (second note) :since (third note))))
+           tra-fields)
+          (append
           (list :text (orchestrator.version-graph:tv-text v)
                 :heading (orchestrator.version-graph:tv-heading v)
                 :valid-from (orchestrator.version-graph:tv-valid-from v)
@@ -205,7 +304,8 @@
                                     (eq (first basis) :not-yet-effective))
                            (list :condition-id (second basis) :since (third basis)))
                 :suspended-by (when (and (consp basis) (eq (first basis) :suspended))
-                                (second basis))))))))
+                                (second basis)))
+          tra-fields)))))))
 
 (defun %source-artifact-for (corpus-id)
   "Η ταυτότητα της πηγής ΜΕΣΑ στη δέσμευση (AUTH-02 ροή): content_sha256 +
