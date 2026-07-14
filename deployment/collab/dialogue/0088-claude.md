@@ -422,3 +422,40 @@ adversarial corpus → formal invariants → signed receipt → rollback drill.
 απαιτεί ο φραγμός ⑬ ⇒ το Φ6γ ΞΕΚΙΝΑ (κατά το κατατεθειμένο σχέδιο ομάδων
 Α-Δ, με proof ανά βήμα). Ο ίδιος ο δημιουργός επισημαίνει: το Φ5 δεν
 θεωρείται πλήρως αποδεδειγμένο πριν το owner docker — παραμένει ζητούμενο.
+
+---
+
+## [0088 Φ6γ-Γ] ΧΑΡΤΟΓΡΑΦΗΣΗ INTELLIGENCE ΟΜΑΔΑΣ — μετρημένο εύρημα & αίτημα απόφασης
+
+Η υπόθεση του σχεδίου («~10 intelligence αρχεία θέλουν rekey number→uri-id»)
+ΑΝΑΤΡΕΠΕΤΑΙ από τη μέτρηση καταναλωτών:
+
+**Ζωντανό & ήδη ΣΩΣΤΟ**: το /diff μονοπάτι (corpus-diff) καταναλώνει από το
+semantic-versioning ΜΟΝΟ το compute-text-diff (LCS), με κλειδιά eId strings
+(«art_5Α») — κανένα rekey δεν χρειάζεται εκεί.
+
+**ΝΗΣΙΑ με number-κλειδιά και 0 ζωντανούς καταναλωτές** (μόνο tests ή τίποτα):
+1. citation-authority: το graph-analytics σκέλος (add-article/PageRank/
+   betweenness/hubs, fixnum keys) — καταναλώνεται ΜΟΝΟ από tests· η ΓΛΩΣΣΙΚΗ
+   έδρα του ίδιου αρχείου (tokenize/lemmata/normalize) είναι η ζωντανή.
+2. semantic-versioning-system: το version-manager/delta-TTL σκέλος
+   (track-article-evolution, register-version, delta:targetArticle ~D) — 0.
+3. embeddings-authority (OpenAI .vec, «article-~3,'0D.vec» = ΔΙΑΡΡΟΗ
+   συνθετικού αριθμού για lettered) — 0.
+4. signed-embedding-manifest (hardcoded gr/syntagma URIs, τρίτη αναπαράσταση
+   άρθρου) — 0.
+5. ai-citation-strategy + ai-core/citation-strategy (αλυσίδα νησιών) — 0.
+
+**ΑΠΟΦΑΣΗ ΔΗΜΙΟΥΡΓΟΥ (εκκρεμεί)**: το asd δηλώνει «Restored capabilities
+(never remove functionality)». Οι επιλογές για τα 5 νησιά:
+  (Α) ΘΑΝΑΤΟΣ κατά [0045] (grep-gate 0 καταναλωτών — πληρούται ΗΔΗ)·
+  (Β) rekey σε typed ids ΤΩΡΑ παρότι νεκρά (κόστος χωρίς παραγωγικό όφελος)·
+  (Γ) διατήρηση ως-έχουν με ΔΗΛΩΜΕΝΟ identity-debt (σε καραντίνα από τη
+      μετάβαση, rekey όταν/αν ζωντανέψουν).
+Πρότασή μου: (Α) για 4 & 5 (syntagma-hardcoded/τρίτη αναπαράσταση = καθαρή
+μετριότητα)· (Γ) για 1-3 (γνήσιες μελλοντικές δυνατότητες). Καμία ενέργεια
+χωρίς ρητή επιλογή.
+
+Η Φ6γ συνεχίζει στο μεταξύ με την ομάδα Α (FRBR layer — δικά του
+number/suffix slots, ΖΩΝΤΑΝΟ emit path) και το legal-ast (μαζί με το
+integer get-article του corpus.lisp) — εκεί είναι το πραγματικό ζωντανό βάρος.
