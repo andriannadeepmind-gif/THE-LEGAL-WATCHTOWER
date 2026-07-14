@@ -71,6 +71,8 @@
    #:re-span-from #:re-span-until #:re-condition-id #:re-prior-edge-id
    #:re-recorded-from #:re-recorded-until
    #:interval-relation #:interval-intersects-p #:interval-covers-p
+   ;; [Φ7 Π5] deterministic effectivity attestation
+   #:make-effectivity-attestation
    #:date+ #:sat
    #:invalid-condition))
 
@@ -1709,3 +1711,79 @@
                            until (re-span-until re)))
           (t nil))))
     (values from until)))
+
+;;; ============================================================================
+;;; [0088 Φ7 Π5] EFFECTIVITY ATTESTATION — deterministic certificate (spec §6)
+;;; ΚΑΝΕΝΑ online κλειδί: κάθε πεδίο επανυπολογίσιμο από το υπογεγραμμένο
+;;; release root + τον journaled γράφο + τον canonical verifier — η αυθεντία
+;;; είναι η ΑΝΑΠΑΡΑΓΩΓΙΜΟΤΗΤΑ, byte-wise.
+;;; ============================================================================
+
+(defun %pid-condition-states (graph pid known-at)
+  "sat-καταστάσεις ΟΛΩΝ των αιρέσεων που αναφέρονται από live conditional
+   εκδόσεις του PID — ταξινομημένες κατά cid (ντετερμινιστικά)."
+  (let ((out '()))
+    (dolist (v (gethash pid (vg-by-provision graph)))
+      (let ((cid (%tv-conditional-cid v)))
+        (when (and cid (%recorded-live-p v known-at)
+                   (not (assoc cid out :test #'equal)))
+          (multiple-value-bind (st at) (condition-status graph cid :known-at known-at)
+            (push (list cid (string-downcase (symbol-name st)) (or at "")) out)))))
+    (sort out #'string< :key #'first)))
+
+(defun %pid-regime-ids (graph pid known-at)
+  "Τα edge-ids των live-κατά-known-at regime edges του PID — ταξινομημένα."
+  (sort (loop for re in (vg-regimes graph)
+              when (and (equal (re-target re) pid) (%re-live-p re known-at))
+                collect (re-edge-id re))
+        #'string<))
+
+(defun make-effectivity-attestation (graph pid &key valid-at known-at corpus-id
+                                                    release-root receipt-id
+                                                    verifier-hash)
+  "[Π5] Deterministic effectivity certificate για την τομή (VALID-AT,
+   KNOWN-AT): plist με :canonical (value-canonical string), :hash (sha256),
+   :outcome (sum type — resolved(vhash) | no-version-in-force |
+   not-yet-effective(cid since) | suspended(edge-id vhash) |
+   uncertain(λόγος)) + όλα τα αγκυρωτικά πεδία. ΧΩΡΙΣ υπογραφή: ο verifier
+   ΑΝΑΠΑΡΑΓΕΙ και συγκρίνει byte-wise — αγκύρωση στο release root κατά
+   spec §6 (release-anchored ⇔ chain-head = census graph_root υπογεγραμμένου
+   release· η κρίση αυτή γίνεται στον καταναλωτή/verifier με το log)."
+  (let* ((outcome
+           (handler-case
+               (multiple-value-bind (v basis note)
+                   (version-at graph pid :valid-at valid-at :known-at known-at)
+                 (cond
+                   ((and v (eq basis :complete)) (list "resolved" (tv-version-hash v)))
+                   ((and v (consp basis) (eq (first basis) :suspended))
+                    (list "suspended" (second basis) (tv-version-hash v)))
+                   ((and v (consp basis) (eq (first basis) :not-yet-effective))
+                    ;; η ΠΑΛΑΙΑ in-force + δηλωμένη επικείμενη: resolved με pending
+                    (list "resolved" (tv-version-hash v)
+                          "pending" (second basis) (third basis)))
+                   ((null v)
+                    (if (and (consp note) (eq (first note) :not-yet-effective))
+                        (list "no-version-in-force" "pending" (second note) (third note))
+                        (list "no-version-in-force")))
+                   (t (error 'invalid-edge :reason "αδύνατη έκβαση version-at"))))
+             (temporal-uncertainty (e)
+               (list "uncertain" (uncertainty-why e)))))
+         (payload (list :lawmax/attestation/1
+                        (or corpus-id "") pid valid-at known-at
+                        outcome
+                        (%pid-condition-states graph pid known-at)
+                        (%pid-regime-ids graph pid known-at)
+                        (or receipt-id "") (or release-root "")
+                        (vg-chain graph) (or verifier-hash "")))
+         (canonical (with-output-to-string (out) (%canon-sexp payload out)))
+         (hash (orchestrator.journal:sha256-hex canonical)))
+    (list :protocol "lawmax/attestation/1"
+          :corpus-id corpus-id :provision pid
+          :valid-at valid-at :known-at known-at
+          :outcome outcome
+          :condition-states (%pid-condition-states graph pid known-at)
+          :regime-edge-ids (%pid-regime-ids graph pid known-at)
+          :receipt-id receipt-id :release-root release-root
+          :graph-chain-head (vg-chain graph)
+          :verifier-hash verifier-hash
+          :canonical canonical :hash hash)))

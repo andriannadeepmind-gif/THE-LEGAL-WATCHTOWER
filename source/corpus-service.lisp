@@ -369,22 +369,50 @@ Allow: /
                   (handler-case
                       (let ((r (funcall provider article valid known)))
                         (if (getf r :text)
+                            ;; [Φ7 Π5] typed in_force/basis (spec §6): αναστολή/
+                            ;; εκκρεμότητα ΔΕΝ μπορεί να παρερμηνευθεί ως ισχύον —
+                            ;; το basis είναι πλέον string-kind (το raw :basis
+                            ;; μπορεί να είναι cons: ποτέ symbol-name πάνω του).
                             (resp 200 (cjson
-                                       (list (cons "article" article)
-                                             (cons "assurance" (string-downcase (symbol-name (getf r :assurance))))
-                                             (cons "basis" (string-downcase (symbol-name (getf r :basis))))
-                                             (cons "heading" (or (getf r :heading) :null))
-                                             (cons "known_at" known)
-                                             (cons "text" (getf r :text))
-                                             (cons "valid_at" valid)
-                                             (cons "valid_from" (getf r :valid-from))
-                                             (cons "valid_until" (let ((vu (getf r :valid-until)))
-                                                                   (if (stringp vu) vu :null)))))
+                                       (append
+                                        (list (cons "article" article)
+                                              (cons "assurance" (string-downcase (symbol-name (getf r :assurance))))
+                                              (cons "basis" (or (getf r :basis-kind)
+                                                                (let ((b (getf r :basis)))
+                                                                  (if (symbolp b)
+                                                                      (string-downcase (symbol-name b))
+                                                                      "complete"))))
+                                              (cons "heading" (or (getf r :heading) :null))
+                                              (cons "in_force" (if (getf r :in-force) t :false))
+                                              (cons "known_at" known)
+                                              (cons "text" (getf r :text))
+                                              (cons "valid_at" valid)
+                                              (cons "valid_from" (getf r :valid-from))
+                                              (cons "valid_until" (let ((vu (getf r :valid-until)))
+                                                                    (if (stringp vu) vu :null))))
+                                        (let ((p (getf r :pending)))
+                                          (when p
+                                            (list (cons "pending_condition"
+                                                        (list (cons "condition_id" (getf p :condition-id))
+                                                              (cons "since" (getf p :since)))))))
+                                        (let ((sb (getf r :suspended-by)))
+                                          (when sb (list (cons "suspended_by" sb))))))
                                   "application/json; charset=utf-8")
                             ;; τίμιο κενό: καμία έκδοση δεν καλύπτει την τομή
                             (resp 404 (cjson
-                                       (list (cons "basis" (string-downcase (symbol-name (or (getf r :basis) :none))))
-                                             (cons "error" "no version covers the requested cut")))
+                                       (append
+                                        (list (cons "basis" (or (getf r :basis-kind)
+                                                                (let ((b (getf r :basis)))
+                                                                  (if (symbolp b)
+                                                                      (string-downcase (symbol-name (or b :none)))
+                                                                      "no-version-in-force"))))
+                                              (cons "error" "no version covers the requested cut")
+                                              (cons "in_force" :false))
+                                        (let ((p (getf r :pending)))
+                                          (when p
+                                            (list (cons "pending_condition"
+                                                        (list (cons "condition_id" (getf p :condition-id))
+                                                              (cons "since" (getf p :since)))))))))
                                   "application/json; charset=utf-8")))
                     (as-known-bad-request (e)
                       (resp 400 (cjson (list (cons "error" "invalid temporal parameters")

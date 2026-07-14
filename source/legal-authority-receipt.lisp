@@ -22,7 +22,7 @@
   (:export #:legal-authority-receipt #:receipt-p
            #:build-receipt #:build-receipts-for-graph
            #:verify-receipt #:receipt-alist
-           #:lr-receipt-id #:lr-provision-id #:lr-valid-from #:lr-valid-until
+           #:lr-receipt-id #:lr-provision-id #:lr-effectivity #:lr-valid-from #:lr-valid-until
            #:lr-recorded-from #:lr-content-hash #:lr-genealogy
            #:lr-assurance #:lr-trust-status #:lr-source-artifact))
 
@@ -41,7 +41,11 @@
   previous-version-hash ; sha256 | "genesis"
   release-generation    ; alist (era seq) | :unreleased
   assurance
-  trust-status)         ; :signed | :unsigned-explicit
+  trust-status          ; :signed | :unsigned-explicit
+  effectivity)          ; [Φ7 Π5] alist condition_id/condition_class/regime_edge_ids
+                        ; — query-ΑΝΕΞΑΡΤΗΤΑ intrinsic πεδία (spec §6)· NIL όταν
+                        ; η έκδοση δεν φέρει αιρέσεις/καθεστώτα ⇒ ΤΑΥΤΟΣΗΜΟ
+                        ; receipt-id με το προ-Π5 σχήμα (roots αμετάβλητα)
 
 (defun %vu (x) (if (eq x :open) "open" x))
 (defun %ru (x) (if (eq x :current) "current" x))
@@ -51,6 +55,9 @@
    WITHOUT-ID: η μορφή πάνω στην οποία υπολογίζεται το receipt-id."
   (append
    (unless without-id (list (cons "receipt_id" (lr-receipt-id r))))
+   ;; [Π5] το effectivity μπαίνει ΜΟΝΟ όταν υπάρχει — receipts χωρίς
+   ;; αιρέσεις/καθεστώτα διατηρούν byte-ίδια κανονική μορφή (ids σταθερά)
+   (when (lr-effectivity r) (list (cons "effectivity" (lr-effectivity r))))
    (list (cons "assurance" (string-downcase (symbol-name (lr-assurance r))))
          (cons "content_hash" (lr-content-hash r))
          (cons "derivation" (lr-derivation r))
@@ -83,6 +90,32 @@
             (error "σπασμένη γενεαλογία: previous ~A ΔΕΝ υπάρχει στον γράφο" prev))
           (setf cur pv))))))
 
+(defun %effectivity-of (graph version)
+  "[Φ7 Π5] Τα query-ΑΝΕΞΑΡΤΗΤΑ effectivity πεδία της έκδοσης: condition-id
+   + class (αν είναι υπό αίρεση) + live regime edge-ids που τη στοχεύουν
+   (κατά pid ή version) — ταξινομημένα, ντετερμινιστικά. NIL όταν τίποτα."
+  (let* ((cid (orchestrator.version-graph::%tv-conditional-cid version))
+         (cnd (and cid (orchestrator.version-graph:graph-condition graph cid)))
+         (redges (sort (loop for re in (orchestrator.version-graph:graph-regimes graph)
+                             when (and (eq (orchestrator.version-graph:re-recorded-until re) :current)
+                                       ;; version-στοχευμένα rewrites δένουν ΜΟΝΟ
+                                       ;; στη δική τους έκδοση· pid-επίπεδα
+                                       ;; (suspend/revive) σε ΟΛΕΣ του pid
+                                       (if (orchestrator.version-graph:re-version re)
+                                           (equal (orchestrator.version-graph:re-version re)
+                                                  (orchestrator.version-graph:tv-version-hash version))
+                                           (equal (orchestrator.version-graph:re-target re)
+                                                  (orchestrator.version-graph:tv-provision-id version))))
+                               collect (orchestrator.version-graph:re-edge-id re))
+                       #'string<)))
+    (when (or cid redges)
+      (append
+       (when cid
+         (list (cons "condition_class"
+                     (string-downcase (symbol-name (orchestrator.version-graph:condition-class cnd))))
+               (cons "condition_id" cid)))
+       (when redges (list (cons "regime_edge_ids" redges)))))))
+
 (defun build-receipt (graph version &key source-artifact)
   "Receipt για τη ΣΥΓΚΕΚΡΙΜΕΝΗ έκδοση, με γενεαλογία ΑΠΟ ΤΟΝ ΓΡΑΦΟ."
   (let* ((genealogy (%genealogy-of graph version))
@@ -104,7 +137,8 @@
                (if (eq p :genesis) "genesis" p))
              :release-generation :unreleased
              :assurance (orchestrator.version-graph:tv-assurance version)
-             :trust-status :unsigned-explicit)))
+             :trust-status :unsigned-explicit
+             :effectivity (%effectivity-of graph version))))
     (setf (lr-receipt-id r)
           (orchestrator.canonical-representation:canonical-hash
            (receipt-alist r :without-id t)))
@@ -147,6 +181,9 @@
       (let ((v (gethash (lr-content-hash r)
                         (orchestrator.version-graph::vg-versions graph))))
         (unless v (fail :version-not-in-graph))
+        ;; [Π5] τα effectivity πεδία ΕΠΑΝΥΠΟΛΟΓΙΖΟΝΤΑΙ από τον γράφο
+        (unless (equal (lr-effectivity r) (%effectivity-of graph v))
+          (fail :effectivity-mismatch))
         (unless (equal (lr-provision-id r)
                        (orchestrator.version-graph:tv-provision-id v))
           (fail :provision-id-mismatch))

@@ -177,17 +177,35 @@
   (multiple-value-bind (graph body) (%ensure-graph corpus-id :if-missing :error)
     (let ((pid (orchestrator.identity:provision-id-string
                 (orchestrator.identity:article-provision-id body article-label))))
-    (multiple-value-bind (v basis)
+    (multiple-value-bind (v basis note)
         (orchestrator.version-graph:version-at graph pid
                                                :valid-at valid-at :known-at known-at)
+      ;; [Φ7 Π5] typed in_force/basis-kind: ο καταναλωτής ΔΕΝ μπορεί να
+      ;; παρερμηνεύσει αναστολή/εκκρεμότητα ως ισχύον κείμενο (spec §6).
       (if (null v)
-          (list :text nil :basis basis)
+          (list :text nil :basis basis
+                :in-force nil :basis-kind "no-version-in-force"
+                :pending (when (and (consp note)
+                                    (eq (first note) :not-yet-effective))
+                           (list :condition-id (second note) :since (third note))))
           (list :text (orchestrator.version-graph:tv-text v)
                 :heading (orchestrator.version-graph:tv-heading v)
                 :valid-from (orchestrator.version-graph:tv-valid-from v)
                 :valid-until (orchestrator.version-graph:tv-valid-until v)
                 :assurance (orchestrator.version-graph:tv-assurance v)
-                :basis basis))))))
+                :basis basis
+                :in-force (not (and (consp basis) (eq (first basis) :suspended)))
+                :basis-kind (cond ((eq basis :complete) "complete")
+                                  ((and (consp basis) (eq (first basis) :suspended))
+                                   "suspended")
+                                  ((and (consp basis) (eq (first basis) :not-yet-effective))
+                                   "complete")
+                                  (t "complete"))
+                :pending (when (and (consp basis)
+                                    (eq (first basis) :not-yet-effective))
+                           (list :condition-id (second basis) :since (third basis)))
+                :suspended-by (when (and (consp basis) (eq (first basis) :suspended))
+                                (second basis))))))))
 
 (defun %source-artifact-for (corpus-id)
   "Η ταυτότητα της πηγής ΜΕΣΑ στη δέσμευση (AUTH-02 ροή): content_sha256 +

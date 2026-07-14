@@ -801,3 +801,36 @@ as-known in_force).
 | #13 β: τεστ-κενά | Locks ⑰-⑰στ ακριβώς στις περιοχές των ευρημάτων + restart parity του tiling |
 
 Proof: temporal-semantics **73/73** + 8 σουίτες 0 failed (409 checks).
+
+## [0088 Φ7 Π5] Δέσμευση ΥΛΟΠΟΙΗΜΕΝΗ — intrinsic receipts + deterministic attestation + /as-known in_force
+
+Κατά spec v3 §6 όπως διορθώθηκε (κανένα online κλειδί):
+- **Intrinsic receipt effectivity**: νέο πεδίο effectivity στο
+  LegalAuthorityReceipt — condition_id + condition_class (υπό-αίρεση
+  έκδοση) + regime_edge_ids (version-scoped rewrites ΜΟΝΟ στη δική τους
+  έκδοση, pid-επίπεδα suspend/revive σε όλες)· μπαίνει στο canonical alist
+  ΜΟΝΟ όταν μη κενό ⇒ receipts χωρίς αιρέσεις/καθεστώτα byte-ταυτόσημα
+  (receipt-set roots ΑΜΕΤΑΒΛΗΤΑ — parity 31/31 + receipt 15/15 το
+  αποδεικνύουν)· verify-receipt ΕΠΑΝΥΠΟΛΟΓΙΖΕΙ το effectivity από τον
+  γράφο (mismatch ⇒ FAIL).
+- **make-effectivity-attestation** (έδρα version-graph): deterministic
+  certificate — protocol lawmax/attestation/1, provision, τομή, outcome
+  sum type {resolved(vhash)[+pending] | suspended(eid,vhash) |
+  no-version-in-force[+pending] | uncertain(λόγος)}, sat-καταστάσεις ανά
+  cid, live regime-edge-ids, receipt-id/release-root/chain-head/
+  verifier-hash — canonical %canon-sexp + sha256, ΧΩΡΙΣ υπογραφή
+  (αναπαραγωγή = επαλήθευση, αγκύρωση στο υπογεγραμμένο release κατά §6).
+- **/as-known**: πεδία in_force (boolean — false σε αναστολή) + basis
+  string + pending_condition{condition_id, since} + suspended_by —
+  προσθετικά (τα 26 e2e locks άθικτα)· διορθώθηκε και λανθάνον 500:
+  το raw :basis είναι πλέον cons σε pending/suspended — ποτέ symbol-name
+  πάνω του· text-as-known εκθέτει :in-force/:basis-kind/:pending typed.
+
+Locks ⑱-⑱ε (temporal-semantics 73→78): ντετερμινισμός byte-identical,
+αναπαραγωγή από load-graph ⇒ ίδιο hash, 4 outcomes, ευαισθησία hash σε
+τομή/root, intrinsic effectivity + verify-receipt.
+
+Proof: temporal-semantics **78/78** · legal-authority-receipt 15/15 ·
+parity 31/31 · as-known-e2e 26/26 + 5 σουίτες 0 failed.
+ΕΠΟΜΕΝΟ: Π6 python verifier ΣΤΟ ΙΔΙΟ gate → Π7 πραγματικά μοτίβα (θέλει
+τα 9 ΦΕΚ του δημιουργού).
