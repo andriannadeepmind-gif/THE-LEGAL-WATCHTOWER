@@ -193,3 +193,37 @@ container με RW mount). Ο δημιουργός το αποκατέστησε 
 
 **⇒ Το δηλωμένο όριο συνέχειας ήρθη: Φ5-πλήρες (cutover) και Φ6 (θάνατοι
 adapters) αποδεσμεύονται.**
+
+---
+
+## [0088+++] ΠΡΟΟΔΟΣ Φ5-ΠΛΗΡΕΣ (α/β/γ) — 2026-07-14
+
+Μετά το πράσινο owner docker proof, αποδεσμεύτηκε και εκτελείται το Φ5-πλήρες:
+
+- **Φ5α — census-2 (κλείσιμο PCL-02)**: `corpus-temporal-commitment` (ΜΙΑ έδρα,
+  cli) = graph_root (κεφαλή chain-hash με verify-chain replay από δίσκο) +
+  receipt_set_root (RFC-6962 MTH των receipt-ids στη σημερινή τομή, σειρά
+  provision-id), fail-closed (0 uncertain / 0 verification failures / import
+  από provenance-ελεγμένη πηγή αν λείπει journal). Το census-2 ΔΕΝ κόβεται
+  χωρίς temporal block· ροή μέσω context σε run-pipeline (JSON+PDF) ΚΑΙ
+  --cut-release· fail-closed στο engine stage ΚΑΙ στην έδρα census.
+  Spec ενημερώθηκε (LAWMAX-PROOF-OBJECT-SPEC §2). Proofs: artifact-census
+  21/21, graph-import-parity ⑥/⑥β.
+- **Φ5β — HTTP /as-known**: route στο corpus-service με typed boundary
+  contract (as-known-uncertain⇒422, as-known-unknown⇒404, χωρίς provider⇒501,
+  χωρίς κάλυψη⇒404 τίμιο κενό). Provider ανά σώμα στο cli πάνω στην έδρα
+  text-as-known (μετάφραση συνθηκών γράφου→boundary). Proofs: corpus-service
+  52/52 (7 νέα locks).
+- **Φ5γ — grounded reasoning (θάνατος TRUST-01)**: `grounded-impact` — κάθε
+  συμπέρασμα impact φέρει {provision-id, receipt-id, content-hash, valid-from}
+  επιλυμένα με version-at στην υποχρεωτική διτεμπορική τομή· αθεμελίωτα
+  ΔΗΛΩΝΟΝΤΑΙ· ερωτώμενο άρθρο χωρίς θεμέλιο ⇒ ΣΦΑΛΜΑ· το --reason εκδίδει
+  θεμελιωμένη αναφορά. Locks ⑦/⑦β (μη-ταυτολογικό — άρθρο με πραγματικές
+  εισερχόμενες παραπομπές, 3 θεμελιωμένα)/⑦γ — graph-import-parity 31/31.
+
+Commits: 98653515 (Φ5α), 61909485 (Φ5β), dd0e817b (Φ5γ).
+
+**Επόμενο**: Φ5δ cutover emitters/serving από snapshot-at (fold-parity gate
+ενεργός) + conformance transaction-time ζεύγη + grep-gate silent_fallbacks=0·
+μετά Φ6 θάνατοι adapters (grep-gate 0 καταναλωτών ανά έδρα)· μετά 2
+αντιπαλικοί κριτές + παραδοτέο §7.
