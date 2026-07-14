@@ -45,6 +45,10 @@
    #:tv-version-hash #:tv-provision-id #:tv-text #:tv-heading
    #:tv-valid-from #:tv-valid-until #:tv-recorded-from #:tv-recorded-until
    #:tv-status #:tv-previous-version-hash #:tv-created-by #:tv-assurance
+   ;; [Φ7-HARDENING #1] commencement sum type — Η έδρα έναρξης ισχύος
+   #:tv-commencement #:tv-commencement-key
+   #:commencement-p #:commencement-fixed #:commencement-conditional
+   #:commencement-key #:parse-commencement #:commencement-date #:commencement-cid
    ;; edge αναγνώστες
    #:ae-edge-id #:ae-op #:ae-target #:ae-effective #:ae-enacted
    #:qe-reason #:qe-edge
@@ -185,7 +189,8 @@
   version-hash          ; sha256 canonical record (χωρίς recorded — event time εκτός ταυτότητας)
   provision-id          ; provision-id-string (orchestrator.identity)
   text heading
-  valid-from            ; legal-date — ΥΠΟΧΡΕΩΤΙΚΟ
+  commencement          ; [Φ7-HARDENING #1] sum type (:fixed d)|(:conditional cid)
+                        ; — Η έδρα· ΠΟΤΕ sentinel string σε πεδίο ημερομηνίας
   valid-until           ; legal-date | :open   (κλείνει ΜΟΝΟ μέσω ακμής, journaled)
   recorded-from         ; journal receipt time — ΥΠΟΧΡΕΩΤΙΚΟ
   recorded-until        ; timestamp | :current (κλείνει ΜΟΝΟ μέσω retract, journaled)
@@ -260,15 +265,79 @@
       (format nil "conditional:~A" (second e))
       e))
 
-(defun %conditional-valid-from (cid)
-  (format nil "conditional:~A" cid))
+;;; [Φ7-HARDENING #1] COMMENCEMENT SUM TYPE — Η ΜΙΑ έδρα έναρξης ισχύος:
+;;;   (:fixed <legal-date>) | (:conditional <condition-id>)
+;;; ΚΛΕΙΣΤΟΣ τύπος. ΚΑΜΙΑ condition-ταυτότητα δεν μεταμφιέζεται σε
+;;; ημερομηνία: το tv-valid-from είναι πλέον ΠΡΟΒΟΛΗ (legal-date | NIL —
+;;; τίμια άγνοια όσο η αίρεση εκκρεμεί), ΟΧΙ slot που χωράει sentinel.
+;;; Το journal/hash δεσμεύει την ΚΑΝΟΝΙΚΗ string προβολή (commencement-key:
+;;; "YYYY-MM-DD" | "conditional:<cid>") — αυτό είναι ΣΕΙΡΙΟΠΟΙΗΣΗ της έδρας,
+;;; όχι δεύτερος τύπος: τα append-only journals δεν ξαναγράφονται ΠΟΤΕ
+;;; (καμία byte-migration, όλα τα υπάρχοντα hashes/chains σταθερά), ενώ η
+;;; runtime αναπαράσταση είναι ΠΑΝΤΑ το sum type (parse-commencement =
+;;; fail-closed αντίστροφη, load-graph τη διατρέχει).
+
+(defun commencement-p (c)
+  (and (consp c) (null (cddr c))
+       (case (first c)
+         (:fixed (legal-date-p (second c)))
+         (:conditional (and (stringp (second c)) (plusp (length (second c)))))
+         (t nil))))
+
+(defun commencement-fixed (date)
+  (%require-date date "commencement")
+  (list :fixed date))
+
+(defun commencement-conditional (cid)
+  (unless (and (stringp cid) (plusp (length cid)))
+    (error 'invalid-edge :reason "commencement-conditional: condition-id μη κενό string"))
+  (list :conditional cid))
+
+(defun %require-commencement (c where)
+  (unless (commencement-p c)
+    (error 'invalid-edge
+           :reason (format nil "~A: απαιτείται commencement (:fixed legal-date) | (:conditional cid) — βρέθηκε ~S"
+                           where c)))
+  c)
+
+(defun commencement-key (c)
+  "Η ΜΙΑ κανονική string προβολή για journal/hash — projection, όχι τύπος."
+  (%require-commencement c "commencement-key")
+  (ecase (first c)
+    (:fixed (second c))
+    (:conditional (format nil "conditional:~A" (second c)))))
+
+(defun parse-commencement (s)
+  "Αντίστροφη της commencement-key — fail-closed (load-graph/replay)."
+  (unless (stringp s)
+    (error 'journal-corruption
+           :reason (format nil "commencement serialization μη-string: ~S" s)))
+  (cond ((legal-date-p s) (list :fixed s))
+        ((and (> (length s) 12) (string= "conditional:" s :end2 12))
+         (list :conditional (subseq s 12)))
+        (t (error 'journal-corruption
+                  :reason (format nil "μη αναγνωρίσιμη commencement serialization: ~S" s)))))
+
+(defun commencement-date (c)
+  "legal-date για :fixed, NIL για :conditional (η ημερομηνία ΔΕΝ υπάρχει
+   πριν την ικανοποίηση — παράγεται στο version-at από το sat, spec §4)."
+  (when (eq :fixed (first c)) (second c)))
+
+(defun commencement-cid (c)
+  (when (eq :conditional (first c)) (second c)))
 
 (defun %tv-conditional-cid (v)
-  "Το condition-id μιας ΥΠΟ ΑΙΡΕΣΗ έκδοσης (sentinel valid-from), αλλιώς NIL."
-  (let ((vf (tv-valid-from v)))
-    (and (stringp vf) (> (length vf) 12)
-         (string= "conditional:" vf :end2 12)
-         (subseq vf 12))))
+  "Το condition-id μιας ΥΠΟ ΑΙΡΕΣΗ έκδοσης, αλλιώς NIL — μέσω της έδρας."
+  (commencement-cid (tv-commencement v)))
+
+(defun tv-valid-from (v)
+  "ΗΜΕΡΟΜΗΝΙΑΚΗ προβολή της έναρξης ισχύος: legal-date για :fixed,
+   NIL για :conditional — τίμια άγνοια, ποτέ sentinel μεταμφιεσμένο σε date."
+  (commencement-date (tv-commencement v)))
+
+(defun tv-commencement-key (v)
+  "Η κανονική string προβολή της έναρξης (ταυτότητες/receipts)."
+  (commencement-key (tv-commencement v)))
 
 (defun %edge-hash (op target from to act-ref act-seq enacted effective fek-date span)
   (orchestrator.canonical-representation:canonical-hash
@@ -422,18 +491,33 @@
 ;;; Δημόσιες πράξεις — ΟΛΕΣ journal-first
 ;;; ----------------------------------------------------------------------------
 
-(defun make-version-spec (&key provision-id text heading valid-from
+(defun make-version-spec (&key provision-id text heading valid-from commencement
                                (status :in-force) (previous :genesis) assurance)
-  "Υποψήφιο περιεχόμενο έκδοσης (πριν την εισδοχή). Fail-closed στον χρόνο."
-  (%require-date valid-from "valid-from")
-  (unless (and (stringp provision-id) (stringp text))
-    (error 'invalid-edge :reason "provision-id/text μη-string"))
-  (unless (member assurance '(:verified :extracted-verified :attested-manual
-                              :reconstructed :legacy-unverifiable))
-    (error 'invalid-edge :reason (format nil "άγνωστο assurance ~S" assurance)))
-  (list :provision-id provision-id :text text :heading heading
-        :valid-from valid-from :status status :previous previous
-        :assurance assurance))
+  "Υποψήφιο περιεχόμενο έκδοσης (πριν την εισδοχή). Fail-closed στον χρόνο.
+   [Φ7-HARDENING #1] ΑΚΡΙΒΩΣ ΜΙΑ πηγή έναρξης: είτε VALID-FROM (legal-date ⇒
+   (:fixed d)) είτε COMMENCEMENT (το sum type αυτούσιο) — ποτέ και τα δύο,
+   ποτέ sentinel string."
+  (when (and valid-from commencement)
+    (error 'invalid-edge :reason "make-version-spec: valid-from ΚΑΙ commencement — ακριβώς μία πηγή έναρξης"))
+  (let ((c (cond (commencement (%require-commencement commencement "make-version-spec"))
+                 (t (%require-date valid-from "valid-from")
+                    (list :fixed valid-from)))))
+    (unless (and (stringp provision-id) (stringp text))
+      (error 'invalid-edge :reason "provision-id/text μη-string"))
+    (unless (member assurance '(:verified :extracted-verified :attested-manual
+                                :reconstructed :legacy-unverifiable))
+      (error 'invalid-edge :reason (format nil "άγνωστο assurance ~S" assurance)))
+    (list :provision-id provision-id :text text :heading heading
+          :commencement c :status status :previous previous
+          :assurance assurance)))
+
+(defun %normalize-version-spec (vs)
+  "[Φ7-HARDENING #1] Η ΜΙΑ είσοδος version-spec στο admit-edge!: spec με
+   :commencement επικυρώνεται· raw plist με :valid-from περνά ΜΕΣΑ από τη
+   make-version-spec (μία έδρα κατασκευής — καμία δεύτερη σημασιολογία)."
+  (if (getf vs :commencement)
+      (progn (%require-commencement (getf vs :commencement) "to-spec") vs)
+      (apply #'make-version-spec vs)))
 
 (defun make-edge-spec (&key op target from-versions to-specs act-ref
                             act-internal-seq corrects-edge-id source-span
@@ -485,15 +569,20 @@
    Ο έλεγχος σύγκρουσης (G4) προηγείται ΚΑΘΕ εγγραφής — κανένα ορφανό record."
   (when (%open-version graph (getf vspec :provision-id))
     (error 'invalid-edge :reason (format nil "genesis σε διάταξη με ΑΝΟΙΧΤΗ έκδοση: ~A (σύγκρουση ταυτότητας — G4)" (getf vspec :provision-id))))
+  ;; [Φ7-HARDENING #1] genesis με conditional commencement δεν έχει νόημα:
+  ;; η γένεση σώματος είναι γεγονός, όχι αίρεση — fail-closed.
+  (when (commencement-cid (getf vspec :commencement))
+    (error 'invalid-edge :reason "genesis με :conditional commencement — η γένεση απαιτεί (:fixed legal-date)"))
   (let* ((vh (%version-hash (getf vspec :provision-id) (getf vspec :text)
-                            (getf vspec :heading) (getf vspec :valid-from)
+                            (getf vspec :heading)
+                            (commencement-key (getf vspec :commencement))
                             (getf vspec :status) :genesis))
          (line (%journal! graph
                           (list :kind :text-version :record-id vh
                                 :provision-id (getf vspec :provision-id)
                                 :text (getf vspec :text)
                                 :heading (getf vspec :heading)
-                                :valid-from (getf vspec :valid-from)
+                                :valid-from (commencement-key (getf vspec :commencement))
                                 :status (getf vspec :status)
                                 :previous "genesis"
                                 :created-by (or derivation "bootstrap")
@@ -503,7 +592,7 @@
          (v (make-text-version
              :version-hash vh :provision-id (getf vspec :provision-id)
              :text (getf vspec :text) :heading (getf vspec :heading)
-             :valid-from (getf vspec :valid-from) :valid-until :open
+             :commencement (getf vspec :commencement) :valid-until :open
              :recorded-from (%recorded-of line) :recorded-until :current
              :status (getf vspec :status) :previous-version-hash :genesis
              :created-by (or derivation "bootstrap")
@@ -529,6 +618,9 @@
   "G1: replay-then-append. Επιστρέφει (values amendment-edge νέες-εκδόσεις) ή
    (values NIL quarantined-edge) όταν το replay διαψεύδει το υλικό. ΠΟΤΕ μισή
    εφαρμογή, ΠΟΤΕ σιωπηλή αποδοχή."
+  (setf espec (copy-list espec))
+  (setf (getf espec :to-specs)
+        (mapcar #'%normalize-version-spec (getf espec :to-specs)))
   (let ((op (getf espec :op))
         (target (getf espec :target))
         (effective (getf espec :effective)))
@@ -550,16 +642,17 @@
          (when (eq (condition-class c) :resolutory)
            (error 'invalid-edge
                   :reason "conditional ακμή έναρξης με :resolutory αίρεση — ΔΗΛΩΜΕΝΟ όριο: μόνο :suspensive εδώ· διαλυτικές = μελλοντικό regime σχήμα")))
-       ;; οι υπό αίρεση νέες εκδόσεις: sentinel valid-from + :not-yet-effective
-       ;; — ημερομηνία ισχύος ΔΕΝ υπάρχει πριν την ικανοποίηση (παράγωγη, §4)
+       ;; [Φ7-HARDENING #1] οι υπό αίρεση νέες εκδόσεις: typed commencement
+       ;; (:conditional cid) + :not-yet-effective — ημερομηνία ισχύος ΔΕΝ
+       ;; υπάρχει πριν την ικανοποίηση (παράγωγη, §4)· κανένα sentinel.
        (dolist (vs (getf espec :to-specs))
-         (unless (and (equal (getf vs :valid-from)
-                             (%conditional-valid-from (second effective)))
+         (unless (and (equal (getf vs :commencement)
+                             (list :conditional (second effective)))
                       (eq (getf vs :status) :not-yet-effective))
            (error 'invalid-edge
-                  :reason (format nil "conditional ακμή: κάθε to-spec απαιτεί :valid-from ~S και :status :not-yet-effective — βρέθηκε (~S ~S)"
-                                  (%conditional-valid-from (second effective))
-                                  (getf vs :valid-from) (getf vs :status))))))
+                  :reason (format nil "conditional ακμή: κάθε to-spec απαιτεί :commencement (:conditional ~A) και :status :not-yet-effective — βρέθηκε (~S ~S)"
+                                  (second effective)
+                                  (getf vs :commencement) (getf vs :status))))))
       (t (%require-date effective "effective")))
     (let* ((cur (%open-version graph target))
            (from (getf espec :from-versions)))
@@ -582,7 +675,8 @@
              (tos (loop for vs in (getf espec :to-specs)
                         collect (list vs (%version-hash
                                           (getf vs :provision-id) (getf vs :text)
-                                          (getf vs :heading) (getf vs :valid-from)
+                                          (getf vs :heading)
+                                          (commencement-key (getf vs :commencement))
                                           (getf vs :status) prev-hash))))
              (to-hashes (mapcar #'second tos))
              (eid (%edge-hash op target from to-hashes
@@ -652,7 +746,7 @@
                                             :provision-id (getf vs :provision-id)
                                             :text (getf vs :text)
                                             :heading (getf vs :heading)
-                                            :valid-from (getf vs :valid-from)
+                                            :valid-from (commencement-key (getf vs :commencement))
                                             :status (getf vs :status)
                                             :previous (string-downcase (string prev-hash))
                                             :created-by eid
@@ -661,7 +755,7 @@
                      (v (make-text-version
                          :version-hash vh :provision-id (getf vs :provision-id)
                          :text (getf vs :text) :heading (getf vs :heading)
-                         :valid-from (getf vs :valid-from) :valid-until :open
+                         :commencement (getf vs :commencement) :valid-until :open
                          :recorded-from (%recorded-of line) :recorded-until :current
                          :status (getf vs :status) :previous-version-hash prev-hash
                          :created-by eid :assurance (getf vs :assurance))))
@@ -761,9 +855,10 @@
                   (case st
                     (:satisfied
                      (multiple-value-bind (f u) (%rewritten-bounds graph v known-at)
-                       ;; ρητό retroact υπερισχύει της παραγωγής· αλλιώς from = t
-                       (push (list v (if (equal f (tv-valid-from v)) at f) u)
-                             tiles)))
+                       ;; [#1] conditional βάση from = NIL (καμία ημερομηνία στην
+                       ;; έδρα)· ρητό retroact την ξαναγράφει σε date — αλλιώς
+                       ;; from = το παράγωγο sat at (spec §4).
+                       (push (list v (or f at) u) tiles)))
                     (:pending (push (cons cid (tv-recorded-from v)) pending))
                     (t nil)))
                 (multiple-value-bind (f u) (%rewritten-bounds graph v known-at)
@@ -900,7 +995,8 @@
                               :version-hash rid
                               :provision-id (getf line :provision-id)
                               :text (getf line :text) :heading (getf line :heading)
-                              :valid-from (getf line :valid-from) :valid-until :open
+                              :commencement (parse-commencement (getf line :valid-from))
+                              :valid-until :open
                               :recorded-from (%recorded-of line) :recorded-until :current
                               :status (getf line :status)
                               :previous-version-hash (if (equal (getf line :previous) "genesis")
@@ -1699,7 +1795,9 @@
   "(values valid-from valid-until) της έκδοσης V όπως ΓΝΩΡΙΖΟΝΤΑΝ κατά
    KNOWN-AT: live :extend/:expire ξαναγράφουν το until, live :retroact
    ξαναγράφει from ΚΑΙ until — διτεμπορικά (πριν την καταγραφή: τα παλαιά).
-   Εφαρμογή σε χρονική σειρά καταγραφής (νεότερο υπερισχύει)."
+   Εφαρμογή σε χρονική σειρά καταγραφής (νεότερο υπερισχύει).
+   [#1] Για conditional έκδοση η βάση from είναι NIL (τίμια: δεν υπάρχει
+   ημερομηνία στην έδρα) — ο καλών παράγει το from από το sat."
   (let ((from (tv-valid-from v)) (until (tv-valid-until v)))
     (dolist (re (reverse (vg-regimes graph)))
       (when (and (re-version re)

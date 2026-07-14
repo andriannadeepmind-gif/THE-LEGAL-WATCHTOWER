@@ -122,11 +122,11 @@
          (r (make-legal-authority-receipt
              :receipt-id nil
              :provision-id (orchestrator.version-graph:tv-provision-id version)
-             :expression (orchestrator.version-graph:tv-valid-from version)
+             :expression (orchestrator.version-graph:tv-commencement-key version)
              :source-artifact (or source-artifact
                                   (list (cons "declared" "missing-source-artifact")))
              :derivation (first genealogy)
-             :valid-from (orchestrator.version-graph:tv-valid-from version)
+             :valid-from (orchestrator.version-graph:tv-commencement-key version)
              :valid-until (orchestrator.version-graph:tv-valid-until version)
              :recorded-from (orchestrator.version-graph:tv-recorded-from version)
              :recorded-until (orchestrator.version-graph:tv-recorded-until version)
@@ -188,7 +188,7 @@
                        (orchestrator.version-graph:tv-provision-id v))
           (fail :provision-id-mismatch))
         (unless (equal (lr-valid-from r)
-                       (orchestrator.version-graph:tv-valid-from v))
+                       (orchestrator.version-graph:tv-commencement-key v))
           (fail :valid-from-mismatch))
         (unless (equal (lr-previous-version-hash r)
                        (let ((p (orchestrator.version-graph:tv-previous-version-hash v)))

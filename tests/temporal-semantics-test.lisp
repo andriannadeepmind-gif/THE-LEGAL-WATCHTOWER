@@ -366,14 +366,14 @@
     (declare (ignore edge))
     (first vs)))
 
-(ts-check "⑩ conditional ακμή: sum type δεκτό, sentinel to-spec, εγκατάσταση χωρίς close-validity"
+(ts-check "⑩ conditional ακμή: sum type δεκτό, typed :commencement to-spec, εγκατάσταση χωρίς close-validity"
           (multiple-value-bind (edge vs)
               (orchestrator.version-graph::admit-edge!
                *ts-g* (list :op :replace :target *ts-pid2*
                             :from-versions (list (orchestrator.version-graph::tv-version-hash *ts-old*))
                             :to-specs (list (list :provision-id *ts-pid2* :text "νέο κείμενο"
                                                   :heading nil
-                                                  :valid-from (orchestrator.version-graph::%conditional-valid-from *ts-cid2*)
+                                                  :commencement (list :conditional *ts-cid2*)
                                                   :status :not-yet-effective :assurance :verified))
                             :act-ref "gr/nomos/2026/0001" :act-internal-seq 1
                             :enacted "2026-02-01" :effective (list :conditional *ts-cid2*)
@@ -430,7 +430,7 @@
                       *ts-g* (list :op :replace :target *ts-pid2*
                                    :from-versions (list (orchestrator.version-graph::tv-version-hash *ts-old*))
                                    :to-specs (list (list :provision-id *ts-pid2* :text "x"
-                                                         :valid-from "conditional:cid-x"
+                                                         :commencement '(:conditional "cid-x")
                                                          :status :not-yet-effective :assurance :verified))
                                    :act-ref "a" :act-internal-seq 1
                                    :enacted "2026-02-01" :effective '(:conditional "cid-x")
@@ -669,7 +669,7 @@
        *ts-g* (list :op :replace :target *ts-pid4*
                     :from-versions (list (orchestrator.version-graph::tv-version-hash *ts-v1*))
                     :to-specs (list (list :provision-id *ts-pid4* :text "V2-COND" :heading nil
-                                          :valid-from (orchestrator.version-graph::%conditional-valid-from *ts-cid4*)
+                                          :commencement (list :conditional *ts-cid4*)
                                           :status :not-yet-effective :assurance :verified))
                     :act-ref "gr/nomos/2026/0004" :act-internal-seq 1
                     :enacted "2026-02-01" :effective (list :conditional *ts-cid4*)
@@ -736,7 +736,7 @@
                         *ts-g* (list :op :replace :target *ts-pid4*
                                      :from-versions (list (orchestrator.version-graph::tv-version-hash *ts-v3*))
                                      :to-specs (list (list :provision-id *ts-pid4* :text "x"
-                                                           :valid-from (orchestrator.version-graph::%conditional-valid-from rcid)
+                                                           :commencement (list :conditional rcid)
                                                            :status :not-yet-effective :assurance :verified))
                                      :act-ref "a" :act-internal-seq 1
                                      :enacted "2026-06-01" :effective (list :conditional rcid)
@@ -829,7 +829,57 @@
                      (orchestrator.legal-receipt:verify-receipt *ts-g* r2)
                    (declare (ignore why)) ok))))
 
+;;; ── [Φ7-HARDENING #1] negative locks: typed commencement, θάνατος sentinel ──
+
+(ts-check "Η1α sentinel string στο valid-from ⇒ invalid-edge (condition-ταυτότητα ΔΕΝ μεταμφιέζεται σε ημερομηνία)"
+          (handler-case
+              (progn (orchestrator.version-graph:make-version-spec
+                      :provision-id "x" :text "x" :assurance :verified
+                      :valid-from "conditional:deadbeef")
+                     nil)
+            (orchestrator.version-graph:invalid-edge () t)))
+
+(ts-check "Η1β valid-from ΚΑΙ commencement μαζί ⇒ invalid-edge (ακριβώς ΜΙΑ πηγή έναρξης)"
+          (handler-case
+              (progn (orchestrator.version-graph:make-version-spec
+                      :provision-id "x" :text "x" :assurance :verified
+                      :valid-from "2026-01-01"
+                      :commencement '(:fixed "2026-01-01"))
+                     nil)
+            (orchestrator.version-graph:invalid-edge () t)))
+
+(ts-check "Η1γ genesis με :conditional commencement ⇒ invalid-edge (η γένεση είναι γεγονός, όχι αίρεση)"
+          (handler-case
+              (progn (orchestrator.version-graph:submit-genesis!
+                      *ts-g* (orchestrator.version-graph:make-version-spec
+                              :provision-id "gr/nomos/2020/9997/art:99" :text "x"
+                              :assurance :verified
+                              :commencement (list :conditional *ts-cid4*)))
+                     nil)
+            (orchestrator.version-graph:invalid-edge () t)))
+
+(ts-check "Η1δ parse-commencement σε σκουπίδι/NIL ⇒ journal-corruption (fail-closed replay)"
+          (and (handler-case (progn (orchestrator.version-graph:parse-commencement "όχι-ημερομηνία") nil)
+                 (orchestrator.version-graph:journal-corruption () t))
+               (handler-case (progn (orchestrator.version-graph:parse-commencement nil) nil)
+                 (orchestrator.version-graph:journal-corruption () t))
+               (equal '(:fixed "2026-01-01") (orchestrator.version-graph:parse-commencement "2026-01-01"))
+               (equal '(:conditional "abc") (orchestrator.version-graph:parse-commencement "conditional:abc"))))
+
+(ts-check "Η1ε conditional έκδοση: tv-valid-from = NIL (τίμια άγνοια) + tv-commencement-key = κανονική προβολή + malformed commencement ⇒ invalid-edge"
+          (and (null (orchestrator.version-graph:tv-valid-from *ts-v2*))
+               (equal (format nil "conditional:~A" *ts-cid4*)
+                      (orchestrator.version-graph:tv-commencement-key *ts-v2*))
+               (equal (list :conditional *ts-cid4*)
+                      (orchestrator.version-graph:tv-commencement *ts-v2*))
+               (handler-case
+                   (progn (orchestrator.version-graph:make-version-spec
+                           :provision-id "x" :text "x" :assurance :verified
+                           :commencement '(:conditional))
+                          nil)
+                 (orchestrator.version-graph:invalid-edge () t))))
+
 (format t "~%========================================~%")
-(format t "TEMPORAL-SEMANTICS [0088 Φ7 Π1-Π5]: ~D passed, ~D failed~%" *ts-pass* *ts-fail*)
+(format t "TEMPORAL-SEMANTICS [0088 Φ7 Π1-Π5+Η1]: ~D passed, ~D failed~%" *ts-pass* *ts-fail*)
 (format t "========================================~%")
 (sb-ext:exit :code (if (zerop *ts-fail*) 0 1))

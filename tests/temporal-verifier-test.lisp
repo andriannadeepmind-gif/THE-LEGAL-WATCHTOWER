@@ -77,7 +77,7 @@
               :from-versions (list (orchestrator.version-graph::tv-version-hash *tv-v1*))
               :to-specs (list (list :provision-id *tv-pid* :text "Κείμενο v2 υπό αίρεση"
                                     :heading nil
-                                    :valid-from (orchestrator.version-graph::%conditional-valid-from *tv-cid*)
+                                    :commencement (list :conditional *tv-cid*)
                                     :status :not-yet-effective :assurance :verified))
               :act-ref "gr/nomos/2026/0100" :act-internal-seq 1
               :enacted "2026-02-01" :effective (list :conditional *tv-cid*)
