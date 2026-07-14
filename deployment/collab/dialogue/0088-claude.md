@@ -459,3 +459,43 @@ semantic-versioning ΜΟΝΟ το compute-text-diff (LCS), με κλειδιά e
 Η Φ6γ συνεχίζει στο μεταξύ με την ομάδα Α (FRBR layer — δικά του
 number/suffix slots, ΖΩΝΤΑΝΟ emit path) και το legal-ast (μαζί με το
 integer get-article του corpus.lisp) — εκεί είναι το πραγματικό ζωντανό βάρος.
+
+---
+
+## [0088 Φ6γ] ΟΛΟΚΛΗΡΩΣΗ ΒΗΜΑΤΩΝ ΤΑΥΤΟΤΗΤΑΣ (Δ1→Δ3, Β, Α1→Α2) — HEAD 7ffde8c3
+
+Εκτελεσμένα με proof ανά βήμα (εντολή «όλα πέρασαν τοπικά συνέχισε»):
+- **Δ1** dadccc95: typed identity slot στο article + (setf label) :after
+  επανυπολογισμός — stale ταυτότητα ΔΟΜΙΚΑ αδύνατη· file-id/διάταξη από slot.
+- **Δ2** 89393160: article-uri object προβολή· μετάφερση consolidate/census/
+  lineage/ingest-manifest/generate-rdf από raw (number,label) ζεύγη.
+- **Β** e29cccd4: ο pipeline γεννήτορας (generate-canonical-rdf) παρέκαμπτε
+  τον builder (direct make-instance) ⇒ pipeline ΧΩΡΙΣ typed ταυτότητα — ΚΛΕΙΣΤΟ·
+  όλα τα άρθρα γεννιούνται από τη ΜΙΑ έδρα.
+- **Α1** 4e241258: typed identity και στο IIR (normalized-article-input).
+- **Α2** e5bb05e8: το segment διαπερνά make-frbr-article-root/work μέσω
+  make-complete-frbr-stack — FRBR URIs/eli-ids από τις προβολές· ΑΜΕΣΗ
+  απόδειξη byte-ισότητας 4/4 (segment ≡ legacy: 5Α/110Α/70/272ΣΤ).
+- **Δ3** 7ffde8c3: corpus store rekey (number→uri-id string κλειδιά)· ΘΑΝΑΤΟΣ
+  integer get-article (ρητό typed σφάλμα, grep-gate 0 μετά την ενημέρωση του
+  μοναδικού test καταναλωτή).
+- **Γ**: χαρτογραφημένη — /diff ήδη σωστό· 5 νησιά αναμένουν απόφαση Α/Β/Γ.
+
+ΔΗΛΩΜΕΝΑ ΥΠΟΛΟΙΠΑ Φ6γ (τίμια, με προϋπόθεση):
+1. Θάνατος raw helpers (article-base-number/label-suffix/pad-article-id/
+   article-uri-id/suffix-ordinal ως δημόσια API): έχουν ακόμη καταναλωτές
+   (FRBR legacy branch, spec/parsers)· πεθαίνουν όταν ΟΛΟΙ περάσουν στις
+   segment-προβολές — μετρήσιμο grep-gate, επόμενο κύμα.
+2. clean.json → sealed source artifact: ΔΕΝ ωριμάζει όσο το CURRENT serving
+   παράγεται από το consolidated μονοπάτι με τον γράφο σε FOLD-PARITY. Το
+   sealing συμπίπτει με το πλήρες current-cutover (Φ8 πεδίο) — το parity gate
+   ΜΕΝΕΙ ενεργό ως τότε (by design).
+3. Γ-νησιά: απόφαση δημιουργού.
+
+ΑΙΤΗΜΑ: OWNER DOCKER PROOF στο HEAD 7ffde8c3 (git restore deployment/data →
+git pull → docker compose down/build/up). Αναμενόμενα νέα/κρίσιμα gates:
+as-known-e2e 26/26 · legal-identity 19/19 · corpus-identity 55/55 ·
+graph-import-parity 31/31 · corpus-service 53/53 · version-graph 18/18 ·
+legal-authority-receipt 15/15 · artifact-census 21/21 · ai-ingest 19/19 ·
+ΟΛΟΣ ο gated loop (και fingerprint/golden — byte-ισότητα emit αποδεδειγμένη
+τοπικά). Μετά το πράσινο: Φ7 Formal Temporal Semantics κατά ΕΝΤΟΛΗ-2.
