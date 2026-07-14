@@ -625,13 +625,16 @@
           (multiple-value-bind (short triples records title) (corpus-spec id)
             (push (cons short id) short->id)
             (let ((provider
-                    (let ((tr triples) (rc records) (sh short) (ti title)
+                    (let ((tr triples) (rc records) (sh short) (ti title) (cid id)
                           (lock (sb-thread:make-mutex :name (format nil "corpus-~A" short)))
                           (current nil))
                       (lambda (&optional as-of)
                         (if as-of
-                            (orchestrator.consolidation.bridge:consolidate-corpus
-                             tr rc :as-of-date as-of :id sh :title ti)
+                            ;; [0088 Φ5δ CUTOVER]: ιστορικό ΜΟΝΟ από τον
+                            ;; διτεμπορικό γράφο (snapshot-at) — το παλιό
+                            ;; text-less select-acts as-of ΔΕΝ σερβίρεται πια
+                            ;; (σέρβιρε το σήμερα ως χθες με ψευδή βεβαιότητα).
+                            (document-as-of cid as-of)
                             (sb-thread:with-mutex (lock)
                               (or current
                                   (setf current

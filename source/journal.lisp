@@ -33,9 +33,13 @@
 (in-package :orchestrator.journal)
 
 (defun iso-now ()
-  "Τοπικός χρόνος ISO-8601 (δευτερόλεπτο) — το ΕΝΑ ρολόι των ημερολογίων."
-  (multiple-value-bind (sec min hour day mon year) (get-decoded-time)
-    (format nil "~4,'0D-~2,'0D-~2,'0DT~2,'0D:~2,'0D:~2,'0D"
+  "Χρόνος ISO-8601 σε CANONICAL UTC (κατάληξη Z, δευτερόλεπτο) — το ΕΝΑ ρολόι
+   των ημερολογίων. [0088 Φ5 Υ1]: ποτέ ζώνη-εξαρτώμενος τοπικός χρόνος σε
+   transaction-time πεδία — τα recorded δεν επιτρέπεται να αλλάζουν νόημα με
+   μετακίνηση του μηχανήματος."
+  (multiple-value-bind (sec min hour day mon year)
+      (decode-universal-time (get-universal-time) 0)
+    (format nil "~4,'0D-~2,'0D-~2,'0DT~2,'0D:~2,'0D:~2,'0DZ"
             year mon day hour min sec)))
 
 (defun sha256-hex (string)

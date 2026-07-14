@@ -209,6 +209,17 @@
       (list (cons "content_sha256" (cdr (assoc "content_sha256" prov :test #'string=)))
             (cons "source_digest" (cdr (assoc "source_digest" prov :test #'string=)))))))
 
+(defun %ensure-graph (corpus-id)
+  "Ο γράφος του CORPUS-ID: load-graph (πλήρες replay + επαλήθευση αλυσίδας) αν
+   υπάρχει journal, αλλιώς import από την provenance-ελεγμένη πηγή. Η ΜΙΑ
+   είσοδος «δώσε μου τον γράφο» — commitment/serving/reasoning τη μοιράζονται."
+  (let* ((body (%graph-body-for corpus-id))
+         (body-string (orchestrator.identity:body-id-string body)))
+    (let ((probe (orchestrator.version-graph:make-graph body-string)))
+      (if (probe-file (orchestrator.version-graph::vg-path probe))
+          (orchestrator.version-graph:load-graph body-string)
+          (import-corpus->graph! corpus-id)))))
+
 (defun corpus-temporal-commitment (corpus-id)
   "[0088 Φ5] Η ΜΙΑ έδρα του temporal commitment ενός corpus — ό,τι δένεται στο
    census (census-2) ώστε το release root να δεσμεύει ΚΑΙ τη διτεμπορική
@@ -222,10 +233,7 @@
    ΣΦΑΛΜΑ (δείχνει σφάλμα import, όχι αποδεκτή άγνοια). Επιστρέφει plist."
   (let* ((body (%graph-body-for corpus-id))
          (body-string (orchestrator.identity:body-id-string body))
-         (graph (let ((probe (orchestrator.version-graph:make-graph body-string)))
-                  (if (probe-file (orchestrator.version-graph::vg-path probe))
-                      (orchestrator.version-graph:load-graph body-string)
-                      (import-corpus->graph! corpus-id)))))
+         (graph (%ensure-graph corpus-id)))
     (multiple-value-bind (ok head n) (orchestrator.version-graph:verify-chain body-string)
       (unless (and ok (plusp n)
                    (equal head (orchestrator.version-graph:graph-chain-head graph)))
@@ -263,3 +271,55 @@
                 :receipt-count (length receipts)
                 :valid-at valid-at
                 :known-at known-at))))))
+
+(defun document-as-of (corpus-id as-of)
+  "[0088 Φ5δ — ΤΟ CUTOVER ΤΟΥ ΣΕΡΒΙΡΙΣΜΑΤΟΣ] Ιστορικό ενοποιημένο έγγραφο
+   ΑΠΟ ΤΟΝ ΔΙΤΕΜΠΟΡΙΚΟ ΓΡΑΦΟ (snapshot-at), ΟΧΙ από το παλιό text-less
+   select-acts μονοπάτι (ο θάνατος της TEMP-03 αναπαραγωγής στο serving):
+   το consolidate-corpus :as-of-date «εφάρμοζε» text-less amendments και
+   επέστρεφε ΣΗΜΕΡΙΝΟ κείμενο ως ιστορικό με ψευδή βεβαιότητα.
+   ΕΔΩ: κάθε διάταξη επιλύεται με version-at στην τομή (AS-OF, known τώρα)·
+   ΟΠΟΙΑΔΗΠΟΤΕ διάταξη σε κενό γνώσης ⇒ temporal-uncertainty για ΟΛΟ το
+   έγγραφο (ονομαστική λίστα) — μερικό «ιστορικό» έγγραφο δεν σερβίρεται.
+   Διατάξεις χωρίς κάλυψη στην τομή (π.χ. δεν είχαν εισαχθεί ακόμη)
+   παραλείπονται ΤΙΜΙΑ — δεν υπήρχαν τότε. Επιστρέφει legal-document."
+  (let* ((body (%graph-body-for corpus-id))
+         (graph (orchestrator.version-graph:load-graph
+                 (orchestrator.identity:body-id-string body)))
+         (short (or (orchestrator.spec:config-get "corpus.short_name") corpus-id))
+         (title (orchestrator.spec:config-get "corpus.name")))
+    (multiple-value-bind (snap uncertain)
+        (orchestrator.version-graph:snapshot-at
+         graph :valid-at as-of :known-at "9999-12-31T23:59:59Z")
+      (when uncertain
+        (error 'orchestrator.version-graph:temporal-uncertainty
+               :provision (format nil "~A (~D διατάξεις)" corpus-id (length uncertain))
+               :why (format nil "as-of ~A: κενά γνώσης σε ~D διατάξεις (πρώτες: ~{~A~^, ~}) — ιστορική ανασυγκρότηση ΔΕΝ σερβίρεται μερική"
+                            as-of (length uncertain)
+                            (mapcar #'car (subseq uncertain 0 (min 5 (length uncertain)))))))
+      (let ((rows
+              (sort (mapcar (lambda (pair)
+                              (let* ((pid (car pair)) (v (cdr pair))
+                                     (label (subseq pid (1+ (position #\: pid)))))
+                                (list (orchestrator.identity:parse-provision-designator pid)
+                                      label v)))
+                            snap)
+                    #'orchestrator.identity:provision-id< :key #'first)))
+        (orchestrator.consolidation:make-legal-document
+         :id short :title title :language "el"
+         :provisions
+         (mapcar (lambda (row)
+                   (destructuring-bind (id label v) row
+                     (declare (ignore id))
+                     (orchestrator.consolidation:make-provision
+                      :eid (format nil "art_~A" label)
+                      :kind :article :num label
+                      :heading (orchestrator.version-graph:tv-heading v)
+                      :text (orchestrator.version-graph:tv-text v)
+                      :status (case (orchestrator.version-graph:tv-status v)
+                                (:repealed :repealed)
+                                (t (let ((cb (orchestrator.version-graph:tv-created-by v)))
+                                     (if (and (stringp cb) (eql 0 (search "bootstrap" cb)))
+                                         :original :amended))))
+                      :source-date (orchestrator.version-graph:tv-valid-from v))))
+                 rows))))))

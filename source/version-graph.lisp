@@ -18,7 +18,9 @@
 ;;;;     — το NIL δεν υπάρχει στον τύπο, άρα δεν ταξινομείται.
 ;;;;  G3 append-only journal (η [0086] έδρα orchestrator.journal, sexp γραμμές
 ;;;;     με Persistence Receipt — ΟΧΙ νέο ιδίωμα αποθήκευσης) + αλυσίδα
-;;;;     chain-hash ανά γραμμή: sha256(prev-chain ‖ 0x1F ‖ record-id).
+;;;;     full-record (Κ2): payload-hash = sha256(κανονική σειριοποίηση ΟΛΟΥ
+;;;;     του payload)· chain = sha256(prev-chain ‖ 0x1F ‖ payload-hash)·
+;;;;     στο replay επανυπολογίζονται payload-hash + semantic record hash.
 ;;;;  G5 retract-knowledge!: ο ΜΟΝΑΔΙΚΟΣ τρόπος «διαγραφής» — κλείνει
 ;;;;     recorded-until με ΝΕΑ γραμμή· το journal δεν ξαναγράφεται ποτέ.
 ;;;;
@@ -35,7 +37,7 @@
   (:use :cl)
   (:export
    ;; τύποι/συνθήκες
-   #:legal-date #:legal-date-p
+   #:legal-date #:legal-date-p #:legal-instant #:legal-instant-p
    #:text-version #:text-version-p #:amendment-edge #:amendment-edge-p
    #:quarantined-edge #:quarantined-edge-p #:knowledge-gap #:knowledge-gap-p
    #:temporal-uncertainty #:unknown-provision #:invalid-edge
@@ -60,14 +62,65 @@
 ;;; Τύποι χρόνου — το NIL ΔΕΝ χωράει
 ;;; ----------------------------------------------------------------------------
 
+(defun %leap-year-p (y)
+  (and (zerop (mod y 4)) (or (plusp (mod y 100)) (zerop (mod y 400)))))
+
+(defun %days-in-month (y m)
+  (case m
+    ((1 3 5 7 8 10 12) 31)
+    ((4 6 9 11) 30)
+    (2 (if (%leap-year-p y) 29 28))
+    (t 0)))
+
+(defun %digits-int (s start end)
+  (loop with n = 0
+        for i from start below end
+        for d = (digit-char-p (char s i))
+        do (unless d (return nil)) (setf n (+ (* 10 n) d))
+        finally (return n)))
+
 (defun legal-date-p (x)
-  "ISO ημερομηνία «YYYY-MM-DD» — αυστηρό σχήμα, τίποτα άλλο."
+  "ISO ημερομηνία «YYYY-MM-DD» με ΠΡΑΓΜΑΤΙΚΟ γρηγοριανό έλεγχο (μήνας 1-12,
+   ημέρα ≤ ημερών μήνα, δίσεκτα) — το «2026-99-99» ΔΕΝ είναι νομικός χρόνος."
   (and (stringp x) (= 10 (length x))
        (char= #\- (char x 4)) (char= #\- (char x 7))
-       (loop for i in '(0 1 2 3 5 6 8 9)
-             always (digit-char-p (char x i)))))
+       (let ((y (%digits-int x 0 4)) (m (%digits-int x 5 7)) (d (%digits-int x 8 10)))
+         (and y m d (<= 1 m 12) (<= 1 d (%days-in-month y m))))))
+
+(defun legal-instant-p (x)
+  "ISO στιγμή «YYYY-MM-DDTHH:MM:SSZ» — CANONICAL UTC, υποχρεωτικό Z, γνήσιος
+   γρηγοριανός + ωρολογιακός έλεγχος. Καμία λεξικογραφική «ημερομηνία» δεν
+   περνιέται για στιγμή."
+  (and (stringp x) (= 20 (length x))
+       (char= #\T (char x 10)) (char= #\Z (char x 19))
+       (char= #\: (char x 13)) (char= #\: (char x 16))
+       (legal-date-p (subseq x 0 10))
+       (let ((h (%digits-int x 11 13)) (mi (%digits-int x 14 16)) (s (%digits-int x 17 19)))
+         (and h mi s (< h 24) (< mi 60) (< s 60)))))
 
 (deftype legal-date () '(and string (satisfies legal-date-p)))
+(deftype legal-instant () '(and string (satisfies legal-instant-p)))
+
+(defun %time-key (x what)
+  "Δομημένο κλειδί σύγκρισης χρόνου (integer) — ΟΧΙ σύγκριση συμβολοσειρών.
+   Δέχεται legal-date (⇒ αρχή ημέρας) ή legal-instant· ΚΑΘΕ άλλη μορφή =
+   typed σφάλμα. Παλαιό ζωνο-χωρίς 19-χαρακτήρων instant (προ-Υ1 journals)
+   γίνεται δεκτό στην ΑΝΑΓΝΩΣΗ μόνο — νέες εγγραφές φέρουν πάντα Z."
+  (cond
+    ((legal-date-p x)
+     (* (+ (* (%digits-int x 0 4) 10000) (* (%digits-int x 5 7) 100) (%digits-int x 8 10))
+        1000000))
+    ((or (legal-instant-p x)
+         (and (stringp x) (= 19 (length x)) (char= #\T (char x 10))
+              (legal-date-p (subseq x 0 10))))
+     (+ (* (+ (* (%digits-int x 0 4) 10000) (* (%digits-int x 5 7) 100) (%digits-int x 8 10))
+           1000000)
+        (* (%digits-int x 11 13) 10000) (* (%digits-int x 14 16) 100) (%digits-int x 17 19)))
+    (t (error 'invalid-edge
+              :reason (format nil "~A δεν είναι legal-date/legal-instant: ~S" what x)))))
+
+(defun %time<= (a b &optional (what-a "χρόνος") (what-b "χρόνος"))
+  (<= (%time-key a what-a) (%time-key b what-b)))
 
 (define-condition invalid-edge (error)
   ((reason :initarg :reason :reader invalid-edge-reason))
@@ -193,29 +246,56 @@
                :edges (make-hash-table :test 'equal)
                :quarantine '() :gaps '() :chain "genesis"))
 
-(defun %chain-next (prev record-id)
+(defun %payload-hash (plist)
+  "[0088 Φ5 Κ2] sha256 της ΚΑΝΟΝΙΚΗΣ σειριοποίησης ΟΛΟΚΛΗΡΟΥ του journal
+   payload (κάθε πεδίο — text/status/effective/assurance/reason/at/…), ΟΧΙ
+   μόνο του semantic record-id. Κανονική μορφή sexp δεδομένων: prin1 υπό
+   with-standard-io-syntax (ντετερμινιστικό για strings/keywords/integers/
+   λίστες — ό,τι ακριβώς επιτρέπει το sexp journal). Το chain αλυσοδένει ΑΥΤΟ:
+   αλλοίωση ΟΠΟΙΟΥΔΗΠΟΤΕ byte με αμετάβλητο record-id/chain ⇒ ρήξη στο replay."
   (orchestrator.journal:sha256-hex
-   (format nil "~A~C~A" prev (code-char 31) record-id)))
+   (with-standard-io-syntax
+     (let ((*print-readably* t))
+       (prin1-to-string plist)))))
+
+(defun %strip-envelope (line)
+  "Το payload μιας γραμμής = η γραμμή ΧΩΡΙΣ τα envelope πεδία (:chain,
+   :payload-hash) — ό,τι ακριβώς hash-άρεται."
+  (loop for (k v) on line by #'cddr
+        unless (member k '(:chain :payload-hash))
+          append (list k v)))
+
+(defun %chain-next (prev payload-hash)
+  (orchestrator.journal:sha256-hex
+   (format nil "~A~C~A" prev (code-char 31) payload-hash)))
 
 (defun %journal! (graph plist &key (verify t))
   "Μία γραμμή στο journal της έδρας [0086]: chained-append + require-durable!.
-   Με VERIFY (προεπιλογή) γίνεται και read-back επαλήθευση ανά γραμμή· σε
-   ΜΑΖΙΚΟ import η ανά-γραμμή επανανάγνωση είναι O(n²) — εκεί VERIFY NIL και
-   η αλήθεια επαληθεύεται στο τέλος με ΠΛΗΡΕΣ replay (verify-chain, O(n))."
-  (let ((next-chain (%chain-next (vg-chain graph) (getf plist :record-id))))
+   Κάθε γραμμή φέρει :payload-hash (δέσμευση ΟΛΟΚΛΗΡΟΥ record — Κ2) και
+   :chain = sha256(prev ‖ 0x1F ‖ payload-hash). Με VERIFY (προεπιλογή)
+   γίνεται και read-back επαλήθευση ανά γραμμή· σε ΜΑΖΙΚΟ import η ανά-γραμμή
+   επανανάγνωση είναι O(n²) — εκεί VERIFY NIL και η αλήθεια επαληθεύεται στο
+   τέλος με ΠΛΗΡΕΣ replay (verify-chain, O(n))."
+  (let* ((ph (%payload-hash plist))
+         (next-chain (%chain-next (vg-chain graph) ph)))
     (multiple-value-bind (line receipt)
         (orchestrator.journal:chained-append
          (vg-path graph)
          (lambda (last)
            (declare (ignore last))
-           (append plist (list :chain next-chain)))
+           (append plist (list :payload-hash ph :chain next-chain)))
          :verify verify)
       (orchestrator.journal:require-durable! receipt :version-graph)
       (setf (vg-chain graph) next-chain)
       line)))
 
 (defun %recorded-of (line)
-  (or (getf line :at) (orchestrator.journal:iso-now)))
+  "Το transaction-time μιας γραμμής = ΑΠΟΚΛΕΙΣΤΙΚΑ το αποθηκευμένο :at της.
+   [Υ3]: κανένα σιωπηλό iso-now fallback — γραμμή χωρίς :at είναι διεφθαρμένη."
+  (or (getf line :at)
+      (error 'invalid-edge
+             :reason (format nil "journal γραμμή χωρίς :at (record ~A) — διεφθαρμένο transaction-time"
+                             (getf line :record-id)))))
 
 ;;; ── εσωτερική υλοποίηση εφαρμογής εγγραφών στην προβολή μνήμης ──
 
@@ -393,33 +473,37 @@
                    (not (eq :repealed (getf (first (getf espec :to-specs)) :status))))
           (return-from admit-edge!
             (values nil (quarantine! graph espec :unknown-text))))
-        ;; journal: η ακμή + οι νέες εκδόσεις + το κλείσιμο της προηγούμενης
-        (%journal! graph (list :kind :amendment-edge :record-id eid
-                               :op op :target target
-                               :from from :to to-hashes
-                               :act-ref (getf espec :act-ref)
-                               :act-seq (getf espec :act-internal-seq)
-                               :corrects (getf espec :corrects-edge-id)
-                               :span (getf espec :source-span)
-                               :enacted (getf espec :enacted)
-                               :effective (getf espec :effective)
-                               :fek-date (getf espec :fek-date)
-                               :assurance (getf espec :assurance)
-                               :confidence (getf espec :confidence)
-                               :at (orchestrator.journal:iso-now)))
-        (let ((edge (make-amendment-edge
-                     :edge-id eid :op op :from-versions from :to-versions to-hashes
-                     :target target :act-ref (getf espec :act-ref)
-                     :act-internal-seq (getf espec :act-internal-seq)
-                     :corrects-edge-id (getf espec :corrects-edge-id)
-                     :source-span (getf espec :source-span)
-                     :enacted (getf espec :enacted) :effective (getf espec :effective)
-                     :fek-date (getf espec :fek-date)
-                     :recorded-from (orchestrator.journal:iso-now)
-                     :recorded-until :current
-                     :assurance (getf espec :assurance)
-                     :confidence (getf espec :confidence)))
-              (new-versions '()))
+        ;; journal: η ακμή + οι νέες εκδόσεις + το κλείσιμο της προηγούμενης.
+        ;; [Υ3 replay identity]: το in-memory recorded-from = ΑΚΡΙΒΩΣ το :at
+        ;; της γραμμής που γράφτηκε — ΠΟΤΕ δεύτερο iso-now μετά την εγγραφή
+        ;; (live ≠ replayed έστω κατά 1s είναι απαράδεκτο σε bitemporal έδρα).
+        (let* ((edge-line (%journal! graph
+                                     (list :kind :amendment-edge :record-id eid
+                                           :op op :target target
+                                           :from from :to to-hashes
+                                           :act-ref (getf espec :act-ref)
+                                           :act-seq (getf espec :act-internal-seq)
+                                           :corrects (getf espec :corrects-edge-id)
+                                           :span (getf espec :source-span)
+                                           :enacted (getf espec :enacted)
+                                           :effective (getf espec :effective)
+                                           :fek-date (getf espec :fek-date)
+                                           :assurance (getf espec :assurance)
+                                           :confidence (getf espec :confidence)
+                                           :at (orchestrator.journal:iso-now))))
+               (edge (make-amendment-edge
+                      :edge-id eid :op op :from-versions from :to-versions to-hashes
+                      :target target :act-ref (getf espec :act-ref)
+                      :act-internal-seq (getf espec :act-internal-seq)
+                      :corrects-edge-id (getf espec :corrects-edge-id)
+                      :source-span (getf espec :source-span)
+                      :enacted (getf espec :enacted) :effective (getf espec :effective)
+                      :fek-date (getf espec :fek-date)
+                      :recorded-from (%recorded-of edge-line)
+                      :recorded-until :current
+                      :assurance (getf espec :assurance)
+                      :confidence (getf espec :confidence)))
+               (new-versions '()))
           (setf (gethash eid (vg-edges graph)) edge)
           ;; κλείσιμο ισχύος προηγούμενης — ΔΙΤΕΜΠΟΡΙΚΗ supersession (journaled):
           ;; η παλιά πεποίθηση «:open» παραμένει ορατή σε as-known ερωτήματα
@@ -470,37 +554,50 @@
 ;;; Διτεμπορικά ερωτήματα — το recorded ΣΥΜΜΕΤΕΧΕΙ στην επιλογή (TEMP-03 νεκρό)
 ;;; ----------------------------------------------------------------------------
 
-(defun %ts<= (a b) (not (string> a b)))
-
 (defun %recorded-live-p (v known-at)
-  (and (%ts<= (tv-recorded-from v) known-at)
+  (and (%time<= (tv-recorded-from v) known-at "recorded-from" "known-at")
        (or (eq :current (tv-recorded-until v))
-           (string> (tv-recorded-until v) known-at))))
+           (not (%time<= (tv-recorded-until v) known-at "recorded-until" "known-at")))))
 
 (defun %valid-covers-p (v valid-at)
-  (and (%ts<= (tv-valid-from v) valid-at)
+  (and (%time<= (tv-valid-from v) valid-at "valid-from" "valid-at")
        (or (eq :open (tv-valid-until v))
-           (string> (tv-valid-until v) valid-at))))
+           (not (%time<= (tv-valid-until v) valid-at "valid-until" "valid-at")))))
+
+(defun %known-by-p (recorded-from known-at)
+  "T όταν κάτι με RECORDED-FROM ήταν ήδη ΓΝΩΣΤΟ κατά KNOWN-AT — η
+   transaction-time πύλη για καραντίνες/κενά (Υ2): μελλοντική καταγραφή δεν
+   δηλητηριάζει παλαιότερο epistemic snapshot."
+  (%time<= recorded-from known-at "recorded-from" "known-at"))
 
 (defun version-at (graph pid &key valid-at known-at)
   "Η έκδοση του PID που (α) ήταν ΓΝΩΣΤΗ στο σύστημα κατά KNOWN-AT και
-   (β) ΙΣΧΥΕ κατά VALID-AT. ΚΑΙ ΤΑ ΔΥΟ ΥΠΟΧΡΕΩΤΙΚΑ — κανένα σιωπηλό τώρα.
-   Καραντίνα/κενό γνώσης που τέμνει το ερώτημα ⇒ temporal-uncertainty (τίμια
-   άγνοια)· άγνωστη διάταξη ⇒ unknown-provision."
+   (β) ΙΣΧΥΕ κατά VALID-AT. ΚΑΙ ΤΑ ΔΥΟ ΥΠΟΧΡΕΩΤΙΚΑ ΚΑΙ TYPED: valid-at =
+   legal-date, known-at = legal-instant (canonical UTC) — καμία λεξικογραφική
+   σύγκριση, καμία άκυρη ημερολογιακά τιμή. Καραντίνα/κενό γνώσης επηρεάζει
+   ΜΟΝΟ αν ήταν ήδη καταγεγραμμένο κατά KNOWN-AT (διτεμπορική σημασιολογία
+   Υ2)· άγνωστη διάταξη ⇒ unknown-provision.
+   ΔΗΛΩΜΕΝΟ ΥΠΟΛΟΙΠΟ (Υ2β): τα knowledge-gaps δεν φέρουν ακόμη άνω όριο
+   valid-διαστήματος — κενό γνωστό κατά known-at καλύπτει ΟΛΗ την ακάλυπτη
+   valid περίοδο της διάταξης (υπερ-προσεκτικό: αβεβαιότητα, ποτέ ψευδής
+   βεβαιότητα ή ψευδής ανυπαρξία)."
   (%require-date valid-at "valid-at")
-  (unless (stringp known-at)
-    (error 'invalid-edge :reason "known-at υποχρεωτικό (ISO timestamp/ημερομηνία)"))
+  (unless (legal-instant-p known-at)
+    (error 'invalid-edge
+           :reason (format nil "known-at δεν είναι legal-instant (YYYY-MM-DDTHH:MM:SSZ): ~S" known-at)))
   (let ((records (gethash pid (vg-by-provision graph))))
     (unless records (error 'unknown-provision :provision pid))
-    ;; ΚΑΡΑΝΤΙΝΑ που στοχεύει τη διάταξη = ΜΗ εφαρμοσμένη γνωστή αλλαγή ⇒ και
-    ;; το ΤΡΕΧΟΝ κείμενο αναξιόπιστο — ολική αβεβαιότητα για τη διάταξη.
+    ;; ΚΑΡΑΝΤΙΝΑ που στοχεύει τη διάταξη ΚΑΙ ήταν γνωστή κατά known-at = ΜΗ
+    ;; εφαρμοσμένη γνωστή αλλαγή ⇒ το κείμενο της τομής αναξιόπιστο. Καραντίνα
+    ;; καταγεγραμμένη ΜΕΤΑ το known-at δεν υπήρχε σε εκείνο το snapshot γνώσης.
     (let ((q (find-if (lambda (q)
-                        (let ((m (qe-edge q)))
-                          (equal pid (getf m :target))))
+                        (and (equal pid (getf (qe-edge q) :target))
+                             (%known-by-p (qe-recorded-from q) known-at)))
                       (vg-quarantine graph))))
       (when q
         (error 'temporal-uncertainty :provision pid
-               :why (format nil "ακμή σε καραντίνα (~A)" (qe-reason q)))))
+               :why (format nil "ακμή σε καραντίνα (~A, καταγεγραμμένη ~A)"
+                            (qe-reason q) (qe-recorded-from q)))))
     (let ((live (loop for v in records
                       when (and (%recorded-live-p v known-at)
                                 (%valid-covers-p v valid-at))
@@ -508,14 +605,17 @@
       (cond
         ((= 1 (length live)) (values (first live) :complete))
         ((null live)
-         ;; ΚΕΝΟ ΓΝΩΣΗΣ (text-less ιστορικό — π.χ. αναθεωρήσεις χωρίς κείμενο):
-         ;; το ερώτημα πέφτει σε περίοδο που ΔΕΝ ανακατασκευάζεται ⇒ ΡΗΤΗ
-         ;; αβεβαιότητα, όχι σιωπηλό «καμία έκδοση» (TEMP-01/TEMP-04 honesty).
-         (let ((g (find pid (vg-gaps graph) :key #'kg-provision-id :test #'equal)))
+         ;; ΚΕΝΟ ΓΝΩΣΗΣ (text-less ιστορικό): μετρά ΜΟΝΟ αν ήταν ήδη
+         ;; καταγεγραμμένο κατά known-at (Υ2) — αλλιώς το snapshot εκείνης της
+         ;; γνώσης απλώς δεν είχε καμία έκδοση (:no-version-in-force, τίμιο).
+         (let ((g (find-if (lambda (g)
+                             (and (equal pid (kg-provision-id g))
+                                  (%known-by-p (kg-recorded-from g) known-at)))
+                           (vg-gaps graph))))
            (if g
                (error 'temporal-uncertainty :provision pid
-                      :why (format nil "δηλωμένο κενό γνώσης (~A ~A): το κείμενο της περιόδου δεν ανακατασκευάζεται από τις διαθέσιμες πηγές"
-                                   (kg-kind g) (kg-effective g)))
+                      :why (format nil "δηλωμένο κενό γνώσης (~A ~A, καταγεγραμμένο ~A): το κείμενο της περιόδου δεν ανακατασκευάζεται από τις διαθέσιμες πηγές"
+                                   (kg-kind g) (kg-effective g) (kg-recorded-from g)))
                (values nil :no-version-in-force))))
         (t (error 'temporal-uncertainty :provision pid
                   :why (format nil "~D επικαλυπτόμενες εκδόσεις στην τομή — ασυνεπής γράφος" (length live))))))))
@@ -544,18 +644,45 @@
 
 (defun load-graph (body-string)
   "Ανακατασκευή της προβολής μνήμης με ΠΛΗΡΕΣ replay του journal + επαλήθευση
-   της chain-hash αλυσίδας γραμμή-προς-γραμμή. Σπασμένη αλυσίδα ⇒ ΣΦΑΛΜΑ."
+   ΚΑΘΕ γραμμής σε ΔΥΟ επίπεδα (Κ2 full-record integrity):
+     ① payload-hash: επανυπολογισμός από την κανονική σειριοποίηση ΟΛΟΚΛΗΡΟΥ
+        του payload (κάθε πεδίο) ≡ αποθηκευμένο :payload-hash — αλλοίωση
+        ΟΠΟΙΟΥΔΗΠΟΤΕ πεδίου με αμετάβλητο record-id ΣΠΑΕΙ εδώ·
+     ② chain: sha256(prev ‖ 0x1F ‖ payload-hash) ≡ αποθηκευμένο :chain.
+   Γραμμή χωρίς :payload-hash = παλαιό σχήμα (προ-Κ2) ⇒ ΡΗΤΟ σφάλμα με οδηγία
+   (τα journals είναι runtime κατασκευάσματα: διαγραφή + reimport)."
   (let ((graph (make-graph body-string)))
     (dolist (line (orchestrator.journal:read-lines (vg-path graph)))
       (let* ((rid (getf line :record-id))
-             (expect (%chain-next (vg-chain graph) rid)))
+             (stored-ph (getf line :payload-hash))
+             (ph (%payload-hash (%strip-envelope line)))
+             (expect (%chain-next (vg-chain graph) ph)))
+        (unless stored-ph
+          (error 'invalid-edge
+                 :reason (format nil "γραμμή ~A χωρίς :payload-hash — παλαιό σχήμα journal (προ-Κ2): διέγραψε το ~A και ξανακάνε import"
+                                 rid (vg-path graph))))
+        (unless (equal ph stored-ph)
+          (error 'invalid-edge
+                 :reason (format nil "ΑΛΛΟΙΩΣΗ PAYLOAD στο ~A: recomputed ~A ≠ αποθηκευμένο ~A — κάποιο πεδίο του record πειράχτηκε"
+                                 rid ph stored-ph)))
         (unless (equal expect (getf line :chain))
           (error 'invalid-edge
                  :reason (format nil "σπασμένη αλυσίδα στο ~A: περίμενα ~A βρήκα ~A"
                                  rid expect (getf line :chain))))
         (setf (vg-chain graph) expect)
+        ;; ③ semantic record hash ανά kind: το record-id ΞΑΝΑΒΓΑΙΝΕΙ από τα
+        ;; πεδία — relabeling/πλαστό id αδύνατο ακόμη κι αν το payload-hash
+        ;; ξαναγραφόταν συνεπές.
         (ecase (getf line :kind)
           (:text-version
+           (let ((semantic (%version-hash (getf line :provision-id) (getf line :text)
+                                          (getf line :heading) (getf line :valid-from)
+                                          (getf line :status)
+                                          (if (equal (getf line :previous) "genesis")
+                                              :genesis (getf line :previous)))))
+             (unless (equal semantic rid)
+               (error 'invalid-edge
+                      :reason (format nil "text-version ~A: semantic hash ~A ≠ record-id — πλαστή ταυτότητα έκδοσης" rid semantic))))
            (%install-version graph
                              (make-text-version
                               :version-hash rid
@@ -569,6 +696,14 @@
                               :created-by (getf line :created-by)
                               :assurance (getf line :assurance))))
           (:amendment-edge
+           (let ((semantic (%edge-hash (getf line :op) (getf line :target)
+                                       (getf line :from) (getf line :to)
+                                       (getf line :act-ref) (getf line :act-seq)
+                                       (getf line :enacted) (getf line :effective)
+                                       (getf line :fek-date) (getf line :span))))
+             (unless (equal semantic rid)
+               (error 'invalid-edge
+                      :reason (format nil "amendment-edge ~A: semantic hash ~A ≠ record-id — πλαστή ταυτότητα ακμής" rid semantic))))
            (setf (gethash rid (vg-edges graph))
                  (make-amendment-edge
                   :edge-id rid :op (getf line :op) :target (getf line :target)
