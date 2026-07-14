@@ -54,7 +54,12 @@
    #:submit-genesis! #:admit-edge! #:quarantine! #:retract-knowledge!
    #:add-knowledge-gap! #:kg-provision-id #:kg-effective #:kg-kind
    #:version-at #:snapshot-at #:verify-chain #:graph-chain-head
-   #:make-edge-spec #:make-version-spec))
+   #:make-edge-spec #:make-version-spec
+   ;; [0088 Φ7 Π1] Formal Temporal Semantics — effectivity conditions
+   #:make-effectivity-condition #:condition-id #:condition-ast #:condition-class
+   #:valid-condition-ast-p #:instrument-kinds
+   #:date+ #:sat
+   #:invalid-condition))
 
 (in-package :orchestrator.version-graph)
 
@@ -799,3 +804,179 @@
 (defun graph-gaps (graph) (vg-gaps graph))
 (defun graph-edge-count (graph) (hash-table-count (vg-edges graph)))
 (defun graph-body (graph) (vg-body graph))
+
+;;; ============================================================================
+;;; [0088 Φ7 Π1] FORMAL TEMPORAL SEMANTICS — effectivity-condition πυρήνας
+;;; Spec: deployment/LAWMAX-TEMPORAL-SEMANTICS-SPEC.md (v2, εγκεκριμένο).
+;;; ΜΟΝΟΤΟΝΗ γραμματική (χωρίς :not/:unless — κλάση :suspensive/:resolutory
+;;; στη ΔΗΛΩΣΗ)· denotational sat = ΟΛΙΚΗ συνάρτηση· date+ κατά ΑΚ 241-243.
+;;; ============================================================================
+
+(define-condition invalid-condition (error)
+  ((reason :initarg :reason :reader invalid-condition-reason))
+  (:report (lambda (c s) (format s "Άκυρο effectivity condition: ~A"
+                                 (invalid-condition-reason c)))))
+
+(defun %instrument-registry-path ()
+  (orchestrator.paths:institution-dir "deployment/data/instrument-kind-registry.sexp"))
+
+(let ((cache nil))
+  (defun instrument-kinds ()
+    "Το ΚΛΕΙΣΤΟ μητρώο ειδών θεσμικών γεγονότων — δηλωτικά δεδομένα από το
+     deployment/data/instrument-kind-registry.sexp. Απόν/άκυρο ⇒ ΣΦΑΛΜΑ."
+    (or cache
+        (setf cache
+              (let ((plist (with-open-file (s (%instrument-registry-path)
+                                              :external-format :utf-8)
+                             (let ((*package* (find-package :keyword)))
+                               (read s)))))
+                (unless (eq (getf plist :schema) :instrument-kind-registry/1)
+                  (error 'invalid-condition
+                         :reason "μητρώο instrument-kinds: άγνωστο schema"))
+                (or (getf plist :kinds)
+                    (error 'invalid-condition
+                           :reason "μητρώο instrument-kinds: κενό")))))))
+
+(defun valid-condition-ast-p (ast)
+  "T ή σφάλμα invalid-condition με ΛΟΓΟ — ποτέ σιωπηλό NIL για άκυρη μορφή.
+   Γραμματική v2: date-reached | instrument-event | after | and | or."
+  (unless (consp ast)
+    (error 'invalid-condition :reason (format nil "μη-λίστα κόμβος: ~S" ast)))
+  (ecase (first ast)
+    (:date-reached
+     (unless (and (= 2 (length ast)) (legal-date-p (second ast)))
+       (error 'invalid-condition
+              :reason (format nil ":date-reached απαιτεί ΜΙΑ legal-date: ~S" ast))))
+    (:instrument-event
+     (unless (and (= 3 (length ast))
+                  (member (second ast) (instrument-kinds))
+                  (stringp (third ast)) (plusp (length (third ast))))
+       (error 'invalid-condition
+              :reason (format nil ":instrument-event απαιτεί (KIND∈μητρώο REF-string): ~S" ast))))
+    (:after
+     (unless (and (= 3 (length ast))
+                  (consp (second ast))
+                  (member (first (second ast)) '(:days :months :years))
+                  (integerp (second (second ast)))
+                  (plusp (second (second ast))))
+       (error 'invalid-condition
+              :reason (format nil ":after απαιτεί ((:days|:months|:years N>0) condition): ~S" ast)))
+     (valid-condition-ast-p (third ast)))
+    ((:and :or)
+     (unless (>= (length (rest ast)) 2)
+       (error 'invalid-condition
+              :reason (format nil "~S απαιτεί ≥2 υπο-conditions" (first ast))))
+     (mapc #'valid-condition-ast-p (rest ast))))
+  t)
+
+(defstruct (effectivity-condition (:conc-name condition-)
+                                  (:constructor %make-condition))
+  id     ; sha256 του value-canonical (class . AST) — η ταυτότητα
+  class  ; :suspensive | :resolutory
+  ast)
+
+(defun make-effectivity-condition (class ast)
+  "Typed effectivity condition. CLASS: :suspensive (η ισχύς ΑΡΧΙΖΕΙ στην
+   ικανοποίηση) | :resolutory (η ισχύς ΠΑΥΕΙ στην ικανοποίηση — π.χ. ΠΝΠ μη
+   κυρωθείσα, 44§1 Σ). Το AST επικυρώνεται ΠΛΗΡΩΣ στην κατασκευή· η ταυτότητα
+   = hash του value-canonical (class . AST) — ίδιο condition ⇒ ίδιο id."
+  (unless (member class '(:suspensive :resolutory))
+    (error 'invalid-condition :reason (format nil "άγνωστη κλάση αίρεσης ~S" class)))
+  (valid-condition-ast-p ast)
+  (%make-condition
+   :id (orchestrator.journal:sha256-hex
+        (with-output-to-string (out) (%canon-sexp (cons class ast) out)))
+   :class class :ast ast))
+
+;;; ── date+ : Η ΜΙΑ ολική συνάρτηση ελληνικής προθεσμίας (ΑΚ 241-243) ──
+
+(defun date+ (iso-date duration)
+  "Η legal-date DURATION μετά την ISO-DATE, κατά ΑΚ 241-243:
+   • :days — η προθεσμία λήγει με την παρέλευση N ημερών (η ημέρα έναρξης
+     ΔΕΝ προσμετράται ⇒ ημερολογιακά: date + N)·
+   • :months/:years — λήγει την ΑΝΤΙΣΤΟΙΧΗ ημερομηνία· ελλείψει αυτής
+     (31/1+1μ), την ΤΕΛΕΥΤΑΙΑ ημέρα του μήνα (28-29/2, με δίσεκτα).
+   Ολική & καθαρή: legal-date × DURATION → legal-date, αλλιώς typed σφάλμα.
+   ΔΗΛΩΜΕΝΟ ΟΡΙΟ (spec §1.2): χωρίς κανόνα αργιών — αφορά έναρξη ισχύος."
+  (unless (legal-date-p iso-date)
+    (error 'invalid-condition :reason (format nil "date+: μη legal-date ~S" iso-date)))
+  (unless (and (consp duration) (member (first duration) '(:days :months :years))
+               (integerp (second duration)) (plusp (second duration)))
+    (error 'invalid-condition :reason (format nil "date+: άκυρο duration ~S" duration)))
+  (let ((y (%digits-int iso-date 0 4))
+        (m (%digits-int iso-date 5 7))
+        (d (%digits-int iso-date 8 10))
+        (n (second duration)))
+    (ecase (first duration)
+      (:days
+       (multiple-value-bind (sec min hr dd mm yy)
+           (decode-universal-time
+            (+ (encode-universal-time 0 0 12 d m y 0) (* n 86400)) 0)
+         (declare (ignore sec min hr))
+         (format nil "~4,'0D-~2,'0D-~2,'0D" yy mm dd)))
+      ((:months :years)
+       (let* ((total-months (+ (* y 12) (1- m)
+                               (if (eq (first duration) :months) n (* 12 n))))
+              (yy (floor total-months 12))
+              (mm (1+ (mod total-months 12)))
+              (dd (min d (%days-in-month yy mm))))
+         (format nil "~4,'0D-~2,'0D-~2,'0D" yy mm dd))))))
+
+;;; ── sat : denotational, ΟΛΙΚΗ (spec §1.2) ──
+;;; LIVE-EVENTS: λίστα plists (:condition-id :kind :ref :outcome :at) — ΗΔΗ
+;;; φιλτραρισμένα ως recorded-live κατά known-at από τον καλούντα (Π2 έδρα)·
+;;; το sat είναι ΚΑΘΑΡΗ συνάρτηση, δεν αγγίζει χρόνο εγγραφής.
+
+(defun %sat-instrument (kind ref live-events)
+  "Το αποτέλεσμα για (:instrument-event KIND REF): από το ΜΟΝΑΔΙΚΟ live
+   γεγονός που ταιριάζει (kind+ref). Πολλαπλά αντιφατικά ⇒ ΣΦΑΛΜΑ (ο γράφος
+   είναι ασυνεπής — όχι σιωπηλή επιλογή). Κανένα ⇒ :pending."
+  (let ((hits (remove-if-not
+               (lambda (e) (and (eq (getf e :kind) kind)
+                                (equal (getf e :ref) ref)))
+               live-events)))
+    (cond ((null hits) (values :pending nil))
+          ((null (rest hits))
+           (values (getf (first hits) :outcome) (getf (first hits) :at)))
+          (t (error 'invalid-condition
+                    :reason (format nil "~D αντιφατικά live γεγονότα για ~S ~S"
+                                    (length hits) kind ref))))))
+
+(defun sat (ast live-events)
+  "(values :pending|:satisfied|:refuted at-ή-nil) — ολική, ντετερμινιστική.
+   :or ⇒ ικανοποίηση με το ΕΛΑΧΙΣΤΟ at· :and ⇒ με το ΜΕΓΙΣΤΟ at·
+   refuted κανόνες κατά spec §1.2. Το at είναι ΠΑΝΤΑ legal-date."
+  (ecase (first ast)
+    (:date-reached (values :satisfied (second ast)))
+    (:instrument-event (%sat-instrument (second ast) (third ast) live-events))
+    (:after
+     (multiple-value-bind (st at) (sat (third ast) live-events)
+       (if (eq st :satisfied)
+           (values :satisfied (date+ at (second ast)))
+           (values st at))))
+    (:and
+     (let ((results (mapcar (lambda (c) (multiple-value-list (sat c live-events)))
+                            (rest ast))))
+       (cond ((find :refuted results :key #'first)
+              (values :refuted
+                      (reduce (lambda (a b) (if (%time<= a b) a b))
+                              (mapcar #'second (remove :refuted results
+                                                       :key #'first :test-not #'eq)))))
+             ((every (lambda (r) (eq (first r) :satisfied)) results)
+              (values :satisfied
+                      (reduce (lambda (a b) (if (%time<= a b) b a))
+                              (mapcar #'second results))))
+             (t (values :pending nil)))))
+    (:or
+     (let ((results (mapcar (lambda (c) (multiple-value-list (sat c live-events)))
+                            (rest ast))))
+       (cond ((find :satisfied results :key #'first)
+              (values :satisfied
+                      (reduce (lambda (a b) (if (%time<= a b) a b))
+                              (mapcar #'second (remove :satisfied results
+                                                       :key #'first :test-not #'eq)))))
+             ((every (lambda (r) (eq (first r) :refuted)) results)
+              (values :refuted
+                      (reduce (lambda (a b) (if (%time<= a b) b a))
+                              (mapcar #'second results))))
+             (t (values :pending nil)))))))
