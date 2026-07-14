@@ -52,14 +52,12 @@
     ;; P1b [0049]: label-aware ταυτότητα — ποτέ ο συνθετικός αριθμός στο id
     `(:|id| ,(format nil "~A/article/~A"
                      (orchestrator.model:corpus-eli-prefix corpus)
-                     (orchestrator.model:article-uri-id
-                      number (orchestrator.model:article-label article)))
+                     (orchestrator.model:article-uri article))
       :|canonical_source| ,eli-uri
       :|corpus| ,(orchestrator.model:corpus-short-name corpus)
       ;; article_number = η ΠΡΑΓΜΑΤΙΚΗ κανονική ταυτότητα (label-aware string,
       ;; «5Α»/«70») — ο εσωτερικός συνθετικός αριθμός δεν διαφεύγει σε καταναλωτές
-      :|article_number| ,(orchestrator.model:article-uri-id
-                          number (orchestrator.model:article-label article))
+      :|article_number| ,(orchestrator.model:article-uri article)
       :|title| ,(orchestrator.model:article-title article)
       :|language| ,(orchestrator.model:corpus-language corpus)
       :|content_hash| ,hash
@@ -76,8 +74,7 @@
                     :|orcid| ,(orchestrator.model:corpus-orcid corpus))
       :|citation_template| ,(format nil "~A, Article ~A (~A)"
                                    (orchestrator.model:corpus-name corpus)
-                                   (orchestrator.model:article-uri-id
-                                    number (orchestrator.model:article-label article))
+                                   (orchestrator.model:article-uri article)
                                    (orchestrator.model:corpus-publication-date corpus))
       :|last_updated| ,(current-build-timestamp)
       :|eli_uri| ,eli-uri)))

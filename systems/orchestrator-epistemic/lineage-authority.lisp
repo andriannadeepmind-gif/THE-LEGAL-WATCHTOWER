@@ -93,9 +93,7 @@
          ;; P1b [0050]#2: η ΚΑΝΟΝΙΚΗ ταυτότητα («5Α», όχι ο συνθετικός 5001)
          ;; από τη ΜΙΑ έδρα — τα labels/σχόλια του lineage φέρουν την αληθινή
          ;; ταυτότητα, όπως ήδη τα URIs (article-eli-uri).
-         (art-id (orchestrator.model:article-uri-id
-                  (orchestrator.model:article-number article)
-                  (orchestrator.model:article-label article)))
+         (art-id (orchestrator.model:article-uri article))
          (hash (orchestrator.model:article-hash article))
          (genesis-iri (format nil "~A/genesis" eli-uri))
          (timestamp-iso (orchestrator.time:format-iso8601 genesis-timestamp)))
@@ -160,9 +158,7 @@
 
   (let* ((eli-uri (orchestrator.model:article-eli-uri article))
          ;; P1b [0050]#2: κανονική ταυτότητα από τη ΜΙΑ έδρα — ποτέ συνθετικός.
-         (art-id (orchestrator.model:article-uri-id
-                  (orchestrator.model:article-number article)
-                  (orchestrator.model:article-label article)))
+         (art-id (orchestrator.model:article-uri article))
          (current-iri (format nil "~A#version-~A" eli-uri current-hash))
          (previous-iri (format nil "~A#version-~A" eli-uri previous-hash))
          (mutation-iri (format nil "~A/mutation/~A"

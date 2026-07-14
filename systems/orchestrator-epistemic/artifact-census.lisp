@@ -71,9 +71,7 @@
          (rows
            (loop for a in ordered
                  for fid = (orchestrator.model:article-file-id a)
-                 for uid = (orchestrator.model:article-uri-id
-                            (orchestrator.model:article-number a)
-                            (orchestrator.model:article-label a))
+                 for uid = (orchestrator.model:article-uri a)
                  collect
                  (flet ((artifact (ext)
                           (let ((p (merge-pathnames

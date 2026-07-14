@@ -44,6 +44,7 @@
    #:article-label-suffix
    #:article-suffix-ordinal
    #:article-identity          ; [0088 Φ6γ] typed identity segment από την έδρα
+   #:article-uri               ; [0088 Φ6γ-Δ2] object-level uri προβολή («5Α»)
    #:article-identity<
    #:articles-in-identity-order
    #:article-title

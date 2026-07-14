@@ -32,9 +32,7 @@
    γράμμα-επίθημα (5, 5Α, 6, …). Ο τίτλος περνά από την ΙΔΙΑ έδρα καθαρισμού
    με το RDF (extract-title-only): γυμνός τίτλος, όχι raw «Άρθρο Ν - …»."
   (mapcar (lambda (a)
-            (list (orchestrator.model:article-uri-id
-                   (orchestrator.model:article-number a)
-                   (orchestrator.model:article-label a))
+            (list (orchestrator.model:article-uri a)
                   (extract-title-only (orchestrator.model:article-title a))
                   ;; Παράγραφοι από τη ΜΙΑ έδρα του κανόνα ορίου
                   ;; (split-article-paragraph-chunks) ώστε το consolidated

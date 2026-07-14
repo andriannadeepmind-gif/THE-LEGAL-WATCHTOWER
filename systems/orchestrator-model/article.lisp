@@ -284,6 +284,18 @@
                 (orchestrator.identity:ordinal-suffix (third seg) :sequence :upper))
         (pad-article-id (article-number article) (article-label article)))))
 
+(defun article-uri (article)
+  "[0088 Φ6γ-Δ2] Η κανονική UNPADDED uri ταυτότητα ΕΝΟΣ ΑΝΤΙΚΕΙΜΕΝΟΥ άρθρου
+   («5», «5Α») — από το typed identity slot (η έδρα, μία φορά στην κατασκευή)·
+   legacy (number,label) μονοπάτι ΜΟΝΟ για slot-less test αντικείμενα
+   (δηλωμένος θάνατος με τους Δ-θανάτους). Καταναλωτές με το ΑΝΤΙΚΕΙΜΕΝΟ
+   περνούν από εδώ — όχι από το raw ζεύγος (number,label)."
+  (let ((seg (article-identity article)))
+    (if seg
+        (format nil "~D~A" (second seg)
+                (orchestrator.identity:ordinal-suffix (third seg) :sequence :upper))
+        (article-uri-id (article-number article) (article-label article)))))
+
 (defun %article-order-key (a)
   "(βάση . τακτική-θέση) — από το typed slot όταν υπάρχει, αλλιώς legacy."
   (let ((seg (article-identity a)))
