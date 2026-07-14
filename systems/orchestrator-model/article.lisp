@@ -351,6 +351,32 @@
         (segment-uri-id seg)
         (format nil "~D" (article-number article)))))
 
+(defun provision-id (corpus article)
+  "[0088 κριτής-δημιουργού #4] Η ΠΛΗΡΗΣ typed ταυτότητα διάταξης — σύνθεση
+   (legal-body-id × article-segment): (:provision BODY-ID (:article ΒΑΣΗ ΘΕΣΗ)).
+   Το «άρθρο 5» μόνο του είναι ΤΟΠΙΚΟ· η παγκόσμια ταυτότητα απαιτεί το σώμα.
+   Fail-closed: άρθρο χωρίς νόμιμη ταυτότητα ή corpus χωρίς body-id ⇒ typed
+   σφάλμα — ποτέ μερική/σιωπηλή ταυτότητα."
+  (let ((body (corpus-legal-body-id corpus))
+        (seg (article-identity article)))
+    (unless body
+      (error 'orchestrator.spec:validation-error
+             :message "provision-id: corpus χωρίς legal-body-id"))
+    (unless seg
+      (error 'orchestrator.spec:validation-error
+             :message (format nil "provision-id: άρθρο χωρίς νόμιμη ταυτότητα (number=~S)"
+                              (and (slot-boundp article 'number)
+                                   (article-number article)))))
+    (list :provision body seg)))
+
+(defun provision-uri (corpus article)
+  "Η παγκόσμια URI προβολή της πλήρους provision identity:
+   {eli-prefix}/art/{segment-uri} — object-level προβολή του ΙΔΙΟΥ κανόνα
+   με το build-eli-article-uri (raw όριο), μέσω των εδρών segment."
+  (let ((pid (provision-id corpus article)))
+    (declare (ignore pid)) ; επικύρωση fail-closed πριν από κάθε προβολή
+    (format nil "~A/art/~A" (corpus-eli-prefix corpus) (article-uri article))))
+
 (defun %article-order-key (a)
   "(βάση . τακτική-θέση) — από το typed slot (ΠΑΝΤΑ υπολογισμένο)· NIL =
    δηλωμένο identity-debt χωρίς label ⇒ (γυμνή βάση . 0)."

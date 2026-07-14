@@ -157,6 +157,38 @@
             (string= "70" (segment-uri-id '(:article 70 0)))
             (string= "070" (segment-file-id '(:article 70 0)))))
 
+(format t "~%== [0088 κριτής-δημιουργού #3/#4] clone invariants + πλήρης provision identity ==~%")
+(let* ((a (make-article :number 5 :label "5Α" :title "T"))
+       (c (clone-article a 'label "5Β")))
+  (check "#3: clone override label ΜΕΣΩ accessor ⇒ identity επανυπολογισμένη (5Β)"
+         (and (equal '(:article 5 2) (article-identity c))
+              (string= "5Β" (article-uri c))))
+  (check "#3β: clone override number ⇒ identity παρακολουθεί"
+         (let ((n (clone-article (make-article :number 7) 'number 9)))
+           (and (equal '(:article 9 0) (article-identity n))
+                (string= "9" (article-uri n)))))
+  (check "#3γ: clone override του ΠΑΡΑΓΩΓΟΥ identity-segment ⇒ typed σφάλμα"
+         (handler-case (progn (clone-article a 'identity-segment '(:article 99 0)) nil)
+           (orchestrator.spec:validation-error () t))))
+(let ((syntagma (make-corpus :name "Σύνταγμα" :short-name "constitution"
+                             :eli-prefix "https://stavropouloslaw.com/eli/gr/const/1975"))
+      (pk (make-corpus :name "Ποινικός Κώδικας" :short-name "poinikos"
+                       :eli-prefix "https://stavropouloslaw.com/eli/gr/l/pk"))
+      (a5 (make-article :number 5)))
+  (check "#4: legal-body-id default = eli-prefix (παγκοσμίως μοναδικό)"
+         (string= (corpus-legal-body-id syntagma)
+                  "https://stavropouloslaw.com/eli/gr/const/1975"))
+  (check "#4β: ΙΔΙΟ άρθρο 5, ΑΛΛΟ σώμα ⇒ ΔΙΑΦΟΡΕΤΙΚΟ provision-id ΚΑΙ uri"
+         (and (not (equal (provision-id syntagma a5) (provision-id pk a5)))
+              (not (string= (provision-uri syntagma a5) (provision-uri pk a5)))))
+  (check "#4γ: provision-uri = {eli-prefix}/art/{segment}"
+         (string= "https://stavropouloslaw.com/eli/gr/const/1975/art/5"
+                  (provision-uri syntagma a5)))
+  (check "#4δ: provision-id για άρθρο χωρίς νόμιμη ταυτότητα ⇒ typed σφάλμα"
+         (handler-case
+             (progn (provision-id syntagma (make-instance 'article :number 272005)) nil)
+           (orchestrator.spec:validation-error () t))))
+
 (format t "~%========================================~%")
 (format t "Article identity tests: ~D passed, ~D failed~%" *pass* *fail*)
 (format t "========================================~%")

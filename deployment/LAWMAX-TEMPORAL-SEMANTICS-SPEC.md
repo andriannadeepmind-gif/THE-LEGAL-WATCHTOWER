@@ -8,6 +8,11 @@
 Το παρόν είναι ΑΥΤΟΤΕΛΕΣ: κάθε ορισμός που χρειάζεται για υλοποίηση και
 ανεξάρτητη επαλήθευση δίνεται εδώ — δεν απαιτείται ανάγνωση των v1/v2 ή
 του διαλόγου κριτών (ιστορικό: deployment/collab/dialogue/0088-claude.md).
+Το v3 κλείνει και τα ευρήματα του στρατηγικού ελέγχου δημιουργού
+2026-07-14: Κρίσιμο Α (scope model ορισμένο εδώ, §5), Κρίσιμο Β (πλήρες
+regime-edge semantic hash, §5), Κρίσιμο Γ (υπογεγραμμένο release-bound
+attestation, §6), Υψηλά: date-reached derived closure (§4), conflict
+semantics condition events (§3.3β), Allen σχέσεις ορισμένες (§5).
 
 ## 0. Πρόβλημα και στόχος
 
@@ -124,6 +129,23 @@ at (legal-date), evidence, verifier}`. Evidence ΥΠΟΧΡΕΩΤΙΚΟ με το
 Η «απο-ικανοποίηση» υπάρχει ΜΟΝΟ ως προς μεταγενέστερο known-at — κάθε
 παλαιό snapshot μένει αναλλοίωτο. Retract ανύπαρκτου event ⇒ σφάλμα.
 
+### 3.3β Συγκρούσεις condition events — πλήρης σημασιολογία
+
+- **Ταυτότητα γεγονότος**: event-id = sha256(%canon-sexp (cid kind ref
+  outcome at evidence-digest)) — δύο καταγραφές με ίδια πεδία είναι ΤΟ ΙΔΙΟ
+  γεγονός (ιδεμποτής επανακαταγραφή), με διαφορετικό οποιοδήποτε πεδίο
+  είναι ΑΛΛΟ γεγονός.
+- **Conflict set**: τα live-κατά-known-at events ίδιου (cid, kind, ref) με
+  ΔΙΑΦΟΡΕΤΙΚΟ outcome. Μη κενό conflict set ⇒ το sat σηκώνει typed σφάλμα
+  (invalid-condition) — ΠΟΤΕ σιωπηλή επιλογή, ΠΟΤΕ αυτόματη προτεραιότητα.
+- **Adjudication (ΜΟΝΗ οδός)**: journaled retract (§3.3) του ηττημένου
+  event με ρητό evidence (διορθωτικό ΦΕΚ / ανακλητική πράξη / verifier
+  απόφαση). Δεν υπάρχει αυτόματο authority ordering: η επίλυση είναι
+  ΘΕΣΜΙΚΗ πράξη με τεκμήριο, καταγεγραμμένη διτεμπορικά — snapshots πριν
+  από την επίλυση συνεχίζουν τίμια να σφάλλουν-κλειστά (422/σφάλμα).
+- Πολλαπλά ΣΥΜΦΩΝΑ events ίδιου (cid,kind,ref,outcome): sat χρησιμοποιεί
+  το ΕΛΑΧΙΣΤΟ at (η ικανοποίηση συνέβη όταν πρωτοσυνέβη) — ντετερμινιστικό.
+
 ### 3.4 condition-status
 `condition-status(graph, cid, known-at) = sat(ast, events live κατά known-at)`.
 Η κατάσταση ΔΕΝ αποθηκεύεται πουθενά (counter `condition_state_defaults=0`) —
@@ -141,6 +163,17 @@ at (legal-date), evidence, verifier}`. Evidence ΥΠΟΧΡΕΩΤΙΚΟ με το
   `:validity-close-on-satisfaction {version, condition-id, derived-t}`
   όταν καταγραφεί (:satisfied t): valid-until = t. Η προηγούμενη έκδοση
   παραμένει in-force μέχρι τότε (νομικά ορθό).
+- **Κανόνας date-reached (κλείσιμο ασυνέπειας v2)**: για αιρέσεις των
+  οποίων το sat εξαρτάται ΜΟΝΟ από ημερομηνίες (κανένας :instrument-event
+  κόμβος), ΔΕΝ υπάρχει condition event και ΔΕΝ γράφεται
+  :validity-close-on-satisfaction: το κλείσιμο της προηγούμενης validity
+  είναι ΠΑΡΑΓΩΓΟ κατά το ερώτημα (derived closure) — το version-at
+  υπολογίζει sat(AST, ∅) = (:satisfied t) ντετερμινιστικά από το ίδιο το
+  AST και συμπεριφέρεται ΣΑΝ valid-until = t. Journaled κλείσιμο
+  απαιτείται ΜΟΝΟ όταν η ικανοποίηση εξαρτάται από γεγονός (χρειάζεται
+  τεκμήριο). ΑΝΑΛΛΟΙΩΤΟ (τεστάρεται): για κάθε AST, το αποτέλεσμα του
+  version-at είναι ταυτόσημο είτε το κλείσιμο είναι derived είτε
+  journaled — καμία τρίτη συμπεριφορά.
 
 ## 5. REGIME EDGES & INTERVAL ALGEBRA [Π4]
 
@@ -148,12 +181,29 @@ at (legal-date), evidence, verifier}`. Evidence ΥΠΟΧΡΕΩΤΙΚΟ με το
   ξανάφερνε NIL-σχήμα πεδία): ops {:suspend :extend :expire :revive
   :retroact} πάνω σε στόχο + typed διάστημα [legal-date, legal-date|:open).
   Μεταβατικές διατάξεις ΔΕΝ είναι regime op — είναι text-versions με
-  παράθυρο ισχύος. Ίδιο journal/Κ2/replay, δικό του semantic hash:
-  sha256(op, target, span, act-ref, act-seq, enacted, fek-date).
-- **Allen άλγεβρα** σε typed διαστήματα με %time-key: έλεγχος συνέπειας
-  καθεστώτων (επικαλύψεις/κενά) + in-force predicate:
+  παράθυρο ισχύος. Ίδιο journal/Κ2/replay.
+- **Semantic hash regime-edge (ΠΛΗΡΕΣ — κλείσιμο Κρίσιμου Β)**:
+  sha256(%canon-sexp (op target span-from span-until|:open scope-set
+  condition-id|NIL act-ref act-seq enacted fek-date prior-edge-id|NIL)) —
+  δεσμεύει ΚΑΙ τα όρια διαστήματος, ΚΑΙ το scope, ΚΑΙ την τυχόν αίρεση,
+  ΚΑΙ τον προηγούμενο κρίκο (revive δείχνει το suspend που αναιρεί):
+  δύο διαφορετικές καθεστωτικές πράξεις ΔΕΝ μπορούν να συμπέσουν σε
+  semantic id.
+- **Allen άλγεβρα — ΟΡΙΣΜΕΝΗ** σε typed διαστήματα I=[i⁻,i⁺), J=[j⁻,j⁺)
+  με σύγκριση %time-key (το :open ⇒ +∞)· και οι 13 σχέσεις:
+  before(I,J): i⁺<j⁻ · meets: i⁺=j⁻ · overlaps: i⁻<j⁻<i⁺<j⁺ ·
+  starts: i⁻=j⁻ ∧ i⁺<j⁺ · during: j⁻<i⁻ ∧ i⁺<j⁺ · finishes: i⁺=j⁺ ∧ j⁻<i⁻ ·
+  equals: i⁻=j⁻ ∧ i⁺=j⁺ · + οι 6 αντίστροφες (after, met-by, overlapped-by,
+  started-by, contains, finished-by). Παράγωγα κατηγορήματα του runtime:
+  intersects(I,J) ≡ ¬(before ∨ after ∨ meets ∨ met-by)· covers(I,t) ≡
+  i⁻ ≤ t < i⁺. Χρήσεις: in-force predicate
   `valid-καλύπτεται ∧ recorded-live ∧ ∄ γνωστή-κατά-known-at τέμνουσα
-  αναστολή ∧ suspensive satisfied ∧ resolutory ¬satisfied`.
+  αναστολή ∧ suspensive satisfied ∧ resolutory ¬satisfied` + έλεγχοι
+  συνέπειας καθεστώτων (revive χωρίς τέμνον suspend ⇒ σφάλμα· δύο extend
+  ίδιου target με επικάλυψη ⇒ έλεγχος συμβατότητας). Πίνακας σύνθεσης
+  (composition table) ΔΕΝ απαιτείται στο runtime — τα κατηγορήματα
+  υπολογίζονται απευθείας στα typed άκρα· η πλήρης αλγεβρική μηχανοποίηση
+  ανήκει στο Φ9 (Lean).
 - **Υ2β**: τα knowledge-gaps αποκτούν διάστημα [from, until|:open) — το
   κενό γνώσης παύει να είναι σημείο.
 - **version-at τριών σκελών** (typed, ποτέ ψευδής άγνοια):
@@ -165,10 +215,23 @@ version-at ⇒ (values v :complete)                      ; in-force έκδοση
                                                        ; αν fresh :insert υπό αίρεση
            | temporal-uncertainty                      ; ΜΟΝΟ γνήσια αδυναμία
 ```
-- Scoped ισχύς (γεωγραφικά/προσωπικά/καθ' ύλην πεδία): καταγραφή ως
-  δηλωμένες διαστάσεις· όπου scoped καθεστώς θα μπορούσε να αλλάξει την
+- **Scope model — ΑΥΤΟΤΕΛΗΣ ΟΡΙΣΜΟΣ (κλείσιμο Κρίσιμου Α — καμία αναφορά
+  σε v1)**: scope-set = πεπερασμένο σύνολο δηλώσεων στις 4 διαστάσεις
+  {:territorial, :personal, :material, :procedural}. Κάθε δήλωση:
+  `(διάσταση tag+)` με tags από κλειστό data-μητρώο ανά διάσταση
+  (scope-tag-registry, ίδιο πρότυπο με instrument-kinds — εκτός μητρώου ⇒
+  typed σφάλμα). Σημασιολογία: απούσα διάσταση = ΚΑΘΟΛΙΚΗ (universal)·
+  παρούσα = η ισχύς περιορίζεται στην ένωση των tags της. Canonical μορφή:
+  διαστάσεις σε σταθερή σειρά, tags ταξινομημένα — μία value-canonical
+  αναπαράσταση, hashable με %canon-sexp. Πράξεις που ΟΡΙΖΟΝΤΑΙ στη Φ7:
+  scope-covers-p (scope-set × ερώτημα-πλαίσιο → boolean | :unknown όταν
+  το ερώτημα δεν δηλώνει τη διάσταση — τίμια άγνοια, ποτέ σιωπηλό ναι)
+  και scope-intersects-p (δύο scope-sets — ανά διάσταση: universal τέμνει
+  τα πάντα· αλλιώς μη κενή τομή tags). Πλήρης άλγεβρα (κανονικοποίηση
+  ενώσεων/διαφορών, μερική κατάργηση ανά υποσύνολο) → Φ8 — δηλωμένο όριο,
+  ΟΧΙ σιωπηλή εξάρτηση. Όπου scoped καθεστώς θα μπορούσε να αλλάξει την
   απάντηση, η δήλωση μπαίνει ΜΕΣΑ στο δεσμευμένο τεκμήριο §6 (counter
-  `silent_scope_omissions=0`). Πλήρης άλγεβρα τομής scope → Φ8.
+  `silent_scope_omissions=0`).
 
 ## 6. ΔΕΣΜΕΥΣΗ — ΔΥΟ ΣΤΡΩΜΑΤΑ [Π5]
 
@@ -176,10 +239,18 @@ version-at ⇒ (values v :complete)                      ; in-force έκδοση
   receipt-id μπαίνουν μόνο condition-ids + class + regime-edge-ids της
   έκδοσης. Ένα receipt ανά έκδοση, σταθερό Merkle φύλλο — το
   receipt-set root σταθερό ανά release.
-- **Effectivity-attestation** (ανά ερώτημα): ξεχωριστό canonical-hash
-  τεκμήριο που δεσμεύει (valid-at, known-at, receipt-id, sat-καταστάσεις,
-  τέμνοντα καθεστώτα, scoped δηλώσεις) — επιστρέφεται από /as-known και
-  τον verifier· ΔΕΝ μπαίνει στο Merkle των receipts.
+- **Effectivity-attestation** (ανά ερώτημα — ΠΛΗΡΩΣ δεσμευμένο, κλείσιμο
+  Κρίσιμου Γ): canonical (JCS) αντικείμενο που δεσμεύει ΟΛΑ τα
+  query-εξαρτώμενα ΚΑΙ τα αγκυρωτικά πεδία:
+  `{protocol-version, corpus-id, valid-at, known-at, receipt-id,
+  release-root, graph-chain-head, sat-καταστάσεις (ανά condition-id),
+  τέμνοντα regime-edge-ids, scoped δηλώσεις, verifier-hash (sha256 του
+  verify.lisp — ήδη 10ο canonical της ταυτότητας)}` — και ΥΠΟΓΡΑΦΕΤΑΙ
+  από το release κλειδί μέσω της ΜΙΑΣ υπάρχουσας έδρας υπογραφής
+  (sign-root/JWS pipeline)· η επαλήθευση της υπογραφής + η επίλυση του
+  release-root στο transparency log αποδεικνύουν ΠΟΙΟΣ το εξέδωσε και ΣΕ
+  ΠΟΙΟ canonical release ανήκει. Επιστρέφεται από /as-known και τον
+  verifier· ΔΕΝ μπαίνει στο Merkle των receipts (query-εξαρτώμενο).
 - **/as-known JSON**: typed κορυφαίο πεδίο `in_force: true|false` +
   `basis` (complete | pending-condition | suspended | …) — καταναλωτής
   που διαβάζει μόνο το text δεν μπορεί να παρερμηνεύσει pending ως ισχύον.

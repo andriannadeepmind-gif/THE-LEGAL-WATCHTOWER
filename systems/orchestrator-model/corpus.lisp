@@ -20,6 +20,16 @@
     :type string
     :documentation "Short identifier (e.g., 'constitution')")
    
+   (legal-body-id
+    :accessor corpus-legal-body-id
+    :initarg :legal-body-id
+    :initform nil
+    :documentation "[0088 κριτής-δημιουργού #4] TYPED παγκόσμια ταυτότητα του
+     νομικού σώματος — το άρθρο «5» μόνο του είναι ΤΟΠΙΚΗ ταυτότητα· η πλήρης
+     provision identity είναι η σύνθεση (legal-body-id × article-segment)
+     μέσω provision-id/provision-uri. Default στην κατασκευή: το eli-prefix
+     (παγκοσμίως μοναδικό URI).")
+
    (articles
     :accessor corpus-articles
     :initform (make-hash-table :test 'equal)

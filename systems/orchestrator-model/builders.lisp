@@ -41,7 +41,7 @@
 ;;; ============================================================================
 
 (defun make-corpus (&key name short-name eli-prefix publication-date language
-                         webid orcid metadata)
+                         webid orcid metadata legal-body-id)
   "Create a corpus instance
   
   Args:
@@ -67,6 +67,8 @@
                  :name name
                  :short-name short-name
                  :eli-prefix eli-prefix
+                 ;; [0088 #4] παγκόσμια ταυτότητα σώματος: ρητή ή το eli-prefix
+                 :legal-body-id (or legal-body-id eli-prefix)
                  :publication-date publication-date
                  :language (or language "el")
                  :webid webid
@@ -164,8 +166,22 @@
     (when (slot-boundp article 'metadata)
       (setf (article-metadata new-article) (copy-list (article-metadata article))))
     
-    ;; Apply overrides
+    ;; [0088 κριτής-δημιουργού #3] Overrides ΜΕΣΩ των accessors — τα :after
+    ;; invariants (number/label ⇒ επανυπολογισμός identity) ισχύουν ΚΑΙ στον
+    ;; κλώνο· το raw slot-value bypass ΠΕΘΑΝΕ για identity-φέροντα slots.
+    ;; Override του ΠΑΡΑΓΩΓΟΥ identity-segment απαγορεύεται ρητά (fail-closed):
+    ;; η ταυτότητα προκύπτει ΜΟΝΟ από την έδρα, ποτέ από τον καλούντα.
     (loop for (slot value) on override-slots by #'cddr
-          do (setf (slot-value new-article slot) value))
-    
+          do (case slot
+               (identity-segment
+                (error 'orchestrator.spec:validation-error
+                       :message "clone-article: το identity-segment είναι ΠΑΡΑΓΩΓΟ της έδρας — override απαγορεύεται· δώσε number/label"))
+               (number (setf (article-number new-article) value))
+               (label (setf (article-label new-article) value))
+               (title (setf (article-title new-article) value))
+               (content (setf (article-content new-article) value))
+               (state (setf (article-processing-state new-article) value))
+               (metadata (setf (article-metadata new-article) value))
+               (t (setf (slot-value new-article slot) value))))
+
     new-article))

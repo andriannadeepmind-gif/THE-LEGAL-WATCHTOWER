@@ -594,3 +594,23 @@ edges + validity-close-on-satisfaction) → Π4 (regime-edges/Allen/version-at
 | B5 MINOR: commit message υπερδήλωση «καμία raw παράλληλη παραγωγή» | ΔΕΚΤΟ ως προς τη διατύπωση | ισχύει ΤΟΠΙΚΑ (FRBR constructors + object projections)· οι raw έδρες έχουν ενεργούς καταναλωτές (prov-activity, unified-frbr-generator, html-rdfa, greek-law-types) — δηλωμένος επόμενος θάνατος, ΔΕΝ αγγίζεται χωρίς έγκριση (Γ-νησιά/Δ-θάνατοι) |
 
 Proof μετά τα κλεισίματα: article-identity **39/39** (+8 locks), corpus-identity 55/55, legal-identity 19/19, kernel-conformance 107/107, artifact-census 21/21, version-graph 18/18, parity 31/31, as-known-e2e 26/26, temporal-semantics 23/23 — 0 failed.
+
+## [0088 Φ6γ-Δ²] Κλείσιμο ΚΑΙ των ευρημάτων του πλήρους στρατηγικού ελέγχου (2026-07-14)
+
+Ο δημιουργός παρέδωσε το πλήρες κείμενο του ελέγχου. Πέραν των ήδη
+κλεισμένων (nullable-στη-γέννηση, stale number, v3 αυτοτελές, GAAF-0):
+
+| Εύρημα ελέγχου | Κλείσιμο |
+|---|---|
+| #3 clone-article slot-value bypass (παράκαμψη invariants) | Overrides ΜΕΣΩ accessors (number/label ⇒ :after επανυπολογισμός)· override του ΠΑΡΑΓΩΓΟΥ identity-segment ⇒ typed σφάλμα. Locks #3/#3β/#3γ |
+| #4 μόνο article-segment, όχι πλήρης provision identity | corpus slot `legal-body-id` (default: eli-prefix — παγκοσμίως μοναδικό) + ΝΕΕΣ έδρες `provision-id` (:provision BODY SEG) / `provision-uri` — fail-closed χωρίς body ή νόμιμη ταυτότητα. Locks #4-#4δ (άρθρο 5 Συντάγματος ≠ άρθρο 5 ΠΚ) |
+| #5 legacy helpers δημόσιοι | ΔΗΛΩΜΕΝΟ υπόλοιπο (κριτής B5) — θάνατος σε εγκρινόμενο κύμα |
+| #6 integer get-article tombstone | ΔΗΛΩΜΕΝΟ — αποδεκτό ως deprecation tombstone κατά τον ίδιο τον έλεγχο |
+| Φ7 Κρίσιμο Α (scope εξάρτηση από v1) | v3 §5: scope model ΟΡΙΣΜΕΝΟ αυτοτελώς (4 διαστάσεις, κλειστά μητρώα tags, canonical μορφή, covers/intersects με τίμιο :unknown)· πλήρης άλγεβρα δηλωμένη → Φ8 |
+| Φ7 Κρίσιμο Β (ελλιπές regime hash) | v3 §5: hash δεσμεύει ΚΑΙ span-όρια, scope-set, condition-id, prior-edge-id |
+| Φ7 Κρίσιμο Γ (attestation αδέσμευτο) | v3 §6: ΥΠΟΓΕΓΡΑΜΜΕΝΟ (η ΜΙΑ sign έδρα) + δεσμεύει protocol-version, corpus-id, release-root, graph-chain-head, verifier-hash |
+| Φ7 Υψηλό date-reached | v3 §4: derived closure κατά το ερώτημα για καθαρά ημερολογιακές αιρέσεις· journaled ΜΟΝΟ για event-εξαρτώμενες· αναλλοίωτο ταύτισης των δύο |
+| Φ7 Υψηλό conflicts | v3 §3.3β: event-id ταυτότητα, conflict set, adjudication ΜΟΝΟ με journaled retract+τεκμήριο — κανένα αυτόματο authority ordering |
+| Φ7 Υψηλό Allen αόριστη | v3 §5: και οι 13 σχέσεις ορισμένες σε %time-key· composition table → Φ9 (δηλωμένο) |
+
+Proof: article-identity **46/46** + 8 σουίτες 0 failed. Φ7 runtime παραμένει ΠΑΓΩΜΕΝΟ.

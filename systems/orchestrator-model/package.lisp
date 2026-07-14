@@ -43,6 +43,9 @@
    #:article-identity-segment
    #:segment-uri-id
    #:segment-file-id
+   #:provision-id
+   #:provision-uri
+   #:corpus-legal-body-id
    #:article-base-number
    #:article-label-suffix
    #:article-suffix-ordinal
