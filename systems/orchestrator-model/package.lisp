@@ -41,6 +41,8 @@
    #:pad-article-id
    #:article-uri-id
    #:article-identity-segment
+   #:segment-uri-id
+   #:segment-file-id
    #:article-base-number
    #:article-label-suffix
    #:article-suffix-ordinal

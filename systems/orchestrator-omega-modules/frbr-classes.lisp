@@ -291,17 +291,15 @@
   ;; όταν δεν δοθεί, παράγεται στο όριο από τη ΜΙΑ έδρα — καμία raw
   ;; παράλληλη παραγωγή δεν υπάρχει πλέον.
   (let* ((seg (or identity-segment
-                  (article-identity-segment article-number article-suffix)
-                  (error 'orchestrator.spec:validation-error
-                         :message (format nil "make-frbr-work: άρθρο χωρίς νόμιμη ταυτότητα (number=~S suffix=~S)"
-                                          article-number article-suffix))))
+                  (article-identity-segment article-number article-suffix
+                                            :context "make-frbr-work")))
          (base (second seg))
          (suffix (orchestrator.identity:ordinal-suffix (third seg) :sequence :upper))
          (article-root (or article-root-uri
-                           (format nil "~A/art/~D~A" eli-prefix base suffix)))
+                           (format nil "~A/art/~A" eli-prefix (segment-uri-id seg))))
          (uri (format nil "~A/work" article-root))
          (year (or law-year (subseq issued-date 0 4)))
-         (eli-id (format nil "gr-~A-~A-art-~3,'0D~A-work" document-type year base suffix)))
+         (eli-id (format nil "gr-~A-~A-art-~A-work" document-type year (segment-file-id seg))))
     (make-instance 'frbr-work
                    :uri uri
                    :eli-identifier eli-id

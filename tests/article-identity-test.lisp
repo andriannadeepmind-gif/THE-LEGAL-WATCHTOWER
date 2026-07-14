@@ -120,6 +120,43 @@
                                           :issued-date "1975-06-11")))
            (search "/art/5Α" (resource-uri r)))))
 
+(format t "~%== [0088 κριτής A1/A2/B4] μετάλλαξη number + golden strings ==~%")
+(let ((a (make-instance 'article :number 5)))
+  (setf (article-number a) 7)
+  (check "A1: (setf article-number) ⇒ η ταυτότητα ΠΑΡΑΚΟΛΟΥΘΕΙ (uri «7», όχι «5»)"
+         (and (equal '(:article 7 0) (article-identity a))
+              (string= "7" (article-uri a)))))
+(let ((a (make-instance 'article)))
+  (setf (article-number a) 5)
+  (check "A2: number δοσμένο ΜΕΤΑ τη γέννηση ⇒ segment υπολογίζεται (όχι μόνιμο NIL)"
+         (equal '(:article 5 0) (article-identity a))))
+(check "A2β: γέννηση με label «» ⇒ typed σφάλμα (δηλωμένο fail-closed, όχι σιωπηλό «005»)"
+       (handler-case (progn (make-instance 'article :number 5 :label "") nil)
+         (orchestrator.spec:validation-error () t)))
+(let ((prefix "https://stavropouloslaw.com/eli/gr/const/1975"))
+  (let ((w (make-frbr-work :article-number 100 :article-suffix "Α"
+                           :eli-prefix prefix :document-type "const"
+                           :law-year "1975" :issued-date "1975-06-11")))
+    (check "B4: GOLDEN Work uri (προ-commit raw έξοδος, κλειδωμένη ως string)"
+           (string= (resource-uri w)
+                    "https://stavropouloslaw.com/eli/gr/const/1975/art/100Α/work"))
+    (check "B4β: GOLDEN Work eli-id"
+           (string= (eli-identifier w) "gr-const-1975-art-100Α-work")))
+  (let ((r (make-frbr-article-root :article-number 5 :article-suffix "Α"
+                                   :article-title "T" :eli-prefix prefix
+                                   :document-type "const" :law-year "1975"
+                                   :issued-date "1975-06-11")))
+    (check "B4γ: GOLDEN Root uri"
+           (string= (resource-uri r)
+                    "https://stavropouloslaw.com/eli/gr/const/1975/art/5Α"))
+    (check "B4δ: GOLDEN Root eli-id"
+           (string= (eli-identifier r) "gr-const-1975-art-005Α"))))
+(check "B1: segment-uri-id/segment-file-id = ΟΙ έδρες προβολής"
+       (and (string= "5Α" (segment-uri-id '(:article 5 1)))
+            (string= "005Α" (segment-file-id '(:article 5 1)))
+            (string= "70" (segment-uri-id '(:article 70 0)))
+            (string= "070" (segment-file-id '(:article 70 0)))))
+
 (format t "~%========================================~%")
 (format t "Article identity tests: ~D passed, ~D failed~%" *pass* *fail*)
 (format t "========================================~%")

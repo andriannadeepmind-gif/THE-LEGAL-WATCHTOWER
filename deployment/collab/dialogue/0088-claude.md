@@ -577,3 +577,20 @@ edges + validity-close-on-satisfaction) → Π4 (regime-edges/Allen/version-at
 3-σκελές/Υ2β) → Π5 (receipts/attestation/as-known) → Π6 (python verifier,
 ίδιο gate) → Π7 (gated tests σε πραγματικά ελληνικά μοτίβα). Proof ανά βήμα.
 Γ-νησιά: παραμένουν άθικτα (εκκρεμεί Α/Β/Γ).
+
+## [0088 Φ6γ-Δ κριτής] Αντιπαλική επιθεώρηση του 3da06a57 — κλείσιμο
+
+Ανεξάρτητος κριτής (φρέσκο πλαίσιο, απόλυτο rubric): 4 SERIOUS + 4 MINOR.
+
+| Εύρημα | Ετυμηγορία | Κλείσιμο |
+|---|---|---|
+| A1 SERIOUS: (setf article-number) δεν παρακολουθείτο ⇒ παγωμένο segment, αποκλίνουσα δημόσια ταυτότητα | ΔΕΚΤΟ | `(setf article-number) :after` επανυπολογίζει από την έδρα — συμμετρικό με label· lock A1 |
+| A2 SERIOUS: «NIL=μόνο debt» ψευδές (number unbound στη γέννηση) | ΔΕΚΤΟ | με το A1-fix, setf number μετά τη γέννηση υπολογίζει segment· lock A2. Υπο-εύρημα label «» ⇒ validation-error: ΔΗΛΩΜΕΝΟ σκόπιμο fail-closed (κενό label = άκυρη ταυτότητα), lock A2β |
+| A3 MINOR: συνθετικός+γυμνό επίθημα αφρούρητος στην article-identity-segment | ΔΗΛΩΜΕΝΟ υπόλοιπο | συμβόλαιο [0050]#2 (NUMBER=αληθινή βάση σε bare-suffix)· μη διακρίσιμο μηχανικά χωρίς άνω όριο βάσης ανά σώμα — ρητό στο docstring· θάνατος μαζί με τον θάνατο των συνθετικών |
+| B1 SERIOUS: 6 inline αντίγραφα του κανόνα προβολής segment→id | ΔΕΚΤΟ | ΝΕΕΣ έδρες `segment-uri-id`/`segment-file-id` (orchestrator.model) — όλες οι θέσεις (article-uri/file-id, FRBR uid/eli-id/root) περνούν από αυτές· lock B1 |
+| B2 SERIOUS: διπλή έδρα γέννησης identity (make-article cond ≡ initialize-instance :after) | ΔΕΚΤΟ | το cond του make-article ΔΙΑΓΡΑΦΗΚΕ — ΜΙΑ έδρα γέννησης το :after |
+| B3 MINOR: copy-paste φρουρός or+error σε 2 constructors | ΔΕΚΤΟ | `:context` keyword στην article-identity-segment — το σφάλμα εκπέμπεται ΣΤΗΝ έδρα, μία φορά |
+| B4 MINOR: «byte-identical» τεστ ημι-ταυτολογικό | ΔΕΚΤΟ | 4 GOLDEN string locks (Work/Root uri+eli-id, προ-commit raw έξοδοι ως literals) |
+| B5 MINOR: commit message υπερδήλωση «καμία raw παράλληλη παραγωγή» | ΔΕΚΤΟ ως προς τη διατύπωση | ισχύει ΤΟΠΙΚΑ (FRBR constructors + object projections)· οι raw έδρες έχουν ενεργούς καταναλωτές (prov-activity, unified-frbr-generator, html-rdfa, greek-law-types) — δηλωμένος επόμενος θάνατος, ΔΕΝ αγγίζεται χωρίς έγκριση (Γ-νησιά/Δ-θάνατοι) |
+
+Proof μετά τα κλεισίματα: article-identity **39/39** (+8 locks), corpus-identity 55/55, legal-identity 19/19, kernel-conformance 107/107, artifact-census 21/21, version-graph 18/18, parity 31/31, as-known-e2e 26/26, temporal-semantics 23/23 — 0 failed.

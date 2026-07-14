@@ -24,26 +24,17 @@
   (unless (and (integerp number) (> number 0))
     (error "Article number must be a positive integer"))
 
-  ;; [0088 Φ6γ] Η typed ταυτότητα γεννιέται ΕΔΩ, μία φορά, από την έδρα:
-  ;; label ⇒ (βάση, τακτική-θέση) μέσω parse-article-label (αυστηρό — άκυρο
-  ;; label σκάει στην ΚΑΤΑΣΚΕΥΗ, όχι βαθιά στο emit path)· χωρίς label ⇒
-  ;; απλό αριθμητικό άρθρο (βάση = number, θέση 0).
-  ;; label ⇒ από την έδρα· χωρίς label: κανονικός αριθμός ⇒ (βάση, 0)·
-  ;; ΣΥΝΘΕΤΙΚΟΣ αριθμός (>9999, legacy αποσαφήνιση 5Α⇒5001) ⇒ NIL μέχρι το
-  ;; (setf article-label) που τον επανυπολογίζει (βλ. :after method — η
-  ;; ταυτότητα ΠΑΡΑΚΟΛΟΥΘΕΙ το label, stale segment δομικά αδύνατο).
-  (let ((identity
-          (cond (label (%article-identity-segment-for label nil))
-                ((<= 1 number 9999) (orchestrator.identity:article-segment number 0))
-                (t nil))))
-    (make-instance 'article
-                   :number number
-                   :label label
-                   :identity identity
-                   :title (or title "")
-                   :content (or content "")
-                   :state (or state :queued)
-                   :metadata metadata)))
+  ;; [0088 Φ6γ-Δ+κριτής B2] Η typed ταυτότητα ΔΕΝ υπολογίζεται εδώ: η ΜΙΑ
+  ;; έδρα γέννησης είναι το initialize-instance :after του article —
+  ;; ο builder απλώς κατασκευάζει. Άκυρο label σκάει στην ΚΑΤΑΣΚΕΥΗ
+  ;; (validation-error από την έδρα), όχι βαθιά στο emit path.
+  (make-instance 'article
+                 :number number
+                 :label label
+                 :title (or title "")
+                 :content (or content "")
+                 :state (or state :queued)
+                 :metadata metadata))
 
 ;;; ============================================================================
 ;;; CORPUS BUILDERS

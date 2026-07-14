@@ -128,20 +128,39 @@
      (orchestrator.identity:article-segment number 0))
     (t nil)))
 
-(defun article-identity-segment (number &optional suffix-or-label)
+(defun article-identity-segment (number &optional suffix-or-label &key context)
   "[0088 Φ6γ-Δ] Η ΜΙΑ δημόσια παραγωγή typed segment από raw ζεύγος
    (NUMBER, SUFFIX-OR-LABEL) στα όρια των μοντέλων (FRBR κ.λπ.):
    — πλήρες label («5Α») ⇒ parse από την έδρα ταυτότητας·
    — γυμνό επίθημα («Α») ⇒ ο NUMBER ΕΙΝΑΙ η αληθινή βάση (συμβόλαιο των
-     καλούντων από το [0050]#2) και σχηματίζεται label «~D~A»·
+     καλούντων από το [0050]#2 — δηλωμένο αφρούρητο υπόλοιπο: συνθετικός
+     με γυμνό επίθημα δεν διακρίνεται μηχανικά εδώ)·
    — κενό ⇒ segment κανονικού αριθμού 1..9999, αλλιώς NIL (δηλωμένο debt).
+   Με CONTEXT (string): το NIL γίνεται typed σφάλμα ΕΔΩ, στην έδρα — οι
+   καλούντες που απαιτούν νόμιμη ταυτότητα δεν ξαναγράφουν φρουρό.
    Άκυρη είσοδος ⇒ orchestrator.spec:validation-error — ποτέ σιωπηλά."
-  (let ((s (and suffix-or-label (string suffix-or-label))))
-    (if (and s (plusp (length s)))
-        (%article-identity-segment-for
-         (if (char<= #\0 (char s 0) #\9) s (format nil "~D~A" number s))
-         nil)
-        (%article-identity-segment-for nil number))))
+  (let* ((s (and suffix-or-label (string suffix-or-label)))
+         (seg (if (and s (plusp (length s)))
+                  (%article-identity-segment-for
+                   (if (char<= #\0 (char s 0) #\9) s (format nil "~D~A" number s))
+                   nil)
+                  (%article-identity-segment-for nil number))))
+    (or seg
+        (and context
+             (error 'orchestrator.spec:validation-error
+                    :message (format nil "~A: άρθρο χωρίς νόμιμη ταυτότητα (number=~S suffix=~S)"
+                                     context number suffix-or-label))))))
+
+(defun segment-uri-id (seg)
+  "Η ΜΙΑ προβολή typed segment → UNPADDED δημόσιο id («5», «5Α») — καμία
+   inline επανάληψη του κανόνα suffix rendering (κριτής B1)."
+  (format nil "~D~A" (second seg)
+          (orchestrator.identity:ordinal-suffix (third seg) :sequence :upper)))
+
+(defun segment-file-id (seg)
+  "Η ΜΙΑ προβολή typed segment → PADDED id αρχείων/eIds («005», «005Α»)."
+  (format nil "~3,'0D~A" (second seg)
+          (orchestrator.identity:ordinal-suffix (third seg) :sequence :upper)))
 
 (defmethod initialize-instance :after ((article article) &key (identity nil identity-p) &allow-other-keys)
   "[0088 Φ6γ-Δ] Η typed ταυτότητα υπάρχει ΑΠΟ ΤΗ ΓΕΝΝΗΣΗ κάθε αντικειμένου:
@@ -154,6 +173,15 @@
           (%article-identity-segment-for
            (and (slot-boundp article 'label) (article-label article))
            (and (slot-boundp article 'number) (article-number article))))))
+
+(defmethod (setf article-number) :after (new-number (article article))
+  "[0088 κριτής A1] Η ταυτότητα ΠΑΡΑΚΟΛΟΥΘΕΙ ΚΑΙ το number, συμμετρικά με
+   το label — μετάλλαξη number με παγωμένο segment (αποκλίνουσα δημόσια
+   ταυτότητα) είναι ΔΟΜΙΚΑ αδύνατη."
+  (setf (slot-value article 'identity-segment)
+        (%article-identity-segment-for
+         (and (slot-boundp article 'label) (article-label article))
+         new-number)))
 
 (defmethod (setf article-label) :after (new-label (article article))
   "[0088 Φ6γ] Η typed ταυτότητα ΠΑΡΑΚΟΛΟΥΘΕΙ το label: κάθε αλλαγή label
@@ -309,8 +337,7 @@
   ;; raw επανερμηνεία. Η ισοδυναμία κλειδώθηκε στο bijection gate 4694/0/0.
   (let ((seg (article-identity article)))
     (if seg
-        (format nil "~3,'0D~A" (second seg)
-                (orchestrator.identity:ordinal-suffix (third seg) :sequence :upper))
+        (segment-file-id seg)
         (format nil "~3,'0D" (article-number article)))))
 
 (defun article-uri (article)
@@ -321,8 +348,7 @@
    περνούν από εδώ — όχι από το raw ζεύγος (number,label)."
   (let ((seg (article-identity article)))
     (if seg
-        (format nil "~D~A" (second seg)
-                (orchestrator.identity:ordinal-suffix (third seg) :sequence :upper))
+        (segment-uri-id seg)
         (format nil "~D" (article-number article)))))
 
 (defun %article-order-key (a)

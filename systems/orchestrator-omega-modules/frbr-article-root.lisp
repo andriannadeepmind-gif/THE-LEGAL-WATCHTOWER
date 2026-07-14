@@ -160,15 +160,13 @@
          ;; base/suffix/uid/eli-id δεν υπάρχει πλέον. Άρθρο χωρίς νόμιμη
          ;; ταυτότητα δεν μπορεί ΔΟΜΙΚΑ να μπει στο FRBR μοντέλο.
          (seg (or identity-segment
-                  (article-identity-segment article-number article-suffix)
-                  (error 'orchestrator.spec:validation-error
-                         :message (format nil "make-frbr-article-root: άρθρο χωρίς νόμιμη ταυτότητα (number=~S suffix=~S)"
-                                          article-number article-suffix))))
+                  (article-identity-segment article-number article-suffix
+                                            :context "make-frbr-article-root")))
          (base (second seg))
          (suffix (orchestrator.identity:ordinal-suffix (third seg) :sequence :upper))
-         (uid (format nil "~D~A" base suffix))
+         (uid (segment-uri-id seg))
          (uri (format nil "~A/art/~A" eli-prefix uid))
-         (eli-id (format nil "gr-~A-~A-art-~3,'0D~A" document-type year base suffix))
+         (eli-id (format nil "gr-~A-~A-art-~A" document-type year (segment-file-id seg)))
          (work-uri (format nil "~A/work" uri)))
 
     (make-instance 'frbr-article-root
