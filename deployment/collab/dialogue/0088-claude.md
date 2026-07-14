@@ -499,3 +499,29 @@ graph-import-parity 31/31 · corpus-service 53/53 · version-graph 18/18 ·
 legal-authority-receipt 15/15 · artifact-census 21/21 · ai-ingest 19/19 ·
 ΟΛΟΣ ο gated loop (και fingerprint/golden — byte-ισότητα emit αποδεδειγμένη
 τοπικά). Μετά το πράσινο: Φ7 Formal Temporal Semantics κατά ΕΝΤΟΛΗ-2.
+
+---
+
+## [0088 Φ6γ+] ΜΕΤΡΗΜΕΝΗ ΚΑΤΑΣΤΑΣΗ ΡΟΗΣ ΤΑΥΤΟΤΗΤΑΣ ΜΕΤΑ ΤΟ Α2/Δ3
+
+Απογραφή ΟΛΩΝ των εναπομεινάντων καταναλωτών raw helpers (uri-id/pad/base/
+suffix/ordinal εκτός model):
+
+1. **Downstream των segment-παραγόμενων slots** (ΗΔΗ καθαρά): το prov-activity
+   καλείται με τα κανονικοποιημένα slots του article-root — που με το Α2
+   βγαίνουν από το typed segment. Expression/manifestation/formats χτίζουν
+   από work URIs. Η ταυτότητα ρέει segment-καθαρή end-to-end στο emit path.
+2. **Legacy else-branches** των make-frbr-article-root/work (όταν ΔΕΝ δοθεί
+   segment) — νεκρώνουν όταν ΟΛΟΙ οι κλήτορες δώσουν segment· απομένουν:
+   frbr-conditions εσωτερικό test-call, greek-law-types helper.
+3. **String-mode parsers** (html-rdfa %article-id-base από id string, release-
+   spine census-id→file-id) — δεν αγγίζουν συνθετικούς αριθμούς.
+4. **Adapters** (pdf/json): article-suffix-ordinal για ΕΠΙΚΥΡΩΣΗ εισόδου στη
+   γέννηση — θεμιτή χρήση της έδρας (μέσω του δηλωμένου model adapter).
+
+ΣΥΜΠΕΡΑΣΜΑ: δεν υπάρχει πλέον ΚΑΝΕΝΑΣ ανεξάρτητος φορέας ταυτότητας εκτός
+έδρας στο ζωντανό μονοπάτι. Ο τυπικός θάνατος των raw helpers ως ΔΗΜΟΣΙΩΝ
+API = ένα τελικό βήμα (σβήσιμο legacy else-branches + 2 μικρο-κλήτορες) —
+προγραμματίζεται ΜΕΤΑ το owner docker πράσινο (χαμηλό ρίσκο, μηδέν βιασύνη).
+
+Αναμονή: owner docker @HEAD + απόφαση Γ-νησιών + (μετά) Φ7 spec.
