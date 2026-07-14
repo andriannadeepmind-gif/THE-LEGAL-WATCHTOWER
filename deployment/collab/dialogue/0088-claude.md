@@ -637,3 +637,31 @@ Proof: article-identity 49/49 · temporal-semantics 31/31 · corpus-identity
 55/55 · legal-identity 19/19 · kernel-conformance 107/107 · artifact-census
 21/21 · version-graph 18/18 · graph-import-parity 31/31 · as-known-e2e
 26/26 — 0 failed. ΕΠΟΝΤΑΙ: 2 ανεξάρτητοι αντιπαλικοί κριτές + owner docker.
+
+## [0088 Δ³-κριτής Β] Αντιπαλική επιθεώρηση ΣΥΛΛΗΨΗΣ (spec v3 + GAAF-1): 1 WRONG + 10 SERIOUS + 9 MINOR — ΟΛΑ κλεισμένα στα κείμενα
+
+| Εύρημα | Κλείσιμο |
+|---|---|
+| Α6-1 WRONG: συντακτική διχοτομία derived/journaled σπάει στο μικτό :or (ΥΑ-ή-6μήνες: ΥΑ δεν εκδίδεται, ημερομηνία περνά ⇒ κανένα έναυσμα κλεισίματος) | ΑΝΩΤΕΡΗ ΛΥΣΗ — εξάλειψη της κλάσης: το κλείσιμο validity είναι ΠΑΝΤΑ παράγωγο του sat στην τομή (valid-at, known-at)· το journaled :validity-close-on-satisfaction ΔΙΑΓΡΑΦΗΚΕ από τη σχεδίαση (spec §4, §7) — ένας μηχανισμός, κανένα «αναλλοίωτο ταύτισης» δεν χρειάζεται πλέον |
+| Α6-2 SERIOUS: το «αναλλοίωτο» ψευδές στον recorded άξονα | Λύνεται από το ίδιο — το παράγωγο κλείσιμο χρησιμοποιεί events live κατά known-at (Υ2 φυσικά) |
+| Α1-1 SERIOUS: unsigned journal suffix ⇒ πλαστό TRA «επαληθεύεται» | spec §6 + 0090 §1.2: έγκυρο TRA ⇔ chain-head = census-δεσμευμένο graph_root ΥΠΟΓΕΓΡΑΜΜΕΝΟΥ release στο transparency log· ενδιάμεσα = typed assurance: provisional-unanchored, ΠΟΤΕ «verified» |
+| Α1-2 SERIOUS: rollback/freshness, stale-known-at αόριστο | TRA φέρει transparency-entry + consistency-proof + max-age· stale ⇔ νεότερο γνωστό release αλλάζει την απάντηση· offline όριο ΔΗΛΩΜΕΝΟ |
+| Α1-3 MINOR: κυκλικός verifier bootstrap | Βήμα 0 ΥΠΟΧΡΕΩΤΙΚΟ: verifier-hash κατά canonical set του υπογεγραμμένου release |
+| Α2-1 SERIOUS: CE έγκυρο χωρίς supersession — αυτοδιάψευση §1.4 | Ο έλεγχος supersession ΜΠΗΚΕ ΣΤΟΝ ΟΡΙΣΜΟ εγκυρότητας παράθεσης· ετυμηγορίες +superseded/+revoked + checked-against-root |
+| Α2-2 SERIOUS: PB race/χωρίς id | pb-id + as-of-release-root (supersession ρητά σχετικό)· revocation feed στα dumps· max-age· δηλωμένο όριο offline |
+| Α3-1 SERIOUS: NFC όχι substring-σταθερό ⇒ quote-hash αμφίσημο | Καρφώθηκε: hash = UTF-8 bytes του scalar range IN SITU, καμία επανακανονικοποίηση από verifier· NFC μία φορά στην πύλη AVC |
+| Α3-2 MINOR: NFC δηλωμένο≠επιβεβλημένο | Πύλη content==NFC(content) + counter non_nfc_content=0 |
+| Α3-3 MINOR: Unicode version ακαρφωτη | unicode-version στο protocol + conformance vectors |
+| Α4-1 SERIOUS: resolution index υπερ-ισχυρισμός/2η έδρα/horizon | Gate «index ≡ canonical fold για ΚΑΘΕ ορθογώνιο»· scope-εξαρτώμενα = πλήρης λογική+δεδομένα ΣΤΟ dump· typed knowledge-horizon + beyond-horizon |
+| Α5-1 SERIOUS: REF ελεύθερο string ⇒ αιώνιο pending / cross-law σύγκρουση cid | REF = ΚΑΝΟΝΙΚΟΣ προσδιοριστής (ref-syntax ανά kind στο μητρώο· placeholder = προσδιοριστής της ΕΞΟΥΣΙΟΔΟΤΟΥΣΑΣ διάταξης μέσω provision-id ⇒ δομικά αδύνατη η σύμπτωση δύο νόμων)· (kind,ref) του event ΠΡΕΠΕΙ να υπάρχει στο canon AST της δήλωσης αλλιώς σφάλμα στην καταγραφή· counter freeform_refs=0 στο Π2 |
+| Α5-2 MINOR: επαναδήλωση/ποιο ast journal-άρεται | §3.1: journaled ast = ΚΑΝΟΝΙΚΟ· ιδεμποτής χωρίς απώλεια (ταυτόσημα records) |
+| Α5-3 | ΚΑΝΕΝΑ ΕΥΡΗΜΑ στην άλγεβρα κατάρρευσης (επιβεβαίωση κριτή) |
+| Β-1 SERIOUS: δύο ορισμοί sat (§2.4 «μοναδικό» vs §3.3β min-at) | §2.4 ενοποιήθηκε με §3.3β (σύμφωνα ⇒ ελάχιστο at) — ταυτόσημο με τον ΗΔΗ υλοποιημένο Π1-hardened κώδικα· ΜΙΑ σημασιολογία |
+| Β-2 SERIOUS: :retroact χωρίς σημασιολογία | §5: διτεμπορική επανεγγραφή valid άξονα με recorded-from = journal — ορατή μόνο από τότε που έγινε γνωστή· συγκρούσεις ⇒ σφάλμα/retract· + πλήρης σημασιολογία suspend/revive/extend/expire (Β-6) |
+| Β-3 SERIOUS: αρνητικές εκβάσεις χωρίς attestation | §6 + tra/1: πεδίο provision + outcome ∈ {resolved, no-version-in-force, not-yet-effective, uncertain} — δεσμεύονται στο ίδιο release root |
+| Β-4 SERIOUS: in-force χωρίς χρονική αγκύρωση sat | §5: suspensive t ≤ valid-at ∧ resolutory ¬(t′ ≤ valid-at) — ρητά στο κατηγόρημα |
+| Β-5 MINOR: ce/pb χωρίς protocol/id | ce-id/pb-id/tra-id + protocol πεδία· context ≤64 scalars εκτός hash |
+| Β-6 MINOR: extend/expire criterion | §5 (μαζί με Β-2) |
+| Β-7 MINOR: generic :event θυρίδα | §2.1: κριτήριο + counter generic_event_uses ανά release |
+| Β-8 MINOR: context packs αόριστα | 0090 §3: σταθερή λίστα πεδίων ανά βαθμίδα + κανόνας περικοπής + gate field-list conformance |
+| Β-9 MINOR: verified-integration χωρίς ταυτότητα δράστη | 0090 §7: κορυφαία βαθμίδα = authenticated ∧ verifying· δηλώσεις μόνο από αυθεντικοποιημένες βαθμίδες |

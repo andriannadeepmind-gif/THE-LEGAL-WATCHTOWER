@@ -23,7 +23,11 @@ avc/1 := {
   version       : { version-id (semantic hash έδρας), valid-from,
                     valid-until|open, effective (date | (:conditional cid)) }
   text          : { content, content-hash sha256, canonicalization: JCS,
-                    unicode-normalization: NFC δηλωμένο }
+                    unicode-normalization: NFC ΕΠΙΒΕΒΛΗΜΕΝΟ — πύλη
+                    κατασκευής content == NFC(content), counter
+                    non_nfc_content=0 (κλείσιμο Α3-2)·
+                    unicode-version: καρφωμένη στο protocol + ίδια στον
+                    ανεξάρτητο verifier μέσω conformance vectors (Α3-3) }
   provenance    : { source (ΦΕΚ ref), source-digest, import-commit }
                   ; επεκτάσιμο πεδίο provenance/2 όταν κλείσει το Φ8:
                   ; artifact-id, page, bbox, byte/unicode span, extractor-hash,
@@ -43,6 +47,18 @@ Deterministic certificate (Φ7 spec v3 §6): ΚΑΝΕΝΑ online private key —
 ο ανεξάρτητος verifier ΑΝΑΠΑΡΑΓΕΙ το TRA από το offline-υπογεγραμμένο
 release root + τον journaled γράφο + τον canonical verifier και συγκρίνει
 byte-wise. Το TRA ΔΕΙΧΝΕΙ στο σταθερό AVC — δεν το αντιγράφει.
+**Αγκύρωση/φρεσκάδα/βήμα-0 (κλείσιμο κριτή Β Α1-1/Α1-2/Α1-3)**: έγκυρο
+TRA ⇔ graph-chain-head = census-δεσμευμένο graph_root ΥΠΟΓΕΓΡΑΜΜΕΝΟΥ
+release στο transparency log (unsigned journal suffix ⇒ απόρριψη)· typed
+`assurance: release-anchored | provisional-unanchored` (το δεύτερο ΠΟΤΕ
+«verified»)· το tra/1 αποκτά πεδία `transparency-entry` +
+`consistency-proof` + `max-age`· ΥΠΟΧΡΕΩΤΙΚΟ βήμα 0: verifier-hash κατά
+το canonical set του υπογεγραμμένου release (αλλιώς κυκλική βεβαίωση =
+ΑΚΥΡΗ). **Αρνητικές εκβάσεις (Β-3)**: tra/1 φέρει ΠΑΝΤΑ `provision` +
+`outcome ∈ {resolved(avc-id), no-version-in-force,
+not-yet-effective(cid,since), uncertain(λόγος)}` — resolved-avc-id
+nullable ΜΟΝΟ εκτός resolved· και οι αρνητικές απαντήσεις δεσμεύονται
+στο release root. Επίσης: `tra-id = sha256(JCS tra)` και πεδίο protocol.
 
 ### 1.3 Citation Envelope (CE) — ακριβές χωρίο, όχι substring
 ```
@@ -54,10 +70,23 @@ ce/1 := { avc-id (ΠΛΗΡΕΣ hash — prefix ΜΟΝΟ ως display, resolver �
           tra-hash (ποια χρονική επίλυση το θεμελίωσε) }
 ```
 Έγκυρη παράθεση ⇔ resolver βρίσκει το AVC ∧ το span υπάρχει ∧ quote-hash
-ταιριάζει ∧ (αν δηλώθηκε TRA) το TRA αναπαράγεται. `POST /verify-citation`
-⇒ typed ετυμηγορία {valid | unknown-capsule | ambiguous-prefix |
-span-out-of-range | quote-hash-mismatch | stale-known-at} — ΠΟΤΕ boolean.
-Η ίδια φράση σε δύο σημεία ΔΕΝ συγχέεται: η ταυτότητα είναι το span.
+ταιριάζει ∧ (αν δηλώθηκε TRA) το TRA αναπαράγεται ∧ **το supersession
+state του AVC κατά το ΝΕΟΤΕΡΟ γνωστό release είναι καθαρό (κλείσιμο Β
+Α2-1 — ο έλεγχος PB/supersession είναι ΜΕΡΟΣ του ορισμού εγκυρότητας,
+όχι προαιρετικός)**. `POST /verify-citation` ⇒ typed ετυμηγορία
+{valid | unknown-capsule | ambiguous-prefix | span-out-of-range |
+quote-hash-mismatch | stale-known-at | **superseded | revoked**} +
+πεδίο `checked-against-root` (κατά ποιο release κρίθηκε) — ΠΟΤΕ boolean.
+`stale-known-at` ⇔ νεότερο γνωστό release περιέχει
+supersession/retract που αλλάζει την απάντηση για τη δηλωμένη τομή.
+**quote-hash — ΑΚΡΙΒΗΣ ορισμός (κλείσιμο Α3-1)**: sha256 των UTF-8 bytes
+του scalar range [start,end) ΟΠΩΣ ΚΕΙΤΑΙ στο AVC content (in situ) — ο
+verifier ΔΕΝ επανακανονικοποιεί ΠΟΤΕ το απόσπασμα (το NFC substring δεν
+είναι NFC-σταθερό)· η καθολική NFC μορφή εξασφαλίζεται ΜΙΑ φορά, στην
+πύλη κατασκευής του AVC. ce/1 αποκτά πεδία `protocol` + `ce-id =
+sha256(JCS ce)` (κλείσιμο Β-5)· context-before/after: ≤64 scalars ανά
+πλευρά, ΕΚΤΟΣ hash — μόνο display. Η ίδια φράση σε δύο σημεία ΔΕΝ
+συγχέεται: η ταυτότητα είναι το span.
 
 ### 1.4 Proof Bundle (PB) — πλήρης δέσμευση
 ```
@@ -68,17 +97,33 @@ pb/1 := { receipt (πλήρες LegalAuthorityReceipt), merkle-audit-path,
           witness-attestations[] (Φ10 — κενό μέχρι τότε, ΔΗΛΩΜΕΝΟ πεδίο),
           supersession: { superseded-by-avc | null, revoked: bool+λόγος } }
 ```
-Η ανάκληση/υπερκάλυψη είναι ΜΕΣΑ στο proof αντικείμενο — καταναλωτής δεν
-μπορεί να επικαλείται AVC αγνοώντας το supersession state.
+Η ανάκληση/υπερκάλυψη είναι ΜΕΣΑ στο proof αντικείμενο ΚΑΙ μέσα στον
+ορισμό εγκυρότητας παράθεσης (§1.3). **Φρεσκάδα (κλείσιμο Α2-2)**: το
+pb/1 αποκτά `pb-id = sha256(JCS pb)` + `as-of-release-root` — δύο PB
+ίδιου receipt σε διαδοχικά releases είναι διακριτά, διευθυνσιοδοτήσιμα
+αντικείμενα· το supersession state ισχύει ΡΗΤΑ «κατά το as-of-release»,
+ποτέ ως απόλυτο· καταναλωτές οφείλουν σύγκριση με το νεότερο γνωστό
+checkpoint (≥1 ανεξάρτητο κανάλι), τα offline dumps συνοδεύονται από
+append-only **revocation/supersession feed** ανά release + max-age
+πολιτική. Δηλωμένο όριο: απόλυτη offline φρεσκάδα μη αποφασίσιμη —
+δηλώνεται, δεν αποσιωπάται.
 
 Ροή: query → TRA → σταθερό AVC → CE στο ακριβές χωρίο → PB αποδεικνύει.
 
 ## 2. Πεπερασμένο static dump
 Ανά release: ΟΛΑ τα AVCs (πεπερασμένα: μία εγγραφή ανά νομική έκδοση) +
-condition/regime events + PBs + **resolution index** (ταξινομημένα
-διαστήματα valid×recorded ανά provision ⇒ κάθε μελλοντικό query απαντιέται
-offline ντετερμινιστικά χωρίς προ-υλοποίηση όλων των queries). ΚΑΝΕΝΑ
-query-παραγόμενο αντικείμενο στο dump.
+condition/regime events + PBs + revocation feed + **resolution index**
+(ταξινομημένα διαστήματα valid×recorded ανά provision). ΚΑΝΕΝΑ
+query-παραγόμενο αντικείμενο στο dump. **Όρια/κριτήρια (κλείσιμο Α4-1)**:
+(α) ο index είναι ΠΡΟΒΟΛΗ, όχι δεύτερη έδρα — δεσμευτικό κριτήριο
+αποδοχής (gate): «index-απάντηση ≡ canonical fold-απάντηση για ΚΑΘΕ
+ορθογώνιο (valid-at × known-at)», με property tests σε τυχαία
+δειγματοληψία + πλήρη κάλυψη οριακών σημείων· (β) καλύπτει τις
+scope-ΑΝΕΞΑΡΤΗΤΕΣ απαντήσεις — scoped ερωτήματα απαιτούν την πλήρη
+verifier λογική + τα scope δεδομένα, που ΠΕΡΙΛΑΜΒΑΝΟΝΤΑΙ στο dump
+(δηλωμένο, όχι σιωπηλό)· (γ) το dump φέρει typed `knowledge-horizon`
+(= τέλος journal του release): query με known-at > horizon ⇒ typed
+`beyond-horizon`, ΠΟΤΕ σιωπηλό «τρέχον».
 
 ## 3. Universal Retrieval Surface (πλήρης — έλειπε από το GAAF-0)
 - **HTML χωρίς JavaScript** ανά provision/version — canonical URLs, το
@@ -95,7 +140,10 @@ query-παραγόμενο αντικείμενο στο dump.
   build_citation, subscriptions στο changes feed.
 - **AI Context Packs**: deterministic πακέτα ανά (provision, budget) —
   compact/standard/complete/proof/change· ίδια inputs + ίδιο release root
-  ⇒ byte-identical pack.
+  ⇒ byte-identical pack. **Η συνάρτηση επιλογής ΟΡΙΖΕΤΑΙ (κλείσιμο Β-8)**:
+  σταθερή λίστα πεδίων ανά βαθμίδα + κανόνας περικοπής σε όρια προτάσεων
+  κατά δηλωμένη σειρά προτεραιότητας — spec στο GAAF-Π4 με gate:
+  byte-identity ΚΑΙ field-list conformance, όχι μόνο ντετερμινισμός.
 - **Sync**: append-only changes feed με robust cursor = (release-root,
   journal-seq) — όχι timestamps· WebSub/IndexNow/sitemaps/Atom στο publish.
 - **Distribution**: κάθε release ταυτόχρονα σε canonical domain + GitHub
@@ -137,11 +185,14 @@ Policy Decision του δημιουργού (η υπερ-περιοριστικ�
   νόημα). Απαιτεί τα 9 ΦΕΚ + νομικούς επισημειωτές (απόφαση δημιουργού).
 
 ## 7. Observatory — evidence-tiered
-Μετρικές ΜΟΝΟ ανά βαθμίδα τεκμηρίωσης: verified-integration (capsule
-verification round-trip) > authenticated-client (token) > declared
-User-Agent > inferred > unknown. Δήλωση «το μοντέλο Χ χρησιμοποιεί LAWMAX»
-επιτρέπεται ΜΟΝΟ από τις δύο πρώτες βαθμίδες· τα User-Agents αναφέρονται
-ως «declared», ποτέ ως απόδειξη. Append-only ledger (journal πρότυπο).
+Μετρικές ΜΟΝΟ ανά βαθμίδα τεκμηρίωσης: verified-integration =
+**authenticated client ΠΟΥ ΚΑΙ επαληθεύει** (το round-trip χωρίς
+αυθεντικοποίηση αποδεικνύει ότι ΚΑΠΟΙΟΣ επαλήθευσε, όχι ΠΟΙΟΣ — κλείσιμο
+Β-9) > authenticated-client (token, χωρίς verification) > declared
+User-Agent > inferred > unknown. Δήλωση «το μοντέλο Χ χρησιμοποιεί
+LAWMAX» επιτρέπεται ΜΟΝΟ από τις δύο αυθεντικοποιημένες βαθμίδες· τα
+User-Agents αναφέρονται ως «declared», ποτέ ως απόδειξη ταυτότητας
+δράστη. Append-only ledger (journal πρότυπο).
 
 ## 8. Ακολουθία (μετά από «εγκρίνω GAAF-1», ανά φάση, επταπλό συμβόλαιο)
 GAAF-Π1 πρωτόκολλα avc/tra/ce/pb + schemas + verifier επέκταση →
