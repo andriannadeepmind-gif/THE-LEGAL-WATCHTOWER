@@ -834,3 +834,31 @@ Proof: temporal-semantics **78/78** · legal-authority-receipt 15/15 ·
 parity 31/31 · as-known-e2e 26/26 + 5 σουίτες 0 failed.
 ΕΠΟΜΕΝΟ: Π6 python verifier ΣΤΟ ΙΔΙΟ gate → Π7 πραγματικά μοτίβα (θέλει
 τα 9 ΦΕΚ του δημιουργού).
+
+## [0088 Φ7 Π6] Ανεξάρτητος python verifier ΣΤΟ ΙΔΙΟ gate — N-version agreement
+
+- **deployment/verify/verify-temporal.py** (καθαρή stdlib, καμία κοινή
+  γραμμή με το Lisp runtime): επαναϋλοποίηση από το spec των value-canonical
+  sexp, date+ (ΑΚ 241-243), semantic canon AST (flatten/dedupe/sort/
+  collapse), domain-separated condition-id / event-hash / regime-hash,
+  denotational sat (min/max, cid-scoped, σύμφωνα⇒min at, αντιφατικά⇒error)
+  και αναπαραγωγής attestation canonical+hash. Δηλωμένο όριο: μητρώο/
+  evidence validation = Lisp-side gate.
+- **tests/temporal-verifier-test.lisp** (gated στο Dockerfile): η Lisp
+  έδρα παράγει 30 vectors (και από ΠΡΑΓΜΑΤΙΚΟ γράφο body 9993 — conditional
+  edge + event + suspend + 2 attestations resolved/suspended) και ο python
+  τα ΕΠΑΝΥΠΟΛΟΓΙΖΕΙ — κάθε διαφωνία FAIL. Χωρίς python3: ρητό SKIP
+  (στο docker το gate είναι σκληρό — python3 παρόν).
+
+Proof: temporal-verifier 2/2 (30 vectors, 0 διαφωνίες) + temporal-semantics
+78/78 + 6 σουίτες 0 failed.
+
+**Φ7 ΚΑΤΑΣΤΑΣΗ: Π1-Π6 ΥΛΟΠΟΙΗΜΕΝΑ + κριτής Π2-Π4 κλεισμένος.**
+Counters: condition_state_defaults=0 (καμία αποθηκευμένη κατάσταση —
+δομικά)· unverified_satisfactions=0 (evidence gate)· replay_mismatches=0
+(restart parity locks)· false_uncertainty=0 (typed bases αντί 422 —
+locks ⑩β/⑫/⑰)· silent_scope_omissions=0 (scope placeholder δηλωμένο,
+δεσμευμένο στο hash — τιμές στο Φ8). **Π7 BLOCKED-ON-CREATOR: απαιτεί τα
+9 ΦΕΚ** (πραγματικά ελληνικά μοτίβα benchmark). Η αυτόνομη αλυσίδα
+σταματά εδώ — αναμονή owner docker στο HEAD + αποφάσεις (GAAF-1, Γ-νησιά,
+License, training-bots).
