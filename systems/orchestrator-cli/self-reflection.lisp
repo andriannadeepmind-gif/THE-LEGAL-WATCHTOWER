@@ -260,7 +260,7 @@
  :description "η μία ταυτότητα κάθε άρθρου: corpus keying, κανονικοποίηση, ELI/άρθρο URIs, δρομολόγηση ΦΕΚ"
  :package :orchestrator.legal-id
  :functions '("build-article-uri" "registry-by-corpus" "normalize-greek"
-              "parse-article-id" "article-id=" "article-id-string")
+              "parse-article-label" "provision-id=" "provision-id-string")
  :gate nil :depends-on '())   ; ΧΩΡΙΣ ΠΥΛΗ — δηλωμένο χρέος· τα εκτελέσιμα τεστ ζουν στο --component-gate
 
 (orchestrator.contracts:defcontract "article-identity-management" :protocol

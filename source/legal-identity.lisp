@@ -15,9 +15,9 @@
 ;;;;  (S2) orchestrator.model article.lisp: αυστηρή νομοθετική ακολουθία
 ;;;;       επιθημάτων + pad/uri/file κανόνες· καταναλωνόταν από το corpus path.
 ;;;; Εδώ: η S2 αυστηρότητα ΜΕΤΑΚΟΜΙΣΕ ως ο πυρήνας του orchestrator.identity,
-;;;; η S5 χαλαρότητα ΠΕΘΑΝΕ, και το orchestrator.article-id έγινε ΔΗΛΩΜΕΝΟΣ
-;;;; adapter χωρίς δική του σημασιολογία (θάνατος adapter: Φ6 του σχεδίου —
-;;;; deployment/LAWMAX-TEMPORAL-IDENTITY-DESIGN.md §2).
+;;;; η S5 χαλαρότητα ΠΕΘΑΝΕ, και [0088 Φ6β] ο adapter orchestrator.article-id
+;;;; ΔΙΑΓΡΑΦΗΚΕ ΟΡΙΣΤΙΚΑ — gates/μητρώα/συμβόλαια δείχνουν πλέον ΑΠΕΥΘΕΙΑΣ
+;;;; εδώ (κατά deployment/LAWMAX-TEMPORAL-IDENTITY-DESIGN.md §2).
 ;;;;
 ;;;; Fail-closed παντού: ό,τι δεν αναγνωρίζεται ⇒ identity-parse-error με
 ;;;; αιτία — ΠΟΤΕ σιωπηλή κανονικοποίηση, ΠΟΤΕ ψευδοταυτότητα (τίμια άγνοια).
@@ -335,11 +335,18 @@
 
 (defun parse-article-label (label)
   "«5», «5Α», «370ΣΤ» ⇒ (values βάση τακτική-θέση). Κενά/πεζά/λατινικά/«Α5»
-   ⇒ identity-parse-error — καμία σιωπηλή επανερμηνεία ([0052] ㉑)."
+   ⇒ identity-parse-error — καμία σιωπηλή επανερμηνεία ([0052] ㉑).
+   [0088 Φ6β]: κάθε επιτυχής αναγνώριση αφήνει :identity ίχνος ΑΠΟ ΤΗΝ ΕΔΡΑ
+   (ο adapter orchestrator.article-id που το εξέπεμπε ΠΕΘΑΝΕ)."
   (let ((s (string label)))
     (when (zerop (length s)) (%die label "κενή ετικέτα άρθρου"))
     (when (find #\Space s) (%die label "η ετικέτα περιέχει κενό — κανονική μορφή «5Α»"))
-    (%parse-decorated s label :upper "άρθρο")))
+    (multiple-value-bind (base ord) (%parse-decorated s label :upper "άρθρο")
+      (orchestrator.trace:emit! :identity
+       :symbol "parse-article-label" :package "orchestrator.identity"
+       :source "source/legal-identity.lisp"
+       :data (list :base base :ordinal ord :raw s))
+      (values base ord))))
 
 (defun article-provision-id (body label)
   "Ετικέτα άρθρου + σώμα ⇒ provision-id (η κανονική είσοδος των adapters)."
@@ -376,84 +383,3 @@
    δεν parse-άρεται ποτέ πίσω σε ταυτότητα (σχέδιο §1.1)."
   (let ((head (%article-head id "file-id")))
     (format nil "~3,'0D~A" (second head) (ordinal-suffix (third head) :sequence :upper))))
-
-;;; ============================================================================
-;;; ΔΗΛΩΜΕΝΟΣ ADAPTER (θάνατος: Φ6) — orchestrator.article-id
-;;; ============================================================================
-;;; Ίδια exports με την προ-[0088] έδρα, ΚΑΜΙΑ δική του σημασιολογία:
-;;; το parsing περνά από τον αυστηρό πυρήνα. Η χαλαρότητα ΠΕΘΑΝΕ:
-;;;   «100 α», «100α», «100A» (λατινικό), «100ΒΙΣ» ⇒ (values NIL λόγος)
-;;; (πριν γίνονταν σιωπηλά δεκτά ως «100Α»/«100ΒΙΣ»). Το hash είναι πλέον
-;;; συνάρτηση της ΚΑΝΟΝΙΚΗΣ σειριοποίησης (το sxhash-λίστας πέθανε).
-
-(defpackage :orchestrator.article-id
-  (:use :cl)
-  (:export #:canonical-article-id #:parse-article-id #:article-id-p
-           #:article-id-raw #:article-id-base #:article-id-suffix
-           #:article-id-context
-           #:article-id= #:article-id-hash #:article-id-string
-           #:article-id-display))
-
-(in-package :orchestrator.article-id)
-
-(defstruct (canonical-article-id
-            (:constructor %make-id)
-            (:conc-name article-id-)
-            (:predicate article-id-p)
-            (:print-object
-             (lambda (id s)
-               (print-unreadable-object (id s :type nil)
-                 (format s "ΑΡΘΡΟ ~A~@[ @~A~]"
-                         (article-id-string id) (article-id-context id))))))
-  raw       ; η ετικέτα όπως δόθηκε (display) — ΔΕΝ είναι η ταυτότητα
-  base      ; integer
-  suffix    ; string ή NIL — από τη νομοθετική ακολουθία, επικυρωμένο
-  context)  ; string ή NIL
-
-(defun parse-article-id (label &key context)
-  "Ετικέτα (string ή integer) → canonical-article-id, ή (values NIL λόγος).
-   ΑΥΣΤΗΡΟ ([0088]): δέχεται «100», «100Α», 100. Εσωτερικά κενά, πεζά,
-   λατινικά ομόγλυφα, μη νομοθετικά επιθήματα ⇒ NIL + λόγος."
-  (etypecase label
-    (integer
-     (if (plusp label)
-         (%make-id :raw (format nil "~D" label) :base label :suffix nil
-                   :context context)
-         (values nil "μη θετικός αριθμός άρθρου")))
-    (string
-     (let ((trimmed (string-trim " " label)))
-       (handler-case
-           (multiple-value-bind (base ord)
-               (orchestrator.identity:parse-article-label trimmed)
-             (let ((id (%make-id :raw trimmed :base base
-                                 :suffix (let ((sfx (orchestrator.identity:ordinal-suffix ord)))
-                                           (if (zerop (length sfx)) nil sfx))
-                                 :context context)))
-               (orchestrator.trace:emit! :identity
-                :symbol "parse-article-id" :package "orchestrator.article-id"
-                :source "source/legal-identity.lisp"
-                :data (list :canonical (article-id-string id) :raw trimmed))
-               id))
-         (orchestrator.identity:identity-parse-error (e)
-           (values nil (orchestrator.identity:identity-error-reason e))))))))
-
-(defun article-id-string (id)
-  "Η κανονική σειριοποίηση — αυτή καταναλώνουν κλειδιά και URIs."
-  (check-type id canonical-article-id)
-  (format nil "~D~@[~A~]" (article-id-base id) (article-id-suffix id)))
-
-(defun article-id-display (id)
-  "Ετικέτα εμφάνισης (raw) — μόνο για ανθρώπους."
-  (article-id-raw id))
-
-(defun article-id= (a b)
-  "Ισότητα ΤΑΥΤΟΤΗΤΩΝ — μόνο μεταξύ typed ids (ωμός αριθμός ⇒ NIL)."
-  (and (article-id-p a) (article-id-p b)
-       (= (article-id-base a) (article-id-base b))
-       (equal (article-id-suffix a) (article-id-suffix b))
-       (equal (article-id-context a) (article-id-context b))))
-
-(defun article-id-hash (id)
-  "Hash συνεπές με article-id= — συνάρτηση της κανονικής σειριοποίησης."
-  (check-type id canonical-article-id)
-  (sxhash (format nil "~A@~@[~A~]" (article-id-string id) (article-id-context id))))

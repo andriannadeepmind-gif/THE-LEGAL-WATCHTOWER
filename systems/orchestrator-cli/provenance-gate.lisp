@@ -12,7 +12,7 @@
 (in-package :orchestrator.cli)
 
 ;;; ── ΜΗΤΡΩΟ ΕΝΟΡΓΑΝΩΣΗΣ: ποιος αφήνει ίχνος και πώς (η μία δήλωση) ──────
-(dolist (n '("subsume" "run-inference" "verify-guard" "parse-article-id"
+(dolist (n '("subsume" "run-inference" "verify-guard" "parse-article-label"
              "draft-memo" "build-article-uri"))
   (orchestrator.trace:register-traced! n :how :direct))
 (loop for (n . via) in '(("evaluate-deontic" . "subsume")
@@ -179,15 +179,15 @@
                                 (member :ok (orchestrator.trace:tevent-data v)))
                               vs))))
       ;; ⑧ ταυτότητα άρθρου: κάθε runtime χρήση αφήνει ίχνος· ωμός αριθμός = ΟΡΑΤΟ χρέος
-      (orchestrator.article-id:parse-article-id "100Α")
+      (orchestrator.identity:parse-article-label "100Α")
       (let ((orchestrator.uris:*canonical-config*
               (if (gethash "base_uri" orchestrator.uris:*canonical-config*)
                   orchestrator.uris:*canonical-config*
                   (let ((h (make-hash-table :test 'equal)))
                     (setf (gethash "base_uri" h) "https://gate.test") h))))
         (orchestrator.uris:build-article-uri 100))
-      (check "⑧ parse-article-id ⇒ :identity · build-article-uri(ωμός ακέραιος) ⇒ :identity-debt"
-             (and (orchestrator.trace:events-where :kind :identity :symbol "parse-article-id")
+      (check "⑧ parse-article-label (η ΕΔΡΑ — ο adapter πέθανε Φ6β) ⇒ :identity · build-article-uri(ωμός ακέραιος) ⇒ :identity-debt"
+             (and (orchestrator.trace:events-where :kind :identity :symbol "parse-article-label")
                   (orchestrator.trace:events-where :kind :identity-debt
                                                    :symbol "build-article-uri")))
       ;; ⑨ ρίζα-εντολή: ο συνταγματικός φραγμός = γονικό span με exit + ετυμηγορία,

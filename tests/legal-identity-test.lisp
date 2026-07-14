@@ -129,24 +129,29 @@
                    (list (orchestrator.identity:article-segment 1 0)
                          (orchestrator.identity:paragraph-segment 2))))))
 
-;;; ⑤ Ο adapter orchestrator.article-id — ΑΥΣΤΗΡΟΣ πλέον (η χαλαρότητα πέθανε)
-(li-check "⑤ parse-article-id: «100Α» ΟΚ· «100 α»/«100α»/«100A»(λατ.)/«100ΒΙΣ» ⇒ NIL+λόγος"
-          (let ((ok (orchestrator.article-id:parse-article-id "100Α")))
-            (and ok (= 100 (orchestrator.article-id:article-id-base ok))
-                 (equal "Α" (orchestrator.article-id:article-id-suffix ok))
+;;; ⑤ [Φ6β] Ο adapter orchestrator.article-id ΠΕΘΑΝΕ — η αυστηρή αλήθεια
+;;; κλειδώνεται ΑΠΕΥΘΕΙΑΣ στην έδρα, και ο νεκρός δεν ανασταίνεται.
+(li-check "⑤ parse-article-label: «100Α» ΟΚ· «100 α»/«100α»/«100A»(λατ.)/«100ΒΙΣ» ⇒ typed σφάλμα+λόγος"
+          (multiple-value-bind (base ord)
+              (orchestrator.identity:parse-article-label "100Α")
+            (and (= 100 base)
+                 (equal "Α" (orchestrator.identity:ordinal-suffix ord :sequence :upper))
                  (loop for bad in '("100 α" "100α" "100A" "100ΒΙΣ")
-                       always (multiple-value-bind (id reason)
-                                  (orchestrator.article-id:parse-article-id bad)
-                                (and (null id) (stringp reason)))))))
-(li-check "⑤β article-id-hash: συνάρτηση της κανονικής σειριοποίησης, συνεπές με article-id="
-          (let ((a (orchestrator.article-id:parse-article-id "100Α"))
-                (b (orchestrator.article-id:parse-article-id "100Α"))
-                (c (orchestrator.article-id:parse-article-id "100")))
-            (and (orchestrator.article-id:article-id= a b)
-                 (= (orchestrator.article-id:article-id-hash a)
-                    (orchestrator.article-id:article-id-hash b))
-                 (/= (orchestrator.article-id:article-id-hash a)
-                     (orchestrator.article-id:article-id-hash c)))))
+                       always (handler-case
+                                  (progn (orchestrator.identity:parse-article-label bad) nil)
+                                (orchestrator.identity:identity-parse-error (e)
+                                  (stringp (orchestrator.identity:identity-error-reason e))))))))
+(li-check "⑤β provision-id-hash: συνάρτηση της κανονικής σειριοποίησης, συνεπές με provision-id="
+          (let* ((a (orchestrator.identity:article-provision-id *li-syntagma* "100Α"))
+                 (b (orchestrator.identity:article-provision-id *li-syntagma* "100Α"))
+                 (c (orchestrator.identity:article-provision-id *li-syntagma* "100")))
+            (and (orchestrator.identity:provision-id= a b)
+                 (= (orchestrator.identity:provision-id-hash a)
+                    (orchestrator.identity:provision-id-hash b))
+                 (/= (orchestrator.identity:provision-id-hash a)
+                     (orchestrator.identity:provision-id-hash c)))))
+(li-check "⑤γ ΘΑΝΑΤΟΣ Φ6β: το πακέτο orchestrator.article-id ΔΕΝ υπάρχει πια"
+          (not (find-package :orchestrator.article-id)))
 
 ;;; ⑥ Ο adapter του article.lisp (S2) — ΙΔΙΑ ετυμηγορία με τον πυρήνα
 (li-check "⑥ article-suffix-ordinal ≡ identity:suffix-ordinal σε ΟΛΟ το 0..89 + ίδιο συμβόλαιο σφάλματος"

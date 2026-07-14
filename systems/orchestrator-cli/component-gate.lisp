@@ -149,42 +149,51 @@
                  (and (member "capability:υπαγωγή" fwd :test #'string=)
                       (member "contract:subsume" fwd :test #'string=)
                       (some (lambda (id) (eql 0 (search "file:" id))) fwd)))))
-      ;; ⑥-⑨ Ο ΤΥΠΟΣ canonical-article-id — [0088] adapter πάνω στην ΑΥΣΤΗΡΗ
-      ;; έδρα orchestrator.identity: η χαλαρή αποδοχή («100 α»/«100α»/λατινικά/
-      ;; «ΒΙΣ») ΠΕΘΑΝΕ — εδώ κλειδώνεται η νέα fail-closed αλήθεια.
-      (check "⑥ parse: «100Α» ⇒ βάση 100, επίθημα Α· «100 α»/«100α»/«100A»(λατ.)/«100ΒΙΣ» ⇒ NIL+λόγος"
-             (let ((a (orchestrator.article-id:parse-article-id "100Α")))
-               (and a (= 100 (orchestrator.article-id:article-id-base a))
-                    (equal "Α" (orchestrator.article-id:article-id-suffix a))
+      ;; ⑥-⑨ Η ΤΑΥΤΟΤΗΤΑ ΑΡΘΡΟΥ — [0088 Φ6β]: ο adapter orchestrator.article-id
+      ;; ΠΕΘΑΝΕ· τα gates κλειδώνουν την ΑΥΣΤΗΡΗ αλήθεια ΑΠΕΥΘΕΙΑΣ στην έδρα
+      ;; orchestrator.identity (typed identity-parse-error, provision-id).
+      (check "⑥ parse: «100Α» ⇒ βάση 100, επίθημα Α· «100 α»/«100α»/«100A»(λατ.)/«100ΒΙΣ» ⇒ typed σφάλμα με λόγο"
+             (multiple-value-bind (base ord)
+                 (orchestrator.identity:parse-article-label "100Α")
+               (and (= 100 base)
+                    (equal "Α" (orchestrator.identity:ordinal-suffix ord :sequence :upper))
                     (loop for bad in '("100 α" "100α" "100A" "100ΒΙΣ")
-                          always (multiple-value-bind (id reason)
-                                     (orchestrator.article-id:parse-article-id bad)
-                                   (and (null id) (stringp reason)))))))
+                          always (handler-case
+                                     (progn (orchestrator.identity:parse-article-label bad) nil)
+                                   (orchestrator.identity:identity-parse-error (e)
+                                     (stringp (orchestrator.identity:identity-error-reason e))))))))
       (check "⑦ 100 ≠ 100Α ως ΤΑΥΤΟΤΗΤΕΣ· ίδια ⇒ ίδιο hash, διαφορετικές ⇒ διαφορετικό"
-             (let ((a (orchestrator.article-id:parse-article-id "100"))
-                   (b (orchestrator.article-id:parse-article-id "100Α"))
-                   (b2 (orchestrator.article-id:parse-article-id "100Α")))
-               (and (not (orchestrator.article-id:article-id= a b))
-                    (orchestrator.article-id:article-id= b b2)
-                    (= (orchestrator.article-id:article-id-hash b)
-                       (orchestrator.article-id:article-id-hash b2))
-                    (/= (orchestrator.article-id:article-id-hash a)
-                        (orchestrator.article-id:article-id-hash b)))))
-      (check "⑧ ωμός αριθμός ≠ κανονική ταυτότητα: το 100 ΔΕΝ είναι article-id και δεν συγκρίνεται σιωπηλά"
-             (and (not (orchestrator.article-id:article-id-p 100))
-                  (not (orchestrator.article-id:article-id=
-                        100 (orchestrator.article-id:parse-article-id "100")))
-                  (not (orchestrator.article-id:parse-article-id "ΧΩΡΙΣ ΑΡΙΘΜΟ"))))
+             (let* ((body (orchestrator.identity:make-body :gr :syntagma))
+                    (a  (orchestrator.identity:article-provision-id body "100"))
+                    (b  (orchestrator.identity:article-provision-id body "100Α"))
+                    (b2 (orchestrator.identity:article-provision-id body "100Α")))
+               (and (not (orchestrator.identity:provision-id= a b))
+                    (orchestrator.identity:provision-id= b b2)
+                    (= (orchestrator.identity:provision-id-hash b)
+                       (orchestrator.identity:provision-id-hash b2))
+                    (/= (orchestrator.identity:provision-id-hash a)
+                        (orchestrator.identity:provision-id-hash b)))))
+      (check "⑧ ωμός αριθμός ≠ κανονική ταυτότητα: το 100 ΔΕΝ είναι provision-id και δεν συγκρίνεται σιωπηλά"
+             (let ((body (orchestrator.identity:make-body :gr :syntagma)))
+               (and (not (orchestrator.identity:provision-id-p 100))
+                    (not (handler-case
+                             (orchestrator.identity:provision-id=
+                              100 (orchestrator.identity:article-provision-id body "100"))
+                           (error () nil)))   ; άρνηση: NIL ή typed σφάλμα — ΠΟΤΕ T
+                    (handler-case
+                        (progn (orchestrator.identity:parse-article-label "ΧΩΡΙΣ ΑΡΙΘΜΟ") nil)
+                      (orchestrator.identity:identity-parse-error () t)))))
       (check "⑨ η γένεση URI καταναλώνει την ΚΑΝΟΝΙΚΗ σειριοποίηση — το επίθημα επιζεί ως το URI"
              (let ((orchestrator.uris:*canonical-config*
                      (if (gethash "base_uri" orchestrator.uris:*canonical-config*)
                          orchestrator.uris:*canonical-config*
                          (let ((h (make-hash-table :test 'equal)))
                            (setf (gethash "base_uri" h) "https://gate.test") h))))
-               (let ((id (orchestrator.article-id:parse-article-id "100Α")))
+               (let* ((body (orchestrator.identity:make-body :gr :syntagma))
+                      (id (orchestrator.identity:article-provision-id body "100Α")))
                  (search "/article/100Α"
                          (orchestrator.uris:build-article-uri
-                          (orchestrator.article-id:article-id-string id))))))
+                          (orchestrator.identity:uri-id<-provision-id id))))))
       ;; ⑩-⑬ ΑΡΝΗΤΙΚΑ — το μητρώο πιάνει ψέματα ή είναι διακοσμητικό
       (check "⑩ διπλή ταυτότητα συστατικού ⇒ ΣΦΑΛΜΑ duplicate-component-id, ποτέ σιωπηλή αντικατάσταση"
              (handler-case
@@ -253,14 +262,14 @@
  :legal-critical t :policy-level :φραγή
  :tests '("--component-gate"))
 
-(orchestrator.contracts:defcontract "parse-article-id" :function
- :package :orchestrator.article-id :system "orchestrator-infrastructure"
+(orchestrator.contracts:defcontract "parse-article-label" :function
+ :package :orchestrator.identity :system "orchestrator-infrastructure"
  :capability "ταυτότητα-άρθρων" :role "νομική-μνήμη"
- :purpose "first-class τύπος ταυτότητας άρθρου: parse-article-id/article-id=/article-id-string — 100 ≠ 100Α, ετικέτα ≠ ταυτότητα"
- :inputs '("ετικέτα (string ή integer)") :outputs '("typed canonical-article-id ή NIL + λόγος")
- :postconditions '("ισότητα/hash μόνο μεταξύ τύπων — ωμός αριθμός δεν συγκρίνεται σιωπηλά"
+ :purpose "first-class ταυτότητα άρθρου ΣΤΗΝ ΕΔΡΑ (ο adapter orchestrator.article-id πέθανε Φ6β): parse-article-label/provision-id=/provision-id-string — 100 ≠ 100Α, ετικέτα ≠ ταυτότητα"
+ :inputs '("ετικέτα (string)") :outputs '("(values βάση τακτική-θέση) ή typed identity-parse-error με λόγο")
+ :postconditions '("ισότητα/hash μόνο μεταξύ typed provision-ids — ωμός αριθμός δεν συγκρίνεται σιωπηλά"
                    "σταθερή σειριοποίηση: αυτή καταναλώνουν κλειδιά και URIs")
  :legal-critical t :policy-level :φραγή
- :failure-modes '("μη αριθμητική ετικέτα ⇒ NIL + λόγος — ποτέ μαντεψιά")
+ :failure-modes '("μη αναγνωρίσιμη ετικέτα ⇒ typed identity-parse-error με λόγο — ποτέ μαντεψιά")
  :tests '("--component-gate")
  :dependents '("υπαγωγή" "παραδοτέο" "πρόσληψη-νομολογίας"))

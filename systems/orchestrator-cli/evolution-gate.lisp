@@ -348,8 +348,8 @@ proposal_id: ~A  →  κρίνεται: --can-adopt ~:*~A~%"
       (check "⑬ μετάβαση ταυτότητας άρθρων ΧΩΡΙΣ ανθρώπινη έγκριση ⇒ :denied (ρητή έλλειψη)"
              (let ((p (orchestrator.whatif:declare-proposal! "gate:article-id-άναρχη"
                        :type :article-identity :purpose "Φάση 2 corpus keying"
-                       :files '("source/canonical-article-id.lisp")
-                       :symbols '("parse-article-id") :capabilities '("ταυτότητα-άρθρων")
+                       :files '("source/legal-identity.lisp")
+                       :symbols '("parse-article-label") :capabilities '("ταυτότητα-άρθρων")
                        :improvement '(:metric :identity-debt-traces :baseline 1 :target 0)
                        :sandbox "σκιά" :rollback '(:restores "keying" :verify "--component-gate")
                        :acceptance '("revalidation: πλήρης") :approvals '())))
@@ -360,8 +360,8 @@ proposal_id: ~A  →  κρίνεται: --can-adopt ~:*~A~%"
       (check "⑭ η ίδια μετάβαση ΜΕ έγκριση+συμβόλαιο+baseline ⇒ επιτρεπτή, με μετρημένο baseline χρέους"
              (let ((p (orchestrator.whatif:declare-proposal! "gate:article-id-νόμιμη"
                        :type :article-identity :purpose "Φάση 2 corpus keying"
-                       :files '("source/canonical-article-id.lisp")
-                       :symbols '("parse-article-id") :capabilities '("ταυτότητα-άρθρων")
+                       :files '("source/legal-identity.lisp")
+                       :symbols '("parse-article-label") :capabilities '("ταυτότητα-άρθρων")
                        :improvement '(:metric :identity-debt-traces :baseline 1 :target 0)
                        :sandbox "σκιά + regression ολομέλεια"
                        :rollback '(:restores "keying" :verify "--component-gate + --contract-gate")
