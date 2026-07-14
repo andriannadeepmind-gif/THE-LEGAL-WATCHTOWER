@@ -227,3 +227,36 @@ Commits: 98653515 (Φ5α), 61909485 (Φ5β), dd0e817b (Φ5γ).
 ενεργός) + conformance transaction-time ζεύγη + grep-gate silent_fallbacks=0·
 μετά Φ6 θάνατοι adapters (grep-gate 0 καταναλωτών ανά έδρα)· μετά 2
 αντιπαλικοί κριτές + παραδοτέο §7.
+
+---
+
+## [0088-κριτής] ΑΥΣΤΗΡΟΣ ΕΛΕΓΧΟΣ ΔΗΜΙΟΥΡΓΟΥ ΣΤΟ Φ5β — ΚΛΕΙΣΙΜΟ 10 ΣΗΜΕΙΩΝ ΣΤΙΣ ΕΔΡΕΣ (2026-07-14)
+
+Ο δημιουργός ΠΑΓΩΣΕ την ανακήρυξη Φ5β («μεταβατικό sidecar, όχι ανώτατο») με
+2 κρίσιμα + 6 υψηλά + 2 μεσαία. Όλα κλείστηκαν στις έδρες, κανένας νέος adapter:
+
+| # | Εύρημα | Κλείσιμο (έδρα) | Απόδειξη |
+|---|---|---|---|
+| Κ1 | service-handler φόρτωνε consolidated doc ΠΡΙΝ το route | route-first lazy doc-memo στο corpus-service — το /as-known ανεξάρτητο από την παλιά διαδρομή | E2E ⑧/⑧β/⑧γ: provider ΚΑΜΕΝΟΣ, /as-known 200 |
+| Κ2 | chain δεν δέσμευε ΟΛΟ το record (μόνο record-id) | payload-hash = sha256(%canon-sexp ΟΛΟΥ payload — value-canonical, ΟΧΙ prin1: βρέθηκε & σκοτώθηκε το #A(...) non-simple-string bug)· chain = sha256(prev‖0x1F‖payload-hash)· replay: payload-hash + semantic hash (%version-hash/%edge-hash ≡ record-id) ανά kind· παλαιό σχήμα ⇒ ρητό σφάλμα | E2E ③ tampering ⇒ ρήξη· reimport→φρέσκια διεργασία→LOAD-OK |
+| Υ1 | ψευδο-τύποι χρόνου (2026-99-99 περνούσε, λεξικογραφικές συγκρίσεις) | legal-date γνήσιος γρηγοριανός (δίσεκτα)· ΝΕΟΣ legal-instant (canonical UTC, υποχρεωτικό Z)· iso-now → UTC Z· %time-key integer σύγκριση· version-at typed· boundary ⇒ 400 | E2E ⑤/⑤β/⑤γ/⑦/⑦β |
+| Υ2 | καραντίνα/κενά αγνοούσαν known-at | %known-by-p: επηρεάζουν ΜΟΝΟ αν recorded-from ≤ known-at· ΔΗΛΩΜΕΝΟ υπόλοιπο Υ2β: gaps χωρίς άνω όριο valid-διαστήματος (υπερ-προσοχή, ποτέ ψευδής βεβαιότητα) | E2E ④/④β, ⑥δ (μέσω HTTP) |
+| Υ3 | δεύτερο iso-now μετά την εγγραφή (live≠replay drift) | edge recorded-from = :at της γραμμής· %recorded-of fail-closed (γραμμή χωρίς :at = διεφθαρμένη) | E2E ②γ/②δ ισότητα live≡replayed |
+| Υ4 | χειροποίητο JSON με format/~S | /as-known ΜΟΝΟ μέσω της ΜΙΑΣ JCS έδρας (canonicalize-json)· typed 400 condition | E2E: ΚΑΘΕ response περνά jonathan parser |
+| Υ5 | tests = boundary mocks | ΝΕΟ gated tests/as-known-e2e-test.lisp (21 locks): γνήσιο journal→graph→HTTP, δύο known-at ⇒ διαφορετικές ορθές απαντήσεις (πυρήνας ΚΑΙ HTTP στο πραγματικό syntagma), restart parity, tampering, καραντίνα, 400s, route-first | 21/21 + Dockerfile gated |
+| Υ6 | 501 σε production | ORCHESTRATOR_SERVE_PROFILE: authority (default) = fail-closed readiness (provider+γράφος+ΟΛΑ receipts verified+FOLD-PARITY ή ΔΕΝ σερβίρεται)· migration = μόνο ρητά | serve-corpus gate |
+| Μ1 | παράλληλες corpora/short->id alists | typed corpus-runtime στο corpus-service (name/corpus-id/doc-provider/as-known-provider) + uniqueness gate· build-all-corpora = Η ΜΙΑ κατασκευή | multi 13/13 (+lock) |
+| Μ2 | STATE-OF-PLAY πίσω από HEAD | ενημερώθηκε στο ίδιο commit με το παρόν | αυτό το commit |
+
+Επιπλέον (Φ5δ serving cutover): document-as-of — το as-of σερβίρισμα ΜΟΝΟ από
+snapshot-at του γράφου (θάνατος της TEMP-03 text-less select-acts αναπαραγωγής
+στο serving)· μερικό «ιστορικό» έγγραφο ΔΕΝ σερβίρεται (ονομαστική αβεβαιότητα).
+
+Proofs (τοπικά, όλα πράσινα): version-graph 18/18 · graph-import-parity 31/31 ·
+legal-authority-receipt 15/15 · corpus-service 52/52 · multi-corpus 13/13 ·
+as-known-e2e 21/21.
+
+**ΤΟ Φ5β ΔΕΝ ανακηρύσσεται πλήρες**: εκκρεμούν owner docker proof (νέο gate
+as-known-e2e στο loop) και οι 2 ανεξάρτητοι αντιπαλικοί κριτές. Υπολείμματα
+δηλωμένα: Υ2β (interval model των gaps), conformance ζεύγη σε ΟΛΟ το σώμα
+(transaction_time_query_failures=0 ως gate), Φ6 θάνατοι adapters.
