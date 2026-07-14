@@ -24,11 +24,14 @@
     :accessor corpus-legal-body-id
     :initarg :legal-body-id
     :initform nil
-    :documentation "[0088 κριτής-δημιουργού #4] TYPED παγκόσμια ταυτότητα του
-     νομικού σώματος — το άρθρο «5» μόνο του είναι ΤΟΠΙΚΗ ταυτότητα· η πλήρης
-     provision identity είναι η σύνθεση (legal-body-id × article-segment)
-     μέσω provision-id/provision-uri. Default στην κατασκευή: το eli-prefix
-     (παγκοσμίως μοναδικό URI).")
+    :documentation "[0088 Φ6γ-Δ³] Η TYPED ταυτότητα του νομικού σώματος —
+     ΑΠΟΚΛΕΙΣΤΙΚΑ orchestrator.identity:legal-body-id (jurisdiction/kind/
+     year/number), ΠΟΤΕ string/ELI URI: η ταυτότητα ≠ τοποθεσία δημοσίευσης.
+     Strings απορρίπτονται ΔΟΜΙΚΑ στη γέννηση (initialize-instance :after).
+     Στην παραγωγή προέρχεται από τη ΜΙΑ έδρα orchestrator.identity:
+     declared-body (config-δηλωμένο body_identity). NIL = ΜΟΝΟ δηλωμένο
+     υπόλοιπο για μη-μεταναστευμένα νησιά — κάθε χρήση παγκόσμιας
+     ταυτότητας (provision-id) fail-closes πάνω του.")
 
    (articles
     :accessor corpus-articles
@@ -89,6 +92,16 @@
     :documentation "Additional metadata as plist"))
   (:metaclass corpus-class)
   (:documentation "Legal corpus container"))
+
+(defmethod initialize-instance :after ((corpus corpus) &key)
+  "[0088 Φ6γ-Δ³] Το legal-body-id είναι TYPED ή τίποτα: string/ELI URI/
+   οτιδήποτε μη-typed απορρίπτεται ΣΤΗ ΓΕΝΝΗΣΗ — body-id/ELI drift είναι
+   δομικά αδύνατο γιατί η ταυτότητα δεν μπορεί καν να ΕΙΝΑΙ URI string."
+  (let ((body (and (slot-boundp corpus 'legal-body-id)
+                   (slot-value corpus 'legal-body-id))))
+    (when (and body (not (orchestrator.identity:body-id-p body)))
+      (error 'orchestrator.spec:validation-error
+             :message (format nil "corpus legal-body-id: απαιτείται TYPED orchestrator.identity:legal-body-id, όχι ~S — η ταυτότητα σώματος ΔΕΝ είναι string/URI" body)))))
 
 (defmethod print-object ((corpus corpus) stream)
   "Print corpus in readable format"

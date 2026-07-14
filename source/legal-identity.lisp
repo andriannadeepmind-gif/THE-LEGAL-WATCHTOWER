@@ -32,7 +32,7 @@
    ;; νομικό σώμα
    #:legal-body-id #:make-body #:body-id-p
    #:body-jurisdiction #:body-kind #:body-year #:body-number #:body-slug
-   #:body-id-string #:body-kinds
+   #:body-id-string #:body-kinds #:declared-body
    ;; διάταξη
    #:provision-id #:make-provision-id #:provision-id-p
    #:provision-body #:provision-path
@@ -166,6 +166,23 @@
   (when (and number (not (integerp number))) (%die number "μη ακέραιος αριθμός"))
   (%make-body :jurisdiction jurisdiction :kind kind
               :year year :number number :slug slug))
+
+(defun declared-body ()
+  "[0088 Φ6γ-Δ³] Η ΜΙΑ config→typed-body αντιστοίχιση για το ΕΝΕΡΓΟ corpus
+   config: document_type «const» ⇒ (:gr :syntagma)· κάθε άλλο σώμα απαιτεί
+   ΔΗΛΩΜΕΝΟ body_identity (kind/year/number της κυρωτικής πράξης) — ΠΟΤΕ
+   παραγωγή από publication dates ή ELI strings. Καταναλωτές: version-graph
+   import ΚΑΙ orchestrator.model corpus — μία έδρα, καμία απόκλιση."
+  (if (equal (orchestrator.spec:config-get "corpus.document_type") "const")
+      (make-body :gr :syntagma)
+      (let ((kind (orchestrator.spec:config-get "body_identity.kind"))
+            (year (orchestrator.spec:config-get "body_identity.year"))
+            (number (orchestrator.spec:config-get "body_identity.number"))
+            (slug (orchestrator.spec:config-get "corpus.short_name")))
+        (unless (and kind year number)
+          (error "ενεργό corpus χωρίς δηλωμένο body_identity (kind/year/number) — δεν κατασκευάζεται ταυτότητα σώματος"))
+        (make-body :gr (intern (string-upcase (string kind)) :keyword)
+                   :year year :number number :slug slug))))
 
 (defun body-id-string (body)
   "Κανονική σειριοποίηση σώματος: «gr/syntagma», «gr/nomos/2019/4619»."

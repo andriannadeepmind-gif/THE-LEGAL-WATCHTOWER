@@ -29,17 +29,11 @@
    kind/year/number της κυρωτικής πράξης, δημόσια επαληθεύσιμα στοιχεία),
    ΠΟΤΕ παραγόμενη από publication dates (δύο κώδικες του 2019 συγκρούονταν).
    Το Σύνταγμα = :syntagma· απόν body_identity σε άλλο σώμα ⇒ ΣΦΑΛΜΑ."
+  ;; [0088 Φ6γ-Δ³] Η αντιστοίχιση μετακόμισε στην έδρα ταυτότητας
+  ;; (orchestrator.identity:declared-body) ώστε γράφος ΚΑΙ corpus μοντέλο
+  ;; να καταναλώνουν ΤΗΝ ΙΔΙΑ — εδώ μένει μόνο η επιλογή ενεργού corpus.
   (orchestrator.spec:select-corpus corpus-id)
-  (if (equal corpus-id "syntagma")
-      (orchestrator.identity:make-body :gr :syntagma)
-      (let ((kind (orchestrator.spec:config-get "body_identity.kind"))
-            (year (orchestrator.spec:config-get "body_identity.year"))
-            (number (orchestrator.spec:config-get "body_identity.number")))
-        (unless (and kind year number)
-          (error "corpus ~A: χωρίς δηλωμένο body_identity (kind/year/number) στο config — δεν κατασκευάζεται ταυτότητα σώματος" corpus-id))
-        (orchestrator.identity:make-body
-         :gr (intern (string-upcase (string kind)) :keyword)
-         :year year :number number :slug corpus-id))))
+  (orchestrator.identity:declared-body))
 
 (defun %amended-article-dates (corpus-id)
   "eid → ημερομηνία ΤΕΛΕΥΤΑΙΑΣ αναθεώρησης που τον άγγιξε + λίστα ΟΛΩΝ των

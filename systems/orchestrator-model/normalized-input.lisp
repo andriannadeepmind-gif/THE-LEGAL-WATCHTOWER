@@ -21,7 +21,8 @@
                   :type string
                   :documentation "Full article label, e.g. '5' or '5Α' or '9Α'")
 
-   (identity-segment :accessor article-identity
+   ;; [Δ³] :reader ΜΟΝΟ — κανένα δημόσιο (setf article-identity) πουθενά
+   (identity-segment :reader article-identity
                      :initarg :identity
                      :initform nil
                      :documentation "[0088 Φ6γ-Α] TYPED ταυτότητα από την έδρα

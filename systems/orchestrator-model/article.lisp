@@ -23,17 +23,17 @@
                     not collide with their base number in filenames/URIs.")
 
    (identity-segment
-    :accessor article-identity
-    :initarg :identity
+    :reader article-identity
     :initform nil
-    :documentation "[0088 Φ6γ] TYPED ταυτότητα άρθρου από την έδρα
-                    orchestrator.identity: article-segment (:article ΒΑΣΗ
-                    ΤΑΚΤΙΚΗ-ΘΕΣΗ), υπολογισμένο ΜΙΑ φορά στην κατασκευή
-                    (make-article) — όχι επανα-parse του label ανά χρήση.
-                    [0088 Φ6γ-Δ] ΥΠΟΛΟΓΙΖΕΤΑΙ ΠΑΝΤΑ στην κατασκευή
-                    (initialize-instance :after) — slot-less αντικείμενα
-                    είναι ΔΟΜΙΚΑ αδύνατα. NIL σημαίνει ΜΟΝΟ το δηλωμένο
-                    identity-debt: συνθετικός αριθμός >9999 χωρίς label.")
+    :documentation "[0088 Φ6γ-Δ³] TYPED ταυτότητα άρθρου από την έδρα
+                    orchestrator.identity — ΠΑΡΑΓΩΓΗ, ΟΧΙ injectable:
+                    ΚΑΝΕΝΑ initarg, ΚΑΝΕΝΑ δημόσιο setf· μεταβάλλεται ΜΟΝΟ
+                    μέσω number/label (τα :after hooks επανυπολογίζουν από
+                    την έδρα). Άρθρο με δεμένο number ΧΩΡΙΣ υπολογίσιμη
+                    ταυτότητα ΔΕΝ κατασκευάζεται (typed σφάλμα — unresolved
+                    υλικό = καραντίνα, ποτέ article). NIL ΜΟΝΟ στο εμβρυϊκό
+                    στάδιο (number ΚΑΙ label αδέσμευτα)· κάθε προβολή πάνω
+                    σε NIL σκάει fail-closed.")
 
    (title
     :accessor article-title
@@ -162,35 +162,36 @@
   (format nil "~3,'0D~A" (second seg)
           (orchestrator.identity:ordinal-suffix (third seg) :sequence :upper)))
 
-(defmethod initialize-instance :after ((article article) &key (identity nil identity-p) &allow-other-keys)
-  "[0088 Φ6γ-Δ] Η typed ταυτότητα υπάρχει ΑΠΟ ΤΗ ΓΕΝΝΗΣΗ κάθε αντικειμένου:
-   όταν δεν δόθηκε ρητά (:identity από τον builder), υπολογίζεται εδώ από
-   την έδρα — αντικείμενο άρθρου χωρίς υπολογισμένη ταυτότητα είναι ΔΟΜΙΚΑ
-   αδύνατο, όχι απαγορευμένο."
-  (declare (ignore identity))
-  (unless identity-p
-    (setf (slot-value article 'identity-segment)
-          (%article-identity-segment-for
-           (and (slot-boundp article 'label) (article-label article))
-           (and (slot-boundp article 'number) (article-number article))))))
+(defun %recompute-article-identity! (article)
+  "[0088 Φ6γ-Δ³] Ο ΜΟΝΑΔΙΚΟΣ δίαυλος εγγραφής του identity slot: υπολογίζει
+   από την έδρα βάσει (label, number). ΔΕΜΕΝΟ number χωρίς υπολογίσιμη
+   ταυτότητα ⇒ typed σφάλμα — article χωρίς νόμιμη ταυτότητα είναι ΔΟΜΙΚΑ
+   αδύνατο (το unresolved υλικό ανήκει σε καραντίνα, όχι σε article)."
+  (let* ((label (and (slot-boundp article 'label) (article-label article)))
+         (number (and (slot-boundp article 'number) (article-number article)))
+         (seg (%article-identity-segment-for label number)))
+    (when (and number (null seg))
+      (error 'orchestrator.spec:validation-error
+             :message (format nil "article χωρίς νόμιμη ταυτότητα: number=~S label=~S — συνθετικός αριθμός απαιτεί label· unresolved υλικό = καραντίνα, όχι article"
+                              number label)))
+    (setf (slot-value article 'identity-segment) seg)))
+
+(defmethod initialize-instance :after ((article article) &key)
+  "[0088 Φ6γ-Δ³] Η typed ταυτότητα υπάρχει ΑΠΟ ΤΗ ΓΕΝΝΗΣΗ: υπολογίζεται
+   ΠΑΝΤΑ από την έδρα — δεν υπάρχει :identity initarg (injection ΑΔΥΝΑΤΟ:
+   άγνωστο initarg ⇒ σφάλμα του CLOS — ΚΑΝΕΝΑ &allow-other-keys εδώ),
+   δεν υπάρχει δημόσιο setf."
+  (%recompute-article-identity! article))
 
 (defmethod (setf article-number) :after (new-number (article article))
-  "[0088 κριτής A1] Η ταυτότητα ΠΑΡΑΚΟΛΟΥΘΕΙ ΚΑΙ το number, συμμετρικά με
-   το label — μετάλλαξη number με παγωμένο segment (αποκλίνουσα δημόσια
-   ταυτότητα) είναι ΔΟΜΙΚΑ αδύνατη."
-  (setf (slot-value article 'identity-segment)
-        (%article-identity-segment-for
-         (and (slot-boundp article 'label) (article-label article))
-         new-number)))
+  "Η ταυτότητα ΠΑΡΑΚΟΛΟΥΘΕΙ το number — stale segment δομικά αδύνατο."
+  (declare (ignore new-number))
+  (%recompute-article-identity! article))
 
 (defmethod (setf article-label) :after (new-label (article article))
-  "[0088 Φ6γ] Η typed ταυτότητα ΠΑΡΑΚΟΛΟΥΘΕΙ το label: κάθε αλλαγή label
-   επανυπολογίζει το identity segment από την έδρα — stale/αποκλίνουσα
-   ταυτότητα είναι ΔΟΜΙΚΑ αδύνατη (όχι φρουρημένη)."
-  (setf (article-identity article)
-        (%article-identity-segment-for
-         new-label
-         (and (slot-boundp article 'number) (article-number article)))))
+  "Η ταυτότητα ΠΑΡΑΚΟΛΟΥΘΕΙ το label — stale segment δομικά αδύνατο."
+  (declare (ignore new-label))
+  (%recompute-article-identity! article))
 
 (defmethod print-object ((article article) stream)
   "Print article in readable format"
@@ -323,67 +324,53 @@
 
 (defun article-file-id (article)
   "Canonical filesystem/eId identifier for ARTICLE that PRESERVES a letter
-   suffix: '070' for article 70, '070Α' for article 70Α. Delegates to the single
-   source of truth PAD-ARTICLE-ID.
-
-   P1b [0049]: όταν υπάρχει LABEL, η αριθμητική ΒΑΣΗ του ονόματος προκύπτει
-   από το label (τη ΜΙΑ πηγή αλήθειας ταυτότητας) — ΟΧΙ από το article-number,
-   που για lettered άρθρα είναι εσωτερικός συνθετικός αριθμός αποσαφήνισης
-   (5Α ⇒ number 5001) και μόλυνε τα ονόματα αρχείων (article-5001Α αντί του
-   κανονικού article-005Α)."
-  ;; [0088 Φ6γ-Δ] το typed slot υπάρχει ΠΑΝΤΑ (initialize-instance :after)·
-  ;; NIL = ΜΟΝΟ το δηλωμένο identity-debt (συνθετικός >9999 ΧΩΡΙΣ label),
-  ;; όπου εξ ορισμού δεν υπάρχει επίθημα — προβολή της γυμνής βάσης, καμία
-  ;; raw επανερμηνεία. Η ισοδυναμία κλειδώθηκε στο bijection gate 4694/0/0.
-  (let ((seg (article-identity article)))
-    (if seg
-        (segment-file-id seg)
-        (format nil "~3,'0D" (article-number article)))))
+   suffix: '070' for article 70, '070Α' for article 70Α — από το typed
+   identity slot μέσω της ΜΙΑΣ προβολής segment-file-id."
+  ;; [0088 Φ6γ-Δ³] καμία fallback προβολή: άρθρο χωρίς ταυτότητα δεν αποκτά
+  ;; δημόσιο id — fail-closed (το εμβρυϊκό στάδιο δεν προβάλλεται ποτέ).
+  (segment-file-id (%article-identity-required article "article-file-id")))
 
 (defun article-uri (article)
   "[0088 Φ6γ-Δ2] Η κανονική UNPADDED uri ταυτότητα ΕΝΟΣ ΑΝΤΙΚΕΙΜΕΝΟΥ άρθρου
-   («5», «5Α») — από το typed identity slot (η έδρα, ΠΑΝΤΑ υπολογισμένο στην
-   κατασκευή)· NIL = ΜΟΝΟ δηλωμένο identity-debt (συνθετικός χωρίς label,
-   άρα χωρίς επίθημα) ⇒ προβολή γυμνής βάσης. Καταναλωτές με το ΑΝΤΙΚΕΙΜΕΝΟ
+   («5», «5Α») — από το typed identity slot· [Δ³] ΚΑΜΙΑ fallback προβολή:
+   άρθρο χωρίς ταυτότητα ⇒ typed σφάλμα. Καταναλωτές με το ΑΝΤΙΚΕΙΜΕΝΟ
    περνούν από εδώ — όχι από το raw ζεύγος (number,label)."
-  (let ((seg (article-identity article)))
-    (if seg
-        (segment-uri-id seg)
-        (format nil "~D" (article-number article)))))
+  (segment-uri-id (%article-identity-required article "article-uri")))
+
+(defun %article-identity-required (article context)
+  "Το typed segment ή typed σφάλμα — καμία προβολή/σύνθεση χωρίς ταυτότητα."
+  (or (article-identity article)
+      (error 'orchestrator.spec:validation-error
+             :message (format nil "~A: άρθρο χωρίς ταυτότητα (εμβρυϊκό — number/label αδέσμευτα)" context))))
 
 (defun provision-id (corpus article)
-  "[0088 κριτής-δημιουργού #4] Η ΠΛΗΡΗΣ typed ταυτότητα διάταξης — σύνθεση
-   (legal-body-id × article-segment): (:provision BODY-ID (:article ΒΑΣΗ ΘΕΣΗ)).
-   Το «άρθρο 5» μόνο του είναι ΤΟΠΙΚΟ· η παγκόσμια ταυτότητα απαιτεί το σώμα.
-   Fail-closed: άρθρο χωρίς νόμιμη ταυτότητα ή corpus χωρίς body-id ⇒ typed
-   σφάλμα — ποτέ μερική/σιωπηλή ταυτότητα."
+  "[0088 Φ6γ-Δ³] Η ΠΛΗΡΗΣ παγκόσμια ταυτότητα διάταξης — ΑΠΟΚΛΕΙΣΤΙΚΑ μέσω
+   της έδρας orchestrator.identity (make-provision-id): typed body × typed
+   article segment. ΚΑΜΙΑ δεύτερη model-level σημασιολογία — αυτό που
+   επιστρέφεται ΕΙΝΑΙ orchestrator.identity:provision-id (provision-id-p T).
+   Fail-closed: corpus χωρίς typed body ή άρθρο χωρίς ταυτότητα ⇒ σφάλμα."
   (let ((body (corpus-legal-body-id corpus))
-        (seg (article-identity article)))
-    (unless body
+        (seg (%article-identity-required article "provision-id")))
+    (unless (orchestrator.identity:body-id-p body)
       (error 'orchestrator.spec:validation-error
-             :message "provision-id: corpus χωρίς legal-body-id"))
-    (unless seg
-      (error 'orchestrator.spec:validation-error
-             :message (format nil "provision-id: άρθρο χωρίς νόμιμη ταυτότητα (number=~S)"
-                              (and (slot-boundp article 'number)
-                                   (article-number article)))))
-    (list :provision body seg)))
+             :message (format nil "provision-id: corpus ~S χωρίς TYPED legal-body-id (orchestrator.identity)"
+                              (and (slot-boundp corpus 'short-name)
+                                   (corpus-short-name corpus)))))
+    (orchestrator.identity:make-provision-id body (list seg))))
 
 (defun provision-uri (corpus article)
-  "Η παγκόσμια URI προβολή της πλήρους provision identity:
-   {eli-prefix}/art/{segment-uri} — object-level προβολή του ΙΔΙΟΥ κανόνα
-   με το build-eli-article-uri (raw όριο), μέσω των εδρών segment."
-  (let ((pid (provision-id corpus article)))
-    (declare (ignore pid)) ; επικύρωση fail-closed πριν από κάθε προβολή
-    (format nil "~A/art/~A" (corpus-eli-prefix corpus) (article-uri article))))
+  "Η URI προβολή της πλήρους provision identity: {eli-prefix}/art/{uri-id},
+   με το uri-id ΑΠΟ ΤΗΝ ΕΔΡΑ (uri-id<-provision-id πάνω στο typed
+   provision-id) — όχι χωριστή σύνθεση. Το eli-prefix είναι ΤΟΠΟΘΕΣΙΑ
+   δημοσίευσης· η ταυτότητα είναι το typed provision-id."
+  (format nil "~A/art/~A"
+          (corpus-eli-prefix corpus)
+          (orchestrator.identity:uri-id<-provision-id (provision-id corpus article))))
 
 (defun %article-order-key (a)
-  "(βάση . τακτική-θέση) — από το typed slot (ΠΑΝΤΑ υπολογισμένο)· NIL =
-   δηλωμένο identity-debt χωρίς label ⇒ (γυμνή βάση . 0)."
-  (let ((seg (article-identity a)))
-    (if seg
-        (cons (second seg) (third seg))
-        (cons (article-number a) 0))))
+  "(βάση . τακτική-θέση) — από το typed slot· [Δ³] χωρίς ταυτότητα ⇒ σφάλμα."
+  (let ((seg (%article-identity-required a "article-identity<")))
+    (cons (second seg) (third seg))))
 
 (defun article-identity< (a b)
   "Κανονική ολική διάταξη άρθρων: αριθμητική ΒΑΣΗ, μετά η ΝΟΜΟΘΕΤΙΚΗ τακτική

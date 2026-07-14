@@ -170,10 +170,9 @@
                 (handler-case (progn (orchestrator.model:article-label-suffix "Α5") nil)
                   (error () t))))
 (cit-check "⑩γ article-identity<: 272Ε < 272ΣΤ < 272Ζ < 272Ι (ΟΧΙ ΣΤ τελευταίο)"
-           (let* ((mk (lambda (n l) (let ((a (orchestrator.model:make-article
-                                              :number n :title "x" :content "y")))
-                                      (setf (orchestrator.model:article-label a) l)
-                                      a)))
+           ;; [Δ³] label ΣΤΗΝ ΚΑΤΑΣΚΕΥΗ — συνθετικός χωρίς label δεν γεννιέται πια
+           (let* ((mk (lambda (n l) (orchestrator.model:make-article
+                                     :number n :label l :title "x" :content "y")))
                   (e (funcall mk 272005 "272Ε"))
                   (st (funcall mk 272006 "272ΣΤ"))
                   (z (funcall mk 272007 "272Ζ"))

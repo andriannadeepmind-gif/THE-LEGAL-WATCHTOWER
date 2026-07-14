@@ -58,6 +58,7 @@
    ;; [0088 Φ7 Π1] Formal Temporal Semantics — effectivity conditions
    #:make-effectivity-condition #:condition-id #:condition-ast #:condition-class
    #:valid-condition-ast-p #:instrument-kinds
+   #:instrument-kind-entries #:instrument-kind-entry
    #:date+ #:sat
    #:invalid-condition))
 
@@ -821,21 +822,42 @@
   (orchestrator.paths:institution-dir "deployment/data/instrument-kind-registry.sexp"))
 
 (let ((cache nil))
-  (defun instrument-kinds ()
-    "Το ΚΛΕΙΣΤΟ μητρώο ειδών θεσμικών γεγονότων — δηλωτικά δεδομένα από το
-     deployment/data/instrument-kind-registry.sexp. Απόν/άκυρο ⇒ ΣΦΑΛΜΑ."
+  (defun instrument-kind-entries ()
+    "Το ΚΛΕΙΣΤΟ TYPED μητρώο ειδών θεσμικών γεγονότων (schema /2): λίστα
+     plists (:kind :authority-class :evidence) από το
+     deployment/data/instrument-kind-registry.sexp. Reader safety: *read-eval*
+     ΡΗΤΑ nil (κριτής-δημιουργού Π1). Απόν/άκυρο/ελλιπές ⇒ ΣΦΑΛΜΑ."
     (or cache
         (setf cache
               (let ((plist (with-open-file (s (%instrument-registry-path)
                                               :external-format :utf-8)
-                             (let ((*package* (find-package :keyword)))
+                             (let ((*package* (find-package :keyword))
+                                   (*read-eval* nil))
                                (read s)))))
-                (unless (eq (getf plist :schema) :instrument-kind-registry/1)
+                (unless (eq (getf plist :schema) :instrument-kind-registry/2)
                   (error 'invalid-condition
-                         :reason "μητρώο instrument-kinds: άγνωστο schema"))
-                (or (getf plist :kinds)
+                         :reason "μητρώο instrument-kinds: άγνωστο schema (απαιτείται /2)"))
+                (let ((entries (getf plist :entries)))
+                  (unless entries
                     (error 'invalid-condition
-                           :reason "μητρώο instrument-kinds: κενό")))))))
+                           :reason "μητρώο instrument-kinds: κενό"))
+                  (dolist (e entries entries)
+                    (unless (and (keywordp (getf e :kind))
+                                 (keywordp (getf e :authority-class))
+                                 (consp (getf e :evidence)))
+                      (error 'invalid-condition
+                             :reason (format nil "μητρώο instrument-kinds: ελλιπής typed εγγραφή ~S — κάθε kind απαιτεί :authority-class + :evidence schema" e))))))))))
+
+(defun instrument-kinds ()
+  "Τα keys του typed μητρώου — για membership ελέγχους γραμματικής."
+  (mapcar (lambda (e) (getf e :kind)) (instrument-kind-entries)))
+
+(defun instrument-kind-entry (kind)
+  "Η ΠΛΗΡΗΣ typed εγγραφή ενός kind (authority-class, evidence schema) —
+   άγνωστο kind ⇒ typed σφάλμα."
+  (or (find kind (instrument-kind-entries) :key (lambda (e) (getf e :kind)))
+      (error 'invalid-condition
+             :reason (format nil "άγνωστο instrument kind ~S" kind))))
 
 (defun valid-condition-ast-p (ast)
   "T ή σφάλμα invalid-condition με ΛΟΓΟ — ποτέ σιωπηλό NIL για άκυρη μορφή.
@@ -869,24 +891,49 @@
      (mapc #'valid-condition-ast-p (rest ast))))
   t)
 
+(defun %canon-condition-ast (ast)
+  "[Φ6γ-Δ³] ΣΗΜΑΣΙΟΛΟΓΙΚΗ κανονικοποίηση AST (η ταυτότητα είναι semantic,
+   ΟΧΙ συντακτική): στα αντιμεταθετικά :and/:or — flattening ίδιων τελεστών,
+   αφαίρεση διπλοτύπων, ντετερμινιστική ταξινόμηση παιδιών κατά value-canonical
+   string· μονομελές αποτέλεσμα καταρρέει στο παιδί (x∧x ≡ x). Προϋπόθεση:
+   ήδη έγκυρο κατά valid-condition-ast-p."
+  (ecase (first ast)
+    ((:date-reached :instrument-event) ast)
+    (:after (list :after (second ast) (%canon-condition-ast (third ast))))
+    ((:and :or)
+     (let* ((op (first ast))
+            (kids (loop for c in (rest ast)
+                        for n = (%canon-condition-ast c)
+                        append (if (eq (first n) op) (rest n) (list n))))
+            (uniq (remove-duplicates kids :test #'equal))
+            (sorted (sort (copy-list uniq) #'string<
+                          :key (lambda (k)
+                                 (with-output-to-string (o) (%canon-sexp k o))))))
+       (if (null (rest sorted)) (first sorted) (cons op sorted))))))
+
 (defstruct (effectivity-condition (:conc-name condition-)
                                   (:constructor %make-condition))
-  id     ; sha256 του value-canonical (class . AST) — η ταυτότητα
+  id     ; sha256 του domain-separated value-canonical (tag class canon-AST)
   class  ; :suspensive | :resolutory
-  ast)
+  ast)   ; το ΚΑΝΟΝΙΚΟ (semantic) AST — όχι η συντακτική μορφή εισόδου
 
 (defun make-effectivity-condition (class ast)
   "Typed effectivity condition. CLASS: :suspensive (η ισχύς ΑΡΧΙΖΕΙ στην
    ικανοποίηση) | :resolutory (η ισχύς ΠΑΥΕΙ στην ικανοποίηση — π.χ. ΠΝΠ μη
-   κυρωθείσα, 44§1 Σ). Το AST επικυρώνεται ΠΛΗΡΩΣ στην κατασκευή· η ταυτότητα
-   = hash του value-canonical (class . AST) — ίδιο condition ⇒ ίδιο id."
+   κυρωθείσα, 44§1 Σ). Το AST επικυρώνεται ΠΛΗΡΩΣ και κανονικοποιείται
+   ΣΗΜΑΣΙΟΛΟΓΙΚΑ στην κατασκευή. Ταυτότητα = sha256 του DOMAIN-SEPARATED
+   value-canonical (:lawmax/effectivity-condition/1 class canon-AST):
+   (:and A B) ≡ (:and B A) ≡ (:and A A B)· μελλοντική αλλαγή σημασιολογίας
+   ⇒ νέο tag ⇒ κανένα id δεν επιζεί με άλλη έννοια."
   (unless (member class '(:suspensive :resolutory))
     (error 'invalid-condition :reason (format nil "άγνωστη κλάση αίρεσης ~S" class)))
   (valid-condition-ast-p ast)
-  (%make-condition
-   :id (orchestrator.journal:sha256-hex
-        (with-output-to-string (out) (%canon-sexp (cons class ast) out)))
-   :class class :ast ast))
+  (let ((canon (%canon-condition-ast ast)))
+    (%make-condition
+     :id (orchestrator.journal:sha256-hex
+          (with-output-to-string (out)
+            (%canon-sexp (list :lawmax/effectivity-condition/1 class canon) out)))
+     :class class :ast canon)))
 
 ;;; ── date+ : Η ΜΙΑ ολική συνάρτηση ελληνικής προθεσμίας (ΑΚ 241-243) ──
 
@@ -927,35 +974,64 @@
 ;;; φιλτραρισμένα ως recorded-live κατά known-at από τον καλούντα (Π2 έδρα)·
 ;;; το sat είναι ΚΑΘΑΡΗ συνάρτηση, δεν αγγίζει χρόνο εγγραφής.
 
-(defun %sat-instrument (kind ref live-events)
+(defun %validate-condition-event (e)
+  "[Φ6γ-Δ³] TYPED επικύρωση ΚΑΘΕ event πριν μπει στην trusted αποτίμηση —
+   raw plists με άκυρο kind/outcome/at/ref δεν φτάνουν ΠΟΤΕ στο sat."
+  (unless (and (consp e)
+               (member (getf e :kind) (instrument-kinds))
+               (stringp (getf e :ref)) (plusp (length (getf e :ref)))
+               (member (getf e :outcome) '(:satisfied :refuted))
+               (legal-date-p (getf e :at)))
+    (error 'invalid-condition
+           :reason (format nil "άκυρο condition event ~S — απαιτείται (:kind∈μητρώο :ref string+ :outcome :satisfied|:refuted :at legal-date)" e)))
+  e)
+
+(defun %sat-instrument (kind ref live-events condition-id)
   "Το αποτέλεσμα για (:instrument-event KIND REF): από το ΜΟΝΑΔΙΚΟ live
-   γεγονός που ταιριάζει (kind+ref). Πολλαπλά αντιφατικά ⇒ ΣΦΑΛΜΑ (ο γράφος
-   είναι ασυνεπής — όχι σιωπηλή επιλογή). Κανένα ⇒ :pending."
+   γεγονός που ταιριάζει. [Φ6γ-Δ³] Με CONDITION-ID: μετρούν ΜΟΝΟ events
+   ρητά δεμένα στο ΙΔΙΟ condition-id — event άλλης δήλωσης με ίδιο kind/ref
+   δεν διαρρέει· event ΧΩΡΙΣ :condition-id σε cid-scoped αποτίμηση ⇒ ΣΦΑΛΜΑ.
+   Πολλαπλά ΣΥΜΦΩΝΑ ⇒ ΕΛΑΧΙΣΤΟ at (spec §3.3β)· αντιφατικά ⇒ ΣΦΑΛΜΑ."
   (let ((hits (remove-if-not
-               (lambda (e) (and (eq (getf e :kind) kind)
-                                (equal (getf e :ref) ref)))
+               (lambda (e)
+                 (and (eq (getf e :kind) kind)
+                      (equal (getf e :ref) ref)
+                      (or (null condition-id)
+                          (progn
+                            (unless (getf e :condition-id)
+                              (error 'invalid-condition
+                                     :reason (format nil "event χωρίς :condition-id σε cid-scoped αποτίμηση: ~S" e)))
+                            (equal (getf e :condition-id) condition-id)))))
                live-events)))
     (cond ((null hits) (values :pending nil))
-          ((null (rest hits))
-           (values (getf (first hits) :outcome) (getf (first hits) :at)))
+          ((let ((o (getf (first hits) :outcome)))
+             (every (lambda (h) (eq (getf h :outcome) o)) (rest hits)))
+           (values (getf (first hits) :outcome)
+                   (reduce (lambda (a b) (if (%time<= a b) a b))
+                           (mapcar (lambda (h) (getf h :at)) hits))))
           (t (error 'invalid-condition
-                    :reason (format nil "~D αντιφατικά live γεγονότα για ~S ~S"
+                    :reason (format nil "~D αντιφατικά live γεγονότα για ~S ~S — επίλυση ΜΟΝΟ με journaled retract+τεκμήριο (spec §3.3β)"
                                     (length hits) kind ref))))))
 
-(defun sat (ast live-events)
+(defun sat (ast live-events &key condition-id)
   "(values :pending|:satisfied|:refuted at-ή-nil) — ολική, ντετερμινιστική.
-   :or ⇒ ικανοποίηση με το ΕΛΑΧΙΣΤΟ at· :and ⇒ με το ΜΕΓΙΣΤΟ at·
-   refuted κανόνες κατά spec §1.2. Το at είναι ΠΑΝΤΑ legal-date."
+   :or ⇒ ικανοποίηση με το ΕΛΑΧΙΣΤΟ at· :and ⇒ με το ΜΕΓΙΣΤΟ at· refuted
+   κανόνες κατά spec §1.2. [Φ6γ-Δ³] ΚΑΘΕ event επικυρώνεται typed πριν την
+   αποτίμηση· με CONDITION-ID τα events δένονται δομικά στη δήλωση."
+  (mapc #'%validate-condition-event live-events)
+  (%sat-1 ast live-events condition-id))
+
+(defun %sat-1 (ast live-events condition-id)
   (ecase (first ast)
     (:date-reached (values :satisfied (second ast)))
-    (:instrument-event (%sat-instrument (second ast) (third ast) live-events))
+    (:instrument-event (%sat-instrument (second ast) (third ast) live-events condition-id))
     (:after
-     (multiple-value-bind (st at) (sat (third ast) live-events)
+     (multiple-value-bind (st at) (%sat-1 (third ast) live-events condition-id)
        (if (eq st :satisfied)
            (values :satisfied (date+ at (second ast)))
            (values st at))))
     (:and
-     (let ((results (mapcar (lambda (c) (multiple-value-list (sat c live-events)))
+     (let ((results (mapcar (lambda (c) (multiple-value-list (%sat-1 c live-events condition-id)))
                             (rest ast))))
        (cond ((find :refuted results :key #'first)
               (values :refuted
@@ -968,7 +1044,7 @@
                               (mapcar #'second results))))
              (t (values :pending nil)))))
     (:or
-     (let ((results (mapcar (lambda (c) (multiple-value-list (sat c live-events)))
+     (let ((results (mapcar (lambda (c) (multiple-value-list (%sat-1 c live-events condition-id)))
                             (rest ast))))
        (cond ((find :satisfied results :key #'first)
               (values :satisfied

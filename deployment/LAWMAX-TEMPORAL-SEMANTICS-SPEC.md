@@ -64,22 +64,33 @@ DURATION  := (:days N) | (:months N) | (:years N)   ; N: θετικός ακέρ
   στο AST: `class ∈ {:suspensive, :resolutory}`. Suspensive: η ισχύς
   ΑΡΧΙΖΕΙ όταν ικανοποιηθεί. Resolutory: η ισχύς ΠΑΥΕΙ όταν ικανοποιηθεί
   (π.χ. ΠΝΠ μη κυρωθείσα, άρθ. 44§1 Σ).
-- **Μητρώο KIND**: `deployment/data/instrument-kind-registry.sexp`
-  (schema `:instrument-kind-registry/1`), σήμερα {:ya :pd :kya :decision
-  :eu-approval :ratification :system-operational :event}. Κλειστό:
-  KIND εκτός μητρώου ⇒ typed σφάλμα `invalid-condition`.
+- **Μητρώο KIND — TYPED**: `deployment/data/instrument-kind-registry.sexp`
+  (schema `:instrument-kind-registry/2`): κάθε kind φέρει ΥΠΟΧΡΕΩΤΙΚΑ
+  `:authority-class` + `:evidence` schema — το γενικό `:event` απαιτεί
+  ρητή πράξη-πηγή με digest, δεν είναι «οτιδήποτε συνέβη». Σήμερα
+  {:ya :pd :kya :decision :eu-approval :ratification :system-operational
+  :event}. Κλειστό: KIND εκτός μητρώου ⇒ `invalid-condition`. Reader:
+  `*read-eval*` ρητά NIL + πλήρης επικύρωση εγγραφών στη φόρτωση.
 - **«Από τη δημοσίευση» ΔΕΝ είναι condition**: με γνωστό ΦΕΚ είναι
   συγκεκριμένη ημερομηνία (fek-date + DURATION) — κανόνας μετάπτωσης στο
   import.
 - Επικύρωση: `valid-condition-ast-p` — ολική, fail-closed (άκυρη μορφή/
   ημερομηνία/kind/duration ⇒ `invalid-condition`, ποτέ NIL-σιωπή).
 
-### 2.2 Ταυτότητα αίρεσης [Π1: ΥΛΟΠΟΙΗΜΕΝΟ]
+### 2.2 Ταυτότητα αίρεσης — ΣΗΜΑΣΙΟΛΟΓΙΚΗ, domain-separated [Π1: ΥΛΟΠΟΙΗΜΕΝΟ]
 
-`condition-id = sha256(%canon-sexp (cons class ast))` — value-canonical:
-ίδιο (class, AST) ⇒ ίδιο id σε κάθε διεργασία/γλώσσα· άλλη κλάση ⇒ άλλο id.
-Κατασκευή: `make-effectivity-condition (class ast)` ⇒ struct
-`effectivity-condition {id, class, ast}`.
+Η ταυτότητα είναι ΡΗΤΑ **semantic** (όχι συντακτική): πριν το hash, το AST
+κανονικοποιείται — στα αντιμεταθετικά :and/:or γίνεται flattening ίδιων
+τελεστών, αφαίρεση διπλοτύπων και ντετερμινιστική ταξινόμηση παιδιών κατά
+value-canonical string· μονομελές αποτέλεσμα καταρρέει στο παιδί. Άρα
+(:and A B) ≡ (:and B A) ≡ (:and A A B) ≡ (:and A (:and B)) — ένα id.
+
+`condition-id = sha256(%canon-sexp (:lawmax/effectivity-condition/1 class canon-ast))`
+— **domain separation**: το tag `:lawmax/effectivity-condition/1` μπαίνει
+ΜΕΣΑ στο hashed υλικό· μελλοντική αλλαγή σημασιολογίας ⇒ νέο tag ⇒ κανένα
+παλαιό id δεν επιζεί με άλλη έννοια. Κατασκευή:
+`make-effectivity-condition (class ast)` ⇒ struct
+`effectivity-condition {id, class, canon-ast}`.
 
 ### 2.3 date+ — ελληνική προθεσμία, ολική [Π1: ΥΛΟΠΟΙΗΜΕΝΟ]
 
@@ -245,12 +256,20 @@ version-at ⇒ (values v :complete)                      ; in-force έκδοση
   `{protocol-version, corpus-id, valid-at, known-at, receipt-id,
   release-root, graph-chain-head, sat-καταστάσεις (ανά condition-id),
   τέμνοντα regime-edge-ids, scoped δηλώσεις, verifier-hash (sha256 του
-  verify.lisp — ήδη 10ο canonical της ταυτότητας)}` — και ΥΠΟΓΡΑΦΕΤΑΙ
-  από το release κλειδί μέσω της ΜΙΑΣ υπάρχουσας έδρας υπογραφής
-  (sign-root/JWS pipeline)· η επαλήθευση της υπογραφής + η επίλυση του
-  release-root στο transparency log αποδεικνύουν ΠΟΙΟΣ το εξέδωσε και ΣΕ
-  ΠΟΙΟ canonical release ανήκει. Επιστρέφεται από /as-known και τον
-  verifier· ΔΕΝ μπαίνει στο Merkle των receipts (query-εξαρτώμενο).
+  verify.lisp — ήδη 10ο canonical της ταυτότητας)}`.
+  **ΚΛΕΙΔΙΑ (κλείσιμο ελέγχου Δ³#7): το release private key ΔΕΝ αγγίζει
+  ΠΟΤΕ online runtime** — καμία per-query υπογραφή με αυτό. Το attestation
+  είναι **deterministic certificate ΧΩΡΙΣ δική του υπογραφή**: κάθε πεδίο
+  του είναι επανυπολογίσιμο από (α) το ΥΠΟΓΕΓΡΑΜΜΕΝΟ release root
+  (offline-signed, transparency log), (β) το journaled γράφο (chain-head),
+  (γ) τον canonical verifier (10ο canonical). Ο ανεξάρτητος verifier
+  ΑΝΑΠΑΡΑΓΕΙ το attestation από αυτά και συγκρίνει byte-wise — η αυθεντία
+  προκύπτει από την αναπαραγωγιμότητα πάνω σε offline-υπογεγραμμένες ρίζες,
+  όχι από online κλειδί. (Δηλωμένη εναλλακτική, ΜΟΝΟ με έγκριση δημιουργού:
+  delegated short-lived attestation key με offline-υπογεγραμμένη
+  εξουσιοδότηση + λήξη + ανάκληση — δεν επιλέγεται τώρα.)
+  Επιστρέφεται από /as-known και τον verifier· ΔΕΝ μπαίνει στο Merkle των
+  receipts (query-εξαρτώμενο).
 - **/as-known JSON**: typed κορυφαίο πεδίο `in_force: true|false` +
   `basis` (complete | pending-condition | suspended | …) — καταναλωτής
   που διαβάζει μόνο το text δεν μπορεί να παρερμηνεύσει pending ως ισχύον.

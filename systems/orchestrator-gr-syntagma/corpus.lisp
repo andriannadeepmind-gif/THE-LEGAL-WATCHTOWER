@@ -26,6 +26,8 @@
                    (error "corpus.short_name not set in active config"))
    :eli-prefix (or (orchestrator.spec:config-get "corpus.eli_prefix")
                    (error "corpus.eli_prefix not set in active config"))
+   ;; [0088 Φ6γ-Δ³] typed ταυτότητα σώματος από τη ΜΙΑ έδρα (config-δηλωμένη)
+   :legal-body-id (orchestrator.identity:declared-body)
    :publication-date (or (orchestrator.spec:config-get "corpus.publication.date")
                          (error "corpus.publication.date not set in active config"))
    :language "el"

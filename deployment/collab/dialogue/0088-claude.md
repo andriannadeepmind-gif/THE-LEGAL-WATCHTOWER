@@ -614,3 +614,26 @@ Proof μετά τα κλεισίματα: article-identity **39/39** (+8 locks),
 | Φ7 Υψηλό Allen αόριστη | v3 §5: και οι 13 σχέσεις ορισμένες σε %time-key· composition table → Φ9 (δηλωμένο) |
 
 Proof: article-identity **46/46** + 8 σουίτες 0 failed. Φ7 runtime παραμένει ΠΑΓΩΜΕΝΟ.
+
+## [0088 Φ6γ-Δ³] Εκτέλεση της εντολής 9 σημείων (2026-07-14, βράδυ)
+
+| # | Εντολή | Κλείσιμο |
+|---|---|---|
+| 1 | corpus-legal-body-id typed, όχι string/ELI | Slot δέχεται ΜΟΝΟ orchestrator.identity:legal-body-id — string απορρίπτεται ΣΤΗ ΓΕΝΝΗΣΗ (initialize-instance :after)· default-από-eli-prefix ΠΕΘΑΝΕ· παραγωγή: ΝΕΑ έδρα orchestrator.identity:declared-body (config body_identity) — την καταναλώνουν gr-syntagma corpus, deploy-stage ΚΑΙ ο γράφος (%graph-body-for πλέον ΚΑΛΕΙ την έδρα — parity 31/31 αποδεικνύει ταυτόσημη συμπεριφορά). NIL = δηλωμένο υπόλοιπο ΜΟΝΟ για μη-μεταναστευμένα νησιά, με fail-closed κάθε χρήση |
+| 2 | Θάνατος 2ης provision-id σημασιολογίας | Η model provision-id ΕΠΙΣΤΡΕΦΕΙ orchestrator.identity:provision-id (make-provision-id) — το (:provision …) list ΔΙΑΓΡΑΦΗΚΕ· lock: provision-id-p T, provision-id-string «gr/syntagma#art:5» |
+| 3 | provision-uri = projection της έδρας | uri-id<-provision-id πάνω στο typed provision-id· eli-prefix = δηλωμένη ΤΟΠΟΘΕΣΙΑ, όχι ταυτότητα |
+| 4 | Τέλος nullable/injectable identity | :identity initarg ΔΕΝ ΥΠΑΡΧΕΙ (άγνωστο initarg ⇒ CLOS σφάλμα — κανένα &allow-other-keys)· article-identity = :reader ΠΑΝΤΟΥ (και στο IIR) — κανένα δημόσιο setf· ΕΝΑΣ δίαυλος εγγραφής (%recompute-article-identity!)· ΔΕΜΕΝΟ number χωρίς υπολογίσιμη ταυτότητα ⇒ ΔΕΝ ΚΑΤΑΣΚΕΥΑΖΕΤΑΙ (unresolved=καραντίνα)· καμία fallback προβολή (uri/file-id/order-key fail-closed)· clone χωρίς αντιγραφή identity (παράγωγο)· το «272005 debt» μοτίβο ΠΕΘΑΝΕ και στο ⑩γ (label στην κατασκευή) |
+| 5 | Registry reader safety | *read-eval* NIL + schema /2 ΜΕ typed εγγραφές: κάθε kind ΥΠΟΧΡΕΩΤΙΚΑ authority-class + evidence schema (το :event απαιτεί act-ref+digest — όχι «οτιδήποτε»)· νέο instrument-kind-entry accessor |
+| 6 | Condition IDs semantic + domain-separated | %canon-condition-ast: flatten/dedupe/sort στα :and-:or, collapse μονομελούς· id = sha256(:lawmax/effectivity-condition/1 class canon)· ΡΗΤΑ SEMANTIC identity (spec v3 §2.2)· locks ②β/②γ |
+| 7 | Όχι online release key | Spec v3 §6: TRA = deterministic certificate — αναπαραγωγή από offline-signed release root + chain-head + canonical verifier, byte-wise σύγκριση· delegated-key = δηλωμένη εναλλακτική ΜΟΝΟ με έγκριση |
+| 8 | GAAF-1 | dialogue/0090-claude.md: 4 αντικείμενα (AVC αμετάβλητο / TRA / CE με unicode spans+quote-hash / PB με πλήρες binding+supersession), πεπερασμένο dump με resolution index, πλήρες retrieval/distribution, rights-manifest ανά συστατικό, 2-στρωματικό benchmark, evidence-tiered observatory — κλείσιμο και των 11 σημείων ονομαστικά (§9) |
+| 9 | Negative locks | :identity ⇒ σφάλμα· (setf article-identity) ΔΕΝ υπάρχει· string body ⇒ σφάλμα γέννησης· 272005-χωρίς-label ⇒ σφάλμα γέννησης· εμβρυϊκή προβολή ⇒ σφάλμα· cid-scoped event χωρίς/με ξένο cid ⇒ σφάλμα/αποκλεισμός· typed event validation· μητρώο /2 typed |
+
+Επιπλέον Π1 hardening (εντολή «πριν από Φ7 Π2»): sat με typed event
+validation (%validate-condition-event) + &key condition-id δέσιμο events
+στη δήλωση + ΣΥΜΦΩΝΑ πολλαπλά events ⇒ ελάχιστο at (spec §3.3β).
+
+Proof: article-identity 49/49 · temporal-semantics 31/31 · corpus-identity
+55/55 · legal-identity 19/19 · kernel-conformance 107/107 · artifact-census
+21/21 · version-graph 18/18 · graph-import-parity 31/31 · as-known-e2e
+26/26 — 0 failed. ΕΠΟΝΤΑΙ: 2 ανεξάρτητοι αντιπαλικοί κριτές + owner docker.

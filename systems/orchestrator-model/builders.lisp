@@ -67,8 +67,9 @@
                  :name name
                  :short-name short-name
                  :eli-prefix eli-prefix
-                 ;; [0088 #4] παγκόσμια ταυτότητα σώματος: ρητή ή το eli-prefix
-                 :legal-body-id (or legal-body-id eli-prefix)
+                 ;; [0088 Φ6γ-Δ³] ΜΟΝΟ typed body (η κλάση απορρίπτει strings)·
+                 ;; στην παραγωγή: orchestrator.identity:declared-body.
+                 :legal-body-id legal-body-id
                  :publication-date publication-date
                  :language (or language "el")
                  :webid webid
@@ -154,9 +155,9 @@
     ;; το επίθημα (100Α ⇒ 100, σιωπηλή σύμπτυξη ταυτότητας).
     (when (slot-boundp article 'label)
       (setf (article-label new-article) (article-label article)))
-    ;; [0088 Φ6γ] το typed identity segment ΕΙΝΑΙ ταυτότητα — κλωνοποιείται
-    (when (slot-boundp article 'identity-segment)
-      (setf (article-identity new-article) (article-identity article)))
+    ;; [0088 Φ6γ-Δ³] το identity ΔΕΝ αντιγράφεται: είναι ΠΑΡΑΓΩΓΟ και έχει
+    ;; ήδη επανυπολογιστεί από τα setf number/label πιο πάνω — αντιγραφή θα
+    ;; ήταν δεύτερος δίαυλος εγγραφής.
     (when (slot-boundp article 'title)
       (setf (article-title new-article) (article-title article)))
     (when (slot-boundp article 'content)

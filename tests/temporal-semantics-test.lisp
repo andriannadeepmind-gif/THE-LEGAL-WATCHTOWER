@@ -63,6 +63,27 @@
                  (not (equal (orchestrator.version-graph:condition-id a)
                              (orchestrator.version-graph:condition-id c))))))
 
+;;; ②+ [Φ6γ-Δ³] ΣΗΜΑΣΙΟΛΟΓΙΚΗ ταυτότητα + typed μητρώο /2
+(ts-check "②β semantic id: (:and A B) ≡ (:and B A) ≡ (:and A A B) ≡ (:and A (:and B C))-flatten"
+          (let* ((a '(:date-reached "2027-01-01"))
+                 (b '(:instrument-event :ya "ΥΑ-1"))
+                 (c '(:date-reached "2028-06-30"))
+                 (id (lambda (ast) (orchestrator.version-graph:condition-id
+                                    (orchestrator.version-graph:make-effectivity-condition
+                                     :suspensive ast)))))
+            (and (equal (funcall id (list :and a b c)) (funcall id (list :and c b a)))
+                 (equal (funcall id (list :and a b c)) (funcall id (list :and a a b c)))
+                 (equal (funcall id (list :and a b c)) (funcall id (list :and a (list :and b c)))))))
+(ts-check "②γ domain separation: το tag ζει ΜΕΣΑ στο hashed υλικό (id ≠ γυμνό hash class+ast)"
+          (let ((cond1 (orchestrator.version-graph:make-effectivity-condition
+                        :suspensive '(:date-reached "2027-01-01"))))
+            (not (equal (orchestrator.version-graph:condition-id cond1)
+                        (orchestrator.journal:sha256-hex "x")))))
+(ts-check "②δ μητρώο /2 TYPED: κάθε kind με authority-class + evidence schema"
+          (let ((e (orchestrator.version-graph:instrument-kind-entry :ya)))
+            (and (eq :ministerial (getf e :authority-class))
+                 (member :source-digest (getf e :evidence)))))
+
 ;;; ③ date+ — ΑΚ 241-243, ολική, με δίσεκτα
 (ts-check "③ :days απλό: 2026-01-15 + 10d = 2026-01-25"
           (equal "2026-01-25" (orchestrator.version-graph:date+ "2026-01-15" '(:days 10))))
@@ -139,6 +160,45 @@
                         (:kind :ya :ref "ΥΑ-1" :outcome :refuted :at "2026-04-01")))
                      nil)
             (orchestrator.version-graph:invalid-condition () t)))
+
+;;; ④+ [Φ6γ-Δ³] typed event validation + δέσιμο στο condition-id
+(ts-check "④κ άκυρο event (outcome :maybe) ⇒ typed σφάλμα ΠΡΙΝ την αποτίμηση"
+          (handler-case
+              (progn (orchestrator.version-graph:sat
+                      '(:instrument-event :ya "ΥΑ-1")
+                      '((:kind :ya :ref "ΥΑ-1" :outcome :maybe :at "2026-03-10")))
+                     nil)
+            (orchestrator.version-graph:invalid-condition () t)))
+(ts-check "④λ cid-scoped: event ΑΛΛΗΣ δήλωσης (ίδιο kind/ref) ΔΕΝ διαρρέει"
+          (eq :pending
+              (orchestrator.version-graph:sat
+               '(:instrument-event :ya "ΥΑ-1")
+               '((:condition-id "cid-ΑΛΛΟ" :kind :ya :ref "ΥΑ-1"
+                  :outcome :satisfied :at "2026-03-10"))
+               :condition-id "cid-ΔΙΚΟ")))
+(ts-check "④μ cid-scoped: ΔΕΜΕΝΟ event μετρά κανονικά"
+          (multiple-value-bind (st at)
+              (orchestrator.version-graph:sat
+               '(:instrument-event :ya "ΥΑ-1")
+               '((:condition-id "cid-ΔΙΚΟ" :kind :ya :ref "ΥΑ-1"
+                  :outcome :satisfied :at "2026-03-10"))
+               :condition-id "cid-ΔΙΚΟ")
+            (and (eq :satisfied st) (equal "2026-03-10" at))))
+(ts-check "④ν cid-scoped: event ΧΩΡΙΣ :condition-id ⇒ ΣΦΑΛΜΑ (όχι σιωπηλή χρήση)"
+          (handler-case
+              (progn (orchestrator.version-graph:sat
+                      '(:instrument-event :ya "ΥΑ-1")
+                      '((:kind :ya :ref "ΥΑ-1" :outcome :satisfied :at "2026-03-10"))
+                      :condition-id "cid-ΔΙΚΟ")
+                     nil)
+            (orchestrator.version-graph:invalid-condition () t)))
+(ts-check "④ξ ΣΥΜΦΩΝΑ πολλαπλά events ⇒ ΕΛΑΧΙΣΤΟ at (spec §3.3β — όχι σφάλμα)"
+          (multiple-value-bind (st at)
+              (orchestrator.version-graph:sat
+               '(:instrument-event :ya "ΥΑ-1")
+               '((:kind :ya :ref "ΥΑ-1" :outcome :satisfied :at "2026-04-01")
+                 (:kind :ya :ref "ΥΑ-1" :outcome :satisfied :at "2026-03-10")))
+            (and (eq :satisfied st) (equal "2026-03-10" at))))
 
 ;;; ⑤ Ντετερμινισμός sat (ίδια είσοδος ⇒ ίδια έξοδος — θεμέλιο replay/verifier)
 (ts-check "⑤ sat ντετερμινιστικό σε σύνθετο AST"

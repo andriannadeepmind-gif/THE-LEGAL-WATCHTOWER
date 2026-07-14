@@ -90,11 +90,17 @@
          (equal '(:article 5 1) (article-identity a)))
   (check "article-uri από το segment"  (string= "5Α" (article-uri a)))
   (check "article-file-id από το segment" (string= "005Α" (article-file-id a))))
-(let ((debt (make-instance 'article :number 272005)))
-  (check "συνθετικός >9999 χωρίς label ⇒ ΔΗΛΩΜΕΝΟ debt (NIL segment)"
-         (null (article-identity debt)))
-  (check "debt-προβολή: γυμνή βάση, χωρίς raw επανερμηνεία"
-         (string= "272005" (article-uri debt))))
+(check "[Δ³] συνθετικός >9999 ΧΩΡΙΣ label ⇒ ΔΕΝ ΚΑΤΑΣΚΕΥΑΖΕΤΑΙ (καραντίνα, όχι article)"
+       (handler-case (progn (make-instance 'article :number 272005) nil)
+         (orchestrator.spec:validation-error () t)))
+(check "[Δ³] :identity initarg ΔΕΝ ΥΠΑΡΧΕΙ — injection δομικά αδύνατο"
+       (handler-case (progn (make-instance 'article :number 5 :identity '(:article 9 0)) nil)
+         (error () t)))
+(check "[Δ³] κανένα δημόσιο (setf article-identity)"
+       (not (fboundp '(setf article-identity))))
+(check "[Δ³] προβολή εμβρυϊκού άρθρου (χωρίς number/label) ⇒ typed σφάλμα, ΟΧΙ fallback URI"
+       (handler-case (progn (article-uri (make-instance 'article)) nil)
+         (orchestrator.spec:validation-error () t)))
 (let ((prefix "https://stavropouloslaw.com/eli/gr/const/1975"))
   (let ((w-raw (make-frbr-work :article-number 100 :article-suffix "Α"
                                :eli-prefix prefix :document-type "const"
@@ -171,22 +177,35 @@
          (handler-case (progn (clone-article a 'identity-segment '(:article 99 0)) nil)
            (orchestrator.spec:validation-error () t))))
 (let ((syntagma (make-corpus :name "Σύνταγμα" :short-name "constitution"
-                             :eli-prefix "https://stavropouloslaw.com/eli/gr/const/1975"))
+                             :eli-prefix "https://stavropouloslaw.com/eli/gr/const/1975"
+                             :legal-body-id (orchestrator.identity:make-body :gr :syntagma)))
       (pk (make-corpus :name "Ποινικός Κώδικας" :short-name "poinikos"
-                       :eli-prefix "https://stavropouloslaw.com/eli/gr/l/pk"))
+                       :eli-prefix "https://stavropouloslaw.com/eli/gr/l/pk"
+                       :legal-body-id (orchestrator.identity:make-body
+                                       :gr :nomos :year 2019 :number 4619)))
       (a5 (make-article :number 5)))
-  (check "#4: legal-body-id default = eli-prefix (παγκοσμίως μοναδικό)"
-         (string= (corpus-legal-body-id syntagma)
-                  "https://stavropouloslaw.com/eli/gr/const/1975"))
+  (check "#4[Δ³]: provision-id = ΤΟ typed αντικείμενο της έδρας orchestrator.identity"
+         (and (orchestrator.identity:provision-id-p (provision-id syntagma a5))
+              (string= "gr/syntagma#art:5"
+                       (orchestrator.identity:provision-id-string (provision-id syntagma a5)))))
   (check "#4β: ΙΔΙΟ άρθρο 5, ΑΛΛΟ σώμα ⇒ ΔΙΑΦΟΡΕΤΙΚΟ provision-id ΚΑΙ uri"
-         (and (not (equal (provision-id syntagma a5) (provision-id pk a5)))
+         (and (not (orchestrator.identity:provision-id=
+                    (provision-id syntagma a5) (provision-id pk a5)))
               (not (string= (provision-uri syntagma a5) (provision-uri pk a5)))))
-  (check "#4γ: provision-uri = {eli-prefix}/art/{segment}"
+  (check "#4γ: provision-uri = {eli-prefix}/art/{uri-id ΑΠΟ ΤΗΝ ΕΔΡΑ}"
          (string= "https://stavropouloslaw.com/eli/gr/const/1975/art/5"
                   (provision-uri syntagma a5)))
-  (check "#4δ: provision-id για άρθρο χωρίς νόμιμη ταυτότητα ⇒ typed σφάλμα"
+  (check "#4δ[Δ³]: corpus με STRING body ⇒ ΔΕΝ ΚΑΤΑΣΚΕΥΑΖΕΤΑΙ (ταυτότητα ≠ URI)"
          (handler-case
-             (progn (provision-id syntagma (make-instance 'article :number 272005)) nil)
+             (progn (make-corpus :name "x" :short-name "x" :eli-prefix "https://e/"
+                                 :legal-body-id "https://e/") nil)
+           (orchestrator.spec:validation-error () t)))
+  (check "#4ε[Δ³]: corpus χωρίς typed body ⇒ provision-id fail-closed"
+         (handler-case
+             (progn (provision-id (make-corpus :name "y" :short-name "y"
+                                               :eli-prefix "https://y/")
+                                  a5)
+                    nil)
            (orchestrator.spec:validation-error () t))))
 
 (format t "~%========================================~%")

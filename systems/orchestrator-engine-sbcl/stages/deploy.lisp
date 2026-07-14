@@ -117,6 +117,8 @@
                         articles
                         (or (orchestrator.core:get-context-value context :corpus)
                             (make-instance 'orchestrator.model:corpus
+                                          ;; [0088 Φ6γ-Δ³] typed body από τη ΜΙΑ έδρα
+                                          :legal-body-id (orchestrator.identity:declared-body)
                                           :name (or (orchestrator.spec:config-get "corpus.name")
                                                     (error "deploy-stage: corpus.name not configured"))
                                           :short-name (or (orchestrator.spec:config-get "corpus.short_name")
