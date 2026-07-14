@@ -26,7 +26,9 @@
    #:corpus-service #:make-corpus-service #:service-handler
    #:representation #:serialize #:representation-media-type
    #:available-representations #:negotiate
-   #:multi-corpus-service #:make-multi-corpus-service #:multi-service-handler))
+   #:multi-corpus-service #:make-multi-corpus-service #:multi-service-handler
+   ;; [0088 Φ5β] /as-known — διτεμπορικό boundary contract του service
+   #:as-known-uncertain #:as-known-unknown #:as-known-why))
 
 (in-package :orchestrator.corpus-service)
 
@@ -168,16 +170,35 @@
 (defclass corpus-service ()
   ((doc-provider :initarg :doc-provider :accessor service-doc-provider
                  :documentation "Thunk returning the current consolidated legal-document.")
+   (as-known-provider :initarg :as-known-provider :initform nil
+                      :accessor service-as-known-provider
+                      :documentation "[0088 Φ5β] fn (article-label valid-at known-at)
+                       → plist (:text :heading :valid-from :valid-until :assurance
+                       :basis) ή σηματοδοτεί as-known-uncertain/as-known-unknown.
+                       NIL ⇒ το /as-known απαντά 501 ΔΗΛΩΜΕΝΑ (όχι σιωπηλό 404).")
    (base-uri :initarg :base-uri :initform "https://stavropouloslaw.com/eli"
              :accessor service-base-uri))
   (:documentation "An AI-first HTTP service over the consolidated corpus."))
 
-(defun make-corpus-service (doc-provider &key (base-uri "https://stavropouloslaw.com/eli"))
+(defun make-corpus-service (doc-provider &key (base-uri "https://stavropouloslaw.com/eli")
+                                              as-known-provider)
   "DOC-PROVIDER is a function of no args returning the current legal-document."
   (make-instance 'corpus-service
                  :doc-provider (if (functionp doc-provider) doc-provider
                                    (lambda () doc-provider))
+                 :as-known-provider as-known-provider
                  :base-uri base-uri))
+
+;;; [0088 Φ5β] Το boundary contract του /as-known: ο provider (καλωδιωμένος στο
+;;; cli πάνω στην έδρα text-as-known) μεταφράζει τις συνθήκες του γράφου σε
+;;; ΑΥΤΕΣ τις typed συνθήκες — το service δεν γνωρίζει τον γράφο, γνωρίζει το
+;;; συμβόλαιο. Καμία αβεβαιότητα δεν σερβίρεται ως κείμενο.
+(define-condition as-known-uncertain (error)
+  ((why :initarg :why :initform nil :reader as-known-why))
+  (:report (lambda (c s) (format s "temporal uncertainty: ~A" (as-known-why c)))))
+(define-condition as-known-unknown (error)
+  ((why :initarg :why :initform nil :reader as-known-why))
+  (:report (lambda (c s) (format s "unknown provision: ~A" (as-known-why c)))))
 
 (define-condition as-of-unavailable (error)
   ((date :initarg :date :reader as-of-date)
@@ -217,8 +238,8 @@ Allow: /
 
 (defun ai-discovery-json (service)
   (let ((base (service-base-uri service)))
-    (format nil "{~%  \"name\": \"Greek Legal Corpus\",~%  \"description\": \"Consolidated, in-force Greek legislation as machine-readable Linked Data (Akoma Ntoso, RDF/Turtle, JSON-LD, JSONL).\",~%  \"ai_first\": true,~%  \"catalog\": \"~A/catalog.jsonld\",~%  \"bulk\": \"~A/corpus.jsonl\",~%  \"formats\": [\"application/akn+xml\", \"text/turtle\", \"application/ld+json\", \"application/jsonl\", \"text/plain\"],~%  \"endpoints\": {~%    \"article\": \"~A/article/{eId}\",~%    \"search\": \"~A/search?q={greek terms}\",~%    \"sparql\": \"~A/sparql?query={SPARQL SELECT}\",~%    \"diff\": \"~A/diff?from={date}&to={date}\",~%    \"dataset\": \"~A/dataset\",~%    \"dataset_jsonl\": \"~A/dataset.jsonl\",~%    \"provenance\": \"~A/provenance\",~%    \"eu_references\": \"~A/eu-references\"~%  },~%  \"content_negotiation\": \"Send an Accept header on / to choose a representation.\"~%}~%"
-            base base base base base base base base base base)))
+    (format nil "{~%  \"name\": \"Greek Legal Corpus\",~%  \"description\": \"Consolidated, in-force Greek legislation as machine-readable Linked Data (Akoma Ntoso, RDF/Turtle, JSON-LD, JSONL).\",~%  \"ai_first\": true,~%  \"catalog\": \"~A/catalog.jsonld\",~%  \"bulk\": \"~A/corpus.jsonl\",~%  \"formats\": [\"application/akn+xml\", \"text/turtle\", \"application/ld+json\", \"application/jsonl\", \"text/plain\"],~%  \"endpoints\": {~%    \"article\": \"~A/article/{eId}\",~%    \"search\": \"~A/search?q={greek terms}\",~%    \"sparql\": \"~A/sparql?query={SPARQL SELECT}\",~%    \"diff\": \"~A/diff?from={date}&to={date}\",~%    \"as_known\": \"~A/as-known?article={label}&valid={date}&known={datetime}\",~%    \"dataset\": \"~A/dataset\",~%    \"dataset_jsonl\": \"~A/dataset.jsonl\",~%    \"provenance\": \"~A/provenance\",~%    \"eu_references\": \"~A/eu-references\"~%  },~%  \"content_negotiation\": \"Send an Accept header on / to choose a representation.\"~%}~%"
+            base base base base base base base base base base base)))
 
 (defun ai-headers (service)
   "Common AI-first response headers."
@@ -303,6 +324,58 @@ Allow: /
                            "application/json; charset=utf-8")))
                  (resp 200 "{\"error\":\"missing ?from= and ?to= (ISO dates)\"}"
                        "application/json; charset=utf-8"))))
+
+          ;; [0088 Φ5β] /as-known?article=LABEL&valid=DATE&known=ISO — η
+          ;; διτεμπορική ερώτηση: «τι ήξερε το σύστημα κατά known για το άρθρο
+          ;; κατά valid;». Αβεβαιότητα ⇒ 422 ΔΗΛΩΜΕΝΗ· άγνωστη διάταξη ⇒ 404·
+          ;; χωρίς provider ⇒ 501 ΔΗΛΩΜΕΝΟ — ΠΟΤΕ το τρέχον ως ιστορικό.
+          ((string= path "/as-known")
+           (let* ((qy (funcall (find-symbol "HTTP-REQUEST-QUERY" http) req))
+                  (article (cdr (assoc "article" qy :test #'string=)))
+                  (valid (cdr (assoc "valid" qy :test #'string=)))
+                  (known (cdr (assoc "known" qy :test #'string=)))
+                  (provider (service-as-known-provider service)))
+             (cond
+               ((null provider)
+                (resp 501 "{\"error\":\"as-known unavailable: no bitemporal provider configured for this corpus\"}"
+                      "application/json; charset=utf-8"))
+               ((not (and article valid known
+                          (plusp (length article)) (plusp (length valid))
+                          (plusp (length known))))
+                (resp 400 "{\"error\":\"missing ?article= &valid= (ISO date) &known= (ISO datetime)\"}"
+                      "application/json; charset=utf-8"))
+               (t
+                (handler-case
+                    (let ((r (funcall provider article valid known)))
+                      (if (getf r :text)
+                          (resp 200 (with-output-to-string (o)
+                                      (format o "{\"article\":~S,\"valid_at\":~S,\"known_at\":~S,"
+                                              article valid known)
+                                      (format o "\"basis\":~S,"
+                                              (string-downcase (symbol-name (getf r :basis))))
+                                      (format o "\"valid_from\":~S,\"valid_until\":~A,"
+                                              (getf r :valid-from)
+                                              (let ((vu (getf r :valid-until)))
+                                                (if (stringp vu) (format nil "~S" vu) "null")))
+                                      (format o "\"assurance\":~S,"
+                                              (string-downcase (symbol-name (getf r :assurance))))
+                                      (format o "\"heading\":~A,"
+                                              (let ((h (getf r :heading)))
+                                                (if h (format nil "~S" h) "null")))
+                                      (format o "\"text\":~S}" (getf r :text)))
+                                "application/json; charset=utf-8")
+                          ;; τίμιο κενό: καμία έκδοση δεν καλύπτει την τομή
+                          (resp 404 (format nil "{\"error\":\"no version covers the requested cut\",\"basis\":~S}"
+                                            (string-downcase (symbol-name (or (getf r :basis) :none))))
+                                "application/json; charset=utf-8")))
+                  (as-known-uncertain (e)
+                    (resp 422 (format nil "{\"error\":\"temporal uncertainty — declared, not guessed\",\"why\":~S}"
+                                      (format nil "~A" (or (as-known-why e) "")))
+                          "application/json; charset=utf-8"))
+                  (as-known-unknown (e)
+                    (resp 404 (format nil "{\"error\":\"unknown provision\",\"why\":~S}"
+                                      (format nil "~A" (or (as-known-why e) "")))
+                          "application/json; charset=utf-8")))))))
 
           ;; /search?q=...  — Greek full-text search over the corpus
           ((string= path "/search")
@@ -417,16 +490,21 @@ Allow: /
   ((services :initarg :services :accessor multi-services)   ; alist (name . corpus-service)
    (base-uri :initarg :base-uri :accessor multi-base-uri)))
 
-(defun make-multi-corpus-service (corpora &key (base-uri "https://stavropouloslaw.com/eli"))
+(defun make-multi-corpus-service (corpora &key (base-uri "https://stavropouloslaw.com/eli")
+                                               as-known-provider-fn)
   "CORPORA is an alist (corpus-name-string . doc-provider). Each corpus is
-   served under /<corpus-name>/ with its own base URI."
+   served under /<corpus-name>/ with its own base URI. AS-KNOWN-PROVIDER-FN
+   ([0088 Φ5β]): fn (corpus-name) → /as-known provider ή NIL (⇒ 501 δηλωμένο)."
   (make-instance 'multi-corpus-service
                  :base-uri base-uri
                  :services (mapcar (lambda (pair)
                                      (cons (car pair)
                                            (make-corpus-service
                                             (cdr pair)
-                                            :base-uri (format nil "~A/~A" base-uri (car pair)))))
+                                            :base-uri (format nil "~A/~A" base-uri (car pair))
+                                            :as-known-provider
+                                            (and as-known-provider-fn
+                                                 (funcall as-known-provider-fn (car pair))))))
                                    corpora)))
 
 (defun %split-corpus-path (path)

@@ -27,9 +27,18 @@
 
 (defpackage :orchestrator.corpus-service.test (:use :cl))
 (defun req (path &key (method "GET") accept)
-  (funcall (find-symbol "MAKE-HTTP-REQUEST" :orchestrator.http)
-           :method method :path path
-           :headers (when accept (list (cons "accept" accept)))))
+  ;; δέχεται και "?k=v" στο path — ο πραγματικός server τα χωρίζει στο accept
+  ;; loop, εδώ τα χωρίζουμε ώστε τα route tests να περνούν από την ίδια μορφή
+  (let* ((qpos (position #\? path))
+         (pure (if qpos (subseq path 0 qpos) path))
+         (query (when qpos
+                  (loop for kv in (uiop:split-string (subseq path (1+ qpos))
+                                                     :separator '(#\&))
+                        for eq = (position #\= kv)
+                        when eq collect (cons (subseq kv 0 eq) (subseq kv (1+ eq)))))))
+    (funcall (find-symbol "MAKE-HTTP-REQUEST" :orchestrator.http)
+             :method method :path pure :query query
+             :headers (when accept (list (cons "accept" accept))))))
 (defun rstatus (r) (funcall (find-symbol "HTTP-RESPONSE-STATUS" :orchestrator.http) r))
 (defun rbody (r) (funcall (find-symbol "HTTP-RESPONSE-BODY" :orchestrator.http) r))
 (defun rheader (r name) (cdr (assoc name (funcall (find-symbol "HTTP-RESPONSE-HEADERS" :orchestrator.http) r)
@@ -164,6 +173,47 @@
          (and (eq :current-doc (document-at svc))
               (handler-case (progn (document-at svc "1990-01-01") nil)
                 (as-of-unavailable (e) (equal "1990-01-01" (as-of-date e)))))))
+
+;;; [0088 Φ5β] /as-known — το διτεμπορικό boundary contract του service
+(format t "~%== [0088 Φ5β] /as-known ==~%")
+(let* ((doc (build-doc))
+       (provider (lambda (article valid known)
+                   (declare (ignorable known))
+                   (cond ((string= article "16")
+                          (if (string< valid "2019-11-25")
+                              (error 'as-known-uncertain :why "revision gap 1986/2001/2008")
+                              (list :text "Κείμενο 16." :heading "Παιδεία"
+                                    :valid-from "2019-11-25" :valid-until :open
+                                    :assurance :extracted-verified :basis :complete)))
+                         ((string= article "999")
+                          (error 'as-known-unknown :why "no such provision"))
+                         (t (list :text nil :basis :no-coverage)))))
+       (svc (make-corpus-service (lambda () doc) :as-known-provider provider))
+       (h (service-handler svc))
+       (svc-bare (make-corpus-service (lambda () doc)))
+       (h-bare (service-handler svc-bare)))
+  (check "/as-known χωρίς provider ⇒ 501 ΔΗΛΩΜΕΝΟ (όχι σιωπηλό 404)"
+         (= 501 (rstatus (funcall h-bare (req "/as-known?article=16&valid=2020-01-01&known=2026-01-01T00:00:00Z")))))
+  (check "/as-known χωρίς παραμέτρους ⇒ 400 με οδηγία"
+         (let ((r (funcall h (req "/as-known"))))
+           (and (= 400 (rstatus r)) (search "article" (rbody r)))))
+  (let ((r (funcall h (req "/as-known?article=16&valid=2020-01-01&known=2026-01-01T00:00:00Z"))))
+    (check "/as-known πλήρης τομή ⇒ 200 με text/basis/valid_from"
+           (and (= 200 (rstatus r))
+                (search "\"basis\":\"complete\"" (rbody r))
+                (search "\"valid_from\":\"2019-11-25\"" (rbody r))
+                (search "Κείμενο 16." (rbody r)))))
+  (let ((r (funcall h (req "/as-known?article=16&valid=1990-01-01&known=2026-01-01T00:00:00Z"))))
+    (check "/as-known σε κενό γνώσης ⇒ 422 ΡΗΤΗ αβεβαιότητα — ΠΟΤΕ το σημερινό κείμενο"
+           (and (= 422 (rstatus r))
+                (search "temporal uncertainty" (rbody r))
+                (not (search "Κείμενο 16." (rbody r))))))
+  (check "/as-known άγνωστη διάταξη ⇒ 404 typed"
+         (= 404 (rstatus (funcall h (req "/as-known?article=999&valid=2020-01-01&known=2026-01-01T00:00:00Z")))))
+  (check "/as-known χωρίς κάλυψη ⇒ 404 τίμιο κενό (όχι 200 με null)"
+         (= 404 (rstatus (funcall h (req "/as-known?article=2&valid=1800-01-01&known=2026-01-01T00:00:00Z")))))
+  (check "discovery διαφημίζει το as_known endpoint"
+         (search "\"as_known\":" (ai-discovery-json svc))))
 
 (format t "Corpus service tests: ~D passed, ~D failed~%" *pass* *fail*)
 (format t "========================================~%")

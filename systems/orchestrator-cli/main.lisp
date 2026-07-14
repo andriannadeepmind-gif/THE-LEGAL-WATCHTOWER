@@ -618,10 +618,12 @@
    κείμενο είναι καθαρή συνάρτησή τους — υπολογίζεται ΜΙΑ φορά (μνημοποίηση,
    όχι ανασυγκρότηση ανά αίτημα). Τα ιστορικά as-of μένουν κατά ζήτηση: είναι
    σπάνια, και cache με κλειδί από παράμετρο URL θα ήταν απύθμενη (DoS)."
-  (let ((out '()))
+  (let ((out '())
+        (short->id '()))   ; [0088 Φ5β] short name → corpus-id (για το /as-known wiring)
     (dolist (id *served-corpora*)
       (handler-case
           (multiple-value-bind (short triples records title) (corpus-spec id)
+            (push (cons short id) short->id)
             (let ((provider
                     (let ((tr triples) (rc records) (sh short) (ti title)
                           (lock (sb-thread:make-mutex :name (format nil "corpus-~A" short)))
@@ -642,7 +644,24 @@
                       (length (orchestrator.consolidation:legal-document-provisions
                                (funcall provider))))))
         (error (e) (format t "  ✗ ~A skipped: ~A~%" id e))))
-    (nreverse out)))
+    (values (nreverse out) short->id)))
+
+(defun %as-known-provider-for (corpus-id)
+  "[0088 Φ5β] /as-known provider πάνω στην ΕΔΡΑ text-as-known: μεταφράζει τις
+   typed συνθήκες του γράφου στο boundary contract του service — η αβεβαιότητα
+   ΔΗΛΩΝΕΤΑΙ (422/404), δεν σερβίρεται ποτέ κείμενο στη θέση της."
+  (lambda (article-label valid-at known-at)
+    (handler-case
+        (text-as-known corpus-id article-label :valid-at valid-at :known-at known-at)
+      (orchestrator.version-graph:temporal-uncertainty (e)
+        (error 'orchestrator.corpus-service:as-known-uncertain
+               :why (format nil "~A" e)))
+      (orchestrator.version-graph:unknown-provision (e)
+        (error 'orchestrator.corpus-service:as-known-unknown
+               :why (format nil "~A" e)))
+      (orchestrator.identity:identity-parse-error (e)
+        (error 'orchestrator.corpus-service:as-known-unknown
+               :why (format nil "~A" e))))))
 
 (defparameter +chat-page+
   "<!doctype html><html lang='el'><head><meta charset='utf-8'>
@@ -801,9 +820,15 @@ document.getElementById('ops').addEventListener('click',function(ev){
                  (or (and p (parse-integer p :junk-allowed t)) 8080)))
          (base (or (uiop:getenv "CORPUS_BASE_URI") "https://stavropouloslaw.com/eli")))
     (format t "~%Building corpora...~%")
-    (let* ((corpora (build-all-corpora))   ; (short . provider) — provider supports as-of
-           (multi (orchestrator.corpus-service:make-multi-corpus-service
-                   corpora :base-uri base))
+    (multiple-value-bind (corpora short->id) (build-all-corpora) ; (short . provider) — provider supports as-of
+    (let* ((multi (orchestrator.corpus-service:make-multi-corpus-service
+                   corpora :base-uri base
+                   ;; [0088 Φ5β] διτεμπορικό /as-known ανά σώμα — provider μόνο
+                   ;; όταν το short αντιστοιχεί σε γνωστό corpus-id (αλλιώς 501)
+                   :as-known-provider-fn
+                   (lambda (short)
+                     (let ((cid (cdr (assoc short short->id :test #'string=))))
+                       (and cid (%as-known-provider-for cid))))))
            (handler (%chat-wrap-handler
                      (orchestrator.corpus-service:multi-service-handler multi))))
       (when (null corpora) (error "serve: no corpora could be built"))
@@ -824,10 +849,11 @@ document.getElementById('ops').addEventListener('click',function(ev){
       (format t "  GET /<corpus>/catalog.jsonld        per-code DCAT~%")
       (format t "  GET /<corpus>/corpus.jsonl          bulk dump~%")
       (format t "  GET /<corpus>/article/{eId}         single article (JSON)~%")
+      (format t "  GET /<corpus>/as-known?article=…&valid=…&known=…  διτεμπορική απάντηση (422 σε αβεβαιότητα)~%")
       (format t "  GET /<corpus>/ (Accept: akn+xml|turtle|ld+json|jsonl|plain)~%")
       (format t "  GET /robots.txt, /.well-known/ai-corpus.json~%")
       (orchestrator.http:start-server handler :port port :host "0.0.0.0")
-      (loop (sleep 3600)))))
+      (loop (sleep 3600))))))
 
 (defun materialize-served-corpora ()
   "Pull every served code from its official state source (source.url in each
