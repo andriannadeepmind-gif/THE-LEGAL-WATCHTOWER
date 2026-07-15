@@ -992,3 +992,85 @@ replay, official source artifact bytes, evidence digests, receipt membership
 αναπαραγωγή) — όχι μόνο Lisp-παραγόμενα vectors. Επόμενο βήμα πριν το Π7.
 Μετά το #4: Π7 (declarative registry 9 ΦΕΚ, αυτόματο download, oracles,
 adjudication) → 2 νέοι αντιπαλικοί κριτές → owner gated proof #5.
+
+---
+
+## [0088 Φ7-HARDENING-REVIEW — έλεγχος δημιουργού στο 319ff4d5: ΑΝΑΧΑΡΑΚΤΗΡΙΣΜΟΣ]
+
+Ετυμηγορία δημιουργού: η δήλωση «7/8 κλειστά» ΔΕΝ γίνεται δεκτή. Τα commits
+4498d1f9…319ff4d5 χαρακτηρίζονται **implemented candidates under hardening** —
+όχι closed. Κανένα GitHub CI/owner-gated proof δεν υπάρχει στο HEAD. ΚΑΜΙΑ
+ανακήρυξη Φ7 πριν μηδενιστούν τα παρακάτω. Το #4 ΔΕΝ ξεκινά πριν κλείσουν
+τα Α-ΣΤ (αλλιώς ο verifier δεύτερης βαθμίδας παγώνει ελαττωματικά schemas).
+
+### ΑΝΟΙΧΤΑ FINDINGS (αποδεκτά ΟΛΑ — κλείσιμο στις έδρες, με versioned
+### migrations, ΟΧΙ μόνιμα ενεργά compatibility wrappers)
+
+**Α. #1 μεταβατικό**: ο sentinel πέθανε στο memory slot αλλά ζει στο
+persisted/canonical στρώμα — journal `:valid-from "conditional:<cid>"`,
+version hash πεδίο `"valid_from"`, receipt contract. Απαίτηση: schema
+**text-version/2** με δομημένο commencement
+`{type: fixed|conditional, date|condition_id}`· νέες εγγραφές ΠΟΤΕ
+conditional τιμή σε πεδίο valid_from· παλαιά journals ΜΟΝΟ μέσω ρητού
+legacy decoder (δεν ξαναγράφονται, δεν είναι το νέο canonical).
+
+**Β. #2 σημασιολογία scope**: (i) `%re-scope-applies-p` μετατρέπει το
+`:unknown` σε εφαρμογή ⇒ scoped regime εφαρμόζεται ως παγκόσμιο ΧΩΡΙΣ
+scope-uncertain σήμανση — απαιτείται typed `scope-uncertain` έκβαση
+(conservative mode ΜΟΝΟ ρητά, ποτέ ως resolved legal truth)·
+(ii) το revive δεν ελέγχει scope/conditional activation ⇒ scoped revive
+ακυρώνει suspension εκτός του scope του· (iii) μητρώο επίπεδο με
+ψευδο-γονικά tags (:gr δεν καλύπτει :attiki, :oloi ⊅ :dikigoroi,
+:geniko ⊅ :poiniko, :oles-diadikasies ⊅ :anakopes) — ή typed
+ιεραρχία/partial order ή αφαίρεση των ψευδο-γονικών· (iv) το
+scope-context δεσμεύεται ΚΑΙ στο TRA.
+
+**Γ. #3 χωρίς πλήρη regime algebra**: τα rewrites εφαρμόζονται «last
+recorded wins». Απαιτείται formal precedence algebra: expire×expire,
+extend×expire, retroact×expire, conditional×fixed, δύο resolutory με
+διαφορετικά sat dates — πρώτη νόμιμη λήξη = ελάχιστο ενεργό boundary·
+υπερκατάσταση ΜΟΝΟ με ρητή correction/supersession πράξη.
+
+**Δ. #5/#6 όχι πλήρες TRA/verified anchoring**: (i) assurance/reasons
+ΕΚΤΟΣ hashed TRA ⇒ αλλαγή provisional→release-anchored ΧΩΡΙΣ αλλαγή hash
+— κρίσιμο proof-binding κενό· (ii) make-effectivity-attestation δέχεται
+raw caller strings ⇒ απαιτούνται typed verified-release-anchor /
+provisional-anchor ΜΟΝΟ· (iii) verified-release-anchor μόνο από verifier
+που έχει ελέγξει recomputed root + JWS/owner signature + RFC-3161 +
+census graph root + transparency inclusion/consistency + verifier hash ∈
+release-bound verifier set (το tlog-verify αποδεικνύει μόνο εσωτερική
+συνέπεια)· (iv) temporal-verifier-hash = hash working-tree αρχείου, όχι
+αποδεδειγμένο μέλος του canonical verifier set του release· (v) 422/404
+exception branches ΧΩΡΙΣ TRA — ΚΑΘΕ έκβαση (resolved, no-version,
+not-yet-effective, suspended, uncertain, unknown-provision) φέρει TRA·
+(vi) assurance μέσα στο TRA hash ΚΑΙ στο TRA ID.
+
+**Ε. #7 όχι πραγματικά release-scoped**: δέσμευση ΜΟΝΟ σε max timestamp —
+(i) δύο graph states στο ίδιο δευτερόλεπτο = ίδιο as-of· (ii) same-second
+event μεταβάλλει παλαιό receipt ⇒ το «για πάντα» δεν ισχύει· (iii)
+build-receipt αγνοεί το known-at του build-receipts-for-graph ⇒ ιστορικό
+receipt με effectivity γνωστά ΜΕΤΑ το ζητηθέν known-at· (iv)
+release_generation: unreleased / trust_status: unsigned-explicit ενώ
+λέγεται release-scoped. Απαίτηση cut = {release_root, graph_root,
+journal_seq ή exact chain_head, known_at}· 1s granularity ΚΑΤΑΡΓΕΙΤΑΙ ως
+proof identity· receipt ερωτήματος = ίδιο known-at/release cut με το TRA.
+
+**ΣΤ. #8 όχι πλήρες closure**: (i) verifier: όχι έλεγχος extra/duplicate
+suites· (ii) hashes ελέγχονται μορφικά, δεν επανυπολογίζονται· (iii)
+source_tree_sha256 δεν δεσμεύει Dockerfile, *.asd, build.lisp, deps.lock,
+third-party tree, base-image closure· (iv) runtime: COPY
+docker/entrypoint.lisp + docker/sbom.json ΑΠΟ context (όχι verified
+stage)· (v) απαιτείται amφίδρομο actual=expected suite set, duplicate ⇒
+fail, recomputation hashes, full build closure manifest, runtime
+self-check κατά asset manifest, δέσμευση image+proof digest στην
+Approval/Release πράξη.
+
+### Εγκεκριμένη ακολουθία
+1. ✅ Η παρούσα κατάθεση (findings ανοιχτά).
+2. Κλείσιμο Α-ΣΤ στις έδρες (versioned schemas/migrations).
+3. Δύο νέοι ανεξάρτητοι αντιπαλικοί κριτές: (α) temporal/scope/regime
+   σημασιολογία, (β) TRA/receipt/release/Docker assurance.
+4. ΜΟΝΟ μετά: #4 verifier δεύτερης βαθμίδας πάνω στα ΤΕΛΙΚΑ contracts.
+5. Μετά το #4: owner Docker proof σε ακριβές clean HEAD + εξαγωγή
+   manifests από το image + εξωτερική επαλήθευση.
+6. Π7 + GAAF-1 runtime: ΠΑΓΩΜΕΝΑ.
