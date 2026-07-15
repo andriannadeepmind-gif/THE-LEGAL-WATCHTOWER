@@ -1989,6 +1989,19 @@
         (error 'invalid-edge
                :reason (format nil "regime edge με ~S αίρεση — μόνο :resolutory εδώ (η suspensive είναι commencement, όχι καθεστώς)"
                                (condition-class c))))))
+  ;; [Γ] prior-edge-id σε rewrite ops = ΡΗΤΗ supersession: πρέπει να δείχνει
+  ;; live rewrite ΙΔΙΟΥ target/version — αλλιώς invalid-edge.
+  (when (and prior-edge-id (member op '(:expire :extend :retroact)))
+    (let ((prior (find-if (lambda (re)
+                            (and (equal (re-edge-id re) prior-edge-id)
+                                 (eq (re-recorded-until re) :current)
+                                 (member (re-op re) '(:expire :extend :retroact))
+                                 (equal (re-target re) target)
+                                 (equal (re-version re) version)))
+                          (vg-regimes graph))))
+      (unless prior
+        (error 'invalid-edge
+               :reason (format nil "supersession prior-edge-id ~S: απαιτείται live rewrite ΙΔΙΟΥ target/version" prior-edge-id)))))
   (when (eq op :revive)
     (let ((prior (find-if (lambda (re)
                             (and (equal (re-edge-id re) prior-edge-id)
@@ -2020,6 +2033,10 @@
   ;; ταυτόσημα πεδία συμπίπτουν σε eid — το live-dedup τα πιάνει).
   (dolist (re (vg-regimes graph))
     (when (and (eq (re-op re) op)
+               ;; [Γ] :expire/:extend συντίθενται από την άλγεβρα (min/max +
+               ;; supersession) — το admission conflict gate αφορά suspend/
+               ;; retroact/revive όπου η συνύπαρξη δεν έχει σύνθεση.
+               (not (member op '(:expire :extend)))
                (equal (re-target re) target)
                (equal (re-version re) version)
                (eq (re-recorded-until re) :current)
@@ -2112,21 +2129,57 @@
    [#2] scoped rewrite εκτός πλαισίου ΔΕΝ εφαρμόζεται· [#3] conditional
    (:resolutory) rewrite εφαρμόζεται μόνο ενεργό — :expire :on-satisfaction
    κλείνει την ισχύ ΣΤΟ σημείο ικανοποίησης (until := sat at)."
-  (let ((from (tv-valid-from v)) (until (tv-valid-until v)))
-    (dolist (re (reverse (vg-regimes graph)))
+  (let ((from (tv-valid-from v)) (until (tv-valid-until v))
+        (applicable '()))
+    ;; ① συλλογή: live + ενεργές + scope-εφαρμοστέες rewrites της έκδοσης
+    (dolist (re (vg-regimes graph))
       (when (and (re-version re)
                  (equal (re-version re) (tv-version-hash v))
+                 (member (re-op re) '(:expire :extend :retroact))
                  (%re-live-p re known-at))
         (multiple-value-bind (f u active) (%re-active-span graph re known-at)
-          ;; [Β2] scope resolution ΜΟΝΟ για ενεργή ακμή
           (when (and active
                      (%re-scope-applies-p re scope-context scope-mode
                                           (tv-provision-id v)))
-            (case (re-op re)
-              (:expire (setf until (if (eq (re-span-from re) :on-satisfaction) f u)))
-              (:extend (setf until u))
-              (:retroact (setf from f until u))
-              (t nil))))))
+            (push (list re f u) applicable)))))
+    ;; ② [REVIEW Γ] supersession: ακμή που αναφέρεται από live rewrite μέσω
+    ;; prior-edge-id ΑΠΟΚΛΕΙΕΤΑΙ — υπερκατάσταση ΜΟΝΟ με ρητή πράξη.
+    (let* ((superseded (loop for (re nil nil) in applicable
+                             when (re-prior-edge-id re)
+                               collect (re-prior-edge-id re)))
+           (eff (remove-if (lambda (entry)
+                             (member (re-edge-id (first entry)) superseded
+                                     :test #'equal))
+                           applicable)))
+      (flet ((ukey (u) (if (eq u :open)
+                           most-positive-fixnum
+                           (%time-key u "regime until"))))
+        ;; ③ retroact: ΕΝΑ ενεργό μη-υπερκατεστημένο ξαναγράφει τη βάση·
+        ;; >1 με ΔΙΑΦΟΡΕΤΙΚΑ όρια = μη επιλύσιμη διαμάχη (τυπική, όχι σειράς)
+        (let ((retro (remove-if-not (lambda (e) (eq (re-op (first e)) :retroact)) eff)))
+          (when (> (length (remove-duplicates retro
+                                              :key (lambda (e) (list (second e) (third e)))
+                                              :test #'equal))
+                   1)
+            (error 'temporal-uncertainty :provision (tv-provision-id v)
+                   :why "δύο ενεργά :retroact με διαφορετικά όρια χωρίς supersession — επίλυση ΜΟΝΟ με ρητή πράξη ή retract"))
+          (when retro
+            (setf from (second (first retro)) until (third (first retro)))))
+        ;; ④ extend: μονότονη επέκταση ⇒ ΜΕΓΙΣΤΟ ενεργό όριο
+        (let ((exts (remove-if-not (lambda (e) (eq (re-op (first e)) :extend)) eff)))
+          (when exts
+            (setf until (third (first (sort exts #'> :key (lambda (e) (ukey (third e)))))))))
+        ;; ⑤ expire: η ΠΡΩΤΗ νόμιμη λήξη = ΕΛΑΧΙΣΤΟ ενεργό όριο — υπερισχύει
+        ;; κάθε extend (η επέκταση λήξασας ισχύος απαιτεί ΡΗΤΗ supersession
+        ;; του expire)· conditional (:on-satisfaction) ⇒ όριο το sat at.
+        ;; ΚΑΜΙΑ «last recorded wins» σημασιολογία.
+        (let ((exps (loop for (re f u) in eff
+                          when (eq (re-op re) :expire)
+                            collect (if (eq (re-span-from re) :on-satisfaction) f u))))
+          (when exps
+            (let ((boundary (first (sort exps #'< :key #'ukey))))
+              (when (or (eq until :open) (< (ukey boundary) (ukey until)))
+                (setf until boundary)))))))
     (values from until)))
 
 ;;; ============================================================================

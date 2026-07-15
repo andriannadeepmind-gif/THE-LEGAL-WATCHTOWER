@@ -567,13 +567,12 @@
                   *ts-g* *ts-pid2* :valid-at "2025-08-01" :known-at "2026-02-02T00:00:00Z")
                (declare (ignore basis))
                (null v)))))
-(ts-check "⑭γ συγκρουόμενο live ίδιου op/target/version με τέμνον span + άλλα όρια ⇒ invalid-edge"
+(ts-check "⑭γ [Γ] συγκρουόμενο live :suspend ίδιου target με τέμνον span + άλλα όρια ⇒ invalid-edge (τα :expire/:extend πλέον ΣΥΝΤΙΘΕΝΤΑΙ από την άλγεβρα min/max)"
           (handler-case
               (progn (orchestrator.version-graph:admit-regime-edge!
-                      *ts-g* :op :expire :target *ts-pid2*
-                      :version (orchestrator.version-graph::tv-version-hash *ts-old*)
-                      :span-from "2026-01-01" :span-until "2026-07-01"
-                      :act-ref "x" :act-seq 1 :enacted "2026-06-01" :fek-date "2026-06-01")
+                      *ts-g* :op :suspend :target *ts-pid2*
+                      :span-from "2026-03-15" :span-until "2026-05-15"
+                      :act-ref "x" :act-seq 1 :enacted "2026-03-01" :fek-date "2026-03-01")
                      nil)
             (orchestrator.version-graph:invalid-edge () t)))
 (ts-check "⑮ Υ2β: gap με ΔΙΑΣΤΗΜΑ μπλοκάρει ΜΟΝΟ ακάλυπτες τομές ΕΝΤΟΣ του — εκτός: τίμιο :no-version-in-force, όχι μόλυνση"
@@ -1147,6 +1146,86 @@
                         (multiple-value-bind (ok why)
                             (orchestrator.legal-receipt:verify-receipt *ts-g* r)
                           (and (not ok) why))))))
+
+(defparameter *ts-v70*
+  (multiple-value-bind (e vs)
+      (orchestrator.version-graph::admit-edge!
+       *ts-g* (list :op :insert :target (format nil "~A/art:70" *ts-body*)
+                    :from-versions nil
+                    :to-specs (list (list :provision-id (format nil "~A/art:70" *ts-body*)
+                                          :text "Κ70" :heading nil
+                                          :valid-from "2026-01-01"
+                                          :status :in-force :assurance :verified))
+                    :act-ref "gr/nomos/2026/0070" :act-internal-seq 1
+                    :enacted "2026-01-01" :effective "2026-01-01"
+                    :fek-date "2026-01-01" :assurance :verified :confidence 100))
+    (declare (ignore e)) (first vs)))
+(defparameter *ts-pid7* (format nil "~A/art:70" *ts-body*))
+(defparameter *ts-vh70* (orchestrator.version-graph::tv-version-hash *ts-v70*))
+
+(defun ts-q70 (valid)
+  (handler-case
+      (multiple-value-bind (v b)
+          (orchestrator.version-graph:version-at
+           *ts-g* *ts-pid7* :valid-at valid :known-at "2043-01-01T00:00:00Z")
+        (list (and v t) (if (consp b) (first b) b)))
+    (orchestrator.version-graph:temporal-uncertainty () '(:uncertain))))
+
+(defparameter *ts-expA*
+  (orchestrator.version-graph:admit-regime-edge!
+   *ts-g* :op :expire :target *ts-pid7* :version *ts-vh70*
+   :span-from "2026-01-01" :span-until "2030-01-01"
+   :act-ref "gr/nomos/2026/0071" :act-seq 1 :enacted "2026-06-01" :fek-date "2026-06-01"))
+(defparameter *ts-expB*
+  (orchestrator.version-graph:admit-regime-edge!
+   *ts-g* :op :expire :target *ts-pid7* :version *ts-vh70*
+   :span-from "2026-01-01" :span-until "2028-01-01"
+   :act-ref "gr/nomos/2026/0072" :act-seq 1 :enacted "2026-07-01" :fek-date "2026-07-01"))
+
+(ts-check "ΓΦ1 [Γ] expire×expire: η ΠΡΩΤΗ νόμιμη λήξη = ΕΛΑΧΙΣΤΟ ενεργό όριο (2028), ΟΧΙ last-recorded"
+          (and (equal '(t :complete) (ts-q70 "2027-06-01"))
+               (equal '(nil :no-version-in-force) (ts-q70 "2029-06-01"))))
+
+(ts-check "ΓΦ2 [Γ] extend×expire: extend (2032) ΧΩΡΙΣ supersession ΔΕΝ νικά το expire — όριο μένει 2028"
+          (progn (orchestrator.version-graph:admit-regime-edge!
+                  *ts-g* :op :extend :target *ts-pid7* :version *ts-vh70*
+                  :span-from "2026-01-01" :span-until "2032-01-01"
+                  :act-ref "gr/nomos/2026/0073" :act-seq 1
+                  :enacted "2026-08-01" :fek-date "2026-08-01")
+                 (equal '(nil :no-version-in-force) (ts-q70 "2029-06-01"))))
+
+(ts-check "ΓΦ3 [Γ] ΡΗΤΗ supersession (prior-edge-id) του expire B ⇒ όριο = επόμενο ελάχιστο (2030): στο 2029 in-force, στο 2031 όχι"
+          (progn (orchestrator.version-graph:admit-regime-edge!
+                  *ts-g* :op :extend :target *ts-pid7* :version *ts-vh70*
+                  :span-from "2026-01-01" :span-until "2032-01-01"
+                  :prior-edge-id (orchestrator.version-graph:re-edge-id *ts-expB*)
+                  :act-ref "gr/nomos/2026/0074" :act-seq 1
+                  :enacted "2026-09-01" :fek-date "2026-09-01")
+                 (and (equal '(t :complete) (ts-q70 "2029-06-01"))
+                      (equal '(nil :no-version-in-force) (ts-q70 "2031-06-01")))))
+
+(ts-check "ΓΦ4 [Γ] supersession σε ΞΕΝΟ target ⇒ invalid-edge· δύο retroact με διαφορετικά όρια (μη τεμνόμενα spans) ⇒ typed temporal-uncertainty"
+          (and (handler-case
+                   (progn (orchestrator.version-graph:admit-regime-edge!
+                           *ts-g* :op :extend :target *ts-pid6*
+                           :version (orchestrator.version-graph::tv-version-hash *ts-v60*)
+                           :span-from "2026-01-01" :span-until "2033-01-01"
+                           :prior-edge-id (orchestrator.version-graph:re-edge-id *ts-expA*)
+                           :act-ref "x" :act-seq 1 :enacted "2026-09-01" :fek-date "2026-09-01")
+                          nil)
+                 (orchestrator.version-graph:invalid-edge () t))
+               (progn
+                 (orchestrator.version-graph:admit-regime-edge!
+                  *ts-g* :op :retroact :target *ts-pid7* :version *ts-vh70*
+                  :span-from "2024-01-01" :span-until "2025-01-01"
+                  :act-ref "gr/nomos/2026/0075" :act-seq 1
+                  :enacted "2026-10-01" :fek-date "2026-10-01")
+                 (orchestrator.version-graph:admit-regime-edge!
+                  *ts-g* :op :retroact :target *ts-pid7* :version *ts-vh70*
+                  :span-from "2026-02-01" :span-until "2027-02-01"
+                  :act-ref "gr/nomos/2026/0076" :act-seq 1
+                  :enacted "2026-11-01" :fek-date "2026-11-01")
+                 (equal '(:uncertain) (ts-q70 "2024-06-01")))))
 
 (ts-check "ΑΦ [REVIEW Α] ΚΑΘΕ νέα text-version γραμμή = schema /2 με ΔΟΜΗΜΕΝΟ commencement· ΚΑΝΕΝΑ conditional σε πεδίο valid-from· υπάρχει τουλάχιστον μία /2 conditional (η μορφή αποδεδειγμένα σε χρήση)"
           (let ((lines (orchestrator.journal:read-lines
