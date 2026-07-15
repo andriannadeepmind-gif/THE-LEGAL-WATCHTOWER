@@ -8,8 +8,13 @@
 ;;;; με επίπεδη subset σημασιολογία δεν καλύπτουν τα «παιδιά» τους — καθολική
 ;;;; ισχύς εκφράζεται ΜΟΝΟ με ΑΠΟΥΣΑ διάσταση· ιεραρχία/partial order = Φ8.
 ;;;; Η πλήρης άλγεβρα (ενώσεις/διαφορές/μερική κατάργηση) = Φ8 — δηλωμένο όριο.
+;;;; [Β5] Schema /2: το /1 (με ψευδο-γονικά tags) ΑΠΟΣΥΡΘΗΚΕ ως ΜΗ
+;;;; δημοσιευμένο candidate — ΚΑΝΕΝΑ persistent/released journal δεν περιέχει
+;;;; /1 scoped edge (το scope εισήχθη στο ίδιο unreleased hardening κύμα·
+;;;; το μόνο committed journal gr-syntagma.vgraph.sexp δεν έχει regime edges).
+;;;; Ο loader δέχεται ΜΟΝΟ /2. Ο digest του μητρώου δεσμεύεται στο tra/2 (Δ).
 ;;;; Reader: *read-eval* ρητά NIL (source/version-graph.lisp).
-(:schema :scope-tag-registry/1
+(:schema :scope-tag-registry/2
  :dimensions
  ((:dimension :territorial
    :tags (:attiki :thessaloniki :nisia-aigaiou :paramethories-periohes)

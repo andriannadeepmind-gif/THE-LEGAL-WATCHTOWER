@@ -41,6 +41,9 @@
    #:text-version #:text-version-p #:amendment-edge #:amendment-edge-p
    #:quarantined-edge #:quarantined-edge-p #:knowledge-gap #:knowledge-gap-p
    #:temporal-uncertainty #:scope-uncertain #:unknown-provision #:invalid-edge #:journal-corruption
+   #:scope-uncertain-edge-id #:scope-uncertain-edge-scope
+   #:scope-uncertain-query-scope-context #:scope-uncertain-missing-dimensions
+   #:scope-uncertain-scope-mode
    ;; text-version αναγνώστες
    #:tv-version-hash #:tv-provision-id #:tv-text #:tv-heading
    #:tv-valid-from #:tv-valid-until #:tv-recorded-from #:tv-recorded-until
@@ -176,7 +179,19 @@
 
 ;;; [Φ7-HARDENING-REVIEW Β] typed scope αβεβαιότητα: scoped καθεστώς με
 ;;; ΑΓΝΩΣΤΗ κάλυψη στο ερώτημα ΔΕΝ εφαρμόζεται «σαν αλήθεια» — σηματοδοτείται.
-(define-condition scope-uncertain (temporal-uncertainty) ())
+(defvar *scope-assumptions* nil
+  "[Β3] Δεσμεύεται ανά version-at: edge-ids που εφαρμόστηκαν με :conservative
+   υπόθεση κάλυψης (:unknown) — το αποτέλεσμα σημαίνεται ΜΗ αφαιρέσιμα.")
+
+(define-condition scope-uncertain (temporal-uncertainty)
+  ;; [Β-FINALIZATION Β1] ΠΛΗΡΩΣ typed: ο verifier/tra δεν αναλύει error string.
+  ((edge-id :initarg :edge-id :reader scope-uncertain-edge-id)
+   (edge-scope :initarg :edge-scope :reader scope-uncertain-edge-scope)
+   (query-scope-context :initarg :query-scope-context
+                        :reader scope-uncertain-query-scope-context)
+   (missing-dimensions :initarg :missing-dimensions
+                       :reader scope-uncertain-missing-dimensions)
+   (scope-mode :initarg :scope-mode :reader scope-uncertain-scope-mode)))
 
 (define-condition unknown-provision (error)
   ((provision :initarg :provision :reader unknown-provision-id))
@@ -825,6 +840,16 @@
    δηλητηριάζει παλαιότερο epistemic snapshot."
   (%time<= recorded-from known-at "recorded-from" "known-at"))
 
+(defun %mark-analytical (basis)
+  "[Β3] ΜΗ αφαιρέσιμος marker όταν χρησιμοποιήθηκε :conservative υπόθεση
+   κάλυψης: το αποτέλεσμα είναι ΑΝΑΛΥΣΗ, όχι resolved legal truth."
+  (if (null *scope-assumptions*)
+      basis
+      (append (if (listp basis) basis (list basis))
+              (list :scope-assumption :conservative
+                    :resolution-status :analytical-not-authoritative
+                    :assumed-edges (sort (copy-list *scope-assumptions*) #'string<)))))
+
 (defun version-at (graph pid &key valid-at known-at scope-context (scope-mode :strict))
   "Η έκδοση του PID που (α) ήταν ΓΝΩΣΤΗ στο σύστημα κατά KNOWN-AT και
    (β) ΙΣΧΥΕ κατά VALID-AT. ΚΑΙ ΤΑ ΔΥΟ ΥΠΟΧΡΕΩΤΙΚΑ ΚΑΙ TYPED: valid-at =
@@ -840,7 +865,10 @@
   (unless (legal-instant-p known-at)
     (error 'invalid-edge
            :reason (format nil "known-at δεν είναι legal-instant (YYYY-MM-DDTHH:MM:SSZ): ~S" known-at)))
-  (let ((records (gethash pid (vg-by-provision graph))))
+  (%require-scope-mode scope-mode)           ; [Β3] ΠΑΝΤΑ, όχι μόνο σε :unknown
+  (canon-scope-set scope-context)            ; fail-closed επικύρωση πλαισίου
+  (let ((*scope-assumptions* nil)
+        (records (gethash pid (vg-by-provision graph))))
     (unless records (error 'unknown-provision :provision pid))
     ;; ΚΑΡΑΝΤΙΝΑ που στοχεύει τη διάταξη ΚΑΙ ήταν γνωστή κατά known-at = ΜΗ
     ;; εφαρμοσμένη γνωστή αλλαγή ⇒ το κείμενο της τομής αναξιόπιστο. Καραντίνα
@@ -919,9 +947,11 @@
                      tiles)))
           (cond
             ((= 1 (length live))
-             (%finish-version graph pid valid-at known-at
-                              (first (first live)) (or pending-note :complete)
-                              scope-context scope-mode))
+             (multiple-value-bind (vv bb)
+                 (%finish-version graph pid valid-at known-at
+                                  (first (first live)) (or pending-note :complete)
+                                  scope-context scope-mode)
+               (values vv (%mark-analytical bb))))
             ((null live)
          ;; ΚΕΝΟ ΓΝΩΣΗΣ (text-less ιστορικό): μετρά ΜΟΝΟ αν ήταν ήδη
          ;; καταγεγραμμένο κατά known-at (Υ2) — αλλιώς το snapshot εκείνης της
@@ -943,7 +973,7 @@
                ;; τρίτη τιμή (:not-yet-effective cid since) όταν υπάρχει
                ;; δηλωμένη επικείμενη διάταξη — προσθετικό, κανένας
                ;; καταναλωτής του (values nil :no-version-in-force) δεν σπάει.
-               (values nil :no-version-in-force pending-note))))
+               (values nil (%mark-analytical :no-version-in-force) pending-note))))
         (t (error 'temporal-uncertainty :provision pid
                   :why (format nil "~D επικαλυπτόμενες εκδόσεις στην τομή — ασυνεπής γράφος" (length live))))))))))
 
@@ -1262,9 +1292,9 @@
                              (let ((*package* (find-package :keyword))
                                    (*read-eval* nil))
                                (read s)))))
-                (unless (eq (getf plist :schema) :scope-tag-registry/1)
+                (unless (eq (getf plist :schema) :scope-tag-registry/2)
                   (error 'invalid-condition
-                         :reason "μητρώο scope-tags: άγνωστο schema (απαιτείται /1)"))
+                         :reason "μητρώο scope-tags: άγνωστο schema (απαιτείται /2 — το /1 αποσύρθηκε ως μη δημοσιευμένο candidate, ΔΕΝ ερμηνεύεται με νέα semantics)"))
                 (let ((entries (getf plist :dimensions)))
                   (unless entries
                     (error 'invalid-condition :reason "μητρώο scope-tags: κενό"))
@@ -1817,23 +1847,44 @@
                     (re-span-until re) t)
             (values nil nil nil)))))
 
+(defun %scope-missing-dimensions (edge-scope context)
+  (loop for decl in (canon-scope-set edge-scope)
+        unless (find (first decl) (canon-scope-set context) :key #'first)
+          collect (first decl)))
+
+(defun %require-scope-mode (scope-mode)
+  "[Β3] Επικύρωση ΣΤΟ boundary — άγνωστο mode απορρίπτεται ΠΑΝΤΑ."
+  (unless (member scope-mode '(:strict :conservative))
+    (error 'invalid-edge
+           :reason (format nil "scope-mode: :strict | :conservative — βρέθηκε ~S" scope-mode)))
+  scope-mode)
+
 (defun %re-scope-applies-p (re scope-context scope-mode pid)
-  "[REVIEW Β(i)] Εφαρμογή scope στο ερώτημα — Η ΜΙΑ έδρα επίλυσης:
-   T ⇒ εφαρμόζεται· NIL ⇒ όχι· :unknown ⇒ ΕΞΑΡΤΑΤΑΙ από το mode:
-     :strict (προεπιλογή)  ⇒ typed SCOPE-UNCERTAIN (ονομαστικό edge) —
-                             το :unknown ΔΕΝ είναι αλήθεια·
-     :conservative (ΡΗΤΟ)  ⇒ εφαρμόζεται — ανάλυση, ΟΧΙ resolved legal truth."
+  "[REVIEW Β(i)/Β3] Εφαρμογή scope στο ερώτημα — Η ΜΙΑ έδρα επίλυσης:
+   T ⇒ εφαρμόζεται· NIL ⇒ όχι· :unknown ⇒ κατά mode:
+     :strict       ⇒ typed SCOPE-UNCERTAIN (machine-readable πεδία Β1)·
+     :conservative ⇒ εφαρμόζεται ΚΑΙ καταγράφεται στο *scope-assumptions*
+                     (το αποτέλεσμα σημαίνεται analytical-not-authoritative).
+   ΚΑΛΕΙΤΑΙ ΜΟΝΟ για live+ενεργές+χρονικά σχετικές ακμές (Β2)."
   (let ((cov (scope-covers-p (re-scope re) scope-context)))
     (case cov
       ((t) t)
       ((nil) nil)
       (:unknown
        (ecase scope-mode
-         (:conservative t)
+         (:conservative
+          (pushnew (re-edge-id re) *scope-assumptions* :test #'equal)
+          t)
          (:strict
           (error 'scope-uncertain :provision pid
-                 :why (format nil "scoped καθεστωτική πράξη ~A: το ερώτημα δεν δηλώνει τις διαστάσεις του scope ~S — δήλωσε scope-context ή ζήτησε ΡΗΤΑ :conservative ανάλυση"
-                              (re-edge-id re) (re-scope re)))))))))
+                 :edge-id (re-edge-id re)
+                 :edge-scope (re-scope re)
+                 :query-scope-context scope-context
+                 :missing-dimensions (%scope-missing-dimensions (re-scope re) scope-context)
+                 :scope-mode scope-mode
+                 :why (format nil "scoped καθεστωτική πράξη ~A: αδήλωτες διαστάσεις ~S — δήλωσε scope-context ή ζήτησε ΡΗΤΑ :conservative ανάλυση"
+                              (re-edge-id re)
+                              (%scope-missing-dimensions (re-scope re) scope-context)))))))))
 
 (defun graph-regimes (graph) (vg-regimes graph))
 
@@ -1919,7 +1970,12 @@
       (unless (interval-intersects-p span-from span-until
                                      (re-span-from prior) (re-span-until prior))
         (error 'invalid-edge
-               :reason ":revive span ΔΕΝ τέμνει το span του suspend που αναιρεί"))))
+               :reason ":revive span ΔΕΝ τέμνει το span του suspend που αναιρεί"))
+      ;; [Β4] admission-time scope τομή: revive με scope ξένο προς το
+      ;; suspension δεν παράγει ΠΟΤΕ έννομο αποτέλεσμα — δεν εισάγεται καν.
+      (unless (scope-intersects-p scope (re-scope prior))
+        (error 'invalid-edge
+               :reason (format nil ":revive scope ~S ΔΕΝ τέμνει το scope ~S του suspend που αναιρεί" scope (re-scope prior))))))
   ;; σύγκρουση live ίδιου op/target/version — spans συγκρίσιμα ΜΟΝΟ όταν
   ;; και τα δύο έχουν συγκεκριμένη αφετηρία ([#3]: conditional edges με
   ;; ταυτόσημα πεδία συμπίπτουν σε eid — το live-dedup τα πιάνει).
@@ -1988,9 +2044,11 @@
      (and (eq (re-op s) :suspend)
           (equal (re-target s) pid)
           (%re-live-p s known-at)
-          (%re-scope-applies-p s scope-context scope-mode pid)
+          ;; [Β2] ΠΡΩΤΑ ενεργότητα+χρονική σχετικότητα, ΜΕΤΑ scope:
+          ;; pending/άσχετη ακμή δεν δικαιούται να απαιτήσει scope context.
           (multiple-value-bind (f u active) (%re-active-span graph s known-at)
             (and active (interval-covers-p f u valid-at)))
+          (%re-scope-applies-p s scope-context scope-mode pid)
           ;; [REVIEW Β(ii)] το revive αναιρεί ΜΟΝΟ μέσα στο ΔΙΚΟ ΤΟΥ scope
           ;; και μόνο ενεργό (conditional gate) — scoped revive δεν σβήνει
           ;; suspension εκτός της εμβέλειάς του.
@@ -1998,10 +2056,10 @@
                           (and (eq (re-op r) :revive)
                                (equal (re-prior-edge-id r) (re-edge-id s))
                                (%re-live-p r known-at)
-                               (%re-scope-applies-p r scope-context scope-mode pid)
                                (multiple-value-bind (rf ru ractive)
                                    (%re-active-span graph r known-at)
-                                 (and ractive (interval-covers-p rf ru valid-at)))))
+                                 (and ractive (interval-covers-p rf ru valid-at)))
+                               (%re-scope-applies-p r scope-context scope-mode pid)))
                         (vg-regimes graph)))))
    (vg-regimes graph)))
 
@@ -2019,11 +2077,12 @@
     (dolist (re (reverse (vg-regimes graph)))
       (when (and (re-version re)
                  (equal (re-version re) (tv-version-hash v))
-                 (%re-live-p re known-at)
-                 (%re-scope-applies-p re scope-context scope-mode
-                                      (tv-provision-id v)))
+                 (%re-live-p re known-at))
         (multiple-value-bind (f u active) (%re-active-span graph re known-at)
-          (when active
+          ;; [Β2] scope resolution ΜΟΝΟ για ενεργή ακμή
+          (when (and active
+                     (%re-scope-applies-p re scope-context scope-mode
+                                          (tv-provision-id v)))
             (case (re-op re)
               (:expire (setf until (if (eq (re-span-from re) :on-satisfaction) f u)))
               (:extend (setf until u))

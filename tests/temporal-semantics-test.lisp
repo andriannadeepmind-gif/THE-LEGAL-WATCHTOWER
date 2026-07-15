@@ -946,8 +946,72 @@
                                (second b))))
                  (handler-case (progn (basis nil) nil)
                    (orchestrator.version-graph:scope-uncertain () t))
+                 ;; [Β3] conservative ⇒ ΥΠΟΧΡΕΩΤΙΚΟΣ non-authoritative marker
                  (let ((b (basis nil :conservative)))
-                   (and (consp b) (eq :suspended (first b)))))))
+                   (and (consp b) (eq :suspended (first b))
+                        (eq :conservative (getf (cddr b) :scope-assumption))
+                        (eq :analytical-not-authoritative
+                            (getf (cddr b) :resolution-status))
+                        (consp (getf (cddr b) :assumed-edges)))))))
+
+(ts-check "ΒΦ1 [Β1] scope-uncertain = ΠΛΗΡΩΣ typed: edge-id/edge-scope/context/missing-dimensions/scope-mode μηχανικά αναγνώσιμα"
+          (handler-case
+              (progn (orchestrator.version-graph:version-at
+                      *ts-g* *ts-pid6* :valid-at "2026-06-01"
+                      :known-at "2033-01-01T00:00:00Z")
+                     nil)
+            (orchestrator.version-graph:scope-uncertain (e)
+              (and (equal (orchestrator.version-graph:re-edge-id *ts-scoped-suspend*)
+                          (orchestrator.version-graph:scope-uncertain-edge-id e))
+                   (equal '((:territorial :attiki))
+                          (orchestrator.version-graph:scope-uncertain-edge-scope e))
+                   (null (orchestrator.version-graph:scope-uncertain-query-scope-context e))
+                   (equal '(:territorial)
+                          (orchestrator.version-graph:scope-uncertain-missing-dimensions e))
+                   (eq :strict (orchestrator.version-graph:scope-uncertain-scope-mode e))))))
+
+(ts-check "ΒΦ2 [Β2] scoped suspension ΕΚΤΟΣ valid-at χωρίς context ⇒ ΚΑΜΙΑ scope αβεβαιότητα (χρονικά άσχετη ακμή δεν απαιτεί context)"
+          (multiple-value-bind (v b)
+              (orchestrator.version-graph:version-at
+               *ts-g* *ts-pid6* :valid-at "2026-02-01"
+               :known-at "2033-01-01T00:00:00Z")
+            (and v (eq b :complete))))
+
+(ts-check "ΒΦ3 [Β2] PENDING conditional scoped edge χωρίς context ⇒ ΚΑΜΙΑ scope αβεβαιότητα (ανενεργή ακμή δεν απαιτεί context)"
+          (let* ((c (orchestrator.version-graph:declare-condition!
+                     *ts-g* (orchestrator.version-graph:make-effectivity-condition
+                             :resolutory (list :instrument-event :ratification "ΠΝΠ-ΒΦ3"))))
+                 (cid (orchestrator.version-graph:condition-id c)))
+            (orchestrator.version-graph:admit-regime-edge!
+             *ts-g* :op :suspend :target *ts-pid6*
+             :span-from :on-satisfaction :span-until :open
+             :condition-id cid :scope '((:material :poiniko))
+             :act-ref "gr/nomos/2026/0062" :act-seq 1
+             :enacted "2026-06-01" :fek-date "2026-06-01")
+            ;; pending ⇒ ανενεργή ⇒ ούτε εφαρμογή ούτε scope-uncertain
+            (multiple-value-bind (v b)
+                (orchestrator.version-graph:version-at
+                 *ts-g* *ts-pid6* :valid-at "2026-02-01"
+                 :known-at "2033-01-01T00:00:00Z")
+              (and v (eq b :complete)))))
+
+(ts-check "ΒΦ4 [Β4] disjoint-scope revive ⇒ invalid-edge στην ΕΙΣΔΟΧΗ + [Β3] άγνωστο scope-mode ⇒ invalid-edge ΠΑΝΤΑ"
+          (and (handler-case
+                   (progn (orchestrator.version-graph:admit-regime-edge!
+                           *ts-g* :op :revive :target *ts-pid6*
+                           :span-from "2026-04-01" :span-until "2026-05-01"
+                           :scope '((:territorial :thessaloniki))
+                           :prior-edge-id (orchestrator.version-graph:re-edge-id *ts-scoped-suspend*)
+                           :act-ref "gr/ya/2026/61" :act-seq 1
+                           :enacted "2026-03-20" :fek-date "2026-03-20")
+                          nil)
+                 (orchestrator.version-graph:invalid-edge () t))
+               (handler-case
+                   (progn (orchestrator.version-graph:version-at
+                           *ts-g* *ts-pid6* :valid-at "2026-02-01"
+                           :known-at "2033-01-01T00:00:00Z" :scope-mode :whatever)
+                          nil)
+                 (orchestrator.version-graph:invalid-edge () t))))
 
 (ts-check "Η2δ scope ΣΤΗΝ ταυτότητα + restart parity: ίδια πεδία με ΑΛΛΟ scope ⇒ ΑΛΛΟ edge-id· φρέσκο load-graph διατηρεί το scope (θάνατος σιωπηλού drop)"
           (let ((e2 (orchestrator.version-graph:admit-regime-edge!
@@ -1085,6 +1149,6 @@
                           (and (not ok) why))))))
 
 (format t "~%========================================~%")
-(format t "TEMPORAL-SEMANTICS [0088 Φ7 Π1-Π5+Η1-Η3+Η7]: ~D passed, ~D failed~%" *ts-pass* *ts-fail*)
+(format t "TEMPORAL-SEMANTICS [0088 Φ7 Π1-Π5+Η1-Η3+Η7+ΒΦ]: ~D passed, ~D failed~%" *ts-pass* *ts-fail*)
 (format t "========================================~%")
 (sb-ext:exit :code (if (zerop *ts-fail*) 0 1))
