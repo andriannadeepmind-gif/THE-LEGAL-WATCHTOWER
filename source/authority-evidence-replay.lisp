@@ -151,21 +151,33 @@
    :n (ironclad:octets-to-integer (jws:base64url-decode (%g jwk "n")))
    :e (ironclad:octets-to-integer (jws:base64url-decode (%g jwk "e")))))
 
+(defvar *replay-counter* 0
+  "Μονότονος μετρητής ανά process — μαζί με fresh random state δίνει ΜΟΝΑΔΙΚΟ
+   nonce ανά κλήση (θάνατος concurrency collision).")
+(defvar *replay-rs* (make-random-state t)
+  "Fresh random state (entropy-seeded) — cross-process nonce uniqueness παρά το
+   deterministic SOURCE_DATE_EPOCH.")
+
 (defun reconstruct-graph-from-journal-bytes (journal-bytes)
-  "HERMETIC replay: γράφει τα bundle-supplied journal bytes σε ΕΦΗΜΕΡΟ body path
-   και τα φορτώνει με load-graph (ΠΛΗΡΗΣ payload/chain/semantic verification ανά
-   γραμμή — byte tamper ⇒ journal-corruption). Επιστρέφει τον reconstructed graph·
-   ο caller ΔΕΝ πρέπει να διαγράψει το temp πριν το τέλος του replay."
-  (let* ((tmp-body (format nil "apbreplay-~A"
-                           (ironclad:byte-array-to-hex-string
-                            (ironclad:digest-sequence
-                             :sha256 (babel:string-to-octets journal-bytes :encoding :utf-8)))))
-         (path (vg::vg-path (vg:make-graph tmp-body))))
+  "HERMETIC replay: γράφει τα bundle-supplied journal bytes σε ΜΟΝΑΔΙΚΟ (nonce)
+   ephemeral body και τα φορτώνει με load-graph (ΠΛΗΡΗΣ payload/chain/semantic
+   verification ανά γραμμή — byte tamper ⇒ journal-corruption). [provenance-critic-2
+   F3] nonce ανά κλήση ⇒ καμία concurrency collision με άλλες επαληθεύσεις ή με
+   πραγματικά corpus bodies· ΣΕ ΑΠΟΤΥΧΙΑ load-graph το αρχείο ΔΙΑΓΡΑΦΕΤΑΙ ΕΔΩ
+   (θάνατος leak στο tamper path). Επιστρέφει (values graph path)· ο caller
+   διαγράφει το path στο unwind-protect μετά το πέρας του replay."
+  (let* ((nonce (format nil "apbreplay-~A-~A-~A"
+                        (incf *replay-counter*) (random (expt 2 48) *replay-rs*)
+                        (ironclad:byte-array-to-hex-string
+                         (ironclad:digest-sequence
+                          :sha256 (babel:string-to-octets journal-bytes :encoding :utf-8)))))
+         (path (vg::vg-path (vg:make-graph nonce))))
     (ensure-directories-exist path)
     (with-open-file (s path :direction :output :if-exists :supersede
                             :if-does-not-exist :create :external-format :utf-8)
       (write-string journal-bytes s))
-    (values (vg:load-graph tmp-body) path)))
+    (handler-case (values (vg:load-graph nonce) path)
+      (error (e) (ignore-errors (delete-file path)) (error e)))))
 
 (defun %rebuild-receipt (alist)
   "Ανακατασκευή του legal-authority-receipt struct ΑΠΟ την canonical alist μορφή
@@ -311,6 +323,19 @@
                                      :policy-digest (%g policy :policy-digest))))
                          (jws:verify-jws stmt-jws astmt (%rsa-key-from-jwk release-jwk))))))
 
+          ;; ── ΔΕΣΜΟΣ REPLAY↔DECLARED: ο replayed graph_root ΠΡΕΠΕΙ να ταυτίζεται
+          ;;    με census/cut/receipt cut graph_root ΚΑΙ ο replayed seq με το cut seq.
+          ;;    Χωρίς αυτό, forged-but-self-consistent envelope census root θα ξέφευγε
+          ;;    (το #4A δεν έχει journal — εδώ δένεται στην ΑΝΑΚΑΤΑΣΚΕΥΗ).
+          (safe :replay/graph-root-consistent
+                (lambda ()
+                  (and graph-root graph-seq
+                       (equal graph-root (%g census :graph-root))
+                       (equal graph-root (%g cut :graph-root))
+                       (equal graph-seq (%g cut :journal-seq))
+                       (equal graph-root (%g (%g (%g bundle :receipt) "cut") "graph_root"))
+                       (equal graph-seq (%g (%g (%g bundle :receipt) "cut") "journal_seq")))))
+
           ;; ── SOURCE ARTIFACT: recompute digest ΑΠΟ ΤΑ BYTES + spans εντός ──
           (safe :replay/source-digest
                 (lambda ()
@@ -377,15 +402,20 @@
                               (equal (getf recomputed :outcome) (%g tra :outcome)))))))
 
           ;; ── VERIFIER BINARIES: το verifier-set string ΔΕΝΕΤΑΙ στα ΠΡΑΓΜΑΤΙΚΑ
-          ;;    verifier bytes (ο απαιτούμενος verifier ∈ verifier-binaries sha256) ──
+          ;;    verifier bytes — sha256(bytes) ΞΑΝΑΫΠΟΛΟΓΙΖΕΤΑΙ ΕΔΩ (provenance-
+          ;;    critic-2 F2: ο declared :sha256 ΔΕΝ γίνεται δεκτός· recompute ==
+          ;;    declared == required verifier hash της policy). ΚΑΘΕ binary bytes
+          ;;    ⇒ digest· κανένα binary χωρίς bytes ⇒ ΣΦΑΛΜΑ.
           (safe :replay/verifier-binaries-bind
                 (lambda ()
                   (let ((req (%g policy :temporal-verifier-hash))
                         (bins (%g bundle :verifier-binaries)))
-                    (and (stringp req)
-                         (member req bins :test #'equal
-                                 :key (lambda (b) (%g b :sha256)))
-                         t))))
+                    (and (stringp req) (consp bins)
+                         (some (lambda (b)
+                                 (let ((declared (%g b :sha256))
+                                       (recomputed (%sha256-hex-of-bytes (%binary-bytes b))))
+                                   (and (equal declared recomputed) (equal req recomputed))))
+                               bins)))))
 
           ;; ── SCOPE: το delegation scope ΚΑΛΥΠΤΕΙ το corpus/release ──
           (safe :replay/scope-covers-corpus
@@ -413,11 +443,15 @@
           ;; ── ΑΠΟΝΟΜΗ ──
           (let* ((all-ok (every #'cadr preds))
                  (required (%g policy :required-tier))
-                 ;; #4B awards ΜΟΝΟ όταν ΚΑΙ το envelope (owner-pinned) ΚΑΙ ΟΛΟ το
-                 ;; replay πέρασαν· continuity απαιτεί checkpoint.
+                 ;; [provenance-critic-2 F4] first-seen vs continuity ΟΥΣΙΑΣΤΙΚΗ,
+                 ;; όχι διακοσμητική: το ΑΝΩΤΑΤΟ owner-pinned-authenticated απαιτεί
+                 ;; ΚΑΙ ΟΛΟ το replay ΚΑΙ continuity (consumer checkpoint — ο
+                 ;; καταναλωτής έχει επαληθεύσει append-only συνέχεια). Χωρίς
+                 ;; checkpoint (first-seen) το bundle μπορεί να είναι fork που ο
+                 ;; καταναλωτής δεν έχει δει — cap σε internally-release-consistent.
                  (tier (cond ((and all-ok (eq auth-mode :continuity-verified))
                               "owner-pinned-authenticated")
-                             (all-ok "owner-pinned-authenticated")
+                             (all-ok "internally-release-consistent")   ; first-seen
                              (t "provisional-unanchored"))))
             (%make-aer-verdict
              :awarded-tier tier
@@ -432,6 +466,14 @@
 
 (defun %merkle-of (strings)
   (if (and strings (consp strings)) (merkle:merkle-root-of-strings strings) ""))
+
+(defun %binary-bytes (b)
+  "Τα ΩΜΑ bytes ενός verifier binary — :bytes (octet vector) ή :bytes-utf8 (string).
+   Απόν ⇒ ΣΦΑΛΜΑ (fail-closed — κανένα digest χωρίς bytes)."
+  (let ((raw (%g b :bytes)) (s (%g b :bytes-utf8)))
+    (cond ((typep raw '(vector (unsigned-byte 8))) raw)
+          ((stringp s) (babel:string-to-octets s :encoding :utf-8))
+          (t (error "verifier-binary: απόντα bytes")))))
 
 (defun %source-bytes (src)
   "Τα ΩΜΑ bytes του source artifact — είτε :bytes (octet vector) είτε

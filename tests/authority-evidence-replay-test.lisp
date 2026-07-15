@@ -115,7 +115,8 @@
   (list (cons "kty" "RSA") (cons "n" (b64u (ironclad:rsa-key-modulus *rk-pub*)))
         (cons "e" (b64u (ironclad:rsa-key-exponent *rk-pub*)))))
 (defparameter *rk-thumb* (orchestrator.jws-authority:jwk-thumbprint *rk-pub*))
-(defparameter *verifier-hash* "sha256:temporal-verifier-abc")
+(defparameter *verifier-bytes* "TEMPORAL-VERIFIER-BINARY-CONTENT-v1 (test)")
+(defparameter *verifier-hash* (sha256tag *verifier-bytes*))
 (defparameter *verifier-set* (list *verifier-hash* "sha256:other"))
 (defparameter *content* (list :text-sha256 (sha256tag (vg:tv-text *version*))
                               :version-hash (vg:tv-version-hash *version*)))
@@ -194,7 +195,8 @@
                  :receipt-membership (list :index *receipt-index*)
                  :journal-bytes *journal-bytes*
                  :census *census* :release-manifest (list :release-id "rel-1")
-                 :verifier-binaries (list (list :name "verify-temporal.py" :sha256 *verifier-hash*))
+                 :verifier-binaries (list (list :name "verify-temporal.py"
+                                                :bytes-utf8 *verifier-bytes* :sha256 *verifier-hash*))
                  :tra *tra* :authority-statement-jws (sign-authority-statement))))
     (loop for (k v) on overrides by #'cddr do (setf (getf b k) v))
     b))
@@ -243,6 +245,14 @@
 (let ((v (verify :authority-statement-jws (sign-authority-statement :graph-root "sha256:FORGED"))))
   (ck "authority-statement graph_root ≠ replayed ⇒ statement-binds-replay FAIL"
       (failed-p v :replay/authority-statement-binds-replay)))
+;; envelope census/cut root ≠ replayed (self-consistent #4A αλλά διαφορετικός
+;; από τον ΑΝΑΚΑΤΑΣΚΕΥΑΣΜΕΝΟ) ⇒ ο δεσμός replay↔declared σπάει
+(let ((v (verify :envelope (make-envelope
+                            :census (list :graph-root "sha256:FAKE"
+                                          :receipt-set-root *receipt-set-root* :receipt-ids *receipt-ids*)
+                            :cut (list :graph-root "sha256:FAKE" :journal-seq *graph-seq* :known-at *known-at*)))))
+  (ck "envelope census/cut root ≠ replayed ⇒ graph-root-consistent FAIL"
+      (failed-p v :replay/graph-root-consistent)))
 ;; ξένο journal (άλλο body) ⇒ receipt cut δεν βρίσκεται
 (let* ((g2b "apbtest-other-graph")
        (g2 (vg:make-graph g2b)) (p2 (vg::vg-path g2)))
@@ -331,17 +341,29 @@
           :policy (list* :policy-digest "sha256:SUBSTITUTED" (cddr *policy*)))))
   (ck "policy digest substitution ⇒ statement-binds-replay FAIL"
       (failed-p v :replay/authority-statement-binds-replay)))
-;; verifier-set string χωρίς αντιστοίχιση σε verifier-binary bytes
-(let ((v (verify :verifier-binaries (list (list :name "verify-temporal.py" :sha256 "sha256:WRONGBYTES")))))
-  (ck "verifier-set string χωρίς matching verifier bytes ⇒ verifier-binaries FAIL"
+;; verifier binary bytes ΠΟΥ ΔΕΝ κατακερματίζονται στον required verifier hash
+;; (recompute sha256(bytes) ≠ required) ⇒ verifier-binaries FAIL (F2 real bytes)
+(let ((v (verify :verifier-binaries
+                 (list (list :name "verify-temporal.py" :bytes-utf8 "WRONG-BINARY-CONTENT"
+                             :sha256 (sha256tag "WRONG-BINARY-CONTENT"))))))
+  (ck "verifier bytes ≠ required hash (recompute) ⇒ verifier-binaries FAIL"
+      (failed-p v :replay/verifier-binaries-bind)))
+;; declared :sha256 ≠ recompute(bytes) ⇒ FAIL (ο declared ΔΕΝ γίνεται δεκτός)
+(let ((v (verify :verifier-binaries
+                 (list (list :name "verify-temporal.py" :bytes-utf8 *verifier-bytes*
+                             :sha256 "sha256:LIED")))))
+  (ck "declared verifier sha256 ≠ recompute ⇒ verifier-binaries FAIL"
       (failed-p v :replay/verifier-binaries-bind)))
 
-(format t "~%== [9] first-seen vs continuity ==~%")
+(format t "~%== [9] first-seen vs continuity (ΟΥΣΙΑΣΤΙΚΗ διάκριση) ==~%")
 (let ((v (verify-authority-evidence-bundle
           (make-bundle) :trusted-owner-root-jwk *owner-jwk* :trusted-tsa-ca-path *sectigo-ca*
           :policy *policy*)))                       ; ΧΩΡΙΣ checkpoint
   (ck "χωρίς checkpoint ⇒ authentication-mode = :first-seen"
-      (eq (aer-authentication-mode v) :first-seen)))
+      (eq (aer-authentication-mode v) :first-seen))
+  (ck "first-seen ⇒ cap σε internally-release-consistent (ΟΧΙ owner-pinned)"
+      (equal (aer-awarded-tier v) "internally-release-consistent"))
+  (ck "first-seen ⇒ ΔΕΝ ικανοποιεί owner-pinned policy" (not (aer-satisfies-policy-p v))))
 
 ;; cleanup
 (ignore-errors (delete-file *graph-path*))

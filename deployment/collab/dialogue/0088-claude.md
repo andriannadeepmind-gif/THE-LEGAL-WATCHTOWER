@@ -1376,3 +1376,58 @@ graph 18/18, temporal-verifier 2/2, tsr-crypto-verify 19/19.
 
 Εκκρεμεί: τελικό owner Docker proof στο καθαρό HEAD (ο δημιουργός). Π7 + GAAF-1
 runtime ΠΑΓΩΜΕΝΑ.
+
+---
+
+## [0088 Φ7-HARDENING #4B] AUTHORITY EVIDENCE REPLAY + cross-language verifier + 4 κριτές (2 γύροι)
+
+Μετά την αποδοχή του #4A ως «cryptographic release-envelope verifier» (όχι πλήρες
+κλείσιμο #4), εντολή δημιουργού: **#4B — AUTHORITY EVIDENCE REPLAY**, χωρίς αλλαγή #4A.
+
+Νέα έδρα `orchestrator.authority-evidence-replay` (`source/authority-evidence-
+replay.lisp`): ΔΕΝ εμπιστεύεται bundle-declared graph_root/journal_seq/content
+hashes — τα ΞΑΝΑΠΑΡΑΓΕΙ:
+- ΚΛΕΙΣΤΟ versioned schema `authority-proof-bundle/1` (unknown/missing key ⇒ ΣΦΑΛΜΑ)
+  + bundle-id.
+- HERMETIC journal replay: bundle journal bytes → ΜΟΝΑΔΙΚΟ (nonce) temp body →
+  vg:load-graph (πλήρης payload/chain/semantic verification ανά γραμμή). graph_root/
+  seq ΑΠΟ replay.
+- verify-receipt-intrinsic ΣΤΟΝ reconstructed graph (rebuild struct από canonical
+  alist → recompute receipt-id → prefix replay → όλα τα graph-derived πεδία).
+- receipt membership στο SIGNED receipt-set-root· source digest recompute ΑΠΟ bytes
+  + spans + provenance chain· TRA recompute (make-effectivity-attestation στον
+  reconstructed graph → hash+outcome ΞΑΝΑΒΓΑΙΝΟΥΝ)· SIGNED authority-statement
+  δεσμεύει ΟΛΕΣ τις ρίζες + το REPLAYED graph_root (point 7)· scope enforcement·
+  external delegation state (rollback/equivocation)· first-seen vs continuity.
+- ΔΕΥΤΕΡΟΣ portable verifier `deployment/verify/verify-authority-bundle.py` (ΜΟΝΟ
+  Python stdlib, καμία Lisp έδρα): RFC-6962 merkle root/inclusion + RFC-9162
+  consistency + canonical authority-statement + RFC-7638 thumbprint — N-version
+  agreement gate.
+
+**ΔΥΟ ΝΕΟΙ ΑΝΤΙΠΑΛΙΚΟΙ ΚΡΙΤΕΣ (#4B), ΚΑΘΕ ΕΥΡΗΜΑ ΚΛΕΙΣΤΟ:**
+Provenance/journal/receipt-replay κριτής:
+- F1 (SERIOUS) envelope census/cut graph_root δεν συμφιλιωνόταν με το replay ⇒
+  :replay/graph-root-consistent (replayed == census == cut == receipt cut) + witness.
+- F2 (SERIOUS) :replay/verifier-binaries-bind διακοσμητικό (declared sha256) ⇒
+  recompute sha256(ΠΡΑΓΜΑΤΙΚΩΝ bytes) == declared == required + 2 witnesses.
+- F3 (SERIOUS) temp graph σε production dir, leak στο tamper path, concurrency
+  collision ⇒ nonce ανά κλήση + delete-on-failure ΕΔΩ (0 leak, deterministic).
+- F4 first-seen vs continuity διακοσμητικό ⇒ ΟΥΣΙΑΣΤΙΚΟ: first-seen cap σε
+  internally-release-consistent, continuity ⇒ owner-pinned + witnesses.
+Cross-language κριτής:
+- SERIOUS-1 3/4 cross-checks χωρίς αρνητικό μάρτυρα ⇒ per-commitment negatives.
+- SERIOUS-2 οι πιο error-prone αλγόριθμοι χωρίς 2η γλώσσα ⇒ Python inclusion-path +
+  consistency loop (RFC-6962/9162) + τίμια δηλωμένο όριο (ΔΕΝ επαληθεύει signatures/
+  TSR/journal — μία υλοποίηση).
+- MINOR-1 canonical seat type-divergence (princ-to-string vs str) ⇒ %canonical-
+  statement-string δέχεται ΜΟΝΟ string|integer (ΔΟΜΙΚΗ εξάλειψη).
+- MINOR-2/NIT merkle n=1/n=2 + non-canonical-x cross-checks.
+
+Proof: authority-evidence-replay 31/31 (ΠΡΑΓΜΑΤΙΚΟΣ γράφος + γνήσιο Sectigo TSR),
+authority-cross-language 12/12 (Lisp↔Python, 0 διαφωνίες), authority-proof-bundle
+66/66. Χωρίς παλινδρόμηση (temporal-semantics 111/111, receipt 21/21, version-graph
+18/18). Wired asd + Dockerfile (2 νέα gated suites).
+
+Δηλωμένο όριο (supreme-law point 3): οι signatures (RSA JWS/Ed25519/TSR) έχουν ΜΙΑ
+(Lisp) υλοποίηση· η 2η γλώσσα καλύπτει τα structural-encoding commitments. Εκκρεμεί:
+τελικό owner Docker proof στο καθαρό HEAD. Π7 + GAAF-1 runtime ΠΑΓΩΜΕΝΑ.

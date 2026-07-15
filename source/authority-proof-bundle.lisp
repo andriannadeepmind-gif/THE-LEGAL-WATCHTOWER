@@ -104,9 +104,17 @@
     (with-output-to-string (s)
       (write-string tag s) (write-char (code-char #x1e) s)
       (dolist (kv sorted)
-        (let ((k (car kv)) (v (princ-to-string (cdr kv))))
-          (unless (and (%no-separators-p k) (%no-separators-p v))
-            (error "canonical-statement: πεδίο ~S περιέχει separator control byte" k))
+        (let* ((k (car kv))
+               ;; [cross-lang-critic-2 MINOR-1] ΔΟΜΙΚΗ αποφυγή type-divergence
+               ;; Lisp↔δεύτερη γλώσσα: ΜΟΝΟ string ή integer επιτρέπονται στη
+               ;; δεσμευμένη μορφή. boolean/nil/float/symbol ⇒ ΣΦΑΛΜΑ (princ-to-
+               ;; string T→"T" vs str(True)→"True" κ.λπ. — εξάλειψη της κλάσης).
+               (raw (cdr kv))
+               (v (etypecase raw
+                    (string raw)
+                    (integer (format nil "~D" raw)))))
+          (unless (and (stringp k) (%no-separators-p k) (%no-separators-p v))
+            (error "canonical-statement: πεδίο ~S άκυρο key ή separator control byte" k))
           (write-string k s) (write-char (code-char #x1f) s)
           (write-string v s) (write-char (code-char #x1e) s))))))
 
