@@ -14,7 +14,7 @@ Fail-closed πύλη στον verifier-conformance κρίκο (η αλυσίδα
   • όλα τα sha256 πεδία = 64-hex· verifier-proof.json: 5 verifier hashes +
     ακριβής λίστα gates.
 """
-import json, os, re, sys
+import hashlib, json, os, re, subprocess, sys
 
 # ΔΗΛΩΜΕΝΕΣ εξαιρέσεις: διαγνωστικά που ΔΕΝ είναι gates σε αυτό το stage.
 # comparison: θέλει python reference fixture απόν από το stage.
@@ -49,7 +49,14 @@ def check_result_line(suite, line):
             return
     fail("suite %s: μη αναγνωρίσιμη γραμμή αποτελέσματος %r" % (suite, line))
 
-def main(proof_dir, tests_dir):
+def sha256_file(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+def main(proof_dir, tests_dir, app_root=None):
     sp_path = os.path.join(proof_dir, "standalone-proof.json")
     vp_path = os.path.join(proof_dir, "verifier-proof.json")
     run_path = os.path.join(proof_dir, "suites-run.txt")
@@ -65,6 +72,10 @@ def main(proof_dir, tests_dir):
         if not HEX64.match(sp.get(k, "")):
             fail("standalone-proof: %s ΔΕΝ είναι 64-hex: %r" % (k, sp.get(k)))
 
+    raw_suites = [s.get("suite") for s in sp.get("suites", [])]
+    if len(raw_suites) != len(set(raw_suites)):
+        fail("standalone-proof: ΔΙΠΛΟΤΥΠΗ σουίτα στο manifest: %s"
+             % sorted({x for x in raw_suites if raw_suites.count(x) > 1}))
     suites = {s.get("suite"): s.get("result", "") for s in sp.get("suites", [])}
     if not suites:
         fail("standalone-proof: κενό suites[]")
@@ -85,6 +96,11 @@ def main(proof_dir, tests_dir):
     if missing:
         fail("ΛΕΙΠΟΥΝ σουίτες από το gated set (σιωπηλή αφαίρεση;): %s"
              % sorted(missing))
+    # [ΣΤ] ΑΜΦΙΔΡΟΜΑ: extra σουίτα (εκτός δηλωμένου συνόλου) = FAIL —
+    # «ακριβές set» σημαίνει ισότητα, όχι υπερσύνολο.
+    extra = set(suites) - expected
+    if extra:
+        fail("ΕΠΙΠΛΕΟΝ σουίτες εκτός του αναμενόμενου set: %s" % sorted(extra))
     for suite, line in sorted(suites.items()):
         check_result_line(suite, line)
 
@@ -101,6 +117,31 @@ def main(proof_dir, tests_dir):
     if vp.get("gates") != EXPECTED_GATES:
         fail("verifier-proof: gates ≠ αναμενόμενα: %r" % vp.get("gates"))
 
+    # [ΣΤ] ΕΠΑΝΥΠΟΛΟΓΙΣΜΟΣ hashes από τα ΠΡΑΓΜΑΤΙΚΑ αρχεία — όχι μόνο μορφή.
+    if app_root:
+        core = os.path.join(app_root, "orchestrator.core")
+        if sp.get("orchestrator_core_sha256") != sha256_file(core):
+            fail("orchestrator_core_sha256 ≠ επανυπολογισμός από %s" % core)
+        cm = os.path.join(app_root, "component-manifest.sexp")
+        if sp.get("component_manifest_sha256") != sha256_file(cm):
+            fail("component_manifest_sha256 ≠ επανυπολογισμός")
+        logs = sorted(os.path.join(proof_dir, "logs", f)
+                      for f in os.listdir(os.path.join(proof_dir, "logs")))
+        h = hashlib.sha256()
+        for lf in logs:
+            with open(lf, "rb") as fh:
+                h.update(fh.read())
+        if sp.get("logs_sha256") != h.hexdigest():
+            fail("logs_sha256 ≠ επανυπολογισμός από proof/logs/*")
+        for k, rel in (("verify_py_sha256", "deployment/verify/verify.py"),
+                       ("verify_mjs_sha256", "deployment/verify/verify.mjs"),
+                       ("verify_canonical_py_sha256", "deployment/verify/verify-canonical.py"),
+                       ("verify_temporal_py_sha256", "deployment/verify/verify-temporal.py"),
+                       ("verify_release_py_sha256", "deployment/verify/verify-release.py")):
+            fp = os.path.join(app_root, rel)
+            if vp.get(k) != sha256_file(fp):
+                fail("%s ≠ επανυπολογισμός από %s" % (k, rel))
+
     if FAIL:
         print("verify-proof-manifest: %d ΑΠΟΤΥΧΙΕΣ" % len(FAIL))
         for f in FAIL:
@@ -110,6 +151,6 @@ def main(proof_dir, tests_dir):
           % len(suites))
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("usage: verify-proof-manifest.py <proof-dir> <tests-dir>"); sys.exit(2)
-    main(sys.argv[1], sys.argv[2])
+    if len(sys.argv) not in (3, 4):
+        print("usage: verify-proof-manifest.py <proof-dir> <tests-dir> [app-root]"); sys.exit(2)
+    main(*sys.argv[1:])

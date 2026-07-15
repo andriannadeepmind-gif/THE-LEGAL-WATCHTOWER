@@ -168,7 +168,8 @@ RUN echo "${GIT_COMMIT}" | grep -Eq '^[0-9a-f]{40}$' \
     || { echo "FATAL: GIT_COMMIT build-arg πρέπει να είναι το ακριβές 40-hex clean HEAD (δόθηκε: '${GIT_COMMIT}')"; exit 1; }
 
 COPY tests/ /app/tests/
-COPY docker/run-standalone-test.lisp docker/sha256.lisp docker/dep-hash.lisp docker/verify-proof-manifest.py /app/docker/
+COPY Dockerfile /app/Dockerfile
+COPY docker/run-standalone-test.lisp docker/sha256.lisp docker/dep-hash.lisp docker/verify-proof-manifest.py docker/entrypoint.lisp docker/sbom.json /app/docker/
 
 # Each script (sb-ext:exit 1 on failure) fails the build if any check fails.
 # The four *-authority/time FiveAM suites are now gated too: run-standalone-test
@@ -208,7 +209,8 @@ RUN set -e; \
 RUN set -e; \
     CORE=$(sha256sum /app/orchestrator.core | cut -d' ' -f1); \
     CM=$(sha256sum /app/component-manifest.sexp | cut -d' ' -f1); \
-    SRC=$(find /app/source /app/systems /app/tests /app/deployment/verify /app/configs /app/deployment/data /app/deployment/knowledge /app/input /app/docker -type f | LC_ALL=C sort | xargs sha256sum | sha256sum | cut -d' ' -f1); \
+    SRC=$(find /app/source /app/systems /app/tests /app/deployment/verify /app/configs /app/deployment/data /app/deployment/knowledge /app/input /app/docker /app/third-party -type f \( ! -name '*.fasl' \) | LC_ALL=C sort | xargs sha256sum | sha256sum | cut -d' ' -f1; find /app -maxdepth 1 -type f \( -name '*.asd' -o -name 'build.lisp' -o -name 'deps.lock' -o -name 'Dockerfile' \) | LC_ALL=C sort | xargs -r sha256sum | sha256sum | cut -d' ' -f1); \
+    SRC=$(echo "$SRC" | sha256sum | cut -d' ' -f1); \
     LOGS=$(cat /app/proof/logs/*.log | sha256sum | cut -d' ' -f1); \
     { echo '{'; \
       echo "  \"proof\": \"lawmax/standalone-proof/1\","; \
@@ -298,7 +300,17 @@ RUN set -e; \
 # ακριβές αναμενόμενο suite set (ΚΑΘΕ tests/*-test.lisp πλην δηλωμένων
 # εξαιρέσεων), κάθε σουίτα με μη κενό parseable failed=0, 40-hex commit,
 # 64-hex hashes, ακριβή gates — αλλιώς ΤΟ RUNTIME ΔΕΝ ΧΤΙΖΕΤΑΙ.
-RUN python3 /app/docker/verify-proof-manifest.py /app/proof /app/tests
+RUN python3 /app/docker/verify-proof-manifest.py /app/proof /app/tests /app
+
+# [ΣΤ] Δεσμευμένο runtime-asset manifest: ΚΑΘΕ asset που θα αντιγραφεί στο
+# runtime αποκτά sha256 ΕΔΩ (verified stage) — το runtime αυτο-ελέγχεται.
+RUN { find /app/orchestrator.core /app/component-manifest.sexp /app/configs \
+           /app/deployment/data /app/deployment/knowledge /app/deployment/self \
+           /app/deployment/verify /app/deployment/PROOF-CARRYING-LAW.md \
+           /app/input -type f | LC_ALL=C sort | xargs sha256sum; \
+      sha256sum /app/docker/entrypoint.lisp | sed 's|/app/docker/entrypoint.lisp|/app/entrypoint.lisp|'; \
+      sha256sum /app/docker/sbom.json | sed 's|/app/docker/sbom.json|/app/sbom.json|'; \
+    } > /app/proof/runtime-assets.sha256
 
 CMD ["echo", "Cross-language verifier conformance passed"]
 
@@ -381,8 +393,12 @@ COPY --from=verifier-conformance /app/deployment/self/ /app/deployment/self/
 COPY --from=verifier-conformance /app/deployment/verify/ /app/deployment/verify/
 COPY --from=verifier-conformance /app/deployment/PROOF-CARRYING-LAW.md /app/deployment/PROOF-CARRYING-LAW.md
 COPY --from=verifier-conformance /app/input/ /app/input/
-COPY docker/entrypoint.lisp /app/entrypoint.lisp
-COPY docker/sbom.json /app/sbom.json
+COPY --from=verifier-conformance /app/docker/entrypoint.lisp /app/entrypoint.lisp
+COPY --from=verifier-conformance /app/docker/sbom.json /app/sbom.json
+
+# [ΣΤ] Runtime self-check: ΚΑΘΕ runtime asset ≡ το δεσμευμένο manifest του
+# verified stage — απόκλιση/απόν αρχείο ⇒ το image ΔΕΝ χτίζεται.
+RUN sha256sum -c --quiet /app/proof/runtime-assets.sha256
 
 # Verify PDF in runtime (primary source)
 RUN echo "=== Runtime: verifying input files ===" && \
