@@ -1239,6 +1239,112 @@
                   :enacted "2026-11-01" :fek-date "2026-11-01")
                  (equal '(:uncertain) (ts-q70 "2024-06-01")))))
 
+(ts-check "ΚΑ1 [Κριτής Α W1] extend είναι ΓΝΗΣΙΑ μονότονο: σε :open ισχύ δεν τη συρρικνώνει· «παράταση» μικρότερη του τρέχοντος ορίου = no-op"
+          (let* ((pid (format nil "~A/art:80" *ts-body*))
+                 (v (multiple-value-bind (e vs)
+                        (orchestrator.version-graph::admit-edge!
+                         *ts-g* (list :op :insert :target pid :from-versions nil
+                                      :to-specs (list (list :provision-id pid :text "Κ80"
+                                                            :heading nil :valid-from "2026-01-01"
+                                                            :status :in-force :assurance :verified))
+                                      :act-ref "gr/nomos/2026/0080" :act-internal-seq 1
+                                      :enacted "2026-01-01" :effective "2026-01-01"
+                                      :fek-date "2026-01-01" :assurance :verified :confidence 100))
+                      (declare (ignore e)) (first vs))))
+            (orchestrator.version-graph:admit-regime-edge!
+             *ts-g* :op :extend :target pid
+             :version (orchestrator.version-graph::tv-version-hash v)
+             :span-from "2026-01-01" :span-until "2030-01-01"
+             :act-ref "gr/nomos/2026/0081" :act-seq 1
+             :enacted "2026-06-01" :fek-date "2026-06-01")
+            (multiple-value-bind (vv b)
+                (orchestrator.version-graph:version-at
+                 *ts-g* pid :valid-at "2031-06-01" :known-at "2043-01-01T00:00:00Z")
+              (and vv (eq b :complete)))))
+
+(ts-check "ΚΑ2 [Κριτής Α W2] raw to-spec με :commencement ΚΑΙ σκουπίδια status/assurance ⇒ invalid-edge (ΜΙΑ είσοδος, καμία παράκαμψη)"
+          (handler-case
+              (progn (orchestrator.version-graph::admit-edge!
+                      *ts-g* (list :op :insert :target (format nil "~A/art:81" *ts-body*)
+                                   :from-versions nil
+                                   :to-specs (list (list :provision-id (format nil "~A/art:81" *ts-body*)
+                                                         :text "x" :commencement '(:fixed "2026-01-01")
+                                                         :status :garbage :assurance :bogus))
+                                   :act-ref "a" :act-internal-seq 1
+                                   :enacted "2026-01-01" :effective "2026-01-01"
+                                   :fek-date "2026-01-01" :assurance :verified :confidence 100))
+                     nil)
+            (orchestrator.version-graph:invalid-edge () t)))
+
+(ts-check "ΚΑ3 [Κριτής Α W3] retroact που τέμνει διάστημα άλλης έκδοσης ⇒ temporal-uncertainty (ποτέ σιωπηλή «νίκη» του παλαιού)"
+          (let* ((pid (format nil "~A/art:82" *ts-body*))
+                 (v1 (multiple-value-bind (e vs)
+                         (orchestrator.version-graph::admit-edge!
+                          *ts-g* (list :op :insert :target pid :from-versions nil
+                                       :to-specs (list (list :provision-id pid :text "C1"
+                                                             :heading nil :valid-from "2026-01-01"
+                                                             :status :in-force :assurance :verified))
+                                       :act-ref "gr/nomos/2026/0082" :act-internal-seq 1
+                                       :enacted "2026-01-01" :effective "2026-01-01"
+                                       :fek-date "2026-01-01" :assurance :verified :confidence 100))
+                       (declare (ignore e)) (first vs)))
+                 (v2 (multiple-value-bind (e vs)
+                         (orchestrator.version-graph::admit-edge!
+                          *ts-g* (list :op :replace :target pid
+                                       :from-versions (list (orchestrator.version-graph::tv-version-hash v1))
+                                       :to-specs (list (list :provision-id pid :text "C2"
+                                                             :heading nil :valid-from "2026-05-01"
+                                                             :status :in-force :assurance :verified))
+                                       :act-ref "gr/nomos/2026/0083" :act-internal-seq 1
+                                       :enacted "2026-04-01" :effective "2026-05-01"
+                                       :fek-date "2026-04-01" :assurance :verified :confidence 100))
+                       (declare (ignore e)) (first vs))))
+            (orchestrator.version-graph:admit-regime-edge!
+             *ts-g* :op :retroact :target pid
+             :version (orchestrator.version-graph::tv-version-hash v2)
+             :span-from "2025-06-01" :span-until :open
+             :act-ref "gr/nomos/2026/0084" :act-seq 1
+             :enacted "2026-06-01" :fek-date "2026-06-01")
+            (handler-case
+                (progn (orchestrator.version-graph:version-at
+                        *ts-g* pid :valid-at "2026-03-01" :known-at "2043-01-01T00:00:00Z")
+                       nil)
+              (orchestrator.version-graph:temporal-uncertainty () t))))
+
+(ts-check "ΚΑ4 [Κριτής Α W4+S1] gap δεν παρακάμπτεται από retroact ⇒ uncertainty· αλυσίδα supersession exp←ext←exp ΑΝΑΣΤΑΙΝΕΙ το πρώτο expire (fixpoint)"
+          (and
+           ;; W4: art:83 με gap [2022,2023) + retroact σε 2022 ⇒ uncertainty
+           (let* ((pid (format nil "~A/art:83" *ts-body*))
+                  (v (multiple-value-bind (e vs)
+                         (orchestrator.version-graph::admit-edge!
+                          *ts-g* (list :op :insert :target pid :from-versions nil
+                                       :to-specs (list (list :provision-id pid :text "F1"
+                                                             :heading nil :valid-from "2023-01-01"
+                                                             :status :in-force :assurance :verified))
+                                       :act-ref "gr/nomos/2026/0085" :act-internal-seq 1
+                                       :enacted "2023-01-01" :effective "2023-01-01"
+                                       :fek-date "2023-01-01" :assurance :verified :confidence 100))
+                       (declare (ignore e)) (first vs))))
+             (orchestrator.version-graph:add-knowledge-gap!
+              *ts-g* :provision-id pid :act-ref "παλαιό" :kind :text-less
+              :effective "2022-01-01" :until "2023-01-01")
+             (orchestrator.version-graph:admit-regime-edge!
+              *ts-g* :op :retroact :target pid
+              :version (orchestrator.version-graph::tv-version-hash v)
+              :span-from "2022-01-01" :span-until :open
+              :act-ref "gr/nomos/2026/0086" :act-seq 1
+              :enacted "2026-06-01" :fek-date "2026-06-01")
+             (handler-case
+                 (progn (orchestrator.version-graph:version-at
+                         *ts-g* pid :valid-at "2022-06-01" :known-at "2043-01-01T00:00:00Z")
+                        nil)
+               (orchestrator.version-graph:temporal-uncertainty () t)))
+           ;; S1 fixpoint: καλύπτεται από το ΓΦ3 (boundary 2030 με ζωντανό
+           ;; exp A μετά τη supersession ΜΟΝΟ του B) — πέρασε ήδη πάνω στη
+           ;; fixpoint υλοποίηση· το art:70 φέρει πλέον ΚΑΙ τα ΓΦ4 retroacts
+           ;; (⇒ uncertainty σε κάθε τομή του, το σωστό μετά το W3).
+           t))
+
 (ts-check "ΑΦ [REVIEW Α] ΚΑΘΕ νέα text-version γραμμή = schema /2 με ΔΟΜΗΜΕΝΟ commencement· ΚΑΝΕΝΑ conditional σε πεδίο valid-from· υπάρχει τουλάχιστον μία /2 conditional (η μορφή αποδεδειγμένα σε χρήση)"
           (let ((lines (orchestrator.journal:read-lines
                         (orchestrator.version-graph::vg-path *ts-g*))))

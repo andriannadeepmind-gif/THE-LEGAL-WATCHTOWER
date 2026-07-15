@@ -1125,3 +1125,48 @@ corpus-service 53/53 · as-known-e2e 27/27 — 0 failed.
 **Σε εξέλιξη (βήμα 3)**: 2 ανεξάρτητοι αντιπαλικοί κριτές (temporal/scope/
 regime + TRA/receipt/release/Docker). Μετά: κλείσιμο ευρημάτων → #4 →
 owner proof. Π7/GAAF-1 παγωμένα.
+
+---
+
+## [0088 ΑΝΤΙΠΑΛΙΚΟΙ ΚΡΙΤΕΣ Φ7-HARDENING — ευρήματα + κλεισίματα]
+
+**Κριτής Α (temporal/scope/regime, εμπειρικά)**: 4 WRONG + 3 SERIOUS + 2 MINOR.
+**Κριτής Β (TRA/receipt/release/Docker)**: 0 WRONG + 2 SERIOUS + 2 NOTE, με
+ρητή λίστα «άντεξε» (receipt cut/prefix replay, receipt-id binding,
+Lisp↔Python attestation ισοδυναμία 19 πεδίων, typed anchors, fail-closed
+downgrades, GIT_COMMIT gate).
+
+ΚΛΕΙΣΜΕΝΑ ΣΤΙΣ ΕΔΡΕΣ (αυτό το commit):
+- **Α-W1** extend συρρίκνωνε ισχύ ⇒ ΓΝΗΣΙΑ μονοτονία: until := max(τρέχον,
+  extends) — «παράταση» δεν τερματίζει ποτέ ισχύ (lock ΚΑ1).
+- **Α-W2** raw to-spec με :commencement παρέκαμπτε validation ⇒
+  %normalize-version-spec περνά ΠΑΝΤΑ από make-version-spec (lock ΚΑ2).
+- **Α-W3** retroact που τέμνει διάστημα άλλης έκδοσης ⇒ temporal-uncertainty
+  αντί σιωπηλού ψαλιδίσματος (lock ΚΑ3).
+- **Α-W4** retroact ΔΕΝ παρακάμπτει δηλωμένο knowledge-gap ⇒ uncertainty
+  (lock ΚΑ4).
+- **Α-S1** supersession fixpoint: υπερκαθιστά ΜΟΝΟ ζωντανή ακμή — αλυσίδα
+  exp←ext←exp αναστήνει το πρώτο expire (ΓΦ3 πράσινο επί fixpoint).
+- **Α-S2** replay: dangling :close-validity/:retract ⇒ journal-corruption
+  + semantic ③ record-id checks (τέλος η ασυμμετρία).
+- **Α-S3** ανεστραμμένο παράγωγο διάστημα ⇒ temporal-uncertainty (ποτέ
+  ψευδο-βέβαιη ολική εξαφάνιση).
+- **Β-S1** content commitment: το resolved outcome δεσμεύει πλέον ΚΑΙ
+  text-sha256 ΜΕΣΑ στο hashed tra/2 payload — το σερβιριζόμενο κείμενο
+  δένεται δομικά.
+
+ΔΗΛΩΜΕΝΑ ΥΠΟΛΟΙΠΑ (με φάση θανάτου):
+- **Β-S2** self-certifying anchor (in-release public.jwk, tlog ολική
+  αντικατάσταση, TSR = χρόνος όχι αυθεντία): κλείνει ΜΟΝΟ με out-of-band
+  pinned owner trust root — απόφαση/πράξη ΔΗΜΙΟΥΡΓΟΥ (P1.5 δηλωμένο).
+- **Β-N3** docker cache poisoning: το owner proof τρέχει --no-cache (ήδη
+  στην εντολή proof #5)· signed build provenance = μελλοντική φάση.
+- **Β-N4** manifest verifier = συνέπεια, όχι ανεξάρτητη απόδειξη — τα
+  gates ζουν στα RUN (σωστός καταμερισμός, δηλωμένος).
+- **Α-M1** conditional :repeal μη-αναπαραστάσιμο (fail-closed, τώρα
+  ΔΗΛΩΜΕΝΟ όριο)· **Α-M2** επίπεδη subset σημασιολογία scope (Φ8).
+
+Proof: temporal-semantics 105/105 · temporal-verifier 2/2 · version-graph
+18/18 · receipt 15/15 · parity 31/31 · corpus-service 53/53 · as-known-e2e
+27/27 — 0 failed. Επόμενο: #4 verifier δεύτερης βαθμίδας πάνω στα ΤΕΛΙΚΑ
+contracts → owner proof. Π7/GAAF-1 παγωμένα.

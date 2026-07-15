@@ -571,9 +571,9 @@
   "[Φ7-HARDENING #1] Η ΜΙΑ είσοδος version-spec στο admit-edge!: spec με
    :commencement επικυρώνεται· raw plist με :valid-from περνά ΜΕΣΑ από τη
    make-version-spec (μία έδρα κατασκευής — καμία δεύτερη σημασιολογία)."
-  (if (getf vs :commencement)
-      (progn (%require-commencement (getf vs :commencement) "to-spec") vs)
-      (apply #'make-version-spec vs)))
+  ;; [Κριτής Α W2] ΠΑΝΤΑ μέσα από τη make-version-spec — και με :commencement:
+  ;; καμία δεύτερη είσοδος που παρακάμπτει assurance/status/string validation.
+  (apply #'make-version-spec vs))
 
 (defun make-edge-spec (&key op target from-versions to-specs act-ref
                             act-internal-seq corrects-edge-id source-span
@@ -923,15 +923,15 @@
                     (condition-status graph cid :known-at known-at)
                   (case st
                     (:satisfied
-                     (multiple-value-bind (f u) (%rewritten-bounds graph v known-at scope-context scope-mode)
+                     (multiple-value-bind (f u retro) (%rewritten-bounds graph v known-at scope-context scope-mode)
                        ;; [#1] conditional βάση from = NIL (καμία ημερομηνία στην
                        ;; έδρα)· ρητό retroact την ξαναγράφει σε date — αλλιώς
                        ;; from = το παράγωγο sat at (spec §4).
-                       (push (list v (or f at) u) tiles)))
+                       (push (list v (or f at) u retro) tiles)))
                     (:pending (push (cons cid (tv-recorded-from v)) pending))
                     (t nil)))
-                (multiple-value-bind (f u) (%rewritten-bounds graph v known-at scope-context scope-mode)
-                  (push (list v f u) tiles))))))
+                (multiple-value-bind (f u retro) (%rewritten-bounds graph v known-at scope-context scope-mode)
+                  (push (list v f u retro) tiles))))))
       ;; ντετερμινιστική επιλογή pending σημείωσης: ελάχιστο (since, cid)
       (let ((pending-note
               (when pending
@@ -943,6 +943,15 @@
                                                        (%time-key (cdr b) "since"))
                                                     (string< (car a) (car b)))))))))
                   (list :not-yet-effective (car best) (cdr best))))))
+        ;; [Κριτής Α S3] ανεστραμμένο ΠΑΡΑΓΩΓΟ διάστημα (until ≤ from από
+        ;; rewrite) = ασυνεπής γράφος — ΠΟΤΕ σιωπηλή ολική εξαφάνιση.
+        (dolist (tile tiles)
+          (destructuring-bind (v2 f u &optional retro) tile
+            (declare (ignore v2 retro))
+            (when (and (not (eq u :open))
+                       (<= (%time-key u "until") (%time-key f "from")))
+              (error 'temporal-uncertainty :provision pid
+                     :why (format nil "παράγωγο διάστημα ισχύος ανεστραμμένο/κενό [~A,~A) — ασυνεπές καθεστωτικό rewrite" f u)))))
         (setf tiles (sort tiles (lambda (a b)
                                   (< (%time-key (second a) "from")
                                      (%time-key (second b) "from")))))
@@ -951,16 +960,22 @@
               do (when (= (%time-key (second a) "from") (%time-key (second b) "from"))
                    (error 'temporal-uncertainty :provision pid
                           :why "δύο εκδόσεις με ΙΔΙΟ σημείο έναρξης ισχύος στην τομή — ασυνεπής γράφος")))
-        ;; ψαλίδισμα: until_i := min(until_i, from_{i+1})
+        ;; ψαλίδισμα: until_i := min(until_i, from_{i+1}) — ΠΑΡΑΓΩΓΟ κλείσιμο.
+        ;; [Κριτής Α W3] Αν στην επικάλυψη εμπλέκεται tile από ΡΗΤΟ retroact,
+        ;; το σιωπηλό ψαλίδισμα θα ακύρωνε/αντέστρεφε τη ρητή αναδρομή —
+        ;; συγκρουόμενες ρητές αξιώσεις = temporal-uncertainty, όχι «νίκη».
         (loop for (a b) on tiles while b
               do (when (or (eq (third a) :open)
                            (> (%time-key (third a) "until")
                               (%time-key (second b) "from")))
+                   (when (or (fourth a) (fourth b))
+                     (error 'temporal-uncertainty :provision pid
+                            :why "ρητό retroact τέμνει διάστημα άλλης έκδοσης — επίλυση ΜΟΝΟ με supersession/retract, ποτέ σιωπηλό ψαλίδισμα"))
                    (setf (third a) (second b))))
         (let ((live (remove-if-not
                      (lambda (tile)
-                       (destructuring-bind (v f u) tile
-                         (declare (ignore v))
+                       (destructuring-bind (v f u &optional retro) tile
+                         (declare (ignore v retro))
                          (and (%time<= f valid-at "from" "valid-at")
                               (or (eq u :open)
                                   (< (%time-key valid-at "valid-at")
@@ -968,6 +983,21 @@
                      tiles)))
           (cond
             ((= 1 (length live))
+             ;; [Κριτής Α W4] ΔΗΛΩΜΕΝΟ κενό γνώσης δεν παρακάμπτεται από
+             ;; retroact: αν το νικητήριο tile προέκυψε από ρητή αναδρομή
+             ;; ΚΑΙ live gap καλύπτει το valid-at ⇒ τίμια αβεβαιότητα
+             ;; (επίλυση: journaled αναίρεση/οριοθέτηση του gap πρώτα).
+             (when (fourth (first live))
+               (let ((g (find-if (lambda (g)
+                                   (and (equal pid (kg-provision-id g))
+                                        (%known-by-p (kg-recorded-from g) known-at)
+                                        (or (null (kg-until g))
+                                            (interval-covers-p (kg-effective g)
+                                                               (kg-until g) valid-at))))
+                                 (vg-gaps graph))))
+                 (when g
+                   (error 'temporal-uncertainty :provision pid
+                          :why (format nil "retroact πάνω σε ΔΗΛΩΜΕΝΟ κενό γνώσης (~A ~A) — η τίμια άγνοια δεν παρακάμπτεται σιωπηλά" (kg-kind g) (kg-effective g))))))
              (multiple-value-bind (vv bb)
                  (%finish-version graph pid valid-at known-at
                                   (first (first live)) (or pending-note :complete)
@@ -1125,9 +1155,17 @@
                   :recorded-from (%recorded-of line) :recorded-until :current
                   :assurance (getf line :assurance) :confidence (getf line :confidence))))
           (:close-validity
+           ;; [Κριτής Α S2] dangling στόχος = ΡΗΞΗ, όχι σιωπηλό no-op·
+           ;; + semantic ③: το record-id ξαναβγαίνει από τα πεδία.
            (let ((v (gethash (getf line :version) (vg-versions graph))))
-             (when v (%supersede-validity graph v (getf line :valid-until)
-                                          (%recorded-of line)))))
+             (unless v
+               (error 'journal-corruption
+                      :reason (format nil "close-validity ~A: ανύπαρκτη έκδοση ~A" rid (getf line :version))))
+             (unless (equal rid (format nil "close:~A@~A" (getf line :version) (getf line :edge)))
+               (error 'journal-corruption
+                      :reason (format nil "close-validity ~A: record-id ≠ πεδία" rid)))
+             (%supersede-validity graph v (getf line :valid-until)
+                                  (%recorded-of line))))
           (:quarantined
            (push (make-quarantined-edge :edge (getf line :material)
                                         :reason (getf line :reason)
@@ -1143,7 +1181,13 @@
                  (vg-gaps graph)))
           (:retract
            (let ((v (gethash (getf line :version) (vg-versions graph))))
-             (when v (setf (tv-recorded-until v) (%recorded-of line)))))
+             (unless v
+               (error 'journal-corruption
+                      :reason (format nil "retract ~A: ανύπαρκτη έκδοση ~A" rid (getf line :version))))
+             (unless (equal rid (format nil "retract:~A" (getf line :version)))
+               (error 'journal-corruption
+                      :reason (format nil "retract ~A: record-id ≠ πεδία" rid)))
+             (setf (tv-recorded-until v) (%recorded-of line))))
           ;; [Φ7 Π2] condition records — semantic hash ③ ανά kind
           (:condition-declared
            (let* ((class (getf line :class))
@@ -2140,6 +2184,7 @@
    (:resolutory) rewrite εφαρμόζεται μόνο ενεργό — :expire :on-satisfaction
    κλείνει την ισχύ ΣΤΟ σημείο ικανοποίησης (until := sat at)."
   (let ((from (tv-valid-from v)) (until (tv-valid-until v))
+        (retroacted nil)
         (applicable '()))
     ;; ① συλλογή: live + ενεργές + scope-εφαρμοστέες rewrites της έκδοσης
     (dolist (re (vg-regimes graph))
@@ -2152,15 +2197,21 @@
                      (%re-scope-applies-p re scope-context scope-mode
                                           (tv-provision-id v)))
             (push (list re f u) applicable)))))
-    ;; ② [REVIEW Γ] supersession: ακμή που αναφέρεται από live rewrite μέσω
-    ;; prior-edge-id ΑΠΟΚΛΕΙΕΤΑΙ — υπερκατάσταση ΜΟΝΟ με ρητή πράξη.
-    (let* ((superseded (loop for (re nil nil) in applicable
-                             when (re-prior-edge-id re)
-                               collect (re-prior-edge-id re)))
-           (eff (remove-if (lambda (entry)
-                             (member (re-edge-id (first entry)) superseded
-                                     :test #'equal))
-                           applicable)))
+    ;; ② [REVIEW Γ + Κριτής Α S1] supersession FIXPOINT: υπερκαθιστά ΜΟΝΟ
+    ;; ΖΩΝΤΑΝΗ (μη υπερκατεστημένη) ακμή — αλυσίδα exp1←ext←exp2 ΑΝΑΣΤΑΙΝΕΙ
+    ;; το exp1 όταν το ext υπερκατασταθεί (το DAG είναι άκυκλο: το prior
+    ;; προϋπάρχει live και το eid δεσμεύει το prior).
+    (let* ((eff applicable))
+      (loop
+        (let* ((dead (loop for (re nil nil) in eff
+                           when (re-prior-edge-id re)
+                             collect (re-prior-edge-id re)))
+               (next (remove-if (lambda (entry)
+                                  (member (re-edge-id (first entry)) dead
+                                          :test #'equal))
+                                applicable)))
+          (when (= (length next) (length eff)) (return))
+          (setf eff next)))
       (flet ((ukey (u) (if (eq u :open)
                            most-positive-fixnum
                            (%time-key u "regime until"))))
@@ -2175,10 +2226,14 @@
                    :why "δύο ενεργά :retroact με διαφορετικά όρια χωρίς supersession — επίλυση ΜΟΝΟ με ρητή πράξη ή retract"))
           (when retro
             (setf from (second (first retro)) until (third (first retro)))))
-        ;; ④ extend: μονότονη επέκταση ⇒ ΜΕΓΙΣΤΟ ενεργό όριο
+        (setf retroacted (and (remove-if-not (lambda (e) (eq (re-op (first e)) :retroact)) eff) t))
+        ;; ④ [Κριτής Α W1] extend: ΓΝΗΣΙΑ μονοτονία — until := max(τρέχον,
+        ;; extends): «παράταση» ΔΕΝ μπορεί ποτέ να συρρικνώσει ισχύ (η
+        ;; συρρίκνωση είναι expire/supersession, όχι extend).
         (let ((exts (remove-if-not (lambda (e) (eq (re-op (first e)) :extend)) eff)))
           (when exts
-            (setf until (third (first (sort exts #'> :key (lambda (e) (ukey (third e)))))))))
+            (let ((m (third (first (sort exts #'> :key (lambda (e) (ukey (third e))))))))
+              (when (> (ukey m) (ukey until)) (setf until m)))))
         ;; ⑤ expire: η ΠΡΩΤΗ νόμιμη λήξη = ΕΛΑΧΙΣΤΟ ενεργό όριο — υπερισχύει
         ;; κάθε extend (η επέκταση λήξασας ισχύος απαιτεί ΡΗΤΗ supersession
         ;; του expire)· conditional (:on-satisfaction) ⇒ όριο το sat at.
@@ -2190,7 +2245,7 @@
             (let ((boundary (first (sort exps #'< :key #'ukey))))
               (when (or (eq until :open) (< (ukey boundary) (ukey until)))
                 (setf until boundary)))))))
-    (values from until)))
+    (values from until retroacted)))
 
 ;;; ============================================================================
 ;;; [0088 Φ7 Π5] EFFECTIVITY ATTESTATION — deterministic certificate (spec §6)
@@ -2269,7 +2324,11 @@
                                          (list "analytical-not-authoritative"))))
                    (append
                     (cond
-                      ((and v (eq b :complete)) (list "resolved" (tv-version-hash v)))
+                      ;; [Κριτής Β S1] content commitment ΜΕΣΑ στο δεσμευμένο
+                      ;; outcome: το σερβιριζόμενο κείμενο δένεται δομικά.
+                      ((and v (eq b :complete))
+                       (list "resolved" (tv-version-hash v)
+                             "text-sha256" (orchestrator.journal:sha256-hex (tv-text v))))
                       ((and v (consp b) (eq (first b) :suspended))
                        (list "suspended" (second b) (tv-version-hash v)))
                       ((and v (consp b) (eq (first b) :not-yet-effective))
