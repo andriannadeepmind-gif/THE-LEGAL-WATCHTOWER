@@ -417,12 +417,13 @@
   (ck "normalization input ≠ extraction output ⇒ normalization-replay FAIL" (failed-p v :replay/normalization-replay)))
 
 (format t "~%== [11] keystone signature + delegation branches (schema-critic F5/F6/F7) ==~%")
-;; F5: νοθευμένο authority-statement-jws ⇒ ΜΟΝΟ binds-replay FAIL (τα άλλα πράσινα)
-(let* ((b (make-bundle)) (j (copy-seq (getf b :authority-statement-jws))))
-  (setf (char j (1- (length j))) (if (char= (char j (1- (length j))) #\A) #\B #\A))
-  (setf (getf b :authority-statement-jws) j)
+;; F5: authority-statement υπογεγραμμένο πάνω σε ΛΑΘΟΣ bundle-id (ΝΤΕΤΕΡΜΙΝΙΣΤΙΚΑ
+;; άκυρη υπογραφή έναντι του πραγματικού statement — ΟΧΙ bit-flip που μπορεί να
+;; πέσει σε αχρησιμοποίητα padding bits του RSA signature) ⇒ ΜΟΝΟ binds-replay FAIL
+(let ((b (make-bundle)))
+  (setf (getf b :authority-statement-jws) (sign-authority-statement-of "sha256:WRONG-BID" b))
   (let ((v (verify-b b)))
-    (ck "νοθευμένο authority-statement JWS ⇒ binds-replay FAIL (isolating)"
+    (ck "authority-statement υπογεγραμμένο σε λάθος bundle-id ⇒ binds-replay FAIL (isolating)"
         (and (failed-p v :replay/authority-statement-binds-replay)
              (not (failed-p v :replay/graph-root-consistent))
              (not (failed-p v :replay/receipt-intrinsic))))))
