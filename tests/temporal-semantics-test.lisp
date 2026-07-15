@@ -889,9 +889,13 @@
                    (progn (orchestrator.version-graph:canon-scope-set
                            '((:territorial :attiki) (:territorial :gr))) nil)
                  (orchestrator.version-graph:invalid-edge () t))
-               (equal '((:territorial :attiki :gr) (:material :poiniko))
+               ;; [REVIEW Β(iii)] ψευδο-γονικό tag (:gr) ΕΚΤΟΣ μητρώου πλέον
+               (handler-case
+                   (progn (orchestrator.version-graph:canon-scope-set '((:territorial :gr))) nil)
+                 (orchestrator.version-graph:invalid-edge () t))
+               (equal '((:territorial :attiki :thessaloniki) (:material :poiniko))
                       (orchestrator.version-graph:canon-scope-set
-                       '((:material :poiniko) (:territorial :gr :attiki :gr))))))
+                       '((:material :poiniko) (:territorial :thessaloniki :attiki :thessaloniki))))))
 
 (ts-check "Η2β scope-covers-p: universal ⇒ T· δηλωμένη κάλυψη ⇒ T· εκτός ⇒ NIL· αδήλωτη διάσταση στο πλαίσιο ⇒ :unknown (τίμια άγνοια)· scope-intersects-p"
           (and (eq t (orchestrator.version-graph:scope-covers-p nil '((:territorial :attiki))))
@@ -902,7 +906,7 @@
                (eq :unknown (orchestrator.version-graph:scope-covers-p
                              '((:territorial :attiki)) nil))
                (eq t (orchestrator.version-graph:scope-intersects-p
-                      '((:territorial :attiki :gr)) '((:territorial :gr))))
+                      '((:territorial :attiki :thessaloniki)) '((:territorial :thessaloniki))))
                (null (orchestrator.version-graph:scope-intersects-p
                       '((:territorial :attiki)) '((:territorial :thessaloniki))))))
 
@@ -927,19 +931,22 @@
    :act-ref "gr/ya/2026/60" :act-seq 1
    :enacted "2026-02-20" :fek-date "2026-02-20"))
 
-(ts-check "Η2γ scoped suspend: πλαίσιο ΕΚΤΟΣ scope ⇒ ΔΕΝ αναστέλλεται· πλαίσιο ΕΝΤΟΣ ⇒ :suspended· ΧΩΡΙΣ πλαίσιο ⇒ :suspended (υπερ-προσεκτικό :unknown, ονομαστικά δεσμευμένο)"
-          (flet ((basis (ctx)
+(ts-check "Η2γ [REVIEW Β(i)] scoped suspend: εκτός scope ⇒ ΔΕΝ αναστέλλεται· εντός ⇒ :suspended· ΧΩΡΙΣ πλαίσιο: strict ⇒ typed SCOPE-UNCERTAIN (το :unknown ΔΕΝ είναι αλήθεια)· ΡΗΤΟ :conservative ⇒ :suspended"
+          (flet ((basis (ctx &optional (mode :strict))
                    (multiple-value-bind (v b)
                        (orchestrator.version-graph:version-at
                         *ts-g* *ts-pid6* :valid-at "2026-06-01"
-                        :known-at "2033-01-01T00:00:00Z" :scope-context ctx)
+                        :known-at "2033-01-01T00:00:00Z" :scope-context ctx
+                        :scope-mode mode)
                      (declare (ignore v)) b)))
-            (and (eq :complete (basis '((:territorial :thessaloniki))))
+            (and (eq :complete (basis '((:territorial :nisia-aigaiou))))
                  (let ((b (basis '((:territorial :attiki)))))
                    (and (consp b) (eq :suspended (first b))
                         (equal (orchestrator.version-graph:re-edge-id *ts-scoped-suspend*)
                                (second b))))
-                 (let ((b (basis nil)))
+                 (handler-case (progn (basis nil) nil)
+                   (orchestrator.version-graph:scope-uncertain () t))
+                 (let ((b (basis nil :conservative)))
                    (and (consp b) (eq :suspended (first b)))))))
 
 (ts-check "Η2δ scope ΣΤΗΝ ταυτότητα + restart parity: ίδια πεδία με ΑΛΛΟ scope ⇒ ΑΛΛΟ edge-id· φρέσκο load-graph διατηρεί το scope (θάνατος σιωπηλού drop)"

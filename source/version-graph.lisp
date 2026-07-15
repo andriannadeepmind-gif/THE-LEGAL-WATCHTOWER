@@ -40,7 +40,7 @@
    #:legal-date #:legal-date-p #:legal-instant #:legal-instant-p
    #:text-version #:text-version-p #:amendment-edge #:amendment-edge-p
    #:quarantined-edge #:quarantined-edge-p #:knowledge-gap #:knowledge-gap-p
-   #:temporal-uncertainty #:unknown-provision #:invalid-edge #:journal-corruption
+   #:temporal-uncertainty #:scope-uncertain #:unknown-provision #:invalid-edge #:journal-corruption
    ;; text-version αναγνώστες
    #:tv-version-hash #:tv-provision-id #:tv-text #:tv-heading
    #:tv-valid-from #:tv-valid-until #:tv-recorded-from #:tv-recorded-until
@@ -173,6 +173,10 @@
   (:report (lambda (c s)
              (format s "Χρονική αβεβαιότητα για ~A: ~A — ΚΑΜΙΑ έμπιστη απάντηση"
                      (uncertainty-provision c) (uncertainty-why c)))))
+
+;;; [Φ7-HARDENING-REVIEW Β] typed scope αβεβαιότητα: scoped καθεστώς με
+;;; ΑΓΝΩΣΤΗ κάλυψη στο ερώτημα ΔΕΝ εφαρμόζεται «σαν αλήθεια» — σηματοδοτείται.
+(define-condition scope-uncertain (temporal-uncertainty) ())
 
 (define-condition unknown-provision (error)
   ((provision :initarg :provision :reader unknown-provision-id))
@@ -806,11 +810,11 @@
 (defun %recorded-live-p (v known-at)
   (%live-at-p (tv-recorded-from v) (tv-recorded-until v) known-at))
 
-(defun %finish-version (graph pid valid-at known-at v basis &optional scope-context)
+(defun %finish-version (graph pid valid-at known-at v basis &optional scope-context (scope-mode :strict))
   "[Φ7 Π4] Τελικό βήμα version-at: live αναστολή που καλύπτει το valid-at
    (χωρίς revive εκεί) ⇒ typed basis (:suspended edge-id) — ΓΝΩΣΤΗ απάντηση,
    ποτέ 422."
-  (let ((s (and v (%active-suspension graph pid valid-at known-at scope-context))))
+  (let ((s (and v (%active-suspension graph pid valid-at known-at scope-context scope-mode))))
     (if s
         (values v (list :suspended (re-edge-id s)))
         (values v basis))))
@@ -821,7 +825,7 @@
    δηλητηριάζει παλαιότερο epistemic snapshot."
   (%time<= recorded-from known-at "recorded-from" "known-at"))
 
-(defun version-at (graph pid &key valid-at known-at scope-context)
+(defun version-at (graph pid &key valid-at known-at scope-context (scope-mode :strict))
   "Η έκδοση του PID που (α) ήταν ΓΝΩΣΤΗ στο σύστημα κατά KNOWN-AT και
    (β) ΙΣΧΥΕ κατά VALID-AT. ΚΑΙ ΤΑ ΔΥΟ ΥΠΟΧΡΕΩΤΙΚΑ ΚΑΙ TYPED: valid-at =
    legal-date, known-at = legal-instant (canonical UTC) — καμία λεξικογραφική
@@ -870,14 +874,14 @@
                     (condition-status graph cid :known-at known-at)
                   (case st
                     (:satisfied
-                     (multiple-value-bind (f u) (%rewritten-bounds graph v known-at scope-context)
+                     (multiple-value-bind (f u) (%rewritten-bounds graph v known-at scope-context scope-mode)
                        ;; [#1] conditional βάση from = NIL (καμία ημερομηνία στην
                        ;; έδρα)· ρητό retroact την ξαναγράφει σε date — αλλιώς
                        ;; from = το παράγωγο sat at (spec §4).
                        (push (list v (or f at) u) tiles)))
                     (:pending (push (cons cid (tv-recorded-from v)) pending))
                     (t nil)))
-                (multiple-value-bind (f u) (%rewritten-bounds graph v known-at scope-context)
+                (multiple-value-bind (f u) (%rewritten-bounds graph v known-at scope-context scope-mode)
                   (push (list v f u) tiles))))))
       ;; ντετερμινιστική επιλογή pending σημείωσης: ελάχιστο (since, cid)
       (let ((pending-note
@@ -917,7 +921,7 @@
             ((= 1 (length live))
              (%finish-version graph pid valid-at known-at
                               (first (first live)) (or pending-note :complete)
-                              scope-context))
+                              scope-context scope-mode))
             ((null live)
          ;; ΚΕΝΟ ΓΝΩΣΗΣ (text-less ιστορικό): μετρά ΜΟΝΟ αν ήταν ήδη
          ;; καταγεγραμμένο κατά known-at (Υ2) — αλλιώς το snapshot εκείνης της
@@ -1813,11 +1817,23 @@
                     (re-span-until re) t)
             (values nil nil nil)))))
 
-(defun %re-scope-applies-p (re scope-context)
-  "[#2] Εφαρμογή scope στο ερώτημα: T (καλύπτει) ή :unknown (το πλαίσιο δεν
-   δηλώνει τη διάσταση — υπερ-προσεκτικά ΕΦΑΡΜΟΖΕΤΑΙ και δηλώνεται μέσω του
-   δεσμευμένου edge-id) ⇒ ισχύει· NIL (αποδεδειγμένα εκτός) ⇒ όχι."
-  (not (null (scope-covers-p (re-scope re) scope-context))))
+(defun %re-scope-applies-p (re scope-context scope-mode pid)
+  "[REVIEW Β(i)] Εφαρμογή scope στο ερώτημα — Η ΜΙΑ έδρα επίλυσης:
+   T ⇒ εφαρμόζεται· NIL ⇒ όχι· :unknown ⇒ ΕΞΑΡΤΑΤΑΙ από το mode:
+     :strict (προεπιλογή)  ⇒ typed SCOPE-UNCERTAIN (ονομαστικό edge) —
+                             το :unknown ΔΕΝ είναι αλήθεια·
+     :conservative (ΡΗΤΟ)  ⇒ εφαρμόζεται — ανάλυση, ΟΧΙ resolved legal truth."
+  (let ((cov (scope-covers-p (re-scope re) scope-context)))
+    (case cov
+      ((t) t)
+      ((nil) nil)
+      (:unknown
+       (ecase scope-mode
+         (:conservative t)
+         (:strict
+          (error 'scope-uncertain :provision pid
+                 :why (format nil "scoped καθεστωτική πράξη ~A: το ερώτημα δεν δηλώνει τις διαστάσεις του scope ~S — δήλωσε scope-context ή ζήτησε ΡΗΤΑ :conservative ανάλυση"
+                              (re-edge-id re) (re-scope re)))))))))
 
 (defun graph-regimes (graph) (vg-regimes graph))
 
@@ -1961,7 +1977,7 @@
       (setf (re-recorded-until re) (%recorded-of line))
       re)))
 
-(defun %active-suspension (graph pid valid-at known-at &optional scope-context)
+(defun %active-suspension (graph pid valid-at known-at &optional scope-context (scope-mode :strict))
   "Το live-κατά-known-at :suspend του PID που καλύπτει το VALID-AT και ΔΕΝ
    αναιρείται εκεί από live :revive — αλλιώς NIL. Γνωστή αναστολή = ΓΝΩΣΤΗ
    απάντηση (:suspended basis), ποτέ ψευδής αβεβαιότητα.
@@ -1972,19 +1988,24 @@
      (and (eq (re-op s) :suspend)
           (equal (re-target s) pid)
           (%re-live-p s known-at)
-          (%re-scope-applies-p s scope-context)
+          (%re-scope-applies-p s scope-context scope-mode pid)
           (multiple-value-bind (f u active) (%re-active-span graph s known-at)
             (and active (interval-covers-p f u valid-at)))
+          ;; [REVIEW Β(ii)] το revive αναιρεί ΜΟΝΟ μέσα στο ΔΙΚΟ ΤΟΥ scope
+          ;; και μόνο ενεργό (conditional gate) — scoped revive δεν σβήνει
+          ;; suspension εκτός της εμβέλειάς του.
           (not (find-if (lambda (r)
                           (and (eq (re-op r) :revive)
                                (equal (re-prior-edge-id r) (re-edge-id s))
                                (%re-live-p r known-at)
-                               (interval-covers-p (re-span-from r) (re-span-until r)
-                                                  valid-at)))
+                               (%re-scope-applies-p r scope-context scope-mode pid)
+                               (multiple-value-bind (rf ru ractive)
+                                   (%re-active-span graph r known-at)
+                                 (and ractive (interval-covers-p rf ru valid-at)))))
                         (vg-regimes graph)))))
    (vg-regimes graph)))
 
-(defun %rewritten-bounds (graph v known-at &optional scope-context)
+(defun %rewritten-bounds (graph v known-at &optional scope-context (scope-mode :strict))
   "(values valid-from valid-until) της έκδοσης V όπως ΓΝΩΡΙΖΟΝΤΑΝ κατά
    KNOWN-AT: live :extend/:expire ξαναγράφουν το until, live :retroact
    ξαναγράφει from ΚΑΙ until — διτεμπορικά (πριν την καταγραφή: τα παλαιά).
@@ -1999,7 +2020,8 @@
       (when (and (re-version re)
                  (equal (re-version re) (tv-version-hash v))
                  (%re-live-p re known-at)
-                 (%re-scope-applies-p re scope-context))
+                 (%re-scope-applies-p re scope-context scope-mode
+                                      (tv-provision-id v)))
         (multiple-value-bind (f u active) (%re-active-span graph re known-at)
           (when active
             (case (re-op re)
