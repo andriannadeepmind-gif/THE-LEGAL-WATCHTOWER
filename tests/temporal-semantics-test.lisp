@@ -822,8 +822,10 @@
             (and (not (string= (getf a1 :hash) (getf a2 :hash)))
                  (not (string= (getf a1 :hash) (getf a3 :hash))))))
 (ts-check "⑱ε intrinsic receipt effectivity: υπό-αίρεση έκδοση ⇒ condition_id/class στο receipt· κανονική χωρίς regimes ⇒ NIL (ids αμετάβλητα)"
-          (let ((r2 (orchestrator.legal-receipt:build-receipt *ts-g* *ts-v2*))
-                (r1 (orchestrator.legal-receipt:build-receipt *ts-g* *ts-v1*)))
+          (let ((r2 (orchestrator.legal-receipt:build-receipt *ts-g* *ts-v2*
+                                                            :known-at "2033-01-01T00:00:00Z"))
+                (r1 (orchestrator.legal-receipt:build-receipt *ts-g* *ts-v1*
+                                                            :known-at "2033-01-01T00:00:00Z")))
             (and (equal *ts-cid4*
                         (cdr (assoc "condition_id" (orchestrator.legal-receipt:lr-effectivity r2)
                                     :test #'string=)))
@@ -1130,12 +1132,13 @@
 
 ;;; ── [Φ7-HARDENING #7] release-scoped receipts: αμετάβλητα σε μελλοντικά events ──
 
-(ts-check "Η7 receipt δεσμεύει effectivity_as_of: ΜΕΤΑΓΕΝΕΣΤΕΡΟ regime event ΔΕΝ μεταβάλλει/ακυρώνει παλαιό receipt· πλαστό as-of ⇒ FAIL"
-          (let ((r (orchestrator.legal-receipt:build-receipt *ts-g* *ts-v60*)))
+(ts-check "Η7 [Ε] receipt δεσμεύει ΑΚΡΙΒΕΣ cut {graph_root, journal_seq, known_at}: ΜΕΤΑΓΕΝΕΣΤΕΡΟ (και same-second) event ΔΕΝ μεταβάλλει παλαιό receipt (prefix replay)· πλαστό cut ⇒ FAIL"
+          (let ((r (orchestrator.legal-receipt:build-receipt
+                    *ts-g* *ts-v60* :known-at "2033-01-01T00:00:00Z")))
             (and (multiple-value-bind (ok why) (orchestrator.legal-receipt:verify-receipt *ts-g* r)
                    (declare (ignore why)) ok)
                  (progn
-                   (sleep 1.2) ; δηλωμένο όριο θωράκισης: 1s (granularity journal :at)
+                   ;; ΚΑΝΕΝΑ sleep: το cut είναι δομικό (seq), όχι χρονικό
                    (orchestrator.version-graph:admit-regime-edge!
                     *ts-g* :op :suspend :target *ts-pid6*
                     :span-from "2027-01-01" :span-until "2027-06-01"
@@ -1144,13 +1147,14 @@
                    ;; το ΠΑΛΑΙΟ receipt εξακολουθεί να επαληθεύεται στο cut ΤΟΥ
                    (multiple-value-bind (ok why) (orchestrator.legal-receipt:verify-receipt *ts-g* r)
                      (declare (ignore why)) ok))
-                 ;; φρέσκο receipt στο ΝΕΟ cut = διαφορετικό effectivity/ids
-                 (let ((r2 (orchestrator.legal-receipt:build-receipt *ts-g* *ts-v60*)))
+                 ;; φρέσκο receipt στο ΝΕΟ cut = διαφορετικό cut/ids
+                 (let ((r2 (orchestrator.legal-receipt:build-receipt
+                            *ts-g* *ts-v60* :known-at "2033-01-01T00:00:00Z")))
                    (not (equal (orchestrator.legal-receipt:lr-receipt-id r)
                                (orchestrator.legal-receipt:lr-receipt-id r2))))
-                 ;; πλαστό as-of ⇒ receipt-id-mismatch (το πεδίο είναι ΔΕΣΜΕΥΜΕΝΟ)
-                 (progn (setf (orchestrator.legal-receipt:lr-effectivity-as-of r)
-                              "2030-01-01T00:00:00Z")
+                 ;; πλαστό cut ⇒ FAIL (δεσμευμένα πεδία + prefix chain check)
+                 (progn (setf (orchestrator.legal-receipt:lr-cut-journal-seq r)
+                              (- (orchestrator.legal-receipt:lr-cut-journal-seq r) 1))
                         (multiple-value-bind (ok why)
                             (orchestrator.legal-receipt:verify-receipt *ts-g* r)
                           (and (not ok) why))))))

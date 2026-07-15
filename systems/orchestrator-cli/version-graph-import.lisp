@@ -326,7 +326,8 @@
            (if v
                (orchestrator.legal-receipt:lr-receipt-id
                 (orchestrator.legal-receipt:build-receipt
-                 graph v :source-artifact (%source-artifact-for corpus-id)))
+                 graph v :source-artifact (%source-artifact-for corpus-id)
+                         :known-at known-at))
                ""))
          (tra (orchestrator.version-graph:make-effectivity-attestation
                graph pid :valid-at valid-at :known-at known-at

@@ -57,7 +57,7 @@
             *lr-graph*
             (orchestrator.version-graph:version-at *lr-graph* "gr/syntagma#art:16"
                                                    :valid-at *lr-today* :known-at *lr-now*)
-            :source-artifact *lr-src*)))
+            :source-artifact *lr-src* :known-at *lr-now*)))
     (funcall mutator r)
     (multiple-value-bind (ok why) (orchestrator.legal-receipt:verify-receipt *lr-graph* r)
       (declare (ignore why)) (not ok))))
@@ -86,9 +86,9 @@
           (let ((v (orchestrator.version-graph:version-at *lr-graph* "gr/syntagma#art:2"
                                                           :valid-at *lr-today* :known-at *lr-now*)))
             (equal (orchestrator.legal-receipt:lr-receipt-id
-                    (orchestrator.legal-receipt:build-receipt *lr-graph* v :source-artifact *lr-src*))
+                    (orchestrator.legal-receipt:build-receipt *lr-graph* v :source-artifact *lr-src* :known-at *lr-now*))
                    (orchestrator.legal-receipt:lr-receipt-id
-                    (orchestrator.legal-receipt:build-receipt *lr-graph* v :source-artifact *lr-src*)))))
+                    (orchestrator.legal-receipt:build-receipt *lr-graph* v :source-artifact *lr-src* :known-at *lr-now*)))))
 (lr-check "③β μετά από admit-edge!: γενεαλογία = (bootstrap, edge-id) — ΠΛΗΡΗΣ αλυσίδα στο receipt"
           (let* ((pid "gr/syntagma#art:2")
                  (v (orchestrator.version-graph:version-at *lr-graph* pid
@@ -105,7 +105,8 @@
                   :act-ref "test/act" :act-internal-seq '(1 1)
                   :enacted "2029-12-01" :effective "2030-01-01" :fek-date "2029-12-01"))
               (let ((r (orchestrator.legal-receipt:build-receipt *lr-graph* (first vs)
-                                                                 :source-artifact *lr-src*)))
+                                                                 :source-artifact *lr-src*
+                                                                 :known-at *lr-now*)))
                 (and (= 2 (length (orchestrator.legal-receipt:lr-genealogy r)))
                      (equal (orchestrator.version-graph:ae-edge-id edge)
                             (second (orchestrator.legal-receipt:lr-genealogy r)))

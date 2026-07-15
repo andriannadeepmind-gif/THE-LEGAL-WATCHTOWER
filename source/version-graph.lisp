@@ -60,7 +60,7 @@
    #:graph-versions-of #:graph-quarantine #:graph-gaps #:graph-edge-count
    #:submit-genesis! #:admit-edge! #:quarantine! #:retract-knowledge!
    #:add-knowledge-gap! #:kg-provision-id #:kg-effective #:kg-kind
-   #:version-at #:snapshot-at #:verify-chain #:graph-chain-head #:graph-latest-at
+   #:version-at #:snapshot-at #:verify-chain #:graph-chain-head #:graph-latest-at #:graph-seq
    #:make-edge-spec #:make-version-spec
    ;; [0088 Φ7 Π1] Formal Temporal Semantics — effectivity conditions
    #:make-effectivity-condition #:condition-id #:condition-ast #:condition-class
@@ -404,6 +404,7 @@
   cond-events           ; [Φ7 Π2] condition-id → λίστα condition-event (equal)
   regimes               ; [Φ7 Π4] λίστα regime-edge (σειρά εισαγωγής, νεότερο πρώτο)
   chain                 ; τρέχον chain-hash (κεφαλή αλυσίδας)
+  (seq 0)               ; [REVIEW Ε] πλήθος journal γραμμών — το ΑΚΡΙΒΕΣ cut
   (latest-at "1970-01-01T00:00:00Z")) ; [#7] το ΜΕΓΙΣΤΟ journal :at — παράγωγο
                         ; του journal (ντετερμινιστικό), το as-of των receipts
 
@@ -420,6 +421,11 @@
                :conditions (make-hash-table :test 'equal)
                :cond-events (make-hash-table :test 'equal)
                :quarantine '() :gaps '() :regimes '() :chain "genesis"))
+
+(defun graph-seq (graph)
+  "[Ε] Ο αύξων αριθμός journal γραμμών — μαζί με το chain-head ορίζει το
+   ΑΚΡΙΒΕΣ graph cut (καμία 1s timestamp ταυτότητα)."
+  (vg-seq graph))
 
 (defun graph-latest-at (graph)
   "[Φ7-HARDENING #7] Το transaction-time στιγμιότυπο «ό,τι ξέρει το journal»
@@ -497,6 +503,7 @@
          :verify verify)
       (orchestrator.journal:require-durable! receipt :version-graph)
       (setf (vg-chain graph) next-chain)
+      (incf (vg-seq graph))
       (%note-latest-at! graph (getf plist :at))
       line)))
 
@@ -1013,7 +1020,7 @@
 ;;; Φόρτωση/επαλήθευση από το journal — το αρχείο ΕΙΝΑΙ η αλήθεια
 ;;; ----------------------------------------------------------------------------
 
-(defun load-graph (body-string)
+(defun load-graph (body-string &key up-to-seq)
   "Ανακατασκευή της προβολής μνήμης με ΠΛΗΡΕΣ replay του journal + επαλήθευση
    ΚΑΘΕ γραμμής σε ΔΥΟ επίπεδα (Κ2 full-record integrity):
      ① payload-hash: επανυπολογισμός από την κανονική σειριοποίηση ΟΛΟΚΛΗΡΟΥ
@@ -1024,7 +1031,9 @@
    οδηγία (τα journals είναι runtime κατασκευάσματα: διαγραφή + reimport).
    ΚΑΘΕ ρήξη ⇒ journal-corruption (server-integrity, ΟΧΙ invalid-edge/client)."
   (let ((graph (make-graph body-string)))
-    (dolist (line (orchestrator.journal:read-lines (vg-path graph)))
+    (dolist (line (let ((all (orchestrator.journal:read-lines (vg-path graph))))
+                    ;; [Ε] prefix replay: το ΑΚΡΙΒΕΣ ιστορικό cut ενός receipt
+                    (if up-to-seq (subseq all 0 (min up-to-seq (length all))) all)))
       (let* ((rid (getf line :record-id))
              (stored-ph (getf line :payload-hash))
              (ph (%payload-hash (%strip-envelope line)))
@@ -1042,6 +1051,7 @@
                  :reason (format nil "σπασμένη αλυσίδα στο ~A: περίμενα ~A βρήκα ~A"
                                  rid expect (getf line :chain))))
         (setf (vg-chain graph) expect)
+        (incf (vg-seq graph))
         (%note-latest-at! graph (getf line :at))
         ;; ③ semantic record hash ανά kind: το record-id ΞΑΝΑΒΓΑΙΝΕΙ από τα
         ;; πεδία — relabeling/πλαστό id αδύνατο ακόμη κι αν το payload-hash

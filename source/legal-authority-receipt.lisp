@@ -22,7 +22,7 @@
   (:export #:legal-authority-receipt #:receipt-p
            #:build-receipt #:build-receipts-for-graph
            #:verify-receipt #:receipt-alist
-           #:lr-receipt-id #:lr-provision-id #:lr-effectivity #:lr-effectivity-as-of #:lr-commencement #:lr-valid-until
+           #:lr-receipt-id #:lr-provision-id #:lr-effectivity #:lr-cut-graph-root #:lr-cut-journal-seq #:lr-cut-known-at #:lr-commencement #:lr-valid-until
            #:lr-recorded-from #:lr-content-hash #:lr-genealogy
            #:lr-assurance #:lr-trust-status #:lr-source-artifact))
 
@@ -43,10 +43,12 @@
   release-generation    ; alist (era seq) | :unreleased
   assurance
   trust-status          ; :signed | :unsigned-explicit
-  effectivity-as-of     ; [Φ7-HARDENING #7] legal-instant: το graph-latest-at
-                        ; ΤΗ ΣΤΙΓΜΗ ΤΗΣ ΔΕΣΜΕΥΣΗΣ — το receipt επαληθεύεται
-                        ; ΓΙΑ ΠΑΝΤΑ απέναντι σε ΑΥΤΟ το graph cut: μεταγενέστερο
-                        ; retract/regime event ΔΕΝ το μεταβάλλει (release-scoped)
+  cut-graph-root        ; [REVIEW Ε] chain-head ΤΟΥ cut δέσμευσης
+  cut-journal-seq       ; [Ε] ΑΚΡΙΒΗΣ αριθμός journal γραμμών του cut —
+                        ; καμία 1s timestamp ταυτότητα: ίδιο δευτερόλεπτο,
+                        ; διαφορετικό state ⇒ ΔΙΑΦΟΡΕΤΙΚΟ cut
+  cut-known-at          ; [Ε] το known-at ΤΟΥ ερωτήματος — το effectivity
+                        ; περιορίζεται σε ό,τι ήταν γνωστό ΤΟΤΕ (όχι build-time)
   effectivity)          ; [Φ7 Π5] alist condition_id/condition_class/regime_edge_ids
                         ; — query-ΑΝΕΞΑΡΤΗΤΑ intrinsic πεδία (spec §6)· NIL όταν
                         ; η έκδοση δεν φέρει αιρέσεις/καθεστώτα ⇒ ΤΑΥΤΟΣΗΜΟ
@@ -64,8 +66,12 @@
    ;; αιρέσεις/καθεστώτα διατηρούν byte-ίδια κανονική μορφή (ids σταθερά)
    (when (lr-effectivity r) (list (cons "effectivity" (lr-effectivity r))))
    (list (cons "assurance" (string-downcase (symbol-name (lr-assurance r))))
-         ;; [#7] το as-of ΔΕΣΜΕΥΕΤΑΙ πάντα (schema receipt/2 — νέα ids)
-         (cons "effectivity_as_of" (lr-effectivity-as-of r))
+         ;; [Ε] το ΑΚΡΙΒΕΣ cut ΔΕΣΜΕΥΕΤΑΙ πάντα (schema receipt/3)· το
+         ;; release_root δένει δομικά ένα επίπεδο πάνω: receipt-id ∈
+         ;; receipt_set_root ∈ census ∈ ΥΠΟΓΕΓΡΑΜΜΕΝΟ release root.
+         (cons "cut" (list (cons "graph_root" (lr-cut-graph-root r))
+                           (cons "journal_seq" (lr-cut-journal-seq r))
+                           (cons "known_at" (lr-cut-known-at r))))
          (cons "content_hash" (lr-content-hash r))
          (cons "derivation" (lr-derivation r))
          ;; [Α] δομημένο commencement στο canonical contract (receipt/2)
@@ -82,7 +88,7 @@
                                         "unreleased" (lr-release-generation r)))
          (cons "source_artifact" (lr-source-artifact r))
          (cons "trust_status" (string-downcase (symbol-name (lr-trust-status r))))
-         (cons "receipt_schema" "lawmax/receipt/2")
+         (cons "receipt_schema" "lawmax/receipt/3")
          (cons "valid_until" (%vu (lr-valid-until r))))))
 
 (defun %genealogy-of (graph v)
@@ -132,8 +138,10 @@
                (cons "condition_id" cid)))
        (when redges (list (cons "regime_edge_ids" redges)))))))
 
-(defun build-receipt (graph version &key source-artifact)
-  "Receipt για τη ΣΥΓΚΕΚΡΙΜΕΝΗ έκδοση, με γενεαλογία ΑΠΟ ΤΟΝ ΓΡΑΦΟ."
+(defun build-receipt (graph version &key source-artifact
+                                         (known-at (error "build-receipt: known-at ΥΠΟΧΡΕΩΤΙΚΟ — το receipt δεσμεύει το epistemic cut του ερωτήματος")))
+  "Receipt για τη ΣΥΓΚΕΚΡΙΜΕΝΗ έκδοση, με γενεαλογία ΑΠΟ ΤΟΝ ΓΡΑΦΟ.
+   [Ε] Δεσμεύει ΑΚΡΙΒΕΣ cut {graph_root, journal_seq, known_at}."
   (let* ((genealogy (%genealogy-of graph version))
          (r (make-legal-authority-receipt
              :receipt-id nil
@@ -153,10 +161,10 @@
              :release-generation :unreleased
              :assurance (orchestrator.version-graph:tv-assurance version)
              :trust-status :unsigned-explicit
-             :effectivity-as-of (orchestrator.version-graph:graph-latest-at graph)
-             :effectivity (%effectivity-of
-                           graph version
-                           (orchestrator.version-graph:graph-latest-at graph)))))
+             :cut-graph-root (orchestrator.version-graph:graph-chain-head graph)
+             :cut-journal-seq (orchestrator.version-graph:graph-seq graph)
+             :cut-known-at known-at
+             :effectivity (%effectivity-of graph version known-at))))
     (setf (lr-receipt-id r)
           (orchestrator.canonical-representation:canonical-hash
            (receipt-alist r :without-id t)))
@@ -175,7 +183,8 @@
                (orchestrator.version-graph:version-at graph pid
                                                       :valid-at valid-at :known-at known-at)
              (declare (ignore basis))
-             (when v (push (build-receipt graph v :source-artifact source-artifact)
+             (when v (push (build-receipt graph v :source-artifact source-artifact
+                                                  :known-at known-at)
                            receipts)))
          (orchestrator.version-graph:temporal-uncertainty (e)
            (push (cons pid (orchestrator.version-graph::uncertainty-why e)) uncertain))))
@@ -199,14 +208,34 @@
       (let ((v (gethash (lr-content-hash r)
                         (orchestrator.version-graph::vg-versions graph))))
         (unless v (fail :version-not-in-graph))
-        ;; [Π5+#7] τα effectivity πεδία ΕΠΑΝΥΠΟΛΟΓΙΖΟΝΤΑΙ στο ΔΙΚΟ ΤΟΥ
-        ;; graph cut (effectivity_as_of) — μεταγενέστερο retract/regime
-        ;; event ΔΕΝ ακυρώνει/μεταλλάσσει παλαιό receipt (release-scoped).
-        (unless (orchestrator.version-graph:legal-instant-p (lr-effectivity-as-of r))
-          (fail :effectivity-as-of-missing))
-        (unless (equal (lr-effectivity r)
-                       (%effectivity-of graph v (lr-effectivity-as-of r)))
-          (fail :effectivity-mismatch))
+        ;; [Π5+Ε] τα effectivity πεδία ΕΠΑΝΥΠΟΛΟΓΙΖΟΝΤΑΙ στο ΑΚΡΙΒΕΣ cut
+        ;; {graph_root, journal_seq, known_at}: αν το cut ≠ τρέχουσα κεφαλή,
+        ;; γίνεται PREFIX REPLAY του journal ως το seq και απαιτείται η
+        ;; κεφαλή του prefix ≡ δεσμευμένο graph_root — same-second events
+        ;; ΜΕΤΑ το cut είναι ΑΟΡΑΤΑ: η εγγύηση είναι δομική, όχι χρονική.
+        (unless (and (stringp (lr-cut-graph-root r))
+                     (integerp (lr-cut-journal-seq r))
+                     (orchestrator.version-graph:legal-instant-p (lr-cut-known-at r)))
+          (fail :cut-missing))
+        (let ((cut-graph
+                (if (and (equal (lr-cut-graph-root r)
+                                (orchestrator.version-graph:graph-chain-head graph))
+                         (= (lr-cut-journal-seq r)
+                            (orchestrator.version-graph:graph-seq graph)))
+                    graph
+                    (let ((pg (orchestrator.version-graph:load-graph
+                               (orchestrator.version-graph:graph-body graph)
+                               :up-to-seq (lr-cut-journal-seq r))))
+                      (unless (equal (lr-cut-graph-root r)
+                                     (orchestrator.version-graph:graph-chain-head pg))
+                        (fail :cut-not-in-journal-history))
+                      pg))))
+          (let ((cv (gethash (lr-content-hash r)
+                             (orchestrator.version-graph::vg-versions cut-graph))))
+            (unless cv (fail :version-not-in-cut))
+            (unless (equal (lr-effectivity r)
+                           (%effectivity-of cut-graph cv (lr-cut-known-at r)))
+              (fail :effectivity-mismatch))))
         (unless (equal (lr-provision-id r)
                        (orchestrator.version-graph:tv-provision-id v))
           (fail :provision-id-mismatch))
