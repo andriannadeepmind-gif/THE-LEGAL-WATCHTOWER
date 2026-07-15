@@ -1391,6 +1391,32 @@
                              :reasons '("t") :verifier-hash "V2"))))
             (not (equal (getf a :hash) (getf b :hash)))))
 
+(ts-check "ΦΖ4 [focused critic SERIOUS] cut-journal-seq OVERSHOOT ⇒ FAIL: seq > true (signed-but-unverified) απορρίπτεται με :cut-seq-overshoot"
+          (let* ((pid (format nil "~A/art:1" *ts-body*))
+                 (g2 (orchestrator.version-graph:load-graph *ts-body*))
+                 (v (orchestrator.version-graph:version-at
+                     g2 *ts-pid2* :valid-at "2026-01-15" :known-at "2043-01-01T00:00:00Z")))
+            (declare (ignore pid))
+            (and v
+                 (let ((r (orchestrator.legal-receipt:build-receipt
+                           g2 v :known-at "2043-01-01T00:00:00Z")))
+                   ;; γνήσιο cut ⇒ OK
+                   (and (multiple-value-bind (ok why)
+                            (orchestrator.legal-receipt:verify-receipt g2 r)
+                          (declare (ignore why)) ok)
+                        ;; φουσκωμένο seq (+9999) ⇒ FAIL (δεν καπάρεται σιωπηλά)
+                        (progn
+                          (setf (orchestrator.legal-receipt::lr-cut-journal-seq r)
+                                (+ 9999 (orchestrator.legal-receipt::lr-cut-journal-seq r)))
+                          ;; ξαναϋπολογισμός receipt-id ώστε να περάσει το self-hash
+                          ;; και να δοκιμαστεί ΜΟΝΟ το seq gate
+                          (setf (orchestrator.legal-receipt:lr-receipt-id r)
+                                (orchestrator.canonical-representation:canonical-hash
+                                 (orchestrator.legal-receipt:receipt-alist r :without-id t)))
+                          (multiple-value-bind (ok why)
+                              (orchestrator.legal-receipt:verify-receipt g2 r)
+                            (and (not ok) (eq why :cut-seq-overshoot)))))))))
+
 (ts-check "ΦΖ6 [#6 legacy hash] το γενικό %version-hash ΚΑΤΑΡΓΗΘΗΚΕ (όχι fboundp)· υπάρχουν ΜΟΝΟ %version-hash-2 (writers) + %legacy-version-hash-1 (read-only /1)· κανένας writer δεν καλεί το legacy (ΑΚΡΙΒΩΣ 1 call-site)"
           (and (not (fboundp (find-symbol "%VERSION-HASH" :orchestrator.version-graph)))
                (fboundp (find-symbol "%VERSION-HASH-2" :orchestrator.version-graph))

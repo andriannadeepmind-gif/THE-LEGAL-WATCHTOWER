@@ -189,7 +189,8 @@
      (α) attested latest.json ⇒ release root·
      (β) census.json του release ⇒ temporal.graph_root ≡ ζωντανή chain-head·
      (γ) release root ∈ transparency log (tlog-verify + membership).
-   Επιστρέφει plist (:assurance \"release-anchored\"|\"provisional-unanchored\"
+   Επιστρέφει typed opaque anchor (verified-release-anchor με assurance
+   \"internally-release-consistent\" | provisional-release-anchor
    :release-root str|NIL :reasons (ονομαστικοί λόγοι)). ΚΑΘΕ αποτυχία =
    ονομαστικός λόγος — ποτέ σιωπηλό downgrade σε «anchored»."
   (let* ((root-dir (uiop:ensure-directory-pathname
@@ -376,7 +377,7 @@
       ;; παρερμηνεύσει αναστολή/εκκρεμότητα ως ισχύον κείμενο (spec §6).
       ;; [Φ7-HARDENING #5/#6] ΚΑΘΕ απάντηση φέρει tra/1: deterministic
       ;; attestation με ΠΑΡΑΓΟΜΕΝΑ (όχι caller-supplied) αγκυρωτικά +
-      ;; assurance release-anchored|provisional-unanchored + ονομαστικούς
+      ;; assurance internally-release-consistent|provisional-unanchored + ονομαστικούς
       ;; λόγους — καμία «verified» ένδειξη χωρίς επιβεβαιωμένο release root.
       (let* ((tra-fields (%tra-fields-for corpus-id graph pid valid-at known-at v)))
       (if (null v)

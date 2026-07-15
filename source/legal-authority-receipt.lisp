@@ -252,6 +252,14 @@
                     (unless (equal (lr-cut-graph-root r)
                                    (orchestrator.version-graph:graph-chain-head pg))
                       (fail :cut-not-in-journal-history))
+                    ;; [focused critic SERIOUS] το load-graph :up-to-seq ΚΑΠΑΡΕΙ
+                    ;; στο μήκος του journal — άρα cut-seq ≥ true περνούσε
+                    ;; σιωπηλά (signed-but-unverified). Απαιτούμε ΑΚΡΙΒΗ ισότητα
+                    ;; του prefix seq: overshoot ⇒ pg-seq = true < claimed ⇒
+                    ;; ρήξη· η αξίωση «exact cut» γίνεται ΔΟΜΙΚΗ, όχι διακοσμητική.
+                    (unless (= (lr-cut-journal-seq r)
+                               (orchestrator.version-graph:graph-seq pg))
+                      (fail :cut-seq-overshoot))
                     pg))))
         ;; 3 — ΟΛΑ τα graph-derived πεδία ΕΠΙ ΤΟΥ ΑΚΡΙΒΟΥΣ bitemporal record.
         ;; [PRE-#4 FREEZE #4] Το content-hash ΔΕΝ αρκεί: η διτεμπορική

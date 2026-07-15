@@ -2360,7 +2360,7 @@
    not-yet-effective(cid since) | suspended(edge-id vhash) |
    uncertain(λόγος)) + όλα τα αγκυρωτικά πεδία. ΧΩΡΙΣ υπογραφή: ο verifier
    ΑΝΑΠΑΡΑΓΕΙ και συγκρίνει byte-wise — αγκύρωση στο release root κατά
-   spec §6 (release-anchored ⇔ chain-head = census graph_root υπογεγραμμένου
+   spec §6 (internally-release-consistent ⇔ chain-head = census graph_root
    release· η κρίση αυτή γίνεται στον καταναλωτή/verifier με το log)."
   (%require-anchor anchor)
   (%require-scope-mode scope-mode)

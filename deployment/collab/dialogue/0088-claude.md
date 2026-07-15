@@ -1244,3 +1244,38 @@ Proof: temporal-semantics 110/110, receipt 21/21, version-graph 18/18,
 parity 31/31, corpus-service 53/53, as-known-e2e 27/27, temporal-verifier
 2/2. Σε εξέλιξη: focused adversarial re-check TRA/receipt/anchor. Μετά,
 αν καθαρός: #4 (εγκρίνεται)· owner proof ΜΕΤΑ το #4· Π7/GAAF-1 παγωμένα.
+
+---
+
+## [0088 FOCUSED ADVERSARIAL RE-CHECK — TRA/receipt/anchor]
+
+Ένας ανεξάρτητος κριτής στοχευμένος ΜΟΝΟ στα TRA/receipt/anchor contracts:
+- **WRONG (στόχος f29f5436) — ΗΔΗ ΚΛΕΙΣΤΟ (faa39951)**: anchor setf-forge —
+  τα mutable slots επέτρεπαν `(setf ra-assurance provisional "internally-
+  release-consistent")` ⇒ verified wording στο hash. Το read-only commit το
+  έκλεισε ΠΡΙΝ την αναφορά (ο κριτής το επιβεβαίωσε εμπειρικά στο HEAD:
+  setf undefined, copy-structure διατηρεί provisional).
+- **SERIOUS — ΚΛΕΙΣΤΟ (τώρα)**: cut-journal-seq overshoot — το
+  `load-graph :up-to-seq` καπάρει σιωπηλά στο μήκος journal, άρα κάθε
+  cut-seq ≥ true περνούσε (signed-but-unverified metadata). Κλείσιμο:
+  απαίτηση `(= claimed (graph-seq pg))` μετά το prefix replay ⇒
+  :cut-seq-overshoot (η αξίωση «exact cut» έγινε ΔΟΜΙΚΗ). Lock ΦΖ4.
+  Ελαφρυντικό που δηλώνει ο κριτής: το graph_root κρυπτο-κάρφωνε ΟΛΑ τα
+  νομικά πεδία, άρα ΚΑΜΙΑ ψευδής νομική απάντηση δεν πιστοποιήθηκε ποτέ —
+  μόνο το seq metadata ήταν αναξιόπιστο.
+- **MINOR — ΚΛΕΙΣΤΟ**: stale «release-anchored» wording σε 3 docstrings/
+  σχόλια (δεν εκπεμπόταν) ⇒ «internally-release-consistent».
+
+Ρητά ΑΝΤΕΞΑΝ (κριτής): opaque construction (κανένας εξαγόμενος verified
+constructor)· verifier-hash μόνο από anchor· content commitment σε ΟΛΑ τα
+text-bearing outcomes (τα error/no-version ΔΕΝ φέρουν κείμενο)· receipt
+match σε content-hash + recorded-from (όχι μόνο hash)· prefix-replay
+δομικό· python verifier σε συμφωνία με attestation/2. Υπόλοιπο NOTE:
+`::`/slot-value πρόσβαση = same-image Lisp (ίδια βαθμίδα με κάθε internal),
+όχι ρήξη exported-API — δηλωμένο.
+
+Proof: temporal-semantics 111/111, receipt 21/21, parity 31/31,
+as-known-e2e 27/27, version-graph 18/18, corpus-service 53/53,
+temporal-verifier 2/2 — 0 failed. Ο re-check ΒΓΗΚΕ ΚΑΘΑΡΟΣ (WRONG ήδη
+κλειστό, SERIOUS+MINOR κλείστηκαν). Κατά την εντολή: #4 ΕΓΚΡΙΝΕΤΑΙ να ξεκινήσει·
+owner Docker proof ΜΕΤΑ το #4· Π7/GAAF-1 παγωμένα.
