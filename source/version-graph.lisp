@@ -262,6 +262,20 @@
 ;;; Κανονικά hashes — ΜΟΝΟ μέσω της έδρας canonical serialization (Φ1β spec)
 ;;; ----------------------------------------------------------------------------
 
+(defun %version-hash-2 (provision-id text heading commencement status previous)
+  "[REVIEW Α] text-version/2 ταυτότητα — domain-separated, ΔΟΜΗΜΕΝΟ
+   commencement (type+value), ΚΑΝΕΝΑ conditional μέσα σε πεδίο ημερομηνίας."
+  (%require-commencement commencement "version-hash/2")
+  (orchestrator.canonical-representation:canonical-hash
+   (list (cons "commencement_type" (string-downcase (symbol-name (first commencement))))
+         (cons "commencement_value" (second commencement))
+         (cons "heading" (or heading :null))
+         (cons "previous_version_hash" (string-downcase (string previous)))
+         (cons "provision_id" provision-id)
+         (cons "schema" "lawmax/text-version/2")
+         (cons "status" (string-downcase (symbol-name status)))
+         (cons "text" text))))
+
 (defun %version-hash (provision-id text heading valid-from status previous)
   "Ταυτότητα περιεχομένου έκδοσης — ΧΩΡΙΣ recorded (bit-reproducible σύνολο)."
   (orchestrator.canonical-representation:canonical-hash
@@ -608,16 +622,16 @@
   ;; η γένεση σώματος είναι γεγονός, όχι αίρεση — fail-closed.
   (when (commencement-cid (getf vspec :commencement))
     (error 'invalid-edge :reason "genesis με :conditional commencement — η γένεση απαιτεί (:fixed legal-date)"))
-  (let* ((vh (%version-hash (getf vspec :provision-id) (getf vspec :text)
-                            (getf vspec :heading)
-                            (commencement-key (getf vspec :commencement))
-                            (getf vspec :status) :genesis))
+  (let* ((vh (%version-hash-2 (getf vspec :provision-id) (getf vspec :text)
+                              (getf vspec :heading) (getf vspec :commencement)
+                              (getf vspec :status) :genesis))
          (line (%journal! graph
                           (list :kind :text-version :record-id vh
                                 :provision-id (getf vspec :provision-id)
                                 :text (getf vspec :text)
                                 :heading (getf vspec :heading)
-                                :valid-from (commencement-key (getf vspec :commencement))
+                                :schema :text-version/2
+                                :commencement (getf vspec :commencement)
                                 :status (getf vspec :status)
                                 :previous "genesis"
                                 :created-by (or derivation "bootstrap")
@@ -708,10 +722,9 @@
       ;; replay: τα to-specs αναπαράγουν ΑΚΡΙΒΩΣ τις δηλωμένες νέες εκδόσεις
       (let* ((prev-hash (if cur (tv-version-hash cur) :genesis))
              (tos (loop for vs in (getf espec :to-specs)
-                        collect (list vs (%version-hash
+                        collect (list vs (%version-hash-2
                                           (getf vs :provision-id) (getf vs :text)
-                                          (getf vs :heading)
-                                          (commencement-key (getf vs :commencement))
+                                          (getf vs :heading) (getf vs :commencement)
                                           (getf vs :status) prev-hash))))
              (to-hashes (mapcar #'second tos))
              (eid (%edge-hash op target from to-hashes
@@ -781,7 +794,8 @@
                                             :provision-id (getf vs :provision-id)
                                             :text (getf vs :text)
                                             :heading (getf vs :heading)
-                                            :valid-from (commencement-key (getf vs :commencement))
+                                            :schema :text-version/2
+                                            :commencement (getf vs :commencement)
                                             :status (getf vs :status)
                                             :previous (string-downcase (string prev-hash))
                                             :created-by eid
@@ -1034,27 +1048,52 @@
         ;; ξαναγραφόταν συνεπές.
         (case (getf line :kind)
           (:text-version
-           (let ((semantic (%version-hash (getf line :provision-id) (getf line :text)
-                                          (getf line :heading) (getf line :valid-from)
-                                          (getf line :status)
-                                          (if (equal (getf line :previous) "genesis")
-                                              :genesis (getf line :previous)))))
-             (unless (equal semantic rid)
-               (error 'journal-corruption
-                      :reason (format nil "text-version ~A: semantic hash ~A ≠ record-id — πλαστή ταυτότητα έκδοσης" rid semantic))))
-           (%install-version graph
+           ;; [REVIEW Α] Δύο σχήματα: /2 (canonical — δομημένο commencement)
+           ;; και LEGACY /1 decoder (μόνο ανάγνωση, ΜΟΝΟ :fixed — journals
+           ;; δεν ξαναγράφονται· conditional sentinel σε /1 = ΑΠΑΓΟΡΕΥΜΕΝΟ:
+           ;; το /1 conditional αποσύρθηκε ως μη δημοσιευμένο candidate).
+           (let ((c (case (getf line :schema)
+                      (:text-version/2
+                       (let ((cc (%require-commencement (getf line :commencement)
+                                                        "text-version/2 replay")))
+                         (unless (equal rid (%version-hash-2
+                                             (getf line :provision-id) (getf line :text)
+                                             (getf line :heading) cc
+                                             (getf line :status)
+                                             (if (equal (getf line :previous) "genesis")
+                                                 :genesis (getf line :previous))))
+                           (error 'journal-corruption
+                                  :reason (format nil "text-version/2 ~A: semantic hash ≠ record-id — πλαστή ταυτότητα έκδοσης" rid)))
+                         cc))
+                      ((nil)
+                       (let ((vf (getf line :valid-from)))
+                         (unless (legal-date-p vf)
+                           (error 'journal-corruption
+                                  :reason (format nil "legacy text-version ~A: μη-fixed valid-from ~S — το /1 conditional αποσύρθηκε, δεν αποκωδικοποιείται" rid vf)))
+                         (unless (equal rid (%version-hash
+                                             (getf line :provision-id) (getf line :text)
+                                             (getf line :heading) vf
+                                             (getf line :status)
+                                             (if (equal (getf line :previous) "genesis")
+                                                 :genesis (getf line :previous))))
+                           (error 'journal-corruption
+                                  :reason (format nil "text-version ~A: semantic hash ≠ record-id — πλαστή ταυτότητα έκδοσης" rid)))
+                         (list :fixed vf)))
+                      (t (error 'journal-corruption
+                                :reason (format nil "text-version ~A: άγνωστο schema ~S" rid (getf line :schema)))))))
+             (%install-version graph
                              (make-text-version
                               :version-hash rid
                               :provision-id (getf line :provision-id)
                               :text (getf line :text) :heading (getf line :heading)
-                              :commencement (parse-commencement (getf line :valid-from))
+                              :commencement c
                               :valid-until :open
                               :recorded-from (%recorded-of line) :recorded-until :current
                               :status (getf line :status)
                               :previous-version-hash (if (equal (getf line :previous) "genesis")
                                                          :genesis (getf line :previous))
                               :created-by (getf line :created-by)
-                              :assurance (getf line :assurance))))
+                              :assurance (getf line :assurance)))))
           (:amendment-edge
            (let ((semantic (%edge-hash (getf line :op) (getf line :target)
                                        (getf line :from) (getf line :to)

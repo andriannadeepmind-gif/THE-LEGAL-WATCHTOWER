@@ -22,7 +22,7 @@
   (:export #:legal-authority-receipt #:receipt-p
            #:build-receipt #:build-receipts-for-graph
            #:verify-receipt #:receipt-alist
-           #:lr-receipt-id #:lr-provision-id #:lr-effectivity #:lr-effectivity-as-of #:lr-valid-from #:lr-valid-until
+           #:lr-receipt-id #:lr-provision-id #:lr-effectivity #:lr-effectivity-as-of #:lr-commencement #:lr-valid-until
            #:lr-recorded-from #:lr-content-hash #:lr-genealogy
            #:lr-assurance #:lr-trust-status #:lr-source-artifact))
 
@@ -31,10 +31,11 @@
 (defstruct (legal-authority-receipt (:conc-name lr-) (:predicate receipt-p))
   receipt-id            ; sha256 canonical ΟΛΟΚΛΗΡΟΥ του receipt (πλην του ίδιου)
   provision-id          ; canonical legal id (provision-id-string)
-  expression            ; valid-from της έκδοσης (expression-level ταυτότητα)
+  commencement          ; [REVIEW Α] το sum type ΑΥΤΟΥΣΙΟ (:fixed d)|(:conditional cid)
+                        ; — ΚΑΜΙΑ condition-ταυτότητα μεταμφιεσμένη σε ημερομηνία
   source-artifact       ; alist: source_digest/prov_content_sha256/channel — από τα prov stamps
   derivation            ; string: created-by της ΓΕΝΕΣΗΣ (bootstrap:<corpus> | edge-id)
-  valid-from valid-until
+  valid-until
   recorded-from recorded-until
   genealogy             ; ΠΛΗΡΗΣ λίστα created-by από genesis → παρούσα (όχι last-touch)
   content-hash          ; version-hash της έκδοσης
@@ -67,7 +68,11 @@
          (cons "effectivity_as_of" (lr-effectivity-as-of r))
          (cons "content_hash" (lr-content-hash r))
          (cons "derivation" (lr-derivation r))
-         (cons "expression" (lr-expression r))
+         ;; [Α] δομημένο commencement στο canonical contract (receipt/2)
+         (cons "commencement"
+               (let ((c (lr-commencement r)))
+                 (list (cons "type" (string-downcase (symbol-name (first c))))
+                       (cons "value" (second c)))))
          (cons "genealogy" (lr-genealogy r))
          (cons "previous_version_hash" (lr-previous-version-hash r))
          (cons "provision_id" (lr-provision-id r))
@@ -77,7 +82,7 @@
                                         "unreleased" (lr-release-generation r)))
          (cons "source_artifact" (lr-source-artifact r))
          (cons "trust_status" (string-downcase (symbol-name (lr-trust-status r))))
-         (cons "valid_from" (lr-valid-from r))
+         (cons "receipt_schema" "lawmax/receipt/2")
          (cons "valid_until" (%vu (lr-valid-until r))))))
 
 (defun %genealogy-of (graph v)
@@ -133,11 +138,10 @@
          (r (make-legal-authority-receipt
              :receipt-id nil
              :provision-id (orchestrator.version-graph:tv-provision-id version)
-             :expression (orchestrator.version-graph:tv-commencement-key version)
+             :commencement (orchestrator.version-graph:tv-commencement version)
              :source-artifact (or source-artifact
                                   (list (cons "declared" "missing-source-artifact")))
              :derivation (first genealogy)
-             :valid-from (orchestrator.version-graph:tv-commencement-key version)
              :valid-until (orchestrator.version-graph:tv-valid-until version)
              :recorded-from (orchestrator.version-graph:tv-recorded-from version)
              :recorded-until (orchestrator.version-graph:tv-recorded-until version)
@@ -206,9 +210,9 @@
         (unless (equal (lr-provision-id r)
                        (orchestrator.version-graph:tv-provision-id v))
           (fail :provision-id-mismatch))
-        (unless (equal (lr-valid-from r)
-                       (orchestrator.version-graph:tv-commencement-key v))
-          (fail :valid-from-mismatch))
+        (unless (equal (lr-commencement r)
+                       (orchestrator.version-graph:tv-commencement v))
+          (fail :commencement-mismatch))
         (unless (equal (lr-previous-version-hash r)
                        (let ((p (orchestrator.version-graph:tv-previous-version-hash v)))
                          (if (eq p :genesis) "genesis" p)))

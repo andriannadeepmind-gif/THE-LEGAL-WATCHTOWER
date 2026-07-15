@@ -1148,6 +1148,21 @@
                             (orchestrator.legal-receipt:verify-receipt *ts-g* r)
                           (and (not ok) why))))))
 
+(ts-check "ΑΦ [REVIEW Α] ΚΑΘΕ νέα text-version γραμμή = schema /2 με ΔΟΜΗΜΕΝΟ commencement· ΚΑΝΕΝΑ conditional σε πεδίο valid-from· υπάρχει τουλάχιστον μία /2 conditional (η μορφή αποδεδειγμένα σε χρήση)"
+          (let ((lines (orchestrator.journal:read-lines
+                        (orchestrator.version-graph::vg-path *ts-g*))))
+            (and (every (lambda (l)
+                          (or (not (eq (getf l :kind) :text-version))
+                              (and (eq (getf l :schema) :text-version/2)
+                                   (null (getf l :valid-from))
+                                   (orchestrator.version-graph:commencement-p
+                                    (getf l :commencement)))))
+                        lines)
+                 (some (lambda (l)
+                         (and (eq (getf l :kind) :text-version)
+                              (eq :conditional (first (getf l :commencement)))))
+                       lines))))
+
 (format t "~%========================================~%")
 (format t "TEMPORAL-SEMANTICS [0088 Φ7 Π1-Π5+Η1-Η3+Η7+ΒΦ]: ~D passed, ~D failed~%" *ts-pass* *ts-fail*)
 (format t "========================================~%")

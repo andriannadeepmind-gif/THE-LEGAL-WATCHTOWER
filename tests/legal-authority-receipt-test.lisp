@@ -66,8 +66,8 @@
           (lr-tamper (lambda (r) (setf (orchestrator.legal-receipt::lr-provision-id r)
                                        "gr/syntagma#art:17"))))
 (lr-check "②β αλλαγμένο valid-from ⇒ FAIL (χρονική παραχάραξη αδύνατη)"
-          (lr-tamper (lambda (r) (setf (orchestrator.legal-receipt::lr-valid-from r)
-                                       "1975-06-11"))))
+          (lr-tamper (lambda (r) (setf (orchestrator.legal-receipt::lr-commencement r)
+                                       '(:fixed "1900-01-01")))))
 (lr-check "②γ αλλαγμένο content-hash ⇒ FAIL"
           (lr-tamper (lambda (r) (setf (orchestrator.legal-receipt::lr-content-hash r)
                                        (make-string 64 :initial-element #\0)))))
