@@ -299,12 +299,21 @@
                 (setf tlog-size (getf info :tree-size 0)
                       tlog-root (or (getf info :log-root) ""))))
           (error () nil)))
-      (list :release-anchor/1
-            :assurance (if reasons "provisional-unanchored" "release-anchored")
-            :release-root (or release-root "")
-            :reasons (nreverse reasons)
-            :tlog-size tlog-size :tlog-root tlog-root
-            :registry-digest (scope-registry-digest)))))
+      ;; [PRE-#4 FREEZE #1/#7] typed anchor — ΜΟΝΟ εδώ κατασκευάζεται verified·
+      ;; ΚΑΘΕ ονομαστικός λόγος αποτυχίας ⇒ provisional. Το ΑΝΩΤΑΤΟ verified
+      ;; assurance χωρίς pinned owner root είναι 'internally-release-consistent'
+      ;; (ΠΟΤΕ wording που υπονοεί εξωτερική εκδοτική ταυτότητα — B-S2/spec).
+      (if reasons
+          (orchestrator.version-graph:make-provisional-anchor
+           :reasons (nreverse reasons)
+           :verifier-hash (temporal-verifier-hash))
+          (orchestrator.version-graph::%make-verified-anchor
+           :assurance "internally-release-consistent"
+           :release-root (or release-root "")
+           :reasons '()
+           :tlog-size tlog-size :tlog-root tlog-root
+           :registry-digest (scope-registry-digest)
+           :verifier-hash (temporal-verifier-hash))))))
 
 (let ((cache nil))
   (defun scope-registry-digest ()
@@ -329,13 +338,13 @@
                  graph v :source-artifact (%source-artifact-for corpus-id)
                          :known-at known-at))
                ""))
+         ;; [#2] verifier-hash ΔΕΝ περνά ξεχωριστά — ζει ΜΕΣΑ στο anchor.
          (tra (orchestrator.version-graph:make-effectivity-attestation
                graph pid :valid-at valid-at :known-at known-at
-               :corpus-id corpus-id :anchor anchor :receipt-id receipt-id
-               :verifier-hash (temporal-verifier-hash))))
+               :corpus-id corpus-id :anchor anchor :receipt-id receipt-id)))
     (list :tra tra
-          :tra-assurance (getf (rest anchor) :assurance)
-          :tra-reasons (getf (rest anchor) :reasons))))
+          :tra-assurance (orchestrator.version-graph:ra-assurance anchor)
+          :tra-reasons (orchestrator.version-graph:ra-reasons anchor))))
 
 (defun as-known-error-tra (corpus-id article-label &key valid-at known-at)
   "[Δ2] TRA και για τις ΕΞΑΙΡΕΤΙΚΕΣ εκβάσεις (uncertain/unknown/scope-

@@ -197,7 +197,7 @@
 (defun %tra-json-fields (r)
   "[Φ7-HARDENING #5] Τα tra/1 πεδία της /as-known απάντησης — ΠΑΝΤΑ παρόντα:
    canonical+hash του deterministic attestation, assurance
-   release-anchored|provisional-unanchored, ονομαστικοί λόγοι όταν
+   internally-release-consistent|provisional-unanchored, ονομαστικοί λόγοι όταν
    unanchored, και τα αγκυρωτικά (release_root, graph_chain_head,
    verifier_hash) ώστε ο καταναλωτής να ΑΝΑΠΑΡΑΓΕΙ και να ελέγξει."
   (let ((tra (getf r :tra)))

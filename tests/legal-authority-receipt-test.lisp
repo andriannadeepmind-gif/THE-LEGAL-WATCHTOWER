@@ -80,6 +80,28 @@
 (lr-check "②στ αλλαγμένο source-artifact ⇒ FAIL (η πηγή ΜΕΣΑ στη δέσμευση — AUTH-02 ροή)"
           (lr-tamper (lambda (r) (setf (orchestrator.legal-receipt::lr-source-artifact r)
                                        '(("content_sha256" . "sha256:ξένο"))))))
+;;; [PRE-#4 FREEZE #4] verify-receipt-intrinsic ελέγχει ΟΛΑ τα graph-derived
+;;; πεδία επί του cut-version — τα ΝΕΑ πεδία δεν πρέπει να μένουν άτρωτα.
+(lr-check "②ζ [#4] αλλαγμένο valid-until ⇒ FAIL (ελέγχεται πλέον επί cut-version)"
+          (lr-tamper (lambda (r) (setf (orchestrator.legal-receipt::lr-valid-until r) "1999-01-01"))))
+(lr-check "②η [#4] αλλαγμένο recorded-until ⇒ FAIL"
+          (lr-tamper (lambda (r) (setf (orchestrator.legal-receipt::lr-recorded-until r) "1999-01-01T00:00:00Z"))))
+(lr-check "②θ [#4] αλλαγμένο recorded-from ⇒ FAIL"
+          (lr-tamper (lambda (r) (setf (orchestrator.legal-receipt::lr-recorded-from r) "1999-01-01T00:00:00Z"))))
+(lr-check "②ι [#4] αλλαγμένο assurance ⇒ FAIL"
+          (lr-tamper (lambda (r) (setf (orchestrator.legal-receipt::lr-assurance r) :reconstructed))))
+(lr-check "②κ [#4] αλλαγμένο derivation ⇒ FAIL"
+          (lr-tamper (lambda (r) (setf (orchestrator.legal-receipt::lr-derivation r) "fake-derivation"))))
+(lr-check "②λ [#4] verify-receipt-intrinsic ΕΙΝΑΙ το πραγματικό όνομα (verify-receipt = alias)"
+          (multiple-value-bind (ok why)
+              (orchestrator.legal-receipt:verify-receipt-intrinsic
+               *lr-graph*
+               (orchestrator.legal-receipt:build-receipt
+                *lr-graph*
+                (orchestrator.version-graph:version-at *lr-graph* "gr/syntagma#art:16"
+                                                       :valid-at *lr-today* :known-at *lr-now*)
+                :source-artifact *lr-src* :known-at *lr-now*))
+            (declare (ignore why)) ok))
 
 ;;; ③ Ντετερμινισμός + γενεαλογία με πραγματική ακμή
 (lr-check "③ ίδιο version ⇒ ίδιο receipt-id (αναπαραγωγιμότητα)"

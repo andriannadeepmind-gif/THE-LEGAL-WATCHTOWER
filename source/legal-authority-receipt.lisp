@@ -21,7 +21,7 @@
   (:use :cl)
   (:export #:legal-authority-receipt #:receipt-p
            #:build-receipt #:build-receipts-for-graph
-           #:verify-receipt #:receipt-alist
+           #:verify-receipt #:verify-receipt-intrinsic #:receipt-alist
            #:lr-receipt-id #:lr-provision-id #:lr-effectivity #:lr-cut-graph-root #:lr-cut-journal-seq #:lr-cut-known-at #:lr-commencement #:lr-valid-until
            #:lr-recorded-from #:lr-content-hash #:lr-genealogy
            #:lr-assurance #:lr-trust-status #:lr-source-artifact))
@@ -138,11 +138,29 @@
                (cons "condition_id" cid)))
        (when redges (list (cons "regime_edge_ids" redges)))))))
 
-(defun build-receipt (graph version &key source-artifact
+(defun %current-record-of (graph version)
+  "[PRE-#4 FREEZE #4] Το ΤΡΕΧΟΝ bitemporal record του content-hash της VERSION
+   (recorded-until :current) στον γράφο — το receipt περιγράφει ΠΑΝΤΑ την
+   τρέχουσα γνώση (όπως το version-at στην παραγωγή), ΟΧΙ superseded snapshot.
+   Η διτεμπορική supersession διχάζει ένα content-hash σε πολλά records· ΕΝΑ
+   είναι :current. Αν το δοθέν object είναι ήδη :current, επιστρέφεται ως έχει."
+  (if (eq :current (orchestrator.version-graph:tv-recorded-until version))
+      version
+      (or (find-if (lambda (rec)
+                     (and (equal (orchestrator.version-graph:tv-version-hash rec)
+                                 (orchestrator.version-graph:tv-version-hash version))
+                          (eq :current (orchestrator.version-graph:tv-recorded-until rec))))
+                   (gethash (orchestrator.version-graph:tv-provision-id version)
+                            (orchestrator.version-graph::vg-by-provision graph)))
+          version)))
+
+(defun build-receipt (graph version-in &key source-artifact
                                          (known-at (error "build-receipt: known-at ΥΠΟΧΡΕΩΤΙΚΟ — το receipt δεσμεύει το epistemic cut του ερωτήματος")))
-  "Receipt για τη ΣΥΓΚΕΚΡΙΜΕΝΗ έκδοση, με γενεαλογία ΑΠΟ ΤΟΝ ΓΡΑΦΟ.
-   [Ε] Δεσμεύει ΑΚΡΙΒΕΣ cut {graph_root, journal_seq, known_at}."
-  (let* ((genealogy (%genealogy-of graph version))
+  "Receipt για την έκδοση, με γενεαλογία ΑΠΟ ΤΟΝ ΓΡΑΦΟ. [Ε] Δεσμεύει ΑΚΡΙΒΕΣ
+   cut {graph_root, journal_seq, known_at}. [#4] Περιγράφει το ΤΡΕΧΟΝ
+   bitemporal record (τρέχουσα γνώση), όχι superseded snapshot."
+  (let* ((version (%current-record-of graph version-in))
+         (genealogy (%genealogy-of graph version))
          (r (make-legal-authority-receipt
              :receipt-id nil
              :provision-id (orchestrator.version-graph:tv-provision-id version)
@@ -192,11 +210,24 @@
     (values (sort receipts #'string< :key #'lr-provision-id)
             (sort uncertain #'string< :key #'car))))
 
-(defun verify-receipt (graph r)
-  "ΠΛΗΡΗΣ επανέλεγχος: (1) receipt-id recompute, (2) η έκδοση υπάρχει στον
-   γράφο και ΚΑΘΕ δεσμευμένο πεδίο ταυτίζεται, (3) γενεαλογία replay από τον
-   γράφο κρίκο-προς-κρίκο (όχι count). (values T :ok) ή (values NIL λόγος) —
-   αποτυχία ΟΠΟΥΔΗΠΟΤΕ ⇒ FAIL, ποτέ μερικό πράσινο."
+(defun %vu-eq (a b) (equal a b))
+(defun %ru-eq (a b) (equal a b))
+
+(defun verify-receipt-intrinsic (graph r)
+  "[PRE-#4 FREEZE #4/#5] INTRINSIC receipt verification — self-hash + ΑΚΡΙΒΕΣ
+   cut + ΟΛΑ ΤΑ GRAPH-DERIVED ΠΕΔΙΑ επί του cut-version:
+     (1) receipt-id = canonical-hash ΟΛΟΚΛΗΡΟΥ του receipt (πλην id)·
+     (2) cut {graph_root, journal_seq, known_at} typed· prefix replay ως το
+         seq + prefix chain-head ≡ δεσμευμένο graph_root (same-second/
+         μεταγενέστερα events ΑΟΡΑΤΑ — δομική εγγύηση, όχι χρονική)·
+     (3) ΚΑΘΕ graph-derived πεδίο ≡ CUT-VERSION: provision-id, commencement,
+         previous, valid-until, recorded-from, recorded-until, derivation,
+         assurance, genealogy (replay), effectivity(cut, known-at).
+   ΔΕΝ αποδεικνύει (ανήκουν στο verify-authority-proof-bundle, #4):
+   source bytes, receipt membership σε signed receipt-set, census/release
+   signature, TSA, tlog inclusion, TRA. Ονομαστικά ΞΕΧΩΡΙΣΤΟ ώστε ΚΑΝΕΝΑΣ
+   να μη νομίσει ότι εδώ αποδεικνύεται εκδοτική αυθεντία.
+   (values T :ok) ή (values NIL λόγος) — αποτυχία ΟΠΟΥΔΗΠΟΤΕ ⇒ FAIL."
   (block verify
     (flet ((fail (why) (return-from verify (values nil why))))
       ;; 1 — αυτο-συνέπεια δέσμευσης
@@ -204,51 +235,74 @@
                      (orchestrator.canonical-representation:canonical-hash
                       (receipt-alist r :without-id t)))
         (fail :receipt-id-mismatch))
-      ;; 2 — η έκδοση στον γράφο
-      (let ((v (gethash (lr-content-hash r)
-                        (orchestrator.version-graph::vg-versions graph))))
-        (unless v (fail :version-not-in-graph))
-        ;; [Π5+Ε] τα effectivity πεδία ΕΠΑΝΥΠΟΛΟΓΙΖΟΝΤΑΙ στο ΑΚΡΙΒΕΣ cut
-        ;; {graph_root, journal_seq, known_at}: αν το cut ≠ τρέχουσα κεφαλή,
-        ;; γίνεται PREFIX REPLAY του journal ως το seq και απαιτείται η
-        ;; κεφαλή του prefix ≡ δεσμευμένο graph_root — same-second events
-        ;; ΜΕΤΑ το cut είναι ΑΟΡΑΤΑ: η εγγύηση είναι δομική, όχι χρονική.
-        (unless (and (stringp (lr-cut-graph-root r))
-                     (integerp (lr-cut-journal-seq r))
-                     (orchestrator.version-graph:legal-instant-p (lr-cut-known-at r)))
-          (fail :cut-missing))
-        (let ((cut-graph
-                (if (and (equal (lr-cut-graph-root r)
-                                (orchestrator.version-graph:graph-chain-head graph))
-                         (= (lr-cut-journal-seq r)
-                            (orchestrator.version-graph:graph-seq graph)))
-                    graph
-                    (let ((pg (orchestrator.version-graph:load-graph
-                               (orchestrator.version-graph:graph-body graph)
-                               :up-to-seq (lr-cut-journal-seq r))))
-                      (unless (equal (lr-cut-graph-root r)
-                                     (orchestrator.version-graph:graph-chain-head pg))
-                        (fail :cut-not-in-journal-history))
-                      pg))))
-          (let ((cv (gethash (lr-content-hash r)
-                             (orchestrator.version-graph::vg-versions cut-graph))))
-            (unless cv (fail :version-not-in-cut))
-            (unless (equal (lr-effectivity r)
-                           (%effectivity-of cut-graph cv (lr-cut-known-at r)))
-              (fail :effectivity-mismatch))))
-        (unless (equal (lr-provision-id r)
-                       (orchestrator.version-graph:tv-provision-id v))
-          (fail :provision-id-mismatch))
-        (unless (equal (lr-commencement r)
-                       (orchestrator.version-graph:tv-commencement v))
-          (fail :commencement-mismatch))
-        (unless (equal (lr-previous-version-hash r)
-                       (let ((p (orchestrator.version-graph:tv-previous-version-hash v)))
-                         (if (eq p :genesis) "genesis" p)))
-          (fail :previous-mismatch))
-        ;; 3 — γενεαλογία replay
-        (handler-case
-            (unless (equal (lr-genealogy r) (%genealogy-of graph v))
-              (fail :genealogy-mismatch))
-          (error () (fail :genealogy-broken)))
-        (values t :ok)))))
+      ;; 2 — ΑΚΡΙΒΕΣ cut (prefix replay)
+      (unless (and (stringp (lr-cut-graph-root r))
+                   (integerp (lr-cut-journal-seq r))
+                   (orchestrator.version-graph:legal-instant-p (lr-cut-known-at r)))
+        (fail :cut-missing))
+      (let ((cut-graph
+              (if (and (equal (lr-cut-graph-root r)
+                              (orchestrator.version-graph:graph-chain-head graph))
+                       (= (lr-cut-journal-seq r)
+                          (orchestrator.version-graph:graph-seq graph)))
+                  graph
+                  (let ((pg (orchestrator.version-graph:load-graph
+                             (orchestrator.version-graph:graph-body graph)
+                             :up-to-seq (lr-cut-journal-seq r))))
+                    (unless (equal (lr-cut-graph-root r)
+                                   (orchestrator.version-graph:graph-chain-head pg))
+                      (fail :cut-not-in-journal-history))
+                    pg))))
+        ;; 3 — ΟΛΑ τα graph-derived πεδία ΕΠΙ ΤΟΥ ΑΚΡΙΒΟΥΣ bitemporal record.
+        ;; [PRE-#4 FREEZE #4] Το content-hash ΔΕΝ αρκεί: η διτεμπορική
+        ;; supersession διχάζει τον ίδιο content-hash σε ΠΟΛΛΑ records (το
+        ;; παλιό με recorded-until=timestamp + το fork copy με :current). Το
+        ;; receipt δεσμεύεται στο record ΤΟΥ ΟΠΟΙΟΥ η recorded-from (αμετάβλητη
+        ;; ταυτότητα γέννησης) ταιριάζει — αλλιώς επαληθεύεται λάθος record.
+        (let ((cv (find-if (lambda (rec)
+                             (and (equal (orchestrator.version-graph:tv-version-hash rec)
+                                         (lr-content-hash r))
+                                  (equal (orchestrator.version-graph:tv-recorded-from rec)
+                                         (lr-recorded-from r))))
+                           (gethash (lr-provision-id r)
+                                    (orchestrator.version-graph::vg-by-provision cut-graph)))))
+          (unless cv (fail :version-not-in-cut))
+          (unless (equal (lr-provision-id r)
+                         (orchestrator.version-graph:tv-provision-id cv))
+            (fail :provision-id-mismatch))
+          (unless (equal (lr-commencement r)
+                         (orchestrator.version-graph:tv-commencement cv))
+            (fail :commencement-mismatch))
+          (unless (equal (lr-previous-version-hash r)
+                         (let ((p (orchestrator.version-graph:tv-previous-version-hash cv)))
+                           (if (eq p :genesis) "genesis" p)))
+            (fail :previous-mismatch))
+          (unless (%vu-eq (lr-valid-until r)
+                          (orchestrator.version-graph:tv-valid-until cv))
+            (fail :valid-until-mismatch))
+          (unless (equal (lr-recorded-from r)
+                         (orchestrator.version-graph:tv-recorded-from cv))
+            (fail :recorded-from-mismatch))
+          (unless (%ru-eq (lr-recorded-until r)
+                          (orchestrator.version-graph:tv-recorded-until cv))
+            (fail :recorded-until-mismatch))
+          (unless (equal (lr-assurance r)
+                         (orchestrator.version-graph:tv-assurance cv))
+            (fail :assurance-mismatch))
+          (handler-case
+              (let ((gen (%genealogy-of cut-graph cv)))
+                (unless (equal (lr-genealogy r) gen)
+                  (fail :genealogy-mismatch))
+                (unless (equal (lr-derivation r) (first gen))
+                  (fail :derivation-mismatch)))
+            (error () (fail :genealogy-broken)))
+          (unless (equal (lr-effectivity r)
+                         (%effectivity-of cut-graph cv (lr-cut-known-at r)))
+            (fail :effectivity-mismatch))))
+      (values t :ok))))
+
+(defun verify-receipt (graph r)
+  "ΣΥΝΤΑΞΙΟΔΟΤΗΜΕΝΟ ΟΝΟΜΑ — δείχνει στο verify-receipt-intrinsic. Η ΠΛΗΡΗΣ
+   εκδοτική αυθεντία (source bytes/membership/release signature) ανήκει στο
+   ΜΕΛΛΟΝΤΙΚΟ verify-authority-proof-bundle (#4)."
+  (verify-receipt-intrinsic graph r))

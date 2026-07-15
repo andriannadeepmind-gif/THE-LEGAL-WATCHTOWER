@@ -80,6 +80,12 @@
    #:interval-relation #:interval-intersects-p #:interval-covers-p
    ;; [Φ7 Π5] deterministic effectivity attestation
    #:make-effectivity-attestation #:make-provisional-anchor
+   ;; [PRE-#4 FREEZE #1] opaque anchor τύποι (constructor verified = PRIVATE)
+   #:release-anchor #:release-anchor-p
+   #:verified-release-anchor #:verified-release-anchor-p
+   #:provisional-release-anchor #:provisional-release-anchor-p
+   #:ra-assurance #:ra-release-root #:ra-reasons #:ra-tlog-size
+   #:ra-tlog-root #:ra-registry-digest #:ra-verifier-hash
    ;; [Φ7-HARDENING #2] scope model — Η ΜΙΑ έδρα
    #:scope-dimension-entries #:scope-dimension-tags
    #:canon-scope-set #:scope-covers-p #:scope-intersects-p
@@ -276,8 +282,12 @@
          (cons "status" (string-downcase (symbol-name status)))
          (cons "text" text))))
 
-(defun %version-hash (provision-id text heading valid-from status previous)
-  "Ταυτότητα περιεχομένου έκδοσης — ΧΩΡΙΣ recorded (bit-reproducible σύνολο)."
+(defun %legacy-version-hash-1 (provision-id text heading valid-from status previous)
+  "[PRE-#4 FREEZE #6] ΑΠΟΚΛΕΙΣΤΙΚΑ legacy /1 VERIFIER (read-only replay των
+   προ-schema γραμμών). ΚΑΝΕΝΑΣ writer δεν την καλεί — οι νέες εγγραφές
+   περνούν ΜΟΝΟ από %version-hash-2 (δομημένο commencement, domain-separated).
+   Το πεδίο 'valid_from' εδώ είναι το ΙΣΤΟΡΙΚΟ /1 σχήμα (legal-date μόνο —
+   conditional sentinel σε /1 = journal-corruption)."
   (orchestrator.canonical-representation:canonical-hash
    (list (cons "heading" (or heading :null))
          (cons "previous_version_hash" (string-downcase (string previous)))
@@ -286,9 +296,9 @@
          (cons "text" text)
          (cons "valid_from" valid-from))))
 
-;;; [Φ7 Π3] effective sum type: legal-date | (:conditional condition-id) —
-;;; ΚΛΕΙΣΤΟ, το NIL δεν χωράει (spec §4). Στο hash/σειριοποίηση το conditional
-;;; προβάλλεται ως "conditional:<cid>" (value-canonical string).
+;;; [Φ7 Π3] commencement sum type: (:fixed legal-date) | (:conditional cid).
+;;; Το text-version/2 journal γράφει ΔΟΜΗΜΕΝΟ commencement· ΚΑΝΕΝΑ conditional
+;;; δεν μεταμφιέζεται σε πεδίο ημερομηνίας (θάνατος sentinel — REVIEW Α).
 
 (defun %conditional-effective-p (e)
   (and (consp e) (eq (first e) :conditional)
@@ -306,12 +316,14 @@
 ;;; ΚΛΕΙΣΤΟΣ τύπος. ΚΑΜΙΑ condition-ταυτότητα δεν μεταμφιέζεται σε
 ;;; ημερομηνία: το tv-valid-from είναι πλέον ΠΡΟΒΟΛΗ (legal-date | NIL —
 ;;; τίμια άγνοια όσο η αίρεση εκκρεμεί), ΟΧΙ slot που χωράει sentinel.
-;;; Το journal/hash δεσμεύει την ΚΑΝΟΝΙΚΗ string προβολή (commencement-key:
-;;; "YYYY-MM-DD" | "conditional:<cid>") — αυτό είναι ΣΕΙΡΙΟΠΟΙΗΣΗ της έδρας,
-;;; όχι δεύτερος τύπος: τα append-only journals δεν ξαναγράφονται ΠΟΤΕ
-;;; (καμία byte-migration, όλα τα υπάρχοντα hashes/chains σταθερά), ενώ η
-;;; runtime αναπαράσταση είναι ΠΑΝΤΑ το sum type (parse-commencement =
-;;; fail-closed αντίστροφη, load-graph τη διατρέχει).
+;;; [REVIEW Α — text-version/2] Το journal/hash δεσμεύει ΔΟΜΗΜΕΝΟ commencement
+;;; (:schema :text-version/2 + :commencement (:fixed d)|(:conditional cid)·
+;;; %version-hash-2 δεσμεύει commencement_type + commencement_value ΞΕΧΩΡΙΣΤΑ)
+;;; — ΚΑΝΕΝΑ conditional σε πεδίο ημερομηνίας στις νέες εγγραφές.
+;;; commencement-key = ΜΟΝΟ projection reader (tv-commencement-key) για
+;;; ταυτότητες/receipts, ΟΧΙ πεδίο journal. Τα append-only journals δεν
+;;; ξαναγράφονται ΠΟΤΕ· ο legacy /1 decoder [%legacy-version-hash-1] διαβάζει
+;;; παλαιές γραμμές read-only (fixed-only· conditional σε /1 = corruption).
 
 (defun commencement-p (c)
   (and (consp c) (null (cddr c))
@@ -878,10 +890,10 @@
    σύγκριση, καμία άκυρη ημερολογιακά τιμή. Καραντίνα/κενό γνώσης επηρεάζει
    ΜΟΝΟ αν ήταν ήδη καταγεγραμμένο κατά KNOWN-AT (διτεμπορική σημασιολογία
    Υ2)· άγνωστη διάταξη ⇒ unknown-provision.
-   ΔΗΛΩΜΕΝΟ ΥΠΟΛΟΙΠΟ (Υ2β): τα knowledge-gaps δεν φέρουν ακόμη άνω όριο
-   valid-διαστήματος — κενό γνωστό κατά known-at καλύπτει ΟΛΗ την ακάλυπτη
-   valid περίοδο της διάταξης (υπερ-προσεκτικό: αβεβαιότητα, ποτέ ψευδής
-   βεβαιότητα ή ψευδής ανυπαρξία)."
+   [Υ2β — ΥΛΟΠΟΙΗΜΕΝΟ] τα knowledge-gaps φέρουν διάστημα [effective, until|:open)
+   (πεδίο kg-until): με until μπλοκάρουν ΜΟΝΟ τομές μέσα τους· χωρίς until
+   (:open) όλη την ακάλυπτη περίοδο — πάντα αβεβαιότητα, ποτέ ψευδής
+   βεβαιότητα ή ψευδής ανυπαρξία."
   (%require-date valid-at "valid-at")
   (unless (legal-instant-p known-at)
     (error 'invalid-edge
@@ -904,8 +916,8 @@
                             (qe-reason q) (qe-recorded-from q)))))
     ;; [Φ7 Π3/Π4 — spec §4, ΕΝΑΣ ΜΗΧΑΝΙΣΜΟΣ (κλείσιμο κριτή Π2-Π4 #1/#2/#4)]
     ;; TILING: κάθε recorded-live έκδοση αποκτά ΠΑΡΑΓΩΓΑ όρια —
-    ;; • conditional (sentinel valid-from): sat(cid, known-at) ⇒ satisfied
-    ;;   ⇒ from = t (ή το from ρητού retroact) — τα regime rewrites
+    ;; • conditional (commencement (:conditional cid)): sat(cid, known-at) ⇒
+    ;;   satisfied ⇒ from = sat at (ή το from ρητού retroact) — regime rewrites
     ;;   ΕΦΑΡΜΟΖΟΝΤΑΙ ΚΑΙ εδώ· pending/refuted ⇒ ΕΚΤΟΣ ισχύος·
     ;; • κανονική: %rewritten-bounds (διτεμπορικά rewrites).
     ;; Μετά, ΚΑΘΕ until ψαλιδίζεται στο from της ΕΠΟΜΕΝΗΣ (κατά from)
@@ -1110,7 +1122,7 @@
                          (unless (legal-date-p vf)
                            (error 'journal-corruption
                                   :reason (format nil "legacy text-version ~A: μη-fixed valid-from ~S — το /1 conditional αποσύρθηκε, δεν αποκωδικοποιείται" rid vf)))
-                         (unless (equal rid (%version-hash
+                         (unless (equal rid (%legacy-version-hash-1
                                              (getf line :provision-id) (getf line :text)
                                              (getf line :heading) vf
                                              (getf line :status)
@@ -2273,30 +2285,71 @@
                 collect (re-edge-id re))
         #'string<))
 
-(defun make-provisional-anchor (&key reasons)
-  "[REVIEW Δ3] Ο ΜΟΝΟΣ τρόπος να φτιαχτεί ΜΗ-ανακτημένη αγκύρωση: ρητά
-   provisional, με ονομαστικούς λόγους. ΚΑΜΙΑ raw-string είσοδος στο TRA."
-  (list :release-anchor/1
-        :assurance "provisional-unanchored"
-        :release-root ""
-        :reasons (or reasons (list "no-anchor-supplied"))
-        :tlog-size 0 :tlog-root "" :registry-digest ""))
+;;; [PRE-#4 FREEZE #1/#7] OPAQUE anchor τύποι — ΔΟΜΙΚΑ ΜΗ κατασκευάσιμοι από
+;;; αυθαίρετο caller ως plist. Δύο διακριτοί τύποι με κοινή αφηρημένη βάση:
+;;;   VERIFIED-RELEASE-ANCHOR    — PRIVATE constructor (%make-verified-…):
+;;;                                ΜΟΝΟ η release-anchor-for το κατασκευάζει·
+;;;   PROVISIONAL-RELEASE-ANCHOR — δημόσιος (make-provisional-anchor).
+;;; Η make-effectivity-attestation δέχεται ΜΟΝΟ αυτούς τους τύπους — plist που
+;;; «μοιάζει» anchored ΔΕΝ γίνεται πλέον δεκτή (θάνατος BLOCKER 1).
+;;;
+;;; ASSURANCE TAXONOMY (ΠΑΓΩΜΕΝΗ — #7): χωρίς out-of-band pinned owner root
+;;; ΚΑΝΕΝΑ wording δεν υπονοεί εξωτερικά αποδεδειγμένη ταυτότητα εκδότη:
+;;;   "provisional-unanchored"        — provisional (τοπικοί έλεγχοι απέτυχαν/απόντες)
+;;;   "internally-release-consistent" — verified ΤΟΠΙΚΑ (JWS+census+tlog+TSR+
+;;;                                     verifier-set)· ΑΝΩΤΑΤΟ χωρίς pinned root
+;;;   "owner-pinned-authenticated"    — ΜΕΛΛΟΝΤΙΚΟ (trust-bootstrap ceremony)
+;;;   "independently-witnessed"       — ΜΕΛΛΟΝΤΙΚΟ (3ος εξωτερικός μάρτυρας)
 
-(defun %release-anchor-p (a)
-  (and (consp a) (eq (first a) :release-anchor/1)
-       (member (getf (rest a) :assurance)
-               '("release-anchored" "provisional-unanchored") :test #'equal)))
+(defparameter +anchor-assurance-taxonomy+
+  '("provisional-unanchored" "internally-release-consistent"
+    "owner-pinned-authenticated" "independently-witnessed")
+  "Η κλειστή λίστα επιτρεπτών assurance τιμών — κάθε άλλη ⇒ σφάλμα.")
+
+(defstruct (release-anchor (:conc-name ra-) (:copier nil) (:constructor nil))
+  ;; αφηρημένη βάση — ΔΕΝ κατασκευάζεται (:constructor nil)
+  (assurance "" :type string) (release-root "" :type string)
+  (reasons '() :type list) (tlog-size 0 :type integer)
+  (tlog-root "" :type string) (registry-digest "" :type string)
+  (verifier-hash "" :type string))
+
+(defstruct (verified-release-anchor (:include release-anchor) (:conc-name ra-)
+             (:copier nil) (:constructor %make-verified-release-anchor)))
+
+(defstruct (provisional-release-anchor (:include release-anchor) (:conc-name ra-)
+             (:copier nil) (:constructor %make-provisional-release-anchor)))
+
+(defun make-provisional-anchor (&key reasons verifier-hash)
+  "Ο ΜΟΝΟΣ δημόσιος κατασκευαστής anchor — ΠΑΝΤΑ provisional, ΠΟΤΕ verified
+   assurance. Το verifier-hash μεταφέρεται εδώ (το attestation ΔΕΝ το δέχεται
+   πλέον ξεχωριστά — #2)."
+  (%make-provisional-release-anchor
+   :assurance "provisional-unanchored"
+   :reasons (or reasons (list "no-anchor-supplied"))
+   :verifier-hash (or verifier-hash "")))
+
+(defun %make-verified-anchor (&key release-root reasons tlog-size tlog-root
+                                   registry-digest verifier-hash
+                                   (assurance "internally-release-consistent"))
+  "[PRIVATE — ΜΟΝΟ release-anchor-for] Κατασκευή VERIFIED anchor. Το assurance
+   περιορίζεται στην παγωμένη taxonomy· 'internally-release-consistent' είναι
+   το ΑΝΩΤΑΤΟ δυνατό χωρίς owner-pinned root (#7)."
+  (unless (member assurance +anchor-assurance-taxonomy+ :test #'equal)
+    (error 'invalid-edge :reason (format nil "anchor assurance εκτός taxonomy: ~S" assurance)))
+  (%make-verified-release-anchor
+   :assurance assurance :release-root (or release-root "")
+   :reasons reasons :tlog-size (or tlog-size 0) :tlog-root (or tlog-root "")
+   :registry-digest (or registry-digest "") :verifier-hash (or verifier-hash "")))
 
 (defun %require-anchor (a)
-  (unless (%release-anchor-p a)
+  (unless (release-anchor-p a)
     (error 'invalid-edge
-           :reason "attestation: απαιτείται typed release-anchor/1 (release-anchor-for | make-provisional-anchor) — raw strings ΔΕΝ γίνονται δεκτά ως αγκυρωτικά"))
+           :reason "attestation: απαιτείται opaque release-anchor (release-anchor-for → verified | make-provisional-anchor) — plists/strings ΔΕΝ γίνονται δεκτά"))
   a)
 
 (defun make-effectivity-attestation (graph pid &key valid-at known-at corpus-id
                                                     anchor receipt-id
-                                                    scope-context (scope-mode :strict)
-                                                    verifier-hash)
+                                                    scope-context (scope-mode :strict))
   "[Π5] Deterministic effectivity certificate για την τομή (VALID-AT,
    KNOWN-AT): plist με :canonical (value-canonical string), :hash (sha256),
    :outcome (sum type — resolved(vhash) | no-version-in-force |
@@ -2307,7 +2360,7 @@
    release· η κρίση αυτή γίνεται στον καταναλωτή/verifier με το log)."
   (%require-anchor anchor)
   (%require-scope-mode scope-mode)
-  (let* ((a (rest anchor))
+  (let* ((verifier-hash (ra-verifier-hash anchor))  ; #2: ΑΠΟΚΛΕΙΣΤΙΚΑ από το anchor
          (canon-ctx (canon-scope-set scope-context))
          (outcome
            (handler-case
@@ -2315,31 +2368,33 @@
                    (version-at graph pid :valid-at valid-at :known-at known-at
                                          :scope-context scope-context
                                          :scope-mode scope-mode)
-                 (let* ((b0 (if (and (consp basis) (member :scope-assumption basis))
-                                (subseq basis 0 (position :scope-assumption basis))
-                                basis))
+                 (let* ((marker-pos (and (consp basis) (position :scope-assumption basis)))
+                        (b0 (if marker-pos (subseq basis 0 marker-pos) basis))
                         (b (if (and (consp b0) (= 1 (length b0))) (first b0) b0))
-                        (analytical (and (consp basis)
-                                         (member :scope-assumption basis)
-                                         (list "analytical-not-authoritative"))))
-                   (append
-                    (cond
-                      ;; [Κριτής Β S1] content commitment ΜΕΣΑ στο δεσμευμένο
-                      ;; outcome: το σερβιριζόμενο κείμενο δένεται δομικά.
-                      ((and v (eq b :complete))
-                       (list "resolved" (tv-version-hash v)
-                             "text-sha256" (orchestrator.journal:sha256-hex (tv-text v))))
-                      ((and v (consp b) (eq (first b) :suspended))
-                       (list "suspended" (second b) (tv-version-hash v)))
-                      ((and v (consp b) (eq (first b) :not-yet-effective))
-                       (list "resolved" (tv-version-hash v)
-                             "pending" (second b) (third b)))
-                      ((null v)
-                       (if (and (consp note) (eq (first note) :not-yet-effective))
-                           (list "no-version-in-force" "pending" (second note) (third note))
-                           (list "no-version-in-force")))
-                      (t (error 'invalid-edge :reason "αδύνατη έκβαση version-at")))
-                    analytical)))
+                        ;; [#3] analytical δεσμεύει ΚΑΙ τα ΑΚΡΙΒΗ assumed-edge-ids
+                        (assumed (and marker-pos
+                                      (getf (nthcdr marker-pos basis) :assumed-edges)))
+                        (analytical (and marker-pos
+                                         (list "analytical-not-authoritative"
+                                               (format nil "~{~A~^,~}" (or assumed '()))))))
+                   (flet ((txt (v) ; [#3] content commitment σε ΚΑΘΕ text-bearing έκβαση
+                            (list "version-hash" (tv-version-hash v)
+                                  "text-sha256" (orchestrator.journal:sha256-hex (tv-text v)))))
+                     (append
+                      (cond
+                        ((and v (eq b :complete))
+                         (cons "resolved" (txt v)))
+                        ((and v (consp b) (eq (first b) :suspended))
+                         (append (list "suspended" (second b)) (txt v)))
+                        ((and v (consp b) (eq (first b) :not-yet-effective))
+                         (append (list "resolved") (txt v)
+                                 (list "pending" (second b) (third b))))
+                        ((null v)
+                         (if (and (consp note) (eq (first note) :not-yet-effective))
+                             (list "no-version-in-force" "pending" (second note) (third note))
+                             (list "no-version-in-force")))
+                        (t (error 'invalid-edge :reason "αδύνατη έκβαση version-at")))
+                      analytical))))
              (scope-uncertain (e)
                (list "scope-uncertain" (scope-uncertain-edge-id e)
                      (format nil "~S" (scope-uncertain-missing-dimensions e))))
@@ -2354,15 +2409,15 @@
                         (%pid-condition-states graph pid known-at)
                         (%pid-regime-ids graph pid known-at)
                         (or receipt-id "")
-                        ;; [Δ1/Δ5] assurance + αγκυρωτικά ΜΕΣΑ στο hash/ID:
-                        ;; αλλαγή provisional→release-anchored ⇒ ΑΛΛΟ TRA.
-                        (getf a :assurance)
-                        (or (getf a :release-root) "")
-                        (getf a :reasons)
-                        (getf a :tlog-size 0)
-                        (or (getf a :tlog-root) "")
-                        (or (getf a :registry-digest) "")
-                        (vg-chain graph) (or verifier-hash "")))
+                        ;; [Δ1/Δ5] assurance + αγκυρωτικά + verifier-hash ΜΕΣΑ
+                        ;; στο hash/ID — ΟΛΑ από τον typed anchor (#1/#2).
+                        (ra-assurance anchor)
+                        (ra-release-root anchor)
+                        (ra-reasons anchor)
+                        (ra-tlog-size anchor)
+                        (ra-tlog-root anchor)
+                        (ra-registry-digest anchor)
+                        (vg-chain graph) verifier-hash))
          (canonical (with-output-to-string (out) (%canon-sexp payload out)))
          (hash (orchestrator.journal:sha256-hex canonical)))
     (list :protocol "lawmax/attestation/2"
@@ -2373,11 +2428,12 @@
           :condition-states (%pid-condition-states graph pid known-at)
           :regime-edge-ids (%pid-regime-ids graph pid known-at)
           :receipt-id receipt-id
-          :assurance (getf a :assurance)
-          :release-root (getf a :release-root)
-          :anchor-reasons (getf a :reasons)
-          :tlog-size (getf a :tlog-size 0) :tlog-root (getf a :tlog-root)
-          :registry-digest (getf a :registry-digest)
+          :assurance (ra-assurance anchor)
+          :anchor-kind (if (verified-release-anchor-p anchor) "verified" "provisional")
+          :release-root (ra-release-root anchor)
+          :anchor-reasons (ra-reasons anchor)
+          :tlog-size (ra-tlog-size anchor) :tlog-root (ra-tlog-root anchor)
+          :registry-digest (ra-registry-digest anchor)
           :graph-chain-head (vg-chain graph)
           :verifier-hash verifier-hash
           :canonical canonical :hash hash)))

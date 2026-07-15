@@ -210,7 +210,7 @@
                    (and (equal "complete" (cdr (assoc "basis" j :test #'string=)))
                         (equal "1975-06-11" (cdr (assoc "valid_from" j :test #'string=)))
                         (plusp (length (cdr (assoc "text" j :test #'string=)))))))))
-(e2-check "⑥τ [Φ7-HARDENING #5] ΚΑΘΕ 200 φέρει tra/2: canonical+hash+αγκυρωτικά + assurance ∈ {release-anchored, provisional-unanchored} (+ονομαστικοί λόγοι όταν unanchored)"
+(e2-check "⑥τ [Φ7-HARDENING #5] ΚΑΘΕ 200 φέρει tra/2: canonical+hash+αγκυρωτικά + assurance ∈ taxonomy {internally-release-consistent, provisional-unanchored} (+ονομαστικοί λόγοι όταν provisional)"
           (let ((r (e2-get "/constitution/as-known?article=2&valid=2020-01-01&known=9999-12-31T23:59:59Z")))
             (and (= 200 (e2-status r))
                  (let* ((j (e2-json r))
@@ -224,7 +224,7 @@
                         (= 64 (length (cdr (assoc "hash" tra :test #'string=))))
                         (plusp (length (cdr (assoc "canonical" tra :test #'string=))))
                         (plusp (length (cdr (assoc "graph_chain_head" tra :test #'string=))))
-                        (or (equal ass "release-anchored")
+                        (or (equal ass "internally-release-consistent")
                             (and (equal ass "provisional-unanchored")
                                  (consp (cdr (assoc "tra_unanchored_reasons" j
                                                     :test #'string=))))))))))

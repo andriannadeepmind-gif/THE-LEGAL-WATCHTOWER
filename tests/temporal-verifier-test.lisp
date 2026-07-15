@@ -214,8 +214,7 @@
                                *tv-g* *tv-pid* :valid-at valid :known-at "2033-01-01T00:00:00Z"
                                :corpus-id "tv"
                                :anchor (orchestrator.version-graph:make-provisional-anchor
-                                        :reasons '("tv-vector"))
-                               :verifier-hash "vh-tv")))
+                                        :reasons '("tv-vector") :verifier-hash "vh-tv"))))
                       (format nil "{\"fields\":{\"corpus_id\":\"tv\",\"provision\":~A,\"valid_at\":~A,\"known_at\":\"2033-01-01T00:00:00Z\",\"scope_context\":null,\"scope_mode\":\"strict\",\"outcome\":~A,\"condition_states\":~A,\"regime_edge_ids\":~A,\"receipt_id\":\"\",\"assurance\":\"provisional-unanchored\",\"release_root\":\"\",\"anchor_reasons\":[\"tv-vector\"],\"tlog_size\":0,\"tlog_root\":\"\",\"registry_digest\":\"\",\"graph_chain_head\":~A,\"verifier_hash\":\"vh-tv\"},\"canonical\":~A,\"hash\":~A}"
                               (%tvj-str *tv-pid*) (%tvj-str valid)
                               (%tvj-arr (mapcar #'%tvj-str (getf a :outcome)))

@@ -209,7 +209,7 @@ RUN set -e; \
 RUN set -e; \
     CORE=$(sha256sum /app/orchestrator.core | cut -d' ' -f1); \
     CM=$(sha256sum /app/component-manifest.sexp | cut -d' ' -f1); \
-    SRC=$(find /app/source /app/systems /app/tests /app/deployment/verify /app/configs /app/deployment/data /app/deployment/knowledge /app/input /app/docker /app/third-party -type f \( ! -name '*.fasl' \) | LC_ALL=C sort | xargs sha256sum | sha256sum | cut -d' ' -f1; find /app -maxdepth 1 -type f \( -name '*.asd' -o -name 'build.lisp' -o -name 'deps.lock' -o -name 'Dockerfile' \) | LC_ALL=C sort | xargs -r sha256sum | sha256sum | cut -d' ' -f1); \
+    SRC=$(find /app/source /app/systems /app/tests /app/deployment/verify /app/configs /app/deployment/data /app/deployment/knowledge /app/input /app/docker /app/third-party -type f \( ! -name '*.fasl' \) -print0 | LC_ALL=C sort -z | xargs -0 sha256sum | sha256sum | cut -d' ' -f1; find /app -maxdepth 1 -type f \( -name '*.asd' -o -name 'build.lisp' -o -name 'deps.lock' -o -name 'Dockerfile' \) -print0 | LC_ALL=C sort -z | xargs -0 -r sha256sum | sha256sum | cut -d' ' -f1); \
     SRC=$(echo "$SRC" | sha256sum | cut -d' ' -f1); \
     LOGS=$(cat /app/proof/logs/*.log | sha256sum | cut -d' ' -f1); \
     { echo '{'; \
@@ -307,7 +307,7 @@ RUN python3 /app/docker/verify-proof-manifest.py /app/proof /app/tests /app
 RUN { find /app/orchestrator.core /app/component-manifest.sexp /app/configs \
            /app/deployment/data /app/deployment/knowledge /app/deployment/self \
            /app/deployment/verify /app/deployment/PROOF-CARRYING-LAW.md \
-           /app/input -type f | LC_ALL=C sort | xargs sha256sum; \
+           /app/input -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum; \
       sha256sum /app/docker/entrypoint.lisp | sed 's|/app/docker/entrypoint.lisp|/app/entrypoint.lisp|'; \
       sha256sum /app/docker/sbom.json | sed 's|/app/docker/sbom.json|/app/sbom.json|'; \
     } > /app/proof/runtime-assets.sha256
