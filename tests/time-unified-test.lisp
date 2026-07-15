@@ -137,4 +137,9 @@
   (run! 'time-unified-suite))
 
 ;;; Standalone gate: run the suite, exit non-zero on any failure (was never invoked).
-(sb-ext:exit :code (if (fiveam:run! 'time-unified-suite) 0 1))
+(let* ((results (fiveam:run 'time-unified-suite))
+       (failed (count-if-not (lambda (r) (typep r 'fiveam::test-passed)) results)))
+  (fiveam:explain! results)
+  ;; Canonical parseable proof line (manifest gate) — uniform «N passed, M failed»
+  (format t "~%TIME-UNIFIED: ~D passed, ~D failed~%" (- (length results) failed) failed)
+  (sb-ext:exit :code (if (zerop failed) 0 1)))

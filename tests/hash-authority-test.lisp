@@ -138,4 +138,9 @@
 ;;; Standalone gate: actually RUN the suite and exit non-zero on any failure, so
 ;;; this file is a real gate under docker/run-standalone-test.lisp (previously it
 ;;; only DEFINED the runner and was never invoked → silent green).
-(sb-ext:exit :code (if (fiveam:run! 'hash-authority-tests) 0 1))
+(let* ((results (fiveam:run 'hash-authority-tests))
+       (failed (count-if-not (lambda (r) (typep r 'fiveam::test-passed)) results)))
+  (fiveam:explain! results)
+  ;; Canonical parseable proof line (manifest gate) — uniform «N passed, M failed»
+  (format t "~%HASH-AUTHORITY: ~D passed, ~D failed~%" (- (length results) failed) failed)
+  (sb-ext:exit :code (if (zerop failed) 0 1)))

@@ -93,5 +93,8 @@
   (format t "GUARANTEED: ~D/~D passed~%" *g-pass* (+ *g-pass* *g-fail*))
   (format t "COVERAGE  : ~D/~D harder forms (~,1F%)~%" *c-pass* cov-total pct)
   (format t "========================================~%")
+  ;; Canonical parseable proof line (manifest gate): μόνο τα GUARANTEED γκειτάρουν
+  ;; το build· η κάλυψη είναι πληροφοριακή (δεν προσμετράται ως failure).
+  (format t "AMENDMENT-ACCURACY: ~D passed, ~D failed~%" *g-pass* *g-fail*)
   ;; The build fails ONLY on a guaranteed regression; coverage is informational.
   (sb-ext:exit :code (if (zerop *g-fail*) 0 1)))

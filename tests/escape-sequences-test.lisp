@@ -208,6 +208,8 @@
     (format t "Tests run: ~D~%" (length results))
     (format t "Passed: ~D~%" (length passed))
     (format t "Failed: ~D~%" (length failed))
+    ;; Canonical parseable proof line (manifest gate) — uniform «N passed, M failed»
+    (format t "ESCAPE-SEQUENCES: ~D passed, ~D failed~%" (length passed) (length failed))
     (format t "~%")
 
     (if (zerop (length failed))

@@ -137,4 +137,9 @@ ex:subject ex:predicate ex:object ."))
 (export 'run-write-authority-tests)
 
 ;;; Standalone gate: run the suite, exit non-zero on any failure (was never invoked).
-(sb-ext:exit :code (if (fiveam:run! 'write-authority-tests) 0 1))
+(let* ((results (fiveam:run 'write-authority-tests))
+       (failed (count-if-not (lambda (r) (typep r 'fiveam::test-passed)) results)))
+  (fiveam:explain! results)
+  ;; Canonical parseable proof line (manifest gate) — uniform «N passed, M failed»
+  (format t "~%WRITE-AUTHORITY: ~D passed, ~D failed~%" (- (length results) failed) failed)
+  (sb-ext:exit :code (if (zerop failed) 0 1)))
