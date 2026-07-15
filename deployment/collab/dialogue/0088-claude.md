@@ -1306,3 +1306,73 @@ owner Docker proof ΜΕΤΑ το #4· Π7/GAAF-1 παγωμένα.
 πλέον περνά (-print0 τα χειρίζεται) αλλά το source_tree_sha256 θα διαφέρει
 από καθαρό checkout — καθαρό checkout/`git clean` συνιστάται πριν το
 τελικό proof-of-record.
+
+---
+
+## [0088 Φ7-HARDENING #4] verify-authority-proof-bundle — ανεξάρτητος hermetic fail-closed επαληθευτής (μετά 2 αντιπαλικών κριτών)
+
+Έδρα: `source/authority-proof-bundle.lisp` (`orchestrator.authority-proof-bundle`
+/ `orchestrator.apb`). Δεύτερης βαθμίδας επαληθευτής αλυσίδας εξουσίας με
+ΧΩΡΙΣΤΕΣ εξωτερικές εισόδους (hermetic — το bundle ΔΕΝ αυτο-εξουσιοδοτείται):
+trusted owner-root Ed25519 JWK **ή** RFC-7638 thumbprint· trusted RFC-3161 TSA
+CA (pinned)· known-revocations του καταναλωτή· consumer transparency checkpoint·
+verification policy.
+
+Αλυσίδα (Δ1–Δ5): external owner pin → owner-signed delegation → delegation
+validity ΣΤΟ genTime του TSR → release JWS (πάνω σε ΚΑΝΟΝΙΚΟ release-statement)
+→ census (graph_root + receipt_set_root) → receipt membership → journal cut
+→ content commitment → tlog inclusion + consistency vs checkpoint → PINNED TSR.
+Βαθμίδες (provisional < internally-release-consistent < owner-pinned-
+authenticated < independently-witnessed) απονέμονται ΜΟΝΟ από επαληθευμένα
+κατηγορήματα· κενή ομάδα ΔΕΝ απονέμει (vacuous-tier νεκρό)· Ed25519 (RFC 8037
+OKP) + RFC-7638 thumbprint bootstrap· independently-witnessed ΠΟΤΕ χωρίς γνήσιο
+3ο μάρτυρα (Δ4).
+
+**ΔΥΟ ΑΝΕΞΑΡΤΗΤΟΙ ΑΝΤΙΠΑΛΙΚΟΙ ΚΡΙΤΕΣ** (φρέσκο πλαίσιο, χωρίς πρόσβαση στο
+σκεπτικό υλοποιητή) — ΚΑΘΕ εύρημα κλεισμένο ΣΤΗΝ ΕΔΡΑ:
+
+Κριτής Α (crypto/trust-bootstrap):
+- **C1 (CRITICAL)**: RC7 δεχόταν `:unpinned` TSR ⇒ ο genTime attacker-forgeable
+  (self-signed timestamping cert) ⇒ κατάρρευση OWN5/OWN6. ⇒ ΑΠΑΙΤΕΙΤΑΙ εξωτερικό
+  `trusted-tsa-ca-path` + tier=`:pinned`· genTime ΜΟΝΟ σε επιτυχία.
+- **S1**: revocation = «καμία-στο-bundle» (suppression-by-omission). ⇒ εξωτερικές
+  `known-revocations` του καταναλωτή αξιολογούνται ΚΑΙ αυτές.
+- **S2**: OWN5 σύγκρινε normalized g με un-normalized nb/na. ⇒ αμφότερα
+  `%normalize-gentime` (dual-format ISO/GeneralizedTime).
+- **M1**: `%canonical-statement` injectivity μη-επιβεβλημένη. ⇒ ΣΦΑΛΜΑ σε
+  #x1e/#x1f control byte (δομική ενριξιμότητα).
+- **M2**: thumbprint πάνω σε μη-canonical x. ⇒ recanonicalization του x.
+- **M3**: OWN6 αγνοούσε revokes_delegate_thumbprint (over-revocation). ⇒ έλεγχος
+  ισότητας delegate thumbprint.
+
+Κριτής Β (proof-bundle/provenance/temporal-replay):
+- **C1/C2/S1-S3 (CRITICAL)**: census/receipt-set/content/cut/verifier-set ΔΕΝ
+  δένονταν κρυπτογραφικά στον anchored release-root (self-consistent bag). ⇒ το
+  **commitment edge**: το delegated release key υπογράφει ΚΑΝΟΝΙΚΟ release-
+  statement που δένει release_root ⋈ graph_root ⋈ receipt_set_root ⋈ content ⋈
+  cut ⋈ verifier_set. RC1 επαληθεύει το JWS πάνω σε αυτό — κανένα downstream
+  artifact δεν είναι πλέον ελεύθερα αντικαταστάσιμο.
+- **S4**: temporal rollback (παλιό γνήσιο TSR ξανα-εξουσιοδοτεί). ⇒ policy
+  `:gentime-floor` (state `:stale`).
+- **M1**: genTime ετίθετο πριν τον έλεγχο tier. ⇒ μόνο σε επιτυχία.
+- **M2**: σιωπηλή παράλειψη fork-detection χωρίς checkpoint. ⇒ policy
+  `:require-checkpoint` (ονομαστικό `:cons/checkpoint-required`).
+Docstrings ΞΑΝΑΓΡΑΦΤΗΚΑΝ τίμια (όριο hermetic: graph_root↔ζωντανή αλυσίδα =
+πρώτη βαθμίδα· εδώ δεσμεύεται στον υπογεγραμμένο release-statement, όχι replay).
+
+Test `tests/authority-proof-bundle-test.lisp`: **54/54** με ΓΝΗΣΙΑ κρυπτογραφία
+(Ed25519 owner, RSA release key υπογράφει release-statement, ΓΝΗΣΙΟ Sectigo
+RFC-3161 TSR chained σε PINNED CA, RFC-6962 receipt-set+tlog). Whole-chain green
+baseline (reasons ΚΕΝΑ) + κάθε αρνητικός μάρτυρας απομονώνει ΕΝΑ κατηγόρημα
+(failed-p στο συγκεκριμένο reason). Νέοι μάρτυρες κριτών: swap census/verifier-
+set υπό fixed JWS (commitment edge), απόν/λάθος TSA CA (pinned discipline),
+known-revocation (S1), ISO-format bounds (S2), other-delegate revocation (M3),
+gentime-floor (S4), require-checkpoint (M2), control-byte injectivity (M1),
+recanonicalization (M2). TEST ROOT — NOT PRODUCTION (Δ5).
+
+Wired: `orchestrator-infrastructure.asd` (μετά x509-authority) + Dockerfile suite
+list. Χωρίς παλινδρόμηση: temporal-semantics 111/111, receipt 21/21, version-
+graph 18/18, temporal-verifier 2/2, tsr-crypto-verify 19/19.
+
+Εκκρεμεί: τελικό owner Docker proof στο καθαρό HEAD (ο δημιουργός). Π7 + GAAF-1
+runtime ΠΑΓΩΜΕΝΑ.

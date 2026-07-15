@@ -3,12 +3,17 @@
 ;;;; [0088 Φ7-HARDENING #4] Regression lock: verify-authority-proof-bundle
 ;;;; ============================================================================
 ;;;; Ο ανεξάρτητος, hermetic, fail-closed επαληθευτής αλυσίδας εξουσίας.
-;;;; ΘΕΤΙΚΟ: πλήρες bundle με ΓΝΗΣΙΑ κρυπτογραφία (Ed25519 owner root, RSA
-;;;;   release key, ΓΝΗΣΙΟ RFC-3161 TSR fixture Sectigo, RFC-6962 receipt-set +
-;;;;   tlog) ⇒ owner-pinned-authenticated, delegation :active.
-;;;; ΑΡΝΗΤΙΚΑ (fail-closed μάρτυρες): κάθε νόθευση κρίκου ⇒ ονομαστική
-;;;;   υποβάθμιση/απόρριψη — ΠΟΤΕ σιωπηλό πράσινο. Το trusted root/pin δίνεται
-;;;;   ΕΞΩΘΕΝ (hermetic): το bundle ΔΕΝ αυτο-εξουσιοδοτείται.
+;;;; ΘΕΤΙΚΟ: πλήρες bundle με ΓΝΗΣΙΑ κρυπτογραφία — Ed25519 owner root, RSA
+;;;;   release key υπογράφει ΚΑΝΟΝΙΚΟ release-statement (δένει census/receipt-set/
+;;;;   content/cut/verifier-set στον anchored root), ΓΝΗΣΙΟ RFC-3161 TSR Sectigo
+;;;;   chained σε PINNED CA, RFC-6962 receipt-set + tlog ⇒ owner-pinned, :active.
+;;;; ΑΡΝΗΤΙΚΑ (fail-closed μάρτυρες, ΜΕΤΑ από 2 αντιπαλικούς κριτές):
+;;;;   • provenance C1/C2: swap census υπό fixed γνήσιο JWS ⇒ release-jws FAIL·
+;;;;   • crypto C1: unpinned/wrong-CA TSR ⇒ tsr FAIL (ο genTime δεν αυθεντικοποιείται)·
+;;;;   • crypto S1: known-revocation του καταναλωτή ⇒ not-revoked FAIL (θάνατος
+;;;;     suppression-by-omission)· crypto S2: ISO-format bounds· crypto M3:
+;;;;     ανάκληση άλλου delegate ΔΕΝ επηρεάζει· provenance S4: gentime-floor·
+;;;;     provenance M2: require-checkpoint.
 ;;;; ΤΕST ROOT — NOT PRODUCTION (Δ5): όλα τα κλειδιά είναι εφήμερα δοκιμαστικά.
 ;;;; ============================================================================
 
@@ -20,32 +25,26 @@
                      (progn (incf *f*) (format t "  FAIL ~A~%" ,name)))
      (error (e) (incf *f*) (format t "  FAIL ~A (error: ~A)~%" ,name e))))
 
-;;; ── ΓΝΗΣΙΑ κρυπτογραφικά συστατικά (TEST ROOT — NOT PRODUCTION) ──
-
 (defparameter *fix*
   (merge-pathnames "fixtures/tsr/"
                    (make-pathname :directory (pathname-directory
                                               (or *load-truename* *load-pathname*)))))
 (defun fx (name) (alexandria:read-file-into-byte-vector (merge-pathnames name *fix*)))
+(defparameter *sectigo-ca* (merge-pathnames "sectigo-issuer-ca.pem" *fix*))
+(defparameter *freetsa-ca* (merge-pathnames "freetsa-issuer-ca.pem" *fix*))
 
 (defparameter *release-root*
-  ;; ΑΚΡΙΒΩΣ το μήνυμα που χρονοσφράγισε το ΓΝΗΣΙΟ Sectigo TSR ⇒ RC7 γνήσιο
   (string-trim '(#\Newline #\Space)
                (alexandria:read-file-into-string (merge-pathnames "message.txt" *fix*))))
-(defparameter *root-hex* (subseq *release-root* 7))
 (defparameter *tsr* (fx "sectigo-rsa.tsr"))
 
 (multiple-value-bind (osk opk) (ironclad:generate-key-pair :ed25519)
-  (defparameter *owner-sk* osk)
-  (defparameter *owner-pk* opk))
+  (defparameter *owner-sk* osk) (defparameter *owner-pk* opk))
 (defparameter *owner-jwk* (ed25519-public-to-jwk *owner-pk*))
 (defparameter *owner-thumb* (ed25519-jwk-thumbprint *owner-pk*))
 
-;; δεύτερος owner (foreign) για αρνητικά pin
 (multiple-value-bind (fsk fpk) (ironclad:generate-key-pair :ed25519)
-  (defparameter *foreign-sk* fsk)
-  (defparameter *foreign-pk* fpk))
-(defparameter *foreign-jwk* (ed25519-public-to-jwk *foreign-pk*))
+  (defparameter *foreign-sk* fsk) (defparameter *foreign-jwk* (ed25519-public-to-jwk fpk)))
 
 (defparameter *rsa* (orchestrator.jws-authority:generate-rsa-keypair :bits 2048))
 (defparameter *rk-pub* (getf *rsa* :public-key))
@@ -56,294 +55,318 @@
         (cons "n" (%b64uint (ironclad:rsa-key-modulus *rk-pub*)))
         (cons "e" (%b64uint (ironclad:rsa-key-exponent *rk-pub*)))))
 (defparameter *rk-thumb* (orchestrator.jws-authority:jwk-thumbprint *rk-pub*))
-(defparameter *release-jws*
-  (getf (orchestrator.jws-authority:sign-jws *root-hex* *rk-priv*) :jws))
 
-;; receipt-set (RFC-6962) — το release receipt στο index 2
 (defparameter *receipt-ids* (list "rid:alpha" "rid:beta" "rid:release-target" "rid:delta"))
 (defparameter *receipt-index* 2)
 (defparameter *receipt-set-root* (orchestrator.merkle:merkle-root-of-strings *receipt-ids*))
 (defparameter *graph-root* "sha256:graphrootDEADBEEF")
+(defparameter *content* (list :text-sha256 "sha256:text-1" :version-hash "sha256:ver-1"))
+(defparameter *verifier-hash* "sha256:temporal-verifier-abc")
+(defparameter *verifier-set* (list *verifier-hash* "sha256:other-verifier"))
+(defparameter *cut* (list :graph-root *graph-root* :journal-seq 42 :known-at "2026-07-10T00:00:00Z"))
 
 ;; transparency log (RFC-6962) — το release-root leaf στο index 1, μέγεθος 4
 (defparameter *tlog-leaves*
   (list "sha256:prev-root-0" *release-root* "sha256:root-2" "sha256:root-3"))
 (defparameter *tlog-index* 1)
-(defparameter *tlog-leaf-hashes*
-  (mapcar #'orchestrator.merkle:hash-leaf-string *tlog-leaves*))
+(defparameter *tlog-leaf-hashes* (mapcar #'orchestrator.merkle:hash-leaf-string *tlog-leaves*))
 (defparameter *tlog-root* (orchestrator.merkle:merkle-tree-hash *tlog-leaf-hashes*))
 (defparameter *tlog-size* 4)
-;; consumer checkpoint: παλιό μέγεθος 2
 (defparameter *cp-size* 2)
-(defparameter *cp-root*
-  (orchestrator.merkle:merkle-tree-hash (subseq *tlog-leaf-hashes* 0 2)))
-(defparameter *consistency-proof*
-  (orchestrator.merkle:consistency-proof *tlog-leaf-hashes* *cp-size*))
+(defparameter *cp-root* (orchestrator.merkle:merkle-tree-hash (subseq *tlog-leaf-hashes* 0 2)))
+(defparameter *consistency-proof* (orchestrator.merkle:consistency-proof *tlog-leaf-hashes* *cp-size*))
 
-(defparameter *verifier-hash* "sha256:temporal-verifier-abc")
+;; Ο RELEASE-STATEMENT (δεσμεύει census/receipt-set/content/cut/verifier-set)
+(defun sign-release-statement (&key (release-root *release-root*) (graph-root *graph-root*)
+                                    (receipt-set-root *receipt-set-root*) (content *content*)
+                                    (cut *cut*) (verifier-set *verifier-set*))
+  (getf (orchestrator.jws-authority:sign-jws
+         (%canonical-release-statement
+          :release-root release-root :graph-root graph-root
+          :receipt-set-root receipt-set-root
+          :content-text-sha256 (getf content :text-sha256)
+          :content-version-hash (getf content :version-hash)
+          :cut-graph-root (getf cut :graph-root) :cut-journal-seq (getf cut :journal-seq)
+          :cut-known-at (getf cut :known-at) :verifier-set verifier-set)
+         *rk-priv*)
+        :jws))
 
-(defun base-delegation (&key (seq 1) (not-before "20260101000000")
-                             (not-after "20261231235959")
+(defun base-delegation (&key (seq 1) (not-before "20260101000000") (not-after "20261231235959")
                              (delegate-thumb *rk-thumb*) (algorithm "RS256")
                              (owner-thumb *owner-thumb*) (signer *owner-sk*))
   (let ((stmt (make-delegation-statement
                :owner-root-thumbprint owner-thumb :delegate-algorithm algorithm
                :delegate-jwk-thumbprint delegate-thumb :scope "corpus/syntagma"
                :not-before not-before :not-after not-after :sequence seq)))
-    (list :statement stmt
-          :signature (owner-sign-statement signer +delegation-tag+ stmt))))
+    (list :statement stmt :signature (owner-sign-statement signer +delegation-tag+ stmt))))
 
-(defun revocation (&key (revokes-seq 1) (revoked-at "20260101000000")
-                        (signer *owner-sk*) (owner-thumb *owner-thumb*))
+(defun revocation (&key (revokes-seq 1) (revoked-at "20260101000000") (signer *owner-sk*)
+                        (delegate-thumb *rk-thumb*) (owner-thumb *owner-thumb*))
   (let ((stmt (make-revocation-statement
                :owner-root-thumbprint owner-thumb :revokes-sequence revokes-seq
-               :revokes-delegate-thumbprint *rk-thumb* :revoked-at revoked-at
-               :reason "test")))
-    (list :statement stmt
-          :signature (owner-sign-statement signer +revocation-tag+ stmt))))
+               :revokes-delegate-thumbprint delegate-thumb :revoked-at revoked-at :reason "test")))
+    (list :statement stmt :signature (owner-sign-statement signer +revocation-tag+ stmt))))
 
 (defun base-bundle (&rest overrides)
-  (let ((b (list
-            :release-root *release-root*
-            :release-jwk *release-jwk*
-            :release-jws *release-jws*
-            :owner-root-jwk *owner-jwk*
-            :census (list :graph-root *graph-root*
-                          :receipt-set-root *receipt-set-root*
-                          :receipt-ids *receipt-ids*)
-            :cut (list :graph-root *graph-root* :journal-seq 42 :known-at "2026-07-10T00:00:00Z")
-            :receipt (list :receipt-id (nth *receipt-index* *receipt-ids*)
-                           :index *receipt-index*)
-            :content (list :text-sha256 "sha256:text-1" :version-hash "sha256:ver-1")
-            :tra (list :committed-content
-                       (list :text-sha256 "sha256:text-1" :version-hash "sha256:ver-1"))
-            :tlog (list :tree-size *tlog-size* :root *tlog-root*
-                        :inclusion-path (orchestrator.merkle:inclusion-path
-                                         *tlog-leaf-hashes* *tlog-index*)
-                        :consistency-proof *consistency-proof*)
-            :tsr-bytes *tsr*
-            :verifier-set (list *verifier-hash* "sha256:other-verifier")
-            :delegation (base-delegation)
-            :revocations '())))
-    ;; overrides: εναλλαγή top-level plist κλειδιών
+  "Χτίζει bundle· το release-jws ΞΑΝΑΫΠΟΛΟΓΙΖΕΤΑΙ πάνω στα ΤΕΛΙΚΑ statement-bound
+   πεδία (census/cut/content/verifier-set) ⇒ isolation μετάλλαξη ⇒ ΕΝΑ κατηγόρημα.
+   Εξαίρεση: αν δοθεί ρητά :release-jws στα overrides, μένει ως έχει (JWS-tamper/C1)."
+  (let* ((census (or (getf overrides :census)
+                     (list :graph-root *graph-root* :receipt-set-root *receipt-set-root*
+                           :receipt-ids *receipt-ids*)))
+         (cut (or (getf overrides :cut) *cut*))
+         (content (or (getf overrides :content) *content*))
+         (vset (if (member :verifier-set overrides) (getf overrides :verifier-set) *verifier-set*))
+         (jws (or (getf overrides :release-jws)
+                  (sign-release-statement :graph-root (getf census :graph-root)
+                                          :receipt-set-root (getf census :receipt-set-root)
+                                          :content content :cut cut :verifier-set vset)))
+         (b (list :release-root *release-root* :release-jwk *release-jwk* :release-jws jws
+                  :owner-root-jwk *owner-jwk* :census census :cut cut :content content
+                  :receipt (list :receipt-id (nth *receipt-index* *receipt-ids*)
+                                 :index *receipt-index*)
+                  :tra (list :committed-content
+                             (list :text-sha256 (getf content :text-sha256)
+                                   :version-hash (getf content :version-hash)))
+                  :tlog (list :tree-size *tlog-size* :root *tlog-root*
+                              :inclusion-path (orchestrator.merkle:inclusion-path
+                                               *tlog-leaf-hashes* *tlog-index*)
+                              :consistency-proof *consistency-proof*)
+                  :tsr-bytes *tsr* :verifier-set vset :delegation (base-delegation)
+                  :revocations '())))
     (loop for (k v) on overrides by #'cddr do (setf (getf b k) v))
     b))
 
 (defparameter *policy*
   (list :required-tier "owner-pinned-authenticated"
-        :allowed-delegate-algorithms '("RS256")
-        :temporal-verifier-hash *verifier-hash*))
+        :allowed-delegate-algorithms '("RS256") :temporal-verifier-hash *verifier-hash*))
 
 (defun verdict (&rest bundle-overrides)
   (verify-authority-proof-bundle
    (apply #'base-bundle bundle-overrides)
-   :trusted-owner-root-jwk *owner-jwk*
-   :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*)
-   :policy *policy*))
+   :trusted-owner-root-jwk *owner-jwk* :trusted-tsa-ca-path *sectigo-ca*
+   :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*) :policy *policy*))
 
 (defun failed-p (v name) (member name (apb-reasons v)))
 
-;;; ============================================================================
-;;; [1] ΘΕΤΙΚΟ: πλήρες γνήσιο bundle ⇒ owner-pinned-authenticated
-;;; ============================================================================
+;;; ── [1] ΘΕΤΙΚΟ ──
 (format t "~%== [1] ΘΕΤΙΚΟ: πλήρης αλυσίδα ⇒ owner-pinned-authenticated ==~%")
 (let ((v (verdict)))
-  (ck "awarded = owner-pinned-authenticated"
-      (equal (apb-awarded-tier v) "owner-pinned-authenticated"))
+  (ck "awarded = owner-pinned-authenticated" (equal (apb-awarded-tier v) "owner-pinned-authenticated"))
   (ck "satisfies-policy" (apb-satisfies-policy-p v))
-  (ck "reasons ΚΕΝΑ" (null (apb-reasons v)))
+  (ck "reasons ΚΕΝΑ (whole-chain green baseline)" (null (apb-reasons v)))
   (ck "delegation-state = :active" (eq (apb-delegation-state v) :active))
-  (ck "genTime εξήχθη από γνήσιο TSR" (stringp (apb-gen-time v)))
-  ;; ΟΧΙ ταυτολογία: κάθε ομάδα κατηγορημάτων ΟΝΤΩΣ αποτιμήθηκε
-  (ck "RC κατηγορήματα παρόντα"
-      (some (lambda (p) (search "RC/" (string (car p)))) (apb-predicates v)))
-  (ck "OWN κατηγορήματα παρόντα"
-      (some (lambda (p) (search "OWN/" (string (car p)))) (apb-predicates v))))
+  (ck "genTime από PINNED TSR" (stringp (apb-gen-time v))))
 
-;;; ============================================================================
-;;; [2] HERMETIC PIN: το bundle ΔΕΝ αυτο-εξουσιοδοτείται
-;;; ============================================================================
+;;; ── [2] Hermetic pin ──
 (format t "~%== [2] Hermetic pin — trusted root ΕΞΩΘΕΝ ==~%")
-;; (α) λάθος thumbprint pin ⇒ όχι owner tier (αλλά RC ισχύει)
 (let ((v (verify-authority-proof-bundle
-          (base-bundle) :trusted-owner-thumbprint "WRONGTHUMB"
-          :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*)
-          :policy *policy*)))
-  (ck "λάθος pin ⇒ ΟΧΙ owner (cap σε internally-release-consistent)"
+          (base-bundle) :trusted-owner-thumbprint "WRONGTHUMB" :trusted-tsa-ca-path *sectigo-ca*
+          :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*) :policy *policy*)))
+  (ck "λάθος pin ⇒ cap internally-release-consistent"
       (equal (apb-awarded-tier v) "internally-release-consistent"))
-  (ck "λάθος pin ⇒ pin κατηγόρημα απέτυχε"
-      (failed-p v :own/pin-authenticates-owner-key))
-  (ck "λάθος pin ⇒ ΔΕΝ ικανοποιεί owner-pinned policy"
-      (not (apb-satisfies-policy-p v))))
-;; (β) κανένα pin ⇒ όχι owner tier
+  (ck "λάθος pin ⇒ pin κατηγόρημα απέτυχε" (failed-p v :own/pin-authenticates-owner-key))
+  (ck "λάθος pin ⇒ ΔΕΝ ικανοποιεί owner policy" (not (apb-satisfies-policy-p v))))
 (let ((v (verify-authority-proof-bundle
-          (base-bundle)
-          :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*)
-          :policy *policy*)))
-  (ck "χωρίς pin ⇒ cap σε internally-release-consistent"
-      (equal (apb-awarded-tier v) "internally-release-consistent")))
-;; (γ) thumbprint-only pin ΑΥΘΕΝΤΙΚΟΠΟΙΕΙ το bundle owner JWK (RFC 7638)
-(let ((v (verify-authority-proof-bundle
-          (base-bundle) :trusted-owner-thumbprint *owner-thumb*
-          :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*)
-          :policy *policy*)))
-  (ck "thumbprint-only pin ⇒ owner-pinned (bootstrap μέσω thumbprint)"
+          (base-bundle) :trusted-owner-thumbprint *owner-thumb* :trusted-tsa-ca-path *sectigo-ca*
+          :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*) :policy *policy*)))
+  (ck "thumbprint-only pin ⇒ owner-pinned (RFC-7638 bootstrap)"
       (equal (apb-awarded-tier v) "owner-pinned-authenticated")))
-;; (δ) thumbprint pin σε bundle με ΞΕΝΟ owner JWK ⇒ απόρριψη
 (let ((v (verify-authority-proof-bundle
-          (base-bundle :owner-root-jwk *foreign-jwk*)
-          :trusted-owner-thumbprint *owner-thumb*
-          :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*)
-          :policy *policy*)))
+          (base-bundle :owner-root-jwk *foreign-jwk*) :trusted-owner-thumbprint *owner-thumb*
+          :trusted-tsa-ca-path *sectigo-ca*
+          :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*) :policy *policy*)))
   (ck "ξένο owner JWK vs pinned thumbprint ⇒ ΟΧΙ owner"
       (failed-p v :own/pin-authenticates-owner-key)))
 
-;;; ============================================================================
-;;; [3] ΑΡΝΗΤΙΚΟΙ ΜΑΡΤΥΡΕΣ owner-tier (delegation/revocation)
-;;; ============================================================================
+;;; ── [3] Owner-tier αρνητικοί μάρτυρες ──
 (format t "~%== [3] Owner-tier αρνητικοί μάρτυρες ==~%")
-;; 3.1 νοθευμένη υπογραφή delegation
 (let* ((d (base-delegation))
        (badsig (let ((s (copy-seq (getf d :signature))))
                  (setf (char s 3) (if (char= (char s 3) #\A) #\B #\A)) s))
        (v (verdict :delegation (list :statement (getf d :statement) :signature badsig))))
-  (ck "νοθευμένη υπογραφή delegation ⇒ owner-signs FAIL"
-      (failed-p v :own/owner-signs-delegation))
-  (ck "  ⇒ cap σε internally-release-consistent"
-      (equal (apb-awarded-tier v) "internally-release-consistent")))
-;; 3.2 delegation ΛΗΓΜΕΝΗ στο genTime
+  (ck "νοθευμένη υπογραφή delegation ⇒ owner-signs FAIL" (failed-p v :own/owner-signs-delegation))
+  (ck "  ⇒ cap internally-release-consistent" (equal (apb-awarded-tier v) "internally-release-consistent")))
 (let ((v (verdict :delegation (base-delegation :not-after "20260101000000"))))
   (ck "ληγμένη delegation ⇒ validity FAIL" (failed-p v :own/delegation-valid-at-gentime))
   (ck "  ⇒ state = :expired" (eq (apb-delegation-state v) :expired)))
-;; 3.3 delegation ΟΧΙ-ΑΚΟΜΗ έγκυρη
 (let ((v (verdict :delegation (base-delegation :not-before "20270101000000"))))
   (ck "μελλοντική delegation ⇒ validity FAIL" (failed-p v :own/delegation-valid-at-gentime))
   (ck "  ⇒ state = :not-yet" (eq (apb-delegation-state v) :not-yet)))
-;; 3.4 ΑΝΑΚΛΗΘΕΙΣΑ (ίδια seq) πριν το genTime
-(let ((v (verdict :revocations (list (revocation :revokes-seq 1
-                                                 :revoked-at "20260101000000")))))
+;; [crypto-critic S2] ISO-format bounds ΚΑΝΟΝΙΚΟΠΟΙΟΥΝΤΑΙ (dual-format)
+(let ((v (verdict :delegation (base-delegation :not-before "2026-01-01T00:00:00Z"
+                                               :not-after "2026-12-31T23:59:59Z"))))
+  (ck "ISO-format bounds ⇒ ΣΩΣΤΑ :active (dual-format normalization)"
+      (and (eq (apb-delegation-state v) :active)
+           (equal (apb-awarded-tier v) "owner-pinned-authenticated"))))
+(let ((v (verdict :revocations (list (revocation :revokes-seq 1 :revoked-at "20260101000000")))))
   (ck "ανάκληση ίδιας seq ⇒ not-revoked FAIL" (failed-p v :own/not-revoked))
   (ck "  ⇒ state = :revoked" (eq (apb-delegation-state v) :revoked)))
-;; 3.5 ΝΕΟΤΕΡΗ ανάκληση (supersession, seq>seq) ⇒ ανακαλεί
-(let ((v (verdict :revocations (list (revocation :revokes-seq 2
-                                                 :revoked-at "20260101000000")))))
+(let ((v (verdict :revocations (list (revocation :revokes-seq 2 :revoked-at "20260101000000")))))
   (ck "νεότερη ανάκληση (seq 2 ≥ 1) ⇒ not-revoked FAIL" (failed-p v :own/not-revoked)))
-;; 3.6 ανάκληση ΜΕΤΑ το genTime ⇒ ΔΕΝ επηρεάζει (χρονικά ορθό)
-(let ((v (verdict :revocations (list (revocation :revokes-seq 1
-                                                 :revoked-at "20991231000000")))))
+(let ((v (verdict :revocations (list (revocation :revokes-seq 1 :revoked-at "20991231000000")))))
   (ck "ανάκληση ΜΕΤΑ το genTime ⇒ owner-pinned ΠΑΡΑΜΕΝΕΙ"
       (equal (apb-awarded-tier v) "owner-pinned-authenticated")))
-;; 3.7 ανάκληση με ΞΕΝΗ υπογραφή ⇒ ΑΓΝΟΕΙΤΑΙ (μόνο owner ανακαλεί)
-(let ((v (verdict :revocations (list (revocation :revokes-seq 1
-                                                 :revoked-at "20260101000000"
+(let ((v (verdict :revocations (list (revocation :revokes-seq 1 :revoked-at "20260101000000"
                                                  :signer *foreign-sk*)))))
-  (ck "ανάκληση με ξένη υπογραφή ⇒ owner-pinned ΠΑΡΑΜΕΝΕΙ (μη έγκυρη ανάκληση)"
+  (ck "ανάκληση με ξένη υπογραφή ⇒ owner-pinned ΠΑΡΑΜΕΝΕΙ"
       (equal (apb-awarded-tier v) "owner-pinned-authenticated")))
-;; 3.8 delegate thumbprint ΔΕΝ δένει το release key
+;; [crypto-critic M3] ανάκληση ΑΛΛΟΥ delegate (seq≥) ΔΕΝ over-revoke
+(let ((v (verdict :revocations (list (revocation :revokes-seq 5
+                                                 :delegate-thumb "OTHER-DELEGATE"
+                                                 :revoked-at "20260101000000")))))
+  (ck "ανάκληση ΑΛΛΟΥ delegate ⇒ owner-pinned ΠΑΡΑΜΕΝΕΙ (M3)"
+      (equal (apb-awarded-tier v) "owner-pinned-authenticated")))
+;; [crypto-critic S1] known-revocation του καταναλωτή, ΑΠΟΝ από το bundle
+(let ((v (verify-authority-proof-bundle
+          (base-bundle)                  ; bundle ΧΩΡΙΣ revocation
+          :trusted-owner-root-jwk *owner-jwk* :trusted-tsa-ca-path *sectigo-ca*
+          :known-revocations (list (revocation :revokes-seq 1 :revoked-at "20260101000000"))
+          :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*) :policy *policy*)))
+  (ck "known-revocation (suppression-by-omission) ⇒ not-revoked FAIL (S1)"
+      (failed-p v :own/not-revoked)))
 (let ((v (verdict :delegation (base-delegation :delegate-thumb "WRONGDELEGATE"))))
-  (ck "delegate thumbprint mismatch ⇒ delegate-binds FAIL"
-      (failed-p v :own/delegate-binds-release-key)))
-;; 3.9 algorithm εκτός policy
+  (ck "delegate thumbprint mismatch ⇒ delegate-binds FAIL" (failed-p v :own/delegate-binds-release-key)))
 (let ((v (verdict :delegation (base-delegation :algorithm "ES256"))))
-  (ck "algorithm ES256 εκτός policy ⇒ delegate-binds FAIL"
-      (failed-p v :own/delegate-binds-release-key)))
-;; 3.10 delegation owner_thumbprint ≠ pinned owner
+  (ck "algorithm ES256 εκτός policy ⇒ delegate-binds FAIL" (failed-p v :own/delegate-binds-release-key)))
 (let ((v (verdict :delegation (base-delegation :owner-thumb "OTHEROWNER"))))
   (ck "delegation δηλώνει ΑΛΛΟΝ owner ⇒ owner-matches-pin FAIL"
       (failed-p v :own/delegation-owner-matches-pin)))
 
-;;; ============================================================================
-;;; [4] ΑΡΝΗΤΙΚΟΙ ΜΑΡΤΥΡΕΣ release-consistency (RC)
-;;; ============================================================================
-(format t "~%== [4] Release-consistency αρνητικοί μάρτυρες ==~%")
+;;; ── [4] Release-consistency + COMMITMENT-EDGE μάρτυρες ──
+(format t "~%== [4] Release-consistency + commitment-edge ==~%")
+;; 4.0 [provenance C1/C2] SWAP census υπό fixed γνήσιο JWS ⇒ release-jws FAIL
+(let* ((b (base-bundle))
+       (_ (setf (getf b :census)
+                (list :graph-root "sha256:FORGED-GRAPH"
+                      :receipt-set-root (orchestrator.merkle:merkle-root-of-strings
+                                         (list "rid:forged-authority"))
+                      :receipt-ids (list "rid:forged-authority"))))
+       (v (verify-authority-proof-bundle
+           b :trusted-owner-root-jwk *owner-jwk* :trusted-tsa-ca-path *sectigo-ca*
+           :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*) :policy *policy*)))
+  (declare (ignore _))
+  (ck "swap census υπό fixed JWS ⇒ release-jws FAIL (commitment edge, C1)"
+      (failed-p v :rc/release-jws))
+  (ck "  ⇒ provisional-unanchored" (equal (apb-awarded-tier v) "provisional-unanchored")))
+;; 4.0β [provenance S2] SWAP verifier-set υπό fixed JWS ⇒ release-jws FAIL
+(let* ((b (base-bundle)) (_ (setf (getf b :verifier-set) (list *verifier-hash* "sha256:INJECTED")))
+       (v (verify-authority-proof-bundle
+           b :trusted-owner-root-jwk *owner-jwk* :trusted-tsa-ca-path *sectigo-ca*
+           :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*) :policy *policy*)))
+  (declare (ignore _))
+  (ck "swap verifier-set υπό fixed JWS ⇒ release-jws FAIL (S2 bound)" (failed-p v :rc/release-jws)))
 ;; 4.1 νοθευμένο release JWS
-(let* ((j (copy-seq *release-jws*))
+(let* ((j (copy-seq (sign-release-statement)))
        (_ (setf (char j 5) (if (char= (char j 5) #\A) #\B #\A)))
        (v (verdict :release-jws j)))
   (declare (ignore _))
   (ck "νοθευμένο release JWS ⇒ release-jws FAIL" (failed-p v :rc/release-jws))
   (ck "  ⇒ provisional-unanchored" (equal (apb-awarded-tier v) "provisional-unanchored")))
-;; 4.2 census graph_root ≠ cut
+;; 4.2 census graph_root ≠ cut (JWS ΞΑΝΑΫΠΟΛΟΓΙΖΕΤΑΙ ⇒ isolation)
 (let ((v (verdict :cut (list :graph-root "sha256:DIFFERENT" :journal-seq 42
                              :known-at "2026-07-10T00:00:00Z"))))
-  (ck "census graph_root ≠ cut ⇒ census-binds-cut FAIL"
-      (failed-p v :rc/census-binds-cut)))
-;; 4.3 receipt-set root νοθευμένο
-(let ((v (verdict :census (list :graph-root *graph-root*
-                                :receipt-set-root "sha256:FORGEDSETROOT"
+  (ck "census graph_root ≠ cut ⇒ census-binds-cut FAIL" (failed-p v :rc/census-binds-cut)))
+;; 4.3 receipt-set root ≠ MTH(ids) (isolation)
+(let ((v (verdict :census (list :graph-root *graph-root* :receipt-set-root "sha256:FORGEDSETROOT"
                                 :receipt-ids *receipt-ids*))))
-  (ck "receipt-set-root ≠ MTH(ids) ⇒ receipt-set-root FAIL"
-      (failed-p v :rc/receipt-set-root)))
-;; 4.4 receipt membership: λάθος index
-(let ((v (verdict :receipt (list :receipt-id (nth *receipt-index* *receipt-ids*)
-                                 :index 0))))
-  (ck "receipt λάθος index ⇒ receipt-membership FAIL"
-      (failed-p v :rc/receipt-membership)))
-;; 4.5 content commitment mismatch
-(let ((v (verdict :content (list :text-sha256 "sha256:TAMPERED" :version-hash "sha256:ver-1"))))
-  (ck "content text-sha256 ≠ TRA ⇒ content-commitment FAIL"
-      (failed-p v :rc/content-commitment)))
+  (ck "receipt-set-root ≠ MTH(ids) ⇒ receipt-set-root FAIL" (failed-p v :rc/receipt-set-root)))
+;; 4.4 receipt membership λάθος index
+(let ((v (verdict :receipt (list :receipt-id (nth *receipt-index* *receipt-ids*) :index 0))))
+  (ck "receipt λάθος index ⇒ receipt-membership FAIL" (failed-p v :rc/receipt-membership)))
+;; 4.5 content ↔ TRA απόκλιση (isolation: content bound σε JWS, TRA χαλασμένο)
+(let* ((b (base-bundle))
+       (_ (setf (getf b :tra) (list :committed-content
+                                    (list :text-sha256 "sha256:TAMPERED" :version-hash "sha256:ver-1"))))
+       (v (verify-authority-proof-bundle
+           b :trusted-owner-root-jwk *owner-jwk* :trusted-tsa-ca-path *sectigo-ca*
+           :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*) :policy *policy*)))
+  (declare (ignore _))
+  (ck "TRA content ≠ release content ⇒ content-commitment FAIL" (failed-p v :rc/content-commitment)))
 ;; 4.6 tlog inclusion νοθευμένο root
 (let ((v (verdict :tlog (list :tree-size *tlog-size* :root "forged-tlog-root"
                               :inclusion-path (orchestrator.merkle:inclusion-path
                                                *tlog-leaf-hashes* *tlog-index*)
                               :consistency-proof *consistency-proof*))))
   (ck "tlog root νοθευμένο ⇒ tlog-inclusion FAIL" (failed-p v :rc/tlog-inclusion)))
-;; 4.7 TSR ακρωτηριασμένο
+;; 4.7/4.8 TSR: pinned CA discipline (crypto C1)
 (let ((v (verdict :tsr-bytes (subseq *tsr* 0 (floor (length *tsr*) 2)))))
   (ck "ακρωτηριασμένο TSR ⇒ tsr FAIL" (failed-p v :rc/tsr)))
-;; 4.8 TSR νοθευμένη υπογραφή
-(let* ((t2 (copy-seq *tsr*))
-       (_ (setf (aref t2 (- (length t2) 8)) (logxor (aref t2 (- (length t2) 8)) 1)))
-       (v (verdict :tsr-bytes t2)))
-  (declare (ignore _))
-  (ck "TSR flipped signature byte ⇒ tsr FAIL" (failed-p v :rc/tsr)))
-;; 4.9 verifier-set membership: ο απαιτούμενος verifier ΑΠΩΝ
+(let ((v (verify-authority-proof-bundle
+          (base-bundle) :trusted-owner-root-jwk *owner-jwk*  ; ΧΩΡΙΣ trusted-tsa-ca-path
+          :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*) :policy *policy*)))
+  (ck "ΑΠΩΝ trusted-tsa-ca-path ⇒ tsr FAIL (unpinned genTime ΔΕΝ αυθεντικοποιείται)"
+      (failed-p v :rc/tsr)))
+(let ((v (verify-authority-proof-bundle
+          (base-bundle) :trusted-owner-root-jwk *owner-jwk* :trusted-tsa-ca-path *freetsa-ca*
+          :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*) :policy *policy*)))
+  (ck "ΛΑΘΟΣ TSA CA (freetsa για sectigo TSR) ⇒ tsr FAIL (όχι :pinned)"
+      (failed-p v :rc/tsr)))
+;; 4.9 verifier-set membership: ο απαιτούμενος ΑΠΩΝ (isolation)
 (let ((v (verdict :verifier-set (list "sha256:only-other"))))
-  (ck "temporal verifier ΑΠΩΝ από verifier-set ⇒ verifier-set FAIL"
-      (failed-p v :rc/verifier-set)))
+  (ck "temporal verifier ΑΠΩΝ από verifier-set ⇒ verifier-set FAIL" (failed-p v :rc/verifier-set)))
 
-;;; ============================================================================
-;;; [5] ΑΡΝΗΤΙΚΟΣ ΜΑΡΤΥΡΑΣ consistency (fork detection)
-;;; ============================================================================
-(format t "~%== [5] Transparency consistency (fork) ==~%")
+;;; ── [5] Consistency (fork) + require-checkpoint ──
+(format t "~%== [5] Transparency consistency + require-checkpoint ==~%")
 (let ((v (verify-authority-proof-bundle
-          (base-bundle) :trusted-owner-root-jwk *owner-jwk*
-          :consumer-checkpoint (list :tree-size *cp-size* :root "forged-old-root")
-          :policy *policy*)))
-  (ck "λάθος consumer old-root ⇒ consistency FAIL"
-      (failed-p v :cons/tlog-consistency))
-  (ck "  ⇒ cap σε provisional (RC ομάδα ολοκληρωμένη αλλά CONS απέτυχε)"
-      (equal (apb-awarded-tier v) "provisional-unanchored")))
+          (base-bundle) :trusted-owner-root-jwk *owner-jwk* :trusted-tsa-ca-path *sectigo-ca*
+          :consumer-checkpoint (list :tree-size *cp-size* :root "forged-old-root") :policy *policy*)))
+  (ck "λάθος consumer old-root ⇒ consistency FAIL" (failed-p v :cons/tlog-consistency))
+  (ck "  ⇒ cap provisional" (equal (apb-awarded-tier v) "provisional-unanchored")))
+;; [provenance M2] require-checkpoint χωρίς checkpoint ⇒ ονομαστική αποτυχία
+(let ((v (verify-authority-proof-bundle
+          (base-bundle) :trusted-owner-root-jwk *owner-jwk* :trusted-tsa-ca-path *sectigo-ca*
+          :policy (list* :require-checkpoint t *policy*))))
+  (ck "require-checkpoint χωρίς checkpoint ⇒ checkpoint-required FAIL (M2)"
+      (failed-p v :cons/checkpoint-required)))
 
-;;; ============================================================================
-;;; [6] ΒΑΘΜΙΔΑ independently-witnessed: ΠΟΤΕ χωρίς γνήσιο μάρτυρα (Δ4)
-;;; ============================================================================
-(format t "~%== [6] independently-witnessed ΠΟΤΕ χωρίς μάρτυρα ==~%")
+;;; ── [6] gentime-floor (provenance S4: temporal rollback) ──
+(format t "~%== [6] gentime-floor — θάνατος temporal rollback ==~%")
 (let ((v (verify-authority-proof-bundle
-          (base-bundle)
-          :trusted-owner-root-jwk *owner-jwk*
+          (base-bundle) :trusted-owner-root-jwk *owner-jwk* :trusted-tsa-ca-path *sectigo-ca*
           :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*)
-          :policy (list :required-tier "owner-pinned-authenticated"
-                        :allowed-delegate-algorithms '("RS256")
-                        :temporal-verifier-hash *verifier-hash*
-                        :require-witness t))))
-  (ck "require-witness αλλά κανένας γνήσιος ⇒ ΟΧΙ independently-witnessed"
+          :policy (list* :gentime-floor "20270101000000" *policy*))))
+  (ck "genTime < floor ⇒ validity FAIL (rollback)" (failed-p v :own/delegation-valid-at-gentime))
+  (ck "  ⇒ state = :stale" (eq (apb-delegation-state v) :stale)))
+(let ((v (verify-authority-proof-bundle
+          (base-bundle) :trusted-owner-root-jwk *owner-jwk* :trusted-tsa-ca-path *sectigo-ca*
+          :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*)
+          :policy (list* :gentime-floor "20260101000000" *policy*))))
+  (ck "genTime ≥ floor ⇒ owner-pinned ΠΑΡΑΜΕΝΕΙ"
+      (equal (apb-awarded-tier v) "owner-pinned-authenticated")))
+
+;;; ── [7] independently-witnessed ΠΟΤΕ χωρίς μάρτυρα ──
+(format t "~%== [7] independently-witnessed ΠΟΤΕ χωρίς μάρτυρα ==~%")
+(let ((v (verify-authority-proof-bundle
+          (base-bundle) :trusted-owner-root-jwk *owner-jwk* :trusted-tsa-ca-path *sectigo-ca*
+          :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*)
+          :policy (list* :require-witness t *policy*))))
+  (ck "require-witness χωρίς γνήσιο ⇒ ΟΧΙ independently-witnessed"
       (not (equal (apb-awarded-tier v) "independently-witnessed")))
   (ck "  ⇒ witness κατηγόρημα απέτυχε" (failed-p v :wit/third-party-checkpoint)))
 
-;;; ============================================================================
-;;; [7] tier>= μονοτονία (κλειστή taxonomy)
-;;; ============================================================================
-(format t "~%== [7] tier ordering ==~%")
+;;; ── [8] tier ordering + canonical injectivity (crypto M1) ──
+(format t "~%== [8] tier ordering + canonical injectivity ==~%")
 (ck "owner ≥ internally" (tier>= "owner-pinned-authenticated" "internally-release-consistent"))
 (ck "internally ≥ provisional" (tier>= "internally-release-consistent" "provisional-unanchored"))
 (ck "provisional ⊁ owner" (not (tier>= "provisional-unanchored" "owner-pinned-authenticated")))
+;; [crypto-critic M1] separator control byte σε value ⇒ ΣΦΑΛΜΑ (δομική ενριξιμότητα)
+(ck "value με #x1f separator ⇒ ΣΦΑΛΜΑ (injectivity δομική)"
+    (handler-case
+        (progn (owner-sign-statement *owner-sk* +delegation-tag+
+                                     (list (cons "k" (format nil "a~Cb" (code-char #x1f)))))
+               nil)
+      (error () t)))
+;; [crypto-critic M2] non-canonical x encoding ⇒ ΙΔΙΟΣ thumbprint
+(ck "thumbprint ανεξάρτητος κωδικοποίησης x (M2 recanonicalization)"
+    (let* ((raw (ironclad:ed25519-key-y *owner-pk*))
+           (padded (concatenate 'string (orchestrator.jws-authority:base64url-encode raw) "")))
+      (equal (ed25519-jwk-thumbprint *owner-pk*)
+             (ed25519-jwk-thumbprint (list (cons "kty" "OKP") (cons "crv" "Ed25519")
+                                           (cons "x" padded))))))
 
-;;; ── ΣΥΝΟΨΗ ──
 (format t "~%======================================================~%")
 (format t "authority-proof-bundle: ~D passed, ~D failed~%" *p* *f*)
 (when (plusp *f*)
-  (format t "ΑΠΟΤΥΧΙΑ — fail-closed παραβιάστηκε~%")
-  (sb-ext:exit :code 1))
-(format t "ΟΛΑ ΠΡΑΣΙΝΑ — hermetic fail-closed επαληθευτής κλειδωμένος~%")
+  (format t "ΑΠΟΤΥΧΙΑ — fail-closed παραβιάστηκε~%") (sb-ext:exit :code 1))
+(format t "ΟΛΑ ΠΡΑΣΙΝΑ — hermetic fail-closed επαληθευτής κλειδωμένος (μετά 2 κριτών)~%")

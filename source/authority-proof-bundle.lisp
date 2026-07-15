@@ -80,18 +80,60 @@
 ;;; σε base64url/ISO/scope tokens ⇒ καμία σύγκρουση/ambiguity. ΕΝΑ tag ανά τύπο
 ;;; δήλωσης ⇒ cross-type replay (delegation ↔ revocation) δομικά αδύνατο.
 
-(defun %canonical-statement-octets (tag alist)
+(defun %no-separators-p (str)
+  "T ανν το STR δεν περιέχει τα control separators #x1e/#x1f — εγγυάται
+   ΔΟΜΙΚΑ την ενριξιμότητα (injectivity) της σειριοποίησης (crypto-critic M1:
+   εξάλειψη της κλάσης σφάλματος, όχι φρουρός γύρω της)."
+  (notany (lambda (c) (or (char= c (code-char #x1e)) (char= c (code-char #x1f))))
+          str))
+
+(defun %canonical-statement-string (tag alist)
+  "Ντετερμινιστική κανονική σειριοποίηση: TAG \\x1e, μετά σε ΛΕΞΙΚΟΓΡΑΦΙΚΗ
+   σειρά key \\x1f value \\x1e. FAIL-CLOSED (M1): κάθε key/value που περιέχει
+   τα separators #x1e/#x1f ⇒ ΣΦΑΛΜΑ — η μη-σύγκρουση γίνεται δομική ιδιότητα,
+   όχι ανεξέλεγκτη υπόθεση."
+  (unless (%no-separators-p tag)
+    (error "canonical-statement: tag περιέχει separator control byte"))
   (let ((sorted (sort (copy-seq alist) #'string< :key #'car)))
-    (babel:string-to-octets
-     (with-output-to-string (s)
-       (write-string tag s) (write-char (code-char #x1e) s)
-       (dolist (kv sorted)
-         (write-string (car kv) s) (write-char (code-char #x1f) s)
-         (princ (cdr kv) s) (write-char (code-char #x1e) s)))
-     :encoding :utf-8)))
+    (with-output-to-string (s)
+      (write-string tag s) (write-char (code-char #x1e) s)
+      (dolist (kv sorted)
+        (let ((k (car kv)) (v (princ-to-string (cdr kv))))
+          (unless (and (%no-separators-p k) (%no-separators-p v))
+            (error "canonical-statement: πεδίο ~S περιέχει separator control byte" k))
+          (write-string k s) (write-char (code-char #x1f) s)
+          (write-string v s) (write-char (code-char #x1e) s))))))
+
+(defun %canonical-statement-octets (tag alist)
+  (babel:string-to-octets (%canonical-statement-string tag alist) :encoding :utf-8))
 
 (defparameter +delegation-tag+ "lawmax/trust/delegation/1")
 (defparameter +revocation-tag+ "lawmax/trust/revocation/1")
+(defparameter +release-statement-tag+ "lawmax/trust/release-statement/1")
+
+(defun %canonical-release-statement (&key release-root graph-root receipt-set-root
+                                          content-text-sha256 content-version-hash
+                                          cut-graph-root cut-journal-seq cut-known-at
+                                          verifier-set)
+  "Η ΚΑΝΟΝΙΚΗ δήλωση release που ΥΠΟΓΡΑΦΕΙ το delegated release key (RC1). ΔΕΝΕΙ
+   τον anchored release-root ΜΑΖΙ ΜΕ census/receipt-set/content/cut/verifier-set,
+   ώστε κανένα από αυτά να ΜΗΝ είναι ελεύθερα αντικαταστάσιμο (provenance-critic
+   C1/C2/S1-S3: το commitment edge). Το verifier-set σειριοποιείται
+   ντετερμινιστικά (ταξινομημένο, comma-joined — τα sha256 tokens δεν έχουν
+   κόμματα/separators)."
+  (%canonical-statement-string
+   +release-statement-tag+
+   (list (cons "content_text_sha256" (or content-text-sha256 ""))
+         (cons "content_version_hash" (or content-version-hash ""))
+         (cons "cut_graph_root" (or cut-graph-root ""))
+         (cons "cut_journal_seq" (or cut-journal-seq ""))
+         (cons "cut_known_at" (or cut-known-at ""))
+         (cons "graph_root" (or graph-root ""))
+         (cons "receipt_set_root" (or receipt-set-root ""))
+         (cons "release_root" (or release-root ""))
+         (cons "verifier_set"
+               (format nil "~{~A~^,~}"
+                       (sort (copy-list (or verifier-set '())) #'string<))))))
 
 ;;; ============================================================================
 ;;; Ed25519 OKP JWK (RFC 8037) + RFC 7638 THUMBPRINT
@@ -130,14 +172,18 @@
   "RFC 7638 JWK thumbprint OKP: base64url(SHA-256({\"crv\":\"Ed25519\",
    \"kty\":\"OKP\",\"x\":…})) — ΑΚΡΙΒΩΣ τα required members σε λεξικογραφική
    σειρά, χωρίς κενά (RFC 8037 §2). Δέχεται είτε ironclad key είτε JWK."
-  (let* ((x (etypecase public-key-or-jwk
-              (cons (or (%jwk-field public-key-or-jwk "x")
-                        (error "ed25519 thumbprint: JWK χωρίς x")))
-              (hash-table (%jwk-field public-key-or-jwk "x"))
-              (t (jws:base64url-encode
-                  (ironclad:ed25519-key-y public-key-or-jwk)))))
+  (let* ((x-in (etypecase public-key-or-jwk
+                 (cons (or (%jwk-field public-key-or-jwk "x")
+                           (error "ed25519 thumbprint: JWK χωρίς x")))
+                 (hash-table (%jwk-field public-key-or-jwk "x"))
+                 (t (jws:base64url-encode
+                     (ironclad:ed25519-key-y public-key-or-jwk)))))
          ;; επικύρωση μήκους ΚΑΙ στη διαδρομή JWK — 32 bytes ή ΣΦΑΛΜΑ
-         (raw (jws:base64url-decode x)))
+         (raw (jws:base64url-decode x-in))
+         ;; [crypto-critic M2] ΕΠΑΝΑΚΑΝΟΝΙΚΟΠΟΙΗΣΗ του x: η ταυτότητα είναι
+         ;; ανεξάρτητη της κωδικοποίησης εισόδου (padding/non-canonical bits) —
+         ;; δύο κωδικοποιήσεις του ΙΔΙΟΥ κλειδιού ⇒ ΙΔΙΟΣ thumbprint.
+         (x (jws:base64url-encode raw)))
     (unless (= 32 (length raw))
       (error "ed25519 thumbprint: x = ~D bytes ≠ 32" (length raw)))
     (let ((canonical (format nil "{\"crv\":\"Ed25519\",\"kty\":\"OKP\",\"x\":\"~A\"}" x)))
@@ -224,18 +270,29 @@
 
 (defun verify-authority-proof-bundle (bundle &key trusted-owner-root-jwk
                                                   trusted-owner-thumbprint
+                                                  trusted-tsa-ca-path
+                                                  known-revocations
                                                   consumer-checkpoint
                                                   policy)
   "Επαληθεύει ΟΛΗ την αλυσίδα εξουσίας του BUNDLE, hermetically. Επιστρέφει
-   apb-verdict. Το trusted root/pin ΔΙΝΕΤΑΙ ΕΞΩΘΕΝ (trusted-owner-root-jwk Ή
-   trusted-owner-thumbprint) — ΠΟΤΕ από το bundle. POLICY: plist με
-   :required-tier :allowed-delegate-algorithms :temporal-verifier-hash
-   :require-witness :policy-digest.
+   apb-verdict. ΟΛΑ τα σημεία εμπιστοσύνης ΔΙΝΟΝΤΑΙ ΕΞΩΘΕΝ — ΠΟΤΕ από το bundle:
+     trusted-owner-root-jwk | trusted-owner-thumbprint — Ed25519 owner pin·
+     trusted-tsa-ca-path — pinned RFC-3161 TSA CA (ΑΠΑΙΤΕΙΤΑΙ :pinned· χωρίς
+       αυτό ο genTime ΔΕΝ αυθεντικοποιείται και RC7 αποτυγχάνει — crypto-critic C1)·
+     known-revocations — authoritative ανακλήσεις που ΓΝΩΡΙΖΕΙ ήδη ο καταναλωτής
+       (αποτρέπουν suppression-by-omission από το bundle — crypto-critic S1).
+   POLICY: plist :required-tier :allowed-delegate-algorithms
+     :temporal-verifier-hash :require-witness :require-checkpoint :gentime-floor
+     :policy-digest.
 
    ΒΑΘΜΙΔΕΣ ΑΠΟΝΕΜΟΝΤΑΙ ΜΟΝΟ από επαληθευμένα κατηγορήματα:
-     RC*   → internally-release-consistent
-     RC*+OWN* → owner-pinned-authenticated
-     RC*+OWN*+WIT* → independently-witnessed."
+     RC*   → internally-release-consistent (ο υπογεγραμμένος release-statement
+             ΔΕΝΕΙ census/receipt-set/content/cut/verifier-set στον anchored root)
+     RC*+CONS*+OWN* → owner-pinned-authenticated
+     RC*+CONS*+OWN*+WIT* → independently-witnessed.
+   ΟΡΙΟ (τίμια δηλωμένο): ο hermetic verifier ΔΕΝ έχει το journal — η δέσμευση
+   graph_root↔ζωντανή αλυσίδα ελέγχεται στην πρώτη βαθμίδα (release-anchor-for)·
+   εδώ ο graph_root δεσμεύεται στον υπογεγραμμένο release-statement, όχι σε replay."
   (let ((preds '()) (reasons '()) (gen-time nil) (deleg-state :absent))
     (labels ((pred (name ok &optional detail)
                (push (list* name (and ok t) detail) preds)
@@ -258,7 +315,11 @@
              (verifier-set (%get bundle :verifier-set))
              (req-verifier (%get policy :temporal-verifier-hash)))
 
-        ;; RC1: το release JWS επαληθεύεται πάνω στο root hex με το release key
+        ;; RC1: το release JWS επαληθεύεται πάνω στον ΚΑΝΟΝΙΚΟ release-statement
+        ;; που ΔΕΝΕΙ release-root ⋈ census ⋈ receipt-set ⋈ content ⋈ cut ⋈
+        ;; verifier-set (provenance-critic C1/C2/S1-S3: το commitment edge — κανένα
+        ;; downstream artifact δεν είναι πλέον ελεύθερα αντικαταστάσιμο, αφού το
+        ;; delegated release key τα υπογράφει ΟΛΑ μαζί με τον anchored root).
         (safe :rc/release-jws
               (lambda ()
                 (let ((key (ironclad:make-public-key
@@ -266,12 +327,22 @@
                             :n (ironclad:octets-to-integer
                                 (jws:base64url-decode (%jwk-field release-jwk "n")))
                             :e (ironclad:octets-to-integer
-                                (jws:base64url-decode (%jwk-field release-jwk "e"))))))
-                  (and root-hex
-                       (jws:verify-jws (%get bundle :release-jws) root-hex key)))))
+                                (jws:base64url-decode (%jwk-field release-jwk "e")))))
+                      (stmt (%canonical-release-statement
+                             :release-root release-root
+                             :graph-root (%get census :graph-root)
+                             :receipt-set-root (%get census :receipt-set-root)
+                             :content-text-sha256 (%get content :text-sha256)
+                             :content-version-hash (%get content :version-hash)
+                             :cut-graph-root (%get cut :graph-root)
+                             :cut-journal-seq (%get cut :journal-seq)
+                             :cut-known-at (%get cut :known-at)
+                             :verifier-set verifier-set)))
+                  (and (stringp release-root)
+                       (jws:verify-jws (%get bundle :release-jws) stmt key)))))
 
-        ;; RC2: census.graph_root ≡ cut.graph_root (το release δεσμεύει ΑΚΡΙΒΩΣ
-        ;; την τομή του journal cut)
+        ;; RC2: census.graph_root ≡ cut.graph_root (semantic έλεγχος — αμφότερα
+        ;; δεσμεύονται ΗΔΗ στον υπογεγραμμένο release-statement μέσω RC1)
         (safe :rc/census-binds-cut
               (lambda ()
                 (and (stringp (%get census :graph-root))
@@ -299,7 +370,9 @@
                          (mapcar #'merkle:hash-leaf-string ids) idx)
                         (%get census :receipt-set-root))))))
 
-        ;; RC5: content commitment — text-sha256 ≡ sha256(κειμένου) στο TRA
+        ;; RC5: content ↔ TRA συνέπεια. Το content ΔΕΣΜΕΥΕΤΑΙ στον υπογεγραμμένο
+        ;; release-statement (RC1)· εδώ ελέγχεται επιπλέον ότι το TRA δεσμεύει
+        ;; ΤΟ ΙΔΙΟ content (καμία απόκλιση attestation↔release).
         (safe :rc/content-commitment
               (lambda ()
                 (let ((tra-out (%get (%get bundle :tra) :committed-content)))
@@ -320,17 +393,24 @@
                       (%get tlog :inclusion-path)
                       (%get tlog :root)))))
 
-        ;; RC7: TSR κρυπτογραφικά έγκυρο πάνω στο ΚΑΝΟΝΙΚΟ release-root token
-        ;; (ΑΚΡΙΒΩΣ όπως το παρουσιάζει το bundle — «sha256:HEX») → genTime,
-        ;; η ΩΡΑ στην οποία αποτιμάται η ισχύς της delegation (Δ3)
+        ;; RC7: TSR κρυπτογραφικά έγκυρο ΚΑΙ chained σε PINNED TSA CA (crypto-
+        ;; critic C1: το :unpinned ΔΕΝ αυθεντικοποιεί ΠΟΙΟΣ υπέγραψε ⇒ ο genTime
+        ;; θα ήταν attacker-forgeable, καταρρίπτοντας OWN5/OWN6). Απαιτείται
+        ;; ΕΞΩΤΕΡΙΚΟ trusted-tsa-ca-path και tier = :pinned. Ο genTime ΤΙΘΕΤΑΙ
+        ;; ΜΟΝΟ στην επιτυχία (provenance-critic M1) — ποτέ από μη-επαληθευμένο TSR.
         (safe :rc/tsr
               (lambda ()
+                (unless trusted-tsa-ca-path
+                  (error "RC7: απόν trusted-tsa-ca-path — ο genTime ΔΕΝ αυθεντικοποιείται (fail-closed)"))
                 (multiple-value-bind (tier plist)
                     (tsa:verify-tsr-cryptographically
                      (%get bundle :tsr-bytes)
-                     (babel:string-to-octets release-root :encoding :utf-8))
-                  (setf gen-time (getf plist :gen-time))
-                  (and (member tier '(:pinned :unpinned)) gen-time t))))
+                     (babel:string-to-octets release-root :encoding :utf-8)
+                     :ca-pem-path trusted-tsa-ca-path)
+                  (let ((g (getf plist :gen-time)))
+                    (when (and (eq tier :pinned) g)
+                      (setf gen-time g)      ; ΜΟΝΟ σε επιτυχία
+                      t)))))
 
         ;; RC8: verifier-set membership — ο ΑΠΑΙΤΟΥΜΕΝΟΣ (policy) temporal
         ;; verifier ∈ verifier-set ΤΟΥ release (ο verifier απαιτείται εξ policy,
@@ -343,15 +423,22 @@
                      t)))
 
         ;; ── ΟΜΑΔΑ CONS: consistency vs consumer checkpoint (append-only) ──
-        (when consumer-checkpoint
-          (safe :cons/tlog-consistency
-                (lambda ()
-                  (merkle:verify-consistency
-                   (%get consumer-checkpoint :tree-size)
-                   (%get tlog :tree-size)
-                   (%get consumer-checkpoint :root)
-                   (%get tlog :root)
-                   (%get tlog :consistency-proof))))))
+        ;; [provenance-critic M2] Η ανίχνευση fork ΕΞΑΡΤΑΤΑΙ από checkpoint· η
+        ;; απουσία του ΔΕΝ είναι σιωπηλή — αν η policy απαιτεί :require-checkpoint
+        ;; και δεν δόθηκε, ΑΠΟΤΥΓΧΑΝΕΙ ονομαστικά.
+        (cond
+          (consumer-checkpoint
+           (safe :cons/tlog-consistency
+                 (lambda ()
+                   (merkle:verify-consistency
+                    (%get consumer-checkpoint :tree-size)
+                    (%get tlog :tree-size)
+                    (%get consumer-checkpoint :root)
+                    (%get tlog :root)
+                    (%get tlog :consistency-proof)))))
+          ((%get policy :require-checkpoint)
+           (pred :cons/checkpoint-required nil
+                 "policy απαιτεί consumer-checkpoint αλλά δεν δόθηκε — fork undetectable"))))
 
       ;; ── ΟΜΑΔΑ OWN: owner-pinned authentication (hermetic pin) ────────────
       (let* ((deleg (%get bundle :delegation))
@@ -422,36 +509,56 @@
                                allowed :test #'equal)
                        t))))
 
-        ;; OWN5: η delegation ΙΣΧΥΕΙ ΣΤΟ genTime του TSR (όχι σε caller clock)
+        ;; OWN5: η delegation ΙΣΧΥΕΙ ΣΤΟ genTime του TSR (όχι σε caller clock).
+        ;; [crypto-critic S2] ΑΜΦΟΤΕΡΑ nb/na ΚΑΝΟΝΙΚΟΠΟΙΟΥΝΤΑΙ (dual-format
+        ;; ISO/GeneralizedTime) — ασύμμετρη σύγκριση = λάθος έκβαση.
+        ;; [provenance-critic S4] freshness floor: αν η policy δώσει
+        ;; :gentime-floor, ο genTime ΠΡΕΠΕΙ να είναι ≥ αυτού (θάνατος temporal
+        ;; rollback — παλιό γνήσιο TSR δεν ξανα-εξουσιοδοτεί νεότερη έκδοση).
         (safe :own/delegation-valid-at-gentime
               (lambda ()
-                (let* ((nb (cdr (assoc "not_before" deleg-stmt :test #'equal)))
-                       (na (cdr (assoc "not_after" deleg-stmt :test #'equal)))
+                (let* ((nb (%normalize-gentime
+                            (cdr (assoc "not_before" deleg-stmt :test #'equal))))
+                       (na (%normalize-gentime
+                            (cdr (assoc "not_after" deleg-stmt :test #'equal))))
+                       (floor (let ((f (%get policy :gentime-floor)))
+                                (and f (%normalize-gentime f))))
                        (g (and gen-time (%normalize-gentime gen-time))))
                   (cond
                     ((not (and g nb na)) (setf deleg-state :absent) nil)
+                    ((and floor (string< g floor)) (setf deleg-state :stale) nil)
                     ((string< g nb) (setf deleg-state :not-yet) nil)
                     ((string> g na) (setf deleg-state :expired) nil)
                     (t (setf deleg-state :active) t)))))
 
-        ;; OWN6: ΚΑΜΙΑ ενεργή (owner-signed) ανάκληση δεν καλύπτει την
-        ;; delegation στο genTime + μονοτονία ακολουθίας
+        ;; OWN6: ΚΑΜΙΑ ενεργή (owner-signed) ανάκληση δεν καλύπτει την delegation
+        ;; στο genTime. [crypto-critic M3] η ανάκληση πρέπει να ΣΤΟΧΕΥΕΙ ΤΟΝ ΙΔΙΟ
+        ;; delegate (revokes_delegate_thumbprint) ΚΑΙ seq ≥ (supersession).
+        ;; [crypto-critic S1] αξιολογούνται ΚΑΙ οι bundle revocations ΚΑΙ οι
+        ;; ΕΞΩΤΕΡΙΚΕΣ known-revocations του καταναλωτή — suppression-by-omission
+        ;; από το bundle δεν κρύβει ανάκληση που ο καταναλωτής ήδη γνωρίζει.
         (safe :own/not-revoked
               (lambda ()
                 (let* ((seq (cdr (assoc "sequence" deleg-stmt :test #'equal)))
+                       (dthumb (cdr (assoc "delegate_jwk_thumbprint" deleg-stmt :test #'equal)))
                        (g (and gen-time (%normalize-gentime gen-time))))
-                  (if (not (and (integerp seq) (>= seq 1) owner-key g))
+                  (if (not (and (integerp seq) (>= seq 1) owner-key g dthumb))
                       nil                       ; προϋποθέσεις απούσες ⇒ fail-closed
                       (block scan
-                        (dolist (rv (%get bundle :revocations) t)
+                        (dolist (rv (append (%get bundle :revocations)
+                                            known-revocations)
+                                    t)
                           (let* ((st (%get rv :statement)) (sg (%get rv :signature))
                                  (rvseq (cdr (assoc "revokes_sequence" st :test #'equal)))
+                                 (rdt (cdr (assoc "revokes_delegate_thumbprint" st :test #'equal)))
                                  (rat (%normalize-gentime
                                        (cdr (assoc "revoked_at" st :test #'equal)))))
                             (when (and (owner-verify-statement owner-key +revocation-tag+ st sg)
                                        (integerp rvseq)
-                                       ;; ανακαλεί ΑΥΤΗ (ίδια seq) ή ΝΕΟΤΕΡΗ
+                                       ;; ανακαλεί ΑΥΤΗ (ίδια seq) ή ΝΕΟΤΕΡΗ...
                                        (>= rvseq seq)
+                                       ;; ...ΚΑΙ στοχεύει ΤΟΝ ΙΔΙΟ delegate
+                                       (equal rdt dthumb)
                                        rat (string>= g rat))
                               (setf deleg-state :revoked)
                               (return-from scan nil))))))))))
