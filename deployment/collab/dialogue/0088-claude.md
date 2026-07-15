@@ -1209,3 +1209,38 @@ supersession/conservative marker συνεκτικά· legacy /1 decoder fail-clo
 hash-chain)· receipt-id ολικό binding· Lisp↔Python attestation ισοδυναμία
 19 πεδίων· typed anchors· ΟΛΑ τα release-anchor-for σφάλματα ⇒ provisional
 (κανένα σιωπηλό upgrade)· GIT_COMMIT gate· %ensure-graph :error στο serving.
+
+---
+
+## [0088 PRE-#4 PROOF-CONTRACT FREEZE — εντολή δημιουργού (opus-4-8 review)]
+
+Ετυμηγορία: Α-ΣΤ = PASS-CANDIDATE, αλλά ο proof critic άφησε 3 blockers ανοιχτά.
+Φάση PRE-#4 πριν το #4. HEAD υλοποίησης: f29f5436.
+
+- **BLOCKER 1 (#1/#7)**: forgeable release-anchor/1 plist ΠΕΘΑΝΕ — opaque
+  τύποι (verified/provisional-release-anchor, abstract base :constructor nil),
+  ΟΛΑ τα slots :read-only (provisional δεν «βάφεται» verified με setf)·
+  %make-verified-anchor PRIVATE (μόνο release-anchor-for)· παγωμένη taxonomy
+  {provisional-unanchored, internally-release-consistent (ΑΝΩΤΑΤΟ χωρίς pinned
+  root — ΠΟΤΕ «release-anchored»), owner-pinned-authenticated,
+  independently-witnessed}. Locks ΦΖ1/ΦΖ7.
+- **#2**: verifier-hash ΜΟΝΟ από anchor (θάνατος ξεχωριστού arg). Lock ΦΖ2.
+- **BLOCKER 2 (#3)**: content commitment (version-hash + text-sha256) σε ΚΑΘΕ
+  text-bearing outcome (complete/pending-future/suspended/analytical)·
+  analytical δεσμεύει ΚΑΙ assumed-edge-ids. Lock ΦΖ3.
+- **BLOCKER 3 (#4/#5)**: verify-receipt → verify-receipt-intrinsic — ΟΛΑ τα
+  graph-derived πεδία επί ΑΚΡΙΒΟΥΣ bitemporal record (%current-record-of στο
+  build· θάνατος gethash-δίνει-fork bug)· ονομαστικός διαχωρισμός από
+  μελλοντικό verify-authority-proof-bundle. Locks ②ζ-②λ.
+- **#6**: %version-hash → %legacy-version-hash-1 (read-only /1, ΑΚΡΙΒΩΣ 1
+  call-site — lock ΦΖ6)· παρωχημένα σχόλια sentinel/gap διορθωμένα.
+
+**OWNER-PROOF DIAGNOSIS**: ο owner build στο b73daa28 πέρασε ΟΛΑ τα gated
+suites αλλά έσκασε στο manifest — 2 tracked junk («article-root-generator-
+omega. lisp» 0-bytes + «type-i. zip», κανένα δεν αναφέρεται) με ΚΕΝΟ έσπαγαν
+το xargs. git rm + find -print0/sort -z/xargs -0.
+
+Proof: temporal-semantics 110/110, receipt 21/21, version-graph 18/18,
+parity 31/31, corpus-service 53/53, as-known-e2e 27/27, temporal-verifier
+2/2. Σε εξέλιξη: focused adversarial re-check TRA/receipt/anchor. Μετά,
+αν καθαρός: #4 (εγκρίνεται)· owner proof ΜΕΤΑ το #4· Π7/GAAF-1 παγωμένα.

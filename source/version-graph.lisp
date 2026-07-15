@@ -2307,11 +2307,15 @@
   "Η κλειστή λίστα επιτρεπτών assurance τιμών — κάθε άλλη ⇒ σφάλμα.")
 
 (defstruct (release-anchor (:conc-name ra-) (:copier nil) (:constructor nil))
-  ;; αφηρημένη βάση — ΔΕΝ κατασκευάζεται (:constructor nil)
-  (assurance "" :type string) (release-root "" :type string)
-  (reasons '() :type list) (tlog-size 0 :type integer)
-  (tlog-root "" :type string) (registry-digest "" :type string)
-  (verifier-hash "" :type string))
+  ;; αφηρημένη βάση — ΔΕΝ κατασκευάζεται (:constructor nil)· ΟΛΑ read-only
+  ;; ώστε provisional να ΜΗΝ μπορεί να «βαφτεί» verified με setf ra-assurance.
+  (assurance "" :type string :read-only t)
+  (release-root "" :type string :read-only t)
+  (reasons '() :type list :read-only t)
+  (tlog-size 0 :type integer :read-only t)
+  (tlog-root "" :type string :read-only t)
+  (registry-digest "" :type string :read-only t)
+  (verifier-hash "" :type string :read-only t))
 
 (defstruct (verified-release-anchor (:include release-anchor) (:conc-name ra-)
              (:copier nil) (:constructor %make-verified-release-anchor)))

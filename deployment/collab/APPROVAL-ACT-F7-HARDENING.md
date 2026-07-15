@@ -1,5 +1,12 @@
 # APPROVAL ACT — Φ7-HARDENING owner proof #5 (ΠΡΟΣ ΣΥΜΠΛΗΡΩΣΗ ΑΠΟ ΔΗΜΙΟΥΡΓΟ)
 
+> OWNER-PROOF FIX (f29f5436): ο owner build στο b73daa28 πέρασε ΟΛΑ τα gated
+> tests (temporal-semantics 105/105 κ.λπ.) αλλά έσκασε στο manifest step —
+> 2 tracked junk αρχεία με ΚΕΝΟ στο όνομα έσπαγαν το `xargs sha256sum`.
+> Διορθώθηκε: git rm των junk + find σκληρυμένο σε -print0/-0. Χτίσε στο ΝΕΟ
+> HEAD (git rev-parse HEAD) — περιλαμβάνει ΚΑΙ τον PRE-#4 PROOF-CONTRACT FREEZE.
+
+
 Η πράξη δένει: git HEAD ↔ runtime image digest ↔ proof-manifest digests.
 Συμπληρώνεται ΜΟΝΟ από τον δημιουργό, ΜΟΝΟ με πράσινο --no-cache build.
 
