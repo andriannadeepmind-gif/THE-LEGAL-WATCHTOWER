@@ -76,10 +76,12 @@
 (defparameter *cp-root* (orchestrator.merkle:merkle-tree-hash (subseq *tlog-leaf-hashes* 0 2)))
 (defparameter *consistency-proof* (orchestrator.merkle:consistency-proof *tlog-leaf-hashes* *cp-size*))
 
-;; Ο RELEASE-STATEMENT (δεσμεύει census/receipt-set/content/cut/verifier-set)
+;; Ο RELEASE-STATEMENT (δεσμεύει census/receipt-set/content/cut/verifier-set/tlog)
 (defun sign-release-statement (&key (release-root *release-root*) (graph-root *graph-root*)
                                     (receipt-set-root *receipt-set-root*) (content *content*)
-                                    (cut *cut*) (verifier-set *verifier-set*))
+                                    (cut *cut*) (verifier-set *verifier-set*)
+                                    (tlog-root *tlog-root*) (tlog-tree-size *tlog-size*)
+                                    (tlog-leaf-index *tlog-index*))
   (getf (orchestrator.jws-authority:sign-jws
          (%canonical-release-statement
           :release-root release-root :graph-root graph-root
@@ -87,7 +89,8 @@
           :content-text-sha256 (getf content :text-sha256)
           :content-version-hash (getf content :version-hash)
           :cut-graph-root (getf cut :graph-root) :cut-journal-seq (getf cut :journal-seq)
-          :cut-known-at (getf cut :known-at) :verifier-set verifier-set)
+          :cut-known-at (getf cut :known-at) :verifier-set verifier-set
+          :tlog-root tlog-root :tlog-tree-size tlog-tree-size :tlog-leaf-index tlog-leaf-index)
          *rk-priv*)
         :jws))
 
@@ -117,10 +120,18 @@
          (cut (or (getf overrides :cut) *cut*))
          (content (or (getf overrides :content) *content*))
          (vset (if (member :verifier-set overrides) (getf overrides :verifier-set) *verifier-set*))
+         (tlog (or (getf overrides :tlog)
+                   (list :tree-size *tlog-size* :root *tlog-root* :leaf-index *tlog-index*
+                         :inclusion-path (orchestrator.merkle:inclusion-path
+                                          *tlog-leaf-hashes* *tlog-index*)
+                         :consistency-proof *consistency-proof*)))
          (jws (or (getf overrides :release-jws)
                   (sign-release-statement :graph-root (getf census :graph-root)
                                           :receipt-set-root (getf census :receipt-set-root)
-                                          :content content :cut cut :verifier-set vset)))
+                                          :content content :cut cut :verifier-set vset
+                                          :tlog-root (getf tlog :root)
+                                          :tlog-tree-size (getf tlog :tree-size)
+                                          :tlog-leaf-index (getf tlog :leaf-index))))
          (b (list :release-root *release-root* :release-jwk *release-jwk* :release-jws jws
                   :owner-root-jwk *owner-jwk* :census census :cut cut :content content
                   :receipt (list :receipt-id (nth *receipt-index* *receipt-ids*)
@@ -128,10 +139,7 @@
                   :tra (list :committed-content
                              (list :text-sha256 (getf content :text-sha256)
                                    :version-hash (getf content :version-hash)))
-                  :tlog (list :tree-size *tlog-size* :root *tlog-root*
-                              :inclusion-path (orchestrator.merkle:inclusion-path
-                                               *tlog-leaf-hashes* *tlog-index*)
-                              :consistency-proof *consistency-proof*)
+                  :tlog tlog
                   :tsr-bytes *tsr* :verifier-set vset :delegation (base-delegation)
                   :revocations '())))
     (loop for (k v) on overrides by #'cddr do (setf (getf b k) v))
@@ -357,13 +365,90 @@
                                      (list (cons "k" (format nil "a~Cb" (code-char #x1f)))))
                nil)
       (error () t)))
-;; [crypto-critic M2] non-canonical x encoding ⇒ ΙΔΙΟΣ thumbprint
-(ck "thumbprint ανεξάρτητος κωδικοποίησης x (M2 recanonicalization)"
+;; [crypto-critic-2 F1] ΓΝΗΣΙΑ non-canonical x (low-bit variant του τελευταίου
+;; sextet — ΔΙΑΦΟΡΕΤΙΚΟ string, ΙΔΙΑ 32 bytes) ⇒ ΙΔΙΟΣ thumbprint. Αν η
+;; recanonicalization αφαιρεθεί, οι δύο thumbprints ΔΙΑΦΕΡΟΥΝ ⇒ το test κοκκινίζει.
+(ck "thumbprint ανεξάρτητος non-canonical x (M2 recanonicalization, ΜΗ-vacuous)"
     (let* ((raw (ironclad:ed25519-key-y *owner-pk*))
-           (padded (concatenate 'string (orchestrator.jws-authority:base64url-encode raw) "")))
-      (equal (ed25519-jwk-thumbprint *owner-pk*)
-             (ed25519-jwk-thumbprint (list (cons "kty" "OKP") (cons "crv" "Ed25519")
-                                           (cons "x" padded))))))
+           (canon (orchestrator.jws-authority:base64url-encode raw))
+           (alpha "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_")
+           (lastc (char canon (1- (length canon))))
+           (variant (concatenate 'string (subseq canon 0 (1- (length canon)))
+                                 (string (char alpha (mod (1+ (position lastc alpha)) 64))))))
+      (and (not (string= canon variant))       ; ΟΝΤΩΣ διαφορετική κωδικοποίηση
+           (equalp raw (orchestrator.jws-authority:base64url-decode variant)) ; ΙΔΙΑ bytes
+           (equal (ed25519-jwk-thumbprint *owner-pk*)
+                  (ed25519-jwk-thumbprint (list (cons "kty" "OKP") (cons "crv" "Ed25519")
+                                                (cons "x" variant)))))))
+;; [crypto-critic-2 F3] verifier-set token με comma ⇒ ΕΝΡΙΞΙΜΟ (length-prefixed):
+;; {"a,b"} και {"a","b"} ΔΕΝ συμπίπτουν πλέον στην υπογραφή
+(ck "verifier-set {\"a,b\"} ≠ {\"a\",\"b\"} στο signed statement (F3 injectivity)"
+    (not (string= (%canonical-release-statement :verifier-set (list "a,b"))
+                  (%canonical-release-statement :verifier-set (list "a" "b")))))
+
+;;; ── [9] COMMITMENT-EDGE per-field witnesses (crypto-critic-2 F2 + C1) ──
+;;; Κάθε statement-bound πεδίο μεταλλάσσεται ΜΟΝΟ του υπό fixed γνήσιο JWS ⇒
+;;; rc/release-jws FAIL. Αποδεικνύει ότι ΚΑΘΕ πεδίο είναι ΟΝΤΩΣ στην υπογραφή.
+(format t "~%== [9] commitment-edge per-field witnesses ==~%")
+(macrolet ((fixed-jws-mutation (label setter)
+             `(let* ((b (base-bundle)) (_ ,setter)
+                     (v (verify-authority-proof-bundle
+                         b :trusted-owner-root-jwk *owner-jwk* :trusted-tsa-ca-path *sectigo-ca*
+                         :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*)
+                         :policy *policy*)))
+                (declare (ignore _))
+                (ck ,label (and (failed-p v :rc/release-jws)
+                                (equal (apb-awarded-tier v) "provisional-unanchored"))))))
+  (fixed-jws-mutation "swap content_text_sha256 υπό fixed JWS ⇒ release-jws FAIL"
+                      (setf (getf b :content) (list :text-sha256 "sha256:FORGED" :version-hash "sha256:ver-1")))
+  (fixed-jws-mutation "swap content_version_hash υπό fixed JWS ⇒ release-jws FAIL"
+                      (setf (getf b :content) (list :text-sha256 "sha256:text-1" :version-hash "sha256:FORGED")))
+  (fixed-jws-mutation "swap cut_journal_seq υπό fixed JWS ⇒ release-jws FAIL"
+                      (setf (getf b :cut) (list :graph-root *graph-root* :journal-seq 99
+                                                :known-at "2026-07-10T00:00:00Z")))
+  (fixed-jws-mutation "swap cut_known_at υπό fixed JWS ⇒ release-jws FAIL"
+                      (setf (getf b :cut) (list :graph-root *graph-root* :journal-seq 42
+                                                :known-at "2099-01-01T00:00:00Z")))
+  (fixed-jws-mutation "[C1] swap tlog_root υπό fixed JWS ⇒ release-jws FAIL (tlog δεσμευμένο)"
+                      (setf (getf b :tlog) (list :tree-size *tlog-size* :root "sha256:FORGED-TLOG"
+                                                 :leaf-index *tlog-index*
+                                                 :inclusion-path (getf (getf b :tlog) :inclusion-path)
+                                                 :consistency-proof *consistency-proof*)))
+  (fixed-jws-mutation "[C1] swap tlog_leaf_index υπό fixed JWS ⇒ release-jws FAIL"
+                      (setf (getf b :tlog) (list :tree-size *tlog-size* :root *tlog-root* :leaf-index 3
+                                                 :inclusion-path (getf (getf b :tlog) :inclusion-path)
+                                                 :consistency-proof *consistency-proof*))))
+
+;;; ── [10] anti-rollback freshness + F4/F5/F6 fail-closed ──
+(format t "~%== [10] anti-rollback + fail-closed normalization ==~%")
+;; [S1] min-tlog-leaf-index: signed leaf-index (1) < floor (3) ⇒ freshness FAIL
+(let ((v (verify-authority-proof-bundle
+          (base-bundle) :trusted-owner-root-jwk *owner-jwk* :trusted-tsa-ca-path *sectigo-ca*
+          :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*)
+          :policy (list* :min-tlog-leaf-index 3 *policy*))))
+  (ck "leaf-index 1 < floor 3 ⇒ freshness FAIL (anti-rollback S1)" (failed-p v :cons/tlog-freshness)))
+(let ((v (verify-authority-proof-bundle
+          (base-bundle) :trusted-owner-root-jwk *owner-jwk* :trusted-tsa-ca-path *sectigo-ca*
+          :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*)
+          :policy (list* :min-tlog-leaf-index 1 *policy*))))
+  (ck "leaf-index 1 ≥ floor 1 ⇒ owner-pinned ΠΑΡΑΜΕΝΕΙ"
+      (equal (apb-awarded-tier v) "owner-pinned-authenticated")))
+;; [F4] κακοσχηματισμένο :gentime-floor ⇒ ΔΕΝ παρακάμπτεται σιωπηλά
+(let ((v (verify-authority-proof-bundle
+          (base-bundle) :trusted-owner-root-jwk *owner-jwk* :trusted-tsa-ca-path *sectigo-ca*
+          :consumer-checkpoint (list :tree-size *cp-size* :root *cp-root*)
+          :policy (list* :gentime-floor "garbage" *policy*))))
+  (ck "κακοσχηματισμένο gentime-floor ⇒ validity FAIL (F4, ΟΧΙ σιωπηλή παράκαμψη)"
+      (and (failed-p v :own/delegation-valid-at-gentime)
+           (eq (apb-delegation-state v) :floor-unparseable))))
+;; [F5] owner-signed ΤΑΙΡΙΑΣΤΗ ανάκληση με κακοσχηματισμένο revoked_at ⇒ ΑΝΑΚΛΗΣΗ
+(let ((v (verdict :revocations (list (revocation :revokes-seq 1 :revoked-at "garbage")))))
+  (ck "ανάκληση με κακοσχηματισμένο revoked_at ⇒ not-revoked FAIL (F5 fail-closed)"
+      (failed-p v :own/not-revoked)))
+;; [F6] offset-bearing not_before ⇒ ΑΠΟΡΡΙΨΗ normalization ⇒ validity FAIL
+(let ((v (verdict :delegation (base-delegation :not-before "2026-01-01T00:00:00+02:00"))))
+  (ck "offset-bearing not_before ⇒ validity FAIL (F6 offset rejection)"
+      (failed-p v :own/delegation-valid-at-gentime)))
 
 (format t "~%======================================================~%")
 (format t "authority-proof-bundle: ~D passed, ~D failed~%" *p* *f*)

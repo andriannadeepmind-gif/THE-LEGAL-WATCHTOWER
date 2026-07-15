@@ -111,29 +111,45 @@
 (defparameter +revocation-tag+ "lawmax/trust/revocation/1")
 (defparameter +release-statement-tag+ "lawmax/trust/release-statement/1")
 
+(defun %canonical-verifier-set (verifier-set)
+  "Ντετερμινιστική, ΕΝΡΙΞΙΜΗ σειριοποίηση του verifier-set: length-prefixed
+   ταξινομημένα tokens (crypto-critic-2 F3 — το comma-join ΔΕΝ ήταν injective:
+   {\"a,b\"} και {\"a\",\"b\"} συνέπιπταν). Length-prefix ⇒ καμία σύγκρουση
+   ανεξαρτήτως περιεχομένου· κάθε token ελέγχεται και για separators."
+  (with-output-to-string (s)
+    (dolist (tok (sort (copy-list (or verifier-set '())) #'string<))
+      (let ((v (princ-to-string tok)))
+        (unless (%no-separators-p v)
+          (error "verifier-set token περιέχει separator control byte"))
+        (format s "~D:~A;" (length v) v)))))
+
 (defun %canonical-release-statement (&key release-root graph-root receipt-set-root
                                           content-text-sha256 content-version-hash
                                           cut-graph-root cut-journal-seq cut-known-at
-                                          verifier-set)
+                                          verifier-set tlog-root tlog-tree-size
+                                          tlog-leaf-index)
   "Η ΚΑΝΟΝΙΚΗ δήλωση release που ΥΠΟΓΡΑΦΕΙ το delegated release key (RC1). ΔΕΝΕΙ
-   τον anchored release-root ΜΑΖΙ ΜΕ census/receipt-set/content/cut/verifier-set,
-   ώστε κανένα από αυτά να ΜΗΝ είναι ελεύθερα αντικαταστάσιμο (provenance-critic
-   C1/C2/S1-S3: το commitment edge). Το verifier-set σειριοποιείται
-   ντετερμινιστικά (ταξινομημένο, comma-joined — τα sha256 tokens δεν έχουν
-   κόμματα/separators)."
-  (%canonical-statement-string
-   +release-statement-tag+
-   (list (cons "content_text_sha256" (or content-text-sha256 ""))
-         (cons "content_version_hash" (or content-version-hash ""))
-         (cons "cut_graph_root" (or cut-graph-root ""))
-         (cons "cut_journal_seq" (or cut-journal-seq ""))
-         (cons "cut_known_at" (or cut-known-at ""))
-         (cons "graph_root" (or graph-root ""))
-         (cons "receipt_set_root" (or receipt-set-root ""))
-         (cons "release_root" (or release-root ""))
-         (cons "verifier_set"
-               (format nil "~{~A~^,~}"
-                       (sort (copy-list (or verifier-set '())) #'string<))))))
+   τον anchored release-root ΜΑΖΙ ΜΕ census/receipt-set/content/cut/verifier-set
+   ΚΑΙ την ταυτότητα του transparency log (tlog root/tree_size/leaf_index —
+   provenance-critic-2 C1: χωρίς αυτό ο tlog root ήταν αδέσμευτος ⇒ RC6 vacuous
+   χωρίς checkpoint). Κανένα πεδίο ελεύθερα αντικαταστάσιμο (το commitment edge).
+   [crypto-critic-2 S4] ΟΛΕΣ οι τιμές σειριοποιούνται ΡΗΤΑ ως strings (format
+   ~A) — καμία type-collision int/string/symbol στη δεσμευμένη μορφή."
+  (flet ((s (x) (if (null x) "" (princ-to-string x))))
+    (%canonical-statement-string
+     +release-statement-tag+
+     (list (cons "content_text_sha256" (s content-text-sha256))
+           (cons "content_version_hash" (s content-version-hash))
+           (cons "cut_graph_root" (s cut-graph-root))
+           (cons "cut_journal_seq" (s cut-journal-seq))
+           (cons "cut_known_at" (s cut-known-at))
+           (cons "graph_root" (s graph-root))
+           (cons "receipt_set_root" (s receipt-set-root))
+           (cons "release_root" (s release-root))
+           (cons "tlog_leaf_index" (s tlog-leaf-index))
+           (cons "tlog_root" (s tlog-root))
+           (cons "tlog_tree_size" (s tlog-tree-size))
+           (cons "verifier_set" (%canonical-verifier-set verifier-set))))))
 
 ;;; ============================================================================
 ;;; Ed25519 OKP JWK (RFC 8037) + RFC 7638 THUMBPRINT
@@ -258,12 +274,6 @@
         ((consp obj) (cdr (assoc key obj :test #'equal)))
         (t nil)))
 
-(defun %hex-of-sha256-tag (s)
-  "«sha256:HEX» → HEX· «HEX» → HEX· αλλιώς NIL (fail-closed στον καλούντα)."
-  (cond ((not (stringp s)) nil)
-        ((and (> (length s) 7) (string= "sha256:" (subseq s 0 7))) (subseq s 7))
-        (t s)))
-
 ;;; ============================================================================
 ;;; Η ΜΙΑ ΕΙΣΟΔΟΣ
 ;;; ============================================================================
@@ -283,16 +293,27 @@
        (αποτρέπουν suppression-by-omission από το bundle — crypto-critic S1).
    POLICY: plist :required-tier :allowed-delegate-algorithms
      :temporal-verifier-hash :require-witness :require-checkpoint :gentime-floor
-     :policy-digest.
+     :min-tlog-leaf-index :policy-digest.
 
    ΒΑΘΜΙΔΕΣ ΑΠΟΝΕΜΟΝΤΑΙ ΜΟΝΟ από επαληθευμένα κατηγορήματα:
      RC*   → internally-release-consistent (ο υπογεγραμμένος release-statement
              ΔΕΝΕΙ census/receipt-set/content/cut/verifier-set στον anchored root)
      RC*+CONS*+OWN* → owner-pinned-authenticated
      RC*+CONS*+OWN*+WIT* → independently-witnessed.
-   ΟΡΙΟ (τίμια δηλωμένο): ο hermetic verifier ΔΕΝ έχει το journal — η δέσμευση
-   graph_root↔ζωντανή αλυσίδα ελέγχεται στην πρώτη βαθμίδα (release-anchor-for)·
-   εδώ ο graph_root δεσμεύεται στον υπογεγραμμένο release-statement, όχι σε replay."
+   ΟΡΙΑ (τίμια δηλωμένα):
+   • ο verifier αυτός (#4A — cryptographic release-envelope) ΔΕΝ έχει journal:
+     ο graph_root δεσμεύεται στον υπογεγραμμένο release-statement, ΟΧΙ σε replay.
+     Η δέσμευση graph_root↔ζωντανή αλυσίδα + το πλήρες authority-evidence replay
+     (journal bytes → reconstructed graph → verify-receipt-intrinsic → TRA
+     recompute) ανήκουν στο #4B (verify-authority-evidence-bundle).
+   • [provenance-critic-2 S3] Η βαθμίδα «internally-release-consistent» μοιράζεται
+     ΟΝΟΜΑ με την πρώτη βαθμίδα (release-anchor-for) αλλά ΔΙΑΦΟΡΕΤΙΚΑ τεκμήρια:
+     εκεί = graph_root ≡ live chain-head· εδώ = υπογεγραμμένος release-statement.
+     ΣΥΜΠΛΗΡΩΜΑΤΙΚΕΣ, όχι εναλλάξιμες — ο καταναλωτής χρειάζεται ΚΑΙ τις δύο για
+     πλήρη διαβεβαίωση (γι' αυτό υπάρχει το #4B).
+   • [provenance-critic-2 S1] Anti-rollback: χωρίς policy :min-tlog-leaf-index (ή
+     :gentime-floor) ένα παλιό γνήσιο release μπορεί να επαναπαρουσιαστεί εντός
+     της ισχύος της delegation — ο καταναλωτής δηλώνει ρητά το freshness floor."
   (let ((preds '()) (reasons '()) (gen-time nil) (deleg-state :absent))
     (labels ((pred (name ok &optional detail)
                (push (list* name (and ok t) detail) preds)
@@ -305,7 +326,6 @@
 
       ;; ── ΟΜΑΔΑ RC: τοπική συνέπεια release ────────────────────────────────
       (let* ((release-root (%get bundle :release-root))
-             (root-hex (%hex-of-sha256-tag release-root))
              (release-jwk (%get bundle :release-jwk))
              (census (%get bundle :census))
              (cut (%get bundle :cut))
@@ -337,7 +357,12 @@
                              :cut-graph-root (%get cut :graph-root)
                              :cut-journal-seq (%get cut :journal-seq)
                              :cut-known-at (%get cut :known-at)
-                             :verifier-set verifier-set)))
+                             :verifier-set verifier-set
+                             ;; [C1] η ταυτότητα του tlog ΜΕΣΑ στην υπογραφή ⇒
+                             ;; RC6 δεν είναι πλέον vacuous χωρίς checkpoint
+                             :tlog-root (%get tlog :root)
+                             :tlog-tree-size (%get tlog :tree-size)
+                             :tlog-leaf-index (%get tlog :leaf-index))))
                   (and (stringp release-root)
                        (jws:verify-jws (%get bundle :release-jws) stmt key)))))
 
@@ -438,7 +463,19 @@
                     (%get tlog :consistency-proof)))))
           ((%get policy :require-checkpoint)
            (pred :cons/checkpoint-required nil
-                 "policy απαιτεί consumer-checkpoint αλλά δεν δόθηκε — fork undetectable"))))
+                 "policy απαιτεί consumer-checkpoint αλλά δεν δόθηκε — fork undetectable")))
+
+        ;; [provenance-critic-2 S1] ANTI-ROLLBACK freshness: αν η policy δηλώσει
+        ;; :min-tlog-leaf-index (η ΤΕΛΕΥΤΑΙΑ θέση log που ο καταναλωτής αποδέχτηκε
+        ;; — μονότονος δείκτης), το ΥΠΟΓΕΓΡΑΜΜΕΝΟ (RC1) tlog leaf-index ΠΡΕΠΕΙ να
+        ;; είναι ≥ αυτού· παλιό γνήσιο release (μικρότερος index) ⇒ rollback ⇒ FAIL.
+        (let ((floor-idx (%get policy :min-tlog-leaf-index)))
+          (when floor-idx
+            (safe :cons/tlog-freshness
+                  (lambda ()
+                    (let ((idx (%get tlog :leaf-index)))
+                      (and (integerp idx) (integerp floor-idx)
+                           (>= idx floor-idx))))))))
 
       ;; ── ΟΜΑΔΑ OWN: owner-pinned authentication (hermetic pin) ────────────
       (let* ((deleg (%get bundle :delegation))
@@ -521,10 +558,13 @@
                             (cdr (assoc "not_before" deleg-stmt :test #'equal))))
                        (na (%normalize-gentime
                             (cdr (assoc "not_after" deleg-stmt :test #'equal))))
-                       (floor (let ((f (%get policy :gentime-floor)))
-                                (and f (%normalize-gentime f))))
+                       (floor-raw (%get policy :gentime-floor))
+                       (floor (and floor-raw (%normalize-gentime floor-raw)))
                        (g (and gen-time (%normalize-gentime gen-time))))
                   (cond
+                    ;; [crypto-critic-2 F4] κακοσχηματισμένο :gentime-floor ΔΕΝ
+                    ;; παρακάμπτει σιωπηλά τον anti-rollback έλεγχο — fail-closed.
+                    ((and floor-raw (null floor)) (setf deleg-state :floor-unparseable) nil)
                     ((not (and g nb na)) (setf deleg-state :absent) nil)
                     ((and floor (string< g floor)) (setf deleg-state :stale) nil)
                     ((string< g nb) (setf deleg-state :not-yet) nil)
@@ -553,15 +593,17 @@
                                  (rdt (cdr (assoc "revokes_delegate_thumbprint" st :test #'equal)))
                                  (rat (%normalize-gentime
                                        (cdr (assoc "revoked_at" st :test #'equal)))))
+                            ;; owner-signed ανάκληση που ΣΤΟΧΕΥΕΙ ΤΟΝ ΙΔΙΟ delegate
+                            ;; με seq ≥ (supersession):
                             (when (and (owner-verify-statement owner-key +revocation-tag+ st sg)
-                                       (integerp rvseq)
-                                       ;; ανακαλεί ΑΥΤΗ (ίδια seq) ή ΝΕΟΤΕΡΗ...
-                                       (>= rvseq seq)
-                                       ;; ...ΚΑΙ στοχεύει ΤΟΝ ΙΔΙΟ delegate
-                                       (equal rdt dthumb)
-                                       rat (string>= g rat))
-                              (setf deleg-state :revoked)
-                              (return-from scan nil))))))))))
+                                       (integerp rvseq) (>= rvseq seq) (equal rdt dthumb))
+                              ;; [crypto-critic-2 F5] revoked_at μη-αναγνώσιμο σε
+                              ;; ΤΑΙΡΙΑΣΤΗ owner-signed ανάκληση ⇒ ΑΝΑΚΛΗΣΗ (fail-
+                              ;; closed), ΠΟΤΕ σιωπηλή παράβλεψη· αλλιώς ισχύει από
+                              ;; revoked_at ≤ genTime.
+                              (when (or (null rat) (string>= g rat))
+                                (setf deleg-state :revoked)
+                                (return-from scan nil)))))))))))
 
       ;; ── ΟΜΑΔΑ WIT: independently-witnessed (Δ4) ──────────────────────────
       ;; Απονέμεται ΜΟΝΟ με επαληθευμένο 3ο μάρτυρα ΚΑΙ policy require-witness.
@@ -603,8 +645,19 @@
 ;;; ── βοηθητικά ──
 
 (defun %normalize-gentime (gt)
-  "GeneralizedTime «YYYYMMDDHHMMSSZ» ή ISO «YYYY-MM-DDTHH:MM:SSZ» → συγκρίσιμο
-   «YYYYMMDDHHMMSS» (μόνο ψηφία). NIL σε κακοσχηματισμένο (fail-closed)."
+  "GeneralizedTime «YYYYMMDDHHMMSS[.fff]Z» ή ISO «YYYY-MM-DDTHH:MM:SS[.fff]Z» →
+   συγκρίσιμο «YYYYMMDDHHMMSS» (14 UTC ψηφία). NIL σε κακοσχηματισμένο (fail-
+   closed). [crypto-critic-2 F6] ΑΠΟΡΡΙΠΤΟΝΤΑΙ offset-bearing χρόνοι (+HH:MM ή
+   -HH:MM μετά το T) — δεν μετατρέπονται σιωπηλά σε UTC· ο genTime RFC-3161
+   είναι πάντα Z, τα bounds προέρχονται από trusted signers/policy, οπότε ένας
+   offset = κακοσχηματισμένη είσοδος ⇒ fail-closed αντί για λάθος σύγκριση."
   (when (stringp gt)
-    (let ((digits (remove-if-not #'digit-char-p gt)))
-      (when (>= (length digits) 14) (subseq digits 0 14)))))
+    (let* ((tpos (position #\T gt))
+           ;; offset ανιχνεύεται ΜΟΝΟ στο time-τμήμα (μετά το T ή, σε καθαρό
+           ;; GeneralizedTime χωρίς T, οπουδήποτε): «+» πάντα, «-» μετά το T.
+           (offset-p (or (find #\+ gt)
+                         (and tpos (find #\- gt :start (1+ tpos)))
+                         (and (null tpos) (find #\- gt)))))
+      (unless offset-p
+        (let ((digits (remove-if-not #'digit-char-p gt)))
+          (when (>= (length digits) 14) (subseq digits 0 14)))))))
