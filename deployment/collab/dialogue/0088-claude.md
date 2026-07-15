@@ -1074,3 +1074,54 @@ Approval/Release πράξη.
 5. Μετά το #4: owner Docker proof σε ακριβές clean HEAD + εξαγωγή
    manifests από το image + εξωτερική επαλήθευση.
 6. Π7 + GAAF-1 runtime: ΠΑΓΩΜΕΝΑ.
+
+---
+
+## [0088 Φ7-HARDENING-REVIEW: κλείσιμο Β-FINALIZATION + Α-ΣΤ — implemented candidates]
+
+Commits 34e97995 (Β-FINALIZATION), 3dc5a547 (Α), 6eccf2fb (Γ), 1c2aa694
+(Δ+Β(iv)), f1cd326a (Ε), 2463bf0c (ΣΤ). ΟΛΑ = implemented candidates —
+τίποτα «closed» πριν από τους 2 κριτές + owner proof.
+
+- **Β-FINALIZATION**: Β1 typed scope-uncertain slots (edge-id/edge-scope/
+  context/missing-dimensions/mode)· Β2 σειρά live→active→χρονικά σχετικό→
+  scope (ανενεργή/άσχετη ακμή δεν απαιτεί context)· Β3 μη αφαιρέσιμος
+  marker :analytical-not-authoritative στο conservative + %require-scope-mode
+  boundary + διόρθωση special-binding bug (defvar πριν το version-at)·
+  Β4 admission scope-intersects revive↔prior· Β5 registry /2 (το /1
+  αποσύρθηκε ως μη δημοσιευμένο — 0 regime/scope lines σε committed journal).
+- **Α (text-version/2)**: journal γραμμές με :schema + ΔΟΜΗΜΕΝΟ
+  :commencement, %version-hash-2 domain-separated· LEGACY /1 decoder μόνο
+  ανάγνωσης (fixed-only, sentinel ⇒ corruption)· receipt contract: δομημένο
+  commencement {type,value} + receipt_schema.
+- **Γ (precedence algebra)**: retroact μοναδικό-ή-uncertainty· extend max·
+  expire min (υπερισχύει extend)· ρητή supersession μέσω prior-edge-id
+  (ήδη στο hash)· admission conflict gate μόνο suspend/retroact/revive.
+- **Δ+Β(iv) (tra/2)**: assurance/release-root/reasons/tlog size+root/
+  registry-digest/scope-context/scope-mode/analytical marker ΜΕΣΑ στο
+  hashed payload· typed anchors ΜΟΝΟ (release-anchor/1 — raw strings ⇒
+  invalid-edge)· release-anchor-for: attested latest + census graph_root ≡
+  chain-head + tlog membership + JWS (in-release public.jwk — δηλωμένο
+  όριο: αυθεντικότητα κλειδιού = out-of-band pinned root) + RFC-3161
+  κρυπτο-TSR + verifier-set membership (απών temporal verifier από παλαιό
+  release ⇒ ονομαστικό reason, ΟΧΙ σιωπηλό anchored)· TRA σε ΚΑΘΕ έκβαση
+  (200/404/422/unknown — as-known-error-tra)· python attestation/2.
+- **Ε (receipt/3)**: cut {graph_root, journal_seq, known_at}· build-receipt
+  με ΥΠΟΧΡΕΩΤΙΚΟ known-at (του ερωτήματος)· verify με PREFIX REPLAY
+  (load-graph :up-to-seq + prefix head ≡ δεσμευμένο root) — same-second
+  events δομικά αόρατα, ΚΑΜΙΑ 1s ταυτότητα· release_root δένει μέσω
+  receipt_set_root ∈ census ∈ signed release (δηλωμένο).
+- **ΣΤ (Docker closure)**: αμφίδρομο suite set + duplicate ⇒ FAIL +
+  recompute core/manifest/logs/5 verifiers από πραγματικά αρχεία·
+  source hash + Dockerfile/*.asd/build.lisp/deps.lock/third-party·
+  entrypoint+sbom από verified stage (0 context COPY στο runtime)·
+  runtime self-check sha256sum -c κατά δεσμευμένο runtime-assets manifest.
+  Owner-side (δηλωμένο): image digest + proof digest στην Approval πράξη.
+
+Proof ανά commit: temporal-semantics 101/101 · temporal-verifier 2/2 (31
+vectors) · version-graph 18/18 · receipt 15/15 · parity 31/31 ·
+corpus-service 53/53 · as-known-e2e 27/27 — 0 failed.
+
+**Σε εξέλιξη (βήμα 3)**: 2 ανεξάρτητοι αντιπαλικοί κριτές (temporal/scope/
+regime + TRA/receipt/release/Docker). Μετά: κλείσιμο ευρημάτων → #4 →
+owner proof. Π7/GAAF-1 παγωμένα.
