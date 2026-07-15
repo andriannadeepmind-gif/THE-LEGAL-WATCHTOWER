@@ -1,24 +1,18 @@
 ;;;; source/authority-evidence-replay.lisp
 ;;;; ============================================================================
-;;;; [0088 Φ7-HARDENING #4B] AUTHORITY EVIDENCE REPLAY — ο ΠΛΗΡΗΣ δεύτερης
-;;;; βαθμίδας verifier: ΔΕΝ εμπιστεύεται bundle-declared graph_root/journal_seq/
-;;;; content hashes — τα ΞΑΝΑΠΑΡΑΓΕΙ από τα πραγματικά τεκμήρια.
+;;;; [0088 Φ7-HARDENING #4B+#4C] AUTHORITY EVIDENCE REPLAY + PROOF-BINDING FREEZE
 ;;;; ============================================================================
-;;;; Το #4A (verify-authority-proof-bundle) είναι cryptographic release-envelope
-;;;; verifier — δηλώνει ρητά ότι ΔΕΝ έχει journal. Το #4B κλείνει αυτό το κενό:
-;;;; ανακατασκευάζει τον γράφο ΑΠΟ ΤΑ ΑΚΡΙΒΗ journal bytes, ξανατρέχει
-;;;; verify-receipt-intrinsic ΠΑΝΩ στον reconstructed graph, επανυπολογίζει το
-;;;; TRA canonical payload/hash ΚΑΙ την temporal έκβαση από τον γράφο, και
-;;;; επανυπολογίζει το source artifact digest από τα ίδια τα bytes.
-;;;;
-;;;; ΚΛΕΙΣΤΟ VERSIONED SCHEMA: authority-proof-bundle/1 — άγνωστο/απόν πεδίο ⇒
-;;;; ΣΦΑΛΜΑ (καμία σιωπηλή ανοχή). bundle_id = canonical hash ΟΛΟΚΛΗΡΟΥ του
-;;;; evidence (πλην του ίδιου).
-;;;;
-;;;; ΤΙΜΙΟΤΗΤΑ (supreme law): κάθε βήμα recompute-and-compare· ΚΑΝΕΝΑ trusted
-;;;; declared root· ΟΛΟ το replay hermetic (bundle-supplied bytes σε temp body,
-;;;; load-graph με πλήρη payload/chain/semantic verification — byte tamper ⇒
-;;;; journal-corruption). Ο signed authority-statement δεσμεύει ΟΛΕΣ τις ρίζες.
+;;;; Ο ΠΛΗΡΗΣ δεύτερης βαθμίδας verifier: ΔΕΝ εμπιστεύεται bundle-declared roots —
+;;;; τα ΞΑΝΑΠΑΡΑΓΕΙ. #4C κλείνει τα proof-binding κενά (εντολή δημιουργού):
+;;;;  1. top-level scope ΔΕΝΕΤΑΙ με το scope της owner-signed delegation·
+;;;;  2. ΠΡΑΓΜΑΤΙΚΗ source→spans→extraction→normalization→graph-text (byte-equiv)·
+;;;;  3. mandatory bundle_id (recompute ΟΛΩΝ των components) + duplicate-key reject·
+;;;;  4. census/release-manifest δεσμευμένα (κανένα decorative evidence)·
+;;;;  5. policy_digest = recompute closed policy schema (όχι caller assertion)·
+;;;;  6. TRA anchor ΠΑΡΑΓΕΤΑΙ από το verified envelope, ΟΧΙ από το ίδιο το TRA·
+;;;;  7. verifier-set = ΑΚΡΙΒΗΣ ισότητα sorted-unique sha256(actual bytes)·
+;;;;  8. :require-delegation-state cap + compromise_from.
+;;;; ΚΑΝΕΝΑ declared root· ΟΛΟ το replay hermetic· κάθε βήμα recompute-and-compare.
 
 (defpackage :orchestrator.authority-evidence-replay
   (:use :cl)
@@ -31,14 +25,15 @@
                     (:jws :orchestrator.jws-authority)
                     (:paths :orchestrator.paths))
   (:export
-   #:+authority-statement-tag+
-   #:canonical-authority-statement
-   #:bundle-id
-   #:validate-bundle-schema
+   #:+authority-statement-tag+ #:+bundle-protocol+
+   #:canonical-authority-statement #:canonical-policy-digest
+   #:extraction-receipt-id #:normalization-receipt-id
+   #:bundle-id #:validate-bundle-schema
    #:reconstruct-graph-from-journal-bytes
    #:aer-verdict #:aer-verdict-p
    #:aer-awarded-tier #:aer-satisfies-policy-p #:aer-reasons #:aer-predicates
    #:aer-replayed-graph-root #:aer-replayed-graph-seq #:aer-recomputed-tra-hash
+   #:aer-derived-text #:aer-authentication-mode
    #:verify-authority-evidence-bundle))
 
 (in-package :orchestrator.authority-evidence-replay)
@@ -50,12 +45,13 @@
 (defparameter +bundle-protocol+ "lawmax/authority-proof-bundle/1")
 
 (defparameter +bundle-required-keys+
-  '(:protocol :corpus-id :body-id :release-id :release-generation :delegation-scope
-    :envelope :source-artifact :extraction-receipt :normalization-receipt
-    :receipt :receipt-membership :journal-bytes :census :release-manifest
-    :verifier-binaries :tra :authority-statement-jws)
-  "Το ΑΚΡΙΒΕΣ σύνολο top-level κλειδιών του authority-proof-bundle/1 — ούτε
-   λιγότερα (missing evidence) ούτε περισσότερα (unknown ⇒ πιθανό smuggling).")
+  '(:protocol :bundle-id :corpus-id :body-id :release-id :release-generation
+    :delegation-scope :registry-digest :envelope :source-artifact
+    :extraction-receipt :normalization-receipt :receipt :receipt-membership
+    :journal-bytes :census :release-manifest :verifier-binaries :tra
+    :authority-statement-jws)
+  "Το ΑΚΡΙΒΕΣ σύνολο top-level κλειδιών — ούτε λιγότερα (missing evidence) ούτε
+   περισσότερα (unknown ⇒ πιθανό smuggling). bundle-id ΥΠΟΧΡΕΩΤΙΚΟ (#4C).")
 
 (defun %g (obj key)
   (cond ((null obj) nil)
@@ -64,33 +60,113 @@
         ((consp obj) (cdr (assoc key obj :test #'equal)))
         (t nil)))
 
-(defun %bundle-keys (bundle)
-  (cond ((and (consp bundle) (keywordp (car bundle)))
-         (loop for (k) on bundle by #'cddr collect k))
-        (t (error "authority-proof-bundle/1: το bundle πρέπει να είναι plist"))))
+(defun %plist-keys (pl)
+  (loop for (k) on pl by #'cddr collect k))
 
 (defun validate-bundle-schema (bundle)
-  "Fail-closed κλειστό schema: ΑΚΡΙΒΩΣ +bundle-required-keys+, καμία απουσία,
-   κανένα άγνωστο. Επιστρέφει T ή σηματοδοτεί error με ονομαστικό λόγο."
+  "Fail-closed κλειστό schema: ΑΚΡΙΒΩΣ +bundle-required-keys+ ΧΩΡΙΣ διπλότυπα
+   (#4C: duplicate top-level key ⇒ ΣΦΑΛΜΑ — cross-language parsing ambiguity)."
+  (unless (and (consp bundle) (keywordp (car bundle)))
+    (error "authority-proof-bundle/1: το bundle πρέπει να είναι plist"))
   (unless (equal (%g bundle :protocol) +bundle-protocol+)
     (error "authority-proof-bundle: πρωτόκολλο ~S ≠ ~S" (%g bundle :protocol) +bundle-protocol+))
-  (let* ((present (%bundle-keys bundle))
+  (let* ((present (%plist-keys bundle))
+         (dups (loop for k in present when (> (count k present) 1) collect k))
          (missing (set-difference +bundle-required-keys+ present))
          (unknown (set-difference present +bundle-required-keys+)))
+    (when dups (error "authority-proof-bundle: ΔΙΠΛΟΤΥΠΑ κλειδιά ~S" (remove-duplicates dups)))
     (when missing (error "authority-proof-bundle: ΛΕΙΠΟΥΝ κλειδιά ~S" missing))
     (when unknown (error "authority-proof-bundle: ΑΓΝΩΣΤΑ κλειδιά ~S (schema κλειστό)" unknown))
     t))
 
+;;; ============================================================================
+;;; HELPERS: hashing
+;;; ============================================================================
+
+(defun %sha256-hex-of-string (s)
+  (format nil "sha256:~A"
+          (ironclad:byte-array-to-hex-string
+           (ironclad:digest-sequence :sha256 (babel:string-to-octets s :encoding :utf-8)))))
+(defun %sha256-hex-of-bytes (bytes)
+  (format nil "sha256:~A"
+          (ironclad:byte-array-to-hex-string (ironclad:digest-sequence :sha256 bytes))))
+
+;;; ============================================================================
+;;; BUNDLE-ID — δεσμεύει ΟΛΑ τα components (#4C-3)
+;;; ============================================================================
+
+(defun %canon-print (obj)
+  "STRUCTURE-PRESERVING ντετερμινιστική τυπωμένη μορφή ΟΠΟΙΟΥΔΗΠΟΤΕ component
+   (plist | alist | dotted cons | list | string | integer | keyword | octet
+   vector | nil). ΙΔΙΑ δομή ⇒ ΙΔΙΟ string. Δεν ταξινομεί (η δομή των components
+   είναι code-deterministic) — χειρίζεται σωστά dotted pairs & octet vectors."
+  (cond
+    ((null obj) "N")
+    ((stringp obj) (format nil "S~D:~A" (length obj) obj))
+    ((integerp obj) (format nil "I:~D" obj))
+    ((symbolp obj) (format nil "K:~A" (string-downcase (symbol-name obj))))
+    ((typep obj '(vector (unsigned-byte 8))) (format nil "B:~A" (%sha256-hex-of-bytes obj)))
+    ((consp obj)
+     (if (atom (cdr obj))                       ; dotted pair (a . b)
+         (format nil "(~A . ~A)" (%canon-print (car obj)) (%canon-print (cdr obj)))
+         (format nil "(~{~A~^ ~})" (mapcar #'%canon-print obj))))
+    (t (format nil "?:~A" obj))))
+
+(defun %component-digest (obj)
+  "Ντετερμινιστικό digest ενός component για το bundle-id."
+  (%sha256-hex-of-string (%canon-print obj)))
+
 (defun bundle-id (bundle)
-  "Ντετερμινιστική ταυτότητα ΟΛΟΚΛΗΡΟΥ του evidence (πλην journal-bytes/envelope
-   opaque blobs, που δεσμεύονται μέσω των hashes τους) — canonical hash."
+  "Ντετερμινιστική ταυτότητα ΟΛΟΚΛΗΡΟΥ του evidence — canonical hash των digests
+   ΚΑΘΕ component (#4C-3: πλέον δεσμεύει receipt/tra/source/spans/extraction/
+   normalization/verifier-binaries/manifest/envelope/census, όχι μόνο 6 πεδία)."
   (canon:canonical-hash
    (list (cons "protocol" (%g bundle :protocol))
          (cons "corpus_id" (%g bundle :corpus-id))
          (cons "body_id" (%g bundle :body-id))
          (cons "release_id" (%g bundle :release-id))
+         (cons "release_generation" (princ-to-string (%g bundle :release-generation)))
+         (cons "delegation_scope" (%g bundle :delegation-scope))
+         (cons "registry_digest" (%g bundle :registry-digest))
          (cons "journal_sha256" (%sha256-hex-of-string (%g bundle :journal-bytes)))
-         (cons "authority_statement_jws" (%g bundle :authority-statement-jws)))))
+         (cons "envelope" (%component-digest (%g bundle :envelope)))
+         (cons "source_artifact" (%component-digest (%g bundle :source-artifact)))
+         (cons "extraction_receipt" (%component-digest (%g bundle :extraction-receipt)))
+         (cons "normalization_receipt" (%component-digest (%g bundle :normalization-receipt)))
+         (cons "receipt" (%component-digest (%g bundle :receipt)))
+         (cons "receipt_membership" (%component-digest (%g bundle :receipt-membership)))
+         (cons "census" (%component-digest (%g bundle :census)))
+         (cons "release_manifest" (%component-digest (%g bundle :release-manifest)))
+         (cons "verifier_binaries" (%component-digest (%g bundle :verifier-binaries)))
+         (cons "tra" (%component-digest (%g bundle :tra))))))
+;; ΣΗΜ: το authority_statement_jws ΔΕΝ μπαίνει στο bundle-id (θα ήταν κυκλικό:
+;; το statement υπογράφει το bundle_id). Το jws δένεται μεταβατικά — το signed
+;; statement δεσμεύει το bundle_id που δεσμεύει ΟΛΑ τα components.
+
+;;; ============================================================================
+;;; CLOSED POLICY SCHEMA + digest (#4C-5)
+;;; ============================================================================
+
+(defparameter +policy-digest-tag+ "lawmax/verification-policy/1")
+
+(defun canonical-policy-digest (policy)
+  "policy_digest = canonical hash του ΚΛΕΙΣΤΟΥ policy schema — ΟΧΙ caller
+   assertion. Αλλαγή ΟΠΟΙΟΥΔΗΠΟΤΕ policy field ⇒ διαφορετικό digest (#4C-5)."
+  (flet ((s (x) (if (null x) "" (princ-to-string x))))
+    (%sha256-hex-of-string
+     (apb:canonical-statement-string
+      +policy-digest-tag+
+      (list (cons "required_tier" (s (%g policy :required-tier)))
+            (cons "allowed_delegate_algorithms"
+                  (format nil "~{~A~^,~}"
+                          (sort (copy-list (or (%g policy :allowed-delegate-algorithms) '()))
+                                #'string<)))
+            (cons "temporal_verifier_hash" (s (%g policy :temporal-verifier-hash)))
+            (cons "gentime_floor" (s (%g policy :gentime-floor)))
+            (cons "min_tlog_leaf_index" (s (%g policy :min-tlog-leaf-index)))
+            (cons "require_checkpoint" (s (and (%g policy :require-checkpoint) t)))
+            (cons "require_witness" (s (and (%g policy :require-witness) t)))
+            (cons "require_delegation_state" (s (and (%g policy :require-delegation-state) t))))))))
 
 ;;; ============================================================================
 ;;; SIGNED AUTHORITY-STATEMENT (point 7) — δεσμεύει ΟΛΕΣ τις ρίζες
@@ -98,26 +174,28 @@
 
 (defparameter +authority-statement-tag+ "lawmax/authority-statement/1")
 
-(defun canonical-authority-statement (&key protocol corpus-id body-id release-id
-                                           release-generation delegation-scope
-                                           release-root census-root receipt-set-root
-                                           source-provenance-root graph-root graph-seq
-                                           graph-known-at tra-hash verifier-set-root
-                                           tlog-tree-size tlog-root tlog-leaf-index
-                                           policy-digest)
+(defun canonical-authority-statement (&key protocol bundle-id corpus-id body-id
+                                           release-id release-generation delegation-scope
+                                           registry-digest release-root census-root
+                                           receipt-set-root source-provenance-root
+                                           graph-root graph-seq graph-known-at tra-hash
+                                           verifier-set-root tlog-tree-size tlog-root
+                                           tlog-leaf-index policy-digest)
   "Ο ΚΑΝΟΝΙΚΟΣ authority-statement που ΥΠΟΓΡΑΦΕΙ το delegated release key. Δεσμεύει
-   ΟΛΑ τα σημεία της αλυσίδας (schema/corpus/body/release/scope/όλες οι ρίζες/
-   graph cut/TRA hash/verifier-set root/tlog ταυτότητα/policy digest). Reuse της
-   ΜΙΑΣ έδρας canonical δήλωσης του #4A (apb:canonical-statement-string)."
+   ΟΛΑ τα σημεία (schema/bundle-id/corpus/body/release/scope/registry/όλες οι ρίζες/
+   graph cut/TRA hash/verifier-set root/tlog/policy digest). #4C: + bundle_id,
+   registry_digest. Reuse της ΜΙΑΣ έδρας canonical δήλωσης (apb)."
   (flet ((s (x) (if (null x) "" (princ-to-string x))))
     (apb:canonical-statement-string
      +authority-statement-tag+
      (list (cons "protocol" (s protocol))
+           (cons "bundle_id" (s bundle-id))
            (cons "corpus_id" (s corpus-id))
            (cons "body_id" (s body-id))
            (cons "release_id" (s release-id))
            (cons "release_generation" (s release-generation))
            (cons "delegation_scope" (s delegation-scope))
+           (cons "registry_digest" (s registry-digest))
            (cons "release_root" (s release-root))
            (cons "census_root" (s census-root))
            (cons "receipt_set_root" (s receipt-set-root))
@@ -133,17 +211,50 @@
            (cons "policy_digest" (s policy-digest))))))
 
 ;;; ============================================================================
-;;; HELPERS
+;;; SOURCE-TO-TEXT PROVENANCE (#4C-2) — closed extraction/normalization schemas
 ;;; ============================================================================
 
-(defun %sha256-hex-of-string (s)
-  (format nil "sha256:~A"
-          (ironclad:byte-array-to-hex-string
-           (ironclad:digest-sequence :sha256 (babel:string-to-octets s :encoding :utf-8)))))
+(defparameter +extraction-schema+ "lawmax/extraction-receipt/1")
+(defparameter +normalization-schema+ "lawmax/normalization-receipt/1")
+(defparameter +extraction-keys+
+  '("schema" "extractor_id" "extractor_hash" "config_hash" "input_digest" "spans" "output_digest"))
+(defparameter +normalization-keys+
+  '("schema" "normalizer_id" "normalizer_hash" "config_hash" "input_digest" "output_digest"))
 
-(defun %sha256-hex-of-bytes (bytes)
-  (format nil "sha256:~A"
-          (ironclad:byte-array-to-hex-string (ironclad:digest-sequence :sha256 bytes))))
+(defun %validate-closed-alist (alist keys label schema-value)
+  (unless (equal (%g alist "schema") schema-value)
+    (error "~A: schema ≠ ~S" label schema-value))
+  (let* ((present (mapcar #'car alist))
+         (dups (loop for k in present when (> (count k present :test #'equal) 1) collect k)))
+    (when dups (error "~A: ΔΙΠΛΟΤΥΠΑ κλειδιά ~S" label dups))
+    (when (set-difference keys present :test #'equal)
+      (error "~A: ΛΕΙΠΟΥΝ κλειδιά ~S" label (set-difference keys present :test #'equal)))
+    (when (set-difference present keys :test #'equal)
+      (error "~A: ΑΓΝΩΣΤΑ κλειδιά ~S" label (set-difference present keys :test #'equal))))
+  t)
+
+(defun extraction-receipt-id (er) (canon:canonical-hash er))
+(defun normalization-receipt-id (nr) (canon:canonical-hash nr))
+
+(defun %apply-spans (bytes spans)
+  "Εφαρμόζει τα byte-spans στα ΠΡΑΓΜΑΤΙΚΑ source bytes → extracted octet vector.
+   ΜΟΝΟ :byte unit· κάθε span εντός [0,len]· μη-έγκυρο ⇒ ΣΦΑΛΜΑ (fail-closed)."
+  (let ((len (length bytes)) (out (make-array 0 :element-type '(unsigned-byte 8) :adjustable t :fill-pointer 0)))
+    (dolist (sp spans (coerce out '(vector (unsigned-byte 8))))
+      (let ((a (%g sp "start")) (b (%g sp "end")) (u (%g sp "unit")))
+        (unless (and (member u '("byte" :byte) :test #'equal)
+                     (integerp a) (integerp b) (<= 0 a b len))
+          (error "span εκτός artifact ή μη-byte unit: ~S" sp))
+        (loop for i from a below b do (vector-push-extend (aref bytes i) out))))))
+
+(defun %normalize-legal-text (text)
+  "Ντετερμινιστική normalization κειμένου: trim leading/trailing whitespace.
+   (Η μία έδρα normalization· επεκτάσιμη — config_hash δεσμεύει την ταυτότητά της.)"
+  (string-trim '(#\Space #\Newline #\Tab #\Return) text))
+
+;;; ============================================================================
+;;; HELPERS: keys / bytes / scope / anchor / verifier-set
+;;; ============================================================================
 
 (defun %rsa-key-from-jwk (jwk)
   (ironclad:make-public-key
@@ -151,21 +262,67 @@
    :n (ironclad:octets-to-integer (jws:base64url-decode (%g jwk "n")))
    :e (ironclad:octets-to-integer (jws:base64url-decode (%g jwk "e")))))
 
-(defvar *replay-counter* 0
-  "Μονότονος μετρητής ανά process — μαζί με fresh random state δίνει ΜΟΝΑΔΙΚΟ
-   nonce ανά κλήση (θάνατος concurrency collision).")
-(defvar *replay-rs* (make-random-state t)
-  "Fresh random state (entropy-seeded) — cross-process nonce uniqueness παρά το
-   deterministic SOURCE_DATE_EPOCH.")
+(defun %source-bytes (src)
+  (let ((b (%g src :bytes)) (s (%g src :bytes-utf8)))
+    (cond ((typep b '(vector (unsigned-byte 8))) b)
+          ((stringp s) (babel:string-to-octets s :encoding :utf-8))
+          (t (error "source-artifact: απόντα bytes")))))
+
+(defun %binary-bytes (b)
+  (let ((raw (%g b :bytes)) (s (%g b :bytes-utf8)))
+    (cond ((typep raw '(vector (unsigned-byte 8))) raw)
+          ((stringp s) (babel:string-to-octets s :encoding :utf-8))
+          (t (error "verifier-binary: απόντα bytes")))))
+
+(defun %scope-covers-p (scope corpus-id body-id)
+  "Το delegation scope ΚΑΛΥΠΤΕΙ ΡΗΤΑ corpus+body. «*»|corpus/<id>|body/<id>|<id>."
+  (and (stringp scope)
+       (or (string= scope "*")
+           (equal scope corpus-id)
+           (equal scope (format nil "corpus/~A" corpus-id))
+           (equal scope (format nil "body/~A" body-id)))))
+
+(defun %delegation-scope (envelope)
+  (cdr (assoc "scope" (%g (%g envelope :delegation) :statement) :test #'equal)))
+(defun %delegation-sequence (envelope)
+  (cdr (assoc "sequence" (%g (%g envelope :delegation) :statement) :test #'equal)))
+(defun %delegation-statement-hash (envelope)
+  (%sha256-hex-of-string
+   (apb:canonical-statement-string "lawmax/trust/delegation/1"
+                                   (%g (%g envelope :delegation) :statement))))
+
+(defun %derive-anchor (envelope registry-digest verifier-hash)
+  "[#4C-6] Το anchor ΠΑΡΑΓΕΤΑΙ από το VERIFIED envelope (release-root, tlog) +
+   τον signed registry-digest + τον policy verifier-hash — ΠΟΤΕ από το ίδιο το
+   TRA (θάνατος κυκλικότητας). assurance = 'internally-release-consistent' (το
+   ΑΝΩΤΑΤΟ που παράγει η πρώτη βαθμίδα release-anchor-for)."
+  (let ((tlog (%g envelope :tlog)))
+    (vg::%make-verified-anchor
+     :assurance "internally-release-consistent"
+     :release-root (%g envelope :release-root)
+     :reasons '()
+     :tlog-size (or (%g tlog :tree-size) 0)
+     :tlog-root (or (%g tlog :root) "")
+     :registry-digest (or registry-digest "")
+     :verifier-hash (or verifier-hash ""))))
+
+(defun %verifier-set-recompute (binaries)
+  "sorted-unique sha256(ΠΡΑΓΜΑΤΙΚΩΝ bytes) ΚΑΘΕ binary (#4C-7)."
+  (sort (remove-duplicates
+         (mapcar (lambda (b) (%sha256-hex-of-bytes (%binary-bytes b))) binaries)
+         :test #'equal)
+        #'string<))
+
+;;; ============================================================================
+;;; HERMETIC GRAPH RECONSTRUCTION
+;;; ============================================================================
+
+(defvar *replay-counter* 0)
+(defvar *replay-rs* (make-random-state t))
 
 (defun reconstruct-graph-from-journal-bytes (journal-bytes)
-  "HERMETIC replay: γράφει τα bundle-supplied journal bytes σε ΜΟΝΑΔΙΚΟ (nonce)
-   ephemeral body και τα φορτώνει με load-graph (ΠΛΗΡΗΣ payload/chain/semantic
-   verification ανά γραμμή — byte tamper ⇒ journal-corruption). [provenance-critic-2
-   F3] nonce ανά κλήση ⇒ καμία concurrency collision με άλλες επαληθεύσεις ή με
-   πραγματικά corpus bodies· ΣΕ ΑΠΟΤΥΧΙΑ load-graph το αρχείο ΔΙΑΓΡΑΦΕΤΑΙ ΕΔΩ
-   (θάνατος leak στο tamper path). Επιστρέφει (values graph path)· ο caller
-   διαγράφει το path στο unwind-protect μετά το πέρας του replay."
+  "HERMETIC replay σε ΜΟΝΑΔΙΚΟ (nonce) ephemeral body· ΣΕ ΑΠΟΤΥΧΙΑ διαγράφει ΕΔΩ
+   (0 leak, καμία concurrency collision). Επιστρέφει (values graph path)."
   (let* ((nonce (format nil "apbreplay-~A-~A-~A"
                         (incf *replay-counter*) (random (expt 2 48) *replay-rs*)
                         (ironclad:byte-array-to-hex-string
@@ -180,44 +337,24 @@
       (error (e) (ignore-errors (delete-file path)) (error e)))))
 
 (defun %rebuild-receipt (alist)
-  "Ανακατασκευή του legal-authority-receipt struct ΑΠΟ την canonical alist μορφή
-   του bundle. Το verify-receipt-intrinsic θα ΞΑΝΑΫΠΟΛΟΓΙΣΕΙ το receipt-id από
-   αυτόν — άρα λάθος rebuild ⇒ receipt-id mismatch (fail-closed)."
-  (let* ((cut (%g alist "cut"))
-         (comm (%g alist "commencement"))
+  "Ανακατασκευή του legal-authority-receipt struct ΑΠΟ τη canonical alist μορφή."
+  (let* ((cut (%g alist "cut")) (comm (%g alist "commencement"))
          (kw (lambda (s) (intern (string-upcase s) :keyword))))
     (lr::make-legal-authority-receipt
-     :receipt-id (%g alist "receipt_id")
-     :provision-id (%g alist "provision_id")
+     :receipt-id (%g alist "receipt_id") :provision-id (%g alist "provision_id")
      :commencement (list (funcall kw (%g comm "type")) (%g comm "value"))
-     :source-artifact (%g alist "source_artifact")
-     :derivation (%g alist "derivation")
+     :source-artifact (%g alist "source_artifact") :derivation (%g alist "derivation")
      :valid-until (let ((v (%g alist "valid_until"))) (if (equal v "open") :open v))
      :recorded-from (%g alist "recorded_from")
      :recorded-until (let ((v (%g alist "recorded_until"))) (if (equal v "current") :current v))
-     :genealogy (%g alist "genealogy")
-     :content-hash (%g alist "content_hash")
+     :genealogy (%g alist "genealogy") :content-hash (%g alist "content_hash")
      :previous-version-hash (%g alist "previous_version_hash")
      :release-generation (let ((v (%g alist "release_generation")))
                            (if (equal v "unreleased") :unreleased v))
      :assurance (funcall kw (%g alist "assurance"))
      :trust-status (funcall kw (%g alist "trust_status"))
-     :cut-graph-root (%g cut "graph_root")
-     :cut-journal-seq (%g cut "journal_seq")
-     :cut-known-at (%g cut "known_at")
-     :effectivity (%g alist "effectivity"))))
-
-(defun %reconstruct-anchor (tra)
-  "Ανακατασκευή του opaque release-anchor ΑΠΟ τα anchor πεδία του TRA, ώστε το
-   make-effectivity-attestation να ξαναπαραχθεί ΑΚΡΙΒΩΣ (recompute TRA)."
-  (if (equal (%g tra :anchor-kind) "verified")
-      (vg::%make-verified-anchor
-       :assurance (%g tra :assurance) :release-root (%g tra :release-root)
-       :reasons (%g tra :anchor-reasons)
-       :tlog-size (%g tra :tlog-size) :tlog-root (%g tra :tlog-root)
-       :registry-digest (%g tra :registry-digest) :verifier-hash (%g tra :verifier-hash))
-      (vg:make-provisional-anchor :reasons (%g tra :anchor-reasons)
-                                  :verifier-hash (%g tra :verifier-hash))))
+     :cut-graph-root (%g cut "graph_root") :cut-journal-seq (%g cut "journal_seq")
+     :cut-known-at (%g cut "known_at") :effectivity (%g alist "effectivity"))))
 
 ;;; ============================================================================
 ;;; TYPED VERDICT
@@ -231,7 +368,10 @@
   (replayed-graph-root nil :read-only t)
   (replayed-graph-seq nil :read-only t)
   (recomputed-tra-hash nil :read-only t)
-  (authentication-mode nil :read-only t))   ; :first-seen | :continuity-verified
+  (derived-text nil :read-only t)
+  (authentication-mode nil :read-only t))
+
+(defun %merkle-of (strings) (if (and strings (consp strings)) (merkle:merkle-root-of-strings strings) ""))
 
 ;;; ============================================================================
 ;;; Η ΜΙΑ ΕΙΣΟΔΟΣ
@@ -239,19 +379,16 @@
 
 (defun verify-authority-evidence-bundle (bundle &key trusted-owner-root-jwk
                                                      trusted-owner-thumbprint
-                                                     trusted-tsa-ca-path
-                                                     known-revocations
+                                                     trusted-tsa-ca-path known-revocations
                                                      known-delegation-state
                                                      consumer-checkpoint policy)
-  "Ο ΠΛΗΡΗΣ authority evidence replay verifier. Επαληθεύει (α) το cryptographic
-   envelope μέσω #4A (apb:verify-authority-proof-bundle στο :envelope) ΚΑΙ (β)
-   την ΠΡΑΓΜΑΤΙΚΗ provenance/journal/receipt/TRA με ΑΝΑΚΑΤΑΣΚΕΥΗ — ΚΑΝΕΝΑ
-   declared root δεν γίνεται δεκτό. Το trusted root/pin/TSA δίνονται ΕΞΩΘΕΝ.
-   KNOWN-DELEGATION-STATE (plist :latest-sequence :statement-hash :compromise-from)
-   = external anti-rollback/equivocation. Επιστρέφει aer-verdict."
+  "Ο ΠΛΗΡΗΣ authority evidence replay verifier (#4B + #4C). KNOWN-DELEGATION-STATE
+   = plist :latest-sequence :statement-hash :compromise-from (external anti-
+   rollback/equivocation/compromise). Επιστρέφει aer-verdict."
   (validate-bundle-schema bundle)
   (let ((preds '()) (reasons '()) (graph-root nil) (graph-seq nil)
-        (tra-hash nil) (auth-mode :first-seen) (tmp-path nil))
+        (tra-hash nil) (derived-text nil) (auth-mode :first-seen)
+        (release-gentime nil) (tmp-path nil))
     (labels ((pred (name ok &optional detail)
                (push (list* name (and ok t) detail) preds)
                (unless ok (push name reasons)) (and ok t))
@@ -263,14 +400,14 @@
                (envelope (%g bundle :envelope))
                (release-jwk (%g envelope :release-jwk))
                (scope (%g bundle :delegation-scope))
-               (corpus-id (%g bundle :corpus-id))
-               (body-id (%g bundle :body-id))
-               (census (%g envelope :census))
-               (cut (%g envelope :cut))
-               (tlog (%g envelope :tlog))
-               (src (%g bundle :source-artifact))
-               (tra (%g bundle :tra))
-               ;; ── ΑΝΑΚΑΤΑΣΚΕΥΗ ΓΡΑΦΟΥ ΑΠΟ ΤΑ ΑΚΡΙΒΗ JOURNAL BYTES ──
+               (corpus-id (%g bundle :corpus-id)) (body-id (%g bundle :body-id))
+               (registry-digest (%g bundle :registry-digest))
+               (top-census (%g bundle :census))
+               (env-census (%g envelope :census))
+               (cut (%g envelope :cut)) (tlog (%g envelope :tlog))
+               (src (%g bundle :source-artifact)) (tra (%g bundle :tra))
+               (er (%g bundle :extraction-receipt)) (nr (%g bundle :normalization-receipt))
+               (req-verifier (%g policy :temporal-verifier-hash))
                (rgraph
                  (handler-case
                      (multiple-value-bind (g p)
@@ -278,225 +415,190 @@
                        (setf tmp-path p) g)
                    (error (e) (pred :replay/journal-integrity nil (princ-to-string e)) nil))))
 
-          ;; E0: envelope (#4A) — cryptographic release-envelope
+          ;; E0: envelope (#4A) — capture verdict (genTime για compromise check)
           (safe :evidence/envelope
                 (lambda ()
                   (let ((v (apb:verify-authority-proof-bundle
-                            envelope
-                            :trusted-owner-root-jwk trusted-owner-root-jwk
+                            envelope :trusted-owner-root-jwk trusted-owner-root-jwk
                             :trusted-owner-thumbprint trusted-owner-thumbprint
                             :trusted-tsa-ca-path trusted-tsa-ca-path
                             :known-revocations known-revocations
-                            :consumer-checkpoint consumer-checkpoint
-                            :policy policy)))
+                            :consumer-checkpoint consumer-checkpoint :policy policy)))
+                    (setf release-gentime (apb:apb-gen-time v))
                     (and (apb:apb-satisfies-policy-p v)
                          (apb:tier>= (apb:apb-awarded-tier v) "owner-pinned-authenticated")))))
 
           (when rgraph
             (pred :replay/journal-integrity t)
-            (setf graph-root (vg:graph-chain-head rgraph)
-                  graph-seq (vg:graph-seq rgraph)))
+            (setf graph-root (vg:graph-chain-head rgraph) graph-seq (vg:graph-seq rgraph)))
 
-          ;; ── SIGNED AUTHORITY-STATEMENT: δεσμεύει ΟΛΕΣ τις ρίζες + το REPLAYED
-          ;;    graph_root (ΟΧΙ το declared) ──
+          ;; [#4C-3] bundle_id recompute ΟΛΩΝ των components
+          (safe :replay/bundle-id
+                (lambda () (equal (%g bundle :bundle-id) (bundle-id bundle))))
+
+          ;; [#4C-5] policy_digest recompute closed schema
+          (safe :replay/policy-digest
+                (lambda () (equal (%g policy :policy-digest) (canonical-policy-digest policy))))
+
+          ;; SIGNED authority-statement δεσμεύει ΟΛΕΣ τις ρίζες + REPLAYED graph_root
           (safe :replay/authority-statement-binds-replay
                 (lambda ()
                   (and graph-root release-jwk stmt-jws
                        (let ((astmt (canonical-authority-statement
-                                     :protocol +bundle-protocol+
+                                     :protocol +bundle-protocol+ :bundle-id (%g bundle :bundle-id)
                                      :corpus-id corpus-id :body-id body-id
                                      :release-id (%g bundle :release-id)
                                      :release-generation (%g bundle :release-generation)
-                                     :delegation-scope scope
+                                     :delegation-scope scope :registry-digest registry-digest
                                      :release-root (%g envelope :release-root)
-                                     :census-root (%g census :graph-root)
-                                     :receipt-set-root (%g census :receipt-set-root)
+                                     :census-root (%g env-census :graph-root)
+                                     :receipt-set-root (%g env-census :receipt-set-root)
                                      :source-provenance-root (%g src :provenance-root)
-                                     ;; ΤΟ REPLAYED graph_root/seq — όχι το declared
                                      :graph-root graph-root :graph-seq graph-seq
-                                     :graph-known-at (%g cut :known-at)
-                                     :tra-hash (%g tra :hash)
+                                     :graph-known-at (%g cut :known-at) :tra-hash (%g tra :hash)
                                      :verifier-set-root (%merkle-of (%g envelope :verifier-set))
-                                     :tlog-tree-size (%g tlog :tree-size)
-                                     :tlog-root (%g tlog :root)
+                                     :tlog-tree-size (%g tlog :tree-size) :tlog-root (%g tlog :root)
                                      :tlog-leaf-index (%g tlog :leaf-index)
                                      :policy-digest (%g policy :policy-digest))))
                          (jws:verify-jws stmt-jws astmt (%rsa-key-from-jwk release-jwk))))))
 
-          ;; ── ΔΕΣΜΟΣ REPLAY↔DECLARED: ο replayed graph_root ΠΡΕΠΕΙ να ταυτίζεται
-          ;;    με census/cut/receipt cut graph_root ΚΑΙ ο replayed seq με το cut seq.
-          ;;    Χωρίς αυτό, forged-but-self-consistent envelope census root θα ξέφευγε
-          ;;    (το #4A δεν έχει journal — εδώ δένεται στην ΑΝΑΚΑΤΑΣΚΕΥΗ).
+          ;; ΔΕΣΜΟΣ REPLAY↔DECLARED
           (safe :replay/graph-root-consistent
                 (lambda ()
                   (and graph-root graph-seq
-                       (equal graph-root (%g census :graph-root))
+                       (equal graph-root (%g env-census :graph-root))
                        (equal graph-root (%g cut :graph-root))
                        (equal graph-seq (%g cut :journal-seq))
                        (equal graph-root (%g (%g (%g bundle :receipt) "cut") "graph_root"))
                        (equal graph-seq (%g (%g (%g bundle :receipt) "cut") "journal_seq")))))
 
-          ;; ── SOURCE ARTIFACT: recompute digest ΑΠΟ ΤΑ BYTES + spans εντός ──
+          ;; [#4C-4] top-level census == envelope census (κανένα decorative census)
+          (safe :replay/census-bound (lambda () (equal top-census env-census)))
+          ;; [#4C-4] release-manifest δεσμεύει release-id/generation
+          (safe :replay/release-manifest-bound
+                (lambda ()
+                  (let ((m (%g bundle :release-manifest)))
+                    (and (equal (%g m :release-id) (%g bundle :release-id))
+                         (equal (%g m :release-generation) (%g bundle :release-generation))))))
+
+          ;; [#4C-1] scope ΔΕΝΕΤΑΙ με το scope της owner-signed delegation + covers
+          (safe :replay/scope-matches-delegation
+                (lambda ()
+                  (and (stringp scope) (equal scope (%delegation-scope envelope))
+                       (%scope-covers-p scope corpus-id body-id))))
+
+          ;; ── [#4C-2] ΠΡΑΓΜΑΤΙΚΗ source→text provenance ──
           (safe :replay/source-digest
                 (lambda ()
-                  (let* ((bytes (%source-bytes src))
-                         (dig (%sha256-hex-of-bytes bytes)))
+                  (let ((dig (%sha256-hex-of-bytes (%source-bytes src))))
                     (and (equal dig (%g src :declared-digest))
-                         ;; δέσιμο στο receipt: το receipt source_artifact content_sha256
-                         (equal dig (%g (%g (%g bundle :receipt) "source_artifact")
-                                        "content_sha256"))))))
-          (safe :replay/source-spans-within
+                         (equal dig (%g (%g (%g bundle :receipt) "source_artifact") "content_sha256"))))))
+          (safe :replay/provenance-root
                 (lambda ()
-                  (let ((len (length (%source-bytes src))))
-                    (every (lambda (span)
-                             (let ((a (%g span :start)) (b (%g span :end)))
-                               (and (integerp a) (integerp b) (<= 0 a b len))))
-                           (%g src :spans)))))
-          ;; extraction/normalization receipts δεσμεύονται στο source provenance root
-          (safe :replay/provenance-chain
+                  (%validate-closed-alist er +extraction-keys+ "extraction-receipt" +extraction-schema+)
+                  (%validate-closed-alist nr +normalization-keys+ "normalization-receipt" +normalization-schema+)
+                  (equal (%g src :provenance-root)
+                         (merkle:merkle-root-of-strings
+                          (list (%sha256-hex-of-bytes (%source-bytes src))
+                                (extraction-receipt-id er) (normalization-receipt-id nr))))))
+          (safe :replay/extraction-replay
                 (lambda ()
-                  (let ((proot (%g src :provenance-root)))
-                    (and (stringp proot)
-                         (equal proot
-                                (%merkle-of
-                                 (list (%sha256-hex-of-bytes (%source-bytes src))
-                                       (%g (%g bundle :extraction-receipt) :digest)
-                                       (%g (%g bundle :normalization-receipt) :digest))))))))
+                  (let* ((sbytes (%source-bytes src))
+                         (extracted (%apply-spans sbytes (%g er "spans"))))
+                    (and (equal (%g er "input_digest") (%sha256-hex-of-bytes sbytes))
+                         (equal (%g er "output_digest") (%sha256-hex-of-bytes extracted))))))
+          (safe :replay/normalization-replay
+                (lambda ()
+                  (let* ((sbytes (%source-bytes src))
+                         (extracted (%apply-spans sbytes (%g er "spans")))
+                         (etext (babel:octets-to-string extracted :encoding :utf-8))
+                         (normalized (%normalize-legal-text etext)))
+                    (setf derived-text normalized)
+                    (and (equal (%g nr "input_digest") (%g er "output_digest"))
+                         (equal (%g nr "output_digest") (%sha256-hex-of-string normalized))))))
+          ;; Η ΓΕΦΥΡΑ: το normalized κείμενο == graph text-version (byte-equiv)
+          (safe :replay/text-equals-graph
+                (lambda ()
+                  (and rgraph derived-text
+                       (let ((v (vg:version-at rgraph (%g tra :provision)
+                                               :valid-at (%g tra :valid-at) :known-at (%g tra :known-at))))
+                         (and v (equal derived-text (vg:tv-text v)))))))
 
-          ;; ── RECEIPT: rebuild + verify-receipt-intrinsic ΣΤΟΝ RECONSTRUCTED GRAPH ──
+          ;; RECEIPT: verify-receipt-intrinsic ΣΤΟΝ reconstructed graph
           (safe :replay/receipt-intrinsic
                 (lambda ()
-                  (and rgraph
-                       (let ((rc (%rebuild-receipt (%g bundle :receipt))))
-                         (multiple-value-bind (ok why) (lr:verify-receipt-intrinsic rgraph rc)
-                           (declare (ignore why))
-                           ok)))))
-          ;; receipt membership στο SIGNED receipt-set-root (όχι declared)
+                  (and rgraph (multiple-value-bind (ok why)
+                                  (lr:verify-receipt-intrinsic rgraph (%rebuild-receipt (%g bundle :receipt)))
+                                (declare (ignore why)) ok))))
           (safe :replay/receipt-membership
                 (lambda ()
-                  (let* ((ids (%g census :receipt-ids))
+                  (let* ((ids (%g env-census :receipt-ids))
                          (idx (%g (%g bundle :receipt-membership) :index))
                          (rid (%g (%g bundle :receipt) "receipt_id")))
                     (and (integerp idx) (< -1 idx (length ids)) (equal (nth idx ids) rid)
-                         (equal (%g census :receipt-set-root) (merkle:merkle-root-of-strings ids))
-                         (merkle:verify-inclusion
-                          (merkle:hash-leaf-string rid)
+                         (equal (%g env-census :receipt-set-root) (merkle:merkle-root-of-strings ids))
+                         (merkle:verify-inclusion (merkle:hash-leaf-string rid)
                           (merkle:inclusion-path (mapcar #'merkle:hash-leaf-string ids) idx)
-                          (%g census :receipt-set-root))))))
+                          (%g env-census :receipt-set-root))))))
 
-          ;; ── TRA: recompute canonical payload/hash + OUTCOME από τον γράφο ──
+          ;; [#4C-6] TRA recompute με anchor ΠΑΡΑΓΟΜΕΝΟ από το envelope (μη-κυκλικό)
           (safe :replay/tra-recompute
                 (lambda ()
                   (and rgraph
-                       (let* ((anchor (%reconstruct-anchor tra))
-                              (recomputed
-                                (vg:make-effectivity-attestation
-                                 rgraph (%g tra :provision)
-                                 :valid-at (%g tra :valid-at) :known-at (%g tra :known-at)
-                                 :corpus-id (%g tra :corpus-id) :anchor anchor
-                                 :receipt-id (%g tra :receipt-id))))
+                       (let* ((anchor (%derive-anchor envelope registry-digest req-verifier))
+                              (recomputed (vg:make-effectivity-attestation
+                                           rgraph (%g tra :provision) :valid-at (%g tra :valid-at)
+                                           :known-at (%g tra :known-at) :corpus-id (%g tra :corpus-id)
+                                           :anchor anchor :receipt-id (%g tra :receipt-id))))
                          (setf tra-hash (getf recomputed :hash))
-                         ;; ΤΟ HASH ΞΑΝΑΒΓΑΙΝΕΙ από τον reconstructed graph — η απλή
-                         ;; ισότητα committed-content ΔΕΝ αρκεί (recompute outcome)
-                         (and (equal tra-hash (%g tra :hash))
-                              (equal (getf recomputed :outcome) (%g tra :outcome)))))))
+                         (equal tra-hash (%g tra :hash))))))
 
-          ;; ── VERIFIER BINARIES: το verifier-set string ΔΕΝΕΤΑΙ στα ΠΡΑΓΜΑΤΙΚΑ
-          ;;    verifier bytes — sha256(bytes) ΞΑΝΑΫΠΟΛΟΓΙΖΕΤΑΙ ΕΔΩ (provenance-
-          ;;    critic-2 F2: ο declared :sha256 ΔΕΝ γίνεται δεκτός· recompute ==
-          ;;    declared == required verifier hash της policy). ΚΑΘΕ binary bytes
-          ;;    ⇒ digest· κανένα binary χωρίς bytes ⇒ ΣΦΑΛΜΑ.
-          (safe :replay/verifier-binaries-bind
+          ;; [#4C-7] verifier-set = ΑΚΡΙΒΗΣ ισότητα sorted-unique sha256(bytes)
+          (safe :replay/verifier-set-exact
                 (lambda ()
-                  (let ((req (%g policy :temporal-verifier-hash))
-                        (bins (%g bundle :verifier-binaries)))
-                    (and (stringp req) (consp bins)
-                         (some (lambda (b)
-                                 (let ((declared (%g b :sha256))
-                                       (recomputed (%sha256-hex-of-bytes (%binary-bytes b))))
-                                   (and (equal declared recomputed) (equal req recomputed))))
-                               bins)))))
+                  (let ((recomputed (%verifier-set-recompute (%g bundle :verifier-binaries)))
+                        (signed (sort (copy-list (or (%g envelope :verifier-set) '())) #'string<)))
+                    (and (equal recomputed signed)
+                         (stringp req-verifier) (member req-verifier recomputed :test #'equal) t))))
 
-          ;; ── SCOPE: το delegation scope ΚΑΛΥΠΤΕΙ το corpus/release ──
-          (safe :replay/scope-covers-corpus
-                (lambda () (%scope-covers-p scope corpus-id body-id)))
+          ;; [#4C-8] EXTERNAL DELEGATION STATE (rollback/equivocation/compromise)
+          (cond
+            (known-delegation-state
+             (safe :replay/delegation-no-rollback
+                   (lambda ()
+                     (let ((seq (%delegation-sequence envelope))
+                           (latest (%g known-delegation-state :latest-sequence)))
+                       (and (integerp seq) (integerp latest) (>= seq latest)))))
+             (safe :replay/delegation-no-equivocation
+                   (lambda ()
+                     (let ((seq (%delegation-sequence envelope))
+                           (latest (%g known-delegation-state :latest-sequence))
+                           (khash (%g known-delegation-state :statement-hash)))
+                       (or (not (eql seq latest)) (null khash)
+                           (equal khash (%delegation-statement-hash envelope))))))
+             (safe :replay/delegation-not-compromised
+                   (lambda ()
+                     (let ((cfrom (%g known-delegation-state :compromise-from))
+                           (g (and release-gentime (apb::%normalize-gentime release-gentime))))
+                       (or (null cfrom)
+                           (and g (string< g (apb::%normalize-gentime cfrom))))))))
+            ((%g policy :require-delegation-state)
+             (pred :replay/delegation-state-required nil
+                   "policy :require-delegation-state αλλά δεν δόθηκε known-delegation-state")))
 
-          ;; ── EXTERNAL DELEGATION STATE: rollback/equivocation rejection ──
-          (when known-delegation-state
-            (safe :replay/delegation-no-rollback
-                  (lambda ()
-                    (let ((seq (%delegation-sequence envelope))
-                          (latest (%g known-delegation-state :latest-sequence)))
-                      (and (integerp seq) (integerp latest) (>= seq latest)))))
-            (safe :replay/delegation-no-equivocation
-                  (lambda ()
-                    ;; ίδιο sequence με ΔΙΑΦΟΡΕΤΙΚΟ statement hash ⇒ equivocation
-                    (let ((seq (%delegation-sequence envelope))
-                          (latest (%g known-delegation-state :latest-sequence))
-                          (khash (%g known-delegation-state :statement-hash)))
-                      (or (not (eql seq latest)) (null khash)
-                          (equal khash (%delegation-statement-hash envelope)))))))
-
-          ;; ── TRANSPARENCY: first-seen vs continuity-verified ──
           (setf auth-mode (if consumer-checkpoint :continuity-verified :first-seen))
 
           ;; ── ΑΠΟΝΟΜΗ ──
           (let* ((all-ok (every #'cadr preds))
                  (required (%g policy :required-tier))
-                 ;; [provenance-critic-2 F4] first-seen vs continuity ΟΥΣΙΑΣΤΙΚΗ,
-                 ;; όχι διακοσμητική: το ΑΝΩΤΑΤΟ owner-pinned-authenticated απαιτεί
-                 ;; ΚΑΙ ΟΛΟ το replay ΚΑΙ continuity (consumer checkpoint — ο
-                 ;; καταναλωτής έχει επαληθεύσει append-only συνέχεια). Χωρίς
-                 ;; checkpoint (first-seen) το bundle μπορεί να είναι fork που ο
-                 ;; καταναλωτής δεν έχει δει — cap σε internally-release-consistent.
-                 (tier (cond ((and all-ok (eq auth-mode :continuity-verified))
-                              "owner-pinned-authenticated")
-                             (all-ok "internally-release-consistent")   ; first-seen
+                 (tier (cond ((and all-ok (eq auth-mode :continuity-verified)) "owner-pinned-authenticated")
+                             (all-ok "internally-release-consistent")
                              (t "provisional-unanchored"))))
             (%make-aer-verdict
              :awarded-tier tier
              :satisfies-policy-p (or (null required) (apb:tier>= tier required))
              :reasons (nreverse reasons) :predicates (nreverse preds)
              :replayed-graph-root graph-root :replayed-graph-seq graph-seq
-             :recomputed-tra-hash tra-hash :authentication-mode auth-mode)))
-        ;; cleanup temp journal
+             :recomputed-tra-hash tra-hash :derived-text derived-text
+             :authentication-mode auth-mode)))
         (when (and tmp-path (probe-file tmp-path)) (ignore-errors (delete-file tmp-path)))))))
-
-;;; ── βοηθητικά ──
-
-(defun %merkle-of (strings)
-  (if (and strings (consp strings)) (merkle:merkle-root-of-strings strings) ""))
-
-(defun %binary-bytes (b)
-  "Τα ΩΜΑ bytes ενός verifier binary — :bytes (octet vector) ή :bytes-utf8 (string).
-   Απόν ⇒ ΣΦΑΛΜΑ (fail-closed — κανένα digest χωρίς bytes)."
-  (let ((raw (%g b :bytes)) (s (%g b :bytes-utf8)))
-    (cond ((typep raw '(vector (unsigned-byte 8))) raw)
-          ((stringp s) (babel:string-to-octets s :encoding :utf-8))
-          (t (error "verifier-binary: απόντα bytes")))))
-
-(defun %source-bytes (src)
-  "Τα ΩΜΑ bytes του source artifact — είτε :bytes (octet vector) είτε
-   :bytes-utf8 (string). Απόν ⇒ ΣΦΑΛΜΑ (fail-closed)."
-  (let ((b (%g src :bytes)) (s (%g src :bytes-utf8)))
-    (cond ((typep b '(vector (unsigned-byte 8))) b)
-          ((stringp s) (babel:string-to-octets s :encoding :utf-8))
-          (t (error "source-artifact: απόντα bytes")))))
-
-(defun %scope-covers-p (scope corpus-id body-id)
-  "Το delegation scope ΚΑΛΥΠΤΕΙ ΡΗΤΑ το corpus/body. Μορφές: «*» (όλα),
-   «corpus/<id>», «body/<id>», ή ακριβές corpus-id. Scope mismatch ⇒ NIL."
-  (and (stringp scope)
-       (or (string= scope "*")
-           (equal scope corpus-id)
-           (equal scope (format nil "corpus/~A" corpus-id))
-           (equal scope (format nil "body/~A" body-id)))))
-
-(defun %delegation-sequence (envelope)
-  (let ((st (%g (%g envelope :delegation) :statement)))
-    (cdr (assoc "sequence" st :test #'equal))))
-
-(defun %delegation-statement-hash (envelope)
-  (let ((st (%g (%g envelope :delegation) :statement)))
-    (%sha256-hex-of-string
-     (apb:canonical-statement-string "lawmax/trust/delegation/1" st))))
