@@ -770,10 +770,12 @@
 (ts-check "⑱ attestation: ίδια inputs ⇒ BYTE-IDENTICAL canonical + ίδιο hash (ντετερμινισμός)"
           (let ((a1 (orchestrator.version-graph:make-effectivity-attestation
                      *ts-g* *ts-pid4* :valid-at "2026-06-01" :known-at "2033-01-01T00:00:00Z"
-                     :corpus-id "ts" :release-root "rr" :verifier-hash "vh"))
+                     :corpus-id "ts" :anchor (orchestrator.version-graph:make-provisional-anchor
+                                              :reasons '("test")) :verifier-hash "vh"))
                 (a2 (orchestrator.version-graph:make-effectivity-attestation
                      *ts-g* *ts-pid4* :valid-at "2026-06-01" :known-at "2033-01-01T00:00:00Z"
-                     :corpus-id "ts" :release-root "rr" :verifier-hash "vh")))
+                     :corpus-id "ts" :anchor (orchestrator.version-graph:make-provisional-anchor
+                                              :reasons '("test")) :verifier-hash "vh")))
             (and (string= (getf a1 :canonical) (getf a2 :canonical))
                  (string= (getf a1 :hash) (getf a2 :hash))
                  (equal "resolved" (first (getf a1 :outcome))))))
@@ -781,16 +783,19 @@
           (let* ((g2 (orchestrator.version-graph::load-graph *ts-body*))
                  (a1 (orchestrator.version-graph:make-effectivity-attestation
                       *ts-g* *ts-pid4* :valid-at "2026-06-01" :known-at "2033-01-01T00:00:00Z"
-                      :corpus-id "ts" :release-root "rr" :verifier-hash "vh"))
+                      :corpus-id "ts" :anchor (orchestrator.version-graph:make-provisional-anchor
+                                              :reasons '("test")) :verifier-hash "vh"))
                  (a2 (orchestrator.version-graph:make-effectivity-attestation
                       g2 *ts-pid4* :valid-at "2026-06-01" :known-at "2033-01-01T00:00:00Z"
-                      :corpus-id "ts" :release-root "rr" :verifier-hash "vh")))
+                      :corpus-id "ts" :anchor (orchestrator.version-graph:make-provisional-anchor
+                                              :reasons '("test")) :verifier-hash "vh")))
             (string= (getf a1 :hash) (getf a2 :hash))))
 (ts-check "⑱γ outcomes: resolved-με-pending (V1@2026-03), suspended (art:2@2026-04-10), no-version (art:4@2025 πριν-known), uncertain (art:3 gap)"
           (flet ((oc (pid valid known)
                    (getf (orchestrator.version-graph:make-effectivity-attestation
                           *ts-g* pid :valid-at valid :known-at known
-                          :corpus-id "ts" :release-root "rr" :verifier-hash "vh")
+                          :corpus-id "ts" :anchor (orchestrator.version-graph:make-provisional-anchor
+                                              :reasons '("test")) :verifier-hash "vh")
                          :outcome)))
             ;; pid2: μετά το retract (⑩στ) η cid2 είναι ΞΑΝΑ pending — η παλαιά
             ;; in-force με δηλωμένη επικείμενη
@@ -804,13 +809,16 @@
 (ts-check "⑱δ διαφορετική τομή/γράφος ⇒ ΑΛΛΟ hash (η δέσμευση δεν είναι διακοσμητική)"
           (let ((a1 (orchestrator.version-graph:make-effectivity-attestation
                      *ts-g* *ts-pid4* :valid-at "2026-06-01" :known-at "2033-01-01T00:00:00Z"
-                     :corpus-id "ts" :release-root "rr" :verifier-hash "vh"))
+                     :corpus-id "ts" :anchor (orchestrator.version-graph:make-provisional-anchor
+                                              :reasons '("test")) :verifier-hash "vh"))
                 (a2 (orchestrator.version-graph:make-effectivity-attestation
                      *ts-g* *ts-pid4* :valid-at "2026-02-01" :known-at "2033-01-01T00:00:00Z"
-                     :corpus-id "ts" :release-root "rr" :verifier-hash "vh"))
+                     :corpus-id "ts" :anchor (orchestrator.version-graph:make-provisional-anchor
+                                              :reasons '("test")) :verifier-hash "vh"))
                 (a3 (orchestrator.version-graph:make-effectivity-attestation
                      *ts-g* *ts-pid4* :valid-at "2026-06-01" :known-at "2033-01-01T00:00:00Z"
-                     :corpus-id "ts" :release-root "ΑΛΛΟ-root" :verifier-hash "vh")))
+                     :corpus-id "ts" :anchor (orchestrator.version-graph:make-provisional-anchor
+                                              :reasons '("ΑΛΛΟΣ-λόγος")) :verifier-hash "vh")))
             (and (not (string= (getf a1 :hash) (getf a2 :hash)))
                  (not (string= (getf a1 :hash) (getf a3 :hash))))))
 (ts-check "⑱ε intrinsic receipt effectivity: υπό-αίρεση έκδοση ⇒ condition_id/class στο receipt· κανονική χωρίς regimes ⇒ NIL (ids αμετάβλητα)"

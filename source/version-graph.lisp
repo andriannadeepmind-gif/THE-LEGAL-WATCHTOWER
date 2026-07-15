@@ -79,7 +79,7 @@
    #:re-recorded-from #:re-recorded-until
    #:interval-relation #:interval-intersects-p #:interval-covers-p
    ;; [Φ7 Π5] deterministic effectivity attestation
-   #:make-effectivity-attestation
+   #:make-effectivity-attestation #:make-provisional-anchor
    ;; [Φ7-HARDENING #2] scope model — Η ΜΙΑ έδρα
    #:scope-dimension-entries #:scope-dimension-tags
    #:canon-scope-set #:scope-covers-p #:scope-intersects-p
@@ -2208,8 +2208,29 @@
                 collect (re-edge-id re))
         #'string<))
 
+(defun make-provisional-anchor (&key reasons)
+  "[REVIEW Δ3] Ο ΜΟΝΟΣ τρόπος να φτιαχτεί ΜΗ-ανακτημένη αγκύρωση: ρητά
+   provisional, με ονομαστικούς λόγους. ΚΑΜΙΑ raw-string είσοδος στο TRA."
+  (list :release-anchor/1
+        :assurance "provisional-unanchored"
+        :release-root ""
+        :reasons (or reasons (list "no-anchor-supplied"))
+        :tlog-size 0 :tlog-root "" :registry-digest ""))
+
+(defun %release-anchor-p (a)
+  (and (consp a) (eq (first a) :release-anchor/1)
+       (member (getf (rest a) :assurance)
+               '("release-anchored" "provisional-unanchored") :test #'equal)))
+
+(defun %require-anchor (a)
+  (unless (%release-anchor-p a)
+    (error 'invalid-edge
+           :reason "attestation: απαιτείται typed release-anchor/1 (release-anchor-for | make-provisional-anchor) — raw strings ΔΕΝ γίνονται δεκτά ως αγκυρωτικά"))
+  a)
+
 (defun make-effectivity-attestation (graph pid &key valid-at known-at corpus-id
-                                                    release-root receipt-id
+                                                    anchor receipt-id
+                                                    scope-context (scope-mode :strict)
                                                     verifier-hash)
   "[Π5] Deterministic effectivity certificate για την τομή (VALID-AT,
    KNOWN-AT): plist με :canonical (value-canonical string), :hash (sha256),
@@ -2219,41 +2240,75 @@
    ΑΝΑΠΑΡΑΓΕΙ και συγκρίνει byte-wise — αγκύρωση στο release root κατά
    spec §6 (release-anchored ⇔ chain-head = census graph_root υπογεγραμμένου
    release· η κρίση αυτή γίνεται στον καταναλωτή/verifier με το log)."
-  (let* ((outcome
+  (%require-anchor anchor)
+  (%require-scope-mode scope-mode)
+  (let* ((a (rest anchor))
+         (canon-ctx (canon-scope-set scope-context))
+         (outcome
            (handler-case
                (multiple-value-bind (v basis note)
-                   (version-at graph pid :valid-at valid-at :known-at known-at)
-                 (cond
-                   ((and v (eq basis :complete)) (list "resolved" (tv-version-hash v)))
-                   ((and v (consp basis) (eq (first basis) :suspended))
-                    (list "suspended" (second basis) (tv-version-hash v)))
-                   ((and v (consp basis) (eq (first basis) :not-yet-effective))
-                    ;; η ΠΑΛΑΙΑ in-force + δηλωμένη επικείμενη: resolved με pending
-                    (list "resolved" (tv-version-hash v)
-                          "pending" (second basis) (third basis)))
-                   ((null v)
-                    (if (and (consp note) (eq (first note) :not-yet-effective))
-                        (list "no-version-in-force" "pending" (second note) (third note))
-                        (list "no-version-in-force")))
-                   (t (error 'invalid-edge :reason "αδύνατη έκβαση version-at"))))
+                   (version-at graph pid :valid-at valid-at :known-at known-at
+                                         :scope-context scope-context
+                                         :scope-mode scope-mode)
+                 (let* ((b0 (if (and (consp basis) (member :scope-assumption basis))
+                                (subseq basis 0 (position :scope-assumption basis))
+                                basis))
+                        (b (if (and (consp b0) (= 1 (length b0))) (first b0) b0))
+                        (analytical (and (consp basis)
+                                         (member :scope-assumption basis)
+                                         (list "analytical-not-authoritative"))))
+                   (append
+                    (cond
+                      ((and v (eq b :complete)) (list "resolved" (tv-version-hash v)))
+                      ((and v (consp b) (eq (first b) :suspended))
+                       (list "suspended" (second b) (tv-version-hash v)))
+                      ((and v (consp b) (eq (first b) :not-yet-effective))
+                       (list "resolved" (tv-version-hash v)
+                             "pending" (second b) (third b)))
+                      ((null v)
+                       (if (and (consp note) (eq (first note) :not-yet-effective))
+                           (list "no-version-in-force" "pending" (second note) (third note))
+                           (list "no-version-in-force")))
+                      (t (error 'invalid-edge :reason "αδύνατη έκβαση version-at")))
+                    analytical)))
+             (scope-uncertain (e)
+               (list "scope-uncertain" (scope-uncertain-edge-id e)
+                     (format nil "~S" (scope-uncertain-missing-dimensions e))))
+             (unknown-provision () (list "unknown-provision"))
              (temporal-uncertainty (e)
                (list "uncertain" (uncertainty-why e)))))
-         (payload (list :lawmax/attestation/1
+         (payload (list :lawmax/attestation/2
                         (or corpus-id "") pid valid-at known-at
+                        canon-ctx
+                        (string-downcase (symbol-name scope-mode))
                         outcome
                         (%pid-condition-states graph pid known-at)
                         (%pid-regime-ids graph pid known-at)
-                        (or receipt-id "") (or release-root "")
+                        (or receipt-id "")
+                        ;; [Δ1/Δ5] assurance + αγκυρωτικά ΜΕΣΑ στο hash/ID:
+                        ;; αλλαγή provisional→release-anchored ⇒ ΑΛΛΟ TRA.
+                        (getf a :assurance)
+                        (or (getf a :release-root) "")
+                        (getf a :reasons)
+                        (getf a :tlog-size 0)
+                        (or (getf a :tlog-root) "")
+                        (or (getf a :registry-digest) "")
                         (vg-chain graph) (or verifier-hash "")))
          (canonical (with-output-to-string (out) (%canon-sexp payload out)))
          (hash (orchestrator.journal:sha256-hex canonical)))
-    (list :protocol "lawmax/attestation/1"
+    (list :protocol "lawmax/attestation/2"
           :corpus-id corpus-id :provision pid
           :valid-at valid-at :known-at known-at
+          :scope-context canon-ctx :scope-mode scope-mode
           :outcome outcome
           :condition-states (%pid-condition-states graph pid known-at)
           :regime-edge-ids (%pid-regime-ids graph pid known-at)
-          :receipt-id receipt-id :release-root release-root
+          :receipt-id receipt-id
+          :assurance (getf a :assurance)
+          :release-root (getf a :release-root)
+          :anchor-reasons (getf a :reasons)
+          :tlog-size (getf a :tlog-size 0) :tlog-root (getf a :tlog-root)
+          :registry-digest (getf a :registry-digest)
           :graph-chain-head (vg-chain graph)
           :verifier-hash verifier-hash
           :canonical canonical :hash hash)))

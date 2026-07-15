@@ -186,14 +186,24 @@ def _sat(ast, events, cid):
 
 # ── attestation αναπαραγωγή ────────────────────────────────────────────────
 def attestation_canonical(f):
+    # [tra/2 — REVIEW Δ] assurance/anchor/scope ΜΕΣΑ στο hash: αλλαγή
+    # provisional→release-anchored ⇒ ΑΛΛΟ TRA hash/ID.
     def sxs(items):  # λίστα από λίστες strings
         return lst(*[lst(*[st(x) for x in row]) for row in items])
     outcome = lst(*[st(x) for x in f["outcome"]])
-    payload = lst(kw("LAWMAX/ATTESTATION/1"), st(f["corpus_id"]),
+    ctx = f.get("scope_context")
+    payload = lst(kw("LAWMAX/ATTESTATION/2"), st(f["corpus_id"]),
                   st(f["provision"]), st(f["valid_at"]), st(f["known_at"]),
+                  nil() if ctx is None else (ctx if isinstance(ctx, dict) else st(ctx)),
+                  st(f["scope_mode"]),
                   outcome, sxs(f["condition_states"]),
                   lst(*[st(x) for x in f["regime_edge_ids"]]),
-                  st(f["receipt_id"]), st(f["release_root"]),
+                  st(f["receipt_id"]),
+                  st(f["assurance"]), st(f["release_root"]),
+                  nil() if not f.get("anchor_reasons")
+                  else lst(*[st(x) for x in f["anchor_reasons"]]),
+                  {"t": "i", "v": f["tlog_size"]}, st(f["tlog_root"]),
+                  st(f["registry_digest"]),
                   st(f["graph_chain_head"]), st(f["verifier_hash"]))
     return canon(payload)
 

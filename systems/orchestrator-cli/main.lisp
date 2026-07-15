@@ -671,10 +671,14 @@
         (text-as-known corpus-id article-label :valid-at valid-at :known-at known-at)
       (orchestrator.version-graph:temporal-uncertainty (e)
         (error 'orchestrator.corpus-service:as-known-uncertain
-               :why (format nil "~A" e)))
+               :why (format nil "~A" e)
+               :tra (as-known-error-tra corpus-id article-label
+                                        :valid-at valid-at :known-at known-at)))
       (orchestrator.version-graph:unknown-provision (e)
         (error 'orchestrator.corpus-service:as-known-unknown
-               :why (format nil "~A" e)))
+               :why (format nil "~A" e)
+               :tra (as-known-error-tra corpus-id article-label
+                                        :valid-at valid-at :known-at known-at)))
       (orchestrator.version-graph:invalid-edge (e)
         (error 'orchestrator.corpus-service:as-known-bad-request
                :why (format nil "~A" e)))

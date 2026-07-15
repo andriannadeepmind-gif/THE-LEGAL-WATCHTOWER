@@ -204,7 +204,8 @@
     (when tra
       (append
        (list (cons "tra"
-                   (list (cons "canonical" (getf tra :canonical))
+                   (list (cons "assurance" (getf tra :assurance))
+                         (cons "canonical" (getf tra :canonical))
                          (cons "graph_chain_head" (getf tra :graph-chain-head))
                          (cons "hash" (getf tra :hash))
                          (cons "protocol" (getf tra :protocol))
@@ -220,10 +221,14 @@
 ;;; ΑΥΤΕΣ τις typed συνθήκες — το service δεν γνωρίζει τον γράφο, γνωρίζει το
 ;;; συμβόλαιο. Καμία αβεβαιότητα δεν σερβίρεται ως κείμενο.
 (define-condition as-known-uncertain (error)
-  ((why :initarg :why :initform nil :reader as-known-why))
+  ((why :initarg :why :initform nil :reader as-known-why)
+   ;; [REVIEW Δ2] tra-fields plist (:tra :tra-assurance :tra-reasons) —
+   ;; ΚΑΘΕ έκβαση, και η αβέβαιη, φέρει attestation.
+   (tra :initarg :tra :initform nil :reader as-known-tra))
   (:report (lambda (c s) (format s "temporal uncertainty: ~A" (as-known-why c)))))
 (define-condition as-known-unknown (error)
-  ((why :initarg :why :initform nil :reader as-known-why))
+  ((why :initarg :why :initform nil :reader as-known-why)
+   (tra :initarg :tra :initform nil :reader as-known-tra))
   (:report (lambda (c s) (format s "unknown provision: ~A" (as-known-why c)))))
 (define-condition as-known-bad-request (error)
   ((why :initarg :why :initform nil :reader as-known-why))
@@ -442,12 +447,16 @@ Allow: /
                                              (cons "why" (format nil "~A" (or (as-known-why e) "")))))
                             "application/json; charset=utf-8"))
                     (as-known-uncertain (e)
-                      (resp 422 (cjson (list (cons "error" "temporal uncertainty — declared, not guessed")
-                                             (cons "why" (format nil "~A" (or (as-known-why e) "")))))
+                      (resp 422 (cjson (append
+                                        (list (cons "error" "temporal uncertainty — declared, not guessed")
+                                              (cons "why" (format nil "~A" (or (as-known-why e) ""))))
+                                        (%tra-json-fields (as-known-tra e))))
                             "application/json; charset=utf-8"))
                     (as-known-unknown (e)
-                      (resp 404 (cjson (list (cons "error" "unknown provision")
-                                             (cons "why" (format nil "~A" (or (as-known-why e) "")))))
+                      (resp 404 (cjson (append
+                                        (list (cons "error" "unknown provision")
+                                              (cons "why" (format nil "~A" (or (as-known-why e) ""))))
+                                        (%tra-json-fields (as-known-tra e))))
                             "application/json; charset=utf-8"))))))))
 
           ;; /search?q=...  — Greek full-text search over the corpus

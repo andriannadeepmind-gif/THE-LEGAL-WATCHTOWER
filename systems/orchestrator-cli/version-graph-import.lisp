@@ -239,9 +239,115 @@
                                 (fail "release-root-not-in-transparency-log"))))
                      (error () (fail "transparency-log-invalid"))))))
             (error () (fail "latest-release-unreadable")))))
-    (list :assurance (if reasons "provisional-unanchored" "release-anchored")
-          :release-root release-root
-          :reasons (nreverse reasons))))
+    ;; [REVIEW Δ4] κρυπτογραφικοί έλεγχοι πάνω στο ΙΔΙΟ το release:
+    ;; JWS υπογραφή του root + RFC-3161 TSR + verifier-set membership.
+    (let ((rel-dir (and release-root
+                        (merge-pathnames
+                         (format nil "sha256-~A/" (subseq release-root 7))
+                         releases-dir)))
+          (tlog-size 0) (tlog-root ""))
+      (flet ((fail (r) (push r reasons)))
+        (when rel-dir
+          ;; (δ) JWS: η υπογραφή επαληθεύεται πάνω στο root hex με το
+          ;; in-release public.jwk (συνέπεια· η αυθεντικότητα του κλειδιού
+          ;; παραμένει out-of-band pinned root — δηλωμένο όριο P1.5).
+          (let ((jws-p (merge-pathnames "temporal-proof/signature.jws" rel-dir))
+                (jwk-p (merge-pathnames "verify/public.jwk" rel-dir)))
+            (if (not (and (probe-file jws-p) (probe-file jwk-p)))
+                (fail "release-signature-or-jwk-missing")
+                (handler-case
+                    (let* ((jwk (jonathan:parse (uiop:read-file-string jwk-p)
+                                                :as :hash-table))
+                           (key (ironclad:make-public-key
+                                 :rsa
+                                 :n (ironclad:octets-to-integer
+                                     (orchestrator.jws-authority::base64url-decode (gethash "n" jwk)))
+                                 :e (ironclad:octets-to-integer
+                                     (orchestrator.jws-authority::base64url-decode (gethash "e" jwk)))))
+                           (root-hex (subseq release-root 7)))
+                      (unless (orchestrator.jws-authority:verify-jws
+                               (string-trim '(#\Newline #\Space)
+                                            (uiop:read-file-string jws-p))
+                               root-hex key)
+                        (fail "release-jws-invalid")))
+                  (error () (fail "release-jws-unverifiable")))))
+          ;; (ε) RFC-3161: τουλάχιστον ένα TSR κρυπτογραφικά έγκυρο πάνω στο root
+          (let ((tsr-p (merge-pathnames "temporal-proof/timestamp.tsr" rel-dir)))
+            (if (not (probe-file tsr-p))
+                (fail "release-tsr-missing")
+                (handler-case
+                    (orchestrator.timestamp-authority:verify-tsr-cryptographically
+                     (alexandria:read-file-into-byte-vector tsr-p)
+                     (babel:string-to-octets (subseq release-root 7) :encoding :utf-8))
+                  (error () (fail "release-tsr-invalid")))))
+          ;; (στ) verifier-set: ο temporal verifier ∈ verify/ ΤΟΥ release
+          (let* ((vdir (merge-pathnames "verify/" rel-dir))
+                 (hashes (when (probe-file vdir)
+                           (mapcar (lambda (f)
+                                     (format nil "sha256:~A"
+                                             (ironclad:byte-array-to-hex-string
+                                              (ironclad:digest-file :sha256 f))))
+                                   (remove-if #'uiop:directory-pathname-p
+                                              (uiop:directory-files vdir))))))
+            (unless (member (temporal-verifier-hash) hashes :test #'equal)
+              (fail "temporal-verifier-not-in-release-verifier-set"))))
+        ;; transparency μέγεθος/ρίζα για δέσμευση ΜΕΣΑ στο tra/2
+        (handler-case
+            (multiple-value-bind (ok info)
+                (orchestrator.epistemic:tlog-verify releases-dir)
+              (when (eq ok t)
+                (setf tlog-size (getf info :tree-size 0)
+                      tlog-root (or (getf info :log-root) ""))))
+          (error () nil)))
+      (list :release-anchor/1
+            :assurance (if reasons "provisional-unanchored" "release-anchored")
+            :release-root (or release-root "")
+            :reasons (nreverse reasons)
+            :tlog-size tlog-size :tlog-root tlog-root
+            :registry-digest (scope-registry-digest)))))
+
+(let ((cache nil))
+  (defun scope-registry-digest ()
+    "sha256 του scope-tag-registry — δεσμεύεται στο tra/2 ώστε παλαιός
+     verifier να μη χρησιμοποιεί σιωπηλά μεταγενέστερο λεξιλόγιο (Β5)."
+    (or cache
+        (setf cache
+              (format nil "sha256:~A"
+                      (ironclad:byte-array-to-hex-string
+                       (ironclad:digest-file
+                        :sha256 (orchestrator.paths:institution-dir
+                                 "deployment/data/scope-tag-registry.sexp"))))))))
+
+(defun %tra-fields-for (corpus-id graph pid valid-at known-at v)
+  "[Δ2] Τα tra/2 πεδία ΚΑΘΕ απάντησης — typed anchor από τη ΜΙΑ έδρα
+   (release-anchor-for), ΠΟΤΕ raw strings· receipt-id μόνο όταν υπάρχει v."
+  (let* ((anchor (release-anchor-for corpus-id graph))
+         (receipt-id
+           (if v
+               (orchestrator.legal-receipt:lr-receipt-id
+                (orchestrator.legal-receipt:build-receipt
+                 graph v :source-artifact (%source-artifact-for corpus-id)))
+               ""))
+         (tra (orchestrator.version-graph:make-effectivity-attestation
+               graph pid :valid-at valid-at :known-at known-at
+               :corpus-id corpus-id :anchor anchor :receipt-id receipt-id
+               :verifier-hash (temporal-verifier-hash))))
+    (list :tra tra
+          :tra-assurance (getf (rest anchor) :assurance)
+          :tra-reasons (getf (rest anchor) :reasons))))
+
+(defun as-known-error-tra (corpus-id article-label &key valid-at known-at)
+  "[Δ2] TRA και για τις ΕΞΑΙΡΕΤΙΚΕΣ εκβάσεις (uncertain/unknown/scope-
+   uncertain): το make-effectivity-attestation αποτυπώνει την έκβαση ΜΕΣΑ
+   στο δεσμευμένο outcome — καμία απάντηση χωρίς attestation."
+  (multiple-value-bind (graph body) (%ensure-graph corpus-id :if-missing :error)
+    (let ((pid (handler-case
+                   (orchestrator.identity:provision-id-string
+                    (orchestrator.identity:article-provision-id body article-label))
+                 (error () (format nil "~A#unresolved:~A"
+                                   (orchestrator.identity:body-id-string body)
+                                   article-label)))))
+      (%tra-fields-for corpus-id graph pid valid-at known-at nil))))
 
 (defun text-as-known (corpus-id article-label &key valid-at known-at)
   "«Τι ήξερε το LAWMAX κατά KNOWN-AT για το άρθρο ARTICLE-LABEL κατά VALID-AT;»
@@ -262,22 +368,7 @@
       ;; attestation με ΠΑΡΑΓΟΜΕΝΑ (όχι caller-supplied) αγκυρωτικά +
       ;; assurance release-anchored|provisional-unanchored + ονομαστικούς
       ;; λόγους — καμία «verified» ένδειξη χωρίς επιβεβαιωμένο release root.
-      (let* ((anchor (release-anchor-for corpus-id graph))
-             (receipt-id
-               (if v
-                   (orchestrator.legal-receipt:lr-receipt-id
-                    (orchestrator.legal-receipt:build-receipt
-                     graph v :source-artifact (%source-artifact-for corpus-id)))
-                   ""))
-             (tra (orchestrator.version-graph:make-effectivity-attestation
-                   graph pid :valid-at valid-at :known-at known-at
-                   :corpus-id corpus-id
-                   :release-root (or (getf anchor :release-root) "")
-                   :receipt-id receipt-id
-                   :verifier-hash (temporal-verifier-hash)))
-             (tra-fields (list :tra tra
-                               :tra-assurance (getf anchor :assurance)
-                               :tra-reasons (getf anchor :reasons))))
+      (let* ((tra-fields (%tra-fields-for corpus-id graph pid valid-at known-at v)))
       (if (null v)
           (append
            (list :text nil :basis basis

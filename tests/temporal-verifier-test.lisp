@@ -212,8 +212,11 @@
            (flet ((att-json (valid)
                     (let* ((a (orchestrator.version-graph:make-effectivity-attestation
                                *tv-g* *tv-pid* :valid-at valid :known-at "2033-01-01T00:00:00Z"
-                               :corpus-id "tv" :release-root "rr-tv" :verifier-hash "vh-tv")))
-                      (format nil "{\"fields\":{\"corpus_id\":\"tv\",\"provision\":~A,\"valid_at\":~A,\"known_at\":\"2033-01-01T00:00:00Z\",\"outcome\":~A,\"condition_states\":~A,\"regime_edge_ids\":~A,\"receipt_id\":\"\",\"release_root\":\"rr-tv\",\"graph_chain_head\":~A,\"verifier_hash\":\"vh-tv\"},\"canonical\":~A,\"hash\":~A}"
+                               :corpus-id "tv"
+                               :anchor (orchestrator.version-graph:make-provisional-anchor
+                                        :reasons '("tv-vector"))
+                               :verifier-hash "vh-tv")))
+                      (format nil "{\"fields\":{\"corpus_id\":\"tv\",\"provision\":~A,\"valid_at\":~A,\"known_at\":\"2033-01-01T00:00:00Z\",\"scope_context\":null,\"scope_mode\":\"strict\",\"outcome\":~A,\"condition_states\":~A,\"regime_edge_ids\":~A,\"receipt_id\":\"\",\"assurance\":\"provisional-unanchored\",\"release_root\":\"\",\"anchor_reasons\":[\"tv-vector\"],\"tlog_size\":0,\"tlog_root\":\"\",\"registry_digest\":\"\",\"graph_chain_head\":~A,\"verifier_hash\":\"vh-tv\"},\"canonical\":~A,\"hash\":~A}"
                               (%tvj-str *tv-pid*) (%tvj-str valid)
                               (%tvj-arr (mapcar #'%tvj-str (getf a :outcome)))
                               (%tvj-arr (mapcar (lambda (row) (%tvj-arr (mapcar #'%tvj-str row)))
