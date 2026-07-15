@@ -27,6 +27,12 @@ VERIFIER_STAGE_ONLY = set()
 EXPECTED_GATES = ["cross-language-verifier", "release-vector-conformance",
                   "verify-canonical", "semantic-validity", "temporal-verifier"]
 
+# Σουίτες που στο standalone-test stage (SBCL-only, χωρίς node/rdflib) κάνουν
+# ΤΙΜΙΟ SKIP και ΞΑΝΑΤΡΕΧΟΥΝ ως ΣΚΛΗΡΟ gate στο verifier-conformance stage
+# (dedicated RUN). Γι' αυτές, «SKIP» result στο standalone manifest είναι
+# αποδεκτό — ο πραγματικός τους gate ΔΕΝ είναι το manifest αλλά το RUN.
+SKIP_ALLOWED_IN_STANDALONE = {"cross-language-verifier"}
+
 HEX40 = re.compile(r"^[0-9a-f]{40}$")
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
 RESULT_PATTERNS = [
@@ -47,6 +53,9 @@ def check_result_line(suite, line):
             if int(m.group(2)) != 0:
                 fail("suite %s: failed=%s ≠ 0 (%r)" % (suite, m.group(2), line))
             return
+    # SKIP επιτρέπεται ΜΟΝΟ για suites hard-gated στο verifier-conformance.
+    if "SKIP" in line and suite in SKIP_ALLOWED_IN_STANDALONE:
+        return
     fail("suite %s: μη αναγνωρίσιμη γραμμή αποτελέσματος %r" % (suite, line))
 
 def sha256_file(path):

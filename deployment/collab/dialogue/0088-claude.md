@@ -1279,3 +1279,30 @@ as-known-e2e 27/27, version-graph 18/18, corpus-service 53/53,
 temporal-verifier 2/2 — 0 failed. Ο re-check ΒΓΗΚΕ ΚΑΘΑΡΟΣ (WRONG ήδη
 κλειστό, SERIOUS+MINOR κλείστηκαν). Κατά την εντολή: #4 ΕΓΚΡΙΝΕΤΑΙ να ξεκινήσει·
 owner Docker proof ΜΕΤΑ το #4· Π7/GAAF-1 παγωμένα.
+
+---
+
+## [0088 owner-proof manifest fix #2 — silent abort σε SKIP suite]
+
+Ο owner build στο faa39951 πέρασε ΟΛΑ τα gated tests (110/110 κ.λπ.) και το
+-print0 fix δούλεψε (κανένα «No such file»), ΑΛΛΑ έσκασε ΣΙΩΠΗΛΑ στο manifest.
+Αιτία (εμπειρικά αναπαραγμένη): το cross-language-verifier κάνει ΤΙΜΙΟ SKIP
+στο standalone-test (χωρίς node)· το `line=$(grep -E "passed…" "$f" | tail -1)`
+δεν βρίσκει result line ⇒ με SHELL bash -o pipefail + set -e το grep exit 1
+προπαγανδίζεται (pipefail) και το `line=$(…)` assignment αμπορτάρει ΣΙΩΠΗΛΑ
+όλο το build (κανένα stderr).
+
+Κλείσιμο (δομικό):
+1. Dockerfile loop: `line=$( { grep -E "…|SKIP" "$f" || true; } | tail -1 | sed …)`
+   — το grep-miss δεν αμπορτάρει· πιάνει και το «SKIP» line.
+2. verify-proof-manifest.py: SKIP_ALLOWED_IN_STANDALONE = {cross-language-
+   verifier} — για suites hard-gated στο verifier-conformance (dedicated RUN),
+   «SKIP» result στο standalone manifest είναι αποδεκτό· κάθε ΑΛΛΟ suite με
+   SKIP ή failed≠0 ⇒ FAIL. Sandbox-validated: θετικό (SKIP cross-lang OK) +
+   2 αρνητικά (SKIP σε temporal ⇒ FAIL, failed=3 ⇒ FAIL).
+
+Δηλωμένο: αν το Windows working tree του δημιουργού κρατά ακόμη τα junk
+αρχεία με ΚΕΝΟ (git σε Windows μπορεί να μη διαγράψει space-named), το build
+πλέον περνά (-print0 τα χειρίζεται) αλλά το source_tree_sha256 θα διαφέρει
+από καθαρό checkout — καθαρό checkout/`git clean` συνιστάται πριν το
+τελικό proof-of-record.

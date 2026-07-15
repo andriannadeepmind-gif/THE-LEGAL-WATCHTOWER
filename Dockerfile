@@ -224,7 +224,7 @@ RUN set -e; \
       first=1; \
       for f in /app/proof/logs/*.log; do \
         t=$(basename "$f" .log); \
-        line=$(grep -h -a -E "passed, [0-9]+ failed|[0-9]+ pass, [0-9]+ fail|διαφωνίες" "$f" | tail -1 | sed 's/\\/\\\\/g; s/"/\\"/g'); \
+        line=$( { grep -h -a -E "passed, [0-9]+ failed|[0-9]+ pass, [0-9]+ fail|διαφωνίες|SKIP" "$f" || true; } | tail -1 | sed 's/\\/\\\\/g; s/"/\\"/g'); \
         if [ $first -eq 0 ]; then echo ','; fi; first=0; \
         printf '    {"suite": "%s", "result": "%s"}' "$t" "$line"; \
       done; \
