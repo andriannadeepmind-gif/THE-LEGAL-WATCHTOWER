@@ -1431,3 +1431,35 @@ authority-cross-language 12/12 (Lisp↔Python, 0 διαφωνίες), authority-
 Δηλωμένο όριο (supreme-law point 3): οι signatures (RSA JWS/Ed25519/TSR) έχουν ΜΙΑ
 (Lisp) υλοποίηση· η 2η γλώσσα καλύπτει τα structural-encoding commitments. Εκκρεμεί:
 τελικό owner Docker proof στο καθαρό HEAD. Π7 + GAAF-1 runtime ΠΑΓΩΜΕΝΑ.
+
+---
+
+## [0088 Φ7-HARDENING #4C — 2 κριτές] Κλείσιμο source/provenance + schema/policy/scope/anchor
+
+Δύο νέοι αντιπαλικοί κριτές στο #4C. Ευρήματα κλειστά ΣΤΗΝ ΕΔΡΑ:
+
+Source/provenance κριτής:
+- F1 (SERIOUS→CRIT) SCATTER/DROP forgery: το %apply-spans δεχόταν αυθαίρετα out-of-
+  order/overlapping/repeated spans ⇒ κάτοχος release key θα συνέθετε το κείμενο-
+  στόχο μαζεύοντας χαρακτήρες από ΑΣΧΕΤΟ source. ⇒ ΑΚΡΙΒΩΣ ΕΝΑ ΣΥΝΕΧΟΜΕΝΟ span
+  (το κείμενο ΠΡΕΠΕΙ να εμφανίζεται αυτούσιο & συνεχόμενο)· multi-span = δηλωμένο
+  μελλοντικό με gap-manifest.
+- F2 (test): isolating text-equals-graph (span σε ΔΙΑΦΟΡΕΤΙΚΟ contiguous κείμενο ⇒
+  ΜΟΝΟ text-equals-graph FAIL) + multi-span + non-byte + digest-chain negatives.
+
+Schema/policy/scope/anchor κριτής (επιβεβαίωσε: policy-digest ΠΛΗΡΕΣ, anchor/
+verifier-set/scope μη-κυκλικά & fail-closed):
+- F1 %canon-print μη-injective για improper lists (mapcar έριχνε το tail) ⇒
+  %canon-list με ρητή κωδικοποίηση terminal atom.
+- F2 fallback ?:~A non-deterministic ⇒ ΣΦΑΛΜΑ σε μη-δεσμεύσιμο τύπο.
+- F3 %scope-covers-p bare body/<id> αγνοούσε corpus ⇒ corpus ΠΑΝΤΑ pinned
+  («corpus/<id>» | «corpus/<id>/body/<id>»).
+- F5 (SERIOUS test) keystone authority-statement-binds-replay χωρίς αρνητικό ⇒
+  isolating JWS-tamper witness (binds-replay FAIL, τα άλλα πράσινα).
+- F6 rollback (seq<latest) + equivocation (ίδιο seq λάθος statement-hash) witnesses.
+- F7 compromise-from == genTime boundary witness.
+- F8 source-digest isolating witness.
+
+Proof: authority-evidence-replay 23→33/33 (ΠΡΑΓΜΑΤΙΚΗ γέφυρα + όλα τα isolating),
+cross-language 12/12, apb 66/66, temporal-semantics 111/111· 0 leak.
+Εκκρεμεί: τελικό owner Docker proof καθαρό HEAD. Π7 + GAAF-1 runtime ΠΑΓΩΜΕΝΑ.

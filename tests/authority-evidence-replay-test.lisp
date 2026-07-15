@@ -205,25 +205,33 @@
                  :verifier-binaries *verifier-binaries* :tra *tra*)))
     (loop for (k v) on overrides by #'cddr do (setf (getf b k) v)) b))
 
-(defun sign-authority-statement (bid &key (graph-root *graph-root*) (scope *scope*)
-                                          (policy-digest (getf *policy* :policy-digest)))
-  (getf (orchestrator.jws-authority:sign-jws
-         (canonical-authority-statement
-          :protocol +bundle-protocol+ :bundle-id bid :corpus-id *corpus* :body-id *body*
-          :release-id "rel-1" :release-generation "1" :delegation-scope scope
-          :registry-digest *registry-digest* :release-root *release-root* :census-root *graph-root*
-          :receipt-set-root *receipt-set-root* :source-provenance-root *provenance-root*
-          :graph-root graph-root :graph-seq *graph-seq* :graph-known-at *known-at*
-          :tra-hash *tra-hash* :verifier-set-root (orchestrator.merkle:merkle-root-of-strings *verifier-set*)
-          :tlog-tree-size 4 :tlog-root (getf *tlog* :root) :tlog-leaf-index 1 :policy-digest policy-digest)
-         *rk-priv*) :jws))
+;; Το statement υπογράφεται πάνω στις ΠΡΑΓΜΑΤΙΚΕΣ τιμές των components (production
+;; model: η release ceremony υπογράφει το ΠΡΑΓΜΑΤΙΚΟ bundle) — ώστε isolating
+;; negatives (π.χ. διαφορετικό span) να μη σπάνε τη statement υπογραφή.
+(defun sign-authority-statement-of (bid comp &key (policy-digest (getf *policy* :policy-digest)))
+  (let* ((env (getf comp :envelope)) (census (getf comp :census))
+         (src (getf comp :source-artifact)))
+    (getf (orchestrator.jws-authority:sign-jws
+           (canonical-authority-statement
+            :protocol +bundle-protocol+ :bundle-id bid :corpus-id (getf comp :corpus-id)
+            :body-id (getf comp :body-id) :release-id (getf comp :release-id)
+            :release-generation (getf comp :release-generation)
+            :delegation-scope (getf comp :delegation-scope) :registry-digest (getf comp :registry-digest)
+            :release-root (getf env :release-root) :census-root (getf census :graph-root)
+            :receipt-set-root (getf census :receipt-set-root) :source-provenance-root (getf src :provenance-root)
+            :graph-root (getf census :graph-root) :graph-seq (getf (getf env :cut) :journal-seq)
+            :graph-known-at (getf (getf env :cut) :known-at) :tra-hash (getf (getf comp :tra) :hash)
+            :verifier-set-root (orchestrator.merkle:merkle-root-of-strings (getf env :verifier-set))
+            :tlog-tree-size (getf (getf env :tlog) :tree-size) :tlog-root (getf (getf env :tlog) :root)
+            :tlog-leaf-index (getf (getf env :tlog) :leaf-index) :policy-digest policy-digest)
+           *rk-priv*) :jws)))
 
 (defun %strip (plist keys)
   (loop for (k v) on plist by #'cddr unless (member k keys) append (list k v)))
 (defun make-bundle (&rest overrides)
   (let* ((comp (apply #'components-bundle (%strip overrides '(:bundle-id :authority-statement-jws))))
          (bid (or (getf overrides :bundle-id) (bundle-id comp)))
-         (jws (or (getf overrides :authority-statement-jws) (sign-authority-statement bid))))
+         (jws (or (getf overrides :authority-statement-jws) (sign-authority-statement-of bid comp))))
     (append (list :bundle-id bid :authority-statement-jws jws) comp)))
 
 (defun verify (&rest overrides)
@@ -231,6 +239,24 @@
    :trusted-owner-root-jwk *owner-jwk* :trusted-tsa-ca-path *sectigo-ca*
    :consumer-checkpoint *cp* :policy *policy*))
 (defun failed-p (v name) (member name (aer-reasons v)))
+(defun verify-b (b) (verify-authority-evidence-bundle b :trusted-owner-root-jwk *owner-jwk*
+                     :trusted-tsa-ca-path *sectigo-ca* :consumer-checkpoint *cp* :policy *policy*))
+;; helpers για isolating source→text negatives (provenance-root recomputed ⇒ ΜΟΝΟ
+;; το target predicate κοκκινίζει)
+(defun make-er (spans &key (input *source-digest*) (output nil))
+  (list (cons "schema" +extraction-schema+) (cons "extractor_id" "x")
+        (cons "extractor_hash" (sha256tag "e")) (cons "config_hash" (sha256tag "c"))
+        (cons "input_digest" input) (cons "spans" spans)
+        (cons "output_digest" (or output "sha256:0"))))
+(defun span1 (a b &key (unit "byte")) (list (list (cons "start" a) (cons "end" b) (cons "unit" unit))))
+(defun make-nr (input normalized) (list (cons "schema" +normalization-schema+) (cons "normalizer_id" "n")
+        (cons "normalizer_hash" (sha256tag "n")) (cons "config_hash" (sha256tag "nc"))
+        (cons "input_digest" input) (cons "output_digest" (sha256tag normalized))))
+(defun bundle-src (er nr)
+  (make-bundle :extraction-receipt er :normalization-receipt nr
+               :source-artifact (list :bytes-utf8 *source-str* :declared-digest *source-digest*
+                 :provenance-root (orchestrator.merkle:merkle-root-of-strings
+                   (list *source-digest* (extraction-receipt-id er) (normalization-receipt-id nr))))))
 
 ;;; ════════════════════════════════ TESTS ════════════════════════════════
 (format t "~%== [1] ΘΕΤΙΚΟ: πλήρες #4C replay + source→text bridge ==~%")
@@ -358,6 +384,67 @@
           :trusted-tsa-ca-path *sectigo-ca* :consumer-checkpoint *cp* :policy *policy*
           :known-delegation-state (list :latest-sequence 1 :compromise-from "20990101000000"))))
   (ck "compromise-from ΜΕΤΑ genTime ⇒ owner-pinned ΠΑΡΑΜΕΝΕΙ" (equal (aer-awarded-tier v) "owner-pinned-authenticated")))
+
+(format t "~%== [10] source→text ADVERSARIAL (single contiguous span, isolating) ==~%")
+;; ΙΣΟΛΑΤΙΝΓ text-equals-graph: single span → ΔΙΑΦΟΡΕΤΙΚΟ contiguous κείμενο (prefix)
+(let* ((plen (length (babel:string-to-octets *prefix* :encoding :utf-8)))
+       (extracted (subseq *source-bytes* 0 plen))
+       (norm (string-trim '(#\Space #\Newline #\Tab #\Return)
+                          (babel:octets-to-string extracted :encoding :utf-8)))
+       (er (make-er (span1 0 plen) :output (sha256tag-bytes extracted)))
+       (nr (make-nr (sha256tag-bytes extracted) norm))
+       (v (verify-b (bundle-src er nr))))
+  (ck "ΙΣΟΛΑΤΙΝΓ: span σε ΔΙΑΦΟΡΕΤΙΚΟ κείμενο ⇒ ΜΟΝΟ text-equals-graph FAIL"
+      (and (failed-p v :replay/text-equals-graph)
+           (not (failed-p v :replay/provenance-root))
+           (not (failed-p v :replay/extraction-replay))
+           (not (failed-p v :replay/source-digest)))))
+;; multi-span scatter/drop ⇒ ΣΦΑΛΜΑ (θάνατος forgery — source-critic F1)
+(let* ((er (make-er (append (span1 0 5) (span1 10 15)) :output (sha256tag "x")))
+       (nr (make-nr (sha256tag "x") "x")) (v (verify-b (bundle-src er nr))))
+  (ck "multi-span (scatter/drop) ⇒ extraction-replay FAIL" (failed-p v :replay/extraction-replay)))
+;; non-byte unit ⇒ ΣΦΑΛΜΑ
+(let* ((er (make-er (span1 *span-start* *span-end* :unit "char") :output (sha256tag-bytes *extracted-bytes*)))
+       (nr (make-nr (sha256tag-bytes *extracted-bytes*) *normalized*)) (v (verify-b (bundle-src er nr))))
+  (ck "non-byte unit ⇒ extraction-replay FAIL" (failed-p v :replay/extraction-replay)))
+;; extraction input_digest ≠ source
+(let* ((er (make-er (span1 *span-start* *span-end*) :input "sha256:WRONG" :output (sha256tag-bytes *extracted-bytes*)))
+       (nr (make-nr (sha256tag-bytes *extracted-bytes*) *normalized*)) (v (verify-b (bundle-src er nr))))
+  (ck "extraction input_digest ≠ source ⇒ extraction-replay FAIL" (failed-p v :replay/extraction-replay)))
+;; normalization input_digest ≠ extraction output
+(let* ((er (make-er (span1 *span-start* *span-end*) :output (sha256tag-bytes *extracted-bytes*)))
+       (nr (make-nr "sha256:MISMATCH" *normalized*)) (v (verify-b (bundle-src er nr))))
+  (ck "normalization input ≠ extraction output ⇒ normalization-replay FAIL" (failed-p v :replay/normalization-replay)))
+
+(format t "~%== [11] keystone signature + delegation branches (schema-critic F5/F6/F7) ==~%")
+;; F5: νοθευμένο authority-statement-jws ⇒ ΜΟΝΟ binds-replay FAIL (τα άλλα πράσινα)
+(let* ((b (make-bundle)) (j (copy-seq (getf b :authority-statement-jws))))
+  (setf (char j (1- (length j))) (if (char= (char j (1- (length j))) #\A) #\B #\A))
+  (setf (getf b :authority-statement-jws) j)
+  (let ((v (verify-b b)))
+    (ck "νοθευμένο authority-statement JWS ⇒ binds-replay FAIL (isolating)"
+        (and (failed-p v :replay/authority-statement-binds-replay)
+             (not (failed-p v :replay/graph-root-consistent))
+             (not (failed-p v :replay/receipt-intrinsic))))))
+;; F6: rollback (latest 2 > seq 1)
+(let ((v (verify-authority-evidence-bundle (make-bundle) :trusted-owner-root-jwk *owner-jwk*
+          :trusted-tsa-ca-path *sectigo-ca* :consumer-checkpoint *cp* :policy *policy*
+          :known-delegation-state (list :latest-sequence 2))))
+  (ck "delegation seq 1 < latest 2 ⇒ no-rollback FAIL" (failed-p v :replay/delegation-no-rollback)))
+;; F6: equivocation (ίδιο seq, λάθος statement-hash)
+(let ((v (verify-authority-evidence-bundle (make-bundle) :trusted-owner-root-jwk *owner-jwk*
+          :trusted-tsa-ca-path *sectigo-ca* :consumer-checkpoint *cp* :policy *policy*
+          :known-delegation-state (list :latest-sequence 1 :statement-hash "sha256:WRONG"))))
+  (ck "ίδιο seq λάθος statement-hash ⇒ no-equivocation FAIL" (failed-p v :replay/delegation-no-equivocation)))
+;; F7: compromise-from == genTime (boundary, inclusive ⇒ compromised)
+(let ((v (verify-authority-evidence-bundle (make-bundle) :trusted-owner-root-jwk *owner-jwk*
+          :trusted-tsa-ca-path *sectigo-ca* :consumer-checkpoint *cp* :policy *policy*
+          :known-delegation-state (list :latest-sequence 1 :compromise-from "2026-07-10T19:47:02Z"))))
+  (ck "compromise-from == genTime (boundary) ⇒ not-compromised FAIL" (failed-p v :replay/delegation-not-compromised)))
+;; F8: source-digest isolating (declared-digest stale)
+(let ((v (verify :source-artifact (list :bytes-utf8 (concatenate 'string *source-str* "X")
+                                        :declared-digest *source-digest* :provenance-root *provenance-root*))))
+  (ck "source bytes αλλαγμένα declared-digest stale ⇒ source-digest FAIL" (failed-p v :replay/source-digest)))
 
 (ignore-errors (delete-file *graph-path*))
 (format t "~%======================================================~%")

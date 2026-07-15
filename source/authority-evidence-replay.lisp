@@ -106,11 +106,25 @@
     ((integerp obj) (format nil "I:~D" obj))
     ((symbolp obj) (format nil "K:~A" (string-downcase (symbol-name obj))))
     ((typep obj '(vector (unsigned-byte 8))) (format nil "B:~A" (%sha256-hex-of-bytes obj)))
-    ((consp obj)
-     (if (atom (cdr obj))                       ; dotted pair (a . b)
-         (format nil "(~A . ~A)" (%canon-print (car obj)) (%canon-print (cdr obj)))
-         (format nil "(~{~A~^ ~})" (mapcar #'%canon-print obj))))
-    (t (format nil "?:~A" obj))))
+    ((consp obj) (%canon-list obj))     ; proper Ή improper list Ή dotted pair
+    ;; [schema-critic-2 F2] μη-δεσμεύσιμος τύπος ⇒ ΣΦΑΛΜΑ (ΟΧΙ non-deterministic
+    ;; ~A address) — η bundle-id δεν κρύβει τύπο που δεν σειριοποιεί ντετερμινιστικά.
+    (t (error "%canon-print: μη-δεσμεύσιμος τύπος ~S (~S)" (type-of obj) obj))))
+
+(defun %canon-list (obj)
+  "[schema-critic-2 F1] ΕΝΡΙΞΙΜΗ σειριοποίηση list ΚΑΙ για improper lists — το
+   mapcar θα έριχνε σιωπηλά το dotted tail (('a 'b . 'c) ≡ ('a 'b)). Εδώ το
+   terminal atom κωδικοποιείται ΡΗΤΑ ⇒ καμία σύγκρουση."
+  (with-output-to-string (s)
+    (write-char #\( s)
+    (loop for rest = obj then (cdr rest)
+          for first = t then nil
+          while (consp rest)
+          do (unless first (write-char #\Space s))
+             (write-string (%canon-print (car rest)) s)
+          finally (unless (null rest)
+                    (write-string " . " s) (write-string (%canon-print rest) s)))
+    (write-char #\) s)))
 
 (defun %component-digest (obj)
   "Ντετερμινιστικό digest ενός component για το bundle-id."
@@ -237,15 +251,22 @@
 (defun normalization-receipt-id (nr) (canon:canonical-hash nr))
 
 (defun %apply-spans (bytes spans)
-  "Εφαρμόζει τα byte-spans στα ΠΡΑΓΜΑΤΙΚΑ source bytes → extracted octet vector.
-   ΜΟΝΟ :byte unit· κάθε span εντός [0,len]· μη-έγκυρο ⇒ ΣΦΑΛΜΑ (fail-closed)."
-  (let ((len (length bytes)) (out (make-array 0 :element-type '(unsigned-byte 8) :adjustable t :fill-pointer 0)))
-    (dolist (sp spans (coerce out '(vector (unsigned-byte 8))))
-      (let ((a (%g sp "start")) (b (%g sp "end")) (u (%g sp "unit")))
-        (unless (and (member u '("byte" :byte) :test #'equal)
-                     (integerp a) (integerp b) (<= 0 a b len))
-          (error "span εκτός artifact ή μη-byte unit: ~S" sp))
-        (loop for i from a below b do (vector-push-extend (aref bytes i) out))))))
+  "Εφαρμόζει το byte-span στα ΠΡΑΓΜΑΤΙΚΑ source bytes → extracted octet vector.
+   [source-critic-1 F1 — θάνατος scatter/drop forgery] ΑΚΡΙΒΩΣ ΕΝΑ ΣΥΝΕΧΟΜΕΝΟ
+   span: το εξαγόμενο κείμενο ΠΡΕΠΕΙ να εμφανίζεται ΑΥΤΟΥΣΙΟ & ΣΥΝΕΧΟΜΕΝΟ στο
+   source. Πολλαπλά spans θα επέτρεπαν (α) αναδιάταξη/επανάληψη χαρακτήρων ή
+   (β) παράλειψη ενδιάμεσων bytes (π.χ. διαγραφή «ΔΕΝ» ⇒ αντιστροφή νοήματος
+   ενώ το source λέει το αντίθετο). ΜΟΝΟ :byte unit· 0 ≤ start < end ≤ len·
+   κάθε παράβαση ⇒ ΣΦΑΛΜΑ. (Δηλωμένο ΑΝΩΤΕΡΟ/μελλοντικό: multi-span excerpting
+   ΜΟΝΟ με ρητό justified gap-manifest — δεν υλοποιείται εδώ κατά scope.)"
+  (unless (and (consp spans) (= 1 (length spans)))
+    (error "spans: απαιτείται ΑΚΡΙΒΩΣ ΕΝΑ συνεχόμενο span (θάνατος scatter/drop forgery)"))
+  (let* ((sp (first spans)) (len (length bytes))
+         (a (%g sp "start")) (b (%g sp "end")) (u (%g sp "unit")))
+    (unless (and (member u '("byte" :byte) :test #'equal)
+                 (integerp a) (integerp b) (<= 0 a) (< a b) (<= b len))
+      (error "span μη-έγκυρο (κενό/εκτός/μη-byte): ~S" sp))
+    (subseq bytes a b)))
 
 (defun %normalize-legal-text (text)
   "Ντετερμινιστική normalization κειμένου: trim leading/trailing whitespace.
@@ -275,12 +296,13 @@
           (t (error "verifier-binary: απόντα bytes")))))
 
 (defun %scope-covers-p (scope corpus-id body-id)
-  "Το delegation scope ΚΑΛΥΠΤΕΙ ΡΗΤΑ corpus+body. «*»|corpus/<id>|body/<id>|<id>."
+  "Το delegation scope ΚΑΛΥΠΤΕΙ ΡΗΤΑ corpus+body. [schema-critic-2 F3] Ο corpus
+   ΠΑΝΤΑ pinned — το bare «body/<id>» καταργήθηκε (θα εξουσιοδοτούσε το body σε
+   ΟΠΟΙΟΝΔΗΠΟΤΕ corpus). Μορφές: «*» | «corpus/<id>» | «corpus/<id>/body/<id>»."
   (and (stringp scope)
        (or (string= scope "*")
-           (equal scope corpus-id)
            (equal scope (format nil "corpus/~A" corpus-id))
-           (equal scope (format nil "body/~A" body-id)))))
+           (equal scope (format nil "corpus/~A/body/~A" corpus-id body-id)))))
 
 (defun %delegation-scope (envelope)
   (cdr (assoc "scope" (%g (%g envelope :delegation) :statement) :test #'equal)))
