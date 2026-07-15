@@ -1170,3 +1170,42 @@ Proof: temporal-semantics 105/105 · temporal-verifier 2/2 · version-graph
 18/18 · receipt 15/15 · parity 31/31 · corpus-service 53/53 · as-known-e2e
 27/27 — 0 failed. Επόμενο: #4 verifier δεύτερης βαθμίδας πάνω στα ΤΕΛΙΚΑ
 contracts → owner proof. Π7/GAAF-1 παγωμένα.
+
+---
+
+## [0088 ΠΙΝΑΚΑΣ ΚΡΙΤΩΝ Φ7-HARDENING — πλήρης, ανά finding]
+
+Ετυμηγορία δημιουργού: Α-ΣΤ = **PASS-CANDIDATE** (όχι τελικό closure).
+
+### Κριτής Α — temporal/scope/regime (εμπειρική αναπαραγωγή, probe body 9981)
+
+| # | Σοβαρότητα | Εύρημα | Evidence | Disposition | Commit |
+|---|---|---|---|---|---|
+| W1 | WRONG (εμπειρικό) | :extend συρρίκνωνε ισχύ (και τερμάτιζε :open) — «μονοτονία» ψευδής | probes A2/A3: extend 2030 σε :open ⇒ no-version στο 2031 | ΚΛΕΙΣΤΟ: until := max(τρέχον, extends)· lock ΚΑ1 | bbbf71a2 |
+| W2 | WRONG (εμπειρικό) | raw to-spec με :commencement παρέκαμπτε validation — σκουπίδια status/assurance journal-άρονταν μόνιμα | probe B1: :status :garbage-status δεκτό+served | ΚΛΕΙΣΤΟ: %normalize-version-spec ΠΑΝΤΑ μέσω make-version-spec· lock ΚΑ2 | bbbf71a2 |
+| W3 | WRONG (εμπειρικό) | retroact διαδόχου πριν τον προκάτοχο: σιωπηλό ψαλίδισμα = ούτε αναδρομή ούτε συνέχεια | probe C: C1 «νικά» ρητή αναδρομή· C2 εξαφανίζεται | ΚΛΕΙΣΤΟ: retroact-τομή ⇒ temporal-uncertainty· lock ΚΑ3 | bbbf71a2 |
+| W4 | WRONG (εμπειρικό) | retroact παρέκαμπτε σιωπηλά ΔΗΛΩΜΕΝΟ knowledge-gap | probe F: gap ⇒ uncertain· μετά retroact ⇒ ψευδές :complete | ΚΛΕΙΣΤΟ: retro tile + live gap ⇒ uncertainty· lock ΚΑ4 | bbbf71a2 |
+| S1 | SERIOUS | supersession chain exp←ext←exp: το πρώτο expire νεκρό για πάντα (μη δηλωμένη transitive σημασιολογία) | probe D: boundary 2035 αντί 2030 | ΚΛΕΙΣΤΟ: fixpoint — υπερκαθιστά ΜΟΝΟ ζωντανή ακμή (ΓΦ3 πράσινο επί fixpoint) | bbbf71a2 |
+| S2 | SERIOUS | replay: dangling :close-validity/:retract = σιωπηλό no-op· χωρίς semantic ③ | γρ. 1128-1146 (τότε) | ΚΛΕΙΣΤΟ: dangling ⇒ journal-corruption + record-id ③ | bbbf71a2 |
+| S3 | SERIOUS | expire boundary πριν το from ⇒ σιωπηλή ολική εξαφάνιση με ψευδή βεβαιότητα | probe H1 | ΚΛΕΙΣΤΟ: ανεστραμμένο παράγωγο διάστημα ⇒ uncertainty | bbbf71a2 |
+| M1 | MINOR | conditional :repeal δομικά αδύνατο αλλά ΑΔΗΛΩΤΟ (μοτίβο «καταργείται από την έκδοση ΥΑ») | γρ. 704-711/749-752 | ΔΗΛΩΜΕΝΟ ΟΡΙΟ (fail-closed· αναπαράσταση = Π7/Φ8 σχήμα, με έγκριση) | παρούσα κατάθεση |
+| M2 | MINOR | scope-covers-p: context με περισσότερα tags ⇒ NIL χωρίς σήμανση μερικότητας | επίπεδη σημασιολογία | ΔΗΛΩΜΕΝΟ ΟΡΙΟ (ιεραρχία/partial order = Φ8) | παρούσα κατάθεση |
+
+Ρητά ΑΝΤΕΞΕ (Α): expire-min/extend-max ανεξάρτητο σειράς· scoped
+supersession/conservative marker συνεκτικά· legacy /1 decoder fail-closed·
+κύκλοι supersession δομικά αδύνατοι· sat cid-scoping αμφίδρομο· Υ2 gates
+μέσω ΜΙΑΣ έδρας· 101 tests μη-ταυτολογικά (με κενά κάλυψης → τώρα ΚΑ1-ΚΑ4).
+
+### Κριτής Β — TRA/receipt/release/Docker (0 WRONG)
+
+| # | Σοβαρότητα | Εύρημα | Evidence | Disposition | Commit |
+|---|---|---|---|---|---|
+| B-S1 | SERIOUS | /as-known 200 όχι self-verifying: text/valid_until εκτός hashed payload | corpus-service 402-418 vs attestation payload | ΚΛΕΙΣΤΟ: resolved outcome δεσμεύει text-sha256 ΜΕΣΑ στο tra/2 hash (+version-hash ήδη μέσα) | bbbf71a2 |
+| B-S2 | SERIOUS | self-certifying anchor: in-release public.jwk, tlog τοπικά αναγεννήσιμο, TSR=χρόνος όχι αυθεντία — τοπικός forge «release-anchored» εφικτός για όποιον ελέγχει το output/ | version-graph-import 186-307· transparency-log 19-26 | ΔΗΛΩΜΕΝΟ + **φάση θανάτου: LAWMAX-TRUST-BOOTSTRAP-SPEC.md** (owner key ceremony, out-of-band pinned root, witness model) — υλοποίηση ΜΟΝΟ με «εγκρίνω» | παρούσα κατάθεση (spec) |
+| B-N3 | NOTE | docker --cache-from poisoning παρακάμπτει την αλυσίδα gates | Dockerfile 155-315 | ΔΗΛΩΜΕΝΟ: owner proof = ΠΑΝΤΑ --no-cache (στην εντολή proof)· signed build provenance = μελλοντική φάση (καταγεγραμμένη στο spec §6) | παρούσα κατάθεση |
+| B-N4 | NOTE | verify-proof-manifest = έλεγχος συνέπειας, όχι ανεξάρτητη επανεκτέλεση σουιτών | verify-proof-manifest.py | ΔΗΛΩΜΕΝΟ: οι εγγυήσεις ζουν στα RUN gates (σωστός καταμερισμός)· ο verifier δένει manifest↔αρχεία↔commit | παρούσα κατάθεση |
+
+Ρητά ΑΝΤΕΞΕ (Β): receipt cut/prefix-replay (πλαστό seq/root = σπάσιμο
+hash-chain)· receipt-id ολικό binding· Lisp↔Python attestation ισοδυναμία
+19 πεδίων· typed anchors· ΟΛΑ τα release-anchor-for σφάλματα ⇒ provisional
+(κανένα σιωπηλό upgrade)· GIT_COMMIT gate· %ensure-graph :error στο serving.
