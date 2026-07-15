@@ -124,6 +124,7 @@
      (:file "timestamp-authority") ; GATE-8: Pure Lisp RFC 3161 timestamps (multi-TSA)
      (:file "archive-authority")  ; GATE-8b: Archive.org 100-year proof
      (:file "x509-authority")     ; Pure Lisp X.509 certificate generation
+     (:file "authority-proof-bundle") ; [0088 Φ7-HARDENING #4] Ανεξάρτητος hermetic fail-closed επαληθευτής αλυσίδας εξουσίας: Ed25519 owner-root (RFC 8037/7638) → delegation/revocation → release JWS → census/receipt-set → journal cut → tlog inclusion+consistency → RFC-3161 TSR· βαθμίδες ΜΟΝΟ από επαληθευμένα τεκμήρια (Δ1–Δ5)
      ;; CT Log removed: public CT logs require CA-issued certificates (not self-signed)
      (:file "proof-carrying")     ; Proof-Carrying Law: portable per-provision Merkle proof + verifier
      (:file "mcp-server")         ; MCP (JSON-RPC) server: AI agents ask → get law + citation + verifiable proof
