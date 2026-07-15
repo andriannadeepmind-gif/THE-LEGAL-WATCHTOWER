@@ -124,7 +124,8 @@
      (:file "timestamp-authority") ; GATE-8: Pure Lisp RFC 3161 timestamps (multi-TSA)
      (:file "archive-authority")  ; GATE-8b: Archive.org 100-year proof
      (:file "x509-authority")     ; Pure Lisp X.509 certificate generation
-     (:file "authority-proof-bundle") ; [0088 Φ7-HARDENING #4] Ανεξάρτητος hermetic fail-closed επαληθευτής αλυσίδας εξουσίας: Ed25519 owner-root (RFC 8037/7638) → delegation/revocation → release JWS → census/receipt-set → journal cut → tlog inclusion+consistency → RFC-3161 TSR· βαθμίδες ΜΟΝΟ από επαληθευμένα τεκμήρια (Δ1–Δ5)
+     (:file "authority-proof-bundle") ; [0088 Φ7-HARDENING #4A] Ανεξάρτητος hermetic fail-closed επαληθευτής αλυσίδας εξουσίας: Ed25519 owner-root (RFC 8037/7638) → delegation/revocation → release JWS → census/receipt-set → journal cut → tlog inclusion+consistency → RFC-3161 TSR· βαθμίδες ΜΟΝΟ από επαληθευμένα τεκμήρια (Δ1–Δ5)
+     (:file "authority-evidence-replay") ; [0088 Φ7-HARDENING #4B] AUTHORITY EVIDENCE REPLAY: closed authority-proof-bundle/1 schema· journal bytes → reconstructed graph (load-graph) → verify-receipt-intrinsic → TRA recompute+outcome από τον γράφο· source digest recompute + spans· signed authority-statement δεσμεύει ΟΛΕΣ τις ρίζες· scope enforcement· external delegation state (rollback/equivocation)· first-seen vs continuity — ΚΑΝΕΝΑ declared root
      ;; CT Log removed: public CT logs require CA-issued certificates (not self-signed)
      (:file "proof-carrying")     ; Proof-Carrying Law: portable per-provision Merkle proof + verifier
      (:file "mcp-server")         ; MCP (JSON-RPC) server: AI agents ask → get law + citation + verifiable proof

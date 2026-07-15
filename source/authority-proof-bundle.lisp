@@ -39,6 +39,7 @@
    #:ed25519-jwk-thumbprint
    #:owner-sign-statement
    #:owner-verify-statement
+   #:canonical-statement-string        ; η ΜΙΑ έδρα canonical δήλωσης (#4B reuse)
    #:make-delegation-statement
    #:make-revocation-statement
    ;; ── typed verdict ──
@@ -86,6 +87,11 @@
    εξάλειψη της κλάσης σφάλματος, όχι φρουρός γύρω της)."
   (notany (lambda (c) (or (char= c (code-char #x1e)) (char= c (code-char #x1f))))
           str))
+
+(defun canonical-statement-string (tag alist)
+  "Δημόσιο alias της ΜΙΑΣ έδρας canonical δήλωσης — καταναλώνεται από το #4B
+   (authority-evidence-replay) ώστε ΜΙΑ κανονικοποίηση, όχι δεύτερη έδρα."
+  (%canonical-statement-string tag alist))
 
 (defun %canonical-statement-string (tag alist)
   "Ντετερμινιστική κανονική σειριοποίηση: TAG \\x1e, μετά σε ΛΕΞΙΚΟΓΡΑΦΙΚΗ
