@@ -1463,3 +1463,106 @@ verifier-set/scope μη-κυκλικά & fail-closed):
 Proof: authority-evidence-replay 23→33/33 (ΠΡΑΓΜΑΤΙΚΗ γέφυρα + όλα τα isolating),
 cross-language 12/12, apb 66/66, temporal-semantics 111/111· 0 leak.
 Εκκρεμεί: τελικό owner Docker proof καθαρό HEAD. Π7 + GAAF-1 runtime ΠΑΓΩΜΕΝΑ.
+
+---
+
+## [0088 Φ7-HARDENING #4 — ΠΡΑΞΗ ΟΛΟΚΛΗΡΩΣΗΣ] Owner Docker proof ΠΡΑΣΙΝΟ @ 478f8708
+
+**Ημερομηνία:** 2026-07-16. **Commit:** `478f870858dc021946fc6396efa9aec4256e020f`
+(επιβεβαιωμένο με git rev-parse στον φάκελο build· `--no-cache`· ρητό
+`GIT_COMMIT` build-arg). Τα proof artifacts εξήχθησαν ΑΠΟ ΤΟ IMAGE
+(docker create/cp) — όχι από build logs.
+
+**Δηλωμένο όριο (τίμια άγνοια):** η καθαρότητα του working tree του δημιουργού
+ΔΕΝ τεκμηριώνεται από τα artifacts (κανένα git status αποδεικτικό· ο 40-hex
+gate ελέγχει μόνο τη μορφή του build-arg). Θετική ένδειξη: και οι 6 σουίτες του
+manifest-fix εκπέμπουν τις νέες parseable γραμμές — το build context περιείχε
+τις αλλαγές του 478f8708. Το `source_tree_sha256 3e66cba2…` είναι δεσμευμένο
+στο proof: διασταυρώσιμο ανά πάσα στιγμή έναντι καθαρού checkout στο ίδιο
+περιβάλλον.
+
+### Διαδρομή προς το πράσινο (3 διαγνωσμένες αποτυχίες — καμία στον κώδικα του #4)
+
+1. Build σε ΠΑΛΙΟ commit `e8339dca` (stale checkout/layer cache): οι 6 σουίτες
+   amendment-accuracy / blockchain-authority / escape-sequences / hash-authority /
+   time-unified / write-authority δεν εξέπεμπαν parseable γραμμή ⇒
+   verify-proof-manifest.py 6 ΑΠΟΤΥΧΙΕΣ — ακριβώς ό,τι σχεδιάστηκε να πιάνει.
+   Κλείσιμο ΣΤΗΝ ΕΔΡΑ: commit `478f8708` — κανονική γραμμή «N passed, M failed»
+   και στις 6 (fiveam:run + explain! + μετρημένη γραμμή· ΟΧΙ wrapper/2η διαδρομή).
+2. `--no-cache` ΧΩΡΙΣ `GIT_COMMIT` build-arg ⇒ FATAL στο βήμα 1/6 του
+   standalone-test («δόθηκε: 'unknown'») — ο 40-hex fail-closed gate λειτούργησε
+   όπως προδιαγράφηκε: καμία σιωπηλή συνέχιση με άγνωστο commit.
+3. Docker engine down (named pipe απών) — περιβαλλοντικό, εκτός repo.
+
+### Αποδεικτικά με αριθμούς
+
+**standalone-proof.json** (`lawmax/standalone-proof/1`):
+- `git_commit` = `478f870858dc021946fc6396efa9aec4256e020f` ✔
+- **106 σουίτες: 105 αριθμητικές = 2264 passed / 0 failed** + 1 ΔΗΛΩΜΕΝΟ SKIP
+  (`cross-language-verifier` στο SBCL-only stage — τίμιο SKIP· σκληρό gate στον
+  verifier-conformance κρίκο, όπου ξανατρέχει με python3/node παρόντα).
+- #4 μέσα στο proof: `authority-proof-bundle` **66/66** ·
+  `authority-evidence-replay` **33/33** · `authority-cross-language` **12/12**.
+- Οι 6 σουίτες του manifest-fix, με κανονική γραμμή: amendment-accuracy 8,
+  blockchain-authority 32, escape-sequences 38, hash-authority 18,
+  time-unified 20, write-authority 16 — όλες 0 failed.
+- Δεσμεύσεις: `source_date_epoch 1735689600` ·
+  `orchestrator_core_sha256 b14108d4c407e1a9c72c48ae547a9f952e47f52ca4348c5b2c4f017ac7fbfca0` ·
+  `component_manifest_sha256 587c03a48946ee88e05d89457011ecba9fa1fa905e84acb31f2051b2b645dc41` ·
+  `source_tree_sha256 3e66cba2436903c225c0ac6475fe2b64b9c3e6c0fdbfce215e9aff3a0b2dd8cd` ·
+  `logs_sha256 8091fd4978c92c6e77d1471ba398029522d175c78e67a3e5e946fc41ef9cba42`.
+
+**verifier-proof.json** (`lawmax/verifier-proof/1`):
+- `git_commit` ✔ ίδιο· gates: cross-language-verifier, release-vector-conformance,
+  verify-canonical, semantic-validity, temporal-verifier.
+- 5 verifier hashes δεσμευμένα:
+  `verify.py 118d695a9561e43c1d23aaa8380e06f3f4c00699b12b00b3677e2c8d8b43a5cd` ·
+  `verify.mjs b743e17a628b28be9ee543ba4ce8ee0d6fd6362c73d8e49ce90083d248f7e20d` ·
+  `verify-canonical.py 5740833a5a4fc0b329f24323b557164011b67e398bfc07618f93d336a832cb42` ·
+  `verify-temporal.py fa470c5cb81732d16797a45218c0d0f15cde23b5a8695e3d23b62b8a9e9b0fac` ·
+  `verify-release.py 4cc8b1c29782e2cfeaeee919f6ee5c3e21b273ea7097e0c6dc08f8b623eebc5a`.
+
+**verify-proof-manifest.py**: ΠΕΡΑΣΕ ΜΕΣΑ στο build (Dockerfile: «αλλιώς ΤΟ
+RUNTIME ΔΕΝ ΧΤΙΖΕΤΑΙ» — το runtime stage χτίστηκε και τα artifacts εξήχθησαν).
+
+**Image:** manifest list
+`sha256:911e7f59a5c8edc5348569ff1c2e56562eb90f29b0d5feefff2a771f841a00b8`
+(manifest `sha256:3df9112878f7d7cdbf0893f2cecff2d31a94e968bc3ea1c78bd365173696cdd8`,
+config `sha256:6b55ba0d7af8631575788e5f75ede2e74f645eb1f2db48f3de0d25266684df68`).
+
+### Κατάσταση #4
+
+#4A (66/66, 2 γύροι κριτών) + #4B (33/33 + 12/12 N-version, 4 κριτές) +
+#4C PROOF-BINDING FREEZE (8/8 ευρήματα δημιουργού — παράρτημα κατωτέρω — + 2 κριτές) —
+**ΟΛΟΚΛΗΡΩΜΕΝΟ, με owner Docker proof στο HEAD 478f8708**. Δηλωμένα όρια
+αμετάβλητα: signatures (RSA JWS/Ed25519/TSR) ΜΙΑ (Lisp) υλοποίηση — η 2η γλώσσα
+καλύπτει τα structural-encoding commitments· multi-span πηγής = δηλωμένο
+μελλοντικό με gap-manifest (σήμερα: ΑΚΡΙΒΩΣ ΕΝΑ συνεχόμενο span).
+
+**Αναμένεται: ρητό «εγκρίνω #4» του δημιουργού.** Π7 (benchmark 9 ΦΕΚ) +
+GAAF-1 runtime ΠΑΓΩΜΕΝΑ μέχρι ρητή εντολή.
+### Παράρτημα — τα 8 ευρήματα δημιουργού του #4C, κατατεθειμένα ονομαστικά
+
+Η ενότητα «#4C — 2 κριτές» ανωτέρω κάλυπτε μόνο τους κριτές· τα 8 ευρήματα του
+δημιουργού (ΟΛΑ αληθή — τίμια καταγραφή) καταθέτονται εδώ ώστε το dialogue να
+έχει την πλήρη έδρα (κλείσιμο: commits 1f4663ea + 52e1f80d):
+
+1. SCOPE binding: το top-level delegation-scope δένεται με το "scope" της
+   owner-signed delegation + κάλυψη corpus+body (:replay/scope-matches-delegation)
+   — θάνατος cross-corpus replay (delegation corpus/B + top-level corpus/A ⇒ FAIL).
+2. ΠΡΑΓΜΑΤΙΚΗ source→text γέφυρα: closed extraction/normalization schemas,
+   recompute receipt-ids από πλήρες περιεχόμενο, spans στα ΠΡΑΓΜΑΤΙΚΑ bytes,
+   normalization replay, τελικό κείμενο BYTE-EQUIVALENT με το graph text
+   (:replay/text-equals-graph). Το κρίσιμο: source bytes ΧΩΡΙΣ το νομικό
+   κείμενο ⇒ FAIL (πριν περνούσε).
+3. bundle_id ΥΠΟΧΡΕΩΤΙΚΟ + recompute ΟΛΩΝ των components + duplicate-key reject.
+4. census/release-manifest ΔΕΣΜΕΥΜΕΝΑ (top==envelope census, manifest==release-id/
+   generation) — κανένα decorative evidence.
+5. policy_digest = recompute από το closed policy schema (όχι caller assertion):
+   ίδιο δηλωμένο digest + διαφορετικό policy field ⇒ FAIL.
+6. TRA anchor ΠΑΡΑΓΕΤΑΙ από το verified envelope (release-root/tlog) + signed
+   registry-digest + policy verifier-hash — ΠΟΤΕ από το ίδιο το TRA (θάνατος
+   κυκλικότητας): forged anchor ⇒ tra-recompute FAIL.
+7. verifier-set: ΑΚΡΙΒΗΣ ισότητα sorted-unique sha256(ΠΡΑΓΜΑΤΙΚΩΝ bytes) ==
+   signed verifier-set — missing/extra binary ⇒ FAIL.
+8. :require-delegation-state cap + compromise_from (genTime ≥ compromise ⇒ FAIL).
