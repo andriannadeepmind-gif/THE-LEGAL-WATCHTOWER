@@ -108,3 +108,76 @@ Commits: `e39e3fea` (v1 draft) → v2 (παρόν commit). **Αναμένετα�
 extraction-receipt/2, authority gate, proposal schemas, conformance vectors,
 gr-gazette acquirer+parser) → benchmark 9 ΦΕΚ ως πελάτης του καθολικού.
 Κανένα download, κανένας connector μέχρι τότε. #4 + GAAF-1 FROZEN.
+
+---
+
+## [0091+] Π7-U.1A — v3 (9 ευρήματα δημιουργού) → 2 ΝΕΟΙ κριτές → v4
+
+**Εντολή δημιουργού:** v2 = ΙΣΧΥΡΟ DESIGN CANDIDATE, ΟΧΙ έγκριση· 9 ευρήματα
+[Δ-1..Δ-9] + απαίτηση 2 νέων κριτών + ονομαστικός negative witness ανά
+finding. Ρητά: «Εγκρίνω #4» (κατατέθηκε στο κύριο branch, eb631750)·
+Π7-U.2 ΠΑΓΩΜΕΝΟ· GAAF-1 ΠΑΓΩΜΕΝΟ.
+
+**v3 (ad73fc63):** κλείσιμο Δ-1..Δ-9 με W-Δ1..9 — expression/1 sum type
+(provision/work-snapshot με cut+RFC-6962 root/single-document)·
+manifestation δεσμεύει expression_id· work ≡ body identity (θάνατος 2ου
+work_id, issuance facts εκτός ταυτότητας)· registry identity-projectors
+(ταξινόμηση ποτέ σε hash)· authority_id από founding_locator+entity_key
+χωρίς kind· journal-batch/1 (ένα seq/payload/chain transition)· disjoint
+source-work tagged sum· consolidation normative/derived με evidence mode·
+raw-artifact μόνο εγγενή + blob↔receipt recovery.
+
+**ΚΡΙΤΗΣ IDENTITY/FRBR/EXPRESSION COLLISION (3 CRIT + 5 SERIOUS + 3 MINOR +
+1 NIT — δείκτες [Κ-x], όλα κλειστά στο v4):**
+- Κ-C1 ΔΙΠΛΗ οδός ΥΑ/EU (body-kind :ya/:eu-* ΚΑΙ projectors) ⇒ invariant
+  ΜΙΑΣ οδού (XOR, gated load) + registry φάση αφαίρεσης §0.2β + W-K1.
+- Κ-C2 provision_set_root όχι συνάρτηση του (work,cut): το cut καθηλώνει
+  known όχι valid (snapshot-at διτεμπορική)· λείπει leaf encoding ⇒
+  valid_at ΣΤΟ schema + σύνολο = ακριβές output snapshot-at + canonical
+  JSON leaf + excluded_uncertain + W-K2.
+- Κ-C3 άχρονο gr/syntagma ⇒ επανίδρυση οργάνου = ΙΔΙΟ authority_id ⇒
+  version_pin στο founding_locator + W-K3.
+- Κ-S4 entity_key ελεύθερη επιλογή / locator tri-type χωρίς tag ⇒ κανόνας
+  προτεραιότητας + tagged union + W-K4· Κ-S5 μονο-διατακτικό work διπλή
+  expression ⇒ δηλωμένη μέρος/όλον διάκριση + παραγώγιμη ισοδυναμία + W-K5·
+  Κ-S6 content_sha256 χωρίς normalization ⇒ §2 canonical spec ρητά + W-K6·
+  Κ-S7 Rule-B χωρίς namespace/register ⇒ lsw1: + register-id ταυτοτικό +
+  tagged work refs + W-K7· Κ-S8 ΠΝΠ ΦΕΚ Α΄68 ≥2 τριάδες ΑΠΟΔΕΔΕΙΓΜΕΝΑ ⇒
+  typed gazette_ref + Rule-B works μόνο single-document + W-K8·
+  Κ-M9 language ISO 639-1 κλειστός πίνακας + W-K9· Κ-M10 edition_facts
+  απαριθμημένα + publisher tagged + W-K10· Κ-M11 make-body number guard
+  ΣΤΗΝ έδρα + W-K11· Κ-NIT12 Συντακτικές Πράξεις = δηλωμένο όριο v1.
+
+**ΚΡΙΤΗΣ JOURNAL ATOMICITY/LEGAL-EFFECT (4 CRIT + 4 SERIOUS + 2 MINOR +
+1 NIT — δείκτες [Τ-x], όλα κλειστά στο v4):**
+- Τ-C1 torn-tail ΣΥΓΚΟΛΛΗΣΗ στο υπάρχον append-line (crash μισογραμμένη
+  γραμμή + επόμενο append = μόνιμο corruption) ⇒ §0.5.1 torn-heal/framing
+  ΣΤΗΝ έδρα journal.lisp — BLOCKING προ-παραδοτέο Π7-U.2 + W-JB-TORN.
+- Τ-C2 precondition εκτός lock = race→μόνιμο corruption (ζωντανός πρόγονος:
+  %journal! υπολογίζει chain προ-lock, αγνοεί το last του chained-append)
+  ⇒ compare-and-append ΥΠΟ το lock, typed stale-precondition + W-JB-RACE.
+- Τ-C3 «journaled record» χωρίς δηλωμένο journal — το version-graph journal
+  είναι per-body, ΔΟΜΙΚΑ ακατάλληλο για receipts ⇒ ΡΗΤΗ topology §0.3:
+  version-graph journal (per-body) + corpus journal (ΕΝΑ)· cross-journal
+  batch ΑΠΑΓΟΡΕΥΕΤΑΙ + W-J-TOPOLOGY.
+- Τ-C4 4 συν-γεννήσεις εκτός batch (uncertainty+καραντίνα, work+issuance,
+  expression+manifestation, reject+uncertainty) ⇒ ΕΞΑΝΤΛΗΤΙΚΟΣ πίνακας
+  §0.4 (καραντίνα ≡ ανοιχτή uncertainty — η 2η σημαία δεν υπάρχει·
+  expression/manifestation = παράγωγες ταυτότητες όχι γεγονότα) +
+  W-COBIRTH-SWEEP.
+- Τ-S5 fsync με ignore-errors = ψευδο-durable ⇒ §0.5.3 fsync honesty +
+  W-FSYNC-LIE· Τ-S6 consolidation mode χωρίς κριτή/έδρα + ο κίνδυνος του
+  δημιουργού (normative-ως-derived) χωρίς witness ⇒ mode-decision journaled
+  record (decider: creator) + αντίστροφος δομικός φρουρός + W-Δ8β·
+  Τ-S7 replay-υποχρέωση από ΜΕΤΑΒΛΗΤΟ registry + κανένα relation-retract ⇒
+  registry digest pinned ΣΤΟ record + retract-σε-batch συμμετρικό +
+  W-REG-PIN/W-REL-RETRACT· Τ-S8 κανένα write authority/rate ⇒ single-writer
+  ανά journal + rejects δεσμεύουν digest + W-FLOOD· Τ-M9 subevent
+  ids/σειρά/TILING κατανάλωση δηλωμένα + W-JB-SUB-ID· Τ-M10 κενό/nested
+  batch reject + W-JB-NEST· Τ-NIT typed torn verdict.
+
+**v4 = παρόν commit.** Συνολικό ιστορικό κριτών Π7-U.1: 2 (v1) + δημιουργός
+(v2) + 2 (v3) = 5 αντιπαλικές επιθεωρήσεις, 44 ευρήματα, ΟΛΑ κλειστά
+ονομαστικά με 31 named negative witnesses (§12). **ΑΝΑΜΕΝΕΤΑΙ: τελικό
+«εγκρίνω Π7-U.1».** Π7-U.2 ΠΑΓΩΜΕΝΟ (με §0.5 journal fixes ως BLOCKING
+πρώτα παραδοτέα). #4 CLOSED. GAAF-1 ΠΑΓΩΜΕΝΟ.
