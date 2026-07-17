@@ -15,7 +15,7 @@
 | ID | Εύρημα | Κλείσιμο (v6) | Witness |
 |---|---|---|---|
 | Ν-C1 | official_key μόνο για 6/16 κλάσεις — Σύνταγμα/ΠΔ/ΥΑ χωρίς ταυτότητα | §2.1 projector+key-shape ΣΤΗΝ εγγραφή, gated load | (δομικό: registry δεν φορτώνει) |
-| Ν-C2 | ΚΥΑ πολλαπλών εκδοτών vs ενικός εκδότης | §1.4 protocol-register οδός + §1.1 issuance facts sorted sets | W-KYA-COISSUERS |
+| Ν-C2 | ΚΥΑ πολλαπλών εκδοτών vs ενικός εκδότης | §1.4 institutional-register οδός + §1.1 issuance facts sorted sets | W-KYA-COISSUERS |
 | Ν-C3 | ΠΝΠ απούσες (κλάση/κλειδί/κύρωση) | §1.4 emergency-legislative-act + :ratification/:expire | W-PNP-SAME-ISSUE |
 | Ν-C4 | Δεύτερη έδρα ταυτότητας δίπλα στο make-body + 2ο μητρώο ειδών | §1.1 Κανόνας Α: work ≡ body· §2.1 επέκταση υπάρχουσας οικογένειας registries | W-Δ3, W-K7β |
 | Ν-C5 | formation ελεύθερο string ⇒ 3 ids για μία ΣτΕ Ολ | §1.4 judgment: formation registry-backed keyword + numbering στην εγγραφή δικαστηρίου | (μέρος W-K8 οικογένειας) |
@@ -26,7 +26,7 @@
 | Ν-S10 | Authority lineage ελλιπές + ΑΠ 1834 άλυτο | §2.2 lineage kinds + pre-corpus locator | W-K3 (γειτονικό) |
 | Ν-S11 | Λείπουν 4 μορφές νομικής αβεβαιότητας | §8 official-sources-conflict, pending-ratification, commencement-unresolved, authenticity-pending | W-UNCERTAINTY-SET (γειτονικό) |
 | Ν-M12 | jurisdiction «κλειστό enum» με ανοιχτό template | §2.3 registry εγγραφών | W-REGISTRY-EXTENSION (πρότυπο) |
-| Ν-M13 | Πρωτόκολλα ανά υπηρεσία — σύγκρουση ίδιου αριθμού | §1.4/§2.1β register_id στο κλειδί | W-REGISTER-REASSIGNMENT |
+| Ν-M13 | Πρωτόκολλα ανά υπηρεσία — σύγκρουση ίδιου αριθμού | §1.4/§2.1β institutional-register id στο κλειδί | W-REGISTER-REASSIGNMENT |
 | Ν-M14 | eu-act/CELEX vs κλάσεις = 2 διαδρομές | §1.4 CELEX = ΤΟ κλειδί για ΟΛΕΣ τις eu | W-Δ4 |
 | Ν-NIT15 | grep gate ψευδο-ακριβές | §9 ρητή λίστα + δηλωμένα υπόλοιπα | (gate test versioned) |
 
@@ -101,7 +101,7 @@
 | ID | Εύρημα | Κλείσιμο (v6) | Witness |
 |---|---|---|---|
 | Β-1 | Snapshot ασύμβατο με έδρα (typed-partial valid_at, seq≠known_at)· count-only excluded | §1.2 valid_at legal-date + knowledge-cut + uncertainty roots | W-SNAPSHOT-TYPES, W-SNAPSHOT-FORK, W-UNCERTAINTY-SET |
-| Β-2 | ΚΥΑ: ενικός issuing_authority_id στον projector | §1.4 protocol-register οδός — κανένας authority στο hash | W-KYA-COISSUERS |
+| Β-2 | ΚΥΑ: ενικός issuing_authority_id στον projector | §1.4 institutional-register οδός — κανένας authority στο hash | W-KYA-COISSUERS |
 | Β-3 | authority version_pin διπλή αναπαράσταση | §2.2 ΜΙΑ μορφή {provision_id, tv_version_hash} | W-AUTH-PIN-DUAL |
 | Β-4 | manifestation με URL/status/detection στο hash | §1.3 μόνο κανονικά πεδία + media-verification records | W-MANIFEST-URL, W-MEDIA-STATUS |
 | Β-5 | ΠΝΠ projector μη-injective (ίδια μέρα/τεύχος) | §1.4 {gazette_ref, act_ordinal} | W-PNP-SAME-ISSUE |
@@ -115,7 +115,7 @@
 | Γ-C1 | Snapshot διασχίζει 2 journals, καρφώνει 1 — uncertainty set χωρίς corpus τομή | §1.2 knowledge-cut/1 {version_cut, corpus_cut} + graph/corpus uncertainty roots με διαχωρισμένα leaf types | W-CROSS-JOURNAL-UNCERTAINTY |
 | Γ-C2 | recorded_through διογκώσιμο· wall-clock ανεπαρκές για ισοχρονία | §1.2 όριο = last_recorded_at ΤΟΥ record στο seq (παράγωγο)· συντεταγμένη (last_recorded_at, seq, chain_root) | W-CUT-TIME-INFLATION, W-CUT-SAME-SECOND |
 | Γ-C3 | normative-act/administrative-act επικαλύπτονται — κανονιστική ΚΥΑ δεν ακυρώνεται | §3 δύο άξονες work_form × legal_effect· §6.3 guards form-based | W-KYA-ANNULMENT |
-| Γ-C4 | protocol-register χωρίς κανόνα παραγωγής id | §2.1β register_id παράγωγο {jurisdiction, founding+pin, canonical_register_key}· υπαγωγή = assertions | W-REGISTER-REASSIGNMENT |
+| Γ-C4 | protocol-register χωρίς κανόνα παραγωγής id (γενικευμένο κατ΄ εντολή σε ΚΑΘΕ θεσμικό μητρώο) | §2.1β institutional-register/1: id παράγωγο {jurisdiction, founding+pin, canonical_register_key}· όνομα/εποπτεία/αρμοδιότητα/υπαγωγή/σειρά/δικαιοδοτική ένταξη = assertions εκτός identity· οντολογική ασυνέχεια ⇒ νέο id + lineage | W-REGISTER-REASSIGNMENT (διευρυμένος) |
 | Γ-S1 | Νομολογιακή ερμηνεία μη αναπαραστάσιμη | §6.3 judicially-interprets / administratively-interprets διακριτές | W-JUDICIAL-INTERPRETATION |
 | Γ-S2 | manual-deposit δεν χωρά στο receipt schema | §5.1 origin sum: network-fetch \| manual-deposit \| archive-import | W-MANUAL-DEPOSIT |
 | Γ-S3 | language/media/edition hardcoded στο schema | §1.5 versioned registries· κλειστά ΜΟΝΟ τα οντολογικά sums | W-REGISTRY-EXTENSION |

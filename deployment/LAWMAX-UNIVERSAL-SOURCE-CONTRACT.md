@@ -16,8 +16,11 @@
 **Θεμελιώδεις αρχές:**
 (α) ΚΑΝΕΝΑ hardcoded enum για επεκτάσιμα δεδομένα — versioned registries·
 ΚΛΕΙΣΤΑ στο schema μένουν ΜΟΝΟ τα γνήσια οντολογικά sum types (expression
-kinds, work_form, origin kinds, locator types) [Γ-S3]· (β) ταυτότητα ≠
-ταξινόμηση ≠ τοποθεσία ≠ κατάσταση επαλήθευσης ≠ διοικητική υπαγωγή
+kinds, work_form, origin kinds, locator types) [Γ-S3]· (β) η ταυτότητα αντέχει καθώς μεταβάλλεται ΟΛΟΚΛΗΡΗ η
+ιστορικά μεταβαλλόμενη έννομη πραγματικότητα γύρω της — ταξινόμηση,
+τοποθεσία, κατάσταση επαλήθευσης, ονομασία, εποπτεία, αρμοδιότητα,
+υπαγωγή, νομική μορφή, δικαιοδοτική ένταξη = ΠΟΤΕ σε identity hash·
+οντολογική ασυνέχεια ⇒ ΝΕΑ ταυτότητα με evidence-backed lineage
 [Δ-4/Δ-5/Β-4/Γ-C4]· (γ) ατομικότητα = δομική ιδιότητα ΕΝΟΣ framed append
 σε ΕΝΑ δηλωμένο journal· ΚΑΘΕ ισχυρισμός γνώσης δένει ΟΛΕΣ τις αλυσίδες
 από τις οποίες εξαρτάται — knowledge-cut/1 [Γ-C1]· (δ) ΜΙΑ οδός ταυτότητας
@@ -50,7 +53,7 @@ trusted path.
 | `document-fetch.lisp` (fek-blob-url κ.λπ.) | acquisition/locations με ΦΕΚ σημασιολογία | **B → Π7-U.2**: ξαναγράφεται ως gr-gazette acquirer· patterns → δεδομένα |
 | `government-source.lisp` | 2η τυπολογία πηγών | **B → Π7-U.3**: πηγές → registry εγγραφές |
 | `corpus-provenance.lisp` (PROV-O) | 2ο provenance λεξιλόγιο | **A**: εξαγωγική προβολή — ποτέ πηγή αλήθειας· mapping Π7-U.3 |
-| **β)** body-kind `:ya`/`:eu-reg`/`:eu-dir` | διπλή οδός [Κ-C1] | **B → Π7-U.2 registry φάση**: ΥΑ/ΚΥΑ ⇒ ΜΟΝΟ protocol-register οδός· EU ⇒ ΜΟΝΟ {celex} |
+| **β)** body-kind `:ya`/`:eu-reg`/`:eu-dir` | διπλή οδός [Κ-C1] | **B → Π7-U.2 registry φάση**: ΥΑ/ΚΥΑ ⇒ ΜΟΝΟ institutional-register οδός· EU ⇒ ΜΟΝΟ {celex} |
 
 ### 0.3 Journal topology — ΡΗΤΗ [Τ-C3]
 
@@ -267,8 +270,8 @@ detector_manifest_sha256, verdict, artifact_digest, recorded_at}
   = classification field· spans = manifestation evidence· κύρωση:
   :ratification· μη κύρωση: :expire με evidence.
 - `ministerial-decision`/`joint-ministerial-decision`/`administrative-act`/
-  `interpretive-circular` [Β-2, Γ-C4]: **protocol-register οδός** —
-  `{"register_id": <§2.1β — παράγωγο, ΟΧΙ αποδιδόμενο>, "protocol_number":
+  `interpretive-circular` [Β-2, Γ-C4]: **institutional-register οδός** —
+  `{"register_id": <§2.1β institutional-register/1 — παράγωγο, ΟΧΙ αποδιδόμενο>, "protocol_number":
   string, "protocol_date": date}` — ΚΑΝΕΝΑΣ authority στο hash· ο connector
   δεν διαλέγει «εκδότη» (W-KYA-COISSUERS)· υπογράφοντες = issuance facts.
 - `eu-*`: `{celex}` για ΟΛΕΣ τις eu κλάσεις — κλάση = classification field
@@ -320,13 +323,16 @@ parliament-standing-orders, independent-authority-decision. Άγνωστη κλ�
 ⇒ unclassified-source + καραντίνα. Συντακτικές Πράξεις: εκτός v1, τίμια
 unclassified [Κ-NIT12].
 
-### 2.1β Protocol-register registry — ΠΑΡΑΓΩΓΗ ταυτότητα [Γ-C4]
+### 2.1β Institutional-register registry — ΠΑΡΑΓΩΓΗ ταυτότητα, ΚΑΘΟΛΙΚΟΣ μηχανισμός [Γ-C4]
 
-`lawmax/protocol-register/1` — το register_id ΥΠΟΛΟΓΙΖΕΤΑΙ, δεν αποδίδεται:
+`lawmax/institutional-register/1` — ΕΝΑΣ μηχανισμός για ΚΑΘΕ θεσμικό μητρώο
+της έννομης τάξης: νομοθετικό, διοικητικό (πρωτόκολλα ΥΑ/ΚΥΑ), δικαστικό
+(μητρώα αρίθμησης αποφάσεων), συνταγματικό, ευρωπαϊκό ή διεθνές. Το
+register_id ΥΠΟΛΟΓΙΖΕΤΑΙ, δεν αποδίδεται:
 
 ```
-register_id = "preg1:" + canonical-hash({
-  "schema": "lawmax/protocol-register/1",
+register_id = "ireg1:" + canonical-hash({
+  "schema": "lawmax/institutional-register/1",
   "jurisdiction": <registry §2.3>,
   "founding_locator": <tagged union ΜΕ version pin — ΙΔΙΕΣ μορφές με §2.2:
       {"locator_type": "provision-id",
@@ -339,11 +345,27 @@ register_id = "preg1:" + canonical-hash({
       όταν η ιδρυτική πράξη ορίζει, ονομασία ΜΟΝΟ αλλιώς>})
 ```
 
-**ΕΚΤΟΣ identity — versioned διτεμπορικά assertions με evidence:**
-owning_authority (η υπαγωγή!), names, series labels, competence transfers,
-existence interval, lineage. Μεταφορά μητρώου σε άλλο υπουργείο ⇒
-register_id ΑΜΕΤΑΒΛΗΤΟ ⇒ ταυτότητες πράξεων ΑΜΕΤΑΒΛΗΤΕΣ· δύο connectors ⇒
-ΙΔΙΟ id (παράγωγο) (W-REGISTER-REASSIGNMENT).
+**ΑΝΑΛΛΟΙΩΤΟ ΘΕΣΜΙΚΗΣ ΤΑΥΤΟΤΗΤΑΣ (ισχύει για register_id ΚΑΙ authority_id):**
+η ταυτότητα μένει ΣΤΑΘΕΡΗ όταν μεταβάλλεται ΟΠΟΙΟΔΗΠΟΤΕ μη ταυτοτικό
+στοιχείο της ιστορικά μεταβαλλόμενης έννομης πραγματικότητας — όνομα,
+εποπτεύουσα αρχή, αρμοδιότητα, γεωγραφικό πεδίο, οργανωτική υπαγωγή,
+νομική μορφή, σειρά αρίθμησης, τρόπος δημοσίευσης, δικαιοδοτική ένταξη.
+ΟΛΑ αυτά = versioned διτεμπορικά assertions με evidence, ΕΚΤΟΣ identity.
+**Πραγματική οντολογική ασυνέχεια** — κατάργηση και ίδρυση νέου θεσμού,
+νέα συνταγματική θεμελίωση, διάσπαση, συγχώνευση, επανίδρυση — παράγει
+ΝΕΑ ταυτότητα με ρητή evidence-backed lineage σχέση (abolished /
+re-established-as / merged-from / split-from / competence-transferred-to).
+Μεταφορά μητρώου σε άλλο υπουργείο ⇒ register_id ΑΜΕΤΑΒΛΗΤΟ ⇒ ταυτότητες
+πράξεων ΑΜΕΤΑΒΛΗΤΕΣ· δύο connectors ⇒ ΙΔΙΟ id (παράγωγο)
+(W-REGISTER-REASSIGNMENT).
+
+Χρήση v1: τα protocol registers των ΥΑ/ΚΥΑ/διοικητικών πράξεων (§1.4).
+Τα λοιπά θεσμικά μητρώα (δικαστικά μητρώα αρίθμησης, gazette series)
+αναπαρίστανται με τον ΙΔΙΟ μηχανισμό· η ενοποίηση των αντίστοιχων
+projectors (judgment, gazette-issue) επί institutional-register refs =
+δηλωμένη μελλοντική versioned φάση (§11) — μέχρι τότε οι υπάρχοντες
+projectors ισχύουν αυτούσιοι (καμία διπλή οδός: η μελλοντική φάση
+αντικαθιστά, δεν συνυπάρχει).
 
 ### 2.2 Authority registry
 
@@ -568,7 +590,7 @@ pinned `relation_registry_digest` του record (W-REG-PIN).
   authority-proposal, uncertainty}. Determinism gate (SOURCE_DATE_EPOCH,
   byte-ίδια έξοδος)· κανένα δίκτυο/ρολόι/ιδιωτικό πεδίο.
 - Προτάσεις-όχι-εγγραφές: graph-event-proposal ≡ espec του admit-edge!·
-  απόρριψη journaled (digest + αιτία)· authority + protocol-register gates
+  απόρριψη journaled (digest + αιτία)· authority + institutional-register gates
   = ΔΗΛΩΜΕΝΑ παραδοτέα Π7-U.2· write authority: ΕΝΑΣ συγγραφέας ανά journal
   (W-FLOOD).
 - Κοινή σουίτα συμμόρφωσης: golden + αντιπαλικά vectors ⊇ ΟΛΟΙ οι
@@ -623,7 +645,7 @@ acquirer+parser.
 6. **Π7-U.2 ΠΑΓΩΜΕΝΟ** — παραδοτέα (σειρά): §0.5 journal fixes + frame
    migration, typed-partial canonical vectors, extraction-receipt/2,
    corpus journal + knowledge-cut replay, registry route-φάση (§0.2β),
-   make-body number guard, authority + protocol-register gates, proposal
+   make-body number guard, authority + institutional-register gates, proposal
    schemas, conformance vectors (⊇ §12), gr-gazette acquirer+parser.
 
 ## 11. Δηλωμένα όρια v1 (τίμια)
@@ -632,7 +654,7 @@ acquirer+parser.
 - Provision-δόμηση Rule-B works = μελλοντική φάση — μέχρι τότε
   single-document ΜΟΝΟ.
 - Συντακτικές Πράξεις: εκτός v1, τίμια unclassified.
-- Authority/protocol-register registries: genesis + μετρήσιμη πληρότητα.
+- Authority/institutional-register registries: genesis + μετρήσιμη πληρότητα.
 - Blob↔receipt: η ΜΟΝΗ δι-store σχέση — ορατή μερικότητα (§4.3).
 - Redaction: typed `parties_redacted`· πολιτική = απόφαση δημιουργού.
 - Καμία ανύπαρκτη υποδομή δεν επικαλείται ως υπάρχουσα (§10.6).
@@ -705,6 +727,6 @@ acquirer+parser.
 | **W-CUT-SAME-SECOND** | 2 records ίδιου recorded_at, διαφορετικό seq → το cut στο πρώτο και στο δεύτερο = ΔΙΑΚΡΙΤΕΣ συντεταγμένες (seq επιλύει)· wall-clock μόνο του → δεν ορίζει cut |
 | **W-KYA-ANNULMENT** | ακυρωτική ΣτΕ κατά ΚΑΝΟΝΙΣΤΙΚΗΣ ΚΥΑ (form: executive-administrative, effect: normative) → annuls relation ΔΕΚΤΗ (ο guard είναι form-based)· στο παλιό μονο-αξονικό sum θα απορριπτόταν — ο witness το αποδεικνύει |
 | **W-JUDICIAL-INTERPRETATION** | απόφαση ΣτΕ που ερμηνεύει άρθρο → judicially-interprets ΔΕΚΤΗ (adjudicative → provision)· interpretive-instrument guard ΔΕΝ την μπλοκάρει· administratively-interprets από judgment → reject (διακριτές σχέσεις) |
-| **W-REGISTER-REASSIGNMENT** | μεταφορά protocol-register σε άλλο υπουργείο (competence transfer assertion) → register_id ΑΜΕΤΑΒΛΗΤΟ → work ids πράξεων ΑΜΕΤΑΒΛΗΤΑ· 2 connectors → ΙΔΙΟ register_id (παράγωγο από founding+key) |
+| **W-REGISTER-REASSIGNMENT** | ΣΑΡΩΣΗ μη ταυτοτικών μεταβολών (όνομα, εποπτεία, αρμοδιότητα, γεωγραφικό πεδίο, υπαγωγή, νομική μορφή, σειρά, τρόπος δημοσίευσης, δικαιοδοτική ένταξη) → register_id/authority_id ΑΜΕΤΑΒΛΗΤΑ → work ids ΑΜΕΤΑΒΛΗΤΑ· 2 connectors → ΙΔΙΟ id· οντολογική ασυνέχεια (κατάργηση+ίδρυση, νέα θεμελίωση, διάσπαση) → ΝΕΟ id + ΥΠΟΧΡΕΩΤΙΚΟ evidence-backed lineage record — απουσία lineage = reject |
 | **W-MANUAL-DEPOSIT** | receipt με origin manual-deposit (χωρίς url/status) → ΕΓΚΥΡΟ· network πεδία σε manual origin → reject· archive-import ομοίως |
 | **W-REGISTRY-EXTENSION** | προσθήκη γλώσσας «es» ως registry εγγραφή → ΚΑΜΙΑ schema revision, υπάρχοντα ids ΑΜΕΤΑΒΛΗΤΑ· τιμή εκτός τρέχοντος registry → reject· ίδιο για media-type/edition-key |
