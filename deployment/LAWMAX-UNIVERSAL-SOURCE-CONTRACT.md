@@ -1,27 +1,29 @@
-# LAWMAX — UNIVERSAL SOURCE CONTRACT (Π7-U.1) · **v5 — Π7-U.1B CANONICAL SNAPSHOT AND IDENTITY CLOSURE** · ΑΥΤΟΤΕΛΕΣ
+# LAWMAX — UNIVERSAL SOURCE CONTRACT (Π7-U.1) · **v6 — Π7-U.1C KNOWLEDGE-CUT AND LEGAL-FORM CLOSURE** · ΑΥΤΟΤΕΛΕΣ
 
 **Κατάσταση:** ΠΡΟΤΑΣΗ προς τελική εξέταση («εγκρίνω Π7-U.1» εκκρεμεί).
-Π7-U.2 implementation: ΠΑΓΩΜΕΝΟ. ΚΑΝΕΝΑ download/connector.
-**Ιστορικό:** v1 → 2 κριτές [Ν-x]/[Α-x] (REJECTED) → v2 → 9 ευρήματα
-δημιουργού [Δ-1..9] → v3 → 2 κριτές [Κ-x]/[Τ-x] → v4 (ΙΣΧΥΡΟΤΑΤΟ CANDIDATE)
-→ 7 αποδεικτικά κενά δημιουργού [Β-1..7] → **v5 = παρόν, Π7-U.1B**.
-Σύνολο: 6 αντιπαλικές επιθεωρήσεις, 51 ευρήματα, ΟΛΑ κλειστά ονομαστικά·
-witnesses: W-Δ1..9, W-K1..11, W-J*, W-Β* (§12).
-**ΑΥΤΟΤΕΛΕΙΑ [Β-6]:** το παρόν αρχείο περιέχει ΟΛΑ τα normative schemas και
-invariants αυτούσια — ΚΑΜΙΑ αναφορά σε προηγούμενη έκδοση δεν είναι
-κανονιστική· υλοποιήσιμο από καθαρό checkout αυτού του commit
-(W-SPEC-SELF-CONTAINED). Οι δείκτες [x] είναι ΜΟΝΟ ιστορική απόδοση.
+Π7-U.2: ΠΑΓΩΜΕΝΟ. ΚΑΝΕΝΑ download/connector/υλοποίηση.
+**Ιστορικό:** v1 → 2 κριτές [Ν]/[Α] → v2 → δημιουργός [Δ-1..9] → v3 →
+2 κριτές [Κ]/[Τ] → v4 → δημιουργός [Β-1..7] → v5 (ΑΥΤΟΤΕΛΕΣ) → δημιουργός
+[Γ-C1..C4, Γ-S1..S3] → **v6 = παρόν, Π7-U.1C**. Πλήρης πίνακας ευρημάτων/
+κλεισιμάτων/witnesses: `LAWMAX-UNIVERSAL-SOURCE-CONTRACT-CLOSURE-MATRIX.md`
+(συνοδευτικό παραδοτέο — η ακριβής καταμέτρηση ζει ΕΚΕΙ).
+**ΑΥΤΟΤΕΛΕΙΑ:** όλα τα normative schemas/invariants αυτούσια εδώ· καμία
+κανονιστική αναφορά σε προηγούμενη έκδοση (W-SPEC-SELF-CONTAINED)· οι
+δείκτες [x] = ιστορική απόδοση μόνο.
 **Εγκεκριμένη βάση:** `b87f7d8b`. **#4A/B/C: CLOSED & FROZEN** (Πράξη
 Έγκρισης `eb631750`). GAAF-1 + reasoning layers ΠΑΓΩΜΕΝΑ.
 
 **Θεμελιώδεις αρχές:**
-(α) ΚΑΝΕΝΑ hardcoded enum — versioned data registries με projector/key-shape
-ΣΤΗΝ εγγραφή· (β) ταυτότητα ≠ ταξινόμηση ≠ τοποθεσία ≠ κατάσταση
-επαλήθευσης [Δ-4/Δ-5/Β-4]: ό,τι διορθώνεται/μεταβάλλεται/αναβαθμίζεται
-αργότερα ΔΕΝ συμμετέχει ποτέ σε identity hash· (γ) ατομικότητα = δομική
-ιδιότητα ΕΝΟΣ framed append σε ΕΝΑ δηλωμένο journal [Δ-6/Τ-C3/Β-7]·
-(δ) ΜΙΑ οδός ταυτότητας ανά πραγματική κλάση [Κ-C1]· (ε) τίμια άγνοια:
-typed uncertainty πρώτης τάξης, ποτέ μαντεψιά, κανένα LLM στο trusted path.
+(α) ΚΑΝΕΝΑ hardcoded enum για επεκτάσιμα δεδομένα — versioned registries·
+ΚΛΕΙΣΤΑ στο schema μένουν ΜΟΝΟ τα γνήσια οντολογικά sum types (expression
+kinds, work_form, origin kinds, locator types) [Γ-S3]· (β) ταυτότητα ≠
+ταξινόμηση ≠ τοποθεσία ≠ κατάσταση επαλήθευσης ≠ διοικητική υπαγωγή
+[Δ-4/Δ-5/Β-4/Γ-C4]· (γ) ατομικότητα = δομική ιδιότητα ΕΝΟΣ framed append
+σε ΕΝΑ δηλωμένο journal· ΚΑΘΕ ισχυρισμός γνώσης δένει ΟΛΕΣ τις αλυσίδες
+από τις οποίες εξαρτάται — knowledge-cut/1 [Γ-C1]· (δ) ΜΙΑ οδός ταυτότητας
+ανά κλάση [Κ-C1]· (ε) μορφή πράξης ≠ έννομο αποτέλεσμα — δύο ανεξάρτητοι
+άξονες [Γ-C3]· (στ) τίμια άγνοια: typed uncertainty, κανένα LLM στο
+trusted path.
 
 ---
 
@@ -31,43 +33,40 @@ typed uncertainty πρώτης τάξης, ποτέ μαντεψιά, κανέν
 
 | Έννοια | Έδρα | Χρήση |
 |---|---|---|
-| Κανονική σειριοποίηση + hash | `canonical-representation` + `deployment/verify/canonical-serialization-spec.md` | ΚΑΘΕ id = canonical-hash επί κλειστού αντικειμένου· ΟΧΙ booleans σε hash-φέροντα (0/1 integers)· §2 text normalization για κάθε content hash |
+| Κανονική σειριοποίηση + hash | `canonical-representation` + `deployment/verify/canonical-serialization-spec.md` | ΚΑΘΕ id = canonical-hash επί κλειστού αντικειμένου· ΟΧΙ booleans (0/1 integers)· §2 text normalization για κάθε content hash· ταξινομήσεις leaves κατά canonical bytes |
 | Ταυτότητα πράξης/provision | `orchestrator.identity` (make-body, make-provision-id, declared-body) | work ≡ body identity για Rule-A κλάσεις (§1.1) |
 | Μητρώα ειδών | `body-kind-registry.sexp`, `instrument-kind-registry.sexp` | επέκταση με εγγραφές + αφαίρεση route-διπλών (§0.2β) |
-| Διτεμπορικός γράφος | `orchestrator.version-graph` (per-body journal, admit-edge! replay-then-append, snapshot-at, version-at/TILING, regime/condition/instrument kinds, retract-*) | text-mutating γεγονότα· ο snapshot ορισμός §1.2 δένει στα ΠΡΑΓΜΑΤΙΚΑ types της έδρας [Β-1] |
-| Journal πειθαρχία | `journal.lisp` [0086] | ΜΕ τα υποχρεωτικά κλεισίματα §0.5 (framing/CAS/fsync/single-writer) ΠΡΙΝ από κάθε Π7-U.2 κώδικα |
-| Raw→text γέφυρα | `lawmax/extraction-receipt/1→/2`, `lawmax/normalization-receipt/1` (#4B) | Η ΜΟΝΗ γέφυρα bytes→κείμενο· /2 προσθέτει manifestation_id (§5.3) |
-| Merkle | orchestrator.merkle (RFC-6962: leaf 0x00, node 0x01) | provision_set_root, uncertainty_set_root (§1.2) |
-| Απόδειξη εξουσίας | `authority-proof-bundle/1` (CLOSED & FROZEN) | καταναλώνει τα παρόντα ΜΕΣΩ CENSUS — καμία μεταβολή στο frozen statement |
+| Διτεμπορικός γράφος | `orchestrator.version-graph` (per-body journal, admit-edge!, snapshot-at, version-at/TILING, regime/condition/instrument kinds, retract-*) | text-mutating γεγονότα· το version_cut του knowledge-cut δένει στα ΠΡΑΓΜΑΤΙΚΑ types της έδρας (legal-date/legal-instant) |
+| Journal πειθαρχία | `journal.lisp` [0086] | ΜΕ τα υποχρεωτικά κλεισίματα §0.5 ΠΡΙΝ από κάθε Π7-U.2 κώδικα |
+| Raw→text γέφυρα | `lawmax/extraction-receipt/1→/2`, `normalization-receipt/1` (#4B) | Η ΜΟΝΗ γέφυρα bytes→κείμενο· /2 προσθέτει manifestation_id (§5.3) |
+| Merkle | orchestrator.merkle (RFC-6962: leaf 0x00, node 0x01) | provision_set_root, graph/corpus_uncertainty_set_roots (§1.2) |
+| Απόδειξη εξουσίας | `authority-proof-bundle/1` (CLOSED & FROZEN) | κατανάλωση ΜΕΣΩ CENSUS — καμία μεταβολή στο frozen statement |
 
 ### 0.2 Μερικές έδρες που διαδέχεται — ταξινόμηση [0045]
 
 | Υπάρχουσα | Επικαλύπτει | Ταξινόμηση + φάση θανάτου |
 |---|---|---|
-| `source-profile.lisp` (acquired-record, channels/authority-ranks, ιδιωτικό %canonical) | acquisition receipt, τυπολογία πηγών, 2η κανονικοποίηση | **B → Π7-U.3**: μετανάστευση σε acquisition-receipts· το %canonical πεθαίνει υπέρ canonical-representation· ranks → authority registry δεδομένα |
-| `document-fetch.lisp` (fek-blob-url, enumerate-new-fek, fetch-fek-blob) | acquisition + locations με ΦΕΚ σημασιολογία | **B → Π7-U.2**: ξαναγράφεται ως gr-gazette acquirer· URL patterns → connector registry δεδομένα |
-| `government-source.lisp` (feed/diavgeia/fek) | 2η τυπολογία πηγών | **B → Π7-U.3**: πηγές → registry εγγραφές |
-| `corpus-provenance.lisp` (PROV-O) | 2ο provenance λεξιλόγιο | **A**: ΕΞΑΓΩΓΙΚΗ προβολή της αλυσίδας receipts — ποτέ πηγή αλήθειας· mapping table Π7-U.3 |
-| **β)** body-kind-registry `:ya`, `:eu-reg`, `:eu-dir` | διπλή οδός ταυτότητας [Κ-C1] | **B → Π7-U.2 versioned registry φάση**: αφαιρούνται από τη Rule-A οδό — ΥΑ/ΚΥΑ ⇒ ΜΟΝΟ protocol-register projector (§1.4)· EU ⇒ ΜΟΝΟ {celex}. Μέχρι τη φάση δεν υλοποιείται connector, άρα η διπλή οδός δεν ασκείται |
+| `source-profile.lisp` (acquired-record, channels/ranks, ιδιωτικό %canonical) | acquisition receipt, τυπολογία, 2η κανονικοποίηση | **B → Π7-U.3**: μετανάστευση σε receipts· %canonical πεθαίνει· ranks → authority registry δεδομένα |
+| `document-fetch.lisp` (fek-blob-url κ.λπ.) | acquisition/locations με ΦΕΚ σημασιολογία | **B → Π7-U.2**: ξαναγράφεται ως gr-gazette acquirer· patterns → δεδομένα |
+| `government-source.lisp` | 2η τυπολογία πηγών | **B → Π7-U.3**: πηγές → registry εγγραφές |
+| `corpus-provenance.lisp` (PROV-O) | 2ο provenance λεξιλόγιο | **A**: εξαγωγική προβολή — ποτέ πηγή αλήθειας· mapping Π7-U.3 |
+| **β)** body-kind `:ya`/`:eu-reg`/`:eu-dir` | διπλή οδός [Κ-C1] | **B → Π7-U.2 registry φάση**: ΥΑ/ΚΥΑ ⇒ ΜΟΝΟ protocol-register οδός· EU ⇒ ΜΟΝΟ {celex} |
 
 ### 0.3 Journal topology — ΡΗΤΗ [Τ-C3]
 
-Το version-graph journal είναι **per-body**. Records που γεννιούνται ΠΡΙΝ
-υπάρξει ταυτοποιημένο body (acquire→parse→identify) δεν χωρούν εκεί.
-ΔΥΟ chain-hashed journals, καθένα με δικό του chain domain, ΙΔΙΑ journal.lisp
-πειθαρχία (§0.5):
+ΔΥΟ chain-hashed journals, ίδια journal.lisp πειθαρχία (§0.5), δικά τους
+chain domains:
 
 | Journal | Πεδίο | Kinds |
 |---|---|---|
-| **version-graph journal** (per-body, υπάρχον) | νομική κατάσταση σώματος | text-mutating (amendment/repeal/correction/normative-consolidation), regime (:suspend/:revive/:extend/:expire/:retroact), conditions, instrument (:ratification/:acceptance), relations-με-regime*, `:batch` |
-| **corpus journal** (ΕΝΑ, νέο) | κτήση & αταξινόμητη πραγματικότητα | acquisition-receipt, location-observation, media-verification (§4.2), uncertainty + uncertainty-resolution, issuance-fact, work-record, proposal-rejected, relations-χωρίς-regime, mode-decision, `:batch` |
+| **version-graph journal** (per-body, υπάρχον) | νομική κατάσταση σώματος | text-mutating (amendment/repeal/correction/normative-consolidation), regime, conditions, instrument (:ratification/:acceptance), relations-με-regime*, `:batch` |
+| **corpus journal** (ΕΝΑ, νέο) | κτήση & πραγματικότητα πηγών | acquisition-receipt, location-observation, media-verification, uncertainty + uncertainty-resolution, issuance-fact, work-record, legal-effect assertion (§3.2), proposal-rejected, relations-χωρίς-regime, mode-decision, `:batch` |
 
-- Το `:batch` (§6.1) ορίζεται ΑΝΑ journal· **cross-journal batch = schema
-  reject** — κάθε συν-γέννηση που διασχίζει journals μπαίνει στον πίνακα
-  §0.4 με ονομαστικό recovery protocol (W-J-TOPOLOGY).
-- *Relations με regime υπο-γεγονός (annuls, suspends-effect,
-  declares-unconstitutional erga-omnes) ζουν στο version-graph journal του
+- `:batch` ΑΝΑ journal· cross-journal batch = schema reject (W-J-TOPOLOGY).
+- *Relations με regime υπο-γεγονός: στο version-graph journal του
   σώματος-στόχου, σε batch με το regime τους.
+- **Κάθε ισχυρισμός που εξαρτάται και από τα δύο journals (snapshots §1.2)
+  δένει ΚΑΙ τα δύο μέσω knowledge-cut/1 [Γ-C1] — μονομερές cut δεν υπάρχει.**
 
 ### 0.4 Πίνακας συν-γεννήσεων — ΕΞΑΝΤΛΗΤΙΚΟΣ [Τ-C4]
 
@@ -75,45 +74,34 @@ typed uncertainty πρώτης τάξης, ποτέ μαντεψιά, κανέν
 |---|---|
 | relation + regime event | batch, version-graph journal |
 | normative consolidation event + codifies relation | batch, version-graph journal |
-| uncertainty + «καραντίνα» artifact | ΕΝΑ corpus-journal record: καραντίνα ≡ ύπαρξη ανοιχτής uncertainty — το store ΔΕΝ κρατά δική του σημαία· δεύτερη κατάσταση δεν υπάρχει δομικά |
-| work-record + issuance facts | batch, corpus journal (Ν+1 records = ΕΝΑ append) |
-| expression + manifestation | ΔΕΝ είναι γεγονότα — παράγωγες content-addressed ταυτότητες: υπολογίζονται, δεν «συμβαίνουν»· κανένα recovery δεν απαιτείται |
+| uncertainty + «καραντίνα» artifact | ΕΝΑ corpus record: καραντίνα ≡ ανοιχτή uncertainty — καμία δεύτερη σημαία |
+| work-record + issuance facts (+ αρχική legal-effect assertion) | batch, corpus journal |
+| expression + manifestation | παράγωγες content-addressed ταυτότητες — όχι γεγονότα· κανένα recovery |
 | proposal-rejected + legal-effect-unresolved | batch, corpus journal |
-| blob + acquisition receipt | recovery protocol §4.3 — η ΜΟΝΗ αναπόφευκτη δι-store σχέση, με ΟΡΑΤΗ μερικότητα και τυπωμένη ετυμηγορία |
+| blob + acquisition receipt | recovery protocol §4.3 — η ΜΟΝΗ δι-store σχέση, ορατή μερικότητα |
 
-### 0.5 ΥΠΟΧΡΕΩΤΙΚΑ κλεισίματα στην έδρα journal.lisp — BLOCKING πριν από κάθε Π7-U.2 κώδικα
+### 0.5 ΥΠΟΧΡΕΩΤΙΚΑ κλεισίματα έδρας journal.lisp — BLOCKING πριν από κάθε Π7-U.2 κώδικα
 
-1. **ΥΠΟΧΡΕΩΤΙΚΟ record framing — `lawmax/journal-frame/1` [Τ-C1, Β-7].**
-   Το newline-based κριτήριο ΔΕΝ γίνεται δεκτό ως απόδειξη πληρότητας
-   record (τα forms περιέχουν multiline strings· η απουσία newline δεν
-   αποδεικνύει τίποτα). Κάθε record γράφεται framed:
+1. **`lawmax/journal-frame/1` — ΥΠΟΧΡΕΩΤΙΚΟ record framing [Τ-C1, Β-7]:**
 
    ```
    frame := "#F1 " <byte_length: decimal> " " <sha256(payload): hex> "\n"
             <payload: ακριβώς byte_length bytes>
-            "\n#C1\n"                       # commit marker
+            "\n#C1\n"
    ```
 
-   Record ΠΛΗΡΕΣ ⟺ (μήκος ✓) ∧ (sha256 payload ✓) ∧ (commit marker ✓).
-   Οτιδήποτε άλλο = torn: typed ετυμηγορία προς τον καλούντα (ΟΧΙ μόνο ⚠
-   σε *error-output* [Τ-NIT]) + journaled heal (truncate στο τελευταίο
-   ΠΛΗΡΕΣ frame, με το heal καταγεγραμμένο ως record). Versioned schema:
-   μελλοντική αλλαγή μορφής = frame/2, ποτέ σιωπηλή (W-JOURNAL-FRAME,
-   W-JB-TORN). Μετάβαση υπαρχόντων journals: versioned migration φάση
-   Π7-U.2 με byte-parity proof του περιεχομένου.
-2. **Compare-and-append [Τ-C2]:** το precondition ελέγχεται ΣΤΟ append, ΥΠΟ
-   το journal lock: mismatch ⇒ typed `stale-precondition` conflict, ΤΙΠΟΤΑ
-   δεν γράφεται. Κλείνει και το προϋπάρχον `%journal!` race (chain
-   υπολογισμένο προ-lock — θα χρησιμοποιηθεί το `last` του chained-append).
-   Μόνο έτσι το replay δικαιούται να θεωρεί stored mismatch = corruption
-   (W-JB-RACE).
-3. **Fsync honesty [Τ-S5]:** το `ignore-errors` γύρω από το fsync ΠΕΘΑΙΝΕΙ —
-   αποτυχία fsync ⇒ `wrote nil` ⇒ ΟΧΙ :durable ⇒ κανένα id (το «id ⟺
-   durable» του [0086] στην πράξη) (W-FSYNC-LIE).
-4. **Single-writer [Τ-S8]:** ΕΝΑΣ δηλωμένος συγγραφέας ανά journal
-   (cross-process lease/O_EXCL)· δεύτερη διεργασία ⇒ ρητή typed άρνηση,
-   όχι fork αλυσίδας. `proposal-rejected` δεσμεύει **digest** πρότασης,
-   ποτέ σώμα (W-FLOOD).
+   Πλήρες ⟺ μήκος ✓ ∧ sha256 ✓ ∧ commit marker ✓. Newline-only truncation =
+   ΑΠΑΓΟΡΕΥΜΕΝΗ διαδρομή (multiline strings στα forms). Torn ⇒ typed
+   ετυμηγορία προς τον καλούντα + journaled heal (truncate στο τελευταίο
+   πλήρες frame). Αλλαγή μορφής = frame/2. Migration υπαρχόντων journals με
+   byte-parity proof (W-JOURNAL-FRAME, W-JB-TORN).
+2. **Compare-and-append [Τ-C2]:** precondition ελέγχεται ΣΤΟ append ΥΠΟ το
+   lock: mismatch ⇒ typed `stale-precondition`, ΤΙΠΟΤΑ δεν γράφεται.
+   Κλείνει και το προϋπάρχον `%journal!` race (W-JB-RACE).
+3. **Fsync honesty [Τ-S5]:** αποτυχία fsync ⇒ ΟΧΙ :durable ⇒ κανένα id
+   (W-FSYNC-LIE).
+4. **Single-writer [Τ-S8]:** ΕΝΑΣ συγγραφέας ανά journal (cross-process
+   lease)· proposal-rejected δεσμεύει digest, ποτέ σώμα (W-FLOOD).
 
 ---
 
@@ -123,114 +111,128 @@ typed uncertainty πρώτης τάξης, ποτέ μαντεψιά, κανέν
 WORK → EXPRESSION (sum type §1.2) → MANIFESTATION (§1.3) → ITEM (bytes §4)
 ```
 
-Καμία ταυτότητα δεν αποδίδεται — κάθε ταυτότητα υπολογίζεται από κλειστό
-σύνολο θεσμικών γεγονότων. URL, μορφότυπος-όπως-παρατηρήθηκε, χρόνος λήψης,
-connector, κατάσταση επαλήθευσης: ΠΟΤΕ σε identity hash [Β-4].
+Καμία ταυτότητα δεν αποδίδεται — όλες υπολογίζονται από κλειστά θεσμικά
+γεγονότα. URL, observed μορφότυπος, χρόνος λήψης, connector, κατάσταση
+επαλήθευσης, διοικητική υπαγωγή: ΠΟΤΕ σε identity hash.
 
 ### 1.1 Work identity — ΜΙΑ οδός ανά κλάση [Δ-3, Κ-C1, Κ-S7]
 
 **Κανόνας Α (κλάσεις με body-kind):** `work identity ≡ body identity`
-αυτούσιο (π.χ. `gr/nomos/2019/4619`) — κανένα νέο hash, κανένα prefix.
-Εκδότες/συνυπογράφοντες: ΕΚΤΟΣ ταυτότητας, ως issuance facts (κατωτέρω).
+αυτούσιο (π.χ. `gr/nomos/2019/4619`).
 
 **Κανόνας Β (λοιπές):**
 
 ```
 work_id = "lsw1:" + canonical-hash({
-  "schema":   "lawmax/work/1",
-  "register": <register-id της εγγραφής source-class registry — ΤΑΥΤΟΤΙΚΟ:
-               προσδιορίζει το ΘΕΣΜΙΚΟ ΜΗΤΡΩΟ ΑΡΙΘΜΗΣΗΣ (όχι ταξινόμηση)
-               [Κ-S7]· δύο κλάσεις με ίδια key πεδία δεν συγκρούονται>,
-  ...projector fields της εγγραφής})
+  "schema": "lawmax/work/1",
+  "register": <register-id εγγραφής source-class registry — ΤΑΥΤΟΤΙΚΟ:
+               το ΜΗΤΡΩΟ ΑΡΙΘΜΗΣΗΣ, όχι ταξινόμηση [Κ-S7]>,
+  ...identity-projector fields της εγγραφής})
 ```
 
-**Invariant ΜΙΑΣ οδού [Κ-C1]:** το source-class registry φορτώνει ΜΟΝΟ αν
-κάθε κλάση δηλώνει ΑΚΡΙΒΩΣ μία identity-route (body-kind XOR projector).
-Body-id string ως Rule-B input ⇒ schema reject.
+**Invariant ΜΙΑΣ οδού [Κ-C1]:** registry gated load — κάθε κλάση ΑΚΡΙΒΩΣ
+μία identity-route (body-kind XOR projector)· body-id string ως Rule-B
+input ⇒ reject.
 
-**Issuance facts [Δ-3, Β-2] — `lawmax/issuance/1`, corpus journal, σε batch
-με το work-record (§0.4):**
+**Issuance facts [Δ-3, Β-2] — `lawmax/issuance/1`, corpus journal, batch με
+το work-record:**
 
 ```
 {"schema": "lawmax/issuance/1",
  "work": {"id_type": "body" | "lsw1", "id": ...},
  "role": <registry: issuer | co-signer | countersigner | promulgator>,
- "authority_ids": <ΚΑΝΟΝΙΚΑ ΤΑΞΙΝΟΜΗΜΕΝΟ σύνολο ανά role [Β-2] — οι
-                   συνυπογράφοντες ΚΥΑ εδώ, ΠΟΤΕ στην ταυτότητα>,
+ "authority_ids": <ΚΑΝΟΝΙΚΑ ΤΑΞΙΝΟΜΗΜΕΝΟ σύνολο ανά role>,
  "evidence": <provision-pin ή gazette span>, "recorded_at": <legal-instant>}
 ```
 
-Διόρθωση απόδοσης/συνυπογραφόντων = νέο issuance fact με evidence —
-ταυτότητα ΑΜΕΤΑΒΛΗΤΗ (W-Δ3, W-KYA-COISSUERS).
+Διόρθωση απόδοσης/υπογραφόντων = νέο fact — ταυτότητα ΑΜΕΤΑΒΛΗΤΗ
+(W-Δ3, W-KYA-COISSUERS).
 
-### 1.2 `lawmax/expression/1` — sum type [Δ-1], δεμένο στα ΠΡΑΓΜΑΤΙΚΑ types της έδρας [Β-1]
+### 1.2 `lawmax/expression/1` — sum type [Δ-1] με knowledge-cut [Γ-C1/C2]
 
 ```
 expression_id = "lse1:" + canonical-hash({"schema":"lawmax/expression/1",
                                           "kind": ..., ...kind-specific})
-kind ∈ ΚΛΕΙΣΤΟ ΣΤΟ SCHEMA (sum type — η οντολογία επιπέδων είναι δομή του
-contract, όχι επεκτάσιμα δεδομένα):
+kind ∈ ΚΛΕΙΣΤΟ ΣΤΟ SCHEMA (γνήσιο οντολογικό sum):
 ```
 
-**provision-expression** — η υπάρχουσα ταυτότητα έκδοσης διάταξης, αυτούσια:
+**provision-expression:**
 ```
-{"provision_id": <make-provision-id>, "tv_version_hash": <hex>,
- "language": <§1.5 — ρητό, default "el">}
+{"provision_id", "tv_version_hash", "language": <language registry §1.5>}
 ```
 
-**work-snapshot-expression** — ενοποιημένο work σε ΠΛΗΡΩΣ προσδιορισμένη
-διτεμπορική θέση [Β-1]:
+**work-snapshot-expression** — ενοποιημένο work σε ΠΛΗΡΩΣ καρφωμένη τομή
+ΓΝΩΣΗΣ (όχι μόνο γράφου) [Γ-C1]:
 ```
 {"work": {"id_type": "body"|"lsw1", "id": ...},
- "language": <§1.5>,
- "valid_at": <ΠΛΗΡΕΣ legal-date "YYYY-MM-DD" — typed-partial ΑΠΑΓΟΡΕΥΕΤΑΙ
-              εδώ: μερική ημερομηνία δεν επιλέγει μοναδική νομική κατάσταση
-              (W-SNAPSHOT-TYPES)>,
- "graph_cut": {"seq": N,
-               "chain_root": <chain head hash ΣΤΟ seq>,
-               "recorded_through": <legal-instant "YYYY-MM-DDTHH:MM:SSZ" —
-                 το known-at όριο ΤΗΣ ΕΔΡΑΣ, όχι το seq (το seq ΔΕΝ είναι
-                 known_at [Β-1])>},
+ "language": <registry>,
+ "valid_at": <ΠΛΗΡΕΣ legal-date "YYYY-MM-DD" — typed-partial ΑΠΑΓΟΡΕΥΕΤΑΙ>,
+ "knowledge_cut": <lawmax/knowledge-cut/1 — κατωτέρω>,
  "provision_set_root": <RFC-6962 root>,
- "uncertainty_set_root": <RFC-6962 root | "sha256:EMPTY-SET" — ΑΚΡΙΒΩΣ ποιες
-   διατάξεις αποκλείστηκαν και γιατί, ΟΧΙ count [Β-1] (W-UNCERTAINTY-SET)>}
+ "graph_uncertainty_set_root": <RFC-6962 root | "sha256:EMPTY-SET">,
+ "corpus_uncertainty_set_root": <RFC-6962 root | "sha256:EMPTY-SET">}
 ```
 
-**Κανονικός ορισμός συνόλων + υποχρεώσεις verifier [Β-1]:**
+**`lawmax/knowledge-cut/1` [Γ-C1]** — δένει ΚΑΙ τις δύο αλυσίδες:
 ```
-graph    := load-graph(body, :up-to-seq seq)
-ΕΛΕΓΧΟΙ  := graph-chain-head(graph) == chain_root          # W-SNAPSHOT-FORK
-            ∧ graph-latest-recorded(graph) <= recorded_through
-            ∧ κανένα record του prefix με recorded > recorded_through
-snapshot := snapshot-at(graph, :valid-at valid_at,
-                               :known-at recorded_through)  # τα ΠΡΑΓΜΑΤΙΚΑ
-                                                            # types της έδρας
-provision_set_root  := RFC-6962 root επί ΤΑΞΙΝΟΜΗΜΕΝΩΝ leaves
-   leaf := canonical-JSON {"provision_id": ..., "tv_version_hash": ...}
-uncertainty_set_root := RFC-6962 root επί ΤΑΞΙΝΟΜΗΜΕΝΩΝ leaves
-   leaf := canonical-JSON {"provision_id": ..., "kind": <uncertainty kind>,
-                           "uncertainty_id": ...}
+{"schema": "lawmax/knowledge-cut/1",
+ "version_cut": {"body_id": ...,
+                 "seq": N, "chain_root": <chain head hash ΣΤΟ seq>,
+                 "last_record_id": <id του record ΣΤΟ seq>,
+                 "last_recorded_at": <legal-instant ΤΟΥ record ΣΤΟ seq>},
+ "corpus_cut":  {"seq": N, "chain_root": ...,
+                 "last_record_id": ..., "last_recorded_at": ...}}
 ```
-Ο verifier ΑΝΑΫΠΟΛΟΓΙΖΕΙ και τα δύο roots από το prefix replay — δηλωμένα
-roots δεν γίνονται πιστευτά (ίδια πειθαρχία με #4B). Το graph_cut.chain_root
-κάνει το cut ΑΠΟΔΕΙΞΙΜΟ: ίδιο seq σε forked ιστορία ⇒ chain mismatch ⇒ FAIL.
 
-**single-document-expression** — works με ενιαίο αδιαίρετο κείμενο
-(judgment, gazette-issue, authentic treaty text):
+**Transaction-time σημασιολογία [Γ-C2]:** η συντεταγμένη κάθε cut είναι η
+τριάδα `(last_recorded_at, seq, chain_root)` — το seq επιλύει την ισοχρονία
+(δύο records ίδιου δευτερολέπτου), το chain_root αποκλείει fork, το
+timestamp κρατά τη χρονική σημασία. **ΔΕΝ υπάρχει ελεύθερο πεδίο
+`recorded_through`:** το transaction όριο ΕΙΝΑΙ το `last_recorded_at` του
+record στο seq — παράγωγο, όχι δηλωτέο· τιμή ≠ της πραγματικής ⇒ verifier
+FAIL· «διογκωμένο» όριο ανύπαρκτο δομικά (W-CUT-TIME-INFLATION,
+W-CUT-SAME-SECOND).
+
+**Κανονικός ορισμός συνόλων + υποχρεώσεις verifier:**
 ```
-{"work": {"id_type": ..., "id": ...}, "language": <§1.5>,
+vgraph  := load-graph(body_id, :up-to-seq version_cut.seq)
+ΕΛΕΓΧΟΙ := chain-head(vgraph) == version_cut.chain_root          # W-SNAPSHOT-FORK
+           ∧ record-id@seq == last_record_id
+           ∧ recorded-at@seq == last_recorded_at
+           (ομοίως για corpus journal prefix @ corpus_cut)
+snapshot := snapshot-at(vgraph, :valid-at valid_at,
+                        :known-at version_cut.last_recorded_at)
+provision_set_root := RFC-6962 root, leaves ΤΑΞΙΝΟΜΗΜΕΝΑ κατά canonical bytes
+  leaf := canonical-JSON {"leaf_type": "provision",
+                          "provision_id": ..., "tv_version_hash": ...}
+graph_uncertainty_set_root := RFC-6962 root — ΟΙ graph-native αβεβαιότητες
+  (uncertain provisions του snapshot κατά την έδρα temporal semantics)
+  leaf := canonical-JSON {"leaf_type": "graph-uncertainty",
+                          "provision_id": ..., "reason": <typed>}
+corpus_uncertainty_set_root := RFC-6962 root — ΟΙ ΑΝΟΙΧΤΕΣ uncertainties
+  του corpus journal ΣΤΟ corpus_cut με subject επί του work ή provisions του
+  leaf := canonical-JSON {"leaf_type": "corpus-uncertainty",
+                          "uncertainty_id": ..., "kind": ..., "subject": ...}
+```
+Ο verifier ΑΝΑΫΠΟΛΟΓΙΖΕΙ και τα τρία roots από τα δύο prefix replays —
+δηλωμένα roots δεν γίνονται πιστευτά. Επίλυση/προσθήκη uncertainty στο
+corpus journal ΧΩΡΙΣ αλλαγή γράφου ⇒ νέο corpus_cut ⇒ διακριτή expression
+— η «ίδια τομή γράφου, άλλη γνώση» σύγχυση αδύνατη
+(W-CROSS-JOURNAL-UNCERTAINTY).
+
+**single-document-expression:**
+```
+{"work": tagged, "language": <registry>,
  "content_sha256": <sha256(UTF-8(κείμενο κανονικοποιημένο κατά §2 της
-   canonical-serialization-spec — Η ΙΔΙΑ normalization των text-versions))
-   [Κ-S6]>}
+   canonical-serialization-spec — Η ΙΔΙΑ normalization των text-versions))>}
 ```
 
-- **Rule-B works χωρίς body-kind** (π.χ. ΠΝΠ πριν την κύρωση): ΔΕΝ έχουν
-  provision-ids (η provision ταυτότητα απαιτεί legal-body-id — γεγονός της
-  έδρας) ⇒ νόμιμη expression ΜΟΝΟ single-document [Κ-S8]. Provision-δόμησή
-  τους = δηλωμένο όριο v1 (§11).
-- **Μονο-διατακτικά works [Κ-S5]:** provision-expression (μέρος) και
-  work-snapshot (όλον) = ΔΙΑΦΟΡΕΤΙΚΑ FRBR αντικείμενα· η ισοδυναμία κειμένου
-  ΠΑΡΑΓΩΓΙΜΗ από το μονοσύνολο root — ο verifier την ελέγχει (W-K5).
+- Rule-B works χωρίς body-kind: provision-ids αδύνατα (απαιτούν
+  legal-body-id) ⇒ ΜΟΝΟ single-document [Κ-S8]· provision-δόμησή τους =
+  δηλωμένο όριο v1 (§11).
+- Μονο-διατακτικά works: provision-expression (μέρος) ≠ work-snapshot
+  (όλον)· ισοδυναμία παραγώγιμη από το μονοσύνολο root — ο verifier την
+  ελέγχει (W-K5).
 
 ### 1.3 `manifestation_id` — ΜΟΝΟ κανονικά ταυτοτικά πεδία [Δ-2, Β-4]
 
@@ -238,70 +240,60 @@ roots δεν γίνονται πιστευτά (ίδια πειθαρχία με
 manifestation_id = "lsm1:" + canonical-hash({
   "schema": "lawmax/manifestation/1",
   "expression_id": <ΥΠΟΧΡΕΩΤΙΚΟ — reject αν λείπει (W-Δ2)>,
-  "media_type": <ΚΑΝΟΝΙΚΗ τιμή από media-type registry (§1.5) — ΟΧΙ
-                 asserted/verified status, ΟΧΙ detection [Β-4]>,
-  "official_variant": <registry: as-published | corrigendum-applied |
-                       consolidated-official>,
+  "media_type": <ΤΙΜΗ από media-type registry §1.5>,
+  "official_variant": <official-variant registry: as-published |
+                       corrigendum-applied | consolidated-official>,
   "publisher": {"kind": "authority" | "work-self",
                 "authority_id": <όταν kind=authority>},
-  "edition_key": <ΚΑΝΟΝΙΚΟ string από edition registry ("official-portal",
-                  "print", "consolidated-database") — ΚΛΕΙΣΤΟ>})
+  "edition_key": <ΤΙΜΗ από edition-key registry §1.5>})
 ```
 
-**ΕΚΤΟΣ ταυτότητας [Β-4] — journaled evidence στο corpus journal:**
-- URLs / url_hint → location-observations (§5.2) (W-MANIFEST-URL)
-- observed content-types → acquisition receipts (§5.1)
-- detection method/detector/manifests + asserted→verified αναβάθμιση →
-  **`lawmax/media-verification/1`** records: {manifestation_id, method:
-  registry(magic-bytes|declared-only|validated-parse), detector_manifest_
-  sha256, verdict, artifact_digest, recorded_at} — η αναβάθμιση κατάστασης
-  είναι ΓΕΓΟΝΟΣ, όχι νέα ταυτότητα (W-MEDIA-STATUS).
+ΕΚΤΟΣ ταυτότητας — journaled evidence (corpus journal): URLs →
+location-observations· observed content-types → receipts· detection/
+asserted→verified → `lawmax/media-verification/1` {manifestation_id,
+method: media-detection registry(magic-bytes|declared-only|validated-parse),
+detector_manifest_sha256, verdict, artifact_digest, recorded_at}
+(W-MANIFEST-URL, W-MEDIA-STATUS).
 
 ### 1.4 Identity projectors — δεσμευτικά v1 (πλήρης μορφή ΣΤΟ registry)
 
 - `judgment`: `{court: authority_id, registry_number: int, year: int}` +
-  `formation` ΜΟΝΟ όταν η εγγραφή δικαστηρίου στο authority registry δηλώνει
-  `numbering: per-formation` (keyword από το κλειστό σύνολο formations της
-  εγγραφής) [Ν-CRIT5]· judgment/court-order/court-minutes = ταυτοτικό
-  series-field (διαφορετικά μητρώα αρίθμησης).
-- `emergency-legislative-act` (ΠΝΠ) [Ν-CRIT3, Β-5]: **typed act locator**
-  `{"gazette_ref": {"id_type": "lsw1", "id": <work_id του gazette-issue>},
-  "act_ordinal": <int — η τάξη της πράξης ΜΕΣΑ στο τεύχος, από την επίσημη
-  διάταξη ύλης του>}` — δύο ΠΝΠ ίδιας ημέρας στο ίδιο ΦΕΚ = διακριτά ordinals
-  (W-PNP-SAME-ISSUE). Το promulgation_date = classification field
-  (evidence-backed, εκτός hash). Byte spans = evidence της manifestation,
-  ΠΟΤΕ ταυτότητα work. Κύρωση: :ratification instrument event· μη κύρωση
-  εντός προθεσμίας: :expire regime event με evidence.
-- `ministerial-decision` / `joint-ministerial-decision` / `administrative-act`
-  / `interpretive-circular` [Κ-C1, Β-2/3]: **protocol-register οδός** —
-  ```
-  {"register_id": <εγγραφή του protocol-register registry — το ΘΕΣΜΙΚΟ
-    μητρώο που εκδίδει τον επίσημο αριθμό· η εγγραφή δένει το μητρώο με
-    την υπηρεσία/αρχή του ΜΕ EVIDENCE, αλλά η ΑΡΧΗ ΔΕΝ είναι στο hash:
-    ο connector δεν διαλέγει ποτέ «issuing authority» [Β-2]>,
-   "protocol_number": string, "protocol_date": date}
-  ```
-  Ο εκδότης + ΟΛΟΙ οι συνυπογράφοντες ΚΥΑ = sorted issuance facts (§1.1)
-  (W-KYA-COISSUERS). «Διόρθωση απόδοσης» = νέο issuance fact· «άλλο μητρώο»
-  = άλλη πράξη (δηλωμένη σημασιολογία).
-- `eu-*`: `{celex}` για ΟΛΕΣ τις eu κλάσεις [Δ-4] — η κλάση είναι
-  classification field· αναταξινόμηση δεν αγγίζει ταυτότητα (W-Δ4).
-- `international-treaty`: `{parties: sorted-set, conclusion_date: date,
-  authentic_title_sha256}` [Ν-S9] — depositary registration = evidence.
+  formation ΜΟΝΟ όταν η εγγραφή δικαστηρίου δηλώνει numbering:
+  per-formation (keyword από το κλειστό σύνολο formations της) [Ν-CRIT5]·
+  judgment/court-order/court-minutes = ταυτοτικό series-field.
+- `emergency-legislative-act` (ΠΝΠ) [Β-5]: `{"gazette_ref": {"id_type":
+  "lsw1", "id": <gazette-issue work_id>}, "act_ordinal": <int — θέση στην
+  επίσημη διάταξη ύλης του τεύχους>}` (W-PNP-SAME-ISSUE)· promulgation_date
+  = classification field· spans = manifestation evidence· κύρωση:
+  :ratification· μη κύρωση: :expire με evidence.
+- `ministerial-decision`/`joint-ministerial-decision`/`administrative-act`/
+  `interpretive-circular` [Β-2, Γ-C4]: **protocol-register οδός** —
+  `{"register_id": <§2.1β — παράγωγο, ΟΧΙ αποδιδόμενο>, "protocol_number":
+  string, "protocol_date": date}` — ΚΑΝΕΝΑΣ authority στο hash· ο connector
+  δεν διαλέγει «εκδότη» (W-KYA-COISSUERS)· υπογράφοντες = issuance facts.
+- `eu-*`: `{celex}` για ΟΛΕΣ τις eu κλάσεις — κλάση = classification field
+  (W-Δ4).
+- `international-treaty`: `{parties: sorted-set, conclusion_date,
+  authentic_title_sha256}` — depositary = evidence [Ν-S9].
 - `gazette-issue`: `{gazette_authority_id, series: string, issue: int,
   year: int}`.
-- `code` (ΑΚ, ΚΠολΔ): Κανόνας Α μέσω `:kodikas`· **number ΥΠΟΧΡΕΩΤΙΚΟ ΣΤΗΝ
-  έδρα make-body** (σήμερα δέχεται NIL για κάθε kind πλην :syntagma — ο
-  φρουρός κατεβαίνει στην έδρα, Π7-U.2 προ-παραδοτέο) [Κ-M11]· το number =
-  της κυρωτικής πράξης, δηλωμένο στην εγγραφή.
+- `code`: Κανόνας Α μέσω `:kodikas`· number ΥΠΟΧΡΕΩΤΙΚΟ ΣΤΗΝ έδρα make-body
+  (Π7-U.2 προ-παραδοτέο) [Κ-M11]· number = της κυρωτικής πράξης, στην
+  εγγραφή.
 
-### 1.5 Κλειστοί πίνακες τιμών (στο schema)
+### 1.5 Επεκτάσιμες τιμές = versioned registries — ΟΧΙ schema enums [Γ-S3]
 
-- `language`: ISO 639-1 — v1: `"el", "en", "fr", "de"`· «ell»/«gre» ⇒
-  reject [Κ-M9] (W-K9).
-- `media-type registry`: `"application/pdf", "text/html", "application/xml",
-  "text/plain"` — κανονικές τιμές· ο,τιδήποτε άλλο ⇒ uncertainty.
-- `edition registry`: `"official-portal", "print", "consolidated-database"`.
+`deployment/data/`: **language-registry** (ISO 639-1 εγγραφές — v1: el, en,
+fr, de· νέα γλώσσα ΕΕ = νέα εγγραφή, ΚΑΜΙΑ schema revision),
+**media-type-registry** (v1: application/pdf, text/html, application/xml,
+text/plain), **edition-key-registry** (v1: official-portal, print,
+consolidated-database), **official-variant-registry**,
+**media-detection-registry**. Όλα: sexp, *read-eval* nil, census. Τιμή
+εκτός τρέχοντος registry ⇒ reject/uncertainty· προσθήκη εγγραφής ΔΕΝ
+αλλάζει υπάρχοντα ids (η ΤΙΜΗ μπαίνει στο hash, όχι το registry)
+(W-REGISTRY-EXTENSION). ΚΛΕΙΣΤΑ στο schema μένουν ΜΟΝΟ τα οντολογικά sums:
+expression kinds, work_form (§3.1), origin kinds (§5.1), locator types
+(§2.2), publisher kinds, id_type tags.
 
 ---
 
@@ -309,117 +301,125 @@ manifestation_id = "lsm1:" + canonical-hash({
 
 ### 2.1 Source-class registry — `deployment/data/source-class-registry.sexp`
 
-Πρότυπο body-kind-registry: sexp, `*read-eval*` nil, census-καταγεγραμμένο.
-Ανά εγγραφή ΥΠΟΧΡΕΩΤΙΚΑ (gated load — εγγραφή χωρίς οποιοδήποτε ΔΕΝ φορτώνει):
+Ανά εγγραφή ΥΠΟΧΡΕΩΤΙΚΑ (gated load):
 
 ```
-class                  — όνομα
-register-id            — μητρώο αρίθμησης (ταυτοτικό στο Rule-B hash) [Κ-S7]
-work-category          — ΕΝΑΣ δείκτης στο tagged sum §3.1 [Δ-7]
-identity-route         — body-kind XOR projector [Κ-C1]
-projector / key-shape  — τα πεδία ταυτότητας + τύποι τους (string | integer |
-                         date | sorted-set-of-string | tagged-ref) [Ν-CRIT1]
-classification-fields  — μεταβλητά assertions — ΠΟΤΕ στο hash [Δ-4]
-required-evidence      — απόδειξη γέννησης εγγραφής
-mutating-capable       — 0/1
+class | register-id | work_form (§3.1 — ΕΝΑ) | default_legal_effect (§3.2)
+identity-route (body-kind XOR projector) [Κ-C1]
+identity-projector + key-shape (string | integer | date |
+  sorted-set-of-string | tagged-ref) [Ν-CRIT1]
+classification-fields (ΠΟΤΕ στο hash) | required-evidence | mutating-capable
 ```
 
-v1 περιεχόμενο: όλα τα body-kinds (nomos, kodikas, nd, an, psifisma,
-syntagma, pd, …) + emergency-legislative-act, ministerial-decision,
-joint-ministerial-decision, administrative-act, gazette-issue, judgment,
-court-order, court-minutes, eu-treaty, eu-regulation, eu-directive,
-eu-decision, eu-judgment, international-treaty, interpretive-circular,
-opinion-nsk, parliament-standing-orders, independent-authority-decision.
-Άγνωστη κλάση ⇒ `unclassified-source` uncertainty + καραντίνα (≡ ανοιχτή
-uncertainty §0.4). Συντακτικές Πράξεις: ΕΚΤΟΣ v1, τίμια unclassified,
-δηλωμένη μελλοντική εγγραφή [Κ-NIT12].
+v1 περιεχόμενο: όλα τα body-kinds + emergency-legislative-act,
+ministerial-decision, joint-ministerial-decision, administrative-act,
+gazette-issue, judgment, court-order, court-minutes, eu-treaty,
+eu-regulation, eu-directive, eu-decision, eu-judgment,
+international-treaty, interpretive-circular, opinion-nsk,
+parliament-standing-orders, independent-authority-decision. Άγνωστη κλάση
+⇒ unclassified-source + καραντίνα. Συντακτικές Πράξεις: εκτός v1, τίμια
+unclassified [Κ-NIT12].
 
-**Protocol-register registry** (νέο, ίδιο πρότυπο): ανά εγγραφή
-{register_id, owning_authority_id + evidence, series, existence interval} —
-τα θεσμικά μητρώα πρωτοκόλλου των ΥΑ/ΚΥΑ/διοικητικών πράξεων [Β-2/3].
+### 2.1β Protocol-register registry — ΠΑΡΑΓΩΓΗ ταυτότητα [Γ-C4]
 
-### 2.2 Authority registry — `deployment/data/authority-registry.sexp`
+`lawmax/protocol-register/1` — το register_id ΥΠΟΛΟΓΙΖΕΤΑΙ, δεν αποδίδεται:
 
 ```
-{"schema": "lawmax/authority/1",
- "authority_id": "auth1:" + canonical-hash({
-    "jurisdiction": <§2.3>,
-    "founding_locator":
-        {"locator_type": "provision-id",
-         "value": {"provision_id": ..., "tv_version_hash": <hex>}}
-          # ΜΙΑ ΜΟΝΟ μορφή pin [Β-3]: το ζεύγος (provision, έκδοση) —
-          # το graph cut είναι PROVENANCE της επίλυσης, ΟΧΙ ταυτότητα
-          # (W-AUTH-PIN-DUAL)· επανίδρυση από νέα έκδοση της ίδιας
-          # διάταξης (αναθεώρηση: το gr/syntagma είναι άχρονο body) ⇒
-          # διακριτό id [Κ-C3] (W-K3)
-      | {"locator_type": "span",
-         "value": {"artifact_digest": ..., "start": N, "end": N}}
-      | {"locator_type": "pre-corpus",
-         "value": {"instrument": string, "date": <typed-partial>,
-                   "gazette_ref": string}},   # ΑΠ 1834 κ.λπ. [Ν-S10]
-    "entity_key": <ΚΑΝΟΝΑΣ: ordinal ΠΑΝΤΑ όταν η ιδρυτική διάταξη
-                   αριθμεί/απαριθμεί· κανονική θεσμική ονομασία ΜΟΝΟ
-                   αλλιώς — μη-κανονική επιλογή ⇒ reject [Κ-S4] (W-K4)>}),
- "kind": <VERSIONED ASSERTION — ΕΚΤΟΣ hash [Δ-5] (W-Δ5β):
-          parliament | president | minister-council | ministry | minister |
-          court | prosecutor | independent-authority | central-bank |
-          municipality | region | eu-institution | international-org>,
- "names":    [{"name", "valid_from", "valid_to", "evidence": work-ref}...],
- "lineage":  [{"relation": renamed-from | merged-from | split-from |
-               abolished | re-established-as | competence-transferred-to,
-               "counterpart": authority_id, "effective": date,
-               "evidence": work-ref}...],
- "numbering": <courts: unified | per-formation + formations: κλειστό σύνολο
-               keywords>,
- "existence": {"from": <date|typed-partial>, "to": <date|null>,
-               "evidence": ...}}
+register_id = "preg1:" + canonical-hash({
+  "schema": "lawmax/protocol-register/1",
+  "jurisdiction": <registry §2.3>,
+  "founding_locator": <tagged union ΜΕ version pin — ΙΔΙΕΣ μορφές με §2.2:
+      {"locator_type": "provision-id",
+       "value": {"provision_id", "tv_version_hash"}}
+    | {"locator_type": "span", "value": {"artifact_digest","start","end"}}
+    | {"locator_type": "pre-corpus",
+       "value": {"instrument","date","gazette_ref"}}>,
+  "canonical_register_key": <ο θεσμικός κωδικός/κανονική ονομασία του
+      μητρώου ΚΑΤΑ ΤΗΝ ΙΔΡΥΣΗ — κανόνας όπως entity_key §2.2: κωδικός ΠΑΝΤΑ
+      όταν η ιδρυτική πράξη ορίζει, ονομασία ΜΟΝΟ αλλιώς>})
 ```
 
-- Μία πράξη που ιδρύει Ν αρχές ⇒ Ν διακριτά (locator, entity_key) ⇒ Ν ids
-  (W-Δ5).
-- **Genesis ακολουθία [Α-S7], journaled:** (i) Σύνταγμα (body `:syntagma`) ⇒
-  (ii) constitutional-basis αρχές (Βουλή, ΠτΔ, ΣτΕ, ΕλΣυν· ΑΠ pre-corpus) ⇒
-  (iii) αναδρομικά evidence-backed. Όχι σιωπηλό seeding.
-- Δέσμευση ΜΕΣΩ CENSUS (κανονικό αρχείο) — ΚΑΜΙΑ αλλαγή στο frozen
-  authority-statement [Α-S10].
+**ΕΚΤΟΣ identity — versioned διτεμπορικά assertions με evidence:**
+owning_authority (η υπαγωγή!), names, series labels, competence transfers,
+existence interval, lineage. Μεταφορά μητρώου σε άλλο υπουργείο ⇒
+register_id ΑΜΕΤΑΒΛΗΤΟ ⇒ ταυτότητες πράξεων ΑΜΕΤΑΒΛΗΤΕΣ· δύο connectors ⇒
+ΙΔΙΟ id (παράγωγο) (W-REGISTER-REASSIGNMENT).
 
-### 2.3 Jurisdiction registry [Ν-M12]
+### 2.2 Authority registry
 
-Registry εγγραφών (όχι enum/template): v1 `gr`, `eu`, `int`· ρητές εγγραφές
-ανά περιφέρεια/δήμο όταν χρειαστούν (ΟΤΑ εκδίδουν κανονιστικές). Νέα
-δικαιοδοσία = εγγραφή με evidence.
+```
+"authority_id": "auth1:" + canonical-hash({
+   "jurisdiction": ...,
+   "founding_locator": <tagged union — ΜΙΑ μορφή pin ανά τύπο [Β-3]:
+       {"locator_type": "provision-id",
+        "value": {"provision_id", "tv_version_hash"}}   # W-AUTH-PIN-DUAL:
+                                                        # cut pin = provenance,
+                                                        # ΔΕΝ υπάρχει εδώ
+     | {"locator_type": "span", "value": {...}}
+     | {"locator_type": "pre-corpus", "value": {...}}>,  # ΑΠ 1834 [Ν-S10]
+   "entity_key": <ordinal ΠΑΝΤΑ όταν η διάταξη αριθμεί· κανονική θεσμική
+                  ονομασία ΜΟΝΟ αλλιώς — μη-κανονική επιλογή ⇒ reject [Κ-S4]>})
+"kind": VERSIONED ASSERTION ΕΚΤΟΣ hash [Δ-5]: parliament | president |
+        minister-council | ministry | minister | court | prosecutor |
+        independent-authority | central-bank | municipality | region |
+        eu-institution | international-org
+"names"/"lineage" (renamed-from | merged-from | split-from | abolished |
+  re-established-as | competence-transferred-to)/"numbering" (unified |
+  per-formation + formations closed set)/"existence" — evidence-backed.
+```
+
+Επανίδρυση από νέα ΕΚΔΟΣΗ της ίδιας διάταξης ⇒ διακριτό id (το
+tv_version_hash στο pin) [Κ-C3] (W-K3). Genesis ακολουθία journaled:
+Σύνταγμα ⇒ constitutional-basis αρχές ⇒ αναδρομικά [Α-S7]. Δέσμευση ΜΕΣΩ
+CENSUS [Α-S10].
+
+### 2.3 Jurisdiction registry [Ν-M12]: εγγραφές gr, eu, int + ρητές ανά
+περιφέρεια/δήμο με evidence.
 
 ---
 
-## 3. Οντολογία — disjoint tagged sum [Δ-7]
+## 3. Οντολογία — ΔΥΟ ΑΝΕΞΑΡΤΗΤΟΙ ΑΞΟΝΕΣ [Γ-C3]
 
-### 3.1 `source-work` — ΚΛΕΙΣΤΟ tagged sum (δομή contract, ΟΧΙ registry)
+### 3.1 `work_form` — ΚΛΕΙΣΤΟ οντολογικό sum (ΤΙ ΕΙΝΑΙ η πράξη — ποιο όργανο/διαδικασία τη γέννησε)
 
 ```
-source-work
-├─ publication-work        (gazette-issue — εκδοτικό τεκμήριο, ΟΧΙ legal act)
-├─ normative-act           (νόμοι, ΠΔ, ΥΑ/ΚΥΑ, ΠΝΠ, κώδικες, κανονισμοί)
-├─ adjudicative-work       (judgments, βουλεύματα, πρακτικά)
-├─ administrative-act      (ατομικές/κανονιστικές διοικητικές πράξεις)
-├─ interpretive-instrument (εγκύκλιοι, γνωμοδοτήσεις ΝΣΚ)
-└─ treaty-work             (διεθνείς/ενωσιακές συνθήκες)
+work_form
+├─ publication                        (gazette-issue — εκδοτικό τεκμήριο)
+├─ legislative-instrument             (νόμοι, ΠΝΠ, κώδικες, κανονισμοί Βουλής)
+├─ executive-administrative-instrument (ΠΔ, ΥΑ/ΚΥΑ, διοικητικές πράξεις,
+│                                       αποφάσεις ανεξάρτητων αρχών)
+├─ adjudicative-instrument            (αποφάσεις, βουλεύματα, πρακτικά)
+├─ treaty                             (διεθνείς/ενωσιακές συνθήκες)
+└─ interpretive-instrument            (εγκύκλιοι, γνωμοδοτήσεις ΝΣΚ)
 ```
 
-- Κάθε source-class δηλώνει work-category — ΕΝΑ. Type guard δομικός: σχέση/
-  γεγονός με λάθος category άκρου = σφάλμα γέννησης record στην έδρα
-  (etypecase) — όχι έλεγχος καταναλωτή (W-Δ7).
-- **provision, expression, manifestation, artifact = ΕΠΙΠΕΔΑ (§1), ΟΧΙ
-  κατηγορίες** — δεν εμφανίζονται στο sum. Judgment/interpretation =
-  work-categories του ΙΔΙΟΥ sum, όχι «ισότιμοι τύποι δίπλα στο work».
-- ΦΕΚ (publication-work) ΠΕΡΙΕΧΕΙ normative-acts: σχέση `published-in`
-  (§6.3) — όχι υπαγωγή τύπων.
-- opinion-nsk: δεσμευτικότητα = :acceptance instrument event (νέα εγγραφή
-  στο instrument-kind-registry) με evidence την πράξη αποδοχής — ΟΧΙ πεδίο
-  status [Ν-S8].
+### 3.2 `legal_effect` — ΤΙ ΠΑΡΑΓΕΙ η πράξη (ανεξάρτητος άξονας, evidence-backed)
+
+```
+legal_effect: normative | individual | adjudicative | interpretive |
+              evidentiary | none | unresolved
+```
+
+- Κάθε source-class εγγραφή δηλώνει `work_form` (ΕΝΑ, αμετάβλητο — δομή)
+  και `default_legal_effect`. Το ΑΝΑ WORK effect = **versioned journaled
+  assertion** (corpus journal, evidence-backed, στο batch της γέννησης ή
+  μεταγενέστερο) — μπορεί να διαφέρει από το default: κανονιστική ΚΥΑ =
+  {form: executive-administrative-instrument, effect: normative}· ατομική
+  ΥΑ = {form: executive-administrative-instrument, effect: individual}
+  [Γ-C3]. Χωρίς evidence ⇒ effect: unresolved + legal-effect-unresolved
+  uncertainty — ποτέ μαντεψιά.
+- **Το όργανο ΔΕΝ συγχέεται με το αποτέλεσμα** — δομικά: το form είναι
+  schema sum, το effect είναι assertion. provision/expression/manifestation/
+  artifact = ΕΠΙΠΕΔΑ (§1), εκτός και των δύο αξόνων.
+- ΦΕΚ (publication) ΠΕΡΙΕΧΕΙ works: σχέση `published-in` (§6.3).
+- opinion-nsk: δεσμευτικότητα = :acceptance instrument event [Ν-S8].
+- Type guards σχέσεων (§6.3): δηλώνουν όρια σε form ΚΑΙ/Η effect — η
+  κανονιστική ΚΥΑ ακυρώνεται δικαστικά χωρίς να σπάσει guard
+  (W-KYA-ANNULMENT).
 
 ---
 
-## 4. Raw artifact — ΜΟΝΟ εγγενή πεδία [Δ-9, Α-S5]
+## 4. Raw artifact — ΜΟΝΟ εγγενή [Δ-9, Α-S5]
 
 ### 4.1 `lawmax/raw-artifact/1`
 
@@ -428,196 +428,151 @@ source-work
  "digest_algorithm": "sha256", "digest": <hex>, "byte_length": N}
 ```
 
-- ΚΑΝΕΝΑ media_type (μη εγγενές — W-Δ9α: πεδίο ⇒ schema reject)· ΚΑΝΕΝΑΣ
-  δείκτης receipts (φορά receipt→artifact, many-to-one — ίδια bytes από Ν
-  λήψεις = ΕΝΑ record, W-Δ9β).
-- Append-only, content-addressed store· read-back verification πριν από
-  κάθε δείκτη ([0086] Persistence Receipt πειθαρχία). Κάθε μετασχηματισμός
-  (OCR, decompress, re-encode) ⇒ ΝΕΟ artifact + δεσμός ΜΟΝΟ μέσω
-  extraction/normalization receipts. Το raw επιζεί ΓΙΑ ΠΑΝΤΑ — και επί
-  αποτυχίας parsing (καραντίνα ≡ ανοιχτή uncertainty §0.4).
+ΚΑΝΕΝΑ media_type (W-Δ9α)· ΚΑΝΕΝΑΣ δείκτης receipts (φορά receipt→artifact,
+many-to-one — W-Δ9β). Append-only content-addressed store, read-back πριν
+από κάθε δείκτη [0086]. Μετασχηματισμός ⇒ ΝΕΟ artifact μέσω extraction/
+normalization receipts. Το raw επιζεί ΓΙΑ ΠΑΝΤΑ — και επί αποτυχίας parsing.
 
 ### 4.2 Media evidence — ΕΚΤΟΣ ταυτότητας [Β-4]
 
-`lawmax/media-verification/1` records στο corpus journal (§1.3): method,
-detector manifest, verdict, αναβαθμίσεις asserted→verified — ΓΕΓΟΝΟΤΑ.
-Το manifestation φέρει ΜΟΝΟ την κανονική media-type τιμή. Απόκλιση
-observed↔verified = τυπωμένο γεγονός + πιθανή uncertainty, ποτέ νέα ταυτότητα.
+`lawmax/media-verification/1` records (§1.3) — αναβαθμίσεις = γεγονότα.
+Απόκλιση observed↔verified = τυπωμένο γεγονός + πιθανή uncertainty.
 
-### 4.3 Blob↔receipt recovery protocol [Δ-9]
+### 4.3 Blob↔receipt recovery [Δ-9]
 
-Σειρά ΠΑΝΤΑ: (1) blob write + fsync + read-back digest· (2) acquisition
-receipt ως framed journaled record (§0.5.1). Recovery:
-- Blob χωρίς receipt = ορφανό ⇒ ΚΑΡΑΝΤΙΝΑ (αόρατο)· επανυιοθέτηση ΜΟΝΟ με
-  νέο receipt — ποτέ σιωπηλή (W-Δ9γ).
-- Receipt χωρίς blob = ΣΚΛΗΡΟ ΣΦΑΛΜΑ κλάσης journal-corruption (W-Δ9δ).
-- Artifact «υπάρχει» ΜΟΝΟ ως ζεύγος (blob, ≥1 receipt)· η μερικότητα ΟΡΑΤΗ
-  με τυπωμένη ετυμηγορία — η ΜΟΝΗ αναπόφευκτη δι-store σχέση του σχεδίου.
+Σειρά: (1) blob + fsync + read-back· (2) receipt ως framed journaled record.
+Recovery: blob χωρίς receipt = ΚΑΡΑΝΤΙΝΑ, επανυιοθέτηση ΜΟΝΟ με νέο receipt
+(W-Δ9γ)· receipt χωρίς blob = ΣΚΛΗΡΟ ΣΦΑΛΜΑ κλάσης journal-corruption
+(W-Δ9δ)· artifact «υπάρχει» ΜΟΝΟ ως ζεύγος (blob, ≥1 receipt).
 
 ---
 
 ## 5. Acquisition, locations, γέφυρες
 
-### 5.1 `lawmax/acquisition-receipt/1` — hash-φέρον, χωρίς booleans [Α-CRIT2]
+### 5.1 `lawmax/acquisition-receipt/1` — origin ως ΚΛΕΙΣΤΟ sum [Α-CRIT2, Γ-S2]
 
 ```
 {"schema": "lawmax/acquisition-receipt/1",
- "receipt_id": "acq1:" + canonical-hash(αντικείμενο πλην receipt_id),
+ "receipt_id": "acq1:" + canonical-hash(πλην receipt_id),
  "artifact_digest": <hex>, "digest_algorithm": "sha256",
- "fetched_from": {"url": ..., "protocol": "https", "status": 200,
-                  "observed_content_type": ...,        # ΕΔΩ — όχι στο artifact
-                  "response_headers_subset": {"content-type", "last-modified",
-                                              "etag"}},
- "fetched_at": <ISO UTC — δηλωμένα αναξιόπιστο μόνο του>,
- "anchoring": {"tlog_leaf_index": N, "tsr_sha256": <digest — ΟΧΙ path
-               [Α-M12]>} | null,     # μόνο TSA/tlog αποδεικνύει ύπαρξη-πριν
- "acquirer": {"acquirer_id": ..., "manifest_sha256": ...},
- "verification": {"read_back": 1, "digest_recomputed": 1}}   # integers 0/1
+ "origin":                                      # ΚΛΕΙΣΤΟ οντολογικό sum [Γ-S2]
+     {"kind": "network-fetch", "url": ..., "protocol": "https",
+      "status": 200, "observed_content_type": ...,
+      "response_headers_subset": {"content-type","last-modified","etag"}}
+   | {"kind": "manual-deposit", "depositor": <authority_id | typed person-ref>,
+      "custody_receipt": <string — αρ. πρωτ./απόδειξη παραλαβής>,
+      "medium": <registry: paper-scan | optical-media | usb | court-registry>,
+      "deposited_at": <legal-instant>, "observed_content_type": ...}
+   | {"kind": "archive-import", "archive_id": <registry εγγραφή>,
+      "item_locator": <string>, "import_manifest_sha256": <hex>,
+      "observed_content_type": ...},
+ "fetched_at": <legal-instant — δηλωμένα αναξιόπιστο μόνο του>,
+ "anchoring": {"tlog_leaf_index": N, "tsr_sha256": <digest>} | null,
+ "acquirer": {"acquirer_id", "manifest_sha256"},
+ "verification": {"read_back": 1, "digest_recomputed": 1}}
 ```
 
-Manual-deposit (offline artifact) = νόμιμο acquirer είδος στο registry.
+Manual-deposit/archive-import receipts επικυρώνονται ΧΩΡΙΣ url/status —
+network πεδία σε μη-network origin ⇒ reject (W-MANUAL-DEPOSIT).
 
-### 5.2 Location observations — journaled, ΕΚΤΟΣ κάθε ταυτότητας [Α-M13, Β-4]
+### 5.2 Location observations — journaled, ΕΚΤΟΣ ταυτότητας [Α-M13, Β-4]
 
 `lawmax/location-observation/1` (corpus journal): {work-ref,
 manifestation_id, url, observed_at, acquisition_receipt_id, status:
-served-bytes | redirect | gone | changed-digest}. History = replay προβολή
-— ΟΧΙ hash-φέρον container. `changed-digest` σε επίσημο URL ⇒ υποχρεωτικά
-νέο manifestation Ή official-sources-conflict/source-integrity uncertainty
-— ποτέ σιωπηλή αντικατάσταση. URLs σε ΚΑΝΕΝΑ identity hash (W-MANIFEST-URL).
+served-bytes | redirect | gone | changed-digest}. `changed-digest` ⇒ νέο
+manifestation Ή official-sources-conflict/source-integrity uncertainty —
+ποτέ σιωπηλά. URLs σε ΚΑΝΕΝΑ id (W-MANIFEST-URL).
 
-### 5.3 Γέφυρα item→manifestation: `lawmax/extraction-receipt/2`
+### 5.3 `lawmax/extraction-receipt/2` = /1 + manifestation_id [Α-S8]
+(versioned· τα /1 των CLOSED #4B bundles έγκυρα — ο verifier δέχεται και
+τα δύο δηλωμένα).
 
-= /1 (#4B, αυτούσιο) + πεδίο `manifestation_id`. Versioned επέκταση: τα /1
-των CLOSED #4B bundles παραμένουν έγκυρα — ο Π7-U verifier δέχεται και τις
-δύο εκδόσεις δηλωμένα. Η αλυσίδα bytes → extraction → normalization →
-graph text κλείνει χωρίς URL [Α-S8].
-
-### 5.4 typed-partial dates [Α-S9]
-
-ΜΟΝΟ strings `"YYYY"` | `"YYYY-MM"` | `"YYYY-MM-DD"` (ISO reduced
-precision)· προστίθενται στην canonical spec με conformance vectors
-(Π7-U.2, ΠΡΙΝ από κάθε χρήση σε hash). Επιτρεπτά ΜΟΝΟ σε: official keys
-(όπου δηλωμένα), pre-corpus citations, uncertainty, existence intervals.
-**ΑΠΑΓΟΡΕΥΟΝΤΑΙ σε: valid_at/known_at/recorded_through** — εκεί ΜΟΝΟ τα
-πλήρη types της έδρας (legal-date / legal-instant) [Β-1] (W-SNAPSHOT-TYPES).
+### 5.4 typed-partial dates [Α-S9]: ΜΟΝΟ "YYYY" | "YYYY-MM" | "YYYY-MM-DD"·
+canonical spec vectors (Π7-U.2, πριν από κάθε χρήση σε hash). Επιτρεπτά:
+official keys (όπου δηλωμένα), pre-corpus citations, uncertainty, existence.
+**ΑΠΑΓΟΡΕΥΜΕΝΑ σε valid_at και σε ΚΑΘΕ πεδίο knowledge-cut** — εκεί ΜΟΝΟ
+legal-date/legal-instant της έδρας (W-SNAPSHOT-TYPES).
 
 ---
 
 ## 6. Journal semantics — batch, consolidation, relations
 
-### 6.1 `lawmax/journal-batch/1` [Δ-6, Τ-C2/M9/M10]
+### 6.1 `lawmax/journal-batch/1` [Δ-6]
 
 ```
-journal kind :batch — ΑΝΑ journal (§0.3)· cross-journal ⇒ schema reject
-{"schema": "lawmax/journal-batch/1",
- "batch_id": "jb1:" + canonical-hash(περιεχομένου),
- "precondition_root": <chain head — compare-and-append ΥΠΟ το lock (§0.5.2):
-                       mismatch ⇒ typed stale-precondition, ΤΙΠΟΤΑ δεν
-                       γράφεται (W-JB-RACE)>,
- "ordered_subevents": [<πλήρη semantic records, με τη σειρά>]}
+journal kind :batch — ΑΝΑ journal· cross-journal ⇒ reject
+{"schema": "lawmax/journal-batch/1", "batch_id": "jb1:...",
+ "precondition_root": <compare-and-append ΥΠΟ το lock (§0.5.2)>,
+ "ordered_subevents": [<πλήρη semantic records>]}
 ```
 
-- ΕΝΑ seq, ΕΝΑ framed record (§0.5.1), ΜΙΑ chain transition — μερική
-  μετάβαση δομικά αδύνατη (W-Δ6). Κανένα `:up-to-seq` cut δεν πέφτει ΜΕΣΑ
-  σε batch (δηλωμένο).
-- Subevent πειθαρχία [Τ-M9]: κάθε subevent φέρει το δικό του record-id·
-  semantic replay checks ΑΝΑ subevent (πλαστό subevent δεν κρύβεται πίσω
-  από έγκυρο batch hash — W-JB-SUB-ID)· κατανάλωση από version-at/TILING =
-  ως διαδοχικές γραμμές στη θέση του batch· ενδο-batch αναφορές ΜΟΝΟ προς
-  προηγούμενο subevent· κοινό `:at` = μία πράξη, μία στιγμή.
-- `ordered_subevents` ≥ 1· subevent kind ≠ :batch (W-JB-NEST).
-- All-or-nothing replay· άκυρο subevent ⇒ ΟΛΟ το batch απορρίπτεται.
+ΕΝΑ seq, ΕΝΑ framed record, ΜΙΑ chain transition (W-Δ6)· κανένα cut ΜΕΣΑ
+σε batch· subevents με δικά τους record-ids + per-subevent semantic replay
+checks (W-JB-SUB-ID)· κατανάλωση = ως διαδοχικές γραμμές· ενδο-batch
+αναφορές μόνο προς προηγούμενο· ≥1 subevents, kind ≠ :batch (W-JB-NEST)·
+all-or-nothing replay.
 
 ### 6.2 Text-mutating + consolidation split [Δ-8, Τ-S6]
 
-- `amendment, repeal, correction (νομοθετική)`: γεγονότα version-graph
-  (υπάρχοντα kinds) μέσω graph-event-proposal + admit-edge!.
-- `consolidation` — evidence-backed legal-effect mode, ΟΧΙ όνομα πράξης:
-  - **normative** (κωδικοποίηση/κύρωση με κανονιστική ισχύ — evidence: η
-    εξουσιοδοτική/κυρωτική διάταξη): γεγονός γράφου ΣΕ BATCH με codifies.
-  - **derived** (επίσημη/εκδοτική ενοποίηση χωρίς νέο κανονιστικό
-    αποτέλεσμα): ΚΑΝΕΝΑ γεγονός γράφου — work-snapshot-expression +
-    manifestation με variant consolidated-official (W-Δ8).
-  - Χωρίς mode evidence ⇒ `legal-effect-unresolved` — ΠΟΤΕ default.
-- **Mode-decision = journaled record** (corpus journal): {evidence-pin,
-  decider: creator, mode} — ο δημιουργός αποφασίζει (κανένα LLM, ο pure
-  parser δεν κρίνει), η απόφαση έχει μόνιμη έδρα [Τ-S6].
-- **Αντίστροφος φρουρός [Τ-S6]:** derived submission για work του οποίου η
-  πηγή φέρει κυρωτική/εξουσιοδοτική citation ήδη στο corpus ⇒ ΥΠΟΧΡΕΩΤΙΚΟ
-  legal-effect-unresolved — η σιωπηλή απώλεια κανονιστικού αποτελέσματος
-  ΔΕΝ περνά (W-Δ8β).
-- Instrument/regime events: `:ratification` (ΠΝΠ/συνθήκες), `:acceptance`
-  (ΝΣΚ), `:suspend/:revive/:extend/:expire/:retroact` — υπάρχουσες έδρες.
+- amendment, repeal, correction: γεγονότα version-graph μέσω proposal +
+  admit-edge!.
+- consolidation — evidence-backed legal-effect mode: **normative** ⇒
+  γεγονός γράφου ΣΕ BATCH με codifies· **derived** ⇒ work-snapshot-
+  expression + manifestation (variant consolidated-official), ΜΗΔΕΝ graph
+  mutation (W-Δ8)· χωρίς evidence ⇒ legal-effect-unresolved.
+- Mode-decision = journaled record (corpus journal): {evidence-pin,
+  decider: creator, mode} [Τ-S6].
+- Αντίστροφος φρουρός: derived submission ενώ υπάρχει κυρωτική/
+  εξουσιοδοτική citation στο corpus ⇒ ΥΠΟΧΡΕΩΤΙΚΟ legal-effect-unresolved
+  (W-Δ8β).
+- Instrument/regime: :ratification, :acceptance, :suspend/:revive/:extend/
+  :expire/:retroact — υπάρχουσες έδρες.
 
-### 6.3 Non-mutating relations — `lawmax/legal-relation/1` ως journal kind [Α-CRIT3, Ν-S7, Τ-S7]
+### 6.3 Non-mutating relations — `lawmax/legal-relation/1` journal kind [Α-CRIT3, Γ-C3/S1]
 
-Record: {relation_id: "rel1:"+canonical-hash, relation: <kind>, from/to:
-{type ∈ work-categories §3.1, id}, evidence: {work-ref, provision-pin ή
-dispositif-pin}, bitemporal: {valid_from: date|typed-partial, known_at:
-legal-instant}, verdict_basis: explicit-citation | operative-part,
-relation_registry_digest: <pinned [Τ-S7]>}.
+Record: {relation_id: "rel1:"+hash, relation, from/to: {form, effect?, id},
+evidence: {work-ref, provision-pin ή dispositif-pin}, bitemporal:
+{valid_from: date|typed-partial, known_at: legal-instant}, verdict_basis:
+explicit-citation | operative-part, relation_registry_digest: <pinned>}.
 
-Kinds — registry:
+Kinds — registry, guards σε form/effect άξονες [Γ-C3]:
 
-| kind | άκρα (type guard) | βάση |
+| kind | άκρα (form guard· effect όπου δηλώνεται) | βάση |
 |---|---|---|
-| `interprets` | interpretive-instrument → provision\|normative-act | explicit-citation |
-| `annuls`* | adjudicative → administrative-act | operative-part |
-| `declares-unconstitutional{erga-omnes\|incidenter}`* | adjudicative → provision | operative-part· ΜΟΝΟ erga-omnes (ΑΕΔ, άρθ. 100 Σ) φέρει regime υπο-γεγονός· incidenter = inter partes, καθαρή σχέση |
-| `suspends-effect`* | adjudicative (ΕΑ) → normative-act\|provision | operative-part |
-| `authorizes-delegation` | statute provision → pd\|ministerial-decision | explicit-citation (το προοίμιο την τυπώνει) |
-| `resolves-pilot-question` | adjudicative (ΟλΣτΕ, ν. 3900/2010) → provision | operative-part — ΤΥΠΙΚΗ δεσμευτικότητα |
+| `judicially-interprets` [Γ-S1] | adjudicative-instrument → provision \| work | explicit-citation (η απόφαση μνημονεύει ρητά τη διάταξη) — η νομολογιακή ερμηνεία πρώτης τάξης (W-JUDICIAL-INTERPRETATION) |
+| `administratively-interprets` [Γ-S1] | interpretive-instrument → provision \| work | explicit-citation — διακριτή authority σημασιολογία (μη δεσμευτική/δεσμευτική μέσω :acceptance) |
+| `annuls`* | adjudicative-instrument → executive-administrative-instrument (ΚΑΘΕ effect — και normative ΚΥΑ [Γ-C3]) | operative-part (W-KYA-ANNULMENT) |
+| `declares-unconstitutional{erga-omnes\|incidenter}`* | adjudicative-instrument → provision | operative-part· regime υπο-γεγονός ΜΟΝΟ erga-omnes (ΑΕΔ, άρθ. 100 Σ) |
+| `suspends-effect`* | adjudicative-instrument → work \| provision | operative-part |
+| `authorizes-delegation` | legislative-instrument provision → executive-administrative-instrument | explicit-citation (το προοίμιο την τυπώνει) |
+| `resolves-pilot-question` | adjudicative-instrument (ΟλΣτΕ, ν. 3900/2010) → provision | operative-part |
 | `precedent-follows` / `precedent-distinguishes` | adjudicative → adjudicative | explicit-citation ΜΟΝΟ |
-| `codifies{legislative\|administrative}` | code-work → statutes | explicit-citation· administrative = χωρίς αυτοτελή κανονιστική ισχύ |
-| `published-in` | κάθε work → publication-work | explicit position |
+| `codifies{legislative\|administrative}` | legislative-instrument (code) → statutes | explicit-citation |
+| `published-in` | κάθε work → publication | explicit position |
 
-\* = ΥΠΟΧΡΕΩΤΙΚΑ σε batch με το regime υπο-γεγονός τους, στο version-graph
-journal του σώματος-στόχου.
-- ΠΟΤΕ inferred — κανένα LLM/similarity στο trusted path.
-- **Relation-retract [Τ-S7]:** συμμετρικό με τη γέννηση — σχέση γεννημένη
-  σε batch αναιρείται ΜΟΝΟ ως batch (relation-retract + regime-retract
-  μαζί)· μερική αναίρεση δομικά αδύνατη (W-REL-RETRACT).
-- **Registry pinning [Τ-S7]:** η υποχρέωση «relation ⇒ batch» κρίνεται στο
-  replay ΚΑΤΑ το `relation_registry_digest` του record — registry edits δεν
-  αλλάζουν αναδρομικά τη νομιμότητα γραμμένων journals (W-REG-PIN).
+\* = ΥΠΟΧΡΕΩΤΙΚΑ σε batch με το regime υπο-γεγονός τους (version-graph
+journal του στόχου). ΠΟΤΕ inferred — κανένα LLM/similarity.
+**Relation-retract:** συμμετρικό — batch-σχέση αναιρείται ΜΟΝΟ ως batch
+(W-REL-RETRACT). **Registry pinning:** η υποχρέωση batch κρίνεται κατά το
+pinned `relation_registry_digest` του record (W-REG-PIN).
 
 ---
 
 ## 7. Connectors — acquirer (impure) / parser (pure) [Α-CRIT1]
 
-### 7.1 `lawmax/acquirer/1`
-
-Emits ΜΟΝΟ: raw-artifact, acquisition-receipt, location-observation.
-Impure· ίχνος = receipts· recovery §4.3. Manifest: {acquirer_id, version,
-sources, rate policy, manual-deposit capability}.
-
-### 7.2 `lawmax/parser/1`
-
-Καθαρή συνάρτηση (artifacts + receipts) → {work-record, issuance-fact,
-expression, manifestation, legal-relation-proposal, graph-event-proposal,
-journal-batch-proposal, authority-proposal, uncertainty}. Emits ΞΕΝΟ προς
-acquirer. Determinism gate: διπλή εκτέλεση ⇒ byte-ίδια έξοδος
-(SOURCE_DATE_EPOCH). Κανένα δίκτυο/ρολόι/connector-ιδιωτικό πεδίο — ό,τι
-δεν χωρά στα schemas ⇒ uncertainty με το raw διατηρημένο.
-
-### 7.3 Προτάσεις, όχι εγγραφές [Α-S6, Τ-S8]
-
-- graph-event-proposal ≡ κανονικοποιημένο espec του ΥΠΑΡΧΟΝΤΟΣ admit-edge!
-  (schema με παράγωγο id — ίδια σημασιολογία).
-- Απόρριψη = journaled `proposal-rejected` (digest πρότασης + αιτία — ΟΧΙ
-  σώμα).
-- Authority-registry admission gate: ΔΕΝ υπάρχει σήμερα — ΔΗΛΩΜΕΝΟ
-  παραδοτέο Π7-U.2 (replay-then-append στο ίδιο πρότυπο).
-- **Write authority:** ΕΝΑΣ δηλωμένος συγγραφέας ανά journal (admission
-  gate)· connectors ΠΟΤΕ δεν αγγίζουν journal (W-FLOOD).
-
-### 7.4 Κοινή σουίτα συμμόρφωσης
-
-Κάθε acquirer/parser περνά ΤΑ ΙΔΙΑ vectors (golden + αντιπαλικά ⊇ ΟΛΟΙ οι
-witnesses §12) — gated στο Docker. Χωρίς πράσινο, δεν εγγράφεται στο
-connector registry. Vectors καρφώνουν και τη σειριοποίηση εξόδων από Lisp
-δομές (plist/alist/array) [Α-NIT].
+- `lawmax/acquirer/1`: emits ΜΟΝΟ raw-artifact + acquisition-receipt +
+  location-observation· origins κατά §5.1 (network/manual/archive).
+- `lawmax/parser/1`: καθαρή συνάρτηση → {work-record, issuance-fact,
+  legal-effect assertion proposal, expression, manifestation,
+  legal-relation-proposal, graph-event-proposal, journal-batch-proposal,
+  authority-proposal, uncertainty}. Determinism gate (SOURCE_DATE_EPOCH,
+  byte-ίδια έξοδος)· κανένα δίκτυο/ρολόι/ιδιωτικό πεδίο.
+- Προτάσεις-όχι-εγγραφές: graph-event-proposal ≡ espec του admit-edge!·
+  απόρριψη journaled (digest + αιτία)· authority + protocol-register gates
+  = ΔΗΛΩΜΕΝΑ παραδοτέα Π7-U.2· write authority: ΕΝΑΣ συγγραφέας ανά journal
+  (W-FLOOD).
+- Κοινή σουίτα συμμόρφωσης: golden + αντιπαλικά vectors ⊇ ΟΛΟΙ οι
+  witnesses §12 — gated· χωρίς πράσινο, ο connector δεν εγγράφεται.
 
 ---
 
@@ -626,130 +581,130 @@ connector registry. Vectors καρφώνουν και τη σειριοποίη�
 ```
 {"schema": "lawmax/uncertainty/1",
  "uncertainty_id": "unc1:" + canonical-hash(...),
- "kind": <registry — v1:
-   source-unverified | identity-ambiguous (candidate_ids ΤΥΠΩΜΕΝΑ) |
-   official-key-incomplete | authority-unresolved | relation-unproven |
-   date-partial | source-integrity | unclassified-source |
-   official-sources-conflict | pending-ratification |
+ "kind": <registry — v1: source-unverified | identity-ambiguous
+   (candidate_ids ΤΥΠΩΜΕΝΑ) | official-key-incomplete | authority-unresolved
+   | relation-unproven | date-partial | source-integrity |
+   unclassified-source | official-sources-conflict | pending-ratification |
    commencement-unresolved | authenticity-pending | legal-effect-unresolved>,
  "subject": {"artifact_digest" | "work-ref" | "candidate_ids": [...]},
- "evidence": <τι ΞΕΡΟΥΜΕ — ποτέ κενό>,
- "blocking": <τι μπλοκάρεται — π.χ. "work-id-mint" | "relation-record">}
+ "evidence": <ποτέ κενό>, "blocking": <τι μπλοκάρεται>}
 ```
 
-Πρώτης τάξης, corpus journal, ορατό στο /as-known στρώμα (υπάρχον pending
-μονοπάτι Φ7-Π5). Θάνατος ΜΟΝΟ με νέο evidence ή ρητή απόφαση δημιουργού —
-journaled `uncertainty-resolution` με δείκτη στο evidence. Καμία
-αυτοεπίλυση. Καραντίνα artifact ≡ ανοιχτή uncertainty (§0.4).
+Corpus journal, ορατό στο /as-known. Θάνατος ΜΟΝΟ με evidence ή ρητή
+απόφαση δημιουργού — journaled `uncertainty-resolution`. Καραντίνα ≡
+ανοιχτή uncertainty (§0.4). Οι ανοιχτές uncertainties συμμετέχουν στο
+corpus_uncertainty_set_root κάθε snapshot που τις αφορά (§1.2).
 
 ---
 
 ## 9. Καμία ΦΕΚ-ειδική δομή [Ν-NIT15, Α-M11]
 
-- ΦΕΚ = ΔΕΔΟΜΕΝΑ: gazette-issue projector + σειρές («Α», «Β», …) στις
-  registry εγγραφές της gr δικαιοδοσίας. ΚΑΝΕΝΑ νέο πεδίο σχήματος/
-  registry-δομής/connector hook με σημασιολογία «ΦΕΚ».
-- **Gate με ρητή λίστα αρχείων** (versioned, ζει στο ίδιο το gate test):
-  τα Π7-U registries (source-class, protocol-register, authority,
-  jurisdiction, relation-kind) + τα νέα source αρχεία acquirer/parser
-  contract — έλεγχος tokens fek/φεκ· επιτρεπτές εμφανίσεις ΜΟΝΟ σε registry
-  ΔΕΔΟΜΕΝΑ.
-- **Δηλωμένα προϋπάρχοντα υπόλοιπα** (εκτός πεδίου του gate, με φάση):
-  `:fek-date` (amendment-edge journal record), `:fek-ref` (instrument
-  evidence schema) — προϋπάρχουν στη σπονδυλική στήλη· μετονομασία σε
-  gazette-ουδέτερο όρο = μελλοντική versioned φάση (journal format), ΟΧΙ
-  σιωπηλή εδώ.
-- Τα 9 ΦΕΚ (Π7 benchmark) = ΠΕΛΑΤΗΣ του καθολικού: gazette-issue works
-  μέσω gr-gazette acquirer+parser — η ίδια διαδρομή κάθε μελλοντικής πηγής.
+ΦΕΚ = ΔΕΔΟΜΕΝΑ (gazette-issue projector + σειρές σε registry εγγραφές).
+Gate με ρητή λίστα αρχείων (όλα τα Π7-U registries + acquirer/parser
+contract αρχεία)· tokens fek/φεκ ΜΟΝΟ σε registry ΔΕΔΟΜΕΝΑ. Δηλωμένα
+προϋπάρχοντα υπόλοιπα: `:fek-date`, `:fek-ref` — μετονομασία = μελλοντική
+versioned φάση. Τα 9 ΦΕΚ = ΠΕΛΑΤΗΣ του καθολικού μέσω gr-gazette
+acquirer+parser.
 
 ---
 
 ## 10. Κριτήρια αποδοχής Π7-U.1
 
-1. Ρητή τελική έγκριση δημιουργού («εγκρίνω Π7-U.1»). Ιστορικό: 6
-   επιθεωρήσεις (2×v1, δημιουργός×2 [v2: Δ-1..9, v4: Β-1..7], 2×v3), 51
-   ευρήματα, ΟΛΑ κλειστά ονομαστικά στο παρόν.
+1. Ρητή τελική έγκριση δημιουργού. Ιστορικό: 7 γύροι επιθεώρησης ([Ν]+[Α],
+   [Δ], [Κ]+[Τ], [Β], [Γ]) — ΟΛΑ τα ευρήματα κλειστά ονομαστικά· ακριβής
+   καταμέτρηση στο CLOSURE-MATRIX (συνοδευτικό).
 2. Registries: identity-route XOR + projector/classification/evidence/
-   key-shape ανά εγγραφή — gated load.
-3. Journal topology ρητή (§0.3)· συν-γεννήσεις εξαντλητικές (§0.4)· §0.5
-   framing/CAS/fsync/single-writer = BLOCKING προ-παραδοτέα Π7-U.2.
-4. Αυτοτέλεια: το παρόν αρχείο πλήρες — μηχανικός όρος
-   W-SPEC-SELF-CONTAINED (§12).
+   key-shape — gated load· επεκτάσιμες τιμές ΜΟΝΟ σε registries [Γ-S3].
+3. Journal topology ρητή (§0.3)· knowledge-cut/1 για κάθε δι-journal
+   ισχυρισμό [Γ-C1]· συν-γεννήσεις εξαντλητικές (§0.4)· §0.5 = BLOCKING
+   προ-παραδοτέα Π7-U.2.
+4. Αυτοτέλεια: μηχανικός όρος W-SPEC-SELF-CONTAINED.
 5. Ο όρος §9 μηχανικά επαληθεύσιμος.
-6. **Π7-U.2 ΠΑΓΩΜΕΝΟ** — παραδοτέα (με σειρά): §0.5 journal fixes + frame
+6. **Π7-U.2 ΠΑΓΩΜΕΝΟ** — παραδοτέα (σειρά): §0.5 journal fixes + frame
    migration, typed-partial canonical vectors, extraction-receipt/2,
-   corpus journal + batch replay, registry route-φάση (§0.2β), make-body
-   number guard, authority gate, proposal schemas, conformance vectors
-   (⊇ §12), gr-gazette acquirer+parser.
+   corpus journal + knowledge-cut replay, registry route-φάση (§0.2β),
+   make-body number guard, authority + protocol-register gates, proposal
+   schemas, conformance vectors (⊇ §12), gr-gazette acquirer+parser.
 
 ## 11. Δηλωμένα όρια v1 (τίμια)
 
 - Πολυγλωσσία: ισοδυναμία expressions μεταξύ γλωσσών = μελλοντική φάση.
-- Provision-δόμηση Rule-B works (άρθρα ΠΝΠ προ κύρωσης) = μελλοντική φάση —
-  μέχρι τότε single-document ΜΟΝΟ.
+- Provision-δόμηση Rule-B works = μελλοντική φάση — μέχρι τότε
+  single-document ΜΟΝΟ.
 - Συντακτικές Πράξεις: εκτός v1, τίμια unclassified.
-- Authority registry: genesis ακολουθία· πληρότητα = μετρήσιμη εκκρεμότητα.
+- Authority/protocol-register registries: genesis + μετρήσιμη πληρότητα.
 - Blob↔receipt: η ΜΟΝΗ δι-store σχέση — ορατή μερικότητα (§4.3).
-- Redaction judgments: typed `parties_redacted`· πολιτική = απόφαση
-  δημιουργού.
-- Το παρόν δεν επικαλείται καμία ανύπαρκτη υποδομή ως υπάρχουσα (§10.6).
+- Redaction: typed `parties_redacted`· πολιτική = απόφαση δημιουργού.
+- Καμία ανύπαρκτη υποδομή δεν επικαλείται ως υπάρχουσα (§10.6).
 
 ---
 
 ## 12. ΟΝΟΜΑΣΤΙΚΟΙ NEGATIVE WITNESSES — υποχρεωτικά αντιπαλικά vectors Π7-U.2
 
-### Δημιουργού v2 [Δ-1..9]
+### [Δ-1..9] (δημιουργός v2)
 | | Στήνει → Αναμενόμενο |
 |---|---|
 | W-Δ1 | ίδιο work, δύο cuts, ίδια γλώσσα/μορφότυπος/variant → διαφορετικά manifestation_ids |
 | W-Δ2 | manifestation χωρίς expression_id → schema reject |
 | W-Δ3 | διόρθωση συνυπογραφόντων make-body νόμου → ταυτότητα ΑΜΕΤΑΒΛΗΤΗ, νέο issuance fact |
-| W-Δ4 | CELEX αναταξινόμηση eu-decision→eu-regulation → work_id ΑΜΕΤΑΒΛΗΤΟ |
+| W-Δ4 | CELEX αναταξινόμηση → work_id ΑΜΕΤΑΒΛΗΤΟ |
 | W-Δ5/β | μία πράξη ιδρύει 2 αρχές → 2 ids· διόρθωση kind → id ΑΜΕΤΑΒΛΗΤΟ |
-| W-Δ6 | ορφανό μισό (relation χωρίς regime όπου απαιτείται batch) → replay FAIL· άκυρο subevent → ΟΛΟ το batch απορρίπτεται |
-| W-Δ7 | gazette-issue ως normative-act / λάθος category άκρου → σφάλμα γέννησης |
-| W-Δ8/β | editorial-ως-normative → reject· normative-ως-derived → ΟΧΙ σιωπηλή αποδοχή (αντίστροφος φρουρός) |
+| W-Δ6 | ορφανό μισό όπου απαιτείται batch → replay FAIL· άκυρο subevent → ΟΛΟ το batch απορρίπτεται |
+| W-Δ7 | λάθος form/επίπεδο άκρου → σφάλμα γέννησης record |
+| W-Δ8/β | editorial-ως-normative → reject· normative-ως-derived → ΟΧΙ σιωπηλή αποδοχή |
 | W-Δ9α-δ | media_type στο artifact → reject· ίδια bytes 2 content-types → ΕΝΑ artifact/2 receipts· blob χωρίς receipt → καραντίνα· receipt χωρίς blob → σκληρό σφάλμα |
 
-### Κριτή identity/FRBR v3 [Κ-x]
+### [Κ-x] (κριτής identity/FRBR v3)
 | | |
 |---|---|
-| W-K1 | ίδια ΚΥΑ από 2 connectors → duplicate-route reject· ΥΑ ως make-body → αδύνατο (οδός αφαιρεμένη) |
-| W-K2 | ίδιο cut, 2 valid_at με διαφορετικό ενεργό σύνολο → 2 ΔΙΑΚΡΙΤΕΣ expressions |
-| W-K3 | ίδρυση από v1 και v2 της ίδιας συνταγματικής διάταξης → 2 authority_ids |
-| W-K4 | δύο νόμιμα entity_keys → το μη-κανονικό reject· locator tags → citation-string ≠ provision-id string |
-| W-K5 | μονο-διατακτικό work → ισοδυναμία παραγώγιμη από μονοσύνολο root, αλλιώς FAIL |
-| W-K6 | CRLF vs LF judgment → ΕΝΑ expression_id |
+| W-K1 | ίδια ΚΥΑ από 2 connectors → duplicate-route reject· ΥΑ ως make-body → αδύνατο |
+| W-K2 | ίδιο version cut, 2 valid_at με διαφορετικό ενεργό σύνολο → 2 ΔΙΑΚΡΙΤΕΣ expressions |
+| W-K3 | ίδρυση από v1/v2 της ίδιας διάταξης → 2 authority_ids |
+| W-K4 | μη-κανονικό entity_key → reject· locator tags → τύποι δεν συγχέονται |
+| W-K5 | μονο-διατακτικό work → ισοδυναμία παραγώγιμη, αλλιώς FAIL |
+| W-K6 | CRLF vs LF → ΕΝΑ expression_id |
 | W-K7 | 2 κλάσεις ίδια projector πεδία → διακριτά ids (register)· body-id ως Rule-B input → reject |
 | W-K8 | ΠΝΠ 20.3.2020 (Α΄68) από 2 connectors → ΜΙΑ τριάδα byte-ίδια |
-| W-K9 | "ell" → reject |
-| W-K10 | άγνωστο edition πεδίο → reject |
+| W-K9 | γλώσσα εκτός registry («ell») → reject |
+| W-K10 | άγνωστο edition πεδίο/τιμή → reject |
 | W-K11 | make-body :kodikas χωρίς number → σφάλμα ΣΤΗΝ έδρα |
 
-### Κριτή atomicity v3 [Τ-x]
+### [Τ-x] (κριτής atomicity v3)
 | | |
 |---|---|
-| W-JB-TORN | torn tail + νέο append → όχι συγκόλληση· typed ετυμηγορία· replay πράσινο στο έγκυρο πρόθεμα |
-| W-JB-RACE | 2 ταυτόχρονα appends ίδιου precondition → ακριβώς ένα γράφεται, το άλλο typed stale-precondition |
+| W-JB-TORN | torn tail + νέο append → όχι συγκόλληση· typed ετυμηγορία· replay πράσινο στο πρόθεμα |
+| W-JB-RACE | 2 ταυτόχρονα appends ίδιου precondition → ένα γράφεται, το άλλο typed stale-precondition |
 | W-J-TOPOLOGY | receipt χωρίς body → corpus journal· cross-journal batch → reject |
-| W-COBIRTH-SWEEP | crash injection σε ΚΑΘΕ ζεύγος του §0.4 → μερικότητα ορατή ή δομικά αδύνατη |
+| W-COBIRTH-SWEEP | crash injection σε ΚΑΘΕ ζεύγος §0.4 → μερικότητα ορατή ή δομικά αδύνατη |
 | W-FSYNC-LIE | mocked fsync failure → ΟΧΙ :durable |
 | W-REL-RETRACT | αναίρεση batch-σχέσης → ΜΟΝΟ all-or-nothing |
-| W-REG-PIN | registry edit → παλαιό replay ΑΜΕΤΑΒΛΗΤΟ (pinned digest) |
-| W-FLOOD | 10⁵ rejects → digests όχι σώματα· 2η διεργασία-συγγραφέας → ρητή άρνηση |
-| W-JB-SUB-ID | πλαστό subevent id → corruption παρά το έγκυρο batch hash |
+| W-REG-PIN | registry edit → παλαιό replay ΑΜΕΤΑΒΛΗΤΟ |
+| W-FLOOD | 10⁵ rejects → digests όχι σώματα· 2η διεργασία → ρητή άρνηση |
+| W-JB-SUB-ID | πλαστό subevent id → corruption παρά έγκυρο batch hash |
 | W-JB-NEST | κενό/nested batch → schema reject |
 
-### Δημιουργού v4 [Β-1..7] — Π7-U.1B
+### [Β-1..7] (δημιουργός v4 — Π7-U.1B)
 | | |
 |---|---|
-| **W-SNAPSHOT-TYPES** | work-snapshot με valid_at "2020" ή "2020-03", ή graph_cut χωρίς recorded_through legal-instant → schema reject· snapshot-at καλείται ΜΟΝΟ με (legal-date, legal-instant) — τα types της έδρας |
-| **W-SNAPSHOT-FORK** | ίδιο seq σε forked ιστορία (άλλο chain_root) → verifier FAIL στο graph-chain-head check· δηλωμένο root χωρίς recompute → δεν γίνεται πιστευτό |
-| **W-UNCERTAINTY-SET** | δύο snapshots με ίδιο πλήθος αλλά ΔΙΑΦΟΡΕΤΙΚΑ αποκλεισμένα provisions → διακριτά uncertainty_set_roots (το count-only θα τα ταύτιζε)· leaf χωρίς kind/uncertainty_id → reject |
-| **W-KYA-COISSUERS** | ίδια ΚΥΑ, connector Α θεωρεί «issuing» τον υπουργό Χ, connector Β τον Ψ → ΙΔΙΟ work_id (register+protocol — κανένας authority στο hash)· οι υπογράφοντες ΟΛΟΙ σε sorted issuance facts |
-| **W-AUTH-PIN-DUAL** | ίδιο ιδρυτικό γεγονός ως {provision_id, tv_version_hash} ΚΑΙ ως graph-cut pin → η δεύτερη μορφή schema reject (ΜΙΑ μορφή pin)· το cut μόνο ως provenance της επίλυσης |
-| **W-MANIFEST-URL** | ίδιο αρχείο σε 2 URLs / με+χωρίς url_hint → ΕΝΑ manifestation_id· URL πεδίο στο manifestation schema → reject |
-| **W-MEDIA-STATUS** | αναβάθμιση asserted→verified / αλλαγή detector → manifestation_id ΑΜΕΤΑΒΛΗΤΟ· νέο media-verification record ΜΟΝΟ |
-| **W-PNP-SAME-ISSUE** | δύο ΠΝΠ ίδιας ημέρας στο ίδιο ΦΕΚ → διακριτά work_ids (act_ordinal)· ΠΝΠ χωρίς act_ordinal → reject |
-| **W-SPEC-SELF-CONTAINED** | μηχανικός έλεγχος του παρόντος αρχείου: καμία κανονιστική αναφορά «όπως v3»/«όπως v2» (grep «όπως v[0-9]» = 0 σε normative θέσεις)· κάθε schema που μνημονεύεται ορίζεται ΜΕΣΑ στο αρχείο |
-| **W-JOURNAL-FRAME** | (α) record χωρίς commit marker → typed torn, journaled heal· (β) payload με εσωτερικά newlines/multiline strings → πλήρες frame διαβάζεται σωστά (το newline-κριτήριο θα αποτύγχανε)· (γ) truncation ΜΟΝΟ βάσει newline → ΑΠΑΓΟΡΕΥΜΕΝΗ διαδρομή, δεν υπάρχει στην έδρα· (δ) frame με λάθος sha256 → torn, όχι δεκτό |
+| W-SNAPSHOT-TYPES | valid_at "2020"/"2020-03" ή knowledge-cut πεδίο χωρίς legal-instant → reject· snapshot-at ΜΟΝΟ με (legal-date, legal-instant) |
+| W-SNAPSHOT-FORK | ίδιο seq σε forked ιστορία → chain_root mismatch → FAIL· δηλωμένο root χωρίς recompute → δεν γίνεται πιστευτό |
+| W-UNCERTAINTY-SET | ίδιο πλήθος, διαφορετικά αποκλεισμένα provisions → διακριτά roots· leaf χωρίς typed πεδία → reject |
+| W-KYA-COISSUERS | connector Α «issuing» τον Χ, connector Β τον Ψ → ΙΔΙΟ work_id (register+protocol)· υπογράφοντες ΟΛΟΙ σε sorted issuance facts |
+| W-AUTH-PIN-DUAL | ιδρυτικό γεγονός ως graph-cut pin → schema reject (ΜΙΑ μορφή: provision+tv_version_hash) |
+| W-MANIFEST-URL | ίδιο αρχείο 2 URLs / ±url_hint → ΕΝΑ manifestation_id· URL πεδίο στο schema → reject |
+| W-MEDIA-STATUS | asserted→verified / άλλος detector → manifestation_id ΑΜΕΤΑΒΛΗΤΟ· μόνο νέο media-verification record |
+| W-PNP-SAME-ISSUE | 2 ΠΝΠ ίδιας μέρας/τεύχους → διακριτά ids (act_ordinal)· χωρίς ordinal → reject |
+| W-SPEC-SELF-CONTAINED | grep «όπως v[0-9]» = 0 κανονιστικές εμφανίσεις· κάθε μνημονευόμενο schema ορίζεται ΜΕΣΑ στο αρχείο |
+| W-JOURNAL-FRAME | χωρίς commit marker → typed torn + heal· multiline payload → σωστή ανάγνωση· newline-truncation → ανύπαρκτη διαδρομή· λάθος sha256 → torn |
+
+### [Γ-C1..S3] (δημιουργός v5 — Π7-U.1C)
+| | |
+|---|---|
+| **W-CROSS-JOURNAL-UNCERTAINTY** | επίλυση/προσθήκη uncertainty στο corpus journal ΧΩΡΙΣ αλλαγή version-graph → νέο corpus_cut → ΔΙΑΚΡΙΤΗ expression· snapshot που δηλώνει ΜΟΝΟ version cut → schema reject (knowledge-cut υποχρεωτικό) |
+| **W-CUT-TIME-INFLATION** | knowledge-cut με last_recorded_at ≠ του πραγματικού record στο seq (μελλοντικό/διογκωμένο) → verifier FAIL· δύο «όρια» για το ίδιο prefix → αδύνατο (το πεδίο είναι παράγωγο, όχι δηλωτέο) |
+| **W-CUT-SAME-SECOND** | 2 records ίδιου recorded_at, διαφορετικό seq → το cut στο πρώτο και στο δεύτερο = ΔΙΑΚΡΙΤΕΣ συντεταγμένες (seq επιλύει)· wall-clock μόνο του → δεν ορίζει cut |
+| **W-KYA-ANNULMENT** | ακυρωτική ΣτΕ κατά ΚΑΝΟΝΙΣΤΙΚΗΣ ΚΥΑ (form: executive-administrative, effect: normative) → annuls relation ΔΕΚΤΗ (ο guard είναι form-based)· στο παλιό μονο-αξονικό sum θα απορριπτόταν — ο witness το αποδεικνύει |
+| **W-JUDICIAL-INTERPRETATION** | απόφαση ΣτΕ που ερμηνεύει άρθρο → judicially-interprets ΔΕΚΤΗ (adjudicative → provision)· interpretive-instrument guard ΔΕΝ την μπλοκάρει· administratively-interprets από judgment → reject (διακριτές σχέσεις) |
+| **W-REGISTER-REASSIGNMENT** | μεταφορά protocol-register σε άλλο υπουργείο (competence transfer assertion) → register_id ΑΜΕΤΑΒΛΗΤΟ → work ids πράξεων ΑΜΕΤΑΒΛΗΤΑ· 2 connectors → ΙΔΙΟ register_id (παράγωγο από founding+key) |
+| **W-MANUAL-DEPOSIT** | receipt με origin manual-deposit (χωρίς url/status) → ΕΓΚΥΡΟ· network πεδία σε manual origin → reject· archive-import ομοίως |
+| **W-REGISTRY-EXTENSION** | προσθήκη γλώσσας «es» ως registry εγγραφή → ΚΑΜΙΑ schema revision, υπάρχοντα ids ΑΜΕΤΑΒΛΗΤΑ· τιμή εκτός τρέχοντος registry → reject· ίδιο για media-type/edition-key |

@@ -241,3 +241,64 @@ raw-artifact μόνο εγγενή + blob↔receipt recovery.
 Κατά την εντολή: ΚΑΜΙΑ υλοποίηση δεν ξεκίνησε. **ΑΝΑΜΕΝΕΤΑΙ: τελική εξέταση
 και «εγκρίνω Π7-U.1» επί του παρόντος commit.** Π7-U.2 ΠΑΓΩΜΕΝΟ (πρώτα
 παραδοτέα: §0.5 journal framing/CAS/fsync/single-writer). GAAF-1 ΠΑΓΩΜΕΝΟ.
+
+---
+
+## [0091+++] Π7-U.1C — KNOWLEDGE-CUT AND LEGAL-FORM CLOSURE (v6 + CLOSURE MATRIX)
+
+**Ετυμηγορία δημιουργού επί v5 @ 921267b9:** ΠΟΛΥ ΙΣΧΥΡΟ ΑΥΤΟΤΕΛΕΣ
+CANDIDATE, ΟΧΙ έγκριση — 4 CRIT + 3 SERIOUS [Γ-C1..C4, Γ-S1..S3]. Ρητά
+δεκτά σε επίπεδο σχεδίου: framing, fsync/CAS, manifestation καθαρό, auth
+pin, ΠΝΠ position, ΚΥΑ issuance facts, αυτοτέλεια, blob/receipt recovery.
+
+**v6 — κλείσιμο και των 7 + οι 8 ζητηθέντες witnesses:**
+
+- **Γ-C1 snapshot διασχίζει 2 journals, καρφώνει 1** ⇒ `knowledge-cut/1`
+  {version_cut: {body_id, seq, chain_root, last_record_id,
+  last_recorded_at}, corpus_cut: {seq, chain_root, last_record_id,
+  last_recorded_at}}· provision_set_root από version_cut·
+  **graph_uncertainty_set_root** (graph-native, leaf_type
+  "graph-uncertainty") + **corpus_uncertainty_set_root** (ανοιχτές
+  uncertainties στο corpus_cut, leaf_type "corpus-uncertainty") — διακριτά
+  canonical leaf encodings, ταξινόμηση κατά canonical bytes· επίλυση
+  uncertainty χωρίς αλλαγή γράφου ⇒ νέο corpus_cut ⇒ διακριτή expression
+  (W-CROSS-JOURNAL-UNCERTAINTY).
+- **Γ-C2 recorded_through διογκώσιμο + ισοχρονία δευτερολέπτου** ⇒ το
+  ελεύθερο πεδίο ΠΕΘΑΝΕ: όριο = last_recorded_at ΤΟΥ record στο seq
+  (παράγωγο, verifier-ελεγχόμενο)· transaction συντεταγμένη =
+  (last_recorded_at, seq, chain_root) — το seq λύνει την ισοχρονία, το
+  chain_root το fork (W-CUT-TIME-INFLATION, W-CUT-SAME-SECOND).
+- **Γ-C3 normative-act/administrative-act επικαλύπτονται** (κανονιστική
+  ΚΥΑ δεν ακυρωνόταν!) ⇒ ΔΥΟ ανεξάρτητοι άξονες: work_form (κλειστό
+  οντολογικό sum: publication | legislative | executive-administrative |
+  adjudicative | treaty | interpretive) × legal_effect (normative |
+  individual | adjudicative | interpretive | evidentiary | none |
+  unresolved — versioned journaled assertion, evidence-backed)· guards
+  form-based: annuls δέχεται κανονιστική ΚΥΑ (W-KYA-ANNULMENT).
+- **Γ-C4 protocol-register χωρίς κανόνα παραγωγής** ⇒ register_id =
+  preg1:hash({jurisdiction, founding_locator+version_pin,
+  canonical_register_key})· ownership/names/series/competence/existence =
+  διτεμπορικά assertions ΕΚΤΟΣ identity — μεταφορά μητρώου δεν αλλάζει
+  ταυτότητες πράξεων (W-REGISTER-REASSIGNMENT).
+- **Γ-S1 νομολογιακή ερμηνεία** ⇒ judicially-interprets (adjudicative →
+  provision|work) + administratively-interprets διακριτές
+  (W-JUDICIAL-INTERPRETATION).
+- **Γ-S2 manual deposit εκτός schema** ⇒ origin κλειστό sum: network-fetch
+  | manual-deposit {depositor, custody_receipt, medium, deposited_at} |
+  archive-import {archive_id, item_locator, import_manifest_sha256}
+  (W-MANUAL-DEPOSIT).
+- **Γ-S3 hardcoded language/media/edition** ⇒ versioned registries
+  (language/media-type/edition-key/official-variant/media-detection)·
+  κλειστά στο schema ΜΟΝΟ τα γνήσια οντολογικά sums (W-REGISTRY-EXTENSION).
+
+**ΔΕΥΤΕΡΟ ΠΑΡΑΔΟΤΕΟ — CLOSURE MATRIX**
+(`LAWMAX-UNIVERSAL-SOURCE-CONTRACT-CLOSURE-MATRIX.md`): πλήρες μητρώο
+7 γύρων → **75 ευρήματα → 75 κλεισίματα → 0 ανοιχτά**, καθένα με § του v6
+και witness. Τίμια διόρθωση: οι ενδιάμεσες συνόψεις (44, 51) ήταν
+υπο-καταμετρήσεις — η αυθεντική καταμέτρηση ζει στο matrix (Ν:15 + Α:14 +
+Δ:9 + Κ:12 + Τ:11 + Β:7 + Γ:7 = 75). Δηλωμένα υπόλοιπα με φάση: 5.
+
+Αυτοτέλεια v6: grep «όπως v[0-9]» = 0 εμφανίσεις. ΚΑΜΙΑ υλοποίηση/
+connector/download κατά την εντολή. **ΑΝΑΜΕΝΕΤΑΙ: τελική εξέταση v6 +
+CLOSURE MATRIX και «εγκρίνω Π7-U.1».** Π7-U.2 ΠΑΓΩΜΕΝΟ. #4 CLOSED.
+GAAF-1 ΠΑΓΩΜΕΝΟ.
