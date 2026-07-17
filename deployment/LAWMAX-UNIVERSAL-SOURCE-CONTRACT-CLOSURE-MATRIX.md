@@ -1,14 +1,16 @@
 # Π7-U.1 CLOSURE MATRIX — πλήρες μητρώο ευρημάτων → κλεισιμάτων → witnesses
 
-**Συνοδεύει:** `LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md` v6 (Π7-U.1C).
+**Συνοδεύει:** `LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md` v7 (Π7-U.1D).
 **Κανόνας ανάγνωσης:** κάθε γραμμή = ένα εύρημα· «Κλείσιμο» = § του v6 όπου
 ζει το κλείσιμο· «Witness» = ονομαστικό αντιπαλικό vector (§12 v6),
 υποχρεωτικό στο Π7-U.2. Η ΠΑΡΟΥΣΑ καταμέτρηση είναι η αυθεντική — οι
 ενδιάμεσες συνόψεις των καταθέσεων (44, 51) ήταν υπο-καταμετρήσεις και
 διορθώνονται εδώ ρητά (τίμια καταγραφή).
 
-**Σύνολα: 7 γύροι επιθεώρησης · 75 ευρήματα · 75 κλεισίματα · 0 ανοιχτά.**
-(Ν:15 + Α:14 + Δ:9 + Κ:12 + Τ:11 + Β:7 + Γ:7 = 75)
+**Σύνολα: 8 γύροι επιθεώρησης · 82 ευρήματα · 82 κλεισίματα · 0 ανοιχτά.**
+(Ν:15 + Α:14 + Δ:9 + Κ:12 + Τ:11 + Β:7 + Γ:7 + ΔΔ:7 = 82 — οι παλαιοί
+γύροι ΑΜΕΤΑΒΛΗΤΟΙ· το matrix είναι traceability register, ΟΧΙ απόδειξη
+ανυπαρξίας νέων ευρημάτων.)
 
 ## Γύρος 1α — Κριτής νομικής ταυτότητας/πηγών [Ν], επί v1
 
@@ -129,3 +131,15 @@
 | Provision-δόμηση Rule-B works | μελλοντική φάση (§11) |
 | Συντακτικές Πράξεις | μελλοντική registry εγγραφή (§11) |
 | Πολυγλωσσική ισοδυναμία expressions | μελλοντική φάση (§11) |
+
+## Γύρος 6 — Δημιουργός [ΔΔ], επί v6 (Π7-U.1D)
+
+| ID | Εύρημα | Κλείσιμο (v7) | Witness |
+|---|---|---|---|
+| ΔΔ-C1 | knowledge-cut = δύο ανεξάρτητα prefixes, όχι αποδεδειγμένα ΜΙΑ συνεπής ιστορία (dangling cross-refs V20→C50) | §1.2β knowledge-checkpoint/1: version_heads[] + corpus_head + cross_journal_dependency_root· ΔΥΟ κανόνες αιτιακής κλειστότητας· verifier recompute | W-INCONSISTENT-VECTOR-CUT, W-CROSS-JOURNAL-DANGLING-REF |
+| ΔΔ-C2 | expression_id μεταβάλλεται από ΑΣΧΕΤΑ corpus γεγονότα (cut μέσα στην ταυτότητα κειμένου) | §1.2 work-expression/1 {work, language, valid_at, provision_set_root} ΧΩΡΙΣ cut· §1.2γ legal-state-attestation/1 {expression_id, checkpoint, uncertainty roots} χωριστά | W-UNRELATED-CORPUS-IDENTITY-CHURN |
+| ΔΔ-C3 | Δύο έδρες μητρώου στο ίδιο work hash (source-class register + institutional register)· αναταξινόμηση αλλάζει id· judgment/gazette «μελλοντική» ενοποίηση = όχι μία έδρα σήμερα | §1.1 work_id = {schema, identity_domain (ΕΝΑ, tagged), official_key}· source-class = resolver ΜΟΝΟ· §1.4 judgment/gazette μέσω institutional-register ΑΠΟ ΤΩΡΑ | W-DOUBLE-REGISTER-SEAT, W-CLASS-RECLASSIFICATION-ID |
+| ΔΔ-C4 | «Δικαιοδοτική ένταξη ποτέ ταυτοτική» vs jurisdiction ΜΕΣΑ στα auth/register hashes — αντίφαση | §2.3 constitutive_legal_order_id (ταυτοτικό, registry) ≠ jurisdictional/territorial/supervision/affiliation assignments (assertions §2.2)· μεταφορά σε άλλο legal order = ρητή ασυνέχεια ⇒ νέο id + lineage | W-JURISDICTION-TRANSFER |
+| ΔΔ-S1 | Relation guards πιστεύουν ΔΗΛΩΜΕΝΟ form/effect (parser «βαφτίζει» πράξη για να περάσει guard) | §6.3 endpoint_assertion_pins {from/to assertion ids + κοινό checkpoint}· verifier ανακτά authoritative assertions και συγκρίνει | W-RELATION-FALSE-ENDPOINT-TYPE |
+| ΔΔ-S2 | authority.kind hardcoded απαρίθμηση (λείπουν notary, chambers, ombudsman…) | §1.5/§2.2 authority-kind-registry + lineage-kind + numbering-mode registries — επέκταση = εγγραφή | W-AUTHORITY-KIND-EXTENSION |
+| ΔΔ-S3 | Αυτοτέλεια ατελής: person-ref/medium/archive αόριστα | §2.4 actor-ref/1 πλήρες (authority/office-holder/natural-person/legal-person, redaction-safe)· acquisition-medium registry· archives ≡ institutional registers (§5.1) | W-MANUAL-ORIGIN-SELF-CONTAINED |

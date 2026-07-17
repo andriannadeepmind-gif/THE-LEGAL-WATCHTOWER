@@ -323,3 +323,62 @@ W-REGISTER-REASSIGNMENT διευρύνθηκε: σάρωση ΟΛΩΝ των μ�
 Χρήση v1: protocol registers ΥΑ/ΚΥΑ· δικαστικά/gazette μητρώα = ίδιος
 μηχανισμός, ενοποίηση projectors = δηλωμένη μελλοντική φάση (§11 —
 αντικατάσταση, όχι συνύπαρξη).
+
+---
+
+## [0091++++] Π7-U.1D — CONSISTENT KNOWLEDGE STATE AND SINGLE IDENTITY SEAT (v7)
+
+**Ετυμηγορία δημιουργού επί v6 @ 1b2cb8da:** ΑΝΩΤΑΤΟΥ ΕΠΙΠΕΔΟΥ CANDIDATE,
+ΟΧΙ έγκριση — 4 CRIT + 3 SERIOUS [ΔΔ]. Η τελευταία κεντρική διάκριση:
+άλλο η ταυτότητα του νομικού αντικειμένου, άλλο η κατάσταση γνώσης που το
+αποδεικνύει, άλλο η κοινή συνεπής ιστορική τομή των μηχανών της απόδειξης.
+
+**v7 — κλείσιμο και των 7 + οι 9 ζητηθέντες witnesses:**
+
+- **ΔΔ-C1** (knowledge-cut = δύο ανεξάρτητα prefixes, όχι μία αποδεδειγμένη
+  ιστορία) ⇒ `knowledge-checkpoint/1`: version_heads[] + corpus_head +
+  cross_journal_dependency_root (RFC-6962 επί ΟΛΩΝ των cross-refs)· ΔΥΟ
+  υποχρεωτικοί κανόνες αιτιακής κλειστότητας — κάθε cross-journal αναφορά
+  επιλύεται ΕΝΤΟΣ του άλλου prefix ΤΟΥ ΙΔΙΟΥ checkpoint· κάθε authoritative
+  συνδυασμός cuts προέρχεται από ΕΝΑ κοινό checkpoint
+  (W-INCONSISTENT-VECTOR-CUT, W-CROSS-JOURNAL-DANGLING-REF).
+- **ΔΔ-C2** (expression_id άλλαζε από άσχετα corpus γεγονότα) ⇒ ΔΙΑΣΠΑΣΗ:
+  `work-expression/1` {work, language, valid_at, provision_set_root} = Η
+  ταυτότητα του κειμένου, ΧΩΡΙΣ cut/checkpoint/uncertainties·
+  `legal-state-attestation/1` {expression_id, checkpoint_id, graph/corpus
+  uncertainty roots} = η κατάσταση γνώσης. Ίδιο κείμενο ⇒ ίδια expression·
+  νεότερη γνώση ⇒ νέα attestation (W-UNRELATED-CORPUS-IDENTITY-CHURN).
+- **ΔΔ-C3** (δύο register έδρες στο work hash· «μελλοντική» ενοποίηση
+  judgment/gazette) ⇒ work_id = {schema, identity_domain (ΕΝΑ tagged:
+  institutional-register | declared-domain), official_key}· source-class =
+  resolver ΜΟΝΟ, κανένα register value· judgment (μητρώο δικαστηρίου) +
+  gazette (μητρώο σειράς) μέσω institutional-register ΑΠΟ ΤΩΡΑ — πριν
+  εκδοθεί οποιοδήποτε id (W-DOUBLE-REGISTER-SEAT,
+  W-CLASS-RECLASSIFICATION-ID).
+- **ΔΔ-C4** (jurisdiction ταυτόχρονα «ποτέ ταυτοτική» και μέσα στα hashes)
+  ⇒ `constitutive_legal_order_id` (registry: gr-constitutional-order,
+  eu-legal-order, international-legal-order) = το ΜΟΝΟ ταυτοτικό
+  «δικαιοδοτικό» στοιχείο· jurisdictional_assignment/territorial_competence/
+  court_district/administrative_supervision/institutional_affiliation =
+  διτεμπορικά assertions· μεταφορά σε άλλο legal order = ΡΗΤΗ οντολογική
+  ασυνέχεια ⇒ νέο id + lineage (W-JURISDICTION-TRANSFER).
+- **ΔΔ-S1** (guards πιστεύουν δηλωμένο form/effect) ⇒
+  endpoint_assertion_pins {from/to authoritative assertion ids + ΚΟΙΝΟ
+  checkpoint}· ο verifier ανακτά και συγκρίνει — «βαφτισμένη» πράξη δεν
+  περνά (W-RELATION-FALSE-ENDPOINT-TYPE).
+- **ΔΔ-S2** (authority.kind hardcoded) ⇒ authority-kind-registry (v1 +19
+  εγγραφές: +notary, professional-chamber, public-legal-entity,
+  quasi-judicial-body, regulatory-agency, electoral-body, ombudsman) +
+  lineage-kind + numbering-mode registries (W-AUTHORITY-KIND-EXTENSION).
+- **ΔΔ-S3** (αυτοτέλεια ατελής) ⇒ `actor-ref/1` πλήρες (authority /
+  office-holder / natural-person redaction-safe / legal-person)·
+  acquisition-medium registry· archives ≡ institutional registers — ίδιος
+  μηχανισμός, καμία νέα έδρα (W-MANUAL-ORIGIN-SELF-CONTAINED).
+
+**CLOSURE MATRIX:** νέος γύρος [ΔΔ] — **8 γύροι · 82 ευρήματα · 82
+κλεισίματα · 0 ανοιχτά**· παλαιοί γύροι ΑΜΕΤΑΒΛΗΤΟΙ· ρητή δήλωση: το
+matrix = traceability register, ΟΧΙ απόδειξη ανυπαρξίας νέων ευρημάτων
+(κατά την ετυμηγορία του δημιουργού).
+
+ΚΑΜΙΑ υλοποίηση/connector/download. **ΑΝΑΜΕΝΕΤΑΙ: τελική εξέταση v7 +
+matrix και «εγκρίνω Π7-U.1».** Π7-U.2 ΠΑΓΩΜΕΝΟ. #4 CLOSED. GAAF-1 ΠΑΓΩΜΕΝΟ.
