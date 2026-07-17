@@ -181,3 +181,63 @@ raw-artifact μόνο εγγενή + blob↔receipt recovery.
 ονομαστικά με 31 named negative witnesses (§12). **ΑΝΑΜΕΝΕΤΑΙ: τελικό
 «εγκρίνω Π7-U.1».** Π7-U.2 ΠΑΓΩΜΕΝΟ (με §0.5 journal fixes ως BLOCKING
 πρώτα παραδοτέα). #4 CLOSED. GAAF-1 ΠΑΓΩΜΕΝΟ.
+
+---
+
+## [0091++] Π7-U.1B — CANONICAL SNAPSHOT AND IDENTITY CLOSURE (v5, ΑΥΤΟΤΕΛΕΣ)
+
+**Ετυμηγορία δημιουργού επί v4 @ f1d2cd49:** ΙΣΧΥΡΟΤΑΤΟ DESIGN CANDIDATE,
+ΟΧΙ έγκριση — 7 αποδεικτικά κενά [Β-1..7]. Επιβεβαίωση: #4 CLOSED
+(Πράξη Έγκρισης eb631750). Εντολή: υποφάση Π7-U.1B, ΚΑΜΙΑ υλοποίηση,
+κατάθεση ΜΟΝΟ αυτοτελούς contract commit για τελική εξέταση.
+
+**v5 — κλείσιμο και των 7, με τους 10 ζητηθέντες witnesses:**
+
+- **Β-1 snapshot ασύμβατο με την έδρα** (typed-partial valid_at δεν επιλέγει
+  μοναδική κατάσταση· το cut_seq ΔΕΝ είναι known_at· snapshot-at απαιτεί
+  πλήρες legal-date + legal-instant) ⇒ §1.2: valid_at ΜΟΝΟ πλήρες
+  legal-date· graph_cut = {seq, chain_root, recorded_through: legal-instant}·
+  verifier: load-graph(up-to-seq) + chain-head==chain_root +
+  recorded<=recorded_through + snapshot-at(valid_at,
+  known_at=recorded_through)· typed-partial ΑΠΑΓΟΡΕΥΜΕΝΑ σε
+  valid_at/known_at/recorded_through (§5.4). excluded_uncertain count ⇒
+  **uncertainty_set_root** με typed leaves {provision_id, kind,
+  uncertainty_id} (W-SNAPSHOT-TYPES, W-SNAPSHOT-FORK, W-UNCERTAINTY-SET).
+- **Β-2 ΚΥΑ ταυτότητα ξαναέσπασε** (ενικός issuing_authority_id στον
+  projector — ο connector διαλέγει «εκδότη») ⇒ §1.4: protocol-register οδός
+  {register_id, protocol_number, protocol_date} — ΚΑΝΕΝΑΣ authority στο
+  hash· το register_id = το θεσμικό μητρώο αρίθμησης (νέο protocol-register
+  registry §2.1, evidence-backed δέση με την υπηρεσία)· issuer/co-signers/
+  countersigners/promulgator = sorted issuance facts (W-KYA-COISSUERS).
+- **Β-3 authority version_pin διπλή αναπαράσταση** (tv-hash Ή cut pin) ⇒
+  §2.2: ΜΙΑ μορφή — {provision_id, tv_version_hash}· το graph cut =
+  provenance της επίλυσης, ΕΚΤΟΣ ταυτότητας (W-AUTH-PIN-DUAL).
+- **Β-4 manifestation με τοποθεσία/κατάσταση επαλήθευσης στο hash**
+  (url_hint, asserted/verified, detection) ⇒ §1.3: identity ΜΟΝΟ
+  {expression_id, canonical media-type, official_variant, publisher,
+  edition_key}· URLs/headers/detector/status ⇒ journaled evidence
+  (location-observations + ΝΕΟ media-verification/1 record) — αναβάθμιση
+  κατάστασης = ΓΕΓΟΝΟΣ, όχι νέα ταυτότητα (W-MANIFEST-URL, W-MEDIA-STATUS).
+- **Β-5 ΠΝΠ projector μη-injective** (2 ΠΝΠ ίδιας μέρας/τεύχους ⇒ ίδιο id)
+  ⇒ §1.4: typed act locator {gazette_ref (lsw1), act_ordinal} από την
+  επίσημη διάταξη ύλης· promulgation_date = classification field· byte
+  spans = evidence manifestation, ποτέ work identity (W-PNP-SAME-ISSUE).
+- **Β-6 μη αυτοτελές** («όπως v3» σε 8 κανονιστικές ενότητες) ⇒ v5 ΠΛΗΡΩΣ
+  αυτοτελές: lineage/genesis/jurisdiction, ontology, raw-artifact+recovery,
+  acquisition/locations, relation kinds πίνακας, connectors, uncertainty,
+  ΦΕΚ-gate — ΟΛΑ αυτούσια στο αρχείο· μηχανικός έλεγχος: grep «όπως v[0-9]»
+  = 0 κανονιστικές εμφανίσεις (επαληθεύτηκε — μόνη εμφάνιση ο ορισμός του
+  ίδιου του witness) (W-SPEC-SELF-CONTAINED).
+- **Β-7 torn-tail recovery ανεπαρκές** (newline-κριτήριο ανίκανο για
+  multiline strings· framing «προαιρετικό») ⇒ §0.5.1: **lawmax/journal-frame/1
+  ΥΠΟΧΡΕΩΤΙΚΟ versioned schema** — length + payload sha256 + commit marker·
+  πλήρες ⟺ και τα τρία ✓· newline-only truncation ΑΠΑΓΟΡΕΥΜΕΝΗ διαδρομή·
+  typed torn ετυμηγορία + journaled heal· migration υπαρχόντων journals με
+  byte-parity proof (W-JOURNAL-FRAME).
+
+**Σύνολο Π7-U.1: 6 επιθεωρήσεις, 51 ευρήματα, ΟΛΑ κλειστά ονομαστικά·
+§12 = 40 named negative witnesses (W-Δ1..9, W-K1..11, W-J×10, W-Β×10).**
+
+Κατά την εντολή: ΚΑΜΙΑ υλοποίηση δεν ξεκίνησε. **ΑΝΑΜΕΝΕΤΑΙ: τελική εξέταση
+και «εγκρίνω Π7-U.1» επί του παρόντος commit.** Π7-U.2 ΠΑΓΩΜΕΝΟ (πρώτα
+παραδοτέα: §0.5 journal framing/CAS/fsync/single-writer). GAAF-1 ΠΑΓΩΜΕΝΟ.
