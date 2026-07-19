@@ -61,6 +61,7 @@
    #:submit-genesis! #:admit-edge! #:quarantine! #:retract-knowledge!
    #:add-knowledge-gap! #:kg-provision-id #:kg-effective #:kg-kind
    #:version-at #:snapshot-at #:verify-chain #:graph-chain-head #:graph-latest-at #:graph-seq
+   #:version-chain-stale #:version-chain-stale-expected #:version-chain-stale-actual
    #:make-edge-spec #:make-version-spec
    ;; [0088 Φ7 Π1] Formal Temporal Semantics — effectivity conditions
    #:make-effectivity-condition #:condition-id #:condition-ast #:condition-class
@@ -497,24 +498,44 @@
   (orchestrator.journal:sha256-hex
    (format nil "~A~C~A" prev (code-char 31) payload-hash)))
 
+(define-condition version-chain-stale (error)
+  ((expected :initarg :expected :reader version-chain-stale-expected)
+   (actual   :initarg :actual   :reader version-chain-stale-actual))
+  (:report (lambda (c s)
+             (format s "[T-C2] version-graph chain stale-precondition: in-memory κεφαλή ~A ≠ πραγματικό tail ~A — reload πριν το append (κανένα σιωπηλό fork)"
+                     (version-chain-stale-expected c) (version-chain-stale-actual c))))
+  (:documentation "[T-C2] Το in-memory chain head αποκλίνει από το ΠΡΑΓΜΑΤΙΚΟ tail
+   του journal (ταυτόχρονος ή stale writer). Fail-closed: δεν γράφεται forked
+   αλυσίδα — ο καλών οφείλει να ξαναφορτώσει (load-graph) και να ξαναδοκιμάσει."))
+
 (defun %journal! (graph plist &key (verify t))
   "Μία γραμμή στο journal της έδρας [0086]: chained-append + require-durable!.
    Κάθε γραμμή φέρει :payload-hash (δέσμευση ΟΛΟΚΛΗΡΟΥ record — Κ2) και
    :chain = sha256(prev ‖ 0x1F ‖ payload-hash). Με VERIFY (προεπιλογή)
    γίνεται και read-back επαλήθευση ανά γραμμή· σε ΜΑΖΙΚΟ import η ανά-γραμμή
    επανανάγνωση είναι O(n²) — εκεί VERIFY NIL και η αλήθεια επαληθεύεται στο
-   τέλος με ΠΛΗΡΕΣ replay (verify-chain, O(n))."
-  (let* ((ph (%payload-hash plist))
-         (next-chain (%chain-next (vg-chain graph) ph)))
+   τέλος με ΠΛΗΡΕΣ replay (verify-chain, O(n)).
+
+   [T-C2 chain-fork race fix] Το next-chain υπολογίζεται ΜΕΣΑ στο κλείδωμα, από
+   το ΠΡΑΓΜΑΤΙΚΟ tail (LAST) που δίνει το chained-append — ΠΟΤΕ από pre-lock
+   in-memory κεφαλή που ένας ταυτόχρονος/stale writer μπορεί να έχει προσπεράσει.
+   Αν το tail αποκλίνει από την in-memory κεφαλή ⇒ version-chain-stale (fail-
+   closed), αντί για σιωπηλή δίκρανση της αλυσίδας. Σε single-writer λειτουργία
+   tail ≡ in-memory κεφαλή, άρα το γραφόμενο :chain είναι byte-ίδιο με πριν."
+  (let ((ph (%payload-hash plist))
+        (captured nil))
     (multiple-value-bind (line receipt)
         (orchestrator.journal:chained-append
          (vg-path graph)
          (lambda (last)
-           (declare (ignore last))
-           (append plist (list :payload-hash ph :chain next-chain)))
+           (let ((tail-chain (if last (getf last :chain) "genesis")))
+             (unless (equal tail-chain (vg-chain graph))
+               (error 'version-chain-stale :expected (vg-chain graph) :actual tail-chain))
+             (setf captured (%chain-next tail-chain ph))
+             (append plist (list :payload-hash ph :chain captured))))
          :verify verify)
       (orchestrator.journal:require-durable! receipt :version-graph)
-      (setf (vg-chain graph) next-chain)
+      (setf (vg-chain graph) captured)
       (incf (vg-seq graph))
       (%note-latest-at! graph (getf plist :at))
       line)))
