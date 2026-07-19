@@ -1330,12 +1330,26 @@ document.getElementById('ops').addEventListener('click',function(ev){
                 (g "id") (g "date") (g "fek") (g "text"))))
     (write-char #\] s)))
 
+(defun %cycle-verdict (critical-rc failures)
+  "Η ΜΙΑ έδρα της τίμιας ετυμηγορίας του ΠΛΗΡΟΥΣ ΚΥΚΛΟΥ. Καθαρή συνάρτηση ώστε
+   να αποδεικνύεται unit-level. Επιστρέφει (values rc clean-p):
+   «όλα καθαρά» (clean-p = T) ΜΟΝΟ όταν καμία φάση δεν απέτυχε — ούτε κρίσιμη
+   (critical-rc = 0) ΟΥΤΕ soft (failures = κενό). Έτσι μια καταπιεσμένη αποτυχία
+   soft-φάσης δεν μπορεί ΠΟΤΕ να μεταμφιεστεί σε «όλα καθαρά»."
+  (values critical-rc (and (eql critical-rc 0) (null failures))))
+
 (defun auto-update ()
   "AUTONOMOUS UPDATE — Ο ΠΛΗΡΗΣ ΚΥΚΛΟΣ με ΜΙΑ εντολή: pull every code from its
    source, codify, consolidate, verify against the golden, (re)issue SIGNED
    proofs, emit the reasoning substrate (references+hypergraph+intelligence),
-   and SEAL with the full gate plenary. Phases are isolated; returns non-zero
-   if codification, golden verification or the plenary fails, so cron can alert.
+   and SEAL with the full gate plenary.
+
+   Fail-closed τιμιότητα: ΚΑΘΕ φάση ελέγχεται. ΚΡΙΣΙΜΗ φάση (κωδικοποίηση, golden
+   verify, ΥΠΟΓΕΓΡΑΜΜΕΝΕΣ αποδείξεις, ολομέλεια) που αποτυγχάνει κάνει rc≠0 ώστε
+   το cron να ειδοποιεί. SOFT φάση (λήψη, υλικοποίηση, υπόστρωμα, δημοσίευση) που
+   αποτυγχάνει καταγράφεται και εμφανίζεται — ώστε η ετυμηγορία «όλα καθαρά» να
+   ισχύει ΜΟΝΟ όταν κάθε εκτελεσμένη φάση πέτυχε, και ΠΟΤΕ να μην κρύβει
+   καταπιεσμένη αποτυχία (ιδίως των αποδείξεων — του πυρήνα Proof-Carrying Law).
      AUTO_UPDATE_FETCH=0    skip the headless fetch (reuse existing source.pdf)
      AUTO_UPDATE_GATES=0    skip the final gate plenary (fast cycle only)
      AUTO_UPDATE_PUBLISH=1  also emit the static site (signed) at the end
@@ -1343,41 +1357,61 @@ document.getElementById('ops').addEventListener('click',function(ev){
   (let ((fetch (not (string= "0" (or (uiop:getenv "AUTO_UPDATE_FETCH") "1"))))
         (gates (not (string= "0" (or (uiop:getenv "AUTO_UPDATE_GATES") "1"))))
         (publish (string= "1" (or (uiop:getenv "AUTO_UPDATE_PUBLISH") "0")))
-        (codify-rc 0) (verify-rc 0) (gates-rc 0))
-    (format t "~%╔══ ΠΛΗΡΗΣ ΚΥΚΛΟΣ: fetch → codify → verify → sign → substrate → gates ══╗~%")
-    (when fetch
-      (format t "~%[1/7] Λήψη ΑΠΕΥΘΕΙΑΣ από την πηγή (headless)~%")
-      (ignore-errors (fetch-pdf-sources)))
-    (format t "~%[2/7] Υλικοποίηση PDF → source.json~%")
-    (ignore-errors (materialize-pdf-sources))
-    (format t "~%[3/7] Κωδικοποίηση & ενοποίηση όλων των κωδίκων~%")
-    (setf codify-rc (or (ignore-errors (run-all-pipelines)) 1))
-    (format t "~%[4/7] Έλεγχος ορθότητας έναντι golden (drift detection)~%")
-    (setf verify-rc (or (ignore-errors (verify-all-corpora)) 1))
-    (format t "~%[5/7] Έκδοση υπογεγραμμένων αποδείξεων (Proof-Carrying Law)~%")
-    (ignore-errors (emit-proofs))
-    (format t "~%[6/7] Υπόστρωμα συλλογισμού: παραπομπές + υπεργράφος + νοημοσύνη~%")
-    (ignore-errors (emit-references))
-    (ignore-errors (emit-hypergraph))
-    (ignore-errors (verify-all-intelligence))
-    (if gates
-        (progn
-          (format t "~%[7/7] ΣΦΡΑΓΙΔΑ: ολομέλεια πυλών~%")
-          (setf gates-rc (or (ignore-errors (run-all-gates)) 1)))
-        (format t "~%[7/7] Πύλες: ΠΑΡΑΛΕΙΦΘΗΚΑΝ (AUTO_UPDATE_GATES=0) — τρέξε --gates χωριστά~%"))
-    (when publish
-      (format t "~%[+]  Δημοσίευση static site (born-cited, signed)~%")
-      (ignore-errors (emit-site)))
-    ;; Per-phase status, so the final verdict is never self-contradictory.
-    (let ((rc (max codify-rc verify-rc gates-rc)))
-      (format t "~%╠══ ΑΝΑΦΟΡΑ ΦΑΣΕΩΝ ══╣~%")
-      (format t "  Κωδικοποίηση/ενοποίηση : ~:[✗ ΑΠΕΤΥΧΕ~;✓ ΟΚ~]~%" (zerop codify-rc))
-      (format t "  Έλεγχος golden (drift) : ~:[✗ ΑΠΕΤΥΧΕ~;✓ ΟΚ~]~%" (zerop verify-rc))
-      (format t "  Ολομέλεια πυλών        : ~:[✗ ΑΠΕΤΥΧΕ~;✓ ΟΚ~]~@[ (παραλείφθηκε)~]~%"
-              (zerop gates-rc) (and (not gates) t))
-      (format t "╚══ Ολοκληρώθηκε — rc=~D ~:[(ΣΦΑΛΜΑ σε φάση παραπάνω)~;(όλα καθαρά)~] ══╝~%"
-              rc (zerop rc))
-      rc)))
+        (critical-rc 0)
+        (failures '()))                 ; (label . reason) για ΚΑΘΕ φάση που απέτυχε
+    (labels ((soft (label thunk)        ; side-effecting· error ⇒ soft αποτυχία
+               (handler-case (progn (funcall thunk) t)
+                 (error (e)
+                   (push (cons label (princ-to-string e)) failures)
+                   (format t "  ✗ «~A» ΑΠΕΤΥΧΕ (soft): ~A~%" label e)
+                   nil)))
+             (crit (label thunk)        ; side-effecting· error ⇒ ΚΡΙΣΙΜΗ αποτυχία
+               (handler-case (progn (funcall thunk) t)
+                 (error (e)
+                   (push (cons label (princ-to-string e)) failures)
+                   (setf critical-rc (max critical-rc 1))
+                   (format t "  ✗ «~A» ΑΠΕΤΥΧΕ (ΚΡΙΣΙΜΗ): ~A~%" label e)
+                   nil)))
+             (crit-rc (label thunk)     ; thunk επιστρέφει αριθμητικό rc (0 = ΟΚ)
+               (let ((rc (or (ignore-errors (funcall thunk)) 1)))
+                 (unless (eql rc 0)
+                   (push (cons label (format nil "rc=~A" rc)) failures)
+                   (setf critical-rc (max critical-rc rc)))
+                 rc)))
+      (format t "~%╔══ ΠΛΗΡΗΣ ΚΥΚΛΟΣ: fetch → codify → verify → sign → substrate → gates ══╗~%")
+      (when fetch
+        (format t "~%[1/7] Λήψη ΑΠΕΥΘΕΙΑΣ από την πηγή (headless)~%")
+        (soft "λήψη πηγών" (lambda () (fetch-pdf-sources))))
+      (format t "~%[2/7] Υλικοποίηση PDF → source.json~%")
+      (soft "υλικοποίηση PDF" (lambda () (materialize-pdf-sources)))
+      (format t "~%[3/7] Κωδικοποίηση & ενοποίηση όλων των κωδίκων~%")
+      (crit-rc "κωδικοποίηση/ενοποίηση" (lambda () (run-all-pipelines)))
+      (format t "~%[4/7] Έλεγχος ορθότητας έναντι golden (drift detection)~%")
+      (crit-rc "έλεγχος golden" (lambda () (verify-all-corpora)))
+      (format t "~%[5/7] Έκδοση υπογεγραμμένων αποδείξεων (Proof-Carrying Law)~%")
+      (crit "έκδοση υπογεγραμμένων αποδείξεων" (lambda () (emit-proofs)))
+      (format t "~%[6/7] Υπόστρωμα συλλογισμού: παραπομπές + υπεργράφος + νοημοσύνη~%")
+      (soft "παραπομπές" (lambda () (emit-references)))
+      (soft "υπεργράφος" (lambda () (emit-hypergraph)))
+      (soft "νοημοσύνη" (lambda () (verify-all-intelligence)))
+      (if gates
+          (progn
+            (format t "~%[7/7] ΣΦΡΑΓΙΔΑ: ολομέλεια πυλών~%")
+            (crit-rc "ολομέλεια πυλών" (lambda () (run-all-gates))))
+          (format t "~%[7/7] Πύλες: ΠΑΡΑΛΕΙΦΘΗΚΑΝ (AUTO_UPDATE_GATES=0) — τρέξε --gates χωριστά~%"))
+      (when publish
+        (format t "~%[+]  Δημοσίευση static site (born-cited, signed)~%")
+        (soft "δημοσίευση site" (lambda () (emit-site))))
+      ;; Τίμια ετυμηγορία μέσα από τη ΜΙΑ έδρα %cycle-verdict.
+      (multiple-value-bind (rc clean) (%cycle-verdict critical-rc failures)
+        (format t "~%╠══ ΑΝΑΦΟΡΑ ΦΑΣΕΩΝ ══╣~%")
+        (if (null failures)
+            (format t "  ✓ όλες οι εκτελεσμένες φάσεις ΟΚ~%")
+            (dolist (f (reverse failures))
+              (format t "  ✗ ~A — ~A~%" (car f) (cdr f))))
+        (format t "╚══ Ολοκληρώθηκε — rc=~D ~:[(ΑΠΟΤΥΧΙΕΣ ΦΑΣΕΩΝ παραπάνω)~;(όλα καθαρά)~] ══╝~%"
+                rc clean)
+        rc))))
 
 (defun %html-escape (s)
   (with-output-to-string (o)
