@@ -268,6 +268,14 @@ NIL αν τίποτα δεν ταιριάζει. Κώδικες: poinikos, astik
                    (tmp-kdir (merge-pathnames (format nil "dreamgate-k-~D/" (get-universal-time))
                                               (uiop:temporary-directory))))
                (ensure-directories-exist tmp-kdir)
+               ;; [ΒΑΣΗ Γ.2] Η σκιώδη δίκη τρέχει την ΠΛΗΡΗ πύλη υπαγωγής, που
+               ;; απαιτεί τους foundational :tatbestand norms (:norm-klopi-372
+               ;; κ.λπ.) — φορτώνονται lazy από τον ΠΡΑΓΜΑΤΙΚΟ knowledge dir.
+               ;; Επειδή παρακάτω απομονώνουμε το *knowledge-dir* σε άδειο tmp
+               ;; (isolation των υποψήφιων writes), φορτώνουμε ΤΩΡΑ τους base norms
+               ;; στο global μητρώο (persist μέσα από το overlay snapshot)· αλλιώς
+               ;; ο σκιώδης δικαστής βρίσκει find-norm→NIL και καταρρέει.
+               (orchestrator.knowledge-packs:ensure-fresh)
                (let ((orchestrator.proposals:*proposals-path* tmp-prop)
                      (orchestrator.knowledge-packs:*knowledge-dir* tmp-kdir))
                  ;; όνειρο που ΕΞΗΓΕΙ τη μαρτυρία ⇒ δικάζεται, προτείνεται, εγκρίνεται
