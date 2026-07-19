@@ -1032,15 +1032,9 @@ document.getElementById('ops').addEventListener('click',function(ev){
 ;;; extraction-method) so the fallback can REFUSE anything that does not match.
 ;;; ----------------------------------------------------------------------------
 
-(defun %sha256-string (s)
-  "«sha256:<hex>» του UTF-8 του S — η έδρα content-hash της provenance (ΔΙΑΚΡΙΤΗ
-   έννοια από το Merkle: ωμό sha256, χωρίς domain prefix 0x00). [P1.5-A] Πριν
-   έδειχνε μέσω find-symbol στο διαγραμμένο COMPUTE-SHA256-STRING ⇒ σιωπηλά NIL·
-   τώρα υπολογίζει άμεσα (ironclad)."
-  (format nil "sha256:~(~{~2,'0x~}~)"
-          (coerce (ironclad:digest-sequence
-                   :sha256 (babel:string-to-octets s :encoding :utf-8))
-                  'list)))
+;; [ΒΑΣΗ Β] Η διπλή έδρα %sha256-string ΣΒΗΣΤΗΚΕ: το «sha256:<hex>» content-hash
+;; της provenance υπολογίζεται πλέον από τη ΜΙΑ αρχή hash-authority:compute-hash-
+;; prefixed (byte-identical — αποδεδειγμένο). Μία είσοδος ανά λειτουργία.
 
 (defun %sha256-file (path)
   "«sha256:<hex>» των ΩΜΩΝ bytes του PATH (σωστό για binary πηγές, π.χ. .docx).
@@ -1125,7 +1119,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
    third party — and the JSON fallback gate — can check."
   (ignore-errors
     (let* ((content (uiop:read-file-string json-path))
-           (chash   (%sha256-string content)))
+           (chash   (orchestrator.hash-authority:compute-hash-prefixed content :algorithm :sha256)))
       (when chash
         (with-open-file (o (%source-prov-path json-path) :direction :output
                                                           :if-exists :supersede
@@ -1159,13 +1153,13 @@ document.getElementById('ops').addEventListener('click',function(ev){
     ((or (null json-path) (not (probe-file json-path)))
      (values :missing nil nil))
     ((not (probe-file (%source-prov-path json-path)))
-     (values :unstamped nil (%sha256-string (uiop:read-file-string json-path))))
+     (values :unstamped nil (orchestrator.hash-authority:compute-hash-prefixed (uiop:read-file-string json-path) :algorithm :sha256)))
     (t
      (let* ((rec  (ignore-errors
                     (jonathan:parse (uiop:read-file-string (%source-prov-path json-path))
                                     :as :plist)))
             (want (and rec (getf rec :|content_sha256|)))
-            (have (%sha256-string (uiop:read-file-string json-path))))
+            (have (orchestrator.hash-authority:compute-hash-prefixed (uiop:read-file-string json-path) :algorithm :sha256)))
        (if (and want have (string= want have))
            (values :valid want have)
            (values :tampered want have))))))
