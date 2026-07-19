@@ -13,9 +13,13 @@
 
 (require :asdf)
 
-;;; Load citation-authority
-(load (merge-pathnames "source/citation-authority.lisp"
-                       (make-pathname :directory '(:absolute "home" "user" "ORCHESTRATORSUPER"))))
+;;; citation-authority: κανονικά είναι ΗΔΗ φορτωμένο από το runtime (ο standalone
+;;; test runner φορτώνει orchestrator-core-runtime πρώτα). Όταν το test τρέξει
+;;; απευθείας (sbcl --load), φόρτωσέ το από τη ρίζα του repo ΣΧΕΤΙΚΑ με ΤΟΥΤΟ το
+;;; αρχείο — ΠΟΤΕ hardcoded machine-specific absolute path.
+(unless (find-package :orchestrator.citation-authority)
+  (load (merge-pathnames "../source/citation-authority.lisp"
+                         (or *load-truename* *default-pathname-defaults*))))
 
 (in-package :orchestrator.citation-authority)
 
