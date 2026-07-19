@@ -190,16 +190,8 @@
               "── καθαρός κώδικας (καμία δομική ανωμαλία) ──"
               "── υπάρχουν ζητήματα προς έλεγχο ──")))
 
-(defun %json-escape (s)
-  (with-output-to-string (o)
-    (loop for ch across (princ-to-string (or s ""))
-          do (case ch (#\" (write-string "\\\"" o)) (#\\ (write-string "\\\\" o))
-                   (#\Newline (write-string "\\n" o)) (#\Return (write-string "\\r" o))
-                   (#\Tab (write-string "\\t" o)) (#\Backspace (write-string "\\b" o))
-                   (#\Page (write-string "\\f" o))
-                   (t (if (< (char-code ch) #x20)
-                          (format o "\\u~4,'0x" (char-code ch))
-                          (write-char ch o)))))))
+;; [ΒΑΣΗ Β.2] Η τοπική %json-escape ΣΒΗΣΤΗΚΕ → ΜΙΑ έδρα orchestrator.spec:
+;; json-string-escape (byte-identical). Μία είσοδος ανά λειτουργία.
 
 (defun intelligence-json (findings)
   "An AI-consumable JSON array of the FINDINGS."
@@ -211,5 +203,5 @@
                      (string-downcase (string (finding-check f)))
                      (string-downcase (string (finding-status f)))
                      (finding-count f)
-                     (%json-escape (finding-summary f))))
+                     (orchestrator.spec:json-string-escape (finding-summary f))))
     (write-string "]" o)))

@@ -96,3 +96,22 @@
     ;; Escape & as Unicode sequence
     (setf escaped (cl-ppcre:regex-replace-all "&" escaped "\\\\u0026"))
     escaped))
+
+(defun json-string-escape (s)
+  "Η ΜΙΑ έδρα: escape ενός scalar σε ασφαλές JSON string BODY (χωρίς τα εξωτερικά
+   quotes). Ρητά \\\" \\\\ \\n \\r \\t \\b \\f· κάθε άλλος control char (<0x20) →
+   \\uXXXX (πεζά hex). Ό,τι δεν είναι string περνά από princ-to-string· nil → «».
+
+   ΔΙΑΚΡΙΤΗ έννοια από την escape-json-string παραπάνω: εκείνη είναι XSS
+   defense-in-depth για JSON-LD μέσα σε HTML (escapeει <>& αλλά ΟΧΙ control
+   chars), ΟΧΙ γενικός JSON escaper. Αυτή εδώ είναι η γενική έδρα που καταναλώνουν
+   οι deterministic JSON emitters (intelligence/citation/cli scalar)."
+  (with-output-to-string (o)
+    (loop for c across (princ-to-string (or s "")) do
+      (case c (#\" (write-string "\\\"" o)) (#\\ (write-string "\\\\" o))
+              (#\Newline (write-string "\\n" o)) (#\Return (write-string "\\r" o))
+              (#\Tab (write-string "\\t" o)) (#\Backspace (write-string "\\b" o))
+              (#\Page (write-string "\\f" o))
+              (t (if (< (char-code c) #x20)
+                     (format o "\\u~4,'0x" (char-code c))
+                     (write-char c o)))))))

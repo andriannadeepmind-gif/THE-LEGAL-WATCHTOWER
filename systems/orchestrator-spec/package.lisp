@@ -233,4 +233,5 @@
 
    #:escape-turtle-string
    #:escape-json-string
+   #:json-string-escape
    #:escape-html))

@@ -189,17 +189,8 @@ reason: legal-critical πύλη απαιτεί runtime provenance — προφί
 ;;;  bytes σε ΑΛΛΟ package· η διαπακετική ένωση είναι δηλωμένη ξεχωριστή φάση με
 ;;;  απόδειξη ότι τα release ids δεν μετακινούνται.)
 
-(defun %json-escape (s)
-  "Escape ενός scalar σε ασφαλές JSON string body (χωρίς τα εξωτερικά \")."
-  (with-output-to-string (o)
-    (loop for c across (princ-to-string (or s "")) do
-      (case c (#\" (write-string "\\\"" o)) (#\\ (write-string "\\\\" o))
-              (#\Newline (write-string "\\n" o)) (#\Return (write-string "\\r" o))
-              (#\Tab (write-string "\\t" o)) (#\Backspace (write-string "\\b" o))
-              (#\Page (write-string "\\f" o))
-              (t (if (< (char-code c) #x20)
-                     (format o "\\u~4,'0x" (char-code c))
-                     (write-char c o)))))))
+;; [ΒΑΣΗ Β.2] Η τοπική %json-escape ΣΒΗΣΤΗΚΕ → ΜΙΑ έδρα orchestrator.spec:
+;; json-string-escape (byte-identical). Το %json-scalar την καταναλώνει.
 
 (defun %json-scalar (v)
   "Η ΜΙΑ cli scalar→JSON: NIL→null· float→~,4F (ντετ., locale-independent)·
@@ -209,4 +200,4 @@ reason: legal-critical πύλη απαιτεί runtime provenance — προφί
         ((floatp v) (format nil "~,4F" v))
         ((integerp v) (princ-to-string v))
         ((rationalp v) (format nil "~,4F" (float v 1d0)))
-        (t (format nil "\"~A\"" (%json-escape v)))))
+        (t (format nil "\"~A\"" (orchestrator.spec:json-string-escape v)))))

@@ -703,21 +703,8 @@
 ;;; ============================================================================
 ;;; DARPA-GRADE: Zero dependencies, replaces cl-json
 
-(defun json-escape-string (str)
-  "Escape special characters in string for JSON"
-  (with-output-to-string (out)
-    (loop for char across str
-          do (case char
-               (#\" (write-string "\\\"" out))
-               (#\\ (write-string "\\\\" out))
-               (#\Newline (write-string "\\n" out))
-               (#\Return (write-string "\\r" out))
-               (#\Tab (write-string "\\t" out))
-               (#\Backspace (write-string "\\b" out))
-               (#\Page (write-string "\\f" out))
-               (otherwise (if (< (char-code char) #x20)
-                              (format out "\\u~4,'0x" (char-code char))
-                              (write-char char out)))))))
+;; [ΒΑΣΗ Β.2] Η τοπική json-escape-string ΣΒΗΣΤΗΚΕ → ΜΙΑ έδρα
+;; orchestrator.spec:json-string-escape (byte-identical για string input).
 
 (defun encode-json (value stream)
   "Encode Lisp value to JSON format - pure Lisp, no dependencies"
@@ -726,7 +713,7 @@
     ((eql t) (write-string "true" stream))
     (integer (format stream "~D" value))
     (float (format stream "~F" value))
-    (string (format stream "\"~A\"" (json-escape-string value)))
+    (string (format stream "\"~A\"" (orchestrator.spec:json-string-escape value)))
     (symbol
      (let ((name (symbol-name value)))
        ;; Keywords with | prefix are JSON keys
