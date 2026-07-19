@@ -43,6 +43,7 @@ deployment/data/decisions/kat-arthron.json
 
 # LAWMAX runtime state (not identity)
 deployment/self/proposals.sexp
+deployment/self/proposals.sexp.*        # runtime sidecar temp/lock (writer/rw/quarantine) — never committed
 deployment/self/episodes.sexp
 deployment/self/graph-snapshot.sexp
 deployment/self/policies.sexp
