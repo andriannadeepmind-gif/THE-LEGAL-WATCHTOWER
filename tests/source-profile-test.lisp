@@ -63,6 +63,20 @@
   (check "source name stamped" (string= "diavgeia" (record-source-name r)))
   (check "content hash present" (and (stringp (record-content-hash r))
                                      (plusp (length (record-content-hash r)))))
+  ;; REGRESSION LOCK (fail-closed authorities): the content-hash is a GENUINE
+  ;; SHA-256 — exactly 64 lowercase hex chars — never the raw canonical string
+  ;; masquerading as a hash. The old silent fallback would pass "present" above
+  ;; but fails here, so the masquerade can never be reintroduced unnoticed.
+  (check "content hash is a genuine sha256 (64 lowercase hex, not a masquerade)"
+         (let ((h (record-content-hash r)))
+           (and (= 64 (length h))
+                (every (lambda (c) (or (digit-char-p c)
+                                       (char<= #\a c #\f))) h))))
+  ;; REGRESSION LOCK: the fetched-at stamp is a real timestamp from the time
+  ;; authority, never the fabricated 1970 epoch fallback that was here before.
+  (check "fetched-at is a real timestamp, never the fabricated 1970 epoch"
+         (let ((ts (record-fetched-at r)))
+           (and (stringp ts) (not (search "1970" ts)))))
   (check "provenance plist is complete"
          (let ((pv (record-provenance r)))
            (and (getf pv :source) (getf pv :channel) (getf pv :content-hash))))

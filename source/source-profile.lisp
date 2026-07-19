@@ -86,9 +86,10 @@
 ;;; ----------------------------------------------------------------------------
 
 (defun %now ()
-  (let ((fn (and (find-package :orchestrator.time)
-                 (find-symbol "GET-RFC3339-TIMESTAMP" :orchestrator.time))))
-    (or (and fn (ignore-errors (funcall fn))) "1970-01-01T00:00:00Z")))
+  "Provenance timestamp via the single time authority (deterministic when enabled).
+   Fail-closed: returns a genuine RFC3339 stamp or the call errors — never a
+   fabricated epoch masquerading as the acquisition time."
+  (orchestrator.time:get-rfc3339-timestamp))
 
 ;;; ----------------------------------------------------------------------------
 ;;; base profile
@@ -231,12 +232,11 @@
     (t (format nil "~S" x))))
 
 (defun %content-hash (content)
-  "SHA-256 of CONTENT's canonical form (or the canonical string itself when the
-   hash authority is unavailable — still deterministic for consensus)."
-  (let ((canon (%canonical content))
-        (fn (and (find-package :orchestrator.hash-authority)
-                 (find-symbol "COMPUTE-HASH" :orchestrator.hash-authority))))
-    (or (and fn (ignore-errors (funcall fn canon :algorithm :sha256))) canon)))
+  "SHA-256 (hex) of CONTENT's canonical form via the single hash authority.
+   Fail-closed: a content-hash is ALWAYS a genuine digest or the call errors —
+   never the raw canonical string masquerading as a hash. Both authorities load
+   before this file in the same serial system, so they are guaranteed present."
+  (orchestrator.hash-authority:compute-hash (%canonical content) :algorithm :sha256))
 
 ;;; ----------------------------------------------------------------------------
 ;;; acquire (one profile)
