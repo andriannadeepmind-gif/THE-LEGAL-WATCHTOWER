@@ -50,7 +50,12 @@
    επανεγγραφή από το ΙΔΙΟ αρχείο επιτρέπεται (idempotent reload)."
   (let ((site (%registration-site))
         (owner (gethash name *command-owners*)))
-    (when (and owner (string/= owner site))
+    ;; ΝΟΜΟΣ ΜΙΑΣ ΕΔΡΑΣ, fail-closed (re-review B-5): ανώνυμο runtime site ΔΕΝ
+    ;; μπορεί να επαναδιεκδικήσει υπάρχουσα έδρα — αλλιώς δύο runtime εγγραφές
+    ;; («<runtime>»≡«<runtime>») θα αντικαθιστούσαν σιωπηλά. Idempotent reload ίδιου
+    ;; ΑΠΟΔΩΣΙΜΟΥ αρχείου επιτρέπεται.
+    (when (and owner (or (not (orchestrator.paths:load-site-attributable-p site))
+                         (string/= owner site)))
       (error 'command-seat-collision :name name :owner owner :claimant site))
     (setf (gethash name *command-owners*) site
           (gethash name *commands*) fn)))

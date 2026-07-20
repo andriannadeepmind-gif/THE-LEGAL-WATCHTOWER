@@ -119,12 +119,17 @@
         (error 'capability-error :cap name
                :reason (format nil "άκυρο param spec ~S (θέλει (keyword τύπος∈~S t/nil))"
                                spec +param-types+))))
-    ;; ΝΟΜΟΣ ΜΙΑΣ ΕΔΡΑΣ — owner binding (ίδιο πρότυπο με register-command).
+    ;; ΝΟΜΟΣ ΜΙΑΣ ΕΔΡΑΣ — owner binding (ίδιο πρότυπο & ίδια έδρα anonymity με
+    ;; register-command). Fail-closed (re-review B-5): ανώνυμο runtime site ΔΕΝ
+    ;; επαναδιεκδικεί υπάρχουσα έδρα — αλλιώς δύο runtime εγγραφές («<runtime>»≡
+    ;; «<runtime>») θα αντικαθιστούσαν σιωπηλά trust/fn/schema/proof. Idempotent
+    ;; reload ίδιου ΑΠΟΔΩΣΙΜΟΥ αρχείου επιτρέπεται.
     (let ((site  (orchestrator.paths:current-load-file))
           (owner (gethash name *capability-owners*)))
-      (when (and owner site (string/= owner site))
+      (when (and owner (or (not (orchestrator.paths:load-site-attributable-p site))
+                           (string/= owner site)))
         (error 'capability-seat-collision :name name :owner owner :claimant site))
-      (when site (setf (gethash name *capability-owners*) site)))
+      (setf (gethash name *capability-owners*) site))
     (setf (gethash name *capabilities*) cap)
     name))
 

@@ -89,6 +89,41 @@
                          (%make-capability :name :guarded :summary "reload" :params ()
                                            :result :any :trust :trusted :fn (lambda () "ok"))))))
 
+(format t "~%== [re-review B-5] ανώνυμο runtime site ΔΕΝ αντικαθιστά σιωπηλά έδρα ==~%")
+;; Το κενό: current-load-file επιστρέφει +anonymous-load-site+ («<runtime>») εκτός
+;; φόρτωσης· δύο runtime εγγραφές το μοιράζονται ⇒ (string/= owner site) = NIL ⇒ ΠΑΛΙΑ
+;; σιωπηλό overwrite. Τώρα: ανώνυμο site ΠΟΤΕ δεν επαναδιεκδικεί υπάρχουσα έδρα.
+(ck "load-site-attributable-p: +anonymous-load-site+ ⇒ NIL (μη-αποδώσιμο)"
+    (not (orchestrator.paths:load-site-attributable-p orchestrator.paths:+anonymous-load-site+)))
+(ck "load-site-attributable-p: πραγματικό αρχείο-έδρα ⇒ T (αποδώσιμο)"
+    (orchestrator.paths:load-site-attributable-p "source/capability-registry"))
+(clrhash *capabilities*) (clrhash *capability-owners*)
+;; 1η runtime εγγραφή (site = anonymous, δεσμεύοντας τα truename special vars σε NIL)
+(let ((*load-truename* nil) (*compile-file-truename* nil))
+  (register-capability (%make-capability :name :rt :summary "trusted runtime"
+                                         :params () :result :any :trust :trusted
+                                         :fn (lambda () "θεμιτό"))))
+(ck "1η runtime εγγραφή πέρασε, owner = +anonymous-load-site+"
+    (string= (capability-owner :rt) orchestrator.paths:+anonymous-load-site+))
+(ck-signals-collision
+ "2η runtime εγγραφή ΙΔΙΟΥ ονόματος ⇒ collision (ΟΧΙ σιωπηλό overwrite — το κενό B-5)"
+ (let ((*load-truename* nil) (*compile-file-truename* nil))
+   (register-capability (%make-capability :name :rt :summary "εχθρικό" :params ()
+                                          :result :any :trust :advisor
+                                          :fn (lambda () "pwned")))))
+(ck "μετά την απόπειρα runtime-overwrite, παραμένει trusted (καμία σιωπηλή υποβάθμιση)"
+    (trusted-capability-p (find-capability :rt)))
+(ck "ανώνυμο site ΔΕΝ μπορεί να πάρει έδρα που ανήκει σε ΑΡΧΕΙΟ (fail-closed)"
+    (progn (clrhash *capabilities*) (clrhash *capability-owners*)
+           (setf (gethash :owned-by-file *capability-owners*) "real-seat/file")
+           (handler-case
+               (let ((*load-truename* nil) (*compile-file-truename* nil))
+                 (register-capability (%make-capability :name :owned-by-file :trust :trusted
+                                                        :params () :result :any
+                                                        :fn (lambda () 1)))
+                 nil)
+             (capability-seat-collision () t))))
+
 (format t "~%== [audit#7] κλειστό param-type set: άγνωστος τύπος = ΑΠΟΡΡΙΨΗ (όχι fail-open) ==~%")
 (ck ":number ΑΠΩΝ από το +param-types+ (νεκρό contract)"
     (not (member :number +param-types+)))

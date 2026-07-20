@@ -20,6 +20,8 @@
            #:make-relative-path
            ;; [0086] ταυτότητα φορτωνόμενου αρχείου (ΟΧΙ ρίζα) — για μητρώα ιδιοκτησίας
            #:current-load-file
+           #:+anonymous-load-site+
+           #:load-site-attributable-p
            ;; [0086+] Η ΜΙΑ έδρα του μοτίβου store-path (override + τεμπέλικη ρίζα)
            #:define-store-path
            ;; FF1 — Η ΜΙΑ έδρα ρίζας του Ιδρύματος (φορητή)
@@ -327,20 +329,33 @@
 (initialize-paths)
 
 
+(defparameter +anonymous-load-site+ "<runtime>"
+  "[audit#6 / re-review B-5] Η ΜΗ-αποδώσιμη ταυτότητα έδρας εκτός φόρτωσης. ΔΕΝ
+   ταυτοποιεί ΜΟΝΑΔΙΚΟ αρχείο — ΚΑΘΕ runtime εγγραφή τη μοιράζεται, άρα ΔΕΝ μπορεί
+   να αποδείξει single-ownership. Τα μητρώα εδρών (register-command/-capability)
+   την αντιμετωπίζουν fail-closed: ανώνυμο site παίρνει ΝΕΑ έδρα αλλά ΠΟΤΕ δεν
+   επαναδιεκδικεί υπάρχουσα (αλλιώς δύο ανώνυμες εγγραφές θα αντικαθιστούσαν σιωπηλά).")
+
 (defun current-load-file ()
   "[0086+] Ταυτότητα έδρας του αρχείου που φορτώνεται/μεταγλωττίζεται ΤΩΡΑ:
    «γονικός-κατάλογος/όνομα» ΧΩΡΙΣ type — το ASDF output translation διατηρεί
    τη δομή καταλόγων, άρα fasl ≡ source (ίδια ταυτότητα, κανένα ψευδο-collision
    σε hot reload) ΚΑΙ δύο ομώνυμα αρχεία σε ΑΛΛΟΥΣ καταλόγους διακρίνονται.
-   \"<runtime>\" εκτός φόρτωσης — ΔΗΛΩΜΕΝΟ όριο: οι runtime εγγραφές μοιράζονται
-   αυτή την ταυτότητα. ΤΑΥΤΟΤΗΤΑ ΜΟΝΟ, ποτέ ρίζα/διαδρομή (FF1 ⑭: το
-   load-truename ζει ΜΟΝΟ σε αυτή την έδρα)."
+   +anonymous-load-site+ εκτός φόρτωσης — ΜΗ-αποδώσιμη ταυτότητα (βλ. εκεί).
+   ΤΑΥΤΟΤΗΤΑ ΜΟΝΟ, ποτέ ρίζα/διαδρομή (FF1 ⑭: το load-truename ζει ΜΟΝΟ εδώ)."
   (let ((p (or *load-truename* *compile-file-truename*)))
     (if p
         (format nil "~A/~A"
                 (or (car (last (pathname-directory p))) "")
                 (pathname-name p))
-        "<runtime>")))
+        +anonymous-load-site+)))
+
+(defun load-site-attributable-p (site)
+  "Αποδίδεται το SITE σε ΜΟΝΑΔΙΚΟ αρχείο-έδρα; (δηλ. ΔΕΝ είναι το ανώνυμο runtime
+   sentinel). ΜΟΝΟ αποδώσιμο site μπορεί να επαναδιεκδικήσει τη δική του έδρα
+   (idempotent reload ίδιου αρχείου)· ανώνυμο ΠΟΤΕ — έτσι η σιωπηλή αντικατάσταση
+   από δύο μη-αποδώσιμες runtime εγγραφές γίνεται ΔΟΜΙΚΑ αδύνατη."
+  (and (stringp site) (string/= site +anonymous-load-site+)))
 
 (defmacro define-store-path (accessor var relpath &optional (doc ""))
   "[0086+] Η ΜΙΑ έδρα του μοτίβου «διαρκές store κάτω από τη ρίζα»: ορίζει
