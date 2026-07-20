@@ -134,6 +134,33 @@
   "Το ΜΟΝΑΔΙΚΟ cl:read της αρχιτεκτονικής σε data path. Επιστρέφει form ή +eof+."
   (read stream nil +eof+))
 
+;;; ── Δομικός φραγμός symbol-smuggling ([audit#4]): ΟΛΙΚΟΣ data-only έλεγχος ──
+
+(defun %data-only-p (form)
+  "T αν το FORM είναι ΑΜΙΓΩΣ data-only: κάθε atom ∈ {keyword, string, number, NIL, T},
+   κάθε cons αναδρομικά data-only. ΑΠΟΡΡΙΠΤΕΙ ΟΠΟΙΟΔΗΠΟΤΕ ξένο σύμβολο (π.χ. CL-USER::FOO,
+   SOMEPKG:BAR): αν και *package* :keyword δίνει keywords για bare tokens, ΡΗΤΑ
+   package-qualified tokens (`pkg::sym`, `pkg:sym`) μπορούν να δείξουν/intern-άρουν σε
+   ΥΠΑΡΧΟΝ package κατά το read. Αυτός ο ΟΛΙΚΟΣ (total) έλεγχος στο ΑΠΟΤΕΛΕΣΜΑ εγγυάται
+   ΔΟΜΙΚΑ ότι κανένα τέτοιο σύμβολο δεν διαφεύγει στον caller — το data-only contract
+   επιβάλλεται στην έξοδο, ΟΧΙ με εύθραυστο token pre-scan (που τα |multi-escape|+colon
+   combos σπάνε). Το interning side-effect κατά το read είναι φραγμένο από το byte-cap
+   (καμία απεριόριστη μνήμη) και ΑΔΡΑΝΕΣ (κανένα eval: *read-eval* NIL)."
+  (typecase form
+    (null    t)                 ; NIL (και η κενή λίστα)
+    (keyword t)
+    (symbol  (eq form t))       ; από τα ΜΗ-keyword σύμβολα ΜΟΝΟ το T επιτρέπεται
+    (string  t)
+    (number  t)
+    (cons    (and (%data-only-p (car form)) (%data-only-p (cdr form))))
+    (t       nil)))             ; ό,τι άλλο = fail-closed (δεν φτάνει εδώ υπό τη readtable)
+
+(defun %utf8-byte-length (string)
+  "Πλήθος UTF-8 BYTES του STRING (όχι χαρακτήρων) — ο byte-cap μετρά bytes, ίδια μονάδα
+   με το file-length του αρχείου ([audit#5]: Unicode string μπορεί να έχει πολλαπλάσια
+   bytes από χαρακτήρες)."
+  (length (sb-ext:string-to-octets string :external-format :utf-8)))
+
 ;;; ── Δημόσιο API: ΕΛΑΧΙΣΤΑ primitives (καμία σημασιολογική παράμετρος) ──
 
 (defun read-data-form (stream)
@@ -153,7 +180,7 @@
 
 (defun %decode-one (content max-depth)
   "One-form EOF law πάνω σε ΟΛΟΚΛΗΡΟ string (μετά byte-cap). (values form status),
-   status ∈ {:ok :empty :trailing :too-deep :unreadable :resource-exhausted}."
+   status ∈ {:ok :empty :trailing :too-deep :unreadable :disallowed-symbol :resource-exhausted}."
   (when (> (max-paren-depth content) max-depth)
     (return-from %decode-one (values nil :too-deep)))
   (%with-data-env
@@ -161,15 +188,16 @@
         (with-input-from-string (s content)
           (let ((form (%read-one s)))
             (cond ((eq form +eof+) (values nil :empty))
-                  ((eq (%read-one s) +eof+) (values form :ok))
-                  (t (values form :trailing)))))
+                  ((not (eq (%read-one s) +eof+)) (values form :trailing))
+                  ((not (%data-only-p form)) (values nil :disallowed-symbol))
+                  (t (values form :ok)))))
       (safe-read-error () (values nil :unreadable))
       (storage-condition (c) (values nil (%classify c)))
       (serious-condition () (values nil :unreadable)))))
 
 (defun %decode-sequence (content max-depth)
   "ΟΛΑ τα top-level forms (all-or-error· ΟΧΙ resync — αυτό είναι policy του journal).
-   (values list status), status ∈ {:ok :too-deep :unreadable :resource-exhausted}."
+   (values list status), status ∈ {:ok :too-deep :unreadable :disallowed-symbol :resource-exhausted}."
   (when (> (max-paren-depth content) max-depth)
     (return-from %decode-sequence (values nil :too-deep)))
   (%with-data-env
@@ -179,7 +207,10 @@
             (loop for form = (%read-one s)
                   until (eq form +eof+)
                   do (push form forms))
-            (values (nreverse forms) :ok)))
+            (let ((all (nreverse forms)))
+              (if (every #'%data-only-p all)
+                  (values all :ok)
+                  (values nil :disallowed-symbol)))))
       (safe-read-error () (values nil :unreadable))
       (storage-condition (c) (values nil (%classify c)))
       (serious-condition () (values nil :unreadable)))))
@@ -204,8 +235,9 @@
 
 (defun read-data-file (path &key (max-bytes *max-data-bytes*) (max-depth *max-data-depth*))
   "Διάβασε ΕΝΑ top-level data form από αρχείο PATH. (values form status), status ∈
-   {:ok :empty :trailing :too-large :too-deep :unreadable :resource-exhausted}.
-   Απόν αρχείο ⇒ (values NIL :empty). Μη-έμπιστο εξωτερικό: pre-scanned βάθος + byte-cap."
+   {:ok :empty :trailing :too-large :too-deep :unreadable :disallowed-symbol :resource-exhausted}.
+   Απόν αρχείο ⇒ (values NIL :empty). Μη-έμπιστο εξωτερικό: pre-scanned βάθος + byte-cap +
+   ΟΛΙΚΟΣ data-only έλεγχος (:disallowed-symbol σε ξένο package-qualified σύμβολο)."
   (multiple-value-bind (content st) (%slurp path max-bytes)
     (case st
       (:absent    (values nil :empty))
@@ -215,14 +247,16 @@
       (t (%decode-one content max-depth)))))
 
 (defun read-data-string (string &key (max-bytes *max-data-bytes*) (max-depth *max-data-depth*))
-  "Διάβασε ΕΝΑ top-level data form από STRING. Ίδιες εγγυήσεις/status με read-data-file."
-  (if (> (length string) max-bytes)
+  "Διάβασε ΕΝΑ top-level data form από STRING. Ίδιες εγγυήσεις/status με read-data-file.
+   [audit#5] Το byte-cap μετρά UTF-8 BYTES (όχι χαρακτήρες) — ΙΔΙΑ μονάδα με το file-length
+   του read-data-file· ένα Unicode string μπορεί να καταλαμβάνει πολλαπλάσια bytes."
+  (if (> (%utf8-byte-length string) max-bytes)
       (values nil :too-large)
       (%decode-one string max-depth)))
 
 (defun read-data-file-sequence (path &key (max-bytes *max-data-bytes*) (max-depth *max-data-depth*))
   "Διάβασε ΟΛΑ τα top-level data forms ενός αρχείου (all-or-error). (values list status),
-   status ∈ {:ok :empty :too-large :too-deep :unreadable :resource-exhausted}."
+   status ∈ {:ok :empty :too-large :too-deep :unreadable :disallowed-symbol :resource-exhausted}."
   (multiple-value-bind (content st) (%slurp path max-bytes)
     (case st
       (:absent    (values nil :empty))

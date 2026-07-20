@@ -131,5 +131,37 @@
   (check "*read-eval* unchanged after reads" (eq *read-eval* re0))
   (check "*read-default-float-format* unchanged after reads" (eq *read-default-float-format* ff0)))
 
+(format t "~%── [audit#4] symbol smuggling: ξένα package-qualified σύμβολα ΑΠΟΡΡΙΠΤΟΝΤΑΙ ──~%")
+;; Το *package* :keyword δίνει keywords για bare tokens, ΑΛΛΑ ρητά package-qualified
+;; tokens μπορούν να δείξουν/intern-άρουν σε ΥΠΑΡΧΟΝ package. Ο ΟΛΙΚΟΣ data-only έλεγχος
+;; στο ΑΠΟΤΕΛΕΣΜΑ το κόβει: status ≠ :ok (ποτέ ξένο σύμβολο στον caller).
+(check "CL-USER::EVIL (υπαρκτό package, intern) ⇒ :disallowed-symbol"
+       (eq (stat "common-lisp-user::evil") :disallowed-symbol))
+(check "μέσα σε λίστα: (:a CL-USER::X) ⇒ :disallowed-symbol"
+       (eq (stat "(:a common-lisp-user::x)") :disallowed-symbol))
+(check "external symbol SB-EXT:*POSIX-ARGV* ⇒ :disallowed-symbol (όχι :ok)"
+       (not (eq (stat "sb-ext:*posix-argv*") :ok)))
+(check "ανύπαρκτο package FOO::BAR ⇒ όχι :ok (reader-error/:unreadable)"
+       (not (eq (stat "foo::bar") :ok)))
+(check "βαθιά ένθεση με ξένο σύμβολο (:x (:y CL-USER::Z)) ⇒ :disallowed-symbol"
+       (eq (stat "(:x (:y common-lisp-user::z))") :disallowed-symbol))
+(check "καθαρά data (keywords/strings/numbers/lists) ⇒ :ok"
+       (eq (stat "(:a 1 :b \"x\" :c (:d 2))") :ok))
+;; Ο boolean round-trip (COMMON-LISP:NIL / :T) ΔΕΝ σπάει — nil/t επιτρέπονται ρητά.
+(check "COMMON-LISP:NIL / :T επιτρέπονται (boolean round-trip ακέραιος)"
+       (and (eq (stat "(:a common-lisp:nil :b common-lisp:t)") :ok)
+            (equal (val "(:a common-lisp:nil :b common-lisp:t)") '(:a nil :b t))))
+(check "bare nil/t ως keywords (:nil/:t) — καθαρά data, :ok"
+       (eq (stat "(nil t)") :ok))
+
+(format t "~%── [audit#5] byte-cap μετρά UTF-8 BYTES (όχι χαρακτήρες) ──~%")
+;; ":αβγδε" = 1 (:) + 5×2 (Greek) = 11 bytes, 6 chars. Το παλιό (length string) μετρούσε 6.
+(check "Unicode: 6 χαρακτήρες αλλά 11 bytes ⇒ :too-large με max-bytes 6"
+       (eq (nth-value 1 (read-data-string ":αβγδε" :max-bytes 6)) :too-large))
+(check "ίδιο input με max-bytes 11 ⇒ ΟΧΙ :too-large (χωράει)"
+       (not (eq (nth-value 1 (read-data-string ":αβγδε" :max-bytes 11)) :too-large)))
+(check "ASCII παραμένει 1 byte/char (\"(:a 1)\" 6 bytes)"
+       (eq (nth-value 1 (read-data-string "(:a 1)" :max-bytes 6)) :ok))
+
 (format t "~%safe-read-test: ~D passed, ~D failed~%" *pass* *fail*)
 (sb-ext:exit :code (if (zerop *fail*) 0 1))
