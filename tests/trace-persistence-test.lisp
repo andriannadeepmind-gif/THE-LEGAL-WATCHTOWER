@@ -56,6 +56,46 @@
          (with-open-file (s tmp :direction :output :if-exists :supersede)
            (format s "(:lawmax-trace/1 :trace-id 12345)~%"))  ; trace-id όχι string
          (ck-rejected "ATTACK λάθος τύπος (trace-id int) ⇒ ΑΠΟΡΡΙΠΤΕΤΑΙ" (load-traces-from-file tmp))
+         ;; [κύκλος-2 SECURITY] λείπον ΥΠΟΧΡΕΩΤΙΚΟ πεδίο ⇒ ΑΠΟΡΡΙΠΤΕΤΑΙ (καμία fabrication
+         ;; ταυτότητας/χρόνου/επιπέδου — το παλιό make-trace-info θα κατασκεύαζε νέα τιμή).
+         (with-open-file (s tmp :direction :output :if-exists :supersede)
+           (format s "(:lawmax-trace/1 :timestamp 42 :layer :layout)~%"))  ; ΛΕΙΠΕΙ trace-id
+         (ck-rejected "ATTACK λείπει :trace-id ⇒ ΑΠΟΡΡΙΠΤΕΤΑΙ (καμία fabricated ταυτότητα)"
+                      (load-traces-from-file tmp))
+         (with-open-file (s tmp :direction :output :if-exists :supersede)
+           (format s "(:lawmax-trace/1 :trace-id \"x\" :layer :layout)~%"))  ; ΛΕΙΠΕΙ timestamp
+         (ck-rejected "ATTACK λείπει :timestamp ⇒ ΑΠΟΡΡΙΠΤΕΤΑΙ (κανένας fabricated χρόνος)"
+                      (load-traces-from-file tmp))
+         (with-open-file (s tmp :direction :output :if-exists :supersede)
+           (format s "(:lawmax-trace/1 :trace-id \"x\" :timestamp 42)~%"))  ; ΛΕΙΠΕΙ layer
+         (ck-rejected "ATTACK λείπει :layer ⇒ ΑΠΟΡΡΙΠΤΕΤΑΙ" (load-traces-from-file tmp))
+         (with-open-file (s tmp :direction :output :if-exists :supersede)
+           (format s "(:lawmax-trace/1 :trace-id)~%"))  ; μη-άρτιο plist
+         (ck-rejected "ATTACK μη-άρτιο plist ⇒ ΑΠΟΡΡΙΠΤΕΤΑΙ" (load-traces-from-file tmp))
+         ;; [κύκλος-2] deep element validation: block-ids ΠΡΕΠΕΙ να είναι strings
+         (with-open-file (s tmp :direction :output :if-exists :supersede)
+           (format s "(:lawmax-trace/1 :trace-id \"x\" :timestamp 42 :layer :l :layout-block-ids (1 2))~%"))
+         (ck-rejected "ATTACK block-ids όχι strings (deep) ⇒ ΑΠΟΡΡΙΠΤΕΤΑΙ" (load-traces-from-file tmp))
+         ;; [κύκλος-2] VALIDATE-ALL-FIRST / ATOMIC COMMIT: 2ο record άκυρο ⇒ ΚΑΝΕΝΑ εγγράφεται
+         (clear-trace-registry)
+         (with-open-file (s tmp :direction :output :if-exists :supersede)
+           (format s "(:lawmax-trace/1 :trace-id \"GOOD\" :timestamp 1 :layer :l)~%")
+           (format s "(:lawmax-trace/1 :trace-id \"BAD\" :timestamp 2)~%"))  ; 2ο: λείπει layer
+         (ck-rejected "ATTACK partial-load (2ο record άκυρο) ⇒ σφάλμα" (load-traces-from-file tmp))
+         (ck "ATOMIC: μετά την αποτυχία, ΚΑΝΕΝΑ record δεν μπήκε στο registry (transaction)"
+             (null (lookup-trace "GOOD")))
+         ;; [κύκλος-2] DETERMINISTIC save: ίδιο registry ⇒ byte-identical αρχείο
+         (clear-trace-registry)
+         (register-trace (make-trace-info :trace-id "B" :layer :l :timestamp 2))
+         (register-trace (make-trace-info :trace-id "A" :layer :l :timestamp 1))
+         (let ((f1 (format nil "~A.d1" tmp)) (f2 (format nil "~A.d2" tmp)))
+           (unwind-protect
+                (progn (save-traces-to-file f1) (save-traces-to-file f2)
+                       (ck "DETERMINISTIC: δύο saves ⇒ byte-identical (ταξινομημένο κατά trace-id)"
+                           (string= (with-open-file (s f1) (let ((x (make-string (file-length s)))) (read-sequence x s) x))
+                                    (with-open-file (s f2) (let ((x (make-string (file-length s)))) (read-sequence x s) x)))))
+             (ignore-errors (delete-file f1)) (ignore-errors (delete-file f2))))
+         (clear-trace-registry)
          ;; θετικό: trace-to-data είναι data-only (κανένα non-keyword symbol στα κλειδιά)
          (let* ((tr (make-trace-info :trace-id "D" :layer :x))
                 (d (trace-to-data tr)))

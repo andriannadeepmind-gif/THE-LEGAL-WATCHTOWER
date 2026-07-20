@@ -444,10 +444,14 @@
 (defun make-trace-info (&key trace-id source-file source-pages source-bboxes
                              raw-text layout-block-ids logical-block-ids
                              canonical-block-ids ast-node-id parent-trace-ids
-                             timestamp layer)
+                             timestamp layer (register t))
   "Constructor for trace-info.
 
-   If TRACE-ID is not provided, generates deterministic ID from content."
+   If TRACE-ID is not provided, generates deterministic ID from content.
+   [κύκλος-2] REGISTER (default T): auto-register στο audit registry. Το data-only
+   %trace-decode το καλεί με :register NIL ⇒ ΚΑΜΙΑ παρενέργεια κατά το decode/validate
+   (η εγγραφή στο registry γίνεται ΑΤΟΜΙΚΑ από το load-traces-from-file, ΜΟΝΟ αφού ΟΛΑ
+   τα records επικυρωθούν — κανένα διπλό register, καμία μερική εγγραφή σε αποτυχία)."
   (let* ((computed-trace-id
            (or trace-id
                (generate-deterministic-trace-id
@@ -469,8 +473,8 @@
                                :parent-trace-ids (or parent-trace-ids '())
                                :timestamp (or timestamp (get-universal-time))
                                :layer (or layer :unknown))))
-    ;; Auto-register for audit trail
-    (register-trace trace)
+    ;; Auto-register for audit trail (εκτός αν :register NIL — data-only decode path)
+    (when register (register-trace trace))
     trace))
 
 (defmethod print-object ((trace trace-info) stream)
@@ -1008,34 +1012,57 @@
   (unless (and (consp data) (eq (first data) +trace-schema+))
     (error 'trace-decode-error :reason
            (format nil "άγνωστο schema/version: ~S" (and (consp data) (first data)))))
-  (let* ((plist (rest data))
-         (keys (loop for (k v) on plist by #'cddr collect k)))
-    (let ((unknown (set-difference keys +trace-data-keys+)))
-      (when unknown (error 'trace-decode-error :reason (format nil "άγνωστα πεδία: ~S" unknown))))
-    (unless (= (length keys) (length (remove-duplicates keys)))
-      (error 'trace-decode-error :reason "διπλό πεδίο"))
-    (labels ((str? (v n) (when v (unless (and (stringp v) (<= (length v) +trace-max-string+))
-                                    (error 'trace-decode-error :reason (format nil "~A: όχι bounded string" n)))) v)
-             (list? (v n) (when v (unless (and (listp v) (<= (length v) +trace-max-list+))
-                                     (error 'trace-decode-error :reason (format nil "~A: όχι bounded list" n)))) v)
-             (kw? (v n) (when v (unless (keywordp v)
-                                  (error 'trace-decode-error :reason (format nil "~A: όχι keyword" n)))) v)
-             (int? (v n) (when v (unless (integerp v)
-                                   (error 'trace-decode-error :reason (format nil "~A: όχι integer" n)))) v)
-             (g (k) (getf plist k)))
+  (let ((plist (rest data)))
+    ;; [κύκλος-2] ΑΡΤΙΟ plist (αλλιώς getf «ολισθαίνει» — δομικό σφάλμα, όχι σιωπή).
+    (unless (evenp (length plist))
+      (error 'trace-decode-error :reason "μη-άρτιο plist (κακοσχηματισμένο)"))
+    (let ((keys (loop for (k) on plist by #'cddr collect k)))
+      (unless (every #'keywordp keys)
+        (error 'trace-decode-error :reason "μη-keyword κλειδί"))
+      (let ((unknown (set-difference keys +trace-data-keys+)))
+        (when unknown (error 'trace-decode-error :reason (format nil "άγνωστα πεδία: ~S" unknown))))
+      (unless (= (length keys) (length (remove-duplicates keys)))
+        (error 'trace-decode-error :reason "διπλό πεδίο"))
+      ;; [κύκλος-2 SECURITY] ΥΠΟΧΡΕΩΤΙΚΑ πεδία ταυτότητας/χρόνου/επιπέδου: αν λείπουν, ο
+      ;; constructor θα ΚΑΤΑΣΚΕΥΑΖΕ νέο trace-id/timestamp/layer (forgery: αλλοιωμένο
+      ;; persisted trace θα φορτωνόταν με ΝΕΑ ταυτότητα/χρόνο αντί να ΑΠΟΡΡΙΦΘΕΙ). Τώρα:
+      ;; απόντα ⇒ trace-decode-error (καμία fabrication).
+      (dolist (req '(:trace-id :timestamp :layer))
+        (unless (member req keys)
+          (error 'trace-decode-error :reason (format nil "λείπει υποχρεωτικό πεδίο ~S" req)))))
+    (labels ((g (k) (getf plist k))
+             (bstr (v n req)                         ; bounded string (req ⇒ υποχρεωτικό μη-κενό)
+               (cond ((and (null v) (not req)) nil)
+                     ((and (stringp v) (<= (length v) +trace-max-string+)
+                           (or (not req) (plusp (length v)))) v)
+                     (t (error 'trace-decode-error :reason (format nil "~A: όχι έγκυρο bounded string" n)))))
+             (blist (v n elem-ok elem-desc)          ; bounded list + ΒΑΘΥΣ έλεγχος στοιχείου
+               (when v
+                 (unless (and (listp v) (<= (length v) +trace-max-list+))
+                   (error 'trace-decode-error :reason (format nil "~A: όχι bounded list" n)))
+                 (dolist (e v)
+                   (unless (funcall elem-ok e)
+                     (error 'trace-decode-error :reason (format nil "~A: στοιχείο όχι ~A (~S)" n elem-desc e)))))
+               v)
+             (num-p (x) (numberp x))
+             (str-p (x) (stringp x))
+             (numlist-p (x) (and (listp x) (every #'numberp x)))  ; bbox = λίστα αριθμών
+             (kw (v n) (unless (keywordp v) (error 'trace-decode-error :reason (format nil "~A: όχι keyword" n))) v)
+             (int (v n) (unless (integerp v) (error 'trace-decode-error :reason (format nil "~A: όχι integer" n))) v))
       (make-trace-info
-       :trace-id (str? (g :trace-id) :trace-id)
-       :source-file (str? (g :source-file) :source-file)
-       :source-pages (list? (g :source-pages) :source-pages)
-       :source-bboxes (list? (g :source-bboxes) :source-bboxes)
-       :raw-text (str? (g :raw-text) :raw-text)
-       :layout-block-ids (list? (g :layout-block-ids) :layout-block-ids)
-       :logical-block-ids (list? (g :logical-block-ids) :logical-block-ids)
-       :canonical-block-ids (list? (g :canonical-block-ids) :canonical-block-ids)
-       :ast-node-id (str? (g :ast-node-id) :ast-node-id)
-       :parent-trace-ids (list? (g :parent-trace-ids) :parent-trace-ids)
-       :timestamp (int? (g :timestamp) :timestamp)
-       :layer (kw? (g :layer) :layer)))))
+       :register nil                                 ; ΚΑΜΙΑ παρενέργεια κατά το decode
+       :trace-id (bstr (g :trace-id) :trace-id t)    ; ΥΠΟΧΡΕΩΤΙΚΟ μη-κενό
+       :source-file (bstr (g :source-file) :source-file nil)
+       :source-pages (blist (g :source-pages) :source-pages #'num-p "αριθμός")
+       :source-bboxes (blist (g :source-bboxes) :source-bboxes #'numlist-p "λίστα αριθμών")
+       :raw-text (bstr (g :raw-text) :raw-text nil)
+       :layout-block-ids (blist (g :layout-block-ids) :layout-block-ids #'str-p "string")
+       :logical-block-ids (blist (g :logical-block-ids) :logical-block-ids #'str-p "string")
+       :canonical-block-ids (blist (g :canonical-block-ids) :canonical-block-ids #'str-p "string")
+       :ast-node-id (bstr (g :ast-node-id) :ast-node-id nil)
+       :parent-trace-ids (blist (g :parent-trace-ids) :parent-trace-ids #'str-p "string")
+       :timestamp (int (g :timestamp) :timestamp)    ; ΥΠΟΧΡΕΩΤΙΚΟ
+       :layer (kw (g :layer) :layer)))))             ; ΥΠΟΧΡΕΩΤΙΚΟ
 
 ;; [re-review adv2-F3] ΔΙΑΓΡΑΦΗΚΑΝ (0 runtime callers, RCE-shaped):
 ;;   form-to-trace         — (eval form): αυθαίρετη εκτέλεση από «δεδομένα»
@@ -1050,18 +1077,20 @@
    standard-io-syntax + keyword package). [re-review adv2-F3] ΚΑΝΕΝΑΣ κώδικας: κανένα
    (make-trace-info)/(in-package)/(clear-trace-registry) — το αρχείο ΔΕΝ είναι πρόγραμμα,
    είναι δεδομένα. Επαναφορά ΜΟΝΟ μέσω load-traces-from-file (safe-read + typed decoder)."
-  (with-open-file (stream filepath
-                          :direction :output
-                          :if-exists :supersede
-                          :if-does-not-exist :create
-                          :external-format :utf-8)
-    (maphash (lambda (id trace)
-               (declare (ignore id))
-               (with-standard-io-syntax
-                 (let ((*package* (find-package :keyword)))
-                   (prin1 (trace-to-data trace) stream)))
-               (terpri stream))
-             registry))
+  ;; [κύκλος-2] DETERMINISTIC (ταξινομημένο κατά trace-id) + ΑΤΟΜΙΚΗ ανθεκτική εγγραφή
+  ;; (write-file-atomic: temp+fsync+rename — ποτέ μισο-γραμμένο/άδειο). Το παλιό maphash
+  ;; έδινε μη-ντετερμινιστική σειρά· το :supersede δεν ήταν ατομικό/ανθεκτικό.
+  (let ((entries '()))
+    (maphash (lambda (id trace) (push (cons id trace) entries)) registry)
+    (setf entries (sort entries #'string< :key #'car))
+    (orchestrator.journal:write-file-atomic
+     filepath
+     (with-output-to-string (s)
+       (dolist (e entries)
+         (with-standard-io-syntax
+           (let ((*package* (find-package :keyword)))
+             (prin1 (trace-to-data (cdr e)) s)))
+         (terpri s)))))
   filepath)
 
 (defun load-traces-from-file (filepath)
@@ -1075,9 +1104,13 @@
     (unless (member status '(:ok :empty))
       (error 'trace-decode-error :reason
              (format nil "μη αναγνώσιμο trace αρχείο (safe-read: ~A)" status)))
-    (dolist (data forms)
-      (register-trace (%trace-decode data)))
-    (length forms)))
+    ;; [κύκλος-2] VALIDATE-ALL-FIRST → ATOMIC COMMIT: αποκωδικοποίησε+επικύρωσε ΟΛΑ τα
+    ;; records ΧΩΡΙΣ παρενέργειες (%trace-decode → make-trace-info :register nil)· αν
+    ;; ΟΠΟΙΟΔΗΠΟΤΕ αποτύχει, σφάλμα ΠΡΙΝ αγγιχτεί το registry (καμία μερική εγγραφή). Μόνο
+    ;; αφού ΟΛΑ επικυρωθούν, γίνεται μία εγγραφή ανά trace (κανένα διπλό register).
+    (let ((traces (mapcar #'%trace-decode forms)))
+      (dolist (tr traces) (register-trace tr))
+      (length traces))))
 
 (defmacro quote-trace (trace-expr)
   "Capture a trace expression as data without evaluating.
