@@ -19,8 +19,15 @@
      - Errors if ALGORITHM not provided (prevents accidental omission)
      - Errors if algorithm not in allowed set
 
-   This is the ONLY authorized hash function for cryptographic hashing.
-   All hash operations must use this function with explicit algorithm.
+   [audit#13] ΑΚΡΙΒΗΣ ΕΜΒΕΛΕΙΑ (τίμια, όχι «η ONLY hash»): αυτή είναι η έδρα του
+   ΓΕΝΙΚΟΥ content-addressing hash (αυθαίρετο περιεχόμενο → hex, ρητό algorithm).
+   ΔΕΝ είναι η μόνη hash του συστήματος: υπάρχουν ΔΗΛΩΜΕΝΕΣ protocol-local hashes με
+   ΔΙΑΦΟΡΕΤΙΚΟ συμβόλαιο που ΔΕΝ μπορούν/πρέπει να περάσουν από εδώ — JWS/RS256 (RFC 7515),
+   X.509 SPKI, RFC-3161 TSA, RFC-6962 Merkle (domain-separated), keccak/256 (Ethereum),
+   digest-file ακεραιότητας. Το πλήρες, ΑΠΟΚΛΕΙΣΤΙΚΟ μητρώο κάθε hash-έδρας ζει στο
+   deployment/verify/hash-seat-registry.sexp και επιβάλλεται μηχανικά (καμία ΚΡΥΦΗ hash
+   έδρα): tests/hash-seat-registry-test.lisp. «Μία έδρα ανά ΕΝΝΟΙΑ» — η έννοια εδώ είναι
+   το γενικό content hash, όχι κάθε πρωτόκολλο.
 
    Returns:
      Hex string (lowercase, without algorithm prefix)"
