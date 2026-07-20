@@ -242,6 +242,7 @@
    ;; HOMOICONICITY
    ;; ══════════════════════════════════════════════════════════════════
    #:form-to-ast
+   #:ast-decode-error
    #:ast-to-readable-string
    #:save-ast-to-file
    #:load-ast-from-file
@@ -1058,42 +1059,85 @@
 ;;; GENERIC FUNCTIONS
 ;;; ============================================================================
 
+;;; [ARCH Phase 1] ΑΝΑΒΑΘΜΙΣΗ (όχι αφαίρεση): το παλιό ζεύγος έγραφε
+;;; (make-instance …)/(make-X-node …) ΚΩΔΙΚΑ (+ (list …), (quote …)) και τον
+;;; ΕΚΤΕΛΟΥΣΕ με form-to-ast = (eval form) / load-ast-from-file = (eval (read stream))
+;;; / provide-node restart = (eval (read)) — «HOMOICONICITY: the file IS a Lisp program»
+;;; = RCE seat. Η ΙΚΑΝΟΤΗΤΑ (serialize↔reconstruct/persist AST) διατηρείται με τα ΙΔΙΑ
+;;; exported ονόματα· ο ΜΗΧΑΝΙΣΜΟΣ αναβαθμίζεται στην data-only + safe-read + typed-decoder
+;;; μορφή: ast-to-form παράγει DATA-ONLY versioned plists, form-to-ast είναι typed decoder
+;;; ΧΩΡΙΣ eval, save/load περνούν από τη ΜΙΑ safe-read έδρα. data ≠ code· reconstruct ≠ eval.
+
+(defparameter +ast-node-class-alist+
+  '((:ast-node . ast-node) (:document-node . document-node) (:preamble-node . preamble-node)
+    (:article-node . article-node) (:paragraph-node . paragraph-node) (:point-node . point-node)
+    (:closing-node . closing-node) (:signature-node . signature-node) (:part-node . part-node)
+    (:division-node . division-node) (:chapter-node . chapter-node)
+    (:cross-reference-node . cross-reference-node) (:amendment-node . amendment-node)
+    (:transitional-node . transitional-node) (:effective-date-node . effective-date-node)
+    (:sub-point-node . sub-point-node) (:case-node . case-node))
+  "Κλειστό allowlist: keyword type-tag → class symbol. ΜΟΝΟ αυτές οι κλάσεις μπορούν να
+   ανασυγκροτηθούν — κανένα input-derived intern σε class symbol (fail-closed).")
+
+(defparameter +ast-schema-tags+
+  '(:ast-node/1 :document-node/1 :article-node/1 :paragraph-node/1 :point-node/1)
+  "Έγκυρα data-only tags των ast-to-form μορφών.")
+
+(define-condition ast-decode-error (error)
+  ((why :initarg :why :reader ast-decode-error-why :initform "μη αναγνώσιμο AST datum"))
+  (:report (lambda (c s) (format s "ast-decode: ~A" (ast-decode-error-why c)))))
+
+(defun %ast-marker-to-data (m)
+  "Point marker → data-only: string pass-through· character → (:char/1 \"x\") (ΩΣΤΕ να μη
+   χρειάζεται #\\ literal που η safe-read απαγορεύει)· nil → nil."
+  (typecase m
+    (null nil) (string m)
+    (character (list :char/1 (string m)))
+    (t (error 'ast-decode-error :why (format nil "μη serializable marker: ~S" m)))))
+
+(defun %ast-data-to-marker (d)
+  "data → point marker: nil/string pass-through· (:char/1 \"x\") → character."
+  (cond ((null d) nil) ((stringp d) d)
+        ((and (consp d) (eq (first d) :char/1) (stringp (second d)) (= 1 (length (second d))))
+         (char (second d) 0))
+        (t (error 'ast-decode-error :why (format nil "μη έγκυρος marker: ~S" d)))))
+
 (defgeneric ast-to-form (node)
-  (:documentation "Convert AST node to reconstructable Lisp form."))
+  (:documentation "Serialize AST node σε DATA-ONLY versioned plist (όχι κώδικα).
+   Αντίστροφο: form-to-ast (typed decoder, καμία eval). Χρησιμοποιείται και για display."))
 
 (defmethod ast-to-form ((node ast-node))
-  `(make-instance ',(type-of node)
-                  :id ,(ast-id node)
-                  :node-type ,(ast-type node)
-                  :text ,(ast-text node)
-                  :source-blocks ',(ast-source-blocks node)))
+  (list :ast-node/1
+        :type (intern (symbol-name (type-of node)) :keyword)
+        :id (ast-id node)
+        :node-type (ast-type node)
+        :text (ast-text node)
+        :source-blocks (ast-source-blocks node)))
 
 (defmethod ast-to-form ((node document-node))
-  `(make-document-node
-    :title ,(document-title node)
-    :preamble ,(when (document-preamble node)
-                 (ast-to-form (document-preamble node)))
-    :articles (list ,@(mapcar #'ast-to-form (document-articles node)))
-    :closing ,(when (document-closing node)
-                (ast-to-form (document-closing node)))))
+  (list :document-node/1
+        :title (document-title node)
+        :preamble (when (document-preamble node) (ast-to-form (document-preamble node)))
+        :articles (mapcar #'ast-to-form (document-articles node))
+        :closing (when (document-closing node) (ast-to-form (document-closing node)))))
 
 (defmethod ast-to-form ((node article-node))
-  `(make-article-node
-    :number ,(article-number node)
-    :title ,(article-title node)
-    :paragraphs (list ,@(mapcar #'ast-to-form (article-paragraphs node)))
-    :text ,(ast-text node)))
+  (list :article-node/1
+        :number (article-number node)
+        :title (article-title node)
+        :paragraphs (mapcar #'ast-to-form (article-paragraphs node))
+        :text (ast-text node)))
 
 (defmethod ast-to-form ((node paragraph-node))
-  `(make-paragraph-node
-    :number ,(paragraph-number node)
-    :content ,(paragraph-content node)
-    :points (list ,@(mapcar #'ast-to-form (paragraph-points node)))))
+  (list :paragraph-node/1
+        :number (paragraph-number node)
+        :content (paragraph-content node)
+        :points (mapcar #'ast-to-form (paragraph-points node))))
 
 (defmethod ast-to-form ((node point-node))
-  `(make-point-node
-    :marker ,(point-marker node)
-    :content ,(point-content node)))
+  (list :point-node/1
+        :marker (%ast-marker-to-data (point-marker node))
+        :content (point-content node)))
 
 ;;; ============================================================================
 ;;; AST TRAVERSAL
@@ -1528,9 +1572,18 @@
        nil)
      (provide-node (new-node)
        :report "Provide a replacement node"
+       ;; [ARCH Phase 1] Το παλιό :interactive έκανε (eval (read)) — αυθαίρετη εκτέλεση από
+       ;; το terminal. Τώρα το interactive input διαβάζεται ως DATA-ONLY (safe-read) και
+       ;; ανασυγκροτείται μέσω του typed decoder (form-to-ast) — ΚΑΜΙΑ eval. Άκυρο data
+       ;; ⇒ empty node (fail-closed, καμία εκτέλεση).
        :interactive (lambda ()
-                      (format t "Enter replacement node form: ")
-                      (list (eval (read))))
+                      (format t "Enter replacement node as data-only form: ")
+                      (multiple-value-bind (data status)
+                          (orchestrator.safe-read:read-data-string (read-line))
+                        (if (eq status :ok)
+                            (list (form-to-ast data))
+                            (progn (format t "~&Άκυρο data-only form (~A)· empty node.~%" status)
+                                   (list (make-instance 'ast-node :id (generate-ast-id "EMPTY")))))))
        new-node)))
 
 ;;; ============================================================================
@@ -1608,58 +1661,109 @@
 ;;; HOMOICONICITY - COMPLETE IMPLEMENTATION
 ;;; ============================================================================
 
-(defgeneric form-to-ast (form)
-  (:documentation "Reconstruct AST node from form.
-   HOMOICONICITY: eval the form to get the node."))
-
-(defmethod form-to-ast ((form list))
-  "Evaluate form to reconstruct AST node"
-  (eval form))
+(defun form-to-ast (form)
+  "TYPED DECODER: validated DATA-ONLY AST plist → AST node ΧΩΡΙΣ eval. Αυστηρό σχήμα:
+   κλειστό+ΥΠΟΧΡΕΩΤΙΚΟ key-set (κανένα forgery-by-omission), μη-διπλά keyword κλειδιά,
+   άρτιο plist, βαθύς type check ΚΑΘΕ στοιχείου (source-blocks/lists/nested nodes),
+   class allowlist (κανένα input-derived intern). Ανασυγκρότηση μέσω των κανονικών
+   constructors — ΚΑΜΙΑ eval. Αντικαθιστά το form-to-ast=(eval form)."
+  (labels ((err (fmt &rest a) (error 'ast-decode-error :why (apply #'format nil fmt a)))
+           (plist (f tag allowed required)
+             (unless (and (consp f) (eq (first f) tag) (evenp (length (rest f))))
+               (err "περίμενα άρτιο ~A plist" tag))
+             (let* ((pl (rest f)) (keys (loop for (k) on pl by #'cddr collect k)))
+               (unless (every #'keywordp keys) (err "~A: μη-keyword κλειδί" tag))
+               (unless (= (length keys) (length (remove-duplicates keys))) (err "~A: διπλό κλειδί" tag))
+               (let ((unknown (set-difference keys allowed)))
+                 (when unknown (err "~A: άγνωστα πεδία ~S" tag unknown)))
+               (dolist (r required) (unless (member r keys) (err "~A: λείπει υποχρεωτικό πεδίο ~S" tag r)))
+               pl))
+           (sstr (v w) (unless (stringp v) (err "~A: όχι string" w)) v)
+           (sstr? (v w) (unless (or (null v) (stringp v)) (err "~A: όχι string/nil" w)) v)
+           (sint? (v w) (unless (or (null v) (stringp v) (integerp v)) (err "~A: όχι string/integer/nil" w)) v)
+           (skw (v w) (unless (keywordp v) (err "~A: όχι keyword" w)) v)
+           (sidlist (v w)
+             (unless (listp v) (err "~A: όχι λίστα" w))
+             (dolist (e v) (unless (or (stringp e) (numberp e) (keywordp e)) (err "~A: μη-data στοιχείο ~S" w e)))
+             v)
+           (snode? (v) (and v (decode v)))
+           (snodelist (v w) (unless (listp v) (err "~A: όχι λίστα" w)) (mapcar #'decode v))
+           (decode (f)
+             (unless (and (consp f) (member (first f) +ast-schema-tags+))
+               (err "άγνωστο/κακοσχηματισμένο AST tag: ~S" (and (consp f) (first f))))
+             (ecase (first f)
+               (:ast-node/1
+                (let* ((p (plist f :ast-node/1 '(:type :id :node-type :text :source-blocks)
+                                 '(:type :id :node-type :text :source-blocks)))
+                       (tk (skw (getf p :type) :type))
+                       (class (cdr (assoc tk +ast-node-class-alist+))))
+                  (unless class (err "μη επιτρεπτή κλάση: ~S" tk))
+                  (make-instance class
+                                 :id (sstr (getf p :id) :id)
+                                 :node-type (skw (getf p :node-type) :node-type)
+                                 :text (sstr (getf p :text) :text)
+                                 :source-blocks (sidlist (getf p :source-blocks) :source-blocks))))
+               (:document-node/1
+                (let ((p (plist f :document-node/1 '(:title :preamble :articles :closing)
+                                '(:title :preamble :articles :closing))))
+                  (make-document-node :title (sstr? (getf p :title) :title)
+                                      :preamble (snode? (getf p :preamble))
+                                      :articles (snodelist (getf p :articles) :articles)
+                                      :closing (snode? (getf p :closing)))))
+               (:article-node/1
+                (let ((p (plist f :article-node/1 '(:number :title :paragraphs :text)
+                                '(:number :title :paragraphs :text))))
+                  (make-article-node :number (sint? (getf p :number) :number)
+                                     :title (sstr? (getf p :title) :title)
+                                     :paragraphs (snodelist (getf p :paragraphs) :paragraphs)
+                                     :text (sstr (getf p :text) :text))))
+               (:paragraph-node/1
+                (let ((p (plist f :paragraph-node/1 '(:number :content :points)
+                                '(:number :content :points))))
+                  (make-paragraph-node :number (sint? (getf p :number) :number)
+                                       :content (sstr (getf p :content) :content)
+                                       :points (snodelist (getf p :points) :points))))
+               (:point-node/1
+                (let ((p (plist f :point-node/1 '(:marker :content) '(:marker :content))))
+                  (make-point-node :marker (%ast-data-to-marker (getf p :marker))
+                                   :content (sstr (getf p :content) :content)))))))
+    (decode form)))
 
 (defun ast-to-readable-string (node)
-  "Convert AST to readable string representation.
-
-   The string can be READ and EVALd to reconstruct the AST."
+  "Convert AST to human-readable DATA-ONLY string (the versioned plist of ast-to-form).
+   [ARCH Phase 1] Το string είναι ΔΕΔΟΜΕΝΑ, ΟΧΙ πρόγραμμα: ανασυγκρότηση με
+   (form-to-ast (orchestrator.safe-read:read-data-string s)) — read+typed-decode, ΠΟΤΕ eval."
   (with-output-to-string (s)
-    (let ((*print-readably* t)
-          (*print-pretty* t)
-          (*print-right-margin* 100))
-      (prin1 (ast-to-form node) s))))
+    (with-standard-io-syntax
+      (let ((*package* (find-package :keyword))
+            (*print-pretty* t)
+            (*print-right-margin* 100))
+        (prin1 (ast-to-form node) s)))))
 
 (defun save-ast-to-file (ast filepath)
-  "Save AST to file as executable Lisp code.
-
-   HOMOICONICITY: The file IS a Lisp program that reconstructs the AST."
-  (with-open-file (stream filepath
-                          :direction :output
-                          :if-exists :supersede
-                          :if-does-not-exist :create)
-    (format stream ";;;; AST Export~%")
-    (format stream ";;;; Generated: ~A~%" (get-universal-time))
-    (format stream "(in-package :orchestrator.legal-ast)~%~%")
-    (let ((*print-readably* t)
-          (*print-pretty* t)
-          (*print-right-margin* 100))
-      (prin1 (ast-to-form ast) stream))
-    (terpri stream))
+  "Save AST ως DATA-ONLY versioned plist, ΑΤΟΜΙΚΑ (write-file-atomic: temp+fsync+rename —
+   ποτέ μισο-γραμμένο). [ARCH Phase 1] Το αρχείο ΔΕΝ είναι πρόγραμμα (κανένα in-package/
+   make-instance/eval): επαναφορά ΜΟΝΟ μέσω load-ast-from-file (safe-read + typed decoder).
+   (Καμία legacy μετανάστευση: το παλιό executable format ήταν dead — 0 persisted artifacts.)"
+  (let ((data (ast-to-form ast)))
+    (orchestrator.journal:write-file-atomic
+     filepath
+     (with-output-to-string (s)
+       (format s ";;;; AST Export — data-only schema ~A (ΔΕΔΟΜΕΝΑ, όχι κώδικας)~%" (first data))
+       (with-standard-io-syntax
+         (let ((*package* (find-package :keyword))) (prin1 data s)))
+       (terpri s))))
   filepath)
 
 (defun load-ast-from-file (filepath)
-  "Load AST from file.
-
-   HOMOICONICITY: Just LOAD the file."
-  (let ((*package* (find-package :orchestrator.legal-ast)))
-    (with-open-file (stream filepath :direction :input)
-      ;; Skip header comment lines without consuming the first non-comment byte.
-      ;; peek-char skips whitespace then looks at the next char; if it is #\;
-      ;; the whole line is a comment — consume it and repeat.
-      (loop for next-char = (peek-char t stream nil nil)
-            while (and next-char (char= next-char #\;))
-            do (read-line stream nil nil))
-      ;; Skip package form
-      (read stream)
-      ;; Read and eval the AST form
-      (eval (read stream)))))
+  "Load AST ΜΕΣΩ της ΜΙΑΣ safe-read έδρας (read-data-file: pre-scanned depth/atoms + byte-cap +
+   *read-eval* nil + #-deny) + typed decoder (form-to-ast) — ΚΑΝΕΝΑ cl:load/eval/read-from-string.
+   [ARCH Phase 1] read-data-file (ΟΧΙ read-data-form): τα αρχεία θεωρούνται δυνητικά αλλοιώσιμα,
+   άρα ΠΡΕΠΕΙ pre-scan. data ≠ code· restore ≠ load."
+  (multiple-value-bind (data status) (orchestrator.safe-read:read-data-file filepath)
+    (unless (eq status :ok)
+      (error 'ast-decode-error :why (format nil "μη αναγνώσιμο AST αρχείο (safe-read: ~A)" status)))
+    (form-to-ast data)))
 
 ;;; ============================================================================
 ;;; MULTIPLE VALUES - RICH RETURNS
