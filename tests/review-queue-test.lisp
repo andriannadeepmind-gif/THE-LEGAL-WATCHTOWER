@@ -278,6 +278,38 @@
           (check "(απόδειξη κενού) το self-referential verify-decision-signature ΘΑ περνούσε"
                  (verify-decision-signature genuine-sig pub)))))))
 
+(format t "~%== [re-review adv1-2] delimiter-injection: μη-injective item-key ΘΑΝΑΤΟΣ ==~%")
+;; Δύο ΔΙΑΚΡΙΤΑ items με μετατοπισμένο «|» μεταξύ source/target ΚΑΙ ίδιο payload:
+;; παλιά «~A|~A» έδιναν ΙΔΙΟ item-key ⇒ μία έγκριση/υπογραφή για ΔΥΟ διαφορετικές αλλαγές.
+(let* ((pl '(:op :replace-text :text "x"))
+       (ia (make-instance 'amendment-review :source "a"   :target "b|c" :payload pl))
+       (ib (make-instance 'amendment-review :source "a|b" :target "c"   :payload pl)))
+  (check "delimiter-injection: distinct (source,target) → ΔΙΑΦΟΡΕΤΙΚΟ item-key (injective)"
+         (not (string= (%item-key ia) (%item-key ib))))
+  (check "και το canonical statement διαφέρει (η υπογραφή δεν αλιάρει)"
+         (not (string= (%canonical-decision-statement (%item-key ia) :approve "L" "T")
+                       (%canonical-decision-statement (%item-key ib) :approve "L" "T"))))
+  (check "ίδιο ακριβώς item → ίδιο item-key (dedup σταθερό)"
+         (string= (%item-key ia)
+                  (%item-key (make-instance 'amendment-review :source "a" :target "b|c" :payload pl))))
+  (check "payload-fingerprint ΠΛΗΡΕΣ 64-hex (256-bit, όχι truncated 16)"
+         (= 64 (length (%payload-fingerprint ia)))))
+
+(format t "~%== [re-review adv1-4] by=nil: signed έγκριση content-verify-άρεται (όχι μόνιμα αδημοσίευτη) ==~%")
+(let* ((dir (format nil "/tmp/rq-bynil-~D/" (get-internal-real-time)))
+       (priv (format nil "~Apriv.pem" dir)) (pub (format nil "~Apub.pem" dir)))
+  (orchestrator.jws-authority:save-rsa-keypair
+   (orchestrator.jws-authority:generate-rsa-keypair :bits 2048) priv pub)
+  (let* ((*review-signing-key-path* priv)
+         (q (make-review-queue))
+         (it (enqueue q (make-instance 'amendment-review :source "L1" :target "art_9"
+                                       :payload '(:op :replace-text :text "Ν")))))
+    (decide q (item-id it) :approve :by nil)   ; by=nil — παλιά έσπαγε το content-verify
+    (check "by=nil: decided-by αποθηκεύτηκε (\"unknown\")"
+           (string= "unknown" (item-decided-by it)))
+    (check "by=nil: η signed έγκριση content-verify-άρεται (statement == item, όχι mismatch)"
+           (verify-item-decision it pub))))
+
 (format t "~%== [re-review CRITICAL] memory validation στο restore (forged learned-approve) ==~%")
 (macrolet ((ck-restore-signals (name form)
              `(check ,name (handler-case (progn ,form nil) (restore-queue-error () t)))))

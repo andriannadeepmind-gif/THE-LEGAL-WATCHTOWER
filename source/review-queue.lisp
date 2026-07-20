@@ -97,12 +97,25 @@
    (fail-closed: unsigned/αλλοιωμένη έγκριση ΔΕΝ φτάνει στο corpus). nil ⇒ καμία επαλήθευση
    configured (ΔΗΛΩΜΕΝΟ όριο· δένεται από REVIEW_VERIFY_KEY στο startup, μοτίβο signing key).")
 
+(defun %canon-encode (&rest fields)
+  "[re-review adv1-2] Η ΜΙΑ έδρα INJECTIVE κανονικής κωδικοποίησης πεδίων: prin1 τυπωμένης
+   λίστας υπό standard-io-syntax + keyword package. Τα strings τυπώνονται quoted+escaped,
+   άρα ΚΑΝΕΝΑ περιεχόμενο πεδίου δεν μπορεί να μιμηθεί το όριο άλλου πεδίου. Το παλιό
+   «~A|~A|…» ΔΕΝ ήταν injective: (source=\"a\" target=\"b|c\") και (source=\"a|b\" target=\"c\")
+   έδιναν ΙΔΙΟ string ⇒ μία υπογραφή εξουσιοδοτούσε ΔΥΟ διακριτές αλλαγές. Εδώ αυτό γίνεται
+   δομικά αδύνατο (η κωδικοποίηση είναι αντιστρέψιμη/1-1)."
+  (with-output-to-string (s)
+    (with-standard-io-syntax
+      (let ((*package* (find-package :keyword)))
+        (prin1 fields s)))))
+
 (defun %canonical-decision-statement (item-key decision by at)
-  "Η ΚΑΝΟΝΙΚΗ δήλωση που υπογράφεται: δένει ταυτότητα|ρήμα|actor|χρόνο ώστε αλλαγή
-   ΟΠΟΙΟΥΔΗΠΟΤΕ πεδίου να σπάει την υπογραφή. item-key περιέχει ΗΔΗ το payload fingerprint
-   ([audit#9]) — άρα η υπογραφή δένεται στο ΑΚΡΙΒΕΣ προτεινόμενο περιεχόμενο."
-  (format nil "review-decision/1|~A|~A|~A|~A"
-          item-key (string-downcase (string decision)) (or by "") (or at "")))
+  "Η ΚΑΝΟΝΙΚΗ δήλωση που υπογράφεται: δένει INJECTIVELY ταυτότητα/ρήμα/actor/χρόνο ώστε
+   αλλαγή ΟΠΟΙΟΥΔΗΠΟΤΕ πεδίου να σπάει την υπογραφή (πλέον ΑΛΗΘΕΣ — καμία delimiter-alias).
+   Το item-key περιέχει ΗΔΗ το πλήρες payload fingerprint (256-bit) — άρα η υπογραφή
+   δένεται στο ΑΚΡΙΒΕΣ προτεινόμενο περιεχόμενο. Version /2 (breaking: injective + full hash)."
+  (%canon-encode :review-decision/2
+                 item-key (string-downcase (string decision)) (or by "") (or at "")))
 
 (defun %sign-decision (item-key decision by at)
   "Signed decision record (data-only plist). FAIL-CLOSED: κλειδί ΠΑΡΟΝ αλλά αποτυχία
@@ -288,24 +301,21 @@
 (defun make-review-queue () (make-instance 'review-queue))
 
 (defun %payload-fingerprint (item)
-  "Ντετερμινιστικό sha256-16 του payload (data-only prin1 υπό keyword package, ίδια
-   κανονική μορφή με το save format). ΜΕΡΟΣ της ταυτότητας ώστε ΔΙΑΦΟΡΕΤΙΚΟ προτεινόμενο
-   περιεχόμενο για το ΙΔΙΟ άρθρο να ΜΗΝ συμπτύσσεται σε μία πρόταση — [audit#9]."
-  (subseq (orchestrator.journal:sha256-hex
-           (with-output-to-string (s)
-             (with-standard-io-syntax
-               (let ((*package* (find-package :keyword)))
-                 (prin1 (item-payload item) s)))))
-          0 16))
+  "[re-review adv1-1] ΠΛΗΡΕΣ sha256 (64-hex, 256-bit) του κανονικού payload — ΟΧΙ πλέον
+   truncated 16-hex/64-bit (birthday 2^32 ⇒ collision εφικτή από τον προτείνοντα). Στα
+   256 bit η σύμπτωση δύο διαφορετικών payloads είναι ΔΟΜΙΚΑ αδύνατη. Ίδια κανονική μορφή
+   με το save format (data-only prin1 υπό keyword package, μέσω της %canon-encode έδρας)."
+  (orchestrator.journal:sha256-hex (%canon-encode (item-payload item))))
 
 (defun %item-key (item)
-  "Stable identity: kind|source|target|payload-fingerprint. [audit#9] Το payload ΑΝΗΚΕΙ
-   στην ταυτότητα: δύο ΔΙΑΦΟΡΕΤΙΚΕΣ προτεινόμενες αλλαγές για το ΙΔΙΟ άρθρο είναι ΔΥΟ
-   ξεχωριστές προτάσεις (ξεχωριστός ανθρώπινος έλεγχος· καμία auto-approve λόγω απόφασης
-   ΑΛΛΟΥ περιεχομένου) — ίδιο ακριβώς περιεχόμενο σε επαναλαμβανόμενα polls = μία εγγραφή."
-  (format nil "~A|~A|~A|~A"
-          (item-kind item) (item-source item) (item-target item)
-          (%payload-fingerprint item)))
+  "Stable identity — INJECTIVE κωδικοποίηση (kind, source, target, full payload-fingerprint)
+   μέσω της %canon-encode έδρας. [audit#9] Το payload ΑΝΗΚΕΙ στην ταυτότητα: δύο ΔΙΑΦΟΡΕΤΙΚΕΣ
+   προτεινόμενες αλλαγές είναι ΔΥΟ ξεχωριστές προτάσεις (ξεχωριστός ανθρώπινος έλεγχος).
+   [re-review adv1-2] Το παλιό «~A|~A» ΔΕΝ ήταν injective: μετατόπιση «|» μεταξύ source/target
+   έδινε ΙΔΙΟ key για διακριτά items ⇒ μία έγκριση εξουσιοδοτούσε δύο αλλαγές. Πλέον αδύνατο."
+  (%canon-encode :review-item/2
+                 (item-kind item) (item-source item) (item-target item)
+                 (%payload-fingerprint item)))
 
 (defun enqueue (queue item)
   "Add ITEM unless an item with the same identity is already queued. Assigns a
@@ -349,10 +359,15 @@
       (apply-decision item decision :by by :note note)
       ;; [audit#8 μέρος Β] Υπόγραψε την απόφαση (ΜΙΑ έδρα, στο μοναδικό choke point που
       ;; καλούν CLI/cockpit/web) και αποθήκευσέ την ΚΑΙ στο item ΚΑΙ στη μνήμη (durable).
-      (let ((sig (%sign-decision (%item-key item) decision by (item-decided-at item))))
+      ;; [re-review adv1-4] Υπόγραψε/αποθήκευσε τον ΠΡΑΓΜΑΤΙΚΟ decided-by του item (που η
+      ;; apply-decision έθεσε σε (or by "unknown")), ΟΧΙ τον raw by. Αλλιώς by=nil ⇒ statement
+      ;; με "" αλλά item με "unknown" ⇒ verify-item-decision recompute mismatch ⇒ ΜΟΝΙΜΑ
+      ;; αδημοσίευτη γνήσια έγκριση (δύο έδρες με διαφορετικό default = ΜΙΑ έδρα violation).
+      (let* ((actor (item-decided-by item))
+             (sig (%sign-decision (%item-key item) decision actor (item-decided-at item))))
         (setf (item-signature item) sig)
         (setf (gethash (%item-key item) (queue-memory queue))
-              (list :decision decision :by by :note note :at (item-decided-at item)
+              (list :decision decision :by actor :note note :at (item-decided-at item)
                     :signature sig))))
     item))
 
