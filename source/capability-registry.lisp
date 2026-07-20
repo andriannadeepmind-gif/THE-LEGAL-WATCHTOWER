@@ -27,7 +27,9 @@
            #:find-capability #:all-capabilities #:*capabilities*
            #:trusted-capability-p #:advisor-capability-p
            #:invoke-capability #:capability-error #:capability-error-cap
-           #:capability-error-reason #:param-name #:param-type #:param-required-p))
+           #:capability-error-reason #:param-name #:param-type #:param-required-p
+           #:+param-types+ #:capability-seat-collision #:capability-owner
+           #:collision-capability-name #:collision-existing-owner #:collision-claimant))
 
 (in-package :orchestrator.capability)
 
@@ -49,8 +51,34 @@
 (defun param-type     (p) (second p))
 (defun param-required-p (p) (third p))
 
+;; [audit#7] Το ΚΛΕΙΣΤΟ (frozen) σύνολο των επιτρεπτών param types — Η ΜΙΑ πηγή
+;; αλήθειας. ΚΑΘΕ μονοπάτι (registration validation + runtime %type-ok-p + API
+;; %coerce-one) οφείλει να καλύπτει ΑΚΡΙΒΩΣ αυτό — καμία fail-open «(t t)»/«(t s)».
+;; Άγνωστος τύπος ⇒ ΑΠΟΡΡΙΨΗ στην εγγραφή (fail-closed), ποτέ σιωπηλή αποδοχή/υποβάθμιση.
+;; (:number ΑΠΩΝ — καταργήθηκε [0094]/2A· η bidirectional gate το επιβάλλει.)
+(defparameter +param-types+ '(:string :keyword :any :integer :boolean)
+  "Το frozen canonical σύνολο param types. Αλλαγή = συνταγματική πράξη μαζί με
+   %type-ok-p ΚΑΙ capability-api:%coerce-one (bidirectional, tests/param-type-coercion).")
+
 (defparameter *capabilities* (make-hash-table :test 'eq)
   "Η ΜΙΑ έδρα: name (keyword) -> capability. Κανένα δεύτερο μητρώο.")
+
+;; [audit#6] name (keyword) → namestring του αρχείου-ΙΔΙΟΚΤΗΤΗ. ΜΙΑ δυνατότητα,
+;; ΕΝΑΣ ιδιοκτήτης: η σιωπηλή αντικατάσταση trusted↔advisor / fn / params / proof
+;; από ΑΛΛΟ αρχείο γίνεται ΔΟΜΙΚΑ αδύνατη (ίδιο πρότυπο με command-seat-collision).
+(defparameter *capability-owners* (make-hash-table :test 'eq)
+  "name → owner file. Επανεγγραφή από ΑΛΛΟ αρχείο ⇒ capability-seat-collision.")
+
+(define-condition capability-seat-collision (error)
+  ((name     :initarg :name     :reader collision-capability-name)
+   (owner    :initarg :owner    :reader collision-existing-owner)
+   (claimant :initarg :claimant :reader collision-claimant))
+  (:report (lambda (c s)
+             (format s "ΣΥΓΚΡΟΥΣΗ ΕΔΡΑΣ ΔΥΝΑΤΟΤΗΤΑΣ «~A»: ιδιοκτήτης ~A, διεκδικητής ~A — ~
+                        μία δυνατότητα έχει ΜΙΑ έδρα· καμία σιωπηλή αντικατάσταση trust/fn/schema."
+                     (collision-capability-name c)
+                     (collision-existing-owner c)
+                     (collision-claimant c)))))
 
 (define-condition capability-error (error)
   ((cap    :initarg :cap    :reader capability-error-cap)
@@ -66,12 +94,18 @@
 (defun %valid-trust-p (x) (member x '(:trusted :advisor)))
 
 (defun %valid-param-spec-p (spec)
+  "(:name :TYPE required-p) όπου :TYPE ∈ +param-types+ (ΚΛΕΙΣΤΟ σύνολο· άγνωστος
+   τύπος = ΑΠΟΡΡΙΨΗ, όχι σιωπηλή αποδοχή — [audit#7])."
   (and (listp spec) (= 3 (length spec))
-       (keywordp (first spec)) (keywordp (second spec))
+       (keywordp (first spec))
+       (keywordp (second spec)) (member (second spec) +param-types+)
        (member (third spec) '(t nil))))
 
 (defun register-capability (cap)
-  "Εγγράφει (ή αντικαθιστά ρητά) μια δυνατότητα στη ΜΙΑ έδρα. Fail-closed έλεγχοι."
+  "Εγγράφει μια δυνατότητα στη ΜΙΑ έδρα. Fail-closed έλεγχοι + ΝΟΜΟΣ ΜΙΑΣ ΕΔΡΑΣ:
+   αν το NAME ανήκει ήδη σε ΑΛΛΟ αρχείο ⇒ capability-seat-collision (καμία σιωπηλή
+   αντικατάσταση trust/fn/schema/proof). Επανεγγραφή από το ΙΔΙΟ αρχείο = idempotent
+   reload (επιτρεπτή). [audit#6]"
   (let ((name (capability-name cap)))
     (unless (keywordp name)
       (error "capability: το όνομα πρέπει να είναι keyword, όχι ~S" name))
@@ -83,9 +117,20 @@
     (dolist (spec (capability-params cap))
       (unless (%valid-param-spec-p spec)
         (error 'capability-error :cap name
-               :reason (format nil "άκυρο param spec ~S (θέλει (keyword τύπος t/nil))" spec))))
+               :reason (format nil "άκυρο param spec ~S (θέλει (keyword τύπος∈~S t/nil))"
+                               spec +param-types+))))
+    ;; ΝΟΜΟΣ ΜΙΑΣ ΕΔΡΑΣ — owner binding (ίδιο πρότυπο με register-command).
+    (let ((site  (orchestrator.paths:current-load-file))
+          (owner (gethash name *capability-owners*)))
+      (when (and owner site (string/= owner site))
+        (error 'capability-seat-collision :name name :owner owner :claimant site))
+      (when site (setf (gethash name *capability-owners*) site)))
     (setf (gethash name *capabilities*) cap)
     name))
+
+(defun capability-owner (name)
+  "Το αρχείο-έδρα της δυνατότητας NAME, ή NIL."
+  (gethash name *capability-owners*))
 
 (defmacro define-capability (name &key summary params (result :any) (trust :trusted)
                                        proof fn)
@@ -113,14 +158,15 @@
 ;;; ----------------------------------------------------------------------------
 
 (defun %type-ok-p (ptype value)
-  (case ptype
+  "Runtime type check ΑΚΡΙΒΩΣ πάνω στο +param-types+ (ecase ⇒ άγνωστος τύπος
+   σφάλλει δομικά — καμία fail-open «(t t)» που αποδεχόταν κάθε άγνωστο τύπο [audit#7].
+   Ο τύπος είναι ήδη εγγυημένος ∈ +param-types+ από την register-capability)."
+  (ecase ptype
     (:string  (stringp value))
     (:integer (integerp value))
-    (:number  (realp value))
     (:boolean (member value '(t nil)))
     (:keyword (keywordp value))
-    ((:any nil) t)
-    (t t)))
+    (:any     t)))
 
 (defun %plist-has-key (plist key)
   (loop for (k v) on plist by #'cddr thereis (eq k key)))

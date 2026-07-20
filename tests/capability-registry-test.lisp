@@ -11,6 +11,8 @@
      (error (e) (incf *f*) (format t "  FAIL ~A (error: ~A)~%" ,name e))))
 (defmacro ck-signals (name form)
   `(ck ,name (handler-case (progn ,form nil) (capability-error () t))))
+(defmacro ck-signals-collision (name form)
+  `(ck ,name (handler-case (progn ,form nil) (capability-seat-collision () t))))
 
 (format t "~%== [1] δηλωτικός ορισμός + εγγραφή ==~%")
 (clrhash *capabilities*)
@@ -65,6 +67,46 @@
 (format t "~%== [5] ντετερμινιστική προβολή (σταθερή σειρά για κάθε επιφάνεια) ==~%")
 (ck "all-capabilities ταξινομημένο κατά όνομα"
     (equal '(:echo :suggest) (mapcar #'capability-name (all-capabilities))))
+
+(format t "~%== [audit#6] seat-collision: καμία σιωπηλή αντικατάσταση από ΑΛΛΟ αρχείο ==~%")
+(clrhash *capabilities*) (clrhash *capability-owners*)
+(define-capability :guarded
+  :summary "trusted έδρα προς προστασία" :params () :result :any :trust :trusted
+  :fn (lambda () "θεμιτό"))
+;; Προσομοίωση ΑΛΛΟΥ αρχείου-ιδιοκτήτη (σίγουρα ≠ current-load-file).
+(setf (gethash :guarded *capability-owners*) "audit6-OTHER-SEAT/foreign")
+(ck-signals-collision
+ ":guarded από ΑΛΛΟ αρχείο ⇒ capability-seat-collision (trust ΔΕΝ αλλάζει)"
+ (register-capability
+  (%make-capability :name :guarded :summary "εχθρικό" :params ()
+                    :result :any :trust :advisor :fn (lambda () "pwned"))))
+(ck "μετά την απόπειρα, η δυνατότητα παραμένει trusted (καμία σιωπηλή υποβάθμιση)"
+    (trusted-capability-p (find-capability :guarded)))
+(ck "idempotent reload από το ΙΔΙΟ αρχείο επιτρέπεται"
+    (progn (setf (gethash :guarded *capability-owners*)
+                 (orchestrator.paths:current-load-file))
+           (eq :guarded (register-capability
+                         (%make-capability :name :guarded :summary "reload" :params ()
+                                           :result :any :trust :trusted :fn (lambda () "ok"))))))
+
+(format t "~%== [audit#7] κλειστό param-type set: άγνωστος τύπος = ΑΠΟΡΡΙΨΗ (όχι fail-open) ==~%")
+(ck ":number ΑΠΩΝ από το +param-types+ (νεκρό contract)"
+    (not (member :number +param-types+)))
+(ck "+param-types+ = ακριβώς το frozen σύνολο"
+    (null (set-exclusive-or +param-types+ '(:string :keyword :any :integer :boolean))))
+(ck-signals "param τύπου :duration (εκτός συνόλου) ⇒ απόρριψη στην εγγραφή"
+  (register-capability
+   (%make-capability :name :bad-type :trust :trusted :params '((:d :duration t))
+                     :fn (lambda (&rest _) (declare (ignore _)) nil))))
+(ck-signals "param τύπου :number (καταργημένο) ⇒ απόρριψη στην εγγραφή"
+  (register-capability
+   (%make-capability :name :bad-num :trust :trusted :params '((:n :number t))
+                     :fn (lambda (&rest _) (declare (ignore _)) nil))))
+(ck "%type-ok-p: κάθε τύπος του +param-types+ έχει ρητό κλάδο (ecase, καμία fail-open)"
+    (every (lambda (ty) (handler-case (progn (%type-ok-p ty nil) t) (error () nil)))
+           +param-types+))
+(ck "%type-ok-p: άγνωστος τύπος :duration ⇒ σφάλμα (ecase), όχι σιωπηλό t"
+    (handler-case (progn (%type-ok-p :duration "x") nil) (error () t)))
 
 (format t "~%========================================~%")
 (format t "capability-registry: ~D passed, ~D failed~%" *p* *f*)

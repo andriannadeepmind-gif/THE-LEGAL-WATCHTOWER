@@ -52,7 +52,11 @@
       (:boolean (cond ((member (string-downcase s) '("true" "1" "yes" "ναι") :test #'string=) t)
                       ((member (string-downcase s) '("false" "0" "no" "όχι" "οχι") :test #'string=) nil)
                       (t (bad :boolean))))
-      (t s))))
+      ;; [audit#7] FAIL-CLOSED: άγνωστος τύπος ΔΕΝ υποβαθμίζεται σιωπηλά σε string
+      ;; (το παλιό «(t s)»). Η register-capability εγγυάται ptype ∈ +param-types+, άρα
+      ;; κάθε τύπος έχει ρητό κλάδο εδώ· ένας τύπος χωρίς κλάδο = δομικό σφάλμα, όχι σιωπή.
+      (t (error 'coercion-error :cap (capability-name cap)
+                :reason (format nil "άγνωστος param-type ~S — καμία coercion (fail-closed)" ptype))))))
 
 (defun coerce-args (cap query)
   "QUERY (alist string.string) → args plist τυποποιημένο κατά το συμβόλαιο του CAP.
