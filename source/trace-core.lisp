@@ -62,7 +62,7 @@
 ;;;; │                          │ • trace-transform                            │
 ;;;; ├─────────────────────────────────────────────────────────────────────────┤
 ;;;; │ HOMOICONICITY            │ Code-as-data / data-as-code                  │
-;;;; │                          │ • trace-to-form: trace → Lisp form           │
+;;;; │                          │ • trace-to-data: trace → data-only plist     │
 ;;;; │                          │ • form-to-trace: Lisp form → trace           │
 ;;;; │                          │ • save-traces-to-file: audit as Lisp code    │
 ;;;; │                          │ • load-traces-from-file: just LOAD it        │
@@ -174,12 +174,15 @@
    #:*trace-context-pages*
 
    ;; ══════════════════════════════════════════════════════════════════
-   ;; HOMOICONICITY - CODE AS DATA
+   ;; DATA-ONLY PERSISTENCE ([re-review adv2-F3]: data ≠ executable Lisp)
    ;; ══════════════════════════════════════════════════════════════════
-   #:trace-to-form
-   ;; [re-review adv2-F3] Ο eval-deserializer κύκλος (form-to-trace/read-trace-from-string/
-   ;; trace-to-readable-string/trace-transform) ΔΙΑΓΡΑΦΗΚΕ: 0 runtime callers + read-from-string
-   ;; ΧΩΡΙΣ *read-eval* nil ⇒ (eval …) = διπλό RCE surface, αντίθετο στη safe-read έδρα.
+   ;; Ο εκτελέσιμος κύκλος (trace-to-form=(make-trace-info …)· form-to-trace/
+   ;; read-trace-from-string/trace-to-readable-string/trace-transform=(eval …)·
+   ;; load-traces-from-file=cl:load) ΔΙΑΓΡΑΦΗΚΕ/ΑΝΤΙΚΑΤΑΣΤΑΘΗΚΕ: το trace σειριοποιείται
+   ;; ως data-only versioned plist (trace-to-data) και ανασυγκροτείται typed (%trace-decode)
+   ;; μέσω της safe-read έδρας — καμία εκτέλεση κώδικα από trace δεδομένα.
+   #:trace-to-data
+   #:trace-decode-error
    #:save-traces-to-file
    #:load-traces-from-file
    #:quote-trace
@@ -268,9 +271,9 @@
        nil)
      (provide-trace (new-trace)
        :report "Provide a replacement trace"
-       :interactive (lambda ()
-                      (format t "Enter replacement trace (or form to evaluate): ")
-                      (list (eval (read))))
+       ;; [re-review adv2-F3] Το παλιό :interactive έκανε (eval (read)) — αυθαίρετη
+       ;; εκτέλεση από stdin. ΑΦΑΙΡΕΘΗΚΕ: το restart καλείται ΠΡΟΓΡΑΜΜΑΤΙΚΑ με trace-info
+       ;; όρισμα (invoke-restart 'provide-trace <trace>)· καμία read-then-eval οδός.
        new-trace)
      ,@(when default-trace
          `((use-default ()
@@ -952,69 +955,129 @@
 ;;;   - Trace transformation via macros
 ;;;   - Self-describing audit trails
 
-(defun trace-to-form (trace)
-  "Convert trace to a Lisp form that, when evaluated, recreates the trace.
+;;; ============================================================================
+;;; DATA-ONLY TRACE PERSISTENCE ([re-review adv2-F3]: data serialization ≠ executable Lisp)
+;;; ============================================================================
+;;; ΑΡΧΗ (εντολή δημιουργού): read ≠ eval· trace restore ≠ load. Το παλιό trace-to-form
+;;; παρήγαγε `(make-trace-info …)` — ΕΚΤΕΛΕΣΙΜΟ constructor call — και το load-traces-from-file
+;;; έκανε cl:load (εκτέλεση κώδικα από αρχείο). Πλέον το trace σειριοποιείται ως DATA-ONLY
+;;; versioned plist, φορτώνεται μέσω της safe-read έδρας, και ανασυγκροτείται από typed
+;;; decoder ΧΩΡΙΣ eval/load. Καμία δυνατότητα εκτέλεσης κώδικα από trace δεδομένα.
 
-   HOMOICONICITY: The trace IS its constructor call.
+(defparameter +trace-schema+ :lawmax-trace/1
+  "Version tag του data-only trace schema. Άλλαγη = ρητή έκδοση + migration.")
 
-   Returns:
-     A quoted Lisp form (make-trace-info ...)"
+(defparameter +trace-data-keys+
+  '(:trace-id :source-file :source-pages :source-bboxes :raw-text
+    :layout-block-ids :logical-block-ids :canonical-block-ids
+    :ast-node-id :parent-trace-ids :timestamp :layer)
+  "Το ΚΛΕΙΣΤΟ σύνολο πεδίων ενός serialized trace. Άγνωστο/διπλό πεδίο ⇒ decode error.")
+
+(defparameter +trace-max-list+ 1000000
+  "Ανώτατο μήκος λίστας-πεδίου (DoS bound στο decode).")
+(defparameter +trace-max-string+ (* 8 1024 1024)
+  "Ανώτατο μήκος string-πεδίου (DoS bound στο decode).")
+
+(define-condition trace-decode-error (trace-error)
+  ((reason :initarg :reason :reader trace-decode-reason :initform "unknown"))
+  (:report (lambda (c s) (format s "Trace decode error: ~A" (trace-decode-reason c)))))
+
+(defun trace-to-data (trace)
+  "DATA-ONLY αναπαράσταση: (+trace-schema+ :k v …). ΟΛΑ keywords/strings/numbers/lists —
+   ΚΑΝΕΝΑ constructor-call, κανένα eval-bait. Αντικαθιστά το εκτελέσιμο trace-to-form."
   (check-type trace trace-info)
-  `(make-trace-info
-    :trace-id ,(trace-id trace)
-    :source-file ,(when (trace-source-file trace)
-                    (namestring (trace-source-file trace)))
-    :source-pages ',(trace-pages trace)
-    :source-bboxes ',(trace-bboxes trace)
-    :raw-text ,(trace-raw-text trace)
-    :layout-block-ids ',(trace-layout-ids trace)
-    :logical-block-ids ',(trace-logical-ids trace)
-    :canonical-block-ids ',(trace-canonical-ids trace)
-    :ast-node-id ,(trace-ast-node-id trace)
-    :parent-trace-ids ',(trace-parents trace)
-    :timestamp ,(trace-timestamp trace)
-    :layer ,(trace-layer trace)))
+  (list +trace-schema+
+        :trace-id (trace-id trace)
+        :source-file (let ((f (trace-source-file trace))) (and f (namestring f)))
+        :source-pages (trace-pages trace)
+        :source-bboxes (trace-bboxes trace)
+        :raw-text (trace-raw-text trace)
+        :layout-block-ids (trace-layout-ids trace)
+        :logical-block-ids (trace-logical-ids trace)
+        :canonical-block-ids (trace-canonical-ids trace)
+        :ast-node-id (trace-ast-node-id trace)
+        :parent-trace-ids (trace-parents trace)
+        :timestamp (trace-timestamp trace)
+        :layer (trace-layer trace)))
+
+(defun %trace-decode (data)
+  "Typed decoder: validated DATA plist → trace-info ΧΩΡΙΣ eval. Απαιτεί ακριβές schema/
+   version, γνωστά+μη-διπλά πεδία, σωστούς τύπους, όρια μεγέθους. Χτίζει μέσω make-trace-info
+   (κανένα eval). Η είσοδος έρχεται από safe-read (data-only ⇒ μόνο keywords/strings/
+   numbers/lists· κανένα constructor symbol δεν μπορεί να υπάρχει)."
+  (unless (and (consp data) (eq (first data) +trace-schema+))
+    (error 'trace-decode-error :reason
+           (format nil "άγνωστο schema/version: ~S" (and (consp data) (first data)))))
+  (let* ((plist (rest data))
+         (keys (loop for (k v) on plist by #'cddr collect k)))
+    (let ((unknown (set-difference keys +trace-data-keys+)))
+      (when unknown (error 'trace-decode-error :reason (format nil "άγνωστα πεδία: ~S" unknown))))
+    (unless (= (length keys) (length (remove-duplicates keys)))
+      (error 'trace-decode-error :reason "διπλό πεδίο"))
+    (labels ((str? (v n) (when v (unless (and (stringp v) (<= (length v) +trace-max-string+))
+                                    (error 'trace-decode-error :reason (format nil "~A: όχι bounded string" n)))) v)
+             (list? (v n) (when v (unless (and (listp v) (<= (length v) +trace-max-list+))
+                                     (error 'trace-decode-error :reason (format nil "~A: όχι bounded list" n)))) v)
+             (kw? (v n) (when v (unless (keywordp v)
+                                  (error 'trace-decode-error :reason (format nil "~A: όχι keyword" n)))) v)
+             (int? (v n) (when v (unless (integerp v)
+                                   (error 'trace-decode-error :reason (format nil "~A: όχι integer" n)))) v)
+             (g (k) (getf plist k)))
+      (make-trace-info
+       :trace-id (str? (g :trace-id) :trace-id)
+       :source-file (str? (g :source-file) :source-file)
+       :source-pages (list? (g :source-pages) :source-pages)
+       :source-bboxes (list? (g :source-bboxes) :source-bboxes)
+       :raw-text (str? (g :raw-text) :raw-text)
+       :layout-block-ids (list? (g :layout-block-ids) :layout-block-ids)
+       :logical-block-ids (list? (g :logical-block-ids) :logical-block-ids)
+       :canonical-block-ids (list? (g :canonical-block-ids) :canonical-block-ids)
+       :ast-node-id (str? (g :ast-node-id) :ast-node-id)
+       :parent-trace-ids (list? (g :parent-trace-ids) :parent-trace-ids)
+       :timestamp (int? (g :timestamp) :timestamp)
+       :layer (kw? (g :layer) :layer)))))
 
 ;; [re-review adv2-F3] ΔΙΑΓΡΑΦΗΚΑΝ (0 runtime callers, RCE-shaped):
 ;;   form-to-trace         — (eval form): αυθαίρετη εκτέλεση από «δεδομένα»
 ;;   trace-to-readable-string — παρήγαγε string «to be READ and EVAL'd»
 ;;   read-trace-from-string   — (form-to-trace (read-from-string s)): read ΧΩΡΙΣ *read-eval*
 ;;                              nil ⇒ #. στο read + eval μετά = διπλό RCE
-;; Η σειριοποίηση traces παραμένει μέσω save-traces-to-file (prin1 του trace-to-form)·
-;; η επαναφορά μέσω load-traces-from-file (cl:load ΑΥΤΟ-γραμμένου, δηλωμένου αρχείου).
+;; Η σειριοποίηση traces γίνεται DATA-ONLY μέσω save-traces-to-file (prin1 του trace-to-data)·
+;; η επαναφορά μέσω load-traces-from-file (safe-read + %trace-decode· κανένα cl:load/eval).
 
 (defun save-traces-to-file (filepath &key (registry *trace-registry*))
-  "Save all traces to file as executable Lisp code.
-
-   The file can be loaded to reconstruct all traces.
-
-   HOMOICONICITY: The audit trail IS a Lisp program."
+  "Save traces ως DATA-ONLY (ένα (+trace-schema+ …) plist ανά γραμμή, prin1 υπό
+   standard-io-syntax + keyword package). [re-review adv2-F3] ΚΑΝΕΝΑΣ κώδικας: κανένα
+   (make-trace-info)/(in-package)/(clear-trace-registry) — το αρχείο ΔΕΝ είναι πρόγραμμα,
+   είναι δεδομένα. Επαναφορά ΜΟΝΟ μέσω load-traces-from-file (safe-read + typed decoder)."
   (with-open-file (stream filepath
                           :direction :output
                           :if-exists :supersede
-                          :if-does-not-exist :create)
-    (format stream ";;;; Trace Registry Export~%")
-    (format stream ";;;; Generated: ~A~%" (get-universal-time))
-    (format stream ";;;; Count: ~D traces~%~%" (hash-table-count registry))
-    (format stream "(in-package :orchestrator.trace-core)~%~%")
-    (format stream "(clear-trace-registry)~%~%")
+                          :if-does-not-exist :create
+                          :external-format :utf-8)
     (maphash (lambda (id trace)
                (declare (ignore id))
-               (format stream "~%;; Trace: ~A~%" (trace-id trace))
-               (let ((*print-readably* t)
-                     (*print-pretty* t)
-                     (*print-right-margin* 100))
-                 (prin1 (trace-to-form trace) stream))
+               (with-standard-io-syntax
+                 (let ((*package* (find-package :keyword)))
+                   (prin1 (trace-to-data trace) stream)))
                (terpri stream))
-             registry)
-    (format stream "~%;;;; End of trace export~%"))
+             registry))
   filepath)
 
 (defun load-traces-from-file (filepath)
-  "Load traces from file, reconstructing them in registry.
-
-   HOMOICONICITY: Just LOAD the file - it's valid Lisp."
-  (load filepath))
+  "Load traces ΜΕΣΩ της ΜΙΑΣ safe-read έδρας + typed decoder — ΚΑΝΕΝΑ cl:load/eval.
+   [re-review adv2-F3] Κάθε γραμμή είναι data-only (+trace-schema+ …)· διαβάζεται με
+   read-data-file-sequence (*read-eval* nil + #-deny + caps + %data-only-p) και
+   ανασυγκροτείται typed (%trace-decode) — καμία εκτέλεση κώδικα από trace δεδομένα.
+   Επιστρέφει το πλήθος των traces που φορτώθηκαν."
+  (multiple-value-bind (forms status)
+      (orchestrator.safe-read:read-data-file-sequence filepath)
+    (unless (member status '(:ok :empty))
+      (error 'trace-decode-error :reason
+             (format nil "μη αναγνώσιμο trace αρχείο (safe-read: ~A)" status)))
+    (dolist (data forms)
+      (register-trace (%trace-decode data)))
+    (length forms)))
 
 (defmacro quote-trace (trace-expr)
   "Capture a trace expression as data without evaluating.
@@ -1026,7 +1089,7 @@
 
 ;; [re-review adv2-F3] trace-transform ΔΙΑΓΡΑΦΗΚΕ: 0 callers + βασιζόταν στο
 ;; διαγραμμένο form-to-trace (eval). Homoiconic transforms σε trusted forms γίνονται
-;; απευθείας μέσω trace-to-form + typed constructors, όχι eval.
+;; απευθείας μέσω trace-to-data + typed decoder, όχι eval.
 
 ;;; ============================================================================
 ;;; SELF-DESCRIBING TRACES
@@ -1043,10 +1106,10 @@
   (format stream ";;; Parents: ~D~%" (length (trace-parents trace)))
   (format stream ";;; Bboxes: ~D~%" (length (trace-bboxes trace)))
   (format stream ";;;~%")
-  (format stream ";;; Reconstructable form:~%")
+  (format stream ";;; Data representation:~%")
   (let ((*print-pretty* t)
         (*print-right-margin* 80))
-    (pprint (trace-to-form trace) stream))
+    (pprint (trace-to-data trace) stream))
   (format stream "~%;;; === END TRACE ===~%")
   trace)
 
