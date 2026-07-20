@@ -60,6 +60,13 @@ jobs:
         # [audit#1] Η ΜΙΑ έδρα κρίσης ολομέλειας δεν γίνεται εμπιστευτή προτού
         # αποδειχθεί ότι απορρίπτει ΚΑΘΕ false-green σενάριο (αρνητικό fixture).
         bash deployment/verify/assess-gate-plenary-test.sh
+    - name: 🧨 Prove the standalone-suite runner is derived+fail-closed (no forgotten suite)
+      shell: bash
+      run: |
+        # [audit#2] Η ΜΙΑ έδρα εκτέλεσης suites (filesystem-derived) δεν γίνεται
+        # εμπιστευτή προτού αποδειχθεί ότι auto-includes κάθε νέα σουίτα, τιμά τις
+        # δηλωμένες εξαιρέσεις, και είναι fail-closed σε αποτυχία/κενό inventory.
+        bash docker/run-standalone-suites-test.sh
 
   verifier-conformance:
     needs: [dependency-policy-gate]

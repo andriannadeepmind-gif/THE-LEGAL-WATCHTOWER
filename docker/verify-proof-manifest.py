@@ -16,9 +16,24 @@ Fail-closed πύλη στον verifier-conformance κρίκο (η αλυσίδα
 """
 import hashlib, json, os, re, subprocess, sys
 
-# ΔΗΛΩΜΕΝΕΣ εξαιρέσεις: διαγνωστικά που ΔΕΝ είναι gates σε αυτό το stage.
-# comparison: θέλει python reference fixture απόν από το stage.
-DECLARED_NOT_GATED = {"comparison"}
+# [audit#2] ΔΗΛΩΜΕΝΕΣ εξαιρέσεις: ΜΙΑ πηγή αλήθειας — το ΙΔΙΟ αρχείο που διαβάζει ο
+# docker/run-standalone-suites.sh (τι τρέχει) ώστε «τι τρέχει» ≡ «τι αναμένεται».
+# Καμία δεύτερη χειρόγραφη λίστα εδώ (η παλιά hardcoded {comparison} ξεσυγχρονιζόταν).
+EXCLUSIONS_REL = os.path.join("docker", "standalone-suite-exclusions.txt")
+
+def load_exclusions(app_root, tests_dir):
+    base = app_root if app_root else os.path.dirname(os.path.abspath(tests_dir.rstrip("/")))
+    path = os.path.join(base, EXCLUSIONS_REL)
+    if not os.path.isfile(path):
+        print("verify-proof-manifest: ΑΠΟΝ exclusions file %r — fail-closed" % path)
+        sys.exit(1)
+    excl = set()
+    with open(path, encoding="utf-8") as fh:
+        for line in fh:
+            line = line.split("#", 1)[0].strip()
+            if line:
+                excl.add(line)
+    return excl
 
 # Σουίτες που τρέχουν ΜΟΝΟ στον verifier-conformance κρίκο (δικά τους RUN
 # gates εκεί — δεν απαιτείται log στο standalone manifest).
@@ -99,8 +114,9 @@ def main(proof_dir, tests_dir, app_root=None):
             fail("manifest suites ≠ εκτελεσμένες: μόνο-manifest=%s μόνο-run=%s"
                  % (sorted(set(suites) - ran), sorted(ran - set(suites))))
 
+    declared_not_gated = load_exclusions(app_root, tests_dir)
     expected = {f[:-len("-test.lisp")] for f in os.listdir(tests_dir)
-                if f.endswith("-test.lisp")} - DECLARED_NOT_GATED - VERIFIER_STAGE_ONLY
+                if f.endswith("-test.lisp")} - declared_not_gated - VERIFIER_STAGE_ONLY
     missing = expected - set(suites)
     if missing:
         fail("ΛΕΙΠΟΥΝ σουίτες από το gated set (σιωπηλή αφαίρεση;): %s"

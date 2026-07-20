@@ -169,39 +169,22 @@ RUN echo "${GIT_COMMIT}" | grep -Eq '^[0-9a-f]{40}$' \
 
 COPY tests/ /app/tests/
 COPY Dockerfile /app/Dockerfile
-COPY docker/run-standalone-test.lisp docker/sha256.lisp docker/dep-hash.lisp docker/verify-proof-manifest.py docker/entrypoint.lisp docker/sbom.json /app/docker/
+COPY docker/run-standalone-test.lisp docker/run-standalone-suites.sh docker/standalone-suite-exclusions.txt docker/sha256.lisp docker/dep-hash.lisp docker/verify-proof-manifest.py docker/entrypoint.lisp docker/sbom.json /app/docker/
 
-# Each script (sb-ext:exit 1 on failure) fails the build if any check fails.
-# The four *-authority/time FiveAM suites are now gated too: run-standalone-test
-# loads :fiveam and each file ends with (sb-ext:exit (if (fiveam:run! …) 0 1)).
-# NOT listed (by design): comparison-test is a diagnostic that needs a Python
-# reference fixture absent from this stage. Everything else under tests/ is gated.
-RUN set -e; \
-    for t in source-profile review-queue legal-references anomaly-detection \
-             legal-qa corpus-fingerprint layout-extraction article-identity \
-             ast-gate greek-nlp orthography citation-authority \
-             reasoning-authority corpus-intelligence document-fetch \
-             source-materialize clean-output source-detect proof-carrying mcp-server \
-             mcp-live-resolver legal-id-registry legal-id-routing fek-article-header article-number-fidelity repeal-polish \
-             pdf-column-reflow fek-rubric fek-noise amended-split isokratis-amended clean-json-format greek-homoglyph seam-detector deps-hash \
-             amendment-extractor amendment-accuracy amendment-consolidation-e2e autonomy-consolidation amendment-backtest \
-             consolidation-bridge consolidation-engine auto-consolidate static-site \
-             ai-corpus-dump ai-ingest-manifest akoma-ntoso-emitter codification-validation \
-             consolidation-feed corpus-diff corpus-eu-links corpus-provenance corpus-search \
-             corpus-service corpus-sparql dsanet-chrome fek-html-parser fek-ingestion \
-             government-source parliament-html-wiring constitution-crawler fek-discovery fek-backtest-report amendment-routing amendment-state ingestion-daemon ingestion-e2e isokratis-parser \
-             legislation-ingestion multi-corpus-service review-service shacl-validator \
-             hash-authority write-authority time-unified blockchain-authority release-authority \
-             merkle-authority kernel-conformance artifact-census release-vector-conformance \
-             tsr-crypto-verify transparency-log capability-registry capability-api cockpit legal-eval casegrammar greek-morphology seat-integrity legal-identity canonical-serialization version-graph graph-import-parity legal-authority-receipt as-known-e2e temporal-semantics temporal-verifier authority-proof-bundle authority-evidence-replay authority-cross-language \
-             escape-sequences turtle-nil-omit corpus-identity semantic-validity \
-             cross-language-verifier; do \
-      echo "=== running $t-test.lisp ==="; \
-      mkdir -p /app/proof/logs; \
-      echo "$t" >> /app/proof/suites-run.txt; \
-      sbcl --script /app/docker/run-standalone-test.lisp "/app/tests/$t-test.lisp" 2>&1 \
-        | tee "/app/proof/logs/$t.log"; \
-    done
+# [audit#2] Το suite inventory ΠΑΡΑΓΕΤΑΙ από το filesystem (glob tests/*-test.lisp)
+# μείον τη ΜΙΑ δηλωμένη πηγή εξαιρέσεων (docker/standalone-suite-exclusions.txt) —
+# ΟΧΙ πλέον χειρόγραφη λίστα εδώ (ο κριτής βρήκε 7 σουίτες ξεχασμένες, incl. τα
+# safe-read/param-type-coercion/audit-signature-failclosed proofs). Έτσι καμία νέα
+# σουίτα δεν μπορεί να ξεχαστεί από το signed proof manifest. Η ΜΙΑ έδρα εκτέλεσης
+# (run-standalone-suites.sh) είναι fail-closed (pipefail: sbcl exit ≠0 ⇒ build red,
+# δεν κρύβεται πίσω από το tee) και δοκιμασμένη από αρνητικό fixture
+# (docker/run-standalone-suites-test.sh, ci-integrity-selfcheck job).
+# Κάθε suite: run-standalone-test.lisp κάνει (sb-ext:exit 1) σε αποτυχία· οι FiveAM
+# *-authority/time σουίτες λήγουν με (sb-ext:exit (if (fiveam:run! …) 0 1)).
+RUN /app/docker/run-standalone-suites.sh \
+      /app/tests /app/proof \
+      /app/docker/run-standalone-test.lisp \
+      /app/docker/standalone-suite-exclusions.txt
 
 # [0088 assurance] Machine-readable proof manifest: δεσμεύει commit, hashes
 # πυρήνα/πηγών, ΟΝΟΜΑΣΤΙΚΕΣ σουίτες με τις γραμμές αποτελεσμάτων τους και
