@@ -36,7 +36,7 @@
    #:item-signature #:item-summary #:apply-decision #:auto-approvable-p
    ;; signed decision (τελική νομική αυθεντία — [audit#8 μέρος Β])
    #:*review-signing-key-path* #:*review-signer-id* #:*review-verify-key-path*
-   #:decision-signature-status #:verify-decision-signature
+   #:decision-signature-status #:verify-decision-signature #:verify-item-decision
    #:restore-queue-error #:restore-queue-error-why
    ;; queue
    #:review-queue #:make-review-queue #:enqueue #:queue-items #:pending-items
@@ -123,7 +123,10 @@
 
 (defun verify-decision-signature (sig public-key-path)
   "Επαληθεύει signed decision record κατά το PUBLIC-KEY-PATH του δικηγόρου (RS256 detached).
-   (values ok-p reason). :unsigned ⇒ (values NIL :unsigned) (τίμια: μη αποδεδειγμένος actor)."
+   (values ok-p reason). :unsigned ⇒ (values NIL :unsigned) (τίμια: μη αποδεδειγμένος actor).
+   ΠΡΟΣΟΧΗ: επαληθεύει το jws κατά του ΑΠΟΘΗΚΕΥΜΕΝΟΥ :statement. Στο trust boundary
+   (δημοσίευση) χρησιμοποίησε verify-item-decision που ΞΑΝΑ-ΠΑΡΑΓΕΙ τη δήλωση από το item —
+   αλλιώς ένα signature-transplant (ίδιο :statement+:jws σε ΑΛΛΟ payload) θα «επαλήθευε»."
   (case (decision-signature-status sig)
     (:signed
      (handler-case
@@ -133,6 +136,30 @@
              (values nil :bad-signature))
        (error (e) (values nil (format nil "~A" e)))))
     (t (values nil :unsigned))))
+
+(defun %item-decision-verb (item)
+  "Το ΡΗΜΑ της απόφασης από το ΤΡΕΧΟΝ status του item (:approved→:approve, :rejected→:reject)."
+  (ecase (item-status item)
+    (:approved :approve)
+    (:rejected :reject)))
+
+(defun verify-item-decision (item public-key-path)
+  "[re-review CRITICAL] Επαληθεύει ότι η υπογραφή αντιστοιχεί στο ΤΡΕΧΟΝ ΠΕΡΙΕΧΟΜΕΝΟ του
+   ITEM, όχι στο (μη-έμπιστο) αποθηκευμένο :statement. ΞΑΝΑ-ΠΑΡΑΓΕΙ την κανονική δήλωση από
+   τα ΕΜΠΙΣΤΑ πεδία (%item-key με payload fingerprint | ρήμα | decided-by | decided-at) και
+   ΑΠΑΙΤΕΙ ισότητα με το :statement ΠΡΙΝ εμπιστευτεί το jws. Έτσι ένα signature-transplant
+   (γνήσιο (:statement+:jws) μεταφερμένο σε ΑΛΛΟ payload/item) ΑΠΟΤΥΓΧΑΝΕΙ: το recomputed
+   statement δείχνει το ΝΕΟ περιεχόμενο, το jws έγινε για το ΠΑΛΙΟ ⇒ mismatch.
+   (values ok-p reason)."
+  (let ((sig (item-signature item)))
+    (if (eq (decision-signature-status sig) :signed)
+        (let ((expected (%canonical-decision-statement
+                         (%item-key item) (%item-decision-verb item)
+                         (item-decided-by item) (item-decided-at item))))
+          (if (equal (getf sig :statement) expected)
+              (verify-decision-signature sig public-key-path)  ; jws κατά (τώρα έμπιστου) statement
+              (values nil :statement-item-mismatch)))
+        (values nil :unsigned))))
 
 (defclass review-item ()
   ((id         :initarg :id :accessor item-id)
@@ -289,6 +316,12 @@
             (when learned
               (apply-decision item (getf learned :decision)
                               :by (getf learned :by) :note (getf learned :note))
+              ;; [re-review] Το decided-at πρέπει να είναι το ΑΡΧΙΚΟ decision-time (learned :at),
+              ;; ΟΧΙ το %now της auto-εφαρμογής — αλλιώς το verify-item-decision recompute-άρει
+              ;; στατεμεντ με ΑΛΛΟ χρόνο και η κληρονομημένη υπογραφή δεν content-verify-άρει.
+              ;; Σημασιολογικά σωστό: ο άνθρωπος αποφάσισε στο :at· η auto-apply απλώς το επαναλαμβάνει.
+              (when (getf learned :at)
+                (setf (item-decided-at item) (getf learned :at)))
               ;; Η ταυτότητα (key) περιλαμβάνει το payload fingerprint ([audit#9]), άρα
               ;; η αποθηκευμένη υπογραφή ισχύει ΑΚΡΙΒΩΣ γι' αυτό το item — κληρονομείται.
               (setf (item-signature item) (getf learned :signature))))
@@ -322,13 +355,22 @@
   (hash-table-count (queue-memory queue)))
 
 (defun %decision-publishable-p (item)
-  "[audit#10] T αν η εγκεκριμένη πράξη επιτρέπεται να δημοσιευτεί. Όταν
-   *review-verify-key-path* είναι set, ΑΠΑΙΤΕΙ ΕΠΑΛΗΘΕΥΜΕΝΗ μη-αποποιήσιμη υπογραφή του
-   δικηγόρου — unsigned ή αλλοιωμένη έγκριση ΔΕΝ δημοσιεύεται (fail-closed). Χωρίς verify
-   key ⇒ t (κανένα configured gate· δηλωμένο όριο, ίδια στάση με τη signing πλευρά)."
-  (if *review-verify-key-path*
-      (values (verify-decision-signature (item-signature item) *review-verify-key-path*))
-      t))
+  "[audit#10 + re-review] T αν η εγκεκριμένη πράξη επιτρέπεται να δημοσιευτεί.
+     • verify key SET ⇒ ΑΠΑΙΤΕΙ content-bound επαληθευμένη υπογραφή (verify-item-decision,
+       που ξανα-παράγει τη δήλωση από το item ⇒ signature-transplant ΑΠΟΤΥΓΧΑΝΕΙ). unsigned/
+       αλλοιωμένη/μεταφερμένη έγκριση ΔΕΝ δημοσιεύεται.
+     • verify key NIL + item :signed ⇒ FAIL-CLOSED: υπάρχει υπογραφή αλλά κανένα κλειδί για
+       επαλήθευση ⇒ ΔΕΝ εμπιστευόμαστε (τέλος το fail-open «signing on, verify off» — κριτής A#3).
+     • verify key NIL + item :unsigned/nil ⇒ t: δηλωμένο no-crypto mode (κανένα configured gate).
+       ΤΙΜΙΟ ΟΡΙΟ: χωρίς verify key το review-queue αρχείο είναι ΕΜΠΙΣΤΗ είσοδος — η μόνη
+       κρυπτογραφική προστασία ενεργοποιείται με REVIEW_VERIFY_KEY."
+  (let ((sig (item-signature item)))
+    (cond
+      (*review-verify-key-path*
+       (values (verify-item-decision item *review-verify-key-path*)))
+      ((eq (decision-signature-status sig) :signed)
+       nil)                              ; signed αλλά χωρίς κλειδί ⇒ μη επαληθεύσιμη ⇒ όχι δημοσίευση
+      (t t))))                           ; no-crypto mode (δηλωμένο όριο)
 
 (defun approved-operations (queue)
   "The operation payloads of APPROVED amendment items — ready to apply to the
@@ -381,6 +423,21 @@
                :why (format nil "~A item χωρίς decided-by/decided-at (καμία provenance)" status))))
     t))
 
+(defun %validate-memory-entry (k v)
+  "[re-review C#4a CRITICAL] Fail-closed έλεγχος ΜΙΑΣ learned-decision εγγραφής μνήμης.
+   Η μνήμη auto-approve-άρει ΜΕΛΛΟΝΤΙΚΑ items (enqueue) ⇒ διεφθαρμένη/forged εγγραφή =
+   αυτόματη έγκριση χωρίς ανθρώπινο έλεγχο. Δομικός έλεγχος: key string· :decision ∈
+   {:approve :reject}· :at παρόν (provenance). (Η κρυπτογραφική εγγύηση προστίθεται όταν
+   υπάρχει verify key: η κληρονομημένη :signature content-verify-άρεται στο publish gate.)"
+  (unless (stringp k)
+    (error 'restore-queue-error :why (format nil "memory key δεν είναι string: ~S" k)))
+  (unless (and (listp v) (member (getf v :decision) '(:approve :reject)))
+    (error 'restore-queue-error
+           :why (format nil "memory[~A]: μη αποδεκτό :decision ~S" k (getf v :decision))))
+  (unless (getf v :at)
+    (error 'restore-queue-error :why (format nil "memory[~A]: λείπει :at (καμία provenance)" k)))
+  t)
+
 (defun queue-state (queue)
   "A serializable plist snapshot of the whole queue, including the learned decision
    memory. Φέρει :version για schema-aware restore ([audit#10])."
@@ -404,8 +461,9 @@
    restore-queue-error (καμία σιωπηλή φόρτωση διεφθαρμένης θεσμικής μνήμης). Το item-id
    ΕΠΑΝΥΠΟΛΟΓΙΖΕΤΑΙ από το περιεχόμενο (%item-key, δένει payload [audit#9]) — ένα
    χειροκίνητα αλλαγμένο payload ΔΕΝ μπορεί να κληρονομήσει την ταυτότητα/έγκριση άλλου."
-  ;; Πρώτα ΕΠΙΚΥΡΩΣΕ τα πάντα· καμία μερική μεταβολή του queue αν κάποιο record είναι άκυρο.
+  ;; Πρώτα ΕΠΙΚΥΡΩΣΕ τα πάντα (items ΚΑΙ μνήμη)· καμία μερική μεταβολή αν κάτι είναι άκυρο.
   (dolist (p (getf state :items)) (%validate-item-record p))
+  (loop for (k . v) in (getf state :memory) do (%validate-memory-entry k v))
   (setf (queue-items queue) '())
   (clrhash (queue-index queue))
   (clrhash (queue-memory queue))

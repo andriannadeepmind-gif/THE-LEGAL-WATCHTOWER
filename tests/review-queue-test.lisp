@@ -240,6 +240,90 @@
       (check "χωρίς verify key ⇒ καμία επιβολή (δηλωμένο όριο)"
              (= 1 (length (approved-operations q)))))))
 
+(format t "~%== [re-review CRITICAL] signature-transplant ΑΠΟΤΥΓΧΑΝΕΙ (content-bound verify) ==~%")
+(let* ((dir (format nil "/tmp/rq-transplant-~D/" (get-internal-real-time)))
+       (priv (format nil "~Apriv.pem" dir)) (pub (format nil "~Apub.pem" dir)))
+  (orchestrator.jws-authority:save-rsa-keypair
+   (orchestrator.jws-authority:generate-rsa-keypair :bits 2048) priv pub)
+  (let ((*review-signing-key-path* priv))
+    ;; γνήσια υπογεγραμμένη έγκριση για payload A
+    (let* ((qa (make-review-queue))
+           (ia (enqueue qa (make-instance 'amendment-review :source "L1" :target "art_5"
+                                          :payload '(:op :replace-text :text "ΚΑΛΟ")))))
+      (decide qa (item-id ia) :approve :by "Σ.Σ.")
+      (let ((genuine-sig (item-signature ia)))
+        (check "γνήσια υπογραφή content-verify-άρεται στο δικό της item"
+               (verify-item-decision ia pub))
+        ;; TRANSPLANT: ο επιτιθέμενος βάζει την ΓΝΗΣΙΑ (:statement+:jws) σε ΑΛΛΟ payload
+        (let ((ib (make-instance 'amendment-review :source "L1" :target "art_5"
+                                 :payload '(:op :replace-text :text "ΚΑΚΟΒΟΥΛΟ")
+                                 :status :approved :decided-by "Σ.Σ."
+                                 :decided-at (item-decided-at ia)
+                                 :signature genuine-sig)))
+          (check "μεταφερμένη γνήσια υπογραφή σε ΑΛΛΟ payload ⇒ verify-item-decision ΑΠΟΤΥΓΧΑΝΕΙ"
+                 (not (verify-item-decision ib pub)))
+          ;; και το OLD self-referential verify «θα περνούσε» — αποδεικνύει το κενό που κλείσαμε
+          (check "(απόδειξη κενού) το self-referential verify-decision-signature ΘΑ περνούσε"
+                 (verify-decision-signature genuine-sig pub)))))))
+
+(format t "~%== [re-review CRITICAL] memory validation στο restore (forged learned-approve) ==~%")
+(macrolet ((ck-restore-signals (name form)
+             `(check ,name (handler-case (progn ,form nil) (restore-queue-error () t)))))
+  (ck-restore-signals "forged memory με μη-αποδεκτό :decision ⇒ restore-queue-error"
+    (restore-queue-state (make-review-queue)
+      (list :version 2 :items nil
+            :memory (list (cons "L1|amendment|art_5|deadbeef"
+                                (list :decision :PWN :by "x" :at "2026-01-01"))))))
+  (ck-restore-signals "forged memory χωρίς :at (καμία provenance) ⇒ restore-queue-error"
+    (restore-queue-state (make-review-queue)
+      (list :version 2 :items nil
+            :memory (list (cons "L1|amendment|art_5|deadbeef"
+                                (list :decision :approve :by "x"))))))
+  ;; έγκυρη μνήμη φορτώνεται κανονικά
+  (check "έγκυρη learned-decision μνήμη φορτώνεται (1 learned)"
+         (let ((q (make-review-queue)))
+           (restore-queue-state q
+             (list :version 2 :items nil
+                   :memory (list (cons "L1|amendment|art_5|deadbeef"
+                                       (list :decision :approve :by "Σ.Σ." :at "2026-01-01")))))
+           (= 1 (learned-count q)))))
+
+(format t "~%== [re-review] auto-applied signed decision ΕΞΑΚΟΛΟΥΘΕΙ να content-verify-άρει ==~%")
+(let* ((dir (format nil "/tmp/rq-autosig-~D/" (get-internal-real-time)))
+       (priv (format nil "~Apriv.pem" dir)) (pub (format nil "~Apub.pem" dir)))
+  (orchestrator.jws-authority:save-rsa-keypair
+   (orchestrator.jws-authority:generate-rsa-keypair :bits 2048) priv pub)
+  (let ((*review-signing-key-path* priv) (q (make-review-queue)))
+    (let ((it (enqueue q (make-instance 'amendment-review :source "L1" :target "art_5"
+                                        :payload '(:op :insert :code "poinikos")))))
+      (decide q (item-id it) :approve :by "Σ.Σ."))
+    ;; persist → restore → re-enqueue ΙΔΙΟ payload ⇒ auto-apply κληρονομεί υπογραφή + decided-at
+    (let ((q2 (make-review-queue)))
+      (restore-queue-state q2 (queue-state q))
+      (let ((auto (enqueue q2 (make-instance 'amendment-review :source "L1" :target "art_5"
+                                             :payload '(:op :insert :code "poinikos")))))
+        (check "auto-applied item είναι :approved" (eq :approved (item-status auto)))
+        (check "auto-applied υπογραφή content-verify-άρεται (decided-at διατηρήθηκε)"
+               (verify-item-decision auto pub))))))
+
+(format t "~%== [re-review HIGH] publication gate fail-CLOSED σε signed-χωρίς-verify-key ==~%")
+(let* ((dir (format nil "/tmp/rq-nokey-~D/" (get-internal-real-time)))
+       (priv (format nil "~Apriv.pem" dir)) (pub (format nil "~Apub.pem" dir)))
+  (orchestrator.jws-authority:save-rsa-keypair
+   (orchestrator.jws-authority:generate-rsa-keypair :bits 2048) priv pub)
+  (let ((*review-signing-key-path* priv) (q (make-review-queue)))
+    (let ((it (enqueue q (make-instance 'amendment-review :source "L1" :target "art_5"
+                                        :payload '(:op :insert :code "poinikos")))))
+      (decide q (item-id it) :approve :by "Σ.Σ."))
+    ;; υπογεγραμμένη έγκριση ΑΛΛΑ κανένα verify key ⇒ ΔΕΝ δημοσιεύεται (fail-closed)
+    (let ((*review-verify-key-path* nil))
+      (check "signed approval + ΚΑΝΕΝΑ verify key ⇒ ΔΕΝ δημοσιεύεται (τέλος fail-open)"
+             (= 0 (length (approved-operations q)))))
+    ;; με το σωστό verify key ⇒ δημοσιεύεται
+    (let ((*review-verify-key-path* pub))
+      (check "signed approval + σωστό verify key ⇒ δημοσιεύεται"
+             (= 1 (length (approved-operations q)))))))
+
 (format t "~%========================================~%")
 (format t "Review queue tests: ~D passed, ~D failed~%" *pass* *fail*)
 (format t "========================================~%")
