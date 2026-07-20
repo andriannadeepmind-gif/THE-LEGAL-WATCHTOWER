@@ -31,13 +31,26 @@
 # η παρουσία της είναι ΘΕΤΙΚΗ απόδειξη ολοκλήρωσης, όχι απλό string match.
 set -u
 
-FOOTER='════ ΟΛΟΜΕΛΕΙΑ ΠΥΛΩΝ'
-# Γραμμή αποτυχίας πύλης: ο runner τυπώνει «  <name>: ΑΠΕΤΥΧΕ» (name λήγει σε -gate).
+# [re-review CRITICAL/HIGH] Η σφραγίδα-footer ΔΕΝ είναι πλέον bare substring: απαιτείται
+# LINE-ANCHORED με τον αριθμό πυλών «════ ΟΛΟΜΕΛΕΙΑ ΠΥΛΩΝ (N) ════», ΚΑΙ ο N πρέπει να
+# ισούται με το πλήθος γραμμών ετυμηγορίας ΚΑΙ να είναι ≥ floor. Έτσι:
+#   • zero-gate «(0)» ⇒ απορρίπτεται (δεν έτρεξε καμία πύλη),
+#   • footer echoed σε debug/dialogue γραμμή (substring) ⇒ ΔΕΝ ταιριάζει το anchored regex,
+#   • truncated/crashed run (footer λέει N αλλά τυπώθηκαν < N ετυμηγορίες) ⇒ mismatch.
+FOOTER_RE='^[[:space:]]*════ ΟΛΟΜΕΛΕΙΑ ΠΥΛΩΝ \(([0-9]+)\) ════[[:space:]]*$'
+# Γραμμή ετυμηγορίας πύλης: ο runner τυπώνει «  <name>: ΠΕΡΑΣΕ|ΑΠΕΤΥΧΕ» (name λήγει σε -gate).
+VERDICT_RE='gate: (ΠΕΡΑΣΕ|ΑΠΕΤΥΧΕ)'
 FAIL_RE='gate: ΑΠΕΤΥΧΕ'
 
 log="${1:-}"
 status="${2:-}"
 exceptions="${GATE_BASELINE_EXCEPTIONS:-advisor-gate}"
+# Ελάχιστο πλήθος πυλών ολομέλειας — φράζει το «η ολομέλεια συρρικνώθηκε σιωπηλά».
+# Default 1 (καμία μηδενική ολομέλεια)· το CI δένει τον πραγματικό αριθμό.
+plenary_min="${GATE_PLENARY_MIN:-1}"
+# ΑΝΩΤΕΡΗ επιβολή: ΑΚΡΙΒΗΣ αναμενόμενος αριθμός πυλών. Set ⇒ N πρέπει να ισούται
+# ΑΚΡΙΒΩΣ (πιάνει σιωπηλή συρρίκνωση 12→8 όπου όλες περνούν)· κενό ⇒ μόνο floor.
+plenary_expect="${GATE_PLENARY_EXPECT:-}"
 
 if [ -z "$log" ] || [ -z "$status" ]; then
   echo "assess-gate-plenary: χρήση: $0 <log-path> <docker-exit-status>" >&2
@@ -51,9 +64,24 @@ case "$status" in
   ''|*[!0-9]*) echo "::error::assess-gate-plenary: μη-αριθμητικό status '$status'." >&2; exit 2 ;;
 esac
 
-# (1) ΑΠΟΔΕΙΞΗ ΟΛΟΚΛΗΡΩΣΗΣ — η σφραγίδα πρέπει να υπάρχει.
-if ! grep -q "$FOOTER" "$log"; then
-  echo "::error::Η ολομέλεια ΔΕΝ ολοκληρώθηκε: λείπει η σφραγίδα-footer (crash/OOM πριν την ετυμηγορία· docker exit=$status)." >&2
+# (1) ΑΠΟΔΕΙΞΗ ΟΛΟΚΛΗΡΩΣΗΣ — anchored footer + N + N==πλήθος ετυμηγοριών + N≥floor.
+footer_line="$(grep -E "$FOOTER_RE" "$log" | tail -1 || true)"
+if [ -z "$footer_line" ]; then
+  echo "::error::Η ολομέλεια ΔΕΝ ολοκληρώθηκε: λείπει η LINE-ANCHORED σφραγίδα «════ ΟΛΟΜΕΛΕΙΑ ΠΥΛΩΝ (N) ════» (crash/OOM/spoof πριν την ετυμηγορία· docker exit=$status)." >&2
+  exit 3
+fi
+declared_n="$(printf '%s\n' "$footer_line" | sed -E "s/$FOOTER_RE/\\1/")"
+verdict_n="$(grep -Ec "$VERDICT_RE" "$log" || true)"
+if [ "$declared_n" -lt "$plenary_min" ]; then
+  echo "::error::Ολομέλεια κάτω από το floor: N=$declared_n < GATE_PLENARY_MIN=$plenary_min — η ολομέλεια συρρικνώθηκε ή δεν έτρεξε καμία πύλη (false-green killer)." >&2
+  exit 3
+fi
+if [ "$verdict_n" != "$declared_n" ]; then
+  echo "::error::ΑΝΤΙΦΑΣΗ ΟΛΟΚΛΗΡΩΣΗΣ: footer δηλώνει $declared_n πύλες αλλά τυπώθηκαν $verdict_n γραμμές ετυμηγορίας (truncated/crashed/spoofed plenary)." >&2
+  exit 3
+fi
+if [ -n "$plenary_expect" ] && [ "$declared_n" != "$plenary_expect" ]; then
+  echo "::error::Ολομέλεια ≠ αναμενόμενο σύνολο: N=$declared_n ≠ GATE_PLENARY_EXPECT=$plenary_expect — η ολομέλεια συρρικνώθηκε/μεγάλωσε σιωπηλά (silent gate-set drift)." >&2
   exit 3
 fi
 
