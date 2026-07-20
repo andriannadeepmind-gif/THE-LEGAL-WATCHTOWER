@@ -221,59 +221,8 @@
 ;;;; SESSION TESTS
 ;;;; ========================================================================
 
-(defun test-session-management ()
-  "Test session management"
-  (format t "~%Testing session management...~%")
-  
-  ;; Create a session
-  (let ((session (orchestrator.session:make-session :user "test-user")))
-    (assert session nil "Should create session")
-    (assert (orchestrator.session:session-id session) nil "Should have ID")
-    (assert (string= (orchestrator.session:session-user session) "test-user"))
-    
-    ;; Test initial state
-    (assert (eq (orchestrator.session:session-state session) :active))
-    
-    ;; Store and retrieve data
-    (orchestrator.session:session-set session "test-key" "test-value")
-    (let ((value (orchestrator.session:session-get session "test-key")))
-      (assert (string= value "test-value") nil "Should retrieve stored value"))
-    
-    ;; Test default value in session-get
-    (let ((default-value (orchestrator.session:session-get session "nonexistent" "default")))
-      (assert (string= default-value "default") nil "Should return default for missing key"))
-    
-    ;; Test session-remove
-    (orchestrator.session:session-remove session "test-key")
-    (assert (null (orchestrator.session:session-get session "test-key")) 
-            nil "Key should be removed")
-    
-    ;; Test list-sessions
-    (let ((sessions (orchestrator.session:list-sessions)))
-      (assert (find (orchestrator.session:session-id session) sessions 
-                    :key (lambda (s) (getf s :id)) :test #'string=)
-              nil "Session should be in list"))
-    
-    ;; Test serialize-session-state
-    (orchestrator.session:session-set session "data-key" "data-value")
-    (let ((serialized (orchestrator.session:serialize-session-state session)))
-      (assert (getf serialized :id) nil "Should have ID in serialized state")
-      (assert (getf serialized :user) nil "Should have user in serialized state"))
-    
-    ;; Test handoff-to-ai
-    (let ((context (orchestrator.session:handoff-to-ai session 
-                                                       :task-description "Test task")))
-      (assert context nil "Should create handoff context")
-      (assert (eq (orchestrator.session:session-state session) :suspended)
-              nil "Session should be suspended during handoff"))
-    
-    ;; Close session
-    (orchestrator.session:close-session (orchestrator.session:session-id session))
-    (assert (eq (orchestrator.session:session-state session) :closed)
-            nil "Session should be closed")
-    
-    (format t "✓ Session management tests passed~%")
-    t))
+;; [0092/Blocker#2] test-session-management ΑΦΑΙΡΕΘΗΚΕ μαζί με το off-plan
+;; session-handoff subsystem (ACE μέσω *read-eval*, μηδέν runtime caller).
 
 ;;;; ========================================================================
 ;;;; EDGE CASE TESTS
@@ -314,14 +263,9 @@
     (error (e)
       (format t "  Correctly caught invalid log level error~%")))
   
-  ;; Test session with missing ID
-  (handler-case
-      (progn
-        (orchestrator.session:close-session "nonexistent-session-id-12345")
-        (format t "  Close on nonexistent session handled gracefully~%"))
-    (error (e)
-      (format t "  Error on nonexistent session: ~A~%" e)))
-  
+  ;; [0092/Blocker#2] session edge-case ΑΦΑΙΡΕΘΗΚΕ μαζί με το off-plan
+  ;; session-handoff subsystem (ACE μέσω *read-eval*, μηδέν runtime caller).
+
   (format t "✓ Edge case tests passed~%")
   t)
 
@@ -341,7 +285,6 @@
         (test-logging)
         (test-circuit-breaker)
         (test-dependency-injection)
-        (test-session-management)
         (test-edge-cases)
         
         (format t "~%========================================~%")

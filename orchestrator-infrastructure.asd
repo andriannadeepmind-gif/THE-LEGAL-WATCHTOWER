@@ -170,5 +170,4 @@
      (:file "sparql-endpoint")    ; GATE-16: Pure Lisp SPARQL query processor
      (:file "protocols")          ; Protocol definitions
      (:file "circuit-breaker")    ; Circuit breaker pattern
-     (:file "injection")          ; Dependency injection
-     (:file "session-handoff"))))) ; Session management
+     (:file "injection")))))          ; Dependency injection
