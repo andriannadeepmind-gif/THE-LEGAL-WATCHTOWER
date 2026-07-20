@@ -132,7 +132,13 @@
      (handler-case
          (if (orchestrator.jws-authority:verify-jws
               (getf sig :jws) (getf sig :statement) public-key-path)
-             (values t :ok)
+             ;; [re-review A-4] Δέσε το ΑΠΟΘΗΚΕΥΜΕΝΟ :kid στο kid του ΥΠΟΓΕΓΡΑΜΜΕΝΟΥ
+             ;; protected header — αλλιώς το recorded :kid είναι ανεπαλήθευτη ετικέτα
+             ;; (θα μπορούσε να δηλώνει άλλον υπογράφοντα από αυτόν που όντως υπέγραψε).
+             (if (equal (getf sig :kid)
+                        (orchestrator.jws-authority:jws-protected-kid (getf sig :jws)))
+                 (values t :ok)
+                 (values nil :kid-mismatch))
              (values nil :bad-signature))
        (error (e) (values nil (format nil "~A" e)))))
     (t (values nil :unsigned))))

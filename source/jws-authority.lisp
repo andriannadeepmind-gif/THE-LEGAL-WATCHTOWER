@@ -30,6 +30,7 @@
    ;; Core signing
    #:sign-jws
    #:verify-jws
+   #:jws-protected-kid
    ;; Key management
    #:load-rsa-private-key
    #:load-rsa-public-key
@@ -357,6 +358,26 @@
   (let ((em (%emsa-pkcs1-v15-sha256 message (%rsa-modulus-bytes private-key))))
     (ironclad:sign-message private-key em)))
 
+(defun %jws-decode-header (header-b64)
+  "Η ΜΙΑ έδρα αποκωδικοποίησης του JWS protected header (base64url → JSON alist).
+   NIL αν δεν παρσάρει. Χρησιμοποιείται ΚΑΙ από το verify-jws (alg pin) ΚΑΙ από το
+   jws-protected-kid — καμία δεύτερη έδρα header-parsing."
+  (handler-case
+      (jonathan:parse
+       (babel:octets-to-string (base64url-decode header-b64) :encoding :utf-8)
+       :as :alist)
+    (error () nil)))
+
+(defun jws-protected-kid (jws)
+  "Το «kid» του protected header ενός compact JWS (ή NIL). Το header είναι ΥΠΟΓΕΓΡΑΜΜΕΝΟ
+   (μέρος του signing input), άρα το kid δεν αλλάζει χωρίς να σπάσει η υπογραφή· ένας
+   caller που έχει ΗΔΗ επαληθεύσει το jws μπορεί να δέσει το recorded kid σε ΑΥΤΟ (ώστε
+   το αποθηκευμένο kid να μην είναι ανεπαλήθευτη ετικέτα)."
+  (let ((header (and (stringp jws)
+                     (%jws-decode-header
+                      (first (uiop:split-string jws :separator '(#\.)))))))
+    (and header (cdr (assoc "kid" header :test #'string=)))))
+
 (defun verify-jws (jws payload public-key)
   "Verify JWS signature
 
@@ -376,14 +397,10 @@
     ;; Parse JWS
     (let* ((parts (uiop:split-string jws :separator '(#\.)))
            (header-b64 (first parts))
-           ;; Pin the algorithm to RS256: decode the protected header and reject any
-           ;; other "alg" (defends against alg-confusion / "alg":"none" if dispatch
-           ;; is ever added). The header is also bound into the signing input below.
-           (header (handler-case
-                       (jonathan:parse
-                        (babel:octets-to-string (base64url-decode header-b64) :encoding :utf-8)
-                        :as :alist)
-                     (error () nil)))
+           ;; Pin the algorithm to RS256: decode the protected header (ΜΙΑ έδρα
+           ;; %jws-decode-header) and reject any other "alg" (defends against
+           ;; alg-confusion / "alg":"none"). The header is bound into the signing input below.
+           (header (%jws-decode-header header-b64))
            (alg (and header (cdr (assoc "alg" header :test #'string=))))
            ;; Detached JWS: the payload was base64url(UTF-8 octets) at signing time,
            ;; so re-encode it the SAME way here (encoding a STRING directly would not

@@ -170,6 +170,18 @@
                 (concatenate 'string (getf sig :statement) "|TAMPERED"))
           (check "αλλοιωμένη δήλωση ⇒ επαλήθευση ΑΠΟΤΥΓΧΑΝΕΙ (μη-αποποιήσιμη)"
                  (not (verify-decision-signature tampered pub))))
+        ;; [re-review A-4] αλλοιωμένο ΑΠΟΘΗΚΕΥΜΕΝΟ :kid (ενώ η υπογραφή είναι γνήσια)
+        ;; ⇒ :kid-mismatch: το recorded kid δένεται στο kid του ΥΠΟΓΕΓΡΑΜΜΕΝΟΥ header.
+        (let ((kid-forged (copy-list sig)))
+          (setf (getf kid-forged :kid) "ΑΜ-99999-ΠΛΑΣΤΟ")
+          (multiple-value-bind (ok reason) (verify-decision-signature kid-forged pub)
+            (check "αλλοιωμένο stored :kid (γνήσια υπογραφή) ⇒ ΑΠΟΤΥΓΧΑΝΕΙ (kid-binding)"
+                   (not ok))
+            (check "ο λόγος αποτυχίας είναι :kid-mismatch (όχι σιωπηλή αποδοχή ετικέτας)"
+                   (eq reason :kid-mismatch))))
+        (check "γνήσιο :kid ⇒ jws-protected-kid ταυτίζεται (signed header kid)"
+               (equal (getf sig :kid)
+                      (orchestrator.jws-authority:jws-protected-kid (getf sig :jws))))
         ;; επιβιώνει queue-state → restore (durable) και εξακολουθεί να επαληθεύεται
         (let ((q2 (make-review-queue)))
           (restore-queue-state q2 (queue-state q))
