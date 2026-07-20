@@ -48,6 +48,19 @@ jobs:
           echo "✓ Layer separation verified"
         fi
 
+  ci-integrity-selfcheck:
+    name: 🔒 CI integrity self-check (plenary-assessor negative fixture)
+    runs-on: ubuntu-latest
+    steps:
+    - name: ⬇️ Checkout
+      uses: actions/checkout@v4
+    - name: 🧨 Prove the gate-plenary assessor fails-closed (crash / incomplete / non-baseline / contradiction)
+      shell: bash
+      run: |
+        # [audit#1] Η ΜΙΑ έδρα κρίσης ολομέλειας δεν γίνεται εμπιστευτή προτού
+        # αποδειχθεί ότι απορρίπτει ΚΑΘΕ false-green σενάριο (αρνητικό fixture).
+        bash deployment/verify/assess-gate-plenary-test.sh
+
   verifier-conformance:
     needs: [dependency-policy-gate]
     name: 🔗 Cross-language verifier conformance
@@ -87,7 +100,7 @@ jobs:
         docker build --build-arg GIT_COMMIT=${{ github.sha }} --target standalone-test --tag orchestrator:standalone-test .
 
   build-and-test:
-    needs: [dependency-policy-gate, verifier-conformance, standalone-tests]
+    needs: [dependency-policy-gate, verifier-conformance, standalone-tests, ci-integrity-selfcheck]
     name: 🛠️ Build & Smoke Test
     runs-on: ubuntu-latest
 
@@ -129,32 +142,42 @@ jobs:
         path: sbom.spdx.json
 
     - name: 🏭 FF3 materialization — output/poinikos πριν την ολομέλεια (επιλογή A)
+      shell: bash          # ρητό bash ⇒ ενεργό pipefail (ο default runner shell ΔΕΝ το έχει)
       run: |
         # Απόφαση δημιουργού [0035] επιλογή A: πύλες που χρειάζονται materialized
         # pipeline output (π.χ. --extension-gate → output/poinikos) ΔΕΝ γίνονται
         # αποδεκτό κόκκινο baseline — το output ΠΑΡΑΓΕΤΑΙ πριν κριθούν. Τρέχουμε
         # το πραγματικό pipeline (poinikos) με έξοδο στο mounted checkout.
+        # [audit#1] FAIL-CLOSED: pipefail + ${PIPESTATUS[0]} — crash του docker ΔΕΝ
+        # κρύβεται πλέον πίσω από το exit 0 του `tee`.
+        set -o pipefail
         docker run --rm -v "${{ github.workspace }}":/src -w /src -e LAWMAX_ROOT=/src \
           -e ORCHESTRATOR_OUTPUT_DIR=/src/output -e ORCHESTRATOR_CORPUS=poinikos \
-          orchestrator:test --run-pipeline 2>&1 | tee materialize-poinikos.log
+          orchestrator:test --run-pipeline 2>&1 | tee materialize-poinikos.log || true
+        status=${PIPESTATUS[0]}
+        if [ "$status" -ne 0 ]; then
+          echo "::error::Το materialization docker κατέρρευσε (exit=$status) — δεν είναι αποδεκτό baseline."; exit 1; fi
         test -d "${{ github.workspace }}/output/poinikos" || {
           echo "::error::Το materialization ΔΕΝ παρήγαγε output/poinikos."; exit 1; }
 
     - name: 🏛️ FF3 AUTHORITATIVE plenary — source-present --gates
+      shell: bash          # ρητό bash ⇒ ενεργό pipefail (ο default runner shell ΔΕΝ το έχει)
       run: |
         # Η ΕΓΚΥΡΗ (authoritative) ολομέλεια του FF3. source-present: το checkout
         # mounted ως /src, cwd=/src (-w) ΚΑΙ LAWMAX_ROOT=/src, ώστε ΟΛΕΣ οι πύλες
         # να βλέπουν source + docs (κάποιες πύλες αναλύουν πηγές μέσω getcwd), και
         # με το output/ ΗΔΗ materialized (βήμα A παραπάνω) ώστε το --extension-gate
         # να κριθεί πραγματικά. ΓΝΩΣΤΟ env-only baseline: ΜΟΝΟ το --advisor-gate.
-        # ΚΑΘΕ ΑΛΛΗ κόκκινη πύλη = κόκκινο job.
+        #
+        # [audit#1] Η ΚΡΙΣΗ γίνεται στη ΜΙΑ δοκιμασμένη έδρα assess-gate-plenary.sh
+        # (καμία grep-πολιτική στο YAML): pipefail ⇒ ${PIPESTATUS[0]} = ΠΡΑΓΜΑΤΙΚΟ
+        # exit του docker (όχι του tee) ⇒ crash/OOM ΔΕΝ γίνεται false-green· η έδρα
+        # απαιτεί ΘΕΤΙΚΗ απόδειξη ολοκλήρωσης (σφραγίδα-footer) + μόνο advisor κόκκινο.
+        set -o pipefail
         docker run --rm -v "${{ github.workspace }}":/src -w /src -e LAWMAX_ROOT=/src \
-          orchestrator:test --gates 2>&1 | tee gates-source-present.log
-        if grep 'gate: ΑΠΕΤΥΧΕ' gates-source-present.log | grep -qv 'advisor-gate'; then
-          echo "::error::Πύλη πέραν του δηλωμένου --advisor-gate baseline απέτυχε (source-present)."
-          exit 1
-        fi
-        echo "Source-present plenary ΑΠΟΔΕΚΤΟ: μόνο το δηλωμένο --advisor-gate baseline κόκκινο."
+          orchestrator:test --gates 2>&1 | tee gates-source-present.log || true
+        GATE_BASELINE_EXCEPTIONS="advisor-gate" \
+          ./deployment/verify/assess-gate-plenary.sh gates-source-present.log "${PIPESTATUS[0]}"
 
     - name: 🔎 FF3 verify-truth source-present enforcement (docs ≡ CI)
       run: |

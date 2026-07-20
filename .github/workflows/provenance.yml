@@ -100,19 +100,23 @@ jobs:
       # ========================================================================
       
       - name: Generate SHA-256 hash
-        run: |
+        shell: bash          # [audit#1] pipefail: αν λείπει το archive, sha256sum αποτυγχάνει
+        run: |               #            και ΔΕΝ κρύβεται πίσω από το exit 0 του tee (κενό hash).
+          set -o pipefail
           ARCHIVE="${{ env.archive_path }}"
           sha256sum "${ARCHIVE}" | tee "${ARCHIVE}.sha256"
-          
+
           HASH=$(cat "${ARCHIVE}.sha256" | awk '{print $1}')
           echo "SHA-256: $HASH"
           echo "sha256_hash=$HASH" >> $GITHUB_ENV
           
       - name: Generate SHA-512 hash
+        shell: bash          # [audit#1] pipefail: ίδια fail-closed στάση με το SHA-256 βήμα.
         run: |
+          set -o pipefail
           ARCHIVE="${{ env.archive_path }}"
           sha512sum "${ARCHIVE}" | tee "${ARCHIVE}.sha512"
-          
+
           HASH=$(cat "${ARCHIVE}.sha512" | awk '{print $1}')
           echo "SHA-512: $HASH"
           
