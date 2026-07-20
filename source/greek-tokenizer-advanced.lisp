@@ -928,7 +928,12 @@
 (defun save-bpe-model (model filename)
   "Save BPE model ως DATA-ONLY (ένα (+bpe-schema+ …) plist, prin1 υπό standard-io-syntax +
    keyword package). [ARCH Phase 1] ΚΑΝΕΝΑΣ κώδικας στο αρχείο — επαναφορά ΜΟΝΟ μέσω
-   load-bpe-model (safe-read + typed decoder)."
+   load-bpe-model (safe-read + STRICT typed decoder· κατεστραμμένο/κολοβό αρχείο ⇒ fail-closed).
+   ΤΙΜΙΑ ΣΗΜΕΙΩΣΗ ατομικότητας: η ΜΙΑ έδρα ατομικής εγγραφής (orchestrator.journal:write-file-atomic)
+   φορτώνεται ΜΕΤΑ αυτό το module (asd: greek-tokenizer πριν journal), άρα ΔΕΝ είναι διαθέσιμη εδώ·
+   δεν επιτρέπεται δεύτερη (διπλή) έδρα atomic-write. Η ατομική εγγραφή απαιτεί προαγωγή της
+   write-file-atomic σε foundational io seat ΠΡΙΝ τον tokenizer (ξεχωριστή, αποδεδειγμένη φάση —
+   δεν επηρεάζει την ασφάλεια: κολοβό αρχείο απορρίπτεται από τον decoder)."
   (with-open-file (out filename :direction :output :if-exists :supersede
                                 :if-does-not-exist :create :external-format :utf-8)
     (format out ";;; BPE Model (data-only ~A) - ~D merges, trained on ~D words~%"
@@ -946,12 +951,21 @@
   (unless (and (consp data) (eq (first data) +bpe-schema+))
     (error 'bpe-decode-error :why (format nil "άγνωστο schema/version: ~S"
                                           (and (consp data) (first data)))))
-  (let* ((plist (rest data))
-         (keys (loop for (k) on plist by #'cddr collect k)))
-    (let ((unknown (set-difference keys '(:merges :trained-on))))
-      (when unknown (error 'bpe-decode-error :why (format nil "άγνωστα πεδία: ~S" unknown))))
-    (unless (= (length keys) (length (remove-duplicates keys)))
-      (error 'bpe-decode-error :why "διπλό πεδίο"))
+  (let ((plist (rest data)))
+    ;; [κύκλος-2] STRICT schema: άρτιο plist + keyword κλειδιά + κλειστό+ΥΠΟΧΡΕΩΤΙΚΟ key-set
+    ;; (κανένα forgery-by-omission: λείπον :merges ΔΕΝ σημαίνει σιωπηλά «κενό μοντέλο»).
+    (unless (evenp (length plist))
+      (error 'bpe-decode-error :why "μη-άρτιο plist"))
+    (let ((keys (loop for (k) on plist by #'cddr collect k)))
+      (unless (every #'keywordp keys)
+        (error 'bpe-decode-error :why "μη-keyword κλειδί"))
+      (let ((unknown (set-difference keys '(:merges :trained-on))))
+        (when unknown (error 'bpe-decode-error :why (format nil "άγνωστα πεδία: ~S" unknown))))
+      (unless (= (length keys) (length (remove-duplicates keys)))
+        (error 'bpe-decode-error :why "διπλό πεδίο"))
+      (dolist (req '(:merges :trained-on))
+        (unless (member req keys)
+          (error 'bpe-decode-error :why (format nil "λείπει υποχρεωτικό πεδίο ~S" req)))))
     (let ((merges (getf plist :merges))
           (trained (getf plist :trained-on)))
       (unless (listp merges)

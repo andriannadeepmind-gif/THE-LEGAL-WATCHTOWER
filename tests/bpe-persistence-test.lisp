@@ -68,7 +68,18 @@
          (ck-rejected "ATTACK κακοσχηματισμένος merge ⇒ ΑΠΟΡΡΙΠΤΕΤΑΙ" (load-bpe-model tmp))
          (with-open-file (s tmp :direction :output :if-exists :supersede)
            (format s "(:lawmax-bpe-model/1 :merges () :trained-on -5)~%"))
-         (ck-rejected "ATTACK trained-on αρνητικό ⇒ ΑΠΟΡΡΙΠΤΕΤΑΙ" (load-bpe-model tmp)))
+         (ck-rejected "ATTACK trained-on αρνητικό ⇒ ΑΠΟΡΡΙΠΤΕΤΑΙ" (load-bpe-model tmp))
+         ;; [κύκλος-2 STRICT] λείπον υποχρεωτικό πεδίο / μη-άρτιο plist ⇒ ΑΠΟΡΡΙΠΤΕΤΑΙ
+         (with-open-file (s tmp :direction :output :if-exists :supersede)
+           (format s "(:lawmax-bpe-model/1 :trained-on 0)~%"))  ; ΛΕΙΠΕΙ :merges
+         (ck-rejected "ATTACK λείπει :merges ⇒ ΑΠΟΡΡΙΠΤΕΤΑΙ (όχι σιωπηλά κενό μοντέλο)"
+                      (load-bpe-model tmp))
+         (with-open-file (s tmp :direction :output :if-exists :supersede)
+           (format s "(:lawmax-bpe-model/1 :merges ())~%"))  ; ΛΕΙΠΕΙ :trained-on
+         (ck-rejected "ATTACK λείπει :trained-on ⇒ ΑΠΟΡΡΙΠΤΕΤΑΙ" (load-bpe-model tmp))
+         (with-open-file (s tmp :direction :output :if-exists :supersede)
+           (format s "(:lawmax-bpe-model/1 :merges)~%"))  ; μη-άρτιο plist
+         (ck-rejected "ATTACK μη-άρτιο plist ⇒ ΑΠΟΡΡΙΠΤΕΤΑΙ" (load-bpe-model tmp)))
     (ignore-errors (delete-file tmp))))
 
 (format t "~%bpe-persistence: ~D passed, ~D failed~%" *pt* *ft*)
