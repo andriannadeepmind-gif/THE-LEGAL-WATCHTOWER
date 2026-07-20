@@ -118,3 +118,19 @@ daemon-live [filesystem-tampering], corpus-fingerprint:151 [false-guarded διό
 load-lisp-lexicon)· ~17 guarded→ένωση· reader-macro allowlist per-site (ΔΕΝ ενεργά
 στο ingestion). **Ο αντίπαλος βρήκε χαμένη κλάση OS shell-exec** (document-fetch
 /bin/sh -c, 19 sites) → Phase 5/6. **ΑΝΑΜΕΝΕΤΑΙ «εγκρίνω Phase 1».**
+
+## Phase 1 (task #65) — ΣΕ ΕΞΕΛΙΞΗ [0095], HEAD f6560284
+
+Εντολή δημιουργού: eval/load elimination ΩΣ **ΑΝΑΒΑΘΜΙΣΗ** (data-only + typed
+decoder), ποτέ αφαίρεση λειτουργίας. Κλεισμένες 4 έδρες persistence ΣΤΗΝ ΕΔΡΑ:
+BPE (`e09b2833`/`f6560284`), layout (`059fdd7f`), AST (`3150eb9d`), trace-core
+gold-standard (`7555166e`) — `(eval/load …)` → versioned data-only schema + STRICT
+typed decoder (closed+required, deep validation, class allowlist) + safe-read
+`read-data-file` + `write-file-atomic`. trace-core: θάνατος fabrication ταυτότητας/
+χρόνου (required fields), validate-all-first→ATOMIC commit, deterministic+atomic save.
+**2 CRITICAL (`e3697774`):** intern-DoS σε μη-έμπιστη HTTP/path (`intern`→`find-symbol`)·
+CI false-green `| tee || true; PIPESTATUS` (fix `set +e`/capture/`set -e`).
+**ΕΚΚΡΕΜΟΥΝ (τίμια):** ~13 ζωντανοί bare-`read` data readers (per-store migration)·
+enforcing census ratchet (τώρα απαριθμητής)· gate verdict-manifest· BPE atomicity
+(load-order). **Απόδειξη τοπική (parse-check+fixtures) — owner-side Docker ΥΠΟΧΡΕΩΤΙΚΟ
+για εκτέλεση gated suites. ΟΧΙ ακόμη πιστοποιήσιμο ως ανώτατο.**
