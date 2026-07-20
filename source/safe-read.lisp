@@ -3,11 +3,11 @@
 ;;;; Η ΜΙΑ ΕΔΡΑ ΑΣΦΑΛΟΥΣ ΑΠΟΣΕΡΙΑΛΟΠΟΙΗΣΗΣ ΔΕΔΟΜΕΝΩΝ ([0094]/Phase 1)
 ;;;; ============================================================================
 ;;;;
-;;;; ΜΙΑ έδρα για ΚΑΘΕ ανάγνωση εξωτερικών/μη-έμπιστων s-expressions. Κανένα bare
-;;;; `read`/`read-from-string` σε data path εκτός από ΕΔΩ (η πύλη επανεισαγωγής το
-;;;; επιβάλλει). Ο κίνδυνος εκτέλεσης κώδικα γίνεται ΔΟΜΙΚΑ αδύνατος, όχι φυλασσόμενος:
+;;;; ΜΙΑ έδρα για ΚΑΘΕ ανάγνωση data-only s-expressions. Κανένα bare `read`/
+;;;; `read-from-string` σε data path εκτός από ΕΔΩ (η πύλη επανεισαγωγής το επιβάλλει).
+;;;; Ο κίνδυνος εκτέλεσης κώδικα γίνεται ΔΟΜΙΚΑ αδύνατος, όχι φυλασσόμενος:
 ;;;;
-;;;;   • *read-eval* NIL           — το ΤΟΙΧΟΣ κατά RCE (#. δεν εκτελείται).
+;;;;   • *read-eval* NIL           — ο ΤΟΙΧΟΣ κατά RCE (#. δεν εκτελείται).
 ;;;;   • +data-readtable+          — ΟΛΙΚΗ απαγόρευση του `#` dispatch (ΟΧΙ ανά-subchar
 ;;;;                                 whitelist-of-denials· wholesale macro-char override
 ;;;;                                 ⇒ κάθε #-σύνταξη = error, ενώ `#` ΜΕΣΑ σε strings
@@ -16,12 +16,22 @@
 ;;;;   • όριο ΒΑΘΟΥΣ με linear pre-scan ΠΡΙΝ τον reader — το byte-cap ΔΕΝ φράζει βάθος
 ;;;;                                 (deep-nest ⇒ control-stack-exhausted). Δομικός φραγμός.
 ;;;;   • byte-cap                  — φράζει το ΕΡΓΟ (μέγεθος εισόδου).
-;;;;   • *read-default-float-format* παραμετρικό (default double) — καμία σιωπηλή απώλεια
-;;;;                                 ακρίβειας (double↔single ⇒ hash mismatch = υποβιβασμός).
-;;;;   • *package* παραμετρικό (default :keyword) — διατηρεί την ΑΚΡΙΒΩΣ ίδια συμπεριφορά
-;;;;                                 κάθε υπάρχοντος reader (καμία σιωπηλή reinterning).
+;;;;   • *read-default-float-format* ΣΤΑΘΕΡΟ 'double-float — η μία κανονική μορφή όλων των
+;;;;                                 data stores (καμία σιωπηλή double↔single απώλεια = hash drift).
+;;;;   • *package* ΣΤΑΘΕΡΟ :keyword — ΚΑΝΕΝΑ arbitrary package/symbol (συνταγματικό όριο):
+;;;;                                 data-only = keywords/strings/numbers/lists. Οι σημασιολογικές
+;;;;                                 ικανότητες έχουν ΧΩΡΙΣΤΟΥΣ typed decoders πάνω από αυτό.
 ;;;;   • one-form EOF law          — ακριβώς ΕΝΑ top-level form· δεύτερο ⇒ :trailing.
 ;;;;   • resource-condition policy  — storage-condition ⇒ :resource-exhausted· άλλο ⇒ :unreadable.
+;;;;   • ΜΗΔΕΝ global μεταβολή      — *readtable*/*package* ΜΟΝΟ dynamically bound (let), ποτέ setf.
+;;;;
+;;;; ΣΥΝΤΑΓΜΑΤΙΚΟ ΟΡΙΟ ([0094], εντολή δημιουργού): ΕΛΑΧΙΣΤΟ ΕΣΩΤΕΡΙΚΟ primitive — ΟΧΙ public
+;;;; ingestion boundary, ΟΧΙ canonical transport, ΟΧΙ γενική persistence. ΑΠΑΓΟΡΕΥΕΤΑΙ: Internet/
+;;;; HTML/PDF/OCR/LLM raw input· arbitrary packages/symbols· universal parser με αυξανόμενα flags·
+;;;; νέο μη-versioned format· πέρασμα in-memory object untrusted→trusted· canonical write/publication.
+;;;; Οι αριθμοί-scalar πάνε σε ξεχωριστό numeric parser· το journal κρατά τον δικό του tolerant loop.
+;;;; Κάθε πραγματική ικανότητα (BPE/trace/component/journal) αποκτά ΔΙΚΟ της typed decoder πάνω από
+;;;; αυτά τα primitives — αυτό ΔΕΝ γίνεται god-reader με σημασιολογικά flags.
 ;;;;
 ;;;; Δεν εξαρτάται από ΤΙΠΟΤΑ πλην :cl (καμία κυκλική εξάρτηση: σταθερά caps, path-ως-όρισμα,
 ;;;; μηδέν audit/time/spec). Φορτώνεται ΠΡΩΤΟ στο orchestrator-infrastructure.
@@ -38,8 +48,8 @@
 ;;; ── Παράμετροι (σταθερές — ΚΑΜΙΑ εξάρτηση από config/spec: bootstrap paradox) ──
 
 (defparameter *max-data-bytes* (* 64 1024 1024)
-  "Ανώτατο μέγεθος εισόδου (bytes). Φράζει το ΕΡΓΟ ανάγνωσης. Οι callers μπορούν να
-   περάσουν μικρότερο/μεγαλύτερο :max-bytes ανά store.")
+  "Ανώτατο μέγεθος εισόδου (bytes). Φράζει το ΕΡΓΟ ανάγνωσης. Resource limit· οι callers
+   μπορούν να περάσουν αυστηρότερο :max-bytes ανά store.")
 
 (defparameter *max-data-depth* 2000
   "Ανώτατο βάθος ένθεσης παρενθέσεων. Φράζει τη ΑΝΑΔΡΟΜΗ του reader ΠΡΙΝ αυτή συμβεί
@@ -102,27 +112,21 @@
       (incf i))
     mx))
 
-;;; ── Πυρήνας: το ΜΟΝΑΔΙΚΟ σημείο cl:read σε data path ──
+;;; ── Πυρήνας: το ΜΟΝΑΔΙΚΟ σημείο cl:read σε data path (keyword + double, σταθερά) ──
 
 (defun %classify (c)
   "RESOURCE-CONDITION POLICY: storage-condition (μνήμη/στοίβα/χώρος) ⇒ :resource-exhausted·
    κάθε άλλη serious-condition ⇒ :unreadable."
   (if (typep c 'storage-condition) :resource-exhausted :unreadable))
 
-(defun %resolve-package (package)
-  (etypecase package
-    (null *package*)                            ; :package NIL ⇒ κράτα το package του caller
-    ((or string symbol keyword)
-     (or (find-package package)
-         (error 'safe-read-error :why (format nil "άγνωστο package ~S" package))))
-    (package package)))
-
-(defmacro %with-data-env ((float-format package) &body body)
-  "Εγκαθιστά ΤΟ data-only δυναμικό περιβάλλον· εντός του, ΜΟΝΟ το %read-one καλεί cl:read."
+(defmacro %with-data-env (&body body)
+  "Εγκαθιστά ΤΟ data-only δυναμικό περιβάλλον (ΣΤΑΘΕΡΟ: keyword + double· καμία παράμετρος =
+   κανένα semantic flag). ΜΟΝΟ dynamic binding (let) — μηδέν global μεταβολή. Εντός, ΜΟΝΟ το
+   %read-one καλεί cl:read."
   `(let ((*read-eval* nil)
          (*readtable* +data-readtable+)
-         (*read-default-float-format* ,float-format)
-         (*package* (%resolve-package ,package)))
+         (*read-default-float-format* 'double-float)
+         (*package* (load-time-value (find-package :keyword))))
      ,@body))
 
 (declaim (inline %read-one))
@@ -130,16 +134,16 @@
   "Το ΜΟΝΑΔΙΚΟ cl:read της αρχιτεκτονικής σε data path. Επιστρέφει form ή +eof+."
   (read stream nil +eof+))
 
-;;; ── Δημόσιο API (ΜΙΑ έδρα· παραμετρικό όπου η συμπεριφορά νόμιμα διαφέρει) ──
+;;; ── Δημόσιο API: ΕΛΑΧΙΣΤΑ primitives (καμία σημασιολογική παράμετρος) ──
 
-(defun read-data-form (stream &key (float-format 'double-float) (package :keyword))
-  "Διάβασε ΕΝΑ top-level form από ανοιχτό STREAM (streaming primitive — για resync loops
-   όπως το journal %load-lines). (values form status), status ∈ {:ok :eof :unreadable
+(defun read-data-form (stream)
+  "Διάβασε ΕΝΑ top-level form από ανοιχτό STREAM (streaming primitive — για tolerant resync
+   loops όπως το journal). (values form status), status ∈ {:ok :eof :unreadable
    :resource-exhausted}. Σε :unreadable αφήνει το stream χρησιμοποιήσιμο (ο caller κάνει
-   read-line resync). ΣΗΜΕΙΩΣΗ: το βάθος εδώ φράζεται από το backstop (storage-condition),
-   όχι pre-scan — τα ΜΗ-έμπιστα-εξωτερικά ολόκληρα αρχεία περνούν από read-data-file/-string
+   read-line resync). ΣΗΜΕΙΩΣΗ: εδώ το βάθος φράζεται από το backstop (storage-condition),
+   όχι pre-scan — τα ΜΗ-έμπιστα-εξωτερικά ΟΛΟΚΛΗΡΑ αρχεία περνούν από read-data-file/-string
    (pre-scanned)· το streaming primitive αφορά self-written journals."
-  (%with-data-env (float-format package)
+  (%with-data-env
     (handler-case
         (let ((form (%read-one stream)))
           (if (eq form +eof+) (values nil :eof) (values form :ok)))
@@ -147,12 +151,12 @@
       (storage-condition (c) (values nil (%classify c)))
       (serious-condition () (values nil :unreadable)))))
 
-(defun %decode-one (content float-format package max-depth)
+(defun %decode-one (content max-depth)
   "One-form EOF law πάνω σε ΟΛΟΚΛΗΡΟ string (μετά byte-cap). (values form status),
    status ∈ {:ok :empty :trailing :too-deep :unreadable :resource-exhausted}."
   (when (> (max-paren-depth content) max-depth)
     (return-from %decode-one (values nil :too-deep)))
-  (%with-data-env (float-format package)
+  (%with-data-env
     (handler-case
         (with-input-from-string (s content)
           (let ((form (%read-one s)))
@@ -163,12 +167,12 @@
       (storage-condition (c) (values nil (%classify c)))
       (serious-condition () (values nil :unreadable)))))
 
-(defun %decode-sequence (content float-format package max-depth)
+(defun %decode-sequence (content max-depth)
   "ΟΛΑ τα top-level forms (all-or-error· ΟΧΙ resync — αυτό είναι policy του journal).
    (values list status), status ∈ {:ok :too-deep :unreadable :resource-exhausted}."
   (when (> (max-paren-depth content) max-depth)
     (return-from %decode-sequence (values nil :too-deep)))
-  (%with-data-env (float-format package)
+  (%with-data-env
     (handler-case
         (with-input-from-string (s content)
           (let ((forms '()))
@@ -182,7 +186,7 @@
 
 (defun %slurp (path max-bytes)
   "Διάβασε το PATH ως UTF-8 string, με byte-cap ΠΡΙΝ την ανάγνωση.
-   (values content status): :absent (δεν υπάρχει), :too-large, :unreadable, ή :present."
+   (values content status): :absent, :too-large, :unreadable, :resource-exhausted, :present."
   (unless (probe-file path) (return-from %slurp (values nil :absent)))
   (let ((size (ignore-errors
                (with-open-file (s path :element-type '(unsigned-byte 8))
@@ -198,8 +202,7 @@
       (storage-condition (c) (values nil (%classify c)))
       (serious-condition () (values nil :unreadable)))))
 
-(defun read-data-file (path &key (float-format 'double-float) (package :keyword)
-                                 (max-bytes *max-data-bytes*) (max-depth *max-data-depth*))
+(defun read-data-file (path &key (max-bytes *max-data-bytes*) (max-depth *max-data-depth*))
   "Διάβασε ΕΝΑ top-level data form από αρχείο PATH. (values form status), status ∈
    {:ok :empty :trailing :too-large :too-deep :unreadable :resource-exhausted}.
    Απόν αρχείο ⇒ (values NIL :empty). Μη-έμπιστο εξωτερικό: pre-scanned βάθος + byte-cap."
@@ -209,17 +212,15 @@
       (:too-large (values nil :too-large))
       (:unreadable (values nil :unreadable))
       (:resource-exhausted (values nil :resource-exhausted))
-      (t (%decode-one content float-format package max-depth)))))
+      (t (%decode-one content max-depth)))))
 
-(defun read-data-string (string &key (float-format 'double-float) (package :keyword)
-                                     (max-bytes *max-data-bytes*) (max-depth *max-data-depth*))
+(defun read-data-string (string &key (max-bytes *max-data-bytes*) (max-depth *max-data-depth*))
   "Διάβασε ΕΝΑ top-level data form από STRING. Ίδιες εγγυήσεις/status με read-data-file."
   (if (> (length string) max-bytes)
       (values nil :too-large)
-      (%decode-one string float-format package max-depth)))
+      (%decode-one string max-depth)))
 
-(defun read-data-file-sequence (path &key (float-format 'double-float) (package :keyword)
-                                          (max-bytes *max-data-bytes*) (max-depth *max-data-depth*))
+(defun read-data-file-sequence (path &key (max-bytes *max-data-bytes*) (max-depth *max-data-depth*))
   "Διάβασε ΟΛΑ τα top-level data forms ενός αρχείου (all-or-error). (values list status),
    status ∈ {:ok :empty :too-large :too-deep :unreadable :resource-exhausted}."
   (multiple-value-bind (content st) (%slurp path max-bytes)
@@ -228,7 +229,7 @@
       (:too-large (values nil :too-large))
       (:unreadable (values nil :unreadable))
       (:resource-exhausted (values nil :resource-exhausted))
-      (t (%decode-sequence content float-format package max-depth)))))
+      (t (%decode-sequence content max-depth)))))
 
 ;;; ── Boolean canonicalization (ΜΙΑ έδρα· από %ebg-canon-bool) ──
 
