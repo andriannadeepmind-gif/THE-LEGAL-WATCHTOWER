@@ -22,18 +22,33 @@ import hashlib, json, os, re, subprocess, sys
 EXCLUSIONS_REL = os.path.join("docker", "standalone-suite-exclusions.txt")
 
 def load_exclusions(app_root, tests_dir):
+    """Επιστρέφει (suite_exclusions, nonsuite_files) από τη ΜΙΑ έδρα δηλώσεων.
+
+    suite_exclusions: basenames (-test.lisp suites) που ΔΕΝ τρέχουν ως gate.
+    nonsuite_files:    ΠΛΗΡΗ filenames tests/*.lisp που δεν είναι harness suites
+                       (κληρονομημένο/διαφορετικό συμβόλαιο) — δηλωμένα «nonsuite:».
+    """
     base = app_root if app_root else os.path.dirname(os.path.abspath(tests_dir.rstrip("/")))
     path = os.path.join(base, EXCLUSIONS_REL)
     if not os.path.isfile(path):
         print("verify-proof-manifest: ΑΠΟΝ exclusions file %r — fail-closed" % path)
         sys.exit(1)
-    excl = set()
+    excl, nonsuite = set(), set()
     with open(path, encoding="utf-8") as fh:
         for line in fh:
             line = line.split("#", 1)[0].strip()
-            if line:
+            if not line:
+                continue
+            if line.startswith("nonsuite:"):
+                fn = line[len("nonsuite:"):].strip()
+                if not fn.endswith(".lisp") or fn.endswith("-test.lisp"):
+                    fail("exclusions: μη-έγκυρη nonsuite δήλωση %r "
+                         "(πρέπει full filename *.lisp, όχι -test.lisp)" % fn)
+                else:
+                    nonsuite.add(fn)
+            else:
                 excl.add(line)
-    return excl
+    return excl, nonsuite
 
 # Σουίτες που τρέχουν ΜΟΝΟ στον verifier-conformance κρίκο (δικά τους RUN
 # gates εκεί — δεν απαιτείται log στο standalone manifest).
@@ -114,7 +129,22 @@ def main(proof_dir, tests_dir, app_root=None):
             fail("manifest suites ≠ εκτελεσμένες: μόνο-manifest=%s μόνο-run=%s"
                  % (sorted(set(suites) - ran), sorted(ran - set(suites))))
 
-    declared_not_gated = load_exclusions(app_root, tests_dir)
+    declared_not_gated, declared_nonsuite = load_exclusions(app_root, tests_dir)
+
+    # [re-review C-2a] TOTALITY: ΚΑΘΕ tests/*.lisp πρέπει να είναι ταξινομημένο —
+    # είτε -test.lisp σουίτα (gated ή δηλωμένη εξαίρεση) είτε δηλωμένο nonsuite.
+    # Οτιδήποτε αταξινόμητο = σιωπηλό κενό = fail-closed (το κενό γίνεται δομικά
+    # αδύνατο, όχι απλώς απαγορευμένο).
+    all_lisp = {f for f in os.listdir(tests_dir) if f.endswith(".lisp")}
+    non_test = {f for f in all_lisp if not f.endswith("-test.lisp")}
+    unclassified = non_test - declared_nonsuite
+    if unclassified:
+        fail("ΑΤΑΞΙΝΟΜΗΤΑ tests/*.lisp (ούτε -test σουίτα ούτε δηλωμένο nonsuite): %s"
+             % sorted(unclassified))
+    stale_nonsuite = declared_nonsuite - all_lisp
+    if stale_nonsuite:
+        fail("nonsuite δηλώσεις για ΑΝΥΠΑΡΚΤΑ αρχεία (stale): %s" % sorted(stale_nonsuite))
+
     expected = {f[:-len("-test.lisp")] for f in os.listdir(tests_dir)
                 if f.endswith("-test.lisp")} - declared_not_gated - VERIFIER_STAGE_ONLY
     missing = expected - set(suites)

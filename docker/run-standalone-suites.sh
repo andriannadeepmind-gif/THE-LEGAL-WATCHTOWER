@@ -40,7 +40,12 @@ mkdir -p "$PROOF_DIR/logs"
 # Δηλωμένες εξαιρέσεις (αγνόησε σχόλια/κενές γραμμές· κράτα το 1ο token).
 excl=()
 while IFS= read -r line; do
-  line="${line%%#*}"; line="${line//[[:space:]]/}"
+  line="${line%%#*}"
+  line="${line#"${line%%[![:space:]]*}"}"   # ltrim
+  # nonsuite:-δηλώσεις (full-filename μη-harness αρχεία) ΔΕΝ είναι suite basenames —
+  # τα ταξινομεί/επιβάλλει ο verify-proof-manifest.py (totality). Εδώ αγνοούνται.
+  case "$line" in nonsuite:*) continue ;; esac
+  line="${line//[[:space:]]/}"
   [ -n "$line" ] && excl+=("$line")
 done < "$EXCL_FILE"
 is_excluded() { local s="$1" e; for e in "${excl[@]:-}"; do [ "$s" = "$e" ] && return 0; done; return 1; }

@@ -14,3 +14,30 @@
 # comparison: διαγνωστικό που απαιτεί Python reference fixture ΑΠΟΝ από το
 #             SBCL-only standalone stage (τρέχει αλλού με python παρόν).
 comparison
+
+# =============================================================================
+# [audit#2 / re-review C-2a] ΔΗΛΩΜΕΝΑ ΜΗ-ΣΟΥΙΤΑ αρχεία tests/*.lisp (full filename)
+# =============================================================================
+# ΓΙΑΤΙ ΥΠΑΡΧΕΙ: το inventory παραγόταν με glob «tests/*-test.lisp» — άρα ΚΑΘΕ
+# tests/*.lisp που ΔΕΝ λήγει σε «-test.lisp» έπεφτε ΕΞΩ από κάθε ταξινόμηση:
+# ούτε έτρεχε, ούτε δηλωνόταν, ούτε καν φαινόταν. Σιωπηλό κενό (ο κριτής C βρήκε 8).
+#
+# ΔΟΜΙΚΗ ΛΥΣΗ (totality): ο verify-proof-manifest.py επιβάλλει ΠΛΗΡΗ κάλυψη —
+# ΚΑΘΕ tests/*.lisp πρέπει να είναι είτε gated σουίτα (-test.lisp) είτε ΕΔΩ
+# δηλωμένο «nonsuite:» με ΛΟΓΟ· οτιδήποτε αταξινόμητο = fail-closed. Έτσι το
+# σιωπηλό κενό γίνεται ΔΟΜΙΚΑ αδύνατο, όχι απλώς απαγορευμένο.
+#
+# Μορφή: «nonsuite: <filename.lisp>  # λόγος». Τα παρακάτω είναι κληρονομημένα
+# DARPA-era αρχεία με ΔΙΑΦΟΡΕΤΙΚΟ συμβόλαιο φόρτωσης (hardcoded /workspace/…
+# paths, «assume X already loaded», δικό τους ASDF setup) — ΑΣΥΜΒΑΤΑ με τον
+# standalone RUNNER harness (sbcl --script RUNNER file). Δεν τρέχουν ως gate εδώ·
+# η τυχόν αναβίωση/διαγραφή τους είναι απόφαση δημιουργού (εκκρεμεί), αλλά το
+# κενό ταξινόμησης κλείνει ΤΩΡΑ.
+nonsuite: architecture-verification.lisp   # /workspace hardcoded load paths· DARPA-era contract
+nonsuite: hardcoded-verification.lisp      # «assume citation-authority.lisp already loaded»
+nonsuite: mathematical-proof.lisp          # δικό του (require :asdf)+source-registry setup
+nonsuite: observer-verification.lisp       # standalone package, μη-harness entrypoint
+nonsuite: run-citation-verification.lisp   # docker-compose.citation-tests entrypoint (ξεχωριστό stage)
+nonsuite: test-citation-authority.lisp     # DARPA-era math-property suite, μη-harness contract
+nonsuite: test-infrastructure.lisp         # φορτώνει πλήρη infra layer (asdf), μη standalone
+nonsuite: tokenizer-verification.lisp      # /workspace hardcoded load paths· DARPA-era contract
