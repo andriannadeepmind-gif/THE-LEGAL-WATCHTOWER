@@ -29,6 +29,17 @@
    (εύρημα Codex PR#2: αλλιώς μια documented CI test path μένει αφύλαχτη).")
 (defparameter +vt-escape-suite-token+ "escape-sequences"
   "Η escape σουίτα, απορροφημένη στο standalone-test loop (FF3).")
+;; [audit#3] Το verify-truth ήλεγχε ΠΑΡΟΥΣΙΑ εντολών (λέξεις), όχι την ΕΚΤΕΛΕΣΤΙΚΗ
+;; καλωδίωση που τις κάνει ουσιαστικές. Αυτά τα tokens επιβάλλουν ότι η authoritative
+;; ολομέλεια είναι FAIL-CLOSED (pipefail + η δοκιμασμένη έδρα κρίσης) και ότι το
+;; standalone inventory ΠΑΡΑΓΕΤΑΙ (καμία χειρόγραφη λίστα) — «CI runs --gates» παύει να
+;; είναι κούφιο. Ευθυγράμμιση με [audit#1] (false-green) + [audit#2] (test inventory).
+(defparameter +vt-pipefail-token+ "pipefail"
+  "Η authoritative --gates CI ΠΡΕΠΕΙ να φέρει pipefail (exit code του docker, όχι του tee).")
+(defparameter +vt-plenary-assessor-token+ "assess-gate-plenary"
+  "Η ΜΙΑ δοκιμασμένη έδρα κρίσης ολομέλειας — καμία grep-πολιτική στο YAML.")
+(defparameter +vt-derived-runner-token+ "run-standalone-suites.sh"
+  "Το standalone inventory ΠΑΡΑΓΕΤΑΙ από το filesystem (όχι χειρόγραφη λίστα).")
 (defparameter +vt-retired-tokens+
   '("docker-compose.test.yml" "scripts/run-gates.lisp" "run-tests-docker.lisp")
   "Αποσυρμένοι μηχανισμοί: το README ΔΕΝ επιτρέπεται να τους διαφημίζει ως
@@ -100,7 +111,19 @@
       ;; L2b: η ΔΕΥΤΕΡΗ documented CI test path (verifier-conformance) — CI τρέχει ≡ README τεκμηριώνει
       (unless (and (%vt-has ci-code +vt-tests-command-2+)
                    (%vt-has readme +vt-tests-command-2+))
-        (return-from check (values :invalid :tests_command_2_divergent))))
+        (return-from check (values :invalid :tests_command_2_divergent)))
+      ;; L6 [audit#3] Η authoritative ολομέλεια είναι ΕΚΤΕΛΕΣΤΙΚΑ FAIL-CLOSED, όχι
+      ;;    απλή αναφορά της εντολής: το CI (χωρίς σχόλια) ΠΡΕΠΕΙ να φέρει pipefail ΚΑΙ
+      ;;    την δοκιμασμένη έδρα κρίσης (assess-gate-plenary). Αλλιώς «CI runs --gates»
+      ;;    είναι κούφιο — crash/false-green (ο ίδιος ο κριτής #3: λέξεις όχι εκτέλεση).
+      (unless (and (%vt-has ci-code +vt-pipefail-token+)
+                   (%vt-has ci-code +vt-plenary-assessor-token+))
+        (return-from check (values :invalid :authoritative_gates_not_failclosed))))
+    ;; L7 [audit#3] Το standalone-test inventory ΠΑΡΑΓΕΤΑΙ (run-standalone-suites.sh),
+    ;;    όχι χειρόγραφη λίστα — αλλιώς «--target standalone-test» δεν αποδεικνύει πλήρη
+    ;;    σουίτα (ο κριτής #2 βρήκε 7 ξεχασμένες).
+    (unless (%vt-has dockerfile +vt-derived-runner-token+)
+      (return-from check (values :invalid :standalone_suites_not_derived)))
     ;; L3 κανένας αποσυρμένος μηχανισμός δεν διαφημίζεται στο README
     (dolist (tok +vt-retired-tokens+)
       (when (%vt-has readme tok)
@@ -162,9 +185,14 @@
                           (format t "  ✗ ~A (πήρα ~A/~A)~%" label v w))))))
       (let ((ok-readme (format nil "run --gates· δες docker build ~A· και ~A"
                                +vt-tests-command+ +vt-tests-command-2+))
-            (ok-ci (format nil "docker run … --gates~%docker build ~A .~%docker build ~A ."
+            ;; [audit#3] ok-ci φέρει την ΕΚΤΕΛΕΣΤΙΚΗ καλωδίωση: pipefail + assess-gate-plenary.
+            (ok-ci (format nil "set -o pipefail~%docker run … --gates … | tee log~%~
+                                ./deployment/verify/assess-gate-plenary.sh log ${PIPESTATUS}~%~
+                                docker build ~A .~%docker build ~A ."
                            +vt-tests-command+ +vt-tests-command-2+))
-            (ok-df (format nil "for t in … ~A …; do sbcl …; done" +vt-escape-suite-token+)))
+            ;; ok-df: derived suite runner + η escape σουίτα.
+            (ok-df (format nil "RUN /app/docker/run-standalone-suites.sh …~%~
+                                # inventory περιλαμβάνει ~A" +vt-escape-suite-token+)))
         ;; θετικό: docs≡CI, escape gated, driver αποσυρμένος
         (expect "① docs≡CI πλήρες ⇒ :ok" ok-readme ok-ci ok-df nil :ok nil)
         ;; L0: αρχεία-πηγές λείπουν
@@ -185,6 +213,17 @@
         ;; L2: το CI δεν χτίζει standalone-test
         (expect "⑧ CI χωρίς standalone-test ⇒ :tests_command_divergent"
                 ok-readme "docker run … --gates" ok-df nil :invalid :tests_command_divergent)
+        ;; L6 [audit#3]: το CI αναφέρει όλες τις εντολές αλλά ΧΩΡΙΣ pipefail+assessor
+        (expect "⑧β CI χωρίς pipefail/assessor ⇒ :authoritative_gates_not_failclosed"
+                ok-readme
+                (format nil "docker run … --gates~%docker build ~A .~%docker build ~A ."
+                        +vt-tests-command+ +vt-tests-command-2+)
+                ok-df nil :invalid :authoritative_gates_not_failclosed)
+        ;; L7 [audit#3]: το Dockerfile ΔΕΝ παράγει το inventory (χειρόγραφη λίστα)
+        (expect "⑧γ Dockerfile χωρίς derived runner ⇒ :standalone_suites_not_derived"
+                ok-readme ok-ci
+                (format nil "for t in source-profile … ~A …; do sbcl …; done" +vt-escape-suite-token+)
+                nil :invalid :standalone_suites_not_derived)
         ;; L3: το README διαφημίζει αποσυρμένο μηχανισμό
         (expect "⑨ README διαφημίζει docker-compose.test.yml ⇒ :retired_mechanism_advertised"
                 (format nil "~A· δες docker-compose.test.yml για All tests" ok-readme) ok-ci ok-df nil
@@ -197,7 +236,9 @@
                 :invalid :retired_mechanism_advertised)
         ;; L4: escape σουίτα ΔΕΝ είναι στο loop
         (expect "⑪ Dockerfile χωρίς escape-sequences ⇒ :escape_suite_ungated"
-                ok-readme ok-ci "for t in source-profile …; do …; done" nil
+                ok-readme ok-ci
+                ;; derived runner παρών (περνά L7) αλλά ΧΩΡΙΣ escape-sequences (πέφτει L4)
+                "RUN /app/docker/run-standalone-suites.sh …" nil
                 :invalid :escape_suite_ungated)
         ;; L4: ο αποσυρμένος driver υπάρχει ακόμη
         (expect "⑫ run-tests-docker.lisp παρών ⇒ :retired_driver_present"
