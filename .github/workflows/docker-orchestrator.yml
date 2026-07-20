@@ -157,11 +157,17 @@ jobs:
         # το πραγματικό pipeline (poinikos) με έξοδο στο mounted checkout.
         # [audit#1] FAIL-CLOSED: pipefail + ${PIPESTATUS[0]} — crash του docker ΔΕΝ
         # κρύβεται πλέον πίσω από το exit 0 του `tee`.
+        # [κύκλος-2 CRITICAL false-green fix] ΟΧΙ «| tee … || true»: μετά το `|| true` έχει
+        # ΗΔΗ εκτελεστεί νέα εντολή (`true`), άρα το PIPESTATUS αντικαθίσταται με (0) —
+        # ΑΚΡΙΒΩΣ όταν το docker αποτυγχάνει (αναπαραγόμενο false-green). set +e γύρω από
+        # το pipe ⇒ το -e δεν ματαιώνει· PIPESTATUS[0] = ΠΡΑΓΜΑΤΙΚΟ docker exit· set -e ξανά.
         set -o pipefail
+        set +e
         docker run --rm -v "${{ github.workspace }}":/src -w /src -e LAWMAX_ROOT=/src \
           -e ORCHESTRATOR_OUTPUT_DIR=/src/output -e ORCHESTRATOR_CORPUS=poinikos \
-          orchestrator:test --run-pipeline 2>&1 | tee materialize-poinikos.log || true
+          orchestrator:test --run-pipeline 2>&1 | tee materialize-poinikos.log
         status=${PIPESTATUS[0]}
+        set -e
         if [ "$status" -ne 0 ]; then
           echo "::error::Το materialization docker κατέρρευσε (exit=$status) — δεν είναι αποδεκτό baseline."; exit 1; fi
         test -d "${{ github.workspace }}/output/poinikos" || {
@@ -180,11 +186,17 @@ jobs:
         # (καμία grep-πολιτική στο YAML): pipefail ⇒ ${PIPESTATUS[0]} = ΠΡΑΓΜΑΤΙΚΟ
         # exit του docker (όχι του tee) ⇒ crash/OOM ΔΕΝ γίνεται false-green· η έδρα
         # απαιτεί ΘΕΤΙΚΗ απόδειξη ολοκλήρωσης (σφραγίδα-footer) + μόνο advisor κόκκινο.
+        # [κύκλος-2 CRITICAL false-green fix] βλ. materialization: «| tee … || true» μηδενίζει
+        # το PIPESTATUS ΑΚΡΙΒΩΣ όταν το docker αποτυγχάνει. set +e/-e ⇒ το `status` είναι το
+        # ΠΡΑΓΜΑΤΙΚΟ docker exit που περνά στην ΜΙΑ έδρα κρίσης (assess-gate-plenary.sh).
         set -o pipefail
+        set +e
         docker run --rm -v "${{ github.workspace }}":/src -w /src -e LAWMAX_ROOT=/src \
-          orchestrator:test --gates 2>&1 | tee gates-source-present.log || true
+          orchestrator:test --gates 2>&1 | tee gates-source-present.log
+        status=${PIPESTATUS[0]}
+        set -e
         GATE_BASELINE_EXCEPTIONS="advisor-gate" \
-          ./deployment/verify/assess-gate-plenary.sh gates-source-present.log "${PIPESTATUS[0]}"
+          ./deployment/verify/assess-gate-plenary.sh gates-source-present.log "$status"
 
     - name: 🔎 FF3 verify-truth source-present enforcement (docs ≡ CI)
       run: |

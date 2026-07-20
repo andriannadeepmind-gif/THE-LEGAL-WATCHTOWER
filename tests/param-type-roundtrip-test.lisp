@@ -51,7 +51,10 @@
                :name :probe :trust :trusted :fn (lambda (&rest _) (declare (ignore _)) nil)))
 
 ;; Δηλωμένα representative samples ανά τύπο· ΚΑΘΕ type ∈ +param-types+ ΠΡΕΠΕΙ να έχει ένα.
-(defparameter *samples* '((:string . "hello") (:keyword . "foo") (:any . "x")
+;; [κύκλος-2] Το :keyword sample είναι ΗΔΗ-ΥΠΑΡΧΟΝ keyword ("string" → :STRING, μέλος του
+;; +param-types+): μετά τη find-symbol διόρθωση (θάνατος intern-DoS) μόνο υπαρκτά keywords
+;; coerce-άρουν· άγνωστη τιμή = 400. Το round-trip δείγμα ΠΡΕΠΕΙ να είναι υπαρκτό.
+(defparameter *samples* '((:string . "hello") (:keyword . "string") (:any . "x")
                           (:integer . "42") (:boolean . "true")))
 
 (format t "~%── RUNTIME ROUND-TRIP: coerce∘type-ok για ΚΑΘΕ +param-types+ ──~%")
@@ -76,6 +79,15 @@
     (orchestrator.capability-api:api-dispatch "/api/kwcap" '(("mode" . "fast")) :require-trust t)
   (check ":keyword-typed param invoke ⇒ 200 (ΟΧΙ 400 — το κενό F2)" (eql st 200))
   (check ":keyword param έφτασε ως :FAST στο :fn" (eq :fast (getf (getf payload :result) :got))))
+
+;; [κύκλος-2] SECURITY: θάνατος intern-DoS — μη-υπαρκτό keyword value ⇒ coercion-error (400),
+;; ΚΑΝΕΝΑ intern πάνω σε μη-έμπιστη είσοδο. (String literal, ΟΧΙ keyword literal ⇒ μένει uninterned.)
+(check ":keyword άγνωστη τιμή ⇒ coercion-error (find-symbol=nil, κανένα intern)"
+       (handler-case
+           (progn (orchestrator.capability-api::%coerce-one *cap* :p :keyword "zzq-unknown-kw-xyzzy") nil)
+         (orchestrator.capability-api::coercion-error () t)))
+(check ":keyword άγνωστη τιμή ΔΕΝ γέμισε το keyword package (παραμένει uninterned)"
+       (null (find-symbol "ZZQ-UNKNOWN-KW-XYZZY" :keyword)))
 
 (format t "~%param-type-roundtrip: ~D passed, ~D failed~%" *pass* *fail*)
 (sb-ext:exit :code (if (zerop *fail*) 0 1))

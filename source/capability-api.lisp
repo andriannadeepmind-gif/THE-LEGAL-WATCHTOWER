@@ -41,12 +41,14 @@
                   :reason (format nil "όρισμα ~A: μη έγκυρο ~A (~S)" pname want s))))
     (case ptype
       (:string  s)
-      ;; [re-review adv2-F2] :keyword ΠΡΕΠΕΙ να παράγει keyword — το %type-ok-p ελέγχει
-      ;; keywordp, άρα το παλιό «κράτα string» αποτύγχανε ΠΑΝΤΑ στο %check-params (400 σε
-      ;; κάθε :keyword param). Τώρα intern-άρεται (upcased, όπως ο reader σε CLI/MCP), ώστε
-      ;; coerce∘type-ok να ταιριάζει σε ΚΑΘΕ επιφάνεια. ΣΗΜΕΙΩΣΗ: interns στο keyword
-      ;; package (bounded από request size)· :keyword παραμένει controlled-vocabulary param.
-      (:keyword (intern (string-upcase s) :keyword))
+      ;; [re-review adv2-F2 → κύκλος-2 CRITICAL] :keyword ΠΡΕΠΕΙ να παράγει keyword (το
+      ;; %type-ok-p ελέγχει keywordp). Το προηγούμενο fix intern-άριζε την ΜΗ-ΕΜΠΙΣΤΗ HTTP
+      ;; τιμή ⇒ κάθε διαφορετικό request γεννούσε ΜΟΝΙΜΟ keyword symbol (intern-DoS: το
+      ;; keyword package μεγάλωνε ασυγκράτητα· το request-size cap ΔΕΝ φράζει το σωρευτικό
+      ;; πλήθος διαφορετικών requests). Τώρα: find-symbol — μόνο ΗΔΗ ΥΠΑΡΧΟΝ keyword
+      ;; (controlled vocabulary που ΚΑΠΟΙΟΣ κώδικας ήδη ξέρει)· άγνωστη τιμή ⇒ 400
+      ;; (fail-closed) ΧΩΡΙΣ intern. ΚΑΝΕΝΑ intern πάνω σε μη-έμπιστη είσοδο.
+      (:keyword (or (find-symbol (string-upcase s) :keyword) (bad :keyword)))
       (:any     s)
       (:integer (or (ignore-errors (parse-integer s :junk-allowed nil)) (bad :integer)))
       ;; [0094]/Phase 1 commit 2A: ο :number κλάδος ΔΙΑΓΡΑΦΗΚΕ — 0 capability δήλωνε
@@ -92,8 +94,13 @@
   (if (not (%prefixp *api-prefix* path))
       (values :not-api nil)
       (let* ((name-part (subseq path (length *api-prefix*)))
+             ;; [κύκλος-2 CRITICAL] find-symbol, ΟΧΙ intern: το route name είναι μη-έμπιστο
+             ;; path input. Το intern θα γέμιζε μόνιμα το keyword package με τυχαία
+             ;; /api/<unique-string> paths (intern-DoS) ΠΡΙΝ καν εξακριβωθεί ότι η δυνατότητα
+             ;; υπάρχει. Μια δηλωμένη δυνατότητα έχει ΗΔΗ interned keyword όνομα (register
+             ;; στο load)· άγνωστο όνομα ⇒ nil ⇒ 404 ΧΩΡΙΣ intern.
              (capname (and (plusp (length name-part))
-                           (intern (string-upcase name-part) :keyword)))
+                           (find-symbol (string-upcase name-part) :keyword)))
              (cap (and capname (find-capability capname))))
         (cond
           ((null cap)
