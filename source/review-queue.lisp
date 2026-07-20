@@ -186,10 +186,25 @@
 
 (defun make-review-queue () (make-instance 'review-queue))
 
+(defun %payload-fingerprint (item)
+  "Ντετερμινιστικό sha256-16 του payload (data-only prin1 υπό keyword package, ίδια
+   κανονική μορφή με το save format). ΜΕΡΟΣ της ταυτότητας ώστε ΔΙΑΦΟΡΕΤΙΚΟ προτεινόμενο
+   περιεχόμενο για το ΙΔΙΟ άρθρο να ΜΗΝ συμπτύσσεται σε μία πρόταση — [audit#9]."
+  (subseq (orchestrator.journal:sha256-hex
+           (with-output-to-string (s)
+             (with-standard-io-syntax
+               (let ((*package* (find-package :keyword)))
+                 (prin1 (item-payload item) s)))))
+          0 16))
+
 (defun %item-key (item)
-  "Stable identity: kind|source|target — so the same flagged change is enqueued
-   once even across repeated polls."
-  (format nil "~A|~A|~A" (item-kind item) (item-source item) (item-target item)))
+  "Stable identity: kind|source|target|payload-fingerprint. [audit#9] Το payload ΑΝΗΚΕΙ
+   στην ταυτότητα: δύο ΔΙΑΦΟΡΕΤΙΚΕΣ προτεινόμενες αλλαγές για το ΙΔΙΟ άρθρο είναι ΔΥΟ
+   ξεχωριστές προτάσεις (ξεχωριστός ανθρώπινος έλεγχος· καμία auto-approve λόγω απόφασης
+   ΑΛΛΟΥ περιεχομένου) — ίδιο ακριβώς περιεχόμενο σε επαναλαμβανόμενα polls = μία εγγραφή."
+  (format nil "~A|~A|~A|~A"
+          (item-kind item) (item-source item) (item-target item)
+          (%payload-fingerprint item)))
 
 (defun enqueue (queue item)
   "Add ITEM unless an item with the same identity is already queued. Assigns a

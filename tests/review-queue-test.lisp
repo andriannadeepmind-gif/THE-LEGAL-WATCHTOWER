@@ -42,6 +42,26 @@
   (check "same identity enqueued once (dedup)" (= 2 (length (queue-items q))))
   (check "2 pending" (= 2 (queue-pending-count q))))
 
+(format t "~%== [audit#9] payload ΑΝΗΚΕΙ στην ταυτότητα (καμία σύμπτυξη διαφορετικών προτάσεων) ==~%")
+(let ((q (make-review-queue)))
+  ;; ΙΔΙΟ άρθρο (source/target), ΔΙΑΦΟΡΕΤΙΚΟ προτεινόμενο περιεχόμενο ⇒ ΔΥΟ προτάσεις.
+  (enqueue q (make-instance 'amendment-review :source "L1" :target "art_5"
+                            :payload '(:op :replace-text :text "Εκδοχή Α")))
+  (enqueue q (make-instance 'amendment-review :source "L1" :target "art_5"
+                            :payload '(:op :replace-text :text "Εκδοχή Β")))
+  (check "διαφορετικά payloads για το ΙΔΙΟ άρθρο ⇒ 2 ξεχωριστές προτάσεις"
+         (= 2 (length (queue-items q))))
+  ;; Απόφαση στη μία ΔΕΝ auto-approve-άρει την άλλη (διαφορετική ταυτότητα).
+  (let ((a (first (queue-items q))))
+    (decide q (item-id a) :approve :by "δικηγόρος"))
+  (check "απόφαση σε μία εκδοχή ΔΕΝ κληρονομείται από την άλλη"
+         (= 1 (length (pending-items q))))
+  ;; ΙΔΙΟ ακριβώς payload σε νέο poll ⇒ μία εγγραφή (dedup διατηρείται).
+  (enqueue q (make-instance 'amendment-review :source "L1" :target "art_5"
+                            :payload '(:op :replace-text :text "Εκδοχή Β")))
+  (check "ίδιο ακριβώς payload σε επανάληψη ⇒ καμία νέα εγγραφή (dedup)"
+         (= 2 (length (queue-items q)))))
+
 (format t "~%== Decisions + audit + approved-operations ==~%")
 (let* ((q (make-review-queue))
        (a (enqueue q (make-instance 'amendment-review :source "L1" :target "art_5"
