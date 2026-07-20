@@ -174,5 +174,24 @@
               (let ((r (load-review-queue-mapping f)))   ; ΣΗΜΑΤΟΔΟΤΕΙ πριν φτάσουμε εδώ
                 (declare (ignore r)) nil))))))
 
+;;; Fixture 10 — [audit#8] LOOPBACK-BY-DEFAULT: η οθόνη εγκρίσεων (τελική νομική αυθεντία)
+;;; ΔΕΝ εκτίθεται στο δίκτυο εξ ορισμού. Στατικός έλεγχος στο σώμα του serve-review.
+(let* ((here (or *load-truename* *load-pathname*))
+       (main (merge-pathnames "../systems/orchestrator-cli/main.lisp"
+                              (make-pathname :directory (pathname-directory here))))
+       (src (with-open-file (s main :external-format :utf-8)
+              (let ((buf (make-string (file-length s))))
+                (subseq buf 0 (read-sequence buf s)))))
+       (start (search "(defun serve-review" src))
+       (end   (and start (search "(defun %env-pathname" src :start2 start)))
+       (body  (and start end (subseq src start end))))
+  (check "10. serve-review υπάρχει" (and start end t))
+  (check "10. default bind = 127.0.0.1 (loopback), όχι 0.0.0.0"
+         (and body (search "\"127.0.0.1\"" body)))
+  (check "10. καμία σκληροκωδικοποιημένη :host 0.0.0.0 στο serve-review"
+         (and body (not (search (concatenate 'string ":host \"0.0.0.0\"") body))))
+  (check "10. ρητό opt-out μέσω REVIEW_BIND με προειδοποίηση"
+         (and body (search "REVIEW_BIND" body))))
+
 (format t "~%review-queue-safe-read (3A-0): ~D passed, ~D failed~%" *pass* *fail*)
 (sb-ext:exit :code (if (zerop *fail*) 0 1))

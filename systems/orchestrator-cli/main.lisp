@@ -2422,6 +2422,13 @@ document.getElementById('ops').addEventListener('click',function(ev){
    from the environment."
   (let* ((port (let ((p (uiop:getenv "REVIEW_PORT")))
                  (or (and p (parse-integer p :junk-allowed t)) 8081)))
+         ;; [audit#8] LOOPBACK-BY-DEFAULT: η οθόνη ανθρώπινων εγκρίσεων (τελική νομική
+         ;; αυθεντία) ΔΕΝ εκτίθεται στο δίκτυο εξ ορισμού — bind 127.0.0.1. Το CSRF token
+         ;; προστατεύει από blind cross-site, ΟΧΙ από άγνωστο δικτυακό actor. Απομακρυσμένη
+         ;; πρόσβαση = SSH tunnel (ασφαλές) ή ρητό REVIEW_BIND πίσω από trusted proxy ΜΕ
+         ;; ταυτοποίηση. Το 0.0.0.0 απαιτεί ΡΗΤΗ, προειδοποιημένη επιλογή.
+         (host (let ((h (uiop:getenv "REVIEW_BIND")))
+                 (if (and h (plusp (length h))) h "127.0.0.1")))
          ;; Re-load on every request so the page reflects whatever the daemon has
          ;; enqueued in the meantime; persist after each decision.
          (service (funcall (find-symbol "MAKE-REVIEW-SERVICE" :orchestrator.review-service)
@@ -2429,11 +2436,15 @@ document.getElementById('ops').addEventListener('click',function(ev){
                            :save-fn #'save-review-queue))
          (handler (funcall (find-symbol "REVIEW-SERVICE-HANDLER" :orchestrator.review-service)
                            service)))
-    (format t "~%Review approval screen: http://0.0.0.0:~D~%" port)
+    (format t "~%Review approval screen: http://~A:~D~%" host port)
+    (unless (string= host "127.0.0.1")
+      (format t "  ⚠ REVIEW_BIND=~A — η οθόνη εγκρίσεων ΔΕΝ είναι πλέον loopback-only.~%" host)
+      (format t "    Χωρίς ταυτοποίηση δικηγόρου, οποιοσδήποτε δικτυακά μπορεί να αποφασίσει.~%")
+      (format t "    Χρησιμοποίησέ το ΜΟΝΟ πίσω από trusted proxy με authentication.~%"))
     (format t "  GET /            ο πίνακας έγκρισης (HTML)~%")
     (format t "  GET /review.json τα εκκρεμή σε JSON~%")
     (format t "  Queue file: ~A~%" (%review-queue-file))
-    (orchestrator.http:start-server handler :port port :host "0.0.0.0")
+    (orchestrator.http:start-server handler :port port :host host)
     (loop (sleep 3600))))
 
 (defun %env-pathname (name)
