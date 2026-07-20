@@ -2526,6 +2526,11 @@ document.getElementById('ops').addEventListener('click',function(ev){
     (let ((s (uiop:getenv "REVIEW_SIGNER_ID")))
       (when (and s (plusp (length s)))
         (setf orchestrator.review:*review-signer-id* s)))
+    ;; [audit#10] REVIEW_VERIFY_KEY (public key δικηγόρου): set ⇒ ΜΟΝΟ κρυπτογραφικά
+    ;; επαληθευμένες εγκρίσεις δημοσιεύονται (fail-closed στο approved-operations).
+    (let ((v (uiop:getenv "REVIEW_VERIFY_KEY")))
+      (when (and v (plusp (length v)))
+        (setf orchestrator.review:*review-verify-key-path* v)))
     (unless mcp-mode
       (print-banner)
       (print-system-info))

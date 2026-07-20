@@ -35,8 +35,9 @@
    #:item-status #:item-created-at #:item-decided-at #:item-decided-by #:item-note
    #:item-signature #:item-summary #:apply-decision #:auto-approvable-p
    ;; signed decision (τελική νομική αυθεντία — [audit#8 μέρος Β])
-   #:*review-signing-key-path* #:*review-signer-id*
+   #:*review-signing-key-path* #:*review-signer-id* #:*review-verify-key-path*
    #:decision-signature-status #:verify-decision-signature
+   #:restore-queue-error #:restore-queue-error-why
    ;; queue
    #:review-queue #:make-review-queue #:enqueue #:queue-items #:pending-items
    #:decide #:approved-operations #:queue-state #:restore-queue-state
@@ -89,6 +90,12 @@
 
 (defvar *review-signer-id* "lawyer"
   "Key-id (kid) του υπογράφοντος δικηγόρου· δένεται από REVIEW_SIGNER_ID στα entry points.")
+
+(defvar *review-verify-key-path* nil
+  "Public key του δικηγόρου για ΕΠΑΛΗΘΕΥΣΗ υπογραφών ΠΡΙΝ τη δημοσίευση ([audit#10]).
+   Set ⇒ ΜΟΝΟ εγκεκριμένες πράξεις με ΕΠΑΛΗΘΕΥΜΕΝΗ μη-αποποιήσιμη υπογραφή δημοσιεύονται
+   (fail-closed: unsigned/αλλοιωμένη έγκριση ΔΕΝ φτάνει στο corpus). nil ⇒ καμία επαλήθευση
+   configured (ΔΗΛΩΜΕΝΟ όριο· δένεται από REVIEW_VERIFY_KEY στο startup, μοτίβο signing key).")
 
 (defun %canonical-decision-statement (item-key decision by at)
   "Η ΚΑΝΟΝΙΚΗ δήλωση που υπογράφεται: δένει ταυτότητα|ρήμα|actor|χρόνο ώστε αλλαγή
@@ -314,11 +321,22 @@
   "How many decisions the queue has memorised."
   (hash-table-count (queue-memory queue)))
 
+(defun %decision-publishable-p (item)
+  "[audit#10] T αν η εγκεκριμένη πράξη επιτρέπεται να δημοσιευτεί. Όταν
+   *review-verify-key-path* είναι set, ΑΠΑΙΤΕΙ ΕΠΑΛΗΘΕΥΜΕΝΗ μη-αποποιήσιμη υπογραφή του
+   δικηγόρου — unsigned ή αλλοιωμένη έγκριση ΔΕΝ δημοσιεύεται (fail-closed). Χωρίς verify
+   key ⇒ t (κανένα configured gate· δηλωμένο όριο, ίδια στάση με τη signing πλευρά)."
+  (if *review-verify-key-path*
+      (values (verify-decision-signature (item-signature item) *review-verify-key-path*))
+      t))
+
 (defun approved-operations (queue)
   "The operation payloads of APPROVED amendment items — ready to apply to the
-   consolidation. (Rejected/pending items contribute nothing.)"
+   consolidation. (Rejected/pending items contribute nothing.) [audit#10] Όταν έχει
+   ρυθμιστεί verify key, ΜΟΝΟ κρυπτογραφικά επαληθευμένες εγκρίσεις περνούν."
   (loop for i in (queue-items queue)
-        when (and (typep i 'amendment-review) (eq (item-status i) :approved))
+        when (and (typep i 'amendment-review) (eq (item-status i) :approved)
+                  (%decision-publishable-p i))
         collect (item-payload i)))
 
 ;;; ----------------------------------------------------------------------------
@@ -329,10 +347,45 @@
   (find-if (lambda (c) (eq (class-kind c) kind))
            (closer-mop:class-direct-subclasses (find-class 'review-item))))
 
+;;; [audit#10] SCHEMA VALIDATION στο restore: το queue-state είναι θεσμική μνήμη
+;;; ανθρώπινων αποφάσεων· ένα αλλοιωμένο/ασύμβατο record ΔΕΝ φορτώνεται σιωπηλά.
+(defparameter +queue-state-version+ 2
+  "Έκδοση σχήματος queue-state. v2: item-id δένεται στο payload ([audit#9]) + schema
+   validation στο restore ([audit#10]).")
+
+(defparameter +admissible-statuses+ '(:pending :approved :rejected)
+  "Τα ΜΟΝΑ έγκυρα status ενός review item — οτιδήποτε άλλο = διεφθαρμένο record.")
+
+(define-condition restore-queue-error (error)
+  ((why :initarg :why :reader restore-queue-error-why :initform "μη έγκυρο queue-state"))
+  (:report (lambda (c s) (format s "restore-queue: ~A" (restore-queue-error-why c)))))
+
+(defun %resolve-kind-strict (kind)
+  "Η κλάση για το KIND, ή ΣΗΜΑ. ΚΑΝΕΝΑ σιωπηλό downgrade σε γενικό review-item (ο κριτής
+   #10: άγνωστο kind χανόταν ⇒ item χωρίς τη σωστή σημασιολογία summary/severity)."
+  (or (%kind->class kind)
+      (error 'restore-queue-error
+             :why (format nil "άγνωστο review kind ~S — καμία σιωπηλή υποβάθμιση σε review-item" kind))))
+
+(defun %validate-item-record (p)
+  "Fail-closed έλεγχος ΕΝΟΣ persisted item plist. Σφάλμα ⇒ restore-queue-error."
+  (let ((status (getf p :status))
+        (kind (getf p :kind)))
+    (unless (member status +admissible-statuses+)
+      (error 'restore-queue-error :why (format nil "μη αποδεκτό status ~S (∈ ~S)" status +admissible-statuses+)))
+    (%resolve-kind-strict kind)                         ; άγνωστο kind ⇒ σήμα
+    ;; Decision provenance: αποφασισμένο item ΧΩΡΙΣ ποιος/πότε = διεφθαρμένη εγγραφή.
+    (when (member status '(:approved :rejected))
+      (unless (and (getf p :decided-by) (getf p :decided-at))
+        (error 'restore-queue-error
+               :why (format nil "~A item χωρίς decided-by/decided-at (καμία provenance)" status))))
+    t))
+
 (defun queue-state (queue)
-  "A serializable plist snapshot of the whole queue, including the learned
-   decision memory."
-  (list :items
+  "A serializable plist snapshot of the whole queue, including the learned decision
+   memory. Φέρει :version για schema-aware restore ([audit#10])."
+  (list :version +queue-state-version+
+        :items
         (loop for i in (queue-items queue)
               collect (list :id (item-id i) :kind (item-kind i)
                             :source (item-source i) :target (item-target i)
@@ -346,22 +399,30 @@
           (sort acc #'string< :key #'car))))
 
 (defun restore-queue-state (queue state)
-  "Rebuild QUEUE from a plist produced by QUEUE-STATE."
+  "Rebuild QUEUE from a plist produced by QUEUE-STATE, με FAIL-CLOSED schema validation
+   ([audit#10]): μη αποδεκτό status / άγνωστο kind / έγκριση χωρίς provenance ⇒
+   restore-queue-error (καμία σιωπηλή φόρτωση διεφθαρμένης θεσμικής μνήμης). Το item-id
+   ΕΠΑΝΥΠΟΛΟΓΙΖΕΤΑΙ από το περιεχόμενο (%item-key, δένει payload [audit#9]) — ένα
+   χειροκίνητα αλλαγμένο payload ΔΕΝ μπορεί να κληρονομήσει την ταυτότητα/έγκριση άλλου."
+  ;; Πρώτα ΕΠΙΚΥΡΩΣΕ τα πάντα· καμία μερική μεταβολή του queue αν κάποιο record είναι άκυρο.
+  (dolist (p (getf state :items)) (%validate-item-record p))
   (setf (queue-items queue) '())
   (clrhash (queue-index queue))
   (clrhash (queue-memory queue))
   (loop for (k . v) in (getf state :memory)
         do (setf (gethash k (queue-memory queue)) v))
   (dolist (p (getf state :items) queue)
-    (let* ((class (or (%kind->class (getf p :kind)) (find-class 'review-item)))
+    (let* ((class (%resolve-kind-strict (getf p :kind)))
            (item (make-instance class
-                                :id (getf p :id) :source (getf p :source)
+                                :source (getf p :source)
                                 :target (getf p :target) :payload (getf p :payload)
                                 :confidence (getf p :confidence) :status (getf p :status)
                                 :created-at (getf p :created-at)
                                 :decided-at (getf p :decided-at)
                                 :decided-by (getf p :decided-by) :note (getf p :note)
                                 :signature (getf p :signature))))
+      ;; id ΑΠΟ ΤΟ ΠΕΡΙΕΧΟΜΕΝΟ (όχι εμπιστοσύνη του stored) — δομικό binding id↔payload.
+      (setf (item-id item) (%item-key item))
       (setf (gethash (item-id item) (queue-index queue)) item)
       (setf (queue-items queue) (append (queue-items queue) (list item))))))
 

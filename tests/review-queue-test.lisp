@@ -176,6 +176,70 @@
           (check "signed decision επιβιώνει persistence + επαληθεύεται"
                  (verify-decision-signature (item-signature (first (queue-items q2))) pub)))))))
 
+(format t "~%== [audit#10] schema validation στο restore (fail-closed θεσμική μνήμη) ==~%")
+(macrolet ((ck-restore-signals (name form)
+             `(check ,name (handler-case (progn ,form nil) (restore-queue-error () t)))))
+  ;; άγνωστο kind ⇒ ΣΗΜΑ (καμία σιωπηλή υποβάθμιση σε generic review-item)
+  (ck-restore-signals "άγνωστο kind ⇒ restore-queue-error"
+    (restore-queue-state (make-review-queue)
+      (list :version 2
+            :items (list (list :kind :bogus-kind :source "L" :target "art_5"
+                               :payload '(:op :insert) :status :pending))
+            :memory nil)))
+  ;; μη αποδεκτό status ⇒ ΣΗΜΑ
+  (ck-restore-signals "μη αποδεκτό status ⇒ restore-queue-error"
+    (restore-queue-state (make-review-queue)
+      (list :version 2
+            :items (list (list :kind :amendment :source "L" :target "art_5"
+                               :payload '(:op :insert) :status :maybe))
+            :memory nil)))
+  ;; εγκεκριμένο χωρίς provenance ⇒ ΣΗΜΑ
+  (ck-restore-signals "approved χωρίς decided-by/at ⇒ restore-queue-error"
+    (restore-queue-state (make-review-queue)
+      (list :version 2
+            :items (list (list :kind :amendment :source "L" :target "art_5"
+                               :payload '(:op :insert) :status :approved))
+            :memory nil))))
+;; έγκυρο queue-state ⇒ φορτώνεται· το id ΕΠΑΝΥΠΟΛΟΓΙΖΕΤΑΙ από το περιεχόμενο (binding)
+(let* ((q (make-review-queue)))
+  (enqueue q (make-instance 'amendment-review :source "L1" :target "art_5"
+                            :payload '(:op :replace-text :text "Δ")))
+  (let* ((st (queue-state q))
+         (orig-id (getf (first (getf st :items)) :id))
+         ;; χειροκίνητη αλλοίωση του stored id — το restore ΔΕΝ πρέπει να το εμπιστευτεί
+         (tampered (copy-tree st)))
+    (setf (getf (first (getf tampered :items)) :id) "ΠΛΑΣΤΟ-ID")
+    (let ((q2 (make-review-queue)))
+      (restore-queue-state q2 tampered)
+      (check "restore αγνοεί αλλοιωμένο id, το ΕΠΑΝΥΠΟΛΟΓΙΖΕΙ από το περιεχόμενο"
+             (string= orig-id (item-id (first (queue-items q2))))))))
+
+(format t "~%== [audit#10] publication gate: signed απόφαση απαιτείται όταν υπάρχει verify key ==~%")
+(let* ((dir (format nil "/tmp/rq-pub-~D/" (get-internal-real-time)))
+       (priv (format nil "~Apriv.pem" dir)) (pub (format nil "~Apub.pem" dir)))
+  (orchestrator.jws-authority:save-rsa-keypair
+   (orchestrator.jws-authority:generate-rsa-keypair :bits 2048) priv pub)
+  ;; (1) εγκεκριμένη ΥΠΟΓΕΓΡΑΜΜΕΝΗ πράξη + verify key ⇒ δημοσιεύεται
+  (let ((*review-signing-key-path* priv) (q (make-review-queue)))
+    (let ((it (enqueue q (make-instance 'amendment-review :source "L1" :target "art_5"
+                                        :payload '(:op :insert :code "poinikos")))))
+      (decide q (item-id it) :approve :by "Σ.Σ."))
+    (let ((*review-verify-key-path* pub))
+      (check "verified signed approval ⇒ περνά στο approved-operations"
+             (= 1 (length (approved-operations q))))))
+  ;; (2) εγκεκριμένη ΑΝΥΠΟΓΡΑΦΗ πράξη + verify key ⇒ ΔΕΝ δημοσιεύεται (fail-closed)
+  (let ((*review-signing-key-path* nil) (q (make-review-queue)))
+    (let ((it (enqueue q (make-instance 'amendment-review :source "L1" :target "art_5"
+                                        :payload '(:op :insert :code "poinikos")))))
+      (decide q (item-id it) :approve :by "άγνωστος"))
+    (let ((*review-verify-key-path* pub))
+      (check "unsigned approval + verify key ⇒ ΑΠΟΚΛΕΙΕΤΑΙ από τη δημοσίευση"
+             (= 0 (length (approved-operations q)))))
+    ;; χωρίς verify key ⇒ καμία επαλήθευση configured (δηλωμένο όριο)
+    (let ((*review-verify-key-path* nil))
+      (check "χωρίς verify key ⇒ καμία επιβολή (δηλωμένο όριο)"
+             (= 1 (length (approved-operations q)))))))
+
 (format t "~%========================================~%")
 (format t "Review queue tests: ~D passed, ~D failed~%" *pass* *fail*)
 (format t "========================================~%")
