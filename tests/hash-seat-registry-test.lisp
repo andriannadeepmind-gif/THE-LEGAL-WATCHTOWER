@@ -36,15 +36,35 @@
     (let ((buf (make-string (file-length s))))
       (subseq buf 0 (read-sequence buf s)))))
 
-;; [re-review C-3a] Ο σαρωτής κάλυπτε ΜΟΝΟ digest-sequence/-file — ένα αρχείο που κάνει
-;; hashing μέσω ΑΛΛΟΥ ironclad API (streaming make-digest/update-digest/produce-digest,
-;; ή digest-stream) θα ΞΕΦΕΥΓΕ ⇒ κρυφή έδρα. Καλύπτουμε ΟΛΗ την επιφάνεια digest.
-(defparameter +ironclad-digest-needles+
-  '("ironclad:digest-sequence" "ironclad:digest-file" "ironclad:digest-stream"
-    "ironclad:make-digest" "ironclad:produce-digest" "ironclad:update-digest"))
+;; [re-review C-3a/F3] Ο σαρωτής πιάνει ΟΛΗ την ironclad digest επιφάνεια, ΑΝΕΞΑΡΤΗΤΑ
+;; qualification. Παλιά: literal "ironclad:…" substrings ⇒ ένα αρχείο με (:use :ironclad)
+;; και unqualified (digest-sequence …), ή nickname (ic:digest-sequence), ή (:import-from
+;; :ironclad …) ΞΕΦΕΥΓΕ ⇒ αδήλωτη κρυφή έδρα ΚΑΙ η set-equality πύλη πρασίνιζε ΕΠΕΙΔΗ ο
+;; σαρωτής ήταν τυφλός (test-tautology). Τώρα ταιριάζουμε τα ΟΝΟΜΑΤΑ των digest fns ως
+;; ΤΟΚΕΝ (left+right boundary) ⇒ πιάνει ironclad:foo / ic:foo / unqualified foo — TOTAL.
+(defparameter +ironclad-digest-fns+
+  '("digest-sequence" "digest-file" "digest-stream"
+    "make-digest" "produce-digest" "update-digest"))
+(defun %call-boundary-p (ch)
+  "Αριστερό boundary κλήσης/qualified-symbol: αρχή, ( ' : ή whitespace."
+  (or (null ch) (member ch '(#\( #\' #\: #\Space #\Tab #\Newline #\Return))))
+(defun %token-end-p (ch)
+  "Δεξί boundary: τέλος, whitespace ή ( )."
+  (or (null ch) (member ch '(#\Space #\Tab #\Newline #\Return #\( #\)))))
+(defun %name-called-p (name txt)
+  "Το NAME εμφανίζεται ως ΤΟΚΕΝ (left+right boundary) — ΟΧΙ ενσωματωμένο σε μεγαλύτερο
+   σύμβολο (π.χ. my-digest-file-helper ΔΕΝ ταιριάζει)."
+  (let ((n (length name)) (m (length txt)) (start 0))
+    (loop for p = (search name txt :start2 start) while p do
+      (let ((before (and (> p 0) (char txt (1- p))))
+            (after  (and (< (+ p n) m) (char txt (+ p n)))))
+        (when (and (%call-boundary-p before) (%token-end-p after))
+          (return-from %name-called-p t)))
+      (setf start (1+ p)))
+    nil))
 (defun %hashes-p (txt)
-  "T αν το TXT καλεί ΟΠΟΙΟΔΗΠΟΤΕ ironclad digest API (one-shot ή streaming)."
-  (and txt (some (lambda (needle) (search needle txt)) +ironclad-digest-needles+)))
+  "T αν το TXT καλεί ΟΠΟΙΟΔΗΠΟΤΕ ironclad digest API, ΑΝΕΞΑΡΤΗΤΑ qualification (TOTAL)."
+  (and txt (some (lambda (fn) (%name-called-p fn txt)) +ironclad-digest-fns+)))
 
 (defun %rel (path)
   "Repo-relative posix path, anchored στο /source/, /systems/ ή /deployment/
@@ -104,6 +124,17 @@
              (%hashes-p "(ironclad:digest-stream :sha256 s)"))
       (check "C-3a NEG: αρχείο ΧΩΡΙΣ ironclad digest ΔΕΝ θεωρείται hash-έδρα"
              (not (%hashes-p "(defun f (x) (+ x 1))")))
+      ;; [F3] TOTAL: πιάνει ΚΑΙ unqualified (:use :ironclad) ΚΑΙ nickname — όχι μόνο ironclad:
+      (check "F3: unqualified (digest-sequence …) [via :use :ironclad] ανιχνεύεται"
+             (%hashes-p "(digest-sequence :sha256 bytes)"))
+      (check "F3: nickname (ic:make-digest …) ανιχνεύεται"
+             (%hashes-p "(let ((d (ic:make-digest :sha256))) d)"))
+      (check "F3: double-colon internal (ironclad::digest-file …) ανιχνεύεται"
+             (%hashes-p "(ironclad::digest-file :sha256 p)"))
+      (check "F3 NEG: όνομα ΕΝΣΩΜΑΤΩΜΕΝΟ σε μεγαλύτερο σύμβολο ΔΕΝ ταιριάζει (no false-positive)"
+             (not (%hashes-p "(my-digest-file-helper x)")))
+      (check "F3 NEG: το «digest» σκέτο (όχι digest fn) ΔΕΝ ταιριάζει"
+             (not (%hashes-p "(compute-digest-of thing)")))
       ;; τίμια docstring: το «ONLY authorized» ΔΕΝ υπάρχει πλέον ως ψευδής ισχυρισμός
       (check "τίμια εμβέλεια: καμία ψευδής «ONLY authorized hash» δήλωση"
              (not (search "ONLY authorized hash function"
