@@ -87,3 +87,17 @@ audit βρήκε 17 confirmed (2 blockers ασφαλείας). ΤΟ ΛΑΘΟΣ �
 μέσω τύπου· ΕΝΑΣ uri constructor + ASDF-edge· υπολειπόμενη πύλη = decidable ban σε
 build-time. Κ-4/Κ-5/Κ-6. **SCOPE = απόφαση δημιουργού** (μεγαλύτερη τομή)· καμία
 υλοποίηση χωρίς ρητή έγκριση.
+
+## [0094] PHASE 0 — census & baseline (trusted/untrusted plane, 8 φάσεις)
+
+Εντολή δημιουργού: πλήρης αρχιτεκτονικός διαχωρισμός trusted/untrusted plane
+(quarantine → validation boundary → trusted kernel· capability separation·
+proof-carrying promotion). 8 φάσεις (tasks #64-#71), κάθε μία κλείνει+εγκρίνεται
+πριν την επόμενη. **Phase 0 = census+baseline, ΚΑΜΙΑ αλλαγή κώδικα.** Reproducible
+enumerator `deployment/verify/census-execution-constructs.sh`. Baseline 8fce64de.
+Ταξινόμηση read/eval/load (adversary-verified): ΝΕΚΡΑ homoiconicity sinks→ΔΙΑΓΡΑΦΗ
+(0 callers/0 test refs, exported)· αφύλακτοι→safe-read έδρα (load-review-queue
+daemon-live [filesystem-tampering], corpus-fingerprint:151 [false-guarded διόρθωση],
+load-lisp-lexicon)· ~17 guarded→ένωση· reader-macro allowlist per-site (ΔΕΝ ενεργά
+στο ingestion). **Ο αντίπαλος βρήκε χαμένη κλάση OS shell-exec** (document-fetch
+/bin/sh -c, 19 sites) → Phase 5/6. **ΑΝΑΜΕΝΕΤΑΙ «εγκρίνω Phase 1».**
