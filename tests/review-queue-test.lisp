@@ -134,6 +134,48 @@
     (enqueue q2 (make-instance 'amendment-review :source "L1" :target "art_9" :payload '(:op :insert)))
     (check "an unseen case is still flagged for review" (= 1 (queue-pending-count q2)))))
 
+(format t "~%== [audit#8 μέρος Β] signed, non-repudiable decision (τελική νομική αυθεντία) ==~%")
+;; Χωρίς κλειδί ⇒ :unsigned (τίμια· καμία ψευδο-υπογραφή). (Η καθαρή έδρα δεν διαβάζει
+;; env — το var είναι η μόνη πηγή· εδώ το αφήνουμε nil.)
+(let ((*review-signing-key-path* nil)
+      (q (make-review-queue)))
+  (let ((it (enqueue q (make-instance 'amendment-review :source "L1" :target "art_5"
+                                      :payload '(:op :insert)))))
+    (decide q (item-id it) :approve :by "Σ.Σ.")
+    (check "χωρίς κλειδί ⇒ decision :unsigned"
+           (eq :unsigned (decision-signature-status (item-signature it))))
+    (check "unsigned verify ⇒ (values nil :unsigned)"
+           (not (verify-decision-signature (item-signature it) "/nonexistent.pem")))))
+
+;; Με το κλειδί ΤΟΥ ΔΙΚΗΓΟΡΟΥ ⇒ :signed + επαληθεύσιμο· tamper ⇒ αποτυχία· επιβιώνει persistence.
+(let* ((dir (format nil "/tmp/rq-sign-~D/" (get-internal-real-time)))
+       (priv (format nil "~Apriv.pem" dir))
+       (pub  (format nil "~Apub.pem" dir)))
+  (let ((kp (orchestrator.jws-authority:generate-rsa-keypair :bits 2048)))
+    (orchestrator.jws-authority:save-rsa-keypair kp priv pub))
+  (let ((*review-signing-key-path* priv)
+        (*review-signer-id* "ΑΜ-12345")
+        (q (make-review-queue)))
+    (let ((it (enqueue q (make-instance 'amendment-review :source "L1" :target "art_5"
+                                        :payload '(:op :replace-text :text "Εγκεκριμένο")))))
+      (decide q (item-id it) :approve :by "Σ.Σ.")
+      (let ((sig (item-signature it)))
+        (check "με κλειδί δικηγόρου ⇒ decision :signed"
+               (eq :signed (decision-signature-status sig)))
+        (check "kid = ο δικηγόρος" (string= "ΑΜ-12345" (getf sig :kid)))
+        (check "η υπογραφή ΕΠΑΛΗΘΕΥΕΤΑΙ κατά το public key του δικηγόρου"
+               (verify-decision-signature sig pub))
+        (let ((tampered (copy-list sig)))
+          (setf (getf tampered :statement)
+                (concatenate 'string (getf sig :statement) "|TAMPERED"))
+          (check "αλλοιωμένη δήλωση ⇒ επαλήθευση ΑΠΟΤΥΓΧΑΝΕΙ (μη-αποποιήσιμη)"
+                 (not (verify-decision-signature tampered pub))))
+        ;; επιβιώνει queue-state → restore (durable) και εξακολουθεί να επαληθεύεται
+        (let ((q2 (make-review-queue)))
+          (restore-queue-state q2 (queue-state q))
+          (check "signed decision επιβιώνει persistence + επαληθεύεται"
+                 (verify-decision-signature (item-signature (first (queue-items q2))) pub)))))))
+
 (format t "~%========================================~%")
 (format t "Review queue tests: ~D passed, ~D failed~%" *pass* *fail*)
 (format t "========================================~%")

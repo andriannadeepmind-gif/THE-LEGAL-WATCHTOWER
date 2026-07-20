@@ -33,7 +33,10 @@
    ;; item accessors / lifecycle
    #:item-id #:item-source #:item-target #:item-payload #:item-confidence
    #:item-status #:item-created-at #:item-decided-at #:item-decided-by #:item-note
-   #:item-summary #:apply-decision #:auto-approvable-p
+   #:item-signature #:item-summary #:apply-decision #:auto-approvable-p
+   ;; signed decision (τελική νομική αυθεντία — [audit#8 μέρος Β])
+   #:*review-signing-key-path* #:*review-signer-id*
+   #:decision-signature-status #:verify-decision-signature
    ;; queue
    #:review-queue #:make-review-queue #:enqueue #:queue-items #:pending-items
    #:decide #:approved-operations #:queue-state #:restore-queue-state
@@ -69,6 +72,61 @@
    χρόνο είναι διεφθαρμένη, όχι σιωπηλά epoch. Ίδια έδρα με proposals/memory."
   (orchestrator.journal:iso-now))
 
+;;; ----------------------------------------------------------------------------
+;;; [audit#8 μέρος Β] Signed, non-repudiable decision record (τελική νομική αυθεντία)
+;;; ----------------------------------------------------------------------------
+;;; ΜΙΑ έδρα υπογραφής απόφασης: ΕΠΑΝΑΧΡΗΣΙΜΟΠΟΙΕΙ την orchestrator.jws-authority:sign-jws
+;;; (RS256 detached, RFC 7515) — καμία δεύτερη κρυπτο-έδρα. Το κλειδί είναι ΤΟΥ ΔΙΚΗΓΟΡΟΥ
+;;; (REVIEW_SIGNING_KEY): έτσι η υπογραφή αποδεικνύει ΠΟΙΟΣ αποφάσισε, όχι απλώς ότι έγινε
+;;; μια απόφαση. Απόν κλειδί ⇒ :unsigned (ΤΙΜΙΑ: η ταυτότητα δεν αποδεικνύεται
+;;; κρυπτογραφικά· ΠΟΤΕ σιωπηλή υπογραφή με κλειδί συστήματος που προσποιείται τον δικηγόρο).
+
+(defvar *review-signing-key-path* nil
+  "Path στο RSA private key ΤΟΥ ΔΙΚΗΓΟΡΟΥ. nil ⇒ αποφάσεις :unsigned (τίμια). ΚΑΘΑΡΗ
+   ΕΔΡΑ: το var είναι η ΜΟΝΗ πηγή (μοτίβο legal-audit-system:*signing-private-key-path*)·
+   το REVIEW_SIGNING_KEY env δένεται στο var στα entry points (serve-review/review-decide),
+   ΟΧΙ εδώ — καμία σύζευξη της domain έδρας με env.")
+
+(defvar *review-signer-id* "lawyer"
+  "Key-id (kid) του υπογράφοντος δικηγόρου· δένεται από REVIEW_SIGNER_ID στα entry points.")
+
+(defun %canonical-decision-statement (item-key decision by at)
+  "Η ΚΑΝΟΝΙΚΗ δήλωση που υπογράφεται: δένει ταυτότητα|ρήμα|actor|χρόνο ώστε αλλαγή
+   ΟΠΟΙΟΥΔΗΠΟΤΕ πεδίου να σπάει την υπογραφή. item-key περιέχει ΗΔΗ το payload fingerprint
+   ([audit#9]) — άρα η υπογραφή δένεται στο ΑΚΡΙΒΕΣ προτεινόμενο περιεχόμενο."
+  (format nil "review-decision/1|~A|~A|~A|~A"
+          item-key (string-downcase (string decision)) (or by "") (or at "")))
+
+(defun %sign-decision (item-key decision by at)
+  "Signed decision record (data-only plist). FAIL-CLOSED: κλειδί ΠΑΡΟΝ αλλά αποτυχία
+   υπογραφής ⇒ ΣΗΜΑ (καμία σιωπηλή υποβάθμιση σε unsigned — μοτίβο Blocker#1)."
+  (let* ((stmt (%canonical-decision-statement item-key decision by at))
+         (digest (orchestrator.journal:sha256-hex stmt))
+         (key *review-signing-key-path*))
+    (if key
+        (let* ((kid *review-signer-id*)
+               (res (orchestrator.jws-authority:sign-jws stmt key :algorithm :rs256 :kid kid)))
+          (list :status :signed :alg "RS256" :kid kid
+                :statement stmt :jws (getf res :jws) :digest digest))
+        (list :status :unsigned :statement stmt :digest digest))))
+
+(defun decision-signature-status (sig)
+  "Το status ενός signed decision record: :signed | :unsigned | nil (καμία απόφαση)."
+  (and sig (getf sig :status)))
+
+(defun verify-decision-signature (sig public-key-path)
+  "Επαληθεύει signed decision record κατά το PUBLIC-KEY-PATH του δικηγόρου (RS256 detached).
+   (values ok-p reason). :unsigned ⇒ (values NIL :unsigned) (τίμια: μη αποδεδειγμένος actor)."
+  (case (decision-signature-status sig)
+    (:signed
+     (handler-case
+         (if (orchestrator.jws-authority:verify-jws
+              (getf sig :jws) (getf sig :statement) public-key-path)
+             (values t :ok)
+             (values nil :bad-signature))
+       (error (e) (values nil (format nil "~A" e)))))
+    (t (values nil :unsigned))))
+
 (defclass review-item ()
   ((id         :initarg :id :accessor item-id)
    (source     :initarg :source :accessor item-source :initform nil
@@ -82,7 +140,10 @@
    (created-at :initarg :created-at :accessor item-created-at :initform (%now))
    (decided-at :initarg :decided-at :accessor item-decided-at :initform nil)
    (decided-by :initarg :decided-by :accessor item-decided-by :initform nil)
-   (note       :initarg :note :accessor item-note :initform nil))
+   (note       :initarg :note :accessor item-note :initform nil)
+   ;; [audit#8 μέρος Β] signed decision record (data-only plist) — μη-αποποιήσιμη
+   ;; υπογραφή της ανθρώπινης απόφασης· nil όσο εκκρεμεί.
+   (signature  :initarg :signature :accessor item-signature :initform nil))
   (:metaclass review-item-class)
   (:documentation "One thing awaiting human approval before it can be published."))
 
@@ -220,7 +281,10 @@
           (let ((learned (gethash key (queue-memory queue))))
             (when learned
               (apply-decision item (getf learned :decision)
-                              :by (getf learned :by) :note (getf learned :note))))
+                              :by (getf learned :by) :note (getf learned :note))
+              ;; Η ταυτότητα (key) περιλαμβάνει το payload fingerprint ([audit#9]), άρα
+              ;; η αποθηκευμένη υπογραφή ισχύει ΑΚΡΙΒΩΣ γι' αυτό το item — κληρονομείται.
+              (setf (item-signature item) (getf learned :signature))))
           (setf (gethash key (queue-index queue)) item)
           (setf (queue-items queue) (append (queue-items queue) (list item)))
           item))))
@@ -237,8 +301,13 @@
                   (find id (queue-items queue) :key #'item-id :test #'equal))))
     (when item
       (apply-decision item decision :by by :note note)
-      (setf (gethash (%item-key item) (queue-memory queue))
-            (list :decision decision :by by :note note :at (item-decided-at item))))
+      ;; [audit#8 μέρος Β] Υπόγραψε την απόφαση (ΜΙΑ έδρα, στο μοναδικό choke point που
+      ;; καλούν CLI/cockpit/web) και αποθήκευσέ την ΚΑΙ στο item ΚΑΙ στη μνήμη (durable).
+      (let ((sig (%sign-decision (%item-key item) decision by (item-decided-at item))))
+        (setf (item-signature item) sig)
+        (setf (gethash (%item-key item) (queue-memory queue))
+              (list :decision decision :by by :note note :at (item-decided-at item)
+                    :signature sig))))
     item))
 
 (defun learned-count (queue)
@@ -270,7 +339,7 @@
                             :payload (item-payload i) :confidence (item-confidence i)
                             :status (item-status i) :created-at (item-created-at i)
                             :decided-at (item-decided-at i) :decided-by (item-decided-by i)
-                            :note (item-note i)))
+                            :note (item-note i) :signature (item-signature i)))
         :memory
         (let ((acc '()))
           (maphash (lambda (k v) (push (cons k v) acc)) (queue-memory queue))
@@ -291,7 +360,8 @@
                                 :confidence (getf p :confidence) :status (getf p :status)
                                 :created-at (getf p :created-at)
                                 :decided-at (getf p :decided-at)
-                                :decided-by (getf p :decided-by) :note (getf p :note))))
+                                :decided-by (getf p :decided-by) :note (getf p :note)
+                                :signature (getf p :signature))))
       (setf (gethash (item-id item) (queue-index queue)) item)
       (setf (queue-items queue) (append (queue-items queue) (list item))))))
 

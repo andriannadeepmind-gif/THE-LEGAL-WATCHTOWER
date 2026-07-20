@@ -2517,6 +2517,15 @@ document.getElementById('ops').addEventListener('click',function(ev){
          ;; banner, system info and all logging go to stderr instead.
          (mcp-mode (and command (string= command "--serve-mcp"))))
     (configure-stable-logging :stream (if mcp-mode *error-output* *standard-output*))
+    ;; [audit#8 μέρος Β] ΜΙΑ σημείο σύζευξης env→var για την υπογραφή απόφασης δικηγόρου:
+    ;; η καθαρή έδρα orchestrator.review δεν διαβάζει env· εδώ (startup) το REVIEW_SIGNING_KEY
+    ;; (private key ΤΟΥ ΔΙΚΗΓΟΡΟΥ) + REVIEW_SIGNER_ID (kid) δένονται μία φορά για CLI/cockpit/web.
+    (let ((k (uiop:getenv "REVIEW_SIGNING_KEY")))
+      (when (and k (plusp (length k)))
+        (setf orchestrator.review:*review-signing-key-path* k)))
+    (let ((s (uiop:getenv "REVIEW_SIGNER_ID")))
+      (when (and s (plusp (length s)))
+        (setf orchestrator.review:*review-signer-id* s)))
     (unless mcp-mode
       (print-banner)
       (print-system-info))
