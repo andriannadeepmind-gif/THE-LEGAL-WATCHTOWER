@@ -56,6 +56,23 @@ if [ "${#suites[@]}" -eq 0 ]; then
   echo "::error::ΚΕΝΟ inventory: καμία $TESTS_DIR/*-test.lisp (καμία ψευδο-επιτυχία)"; exit 1
 fi
 
+# Σύνολο ονομάτων σουιτών (basenames) — για validation των εξαιρέσεων.
+suite_names=()
+for f in "${suites[@]}"; do suite_names+=("$(basename "$f" -test.lisp)"); done
+name_exists() { local s="$1" n; for n in "${suite_names[@]}"; do [ "$s" = "$n" ] && return 0; done; return 1; }
+
+# (C-2b) ΚΑΘΕ δηλωμένη suite-εξαίρεση ΠΡΕΠΕΙ να αντιστοιχεί σε ΥΠΑΡΚΤΗ σουίτα —
+# stale/typo εξαίρεση = σιωπηλά ανενεργή (και μελλοντικά μασκάρει πραγματική σουίτα).
+# Fail-closed: αδικαιολόγητη εξαίρεση ⇒ σφάλμα (η εξαίρεση οφείλει να είναι τίμια).
+stale_excl=()
+for e in "${excl[@]:-}"; do
+  [ -n "$e" ] || continue
+  name_exists "$e" || stale_excl+=("$e")
+done
+if [ "${#stale_excl[@]}" -gt 0 ]; then
+  echo "::error::stale/typo suite-εξαίρεση (δεν αντιστοιχεί σε tests/*-test.lisp): ${stale_excl[*]}"; exit 1
+fi
+
 ran=0; skipped=0; failed=0
 for f in "${suites[@]}"; do
   t="$(basename "$f" -test.lisp)"
@@ -77,5 +94,10 @@ done
 echo "──────── standalone suites: $ran έτρεξαν, $skipped εξαιρέθηκαν, $failed απέτυχαν ────────"
 if [ "$failed" -ne 0 ]; then
   echo "::error::$failed σουίτα(ες) απέτυχαν — fail-closed"; exit 1
+fi
+# (C-2d) ΚΑΜΙΑ σουίτα δεν εκτελέστηκε (όλες εξαιρέθηκαν) ⇒ false-green: «0 απέτυχαν»
+# ΔΕΝ είναι απόδειξη. Fail-closed — τουλάχιστον μία σουίτα οφείλει να τρέξει ως gate.
+if [ "$ran" -eq 0 ]; then
+  echo "::error::ΚΑΜΙΑ σουίτα εκτελέστηκε ($skipped εξαιρέθηκαν) — καμία ψευδο-επιτυχία «0 failed»"; exit 1
 fi
 echo "✓ όλες οι εκτελεσμένες standalone suites πέρασαν."

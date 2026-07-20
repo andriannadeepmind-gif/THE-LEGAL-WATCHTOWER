@@ -45,7 +45,7 @@ ok() { pass=$((pass+1)); printf '  ok   %s\n' "$1"; }
 no() { fail=$((fail+1)); printf '  FAIL %s\n' "$1"; }
 
 # (α) Νέα σουίτα περιλαμβάνεται ΑΥΤΟΜΑΤΑ + όλες πράσινες ⇒ exit 0.
-TD="$(mktests A alpha beta brand-new-suite)"; EX="$(printf 'comparison\n' > "$tmp/e1"; echo "$tmp/e1")"
+TD="$(mktests A alpha beta brand-new-suite)"; EX="$(printf '# none\n' > "$tmp/e1"; echo "$tmp/e1")"
 run_seat "$TD" "$EX"
 { [ "$GOT_RC" = 0 ] && grep -q "brand-new-suite" "$tmp/proof/suites-run.txt" \
   && [ "$(wc -l < "$tmp/proof/suites-run.txt")" = 3 ]; } \
@@ -61,7 +61,7 @@ run_seat "$TD" "$tmp/e2"
   || no "(β) εξαίρεση comparison ($GOT_RC)"
 
 # (γ) FAIL-CLOSED: μία σουίτα που αποτυγχάνει ⇒ exit ≠0.
-TD="$(mktests C alpha this-one-FAIL gamma)"; printf 'comparison\n' > "$tmp/e3"
+TD="$(mktests C alpha this-one-FAIL gamma)"; printf '# none\n' > "$tmp/e3"
 run_seat "$TD" "$tmp/e3"
 [ "$GOT_RC" != 0 ] && ok "(γ) αποτυχημένη σουίτα ⇒ fail-closed (exit $GOT_RC)" \
                    || no "(γ) αποτυχημένη σουίτα ΔΕΝ πέρασε fail-closed (exit 0!)"
@@ -77,6 +77,28 @@ run_seat "$TD" "$tmp/e4"
 
 # (ε) Ανύπαρκτο tests-dir / exclusions ⇒ σφάλμα χρήσης.
 run_seat "$tmp/nope" "$tmp/e4"; [ "$GOT_RC" != 0 ] && ok "(ε) ανύπαρκτο tests-dir ⇒ σφάλμα" || no "(ε) ανύπαρκτο tests-dir"
+
+# (ζ) C-2b: stale/typo suite-εξαίρεση (δεν αντιστοιχεί σε καμία σουίτα) ⇒ σφάλμα.
+TD="$(mktests Z alpha beta)"; printf 'ghost-suite\n' > "$tmp/e5"
+run_seat "$TD" "$tmp/e5"
+{ [ "$GOT_RC" != 0 ] && grep -q "stale/typo" "$tmp/out.txt"; } \
+  && ok "(ζ) C-2b: stale εξαίρεση ⇒ σφάλμα" \
+  || no "(ζ) C-2b: stale εξαίρεση ΔΕΝ πιάστηκε ($GOT_RC)"
+
+# (η) C-2d: ΟΛΕΣ οι σουίτες εξαιρεμένες ⇒ ran=0 ⇒ σφάλμα (καμία ψευδο-επιτυχία «0 failed»).
+TD="$(mktests H solo)"; printf 'solo\n' > "$tmp/e6"
+run_seat "$TD" "$tmp/e6"
+{ [ "$GOT_RC" != 0 ] && grep -q "ΚΑΜΙΑ σουίτα εκτελέστηκε" "$tmp/out.txt"; } \
+  && ok "(η) C-2d: όλες εξαιρεμένες ⇒ σφάλμα (όχι false-green)" \
+  || no "(η) C-2d: all-excluded ΔΕΝ πιάστηκε ($GOT_RC)"
+
+# (θ) Έλεγχος ότι μια ΕΓΚΥΡΗ εξαίρεση (matches suite) + άλλη σουίτα τρέχει ⇒ exit 0.
+TD="$(mktests T keeprun comparison)"; printf 'comparison\n' > "$tmp/e7"
+run_seat "$TD" "$tmp/e7"
+{ [ "$GOT_RC" = 0 ] && grep -q "keeprun" "$tmp/proof/suites-run.txt" \
+  && ! grep -q "comparison" "$tmp/proof/suites-run.txt"; } \
+  && ok "(θ) έγκυρη εξαίρεση + 1 σουίτα τρέχει ⇒ exit 0" \
+  || no "(θ) έγκυρη εξαίρεση ($GOT_RC)"
 
 printf '\nrun-standalone-suites fixture: %d passed, %d failed\n' "$pass" "$fail"
 [ "$fail" = 0 ]
