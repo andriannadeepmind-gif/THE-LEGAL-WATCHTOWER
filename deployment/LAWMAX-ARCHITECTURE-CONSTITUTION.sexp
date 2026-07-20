@@ -312,7 +312,9 @@
    :implementations ("orchestrator.decisions:%fold" "orchestrator.citation-authority:normalize-greek")
    :why "Διακριτοί ρόλοι: %fold = 1:1 ταύτιση ίδιου μήκους (offsets)· normalize-greek = κανονικοποίηση παραπομπών. ΧΡΕΟΣ Π3: ενιαία τεκμηρίωση ορίων χρήσης.")
   (:area :failure-memories
-   :implementations ("lessons.jsonl" "failure-ledger.jsonl" "episodes.sexp")
+   :implementations ((:file "deployment/state/lessons.jsonl")
+                     (:file "deployment/state/failure-ledger.jsonl")
+                     (:file "deployment/self/episodes.sexp"))
    :why "Διακριτοί ρόλοι: aggregate αναστοχασμού / δομημένο ledger διαλόγου / βιωματικό ρεύμα. Ίδιος γονικός φάκελος state, κοινή εποπτεία στο gap-ledger-frame.")
   (:area :proposal-registries
    :implementations ("orchestrator.proposals (Σ11 γνώση)" "orchestrator.whatif (change-proposals)")
@@ -321,8 +323,10 @@
    :implementations ("--ask/--ρώτα" "/chat + /ask (--serve)" "--serve-mcp tools")
    :why "Όλες οι επιφάνειες δρομολογούν στην ΙΔΙΑ έδρα (run-ask/corpus providers) — δεδικασμένο 08a93db6: κανένας δεύτερος διάλογος.")
   (:area :article-identity
-   :implementations ("source/legal-identity.lisp" "source/legal-id-registry.lisp" "source/canonical-uris.lisp")
-   :why "Τρία αρχεία στην τροχιά της ταυτότητας άρθρων — legal-identity = ο ΤΥΠΟΣ (η canonical-article-id.lisp συγχωνεύτηκε εκεί)· registry/uris = καταναλωτές. Η ⑫ πύλη επιβάλλει ΥΠΑΡΞΗ κάθε δηλωμένου αρχείου-έδρας (καμία stale εγγραφή)."))
+   :implementations ((:file "source/legal-identity.lisp")
+                     (:file "source/legal-id-registry.lisp")
+                     (:file "source/canonical-uris.lisp"))
+   :why "Τρία αρχεία στην τροχιά της ταυτότητας άρθρων — legal-identity = ο ΤΥΠΟΣ (η canonical-article-id.lisp συγχωνεύτηκε εκεί)· registry/uris = καταναλωτές. Η ⑫ πύλη επιβάλλει ΥΠΑΡΞΗ κάθε δηλωμένου (:file …) αρχείου-έδρας — τυπωμένη δήλωση, όχι εύρεση με heuristic (καμία stale εγγραφή)."))
 
  ;; ══ CONCEPT MAPPING — αποφασισμένες μελλοντικές έννοιες → έδρες (κανένας νέος φάκελος) ══
  :concept-mapping

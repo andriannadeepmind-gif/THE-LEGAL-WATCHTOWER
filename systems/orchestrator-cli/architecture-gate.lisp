@@ -126,6 +126,23 @@
   (and (>= (length s) (length prefix))
        (string= prefix s :end2 (length prefix))))
 
+(defun %suffix-p (suffix s)
+  "Λήγει το S με το SUFFIX;"
+  (and (>= (length s) (length suffix))
+       (string= suffix s :start2 (- (length s) (length suffix)))))
+
+(defparameter +arch-file-extensions+
+  '(".lisp" ".sexp" ".jsonl" ".json" ".md" ".txt" ".py" ".mjs" ".sh"
+    ".yaml" ".yml" ".pem" ".asd")
+  "Γνωστές file-extensions του repo. Χρήση ΜΟΝΟ ως lint: μια bare
+   justified-multiplicity implementation που λήγει σε αυτές ΠΡΕΠΕΙ να είναι
+   τυπωμένη (:file …)· αλλιώς είναι σιωπηλά ανέλεγκτο αρχείο-έδρα (⑫).")
+
+(defun split-on-space (s)
+  "Tokens του S χωρισμένα σε whitespace (κενά μη-κενά tokens)."
+  (remove "" (uiop:split-string s :separator '(#\Space #\Tab #\Newline))
+          :test #'string=))
+
 (defun %yaml-abs-path-value-p (trimmed-line)
   "Η τιμή ενός YAML key:value γραμμής είναι ABSOLUTE filesystem path (ξεκινά με
    «/»); — ΟΧΙ URL/URI, ΟΧΙ σχετική, ΟΧΙ κενή. Απομονώνει τη τιμή μέσα στα «\"»
@@ -321,26 +338,41 @@
                                              (getf cm :does-not-duplicate)))
                            (getf c :concept-mapping)))))
         ;; ⑫ δηλωμένη πολλαπλότητα: κάθε εγγραφή με αιτιολόγηση (ρητό :why) ΚΑΙ κάθε
-        ;;    δηλωμένη implementation ΠΟΥ ΕΙΝΑΙ ΑΡΧΕΙΟ-ΕΔΡΑ να ΥΠΑΡΧΕΙ πραγματικά — καμία
-        ;;    stale εγγραφή που δείχνει διαγραμμένο αρχείο (κριτής #12). Οι μη-file
-        ;;    implementations (package names, surface descriptions) εξαιρούνται ρητά.
+        ;;    αρχείο-έδρα δηλωμένο ΤΥΠΩΜΕΝΑ ως (:file "σχετικό/path") να ΥΠΑΡΧΕΙ. Το παλιό
+        ;;    file-impl-p heuristic (μάντεμα «μοιάζει αρχείο;» από prefix/επέκταση) ΠΕΘΑΙΝΕΙ:
+        ;;    (α) υπο-εκτιμούσε (bare filenames όπως lessons.jsonl ΞΕΦΕΥΓΑΝ ⇒ stale επιβίωνε —
+        ;;    κριτής C-5)· (β) υπερ-εκτιμούσε (bare name ≠ πραγματικό path ⇒ false-missing).
+        ;;    ΔΟΜΙΚΗ λύση: η ΤΑΥΤΟΤΗΤΑ «αρχείο-έδρα» δηλώνεται, δεν μαντεύεται. Επιπλέον lint:
+        ;;    κάθε bare string που ΜΟΙΑΖΕΙ αρχείο (γνωστή επέκταση) αλλά ΔΕΝ είναι τυπωμένη
+        ;;    (:file …) = ΚΟΚΚΙΝΟ — έτσι το «σιωπηλά ανέλεγκτο αρχείο-έδρα» γίνεται δομικά αδύνατο.
         (let ((bad-just '()) (root (orchestrator.paths:institution-root)))
-          (flet ((file-impl-p (s)
-                   ;; heuristic: repo file-path (source/systems/deployment/… ή *.lisp)
+          (flet ((file-decl-p (impl)   ; τυπωμένη δήλωση αρχείου-έδρας
+                   (and (consp impl) (eq (first impl) :file)
+                        (stringp (second impl)) (null (cddr impl))))
+                 (looks-like-file (s)  ; bare string με γνωστή file-extension σε token
                    (and (stringp s)
-                        (or (search ".lisp" s)
-                            (%prefix-p "source/" s)
-                            (%prefix-p "systems/" s)
-                            (%prefix-p "deployment/" s)
-                            (%prefix-p "tests/" s)))))
+                        (some (lambda (tok)
+                                (some (lambda (ext) (%suffix-p ext tok))
+                                      +arch-file-extensions+))
+                              (split-on-space s)))))
             (dolist (j (getf c :justified-multiplicity))
               (unless (and (getf j :area) (stringp (getf j :why)) (getf j :implementations))
                 (push (list (getf j :area) :incomplete) bad-just))
               (dolist (impl (getf j :implementations))
-                (when (and (file-impl-p impl)
-                           (not (probe-file (merge-pathnames impl root))))
-                  (push (list (getf j :area) :missing impl) bad-just)))))
-          (chk "⑫ justified-multiplicity: αιτιολόγηση + ΥΠΑΡΚΤΑ αρχεία-έδρες (καμία stale)"
+                (cond
+                  ((file-decl-p impl)
+                   (let ((p (second impl)))
+                     (cond ((and (plusp (length p)) (char= (char p 0) #\/))
+                            (push (list (getf j :area) :absolute p) bad-just))
+                           ((not (probe-file (merge-pathnames p root)))
+                            (push (list (getf j :area) :missing p) bad-just)))))
+                  ;; bare string: επιτρέπεται ΜΟΝΟ αν ΔΕΝ μοιάζει αρχείο (package/surface).
+                  ((and (stringp impl) (looks-like-file impl))
+                   (push (list (getf j :area) :untyped-file-seat impl) bad-just))
+                  ;; malformed impl (ούτε bare string ούτε (:file …))
+                  ((not (stringp impl))
+                   (push (list (getf j :area) :malformed impl) bad-just))))))
+          (chk "⑫ justified-multiplicity: αιτιολόγηση + ΤΥΠΩΜΕΝΑ (:file) αρχεία-έδρες υπαρκτά (καμία stale, κανένα ανέλεγκτο)"
                (null bad-just)
                (when bad-just (format nil "παραβάσεις: ~{~A~^, ~}" (nreverse bad-just)))))
         ;; ── FF1: μία έδρα ρίζας του Ιδρύματος (κανόνας Κριτή 0021) ──
