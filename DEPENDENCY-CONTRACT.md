@@ -77,9 +77,12 @@ These dependencies are for development/debugging and are optional in production:
 
 ### 4. Missing Dependencies (Requires Manual Intervention)
 
-| Dependency | Reason | Workaround |
-|------------|--------|------------|
-| `parse-declarations-1.0` | Network restrictions prevent download | Manual addition required from http://common-lisp.net/project/parse-declarations/ |
+_None._ [audit#14] `parse-declarations-1.0` is now vendored under `third-party/` and
+pinned in `deps.lock` (SHA-256) — the earlier "manual addition required" note was stale.
+Machine-checked by `tests/dependency-contract-consistency-test.lisp`: any dependency
+listed in this section that is actually present in `deps.lock` fails the gate (no
+doc/lock contradiction). Additional infrastructure runtime deps now pinned: `ieee-floats`,
+`uuid-20231021`.
 
 ## Layer Separation
 
@@ -228,7 +231,7 @@ NO Quicklisp, NO `vendor/local-projects`, NO `-master` versions.
 - [x] Production build loads ONLY `orchestrator-core-runtime`
 - [x] Test framework (`fiveam`) NOT loaded in production
 - [x] `docker build --network=none` supported
-- [ ] Full verification passes (requires `parse-declarations-1.0`)
+- [x] Full verification passes (`parse-declarations-1.0` now vendored + pinned in `deps.lock`)
 - [x] No Quicklisp runtime calls in source code
 - [x] ASDF source registry configured for hermetic builds
 
