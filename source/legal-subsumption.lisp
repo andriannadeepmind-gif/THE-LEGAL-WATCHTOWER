@@ -30,12 +30,39 @@
 ;;; ΔΗΛΩΜΕΝΟΣ μετασχηματισμός — τα πακέτα διαβάζονται σε keyword package,
 ;;; οι μεταβλητές του engine είναι non-keyword σύμβολα με πρόθεμα «?».
 
-(defun %devar (tree)
-  "Κάθε keyword :?Χ του δέντρου γίνεται μεταβλητή ενοποίησης ?Χ."
-  (cond ((consp tree) (mapcar #'%devar tree))
+(defparameter +max-var-name-chars+ 64
+  "[re-review adv2-F1+] Ανώτατο μήκος ονόματος μεταβλητής ?Χ.")
+(defparameter +max-distinct-vars+ 256
+  "[re-review adv2-F1+] Ανώτατο πλήθος ΜΟΝΑΔΙΚΩΝ μεταβλητών ανά parse — φράζει το
+   unbounded intern στο :orchestrator.subsumption package από input-derived ονόματα.")
+
+(defun %valid-var-name-p (name)
+  "Γραμματική μεταβλητής: «?» + [alphanumeric|-]+ , συνολικό μήκος ≤ +max-var-name-chars+.
+   (alphanumericp ⇒ δέχεται και ελληνικά γράμματα.)"
+  (and (>= (length name) 2) (<= (length name) +max-var-name-chars+)
+       (char= (char name 0) #\?)
+       (loop for i from 1 below (length name)
+             for c = (char name i)
+             always (or (alphanumericp c) (char= c #\-)))))
+
+(defun %devar (tree &optional (vars (make-hash-table :test 'equal)))
+  "Κάθε keyword :?Χ του δέντρου γίνεται μεταβλητή ενοποίησης ?Χ. [re-review adv2-F1+]
+   ΦΡΑΓΜΕΝΟ intern: κάθε όνομα ελέγχεται με αυστηρή γραμματική (%valid-var-name-p) και το
+   πλήθος ΜΟΝΑΔΙΚΩΝ μεταβλητών ≤ +max-distinct-vars+ — ώστε input-derived ονόματα να ΜΗΝ
+   γεμίζουν μόνιμα το package με αυθαίρετα σύμβολα (μετά τη safe-read, το τελευταίο intern-sink)."
+  (cond ((consp tree) (mapcar (lambda (x) (%devar x vars)) tree))
         ((and (keywordp tree) (plusp (length (symbol-name tree)))
               (char= (char (symbol-name tree) 0) #\?))
-         (intern (symbol-name tree) :orchestrator.subsumption))
+         (let ((name (symbol-name tree)))
+           (unless (%valid-var-name-p name)
+             (error "μη έγκυρο όνομα μεταβλητής ~S (γραμματική «?»+[alnum|-], ≤~D χαρακτήρες)"
+                    name +max-var-name-chars+))
+           (unless (gethash name vars)
+             (when (>= (hash-table-count vars) +max-distinct-vars+)
+               (error "υπέρβαση ορίου μοναδικών μεταβλητών (~D) — πιθανή intern-DoS"
+                      +max-distinct-vars+))
+             (setf (gethash name vars) t))
+           (intern name :orchestrator.subsumption)))
         (t tree)))
 
 (defun parse-case-facts (string)
