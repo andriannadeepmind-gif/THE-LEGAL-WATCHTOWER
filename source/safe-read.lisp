@@ -181,8 +181,15 @@
 (defun %utf8-byte-length (string)
   "Πλήθος UTF-8 BYTES του STRING (όχι χαρακτήρων) — ο byte-cap μετρά bytes, ίδια μονάδα
    με το file-length του αρχείου ([audit#5]: Unicode string μπορεί να έχει πολλαπλάσια
-   bytes από χαρακτήρες)."
-  (length (sb-ext:string-to-octets string :external-format :utf-8)))
+   bytes από χαρακτήρες). [re-review B-4] Άθροισμα ανά-char code-point width — ΧΩΡΙΣ
+   allocation ενδιάμεσου octet vector (το παλιό string-to-octets δέσμευε ολόκληρο buffer
+   μόνο για το length· εδώ ο byte-cap ελέγχεται με σταθερή μνήμη)."
+  (let ((n 0))
+    (declare (type unsigned-byte n))
+    (loop for ch across string
+          for c = (char-code ch)
+          do (incf n (cond ((< c #x80) 1) ((< c #x800) 2) ((< c #x10000) 3) (t 4))))
+    n))
 
 ;;; ── Δημόσιο API: ΕΛΑΧΙΣΤΑ primitives (καμία σημασιολογική παράμετρος) ──
 
