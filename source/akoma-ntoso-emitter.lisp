@@ -187,7 +187,7 @@
 
 (defun emit-akoma-ntoso (document &key (country "gr")
                                        (author-href "#stavropoulosLaw")
-                                       (work-date "1970-01-01")
+                                       (work-date (error "emit-akoma-ntoso: :work-date ΑΠΑΙΤΕΙΤΑΙ — καμία φαβρικαρισμένη «1970-01-01» ημερομηνία στο FRBRdate αυθεντικού Akoma Ntoso [0092/silent-fallback]"))
                                        (source "#stavropoulosLaw"))
   "Serialize DOCUMENT (a consolidation legal-document) to an Akoma Ntoso 3.0
    <act> XML string. Deterministic for a given document and arguments."

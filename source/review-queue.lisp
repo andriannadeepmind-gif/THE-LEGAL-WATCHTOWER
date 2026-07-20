@@ -63,9 +63,11 @@
 ;;; ----------------------------------------------------------------------------
 
 (defun %now ()
-  (let ((fn (and (find-package :orchestrator.time)
-                 (find-symbol "GET-RFC3339-TIMESTAMP" :orchestrator.time))))
-    (or (and fn (ignore-errors (funcall fn))) "1970-01-01T00:00:00Z")))
+  "Transaction-time της ουράς ελέγχου μέσα από τη ΜΙΑ honest έδρα ρολογιού
+   (iso-now). [0092/silent-fallback] Το παλιό find-symbol+ignore-errors με
+   φαβρικαρισμένο «1970-01-01» fallback ΣΒΗΣΤΗΚΕ — γραμμή review χωρίς πραγματικό
+   χρόνο είναι διεφθαρμένη, όχι σιωπηλά epoch. Ίδια έδρα με proposals/memory."
+  (orchestrator.journal:iso-now))
 
 (defclass review-item ()
   ((id         :initarg :id :accessor item-id)
