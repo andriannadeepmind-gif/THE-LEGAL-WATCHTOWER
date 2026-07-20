@@ -146,5 +146,33 @@
                 (loop (let ((p (search "(defun load-review-queue " src :start2 i)))
                         (if p (progn (incf c) (setf i (1+ p))) (return c))))))))
 
+;;; Fixture 9 — CONTRADICTION LOCK (κριτής C): %approved-review-records ΔΕΝ επιτρέπεται
+;;; να καταπίνει το safe-read-error (fail-open). Ήταν τυλιγμένο σε (handler-case … (error () nil))
+;;; που σε ΑΛΛΟΙΩΜΕΝΗ ουρά επέστρεφε σιωπηλά nil ⇒ οι ΑΝΘΡΩΠΙΝΑ ΕΓΚΕΚΡΙΜΕΝΕΣ τροποποιήσεις
+;;; ΕΞΑΦΑΝΙΖΟΝΤΑΝ από το δημοσιευμένο corpus — αντιφατικό με τον νόμο της load-review-queue.
+;;; (α) στατικό: κανένα blanket error-swallow στο σώμα του %approved-review-records.
+;;; (β) συμβολαιακό mirror: το ίδιο mapping με corruption ⇒ σηματοδοτεί (δεν επιστρέφει nil).
+(let* ((here (or *load-truename* *load-pathname*))
+       (main (merge-pathnames "../systems/orchestrator-cli/main.lisp"
+                              (make-pathname :directory (pathname-directory here))))
+       (src (with-open-file (s main :external-format :utf-8)
+              (let ((buf (make-string (file-length s))))
+                (subseq buf 0 (read-sequence buf s)))))
+       (start (search "(defun %approved-review-records" src))
+       (end   (and start (search "(defun main " src :start2 start)))
+       (body  (and start end (subseq src start end))))
+  (check "9. %approved-review-records υπάρχει (publish path)" (and start end t))
+  (check "9a. ΚΑΝΕΝΑ blanket (error () nil) swallow γύρω από load-review-queue (fail-open νεκρό)"
+         (and body (not (search (concatenate 'string "(" "error () nil)") body))))
+  (check "9a. καλεί load-review-queue απευθείας (fail-closed διάδοση)"
+         (and body (search "(load-review-queue)" body)))
+  ;; (β) contract mirror: corruption ΠΡΕΠΕΙ να διαδίδεται μέσα από τη λογική εγκεκριμένων
+  (with-temp "(:pending ((:id \"a1\" :summary"          ; αλλοιωμένο
+    (lambda (f)
+      (check "9b. corrupt ουρά ⇒ %approved-review-records-mirror ΣΗΜΑΤΟΔΟΤΕΙ (όχι σιωπηλό nil)"
+             (signals-fail-closed
+              (let ((r (load-review-queue-mapping f)))   ; ΣΗΜΑΤΟΔΟΤΕΙ πριν φτάσουμε εδώ
+                (declare (ignore r)) nil))))))
+
 (format t "~%review-queue-safe-read (3A-0): ~D passed, ~D failed~%" *pass* *fail*)
 (sb-ext:exit :code (if (zerop *fail*) 0 1))

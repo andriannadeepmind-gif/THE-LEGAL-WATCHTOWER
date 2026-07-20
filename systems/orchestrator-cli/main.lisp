@@ -2479,17 +2479,24 @@ document.getElementById('ops').addEventListener('click',function(ev){
 (defun %approved-review-records (corpus-id)
   "The operations the human APPROVED in the review queue, as one synthetic
    amendment record for CORPUS-ID — so consolidation applies them through the
-   very same path as any ΦΕΚ (no second application mechanism)."
-  (handler-case
-      (let* ((q (load-review-queue))
-             (ops (remove-if-not
-                   (lambda (op)
-                     (let ((c (getf op :code)))
-                       (or (null c) (equal c corpus-id))))
-                   (orchestrator.review:approved-operations q))))
-        (when ops
-          (list (list :id "review:εγκεκριμένα" :operations ops))))
-    (error () nil)))
+   very same path as any ΦΕΚ (no second application mechanism).
+
+   FAIL-CLOSED: απόν/κενό αρχείο ουράς ⇒ load-review-queue επιστρέφει άδεια ουρά
+   ΧΩΡΙΣ σφάλμα ⇒ nil εγκεκριμένα (νόμιμο: καμία έγκριση ακόμη, η δημοσίευση
+   προχωρά). ΑΛΛΟΙΩΜΕΝΟ/μη-αναγνώσιμο αρχείο ⇒ safe-read-error ΔΙΑΔΙΔΕΤΑΙ και
+   ΣΤΑΜΑΤΑ τη δημοσίευση — ΠΟΤΕ σιωπηλή απόρριψη των ανθρώπινα εγκεκριμένων
+   τροποποιήσεων από το δημοσιευμένο corpus. Το παλιό blanket handler-case που
+   κατάπινε κάθε σφάλμα σε nil έπιανε ΑΚΡΙΒΩΣ αυτό το σφάλμα (fail-open) — αντιφατικό
+   με τον νόμο της έδρας load-review-queue ([0072] verify V3)· ΣΒΗΣΤΗΚΕ. Ίδια
+   fail-closed στάση με κάθε άλλον caller (review-list/review-decide/cockpit/review-service)."
+  (let* ((q (load-review-queue))
+         (ops (remove-if-not
+               (lambda (op)
+                 (let ((c (getf op :code)))
+                   (or (null c) (equal c corpus-id))))
+               (orchestrator.review:approved-operations q))))
+    (when ops
+      (list (list :id "review:εγκεκριμένα" :operations ops)))))
 
 (defun main (&rest args)
   "Main CLI entrypoint - ΩΜΕΓΑ GRADE"
