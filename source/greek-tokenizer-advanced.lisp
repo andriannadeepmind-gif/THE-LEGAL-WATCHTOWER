@@ -51,6 +51,8 @@
    #:train-bpe
    #:save-bpe-model
    #:load-bpe-model
+   #:bpe-model-to-data
+   #:bpe-decode-error
    ;; Morphology
    #:segment-morphology
    #:extract-prefix
@@ -885,25 +887,90 @@
       (setf subwords (merge-pair subwords (car merge) (cdr merge))))
     subwords))
 
+;;; ── BPE persistence: DATA-ONLY schema + typed decoder ([ARCH Phase 1]) ──
+;;; Το παλιό ζεύγος έγραφε (setf *bpe-model* (make-bpe-model …)) και το φόρτωνε με
+;;; cl:LOAD — δηλαδή ΕΚΤΕΛΟΥΣΕ το αρχείο ως πρόγραμμα (αυθαίρετος κώδικας από «μοντέλο»).
+;;; Η ΙΚΑΝΟΤΗΤΑ (save/load BPE model) διατηρείται· ο ΜΗΧΑΝΙΣΜΟΣ αναβαθμίζεται: το αρχείο
+;;; είναι πλέον ΔΕΔΟΜΕΝΑ (versioned plist), φορτώνεται από τη ΜΙΑ safe-read έδρα και
+;;; ανασυγκροτείται typed — καμία εκτέλεση κώδικα (data serialization ≠ executable Lisp).
+
+(defparameter +bpe-schema+ :lawmax-bpe-model/1
+  "Version tag του data-only BPE schema. Αλλαγή = ρητή έκδοση + migration.")
+
+(define-condition bpe-decode-error (error)
+  ((why :initarg :why :reader bpe-decode-error-why :initform "μη αναγνώσιμο BPE μοντέλο"))
+  (:report (lambda (c s) (format s "bpe-decode: ~A" (bpe-decode-error-why c)))))
+
+(defun %bpe-merge-to-data (merge)
+  "(cons (cons a b) merged) → data-only (list (list a b) merged) — μόνο strings/lists."
+  (let ((pair (car merge)) (merged (cdr merge)))
+    (list (list (car pair) (cdr pair)) merged)))
+
+(defun %bpe-data-to-merge (m)
+  "Data (list (a b) merged) → runtime (cons (cons a b) merged) — αυστηρός type check
+   (τρία strings), ΧΩΡΙΣ eval."
+  (unless (and (consp m) (= (length m) 2)
+               (consp (first m)) (= (length (first m)) 2)
+               (stringp (first (first m))) (stringp (second (first m)))
+               (stringp (second m)))
+    (error 'bpe-decode-error :why (format nil "μη έγκυρος merge κανόνας: ~S" m)))
+  (cons (cons (first (first m)) (second (first m))) (second m)))
+
+(defun bpe-model-to-data (model)
+  "DATA-ONLY αναπαράσταση BPE μοντέλου: (+bpe-schema+ :merges ((( a b) merged)…) :trained-on N).
+   ΟΛΑ strings/numbers/lists — ΚΑΝΕΝΑ constructor-call/eval-bait. (Το vocab είναι training-only
+   state που δεν χρειάζεται το inference — το παλιό save το έγραφε ήδη κενό.)"
+  (check-type model bpe-model)
+  (list +bpe-schema+
+        :merges (mapcar #'%bpe-merge-to-data (bpe-model-merges model))
+        :trained-on (bpe-model-trained-on model)))
+
 (defun save-bpe-model (model filename)
-  "Save BPE model to file."
-  (with-open-file (out filename :direction :output :if-exists :supersede)
-    (format out ";;; BPE Model - ~D merges, trained on ~D words~%"
-            (length (bpe-model-merges model))
-            (bpe-model-trained-on model))
-    (format out "(setf *bpe-model*~%")
-    (format out "  (make-bpe-model~%")
-    (format out "   :merges '~S~%" (bpe-model-merges model))
-    (format out "   :vocab (make-hash-table :test 'equal)~%")
-    (format out "   :trained-on ~D))~%" (bpe-model-trained-on model)))
+  "Save BPE model ως DATA-ONLY (ένα (+bpe-schema+ …) plist, prin1 υπό standard-io-syntax +
+   keyword package). [ARCH Phase 1] ΚΑΝΕΝΑΣ κώδικας στο αρχείο — επαναφορά ΜΟΝΟ μέσω
+   load-bpe-model (safe-read + typed decoder)."
+  (with-open-file (out filename :direction :output :if-exists :supersede
+                                :if-does-not-exist :create :external-format :utf-8)
+    (format out ";;; BPE Model (data-only ~A) - ~D merges, trained on ~D words~%"
+            +bpe-schema+ (length (bpe-model-merges model)) (bpe-model-trained-on model))
+    (with-standard-io-syntax
+      (let ((*package* (find-package :keyword)))
+        (prin1 (bpe-model-to-data model) out)))
+    (terpri out))
   filename)
 
+(defun %bpe-decode (data)
+  "Typed decoder: validated DATA plist → bpe-model ΧΩΡΙΣ eval. Απαιτεί ακριβές schema/version,
+   γνωστά+μη-διπλά πεδία, σωστούς τύπους. Χτίζει μέσω make-bpe-model. Η είσοδος έρχεται από
+   safe-read (data-only ⇒ μόνο keywords/strings/numbers/lists)."
+  (unless (and (consp data) (eq (first data) +bpe-schema+))
+    (error 'bpe-decode-error :why (format nil "άγνωστο schema/version: ~S"
+                                          (and (consp data) (first data)))))
+  (let* ((plist (rest data))
+         (keys (loop for (k) on plist by #'cddr collect k)))
+    (let ((unknown (set-difference keys '(:merges :trained-on))))
+      (when unknown (error 'bpe-decode-error :why (format nil "άγνωστα πεδία: ~S" unknown))))
+    (unless (= (length keys) (length (remove-duplicates keys)))
+      (error 'bpe-decode-error :why "διπλό πεδίο"))
+    (let ((merges (getf plist :merges))
+          (trained (getf plist :trained-on)))
+      (unless (listp merges)
+        (error 'bpe-decode-error :why ":merges όχι λίστα"))
+      (unless (and (integerp trained) (>= trained 0))
+        (error 'bpe-decode-error :why ":trained-on όχι μη-αρνητικός integer"))
+      (make-bpe-model :merges (mapcar #'%bpe-data-to-merge merges)
+                      :vocab (make-hash-table :test 'equal)
+                      :trained-on trained))))
+
 (defun load-bpe-model (filename)
-  "Load BPE model from file."
-  (let ((*bpe-model* nil))
-    (declare (special *bpe-model*))
-    (load filename)
-    *bpe-model*))
+  "Load BPE model ΜΕΣΩ της ΜΙΑΣ safe-read έδρας + typed decoder — ΚΑΝΕΝΑ cl:load/eval.
+   [ARCH Phase 1] Το αρχείο είναι data-only (+bpe-schema+ …)· διαβάζεται με read-data-file
+   (*read-eval* nil + #-deny + caps + %data-only-p) και ανασυγκροτείται typed (%bpe-decode)."
+  (multiple-value-bind (data status)
+      (orchestrator.safe-read:read-data-file filename)
+    (unless (eq status :ok)
+      (error 'bpe-decode-error :why (format nil "μη αναγνώσιμο BPE αρχείο (safe-read: ~A)" status)))
+    (%bpe-decode data)))
 
 ;;; ============================================================================
 ;;; STATISTICS AND DIAGNOSTICS
