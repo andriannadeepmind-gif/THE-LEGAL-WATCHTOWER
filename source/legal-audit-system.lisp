@@ -293,23 +293,26 @@
   "Path to RSA public key for signature verification.")
 
 (defun sign-entry (entry)
-  "Sign audit entry with cryptographic signature or legacy format.
+  "Sign audit entry with a cryptographic signature, or the legacy format ONLY
+   when no signing key is configured.
 
-   DARPA-GRADE: If *signing-private-key-path* is set, creates real JWS signature.
-   Otherwise, creates legacy SIGNED: format for backwards compatibility."
+   [Blocker#1] FAIL-CLOSED. When *signing-private-key-path* is set (the operator
+   explicitly requested genuine signatures), a signing failure SIGNALS — it does
+   NOT silently downgrade to the forgeable legacy \"SIGNED:\" pseudo-signature.
+   That downgrade was a fail-OPEN hole: content = (compute-entry-hash entry) is
+   derived purely from public entry fields, so anyone can recompute SIGNED:actor:
+   content, and verify-signature would then bless it. An attacker able to induce
+   a signing error (remove/corrupt the key, resource exhaustion, library fault)
+   could thus write keyless, verifier-passing audit entries. A missing entry is
+   safer than a forgeable one — so we signal and let the caller fail loudly."
   (let ((content (compute-entry-hash entry)))
     (if *signing-private-key-path*
-        ;; Real cryptographic signature using JWS
-        (handler-case
-            (orchestrator.jws-authority:sign-jws
-             content
-             *signing-private-key-path*
-             :algorithm :rs256)
-          (error (e)
-            ;; Fall back to legacy if signing fails
-            (log:warn () "Cryptographic signing failed, using legacy: ~A" e)
-            (format nil "SIGNED:~A:~A" (entry-actor entry) content)))
-        ;; Legacy format (backwards compatible)
+        (orchestrator.jws-authority:sign-jws
+         content
+         *signing-private-key-path*
+         :algorithm :rs256)
+        ;; Pure-legacy mode (no key configured): backwards-compatible format,
+        ;; which verify-signature treats as unverified-legacy, not crypto-strength.
         (format nil "SIGNED:~A:~A"
                 (entry-actor entry)
                 content))))
@@ -554,14 +557,24 @@
              (log:warn () "JWS signature present but no public key configured")
              nil)))
 
-      ;; Legacy SIGNED: format - verify structure matches
+      ;; Legacy SIGNED: format — accepted ONLY in pure-legacy mode (no public key
+      ;; configured). [Blocker#1] When a crypto public key IS configured, genuine
+      ;; JWS signatures are expected; a legacy "SIGNED:" string is unverifiable and
+      ;; trivially forgeable (content derives from public entry fields), so it is
+      ;; REJECTED, never blessed as valid. This closes the verify side of the
+      ;; fail-open forgery (the sign side is fixed in sign-entry).
       ((search "SIGNED:" signature)
-       (let* ((content (compute-entry-hash entry))
-              (expected-legacy (format nil "SIGNED:~A:~A"
-                                       (entry-actor entry)
-                                       content)))
-         ;; Use constant-time comparison to prevent timing attacks
-         (orchestrator.jws-authority:constant-time-string= signature expected-legacy)))
+       (if *signing-public-key-path*
+           (progn
+             (log:warn () "Legacy SIGNED: signature REJECTED — crypto public key configured (entry ~A)"
+                       (entry-id entry))
+             nil)
+           (let* ((content (compute-entry-hash entry))
+                  (expected-legacy (format nil "SIGNED:~A:~A"
+                                           (entry-actor entry)
+                                           content)))
+             ;; Constant-time comparison to prevent timing attacks
+             (orchestrator.jws-authority:constant-time-string= signature expected-legacy))))
 
       ;; Unknown format
       (t
