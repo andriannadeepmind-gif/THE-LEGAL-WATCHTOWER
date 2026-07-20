@@ -186,6 +186,7 @@
    ;; ══════════════════════════════════════════════════════════════════
    #:layout-error
    #:layout-error-message
+   #:layout-decode-error
    #:bbox-error
    #:bbox-invalid-error
    #:overlap-error
@@ -940,74 +941,149 @@
 ;;; HOMOICONICITY - ELEMENT TO/FROM FORM
 ;;; ============================================================================
 
-(defgeneric element-to-form (element)
-  (:documentation "Convert layout element to reconstructable Lisp form.
+;;; [ARCH Phase 1] ΑΝΑΒΑΘΜΙΣΗ (όχι αφαίρεση): το παλιό ζεύγος παρήγαγε
+;;; (make-instance …) ΚΩΔΙΚΑ και τον ΕΚΤΕΛΟΥΣΕ με form-to-element = (eval form) —
+;;; «Data becomes code becomes data» = homoiconic RCE seat (αυθαίρετη εκτέλεση από
+;;; «σχήμα»). Η ΙΚΑΝΟΤΗΤΑ (serialize↔reconstruct layout element) διατηρείται με τα
+;;; ΙΔΙΑ exported ονόματα· ο ΜΗΧΑΝΙΣΜΟΣ αναβαθμίζεται: element-to-form παράγει
+;;; DATA-ONLY versioned plist (keywords/strings/numbers/lists — κανένα constructor
+;;; symbol) και form-to-element είναι TYPED DECODER που ανασυγκροτεί μέσω των
+;;; κανονικών constructors, ΧΩΡΙΣ eval. data ≠ code· reconstruct ≠ eval.
 
-   HOMOICONICITY: The element IS its constructor call."))
+(defparameter +layout-schema-tags+
+  '(:layout-bbox/1 :layout-font/1 :layout-span/1 :layout-line/1
+    :layout-block/1 :layout-page/1 :layout-document/1)
+  "Κλειστό σύνολο έγκυρων tags της data-only layout αναπαράστασης.")
+
+(define-condition layout-decode-error (layout-error)
+  ((datum :initarg :datum :reader layout-decode-error-datum :initform nil))
+  (:report (lambda (c s)
+             (format s "layout-decode: ~A~@[ [~S]~]"
+                     (layout-error-message c) (layout-decode-error-datum c)))))
+
+(defgeneric element-to-form (element)
+  (:documentation "Serialize layout element σε DATA-ONLY versioned plist (όχι κώδικα).
+   Αντίστροφο: form-to-element (typed decoder, καμία eval)."))
 
 (defmethod element-to-form ((bbox bbox))
-  `(make-bbox :x ,(bbox-x bbox)
-              :y ,(bbox-y bbox)
-              :width ,(bbox-width bbox)
-              :height ,(bbox-height bbox)))
+  (list :layout-bbox/1 :x (bbox-x bbox) :y (bbox-y bbox)
+        :width (bbox-width bbox) :height (bbox-height bbox)))
 
 (defmethod element-to-form ((font font-info))
-  `(make-font-info :name ,(font-info-name font)
-                   :size ,(font-info-size font)
-                   :bold-p ,(font-info-bold-p font)
-                   :italic-p ,(font-info-italic-p font)
-                   :monospace-p ,(font-info-monospace-p font)))
+  (list :layout-font/1 :name (font-info-name font) :size (font-info-size font)
+        :bold-p (and (font-info-bold-p font) t)
+        :italic-p (and (font-info-italic-p font) t)
+        :monospace-p (and (font-info-monospace-p font) t)))
 
 (defmethod element-to-form ((span layout-span))
-  `(make-instance 'layout-span
-                  :id ,(span-id span)
-                  :text ,(span-text span)
-                  :bbox ,(when (span-bbox span)
-                           (element-to-form (span-bbox span)))
-                  :font ,(when (span-font span)
-                           (element-to-form (span-font span)))
-                  :color ',(span-color span)
-                  :baseline ,(span-baseline span)
-                  :char-spacing ,(span-char-spacing span)))
+  (list :layout-span/1
+        :id (span-id span) :text (span-text span)
+        :bbox (when (span-bbox span) (element-to-form (span-bbox span)))
+        :font (when (span-font span) (element-to-form (span-font span)))
+        :color (span-color span)
+        :baseline (span-baseline span) :char-spacing (span-char-spacing span)))
 
 (defmethod element-to-form ((line layout-line))
-  `(make-instance 'layout-line
-                  :id ,(line-id line)
-                  :spans (list ,@(mapcar #'element-to-form (line-spans line)))
-                  :bbox ,(when (line-bbox line)
-                           (element-to-form (line-bbox line)))
-                  :baseline ,(line-baseline line)
-                  :reading-order ,(line-reading-order line)))
+  (list :layout-line/1
+        :id (line-id line)
+        :spans (mapcar #'element-to-form (line-spans line))
+        :bbox (when (line-bbox line) (element-to-form (line-bbox line)))
+        :baseline (line-baseline line) :reading-order (line-reading-order line)))
 
 (defmethod element-to-form ((block layout-block))
-  `(make-instance 'layout-block
-                  :id ,(block-id block)
-                  :lines (list ,@(mapcar #'element-to-form (block-lines block)))
-                  :bbox ,(when (block-bbox block)
-                           (element-to-form (block-bbox block)))
-                  :reading-order ,(block-reading-order block)
-                  :column-index ,(block-column-index block)))
+  (list :layout-block/1
+        :id (block-id block)
+        :lines (mapcar #'element-to-form (block-lines block))
+        :bbox (when (block-bbox block) (element-to-form (block-bbox block)))
+        :reading-order (block-reading-order block) :column-index (block-column-index block)))
 
 (defmethod element-to-form ((page layout-page))
-  `(make-instance 'layout-page
-                  :page-number ,(page-number page)
-                  :blocks (list ,@(mapcar #'element-to-form (page-blocks page)))
-                  :width ,(page-width page)
-                  :height ,(page-height page)
-                  :rotation ,(page-rotation page)))
+  (list :layout-page/1
+        :page-number (page-number page)
+        :blocks (mapcar #'element-to-form (page-blocks page))
+        :width (page-width page) :height (page-height page) :rotation (page-rotation page)))
 
 (defmethod element-to-form ((doc layout-document))
-  `(make-instance 'layout-document
-                  :id ,(document-id doc)
-                  :source-file ,(when (document-source-file doc)
-                                  (namestring (document-source-file doc)))
-                  :pages (list ,@(mapcar #'element-to-form (document-pages doc)))))
+  (list :layout-document/1
+        :id (document-id doc)
+        :source-file (when (document-source-file doc) (namestring (document-source-file doc)))
+        :pages (mapcar #'element-to-form (document-pages doc))))
+
+(defun %layout-plist (data tag)
+  "Επικύρωσε ότι το DATA είναι (TAG :k v …) με μη-διπλά keyword κλειδιά· επίστρεψε το plist."
+  (unless (and (consp data) (eq (first data) tag) (evenp (length (rest data))))
+    (error 'layout-decode-error :message (format nil "περίμενα ~A plist" tag) :datum data))
+  (let* ((plist (rest data))
+         (keys (loop for (k) on plist by #'cddr collect k)))
+    (unless (every #'keywordp keys)
+      (error 'layout-decode-error :message "μη-keyword κλειδί" :datum data))
+    (unless (= (length keys) (length (remove-duplicates keys)))
+      (error 'layout-decode-error :message "διπλό κλειδί" :datum data))
+    plist))
+
+(defun %num (v where) (unless (numberp v) (error 'layout-decode-error :message (format nil "~A: όχι αριθμός" where) :datum v)) v)
+(defun %str? (v where) (when v (unless (stringp v) (error 'layout-decode-error :message (format nil "~A: όχι string" where) :datum v))) v)
+(defun %bool (v) (if (or (eq v t) (eq v :t)) t nil))
+(defun %color? (v)
+  (unless (or (null v) (keywordp v) (stringp v) (and (listp v) (every #'numberp v)))
+    (error 'layout-decode-error :message "color: μόνο keyword/string/number-list/nil" :datum v))
+  v)
 
 (defun form-to-element (form)
-  "Evaluate a layout element form to recreate the element.
-
-   HOMOICONICITY: Data becomes code becomes data."
-  (eval form))
+  "TYPED DECODER: validated DATA-ONLY layout plist → layout element ΧΩΡΙΣ eval.
+   Dispatch στο tag· ανασυγκρότηση μέσω των κανονικών constructors· αναδρομικά για
+   nested στοιχεία. Άγνωστο/κακοσχηματισμένο tag ⇒ layout-decode-error (fail-closed)."
+  (unless (and (consp form) (member (first form) +layout-schema-tags+))
+    (error 'layout-decode-error :message "άγνωστο/κακοσχηματισμένο layout tag"
+                                :datum (and (consp form) (first form))))
+  (ecase (first form)
+    (:layout-bbox/1
+     (let ((p (%layout-plist form :layout-bbox/1)))
+       (make-bbox :x (%num (getf p :x) :x) :y (%num (getf p :y) :y)
+                  :width (%num (getf p :width) :width) :height (%num (getf p :height) :height))))
+    (:layout-font/1
+     (let ((p (%layout-plist form :layout-font/1)))
+       (make-font-info :name (%str? (getf p :name) :name) :size (%num (getf p :size) :size)
+                       :bold-p (%bool (getf p :bold-p)) :italic-p (%bool (getf p :italic-p))
+                       :monospace-p (%bool (getf p :monospace-p)))))
+    (:layout-span/1
+     (let ((p (%layout-plist form :layout-span/1)))
+       (make-instance 'layout-span
+                      :id (%str? (getf p :id) :id) :text (%str? (getf p :text) :text)
+                      :bbox (let ((b (getf p :bbox))) (and b (form-to-element b)))
+                      :font (let ((f (getf p :font))) (and f (form-to-element f)))
+                      :color (%color? (getf p :color))
+                      :baseline (%num (getf p :baseline) :baseline)
+                      :char-spacing (%num (getf p :char-spacing) :char-spacing))))
+    (:layout-line/1
+     (let ((p (%layout-plist form :layout-line/1)))
+       (make-instance 'layout-line
+                      :id (%str? (getf p :id) :id)
+                      :spans (mapcar #'form-to-element (getf p :spans))
+                      :bbox (let ((b (getf p :bbox))) (and b (form-to-element b)))
+                      :baseline (%num (getf p :baseline) :baseline)
+                      :reading-order (%num (getf p :reading-order) :reading-order))))
+    (:layout-block/1
+     (let ((p (%layout-plist form :layout-block/1)))
+       (make-instance 'layout-block
+                      :id (%str? (getf p :id) :id)
+                      :lines (mapcar #'form-to-element (getf p :lines))
+                      :bbox (let ((b (getf p :bbox))) (and b (form-to-element b)))
+                      :reading-order (%num (getf p :reading-order) :reading-order)
+                      :column-index (%num (getf p :column-index) :column-index))))
+    (:layout-page/1
+     (let ((p (%layout-plist form :layout-page/1)))
+       (make-instance 'layout-page
+                      :page-number (%num (getf p :page-number) :page-number)
+                      :blocks (mapcar #'form-to-element (getf p :blocks))
+                      :width (%num (getf p :width) :width) :height (%num (getf p :height) :height)
+                      :rotation (%num (getf p :rotation) :rotation))))
+    (:layout-document/1
+     (let ((p (%layout-plist form :layout-document/1)))
+       (make-instance 'layout-document
+                      :id (%str? (getf p :id) :id)
+                      :source-file (%str? (getf p :source-file) :source-file)
+                      :pages (mapcar #'form-to-element (getf p :pages)))))))
 
 ;;; ============================================================================
 ;;; READING ORDER COMPUTATION
