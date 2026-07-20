@@ -66,12 +66,34 @@ fi
 # Συλλογή των κόκκινων πυλών από το log.
 red_lines="$(grep "$FAIL_RE" "$log" || true)"
 
-# (3) ΠΟΛΙΤΙΚΗ — κάθε κόκκινη πύλη πρέπει να είναι δηλωμένη baseline exception.
-offending="$red_lines"
-for exc in $exceptions; do
-  offending="$(printf '%s\n' "$offending" | grep -v "$exc" || true)"
-done
-offending="$(printf '%s\n' "$offending" | grep "$FAIL_RE" || true)"
+# Κανονικοποίηση ονόματος πύλης: αφαίρεσε προπορευόμενα «--» ώστε το τυπωμένο
+# «--advisor-gate» και η env-εξαίρεση «advisor-gate» να ταιριάζουν ΑΚΡΙΒΩΣ —
+# ΟΧΙ ως substring (αλλιώς μια πύλη «--meta-advisor-gate» θα εξαιρούνταν λαθεμένα).
+normalize_gate() {
+  local n="$1"
+  while [ "${n#--}" != "$n" ]; do n="${n#--}"; done
+  printf '%s' "$n"
+}
+
+# (3) ΠΟΛΙΤΙΚΗ — κάθε κόκκινη πύλη πρέπει να είναι δηλωμένη baseline exception,
+# με ΑΚΡΙΒΗ αντιστοίχιση ΟΝΟΜΑΤΟΣ (όχι whole-line substring).
+offending=""
+while IFS= read -r line; do
+  [ -n "$line" ] || continue
+  # Πεδίο ονόματος: κόψε προπορευόμενα κενά, πάρε ό,τι προηγείται του πρώτου «:».
+  name="${line#"${line%%[![:space:]]*}"}"   # ltrim
+  name="${name%%:*}"                          # token πριν το ':'
+  name="${name%"${name##*[![:space:]]}"}"     # rtrim
+  norm="$(normalize_gate "$name")"
+  exempt=""
+  for exc in $exceptions; do
+    if [ "$norm" = "$(normalize_gate "$exc")" ]; then exempt=1; break; fi
+  done
+  [ -n "$exempt" ] || offending="${offending}${line}"$'\n'
+done <<EOF
+$red_lines
+EOF
+offending="${offending%$'\n'}"
 if [ -n "$offending" ]; then
   echo "::error::Πύλη πέραν των baseline exceptions ($exceptions) απέτυχε:" >&2
   printf '%s\n' "$offending" >&2

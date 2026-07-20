@@ -74,5 +74,20 @@ bash "$assess" "" "" >/dev/null 2>&1; [ $? = 2 ] && { echo "  ok   κακή χρ
 L="$(mklog "  --understanding-gate: ΑΠΕΤΥΧΕ" "$FOOTER")"
 check "custom baseline exception (understanding-gate)" 0 "$L" 1 "understanding-gate"
 
+# ── SUBSTRING-EXEMPTION (C-1c): η εξαίρεση ΠΡΕΠΕΙ να είναι ΑΚΡΙΒΗΣ, όχι substring ──
+# 10. Πύλη «--meta-advisor-gate» ΠΕΡΙΕΧΕΙ το «advisor-gate» ως substring· με το παλιό
+#     grep -v θα εξαιρούνταν λαθεμένα ⇒ false-green. ΤΩΡΑ πρέπει να απορρίπτεται (exit 5).
+L="$(mklog "  --meta-advisor-gate: ΑΠΕΤΥΧΕ" "$FOOTER")"
+check "substring-όχι-exact: --meta-advisor-gate ΔΕΝ εξαιρείται από advisor-gate" 5 "$L" 1 "advisor-gate"
+
+# 12. Κανονικοποίηση «--»: εξαίρεση δοσμένη ΜΕ dashes («--advisor-gate») ταιριάζει
+#     ΑΚΡΙΒΩΣ το τυπωμένο «--advisor-gate» ⇒ αποδεκτό.
+L="$(mklog "  --advisor-gate: ΑΠΕΤΥΧΕ" "$FOOTER")"
+check "normalize «--»: εξαίρεση με dashes ταιριάζει exact" 0 "$L" 1 "--advisor-gate"
+
+# 13. Ακριβής εξαίρεση με ΔΥΟ ονόματα: μόνο τα δηλωμένα, όχι superstrings.
+L="$(mklog "  --advisor-gate: ΑΠΕΤΥΧΕ" "  --meta-advisor-gate: ΑΠΕΤΥΧΕ" "$FOOTER")"
+check "δύο εξαιρέσεις: το exact-δηλωμένο superstring απορρίπτεται" 5 "$L" 1 "advisor-gate understanding-gate"
+
 printf '\nassess-gate-plenary fixture: %d passed, %d failed\n' "$pass" "$fail"
 [ "$fail" = 0 ]
