@@ -177,13 +177,12 @@
    ;; HOMOICONICITY - CODE AS DATA
    ;; ══════════════════════════════════════════════════════════════════
    #:trace-to-form
-   #:form-to-trace
-   #:trace-to-readable-string
-   #:read-trace-from-string
+   ;; [re-review adv2-F3] Ο eval-deserializer κύκλος (form-to-trace/read-trace-from-string/
+   ;; trace-to-readable-string/trace-transform) ΔΙΑΓΡΑΦΗΚΕ: 0 runtime callers + read-from-string
+   ;; ΧΩΡΙΣ *read-eval* nil ⇒ (eval …) = διπλό RCE surface, αντίθετο στη safe-read έδρα.
    #:save-traces-to-file
    #:load-traces-from-file
    #:quote-trace
-   #:trace-transform
    #:trace-describe
 
    ;; ══════════════════════════════════════════════════════════════════
@@ -976,38 +975,13 @@
     :timestamp ,(trace-timestamp trace)
     :layer ,(trace-layer trace)))
 
-(defun form-to-trace (form)
-  "Evaluate a trace form to recreate the trace.
-
-   HOMOICONICITY: Data becomes code becomes data.
-
-   Args:
-     form: A Lisp form as produced by trace-to-form
-
-   Returns:
-     trace-info instance"
-  (eval form))
-
-(defun trace-to-readable-string (trace)
-  "Convert trace to a readable string that can be READ back.
-
-   The string, when READ and EVAL'd, recreates the trace.
-
-   Usage:
-     (let ((str (trace-to-readable-string my-trace)))
-       (equal (trace-id my-trace)
-              (trace-id (eval (read-from-string str)))))"
-  (check-type trace trace-info)
-  (with-output-to-string (s)
-    (let ((*print-readably* t)
-          (*print-pretty* t))
-      (prin1 (trace-to-form trace) s))))
-
-(defun read-trace-from-string (string)
-  "Read and reconstruct a trace from its string representation.
-
-   HOMOICONICITY: Traces survive serialization perfectly."
-  (form-to-trace (read-from-string string)))
+;; [re-review adv2-F3] ΔΙΑΓΡΑΦΗΚΑΝ (0 runtime callers, RCE-shaped):
+;;   form-to-trace         — (eval form): αυθαίρετη εκτέλεση από «δεδομένα»
+;;   trace-to-readable-string — παρήγαγε string «to be READ and EVAL'd»
+;;   read-trace-from-string   — (form-to-trace (read-from-string s)): read ΧΩΡΙΣ *read-eval*
+;;                              nil ⇒ #. στο read + eval μετά = διπλό RCE
+;; Η σειριοποίηση traces παραμένει μέσω save-traces-to-file (prin1 του trace-to-form)·
+;; η επαναφορά μέσω load-traces-from-file (cl:load ΑΥΤΟ-γραμμένου, δηλωμένου αρχείου).
 
 (defun save-traces-to-file (filepath &key (registry *trace-registry*))
   "Save all traces to file as executable Lisp code.
@@ -1050,16 +1024,9 @@
    Returns the unevaluated form."
   `',trace-expr)
 
-(defmacro trace-transform (trace transformation)
-  "Apply a transformation to a trace, returning new trace form.
-
-   TRANSFORMATION is a function that takes and returns a trace form.
-
-   Usage:
-     (trace-transform my-trace
-       (lambda (form)
-         (append form '(:layer :transformed))))"
-  `(form-to-trace (funcall ,transformation (trace-to-form ,trace))))
+;; [re-review adv2-F3] trace-transform ΔΙΑΓΡΑΦΗΚΕ: 0 callers + βασιζόταν στο
+;; διαγραμμένο form-to-trace (eval). Homoiconic transforms σε trusted forms γίνονται
+;; απευθείας μέσω trace-to-form + typed constructors, όχι eval.
 
 ;;; ============================================================================
 ;;; SELF-DESCRIBING TRACES

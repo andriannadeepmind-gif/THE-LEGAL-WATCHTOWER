@@ -39,14 +39,20 @@
         (t tree)))
 
 (defun parse-case-facts (string)
-  "Διάβασε γεγονότα υπόθεσης από STRING — λίστα από tuples, *read-eval* nil,
-   keyword package (καμία εκτέλεση κώδικα από δεδομένα)."
-  (let ((*read-eval* nil)
-        (*package* (find-package :keyword)))
-    (let ((form (read-from-string string)))
-      (unless (and (listp form) (every #'consp form))
-        (error "περιμένω λίστα γεγονότων ((:γεγονός …) …), βρέθηκε: ~S" form))
-      (%devar form))))
+  "Διάβασε γεγονότα υπόθεσης από STRING — λίστα από tuples. [re-review adv2-F1] Περνά
+   από τη ΜΙΑ safe-read έδρα (read-data-string): *read-eval* nil + +data-readtable+
+   (θάνατος #-σύνταξης/quote) + depth/atom/byte caps + ΟΛΙΚΟΣ %data-only-p έλεγχος. Το
+   παλιό bare read-from-string ήταν ΔΕΥΤΕΡΟΣ data-path reader ΧΩΡΙΣ readtable/caps
+   (προσβάσιμος από CLI --subsume): quote/paren bomb ⇒ control-stack-exhausted (storage-
+   condition, ΔΕΝ πιανόταν από handler-case (error …)) ⇒ CLI abort· ~10^7 tokens ⇒
+   unbounded keyword intern. Τώρα αυτά είναι δομικά αδύνατα (μία έδρα)."
+  (multiple-value-bind (form status)
+      (orchestrator.safe-read:read-data-string string)
+    (unless (eq status :ok)
+      (error "μη αναγνώσιμα γεγονότα υπόθεσης (safe-read: ~A)" status))
+    (unless (and (listp form) (every #'consp form))
+      (error "περιμένω λίστα γεγονότων ((:γεγονός …) …), βρέθηκε: ~S" form))
+    (%devar form)))
 
 ;;; ── Η ΥΠΑΓΩΓΗ: ο κύκλος του L5, με τους κανόνες-ειδικές υποστάσεις ──
 
