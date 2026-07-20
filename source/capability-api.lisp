@@ -44,11 +44,11 @@
       (:keyword s)                       ; κρατιέται string· η δυνατότητα ερμηνεύει
       (:any     s)
       (:integer (or (ignore-errors (parse-integer s :junk-allowed nil)) (bad :integer)))
-      (:number  ;; [0094]/Phase 1: scalar real ΧΩΡΙΣ reader/eval — ξεχωριστός numeric parser
-                ;; (parse-real-number: read-free, signals σε μη-αριθμό, δέχεται #x/#r radix ΩΣ ΔΕΔΟΜΕΝΑ
-                ;; χωρίς εκτέλεση· αυστηρότερο: trailing garbage «3.14 5» απορρίπτεται πλέον).
-                (let ((v (ignore-errors (parse-number:parse-real-number s))))
-                  (if (realp v) v (bad :number))))
+      ;; [0094]/Phase 1 commit 2A: ο :number κλάδος ΔΙΑΓΡΑΦΗΚΕ — 0 capability δήλωνε
+      ;; :number-typed param (νεκρό contract). Το read-from-string→parse-number sink
+      ;; καταργήθηκε ΜΕ ΔΙΑΓΡΑΦΗ, όχι νέα numeric έδρα. Μελλοντικό αριθμητικό param =
+      ;; ρητή capability με schema/owner/fixtures (integer/quantity/score — όχι γενικό «number»).
+      ;; Η bidirectional param-type gate (tests/param-type-coercion-gate) το επιβάλλει.
       (:boolean (cond ((member (string-downcase s) '("true" "1" "yes" "ναι") :test #'string=) t)
                       ((member (string-downcase s) '("false" "0" "no" "όχι" "οχι") :test #'string=) nil)
                       (t (bad :boolean))))

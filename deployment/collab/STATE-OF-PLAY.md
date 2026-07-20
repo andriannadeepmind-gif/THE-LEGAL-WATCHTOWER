@@ -88,6 +88,18 @@ audit βρήκε 17 confirmed (2 blockers ασφαλείας). ΤΟ ΛΑΘΟΣ �
 build-time. Κ-4/Κ-5/Κ-6. **SCOPE = απόφαση δημιουργού** (μεγαλύτερη τομή)· καμία
 υλοποίηση χωρίς ρητή έγκριση.
 
+## [0094/Phase1] Υπο-ομάδες (read/eval/load elimination) — σε εξέλιξη
+
+- **1** safe-read συνταγματικά-ελάχιστο primitive (48/48) — `437e66c9`.
+- **2A** numeric/read-sink closure (**ΔΙΑΓΡΑΦΗ νεκρής επιφάνειας, ΟΧΙ νέα numeric έδρα**,
+  εντολή δημιουργού): διαγράφηκαν `:number` coercion branch (νεκρό — 0 δηλωμένα params),
+  `parse-float`+`load-word-vectors`+`load-embeddings`+`save-embeddings` (νεκρός word-vector
+  loader, ΚΑΙ τα δύο άκρα), export/error refs· αφαιρέθηκε `parse-number` dep (0 άλλος χρήστης).
+  + bidirectional param-type/coercion gate (8/8, reintroduction `:number` κοκκινίζει). E:
+  `tfidf-embed`/live `cosine-similarity` (citation-authority) UNTOUCHED, μηδέν cross-ref.
+  **Ξεχωριστό debt (ξεχωριστή φάση, ΔΕΝ αγγίχθηκε):** ευρύτερος `embed-text`/`similarity`
+  dead-at-runtime + `embed-batch-openai`. Owner-side full build = τελικό gate Phase 1.
+
 ## [0094] PHASE 0 — census & baseline (trusted/untrusted plane, 8 φάσεις)
 
 Εντολή δημιουργού: πλήρης αρχιτεκτονικός διαχωρισμός trusted/untrusted plane

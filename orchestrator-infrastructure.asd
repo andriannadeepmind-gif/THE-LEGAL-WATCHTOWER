@@ -24,7 +24,6 @@
                #:usocket             ; Pure-Lisp HTTP server sockets
                #:closer-mop          ; MOP for the corpus service content negotiation
                #:uuid                ; v4 UUIDs for the restored authority/provenance layers
-               #:parse-number        ; [0094]/Phase 1: Ο ΞΕΧΩΡΙΣΤΟΣ numeric parser (scalar reals ΧΩΡΙΣ reader/eval) — capability-api :number, embeddings float tokens
                #:uiop)
   
   :serial t

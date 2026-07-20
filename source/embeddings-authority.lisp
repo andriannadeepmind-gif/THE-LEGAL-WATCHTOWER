@@ -37,7 +37,6 @@
    #:load-embedding
    #:generate-corpus-embeddings
    ;; Model management
-   #:load-word-vectors
    #:*word-vectors*
    #:*embedding-dimension*
    ;; Conditions
@@ -378,69 +377,13 @@
 (define-condition model-not-loaded (embeddings-error) ())
 
 ;;; ============================================================================
-;;; WORD VECTOR LOADING (GloVe Format)
+;;; WORD VECTOR LOADING — ΔΙΑΓΡΑΦΗΚΕ ([0094]/Phase 1, commit 2A)
 ;;; ============================================================================
-;;;;
-;;;; GloVe format: word float1 float2 ... floatN
-;;;; One word per line, space-separated
-
-(defun load-word-vectors (path &key (max-words nil) (dimension 300))
-  "Load pre-trained word vectors from GloVe/Word2Vec format file
-
-   Args:
-     path: Path to vectors file (e.g., glove.6B.300d.txt)
-     max-words: Maximum words to load (nil = all)
-     dimension: Expected vector dimension
-
-   Returns:
-     Number of words loaded
-
-   Side effect:
-     Sets *word-vectors* hash table"
-
-  (unless (probe-file path)
-    (error 'embeddings-error
-           :message (format nil "Word vectors file not found: ~A" path)))
-
-  (setf *embedding-dimension* dimension)
-  (setf *word-vectors* (make-hash-table :test 'equal :size (or max-words 400000)))
-
-  (let ((count 0))
-    (with-open-file (stream path :direction :input)
-      (loop for line = (read-line stream nil nil)
-            while (and line (or (null max-words) (< count max-words)))
-            do (handler-case
-                   (let* ((parts (uiop:split-string line :separator '(#\Space)))
-                          (word (first parts))
-                          (vector (make-array dimension
-                                              :element-type 'single-float
-                                              :initial-element 0.0)))
-                     ;; Parse floats
-                     (loop for i from 0 below dimension
-                           for str in (rest parts)
-                           do (setf (aref vector i)
-                                    (coerce (parse-float str) 'single-float)))
-                     ;; Store normalized vector
-                     (setf (gethash word *word-vectors*)
-                           (normalize-vector vector))
-                     (incf count))
-                 (error ()
-                   ;; Skip malformed lines
-                   nil))))
-
-    (format t "~&; Loaded ~D word vectors (dimension: ~D)~%" count dimension)
-    count))
-
-(defun parse-float (string)
-  "Parse float from STRING, handling scientific notation.
-
-   [0094]/Phase 1: word-vector model files are an untrusted supply-chain artifact.
-   Ο reader ΚΑΤΑΡΓΗΘΗΚΕ εντελώς εδώ: το `parse-number:parse-real-number` είναι read-free
-   (δεν υπάρχει reader-macro επιφάνεια — ΚΑΝΕΝΑ `#.` δεν μπορεί να υπάρξει, όχι απλώς να μην
-   εκτελεστεί). *read-default-float-format* 'single-float ⇒ ΑΚΡΙΒΩΣ single-float έξοδος (καμία
-   double↔single μετατροπή). Επιστρέφει real ή σφάλλει σε μη-αριθμητικό token."
-  (let ((*read-default-float-format* 'single-float))
-    (parse-number:parse-real-number string)))
+;;;; Ο νεκρός word-vector loader (load-word-vectors + parse-float, το ΜΟΝΑΔΙΚΟ
+;;;; read/eval/load sink εδώ) διαγράφηκε πλήρως: 0 external callers, 0 shipped
+;;;; model artifact, 0 runtime registration. Το parse-float (read-from-string)
+;;;; ήταν το read-sink· καταργήθηκε ΜΕ ΔΙΑΓΡΑΦΗ, όχι νέα numeric έδρα. Μελλοντικό
+;;;; word-vector ingestion = νέα capability με format/artifact/consumer/schema.
 
 ;;; ============================================================================
 ;;; TEXT EMBEDDING
@@ -657,54 +600,11 @@
     (nreverse clusters)))
 
 ;;; ============================================================================
-;;; PERSISTENCE
+;;; PERSISTENCE — .vec batch save/load ΔΙΑΓΡΑΦΗΚΕ ([0094]/Phase 1, commit 2A)
 ;;; ============================================================================
-
-(defun save-embeddings (texts output-path)
-  "Save embeddings to file
-
-   Format: text<TAB>vec[0] vec[1] ... vec[n]
-
-   Args:
-     texts: List of texts
-     output-path: Output file path
-
-   Returns:
-     Number of embeddings saved"
-  (ensure-model-loaded)
-  (ensure-directories-exist output-path)
-
-  (with-open-file (out output-path :direction :output
-                                   :if-exists :supersede)
-    (loop for text in texts
-          for vec = (embed-text text)
-          do (format out "~A~C~{~F~^ ~}~%"
-                     text #\Tab (coerce vec 'list))
-          count t)))
-
-(defun load-embeddings (input-path)
-  "Load pre-computed embeddings from file
-
-   Args:
-     input-path: Path to embeddings file
-
-   Returns:
-     Hash table mapping texts to vectors"
-  (let ((embeddings (make-hash-table :test 'equal)))
-    (with-open-file (stream input-path :direction :input)
-      (loop for line = (read-line stream nil nil)
-            while line
-            do (let* ((tab-pos (position #\Tab line))
-                      (text (subseq line 0 tab-pos))
-                      (vec-str (subseq line (1+ tab-pos)))
-                      (vec-parts (uiop:split-string vec-str :separator '(#\Space)))
-                      (vec (make-array (length vec-parts)
-                                       :element-type 'single-float)))
-                 (loop for i from 0
-                       for s in vec-parts
-                       do (setf (aref vec i) (parse-float s)))
-                 (setf (gethash text embeddings) vec))))
-    embeddings))
+;;;; save-embeddings/load-embeddings (το .vec reader/writer ζεύγος· load-embeddings
+;;;; κατανάλωνε το διαγραμμένο parse-float) — 0 callers, νεκρή persistence. Και τα
+;;;; ΔΥΟ άκρα διαγράφηκαν μαζί (κανένας orphan writer).
 
 ;;; ============================================================================
 ;;; UTILITY
@@ -714,7 +614,7 @@
   "Ensure word vectors are loaded"
   (unless *word-vectors*
     (error 'model-not-loaded
-           :message "Word vectors not loaded. Call (load-word-vectors path) first.")))
+           :message "Word vectors not loaded (word-vector ingestion is not a current capability).")))
 
 (defun vocabulary-size ()
   "Return number of words in vocabulary"
