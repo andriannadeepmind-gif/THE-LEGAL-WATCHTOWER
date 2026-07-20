@@ -434,13 +434,13 @@
 (defun parse-float (string)
   "Parse float from STRING, handling scientific notation.
 
-   *READ-EVAL* is bound to NIL: word-vector model files are an untrusted
-   supply-chain artifact, and a token like `#.(form)` would otherwise execute
-   arbitrary code at load time via the reader. Disabling read-eval makes the
-   `#.` macro signal instead of running — no code execution from a model file."
-  (let ((*read-default-float-format* 'single-float)
-        (*read-eval* nil))
-    (read-from-string string)))
+   [0094]/Phase 1: word-vector model files are an untrusted supply-chain artifact.
+   Ο reader ΚΑΤΑΡΓΗΘΗΚΕ εντελώς εδώ: το `parse-number:parse-real-number` είναι read-free
+   (δεν υπάρχει reader-macro επιφάνεια — ΚΑΝΕΝΑ `#.` δεν μπορεί να υπάρξει, όχι απλώς να μην
+   εκτελεστεί). *read-default-float-format* 'single-float ⇒ ΑΚΡΙΒΩΣ single-float έξοδος (καμία
+   double↔single μετατροπή). Επιστρέφει real ή σφάλλει σε μη-αριθμητικό token."
+  (let ((*read-default-float-format* 'single-float))
+    (parse-number:parse-real-number string)))
 
 ;;; ============================================================================
 ;;; TEXT EMBEDDING

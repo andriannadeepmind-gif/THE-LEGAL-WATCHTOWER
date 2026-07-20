@@ -44,8 +44,10 @@
       (:keyword s)                       ; κρατιέται string· η δυνατότητα ερμηνεύει
       (:any     s)
       (:integer (or (ignore-errors (parse-integer s :junk-allowed nil)) (bad :integer)))
-      (:number  (let* ((*read-eval* nil)
-                       (v (ignore-errors (read-from-string s))))
+      (:number  ;; [0094]/Phase 1: scalar real ΧΩΡΙΣ reader/eval — ξεχωριστός numeric parser
+                ;; (parse-real-number: read-free, signals σε μη-αριθμό, δέχεται #x/#r radix ΩΣ ΔΕΔΟΜΕΝΑ
+                ;; χωρίς εκτέλεση· αυστηρότερο: trailing garbage «3.14 5» απορρίπτεται πλέον).
+                (let ((v (ignore-errors (parse-number:parse-real-number s))))
                   (if (realp v) v (bad :number))))
       (:boolean (cond ((member (string-downcase s) '("true" "1" "yes" "ναι") :test #'string=) t)
                       ((member (string-downcase s) '("false" "0" "no" "όχι" "οχι") :test #'string=) nil)
