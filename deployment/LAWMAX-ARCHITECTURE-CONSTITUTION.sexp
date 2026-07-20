@@ -321,8 +321,8 @@
    :implementations ("--ask/--ρώτα" "/chat + /ask (--serve)" "--serve-mcp tools")
    :why "Όλες οι επιφάνειες δρομολογούν στην ΙΔΙΑ έδρα (run-ask/corpus providers) — δεδικασμένο 08a93db6: κανένας δεύτερος διάλογος.")
   (:area :article-identity
-   :implementations ("source/canonical-article-id.lisp" "source/legal-id-registry.lisp" "source/canonical-uris.lisp")
-   :why "ΧΡΕΟΣ Π2 (consolidation plan): τρία αρχεία στην τροχιά της ταυτότητας άρθρων — canonical-article-id = ο τύπος· registry/uris = καταναλωτές. Συγχώνευση τεκμηρίωσης εκκρεμεί· ΟΧΙ νέος κώδικας εν τω μεταξύ."))
+   :implementations ("source/legal-identity.lisp" "source/legal-id-registry.lisp" "source/canonical-uris.lisp")
+   :why "Τρία αρχεία στην τροχιά της ταυτότητας άρθρων — legal-identity = ο ΤΥΠΟΣ (η canonical-article-id.lisp συγχωνεύτηκε εκεί)· registry/uris = καταναλωτές. Η ⑫ πύλη επιβάλλει ΥΠΑΡΞΗ κάθε δηλωμένου αρχείου-έδρας (καμία stale εγγραφή)."))
 
  ;; ══ CONCEPT MAPPING — αποφασισμένες μελλοντικές έννοιες → έδρες (κανένας νέος φάκελος) ══
  :concept-mapping

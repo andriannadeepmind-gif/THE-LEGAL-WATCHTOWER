@@ -34,6 +34,11 @@ rgfp -e 'with-standard-io-syntax'
 sec "F. DYNAMIC SYMBOL RESOLUTION → callable (indirect eval wrappers)"
 rgfp -e '(funcall[[:space:]]+\(?(find-symbol|intern)|symbol-function|fdefinition|\(coerce[[:space:]].*(quote function|'"'"'function))'
 
+sec "F2. DYNAMIC SYMBOL RESOLUTION — FULL surface ([audit#11]: κάθε find-symbol/intern,"
+echo "     ΟΧΙ μόνο funcall-adjacent· το ιστορικό είχε 5 find-symbol σε διαγραμμένα symbols"
+echo "     που το adjacent-only regex ΔΕΝ έπιανε — εδώ απογράφεται ΟΛΗ η επιφάνεια)"
+rgfp -e '\((find-symbol|intern)[[:space:]]'
+
 sec "G. OS PROCESS EXECUTION (shell / external binaries)"
 rgfp -e '\((uiop:run-program|uiop:launch-program|sb-ext:run-program|run-fetch-command)\b'
 
@@ -51,6 +56,7 @@ for label in \
   'reader-macro:(set-macro-character|set-dispatch-macro-character|make-dispatch-macro-character|set-syntax-from-char)' \
   'with-std-io:with-standard-io-syntax' \
   'os-exec:\((uiop:run-program|uiop:launch-program|sb-ext:run-program)\b' \
+  'dyn-resolve:\((find-symbol|intern)[[:space:]]' \
   'read-eval-binds:\*read-eval\*' ; do
   name="${label%%:*}"; pat="${label#*:}"
   printf '%-22s %s\n' "$name" "$(rgfp -e "$pat" | wc -l)"

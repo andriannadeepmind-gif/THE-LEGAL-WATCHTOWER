@@ -320,11 +320,29 @@
                     (every (lambda (cm) (and (getf cm :extends-existing)
                                              (getf cm :does-not-duplicate)))
                            (getf c :concept-mapping)))))
-        ;; ⑫ δηλωμένη πολλαπλότητα: κάθε εγγραφή με αιτιολόγηση (ρητό :why)
-        (chk "⑫ κάθε justified-multiplicity εγγραφή φέρει ρητή αιτιολόγηση"
-             (every (lambda (j) (and (getf j :area) (stringp (getf j :why))
-                                     (getf j :implementations)))
-                    (getf c :justified-multiplicity)))
+        ;; ⑫ δηλωμένη πολλαπλότητα: κάθε εγγραφή με αιτιολόγηση (ρητό :why) ΚΑΙ κάθε
+        ;;    δηλωμένη implementation ΠΟΥ ΕΙΝΑΙ ΑΡΧΕΙΟ-ΕΔΡΑ να ΥΠΑΡΧΕΙ πραγματικά — καμία
+        ;;    stale εγγραφή που δείχνει διαγραμμένο αρχείο (κριτής #12). Οι μη-file
+        ;;    implementations (package names, surface descriptions) εξαιρούνται ρητά.
+        (let ((bad-just '()) (root (orchestrator.paths:institution-root)))
+          (flet ((file-impl-p (s)
+                   ;; heuristic: repo file-path (source/systems/deployment/… ή *.lisp)
+                   (and (stringp s)
+                        (or (search ".lisp" s)
+                            (%prefix-p "source/" s)
+                            (%prefix-p "systems/" s)
+                            (%prefix-p "deployment/" s)
+                            (%prefix-p "tests/" s)))))
+            (dolist (j (getf c :justified-multiplicity))
+              (unless (and (getf j :area) (stringp (getf j :why)) (getf j :implementations))
+                (push (list (getf j :area) :incomplete) bad-just))
+              (dolist (impl (getf j :implementations))
+                (when (and (file-impl-p impl)
+                           (not (probe-file (merge-pathnames impl root))))
+                  (push (list (getf j :area) :missing impl) bad-just)))))
+          (chk "⑫ justified-multiplicity: αιτιολόγηση + ΥΠΑΡΚΤΑ αρχεία-έδρες (καμία stale)"
+               (null bad-just)
+               (when bad-just (format nil "παραβάσεις: ~{~A~^, ~}" (nreverse bad-just)))))
         ;; ── FF1: μία έδρα ρίζας του Ιδρύματος (κανόνας Κριτή 0021) ──
         (let* ((root (orchestrator.paths:institution-root))
                (sources (%ff1-lisp-sources root))
