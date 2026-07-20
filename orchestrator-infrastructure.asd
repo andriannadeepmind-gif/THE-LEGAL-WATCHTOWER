@@ -32,6 +32,7 @@
     :components
     ((:file "deterministic-time") ; Deterministic timestamp abstraction - MUST be first (used by paths)
      (:file "paths")              ; Path abstraction
+     (:file "safe-read")          ; [0094]/Phase 1: Η ΜΙΑ ΕΔΡΑ ασφαλούς αποσεριαλοποίησης δεδομένων (*read-eval* NIL, wholesale #-deny, depth pre-scan) — φορτώνεται ΠΡΙΝ κάθε reader· (:use :cl) μόνο, καμία κυκλική εξάρτηση
      (:file "execution-trace")    ; ΙΧΝΟΣ ΕΚΤΕΛΕΣΗΣ: legal execution provenance πυρήνας — data-only, append-only, προφίλ κόστους
      (:file "canonical-uris")     ; Canonical URI configuration - Phase C
      (:file "consolidation-engine") ; Codification: apply amendments -> in-force consolidated text
