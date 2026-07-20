@@ -99,6 +99,11 @@ build-time. Κ-4/Κ-5/Κ-6. **SCOPE = απόφαση δημιουργού** (μ�
   `tfidf-embed`/live `cosine-similarity` (citation-authority) UNTOUCHED, μηδέν cross-ref.
   **Ξεχωριστό debt (ξεχωριστή φάση, ΔΕΝ αγγίχθηκε):** ευρύτερος `embed-text`/`similarity`
   dead-at-runtime + `embed-batch-openai`. Owner-side full build = τελικό gate Phase 1.
+- **2B** dead binary-persistence cleanup (capability-hygiene, ΧΩΡΙΣΤΟ από την read-sink κλάση):
+  διαγράφηκε το κλειστό νεκρό cluster `generate-corpus-embeddings`+`save-embedding`+`load-embedding`
+  (binary .vec)+`load-corpus-embeddings`+`embed-text-hybrid`+`*corpus-embeddings*`+`*default-model-path*`
+  (ΚΑΙ τα δύο άκρα, 0 callers) + 3 exports. ΚΡΑΤΗΘΗΚΑΝ: ζωντανό `embed-via-openai`
+  (signed-embedding-manifest), `embed-text`/`similarity` (ευρύτερο debt). 0 code refs, 0 orphan.
 
 ## [0094] PHASE 0 — census & baseline (trusted/untrusted plane, 8 φάσεις)
 

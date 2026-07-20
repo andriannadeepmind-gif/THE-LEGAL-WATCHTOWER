@@ -33,9 +33,6 @@
    #:euclidean-distance
    #:normalize-vector
    ;; Storage
-   #:save-embedding
-   #:load-embedding
-   #:generate-corpus-embeddings
    ;; Model management
    #:*word-vectors*
    #:*embedding-dimension*
@@ -56,8 +53,6 @@
 (defvar *embedding-dimension* 3072
   "Dimension of embeddings (3072 for text-embedding-3-large)")
 
-(defvar *default-model-path* nil
-  "Default path to word vectors file")
 
 ;;; ============================================================================
 ;;; OPENAI API CONFIGURATION (CEILING QUALITY)
@@ -205,174 +200,16 @@
                :message (format nil "OpenAI batch request failed: ~A" e))))))
 
 ;;; ============================================================================
-;;; CORPUS EMBEDDING GENERATION (ONE-TIME)
+;;; CORPUS EMBEDDING PERSISTENCE — ΔΙΑΓΡΑΦΗΚΕ ([0094]/Phase 1, commit 2B)
 ;;; ============================================================================
-
-(defun generate-corpus-embeddings (articles output-dir &key (model *openai-model*))
-  "Generate embeddings for all articles in corpus (ONE-TIME operation)
-
-   Calls OpenAI API once per article and saves to .vec files.
-   These files are then used at runtime without API calls.
-
-   Args:
-     articles: List of article objects or (number . text) pairs
-     output-dir: Directory to save .vec files
-     model: OpenAI model
-
-   Returns:
-     Number of embeddings generated"
-
-  (ensure-directories-exist (merge-pathnames "dummy.txt" output-dir))
-
-  (let ((count 0)
-        (total (length articles)))
-
-    (format t "~&; Generating embeddings for ~D articles...~%" total)
-
-    (dolist (article articles)
-      (let* ((number (if (consp article) (car article)
-                         (funcall (find-symbol "ARTICLE-NUMBER" :orchestrator.model) article)))
-             (text (if (consp article) (cdr article)
-                       (funcall (find-symbol "ARTICLE-CONTENT" :orchestrator.model) article)))
-             (output-path (merge-pathnames
-                           (format nil "article-~3,'0D.vec" number)
-                           output-dir)))
-
-        ;; Skip if already exists
-        (if (probe-file output-path)
-            (format t ";   Article ~3,'0D: already exists, skipping~%" number)
-            (progn
-              (format t ";   Article ~3,'0D: generating...~%" number)
-
-              ;; Generate embedding
-              (let ((embedding (embed-via-openai text :model model)))
-
-                ;; Save to file
-                (save-embedding embedding output-path)
-
-                (incf count)
-                (format t ";   Article ~3,'0D: saved (~D dimensions)~%"
-                        number (length embedding)))))))
-
-    (format t "~&; Generated ~D new embeddings (total: ~D)~%" count total)
-    count))
-
-(defun save-embedding (vector output-path)
-  "Save embedding vector to file
-
-   Format: Binary float32 array for efficiency
-
-   Args:
-     vector: Float vector
-     output-path: Output file path"
-
-  (ensure-directories-exist output-path)
-
-  (with-open-file (out output-path
-                       :direction :output
-                       :element-type '(unsigned-byte 8)
-                       :if-exists :supersede)
-    ;; Write dimension as 4-byte integer
-    (let ((dim (length vector)))
-      (write-byte (ldb (byte 8 0) dim) out)
-      (write-byte (ldb (byte 8 8) dim) out)
-      (write-byte (ldb (byte 8 16) dim) out)
-      (write-byte (ldb (byte 8 24) dim) out))
-
-    ;; Write floats as IEEE 754 binary32
-    (loop for val across vector
-          for bits = (ieee-floats:encode-float32 val)
-          do (write-byte (ldb (byte 8 0) bits) out)
-             (write-byte (ldb (byte 8 8) bits) out)
-             (write-byte (ldb (byte 8 16) bits) out)
-             (write-byte (ldb (byte 8 24) bits) out))))
-
-(defun load-embedding (input-path)
-  "Load embedding vector from file
-
-   Args:
-     input-path: Path to .vec file
-
-   Returns:
-     Float vector"
-
-  (unless (probe-file input-path)
-    (error 'embeddings-error
-           :message (format nil "Embedding file not found: ~A" input-path)))
-
-  (with-open-file (in input-path
-                      :direction :input
-                      :element-type '(unsigned-byte 8))
-    ;; Read dimension
-    (let* ((dim (+ (read-byte in)
-                   (ash (read-byte in) 8)
-                   (ash (read-byte in) 16)
-                   (ash (read-byte in) 24)))
-           (vector (make-array dim :element-type 'single-float)))
-
-      ;; Read floats
-      (loop for i from 0 below dim
-            for bits = (+ (read-byte in)
-                          (ash (read-byte in) 8)
-                          (ash (read-byte in) 16)
-                          (ash (read-byte in) 24))
-            do (setf (aref vector i) (ieee-floats:decode-float32 bits)))
-
-      vector)))
-
-(defun load-corpus-embeddings (embeddings-dir)
-  "Load all pre-computed embeddings from directory
-
-   Args:
-     embeddings-dir: Directory containing .vec files
-
-   Returns:
-     Hash table mapping article numbers to vectors"
-
-  (let ((embeddings (make-hash-table)))
-    (dolist (path (directory (merge-pathnames "article-*.vec" embeddings-dir)))
-      (let* ((filename (pathname-name path))
-             (number (parse-integer (subseq filename 8) :junk-allowed t)))
-        (when number
-          (setf (gethash number embeddings) (load-embedding path)))))
-
-    (format t "~&; Loaded ~D pre-computed embeddings~%" (hash-table-count embeddings))
-    embeddings))
-
-;;; ============================================================================
-;;; HYBRID EMBED-TEXT (Uses pre-computed if available)
-;;; ============================================================================
-
-(defvar *corpus-embeddings* nil
-  "Pre-loaded corpus embeddings hash table")
-
-(defun embed-text-hybrid (text &key article-number embeddings-dir)
-  "Embed text using pre-computed embeddings if available, else GloVe fallback
-
-   Args:
-     text: Text to embed
-     article-number: If provided, try to load pre-computed embedding
-     embeddings-dir: Directory with .vec files
-
-   Returns:
-     Float vector"
-
-  ;; Try pre-computed embedding first
-  (when (and article-number *corpus-embeddings*)
-    (let ((cached (gethash article-number *corpus-embeddings*)))
-      (when cached
-        (return-from embed-text-hybrid cached))))
-
-  ;; Try loading from file
-  (when (and article-number embeddings-dir)
-    (let ((path (merge-pathnames
-                 (format nil "article-~3,'0D.vec" article-number)
-                 embeddings-dir)))
-      (when (probe-file path)
-        (return-from embed-text-hybrid (load-embedding path)))))
-
-  ;; Fallback to GloVe
-  (embed-text text))
+;;;; Κλειστό, πλήρως χαρτογραφημένο νεκρό cluster (0 external callers, χωρίς kept
+;;;; caller): generate-corpus-embeddings + save-embedding + load-embedding (binary
+;;;; .vec) + load-corpus-embeddings + embed-text-hybrid + *corpus-embeddings*.
+;;;; Και τα δύο άκρα κάθε ζεύγους διαγράφηκαν μαζί (κανένας orphan writer/reader).
+;;;; ΔΕΝ ήταν read/eval/load vulnerability (read-byte binary) — capability-hygiene
+;;;; cleanup σε χωριστό commit από την read-sink closure (2A). ΚΡΑΤΗΘΗΚΑΝ: το ζωντανό
+;;;; embed-via-openai (caller: signed-embedding-manifest) και το embed-text (caller:
+;;;; similarity — ευρύτερη dead-at-runtime κατάσταση = ξεχωριστή μελλοντική φάση).
 
 (define-condition model-not-loaded (embeddings-error) ())
 
