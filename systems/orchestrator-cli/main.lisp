@@ -1544,15 +1544,23 @@ document.getElementById('ops').addEventListener('click',function(ev){
 (defun load-review-queue ()
   (let ((q (funcall (find-symbol "MAKE-REVIEW-QUEUE" :orchestrator.review)))
         (f (%review-queue-file)))
-    (when (probe-file f)
-      (with-open-file (s f :external-format :utf-8)
-        ;; FAIL-CLOSED: κενό αρχείο ⇒ nil (νόμιμα άδεια ουρά)· ΑΛΛΟΙΩΜΕΝΟ s-expr ⇒
-        ;; το read ΣΗΜΑΤΟΔΟΤΕΙ (καμία σιωπηλή «άδεια ουρά» που κρύβει τις προτάσεις
-        ;; του δαίμονα από τον άνθρωπο-αυθεντία — [0072] verify V3).
-        (let ((state (read s nil nil)))
-          (when state
-            (funcall (find-symbol "RESTORE-QUEUE-STATE" :orchestrator.review) q state)))))
-    q))
+    ;; FAIL-CLOSED μέσω της ΜΙΑΣ έδρας ασφαλούς αποσεριαλοποίησης (orchestrator.safe-read):
+    ;;   • απόν/κενό αρχείο ⇒ :empty ⇒ nil (νόμιμα άδεια ουρά).
+    ;;   • ΑΛΛΟΙΩΜΕΝΟ / μη-αναγνώσιμο / υπερμέγεθες / υπερβάθος / δεύτερο top-level form ⇒
+    ;;     safe-read-error ΣΗΜΑΤΟΔΟΤΕΙ (καμία σιωπηλή «άδεια ουρά» που κρύβει τις προτάσεις
+    ;;     του δαίμονα από τον άνθρωπο-αυθεντία — [0072] verify V3).
+    ;;   • #. δεν εκτελείται πλέον (read-eval απενεργό + data-only readtable στην έδρα) —
+    ;;     ήταν LIVE read-based ACE στο trusted path.
+    (multiple-value-bind (state status)
+        (orchestrator.safe-read:read-data-file f)
+      (case status
+        (:empty q)                        ; απόν ή κενό ⇒ νόμιμα άδεια ουρά
+        (:ok (when state
+               (funcall (find-symbol "RESTORE-QUEUE-STATE" :orchestrator.review) q state))
+             q)
+        (t (error 'orchestrator.safe-read:safe-read-error
+                  :why (format nil "review-queue ~A: κατάσταση ~A — fail-closed (καμία σιωπηλή άδεια ουρά)"
+                               f status)))))))
 
 (defun save-review-queue (q)
   ;; ΑΤΟΜΙΚΗ αντικατάσταση (tmp+rename): crash στη μέση δεν αδειάζει ΠΟΤΕ
