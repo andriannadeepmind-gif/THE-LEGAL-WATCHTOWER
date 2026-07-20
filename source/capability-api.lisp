@@ -41,7 +41,12 @@
                   :reason (format nil "όρισμα ~A: μη έγκυρο ~A (~S)" pname want s))))
     (case ptype
       (:string  s)
-      (:keyword s)                       ; κρατιέται string· η δυνατότητα ερμηνεύει
+      ;; [re-review adv2-F2] :keyword ΠΡΕΠΕΙ να παράγει keyword — το %type-ok-p ελέγχει
+      ;; keywordp, άρα το παλιό «κράτα string» αποτύγχανε ΠΑΝΤΑ στο %check-params (400 σε
+      ;; κάθε :keyword param). Τώρα intern-άρεται (upcased, όπως ο reader σε CLI/MCP), ώστε
+      ;; coerce∘type-ok να ταιριάζει σε ΚΑΘΕ επιφάνεια. ΣΗΜΕΙΩΣΗ: interns στο keyword
+      ;; package (bounded από request size)· :keyword παραμένει controlled-vocabulary param.
+      (:keyword (intern (string-upcase s) :keyword))
       (:any     s)
       (:integer (or (ignore-errors (parse-integer s :junk-allowed nil)) (bad :integer)))
       ;; [0094]/Phase 1 commit 2A: ο :number κλάδος ΔΙΑΓΡΑΦΗΚΕ — 0 capability δήλωνε
