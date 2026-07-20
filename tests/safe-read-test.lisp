@@ -108,6 +108,31 @@
 (check "pre-scan ignores parens INSIDE ; comments" (= (max-paren-depth "; ((((
 (:a)") 1))
 
+(format t "~%── [re-review B-2] atom-cap: φράζει το intern side-effect ΠΡΙΝ τον reader ──~%")
+;; prescan-depth-atoms μετρά atoms σε ΕΝΑΝ pass· strings/comments/whitespace ΔΕΝ ξεκινούν token.
+(check "prescan atoms: (:a (:b :c) 42) ⇒ 4 atoms" (= (nth-value 1 (prescan-depth-atoms "(:a (:b :c) 42)")) 4))
+(check "prescan atoms: string ΔΕΝ μετρά ως atom (μόνο :a ⇒ 1)" (= (nth-value 1 (prescan-depth-atoms "(:a \"x y z\")")) 1))
+(check "prescan atoms: ; comment token ΔΕΝ μετρά" (= (nth-value 1 (prescan-depth-atoms "(:a) ; b c d
+")) 1))
+(check "prescan depth ΑΝΑΛΛΟΙΩΤΟ (πρώτη τιμή = max-paren-depth)"
+       (= (nth-value 0 (prescan-depth-atoms "(( ))")) (max-paren-depth "(( ))")))
+;; ΤΟ ΚΕΝΟ B-2: πολλά atoms ⇒ :too-many-atoms ΠΡΙΝ τρέξει ο reader (κανένα intern).
+(check "atom flood → :too-many-atoms (reject ΠΡΙΝ intern)"
+       (eq (stat "(:a :b :c :d :e :f)" :max-atoms 3) :too-many-atoms))
+(check "εντός atom-cap ⇒ OK (κανονική ανάγνωση)"
+       (eq (stat "(:a :b :c)" :max-atoms 10) :ok))
+(check "atom-cap ΝΤΕΤΕΡΜΙΝΙΣΤΙΚΟ (flood δύο φορές → :too-many-atoms)"
+       (eq (stat "(:a :b :c :d)" :max-atoms 2) (stat "(:a :b :c :d)" :max-atoms 2)))
+(check "default *max-data-atoms* ⇒ νόμιμα μικρά data περνούν άθικτα"
+       (equal (val "(:version 2 :seats (:a :b))") '(:version 2 :seats (:a :b))))
+(check "atom-cap ΠΡΟΗΓΕΙΤΑΙ intern: 100k keywords με cap 1000 ⇒ :too-many-atoms"
+       (eq (stat (with-output-to-string (o)
+                   (write-char #\( o)
+                   (dotimes (k 100000) (format o ":k~D " k))
+                   (write-char #\) o))
+                 :max-atoms 1000)
+           :too-many-atoms))
+
 (format t "~%── STATUS distinctness + deterministic why-codes ──~%")
 (check ":empty on empty input" (eq (stat "   ") :empty))
 (check ":empty on comment-only" (eq (stat "; just a comment

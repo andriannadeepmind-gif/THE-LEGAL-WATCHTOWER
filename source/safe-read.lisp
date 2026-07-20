@@ -41,7 +41,8 @@
   (:export #:read-data-file #:read-data-string #:read-data-file-sequence
            #:read-data-form #:canonicalize-bool
            #:safe-read-error #:safe-read-error-why
-           #:*max-data-bytes* #:*max-data-depth* #:max-paren-depth))
+           #:*max-data-bytes* #:*max-data-depth* #:*max-data-atoms*
+           #:max-paren-depth #:prescan-depth-atoms))
 
 (in-package :orchestrator.safe-read)
 
@@ -55,6 +56,14 @@
   "Ανώτατο βάθος ένθεσης παρενθέσεων. Φράζει τη ΑΝΑΔΡΟΜΗ του reader ΠΡΙΝ αυτή συμβεί
    (deep-nest ⇒ control-stack-exhausted). Νόμιμα δεδομένα: βάθος ~10-50· 2000 = άφθονο
    περιθώριο, πολύ κάτω από το κατώφλι υπερχείλισης (~100k).")
+
+(defparameter *max-data-atoms* 4000000
+  "[audit#4 / re-review B-2] Ανώτατο πλήθος ATOMS (tokens) — ΑΝΩ ΦΡΑΓΜΑ των συμβόλων που
+   ο reader θα intern-άρει. Το intern side-effect (keywords μένουν ΜΟΝΙΜΑ στο keyword
+   package) φραζόταν ΜΟΝΟ από το byte-cap (~32M tokens σε 64MB) — σωρευτικά απεριόριστο.
+   Τώρα ο linear pre-scan μετρά atoms ΠΡΙΝ τον reader· υπέρβαση ⇒ :too-many-atoms ⇒ ΚΑΝΕΝΑ
+   intern (το read δεν τρέχει καν). Νόμιμα data stores: ~10²–10⁴ atoms· 4·10⁶ = άφθονο
+   περιθώριο, με τους callers να περνούν αυστηρότερο :max-atoms ανά store.")
 
 (define-condition safe-read-error (error)
   ((why :initarg :why :reader safe-read-error-why :initform "μη αναγνώσιμο"))
@@ -87,30 +96,44 @@
 
 ;;; ── Δομικός φραγμός βάθους: linear pre-scan (string→max paren depth) ──
 
+(defun prescan-depth-atoms (s)
+  "ΕΝΑΣ linear pass ΠΡΙΝ τον reader: (values max-paren-depth atom-count). Σωστό state
+   machine: αγνοεί παρενθέσεις/tokens μέσα σε \"strings\", ; line-comments, και μετά
+   single \\ escape· τα |multi-escape| ανήκουν στο τρέχον symbol token.
+     • max-paren-depth — φράζει την ΑΝΑΔΡΟΜΗ του reader δομικά.
+     • atom-count — ΑΝΩ ΦΡΑΓΜΑ των tokens (άρα των πιθανών interned symbols): μετρά
+       token-starts σε :normal (strings/comments/whitespace/quotes ΔΕΝ ξεκινούν token).
+       Over-approximation (numbers/strings μετρώνται κι αυτά) — ασφαλές cap (μόνο νωρίτερη
+       απόρριψη, ποτέ διαφυγή)."
+  (let ((depth 0) (mx 0) (atoms 0) (i 0) (n (length s)) (state :normal) (in-token nil))
+    (macrolet ((token-start ()
+                 '(unless in-token (incf atoms) (setf in-token t))))
+      (loop while (< i n) do
+        (let ((c (char s i)))
+          (ecase state
+            (:normal
+             (case c
+               (#\" (setf in-token nil state :string))
+               (#\; (setf in-token nil state :comment))
+               (#\| (token-start) (setf state :multi))
+               (#\\ (token-start) (incf i))               ; single-escape token char
+               ((#\Space #\Tab #\Newline #\Return #\Page) (setf in-token nil))
+               (#\( (setf in-token nil) (incf depth) (when (> depth mx) (setf mx depth)))
+               (#\) (setf in-token nil) (when (> depth 0) (decf depth)))
+               ((#\' #\` #\,) (setf in-token nil))        ; separators (απαγορευμένα στον reader)
+               (t (token-start))))                        ; constituent ⇒ token
+            (:string
+             (case c (#\\ (incf i)) (#\" (setf state :normal))))
+            (:comment
+             (when (char= c #\Newline) (setf state :normal)))
+            (:multi
+             (case c (#\\ (incf i)) (#\| (setf state :normal))))))  ; symbol συνεχίζεται
+        (incf i)))
+    (values mx atoms)))
+
 (defun max-paren-depth (s)
-  "Μέγιστο βάθος ΕΝΘΕΣΗΣ παρενθέσεων στο S, με σωστό state machine: αγνοεί παρενθέσεις
-   μέσα σε \"strings\", ; line-comments, |multi-escape| symbols, και μετά single \\ escape.
-   Τρέχει ΠΡΙΝ τον reader — φράζει την αναδρομή δομικά (όχι με catch storage-condition)."
-  (let ((depth 0) (mx 0) (i 0) (n (length s)) (state :normal))
-    (loop while (< i n) do
-      (let ((c (char s i)))
-        (ecase state
-          (:normal
-           (case c
-             (#\" (setf state :string))
-             (#\; (setf state :comment))
-             (#\| (setf state :multi))
-             (#\\ (incf i))                    ; single-escape: προσπέρασε τον επόμενο
-             (#\( (incf depth) (when (> depth mx) (setf mx depth)))
-             (#\) (when (> depth 0) (decf depth)))))
-          (:string
-           (case c (#\\ (incf i)) (#\" (setf state :normal))))
-          (:comment
-           (when (char= c #\Newline) (setf state :normal)))
-          (:multi
-           (case c (#\\ (incf i)) (#\| (setf state :normal))))))
-      (incf i))
-    mx))
+  "Μέγιστο βάθος ΕΝΘΕΣΗΣ παρενθέσεων στο S (πρώτη τιμή του prescan-depth-atoms)."
+  (values (prescan-depth-atoms s)))
 
 ;;; ── Πυρήνας: το ΜΟΝΑΔΙΚΟ σημείο cl:read σε data path (keyword + double, σταθερά) ──
 
@@ -178,11 +201,12 @@
       (storage-condition (c) (values nil (%classify c)))
       (serious-condition () (values nil :unreadable)))))
 
-(defun %decode-one (content max-depth)
-  "One-form EOF law πάνω σε ΟΛΟΚΛΗΡΟ string (μετά byte-cap). (values form status),
-   status ∈ {:ok :empty :trailing :too-deep :unreadable :disallowed-symbol :resource-exhausted}."
-  (when (> (max-paren-depth content) max-depth)
-    (return-from %decode-one (values nil :too-deep)))
+(defun %decode-one (content max-depth max-atoms)
+  "One-form EOF law πάνω σε ΟΛΟΚΛΗΡΟ string (μετά byte-cap). (values form status), status ∈
+   {:ok :empty :trailing :too-deep :too-many-atoms :unreadable :disallowed-symbol :resource-exhausted}."
+  (multiple-value-bind (depth atoms) (prescan-depth-atoms content)
+    (when (> depth max-depth)  (return-from %decode-one (values nil :too-deep)))
+    (when (> atoms max-atoms) (return-from %decode-one (values nil :too-many-atoms))))
   (%with-data-env
     (handler-case
         (with-input-from-string (s content)
@@ -195,11 +219,12 @@
       (storage-condition (c) (values nil (%classify c)))
       (serious-condition () (values nil :unreadable)))))
 
-(defun %decode-sequence (content max-depth)
-  "ΟΛΑ τα top-level forms (all-or-error· ΟΧΙ resync — αυτό είναι policy του journal).
-   (values list status), status ∈ {:ok :too-deep :unreadable :disallowed-symbol :resource-exhausted}."
-  (when (> (max-paren-depth content) max-depth)
-    (return-from %decode-sequence (values nil :too-deep)))
+(defun %decode-sequence (content max-depth max-atoms)
+  "ΟΛΑ τα top-level forms (all-or-error· ΟΧΙ resync — αυτό είναι policy του journal). (values
+   list status), status ∈ {:ok :too-deep :too-many-atoms :unreadable :disallowed-symbol :resource-exhausted}."
+  (multiple-value-bind (depth atoms) (prescan-depth-atoms content)
+    (when (> depth max-depth)  (return-from %decode-sequence (values nil :too-deep)))
+    (when (> atoms max-atoms) (return-from %decode-sequence (values nil :too-many-atoms))))
   (%with-data-env
     (handler-case
         (with-input-from-string (s content)
@@ -233,10 +258,11 @@
       (storage-condition (c) (values nil (%classify c)))
       (serious-condition () (values nil :unreadable)))))
 
-(defun read-data-file (path &key (max-bytes *max-data-bytes*) (max-depth *max-data-depth*))
+(defun read-data-file (path &key (max-bytes *max-data-bytes*) (max-depth *max-data-depth*)
+                                 (max-atoms *max-data-atoms*))
   "Διάβασε ΕΝΑ top-level data form από αρχείο PATH. (values form status), status ∈
-   {:ok :empty :trailing :too-large :too-deep :unreadable :disallowed-symbol :resource-exhausted}.
-   Απόν αρχείο ⇒ (values NIL :empty). Μη-έμπιστο εξωτερικό: pre-scanned βάθος + byte-cap +
+   {:ok :empty :trailing :too-large :too-deep :too-many-atoms :unreadable :disallowed-symbol :resource-exhausted}.
+   Απόν αρχείο ⇒ (values NIL :empty). Μη-έμπιστο εξωτερικό: pre-scanned βάθος+atoms + byte-cap +
    ΟΛΙΚΟΣ data-only έλεγχος (:disallowed-symbol σε ξένο package-qualified σύμβολο)."
   (multiple-value-bind (content st) (%slurp path max-bytes)
     (case st
@@ -244,26 +270,28 @@
       (:too-large (values nil :too-large))
       (:unreadable (values nil :unreadable))
       (:resource-exhausted (values nil :resource-exhausted))
-      (t (%decode-one content max-depth)))))
+      (t (%decode-one content max-depth max-atoms)))))
 
-(defun read-data-string (string &key (max-bytes *max-data-bytes*) (max-depth *max-data-depth*))
+(defun read-data-string (string &key (max-bytes *max-data-bytes*) (max-depth *max-data-depth*)
+                                     (max-atoms *max-data-atoms*))
   "Διάβασε ΕΝΑ top-level data form από STRING. Ίδιες εγγυήσεις/status με read-data-file.
    [audit#5] Το byte-cap μετρά UTF-8 BYTES (όχι χαρακτήρες) — ΙΔΙΑ μονάδα με το file-length
    του read-data-file· ένα Unicode string μπορεί να καταλαμβάνει πολλαπλάσια bytes."
   (if (> (%utf8-byte-length string) max-bytes)
       (values nil :too-large)
-      (%decode-one string max-depth)))
+      (%decode-one string max-depth max-atoms)))
 
-(defun read-data-file-sequence (path &key (max-bytes *max-data-bytes*) (max-depth *max-data-depth*))
-  "Διάβασε ΟΛΑ τα top-level data forms ενός αρχείου (all-or-error). (values list status),
-   status ∈ {:ok :empty :too-large :too-deep :unreadable :disallowed-symbol :resource-exhausted}."
+(defun read-data-file-sequence (path &key (max-bytes *max-data-bytes*) (max-depth *max-data-depth*)
+                                          (max-atoms *max-data-atoms*))
+  "Διάβασε ΟΛΑ τα top-level data forms ενός αρχείου (all-or-error). (values list status), status ∈
+   {:ok :empty :too-large :too-deep :too-many-atoms :unreadable :disallowed-symbol :resource-exhausted}."
   (multiple-value-bind (content st) (%slurp path max-bytes)
     (case st
       (:absent    (values nil :empty))
       (:too-large (values nil :too-large))
       (:unreadable (values nil :unreadable))
       (:resource-exhausted (values nil :resource-exhausted))
-      (t (%decode-sequence content max-depth)))))
+      (t (%decode-sequence content max-depth max-atoms)))))
 
 ;;; ── Boolean canonicalization (ΜΙΑ έδρα· από %ebg-canon-bool) ──
 
