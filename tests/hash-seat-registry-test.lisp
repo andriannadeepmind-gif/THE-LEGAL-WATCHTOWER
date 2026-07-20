@@ -36,6 +36,16 @@
     (let ((buf (make-string (file-length s))))
       (subseq buf 0 (read-sequence buf s)))))
 
+;; [re-review C-3a] Ο σαρωτής κάλυπτε ΜΟΝΟ digest-sequence/-file — ένα αρχείο που κάνει
+;; hashing μέσω ΑΛΛΟΥ ironclad API (streaming make-digest/update-digest/produce-digest,
+;; ή digest-stream) θα ΞΕΦΕΥΓΕ ⇒ κρυφή έδρα. Καλύπτουμε ΟΛΗ την επιφάνεια digest.
+(defparameter +ironclad-digest-needles+
+  '("ironclad:digest-sequence" "ironclad:digest-file" "ironclad:digest-stream"
+    "ironclad:make-digest" "ironclad:produce-digest" "ironclad:update-digest"))
+(defun %hashes-p (txt)
+  "T αν το TXT καλεί ΟΠΟΙΟΔΗΠΟΤΕ ironclad digest API (one-shot ή streaming)."
+  (and txt (some (lambda (needle) (search needle txt)) +ironclad-digest-needles+)))
+
 (defun %rel (path)
   "Repo-relative posix path, anchored στο /source/, /systems/ ή /deployment/
    (ανθεκτικό σε non-truename root· το enough-namestring απαιτεί ακριβές prefix)."
@@ -58,8 +68,7 @@
        (repo-seats '()))
   (dolist (f sources)
     (let ((txt (ignore-errors (%slurp f))))
-      (when (and txt (or (search "ironclad:digest-sequence" txt)
-                         (search "ironclad:digest-file" txt)))
+      (when (%hashes-p txt)
         (push (%rel f) repo-seats))))
   (setf repo-seats (sort (remove-duplicates repo-seats :test #'string=) #'string<))
 
@@ -88,6 +97,13 @@
       ;; NEG: ο σαρωτής όντως ανιχνεύει το ironclad:digest (όχι tautology)
       (check "NEG: sanity — το hash-authority.lisp περιέχει ironclad:digest"
              (search "ironclad:digest" (%slurp (merge-pathnames "source/hash-authority.lisp" root))))
+      ;; [C-3a] NEG: ο σαρωτής πιάνει ΚΑΙ τα streaming/alt ironclad digest APIs
+      (check "C-3a: streaming API (make-digest) ανιχνεύεται ως hashing"
+             (%hashes-p "(let ((d (ironclad:make-digest :sha256))) (ironclad:produce-digest d))"))
+      (check "C-3a: digest-stream ανιχνεύεται ως hashing"
+             (%hashes-p "(ironclad:digest-stream :sha256 s)"))
+      (check "C-3a NEG: αρχείο ΧΩΡΙΣ ironclad digest ΔΕΝ θεωρείται hash-έδρα"
+             (not (%hashes-p "(defun f (x) (+ x 1))")))
       ;; τίμια docstring: το «ONLY authorized» ΔΕΝ υπάρχει πλέον ως ψευδής ισχυρισμός
       (check "τίμια εμβέλεια: καμία ψευδής «ONLY authorized hash» δήλωση"
              (not (search "ONLY authorized hash function"
