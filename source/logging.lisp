@@ -147,15 +147,17 @@
                          (list (cons "error_type" (type-of error))
                                (cons "error_message" (princ-to-string error))))))
     
-    ;; Convert to JSON-like format
-    (format nil "{~{~A~^, ~}}"
-            (mapcar (lambda (pair)
-                      (format nil "\"~A\": ~S" 
-                              (if (stringp (car pair))
-                                  (car pair)
-                                  (string-downcase (symbol-name (car pair))))
-                              (cdr pair)))
-                    entry))))
+    ;; [audit#15] ΕΓΓΥΗΜΕΝΑ ΕΓΚΥΡΟ JSON μέσω της ΜΙΑΣ έδρας orchestrator.json-emit
+    ;; (RFC 8259): το παλιό «~S» έβγαζε symbols χωρίς εισαγωγικά (error_type=(type-of e)),
+    ;; NIL→NIL, T→T, control chars αδιαφυγάδευτους ⇒ ΜΗ έγκυρο JSON. Τώρα κάθε τιμή είναι
+    ;; typed JSON (string escaped/number/null/true), τα keys lowercase JSON strings.
+    (orchestrator.json-emit:json-object
+     (mapcar (lambda (pair)
+               (cons (if (stringp (car pair))
+                         (car pair)
+                         (string-downcase (symbol-name (car pair))))
+                     (cdr pair)))
+             entry))))
 
 (defun log-event (level message &key error context)
   "Log an event at specified level"

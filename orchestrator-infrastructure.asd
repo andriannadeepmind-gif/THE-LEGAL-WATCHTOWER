@@ -60,6 +60,7 @@
      (:file "greek-lemmatizer")   ; Rule-based Greek legal lemmatizer (extends citation-authority)
      (:file "corpus-search")      ; Greek full-text search over the corpus
      (:file "corpus-diff")        ; Point-in-time legal diff (wires semantic-versioning)
+     (:file "json-emit")          ; [audit#15] Η ΜΙΑ έδρα: Lisp value → ΕΓΓΥΗΜΕΝΑ έγκυρο JSON (RFC 8259)· καθαρή CL, πριν το logging
      (:file "logging")            ; Structured logging
      (:file "write-authority")    ; GATE-2: Write authority unification
      (:file "hash-authority")     ; GATE-3: Hash authority unification
