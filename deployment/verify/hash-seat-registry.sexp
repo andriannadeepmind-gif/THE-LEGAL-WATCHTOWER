@@ -33,4 +33,5 @@
   (:file "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp" :reason "sha256 blockchain anchor stage")
   (:file "systems/orchestrator-engine-sbcl/stages/test-escaping.lisp" :reason "sha256 verification στο escaping stage")
   (:file "systems/orchestrator-epistemic/artifact-census.lisp" :reason "digest artifact census")
-  (:file "systems/orchestrator-epistemic/deploy-epistemic.lisp" :reason "digest deploy-epistemic artifact")))
+  (:file "systems/orchestrator-epistemic/deploy-epistemic.lisp" :reason "digest deploy-epistemic artifact")
+  (:file "deployment/verify/kernel-verify.lisp" :reason "verify-kit v2: ανεξάρτητος verification kernel — sha256 content-addressed release (ironclad-only, καμία εξάρτηση συστήματος)")))

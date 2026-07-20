@@ -8,8 +8,12 @@
 ;;;; deployment/verify/hash-seat-registry.sexp:
 ;;;;   • undeclared (κάνει ironclad:digest αλλά ΕΚΤΟΣ μητρώου) ⇒ FAIL (κρυφή έδρα)
 ;;;;   • stale (στο μητρώο αλλά ΔΕΝ κάνει πια hashing) ⇒ FAIL (νεκρή δήλωση)
-;;;; Self-contained: σαρώνει source/**/*.lisp + systems/**/*.lisp, διαβάζει το μητρώο
-;;;; μέσω της ΜΙΑΣ safe-read έδρας (data-only). Runnable χωρίς full build.
+;;;; Self-contained: σαρώνει source/**/*.lisp + systems/**/*.lisp + deployment/**/*.lisp
+;;;; (re-review C-3b: το deployment/ ΕΛΕΙΠΕ — το kernel-verify.lisp έκανε ironclad:digest
+;;;; ΕΚΤΟΣ σάρωσης ⇒ αδήλωτη κρυφή έδρα). Εξαιρούνται ΜΟΝΟ οι ΠΑΡΑΓΟΜΕΝΕΣ copies κάτω
+;;;; από deployment/verify/vectors/ (byte-copies του kernel-verify για conformance
+;;;; vectors — artifacts, όχι authored έδρες). Διαβάζει το μητρώο μέσω της ΜΙΑΣ
+;;;; safe-read έδρας (data-only). Runnable χωρίς full build.
 
 (let* ((here (or *load-truename* *load-pathname*))
        (seat (merge-pathnames "../source/safe-read.lisp"
@@ -33,17 +37,24 @@
       (subseq buf 0 (read-sequence buf s)))))
 
 (defun %rel (path)
-  "Repo-relative posix path, anchored στο /source/ ή /systems/ (ανθεκτικό σε
-   non-truename root· το enough-namestring απαιτεί ακριβές prefix)."
+  "Repo-relative posix path, anchored στο /source/, /systems/ ή /deployment/
+   (ανθεκτικό σε non-truename root· το enough-namestring απαιτεί ακριβές prefix)."
   (let* ((ns (substitute #\/ #\\ (namestring path)))
-         (p (or (search "/source/" ns) (search "/systems/" ns))))
+         (p (or (search "/source/" ns) (search "/systems/" ns)
+                (search "/deployment/" ns))))
     (if p (subseq ns (1+ p)) ns)))
 
 (let* ((here (or *load-truename* *load-pathname*))
        (root (merge-pathnames "../" (make-pathname :directory (pathname-directory here))))
-       ;; ── (Α) repo: κάθε .lisp που καλεί ironclad:digest* ──
-       (sources (append (directory (merge-pathnames "source/**/*.lisp" root))
-                        (directory (merge-pathnames "systems/**/*.lisp" root))))
+       ;; ── (Α) repo: κάθε AUTHORED .lisp που καλεί ironclad:digest* ──
+       ;; source/ + systems/ + deployment/ (C-3b). Εξαιρούνται οι ΠΑΡΑΓΟΜΕΝΕΣ copies
+       ;; κάτω από /vectors/ (byte-copies του kernel-verify για conformance vectors —
+       ;; generated artifacts, όχι authored έδρες· η δήλωση καθεμιάς = θόρυβος).
+       (sources (remove-if
+                 (lambda (p) (search "/vectors/" (substitute #\/ #\\ (namestring p))))
+                 (append (directory (merge-pathnames "source/**/*.lisp" root))
+                         (directory (merge-pathnames "systems/**/*.lisp" root))
+                         (directory (merge-pathnames "deployment/**/*.lisp" root)))))
        (repo-seats '()))
   (dolist (f sources)
     (let ((txt (ignore-errors (%slurp f))))
