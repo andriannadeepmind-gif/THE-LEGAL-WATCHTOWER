@@ -85,10 +85,17 @@
     ;; σε strings/tokens δεν επηρεάζεται). Καλύπτει #. #= ## #S #A #( #* #\ #: #' #+ #-
     ;; #B #O #X #R #C #P #| — ΟΛΑ — χωρίς enumeration (η enumeration ξεχνά ⇒ φρουρός).
     (set-macro-character #\# #'%deny t rt)
-    ;; quasiquote/comma: `(a ,b) ⇒ code-template, ΟΧΙ data. Απαγόρευση (comma ήδη
-    ;; σφάλλει εκτός backquote· backquote σιωπηλό ⇒ ρητή απαγόρευση).
+    ;; quasiquote/comma/quote: `(a ,b) και 'x ⇒ code-template, ΟΧΙ data. Απαγόρευση
+    ;; (comma ήδη σφάλλει εκτός backquote· backquote/quote σιωπηλά ⇒ ρητή απαγόρευση).
+    ;; [re-review adv2-F4] Το quote ΗΤΑΝ ζωντανό: 'x ⇒ (quote <recursive-read>), άρα ένα
+    ;; run από N απανωτά «'» οδηγούσε τον reader N frames βαθιά ΕΝΩ ο pre-scan (που δεν
+    ;; μετρά το quote) ανέφερε depth 0 ⇒ ο δηλωμένος «δομικός φραγμός βάθους» ΠΑΡΑΚΑΜΠΤΟΤΑΝ
+    ;; (control-stack-exhausted, πιανόταν μόνο από το storage-condition backstop, όχι δομικά).
+    ;; Τώρα το «'» σφάλλει ΑΜΕΣΩΣ ως macro-char (καμία αναδρομή)· το quote ήταν έτσι κι
+    ;; αλλιώς μη-data (θα το απέρριπτε ο %data-only-p) — τώρα απορρίπτεται ΠΡΙΝ την αναδρομή.
     (set-macro-character #\` #'%deny nil rt)
     (set-macro-character #\, #'%deny nil rt)
+    (set-macro-character #\' #'%deny nil rt)
     rt)
   "Data-only readtable: ό,τι δεν είναι απλό datum (list/keyword/string/number), αρνείται.")
 

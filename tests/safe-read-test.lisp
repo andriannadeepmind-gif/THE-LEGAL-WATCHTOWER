@@ -108,6 +108,17 @@
 (check "pre-scan ignores parens INSIDE ; comments" (= (max-paren-depth "; ((((
 (:a)") 1))
 
+(format t "~%── [re-review adv2-F4] quote denied στη readtable: κανένα depth-prescan bypass ──~%")
+(check "quote 'x απορρίπτεται στη readtable (:unreadable, όχι :ok)" (eq (stat "'foo") :unreadable))
+(check "nested quote '(a) απορρίπτεται" (eq (stat "'(:a 1)") :unreadable))
+;; ΤΟ ΚΕΝΟ F4: quote-bomb ΠΑΡΑΚΑΜΠΤΕ το depth pre-scan (depth 0) και ανάγκαζε βαθιά
+;; αναδρομή reader· τώρα σφάλλει στο ΠΡΩΤΟ « ' » (καμία αναδρομή), :unreadable.
+(check "quote-bomb (100k απανωτά quotes) ⇒ :unreadable ΧΩΡΙΣ crash (όχι backstop recursion)"
+       (eq (stat (concatenate 'string (make-string 100000 :initial-element #\') "x")) :unreadable))
+(check "quote ΜΕΣΑ σε string ΔΕΝ επηρεάζεται (data-only ok)" (eq (stat "\"a'b\"") :ok))
+(check "pre-scan: quote-run δεν μετρά depth/atoms (ο reader το κόβει πλέον)"
+       (and (= 0 (max-paren-depth "''''")) (= 0 (nth-value 1 (prescan-depth-atoms "''''")))))
+
 (format t "~%── [re-review B-2] atom-cap: φράζει το intern side-effect ΠΡΙΝ τον reader ──~%")
 ;; prescan-depth-atoms μετρά atoms σε ΕΝΑΝ pass· strings/comments/whitespace ΔΕΝ ξεκινούν token.
 (check "prescan atoms: (:a (:b :c) 42) ⇒ 4 atoms" (= (nth-value 1 (prescan-depth-atoms "(:a (:b :c) 42)")) 4))
