@@ -1068,21 +1068,6 @@
 ;;; μορφή: ast-to-form παράγει DATA-ONLY versioned plists, form-to-ast είναι typed decoder
 ;;; ΧΩΡΙΣ eval, save/load περνούν από τη ΜΙΑ safe-read έδρα. data ≠ code· reconstruct ≠ eval.
 
-(defparameter +ast-node-class-alist+
-  '((:ast-node . ast-node) (:document-node . document-node) (:preamble-node . preamble-node)
-    (:article-node . article-node) (:paragraph-node . paragraph-node) (:point-node . point-node)
-    (:closing-node . closing-node) (:signature-node . signature-node) (:part-node . part-node)
-    (:division-node . division-node) (:chapter-node . chapter-node)
-    (:cross-reference-node . cross-reference-node) (:amendment-node . amendment-node)
-    (:transitional-node . transitional-node) (:effective-date-node . effective-date-node)
-    (:sub-point-node . sub-point-node) (:case-node . case-node))
-  "Κλειστό allowlist: keyword type-tag → class symbol. ΜΟΝΟ αυτές οι κλάσεις μπορούν να
-   ανασυγκροτηθούν — κανένα input-derived intern σε class symbol (fail-closed).")
-
-(defparameter +ast-schema-tags+
-  '(:ast-node/1 :document-node/1 :article-node/1 :paragraph-node/1 :point-node/1)
-  "Έγκυρα data-only tags των ast-to-form μορφών.")
-
 (define-condition ast-decode-error (error)
   ((why :initarg :why :reader ast-decode-error-why :initform "μη αναγνώσιμο AST datum"))
   (:report (lambda (c s) (format s "ast-decode: ~A" (ast-decode-error-why c)))))
@@ -1102,42 +1087,97 @@
          (char (second d) 0))
         (t (error 'ast-decode-error :why (format nil "μη έγκυρος marker: ~S" d)))))
 
+;;; ── [κύκλος-2] ΜΙΑ data-driven schema table — LOSSLESS coverage ΟΛΩΝ των node types ──
+;;; Κάθε entry: (tag class (slot-initarg accessor kind)…). Οδηγεί ΚΑΙ serialize ΚΑΙ decode
+;;; (πρόσθεση type = μία γραμμή, μηδέν divergence). LOSSLESS: κάθε node σειριοποιεί ΟΛΑ τα
+;;; slots (base :id/:node-type/:text/:source-blocks + type-specific) και ανασυγκροτείται με
+;;; make-instance + το ΙΔΙΟ :id (κανένα regenerate). Ο παλιός generic :ast-node/1 έχανε τα
+;;; type-specific slots ~12 τύπων — τώρα κάθε τύπος έχει δικό του versioned schema.
+
+(defparameter +ast-base-fields+
+  '((:id ast-id :str-req) (:node-type ast-type :kw) (:text ast-text :str)
+    (:source-blocks ast-source-blocks :idlist))
+  "Τα κοινά (base ast-node) πεδία που σειριοποιεί ΚΑΘΕ node type.")
+
+(defparameter +ast-schema+
+  (flet ((e (tag class extra) (list* tag class (append +ast-base-fields+ extra))))
+    (list
+     (e :ast-node/1 'ast-node '())
+     (e :document-node/1 'document-node
+        '((:title document-title :str) (:preamble document-preamble :node)
+          (:articles document-articles :nodelist) (:closing document-closing :node)))
+     (e :preamble-node/1 'preamble-node '())
+     (e :article-node/1 'article-node
+        '((:article-number article-number :strint?) (:article-title article-title :str)
+          (:paragraphs article-paragraphs :nodelist)))
+     (e :paragraph-node/1 'paragraph-node
+        '((:paragraph-number paragraph-number :strint?) (:content paragraph-content :str)
+          (:points paragraph-points :nodelist)))
+     (e :point-node/1 'point-node
+        '((:marker point-marker :marker) (:content point-content :str)))
+     (e :closing-node/1 'closing-node
+        '((:signatures closing-signatures :nodelist)))
+     (e :signature-node/1 'signature-node
+        '((:name signature-name :str) (:role signature-role :str)))
+     (e :part-node/1 'part-node
+        '((:part-number part-number :str) (:part-title part-title :str)
+          (:sections part-sections :nodelist)))
+     (e :division-node/1 'division-node
+        '((:division-number division-number :str) (:division-title division-title :str)
+          (:chapters division-chapters :nodelist)))
+     (e :chapter-node/1 'chapter-node
+        '((:chapter-number chapter-number :str) (:chapter-title chapter-title :str)
+          (:articles chapter-articles :nodelist)))
+     (e :cross-reference-node/1 'cross-reference-node
+        '((:xref-type xref-type :kw) (:target-number xref-target-number :strint?)
+          (:target-year xref-target-year :strint?) (:target-fek xref-target-fek :str)
+          (:target-article xref-target-article :strint?)
+          (:target-paragraph xref-target-paragraph :strint?)
+          (:original-text xref-original-text :str) (:confidence xref-confidence :prob)))
+     (e :amendment-node/1 'amendment-node
+        '((:amendment-type amendment-type :kw) (:target-law amendment-target-law :node-or-str)
+          (:target-article amendment-target-article :strint?)
+          (:target-paragraph amendment-target-paragraph :strint?)
+          (:target-point amendment-target-point :str)
+          (:effective-date amendment-effective-date :str) (:new-text amendment-new-text :str)))
+     (e :transitional-node/1 'transitional-node
+        '((:duration transitional-duration :str) (:conditions transitional-conditions :strlist)))
+     (e :effective-date-node/1 'effective-date-node
+        '((:effective-date effective-date :str) (:conditions effective-conditions :strlist)))
+     (e :sub-point-node/1 'sub-point-node
+        '((:marker sub-point-marker :str) (:level sub-point-level :int)
+          (:content sub-point-content :str) (:children sub-point-children :nodelist)))
+     (e :case-node/1 'case-node
+        '((:marker case-marker :str) (:content case-content :str)))))
+  "Η ΜΙΑ έδρα του AST persistence schema — lossless για κάθε πραγματικό node type.")
+
+(defparameter +ast-schema-tags+ (mapcar #'first +ast-schema+)
+  "Έγκυρα data-only tags (παραγόμενα από την +ast-schema+ — καμία δεύτερη λίστα).")
+
+(defun %ast-tag-for-type (class-sym)
+  "Class symbol → data-only tag (π.χ. ARTICLE-NODE → :ARTICLE-NODE/1)."
+  (intern (concatenate 'string (symbol-name class-sym) "/1") :keyword))
+
+(defun %ast-enc (kind v)
+  "Encode ΕΝΑ slot value σε data-only, κατά KIND (nested nodes → ast-to-form αναδρομικά)."
+  (ecase kind
+    ((:str-req :str :kw :int :strint? :num :prob :idlist :strlist) v)
+    (:marker (%ast-marker-to-data v))
+    (:node (when v (ast-to-form v)))
+    (:nodelist (mapcar #'ast-to-form v))
+    (:node-or-str (cond ((stringp v) v) (v (ast-to-form v)) (t nil)))))
+
 (defgeneric ast-to-form (node)
-  (:documentation "Serialize AST node σε DATA-ONLY versioned plist (όχι κώδικα).
-   Αντίστροφο: form-to-ast (typed decoder, καμία eval). Χρησιμοποιείται και για display."))
+  (:documentation "Serialize AST node σε DATA-ONLY versioned plist (όχι κώδικα), table-driven
+   & LOSSLESS. Αντίστροφο: form-to-ast (typed decoder, καμία eval). Και για display."))
 
 (defmethod ast-to-form ((node ast-node))
-  (list :ast-node/1
-        :type (intern (symbol-name (type-of node)) :keyword)
-        :id (ast-id node)
-        :node-type (ast-type node)
-        :text (ast-text node)
-        :source-blocks (ast-source-blocks node)))
-
-(defmethod ast-to-form ((node document-node))
-  (list :document-node/1
-        :title (document-title node)
-        :preamble (when (document-preamble node) (ast-to-form (document-preamble node)))
-        :articles (mapcar #'ast-to-form (document-articles node))
-        :closing (when (document-closing node) (ast-to-form (document-closing node)))))
-
-(defmethod ast-to-form ((node article-node))
-  (list :article-node/1
-        :number (article-number node)
-        :title (article-title node)
-        :paragraphs (mapcar #'ast-to-form (article-paragraphs node))
-        :text (ast-text node)))
-
-(defmethod ast-to-form ((node paragraph-node))
-  (list :paragraph-node/1
-        :number (paragraph-number node)
-        :content (paragraph-content node)
-        :points (mapcar #'ast-to-form (paragraph-points node))))
-
-(defmethod ast-to-form ((node point-node))
-  (list :point-node/1
-        :marker (%ast-marker-to-data (point-marker node))
-        :content (point-content node)))
+  (let* ((tag (%ast-tag-for-type (type-of node)))
+         (entry (assoc tag +ast-schema+)))
+    (unless entry
+      (error 'ast-decode-error :why (format nil "μη-serializable AST type: ~S" (type-of node))))
+    (cons tag (loop for (initarg accessor kind) in (cddr entry)
+                    nconc (list initarg (%ast-enc kind (funcall accessor node)))))))
 
 ;;; ============================================================================
 ;;; AST TRAVERSAL
@@ -1668,65 +1708,45 @@
    class allowlist (κανένα input-derived intern). Ανασυγκρότηση μέσω των κανονικών
    constructors — ΚΑΜΙΑ eval. Αντικαθιστά το form-to-ast=(eval form)."
   (labels ((err (fmt &rest a) (error 'ast-decode-error :why (apply #'format nil fmt a)))
-           (plist (f tag allowed required)
+           (plist (f tag keys)
              (unless (and (consp f) (eq (first f) tag) (evenp (length (rest f))))
                (err "περίμενα άρτιο ~A plist" tag))
-             (let* ((pl (rest f)) (keys (loop for (k) on pl by #'cddr collect k)))
-               (unless (every #'keywordp keys) (err "~A: μη-keyword κλειδί" tag))
-               (unless (= (length keys) (length (remove-duplicates keys))) (err "~A: διπλό κλειδί" tag))
-               (let ((unknown (set-difference keys allowed)))
+             (let* ((pl (rest f)) (ks (loop for (k) on pl by #'cddr collect k)))
+               (unless (every #'keywordp ks) (err "~A: μη-keyword κλειδί" tag))
+               (unless (= (length ks) (length (remove-duplicates ks))) (err "~A: διπλό κλειδί" tag))
+               (let ((unknown (set-difference ks keys)))
                  (when unknown (err "~A: άγνωστα πεδία ~S" tag unknown)))
-               (dolist (r required) (unless (member r keys) (err "~A: λείπει υποχρεωτικό πεδίο ~S" tag r)))
+               (dolist (r keys) (unless (member r ks) (err "~A: λείπει υποχρεωτικό πεδίο ~S" tag r)))
                pl))
-           (sstr (v w) (unless (stringp v) (err "~A: όχι string" w)) v)
-           (sstr? (v w) (unless (or (null v) (stringp v)) (err "~A: όχι string/nil" w)) v)
-           (sint? (v w) (unless (or (null v) (stringp v) (integerp v)) (err "~A: όχι string/integer/nil" w)) v)
-           (skw (v w) (unless (keywordp v) (err "~A: όχι keyword" w)) v)
-           (sidlist (v w)
-             (unless (listp v) (err "~A: όχι λίστα" w))
-             (dolist (e v) (unless (or (stringp e) (numberp e) (keywordp e)) (err "~A: μη-data στοιχείο ~S" w e)))
-             v)
-           (snode? (v) (and v (decode v)))
-           (snodelist (v w) (unless (listp v) (err "~A: όχι λίστα" w)) (mapcar #'decode v))
+           (dec (kind v w)
+             (ecase kind
+               (:str-req (unless (and (stringp v) (plusp (length v))) (err "~A: όχι μη-κενό string" w)) v)
+               (:str (unless (or (null v) (stringp v)) (err "~A: όχι string/nil" w)) v)
+               (:kw (unless (keywordp v) (err "~A: όχι keyword" w)) v)
+               (:int (unless (integerp v) (err "~A: όχι integer" w)) v)
+               (:strint? (unless (or (null v) (stringp v) (integerp v)) (err "~A: όχι string/int/nil" w)) v)
+               (:num (unless (realp v) (err "~A: όχι real" w)) v)
+               (:prob (unless (and (realp v) (<= 0 v 1)) (err "~A: όχι real 0..1" w)) v)
+               (:idlist (unless (listp v) (err "~A: όχι λίστα" w))
+                        (dolist (e v) (unless (or (stringp e) (numberp e) (keywordp e))
+                                        (err "~A: μη-data στοιχείο ~S" w e))) v)
+               (:strlist (unless (listp v) (err "~A: όχι λίστα" w))
+                         (dolist (e v) (unless (stringp e) (err "~A: μη-string στοιχείο ~S" w e))) v)
+               (:marker (%ast-data-to-marker v))
+               (:node (and v (decode v)))
+               (:nodelist (unless (listp v) (err "~A: όχι λίστα" w)) (mapcar #'decode v))
+               (:node-or-str (cond ((null v) nil) ((stringp v) v) ((consp v) (decode v))
+                                   (t (err "~A: όχι node/string/nil" w))))))
            (decode (f)
-             (unless (and (consp f) (member (first f) +ast-schema-tags+))
-               (err "άγνωστο/κακοσχηματισμένο AST tag: ~S" (and (consp f) (first f))))
-             (ecase (first f)
-               (:ast-node/1
-                (let* ((p (plist f :ast-node/1 '(:type :id :node-type :text :source-blocks)
-                                 '(:type :id :node-type :text :source-blocks)))
-                       (tk (skw (getf p :type) :type))
-                       (class (cdr (assoc tk +ast-node-class-alist+))))
-                  (unless class (err "μη επιτρεπτή κλάση: ~S" tk))
-                  (make-instance class
-                                 :id (sstr (getf p :id) :id)
-                                 :node-type (skw (getf p :node-type) :node-type)
-                                 :text (sstr (getf p :text) :text)
-                                 :source-blocks (sidlist (getf p :source-blocks) :source-blocks))))
-               (:document-node/1
-                (let ((p (plist f :document-node/1 '(:title :preamble :articles :closing)
-                                '(:title :preamble :articles :closing))))
-                  (make-document-node :title (sstr? (getf p :title) :title)
-                                      :preamble (snode? (getf p :preamble))
-                                      :articles (snodelist (getf p :articles) :articles)
-                                      :closing (snode? (getf p :closing)))))
-               (:article-node/1
-                (let ((p (plist f :article-node/1 '(:number :title :paragraphs :text)
-                                '(:number :title :paragraphs :text))))
-                  (make-article-node :number (sint? (getf p :number) :number)
-                                     :title (sstr? (getf p :title) :title)
-                                     :paragraphs (snodelist (getf p :paragraphs) :paragraphs)
-                                     :text (sstr (getf p :text) :text))))
-               (:paragraph-node/1
-                (let ((p (plist f :paragraph-node/1 '(:number :content :points)
-                                '(:number :content :points))))
-                  (make-paragraph-node :number (sint? (getf p :number) :number)
-                                       :content (sstr (getf p :content) :content)
-                                       :points (snodelist (getf p :points) :points))))
-               (:point-node/1
-                (let ((p (plist f :point-node/1 '(:marker :content) '(:marker :content))))
-                  (make-point-node :marker (%ast-data-to-marker (getf p :marker))
-                                   :content (sstr (getf p :content) :content)))))))
+             (unless (and (consp f) (keywordp (first f)))
+               (err "κακοσχηματισμένο AST datum: ~S" (and (consp f) (first f))))
+             (let ((entry (assoc (first f) +ast-schema+)))
+               (unless entry (err "άγνωστο AST tag: ~S" (first f)))
+               (let* ((class (second entry)) (fields (cddr entry))
+                      (p (plist f (first f) (mapcar #'first fields)))
+                      (initargs (loop for (initarg nil kind) in fields
+                                      nconc (list initarg (dec kind (getf p initarg) initarg)))))
+                 (apply #'make-instance class initargs)))))
     (decode form)))
 
 (defun ast-to-readable-string (node)

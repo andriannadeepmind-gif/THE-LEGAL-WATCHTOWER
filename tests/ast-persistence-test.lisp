@@ -48,6 +48,53 @@
              (ck "in-mem: string marker α" (equal "α" (point-marker (first pts))))
              (ck "in-mem: char marker β round-trips ΩΣ character"
                  (eql #\β (point-marker (second pts))))))
+         ;; (α2) [κύκλος-2] LOSSLESS coverage ΚΑΘΕ πρώην-ακάλυπτου node type (id + type-specific slots)
+         (flet ((rt (n) (form-to-ast (ast-to-form n))))
+           (let ((xr (make-instance 'cross-reference-node :id "XR" :xref-type :law
+                                    :target-number "1" :target-year 2020 :original-text "ν.1/2020" :confidence 0.9)))
+             (let ((r (rt xr)))
+               (ck "cross-reference: id+type+year+confidence lossless"
+                   (and (string= "XR" (ast-id r)) (eq :law (xref-type r))
+                        (eql 2020 (xref-target-year r)) (= 0.9 (xref-confidence r)))))
+             (let ((r (rt (make-instance 'amendment-node :id "AM" :amendment-type :repeal
+                                         :target-law xr :target-article "5" :new-text "νέο"))))
+               (ck "amendment: id+type+nested-xref(target-law)+new-text lossless"
+                   (and (string= "AM" (ast-id r)) (eq :repeal (amendment-type r))
+                        (typep (amendment-target-law r) 'cross-reference-node)
+                        (string= "νέο" (amendment-new-text r)))))
+             (let ((r (rt (make-instance 'amendment-node :id "AM2" :target-law "raw-law-string"))))
+               (ck "amendment: target-law ΩΣ raw string (node-or-str union)"
+                   (string= "raw-law-string" (amendment-target-law r)))))
+           (let ((sig (make-instance 'signature-node :id "SG" :name "Ν. Παπ." :role "Υπουργός")))
+             (let ((r (rt sig)))
+               (ck "signature: name+role lossless" (and (string= "Ν. Παπ." (signature-name r))
+                                                        (string= "Υπουργός" (signature-role r)))))
+             (let ((r (rt (make-instance 'closing-node :id "CL" :signatures (list sig)))))
+               (ck "closing: signatures nodelist lossless"
+                   (and (string= "CL" (ast-id r)) (= 1 (length (closing-signatures r)))
+                        (typep (first (closing-signatures r)) 'signature-node)))))
+           (let ((r (rt (make-instance 'part-node :id "PT" :part-number "Α" :part-title "Μέρος" :sections '()))))
+             (ck "part: number+title lossless" (and (string= "Α" (part-number r)) (string= "Μέρος" (part-title r)))))
+           (let ((r (rt (make-instance 'division-node :id "DV" :division-number "Β" :division-title "Τμήμα" :chapters '()))))
+             (ck "division: number+title lossless" (and (string= "Β" (division-number r)) (string= "Τμήμα" (division-title r)))))
+           (let ((r (rt (make-instance 'chapter-node :id "CH" :chapter-number "Γ" :chapter-title "Κεφ" :articles '()))))
+             (ck "chapter: number+title lossless" (and (string= "Γ" (chapter-number r)) (string= "Κεφ" (chapter-title r)))))
+           (let ((r (rt (make-instance 'transitional-node :id "TR" :duration "6 μήνες" :conditions '("c1" "c2")))))
+             (ck "transitional: duration+conditions(strlist) lossless"
+                 (and (string= "6 μήνες" (transitional-duration r)) (equal '("c1" "c2") (transitional-conditions r)))))
+           (let ((r (rt (make-instance 'effective-date-node :id "ED" :effective-date "2026-01-01" :conditions '("μετά ΦΕΚ")))))
+             (ck "effective-date: date+conditions lossless"
+                 (and (string= "2026-01-01" (effective-date r)) (equal '("μετά ΦΕΚ") (effective-conditions r)))))
+           (let ((r (rt (make-instance 'sub-point-node :id "SP" :marker "i" :level 2 :content "υπο" :children '()))))
+             (ck "sub-point: marker+level(int)+content lossless"
+                 (and (string= "i" (sub-point-marker r)) (eql 2 (sub-point-level r)) (string= "υπο" (sub-point-content r)))))
+           (let ((r (rt (make-instance 'case-node :id "CS" :marker "α" :content "περίπτωση"))))
+             (ck "case: marker+content lossless"
+                 (and (string= "α" (case-marker r)) (string= "περίπτωση" (case-content r)))))
+           (let ((r (rt (make-instance 'preamble-node :id "PR" :text "προοίμιο" :source-blocks '("b1" "b2")))))
+             (ck "preamble: id+text+source-blocks(idlist) lossless"
+                 (and (string= "PR" (ast-id r)) (string= "προοίμιο" (ast-text r))
+                      (equal '("b1" "b2") (ast-source-blocks r))))))
          ;; (β) file round-trip: atomic write + safe read
          (save-ast-to-file doc tmp)
          (let ((r (load-ast-from-file tmp)))
