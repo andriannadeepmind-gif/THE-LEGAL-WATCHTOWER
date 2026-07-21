@@ -68,7 +68,28 @@
   (ck-rejected "ATTACK bbox :x όχι αριθμός ⇒ decode-error"
                (form-to-element '(:layout-bbox/1 :x "nope" :y 0 :width 0 :height 0)))
   (ck-rejected "ATTACK διπλό κλειδί ⇒ decode-error"
-               (form-to-element '(:layout-bbox/1 :x 0 :x 1 :y 0 :width 0 :height 0))))
+               (form-to-element '(:layout-bbox/1 :x 0 :x 1 :y 0 :width 0 :height 0)))
+  ;; (ε) [κύκλος-2 STRICT] closed+required key set / strict bool / tag-specific children
+  (ck-rejected "STRICT: άγνωστο πεδίο στο bbox ⇒ decode-error"
+               (form-to-element '(:layout-bbox/1 :x 0 :y 0 :width 0 :height 0 :evil 1)))
+  (ck-rejected "STRICT: λείπει υποχρεωτικό :height ⇒ decode-error"
+               (form-to-element '(:layout-bbox/1 :x 0 :y 0 :width 0)))
+  (ck-rejected "STRICT bool: :bold-p :evil ⇒ decode-error (όχι σιωπηλά false)"
+               (form-to-element '(:layout-font/1 :name "F" :size 10 :bold-p :evil
+                                  :italic-p nil :monospace-p nil)))
+  (ck-rejected "STRICT bool: :bold-p \"yes\" ⇒ decode-error"
+               (form-to-element '(:layout-font/1 :name "F" :size 10 :bold-p "yes"
+                                  :italic-p nil :monospace-p nil)))
+  (ck-rejected "STRICT bool: :bold-p 123 ⇒ decode-error"
+               (form-to-element '(:layout-font/1 :name "F" :size 10 :bold-p 123
+                                  :italic-p nil :monospace-p nil)))
+  (ck-rejected "STRICT child type: layout-line με page αντί για span ⇒ decode-error"
+               (form-to-element '(:layout-line/1 :id "l" :baseline 0 :reading-order 0 :bbox nil
+                                  :spans ((:layout-page/1 :page-number 1 :blocks () :width 0 :height 0 :rotation 0)))))
+  (ck "OK: strict bool δέχεται :t και :nil"
+      (let ((f (form-to-element '(:layout-font/1 :name "F" :size 10 :bold-p :t
+                                  :italic-p :nil :monospace-p nil))))
+        (and (font-info-bold-p f) (not (font-info-italic-p f))))))
 
 (format t "~%layout-persistence: ~D passed, ~D failed~%" *pt* *ft*)
 (sb-ext:exit :code (if (zerop *ft*) 0 1))

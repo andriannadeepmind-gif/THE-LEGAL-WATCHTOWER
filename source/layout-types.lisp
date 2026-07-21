@@ -1009,81 +1009,109 @@
         :source-file (when (document-source-file doc) (namestring (document-source-file doc)))
         :pages (mapcar #'element-to-form (document-pages doc))))
 
-(defun %layout-plist (data tag)
-  "Επικύρωσε ότι το DATA είναι (TAG :k v …) με μη-διπλά keyword κλειδιά· επίστρεψε το plist."
+(defun %layout-plist (data tag allowed required)
+  "[κύκλος-2] STRICT: DATA = (TAG :k v …) με ΑΡΤΙΟ plist, keyword κλειδιά, ΚΑΝΕΝΑ διπλό,
+   ΚΑΝΕΝΑ unknown (keys ⊆ ALLOWED) και ΟΛΑ τα REQUIRED παρόντα. Επιστρέφει το plist."
   (unless (and (consp data) (eq (first data) tag) (evenp (length (rest data))))
-    (error 'layout-decode-error :message (format nil "περίμενα ~A plist" tag) :datum data))
+    (error 'layout-decode-error :message (format nil "περίμενα άρτιο ~A plist" tag) :datum data))
   (let* ((plist (rest data))
          (keys (loop for (k) on plist by #'cddr collect k)))
     (unless (every #'keywordp keys)
       (error 'layout-decode-error :message "μη-keyword κλειδί" :datum data))
     (unless (= (length keys) (length (remove-duplicates keys)))
       (error 'layout-decode-error :message "διπλό κλειδί" :datum data))
+    (let ((unknown (set-difference keys allowed)))
+      (when unknown (error 'layout-decode-error :message (format nil "άγνωστα πεδία: ~S" unknown) :datum data)))
+    (dolist (r required)
+      (unless (member r keys)
+        (error 'layout-decode-error :message (format nil "λείπει υποχρεωτικό πεδίο ~S" r) :datum data)))
     plist))
 
 (defun %num (v where) (unless (numberp v) (error 'layout-decode-error :message (format nil "~A: όχι αριθμός" where) :datum v)) v)
 (defun %str? (v where) (when v (unless (stringp v) (error 'layout-decode-error :message (format nil "~A: όχι string" where) :datum v))) v)
-(defun %bool (v) (if (or (eq v t) (eq v :t)) t nil))
+(defun %bool (v where)
+  "[κύκλος-2] STRICT boolean: ΜΟΝΟ t/:t ⇒ t, nil/:nil ⇒ nil· ΟΤΙΔΗΠΟΤΕ ΑΛΛΟ (:evil, \"yes\",
+   123) ⇒ layout-decode-error — ΟΧΙ σιωπηλή μετατροπή σε false."
+  (cond ((or (eq v t) (eq v :t)) t)
+        ((or (null v) (eq v :nil)) nil)
+        (t (error 'layout-decode-error :message (format nil "~A: όχι boolean (t/:t/nil/:nil)" where) :datum v))))
 (defun %color? (v)
   (unless (or (null v) (keywordp v) (stringp v) (and (listp v) (every #'numberp v)))
     (error 'layout-decode-error :message "color: μόνο keyword/string/number-list/nil" :datum v))
   v)
 
 (defun form-to-element (form)
-  "TYPED DECODER: validated DATA-ONLY layout plist → layout element ΧΩΡΙΣ eval.
-   Dispatch στο tag· ανασυγκρότηση μέσω των κανονικών constructors· αναδρομικά για
-   nested στοιχεία. Άγνωστο/κακοσχηματισμένο tag ⇒ layout-decode-error (fail-closed)."
-  (unless (and (consp form) (member (first form) +layout-schema-tags+))
-    (error 'layout-decode-error :message "άγνωστο/κακοσχηματισμένο layout tag"
-                                :datum (and (consp form) (first form))))
-  (ecase (first form)
-    (:layout-bbox/1
-     (let ((p (%layout-plist form :layout-bbox/1)))
-       (make-bbox :x (%num (getf p :x) :x) :y (%num (getf p :y) :y)
-                  :width (%num (getf p :width) :width) :height (%num (getf p :height) :height))))
-    (:layout-font/1
-     (let ((p (%layout-plist form :layout-font/1)))
-       (make-font-info :name (%str? (getf p :name) :name) :size (%num (getf p :size) :size)
-                       :bold-p (%bool (getf p :bold-p)) :italic-p (%bool (getf p :italic-p))
-                       :monospace-p (%bool (getf p :monospace-p)))))
-    (:layout-span/1
-     (let ((p (%layout-plist form :layout-span/1)))
-       (make-instance 'layout-span
-                      :id (%str? (getf p :id) :id) :text (%str? (getf p :text) :text)
-                      :bbox (let ((b (getf p :bbox))) (and b (form-to-element b)))
-                      :font (let ((f (getf p :font))) (and f (form-to-element f)))
-                      :color (%color? (getf p :color))
-                      :baseline (%num (getf p :baseline) :baseline)
-                      :char-spacing (%num (getf p :char-spacing) :char-spacing))))
-    (:layout-line/1
-     (let ((p (%layout-plist form :layout-line/1)))
-       (make-instance 'layout-line
-                      :id (%str? (getf p :id) :id)
-                      :spans (mapcar #'form-to-element (getf p :spans))
-                      :bbox (let ((b (getf p :bbox))) (and b (form-to-element b)))
-                      :baseline (%num (getf p :baseline) :baseline)
-                      :reading-order (%num (getf p :reading-order) :reading-order))))
-    (:layout-block/1
-     (let ((p (%layout-plist form :layout-block/1)))
-       (make-instance 'layout-block
-                      :id (%str? (getf p :id) :id)
-                      :lines (mapcar #'form-to-element (getf p :lines))
-                      :bbox (let ((b (getf p :bbox))) (and b (form-to-element b)))
-                      :reading-order (%num (getf p :reading-order) :reading-order)
-                      :column-index (%num (getf p :column-index) :column-index))))
-    (:layout-page/1
-     (let ((p (%layout-plist form :layout-page/1)))
-       (make-instance 'layout-page
-                      :page-number (%num (getf p :page-number) :page-number)
-                      :blocks (mapcar #'form-to-element (getf p :blocks))
-                      :width (%num (getf p :width) :width) :height (%num (getf p :height) :height)
-                      :rotation (%num (getf p :rotation) :rotation))))
-    (:layout-document/1
-     (let ((p (%layout-plist form :layout-document/1)))
-       (make-instance 'layout-document
-                      :id (%str? (getf p :id) :id)
-                      :source-file (%str? (getf p :source-file) :source-file)
-                      :pages (mapcar #'form-to-element (getf p :pages)))))))
+  "TYPED DECODER: validated DATA-ONLY layout plist → layout element ΧΩΡΙΣ eval. STRICT:
+   allowed+required key set ανά schema, strict boolean, tag-specific child types (spans μόνο
+   layout-span, lines μόνο layout-line, blocks μόνο layout-block, pages μόνο layout-page)·
+   άγνωστο/κακοσχηματισμένο tag ⇒ layout-decode-error (fail-closed)."
+  (labels ((child (v where type)
+             (let ((el (form-to-element v)))
+               (unless (typep el type)
+                 (error 'layout-decode-error
+                        :message (format nil "~A: περίμενα ~A, βρέθηκε ~A" where type (type-of el)) :datum v))
+               el))
+           (opt-child (v where type) (and v (child v where type)))   ; nested ή nil
+           (children (v where type)
+             (unless (listp v) (error 'layout-decode-error :message (format nil "~A: όχι λίστα" where) :datum v))
+             (mapcar (lambda (x) (child x where type)) v)))
+    (unless (and (consp form) (member (first form) +layout-schema-tags+))
+      (error 'layout-decode-error :message "άγνωστο/κακοσχηματισμένο layout tag"
+                                  :datum (and (consp form) (first form))))
+    (ecase (first form)
+      (:layout-bbox/1
+       (let ((p (%layout-plist form :layout-bbox/1 '(:x :y :width :height) '(:x :y :width :height))))
+         (make-bbox :x (%num (getf p :x) :x) :y (%num (getf p :y) :y)
+                    :width (%num (getf p :width) :width) :height (%num (getf p :height) :height))))
+      (:layout-font/1
+       (let ((p (%layout-plist form :layout-font/1 '(:name :size :bold-p :italic-p :monospace-p)
+                               '(:name :size :bold-p :italic-p :monospace-p))))
+         (make-font-info :name (%str? (getf p :name) :name) :size (%num (getf p :size) :size)
+                         :bold-p (%bool (getf p :bold-p) :bold-p) :italic-p (%bool (getf p :italic-p) :italic-p)
+                         :monospace-p (%bool (getf p :monospace-p) :monospace-p))))
+      (:layout-span/1
+       (let ((p (%layout-plist form :layout-span/1 '(:id :text :bbox :font :color :baseline :char-spacing)
+                               '(:id :text :bbox :font :color :baseline :char-spacing))))
+         (make-instance 'layout-span
+                        :id (%str? (getf p :id) :id) :text (%str? (getf p :text) :text)
+                        :bbox (opt-child (getf p :bbox) :bbox 'bbox)
+                        :font (opt-child (getf p :font) :font 'font-info)
+                        :color (%color? (getf p :color))
+                        :baseline (%num (getf p :baseline) :baseline)
+                        :char-spacing (%num (getf p :char-spacing) :char-spacing))))
+      (:layout-line/1
+       (let ((p (%layout-plist form :layout-line/1 '(:id :spans :bbox :baseline :reading-order)
+                               '(:id :spans :bbox :baseline :reading-order))))
+         (make-instance 'layout-line
+                        :id (%str? (getf p :id) :id)
+                        :spans (children (getf p :spans) :spans 'layout-span)
+                        :bbox (opt-child (getf p :bbox) :bbox 'bbox)
+                        :baseline (%num (getf p :baseline) :baseline)
+                        :reading-order (%num (getf p :reading-order) :reading-order))))
+      (:layout-block/1
+       (let ((p (%layout-plist form :layout-block/1 '(:id :lines :bbox :reading-order :column-index)
+                               '(:id :lines :bbox :reading-order :column-index))))
+         (make-instance 'layout-block
+                        :id (%str? (getf p :id) :id)
+                        :lines (children (getf p :lines) :lines 'layout-line)
+                        :bbox (opt-child (getf p :bbox) :bbox 'bbox)
+                        :reading-order (%num (getf p :reading-order) :reading-order)
+                        :column-index (%num (getf p :column-index) :column-index))))
+      (:layout-page/1
+       (let ((p (%layout-plist form :layout-page/1 '(:page-number :blocks :width :height :rotation)
+                               '(:page-number :blocks :width :height :rotation))))
+         (make-instance 'layout-page
+                        :page-number (%num (getf p :page-number) :page-number)
+                        :blocks (children (getf p :blocks) :blocks 'layout-block)
+                        :width (%num (getf p :width) :width) :height (%num (getf p :height) :height)
+                        :rotation (%num (getf p :rotation) :rotation))))
+      (:layout-document/1
+       (let ((p (%layout-plist form :layout-document/1 '(:id :source-file :pages)
+                               '(:id :source-file :pages))))
+         (make-instance 'layout-document
+                        :id (%str? (getf p :id) :id)
+                        :source-file (%str? (getf p :source-file) :source-file)
+                        :pages (children (getf p :pages) :pages 'layout-page)))))))
 
 ;;; ============================================================================
 ;;; READING ORDER COMPUTATION
