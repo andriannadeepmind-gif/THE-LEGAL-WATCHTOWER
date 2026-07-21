@@ -143,12 +143,15 @@
   path)
 
 (defun read-fingerprint-manifest (path)
-  "Read a manifest written by WRITE-FINGERPRINT-MANIFEST, or NIL if absent."
-  (when (probe-file path)
-    (with-open-file (s path :external-format :utf-8)
-      (with-standard-io-syntax
-        (let ((*package* (find-package :keyword)))
-          (read s nil nil))))))
+  "Read a manifest written by WRITE-FINGERPRINT-MANIFEST, or NIL if absent.
+   [κύκλος-2] ΜΙΑ safe-read έδρα (read-data-file: *read-eval* nil + wholesale #-deny +
+   depth/atom/byte caps + total data-only). Το παλιό with-standard-io-syntax ΕΘΕΤΕ
+   *read-eval* T (false-guarded RCE)· τώρα δομικά αδύνατη εκτέλεση."
+  (multiple-value-bind (form status) (orchestrator.safe-read:read-data-file path)
+    (case status
+      (:ok form)
+      (:empty nil)              ; απόν/κενό αρχείο → NIL (όπως πριν)
+      (t (error "read-fingerprint-manifest: μη αναγνώσιμο manifest (~A): ~A" status path)))))
 
 ;;; ----------------------------------------------------------------------------
 ;;; fingerprint the REAL emitted codification (output dir of article-*.hash)

@@ -64,11 +64,10 @@
 (defun load-pack (path)
   "Διάβασε+επικύρωσε ένα πακέτο. Επιστρέφει plist (:kind :version :entries
    :sha :path) ή σφάλμα με ΣΥΓΚΕΚΡΙΜΕΝΗ αιτία — ποτέ μισοφορτωμένη γνώση."
-  (let ((form (with-open-file (s path :external-format :utf-8)
-                (with-standard-io-syntax
-                  (let ((*read-eval* nil)
-                        (*package* (find-package :keyword)))
-                    (read s))))))
+  (let ((form (multiple-value-bind (f st)  ; [κύκλος-2] ΜΙΑ safe-read έδρα
+                  (orchestrator.safe-read:read-data-file path)
+                (unless (eq st :ok) (error "~A: μη αναγνώσιμο πακέτο γνώσης (~A)" path st))
+                f)))
     (unless (and (listp form) (eq (first form) :knowledge-pack))
       (error "~A: δεν είναι (:knowledge-pack …)" path))
     (destructuring-bind (marker kind version &rest entries) form

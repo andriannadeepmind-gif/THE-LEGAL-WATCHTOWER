@@ -1355,11 +1355,12 @@
      ΡΗΤΑ nil (κριτής-δημιουργού Π1). Απόν/άκυρο/ελλιπές ⇒ ΣΦΑΛΜΑ."
     (or cache
         (setf cache
-              (let ((plist (with-open-file (s (%instrument-registry-path)
-                                              :external-format :utf-8)
-                             (let ((*package* (find-package :keyword))
-                                   (*read-eval* nil))
-                               (read s)))))
+              (let ((plist (multiple-value-bind (f st)  ; [κύκλος-2] ΜΙΑ safe-read έδρα
+                               (orchestrator.safe-read:read-data-file (%instrument-registry-path))
+                             (unless (eq st :ok)
+                               (error 'invalid-condition
+                                      :reason (format nil "μητρώο instrument-kinds: μη αναγνώσιμο (~A)" st)))
+                             f)))
                 (unless (eq (getf plist :schema) :instrument-kind-registry/2)
                   (error 'invalid-condition
                          :reason "μητρώο instrument-kinds: άγνωστο schema (απαιτείται /2)"))
@@ -1413,11 +1414,12 @@
      Απόν/άκυρο/ελλιπές/διπλότυπο ⇒ ΣΦΑΛΜΑ — ποτέ σιωπηλή αποδοχή."
     (or cache
         (setf cache
-              (let ((plist (with-open-file (s (%scope-registry-path)
-                                              :external-format :utf-8)
-                             (let ((*package* (find-package :keyword))
-                                   (*read-eval* nil))
-                               (read s)))))
+              (let ((plist (multiple-value-bind (f st)  ; [κύκλος-2] ΜΙΑ safe-read έδρα
+                               (orchestrator.safe-read:read-data-file (%scope-registry-path))
+                             (unless (eq st :ok)
+                               (error 'invalid-condition
+                                      :reason (format nil "μητρώο scope-tags: μη αναγνώσιμο (~A)" st)))
+                             f)))
                 (unless (eq (getf plist :schema) :scope-tag-registry/2)
                   (error 'invalid-condition
                          :reason "μητρώο scope-tags: άγνωστο schema (απαιτείται /2 — το /1 αποσύρθηκε ως μη δημοσιευμένο candidate, ΔΕΝ ερμηνεύεται με νέα semantics)"))

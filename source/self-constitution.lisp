@@ -73,11 +73,11 @@
                 (ironclad:digest-file :sha256 path))))
       (unless (equal sha (getf *constitution* :sha))
         (handler-case
-            (let ((form (with-open-file (s path :external-format :utf-8)
-                          (with-standard-io-syntax
-                            (let ((*read-eval* nil)
-                                  (*package* (find-package :keyword)))
-                              (read s))))))
+            (multiple-value-bind (form st) (orchestrator.safe-read:read-data-file path)
+              ;; [κύκλος-2] ΜΙΑ safe-read έδρα (αντί σκόρπιου *read-eval* nil + keyword):
+              ;; + wholesale #-deny (#S/#A/#=/#* πλέον φράζονται) + depth/atom/byte caps + data-only.
+              (unless (eq st :ok)
+                (error "σύνταγμα συστήματος: μη αναγνώσιμο δεδομένο (~A)" st))
               (setf *constitution* (append (%validate form path) (list :sha sha)))
               (when stream
                 (format stream "  ✓ σύνταγμα συστήματος v~D (sha ~A…)~%"

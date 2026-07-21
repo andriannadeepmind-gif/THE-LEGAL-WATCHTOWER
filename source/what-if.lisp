@@ -75,13 +75,12 @@
                 (uiop:subpathp true (merge-pathnames "deployment/" root))))
        (values nil "εκτός εγκεκριμένων φακέλων (output/, deployment/) — απορρίπτεται"))
       (t
-       (let ((form (handler-case
-                       (with-open-file (s true :external-format :utf-8)
-                         (let ((*read-eval* nil)
-                               (*package* (find-package :keyword)))
-                           (read s nil nil)))
-                     (error (e) (return-from load-proposal-file!
-                                  (values nil (format nil "μη αναγνώσιμα δεδομένα: ~A" e)))))))
+       (let ((form (multiple-value-bind (f st)  ; [κύκλος-2] ΜΙΑ safe-read έδρα
+                       (orchestrator.safe-read:read-data-file true)
+                     (unless (eq st :ok)
+                       (return-from load-proposal-file!
+                         (values nil (format nil "μη αναγνώσιμα δεδομένα: ~A" st))))
+                     f)))
          (unless (ignore-errors
                    (and (listp form) (evenp (length form))
                         (loop for k in form by #'cddr always (keywordp k))

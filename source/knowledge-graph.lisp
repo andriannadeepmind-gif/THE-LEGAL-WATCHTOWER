@@ -238,15 +238,21 @@
   "Φόρτωσε γράφο από στιγμιότυπο. Επιστρέφει (values graph κόμβοι ακμές meta)
    ή NIL αν το αρχείο λείπει/δεν είναι στιγμιότυπο γράφου. Σφάλμα ανάγνωσης
    σηματοδοτείται — ο καλών αποφασίζει (συνήθως: πλήρες ξαναχτίσιμο)."
-  (unless (probe-file path) (return-from load-graph nil))
-  (with-open-file (s path :external-format :utf-8)
-    (let ((*read-eval* nil)
-          (*package* (find-package :keyword))
-          (graph (make-graph)) (nn 0) (ne 0))
-      (let ((header (read s nil nil)))
+  ;; [κύκλος-2] ΜΙΑ safe-read έδρα: read-data-file-sequence (ΟΛΑ τα forms pre-scanned:
+  ;; *read-eval* nil + wholesale #-deny + depth/atom/byte caps + total data-only) αντί
+  ;; σκόρπιου streaming read· απόν/κενό → NIL, μη αναγνώσιμο → ΣΦΑΛΜΑ (ο καλών ξαναχτίζει).
+  (multiple-value-bind (forms status)
+      (orchestrator.safe-read:read-data-file-sequence path)
+    (case status
+      (:empty (return-from load-graph nil))
+      (:ok nil)
+      (t (error "load-graph: μη αναγνώσιμο στιγμιότυπο γράφου (~A): ~A" status path)))
+    (let ((graph (make-graph)) (nn 0) (ne 0)
+          (header (first forms)))
+      (progn
         (unless (and (listp header) (eq (first header) :knowledge-graph))
           (return-from load-graph nil))
-        (loop for form = (read s nil nil) while form do
+        (dolist (form (rest forms))
           (ecase (first form)
             (:node
              (destructuring-bind (&key id label layer source props validity retracted just)
