@@ -114,9 +114,13 @@
   (check "duplicate item is high severity" (eq :high (item-severity (first items)))))
 
 (format t "~%== Self-improvement: learn a decision, auto-apply it forever ==~%")
-(let ((q (make-review-queue)))
-  (enqueue q (make-instance 'amendment-review :source "L1" :target "art_5" :payload '(:op :insert)))
-  (decide q "AMENDMENT|L1|art_5" :approve :by "Σ.Σ." :note "ορθό")
+(let* ((q (make-review-queue))
+       ;; [κύκλος-3] Αποφάσισε με το ΠΡΑΓΜΑΤΙΚΟ item-id του enqueued item (= το injective
+       ;; %item-key). Το παλιό hardcoded "AMENDMENT|L1|art_5" ήταν το ΞΕΠΕΡΑΣΜΕΝΟ human-key
+       ;; format ΠΡΙΝ την injective %canon-encode διόρθωση (adv1-2)· κανένας πραγματικός caller
+       ;; δεν αποφασίζει με literal key — μόνο μέσω του item-id που δίνει το enqueue/listing.
+       (a (enqueue q (make-instance 'amendment-review :source "L1" :target "art_5" :payload '(:op :insert)))))
+  (decide q (item-id a) :approve :by "Σ.Σ." :note "ορθό")
   (check "decision is memorised" (= 1 (learned-count q)))
   ;; persist + restore (a new run / restart)
   (let ((q2 (make-review-queue)))

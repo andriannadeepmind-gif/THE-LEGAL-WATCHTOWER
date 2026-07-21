@@ -54,9 +54,9 @@
                                                        (if (eql 0 (cdr r)) :passed :failed)))
                                                results))))
           (format t "~%════ GATE-PLENARY-MANIFEST ════~%")
-          (with-standard-io-syntax
-            (let ((*package* (find-package :keyword)) (*print-pretty* nil))
-              (prin1 manifest)))
+          ;; [κύκλος-3] ΜΙΑ έδρα data-only εγγραφής (data-to-string): συνέπεια με κάθε άλλο
+          ;; writer + %data-only-p fail-closed (το manifest ΔΕΝ μπορεί να φέρει μη-data-only).
+          (write-string (orchestrator.safe-read:data-to-string manifest))
           (format t "~%════ END-MANIFEST ════~%"))
         (if failed 1 0)))))
 

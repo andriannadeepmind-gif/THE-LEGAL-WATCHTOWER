@@ -1566,12 +1566,15 @@ document.getElementById('ops').addEventListener('click',function(ev){
   ;; ΑΤΟΜΙΚΗ αντικατάσταση (tmp+rename): crash στη μέση δεν αδειάζει ΠΟΤΕ
   ;; σιωπηλά την ουρά εγκρίσεων (Φάση 0).
   (let ((f (%review-queue-file)))
+    ;; [κύκλος-3] ΜΙΑ έδρα DATA-ONLY εγγραφής (data-to-string): *print-readably* NIL ⇒ τα
+    ;; specialized (simple-array base-char) strings (π.χ. canon-encoded item-ids) ΔΕΝ γίνονται
+    ;; «#A(…)» array-literals που η safe-read απορρίπτει (:unreadable) — το παλιό σκόρπιο
+    ;; prin1-under-std-io έγραφε μη-αναγνώσιμη ουρά. + %data-only-p ΠΡΙΝ (fail-closed: ποτέ
+    ;; γράψιμο μη-data-only). Συμμετρικό με το load-review-queue (safe-read read-data-file).
     (orchestrator.journal:write-file-atomic
      f
-     (with-output-to-string (s)
-       (with-standard-io-syntax
-         (let ((*package* (find-package :keyword)))
-           (prin1 (funcall (find-symbol "QUEUE-STATE" :orchestrator.review) q) s)))))
+     (orchestrator.safe-read:data-to-string
+      (funcall (find-symbol "QUEUE-STATE" :orchestrator.review) q)))
     f))
 
 (defun review-list ()

@@ -106,7 +106,14 @@
    δομικά αδύνατο (η κωδικοποίηση είναι αντιστρέψιμη/1-1)."
   (with-output-to-string (s)
     (with-standard-io-syntax
-      (let ((*package* (find-package :keyword)))
+      (let ((*package* (find-package :keyword))
+            ;; [κύκλος-3] *print-readably* NIL: το payload-fingerprint (sha256) είναι
+            ;; (simple-array base-char)· υπό readable printing τυπώνεται «#A((64) BASE-CHAR . …)»
+            ;; ⇒ το ΙΔΙΟ το κανονικό κλειδί/item-id διέρρεε implementation artifact (#A μέσα στο
+            ;; string) και δεν ήταν αναγνώσιμο ως data. Τώρα τυπώνεται ως απλό \"…\". Η injectivity
+            ;; διατηρείται (strings πάντα quoted+escaped)· απλώς καθαρό, portable, safe-read-able.
+            (*print-readably* nil)
+            (*print-pretty* nil))
         (prin1 fields s)))))
 
 (defun %canonical-decision-statement (item-key decision by at)

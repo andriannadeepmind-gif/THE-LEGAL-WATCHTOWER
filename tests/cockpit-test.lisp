@@ -87,15 +87,20 @@
 
 (format t "~%== :decide round-trip σε ΥΠΑΡΚΤΟ item (το bug :approved→ecase) ==~%")
 ;; Φτιάξε πραγματικό εκκρεμές item, σώσ' το στην ουρά (temp file), απόφαση μέσω cockpit.
-(let* ((mk (find-symbol "MAKE-REVIEW-QUEUE" :orchestrator.review))
-       (cls (find-symbol "AMENDMENT-REVIEW" :orchestrator.review))
-       (q (funcall mk))
-       (it (make-instance cls :id "AMENDMENT|L1|art_5" :source "L1" :target "art_5"
-                          :payload (list :op :repeal :target "art_5"))))
-  (orchestrator.review:enqueue q it)
-  (save-review-queue q))
+;; [κύκλος-3] Το item-id είναι CONTENT-DERIVED (%item-key, δένει payload — το restore-queue-state
+;; το ΕΠΑΝΥΠΟΛΟΓΙΖΕΙ, δομικό id↔payload binding). Το UI σε production εμφανίζει+περνά ΑΥΤΟ το id·
+;; άρα το test αποφασίζει με το ΠΡΑΓΜΑΤΙΚΟ id (όχι fake string άσχετο με την ταυτότητα περιεχομένου).
+(defparameter *ck-decide-id*
+  (let* ((mk (find-symbol "MAKE-REVIEW-QUEUE" :orchestrator.review))
+         (cls (find-symbol "AMENDMENT-REVIEW" :orchestrator.review))
+         (q (funcall mk))
+         (it (make-instance cls :source "L1" :target "art_5"
+                            :payload (list :op :repeal :target "art_5"))))
+    (orchestrator.review:enqueue q it)          ; θέτει item-id = %item-key
+    (save-review-queue q)
+    (orchestrator.review:item-id it)))
 (let ((r (%cockpit-handler (req "/api/decide"
-                                :query '(("id" . "AMENDMENT|L1|art_5") ("action" . "approve"))
+                                :query `(("id" . ,*ck-decide-id*) ("action" . "approve"))
                                 :headers *ok-headers*))))
   (check "decide approve → 200" (= 200 (st r)))
   (check "decide approve → status approved (όχι 500/ecase)" (and (search "approved" (bd r)) t)))
@@ -111,7 +116,7 @@
   (check "decide σε άγνωστο id → 200 «δεν βρέθηκε» (όχι σφάλμα)"
          (and (= 200 (st r)) (search "δεν βρέθηκε" (bd r)))))
 (let ((r (%cockpit-handler (req "/api/decide"
-                                :query '(("id" . "AMENDMENT|L1|art_5") ("action" . "λάθος"))
+                                :query `(("id" . ,*ck-decide-id*) ("action" . "λάθος"))
                                 :headers *ok-headers*))))
   (check "decide με άκυρο action → 500 (fail-closed, όχι σιωπηλό)" (= 500 (st r))))
 
