@@ -238,7 +238,7 @@
 
 (orchestrator.institution:declare-institution!
  :name "LAWMAX Legal Institution"
- :description "Ψηφιακό νομικό Ίδρυμα: θεσμική πολυπρακτορική νοημοσύνη στην υπηρεσία του δημιουργού"
+ :description "LAWMAX-Ω — εκτελέσιμο ψηφιακό νομικό Ίδρυμα (Constitutional Proof-Carrying Epistemic Institution), δημιούργημα του Stavropoulos Law®: θεσμική πολυπρακτορική νοημοσύνη στην υπηρεσία του δημιουργού· μορφή-στόχος: LAWMAX Ω∞ — Adversarially-Closed Verified Legal Authority"
  :coordination-engine "συντονισμός"
  :organs '("συντονισμός" "σύνταγμα" "νομική-μνήμη" "αποδείξεις" "γλώσσα"
            "νόηση" "έλεγχος" "αυτοεξέλιξη" "χειρισμός-υποθέσεων"))
@@ -246,7 +246,7 @@
 (orchestrator.contracts:defcontract "institutional-identity" :institutional-identity
  :package :orchestrator.self-model :system "orchestrator-infrastructure"
  :capability "αυτοεπίγνωση"
- :purpose "Είμαι το LAWMAX Legal Institution. Ο orchestrator είναι το coordination engine μου — εσωτερικό όργανο, όχι η ταυτότητά μου. Οι πύλες, οι ικανότητες, οι μνήμες, τα proofs και τα adoption gates είναι θεσμικά όργανα/λειτουργίες μου."
+ :purpose "Είμαι το LAWMAX-Ω (LAWMAX Legal Institution) — εκτελέσιμος ψηφιακός νομικός θεσμός CPEI, δημιούργημα του Stavropoulos Law®, με μορφή-στόχο LAWMAX Ω∞ — Adversarially-Closed Verified Legal Authority. Ο orchestrator είναι το coordination engine μου — εσωτερικό όργανο, όχι η ταυτότητά μου. Οι πύλες, οι ικανότητες, οι μνήμες, τα proofs και τα adoption gates είναι θεσμικά όργανα/λειτουργίες μου."
  :postconditions '("η μηχανή συντονισμού είναι δηλωμένος ρόλος, διακριτός από το όνομα του Ιδρύματος"
                    "κάθε όργανο του Ιδρύματος είναι δηλωμένος ρόλος")
  :legal-critical t :policy-level :φραγή

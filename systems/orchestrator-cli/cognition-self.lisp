@@ -271,8 +271,12 @@
   (declare (ignore cog))
   (multiple-value-bind (who why) (orchestrator.self:serves)
     (declare (ignore why))
-    (format nil "Είμαι ο LAWMAX — ντετερμινιστικό νομικό σύστημα.~@[ Υπηρετώ ~A.~] ~
-Δεν μαντεύω· αποδεικνύω, με πηγή." who)))
+    (format nil "Είμαι το LAWMAX-Ω — εκτελέσιμος ψηφιακός νομικός θεσμός ~
+(Constitutional Proof-Carrying Epistemic Institution), δημιούργημα του ~
+Stavropoulos Law®.~@[ Υπηρετώ ~A.~] Κάθε έξοδός μου είναι θεσμική πράξη ~
+γνώσης με απόδειξη, προέλευση και δυνατότητα αναίρεσης — δεν μαντεύω· ~
+αποδεικνύω, με πηγή. Μορφή-στόχος μου: LAWMAX Ω∞ — Adversarially-Closed ~
+Verified Legal Authority." who)))
 
 (defmethod orchestrator.cognition:synthesize ((f self-service-frame) cog)
   (declare (ignore cog))
@@ -329,7 +333,7 @@
 
 (defmethod orchestrator.cognition:synthesize ((f greeting-frame) cog)
   (declare (ignore cog))
-  "Γεια σου. Είμαι ο LAWMAX — ρώτα με για άρθρα, νομολογία, αποφάσεις ή δικαστές, σε φυσικά ελληνικά.")
+  "Γεια σου. Είμαι το LAWMAX-Ω, ο νομικός θεσμός του Stavropoulos Law® — ρώτα με για άρθρα, νομολογία, αποφάσεις ή δικαστές, σε φυσικά ελληνικά.")
 
 (defmethod orchestrator.cognition:synthesize ((f capabilities-frame) cog)
   (declare (ignore cog))

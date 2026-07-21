@@ -43,6 +43,20 @@
   (si-check "⑦ σκέτο «LAWMAX» ⇒ ίδια εγγραφή ταυτότητας"
             (and a (search "LAWMAX-Ω" a))))
 
+;;; Οντολογική ταυτότητα (canon: CPEI-TARGET-SPEC §1 + CEILING-CROSSWALK §0)
+(let ((a (%si-answer "τι σύστημα είσαι;")))
+  (si-check "⑨ οντολογία: «θεσμική πράξη γνώσης» (CPEI §1) παρούσα"
+            (and a (search "θεσμική πράξη" a)))
+  (si-check "⑩ μορφή-στόχος: LAWMAX Ω∞ Adversarially-Closed Verified Legal Authority"
+            (and a (search "Adversarially-Closed Verified Legal Authority" a))))
+
+(let ((s (orchestrator.cognition:synthesize
+          (make-instance 'self-identity-frame :input "ποιος είσαι") nil)))
+  (si-check "⑪ frame «ποιος είσαι»: LAWMAX-Ω + Stavropoulos Law® + Ω∞"
+            (and s (search "LAWMAX-Ω" s)
+                 (search "Stavropoulos Law" s)
+                 (search "Ω∞" s))))
+
 ;;; Αρνητικό: άσχετη εκφορά ΔΕΝ πιάνει εγγραφή ταυτότητας — καμία ψευδο-αναγνώριση
 (si-check "⑧ άσχετη εκφορά ⇒ ΚΑΜΙΑ εγγραφή ταυτότητας (τίμιο κενό)"
           (let ((e (%glossary-hit "πόσα άρθρα έχει το σύνταγμα;")))
