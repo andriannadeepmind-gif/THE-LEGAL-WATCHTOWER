@@ -84,6 +84,28 @@
          (ck-rejected "ATTACK partial-load (2ο record άκυρο) ⇒ σφάλμα" (load-traces-from-file tmp))
          (ck "ATOMIC: μετά την αποτυχία, ΚΑΝΕΝΑ record δεν μπήκε στο registry (transaction)"
              (null (lookup-trace "GOOD")))
+         ;; [κύκλος-2] duplicate trace-id ΜΕΣΑ στο αρχείο ⇒ ΑΠΟΡΡΙΨΗ (κανένα σιωπηλό overwrite)
+         (clear-trace-registry)
+         (with-open-file (s tmp :direction :output :if-exists :supersede)
+           (format s "(:lawmax-trace/1 :trace-id \"DUP\" :timestamp 1 :layer :l)~%")
+           (format s "(:lawmax-trace/1 :trace-id \"DUP\" :timestamp 2 :layer :l)~%"))
+         (ck-rejected "ATTACK duplicate trace-id στο αρχείο ⇒ ΑΠΟΡΡΙΠΤΕΤΑΙ" (load-traces-from-file tmp))
+         (ck "ATOMIC: duplicate-in-file ⇒ ΚΑΝΕΝΑ record στο registry" (null (lookup-trace "DUP")))
+         ;; [κύκλος-2] collision policy vs υπάρχον registry
+         (clear-trace-registry)
+         (register-trace (make-trace-info :trace-id "X" :timestamp 100 :layer :orig))
+         (with-open-file (s tmp :direction :output :if-exists :supersede)
+           (format s "(:lawmax-trace/1 :trace-id \"X\" :timestamp 200 :layer :new)~%"))
+         (ck-rejected ":on-existing :error (default) ⇒ collision ΑΠΟΡΡΙΠΤΕΤΑΙ"
+                      (load-traces-from-file tmp))
+         (ck "collision :error: το υπάρχον ΔΕΝ αλλοιώθηκε (timestamp 100)"
+             (eql 100 (trace-timestamp (lookup-trace "X"))))
+         (ck ":on-existing :skip ⇒ κρατά το υπάρχον (0 committed)"
+             (and (= 0 (load-traces-from-file tmp :on-existing :skip))
+                  (eql 100 (trace-timestamp (lookup-trace "X")))))
+         (ck ":on-existing :replace ⇒ αντικαθιστά (1 committed, timestamp 200)"
+             (and (= 1 (load-traces-from-file tmp :on-existing :replace))
+                  (eql 200 (trace-timestamp (lookup-trace "X")))))
          ;; [κύκλος-2] DETERMINISTIC save: ίδιο registry ⇒ byte-identical αρχείο
          (clear-trace-registry)
          (register-trace (make-trace-info :trace-id "B" :layer :l :timestamp 2))

@@ -1093,24 +1093,54 @@
          (terpri s)))))
   filepath)
 
-(defun load-traces-from-file (filepath)
+(defun load-traces-from-file (filepath &key (on-existing :error))
   "Load traces ΜΕΣΩ της ΜΙΑΣ safe-read έδρας + typed decoder — ΚΑΝΕΝΑ cl:load/eval.
    [re-review adv2-F3] Κάθε γραμμή είναι data-only (+trace-schema+ …)· διαβάζεται με
    read-data-file-sequence (*read-eval* nil + #-deny + caps + %data-only-p) και
    ανασυγκροτείται typed (%trace-decode) — καμία εκτέλεση κώδικα από trace δεδομένα.
-   Επιστρέφει το πλήθος των traces που φορτώθηκαν."
+
+   [κύκλος-2] ΠΛΗΡΗΣ ΣΥΝΑΛΛΑΚΤΙΚΗ (transactional) επαναφορά:
+     1. decode+validate ΟΛΑ (register nil ⇒ καμία παρενέργεια)·
+     2. staging hash-table με ΑΠΟΡΡΙΨΗ duplicate trace-id ΜΕΣΑ στο αρχείο (κανένα σιωπηλό
+        overwrite του ενός record από το άλλο)·
+     3. collision policy vs ΥΠΑΡΧΟΝ *trace-registry* — ON-EXISTING:
+          :error   (default) ⇒ trace-decode-error αν οποιοδήποτε id υπάρχει ήδη (τίποτα δεν μπαίνει)·
+          :skip    ⇒ υπάρχοντα διατηρούνται, μπαίνουν μόνο τα νέα·
+          :replace ⇒ υπάρχοντα αντικαθίστανται·
+     4. ΑΤΟΜΙΚΗ commit ΜΟΝΟ αφού περάσουν όλοι οι έλεγχοι (όλα ή τίποτα).
+   Επιστρέφει το πλήθος των traces που γράφτηκαν στο registry."
+  (check-type on-existing (member :error :skip :replace))
   (multiple-value-bind (forms status)
       (orchestrator.safe-read:read-data-file-sequence filepath)
     (unless (member status '(:ok :empty))
       (error 'trace-decode-error :reason
              (format nil "μη αναγνώσιμο trace αρχείο (safe-read: ~A)" status)))
-    ;; [κύκλος-2] VALIDATE-ALL-FIRST → ATOMIC COMMIT: αποκωδικοποίησε+επικύρωσε ΟΛΑ τα
-    ;; records ΧΩΡΙΣ παρενέργειες (%trace-decode → make-trace-info :register nil)· αν
-    ;; ΟΠΟΙΟΔΗΠΟΤΕ αποτύχει, σφάλμα ΠΡΙΝ αγγιχτεί το registry (καμία μερική εγγραφή). Μόνο
-    ;; αφού ΟΛΑ επικυρωθούν, γίνεται μία εγγραφή ανά trace (κανένα διπλό register).
-    (let ((traces (mapcar #'%trace-decode forms)))
-      (dolist (tr traces) (register-trace tr))
-      (length traces))))
+    ;; 1. decode+validate ΟΛΑ (καμία παρενέργεια)
+    (let ((decoded (mapcar #'%trace-decode forms))
+          (staging (make-hash-table :test 'equal)))
+      ;; 2. staging + απόρριψη duplicate id ΜΕΣΑ στο αρχείο
+      (dolist (tr decoded)
+        (let ((id (trace-id tr)))
+          (when (gethash id staging)
+            (error 'trace-decode-error :reason
+                   (format nil "διπλό trace-id ΜΕΣΑ στο αρχείο: ~S" id)))
+          (setf (gethash id staging) tr)))
+      ;; 3. collision policy vs υπάρχον registry — ΠΡΙΝ κάθε commit (fail-closed για :error)
+      (when (eq on-existing :error)
+        (maphash (lambda (id tr) (declare (ignore tr))
+                   (when (nth-value 1 (gethash id *trace-registry*))
+                     (error 'trace-decode-error :reason
+                            (format nil "trace-id υπάρχει ήδη στο registry: ~S (:on-existing :error)" id))))
+                 staging))
+      ;; 4. ΑΤΟΜΙΚΗ commit (όλοι οι έλεγχοι πέρασαν)· :skip παρακάμπτει υπάρχοντα
+      (let ((committed 0))
+        (maphash (lambda (id tr)
+                   (unless (and (eq on-existing :skip)
+                                (nth-value 1 (gethash id *trace-registry*)))
+                     (register-trace tr)
+                     (incf committed)))
+                 staging)
+        committed))))
 
 (defmacro quote-trace (trace-expr)
   "Capture a trace expression as data without evaluating.
