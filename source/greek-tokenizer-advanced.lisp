@@ -927,21 +927,20 @@
 
 (defun save-bpe-model (model filename)
   "Save BPE model ως DATA-ONLY (ένα (+bpe-schema+ …) plist, prin1 υπό standard-io-syntax +
-   keyword package). [ARCH Phase 1] ΚΑΝΕΝΑΣ κώδικας στο αρχείο — επαναφορά ΜΟΝΟ μέσω
-   load-bpe-model (safe-read + STRICT typed decoder· κατεστραμμένο/κολοβό αρχείο ⇒ fail-closed).
-   ΤΙΜΙΑ ΣΗΜΕΙΩΣΗ ατομικότητας: η ΜΙΑ έδρα ατομικής εγγραφής (orchestrator.journal:write-file-atomic)
-   φορτώνεται ΜΕΤΑ αυτό το module (asd: greek-tokenizer πριν journal), άρα ΔΕΝ είναι διαθέσιμη εδώ·
-   δεν επιτρέπεται δεύτερη (διπλή) έδρα atomic-write. Η ατομική εγγραφή απαιτεί προαγωγή της
-   write-file-atomic σε foundational io seat ΠΡΙΝ τον tokenizer (ξεχωριστή, αποδεδειγμένη φάση —
-   δεν επηρεάζει την ασφάλεια: κολοβό αρχείο απορρίπτεται από τον decoder)."
-  (with-open-file (out filename :direction :output :if-exists :supersede
-                                :if-does-not-exist :create :external-format :utf-8)
-    (format out ";;; BPE Model (data-only ~A) - ~D merges, trained on ~D words~%"
-            +bpe-schema+ (length (bpe-model-merges model)) (bpe-model-trained-on model))
-    (with-standard-io-syntax
-      (let ((*package* (find-package :keyword)))
-        (prin1 (bpe-model-to-data model) out)))
-    (terpri out))
+   keyword package), ΑΤΟΜΙΚΑ μέσω της ΜΙΑΣ έδρας orchestrator.journal:write-file-atomic
+   (temp+fsync+rename — ποτέ μισο-γραμμένο/άδειο). [κύκλος-2] Το journal μεταφέρθηκε νωρίτερα
+   στο asd (πριν τον tokenizer) ⇒ η έδρα είναι πλέον διαθέσιμη εδώ — καμία διπλή έδρα atomic-write.
+   ΚΑΝΕΝΑΣ κώδικας στο αρχείο· επαναφορά ΜΟΝΟ μέσω load-bpe-model (safe-read + STRICT decoder·
+   κολοβό αρχείο ⇒ fail-closed)."
+  (orchestrator.journal:write-file-atomic
+   filename
+   (with-output-to-string (out)
+     (format out ";;; BPE Model (data-only ~A) - ~D merges, trained on ~D words~%"
+             +bpe-schema+ (length (bpe-model-merges model)) (bpe-model-trained-on model))
+     (with-standard-io-syntax
+       (let ((*package* (find-package :keyword)))
+         (prin1 (bpe-model-to-data model) out)))
+     (terpri out)))
   filename)
 
 (defun %bpe-decode (data)

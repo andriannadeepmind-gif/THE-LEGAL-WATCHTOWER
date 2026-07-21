@@ -33,6 +33,7 @@
     ((:file "deterministic-time") ; Deterministic timestamp abstraction - MUST be first (used by paths)
      (:file "paths")              ; Path abstraction
      (:file "safe-read")          ; [0094]/Phase 1: Η ΜΙΑ ΕΔΡΑ ασφαλούς αποσεριαλοποίησης δεδομένων (*read-eval* NIL, wholesale #-deny, depth pre-scan) — φορτώνεται ΠΡΙΝ κάθε reader· (:use :cl) μόνο, καμία κυκλική εξάρτηση
+     (:file "journal")            ; [κύκλος-2] ΜΕΤΑΦΕΡΘΗΚΕ ΝΩΡΙΤΕΡΑ (ήταν #92): (:use :cl) + μηδέν orchestrator.* εξαρτήσεις (μόνο sb-*)· φορτώνεται ΠΡΙΝ κάθε caller ⇒ η ΜΙΑ έδρα write-file-atomic (temp+fsync+rename) διαθέσιμη σε ΟΛΗ την persistence (BPE/AST/trace/…)· iso-now/sha256-hex/append-line — η μία έδρα (βιογραφία/προτάσεις/επεισόδια)
      (:file "execution-trace")    ; ΙΧΝΟΣ ΕΚΤΕΛΕΣΗΣ: legal execution provenance πυρήνας — data-only, append-only, προφίλ κόστους
      (:file "canonical-uris")     ; Canonical URI configuration - Phase C
      (:file "consolidation-engine") ; Codification: apply amendments -> in-force consolidated text
@@ -89,7 +90,6 @@
      (:file "legal-casegrammar")
      (:file "legal-hypo")
      (:file "fluid-induction")    ; Σ12-ΡΕΥΣΤΟ: επαγωγή προγραμμάτων από παραδείγματα (ARC-family: DSL+αναζήτηση+ακριβής επαλήθευση)         ; Σ7 HYPO/CATO: παράγοντες, διακρίσεις, κατάταξη, k-NN διατακτικού — Η ΜΙΑ ομοιότητα υποθέσεων  ; Σ4β ΓΡΑΜΜΑΤΙΚΗ ΠΤΩΣΕΩΝ (Fillmore): αφήγηση → γεγονότα υπόθεσης (πακέτο :verb-frames)
-     (:file "journal")            ; ΤΟ ΕΝΑ ΙΔΙΩΜΑ ΗΜΕΡΟΛΟΓΙΟΥ: iso-now/sha256-hex/append-line/read-lines — η μία έδρα (βιογραφία/προτάσεις/επεισόδια)
      (:file "deliberation")       ; ΤΟ ΕΓΩ: ο στοχαστής — MOP metaclass σκέψης (καμία σκέψη αόρατη), κύκλος υπόθεση→δοκιμή-σε-απομόνωση→επαλήθευση
      (:file "proposals")          ; ΤΟ ΕΓΩ: γενικό μητρώο προτάσεων→έγκρισης (open/closed) — προσωρινή απόρριψη κατά υπογραφή-αποδείξεων
      (:file "introspection")      ; ΤΟ ΕΓΩ: γενική μηχανή αναστοχασμού — μητρώο παρατηρητών, ορατή σκέψη, ευρήματα→προτάσεις
