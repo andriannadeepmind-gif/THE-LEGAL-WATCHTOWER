@@ -189,14 +189,18 @@ docker compose -f docker-compose.architecture-tests.yml up --build
 **AUTHORITATIVE (η έγκυρη ολομέλεια — source-present).** Το checkout είναι
 mounted ως `/src` με cwd εκεί, ώστε ΟΛΕΣ οι πύλες να βλέπουν source + docs
 (κάποιες αναλύουν πηγές μέσω `getcwd`). Πύλες που χρειάζονται materialized
-pipeline output (π.χ. `--extension-gate` → `output/poinikos`) δεν γίνονται
-αποδεκτό κόκκινο baseline — το output **παράγεται πρώτα** και μετά κρίνονται:
+pipeline output (π.χ. `--extension-gate`, `--release-gate`) δεν γίνονται
+αποδεκτό κόκκινο baseline — το output **παράγεται πρώτα για ΚΑΘΕ υπηρετούμενο
+σώμα** (απόφαση [0035] A, καθολικευμένη 2026-07-21: «παράγει τα πάντα, κρίνει
+επί όλων») και μετά κρίνονται:
 
 ```bash
-# 1) materialize output/poinikos (πριν την ολομέλεια — απόφαση [0035] A):
-docker run --rm -v "$PWD":/src -w /src -e LAWMAX_ROOT=/src \
-  -e ORCHESTRATOR_OUTPUT_DIR=/src/output -e ORCHESTRATOR_CORPUS=poinikos \
-  orchestrator:test --run-pipeline
+# 1) materialize ΚΑΙ ΤΑ 6 σώματα (πριν την ολομέλεια):
+for corpus in syntagma poinikos astikos kpolitikis kpoinikis kdioikitikis; do
+  docker run --rm -v "$PWD":/src -w /src -e LAWMAX_ROOT=/src \
+    -e ORCHESTRATOR_OUTPUT_DIR=/src/output -e ORCHESTRATOR_CORPUS="$corpus" \
+    orchestrator:test --run-pipeline
+done
 
 # 2) η authoritative ολομέλεια — το τελικό correctness proof:
 docker run --rm -v "$PWD":/src -w /src -e LAWMAX_ROOT=/src orchestrator:test --gates

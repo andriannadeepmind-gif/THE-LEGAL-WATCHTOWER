@@ -148,13 +148,15 @@ jobs:
         name: orchestrator-sbom
         path: sbom.spdx.json
 
-    - name: 🏭 FF3 materialization — output/poinikos πριν την ολομέλεια (επιλογή A)
+    - name: 🏭 FF3 materialization — ΚΑΙ ΤΑ 6 σώματα πριν την ολομέλεια (επιλογή A, καθολική)
       shell: bash          # ρητό bash ⇒ ενεργό pipefail (ο default runner shell ΔΕΝ το έχει)
       run: |
-        # Απόφαση δημιουργού [0035] επιλογή A: πύλες που χρειάζονται materialized
-        # pipeline output (π.χ. --extension-gate → output/poinikos) ΔΕΝ γίνονται
-        # αποδεκτό κόκκινο baseline — το output ΠΑΡΑΓΕΤΑΙ πριν κριθούν. Τρέχουμε
-        # το πραγματικό pipeline (poinikos) με έξοδο στο mounted checkout.
+        # Απόφαση δημιουργού [0035] επιλογή A, καθολικευμένη [εντολή 2026-07-21]:
+        # «πρέπει να παράγει τα πάντα και να κρίνει επί όλων». Πύλες που χρειάζονται
+        # materialized output ΔΕΝ κρίνονται σε μερικό baseline — το pipeline τρέχει
+        # ΠΡΑΓΜΑΤΙΚΑ για ΚΑΘΕ υπηρετούμενο σώμα (η ίδια λίστα με *served-corpora*),
+        # ώστε ολομέλεια + release/extension gates να κρίνουν ΦΡΕΣΚΙΑ έξοδο 6/6,
+        # όχι 1/6 φρέσκια και 5/6 committed ιστορία.
         # [audit#1] FAIL-CLOSED: pipefail + ${PIPESTATUS[0]} — crash του docker ΔΕΝ
         # κρύβεται πλέον πίσω από το exit 0 του `tee`.
         # [κύκλος-2 CRITICAL false-green fix] ΟΧΙ «| tee … || true»: μετά το `|| true` έχει
@@ -162,16 +164,21 @@ jobs:
         # ΑΚΡΙΒΩΣ όταν το docker αποτυγχάνει (αναπαραγόμενο false-green). set +e γύρω από
         # το pipe ⇒ το -e δεν ματαιώνει· PIPESTATUS[0] = ΠΡΑΓΜΑΤΙΚΟ docker exit· set -e ξανά.
         set -o pipefail
-        set +e
-        docker run --rm -v "${{ github.workspace }}":/src -w /src -e LAWMAX_ROOT=/src \
-          -e ORCHESTRATOR_OUTPUT_DIR=/src/output -e ORCHESTRATOR_CORPUS=poinikos \
-          orchestrator:test --run-pipeline 2>&1 | tee materialize-poinikos.log
-        status=${PIPESTATUS[0]}
-        set -e
-        if [ "$status" -ne 0 ]; then
-          echo "::error::Το materialization docker κατέρρευσε (exit=$status) — δεν είναι αποδεκτό baseline."; exit 1; fi
-        test -d "${{ github.workspace }}/output/poinikos" || {
-          echo "::error::Το materialization ΔΕΝ παρήγαγε output/poinikos."; exit 1; }
+        # corpus-id → όνομα φακέλου εξόδου (συνέπεια με +corpus-output-alias+: syntagma→constitution)
+        outdir() { case "$1" in syntagma) echo constitution ;; *) echo "$1" ;; esac; }
+        for corpus in syntagma poinikos astikos kpolitikis kpoinikis kdioikitikis; do
+          set +e
+          docker run --rm -v "${{ github.workspace }}":/src -w /src -e LAWMAX_ROOT=/src \
+            -e ORCHESTRATOR_OUTPUT_DIR=/src/output -e ORCHESTRATOR_CORPUS="$corpus" \
+            orchestrator:test --run-pipeline 2>&1 | tee "materialize-$corpus.log"
+          status=${PIPESTATUS[0]}
+          set -e
+          if [ "$status" -ne 0 ]; then
+            echo "::error::Materialization «$corpus» κατέρρευσε (exit=$status) — μερικό baseline ΔΕΝ γίνεται δεκτό."; exit 1; fi
+          d="$(outdir "$corpus")"
+          test -d "${{ github.workspace }}/output/$d" || {
+            echo "::error::Το materialization ΔΕΝ παρήγαγε output/$d ($corpus)."; exit 1; }
+        done
 
     - name: 🏛️ FF3 AUTHORITATIVE plenary — source-present --gates
       shell: bash          # ρητό bash ⇒ ενεργό pipefail (ο default runner shell ΔΕΝ το έχει)

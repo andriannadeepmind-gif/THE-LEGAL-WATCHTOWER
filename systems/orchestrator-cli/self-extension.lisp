@@ -610,6 +610,19 @@
                (and (zerop n) why
                     (search "ΣΥΜΦΩΝΕΙ" why)
                     (search "άρσης" why)))))
+    ;; ── [6/6 ΚΑΛΥΨΗ — εντολή δημιουργού 2026-07-21] ΚΑΘΕ υπηρετούμενο σώμα
+    ;;    υλοποιημένο ΚΑΙ αναγνώσιμο. Data-driven από τη ΜΙΑ λίστα *served-corpora*
+    ;;    (νέο σώμα ⇒ αυτόματα ελέγχεται — καμία δεύτερη λίστα). Η βαθιά χρυσή
+    ;;    δοκιμή (ΠΚ 372) μένει curated παραπάνω· εδώ κλειδώνει ότι ΚΑΝΕΝΑ σώμα
+    ;;    δεν μένει χωρίς υλοποιημένη έξοδο που η μηχανή μπορεί να διαβάσει. ──
+    (flet ((check (label ok)
+             (incf total)
+             (if ok (format t "  ✓ ~A~%" label)
+                 (progn (push label fails) (format t "  ✗ ~A~%" label)))))
+      (dolist (id *served-corpora*)
+        (let ((tbl (ignore-errors (%article-table id))))
+          (check (format nil "~A: υλοποιημένο corpus.jsonl παρόν και αναγνώσιμο (≥1 άρθρο)" id)
+                 (and tbl (plusp (hash-table-count tbl)))))))
     ;; ── ΑΥΤΟΜΕΛΕΤΗ (ξηρή): η μηχανή μετρά ΜΟΝΗ της τι τής λείπει ──
     (flet ((check (label ok)
              (incf total)

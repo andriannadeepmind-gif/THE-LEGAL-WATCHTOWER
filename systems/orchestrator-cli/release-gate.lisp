@@ -206,6 +206,31 @@
                                         (eq (getf d :|attested|) t)))
                                (error () nil))
                              "latest.json απόν/ασύμφωνο με τον στόχο του symlink")))))))))
+        ;; [6/6 ΚΑΛΥΨΗ — εντολή δημιουργού 2026-07-21] EXACT-SET κατά *served-corpora*:
+        ;; ΚΑΘΕ υπηρετούμενο σώμα οφείλει παρόντα υλοποιημένο κατάλογο ΚΑΙ releases/
+        ;; με ≥1 δημοσίευση. Χωρίς αυτό, η διαγραφή ΟΛΟΚΛΗΡΟΥ του φακέλου releases/
+        ;; ενός σώματος περνούσε ΣΙΩΠΗΛΑ (το [A1] anti-deletion ζει ΜΕΣΑ στο releases/
+        ;; — δεν πιάνει την εξαφάνιση του ίδιου του φακέλου). Ό,τι κάνει το [A1] για
+        ;; entries, αυτό εδώ για σώματα: η συρρίκνωση εύρους ΔΟΜΙΚΑ αδύνατη.
+        ;; Ίδια τιμιότητα με τον έλεγχο found: επιβάλλεται ΜΟΝΟ όταν υπάρχει output
+        ;; (minimal-runtime image χωρίς output = δηλωμένο baseline, όχι σιωπηλό).
+        (when (probe-file output-root)
+          (dolist (id *served-corpora*)
+            (let* ((outdir (%corpus-outdir id))
+                   (cdir (merge-pathnames (format nil "~A/" outdir) output-root))
+                   (rdir (merge-pathnames "releases/" cdir)))
+              (chk (format nil "~A: υλοποιημένος κατάλογος output/~A/ παρών" id outdir)
+                   (and (probe-file cdir) t)
+                   (format nil "ΛΕΙΠΕΙ ~A — υπηρετούμενο σώμα χωρίς υλοποιημένη έξοδο" (namestring cdir)))
+              (chk (format nil "~A: releases/ παρόν με ≥1 δημοσίευση" id)
+                   (and (probe-file rdir)
+                        (some (lambda (d)
+                                (let ((leaf (car (last (pathname-directory d)))))
+                                  (and (stringp leaf)
+                                       (not (eql 0 (search ".staging" leaf)))
+                                       (not (equal leaf "latest")))))
+                              (uiop:subdirectories rdir)))
+                   (format nil "απόν/κενό ~A — σβησμένη ιστορία εκδόσεων δεν είναι πράσινη" (namestring rdir))))))
         (chk (format nil "σαρώθηκαν ~D δημοσιευμένα releases (≥1 απαιτείται όταν υπάρχει output)" found)
              (or (plusp found)
                  (null (probe-file output-root)))))
