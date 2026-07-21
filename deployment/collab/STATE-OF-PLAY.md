@@ -134,3 +134,25 @@ CI false-green `| tee || true; PIPESTATUS` (fix `set +e`/capture/`set -e`).
 enforcing census ratchet (τώρα απαριθμητής)· gate verdict-manifest· BPE atomicity
 (load-order). **Απόδειξη τοπική (parse-check+fixtures) — owner-side Docker ΥΠΟΧΡΕΩΤΙΚΟ
 για εκτέλεση gated suites. ΟΧΙ ακόμη πιστοποιήσιμο ως ανώτατο.**
+
+## REAL-BUILD (task #65 συνέχεια) — [0097], HEAD `ecf45296`
+
+Εντολή δημιουργού: «γιατι δεν ετρεξες εσυ πρωτα στο περιβαλλον σου» + «ποτέ workarounds».
+Το [0096] §Δ έλεγε «απαιτεί owner Docker»· διόρθωση: οι **vendored deps (`third-party/`)**
+επιτρέπουν πλήρες ερμητικό **ASDF load ΧΩΡΙΣ docker/δίκτυο**. Το έτρεξα — βρήκε **πραγματικά
+bugs που η parse-check ΔΕΝ έπιανε** (serialization χρόνου-εκτέλεσης, όχι σύνταξης).
+**Κλάση:** `(simple-array base-char)` strings (sha256/ids) υπό `w-s-i-s`→`*print-readably* t`
+τυπώνονται `#A((n) BASE-CHAR . "…")` ⇒ safe-read `#`-deny τα απορρίπτει ⇒ **αρχείο που δεν
+ξαναδιαβάζεται** (σιωπηλό round-trip break). **Λύση — ΜΙΑ έδρα data-only εγγραφής
+`orchestrator.safe-read:data-to-string`** (`52d48762`): `%data-only-p` ΠΡΙΝ (fail-closed) +
+`*print-readably* nil` (ρίζα εξαλειμμένη). **6 έδρες→1** (BPE/AST/trace `52d48762`·
+`%canon-encode`/save-review-queue/gate-manifest `ecf45296`)· η #4 διέρρεε `#A` **μέσα στο
+κανονικό item-id** (injectivity διατηρημένη). **4 stale tests** διορθωμένα στην ΤΑΥΤΟΤΗΤΑ
+(κανένα assertion δεν μαλάκωσε). **ΑΠΟΔΕΙΞΗ (real build):** core-runtime EXIT=0/0-fail·
+safe-read 73/0, review-queue-safe-read 22/0, bpe 16/0, layout 20/0, ast 30/0, trace 27/0,
+jws 13/0, param-roundtrip 12/0, param-coercion 17/0, canonical-serialization 12/0·
+review-queue 66/0· cockpit 37/0· gate-manifest round-trip 6/6 (safe-read + ανεξάρτητος
+`#`-deny assessor + fail-closed)· reader-census PASS (133/2). **ΤΙΜΙΑ:** 2 σουίτες
+(write-authority=FIVEAM, capability-api=`ASK` seat-conflict) αποτυγχάνουν στο LOAD ΤΑΥΤΟΣΗΜΑ
+**και pristine** (harness artifacts, stash-verified)· owner Docker glue + runtime gate-set
+equality μένουν. Vendored-deps run = **ισχυρότερο** από το προηγούμενο local proof.
