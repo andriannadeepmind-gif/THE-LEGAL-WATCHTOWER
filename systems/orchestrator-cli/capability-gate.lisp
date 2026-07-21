@@ -181,4 +181,7 @@
  :legal-critical t :policy-level :φραγή
  :audit "scorecard + baseline: πλήρεις αριθμοί και stamps, μηχανικά αναγνώσιμα"
  :rollback "revert του commit εισαγωγής"
- :tests '("--capability-gate" "tests/capability-gate-test.lisp"))
+ ;; :tests = ΕΝΤΟΛΕΣ (το λεξιλόγιο του contract validator)· το standalone lock
+ ;; tests/capability-gate-test.lisp είναι gated αυτόματα από το παραγόμενο
+ ;; suite inventory ([audit#2]) — δεν δηλώνεται εδώ (θα ήταν ξένο λεξιλόγιο).
+ :tests '("--capability-gate"))
