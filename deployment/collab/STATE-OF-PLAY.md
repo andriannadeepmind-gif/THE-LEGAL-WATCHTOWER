@@ -207,7 +207,9 @@ PASS. Δηλωμένο όριο: skip-generation βαθμίδα = μελλοντ
 Απογραφή: extractor ντετερμινιστικός 124/124 — 0 κρυφές αποκλίσεις. Golden
 constitution συνειδητά 153056b5→0a5ba296. Πύλες/σουίτες πράσινες. Φ1β ΚΛΕΙΣΤΟ [0109β]: journals=gitignored runtime stores· φρέσκο import από
 διορθωμένη πηγή ⇒ parity 124/124, art:4 σωστό στο version-at/serving.
-Υπόλοιπα με φάση: adapter reflow κλάση, N-κανάλια demote-only.
+[0109γ] Απογραφή 6/6: ΚΑΘΕ byte κάθε json = ντετερμινιστική εξαγωγή + δηλωμένα
+errata (0 ανεξήγητα σε 4694 άρθρα). Υπόλοιπα με φάση: adapter reflow κλάση,
+N-κανάλια demote-only.
 
 ## +3 ΘΕΩΡΗΜΑ Στάδιο 2 — [0105] ΜΕΤΑΘΕΣΗ ΚΥΡΙΑΡΧΙΑΣ
 
