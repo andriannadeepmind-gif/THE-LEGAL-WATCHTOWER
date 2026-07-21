@@ -187,3 +187,17 @@ AMENDED. Goldens astikos/kpolitikis: συνειδητή αναγέννηση (GO
 run-golden-gate 0· ΝΕΟ lock currentness-34-test **12/12**· σουίτες 193/0.
 Runbook `docs/CURRENTNESS-34.md`. **#34 ΑΝΟΙΧΤΟ ως προς το κείμενο** — κλείνει
 με owner fetch από ελληνική IP → extractor → review approval.
+
+## ΤΑΒΑΝΙ #1 — [0100], HEAD `ac51a09d`
+
+Εντολή: «το απόλυτο ταβάνι». ΤΟ ΜΕΤΡΟ ΩΣ ΠΥΛΗ: νέα **--capability-gate (25η)**
+— legal-eval (①gold ②e2e ⊕strict) + judge leave-one-out (hit@1/5/10 +
+content-addressed dataset-stamp) vs **committed baseline** σε κάθε ολομέλεια.
+5 νόμοι: απόν baseline ⇒ ΚΟΚΚΙΝΟ· gold=100% ΠΑΝΤΑ· ίδιο μέτρο αλλιώς ρητό
+drift-re-baseline· ratchet ≥· scorecard data-only. Judge αναβαθμισμένος σε ΜΙΑ
+έδρα %judge-metrics (πανομοιότυπη έξοδος). Baseline 2026-07-21: eval 13/13,
+8/13, 6/11· judge 164/1947/1628, hit@1 406, hit@5 661, hit@10 792. Registry
+24→25. Απόδειξη: cap-proof 15/15 + lock test 14/0 + legal-eval 8/0 + assessor
+PASS 25 + census PASS· δικό μου false-green (απόν baseline ⇒ NIL ⇒ πράσινο)
+πιασμένο από αρνητικό fixture, κλεισμένο στην έδρα. Η γείωση #36 πλέον
+ΜΕΤΡΗΣΙΜΗ (βελτίωση = e2e>8/13 στο scorecard). Owner Docker στο `ac51a09d`.
