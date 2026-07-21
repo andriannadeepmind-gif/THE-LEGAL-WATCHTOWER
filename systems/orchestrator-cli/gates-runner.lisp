@@ -10,6 +10,10 @@
 
 (in-package :orchestrator.cli)
 
+(defun %gate-name->keyword (name)
+  "«--advisor-gate» → :ADVISOR-GATE — strip leading dashes· keyword για data-only manifest."
+  (intern (string-upcase (string-left-trim "-" name)) :keyword))
+
 (defun run-all-gates ()
   "--gates : όλες οι εγγεγραμμένες πύλες, μία-μία, με ενιαία ετυμηγορία."
   (let ((names '()))
@@ -37,6 +41,23 @@
           (let ((bad (not (eql 0 (cdr r)))))   ; ό,τι δεν είναι ρητό 0 = αποτυχία
             (when bad (setf failed t))
             (format t "  ~A: ~:[ΠΕΡΑΣΕ~;ΑΠΕΤΥΧΕ~]~%" (car r) bad)))
+        ;; [κύκλος-2 #7] MACHINE-READABLE canonical verdict manifest (data-only, safe-read-able).
+        ;; Τυπώνεται ΜΟΝΟ εδώ, ΜΕΤΑ από ΟΛΕΣ τις πύλες ⇒ το :completed t είναι θετική απόδειξη
+        ;; ολοκλήρωσης: crash/OOM στη μέση ⇒ ΚΑΝΕΝΑ manifest ⇒ ο checker αποτυγχάνει (όχι
+        ;; false-green). Ο assess-gate-manifest επιβάλλει exact set-equality με το canonical
+        ;; gate-registry.sexp + κανένα duplicate + ακριβώς μία ετυμηγορία ανά πύλη.
+        (let ((manifest (list :schema :gate-plenary/1
+                              :completed t
+                              :count (length results)
+                              :results (mapcar (lambda (r)
+                                                 (list (%gate-name->keyword (car r))
+                                                       (if (eql 0 (cdr r)) :passed :failed)))
+                                               results))))
+          (format t "~%════ GATE-PLENARY-MANIFEST ════~%")
+          (with-standard-io-syntax
+            (let ((*package* (find-package :keyword)) (*print-pretty* nil))
+              (prin1 manifest)))
+          (format t "~%════ END-MANIFEST ════~%"))
         (if failed 1 0)))))
 
 (register-command "--gates" (lambda (a) (declare (ignore a)) (run-all-gates)))

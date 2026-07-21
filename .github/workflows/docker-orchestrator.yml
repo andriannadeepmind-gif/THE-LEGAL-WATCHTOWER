@@ -197,6 +197,15 @@ jobs:
         set -e
         GATE_BASELINE_EXCEPTIONS="advisor-gate" \
           ./deployment/verify/assess-gate-plenary.sh gates-source-present.log "$status"
+        # [κύκλος-2 #7] MACHINE-READABLE canonical authority (συμπληρωματικά στην anchored-footer
+        # κρίση): parse του (:gate-plenary/1 …) manifest· ΑΚΡΙΒΗΣ set-equality με το canonical
+        # gate-registry.sexp (καμία πύλη λείπει/επιπλέον), κανένα duplicate, ΑΚΡΙΒΩΣ μία ετυμηγορία
+        # ανά πύλη, :completed t (απόδειξη ολοκλήρωσης), πραγματικός docker-exit. Τρέχει ΜΕΣΑ στο
+        # image (--entrypoint sbcl· self-contained data-only reader, καμία εξάρτηση) με το log
+        # mounted. Baseline: advisor-gate (env-only).
+        docker run --rm -v "${{ github.workspace }}":/src -w /src --entrypoint sbcl \
+          orchestrator:test --script deployment/verify/assess-gate-manifest.lisp \
+          gates-source-present.log "$status" deployment/verify/gate-registry.sexp advisor-gate
 
     - name: 🔎 FF3 verify-truth source-present enforcement (docs ≡ CI)
       run: |
