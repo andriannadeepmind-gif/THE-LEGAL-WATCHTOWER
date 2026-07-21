@@ -105,6 +105,13 @@
             (first s) (second s)))
   (if (and (null violations) (null stale))
       (progn (format t "~&reader-census: PASS — κάθε sexp-reader/eval/load είναι η safe-read έδρα ή δηλωμένη εξαίρεση~%")
+             ;; [0106] Η ΜΙΑ γραμματική απόδειξης (verify-proof-manifest.py):
+             ;; ΚΑΘΕ σουίτα εκπέμπει «N passed, M failed» — τίμιοι αριθμοί:
+             ;; passed = σαρωμένα αρχεία, failed = παραβάσεις + stale.
+             (format t "~&reader-census: ~D passed, 0 failed~%" scanned)
              (sb-ext:exit :code 0))
       (progn (format t "~&reader-census: FAIL (~D violations, ~D stale)~%" (length violations) (length stale))
+             (format t "~&reader-census: ~D passed, ~D failed~%"
+                     (- scanned (length violations))
+                     (+ (length violations) (length stale)))
              (sb-ext:exit :code 1))))
