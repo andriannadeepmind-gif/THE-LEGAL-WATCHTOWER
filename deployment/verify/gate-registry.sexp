@@ -11,13 +11,14 @@
 ;;;; keywords ΧΩΡΙΣ leading dashes (όπως στο manifest: «--advisor-gate» → :advisor-gate).
 ;;;;
 ;;;; ΣΗΜΕΙΩΣΗ ΒΑΘΜΟΝΟΜΗΣΗΣ: το σύνολο παρήχθη με στατική απαρίθμηση των register-command
-;;;; «*-gate» της πηγής (24). Το πρώτο owner-side Docker run επικυρώνει ότι ταιριάζει με το
-;;;; runtime *commands* set· τυχόν διαφορά = πραγματικό drift προς συμφιλίωση (ο checker το
-;;;; δηλώνει ρητά, δεν το κρύβει).
+;;;; «*-gate» της πηγής (25 — η :capability-gate προστέθηκε ρητά [ΤΑΒΑΝΙ #1]). Το πρώτο
+;;;; owner-side Docker run επικυρώνει ότι ταιριάζει με το runtime *commands* set· τυχόν
+;;;; διαφορά = πραγματικό drift προς συμφιλίωση (ο checker το δηλώνει ρητά, δεν το κρύβει).
 
 (:schema :gate-registry/1
  :gates (:advisor-gate
          :architecture-constitution-gate
+         :capability-gate
          :component-gate
          :contract-gate
          :deontic-gate

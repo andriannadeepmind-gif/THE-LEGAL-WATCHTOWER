@@ -57,6 +57,7 @@
      (:file "case-workspace")          ; Ο ΧΩΡΟΣ ΥΠΟΘΕΣΗΣ: deterministic blackboard — όλοι οι ειδικοί σε μία αρένα (--case)    ; Σ4-Σ6: --subsume/--argue/--what-if + πύλη --subsumption-gate
      (:file "jurisprudence-judge")     ; Ο ΚΡΙΤΗΣ-ΝΟΜΟΛΟΓΙΑ: μετρημένη ικανότητα leave-one-out στη νομολογία (--judge)
      (:file "legal-eval")              ; Η ΜΕΤΡΗΜΕΝΗ ΣΚΑΛΑ: benchmark αφήγηση→γεγονότα→υπαγωγή· απομονώνει τη ΓΕΙΩΣΗ (①μηχανή-σε-gold ②end-to-end ③χάσμα) — προβολή casegrammar+subsumption (--legal-eval)
+     (:file "capability-gate")         ; ΤΟ ΜΕΤΡΟ ΩΣ RATCHET: legal-eval + judge vs committed baseline — η ικανότητα δεν οπισθοδρομεί ποτέ σιωπηλά (--capability-gate/--capability-baseline)
      (:file "autonomy-missions")       ; ΑΠΟΣΤΟΛΕΣ αυτόνομου οδηγού: δεοντική σάρωση κωδίκων → ουρά προτάσεων (--autonomous)
      (:file "self-extension")          ; Σ11 ΑΥΤΟ-ΕΠΕΚΤΑΣΗ: κενά→αυτο-προτάσεις γνώσης, σκιωδώς δοκιμασμένες (--self-extend) + πύλη
      (:file "approval-policy")        ; Φ5: ΕΓΚΡΙΣΕΙΣ ΚΑΤΑ ΚΛΑΣΗ με μετρημένη ακρίβεια (--policies/--policy-approve) + πύλη

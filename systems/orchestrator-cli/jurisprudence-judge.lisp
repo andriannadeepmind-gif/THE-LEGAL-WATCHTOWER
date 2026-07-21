@@ -75,9 +75,14 @@
                                           (and (= (cdr x) (cdr y)) (string< (car x) (car y))))))))
       (mapcar #'car (subseq ranked 0 (min k (length ranked)))))))
 
-(defun run-judge ()
-  "--judge : το πείραμα leave-one-out σε ΟΛΗ τη νομολογία του γράφου. Τυπώνει
-   hit@1/5/10, το τίμιο ταβάνι, και τις χειρότερες αστοχίες. Ντετερμινιστικό."
+(defun %judge-metrics ()
+  "Η ΜΙΑ έδρα υπολογισμού των μετρικών leave-one-out — ΚΑΘΑΡΟ data plist, καμία
+   εκτύπωση: (:decisions :multi :trials :predictable :hit1 :hit5 :hit10 :misses
+   :dataset-stamp). Το run-judge ΤΥΠΩΝΕΙ από εδώ και το --capability-gate
+   ΣΥΓΚΡΙΝΕΙ από εδώ (ratchet) — κανένα stdout scraping, καμία δεύτερη υλοποίηση.
+   :dataset-stamp = content-addressed ταυτότητα του κρινόμενου dataset (sha256
+   πάνω σε sorted «dec|art,art,…» γραμμές): αλλαγή νομολογίας ⇒ άλλο stamp ⇒ η
+   ratchet σύγκριση αρνείται ρητά (συνειδητό re-baseline), δεν συγκρίνει ανόμοια."
   (let* ((dec-arts (%judge-decision-citations))
          (pairs (%judge-pair-counts dec-arts))
          ;; πόσες φορές εμφανίζεται κάθε διάταξη συνολικά (για το τίμιο ταβάνι)
@@ -100,19 +105,42 @@
                         ((and pos (< pos 5)) (incf hit5) (incf hit10))
                         (pos (incf hit10))
                         (t (push (list dec held) misses)))))))))
-      (format t "~%── ΚΡΙΤΗΣ-ΝΟΜΟΛΟΓΙΑ: πρόβλεψη συν-εφαρμογής (leave-one-out) ──~%")
-      (format t "  αποφάσεις με ≥2 διατάξεις: ~D · δοκιμές: ~D~%"
-              (count-if (lambda (e) (>= (length (cdr e)) 2)) dec-arts) trials)
-      (format t "  τίμιο ταβάνι (κρυμμένη υπάρχει αλλού): ~D/~D (~,1F%)~%"
-              predictable trials (if (plusp trials) (* 100.0 (/ predictable trials)) 0))
-      (when (plusp predictable)
-        (format t "  hit@1:  ~D/~D (~,1F%)~%" hit1 predictable (* 100.0 (/ hit1 predictable)))
-        (format t "  hit@5:  ~D/~D (~,1F%)~%" hit5 predictable (* 100.0 (/ hit5 predictable)))
-        (format t "  hit@10: ~D/~D (~,1F%)~%" hit10 predictable (* 100.0 (/ hit10 predictable))))
-      (when misses
-        (format t "~%  Αστοχίες εκτός top-10 (~D) — οι πρώτες 8, ορατές:~%" (length misses))
-        (dolist (m (subseq misses 0 (min 8 (length misses))))
-          (format t "    • ~A δεν προέβλεψε ~A~%" (first m) (second m))))
-      0)))
+      (list :decisions (length dec-arts)
+            :multi (count-if (lambda (e) (>= (length (cdr e)) 2)) dec-arts)
+            :trials trials :predictable predictable
+            :hit1 hit1 :hit5 hit5 :hit10 hit10 :misses misses
+            :dataset-stamp
+            (orchestrator.hash-authority:compute-hash
+             (with-output-to-string (s)
+               (dolist (line (sort (mapcar (lambda (e)
+                                             (format nil "~A|~{~A~^,~}"
+                                                     (car e)
+                                                     (sort (copy-list (cdr e)) #'string<)))
+                                           dec-arts)
+                                   #'string<))
+                 (write-line line s)))
+             :algorithm :sha256)))))
+
+(defun run-judge ()
+  "--judge : το πείραμα leave-one-out σε ΟΛΗ τη νομολογία του γράφου. Τυπώνει
+   hit@1/5/10, το τίμιο ταβάνι, και τις χειρότερες αστοχίες. Ντετερμινιστικό.
+   Οι αριθμοί προέρχονται ΑΠΟΚΛΕΙΣΤΙΚΑ από τη ΜΙΑ έδρα %judge-metrics."
+  (let* ((m (%judge-metrics))
+         (trials (getf m :trials)) (predictable (getf m :predictable))
+         (hit1 (getf m :hit1)) (hit5 (getf m :hit5)) (hit10 (getf m :hit10))
+         (misses (getf m :misses)))
+    (format t "~%── ΚΡΙΤΗΣ-ΝΟΜΟΛΟΓΙΑ: πρόβλεψη συν-εφαρμογής (leave-one-out) ──~%")
+    (format t "  αποφάσεις με ≥2 διατάξεις: ~D · δοκιμές: ~D~%" (getf m :multi) trials)
+    (format t "  τίμιο ταβάνι (κρυμμένη υπάρχει αλλού): ~D/~D (~,1F%)~%"
+            predictable trials (if (plusp trials) (* 100.0 (/ predictable trials)) 0))
+    (when (plusp predictable)
+      (format t "  hit@1:  ~D/~D (~,1F%)~%" hit1 predictable (* 100.0 (/ hit1 predictable)))
+      (format t "  hit@5:  ~D/~D (~,1F%)~%" hit5 predictable (* 100.0 (/ hit5 predictable)))
+      (format t "  hit@10: ~D/~D (~,1F%)~%" hit10 predictable (* 100.0 (/ hit10 predictable))))
+    (when misses
+      (format t "~%  Αστοχίες εκτός top-10 (~D) — οι πρώτες 8, ορατές:~%" (length misses))
+      (dolist (m2 (subseq misses 0 (min 8 (length misses))))
+        (format t "    • ~A δεν προέβλεψε ~A~%" (first m2) (second m2))))
+    0))
 
 (register-command "--judge" (lambda (a) (declare (ignore a)) (run-judge)))
