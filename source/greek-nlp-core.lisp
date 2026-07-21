@@ -259,13 +259,18 @@
     (setf (lexicon-loaded-p lex) t)))
 
 (defun load-lisp-lexicon (lex path)
-  "Load Lisp-format lexicon: ((word . features) ...)"
-  (with-open-file (in path :direction :input)
-    (loop for entry = (read in nil :eof)
-          until (eq entry :eof)
-          do (destructuring-bind (word . features) entry
-               (setf (gethash (string-downcase word) (lexicon-cache lex))
-                     features)))))
+  "Load Lisp-format lexicon: ((word . features) …) — DATA-ONLY μέσω της ΜΙΑΣ safe-read έδρας.
+   [κύκλος-2] Το παλιό (read in nil :eof) σε DEFAULT package + *read-eval* T ήταν ΑΦΥΛΑΚΤΟ RCE
+   (#. σε lexicon αρχείο εκτελούνταν). Τώρα read-data-file-sequence (*read-eval* nil + #-deny +
+   depth/atom/byte caps + total data-only): τα features είναι keywords/strings/numbers/lists —
+   καμία εκτέλεση. (Καμία legacy απώλεια: 0 :lisp-format callers, 0 data αρχεία στο δίσκο.)"
+  (multiple-value-bind (entries status)
+      (orchestrator.safe-read:read-data-file-sequence path)
+    (unless (member status '(:ok :empty))
+      (error 'nlp-error :message (format nil "μη αναγνώσιμο lisp lexicon (~A): ~A" status path)))
+    (dolist (entry entries)
+      (destructuring-bind (word . features) entry
+        (setf (gethash (string-downcase word) (lexicon-cache lex)) features)))))
 
 (defun load-tsv-lexicon (lex path)
   "Load TSV lexicon: word<tab>lemma<tab>pos<tab>features"

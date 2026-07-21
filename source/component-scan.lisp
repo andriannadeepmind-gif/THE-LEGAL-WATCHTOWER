@@ -103,13 +103,15 @@
   (or *manifest*
       (setf *manifest*
             (let ((h (make-hash-table :test 'equal)))
-              (ignore-errors
-                (with-open-file (s (%manifest-file) :external-format :utf-8
-                                                    :if-does-not-exist nil)
-                  (when s
-                    (let ((*read-eval* nil))   ; ΜΟΝΟ δεδομένα — ποτέ εκτέλεση
-                      (dolist (e (read s nil nil))
-                        (setf (gethash (getf e :file) h) e))))))
+              ;; [κύκλος-2] ΜΙΑ safe-read έδρα· το manifest είναι data-only (strings/keywords/
+              ;; lists — %scan-file-text επιστρέφει strings). Το παλιό διάβαζε σε DEFAULT package
+              ;; με μόνο *read-eval* nil (χωρίς #-deny/caps). Absent/κενό/μη-αναγνώσιμο → κενό
+              ;; manifest (όπως το παλιό ignore-errors).
+              (multiple-value-bind (entries status)
+                  (orchestrator.safe-read:read-data-file (%manifest-file))
+                (when (eq status :ok)
+                  (dolist (e entries)
+                    (setf (gethash (getf e :file) h) e))))
               h))))
 
 (defun manifest-count () (hash-table-count (%load-manifest)))
