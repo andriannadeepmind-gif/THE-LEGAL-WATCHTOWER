@@ -199,6 +199,15 @@ Write-if-changed στη ΜΙΑ έδρα εγγραφής (write-utf8-file): πα
 ανέγγιχτα (mtime/git καθαρά, νεκρό IO). Lock 15/15 + inventory 127/127 + census
 PASS. Δηλωμένο όριο: skip-generation βαθμίδα = μελλοντικός σχεδιασμός.
 
+## Π7-U.1 Φ1 — [0109] ΠΡΩΤΗ ΤΕΚΜΗΡΙΩΜΕΝΗ ΔΙΟΡΘΩΣΗ ΠΗΓΗΣ
+
+Άρθρο 4 Σ διορθωμένο ΜΕΣΩ της υπάρχουσας έδρας errata (config → %apply-errata
+→ provenance sidecar): «συμφέροντα» (text-layer απόδειξη), «προβλέπει
+ειδικότερα» (ελάττωμα text layer πηγής, 600dpi εικόνα + επικύρωση δημιουργού).
+Απογραφή: extractor ντετερμινιστικός 124/124 — 0 κρυφές αποκλίσεις. Golden
+constitution συνειδητά 153056b5→0a5ba296. Πύλες/σουίτες πράσινες. Υπόλοιπα με
+φάση: :correct edge στον γράφο (Φ1β), adapter reflow κλάση, N-κανάλια.
+
 ## +3 ΘΕΩΡΗΜΑ Στάδιο 2 — [0105] ΜΕΤΑΘΕΣΗ ΚΥΡΙΑΡΧΙΑΣ
 
 Τα per-article artifacts ΔΕΝ αποδίδονται πια από raw IIR: το generate-rdf-stage

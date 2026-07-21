@@ -63,6 +63,22 @@ source:
   # web-scrape κατάλοιπα («<< Προηγούμενο», υποσημειώσεις).
   pdf: "input/syntagma_2019.pdf"
   json: "deployment/data/syntagma_clean.json"
+  # [Π7-U.1 Φ1 / 0109] ΔΗΛΩΜΕΝΑ ERRATA ΠΗΓΗΣ — η ΜΙΑ έδρα τεκμηριωμένης
+  # εκδοτικής διόρθωσης (εφαρμόζεται στο --materialize-pdf, ΑΚΡΙΒΩΣ μία φορά,
+  # καταγράφεται στο provenance sidecar). ΠΟΤΕ σιωπηλό patch: κάθε εγγραφή
+  # φέρει άρθρο, ακριβές κείμενο, αιτιολογία και σελίδα της πηγής
+  # (input/syntagma_2019.pdf, sha256:fd72ebd5…, έκδοση Βουλής 2020).
+  errata:
+    - article: "4"
+      from: "εθνικά συμφέρον τα"
+      to: "εθνικά συμφέροντα"
+      reason: "Σπασμένο όριο λέξης στην εξαγωγή (line-boundary reflow)· το text layer της πηγής φέρει «συμφέροντα» ακέραιο (επαληθεύτηκε με ανεξάρτητο extractor poppler/pdftotext)."
+      page: 29
+    - article: "4"
+      from: "που προβλέπειειδικότερα ο νόμος"
+      to: "που προβλέπει ειδικότερα ο νόμος"
+      reason: "Ελάττωμα του text layer ΤΗΣ ΠΗΓΗΣ: κανένας χαρακτήρας κενού ανάμεσα σε «προβλέπει»/«ειδικότερα» (ένα word-run στο bbox), ενώ η τυπωμένη σελίδα φέρει λεπτό οπτικό κενό (600dpi απόδοση, σελ. 29)· επικυρώθηκε από τον δημιουργό επί της εικόνας 2026-07-21."
+      page: 29
   # Official state source (κρατική πηγή) for --fetch-sources / the ingestion cron.
   # Hellenic Parliament — official Constitution text
   url: "https://www.hellenicparliament.gr/Vouli-ton-Ellinon/To-Politevma/Syntagma/"
