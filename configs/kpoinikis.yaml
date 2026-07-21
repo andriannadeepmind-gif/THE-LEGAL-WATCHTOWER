@@ -133,7 +133,19 @@ html_generation:
 
 versioning:
   track_amendments: true
-  amendments: []
+  # [#34, 2026-07-21] Γεγονός τροποποίησης ΧΩΡΙΣ κείμενο (fail-closed· βλ.
+  # docs/CURRENTNESS-34.md και configs/astikos.yaml). Πηγή στόχου: [0067].
+  amendments:
+    - id: "n5303-2026"
+      date_applicability: "2026-09-16"
+      recorded_at: "2026-07-21"
+      fek: "ΦΕΚ Α' 81/2026"
+      description: >-
+        Ν.5303/2026 — στόχος από [0067]: άρθρο 32Α. Το 32Α ΔΕΝ υπάρχει στο τρέχον
+        σώμα (προφανής ΠΡΟΣΘΗΚΗ από τον νόμο)· το mark-amended με if-missing skip
+        το ανέχεται τίμια — η προσθήκη ΔΕΝ αναπαρίσταται χωρίς το επίσημο κείμενο.
+      articles_amended: ["32Α"]
+      articles_repealed: []
 
 article_defaults:
   in_force: true

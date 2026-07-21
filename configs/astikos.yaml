@@ -142,7 +142,38 @@ html_generation:
 
 versioning:
   track_amendments: true
-  amendments: []
+  # [#34, 2026-07-21] Καταγραφή ΓΕΓΟΝΟΤΩΝ τροποποίησης ΧΩΡΙΣ κείμενο (fail-closed):
+  # το επίσημο ΦΕΚ ήταν απρόσιτο από το περιβάλλον εργασίας (et.gr/blob: 403) και
+  # ΠΟΤΕ δεν εισάγεται νομικό κείμενο από μνήμη LLM. Τα records εδώ είναι ΜΟΝΟ
+  # μεταδεδομένα (mark-amended provenance, διτεμπορικά: recorded_at = πότε το
+  # μάθαμε, date_applicability = πότε ισχύει)· το κείμενο συμπληρώνεται μέσω του
+  # runbook docs/CURRENTNESS-34.md (fetch από ελληνική IP → amendment-extractor).
+  # Πηγές στόχων: [0067] owner-run δρομολόγηση Α'81 + διπλή ανεξάρτητη επιβεβαίωση
+  # ([0001]/[0018]/STATE-OF-PLAY#44).
+  amendments:
+    - id: "n5221-2025"
+      # ΦΕΚ Α' 133/2025 — ημερομηνία δημοσίευσης ΑΓΝΩΣΤΗ στο repo (δεν εφευρίσκεται).
+      date_applicability: "2026-01-01"
+      recorded_at: "2026-07-21"
+      fek: "ΦΕΚ Α' 133/2025"
+      description: >-
+        Ν.5221/2025 — καταγεγραμμένο ως τροποποιητικό ΑΚ/ΚΠολΔ (διπλή ανεξάρτητη
+        επιβεβαίωση [0001]/[0018])· ΚΑΤΑΛΟΓΟΣ ΑΡΘΡΩΝ-ΣΤΟΧΩΝ ΑΓΝΩΣΤΟΣ στο repo —
+        εκκρεμεί το επίσημο κείμενο (docs/CURRENTNESS-34.md). Record-μόνο-γεγονός:
+        καμία πράξη επί άρθρων μέχρι το ΦΕΚ.
+      articles_amended: []
+      articles_repealed: []
+    - id: "n5303-2026"
+      date_applicability: "2026-09-16"
+      recorded_at: "2026-07-21"
+      fek: "ΦΕΚ Α' 81/2026"
+      description: >-
+        Ν.5303/2026 (νέο κληρονομικό) — στόχοι από τη δρομολόγηση του owner run
+        [0067] (amendment-extractor στο πραγματικό Α'81). ΜΕΡΙΚΟΣ κατάλογος όπως
+        σώθηκε στην κατάθεση· πλήρης + κείμενο με το επίσημο ΦΕΚ
+        (docs/CURRENTNESS-34.md). Μόνο mark-amended provenance — όχι νέο κείμενο.
+      articles_amended: [1521, 1522, 1527, 1616, 1625]
+      articles_repealed: []
 
 article_defaults:
   in_force: true

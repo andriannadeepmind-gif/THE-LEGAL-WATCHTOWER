@@ -135,7 +135,30 @@ html_generation:
 
 versioning:
   track_amendments: true
-  amendments: []
+  # [#34, 2026-07-21] Γεγονότα τροποποίησης ΧΩΡΙΣ κείμενο (fail-closed· βλ.
+  # docs/CURRENTNESS-34.md και το αναλυτικό σχόλιο στο configs/astikos.yaml).
+  # Πηγές στόχων: [0067] owner-run δρομολόγηση Α'81 + [0001]/[0018].
+  amendments:
+    - id: "n5221-2025"
+      date_applicability: "2026-01-01"
+      recorded_at: "2026-07-21"
+      fek: "ΦΕΚ Α' 133/2025"
+      description: >-
+        Ν.5221/2025 — καταγεγραμμένο ως τροποποιητικό ΑΚ/ΚΠολΔ (διπλή ανεξάρτητη
+        επιβεβαίωση)· ΚΑΤΑΛΟΓΟΣ ΑΡΘΡΩΝ-ΣΤΟΧΩΝ ΑΓΝΩΣΤΟΣ στο repo — εκκρεμεί το
+        επίσημο κείμενο. Record-μόνο-γεγονός: καμία πράξη επί άρθρων μέχρι το ΦΕΚ.
+      articles_amended: []
+      articles_repealed: []
+    - id: "n5303-2026"
+      date_applicability: "2026-09-16"
+      recorded_at: "2026-07-21"
+      fek: "ΦΕΚ Α' 81/2026"
+      description: >-
+        Ν.5303/2026 — στόχοι από [0067] (808, 813, 814, 640§2, 975)· ο κατάλογος
+        στην κατάθεση ήταν ΡΗΤΑ ΜΕΡΙΚΟΣ («975…») — πλήρωση με το επίσημο ΦΕΚ.
+        Μόνο mark-amended provenance — όχι νέο κείμενο.
+      articles_amended: [640, 808, 813, 814, 975]
+      articles_repealed: []
 
 article_defaults:
   in_force: true
