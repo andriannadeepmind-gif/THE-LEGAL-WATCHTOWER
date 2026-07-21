@@ -63,6 +63,10 @@
    #:version-at #:snapshot-at #:verify-chain #:graph-chain-head #:graph-latest-at #:graph-seq
    #:version-chain-stale #:version-chain-stale-expected #:version-chain-stale-actual
    #:make-edge-spec #:make-version-spec
+   ;; [+3/0104] πόρτα εισδοχής κειμένου + τυπωμένες παρατηρήσεις
+   #:text-hygiene #:graph-observations
+   #:text-observation #:text-observation-p
+   #:to-provision-id #:to-version-hash #:to-findings #:to-recorded-from
    ;; [0088 Φ7 Π1] Formal Temporal Semantics — effectivity conditions
    #:make-effectivity-condition #:condition-id #:condition-ast #:condition-class
    #:valid-condition-ast-p #:instrument-kinds
@@ -265,6 +269,18 @@
                  ; NIL = ως τώρα (όλη η ακάλυπτη περίοδος — υπερ-προσεκτικό)
   recorded-from)
 
+(defstruct (text-observation (:conc-name to-))
+  ;; [+3 ΘΕΩΡΗΜΑ / 0104] Τυπωμένη ΠΑΡΑΤΗΡΗΣΗ πάνω σε κείμενο έκδοσης — ΠΟΤΕ
+  ;; επέμβαση στο κείμενο. Η πόρτα εισδοχής (make-version-spec) καθιστά ΔΟΜΙΚΑ
+  ;; αδύνατη τη σιωπηλή είσοδο κειμένου με σύνταξη-μεταφοράς: είτε το κείμενο
+  ;; είναι καθαρό, είτε η εισδοχή συνοδεύεται ΥΠΟΧΡΕΩΤΙΚΑ από αυτό το record
+  ;; (journaled, replayed, ορατό στο serving). Το κείμενο μένει ΑΘΙΚΤΟ —
+  ;; αυθεντία ≠ αλήθεια: η γνώμη για την πηγή ζει σε δικό της στρώμα.
+  provision-id
+  version-hash   ; η έκδοση που αφορά (declare-before-reference στο replay)
+  findings       ; κανονική λίστα keywords ⊆ +text-hygiene-findings+
+  recorded-from)
+
 ;;; ----------------------------------------------------------------------------
 ;;; Κανονικά hashes — ΜΟΝΟ μέσω της έδρας canonical serialization (Φ1β spec)
 ;;; ----------------------------------------------------------------------------
@@ -413,6 +429,7 @@
   edges                 ; edge-id → amendment-edge
   quarantine            ; λίστα quarantined-edge
   gaps                  ; λίστα knowledge-gap
+  observations          ; [+3/0104] λίστα text-observation (σειρά εισαγωγής)
   conditions            ; [Φ7 Π2] condition-id → effectivity-condition (equal)
   cond-events           ; [Φ7 Π2] condition-id → λίστα condition-event (equal)
   regimes               ; [Φ7 Π4] λίστα regime-edge (σειρά εισαγωγής, νεότερο πρώτο)
@@ -433,7 +450,8 @@
                :edges (make-hash-table :test 'equal)
                :conditions (make-hash-table :test 'equal)
                :cond-events (make-hash-table :test 'equal)
-               :quarantine '() :gaps '() :regimes '() :chain "genesis"))
+               :quarantine '() :gaps '() :observations '() :regimes '()
+               :chain "genesis"))
 
 (defun graph-seq (graph)
   "[Ε] Ο αύξων αριθμός journal γραμμών — μαζί με το chain-head ορίζει το
@@ -580,12 +598,58 @@
 ;;; Δημόσιες πράξεις — ΟΛΕΣ journal-first
 ;;; ----------------------------------------------------------------------------
 
+(defparameter +text-hygiene-findings+
+  '(:ascii-quote :unbalanced-guillemets :fek-wrap :replacement-char)
+  "[+3/0104] Το ΚΛΕΙΣΤΟ σύνολο ευρημάτων σύνταξης-μεταφοράς. Κανονική σειρά =
+   αυτή η λίστα (το record-id της παρατήρησης παράγεται από αυτήν).")
+
+(defun text-hygiene (text)
+  "[+3/0104] Η ΜΙΑ έδρα υγιεινής κειμένου (καθαρή, χωρίς IO). Επιστρέφει
+   κανονική λίστα ευρημάτων ⊆ +text-hygiene-findings+ (κενή = καθαρό):
+     :ascii-quote           — ASCII \" αντί ελληνικών «» (τυπογραφία εξαγωγής)
+     :unbalanced-guillemets — πλήθος « ≠ πλήθος » (σφάλμα μεταγραφής)
+     :fek-wrap              — ΟΛΟ το σώμα μέσα σε ΕΝΑ ζεύγος «…» (σύνταξη
+                              παράθεσης του τροποποιητικού ΦΕΚ, όχι ο νόμος)
+     :replacement-char      — U+FFFD (κατεστραμμένη αποκωδικοποίηση)
+   Δεν κρίνει ΝΟΜΙΚΗ ορθότητα — μόνο μηχανικά αποδείξιμη σύνταξη μεταφοράς."
+  (check-type text string)
+  (let* ((opens (count #\« text))
+         (closes (count #\» text))
+         (trimmed (string-trim '(#\Space #\Tab #\Newline #\Return) text))
+         (n (length trimmed))
+         (wrap (and (>= n 2) (plusp opens) (= opens closes)
+                    (char= (char trimmed 0) #\«)
+                    (char= (char trimmed (1- n)) #\»)
+                    ;; το ΑΡΧΙΚΟ « κλείνει μόνο στο ΤΕΛΙΚΟ » (βάθος>0 ενδιάμεσα)
+                    (loop with depth = 0
+                          for i from 0 below n
+                          for ch = (char trimmed i)
+                          do (cond ((char= ch #\«) (incf depth))
+                                   ((char= ch #\») (decf depth)))
+                          when (and (zerop depth) (< i (1- n))) return nil
+                          finally (return (zerop depth))))))
+    (loop for f in +text-hygiene-findings+
+          when (ecase f
+                 (:ascii-quote (find #\" text))
+                 (:unbalanced-guillemets (/= opens closes))
+                 (:fek-wrap wrap)
+                 (:replacement-char (find (code-char #xFFFD) text)))
+            collect f)))
+
 (defun make-version-spec (&key provision-id text heading valid-from commencement
-                               (status :in-force) (previous :genesis) assurance)
+                               (status :in-force) (previous :genesis) assurance
+                               hygiene hygiene-waiver)
   "Υποψήφιο περιεχόμενο έκδοσης (πριν την εισδοχή). Fail-closed στον χρόνο.
    [Φ7-HARDENING #1] ΑΚΡΙΒΩΣ ΜΙΑ πηγή έναρξης: είτε VALID-FROM (legal-date ⇒
    (:fixed d)) είτε COMMENCEMENT (το sum type αυτούσιο) — ποτέ και τα δύο,
-   ποτέ sentinel string."
+   ποτέ sentinel string.
+   [+3/0104 ΠΟΡΤΑ ΕΙΣΔΟΧΗΣ] Η υγιεινή υπολογίζεται ΕΔΩ (η μία είσοδος ΚΑΘΕ
+   κειμένου — genesis και ακμές). Κείμενο με ευρήματα ΔΕΝ εισέρχεται σιωπηλά:
+   απαιτείται HYGIENE-WAIVER που κατονομάζει ΑΚΡΙΒΩΣ τα ευρήματα (συνειδητή
+   αναγνώριση — π.χ. bootstrap υπάρχουσας εξαγωγής), και το spec φέρει :hygiene
+   ώστε η εισδοχή να journal-άρει text-observation. Καθαρό κείμενο με waiver =
+   σφάλμα (κανένα μπλανκ waiver). Το :hygiene σε επαν-ομαλοποίηση (σπεκ που
+   ξαναπερνά την πόρτα) επαληθεύεται κατά του επανυπολογισμού."
   (when (and valid-from commencement)
     (error 'invalid-edge :reason "make-version-spec: valid-from ΚΑΙ commencement — ακριβώς μία πηγή έναρξης"))
   (let ((c (cond (commencement (%require-commencement commencement "make-version-spec"))
@@ -596,9 +660,24 @@
     (unless (member assurance '(:verified :extracted-verified :attested-manual
                                 :reconstructed :legacy-unverifiable))
       (error 'invalid-edge :reason (format nil "άγνωστο assurance ~S" assurance)))
-    (list :provision-id provision-id :text text :heading heading
-          :commencement c :status status :previous previous
-          :assurance assurance)))
+    (let ((findings (text-hygiene text)))
+      (when (and hygiene (not (equal hygiene findings)))
+        (error 'invalid-edge
+               :reason (format nil "make-version-spec ~A: δηλωμένο :hygiene ~S ≠ επανυπολογισμένο ~S — πλαστή δήλωση υγιεινής"
+                               provision-id hygiene findings)))
+      (cond
+        ((and findings (null hygiene) (not (equal hygiene-waiver findings)))
+         (error 'invalid-edge
+                :reason (format nil "make-version-spec ~A: κείμενο με σύνταξη-μεταφοράς ~S — εισδοχή ΜΟΝΟ με :hygiene-waiver που τα κατονομάζει ΑΚΡΙΒΩΣ (τίποτα σιωπηλό)"
+                                provision-id findings)))
+        ((and (null findings) hygiene-waiver)
+         (error 'invalid-edge
+                :reason (format nil "make-version-spec ~A: :hygiene-waiver ~S σε ΚΑΘΑΡΟ κείμενο — κανένα μπλανκ/stale waiver"
+                                provision-id hygiene-waiver))))
+      (append (list :provision-id provision-id :text text :heading heading
+                    :commencement c :status status :previous previous
+                    :assurance assurance)
+              (when findings (list :hygiene findings))))))
 
 (defun %normalize-version-spec (vs)
   "[Φ7-HARDENING #1] Η ΜΙΑ είσοδος version-spec στο admit-edge!: spec με
@@ -653,6 +732,36 @@
     (push g (vg-gaps graph))
     g))
 
+(defun %observation-rid (version-hash findings)
+  "[+3/0104] Semantic record-id παρατήρησης — ξαναβγαίνει από τα πεδία (③)."
+  (format nil "obs:~A:~{~(~A~)~^,~}" version-hash findings))
+
+(defun %journal-observation! (graph provision-id version-hash findings)
+  "[+3/0104] Journal-άρει text-observation ΜΕΤΑ την εγκατάσταση της έκδοσης
+   που αφορά (declare-before-reference). Καλείται ΜΟΝΟ από τις δύο εισδοχές
+   (submit-genesis!/admit-edge!) όταν το spec φέρει :hygiene — η σύζευξη
+   spec↔record είναι δομική, όχι πειθαρχία καλούντος."
+  (let* ((rid (%observation-rid version-hash findings))
+         (line (%journal! graph (list :kind :text-observation :record-id rid
+                                      :provision-id provision-id
+                                      :version version-hash
+                                      :findings findings
+                                      :at (orchestrator.journal:iso-now))
+                          :verify nil))
+         (o (make-text-observation :provision-id provision-id
+                                   :version-hash version-hash
+                                   :findings findings
+                                   :recorded-from (%recorded-of line))))
+    (push o (vg-observations graph))
+    o))
+
+(defun graph-observations (graph &optional provision-id)
+  "[+3/0104] Οι τυπωμένες παρατηρήσεις — όλες, ή της διάταξης."
+  (if provision-id
+      (remove provision-id (vg-observations graph)
+              :key #'to-provision-id :test-not #'equal)
+      (vg-observations graph)))
+
 (defun submit-genesis! (graph vspec &key derivation)
   "Εισδοχή έκδοσης-γένεσης (bootstrap/import) — δεν προέρχεται από ακμή.
    Ο έλεγχος σύγκρουσης (G4) προηγείται ΚΑΘΕ εγγραφής — κανένα ορφανό record."
@@ -687,6 +796,10 @@
              :created-by (or derivation "bootstrap")
              :assurance (getf vspec :assurance))))
     (%install-version graph v)
+    ;; [+3/0104] spec με ευρήματα ⇒ ΥΠΟΧΡΕΩΤΙΚΟ journaled observation
+    (when (getf vspec :hygiene)
+      (%journal-observation! graph (getf vspec :provision-id) vh
+                             (getf vspec :hygiene)))
     v))
 
 (defun quarantine! (graph material reason)
@@ -849,6 +962,10 @@
                          :status (getf vs :status) :previous-version-hash prev-hash
                          :created-by eid :assurance (getf vs :assurance))))
                 (%install-version graph v)
+                ;; [+3/0104] ίδια δομική σύζευξη και στη δεύτερη εισδοχή
+                (when (getf vs :hygiene)
+                  (%journal-observation! graph (getf vs :provision-id) vh
+                                         (getf vs :hygiene)))
                 (push v new-versions))))
           (values edge (nreverse new-versions)))))))
 
@@ -1204,6 +1321,30 @@
                                         :reason (getf line :reason)
                                         :recorded-from (%recorded-of line))
                  (vg-quarantine graph)))
+          (:text-observation
+           ;; [+3/0104] semantic ③ + declare-before-reference στην έκδοση
+           (let ((v (gethash (getf line :version) (vg-versions graph)))
+                 (findings (getf line :findings)))
+             (unless v
+               (error 'journal-corruption
+                      :reason (format nil "text-observation ~A: ανύπαρκτη έκδοση ~A" rid (getf line :version))))
+             (unless (and (consp findings)
+                          (every (lambda (f) (member f +text-hygiene-findings+))
+                                 findings)
+                          (equal rid (%observation-rid (getf line :version) findings)))
+               (error 'journal-corruption
+                      :reason (format nil "text-observation ~A: record-id ≠ πεδία ή ευρήματα εκτός κλειστού συνόλου ~S" rid findings)))
+             ;; η παρατήρηση οφείλει να ΑΛΗΘΕΥΕΙ για το κείμενο που δείχνει —
+             ;; πλαστό/stale εύρημα πάνω σε καθαρό κείμενο = διαφθορά
+             (unless (equal findings (text-hygiene (tv-text v)))
+               (error 'journal-corruption
+                      :reason (format nil "text-observation ~A: ευρήματα ~S ≠ επανυπολογισμός στο κείμενο της έκδοσης — ψευδής παρατήρηση" rid findings)))
+             (push (make-text-observation
+                    :provision-id (getf line :provision-id)
+                    :version-hash (getf line :version)
+                    :findings findings
+                    :recorded-from (%recorded-of line))
+                   (vg-observations graph))))
           (:knowledge-gap
            (push (make-knowledge-gap :provision-id (getf line :provision-id)
                                      :act-ref (getf line :act-ref)

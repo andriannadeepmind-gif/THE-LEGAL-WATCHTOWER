@@ -131,7 +131,11 @@
                      :provision-id pid :text text :heading heading
                      :valid-from valid-from
                      :status (if repealed :repealed :in-force)
-                     :assurance :extracted-verified)  ; όλα τα 6 prov stamps φέρουν source_digest
+                     :assurance :extracted-verified  ; όλα τα 6 prov stamps φέρουν source_digest
+                     ;; [+3/0104] ΤΙΜΙΟ bootstrap: η υπάρχουσα εξαγωγή εισέρχεται
+                     ;; ΩΣ ΕΧΕΙ, αλλά ΠΟΤΕ σιωπηλά — κάθε εύρημα σύνταξης-μεταφοράς
+                     ;; αναγνωρίζεται ρητά και journal-άρεται ως text-observation.
+                     :hygiene-waiver (orchestrator.version-graph:text-hygiene text))
                     :derivation (format nil "bootstrap:~A" corpus-id))
                    (incf imported)
                    ;; κενά γνώσης: ΚΑΘΕ αναθεώρηση που άγγιξε το άρθρο —

@@ -193,6 +193,18 @@ Write-if-changed στη ΜΙΑ έδρα εγγραφής (write-utf8-file): πα
 ανέγγιχτα (mtime/git καθαρά, νεκρό IO). Lock 15/15 + inventory 127/127 + census
 PASS. Δηλωμένο όριο: skip-generation βαθμίδα = μελλοντικός σχεδιασμός.
 
+## +3 ΘΕΩΡΗΜΑ (εντολή δημιουργού) — [0104], Στάδιο 1
+
+Εγκεκριμένο ταβάνι: consolidate(date) = fold(genesis, amendments ≤ date) —
+κείμενο ως παραγόμενη απόδειξη, όχι αποθηκευμένη επιμέλεια. Στάδιο 1 ΚΛΕΙΣΤΟ:
+πόρτα εισδοχής κειμένου στη ΜΙΑ είσοδο (make-version-spec): σύνταξη-μεταφοράς
+(ascii-quote/αταίριαστα «»/ΦΕΚ-wrap/U+FFFD) ΔΕΝ εισέρχεται σιωπηλά — μόνο με
+waiver που κατονομάζει ΑΚΡΙΒΩΣ + journaled :text-observation (semantic ③,
+replay επανυπολογίζει στο κείμενο). Κείμενο ΑΘΙΚΤΟ (αυθεντία ≠ αλήθεια).
+Locks: text-admission 19/19, parity 31/31. Επόμενα: Στάδιο 2 μετάθεση
+κυριαρχίας (artifacts από το fold), Στάδιο 3 text-bearing operators + πύλη,
+Στάδιο 4 άγκυρα ΕΤ + N-version. Task #73.
+
 ## 2ος OWNER ΓΥΡΟΣ (2 κόκκινα) + ΑΥΤΟΕΛΕΓΧΟΣ ΠΥΛΩΝ — [0103]
 
 Owner γύρος 2: dependency-contract (builder δεν αντέγραφε deps.lock ⇒ Dockerfile
