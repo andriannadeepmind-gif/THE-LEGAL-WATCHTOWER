@@ -172,3 +172,18 @@ kpolitikis ⇒ exit 1 ονομαστικά· σβησμένο σώμα astikos �
 census PASS. **ΤΙΜΙΑ:** CI loop αποδεικνύεται στο πρώτο CI run + owner Docker·
 κατηγορία-Γ fixtures δευτερεύον δηλωμένο υπόλοιπο· «ταβάνι»-χάρτης (benchmark
 κρυφού σετ, γείωση #36, ΑΚ/ΚΠολΔ #34, αντιπαλικός βρόχος ουσίας) ανοιχτός.
+
+## #34 ΦΑΣΗ-Α — [0099], HEAD `4e3da7f5`
+
+Εντολή: «ξεκίνα με το 3 — ανώτατη υλοποίηση». Επίσημο ΦΕΚ ΑΠΡΟΣΙΤΟ από το
+περιβάλλον (blob/et.gr/WebFetch: 403) + κανένα νομικό κείμενο από μνήμη LLM ⇒
+ανώτατη εφικτή μορφή: **διτεμπορική καταγραφή των γεγονότων ΧΩΡΙΣ κείμενο** στη
+ΜΙΑ έδρα amendment records. n5221-2025 (Α'133, ισχύς 1/1/2026 ΗΔΗ): record-μόνο,
+στόχοι ΑΓΝΩΣΤΟΙ-δηλωμένοι — staleness πλέον μηχανικό γεγονός ([0018] Ω+6).
+n5303-2026 (Α'81, ισχύς 16/9/2026): στόχοι [0067] — astikos ×5, kpolitikis ×5
+(ΡΗΤΑ μερικός), kpoinikis 32Α (προσθήκη⇒skip)· as-of: σήμερα ORIGINAL, από 16/9
+AMENDED. Goldens astikos/kpolitikis: συνειδητή αναγέννηση (GOLDEN_WRITE=1,
+:semantic)· diff = root+5×status. **Απόδειξη real build:** proof 9/9·
+run-golden-gate 0· ΝΕΟ lock currentness-34-test **12/12**· σουίτες 193/0.
+Runbook `docs/CURRENTNESS-34.md`. **#34 ΑΝΟΙΧΤΟ ως προς το κείμενο** — κλείνει
+με owner fetch από ελληνική IP → extractor → review approval.
