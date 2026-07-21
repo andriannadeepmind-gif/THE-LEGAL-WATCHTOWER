@@ -28,7 +28,13 @@
    την τεκμηριώνει ως canonical, ΠΡΕΠΕΙ κι αυτή να είναι εντός του φρουρού
    (εύρημα Codex PR#2: αλλιώς μια documented CI test path μένει αφύλαχτη).")
 (defparameter +vt-escape-suite-token+ "escape-sequences"
-  "Η escape σουίτα, απορροφημένη στο standalone-test loop (FF3).")
+  "Η escape σουίτα, απορροφημένη στο standalone-test inventory (FF3).
+   Από το [audit#2] το inventory ΠΑΡΑΓΕΤΑΙ από το filesystem (glob tests/*-test.lisp
+   μείον exclusions) — άρα ο L4 ΔΕΝ ψάχνει πια literal στο Dockerfile (stale-literal
+   κλάση: το literal έφυγε νόμιμα μαζί με τη χειρόγραφη λίστα)· ελέγχει το ΓΕΓΟΝΟΣ:
+   tests/escape-sequences-test.lisp υπάρχει ΚΑΙ δεν είναι εξαιρεμένη.")
+(defparameter +vt-exclusions-subpath+ "docker/standalone-suite-exclusions.txt"
+  "Η ΜΙΑ δηλωμένη έδρα εξαιρέσεων του παραγόμενου inventory ([audit#2]).")
 ;; [audit#3] Το verify-truth ήλεγχε ΠΑΡΟΥΣΙΑ εντολών (λέξεις), όχι την ΕΚΤΕΛΕΣΤΙΚΗ
 ;; καλωδίωση που τις κάνει ουσιαστικές. Αυτά τα tokens επιβάλλουν ότι η authoritative
 ;; ολομέλεια είναι FAIL-CLOSED (pipefail + η δοκιμασμένη έδρα κρίσης) και ότι το
@@ -86,12 +92,30 @@
     (mapcar #'parse-integer
             (cl-ppcre:all-matches-as-strings "\\d+(?=\\s*(?:πύλες|gates))" text))))
 
-(defun %vt-check (readme ci dockerfile run-tests-docker-present live-gate-count)
+(defun %vt-escape-suite-gated-p (suite-present exclusions-text)
+  "L4 ΔΟΜΙΚΑ (καθαρή, testable): η escape σουίτα είναι gated στο ΠΑΡΑΓΟΜΕΝΟ
+   inventory ⇔ το αρχείο της υπάρχει (SUITE-PRESENT) ΚΑΙ το basename της ΔΕΝ
+   είναι γραμμή-εξαίρεση στο exclusions text (ίδια γραμματική με το
+   run-standalone-suites.sh: trim, «#…» σχόλιο κόβεται, κενές γραμμές έξω)."
+  (and suite-present
+       (or (null exclusions-text)   ; χωρίς exclusions αρχείο: τίποτα δεν εξαιρείται
+           (with-input-from-string (in exclusions-text)
+             (loop for line = (read-line in nil nil)
+                   while line
+                   never (let* ((no-comment (let ((p (position #\# line)))
+                                              (if p (subseq line 0 p) line)))
+                                (tok (string-trim '(#\Space #\Tab) no-comment)))
+                           (string= tok +vt-escape-suite-token+)))))))
+
+(defun %vt-check (readme ci dockerfile run-tests-docker-present live-gate-count
+                  escape-suite-gated)
   "Ο ΚΑΘΑΡΟΣ κανόνας τιμιότητας (testable). Επιστρέφει (values verdict why):
    verdict :ok (docs≡CI) ή :invalid (κλειστός why). Καμία παρενέργεια/IO.
      • README/CI/Dockerfile: το πλήρες κείμενο (ή NIL αν λείπει).
      • run-tests-docker-present: υπάρχει ο αποσυρμένος escape driver;
-     • live-gate-count: ο ΖΩΝΤΑΝΟΣ αριθμός πυλών (μητρώο) — L5."
+     • live-gate-count: ο ΖΩΝΤΑΝΟΣ αριθμός πυλών (μητρώο) — L5.
+     • escape-suite-gated: το ΓΕΓΟΝΟΣ του L4 (βλ. %vt-escape-suite-gated-p) —
+       υπολογίζεται από τον καλούντα ώστε ο κανόνας να μείνει χωρίς IO."
   (block check
     ;; 0. τα τρία αρχεία-πηγές πρέπει να ΥΠΑΡΧΟΥΝ
     (unless readme     (return-from check (values :invalid :readme_missing)))
@@ -128,8 +152,10 @@
     (dolist (tok +vt-retired-tokens+)
       (when (%vt-has readme tok)
         (return-from check (values :invalid :retired_mechanism_advertised))))
-    ;; L4 escape σουίτα gated: στο standalone-test loop ΚΑΙ ο αποσυρμένος driver λείπει
-    (unless (%vt-has dockerfile +vt-escape-suite-token+)
+    ;; L4 escape σουίτα gated: στο ΠΑΡΑΓΟΜΕΝΟ inventory (αρχείο παρόν + όχι
+    ;; εξαιρεμένο) ΚΑΙ ο αποσυρμένος driver λείπει. ΟΧΙ literal στο Dockerfile —
+    ;; από το [audit#2] το inventory παράγεται· ο έλεγχος ακολουθεί την έδρα.
+    (unless escape-suite-gated
       (return-from check (values :invalid :escape_suite_ungated)))
     (when run-tests-docker-present
       (return-from check (values :invalid :retired_driver_present)))
@@ -167,18 +193,22 @@
   (let ((readme (%vt-slurp "README.md"))
         (ci (%vt-slurp ".github/workflows/docker-orchestrator.yml"))
         (dockerfile (%vt-slurp "Dockerfile"))
-        (rtd (and (%vt-slurp "run-tests-docker.lisp") t)))
+        (rtd (and (%vt-slurp "run-tests-docker.lisp") t))
+        (esg (%vt-escape-suite-gated-p
+              (and (%vt-slurp (format nil "tests/~A-test.lisp" +vt-escape-suite-token+)) t)
+              (%vt-slurp +vt-exclusions-subpath+))))
     (if (and (null readme) (null ci) (null dockerfile))
         (values :skipped :source_tree_absent)
-        (%vt-check readme ci dockerfile rtd (%vt-live-gate-count)))))
+        (%vt-check readme ci dockerfile rtd (%vt-live-gate-count) esg))))
 
 (defun %vt-selftest ()
   "Απόδειξη φρουρού: synthetic fixtures με ΑΚΡΙΒΗ why-codes (θετικό + κάθε
    αρνητικό). Επιστρέφει (values fails total)."
   (let ((fails '()) (total 0))
-    (flet ((expect (label readme ci df rtd want-verdict want-why &optional (gc 23))
+    (flet ((expect (label readme ci df rtd want-verdict want-why
+                    &optional (gc 23) (esg t))
              (incf total)
-             (multiple-value-bind (v w) (%vt-check readme ci df rtd gc)
+             (multiple-value-bind (v w) (%vt-check readme ci df rtd gc esg)
                (if (and (eq v want-verdict) (eq w want-why))
                    (format t "  ✓ ~A~%" label)
                    (progn (push label fails)
@@ -190,9 +220,10 @@
                                 ./deployment/verify/assess-gate-plenary.sh log ${PIPESTATUS}~%~
                                 docker build ~A .~%docker build ~A ."
                            +vt-tests-command+ +vt-tests-command-2+))
-            ;; ok-df: derived suite runner + η escape σουίτα.
-            (ok-df (format nil "RUN /app/docker/run-standalone-suites.sh …~%~
-                                # inventory περιλαμβάνει ~A" +vt-escape-suite-token+)))
+            ;; ok-df: derived suite runner (το inventory παράγεται). Το fixture
+            ;; κατασκευάζεται από το token — ΚΑΝΕΝΑ literal ρίζα-path (FF1 ⑬):
+            ;; ο L7 ελέγχει το όνομα του runner, όχι τη ρίζα.
+            (ok-df (format nil "RUN docker/~A …" +vt-derived-runner-token+)))
         ;; θετικό: docs≡CI, escape gated, driver αποσυρμένος
         (expect "① docs≡CI πλήρες ⇒ :ok" ok-readme ok-ci ok-df nil :ok nil)
         ;; L0: αρχεία-πηγές λείπουν
@@ -234,12 +265,27 @@
         (expect "⑩β README αναφέρει run-tests-docker.lisp ⇒ :retired_mechanism_advertised"
                 (format nil "~A· δες run-tests-docker.lisp" ok-readme) ok-ci ok-df nil
                 :invalid :retired_mechanism_advertised)
-        ;; L4: escape σουίτα ΔΕΝ είναι στο loop
-        (expect "⑪ Dockerfile χωρίς escape-sequences ⇒ :escape_suite_ungated"
-                ok-readme ok-ci
-                ;; derived runner παρών (περνά L7) αλλά ΧΩΡΙΣ escape-sequences (πέφτει L4)
-                "RUN /app/docker/run-standalone-suites.sh …" nil
-                :invalid :escape_suite_ungated)
+        ;; L4: escape σουίτα ΔΕΝ είναι στο παραγόμενο inventory (γεγονός, όχι literal)
+        (expect "⑪ escape σουίτα εκτός inventory ⇒ :escape_suite_ungated"
+                ok-readme ok-ci ok-df nil
+                :invalid :escape_suite_ungated 23 nil)
+        ;; L4 helper: το ΓΕΓΟΝΟΣ υπολογίζεται σωστά από τις πραγματικές έδρες
+        (flet ((hp (label want got)
+                 (incf total)
+                 (if (eq want got)
+                     (format t "  ✓ ~A~%" label)
+                     (progn (push label fails) (format t "  ✗ ~A~%" label)))))
+          (hp "⑪α παρούσα + μη εξαιρεμένη ⇒ gated"
+              t (and (%vt-escape-suite-gated-p t "comparison~%") t))
+          (hp "⑪β παρούσα + ΕΞΑΙΡΕΜΕΝΗ ⇒ ungated"
+              nil (%vt-escape-suite-gated-p
+                   t (format nil "comparison~%~A   # λόγος~%" +vt-escape-suite-token+)))
+          (hp "⑪γ αρχείο σουίτας ΑΠΟΝ ⇒ ungated"
+              nil (%vt-escape-suite-gated-p nil nil))
+          (hp "⑪δ token μόνο σε σχόλιο ⇒ ΔΕΝ μετρά ως εξαίρεση"
+              t (and (%vt-escape-suite-gated-p
+                      t (format nil "# σχόλιο για ~A~%comparison~%" +vt-escape-suite-token+))
+                     t)))
         ;; L4: ο αποσυρμένος driver υπάρχει ακόμη
         (expect "⑫ run-tests-docker.lisp παρών ⇒ :retired_driver_present"
                 ok-readme ok-ci ok-df t :invalid :retired_driver_present)

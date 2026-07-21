@@ -83,6 +83,10 @@ COPY --from=deps-verify /app/third-party/ /app/third-party/
 
 # Copy source code and system definitions
 COPY *.asd /app/
+# [OWNER-RUN 2ος γύρος] deps.lock + DEPENDENCY-CONTRACT.md: μέρος της ταυτότητας
+# εξαρτήσεων — απαιτούνται από το dependency-contract-consistency suite (το
+# deps-verify stage τα είχε, ο builder ΟΧΙ ⇒ /app/deps.lock απόν στο test stage).
+COPY deps.lock DEPENDENCY-CONTRACT.md /app/
 COPY systems/ /app/systems/
 COPY source/ /app/source/
 COPY configs/ /app/configs/

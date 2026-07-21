@@ -72,6 +72,7 @@
   (:capability "τιμιότητα-επαλήθευσης" :primitive :substrate)
   (:capability "εξουσία-εκδόσεων" :primitive :law)
   (:capability "περιφρούρηση-εκδόσεων" :primitive :law)
+  (:capability "μέτρο-ικανότητας" :primitive :law)
  )
 
  ;; ══ COMMAND → PRIMITIVE/OWNER/ENVELOPE (πλήρης κάλυψη — ελέγχεται αμφίδρομα) ══
@@ -80,6 +81,8 @@
   (:command "--adoption-decision" :primitive :evolution :owner-file "systems/orchestrator-cli/evolution-gate.lisp" :envelope (:structured "decision:/reason: ή πλήρες δομημένο αντικείμενο"))
   (:command "--architecture-constitution-gate" :primitive :substrate :owner-file "systems/orchestrator-cli/architecture-gate.lisp" :envelope (:exception "read-only πύλη — τυπώνει ελέγχους, όχι νομική κρίση"))
   (:command "--golden-gate" :primitive :law :owner-file "systems/orchestrator-cli/golden-gate.lisp" :envelope (:exception "read-only regression ratchet — golden ≡ τρέχον αποτύπωμα, όχι νομική κρίση"))
+  (:command "--capability-gate" :primitive :law :owner-file "systems/orchestrator-cli/capability-gate.lisp" :envelope (:exception "read-only capability ratchet — παγωμένα μέτρα ≥ committed baseline, όχι νομική κρίση"))
+  (:command "--capability-baseline" :primitive :law :owner-file "systems/orchestrator-cli/capability-gate.lisp" :envelope (:exception "συνειδητή επαν-αναφορά baseline (GOLDEN_WRITE μοτίβο) — γράφει ΜΟΝΟ το data-only capability-baseline.sexp, όχι νομική κρίση"))
   (:command "--advisor" :primitive :hypothesis :owner-file "systems/orchestrator-cli/advisor.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--advisor-gate" :primitive :hypothesis :owner-file "systems/orchestrator-cli/advisor.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
   (:command "--affected-proofs" :primitive :evolution :owner-file "systems/orchestrator-cli/evolution-gate.lisp" :envelope (:exception "εσωτερική/διαγνωστική/στατική αναφορά — δεν εκφέρει νομική κρίση προς τρίτο"))
@@ -312,10 +315,10 @@
    :implementations ("orchestrator.decisions:%fold" "orchestrator.citation-authority:normalize-greek")
    :why "Διακριτοί ρόλοι: %fold = 1:1 ταύτιση ίδιου μήκους (offsets)· normalize-greek = κανονικοποίηση παραπομπών. ΧΡΕΟΣ Π3: ενιαία τεκμηρίωση ορίων χρήσης.")
   (:area :failure-memories
-   :implementations ((:file "deployment/state/lessons.jsonl")
-                     (:file "deployment/state/failure-ledger.jsonl")
-                     (:file "deployment/self/episodes.sexp"))
-   :why "Διακριτοί ρόλοι: aggregate αναστοχασμού / δομημένο ledger διαλόγου / βιωματικό ρεύμα. Ίδιος γονικός φάκελος state, κοινή εποπτεία στο gap-ledger-frame.")
+   :implementations ((:store "deployment/state/lessons.jsonl")
+                     (:store "deployment/state/failure-ledger.jsonl")
+                     (:store "deployment/self/episodes.sexp"))
+   :why "Διακριτοί ρόλοι: aggregate αναστοχασμού / δομημένο ledger διαλόγου / βιωματικό ρεύμα. Ίδιος γονικός φάκελος state, κοινή εποπτεία στο gap-ledger-frame. ΤΥΠΟΣ (:store …): RUNTIME κατάσταση — ΔΕΝ είναι committed αρχείο-έδρα ώστε να απαιτείται ύπαρξη στο δέντρο (καθαρό image = νόμιμα απόντα)· η ορθότητα ελέγχεται ως ΕΣΩΤΕΡΙΚΗ ΣΥΝΕΠΕΙΑ: κάθε (:store …) ΟΦΕΙΛΕΙ να είναι εγγεγραμμένο στο :canonical-stores.")
   (:area :proposal-registries
    :implementations ("orchestrator.proposals (Σ11 γνώση)" "orchestrator.whatif (change-proposals)")
    :why "Διαφορετικά αντικείμενα: πακέτα γνώσης προς έγκριση vs first-class προτάσεις αλλαγής με what-if. Η ΑΠΟΦΑΣΗ είναι κοινή (can-adopt).")

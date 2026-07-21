@@ -35,6 +35,11 @@
 (defun %file-decl-p (impl)
   "Τυπωμένη δήλωση αρχείου-έδρας: (:file \"σχετικό/path\")."
   (and (consp impl) (eq (first impl) :file) (stringp (second impl)) (null (cddr impl))))
+(defun %store-decl-p (impl)
+  "Τυπωμένη δήλωση RUNTIME store: (:store \"σχετικό/path\") — ΔΕΝ απαιτείται
+   ύπαρξη στον δίσκο (καθαρό image = νόμιμα απόν)· απαιτείται ΕΣΩΤΕΡΙΚΗ
+   ΣΥΝΕΠΕΙΑ: το path ΟΦΕΙΛΕΙ να είναι εγγεγραμμένο στο :canonical-stores."
+  (and (consp impl) (eq (first impl) :store) (stringp (second impl)) (null (cddr impl))))
 (defun %tokens (s)
   "Tokens του S σε whitespace, χωρίς εξάρτηση από uiop (bare sbcl --script)."
   (let ((toks '()) (start nil) (n (length s)))
@@ -57,9 +62,15 @@
     ;; top: (:lawmax-architecture-constitution :key val … :justified-multiplicity (…))
     (let* ((plist (if (keywordp (first form)) (rest form) form))
            (just (getf plist :justified-multiplicity))
+           ;; [OWNER-RUN 2ος γύρος] canonical store paths — για τον (:store …) cross-check
+           (canonical-store-paths
+             (loop for e in (getf plist :canonical-stores)
+                   for p = (getf e :path) when (stringp p) collect p))
            (missing '()) (checked 0))
       (check "υπάρχει :justified-multiplicity" (consp just))
-      (let ((untyped '()))
+      (check "υπάρχει :canonical-stores (για τον store cross-check)"
+             (consp canonical-store-paths))
+      (let ((untyped '()) (stores-checked 0) (uncanonical '()))
         (dolist (entry just)
           (dolist (impl (getf entry :implementations))
             (cond
@@ -67,14 +78,24 @@
                (incf checked)
                (unless (probe-file (merge-pathnames (second impl) root))
                  (push (list (getf entry :area) (second impl)) missing)))
-              ;; bare string που ΜΟΙΑΖΕΙ αρχείο αλλά ΔΕΝ τυπώθηκε (:file …) = παράβαση
+              ;; RUNTIME store: όχι probe-file (καθαρό image = νόμιμα απόν)·
+              ;; ΕΣΩΤΕΡΙΚΗ ΣΥΝΕΠΕΙΑ: πρέπει να είναι canonical store.
+              ((%store-decl-p impl)
+               (incf stores-checked)
+               (unless (member (second impl) canonical-store-paths :test #'string=)
+                 (push (list (getf entry :area) (second impl)) uncanonical)))
+              ;; bare string που ΜΟΙΑΖΕΙ αρχείο αλλά ΔΕΝ τυπώθηκε (:file/:store …) = παράβαση
               ((%looks-like-file impl)
                (push (list (getf entry :area) impl) untyped)))))
-        (format t "  (ελέγχθηκαν ~D τυπωμένα (:file) αρχεία-έδρες σε ~D εγγραφές)~%" checked (length just))
+        (format t "  (ελέγχθηκαν ~D τυπωμένα (:file) + ~D (:store) σε ~D εγγραφές)~%"
+                checked stores-checked (length just))
         (check "ΚΑΘΕ (:file …) implementation του Συντάγματος ΥΠΑΡΧΕΙ (καμία stale)"
                (null missing))
         (when missing (format t "  ΛΕΙΠΟΥΝ: ~{~A~^, ~}~%" missing))
-        (check "καμία bare implementation δεν μοιάζει αρχείο χωρίς τύπο (:file …) (κανένα ανέλεγκτο)"
+        (check "ΚΑΘΕ (:store …) είναι εγγεγραμμένο στο :canonical-stores (εσωτερική συνέπεια)"
+               (and (plusp stores-checked) (null uncanonical)))
+        (when uncanonical (format t "  ΜΗ-CANONICAL STORES: ~{~A~^, ~}~%" uncanonical))
+        (check "καμία bare implementation δεν μοιάζει αρχείο χωρίς τύπο (:file/:store …) (κανένα ανέλεγκτο)"
                (null untyped))
         (when untyped (format t "  ΑΤΥΠΑ ΑΡΧΕΙΑ-ΕΔΡΕΣ: ~{~A~^, ~}~%" untyped)))
       ;; NEG: ο ανιχνευτής όντως πιάνει ανύπαρκτο τυπωμένο αρχείο (όχι tautology)
@@ -89,7 +110,15 @@
              (%looks-like-file "lessons.jsonl"))
       ;; NEG: dialogue surface με «/» ΔΕΝ είναι αρχείο (δεν λήγει σε επέκταση)
       (check "NEG: dialogue surface --ask/--ρώτα ΔΕΝ μοιάζει αρχείο"
-             (not (%looks-like-file "--ask/--ρώτα"))))))
+             (not (%looks-like-file "--ask/--ρώτα")))
+      ;; NEG: (:store εκτός canonical) ⇒ ΘΑ πιανόταν (ο cross-check δεν είναι tautology)
+      (check "NEG: (:store μη-canonical) ⇒ ανιχνεύσιμο"
+             (and (%store-decl-p '(:store "deployment/state/NOT-A-CANONICAL-STORE.jsonl"))
+                  (not (member "deployment/state/NOT-A-CANONICAL-STORE.jsonl"
+                               (loop for e in (getf (if (keywordp (first form)) (rest form) form)
+                                                    :canonical-stores)
+                                     for p = (getf e :path) when (stringp p) collect p)
+                               :test #'string=)))))))
 
 (format t "~%architecture-multiplicity: ~D passed, ~D failed~%" *pass* *fail*)
 (sb-ext:exit :code (if (zerop *fail*) 0 1))

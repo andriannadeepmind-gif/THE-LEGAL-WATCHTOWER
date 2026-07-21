@@ -193,6 +193,20 @@ Write-if-changed στη ΜΙΑ έδρα εγγραφής (write-utf8-file): πα
 ανέγγιχτα (mtime/git καθαρά, νεκρό IO). Lock 15/15 + inventory 127/127 + census
 PASS. Δηλωμένο όριο: skip-generation βαθμίδα = μελλοντικός σχεδιασμός.
 
+## 2ος OWNER ΓΥΡΟΣ (2 κόκκινα) + ΑΥΤΟΕΛΕΓΧΟΣ ΠΥΛΩΝ — [0103]
+
+Owner γύρος 2: dependency-contract (builder δεν αντέγραφε deps.lock ⇒ Dockerfile
+COPY στη σωστή βαθμίδα) + architecture-multiplicity (runtime stores δηλωμένα
+(:file) — τοπικό πράσινο ΚΑΤΑ ΛΑΘΟΣ ⇒ ΝΕΟΣ τυπωμένος τύπος Συντάγματος
+(:store "path"): ύπαρξη ΔΕΝ απαιτείται, ∈ :canonical-stores· έλεγχος
+image-independent ΕΚ ΚΑΤΑΣΚΕΥΗΣ, test 11/11 + gate ⑫). Οι πύλες-Σύνταγμα
+έπιασαν δικές μου παραλείψεις ΤΑΒΑΝΙ #1 (②⑤⑥ αχαρτογράφητα ⇒ χαρτογράφηση
+--capability-gate/--capability-baseline/«μέτρο-ικανότητας» ως :law) + 2
+προϋπάρχοντα: FF1 literal σε fixture του verify-truth (⇒ fixture από token)
+και stale L4 (literal «escape-sequences» στο Dockerfile πέθανε στο [audit#2] ⇒
+L4 ελέγχει το ΓΕΓΟΝΟΣ: σουίτα παρούσα ∧ όχι εξαιρεμένη). constitution-gate
+18/18 ⇒ 0 · verify-truth 28/28 ⇒ 0. Εκκρεμεί: owner rebuild στο νέο HEAD.
+
 ## #34 ΦΑΣΗ-Α — [0099], HEAD `4e3da7f5`
 
 Εντολή: «ξεκίνα με το 3 — ανώτατη υλοποίηση». Επίσημο ΦΕΚ ΑΠΡΟΣΙΤΟ από το

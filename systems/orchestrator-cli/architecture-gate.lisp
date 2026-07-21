@@ -345,9 +345,18 @@
         ;;    ΔΟΜΙΚΗ λύση: η ΤΑΥΤΟΤΗΤΑ «αρχείο-έδρα» δηλώνεται, δεν μαντεύεται. Επιπλέον lint:
         ;;    κάθε bare string που ΜΟΙΑΖΕΙ αρχείο (γνωστή επέκταση) αλλά ΔΕΝ είναι τυπωμένη
         ;;    (:file …) = ΚΟΚΚΙΝΟ — έτσι το «σιωπηλά ανέλεγκτο αρχείο-έδρα» γίνεται δομικά αδύνατο.
-        (let ((bad-just '()) (root (orchestrator.paths:institution-root)))
+        ;;    [OWNER-RUN 2ος γύρος] Τρίτος τύπος (:store "path"): RUNTIME κατάστημα
+        ;;    (π.χ. lessons.jsonl) — η ύπαρξή του ΔΕΝ απαιτείται (γεννιέται στο
+        ;;    τρέξιμο· probe-file θα ήταν ψευδο-πράσινο μόνο σε λερωμένο checkout)·
+        ;;    απαιτείται ΕΣΩΤΕΡΙΚΗ συνέπεια: κάθε (:store p) ∈ :canonical-stores.
+        (let ((bad-just '()) (root (orchestrator.paths:institution-root))
+              (canonical-stores
+                (mapcar (lambda (s) (getf s :path)) (getf c :canonical-stores))))
           (flet ((file-decl-p (impl)   ; τυπωμένη δήλωση αρχείου-έδρας
                    (and (consp impl) (eq (first impl) :file)
+                        (stringp (second impl)) (null (cddr impl))))
+                 (store-decl-p (impl)  ; τυπωμένη δήλωση runtime καταστήματος
+                   (and (consp impl) (eq (first impl) :store)
                         (stringp (second impl)) (null (cddr impl))))
                  (looks-like-file (s)  ; bare string με γνωστή file-extension σε token
                    (and (stringp s)
@@ -366,13 +375,18 @@
                             (push (list (getf j :area) :absolute p) bad-just))
                            ((not (probe-file (merge-pathnames p root)))
                             (push (list (getf j :area) :missing p) bad-just)))))
+                  ;; (:store p): runtime κατάστημα — ΟΧΙ probe-file· ∈ :canonical-stores
+                  ((store-decl-p impl)
+                   (unless (member (second impl) canonical-stores :test #'string=)
+                     (push (list (getf j :area) :non-canonical-store (second impl))
+                           bad-just)))
                   ;; bare string: επιτρέπεται ΜΟΝΟ αν ΔΕΝ μοιάζει αρχείο (package/surface).
                   ((and (stringp impl) (looks-like-file impl))
                    (push (list (getf j :area) :untyped-file-seat impl) bad-just))
                   ;; malformed impl (ούτε bare string ούτε (:file …))
                   ((not (stringp impl))
                    (push (list (getf j :area) :malformed impl) bad-just))))))
-          (chk "⑫ justified-multiplicity: αιτιολόγηση + ΤΥΠΩΜΕΝΑ (:file) αρχεία-έδρες υπαρκτά (καμία stale, κανένα ανέλεγκτο)"
+          (chk "⑫ justified-multiplicity: αιτιολόγηση + ΤΥΠΩΜΕΝΑ (:file) αρχεία-έδρες υπαρκτά + (:store) ∈ canonical-stores (καμία stale, κανένα ανέλεγκτο)"
                (null bad-just)
                (when bad-just (format nil "παραβάσεις: ~{~A~^, ~}" (nreverse bad-just)))))
         ;; ── FF1: μία έδρα ρίζας του Ιδρύματος (κανόνας Κριτή 0021) ──
