@@ -23,7 +23,7 @@
 - **Μόνο ο δημιουργός συγχωνεύει/εγκρίνει φάσεις** — ρητό «εγκρίνω X» ανά φάση, τίποτα δεν ανοίγει μόνο του.
 - **Άδεια: All Rights Reserved παντού** (εκκρεμεί Deferred License Policy Decision για κληρονομημένα CC0 κείμενα — μόνο με ρητή έγκριση).
 - **Workarounds**: A/B/C/D ταξινόμηση κατά [0045]· καμία B-συμφιλίωση χωρίς απόφαση διαλόγου + φάση που τη συνταξιοδοτεί· manual copy-back ΔΕΝ είναι ποτέ τελική αρχιτεκτονική.
-- Commits: ουδέτερο trailer `Co-Authored-By: Claude <noreply@anthropic.com>`· ΠΟΤΕ ονόματα/IDs μοντέλων σε repo artifacts· `deployment/self/history.sexp` και `output/.healthy` επαναφέρονται (`git checkout --`) πριν από κάθε commit.
+- Commits (εντολή δημιουργού 2026-07-21): ταυτότητα author/committer ΠΑΝΤΑ `Stavropoulos Law® <info@stavropouloslaw.com>`· ΚΑΝΕΝΑ AI trailer (Co-Authored-By/Session), ΠΟΤΕ ονόματα/IDs μοντέλων ή αναφορά AI σε repo artifacts — ο δημιουργός του συστήματος είναι το Stavropoulos Law® και το σύστημα είναι το LAWMAX-Ω· `deployment/self/history.sexp` και `output/.healthy` επαναφέρονται (`git checkout --`) πριν από κάθε commit.
 
 ## Πρωτόκολλο συνεργασίας (ενημέρωση δημιουργού 2026-07-10)
 
