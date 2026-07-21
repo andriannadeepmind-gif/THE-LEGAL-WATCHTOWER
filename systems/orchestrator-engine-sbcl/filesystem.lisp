@@ -43,25 +43,50 @@
 ;;; FILE OPERATIONS
 ;;; ============================================================================
 
+(defun %file-bytes-equal-p (path bytes)
+  "T όταν το υπάρχον PATH περιέχει ΑΚΡΙΒΩΣ τα BYTES. Φθηνός πρώτος έλεγχος
+   μήκους (stat)· πλήρης σύγκριση μόνο σε ίσο μήκος. Οποιοδήποτε IO σφάλμα
+   ανάγνωσης ⇒ NIL (θα ξαναγραφτεί — ποτέ ψευδές «αμετάβλητο»)."
+  (handler-case
+      (with-open-file (in path :direction :input
+                               :element-type '(unsigned-byte 8)
+                               :if-does-not-exist nil)
+        (and in
+             (= (file-length in) (length bytes))
+             (let ((existing (make-array (length bytes)
+                                         :element-type '(unsigned-byte 8))))
+               (= (read-sequence existing in) (length bytes))
+               (equalp existing bytes))))
+    (error () nil)))
+
 (defun write-utf8-file (filepath content)
-  "Write file with guaranteed UTF-8 encoding using babel
+  "Write file with guaranteed UTF-8 encoding using babel.
+
+  ΑΥΞΗΤΙΚΗ ΕΞΟΔΟΣ (write-if-changed): τα artifacts είναι ντετερμινιστικές
+  συναρτήσεις των εισόδων τους — αν τα bytes στον δίσκο είναι ΗΔΗ ταυτόσημα,
+  η εγγραφή ΠΑΡΑΛΕΙΠΕΤΑΙ (το mtime διατηρείται, το IO πεθαίνει). Καμία λογική
+  invalidation/εκδόσεων: η ισοδυναμία κρίνεται στα ΠΡΑΓΜΑΤΙΚΑ bytes, άρα το
+  αποτέλεσμα είναι ΕΚ ΚΑΤΑΣΚΕΥΗΣ byte-ταυτόσημο με πλήρη επανεγγραφή.
 
   Args:
     filepath: Target file path
     content: String content
 
   Returns:
-    Pathname of written file"
-  (let ((path (uiop:ensure-pathname filepath)))
+    (values pathname status) — status ∈ {:written :unchanged}"
+  (let ((path (uiop:ensure-pathname filepath))
+        (bytes (babel:string-to-octets content :encoding :utf-8)))
     (ensure-directories-exist path)
-    (with-open-file (stream path
-                            :direction :output
-                            :if-exists :supersede
-                            :if-does-not-exist :create
-                            :element-type '(unsigned-byte 8))
-      (let ((bytes (babel:string-to-octets content :encoding :utf-8)))
-        (write-sequence bytes stream)))
-    path))
+    (if (%file-bytes-equal-p path bytes)
+        (values path :unchanged)
+        (progn
+          (with-open-file (stream path
+                                  :direction :output
+                                  :if-exists :supersede
+                                  :if-does-not-exist :create
+                                  :element-type '(unsigned-byte 8))
+            (write-sequence bytes stream))
+          (values path :written)))))
 
 (defun write-artifact-to-file (artifact filepath)
   "Write artifact content to file with UTF-8 encoding
@@ -178,63 +203,50 @@
     verbose: Log each file write (default: T)
 
   Returns:
-    List of written file paths"
-  (let ((written-files nil)
+    (values artifact-paths written-count unchanged-count) — τα paths είναι το
+    ΠΛΗΡΕΣ σύνολο artifacts του άρθρου (γραμμένα + αμετάβλητα: όλα υπαρκτά)·
+    οι μετρητές τροφοδοτούν την τίμια αναφορά του write-corpus-files."
+  (let ((artifact-files nil)
+        (written 0) (unchanged 0)
         (num (orchestrator.model:article-number article)))
 
     (when verbose
       (log:info () "Deploying article ~D (5 formats)" num))
 
-    ;; Write Turtle
-    (when (orchestrator.model:article-rdf-turtle article)
-      (push (write-utf8-file
-             (article-filepath article "ttl" output-dir)
-             (orchestrator.model:article-rdf-turtle article))
-            written-files)
-      (when verbose
-        (log:info () "  ✓ RDF/Turtle: ~A" (namestring (car written-files)))))
+    (flet ((w (ext content label)
+             (multiple-value-bind (path status)
+                 (write-utf8-file (article-filepath article ext output-dir) content)
+               (push path artifact-files)
+               (if (eq status :written) (incf written) (incf unchanged))
+               (when verbose
+                 (log:info () "  ~:[≡~;✓~] ~A: ~A" (eq status :written)
+                           label (namestring path))))))
 
-    ;; Write JSON-LD (STANDALONE - guaranteed identical to embedded)
-    (when (orchestrator.model:article-json-ld article)
-      (push (write-utf8-file
-             (article-filepath article "jsonld" output-dir)
-             (orchestrator.model:article-json-ld article))
-            written-files)
-      (when verbose
-        (log:info () "  ✓ JSON-LD: ~A" (namestring (car written-files)))))
+      ;; Write Turtle
+      (when (orchestrator.model:article-rdf-turtle article)
+        (w "ttl" (orchestrator.model:article-rdf-turtle article) "RDF/Turtle"))
 
-    ;; Write HTML+RDFa (contains embedded JSON-LD)
-    (when (orchestrator.model:article-html article)
-      (push (write-utf8-file
-             (article-filepath article "html" output-dir)
-             (orchestrator.model:article-html article))
-            written-files)
-      (when verbose
-        (log:info () "  ✓ HTML+RDFa: ~A" (namestring (car written-files)))))
+      ;; Write JSON-LD (STANDALONE - guaranteed identical to embedded)
+      (when (orchestrator.model:article-json-ld article)
+        (w "jsonld" (orchestrator.model:article-json-ld article) "JSON-LD"))
 
-    ;; Write hash
-    (when (orchestrator.model:article-hash article)
-      (push (write-utf8-file
-             (article-filepath article "hash" output-dir)
-             (orchestrator.model:article-hash article))
-            written-files)
-      (when verbose
-        (log:info () "  ✓ Hash: ~A" (namestring (car written-files)))))
+      ;; Write HTML+RDFa (contains embedded JSON-LD)
+      (when (orchestrator.model:article-html article)
+        (w "html" (orchestrator.model:article-html article) "HTML+RDFa"))
 
-    ;; Write plain text (the human-readable view the MCP serve layer returns as
-    ;; :text). Without it an article's text is locked inside the .jsonld/.html only;
-    ;; emitting article-N.txt means EVERY article carries its full file set.
-    (let ((title (orchestrator.model:article-title article))
-          (content (orchestrator.model:article-content article)))
-      (when (or title content)
-        (push (write-utf8-file
-               (article-filepath article "txt" output-dir)
-               (format nil "~@[~A~%~%~]~@[~A~%~]" title content))
-              written-files)
-        (when verbose
-          (log:info () "  ✓ Text: ~A" (namestring (car written-files))))))
+      ;; Write hash
+      (when (orchestrator.model:article-hash article)
+        (w "hash" (orchestrator.model:article-hash article) "Hash"))
 
-    (nreverse written-files)))
+      ;; Write plain text (the human-readable view the MCP serve layer returns as
+      ;; :text). Without it an article's text is locked inside the .jsonld/.html only;
+      ;; emitting article-N.txt means EVERY article carries its full file set.
+      (let ((title (orchestrator.model:article-title article))
+            (content (orchestrator.model:article-content article)))
+        (when (or title content)
+          (w "txt" (format nil "~@[~A~%~%~]~@[~A~%~]" title content) "Text"))))
+
+    (values (nreverse artifact-files) written unchanged)))
 
 (defun write-corpus-files (articles-or-corpus output-dir
                            &key manifest void-descriptor ai-manifest)
@@ -279,13 +291,19 @@
                                :message "write-corpus-files expects corpus object or list of articles"
                                :config-key :articles)))))
 
-      (log:info () "Writing ~D articles (5 formats each)" (length articles))
+      (log:info () "Writing ~D articles (5 formats each, incremental write-if-changed)"
+                (length articles))
 
-      ;; Write all article formats
-      (loop for article in articles
-            do (setf article-files
-                    (nconc article-files
-                           (write-article-formats article dir :verbose t))))
+      ;; Write all article formats — αυξητικά: ΟΛΑ παράγονται, γράφονται ΜΟΝΟ
+      ;; όσα άλλαξαν bytes. Η αναφορά ΔΗΛΩΝΕΙ το skip (ποτέ σιωπηλό).
+      (let ((written 0) (unchanged 0))
+        (loop for article in articles
+              do (multiple-value-bind (files w u)
+                     (write-article-formats article dir :verbose nil)
+                   (setf article-files (nconc article-files files))
+                   (incf written w) (incf unchanged u)))
+        (log:info () "Incremental emit: ~D αρχεία ΓΡΑΦΤΗΚΑΝ, ~D αμετάβλητα (ίδια bytes, ανέγγιχτα)"
+                  written unchanged))
 
       ;; Write dataset-level files
 
