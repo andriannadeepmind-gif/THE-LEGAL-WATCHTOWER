@@ -156,3 +156,19 @@ review-queue 66/0· cockpit 37/0· gate-manifest round-trip 6/6 (safe-read + α�
 (write-authority=FIVEAM, capability-api=`ASK` seat-conflict) αποτυγχάνουν στο LOAD ΤΑΥΤΟΣΗΜΑ
 **και pristine** (harness artifacts, stash-verified)· owner Docker glue + runtime gate-set
 equality μένουν. Vendored-deps run = **ισχυρότερο** από το προηγούμενο local proof.
+
+## 6/6 ΚΑΛΥΨΗ — [0098], HEAD `fa8699af`
+
+Εντολή δημιουργού: «παράγει τα πάντα, κρίνει επί όλων». Χάρτης 24 πυλών: 17
+corpus-agnostic· golden 6/6 από πηγή· 4 fixtures· **2 output-dependent = κενό**.
+Το πραγματικό δομικό κενό: release-gate σάρωνε «ό,τι υπάρχει» ⇒ διαγραφή ΟΛΟΚΛΗΡΟΥ
+releases/ σώματος = σιωπηλό πράσινο· extension-gate ζωντανή δοκιμή μόνο poinikos·
+CI φρέσκια παραγωγή μόνο poinikos. **Λύση (`fa8699af`):** release-gate EXACT-SET
+κατά `*served-corpora*` (ΚΟΚΚΙΝΟ ονομαστικά ανά απόν σώμα/releases)· extension-gate
+6/6 data-driven probes (ΜΙΑ λίστα, ΠΚ 372 curated μένει)· CI materialization loop
+6/6 (fail-closed, PIPESTATUS-safe)· README docs≡CI. **Απόδειξη 19/19 real build**
+(πλήρες orchestrator-cli): 6/6 ⇒ exit 0 + 12/12 coverage· σβησμένο releases/
+kpolitikis ⇒ exit 1 ονομαστικά· σβησμένο σώμα astikos ⇒ exit 1· 6/6 probes ✓·
+census PASS. **ΤΙΜΙΑ:** CI loop αποδεικνύεται στο πρώτο CI run + owner Docker·
+κατηγορία-Γ fixtures δευτερεύον δηλωμένο υπόλοιπο· «ταβάνι»-χάρτης (benchmark
+κρυφού σετ, γείωση #36, ΑΚ/ΚΠολΔ #34, αντιπαλικός βρόχος ουσίας) ανοιχτός.
