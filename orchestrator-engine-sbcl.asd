@@ -36,11 +36,13 @@
       :depends-on ("package" "filesystem")
       :components
       ((:file "json-adapter")
-       (:file "pdf-adapter")
+       ;; [Π7-U.1 Φ1γ] Η ΜΙΑ έδρα errata στο όριο εξαγωγής — πριν από pdf/docx
+       (:file "errata-boundary")
+       (:file "pdf-adapter" :depends-on ("errata-boundary"))
        (:file "raw-text-adapter")
        (:file "html-parliament-adapter")
        ;; .docx (Office Open XML) → text → raw-text FSM; needs raw-text->iir-articles
-       (:file "docx-adapter" :depends-on ("raw-text-adapter"))))
+       (:file "docx-adapter" :depends-on ("raw-text-adapter" "errata-boundary"))))
      
      (:module "stages"
       :depends-on ("package" "filesystem" "adapters")

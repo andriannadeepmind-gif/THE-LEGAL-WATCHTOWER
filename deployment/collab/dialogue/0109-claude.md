@@ -104,3 +104,25 @@ Dry-run ντετερμινιστική εξαγωγή από κάθε ψηφια
 από την hash-δεμένη πηγή + δηλωμένα errata στο provenance sidecar. ΜΗΔΕΝ
 ανεξήγητο κείμενο σε 4694 άρθρα / 6 σώματα.** Αυτό είναι το Source Contract
 invariant της Φ1, μετρημένο — το θεμέλιο για τη λογιστική χαρακτήρων του CPEI.
+
+## Θ. [0110] Φ1γ — ΤΟ ΟΡΙΟ ΕΞΑΓΩΓΗΣ ΕΦΑΡΜΟΖΕΙ ΤΑ ERRATA (θάνατος της δεύτερης αλήθειας εισόδου)
+
+Ζωντανό εύρημα δημιουργού: το docker artifact του άρθρου 4 ΞΑΝΑ λάθος παρά τη
+διορθωμένη source.json. Ρίζα: ο run-pipeline είναι «PDF first» — μέσα στο
+container ξανα-εξήγαγε από το raw PDF, και τα errata εφαρμόζονταν ΜΟΝΟ στο
+materialize μονοπάτι ⇒ ΔΥΟ αλήθειες εισόδου. ΔΟΜΙΚΟ κλείσιμο (όχι φρουρός):
+η έδρα errata ΜΕΤΑΚΟΜΙΣΕ στο όριο εξαγωγής —
+`adapters/errata-boundary.lisp::apply-declared-errata`, καλείται ΜΕΣΑ στους
+pdf-adapter/docx-adapter (2η τιμή = applied, τρέφει το sidecar στο
+materialize)· η παλιά CLI υλοποίηση (%apply-errata κ.λπ.) ΔΙΑΓΡΑΦΗΚΕ —
+καμία δεύτερη έδρα, κανένας καταναλωτής δεν μπορεί να την παρακάμψει
+(materialize, pipeline PDF-mode, self-study diff, μελλοντικοί: όλοι
+κληρονομούν).
+
+ΑΠΟΔΕΙΞΗ: ΝΕΟ lock errata-boundary-test 6/6 (πραγματικός adapter στην
+πραγματική πηγή: 124 άρθρα, 2 applied, σωστές μορφές παρούσες, σπασμένες
+ΚΑΜΙΑ, κενά iirs ⇒ τίμιο (nil nil))· END-TO-END: run-pipeline PDF MODE
+τοπικά ⇒ «✦ erratum εφαρμόστηκε» ×2 ΜΕΣΑ στο pipeline και το
+article-004.{html,txt} φέρει «εθνικά συμφέροντα»+«προβλέπει ειδικότερα»,
+0 σπασμένες· ingestion-e2e 10/10 · fek-ingestion 10/10 · corpus-identity
+55/55 · πλήρες inventory στο commit.

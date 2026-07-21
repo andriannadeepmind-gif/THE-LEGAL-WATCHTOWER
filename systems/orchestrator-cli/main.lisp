@@ -1051,71 +1051,9 @@ document.getElementById('ops').addEventListener('click',function(ev){
 (defun %source-prov-path (json-path)
   (concatenate 'string (namestring json-path) ".prov.json"))
 
-(defun %corpus-errata ()
-  "The declared errata of the ACTIVE corpus: config source.errata is a list of
-   entries {article, from, to, reason, page}. This is the gazette practice --
-   a documented editorial correction of a defect in the SOURCE's own text
-   layer (e.g. a misplaced line fragment poppler cannot re-order because the
-   glyph boxes are anomalous in the PDF itself). NEVER a silent patch: each
-   entry names its article, exact text, justification and source page, and is
-   recorded in the provenance sidecar."
-  (let ((v (ignore-errors (orchestrator.spec:config-get "source.errata"))))
-    (when (listp v) v)))
-
-(defun %erratum-field (e key)
-  "Read KEY from erratum entry E, whatever shape the YAML loader produced."
-  (cond ((hash-table-p e)
-         (or (gethash key e)
-             (gethash (intern (string-upcase key) :keyword) e)))
-        ((consp e)
-         (or (cdr (assoc key e :test #'equalp))
-             (getf e (intern (string-upcase key) :keyword))))))
-
-(defun %apply-errata (iirs corpus-id)
-  "Apply the corpus's declared errata to IIRS. Each entry must match its
-   article and its FROM text EXACTLY ONCE -- anything else is reported loudly
-   and skipped (an erratum that no longer matches is stale and must be
-   reviewed, not guessed). Returns the list of applied entries (for the
-   provenance record)."
-  (let ((applied '())
-        (label-fn (find-symbol "ARTICLE-LABEL" :orchestrator.model))
-        (content-fn (find-symbol "ARTICLE-CONTENT" :orchestrator.model)))
-    (dolist (e (%corpus-errata) (nreverse applied))
-      (let* ((art  (princ-to-string (or (%erratum-field e "article") "")))
-             (from (princ-to-string (or (%erratum-field e "from") "")))
-             (to   (princ-to-string (or (%erratum-field e "to") "")))
-             (why  (princ-to-string (or (%erratum-field e "reason") "")))
-             (iir  (find art iirs
-                         :test #'string=
-                         :key (lambda (x) (princ-to-string (funcall label-fn x))))))
-        (cond
-          ((null iir)
-           (format t "  ✗ erratum ~A/~A: το άρθρο δεν βρέθηκε — ΔΕΝ εφαρμόστηκε~%"
-                   corpus-id art))
-          ((zerop (length from))
-           (format t "  ✗ erratum ~A/~A: κενό 'from' — ΔΕΝ εφαρμόστηκε~%" corpus-id art))
-          (t
-           (let* ((body (funcall content-fn iir))
-                  (hits (loop with start = 0 with n = 0
-                              for pos = (search from body :start2 start)
-                              while pos do (incf n) (setf start (1+ pos))
-                              finally (return n))))
-             (cond
-               ((/= hits 1)
-                (format t "  ✗ erratum ~A/~A: το 'from' βρέθηκε ~D φορές (απαιτείται ακριβώς 1) — ΔΕΝ εφαρμόστηκε~%"
-                        corpus-id art hits))
-               (t
-                (let ((pos (search from body)))
-                  (funcall (fdefinition (list 'setf content-fn))
-                           (concatenate 'string
-                                        (subseq body 0 pos) to
-                                        (subseq body (+ pos (length from))))
-                           iir))
-                (format t "  ✦ erratum ~A/~A εφαρμόστηκε: ~A~%" corpus-id art why)
-                (push (list (cons "article" art) (cons "from" from)
-                            (cons "to" to) (cons "reason" why)
-                            (cons "page" (princ-to-string (or (%erratum-field e "page") ""))))
-                      applied))))))))))
+;; [Π7-U.1 Φ1γ] Τα errata ΜΕΤΑΚΟΜΙΣΑΝ στην έδρα του ορίου εξαγωγής
+;; (engine adapters/errata-boundary.lisp): ΚΑΘΕ adapter τα εφαρμόζει ο ίδιος —
+;; materialize/pipeline/οποιοσδήποτε καταναλωτής τα κληρονομεί δομικά.
 
 (defun %write-source-provenance (json-path &key source-digest extraction-method date errata)
   "Stamp a provenance sidecar for the source.json at JSON-PATH: the SHA-256 of its
@@ -1201,9 +1139,16 @@ document.getElementById('ops').addEventListener('click',function(ev){
                  (format t "  – ~A: δεν υπάρχει source.docx/source.pdf~@[ (~A)~]~%" id (or docx pdf)))
                 ((or (null json) (zerop (length (or json ""))))
                  (format t "  ✗ ~A: δεν έχει source.json~%" id))
-                (t (let* ((iirs (if (string-equal (or (pathname-type src) "") "docx")
-                                    (orchestrator.engine.sbcl:docx-adapter src)
-                                    (orchestrator.engine.sbcl:pdf-adapter src)))
+                (t (let* (;; [Π7-U.1 Φ1γ] Οι adapters εφαρμόζουν ΟΙ ΙΔΙΟΙ τα
+                          ;; δηλωμένα errata (η ΜΙΑ έδρα, στο όριο εξαγωγής)
+                          ;; και επιστρέφουν τα applied ως 2η τιμή — για το
+                          ;; provenance sidecar. ΚΑΜΙΑ εφαρμογή εδώ.
+                          (adapter-vals (multiple-value-list
+                                         (if (string-equal (or (pathname-type src) "") "docx")
+                                             (orchestrator.engine.sbcl:docx-adapter src)
+                                             (orchestrator.engine.sbcl:pdf-adapter src))))
+                          (iirs (first adapter-vals))
+                          (applied-errata (second adapter-vals))
                           ;; Ρητή αλυσίδα δηλωμένων config τιμών (όχι κατασκευή)·
                           ;; το config-get δεν σηματοδοτεί για απόν κλειδί.
                           (date (or (orchestrator.spec:config-get "corpus.publication.date")
@@ -1235,7 +1180,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
                             (%write-source-provenance json :extraction-method "preserved-shrink-guard" :date date))
                           (format t "  ⚠ ~A: εξαγωγή ~D άρθρων ενώ το υπάρχον ~A έχει ~D — ΥΠΟΠΤΗ ΣΥΡΡΙΚΝΩΣΗ, ΔΙΑΤΗΡΕΙΤΑΙ το υπάρχον (θέσε ORCHESTRATOR_ALLOW_SHRINK=1 για παράκαμψη).~%"
                                   id (length iirs) json (%source-json-count json))))
-                       (t (let* ((errata (%apply-errata iirs id))
+                       (t (let* ((errata applied-errata) ; ήδη εφαρμοσμένα ΣΤΟΝ adapter
                                  (cnt (orchestrator.gov-source:write-source-json iirs json date)))
                             (incf n)
                             ;; O-3: stamp provenance binding this source.json to the

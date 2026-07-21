@@ -31,9 +31,8 @@
             (title-fn (find-symbol "ARTICLE-TITLE" :orchestrator.model))
             (content-fn (find-symbol "ARTICLE-CONTENT" :orchestrator.model)))
         (when iirs
-          ;; apply the SAME declared errata materialize applies, so the diff is
-          ;; honest — an errata correction is not a pending "upgrade".
-          (%apply-errata iirs id)
+          ;; [Π7-U.1 Φ1γ] Τα errata εφαρμόστηκαν ΗΔΗ μέσα στον adapter (η ΜΙΑ
+          ;; έδρα στο όριο εξαγωγής) — το diff μένει τίμιο χωρίς δεύτερη κλήση.
           (loop for iir in iirs
                 collect (cons (princ-to-string (funcall title-fn iir))
                               (princ-to-string (funcall content-fn iir)))))))))

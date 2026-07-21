@@ -2241,8 +2241,11 @@
           ;; Store for REPL inspection
           (setf *last-parsed-articles* articles)
 
-          ;; Convert to IIR
-          (mapcar (lambda (art) (article-to-iir art pdf-path)) articles)))
+          ;; Convert to IIR — και ΥΠΟΧΡΕΩΤΙΚΑ μέσα από το όριο errata
+          ;; ([Π7-U.1 Φ1γ]: ΚΑΘΕ καταναλωτής — materialize, pipeline PDF-mode,
+          ;; μελλοντικοί — κληρονομεί τα δηλωμένα errata· καμία δεύτερη αλήθεια).
+          (apply-declared-errata
+           (mapcar (lambda (art) (article-to-iir art pdf-path)) articles))))
 
     (error (e)
       (error 'orchestrator.spec:stage-error
