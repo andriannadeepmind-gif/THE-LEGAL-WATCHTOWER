@@ -193,6 +193,17 @@ Write-if-changed στη ΜΙΑ έδρα εγγραφής (write-utf8-file): πα
 ανέγγιχτα (mtime/git καθαρά, νεκρό IO). Lock 15/15 + inventory 127/127 + census
 PASS. Δηλωμένο όριο: skip-generation βαθμίδα = μελλοντικός σχεδιασμός.
 
+## +3 ΘΕΩΡΗΜΑ Στάδιο 2 — [0105] ΜΕΤΑΘΕΣΗ ΚΥΡΙΑΡΧΙΑΣ
+
+Τα per-article artifacts ΔΕΝ αποδίδονται πια από raw IIR: το generate-rdf-stage
+παράγει ΕΚΕΙ τη ΜΙΑ φορά το consolidated, επιβάλλει article-content :=
+in-force κείμενο (fail-closed) και αποδίδει ΟΛΑ τα formats από αυτό· το
+consolidate-stage μόνο καταναλώνει (απόν context ⇒ ΣΦΑΛΜΑ). Αλυσίδα ΕΚ
+ΚΑΤΑΣΚΕΥΗΣ: graph fold ≡ consolidated ≡ artifacts. Lock: text-sovereignty
+11/11 + e2e πράσινα. ΤΙΜΙΟ: επόμενο owner --run-pipeline αλλάζει bytes όπου
+IIR≠κανονική μορφή — golden re-baseline ΣΥΝΕΙΔΗΤΑ. Επόμενα: Στάδιο 3 (βάση
+από ΓΡΑΦΟ + text-bearing operators + πύλη), Στάδιο 4 (+1/+2).
+
 ## +3 ΘΕΩΡΗΜΑ (εντολή δημιουργού) — [0104], Στάδιο 1
 
 Εγκεκριμένο ταβάνι: consolidate(date) = fold(genesis, amendments ≤ date) —

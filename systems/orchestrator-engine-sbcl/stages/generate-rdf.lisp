@@ -45,9 +45,35 @@
 
     (log:info () "Generating CANONICAL RDF for ~D normalized inputs" (length normalized-inputs))
 
-    ;; Transform IIR → Article with FRBR
-    (let ((articles (loop for normalized-input in normalized-inputs
-                          collect (generate-canonical-rdf normalized-input corpus))))
+    ;; [+3 ΘΕΩΡΗΜΑ Στάδιο 2 — ΜΕΤΑΘΕΣΗ ΚΥΡΙΑΡΧΙΑΣ / 0105]
+    ;; Το παλιό σχήμα ήταν ΔΥΟ αλήθειες κειμένου: τα per-article artifacts
+    ;; πάγωναν από το raw IIR ΠΡΙΝ καν υπάρξει το consolidated (η σειρά DAG
+    ;; ήταν generate-rdf → consolidate), ενώ serving/static/graph έτρωγαν από
+    ;; το consolidated. Τώρα: (1) χτίζεται η ΤΑΥΤΟΤΗΤΑ (make-article από IIR),
+    ;; (2) γίνεται ΕΔΩ Η ΜΙΑ παραγωγή του consolidated (ίδιες έδρες με το
+    ;; consolidate-stage), (3) το article-content ΚΑΘΕ άρθρου γίνεται το
+    ;; in-force κείμενο του consolidated (fail-closed αν λείπει provision),
+    ;; (4) ΟΛΑ τα formats αποδίδονται ΑΠΟ αυτό. Έτσι: graph fold ≡ consolidated
+    ;; ≡ artifacts ΕΚ ΚΑΤΑΣΚΕΥΗΣ — καμία τρίτη αλήθεια δεν είναι αναπαραστάσιμη.
+    (let* ((pairs (loop for normalized-input in normalized-inputs
+                        collect (cons normalized-input
+                                      (build-canonical-article normalized-input corpus))))
+           (articles (mapcar #'cdr pairs))
+           (consolidated (%consolidate-from-articles articles)))
+      (orchestrator.core:set-context-value context :consolidated consolidated)
+      (dolist (pair pairs)
+        (let* ((a (cdr pair))
+               (eid (orchestrator.consolidation.bridge:article-eid
+                     (orchestrator.model:article-uri a)))
+               (p (or (orchestrator.consolidation:find-provision consolidated eid)
+                      (error 'orchestrator.spec:rdf-error
+                             :message (format nil "ΜΕΤΑΘΕΣΗ ΚΥΡΙΑΡΧΙΑΣ: το ~A ΔΕΝ υπάρχει στο consolidated — καμία δεύτερη αλήθεια κειμένου" eid)
+                             :article (orchestrator.model:article-number a))))
+               ;; in-force κείμενο από τη ΜΙΑ έδρα απόδοσης (ίδια με JSONL/graph
+               ;; bootstrap)· :repealed ⇒ NIL ⇒ κενό σώμα (τίμιο tombstone)
+               (sovereign-text (or (orchestrator.ai-dump:article-text p) "")))
+          (setf (orchestrator.model:article-content a) sovereign-text)
+          (render-canonical-formats (car pair) a)))
 
       ;; Generate global manifest using Ωmega Corpus Root
       (let* ((article-uris (loop for article in articles
@@ -95,82 +121,60 @@
 ;;; ARTICLE RDF GENERATION
 ;;; ============================================================
 
-(defun generate-canonical-rdf (normalized-input corpus)
-  "Generate canonical RDF from normalized input (IIR) → Article instance
-
-   CRITICAL IIR TRANSFORMATION:
-     Input:  normalized-article-input (parser-independent)
-     Output: article instance (with FRBR+RDF)
-
-   Arguments:
-     normalized-input: normalized-article-input instance (IIR)
-     corpus:            Corpus name (e.g., 'syntagma')
-
-   Returns:
-     article instance with complete RDF artifacts"
+(defun build-canonical-article (normalized-input corpus)
+  "[+3/0105] ΦΑΣΗ ΤΑΥΤΟΤΗΤΑΣ: IIR → article instance (typed identity, URI,
+   metadata) — ΧΩΡΙΣ formats. Το content εδώ είναι το IIR βάσης· η κυριαρχία
+   κειμένου (consolidated in-force) επιβάλλεται από το stage ΠΡΙΝ κάθε render."
   (declare (ignore corpus))
-
   (let* ((article-num   (orchestrator.model:article-number normalized-input))
-         (article-label (orchestrator.model:article-label normalized-input)))
-    (log:info () "Generating canonical RDF for Article ~A (from IIR)" article-label)
+         (article-label (orchestrator.model:article-label normalized-input))
+         (title (orchestrator.model:article-title normalized-input))
+         (content (orchestrator.model:article-content normalized-input))
+         (source-type (orchestrator.model:source-type normalized-input))
+         (source-path (orchestrator.model:source-path normalized-input))
+         (extraction-metadata (orchestrator.model:source-metadata normalized-input))
+         ;; [0088 Φ6γ-Β] ΜΟΝΟ μέσω του builder (make-article): εκεί γεννιέται
+         ;; το typed identity slot από την έδρα.
+         (article (orchestrator.model:make-article
+                   :number article-num
+                   :label article-label
+                   :title title
+                   :content content
+                   :state :generating
+                   :metadata (append (list :source-type source-type
+                                           :source-path source-path)
+                                     extraction-metadata))))
+    (setf (orchestrator.model:article-eli-uri article)
+          (make-canonical-uri article-num "" article-label))
+    article))
 
+(defun render-canonical-formats (normalized-input article)
+  "[+3/0105] ΦΑΣΗ ΑΠΟΔΟΣΗΣ: όλα τα formats από το ΚΥΡΙΑΡΧΟ article-content
+   (το in-force κείμενο του consolidated — έχει ήδη τεθεί από το stage).
+   Το IIR δίνει ΜΟΝΟ ταυτότητα/δομή στο FRBR stack, ΠΟΤΕ πια κείμενο."
+  (let ((article-num (orchestrator.model:article-number article)))
     (handler-case
-        (let* (;; Extract from IIR
-               (title (orchestrator.model:article-title normalized-input))
-               (content (orchestrator.model:article-content normalized-input))
-               (source-type (orchestrator.model:source-type normalized-input))
-               (source-path (orchestrator.model:source-path normalized-input))
-               (extraction-metadata (orchestrator.model:source-metadata normalized-input))
-
-               ;; Generate FRBR+RDF using Ωmega Engine
-               (canonical-uri (make-canonical-uri article-num "" article-label))
-               (turtle-rdf (generate-frbr-unified-from-iir normalized-input))
-
-               ;; Create Article instance with FRBR results — [0088 Φ6γ-Β]
-               ;; ΜΟΝΟ μέσω του builder (make-article): εκεί γεννιέται το typed
-               ;; identity slot από την έδρα· το direct make-instance παρέκαμπτε
-               ;; τον builder και άφηνε το pipeline ΧΩΡΙΣ typed ταυτότητα.
-               (article (orchestrator.model:make-article
-                         :number article-num
-                         :label article-label
-                         :title title
-                         :content content
-                         :state :generating  ; Start in :generating state (IIR already parsed)
-                         :metadata (append (list :source-type source-type
-                                                 :source-path source-path)
-                                           extraction-metadata))))
-
-          ;; Set canonical URI
-          (setf (orchestrator.model:article-eli-uri article) canonical-uri)
-
-          ;; ΩΜΕΓΑ: Set unified Turtle RDF (ONE FILE PER ARTICLE)
-          ;; This contains EVERYTHING: Article Root, Work, Expression,
-          ;; Manifestation, Formats, PROV-O Activity
-          ;; 1. RDF/TURTLE (machine-readable semantic data)
-          (setf (orchestrator.model:article-rdf-turtle article) turtle-rdf)
-
-          ;; 2. HTML+RDFa+JSON-LD (human & machine readable)
-          ;; Contains: Schema.org structured data, embedded JSON-LD for search engines
-          ;; Multi-format serialization for maximum interoperability
+        (progn
+          ;; 1. RDF/TURTLE — content override: το κυρίαρχο κείμενο
+          (setf (orchestrator.model:article-rdf-turtle article)
+                (generate-frbr-unified-from-iir
+                 normalized-input (orchestrator.model:article-content article)))
+          ;; 2. JSON-LD + HTML — διαβάζουν article-content (ήδη κυρίαρχο)
           (setf (orchestrator.model:article-json-ld article) (render-canonical-jsonld article))
           (setf (orchestrator.model:article-html article) (render-canonical-html article))
-
-          ;; State transition
           (orchestrator.spec:transition article :validating)
           article)
-
       (error (e)
         (error 'orchestrator.spec:rdf-error
                :message (format nil "RDF generation failed for article ~A: ~A"
-                                (orchestrator.model:article-uri article)
-                                e)
+                                (orchestrator.model:article-uri article) e)
                :article article-num)))))
 
 ;;; ============================================================
 ;;; FRBR PIPELINE INTEGRATION (Ω-LEVEL) - ACTIVE
 ;;; ============================================================
 
-(defun generate-frbr-unified-from-iir (normalized-input)
+(defun generate-frbr-unified-from-iir (normalized-input &optional content-override)
   "Generate UNIFIED FRBR stack with complete ELI compliance
 
    ACCEPTS IIR (normalized-article-input) - NOT Article
@@ -203,7 +207,10 @@
          ;; καταναλωτές — η κλάση σφάλματος εξαλείφεται, δεν περιφράσσεται.
          (article-suffix (or (orchestrator.model:article-label normalized-input) ""))
          (title (extract-title-only (orchestrator.model:article-title normalized-input)))
-         (content (orchestrator.model:article-content normalized-input)))
+         ;; [+3/0105] ΚΥΡΙΑΡΧΟ κείμενο όταν δίνεται (consolidated in-force)·
+         ;; χωρίς override (αυτοτελείς καταναλωτές/tests): το IIR ως έχει.
+         (content (or content-override
+                      (orchestrator.model:article-content normalized-input))))
 
     ;; Generate UNIFIED FRBR stack
     ;; Includes: ALL FRBR layers + ELI Format nodes + PROV-O Activity + Paragraphs

@@ -55,32 +55,34 @@
    δεν το έγραφε πια — ήταν νεκρή δεύτερη πηγή αλήθειας δίπλα στο config)."
   (orchestrator.spec:config-get "versioning.amendments"))
 
-(defun consolidate-stage (context)
-  "Build the consolidated in-force corpus from the parsed articles and the
-   configured amendments, and write consolidated.ttl + consolidated.txt."
-  (let ((articles (orchestrator.core:get-context-value context :articles))
-        (output-dir (or (orchestrator.core:get-context-value context :output-dir)
-                        (orchestrator.paths:institution-dir "output"))))
-    (unless articles
-      (error 'orchestrator.spec:config-error
-             :message "No articles to consolidate"
-             :config-key :articles))
+(defun %consolidate-from-articles (articles)
+  "[+3/0105] Η ΜΙΑ παραγωγή του consolidated από article objects — καλείται
+   ΜΟΝΟ από το generate-rdf-stage (πριν από κάθε render, ώστε το κείμενο των
+   artifacts να ΕΙΝΑΙ το consolidated). P1b [0052]#Ε6/Ε8: ταυτότητα corpus +
+   νομική ημερομηνία από την έδρα required-config — ΠΟΤΕ σιωπηλά/πλαστά.
+   [#34/0092] work-date στην ΤΑΥΤΟΤΗΤΑ του εγγράφου."
+  (let ((triples (%consolidation-articles->triples articles))
+        (records (%consolidation-amendment-records)))
+    (log:info () "Consolidating ~D articles with ~D amending act(s)"
+              (length triples) (length records))
+    (orchestrator.consolidation.bridge:consolidate-corpus
+     triples records
+     :id (orchestrator.spec:required-config "corpus.short_name")
+     :title (orchestrator.spec:required-config "corpus.name")
+     :work-date (orchestrator.spec:required-config "corpus.publication.date"))))
 
-    ;; P1b [0052]#Ε6/Ε8: ταυτότητα corpus + νομική ημερομηνία από την έδρα
-    ;; required-config — ΠΟΤΕ σιωπηλά «"corpus"»/πλαστές τιμές, ΠΟΤΕ
-    ;; ignore-errors γύρω από config-get (που δεν σηματοδοτεί για απόν κλειδί
-    ;; — κατάπινε μόνο πραγματικές βλάβες φόρτωσης).
-    (let* ((triples (%consolidation-articles->triples articles))
-           (records (%consolidation-amendment-records))
-           (corpus-id (orchestrator.spec:required-config "corpus.short_name"))
-           (corpus-title (orchestrator.spec:required-config "corpus.name"))
-           (consolidated
-             (orchestrator.consolidation.bridge:consolidate-corpus
-              triples records :id corpus-id :title corpus-title
-              ;; [#34/0092] Νομική ημερομηνία ΠΟΤΕ δεν μαντεύεται: ρητά από το
-              ;; config ή ΣΦΑΛΜΑ — και μπαίνει στην ΤΑΥΤΟΤΗΤΑ του εγγράφου,
-              ;; ώστε ΚΑΘΕ downstream serializer (AKN κ.ά.) να τη βρίσκει εκεί.
-              :work-date (orchestrator.spec:required-config "corpus.publication.date")))
+(defun consolidate-stage (context)
+  "Write the consolidated artifacts. [+3/0105 ΜΕΤΑΘΕΣΗ ΚΥΡΙΑΡΧΙΑΣ]: το
+   consolidated ΔΕΝ ξανα-υπολογίζεται εδώ — παράγεται ΜΙΑ φορά στο
+   generate-rdf-stage (πριν από κάθε render) και καταναλώνεται από το context.
+   Απόν consolidated = ΣΦΑΛΜΑ (καμία σιωπηλή δεύτερη παραγωγή)."
+  (let ((output-dir (or (orchestrator.core:get-context-value context :output-dir)
+                        (orchestrator.paths:institution-dir "output"))))
+    (let* ((consolidated
+             (or (orchestrator.core:get-context-value context :consolidated)
+                 (error 'orchestrator.spec:config-error
+                        :message "consolidate-stage: ΚΑΝΕΝΑ :consolidated στο context — η ΜΙΑ παραγωγή γίνεται στο generate-rdf-stage (ΜΕΤΑΘΕΣΗ ΚΥΡΙΑΡΧΙΑΣ [0105])"
+                        :config-key :consolidated)))
            (ttl (orchestrator.consolidation:render-consolidation-provenance-ttl
                  consolidated))
            (txt (orchestrator.consolidation:render-consolidated-text consolidated))
@@ -88,9 +90,6 @@
            ;; παραμένει fail-closed αν λείπει.
            (akn (orchestrator.akoma-ntoso:emit-akoma-ntoso consolidated))
            (dir (uiop:ensure-directory-pathname output-dir)))
-
-      (log:info () "Consolidating ~D articles with ~D amending act(s)"
-                (length triples) (length records))
 
       (orchestrator.write-authority:emit-graph
        ttl (merge-pathnames "consolidated.ttl" dir) :authority :provenance)
@@ -106,7 +105,6 @@
        (orchestrator.ai-dump:emit-corpus-catalog consolidated)
        (merge-pathnames "catalog.jsonld" dir) :authority :provenance)
 
-      (orchestrator.core:set-context-value context :consolidated consolidated)
       (log:info () "Wrote consolidated.{ttl,txt,akn.xml}, corpus.jsonl and catalog.jsonld to ~A"
                 output-dir)
       context)))
