@@ -591,15 +591,19 @@
                           ;; πηγή εφαρμογής τους (κλείνει ο κύκλος πρότασης).
                           (%approved-review-records corpus-id)))
          (short (or (orchestrator.spec:config-get "corpus.short_name") corpus-id)))
-    (values short triples records (orchestrator.spec:config-get "corpus.name"))))
+    ;; [#34/0092] 5η τιμή: work-date (corpus.publication.date) — η ΜΙΑ πηγή της
+    ;; ημερομηνίας έργου, ρέει στην ταυτότητα του consolidated εγγράφου.
+    (values short triples records (orchestrator.spec:config-get "corpus.name")
+            (orchestrator.spec:config-get "corpus.publication.date"))))
 
 (defun build-consolidated-for (corpus-id &optional as-of-date)
   "Build (values short-name consolidated-document) for CORPUS-ID, optionally as
    it stood on AS-OF-DATE."
-  (multiple-value-bind (short triples records title) (corpus-spec corpus-id)
+  (multiple-value-bind (short triples records title work-date) (corpus-spec corpus-id)
     (values short
             (orchestrator.consolidation.bridge:consolidate-corpus
-             triples records :as-of-date as-of-date :id short :title title))))
+             triples records :as-of-date as-of-date :id short :title title
+             :work-date work-date))))
 
 (defun build-active-consolidated-document ()
   "Build the consolidated document for the currently-selected corpus."
@@ -621,9 +625,10 @@
   (let ((out '()))
     (dolist (id *served-corpora*)
       (handler-case
-          (multiple-value-bind (short triples records title) (corpus-spec id)
+          (multiple-value-bind (short triples records title work-date) (corpus-spec id)
             (let ((provider
                     (let ((tr triples) (rc records) (sh short) (ti title) (cid id)
+                          (wd work-date)
                           (lock (sb-thread:make-mutex :name (format nil "corpus-~A" short)))
                           (current nil))
                       (lambda (&optional as-of)
@@ -637,7 +642,7 @@
                               (or current
                                   (setf current
                                         (orchestrator.consolidation.bridge:consolidate-corpus
-                                         tr rc :id sh :title ti)))))))))
+                                         tr rc :id sh :title ti :work-date wd)))))))))
               ;; [Μ] ΜΙΑ typed εγγραφή ανά σώμα: identity + providers μαζί —
               ;; καμία δεύτερη alist που ξανασυνδέεται με assoc.
               (push (orchestrator.corpus-service:make-corpus-runtime

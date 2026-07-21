@@ -26,7 +26,7 @@
 (defun md (&rest a) (apply (find-symbol "MAKE-LEGAL-DOCUMENT" :orchestrator.consolidation) a))
 
 (defun base-doc ()
-  (md :id "pk" :title "Ποινικός Κώδικας" :language "el"
+  (md :id "pk" :title "Ποινικός Κώδικας" :language "el" :work-date "2019-06-11"
       :provisions (list (mp :eid "art_1" :kind :article :num "1" :heading "Α" :text "Αρχικό 1.")
                         (mp :eid "art_2" :kind :article :num "2" :heading "Β" :text "Αρχικό 2.")
                         (mp :eid "art_3" :kind :article :num "3" :heading "Γ" :text "Αρχικό 3."))))

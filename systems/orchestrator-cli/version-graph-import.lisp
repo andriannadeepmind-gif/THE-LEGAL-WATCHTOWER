@@ -35,9 +35,16 @@
   (orchestrator.spec:select-corpus corpus-id)
   (orchestrator.identity:declared-body))
 
-(defun %amended-article-dates (corpus-id)
+(defun %amended-article-dates (corpus-id &optional cut)
   "eid → ημερομηνία ΤΕΛΕΥΤΑΙΑΣ αναθεώρησης που τον άγγιξε + λίστα ΟΛΩΝ των
-   (ημερομηνία act-ref) ανά eid — από τα text-less versioning.amendments."
+   (ημερομηνία act-ref) ανά eid — από τα text-less versioning.amendments.
+   [#34 διόρθωση διτεμπορικής σημασιολογίας] CUT (ISO ημερομηνία, η ΙΔΙΑ έδρα
+   «σήμερα» με το fold-parity): στο LAST μετρούν ΜΟΝΟ αναθεωρήσεις ≤ CUT — μια
+   ΜΕΛΛΟΝΤΙΚΗ τροποποίηση (π.χ. Ν.5303/2026, ισχύς 16/9/2026) ΔΕΝ έχει αγγίξει
+   ακόμη το κείμενο, άρα το bootstrap valid-from ΔΕΝ επιτρέπεται να γίνει
+   μελλοντικό (αλλιώς: «καμία έκδοση σε ισχύ σήμερα» = ψευδο-αβεβαιότητα, ενώ
+   το σημερινό κείμενο είναι ΓΝΩΣΤΟ). Στο ALL μπαίνουν ΟΛΕΣ (και οι μελλοντικές)
+   — τα κενά γνώσης τους δηλώνονται τίμια για το διάστημά τους."
   (orchestrator.spec:select-corpus corpus-id)
   (let ((last (make-hash-table :test 'equal))
         (all (make-hash-table :test 'equal)))
@@ -51,7 +58,8 @@
         (dolist (a arts)
           (let ((eid (format nil "art_~A" a)))
             (push (list date fek) (gethash eid all))
-            (when (or (null (gethash eid last)) (string> date (gethash eid last)))
+            (when (and (or (null cut) (not (string> date cut)))
+                       (or (null (gethash eid last)) (string> date (gethash eid last))))
               (setf (gethash eid last) date))))))
     (values last all)))
 
@@ -85,7 +93,10 @@
             (when aid
               (setf (gethash (format nil "art_~A" aid) src-dates)
                     (%iso<-greek-date (cdr (assoc "date" o :test #'string=)))))))
-        (multiple-value-bind (last-rev all-revs) (%amended-article-dates corpus-id)
+        ;; [#34] cut = «σήμερα» από την ΙΔΙΑ έδρα με το fold-parity (journal:iso-now):
+        ;; μελλοντικές τροποποιήσεις δεν μολύνουν το valid-from του bootstrap.
+        (multiple-value-bind (last-rev all-revs)
+            (%amended-article-dates corpus-id (subseq (orchestrator.journal:iso-now) 0 10))
           (let ((imported 0) (gaps 0) (skipped '()))
             (dolist (p (orchestrator.consolidation:legal-document-provisions doc))
               (let* ((eid (orchestrator.consolidation:provision-eid p))
@@ -525,6 +536,9 @@
                     #'orchestrator.identity:provision-id< :key #'first)))
         (orchestrator.consolidation:make-legal-document
          :id short :title title :language "el"
+         ;; [#34/0092] work-date από την ΙΔΙΑ πηγή με το τρέχον serving —
+         ;; το ιστορικό έγγραφο φέρει την ταυτότητα έργου του σώματος.
+         :work-date (orchestrator.spec:config-get "corpus.publication.date")
          :provisions
          (mapcar (lambda (row)
                    (destructuring-bind (id label v) row

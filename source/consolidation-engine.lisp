@@ -36,6 +36,7 @@
    #:provision-status #:provision-source-act #:provision-source-date
    #:legal-document #:make-legal-document #:legal-document-p
    #:legal-document-id #:legal-document-title #:legal-document-language
+   #:legal-document-work-date
    #:legal-document-provisions
    #:amending-act #:make-amending-act #:amending-act-p
    #:amending-act-id #:amending-act-fek #:amending-act-enacted
@@ -99,10 +100,15 @@
   (source-date nil :type (or null string)))
 
 (defstruct (legal-document (:copier nil))
-  "An ordered collection of top-level provisions (articles) plus identity."
+  "An ordered collection of top-level provisions (articles) plus identity.
+   WORK-DATE [#34/0092]: η ημερομηνία δημοσίευσης του ΕΡΓΟΥ (FRBR work) — μέρος
+   της ταυτότητας του εγγράφου, από τη ΜΙΑ πηγή (corpus.publication.date) στη
+   ΜΙΑ έδρα κατασκευής. Οι serializers (Akoma Ntoso FRBRdate) τη βρίσκουν ΕΔΩ·
+   NIL = τίμια άγνωστη ⇒ ο emitter αρνείται fail-closed (ποτέ πλαστή 1970-01-01)."
   (id         nil :type (or null string))
   (title      nil :type (or null string))
   (language   "el" :type string)
+  (work-date  nil :type (or null string))
   (provisions nil :type list))
 
 (defstruct (amending-act (:copier nil))
@@ -147,6 +153,7 @@
    :id (legal-document-id doc)
    :title (legal-document-title doc)
    :language (legal-document-language doc)
+   :work-date (legal-document-work-date doc)
    :provisions (mapcar #'copy-provision-tree (legal-document-provisions doc))))
 
 ;;; ============================================================================

@@ -21,7 +21,7 @@
 (defun cons* (&rest a) (apply (find-symbol "CONSOLIDATE" :orchestrator.consolidation) a))
 
 (defun build ()
-  (cons* (md :id "demo" :title "Δοκιμαστικός Κώδικας" :language "el"
+  (cons* (md :id "demo" :title "Δοκιμαστικός Κώδικας" :language "el" :work-date "2020-01-01"
              :provisions (list (mp :eid "art_1" :kind :article :num "1" :heading "Σκοπός" :text "Αρχικό."
                                    :children (list (mp :eid "art_1__para_1" :kind :paragraph :num "1" :text "Πρώτη.")
                                                    (mp :eid "art_1__para_2" :kind :paragraph :num "2" :text "Δεύτερη.")))

@@ -82,14 +82,17 @@
                                       :kind :paragraph :num (princ-to-string m)
                                       :text p)))))))
 
-(defun articles->document (articles &key id title (language "el"))
+(defun articles->document (articles &key id title (language "el") work-date)
   "Build a LEGAL-DOCUMENT from ARTICLES, a list of (number title content).
    Το ID είναι ΥΠΟΧΡΕΩΤΙΚΟ — η ταυτότητα corpus δεν μαντεύεται ποτέ (το παλιό
-   σιωπηλό default «corpus» έγραφε πλαστή ταυτότητα εγγράφου)."
+   σιωπηλό default «corpus» έγραφε πλαστή ταυτότητα εγγράφου).
+   WORK-DATE [#34/0092]: ημερομηνία δημοσίευσης του έργου (corpus.publication.date)
+   — μπαίνει στην ταυτότητα του εγγράφου· NIL = τίμια άγνωστη (ο AKN emitter
+   αρνείται fail-closed)."
   (unless (and (stringp id) (plusp (length id)))
     (error "articles->document: το :id (ταυτότητα corpus) είναι υποχρεωτικό — δόθηκε ~S" id))
   (make-legal-document
-   :id id :title title :language language
+   :id id :title title :language language :work-date work-date
    :provisions
    (mapcar (lambda (a)
              (destructuring-bind (number title content) a
@@ -166,16 +169,17 @@
 ;;; ============================================================================
 
 (defun consolidate-corpus (articles amendment-records
-                           &key as-of-date id title)
+                           &key as-of-date id title work-date)
   "Consolidate a corpus end-to-end.
 
    ARTICLES:          list of (number title content).
    AMENDMENT-RECORDS: list of ELI-temporal config-shaped records.
    AS-OF-DATE:        optional ISO date; consolidate as it stood on that date.
    ID:                ΥΠΟΧΡΕΩΤΙΚΗ ταυτότητα corpus (βλ. articles->document).
+   WORK-DATE:         [#34/0092] ημερομηνία δημοσίευσης έργου → ταυτότητα doc.
 
    Returns the consolidated LEGAL-DOCUMENT."
-  (consolidate (articles->document articles :id id :title title)
+  (consolidate (articles->document articles :id id :title title :work-date work-date)
                (amendment-records->acts amendment-records)
                :as-of-date as-of-date))
 

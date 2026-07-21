@@ -18,7 +18,7 @@
            (md (&rest a) (apply (find-symbol "MAKE-LEGAL-DOCUMENT" c) a))
            (ma (&rest a) (apply (find-symbol "MAKE-AMENDING-ACT" c) a))
            (cons* (&rest a) (apply (find-symbol "CONSOLIDATE" c) a)))
-      (cons* (md :id "demo" :title "Demo Code" :language "el"
+      (cons* (md :id "demo" :title "Demo Code" :language "el" :work-date "2020-01-01"
                  :provisions (list (mp :eid "art_1" :kind :article :num "1" :heading "Α" :text "Κ1.")
                                    (mp :eid "art_2" :kind :article :num "2" :heading "Β" :text "Κ2.")
                                    (mp :eid "art_3" :kind :article :num "3" :heading "Γ" :text "Κ3.")))

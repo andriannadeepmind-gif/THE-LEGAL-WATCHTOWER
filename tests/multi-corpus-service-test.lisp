@@ -15,6 +15,9 @@
   (let ((c (find-package :orchestrator.consolidation)))
     (funcall (find-symbol "MAKE-LEGAL-DOCUMENT" c)
              :id id :title title :language "el"
+             ;; [#34/0092] work-date = μέρος της ταυτότητας fixture (ο AKN
+             ;; emitter είναι fail-closed — καμία πλαστή ημερομηνία).
+             :work-date "2020-01-01"
              :provisions
              (list (funcall (find-symbol "MAKE-PROVISION" c)
                             :eid "art_5" :kind :article :num "5"

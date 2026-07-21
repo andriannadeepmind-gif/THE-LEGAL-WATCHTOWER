@@ -10,7 +10,15 @@
                      (progn (incf *f*) (format t "  FAIL ~A~%" ,name)))
      (error (e) (incf *f*) (format t "  FAIL ~A (error: ~A)~%" ,name e))))
 
-(clrhash orchestrator.capability:*capabilities*)
+;; ΠΛΗΡΗΣ απομόνωση κόσμου δυνατοτήτων: το μητρώο ΚΑΙ το ledger ιδιοκτησίας
+;; ([0086] seat-collision) είναι ΕΝΑ concept — επανεκκινούν ΜΑΖΙ. Το παλιό
+;; σκέτο clrhash άφηνε το ownership ledger με τον ιδιοκτήτη του cockpit για το
+;; :ask ⇒ CAPABILITY-SEAT-COLLISION όταν το τεστ έστηνε το δικό του fixture
+;; στο ΠΛΗΡΕΣ image (standalone stage). Φρέσκοι πίνακες = καθαρός κόσμος
+;; fixture, με τον φρουρό ΠΛΗΡΩΣ ενεργό μέσα του (η σύγκρουση εξακολουθεί να
+;; ανιχνεύεται — βλ. seat-integrity-test για το ίδιο το lock του φρουρού).
+(setf orchestrator.capability:*capabilities* (make-hash-table :test 'eq)
+      orchestrator.capability::*capability-owners* (make-hash-table :test 'eq))
 (orchestrator.capability:define-capability :ask
   :summary "δοκιμαστική ask" :params ((:q :string t)) :result :string :trust :trusted
   :fn (lambda (&key q) (format nil "απάντηση: ~A" q)))

@@ -17,7 +17,7 @@
    (list (list 1 "Άρθρο 1" "Κείμενο 1.")
          (list 2 "Άρθρο 2" "Κείμενο 2.")
          (list 3 "Άρθρο 3" "Κείμενο 3."))
-   :id "demo" :title "Demo"))
+   :id "demo" :title "Demo" :work-date "2020-01-01"))
 
 (defun rec (id date &key amended repealed)
   (list (cons "id" id) (cons "date" date) (cons "date_applicability" date)

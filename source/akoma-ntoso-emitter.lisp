@@ -28,6 +28,7 @@
   (:use :cl)
   (:import-from :orchestrator.consolidation
                 #:legal-document-id #:legal-document-title #:legal-document-language
+                #:legal-document-work-date
                 #:legal-document-provisions
                 #:provision-eid #:provision-kind #:provision-num #:provision-heading
                 #:provision-text #:provision-children
@@ -187,10 +188,18 @@
 
 (defun emit-akoma-ntoso (document &key (country "gr")
                                        (author-href "#stavropoulosLaw")
-                                       (work-date (error "emit-akoma-ntoso: :work-date ΑΠΑΙΤΕΙΤΑΙ — καμία φαβρικαρισμένη «1970-01-01» ημερομηνία στο FRBRdate αυθεντικού Akoma Ntoso [0092/silent-fallback]"))
+                                       work-date
                                        (source "#stavropoulosLaw"))
   "Serialize DOCUMENT (a consolidation legal-document) to an Akoma Ntoso 3.0
-   <act> XML string. Deterministic for a given document and arguments."
+   <act> XML string. Deterministic for a given document and arguments.
+   [#34/0092] WORK-DATE: ρητό όρισμα ή — κανονικά — από την ΤΑΥΤΟΤΗΤΑ του
+   εγγράφου (legal-document-work-date, γεμισμένο από corpus.publication.date
+   στη ΜΙΑ έδρα κατασκευής). Χωρίς καμία από τις δύο ⇒ ΣΦΑΛΜΑ fail-closed —
+   ποτέ φαβρικαρισμένη «1970-01-01» στο FRBRdate αυθεντικού Akoma Ntoso."
+  (setf work-date
+        (or work-date
+            (legal-document-work-date document)
+            (error "emit-akoma-ntoso: :work-date ΑΠΑΙΤΕΙΤΑΙ (ρητά ή στο legal-document-work-date) — καμία φαβρικαρισμένη «1970-01-01» ημερομηνία στο FRBRdate αυθεντικού Akoma Ntoso [0092/silent-fallback]")))
   (with-output-to-string (out)
     (format out "<?xml version=\"1.0\" encoding=\"UTF-8\"?>~%")
     (format out "<akomaNtoso xmlns=\"~A\">~%" +akn-namespace+)

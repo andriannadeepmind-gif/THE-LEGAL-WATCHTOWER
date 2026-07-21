@@ -76,16 +76,17 @@
            (corpus-title (orchestrator.spec:required-config "corpus.name"))
            (consolidated
              (orchestrator.consolidation.bridge:consolidate-corpus
-              triples records :id corpus-id :title corpus-title))
+              triples records :id corpus-id :title corpus-title
+              ;; [#34/0092] Νομική ημερομηνία ΠΟΤΕ δεν μαντεύεται: ρητά από το
+              ;; config ή ΣΦΑΛΜΑ — και μπαίνει στην ΤΑΥΤΟΤΗΤΑ του εγγράφου,
+              ;; ώστε ΚΑΘΕ downstream serializer (AKN κ.ά.) να τη βρίσκει εκεί.
+              :work-date (orchestrator.spec:required-config "corpus.publication.date")))
            (ttl (orchestrator.consolidation:render-consolidation-provenance-ttl
                  consolidated))
            (txt (orchestrator.consolidation:render-consolidated-text consolidated))
-           ;; Νομική ημερομηνία ΠΟΤΕ δεν μαντεύεται: ρητά από το config ή
-           ;; ΣΦΑΛΜΑ. Το παλιό σιωπηλό «1970-01-01» έγραφε πλαστή Unix-epoch
-           ;; ημερομηνία σε νομικό αρτεφάκτ (Akoma Ntoso FRBRdate).
-           (akn (orchestrator.akoma-ntoso:emit-akoma-ntoso
-                 consolidated
-                 :work-date (orchestrator.spec:required-config "corpus.publication.date")))
+           ;; Το work-date ταξιδεύει ΜΕΣΑ στο έγγραφο (ΜΙΑ ροή) — ο emitter
+           ;; παραμένει fail-closed αν λείπει.
+           (akn (orchestrator.akoma-ntoso:emit-akoma-ntoso consolidated))
            (dir (uiop:ensure-directory-pathname output-dir)))
 
       (log:info () "Consolidating ~D articles with ~D amending act(s)"
