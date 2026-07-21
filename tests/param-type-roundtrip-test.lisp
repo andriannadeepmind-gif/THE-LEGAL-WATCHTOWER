@@ -68,10 +68,13 @@
              (orchestrator.capability::%type-ok-p ty coerced)))))
 
 ;; Το ΑΚΡΙΒΕΣ κενό F2: :keyword coerce-άρει σε keyword (όχι string), invoke ⇒ 200 όχι 400.
+;; [κύκλος-3] Υπαρκτό keyword ("string" → :STRING, μέλος +param-types+): μετά τη find-symbol
+;; διόρθωση, μόνο ΗΔΗ-interned keywords coerce-άρουν (θάνατος intern-DoS). ΟΧΙ "foo" — που
+;; θα βασιζόταν σε read-order artifact (το :foo interned μόνο όταν διαβαστεί η form του).
 (check ":keyword coerce → keyword (όχι string)"
-       (keywordp (orchestrator.capability-api::%coerce-one *cap* :p :keyword "foo")))
-(check ":keyword \"foo\" → :FOO (upcased όπως ο reader σε CLI/MCP)"
-       (eq :foo (orchestrator.capability-api::%coerce-one *cap* :p :keyword "foo")))
+       (keywordp (orchestrator.capability-api::%coerce-one *cap* :p :keyword "string")))
+(check ":keyword \"string\" → :STRING (υπαρκτό keyword, upcased)"
+       (eq :string (orchestrator.capability-api::%coerce-one *cap* :p :keyword "string")))
 (orchestrator.capability:define-capability :kwcap
   :params ((:mode :keyword t)) :result :any :trust :trusted
   :fn (lambda (&key mode) (list :got mode)))

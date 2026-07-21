@@ -87,7 +87,7 @@
                (form-to-element '(:layout-line/1 :id "l" :baseline 0 :reading-order 0 :bbox nil
                                   :spans ((:layout-page/1 :page-number 1 :blocks () :width 0 :height 0 :rotation 0)))))
   (ck "OK: strict bool δέχεται :t και :nil"
-      (let ((f (form-to-element '(:layout-font/1 :name "F" :size 10 :bold-p :t
+      (let ((f (form-to-element '(:layout-font/1 :name "F" :size 10.0 :bold-p :t
                                   :italic-p :nil :monospace-p nil))))
         (and (font-info-bold-p f) (not (font-info-italic-p f))))))
 

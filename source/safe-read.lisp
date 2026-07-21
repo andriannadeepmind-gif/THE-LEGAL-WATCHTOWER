@@ -39,7 +39,7 @@
 (defpackage :orchestrator.safe-read
   (:use :cl)
   (:export #:read-data-file #:read-data-string #:read-data-file-sequence
-           #:read-data-form #:canonicalize-bool
+           #:read-data-form #:data-to-string #:canonicalize-bool
            #:safe-read-error #:safe-read-error-why
            #:*max-data-bytes* #:*max-data-depth* #:*max-data-atoms*
            #:max-paren-depth #:prescan-depth-atoms))
@@ -306,6 +306,37 @@
       (:unreadable (values nil :unreadable))
       (:resource-exhausted (values nil :resource-exhausted))
       (t (%decode-sequence content max-depth max-atoms)))))
+
+;;; ── Η ΜΙΑ έδρα DATA-ONLY ΕΓΓΡΑΦΗΣ (συμμετρική της ανάγνωσης) ──
+
+(defun data-to-string (form &key (max-bytes *max-data-bytes*))
+  "Canonical DATA-ONLY serialization: FORM → string που το read-data-string ξαναδιαβάζει
+   ΑΚΕΡΑΙΟ. Η ΜΙΑ έδρα εγγραφής, συμμετρική της ΜΙΑΣ έδρας ανάγνωσης — κάθε persistence
+   writer (trace/AST/BPE) περνά από ΕΔΩ, ώστε το «τι γράφεται» να είναι δομικά ό,τι «μπορεί
+   να διαβαστεί». Εγγυήσεις:
+     • %data-only-p ΠΡΙΝ την εγγραφή — fail-closed: ΠΟΤΕ δεν γράφεται μη-data-only form
+       (κανένα constructor symbol/package-qualified που ο reader θα απέρριπτε)·
+     • *print-readably* NIL — ΚΡΙΣΙΜΟ: specialized (simple-array base-char) strings (π.χ.
+       από format-παραγόμενα ids) τυπώνονται ως «#A(…)» array-literals υπό readable printing,
+       που η +data-readtable+ (#-deny) ΑΠΟΡΡΙΠΤΕΙ ⇒ round-trip έσπαγε (:unreadable)· εδώ
+       τυπώνονται ως απλά \"…\" strings·
+     • keyword package + double-float — ΙΔΙΑ κανονική μορφή με τον reader (καμία drift)·
+     • όχι pretty/circle — ντετερμινιστικό, χωρίς #N= sharing markers·
+     • byte-cap στο ΑΠΟΤΕΛΕΣΜΑ (ίδιο όριο με την ανάγνωση)."
+  (unless (%data-only-p form)
+    (error 'safe-read-error :why
+           "data-to-string: μη data-only form (μόνο keywords/strings/numbers/lists/t/nil)"))
+  (let ((s (with-output-to-string (out)
+             (with-standard-io-syntax
+               (let ((*package* (load-time-value (find-package :keyword)))
+                     (*print-readably* nil)
+                     (*print-pretty* nil)
+                     (*print-circle* nil)
+                     (*read-default-float-format* 'double-float))
+                 (prin1 form out))))))
+    (when (> (%utf8-byte-length s) max-bytes)
+      (error 'safe-read-error :why "data-to-string: υπέρβαση byte-cap"))
+    s))
 
 ;;; ── Boolean canonicalization (ΜΙΑ έδρα· από %ebg-canon-bool) ──
 

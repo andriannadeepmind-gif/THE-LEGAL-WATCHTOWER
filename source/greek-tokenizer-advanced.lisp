@@ -934,13 +934,9 @@
    κολοβό αρχείο ⇒ fail-closed)."
   (orchestrator.journal:write-file-atomic
    filename
-   (with-output-to-string (out)
-     (format out ";;; BPE Model (data-only ~A) - ~D merges, trained on ~D words~%"
-             +bpe-schema+ (length (bpe-model-merges model)) (bpe-model-trained-on model))
-     (with-standard-io-syntax
-       (let ((*package* (find-package :keyword)))
-         (prin1 (bpe-model-to-data model) out)))
-     (terpri out)))
+   (format nil ";;; BPE Model (data-only ~A) - ~D merges, trained on ~D words~%~A~%"
+           +bpe-schema+ (length (bpe-model-merges model)) (bpe-model-trained-on model)
+           (orchestrator.safe-read:data-to-string (bpe-model-to-data model))))  ; ΜΙΑ έδρα εγγραφής
   filename)
 
 (defun %bpe-decode (data)

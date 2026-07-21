@@ -1086,10 +1086,8 @@
     (orchestrator.journal:write-file-atomic
      filepath
      (with-output-to-string (s)
-       (dolist (e entries)
-         (with-standard-io-syntax
-           (let ((*package* (find-package :keyword)))
-             (prin1 (trace-to-data (cdr e)) s)))
+       (dolist (e entries)                                       ; ΜΙΑ έδρα εγγραφής (data-to-string)
+         (write-string (orchestrator.safe-read:data-to-string (trace-to-data (cdr e))) s)
          (terpri s)))))
   filepath)
 

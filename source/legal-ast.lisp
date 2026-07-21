@@ -1768,11 +1768,8 @@
   (let ((data (ast-to-form ast)))
     (orchestrator.journal:write-file-atomic
      filepath
-     (with-output-to-string (s)
-       (format s ";;;; AST Export — data-only schema ~A (ΔΕΔΟΜΕΝΑ, όχι κώδικας)~%" (first data))
-       (with-standard-io-syntax
-         (let ((*package* (find-package :keyword))) (prin1 data s)))
-       (terpri s))))
+     (format nil ";;;; AST Export — data-only schema ~A (ΔΕΔΟΜΕΝΑ, όχι κώδικας)~%~A~%"
+             (first data) (orchestrator.safe-read:data-to-string data))))  ; ΜΙΑ έδρα εγγραφής
   filepath)
 
 (defun load-ast-from-file (filepath)
