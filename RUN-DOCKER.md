@@ -192,11 +192,11 @@ icacls logs /grant Everyone:F /T
 
 ### Πρόβλημα: Build fails με "circular dependency"
 
-**Λύση:** Αυτό έχει διορθωθεί στο branch `claude/fix-docker-dependency-5axFE`
+**Λύση:** Αυτό έχει διορθωθεί στο branch `main`
 
 Κάντε:
 ```bash
-git pull origin claude/fix-docker-dependency-5axFE
+git pull origin main
 ```
 
 ## Επόμενα Βήματα (Implementation Roadmap)

@@ -35,7 +35,7 @@ command: ["--run-pipeline"]  # ← Τρέχει pipeline, όχι --help
 
 ```powershell
 # 1. Pull όλες τις αλλαγές
-git pull origin claude/fix-docker-dependency-5axFE
+git pull origin main
 
 # 2. Clean rebuild (χωρίς cache)
 docker-compose build --no-cache
@@ -51,7 +51,7 @@ Get-ChildItem -Recurse output/releases/
 
 ```bash
 # 1. Pull όλες τις αλλαγές
-git pull origin claude/fix-docker-dependency-5axFE
+git pull origin main
 
 # 2. Clean rebuild
 docker-compose build --no-cache
@@ -214,7 +214,7 @@ docker compose up
 ---
 
 **System Version**: 1.2.0
-**Branch**: `claude/fix-docker-dependency-5axFE`
+**Branch**: `main`
 **Author**: Spyridon Stavropoulos
 **ORCID**: 0009-0005-2832-2153
 **License**: MIT

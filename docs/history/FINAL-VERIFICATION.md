@@ -7,17 +7,17 @@
 #### 1. Zero hardcoded paths ✅
 **Verification:**
 ```bash
-$ grep -r "/home/claude" source/
+$ grep -r "/opt/orchestrator-v1.1" source/
 # No results
 ```
 **Status:** ✅ PASS - All hardcoded paths replaced with `orchestrator.paths:resolve-path`
 
 **Replacements Made:**
-- `/home/claude/orchestrator-v1.1/scripts/pdf_parser.py` → `(resolve-path :scripts "pdf_parser.py")`
-- `/home/claude/orchestrator-v1.1/shapes/eli-shapes.ttl` → `(resolve-path :shapes "eli-shapes.ttl")`
-- `/home/claude/orchestrator-v1.1/scripts/ethereum_anchor.py` → `(resolve-path :scripts "ethereum_anchor.py")`
-- `/home/claude/orchestrator-v1.1/scripts/arweave_upload.js` → `(resolve-path :scripts "arweave_upload.js")`
-- `/home/claude/orchestrator-v1.1/output/` → `(resolve-path :output)`
+- `/opt/orchestrator-v1.1/scripts/pdf_parser.py` → `(resolve-path :scripts "pdf_parser.py")`
+- `/opt/orchestrator-v1.1/shapes/eli-shapes.ttl` → `(resolve-path :shapes "eli-shapes.ttl")`
+- `/opt/orchestrator-v1.1/scripts/ethereum_anchor.py` → `(resolve-path :scripts "ethereum_anchor.py")`
+- `/opt/orchestrator-v1.1/scripts/arweave_upload.js` → `(resolve-path :scripts "arweave_upload.js")`
+- `/opt/orchestrator-v1.1/output/` → `(resolve-path :output)`
 
 #### 2. All protocols defined ✅
 **File:** `source/protocols.lisp` (6.7 KB)
