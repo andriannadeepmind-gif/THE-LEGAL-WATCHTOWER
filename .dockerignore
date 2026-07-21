@@ -18,6 +18,10 @@ azure-pipelines.yml
 # Documentation (exclude from build context)
 *.md
 !README.md
+# [0103] Το συμβόλαιο εξαρτήσεων είναι ΜΕΡΟΣ της ταυτότητας του image: το
+# dependency-contract-consistency suite το διασταυρώνει με το deps.lock ΜΕΣΑ
+# στο standalone-test stage — χωρίς αυτό, COPY fail στον builder.
+!DEPENDENCY-CONTRACT.md
 CHANGELOG.md
 LICENSE
 docs/
