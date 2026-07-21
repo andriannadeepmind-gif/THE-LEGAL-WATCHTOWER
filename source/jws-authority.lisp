@@ -262,6 +262,19 @@
   (unless (eq algorithm :rs256)
     (error 'jws-error :message "Only RS256 algorithm is supported"))
 
+  ;; [κύκλος-2 JWS] «kid» ΥΠΟΧΡΕΩΤΙΚΟ, μη-κενό — το verify-jws δένει την αποθηκευμένη
+  ;; ταυτότητα κλειδιού σε ΑΥΤΟ (χωρίς kid, ο caller-έλεγχος nil==nil θα περνούσε).
+  (unless (and (stringp kid) (plusp (length kid)))
+    (error 'jws-error :message "sign-jws: «kid» ΥΠΟΧΡΕΩΤΙΚΟ και μη-κενό"))
+  ;; [κύκλος-2 JWS] απαγόρευση duplicate reserved fields στα extra-headers: αλλιώς το
+  ;; JSON header θα έφερε δύο «alg»/«typ»/«kid» (ambiguous· alg-confusion — ο parser κρατά
+  ;; το ένα). Τα reserved ορίζονται ΜΟΝΟ εδώ (case-insensitive έλεγχος στο όνομα).
+  (loop for (k) on extra-headers by #'cddr
+        for kn = (and (symbolp k) (string-downcase (symbol-name k)))
+        when (member kn '("alg" "typ" "kid") :test #'equal) do
+          (error 'jws-error
+                 :message (format nil "sign-jws: το extra-header ~S επικαλύπτει reserved field" k)))
+
   ;; Load key if path provided
   (let ((key (etypecase private-key
                (pathname (load-rsa-private-key private-key))
@@ -395,13 +408,22 @@
                (t public-key))))
 
     ;; Parse JWS
-    (let* ((parts (uiop:split-string jws :separator '(#\.)))
-           (header-b64 (first parts))
+    ;; [κύκλος-2 JWS] STRICT compact grammar: ΑΚΡΙΒΩΣ 3 segments (header.payload.signature)·
+    ;; header + signature ΜΗ-ΚΕΝΑ. Το παλιό first/second/third ΔΕΝ απαιτούσε length=3 ⇒ token
+    ;; με 2 ή 4+ segments περνούσε (το 4ο αγνοούνταν). Fail-closed πριν οποιαδήποτε χρήση.
+    (let ((parts (uiop:split-string jws :separator '(#\.))))
+      (unless (= (length parts) 3)
+        (error 'invalid-signature
+               :message (format nil "JWS: όχι ακριβώς 3 compact segments (~D)" (length parts))))
+      (unless (and (plusp (length (first parts))) (plusp (length (third parts))))
+        (error 'invalid-signature :message "JWS: κενό header ή signature segment"))
+     (let* ((header-b64 (first parts))
            ;; Pin the algorithm to RS256: decode the protected header (ΜΙΑ έδρα
            ;; %jws-decode-header) and reject any other "alg" (defends against
            ;; alg-confusion / "alg":"none"). The header is bound into the signing input below.
            (header (%jws-decode-header header-b64))
            (alg (and header (cdr (assoc "alg" header :test #'string=))))
+           (kid (and header (cdr (assoc "kid" header :test #'string=))))
            ;; Detached JWS: the payload was base64url(UTF-8 octets) at signing time,
            ;; so re-encode it the SAME way here (encoding a STRING directly would not
            ;; match what SIGN-JWS produced and verification would always fail).
@@ -438,8 +460,13 @@
       (unless (and header (equal alg "RS256"))
         (error 'invalid-signature
                :message (format nil "JWS header invalid or alg not RS256 (got ~S)" alg)))
+      ;; [κύκλος-2 JWS] mandatory ΜΗ-ΚΕΝΟ signed «kid»: η αποθηκευμένη ταυτότητα κλειδιού
+      ;; δένεται σε ΑΥΤΟ (jws-protected-kid)· χωρίς παρόν kid, ο caller-έλεγχος nil==nil θα
+      ;; γινόταν σιωπηλά αποδεκτός. Απαιτείται παρούσα, μη-κενή ταυτότητα στο ΥΠΟΓΕΓΡΑΜΜΕΝΟ header.
+      (unless (and (stringp kid) (plusp (length kid)))
+        (error 'invalid-signature :message "JWS: λείπει/κενό «kid» στο protected header"))
       ;; Verify with RSA-SHA256
-      (verify-rsa-sha256 signing-bytes signature key))))
+      (verify-rsa-sha256 signing-bytes signature key)))))
 
 (defun verify-rsa-pkcs1 (message signature public-key &key (digest :sha256))
   "Verify a STANDARD RSASSA-PKCS1-v1_5 signature (RFC 8017 §8.2.2) με DIGEST

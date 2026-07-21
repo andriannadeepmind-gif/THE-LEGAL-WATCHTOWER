@@ -145,13 +145,19 @@
      (handler-case
          (if (orchestrator.jws-authority:verify-jws
               (getf sig :jws) (getf sig :statement) public-key-path)
-             ;; [re-review A-4] Δέσε το ΑΠΟΘΗΚΕΥΜΕΝΟ :kid στο kid του ΥΠΟΓΕΓΡΑΜΜΕΝΟΥ
-             ;; protected header — αλλιώς το recorded :kid είναι ανεπαλήθευτη ετικέτα
-             ;; (θα μπορούσε να δηλώνει άλλον υπογράφοντα από αυτόν που όντως υπέγραψε).
-             (if (equal (getf sig :kid)
-                        (orchestrator.jws-authority:jws-protected-kid (getf sig :jws)))
-                 (values t :ok)
-                 (values nil :kid-mismatch))
+             ;; [re-review A-4 / κύκλος-2] Δέσε το ΑΠΟΘΗΚΕΥΜΕΝΟ :kid στο kid του
+             ;; ΥΠΟΓΕΓΡΑΜΜΕΝΟΥ protected header — αλλιώς το recorded :kid είναι ανεπαλήθευτη
+             ;; ετικέτα (θα μπορούσε να δηλώνει άλλον υπογράφοντα). ΑΠΑΙΤΕΙΤΑΙ ΠΑΡΟΝ, μη-κενό
+             ;; kid και στις δύο πλευρές: το verify-jws ήδη απαιτεί μη-κενό signed kid, αλλά
+             ;; ο έλεγχος εδώ πρέπει επίσης να απορρίπτει ΚΕΝΟ αποθηκευμένο :kid (nil==nil
+             ;; θα περνούσε σιωπηλά — ανεπαλήθευτη ταυτότητα).
+             (let ((stored-kid (getf sig :kid))
+                   (signed-kid (orchestrator.jws-authority:jws-protected-kid (getf sig :jws))))
+               (if (and (stringp stored-kid) (plusp (length stored-kid))
+                        (stringp signed-kid) (plusp (length signed-kid))
+                        (string= stored-kid signed-kid))
+                   (values t :ok)
+                   (values nil :kid-mismatch)))
              (values nil :bad-signature))
        (error (e) (values nil (format nil "~A" e)))))
     (t (values nil :unsigned))))
