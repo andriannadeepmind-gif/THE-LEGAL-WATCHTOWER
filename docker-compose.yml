@@ -98,11 +98,10 @@ services:
   #     http://localhost:8080/constitution/corpus.jsonl
   # ──────────────────────────────────────────────────────────────────────────
   corpus-service:
+    # ΜΙΑ έδρα build: ΜΟΝΟ το service `orchestrator` χτίζει το image — αυτό εδώ
+    # το ΞΑΝΑΧΡΗΣΙΜΟΠΟΙΕΙ (δικό του build: στανζα = δεύτερο build χωρίς
+    # GIT_COMMIT arg ⇒ η fail-closed πύλη του Dockerfile το σκοτώνει, σωστά).
     image: orchestrator:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: runtime
     container_name: orchestrator-corpus-service
     command: ["--serve"]
     depends_on:
@@ -122,6 +121,10 @@ services:
       # στιγμιότυπο γράφου) ΕΠΙΒΙΩΝΕΙ επανεκκινήσεων: μόνο το self εγγράψιμο,
       # όλα τα άλλα (configs, δεδομένα, κείμενα νόμων) μένουν προστατευμένα.
       - ./deployment/self:/app/deployment/self:rw
+      # [0086]/Φ6: το corpus-service είναι ο ΜΟΝΑΔΙΚΟΣ ΣΥΓΓΡΑΦΕΑΣ-ΑΥΘΕΝΤΙΑ των
+      # version-graph journals — η έκδοση ταυτότητας απαιτεί Persistence Receipt
+      # (durable εγγραφή)· χωρίς rw εδώ το serve σωστά αρνείται να ξεκινήσει.
+      - ./deployment/data/version-graph:/app/deployment/data/version-graph:rw
       - ./output:/app/output:ro
     environment:
       PORT: 8080
