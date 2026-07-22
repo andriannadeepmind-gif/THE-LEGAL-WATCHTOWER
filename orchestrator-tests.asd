@@ -45,7 +45,7 @@
       :components
       ((:file "mini-corpus-test")
        (:file "pipeline-test")
-       (:file "test-full-build-ai")))     ; NEW: Full build AI integration tests
+       (:file "ai-export-integration-test"))) ; [0115] AI export integration (live ai-core seats)
      (:module "reproducibility"
       :depends-on ("package" "suite" "fixtures")
       :components

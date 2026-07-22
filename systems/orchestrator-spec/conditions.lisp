@@ -195,6 +195,31 @@
   (:documentation "Artifact building or serialization error"))
 
 ;;; ============================================================================
+;;; RETIRED ENTRYPOINTS — tombstone πριν την οριστική διαγραφή
+;;; ============================================================================
+;;; [0115] Πρωτόκολλο απόσυρσης έδρας: αποδεδειγμένα μη-προσβάσιμος κώδικας ΔΕΝ
+;;; εξαφανίζεται σιωπηλά — για έναν κύκλο επαλήθευσης το σώμα του γίνεται αυτή
+;;; η typed παγίδα. Κάθε κρυφός δυναμικός caller (find-symbol/funcall/symbol-call)
+;;; εμφανίζεται ΑΜΕΣΩΣ και ονομάζεται· καμία σιωπηλή εκτέλεση legacy μονοπατιού·
+;;; η διαγραφή μένει αναστρέψιμη μέχρι το tombstone run να βγει καθαρό.
+
+(define-condition retired-entrypoint (orchestrator-error)
+  ((symbol
+    :initarg :symbol
+    :reader retired-symbol
+    :documentation "Το αποσυρμένο σύμβολο που κλήθηκε")
+   (canonical-entrypoint
+    :initarg :canonical-entrypoint
+    :reader retired-canonical-entrypoint
+    :initform nil
+    :documentation "Η ΜΙΑ ζωντανή έδρα που το αντικαθιστά (ή NIL αν η ικανότητα αποσύρθηκε σε projection contract)"))
+  (:report (lambda (condition stream)
+             (format stream "ΑΠΟΣΥΡΜΕΝΟ ENTRYPOINT: ~S κλήθηκε ενώ είναι υπό απόσυρση [0115].~@[ Κανονική έδρα: ~S.~] Η κλήση αυτή ΑΚΥΡΩΝΕΙ την οριστική διαγραφή — κατάγραψε τον caller."
+                     (retired-symbol condition)
+                     (retired-canonical-entrypoint condition))))
+  (:documentation "Tombstone: σηματοδοτείται από σώματα υπό-απόσυρση entrypoints ώστε κάθε κρυφή διαδρομή να αποκαλυφθεί πριν την οριστική διαγραφή."))
+
+;;; ============================================================================
 ;;; RESTART DEFINITIONS
 ;;; ============================================================================
 

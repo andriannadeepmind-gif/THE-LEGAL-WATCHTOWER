@@ -44,7 +44,12 @@
    #:stage-error
    #:artifact-error
    #:error-validation-type
-   
+
+   ;; [0115] Tombstone απόσυρσης entrypoints
+   #:retired-entrypoint
+   #:retired-symbol
+   #:retired-canonical-entrypoint
+
    ;; === RESTARTS ===
    #:retry-stage
    #:skip-article

@@ -1,6 +1,8 @@
-;;;; systems/orchestrator-tests/integration/test-full-build-ai.lisp
-;;;; Integration tests for full-build-ai command
-;;;; Tests end-to-end AI export functionality with dummy corpus
+;;;; systems/orchestrator-tests/integration/ai-export-integration-test.lisp
+;;;; [0115] Integration tests για τη ΖΩΝΤΑΝΗ λειτουργικότητα AI export
+;;;; (orchestrator.ai-core: manifest, provenance, determinism, validation,
+;;;; statistics, performance). ΔΕΝ αφορά τους αποσυρμένους wrappers του
+;;;; commands.lisp — το παλιό όνομα/σχόλια το υπονοούσαν ψευδώς.
 
 (in-package :orchestrator-tests)
 
@@ -78,7 +80,7 @@
 
 (defun register-test-corpus-for-integration (corpus)
   "Register test corpus in meta registry for CLI access"
-  ;; Store in meta registry so run-full-build-ai can find it
+  ;; Store in meta registry ώστε τα integration tests να βρίσκουν το corpus
   (setf (gethash :test-integration orchestrator.meta::*corpus-registry*) corpus))
 
 ;;; ============================================================================

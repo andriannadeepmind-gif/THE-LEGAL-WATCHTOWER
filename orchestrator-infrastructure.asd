@@ -24,7 +24,8 @@
                #:usocket             ; Pure-Lisp HTTP server sockets
                #:closer-mop          ; MOP for the corpus service content negotiation
                #:uuid                ; v4 UUIDs for the restored authority/provenance layers
-               #:uiop)
+               #:uiop
+               #:orchestrator-spec)  ; [0115] kernel conditions: retired-entrypoint tombstones
   
   :serial t
   :components

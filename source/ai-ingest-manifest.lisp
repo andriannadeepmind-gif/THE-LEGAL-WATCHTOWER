@@ -523,9 +523,17 @@
   url={~A/corpus}
 }" +institution-vocabulary-base+))))
 
-(defmethod export-huggingface-dataset ((formatter huggingface-formatter) 
+(defmethod export-huggingface-dataset ((formatter huggingface-formatter)
                                        manifest articles output-dir)
-  "Export dataset in HuggingFace format"
+  "[0115 ΥΠΟ ΑΠΟΣΥΡΣΗ — tombstone] Legacy HF-specific renderer (hardcoded licence/split/embedding).
+   Η ικανότητα διανομής dataset δηλώνεται στο dataset-package projection contract
+   (deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md)· η ουδέτερη σειριοποίηση ζει
+   στο dataset-jsonl-string (ζωντανό)."
+  (error 'orchestrator.spec:retired-entrypoint
+         :message "export-huggingface-dataset αποσύρθηκε [0115] — βλ. LAWMAX-DATASET-PACKAGE-PROJECTION.md"
+         :symbol 'export-huggingface-dataset
+         :canonical-entrypoint 'dataset-jsonl-string)
+  ;; — νεκρό μετά την παγίδα· διατηρείται ΜΟΝΟ για τον κύκλο tombstone —
   (ensure-directories-exist output-dir)
   
   ;; Generate dataset files
@@ -955,23 +963,24 @@ cross-reference and backlink counts, and a per-article LLM-readiness score.~%~%"
     manifest))
 
 (defun manifest->huggingface-formatter (manifest &key (dataset-name "stavropoulos/greek-law-consolidated"))
-  "Build a fully-initialised HUGGINGFACE-FORMATTER (schema + card) for MANIFEST."
-  (let ((fmt (make-instance 'huggingface-formatter :dataset-name dataset-name)))
-    (generate-huggingface-schema fmt)
-    (generate-dataset-card fmt manifest)
-    fmt))
+  "[0115 ΥΠΟ ΑΠΟΣΥΡΣΗ — tombstone] Legacy HF formatter constructor."
+  (declare (ignore manifest dataset-name))
+  (error 'orchestrator.spec:retired-entrypoint
+         :message "manifest->huggingface-formatter αποσύρθηκε [0115] — βλ. LAWMAX-DATASET-PACKAGE-PROJECTION.md"
+         :symbol 'manifest->huggingface-formatter
+         :canonical-entrypoint nil))
 
 (defun export-corpus-dataset (document output-dir
                               &key (base-uri "https://stavropouloslaw.com/eli")
                                    (dataset-name "stavropoulos/greek-law-consolidated"))
-  "Build the manifest for DOCUMENT and write a complete HuggingFace dataset
-   (train/validation/test JSONL, README.md card, dataset_info.json) to
-   OUTPUT-DIR. Deterministic: same corpus in, byte-identical files out."
-  (let* ((manifest (build-corpus-manifest document :base-uri base-uri :dataset-name dataset-name))
-         (fmt (manifest->huggingface-formatter manifest :dataset-name dataset-name))
-         (articles (manifest-articles-ordered manifest)))
-    (export-huggingface-dataset fmt manifest articles output-dir)
-    manifest))
+  "[0115 ΥΠΟ ΑΠΟΣΥΡΣΗ — tombstone] Legacy HF dataset export entrypoint.
+   Η ικανότητα (splits + card + dataset_info.json) δηλώνεται στο dataset-package
+   projection contract· ΔΕΝ ξαναγίνεται δεύτερη orchestration έδρα."
+  (declare (ignore document output-dir base-uri dataset-name))
+  (error 'orchestrator.spec:retired-entrypoint
+         :message "export-corpus-dataset αποσύρθηκε [0115] — βλ. LAWMAX-DATASET-PACKAGE-PROJECTION.md"
+         :symbol 'export-corpus-dataset
+         :canonical-entrypoint 'build-corpus-manifest))
 
 (defun export-manifest-json (manifest file)
   "Export manifest as JSON to FILE (deterministic ordering)."
