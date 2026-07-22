@@ -11,8 +11,12 @@ services:
     image: orchestrator:latest
     container_name: orchestrator-main
 
-    # CRITICAL: Override default CMD to run pipeline (not --help)
-    command: ["--run-pipeline"]
+    # Παράγει ΟΛΟΥΣ τους κώδικες σε ΕΝΑ container/process (η ΜΙΑ έδρα
+    # run-all-pipelines): κάθε κώδικας απομονωμένος στο output/<code>/, με
+    # τελικό summary. Αντικαθιστά τον εύθραυστο εξωτερικό βρόχο που ξαναέφτιαχνε
+    # container ανά κώδικα (6× recreate ⇒ εξάντληση Docker Desktop). Για έναν
+    # μόνο κώδικα: docker compose run --rm orchestrator --run-pipeline.
+    command: ["--run-all-pipelines"]
 
     # Security options
     security_opt:
