@@ -278,4 +278,10 @@
 
    ;; [L7-B] Transparency log των release roots (RFC 6962 §2.1.2)
    #:tlog-append-root!
-   #:tlog-verify))
+   #:tlog-verify
+
+   ;; [Level-7 VCCT-RSM] Οι ΠΑΛΙΕΣ έδρες authority ΚΑΤΑΡΓΗΘΗΚΑΝ. Το legacy
+   ;; σύστημα είναι πλέον ΜΟΝΟ μη-έμπιστος παραγωγός candidate bundles.
+   #:legacy-authority-seat-removed
+   #:legacy-authority-seat-removed-seat
+   #:emit-candidate-bundle!))

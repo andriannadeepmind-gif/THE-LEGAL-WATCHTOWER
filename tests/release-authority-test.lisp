@@ -95,43 +95,48 @@
         (let ((final4 (orchestrator.epistemic::atomic-publish-release base staging4 id4)))
           (rat-check "⑥ νέο περιεχόμενο ⇒ νέος κατάλογος, ο παλιός ΑΘΙΚΤΟΣ (append-only)"
                      (and (probe-file final4) (not (equal id id4)) (probe-file final)))))
-      ;; ⑦ promote-latest!: unattested ⇒ ΣΦΑΛΜΑ· attested ⇒ symlink+signed pointer
-      (rat-check "⑦ latest σε UNATTESTED ⇒ αρνείται (η εξουσία θέλει χρονική απόδειξη)"
-                 (handler-case
-                     (progn (orchestrator.epistemic::promote-latest! base id) nil)
-                   (orchestrator.spec:validation-error () t)
-                   (error () nil)))
-      ;; Το receipt πρέπει να ΔΕΝΕΙ το root: γράφουμε tsr που περιέχει το
-      ;; messageImprint (SHA-256 του recomputed root string) — όπως ένα γνήσιο.
+      ;; ⑦ [Level-7 VCCT-RSM] Οι ΠΑΛΙΕΣ authority έδρες ΚΑΤΑΡΓΗΘΗΚΑΝ.
+      ;; Αυτή η ενότητα ΚΑΤΟΧΥΡΩΝΕ τη συμπεριφορά τους (⑦/⑦β/⑦γ). Το ⑦β μάλιστα
+      ;; κατασκεύαζε ΠΛΑΣΤΟ .tsr (μόνο το imprint) και απαιτούσε ΕΠΙΤΥΧΙΑ — ήταν
+      ;; η ίδια η απόδειξη ότι το κατηγόρημα ήταν παρακάμψιμο. Τώρα κατοχυρώνεται
+      ;; η ΑΡΝΗΣΗ: το legacy pipeline δεν προάγει authority με ΚΑΜΙΑ είσοδο.
+      ;; Η πλήρης απόδειξη αφοπλισμού ζει στο tests/level7-disarm-test.lisp.
       (let* ((root (orchestrator.epistemic::%release-recomputed-root final))
              (imprint (ironclad:digest-sequence
                        :sha256 (babel:string-to-octets root :encoding :utf-8))))
+        ;; Το ΑΚΡΙΒΕΣ πλαστό receipt που ΠΡΙΝ γινόταν δεκτό:
         (with-open-file (o (merge-pathnames "temporal-proof/timestamp.tsr" final)
                            :direction :output :if-exists :supersede
                            :element-type '(unsigned-byte 8))
           (write-sequence imprint o)))
-      (rat-check "⑦β attested ⇒ receipt δεμένο στο recomputed root"
-                 (orchestrator.epistemic::release-attested-p
-                  final (orchestrator.epistemic::%release-recomputed-root final)))
-      (rat-check "⑦β2 receipt με ΞΕΝΟ imprint ⇒ ΔΕΝ μετρά ως attested για αυτό το root"
-                 (not (orchestrator.epistemic::release-attested-p
-                       final (concatenate 'string "sha256:" (make-string 64 :initial-element #\d)))))
-      (orchestrator.epistemic::promote-latest! base id)
-      (rat-check "⑦γ latest symlink + latest.json δείχνουν στην ταυτότητα, attested:true"
-                 (let ((ptr (uiop:read-file-string
-                             (merge-pathnames "releases/latest.json" base))))
-                   (and (probe-file (merge-pathnames "releases/latest" base))
-                        (search id ptr)
-                        (search "\"attested\":true" ptr))))))
+      (rat-check "⑦ promote-latest! ΚΑΤΑΡΓΗΘΗΚΕ ως authority seat (fail-closed)"
+                 (handler-case
+                     (progn (orchestrator.epistemic::promote-latest! base id) nil)
+                   (orchestrator.epistemic:legacy-authority-seat-removed () t)
+                   (error () nil)))
+      (rat-check "⑦β το ΠΛΑΣΤΟ receipt δεν κρίνεται πια — release-attested-p ΚΑΤΑΡΓΗΘΗΚΕ"
+                 (handler-case
+                     (progn (orchestrator.epistemic::release-attested-p final "sha256:x") nil)
+                   (orchestrator.epistemic:legacy-authority-seat-removed () t)
+                   (error () nil)))
+      (rat-check "⑦γ ΚΑΝΕΝΑ latest/latest.json δεν γράφτηκε από τις απόπειρες"
+                 (and (not (probe-file (merge-pathnames "releases/latest" base)))
+                      (not (probe-file (merge-pathnames "releases/latest.json" base)))))))
 
   ;; ⑧ Ο καθαρισμός output ΔΕΝ αγγίζει το releases/
   (with-open-file (o (merge-pathnames "junk.txt" base) :direction :output
                      :if-exists :supersede)
     (write-string "junk" o))
   (orchestrator.cli::clean-corpus-output-dir base)
-  (rat-check "⑧ clean-corpus-output-dir: junk ΦΕΥΓΕΙ, releases/ ΜΕΝΕΙ (append-only δημοσίευση)"
+  ;; [Level-7] Ο δείκτης ελέγχου ΔΕΝ είναι πια το latest.json (καταργήθηκε ως
+  ;; authority artifact): είναι ο ΙΔΙΟΣ ο κατάλογος releases/ και το immutable
+  ;; content-addressed release μέσα του — αυτά οφείλουν να επιβιώσουν.
+  (rat-check "⑧ clean-corpus-output-dir: junk ΦΕΥΓΕΙ, releases/ + content-addressed release ΜΕΝΟΥΝ"
              (and (not (probe-file (merge-pathnames "junk.txt" base)))
-                  (probe-file (merge-pathnames "releases/latest.json" base))))
+                  (probe-file (merge-pathnames "releases/" base))
+                  ;; τουλάχιστον ένα immutable content-addressed release επιβιώνει
+                  (some (lambda (p) (search "sha256-" (namestring p)))
+                        (directory (merge-pathnames "releases/*.*" base)))))
   (ignore-errors (uiop:delete-directory-tree base :validate (constantly t))))
 
 ;;; ⑨ [P1.5-D κριτής#1] Epoch-downgrade: sha256-named ΧΩΡΙΣ census ΚΑΙ εκτός

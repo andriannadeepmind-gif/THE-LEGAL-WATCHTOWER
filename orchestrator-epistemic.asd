@@ -38,6 +38,10 @@
    (:file "lineage-authority" :depends-on ("vocabularies"))
    (:file "negation-layer" :depends-on ("vocabularies"))
    (:file "stability-policy" :depends-on ("vocabularies"))
+   ;; [Level-7 VCCT-RSM] Η έδρα κατάργησης των παλιών authority seats + το
+   ;; candidate boundary. ΠΡΕΠΕΙ να φορτώνεται ΠΡΙΝ από κάθε παλιά έδρα που
+   ;; τώρα σηματοδοτεί fail-closed (transparency-log, deploy-epistemic).
+   (:file "authority-boundary" :depends-on ("package"))
    (:file "merkle-tree" :depends-on ("package"))
    ;; Level-1: provenance anchor to the primary ΦΕΚ (reuses compute-sha256-*)
    (:file "primary-anchor" :depends-on ("package" "merkle-tree"))
@@ -45,10 +49,11 @@
    (:file "release-manifest" :depends-on ("vocabularies" "merkle-tree"))
    ;; [P1.5-B] Artifact Census: το 9ο canonical αρχείο (census-1)
    (:file "artifact-census" :depends-on ("package" "release-manifest"))
-   (:file "transparency-log" :depends-on ("package" "artifact-census"))
+   (:file "transparency-log" :depends-on ("package" "artifact-census" "authority-boundary"))
    (:file "release-spine" :depends-on ("package" "artifact-census" "deploy-epistemic"))
    (:file "shacl-shapes" :depends-on ("vocabularies"))
-   (:file "deploy-epistemic" :depends-on ("meta-ontology"
+   (:file "deploy-epistemic" :depends-on ("authority-boundary"
+                                          "meta-ontology"
                                           "lineage-authority"
                                           "negation-layer"
                                           "stability-policy"

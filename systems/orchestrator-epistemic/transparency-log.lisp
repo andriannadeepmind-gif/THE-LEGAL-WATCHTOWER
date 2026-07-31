@@ -122,64 +122,21 @@
     chain))
 
 (defun tlog-append-root! (releases-dir release-root)
-  "Append του RELEASE-ROOT στο transparency log του RELEASES-DIR.
-   Ιδεμποτές ΜΟΝΟ ως προς το ΤΕΛΕΥΤΑΙΟ entry (άμεσο re-promote ίδιου root
-   δεν διπλογράφει· re-promote ΠΑΛΑΙΟΤΕΡΟΥ root καταγράφεται ως νέο γεγονός
-   προαγωγής — το log είναι ημερολόγιο γεγονότων, όχι σύνολο).
-   Πριν από κάθε εγγραφή: PROOF(old,new) επαληθεύεται με verify-consistency —
-   αποτυχία ⇒ ΣΦΑΛΜΑ και το αρχείο μένει ανέγγιχτο. Επιστρέφει το νέο log_root."
-  (unless (and (stringp release-root)
-               (eql 0 (search "sha256:" release-root))
-               (= (length release-root) 71)
-               (every (lambda (c) (find c "0123456789abcdef"))
-                      (subseq release-root 7)))
-    (error 'validation-error
-           :message "tlog-append-root!: μη έγκυρο release root"
-           :details (format nil "~S" release-root)))
-  (let* ((path (%tlog-path releases-dir))
-         (old (%tlog-read path))
-         (old-entries (getf old :entries))
-         (old-root (getf old :log-root)))
-    (cond
-      ;; Ιδεμποτές: το root είναι ήδη το τελευταίο entry ⇒ καμία αλλαγή.
-      ((and old-entries (equal (car (last old-entries)) release-root))
-       old-root)
-      (t
-       (let* ((seed (if old
-                        old-entries
-                        ;; ΓΕΝΕΣΗ (εύρημα κριτή A1/B3): το log δεν ξεκινά ποτέ
-                        ;; «από το μηδέν» όταν υπάρχει ήδη census-era ιστορία —
-                        ;; bootstrap από την ανεξάρτητη έδρα ιστορίας (census
-                        ;; prev_release_root αλυσίδα). Έτσι διαγραφή του
-                        ;; αρχείου ΔΕΝ παράγει συνεπές-αλλά-κολοβό log: η
-                        ;; αναγέννηση ξαναχτίζει ΟΛΗ την αλυσίδα, και η πύλη
-                        ;; απαιτεί κάθε census-era attested root ∈ entries.
-                        (butlast (%tlog-census-chain releases-dir release-root))))
-              (new-entries (append seed (list release-root)))
-              (leaves (mapcar #'%tlog-leaf new-entries))
-              (new-root (orchestrator.merkle:merkle-tree-hash leaves))
-              (m (length old-entries))
-              (n (length new-entries)))
-         ;; Συνέπεια με ΟΛΗ την ιστορία πριν γραφτεί byte (fail-closed).
-         (when old
-           (let ((proof (orchestrator.merkle:consistency-proof leaves m)))
-             (unless (orchestrator.merkle:verify-consistency
-                      m n old-root new-root proof)
-               (error 'validation-error
-                      :message "tlog-append-root!: το νέο log ΔΕΝ επεκτείνει το παλιό — άρνηση εγγραφής"
-                      :details (format nil "m=~D n=~D old=~A" m n old-root))))
-           ;; Και κάθε παλιό checkpoint παραμένει consistent με το νέο δέντρο.
-           (dolist (cp (getf old :checkpoints))
-             (let ((proof (orchestrator.merkle:consistency-proof leaves (car cp))))
-               (unless (orchestrator.merkle:verify-consistency
-                        (car cp) n (cdr cp) new-root proof)
-                 (error 'validation-error
-                        :message "tlog-append-root!: checkpoint ασυνεπές με το νέο δέντρο"
-                        :details (format nil "size=~D" (car cp)))))))
-         (%tlog-write path new-entries new-root
-                      (append (getf old :checkpoints)
-                              (when old (list (cons m old-root)))))
-         new-root)))))
+  "[Level-7 VCCT-RSM — ΚΑΤΑΡΓΗΜΕΝΗ AUTHORITY ΕΔΡΑ]
+
+   Η ΠΑΛΙΑ authoritative log-write έδρα: έγραφε ένα μεταβλητό, αυτο-ελεγχόμενο
+   JSON log χωρίς υπογεγραμμένο checkpoint και χωρίς εξωτερικό witness — ολική
+   αντικατάσταση/διαγραφή περνούσε τον εσωτερικό έλεγχο (split-view/freeze
+   αόρατα). Κατ' εντολή δημιουργού ΚΑΤΑΡΓΕΙΤΑΙ ως authority seat.
+
+   Το authoritative log εκδίδεται πλέον από την authority-v2 process σε
+   C2SP-compatible tiles/checkpoints με Ed25519 log signature, μέσα στην ΙΔΙΑ
+   συναλλαγή του accepted transition (Perennial-class store). Η ανάγνωση/
+   επαλήθευση (tlog-verify) παραμένει ως legacy evidence helper — ΔΕΝ γράφει.
+   Fail-closed, ΠΑΝΤΑ."
+  (declare (ignore releases-dir))
+  (%seat-removed "tlog-append-root!"
+                 (format nil "απόπειρα authoritative log-append root '~A'" release-root)))
 
 (defun tlog-verify (releases-dir)
   "Πλήρης επαλήθευση του transparency log:

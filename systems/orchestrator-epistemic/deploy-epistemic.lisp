@@ -917,69 +917,35 @@ No fallbacks, no partial validity - strict proof gates.
      (build-merkle-tree (sort paths #'string< :key #'namestring)))))
 
 (defun release-attested-p (release-dir &optional root)
-  "Ένα release είναι ATTESTED όταν φέρει RFC-3161 timestamp.tsr — και όταν
-   είναι γνωστό το ROOT, το receipt πρέπει να ΔΕΝΕΙ αυτό ακριβώς το root:
-   το messageImprint του TSR είναι το SHA-256 του root string, και τα 32
-   αυτά bytes οφείλουν να εμφανίζονται στο DER σώμα του receipt. (Πλήρης
-   κρυπτογραφική επαλήθευση υπογραφής TSR = δηλωμένη επόμενη βαθμίδα —
-   καταγεγραμμένη, όχι σιωπηλή.)"
-  (let ((tsr (merge-pathnames "temporal-proof/timestamp.tsr"
-                              (uiop:ensure-directory-pathname release-dir))))
-    (and (probe-file tsr)
-         (or (null root)
-             (let ((imprint (ironclad:digest-sequence
-                             :sha256 (babel:string-to-octets root :encoding :utf-8)))
-                   (body (alexandria:read-file-into-byte-vector tsr)))
-               (and (>= (length body) (length imprint))
-                    (loop for i from 0 to (- (length body) (length imprint))
-                            thereis (not (mismatch imprint body :start2 i
-                                                   :end2 (+ i (length imprint)))))))))))
+  "[Level-7 VCCT-RSM — ΚΑΤΑΡΓΗΜΕΝΗ AUTHORITY ΕΔΡΑ]
+
+   Το ΠΑΛΙΟ κατηγόρημα δεχόταν ως 'attested' οποιοδήποτε αρχείο περιέχει τα 32
+   bytes του imprint οπουδήποτε στο σώμα του — substring-σάρωση, ΟΧΙ RFC-3161
+   επαλήθευση. Ήταν παρακάμψιμο (πλαστό .tsr με μόνο το imprint περνούσε) και
+   κατ' εντολή δημιουργού ΚΑΤΑΡΓΕΙΤΑΙ ως authority seat.
+
+   Η ΠΛΗΡΗΣ TSA επαλήθευση (nonce/policy/signer/path/validity-at-genTime/
+   EKU-KU/revocation/algorithm-policy, :pinned μόνο) είναι πλέον ΥΠΟΧΡΕΩΤΙΚΟ
+   conjunct του admission kernel (authority-v2), όχι αυτό το substring test.
+   Fail-closed, ΠΑΝΤΑ."
+  (declare (ignore release-dir root))
+  (%seat-removed "release-attested-p"
+                 "substring-based attestation — αντικαταστάθηκε από το TSA conjunct του admission kernel"))
 
 (defun promote-latest! (base-output-dir release-id)
-  "Προαγωγή του `latest` στο RELEASE-ID — ΜΟΝΟ αν το release είναι attested.
-   Γράφει: symlink `latest` (ευκολία πλοήγησης) + `latest.json` επαληθεύσιμο
-   δείκτη {release, attested, signature_jws} όπου το JWS είναι η υπογραφή του
-   ίδιου του root (temporal-proof/signature.jws) — ο δείκτης δένεται στο
-   περιεχόμενο, όχι σε όνομα."
-  (let* ((base (uiop:ensure-directory-pathname base-output-dir))
-         (releases-dir (merge-pathnames "releases/" base))
-         (release-dir (merge-pathnames (format nil "releases/~A/" release-id) base))
-         (latest-symlink (merge-pathnames "latest" releases-dir))
-         (pointer-path (merge-pathnames "latest.json" releases-dir)))
-    (unless (probe-file (uiop:ensure-directory-pathname release-dir))
-      (error "promote-latest!: ανύπαρκτο release ~A" release-id))
-    ;; Η προαγωγή σε εξουσία επαληθεύει ΚΑΙ την ακεραιότητα ΚΑΙ το δέσιμο της
-    ;; χρονικής απόδειξης στο ΣΥΓΚΕΚΡΙΜΕΝΟ περιεχόμενο — όχι απλή ύπαρξη αρχείου.
-    (let ((recomputed (%release-recomputed-root release-dir)))
-      (unless (equal (%root->release-id recomputed) release-id)
-        (error 'orchestrator.spec:validation-error
-               :message "promote-latest!: ΔΙΑΦΘΟΡΑ — recomputed root ≠ ταυτότητα"
-               :details (format nil "~A ≠ ~A" recomputed release-id)))
-      (unless (release-attested-p release-dir recomputed)
-        (error 'orchestrator.spec:validation-error
-               :message "promote-latest!: το release ΔΕΝ φέρει RFC-3161 receipt δεμένο στο δικό του root — το latest προάγεται μόνο σε χρονικά αποδεδειγμένη έκδοση"
-               :details release-id)))
-    ;; [L7-B] Transparency log ΠΡΩΤΑ (εύρημα κριτή A3-ordering): αν το append
-    ;; αποτύχει, ΤΙΠΟΤΑ δεν προάγεται — ποτέ promoted release εκτός log.
-    ;; Η ΜΙΑ έδρα: tlog-append-root! (consistency proof πριν από κάθε byte).
-    (let ((root (%release-recomputed-root release-dir)))
-      (tlog-append-root! releases-dir root)
-      (format t "✓ transparency log: ~A καταγράφηκε (consistency proof OK)~%" root))
-    (when (probe-file latest-symlink) (delete-file latest-symlink))
-    #+sbcl (sb-posix:symlink release-id (namestring latest-symlink))
-    #-sbcl (error "Symlink creation not implemented for this Lisp implementation")
-    (let ((jws (let ((p (merge-pathnames "temporal-proof/signature.jws" release-dir)))
-                 (when (probe-file p)
-                   (string-trim '(#\Space #\Newline) (uiop:read-file-string p))))))
-      (with-open-file (o pointer-path :direction :output :if-exists :supersede)
-        (write-string (jonathan:to-json
-                       (append (list :|release| release-id :|attested| t)
-                               (when jws (list :|signature_jws| jws)))
-                       :from :plist)
-                      o)
-        (terpri o)))
-    (format t "✓ latest → ~A (attested, signed pointer)~%" release-id)
-    latest-symlink))
+  "[Level-7 VCCT-RSM — ΚΑΤΑΡΓΗΜΕΝΗ AUTHORITY ΕΔΡΑ]
+
+   Αυτή η συνάρτηση ΗΤΑΝ η παλιά έδρα προαγωγής `latest`. Κατ' εντολή δημιουργού
+   (FV-CCT-RSM), ΚΑΤΑΡΓΕΙΤΑΙ ως authority seat: το legacy σύστημα είναι πλέον
+   ΜΟΝΟ μη-έμπιστος παραγωγός candidate bundles. Δεν επιτρέπεται να γράψει
+   authoritative `latest`, log ή release — αυτό είναι αποκλειστικά δουλειά της
+   authority-v2 process (admission kernel + OS-enforced write capability).
+
+   ΔΕΝ έγινε 'ισχυρότερη': ΚΑΤΑΡΓΗΘΗΚΕ. Κάθε κλήση σηματοδοτεί fail-closed. Ο
+   αφοπλισμός αποδεικνύεται στο tests/level7-disarm-test.lisp."
+  (declare (ignore base-output-dir))
+  (%seat-removed "promote-latest!"
+                 (format nil "απόπειρα προαγωγής '~A' σε authoritative latest" release-id)))
 
 ;;; ============================================================================
 ;;; MAIN DEPLOYMENT FUNCTION (STRICT PROOF GATES)
@@ -1112,24 +1078,30 @@ No fallbacks, no partial validity - strict proof gates.
                          :details "Missing required artifacts / TSA-CA gate / signature"))
                 (format t "✓ Material gate passed (required files + TSA-CA + signature)~%")
 
-                ;; Step 9: Content-addressed publish + promote latest ΜΟΝΟ αν attested
-                (format t "~%Step 9: Content-addressed publish...~%")
+                ;; Step 9: Content-addressed publish ⇒ CANDIDATE ONLY.
+                ;; [Level-7 VCCT-RSM] Το legacy pipeline ΔΕΝ προάγει πλέον
+                ;; authority. Γράφει immutable candidate bundle στο candidate
+                ;; namespace και ΣΤΑΜΑΤΑ. Η προαγωγή σε authority (latest/log/
+                ;; accepted state) γίνεται ΑΠΟΚΛΕΙΣΤΙΚΑ από τον admission kernel
+                ;; της authority-v2 process — ποτέ από εδώ.
+                (format t "~%Step 9: Content-addressed publish (CANDIDATE-ONLY)...~%")
                 (let* ((release-id (%root->release-id release-root-hash))
                        (final-dir (atomic-publish-release base-output-dir staging-dir release-id))
-                       (attested (release-attested-p final-dir release-root-hash)))
-                  (if attested
-                      (promote-latest! base-output-dir release-id)
-                      (format t "⚠ latest ΔΕΝ προάγεται: unattested commitment ~A (χρήση --attest-release)~%"
-                              release-id))
-                  (format t "~%=== EPISTEMIC DEPLOYMENT COMPLETE ===~%~%")
+                       (candidate-marker
+                         (emit-candidate-bundle! base-output-dir release-id
+                                                 :candidate-root release-root-hash)))
+                  (format t "✓ candidate bundle: ~A~%" candidate-marker)
+                  (format t "  (authority ΔΕΝ προάγεται από το legacy pipeline — ~
+                             admission kernel της authority-v2 αποφασίζει)~%")
+                  (format t "~%=== EPISTEMIC PRODUCER STAGE COMPLETE (candidate-only) ===~%~%")
 
                   (list :release-dir final-dir
                         :release-id release-id
-                        :attested attested
+                        :authority :candidate-only
+                        :candidate-marker candidate-marker
                         :merkle-root release-root-hash
                         :system-commit-hash system-hash
-                        :manifest-path (getf manifest-paths :manifest-ttl)
-                        :latest-symlink (merge-pathnames "releases/latest" base-output-dir)))))))))))
+                        :manifest-path (getf manifest-paths :manifest-ttl)))))))))))
 
 ;;; ============================================================================
 ;;; VALIDATION FUNCTION
