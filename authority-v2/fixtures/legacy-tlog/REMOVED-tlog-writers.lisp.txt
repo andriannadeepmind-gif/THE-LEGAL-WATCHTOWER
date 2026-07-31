@@ -1,0 +1,26 @@
+;;;; ΑΦΑΙΡΕΘΕΝ ΑΠΟ ΤΗΝ ΠΑΡΑΓΩΓΗ — ΙΣΤΟΡΙΚΟ ΑΝΤΙΓΡΑΦΟ (ΔΕΝ ΦΟΡΤΩΝΕΤΑΙ ΠΟΤΕ)
+;;;; ============================================================================
+;;;; [Δ2] Ο κώδικας παρακάτω ΔΕΝ είναι μέρος κανενός ASDF system. Διατηρείται
+;;;; ΜΟΝΟ ως ιστορικό τεκμήριο. Τα tests ΔΕΝ τον ξαναχτίζουν — διαβάζουν
+;;;; ΠΑΓΩΜΕΝΑ BYTE FIXTURES. Αν εμφανιστεί σε .asd ⇒ παράβαση.
+
+(defun %tlog-write (path entries log-root checkpoints)
+  ;; Ατομική εγγραφή (εύρημα κριτή A3, ίδια πειθαρχία με atomic-publish-release):
+  ;; γράψε σε .tmp και rename — μισογραμμένο log από crash = δομικά αδύνατο.
+  (let ((tmp (merge-pathnames (format nil "~A.tmp" (file-namestring path)) path)))
+    (%tlog-write-1 tmp entries log-root checkpoints)
+    (rename-file tmp path)))
+
+(defun %tlog-write-1 (path entries log-root checkpoints)
+  (with-open-file (o path :direction :output :if-exists :supersede)
+    ;; Χειροποίητο ντετερμινιστικό JSON (ίδια πειθαρχία με census->json):
+    ;; σταθερή σειρά κλειδιών, καμία εξάρτηση από hash-table iteration.
+    (format o "{\"version\":\"~A\",\"merkle\":\"rfc6962-sha256\",~
+               \"tree_size\":~D,\"log_root\":\"~A\",\"entries\":[~{\"~A\"~^,~}],~
+               \"checkpoints\":[~{~A~^,~}]}~%"
+            +tlog-version+ (length entries) log-root entries
+            (mapcar (lambda (cp)
+                      (format nil "{\"size\":~D,\"log_root\":\"~A\"}"
+                              (car cp) (cdr cp)))
+                    checkpoints))))
+

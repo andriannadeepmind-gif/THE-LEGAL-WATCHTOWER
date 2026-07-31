@@ -105,11 +105,17 @@ def main(argv):
     releases = snap["legacy_releases"]
     per_release = []
     conforming_n = 0
-    for rel in releases:
+    for rec in releases:
+        # [Δ1] Οι εγγραφές είναι πλέον {path, naming, dir_name, ...} — η
+        # ταξινόμηση ονοματοδοσίας μεταφέρεται ΣΤΟ ΑΠΟΤΕΛΕΣΜΑ ώστε να φαίνεται
+        # ότι κρίθηκαν ΚΑΙ ΟΙ ΔΥΟ εποχές, όχι μόνο τα content-addressed.
+        rel = rec["path"] if isinstance(rec, dict) else rec
+        naming = rec.get("naming") if isinstance(rec, dict) else None
         ok, res = check_release(repo_root, rel)
         conforming_n += 1 if ok else 0
         per_release.append({
             "release": rel,
+            "naming": naming,
             "conforming": ok,
             "conjuncts": {k: {"pass": v[0], "reason": v[1]} for k, v in sorted(res.items())},
         })
@@ -120,6 +126,10 @@ def main(argv):
         "evaluated": len(releases),
         "conforming": conforming_n,
         "summary": "%d/%d conforming" % (conforming_n, len(releases)),
+        "evaluated_by_naming": {
+            n: sum(1 for r in releases if isinstance(r, dict) and r.get("naming") == n)
+            for n in ("content-addressed", "timestamp-named")
+        },
         "conjunct_definitions": [
             {"id": cid, "name": name, "requirement": req} for cid, name, req in CONJUNCTS
         ],

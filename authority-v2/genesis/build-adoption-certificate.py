@@ -74,6 +74,8 @@ def main(argv):
         "legacy_archive_root": snap["legacy_archive_root"],
         "legacy_file_count": snap["file_count"],
         "legacy_releases": snap["legacy_releases"],
+        "legacy_release_count_by_naming": snap["legacy_release_count_by_naming"],
+        "historical_run_artifacts": snap["historical_run_artifacts"],
         "legacy_latest_pointers": snap["legacy_latest_pointers"],
         "tsa_evidence": snap["tsa_evidence"],
         "jws_evidence": snap["jws_evidence"],
@@ -85,9 +87,25 @@ def main(argv):
         },
         "known_divergences": [
             {"id": "release-count",
-             "expected": "24 legacy releases (εντολή)",
-             "observed": "%d top-level releases (ντετερμινιστικός snapshot)" % len(snap["legacy_releases"]),
-             "resolution": "ο ΠΡΑΓΜΑΤΙΚΟΣ αριθμός δεσμεύεται· κανένας αριθμός δεν κατασκευάζεται"},
+             "status": "RESOLVED",
+             "expected": "24 canonical legacy releases",
+             "observed": "%d canonical (%d content-addressed + %d timestamp-named)"
+                         % (len(snap["legacy_releases"]),
+                            snap["legacy_release_count_by_naming"]["content-addressed"],
+                            snap["legacy_release_count_by_naming"]["timestamp-named"]),
+             "resolution": "Η ΠΡΩΤΗ απογραφή μέτρησε 18 επειδή το κριτήριο ήταν ΛΑΘΟΣ "
+                           "(μόνο sha256-*). Τα timestamp-named είναι εξίσου releases "
+                           "της παλιάς εποχής. Διορθώθηκε το ΚΡΙΤΗΡΙΟ, όχι ο αριθμός."},
+            {"id": "timestamp-name-codepoints",
+             "status": "RECORDED",
+             "detail": "τα timestamp-named releases περιέχουν U+F03A (Private Use Area) "
+                       "αντί για ASCII ':' — γι' αυτό αστοχούσαν regex ΚΑΙ `find -name`. "
+                       "Τα legacy bytes ΔΕΝ κανονικοποιούνται: μένουν όπως είναι (evidence-only)."},
+            {"id": "historical-run-artifacts",
+             "status": "RECORDED-SEPARATELY",
+             "observed": "%d artifacts στο output_run1/releases" % snap["historical_run_artifact_count"],
+             "detail": "historical RUN, ΟΧΙ δημοσιευμένη εποχή — δεσμεύονται ως evidence "
+                       "αλλά ΔΕΝ προσμετρούνται στα canonical releases"},
             {"id": "canonical-wire", "status": "BLOCKED-TOOLCHAIN",
              "detail": "EverCBOR/EverCDDL/EverParse απόντα (F* ΑΠΩΝ, δίκτυο 403)"},
             {"id": "store-substrate", "status": "BLOCKED-TOOLCHAIN",

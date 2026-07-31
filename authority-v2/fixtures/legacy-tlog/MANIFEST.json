@@ -1,0 +1,22 @@
+{
+  "fixtures": [
+    {
+      "log_root": "sha256:991f90a24c7c1ddac144b99f7e443f0d73ded70ba78db4062a1e796790dec510",
+      "path": "authority-v2/fixtures/legacy-tlog/tlog-n1.json",
+      "sha256": "aba4bad4e34700613c180e77312bf84ddc467ef0bb784e6737a1b7673ab20a86"
+    },
+    {
+      "log_root": "sha256:08000409716a2fa628ee7f2f721a211266e7cfebe3ad8edb1f37796f2b039eb2",
+      "path": "authority-v2/fixtures/legacy-tlog/tlog-n2.json",
+      "sha256": "abc9237192194b94741002095e7f44b1cc1aebb67fa88bd4e6b9cac5f233d8cb"
+    },
+    {
+      "log_root": "sha256:fa3412d851128ed7fe18ff4b77aae4e55e84b589a7e0f98de476490c00446f62",
+      "path": "authority-v2/fixtures/legacy-tlog/tlog-n3.json",
+      "sha256": "7812e1304961503fa12693a4b243aae550209140f086ae1ae5bc19dad82f9f4f"
+    }
+  ],
+  "kind": "lawmax/legacy-tlog-fixtures/1",
+  "note": "ΠΑΓΩΜΕΝΑ bytes — ο παραγωγικός writer ΑΦΑΙΡΕΘΗΚΕ (Δ2)",
+  "tlog_version": "tlog-1"
+}

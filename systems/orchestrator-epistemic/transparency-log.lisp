@@ -71,25 +71,18 @@
                                            (gethash "log_root" cp)))
                                    (or checkpoints '())))))))
 
-(defun %tlog-write (path entries log-root checkpoints)
-  ;; Ατομική εγγραφή (εύρημα κριτή A3, ίδια πειθαρχία με atomic-publish-release):
-  ;; γράψε σε .tmp και rename — μισογραμμένο log από crash = δομικά αδύνατο.
-  (let ((tmp (merge-pathnames (format nil "~A.tmp" (file-namestring path)) path)))
-    (%tlog-write-1 tmp entries log-root checkpoints)
-    (rename-file tmp path)))
 
-(defun %tlog-write-1 (path entries log-root checkpoints)
-  (with-open-file (o path :direction :output :if-exists :supersede)
-    ;; Χειροποίητο ντετερμινιστικό JSON (ίδια πειθαρχία με census->json):
-    ;; σταθερή σειρά κλειδιών, καμία εξάρτηση από hash-table iteration.
-    (format o "{\"version\":\"~A\",\"merkle\":\"rfc6962-sha256\",~
-               \"tree_size\":~D,\"log_root\":\"~A\",\"entries\":[~{\"~A\"~^,~}],~
-               \"checkpoints\":[~{~A~^,~}]}~%"
-            +tlog-version+ (length entries) log-root entries
-            (mapcar (lambda (cp)
-                      (format nil "{\"size\":~D,\"log_root\":\"~A\"}"
-                              (car cp) (cdr cp)))
-                    checkpoints))))
+;;; ── [Δ2] ΟΙ WRITERS ΤΟΥ LEGACY LOG ΑΦΑΙΡΕΘΗΚΑΝ ΑΠΟ ΤΗΝ ΠΑΡΑΓΩΓΗ ──────────────
+;;; Οι %tlog-write / %tlog-write-1 ΔΕΝ υπάρχουν πλέον σε κανένα ASDF system.
+;;; Ο αφοπλισμός του tlog-append-root! ΔΕΝ αρκούσε: όσο ο μηχανισμός εγγραφής
+;;; ζούσε στην παραγωγική εικόνα, παρέμενε διαδρομή που ΘΑ μπορούσε να
+;;; ξανακληθεί. Τώρα ΔΕΝ ΥΠΑΡΧΕΙ ΚΩΔΙΚΑΣ ΕΓΓΡΑΦΗΣ.
+;;;   · ιστορικό αντίγραφο (μη φορτωνόμενο):
+;;;       authority-v2/fixtures/legacy-tlog/REMOVED-tlog-writers.lisp.txt
+;;;   · τα tests χρησιμοποιούν ΠΑΓΩΜΕΝΑ BYTE FIXTURES:
+;;;       authority-v2/fixtures/legacy-tlog/*.json
+;;; Ο READER (%tlog-read/tlog-verify) παραμένει: χρειάζεται για να ΔΙΑΒΑΣΤΕΙ το
+;;; legacy log ως evidence στη γένεση.
 
 (defun %tlog-census-chain (releases-dir tip-root)
   "Η αλυσίδα census-era roots που καταλήγει στο TIP-ROOT (σειρά παλαιό→νέο),

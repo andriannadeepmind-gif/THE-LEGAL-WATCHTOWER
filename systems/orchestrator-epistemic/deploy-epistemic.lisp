@@ -784,7 +784,12 @@ No fallbacks, no partial validity - strict proof gates.
 ;;; ============================================================================
 
 (defun atomic-publish-release (base-output-dir staging-dir release-id)
-  "Atomically publish release from staging to its CONTENT-ADDRESSED directory.
+  "[Δ3] Γράφει το bundle ως IMMUTABLE CANDIDATE στο candidates/<release-id>/.
+  ΔΕΝ γράφει ΠΟΤΕ στο releases/ — το legacy releases/ είναι read-only για τον
+  παραγωγό. Η προαγωγή σε authority κρίνεται ΑΠΟΚΛΕΙΣΤΙΚΑ από τον admission
+  kernel της authority-v2, με βάση αυτό ακριβώς το candidate.
+
+  Atomically emit release bundle from staging to its CONTENT-ADDRESSED directory.
 
   Args:
     base-output-dir: Base output directory
@@ -802,12 +807,18 @@ No fallbacks, no partial validity - strict proof gates.
   ;; διαφορετικό περιεχόμενο ⇒ άλλος κατάλογος· υπάρχων κατάλογος με ξένο root
   ;; ⇒ διαφθορά ⇒ ΣΦΑΛΜΑ. Το `latest` προάγεται ΜΟΝΟ από promote-latest! σε
   ;; attested release — ποτέ από εδώ.
+  ;; ── [Δ3] Ο ΠΑΡΑΓΩΓΟΣ ΔΕΝ ΓΡΑΦΕΙ ΠΙΑ ΣΤΟ releases/ ────────────────────────
+  ;; Ο δημιουργός: «Κατάργησε το producer write στο releases/: ολόκληρο το
+  ;; bundle πηγαίνει μόνο σε candidates/<root>/· το legacy releases/ γίνεται
+  ;; read-only.» Ο αφοπλισμός του promote-latest! ΔΕΝ αρκούσε: όσο ο παραγωγός
+  ;; έγραφε ΜΕΣΑ στο authoritative namespace, το όριο ήταν συμβατικό. Τώρα ο
+  ;; προορισμός είναι ΑΛΛΟ namespace — δομικά, όχι κατά σύμβαση.
   (let* ((base-dir-pathname (uiop:ensure-directory-pathname base-output-dir))
-         (releases-dir (merge-pathnames "releases/" base-dir-pathname))
-         (final-dir (merge-pathnames (format nil "releases/~A/" release-id)
+         (candidates-dir (merge-pathnames "candidates/" base-dir-pathname))
+         (final-dir (merge-pathnames (format nil "candidates/~A/" release-id)
                                      base-dir-pathname)))
-    (ensure-directories-exist releases-dir)
-    (format t "~%Content-addressed publish: staging → ~A~%" final-dir)
+    (ensure-directories-exist candidates-dir)
+    (format t "~%Content-addressed CANDIDATE emit (ΟΧΙ authority): staging → ~A~%" final-dir)
     ;; Η ταυτότητα ΔΕΝ είναι δήλωση καλής πίστης: το staging πρέπει ΤΟ ΙΔΙΟ να
     ;; αποδεικνύει ότι το περιεχόμενό του παράγει το RELEASE-ID.
     (let ((staging-root (%release-dir-root staging-dir)))
@@ -1021,6 +1032,8 @@ No fallbacks, no partial validity - strict proof gates.
                            "corpus")
                        base-output-dir
                        staging-dir
+                       ;; [Δ3] ΑΝΑΓΝΩΣΗ ΜΟΝΟ: το legacy releases/ διαβάζεται για
+                       ;; τον πρόγονο (prev_release_root). Καμία εγγραφή.
                        (merge-pathnames "releases/"
                                         (uiop:ensure-directory-pathname base-output-dir))
                        :temporal-commitment temporal-commitment)))

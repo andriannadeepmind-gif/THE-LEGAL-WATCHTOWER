@@ -18,7 +18,9 @@ resolve — ο δεσμός είναι το δεδομένο). Καμία ώρα
 Το legacy archive root = MTH του καταλόγου με το κανονικό profile
 lawmax-merkle-sha256-v1 (leaf = SHA-256(0x00 || canonical-entry-bytes)).
 
-ΤΙΜΙΑ ΑΓΝΟΙΑ ΩΣ ΔΕΔΟΜΕΝΟ: η εντολή ανέμενε 24 legacy releases· ο snapshot
+[Δ1] ΔΙΟΡΘΩΘΗΚΕ: η προηγούμενη έκδοση μετρούσε ΜΟΝΟ sha256-* (18). Τα canonical
+είναι 24 = 18 content-addressed + 6 timestamp-named· τα 7 output_run1 artifacts
+καταγράφονται ΧΩΡΙΣΤΑ ως historical-run. Το παλιό σχόλιο έλεγε: η εντολή ανέμενε 24· ο snapshot
 καταγράφει τον ΠΡΑΓΜΑΤΙΚΟ αριθμό που ανακαλύπτει και δηλώνει τη διαφορά στο
 known_divergences. Ο αριθμός ΔΕΝ κατασκευάζεται για να ταιριάξει.
 
@@ -27,6 +29,7 @@ known_divergences. Ο αριθμός ΔΕΝ κατασκευάζεται για 
 """
 import hashlib
 import json
+import re
 import os
 import sys
 
@@ -109,16 +112,64 @@ def scan(repo_root):
     return entries
 
 
+# [Δ1 — ΠΡΑΓΜΑΤΙΚΟ ΕΥΡΗΜΑ ΤΗΣ ΑΠΟΓΡΑΦΗΣ] Τα timestamp-named legacy releases ΔΕΝ
+# περιέχουν ASCII άνω-κάτω τελεία: περιέχουν U+F03A (Private Use Area) —
+# «2025-01-01T00\uf03a00\uf03a00Z». Γι' αυτό αστοχούσε και το πρώτο μου regex
+# ΚΑΙ το `find -name`. Το ΔΕΧΟΜΑΣΤΕ ως γεγονός των legacy bytes (evidence-only),
+# το ΚΑΤΑΓΡΑΦΟΥΜΕ ρητά, και ΔΕΝ το κανονικοποιούμε: τα legacy bytes μένουν όπως
+# είναι. Ο ταξινομητής δέχεται ΟΠΟΙΟΝΔΗΠΟΤΕ διαχωριστή στη θέση της τελείας και
+# καταγράφει τα code points που βρέθηκαν.
+TS_SEP_CODEPOINTS = {"\uf03a", ":"}
+TS_NAME = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}(.)\d{2}(.)\d{2}Z$", re.S)
+
+
+def _release_naming(name):
+    """Η ονοματοδοσία ΤΑΞΙΝΟΜΕΙΤΑΙ ρητά — δεν αγνοείται.
+       content-addressed : sha256-<64hex>  (η νέα εποχή)
+       timestamp-named   : 2025-01-01T000000Z (η ΠΑΛΙΑ εποχή — ΕΞΙΣΟΥ release)
+    """
+    if name.startswith("sha256-"):
+        return "content-addressed"
+    m = TS_NAME.match(name)
+    if m and set(m.groups()) <= TS_SEP_CODEPOINTS:
+        return "timestamp-named"
+    return None
+
+
 def collect_releases(repo_root, entries):
-    """Κάθε top-level legacy release: κατάλογος sha256-* που είναι ΑΜΕΣΟ παιδί
-    ενός `releases/`. (Υπο-κατάλογοι μέσα σε release ΔΕΝ είναι releases.)"""
-    rels = set()
+    """[ΔΙΟΡΘΩΣΗ ΔΗΜΙΟΥΡΓΟΥ Δ1] Η προηγούμενη έκδοση μετρούσε ΜΟΝΟ sha256-*
+    και βρήκε 18, ενώ τα canonical είναι 24: 18 content-addressed + 6
+    timestamp-named. Η παράλειψη ΔΕΝ ήταν «τίμια απόκλιση» — ήταν ΛΑΘΟΣ
+    ΚΡΙΤΗΡΙΟ: τα timestamp-named είναι εξίσου releases της παλιάς εποχής και
+    ΟΦΕΙΛΟΥΝ να δεσμευτούν ως evidence.
+
+    ΧΩΡΙΣΤΑ (και ΟΧΙ ως canonical): τα artifacts του output_run1, που είναι
+    historical RUN, όχι δημοσιευμένη εποχή — καταγράφονται ρητά ώστε να μην
+    εξαφανιστούν ούτε να προσμετρηθούν λαθεμένα.
+
+    Επιστρέφει (canonical, historical_run) — κάθε στοιχείο με path+naming.
+    """
+    canonical, historical = {}, {}
     for e in entries:
         parts = e["path"].split(os.sep)
         for i in range(len(parts) - 1):
-            if parts[i] == "releases" and parts[i + 1].startswith("sha256-"):
-                rels.add(os.sep.join(parts[:i + 2]))
-    return sorted(rels)
+            if parts[i] != "releases":
+                continue
+            name = parts[i + 1]
+            naming = _release_naming(name)
+            if naming is None:          # π.χ. `latest` — δείκτης, όχι release
+                continue
+            rel = os.sep.join(parts[:i + 2])
+            rec = {"path": rel, "naming": naming, "dir_name": name}
+            if naming == "timestamp-named":
+                rec["separator_codepoints"] = sorted(
+                    {"U+%04X" % ord(c) for c in name if not (c.isalnum() or c == "-")})
+            if parts[0] == "output_run1":
+                historical[rel] = rec
+            else:
+                canonical[rel] = rec
+    key = lambda r: r["path"]
+    return (sorted(canonical.values(), key=key), sorted(historical.values(), key=key))
 
 
 def collect_latest_pointers(repo_root, entries):
@@ -149,7 +200,7 @@ def main(argv):
         out_path = argv[argv.index("--out") + 1]
 
     entries = scan(repo_root)
-    releases = collect_releases(repo_root, entries)
+    releases, historical = collect_releases(repo_root, entries)
     latest = collect_latest_pointers(repo_root, entries)
     tsa = collect_evidence(entries, (".tsr",))
     jws = collect_evidence(entries, (".jws",))
@@ -167,6 +218,14 @@ def main(argv):
         "legacy_archive_root": archive_root,
         "legacy_releases": releases,
         "legacy_release_count": len(releases),
+        "legacy_release_count_by_naming": {
+            "content-addressed": sum(1 for r in releases if r["naming"] == "content-addressed"),
+            "timestamp-named": sum(1 for r in releases if r["naming"] == "timestamp-named"),
+        },
+        # ΧΩΡΙΣΤΑ: historical run artifacts — ΔΕΝ είναι canonical releases, αλλά
+        # ΔΕΝ εξαφανίζονται από το evidence.
+        "historical_run_artifacts": historical,
+        "historical_run_artifact_count": len(historical),
         "legacy_latest_pointers": latest,
         "tsa_evidence": tsa,
         "jws_evidence": jws,
@@ -177,9 +236,13 @@ def main(argv):
     if out_path:
         with open(out_path, "w", encoding="utf-8") as fh:
             fh.write(text)
-        print("legacy-snapshot: %d αρχεία, %d releases, %d latest pointers, "
-              "%d tsr, %d jws" % (len(entries), len(releases), len(latest),
-                                  len(tsa), len(jws)))
+        ca = sum(1 for r in releases if r["naming"] == "content-addressed")
+        tn = sum(1 for r in releases if r["naming"] == "timestamp-named")
+        print("legacy-snapshot: %d αρχεία, %d canonical releases "
+              "(%d content-addressed + %d timestamp-named), %d historical-run, "
+              "%d latest pointers, %d tsr, %d jws"
+              % (len(entries), len(releases), ca, tn, len(historical),
+                 len(latest), len(tsa), len(jws)))
         print("legacy_archive_root: %s" % archive_root)
         print("→ %s" % out_path)
     else:

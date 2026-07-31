@@ -105,6 +105,31 @@
                   (orchestrator.epistemic:legacy-authority-seat-removed-seat c)))
          (error () nil)))
 
+(format t "~%== [Δ2] ΚΑΝΕΝΑΣ παραγωγικός writer του legacy log ==~%")
+;; [Δ2] Ο αφοπλισμός του tlog-append-root! δεν αρκούσε: όσο ο ΜΗΧΑΝΙΣΜΟΣ
+;; εγγραφής ζούσε στην εικόνα, παρέμενε διαδρομή που ΘΑ μπορούσε να ξανακληθεί.
+;; Τώρα ο κώδικας ΔΕΝ ΥΠΑΡΧΕΙ σε κανένα ASDF system — ελέγχεται εκτελεστικά.
+(check "Δ2α %tlog-write ΔΕΝ είναι fbound (εκτός παραγωγής)"
+       (let ((sym (find-symbol "%TLOG-WRITE" :orchestrator.epistemic)))
+         (or (null sym) (not (fboundp sym)))))
+(check "Δ2β %tlog-write-1 ΔΕΝ είναι fbound"
+       (let ((sym (find-symbol "%TLOG-WRITE-1" :orchestrator.epistemic)))
+         (or (null sym) (not (fboundp sym)))))
+(check "Δ2γ ο READER %tlog-read ΠΑΡΑΜΕΝΕΙ (legacy evidence γένεσης)"
+       (let ((sym (find-symbol "%TLOG-READ" :orchestrator.epistemic)))
+         (and sym (fboundp sym))))
+
+(format t "~%== [Δ3] Ο ΠΑΡΑΓΩΓΟΣ ΓΡΑΦΕΙ ΜΟΝΟ ΣΕ candidates/ ==~%")
+;; [Δ3] Ο προορισμός του παραγωγού είναι ΑΛΛΟ namespace — δομικά, όχι κατά
+;; σύμβαση. Ελέγχεται με ΠΡΑΓΜΑΤΙΚΗ κλήση του publish path.
+(check "Δ3α η έδρα publish στοχεύει candidates/ (όχι releases/)"
+       (let ((src (uiop:read-file-string
+                   (merge-pathnames "systems/orchestrator-epistemic/deploy-epistemic.lisp"
+                                    (uiop:ensure-directory-pathname
+                                     (or (uiop:getenv "LAWMAX_REPO") (uiop:getcwd)))))))
+         (and (search "candidates/~A/" src)
+              (not (search "(format nil \"releases/~A/\" release-id)" src)))))
+
 (uiop:delete-directory-tree *base* :validate t :if-does-not-exist :ignore)
 
 (format t "~%── level7-disarm: ~D passed, ~D failed ──~%" *pass* *fail*)
