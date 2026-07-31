@@ -162,12 +162,17 @@
    :title "TUF-class roles (offline root 1-of-1, release/targets/snapshot/timestamp) + rotation/revocation/rollback-freeze + lineage"
    :status :externally-blocked
    :load-bearing t
-   :implementation ()
+   :implementation ("authority-v2/roles/ROLES-MODEL.sexp (5 ρόλοι, threshold σχήμα έτοιμο
+                     για πραγματικό quorum, 5 υποχρεωτικές άμυνες, ρητό stop point·
+                     :tuf-conformance-claim nil — ΚΑΜΙΑ δήλωση συμμόρφωσης)"
+                    "authority-v2/roles/ceremony.sh (genesis/rotation/revocation/recovery)"
+                    "authority-v2/tests/ceremony-rehearsal-test.sh")
    :proof-objects ()
-   :command nil
-   :actual-result "NOT-EXECUTED — BLOCKED-SPEC-INPUT (TUF specification v1.0.35 δεν ανακτάται· 403)"
-   :negative-witness nil
-   :residual-assumptions ("ceremony tooling/rotation/revocation/recovery/rehearsal κατασκευάζονται ΩΣ ΔΟΜΗ· ΜΟΝΟ η δημιουργία/χρήση του ΠΡΑΓΜΑΤΙΚΟΥ production root key σταματά"
+   :command "bash authority-v2/tests/ceremony-rehearsal-test.sh"
+   :actual-result "EXECUTED 2026-07-31: 8 passed, 0 failed — 4 τελετές προβαρίστηκαν ΠΡΑΓΜΑΤΙΚΑ με test keys (5 ρόλοι, 4 delegations, self-binding, rotation αλυσίδα, υπογεγραμμένη ανάκληση, ανάκτηση 4 ρόλων από offline root)· και οι 3 production εντολές ΣΤΑΜΑΤΗΣΑΝ με exit 3"
+   :negative-witness "rotation: το ΝΕΟ root ΔΕΝ αυτο-επικυρώνεται χωρίς την αλυσίδα (η πρόβα το ελέγχει ρητά και θα σκάσει αν στεκόταν μόνο του)· MODE=production ⇒ ΑΚΟΜΗ ΚΑΙ οι rehearse εντολές σταματούν"
+   :residual-assumptions ("ΚΑΤΑΣΚΕΥΑΣΤΗΚΑΝ ΠΛΗΡΩΣ και ΠΡΟΒΑΡΙΣΤΗΚΑΝ: ceremony/rotation/revocation/recovery/fixtures/rehearsal. ΣΤΑΜΑΤΑ ΜΟΝΟ η δημιουργία/χρήση ΠΡΑΓΜΑΤΙΚΟΥ production root key (air-gap/HSM/μάρτυρες/out-of-band δημοσίευση = ενέργεια δημιουργού)"
+                          "η ΣΥΜΜΟΡΦΩΣΗ με TUF v1.0.35 παραμένει BLOCKED-SPEC-INPUT: το κανονικό κείμενο δεν ανακτάται (403) και ΑΠΑΓΟΡΕΥΕΤΑΙ υλοποίηση από μνήμη"
                           "end-to-end refinement obligation (spec→source→binary) + reproducible-build comparison + trusted-toolchain manifest: βλ. γραμμή 9b"))
 
   ;; ── 9b (προσθήκη διορθωτικής: refinement obligation) ──────────────────────
