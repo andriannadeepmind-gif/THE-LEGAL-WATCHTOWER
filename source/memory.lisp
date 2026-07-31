@@ -99,10 +99,15 @@
               ;; 16 hex (64 bits — τα 12 hex συγκρούονται πολύ νωρίτερα)· το PREV
               ;; μέσα στην ταυτότητα ⇒ μοναδική ανά θέση αλυσίδας, ντετερμινιστική
               (eid (or id (subseq (%sha256 (format nil "~A|~A|~A|~A" kind text at prev)) 0 16)))
+              ;; [RATCHET-3] :hv 2 ⇒ το hash παράγεται από τη ΜΙΑ κανονική έδρα
+              ;; σειριοποίησης (orchestrator.journal:canon-sexp — συνάρτηση της
+              ;; ΑΞΙΑΣ), όχι από το ~S της αναπαράστασης. Το :hv είναι ΜΕΣΑ στο
+              ;; σφραγισμένο σώμα: υποβάθμιση σε legacy verifier με αμετάβλητο
+              ;; hash είναι αδύνατη.
               (body (list :at at :session *session* :id eid :kind kind :text text
                           :topic topic :status status :props props :lemmas lemmas
-                          :prev prev))
-              (hash (%sha256 (let ((*print-pretty* nil)) (format nil "~S" body)))))
+                          :prev prev :hv 2))
+              (hash (%sha256 (orchestrator.journal:canon-sexp body))))
          (append body (list :hash hash)))))))
 
 (defun episodes (&key kind session (fold t))
@@ -135,14 +140,61 @@
               (member topic-includes (episode-topic e) :test #'equal))))
    (episodes)))
 
+;;; ── [RATCHET-3] ΠΛΗΡΗΣ ΕΠΑΛΗΘΕΥΣΗ: επανυπολογισμός, όχι εμπιστοσύνη ──
+;;; Ο έλεγχος ΜΟΝΟ του :prev→:hash δεσμού εμπιστευόταν το αποθηκευμένο :hash:
+;;; αλλαγή του :text με άθικτα :hash/:prev περνούσε ως «αλυσίδα ΑΚΕΡΑΙΗ».
+;;; Εδώ το hash ΞΑΝΑΒΓΑΙΝΕΙ από τα ίδια τα πεδία — κάθε δεσμευμένο πεδίο
+;;; (υπάρχον Ή μελλοντικό) καλύπτεται, γιατί το σφραγισμένο σώμα ορίζεται
+;;; ΑΦΑΙΡΕΤΙΚΑ: όλη η γραμμή ΜΕΙΟΝ το ίδιο το :hash.
+
+(defun %episode-payload (e)
+  "Το σφραγισμένο σώμα του επεισοδίου = η γραμμή ΧΩΡΙΣ το :hash, με τη σειρά
+   των πεδίων της. Ορισμός ΑΦΑΙΡΕΤΙΚΟΣ ⇒ κανένα πεδίο δεν μένει ακάλυπτο
+   κατά λάθος (νέο πεδίο = αυτομάτως προστατευμένο)."
+  (loop for (k v) on e by #'cddr
+        unless (eq k :hash) append (list k v)))
+
+(defun %episode-hash (e)
+  "ΕΠΑΝΥΠΟΛΟΓΙΣΜΟΣ του hash του επεισοδίου E από τα πεδία του.
+   :hv 2 ⇒ η ΜΙΑ κανονική έδρα (journal:canon-sexp). Γραμμή ΧΩΡΙΣ :hv =
+   προ-RATCHET legacy: αναπαράγεται με τον ΙΣΤΟΡΙΚΟ τύπο (~S) — ΜΟΝΟ για
+   ανάγνωση/επαλήθευση παλαιών ρευμάτων· καμία νέα εγγραφή δεν τον χρησιμοποιεί."
+  (let ((payload (%episode-payload e)))
+    (if (eql (getf e :hv) 2)
+        (%sha256 (orchestrator.journal:canon-sexp payload))
+        (%sha256 (let ((*print-pretty* nil)) (format nil "~S" payload))))))
+
 (defun verify-episode-chain ()
-  "Επαλήθευση της αλυσίδας SHA-256: (values ok-p πλήθος πρώτο-σπασμένο-id)."
+  "Πλήρης επαλήθευση του ρεύματος επεισοδίων [RATCHET-3].
+   Ανά επεισόδιο: (α) το :hash ΕΠΑΝΥΠΟΛΟΓΙΖΕΤΑΙ από τα πεδία και συγκρίνεται
+   με το αποθηκευμένο — αλλοίωση ΟΠΟΙΟΥΔΗΠΟΤΕ δεσμευμένου πεδίου
+   (:text/:props/:at/:kind/…) πιάνεται· (β) το :prev δένει στο hash του
+   προηγουμένου.
+   Επιστρέφει (values ok-p πλήθος-ελεγμένων πρώτο-σπασμένο-id θέση αιτία):
+     θέση = 1-based δείκτης του πρώτου ελαττωματικού επεισοδίου,
+     αιτία ∈ {:missing-hash :chain-break :hash-mismatch :unserializable-payload}.
+   Οι τρεις πρώτες τιμές διατηρούν το ιστορικό συμβόλαιο των καλούντων."
   (let ((prev (make-string 64 :initial-element #\0)) (n 0))
-    (dolist (e (%events) (values t n nil))
+    (dolist (e (%events) (values t n nil nil nil))
       (incf n)
-      (unless (equal (getf e :prev) prev)
-        (return (values nil n (episode-id e))))
-      (setf prev (getf e :hash)))))
+      (let ((stored (getf e :hash)))
+        (cond
+          ;; γραμμή χωρίς σφραγίδα = μη επαληθεύσιμη ⇒ ποτέ «ακέραιη»
+          ((not (stringp stored))
+           (return (values nil n (episode-id e) n :missing-hash)))
+          ((not (equal (getf e :prev) prev))
+           (return (values nil n (episode-id e) n :chain-break)))
+          (t
+           (let ((recomputed (handler-case (%episode-hash e)
+                               ;; μη-σειριοποιήσιμο payload (εκτός κανονικού
+                               ;; πεδίου) ⇒ ΔΗΛΩΝΕΤΑΙ, ποτέ σιωπηλό «ok»
+                               (error () nil))))
+             (cond
+               ((null recomputed)
+                (return (values nil n (episode-id e) n :unserializable-payload)))
+               ((not (equal recomputed stored))
+                (return (values nil n (episode-id e) n :hash-mismatch)))
+               (t (setf prev stored))))))))))
 
 ;;; ============================================================================
 ;;; ΑΤΖΕΝΤΑ — επεισόδια :goal με κατάσταση + δρομέα (ο οδηγός συνεχίζει)

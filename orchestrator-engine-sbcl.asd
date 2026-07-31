@@ -14,6 +14,8 @@
                #:orchestrator-infrastructure  ; Required for orchestrator.time package
                #:closer-mop          ; MOP introspection for FSM validation
                #:named-readtables    ; Named readtable for #§ legal article dispatch
+               #:log4cl              ; [RATCHET-5] ΑΔΗΛΩΤΗ εξάρτηση: 17 αρχεία χρησιμοποιούν
+                                     ; το πακέτο LOG — αυτάρκεια ΔΗΛΩΜΕΝΗ, όχι τυχαία
                #:alexandria
                #:cl-ppcre
                #:jonathan

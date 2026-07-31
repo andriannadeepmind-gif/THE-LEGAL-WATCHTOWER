@@ -21,6 +21,29 @@ import hashlib, json, os, re, subprocess, sys
 # Καμία δεύτερη χειρόγραφη λίστα εδώ (η παλιά hardcoded {comparison} ξεσυγχρονιζόταν).
 EXCLUSIONS_REL = os.path.join("docker", "standalone-suite-exclusions.txt")
 
+def load_suite_census(app_root, tests_dir):
+    """Το ΠΑΓΩΜΕΝΟ σύνολο σουιτών που ΟΦΕΙΛΟΥΝ να τρέχουν ως gate ([RATCHET-5]).
+
+    Απόν/κενό μητρώο = fail-closed: χωρίς μητρώο δεν υπάρχει ratchet, και ένα
+    «πέρασε» χωρίς ratchet είναι ακριβώς το ψευδο-πράσινο που κλείνουμε.
+    """
+    base = app_root if app_root else os.path.dirname(os.path.abspath(tests_dir.rstrip("/")))
+    path = os.path.join(base, CENSUS_REL)
+    if not os.path.isfile(path):
+        print("verify-proof-manifest: ΑΠΟΝ suite census %r — fail-closed" % path)
+        sys.exit(1)
+    census = set()
+    with open(path, encoding="utf-8") as fh:
+        for line in fh:
+            line = line.split("#", 1)[0].strip()
+            if line:
+                census.add(line)
+    if not census:
+        print("verify-proof-manifest: ΚΕΝΟ suite census — fail-closed")
+        sys.exit(1)
+    return census
+
+
 def load_exclusions(app_root, tests_dir):
     """Επιστρέφει (suite_exclusions, nonsuite_files) από τη ΜΙΑ έδρα δηλώσεων.
 
@@ -53,6 +76,11 @@ def load_exclusions(app_root, tests_dir):
 # Σουίτες που τρέχουν ΜΟΝΟ στον verifier-conformance κρίκο (δικά τους RUN
 # gates εκεί — δεν απαιτείται log στο standalone manifest).
 VERIFIER_STAGE_ONLY = set()
+
+# [RATCHET-5] Το ΠΑΓΩΜΕΝΟ μητρώο σουιτών: η μόνη άμυνα απέναντι στη ΣΙΩΠΗΛΗ
+# ΑΦΑΙΡΕΣΗ (διαγραφή αρχείου ή νέα γραμμή στο exclusions) — και οι δύο σμίκρυναν
+# το gated set αφήνοντας το build πράσινο.
+CENSUS_REL = os.path.join("docker", "suite-census.txt")
 
 EXPECTED_GATES = ["cross-language-verifier", "release-vector-conformance",
                   "verify-canonical", "semantic-validity", "temporal-verifier"]
@@ -156,6 +184,23 @@ def main(proof_dir, tests_dir, app_root=None):
     extra = set(suites) - expected
     if extra:
         fail("ΕΠΙΠΛΕΟΝ σουίτες εκτός του αναμενόμενου set: %s" % sorted(extra))
+
+    # [RATCHET-5] RATCHET ΣΟΥΙΤΩΝ: ακριβής set-ισότητα με το ΠΑΓΩΜΕΝΟ μητρώο.
+    # Πιάνει ό,τι το `expected` ΔΕΝ μπορούσε να πιάσει, επειδή το ίδιο το
+    # `expected` παράγεται από τον δίσκο: διαγραμμένη σουίτα εξαφανίζεται και από
+    # τα δύο σκέλη της σύγκρισης· εξαιρεθείσα σουίτα φεύγει «νόμιμα». Το μητρώο
+    # είναι ΑΝΕΞΑΡΤΗΤΗ, committed αυθεντία — η μόνη που επιβιώνει και των δύο.
+    census = load_suite_census(app_root, tests_dir)
+    removed = census - expected
+    if removed:
+        fail("ΣΙΩΠΗΛΗ ΑΦΑΙΡΕΣΗ σουίτας (διαγραφή ή εξαίρεση) — στο μητρώο αλλά ΕΚΤΟΣ "
+             "gated set: %s. Αφαίρεση απαιτεί ΡΗΤΗ μεταβολή του docker/suite-census.txt"
+             % sorted(removed))
+    added = expected - census
+    if added:
+        fail("ΑΔΗΛΩΤΗ σουίτα (τρέχει αλλά ΔΕΝ είναι στο μητρώο): %s. Πρόσθεσέ τη στο "
+             "docker/suite-census.txt ώστε η αφαίρεσή της να κοκκινίζει στο μέλλον"
+             % sorted(added))
     for suite, line in sorted(suites.items()):
         check_result_line(suite, line)
 

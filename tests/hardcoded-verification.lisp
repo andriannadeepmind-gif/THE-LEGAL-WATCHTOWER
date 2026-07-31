@@ -391,5 +391,9 @@
 
       all-passed)))
 
-;;; Run
-(run-hardcoded-tests)
+;;; Run — [RATCHET-5] η ΕΤΥΜΗΓΟΡΙΑ κρατιέται ώστε ο runner να μπορεί να βγει
+;;; με τίμιο exit code. Πριν, η τιμή πεταγόταν και το
+;;; tests/run-citation-verification.lisp έκανε ΠΑΝΤΑ (sb-ext:exit :code 0) —
+;;; αποτυχημένο test = πράσινο container (false-green entrypoint του
+;;; docker-compose.citation-tests.yml). ΜΙΑ εκτέλεση, μία αλήθεια.
+(defparameter *hardcoded-verification-passed* (run-hardcoded-tests))

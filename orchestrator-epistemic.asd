@@ -16,7 +16,8 @@
   :author "Stavropoulos Law"
   :license "All Rights Reserved"
 
-  :depends-on (#:orchestrator-spec
+  :depends-on ((:require :sb-posix)   ; [RATCHET-5] αδήλωτη εξάρτηση σε SBCL contrib
+               #:orchestrator-spec
                #:orchestrator-model
                #:orchestrator-infrastructure  ; Provides orchestrator.time + hash-authority
                #:drakma

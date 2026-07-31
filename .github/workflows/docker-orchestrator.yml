@@ -23,7 +23,9 @@ jobs:
 
     - name: 🔍 Verify Bijective Closure
       run: |
-        sudo apt-get install -y jq
+        # [RATCHET-5] Η ΜΙΑ ΕΔΡΑ ΚΡΙΣΗΣ. Το script αυτό ΔΕΝ ΥΠΗΡΧΕ σε κανένα
+        # commit — άρα το job έσκαγε πάντα και ΟΛΑ τα εξαρτώμενα jobs
+        # (needs: dependency-policy-gate) δεν έτρεχαν ΠΟΤΕ.
         VERIFY_HASHES=true ./scripts/verify-runtime-closure.sh
 
     - name: 📋 Check Closure Artifact Unchanged
@@ -38,15 +40,11 @@ jobs:
           exit 1
         fi
 
-    - name: 🛡️ Layer Separation Check
-      run: |
-        # Verify no test/tooling deps in runtime closure
-        if jq -e '.closure[] | select(.layer == "test" or .layer == "tooling")' deps/orchestrator-core-runtime.closure.json > /dev/null; then
-          echo "❌ FAIL: Test/tooling dependencies found in runtime closure"
-          exit 1
-        else
-          echo "✓ Layer separation verified"
-        fi
+    # [RATCHET-5] Ο έλεγχος διαχωρισμού στρωμάτων ΜΕΤΑΦΕΡΘΗΚΕ ΜΕΣΑ στην έδρα
+    # κρίσης (verify-runtime-closure.sh). Ήταν inline jq πάνω σε artifact που
+    # ήταν ΚΕΝΟ ("closure": []) — δηλαδή περνούσε ΤΕΤΡΙΜΜΕΝΑ: jq σε κενό array
+    # δεν βρίσκει ποτέ παράβαση. Καμία πολιτική σε YAML· η έδρα φέρει και δικό
+    # της αντιπαλικό fixture (scripts/verify-runtime-closure-test.sh).
 
   ci-integrity-selfcheck:
     name: 🔒 CI integrity self-check (plenary-assessor negative fixture)
@@ -67,6 +65,20 @@ jobs:
         # εμπιστευτή προτού αποδειχθεί ότι auto-includes κάθε νέα σουίτα, τιμά τις
         # δηλωμένες εξαιρέσεις, και είναι fail-closed σε αποτυχία/κενό inventory.
         bash docker/run-standalone-suites-test.sh
+    - name: 🧨 Prove the runtime-closure seat rejects every false-green
+      shell: bash
+      run: |
+        # [RATCHET-5] Η έδρα κρίσης closure δεν γίνεται εμπιστευτή προτού
+        # αποδειχθεί ότι απορρίπτει: κενό closure, test-layer εξάρτηση, σπασμένο
+        # αμφιμονοσήμαντο, ασύμφωνο/απόν pin, ελλιπές πεδίο, κατεστραμμένο JSON.
+        bash scripts/verify-runtime-closure-test.sh
+    - name: 🧨 Prove the proof-manifest verifier fails-closed (totality + suite census)
+      shell: bash
+      run: |
+        # [RATCHET-5] Το fixture ΥΠΗΡΧΕ αλλά ήταν ΟΡΦΑΝΟ: 0 αναφορές σε CI ή
+        # Dockerfile — δηλαδή ο verifier του proof manifest (η πύλη ολότητας)
+        # ήταν ο ΜΟΝΟΣ χωρίς αντίπαλο. Τώρα τρέχει.
+        python3 docker/verify-proof-manifest-test.py
 
   verifier-conformance:
     needs: [dependency-policy-gate]

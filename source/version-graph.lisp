@@ -551,6 +551,12 @@
                (error 'version-chain-stale :expected (vg-chain graph) :actual tail-chain))
              (setf captured (%chain-next tail-chain ph))
              (append plist (list :payload-hash ph :chain captured))))
+         ;; [RATCHET-2] ΡΗΤΗ δήλωση: ο δεσμός αυτού του ημερολογίου ΔΕΝ είναι
+         ;; πεδίο-δείκτης (:prev→:hash) αλλά η ΙΔΙΑ η τιμή :chain, που παράγεται
+         ;; από την ουρά. Τον επαληθεύει ο builder παραπάνω (version-chain-stale)
+         ;; πάνω στην ΟΥΡΑ ΑΛΗΘΕΙΑΣ που εγγυάται πλέον το chained-append — άρα
+         ;; αυστηρότερος έλεγχος, όχι παράλειψή του.
+         :back-link nil
          :verify verify)
       (orchestrator.journal:require-durable! receipt :version-graph)
       (setf (vg-chain graph) captured)

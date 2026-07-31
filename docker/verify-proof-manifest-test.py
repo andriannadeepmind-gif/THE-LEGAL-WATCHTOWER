@@ -32,8 +32,11 @@ def no(m):
     global fail_n; fail_n += 1; print("  FAIL " + m)
 
 
-def build(root, test_files, nonsuite_decls, suites):
-    """Στήνει app-root με tests/, docker/exclusions, proof/. Επιστρέφει (proof, tests)."""
+def build(root, test_files, nonsuite_decls, suites, census=None):
+    """Στήνει app-root με tests/, docker/exclusions, docker/suite-census, proof/.
+
+    [RATCHET-5] Το census είναι ΠΑΓΩΜΕΝΟ μητρώο: default = ακριβώς οι gated
+    suites (υγιής κατάσταση). Τα αρνητικά σενάρια το παραλλάσσουν."""
     tests = os.path.join(root, "tests"); os.makedirs(tests)
     for f in test_files:
         open(os.path.join(tests, f), "w").close()
@@ -42,6 +45,11 @@ def build(root, test_files, nonsuite_decls, suites):
         fh.write(EXCL_BODY_BASE)
         for f in nonsuite_decls:
             fh.write("nonsuite: %s\n" % f)
+    census_names = suites if census is None else census
+    with open(os.path.join(docker, "suite-census.txt"), "w", encoding="utf-8") as fh:
+        fh.write("# frozen suite census (fixture)\n")
+        for s in census_names:
+            fh.write("%s\n" % s)
     proof = os.path.join(root, "proof"); os.makedirs(os.path.join(proof, "logs"))
     open(os.path.join(proof, "logs", "x.log"), "w").close()
     sp = {"proof": "lawmax/standalone-proof/1", "git_commit": HEX40,
@@ -70,9 +78,12 @@ def run(proof, tests):
     return r.returncode, (r.stdout + r.stderr)
 
 
-def case(name, test_files, nonsuite_decls, suites, want_ok, needle=None):
+def case(name, test_files, nonsuite_decls, suites, want_ok, needle=None, census=None,
+         drop_census=False):
     with tempfile.TemporaryDirectory() as root:
-        proof, tests = build(root, test_files, nonsuite_decls, suites)
+        proof, tests = build(root, test_files, nonsuite_decls, suites, census)
+        if drop_census:
+            os.remove(os.path.join(root, "docker", "suite-census.txt"))
         rc, out = run(proof, tests)
         got_ok = (rc == 0)
         cond = (got_ok == want_ok) and (needle is None or needle in out)
@@ -118,6 +129,40 @@ case("(ε) 8 legacy nonsuite + 1 suite ⇒ OK",
 case("(στ) nonsuite δήλωση σε -test.lisp ⇒ FAIL",
      ["foo-test.lisp"], ["foo-test.lisp"], ["foo"],
      want_ok=False, needle="μη-έγκυρη nonsuite")
+
+
+# ── [RATCHET-5] RATCHET ΣΟΥΙΤΩΝ: η σιωπηλή αφαίρεση γίνεται αδύνατη ──
+# Ο αντίπαλος μεταλλάξεων μέτρησε ότι σουίτα μπορούσε να εξαφανιστεί με δύο
+# τρόπους ΧΩΡΙΣ κανένα κόκκινο: διαγραφή αρχείου (σμικραίνει το glob) ή μία
+# γραμμή στο exclusions (σμικραίνει το gated set). Το παγωμένο μητρώο είναι
+# ΑΝΕΞΑΡΤΗΤΗ committed αυθεντία που επιβιώνει και των δύο.
+
+# (ζ) ΔΙΑΓΡΑΜΜΕΝΗ σουίτα: στο μητρώο αλλά το αρχείο λείπει ⇒ FAIL.
+case("(ζ) διαγραμμένη σουίτα (στο census, εκτός δίσκου) ⇒ FAIL",
+     ["foo-test.lisp"], [], ["foo"],
+     want_ok=False, needle="ΣΙΩΠΗΛΗ ΑΦΑΙΡΕΣΗ", census=["foo", "bar"])
+
+# (η) ΕΞΑΙΡΕΘΕΙΣΑ σουίτα: υπάρχει στον δίσκο και στο μητρώο, αλλά «comparison»
+#     είναι δηλωμένη εξαίρεση ⇒ εκτός gated set ⇒ FAIL.
+case("(η) εξαιρεθείσα σουίτα παρούσα στο census ⇒ FAIL",
+     ["foo-test.lisp", "comparison-test.lisp"], [], ["foo"],
+     want_ok=False, needle="ΣΙΩΠΗΛΗ ΑΦΑΙΡΕΣΗ", census=["foo", "comparison"])
+
+# (θ) ΑΔΗΛΩΤΗ σουίτα: τρέχει αλλά λείπει από το μητρώο ⇒ FAIL (ώστε η μελλοντική
+#     αφαίρεσή της να μπορεί να κοκκινίσει).
+case("(θ) σουίτα εκτός census ⇒ FAIL",
+     ["foo-test.lisp", "bar-test.lisp"], [], ["foo", "bar"],
+     want_ok=False, needle="ΑΔΗΛΩΤΗ", census=["foo"])
+
+# (ι) ΑΠΟΝ μητρώο ⇒ fail-closed (χωρίς ratchet δεν υπάρχει απόδειξη).
+case("(ι) απόν suite-census ⇒ FAIL (fail-closed)",
+     ["foo-test.lisp"], [], ["foo"],
+     want_ok=False, needle="census", drop_census=True)
+
+# (κ) Μητρώο ΤΑΥΤΟ με το gated set ⇒ OK.
+case("(κ) census ≡ gated set ⇒ OK",
+     ["foo-test.lisp", "bar-test.lisp"], [], ["foo", "bar"],
+     want_ok=True, census=["foo", "bar"])
 
 print("\nverify-proof-manifest fixture: %d passed, %d failed" % (pass_n, fail_n))
 sys.exit(0 if fail_n == 0 else 1)

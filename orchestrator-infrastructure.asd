@@ -9,7 +9,21 @@
   :version "1.0.0"
   :homepage "https://stavropouloslaw.com"
   
-  :depends-on (#:alexandria
+  :depends-on ((:require :sb-posix)   ; [RATCHET-5] ΑΔΗΛΩΤΗ εξάρτηση σε SBCL contrib:
+                                     ; journal/paths κ.ά. καλούν sb-posix:* — δούλευε μόνο
+                                     ; επειδή ο εκάστοτε loader έκανε (require :sb-posix)
+                                     ; από έξω. Τώρα η δήλωση ζει ΣΤΟ σύστημα.
+                                     ; (το sb-alien — flock(2) μέσω define-alien-routine,
+                                     ; [RATCHET-2] — είναι ΠΥΡΗΝΑΣ της SBCL, όχι contrib:
+                                     ; δεν δηλώνεται με :require, υπάρχει πάντα.)
+               #:alexandria
+               #:log4cl              ; [RATCHET-5] ΑΔΗΛΩΤΗ εξάρτηση: 8 αρχεία του source/
+                                     ; χρησιμοποιούν το πακέτο LOG (eu-interop-layer,
+                                     ; logging, pdf-authority, review-queue, …). Δούλευε
+                                     ; ΚΑΤΑ ΤΥΧΗ επειδή το orchestrator-core φορτωνόταν
+                                     ; πρώτο· σε καθαρή φόρτωση του συστήματος έσκαγε με
+                                     ; «Package LOG does not exist». Η αυτάρκεια είναι
+                                     ; πλέον ΔΗΛΩΜΕΝΗ, όχι τυχαία.
                #:serapeum
                #:bordeaux-threads
                #:local-time

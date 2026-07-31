@@ -1,0 +1,152 @@
+# =============================================================================
+# ΠΑΓΩΜΕΝΟ ΜΗΤΡΩΟ ΣΟΥΙΤΩΝ (suite census) — [RATCHET-5]
+# =============================================================================
+# ΓΙΑΤΙ ΥΠΑΡΧΕΙ: το suite inventory ΠΑΡΑΓΕΤΑΙ από glob (tests/*-test.lisp) μείον
+# τις δηλωμένες εξαιρέσεις. Αυτό σκοτώνει τη «ξεχασμένη» σουίτα — αλλά ΟΧΙ την
+# ΑΦΑΙΡΕΣΗ: διαγραφή αρχείου σμικρύνει το glob, και μία γραμμή στο
+# standalone-suite-exclusions.txt σμικρύνει το gated set — και στις δύο
+# περιπτώσεις το build έμενε ΠΡΑΣΙΝΟ (μετρημένο εύρημα του αντιπάλου
+# μεταλλάξεων: «σιωπηλή αφαίρεση σουίτας ⇒ κανένα κόκκινο»).
+#
+# ΔΟΜΙΚΗ ΛΥΣΗ (ratchet): το gated set πρέπει να ΤΑΥΤΙΖΕΤΑΙ με αυτό το μητρώο.
+#   • αφαίρεση/εξαίρεση σουίτας  ⇒ λείπει από το gated set  ⇒ ΚΟΚΚΙΝΟ
+#   • προσθήκη νέας σουίτας      ⇒ επιπλέον στο gated set   ⇒ ΚΟΚΚΙΝΟ
+# Και οι δύο κατευθύνσεις απαιτούν ΡΗΤΗ, αναθεωρήσιμη μεταβολή αυτού του
+# αρχείου — ίδιο πρότυπο με το gate-registry.sexp (ακριβής set-ισότητα).
+#
+# Μορφή: ένα suite-basename ανά γραμμή (χωρίς «-test» suffix). Σχόλια με «#».
+# Παράγεται: ls tests/*-test.lisp μείον τις δηλωμένες εξαιρέσεις.
+# =============================================================================
+ai-corpus-dump
+ai-ingest-manifest
+akoma-ntoso-emitter
+amended-split
+amendment-accuracy
+amendment-backtest
+amendment-consolidation-e2e
+amendment-extractor
+amendment-routing
+amendment-state
+anomaly-detection
+architecture-multiplicity
+article-identity
+article-number-fidelity
+artifact-census
+as-known-e2e
+ast-gate
+ast-persistence
+audit-signature-failclosed
+authority-cross-language
+authority-evidence-replay
+authority-proof-bundle
+auto-consolidate
+auto-update-verdict
+autonomy-consolidation
+blockchain-authority
+bpe-persistence
+canonical-serialization
+capability-api
+capability-gate
+capability-registry
+casegrammar
+citation-authority
+clean-json-format
+clean-output
+cockpit
+codification-validation
+consolidation-bridge
+consolidation-engine
+consolidation-feed
+constitution-crawler
+corpus-diff
+corpus-eu-links
+corpus-fingerprint
+corpus-identity
+corpus-intelligence
+corpus-provenance
+corpus-search
+corpus-service
+corpus-sparql
+cross-language-verifier
+currentness-34
+dependency-contract-consistency
+deps-hash
+document-fetch
+dsanet-chrome
+errata-boundary
+escape-sequences
+fek-article-header
+fek-backtest-report
+fek-discovery
+fek-html-parser
+fek-ingestion
+fek-noise
+fek-rubric
+government-source
+graph-import-parity
+greek-homoglyph
+greek-morphology
+greek-nlp
+hash-authority
+hash-seat-registry
+incremental-emit
+ingestion-daemon
+ingestion-e2e
+isokratis-amended
+isokratis-parser
+journal-integrity
+json-emit
+json-escape-seat
+jws-strict-grammar
+kernel-conformance
+layout-extraction
+layout-persistence
+legal-authority-receipt
+legal-eval
+legal-id-registry
+legal-id-routing
+legal-identity
+legal-qa
+legal-references
+legislation-ingestion
+mcp-live-resolver
+mcp-server
+merkle-authority
+multi-corpus-service
+orthography
+param-type-coercion
+param-type-roundtrip
+parliament-html-wiring
+pdf-column-reflow
+proof-carrying
+reader-census
+reasoning-authority
+release-authority
+release-vector-conformance
+repeal-polish
+retired-entrypoint
+review-queue
+review-queue-safe-read
+review-service
+safe-read
+seam-detector
+seat-integrity
+self-identity
+semantic-validity
+shacl-validator
+source-detect
+source-materialize
+source-profile
+static-site
+temporal-semantics
+temporal-verifier
+text-admission
+text-sovereignty
+time-unified
+trace-persistence
+transparency-log
+tsr-crypto-verify
+turtle-nil-omit
+version-chain-tc2
+version-graph
+write-authority

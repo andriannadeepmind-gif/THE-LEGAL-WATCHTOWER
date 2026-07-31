@@ -1,7 +1,1672 @@
 {
   "format_version": "1.0",
   "system": "orchestrator-core-runtime",
-  "sbcl_version": "2.4.0",
-  "closure": [],
-  "graph": {}
+  "sbcl_version": "2.2.9.debian",
+  "closure": [
+    {
+      "name": "alexandria",
+      "version": "20241012-git",
+      "source_id": "third-party/alexandria-20241012-git",
+      "hash": "9f545925f6944cd7fc7f2d6811681bde5d3805df613bcc81cf4821c202ffb684",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "asdf",
+      "version": "3.3.1",
+      "source_id": "NIL",
+      "hash": "n/a-first-party",
+      "origin": "first-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "autoload",
+      "version": "unpinned",
+      "source_id": "third-party/mgl-pax-20250622-git/autoload",
+      "hash": "039cdef71b354696eeff950a8e803b2216145bb1cb1ea99eee85ddaf0f6011cc",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "babel",
+      "version": "20241012-git",
+      "source_id": "third-party/babel-20241012-git",
+      "hash": "b5a2f0cc2a6dd7b373f9d53cb218b36d90aac9b4a4b0bcb682046e8480b69a0e",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "bordeaux-threads",
+      "version": "v0.9.4",
+      "source_id": "third-party/bordeaux-threads-v0.9.4",
+      "hash": "1e81538f3284a4b83d4820d110852249b19240a0135f45edb20e63f0a230301e",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "cffi",
+      "version": "20250622-git",
+      "source_id": "third-party/cffi-20250622-git",
+      "hash": "36a37702bb5e9df34634173f768ec66deca1a01aa421246b329ce2625d5ee054",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "chipz",
+      "version": "20230618-git",
+      "source_id": "third-party/chipz-20230618-git",
+      "hash": "72d2c52663d15a77588552915e4b92ad56788c4c13367c87f53920d6aa7ba083",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "chunga",
+      "version": "20241012-git",
+      "source_id": "third-party/chunga-20241012-git",
+      "hash": "fbc78d91f2b32312f50b09cb881265dfa7a8a53a9ed649b15ea3759b46e6bf81",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "cl+ssl",
+      "version": "20250622-git",
+      "source_id": "third-party/cl+ssl-20250622-git",
+      "hash": "2f17f84ee5bf78389af38b8c6c6315a854d41f8e091e4914d1587ecc078297c6",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "cl+ssl/config",
+      "version": "unpinned",
+      "source_id": "third-party/cl+ssl-20250622-git",
+      "hash": "2f17f84ee5bf78389af38b8c6c6315a854d41f8e091e4914d1587ecc078297c6",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "cl-annot",
+      "version": "20150608-git",
+      "source_id": "third-party/cl-annot-20150608-git",
+      "hash": "f6937414be516f1e693c505790708a0b864d9a14c0351c78628315491e6471ce",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "cl-base64",
+      "version": "20201016-git",
+      "source_id": "third-party/cl-base64-20201016-git",
+      "hash": "2b45dfbde540873938a83374880162b382166fca1ddeea13cd8c1e60d3245aaf",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "cl-libyaml",
+      "version": "20201016-git",
+      "source_id": "third-party/cl-libyaml-20201016-git",
+      "hash": "cbfc8829d2a8271cef579753a16fed7bb53a0fa91e8449854e0a0e1613241b52",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "cl-ppcre",
+      "version": "20250622-git",
+      "source_id": "third-party/cl-ppcre-20250622-git",
+      "hash": "9a94b112e0a76d6de61d20833bd072a2b4135956bd96a27192abb271cb4b26d6",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "cl-syntax",
+      "version": "20150407-git",
+      "source_id": "third-party/cl-syntax-20150407-git",
+      "hash": "6245a27e0a744836267e8e91a4ad690b432b92e780897eca2605bdd4fbca07f6",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "cl-syntax-annot",
+      "version": "unpinned",
+      "source_id": "third-party/cl-syntax-20150407-git",
+      "hash": "6245a27e0a744836267e8e91a4ad690b432b92e780897eca2605bdd4fbca07f6",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "cl-yaml",
+      "version": "20201016-git",
+      "source_id": "third-party/cl-yaml-20201016-git",
+      "hash": "60ce602e3322d3e95888cb84a43aa710e19cf4786e9b0c746f8feeb26b67a517",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "closer-mop",
+      "version": "v1.0.0",
+      "source_id": "third-party/closer-mop-v1.0.0",
+      "hash": "5a72483767f940519c0b56165882678fbbafeb383a6609d0ffc68570c3f73cac",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "closure-common",
+      "version": "20181018-git",
+      "source_id": "third-party/closure-common-20181018-git",
+      "hash": "bd2c99aef7cbb53f35f0ca40ddff36af741c10593a8991468c9b822969d5a6fc",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "cxml",
+      "version": "20250622-git",
+      "source_id": "third-party/cxml-20250622-git",
+      "hash": "b09d2c7c3f719a7710afb56adca53124b51a37b48c26a6cfa5594e206861499d",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "cxml-stp",
+      "version": "20200325-git",
+      "source_id": "third-party/cxml-stp-20200325-git",
+      "hash": "f7a35c6b72733ec0c3e1ca469bedc3e0c2b34cb8219595d9a9a3a121591499ac",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "cxml/dom",
+      "version": "unpinned",
+      "source_id": "third-party/cxml-20250622-git",
+      "hash": "b09d2c7c3f719a7710afb56adca53124b51a37b48c26a6cfa5594e206861499d",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "cxml/klacks",
+      "version": "unpinned",
+      "source_id": "third-party/cxml-20250622-git",
+      "hash": "b09d2c7c3f719a7710afb56adca53124b51a37b48c26a6cfa5594e206861499d",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "cxml/xml",
+      "version": "unpinned",
+      "source_id": "third-party/cxml-20250622-git",
+      "hash": "b09d2c7c3f719a7710afb56adca53124b51a37b48c26a6cfa5594e206861499d",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "drakma",
+      "version": "v2.0.10",
+      "source_id": "third-party/drakma-v2.0.10",
+      "hash": "d1a013ca3276771b6fa17c59e16f96a589178b4d92c44b62f29b55ec12bc73fb",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "fast-io",
+      "version": "20221106-git",
+      "source_id": "third-party/fast-io-20221106-git",
+      "hash": "f9a32f9cfb420d0f54fc873e4def3e4fa298d8ae306538673a931fb4dae0616b",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "flexi-streams",
+      "version": "20241012-git",
+      "source_id": "third-party/flexi-streams-20241012-git",
+      "hash": "adfa6fbc1dde61bd77588562334f6a1e92e7cccc26d6fb0f962c92c586210964",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "global-vars",
+      "version": "20141106-git",
+      "source_id": "third-party/global-vars-20141106-git",
+      "hash": "816626b18f5cd8a3e8282bd6440c1f88c3095d275821fbed8865263a65b762b1",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ieee-floats",
+      "version": "unpinned",
+      "source_id": "third-party/ieee-floats",
+      "hash": "0c5471aa0719971283807e571df616d067b29ed8be3debae8638a74bce4a69db",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "introspect-environment",
+      "version": "20241012-git",
+      "source_id": "third-party/introspect-environment-20241012-git",
+      "hash": "26ffb08cb210f16be010662172726f66a4b5a93d0cd7e50b1eb02df3433d69c2",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad",
+      "version": "v0.61",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/aead/eax",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/aead/etm",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/aead/gcm",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/aeads",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/aes",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/arcfour",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/aria",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/blowfish",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/camellia",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/cast5",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/chacha",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/des",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/idea",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/kalyna",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/keystream",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/kuznyechik",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/misty1",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/rc2",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/rc5",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/rc6",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/salsa20",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/seed",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/serpent",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/sm4",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/sosemanuk",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/square",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/tea",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/threefish",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/twofish",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/xchacha",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/xor",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/xsalsa20",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/cipher/xtea",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/ciphers",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/core",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/adler32",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/blake2",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/blake2s",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/crc24",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/crc32",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/groestl",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/jh",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/kupyna",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/md2",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/md4",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/md5",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/ripemd-128",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/ripemd-160",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/sha1",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/sha256",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/sha3",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/sha512",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/skein",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/sm3",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/streebog",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/tiger",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/tree-hash",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digest/whirlpool",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/digests",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/kdf/argon2",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/kdf/bcrypt",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/kdf/hmac",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/kdf/password-hash",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/kdf/pkcs5",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/kdf/scrypt",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/kdfs",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/mac/blake2-mac",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/mac/blake2s-mac",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/mac/cmac",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/mac/gmac",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/mac/hmac",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/mac/poly1305",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/mac/siphash",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/mac/skein-mac",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/macs",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/prng/fortuna",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/prngs",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/public-key/curve25519",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/public-key/curve448",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/public-key/dsa",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/public-key/ed25519",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/public-key/ed448",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/public-key/elgamal",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/public-key/rsa",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/public-key/secp256k1",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/public-key/secp256r1",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/public-key/secp384r1",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/public-key/secp521r1",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "ironclad/public-keys",
+      "version": "unpinned",
+      "source_id": "third-party/ironclad-v0.61",
+      "hash": "a1191b689fbd7be1c6b54e364fed491762afb2d2eec02bf6317e4d905158fe83",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "iterate",
+      "version": "release-1.5",
+      "source_id": "third-party/iterate-release-1.5",
+      "hash": "cef012e274295c989759495f14b1ebe1eb64a2469a65bb65ce02575f16dec0d8",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "jonathan",
+      "version": "20200925-git",
+      "source_id": "third-party/jonathan-20200925-git",
+      "hash": "a5266be83da13eeb11e6fa6fd3eb4f32e48861dc023449a9e9c2d7898695637d",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "lisp-namespace",
+      "version": "git",
+      "source_id": "third-party/lisp-namespace-git",
+      "hash": "10d8ddcd7a2002fc28356c6b5299a64a76265aa1603cfd144a1a89254f3afdb2",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "local-time",
+      "version": "20250622-git",
+      "source_id": "third-party/local-time-20250622-git",
+      "hash": "6ab76267fe9325d3563db7f23f71fbd01259a0317b86b2c325fedde694a932fc",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "log4cl",
+      "version": "v1.1.2",
+      "source_id": "third-party/log4cl-v1.1.2",
+      "hash": "d409c09d10c1cd27d184bdb7c052c8a5729c162741cf613041a6b708e7cee212",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "lparallel",
+      "version": "v2.8.4",
+      "source_id": "third-party/lparallel-v2.8.4",
+      "hash": "a6d5d5cc2ec81c4ce02405412cd7191d01415b6e6775febb3ce03bc90dc4b036",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "mgl-pax-bootstrap",
+      "version": "unpinned",
+      "source_id": "third-party/mgl-pax-20250622-git",
+      "hash": "039cdef71b354696eeff950a8e803b2216145bb1cb1ea99eee85ddaf0f6011cc",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "mgl-pax.asdf",
+      "version": "unpinned",
+      "source_id": "third-party/mgl-pax-20250622-git",
+      "hash": "039cdef71b354696eeff950a8e803b2216145bb1cb1ea99eee85ddaf0f6011cc",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "named-readtables",
+      "version": "20250622-git",
+      "source_id": "third-party/named-readtables-20250622-git",
+      "hash": "21e0d09ad9c655061bb4576cfb14e6484177f6a2b3e9f85a83bfa51c6d366bc9",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "orchestrator-ai-core",
+      "version": "unpinned",
+      "source_id": ".",
+      "hash": "n/a-first-party",
+      "origin": "first-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "orchestrator-cli",
+      "version": "unpinned",
+      "source_id": ".",
+      "hash": "n/a-first-party",
+      "origin": "first-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "orchestrator-core",
+      "version": "unpinned",
+      "source_id": ".",
+      "hash": "n/a-first-party",
+      "origin": "first-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "orchestrator-core-runtime",
+      "version": "unpinned",
+      "source_id": ".",
+      "hash": "n/a-first-party",
+      "origin": "first-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "orchestrator-engine-sbcl",
+      "version": "unpinned",
+      "source_id": ".",
+      "hash": "n/a-first-party",
+      "origin": "first-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "orchestrator-epistemic",
+      "version": "unpinned",
+      "source_id": ".",
+      "hash": "n/a-first-party",
+      "origin": "first-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "orchestrator-gr-syntagma",
+      "version": "unpinned",
+      "source_id": ".",
+      "hash": "n/a-first-party",
+      "origin": "first-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "orchestrator-infrastructure",
+      "version": "unpinned",
+      "source_id": ".",
+      "hash": "n/a-first-party",
+      "origin": "first-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "orchestrator-meta",
+      "version": "unpinned",
+      "source_id": ".",
+      "hash": "n/a-first-party",
+      "origin": "first-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "orchestrator-model",
+      "version": "unpinned",
+      "source_id": ".",
+      "hash": "n/a-first-party",
+      "origin": "first-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "orchestrator-omega",
+      "version": "unpinned",
+      "source_id": ".",
+      "hash": "n/a-first-party",
+      "origin": "first-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "orchestrator-spec",
+      "version": "unpinned",
+      "source_id": ".",
+      "hash": "n/a-first-party",
+      "origin": "first-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "parse-declarations-1.0",
+      "version": "unpinned",
+      "source_id": "third-party/parse-declarations-1.0",
+      "hash": "2c30fbee1d03c215f506cd40f965f18c9abd0201dad3551a53930c47cd8253a4",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "parse-number",
+      "version": "v1.8",
+      "source_id": "third-party/parse-number-v1.8",
+      "hash": "7404741ea9b63fe98d40f344d103dccdf154a808c875f94cf0564e04f91633a4",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "proc-parse",
+      "version": "20150923-git",
+      "source_id": "third-party/proc-parse-20150923-git",
+      "hash": "8b63dbb4ff47c6031eb7c1b911b5517d703862e122e96436cd37e8fe6ee96c93",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "puri",
+      "version": "20201016-git",
+      "source_id": "third-party/puri-20201016-git",
+      "hash": "7d7d1833d57ea2f1823207559cdf5d3bc48af23ea5fe826d8630250825b1be71",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "sb-bsd-sockets",
+      "version": "unpinned",
+      "source_id": "/usr/lib/sbcl/contrib",
+      "hash": "n/a-sbcl-contrib",
+      "origin": "sbcl-contrib",
+      "layer": "runtime"
+    },
+    {
+      "name": "sb-cltl2",
+      "version": "unpinned",
+      "source_id": "/usr/lib/sbcl/contrib",
+      "hash": "n/a-sbcl-contrib",
+      "origin": "sbcl-contrib",
+      "layer": "runtime"
+    },
+    {
+      "name": "sb-concurrency",
+      "version": "unpinned",
+      "source_id": "/usr/lib/sbcl/contrib",
+      "hash": "n/a-sbcl-contrib",
+      "origin": "sbcl-contrib",
+      "layer": "runtime"
+    },
+    {
+      "name": "sb-introspect",
+      "version": "unpinned",
+      "source_id": "/usr/lib/sbcl/contrib",
+      "hash": "n/a-sbcl-contrib",
+      "origin": "sbcl-contrib",
+      "layer": "runtime"
+    },
+    {
+      "name": "sb-posix",
+      "version": "unpinned",
+      "source_id": "/usr/lib/sbcl/contrib",
+      "hash": "n/a-sbcl-contrib",
+      "origin": "sbcl-contrib",
+      "layer": "runtime"
+    },
+    {
+      "name": "sb-rotate-byte",
+      "version": "unpinned",
+      "source_id": "/usr/lib/sbcl/contrib",
+      "hash": "n/a-sbcl-contrib",
+      "origin": "sbcl-contrib",
+      "layer": "runtime"
+    },
+    {
+      "name": "serapeum",
+      "version": "20251125-git",
+      "source_id": "third-party/serapeum-20251125-git",
+      "hash": "75665a18a2f0cb1be93a0443b78260d5615aead992d1cd975d8e1b211ca2c19d",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "serapeum/binding",
+      "version": "unpinned",
+      "source_id": "third-party/serapeum-20251125-git",
+      "hash": "75665a18a2f0cb1be93a0443b78260d5615aead992d1cd975d8e1b211ca2c19d",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "serapeum/box",
+      "version": "unpinned",
+      "source_id": "third-party/serapeum-20251125-git",
+      "hash": "75665a18a2f0cb1be93a0443b78260d5615aead992d1cd975d8e1b211ca2c19d",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "serapeum/conditions",
+      "version": "unpinned",
+      "source_id": "third-party/serapeum-20251125-git",
+      "hash": "75665a18a2f0cb1be93a0443b78260d5615aead992d1cd975d8e1b211ca2c19d",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "serapeum/control-flow",
+      "version": "unpinned",
+      "source_id": "third-party/serapeum-20251125-git",
+      "hash": "75665a18a2f0cb1be93a0443b78260d5615aead992d1cd975d8e1b211ca2c19d",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "serapeum/defining-types",
+      "version": "unpinned",
+      "source_id": "third-party/serapeum-20251125-git",
+      "hash": "75665a18a2f0cb1be93a0443b78260d5615aead992d1cd975d8e1b211ca2c19d",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "serapeum/definitions",
+      "version": "unpinned",
+      "source_id": "third-party/serapeum-20251125-git",
+      "hash": "75665a18a2f0cb1be93a0443b78260d5615aead992d1cd975d8e1b211ca2c19d",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "serapeum/iter",
+      "version": "unpinned",
+      "source_id": "third-party/serapeum-20251125-git",
+      "hash": "75665a18a2f0cb1be93a0443b78260d5615aead992d1cd975d8e1b211ca2c19d",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "serapeum/macro-tools",
+      "version": "unpinned",
+      "source_id": "third-party/serapeum-20251125-git",
+      "hash": "75665a18a2f0cb1be93a0443b78260d5615aead992d1cd975d8e1b211ca2c19d",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "serapeum/op",
+      "version": "unpinned",
+      "source_id": "third-party/serapeum-20251125-git",
+      "hash": "75665a18a2f0cb1be93a0443b78260d5615aead992d1cd975d8e1b211ca2c19d",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "serapeum/portability",
+      "version": "unpinned",
+      "source_id": "third-party/serapeum-20251125-git",
+      "hash": "75665a18a2f0cb1be93a0443b78260d5615aead992d1cd975d8e1b211ca2c19d",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "serapeum/queue",
+      "version": "unpinned",
+      "source_id": "third-party/serapeum-20251125-git",
+      "hash": "75665a18a2f0cb1be93a0443b78260d5615aead992d1cd975d8e1b211ca2c19d",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "serapeum/types",
+      "version": "unpinned",
+      "source_id": "third-party/serapeum-20251125-git",
+      "hash": "75665a18a2f0cb1be93a0443b78260d5615aead992d1cd975d8e1b211ca2c19d",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "split-sequence",
+      "version": "v2.0.1",
+      "source_id": "third-party/split-sequence-v2.0.1",
+      "hash": "2ed04db4b906b50d0256150d477c8888afaf2fcbf59eeba93094dd117a724716",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "static-vectors",
+      "version": "v1.9.3",
+      "source_id": "third-party/static-vectors-v1.9.3",
+      "hash": "c795faaaa49cc6ee138d518678798d9ad58875b0618da1cb44a42cab6763a068",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "string-case",
+      "version": "20241012-git",
+      "source_id": "third-party/string-case-20241012-git",
+      "hash": "03a9a99ed04decf6125b00501ac4c90763dd48853679375025be35a2d3023069",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "trivia",
+      "version": "20241012-git",
+      "source_id": "third-party/trivia-20241012-git",
+      "hash": "2336e7c5ac2adc3562d55cdb983e57f11583d2d748c2cf606530b22e91e9ed58",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "trivia.balland2006",
+      "version": "unpinned",
+      "source_id": "third-party/trivia-20241012-git",
+      "hash": "2336e7c5ac2adc3562d55cdb983e57f11583d2d748c2cf606530b22e91e9ed58",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "trivia.level0",
+      "version": "unpinned",
+      "source_id": "third-party/trivia-20241012-git",
+      "hash": "2336e7c5ac2adc3562d55cdb983e57f11583d2d748c2cf606530b22e91e9ed58",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "trivia.level1",
+      "version": "unpinned",
+      "source_id": "third-party/trivia-20241012-git",
+      "hash": "2336e7c5ac2adc3562d55cdb983e57f11583d2d748c2cf606530b22e91e9ed58",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "trivia.level2",
+      "version": "unpinned",
+      "source_id": "third-party/trivia-20241012-git",
+      "hash": "2336e7c5ac2adc3562d55cdb983e57f11583d2d748c2cf606530b22e91e9ed58",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "trivia.trivial",
+      "version": "unpinned",
+      "source_id": "third-party/trivia-20241012-git",
+      "hash": "2336e7c5ac2adc3562d55cdb983e57f11583d2d748c2cf606530b22e91e9ed58",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "trivial-cltl2",
+      "version": "20211230-git",
+      "source_id": "third-party/trivial-cltl2-20211230-git",
+      "hash": "3d78da8abc5e31b7a795551001462b59c70413a98349fbd699e0c7c0f53f5f8b",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "trivial-features",
+      "version": "20250622-git",
+      "source_id": "third-party/trivial-features-20250622-git",
+      "hash": "99f8986f59072a4f063f75d639c16ac83e85c04fcbca650c4c468df8d9c00b38",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "trivial-file-size",
+      "version": "20241012-git",
+      "source_id": "third-party/trivial-file-size-20241012-git",
+      "hash": "9fe5cae4a1d2fd1869de5c94349f235aba1f150efce6ecd25bd3f46823006e89",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "trivial-garbage",
+      "version": "20231021-git",
+      "source_id": "third-party/trivial-garbage-20231021-git",
+      "hash": "9db4b1ce640072ee3da09e94c9c0acce2782e0e065caa9f23e3cfe154692a39d",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "trivial-gray-streams",
+      "version": "20241012-git",
+      "source_id": "third-party/trivial-gray-streams-20241012-git",
+      "hash": "fa0e036a0b77d20da7b78c9b38c78409cf31422e9db269b1bd91aac1736eb71a",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "trivial-macroexpand-all",
+      "version": "20241012-git",
+      "source_id": "third-party/trivial-macroexpand-all-20241012-git",
+      "hash": "fc11c0083d645e926280da4f7887a4db23735ede0e547f3ac5807a7a361e0f27",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "trivial-types",
+      "version": "20120407-git",
+      "source_id": "third-party/trivial-types-20120407-git",
+      "hash": "83ba62812231573a89760e1c42e0b9be316faf5d501d488eecab880305daaf26",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "trivial-utf-8",
+      "version": "git",
+      "source_id": "third-party/trivial-utf-8-git",
+      "hash": "ae54d65d433b265d96266467760dbacef60f181e32f42bec3eabb00afab45039",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "type-i",
+      "version": "git",
+      "source_id": "third-party/type-i-git",
+      "hash": "321a4fcc5bab4842d8fa7c79619cf9c60388d89d7f26330d65d3384e96560929",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "uiop",
+      "version": "3.3.1",
+      "source_id": "NIL",
+      "hash": "n/a-first-party",
+      "origin": "first-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "usocket",
+      "version": "0.8.8",
+      "source_id": "third-party/usocket-0.8.8",
+      "hash": "4fb7cd3acd6ebbb068caebd16c0165788aaceb42c7e42929be47a850496fb08f",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "uuid",
+      "version": "20231021",
+      "source_id": "third-party/uuid-20231021",
+      "hash": "bffa080e64df09c998492325f34b2f4f3c135c59febc18b24c65f60345230083",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "xpath",
+      "version": "unpinned",
+      "source_id": "third-party/plexippus-xpath-20190521-git",
+      "hash": "d408472446bd89afe6efd78fc2922303bcbf214215971e25d2d264b57e57b8f7",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "yacc",
+      "version": "unpinned",
+      "source_id": "third-party/cl-yacc-20231210-git",
+      "hash": "ba4460fb3e2fb75831b2c9812cf2c777b9e1f504d360a2f95c22017ad926b6f8",
+      "origin": "third-party",
+      "layer": "runtime"
+    },
+    {
+      "name": "yason",
+      "version": "20250622-git",
+      "source_id": "third-party/yason-20250622-git",
+      "hash": "9fa1c4cfe43775d45868b382a1fed5783bb36850bd6de776a2d7d503dbffaa06",
+      "origin": "third-party",
+      "layer": "runtime"
+    }
+  ],
+  "graph": {
+    "babel": ["alexandria", "trivial-features"],
+    "bordeaux-threads": ["alexandria", "global-vars", "trivial-features", "trivial-garbage"],
+    "cffi": ["alexandria", "babel"],
+    "chunga": ["trivial-gray-streams"],
+    "cl+ssl": ["alexandria", "bordeaux-threads", "cffi", "cl+ssl/config", "flexi-streams", "sb-posix", "trivial-features", "trivial-garbage", "trivial-gray-streams", "uiop", "usocket"],
+    "cl+ssl/config": ["cffi"],
+    "cl-annot": ["alexandria"],
+    "cl-libyaml": ["cffi"],
+    "cl-syntax": ["named-readtables", "trivial-types"],
+    "cl-syntax-annot": ["cl-annot", "cl-syntax"],
+    "cl-yaml": ["alexandria", "cl-libyaml", "cl-ppcre", "parse-number"],
+    "closure-common": ["babel", "trivial-gray-streams"],
+    "cxml": ["cxml/dom", "cxml/klacks"],
+    "cxml-stp": ["alexandria", "cxml", "xpath"],
+    "cxml/dom": ["cxml/xml"],
+    "cxml/klacks": ["cxml/xml"],
+    "cxml/xml": ["closure-common", "puri", "trivial-gray-streams"],
+    "drakma": ["chipz", "chunga", "cl+ssl", "cl-base64", "cl-ppcre", "flexi-streams", "puri", "usocket"],
+    "fast-io": ["alexandria", "static-vectors", "trivial-gray-streams"],
+    "flexi-streams": ["trivial-gray-streams"],
+    "introspect-environment": ["sb-cltl2"],
+    "ironclad": ["ironclad/aeads", "ironclad/ciphers", "ironclad/core", "ironclad/digests", "ironclad/kdfs", "ironclad/macs", "ironclad/prngs", "ironclad/public-keys"],
+    "ironclad/aead/eax": ["ironclad/core", "ironclad/mac/cmac"],
+    "ironclad/aead/etm": ["ironclad/core"],
+    "ironclad/aead/gcm": ["ironclad/core", "ironclad/mac/gmac"],
+    "ironclad/aeads": ["ironclad/aead/eax", "ironclad/aead/etm", "ironclad/aead/gcm", "ironclad/core"],
+    "ironclad/cipher/aes": ["ironclad/core"],
+    "ironclad/cipher/arcfour": ["ironclad/core"],
+    "ironclad/cipher/aria": ["ironclad/core"],
+    "ironclad/cipher/blowfish": ["ironclad/core"],
+    "ironclad/cipher/camellia": ["ironclad/core"],
+    "ironclad/cipher/cast5": ["ironclad/core"],
+    "ironclad/cipher/chacha": ["ironclad/core"],
+    "ironclad/cipher/des": ["ironclad/core"],
+    "ironclad/cipher/idea": ["ironclad/core"],
+    "ironclad/cipher/kalyna": ["ironclad/core"],
+    "ironclad/cipher/keystream": ["ironclad/cipher/chacha", "ironclad/cipher/salsa20", "ironclad/core"],
+    "ironclad/cipher/kuznyechik": ["ironclad/core"],
+    "ironclad/cipher/misty1": ["ironclad/core"],
+    "ironclad/cipher/rc2": ["ironclad/core"],
+    "ironclad/cipher/rc5": ["ironclad/core"],
+    "ironclad/cipher/rc6": ["ironclad/core"],
+    "ironclad/cipher/salsa20": ["ironclad/core"],
+    "ironclad/cipher/seed": ["ironclad/core"],
+    "ironclad/cipher/serpent": ["ironclad/core"],
+    "ironclad/cipher/sm4": ["ironclad/core"],
+    "ironclad/cipher/sosemanuk": ["ironclad/core"],
+    "ironclad/cipher/square": ["ironclad/core"],
+    "ironclad/cipher/tea": ["ironclad/core"],
+    "ironclad/cipher/threefish": ["ironclad/core"],
+    "ironclad/cipher/twofish": ["ironclad/core"],
+    "ironclad/cipher/xchacha": ["ironclad/cipher/chacha", "ironclad/core"],
+    "ironclad/cipher/xor": ["ironclad/core"],
+    "ironclad/cipher/xsalsa20": ["ironclad/cipher/salsa20", "ironclad/core"],
+    "ironclad/cipher/xtea": ["ironclad/core"],
+    "ironclad/ciphers": ["ironclad/cipher/aes", "ironclad/cipher/arcfour", "ironclad/cipher/aria", "ironclad/cipher/blowfish", "ironclad/cipher/camellia", "ironclad/cipher/cast5", "ironclad/cipher/chacha", "ironclad/cipher/des", "ironclad/cipher/idea", "ironclad/cipher/kalyna", "ironclad/cipher/keystream", "ironclad/cipher/kuznyechik", "ironclad/cipher/misty1", "ironclad/cipher/rc2", "ironclad/cipher/rc5", "ironclad/cipher/rc6", "ironclad/cipher/salsa20", "ironclad/cipher/seed", "ironclad/cipher/serpent", "ironclad/cipher/sm4", "ironclad/cipher/sosemanuk", "ironclad/cipher/square", "ironclad/cipher/tea", "ironclad/cipher/threefish", "ironclad/cipher/twofish", "ironclad/cipher/xchacha", "ironclad/cipher/xor", "ironclad/cipher/xsalsa20", "ironclad/cipher/xtea", "ironclad/core"],
+    "ironclad/core": ["bordeaux-threads", "sb-posix", "sb-rotate-byte"],
+    "ironclad/digest/adler32": ["ironclad/core"],
+    "ironclad/digest/blake2": ["ironclad/core"],
+    "ironclad/digest/blake2s": ["ironclad/core"],
+    "ironclad/digest/crc24": ["ironclad/core"],
+    "ironclad/digest/crc32": ["ironclad/core"],
+    "ironclad/digest/groestl": ["ironclad/core"],
+    "ironclad/digest/jh": ["ironclad/core"],
+    "ironclad/digest/kupyna": ["ironclad/cipher/kalyna", "ironclad/core"],
+    "ironclad/digest/md2": ["ironclad/core"],
+    "ironclad/digest/md4": ["ironclad/core"],
+    "ironclad/digest/md5": ["ironclad/core"],
+    "ironclad/digest/ripemd-128": ["ironclad/core"],
+    "ironclad/digest/ripemd-160": ["ironclad/core"],
+    "ironclad/digest/sha1": ["ironclad/core"],
+    "ironclad/digest/sha256": ["ironclad/core"],
+    "ironclad/digest/sha3": ["ironclad/core"],
+    "ironclad/digest/sha512": ["ironclad/core"],
+    "ironclad/digest/skein": ["ironclad/cipher/threefish", "ironclad/core"],
+    "ironclad/digest/sm3": ["ironclad/core"],
+    "ironclad/digest/streebog": ["ironclad/core"],
+    "ironclad/digest/tiger": ["ironclad/core"],
+    "ironclad/digest/tree-hash": ["ironclad/core", "ironclad/digest/tiger"],
+    "ironclad/digest/whirlpool": ["ironclad/core"],
+    "ironclad/digests": ["ironclad/core", "ironclad/digest/adler32", "ironclad/digest/blake2", "ironclad/digest/blake2s", "ironclad/digest/crc24", "ironclad/digest/crc32", "ironclad/digest/groestl", "ironclad/digest/jh", "ironclad/digest/kupyna", "ironclad/digest/md2", "ironclad/digest/md4", "ironclad/digest/md5", "ironclad/digest/ripemd-128", "ironclad/digest/ripemd-160", "ironclad/digest/sha1", "ironclad/digest/sha256", "ironclad/digest/sha3", "ironclad/digest/sha512", "ironclad/digest/skein", "ironclad/digest/sm3", "ironclad/digest/streebog", "ironclad/digest/tiger", "ironclad/digest/tree-hash", "ironclad/digest/whirlpool"],
+    "ironclad/kdf/argon2": ["ironclad/core", "ironclad/mac/blake2-mac"],
+    "ironclad/kdf/bcrypt": ["ironclad/cipher/blowfish", "ironclad/core", "ironclad/digest/sha512"],
+    "ironclad/kdf/hmac": ["ironclad/core", "ironclad/mac/hmac"],
+    "ironclad/kdf/password-hash": ["ironclad/core", "ironclad/digest/sha256"],
+    "ironclad/kdf/pkcs5": ["ironclad/core"],
+    "ironclad/kdf/scrypt": ["ironclad/cipher/salsa20", "ironclad/core", "ironclad/digest/sha256", "ironclad/kdf/pkcs5"],
+    "ironclad/kdfs": ["ironclad/core", "ironclad/kdf/argon2", "ironclad/kdf/bcrypt", "ironclad/kdf/hmac", "ironclad/kdf/password-hash", "ironclad/kdf/pkcs5", "ironclad/kdf/scrypt"],
+    "ironclad/mac/blake2-mac": ["ironclad/core", "ironclad/digest/blake2"],
+    "ironclad/mac/blake2s-mac": ["ironclad/core", "ironclad/digest/blake2s"],
+    "ironclad/mac/cmac": ["ironclad/core"],
+    "ironclad/mac/gmac": ["ironclad/core"],
+    "ironclad/mac/hmac": ["ironclad/core"],
+    "ironclad/mac/poly1305": ["ironclad/core"],
+    "ironclad/mac/siphash": ["ironclad/core"],
+    "ironclad/mac/skein-mac": ["ironclad/cipher/threefish", "ironclad/core", "ironclad/digest/skein"],
+    "ironclad/macs": ["ironclad/core", "ironclad/mac/blake2-mac", "ironclad/mac/blake2s-mac", "ironclad/mac/cmac", "ironclad/mac/gmac", "ironclad/mac/hmac", "ironclad/mac/poly1305", "ironclad/mac/siphash", "ironclad/mac/skein-mac"],
+    "ironclad/prng/fortuna": ["ironclad/cipher/aes", "ironclad/core", "ironclad/digest/sha256"],
+    "ironclad/prngs": ["ironclad/core", "ironclad/prng/fortuna"],
+    "ironclad/public-key/curve25519": ["ironclad/core"],
+    "ironclad/public-key/curve448": ["ironclad/core"],
+    "ironclad/public-key/dsa": ["ironclad/core"],
+    "ironclad/public-key/ed25519": ["ironclad/core", "ironclad/digest/sha512"],
+    "ironclad/public-key/ed448": ["ironclad/core", "ironclad/digest/sha3"],
+    "ironclad/public-key/elgamal": ["ironclad/core"],
+    "ironclad/public-key/rsa": ["ironclad/core"],
+    "ironclad/public-key/secp256k1": ["ironclad/core"],
+    "ironclad/public-key/secp256r1": ["ironclad/core"],
+    "ironclad/public-key/secp384r1": ["ironclad/core"],
+    "ironclad/public-key/secp521r1": ["ironclad/core"],
+    "ironclad/public-keys": ["ironclad/core", "ironclad/public-key/curve25519", "ironclad/public-key/curve448", "ironclad/public-key/dsa", "ironclad/public-key/ed25519", "ironclad/public-key/ed448", "ironclad/public-key/elgamal", "ironclad/public-key/rsa", "ironclad/public-key/secp256k1", "ironclad/public-key/secp256r1", "ironclad/public-key/secp384r1", "ironclad/public-key/secp521r1"],
+    "jonathan": ["babel", "cl-annot", "cl-ppcre", "cl-syntax", "cl-syntax-annot", "fast-io", "proc-parse", "trivial-types"],
+    "lisp-namespace": ["alexandria"],
+    "local-time": ["uiop"],
+    "log4cl": ["bordeaux-threads"],
+    "lparallel": ["alexandria", "bordeaux-threads"],
+    "mgl-pax-bootstrap": ["autoload"],
+    "named-readtables": ["mgl-pax-bootstrap"],
+    "orchestrator-ai-core": ["alexandria", "babel", "cl-yaml", "ironclad", "local-time", "orchestrator-infrastructure", "orchestrator-model", "orchestrator-spec", "uuid", "yason"],
+    "orchestrator-cli": ["alexandria", "cl-yaml", "log4cl", "orchestrator-ai-core", "orchestrator-core", "orchestrator-engine-sbcl", "orchestrator-gr-syntagma", "orchestrator-infrastructure", "orchestrator-meta", "orchestrator-model", "orchestrator-spec", "sb-posix", "uiop"],
+    "orchestrator-core": ["alexandria", "bordeaux-threads", "log4cl", "lparallel", "orchestrator-infrastructure", "orchestrator-model", "orchestrator-spec"],
+    "orchestrator-core-runtime": ["orchestrator-ai-core", "orchestrator-cli", "orchestrator-core", "orchestrator-engine-sbcl", "orchestrator-gr-syntagma", "orchestrator-infrastructure", "orchestrator-meta", "orchestrator-model", "orchestrator-omega", "orchestrator-spec"],
+    "orchestrator-engine-sbcl": ["alexandria", "babel", "chipz", "cl-ppcre", "closer-mop", "cxml", "cxml-stp", "drakma", "ironclad", "jonathan", "local-time", "log4cl", "named-readtables", "orchestrator-ai-core", "orchestrator-core", "orchestrator-epistemic", "orchestrator-infrastructure", "orchestrator-model", "orchestrator-omega", "orchestrator-spec", "uiop", "yason"],
+    "orchestrator-epistemic": ["alexandria", "babel", "cl-base64", "cl-ppcre", "drakma", "ironclad", "jonathan", "log4cl", "orchestrator-infrastructure", "orchestrator-model", "orchestrator-spec", "sb-posix"],
+    "orchestrator-gr-syntagma": ["alexandria", "local-time", "orchestrator-core", "orchestrator-meta", "orchestrator-model", "orchestrator-spec"],
+    "orchestrator-infrastructure": ["alexandria", "babel", "bordeaux-threads", "cffi", "cl-base64", "cl-ppcre", "closer-mop", "drakma", "ieee-floats", "ironclad", "jonathan", "local-time", "log4cl", "orchestrator-spec", "sb-posix", "serapeum", "uiop", "usocket", "uuid"],
+    "orchestrator-meta": ["alexandria", "jonathan", "orchestrator-infrastructure", "orchestrator-model", "orchestrator-spec", "uiop"],
+    "orchestrator-model": ["alexandria", "babel", "cl-ppcre", "closer-mop", "ironclad", "local-time", "orchestrator-infrastructure", "orchestrator-spec"],
+    "orchestrator-omega": ["alexandria", "babel", "bordeaux-threads", "cl-ppcre", "cl-yaml", "closer-mop", "ironclad", "orchestrator-infrastructure", "orchestrator-meta", "sb-concurrency", "serapeum", "trivial-garbage"],
+    "orchestrator-spec": ["alexandria", "cl-ppcre", "closer-mop"],
+    "proc-parse": ["alexandria", "babel", "sb-cltl2"],
+    "serapeum": ["alexandria", "bordeaux-threads", "global-vars", "parse-number", "serapeum/binding", "serapeum/box", "serapeum/conditions", "serapeum/control-flow", "serapeum/defining-types", "serapeum/definitions", "serapeum/iter", "serapeum/macro-tools", "serapeum/op", "serapeum/portability", "serapeum/queue", "serapeum/types", "split-sequence", "string-case", "trivia", "trivial-file-size", "trivial-garbage", "trivial-macroexpand-all"],
+    "serapeum/binding": ["alexandria", "serapeum/macro-tools", "trivia"],
+    "serapeum/box": ["alexandria", "serapeum/types", "trivia"],
+    "serapeum/conditions": ["alexandria"],
+    "serapeum/control-flow": ["alexandria", "introspect-environment", "serapeum/binding", "serapeum/macro-tools", "serapeum/types", "string-case", "trivia"],
+    "serapeum/defining-types": ["alexandria", "bordeaux-threads", "serapeum/control-flow", "serapeum/definitions", "serapeum/macro-tools", "serapeum/types", "trivia"],
+    "serapeum/definitions": ["alexandria", "global-vars", "serapeum/iter", "serapeum/macro-tools", "trivia"],
+    "serapeum/iter": ["alexandria", "parse-declarations-1.0"],
+    "serapeum/macro-tools": ["introspect-environment", "parse-declarations-1.0", "trivia", "trivial-cltl2"],
+    "serapeum/op": ["alexandria"],
+    "serapeum/portability": ["alexandria", "trivia"],
+    "serapeum/queue": ["alexandria", "serapeum/types", "trivia"],
+    "serapeum/types": ["serapeum/macro-tools", "serapeum/portability"],
+    "static-vectors": ["alexandria", "cffi"],
+    "trivia": ["trivia.balland2006"],
+    "trivia.balland2006": ["alexandria", "iterate", "trivia.trivial", "type-i"],
+    "trivia.level0": ["alexandria"],
+    "trivia.level1": ["trivia.level0"],
+    "trivia.level2": ["closer-mop", "lisp-namespace", "trivia.level1", "trivial-cltl2"],
+    "trivia.trivial": ["trivia.level2"],
+    "trivial-file-size": ["sb-posix", "uiop"],
+    "trivial-macroexpand-all": ["sb-cltl2"],
+    "trivial-utf-8": ["mgl-pax-bootstrap"],
+    "type-i": ["alexandria", "introspect-environment", "lisp-namespace", "trivia.trivial"],
+    "usocket": ["sb-bsd-sockets", "split-sequence"],
+    "uuid": ["ironclad", "trivial-utf-8"],
+    "xpath": ["cl-ppcre", "cxml", "parse-number", "yacc"],
+    "yason": ["alexandria", "trivial-gray-streams"]
+  }
 }

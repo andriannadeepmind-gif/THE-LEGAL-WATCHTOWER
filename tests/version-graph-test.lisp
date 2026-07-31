@@ -209,11 +209,23 @@
                g (orchestrator.version-graph:make-version-spec
                   :provision-id "gr/syntagma#art:1" :text "α" :valid-from "1975-06-11"
                   :assurance :attested-manual))
-              ;; ξένη γραμμή με ΨΕΥΤΙΚΗ αλυσίδα κατευθείαν στο journal
-              (orchestrator.journal:append-line
-               (orchestrator.version-graph::vg-path g)
-               (list :kind :retract :record-id "tampered" :version "x"
-                     :chain "ΨΕΥΤΙΚΗ" :at "2026-01-01T00:00:00Z"))
+              ;; ξένη γραμμή με ΨΕΥΤΙΚΗ αλυσίδα κατευθείαν στο journal.
+              ;; [RATCHET-4] Γράφεται ΩΜΑ στο αρχείο, ΕΚΤΟΣ της έδρας εγγραφής —
+              ;; έτσι ακριβώς δρα ο αλλοιωτής. Πριν χρησιμοποιούσε το append-line
+              ;; με τεχνητό παρελθοντικό :at· αυτό ΔΕΝ είναι προσομοίωση
+              ;; αλλοίωσης (ο αλλοιωτής δεν περνά από τους φρουρούς μας) και
+              ;; πλέον το απορρίπτει σωστά ο κανόνας μονοτονίας
+              ;; transaction-time. Ο ισχυρισμός του ελέγχου μένει ο ΙΔΙΟΣ: το
+              ;; load-graph οφείλει να εντοπίσει τη διαφθορά.
+              (with-open-file (s (orchestrator.version-graph::vg-path g)
+                                 :direction :output :if-exists :append
+                                 :if-does-not-exist :create :external-format :utf-8)
+                (let ((*package* (find-package :keyword))
+                      (*print-readably* nil) (*print-escape* t)
+                      (*print-pretty* nil) (*print-circle* nil))
+                  (format s "~S~%"
+                          (list :kind :retract :record-id "tampered" :version "x"
+                                :chain "ΨΕΥΤΙΚΗ" :at "2026-01-01T00:00:00Z"))))
               ;; [κριτής Ε2] ξένη/παραποιημένη γραμμή = journal-corruption
               ;; (server-integrity), ΟΧΙ invalid-edge (client input)
               (handler-case (progn (orchestrator.version-graph:load-graph body) nil)

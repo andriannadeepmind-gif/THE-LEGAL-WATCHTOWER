@@ -9,7 +9,8 @@
   :version "0.9.0"
   :homepage "https://stavropouloslaw.com"
   
-  :depends-on (#:orchestrator-spec
+  :depends-on ((:require :sb-posix)   ; [RATCHET-5] αδήλωτη εξάρτηση σε SBCL contrib
+               #:orchestrator-spec
                #:orchestrator-model
                #:orchestrator-core
                #:orchestrator-engine-sbcl
@@ -17,6 +18,8 @@
                #:orchestrator-meta
                #:orchestrator-ai-core
                #:orchestrator-infrastructure  ; Required for orchestrator.time package
+               #:log4cl              ; [RATCHET-5] ΑΔΗΛΩΤΗ εξάρτηση (πακέτο LOG) —
+                                     ; αυτάρκεια ΔΗΛΩΜΕΝΗ, όχι τυχαία
                #:alexandria
                #:cl-yaml
                #:uiop)

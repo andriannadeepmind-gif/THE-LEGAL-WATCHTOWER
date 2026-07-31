@@ -173,7 +173,7 @@ RUN echo "${GIT_COMMIT}" | grep -Eq '^[0-9a-f]{40}$' \
 
 COPY tests/ /app/tests/
 COPY Dockerfile /app/Dockerfile
-COPY docker/run-standalone-test.lisp docker/run-standalone-suites.sh docker/standalone-suite-exclusions.txt docker/sha256.lisp docker/dep-hash.lisp docker/verify-proof-manifest.py docker/entrypoint.lisp docker/sbom.json /app/docker/
+COPY docker/run-standalone-test.lisp docker/run-standalone-suites.sh docker/standalone-suite-exclusions.txt docker/suite-census.txt docker/sha256.lisp docker/dep-hash.lisp docker/verify-proof-manifest.py docker/entrypoint.lisp docker/sbom.json /app/docker/
 
 # [audit#2] Το suite inventory ΠΑΡΑΓΕΤΑΙ από το filesystem (glob tests/*-test.lisp)
 # μείον τη ΜΙΑ δηλωμένη πηγή εξαιρέσεων (docker/standalone-suite-exclusions.txt) —
