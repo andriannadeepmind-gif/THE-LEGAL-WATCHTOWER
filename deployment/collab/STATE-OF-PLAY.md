@@ -320,3 +320,5 @@ BLOCKED, μητρώο ≡ εφαρμοσμένοι**. **CI**: επιβεβαιώ
 20/0 · 27/27 · 17/0 · 52/0. Υπολείμματα δηλωμένα: ετικέτες rfc6962-* σε
 ιστορικά artifacts (versioned-format φάση)· Docker τοπικά BLOCKED — release
 proof = πράσινο CI ή owner docker.
+
+**[0120+] Έκβαση CI:** dispatch ⇒ 403 (το App token δεν έχει actions:write)· push `5af60978` ⇒ 0 runs (τα push του integration δεν πυροδοτούν Actions). ΚΕΝΟ 6 = BLOCKED — NOT EXECUTED. Κλείνει ΜΟΝΟ από δημιουργό: Run workflow στον κλάδο, Ή PR προς main (τρέχει όλες τις πύλες + Docker build), Ή push με δικά του credentials.

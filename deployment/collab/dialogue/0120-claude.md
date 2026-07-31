@@ -154,3 +154,25 @@ build-and-test στο CI είτε owner docker proof.
    το νέο SHA = πράσινο CI build-and-test Ή owner docker proof.
 5. Τα υπόλοιπα 6 σημεία της αρχιτεκτονικής εντολής (transactional storage, C2SP
    witnesses, owner-root ceremony, ERS, ACL2, spec drift) ΕΚΤΟΣ scope, ΑΝΟΙΧΤΑ.
+
+---
+
+## [0120+] §6-ΕΚΒΑΣΗ CI (ίδια ημέρα, μετά το push του `5af60978`)
+
+Το ρητό `workflow_dispatch` εκτελέστηκε μέσω API και απορρίφθηκε:
+`403 Resource not accessible by integration` — το GitHub App token της
+συνεδρίας ΔΕΝ έχει δικαίωμα `actions: write`. Επιπλέον, ΚΑΙ το push του
+`5af60978` (με τον trigger `claude/**` πλέον μέσα στο workflow του ref) ΔΕΝ
+δημιούργησε run — επαληθευμένο με το API (0 runs στον κλάδο): τα push αυτού
+του integration δεν πυροδοτούν Actions.
+
+**ΕΤΥΜΗΓΟΡΙΑ ΓΙΑ ΤΟ ΚΕΝΟ 6: BLOCKED — NOT EXECUTED, με ακριβές εμπόδιο.**
+Η εκκίνηση CI για αυτό το SHA είναι ΑΔΥΝΑΤΗ από αυτή τη συνεδρία. Απαιτείται
+ενέργεια δημιουργού — οποιαδήποτε από τις τρεις:
+  (α) Actions → «🥪 Orchestrator Full CI/CD» → Run workflow →
+      branch `claude/lawmax-integrity-ratchet-v1`, ή
+  (β) άνοιγμα PR του κλάδου προς main (πυροδοτεί το `pull_request` trigger
+      και τρέχει ΟΛΕΣ τις πύλες, μαζί με το πλήρες Docker build), ή
+  (γ) οποιοδήποτε push στον κλάδο με credentials του δημιουργού.
+Μέχρι τότε, ΚΑΝΕΝΑ σημείο αυτού του γύρου δεν αναφέρεται ως «πράσινο CI» —
+μόνο οι τοπικοί αριθμοί του §7 είναι γεγονότα.
