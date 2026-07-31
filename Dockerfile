@@ -291,19 +291,20 @@ RUN bash /app/scripts/merkle-mutation-witness.sh
 
 # [0088 assurance] verifier-proof manifest: δεσμεύει τα hashes ΟΛΩΝ των
 # δημόσιων verifiers που αποτέλεσαν gate σε αυτόν τον κρίκο.
+# [ΕΥΡΗΜΑ ΚΡΙΤΗ #2] Το manifest παράγεται ΑΠΟ το ΠΑΓΩΜΕΝΟ μητρώο
+# docker/verifier-census.txt (η ΜΙΑ έδρα), όχι από χειρόγραφη λίστα εδώ:
+# νέος verifier = μία γραμμή στο census· αφαίρεση = ορατό diff στο census·
+# αρχείο του census που λείπει = το sha256sum σκάει = το build κοκκινίζει.
 RUN set -e; \
     { echo '{'; \
       echo "  \"proof\": \"lawmax/verifier-proof/1\","; \
       echo "  \"git_commit\": \"${GIT_COMMIT}\","; \
-      echo "  \"verify_py_sha256\": \"$(sha256sum /app/deployment/verify/verify.py | cut -d' ' -f1)\","; \
-      echo "  \"verify_mjs_sha256\": \"$(sha256sum /app/deployment/verify/verify.mjs | cut -d' ' -f1)\","; \
-      echo "  \"verify_canonical_py_sha256\": \"$(sha256sum /app/deployment/verify/verify-canonical.py | cut -d' ' -f1)\","; \
-      echo "  \"verify_temporal_py_sha256\": \"$(sha256sum /app/deployment/verify/verify-temporal.py | cut -d' ' -f1)\","; \
-      echo "  \"verify_release_py_sha256\": \"$(sha256sum /app/deployment/verify/verify-release.py | cut -d' ' -f1)\","; \
-      echo "  \"verify_merkle_py_sha256\": \"$(sha256sum /app/deployment/verify/verify-merkle.py | cut -d' ' -f1)\","; \
-      echo "  \"verify_merkle_mjs_sha256\": \"$(sha256sum /app/deployment/verify/verify-merkle.mjs | cut -d' ' -f1)\","; \
-      echo "  \"merkle_profile_sha256\": \"$(sha256sum /app/deployment/verify/merkle-profile.sexp | cut -d' ' -f1)\","; \
-      echo "  \"merkle_vectors_sha256\": \"$(sha256sum /app/deployment/verify/vectors/merkle/vectors.json | cut -d' ' -f1)\","; \
+      grep -v '^[[:space:]]*#' /app/docker/verifier-census.txt | grep -v '^[[:space:]]*$' | \
+      while IFS="$(printf '\t')" read -r key rel; do \
+        h="$(sha256sum "/app/${rel}" | cut -d' ' -f1)" || exit 1; \
+        [ -n "$h" ] || exit 1; \
+        echo "  \"${key}\": \"$h\","; \
+      done; \
       echo '  "gates": ["cross-language-verifier", "release-vector-conformance", "verify-canonical", "semantic-validity", "temporal-verifier", "merkle-single-truth"]'; \
       echo '}'; \
     } > /app/proof/verifier-proof.json

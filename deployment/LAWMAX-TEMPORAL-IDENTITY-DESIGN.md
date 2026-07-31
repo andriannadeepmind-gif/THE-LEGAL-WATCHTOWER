@@ -155,7 +155,7 @@
 (defstruct extraction-derivation
   derivation-id                         ; sha256(artifact ‖ extractor-root ‖ config-digest)
   artifact-digest
-  extractor-root                        ; MTH των sha256 των πηγών του pinned extractor
+  extractor-root                        ; MTH (profile lawmax-merkle-sha256-v1) των sha256 των πηγών του pinned extractor
                                         ; (extractor-manifest.sexp στο build) — ΟΧΙ free string
   config-digest                         ; canonicalized YAML υπο-δέντρο
   outputs)                              ; (provision-id-string content-sha256 source-span)*

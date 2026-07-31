@@ -131,7 +131,8 @@
                     (incf found)
                     (%rg-verify-release rel #'chk))))
               ;; [L7-B] Transparency log: αν υπάρχει, επαληθεύεται ΠΛΗΡΩΣ
-              ;; (log_root ≡ MTH(entries) + ΚΑΘΕ checkpoint consistency, RFC
+              ;; (log_root ≡ MTH(entries) κατά το profile lawmax-merkle-sha256-v1
+              ;; + ΚΑΘΕ checkpoint consistency, RFC
               ;; 6962 §2.1.2). Απόν = τίμιο (προ-L7-B εποχή)· άκυρο = ΚΟΚΚΙΝΟ.
               (let ((corpus (car (last (pathname-directory corpus-dir)))))
                 (multiple-value-bind (status info)

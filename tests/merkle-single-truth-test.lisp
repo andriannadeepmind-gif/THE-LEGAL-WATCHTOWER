@@ -244,9 +244,9 @@
                       :key (lambda (l) (jget l "id")) :test #'string=)))
          (not (string= (jget a "leaf") (jget b "leaf")))))
 
-(format t "~%== Ε. ΚΑΜΙΑ ΔΕΥΤΕΡΗ, ΑΝΤΙΦΑΤΙΚΗ ΠΕΡΙΓΡΑΦΗ (ΟΛΟ ΤΟ REPO) ==~%")
+(format t "~%== Ε. ΚΑΝΟΝΙΣΤΙΚΗ ΜΟΝΑΔΙΚΟΤΗΤΑ: tripwires + δέσμευση στο profile ==~%")
 
-;; [ΔΙΟΡΘΩΣΗ ΚΡΙΤΗ #2] Δύο διαδοχικά λάθη διορθώνονται εδώ.
+;; [ΔΙΟΡΘΩΣΗ ΚΡΙΤΗ #2/#3] Τρία διαδοχικά λάθη διορθώνονται εδώ.
 ;;
 ;;  (α) Πριν σαρώνονταν ΜΟΝΟ δύο markdown αρχεία — η διαβεβαίωση «καμία δεύτερη
 ;;      περιγραφή στο repo» ήταν ΕΥΡΥΤΕΡΗ από τον μηχανισμό. Τώρα σαρώνεται ΟΛΟ
@@ -256,6 +256,19 @@
 ;;      αρχείων σημαίνει ότι ένα εξαιρεμένο αρχείο μπορεί αύριο να διδάξει τον
 ;;      μεταλλαγμένο αλγόριθμο ΑΤΙΜΩΡΗΤΑ, ενώ οκτώ αθώες ΑΠΑΓΟΡΕΥΣΕΙΣ
 ;;      («NEVER duplicate-last») καταγγέλλονταν ως παραβάσεις.
+;;  (γ) Ο σαρωτής πολικότητας πιάνει ΜΟΝΟ την ΟΝΟΜΑΣΜΕΝΗ κλάση (duplicate-last)·
+;;      μια ΝΕΑ λάθος περιγραφή — π.χ. χωρίς τα prefixes, η ΔΕΥΤΕΡΗ από τις
+;;      τρεις αρχικές αστοχίες — δεν ονομάζει τίποτα και περνούσε. Προστέθηκε
+;;      ΔΕΥΤΕΡΟΣ μηχανικός κανόνας (Ε2): κάθε αρχείο που ΓΡΑΦΕΙ φόρμουλα του
+;;      αλγορίθμου δένεται ονομαστικά στο κανονικό profile.
+;;
+;; ΤΙΜΙΑ ΟΡΙΟΘΕΤΗΣΗ — ΤΙ ΔΕΝ ΑΠΟΔΕΙΚΝΥΕΙ ΤΟ Ε: κειμενικοί κανόνες ΔΕΝ
+;; αποκλείουν σημασιολογικά λάθος περιγραφή σε ελεύθερη πρόζα που αποφεύγει
+;; και τα δύο tripwires (ούτε ονομάζει τη μετάλλαξη ούτε γράφει φόρμουλα).
+;; Η ΚΑΝΟΝΙΣΤΙΚΗ επιφάνεια του συστήματος είναι: το profile + οι GENERATED
+;; ζώνες + τα golden vectors — ΟΛΑ byte-checked από τον generator. Το Ε είναι
+;; tripwire ΠΑΝΩ από αυτή την επιφάνεια, όχι απόδειξη μη-ύπαρξης· ο ισχυρισμός
+;; «καμία αντίφαση πουθενά» ΔΕΝ εκφέρεται από αυτή τη σουίτα.
 ;;
 ;; Η ΕΔΡΑ ΤΟΥ ΚΑΝΟΝΑ ΕΙΝΑΙ Η ΠΟΛΙΚΟΤΗΤΑ ΤΗΣ ΑΝΑΦΟΡΑΣ, ΟΧΙ Η ΤΑΥΤΟΤΗΤΑ ΤΟΥ
 ;; ΑΡΧΕΙΟΥ. Το όνομα του μεταλλαγμένου αλγορίθμου επιτρέπεται ΠΑΝΤΟΥ όταν —και
@@ -406,6 +419,85 @@
            "ΑΠΑΓΟΡΕΥΕΤΑΙ ΑΠΟΛΥΤΩΣ ΤΟ duplicate-last")
   (witness "Ε-Μ9 πεζά ΤΟΝΙΣΜΕΝΑ ελληνικά μετρούν ως πολικότητα (folding)" '()
            "μάρτυρας μετάλλαξης: duplicate-last"))
+
+;; ── Ε2. ΚΑΘΕ ΑΡΧΕΙΟ ΜΕ ΦΟΡΜΟΥΛΑ ΤΟΥ ΑΛΓΟΡΙΘΜΟΥ ΔΕΝΕΤΑΙ ΣΤΟ ΚΑΝΟΝΙΚΟ PROFILE ──
+;; Φόρμουλα = (i) MTH(-σημειογραφία του RFC, οπουδήποτε, ή (ii) hash-συνένωση
+;; (‖ ή ||) με «sha» στην ΙΔΙΑ γραμμή, μέσα σε Merkle/RFC-6962/9162 συμφραζόμενα
+;; (±3 γραμμές — αλλιώς π.χ. η αλυσίδα του journal, που ΔΕΝ είναι Merkle, θα
+;; δενόταν λαθεμένα). Αρχείο με φόρμουλα ΧΩΡΙΣ το όνομα του profile = ΑΠΟΤΥΧΙΑ:
+;; κάθε περιγραφή οφείλει να δείχνει στη ΜΙΑ πηγή, ώστε το drift να είναι
+;; ελέγξιμο απέναντι στα byte-checked παραγόμενα.
+
+(defparameter +profile-id-string+ "lawmax-merkle-sha256-v1")
+
+(defun %e2-context-p (lines i)
+  (loop for j from (max 0 (- i +dup-window+))
+          to (min (1- (length lines)) (+ i +dup-window+))
+        thereis (let ((l (aref lines j)))
+                  (or (search "merkle" l) (search "mth" l)
+                      (search "rfc 6962" l) (search "rfc-6962" l)
+                      (search "rfc 9162" l) (search "rfc-9162" l)))))
+
+(defun %e2-formula-lines (lines)
+  "1-based γραμμές που ΓΡΑΦΟΥΝ φόρμουλα του αλγορίθμου (folded είσοδος)."
+  (loop for i below (length lines)
+        for l = (aref lines i)
+        when (or (search "mth(" l)
+                 (and (or (search "‖" l) (search "||" l))
+                      (search "sha" l)
+                      (%e2-context-p lines i)))
+          collect (1+ i)))
+
+(defun %e2-bound-p (lines)
+  (loop for l across lines thereis (search +profile-id-string+ l)))
+
+(let ((unbound '()) (bearing 0))
+  (dolist (f (%mst-authored-files))
+    (handler-case
+        (let* ((lines (%mst-lines f))
+               (fl (%e2-formula-lines lines)))
+          (when fl
+            (incf bearing)
+            (unless (%e2-bound-p lines)
+              (push (cons (namestring f) fl) unbound))))
+      (error () nil)))
+  (dolist (u unbound)
+    (format t "    ✗ φόρμουλα ΧΩΡΙΣ δέσμευση στο profile: ~A γραμμές ~{~D~^, ~}~%"
+            (car u) (cdr u)))
+  (check (format nil "Ε2 κάθε formula-bearing αρχείο ονομάζει το προφίλ (~D αρχεία με φόρμουλα)"
+                 bearing)
+         (null unbound)))
+
+;; Ε2-ΜΑΡΤΥΡΕΣ: ο κανόνας αποδεικνύεται μη-κενός σε συνθετικό κείμενο.
+(macrolet ((fwitness (name expected &rest lines)
+             `(check ,name (equal ,expected (%e2-formula-lines (%dup-fixture ,@lines))))))
+  (fwitness "Ε2-Μ1 περιγραφή ΧΩΡΙΣ prefixes (η αυθεντική 2η αστοχία) ΑΝΙΧΝΕΥΕΤΑΙ" '(2 3)
+            "## The Merkle commitment"
+            "leaf = sha256( text )   and   node = sha256( l ‖ r )"
+            "root = sha256( left ‖ right ) applied pairwise")
+  (fwitness "Ε2-Μ3 αλυσίδα journal (ΟΧΙ Merkle) ΔΕΝ δένεται λαθεμένα" '()
+            "journal: chained-append"
+            "chain = sha256(prev ‖ 0x1f ‖ payload-hash)")
+  (fwitness "Ε2-Μ4 σκέτη MTH( σημειογραφία πιάνεται ΠΑΝΤΟΥ" '(1)
+            "mth(d[n]) = h(mth(d[0:k]) + mth(d[k:n]))"))
+(check "Ε2-Μ2 η ονομαστική δέσμευση στο profile αίρει την καταγγελία"
+       (%e2-bound-p (%dup-fixture "canonical profile lawmax-merkle-sha256-v1")))
+
+;; ── Ε3. ΤΟ VERIFIER CENSUS ΚΑΡΦΩΝΕΤΑΙ ΑΝΕΞΑΡΤΗΤΑ (αντι-συρρίκνωση ratchet) ──
+;; [ΕΥΡΗΜΑ ΚΡΙΤΗ #2] Το fixture του verify-proof-manifest δοκιμάζει ΣΥΝΘΕΤΙΚΑ
+;; μητρώα· το ΠΡΑΓΜΑΤΙΚΟ docker/verifier-census.txt καρφώνεται ΕΔΩ, σε άλλη
+;; σουίτα από τον verifier — «μικραίνω verifier και fixture μαζί» δεν αρκεί πια.
+(let ((txt (handler-case (%mst-slurp (%mst-repo "docker/verifier-census.txt"))
+             (error () ""))))
+  (check "Ε3 verifier-census: δεσμεύει py+mjs Merkle verifiers, profile και vectors"
+         (and (search "verify_merkle_py_sha256" txt)
+              (search "deployment/verify/verify-merkle.py" txt)
+              (search "verify_merkle_mjs_sha256" txt)
+              (search "deployment/verify/verify-merkle.mjs" txt)
+              (search "merkle_profile_sha256" txt)
+              (search "deployment/verify/merkle-profile.sexp" txt)
+              (search "merkle_vectors_sha256" txt)
+              (search "deployment/verify/vectors/merkle/vectors.json" txt))))
 
 (dolist (doc '("deployment/PROOF-CARRYING-LAW.md" "deployment/verify/README.md"))
   (let ((txt (%mst-slurp (%mst-repo doc))))

@@ -17,7 +17,8 @@ TRUST MODEL — read this:
     the embedded key (if any) must match it by RFC 7638 thumbprint. Without a
     pinned key, `signature`/`full` return code 3 (UNPINNED — not a trust anchor).
 
-The hashing convention (must match source/proof-carrying.lisp byte-for-byte):
+The hashing convention — canonical profile `lawmax-merkle-sha256-v1`
+(must match source/proof-carrying.lisp byte-for-byte):
   leaf      = "sha256:" + hex(SHA256( 0x00 ‖ UTF-8(text) ))          # RFC 6962 leaf
   node(a,b) = "sha256:" + hex(SHA256( 0x01 ‖ raw(a) ‖ raw(b) ))      # RFC 6962 node
   root      = RFC-6962 Merkle root over the ordered leaves (unbalanced split:

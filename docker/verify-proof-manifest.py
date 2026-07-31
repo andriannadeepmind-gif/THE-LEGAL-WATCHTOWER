@@ -86,22 +86,37 @@ EXPECTED_GATES = ["cross-language-verifier", "release-vector-conformance",
                   "verify-canonical", "semantic-validity", "temporal-verifier",
                   "merkle-single-truth"]
 
-# [MERKLE-SINGLE-TRUTH] ΜΙΑ ΕΔΡΑ για το «τι δεσμεύει το verifier-proof»: και ο
-# έλεγχος μορφής και ο ΕΠΑΝΥΠΟΛΟΓΙΣΜΟΣ διαβάζουν ΑΥΤΟΝ τον πίνακα, ώστε νέος
-# verifier να μην μπορεί να μπει στο manifest χωρίς να ελεγχθεί ΚΑΙ ως προς το
-# πραγματικό αρχείο. Οι δύο Merkle verifiers ΚΑΙ τα δύο δεδομένα-πηγή (profile,
-# golden vectors) δεσμεύονται εδώ: αλλιώς το gate «πέρασε» πάνω σε άγνωστα bytes.
-BOUND_VERIFIER_FILES = (
-    ("verify_py_sha256",            "deployment/verify/verify.py"),
-    ("verify_mjs_sha256",           "deployment/verify/verify.mjs"),
-    ("verify_canonical_py_sha256",  "deployment/verify/verify-canonical.py"),
-    ("verify_temporal_py_sha256",   "deployment/verify/verify-temporal.py"),
-    ("verify_release_py_sha256",    "deployment/verify/verify-release.py"),
-    ("verify_merkle_py_sha256",     "deployment/verify/verify-merkle.py"),
-    ("verify_merkle_mjs_sha256",    "deployment/verify/verify-merkle.mjs"),
-    ("merkle_profile_sha256",       "deployment/verify/merkle-profile.sexp"),
-    ("merkle_vectors_sha256",       "deployment/verify/vectors/merkle/vectors.json"),
-)
+# [MERKLE-SINGLE-TRUTH / ΕΥΡΗΜΑ ΚΡΙΤΗ #2] Το «τι δεσμεύει το verifier-proof»
+# ΔΕΝ ζει πια ως σταθερά εδώ: όταν ζούσε στον κώδικα, η αφαίρεση ενός verifier
+# μίκραινε ΜΑΖΙ τον verifier ΚΑΙ το fixture (που εισήγαγε τη λίστα από τον ίδιο
+# κώδικα) — ο ratchet συρρικνωνόταν αόρατα. Η ΜΙΑ έδρα είναι το ΑΝΕΞΑΡΤΗΤΟ,
+# committed docker/verifier-census.txt (ίδιο μοντέλο με το suite-census.txt):
+# απόν/κενό = fail-closed, και κάθε συρρίκνωση = ορατό diff.
+VERIFIER_CENSUS_REL = os.path.join("docker", "verifier-census.txt")
+
+def load_verifier_census(app_root, tests_dir):
+    """[(json-key, repo-relative-path)] από το ΠΑΓΩΜΕΝΟ μητρώο — fail-closed."""
+    base = app_root if app_root else os.path.dirname(os.path.abspath(tests_dir.rstrip("/")))
+    path = os.path.join(base, VERIFIER_CENSUS_REL)
+    if not os.path.isfile(path):
+        print("verify-proof-manifest: ΑΠΟΝ verifier census %r — fail-closed" % path)
+        sys.exit(1)
+    entries = []
+    with open(path, encoding="utf-8") as fh:
+        for line in fh:
+            line = line.split("#", 1)[0].rstrip()
+            if not line.strip():
+                continue
+            parts = line.split("\t")
+            if len(parts) != 2 or not parts[0].strip() or not parts[1].strip():
+                print("verify-proof-manifest: κακοσχηματισμένη γραμμή verifier census %r" % line)
+                sys.exit(1)
+            entries.append((parts[0].strip(), parts[1].strip()))
+    keys = [k for k, _ in entries]
+    if not entries or len(keys) != len(set(keys)):
+        print("verify-proof-manifest: ΚΕΝΟ/διπλότυπο verifier census — fail-closed")
+        sys.exit(1)
+    return entries
 
 # Σουίτες που στο standalone-test stage (SBCL-only, χωρίς node/rdflib) κάνουν
 # ΤΙΜΙΟ SKIP και ΞΑΝΑΤΡΕΧΟΥΝ ως ΣΚΛΗΡΟ gate στο verifier-conformance stage
@@ -222,15 +237,24 @@ def main(proof_dir, tests_dir, app_root=None):
     for suite, line in sorted(suites.items()):
         check_result_line(suite, line)
 
+    bound_verifiers = load_verifier_census(app_root, tests_dir)
+
     with open(vp_path, encoding="utf-8") as fh:
         vp = json.load(fh)
     if vp.get("proof") != "lawmax/verifier-proof/1":
         fail("verifier-proof: άγνωστο σχήμα %r" % vp.get("proof"))
     if vp.get("git_commit") != sp.get("git_commit"):
         fail("verifier-proof: git_commit ≠ standalone-proof")
-    for k, _rel in BOUND_VERIFIER_FILES:
+    for k, _rel in bound_verifiers:
         if not HEX64.match(vp.get(k, "")):
             fail("verifier-proof: %s ΔΕΝ είναι 64-hex: %r" % (k, vp.get(k)))
+    # [ΕΥΡΗΜΑ ΚΡΙΤΗ #2] ΚΛΕΙΣΤΟ σχήμα: επιπλέον κλειδί στο JSON = FAIL. Χωρίς
+    # αυτό, ένα «δεσμευμένο» hash μπορούσε να μετονομαστεί (το παλιό κλειδί να
+    # μείνει ορφανό) και ο έλεγχος μορφής να μην το δει ποτέ.
+    allowed_keys = {"proof", "git_commit", "gates"} | {k for k, _ in bound_verifiers}
+    extra_keys = set(vp) - allowed_keys
+    if extra_keys:
+        fail("verifier-proof: ΑΔΗΛΩΤΑ κλειδιά εκτός census: %s" % sorted(extra_keys))
     if vp.get("gates") != EXPECTED_GATES:
         fail("verifier-proof: gates ≠ αναμενόμενα: %r" % vp.get("gates"))
 
@@ -250,9 +274,11 @@ def main(proof_dir, tests_dir, app_root=None):
                 h.update(fh.read())
         if sp.get("logs_sha256") != h.hexdigest():
             fail("logs_sha256 ≠ επανυπολογισμός από proof/logs/*")
-        for k, rel in BOUND_VERIFIER_FILES:
+        for k, rel in bound_verifiers:
             fp = os.path.join(app_root, rel)
-            if vp.get(k) != sha256_file(fp):
+            if not os.path.isfile(fp):
+                fail("%s: το δεσμευμένο αρχείο %s ΔΕΝ ΥΠΑΡΧΕΙ" % (k, rel))
+            elif vp.get(k) != sha256_file(fp):
                 fail("%s ≠ επανυπολογισμός από %s" % (k, rel))
 
     if FAIL:

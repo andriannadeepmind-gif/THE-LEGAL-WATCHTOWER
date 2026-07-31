@@ -7,7 +7,8 @@
 ;;;;   sbcl --script kernel-verify.lisp <release-dir> [pinned-root-hex]
 ;;;;
 ;;;; Επαληθεύει, ΧΩΡΙΣ να εμπιστεύεται κανέναν — μόνο μαθηματικά + το ΦΕΚ-δέσιμο:
-;;;;   1. Release root ≡ όνομα καταλόγου: RFC-6962 MTH των 10 canonical αρχείων
+;;;;   1. Release root ≡ όνομα καταλόγου: MTH των 10 canonical αρχείων κατά το
+;;;;      κανονικό profile lawmax-merkle-sha256-v1 (RFC 9162 §2.1.1 / RFC 6962)
 ;;;;      (συμπεριλαμβανομένου ΑΥΤΟΥ του αρχείου — ο verifier μέσα στην ταυτότητα).
 ;;;;   2. Census self-consistency: pcl_text_root ≡ MTH των text-leaves· κάθε
 ;;;;      per-article ttl/jsonld/html sha512 ≡ το πραγματικό αρχείο του release·

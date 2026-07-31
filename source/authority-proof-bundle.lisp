@@ -387,7 +387,8 @@
                 (and (stringp (%get census :graph-root))
                      (equal (%get census :graph-root) (%get cut :graph-root)))))
 
-        ;; RC3: receipt-set root ≡ MTH(receipt-ids) — ο census δεσμεύει το ΣΥΝΟΛΟ
+        ;; RC3: receipt-set root ≡ MTH(receipt-ids) (profile lawmax-merkle-sha256-v1)
+        ;; — ο census δεσμεύει το ΣΥΝΟΛΟ
         (safe :rc/receipt-set-root
               (lambda ()
                 (let ((ids (%get census :receipt-ids)))

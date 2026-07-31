@@ -5,7 +5,7 @@ pure stdlib). Verdict-for-verdict identical to the Common Lisp L6 kernel
 census/release layer: you do NOT trust the Lisp implementation — you re-verify
 the same release with a program written independently, and both must agree.
 
-Checks (census-era release, RFC-6962):
+Checks (census-era release, RFC-6962 — canonical profile lawmax-merkle-sha256-v1):
   1. Release root ≡ directory name: MTH of the 10 canonical files (incl. this
      verifier's Lisp twin verify/verify.lisp — the verifier is INSIDE identity).
      Optional: root ≡ out-of-band <pinned-root-hex> (RECOMMENDED trust anchor).

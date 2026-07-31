@@ -657,7 +657,8 @@ sbcl --script verify.lisp .. [pinned-root-hex]
    root, if you pass one — RECOMMENDED). `verify.lisp` itself is one of the 10:
    the identity binds the verifier you are running.
 2. **Artifact census**: every per-article ttl/jsonld/html sha512 and every
-   text_leaf recomputed from the in-release bytes; pcl_text_root ≡ MTH(text
+   text_leaf recomputed from the in-release bytes; pcl_text_root ≡ MTH(text —
+   canonical profile lawmax-merkle-sha256-v1;
    leaves); prev_release_root present (anti-equivocation chain; null only for
    the first release of a chain).
 3. **JWS signature**: detached RS256 over the release root, full

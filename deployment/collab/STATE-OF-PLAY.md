@@ -299,3 +299,24 @@ job καλούσε `sbcl` χωρίς εγκατάσταση (δεν έτρεξε
 εκτέλεση. Τα υπόλοιπα 6 σημεία της αρχιτεκτονικής εντολής (transactional storage,
 C2SP witnesses, owner-root ceremony, ERS, ACL2, spec drift) **ΑΝΟΙΧΤΑ**, εκτός
 scope κατά ρητή εντολή.
+
+## MERKLE-SINGLE-TRUTH — 2ος ΑΝΤΙΠΑΛΙΚΟΣ ΓΥΡΟΣ [0120], πάνω στο `85cf8350`
+
+Τα 6 κενά του δημιουργού επί του [0119]: ΟΛΑ επιβεβαιώθηκαν και κλείστηκαν στην
+έδρα ή δηλώθηκαν ρητά. **Oracle**: ροϊκός MTH (κανένα split), μεταγραφή
+PATH/SUBPROOF, διασταύρωση ΚΑΘΕ path/proof/root ⇒ 101→**156**, vectors
+byte-ταυτόσημα· τίμιο όριο: ίδιος συγγραφέας — κλείνει μόνο με εξωτερικό υλικό.
+**Profile ζωντανό**: παράμετροι από το profile + assert έδρας + μητρώο μαρτύρων
+με ισότητα συνόλων + 3 profile-drift mutants σε αντίγραφο repo — ΟΛΟΙ ΣΚΟΤΩΘΗΚΑΝ.
+**Σαρωτής**: υπερ-ισχυρισμός ΑΠΟΣΥΡΘΗΚΕ (ρητό «τι ΔΕΝ αποδεικνύει»)· νέος
+κανόνας Ε2 formula-binding ⇒ 23 αρχεία, 14 δέθηκαν στο κανονικό profile.
+**Ratchet**: committed docker/verifier-census.txt (ΜΙΑ έδρα, fail-closed),
+Dockerfile loop, κλειστό σχήμα, μετάλλαξη αφαίρεσης ΚΑΘΕ κλειδιού ⇒ fixture
+**17/17**, ανεξάρτητο καρφί §Ε3. **Publishers εκτελέσιμα**: census-empty-articles
++ tlog-invalid-root GUARDED/UNGUARDED ⇒ guards ΦΕΡΟΝΤΕΣ ⇒ μάρτυρες **27/27, 0
+BLOCKED, μητρώο ≡ εφαρμοσμένοι**. **CI**: επιβεβαιώθηκε ότι το push ΔΕΝ
+δημιούργησε run (Actions ενεργό, 2 παλιά failed στο main) ⇒ ρητό dispatch μετά
+το push, καταγραφή πραγματικού αποτελέσματος. Αριθμοί: 156 ✓ · 111/0 ×2 · 48/0 ·
+20/0 · 27/27 · 17/0 · 52/0. Υπολείμματα δηλωμένα: ετικέτες rfc6962-* σε
+ιστορικά artifacts (versioned-format φάση)· Docker τοπικά BLOCKED — release
+proof = πράσινο CI ή owner docker.

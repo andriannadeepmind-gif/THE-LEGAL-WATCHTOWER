@@ -14,6 +14,7 @@
 //     if present it must match the pinned key by RFC 7638 thumbprint. With no
 //     pinned key, `signature`/`full` exit 3 (UNPINNED — not a trust anchor).
 //
+//   Canonical profile: lawmax-merkle-sha256-v1 (RFC 9162 §2.1.1).
 //   leaf      = "sha256:" + hex(SHA256( 0x00 ‖ UTF-8(text) ))      // RFC 6962 leaf
 //   node(a,b) = "sha256:" + hex(SHA256( 0x01 ‖ raw(a) ‖ raw(b) ))  // RFC 6962 node
 //

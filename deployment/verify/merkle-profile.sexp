@@ -115,7 +115,10 @@
  :differential-range (:from 0 :to 64)
 
  ;; ── ΥΠΟΧΡΕΩΤΙΚΟΙ ΜΑΡΤΥΡΕΣ ΜΕΤΑΛΛΑΞΗΣ ──
- ;; Κάθε ένας ΠΡΕΠΕΙ να εφαρμοστεί ΠΡΑΓΜΑΤΙΚΑ και να δώσει non-zero.
+ ;; Κάθε ένας ΠΡΕΠΕΙ να εφαρμοστεί ΠΡΑΓΜΑΤΙΚΑ και να δώσει non-zero. Το μητρώο
+ ;; αυτό είναι ΖΩΝΤΑΝΟ: το harness (merkle-mutation-witness.sh) διαβάζει τα ids
+ ;; ΑΠΟ ΕΔΩ και απαιτεί ισότητα συνόλων μητρώου/εφαρμοσμένων — δηλωμένος-
+ ;; ανεφάρμοστος ή εφαρμοσμένος-αδήλωτος μάρτυρας = αποτυχία της πύλης.
  :mutation-witnesses
  ((:id "duplicate-last"      :target :tree  :description "περιττός κόμβος ζευγαρώνει με τον εαυτό του αντί unbalanced split")
   (:id "no-leaf-prefix"      :target :leaf  :description "φύλλο χωρίς το 0x00")
@@ -124,4 +127,13 @@
   (:id "swap-left-right"     :target :node  :description "αντιστροφή σειράς παιδιών")
   (:id "unicode-normalize"   :target :input :description "σιωπηλή NFC κανονικοποίηση της εισόδου")
   (:id "crlf-normalize"      :target :input :description "μετατροπή CRLF -> LF στην είσοδο")
-  (:id "publish-empty-corpus" :target :policy :description "δημοσίευση corpus με leaf_count = 0")))
+  (:id "publish-empty-corpus" :target :policy :description "δημοσίευση corpus με leaf_count = 0")
+  ;; profile-drift: η ΜΙΑ πηγή δεν είναι διακοσμητική — αλλαγή ΜΟΝΟ του profile
+  ;; οφείλει να κοκκινίζει τον generator (έδρα/oracle/σταθερές ασυμφωνούν).
+  (:id "profile-drift-leaf-prefix" :target :profile :description "leaf-prefix-byte 0x00 -> 0x02 μόνο στο profile")
+  (:id "profile-drift-node-prefix" :target :profile :description "node-prefix-byte 0x01 -> 0x00 μόνο στο profile")
+  (:id "profile-drift-hash-alg"    :target :profile :description "hash-algorithm SHA-256 -> SHA-512 μόνο στο profile")
+  ;; Οι πύλες των ΑΛΛΩΝ ΔΥΟ δημοσιευτών αποδεικνύονται ΦΕΡΟΥΣΕΣ εκτελέσιμα
+  ;; (GUARDED απορρίπτει / UNGUARDED δέχεται), όχι με κειμενικό substring.
+  (:id "census-empty-articles" :target :policy :description "build-artifact-census με κενό σύνολο άρθρων")
+  (:id "tlog-invalid-root"     :target :policy :description "tlog-append-root! με μη έγκυρο release root")))

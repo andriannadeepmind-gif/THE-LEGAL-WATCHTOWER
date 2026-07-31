@@ -12,7 +12,7 @@
 ;;;; census-1 release (census.json παρόν):
 ;;;;   1. Census self-consistency: per-article ttl/jsonld/html sha512 ≡ τα
 ;;;;      in-release bytes· text_leaf ≡ RFC-6962 φύλλο του .txt·
-;;;;      pcl_text_root ≡ MTH(text leaves).
+;;;;      pcl_text_root ≡ MTH(text leaves) (profile lawmax-merkle-sha256-v1).
 ;;;;   2. prev_release_root: κλειδί ΥΠΟΧΡΕΩΤΙΚΟ· null = τίμιο πρώτο της
 ;;;;      αλυσίδας· αλλιώς μορφή sha256:<64hex>.
 ;;;;   3. JWS detached RS256 πάνω στο RECOMPUTED root — απούσα υπογραφή =

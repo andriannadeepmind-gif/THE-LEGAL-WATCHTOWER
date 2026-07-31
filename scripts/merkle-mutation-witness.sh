@@ -2,16 +2,18 @@
 # =============================================================================
 # MERKLE-SINGLE-TRUTH — ΜΑΡΤΥΡΕΣ ΜΕΤΑΛΛΑΞΗΣ (ΠΡΑΓΜΑΤΙΚΑ ΕΦΑΡΜΟΣΜΕΝΟΙ)
 # =============================================================================
-# ΔΕΝ αρκεί να ΥΠΑΡΧΟΥΝ tests. Κάθε μετάλλαξη εφαρμόζεται ΠΡΑΓΜΑΤΙΚΑ σε ΑΝΤΙΓΡΑΦΟ
+# Στόχος-προφίλ: lawmax-merkle-sha256-v1. ΔΕΝ αρκεί να ΥΠΑΡΧΟΥΝ tests. Κάθε μετάλλαξη εφαρμόζεται ΠΡΑΓΜΑΤΙΚΑ σε ΑΝΤΙΓΡΑΦΟ
 # της κάθε υλοποίησης, τρέχει απέναντι στα committed golden vectors, και ΠΡΕΠΕΙ
 # να δώσει non-zero. Επιβιώνουσα μετάλλαξη = η πύλη δεν διακρίνει το λάθος από
 # το σωστό ⇒ ο μάρτυρας είναι κενός ⇒ ΑΠΟΤΥΧΙΑ.
 #
 # Το repo ΔΕΝ αγγίζεται ποτέ: όλες οι μεταλλάξεις ζουν σε προσωρινό κατάλογο.
 #
-# Καλύπτονται και οι 8 μάρτυρες του profile:
-#   duplicate-last · no-leaf-prefix · no-node-prefix · wrong-split ·
-#   swap-left-right · unicode-normalize · crlf-normalize · publish-empty-corpus
+# [ΕΥΡΗΜΑ ΚΡΙΤΗ #2] Το ΜΗΤΡΩΟ των μαρτύρων ΔΕΝ είναι λίστα μέσα σε αυτό το
+# script: διαβάζεται από το profile (:mutation-witnesses) και απαιτείται
+# ΙΣΟΤΗΤΑ ΣΥΝΟΛΩΝ μητρώου/εφαρμοσμένων. Μάρτυρας δηλωμένος-αλλά-ανεφάρμοστος
+# ή εφαρμοσμένος-αλλά-αδήλωτος = ΑΠΟΤΥΧΙΑ. Έτσι το πεδίο του profile παύει να
+# είναι διακοσμητικό: η αφαίρεση μιας γραμμής του κοκκινίζει αυτό το gate.
 set -uo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -19,11 +21,21 @@ VECTORS="$HERE/deployment/verify/vectors/merkle/vectors.json"
 [ -f "$VECTORS" ] || { echo "::error::golden vectors ΑΠΟΝΤΑ: $VECTORS"; exit 2; }
 
 python3 - "$HERE" "$VECTORS" <<'PYTHON'
-import json, os, shutil, subprocess, sys, tempfile
+import json, os, re, shutil, subprocess, sys, tempfile
 
 repo, vectors_path = sys.argv[1], sys.argv[2]
 with open(vectors_path, encoding="utf-8") as fh:
     V = json.load(fh)
+
+# ── ΜΗΤΡΩΟ ΜΑΡΤΥΡΩΝ: η ΜΙΑ έδρα είναι το profile — ΚΑΜΙΑ δεύτερη λίστα εδώ ──
+PROFILE_PATH = os.path.join(repo, "deployment/verify/merkle-profile.sexp")
+_ptxt = open(PROFILE_PATH, encoding="utf-8").read()
+if ":mutation-witnesses" not in _ptxt:
+    print("::error::το profile ΔΕΝ έχει :mutation-witnesses — fail-closed"); sys.exit(2)
+REGISTRY = set(re.findall(r'\(:id\s+"([a-z0-9-]+)"',
+                          _ptxt.split(":mutation-witnesses", 1)[1]))
+if not REGISTRY:
+    print("::error::ΚΕΝΟ μητρώο :mutation-witnesses — fail-closed"); sys.exit(2)
 
 PY_SRC   = os.path.join(repo, "deployment/verify/verify-merkle.py")
 MJS_SRC  = os.path.join(repo, "deployment/verify/verify-merkle.mjs")
@@ -254,14 +266,172 @@ else:
         record("publish-empty-corpus", "policy", 1 if killed else 0,
                "" if killed else f"  (guarded={vals.get('GUARDED')} unguarded={vals.get('UNGUARDED')})")
 
+# ── PROFILE-DRIFT: το profile ΔΕΝ είναι διακοσμητικό ─────────────────────────
+# [ΕΥΡΗΜΑ ΚΡΙΤΗ #2] Αν άλλαζε ΜΟΝΟ το profile (π.χ. leaf-prefix 0x02), ο παλιός
+# generator έμενε πράσινος γιατί hardcode-αρε 0x00/0x01/SHA-256. Τώρα ο
+# generator διαβάζει τις κρυπτο-παραμέτρους ΑΠΟ το profile και ελέγχει τις
+# σταθερές της έδρας απέναντί τους — εδώ αυτό ΑΠΟΔΕΙΚΝΥΕΤΑΙ: το profile
+# μεταλλάσσεται ΠΡΑΓΜΑΤΙΚΑ σε ΑΝΤΙΓΡΑΦΟ του repo και ο generator ΠΡΕΠΕΙ να
+# σκάσει με το ΑΝΑΜΕΝΟΜΕΝΟ μήνυμα (όχι απλώς non-zero — ένα άσχετο σκάσιμο,
+# π.χ. αρχείο που λείπει στο αντίγραφο, ΔΕΝ μετρά ως φόνος).
+PROFILE_DRIFTS = {
+    "profile-drift-leaf-prefix":
+        (':leaf-prefix-byte "0x00"', ':leaf-prefix-byte "0x02"', "ΑΣΥΜΦΩΝΙΑ ΕΔΡΑΣ/PROFILE"),
+    "profile-drift-node-prefix":
+        (':node-prefix-byte "0x01"', ':node-prefix-byte "0x00"', "ΑΣΥΜΦΩΝΙΑ ΕΔΡΑΣ/PROFILE"),
+    "profile-drift-hash-alg":
+        (':hash-algorithm "SHA-256"', ':hash-algorithm "SHA-512"', "ΔΕΝ υποστηρίζεται"),
+}
+
+if not have_sbcl:
+    for m in PROFILE_DRIFTS:
+        record(m, "profile", -1, "  (BLOCKED — sbcl ΑΠΩΝ)")
+else:
+    drift_root = tempfile.mkdtemp(prefix="lawmax-profile-drift-")
+    copy = os.path.join(drift_root, "repo")
+    os.makedirs(copy)
+    # Αντίγραφο του repo ΧΩΡΙΣ .git/output (μη αναγκαία, βαριά). Ο generator
+    # τρέχει με cwd=copy ⇒ το ΠΡΑΓΜΑΤΙΚΟ repo δεν αγγίζεται ποτέ.
+    for entry in os.listdir(repo):
+        if entry in (".git", "output"):
+            continue
+        subprocess.run(["cp", "-a", os.path.join(repo, entry), copy], check=True)
+    mut_profile = os.path.join(copy, "deployment/verify/merkle-profile.sexp")
+    pristine = open(mut_profile, encoding="utf-8").read()
+    try:
+        for mutant, (old, new, expect) in PROFILE_DRIFTS.items():
+            if old not in pristine:
+                record(mutant, "profile", 0, "  (::error:: anchor δεν βρέθηκε)")
+                continue
+            open(mut_profile, "w", encoding="utf-8").write(pristine.replace(old, new, 1))
+            r = subprocess.run(["sbcl", "--script", "scripts/gen-merkle-truth.lisp", "--check"],
+                               cwd=copy, capture_output=True, text=True, timeout=1800)
+            hit = expect in (r.stderr or "") or expect in (r.stdout or "")
+            if r.returncode > 0 and hit:
+                record(mutant, "profile", r.returncode)
+            elif r.returncode > 0:
+                record(mutant, "profile", 0,
+                       "  (::error:: σκάσιμο ΧΩΡΙΣ το αναμενόμενο μήνυμα — δεν μετρά)")
+            else:
+                record(mutant, "profile", 0)
+            open(mut_profile, "w", encoding="utf-8").write(pristine)
+    finally:
+        shutil.rmtree(drift_root, ignore_errors=True)
+
+# ── ΟΙ ΔΥΟ ΑΛΛΟΙ ΔΗΜΟΣΙΕΥΤΕΣ: εκτελέσιμη απόδειξη, όχι substring ─────────────
+# [ΕΥΡΗΜΑ ΚΡΙΤΗ #2] Το census παραγωγών ρίζας στο merkle-single-truth-test
+# είναι ΚΕΙΜΕΝΙΚΟ (ελέγχει ότι η άμυνα ΥΠΑΡΧΕΙ στο κείμενο). Εδώ οι πύλες των
+# άλλων δύο δημοσιευτών ΕΚΤΕΛΟΥΝΤΑΙ και αποδεικνύονται ΦΕΡΟΥΣΕΣ, με το ίδιο
+# πρότυπο GUARDED/UNGUARDED του publish-empty-corpus:
+#   census-empty-articles: build-artifact-census με ΚΕΝΟ σύνολο άρθρων ⇒
+#     ΑΠΟΡΡΙΨΗ· με τον guard μεταλλαγμένο ώστε να δίνει +empty-tree-hash+ ⇒
+#     ΔΕΚΤΟ (θα υπέγραφε δέσμευση για ΤΙΠΟΤΑ) ⇒ ο guard είναι φέρων.
+#   tlog-invalid-root: tlog-append-root! με μη-έγκυρο root ⇒ ΑΠΟΡΡΙΨΗ· με τον
+#     guard νεκρωμένο (unless t) ⇒ ΔΕΚΤΟ ⇒ ο guard είναι φέρων.
+CENSUS_SRC = os.path.join(repo, "systems/orchestrator-epistemic/artifact-census.lisp")
+TLOG_SRC   = os.path.join(repo, "systems/orchestrator-epistemic/transparency-log.lisp")
+CENSUS_GUARD_OLD = '(error "census: κενό σύνολο άρθρων")'
+CENSUS_GUARD_NEW = "orchestrator.merkle:+empty-tree-hash+"
+TLOG_GUARD_OLD = """  (unless (and (stringp release-root)
+               (eql 0 (search "sha256:" release-root))
+               (= (length release-root) 71)
+               (every (lambda (c) (find c "0123456789abcdef"))
+                      (subseq release-root 7)))"""
+TLOG_GUARD_NEW = "  (unless t"
+
+PUBLISHER_PROBE = r"""
+(require :asdf) (require :sb-posix)
+(setf asdf:*central-registry* (append (list #p"{repo}/") (directory #p"{repo}/systems/*/")))
+(asdf:initialize-source-registry '(:source-registry (:tree #p"{third}") :inherit-configuration))
+(locally (declare (sb-ext:muffle-conditions sb-ext:compiler-note style-warning warning))
+  (handler-bind ((warning #'muffle-warning))
+    (asdf:load-system :alexandria) (asdf:load-system :log4cl)
+    (asdf:load-system :orchestrator-epistemic)))
+(defun probe-census ()
+  (handler-case
+      (progn (orchestrator.epistemic::build-artifact-census
+              '() "probe" #p"{work}/census-artifacts/"
+              :temporal-commitment '(:graph-root "sha256:probe-g"
+                                     :receipt-set-root "sha256:probe-r"))
+             :accepted)
+    (error (e) (let ((s (format nil "~A" e)))
+                 (if (search "κενό σύνολο άρθρων" s) :rejected
+                     (progn (format t "DIAG-CENSUS ~A~%" s) :other))))))
+(defun probe-tlog (dir)
+  (handler-case
+      (progn (orchestrator.epistemic:tlog-append-root! dir "not-a-root") :accepted)
+    (error (e) (let ((s (format nil "~A ~S" e (type-of e))))
+                 (if (or (search "μη έγκυρο release root" s)
+                         (search "VALIDATION-ERROR" s))
+                     :rejected
+                     (progn (format t "DIAG-TLOG ~A~%" s) :other))))))
+(format t "C-GUARDED ~A~%" (probe-census))
+(format t "T-GUARDED ~A~%" (probe-tlog #p"{work}/tlog-guarded/"))
+;; ΜΕΤΑΛΛΑΞΗ: τα μεταλλαγμένα αντίγραφα φορτώνονται ΠΑΝΩ στην εικόνα
+(handler-bind ((warning #'muffle-warning))
+  (load "{mut_census}")
+  (load "{mut_tlog}"))
+(format t "C-UNGUARDED ~A~%" (probe-census))
+(format t "T-UNGUARDED ~A~%" (probe-tlog #p"{work}/tlog-unguarded/"))
+(sb-ext:exit :code 0)
+"""
+
+if not have_sbcl:
+    record("census-empty-articles", "policy", -1, "  (BLOCKED — sbcl ΑΠΩΝ)")
+    record("tlog-invalid-root", "policy", -1, "  (BLOCKED — sbcl ΑΠΩΝ)")
+else:
+    with tempfile.TemporaryDirectory(prefix="lawmax-publisher-wit-") as d:
+        c_src = open(CENSUS_SRC, encoding="utf-8").read()
+        t_src = open(TLOG_SRC, encoding="utf-8").read()
+        if CENSUS_GUARD_OLD not in c_src:
+            record("census-empty-articles", "policy", 0, "  (::error:: anchor δεν βρέθηκε)")
+        elif TLOG_GUARD_OLD not in t_src:
+            record("tlog-invalid-root", "policy", 0, "  (::error:: anchor δεν βρέθηκε)")
+        else:
+            mut_census = os.path.join(d, "mut-census.lisp")
+            mut_tlog = os.path.join(d, "mut-tlog.lisp")
+            open(mut_census, "w", encoding="utf-8").write(
+                c_src.replace(CENSUS_GUARD_OLD, CENSUS_GUARD_NEW, 1))
+            open(mut_tlog, "w", encoding="utf-8").write(
+                t_src.replace(TLOG_GUARD_OLD, TLOG_GUARD_NEW, 1))
+            for sub in ("census-artifacts", "tlog-guarded", "tlog-unguarded"):
+                os.makedirs(os.path.join(d, sub))
+            probe = os.path.join(d, "publishers.lisp")
+            open(probe, "w", encoding="utf-8").write(
+                PUBLISHER_PROBE.format(repo=repo.rstrip("/"), third=THIRD, work=d,
+                                       mut_census=mut_census, mut_tlog=mut_tlog))
+            r = subprocess.run(["sbcl", "--script", probe],
+                               capture_output=True, text=True, timeout=1800)
+            vals = dict(l.split(None, 1) for l in r.stdout.splitlines()
+                        if l.split(None, 1) and l.split(None, 1)[0] in
+                        ("C-GUARDED", "C-UNGUARDED", "T-GUARDED", "T-UNGUARDED"))
+            norm = lambda s: (s or "").strip().lstrip(":").upper()
+            c_kill = norm(vals.get("C-GUARDED")) == "REJECTED" and norm(vals.get("C-UNGUARDED")) == "ACCEPTED"
+            t_kill = norm(vals.get("T-GUARDED")) == "REJECTED" and norm(vals.get("T-UNGUARDED")) == "ACCEPTED"
+            record("census-empty-articles", "policy", 1 if c_kill else 0,
+                   "" if c_kill else f"  (guarded={vals.get('C-GUARDED')} unguarded={vals.get('C-UNGUARDED')} rc={r.returncode})")
+            record("tlog-invalid-root", "policy", 1 if t_kill else 0,
+                   "" if t_kill else f"  (guarded={vals.get('T-GUARDED')} unguarded={vals.get('T-UNGUARDED')} rc={r.returncode})")
+
 killed_n  = [r for r in results if r[3]]
 blocked_n = [(m, l) for (m, l, c, k, b, _) in results if b]
 survived  = [(m, l) for (m, l, c, k, b, _) in results if not k and not b]
 print(f"\n── μάρτυρες: {len(results)} συνολικά, {len(killed_n)} ΣΚΟΤΩΜΕΝΟΙ, "
       f"{len(survived)} ΕΠΙΒΙΩΣΑΝ, {len(blocked_n)} BLOCKED ──")
+
+# ── ΙΣΟΤΗΤΑ ΜΗΤΡΩΟΥ/ΕΦΑΡΜΟΣΜΕΝΩΝ: το profile δεν είναι διακοσμητικό ──
+applied = {m for (m, l, c, k, b, _) in results}
+reg_only = sorted(REGISTRY - applied)
+app_only = sorted(applied - REGISTRY)
+census_broken = bool(reg_only or app_only)
+if census_broken:
+    print(f"::error::ΜΗΤΡΩΟ ≠ ΕΦΑΡΜΟΣΜΕΝΟΙ — δηλωμένοι-ανεφάρμοστοι: {reg_only}, "
+          f"εφαρμοσμένοι-αδήλωτοι: {app_only}")
+else:
+    print(f"μητρώο profile ≡ εφαρμοσμένοι μάρτυρες ({len(REGISTRY)} ids)")
 if blocked_n:
     print(f"::error::BLOCKED (εργαλείο ΑΠΟΝ — ΔΕΝ μετρά ως kill): {blocked_n}")
 if survived:
     print(f"::error::ΕΠΙΒΙΩΣΑΝ μεταλλάξεις: {survived}")
-sys.exit(1 if (survived or blocked_n) else 0)
+sys.exit(1 if (survived or blocked_n or census_broken) else 0)
 PYTHON

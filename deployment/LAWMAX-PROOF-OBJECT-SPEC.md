@@ -14,7 +14,8 @@ claim+hash+signature): αρκετά ώστε ΤΡΙΤΟΣ να ΞΑΝΑΫΠΟΛ�
 audit-άρει ο καθένας σε ένα απόγευμα.
 
 ## 1 · Merkle criterion (ΜΙΑ έδρα, RFC-6962)
-ΟΛΑ τα Merkle δέντρα του συστήματος υπακούν σε ΕΝΑ κανόνα (ενοποίηση στο P1.5):
+ΟΛΑ τα Merkle δέντρα του συστήματος υπακούν σε ΕΝΑ κανόνα — το κανονικό profile
+`lawmax-merkle-sha256-v1` (ενοποίηση στο P1.5):
 - **leaf** = SHA-256( 0x00 ‖ bytes ) — domain separation
 - **node** = SHA-256( 0x01 ‖ left ‖ right ) — domain separation
 - περιττός κόμβος: **unbalanced split** (RFC-6962), ΟΧΙ duplicate-last

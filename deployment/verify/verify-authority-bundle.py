@@ -6,7 +6,8 @@
 καμία Lisp έδρα (Merkle/JWS/TSA/journal). Επανυπολογίζει ΑΝΕΞΑΡΤΗΤΑ τα
 δομικά commitments του bundle και ελέγχει N-version συμφωνία με τις τιμές που
 παρήγαγε ο Lisp verifier:
-  • RFC-6962 merkle root of strings (domain-separated 0x00 leaf / 0x01 node,
+  • merkle root of strings κατά το κανονικό profile lawmax-merkle-sha256-v1
+    (RFC 6962/9162: domain-separated 0x00 leaf / 0x01 node,
     unbalanced split k<n≤2k) — receipt-set-root, verifier-set-root·
   • canonical authority-statement (tag \\x1e, ταξινομημένα key \\x1f value \\x1e)
     + sha256 — η υπογεγραμμένη δέσμευση ΟΛΩΝ των ριζών·

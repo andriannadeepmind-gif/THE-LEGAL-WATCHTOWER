@@ -1,0 +1,21 @@
+# =============================================================================
+# VERIFIER CENSUS — το ΠΑΓΩΜΕΝΟ μητρώο των δεσμευμένων verifiers/δεδομένων
+# =============================================================================
+# [ΕΥΡΗΜΑ ΚΡΙΤΗ #2] Όταν η λίστα ζούσε ως σταθερά ΜΕΣΑ στον
+# docker/verify-proof-manifest.py, η αφαίρεση ενός verifier μίκραινε ΜΑΖΙ τον
+# verifier ΚΑΙ το fixture του (που εισήγαγε τη λίστα από τον ίδιο κώδικα) —
+# ο ratchet συρρικνωνόταν αόρατα. Αυτό το αρχείο είναι η ΜΙΑ, ΑΝΕΞΑΡΤΗΤΗ,
+# committed έδρα: ο verifier ΤΟ ΔΙΑΒΑΖΕΙ (fail-closed αν λείπει/κενό), το
+# Dockerfile παράγει το verifier-proof.json ΑΠΟ ΑΥΤΟ, και η αφαίρεση γραμμής
+# είναι ΟΡΑΤΟ diff σε committed αρχείο — όπως το suite-census.txt ([RATCHET-5]).
+#
+# Μορφή: <json-key> <TAB> <repo-relative-path>
+verify_py_sha256	deployment/verify/verify.py
+verify_mjs_sha256	deployment/verify/verify.mjs
+verify_canonical_py_sha256	deployment/verify/verify-canonical.py
+verify_temporal_py_sha256	deployment/verify/verify-temporal.py
+verify_release_py_sha256	deployment/verify/verify-release.py
+verify_merkle_py_sha256	deployment/verify/verify-merkle.py
+verify_merkle_mjs_sha256	deployment/verify/verify-merkle.mjs
+merkle_profile_sha256	deployment/verify/merkle-profile.sexp
+merkle_vectors_sha256	deployment/verify/vectors/merkle/vectors.json
