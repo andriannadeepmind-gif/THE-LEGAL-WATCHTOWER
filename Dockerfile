@@ -91,6 +91,7 @@ COPY systems/ /app/systems/
 COPY source/ /app/source/
 COPY configs/ /app/configs/
 COPY deployment/ /app/deployment/
+COPY scripts/ /app/scripts/
 COPY input/ /app/input/
 
 # Debug: verify PDF file (primary source)
@@ -267,6 +268,26 @@ RUN sbcl --script /app/docker/run-standalone-test.lisp \
 # διπλή εγγύηση ότι ο verifier-conformance κρίκος καλύπτει και τα temporal.
 RUN sbcl --script /app/docker/run-standalone-test.lisp \
       /app/tests/temporal-verifier-test.lisp
+
+# [MERKLE-SINGLE-TRUTH] Η ΜΙΑ Merkle αλήθεια, ΣΚΛΗΡΟ gate και στις τρεις γλώσσες.
+# Τα κείμενα δίδασκαν duplicate-last (κλάση CVE-2012-2459) και το verify/README
+# παρέλειπε ΚΑΙ τα δύο domain prefixes, ενώ ο κώδικας έκανε το σωστό: τρίτος που
+# ξανα-υλοποιούσε από τα δημοσιευμένα κείμενα έπαιρνε ΔΙΑΦΟΡΕΤΙΚΗ ρίζα.
+#
+# (α) τα ΠΑΡΑΓΟΜΕΝΑ κείμενα+vectors ταυτίζονται με τα committed ΚΑΙ ο generator
+#     είναι ΙΔΙΟΠΑΘΗΣ (δεύτερη εκτέλεση ⇒ καμία αλλαγή)
+RUN cd /app && sbcl --script scripts/gen-merkle-truth.lisp --check
+RUN cd /app && sbcl --script scripts/gen-merkle-truth.lisp \
+ && sbcl --script scripts/gen-merkle-truth.lisp --check
+
+# (β) ΚΑΘΕ ανεξάρτητη υλοποίηση συμφωνεί byte-for-byte με τα golden vectors
+RUN python3 /app/deployment/verify/verify-merkle.py
+RUN node /app/deployment/verify/verify-merkle.mjs
+RUN sbcl --script /app/docker/run-standalone-test.lisp \
+      /app/tests/merkle-single-truth-test.lisp
+
+# (γ) ΚΑΘΕ μάρτυρας μετάλλαξης εφαρμόζεται ΠΡΑΓΜΑΤΙΚΑ και ΠΡΕΠΕΙ να σκοτωθεί
+RUN bash /app/scripts/merkle-mutation-witness.sh
 
 # [0088 assurance] verifier-proof manifest: δεσμεύει τα hashes ΟΛΩΝ των
 # δημόσιων verifiers που αποτέλεσαν gate σε αυτόν τον κρίκο.

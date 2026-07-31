@@ -9,38 +9,69 @@ PCL-1 proof. From *"cite this source"* to *"verify against this root."*
 
 ---
 
-## 1. Hashing (RFC 6962 domain separation)
+<!-- BEGIN GENERATED lawmax-merkle-sha256-v1 — DO NOT EDIT BY HAND -->
+*Αυτή η ενότητα **ΠΑΡΑΓΕΤΑΙ** από τη μία κανονική πηγή
+`deployment/verify/merkle-profile.sexp` μέσω `scripts/gen-merkle-truth.lisp`.
+Χειροκίνητη επεξεργασία θα ανατραπεί και **κοκκινίζει το build**.*
 
-Leaves and internal nodes are **domain-separated** by a one-byte prefix, so a
-leaf's preimage can never be reinterpreted as an internal node (second-preimage
-hardening, per RFC 6962 §2.1):
+## Merkle tree — canonical profile `lawmax-merkle-sha256-v1`
 
-- **Leaf:** `leaf = "sha256:" + hex( SHA-256( 0x00 ‖ UTF-8(text) ) )`
-- **Internal node:** prefix `0x01`, then the **raw bytes** of the two child hashes
-  (not their hex text), then SHA-256:
-  `parent = "sha256:" + hex( SHA-256( 0x01 ‖ bytes(h_left) ‖ bytes(h_right) ) )`
-  where `bytes(h)` decodes the hex after the `sha256:` prefix.
-- All hex is lowercase.
+Normative reference: [RFC 9162 §2.1.1 (Merkle Tree Hash) — obsoletes RFC 6962](https://www.rfc-editor.org/rfc/rfc9162.html#section-2.1.1).
 
-## 2. Merkle tree
+### Rules
 
-- Leaves are the provision leaves **in corpus order** (article 1, 2, …, including
-  lettered articles as their own leaves: 100, 100Α, 100Β …).
-- Build bottom-up; an **odd** node at any level is paired **with itself**.
-- The top node is the **`merkle_root`**. This single value is what the corpus
-  RFC-3161 timestamps (multi-TSA) and JWS-signs — see `corpus-proof.json` and the
-  release's `temporal-proof/` + `verify/` kit.
+- **`empty`** — `MTH({}) = SHA-256("")  — ο hash του ΚΕΝΟΥ string`
+  <br/>*RFC 9162 §2.1.1: το κενό δέντρο έχει ΟΡΙΣΜΕΝΗ ρίζα. Ο πρωτόγονος ΟΦΕΙΛΕΙ να τη δίνει· η ΠΟΛΙΤΙΚΗ δημοσίευσης χωριστά ΑΠΑΓΟΡΕΥΕΙ κενό corpus.*
+- **`leaf`** — `MTH({d(0)}) = SHA-256(0x00 || d(0))`
+  <br/>*Domain separation: χωρίς το 0x00 ένα 64-byte φύλλο είναι second-preimage εσωτερικού κόμβου.*
+- **`node`** — `MTH(D[n]) = SHA-256(0x01 || MTH(D[0:k]) || MTH(D[k:n]))  για n > 1`
+  <br/>*Το 0x01 σφραγίζει τον εσωτερικό κόμβο· συνενώνονται τα ΩΜΑ bytes των παιδιών, ΟΧΙ το hex κείμενό τους.*
+- **`split`** — `k = η μεγαλύτερη δύναμη του 2 ΑΥΣΤΗΡΑ μικρότερη του n  (k < n <= 2k)`
+  <br/>*Unbalanced split: το δέντρο καθορίζεται μονοσήμαντα από το n.*
+- **`no-duplicate-last`** — `duplicate-last ΑΠΑΓΟΡΕΥΕΤΑΙ ΑΠΟΛΥΤΩΣ`
+  <br/>*Κλάση CVE-2012-2459: με αντιγραφή του τελευταίου φύλλου, ΔΙΑΦΟΡΕΤΙΚΑ σύνολα φύλλων παράγουν ΙΔΙΑ ρίζα (π.χ. [a b c] και [a b c c]) — ανεπίτρεπτο όταν εκδίδονται inclusion proofs σε τρίτους.*
+- **`order-sensitive`** — `node(L,R) != node(R,L) — η σειρά είναι μέρος της δέσμευσης`
+  <br/>*Η θέση του φύλλου στο corpus είναι σημασιολογική.*
 
-## 3. Inclusion path
+### Byte-exact input
 
-For a leaf at index `i`, the path is the list of sibling hashes from leaf to root:
+- **`utf8-no-bom`** — text -> bytes = UTF-8, ΧΩΡΙΣ BOM
+- **`no-normalization`** — ΚΑΜΙΑ Unicode normalization (ούτε NFC ούτε NFD ούτε NFKC/NFKD)
+  <br/>*Δύο ΟΠΤΙΚΑ ισοδύναμες ακολουθίες είναι ΔΙΑΦΟΡΕΤΙΚΑ φύλλα. Σιωπηλή κανονικοποίηση θα άλλαζε ρίζα χωρίς αλλαγή κειμένου.*
+- **`no-eol-conversion`** — ΚΑΜΙΑ μετατροπή LF/CRLF προς οποιαδήποτε κατεύθυνση
+- **`preserve-trailing-newline`** — Το τελικό newline διατηρείται ΑΚΡΙΒΩΣ όπως είναι (ούτε προστίθεται ούτε αφαιρείται)
+
+### Publication policy (mechanism ≠ policy)
+
+- **`reject-empty-corpus`** — Δημοσίευση/υπογραφή/checkpoint corpus με leaf_count = 0 ΑΠΟΡΡΙΠΤΕΤΑΙ fail-closed
+  <br/>*Ο πρωτόγονος ΟΦΕΙΛΕΙ να ξέρει τη ρίζα του κενού δέντρου (συμμόρφωση προτύπου)· ο ΘΕΣΜΟΣ δεν επιτρέπεται να υπογράψει δέσμευση για ΤΙΠΟΤΑ. Μηχανισμός != πολιτική· απαιτούνται ΑΝΕΞΑΡΤΗΤΑ tests για τις δύο ιδιότητες.*
+
+### Algorithm
 
 ```
-[ { "side": "left" | "right", "hash": "sha256:…" }, … ]
+# profile: lawmax-merkle-sha256-v1   (RFC 9162 §2.1.1 (Merkle Tree Hash) — obsoletes RFC 6962)
+MTH([])        = SHA-256("")                                  # empty tree
+MTH([d0])      = SHA-256(0x00 || d0)                          # leaf, domain-separated
+MTH(D[n>1])    = SHA-256(0x01 || MTH(D[0:k]) || MTH(D[k:n]))   # internal node
+                 where k = largest power of two STRICTLY < n   # unbalanced split
+                 NEVER duplicate-last                          # CVE-2012-2459 class
+
+# hashes are carried as "sha256:" + 64 lowercase hex; node() concatenates the
+# RAW decoded bytes of the children, never their hex text.
+
+inclusion(text, proof):
+  leaf = "sha256:" + hex(SHA-256(0x00 || UTF8_no_BOM(text)))
+  if leaf != proof.leaf:              FAIL("text-hash-mismatch")
+  h = leaf
+  for step in proof.path:                                      # leaf -> root
+     h = (step.side == "left") ? node(step.hash, h) : node(h, step.hash)
+  if h != proof.merkle_root:          FAIL("inclusion-failed")
+  OK
 ```
 
-`side` is the position of the **sibling** relative to the running hash:
-`"right"` ⇒ `next = node(running ‖ sibling)`, `"left"` ⇒ `next = node(sibling ‖ running)`.
+Golden vectors shared by all three independent implementations:
+`deployment/verify/vectors/merkle/vectors.json`.
+<!-- END GENERATED lawmax-merkle-sha256-v1 -->
 
 ## 4. The proof object — `article-<id>.proof.json`
 

@@ -84,9 +84,24 @@
   (ck "παραποίηση αδερφού στο path ⇒ αποτυχία επαλήθευσης"
       (not (verify-inclusion (first leaves) bad root))))
 
-(format t "~%== Edge: empty ⇒ error ==~%")
-(ck "κενή λίστα φύλλων ⇒ σφάλμα"
-    (handler-case (progn (merkle-tree-hash '()) nil) (error () t)))
+(format t "~%== Edge: ΚΕΝΟ ΔΕΝΤΡΟ — ΜΗΧΑΝΙΣΜΟΣ, όχι πολιτική ==~%")
+;; [MERKLE-SINGLE-TRUTH] ΑΛΛΑΓΗ ΣΥΜΒΟΛΑΙΟΥ, κατ' εντολή του profile
+;; `lawmax-merkle-sha256-v1` (RFC 9162 §2.1.1): ο ΠΡΩΤΟΓΟΝΟΣ οφείλει να δίνει
+;; την ΚΑΝΟΝΙΚΗ ρίζα του κενού δέντρου — MTH({}) = SHA-256(""). Πριν, σήκωνε
+;; σφάλμα, δηλαδή ήταν ΜΗ ΣΥΜΜΟΡΦΟΣ με το πρότυπο.
+;;
+;; Η ΑΠΑΓΟΡΕΥΣΗ κενού corpus ΔΕΝ χάθηκε — ΜΕΤΑΚΙΝΗΘΗΚΕ εκεί που ανήκει: στην
+;; ΠΟΛΙΤΙΚΗ δημοσίευσης (orchestrator.proof-carrying:write-provision-proofs ⇒
+;; EMPTY-CORPUS-PUBLICATION), με ΔΙΚΟ ΤΗΣ ανεξάρτητο έλεγχο στο
+;; tests/merkle-single-truth-test.lisp §Β. Δύο ιδιότητες, δύο έλεγχοι.
+(ck "κενό δέντρο ⇒ MTH({}) = SHA-256(\"\")  (RFC 9162 §2.1.1)"
+    (string= (merkle-tree-hash '())
+             "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"))
+(ck "η κανονική σταθερά +empty-tree-hash+ συμφωνεί με τον υπολογισμό"
+    (string= (merkle-tree-hash '()) orchestrator.merkle:+empty-tree-hash+))
+(ck "κενό δέντρο != οποιοδήποτε μονο-φυλλο δέντρο (καμία σύγχυση)"
+    (not (string= (merkle-tree-hash '())
+                  (merkle-tree-hash (list (hash-leaf-string ""))))))
 
 (format t "~%========================================~%")
 (format t "Merkle authority (RFC 6962) tests: ~D passed, ~D failed~%" *pass* *fail*)

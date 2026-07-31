@@ -36,6 +36,7 @@
   (:export #:make-provision-proof #:verify-provision-proof
            #:proof-plist->json #:cite-as
            #:write-provision-proofs #:verify-proof-json #:corpus-proof-json
+           #:empty-corpus-publication
            #:sign-root #:verify-signed-root #:verify-corpus-anchor #:verify-full-chain))
 
 (in-package :orchestrator.proof-carrying)
@@ -179,16 +180,33 @@
           (and signature (%j "signature")) (and signature (%j signature))
           (and public-jwk (%j "public_key")) (and public-jwk public-jwk)))
 
+(define-condition empty-corpus-publication (error)
+  ((output-dir :initarg :output-dir :reader empty-corpus-output-dir))
+  (:report (lambda (c s)
+             (format s "ΑΡΝΗΣΗ ΔΗΜΟΣΙΕΥΣΗΣ: corpus με leaf_count = 0 (~A). ~
+                        [MERKLE-SINGLE-TRUTH] Ο θεσμός ΔΕΝ υπογράφει δέσμευση ~
+                        για ΤΙΠΟΤΑ — ο πρωτόγονος γνωρίζει τη ρίζα του κενού ~
+                        δέντρου, η ΠΟΛΙΤΙΚΗ την απαγορεύει στη δημοσίευση."
+                     (empty-corpus-output-dir c)))))
+
 (defun write-provision-proofs (provisions output-dir &key anchored-at private-key public-jwk anchor)
   "PROVISIONS is an ordered list of plists (:id :text :eli :cite). Build the corpus
    Merkle root over their text leaves, write article-<id>.proof.json per provision,
    and corpus-proof.json. When PRIVATE-KEY is given the root is SIGNED (detached
    RS256 JWS) and the signature + PUBLIC-JWK are embedded, so the full chain
    text→leaf→path→root→signature is verifiable. Returns (values root count signature)."
+  ;; [MERKLE-SINGLE-TRUTH] ΠΥΛΗ ΔΗΜΟΣΙΕΥΣΗΣ (ΠΟΛΙΤΙΚΗ, όχι μηχανισμός):
+  ;; corpus με leaf_count = 0 ΑΠΟΡΡΙΠΤΕΤΑΙ fail-closed ΠΡΙΝ από οποιαδήποτε
+  ;; υπογραφή/checkpoint/εγγραφή. Ο πρωτόγονος merkle-tree-hash ΞΕΡΕΙ τη ρίζα
+  ;; του κενού δέντρου (RFC 9162 συμμόρφωση)· ο ΘΕΣΜΟΣ δεν υπογράφει ΠΟΤΕ
+  ;; δέσμευση για ΤΙΠΟΤΑ. Πριν: root = NIL και η συνάρτηση επέστρεφε σιωπηλά
+  ;; χωρίς να γράψει corpus-proof.json — σιωπηλό no-op αντί άρνησης.
+  (when (null provisions)
+    (error 'empty-corpus-publication :output-dir (princ-to-string output-dir)))
   (let* ((dir (uiop:ensure-directory-pathname output-dir))
          (texts (mapcar (lambda (p) (or (getf p :text) "")) provisions))
          (leaves (mapcar #'hash-leaf-string texts))
-         (root (and leaves (merkle-tree-hash leaves)))
+         (root (merkle-tree-hash leaves))
          (signature (and root private-key (sign-root root private-key))))
     (ensure-directories-exist dir)
     (loop for p in provisions for i from 0

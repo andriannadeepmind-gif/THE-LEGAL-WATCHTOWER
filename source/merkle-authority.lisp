@@ -41,7 +41,8 @@
    #:verify-consistency           ; έλεγχος old-root⊑new-root ΧΩΡΙΣ τα φύλλα
    ;; Σταθερές (audit)
    #:+leaf-prefix+
-   #:+node-prefix+))
+   #:+node-prefix+
+   #:+empty-tree-hash+))
 
 (in-package :orchestrator.merkle)
 
@@ -88,13 +89,22 @@
     (loop while (< (* k 2) n) do (setf k (* k 2)))
     k))
 
+(defparameter +empty-tree-hash+
+  (%sha256-hex (make-array 0 :element-type '(unsigned-byte 8)))
+  "RFC 9162 §2.1.1: MTH({}) = SHA-256(\"\") — η ΚΑΝΟΝΙΚΗ ρίζα του κενού δέντρου.
+   [MERKLE-SINGLE-TRUTH] ΜΗΧΑΝΙΣΜΟΣ, όχι πολιτική: ο πρωτόγονος ΟΦΕΙΛΕΙ να
+   συμμορφώνεται με το πρότυπο. Η ΑΠΑΓΟΡΕΥΣΗ δημοσίευσης κενού corpus ζει
+   χωριστά, στην πύλη δημοσίευσης (source/proof-carrying.lisp) — δύο ιδιότητες,
+   δύο ανεξάρτητα tests.")
+
 (defun merkle-tree-hash (leaf-hashes)
-  "RFC 6962 Merkle Tree Hash πάνω σε ΔΙΑΤΕΤΑΓΜΕΝΗ λίστα ΗΔΗ-υπολογισμένων
+  "RFC 9162 §2.1.1 Merkle Tree Hash πάνω σε ΔΙΑΤΕΤΑΓΜΕΝΗ λίστα ΗΔΗ-υπολογισμένων
    leaf-hashes:
+     n=0 ⇒ +empty-tree-hash+ = SHA-256(\"\")  (κανονικό κενό δέντρο)·
      n=1 ⇒ το ίδιο το φύλλο (κανένα re-hash)·
-     n>1 ⇒ k = μεγαλύτερη δύναμη του 2 < n·
+     n>1 ⇒ k = μεγαλύτερη δύναμη του 2 ΑΥΣΤΗΡΑ < n·
            hash-node( MTH(leaves[0:k]), MTH(leaves[k:n]) ).
-   Σφάλμα σε κενή λίστα (το κενό δέντρο δεν έχει νόημα ως commitment εδώ)."
+   ΠΟΤΕ duplicate-last (κλάση CVE-2012-2459)."
   (let ((v (coerce leaf-hashes 'vector)))
     (labels ((mth (lo hi)                      ; [lo, hi)
                (let ((n (- hi lo)))
@@ -103,9 +113,9 @@
                    ((= n 1) (aref v lo))
                    (t (let ((k (%largest-power-of-two-below n)))
                         (hash-node (mth lo (+ lo k)) (mth (+ lo k) hi))))))))
-      (when (zerop (length v))
-        (error "merkle-tree-hash: κενή λίστα φύλλων"))
-      (mth 0 (length v)))))
+      (if (zerop (length v))
+          +empty-tree-hash+
+          (mth 0 (length v))))))
 
 (defun merkle-root-of-strings (strings)
   "Ρίζα RFC-6962 πάνω σε λίστα strings (κάθε ένα ⇒ domain-separated φύλλο)."

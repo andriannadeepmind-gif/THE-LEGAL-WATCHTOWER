@@ -72,6 +72,19 @@ jobs:
         # αποδειχθεί ότι απορρίπτει: κενό closure, test-layer εξάρτηση, σπασμένο
         # αμφιμονοσήμαντο, ασύμφωνο/απόν pin, ελλιπές πεδίο, κατεστραμμένο JSON.
         bash scripts/verify-runtime-closure-test.sh
+    - name: 🌳 MERKLE-SINGLE-TRUTH — one canonical Merkle truth
+      shell: bash
+      run: |
+        # [MERKLE-SINGLE-TRUTH] Τα δημόσια κείμενα δίδασκαν duplicate-last
+        # (CVE-2012-2459) και το verify/README παρέλειπε τα domain prefixes,
+        # ενώ ο κώδικας έκανε το σωστό ⇒ τρίτος που ξανα-υλοποιούσε έπαιρνε
+        # ΔΙΑΦΟΡΕΤΙΚΗ ρίζα. Release blocker — τώρα μηχανικά επιβαλλόμενο.
+        sbcl --script scripts/gen-merkle-truth.lisp --check     # docs ≡ committed
+        sbcl --script scripts/gen-merkle-truth.lisp             # ιδιοπάθεια:
+        sbcl --script scripts/gen-merkle-truth.lisp --check     #   2η εκτέλεση = καμία αλλαγή
+        python3 deployment/verify/verify-merkle.py
+        node deployment/verify/verify-merkle.mjs
+        bash scripts/merkle-mutation-witness.sh
     - name: 🧨 Prove the proof-manifest verifier fails-closed (totality + suite census)
       shell: bash
       run: |

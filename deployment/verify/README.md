@@ -60,19 +60,51 @@ Exit codes:
 A single tampered byte, a forged path, a wrong signing key, or a self-consistent
 forgery signed by an attacker's own key all fail against the pinned anchor.
 
+<!-- BEGIN GENERATED lawmax-merkle-sha256-v1 — DO NOT EDIT BY HAND -->
+*Αυτή η ενότητα **ΠΑΡΑΓΕΤΑΙ** από τη μία κανονική πηγή
+`deployment/verify/merkle-profile.sexp` μέσω `scripts/gen-merkle-truth.lisp`.
+Χειροκίνητη επεξεργασία θα ανατραπεί και **κοκκινίζει το build**.*
+
 ## The algorithm (so you can re-implement it in any language)
 
+Canonical profile **`lawmax-merkle-sha256-v1`** — normative reference
+[RFC 9162 §2.1.1 (Merkle Tree Hash) — obsoletes RFC 6962](https://www.rfc-editor.org/rfc/rfc9162.html#section-2.1.1).
+
 ```
-leaf      = "sha256:" + hex(SHA256(UTF-8(text)))
-node(a,b) = "sha256:" + hex(SHA256( rawBytes(a) || rawBytes(b) ))   # strip "sha256:", concat RAW bytes
-root      = Merkle root over the ordered leaves; an odd node pairs with itself
+# profile: lawmax-merkle-sha256-v1   (RFC 9162 §2.1.1 (Merkle Tree Hash) — obsoletes RFC 6962)
+MTH([])        = SHA-256("")                                  # empty tree
+MTH([d0])      = SHA-256(0x00 || d0)                          # leaf, domain-separated
+MTH(D[n>1])    = SHA-256(0x01 || MTH(D[0:k]) || MTH(D[k:n]))   # internal node
+                 where k = largest power of two STRICTLY < n   # unbalanced split
+                 NEVER duplicate-last                          # CVE-2012-2459 class
 
-inclusion: h = leaf; for step in path: h = step.side=="left" ? node(step.hash,h) : node(h,step.hash)
-           accept iff h == merkle_root
+# hashes are carried as "sha256:" + 64 lowercase hex; node() concatenates the
+# RAW decoded bytes of the children, never their hex text.
 
-signature: a detached RS256 JWS "header..sig" whose payload is the merkle_root STRING.
-           signing_input = header_b64 + "." + base64url(UTF-8(merkle_root))
-           accept iff RSASSA-PKCS1-v1_5/SHA-256 verifies signing_input against sig with public_key (n,e)
+inclusion(text, proof):
+  leaf = "sha256:" + hex(SHA-256(0x00 || UTF8_no_BOM(text)))
+  if leaf != proof.leaf:              FAIL("text-hash-mismatch")
+  h = leaf
+  for step in proof.path:                                      # leaf -> root
+     h = (step.side == "left") ? node(step.hash, h) : node(h, step.hash)
+  if h != proof.merkle_root:          FAIL("inclusion-failed")
+  OK
 ```
 
-That's the whole trust root. From *"cite this source"* to *"verify against this root."*
+### Byte-exact input
+
+- **`utf8-no-bom`** — text -> bytes = UTF-8, ΧΩΡΙΣ BOM
+- **`no-normalization`** — ΚΑΜΙΑ Unicode normalization (ούτε NFC ούτε NFD ούτε NFKC/NFKD)
+  <br/>*Δύο ΟΠΤΙΚΑ ισοδύναμες ακολουθίες είναι ΔΙΑΦΟΡΕΤΙΚΑ φύλλα. Σιωπηλή κανονικοποίηση θα άλλαζε ρίζα χωρίς αλλαγή κειμένου.*
+- **`no-eol-conversion`** — ΚΑΜΙΑ μετατροπή LF/CRLF προς οποιαδήποτε κατεύθυνση
+- **`preserve-trailing-newline`** — Το τελικό newline διατηρείται ΑΚΡΙΒΩΣ όπως είναι (ούτε προστίθεται ούτε αφαιρείται)
+
+### Publication policy
+
+- **`reject-empty-corpus`** — Δημοσίευση/υπογραφή/checkpoint corpus με leaf_count = 0 ΑΠΟΡΡΙΠΤΕΤΑΙ fail-closed
+  <br/>*Ο πρωτόγονος ΟΦΕΙΛΕΙ να ξέρει τη ρίζα του κενού δέντρου (συμμόρφωση προτύπου)· ο ΘΕΣΜΟΣ δεν επιτρέπεται να υπογράψει δέσμευση για ΤΙΠΟΤΑ. Μηχανισμός != πολιτική· απαιτούνται ΑΝΕΞΑΡΤΗΤΑ tests για τις δύο ιδιότητες.*
+
+Every implementation in this directory is checked against the shared golden
+vectors (`vectors/merkle/vectors.json`) by the build gate. A second, contradictory
+description of this algorithm anywhere in the repository is a build failure.
+<!-- END GENERATED lawmax-merkle-sha256-v1 -->

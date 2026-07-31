@@ -112,6 +112,7 @@ legislation-ingestion
 mcp-live-resolver
 mcp-server
 merkle-authority
+merkle-single-truth
 multi-corpus-service
 orthography
 param-type-coercion
