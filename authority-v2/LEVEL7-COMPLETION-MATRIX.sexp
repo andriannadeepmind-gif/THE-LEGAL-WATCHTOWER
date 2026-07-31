@@ -57,25 +57,31 @@
   ;; ── 2 ────────────────────────────────────────────────────────────────────
   (:id 2
    :title "Καθαρή κλειστού σχήματος K(old,candidate,evidence,policy) + 9 μηχανικές αποδείξεις"
-   :status :not-started
+   :status :externally-blocked
    :load-bearing t
-   :implementation ()
-   :proof-objects ()
-   :command nil
-   :actual-result "NOT-EXECUTED"
-   :negative-witness nil
-   :residual-assumptions ("οι 9 ιδιότητες (authorization, completeness, no-rollback, unique-latest, monotonic-sequence, deterministic-replay, rejection-without-state-change, profile-continuity, certificate-soundness) απαιτούν prover — βλ. απαίτηση 5"))
+   :implementation ("authority-v2/kernel/admission-model.sexp (ΠΡΟΔΙΑΓΡΑΦΗ: υπογραφή,
+                     ολότητα, 9 conjuncts, 9 θεωρήματα, out-of-scope)")
+   :proof-objects ("authority-v2/proof-manifest.sexp :T1..:T9 — όλα :blocked-toolchain")
+   :command "python3 authority-v2/verify-proof-manifest.py"
+   :actual-result "EXECUTED 2026-07-31: 17 θεωρήματα, 0 proved, 17 blocked-toolchain, gate :not-passed, manifest ΣΥΝΕΠΕΣ"
+   :negative-witness "authority-v2/tests/gate-negative-fixtures.py — 12/12: θεώρημα :proved χωρίς artifact, gate :passed με blocked φέροντα, ασύμφωνο summary, επινοημένο status ⇒ ΟΛΑ απορρίπτονται"
+   :residual-assumptions ("Η ΥΛΟΠΟΙΗΣΗ της K είναι ΣΚΟΠΙΜΑ απούσα σε Common Lisp: θα ήταν
+                          δεύτερη έδρα που αργότερα θα χρειαζόταν migration (ρητή απαγόρευση).
+                          Στόχος υλοποίησης: F* — ΑΠΩΝ (403)."
+                          "certificates/bounded checking ΔΕΝ αναβαθμίζουν status (§5)"))
 
   ;; ── 3 ────────────────────────────────────────────────────────────────────
   (:id 3
    :title "Deterministic CBOR + CDDL μέσω EverCBOR/EverCDDL/EverParse· JSON/HTML μόνο προβολές"
    :status :externally-blocked
    :load-bearing t
-   :implementation ()
-   :proof-objects ()
-   :command nil
-   :actual-result "NOT-EXECUTED — BLOCKED-TOOLCHAIN (F* απόν, δίκτυο 403)"
-   :negative-witness nil
+   :implementation ("authority-v2/schema/transition-certificate.cddl (κλειστό σχήμα, χωρίς floats)"
+                    "authority-v2/schema/state.cddl (state/log/profile-lineage/rejection)"
+                    "authority-v2/toolchain/everparse.Dockerfile (hermetic — το μονοπάτι άρσης)")
+   :proof-objects ("proof-manifest :P1-cddl-parser-soundness, :P2-deterministic-encoding — blocked")
+   :command "docker build -f authority-v2/toolchain/everparse.Dockerfile --target cddl-gate ."
+   :actual-result "NOT-EXECUTED — BLOCKED-TOOLCHAIN (F* απόν· δίκτυο 403· κανένας docker daemon). Το Dockerfile ΑΠΟΤΥΓΧΑΝΕΙ ΣΚΟΠΙΜΑ όσο τα pins είναι PIN-REQUIRED"
+   :negative-witness "τα pins είναι PIN-REQUIRED ⇒ fail-closed· καμία εικασία commit/sha256 από μνήμη"
    :residual-assumptions ("ΚΑΜΙΑ CL υλοποίηση CBOR δεν μπήκε στο TCB ούτε πάγιωσε wire format (ρητή εντολή)"
                           "τα staging artifacts φέρουν canonical_encoding=PENDING-EVERPARSE"
                           "ο canonical parser gate παραμένει ΚΟΚΚΙΝΟΣ"))
@@ -83,12 +89,16 @@
   ;; ── 4 ────────────────────────────────────────────────────────────────────
   (:id 4
    :title "Transition certificate που δεσμεύει και τα 15 απαιτούμενα πεδία"
-   :status :not-started
+   :status :externally-blocked
    :load-bearing t
-   :implementation ()
+   :implementation ("authority-v2/schema/transition-certificate.cddl — ΟΛΑ τα απαιτούμενα:
+                     previous checkpoint+state hash, sequence, candidate root, ΠΛΗΡΕΣ census,
+                     source/evidence roots, profile-id + predecessor hash, owner/release
+                     signature, raw TSA request/response, nonce, requested policy, TSA chain +
+                     revocation evidence, νέο state hash, log entry, signed checkpoint")
    :proof-objects ()
    :command nil
-   :actual-result "NOT-EXECUTED"
+   :actual-result "NOT-EXECUTED — η ΕΚΠΟΜΠΗ απαιτεί τον verified parser (γραμμή 3)"
    :negative-witness nil
    :residual-assumptions ("το sequence-0 adoption certificate (απαίτηση γένεσης) υπάρχει ήδη με 13/13 πεδία — διαφορετικό σχήμα από το transition certificate"))
 
@@ -124,11 +134,13 @@
    :title "Crash-safe authority store πάνω σε Perennial 2.0/GoTxn με απόδειξη atomicity/recovery"
    :status :externally-blocked
    :load-bearing t
-   :implementation ()
-   :proof-objects ()
-   :command nil
-   :actual-result "NOT-EXECUTED — BLOCKED-TOOLCHAIN (Coq/Perennial απόντα, δίκτυο 403)"
-   :negative-witness nil
+   :implementation ("authority-v2/store/STORAGE-API.sexp (διεπαφή + η ΜΙΑ συναλλαγή των έξι
+                     στοιχείων + startup recheck + derived-caches κανόνας)"
+                    "authority-v2/toolchain/perennial.Dockerfile (hermetic — μονοπάτι άρσης)")
+   :proof-objects ("proof-manifest :S1-transaction-atomicity, :S2-crash-recovery — blocked")
+   :command "docker build -f authority-v2/toolchain/perennial.Dockerfile --target store-proof ."
+   :actual-result "NOT-EXECUTED — BLOCKED-TOOLCHAIN (Coq απόν· 403· κανένας docker daemon)"
+   :negative-witness "το API δηλώνει ρητά :forbidden-substitutes (intent-log/SQLite/atomic-rename-με-crash-tests) και :implementation-status :absent-by-design — καμία υλοποίηση δεν μπήκε πίσω από το interface"
    :residual-assumptions ("ΚΑΝΕΝΑ προσωρινό intent-log ΔΕΝ μπήκε πίσω από το τελικό interface (ρητή εντολή)"
                           "το production writer παραμένει ΑΠΕΝΕΡΓΟΠΟΙΗΜΕΝΟ"))
 
@@ -161,12 +173,15 @@
   ;; ── 9b (προσθήκη διορθωτικής: refinement obligation) ──────────────────────
   (:id "9b"
    :title "End-to-end refinement obligation: formal spec → generated source → compiled binary + reproducible build + trusted-toolchain manifest"
-   :status :not-started
+   :status :externally-blocked
    :load-bearing t
-   :implementation ()
-   :proof-objects ()
+   :implementation ("authority-v2/toolchain/trusted-toolchain-manifest.sexp — αλυσίδα 5 κρίκων
+                     (spec→ορισμοί→παραγόμενος→binary→rebuild) με υποχρέωση ανά κρίκο,
+                     CompCert license gate, trusted-tools με ρητό «τι ΔΕΝ αποδεικνύει»,
+                     κλειστός κατάλογος residual TCB")
+   :proof-objects ("proof-manifest :R1-extraction-soundness, :R2-compiler-correctness, :R3-reproducible-build — blocked")
    :command nil
-   :actual-result "NOT-EXECUTED"
+   :actual-result "NOT-EXECUTED — κρίκοι 1,2 blocked (F*/Coq), κρίκος 3 externally-blocked (CompCert άδεια), κρίκος 4 not-started, κρίκος 5 declared-residual"
    :negative-witness nil
    :residual-assumptions ("η production CompCert εκτέλεση = :externally-blocked μέχρι εμπορική άδεια (βλ. 6)"
                           "η υπόλοιπη υποδομή (manifest, reproducible comparison) ΔΕΝ είναι blocked"))
@@ -206,8 +221,8 @@
                     "tests/release-authority-test.lisp (αναδιατυπωμένο)"
                     "tests/transparency-log-test.lisp (αναδιατυπωμένο)")
    :proof-objects ()
-   :command "sbcl --script <runner> tests/level7-disarm-test.lisp && sbcl --script <runner> tests/release-authority-test.lisp && sbcl --script <runner> tests/transparency-log-test.lisp"
-   :actual-result "EXECUTED 2026-07-31: level7-disarm 9/0 · release-authority 14/0 · transparency-log 23/0"
+   :command "sbcl --script <runner> tests/level7-disarm-test.lisp && sbcl --script <runner> tests/release-authority-test.lisp && sbcl --script <runner> tests/transparency-log-test.lisp && python3 authority-v2/tests/gate-negative-fixtures.py"
+   :actual-result "EXECUTED 2026-07-31: level7-disarm 9/0 · release-authority 14/0 · transparency-log 23/0 · gate-negative-fixtures 12/0"
    :negative-witness "κάθε αναδιατυπωμένος έλεγχος κατοχυρώνει ΑΡΝΗΣΗ εκεί που πριν κατοχύρωνε ΑΠΟΔΟΧΗ (⑦β πλαστό receipt)· η απόσυρση δύο ελέγχων bootstrap δηλώνεται ΡΗΤΑ αντί να αναστηθεί η νεκρή έδρα στα fixtures"
    :residual-assumptions ("crash-at-every-write-boundary ΔΕΝ υπάρχει ακόμη — απαιτεί το store (7)"
                           "τα tests είναι regression layer, ΟΧΙ φέρουσα απόδειξη (ρητή εντολή)")))
@@ -217,7 +232,7 @@
  (:total 13
   :proved 0
   :implemented-not-proved 3
-  :externally-blocked 4
-  :not-started 6
+  :externally-blocked 7
+  :not-started 3
   :level7 nil
   :statement "0/13 PROVED ⇒ ΤΟ ΣΥΣΤΗΜΑ ΔΕΝ ΕΙΝΑΙ LEVEL-7. Καμία απαίτηση δεν αντικαταστάθηκε από κατώτερη· τα :externally-blocked παραμένουν ανοιχτά με hermetic build ως μονοπάτι άρσης."))

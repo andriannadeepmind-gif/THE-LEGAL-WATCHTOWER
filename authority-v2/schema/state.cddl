@@ -1,0 +1,85 @@
+; authority-v2/schema/state.cddl
+; =============================================================================
+; LEVEL-7 VCCT-RSM — AUTHORITY STATE, LOG, PROFILE LINEAGE (κλειστά σχήματα)
+; =============================================================================
+; Ίδιοι κανόνες με το transition-certificate.cddl: deterministic CBOR, καμία
+; float, κλειστές maps, EverCDDL/EverParse ως ο ΜΟΝΟΣ επικυρωτής (σήμερα
+; EXTERNALLY-BLOCKED).
+
+sha256-digest = bytes .size 32
+ed25519-sig   = bytes .size 64
+ed25519-pub   = bytes .size 32
+sequence-no   = uint
+utc-seconds   = uint
+profile-id    = tstr .size (1..64)
+
+; ── AUTHORITY STATE ──────────────────────────────────────────────────────────
+; Η ΜΟΝΑΔΙΚΗ authoritative κατάσταση. Ό,τι σερβίρεται παράγεται ΑΠΟ ΕΔΩ.
+authority-state = {
+  1 => "lawmax/authority-state/1",
+  2 => sequence-no,              ; τρέχον sequence
+  3 => sha256-digest,            ; hash ΑΥΤΗΣ της κατάστασης (self-binding)
+  4 => latest,                   ; ΜΟΝΑΔΙΚΟ latest (unique-latest invariant)
+  5 => [* accepted-release],     ; ιστορικό αποδεκτών
+  6 => log-state,
+  7 => profile-lineage,
+  8 => epoch,
+}
+
+; unique-latest: ΑΚΡΙΒΩΣ ένα, ποτέ λίστα — η μοναδικότητα είναι ΤΥΠΙΚΗ, όχι
+; συμβατική (δεν υπάρχει σχήμα που να επιτρέπει δεύτερο latest).
+latest = null / {
+  1 => sha256-digest,            ; release root
+  2 => sequence-no,              ; σε ποιο sequence έγινε δεκτό
+  3 => sha256-digest,            ; hash του transition certificate που το έκανε δεκτό
+}
+
+accepted-release = {
+  1 => sequence-no,
+  2 => sha256-digest,            ; release root
+  3 => sha256-digest,            ; certificate hash
+  4 => utc-seconds,              ; accepted-at (από το TSA genTime, όχι τοπικό ρολόι)
+}
+
+log-state = {
+  1 => uint,                     ; tree size
+  2 => sha256-digest,            ; log root
+  3 => sha256-digest,            ; hash του τελευταίου signed checkpoint
+}
+
+; ── PROFILE LINEAGE (απαίτηση 9: profile lineage υποχρεωτικό) ────────────────
+; Append-only αλυσίδα: κάθε profile ΔΕΣΜΕΥΕΙ το hash του προκατόχου του. Έτσι
+; το «spec drift ΤΟΥ spec» γίνεται δομικά ανιχνεύσιμο, και ένα εκδοθέν proof
+; παραμένει επαληθεύσιμο υπό ΤΟ ΔΙΚΟ ΤΟΥ profile εσαεί.
+profile-lineage = [+ profile-link]
+profile-link = {
+  1 => profile-id,
+  2 => sha256-digest,            ; hash του profile αρχείου
+  3 => null / sha256-digest,     ; hash προκατόχου (null ΜΟΝΟ στο πρώτο)
+  4 => sequence-no,              ; από ποιο sequence ισχύει
+  5 => tstr,                     ; κανόνας συνέχειας / λόγος αλλαγής
+  6 => ed25519-sig,              ; ΥΠΟΓΕΓΡΑΜΜΕΝΟ από owner root — η μεταβολή της
+                                 ; αλήθειας είναι ΕΞΟΥΣΙΟΔΟΤΗΜΕΝΗ, όχι απλώς ορατή
+}
+
+epoch = {
+  1 => tstr,                     ; epoch id
+  2 => sha256-digest,            ; hash του genesis certificate (sequence 0)
+  3 => "evidence-only" / "inherited",
+}
+
+; ── ΑΠΟΡΡΙΨΗ (rejection-without-state-change) ────────────────────────────────
+; Η απόρριψη ΕΙΝΑΙ ΚΙ ΑΥΤΗ πιστοποιητικό: ο τρίτος μαθαίνει ΓΙΑΤΙ, και το
+; state hash ΔΕΝ αλλάζει (ελέγξιμο: prev == next).
+rejection-certificate = {
+  1 => "lawmax/rejection-certificate/1",
+  2 => sha256-digest,            ; state hash ΠΡΙΝ
+  3 => sha256-digest,            ; state hash ΜΕΤΑ (ΠΡΕΠΕΙ να ταυτίζεται με το ΠΡΙΝ)
+  4 => sha256-digest,            ; candidate root που απορρίφθηκε
+  5 => [+ rejection-reason],     ; ΟΛΟΙ οι λόγοι, όχι ο πρώτος
+  6 => ed25519-sig,
+}
+rejection-reason = {
+  1 => tstr,                     ; conjunct id (π.χ. "tsa-full-verification")
+  2 => tstr,                     ; ανθρώπινη εξήγηση
+}

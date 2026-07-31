@@ -1,0 +1,129 @@
+; authority-v2/schema/transition-certificate.cddl
+; =============================================================================
+; LEVEL-7 VCCT-RSM — ΚΛΕΙΣΤΟ CDDL ΣΧΗΜΑ ΤΟΥ TRANSITION CERTIFICATE
+; =============================================================================
+; ΚΑΝΟΝΙΚΟ WIRE: deterministic CBOR (RFC 8949 §4.2) — ΚΑΜΙΑ κινητή υποδιαστολή.
+; JSON/HTML είναι ΜΟΝΟ παραγόμενες ανθρώπινα αναγνώσιμες προβολές, δεσμευμένες
+; με roundtrip/bijection gate.
+;
+; ΚΑΤΑΣΤΑΣΗ ΕΠΙΚΥΡΩΣΗΣ: αυτό το σχήμα ΠΡΕΠΕΙ να επικυρώνεται/μεταγλωττίζεται
+; από EverCDDL/EverParse. Στο παρόν περιβάλλον το F* toolchain είναι ΑΠΟΝ και
+; το δίκτυο 403 ⇒ ο canonical parser gate είναι ΚΟΚΚΙΝΟΣ (EXTERNALLY-BLOCKED,
+; γραμμή 3 του LEVEL7-COMPLETION-MATRIX). Το hermetic build που τον ανοίγει:
+; authority-v2/toolchain/everparse.Dockerfile. ΚΑΜΙΑ άλλη υλοποίηση δεν
+; επιτρέπεται να παγιώσει wire format στο μεταξύ.
+;
+; ΚΛΕΙΣΤΟΤΗΤΑ: κάθε map είναι κλειστή (χωρίς extension slots). Άγνωστο κλειδί
+; ⇒ ΑΠΟΡΡΙΨΗ κατά το parsing, όχι σιωπηλή αγνόηση.
+
+; ── Πρωτόγονοι τύποι ─────────────────────────────────────────────────────────
+sha256-digest = bytes .size 32          ; ΩΜΑ bytes — ποτέ hex κείμενο στο wire
+ed25519-sig   = bytes .size 64
+ed25519-pub   = bytes .size 32
+sequence-no   = uint                    ; μονοτονικά αύξων, χωρίς κενά
+profile-id    = tstr .size (1..64)
+utc-seconds   = uint                    ; ακέραια δευτερόλεπτα — ΚΑΜΙΑ float
+
+; ── Η ΡΙΖΑ ───────────────────────────────────────────────────────────────────
+transition-certificate = {
+  1  => "lawmax/transition-certificate/1",   ; kind (σταθερή)
+  2  => sequence-no,                         ; sequence της ΝΕΑΣ κατάστασης
+  3  => previous-checkpoint,                 ; προηγούμενο checkpoint + state hash
+  4  => candidate,                           ; τι κρίθηκε
+  5  => census,                              ; ΠΛΗΡΕΣ census
+  6  => evidence,                            ; source/evidence roots + TSA
+  7  => profile-binding,                     ; profile-id + predecessor hash
+  8  => policy-request,                       ; η ΑΙΤΗΘΕΙΣΑ πολιτική
+  9  => outcome,                             ; new state hash + log entry + checkpoint
+  10 => authorization,                       ; owner/release signature
+}
+
+previous-checkpoint = {
+  1 => sha256-digest,        ; hash του προηγούμενου signed checkpoint
+  2 => sha256-digest,        ; hash της προηγούμενης state
+  3 => sequence-no,          ; sequence της προηγούμενης state (new = prev + 1)
+}
+
+candidate = {
+  1 => sha256-digest,        ; candidate root (Merkle, profile lawmax-merkle-sha256-v1)
+  2 => tstr,                 ; candidate bundle id (content-addressed)
+  3 => sha256-digest,        ; digest του ΙΔΙΟΥ του candidate manifest
+}
+
+census = {
+  1 => uint,                 ; πλήθος artifacts
+  2 => sha256-digest,        ; census root
+  3 => [+ census-entry],     ; ΠΛΗΡΕΣ census — όχι δείγμα
+}
+census-entry = {
+  1 => tstr,                 ; path (κανονικοποιημένο, repo-relative)
+  2 => sha256-digest,        ; content digest
+  3 => uint,                 ; size σε bytes
+}
+
+evidence = {
+  1 => sha256-digest,        ; source root (τα ΑΥΘΕΝΤΙΚΑ source bytes)
+  2 => sha256-digest,        ; evidence root
+  3 => tsa-evidence,
+}
+
+; ── TSA: ΟΛΟ το υλικό, όχι μόνο το receipt ───────────────────────────────────
+; Το request ΚΑΙ το response δεσμεύονται ΩΜΑ ώστε ο checker να επαναλάβει την
+; πλήρη RFC-3161 επαλήθευση ανεξάρτητα — ποτέ «ο kernel είπε ναι».
+tsa-evidence = {
+  1 => bytes,                ; raw TSA request (DER)
+  2 => bytes,                ; raw TSA response (DER)
+  3 => bytes,                ; nonce (ΑΚΡΙΒΩΣ αυτό που ζητήθηκε)
+  4 => tstr,                 ; requested policy OID
+  5 => tstr,                 ; signer identity (subject DN)
+  6 => [+ bytes],            ; certificate path (DER, leaf→root)
+  7 => revocation-evidence,
+  8 => utc-seconds,          ; genTime
+  9 => "pinned",             ; ΜΟΝΟ pinned — ποτέ unpinned (κλειστό literal)
+}
+revocation-evidence = {
+  1 => tstr,                 ; "crl" / "ocsp"
+  2 => bytes,                ; ΩΜΟ evidence (DER)
+  3 => utc-seconds,          ; thisUpdate/producedAt
+  4 => utc-seconds,          ; nextUpdate — freshness ελέγξιμη από τον checker
+}
+
+profile-binding = {
+  1 => profile-id,           ; ΤΡΕΧΟΝ profile
+  2 => sha256-digest,        ; hash του ΤΡΕΧΟΝΤΟΣ profile
+  3 => predecessor-binding,  ; αλυσίδα διαδοχής
+}
+predecessor-binding = null / {
+  1 => profile-id,
+  2 => sha256-digest,        ; hash του ΠΡΟΗΓΟΥΜΕΝΟΥ profile
+  3 => tstr,                 ; κανόνας συνέχειας
+}
+
+policy-request = {
+  1 => sha256-digest,        ; hash της πολιτικής υπό την οποία ζητήθηκε η αποδοχή
+  2 => tstr,                 ; policy id
+}
+
+outcome = {
+  1 => sha256-digest,        ; ΝΕΟ state hash
+  2 => log-entry,
+  3 => signed-checkpoint,
+}
+log-entry = {
+  1 => uint,                 ; log index
+  2 => sha256-digest,        ; leaf hash (RFC 9162, domain-separated)
+}
+signed-checkpoint = {
+  1 => tstr,                 ; origin
+  2 => uint,                 ; tree size
+  3 => sha256-digest,        ; log root
+  4 => utc-seconds,          ; timestamp — μονοτονικός (anti-freeze)
+  5 => ed25519-sig,          ; υπογραφή log
+  6 => ed25519-pub,          ; log public key (pinned έναντι roles)
+}
+
+authorization = {
+  1 => ed25519-sig,          ; owner/release signature ΠΑΝΩ στο certificate
+  2 => ed25519-pub,          ; ο υπογράφων (pinned έναντι TUF role)
+  3 => tstr,                 ; role: "release" / "root"
+}
