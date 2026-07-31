@@ -45,9 +45,16 @@
    :rationale "από τη στιγμή της αντιγραφής και μετά, ο producer ΔΕΝ μπορεί να
                αλλάξει αυτό που κρίνεται — το TOCTOU παύει να υπάρχει")
   (:n 4 :id :recompute-in-quarantine
-   :statement "census ΚΑΙ root ΕΠΑΝΥΠΟΛΟΓΙΖΟΝΤΑΙ ΜΕΣΑ στο quarantine, από τα
-               αντιγραμμένα bytes — ΠΟΤΕ από δηλώσεις του producer"
-   :rationale "ό,τι δηλώνει ο producer είναι ισχυρισμός, όχι δεδομένο")
+   :statement "census ΚΑΙ ΟΙ ΔΥΟ ρίζες ΕΠΑΝΥΠΟΛΟΓΙΖΟΝΤΑΙ ΜΕΣΑ στο quarantine, με
+               ΞΑΝΑΔΙΑΒΑΣΜΑ ΚΑΘΕ byte από το ΑΝΤΙΓΡΑΦΟ — ΠΟΤΕ από δηλώσεις του
+               producer ΚΑΙ ΠΟΤΕ από τα bytes που διαβάστηκαν στη ΦΑΣΗ Α"
+   :rationale "ό,τι δηλώνει ο producer είναι ισχυρισμός, όχι δεδομένο· και ό,τι
+               διαβάστηκε ΑΠΟ ΤΗΝ ΕΧΘΡΙΚΗ ΠΗΓΗ δεν επιτρέπεται να γίνει δέσμευση.
+               ΔΥΟ ΑΥΣΤΗΡΑ ΔΙΑΚΡΙΤΕΣ ΦΑΣΕΙΣ: Α = αντιγραφή ΧΩΡΙΣ κανένα hash·
+               Β = μέτρηση ΑΠΟΚΛΕΙΣΤΙΚΑ από το quarantine. Η διασταύρωση
+               (path,size) των δύο φάσεων ⇒ quarantine-diverged σε κάθε απόκλιση
+               (πιάνει μερική εγγραφή/ENOSPC). Έτσι η κλάση «hash από εχθρικά
+               bytes» δεν φυλάσσεται — ΔΕΝ ΥΠΑΡΧΕΙ ως δυνατότητα.")
   (:n 5 :id :k-on-captured-snapshot-only
    :statement "η K εκτελείται ΑΠΟΚΛΕΙΣΤΙΚΑ πάνω στο συλληφθέν snapshot"
    :rationale "η καθαρότητα της K προϋποθέτει ΑΜΕΤΑΒΛΗΤΗ είσοδο· το
@@ -62,7 +69,46 @@
   (:id :escapes-root           :detail "το πραγματικό realpath βγαίνει εκτός root")
   (:id :nul-or-empty-component :detail "NUL byte ή κενή συνιστώσα στο path")
   (:id :mutated-during-capture :detail "τα bytes άλλαξαν μεταξύ δύο αναγνώσεων")
-  (:id :declared-root-mismatch :detail "ο δηλωμένος root ≠ ο επανυπολογισμένος"))
+  (:id :declared-root-mismatch :detail "ο δηλωμένος root ≠ ο επανυπολογισμένος")
+  (:id :short-write            :detail "η os.write έγραψε λιγότερα από όσα ζητήθηκαν")
+  (:id :quarantine-diverged    :detail "ό,τι γράφτηκε (ΦΑΣΗ Α) ≠ ό,τι μετρήθηκε (ΦΑΣΗ Β)")
+  (:id :quarantine-corrupt     :detail "μη κανονικό αρχείο ή nlink≠1 ΜΕΣΑ στο quarantine")
+  (:id :merkle-seat-unverified :detail "τα committed golden vectors δεν διαβάστηκαν/δεν ταιριάζει το profile")
+  (:id :merkle-seat-divergence :detail "τα πρωτόγονα ΑΥΤΗΣ της υλοποίησης ≠ committed vectors")
+  (:id :openat2-unavailable    :detail "ο πυρήνας δεν υποστηρίζει openat2 — ΚΑΜΙΑ σιωπηλή υποβάθμιση"))
+
+ ;; ── Η MERKLE ΕΔΡΑ ΕΙΝΑΙ Η ΠΑΡΑΓΩΓΙΚΗ, ΚΑΙ ΤΟ ΑΠΟΔΕΙΚΝΥΕΙ ────────────────
+ :merkle-seat
+ (:profile "lawmax-merkle-sha256-v1"
+  :leaf "SHA-256(0x00 ‖ ΩΜΑ BYTES ΑΡΧΕΙΟΥ)  ≡ orchestrator.merkle:hash-leaf-file"
+  :node "SHA-256(0x01 ‖ raw(L) ‖ raw(R))     ≡ orchestrator.merkle:hash-node"
+  :mth  "RFC 9162 §2.1.1 unbalanced split — ΠΟΤΕ duplicate-last (CVE-2012-2459)"
+  :release-root "MTH πάνω σε hash-leaf-file φύλλα, ΣΤΗ ΣΕΙΡΑ των canonical files
+                 (η σειρά ΕΙΝΑΙ μέρος της δέσμευσης) ≡ merkle-root-of-files"
+  :snapshot-root "MTH πάνω σε φύλλα εγγραφών:
+                  leaf( «lawmax-snapshot-entry-v1\\0» ‖ u64be(len(path)) ‖ path ‖
+                        u64be(size) ‖ raw32(file-leaf) ) — αναμφίσημη, length-prefixed,
+                  δεσμεύει ΤΟ ΙΔΙΟ per-file φύλλο με το release_root"
+  :self-check "verify_merkle_seat() ΠΡΙΝ από κάθε byte: κενή ρίζα + ΚΑΘΕ leaf vector +
+               ΚΑΘΕ δέντρο n=0..17 απέναντι στα COMMITTED
+               deployment/verify/vectors/merkle/vectors.json. Απόκλιση/απουσία ⇒ ΑΡΝΗΣΗ."
+  :differential-proof "authority-v2/tests/capture-seat-differential-test.sh — τρέχει ΚΑΙ ΤΙΣ
+                       ΔΥΟ έδρες (capture.py ΚΑΙ ο ΠΑΡΑΓΩΓΙΚΟΣ Lisp πυρήνας) στα ΙΔΙΑ bytes
+                       και συγκρίνει byte-για-byte, με αρνητικό μάρτυρα (1 byte αλλάζει ⇒
+                       αλλάζουν ΚΑΙ ΟΙ ΔΥΟ) και έλεγχο ότι η σειρά δεσμεύεται.")
+
+ ;; ── ΤΙ ΔΕΝ ΙΣΧΥΡΙΖΕΤΑΙ Η CAPTURE (τίμια άγνοια) ──────────────────────────
+ :non-claims
+ ("Η capture ΔΕΝ ισχυρίζεται ότι το candidates/ είχε αυτό το περιεχόμενο σε ΜΙΑ
+   στιγμή. Ο producer μπορεί να αλλάξει το αρχείο Β αφού διαβαστεί το Α· ένα
+   ατομικό στιγμιότυπο ΟΛΟΥ του δέντρου δεν είναι διαθέσιμο χωρίς υποστήριξη
+   filesystem (snapshot/reflink)."
+  "Ο ΙΣΧΥΡΙΣΜΟΣ ΠΟΥ ΟΝΤΩΣ ΓΙΝΕΤΑΙ: το quarantine περιέχει ΑΥΤΑ ΑΚΡΙΒΩΣ τα bytes,
+   οι δύο ρίζες τα δεσμεύουν, και η K κρίνει ΑΠΟΚΛΕΙΣΤΙΚΑ αυτά. Το candidates/
+   ΔΕΝ είναι είσοδος καμίας απόφασης — άρα η μη-ατομικότητά του δεν μολύνει
+   καμία κρίση· μπορεί μόνο να οδηγήσει σε ΑΡΝΗΣΗ (fail-closed)."
+  "Το ανά-αρχείο fingerprint (πριν/μετά) ανιχνεύει μεταβολή ΤΟΥ ΙΔΙΟΥ inode μέσα
+   στο παράθυρο ανάγνωσης· ΔΕΝ ανιχνεύει αλλαγή αρχείου που έχει ΗΔΗ διαβαστεί.")
 
  ;; ── ΟΡΙΟΘΕΤΗΣΗ ───────────────────────────────────────────────────────────
  :out-of-scope

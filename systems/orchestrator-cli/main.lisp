@@ -2524,8 +2524,11 @@ document.getElementById('ops').addEventListener('click',function(ev){
                 ;; Κανένα προνομιακό μονοπάτι: εξωτερική επιθεώρηση (05-07-2026)
                 ;; βρήκε 30 builtin εντολές να εκτελούνται ΕΚΤΟΣ της πύλης του
                 ;; ΕΓΩ — το εύρημα κλείνει εδώ, στη ρίζα της δρομολόγησης.
+                ;; ΜΙΑ ΕΔΡΑ ΕΠΙΛΥΣΗΣ (resolve-command): ενεργή / ΚΑΤΑΡΓΗΜΕΝΗ /
+                ;; άγνωστη. Η ίδια συνάρτηση κρίνει και στις αποδείξεις — καμία
+                ;; δεύτερη διαδρομή δρομολόγησης δεν μπορεί να αποκλίνει.
                 (execute-command command
-                                 (or (find-command command)
+                                 (or (resolve-command command)
                                      (lambda (args)
                                        (declare (ignore args))
                                        (format *error-output* "Unknown command: ~A~%" command)

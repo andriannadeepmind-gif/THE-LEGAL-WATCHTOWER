@@ -108,6 +108,58 @@ jobs:
         # ήταν ο ΜΟΝΟΣ χωρίς αντίπαλο. Τώρα τρέχει.
         python3 docker/verify-proof-manifest-test.py
 
+  authority-v2-boundary:
+    name: 🔒 authority-v2 — Merkle seat differential, capture fixed point, OS boundary
+    runs-on: ubuntu-latest
+    # ΕΥΡΗΜΑ ΔΗΜΙΟΥΡΓΟΥ (P1): «τίποτα δεν είναι συρματωμένο σε Docker/compose/
+    # workflow — το HEAD έχει μηδέν Actions runs και μηδέν status checks». ΟΡΘΟ.
+    # ΚΑΜΙΑ ΠΟΛΙΤΙΚΗ ΣΕ YAML: το job καλεί ΜΙΑ έδρα (run-authority-v2-proofs.sh)
+    # που ΠΑΡΑΓΕΙ το inventory από το filesystem και το συγκρίνει με την
+    # committed απογραφή. Νέα απόδειξη ⇒ μπαίνει ΑΥΤΟΜΑΤΑ· ξεχασμένη απόδειξη
+    # ⇒ ΣΦΑΛΜΑ. Το YAML δεν ξέρει ονόματα tests και δεν μπορεί να ξεμείνει πίσω.
+    steps:
+    - name: ⬇️ Checkout
+      uses: actions/checkout@v4
+
+    - name: 🧰 Toolchain — ΡΗΤΗ εγκατάσταση, καμία σιωπηλή υπόθεση
+      shell: bash
+      run: |
+        sudo apt-get update && sudo apt-get install -y sbcl util-linux
+        for t in sbcl python3 setpriv unshare mount; do
+          command -v "$t" >/dev/null || { echo "::error::ΑΠΟΝ εργαλείο: $t"; exit 1; }
+          echo "  ✓ $t → $(command -v "$t")"
+        done
+
+    - name: 🔒 ΟΛΕΣ οι αποδείξεις authority-v2 (BLOCKED ⇒ ΣΦΑΛΜΑ, ποτέ σιωπή)
+      shell: bash
+      run: |
+        # AUTHORITY_V2_REQUIRE_ALL=1: εδώ ο root ΥΠΑΡΧΕΙ, άρα «BLOCKED» δεν είναι
+        # τίμια άγνοια — είναι απώλεια δυνατότητας και ΟΦΕΙΛΕΙ να κοκκινίσει.
+        # sudo: το OS boundary test απαιτεί CAP_SYS_ADMIN (bind mount) + setpriv.
+        sudo env AUTHORITY_V2_REQUIRE_ALL=1 LAWMAX_REPO="$PWD" \
+             bash authority-v2/tests/run-authority-v2-proofs.sh
+
+    - name: 🧪 Οι Lisp αποδείξεις αφοπλισμού (ΙΔΙΟΣ πυρήνας, ΜΙΑ φορά χτισμένος)
+      shell: bash
+      run: |
+        CORE="$RUNNER_TEMP/authority-cli.core"
+        LAWMAX_REPO="$PWD" sbcl --script authority-v2/tests/build-authority-core.lisp "$CORE"
+        [ -s "$CORE" ] || { echo "::error::ο πυρήνας δεν χτίστηκε"; exit 1; }
+        rc=0
+        for t in tests/level7-disarm-test.lisp \
+                 tests/release-authority-test.lisp \
+                 tests/transparency-log-test.lisp; do
+          echo "▶ $t"
+          LAWMAX_REPO="$PWD" sbcl --core "$CORE" --script "$t" || rc=1
+        done
+        exit $rc
+
+    - name: 📐 Πύλες τιμιότητας — completion matrix + proof manifest
+      shell: bash
+      run: |
+        python3 authority-v2/verify-completion-matrix.py
+        python3 authority-v2/verify-proof-manifest.py
+
   verifier-conformance:
     needs: [dependency-policy-gate]
     name: 🔗 Cross-language verifier conformance
@@ -306,7 +358,7 @@ jobs:
   tag-release:
     name: 🔖 Tag if all tests pass
     runs-on: ubuntu-latest
-    needs: build-and-test
+    needs: [build-and-test, authority-v2-boundary]
     if: github.ref == 'refs/heads/main'
 
     steps:

@@ -131,8 +131,9 @@
    ;;   - Certificate Transparency (if CT logs available)
    ;;   - JWS signatures (if private key available)
    ;; Output:
-   ;;   - Immutable timestamped release: /releases/YYYY-MM-DDTHH:MM:SSZ/
-   ;;   - Atomic publish via 'latest' symlink
+   ;;   - Candidate bundle: /candidates/sha256-<root>/  (ΟΧΙ δημοσίευση)
+   ;;   [ΑΝΑΚΛΗΣΗ] ΟΧΙ «immutable release»: το candidates/ ανήκει στον producer
+   ;;   και είναι ΜΕΤΑΒΛΗΤΟ· latest ΔΕΝ προάγεται από εδώ.
    ;; ================================================================
    (deploy-epistemic
     :function orchestrator.engine.sbcl:deploy-epistemic-stage

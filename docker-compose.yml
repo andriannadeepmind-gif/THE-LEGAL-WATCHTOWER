@@ -243,6 +243,40 @@ services:
   #     - orchestrator-net
   #   restart: unless-stopped
 
+  # ═══════════════════════════════════════════════════════════════════════════
+  # authority-v2 — ΤΟ ΟΡΙΟ ΠΥΡΗΝΑ ΣΕ CONTAINER (η ίδια ΜΙΑ έδρα με το CI)
+  # ═══════════════════════════════════════════════════════════════════════════
+  # ΕΥΡΗΜΑ ΔΗΜΙΟΥΡΓΟΥ (P1): «τίποτα δεν είναι συρματωμένο σε Docker/compose».
+  # Εδώ τρέχει ΑΚΡΙΒΩΣ το ίδιο script που τρέχει το CI και ο δημιουργός τοπικά —
+  # καμία τρίτη διαδρομή, καμία «ειδική έκδοση για container».
+  #
+  # ΓΙΑΤΙ privileged/CAP_SYS_ADMIN: το όριο ΔΕΝ προσομοιώνεται. Απαιτεί
+  # ΠΡΑΓΜΑΤΙΚΟ read-only bind mount σε ιδιωτικό mount namespace και setpriv σε
+  # ξεχωριστό uid. Χωρίς αυτά η απόδειξη βγάζει BLOCKED (exit 2) — ΠΟΤΕ pass.
+  # ΔΕΝ είναι υπηρεσία παραγωγής: είναι ΕΚΤΕΛΕΣΤΗΣ ΑΠΟΔΕΙΞΕΩΝ, one-shot.
+  authority-v2-proofs:
+    image: debian:bookworm-slim
+    container_name: lawmax-authority-v2-proofs
+    working_dir: /repo
+    privileged: true
+    volumes:
+      - .:/repo:rw
+    environment:
+      - AUTHORITY_V2_REQUIRE_ALL=1
+      - LAWMAX_REPO=/repo
+    command:
+      - bash
+      - -euo
+      - pipefail
+      - -c
+      - |
+        apt-get update -qq && apt-get install -y -qq sbcl python3 util-linux >/dev/null
+        for t in sbcl python3 setpriv unshare mount; do
+          command -v "$$t" >/dev/null || { echo "::error::ΑΠΟΝ εργαλείο: $$t"; exit 1; }
+        done
+        bash authority-v2/tests/run-authority-v2-proofs.sh
+    profiles: ["proofs"]
+
 networks:
   orchestrator-net:
     driver: bridge

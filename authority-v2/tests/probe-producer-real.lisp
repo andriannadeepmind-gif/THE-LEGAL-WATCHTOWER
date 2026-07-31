@@ -11,9 +11,18 @@
                 (t "ELSEWHERE"))))
     (error (e) (format nil "ERROR:~A" (type-of e)))))
 (note "attest"
-  (handler-case (progn (funcall (find-symbol "RUN-ATTEST-RELEASE" :orchestrator.cli) "probe") "NOT-REFUSED")
-    (orchestrator.epistemic:legacy-authority-seat-removed () "REFUSED")
-    (error (e) (format nil "OTHER:~A" (type-of e)))))
+  ;; [CAPTURE-AND-BOUNDARY-CORRECTION] Η ΣΥΝΑΡΤΗΣΗ ΔΕΝ ΥΠΑΡΧΕΙ ΠΙΑ — διαγράφηκε.
+  ;; Η απόδειξη περνά από την ΙΔΙΑ έδρα επίλυσης με τον dispatcher του main
+  ;; (orchestrator.cli::resolve-command): καμία δεύτερη διαδρομή.
+  (let ((fn (find-symbol "RUN-ATTEST-RELEASE" :orchestrator.cli)))
+    (if (and fn (fboundp fn))
+        "STILL-CALLABLE"
+        (multiple-value-bind (handler kind)
+            (funcall (find-symbol "RESOLVE-COMMAND" :orchestrator.cli) "--attest-release")
+          (if (eq kind :retired)
+              (handler-case (progn (funcall handler nil) "HANDLER-DID-NOT-SIGNAL")
+                (error () "SEAT-DELETED"))
+              (format nil "UNEXPECTED-KIND:~A" kind))))))
 (note "direct-write"
   (handler-case
       (progn (with-open-file (o (merge-pathnames "releases/pwned.txt" *base*)

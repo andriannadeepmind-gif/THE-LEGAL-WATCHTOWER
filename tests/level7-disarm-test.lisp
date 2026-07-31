@@ -142,6 +142,40 @@
          (and (search "candidates/~A/" src)
               (not (search "(format nil \"releases/~A/\" release-id)" src)))))
 
+(format t "~%== [Δ3δ] Η ΕΔΡΑ --attest-release ΕΙΝΑΙ ΔΙΑΓΡΑΜΜΕΝΗ, ΟΧΙ ΑΠΕΝΕΡΓΟΠΟΙΗΜΕΝΗ ==~%")
+;; ΕΥΡΗΜΑ ΔΗΜΙΟΥΡΓΟΥ (P1): «το παλιό σώμα παραμένει μεταγλωττισμένο, η εντολή
+;; παραμένει εγγεγραμμένη, το συμβόλαιο διαφημίζει ακόμη εγγραφές στο releases/».
+;; ΤΕΣΣΕΡΙΣ ΑΝΕΞΑΡΤΗΤΟΙ ΕΛΕΓΧΟΙ — κάθε ένας κλείνει ΔΙΑΦΟΡΕΤΙΚΗ διαδρομή:
+(check "Δ3δ① η ΣΥΝΑΡΤΗΣΗ run-attest-release ΔΕΝ ΥΠΑΡΧΕΙ (ούτε απρόσιτη)"
+       (let ((sym (find-symbol "RUN-ATTEST-RELEASE" :orchestrator.cli)))
+         (or (null sym) (not (fboundp sym)))))
+(check "Δ3δ② το όνομα ΔΕΝ είναι στο μητρώο ΕΝΕΡΓΩΝ εντολών"
+       (null (orchestrator.cli::find-command "--attest-release")))
+(check "Δ3δ③ το όνομα ΕΙΝΑΙ στο μητρώο ΚΑΤΑΡΓΗΜΕΝΩΝ εδρών, με αιτία"
+       (let ((info (orchestrator.cli::retired-command "--attest-release")))
+         (and info (stringp (getf info :reason))
+              (search "ΚΑΤΑΡΓΗΘΗΚΕ" (getf info :reason))
+              (stringp (getf info :replacement)))))
+(check "Δ3δ④ ΑΝΑΣΤΑΣΗ ΑΔΥΝΑΤΗ: register-command σε καταργημένο όνομα ⇒ ΣΦΑΛΜΑ"
+       (handler-case
+           (progn (orchestrator.cli::register-command "--attest-release"
+                                                     (lambda (a) (declare (ignore a)) 0))
+                  nil)
+         (error () t)))
+;; ΘΕΤΙΚΟΣ ΜΑΡΤΥΡΑΣ: ο μηχανισμός ΔΕΝ απαγορεύει τα πάντα — ενεργή εντολή
+;; παραμένει εγγράψιμη/ευρετή (αλλιώς ο ④ θα περνούσε για λάθος λόγο).
+(check "Δ3δ⑤ ΘΕΤΙΚΟΣ ΜΑΡΤΥΡΑΣ: η ενεργή --cut-release ΕΙΝΑΙ ευρετή"
+       (and (orchestrator.cli::find-command "--cut-release")
+            (null (orchestrator.cli::retired-command "--cut-release"))))
+(check "Δ3δ⑥ το ΣΥΜΒΟΛΑΙΟ δεν διαφημίζει πλέον εγγραφές στο releases/"
+       (let* ((c (orchestrator.contracts:find-contract "content-addressed-release"))
+              (outs (and c (orchestrator.contracts:contract-outputs c)))
+              (fx (and c (orchestrator.contracts:contract-side-effects c))))
+         (and c
+              (notany (lambda (s) (search "releases/" s)) outs)
+              (notany (lambda (s) (search "releases/" s)) fx)
+              (some (lambda (s) (search "candidates/" s)) outs))))
+
 (uiop:delete-directory-tree *base* :validate t :if-does-not-exist :ignore)
 
 (format t "~%── level7-disarm: ~D passed, ~D failed ──~%" *pass* *fail*)

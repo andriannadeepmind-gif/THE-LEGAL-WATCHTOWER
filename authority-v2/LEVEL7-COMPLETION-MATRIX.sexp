@@ -111,12 +111,24 @@
                     "systems/orchestrator-epistemic/deploy-epistemic.lisp (seats ⇒ fail-closed)"
                     "systems/orchestrator-epistemic/transparency-log.lisp (write seat ⇒ fail-closed)")
    :proof-objects ()
-   :command "tests/level7-disarm-test.lisp + authority-v2/tests/producer-os-boundary-test.sh + capture-adversarial-test.py"
-   :actual-result "EXECUTED 2026-07-31: level7-disarm 13/0· producer-os-boundary 9/0 (ΠΡΑΓΜΑΤΙΚΕΣ παραγωγικές συναρτήσεις υπό producer UID, releases/ bind-mounted read-only, precompiled core)· capture-adversarial 11/0 (openat2/RESOLVE_BENEATH, concurrent independent-subprocess mutator)"
-   :negative-witness "το ΑΚΡΙΒΕΣ πλαστό receipt που ΠΡΙΝ γινόταν δεκτό (⑦β) τώρα ΑΡΝΕΙΤΑΙ· --attest-release αρνείται ΣΤΗΝ ΠΡΩΤΗ ΓΡΑΜΜΗ (πριν από κάθε TSA write, το legacy evidence ΑΘΙΚΤΟ)· create-staging-directory γράφει candidates/ όχι releases/· η capture απορρίπτει symlink/hardlink/FIFO/traversal/preexisting-quarantine ΚΑΙ έπιασε πραγματικό FIFO-DoS (openat2 O_NONBLOCK)"
-   :residual-assumptions ("[ΑΝΑΚΛΗΣΗ] Ο προηγούμενος χαρακτηρισμός Δ2/Δ3 ως CLOSED ΑΠΟΣΥΡΘΗΚΕ: Δ2 = IMPLEMENTED-NOT-PROVED, Δ3 = IMPLEMENTED-NOT-PROVED. Το προηγούμενο grep-proof ήταν ψευδώς πράσινο (έχανε create-staging-directory και --attest-release)· αντικαταστάθηκε με πραγματικό OS test."
+   :command "bash authority-v2/tests/run-authority-v2-proofs.sh   (Η ΜΙΑ ΕΔΡΑ: inventory από filesystem ≡ committed PROOF-CENSUS.txt)"
+   :actual-result "EXECUTED 2026-07-31 [CAPTURE-AND-BOUNDARY-CORRECTION]: authority-v2 proofs 8 passed / 0 failed / 0 blocked (από 8 απογεγραμμένες)·
+                   capture-seat-differential 8/0 — η capture.py ΚΑΙ ο ΠΑΡΑΓΩΓΙΚΟΣ orchestrator.merkle:merkle-root-of-files δίνουν ΤΗΝ ΙΔΙΑ ρίζα
+                     sha256:bbe1817c91837dc89b4affd213e32cb21baab23fb1c02da50bec0c4c638be6f9 στα ΙΔΙΑ αρχεία, ΚΑΙ αλλάζουν ΜΑΖΙ σε 1-byte μετάλλαξη ΚΑΙ σε εναλλαγή σειράς·
+                   capture-adversarial + fixed point 11/0 (10 σενάρια, ΚΑΘΕ καθαρή σύλληψη περνά ΥΠΟΧΡΕΩΤΙΚΑ από fixed point ①②③)·
+                   capture-mutation-witness 8/0 — 7/7 μεταλλάξεις ΣΚΟΤΩΘΗΚΑΝ + θετικός μάρτυρας·
+                   producer-os-boundary 11/0 — EROFS(30) ΟΧΙ EACCES(13), με τον producer ΙΔΙΟΚΤΗΤΗ του releases/ και θετικό έλεγχο ότι ΧΩΡΙΣ mount γράφει·
+                   level7-disarm 20/0 (με 6 νέους ελέγχους Δ3δ)· release-authority 14/0· transparency-log 21/0"
+   :negative-witness "ΜΑΡΤΥΡΑΣ ΜΕΤΑΛΛΑΞΕΩΝ (authority-v2/tests/capture-mutation-witness.py): κάθε ένα από τα ευρήματα του δημιουργού ΞΑΝΑΕΙΣΑΓΕΤΑΙ επίτηδες στον κώδικα και ΠΡΕΠΕΙ να σκοτωθεί —
+                      M1 release_root ως hash-of-hash (ΤΟ ΑΚΡΙΒΕΣ P0), M2 φύλλο χωρίς 0x00, M3 duplicate-last MTH, M4 μερική εγγραφή, M5 κατάργηση fingerprint (TOCTOU), M6 κατάργηση άρνησης hardlink (διαρροή secret), M7 κατάργηση διασταύρωσης φάσεων.
+                      Ο ΙΔΙΟΣ ο μάρτυρας βρήκε ΔΥΟ κενά σενάρια (αρχείο < chunk ανάγνωσης· round-robin αντίπαλος) και τα έκλεισε στην ΑΙΤΙΑ τους.
+                      Στο OS όριο: ο producer ΕΙΝΑΙ ιδιοκτήτης με 0700 και ΓΡΑΦΕΙ χωρίς mount — άρα η άρνηση ΔΕΝ εξηγείται από δικαιώματα· το errno ελέγχεται ΑΡΙΘΜΗΤΙΚΑ."
+   :residual-assumptions ("[ΑΝΑΚΛΗΣΗ ΙΣΧΥΕΙ] Δ2 = IMPLEMENTED-NOT-PROVED, Δ3 = IMPLEMENTED-NOT-PROVED. Ο χαρακτηρισμός CLOSED παραμένει ΑΠΟΣΥΡΜΕΝΟΣ."
+                          "ΚΛΕΙΣΤΑ ΣΕ ΑΥΤΟ ΤΟ COMMIT (εκτελεστικά, όχι τυπικά): ταύτιση Merkle έδρας με την παραγωγή· επαναμέτρηση ΑΠΟΚΛΕΙΣΤΙΚΑ από το quarantine· write-all· κλείσιμο ΟΛΩΝ των descriptors· deadline ανά αρχείο ΚΑΙ ανά ανάγνωση· πραγματικό fixed point· mount-attributable άρνηση· συρμάτωση σε CI."
                           "το TSA conjunct του νέου kernel ΔΕΝ έχει υλοποιηθεί ακόμη (απαίτηση 2/4)"
-                          "η κατάργηση είναι σε επίπεδο κώδικα ΚΑΙ OS (απαίτηση 1) — όχι τυπικά αποδεδειγμένη· η capture είναι υλοποίηση αναφοράς σε Python, ΟΧΙ ο τελικός verified checker (απαίτηση 6)"))
+                          "η κατάργηση είναι σε επίπεδο κώδικα ΚΑΙ OS (απαίτηση 1) — όχι τυπικά αποδεδειγμένη· η capture είναι υλοποίηση αναφοράς σε Python, ΟΧΙ ο τελικός verified checker (απαίτηση 6)"
+                          "ΤΟ COMPOSE SERVICE authority-v2-proofs ΔΕΝ ΕΚΤΕΛΕΣΤΗΚΕ: `docker compose config` ΕΠΙΚΥΡΩΘΗΚΕ (exit 0), αλλά ΔΕΝ υπάρχει διαθέσιμος docker daemon σε αυτό το περιβάλλον. BLOCKED — NOT EXECUTED, ΠΟΤΕ pass."
+                          "ΤΟ CI JOB authority-v2-boundary ΔΕΝ ΕΧΕΙ ΤΡΕΞΕΙ ΑΚΟΜΗ σε GitHub Actions τη στιγμή της συγγραφής — δηλώνεται ΩΣ ΣΥΡΜΑΤΩΜΕΝΟ, ΟΧΙ ΩΣ ΠΡΑΣΙΝΟ."))
 
   ;; ── 6 ────────────────────────────────────────────────────────────────────
   (:id 6

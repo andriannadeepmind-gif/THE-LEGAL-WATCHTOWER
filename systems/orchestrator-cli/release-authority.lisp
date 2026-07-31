@@ -6,9 +6,11 @@
 ;;;;   per-article deploy και ΧΩΡΙΣ wipe — συνθέτει τις ΙΔΙΕΣ έδρες (provenance
 ;;;;   check → load-json-source stage → orchestrator.epistemic seat). Κανένα
 ;;;;   wrapper: δεν καλεί το --run-pipeline.
-;;;; --attest-release <corpus> : επαληθεύει το commitment (recomputed root ≡
-;;;;   ταυτότητα), προσαρτά RFC-3161 receipts APPEND-ONLY και προάγει το latest.
-;;;; Η ταυτότητα release = sha256-<Merkle root> ⇒ overwrite δομικά αδύνατο.
+;;;; --attest-release          : ΚΑΤΑΡΓΗΜΕΝΗ ΕΔΡΑ. Το σώμα ΔΕΝ υπάρχει (δεν
+;;;;   είναι απενεργοποιημένο — είναι διαγραμμένο)· το όνομα ζει ΜΟΝΟ στο
+;;;;   μητρώο καταργημένων εδρών και απαντά τίμια. Ιστορικό ίχνος:
+;;;;   authority-v2/fixtures/legacy-authority/REMOVED-attest-release.lisp.txt
+;;;; Η ταυτότητα candidate = sha256-<Merkle root> ⇒ overwrite δομικά αδύνατο.
 
 (in-package :orchestrator.cli)
 
@@ -147,101 +149,44 @@
               release-dir)
       0)))
 
-(defun run-attest-release (corpus-id &key (tsa-fn nil) (release-id-arg nil))
-  "[Δ3 — ΚΑΤΑΡΓΗΜΕΝΗ ΕΔΡΑ] Η εντολή ΑΡΝΕΙΤΑΙ ΣΤΗΝ ΠΡΩΤΗ ΓΡΑΜΜΗ.
-
-  ΕΥΡΗΜΑ ΔΗΜΙΟΥΡΓΟΥ: το ενεργό --attest-release έγραφε TSA receipts ΜΕΣΑ σε
-  υπάρχον releases/<id>/temporal-proof/ και ΜΟΝΟ ΜΕΤΑ καλούσε το καταργημένο
-  promote-latest!. Δηλαδή ΜΠΟΡΟΥΣΕ να μεταβάλει legacy evidence και κατόπιν να
-  αποτύχει — μόνιμη αλλοίωση του παρελθόντος από εντολή που «δεν κάνει τίποτα».
-  Η άρνηση μπαίνει ΠΡΙΝ από ΚΑΘΕ ενέργεια: πριν από config lookup, πριν από
-  release discovery, πριν από κάθε TSA κλήση, πριν από κάθε byte.
-  Η attestation είναι πλέον ΥΠΟΧΡΕΩΤΙΚΟ CONJUNCT του admission kernel.
-
-  Ιστορική τεκμηρίωση της παλιάς διαδρομής:
-  --attest-release <corpus> [release-id] : προσάρτηση χρονικής απόδειξης σε
-   ΥΠΑΡΧΟΝ commitment. Η επιλογή στόχου είναι ΝΤΕΤΕΡΜΙΝΙΣΤΙΚΗ, ποτέ ευρετική:
-   ρητό release-id, αλλιώς ο ΜΟΝΑΔΙΚΟΣ υποψήφιος· με πολλούς ⇒ ΣΦΑΛΜΑ με
-   πλήρη λίστα (ο δημιουργός ονομάζει, το σύστημα δεν μαντεύει).
-   ① επαλήθευση: recomputed root των 8 canonical ≡ ταυτότητα καταλόγου
-   ② RFC-3161 receipts (append-only: υπάρχοντα receipts ΔΕΝ αγγίζονται)
-   ③ προαγωγή latest (μόνο τότε). TSA-FN injectable ΜΟΝΟ για offline test."
-  ;; ΠΡΩΤΗ ΕΝΤΟΛΗ — πριν από config lookup, πριν από release discovery, πριν
-  ;; από κάθε TSA κλήση, πριν από κάθε byte. Καμία παρενέργεια δεν προηγείται.
-  (error 'orchestrator.epistemic:legacy-authority-seat-removed
-         :seat "--attest-release"
-         :detail "ΚΑΤΑΡΓΗΜΕΝΗ ΕΔΡΑ: καμία εγγραφή στο legacy releases/ — η attestation είναι conjunct του admission kernel (authority-v2)")
-  ;; ── ΑΠΡΟΣΙΤΟΣ ΚΩΔΙΚΑΣ (ιστορικό ίχνος της παλιάς διαδρομής) ──
-  (orchestrator.spec:select-corpus corpus-id)
-  (let* ((short (or (orchestrator.spec:config-get "corpus.short_name")
-                    (error "attest-release: corpus.short_name not configured")))
-         (output-dir (corpus-output-dir
-                      (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR")
-                          (orchestrator.paths:institution-dir "output/"))))
-         (releases-dir (merge-pathnames "releases/" (uiop:ensure-directory-pathname output-dir)))
-         (candidates (remove-if-not
-                      (lambda (d) (let ((leaf (car (last (pathname-directory d)))))
-                                    (and (stringp leaf) (eql 0 (search "sha256-" leaf)))))
-                      (uiop:subdirectories releases-dir))))
-    (unless candidates
-      (error "attest-release ~A: κανένα content-addressed release στο ~A" corpus-id releases-dir))
-    (let* ((release-dir
-             (cond
-               (release-id-arg
-                (or (find release-id-arg candidates
-                          :key (lambda (d) (car (last (pathname-directory d))))
-                          :test #'equal)
-                    (error "attest-release ~A: ανύπαρκτο release ~A~%  υπαρκτά:~{~%  ~A~}"
-                           corpus-id release-id-arg
-                           (mapcar (lambda (d) (car (last (pathname-directory d)))) candidates))))
-               ((null (rest candidates)) (first candidates))
-               (t (error "attest-release ~A: ~D υποψήφια commitments — δώσε ΡΗΤΟ release-id:~{~%  ~A~}"
-                         corpus-id (length candidates)
-                         (mapcar (lambda (d) (car (last (pathname-directory d)))) candidates)))))
-           (release-id (car (last (pathname-directory release-dir))))
-           (fp (find-package :orchestrator.epistemic))
-           (root (funcall (find-symbol "%RELEASE-RECOMPUTED-ROOT" fp) release-dir))
-           (expected (funcall (find-symbol "%ROOT->RELEASE-ID" fp) root)))
-      (format t "~%── ATTEST-RELEASE ~A: ~A ──~%" short release-id)
-      (unless (equal expected release-id)
-        (error "attest-release: ΔΙΑΦΘΟΡΑ — recomputed ~A ≠ ταυτότητα ~A" expected release-id))
-      (format t "  ✓ ακεραιότητα: recomputed root ≡ ταυτότητα~%")
-      (let* ((temporal-dir (merge-pathnames "temporal-proof/" release-dir))
-             (tsr (merge-pathnames "timestamp.tsr" temporal-dir)))
-        (if (probe-file tsr)
-            (format t "  ✓ ήδη attested (τα υπάρχοντα receipts ΔΕΝ αγγίζονται)~%")
-            (if tsa-fn
-                (funcall tsa-fn root temporal-dir)
-                (funcall (find-symbol "REQUEST-MULTI-TSA-TIMESTAMPS" fp) root temporal-dir)))
-        (unless (probe-file tsr)
-          (error "attest-release: καμία TSA δεν απέδωσε receipt — το commitment μένει unattested"))
-        (funcall (find-symbol "PROMOTE-LATEST!" fp) output-dir release-id)
-        (format t "  ✓ ATTESTED + latest → ~A~%" release-id)
-        0))))
-
 (register-command "--cut-release"
   (lambda (args) (run-cut-release (or (first args) (uiop:getenv "ORCHESTRATOR_CORPUS")))))
-(register-command "--attest-release"
-  (lambda (args) (run-attest-release (or (first args) (uiop:getenv "ORCHESTRATOR_CORPUS"))
-                                     :release-id-arg (second args))))
 
+(retire-command! "--attest-release"
+ :reason "Η ΕΔΡΑ ΚΑΤΑΡΓΗΘΗΚΕ ΟΡΙΣΤΙΚΑ. Το ενεργό --attest-release έγραφε TSA
+          receipts ΜΕΣΑ σε υπάρχον legacy releases/<id>/temporal-proof/ και ΜΟΝΟ
+          ΜΕΤΑ καλούσε το promote-latest!: μπορούσε να αλλοιώσει μόνιμα το
+          παρελθόν και κατόπιν να αποτύχει. Το ΣΩΜΑ ΤΗΣ ΣΥΝΑΡΤΗΣΗΣ ΔΕΝ ΥΠΑΡΧΕΙ
+          ΠΙΑ — δεν είναι απενεργοποιημένο, είναι ΔΙΑΓΡΑΜΜΕΝΟ (ιστορικό ίχνος:
+          authority-v2/fixtures/legacy-authority/REMOVED-attest-release.lisp.txt)."
+ :retired-in "Δ3 / CAPTURE-AND-BOUNDARY-CORRECTION"
+ :replacement "authority-v2 admission kernel — η RFC-3161 attestation είναι
+               ΥΠΟΧΡΕΩΤΙΚΟ CONJUNCT της εισδοχής, όχι εκ των υστέρων εντολή")
+
+
+;;; ΕΥΡΗΜΑ ΔΗΜΙΟΥΡΓΟΥ (P1): «το συμβόλαιο ικανότητας εξακολουθεί να διαφημίζει
+;;; εγγραφές στο releases/». ΟΡΘΟ — και επικίνδυνο: το συμβόλαιο ΕΙΝΑΙ η
+;;; δηλωμένη εξουσία της έδρας. Αν λέει «γράφω στο releases/», τότε είτε λέει
+;;; ψέματα είτε η έδρα δεν αφοπλίστηκε. Εδώ λέει ΑΚΡΙΒΩΣ ό,τι κάνει: ο Lisp
+;;; είναι ΑΠΟΚΛΕΙΣΤΙΚΑ ΜΗ ΕΜΠΙΣΤΟΣ ΠΑΡΑΓΩΓΟΣ υποψηφίων.
 (orchestrator.self-model:declare-capability! "εξουσία-εκδόσεων"
- :description "content-addressed release authority: ταυτότητα = Merkle root του περιεχομένου (overwrite δομικά αδύνατο)· χρόνος = append-only RFC-3161 attestation πάνω στο commitment· latest προάγεται ΜΟΝΟ σε attested· παραγωγικές είσοδοι --cut-release/--attest-release, κανένα wrapper"
+ :description "ΜΗ ΕΜΠΙΣΤΟΣ ΠΑΡΑΓΩΓΟΣ ΥΠΟΨΗΦΙΩΝ: συνθέτει candidate bundle κάτω από candidates/<release-id>/ με ταυτότητα = Merkle root του περιεχομένου (overwrite δομικά αδύνατο). ΚΑΜΙΑ εγγραφή στο legacy releases/ — το όριο επιβάλλεται ΑΠΟ ΤΟΝ ΠΥΡΗΝΑ (ξεχωριστό uid + read-only bind mount, EROFS). Η attestation ΔΕΝ είναι εντολή αυτής της έδρας: είναι υποχρεωτικό conjunct του authority-v2 admission kernel. Παραγωγική είσοδος: --cut-release. Το --attest-release ΚΑΤΑΡΓΗΘΗΚΕ (retire-command!)."
  :package :orchestrator.cli
- :functions '("run-cut-release" "run-attest-release" "%release-corpus-context")
+ :functions '("run-cut-release" "%release-corpus-context")
  :gate "--release-gate")
 
 (orchestrator.contracts:defcontract "content-addressed-release" :protocol
  :package :orchestrator.cli :system "orchestrator-cli"
  :capability "εξουσία-εκδόσεων" :role "νομική-μνήμη"
- :purpose "κάθε δημοσιευμένη έκδοση είναι αμετάβλητη ΕΚ ΚΑΤΑΣΚΕΥΗΣ (όνομα = περιεχόμενο) και χρονικά αποδεδειγμένη ΠΡΙΝ γίνει η τρέχουσα — ποτέ σιωπηλό ρολόι, ποτέ αντικατάσταση ιστορικού"
- :inputs '("provenance-checked source.json" "SOURCE_DATE_EPOCH (δηλωμένη αρχή χρόνου)" "RFC-3161 TSAs")
- :outputs '("releases/sha256-<root>/ commitment" "append-only temporal attestations" "latest symlink + υπογεγραμμένος δείκτης latest.json")
- :preconditions '("deterministic mode ενεργό για output-bound χρόνο (αλλιώς ΣΦΑΛΜΑ)")
- :postconditions '("υπάρχον release ΠΟΤΕ δεν διαγράφεται/ξαναγράφεται"
-                   "latest ⇒ πάντα attested release")
- :side-effects '("append-only εγγραφές κάτω από output/<corpus>/releases/")
+ :purpose "κάθε ΥΠΟΨΗΦΙΑ έκδοση ονομάζεται από το περιεχόμενό της (όνομα = Merkle root) ώστε η αντικατάσταση να είναι δομικά αδύνατη· η ΕΓΚΡΙΣΗ και η χρονική απόδειξη ΔΕΝ ανήκουν εδώ — ανήκουν στον admission kernel"
+ :inputs '("provenance-checked source.json" "SOURCE_DATE_EPOCH (δηλωμένη αρχή χρόνου)")
+ :outputs '("candidates/sha256-<root>/ candidate bundle (ΜΗ ΕΓΚΕΚΡΙΜΕΝΟ)")
+ :preconditions '("deterministic mode ενεργό για output-bound χρόνο (αλλιώς ΣΦΑΛΜΑ)"
+                  "η διεργασία τρέχει ΩΣ lawmax-producer, με το releases/ read-only bind-mounted")
+ :postconditions '("ΚΑΝΕΝΑ byte δεν γράφεται κάτω από output/<corpus>/releases/"
+                   "το candidate bundle ΔΕΝ είναι δημοσιευμένο και ΔΕΝ προάγει latest")
+ :side-effects '("εγγραφές ΜΟΝΟ κάτω από output/<corpus>/candidates/")
  :legal-critical t :policy-level :φραγή
- :audit "release-id ≡ recomputed root ελέγξιμο από τον καθένα με το verify kit"
- :rollback "revert commit — κανένα υπάρχον release δεν έχει πειραχτεί"
+ :audit "candidate-id ≡ recomputed root· η σύλληψη σε quarantine και η επαναμέτρηση γίνονται από την authority (authority-v2/capture)"
+ :rollback "διαγραφή του candidate — κανένα δημοσιευμένο artifact δεν έχει πειραχτεί"
  :tests '("--release-gate"))

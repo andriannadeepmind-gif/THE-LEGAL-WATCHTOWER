@@ -37,14 +37,25 @@
   (error 'legacy-authority-seat-removed :seat seat :detail detail))
 
 ;;; ── CANDIDATE BOUNDARY ──
-;;; Ο παραγωγός γράφει ΜΟΝΟ candidate bundles: immutable, content-addressed,
-;;; σε namespace ΞΕΧΩΡΙΣΤΟ από το authority store. Δεν προάγει τίποτα σε
-;;; authority — αυτό είναι δουλειά ΜΟΝΟ του admission kernel της authority-v2.
+;;; Ο παραγωγός γράφει ΜΟΝΟ candidate bundles: content-addressed, σε namespace
+;;; ΞΕΧΩΡΙΣΤΟ από το authority store. Δεν προάγει τίποτα σε authority — αυτό
+;;; είναι δουλειά ΜΟΝΟ του admission kernel της authority-v2.
+;;;
+;;; [ΑΝΑΚΛΗΣΗ — ΕΝΤΟΛΗ ΔΗΜΙΟΥΡΓΟΥ] Ο χαρακτηρισμός «immutable» για τα candidate
+;;; bundles ΑΠΟΣΥΡΕΤΑΙ ΚΑΙ ΑΠΟ ΕΔΩ. Ήταν ΨΕΥΔΗΣ: ο producer είναι ΙΔΙΟΚΤΗΤΗΣ
+;;; του candidates/ και μπορεί να αλλάξει ΚΑΘΕ byte οποιαδήποτε στιγμή, ακόμη
+;;; και ΕΝΟΣΩ η authority διαβάζει (ενεργός αντίπαλος, TOCTOU). Το
+;;; content-addressed όνομα ΔΕΝ κάνει τα bytes αμετάβλητα — κάνει μόνο την
+;;; ΑΣΥΜΦΩΝΙΑ ανιχνεύσιμη ΑΦΟΥ μετρηθούν. Ο ΜΟΝΟΣ αμετάβλητος είναι ο
+;;; ΣΥΛΛΗΦΘΕΙΣ snapshot στο authority quarantine (authority-v2/capture).
 ;;;
 ;;; ΤΙΜΙΟ ΟΡΙΟ: εδώ δηλώνεται η πρόθεση+δομή· ο OS-enforced διαχωρισμός
-;;; (producer identity ⇒ EACCES στο authority store) επιβάλλεται από το
-;;; authority-v2/capability/identities.sh και αποδεικνύεται στα tests. Ο
-;;; παραγωγός ΔΕΝ έχει καν όνομα-συνάρτησης για authority write — δεν υπάρχει.
+;;; επιβάλλεται από ξεχωριστό uid + read-only bind mount του releases/
+;;; (authority-v2/capability/identities.sh) και ΑΠΟΔΕΙΚΝΥΕΤΑΙ εκτελεστικά:
+;;; κάθε εγγραφή του producer στο releases/ αποτυγχάνει με EROFS(30) — ΟΧΙ
+;;; EACCES(13) — ενώ ο ΙΔΙΟΣ producer γράφει κανονικά χωρίς το mount
+;;; (authority-v2/tests/producer-os-boundary-test.sh). Ο παραγωγός ΔΕΝ έχει καν
+;;; όνομα-συνάρτησης για authority write — δεν υπάρχει.
 
 (defvar *candidate-namespace* "candidates/"
   "Υπο-κατάλογος (σχετικός στο base) όπου ο παραγωγός γράφει candidate bundles.

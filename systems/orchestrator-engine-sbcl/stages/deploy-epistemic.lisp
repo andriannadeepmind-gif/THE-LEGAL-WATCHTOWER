@@ -19,8 +19,11 @@
 ;;;; - JWS signatures (if private key available)
 ;;;;
 ;;;; OUTPUT:
-;;;; - Immutable timestamped release directory: /releases/2025-01-15T12:34:56Z/
-;;;; - Atomic publish via 'latest' symlink
+;;;; - Candidate bundle directory: /candidates/sha256-<root>/
+;;;; [ΑΝΑΚΛΗΣΗ] ΟΧΙ «immutable release»: ο producer είναι ΙΔΙΟΚΤΗΤΗΣ του
+;;;; candidates/ και μπορεί να το αλλάξει ανά πάσα στιγμή. Το στάδιο ΔΕΝ
+;;;; δημοσιεύει και ΔΕΝ προάγει latest — η έγκριση ανήκει ΑΠΟΚΛΕΙΣΤΙΚΑ στον
+;;;; admission kernel της authority-v2, πάνω σε ΣΥΛΛΗΦΘΕΝ snapshot (quarantine).
 
 (in-package :orchestrator.engine.sbcl)
 
@@ -41,7 +44,7 @@
     :blockchain-proof - Blockchain anchor from anchor-blockchain stage (optional)
 
   Context Updates:
-    :epistemic-release-dir - Path to immutable timestamped release
+    :epistemic-release-dir - Path to the CANDIDATE bundle (producer-owned, MUTABLE)
     :epistemic-merkle-root - Blake3 Merkle root of all artifacts
     :epistemic-system-hash - Blake3 hash of epistemic system
     :epistemic-manifest - Path to manifest.ttl

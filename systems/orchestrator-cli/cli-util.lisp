@@ -48,6 +48,9 @@
    (λίστα) και επιστρέφει exit-code. ΝΟΜΟΣ ΜΙΑΣ ΕΔΡΑΣ: αν το NAME ανήκει ήδη σε
    ΑΛΛΟ αρχείο, σφάλμα COMMAND-SEAT-COLLISION (καμία σιωπηλή αντικατάσταση) —
    επανεγγραφή από το ΙΔΙΟ αρχείο επιτρέπεται (idempotent reload)."
+  (when (gethash name *retired-commands*)
+    (error "ΑΝΑΣΤΑΣΗ ΚΑΤΑΡΓΗΜΕΝΗΣ ΕΔΡΑΣ «~A»: το όνομα είναι ΚΑΤΑΡΓΗΜΕΝΟ — ~
+            καμία επανεγγραφή. Δες authority-v2/fixtures/legacy-authority/." name))
   (let ((site (%registration-site))
         (owner (gethash name *command-owners*)))
     ;; ΝΟΜΟΣ ΜΙΑΣ ΕΔΡΑΣ, fail-closed (re-review B-5): ανώνυμο runtime site ΔΕΝ
@@ -60,9 +63,77 @@
     (setf (gethash name *command-owners*) site
           (gethash name *commands*) fn)))
 
+;;; ----------------------------------------------------------------------------
+;;; ΚΑΤΑΡΓΗΜΕΝΕΣ ΕΔΡΕΣ — ΜΙΑ ΕΔΡΑ ΓΙΑ ΟΛΕΣ, ΚΑΝΕΝΑ ΝΕΚΡΟ ΣΩΜΑ
+;;; ----------------------------------------------------------------------------
+;;;
+;;; ΕΥΡΗΜΑ ΔΗΜΙΟΥΡΓΟΥ (P1): «το παλιό σώμα του --attest-release παραμένει
+;;; μεταγλωττισμένο και η εντολή παραμένει εγγεγραμμένη». ΟΡΘΟ. Ένα σώμα που
+;;; υπάρχει αλλά «δεν φτάνεται» είναι φρουρός γύρω από λάθος σχήμα: αρκεί μια
+;;; μελλοντική επεξεργασία να μετακινήσει το (error …) και η παλιά διαδρομή
+;;; ξαναζωντανεύει. Ο ΝΟΜΟΣ απαιτεί εξάλειψη της ΚΛΑΣΗΣ, όχι φύλαξη.
+;;;
+;;; ΕΔΩ: το σώμα ΔΙΑΓΡΑΦΕΤΑΙ (το ιστορικό ίχνος παγώνει σε
+;;; authority-v2/fixtures/legacy-authority/). Το ΟΝΟΜΑ καταχωρείται ως
+;;; ΚΑΤΑΡΓΗΜΕΝΟ σε ΕΝΑ μητρώο. Δεν υπάρχει συνάρτηση να κληθεί — υπάρχει μόνο
+;;; τίμια απάντηση. Και η επανεγγραφή καταργημένου ονόματος είναι ΣΦΑΛΜΑ:
+;;; καμία ανάσταση κατά λάθος.
+
+(defvar *retired-commands* (make-hash-table :test 'equal)
+  "\"--foo\" → plist (:reason :retired-in :replacement :site). ΚΑΤΑΡΓΗΜΕΝΗ ΕΔΡΑ:
+   το όνομα ΔΕΝ έχει σώμα — ούτε απρόσιτο. Απαντά, δεν εκτελεί.")
+
+(define-condition retired-command-invoked (error)
+  ((name :initarg :name :reader retired-command-name)
+   (info :initarg :info :reader retired-command-info))
+  (:report (lambda (c s)
+             (let ((i (retired-command-info c)))
+               (format s "ΚΑΤΑΡΓΗΜΕΝΗ ΕΔΡΑ «~A»: ~A~@[~%  Καταργήθηκε: ~A~]~
+                          ~@[~%  Αντικαταστάθηκε από: ~A~]~%  ~
+                          Το σώμα της εντολής ΔΕΝ υπάρχει — δεν είναι απενεργοποιημένο, είναι ΔΙΑΓΡΑΜΜΕΝΟ."
+                       (retired-command-name c)
+                       (getf i :reason) (getf i :retired-in) (getf i :replacement))))))
+
+(defun retire-command! (name &key reason retired-in replacement)
+  "Καταχώρηση ΚΑΤΑΡΓΗΜΕΝΗΣ έδρας. Αν το NAME είναι ΕΝΕΡΓΟ στο μητρώο εντολών,
+   ΣΦΑΛΜΑ: μια έδρα δεν μπορεί να είναι ταυτόχρονα ενεργή και καταργημένη."
+  (when (gethash name *commands*)
+    (error "ΑΝΤΙΦΑΣΗ ΕΔΡΑΣ «~A»: δηλώνεται ΚΑΤΑΡΓΗΜΕΝΗ ενώ είναι ΕΝΕΡΓΗ (~A)"
+           name (gethash name *command-owners*)))
+  (setf (gethash name *retired-commands*)
+        (list :reason reason :retired-in retired-in :replacement replacement
+              :site (%registration-site)))
+  name)
+
+(defun retired-command (name)
+  "Το plist της καταργημένης έδρας NAME, ή NIL."
+  (and name (gethash name *retired-commands*)))
+
+(defun all-retired-commands ()
+  (sort (loop for k being the hash-keys of *retired-commands* collect k) #'string<))
+
 (defun find-command (name)
   "Ο χειριστής της εντολής NAME, ή NIL όταν δεν είναι στο μητρώο."
   (and name (gethash name *commands*)))
+
+(defun resolve-command (name)
+  "Η ΜΙΑ ΕΔΡΑ ΕΠΙΛΥΣΗΣ: (values handler kind), kind ∈ :registered|:retired|:unknown.
+   ΕΝΕΡΓΗ ⇒ ο χειριστής της. ΚΑΤΑΡΓΗΜΕΝΗ ⇒ χειριστής που σηματοδοτεί
+   RETIRED-COMMAND-INVOKED (τίμια απάντηση, όχι «Unknown command»). ΑΓΝΩΣΤΗ ⇒
+   (values NIL :unknown) και ο καλών βάζει το usage — η τυπογραφία του usage
+   ζει στο main, η ΚΡΙΣΗ ζει εδώ.
+   Ο dispatcher ΚΑΙ κάθε απόδειξη περνούν από ΕΔΩ: δεν υπάρχει δεύτερη διαδρομή
+   επίλυσης που θα μπορούσε να αποκλίνει σιωπηλά."
+  (let ((h (find-command name)))
+    (cond
+      (h (values h :registered))
+      ((retired-command name)
+       (let ((info (retired-command name)))
+         (values (lambda (args)
+                   (declare (ignore args))
+                   (error 'retired-command-invoked :name name :info info))
+                 :retired)))
+      (t (values nil :unknown)))))
 
 (defun command-owner (name)
   "Το αρχείο-έδρα της εντολής NAME, ή NIL."

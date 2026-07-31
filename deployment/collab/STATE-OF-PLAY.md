@@ -337,3 +337,34 @@ publish-empty-corpus αναβαθμίστηκε από eval-redefinition). (6) �
 (7) BLOCKED: dispatch 403 / push ⇒ 0 runs / docker απών — μόνο δημιουργός
 (Run workflow στον κλάδο, Ή PR προς main, Ή push). Μάρτυρες: **39/39, 0
 BLOCKED, μητρώο ≡ 14 ids**.
+
+## [0122] CAPTURE-AND-BOUNDARY-CORRECTION — `claude/lawmax-level7-vcct-rsm`
+
+Αποκλειστικό διορθωτικό commit στα 6 ευρήματα (2×P0, 4×P1) του δημιουργού πάνω
+στο `740d1d45`. **Δ4–Δ9 ΔΕΝ αγγίχτηκαν** (ρητή εντολή).
+
+- **P0-1 έδρα Merkle** ⇒ ΚΛΕΙΣΤΟ με **διαφορική απόδειξη**: `capture.py` ≡
+  ΠΑΡΑΓΩΓΙΚΟΣ `orchestrator.merkle:merkle-root-of-files` στα ίδια bytes
+  (`sha256:bbe1817c…9da0`), + `verify_merkle_seat()` απέναντι στα committed
+  golden vectors ΠΡΙΝ από κάθε byte.
+- **P0-2 rehash** ⇒ ΚΛΕΙΣΤΟ ΔΟΜΙΚΑ: δύο διακριτές φάσεις (αντιγραφή χωρίς hash /
+  μέτρηση αποκλειστικά από quarantine) + διασταύρωση φάσεων.
+- **P1-3 ψευδώς-πράσινο** ⇒ το `None` δεν αρκεί ποτέ: υποχρεωτικό fixed point με
+  ανεξάρτητη υλοποίηση + έλεγχο συνοχής/διαρροής.
+- **P1-4** ⇒ όλοι οι descriptors σε `finally`, deadline ανά αρχείο ΚΑΙ ανά chunk.
+- **P1-5 mount** ⇒ **EROFS(30), όχι EACCES(13)**, με τον producer ιδιοκτήτη και
+  θετικό έλεγχο ότι χωρίς mount γράφει.
+- **P1-6** ⇒ σώμα `run-attest-release` **διαγράφηκε**, μία έδρα καταργημένων
+  εντολών (ανάσταση = σφάλμα), συμβόλαιο candidates-only, ανάκληση «immutable»
+  ολοκληρωμένη.
+- **Συρμάτωση**: μία έδρα `run-authority-v2-proofs.sh` (filesystem ≡ committed
+  `PROOF-CENSUS.txt`), CI job φέρον στο `tag-release`, compose service.
+
+**Αριθμοί (εκτελεσμένοι):** authority-v2 proofs 8/0/0 blocked · seat-differential
+8/0 · adversarial+fixed-point 11/0 · mutation witness 8/0 (7/7 σκοτωμένες) · OS
+boundary 11/0 · delta23 11/0 · level7-disarm 20/0 · release-authority 14/0 ·
+transparency-log 21/0.
+
+**BLOCKED — NOT EXECUTED:** compose service (docker daemon απών· `compose config`
+επικυρώθηκε) · CI job (δεν έχει τρέξει ακόμη). Δ2/Δ3 = IMPLEMENTED-NOT-PROVED,
+Level-7 gate `:not-passed`.
