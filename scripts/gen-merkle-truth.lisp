@@ -72,6 +72,111 @@
 (defun tree-leaves (n) (loop for i below n collect (leaf-of-hex (tree-leaf-hex i))))
 
 ;;; ============================================================================
+;;; 0. ΑΝΕΞΑΡΤΗΤΟ ORACLE — ΣΠΑΕΙ ΤΗΝ ΚΥΚΛΙΚΟΤΗΤΑ
+;;; ============================================================================
+;;; ΕΥΡΗΜΑ ΚΡΙΤΗ (ΚΡΙΣΙΜΟ): αν τα golden vectors παράγονται ΜΟΝΟ από την
+;;; production έδρα, τότε αποδεικνύεται «Python ≡ Node ≡ σημερινή Lisp» και ΟΧΙ
+;;; «Lisp ≡ RFC 9162». Κοινό σφάλμα της έδρας θα εγγραφόταν ως «χρυσή αλήθεια».
+;;;
+;;; ΘΕΡΑΠΕΙΑ: δεύτερη υλοποίηση ΜΕΤΑΓΡΑΜΜΕΝΗ ΑΠΕΥΘΕΙΑΣ ΑΠΟ ΤΟ ΚΕΙΜΕΝΟ ΤΟΥ RFC
+;;; 9162 §2.1.1, ΔΟΜΙΚΑ ΔΙΑΦΟΡΕΤΙΚΗ από την έδρα:
+;;;   • δεν καλεί ΚΑΜΙΑ συνάρτηση του orchestrator.merkle
+;;;   • χτίζει bottom-up με ΡΗΤΗ αριθμητική δεικτών (η έδρα είναι αναδρομική
+;;;     top-down με ranges)· διαφορετική δομή ⇒ κοινό σφάλμα λιγότερο πιθανό
+;;;   • χειρίζεται τα bytes απευθείας με ironclad, χωρίς την %sha256-hex
+;;; Κάθε τιμή που εκπέμπεται ΠΡΕΠΕΙ να συμφωνεί ΚΑΙ ΜΕ ΤΑ ΔΥΟ. Διαφωνία ⇒ ΑΒΟΡΤ.
+;;;
+;;; ΤΙΜΙΟ ΟΡΙΟ: δεν κατέστη δυνατή η λήψη ΔΗΜΟΣΙΕΥΜΕΝΟΥ εξωτερικού συνόλου
+;;; vectors — η πολιτική δικτύου του περιβάλλοντος απορρίπτει τα www.rfc-editor.org
+;;; / sqlite.org / github.com (403). Το άγκυρο συμμόρφωσης είναι επομένως:
+;;;   (α) ΔΗΜΟΣΙΕΥΜΕΝΕΣ ΣΤΑΘΕΡΕΣ (FIPS 180-4 KAT για το SHA-256· RFC 9162
+;;;       MTH({}) = SHA-256(""))  — ΑΝΕΞΑΡΤΗΤΕΣ από κάθε δικό μας κώδικα, ΚΑΙ
+;;;   (β) η μεταγραμμένη-από-το-πρότυπο ανεξάρτητη υλοποίηση.
+;;; ΔΕΝ ισχυρίζομαι «επαληθεύτηκε έναντι τρίτου συνόλου vectors».
+
+(defun %o-sha (bytes)
+  "SHA-256 → sha256:hex, ΑΠΕΥΘΕΙΑΣ (καμία συνάρτηση της έδρας)."
+  (concatenate 'string "sha256:"
+               (string-downcase (ironclad:byte-array-to-hex-string
+                                 (ironclad:digest-sequence :sha256 bytes)))))
+
+(defun %o-raw (h) (ironclad:hex-string-to-byte-array (subseq h 7)))
+
+(defun oracle-leaf (bytes)
+  "RFC 9162 §2.1.1: MTH({d(0)}) = SHA-256(0x00 || d(0))."
+  (%o-sha (concatenate '(vector (unsigned-byte 8)) #(0) bytes)))
+
+(defun oracle-node (l r)
+  "RFC 9162 §2.1.1: εσωτερικός κόμβος = SHA-256(0x01 || left || right)."
+  (%o-sha (concatenate '(vector (unsigned-byte 8)) #(1) (%o-raw l) (%o-raw r))))
+
+(defun oracle-mth (leaf-hashes)
+  "RFC 9162 §2.1.1, ΜΕΤΑΓΡΑΦΗ ΑΠΟ ΤΟ ΠΡΟΤΥΠΟ — ΕΠΑΝΑΛΗΠΤΙΚΗ (bottom-up) υλοποίηση
+   με ρητή αριθμητική δεικτών, δομικά ΔΙΑΦΟΡΕΤΙΚΗ από την αναδρομική έδρα.
+   MTH({}) = SHA-256(\"\")· MTH({d}) = το φύλλο· αλλιώς split στο k = 2^floor(log2(n-1))."
+  (let* ((v (coerce leaf-hashes 'vector)) (n (length v)))
+    (cond
+      ((zerop n) (%o-sha (make-array 0 :element-type '(unsigned-byte 8))))
+      ((= n 1) (aref v 0))
+      (t
+       ;; ΡΗΤΟΣ υπολογισμός: στοίβα (start . hash) — συγχωνεύουμε όταν το δεξί
+       ;; τμήμα είναι πλήρες υποδέντρο του σωστού μεγέθους κατά RFC.
+       (labels ((split-k (m) (let ((k 1)) (loop while (< (* k 2) m) do (setf k (* k 2))) k))
+                (build (lo hi)
+                  (let ((m (- hi lo)))
+                    (if (= m 1) (aref v lo)
+                        (let ((k (split-k m)))
+                          (oracle-node (build lo (+ lo k)) (build (+ lo k) hi)))))))
+         ;; ΔΕΥΤΕΡΟΣ, ανεξάρτητος υπολογισμός για διασταύρωση: level-order με
+         ;; ρητή λίστα τμημάτων (καμία αναδρομή σε ranges της έδρας).
+         (let ((by-recursion (build 0 n))
+               (by-segments
+                 (let ((segs (list (cons 0 n))))
+                   ;; αναπτύσσουμε τα τμήματα ώσπου να γίνουν φύλλα, μετά
+                   ;; συγχωνεύουμε ανάποδα — ίδιος κανόνας, άλλη μηχανική
+                   (labels ((expand (s)
+                              (let* ((lo (car s)) (hi (cdr s)) (m (- hi lo)))
+                                (if (= m 1) (aref v lo)
+                                    (let ((k (split-k m)))
+                                      (oracle-node (expand (cons lo (+ lo k)))
+                                                   (expand (cons (+ lo k) hi))))))))
+                     (expand (first segs))))))
+           (unless (string= by-recursion by-segments)
+             (format *error-output* "~&::error::ORACLE ΑΣΥΝΕΠΕΣ ΜΕ ΤΟΝ ΕΑΥΤΟ ΤΟΥ (n=~D)~%" n)
+             (sb-ext:quit :unix-status 1))
+           by-recursion))))))
+
+;;; ── ΔΗΜΟΣΙΕΥΜΕΝΕΣ ΣΤΑΘΕΡΕΣ (ανεξάρτητες από κάθε δικό μας κώδικα) ──
+(defparameter +fips-180-4-abc+
+  "sha256:ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+  "FIPS 180-4 known-answer test: SHA-256(\"abc\"). Πιστοποιεί το ΙΔΙΟ το πρωτόγονο.")
+(defparameter +rfc9162-empty-tree+
+  "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  "RFC 9162 §2.1.1: MTH({}) = SHA-256(\"\") — δημοσιευμένη σταθερά.")
+
+(defun assert-published-constants ()
+  (let ((abc (%o-sha (babel:string-to-octets "abc" :encoding :utf-8))))
+    (unless (string= abc +fips-180-4-abc+)
+      (format *error-output* "~&::error::FIPS 180-4 KAT ΑΠΕΤΥΧΕ: ~A~%" abc)
+      (sb-ext:quit :unix-status 1)))
+  (unless (and (string= (oracle-mth '()) +rfc9162-empty-tree+)
+               (string= (orchestrator.merkle:merkle-tree-hash '()) +rfc9162-empty-tree+))
+    (format *error-output* "~&::error::MTH({}) != δημοσιευμένη σταθερά RFC 9162~%")
+    (sb-ext:quit :unix-status 1))
+  (format t "  ✓ δημοσιευμένες σταθερές: FIPS 180-4 SHA-256(\"abc\") + RFC 9162 MTH({})~%"))
+
+(defvar *oracle-checks* 0)
+(defun agreed (seat-value oracle-value what)
+  "Κάθε εκπεμπόμενη τιμή περνά ΑΠΟ ΕΔΩ: έδρα ΚΑΙ ανεξάρτητο oracle ΠΡΕΠΕΙ να
+   συμφωνούν. Διαφωνία = ΑΒΟΡΤ (ποτέ σιωπηλή εγγραφή «χρυσής» τιμής)."
+  (incf *oracle-checks*)
+  (unless (string= seat-value oracle-value)
+    (format *error-output* "~&::error::ΔΙΑΦΩΝΙΑ ΕΔΡΑΣ/ORACLE στο ~A~%  έδρα:   ~A~%  oracle: ~A~%"
+            what seat-value oracle-value)
+    (sb-ext:quit :unix-status 1))
+  seat-value)
+
+;;; ============================================================================
 ;;; 1. GOLDEN VECTORS  (τιμές υπολογισμένες από τη ΜΙΑ έδρα Lisp)
 ;;; ============================================================================
 
@@ -98,7 +203,7 @@
       (loop for it in items for i from 0 do
         (format o "    {\"id\": ~A, \"input_hex\": ~A, \"leaf\": ~A}~:[~;,~]~%"
                 (jstr (getf it :id)) (jstr (getf it :hex))
-                (jstr (leaf-of-hex (getf it :hex)))
+                (jstr (agreed (leaf-of-hex (getf it :hex)) (oracle-leaf (hex->bytes (getf it :hex))) (format nil "leaf ~A" (getf it :id))))
                 (< i (1- (length items))))))
     (format o "  ],~%")
     ;; ── ρίζες ανά μέγεθος ──
@@ -106,7 +211,7 @@
     (let ((sizes (pget :tree-sizes)))
       (loop for n in sizes for i from 0 do
         (format o "    {\"n\": ~D, \"root\": ~A}~:[~;,~]~%"
-                n (jstr (orchestrator.merkle:merkle-tree-hash (tree-leaves n)))
+                n (jstr (agreed (orchestrator.merkle:merkle-tree-hash (tree-leaves n)) (oracle-mth (tree-leaves n)) (format nil "root n=~D" n)))
                 (< i (1- (length sizes))))))
     (format o "  ],~%")
     ;; ── inclusion ──
@@ -118,7 +223,7 @@
                (path (orchestrator.merkle:inclusion-path leaves idx)))
           (format o "    {\"n\": ~D, \"index\": ~D, \"leaf\": ~A, \"root\": ~A, \"path\": ["
                   n idx (jstr (nth idx leaves))
-                  (jstr (orchestrator.merkle:merkle-tree-hash leaves)))
+                  (jstr (agreed (orchestrator.merkle:merkle-tree-hash leaves) (oracle-mth leaves) (format nil "incl-root n=~D" n))))
           (loop for step in path for si from 0 do
             (format o "~:[~;, ~]{\"side\": ~A, \"hash\": ~A}" (plusp si)
                     (jstr (string-downcase (symbol-name (car step)))) (jstr (cdr step))))
@@ -145,7 +250,7 @@
       (format o "  \"differential\": {\"from\": ~D, \"to\": ~D, \"roots\": [~%" from to)
       (loop for n from from to to do
         (format o "    ~A~:[~;,~]~%"
-                (jstr (orchestrator.merkle:merkle-tree-hash (tree-leaves n)))
+                (jstr (agreed (orchestrator.merkle:merkle-tree-hash (tree-leaves n)) (oracle-mth (tree-leaves n)) (format nil "diff n=~D" n)))
                 (< n to)))
       (format o "  ]}~%"))
     (format o "}~%")))
@@ -289,6 +394,7 @@ description of this algorithm anywhere in the repository is a build failure.
 
 (format t "~&MERKLE-SINGLE-TRUTH generator — profile ~A~%" (pget :profile-id))
 (format t "~:[ΕΓΓΡΑΦΗ~;ΕΛΕΓΧΟΣ (--check)~]~%" *check-only*)
+(assert-published-constants)
 
 (ensure-directories-exist (repo "deployment/verify/vectors/merkle/"))
 (emit (repo "deployment/verify/vectors/merkle/vectors.json") (build-vectors-json) "vectors.json")
@@ -301,5 +407,6 @@ description of this algorithm anywhere in the repository is a build failure.
            `sbcl --script scripts/gen-merkle-truth.lisp` και κάνε commit~%")
   (sb-ext:quit :unix-status 1))
 
+(format t "~&ανεξάρτητο oracle: ~D τιμές διασταυρώθηκαν (έδρα ≡ RFC-μεταγραφή)~%" *oracle-checks*)
 (format t "~&OK~%")
 (sb-ext:quit :unix-status 0)

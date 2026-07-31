@@ -8,7 +8,9 @@
 ;;;; cryptographic proof. So each provision travels with a portable proof that
 ;;;; ANYONE can check WITHOUT trusting us:
 ;;;;
-;;;;   leaf      = sha256(canonical text of the provision)
+;;;;   leaf      = sha256:hex( SHA-256( 0x00 || UTF-8(canonical text) ) )
+;;;;               [MERKLE-SINGLE-TRUTH] domain-separated κατά RFC 9162 §2.1.1·
+;;;;               κανονικό profile: deployment/verify/merkle-profile.sexp
 ;;;;   path      = Merkle inclusion path (leaf → signed corpus root)
 ;;;;   root      = the corpus Merkle root (RFC-3161 timestamped + JWS signed)
 ;;;;
@@ -172,7 +174,7 @@
    την απουσία πεδίων ποια βαθμίδα εγγύησης κρατά."
   (format nil "{~A:~A,~A:~A,~A:~A,~A:~D,~A:~A,~A:~A~@[,~A:~A~]~@[,~A:~A~]}"
           (%j "version") (%j "pcl-1")
-          (%j "algorithm") (%j "sha256-merkle/rfc6962+RS256")
+          (%j "algorithm") (%j "lawmax-merkle-sha256-v1+RS256")
           (%j "merkle_root") (%j root)
           (%j "count") count
           (%j "anchored_at") (%j anchored-at)

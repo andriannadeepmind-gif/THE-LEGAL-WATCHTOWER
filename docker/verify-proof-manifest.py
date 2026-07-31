@@ -83,7 +83,25 @@ VERIFIER_STAGE_ONLY = set()
 CENSUS_REL = os.path.join("docker", "suite-census.txt")
 
 EXPECTED_GATES = ["cross-language-verifier", "release-vector-conformance",
-                  "verify-canonical", "semantic-validity", "temporal-verifier"]
+                  "verify-canonical", "semantic-validity", "temporal-verifier",
+                  "merkle-single-truth"]
+
+# [MERKLE-SINGLE-TRUTH] ΜΙΑ ΕΔΡΑ για το «τι δεσμεύει το verifier-proof»: και ο
+# έλεγχος μορφής και ο ΕΠΑΝΥΠΟΛΟΓΙΣΜΟΣ διαβάζουν ΑΥΤΟΝ τον πίνακα, ώστε νέος
+# verifier να μην μπορεί να μπει στο manifest χωρίς να ελεγχθεί ΚΑΙ ως προς το
+# πραγματικό αρχείο. Οι δύο Merkle verifiers ΚΑΙ τα δύο δεδομένα-πηγή (profile,
+# golden vectors) δεσμεύονται εδώ: αλλιώς το gate «πέρασε» πάνω σε άγνωστα bytes.
+BOUND_VERIFIER_FILES = (
+    ("verify_py_sha256",            "deployment/verify/verify.py"),
+    ("verify_mjs_sha256",           "deployment/verify/verify.mjs"),
+    ("verify_canonical_py_sha256",  "deployment/verify/verify-canonical.py"),
+    ("verify_temporal_py_sha256",   "deployment/verify/verify-temporal.py"),
+    ("verify_release_py_sha256",    "deployment/verify/verify-release.py"),
+    ("verify_merkle_py_sha256",     "deployment/verify/verify-merkle.py"),
+    ("verify_merkle_mjs_sha256",    "deployment/verify/verify-merkle.mjs"),
+    ("merkle_profile_sha256",       "deployment/verify/merkle-profile.sexp"),
+    ("merkle_vectors_sha256",       "deployment/verify/vectors/merkle/vectors.json"),
+)
 
 # Σουίτες που στο standalone-test stage (SBCL-only, χωρίς node/rdflib) κάνουν
 # ΤΙΜΙΟ SKIP και ΞΑΝΑΤΡΕΧΟΥΝ ως ΣΚΛΗΡΟ gate στο verifier-conformance stage
@@ -210,8 +228,7 @@ def main(proof_dir, tests_dir, app_root=None):
         fail("verifier-proof: άγνωστο σχήμα %r" % vp.get("proof"))
     if vp.get("git_commit") != sp.get("git_commit"):
         fail("verifier-proof: git_commit ≠ standalone-proof")
-    for k in ("verify_py_sha256", "verify_mjs_sha256", "verify_canonical_py_sha256",
-              "verify_temporal_py_sha256", "verify_release_py_sha256"):
+    for k, _rel in BOUND_VERIFIER_FILES:
         if not HEX64.match(vp.get(k, "")):
             fail("verifier-proof: %s ΔΕΝ είναι 64-hex: %r" % (k, vp.get(k)))
     if vp.get("gates") != EXPECTED_GATES:
@@ -233,11 +250,7 @@ def main(proof_dir, tests_dir, app_root=None):
                 h.update(fh.read())
         if sp.get("logs_sha256") != h.hexdigest():
             fail("logs_sha256 ≠ επανυπολογισμός από proof/logs/*")
-        for k, rel in (("verify_py_sha256", "deployment/verify/verify.py"),
-                       ("verify_mjs_sha256", "deployment/verify/verify.mjs"),
-                       ("verify_canonical_py_sha256", "deployment/verify/verify-canonical.py"),
-                       ("verify_temporal_py_sha256", "deployment/verify/verify-temporal.py"),
-                       ("verify_release_py_sha256", "deployment/verify/verify-release.py")):
+        for k, rel in BOUND_VERIFIER_FILES:
             fp = os.path.join(app_root, rel)
             if vp.get(k) != sha256_file(fp):
                 fail("%s ≠ επανυπολογισμός από %s" % (k, rel))

@@ -37,11 +37,17 @@ results = []           # (mutant, language, exit_code, killed?)
 
 
 def record(mutant, lang, code, note=""):
-    killed = code != 0
-    results.append((mutant, lang, code, killed, note))
-    mark = "ok  " if killed else "FAIL"
-    print(f"  {mark} {mutant:22s} {lang:7s} exit={code:<3d} "
-          f"{'ΣΚΟΤΩΘΗΚΕ' if killed else 'ΕΠΙΒΙΩΣΕ — Ο ΜΑΡΤΥΡΑΣ ΕΙΝΑΙ ΚΕΝΟΣ'}{note}")
+    """[ΔΙΟΡΘΩΣΗ ΚΡΙΤΗ] killed = code > 0 ΑΥΣΤΗΡΑ. Πριν ήταν `code != 0`, οπότε
+    το -1 (εργαλείο ΑΠΟΝ) καταμετρούνταν ως «σκοτωμένη μετάλλαξη» — false-green.
+    Τώρα: -1 = BLOCKED, ΔΕΝ είναι kill, και ρίχνει ΟΛΟ το script."""
+    blocked = code < 0
+    killed = code > 0
+    results.append((mutant, lang, code, killed, blocked, note))
+    mark = "ok  " if killed else ("BLK " if blocked else "FAIL")
+    state = ("ΣΚΟΤΩΘΗΚΕ" if killed else
+             ("BLOCKED — ΔΕΝ ΕΚΤΕΛΕΣΤΗΚΕ (ποτέ PASS)" if blocked else
+              "ΕΠΙΒΙΩΣΕ — Ο ΜΑΡΤΥΡΑΣ ΕΙΝΑΙ ΚΕΝΟΣ"))
+    print(f"  {mark} {mutant:22s} {lang:7s} exit={code:<3d} {state}{note}")
 
 
 # ── ΜΕΤΑΛΛΑΞΕΙΣ: (παλιό, νέο) ανά γλώσσα. Πραγματική επέμβαση στο κείμενο. ──
@@ -52,6 +58,7 @@ PY_MUT = {
                        "return _h(NODE_DOMAIN, bytes.fromhex(b[len(PREFIX):]) + bytes.fromhex(a[len(PREFIX):]))"),
   "wrong-split":      ("    k = largest_power_of_two_below(len(leaves))",
                        "    k = len(leaves) // 2"),
+  # ΜΕΤΑΛΛΑΞΗ (ΟΧΙ ο κανόνας): επίπεδο-προς-επίπεδο, περιττός ⇒ ζευγάρι με ΕΑΥΤΟ.
   "duplicate-last":   ("    k = largest_power_of_two_below(len(leaves))\n    return node(mth(leaves[:k]), mth(leaves[k:]))",
                        "    cur = list(leaves)\n"
                        "    while len(cur) > 1:\n"
@@ -94,8 +101,18 @@ LISP_MUT = {
                        "(%sha256-hex (concatenate '(vector (unsigned-byte 8)) +node-prefix+ br bl))"),
   "wrong-split":      ("(let ((k 1))\n    (loop while (< (* k 2) n) do (setf k (* k 2)))\n    k))",
                        "(floor n 2))"),
+  # ΠΡΑΓΜΑΤΙΚΗ ΜΕΤΑΛΛΑΞΗ duplicate-last: επίπεδο-προς-επίπεδο, περιττός ⇒ ζευγάρι με ΕΑΥΤΟ.
   "duplicate-last":   ("(t (let ((k (%largest-power-of-two-below n)))\n                        (hash-node (mth lo (+ lo k)) (mth (+ lo k) hi))))",
-                       "(t (let ((k (ceiling n 2)))\n                        (hash-node (mth lo (min hi (+ lo k)))\n                                   (mth (min hi (+ lo k)) hi))))"),
+                       "(t (let ((cur (coerce (subseq v lo hi) 'list)))\n"
+                       "                        (loop while (> (length cur) 1) do\n"
+                       "                          (when (oddp (length cur)) (setf cur (append cur (last cur))))\n"
+                       "                          (setf cur (loop for (a b) on cur by #'cddr collect (hash-node a b))))\n"
+                       "                        (first cur)))"),
+  # Οι δύο μεταλλάξεις ΕΙΣΟΔΟΥ έλειπαν εντελώς από τη Lisp (εύρημα κριτή).
+  "unicode-normalize":("(defun hash-leaf-bytes (bytes)",
+                       "(defun hash-leaf-bytes (bytes)\n  (setf bytes (babel:string-to-octets\n               (sb-unicode:normalize-string (babel:octets-to-string bytes :encoding :utf-8) :nfc)\n               :encoding :utf-8))"),
+  "crlf-normalize":   ("(defun hash-leaf-bytes (bytes)",
+                       "(defun hash-leaf-bytes (bytes)\n  (setf bytes (babel:string-to-octets\n               (with-output-to-string (o)\n                 (let ((s (babel:octets-to-string bytes :encoding :utf-8)))\n                   (loop for i from 0 below (length s) do\n                     (unless (and (char= (char s i) #\\Return) (< (1+ i) (length s))\n                                  (char= (char s (1+ i)) #\\Newline))\n                       (write-char (char s i) o)))))\n               :encoding :utf-8))"),
 }
 
 # ── PYTHON ──
@@ -138,7 +155,12 @@ LISP_PROBE = r'''
                      collect (orchestrator.merkle:hash-leaf-bytes
                               (babel:string-to-octets (format nil "~D" i) :encoding :utf-8))))
        (root (orchestrator.merkle:merkle-tree-hash leaves)))
-  (format t "~A~%" root))
+  (format t "ROOT5 ~A~%" root)
+  ;; φύλλα ειδικής εισόδου — ΧΩΡΙΣ αυτά, unicode/crlf μεταλλάξεις είναι αόρατες
+  (dolist (spec '(("nfd" "ceb1cc81") ("crlf" "ceb10d0aceb2")))
+    (format t "LEAF-~A ~A~%" (first spec)
+            (orchestrator.merkle:hash-leaf-bytes
+             (ironclad:hex-string-to-byte-array (second spec))))))
 (sb-ext:exit :code 0)
 '''
 
@@ -157,10 +179,19 @@ def run_lisp(mutant, old, new):
         probe = os.path.join(d, "probe.lisp")
         open(probe, "w", encoding="utf-8").write(LISP_PROBE.format(third=THIRD, seat=seat))
         r = subprocess.run(["sbcl", "--script", probe], capture_output=True, text=True)
-        got = [l.strip() for l in r.stdout.splitlines() if l.strip().startswith("sha256:")]
-        # ΣΚΟΤΩΜΕΝΟ = ή έσκασε, ή έδωσε ΔΙΑΦΟΡΕΤΙΚΗ ρίζα από το golden vector
-        code = 0 if (r.returncode == 0 and got and got[-1] == expected) else 1
-        record(mutant, "lisp", code)
+        out = {}
+        for line in r.stdout.splitlines():
+            parts = line.strip().split()
+            if len(parts) == 2 and parts[1].startswith("sha256:"):
+                out[parts[0]] = parts[1]
+        golden = {
+            "ROOT5":     expected,
+            "LEAF-nfd":  next(l["leaf"] for l in V["leaves"] if l["id"] == "nfd-alpha-tonos"),
+            "LEAF-crlf": next(l["leaf"] for l in V["leaves"] if l["id"] == "embedded-crlf"),
+        }
+        # ΣΚΟΤΩΜΕΝΟ = έσκασε, Ή οποιαδήποτε τιμή διαφέρει από το golden vector
+        agree = r.returncode == 0 and all(out.get(k) == v for k, v in golden.items())
+        record(mutant, "lisp", 0 if agree else 1)
 
 
 print("== ΜΑΡΤΥΡΕΣ ΜΕΤΑΛΛΑΞΗΣ — πραγματική εφαρμογή σε ΚΑΘΕ υλοποίηση ==")
@@ -170,23 +201,67 @@ for mutant in ["duplicate-last", "no-leaf-prefix", "no-node-prefix",
     if mutant in MJS_MUT:  run_node(mutant, *MJS_MUT[mutant])
     if mutant in LISP_MUT: run_lisp(mutant, *LISP_MUT[mutant])
 
-# ── 8ος ΜΑΡΤΥΡΑΣ: ΠΟΛΙΤΙΚΗ — δημοσίευση κενού corpus ──
-# Ο μηχανισμός ΞΕΡΕΙ τη ρίζα του κενού δέντρου· η ΠΟΛΙΤΙΚΗ την απαγορεύει.
-# Επιβεβαιώνεται ότι η άρνηση υπάρχει ΣΤΗΝ ΕΔΡΑ (κειμενικός έλεγχος της πύλης)
-# — η ΕΚΤΕΛΕΣΤΙΚΗ απόδειξη ζει στο tests/merkle-single-truth-test.lisp §Β.
-pc = open(os.path.join(repo, "source/proof-carrying.lisp"), encoding="utf-8").read()
-gate_present = ("empty-corpus-publication" in pc and "(when (null provisions)" in pc)
-record("publish-empty-corpus", "policy", 1 if gate_present else 0,
-       "" if gate_present else "  (::error:: η πύλη δημοσίευσης ΛΕΙΠΕΙ)")
+# ── 8ος ΜΑΡΤΥΡΑΣ: ΠΟΛΙΤΙΚΗ — δημοσίευση κενού corpus (ΠΡΑΓΜΑΤΙΚΗ ΜΕΤΑΛΛΑΞΗ) ──
+# [ΔΙΟΡΘΩΣΗ ΚΡΙΤΗ] Πριν ήταν ΚΕΙΜΕΝΙΚΟΣ έλεγχος ύπαρξης δύο strings — δηλαδή
+# ΔΕΝ ήταν καθόλου μάρτυρας μετάλλαξης. Τώρα: φορτώνεται το ΠΡΑΓΜΑΤΙΚΟ runtime,
+# η πύλη ΑΦΑΙΡΕΙΤΑΙ με redefinition μέσα στην εικόνα, και αποδεικνύεται ότι
+#   (α) ΜΕ την πύλη   ⇒ κενό corpus ΑΠΟΡΡΙΠΤΕΤΑΙ, και
+#   (β) ΧΩΡΙΣ την πύλη ⇒ ΔΕΝ απορρίπτεται (άρα η πύλη είναι φέρουσα).
+POLICY_PROBE = r"""
+(require :asdf) (require :sb-posix)
+(setf asdf:*central-registry* (append (list #p"{repo}/") (directory #p"{repo}/systems/*/")))
+(asdf:initialize-source-registry '(:source-registry (:tree #p"{third}") :inherit-configuration))
+(locally (declare (sb-ext:muffle-conditions sb-ext:compiler-note style-warning warning))
+  (handler-bind ((warning #'muffle-warning))
+    (asdf:load-system :alexandria) (asdf:load-system :log4cl)
+    (asdf:load-system :orchestrator-core-runtime)))
+(defvar *guarded*
+  (handler-case (progn (orchestrator.proof-carrying:write-provision-proofs
+                        '() #p"/tmp/lawmax-mut-policy/") :accepted)
+    (orchestrator.proof-carrying:empty-corpus-publication () :rejected)
+    (error () :other-error)))
+;; ΜΕΤΑΛΛΑΞΗ: αφαίρεση της πύλης (redefinition χωρίς τον έλεγχο κενού)
+(handler-bind ((warning #'muffle-warning))
+  (eval '(defun orchestrator.proof-carrying::write-provision-proofs
+             (provisions output-dir &key anchored-at private-key public-jwk anchor)
+           (declare (ignore anchored-at private-key public-jwk anchor))
+           (let* ((texts (mapcar (lambda (p) (or (getf p :text) "")) provisions))
+                  (leaves (mapcar #'orchestrator.merkle:hash-leaf-string texts)))
+             (values (orchestrator.merkle:merkle-tree-hash leaves) (length provisions) nil)))))
+(defvar *unguarded*
+  (handler-case (progn (orchestrator.proof-carrying:write-provision-proofs
+                        '() #p"/tmp/lawmax-mut-policy/") :accepted)
+    (orchestrator.proof-carrying:empty-corpus-publication () :rejected)
+    (error () :other-error)))
+(format t "GUARDED ~A~%UNGUARDED ~A~%" *guarded* *unguarded*)
+(sb-ext:exit :code 0)
+"""
 
-survived = [(m, l) for (m, l, c, k, _) in results if not k]
-blocked  = [(m, l) for (m, l, c, k, _) in results if c == -1]
-print(f"\n── μάρτυρες: {len(results)} συνολικά, "
-      f"{len(results) - len(survived)} ΣΚΟΤΩΜΕΝΟΙ, {len(survived)} ΕΠΙΒΙΩΣΑΝ ──")
-if blocked:
-    print(f"   BLOCKED (εργαλείο απόν): {blocked}")
+if not have_sbcl:
+    record("publish-empty-corpus", "policy", -1, "  (BLOCKED — sbcl ΑΠΩΝ)")
+else:
+    with tempfile.TemporaryDirectory() as d:
+        probe = os.path.join(d, "policy.lisp")
+        open(probe, "w", encoding="utf-8").write(
+            POLICY_PROBE.format(repo=repo.rstrip("/"), third=THIRD))
+        r = subprocess.run(["sbcl", "--script", probe], capture_output=True, text=True, timeout=1800)
+        vals = dict(l.split() for l in r.stdout.splitlines()
+                    if len(l.split()) == 2 and l.split()[0] in ("GUARDED", "UNGUARDED"))
+        # ΣΚΟΤΩΜΕΝΟ ⇔ με πύλη ΑΠΟΡΡΙΠΤΕΤΑΙ ΚΑΙ χωρίς πύλη ΓΙΝΕΤΑΙ ΔΕΚΤΟ
+        # (~A σε keyword τυπώνει ΧΩΡΙΣ άνω-κάτω τελεία — δεχόμαστε και τις δύο μορφές)
+        norm = lambda s: (s or "").lstrip(":").upper()
+        killed = norm(vals.get("GUARDED")) == "REJECTED" and norm(vals.get("UNGUARDED")) == "ACCEPTED"
+        record("publish-empty-corpus", "policy", 1 if killed else 0,
+               "" if killed else f"  (guarded={vals.get('GUARDED')} unguarded={vals.get('UNGUARDED')})")
+
+killed_n  = [r for r in results if r[3]]
+blocked_n = [(m, l) for (m, l, c, k, b, _) in results if b]
+survived  = [(m, l) for (m, l, c, k, b, _) in results if not k and not b]
+print(f"\n── μάρτυρες: {len(results)} συνολικά, {len(killed_n)} ΣΚΟΤΩΜΕΝΟΙ, "
+      f"{len(survived)} ΕΠΙΒΙΩΣΑΝ, {len(blocked_n)} BLOCKED ──")
+if blocked_n:
+    print(f"::error::BLOCKED (εργαλείο ΑΠΟΝ — ΔΕΝ μετρά ως kill): {blocked_n}")
 if survived:
     print(f"::error::ΕΠΙΒΙΩΣΑΝ μεταλλάξεις: {survived}")
-    sys.exit(1)
-sys.exit(0)
+sys.exit(1 if (survived or blocked_n) else 0)
 PYTHON

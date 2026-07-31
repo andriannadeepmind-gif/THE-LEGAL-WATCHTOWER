@@ -300,7 +300,11 @@ RUN set -e; \
       echo "  \"verify_canonical_py_sha256\": \"$(sha256sum /app/deployment/verify/verify-canonical.py | cut -d' ' -f1)\","; \
       echo "  \"verify_temporal_py_sha256\": \"$(sha256sum /app/deployment/verify/verify-temporal.py | cut -d' ' -f1)\","; \
       echo "  \"verify_release_py_sha256\": \"$(sha256sum /app/deployment/verify/verify-release.py | cut -d' ' -f1)\","; \
-      echo '  "gates": ["cross-language-verifier", "release-vector-conformance", "verify-canonical", "semantic-validity", "temporal-verifier"]'; \
+      echo "  \"verify_merkle_py_sha256\": \"$(sha256sum /app/deployment/verify/verify-merkle.py | cut -d' ' -f1)\","; \
+      echo "  \"verify_merkle_mjs_sha256\": \"$(sha256sum /app/deployment/verify/verify-merkle.mjs | cut -d' ' -f1)\","; \
+      echo "  \"merkle_profile_sha256\": \"$(sha256sum /app/deployment/verify/merkle-profile.sexp | cut -d' ' -f1)\","; \
+      echo "  \"merkle_vectors_sha256\": \"$(sha256sum /app/deployment/verify/vectors/merkle/vectors.json | cut -d' ' -f1)\","; \
+      echo '  "gates": ["cross-language-verifier", "release-vector-conformance", "verify-canonical", "semantic-validity", "temporal-verifier", "merkle-single-truth"]'; \
       echo '}'; \
     } > /app/proof/verifier-proof.json
 

@@ -10,10 +10,21 @@
   (δ) πλήρως έγκυρο σετ ⇒ OK.
 Χωρίς app_root ⇒ παραλείπεται ο επανυπολογισμός hash (self-contained, χωρίς build).
 """
-import hashlib, json, os, subprocess, sys, tempfile
+import hashlib, importlib.util, json, os, subprocess, sys, tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 VERIFIER = os.path.join(HERE, "verify-proof-manifest.py")
+
+# [MERKLE-SINGLE-TRUTH] Το fixture ΔΕΝ αντιγράφει τη λίστα gates/hashes: την
+# ΕΙΣΑΓΕΙ από την έδρα. Χειρόγραφο αντίγραφο σημαίνει ότι κάθε νέα πύλη θα
+# έσπαγε το fixture (ή, χειρότερα, το fixture θα δοκίμαζε ΠΑΛΙΟ σχήμα και θα
+# έμενε πράσινο ενώ η πραγματική πύλη είχε αλλάξει).
+# ΚΑΝΕΝΑ __pycache__: το fixture ΔΕΝ επιτρέπεται να λερώσει το δέντρο — το
+# runtime-assets manifest υπολογίζει hashes πάνω σε ΑΥΤΟ το δέντρο μέσα στο build.
+sys.dont_write_bytecode = True
+_spec = importlib.util.spec_from_file_location("_vpm", VERIFIER)
+_vpm = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_vpm)
 HEX40 = "a" * 40
 HEX64 = "b" * 64
 
@@ -59,11 +70,9 @@ def build(root, test_files, nonsuite_decls, suites, census=None):
     with open(os.path.join(proof, "standalone-proof.json"), "w") as fh:
         json.dump(sp, fh)
     vp = {"proof": "lawmax/verifier-proof/1", "git_commit": HEX40,
-          "verify_py_sha256": HEX64, "verify_mjs_sha256": HEX64,
-          "verify_canonical_py_sha256": HEX64, "verify_temporal_py_sha256": HEX64,
-          "verify_release_py_sha256": HEX64,
-          "gates": ["cross-language-verifier", "release-vector-conformance",
-                    "verify-canonical", "semantic-validity", "temporal-verifier"]}
+          "gates": list(_vpm.EXPECTED_GATES)}
+    for _k, _rel in _vpm.BOUND_VERIFIER_FILES:
+        vp[_k] = HEX64
     with open(os.path.join(proof, "verifier-proof.json"), "w") as fh:
         json.dump(vp, fh)
     with open(os.path.join(proof, "suites-run.txt"), "w") as fh:

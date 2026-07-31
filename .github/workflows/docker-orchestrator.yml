@@ -1,8 +1,11 @@
 name: 🥪 Orchestrator Full CI/CD
 
 on:
+  # [ΔΙΟΡΘΩΣΗ ΚΡΙΤΗ #2] Οι πύλες έτρεχαν ΜΟΝΟ στο main. Κάθε κλάδος εργασίας
+  # έφτανε στη συγχώνευση ΑΝΕΛΕΓΚΤΟΣ: το «πράσινο CI» ήταν βεβαιότητα για
+  # κώδικα που είχε ΗΔΗ μπει, ποτέ για κώδικα που ΕΠΡΟΚΕΙΤΟ να μπει.
   push:
-    branches: [ "main" ]
+    branches: [ "main", "claude/**" ]
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
@@ -52,6 +55,18 @@ jobs:
     steps:
     - name: ⬇️ Checkout
       uses: actions/checkout@v4
+    - name: 🧰 Toolchain (sbcl/python3/node) — ΡΗΤΗ εγκατάσταση, καμία σιωπηλή υπόθεση
+      shell: bash
+      run: |
+        # [ΔΙΟΡΘΩΣΗ ΚΡΙΤΗ #2] Το job καλούσε `sbcl` ΧΩΡΙΣ να το εγκαταστήσει —
+        # τα βήματα Merkle έσκαγαν με "command not found", δηλαδή η πύλη ΔΕΝ
+        # έτρεχε ΠΟΤΕ πράσινη. Εδώ εγκαθίσταται ΚΑΙ επαληθεύεται η ύπαρξη κάθε
+        # εργαλείου: απόν εργαλείο = ΑΠΟΤΥΧΙΑ ΤΩΡΑ, όχι ψευδο-πράσινο μετά.
+        sudo apt-get update && sudo apt-get install -y sbcl
+        for t in sbcl python3 node; do
+          command -v "$t" >/dev/null || { echo "::error::ΑΠΟΝ εργαλείο: $t"; exit 1; }
+          echo "  ✓ $t → $(command -v "$t")"
+        done
     - name: 🧨 Prove the gate-plenary assessor fails-closed (crash / incomplete / non-baseline / contradiction)
       shell: bash
       run: |

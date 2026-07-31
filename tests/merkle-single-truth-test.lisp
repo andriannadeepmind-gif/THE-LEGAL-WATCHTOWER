@@ -191,7 +191,7 @@
              (let ((n (length v)))
                (cond ((= n 1) (aref v 0))
                      (dup-last
-                      ;; duplicate-last: επίπεδο-προς-επίπεδο, περιττό ⇒ ζευγάρι με εαυτό
+                      ;; ΜΕΤΑΛΛΑΞΗ duplicate-last: επίπεδο-προς-επίπεδο, περιττό ⇒ ζευγάρι με εαυτό
                       (let ((cur (coerce v 'list)))
                         (loop while (> (length cur) 1) do
                           (when (oddp (length cur)) (setf cur (append cur (last cur))))
@@ -244,24 +244,168 @@
                       :key (lambda (l) (jget l "id")) :test #'string=)))
          (not (string= (jget a "leaf") (jget b "leaf")))))
 
-(format t "~%== Ε. ΚΑΜΙΑ ΔΕΥΤΕΡΗ, ΑΝΤΙΦΑΤΙΚΗ ΠΕΡΙΓΡΑΦΗ ==~%")
+(format t "~%== Ε. ΚΑΜΙΑ ΔΕΥΤΕΡΗ, ΑΝΤΙΦΑΤΙΚΗ ΠΕΡΙΓΡΑΦΗ (ΟΛΟ ΤΟ REPO) ==~%")
 
-;; Σάρωση των κειμένων για τη ΔΙΔΑΣΚΑΛΙΑ του duplicate-last. Ο έλεγχος είναι
-;; σκόπιμα κειμενικός: το εύρημα ΗΤΑΝ κειμενικό (τα κείμενα δίδασκαν λάθος
-;; αλγόριθμο ενώ ο κώδικας έκανε το σωστό).
-(defun %teaches-duplicate-last-p (path)
-  (let ((txt (string-downcase (%mst-slurp path))))
-    (and (or (search "paired with itself" txt)
-             (search "pairs with itself" txt)
-             (search "duplicate-last" txt))
-         ;; επιτρέπεται ΜΟΝΟ ως ΑΠΑΓΟΡΕΥΣΗ (never/forbidden/ΑΠΑΓΟΡΕΥΕΤΑΙ/CVE)
-         (not (or (search "never duplicate-last" txt)
-                  (search "forbidden" txt)
-                  (search "cve-2012-2459" txt))))))
+;; [ΔΙΟΡΘΩΣΗ ΚΡΙΤΗ #2] Δύο διαδοχικά λάθη διορθώνονται εδώ.
+;;
+;;  (α) Πριν σαρώνονταν ΜΟΝΟ δύο markdown αρχεία — η διαβεβαίωση «καμία δεύτερη
+;;      περιγραφή στο repo» ήταν ΕΥΡΥΤΕΡΗ από τον μηχανισμό. Τώρα σαρώνεται ΟΛΟ
+;;      το authored δέντρο.
+;;  (β) Η πρώτη διόρθωση έβαλε ΛΙΣΤΑ ΕΞΑΙΡΕΣΕΩΝ ΑΝΑ ΑΡΧΕΙΟ. Λάθος έδρα: ένα
+;;      αρχείο δεν είναι «καθαρό» ή «βρόμικο» — η κάθε ΑΝΑΦΟΡΑ είναι. Λίστα
+;;      αρχείων σημαίνει ότι ένα εξαιρεμένο αρχείο μπορεί αύριο να διδάξει τον
+;;      μεταλλαγμένο αλγόριθμο ΑΤΙΜΩΡΗΤΑ, ενώ οκτώ αθώες ΑΠΑΓΟΡΕΥΣΕΙΣ
+;;      («NEVER duplicate-last») καταγγέλλονταν ως παραβάσεις.
+;;
+;; Η ΕΔΡΑ ΤΟΥ ΚΑΝΟΝΑ ΕΙΝΑΙ Η ΠΟΛΙΚΟΤΗΤΑ ΤΗΣ ΑΝΑΦΟΡΑΣ, ΟΧΙ Η ΤΑΥΤΟΤΗΤΑ ΤΟΥ
+;; ΑΡΧΕΙΟΥ. Το όνομα του μεταλλαγμένου αλγορίθμου επιτρέπεται ΠΑΝΤΟΥ όταν —και
+;; μόνο όταν— το παράθυρο ±3 γραμμών το τοποθετεί σε μία από τέσσερις νόμιμες
+;; κατηγορίες: ΑΠΑΓΟΡΕΥΣΗ, ΙΣΤΟΡΙΚΟ, ΑΝΤΙΠΑΛΟΣ/ΜΕΤΑΛΛΑΞΗ, ΑΠΟΚΛΙΣΗ. Αναφορά
+;; ΧΩΡΙΣ πολικότητα = ΠΡΟΣΤΑΚΤΙΚΗ ΔΙΔΑΣΚΑΛΙΑ = ΑΠΟΤΥΧΙΑ, σε ΟΠΟΙΟΔΗΠΟΤΕ αρχείο,
+;; συμπεριλαμβανομένου ΑΥΤΟΥ. Καμία εξαίρεση αρχείου δεν υπάρχει πια.
+;;
+;; Ο ίδιος ο σαρωτής ΑΠΟΔΕΙΚΝΥΕΤΑΙ μη-κενός παρακάτω (Ε-ΜΑΡΤΥΡΕΣ): τρέχει πάνω
+;; στο ΑΥΘΕΝΤΙΚΟ ελαττωματικό κείμενο που ζούσε στο PROOF-CARRYING-LAW.md και
+;; ΠΡΕΠΕΙ να το καταγγείλει.
 
-(dolist (doc '("deployment/PROOF-CARRYING-LAW.md" "deployment/verify/README.md"))
-  (check (format nil "~A ΔΕΝ διδάσκει duplicate-last" doc)
-         (not (%teaches-duplicate-last-p (%mst-repo doc)))))
+(defparameter +dup-phrases+           ; ΑΠΑΓΟΡΕΥΜΕΝΗ διδασκαλία — ονόματα-στόχοι
+  '("paired with itself" "pairs with itself" "duplicate-last" "duplicate last"))
+
+(defparameter +dup-window+ 3
+  "Πόσες γραμμές εκατέρωθεν μετρούν ως «ίδιο σημασιολογικό παράθυρο».")
+
+(defun %fold (s)
+  "Πεζά + αφαίρεση τόνων/διαλυτικών + τελικό σίγμα ⇒ σ.
+   ΓΙΑΤΙ: ο δείκτης πολικότητας ΔΕΝ επιτρέπεται να χαθεί επειδή το κείμενο
+   γράφτηκε ΚΕΦΑΛΑΙΟ (ΟΧΙ, ΜΑΡΤΥΡΕΣ, ΑΠΑΓΟΡΕΥΕΤΑΙ — τα ελληνικά κεφαλαία
+   γράφονται ΑΤΟΝΑ) ή τονισμένο (όχι, μάρτυρες). Χωρίς folding, ο σαρωτής θα
+   καταδίκαζε ακριβώς τις πιο εμφατικές απαγορεύσεις του repo."
+  (map 'string
+       (lambda (c)
+         (let ((d (char-downcase c)))
+           (case d
+             ((#\ά) #\α) ((#\έ) #\ε) ((#\ή) #\η)
+             ((#\ί #\ϊ #\ΐ) #\ι) ((#\ό) #\ο)
+             ((#\ύ #\ϋ #\ΰ) #\υ) ((#\ώ) #\ω)
+             ((#\ς) #\σ)
+             (t d))))
+       s))
+
+(defparameter +dup-polarity-markers+
+  (mapcar #'%fold
+          '(;; 1. ΑΠΑΓΟΡΕΥΣΗ / ΑΡΝΗΣΗ — «αυτό ΔΕΝ κάνουμε»
+            ;; ΠΡΟΣΟΧΗ: «μη» ΜΟΝΟ με προπορευόμενο κενό — αλλιώς κάθε «γραμμή »
+            ;; θα περνούσε ως άρνηση (ψευδο-άδεια).
+            "οχι " "δεν " " μη " " μην " "απαγορ" "καμία" "χωρίς" "ανεπίτρεπτ"
+            "never" "not " "no-duplicate" "must not" "forbid" "prohibit" "reject"
+            "≠" "!="
+            ;; 2. ΙΣΤΟΡΙΚΟ / ΥΠΕΡΚΕΡΑΣΗ — «αυτό κάναμε ΠΡΙΝ, καταργήθηκε»
+            "προηγούμεν" "παλαι" "πριν" "ήταν" "έλεγε" "δίδασκε" "έκανε" "καταδικ"
+            "legacy" "obsolete" "superseded" "used to"
+            ;; 3. ΑΝΤΙΠΑΛΟΣ / ΜΕΤΑΛΛΑΞΗ — «αυτό είναι το μεταλλαγμένο σώμα υπό δοκιμή»
+            "μεταλλαξ" "μεταλλαγ" "μεταλλάσ" "μάρτυρ" "μαρτυρα"
+            "mutation" "mutant" "witness" "forged" "attack" "επίθεση" "cve-"
+            ;; 4. ΑΠΟΚΛΙΣΗ / ΑΝΤΙΘΕΣΗ — «εδώ ακριβώς διαφέρει από το κανονικό»
+            "αποκλιν" "diverge" "differs" "διαφορετικ" " vs ")))
+
+(defun %dup-polarised-p (lines i)
+  "Υπάρχει δείκτης πολικότητας στο παράθυρο ±+DUP-WINDOW+ γύρω από τη γραμμή I;"
+  (loop for j from (max 0 (- i +dup-window+))
+          to (min (1- (length lines)) (+ i +dup-window+))
+        thereis (let ((l (aref lines j)))
+                  (some (lambda (m) (search m l)) +dup-polarity-markers+))))
+
+(defun %dup-mention-p (line)
+  (some (lambda (ph) (search ph line)) +dup-phrases+))
+
+(defun %dup-mention-lines (lines)
+  "1-based γραμμές που ΟΝΟΜΑΖΟΥΝ τον μεταλλαγμένο αλγόριθμο (με ή χωρίς πολικότητα)."
+  (loop for i below (length lines) when (%dup-mention-p (aref lines i)) collect (1+ i)))
+
+(defun %dup-offending-lines (lines)
+  "1-based γραμμές όπου το όνομα εμφανίζεται ΧΩΡΙΣ πολικότητα ⇒ διδάσκεται ως Ο
+   αλγόριθμος. LINES = vector ΗΔΗ folded γραμμών (βλ. %FOLD)."
+  (loop for i below (length lines)
+        when (and (%dup-mention-p (aref lines i))
+                  (not (%dup-polarised-p lines i)))
+          collect (1+ i)))
+
+(defun %mst-lines (path)
+  (with-open-file (s path :external-format :utf-8)
+    (coerce (loop for l = (read-line s nil) while l collect (%fold l)) 'vector)))
+
+(defun %dup-offenders-in-file (path)
+  (handler-case (%dup-offending-lines (%mst-lines path)) (error () nil)))
+
+(defun %dup-mention-lines-in-file (path)
+  (handler-case (%dup-mention-lines (%mst-lines path)) (error () nil)))
+
+(defun %mst-authored-files ()
+  "Κάθε authored αρχείο που θα μπορούσε να περιγράψει τον αλγόριθμο.
+   ΕΞΑΙΡΟΥΝΤΑΙ τα append-only πρακτικά (deployment/collab/dialogue) — είναι
+   ΙΣΤΟΡΙΚΟ αρχείο, όχι προδιαγραφή, και ΔΕΝ επιτρέπεται να ξαναγραφτεί."
+  (remove-if
+   (lambda (p) (search "/dialogue/" (namestring p)))
+   (append
+    (directory (%mst-repo "source/*.lisp"))
+    (directory (%mst-repo "systems/*/*.lisp"))
+    (directory (%mst-repo "scripts/*.*"))
+    (directory (%mst-repo "docker/*.*"))
+    (directory (%mst-repo "tests/merkle*.lisp"))
+    (directory (%mst-repo "deployment/*.md"))
+    (directory (%mst-repo "deployment/verify/*.*"))
+    (directory (%mst-repo "*.md")))))
+
+(let* ((files (%mst-authored-files))
+       (mentions 0)
+       (offenders '()))
+  (dolist (f files)
+    (let ((bad (%dup-offenders-in-file f)))
+      (incf mentions (length (%dup-mention-lines-in-file f)))
+      (when bad (push (cons (namestring f) bad) offenders))))
+  (dolist (o offenders)
+    (format t "    ✗ ΠΡΟΣΤΑΚΤΙΚΗ αναφορά χωρίς πολικότητα: ~A γραμμές ~{~D~^, ~}~%"
+            (car o) (cdr o)))
+  (check (format nil "καμία ΑΠΡΟΣΔΙΟΡΙΣΤΗ αναφορά (~D αναφορές σε ~D authored αρχεία, ΟΛΕΣ πολωμένες)"
+                 mentions (length files))
+         (null offenders)))
+
+;; ── Ε-ΜΑΡΤΥΡΕΣ: ο σαρωτής ΔΕΝ επιτρέπεται να είναι κενός ──
+;; Ένας κανόνας που δεν καταγγέλλει ΤΙΠΟΤΑ είναι ταυτολογία. Οι μάρτυρες
+;; τρέχουν πάνω σε ΣΥΝΘΕΤΙΚΟ κείμενο (καθόλου I/O), ώστε ο έλεγχος να είναι
+;; ντετερμινιστικός και ανεξάρτητος από την τρέχουσα κατάσταση του repo.
+;; Μ1 είναι το ΑΥΘΕΝΤΙΚΟ ελαττωματικό κείμενο που ζούσε στο PROOF-CARRYING-LAW.md.
+(defun %dup-fixture (&rest lines)
+  (coerce (mapcar #'%fold lines) 'vector))
+
+(macrolet ((witness (name expected &rest lines)
+             `(check ,name (equal ,expected (%dup-offending-lines (%dup-fixture ,@lines))))))
+  (witness "Ε-Μ1 το ΑΥΘΕΝΤΙΚΟ ελάττωμα («an odd node is paired with itself») ΚΑΤΑΓΓΕΛΛΕΤΑΙ" '(2)
+           "## 2. The Merkle commitment"
+           "The tree is built pairwise; an odd node is paired with itself."
+           "The root is published in the corpus proof.")
+  (witness "Ε-Μ2 ΠΡΟΣΤΑΚΤΙΚΗ διδασκαλία με το ίδιο το όνομα ΚΑΤΑΓΓΕΛΛΕΤΑΙ" '(2)
+           "k = floor(n/2)"
+           "if the level has an odd count, apply duplicate-last before hashing."
+           "repeat until one hash remains.")
+  (witness "Ε-Μ3 ΑΠΑΓΟΡΕΥΣΗ στην ίδια γραμμή ΔΕΝ καταγγέλλεται" '()
+           "περιττός κόμβος: unbalanced split (RFC 9162), ΟΧΙ duplicate-last")
+  (witness "Ε-Μ4 δείκτης ΜΕΤΑΛΛΑΞΗΣ στο παράθυρο ΔΕΝ καταγγέλλεται" '()
+           ";; ΜΑΡΤΥΡΑΣ ΜΕΤΑΛΛΑΞΗΣ — μεταλλαγμένο σώμα υπό δοκιμή"
+           "duplicate-last: περιττός ⇒ ζευγάρι με τον εαυτό του")
+  (witness "Ε-Μ5 δείκτης στο ΟΡΙΟ του παραθύρου (±3) ΔΕΝ καταγγέλλεται" '()
+           "ΑΠΑΓΟΡΕΥΕΤΑΙ ΑΠΟΛΥΤΩΣ:" "" ""
+           "duplicate-last")
+  (witness "Ε-Μ6 δείκτης ΕΞΩ από το παράθυρο (4 γραμμές) ΚΑΤΑΓΓΕΛΛΕΤΑΙ" '(6)
+           "ΑΠΑΓΟΡΕΥΕΤΑΙ ΑΠΟΛΥΤΩΣ:" "" "" "" ""
+           "duplicate-last is applied to the odd leaf")
+  (witness "Ε-Μ7 ΠΟΛΛΑΠΛΕΣ παραβάσεις αναφέρονται ΟΛΕΣ, με ακριβή θέση" '(1 9)
+           "duplicate last is the rule here" "" "" "" "" "" "" ""
+           "an odd node pairs with itself")
+  (witness "Ε-Μ8 ΚΕΦΑΛΑΙΑ ΑΤΟΝΑ ελληνικά μετρούν ως πολικότητα (folding)" '()
+           "ΑΠΑΓΟΡΕΥΕΤΑΙ ΑΠΟΛΥΤΩΣ ΤΟ duplicate-last")
+  (witness "Ε-Μ9 πεζά ΤΟΝΙΣΜΕΝΑ ελληνικά μετρούν ως πολικότητα (folding)" '()
+           "μάρτυρας μετάλλαξης: duplicate-last"))
 
 (dolist (doc '("deployment/PROOF-CARRYING-LAW.md" "deployment/verify/README.md"))
   (let ((txt (%mst-slurp (%mst-repo doc))))
@@ -269,6 +413,64 @@
            (and (search "0x00" txt) (search "0x01" txt)))
     (check (format nil "~A φέρει τον δείκτη GENERATED (μία πηγή)" doc)
            (search "BEGIN GENERATED lawmax-merkle-sha256-v1" txt))))
+
+;; ── ΚΑΘΟΛΙΚΗ ΤΑΥΤΟΤΗΤΑ PROFILE ──
+(check "το ΕΚΠΕΜΠΟΜΕΝΟ corpus-proof δηλώνει το ΚΑΝΟΝΙΚΟ profile (όχι rfc6962 alias)"
+       (let ((src (%mst-slurp (%mst-repo "source/proof-carrying.lisp"))))
+         (and (search "lawmax-merkle-sha256-v1" src)
+              (not (search "sha256-merkle/rfc6962" src)))))
+
+;; ── CENSUS ΠΑΡΑΓΩΓΩΝ ΡΙΖΩΝ: καμία αδήλωτη διαδρομή δημοσίευσης ──
+;; [ΔΙΟΡΘΩΣΗ ΚΡΙΤΗ] Η αλλαγή του MTH([]) είναι ΚΑΘΟΛΙΚΗ· κάθε καλών του
+;; πρωτόγονου πρέπει να είναι ΤΑΞΙΝΟΜΗΜΕΝΟΣ: είτε ΔΗΜΟΣΙΕΥΤΗΣ (οφείλει πύλη
+;; κενού corpus) είτε ρητά ΕΣΩΤΕΡΙΚΟΣ. Αδήλωτος καλών = ΑΠΟΤΥΧΙΑ.
+(defparameter +declared-root-callers+
+  ;; (αρχείο . ρόλος) — ΚΑΘΕ παραγωγός Merkle ρίζας εκτός της έδρας.
+  ;; :publisher = εκπέμπει δέσμευση προς τα έξω ⇒ ΟΦΕΙΛΕΙ άμυνα κενού συνόλου
+  ;; :internal  = υπολογισμός/σύγκριση εντός συστήματος, καμία δημοσίευση
+  '(("source/proof-carrying.lisp"                        :publisher "empty-corpus-publication")
+    ("systems/orchestrator-epistemic/artifact-census.lisp" :publisher "κενό σύνολο άρθρων")
+    ("systems/orchestrator-epistemic/transparency-log.lisp" :publisher "(list release-root)")
+    ("source/corpus-fingerprint.lisp"                    :internal "")
+    ("source/legal-audit-system.lisp"                    :internal "")
+    ("source/semantic-authority.lisp"                    :internal "")
+    ("source/authority-proof-bundle.lisp"                :internal "")
+    ("source/authority-evidence-replay.lisp"             :internal "")
+    ("systems/orchestrator-epistemic/merkle-tree.lisp"   :internal "")
+    ("systems/orchestrator-epistemic/release-spine.lisp" :internal "")
+    ("systems/orchestrator-cli/version-graph-import.lisp" :internal "")))
+
+(let* ((hits '()))
+  (dolist (f (append (directory (%mst-repo "source/*.lisp"))
+                     (directory (%mst-repo "systems/*/*.lisp"))))
+    (let ((txt (handler-case (%mst-slurp f) (error () ""))))
+      (when (and (or (search "merkle-root-of-strings" txt)
+                     (search "merkle-root-of-files" txt)
+                     (search "merkle-tree-hash" txt))
+                 (not (search "merkle-authority.lisp" (namestring f))))
+        (push (namestring f) hits))))
+  (let* ((declared (mapcar #'first +declared-root-callers+))
+         (undeclared (remove-if (lambda (h) (some (lambda (d) (search d h)) declared)) hits))
+         (stale (remove-if (lambda (d) (some (lambda (h) (search d h)) hits)) declared)))
+    (dolist (u undeclared) (format t "    ✗ ΑΔΗΛΩΤΟΣ παραγωγός ρίζας: ~A~%" u))
+    (dolist (s stale) (format t "    ✗ stale δήλωση: ~A~%" s))
+    (check (format nil "κάθε παραγωγός Merkle ρίζας ΤΑΞΙΝΟΜΗΜΕΝΟΣ (~D βρέθηκαν)" (length hits))
+           (null undeclared))
+    (check "καμία stale δήλωση στο μητρώο παραγωγών" (null stale))))
+
+;; ΔΕΝ αρκεί η ΔΗΛΩΣΗ: για κάθε :publisher ΕΠΑΛΗΘΕΥΕΤΑΙ ότι η άμυνα κενού
+;; συνόλου ΥΠΑΡΧΕΙ ΠΡΑΓΜΑΤΙΚΑ στο αρχείο του.
+(dolist (entry +declared-root-callers+)
+  (destructuring-bind (rel role marker) entry
+    (when (eq role :publisher)
+      (check (format nil "ΔΗΜΟΣΙΕΥΤΗΣ ~A φέρει άμυνα κενού συνόλου" rel)
+             (let ((txt (handler-case (%mst-slurp (%mst-repo rel)) (error () ""))))
+               (search marker txt))))))
+
+(check "ο ΜΟΝΟΣ δηλωμένος ΔΗΜΟΣΙΕΥΤΗΣ φέρει την πύλη κενού corpus"
+       (let ((src (%mst-slurp (%mst-repo "source/proof-carrying.lisp"))))
+         (and (search "empty-corpus-publication" src)
+              (search "(when (null provisions)" src))))
 
 (format t "~%── merkle-single-truth: ~D passed, ~D failed ──~%" *pass* *fail*)
 (sb-ext:exit :code (if (plusp *fail*) 1 0))
