@@ -78,9 +78,11 @@ case("gate δηλωμένο :passed ενώ φέρουσες ≠ PROVED ⇒ ΑΠ�
      lambda t: t.replace(":level7-gate :not-passed", ":level7-gate :passed", 1),
      want_reject=True, needle="ΨΕΥΔΟ-ΠΡΑΣΙΝΟ")
 
+# ΑΚΡΙΒΗΣ ΣΤΟΧΟΣ: γραμμή που ΟΝΤΩΣ έχει κενά proof-objects (:not-started) —
+# αλλιώς η απόρριψη θα ερχόταν από άλλον κανόνα και ο μάρτυρας θα ήταν θολός.
 case("γραμμή :proved ΧΩΡΙΣ proof objects ⇒ ΑΠΟΡΡΙΨΗ", MATRIX_V, MATRIX,
-     lambda t: t.replace(":status :externally-blocked", ":status :proved", 1),
-     want_reject=True, needle="ΧΩΡΙΣ")
+     lambda t: t.replace(":status :not-started", ":status :proved", 1),
+     want_reject=True, needle="ΧΩΡΙΣ proof objects")
 
 case("επινοημένο status εκτός λεξιλογίου ⇒ ΑΠΟΡΡΙΨΗ", MATRIX_V, MATRIX,
      lambda t: t.replace(":status :not-started", ":status :mostly-done", 1),

@@ -149,13 +149,17 @@
    :title "C2SP tiles/checkpoints + Ed25519 log signature + witness iface/quorum (external disabled)"
    :status :externally-blocked
    :load-bearing t
-   :implementation ()
+   :implementation ("authority-v2/log/witness-policy.sexp (FORMAT-AGNOSTIC witness interface,
+                     quorum policy με ΚΡΙΤΗΡΙΑ ΑΝΕΞΑΡΤΗΣΙΑΣ, freshness/anti-freeze policy,
+                     fake witnesses με :counts-toward-quorum nil)"
+                    "authority-v2/tests/witness-quorum-test.py")
    :proof-objects ()
-   :command nil
-   :actual-result "NOT-EXECUTED — BLOCKED-SPEC-INPUT (τα κανονικά κείμενα tlog-tiles@v0.1.0 / tlog-checkpoint / tlog-witness@v1.0.0 δεν ανακτώνται· 403)"
-   :negative-witness nil
-   :residual-assumptions ("ΑΠΑΓΟΡΕΥΕΤΑΙ υλοποίηση από μνήμη (ρητή εντολή §2)"
-                          "external_quorum_status=disabled· ΚΑΜΙΑ δήλωση split-view resistance"))
+   :command "python3 authority-v2/tests/witness-quorum-test.py"
+   :actual-result "EXECUTED 2026-07-31: 8 passed, 0 failed — ΜΟΝΟ η ΠΟΛΙΤΙΚΗ (κβόρουμ/φρεσκάδα/αντιφατική εικόνα). ΤΟ WIRE FORMAT ΠΑΡΑΜΕΝΕΙ BLOCKED-SPEC-INPUT: τα κανονικά κείμενα tlog-tiles@v0.1.0 / tlog-checkpoint / tlog-witness@v1.0.0 δεν ανακτώνται (403) και ΑΠΑΓΟΡΕΥΕΤΑΙ υλοποίηση από μνήμη"
+   :negative-witness "3 fake witnesses ⇒ ΔΕΝ σχηματίζουν κβόρουμ· 2 μάρτυρες με κοινό φορέα μετρούν ως 1· έγκυρο ΑΛΛΑ παλιό checkpoint ΑΠΟΡΡΙΠΤΕΤΑΙ· ένας μάρτυρας με αντιφατική εικόνα ρίχνει τα πάντα (όχι 2-of-3)· external disabled ⇒ ΑΝΕΝΕΡΓΗ πύλη, ΠΟΤΕ «0-of-3 ok»"
+   :residual-assumptions ("ΑΠΑΓΟΡΕΥΕΤΑΙ υλοποίηση από μνήμη (ρητή εντολή §2) — καμία γραμμή του witness-policy δεν υποθέτει σειριοποίηση"
+                          "external_quorum_status=disabled· ΚΑΜΙΑ δήλωση split-view resistance"
+                          "με ΜΟΝΟ τοπικούς fake witnesses ΔΕΝ υπάρχει ανεξαρτησία — και δεν προσποιούμαστε ότι υπάρχει"))
 
   ;; ── 9 ────────────────────────────────────────────────────────────────────
   (:id 9
@@ -226,8 +230,8 @@
                     "tests/release-authority-test.lisp (αναδιατυπωμένο)"
                     "tests/transparency-log-test.lisp (αναδιατυπωμένο)")
    :proof-objects ()
-   :command "sbcl --script <runner> tests/level7-disarm-test.lisp && sbcl --script <runner> tests/release-authority-test.lisp && sbcl --script <runner> tests/transparency-log-test.lisp && python3 authority-v2/tests/gate-negative-fixtures.py"
-   :actual-result "EXECUTED 2026-07-31: level7-disarm 9/0 · release-authority 14/0 · transparency-log 23/0 · gate-negative-fixtures 12/0"
+   :command "sbcl --script <runner> tests/level7-disarm-test.lisp && sbcl --script <runner> tests/release-authority-test.lisp && sbcl --script <runner> tests/transparency-log-test.lisp && python3 authority-v2/tests/gate-negative-fixtures.py && bash authority-v2/tests/ceremony-rehearsal-test.sh && python3 authority-v2/tests/witness-quorum-test.py"
+   :actual-result "EXECUTED 2026-07-31: level7-disarm 9/0 · release-authority 14/0 · transparency-log 23/0 · gate-negative-fixtures 12/0 · ceremony-rehearsal 8/0 · witness-quorum 8/0"
    :negative-witness "κάθε αναδιατυπωμένος έλεγχος κατοχυρώνει ΑΡΝΗΣΗ εκεί που πριν κατοχύρωνε ΑΠΟΔΟΧΗ (⑦β πλαστό receipt)· η απόσυρση δύο ελέγχων bootstrap δηλώνεται ΡΗΤΑ αντί να αναστηθεί η νεκρή έδρα στα fixtures"
    :residual-assumptions ("crash-at-every-write-boundary ΔΕΝ υπάρχει ακόμη — απαιτεί το store (7)"
                           "τα tests είναι regression layer, ΟΧΙ φέρουσα απόδειξη (ρητή εντολή)")))
