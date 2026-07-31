@@ -214,11 +214,17 @@ for mutant in ["duplicate-last", "no-leaf-prefix", "no-node-prefix",
     if mutant in LISP_MUT: run_lisp(mutant, *LISP_MUT[mutant])
 
 # ── 8ος ΜΑΡΤΥΡΑΣ: ΠΟΛΙΤΙΚΗ — δημοσίευση κενού corpus (ΠΡΑΓΜΑΤΙΚΗ ΜΕΤΑΛΛΑΞΗ) ──
-# [ΔΙΟΡΘΩΣΗ ΚΡΙΤΗ] Πριν ήταν ΚΕΙΜΕΝΙΚΟΣ έλεγχος ύπαρξης δύο strings — δηλαδή
-# ΔΕΝ ήταν καθόλου μάρτυρας μετάλλαξης. Τώρα: φορτώνεται το ΠΡΑΓΜΑΤΙΚΟ runtime,
-# η πύλη ΑΦΑΙΡΕΙΤΑΙ με redefinition μέσα στην εικόνα, και αποδεικνύεται ότι
+# [ΕΠΙΤΗΡΗΤΗΣ κρ.5] Ήταν χειρόγραφη eval-redefinition (ΟΧΙ μετάλλαξη του
+# πραγματικού πηγαίου — ένα ΤΡΙΤΟ σώμα γραμμένο μέσα στο probe). Τώρα, ίδιο
+# πρότυπο με census/tlog: το ΙΔΙΟ το source/proof-carrying.lisp μεταλλάσσεται
+# κειμενικά σε αντίγραφο (η πύλη νεκρώνεται: when (null provisions) -> when nil)
+# και φορτώνεται ΠΑΝΩ στην εικόνα. Αποδεικνύεται ότι:
 #   (α) ΜΕ την πύλη   ⇒ κενό corpus ΑΠΟΡΡΙΠΤΕΤΑΙ, και
-#   (β) ΧΩΡΙΣ την πύλη ⇒ ΔΕΝ απορρίπτεται (άρα η πύλη είναι φέρουσα).
+#   (β) ΧΩΡΙΣ την πύλη ⇒ ΓΙΝΕΤΑΙ ΔΕΚΤΟ (η ΓΡΑΜΜΗ του πηγαίου είναι φέρουσα).
+PC_SRC = os.path.join(repo, "source/proof-carrying.lisp")
+PC_GUARD_OLD = "  (when (null provisions)\n    (error 'empty-corpus-publication :output-dir (princ-to-string output-dir)))"
+PC_GUARD_NEW = "  (when nil\n    (error 'empty-corpus-publication :output-dir (princ-to-string output-dir)))"
+
 POLICY_PROBE = r"""
 (require :asdf) (require :sb-posix)
 (setf asdf:*central-registry* (append (list #p"{repo}/") (directory #p"{repo}/systems/*/")))
@@ -227,25 +233,15 @@ POLICY_PROBE = r"""
   (handler-bind ((warning #'muffle-warning))
     (asdf:load-system :alexandria) (asdf:load-system :log4cl)
     (asdf:load-system :orchestrator-core-runtime)))
-(defvar *guarded*
-  (handler-case (progn (orchestrator.proof-carrying:write-provision-proofs
-                        '() #p"/tmp/lawmax-mut-policy/") :accepted)
+(defun probe-publish (dir)
+  (handler-case (progn (orchestrator.proof-carrying:write-provision-proofs '() dir) :accepted)
     (orchestrator.proof-carrying:empty-corpus-publication () :rejected)
-    (error () :other-error)))
-;; ΜΕΤΑΛΛΑΞΗ: αφαίρεση της πύλης (redefinition χωρίς τον έλεγχο κενού)
-(handler-bind ((warning #'muffle-warning))
-  (eval '(defun orchestrator.proof-carrying::write-provision-proofs
-             (provisions output-dir &key anchored-at private-key public-jwk anchor)
-           (declare (ignore anchored-at private-key public-jwk anchor))
-           (let* ((texts (mapcar (lambda (p) (or (getf p :text) "")) provisions))
-                  (leaves (mapcar #'orchestrator.merkle:hash-leaf-string texts)))
-             (values (orchestrator.merkle:merkle-tree-hash leaves) (length provisions) nil)))))
-(defvar *unguarded*
-  (handler-case (progn (orchestrator.proof-carrying:write-provision-proofs
-                        '() #p"/tmp/lawmax-mut-policy/") :accepted)
-    (orchestrator.proof-carrying:empty-corpus-publication () :rejected)
-    (error () :other-error)))
-(format t "GUARDED ~A~%UNGUARDED ~A~%" *guarded* *unguarded*)
+    (error (e) (progn (format t "DIAG-PC ~A~%" e) :other-error))))
+(format t "GUARDED ~A~%" (probe-publish #p"{work}/pc-guarded/"))
+;; ΜΕΤΑΛΛΑΞΗ: το ΜΕΤΑΛΛΑΓΜΕΝΟ αντίγραφο του ΠΡΑΓΜΑΤΙΚΟΥ πηγαίου φορτώνεται
+;; πάνω στην εικόνα — καμία χειρόγραφη redefinition.
+(handler-bind ((warning #'muffle-warning)) (load "{mut_pc}"))
+(format t "UNGUARDED ~A~%" (probe-publish #p"{work}/pc-unguarded/"))
 (sb-ext:exit :code 0)
 """
 
@@ -253,18 +249,26 @@ if not have_sbcl:
     record("publish-empty-corpus", "policy", -1, "  (BLOCKED — sbcl ΑΠΩΝ)")
 else:
     with tempfile.TemporaryDirectory() as d:
-        probe = os.path.join(d, "policy.lisp")
-        open(probe, "w", encoding="utf-8").write(
-            POLICY_PROBE.format(repo=repo.rstrip("/"), third=THIRD))
-        r = subprocess.run(["sbcl", "--script", probe], capture_output=True, text=True, timeout=1800)
-        vals = dict(l.split() for l in r.stdout.splitlines()
-                    if len(l.split()) == 2 and l.split()[0] in ("GUARDED", "UNGUARDED"))
-        # ΣΚΟΤΩΜΕΝΟ ⇔ με πύλη ΑΠΟΡΡΙΠΤΕΤΑΙ ΚΑΙ χωρίς πύλη ΓΙΝΕΤΑΙ ΔΕΚΤΟ
-        # (~A σε keyword τυπώνει ΧΩΡΙΣ άνω-κάτω τελεία — δεχόμαστε και τις δύο μορφές)
-        norm = lambda s: (s or "").lstrip(":").upper()
-        killed = norm(vals.get("GUARDED")) == "REJECTED" and norm(vals.get("UNGUARDED")) == "ACCEPTED"
-        record("publish-empty-corpus", "policy", 1 if killed else 0,
-               "" if killed else f"  (guarded={vals.get('GUARDED')} unguarded={vals.get('UNGUARDED')})")
+        pc_src = open(PC_SRC, encoding="utf-8").read()
+        if PC_GUARD_OLD not in pc_src:
+            record("publish-empty-corpus", "policy", 0, "  (::error:: anchor δεν βρέθηκε)")
+        else:
+            mut_pc = os.path.join(d, "mut-proof-carrying.lisp")
+            open(mut_pc, "w", encoding="utf-8").write(
+                pc_src.replace(PC_GUARD_OLD, PC_GUARD_NEW, 1))
+            for sub in ("pc-guarded", "pc-unguarded"):
+                os.makedirs(os.path.join(d, sub))
+            probe = os.path.join(d, "policy.lisp")
+            open(probe, "w", encoding="utf-8").write(
+                POLICY_PROBE.format(repo=repo.rstrip("/"), third=THIRD, work=d, mut_pc=mut_pc))
+            r = subprocess.run(["sbcl", "--script", probe], capture_output=True, text=True, timeout=1800)
+            vals = dict(l.split() for l in r.stdout.splitlines()
+                        if len(l.split()) == 2 and l.split()[0] in ("GUARDED", "UNGUARDED"))
+            # (~A σε keyword τυπώνει ΧΩΡΙΣ άνω-κάτω τελεία — δεκτές και οι δύο μορφές)
+            norm = lambda s: (s or "").lstrip(":").upper()
+            killed = norm(vals.get("GUARDED")) == "REJECTED" and norm(vals.get("UNGUARDED")) == "ACCEPTED"
+            record("publish-empty-corpus", "policy", 1 if killed else 0,
+                   "" if killed else f"  (guarded={vals.get('GUARDED')} unguarded={vals.get('UNGUARDED')} rc={r.returncode})")
 
 # ── PROFILE-DRIFT: το profile ΔΕΝ είναι διακοσμητικό ─────────────────────────
 # [ΕΥΡΗΜΑ ΚΡΙΤΗ #2] Αν άλλαζε ΜΟΝΟ το profile (π.χ. leaf-prefix 0x02), ο παλιός
@@ -286,6 +290,7 @@ PROFILE_DRIFTS = {
 if not have_sbcl:
     for m in PROFILE_DRIFTS:
         record(m, "profile", -1, "  (BLOCKED — sbcl ΑΠΩΝ)")
+    record("profile-field-drift", "sweep", -1, "  (BLOCKED — sbcl ΑΠΩΝ)")
 else:
     drift_root = tempfile.mkdtemp(prefix="lawmax-profile-drift-")
     copy = os.path.join(drift_root, "repo")
@@ -298,23 +303,75 @@ else:
         subprocess.run(["cp", "-a", os.path.join(repo, entry), copy], check=True)
     mut_profile = os.path.join(copy, "deployment/verify/merkle-profile.sexp")
     pristine = open(mut_profile, encoding="utf-8").read()
-    try:
-        for mutant, (old, new, expect) in PROFILE_DRIFTS.items():
-            if old not in pristine:
-                record(mutant, "profile", 0, "  (::error:: anchor δεν βρέθηκε)")
-                continue
-            open(mut_profile, "w", encoding="utf-8").write(pristine.replace(old, new, 1))
+    def drift_case(mutant, lang, old, new, expect):
+        """Μία μετάλλαξη profile στο αντίγραφο ⇒ gen --check ΠΡΕΠΕΙ να κοκκινίσει
+        με το ΑΝΑΜΕΝΟΜΕΝΟ μήνυμα (άσχετο σκάσιμο ΔΕΝ μετρά ως φόνος)."""
+        if old not in pristine:
+            record(mutant, lang, 0, "  (::error:: anchor δεν βρέθηκε)")
+            return
+        open(mut_profile, "w", encoding="utf-8").write(pristine.replace(old, new, 1))
+        try:
             r = subprocess.run(["sbcl", "--script", "scripts/gen-merkle-truth.lisp", "--check"],
                                cwd=copy, capture_output=True, text=True, timeout=1800)
             hit = expect in (r.stderr or "") or expect in (r.stdout or "")
             if r.returncode > 0 and hit:
-                record(mutant, "profile", r.returncode)
+                record(mutant, lang, r.returncode)
             elif r.returncode > 0:
-                record(mutant, "profile", 0,
+                record(mutant, lang, 0,
                        "  (::error:: σκάσιμο ΧΩΡΙΣ το αναμενόμενο μήνυμα — δεν μετρά)")
             else:
-                record(mutant, "profile", 0)
+                record(mutant, lang, 0)
+        finally:
             open(mut_profile, "w", encoding="utf-8").write(pristine)
+
+    # [ΕΠΙΤΗΡΗΤΗΣ κρ.3] ΚΑΘΕ κανονιστικό πεδίο του profile έχει μάρτυρα:
+    # μεταβολή του είτε αλλάζει υποχρεωτικά τα artifacts (⇒ «ΑΠΟΚΛΙΝΕΙ» στο
+    # --check) είτε κοκκινίζει τον generator (ασυμφωνία έδρας/oracle). Πεδίο
+    # χωρίς μηχανική ισχύ δεν επιτρέπεται να υπάρχει στο profile.
+    PROFILE_FIELD_SWEEP = [
+        ("profile-id",
+         ':profile-id "lawmax-merkle-sha256-v1"',
+         ':profile-id "lawmax-merkle-sha256-x9"', "ΑΠΟΚΛΙΝΕΙ"),
+        ("normative-ref",
+         ':normative-reference "RFC 9162 §2.1.1 (Merkle Tree Hash) — obsoletes RFC 6962"',
+         ':normative-reference "RFC 0000 (bogus)"', "ΑΠΟΚΛΙΝΕΙ"),
+        # Η αναπαράσταση πιάνεται από την άγκυρα ΔΗΜΟΣΙΕΥΜΕΝΩΝ σταθερών (το
+        # FIPS 180-4 KAT τρέχει ΠΡΙΝ τη σύγκριση έδρας/profile) — ισχυρότερο
+        # σημείο θανάτου: εξωτερική σταθερά, όχι εσωτερική σύγκριση.
+        ("hash-representation",
+         ':hash-representation "sha256:<64 lowercase hex>"',
+         ':hash-representation "sha512:<64 lowercase hex>"', "FIPS 180-4"),
+        ("tree-leaf-rule",
+         ':tree-leaf-rule "leaf data for index i = ASCII bytes of the decimal representation of i"',
+         ':tree-leaf-rule "leaf data for index i = ASCII bytes of i+1"', "ΑΠΟΚΛΙΝΕΙ"),
+        ("tree-sizes",
+         ":tree-sizes (0 1 2 3 4 5 6 7 8 15 16 17)",
+         ":tree-sizes (0 1 2 3 4 5 6 7 8 15 16 17 18)", "ΑΠΟΚΛΙΝΕΙ"),
+        ("leaf-input-hex",
+         ':hex "68656c6c6f"', ':hex "68656c6c6e"', "ΑΠΟΚΛΙΝΕΙ"),
+        ("inclusion-cases",
+         "(:n 17 :index 16)", "(:n 17 :index 15)", "ΑΠΟΚΛΙΝΕΙ"),
+        ("consistency-cases",
+         "(:n 17 :m 16)", "(:n 17 :m 15)", "ΑΠΟΚΛΙΝΕΙ"),
+        ("differential-range",
+         ":differential-range (:from 0 :to 64)",
+         ":differential-range (:from 0 :to 63)", "ΑΠΟΚΛΙΝΕΙ"),
+        ("rule-statement",
+         ':statement "duplicate-last ΑΠΑΓΟΡΕΥΕΤΑΙ ΑΠΟΛΥΤΩΣ"',
+         ':statement "duplicate-last ΕΠΙΤΡΕΠΕΤΑΙ"', "ΑΠΟΚΛΙΝΕΙ"),
+        ("byte-encoding",
+         ':statement "ΚΑΜΙΑ μετατροπή LF/CRLF προς οποιαδήποτε κατεύθυνση"',
+         ':statement "CRLF κανονικοποιειται σε LF"', "ΑΠΟΚΛΙΝΕΙ"),
+        ("publication-policy",
+         ':statement "Δημοσίευση/υπογραφή/checkpoint corpus με leaf_count = 0 ΑΠΟΡΡΙΠΤΕΤΑΙ fail-closed"',
+         ':statement "Κενο corpus επιτρεπεται"', "ΑΠΟΚΛΙΝΕΙ"),
+    ]
+
+    try:
+        for mutant, (old, new, expect) in PROFILE_DRIFTS.items():
+            drift_case(mutant, "profile", old, new, expect)
+        for field, old, new, expect in PROFILE_FIELD_SWEEP:
+            drift_case("profile-field-drift", field, old, new, expect)
     finally:
         shutil.rmtree(drift_root, ignore_errors=True)
 

@@ -72,6 +72,38 @@ def verify_inclusion(leaf: str, path, root: str) -> bool:
     return h == root
 
 
+def path_gen(m: int, lo: int, hi: int, leaves):
+    """RFC 9162 §2.1.3.1 PATH(m, D[n]) — INDEPENDENT construction, outside the
+    Lisp TCB. The generator's own cross-checks share an author and an image
+    with the production seat; THIS build is the out-of-TCB authority that the
+    emitted path is the canonical RFC path, element for element — not merely
+    one that happens to fold to the root."""
+    n = hi - lo
+    if n == 1:
+        return []
+    k = largest_power_of_two_below(n)
+    if m < k:
+        return path_gen(m, lo, lo + k, leaves) + \
+            [{"side": "right", "hash": mth(leaves[lo + k:hi])}]
+    return path_gen(m - k, lo + k, hi, leaves) + \
+        [{"side": "left", "hash": mth(leaves[lo:lo + k])}]
+
+
+def proof_gen(m: int, leaves):
+    """RFC 9162 §2.1.4.1 PROOF(m, D[n]) = SUBPROOF(m, D[n], true) — independent
+    construction of the consistency proof itself (not only its verification)."""
+    def sub(m, lo, hi, complete):
+        n = hi - lo
+        if m == n:
+            return [] if complete else [mth(leaves[lo:hi])]
+        k = largest_power_of_two_below(n)
+        if m <= k:
+            return sub(m, lo, lo + k, complete) + [mth(leaves[lo + k:hi])]
+        return sub(m - k, lo + k, hi, False) + [mth(leaves[lo:lo + k])]
+    n = len(leaves)
+    return [] if m == n else sub(m, 0, n, True)
+
+
 def verify_consistency(m: int, n: int, old_root: str, new_root: str, proof) -> bool:
     """RFC 9162 §2.1.4.2 — verify D[m] is a prefix of D[n] from the roots alone."""
     if m < 1 or m > n:
@@ -140,10 +172,16 @@ def main(argv):
               leaves[inc["index"]] == inc["leaf"]
               and verify_inclusion(inc["leaf"], inc["path"], inc["root"])
               and mth(leaves) == inc["root"])
+        # Ανεξάρτητη ΠΑΡΑΓΩΓΗ του path (όχι μόνο επαλήθευση): στοιχείο-στοιχείο.
+        check(f"inclusion PATH-gen n={inc['n']} i={inc['index']}",
+              path_gen(inc["index"], 0, inc["n"], leaves) == inc["path"])
 
     for c in v["consistency"]:
         check(f"consistency n={c['n']} m={c['m']}",
               verify_consistency(c["m"], c["n"], c["old_root"], c["new_root"], c["proof"]))
+        # Ανεξάρτητη ΠΑΡΑΓΩΓΗ του proof: στοιχείο-στοιχείο.
+        check(f"consistency PROOF-gen n={c['n']} m={c['m']}",
+              proof_gen(c["m"], tree_leaves(c["n"])) == c["proof"])
 
     d = v["differential"]
     for i, expected in enumerate(d["roots"]):

@@ -133,6 +133,10 @@
   (:id "profile-drift-leaf-prefix" :target :profile :description "leaf-prefix-byte 0x00 -> 0x02 μόνο στο profile")
   (:id "profile-drift-node-prefix" :target :profile :description "node-prefix-byte 0x01 -> 0x00 μόνο στο profile")
   (:id "profile-drift-hash-alg"    :target :profile :description "hash-algorithm SHA-256 -> SHA-512 μόνο στο profile")
+  ;; ΚΑΘΕ κανονιστικό πεδίο: μεταβολή του είτε αλλάζει υποχρεωτικά τα
+  ;; παραγόμενα artifacts (⇒ --check κόκκινο) είτε ρίχνει τον generator.
+  ;; Αδρανές πεδίο = δεν επιτρέπεται να υπάρχει σε αυτό το αρχείο.
+  (:id "profile-field-drift" :target :profile :description "sweep: profile-id, normative-ref, hash-representation, tree-leaf-rule, tree-sizes, leaf-inputs, inclusion/consistency-cases, differential-range, rules, byte-encoding, publication-policy")
   ;; Οι πύλες των ΑΛΛΩΝ ΔΥΟ δημοσιευτών αποδεικνύονται ΦΕΡΟΥΣΕΣ εκτελέσιμα
   ;; (GUARDED απορρίπτει / UNGUARDED δέχεται), όχι με κειμενικό substring.
   (:id "census-empty-articles" :target :policy :description "build-artifact-census με κενό σύνολο άρθρων")

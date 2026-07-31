@@ -54,6 +54,37 @@ function verifyInclusion(leaf, path, root) {
   return cur === root;
 }
 
+// RFC 9162 §2.1.3.1 PATH(m, D[n]) — INDEPENDENT construction outside the Lisp
+// TCB (not just fold-verification): the emitted path must be the canonical RFC
+// path, element for element.
+function pathGen(m, lo, hi, leaves) {
+  const n = hi - lo;
+  if (n === 1) return [];
+  const k = largestPowerOfTwoBelow(n);
+  if (m < k)
+    return [...pathGen(m, lo, lo + k, leaves),
+            { side: "right", hash: mth(leaves.slice(lo + k, hi)) }];
+  return [...pathGen(m - k, lo + k, hi, leaves),
+          { side: "left", hash: mth(leaves.slice(lo, lo + k)) }];
+}
+
+// RFC 9162 §2.1.4.1 PROOF(m, D[n]) = SUBPROOF(m, D[n], true) — independent
+// construction of the consistency proof itself.
+function proofGen(m, leaves) {
+  const sub = (m, lo, hi, complete) => {
+    const n = hi - lo;
+    if (m === n) return complete ? [] : [mth(leaves.slice(lo, hi))];
+    const k = largestPowerOfTwoBelow(n);
+    if (m <= k) return [...sub(m, lo, lo + k, complete), mth(leaves.slice(lo + k, hi))];
+    return [...sub(m - k, lo + k, hi, false), mth(leaves.slice(lo, lo + k))];
+  };
+  return m === leaves.length ? [] : sub(m, 0, leaves.length, true);
+}
+
+const samePath = (a, b) =>
+  a.length === b.length && a.every((s, i) => s.side === b[i].side && s.hash === b[i].hash);
+const sameProof = (a, b) => a.length === b.length && a.every((h, i) => h === b[i]);
+
 function verifyConsistency(m, n, oldRoot, newRoot, proof) {
   if (m < 1 || m > n) return false;
   if (m === n) return proof.length === 0 && oldRoot === newRoot;
@@ -101,11 +132,16 @@ function main(argv) {
       leaves[inc.index] === inc.leaf &&
       verifyInclusion(inc.leaf, inc.path, inc.root) &&
       mth(leaves) === inc.root);
+    check(`inclusion PATH-gen n=${inc.n} i=${inc.index}`,
+      samePath(pathGen(inc.index, 0, inc.n, leaves), inc.path));
   }
 
-  for (const c of v.consistency)
+  for (const c of v.consistency) {
     check(`consistency n=${c.n} m=${c.m}`,
       verifyConsistency(c.m, c.n, c.old_root, c.new_root, c.proof));
+    check(`consistency PROOF-gen n=${c.n} m=${c.m}`,
+      sameProof(proofGen(c.m, treeLeaves(c.n)), c.proof));
+  }
 
   v.differential.roots.forEach((expected, i) => {
     const n = v.differential.from + i;

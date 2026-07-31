@@ -322,3 +322,18 @@ BLOCKED, μητρώο ≡ εφαρμοσμένοι**. **CI**: επιβεβαιώ
 proof = πράσινο CI ή owner docker.
 
 **[0120+] Έκβαση CI:** dispatch ⇒ 403 (το App token δεν έχει actions:write)· push `5af60978` ⇒ 0 runs (τα push του integration δεν πυροδοτούν Actions). ΚΕΝΟ 6 = BLOCKED — NOT EXECUTED. Κλείνει ΜΟΝΟ από δημιουργό: Run workflow στον κλάδο, Ή PR προς main (τρέχει όλες τις πύλες + Docker build), Ή push με δικά του credentials.
+
+## ΑΠΑΝΤΗΣΗ ΣΤΑ 7 ΚΡΙΤΗΡΙΑ ΤΟΥ ΕΠΙΤΗΡΗΤΗ — [0121]
+
+Κανένα «ανώτατο» δεν εκφέρεται. (1) oracle εκτός TCB: ΜΕΡΙΚΩΣ — in-image
+διασταύρωση = ρητά ΚΑΛΥΨΗ, εκτός-TCB αυθεντία = py/mjs· εξωτερικά vectors
+ΑΠΟΝΤΑ (403) ⇒ ενέργεια δημιουργού. (2) ΚΛΕΙΣΤΟ: γεννήτριες PATH/PROOF και
+στα δύο py/mjs, στοιχείο-προς-στοιχείο ⇒ 134 ok ×2. (3) ΚΛΕΙΣΤΟ: sweep 15
+profile mutations (κάθε κανονιστικό πεδίο ⇒ κόκκινο ή υποχρεωτική αλλαγή
+artifacts)· ο sweep έπιασε δικό του εύρημα (kill από FIPS KAT, όχι από το
+δηλωμένο μήνυμα — «λάθος αιτία δεν μετράει» δούλεψε). (4) ΚΛΕΙΣΤΟ [0120].
+(5) ΚΛΕΙΣΤΟ: και οι 3 publishers με ΠΡΑΓΜΑΤΙΚΕΣ source mutations (το
+publish-empty-corpus αναβαθμίστηκε από eval-redefinition). (6) ΚΛΕΙΣΤΟ [0120].
+(7) BLOCKED: dispatch 403 / push ⇒ 0 runs / docker απών — μόνο δημιουργός
+(Run workflow στον κλάδο, Ή PR προς main, Ή push). Μάρτυρες: **39/39, 0
+BLOCKED, μητρώο ≡ 14 ids**.
