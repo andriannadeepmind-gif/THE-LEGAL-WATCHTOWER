@@ -41,7 +41,7 @@
   "Create staging directory for release validation before publish
 
   Structure:
-    /releases/.staging-<timestamp>/
+    /candidates/.staging-<timestamp>/   [Δ3] ΠΟΤΕ κάτω από releases/
       articles/
       meta-ontology.ttl
       lineage-graph.ttl
@@ -80,7 +80,7 @@
          ;; Μοναδικό staging ανά διεργασία: με ντετερμινιστικό timestamp δύο
          ;; παράλληλα cuts θα μοιράζονταν το ΙΔΙΟ staging και θα διαπλέκονταν.
          (staging-dir (merge-pathnames
-                      (format nil "releases/.staging-~A-p~D/" timestamp-str
+                      (format nil "candidates/.staging-~A-p~D/" timestamp-str
                               #+sbcl (sb-posix:getpid) #-sbcl 0)
                       base-dir-pathname))
          (articles-dir (merge-pathnames "articles/" staging-dir))

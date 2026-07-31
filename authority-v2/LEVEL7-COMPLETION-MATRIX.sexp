@@ -111,11 +111,12 @@
                     "systems/orchestrator-epistemic/deploy-epistemic.lisp (seats ⇒ fail-closed)"
                     "systems/orchestrator-epistemic/transparency-log.lisp (write seat ⇒ fail-closed)")
    :proof-objects ()
-   :command "sbcl --script <runner> tests/level7-disarm-test.lisp"
-   :actual-result "EXECUTED 2026-07-31: 9 passed, 0 failed — ΚΑΙ ΟΙ ΤΡΕΙΣ έδρες αρνούνται καθολικά· κανένα latest/log δεν γράφτηκε"
-   :negative-witness "το ΑΚΡΙΒΕΣ πλαστό receipt που ΠΡΙΝ γινόταν δεκτό (⑦β: .tsr με μόνο το imprint) τώρα ΑΡΝΕΙΤΑΙ· η άρνηση κατονομάζει την έδρα· επιπλέον οι legacy suites release-authority (14/0) και transparency-log (23/0) κατοχυρώνουν πλέον την ΑΡΝΗΣΗ"
-   :residual-assumptions ("το TSA conjunct του νέου kernel ΔΕΝ έχει υλοποιηθεί ακόμη (απαίτηση 2/4)"
-                          "η κατάργηση είναι σε επίπεδο κώδικα ΚΑΙ OS (απαίτηση 1) — όχι τυπικά αποδεδειγμένη"))
+   :command "tests/level7-disarm-test.lisp + authority-v2/tests/producer-os-boundary-test.sh + capture-adversarial-test.py"
+   :actual-result "EXECUTED 2026-07-31: level7-disarm 13/0· producer-os-boundary 9/0 (ΠΡΑΓΜΑΤΙΚΕΣ παραγωγικές συναρτήσεις υπό producer UID, releases/ bind-mounted read-only, precompiled core)· capture-adversarial 11/0 (openat2/RESOLVE_BENEATH, concurrent independent-subprocess mutator)"
+   :negative-witness "το ΑΚΡΙΒΕΣ πλαστό receipt που ΠΡΙΝ γινόταν δεκτό (⑦β) τώρα ΑΡΝΕΙΤΑΙ· --attest-release αρνείται ΣΤΗΝ ΠΡΩΤΗ ΓΡΑΜΜΗ (πριν από κάθε TSA write, το legacy evidence ΑΘΙΚΤΟ)· create-staging-directory γράφει candidates/ όχι releases/· η capture απορρίπτει symlink/hardlink/FIFO/traversal/preexisting-quarantine ΚΑΙ έπιασε πραγματικό FIFO-DoS (openat2 O_NONBLOCK)"
+   :residual-assumptions ("[ΑΝΑΚΛΗΣΗ] Ο προηγούμενος χαρακτηρισμός Δ2/Δ3 ως CLOSED ΑΠΟΣΥΡΘΗΚΕ: Δ2 = IMPLEMENTED-NOT-PROVED, Δ3 = IMPLEMENTED-NOT-PROVED. Το προηγούμενο grep-proof ήταν ψευδώς πράσινο (έχανε create-staging-directory και --attest-release)· αντικαταστάθηκε με πραγματικό OS test."
+                          "το TSA conjunct του νέου kernel ΔΕΝ έχει υλοποιηθεί ακόμη (απαίτηση 2/4)"
+                          "η κατάργηση είναι σε επίπεδο κώδικα ΚΑΙ OS (απαίτηση 1) — όχι τυπικά αποδεδειγμένη· η capture είναι υλοποίηση αναφοράς σε Python, ΟΧΙ ο τελικός verified checker (απαίτηση 6)"))
 
   ;; ── 6 ────────────────────────────────────────────────────────────────────
   (:id 6

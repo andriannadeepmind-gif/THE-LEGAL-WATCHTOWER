@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # =============================================================================
-# Δ2–Δ3 CLOSURE PROOF — οι ΕΞΙ υποχρεώσεις που έθεσε ο δημιουργός
+# Δ2–Δ3 EVIDENCE BUNDLE (ΟΧΙ closure) — grep-checks ΜΟΝΟ ως ένδειξη,
+# η ΦΕΡΟΥΣΑ απόδειξη είναι το πραγματικό OS test (καλείται στο τέλος)
 # =============================================================================
 # «Πριν χαρακτηρίσει Δ2–Δ3 κλειστές, να αποδείξει:
 #   1. μηδέν definitions ΚΑΙ μηδέν calls των %tlog-write* στο production load graph
@@ -44,12 +45,20 @@ case "$LOADED" in
 esac
 
 echo
-echo "== ② ΜΗΔΕΝ production writes στο παλιό releases/ =="
-WRITES=$(echo "$ASD_FILES" | xargs grep -nE '(with-open-file|ensure-directories-exist|rename-file|delete-file|sb-posix:symlink)' 2>/dev/null \
-         | grep -E '"releases/|releases/~A' | grep -v ";;" | wc -l)
-[ "$WRITES" -eq 0 ] && ok "καμία εγγραφή προς releases/ στο load graph" \
-                    || { no "ΒΡΕΘΗΚΑΝ $WRITES πιθανές εγγραφές"; \
-                         echo "$ASD_FILES" | xargs grep -nE '(with-open-file|ensure-directories-exist|rename-file|delete-file|sb-posix:symlink)' 2>/dev/null | grep -E '"releases/|releases/~A' | head -3; }
+echo "== ② ΜΗΔΕΝ production writes στο releases/ — ΠΡΑΓΜΑΤΙΚΟ OS TEST, ΟΧΙ grep =="
+# [ΕΥΡΗΜΑ ΔΗΜΙΟΥΡΓΟΥ] Το grep έχανε create-staging-directory (άλλη γραμμή) και
+# --attest-release. Η κρίση μεταφέρεται στο πραγματικό OS test: παραγωγικές
+# συναρτήσεις υπό producer UID, releases/ bind-mounted read-only.
+if [ "$(id -u)" -eq 0 ] && command -v setpriv >/dev/null && command -v unshare >/dev/null; then
+  if bash "$REPO/authority-v2/tests/producer-os-boundary-test.sh" >/tmp/osb.$$.log 2>&1; then
+    ok "OS boundary test: $(grep -c '  ok' /tmp/osb.$$.log) έλεγχοι, 0 αποτυχίες (producer UID, ro releases/)"
+  else
+    no "OS boundary test ΑΠΕΤΥΧΕ:"; grep FAIL /tmp/osb.$$.log | head -3
+  fi
+  rm -f /tmp/osb.$$.log
+else
+  echo "  BLK  OS boundary test — απαιτεί root+setpriv+unshare (δεν δηλώνεται pass)"
+fi
 
 echo
 echo "== ③ ΠΡΑΓΜΑΤΙΚΟ bundle κάτω από candidates/<root>/, όχι marker =="
@@ -98,5 +107,13 @@ else
 fi
 
 echo
-echo "── Δ2–Δ3 closure proof: $p passed, $f failed ──"
+echo "== ⑦ CAPTURE ADVERSARIAL (concurrent mutator, openat2) =="
+if CAP=$(cd "$REPO" && timeout 120 python3 authority-v2/tests/capture-adversarial-test.py 2>&1); then
+  ok "capture adversarial: $(echo "$CAP" | grep -c '  ok') έλεγχοι, 0 αποτυχίες"
+else
+  no "capture adversarial ΑΠΕΤΥΧΕ:"; echo "$CAP" | grep FAIL | head -3
+fi
+
+echo
+echo "── Δ2–Δ3 evidence bundle: $p passed, $f failed ──"
 [ "$f" -eq 0 ]

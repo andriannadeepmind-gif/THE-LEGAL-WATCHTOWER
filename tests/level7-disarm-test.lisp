@@ -14,7 +14,11 @@
 ;;;;      release-authority-test ⑦β) και απαιτεί ΑΡΝΗΣΗ εκεί που πριν ήταν
 ;;;;      αποδοχή.
 ;;;;   Β. CANDIDATE BOUNDARY: ο παραγωγός γράφει ΜΟΝΟ candidate bundles
-;;;;      (evidence-only, authority:false), και το marker είναι immutable.
+;;;;      (evidence-only, authority:false). ΤΟ candidates/ ΔΕΝ ΕΙΝΑΙ
+;;;;      immutable — ο producer είναι ιδιοκτήτης του (εύρημα δημιουργού). Ο
+;;;;      έλεγχος παρακάτω δείχνει ΜΟΝΟ ιδιοπάθεια της ΙΔΙΑΣ εκπομπής, ΟΧΙ
+;;;;      αμεταβλητότητα· η μόνη αμετάβλητη είναι ο συλληφθείς snapshot στο
+;;;;      authority quarantine (authority-v2/capture/capture.py).
 ;;;;
 ;;;; (Το OS επίπεδο — EACCES για κάθε ταυτότητα πλην authority — αποδεικνύεται
 ;;;;  ΕΚΤΕΛΕΣΤΙΚΑ από authority-v2/capability/verify-capability-closure.sh:
@@ -83,10 +87,18 @@
            (and (search "\"authority\":false" txt)
                 (search "candidate-bundle" txt))))
   ;; Immutability: δεύτερη εκπομπή ΔΕΝ ξαναγράφει (ίδιο αρχείο, ίδια bytes).
+  ;; [ΔΙΟΡΘΩΣΗ] ΔΕΝ ισχυριζόμαστε immutability ενός producer-owned αρχείου: ο
+  ;; producer μπορεί να το αλλάξει. Ελέγχουμε ΜΟΝΟ ιδιοπάθεια: δεύτερη εκπομπή
+  ;; ΙΔΙΟΥ candidate δεν παράγει διαφορετικό δείκτη (content-addressed).
   (let ((before (uiop:read-file-string marker)))
     (orchestrator.epistemic:emit-candidate-bundle! *base* *rel-id* :candidate-root "sha256:beef")
-    (check "candidate marker είναι IMMUTABLE (δεύτερη εκπομπή δεν τον αλλάζει)"
-           (equal before (uiop:read-file-string marker)))))
+    (check "ιδιοπάθεια εκπομπής: δεύτερη εκπομπή ΙΔΙΟΥ candidate ⇒ ίδιος δείκτης (ΟΧΙ immutability — ο producer παραμένει ιδιοκτήτης)"
+           (equal before (uiop:read-file-string marker)))
+    ;; ΘΕΤΙΚΟΣ ΜΑΡΤΥΡΑΣ ΤΗΣ ΜΕΤΑΒΛΗΤΟΤΗΤΑΣ: ο ιδιοκτήτης ΟΝΤΩΣ μπορεί να γράψει.
+    (with-open-file (o marker :direction :output :if-exists :append)
+      (write-char #\Space o))
+    (check "ΤΟ candidates/ ΕΙΝΑΙ ΜΕΤΑΒΛΗΤΟ: ο ιδιοκτήτης έγραψε (γι' αυτό χρειάζεται quarantine capture)"
+           (not (equal before (uiop:read-file-string marker))))))
 
 ;; ΚΑΝΕΝΑ authoritative artifact δεν εμφανίστηκε από όλες τις παραπάνω κλήσεις.
 (check "ΚΑΝΕΝΑ latest/latest.json/transparency-log δεν γράφτηκε από τις απόπειρες"

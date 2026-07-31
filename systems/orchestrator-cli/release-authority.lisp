@@ -143,18 +143,35 @@
           (release-dir (orchestrator.core:get-context-value context :epistemic-release-dir)))
       (format t "~%RELEASE: ~A~%ATTESTED: ~A~%DIR: ~A~%"
               release-id
-              (if attested "ΝΑΙ (latest προήχθη)" "ΟΧΙ — χρήση --attest-release")
+              (if attested "ΝΑΙ (legacy)" "ΟΧΙ — η attestation ζει πλέον στο authority-v2 admission kernel")
               release-dir)
       0)))
 
 (defun run-attest-release (corpus-id &key (tsa-fn nil) (release-id-arg nil))
-  "--attest-release <corpus> [release-id] : προσάρτηση χρονικής απόδειξης σε
+  "[Δ3 — ΚΑΤΑΡΓΗΜΕΝΗ ΕΔΡΑ] Η εντολή ΑΡΝΕΙΤΑΙ ΣΤΗΝ ΠΡΩΤΗ ΓΡΑΜΜΗ.
+
+  ΕΥΡΗΜΑ ΔΗΜΙΟΥΡΓΟΥ: το ενεργό --attest-release έγραφε TSA receipts ΜΕΣΑ σε
+  υπάρχον releases/<id>/temporal-proof/ και ΜΟΝΟ ΜΕΤΑ καλούσε το καταργημένο
+  promote-latest!. Δηλαδή ΜΠΟΡΟΥΣΕ να μεταβάλει legacy evidence και κατόπιν να
+  αποτύχει — μόνιμη αλλοίωση του παρελθόντος από εντολή που «δεν κάνει τίποτα».
+  Η άρνηση μπαίνει ΠΡΙΝ από ΚΑΘΕ ενέργεια: πριν από config lookup, πριν από
+  release discovery, πριν από κάθε TSA κλήση, πριν από κάθε byte.
+  Η attestation είναι πλέον ΥΠΟΧΡΕΩΤΙΚΟ CONJUNCT του admission kernel.
+
+  Ιστορική τεκμηρίωση της παλιάς διαδρομής:
+  --attest-release <corpus> [release-id] : προσάρτηση χρονικής απόδειξης σε
    ΥΠΑΡΧΟΝ commitment. Η επιλογή στόχου είναι ΝΤΕΤΕΡΜΙΝΙΣΤΙΚΗ, ποτέ ευρετική:
    ρητό release-id, αλλιώς ο ΜΟΝΑΔΙΚΟΣ υποψήφιος· με πολλούς ⇒ ΣΦΑΛΜΑ με
    πλήρη λίστα (ο δημιουργός ονομάζει, το σύστημα δεν μαντεύει).
    ① επαλήθευση: recomputed root των 8 canonical ≡ ταυτότητα καταλόγου
    ② RFC-3161 receipts (append-only: υπάρχοντα receipts ΔΕΝ αγγίζονται)
    ③ προαγωγή latest (μόνο τότε). TSA-FN injectable ΜΟΝΟ για offline test."
+  ;; ΠΡΩΤΗ ΕΝΤΟΛΗ — πριν από config lookup, πριν από release discovery, πριν
+  ;; από κάθε TSA κλήση, πριν από κάθε byte. Καμία παρενέργεια δεν προηγείται.
+  (error 'orchestrator.epistemic:legacy-authority-seat-removed
+         :seat "--attest-release"
+         :detail "ΚΑΤΑΡΓΗΜΕΝΗ ΕΔΡΑ: καμία εγγραφή στο legacy releases/ — η attestation είναι conjunct του admission kernel (authority-v2)")
+  ;; ── ΑΠΡΟΣΙΤΟΣ ΚΩΔΙΚΑΣ (ιστορικό ίχνος της παλιάς διαδρομής) ──
   (orchestrator.spec:select-corpus corpus-id)
   (let* ((short (or (orchestrator.spec:config-get "corpus.short_name")
                     (error "attest-release: corpus.short_name not configured")))
