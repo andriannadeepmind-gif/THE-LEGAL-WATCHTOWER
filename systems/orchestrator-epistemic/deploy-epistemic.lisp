@@ -1093,7 +1093,8 @@ No fallbacks, no partial validity - strict proof gates.
 
                 ;; Step 9: Content-addressed publish ⇒ CANDIDATE ONLY.
                 ;; [Level-7 VCCT-RSM] Το legacy pipeline ΔΕΝ προάγει πλέον
-                ;; authority. Γράφει immutable candidate bundle στο candidate
+                ;; authority. Γράφει candidate bundle (ΜΕΤΑΒΛΗΤΟ — ο producer είναι
+                ;; ιδιοκτήτης του candidates/) στο candidate
                 ;; namespace και ΣΤΑΜΑΤΑ. Η προαγωγή σε authority (latest/log/
                 ;; accepted state) γίνεται ΑΠΟΚΛΕΙΣΤΙΚΑ από τον admission kernel
                 ;; της authority-v2 process — ποτέ από εδώ.

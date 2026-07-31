@@ -52,9 +52,14 @@
 
 (defun emit-candidate-bundle! (base-output-dir release-id
                                &key (source-commit nil) (candidate-root nil))
-  "Γράφει έναν immutable candidate-bundle δείκτη για το RELEASE-ID στο
+  "Γράφει δείκτη candidate-bundle για το RELEASE-ID στο
    candidate namespace. Επιστρέφει το path του δείκτη. ΔΕΝ προάγει authority,
    ΔΕΝ γράφει latest/log — αυτά είναι αποκλειστικά της authority-v2 process.
+
+   ΠΡΟΣΟΧΗ — ΤΟ candidates/ ΔΕΝ είναι immutable: ο producer είναι ΙΔΙΟΚΤΗΤΗΣ του
+   και μπορεί να το αλλάξει ανά πάσα στιγμή (ενεργός αντίπαλος, TOCTOU). Ο μόνος
+   αμετάβλητος είναι ο ΣΥΛΛΗΦΘΕΙΣ snapshot μέσα στο authority quarantine — βλ.
+   authority-v2/capture/CAPTURE-PROTOCOL.sexp.
 
    Ο δείκτης είναι evidence-only: λέει «ο παραγωγός ΠΡΟΤΕΙΝΕΙ αυτό το bundle
    ως candidate». Η αποδοχή (ή απόρριψη) κρίνεται από τον admission kernel."
