@@ -18,5 +18,7 @@
   ],
   "kind": "lawmax/legacy-tlog-fixtures/1",
   "note": "ΠΑΓΩΜΕΝΑ bytes — ο παραγωγικός writer ΑΦΑΙΡΕΘΗΚΕ (Δ2)",
+  "provenance_commit": "57c0cd868c80f87df8e298c9aa75b8ccf2503391",
+  "provenance_note": "Τα bytes αντιστοιχούν στη ΜΟΡΦΗ του legacy transparency log όπως υπήρχε στο 57c0cd86 (version tlog-1, rfc6962-sha256, ίδια σειρά κλειδιών). Παρήχθησαν ΑΝΕΞΑΡΤΗΤΑ από τον αφαιρεμένο writer.",
   "tlog_version": "tlog-1"
 }

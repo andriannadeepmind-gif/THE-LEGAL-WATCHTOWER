@@ -238,18 +238,21 @@
        (handler-case
            ;; P1R [0046]: το output είναι αναγεννήσιμη μνήμη, το releases/ είναι
            ;; APPEND-ONLY δημοσίευση — ο καθαρισμός δεν το αγγίζει ΠΟΤΕ.
+           ;; [Δ3] ΚΑΙ το candidates/ προστατεύεται: εκεί γράφει πλέον ο
+           ;; παραγωγός· αν το σκούπιζε ο καθαρισμός, τα candidate bundles θα
+           ;; εξαφανίζονταν πριν προλάβει να τα κρίνει η authority.
            (progn
              (dolist (child (append (uiop:subdirectories dir)
                                     (uiop:directory-files dir)))
                (let ((leaf (car (last (pathname-directory
                                        (uiop:ensure-directory-pathname child))))))
                  (unless (and (uiop:directory-pathname-p child)
-                              (equal leaf "releases"))
+                              (member leaf '("releases" "candidates") :test #'equal))
                    (if (uiop:directory-pathname-p child)
                        (uiop:delete-directory-tree child :validate t
                                                          :if-does-not-exist :ignore)
                        (delete-file child)))))
-             (format t "  ✓ καθαρός φάκελος εξόδου (releases/ ΑΘΙΚΤΟ): ~A~%" dir))
+             (format t "  ✓ καθαρός φάκελος εξόδου (releases/ + candidates/ ΑΘΙΚΤΑ): ~A~%" dir))
          (error (e) (format t "  ⚠ δεν καθαρίστηκε ~A: ~A~%" dir e))))
       (t nil)))
   (ensure-directories-exist (uiop:ensure-directory-pathname output-dir)))

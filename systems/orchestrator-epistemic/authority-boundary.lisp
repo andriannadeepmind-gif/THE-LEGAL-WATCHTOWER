@@ -62,7 +62,7 @@
          (cand-dir (merge-pathnames *candidate-namespace* base))
          (marker (merge-pathnames (format nil "~A.candidate.json" release-id) cand-dir)))
     (ensure-directories-exist cand-dir)
-    ;; Immutable: αν υπάρχει ήδη, ΔΕΝ ξαναγράφεται (content-addressed ⇒ ίδιο).
+    ;; Producer-owned (ΟΧΙ immutable): αν υπάρχει ήδη, ΔΕΝ ξαναγράφεται (content-addressed ⇒ ίδιο).
     (unless (probe-file marker)
       (with-open-file (o marker :direction :output :if-exists :error
                                 :if-does-not-exist :create)

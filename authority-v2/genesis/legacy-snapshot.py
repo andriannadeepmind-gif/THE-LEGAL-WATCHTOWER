@@ -160,10 +160,16 @@ def collect_releases(repo_root, entries):
             if naming is None:          # π.χ. `latest` — δείκτης, όχι release
                 continue
             rel = os.sep.join(parts[:i + 2])
-            rec = {"path": rel, "naming": naming, "dir_name": name}
-            if naming == "timestamp-named":
-                rec["separator_codepoints"] = sorted(
-                    {"U+%04X" % ord(c) for c in name if not (c.isalnum() or c == "-")})
+            # [ΔΙΟΡΘΩΣΗ ΔΗΜΙΟΥΡΓΟΥ] Η ταξινόμηση ΔΕΝ αγγίζει την ταυτότητα:
+            # το `path`/`dir_name` είναι τα ΑΚΡΙΒΗ bytes του πραγματικού path
+            # (καμία μετατροπή U+F03A → ':'). Η ανωμαλία ΚΑΤΑΓΡΑΦΕΤΑΙ ρητά ώστε
+            # να μη θεωρηθεί ποτέ τυπογραφικό ούτε να «διορθωθεί» σιωπηλά.
+            rec = {"path": rel, "naming": naming, "dir_name": name,
+                   "dir_name_utf8_hex": name.encode("utf-8").hex()}
+            anomalies = sorted({"U+%04X" % ord(c) for c in name
+                                if not (c.isalnum() or c in "-TZ")})
+            if anomalies and anomalies != ["U+003A"]:
+                rec["name_encoding_anomaly"] = anomalies
             if parts[0] == "output_run1":
                 historical[rel] = rec
             else:
@@ -226,6 +232,13 @@ def main(argv):
         # ΔΕΝ εξαφανίζονται από το evidence.
         "historical_run_artifacts": historical,
         "historical_run_artifact_count": len(historical),
+        # Συγκεντρωτική δήλωση: ΠΟΙΕΣ ανωμαλίες ονοματοδοσίας υπάρχουν στα legacy
+        # bytes. Καμία δεν κανονικοποιείται — το Merkle root δεσμεύει τα ΑΚΡΙΒΗ
+        # UTF-8 bytes κάθε path (βλ. entry_bytes).
+        "name_encoding_anomalies": sorted({
+            a for r in (releases + historical)
+            for a in r.get("name_encoding_anomaly", [])
+        }),
         "legacy_latest_pointers": latest,
         "tsa_evidence": tsa,
         "jws_evidence": jws,

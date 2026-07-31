@@ -131,12 +131,14 @@
   ;; [Level-7] Ο δείκτης ελέγχου ΔΕΝ είναι πια το latest.json (καταργήθηκε ως
   ;; authority artifact): είναι ο ΙΔΙΟΣ ο κατάλογος releases/ και το immutable
   ;; content-addressed release μέσα του — αυτά οφείλουν να επιβιώσουν.
-  (rat-check "⑧ clean-corpus-output-dir: junk ΦΕΥΓΕΙ, releases/ + content-addressed release ΜΕΝΟΥΝ"
+  ;; [Δ3] Ο παραγωγός γράφει πλέον στο candidates/ — ΕΚΕΙ ζει το bundle που
+  ;; οφείλει να επιβιώσει του καθαρισμού (το releases/ είναι legacy read-only).
+  (rat-check "⑧ clean-corpus-output-dir: junk ΦΕΥΓΕΙ, candidates/ + content-addressed bundle ΜΕΝΟΥΝ"
              (and (not (probe-file (merge-pathnames "junk.txt" base)))
-                  (probe-file (merge-pathnames "releases/" base))
+                  (probe-file (merge-pathnames "candidates/" base))
                   ;; τουλάχιστον ένα immutable content-addressed release επιβιώνει
                   (some (lambda (p) (search "sha256-" (namestring p)))
-                        (directory (merge-pathnames "releases/*.*" base)))))
+                        (directory (merge-pathnames "candidates/*.*" base)))))
   (ignore-errors (uiop:delete-directory-tree base :validate (constantly t))))
 
 ;;; ⑨ [P1.5-D κριτής#1] Epoch-downgrade: sha256-named ΧΩΡΙΣ census ΚΑΙ εκτός
