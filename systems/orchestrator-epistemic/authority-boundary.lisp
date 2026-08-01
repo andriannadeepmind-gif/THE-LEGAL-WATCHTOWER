@@ -3,7 +3,7 @@
 ;;;; LEVEL-7 VCCT-RSM — Η ΓΡΑΜΜΗ CANDIDATE/AUTHORITY (μία έδρα κατάργησης)
 ;;;; ============================================================================
 ;;;; ΓΙΑΤΙ ΥΠΑΡΧΕΙ: κατ' εντολή δημιουργού (FV-CCT-RSM), ολόκληρο το υπάρχον
-;;;; Common Lisp σύστημα γίνεται ΑΠΟΚΛΕΙΣΤΙΚΑ μη-έμπιστος παραγωγός immutable
+;;;; Common Lisp σύστημα γίνεται ΑΠΟΚΛΕΙΣΤΙΚΑ μη-έμπιστος παραγωγός ΜΕΤΑΒΛΗΤΩΝ
 ;;;; candidate bundles. Καμία υπάρχουσα διαδρομή (deploy, emit, ingestion,
 ;;;; blockchain, promote-latest!) ΔΕΝ επιτρέπεται πλέον να γράψει authoritative
 ;;;; release, log ή latest. Η ΜΟΝΗ authority ζει στη νέα authority-v2 process

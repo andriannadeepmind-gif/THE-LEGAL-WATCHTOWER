@@ -111,24 +111,22 @@
                     "systems/orchestrator-epistemic/deploy-epistemic.lisp (seats ⇒ fail-closed)"
                     "systems/orchestrator-epistemic/transparency-log.lisp (write seat ⇒ fail-closed)")
    :proof-objects ()
-   :command "bash authority-v2/tests/run-authority-v2-proofs.sh   (Η ΜΙΑ ΕΔΡΑ: inventory από filesystem ≡ committed PROOF-CENSUS.txt)"
-   :actual-result "EXECUTED 2026-07-31 [CAPTURE-AND-BOUNDARY-CORRECTION]: authority-v2 proofs 8 passed / 0 failed / 0 blocked (από 8 απογεγραμμένες)·
-                   capture-seat-differential 8/0 — η capture.py ΚΑΙ ο ΠΑΡΑΓΩΓΙΚΟΣ orchestrator.merkle:merkle-root-of-files δίνουν ΤΗΝ ΙΔΙΑ ρίζα
-                     sha256:bbe1817c91837dc89b4affd213e32cb21baab23fb1c02da50bec0c4c638be6f9 στα ΙΔΙΑ αρχεία, ΚΑΙ αλλάζουν ΜΑΖΙ σε 1-byte μετάλλαξη ΚΑΙ σε εναλλαγή σειράς·
-                   capture-adversarial + fixed point 11/0 (10 σενάρια, ΚΑΘΕ καθαρή σύλληψη περνά ΥΠΟΧΡΕΩΤΙΚΑ από fixed point ①②③)·
-                   capture-mutation-witness 8/0 — 7/7 μεταλλάξεις ΣΚΟΤΩΘΗΚΑΝ + θετικός μάρτυρας·
-                   producer-os-boundary 11/0 — EROFS(30) ΟΧΙ EACCES(13), με τον producer ΙΔΙΟΚΤΗΤΗ του releases/ και θετικό έλεγχο ότι ΧΩΡΙΣ mount γράφει·
-                   level7-disarm 20/0 (με 6 νέους ελέγχους Δ3δ)· release-authority 14/0· transparency-log 21/0"
-   :negative-witness "ΜΑΡΤΥΡΑΣ ΜΕΤΑΛΛΑΞΕΩΝ (authority-v2/tests/capture-mutation-witness.py): κάθε ένα από τα ευρήματα του δημιουργού ΞΑΝΑΕΙΣΑΓΕΤΑΙ επίτηδες στον κώδικα και ΠΡΕΠΕΙ να σκοτωθεί —
-                      M1 release_root ως hash-of-hash (ΤΟ ΑΚΡΙΒΕΣ P0), M2 φύλλο χωρίς 0x00, M3 duplicate-last MTH, M4 μερική εγγραφή, M5 κατάργηση fingerprint (TOCTOU), M6 κατάργηση άρνησης hardlink (διαρροή secret), M7 κατάργηση διασταύρωσης φάσεων.
-                      Ο ΙΔΙΟΣ ο μάρτυρας βρήκε ΔΥΟ κενά σενάρια (αρχείο < chunk ανάγνωσης· round-robin αντίπαλος) και τα έκλεισε στην ΑΙΤΙΑ τους.
-                      Στο OS όριο: ο producer ΕΙΝΑΙ ιδιοκτήτης με 0700 και ΓΡΑΦΕΙ χωρίς mount — άρα η άρνηση ΔΕΝ εξηγείται από δικαιώματα· το errno ελέγχεται ΑΡΙΘΜΗΤΙΚΑ."
+   :command "bash authority-v2/tests/run-authority-v2-proofs.sh   (Η ΜΙΑ ΕΔΡΑ: inventory ΟΛΟΥ του authority-v2/ ≡ committed PROOF-CENSUS.txt)"
+   :actual-result "EXECUTED 2026-08-01 [CAPTURE-BOUNDARY-CLOSURE-2]: authority-v2 proofs 13 passed / 0 failed / 0 blocked (από 13 απογεγραμμένες, ΜΕ το capability-closure μέσα)·
+                   capture-adversarial + fixed point 23/0 (22 σενάρια, ακριβής ισότητα) — περιλαμβάνει RLIMIT_NOFILE=96 με 200 αρχεία ⇒ OK 210, RLIMIT=8 ⇒ ΕΛΕΓΧΟΜΕΝΟ fd-exhausted, μη έγκυρο UTF-8 ⇒ non-utf8-name, symlink σε ΤΕΛΙΚΗ και σε ΕΝΔΙΑΜΕΣΗ συνιστώσα της άγκυρας ⇒ symlink-in-anchor, canonical profile απόν/κενό/διπλότυπο/λάθος-id/απόλυτο ⇒ ΑΡΝΗΣΗ·
+                   capture-mutation-witness 15/0 — 14/14 ΦΟΝΕΥΣΙΜΕΣ μεταλλάξεις ΣΚΟΤΩΘΗΚΑΝ (μαζί με «λάθος ΜΟΝΟ σε δέντρο 18 φύλλων» ΚΑΙ την παραλλαγή του χωρίς τον δεύτερο αλγόριθμο) + 1 ΔΗΛΩΜΕΝΑ ΜΗ ΠΑΡΑΤΗΡΗΣΙΜΗ (η δήλωση είναι ΔΙΑΨΕΥΣΙΜΗ: αν σκοτωθεί, ο μάρτυρας αποτυγχάνει)·
+                   capture-seat-differential 8/0 — profile ≡ +EPISTEMIC-CANONICAL-FILES+ (10 αρχεία, ίδια σειρά) ΚΑΙ ίδια ρίζα με τον ΠΑΡΑΓΩΓΙΚΟ merkle-root-of-files·
+                   proof-census-adversarial 11/0 (ξεχασμένη/ορφανή/διπλότυπη/άγνωστος τρόπος/κακοσχημάτη/κενή ⇒ ΟΛΕΣ ΑΠΟΡΡΙΠΤΟΝΤΑΙ)·
+                   producer-topology 9/0 (ΔΗΛΩΜΕΝΗ τοπολογία: uid 11002, output ro, μόνο candidates rw, κανένα authority store· 7 μεταλλαγμένες τοπολογίες απορρίπτονται)·
+                   producer-os-boundary 11/0 (EROFS 30, όχι EACCES 13)· verify-capability-closure 5/0· level7-disarm 20/0· release-authority 14/0· transparency-log 21/0"
+   :negative-witness "ΜΑΡΤΥΡΑΣ ΜΕΤΑΛΛΑΞΕΩΝ: κάθε εύρημα ΚΑΙ ΤΩΝ ΔΥΟ ετυμηγοριών ξαναεισάγεται επίτηδες και ΠΡΕΠΕΙ να σκοτωθεί — hash-of-hash, φύλλο χωρίς 0x00, duplicate-last, ΛΑΘΟΣ ΜΟΝΟ ΣΤΟ n=18, μερική εγγραφή, κατάργηση fingerprint, κατάργηση άρνησης hardlink, ΔΙΑΡΡΟΗ DESCRIPTORS, ΑΥΘΑΙΡΕΤΟ PATHNAME ΑΓΚΥΡΑΣ, αποδοχή μη έγκυρου UTF-8, αποδοχή διπλότυπου profile, κανένας καθαρισμός μερικού quarantine, κατάργηση διασταύρωσης φάσεων.
+                      Ο ΙΔΙΟΣ ο μάρτυρας βρήκε ΔΥΟ κενά σενάρια στην προηγούμενη έκδοση (αρχείο < chunk· round-robin αντίπαλος) και ένας ΘΕΤΙΚΟΣ ΜΑΡΤΥΡΑΣ έπιασε πραγματική παλινδρόμηση (χαμένη εγγραφή --cut-release)."
    :residual-assumptions ("[ΑΝΑΚΛΗΣΗ ΙΣΧΥΕΙ] Δ2 = IMPLEMENTED-NOT-PROVED, Δ3 = IMPLEMENTED-NOT-PROVED. Ο χαρακτηρισμός CLOSED παραμένει ΑΠΟΣΥΡΜΕΝΟΣ."
-                          "ΚΛΕΙΣΤΑ ΣΕ ΑΥΤΟ ΤΟ COMMIT (εκτελεστικά, όχι τυπικά): ταύτιση Merkle έδρας με την παραγωγή· επαναμέτρηση ΑΠΟΚΛΕΙΣΤΙΚΑ από το quarantine· write-all· κλείσιμο ΟΛΩΝ των descriptors· deadline ανά αρχείο ΚΑΙ ανά ανάγνωση· πραγματικό fixed point· mount-attributable άρνηση· συρμάτωση σε CI."
+                          "[ΝΕΑ ΑΝΑΚΛΗΣΗ] Ο ισχυρισμός «η απόκλιση της Merkle έδρας είναι ΔΟΜΙΚΑ ΑΔΥΝΑΤΗ» ΑΠΟΣΥΡΕΤΑΙ ΟΡΙΣΤΙΚΑ: ο δημιουργός κατασκεύασε μετάλλαξη που αστοχεί ΜΟΝΟ σε n=18 και πέρασε όλους τους τότε ελέγχους. Ό,τι ισχύει τώρα είναι ΑΝΙΧΝΕΥΣΗ (vectors n=0..64 + δεύτερος δομικά διαφορετικός αλγόριθμος για κάθε n + διαφορικό με τον παραγωγικό πυρήνα), ΟΧΙ αδυνατότητα. Επιστρέφει ΜΟΝΟ με ΚΟΙΝΟ ΑΠΟΔΕΔΕΙΓΜΕΝΟ πυρήνα."
                           "το TSA conjunct του νέου kernel ΔΕΝ έχει υλοποιηθεί ακόμη (απαίτηση 2/4)"
-                          "η κατάργηση είναι σε επίπεδο κώδικα ΚΑΙ OS (απαίτηση 1) — όχι τυπικά αποδεδειγμένη· η capture είναι υλοποίηση αναφοράς σε Python, ΟΧΙ ο τελικός verified checker (απαίτηση 6)"
-                          "ΤΟ COMPOSE SERVICE authority-v2-proofs ΔΕΝ ΕΚΤΕΛΕΣΤΗΚΕ: `docker compose config` ΕΠΙΚΥΡΩΘΗΚΕ (exit 0), αλλά ΔΕΝ υπάρχει διαθέσιμος docker daemon σε αυτό το περιβάλλον. BLOCKED — NOT EXECUTED, ΠΟΤΕ pass."
-                          "ΤΟ CI JOB authority-v2-boundary ΔΕΝ ΕΧΕΙ ΤΡΕΞΕΙ ΑΚΟΜΗ σε GitHub Actions τη στιγμή της συγγραφής — δηλώνεται ΩΣ ΣΥΡΜΑΤΩΜΕΝΟ, ΟΧΙ ΩΣ ΠΡΑΣΙΝΟ."))
+                          "η capture είναι υλοποίηση αναφοράς σε Python, ΟΧΙ ο τελικός formally-verified checker (απαίτηση 6)· το CAPTURE-PROTOCOL το δηλώνει ρητά και ο production writer παραμένει ΑΠΕΝΕΡΓΟΠΟΙΗΜΕΝΟΣ"
+                          "Η ΥΠΗΡΕΣΙΑ producer ΔΕΝ ΕΚΤΕΛΕΣΤΗΚΕ: `docker compose config` ΕΠΙΚΥΡΩΘΗΚΕ και η ΔΗΛΩΜΕΝΗ τοπολογία ελέγχεται εκτελεστικά (producer-topology-test.py 9/0), ΑΛΛΑ δεν υπάρχει docker daemon εδώ. BLOCKED — NOT EXECUTED, ΠΟΤΕ pass."
+                          "ΤΟ CI JOB authority-v2-boundary ΔΕΝ ΕΧΕΙ ΤΡΕΞΕΙ ΠΡΑΣΙΝΟ: workflow_dispatch ⇒ 403 (χωρίς actions:write), 0 runs στον κλάδο. ΣΥΡΜΑΤΩΜΕΝΟ, ΟΧΙ ΠΡΑΣΙΝΟ — κλείνει ΜΟΝΟ από τον δημιουργό."))
 
   ;; ── 6 ────────────────────────────────────────────────────────────────────
   (:id 6

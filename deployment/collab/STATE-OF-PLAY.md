@@ -368,3 +368,30 @@ transparency-log 21/0.
 **BLOCKED — NOT EXECUTED:** compose service (docker daemon απών· `compose config`
 επικυρώθηκε) · CI job (δεν έχει τρέξει ακόμη). Δ2/Δ3 = IMPLEMENTED-NOT-PROVED,
 Level-7 gate `:not-passed`.
+
+## [0123] CAPTURE-BOUNDARY-CLOSURE-2 — `claude/lawmax-level7-vcct-rsm`
+
+Απάντηση στα ΕΠΙΖΩΝΤΑ σφάλματα που βρήκε ο δημιουργός **τρέχοντας** τον κώδικα
+του `0cef4003`. **Δ4–Δ9 ΔΕΝ αγγίχτηκαν.**
+
+- **ΑΝΑΚΛΗΣΗ**: «Merkle divergence δομικά αδύνατη» ⇒ αποσύρθηκε (μετάλλαξη λάθος
+  μόνο σε n=18 πέρασε). Τώρα: vectors n=0..64 + **δεύτερος δομικά διαφορετικός
+  αλγόριθμος MTH** για κάθε n + διαφορικό με τον παραγωγικό πυρήνα = **ανίχνευση**.
+- **Descriptors** κλείνουν αμέσως (RLIMIT_NOFILE=96 με 200 αρχεία ⇒ OK).
+- **Αγκύρωση**: καμία αυθαίρετη διαδρομή· symlink οπουδήποτε στην άγκυρα ⇒ άρνηση.
+- **Canonical profile** υποχρεωτικό/μοναδικό/χωρίς διπλότυπα, ταυτισμένο εκτελεστικά
+  με τη σταθερά του πυρήνα· `release_root` ποτέ `None`.
+- **Ελεγχόμενες αρνήσεις** για invalid UTF-8 / EMFILE / ENOSPC / EIO + καθαρισμός
+  μερικού quarantine.
+- **Απογραφή αποδείξεων** επιπέδου αποθετηρίου (13, με το capability-closure) +
+  αντίπαλος για διπλότυπα/άγνωστα/ορφανά.
+- **Υπηρεσία producer**: uid 11002, output ro, μόνο candidates rw, κανένα authority
+  store — τοπολογία ελεγμένη με 7 μεταλλάξεις.
+
+**Αριθμοί:** η ΜΙΑ έδρα 13/0/0 blocked · adversarial 23/0 · mutation witness 15/0
+(14/14 φονεύσιμες) · seat-differential 8/0 · census adversary 11/0 · topology 9/0 ·
+OS boundary 11/0 · capability closure 5/0 · level7-disarm 20/0 · release-authority
+14/0 · transparency-log 21/0.
+
+**BLOCKED — NOT EXECUTED:** compose producer (docker daemon απών) · CI (dispatch
+403, 0 runs). Δ2/Δ3 = IMPLEMENTED-NOT-PROVED, Level-7 gate `:not-passed`.

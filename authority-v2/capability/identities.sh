@@ -38,16 +38,36 @@ CAND_ROOT="${2:-/var/lib/lawmax/candidates}"
 die() { echo "::error::$*" >&2; exit 1; }
 [ "$(id -u)" -eq 0 ] || die "identities.sh: απαιτείται root για τη δημιουργία ταυτοτήτων/δικαιωμάτων"
 
-ensure_group() { getent group "$1" >/dev/null || groupadd --system "$1"; }
-ensure_user() {
-  local u="$1"; shift
-  getent passwd "$u" >/dev/null || useradd --system --no-create-home --shell /usr/sbin/nologin "$@" "$u"
+# ── ΚΑΡΦΩΜΕΝΑ UID/GID ────────────────────────────────────────────────────────
+# ΕΤΥΜΗΓΟΡΙΑ ΔΗΜΙΟΥΡΓΟΥ: «η πραγματική υπηρεσία … δεν ορίζει producer UID».
+# Για να μπορεί ΤΟ COMPOSE/DOCKER να δηλώσει `user:` ντετερμινιστικά, τα uid/gid
+# ΔΕΝ μπορούν να είναι ό,τι δώσει ο useradd. Καρφώνονται εδώ, ΜΙΑ φορά, και
+# αναφέρονται αυτούσια στο docker-compose.yml.
+LAWMAX_AUTHORITY_UID="${LAWMAX_AUTHORITY_UID:-11001}"
+LAWMAX_PRODUCER_UID="${LAWMAX_PRODUCER_UID:-11002}"
+LAWMAX_READER_UID="${LAWMAX_READER_UID:-11003}"
+LAWMAX_READERS_GID="${LAWMAX_READERS_GID:-11010}"
+
+ensure_group() {                     # ensure_group <name> [gid]
+  getent group "$1" >/dev/null || groupadd --system ${2:+--gid "$2"} "$1"
+}
+ensure_user() {                      # ensure_user <name> <uid> [extra useradd args…]
+  local u="$1" uid="$2"; shift 2
+  if ! getent passwd "$u" >/dev/null; then
+    # Το ΙΔΙΟ uid ⇒ ΙΔΙΑ ταυτότητα σε host και container. Αν το uid είναι ήδη
+    # πιασμένο από άλλον, ΣΦΑΛΜΑ — καμία σιωπηλή αντικατάσταση ταυτότητας.
+    if getent passwd "$uid" >/dev/null; then
+      die "identities.sh: το uid $uid είναι ήδη πιασμένο από $(getent passwd "$uid" | cut -d: -f1) — καμία σιωπηλή επαναχρήση"
+    fi
+    useradd --system --no-create-home --shell /usr/sbin/nologin \
+            --uid "$uid" --user-group "$@" "$u"
+  fi
 }
 
-ensure_group "$READERS_GROUP"
-ensure_user "$AUTHORITY_USER"
-ensure_user "$PRODUCER_USER"
-ensure_user "$READER_USER" --groups "$READERS_GROUP"
+ensure_group "$READERS_GROUP" "$LAWMAX_READERS_GID"
+ensure_user "$AUTHORITY_USER" "$LAWMAX_AUTHORITY_UID"
+ensure_user "$PRODUCER_USER"  "$LAWMAX_PRODUCER_UID"
+ensure_user "$READER_USER"    "$LAWMAX_READER_UID" --groups "$READERS_GROUP"
 usermod -a -G "$READERS_GROUP" "$READER_USER" >/dev/null 2>&1 || true
 
 mkdir -p "$STORE_ROOT" "$CAND_ROOT"
@@ -65,3 +85,4 @@ usermod -a -G "$READERS_GROUP" "$AUTHORITY_USER" >/dev/null 2>&1 || true
 echo "✓ capability closure εγκαταστάθηκε"
 echo "  authority store : $STORE_ROOT  ($AUTHORITY_USER:$READERS_GROUP 0750)"
 echo "  candidates      : $CAND_ROOT   ($PRODUCER_USER:$READERS_GROUP 0750)"
+echo "  ΚΑΡΦΩΜΕΝΑ uid   : authority=$LAWMAX_AUTHORITY_UID producer=$LAWMAX_PRODUCER_UID reader=$LAWMAX_READER_UID readers-gid=$LAWMAX_READERS_GID"

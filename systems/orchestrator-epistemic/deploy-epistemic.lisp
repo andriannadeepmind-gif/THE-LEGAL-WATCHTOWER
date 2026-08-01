@@ -34,7 +34,11 @@
 (in-package :orchestrator.epistemic)
 
 ;;; ============================================================================
-;;; IMMUTABLE RELEASE DIRECTORY CREATION (STAGING-BASED)
+;;; STAGING DIRECTORY CREATION  [ΑΝΑΚΛΗΣΗ: ΟΧΙ «IMMUTABLE RELEASE»]
+;;; Ο τίτλος έλεγε «IMMUTABLE RELEASE DIRECTORY». ΨΕΥΔΗΣ σε δύο σημεία: (α) εδώ
+;;; ΔΕΝ παράγεται release αλλά CANDIDATE· (β) το candidates/ ανήκει στον producer
+;;; και είναι ΜΕΤΑΒΛΗΤΟ. Ο μόνος αμετάβλητος είναι ο ΣΥΛΛΗΦΘΕΙΣ snapshot στο
+;;; authority quarantine (authority-v2/capture).
 ;;; ============================================================================
 
 (defun create-staging-directory (base-output-dir timestamp)
@@ -784,7 +788,12 @@ No fallbacks, no partial validity - strict proof gates.
 ;;; ============================================================================
 
 (defun atomic-publish-release (base-output-dir staging-dir release-id)
-  "[Δ3] Γράφει το bundle ως IMMUTABLE CANDIDATE στο candidates/<release-id>/.
+  "[Δ3] Γράφει το bundle ως CANDIDATE στο candidates/<release-id>/.
+  [ΑΝΑΚΛΗΣΗ] ΟΧΙ «IMMUTABLE CANDIDATE»: ο producer είναι ΙΔΙΟΚΤΗΤΗΣ του
+  candidates/ και μπορεί να αλλάξει ΚΑΘΕ byte οποιαδήποτε στιγμή — ακόμη και
+  ενόσω η authority διαβάζει. Το content-addressed όνομα ΔΕΝ κάνει τα bytes
+  αμετάβλητα· κάνει μόνο την ασυμφωνία ανιχνεύσιμη ΑΦΟΥ μετρηθούν, και η
+  μέτρηση γίνεται ΑΠΟΚΛΕΙΣΤΙΚΑ πάνω στο συλληφθέν αντίγραφο.
   ΔΕΝ γράφει ΠΟΤΕ στο releases/ — το legacy releases/ είναι read-only για τον
   παραγωγό. Η προαγωγή σε authority κρίνεται ΑΠΟΚΛΕΙΣΤΙΚΑ από τον admission
   kernel της authority-v2, με βάση αυτό ακριβώς το candidate.

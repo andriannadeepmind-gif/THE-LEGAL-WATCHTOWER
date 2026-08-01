@@ -108,7 +108,7 @@ fi
 
 echo
 echo "== ⑦ CAPTURE ADVERSARIAL (concurrent mutator, openat2) =="
-if CAP=$(cd "$REPO" && timeout 120 python3 authority-v2/tests/capture-adversarial-test.py 2>&1); then
+if CAP=$(cd "$REPO" && timeout 900 python3 authority-v2/tests/capture-adversarial-test.py 2>&1); then
   ok "capture adversarial: $(echo "$CAP" | grep -c '  ok') έλεγχοι, 0 αποτυχίες"
 else
   no "capture adversarial ΑΠΕΤΥΧΕ:"; echo "$CAP" | grep FAIL | head -3

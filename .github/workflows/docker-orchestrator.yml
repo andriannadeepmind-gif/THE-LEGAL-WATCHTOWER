@@ -124,7 +124,8 @@ jobs:
     - name: 🧰 Toolchain — ΡΗΤΗ εγκατάσταση, καμία σιωπηλή υπόθεση
       shell: bash
       run: |
-        sudo apt-get update && sudo apt-get install -y sbcl util-linux
+        sudo apt-get update && sudo apt-get install -y sbcl util-linux python3-yaml
+        python3 -c 'import yaml' || { echo '::error::PyYAML ΑΠΩΝ'; exit 1; }
         for t in sbcl python3 setpriv unshare mount; do
           command -v "$t" >/dev/null || { echo "::error::ΑΠΟΝ εργαλείο: $t"; exit 1; }
           echo "  ✓ $t → $(command -v "$t")"

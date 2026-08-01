@@ -244,6 +244,60 @@ services:
   #   restart: unless-stopped
 
   # ═══════════════════════════════════════════════════════════════════════════
+  # producer — Η ΠΡΑΓΜΑΤΙΚΗ ΠΑΡΑΓΩΓΙΚΗ ΤΟΠΟΛΟΓΙΑ ΤΟΥ ΜΗ ΕΜΠΙΣΤΟΥ ΠΑΡΑΓΩΓΟΥ
+  # ═══════════════════════════════════════════════════════════════════════════
+  # ΕΤΥΜΗΓΟΡΙΑ ΔΗΜΙΟΥΡΓΟΥ: «Η πραγματική υπηρεσία εξακολουθεί να έχει ολόκληρο
+  # το output ως rw και δεν ορίζει producer UID. Το authority-v2-proofs είναι
+  # μόνο προνομιούχος εκτελεστής tests, όχι παραγωγική τοπολογία.» ΟΡΘΟ.
+  #
+  # ΕΔΩ ΕΙΝΑΙ Η ΤΟΠΟΛΟΓΙΑ, ΟΧΙ ΤΟ TEST:
+  #   · user: 11002 = lawmax-producer (ΚΑΡΦΩΜΕΝΟ uid στο
+  #     authority-v2/capability/identities.sh — ΙΔΙΑ ταυτότητα host και container)
+  #   · ./output ΟΛΟΚΛΗΡΟ ως :ro  ⇒ το releases/ ΚΑΘΕ corpus είναι read-only
+  #   · ΜΟΝΟ τα candidates/<corpus> είναι :rw (nested mounts πάνω από το :ro)
+  #   · ΚΑΝΕΝΑ mount του authority store (/var/lib/lawmax/authority): ο producer
+  #     δεν έχει ΟΥΤΕ ΜΟΝΟΠΑΤΙ προς αυτόν — μηδενική πρόσβαση εξ ορισμού
+  #   · read_only rootfs + cap_drop ALL + no-new-privileges
+  # Η άρνηση εγγραφής στο releases/ είναι ΤΟΥ ΠΥΡΗΝΑ (EROFS), όχι της εφαρμογής —
+  # η ίδια ιδιότητα που αποδεικνύεται εκτελεστικά στο producer-os-boundary-test.sh.
+  producer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: orchestrator:latest
+    container_name: lawmax-producer
+    user: "11002:11002"
+    command: ["--cut-release"]
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp:size=256m,mode=1777
+    mem_limit: 2g
+    cpus: 2.0
+    volumes:
+      # ΟΛΟ το output ΜΟΝΟ ΓΙΑ ΑΝΑΓΝΩΣΗ — περιλαμβάνει ΚΑΘΕ releases/
+      - ./output:/app/output:ro
+      - ./configs:/app/configs:ro
+      - ./deployment:/app/deployment:ro
+      # astikos: ΜΟΝΟ το candidates/ του είναι εγγράψιμο
+      - ./output/astikos/candidates:/app/output/astikos/candidates:rw
+      # constitution: ΜΟΝΟ το candidates/ του είναι εγγράψιμο
+      - ./output/constitution/candidates:/app/output/constitution/candidates:rw
+      # kdioikitikis: ΜΟΝΟ το candidates/ του είναι εγγράψιμο
+      - ./output/kdioikitikis/candidates:/app/output/kdioikitikis/candidates:rw
+      # kpoinikis: ΜΟΝΟ το candidates/ του είναι εγγράψιμο
+      - ./output/kpoinikis/candidates:/app/output/kpoinikis/candidates:rw
+      # kpolitikis: ΜΟΝΟ το candidates/ του είναι εγγράψιμο
+      - ./output/kpolitikis/candidates:/app/output/kpolitikis/candidates:rw
+      # poinikos: ΜΟΝΟ το candidates/ του είναι εγγράψιμο
+      - ./output/poinikos/candidates:/app/output/poinikos/candidates:rw
+    profiles: ["producer"]
+
+  # ═══════════════════════════════════════════════════════════════════════════
   # authority-v2 — ΤΟ ΟΡΙΟ ΠΥΡΗΝΑ ΣΕ CONTAINER (η ίδια ΜΙΑ έδρα με το CI)
   # ═══════════════════════════════════════════════════════════════════════════
   # ΕΥΡΗΜΑ ΔΗΜΙΟΥΡΓΟΥ (P1): «τίποτα δεν είναι συρματωμένο σε Docker/compose».

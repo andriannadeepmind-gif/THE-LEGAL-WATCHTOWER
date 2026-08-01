@@ -1,51 +1,52 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""AUTHORITY CANDIDATE CAPTURE — descriptor-based, openat2/RESOLVE_BENEATH.
+"""AUTHORITY CANDIDATE CAPTURE — αγκυρωμένη, φραγμένη, fail-closed.
 
-ΕΤΥΜΗΓΟΡΙΑ ΔΗΜΙΟΥΡΓΟΥ ΠΟΥ ΓΕΝΝΗΣΕ ΑΥΤΟ ΤΟ ΑΡΧΕΙΟ (P0/P0/P1):
-  · «λάθος αλγόριθμος ρίζας»: το προηγούμενο release_root υπολόγιζε
-    SHA256(0x00 ‖ SHA256(bytes)) — ΔΕΝ είναι η παραγωγική έδρα. Η παραγωγική
-    έδρα (source/merkle-authority.lisp · hash-leaf-file) είναι
-    SHA256(0x00 ‖ ΩΜΑ BYTES ΑΡΧΕΙΟΥ).
-  · «τίποτα δεν επανυπολογίζεται από το quarantine»: τα hash υπολογίζονταν από
-    τα bytes της ΕΧΘΡΙΚΗΣ πηγής, με μία os.write χωρίς έλεγχο επιστροφής.
-  · διαρροή descriptors· deadline μία φορά ανά κατάλογο.
+ΕΤΥΜΗΓΟΡΙΑ ΔΗΜΙΟΥΡΓΟΥ ΠΟΥ ΓΕΝΝΗΣΕ ΑΥΤΗ ΤΗΝ ΕΚΔΟΣΗ (CAPTURE-BOUNDARY-CLOSURE-2).
+Ο δημιουργός έτρεξε τον κώδικα, πρόσθεσε σενάρια που δεν είχε η σουίτα, και
+βρήκε ΕΠΙΖΩΝΤΑ σφάλματα. Κάθε ένα κλείνει εδώ ΣΤΗΝ ΑΙΤΙΑ ΤΟΥ:
 
-Η ΔΟΜΙΚΗ ΑΠΑΝΤΗΣΗ — ΟΧΙ φρουρός γύρω από το λάθος σχήμα, αλλά εξάλειψη της
-κλάσης σφάλματος: **ΔΥΟ ΑΥΣΤΗΡΑ ΔΙΑΚΡΙΤΕΣ ΦΑΣΕΙΣ**.
+  ① «Ενδιάμεσο symlink στο ίδιο το candidate_root έγινε δεκτό — το openat2
+     προστατεύει τους απογόνους, όχι τον αρχικό αυθαίρετο pathname.»
+     ⇒ ΚΑΝΕΝΑ αυθαίρετο pathname. `_open_anchor()` διασχίζει ΚΑΘΕ συνιστώσα του
+     απόλυτου μονοπατιού από το «/» με openat2 RESOLVE_STRICT. Ένα symlink
+     ΟΠΟΥΔΗΠΟΤΕ στην άγκυρα ⇒ ΑΡΝΗΣΗ `symlink-in-anchor`. Candidate και
+     quarantine ανοίγουν ΩΣ ΟΝΟΜΑΤΑ μέσα σε έμπιστα parent dirfds.
+  ② «Με RLIMIT_NOFILE=96 και 200 αρχεία πήρα ακατέργαστο OSError(24).»
+     ⇒ ΚΑΘΕ descriptor κλείνει ΑΜΕΣΩΣ μετά τη χρήση (αναδρομή με finally):
+     ταυτόχρονα ανοιχτά = O(βάθος)+2, ΟΧΙ O(αρχεία). Και κάθε OSError
+     μεταφράζεται σε ΕΛΕΓΧΟΜΕΝΗ άρνηση (`fd-exhausted`, `quarantine-no-space`,
+     `io-error`, `os-error`) — ποτέ ακατέργαστη εξαίρεση.
+  ③ «Το sorted(scandir(...)) φορτώνει ολόκληρο τον κατάλογο πριν εφαρμοστεί όριο.»
+     ⇒ Η απαρίθμηση μετράει ΚΑΘΩΣ διαβάζει και σταματά ΠΡΙΝ τη συσσώρευση.
+  ④ «Μη έγκυρο UTF-8 όνομα ⇒ ακατέργαστο UnicodeEncodeError.»
+     ⇒ Τα ονόματα δουλεύονται ΣΕ BYTES· αυστηρή αποκωδικοποίηση UTF-8 ως
+     ΕΛΕΓΧΟΣ, όχι ως μετατροπή. Αποτυχία ⇒ ΑΡΝΗΣΗ `non-utf8-name`.
+  ⑤ «Χωρίς canonical list ⇒ release_root=None· με διπλό αρχείο ⇒ άλλη ρίζα.»
+     ⇒ Το canonical profile είναι ΥΠΟΧΡΕΩΤΙΚΟ, ΚΑΡΦΩΜΕΝΟ σε committed αρχείο,
+     ΜΟΝΑΔΙΚΟ και ΧΩΡΙΣ διπλότυπα. `release_root` ΔΕΝ είναι ΠΟΤΕ None.
+  ⑥ «Το independent fixed point τρέχει μόνο στο harness, όχι στην capture().»
+     ⇒ Η capture() ΕΚΤΕΛΕΙ η ίδια δεύτερη, πλήρη επαναμέτρηση και απορρίπτει με
+     `fixed-point-violation` σε οποιαδήποτε διαφορά.
+  ⑦ «Μετάλλαξη λάθος ΜΟΝΟ σε δέντρο 18 φύλλων πέρασε και τους 22 ελέγχους.»
+     ⇒ ΟΡΘΟ ΚΑΙ ΘΕΜΕΛΙΩΔΕΣ: πεπερασμένα vectors ΔΕΝ εξαλείφουν την απόκλιση.
+     (α) Ο ισχυρισμός «δομικά αδύνατη» ΑΠΟΣΥΡΕΤΑΙ — βλ. `RETRACTED_CLAIMS`.
+     (β) Ο έλεγχος vectors επεκτάθηκε σε ΟΛΟ το differential range (n=0..64).
+     (γ) Προστέθηκε ΔΕΥΤΕΡΟΣ, ΔΟΜΙΚΑ ΔΙΑΦΟΡΕΤΙΚΟΣ αλγόριθμος MTH (επαυξητική
+         στοίβα RFC 6962 αντί για αναδρομική διάσπαση). Κάθε ρίζα υπολογίζεται
+         ΚΑΙ ΜΕ ΤΟΥΣ ΔΥΟ και συγκρίνεται — για ΚΑΘΕ n, όχι μόνο για τα
+         πινακοποιημένα. Διαφορά ⇒ `merkle-internal-divergence`.
+     Αυτό ΔΕΝ είναι απόδειξη ορθότητας· είναι ανίχνευση απόκλισης για κάθε n.
 
-  ΦΑΣΗ Α — ΑΝΤΙΓΡΑΦΗ (copy).  Διαβάζει από την εχθρική πηγή και γράφει στο
-      quarantine με write-all. **ΚΑΝΕΝΑ hash δεν υπολογίζεται εδώ.** Τίποτα από
-      όσα διαβάστηκαν από το candidates/ δεν συμμετέχει σε καμία δέσμευση.
-      Άρα η κλάση «hash από εχθρικά bytes» δεν υπάρχει ως δυνατότητα.
-  ΦΑΣΗ Β — ΜΕΤΡΗΣΗ (measure).  Ανοίγει ΕΚ ΝΕΟΥ το quarantine και ΞΑΝΑΔΙΑΒΑΖΕΙ
-      ΚΑΘΕ byte από το ΑΝΤΙΓΡΑΦΟ. Ο census, το snapshot_root και το
-      release_root παράγονται ΑΠΟΚΛΕΙΣΤΙΚΑ εδώ.
-  ΔΙΑΣΤΑΥΡΩΣΗ ΦΑΣΕΩΝ.  Τα σύνολα (path, size) των δύο φάσεων ΟΦΕΙΛΟΥΝ να
-      ταυτίζονται· αλλιώς `quarantine-diverged` (πιάνει μερική εγγραφή, ENOSPC,
-      αλλοίωση του ίδιου του authority store).
-
-Η MERKLE ΕΔΡΑ ΔΕΝ ΜΠΟΡΕΙ ΝΑ ΑΠΟΚΛΙΝΕΙ ΣΙΩΠΗΛΑ: πριν αγγιχτεί ΕΝΑ byte, η
-`verify_merkle_seat()` ελέγχει τα πρωτόγονα αυτής της υλοποίησης απέναντι στα
-committed golden vectors (deployment/verify/vectors/merkle/vectors.json) —
-κενή ρίζα, κάθε leaf vector, κάθε δέντρο n=0..17 (unbalanced split). Απόκλιση ή
-απουσία vectors ⇒ ΑΡΝΗΣΗ, ποτέ σιωπηλή συνέχεια.
-
-ΕΓΓΥΗΣΕΙΣ ΠΡΟΣΒΑΣΗΣ:
-  · openat2(2) με RESOLVE_BENEATH|RESOLVE_NO_SYMLINKS|RESOLVE_NO_XDEV ΚΑΙ
-    O_NONBLOCK (FIFO ⇒ ΚΑΝΕΝΑ blocking open· DoS αδύνατο) σε ΚΑΘΕ άνοιγμα —
-    η επιβολή γίνεται ΑΠΟ ΤΟΝ ΠΥΡΗΝΑ, ΜΕΣΑ στο syscall.
-  · Απαρίθμηση ΜΟΝΟ με descriptors (scandir(fd)), ΠΟΤΕ με pathname walk.
-  · fstat ΤΟΥ ΑΝΟΙΓΜΕΝΟΥ descriptor ΠΡΙΝ και ΜΕΤΑ την ανάγνωση.
-  · Το quarantine ΑΠΑΓΟΡΕΥΕΤΑΙ να προϋπάρχει· εγγραφή με O_EXCL|O_NOFOLLOW.
-  · ΟΛΟΙ οι descriptors κλείνονται σε `finally` (κλειστό σύνολο `_Fds`).
-  · Ο deadline ελέγχεται ανά καταχώρηση ΚΑΙ ανά ανάγνωση/εγγραφή chunk.
-  · Ροϊκή αντιγραφή/μέτρηση: η μνήμη είναι O(chunk), όχι O(μέγεθος αρχείου).
-
-ΟΡΙΟΘΕΤΗΣΗ ΙΣΧΥΡΙΣΜΟΥ (τίμια άγνοια): η capture ΔΕΝ ισχυρίζεται ότι το
-candidates/ είχε αυτό το περιεχόμενο σε ΜΙΑ στιγμή. Ισχυρίζεται ΜΟΝΟ ότι το
-quarantine περιέχει ΑΥΤΑ ΑΚΡΙΒΩΣ τα bytes και ότι οι ρίζες τα δεσμεύουν. Η K
-κρίνει το quarantine — το candidates/ δεν είναι είσοδος καμίας απόφασης.
+ΔΙΑΤΗΡΟΥΝΤΑΙ ΑΠΟ ΤΗΝ ΠΡΟΗΓΟΥΜΕΝΗ ΕΚΔΟΣΗ (ελεγμένα):
+  · ΔΥΟ ΑΥΣΤΗΡΑ ΔΙΑΚΡΙΤΕΣ ΦΑΣΕΙΣ — Α: αντιγραφή ΧΩΡΙΣ κανένα hash· Β: μέτρηση
+    ΑΠΟΚΛΕΙΣΤΙΚΑ από το quarantine. Διασταύρωση (path,size) ⇒ quarantine-diverged.
+  · write-all που τιμά ΚΑΘΕ επιστροφή της os.write· fsync αρχείων και καταλόγων.
+  · fstat ΤΟΥ DESCRIPTOR πριν/μετά ⇒ `mutated-during-capture`.
+  · Άρνηση symlink/hardlink/non-regular/traversal/προϋπάρχοντος quarantine.
+  · deadline ανά καταχώρηση ΚΑΙ ανά chunk· ροϊκή μνήμη O(chunk).
+ΝΕΟ: σε ΚΑΘΕ άρνηση, το ΜΕΡΙΚΟ quarantine ΚΑΘΑΡΙΖΕΤΑΙ (descriptor-based purge) —
+δεν μένει ποτέ μισοχτισμένο δέντρο που θα μπορούσε να περαστεί για σύλληψη.
 
 ΑΠΑΙΤΕΙ Linux ≥ 5.6 (openat2). Αν λείπει ⇒ ΑΡΝΗΣΗ, ΠΟΤΕ σιωπηλό fallback.
 """
@@ -63,26 +64,38 @@ PREFIX = "sha256:"
 LEAF_DOMAIN = b"\x00"
 NODE_DOMAIN = b"\x01"
 MERKLE_PROFILE = "lawmax-merkle-sha256-v1"
+CANONICAL_PROFILE_ID = "lawmax-candidate-canonical-v1"
 CHUNK = 1 << 20
 
-# Το ΜΟΝΟ σχήμα εγγραφής snapshot — αναμφίσημο (length-prefixed), domain-separated
-# σε ΔΥΟ επίπεδα, και δεσμεύει ΑΚΡΙΒΩΣ το ίδιο per-file φύλλο με το release_root.
 SNAPSHOT_ENTRY_DOMAIN = b"lawmax-snapshot-entry-v1\x00"
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.dirname(os.path.dirname(_HERE))
 GOLDEN_VECTORS = os.path.join(REPO_ROOT, "deployment", "verify", "vectors",
                               "merkle", "vectors.json")
+CANONICAL_PROFILE = os.path.join(_HERE, "canonical-profile.json")
 TREE_LEAF_RULE = "leaf data for index i = ASCII bytes of the decimal representation of i"
+
+# ── ΑΠΟΣΥΡΜΕΝΟΙ ΙΣΧΥΡΙΣΜΟΙ (ρητή εντολή δημιουργού) ──────────────────────────
+RETRACTED_CLAIMS = (
+    "«Η απόκλιση της Merkle έδρας είναι ΔΟΜΙΚΑ ΑΔΥΝΑΤΗ» — ΑΠΟΣΥΡΕΤΑΙ. Πεπερασμένα "
+    "golden vectors ελέγχουν πεπερασμένα n· μετάλλαξη που αστοχεί ΜΟΝΟ σε n εκτός "
+    "πίνακα τα περνά όλα. Ό,τι ισχύει σήμερα είναι ΑΝΙΧΝΕΥΣΗ, όχι αδυνατότητα: "
+    "committed vectors για n=0..64 ΚΑΙ δεύτερος δομικά διαφορετικός αλγόριθμος για "
+    "κάθε n ΚΑΙ διαφορικό test απέναντι στον παραγωγικό Lisp πυρήνα. Ο ισχυρισμός "
+    "«αδύνατη» επιστρέφει ΜΟΝΟ όταν υπάρξει ΚΟΙΝΟΣ ΑΠΟΔΕΔΕΙΓΜΕΝΟΣ πυρήνας.",
+)
 
 # openat2(2)
 SYS_openat2 = 437
 RESOLVE_NO_XDEV = 0x01
 RESOLVE_NO_SYMLINKS = 0x04
 RESOLVE_BENEATH = 0x08
+RESOLVE_STRICT = RESOLVE_BENEATH | RESOLVE_NO_SYMLINKS | RESOLVE_NO_XDEV
 
 DEFAULT_LIMITS = {
     "max_files": 10000,
+    "max_dir_entries": 4096,
     "max_total_bytes": 512 * 1024 * 1024,
     "max_file_bytes": 64 * 1024 * 1024,
     "max_depth": 16,
@@ -90,11 +103,27 @@ DEFAULT_LIMITS = {
     "deadline_seconds": 120,
 }
 
+_ERRNO_REASON = {
+    errno.EMFILE: "fd-exhausted",
+    errno.ENFILE: "fd-exhausted",
+    errno.ENOSPC: "quarantine-no-space",
+    errno.EDQUOT: "quarantine-no-space",
+    errno.EIO: "io-error",
+    errno.EROFS: "quarantine-read-only",
+}
+
 
 class CaptureRefused(Exception):
     def __init__(self, reason, detail=""):
         super().__init__("%s: %s" % (reason, detail))
         self.reason, self.detail = reason, detail
+
+
+def _os_refuse(exc, ctx):
+    """ΚΑΘΕ OSError γίνεται ΕΛΕΓΧΟΜΕΝΗ άρνηση — ποτέ ακατέργαστη εξαίρεση."""
+    e = getattr(exc, "errno", None)
+    return CaptureRefused(_ERRNO_REASON.get(e, "os-error"),
+                          "%s: %s" % (ctx, os.strerror(e) if e else exc))
 
 
 class _OpenHow(ctypes.Structure):
@@ -107,24 +136,27 @@ _libc = ctypes.CDLL(ctypes.util.find_library("c"), use_errno=True)
 
 
 def openat2(dirfd, path, flags, resolve):
-    """openat2 με RESOLVE_* — η επιβολή beneath/no-symlinks γίνεται ΣΤΟΝ ΠΥΡΗΝΑ."""
+    """openat2 με RESOLVE_* — η επιβολή γίνεται ΣΤΟΝ ΠΥΡΗΝΑ. PATH σε bytes."""
+    raw = path if isinstance(path, bytes) else os.fsencode(path)
     how = _OpenHow(flags=flags, mode=0, resolve=resolve)
     rc = _libc.syscall(ctypes.c_long(SYS_openat2), ctypes.c_int(dirfd),
-                       ctypes.c_char_p(path.encode("utf-8")),
-                       ctypes.byref(how), ctypes.c_size_t(ctypes.sizeof(how)))
+                       ctypes.c_char_p(raw), ctypes.byref(how),
+                       ctypes.c_size_t(ctypes.sizeof(how)))
     if rc < 0:
         e = ctypes.get_errno()
         if e == errno.ENOSYS:
             raise CaptureRefused("openat2-unavailable",
                                  "ο πυρήνας δεν υποστηρίζει openat2 — ΚΑΜΙΑ σιωπηλή υποβάθμιση")
         if e in (errno.EXDEV, errno.ELOOP):
-            raise CaptureRefused("escapes-root", "%s (%s)" % (path, os.strerror(e)))
-        raise CaptureRefused("open-refused", "%s (%s)" % (path, os.strerror(e)))
+            raise CaptureRefused("escapes-root", "%r (%s)" % (raw, os.strerror(e)))
+        if e in _ERRNO_REASON:
+            raise CaptureRefused(_ERRNO_REASON[e], "%r (%s)" % (raw, os.strerror(e)))
+        raise CaptureRefused("open-refused", "%r (%s)" % (raw, os.strerror(e)))
     return rc
 
 
-RESOLVE_STRICT = RESOLVE_BENEATH | RESOLVE_NO_SYMLINKS | RESOLVE_NO_XDEV
 _OPEN_FLAGS = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
+_DIR_FLAGS = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -136,12 +168,10 @@ _OPEN_FLAGS = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
 #        δύναμη του 2 ΑΥΣΤΗΡΑ < n. ΠΟΤΕ duplicate-last (κλάση CVE-2012-2459).
 
 def _leaf(data: bytes) -> str:
-    """hash-leaf-bytes: το φύλλο των ΩΜΩΝ bytes — ΟΧΙ hash-of-hash."""
     return PREFIX + hashlib.sha256(LEAF_DOMAIN + data).hexdigest()
 
 
 def _leaf_hasher():
-    """Ροϊκή μορφή του ΙΔΙΟΥ φύλλου: hasher ήδη τροφοδοτημένος με το 0x00."""
     h = hashlib.sha256()
     h.update(LEAF_DOMAIN)
     return h
@@ -152,7 +182,8 @@ def _node(a: str, b: str) -> str:
         NODE_DOMAIN + bytes.fromhex(a[len(PREFIX):]) + bytes.fromhex(b[len(PREFIX):])).hexdigest()
 
 
-def _mth(leaves):
+def _mth_recursive(leaves):
+    """RFC 9162 §2.1.1 με ΑΝΑΔΡΟΜΙΚΗ ΔΙΑΣΠΑΣΗ στη μεγαλύτερη δύναμη του 2 < n."""
     if not leaves:
         return PREFIX + hashlib.sha256(b"").hexdigest()
     if len(leaves) == 1:
@@ -160,12 +191,41 @@ def _mth(leaves):
     k = 1
     while k * 2 < len(leaves):
         k *= 2
-    return _node(_mth(leaves[:k]), _mth(leaves[k:]))
+    return _node(_mth_recursive(leaves[:k]), _mth_recursive(leaves[k:]))
+
+
+def _mth_streaming(leaves):
+    """Ο ΙΔΙΟΣ MTH με ΔΟΜΙΚΑ ΔΙΑΦΟΡΕΤΙΚΟ αλγόριθμο: επαυξητική στοίβα τέλειων
+    υποδέντρων (η κανονική μηχανική των CT logs). Καμία διάσπαση, καμία
+    αναδρομή, καμία κοινή γραμμή λογικής με την _mth_recursive πέρα από το
+    _node. Χρησιμεύει ως ΔΕΥΤΕΡΗ ΓΝΩΜΗ για ΚΑΘΕ n — εκεί ακριβώς όπου τα
+    πεπερασμένα vectors δεν φτάνουν (εύρημα δημιουργού: μετάλλαξη μόνο σε n=18)."""
+    if not leaves:
+        return PREFIX + hashlib.sha256(b"").hexdigest()
+    stack = []                      # [(hash, size)] με ΓΝΗΣΙΩΣ φθίνοντα sizes
+    for lf in leaves:
+        cur, size = lf, 1
+        while stack and stack[-1][1] == size:
+            top, tsz = stack.pop()
+            cur, size = _node(top, cur), size * 2
+        stack.append((cur, size))
+    root = stack[-1][0]
+    for h, _ in reversed(stack[:-1]):
+        root = _node(h, root)
+    return root
+
+
+def _mth(leaves):
+    """Η έδρα: ΔΥΟ ανεξάρτητοι αλγόριθμοι, υποχρεωτική συμφωνία για ΚΑΘΕ n."""
+    a = _mth_recursive(leaves)
+    b = _mth_streaming(leaves)
+    if a != b:
+        raise CaptureRefused("merkle-internal-divergence",
+                             "n=%d: αναδρομικός=%s επαυξητικός=%s" % (len(leaves), a, b))
+    return a
 
 
 def _snapshot_leaf(path: str, size: int, file_leaf: str) -> str:
-    """Φύλλο snapshot: αναμφίσημη (length-prefixed) εγγραφή που δεσμεύει
-    path ‖ size ‖ ΤΟ ΙΔΙΟ per-file φύλλο που δεσμεύει και το release_root."""
     p = path.encode("utf-8")
     rec = (SNAPSHOT_ENTRY_DOMAIN
            + len(p).to_bytes(8, "big") + p
@@ -175,11 +235,12 @@ def _snapshot_leaf(path: str, size: int, file_leaf: str) -> str:
 
 
 def verify_merkle_seat(vectors_path=GOLDEN_VECTORS):
-    """Διασταύρωση ΑΥΤΩΝ των πρωτογόνων με τα COMMITTED golden vectors.
+    """Διασταύρωση με τα COMMITTED golden vectors — ΟΛΑ, μαζί με ΟΛΟ το
+    differential range (εύρημα δημιουργού: ο παλιός έλεγχος σταματούσε στο n=17
+    και μια μετάλλαξη «λάθος μόνο στο n=18» περνούσε).
 
-    Εκτελείται ΠΡΙΝ από κάθε capture. Απόκλιση ή απουσία ⇒ ΑΡΝΗΣΗ. Έτσι η
-    κλάση «η capture χρησιμοποιεί άλλη Merkle έδρα από την παραγωγή» παύει να
-    είναι δυνατή — δεν φυλάσσεται, εξαλείφεται."""
+    ΔΕΝ αρκεί: ο πίνακας είναι πεπερασμένος. Γι' αυτό η _mth συγκρίνει ΔΥΟ
+    αλγορίθμους σε κάθε κλήση. Βλ. RETRACTED_CLAIMS."""
     try:
         with open(vectors_path, encoding="utf-8") as fh:
             v = json.load(fh)
@@ -192,7 +253,7 @@ def verify_merkle_seat(vectors_path=GOLDEN_VECTORS):
     if v.get("tree_leaf_rule") != TREE_LEAF_RULE:
         raise CaptureRefused("merkle-seat-unverified",
                              "ο κανόνας φύλλου των vectors άλλαξε — ΚΑΜΙΑ σιωπηλή αποδοχή")
-    checked = 0
+    checked, max_n = 0, 0
     if _mth([]) != v["empty_tree_root"]:
         raise CaptureRefused("merkle-seat-divergence", "MTH([]) ≠ committed")
     checked += 1
@@ -200,35 +261,65 @@ def verify_merkle_seat(vectors_path=GOLDEN_VECTORS):
         if _leaf(bytes.fromhex(lv["input_hex"])) != lv["leaf"]:
             raise CaptureRefused("merkle-seat-divergence", "leaf %s" % lv["id"])
         checked += 1
+
+    def tree_leaves(n):
+        return [_leaf(str(i).encode("ascii")) for i in range(n)]
+
     for t in v["trees"]:
-        leaves = [_leaf(str(i).encode("ascii")) for i in range(t["n"])]
-        if _mth(leaves) != t["root"]:
+        if _mth(tree_leaves(t["n"])) != t["root"]:
             raise CaptureRefused("merkle-seat-divergence", "tree n=%d" % t["n"])
         checked += 1
-    return checked
+        max_n = max(max_n, t["n"])
+    d = v["differential"]                       # ΟΛΟ το εύρος, όχι δείγμα
+    for i, expected in enumerate(d["roots"]):
+        n = d["from"] + i
+        if _mth(tree_leaves(n)) != expected:
+            raise CaptureRefused("merkle-seat-divergence", "differential n=%d" % n)
+        checked += 1
+        max_n = max(max_n, n)
+    return {"vectors_checked": checked, "max_verified_n": max_n}
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# ΔΙΑΣΧΙΣΗ ΜΟΝΟ ΜΕ DESCRIPTORS — ΜΙΑ ΕΔΡΑ, ΔΥΟ ΚΑΤΑΝΑΛΩΤΕΣ (copy, measure)
+# ΑΓΚΥΡΩΣΗ — ΚΑΝΕΝΑ ΑΥΘΑΙΡΕΤΟ PATHNAME
 # ═════════════════════════════════════════════════════════════════════════════
 
-class _Fds:
-    """Κλειστό σύνολο descriptors: ΟΤΙ ανοίγει, κλείνει — ΠΑΝΤΑ, σε finally."""
+def _open_anchor(abs_path):
+    """Ανοίγει έμπιστο dirfd διασχίζοντας ΚΑΘΕ συνιστώσα από το «/» με
+    openat2 RESOLVE_STRICT. Symlink ΟΠΟΥΔΗΠΟΤΕ στη διαδρομή ⇒ ΑΡΝΗΣΗ.
 
-    def __init__(self):
-        self._fds = []
-
-    def add(self, fd):
-        self._fds.append(fd)
-        return fd
-
-    def close_all(self):
-        for fd in reversed(self._fds):
+    ΕΥΡΗΜΑ ΔΗΜΙΟΥΡΓΟΥ: «ενδιάμεσο symlink στο ίδιο το candidate_root έγινε
+    δεκτό — το openat2 προστατεύει τους απογόνους, όχι τον αρχικό αυθαίρετο
+    pathname». Εδώ ΔΕΝ υπάρχει αυθαίρετο pathname: υπάρχει αλυσίδα
+    επαληθευμένων συνιστωσών."""
+    if not os.path.isabs(abs_path):
+        raise CaptureRefused("anchor-not-absolute", abs_path)
+    try:
+        fd = os.open("/", _DIR_FLAGS)
+    except OSError as e:
+        raise _os_refuse(e, "/")
+    try:
+        for comp in [c for c in abs_path.split("/") if c]:
+            if comp in (".", ".."):
+                raise CaptureRefused("path-traversal", "συνιστώσα %r στην άγκυρα" % comp)
             try:
-                os.close(fd)
-            except OSError:
-                pass
-        self._fds = []
+                nxt = openat2(fd, comp, _DIR_FLAGS, RESOLVE_STRICT)
+            except CaptureRefused as e:
+                if e.reason in ("escapes-root", "open-refused"):
+                    raise CaptureRefused(
+                        "symlink-in-anchor",
+                        "η συνιστώσα %r του %s δεν είναι απλός κατάλογος (%s)"
+                        % (comp, abs_path, e.detail))
+                raise
+            os.close(fd)
+            fd = nxt
+        return fd
+    except BaseException:
+        try:
+            os.close(fd)
+        except OSError:
+            pass
+        raise
 
 
 def _tick(deadline):
@@ -241,241 +332,388 @@ def _fingerprint(st):
             st.st_size, st.st_mtime_ns, st.st_ctime_ns)
 
 
-def _check_name(name, limits):
-    if name in ("", ".", ".."):
-        raise CaptureRefused("path-traversal", "συνιστώσα %r" % name)
-    if "/" in name or "\x00" in name:
-        raise CaptureRefused("nul-or-empty-component", repr(name))
-    if len(name) > limits["max_name_len"]:
-        raise CaptureRefused("limit-exceeded", "όνομα > %d" % limits["max_name_len"])
+def _checked_name(entry_name, lim):
+    """Επιστρέφει (bytes, str). Τα ονόματα ΕΙΝΑΙ bytes· η αυστηρή αποκωδικοποίηση
+    UTF-8 είναι ΕΛΕΓΧΟΣ, όχι μετατροπή (εύρημα: UnicodeEncodeError σε surrogates)."""
+    raw = os.fsencode(entry_name)
+    if raw in (b"", b".", b".."):
+        raise CaptureRefused("path-traversal", "συνιστώσα %r" % raw)
+    if b"/" in raw or b"\x00" in raw:
+        raise CaptureRefused("nul-or-empty-component", repr(raw))
+    if len(raw) > lim["max_name_len"]:
+        raise CaptureRefused("limit-exceeded", "όνομα > %d bytes" % lim["max_name_len"])
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise CaptureRefused("non-utf8-name",
+                             "%r δεν είναι έγκυρο UTF-8 (%s)" % (raw, exc.reason))
+    return raw, text
 
 
-def _walk(root_fd, lim, deadline, fds):
-    """DFS ΜΟΝΟ με descriptors. Δίνει (kind, rel, fd, st) — kind ∈ {dir,file}.
-
-    Ο κατάλογος δίνεται ΠΡΙΝ από τα παιδιά του (ο καταναλωτής μπορεί να χτίσει
-    το κάτοπτρο πριν χρειαστεί). Ο deadline ελέγχεται ΑΝΑ ΚΑΤΑΧΩΡΗΣΗ."""
-    stack = [("", root_fd, 0)]
-    while stack:
-        rel, dfd, depth = stack.pop()
-        _tick(deadline)
-        if depth > lim["max_depth"]:
-            raise CaptureRefused("limit-exceeded", "βάθος > %d" % lim["max_depth"])
-        with os.scandir(dfd) as it:
-            entries = sorted(it, key=lambda e: e.name)
-        for e in entries:
+def _list_names(dfd, lim, deadline):
+    """Απαρίθμηση με ΟΡΙΟ ΠΡΙΝ ΤΗ ΣΥΣΣΩΡΕΥΣΗ (εύρημα: το sorted(scandir(...))
+    φόρτωνε ολόκληρο τον κατάλογο πριν εφαρμοστεί όριο). Ταξινόμηση κατά BYTES."""
+    out = []
+    try:
+        it = os.scandir(dfd)
+    except OSError as e:
+        raise _os_refuse(e, "scandir")
+    try:
+        for e in it:
             _tick(deadline)
-            _check_name(e.name, lim)
-            child = os.path.join(rel, e.name) if rel else e.name
-            fd = fds.add(openat2(dfd, e.name, _OPEN_FLAGS, RESOLVE_STRICT))
-            st = os.fstat(fd)
-            if stat.S_ISDIR(st.st_mode):
-                stack.append((child, fd, depth + 1))
-                yield ("dir", child, fd, st)
-            else:
-                yield ("file", child, fd, st)
+            if len(out) >= lim["max_dir_entries"]:
+                raise CaptureRefused("limit-exceeded",
+                                     "καταχωρήσεις καταλόγου > %d" % lim["max_dir_entries"])
+            out.append(_checked_name(e.name, lim))
+    except OSError as exc:
+        raise _os_refuse(exc, "scandir-iter")
+    finally:
+        it.close()
+    out.sort(key=lambda t: t[0])
+    return out
 
 
 def _write_all(fd, buf):
-    """ΚΑΘΕ byte γράφεται. Η os.write ΕΠΙΤΡΕΠΕΤΑΙ να γράψει λιγότερα — η
-    προηγούμενη υλοποίηση αγνοούσε την επιστροφή (εύρημα δημιουργού P0)."""
+    """ΚΑΘΕ byte γράφεται· η os.write ΕΠΙΤΡΕΠΕΤΑΙ να γράψει λιγότερα."""
     mv = memoryview(buf)
     off, n = 0, len(buf)
     while off < n:
-        w = os.write(fd, mv[off:])
+        try:
+            w = os.write(fd, mv[off:])
+        except OSError as e:
+            raise _os_refuse(e, "write")
         if w <= 0:
             raise CaptureRefused("short-write", "os.write ⇒ %d" % w)
         off += w
     return off
 
 
+def _purge(parent_fd, name_bytes):
+    """Descriptor-based αναδρομική διαγραφή του ΜΕΡΙΚΟΥ quarantine. Best-effort
+    ως προς σφάλματα, ΑΛΛΑ ρητή: κανένα μισοχτισμένο δέντρο δεν επιβιώνει
+    σιωπηλά για να περαστεί αργότερα για σύλληψη."""
+    try:
+        fd = openat2(parent_fd, name_bytes, _DIR_FLAGS,
+                     RESOLVE_BENEATH | RESOLVE_NO_SYMLINKS)
+    except (CaptureRefused, OSError):
+        return
+    try:
+        with os.scandir(fd) as it:
+            entries = [(os.fsencode(e.name), e.is_dir(follow_symlinks=False)) for e in it]
+        for raw, isdir in entries:
+            if isdir:
+                _purge(fd, raw)
+            else:
+                try:
+                    os.unlink(raw, dir_fd=fd)
+                except OSError:
+                    pass
+    except OSError:
+        pass
+    finally:
+        os.close(fd)
+    try:
+        os.rmdir(name_bytes, dir_fd=parent_fd)
+    except OSError:
+        pass
+
+
 # ═════════════════════════════════════════════════════════════════════════════
-# ΦΑΣΗ Α — ΑΝΤΙΓΡΑΦΗ (ΚΑΝΕΝΑ hash· τίποτα από την εχθρική πηγή δεν δεσμεύεται)
+# CANONICAL PROFILE — ΥΠΟΧΡΕΩΤΙΚΟ, ΚΑΡΦΩΜΕΝΟ, ΜΟΝΑΔΙΚΟ, ΧΩΡΙΣ ΔΙΠΛΟΤΥΠΑ
 # ═════════════════════════════════════════════════════════════════════════════
 
-def _phase_copy(root_fd, qfd, lim, deadline, fds):
-    copied, total = [], 0
-    qdirs = {"": qfd}
-    for kind, rel, fd, st in _walk(root_fd, lim, deadline, fds):
-        name = os.path.basename(rel)
-        qparent = qdirs[os.path.dirname(rel)]
-        if kind == "dir":
-            try:
-                os.mkdir(name, 0o700, dir_fd=qparent)
-            except FileExistsError:
-                raise CaptureRefused("quarantine-preexisting", rel)
-            qdirs[rel] = fds.add(openat2(qparent, name, _OPEN_FLAGS,
-                                         RESOLVE_BENEATH | RESOLVE_NO_SYMLINKS))
-            continue
-        if not stat.S_ISREG(st.st_mode):
-            raise CaptureRefused("non-regular-file", rel)
-        if st.st_nlink > 1:
-            raise CaptureRefused("hardlink-present", "%s (nlink=%d)" % (rel, st.st_nlink))
-        if st.st_size > lim["max_file_bytes"]:
-            raise CaptureRefused("limit-exceeded", "%s > max_file_bytes" % rel)
-        if len(copied) + 1 > lim["max_files"]:
-            raise CaptureRefused("limit-exceeded", "max_files")
-        before = _fingerprint(st)
-        wfd = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
-                      0o600, dir_fd=qparent)
-        written = 0
+def load_canonical_profile(path=CANONICAL_PROFILE):
+    try:
+        with open(path, "rb") as fh:
+            raw = fh.read()
+        prof = json.loads(raw.decode("utf-8"))
+    except (OSError, ValueError) as exc:
+        raise CaptureRefused("canonical-profile-unreadable", "%s: %s" % (path, exc))
+    if prof.get("profile_id") != CANONICAL_PROFILE_ID:
+        raise CaptureRefused("canonical-profile-invalid",
+                             "profile_id=%r ≠ %r" % (prof.get("profile_id"), CANONICAL_PROFILE_ID))
+    files = prof.get("files")
+    if not isinstance(files, list) or not files:
+        raise CaptureRefused("canonical-profile-invalid",
+                             "ΚΕΝΗ λίστα — θα έδινε τη ρίζα του κενού δέντρου για ΚΑΘΕ περιεχόμενο")
+    seen = set()
+    for f in files:
+        if not isinstance(f, str) or not f or f.startswith("/") or ".." in f.split("/"):
+            raise CaptureRefused("canonical-profile-invalid", "μη έγκυρη εγγραφή %r" % (f,))
+        if f in seen:
+            raise CaptureRefused("canonical-profile-duplicate",
+                                 "%r εμφανίζεται δύο φορές — δύο ρίζες για τα ΙΔΙΑ bytes" % f)
+        seen.add(f)
+    return {"profile_id": prof["profile_id"], "files": tuple(files),
+            "sha256": hashlib.sha256(raw).hexdigest(), "path": path}
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# ΦΑΣΗ Α — ΑΝΤΙΓΡΑΦΗ (ΚΑΝΕΝΑ hash· κάθε fd κλείνει ΑΜΕΣΩΣ)
+# ═════════════════════════════════════════════════════════════════════════════
+
+class _CopyState:
+    def __init__(self, lim, deadline):
+        self.lim, self.deadline = lim, deadline
+        self.copied, self.total = [], 0
+
+
+def _copy_dir(src_fd, dst_fd, rel, depth, st):
+    if depth > st.lim["max_depth"]:
+        raise CaptureRefused("limit-exceeded", "βάθος > %d" % st.lim["max_depth"])
+    for raw, name in _list_names(src_fd, st.lim, st.deadline):
+        _tick(st.deadline)
+        child = "%s/%s" % (rel, name) if rel else name
+        fd = openat2(src_fd, raw, _OPEN_FLAGS, RESOLVE_STRICT)
         try:
-            while True:
-                _tick(deadline)                    # deadline ΑΝΑ ΑΝΑΓΝΩΣΗ
-                chunk = os.read(fd, CHUNK)
-                if not chunk:
-                    break
-                written += _write_all(wfd, chunk)
-                if written > lim["max_file_bytes"]:
-                    raise CaptureRefused("limit-exceeded", "%s ξεπέρασε το όριο" % rel)
-                if total + written > lim["max_total_bytes"]:
-                    raise CaptureRefused("limit-exceeded", "max_total_bytes")
-            os.fsync(wfd)                          # το quarantine είναι το ΑΡΧΕΙΟ
+            sb = os.fstat(fd)
+            if stat.S_ISDIR(sb.st_mode):
+                try:
+                    os.mkdir(raw, 0o700, dir_fd=dst_fd)
+                except FileExistsError:
+                    raise CaptureRefused("quarantine-preexisting", child)
+                except OSError as e:
+                    raise _os_refuse(e, "mkdir %s" % child)
+                nq = openat2(dst_fd, raw, _DIR_FLAGS,
+                             RESOLVE_BENEATH | RESOLVE_NO_SYMLINKS)
+                try:
+                    _copy_dir(fd, nq, child, depth + 1, st)
+                    os.fsync(nq)
+                finally:
+                    os.close(nq)          # ΑΜΕΣΩΣ — O(βάθος), όχι O(αρχεία)
+                continue
+            if not stat.S_ISREG(sb.st_mode):
+                raise CaptureRefused("non-regular-file", child)
+            if sb.st_nlink > 1:
+                raise CaptureRefused("hardlink-present", "%s (nlink=%d)" % (child, sb.st_nlink))
+            if sb.st_size > st.lim["max_file_bytes"]:
+                raise CaptureRefused("limit-exceeded", "%s > max_file_bytes" % child)
+            if len(st.copied) + 1 > st.lim["max_files"]:
+                raise CaptureRefused("limit-exceeded", "max_files")
+            before = _fingerprint(sb)
+            try:
+                wfd = os.open(raw, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+                              0o600, dir_fd=dst_fd)
+            except OSError as e:
+                raise _os_refuse(e, "create %s" % child)
+            written = 0
+            try:
+                while True:
+                    _tick(st.deadline)
+                    try:
+                        chunk = os.read(fd, CHUNK)
+                    except OSError as e:
+                        raise _os_refuse(e, "read %s" % child)
+                    if not chunk:
+                        break
+                    written += _write_all(wfd, chunk)
+                    if written > st.lim["max_file_bytes"]:
+                        raise CaptureRefused("limit-exceeded", "%s ξεπέρασε το όριο" % child)
+                    if st.total + written > st.lim["max_total_bytes"]:
+                        raise CaptureRefused("limit-exceeded", "max_total_bytes")
+                try:
+                    os.fsync(wfd)
+                except OSError as e:
+                    raise _os_refuse(e, "fsync %s" % child)
+            finally:
+                os.close(wfd)             # ΑΜΕΣΩΣ
+            if _fingerprint(os.fstat(fd)) != before:
+                raise CaptureRefused("mutated-during-capture", child)
+            os.chmod(raw, 0o400, dir_fd=dst_fd)
+            st.total += written
+            st.copied.append((child, written))
         finally:
-            os.close(wfd)
-        # fstat ΜΕΤΑ: αν ο producer άγγιξε τον ΙΔΙΟ inode ενόσω διαβάζαμε, το
-        # fingerprint αλλάζει. Άρνηση — ΠΟΤΕ σιωπηλή αποδοχή σχισμένης ανάγνωσης.
-        if _fingerprint(os.fstat(fd)) != before:
-            raise CaptureRefused("mutated-during-capture", rel)
-        os.chmod(name, 0o400, dir_fd=qparent)
-        total += written
-        copied.append((rel, written))
-    if not copied:
-        raise CaptureRefused("empty-candidate", "κανένα regular file")
-    for rel in sorted(qdirs):                      # durability του ίδιου του δέντρου
-        if rel:
-            os.fsync(qdirs[rel])
-    os.fsync(qfd)
-    return copied, total
+            os.close(fd)                  # ΑΜΕΣΩΣ, σε ΚΑΘΕ διαδρομή
+    return st
 
 
 # ═════════════════════════════════════════════════════════════════════════════
 # ΦΑΣΗ Β — ΜΕΤΡΗΣΗ ΑΠΟΚΛΕΙΣΤΙΚΑ ΑΠΟ ΤΟ QUARANTINE
 # ═════════════════════════════════════════════════════════════════════════════
 
-def measure(quarantine_dir, canonical_files=(), limits=None):
-    """Ο ΜΟΝΟΣ παραγωγός αριθμών: διαβάζει ΚΑΘΕ byte από το ΣΦΡΑΓΙΣΜΕΝΟ
-    quarantine και υπολογίζει census + snapshot_root + release_root.
-
-    Είναι ΔΗΜΟΣΙΑ έδρα: την καλεί η capture ΚΑΙ κάθε μεταγενέστερος verifier
-    (fixed-point). Ίδια είσοδος ⇒ ίδια έξοδος, πάντα."""
-    lim = dict(DEFAULT_LIMITS)
-    if limits:
-        lim.update(limits)
-    deadline = time.monotonic() + lim["deadline_seconds"]
-    verify_merkle_seat()
-    fds = _Fds()
-    census, total = [], 0
-    try:
-        qroot = fds.add(os.open(quarantine_dir,
-                                os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW))
-        for kind, rel, fd, st in _walk(qroot, lim, deadline, fds):
-            if kind == "dir":
+def _measure_dir(dfd, rel, depth, lim, deadline, out):
+    if depth > lim["max_depth"]:
+        raise CaptureRefused("limit-exceeded", "βάθος > %d" % lim["max_depth"])
+    for raw, name in _list_names(dfd, lim, deadline):
+        _tick(deadline)
+        child = "%s/%s" % (rel, name) if rel else name
+        fd = openat2(dfd, raw, _OPEN_FLAGS, RESOLVE_STRICT)
+        try:
+            sb = os.fstat(fd)
+            if stat.S_ISDIR(sb.st_mode):
+                _measure_dir(fd, child, depth + 1, lim, deadline, out)
                 continue
-            if not stat.S_ISREG(st.st_mode) or st.st_nlink != 1:
+            if not stat.S_ISREG(sb.st_mode) or sb.st_nlink != 1:
                 raise CaptureRefused("quarantine-corrupt",
-                                     "%s (mode=%o nlink=%d)" % (rel, st.st_mode, st.st_nlink))
+                                     "%s (mode=%o nlink=%d)" % (child, sb.st_mode, sb.st_nlink))
             leafh, conth, size = _leaf_hasher(), hashlib.sha256(), 0
             while True:
-                _tick(deadline)                    # deadline ΑΝΑ ΑΝΑΓΝΩΣΗ
-                chunk = os.read(fd, CHUNK)
+                _tick(deadline)
+                try:
+                    chunk = os.read(fd, CHUNK)
+                except OSError as e:
+                    raise _os_refuse(e, "read %s" % child)
                 if not chunk:
                     break
                 leafh.update(chunk)
                 conth.update(chunk)
                 size += len(chunk)
-            total += size
-            census.append({"path": rel, "size": size,
-                           "sha256": conth.hexdigest(),
-                           "leaf": PREFIX + leafh.hexdigest()})
+            out.append({"path": child, "size": size, "sha256": conth.hexdigest(),
+                        "leaf": PREFIX + leafh.hexdigest()})
+        finally:
+            os.close(fd)
+
+
+def measure(vault_path, quarantine_name, canonical_profile=None, limits=None):
+    """Ο ΜΟΝΟΣ παραγωγός αριθμών: ξαναδιαβάζει ΚΑΘΕ byte από το quarantine.
+    Δημόσια έδρα — την καλεί η capture() ΚΑΙ κάθε μεταγενέστερος verifier."""
+    lim = dict(DEFAULT_LIMITS)
+    if limits:
+        lim.update(limits)
+    deadline = time.monotonic() + lim["deadline_seconds"]
+    seat = verify_merkle_seat()
+    prof = canonical_profile or load_canonical_profile()
+    census = []
+    vault_fd = _open_anchor(vault_path)
+    try:
+        qfd = openat2(vault_fd, os.fsencode(quarantine_name), _DIR_FLAGS, RESOLVE_STRICT)
+        try:
+            _measure_dir(qfd, "", 0, lim, deadline, census)
+        finally:
+            os.close(qfd)
     finally:
-        fds.close_all()
+        os.close(vault_fd)
     if not census:
         raise CaptureRefused("quarantine-corrupt", "κανένα αρχείο στο quarantine")
     census.sort(key=lambda e: e["path"].encode("utf-8"))
 
     snapshot_root = _mth([_snapshot_leaf(e["path"], e["size"], e["leaf"]) for e in census])
 
-    release_root = None
-    if canonical_files:
-        by_path = {e["path"]: e for e in census}
-        missing = [f for f in canonical_files if f not in by_path]
-        if missing:
-            raise CaptureRefused("canonical-missing", ", ".join(missing[:5]))
-        # ΑΚΡΙΒΩΣ orchestrator.merkle:merkle-root-of-files — MTH πάνω σε
-        # hash-leaf-file φύλλα, ΣΤΗ ΣΕΙΡΑ των canonical_files (η σειρά ΕΙΝΑΙ
-        # μέρος της δέσμευσης).
-        release_root = _mth([by_path[f]["leaf"] for f in canonical_files])
+    by_path = {e["path"]: e for e in census}
+    missing = [f for f in prof["files"] if f not in by_path]
+    if missing:
+        raise CaptureRefused("canonical-missing", ", ".join(missing[:5]))
+    # ΑΚΡΙΒΩΣ orchestrator.merkle:merkle-root-of-files — MTH πάνω σε
+    # hash-leaf-file φύλλα, ΣΤΗ ΣΕΙΡΑ του καρφωμένου profile.
+    release_root = _mth([by_path[f]["leaf"] for f in prof["files"]])
 
     return {"snapshot_root": snapshot_root, "release_root": release_root,
-            "census": census, "quarantine": quarantine_dir,
-            "file_count": len(census), "total_bytes": total,
+            "census": census, "quarantine": quarantine_name, "vault": vault_path,
+            "file_count": len(census),
+            "total_bytes": sum(e["size"] for e in census),
             "merkle_profile": MERKLE_PROFILE, "measured_from": "quarantine",
-            "limits_used": lim}
+            "canonical_profile_id": prof["profile_id"],
+            "canonical_profile_sha256": prof["sha256"],
+            "merkle_seat": seat, "limits_used": lim}
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# CAPTURE = ΦΑΣΗ Α → ΣΦΡΑΓΙΣΗ → ΦΑΣΗ Β → ΔΙΑΣΤΑΥΡΩΣΗ
+# CAPTURE = ΑΓΚΥΡΩΣΗ → ΦΑΣΗ Α → ΦΑΣΗ Β → ΔΙΑΣΤΑΥΡΩΣΗ → FIXED POINT
 # ═════════════════════════════════════════════════════════════════════════════
 
-def capture(candidate_root, quarantine_dir, canonical_files=(), limits=None):
-    """Συλλαμβάνει το candidate σε ΝΕΟ authority-owned quarantine και μετρά
-    ΜΟΝΟ το αντίγραφο. Κάθε ανωμαλία ⇒ CaptureRefused (fail-closed)."""
+def capture(inbox_path, candidate_name, vault_path, quarantine_name,
+            canonical_profile=None, limits=None):
+    """Συλλαμβάνει το `inbox_path/candidate_name` σε ΝΕΟ `vault_path/quarantine_name`.
+
+    ΚΑΝΕΝΑ αυθαίρετο pathname: και οι δύο άγκυρες διασχίζονται συνιστώσα-προς-
+    συνιστώσα με RESOLVE_STRICT· candidate και quarantine είναι ΟΝΟΜΑΤΑ μέσα
+    τους. Κάθε ανωμαλία ⇒ CaptureRefused (fail-closed) ΚΑΙ καθαρισμός του
+    μερικού quarantine."""
     lim = dict(DEFAULT_LIMITS)
     if limits:
         lim.update(limits)
     deadline = time.monotonic() + lim["deadline_seconds"]
-    seat_checks = verify_merkle_seat()             # ΠΡΙΝ από κάθε byte
+    seat = verify_merkle_seat()                      # ΠΡΙΝ από κάθε byte
+    prof = canonical_profile or load_canonical_profile()
+    qraw = os.fsencode(quarantine_name)
+    _checked_name(quarantine_name, lim)
+    _checked_name(candidate_name, lim)
 
+    inbox_fd = _open_anchor(inbox_path)
+    vault_fd = None
+    created = False
     try:
-        os.mkdir(quarantine_dir, 0o700)
-    except FileExistsError:
-        raise CaptureRefused("quarantine-preexisting",
-                             "%s υπάρχει ήδη — η authority δημιουργεί ΝΕΟ" % quarantine_dir)
-    os.chmod(quarantine_dir, 0o700)
+        vault_fd = _open_anchor(vault_path)
+        try:
+            os.mkdir(qraw, 0o700, dir_fd=vault_fd)
+        except FileExistsError:
+            raise CaptureRefused("quarantine-preexisting",
+                                 "%s/%s υπάρχει ήδη — η authority δημιουργεί ΝΕΟ"
+                                 % (vault_path, quarantine_name))
+        except OSError as e:
+            raise _os_refuse(e, "mkdir quarantine")
+        created = True
+        try:
+            src = openat2(inbox_fd, os.fsencode(candidate_name), _DIR_FLAGS, RESOLVE_STRICT)
+            try:
+                dst = openat2(vault_fd, qraw, _DIR_FLAGS, RESOLVE_STRICT)
+                try:
+                    st = _copy_dir(src, dst, "", 0, _CopyState(lim, deadline))
+                    os.fsync(dst)
+                finally:
+                    os.close(dst)
+            finally:
+                os.close(src)
+        except OSError as e:
+            raise _os_refuse(e, "capture")
+        if not st.copied:
+            raise CaptureRefused("empty-candidate", "κανένα regular file")
 
-    fds = _Fds()
-    try:
-        qfd = fds.add(os.open(quarantine_dir,
-                              os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW))
-        root_fd = fds.add(os.open(candidate_root,
-                                  os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW))
-        copied, copied_bytes = _phase_copy(root_fd, qfd, lim, deadline, fds)
+        result = measure(vault_path, quarantine_name, canonical_profile=prof, limits=lim)
+
+        # ── ΔΙΑΣΤΑΥΡΩΣΗ ΦΑΣΕΩΝ: ό,τι γράφτηκε == ό,τι μετρήθηκε ──────────────
+        written = sorted(st.copied, key=lambda t: t[0].encode("utf-8"))
+        measured = [(e["path"], e["size"]) for e in result["census"]]
+        if written != measured:
+            wd, md = dict(written), dict(measured)
+            raise CaptureRefused(
+                "quarantine-diverged",
+                "γράφτηκαν %d / μετρήθηκαν %d· μόνο-γραμμένα=%s μόνο-μετρημένα=%s"
+                % (len(written), len(measured),
+                   [p for p in wd if p not in md][:3], [p for p in md if p not in wd][:3]))
+        if result["total_bytes"] != st.total:
+            raise CaptureRefused("quarantine-diverged",
+                                 "bytes γραμμένα=%d μετρημένα=%d" % (st.total, result["total_bytes"]))
+
+        # ── FIXED POINT ΣΤΗΝ ΙΔΙΑ ΤΗΝ ΠΑΡΑΓΩΓΗ (εύρημα δημιουργού) ──────────
+        # Δεύτερη, ΠΛΗΡΗΣ επαναμέτρηση από το σφραγισμένο quarantine. Δεν είναι
+        # δουλειά του harness να το κάνει «κάπου αλλού»: η capture ΔΕΝ επιστρέφει
+        # αριθμούς που δεν αναπαράγονται.
+        again = measure(vault_path, quarantine_name, canonical_profile=prof, limits=lim)
+        for k in ("snapshot_root", "release_root", "census", "file_count", "total_bytes"):
+            if again[k] != result[k]:
+                raise CaptureRefused("fixed-point-violation",
+                                     "η δεύτερη μέτρηση διαφέρει στο %s" % k)
+
+        result["seat_vectors_checked"] = seat["vectors_checked"]
+        result["max_verified_n"] = seat["max_verified_n"]
+        result["fixed_point"] = "verified-in-capture"
+        created = False                              # επιτυχία ⇒ ΔΕΝ καθαρίζεται
+        return result
+    except OSError as e:                             # καμία ακατέργαστη εξαίρεση
+        raise _os_refuse(e, "capture")
     finally:
-        fds.close_all()                            # ΟΛΟΙ, όχι μόνο δύο
-
-    result = measure(quarantine_dir, canonical_files=canonical_files, limits=lim)
-
-    # ── ΔΙΑΣΤΑΥΡΩΣΗ ΦΑΣΕΩΝ: ό,τι γράφτηκε == ό,τι μετρήθηκε ──────────────────
-    written = sorted(copied, key=lambda t: t[0].encode("utf-8"))
-    measured = [(e["path"], e["size"]) for e in result["census"]]
-    if written != measured:
-        only_w = [p for p, _ in written if p not in dict(measured)]
-        only_m = [p for p, _ in measured if p not in dict(written)]
-        raise CaptureRefused(
-            "quarantine-diverged",
-            "γράφτηκαν %d / μετρήθηκαν %d· μόνο-γραμμένα=%s μόνο-μετρημένα=%s"
-            % (len(written), len(measured), only_w[:3], only_m[:3]))
-    if result["total_bytes"] != copied_bytes:
-        raise CaptureRefused("quarantine-diverged",
-                             "bytes γραμμένα=%d μετρημένα=%d"
-                             % (copied_bytes, result["total_bytes"]))
-    result["seat_vectors_checked"] = seat_checks
-    return result
+        if created and vault_fd is not None:
+            _purge(vault_fd, qraw)                   # ΜΕΡΙΚΟ quarantine ⇒ ΤΕΛΟΣ
+        for fd in (vault_fd, inbox_fd):
+            if fd is not None:
+                try:
+                    os.close(fd)
+                except OSError:
+                    pass
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("usage: capture.py <candidate-root> <NEW-quarantine> [canonical-list-file]")
+    if len(sys.argv) != 5:
+        print("usage: capture.py <inbox-dir> <candidate-name> <vault-dir> <NEW-quarantine-name>")
         sys.exit(2)
-    canon = ()
-    if len(sys.argv) > 3:
-        canon = tuple(l.strip() for l in open(sys.argv[3], encoding="utf-8") if l.strip())
     try:
-        r = capture(sys.argv[1], sys.argv[2], canonical_files=canon)
+        r = capture(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
         print(json.dumps({k: r[k] for k in
                           ("snapshot_root", "release_root", "file_count", "total_bytes",
-                           "merkle_profile", "seat_vectors_checked")},
+                           "merkle_profile", "canonical_profile_id",
+                           "canonical_profile_sha256", "seat_vectors_checked",
+                           "max_verified_n", "fixed_point")},
                          ensure_ascii=False, sort_keys=True))
     except CaptureRefused as e:
         print("::error::CAPTURE REFUSED — %s" % e)

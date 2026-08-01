@@ -1,0 +1,17 @@
+{
+  "profile_id": "lawmax-candidate-canonical-v1",
+  "mirrors": "orchestrator.epistemic::+epistemic-canonical-files+ (systems/orchestrator-epistemic/release-manifest.lisp) — Η ΜΙΑ έδρα του canonical συνόλου. Εδώ καταγράφεται ΜΕ ΤΗ ΣΕΙΡΑ που παράγει η collect-epistemic-artifacts (sort string< πάνω στα namestrings). Η ταύτιση ΔΕΝ είναι υπόσχεση σχολίου: ελέγχεται εκτελεστικά από το authority-v2/tests/capture-seat-differential-test.sh, που διαβάζει τη ΣΤΑΘΕΡΑ ΤΟΥ ΠΑΡΑΓΩΓΙΚΟΥ ΠΥΡΗΝΑ και τη συγκρίνει με αυτό το αρχείο.",
+  "note": "ΚΛΕΙΣΤΗ, ΚΑΡΦΩΜΕΝΗ, ΥΠΟΧΡΕΩΤΙΚΗ λίστα. Η ΣΕΙΡΑ ΕΙΝΑΙ ΜΕΡΟΣ ΤΗΣ ΔΕΣΜΕΥΣΗΣ (release_root = MTH πάνω στα φύλλα ΜΕ ΑΥΤΗ ΤΗ ΣΕΙΡΑ). Διπλότυπα ΑΠΑΓΟΡΕΥΟΝΤΑΙ: θα επέτρεπαν δύο διαφορετικές ρίζες για το ΙΔΙΟ σύνολο bytes. Κενή λίστα ΑΠΑΓΟΡΕΥΕΤΑΙ: θα έδινε τη ρίζα του κενού δέντρου για ΟΠΟΙΟΔΗΠΟΤΕ περιεχόμενο.",
+  "files": [
+    "census.json",
+    "lineage-graph.ttl",
+    "meta-ontology.ttl",
+    "negation.ttl",
+    "shapes/article-shape.ttl",
+    "shapes/lineage-shape.ttl",
+    "shapes/manifest-shape.ttl",
+    "stability-policy.md",
+    "stability-policy.ttl",
+    "verify/verify.lisp"
+  ]
+}
