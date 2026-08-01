@@ -44,6 +44,8 @@ authority-v2/capability/identities.sh                  tool-requires-root  /var/
 authority-v2/roles/ceremony.sh                         tool-declared
 # run-proofs.sh: Ο ΙΔΙΟΣ Ο ΕΚΤΕΛΕΣΤΗΣ - δεν μπορεί να είναι απόδειξη του εαυτού του.
 authority-v2/run-proofs.sh                             tool-declared
+# run-all.sh: Η ΜΙΑ ΕΝΤΟΛΗ που καλεί proofs + Lisp σουίτες + Docker E2E.
+authority-v2/run-all.sh                                tool-declared
 
 # -- ΑΠΟΔΕΙΞΕΙΣ (ΑΠΟΚΛΕΙΣΤΙΚΑ στο authority-v2/proofs/) ----------------------
 authority-v2/proofs/verify-capability-closure.sh       requires-root       /var/lib/lawmax/authority /var/lib/lawmax/candidates
