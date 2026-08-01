@@ -26,8 +26,8 @@ REPO = os.path.dirname(os.path.dirname(_HERE))
 CAPTURE_DIR = os.path.join(REPO, "authority-v2", "capture")
 CAPTURE_SRC = os.path.join(CAPTURE_DIR, "capture.py")
 PROFILE_SRC = os.path.join(CAPTURE_DIR, "canonical-profile.json")
-HARNESS = os.path.join(_HERE, "capture-adversarial-test.py")
-MUTATOR = os.path.join(_HERE, "_mutator.py")
+HARNESS = os.path.join(_HERE, "capture-adversarial-test.py")  # ίδιος κατάλογος εισόδων
+MUTATOR = os.path.join(REPO, "authority-v2", "tests", "_mutator.py")  # ΒΟΗΘΟΣ, όχι απόδειξη
 
 passed = failed = 0
 survivors = []
@@ -49,9 +49,9 @@ def no(m):
 # ── ΟΙ ΜΕΤΑΛΛΑΞΕΙΣ = ΤΑ ΕΥΡΗΜΑΤΑ ΤΟΥ ΔΗΜΙΟΥΡΓΟΥ, ΞΑΝΑΕΙΣΑΓΜΕΝΑ ΕΠΙΤΗΔΕΣ ────
 MUTANTS = [
     ("release_root ως hash-of-hash (P0 πρώτης ετυμηγορίας)",
-     '    release_root = _mth([by_path[f]["leaf"] for f in prof["files"]])',
+     '    release_root = _mth([by_path[f]["leaf"] for f in prof.files])',
      '    release_root = _mth([_leaf(bytes.fromhex(by_path[f]["sha256"]))\n'
-     '                         for f in prof["files"]])'),
+     '                         for f in prof.files])'),
 
     ("φύλλο ΧΩΡΙΣ domain separation (0x00)",
      '    return PREFIX + hashlib.sha256(LEAF_DOMAIN + data).hexdigest()',
@@ -116,12 +116,12 @@ MUTANTS = [
      '        pass  # ΜΕΤΑΛΛΑΞΗ: διπλότυπα γίνονται δεκτά'),
 
     ("ΚΑΝΕΝΑΣ ΚΑΘΑΡΙΣΜΟΣ του ΜΕΡΙΚΟΥ quarantine μετά από άρνηση",
-     '            _purge(vault_fd, qraw)                   # ΜΕΡΙΚΟ quarantine ⇒ ΤΕΛΟΣ',
-     '            pass  # ΜΕΤΑΛΛΑΞΗ: το μερικό quarantine μένει'),
+     '            failures = _purge(vault.fd, qraw)',
+     '            failures = []  # ΜΕΤΑΛΛΑΞΗ: το μερικό quarantine μένει'),
 
     # ΔΗΛΩΜΕΝΑ ΜΗ ΠΑΡΑΤΗΡΗΣΙΜΗ — και η δήλωση ΕΙΝΑΙ ΔΙΑΨΕΥΣΙΜΗ (βλ. παρακάτω).
     ("κατάργηση του fixed point ΜΕΣΑ στην capture() [ΔΗΛΩΜΕΝΑ ΜΗ ΠΑΡΑΤΗΡΗΣΙΜΗ]",
-     '        again = measure(vault_path, quarantine_name, canonical_profile=prof, limits=lim)',
+     '        again = measure(vault, quarantine_name, profile=prof, limits=lim)',
      '        again = dict(result)  # ΜΕΤΑΛΛΑΞΗ: καμία δεύτερη μέτρηση'),
 
     ("κατάργηση της ΔΙΑΣΤΑΥΡΩΣΗΣ ΦΑΣΕΩΝ + μερική εγγραφή",
@@ -157,16 +157,17 @@ COMBOS = {
 def build_tree(tmp, source_text):
     os.makedirs(os.path.join(tmp, "authority-v2", "capture"))
     os.makedirs(os.path.join(tmp, "authority-v2", "tests"))
+    os.makedirs(os.path.join(tmp, "authority-v2", "proofs"))
     with open(os.path.join(tmp, "authority-v2", "capture", "capture.py"), "w",
               encoding="utf-8") as fh:
         fh.write(source_text)
     shutil.copy2(PROFILE_SRC, os.path.join(tmp, "authority-v2", "capture",
                                            "canonical-profile.json"))
-    shutil.copy2(HARNESS, os.path.join(tmp, "authority-v2", "tests",
+    shutil.copy2(HARNESS, os.path.join(tmp, "authority-v2", "proofs",
                                        "capture-adversarial-test.py"))
     shutil.copy2(MUTATOR, os.path.join(tmp, "authority-v2", "tests", "_mutator.py"))
     os.symlink(os.path.join(REPO, "deployment"), os.path.join(tmp, "deployment"))
-    return os.path.join(tmp, "authority-v2", "tests", "capture-adversarial-test.py")
+    return os.path.join(tmp, "authority-v2", "proofs", "capture-adversarial-test.py")
 
 
 def run_harness(tmp, source_text):

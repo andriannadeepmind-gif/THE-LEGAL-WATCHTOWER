@@ -132,7 +132,7 @@
                      μηχανική των CT logs) και οι δύο ΟΦΕΙΛΟΥΝ να συμφωνούν — για
                      ΚΑΘΕ n, όχι μόνο για τα πινακοποιημένα. Διαφορά ⇒
                      merkle-internal-divergence."
-  :differential-proof "authority-v2/tests/capture-seat-differential-test.sh — τρέχει ΚΑΙ ΤΙΣ
+  :differential-proof "authority-v2/proofs/capture-seat-differential-test.sh — τρέχει ΚΑΙ ΤΙΣ
                        ΔΥΟ έδρες (capture.py ΚΑΙ ο ΠΑΡΑΓΩΓΙΚΟΣ Lisp πυρήνας) στα ΙΔΙΑ bytes
                        και συγκρίνει byte-για-byte, με αρνητικό μάρτυρα (1 byte αλλάζει ⇒
                        αλλάζουν ΚΑΙ ΟΙ ΔΥΟ) και έλεγχο ότι η σειρά δεσμεύεται.")

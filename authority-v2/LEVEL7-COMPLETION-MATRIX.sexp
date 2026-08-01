@@ -44,9 +44,9 @@
    :status :implemented-not-proved
    :load-bearing t
    :implementation ("authority-v2/capability/identities.sh"
-                    "authority-v2/capability/verify-capability-closure.sh")
+                    "authority-v2/proofs/verify-capability-closure.sh")
    :proof-objects ()
-   :command "bash authority-v2/capability/verify-capability-closure.sh /var/lib/lawmax/authority /var/lib/lawmax/candidates"
+   :command "bash authority-v2/proofs/verify-capability-closure.sh /var/lib/lawmax/authority /var/lib/lawmax/candidates"
    :actual-result "EXECUTED 2026-07-31: 5 ok, 0 FAIL — producer⇒EACCES, reader⇒EACCES, authority γράφει, producer γράφει candidates, reader διαβάζει"
    :negative-witness "θετικός μάρτυρας μη-κενότητας: αν ο authority ΔΕΝ μπορεί να γράψει, το script το καταγγέλλει ως ΚΕΝΟ ΜΑΡΤΥΡΑ· χωρίς root/setpriv ⇒ exit 2 BLOCKED, ΠΟΤΕ pass"
    :residual-assumptions ("kernel DAC (uid/gid/mode) ορθός"
@@ -62,9 +62,9 @@
    :implementation ("authority-v2/kernel/admission-model.sexp (ΠΡΟΔΙΑΓΡΑΦΗ: υπογραφή,
                      ολότητα, 9 conjuncts, 9 θεωρήματα, out-of-scope)")
    :proof-objects ("authority-v2/proof-manifest.sexp :T1..:T9 — όλα :blocked-toolchain")
-   :command "python3 authority-v2/verify-proof-manifest.py"
+   :command "python3 authority-v2/proofs/verify-proof-manifest.py"
    :actual-result "EXECUTED 2026-07-31: 17 θεωρήματα, 0 proved, 17 blocked-toolchain, gate :not-passed, manifest ΣΥΝΕΠΕΣ"
-   :negative-witness "authority-v2/tests/gate-negative-fixtures.py — 12/12: θεώρημα :proved χωρίς artifact, gate :passed με blocked φέροντα, ασύμφωνο summary, επινοημένο status ⇒ ΟΛΑ απορρίπτονται"
+   :negative-witness "authority-v2/proofs/gate-negative-fixtures.py — 12/12: θεώρημα :proved χωρίς artifact, gate :passed με blocked φέροντα, ασύμφωνο summary, επινοημένο status ⇒ ΟΛΑ απορρίπτονται"
    :residual-assumptions ("Η ΥΛΟΠΟΙΗΣΗ της K είναι ΣΚΟΠΙΜΑ απούσα σε Common Lisp: θα ήταν
                           δεύτερη έδρα που αργότερα θα χρειαζόταν migration (ρητή απαγόρευση).
                           Στόχος υλοποίησης: F* — ΑΠΩΝ (403)."
@@ -111,22 +111,23 @@
                     "systems/orchestrator-epistemic/deploy-epistemic.lisp (seats ⇒ fail-closed)"
                     "systems/orchestrator-epistemic/transparency-log.lisp (write seat ⇒ fail-closed)")
    :proof-objects ()
-   :command "bash authority-v2/tests/run-authority-v2-proofs.sh   (Η ΜΙΑ ΕΔΡΑ: inventory ΟΛΟΥ του authority-v2/ ≡ committed PROOF-CENSUS.txt)"
-   :actual-result "EXECUTED 2026-08-01 [CAPTURE-BOUNDARY-CLOSURE-2]: authority-v2 proofs 13 passed / 0 failed / 0 blocked (από 13 απογεγραμμένες, ΜΕ το capability-closure μέσα)·
-                   capture-adversarial + fixed point 23/0 (22 σενάρια, ακριβής ισότητα) — περιλαμβάνει RLIMIT_NOFILE=96 με 200 αρχεία ⇒ OK 210, RLIMIT=8 ⇒ ΕΛΕΓΧΟΜΕΝΟ fd-exhausted, μη έγκυρο UTF-8 ⇒ non-utf8-name, symlink σε ΤΕΛΙΚΗ και σε ΕΝΔΙΑΜΕΣΗ συνιστώσα της άγκυρας ⇒ symlink-in-anchor, canonical profile απόν/κενό/διπλότυπο/λάθος-id/απόλυτο ⇒ ΑΡΝΗΣΗ·
-                   capture-mutation-witness 15/0 — 14/14 ΦΟΝΕΥΣΙΜΕΣ μεταλλάξεις ΣΚΟΤΩΘΗΚΑΝ (μαζί με «λάθος ΜΟΝΟ σε δέντρο 18 φύλλων» ΚΑΙ την παραλλαγή του χωρίς τον δεύτερο αλγόριθμο) + 1 ΔΗΛΩΜΕΝΑ ΜΗ ΠΑΡΑΤΗΡΗΣΙΜΗ (η δήλωση είναι ΔΙΑΨΕΥΣΙΜΗ: αν σκοτωθεί, ο μάρτυρας αποτυγχάνει)·
-                   capture-seat-differential 8/0 — profile ≡ +EPISTEMIC-CANONICAL-FILES+ (10 αρχεία, ίδια σειρά) ΚΑΙ ίδια ρίζα με τον ΠΑΡΑΓΩΓΙΚΟ merkle-root-of-files·
-                   proof-census-adversarial 11/0 (ξεχασμένη/ορφανή/διπλότυπη/άγνωστος τρόπος/κακοσχημάτη/κενή ⇒ ΟΛΕΣ ΑΠΟΡΡΙΠΤΟΝΤΑΙ)·
-                   producer-topology 9/0 (ΔΗΛΩΜΕΝΗ τοπολογία: uid 11002, output ro, μόνο candidates rw, κανένα authority store· 7 μεταλλαγμένες τοπολογίες απορρίπτονται)·
-                   producer-os-boundary 11/0 (EROFS 30, όχι EACCES 13)· verify-capability-closure 5/0· level7-disarm 20/0· release-authority 14/0· transparency-log 21/0"
-   :negative-witness "ΜΑΡΤΥΡΑΣ ΜΕΤΑΛΛΑΞΕΩΝ: κάθε εύρημα ΚΑΙ ΤΩΝ ΔΥΟ ετυμηγοριών ξαναεισάγεται επίτηδες και ΠΡΕΠΕΙ να σκοτωθεί — hash-of-hash, φύλλο χωρίς 0x00, duplicate-last, ΛΑΘΟΣ ΜΟΝΟ ΣΤΟ n=18, μερική εγγραφή, κατάργηση fingerprint, κατάργηση άρνησης hardlink, ΔΙΑΡΡΟΗ DESCRIPTORS, ΑΥΘΑΙΡΕΤΟ PATHNAME ΑΓΚΥΡΑΣ, αποδοχή μη έγκυρου UTF-8, αποδοχή διπλότυπου profile, κανένας καθαρισμός μερικού quarantine, κατάργηση διασταύρωσης φάσεων.
-                      Ο ΙΔΙΟΣ ο μάρτυρας βρήκε ΔΥΟ κενά σενάρια στην προηγούμενη έκδοση (αρχείο < chunk· round-robin αντίπαλος) και ένας ΘΕΤΙΚΟΣ ΜΑΡΤΥΡΑΣ έπιασε πραγματική παλινδρόμηση (χαμένη εγγραφή --cut-release)."
-   :residual-assumptions ("[ΑΝΑΚΛΗΣΗ ΙΣΧΥΕΙ] Δ2 = IMPLEMENTED-NOT-PROVED, Δ3 = IMPLEMENTED-NOT-PROVED. Ο χαρακτηρισμός CLOSED παραμένει ΑΠΟΣΥΡΜΕΝΟΣ."
-                          "[ΝΕΑ ΑΝΑΚΛΗΣΗ] Ο ισχυρισμός «η απόκλιση της Merkle έδρας είναι ΔΟΜΙΚΑ ΑΔΥΝΑΤΗ» ΑΠΟΣΥΡΕΤΑΙ ΟΡΙΣΤΙΚΑ: ο δημιουργός κατασκεύασε μετάλλαξη που αστοχεί ΜΟΝΟ σε n=18 και πέρασε όλους τους τότε ελέγχους. Ό,τι ισχύει τώρα είναι ΑΝΙΧΝΕΥΣΗ (vectors n=0..64 + δεύτερος δομικά διαφορετικός αλγόριθμος για κάθε n + διαφορικό με τον παραγωγικό πυρήνα), ΟΧΙ αδυνατότητα. Επιστρέφει ΜΟΝΟ με ΚΟΙΝΟ ΑΠΟΔΕΔΕΙΓΜΕΝΟ πυρήνα."
+   :command "bash authority-v2/run-proofs.sh   (ΜΙΑ έδρα· ΑΝΑΔΡΟΜΙΚΗ σάρωση ΟΛΟΥ του authority-v2/ ≡ committed PROOF-CENSUS.txt· ΕΝΑΣ κατάλογος εισόδων authority-v2/proofs/)"
+   :actual-result "EXECUTED 2026-08-01 [CAPTURE-BOUNDARY-CLOSURE-3]: authority-v2 proofs 14 passed / 0 failed / 0 blocked (64 αρχεία σαρώθηκαν αναδρομικά, 14 είσοδοι)·
+                   capture-mountpoint 6/0 — inbox σε tmpfs (ΞΕΧΩΡΙΣΤΟ fs, mnt 45) → vault πίσω από BIND MOUNT (mnt 46) ⇒ Η CAPTURE ΠΕΤΥΧΑΙΝΕΙ, με ρητή επιβεβαίωση ότι τα mount-id ΔΙΑΦΕΡΟΥΝ ΚΑΙ από τη ρίζα (mnt 37)· nested mount ΜΕΣΑ στο candidate ⇒ ΑΡΝΗΣΗ (το NO_XDEV ΚΑΤΩ από την άγκυρα παραμένει)· ΠΑΛΙΝΔΡΟΜΗΣΗ: η ΠΑΛΙΑ λογική απορρίπτει το ίδιο νόμιμο mountpoint με EXDEV(18) — το σφάλμα ήταν ΠΡΑΓΜΑΤΙΚΟ·
+                   capture-adversarial + fixed point 27/0 (26 σενάρια, ακριβής ισότητα) — μαζί με φρουρούς API: ΩΜΟ dict ως profile ⇒ canonical-profile-not-validated, PATHNAME αντί για Anchor ⇒ anchor-required, group-writable vault ⇒ anchor-group-world-writable·
+                   capture-mutation-witness 15/0 — 14/14 ΦΟΝΕΥΣΙΜΕΣ σκοτωμένες + 1 ΔΗΛΩΜΕΝΑ ΜΗ ΠΑΡΑΤΗΡΗΣΙΜΗ (η δήλωση ΕΙΝΑΙ ΔΙΑΨΕΥΣΙΜΗ)·
+                   proof-census-adversarial 14/0 — ΜΑΖΙ ΜΕ ΤΟ ΑΚΡΙΒΕΣ MUTANT ΤΟΥ ΔΗΜΙΟΥΡΓΟΥ (authority-v2/other/forgotten-proof.py) που ΤΩΡΑ ΚΟΚΚΙΝΙΖΕΙ·
+                   producer-topology 13/0 — ΚΑΘΟΛΙΚΗ απογραφή ΟΛΩΝ των services (όχι μόνο του producer): orchestrator/ingestion/corpus-service/producer ΟΛΑ με καρφωμένο uid, output ΟΛΟΚΛΗΡΟ ro, κλειδιά ro, κανένα authority store· 7 μεταλλαγμένες τοπολογίες απορρίπτονται·
+                   capture-seat-differential 8/0 · producer-os-boundary 11/0 (EROFS 30) · verify-capability-closure 5/0 · ceremony 8/0 · witness-quorum 8/0 · gate-negative-fixtures 12/0·
+                   level7-disarm 20/0 · release-authority 14/0 · transparency-log 21/0"
+   :negative-witness "ΚΑΘΕ εύρημα ΚΑΙ ΤΩΝ ΤΡΙΩΝ ετυμηγοριών ξαναεισάγεται ως μετάλλαξη και ΠΡΕΠΕΙ να σκοτωθεί: hash-of-hash, φύλλο χωρίς 0x00, duplicate-last, ΛΑΘΟΣ ΜΟΝΟ ΣΤΟ n=18 (και η παραλλαγή του χωρίς δεύτερο αλγόριθμο), μερική εγγραφή, κατάργηση fingerprint, κατάργηση άρνησης hardlink, διαρροή descriptors, ΑΥΘΑΙΡΕΤΟ PATHNAME ΑΓΚΥΡΑΣ, αποδοχή μη έγκυρου UTF-8, αποδοχή διπλότυπου profile, κανένας καθαρισμός μερικού quarantine, κατάργηση διασταύρωσης φάσεων.
+                      Ο ΙΔΙΟΣ ο runner έπιασε ΔΥΟ αδήλωτα εκτελέσιμα εκτός του καταλόγου εισόδων μόλις έγινε αναδρομικός."
+   :residual-assumptions ("[ΑΝΑΚΛΗΣΗ ΙΣΧΥΕΙ] Δ2 = IMPLEMENTED-NOT-PROVED, Δ3 = IMPLEMENTED-NOT-PROVED. ΟΥΤΕ CLOSED ΟΥΤΕ PROVED."
+                          "[ΑΝΑΚΛΗΣΗ ΙΣΧΥΕΙ] Ο ισχυρισμός «η απόκλιση της Merkle έδρας είναι ΔΟΜΙΚΑ ΑΔΥΝΑΤΗ» παραμένει ΑΠΟΣΥΡΜΕΝΟΣ. Ό,τι ισχύει είναι ΑΝΙΧΝΕΥΣΗ (vectors n=0..64 + δεύτερος δομικά διαφορετικός αλγόριθμος για κάθε n + διαφορικό με τον παραγωγικό πυρήνα), ΟΧΙ φέρουσα απόδειξη."
                           "το TSA conjunct του νέου kernel ΔΕΝ έχει υλοποιηθεί ακόμη (απαίτηση 2/4)"
-                          "η capture είναι υλοποίηση αναφοράς σε Python, ΟΧΙ ο τελικός formally-verified checker (απαίτηση 6)· το CAPTURE-PROTOCOL το δηλώνει ρητά και ο production writer παραμένει ΑΠΕΝΕΡΓΟΠΟΙΗΜΕΝΟΣ"
-                          "Η ΥΠΗΡΕΣΙΑ producer ΔΕΝ ΕΚΤΕΛΕΣΤΗΚΕ: `docker compose config` ΕΠΙΚΥΡΩΘΗΚΕ και η ΔΗΛΩΜΕΝΗ τοπολογία ελέγχεται εκτελεστικά (producer-topology-test.py 9/0), ΑΛΛΑ δεν υπάρχει docker daemon εδώ. BLOCKED — NOT EXECUTED, ΠΟΤΕ pass."
-                          "ΤΟ CI JOB authority-v2-boundary ΔΕΝ ΕΧΕΙ ΤΡΕΞΕΙ ΠΡΑΣΙΝΟ: workflow_dispatch ⇒ 403 (χωρίς actions:write), 0 runs στον κλάδο. ΣΥΡΜΑΤΩΜΕΝΟ, ΟΧΙ ΠΡΑΣΙΝΟ — κλείνει ΜΟΝΟ από τον δημιουργό."))
+                          "η capture είναι υλοποίηση αναφοράς σε Python, ΟΧΙ ο τελικός formally-verified checker (απαίτηση 6)· ο production writer παραμένει ΑΠΕΝΕΡΓΟΠΟΙΗΜΕΝΟΣ"
+                          "ΟΙ ΥΠΗΡΕΣΙΕΣ COMPOSE ΔΕΝ ΕΚΤΕΛΕΣΤΗΚΑΝ: `docker compose config` ΕΠΙΚΥΡΩΘΗΚΕ και η ΔΗΛΩΜΕΝΗ τοπολογία ΟΛΩΝ των services ελέγχεται εκτελεστικά, ΑΛΛΑ δεν υπάρχει docker daemon εδώ. BLOCKED — NOT EXECUTED."
+                          "ΤΟ CI JOB ΔΕΝ ΕΧΕΙ ΤΡΕΞΕΙ ΠΡΑΣΙΝΟ: workflow_dispatch ⇒ 403 (χωρίς actions:write), 0 runs/0 status contexts στον κλάδο. ΣΥΡΜΑΤΩΜΕΝΟ, ΟΧΙ ΠΡΑΣΙΝΟ — κλείνει ΜΟΝΟ από τον δημιουργό."))
 
   ;; ── 6 ────────────────────────────────────────────────────────────────────
   (:id 6
@@ -163,9 +164,9 @@
    :implementation ("authority-v2/log/witness-policy.sexp (FORMAT-AGNOSTIC witness interface,
                      quorum policy με ΚΡΙΤΗΡΙΑ ΑΝΕΞΑΡΤΗΣΙΑΣ, freshness/anti-freeze policy,
                      fake witnesses με :counts-toward-quorum nil)"
-                    "authority-v2/tests/witness-quorum-test.py")
+                    "authority-v2/proofs/witness-quorum-test.py")
    :proof-objects ()
-   :command "python3 authority-v2/tests/witness-quorum-test.py"
+   :command "python3 authority-v2/proofs/witness-quorum-test.py"
    :actual-result "EXECUTED 2026-07-31: 8 passed, 0 failed — ΜΟΝΟ η ΠΟΛΙΤΙΚΗ (κβόρουμ/φρεσκάδα/αντιφατική εικόνα). ΤΟ WIRE FORMAT ΠΑΡΑΜΕΝΕΙ BLOCKED-SPEC-INPUT: τα κανονικά κείμενα tlog-tiles@v0.1.0 / tlog-checkpoint / tlog-witness@v1.0.0 δεν ανακτώνται (403) και ΑΠΑΓΟΡΕΥΕΤΑΙ υλοποίηση από μνήμη"
    :negative-witness "3 fake witnesses ⇒ ΔΕΝ σχηματίζουν κβόρουμ· 2 μάρτυρες με κοινό φορέα μετρούν ως 1· έγκυρο ΑΛΛΑ παλιό checkpoint ΑΠΟΡΡΙΠΤΕΤΑΙ· ένας μάρτυρας με αντιφατική εικόνα ρίχνει τα πάντα (όχι 2-of-3)· external disabled ⇒ ΑΝΕΝΕΡΓΗ πύλη, ΠΟΤΕ «0-of-3 ok»"
    :residual-assumptions ("ΑΠΑΓΟΡΕΥΕΤΑΙ υλοποίηση από μνήμη (ρητή εντολή §2) — καμία γραμμή του witness-policy δεν υποθέτει σειριοποίηση"
@@ -181,9 +182,9 @@
                      για πραγματικό quorum, 5 υποχρεωτικές άμυνες, ρητό stop point·
                      :tuf-conformance-claim nil — ΚΑΜΙΑ δήλωση συμμόρφωσης)"
                     "authority-v2/roles/ceremony.sh (genesis/rotation/revocation/recovery)"
-                    "authority-v2/tests/ceremony-rehearsal-test.sh")
+                    "authority-v2/proofs/ceremony-rehearsal-test.sh")
    :proof-objects ()
-   :command "bash authority-v2/tests/ceremony-rehearsal-test.sh"
+   :command "bash authority-v2/proofs/ceremony-rehearsal-test.sh"
    :actual-result "EXECUTED 2026-07-31: 8 passed, 0 failed — 4 τελετές προβαρίστηκαν ΠΡΑΓΜΑΤΙΚΑ με test keys (5 ρόλοι, 4 delegations, self-binding, rotation αλυσίδα, υπογεγραμμένη ανάκληση, ανάκτηση 4 ρόλων από offline root)· και οι 3 production εντολές ΣΤΑΜΑΤΗΣΑΝ με exit 3"
    :negative-witness "rotation: το ΝΕΟ root ΔΕΝ αυτο-επικυρώνεται χωρίς την αλυσίδα (η πρόβα το ελέγχει ρητά και θα σκάσει αν στεκόταν μόνο του)· MODE=production ⇒ ΑΚΟΜΗ ΚΑΙ οι rehearse εντολές σταματούν"
    :residual-assumptions ("ΚΑΤΑΣΚΕΥΑΣΤΗΚΑΝ ΠΛΗΡΩΣ και ΠΡΟΒΑΡΙΣΤΗΚΑΝ: ceremony/rotation/revocation/recovery/fixtures/rehearsal. ΣΤΑΜΑΤΑ ΜΟΝΟ η δημιουργία/χρήση ΠΡΑΓΜΑΤΙΚΟΥ production root key (air-gap/HSM/μάρτυρες/out-of-band δημοσίευση = ενέργεια δημιουργού)"
@@ -236,12 +237,12 @@
    :status :implemented-not-proved
    :load-bearing t
    :implementation ("tests/level7-disarm-test.lisp"
-                    "authority-v2/capability/verify-capability-closure.sh"
+                    "authority-v2/proofs/verify-capability-closure.sh"
                     "docker/suite-census.txt (+level7-disarm)"
                     "tests/release-authority-test.lisp (αναδιατυπωμένο)"
                     "tests/transparency-log-test.lisp (αναδιατυπωμένο)")
    :proof-objects ()
-   :command "sbcl --script <runner> tests/level7-disarm-test.lisp && sbcl --script <runner> tests/release-authority-test.lisp && sbcl --script <runner> tests/transparency-log-test.lisp && python3 authority-v2/tests/gate-negative-fixtures.py && bash authority-v2/tests/ceremony-rehearsal-test.sh && python3 authority-v2/tests/witness-quorum-test.py"
+   :command "sbcl --script <runner> tests/level7-disarm-test.lisp && sbcl --script <runner> tests/release-authority-test.lisp && sbcl --script <runner> tests/transparency-log-test.lisp && python3 authority-v2/proofs/gate-negative-fixtures.py && bash authority-v2/proofs/ceremony-rehearsal-test.sh && python3 authority-v2/proofs/witness-quorum-test.py"
    :actual-result "EXECUTED 2026-07-31: level7-disarm 9/0 · release-authority 14/0 · transparency-log 23/0 · gate-negative-fixtures 12/0 · ceremony-rehearsal 8/0 · witness-quorum 8/0"
    :negative-witness "κάθε αναδιατυπωμένος έλεγχος κατοχυρώνει ΑΡΝΗΣΗ εκεί που πριν κατοχύρωνε ΑΠΟΔΟΧΗ (⑦β πλαστό receipt)· η απόσυρση δύο ελέγχων bootstrap δηλώνεται ΡΗΤΑ αντί να αναστηθεί η νεκρή έδρα στα fixtures"
    :residual-assumptions ("crash-at-every-write-boundary ΔΕΝ υπάρχει ακόμη — απαιτεί το store (7)"

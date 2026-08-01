@@ -18,11 +18,11 @@ import sys
 import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-AV2 = os.path.dirname(HERE)
+AV2 = os.path.dirname(HERE)   # authority-v2/  (το proofs/ είναι ΜΕΣΑ του)
 MATRIX = os.path.join(AV2, "LEVEL7-COMPLETION-MATRIX.sexp")
 PROOFS = os.path.join(AV2, "proof-manifest.sexp")
-MATRIX_V = os.path.join(AV2, "verify-completion-matrix.py")
-PROOFS_V = os.path.join(AV2, "verify-proof-manifest.py")
+MATRIX_V = os.path.join(HERE, "verify-completion-matrix.py")
+PROOFS_V = os.path.join(HERE, "verify-proof-manifest.py")
 
 passed = failed = 0
 

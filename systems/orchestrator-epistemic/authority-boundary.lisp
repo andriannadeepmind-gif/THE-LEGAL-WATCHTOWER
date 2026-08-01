@@ -54,7 +54,7 @@
 ;;; (authority-v2/capability/identities.sh) και ΑΠΟΔΕΙΚΝΥΕΤΑΙ εκτελεστικά:
 ;;; κάθε εγγραφή του producer στο releases/ αποτυγχάνει με EROFS(30) — ΟΧΙ
 ;;; EACCES(13) — ενώ ο ΙΔΙΟΣ producer γράφει κανονικά χωρίς το mount
-;;; (authority-v2/tests/producer-os-boundary-test.sh). Ο παραγωγός ΔΕΝ έχει καν
+;;; (authority-v2/proofs/producer-os-boundary-test.sh). Ο παραγωγός ΔΕΝ έχει καν
 ;;; όνομα-συνάρτησης για authority write — δεν υπάρχει.
 
 (defvar *candidate-namespace* "candidates/"

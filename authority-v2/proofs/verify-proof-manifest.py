@@ -15,7 +15,7 @@ import re
 import sys
 
 ALLOWED = {":proved", ":failed", ":blocked-toolchain"}
-HERE = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def main(argv):

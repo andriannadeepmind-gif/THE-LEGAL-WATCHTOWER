@@ -30,8 +30,9 @@ import time
 _HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(_HERE))
 sys.path.insert(0, os.path.join(REPO, "authority-v2", "capture"))
-from capture import (capture, measure, load_canonical_profile,       # noqa: E402
-                     CaptureRefused, PREFIX, CHUNK, CANONICAL_PROFILE)
+from capture import (capture, measure, load_canonical_profile, open_anchor,  # noqa: E402
+                     CanonicalProfile, CaptureRefused, PREFIX, CHUNK,
+                     CANONICAL_PROFILE)
 
 _spec = importlib.util.spec_from_file_location(
     "indep_merkle", os.path.join(REPO, "deployment", "verify", "verify-merkle.py"))
@@ -40,8 +41,10 @@ _spec.loader.exec_module(_indep)
 
 SECRET_MARKER = b"APORRHTO-AUTHORITY-SECRET-DO-NOT-CAPTURE"
 GENERATIONS = set(b"ABCDEFGH")
-CANON = load_canonical_profile()["files"]
-EXPECTED_SCENARIOS = 22   # 1 benign + 5 static + 4 μάρτυρες + 5 profile + 2 όρια + 2 rlimit + 3 concurrent
+CANON = load_canonical_profile().files
+# 1 benign + 5 static + 4 μάρτυρες + 5 profile + 4 φρουροί API/άγκυρας
+# + 2 όρια + 2 rlimit + 3 concurrent
+EXPECTED_SCENARIOS = 26
 executed = 0
 passed = failed = 0
 
@@ -89,9 +92,9 @@ def independent_measure(qdir):
             "release_root": _indep.mth([by[f]["leaf"] for f in CANON])}
 
 
-def fixed_point(name, result, vault, qname, coherence=False):
+def fixed_point(name, result, vault_anchor, vault_path, qname, coherence=False):
     good = True
-    again = measure(vault, qname)
+    again = measure(vault_anchor, qname)
     if (again["snapshot_root"] != result["snapshot_root"]
             or again["release_root"] != result["release_root"]
             or again["census"] != result["census"]):
@@ -104,7 +107,7 @@ def fixed_point(name, result, vault, qname, coherence=False):
         no("%s ① release_root=None — ΑΠΑΓΟΡΕΥΜΕΝΟ" % name)
         good = False
 
-    ind = independent_measure(os.path.join(vault, qname))
+    ind = independent_measure(os.path.join(vault_path, qname))
     if ind["snapshot_root"] != result["snapshot_root"]:
         no("%s ② snapshot_root ≠ ανεξάρτητης υλοποίησης" % name)
         good = False
@@ -143,8 +146,10 @@ def mkcand(d, nbin=0, size=0):
     for i in range(nbin):
         with open(os.path.join(cand, "f%d.bin" % i), "wb") as fh:
             fh.write(b"A" * size)
-    os.makedirs(os.path.join(d, "vault"))
-    return inbox, cand, os.path.join(d, "vault")
+    vault = os.path.join(d, "vault")
+    os.makedirs(vault, 0o700)          # authority-ιδιωτικό ⇒ open_anchor το δέχεται
+    os.chmod(vault, 0o700)
+    return inbox, cand, vault
 
 
 def run(name, build, want):
@@ -163,8 +168,12 @@ def run(name, build, want):
         executed += 1
         use_inbox = (ctx or {}).get("inbox", inbox)
         res, got = None, None
+        ia = va = None
         try:
-            res = capture(use_inbox, "cand", vault, "q")
+            # Ο ΕΜΠΙΣΤΟΣ LAUNCHER ανοίγει τα anchors· η capture ΔΕΝ βλέπει pathname.
+            ia = open_anchor(use_inbox, "inbox")
+            va = open_anchor(vault, "vault")
+            res = capture(ia, "cand", va, "q")
         except CaptureRefused as e:
             got = e.reason
         except Exception as e:                      # ΑΚΑΤΕΡΓΑΣΤΗ = ΑΠΟΤΥΧΙΑ
@@ -173,7 +182,7 @@ def run(name, build, want):
         if want is None:
             if got is not None:
                 no("%s ⇒ ΑΝΑΜΕΝΟΤΑΝ σύλληψη (got=%s)" % (name, got))
-            elif fixed_point(name, res, vault, "q"):
+            elif fixed_point(name, res, va, vault, "q"):
                 ok("%s ⇒ ΣΥΛΛΑΜΒΑΝΕΤΑΙ + fixed point ①②③" % name)
         else:
             (ok if got == want else no)("%s ⇒ ΑΡΝΗΣΗ %s (got=%s)" % (name, want, got))
@@ -184,6 +193,9 @@ def run(name, build, want):
         if (got not in (None, "quarantine-preexisting")
                 and os.path.exists(os.path.join(vault, "q"))):
             no("%s ⇒ ΑΡΝΗΘΗΚΕ αλλά το ΜΕΡΙΚΟ quarantine ΕΜΕΙΝΕ στον δίσκο" % name)
+        for a in (ia, va):
+            if a is not None:
+                a.close()
 
 
 print("== ΘΕΤΙΚΟΣ ΜΑΡΤΥΡΑΣ ==")
@@ -269,12 +281,51 @@ profile_case("profile με λάθος id", {"profile_id": "other", "files": ["a.
 profile_case("profile με απόλυτο path", {"profile_id": PID, "files": ["/etc/passwd"]},
              "canonical-profile-invalid")
 
+print("\n== ΦΡΟΥΡΟΙ API ΚΑΙ ΑΓΚΥΡΑΣ (ΕΥΡΗΜΑΤΑ ΔΗΜΙΟΥΡΓΟΥ) ==")
+
+
+def guard(name, fn, want):
+    """Ο φρουρός ΠΡΕΠΕΙ να είναι στον ΤΥΠΟ, όχι στην πόρτα."""
+    global executed
+    executed += 1
+    try:
+        fn()
+        no("%s ⇒ ΕΓΙΝΕ ΔΕΚΤΟ" % name)
+    except CaptureRefused as e:
+        (ok if e.reason == want else no)("%s ⇒ ΑΡΝΗΣΗ %s (got=%s)" % (name, want, e.reason))
+    except Exception as e:                          # noqa: BLE001
+        no("%s ⇒ ΑΚΑΤΕΡΓΑΣΤΗ ΕΞΑΙΡΕΣΗ %s: %s" % (name, type(e).__name__, e))
+
+
+with tempfile.TemporaryDirectory() as d:
+    _inbox, _cand, _vault = mkcand(d)
+    _ia, _va = open_anchor(_inbox, "inbox"), open_anchor(_vault, "vault")
+    # ΤΟ ΑΚΡΙΒΕΣ ΕΥΡΗΜΑ: «capture(..., canonical_profile=<οποιοδήποτε dict>)».
+    guard("capture με ΩΜΟ dict ως profile",
+          lambda: capture(_ia, "cand", _va, "qq",
+                          profile={"profile_id": "x", "files": ["a"]}),
+          "canonical-profile-not-validated")
+    guard("measure με ΩΜΟ dict ως profile",
+          lambda: measure(_va, "q", profile={"profile_id": "x", "files": ["a"]}),
+          "canonical-profile-not-validated")
+    # Η capture ΔΕΝ δέχεται pathname — μόνο επαληθευμένο Anchor.
+    guard("capture με PATHNAME αντί για Anchor",
+          lambda: capture(_inbox, "cand", _va, "qq"), "anchor-required")
+    _ia.close(); _va.close()
+
+with tempfile.TemporaryDirectory() as d:
+    _inbox, _cand, _vault = mkcand(d)
+    os.chmod(_vault, 0o770)             # group-writable ⇒ ΟΧΙ authority-ιδιωτικό
+    guard("vault group-writable ⇒ ΔΕΝ είναι authority-ιδιωτικό",
+          lambda: open_anchor(_vault, "vault"), "anchor-group-world-writable")
+
 print("\n== ΟΡΙΑ ΠΟΡΩΝ ==")
 with tempfile.TemporaryDirectory() as d:
     inbox, cand, vault = mkcand(d)
     executed += 1
+    ia, va = open_anchor(inbox, "inbox"), open_anchor(vault, "vault")
     try:
-        capture(inbox, "cand", vault, "q", limits={"max_files": 2})
+        capture(ia, "cand", va, "q", limits={"max_files": 2})
         no("όριο max_files ⇒ ΔΕΝ επιβλήθηκε")
     except CaptureRefused as e:
         (ok if e.reason == "limit-exceeded" else no)("όριο max_files ⇒ ΑΡΝΗΣΗ (%s)" % e.reason)
@@ -282,8 +333,9 @@ with tempfile.TemporaryDirectory() as d:
 with tempfile.TemporaryDirectory() as d:
     inbox, cand, vault = mkcand(d)
     executed += 1
+    ia, va = open_anchor(inbox, "inbox"), open_anchor(vault, "vault")
     try:
-        capture(inbox, "cand", vault, "q", limits={"max_dir_entries": 3})
+        capture(ia, "cand", va, "q", limits={"max_dir_entries": 3})
         no("όριο max_dir_entries ⇒ ΔΕΝ επιβλήθηκε")
     except CaptureRefused as e:
         (ok if e.reason == "limit-exceeded" else no)(
@@ -293,7 +345,7 @@ print("\n== RLIMIT_NOFILE — Ο ΜΑΡΤΥΡΑΣ ΤΟΥ ΔΗΜΙΟΥΡΓΟΥ ==
 RLIMIT_RUNNER = r'''
 import os, resource, sys, json, tempfile
 sys.path.insert(0, sys.argv[1])
-from capture import capture, CaptureRefused
+from capture import capture, open_anchor, CaptureRefused
 nfiles, soft = int(sys.argv[2]), int(sys.argv[3])
 d = tempfile.mkdtemp()
 inbox = os.path.join(d, "inbox"); cand = os.path.join(inbox, "cand")
@@ -303,10 +355,11 @@ for rel in json.loads(sys.argv[4]):
     open(p, "wb").write(("canonical:" + rel).encode("utf-8"))
 for i in range(nfiles):
     open(os.path.join(cand, "extra%04d.bin" % i), "wb").write(b"x" * 64)
-vault = os.path.join(d, "vault"); os.makedirs(vault)
+vault = os.path.join(d, "vault"); os.makedirs(vault, 0o700); os.chmod(vault, 0o700)
+ia = open_anchor(inbox, "inbox"); va = open_anchor(vault, "vault")
 resource.setrlimit(resource.RLIMIT_NOFILE, (soft, soft))
 try:
-    r = capture(inbox, "cand", vault, "q")
+    r = capture(ia, "cand", va, "q")
     print("OK %d" % r["file_count"])
 except CaptureRefused as e:
     print("REFUSED %s" % e.reason)
@@ -349,7 +402,7 @@ assert CONC_SIZE > CHUNK, "το σενάριο θα ήταν κενό"
 
 def concurrent(name, kind, allowed):
     global executed
-    mutator = os.path.join(_HERE, "_mutator.py")
+    mutator = os.path.join(REPO, "authority-v2", "tests", "_mutator.py")
     with tempfile.TemporaryDirectory() as d:
         inbox, cand, vault = mkcand(d, nbin=NF, size=CONC_SIZE)
         secret = os.path.join(d, "secret")
@@ -361,8 +414,11 @@ def concurrent(name, kind, allowed):
         executed += 1
         time.sleep(0.02)
         res, got = None, None
+        ia = va = None
         try:
-            res = capture(inbox, "cand", vault, "q")
+            ia = open_anchor(inbox, "inbox")
+            va = open_anchor(vault, "vault")
+            res = capture(ia, "cand", va, "q")
         except CaptureRefused as e:
             got = e.reason
         except Exception as e:                      # noqa: BLE001
@@ -373,7 +429,7 @@ def concurrent(name, kind, allowed):
             adv.kill()
             adv.wait()
         if got is None:
-            if fixed_point(name, res, vault, "q", coherence=True):
+            if fixed_point(name, res, va, vault, "q", coherence=True):
                 ok("%s ⇒ ΚΑΘΑΡΗ ΣΥΛΛΗΨΗ + fixed point ①②③ (καμία μόλυνση)" % name)
         elif got in allowed:
             ok("%s ⇒ ΑΡΝΗΣΗ %s" % (name, got))

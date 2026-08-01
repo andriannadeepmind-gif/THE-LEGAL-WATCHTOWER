@@ -50,7 +50,7 @@ echo "== ② ΜΗΔΕΝ production writes στο releases/ — ΠΡΑΓΜΑΤΙ�
 # --attest-release. Η κρίση μεταφέρεται στο πραγματικό OS test: παραγωγικές
 # συναρτήσεις υπό producer UID, releases/ bind-mounted read-only.
 if [ "$(id -u)" -eq 0 ] && command -v setpriv >/dev/null && command -v unshare >/dev/null; then
-  if bash "$REPO/authority-v2/tests/producer-os-boundary-test.sh" >/tmp/osb.$$.log 2>&1; then
+  if bash "$REPO/authority-v2/proofs/producer-os-boundary-test.sh" >/tmp/osb.$$.log 2>&1; then
     ok "OS boundary test: $(grep -c '  ok' /tmp/osb.$$.log) έλεγχοι, 0 αποτυχίες (producer UID, ro releases/)"
   else
     no "OS boundary test ΑΠΕΤΥΧΕ:"; grep FAIL /tmp/osb.$$.log | head -3
@@ -108,7 +108,7 @@ fi
 
 echo
 echo "== ⑦ CAPTURE ADVERSARIAL (concurrent mutator, openat2) =="
-if CAP=$(cd "$REPO" && timeout 900 python3 authority-v2/tests/capture-adversarial-test.py 2>&1); then
+if CAP=$(cd "$REPO" && timeout 900 python3 authority-v2/proofs/capture-adversarial-test.py 2>&1); then
   ok "capture adversarial: $(echo "$CAP" | grep -c '  ok') έλεγχοι, 0 αποτυχίες"
 else
   no "capture adversarial ΑΠΕΤΥΧΕ:"; echo "$CAP" | grep FAIL | head -3

@@ -10,6 +10,8 @@ services:
       target: runtime
     image: orchestrator:latest
     container_name: orchestrator-main
+    # ΤΑΥΤΟΤΗΤΑ: lawmax-producer (ΚΑΡΦΩΜΕΝΟ uid — authority-v2/capability/identities.sh)
+    user: "11002:11002"
 
     # Παράγει ΟΛΟΥΣ τους κώδικες σε ΕΝΑ container/process (η ΜΙΑ έδρα
     # run-all-pipelines): κάθε κώδικας απομονωμένος στο output/<code>/, με
@@ -36,7 +38,18 @@ services:
     volumes:
       # Input/Output (read-write)
       - ./input:/app/input:rw
-      - ./output:/app/output:rw
+      # [ΕΤΥΜΗΓΟΡΙΑ ΔΗΜΙΟΥΡΓΟΥ P0] Ήταν `./output:/app/output:rw` — ΟΛΟ το output,
+      # μαζί με ΚΑΘΕ releases/, εγγράψιμο. Η ασφαλής διαδρομή υπήρχε (service
+      # `producer`) αλλά ΔΕΝ ήταν η ΜΟΝΑΔΙΚΗ δυνατή. Τώρα ΚΑΘΕ service με το
+      # runtime image έχει ΤΗΝ ΙΔΙΑ τοπολογία: output ΟΛΟΚΛΗΡΟ read-only,
+      # εγγράψιμα ΜΟΝΟ τα candidates/<corpus>.
+      - ./output:/app/output:ro
+      - ./output/astikos/candidates:/app/output/astikos/candidates:rw
+      - ./output/constitution/candidates:/app/output/constitution/candidates:rw
+      - ./output/kdioikitikis/candidates:/app/output/kdioikitikis/candidates:rw
+      - ./output/kpoinikis/candidates:/app/output/kpoinikis/candidates:rw
+      - ./output/kpolitikis/candidates:/app/output/kpolitikis/candidates:rw
+      - ./output/poinikos/candidates:/app/output/poinikos/candidates:rw
       - ./logs:/app/logs:rw
 
       # Configurations (read-only)
@@ -49,7 +62,8 @@ services:
       - ./deployment:/app/deployment:rw
 
       # Auto-generated crypto keys (Pure Lisp via Ironclad)
-      - ./keys:/app/keys:rw
+      # [ΕΤΥΜΗΓΟΡΙΑ ΔΗΜΙΟΥΡΓΟΥ] Ιδιωτικά κλειδιά ΠΟΤΕ εγγράψιμα από παραγωγό.
+      - ./keys:/app/keys:ro
 
     environment:
       ORCHESTRATOR_OUTPUT_DIR: /app/output
@@ -107,6 +121,8 @@ services:
     # GIT_COMMIT arg ⇒ η fail-closed πύλη του Dockerfile το σκοτώνει, σωστά).
     image: orchestrator:latest
     container_name: orchestrator-corpus-service
+    # ΤΑΥΤΟΤΗΤΑ: lawmax-reader (11003) — serving· ΚΑΜΙΑ εγγραφή σε output/keys.
+    user: "11003:11003"
     command: ["--serve"]
     depends_on:
       - orchestrator          # reuse the built image
@@ -171,6 +187,7 @@ services:
   # ──────────────────────────────────────────────────────────────────────────
   ingestion:
     image: orchestrator:latest
+    user: "11002:11002"
     build:
       context: .
       dockerfile: Dockerfile
@@ -190,7 +207,14 @@ services:
       - ./configs:/app/configs:ro
       - ./deployment:/app/deployment:ro
       - ./deployment/self:/app/deployment/self:rw
-      - ./output:/app/output:rw
+      # [P0] ίδια τοπολογία με τον producer: output ro, μόνο candidates rw
+      - ./output:/app/output:ro
+      - ./output/astikos/candidates:/app/output/astikos/candidates:rw
+      - ./output/constitution/candidates:/app/output/constitution/candidates:rw
+      - ./output/kdioikitikis/candidates:/app/output/kdioikitikis/candidates:rw
+      - ./output/kpoinikis/candidates:/app/output/kpoinikis/candidates:rw
+      - ./output/kpolitikis/candidates:/app/output/kpolitikis/candidates:rw
+      - ./output/poinikos/candidates:/app/output/poinikos/candidates:rw
     environment:
       ORCHESTRATOR_OUTPUT_DIR: /app/output
       ORCHESTRATOR_CORPUS: ${ORCHESTRATOR_CORPUS:-poinikos}
@@ -328,7 +352,7 @@ services:
         for t in sbcl python3 setpriv unshare mount; do
           command -v "$$t" >/dev/null || { echo "::error::ΑΠΟΝ εργαλείο: $$t"; exit 1; }
         done
-        bash authority-v2/tests/run-authority-v2-proofs.sh
+        bash authority-v2/run-proofs.sh
     profiles: ["proofs"]
 
 networks:

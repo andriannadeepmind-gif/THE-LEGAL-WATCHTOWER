@@ -155,8 +155,14 @@ def openat2(dirfd, path, flags, resolve):
     return rc
 
 
-_OPEN_FLAGS = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
-_DIR_FLAGS = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+# O_CLOEXEC ΠΑΝΤΟΥ: κανένας descriptor δεν διαρρέει σε παιδική διεργασία.
+_OPEN_FLAGS = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_CLOEXEC
+_DIR_FLAGS = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC
+# ΑΓΚΥΡΑ: ΧΩΡΙΣ NO_XDEV — τα mountpoints (bind mounts, tmpfs, docker volumes)
+# είναι ΝΟΜΙΜΑ στη διαδρομή προς την άγκυρα. Τα symlinks ΟΧΙ.
+_RESOLVE_ANCHOR = RESOLVE_BENEATH | RESOLVE_NO_SYMLINKS
+# ΚΑΤΩ ΑΠΟ ΤΗΝ ΑΓΚΥΡΑ: πλήρες RESOLVE_STRICT — το candidate δέντρο ΔΕΝ
+# επιτρέπεται να απλώνεται σε άλλο filesystem.
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -281,17 +287,76 @@ def verify_merkle_seat(vectors_path=GOLDEN_VECTORS):
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# ΑΓΚΥΡΩΣΗ — ΚΑΝΕΝΑ ΑΥΘΑΙΡΕΤΟ PATHNAME
+# ΑΓΚΥΡΩΣΗ — ΕΜΠΙΣΤΟΣ LAUNCHER, ΟΧΙ ΑΥΘΑΙΡΕΤΟ PATHNAME ΜΕΣΑ ΣΤΗΝ CAPTURE
 # ═════════════════════════════════════════════════════════════════════════════
+# ΕΤΥΜΗΓΟΡΙΑ ΔΗΜΙΟΥΡΓΟΥ (P0): «Η _open_anchor() εφαρμόζει RESOLVE_NO_XDEV
+# ξεκινώντας από /. Επομένως απορρίπτει ΚΑΘΕ ΝΟΜΙΜΟ mountpoint ως
+# symlink-in-anchor. /tmp και /workspace απορρίφθηκαν με EXDEV· 8 passed /
+# 16 failed. Αυτό θα χτυπήσει ακριβώς Docker volumes/bind mounts.»
+#
+# ΑΠΟΛΥΤΑ ΟΡΘΟ — και η αιτία είναι εννοιολογική, όχι τυπογραφική: το NO_XDEV
+# απαντά στην ερώτηση «μένει η ΔΙΑΣΧΙΣΗ μέσα στο ΙΔΙΟ filesystem;», που είναι
+# σωστή ΜΕΣΑ στο candidate δέντρο και ΛΑΘΟΣ για τη διαδρομή προς την άγκυρα:
+# κάθε άγκυρα σε container ΕΙΝΑΙ mountpoint.
+#
+# Η ΔΟΜΗ ΤΩΡΑ:
+#   · Ο ΕΜΠΙΣΤΟΣ LAUNCHER (open_anchor) ανοίγει ΜΙΑ φορά τα δύο anchor dirfds,
+#     διασχίζοντας συνιστώσα-προς-συνιστώσα με BENEATH|NO_SYMLINKS — **ΧΩΡΙΣ**
+#     NO_XDEV, ώστε τα mountpoints να είναι νόμιμα — και ΕΠΑΛΗΘΕΥΕΙ
+#     mount-id (/proc/self/fdinfo), owner και mode.
+#   · Η capture ΔΕΝ βλέπει ΠΟΤΕ pathname: παίρνει ΤΑ dirfds (Anchor) και από
+#     εκεί και κάτω ΜΟΝΟ relative openat2 με
+#     BENEATH|NO_SYMLINKS|NO_XDEV|O_CLOEXEC.
 
-def _open_anchor(abs_path):
-    """Ανοίγει έμπιστο dirfd διασχίζοντας ΚΑΘΕ συνιστώσα από το «/» με
-    openat2 RESOLVE_STRICT. Symlink ΟΠΟΥΔΗΠΟΤΕ στη διαδρομή ⇒ ΑΡΝΗΣΗ.
+class Anchor:
+    """Επαληθευμένο anchor dirfd + η ταυτότητά του (mount-id/uid/gid/mode).
+    Παράγεται ΜΟΝΟ από open_anchor() — η capture δεν δέχεται pathname."""
 
-    ΕΥΡΗΜΑ ΔΗΜΙΟΥΡΓΟΥ: «ενδιάμεσο symlink στο ίδιο το candidate_root έγινε
-    δεκτό — το openat2 προστατεύει τους απογόνους, όχι τον αρχικό αυθαίρετο
-    pathname». Εδώ ΔΕΝ υπάρχει αυθαίρετο pathname: υπάρχει αλυσίδα
-    επαληθευμένων συνιστωσών."""
+    __slots__ = ("fd", "path", "role", "mount_id", "uid", "gid", "mode")
+
+    def __init__(self, fd, path, role, mount_id, st):
+        self.fd, self.path, self.role, self.mount_id = fd, path, role, mount_id
+        self.uid, self.gid, self.mode = st.st_uid, st.st_gid, stat.S_IMODE(st.st_mode)
+
+    def evidence(self):
+        return {"path": self.path, "role": self.role, "mount_id": self.mount_id,
+                "uid": self.uid, "gid": self.gid, "mode": "0%o" % self.mode}
+
+    def close(self):
+        try:
+            os.close(self.fd)
+        except OSError:
+            pass
+
+
+def _mount_id(fd):
+    """Το mount id του ανοιγμένου descriptor — ΑΠΟ ΤΟΝ ΠΥΡΗΝΑ (/proc/self/fdinfo)."""
+    try:
+        with open("/proc/self/fdinfo/%d" % fd, encoding="ascii") as fh:
+            for line in fh:
+                if line.startswith("mnt_id:"):
+                    return int(line.split()[1])
+    except (OSError, ValueError, IndexError):
+        pass
+    return None
+
+
+def open_anchor(abs_path, role, expect_uid=None, expect_mount_id=None):
+    """ΕΜΠΙΣΤΟΣ LAUNCHER: ανοίγει και ΕΠΑΛΗΘΕΥΕΙ μια άγκυρα. ROLE ∈ {inbox,vault}.
+
+    Διάσχιση ΚΑΘΕ συνιστώσας με BENEATH|NO_SYMLINKS (ΟΧΙ NO_XDEV: τα mountpoints
+    είναι ΝΟΜΙΜΑ — bind mounts, tmpfs, docker volumes). Symlink σε οποιαδήποτε
+    συνιστώσα ⇒ `symlink-in-anchor`.
+
+    ΕΠΑΛΗΘΕΥΣΗ:
+      · vault : ΠΡΕΠΕΙ να ανήκει στην τρέχουσα ταυτότητα και να ΜΗΝ είναι
+                εγγράψιμο από group/other (mode & 0o022 == 0) — αλλιώς δεν είναι
+                authority-ιδιωτικό και το «quarantine» θα ήταν ψευδώνυμο.
+      · inbox : ΑΠΑΓΟΡΕΥΕΤΑΙ world-writable ΧΩΡΙΣ sticky bit — αλλιώς τρίτος
+                μπορεί να αντικαταστήσει τον candidate κατάλογο ολόκληρο.
+      · expect_uid / expect_mount_id: προαιρετικά ΚΑΡΦΩΜΑΤΑ του καλούντος."""
+    if role not in ("inbox", "vault"):
+        raise CaptureRefused("anchor-role-unknown", repr(role))
     if not os.path.isabs(abs_path):
         raise CaptureRefused("anchor-not-absolute", abs_path)
     try:
@@ -303,7 +368,7 @@ def _open_anchor(abs_path):
             if comp in (".", ".."):
                 raise CaptureRefused("path-traversal", "συνιστώσα %r στην άγκυρα" % comp)
             try:
-                nxt = openat2(fd, comp, _DIR_FLAGS, RESOLVE_STRICT)
+                nxt = openat2(fd, comp, _DIR_FLAGS, _RESOLVE_ANCHOR)
             except CaptureRefused as e:
                 if e.reason in ("escapes-root", "open-refused"):
                     raise CaptureRefused(
@@ -313,7 +378,30 @@ def _open_anchor(abs_path):
                 raise
             os.close(fd)
             fd = nxt
-        return fd
+        st = os.fstat(fd)
+        mode = stat.S_IMODE(st.st_mode)
+        if role == "vault":
+            if st.st_uid != os.geteuid():
+                raise CaptureRefused("anchor-not-owned",
+                                     "το vault %s ανήκει σε uid=%d, τρέχουμε ως uid=%d"
+                                     % (abs_path, st.st_uid, os.geteuid()))
+            if mode & 0o022:
+                raise CaptureRefused("anchor-group-world-writable",
+                                     "το vault %s έχει mode 0%o — δεν είναι authority-ιδιωτικό"
+                                     % (abs_path, mode))
+        else:
+            if (mode & 0o002) and not (st.st_mode & stat.S_ISVTX):
+                raise CaptureRefused("anchor-world-writable",
+                                     "το inbox %s είναι world-writable ΧΩΡΙΣ sticky (0%o)"
+                                     % (abs_path, mode))
+        if expect_uid is not None and st.st_uid != expect_uid:
+            raise CaptureRefused("anchor-owner-mismatch",
+                                 "uid=%d ≠ αναμενόμενο %d" % (st.st_uid, expect_uid))
+        mid = _mount_id(fd)
+        if expect_mount_id is not None and mid != expect_mount_id:
+            raise CaptureRefused("anchor-mount-mismatch",
+                                 "mount_id=%s ≠ αναμενόμενο %s" % (mid, expect_mount_id))
+        return Anchor(fd, abs_path, role, mid, st)
     except BaseException:
         try:
             os.close(fd)
@@ -389,38 +477,69 @@ def _write_all(fd, buf):
 
 
 def _purge(parent_fd, name_bytes):
-    """Descriptor-based αναδρομική διαγραφή του ΜΕΡΙΚΟΥ quarantine. Best-effort
-    ως προς σφάλματα, ΑΛΛΑ ρητή: κανένα μισοχτισμένο δέντρο δεν επιβιώνει
-    σιωπηλά για να περαστεί αργότερα για σύλληψη."""
+    """Descriptor-based αναδρομική διαγραφή του ΜΕΡΙΚΟΥ quarantine.
+
+    ΕΤΥΜΗΓΟΡΙΑ ΔΗΜΙΟΥΡΓΟΥ: «το cleanup είναι best-effort και καταπίνει όλα τα
+    σφάλματα». ΟΡΘΟ — σιωπηλός καθαρισμός σημαίνει ότι ένα μισοχτισμένο δέντρο
+    μπορεί να επιβιώσει ΧΩΡΙΣ κανείς να το μάθει. Τώρα ΕΠΙΣΤΡΕΦΕΙ τη λίστα των
+    αποτυχιών· ο καλών την κάνει ΟΡΑΤΗ ως `cleanup-incomplete`."""
+    failures = []
     try:
-        fd = openat2(parent_fd, name_bytes, _DIR_FLAGS,
-                     RESOLVE_BENEATH | RESOLVE_NO_SYMLINKS)
-    except (CaptureRefused, OSError):
-        return
+        fd = openat2(parent_fd, name_bytes, _DIR_FLAGS, RESOLVE_STRICT)
+    except (CaptureRefused, OSError) as e:
+        return ["άνοιγμα %r: %s" % (name_bytes, e)]
     try:
         with os.scandir(fd) as it:
             entries = [(os.fsencode(e.name), e.is_dir(follow_symlinks=False)) for e in it]
         for raw, isdir in entries:
             if isdir:
-                _purge(fd, raw)
+                failures.extend(_purge(fd, raw))
             else:
                 try:
                     os.unlink(raw, dir_fd=fd)
-                except OSError:
-                    pass
-    except OSError:
-        pass
+                except OSError as e:
+                    failures.append("unlink %r: %s" % (raw, e))
+    except OSError as e:
+        failures.append("scandir %r: %s" % (name_bytes, e))
     finally:
         os.close(fd)
     try:
         os.rmdir(name_bytes, dir_fd=parent_fd)
-    except OSError:
-        pass
+    except OSError as e:
+        failures.append("rmdir %r: %s" % (name_bytes, e))
+    return failures
 
 
 # ═════════════════════════════════════════════════════════════════════════════
 # CANONICAL PROFILE — ΥΠΟΧΡΕΩΤΙΚΟ, ΚΑΡΦΩΜΕΝΟ, ΜΟΝΑΔΙΚΟ, ΧΩΡΙΣ ΔΙΠΛΟΤΥΠΑ
 # ═════════════════════════════════════════════════════════════════════════════
+
+class CanonicalProfile:
+    """ΑΔΙΑΦΑΝΕΣ, ΕΠΙΚΥΡΩΜΕΝΟ profile. Παράγεται ΜΟΝΟ από load_canonical_profile().
+
+    ΕΤΥΜΗΓΟΡΙΑ ΔΗΜΙΟΥΡΓΟΥ (P1): «Το “υποχρεωτικό καρφωμένο canonical profile”
+    παρακάμπτεται από το ίδιο το API: capture(..., canonical_profile=<οποιοδήποτε
+    dict>) και measure(...) χρησιμοποιούν το dict ΧΩΡΙΣ load_canonical_profile()
+    και ΧΩΡΙΣ επικύρωση.» ΟΡΘΟ — ο φρουρός ήταν στην πόρτα, όχι στον τύπο.
+    Τώρα τα production APIs δέχονται ΜΟΝΟ αυτόν τον τύπο· dict ⇒ ΑΡΝΗΣΗ."""
+
+    __slots__ = ("profile_id", "files", "sha256", "path")
+
+    def __init__(self, profile_id, files, sha256, path):
+        self.profile_id, self.files, self.sha256, self.path = profile_id, files, sha256, path
+
+
+def _require_profile(profile):
+    """Ο ΜΟΝΟΣ τρόπος να μπει profile στην παραγωγή: επικυρωμένο αντικείμενο."""
+    if profile is None:
+        return load_canonical_profile()
+    if not isinstance(profile, CanonicalProfile):
+        raise CaptureRefused(
+            "canonical-profile-not-validated",
+            "τα production APIs δέχονται ΜΟΝΟ CanonicalProfile από "
+            "load_canonical_profile()· δόθηκε %s" % type(profile).__name__)
+    return profile
+
 
 def load_canonical_profile(path=CANONICAL_PROFILE):
     try:
@@ -444,8 +563,8 @@ def load_canonical_profile(path=CANONICAL_PROFILE):
             raise CaptureRefused("canonical-profile-duplicate",
                                  "%r εμφανίζεται δύο φορές — δύο ρίζες για τα ΙΔΙΑ bytes" % f)
         seen.add(f)
-    return {"profile_id": prof["profile_id"], "files": tuple(files),
-            "sha256": hashlib.sha256(raw).hexdigest(), "path": path}
+    return CanonicalProfile(prof["profile_id"], tuple(files),
+                            hashlib.sha256(raw).hexdigest(), path)
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -531,7 +650,9 @@ def _copy_dir(src_fd, dst_fd, rel, depth, st):
 # ΦΑΣΗ Β — ΜΕΤΡΗΣΗ ΑΠΟΚΛΕΙΣΤΙΚΑ ΑΠΟ ΤΟ QUARANTINE
 # ═════════════════════════════════════════════════════════════════════════════
 
-def _measure_dir(dfd, rel, depth, lim, deadline, out):
+def _measure_dir(dfd, rel, depth, lim, deadline, st):
+    """ΤΑ ΙΔΙΑ ΣΥΝΟΛΙΚΑ ΟΡΙΑ ΜΕ ΤΗ ΦΑΣΗ Α (εύρημα δημιουργού: «η δημόσια measure()
+    δεν επιβάλλει max_files, max_file_bytes ή max_total_bytes»)."""
     if depth > lim["max_depth"]:
         raise CaptureRefused("limit-exceeded", "βάθος > %d" % lim["max_depth"])
     for raw, name in _list_names(dfd, lim, deadline):
@@ -541,11 +662,15 @@ def _measure_dir(dfd, rel, depth, lim, deadline, out):
         try:
             sb = os.fstat(fd)
             if stat.S_ISDIR(sb.st_mode):
-                _measure_dir(fd, child, depth + 1, lim, deadline, out)
+                _measure_dir(fd, child, depth + 1, lim, deadline, st)
                 continue
             if not stat.S_ISREG(sb.st_mode) or sb.st_nlink != 1:
                 raise CaptureRefused("quarantine-corrupt",
                                      "%s (mode=%o nlink=%d)" % (child, sb.st_mode, sb.st_nlink))
+            if len(st.census) + 1 > lim["max_files"]:
+                raise CaptureRefused("limit-exceeded", "max_files (measure)")
+            if sb.st_size > lim["max_file_bytes"]:
+                raise CaptureRefused("limit-exceeded", "%s > max_file_bytes (measure)" % child)
             leafh, conth, size = _leaf_hasher(), hashlib.sha256(), 0
             while True:
                 _tick(deadline)
@@ -558,31 +683,47 @@ def _measure_dir(dfd, rel, depth, lim, deadline, out):
                 leafh.update(chunk)
                 conth.update(chunk)
                 size += len(chunk)
-            out.append({"path": child, "size": size, "sha256": conth.hexdigest(),
-                        "leaf": PREFIX + leafh.hexdigest()})
+                if size > lim["max_file_bytes"]:
+                    raise CaptureRefused("limit-exceeded",
+                                         "%s ξεπέρασε το max_file_bytes (measure)" % child)
+                if st.total + size > lim["max_total_bytes"]:
+                    raise CaptureRefused("limit-exceeded", "max_total_bytes (measure)")
+            st.total += size
+            st.census.append({"path": child, "size": size, "sha256": conth.hexdigest(),
+                              "leaf": PREFIX + leafh.hexdigest()})
         finally:
             os.close(fd)
 
 
-def measure(vault_path, quarantine_name, canonical_profile=None, limits=None):
+class _MeasureState:
+    __slots__ = ("census", "total")
+
+    def __init__(self):
+        self.census, self.total = [], 0
+
+
+def measure(vault, quarantine_name, profile=None, limits=None):
     """Ο ΜΟΝΟΣ παραγωγός αριθμών: ξαναδιαβάζει ΚΑΘΕ byte από το quarantine.
-    Δημόσια έδρα — την καλεί η capture() ΚΑΙ κάθε μεταγενέστερος verifier."""
+
+    VAULT είναι ΕΠΑΛΗΘΕΥΜΕΝΟ Anchor (open_anchor(..., "vault")) — ΟΧΙ pathname.
+    PROFILE είναι ΕΠΙΚΥΡΩΜΕΝΟ CanonicalProfile — ΟΧΙ dict."""
+    if not isinstance(vault, Anchor) or vault.role != "vault":
+        raise CaptureRefused("anchor-required",
+                             "η measure() δέχεται ΜΟΝΟ επαληθευμένο vault Anchor")
     lim = dict(DEFAULT_LIMITS)
     if limits:
         lim.update(limits)
     deadline = time.monotonic() + lim["deadline_seconds"]
     seat = verify_merkle_seat()
-    prof = canonical_profile or load_canonical_profile()
-    census = []
-    vault_fd = _open_anchor(vault_path)
+    prof = _require_profile(profile)
+    _checked_name(quarantine_name, lim)
+    st = _MeasureState()
+    qfd = openat2(vault.fd, os.fsencode(quarantine_name), _DIR_FLAGS, RESOLVE_STRICT)
     try:
-        qfd = openat2(vault_fd, os.fsencode(quarantine_name), _DIR_FLAGS, RESOLVE_STRICT)
-        try:
-            _measure_dir(qfd, "", 0, lim, deadline, census)
-        finally:
-            os.close(qfd)
+        _measure_dir(qfd, "", 0, lim, deadline, st)
     finally:
-        os.close(vault_fd)
+        os.close(qfd)
+    census = st.census
     if not census:
         raise CaptureRefused("quarantine-corrupt", "κανένα αρχείο στο quarantine")
     census.sort(key=lambda e: e["path"].encode("utf-8"))
@@ -590,63 +731,68 @@ def measure(vault_path, quarantine_name, canonical_profile=None, limits=None):
     snapshot_root = _mth([_snapshot_leaf(e["path"], e["size"], e["leaf"]) for e in census])
 
     by_path = {e["path"]: e for e in census}
-    missing = [f for f in prof["files"] if f not in by_path]
+    missing = [f for f in prof.files if f not in by_path]
     if missing:
         raise CaptureRefused("canonical-missing", ", ".join(missing[:5]))
     # ΑΚΡΙΒΩΣ orchestrator.merkle:merkle-root-of-files — MTH πάνω σε
     # hash-leaf-file φύλλα, ΣΤΗ ΣΕΙΡΑ του καρφωμένου profile.
-    release_root = _mth([by_path[f]["leaf"] for f in prof["files"]])
+    release_root = _mth([by_path[f]["leaf"] for f in prof.files])
 
     return {"snapshot_root": snapshot_root, "release_root": release_root,
-            "census": census, "quarantine": quarantine_name, "vault": vault_path,
-            "file_count": len(census),
-            "total_bytes": sum(e["size"] for e in census),
+            "census": census, "quarantine": quarantine_name,
+            "vault": vault.evidence(), "file_count": len(census),
+            "total_bytes": st.total,
             "merkle_profile": MERKLE_PROFILE, "measured_from": "quarantine",
-            "canonical_profile_id": prof["profile_id"],
-            "canonical_profile_sha256": prof["sha256"],
+            "canonical_profile_id": prof.profile_id,
+            "canonical_profile_sha256": prof.sha256,
             "merkle_seat": seat, "limits_used": lim}
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# CAPTURE = ΑΓΚΥΡΩΣΗ → ΦΑΣΗ Α → ΦΑΣΗ Β → ΔΙΑΣΤΑΥΡΩΣΗ → FIXED POINT
+# CAPTURE = ΦΑΣΗ Α → ΦΑΣΗ Β → ΔΙΑΣΤΑΥΡΩΣΗ → FIXED POINT
 # ═════════════════════════════════════════════════════════════════════════════
 
-def capture(inbox_path, candidate_name, vault_path, quarantine_name,
-            canonical_profile=None, limits=None):
-    """Συλλαμβάνει το `inbox_path/candidate_name` σε ΝΕΟ `vault_path/quarantine_name`.
+def capture(inbox, candidate_name, vault, quarantine_name, profile=None, limits=None):
+    """Συλλαμβάνει το <inbox>/<candidate_name> σε ΝΕΟ <vault>/<quarantine_name>.
 
-    ΚΑΝΕΝΑ αυθαίρετο pathname: και οι δύο άγκυρες διασχίζονται συνιστώσα-προς-
-    συνιστώσα με RESOLVE_STRICT· candidate και quarantine είναι ΟΝΟΜΑΤΑ μέσα
-    τους. Κάθε ανωμαλία ⇒ CaptureRefused (fail-closed) ΚΑΙ καθαρισμός του
-    μερικού quarantine."""
+    INBOX και VAULT είναι ΕΠΑΛΗΘΕΥΜΕΝΑ Anchor (open_anchor) — η capture ΔΕΝ
+    βλέπει ΠΟΤΕ pathname και ΔΕΝ διασχίζει ποτέ απόλυτη διαδρομή. Από τα anchors
+    και κάτω: ΜΟΝΟ relative openat2 με BENEATH|NO_SYMLINKS|NO_XDEV|O_CLOEXEC.
+
+    Κάθε ανωμαλία ⇒ CaptureRefused (fail-closed) ΚΑΙ καθαρισμός του μερικού
+    quarantine· αν ο καθαρισμός αποτύχει, η αποτυχία ΕΙΝΑΙ ΟΡΑΤΗ
+    (`cleanup-incomplete`), ΠΟΤΕ σιωπηλή."""
+    if not isinstance(inbox, Anchor) or inbox.role != "inbox":
+        raise CaptureRefused("anchor-required",
+                             "η capture() δέχεται ΜΟΝΟ επαληθευμένο inbox Anchor")
+    if not isinstance(vault, Anchor) or vault.role != "vault":
+        raise CaptureRefused("anchor-required",
+                             "η capture() δέχεται ΜΟΝΟ επαληθευμένο vault Anchor")
     lim = dict(DEFAULT_LIMITS)
     if limits:
         lim.update(limits)
     deadline = time.monotonic() + lim["deadline_seconds"]
     seat = verify_merkle_seat()                      # ΠΡΙΝ από κάθε byte
-    prof = canonical_profile or load_canonical_profile()
-    qraw = os.fsencode(quarantine_name)
+    prof = _require_profile(profile)
     _checked_name(quarantine_name, lim)
     _checked_name(candidate_name, lim)
+    qraw = os.fsencode(quarantine_name)
 
-    inbox_fd = _open_anchor(inbox_path)
-    vault_fd = None
     created = False
     try:
-        vault_fd = _open_anchor(vault_path)
         try:
-            os.mkdir(qraw, 0o700, dir_fd=vault_fd)
+            os.mkdir(qraw, 0o700, dir_fd=vault.fd)
         except FileExistsError:
             raise CaptureRefused("quarantine-preexisting",
                                  "%s/%s υπάρχει ήδη — η authority δημιουργεί ΝΕΟ"
-                                 % (vault_path, quarantine_name))
+                                 % (vault.path, quarantine_name))
         except OSError as e:
             raise _os_refuse(e, "mkdir quarantine")
         created = True
         try:
-            src = openat2(inbox_fd, os.fsencode(candidate_name), _DIR_FLAGS, RESOLVE_STRICT)
+            src = openat2(inbox.fd, os.fsencode(candidate_name), _DIR_FLAGS, RESOLVE_STRICT)
             try:
-                dst = openat2(vault_fd, qraw, _DIR_FLAGS, RESOLVE_STRICT)
+                dst = openat2(vault.fd, qraw, _DIR_FLAGS, RESOLVE_STRICT)
                 try:
                     st = _copy_dir(src, dst, "", 0, _CopyState(lim, deadline))
                     os.fsync(dst)
@@ -659,7 +805,7 @@ def capture(inbox_path, candidate_name, vault_path, quarantine_name,
         if not st.copied:
             raise CaptureRefused("empty-candidate", "κανένα regular file")
 
-        result = measure(vault_path, quarantine_name, canonical_profile=prof, limits=lim)
+        result = measure(vault, quarantine_name, profile=prof, limits=lim)
 
         # ── ΔΙΑΣΤΑΥΡΩΣΗ ΦΑΣΕΩΝ: ό,τι γράφτηκε == ό,τι μετρήθηκε ──────────────
         written = sorted(st.copied, key=lambda t: t[0].encode("utf-8"))
@@ -675,16 +821,14 @@ def capture(inbox_path, candidate_name, vault_path, quarantine_name,
             raise CaptureRefused("quarantine-diverged",
                                  "bytes γραμμένα=%d μετρημένα=%d" % (st.total, result["total_bytes"]))
 
-        # ── FIXED POINT ΣΤΗΝ ΙΔΙΑ ΤΗΝ ΠΑΡΑΓΩΓΗ (εύρημα δημιουργού) ──────────
-        # Δεύτερη, ΠΛΗΡΗΣ επαναμέτρηση από το σφραγισμένο quarantine. Δεν είναι
-        # δουλειά του harness να το κάνει «κάπου αλλού»: η capture ΔΕΝ επιστρέφει
-        # αριθμούς που δεν αναπαράγονται.
-        again = measure(vault_path, quarantine_name, canonical_profile=prof, limits=lim)
+        # ── FIXED POINT ΣΤΗΝ ΙΔΙΑ ΤΗΝ ΠΑΡΑΓΩΓΗ ──────────────────────────────
+        again = measure(vault, quarantine_name, profile=prof, limits=lim)
         for k in ("snapshot_root", "release_root", "census", "file_count", "total_bytes"):
             if again[k] != result[k]:
                 raise CaptureRefused("fixed-point-violation",
                                      "η δεύτερη μέτρηση διαφέρει στο %s" % k)
 
+        result["inbox"] = inbox.evidence()
         result["seat_vectors_checked"] = seat["vectors_checked"]
         result["max_verified_n"] = seat["max_verified_n"]
         result["fixed_point"] = "verified-in-capture"
@@ -693,28 +837,37 @@ def capture(inbox_path, candidate_name, vault_path, quarantine_name,
     except OSError as e:                             # καμία ακατέργαστη εξαίρεση
         raise _os_refuse(e, "capture")
     finally:
-        if created and vault_fd is not None:
-            _purge(vault_fd, qraw)                   # ΜΕΡΙΚΟ quarantine ⇒ ΤΕΛΟΣ
-        for fd in (vault_fd, inbox_fd):
-            if fd is not None:
-                try:
-                    os.close(fd)
-                except OSError:
-                    pass
+        if created:
+            failures = _purge(vault.fd, qraw)
+            if failures:
+                # ΟΡΑΤΗ αποτυχία καθαρισμού — ΠΟΤΕ σιωπηλή κατάποση σφαλμάτων.
+                raise CaptureRefused(
+                    "cleanup-incomplete",
+                    "το ΜΕΡΙΚΟ quarantine %s ΔΕΝ καθαρίστηκε πλήρως: %s"
+                    % (quarantine_name, "· ".join(failures[:5])))
 
 
 if __name__ == "__main__":
+    # Ο ΕΜΠΙΣΤΟΣ LAUNCHER: ΕΔΩ και ΜΟΝΟ εδώ υπάρχουν pathnames. Ανοίγει και
+    # ΕΠΑΛΗΘΕΥΕΙ τα δύο anchors και τα παραδίδει στην capture ως descriptors.
     if len(sys.argv) != 5:
         print("usage: capture.py <inbox-dir> <candidate-name> <vault-dir> <NEW-quarantine-name>")
         sys.exit(2)
+    inbox_a = vault_a = None
     try:
-        r = capture(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+        inbox_a = open_anchor(os.path.abspath(sys.argv[1]), "inbox")
+        vault_a = open_anchor(os.path.abspath(sys.argv[3]), "vault")
+        r = capture(inbox_a, sys.argv[2], vault_a, sys.argv[4])
         print(json.dumps({k: r[k] for k in
                           ("snapshot_root", "release_root", "file_count", "total_bytes",
                            "merkle_profile", "canonical_profile_id",
                            "canonical_profile_sha256", "seat_vectors_checked",
-                           "max_verified_n", "fixed_point")},
+                           "max_verified_n", "fixed_point", "inbox", "vault")},
                          ensure_ascii=False, sort_keys=True))
     except CaptureRefused as e:
         print("::error::CAPTURE REFUSED — %s" % e)
         sys.exit(1)
+    finally:
+        for a in (inbox_a, vault_a):
+            if a is not None:
+                a.close()

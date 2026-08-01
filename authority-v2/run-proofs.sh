@@ -2,25 +2,26 @@
 # =============================================================================
 # Η ΜΙΑ ΕΔΡΑ ΕΚΤΕΛΕΣΗΣ ΤΩΝ ΑΠΟΔΕΙΞΕΩΝ authority-v2
 # =============================================================================
-# ΕΤΥΜΗΓΟΡΙΑ ΔΗΜΙΟΥΡΓΟΥ: «ο runner απογράφει μόνο συγκεκριμένα globs μέσα στο
-# authority-v2/tests/· ο ισχυρισμός “τρέχει όλες τις αποδείξεις” είναι ψευδής».
-# ΔΙΟΡΘΩΣΗ: το inventory καλύπτει ΟΛΟ το authority-v2/ (tests/, capability/, και
-# τους verifiers της ρίζας του) με repo-relative μονοπάτια.
+# ΕΤΥΜΗΓΟΡΙΑ ΔΗΜΙΟΥΡΓΟΥ: «Η "πλήρης απογραφή" παραμένει glob-based. Έβαλα
+# τεχνητή αποτυχημένη απόδειξη στο authority-v2/other/forgotten-proof.py: ο
+# runner την ΑΓΝΟΗΣΕ και επέστρεψε exit 0.»
+# ΔΙΟΡΘΩΣΗ: ΕΝΑΣ κατάλογος εισόδων (authority-v2/proofs/) + ΑΝΑΔΡΟΜΙΚΗ σάρωση
+# ΟΛΟΥ του authority-v2/ + απαγόρευση αποδείξεων εκτός του καταλόγου εισόδων.
 #
 # ΚΑΜΙΑ ΠΟΛΙΤΙΚΗ ΣΕ YAML. Η έδρα:
-#   ① ΠΑΡΑΓΕΙ inventory από το filesystem (globs), ΔΕΝ το γράφει κανείς με το χέρι
+#   ① ΣΑΡΩΝΕΙ ΑΝΑΔΡΟΜΙΚΑ το filesystem, ΔΕΝ γράφει κανείς inventory με το χέρι
 #   ② το ΣΥΓΚΡΙΝΕΙ με τη committed απογραφή· απόκλιση προς ΟΠΟΙΑΔΗΠΟΤΕ κατεύθυνση
 #      ⇒ ΣΦΑΛΜΑ (ξεχασμένη απόδειξη / νεκρή εγγραφή), ΚΑΙ ελέγχει διπλότυπα και
 #      άγνωστους τρόπους (κλειστό σχήμα)
-#   ③ τρέχει ΠΡΩΤΑ τα setup-*, μετά ΚΑΘΕ απόδειξη, και ΜΕΤΡΑΕΙ
+#   ③ τρέχει ΠΡΩΤΑ τα tool-* (προετοιμασία), μετά ΚΑΘΕ απόδειξη, και ΜΕΤΡΑΕΙ
 #   ④ ΤΟ BLOCKED ΔΕΝ ΕΙΝΑΙ ΠΟΤΕ PASS. Τοπικά ⇒ exit 3 (ΑΤΕΛΕΣ). Με
 #      AUTHORITY_V2_REQUIRE_ALL=1 (CI) ⇒ ΣΦΑΛΜΑ.
 #
-#   run-authority-v2-proofs.sh [--census FILE] [--root DIR]
+#   authority-v2/run-proofs.sh [--census FILE] [--root DIR]
 # Έξοδοι: 0 = όλα εκτελέστηκαν και πέρασαν· 1 = αποτυχία· 3 = ατελές (blocked).
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT="$(cd "$HERE/../.." && pwd)"
+ROOT="$(cd "$HERE/.." && pwd)"
 CENSUS="$HERE/PROOF-CENSUS.txt"
 REQUIRE_ALL="${AUTHORITY_V2_REQUIRE_ALL:-0}"
 
@@ -33,19 +34,34 @@ while [ "$#" -gt 0 ]; do
 done
 [ -f "$CENSUS" ] || { echo "::error::ΑΠΟΓΡΑΦΗ ΑΠΟΥΣΑ: $CENSUS"; exit 1; }
 
-# ── ① inventory ΑΠΟ ΤΟ FILESYSTEM, ΣΕ ΕΠΙΠΕΔΟ ΑΠΟΘΕΤΗΡΙΟΥ ────────────────────
-# Εκτελεστές = αποδείξεις/μάρτυρες/verifiers. Τα probe-*/_*/build-* είναι
-# ΒΟΗΘΟΙ (καλούνται ΑΠΟ τις αποδείξεις), ΟΧΙ αυτοτελείς αποδείξεις.
-shopt -s nullglob
-disk=()
-for f in "$ROOT"/authority-v2/tests/*-test.py    "$ROOT"/authority-v2/tests/*-test.sh \
-         "$ROOT"/authority-v2/tests/*-witness.py "$ROOT"/authority-v2/tests/*-witness.sh \
-         "$ROOT"/authority-v2/tests/*-fixtures.py "$ROOT"/authority-v2/tests/*-bundle.sh \
-         "$ROOT"/authority-v2/capability/*.sh    "$ROOT"/authority-v2/verify-*.py; do
-  disk+=("${f#$ROOT/}")
+# ── ① ΑΝΑΔΡΟΜΙΚΗ ΑΠΑΡΙΘΜΗΣΗ, ΟΧΙ GLOBS ──────────────────────────────────────
+# ΕΤΥΜΗΓΟΡΙΑ ΔΗΜΙΟΥΡΓΟΥ: αποτυχημένη απόδειξη στο authority-v2/other/ ΑΓΝΟΗΘΗΚΕ
+# επειδή τα globs κοιτούσαν μόνο συγκεκριμένους καταλόγους. Τώρα απαριθμείται
+# ΚΑΘΕ regular file κάτω από το authority-v2/ και ισχύουν ΔΥΟ κανόνες:
+#   (α) ό,τι είναι ΜΕΣΑ στο proofs/ ΕΙΝΑΙ απόδειξη και ΠΡΕΠΕΙ να απογράφεται
+#   (β) ΚΑΝΕΝΑ εκτελέσιμο απόδειξης ΕΚΤΟΣ του proofs/ — εκτός αν δηλώνεται ρητά
+#       ως tool-* στην απογραφή, με λόγο
+PROOFS_DIR="authority-v2/proofs"
+mapfile -t all_files < <(cd "$ROOT" && find authority-v2 -type f | LC_ALL=C sort)
+[ "${#all_files[@]}" -gt 0 ] || { echo "::error::ΚΕΝΟ authority-v2 — καμία ψευδο-επιτυχία"; exit 1; }
+
+in_proofs=(); outside_exec=()
+for f in "${all_files[@]}"; do
+  case "$f" in
+    "$PROOFS_DIR"/*)
+      rest="${f#$PROOFS_DIR/}"
+      case "$rest" in
+        */*) echo "::error::ΥΠΟΚΑΤΑΛΟΓΟΣ ΣΤΟ proofs/: $f — ο κατάλογος εισόδων είναι ΕΠΙΠΕΔΟΣ"; exit 1;;
+      esac
+      in_proofs+=("$f");;
+    *)
+      case "$f" in
+        *-test.py|*-test.sh|*-witness.py|*-witness.sh|*-fixtures.py|*-bundle.sh|*/verify-*.py|*/verify-*.sh)
+          outside_exec+=("$f");;
+        *.py|*.sh) [ -x "$ROOT/$f" ] && outside_exec+=("$f");;
+      esac;;
+  esac
 done
-IFS=$'\n' disk=($(printf '%s\n' "${disk[@]}" | sort -u)); unset IFS
-[ "${#disk[@]}" -gt 0 ] || { echo "::error::ΚΕΝΟ inventory — καμία ψευδο-επιτυχία"; exit 1; }
 
 # ── ② σύγκριση με τη committed απογραφή (κλειστό σχήμα) ──────────────────────
 declare -A MODE=() ARGS=()
@@ -60,7 +76,7 @@ while IFS= read -r line || [ -n "$line" ]; do
   [ "$#" -ge 2 ] || { echo "::error::ΚΑΚΟΣΧΗΜΑΤΗ γραμμή $lineno: '$line'"; exit 1; }
   path="$1"; mode="$2"; shift 2
   case "$mode" in
-    plain|requires-root|requires-sbcl|setup-requires-root) ;;
+    plain|requires-root|requires-sbcl|tool-requires-root|tool-declared) ;;
     *) echo "::error::ΑΓΝΩΣΤΟΣ τρόπος '$mode' (γραμμή $lineno· κλειστό σχήμα)"; exit 1;;
   esac
   if [ -n "${MODE[$path]:-}" ]; then
@@ -70,15 +86,27 @@ while IFS= read -r line || [ -n "$line" ]; do
   census+=("$path"); order+=("$path")
 done < "$CENSUS"
 
-missing=(); dead=()
-for f in "${disk[@]}";   do [ -n "${MODE[$f]:-}" ] || missing+=("$f"); done
-for f in "${census[@]}"; do [ -f "$ROOT/$f" ]      || dead+=("$f"); done
-if [ "${#missing[@]}" -gt 0 ] || [ "${#dead[@]}" -gt 0 ]; then
-  [ "${#missing[@]}" -gt 0 ] && echo "::error::ΞΕΧΑΣΜΕΝΕΣ ΑΠΟΔΕΙΞΕΙΣ (στον δίσκο, εκτός απογραφής): ${missing[*]}"
+missing=(); dead=(); stray=()
+for f in "${in_proofs[@]}"; do [ -n "${MODE[$f]:-}" ] || missing+=("$f"); done
+for f in "${census[@]}";    do [ -f "$ROOT/$f" ]      || dead+=("$f"); done
+for f in "${outside_exec[@]:-}"; do
+  [ -n "$f" ] || continue
+  case "${MODE[$f]:-}" in tool-*) ;; *) stray+=("$f");; esac
+done
+if [ "${#missing[@]}" -gt 0 ] || [ "${#dead[@]}" -gt 0 ] || [ "${#stray[@]}" -gt 0 ]; then
+  [ "${#missing[@]}" -gt 0 ] && echo "::error::ΞΕΧΑΣΜΕΝΕΣ ΑΠΟΔΕΙΞΕΙΣ (στο proofs/, εκτός απογραφής): ${missing[*]}"
   [ "${#dead[@]}" -gt 0 ]    && echo "::error::ΝΕΚΡΕΣ ΕΓΓΡΑΦΕΣ (στην απογραφή, ανύπαρκτες): ${dead[*]}"
+  [ "${#stray[@]}" -gt 0 ]   && echo "::error::ΑΠΟΔΕΙΞΗ ΕΚΤΟΣ ΤΟΥ ΚΑΤΑΛΟΓΟΥ ΕΙΣΟΔΩΝ (authority-v2/proofs/): ${stray[*]}"
   exit 1
 fi
-echo "── απογραφή authority-v2: ${#census[@]} εγγραφές, filesystem ≡ committed ──"
+for f in "${census[@]}"; do
+  case "${MODE[$f]}" in tool-*) continue;; esac
+  case "$f" in
+    "$PROOFS_DIR"/*) ;;
+    *) echo "::error::Η ΑΠΟΓΡΑΦΗ δηλώνει απόδειξη ΕΚΤΟΣ proofs/: $f"; exit 1;;
+  esac
+done
+echo "── απογραφή: ${#all_files[@]} αρχεία σαρώθηκαν ΑΝΑΔΡΟΜΙΚΑ· ${#in_proofs[@]} είσοδοι στο proofs/ ≡ committed ──"
 echo
 
 # ── ③ εκτέλεση: ΠΡΩΤΑ τα setup, μετά οι αποδείξεις ───────────────────────────
@@ -98,7 +126,7 @@ exec_entry() {                     # $1 = repo-relative path
 }
 
 for f in "${order[@]}"; do
-  [ "${MODE[$f]}" = "setup-requires-root" ] || continue
+  [ "${MODE[$f]}" = "tool-requires-root" ] || continue
   echo "▶ [setup] $f"
   if [ "$(id -u)" -ne 0 ]; then
     setup_ok=0; echo "  ⊘ BLOCKED — απαιτείται root για την προετοιμασία"
@@ -113,7 +141,7 @@ done
 
 for f in "${order[@]}"; do
   mode="${MODE[$f]}"
-  [ "$mode" = "setup-requires-root" ] && continue
+  case "$mode" in tool-*) continue;; esac
   echo "▶ $f  [$mode]"
   if [ "$mode" = "requires-root" ] && [ "$setup_ok" -ne 1 ]; then
     if [ "$REQUIRE_ALL" = "1" ]; then

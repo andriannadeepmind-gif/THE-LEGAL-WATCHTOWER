@@ -21,7 +21,7 @@
 ;;;;      authority quarantine (authority-v2/capture/capture.py).
 ;;;;
 ;;;; (Το OS επίπεδο — EACCES για κάθε ταυτότητα πλην authority — αποδεικνύεται
-;;;;  ΕΚΤΕΛΕΣΤΙΚΑ από authority-v2/capability/verify-capability-closure.sh:
+;;;;  ΕΚΤΕΛΕΣΤΙΚΑ από authority-v2/proofs/verify-capability-closure.sh:
 ;;;;  ξεχωριστή έδρα, ξεχωριστή απόδειξη, BLOCKED χωρίς root — ποτέ PASS.)
 
 (defvar *pass* 0)

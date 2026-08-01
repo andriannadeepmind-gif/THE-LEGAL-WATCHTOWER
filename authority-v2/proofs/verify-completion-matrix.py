@@ -23,7 +23,7 @@ REQUIRED_KEYS = [":id", ":title", ":status", ":load-bearing", ":implementation",
                  ":proof-objects", ":command", ":actual-result",
                  ":negative-witness", ":residual-assumptions"]
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def main(argv):

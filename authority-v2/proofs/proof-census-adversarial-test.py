@@ -27,8 +27,8 @@ import tempfile
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(_HERE))
-RUNNER = os.path.join(_HERE, "run-authority-v2-proofs.sh")
-REAL_CENSUS = os.path.join(_HERE, "PROOF-CENSUS.txt")
+RUNNER = os.path.join(REPO, "authority-v2", "run-proofs.sh")
+REAL_CENSUS = os.path.join(REPO, "authority-v2", "PROOF-CENSUS.txt")
 
 passed = failed = 0
 
@@ -45,11 +45,17 @@ def no(m):
     print("  FAIL " + m)
 
 
-def fake_repo(d, proofs, census_lines):
-    """Τεχνητό αποθετήριο: authority-v2/tests/<name> + απογραφή."""
-    tests = os.path.join(d, "authority-v2", "tests")
+def fake_repo(d, proofs, census_lines, strays=()):
+    """Τεχνητό αποθετήριο: authority-v2/proofs/<name> + απογραφή (+ αδέσποτα)."""
+    tests = os.path.join(d, "authority-v2", "proofs")
     os.makedirs(tests)
     os.makedirs(os.path.join(d, "authority-v2", "capability"))
+    for rel in strays:
+        sp = os.path.join(d, rel)
+        os.makedirs(os.path.dirname(sp), exist_ok=True)
+        with open(sp, "w", encoding="utf-8") as fh:
+            fh.write("#!/usr/bin/env python3\nimport sys\nsys.exit(1)\n")
+        os.chmod(sp, 0o755)
     for name in proofs:
         p = os.path.join(tests, name)
         with open(p, "w", encoding="utf-8") as fh:
@@ -67,9 +73,9 @@ def run(d, census):
     return r.returncode, r.stdout + r.stderr
 
 
-def case(name, proofs, census_lines, want_rc, want_token):
+def case(name, proofs, census_lines, want_rc, want_token, strays=()):
     with tempfile.TemporaryDirectory() as d:
-        census = fake_repo(d, proofs, census_lines)
+        census = fake_repo(d, proofs, census_lines, strays)
         rc, out = run(d, census)
         if rc != want_rc:
             no("%s ⇒ exit %d (αναμενόταν %d)\n%s" % (name, rc, want_rc, out[-400:]))
@@ -83,43 +89,64 @@ def case(name, proofs, census_lines, want_rc, want_token):
 print("== ΘΕΤΙΚΟΣ ΜΑΡΤΥΡΑΣ: ΣΥΝΕΠΗΣ ΑΠΟΓΡΑΦΗ ΠΕΡΝΑΕΙ ==")
 case("συνεπής απογραφή (2 αποδείξεις)",
      ["alpha-test.py", "beta-test.py"],
-     ["authority-v2/tests/alpha-test.py  plain",
-      "authority-v2/tests/beta-test.py   plain"], 0, "filesystem ≡ committed")
+     ["authority-v2/proofs/alpha-test.py  plain",
+      "authority-v2/proofs/beta-test.py   plain"], 0, "είσοδοι στο proofs/ ≡ committed")
 
 print("\n== ΚΑΘΕ ΑΝΩΜΑΛΙΑ ΤΗΣ ΑΠΟΓΡΑΦΗΣ ΕΙΝΑΙ ΣΦΑΛΜΑ ==")
 case("απόδειξη ΕΚΤΟΣ απογραφής (ξεχασμένη)",
      ["alpha-test.py", "forgotten-test.py"],
-     ["authority-v2/tests/alpha-test.py  plain"], 1, "ΞΕΧΑΣΜΕΝΕΣ ΑΠΟΔΕΙΞΕΙΣ")
+     ["authority-v2/proofs/alpha-test.py  plain"], 1, "ΞΕΧΑΣΜΕΝΕΣ ΑΠΟΔΕΙΞΕΙΣ")
 
 case("ΟΡΦΑΝΗ εγγραφή (αρχείο ανύπαρκτο)",
      ["alpha-test.py"],
-     ["authority-v2/tests/alpha-test.py  plain",
-      "authority-v2/tests/ghost-test.py  plain"], 1, "ΝΕΚΡΕΣ ΕΓΓΡΑΦΕΣ")
+     ["authority-v2/proofs/alpha-test.py  plain",
+      "authority-v2/proofs/ghost-test.py  plain"], 1, "ΝΕΚΡΕΣ ΕΓΓΡΑΦΕΣ")
 
 case("ΔΙΠΛΟΤΥΠΗ εγγραφή",
      ["alpha-test.py"],
-     ["authority-v2/tests/alpha-test.py  plain",
-      "authority-v2/tests/alpha-test.py  plain"], 1, "ΔΙΠΛΟΤΥΠΗ ΕΓΓΡΑΦΗ")
+     ["authority-v2/proofs/alpha-test.py  plain",
+      "authority-v2/proofs/alpha-test.py  plain"], 1, "ΔΙΠΛΟΤΥΠΗ ΕΓΓΡΑΦΗ")
 
 case("ΑΓΝΩΣΤΟΣ τρόπος (κλειστό σχήμα)",
      ["alpha-test.py"],
-     ["authority-v2/tests/alpha-test.py  maybe-someday"], 1, "ΑΓΝΩΣΤΟΣ τρόπος")
+     ["authority-v2/proofs/alpha-test.py  maybe-someday"], 1, "ΑΓΝΩΣΤΟΣ τρόπος")
 
 case("ΚΑΚΟΣΧΗΜΑΤΗ γραμμή (ένα μόνο πεδίο)",
      ["alpha-test.py"],
-     ["authority-v2/tests/alpha-test.py"], 1, "ΚΑΚΟΣΧΗΜΑΤΗ γραμμή")
+     ["authority-v2/proofs/alpha-test.py"], 1, "ΚΑΚΟΣΧΗΜΑΤΗ γραμμή")
 
 case("ΚΕΝΗ απογραφή πάνω σε ΜΗ ΚΕΝΟ δίσκο",
      ["alpha-test.py"], ["# μόνο σχόλιο"], 1, "ΞΕΧΑΣΜΕΝΕΣ ΑΠΟΔΕΙΞΕΙΣ")
+
+print("\n== ΤΟ ΑΚΡΙΒΕΣ MUTANT ΤΟΥ ΔΗΜΙΟΥΡΓΟΥ: authority-v2/other/forgotten-proof.py ==")
+# «Έβαλα τεχνητή αποτυχημένη απόδειξη στο authority-v2/other/forgotten-proof.py:
+#  ο runner την ΑΓΝΟΗΣΕ και επέστρεψε exit 0.» ΤΩΡΑ ΟΦΕΙΛΕΙ ΝΑ ΚΟΚΚΙΝΙΖΕΙ.
+case("ΞΕΧΑΣΜΕΝΗ απόδειξη ΕΚΤΟΣ του καταλόγου εισόδων (authority-v2/other/)",
+     ["alpha-test.py"],
+     ["authority-v2/proofs/alpha-test.py  plain"], 1,
+     "ΑΠΟΔΕΙΞΗ ΕΚΤΟΣ ΤΟΥ ΚΑΤΑΛΟΓΟΥ ΕΙΣΟΔΩΝ",
+     strays=("authority-v2/other/forgotten-proof.py",))
+
+case("ΑΔΕΣΠΟΤΟ εκτελέσιμο σε ΤΥΧΑΙΟ βάθος (authority-v2/a/b/c/)",
+     ["alpha-test.py"],
+     ["authority-v2/proofs/alpha-test.py  plain"], 1,
+     "ΑΠΟΔΕΙΞΗ ΕΚΤΟΣ ΤΟΥ ΚΑΤΑΛΟΓΟΥ ΕΙΣΟΔΩΝ",
+     strays=("authority-v2/a/b/c/deep-witness.py",))
+
+case("Η ΑΠΟΓΡΑΦΗ δηλώνει απόδειξη ΕΚΤΟΣ proofs/",
+     ["alpha-test.py"],
+     ["authority-v2/proofs/alpha-test.py  plain",
+      "authority-v2/elsewhere/x-test.py   plain"], 1,
+     "ΝΕΚΡΕΣ ΕΓΓΡΑΦΕΣ")
 
 print("\n== Η ΠΡΑΓΜΑΤΙΚΗ ΑΠΟΓΡΑΦΗ ΠΕΡΙΕΧΕΙ ΤΟ CAPABILITY CLOSURE ==")
 with open(REAL_CENSUS, encoding="utf-8") as fh:
     body = [l.split("#")[0].split() for l in fh]
 entries = {parts[0]: parts[1] for parts in body if len(parts) >= 2}
-for required, mode in (("authority-v2/capability/verify-capability-closure.sh", "requires-root"),
-                       ("authority-v2/capability/identities.sh", "setup-requires-root"),
-                       ("authority-v2/verify-completion-matrix.py", "plain"),
-                       ("authority-v2/verify-proof-manifest.py", "plain")):
+for required, mode in (("authority-v2/proofs/verify-capability-closure.sh", "requires-root"),
+                       ("authority-v2/capability/identities.sh", "tool-requires-root"),
+                       ("authority-v2/proofs/verify-completion-matrix.py", "plain"),
+                       ("authority-v2/proofs/verify-proof-manifest.py", "plain")):
     if entries.get(required) == mode:
         ok("η απογραφή περιέχει %s [%s]" % (required, mode))
     else:

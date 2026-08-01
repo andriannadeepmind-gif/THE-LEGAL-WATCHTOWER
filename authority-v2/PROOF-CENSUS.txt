@@ -1,0 +1,55 @@
+# =============================================================================
+# AUTHORITY-V2 — ΑΠΟΓΡΑΦΗ ΑΠΟΔΕΙΞΕΩΝ (ΚΛΕΙΣΤΟ ΣΧΗΜΑ, ΕΝΑΣ ΚΑΤΑΛΟΓΟΣ ΕΙΣΟΔΩΝ)
+# =============================================================================
+# ΕΤΥΜΗΓΟΡΙΑ ΔΗΜΙΟΥΡΓΟΥ (P1): «Η "πλήρης απογραφή" παραμένει glob-based. Έβαλα
+# τεχνητή αποτυχημένη απόδειξη στο authority-v2/other/forgotten-proof.py: ο
+# runner την ΑΓΝΟΗΣΕ και επέστρεψε exit 0. Άρα το 13/13 σημαίνει "13
+# καταχωρισμένες αποδείξεις πέρασαν", όχι "καμία απόδειξη δεν μπορεί να
+# ξεχαστεί".» ΟΡΘΟ — τα globs κοιτούσαν μόνο εκεί που ήξεραν.
+#
+# ΔΙΟΡΘΩΣΗ ΣΤΗΝ ΑΙΤΙΑ — ΕΝΑΣ ΚΑΤΑΛΟΓΟΣ ΕΙΣΟΔΩΝ:
+#   · ΟΛΕΣ οι αποδείξεις ζουν ΑΠΟΚΛΕΙΣΤΙΚΑ στο authority-v2/proofs/.
+#   · Ο runner απαριθμεί ΑΝΑΔΡΟΜΙΚΑ ΚΑΘΕ regular file κάτω από το authority-v2/
+#     (ΟΧΙ globs) και απαιτεί:
+#       - κάθε αρχείο ΜΕΣΑ στο proofs/ να είναι εγγεγραμμένο εδώ, και αντίστροφα
+#       - ΚΑΝΕΝΑ εκτελέσιμο απόδειξης ΕΚΤΟΣ του proofs/ — εκτός αν δηλώνεται
+#         ρητά εδώ ως `tool-*` (μη-απόδειξη) με λόγο
+#   · Αντίπαλος: authority-v2/proofs/proof-census-adversarial-test.py, που
+#     φυτεύει authority-v2/other/forgotten-proof.py και απαιτεί ΚΟΚΚΙΝΟ.
+#
+# ΣΧΗΜΑ (κλειστό): <repo-relative-path>  <τροπος>  [ορίσματα...]
+#   plain               - τρέχει χωρίς προνόμια
+#   requires-sbcl       - απαιτεί τον παραγωγικό Lisp πυρήνα (διαφορικές έδρες)
+#   requires-root       - απαιτεί root+CAP_SYS_ADMIN (mount/setpriv/unshare).
+#                         Τοπικά χωρίς root => BLOCKED (ΠΟΤΕ pass). Στο CI με
+#                         AUTHORITY_V2_REQUIRE_ALL=1 => ΣΦΑΛΜΑ.
+#   tool-requires-root  - ΕΡΓΑΛΕΙΟ/ΠΡΟΕΤΟΙΜΑΣΙΑ, ΟΧΙ απόδειξη: τρέχει ΠΡΩΤΟ, δεν
+#                         μετριέται, και επιτρέπεται να ζει ΕΚΤΟΣ του proofs/.
+#   tool-declared       - ΕΡΓΑΛΕΙΟ που ΔΕΝ εκτελείται από τον runner· δηλώνεται
+#                         ΜΟΝΟ για να επιτραπεί ρητά η ύπαρξή του εκτός proofs/.
+# =============================================================================
+
+# -- ΕΡΓΑΛΕΙΑ (μη-αποδείξεις, εκτός proofs/ ΜΕ ΛΟΓΟ) -------------------------
+# identities.sh: ΕΓΚΑΤΑΣΤΑΤΗΣ ταυτοτήτων/δικαιωμάτων - δεν αποδεικνύει, ΣΤΗΝΕΙ.
+authority-v2/capability/identities.sh                  tool-requires-root  /var/lib/lawmax/authority /var/lib/lawmax/candidates
+# ceremony.sh: ΤΕΛΕΤΗ ρίζας (offline root) - ΕΡΓΑΛΕΙΟ που ΑΣΚΕΙΤΑΙ από την
+# ceremony-rehearsal-test.sh· δεν είναι αυτοτελής απόδειξη και ΔΕΝ τρέχει μόνο του.
+authority-v2/roles/ceremony.sh                         tool-declared
+# run-proofs.sh: Ο ΙΔΙΟΣ Ο ΕΚΤΕΛΕΣΤΗΣ - δεν μπορεί να είναι απόδειξη του εαυτού του.
+authority-v2/run-proofs.sh                             tool-declared
+
+# -- ΑΠΟΔΕΙΞΕΙΣ (ΑΠΟΚΛΕΙΣΤΙΚΑ στο authority-v2/proofs/) ----------------------
+authority-v2/proofs/verify-capability-closure.sh       requires-root       /var/lib/lawmax/authority /var/lib/lawmax/candidates
+authority-v2/proofs/producer-os-boundary-test.sh       requires-root
+authority-v2/proofs/capture-mountpoint-test.sh         requires-root
+authority-v2/proofs/capture-adversarial-test.py        plain
+authority-v2/proofs/capture-mutation-witness.py        plain
+authority-v2/proofs/proof-census-adversarial-test.py   plain
+authority-v2/proofs/producer-topology-test.py          plain
+authority-v2/proofs/gate-negative-fixtures.py          plain
+authority-v2/proofs/witness-quorum-test.py             plain
+authority-v2/proofs/ceremony-rehearsal-test.sh         plain
+authority-v2/proofs/capture-seat-differential-test.sh  requires-sbcl
+authority-v2/proofs/delta23-evidence-bundle.sh         requires-sbcl
+authority-v2/proofs/verify-completion-matrix.py        plain
+authority-v2/proofs/verify-proof-manifest.py           plain

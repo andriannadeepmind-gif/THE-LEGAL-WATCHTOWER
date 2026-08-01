@@ -395,3 +395,27 @@ OS boundary 11/0 · capability closure 5/0 · level7-disarm 20/0 · release-auth
 
 **BLOCKED — NOT EXECUTED:** compose producer (docker daemon απών) · CI (dispatch
 403, 0 runs). Δ2/Δ3 = IMPLEMENTED-NOT-PROVED, Level-7 gate `:not-passed`.
+
+## [0124] CAPTURE-BOUNDARY-CLOSURE-3 — `claude/lawmax-level7-vcct-rsm`
+
+Δύο P0 παρακάμψεις και δύο ψευδο-πράσινες εγγυήσεις που βρήκε ο δημιουργός
+τρέχοντας το `7b36c98b`. **Δ4–Δ9 ΔΕΝ αγγίχτηκαν.**
+
+- **P0① `NO_XDEV` από «/»**: απέρριπτε κάθε νόμιμο mountpoint (EXDEV) — θα
+  χτυπούσε κάθε Docker volume. Τώρα: έμπιστος launcher `open_anchor()` με
+  επαλήθευση mount-id/owner/mode· η capture παίρνει **μόνο** dirfds. Μάρτυρες σε
+  **πραγματικά** tmpfs + bind mount, μαζί με μάρτυρα παλινδρόμησης.
+- **P0② η ασφαλής τοπολογία δεν ήταν η μοναδική**: κάθε service έχει τώρα
+  καρφωμένο uid, `output` ro, κλειδιά ro· ο verifier απογράφει **όλα** τα services.
+- **P1③** αδιαφανές `CanonicalProfile` + `Anchor` — ο φρουρός στον **τύπο**.
+- **P1④** ένας κατάλογος εισόδων + **αναδρομική** σάρωση· το mutant
+  `authority-v2/other/forgotten-proof.py` κοκκινίζει.
+- `measure()` με τα ίδια όρια· `cleanup-incomplete` ορατό.
+
+**Αριθμοί:** run-proofs **14/0/0 blocked** · mountpoint 6/0 · adversarial 27/0 ·
+mutation witness 15/0 (14/14 φονεύσιμες) · census adversary 14/0 · topology 13/0 ·
+seat-differential 8/0 · OS boundary 11/0 · capability closure 5/0 · level7-disarm
+20/0 · release-authority 14/0 · transparency-log 21/0.
+
+**BLOCKED — NOT EXECUTED:** Docker (daemon απών) · CI (403, 0 runs).
+Δ2/Δ3 = IMPLEMENTED-NOT-PROVED. Level-7 gate `:not-passed`.

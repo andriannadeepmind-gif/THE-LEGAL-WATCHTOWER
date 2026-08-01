@@ -113,7 +113,7 @@ jobs:
     runs-on: ubuntu-latest
     # ΕΥΡΗΜΑ ΔΗΜΙΟΥΡΓΟΥ (P1): «τίποτα δεν είναι συρματωμένο σε Docker/compose/
     # workflow — το HEAD έχει μηδέν Actions runs και μηδέν status checks». ΟΡΘΟ.
-    # ΚΑΜΙΑ ΠΟΛΙΤΙΚΗ ΣΕ YAML: το job καλεί ΜΙΑ έδρα (run-authority-v2-proofs.sh)
+    # ΚΑΜΙΑ ΠΟΛΙΤΙΚΗ ΣΕ YAML: το job καλεί ΜΙΑ έδρα (authority-v2/run-proofs.sh)
     # που ΠΑΡΑΓΕΙ το inventory από το filesystem και το συγκρίνει με την
     # committed απογραφή. Νέα απόδειξη ⇒ μπαίνει ΑΥΤΟΜΑΤΑ· ξεχασμένη απόδειξη
     # ⇒ ΣΦΑΛΜΑ. Το YAML δεν ξέρει ονόματα tests και δεν μπορεί να ξεμείνει πίσω.
@@ -138,7 +138,7 @@ jobs:
         # τίμια άγνοια — είναι απώλεια δυνατότητας και ΟΦΕΙΛΕΙ να κοκκινίσει.
         # sudo: το OS boundary test απαιτεί CAP_SYS_ADMIN (bind mount) + setpriv.
         sudo env AUTHORITY_V2_REQUIRE_ALL=1 LAWMAX_REPO="$PWD" \
-             bash authority-v2/tests/run-authority-v2-proofs.sh
+             bash authority-v2/run-proofs.sh
 
     - name: 🧪 Οι Lisp αποδείξεις αφοπλισμού (ΙΔΙΟΣ πυρήνας, ΜΙΑ φορά χτισμένος)
       shell: bash
@@ -158,8 +158,8 @@ jobs:
     - name: 📐 Πύλες τιμιότητας — completion matrix + proof manifest
       shell: bash
       run: |
-        python3 authority-v2/verify-completion-matrix.py
-        python3 authority-v2/verify-proof-manifest.py
+        python3 authority-v2/proofs/verify-completion-matrix.py
+        python3 authority-v2/proofs/verify-proof-manifest.py
 
   verifier-conformance:
     needs: [dependency-policy-gate]
