@@ -74,6 +74,11 @@ REPO_ROOT = os.path.dirname(os.path.dirname(_HERE))
 GOLDEN_VECTORS = os.path.join(REPO_ROOT, "deployment", "verify", "vectors",
                               "merkle", "vectors.json")
 CANONICAL_PROFILE = os.path.join(_HERE, "canonical-profile.json")
+# ΚΑΡΦΩΜΕΝΟ DIGEST ΤΟΥ PROFILE — η ταυτότητά του ΕΙΝΑΙ τα bytes του, όχι το id.
+# Αλλαγή του profile ΑΠΑΙΤΕΙ ρητή αλλαγή ΕΔΩ, σε commit: κανένα «άλλο profile με
+# το σωστό id» δεν γίνεται δεκτό (εύρημα δημιουργού P1).
+PINNED_CANONICAL_PROFILE_SHA256 = \
+    "7c1005aec4728e2b4ef8d8beec68295ac0b8bbebdfd52d46faf1a7a7b028dd35"
 TREE_LEAF_RULE = "leaf data for index i = ASCII bytes of the decimal representation of i"
 
 # ── ΑΠΟΣΥΡΜΕΝΟΙ ΙΣΧΥΡΙΣΜΟΙ (ρητή εντολή δημιουργού) ──────────────────────────
@@ -308,18 +313,91 @@ def verify_merkle_seat(vectors_path=GOLDEN_VECTORS):
 #     εκεί και κάτω ΜΟΝΟ relative openat2 με
 #     BENEATH|NO_SYMLINKS|NO_XDEV|O_CLOEXEC.
 
-class Anchor:
-    """Επαληθευμένο anchor dirfd + η ταυτότητά του (mount-id/uid/gid/mode).
-    Παράγεται ΜΟΝΟ από open_anchor() — η capture δεν δέχεται pathname."""
+class _CapabilityToken:
+    """Ιδιωτικό κλειδί κατασκευής. ΔΕΝ εξάγεται· ΔΕΝ μπορεί να αποκτηθεί από
+    caller. Κάθε capability type απαιτεί ΑΥΤΟ το αντικείμενο για να γεννηθεί."""
+    __slots__ = ()
 
-    __slots__ = ("fd", "path", "role", "mount_id", "uid", "gid", "mode")
 
-    def __init__(self, fd, path, role, mount_id, st):
+_MINT = _CapabilityToken()
+
+
+class _Sealed:
+    """Βάση ΑΜΕΤΑΒΛΗΤΩΝ, ΜΗ ΚΑΤΑΣΚΕΥΑΣΙΜΩΝ capability αντικειμένων.
+
+    ΕΤΥΜΗΓΟΡΙΑ ΔΗΜΙΟΥΡΓΟΥ (P1): «Anchor και CanonicalProfile είναι δημόσια,
+    μεταβλητά Python objects. Δεν είναι πραγματικά capability types· μπορούν να
+    κατασκευαστούν ή να μεταβληθούν από caller.» ΟΡΘΟ — ένας τύπος που
+    κατασκευάζεται ελεύθερα δεν είναι ικανότητα, είναι υπόδειξη.
+
+    ΕΔΩ: (α) η κατασκευή απαιτεί το ιδιωτικό _MINT — `Anchor(...)` από caller
+    σηκώνει ΣΦΑΛΜΑ· (β) μετά τη σφράγιση ΚΑΘΕ ανάθεση/διαγραφή πεδίου σηκώνει
+    ΣΦΑΛΜΑ. Η ικανότητα ΔΕΝ κατασκευάζεται και ΔΕΝ μεταβάλλεται εκ των υστέρων."""
+
+    __slots__ = ("_sealed",)
+
+    def __init__(self, token):
+        if token is not _MINT:
+            raise CaptureRefused(
+                "capability-forgery",
+                "%s ΔΕΝ κατασκευάζεται από caller — μόνο από την έδρα του"
+                % type(self).__name__)
+        object.__setattr__(self, "_sealed", False)
+
+    def _seal(self):
+        object.__setattr__(self, "_sealed", True)
+
+    def __setattr__(self, k, v):
+        if getattr(self, "_sealed", False):
+            raise CaptureRefused("capability-immutable",
+                                 "%s.%s: τα capability αντικείμενα ΔΕΝ μεταβάλλονται"
+                                 % (type(self).__name__, k))
+        object.__setattr__(self, k, v)
+
+    def __delattr__(self, k):
+        raise CaptureRefused("capability-immutable",
+                             "%s.%s: καμία διαγραφή πεδίου" % (type(self).__name__, k))
+
+
+class Anchor(_Sealed):
+    """Επαληθευμένο anchor dirfd + η ΤΑΥΤΟΤΗΤΑ του (mount-id/dev/ino/uid/mode).
+
+    Παράγεται ΜΟΝΟ από open_anchor(). Σφραγισμένο: κανένα πεδίο δεν αλλάζει.
+    Η `reverify()` ΞΑΝΑΕΛΕΓΧΕΙ ότι ο descriptor δείχνει ΑΚΟΜΗ στο ίδιο inode και
+    στο ίδιο mount — ένας stale/ανταλλαγμένος fd γίνεται ανιχνεύσιμος."""
+
+    __slots__ = ("fd", "path", "role", "mount_id", "dev", "ino", "uid", "gid", "mode")
+
+    def __init__(self, token, fd, path, role, mount_id, st):
+        super().__init__(token)
         self.fd, self.path, self.role, self.mount_id = fd, path, role, mount_id
+        self.dev, self.ino = st.st_dev, st.st_ino
         self.uid, self.gid, self.mode = st.st_uid, st.st_gid, stat.S_IMODE(st.st_mode)
+        self._seal()
+
+    def reverify(self):
+        """ΕΠΑΝΕΛΕΓΧΟΣ ΤΑΥΤΟΤΗΤΑΣ πριν από κάθε χρήση: ίδιο dev/ino/mount, ίδιος
+        κάτοχος, ίδια δικαιώματα, ακόμη κατάλογος. Αλλιώς ΑΡΝΗΣΗ."""
+        try:
+            st = os.fstat(self.fd)
+        except OSError as e:
+            raise _os_refuse(e, "reverify %s" % self.path)
+        if not stat.S_ISDIR(st.st_mode):
+            raise CaptureRefused("anchor-stale", "%s: ο descriptor δεν είναι κατάλογος" % self.path)
+        if (st.st_dev, st.st_ino) != (self.dev, self.ino):
+            raise CaptureRefused("anchor-stale",
+                                 "%s: dev/ino άλλαξαν (%s,%s → %s,%s)"
+                                 % (self.path, self.dev, self.ino, st.st_dev, st.st_ino))
+        if _mount_id(self.fd) != self.mount_id:
+            raise CaptureRefused("anchor-stale", "%s: το mount-id άλλαξε" % self.path)
+        if (st.st_uid, stat.S_IMODE(st.st_mode)) != (self.uid, self.mode):
+            raise CaptureRefused("anchor-stale",
+                                 "%s: owner/mode άλλαξαν" % self.path)
+        return self
 
     def evidence(self):
         return {"path": self.path, "role": self.role, "mount_id": self.mount_id,
+                "dev": self.dev, "ino": self.ino,
                 "uid": self.uid, "gid": self.gid, "mode": "0%o" % self.mode}
 
     def close(self):
@@ -401,7 +479,7 @@ def open_anchor(abs_path, role, expect_uid=None, expect_mount_id=None):
         if expect_mount_id is not None and mid != expect_mount_id:
             raise CaptureRefused("anchor-mount-mismatch",
                                  "mount_id=%s ≠ αναμενόμενο %s" % (mid, expect_mount_id))
-        return Anchor(fd, abs_path, role, mid, st)
+        return Anchor(_MINT, fd, abs_path, role, mid, st)
     except BaseException:
         try:
             os.close(fd)
@@ -514,19 +592,23 @@ def _purge(parent_fd, name_bytes):
 # CANONICAL PROFILE — ΥΠΟΧΡΕΩΤΙΚΟ, ΚΑΡΦΩΜΕΝΟ, ΜΟΝΑΔΙΚΟ, ΧΩΡΙΣ ΔΙΠΛΟΤΥΠΑ
 # ═════════════════════════════════════════════════════════════════════════════
 
-class CanonicalProfile:
-    """ΑΔΙΑΦΑΝΕΣ, ΕΠΙΚΥΡΩΜΕΝΟ profile. Παράγεται ΜΟΝΟ από load_canonical_profile().
+class CanonicalProfile(_Sealed):
+    """ΑΔΙΑΦΑΝΕΣ, ΕΠΙΚΥΡΩΜΕΝΟ, ΣΦΡΑΓΙΣΜΕΝΟ profile — ΜΟΝΟ από load_canonical_profile().
 
-    ΕΤΥΜΗΓΟΡΙΑ ΔΗΜΙΟΥΡΓΟΥ (P1): «Το “υποχρεωτικό καρφωμένο canonical profile”
-    παρακάμπτεται από το ίδιο το API: capture(..., canonical_profile=<οποιοδήποτε
-    dict>) και measure(...) χρησιμοποιούν το dict ΧΩΡΙΣ load_canonical_profile()
-    και ΧΩΡΙΣ επικύρωση.» ΟΡΘΟ — ο φρουρός ήταν στην πόρτα, όχι στον τύπο.
-    Τώρα τα production APIs δέχονται ΜΟΝΟ αυτόν τον τύπο· dict ⇒ ΑΡΝΗΣΗ."""
+    ΕΤΥΜΗΓΟΡΙΕΣ ΔΗΜΙΟΥΡΓΟΥ:
+      P1 «παρακάμπτεται από το ίδιο το API: capture(..., canonical_profile=dict)»
+      P1 «φορτώνεται από αυθαίρετο pathname ΧΩΡΙΣ pinned digest ή υπογραφή ⇒ ένα
+          ΔΙΑΦΟΡΕΤΙΚΟ profile με το σωστό profile-id μπορεί να γίνει δεκτό»
+    ⇒ Το production API δέχεται ΜΟΝΟ αυτόν τον τύπο, η κατασκευή απαιτεί το
+      ιδιωτικό _MINT, τα πεδία είναι σφραγισμένα, ΚΑΙ το περιεχόμενο ελέγχεται
+      απέναντι στο ΚΑΡΦΩΜΕΝΟ digest (PINNED_CANONICAL_PROFILE_SHA256)."""
 
     __slots__ = ("profile_id", "files", "sha256", "path")
 
-    def __init__(self, profile_id, files, sha256, path):
+    def __init__(self, token, profile_id, files, sha256, path):
+        super().__init__(token)
         self.profile_id, self.files, self.sha256, self.path = profile_id, files, sha256, path
+        self._seal()
 
 
 def _require_profile(profile):
@@ -563,8 +645,16 @@ def load_canonical_profile(path=CANONICAL_PROFILE):
             raise CaptureRefused("canonical-profile-duplicate",
                                  "%r εμφανίζεται δύο φορές — δύο ρίζες για τα ΙΔΙΑ bytes" % f)
         seen.add(f)
-    return CanonicalProfile(prof["profile_id"], tuple(files),
-                            hashlib.sha256(raw).hexdigest(), path)
+    digest = hashlib.sha256(raw).hexdigest()
+    # ── ΚΑΡΦΩΜΕΝΟ DIGEST ────────────────────────────────────────────────────
+    # Το profile-id ΔΕΝ αρκεί: ένα ΔΙΑΦΟΡΕΤΙΚΟ αρχείο με το ΙΔΙΟ id θα περνούσε.
+    # Η ταυτότητα του profile ΕΙΝΑΙ τα bytes του.
+    if digest != PINNED_CANONICAL_PROFILE_SHA256:
+        raise CaptureRefused(
+            "canonical-profile-unpinned",
+            "sha256=%s ≠ ΚΑΡΦΩΜΕΝΟ %s (%s)"
+            % (digest, PINNED_CANONICAL_PROFILE_SHA256, path))
+    return CanonicalProfile(_MINT, prof["profile_id"], tuple(files), digest, path)
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -575,6 +665,9 @@ class _CopyState:
     def __init__(self, lim, deadline):
         self.lim, self.deadline = lim, deadline
         self.copied, self.total = [], 0
+        # ΤΟ ΑΠΟΤΥΠΩΜΑ ΚΑΘΕ ΠΗΓΑΙΟΥ ΑΡΧΕΙΟΥ ΤΗ ΣΤΙΓΜΗ ΤΗΣ ΑΝΤΙΓΡΑΦΗΣ ΤΟΥ —
+        # η πρώτη ύλη για τη ΣΤΑΘΕΡΟΠΟΙΗΣΗ ΟΛΟΥ ΤΟΥ ΣΥΝΟΛΟΥ (φάση Α2).
+        self.fingerprints = {}
 
 
 def _copy_dir(src_fd, dst_fd, rel, depth, st):
@@ -641,9 +734,55 @@ def _copy_dir(src_fd, dst_fd, rel, depth, st):
             os.chmod(raw, 0o400, dir_fd=dst_fd)
             st.total += written
             st.copied.append((child, written))
+            st.fingerprints[child] = before
         finally:
             os.close(fd)                  # ΑΜΕΣΩΣ, σε ΚΑΘΕ διαδρομή
     return st
+
+
+def _verify_set_stable(src_fd, st, lim, deadline):
+    """ΦΑΣΗ Α2 — ΣΤΑΘΕΡΟΠΟΙΗΣΗ ΟΛΟΥ ΤΟΥ ΣΥΝΟΛΟΥ, ΟΧΙ ΑΡΧΕΙΟΥ-ΑΡΧΕΙΟΥ.
+
+    ΕΤΥΜΗΓΟΡΙΑ ΔΗΜΙΟΥΡΓΟΥ (P1): «Η capture σταθεροποιεί κάθε αρχείο χωριστά, όχι
+    ολόκληρο το σύνολο ⇒ μπορεί να δεχτεί torn snapshot: μερικά αρχεία από γενιά
+    Α και άλλα από γενιά Β.» ΟΡΘΟ — το ανά-αρχείο fingerprint εγγυάται μόνο ότι
+    ΤΟ ΚΑΘΕ αρχείο ήταν σταθερό ΟΣΟ το διαβάζαμε, ΟΧΙ ότι το ΣΥΝΟΛΟ αντιστοιχεί
+    σε ΜΙΑ κατάσταση της πηγής.
+
+    ΕΔΩ: μετά την αντιγραφή ΟΛΩΝ, η πηγή ξαναδιασχίζεται και ΚΑΘΕ αρχείο πρέπει
+    να έχει ΑΚΡΙΒΩΣ το ίδιο αποτύπωμα (dev/ino/nlink/size/mtime/ctime) με τη
+    στιγμή της αντιγραφής του — ΚΑΙ το σύνολο των διαδρομών πρέπει να είναι
+    ΑΚΡΙΒΩΣ το ίδιο (καμία προσθήκη, καμία αφαίρεση). Έτσι το «διάβασα το Α, ο
+    αντίπαλος άλλαξε το Α, μετά διάβασα το Β» γίνεται ΑΝΙΧΝΕΥΣΙΜΟ."""
+    seen = {}
+
+    def walk(dfd, rel, depth):
+        if depth > lim["max_depth"]:
+            raise CaptureRefused("limit-exceeded", "βάθος > %d" % lim["max_depth"])
+        for raw, name in _list_names(dfd, lim, deadline):
+            _tick(deadline)
+            child = "%s/%s" % (rel, name) if rel else name
+            fd = openat2(dfd, raw, _OPEN_FLAGS, RESOLVE_STRICT)
+            try:
+                sb = os.fstat(fd)
+                if stat.S_ISDIR(sb.st_mode):
+                    walk(fd, child, depth + 1)
+                elif stat.S_ISREG(sb.st_mode):
+                    seen[child] = _fingerprint(sb)
+                else:
+                    raise CaptureRefused("non-regular-file", child)
+            finally:
+                os.close(fd)
+
+    walk(src_fd, "", 0)
+    added = sorted(set(seen) - set(st.fingerprints))
+    removed = sorted(set(st.fingerprints) - set(seen))
+    changed = sorted(k for k in seen if k in st.fingerprints and seen[k] != st.fingerprints[k])
+    if added or removed or changed:
+        raise CaptureRefused(
+            "set-mutated-during-capture",
+            "ΤΟ ΣΥΝΟΛΟ ΔΕΝ ΕΙΝΑΙ ΜΙΑ ΚΑΤΑΣΤΑΣΗ: +%s -%s ~%s"
+            % (added[:3], removed[:3], changed[:3]))
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -710,6 +849,7 @@ def measure(vault, quarantine_name, profile=None, limits=None):
     if not isinstance(vault, Anchor) or vault.role != "vault":
         raise CaptureRefused("anchor-required",
                              "η measure() δέχεται ΜΟΝΟ επαληθευμένο vault Anchor")
+    vault.reverify()          # stale/ανταλλαγμένος fd ⇒ anchor-stale
     lim = dict(DEFAULT_LIMITS)
     if limits:
         lim.update(limits)
@@ -768,6 +908,8 @@ def capture(inbox, candidate_name, vault, quarantine_name, profile=None, limits=
     if not isinstance(vault, Anchor) or vault.role != "vault":
         raise CaptureRefused("anchor-required",
                              "η capture() δέχεται ΜΟΝΟ επαληθευμένο vault Anchor")
+    inbox.reverify()          # ΕΠΑΝΕΛΕΓΧΟΣ ΤΑΥΤΟΤΗΤΑΣ πριν από κάθε χρήση
+    vault.reverify()
     lim = dict(DEFAULT_LIMITS)
     if limits:
         lim.update(limits)
@@ -796,6 +938,8 @@ def capture(inbox, candidate_name, vault, quarantine_name, profile=None, limits=
                 try:
                     st = _copy_dir(src, dst, "", 0, _CopyState(lim, deadline))
                     os.fsync(dst)
+                    # ΦΑΣΗ Α2 — ΣΤΑΘΕΡΟΠΟΙΗΣΗ ΟΛΟΥ ΤΟΥ ΣΥΝΟΛΟΥ (ΟΧΙ ανά αρχείο)
+                    _verify_set_stable(src, st, lim, deadline)
                 finally:
                     os.close(dst)
             finally:

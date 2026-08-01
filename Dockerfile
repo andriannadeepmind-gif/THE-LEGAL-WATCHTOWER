@@ -439,8 +439,12 @@ EXPOSE 8080
 USER nonroot:nonroot
 
 # Health check
+# [P0 ΔΗΜΙΟΥΡΓΟΥ] Ήταν /app/output/.healthy — ΜΕΣΑ στο authority evidence, που
+# είναι read-only για τον μη έμπιστο παραγωγό ⇒ ο αγωγός έσκαγε με EROFS και το
+# service έμενε ΜΟΝΙΜΑ unhealthy. Η υγεία είναι ΕΦΗΜΕΡΗ ΚΑΤΑΣΤΑΣΗ ΔΙΕΡΓΑΣΙΑΣ.
+ENV LAWMAX_RUNTIME_DIR=/run/lawmax
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD test -f /app/output/.healthy || exit 1
+    CMD test -f /run/lawmax/.healthy || exit 1
 
 # Entrypoint with proper signal handling (PURE LISP)
 # DARPA-GRADE: No shell scripts, Pure Common Lisp entrypoint

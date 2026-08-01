@@ -101,8 +101,7 @@
   (let* ((short (or (orchestrator.spec:config-get "corpus.short_name")
                     (error "cut-release: corpus.short_name not configured")))
          (output-dir (corpus-output-dir
-                      (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR")
-                          (orchestrator.paths:institution-dir "output/"))))
+                      (orchestrator.paths:output-root)))
          ;; B4 [0047]/[0049]: η ΙΔΙΑ έδρα provenance-checked πηγής με το pipeline
          (json-path (or (provenance-checked-json-source corpus-id)
                         (error "cut-release ~A: source.json ΧΩΡΙΣ έγκυρο provenance — δεν κόβεται release από μη επαληθευμένη πηγή" corpus-id)))

@@ -36,7 +36,7 @@
       (:semantic (funcall (find-symbol "CORPUS-FINGERPRINT" fp) doc))
       (:emitted  (funcall (find-symbol "OUTPUT-MANIFEST" fp)
                           (corpus-output-dir
-                           (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/")))
+                           (orchestrator.paths:output-root))
                           :id short)))))
 
 (defun run-golden-gate ()

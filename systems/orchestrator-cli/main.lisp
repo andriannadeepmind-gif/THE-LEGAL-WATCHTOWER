@@ -4,7 +4,14 @@
 (in-package :orchestrator.cli)
 
 (defparameter *version* "1.2.0")
-(defparameter *health-file* (orchestrator.paths:institution-dir "output/.healthy"))
+(defun health-file ()
+  "[P0 ΔΗΜΙΟΥΡΓΟΥ] Ήταν `defparameter` πάνω σε output/.healthy. ΔΥΟ σφάλματα:
+   (α) η υγεία ζούσε ΜΕΣΑ στο authority evidence, που ΟΦΕΙΛΕΙ να είναι read-only
+   για τον μη έμπιστο παραγωγό ⇒ ο αγωγός έσκαγε με EROFS και το service έμενε
+   unhealthy· (β) ως `defparameter` υπολογιζόταν σε LOAD TIME και ΨΗΝΟΤΑΝ μέσα
+   στο προ-χτισμένο core — δηλαδή το LAWMAX_RUNTIME_DIR του container ΔΕΝ θα
+   ίσχυε ΠΟΤΕ. Είναι ΣΥΝΑΡΤΗΣΗ: αποτιμάται στην ΕΚΤΕΛΕΣΗ, από τη ΜΙΑ έδρα."
+  (namestring (merge-pathnames ".healthy" (orchestrator.paths:runtime-state-dir))))
 
 (define-condition orchestrator-cli-error (error)
   ((message :initarg :message :reader error-message)
@@ -16,9 +23,9 @@
 (defun write-health-file ()
   "Write health check file for Docker"
   (handler-case
-      (let ((dir (directory-namestring *health-file*)))
+      (let ((dir (directory-namestring (health-file))))
         (ensure-directories-exist dir)
-        (with-open-file (s *health-file*
+        (with-open-file (s (health-file)
                           :direction :output
                           :if-exists :supersede
                           :if-does-not-exist :create)
@@ -138,7 +145,7 @@
   (format t "═══════════════════════════════════════════════════════════════~%~%")
 
   (let* ((input-dir (or (uiop:getenv "ORCHESTRATOR_INPUT_DIR") (orchestrator.paths:institution-dir "input/")))
-         (output-dir (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/")))
+         (output-dir (namestring (orchestrator.paths:output-root)))
          ;; SBCL-compatible wildcard pattern
          (pdf-pattern (make-pathname :directory (pathname-directory (pathname input-dir))
                                      :name :wild
@@ -301,7 +308,7 @@
 
   ;; Η υγεία είναι ΑΝΑ ΕΚΤΕΛΕΣΗ: σβήσε τυχόν παλιό σήμα ώστε το healthcheck
   ;; να μη δείχνει «υγιές» από προηγούμενο run (audit 0012 — semantic readiness).
-  (ignore-errors (delete-file *health-file*))
+  (ignore-errors (delete-file (health-file)))
 
   ;; Select corpus (explicit id, else ORCHESTRATOR_CORPUS env, else default).
   ;; Must happen before any config-get call or corpus registration.
@@ -317,7 +324,7 @@
          ;; Per-corpus output: each κώδικας lands in its own subdirectory so
          ;; runs of different corpora never overwrite or mix.
          (output-dir (corpus-output-dir
-                      (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/"))))
+                      (orchestrator.paths:output-root)))
          ;; Process ONLY this corpus's declared source PDF — never glob the
          ;; shared input/ directory, which may hold other corpora's PDFs (e.g.
          ;; both the Constitution and the Penal Code). This is what keeps each
@@ -1444,7 +1451,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
    directory — corpora can never read each other's source or overwrite each
    other's output. Continues past any single failure and prints a per-code
    summary so a missing input PDF (placeholder fallback) is obvious at a glance."
-  (let ((base (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/")))
+  (let ((base (orchestrator.paths:output-root))
         (rows '()))
     (dolist (id *served-corpora*)
       (format t "~%~A~%  CODE: ~A~%~A~%"
@@ -1483,7 +1490,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
   (or (uiop:getenv "REVIEW_QUEUE_FILE")
       (namestring (merge-pathnames "review-queue.sexp"
                                    (uiop:ensure-directory-pathname
-                                    (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/")))))))
+                                    (orchestrator.paths:output-root))))))
 
 ;; ΜΙΑ σειριοποίηση για το read-modify-write της ουράς εγκρίσεων: πολλά ταυτόχρονα
 ;; νήματα HTTP (cockpit) ή CLI+cockpit στην ΙΔΙΑ διεργασία δεν πατούν το ένα την
@@ -1613,7 +1620,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
   (multiple-value-bind (short doc) (build-consolidated-for corpus-id)
    (let* ((fp (find-package :orchestrator.fingerprint))
           (out-dir (corpus-output-dir
-                    (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/"))))
+                    (orchestrator.paths:output-root)))
           (manifest-path (merge-pathnames (concatenate 'string short ".fingerprint.sexp")
                                           (uiop:ensure-directory-pathname out-dir)))
           (golden-path (%corpus-golden-file short))
@@ -1771,7 +1778,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
            (json  (find-symbol "INTELLIGENCE-JSON" pkg))
            (clean (find-symbol "REPORT-CLEAN-P" pkg))
            (out-dir (corpus-output-dir
-                     (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/"))))
+                     (orchestrator.paths:output-root)))
            (json-path (merge-pathnames (concatenate 'string short ".intelligence.json")
                                        (uiop:ensure-directory-pathname out-dir))))
       (format t "~%═══ ΝΟΗΜΟΣΥΝΗ ΚΩΔΙΚΑ: ~A ═══~%" short)
@@ -1903,7 +1910,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
                    (abbr (or (ignore-errors (orchestrator.spec:config-get "corpus.citation_abbrev"))
                              (or (ignore-errors (orchestrator.spec:config-get "corpus.short_name")) "")))
                    (out-dir (corpus-output-dir
-                             (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/"))))
+                             (orchestrator.paths:output-root)))
                    (provisions
                      (loop for p in provs
                            for eid = (funcall eid-fn p)
@@ -1964,7 +1971,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
             (let* ((graph (funcall rg doc))
                    (eli   (or (ignore-errors (orchestrator.spec:config-get "corpus.eli_prefix")) ""))
                    (out-dir (corpus-output-dir
-                             (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/"))))
+                             (orchestrator.paths:output-root)))
                    (path  (merge-pathnames "references.ttl"
                                            (uiop:ensure-directory-pathname out-dir)))
                    (n 0))
@@ -2082,7 +2089,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
                    (result  (second _bl))
                    (eli     (or (ignore-errors (orchestrator.spec:config-get "corpus.eli_prefix")) ""))
                    (out-dir (corpus-output-dir
-                             (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/"))))
+                             (orchestrator.paths:output-root)))
                    (path    (merge-pathnames "hypergraph.ttl"
                                              (uiop:ensure-directory-pathname out-dir)))
                    (by-act  (make-hash-table :test 'equal))
@@ -2326,7 +2333,7 @@ document.getElementById('ops').addEventListener('click',function(ev){
          (n (let ((p (uiop:getenv "DUMP_LINES")))
               (or (and p (parse-integer p :junk-allowed t)) 150)))
          (out-dir (corpus-output-dir
-                   (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output/")))))
+                   (orchestrator.paths:output-root))))
     (unless (and pdf (probe-file pdf))
       (format t "✗ Δεν βρέθηκε PDF για ~A: ~A~%" short pdf)
       (return-from dump-pdf-text 1))

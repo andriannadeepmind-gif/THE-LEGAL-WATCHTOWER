@@ -53,3 +53,7 @@ deployment/self/adoptions.sexp
 component-manifest.sexp
 deployment/data/version-graph/
 authority-v2/fixtures/ceremony/
+
+# Ιδιωτικά κλειδιά: ΠΟΤΕ στο repository (μόνο το README)
+keys/private/*
+!keys/private/README.md

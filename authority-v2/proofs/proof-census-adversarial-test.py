@@ -51,11 +51,17 @@ def fake_repo(d, proofs, census_lines, strays=()):
     os.makedirs(tests)
     os.makedirs(os.path.join(d, "authority-v2", "capability"))
     for rel in strays:
+        mode = 0o755
+        if isinstance(rel, tuple):
+            rel, mode = rel
         sp = os.path.join(d, rel)
         os.makedirs(os.path.dirname(sp), exist_ok=True)
+        if mode == "symlink":
+            os.symlink("/etc/hostname", sp)
+            continue
         with open(sp, "w", encoding="utf-8") as fh:
             fh.write("#!/usr/bin/env python3\nimport sys\nsys.exit(1)\n")
-        os.chmod(sp, 0o755)
+        os.chmod(sp, mode)
     for name in proofs:
         p = os.path.join(tests, name)
         with open(p, "w", encoding="utf-8") as fh:
@@ -90,7 +96,7 @@ print("== ΘΕΤΙΚΟΣ ΜΑΡΤΥΡΑΣ: ΣΥΝΕΠΗΣ ΑΠΟΓΡΑΦΗ ΠΕ�
 case("συνεπής απογραφή (2 αποδείξεις)",
      ["alpha-test.py", "beta-test.py"],
      ["authority-v2/proofs/alpha-test.py  plain",
-      "authority-v2/proofs/beta-test.py   plain"], 0, "είσοδοι στο proofs/ ≡ committed")
+      "authority-v2/proofs/beta-test.py   plain"], 0, "ΟΛΑ ταξινομημένα")
 
 print("\n== ΚΑΘΕ ΑΝΩΜΑΛΙΑ ΤΗΣ ΑΠΟΓΡΑΦΗΣ ΕΙΝΑΙ ΣΦΑΛΜΑ ==")
 case("απόδειξη ΕΚΤΟΣ απογραφής (ξεχασμένη)",
@@ -124,13 +130,13 @@ print("\n== ΤΟ ΑΚΡΙΒΕΣ MUTANT ΤΟΥ ΔΗΜΙΟΥΡΓΟΥ: authority-v2
 case("ΞΕΧΑΣΜΕΝΗ απόδειξη ΕΚΤΟΣ του καταλόγου εισόδων (authority-v2/other/)",
      ["alpha-test.py"],
      ["authority-v2/proofs/alpha-test.py  plain"], 1,
-     "ΑΠΟΔΕΙΞΗ ΕΚΤΟΣ ΤΟΥ ΚΑΤΑΛΟΓΟΥ ΕΙΣΟΔΩΝ",
+     "ΑΤΑΞΙΝΟΜΗΤΟΣ ΚΩΔΙΚΑΣ",
      strays=("authority-v2/other/forgotten-proof.py",))
 
 case("ΑΔΕΣΠΟΤΟ εκτελέσιμο σε ΤΥΧΑΙΟ βάθος (authority-v2/a/b/c/)",
      ["alpha-test.py"],
      ["authority-v2/proofs/alpha-test.py  plain"], 1,
-     "ΑΠΟΔΕΙΞΗ ΕΚΤΟΣ ΤΟΥ ΚΑΤΑΛΟΓΟΥ ΕΙΣΟΔΩΝ",
+     "ΑΤΑΞΙΝΟΜΗΤΟΣ ΚΩΔΙΚΑΣ",
      strays=("authority-v2/a/b/c/deep-witness.py",))
 
 case("Η ΑΠΟΓΡΑΦΗ δηλώνει απόδειξη ΕΚΤΟΣ proofs/",
@@ -138,6 +144,36 @@ case("Η ΑΠΟΓΡΑΦΗ δηλώνει απόδειξη ΕΚΤΟΣ proofs/",
      ["authority-v2/proofs/alpha-test.py  plain",
       "authority-v2/elsewhere/x-test.py   plain"], 1,
      "ΝΕΚΡΕΣ ΕΓΓΡΑΦΕΣ")
+
+print("\n== ΟΙ ΠΑΡΑΚΑΜΨΕΙΣ ΠΟΥ ΟΝΟΜΑΣΕ Ο ΔΗΜΙΟΥΡΓΟΣ ==")
+# «non-executable .py, αυθαίρετα .lisp, symlinks ή proof δηλωμένο ως tool
+#  μπορούν να διαφύγουν». ΚΑΘΕ ΜΙΑ γίνεται μόνιμος μάρτυρας:
+case("ΜΗ ΕΚΤΕΛΕΣΙΜΗ ξεχασμένη απόδειξη (mode 0644)",
+     ["alpha-test.py"], ["authority-v2/proofs/alpha-test.py  plain"], 1,
+     "ΑΤΑΞΙΝΟΜΗΤΟΣ ΚΩΔΙΚΑΣ",
+     strays=(("authority-v2/other/forgotten-proof.py", 0o644),))
+
+case("ΑΥΘΑΙΡΕΤΟ .lisp εκτός καταλόγου εισόδων",
+     ["alpha-test.py"], ["authority-v2/proofs/alpha-test.py  plain"], 1,
+     "ΑΤΑΞΙΝΟΜΗΤΟΣ ΚΩΔΙΚΑΣ",
+     strays=(("authority-v2/sneaky/hidden.lisp", 0o644),))
+
+case("SYMLINK κάτω από το authority-v2/",
+     ["alpha-test.py"], ["authority-v2/proofs/alpha-test.py  plain"], 1,
+     "SYMLINK ΚΑΤΩ ΑΠΟ authority-v2/",
+     strays=(("authority-v2/link-out.py", "symlink"),))
+
+case("ΒΑΠΤΙΣΗ: απόδειξη ΜΕΣΑ στο proofs/ δηλωμένη ως tool",
+     ["alpha-test.py", "baptised-test.py"],
+     ["authority-v2/proofs/alpha-test.py     plain",
+      "authority-v2/proofs/baptised-test.py  tool-declared"], 1,
+     "ΒΑΠΤΙΣΗ ΑΠΟΔΕΙΞΗΣ ΩΣ ΕΡΓΑΛΕΙΟΥ")
+
+case("ΒΑΠΤΙΣΗ: απόδειξη ΜΕΣΑ στο proofs/ δηλωμένη ως helper",
+     ["alpha-test.py", "helped-test.py"],
+     ["authority-v2/proofs/alpha-test.py   plain",
+      "authority-v2/proofs/helped-test.py  helper"], 1,
+     "ΒΑΠΤΙΣΗ ΑΠΟΔΕΙΞΗΣ ΩΣ ΕΡΓΑΛΕΙΟΥ")
 
 print("\n== Η ΠΡΑΓΜΑΤΙΚΗ ΑΠΟΓΡΑΦΗ ΠΕΡΙΕΧΕΙ ΤΟ CAPABILITY CLOSURE ==")
 with open(REAL_CENSUS, encoding="utf-8") as fh:

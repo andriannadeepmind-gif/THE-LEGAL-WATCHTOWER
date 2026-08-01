@@ -419,3 +419,25 @@ seat-differential 8/0 · OS boundary 11/0 · capability closure 5/0 · level7-di
 
 **BLOCKED — NOT EXECUTED:** Docker (daemon απών) · CI (403, 0 runs).
 Δ2/Δ3 = IMPLEMENTED-NOT-PROVED. Level-7 gate `:not-passed`.
+
+## [0125] ΔΙΑΧΩΡΙΣΜΟΣ ΡΟΛΩΝ + ΧΩΡΟΣ ΕΡΓΑΣΙΑΣ — `claude/lawmax-level7-vcct-rsm`
+
+Απάντηση στην ευθεία ερώτηση «γιατί ψευδοκλειστές διαδρομές;»: έγραφα ελεγκτές
+των οποίων **εγώ όριζα το εύρος**, και άλλαξα το compose **χωρίς να μπορώ να
+τρέξω τον αγωγό** (κανένας docker daemon, dispatch 403).
+
+- **P0 παλινδρόμηση**: δύο νέες έδρες (`output-root` ένωσε 13 αντίγραφα·
+  `runtime-state-dir`)· `health-file` έγινε συνάρτηση. Αποδεδειγμένο με
+  `output/` πραγματικά read-only.
+- **P0 κλειδί**: αφαιρέθηκε από κάθε παραγωγό· `authority-signer` (11001) η μόνη
+  κάτοχος — και **αρνείται ρητά** (ο admission kernel δεν υπάρχει).
+- **P0 specs**: `deployment/` read-only· ξεχωριστός τόμος `evidence/`.
+- **P1**: capability types (`_Sealed`, `_MINT`, `reverify`), pinned digest,
+  ταξινόμηση ακριβώς μία φορά, image-tag bypass, torn set (ΦΑΣΗ Α2).
+
+**Αριθμοί:** run-proofs **14/0/1 BLOCKED ⇒ exit 3 ΑΤΕΛΕΣ** · topology 17/0 ·
+adversarial 33/0 · mutation witness 19/0 (18/18 φονεύσιμες) · census 19/0 ·
+mountpoint 6/0 · OS boundary 11/0 · level7-disarm 20/0.
+
+**ΔΕΝ ΕΚΤΕΛΕΣΤΗΚΕ:** Docker E2E (γραμμένο· κανένας daemon) · CI (0 runs).
+Δ2/Δ3 = IMPLEMENTED-NOT-PROVED. Level-7 gate `:not-passed`.

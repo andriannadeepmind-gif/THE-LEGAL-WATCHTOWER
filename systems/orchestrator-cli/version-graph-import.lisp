@@ -209,8 +209,7 @@
    :release-root str|NIL :reasons (ονομαστικοί λόγοι)). ΚΑΘΕ αποτυχία =
    ονομαστικός λόγος — ποτέ σιωπηλό downgrade σε «anchored»."
   (let* ((root-dir (uiop:ensure-directory-pathname
-                    (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR")
-                        (orchestrator.paths:institution-dir "output"))))
+                    (orchestrator.paths:output-root)))
          (releases-dir (merge-pathnames (format nil "~A/releases/" corpus-id) root-dir))
          (lj (merge-pathnames "latest.json" releases-dir))
          (reasons '())

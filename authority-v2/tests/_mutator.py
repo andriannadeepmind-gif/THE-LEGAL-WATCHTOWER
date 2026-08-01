@@ -43,6 +43,16 @@ while True:
             os.unlink(HOT)
             with open(HOT, "wb") as fh:
                 fh.write(gen * SIZE)
+        elif kind == "generation":
+            # ΔΙΑΣΤΑΥΡΩΜΕΝΗ ΓΕΝΙΑ: γράφει ΤΗΝ ΙΔΙΑ γενιά σε ΟΛΑ τα αρχεία (και
+            # στο census.json που ταξινομείται ΠΡΩΤΟ). Αν η capture δεν
+            # σταθεροποιεί ΟΛΟ ΤΟ ΣΥΝΟΛΟ, θα πάρει census.json από γενιά Α και
+            # f*.bin από γενιά Β — ΑΝΙΧΝΕΥΣΙΜΟ ΜΟΝΟ διασταυρώνοντας αρχεία.
+            with open(os.path.join(c, "census.json"), "wb") as fh:
+                fh.write(b"GEN:" + gen)
+            for k in range(nf):
+                with open(os.path.join(c, "f%d.bin" % k), "wb") as fh:
+                    fh.write(gen * SIZE)
         elif kind == "swap-hardlink":
             os.unlink(HOT)
             os.link(secret, HOT)        # απόπειρα διαρροής authority secret

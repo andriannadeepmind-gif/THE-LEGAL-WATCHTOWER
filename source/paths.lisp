@@ -26,7 +26,9 @@
            #:define-store-path
            ;; FF1 — Η ΜΙΑ έδρα ρίζας του Ιδρύματος (φορητή)
            #:institution-root
-           #:institution-dir))
+           #:institution-dir
+           #:output-root
+           #:runtime-state-dir))
 
 (in-package :orchestrator.paths)
 
@@ -125,6 +127,39 @@
    \"output/\", \"keys/private.pem\". Ο ΜΟΝΟΣ τρόπος να μιλήσει runtime
    κώδικας για θέση κάτω από τη ρίζα (FF1 — κανένα literal /app αλλού)."
   (namestring (merge-pathnames* subpath (institution-root))))
+
+;;;; ------------------------------------------------------------------------
+;;;; ΔΥΟ ΕΔΡΕΣ ΠΟΥ ΕΛΕΙΠΑΝ — ΕΥΡΗΜΑ ΔΗΜΙΟΥΡΓΟΥ (P0 λειτουργική παλινδρόμηση)
+;;;; ------------------------------------------------------------------------
+;;;; «Το κανονικό orchestrator έχει /app/output:ro, αλλά το --run-all-pipelines
+;;;;  γράφει άρθρα, manifests και /app/output/.healthy έξω από το writable
+;;;;  candidates/ ⇒ ο αγωγός αποτυγχάνει με EROFS και το service μένει
+;;;;  unhealthy.» ΟΡΘΟ. Η αιτία: ΔΕΝ υπήρχε έδρα ούτε για τον χώρο εργασίας του
+;;;; παραγωγού ούτε για την ΕΦΗΜΕΡΗ κατάσταση εκτέλεσης — και τα δύο έπεφταν
+;;;; πάνω στο ΙΔΙΟ output/, που ΟΦΕΙΛΕΙ να είναι read-only για μη έμπιστο
+;;;; παραγωγό. Δύο ΔΙΑΦΟΡΕΤΙΚΕΣ έννοιες, δύο έδρες:
+
+(defun output-root ()
+  "Ο ΧΩΡΟΣ ΕΡΓΑΣΙΑΣ ΤΟΥ ΠΑΡΑΓΩΓΟΥ — Η ΜΙΑ ΕΔΡΑ (ORCHESTRATOR_OUTPUT_DIR).
+
+   Ήταν διάσπαρτο ως `(or (uiop:getenv \"ORCHESTRATOR_OUTPUT_DIR\") …)` σε πέντε
+   σημεία: πέντε αντίγραφα της ΙΔΙΑΣ απόφασης, που μπορούσαν να αποκλίνουν.
+   Εδώ ζει ΜΙΑ φορά. Σε container ο παραγωγός το δείχνει στο ΕΓΓΡΑΨΙΜΟ candidate
+   workspace· το legacy output/ μένει read-only."
+  (uiop:ensure-directory-pathname
+   (or (%nonblank-env "ORCHESTRATOR_OUTPUT_DIR")
+       (institution-dir "output/"))))
+
+(defun runtime-state-dir ()
+  "ΕΦΗΜΕΡΗ ΚΑΤΑΣΤΑΣΗ ΕΚΤΕΛΕΣΗΣ (health, pid, locks) — Η ΜΙΑ ΕΔΡΑ.
+
+   ΔΕΝ είναι δεδομένα: είναι κατάσταση διεργασίας, και ΔΕΝ έχει καμία δουλειά
+   μέσα στο output/ (που είναι authority evidence και ΠΡΕΠΕΙ να είναι read-only
+   για τον παραγωγό). Σε container: LAWMAX_RUNTIME_DIR=/run/lawmax (tmpfs).
+   Τοπικά: <ρίζα>/run/ — ΠΟΤΕ κάτω από το output/."
+  (uiop:ensure-directory-pathname
+   (or (%nonblank-env "LAWMAX_RUNTIME_DIR")
+       (institution-dir "run/"))))
 
 ;;;; ========================================================================
 ;;;; PATH REGISTRY

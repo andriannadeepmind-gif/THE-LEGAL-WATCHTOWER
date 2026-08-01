@@ -43,8 +43,8 @@ SECRET_MARKER = b"APORRHTO-AUTHORITY-SECRET-DO-NOT-CAPTURE"
 GENERATIONS = set(b"ABCDEFGH")
 CANON = load_canonical_profile().files
 # 1 benign + 5 static + 4 μάρτυρες + 5 profile + 4 φρουροί API/άγκυρας
-# + 2 όρια + 2 rlimit + 3 concurrent
-EXPECTED_SCENARIOS = 26
+# + 5 capability + 2 όρια + 2 rlimit + 4 concurrent
+EXPECTED_SCENARIOS = 33
 executed = 0
 passed = failed = 0
 
@@ -319,6 +319,50 @@ with tempfile.TemporaryDirectory() as d:
     guard("vault group-writable ⇒ ΔΕΝ είναι authority-ιδιωτικό",
           lambda: open_anchor(_vault, "vault"), "anchor-group-world-writable")
 
+# ── ΤΑ CAPABILITY TYPES ΕΙΝΑΙ ΤΥΠΟΙ, ΟΧΙ ΥΠΟΔΕΙΞΕΙΣ ────────────────────────
+with tempfile.TemporaryDirectory() as d:
+    _inbox, _cand, _vault = mkcand(d)
+    _prof = load_canonical_profile()
+    _a = open_anchor(_inbox, "inbox")
+
+    def _mutate_profile():
+        _prof.files = ("x",)
+
+    def _mutate_anchor():
+        _a.fd = 0
+
+    def _forge_profile():
+        CanonicalProfile("x", "y", (), "z", "w")
+
+    guard("ΜΕΤΑΒΟΛΗ CanonicalProfile από caller", _mutate_profile, "capability-immutable")
+    guard("ΜΕΤΑΒΟΛΗ Anchor από caller", _mutate_anchor, "capability-immutable")
+    guard("ΚΑΤΑΣΚΕΥΗ CanonicalProfile από caller", _forge_profile, "capability-forgery")
+
+    # ΕΠΑΝΕΛΕΓΧΟΣ ΤΑΥΤΟΤΗΤΑΣ: ο ίδιος fd, αλλαγμένα δικαιώματα ⇒ ΑΡΝΗΣΗ.
+    os.chmod(_inbox, 0o750)   # ΔΙΑΦΟΡΕΤΙΚΟ mode από αυτό που καταγράφηκε
+
+    def _stale():
+        _a.reverify()
+
+    guard("ΑΛΛΑΓΜΕΝΗ ΤΑΥΤΟΤΗΤΑ ΑΓΚΥΡΑΣ (stale fd) ⇒ επανέλεγχος", _stale, "anchor-stale")
+
+    # ΚΑΙ ΜΕΣΑ ΑΠΟ ΤΗΝ ΙΔΙΑ ΤΗΝ capture(): ο επανέλεγχος ΠΡΕΠΕΙ να είναι στο
+    # παραγωγικό μονοπάτι, όχι μόνο διαθέσιμος ως μέθοδος.
+    _v = open_anchor(_vault, "vault")
+    guard("capture() με ΑΛΛΑΓΜΕΝΗ ταυτότητα άγκυρας ⇒ ΑΡΝΗΣΗ ΣΤΟ ΠΑΡΑΓΩΓΙΚΟ ΜΟΝΟΠΑΤΙ",
+          lambda: capture(_a, "cand", _v, "qz"), "anchor-stale")
+    _v.close()
+    _a.close()
+
+with tempfile.TemporaryDirectory() as d:
+    # ΚΑΡΦΩΜΕΝΟ DIGEST: σωστό id, ΔΙΑΦΟΡΕΤΙΚΑ bytes ⇒ ΑΡΝΗΣΗ.
+    _p = os.path.join(d, "profile.json")
+    _raw = open(CANONICAL_PROFILE, "rb").read()
+    with open(_p, "wb") as fh:
+        fh.write(_raw.replace(b'"files"', b'"files" '))
+    guard("profile με ΣΩΣΤΟ id αλλά ΑΛΛΑ bytes ⇒ ΚΑΡΦΩΜΕΝΟ digest",
+          lambda: load_canonical_profile(_p), "canonical-profile-unpinned")
+
 print("\n== ΟΡΙΑ ΠΟΡΩΝ ==")
 with tempfile.TemporaryDirectory() as d:
     inbox, cand, vault = mkcand(d)
@@ -400,7 +444,7 @@ CONC_SIZE = 4 * CHUNK
 assert CONC_SIZE > CHUNK, "το σενάριο θα ήταν κενό"
 
 
-def concurrent(name, kind, allowed):
+def concurrent(name, kind, allowed, cross_generation=False):
     global executed
     mutator = os.path.join(REPO, "authority-v2", "tests", "_mutator.py")
     with tempfile.TemporaryDirectory() as d:
@@ -429,7 +473,21 @@ def concurrent(name, kind, allowed):
             adv.kill()
             adv.wait()
         if got is None:
-            if fixed_point(name, res, va, vault, "q", coherence=True):
+            good = fixed_point(name, res, va, vault, "q", coherence=True)
+            if cross_generation:
+                # ΟΛΑ τα αρχεία ΟΦΕΙΛΟΥΝ να ανήκουν στην ΙΔΙΑ γενιά. Διαφορετική
+                # γενιά ανάμεσα σε census.json και f*.bin = torn set.
+                rows = {r["path"]: r["raw"]
+                        for r in independent_measure(os.path.join(vault, "q"))["rows"]}
+                cen = rows.get("census.json", b"")
+                gens = {v[:1] for k, v in rows.items()
+                        if k.startswith("f") and k.endswith(".bin") and v}
+                cgen = cen[4:5] if cen.startswith(b"GEN:") else None
+                if cgen is not None and gens and gens != {cgen}:
+                    no("%s ⇒ TORN SET: census γενιά=%r αλλά f*.bin γενιές=%r"
+                       % (name, cgen, sorted(gens)))
+                    good = False
+            if good:
                 ok("%s ⇒ ΚΑΘΑΡΗ ΣΥΛΛΗΨΗ + fixed point ①②③ (καμία μόλυνση)" % name)
         elif got in allowed:
             ok("%s ⇒ ΑΡΝΗΣΗ %s" % (name, got))
@@ -437,13 +495,18 @@ def concurrent(name, kind, allowed):
             no("%s ⇒ ΑΝΕΠΙΤΡΕΠΤΟ αποτέλεσμα: %s" % (name, got))
 
 
-concurrent("concurrent rewrite", "rewrite", ("mutated-during-capture",))
+concurrent("concurrent rewrite", "rewrite",
+           ("mutated-during-capture", "set-mutated-during-capture"))
 concurrent("concurrent swap->FIFO", "swap-fifo",
-           ("mutated-during-capture", "non-regular-file", "open-refused",
-            "canonical-missing"))
+           ("mutated-during-capture", "set-mutated-during-capture",
+            "non-regular-file", "open-refused", "canonical-missing"))
 concurrent("concurrent swap->hardlink", "swap-hardlink",
-           ("mutated-during-capture", "hardlink-present", "open-refused",
-            "canonical-missing"))
+           ("mutated-during-capture", "set-mutated-during-capture",
+            "hardlink-present", "open-refused", "canonical-missing"))
+# ΤΟ ΑΚΡΙΒΕΣ P1 ΤΟΥ ΔΗΜΙΟΥΡΓΟΥ: torn snapshot ΔΙΑΣΤΑΥΡΩΜΕΝΟ ΜΕΤΑΞΥ ΑΡΧΕΙΩΝ.
+concurrent("concurrent ΔΙΑΣΤΑΥΡΩΜΕΝΗ ΓΕΝΙΑ (torn set)", "generation",
+           ("mutated-during-capture", "set-mutated-during-capture",
+            "canonical-missing"), cross_generation=True)
 
 print("\n== ΑΚΡΙΒΗΣ ΑΡΙΘΜΟΣ ΕΚΤΕΛΕΣΜΕΝΩΝ ΣΕΝΑΡΙΩΝ ==")
 (ok if executed == EXPECTED_SCENARIOS else no)(

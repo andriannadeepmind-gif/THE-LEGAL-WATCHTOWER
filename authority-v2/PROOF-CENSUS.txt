@@ -25,8 +25,15 @@
 #                         AUTHORITY_V2_REQUIRE_ALL=1 => ΣΦΑΛΜΑ.
 #   tool-requires-root  - ΕΡΓΑΛΕΙΟ/ΠΡΟΕΤΟΙΜΑΣΙΑ, ΟΧΙ απόδειξη: τρέχει ΠΡΩΤΟ, δεν
 #                         μετριέται, και επιτρέπεται να ζει ΕΚΤΟΣ του proofs/.
+#   requires-docker     - απαιτεί ΤΡΕΧΟΝΤΑ docker daemon (όχι απλώς CLI)
 #   tool-declared       - ΕΡΓΑΛΕΙΟ που ΔΕΝ εκτελείται από τον runner· δηλώνεται
 #                         ΜΟΝΟ για να επιτραπεί ρητά η ύπαρξή του εκτός proofs/.
+#   helper              - ΒΟΗΘΟΣ που ΚΑΛΕΙΤΑΙ ΑΠΟ αποδείξεις (probe/mutator/
+#                         builder) ή παραγωγικός κώδικας· ΔΕΝ είναι απόδειξη και
+#                         ΔΕΝ τρέχει μόνος του. Δηλώνεται για να ΤΑΞΙΝΟΜΗΘΕΙ:
+#                         ΚΑΘΕ .py/.sh/.lisp κάτω από το authority-v2/ ΠΡΕΠΕΙ να
+#                         ταξινομείται ΑΚΡΙΒΩΣ ΜΙΑ ΦΟΡΑ — καμία εξάρτηση από
+#                         όνομα ή bit εκτέλεσης.
 # =============================================================================
 
 # -- ΕΡΓΑΛΕΙΑ (μη-αποδείξεις, εκτός proofs/ ΜΕ ΛΟΓΟ) -------------------------
@@ -42,6 +49,8 @@ authority-v2/run-proofs.sh                             tool-declared
 authority-v2/proofs/verify-capability-closure.sh       requires-root       /var/lib/lawmax/authority /var/lib/lawmax/candidates
 authority-v2/proofs/producer-os-boundary-test.sh       requires-root
 authority-v2/proofs/capture-mountpoint-test.sh         requires-root
+# Απαιτεί ΤΡΕΧΟΝΤΑ docker daemon· χωρίς αυτόν ⇒ BLOCKED (exit 2), ΠΟΤΕ pass.
+authority-v2/proofs/docker-e2e-test.sh                 requires-docker
 authority-v2/proofs/capture-adversarial-test.py        plain
 authority-v2/proofs/capture-mutation-witness.py        plain
 authority-v2/proofs/proof-census-adversarial-test.py   plain
@@ -53,3 +62,21 @@ authority-v2/proofs/capture-seat-differential-test.sh  requires-sbcl
 authority-v2/proofs/delta23-evidence-bundle.sh         requires-sbcl
 authority-v2/proofs/verify-completion-matrix.py        plain
 authority-v2/proofs/verify-proof-manifest.py           plain
+
+# -- ΒΟΗΘΟΙ ΚΑΙ ΠΑΡΑΓΩΓΙΚΟΣ ΚΩΔΙΚΑΣ (ταξινομημένοι, ΔΕΝ τρέχουν μόνοι τους) ---
+authority-v2/capture/capture.py                        helper
+authority-v2/genesis/build-adoption-certificate.py     helper
+authority-v2/genesis/conformance-check.py              helper
+authority-v2/genesis/legacy-snapshot.py                helper
+authority-v2/tests/_mutator.py                         helper
+authority-v2/tests/build-authority-core.lisp           helper
+authority-v2/tests/probe-attest-refusal.lisp           helper
+authority-v2/tests/probe-candidate-bundle.lisp         helper
+authority-v2/tests/probe-canonical-files.lisp          helper
+authority-v2/tests/probe-emit-load-graph.lisp          helper
+authority-v2/tests/probe-frozen-mutants.lisp           helper
+authority-v2/tests/probe-load-graph.lisp               helper
+authority-v2/tests/probe-merkle-root-of-files.lisp     helper
+authority-v2/tests/probe-producer-real.lisp            helper
+authority-v2/tests/probe-producer-under-uid.lisp       helper
+authority-v2/tests/staging-helper.lisp                 helper

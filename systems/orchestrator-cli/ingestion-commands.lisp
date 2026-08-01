@@ -208,8 +208,7 @@
    ο extractor τότε ΔΕΝ προβάλλει αξίωση ταυτότητας."
   (let ((cache (make-hash-table :test 'equal))
         (root (uiop:ensure-directory-pathname
-               (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR")
-                   (orchestrator.paths:institution-dir "output")))))
+               (orchestrator.paths:output-root))))
     (flet ((ids-for (code)
              (multiple-value-bind (v present) (gethash code cache)
                (if present v
@@ -585,7 +584,7 @@
          (base-doc (build-active-consolidated-document))
          ;; per-corpus output (build-active-consolidated-document ran select-corpus)
          (output-dir (corpus-output-dir
-                      (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR") (orchestrator.paths:institution-dir "output"))))
+                      (orchestrator.paths:output-root)))
          ;; The initial production feed is ΦΕΚ (laws). INGEST_SOURCE=diavgeia
          ;; switches to decision-level ingestion; INGEST_SOURCE=consensus runs the
          ;; full ranked acquisition stack (institutional > open-data > eu-cellar >

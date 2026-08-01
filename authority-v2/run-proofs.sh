@@ -34,18 +34,32 @@ while [ "$#" -gt 0 ]; do
 done
 [ -f "$CENSUS" ] || { echo "::error::ΑΠΟΓΡΑΦΗ ΑΠΟΥΣΑ: $CENSUS"; exit 1; }
 
-# ── ① ΑΝΑΔΡΟΜΙΚΗ ΑΠΑΡΙΘΜΗΣΗ, ΟΧΙ GLOBS ──────────────────────────────────────
-# ΕΤΥΜΗΓΟΡΙΑ ΔΗΜΙΟΥΡΓΟΥ: αποτυχημένη απόδειξη στο authority-v2/other/ ΑΓΝΟΗΘΗΚΕ
-# επειδή τα globs κοιτούσαν μόνο συγκεκριμένους καταλόγους. Τώρα απαριθμείται
-# ΚΑΘΕ regular file κάτω από το authority-v2/ και ισχύουν ΔΥΟ κανόνες:
-#   (α) ό,τι είναι ΜΕΣΑ στο proofs/ ΕΙΝΑΙ απόδειξη και ΠΡΕΠΕΙ να απογράφεται
-#   (β) ΚΑΝΕΝΑ εκτελέσιμο απόδειξης ΕΚΤΟΣ του proofs/ — εκτός αν δηλώνεται ρητά
-#       ως tool-* στην απογραφή, με λόγο
+# ── ① ΑΝΑΔΡΟΜΙΚΗ ΑΠΑΡΙΘΜΗΣΗ + ΤΑΞΙΝΟΜΗΣΗ ΑΚΡΙΒΩΣ ΜΙΑ ΦΟΡΑ ────────────────
+# ΕΤΥΜΗΓΟΡΙΑ ΔΗΜΙΟΥΡΓΟΥ: «Το proof census παρακάμπτεται: non-executable .py,
+# αυθαίρετα .lisp, symlinks ή proof δηλωμένο ως tool μπορούν να διαφύγουν.»
+# ΟΡΘΟ — ο προηγούμενος έλεγχος στηριζόταν σε ΕΥΡΕΤΙΚΑ ΟΝΟΜΑΤΩΝ και στο bit
+# εκτέλεσης· και τα δύο είναι επιλογές του συγγραφέα του κακόβουλου αρχείου.
+#
+# ΤΩΡΑ: ΚΑΘΕ αρχείο κώδικα (.py/.sh/.lisp) κάτω από το authority-v2/
+# ΤΑΞΙΝΟΜΕΙΤΑΙ ΑΚΡΙΒΩΣ ΜΙΑ ΦΟΡΑ:
+#   · μέσα στο proofs/  ⇒ ΠΡΕΠΕΙ να είναι εγγραφή ΑΠΟΔΕΙΞΗΣ στην απογραφή
+#   · εκτός proofs/     ⇒ ΠΡΕΠΕΙ να είναι εγγραφή tool-* ή helper στην απογραφή
+#   · οτιδήποτε άλλο    ⇒ ΑΤΑΞΙΝΟΜΗΤΟ ⇒ ΣΦΑΛΜΑ
+# Καμία εξάρτηση από όνομα ή +x. Και:
+#   · ΚΑΝΕΝΑ symlink κάτω από το authority-v2/ (θα έδειχνε εκτός απογραφής)
+#   · ΚΑΜΙΑ ΒΑΠΤΙΣΗ: απόδειξη μέσα στο proofs/ ΔΕΝ δηλώνεται tool/helper
 PROOFS_DIR="authority-v2/proofs"
+
+mapfile -t symlinks < <(cd "$ROOT" && find authority-v2 -type l | LC_ALL=C sort)
+if [ "${#symlinks[@]}" -gt 0 ]; then
+  echo "::error::SYMLINK ΚΑΤΩ ΑΠΟ authority-v2/ (η απογραφή δεν μπορεί να τα δεσμεύσει): ${symlinks[*]}"
+  exit 1
+fi
+
 mapfile -t all_files < <(cd "$ROOT" && find authority-v2 -type f | LC_ALL=C sort)
 [ "${#all_files[@]}" -gt 0 ] || { echo "::error::ΚΕΝΟ authority-v2 — καμία ψευδο-επιτυχία"; exit 1; }
 
-in_proofs=(); outside_exec=()
+in_proofs=(); code_outside=()
 for f in "${all_files[@]}"; do
   case "$f" in
     "$PROOFS_DIR"/*)
@@ -54,12 +68,7 @@ for f in "${all_files[@]}"; do
         */*) echo "::error::ΥΠΟΚΑΤΑΛΟΓΟΣ ΣΤΟ proofs/: $f — ο κατάλογος εισόδων είναι ΕΠΙΠΕΔΟΣ"; exit 1;;
       esac
       in_proofs+=("$f");;
-    *)
-      case "$f" in
-        *-test.py|*-test.sh|*-witness.py|*-witness.sh|*-fixtures.py|*-bundle.sh|*/verify-*.py|*/verify-*.sh)
-          outside_exec+=("$f");;
-        *.py|*.sh) [ -x "$ROOT/$f" ] && outside_exec+=("$f");;
-      esac;;
+    *.py|*.sh|*.lisp) code_outside+=("$f");;   # ΟΛΟΣ ο κώδικας, ΧΩΡΙΣ ευρετικά
   esac
 done
 
@@ -76,7 +85,7 @@ while IFS= read -r line || [ -n "$line" ]; do
   [ "$#" -ge 2 ] || { echo "::error::ΚΑΚΟΣΧΗΜΑΤΗ γραμμή $lineno: '$line'"; exit 1; }
   path="$1"; mode="$2"; shift 2
   case "$mode" in
-    plain|requires-root|requires-sbcl|tool-requires-root|tool-declared) ;;
+    plain|requires-root|requires-sbcl|requires-docker|tool-requires-root|tool-declared|helper) ;;
     *) echo "::error::ΑΓΝΩΣΤΟΣ τρόπος '$mode' (γραμμή $lineno· κλειστό σχήμα)"; exit 1;;
   esac
   if [ -n "${MODE[$path]:-}" ]; then
@@ -86,27 +95,35 @@ while IFS= read -r line || [ -n "$line" ]; do
   census+=("$path"); order+=("$path")
 done < "$CENSUS"
 
-missing=(); dead=(); stray=()
-for f in "${in_proofs[@]}"; do [ -n "${MODE[$f]:-}" ] || missing+=("$f"); done
-for f in "${census[@]}";    do [ -f "$ROOT/$f" ]      || dead+=("$f"); done
-for f in "${outside_exec[@]:-}"; do
-  [ -n "$f" ] || continue
-  case "${MODE[$f]:-}" in tool-*) ;; *) stray+=("$f");; esac
+missing=(); dead=(); stray=(); baptised=()
+for f in "${in_proofs[@]}"; do
+  case "${MODE[$f]:-}" in
+    "")            missing+=("$f");;
+    tool-*|helper) baptised+=("$f");;          # ΒΑΠΤΙΣΗ: απόδειξη ως εργαλείο
+  esac
 done
-if [ "${#missing[@]}" -gt 0 ] || [ "${#dead[@]}" -gt 0 ] || [ "${#stray[@]}" -gt 0 ]; then
-  [ "${#missing[@]}" -gt 0 ] && echo "::error::ΞΕΧΑΣΜΕΝΕΣ ΑΠΟΔΕΙΞΕΙΣ (στο proofs/, εκτός απογραφής): ${missing[*]}"
-  [ "${#dead[@]}" -gt 0 ]    && echo "::error::ΝΕΚΡΕΣ ΕΓΓΡΑΦΕΣ (στην απογραφή, ανύπαρκτες): ${dead[*]}"
-  [ "${#stray[@]}" -gt 0 ]   && echo "::error::ΑΠΟΔΕΙΞΗ ΕΚΤΟΣ ΤΟΥ ΚΑΤΑΛΟΓΟΥ ΕΙΣΟΔΩΝ (authority-v2/proofs/): ${stray[*]}"
+for f in "${census[@]}"; do [ -f "$ROOT/$f" ] || dead+=("$f"); done
+# ΚΑΘΕ αρχείο κώδικα ΕΚΤΟΣ proofs/ ΠΡΕΠΕΙ να είναι ΔΗΛΩΜΕΝΟ tool-* ή helper.
+for f in "${code_outside[@]:-}"; do
+  [ -n "$f" ] || continue
+  case "${MODE[$f]:-}" in tool-*|helper) ;; *) stray+=("$f");; esac
+done
+if [ "${#missing[@]}" -gt 0 ] || [ "${#dead[@]}" -gt 0 ] || [ "${#stray[@]}" -gt 0 ] \
+   || [ "${#baptised[@]}" -gt 0 ]; then
+  [ "${#missing[@]}" -gt 0 ]  && echo "::error::ΞΕΧΑΣΜΕΝΕΣ ΑΠΟΔΕΙΞΕΙΣ (στο proofs/, εκτός απογραφής): ${missing[*]}"
+  [ "${#dead[@]}" -gt 0 ]     && echo "::error::ΝΕΚΡΕΣ ΕΓΓΡΑΦΕΣ (στην απογραφή, ανύπαρκτες): ${dead[*]}"
+  [ "${#stray[@]}" -gt 0 ]    && echo "::error::ΑΤΑΞΙΝΟΜΗΤΟΣ ΚΩΔΙΚΑΣ ΕΚΤΟΣ ΤΟΥ ΚΑΤΑΛΟΓΟΥ ΕΙΣΟΔΩΝ: ${stray[*]}"
+  [ "${#baptised[@]}" -gt 0 ] && echo "::error::ΒΑΠΤΙΣΗ ΑΠΟΔΕΙΞΗΣ ΩΣ ΕΡΓΑΛΕΙΟΥ (μέσα στο proofs/): ${baptised[*]}"
   exit 1
 fi
 for f in "${census[@]}"; do
-  case "${MODE[$f]}" in tool-*) continue;; esac
+  case "${MODE[$f]}" in tool-*|helper) continue;; esac
   case "$f" in
     "$PROOFS_DIR"/*) ;;
     *) echo "::error::Η ΑΠΟΓΡΑΦΗ δηλώνει απόδειξη ΕΚΤΟΣ proofs/: $f"; exit 1;;
   esac
 done
-echo "── απογραφή: ${#all_files[@]} αρχεία σαρώθηκαν ΑΝΑΔΡΟΜΙΚΑ· ${#in_proofs[@]} είσοδοι στο proofs/ ≡ committed ──"
+echo "── απογραφή: ${#all_files[@]} αρχεία σαρώθηκαν ΑΝΑΔΡΟΜΙΚΑ· ${#in_proofs[@]} είσοδοι στο proofs/· ${#code_outside[@]} αρχεία κώδικα εκτός, ΟΛΑ ταξινομημένα· 0 symlinks ──"
 echo
 
 # ── ③ εκτέλεση: ΠΡΩΤΑ τα setup, μετά οι αποδείξεις ───────────────────────────
@@ -141,7 +158,7 @@ done
 
 for f in "${order[@]}"; do
   mode="${MODE[$f]}"
-  case "$mode" in tool-*) continue;; esac
+  case "$mode" in tool-*|helper) continue;; esac
   echo "▶ $f  [$mode]"
   if [ "$mode" = "requires-root" ] && [ "$setup_ok" -ne 1 ]; then
     if [ "$REQUIRE_ALL" = "1" ]; then

@@ -111,23 +111,23 @@
                     "systems/orchestrator-epistemic/deploy-epistemic.lisp (seats ⇒ fail-closed)"
                     "systems/orchestrator-epistemic/transparency-log.lisp (write seat ⇒ fail-closed)")
    :proof-objects ()
-   :command "bash authority-v2/run-proofs.sh   (ΜΙΑ έδρα· ΑΝΑΔΡΟΜΙΚΗ σάρωση ΟΛΟΥ του authority-v2/ ≡ committed PROOF-CENSUS.txt· ΕΝΑΣ κατάλογος εισόδων authority-v2/proofs/)"
-   :actual-result "EXECUTED 2026-08-01 [CAPTURE-BOUNDARY-CLOSURE-3]: authority-v2 proofs 14 passed / 0 failed / 0 blocked (64 αρχεία σαρώθηκαν αναδρομικά, 14 είσοδοι)·
-                   capture-mountpoint 6/0 — inbox σε tmpfs (ΞΕΧΩΡΙΣΤΟ fs, mnt 45) → vault πίσω από BIND MOUNT (mnt 46) ⇒ Η CAPTURE ΠΕΤΥΧΑΙΝΕΙ, με ρητή επιβεβαίωση ότι τα mount-id ΔΙΑΦΕΡΟΥΝ ΚΑΙ από τη ρίζα (mnt 37)· nested mount ΜΕΣΑ στο candidate ⇒ ΑΡΝΗΣΗ (το NO_XDEV ΚΑΤΩ από την άγκυρα παραμένει)· ΠΑΛΙΝΔΡΟΜΗΣΗ: η ΠΑΛΙΑ λογική απορρίπτει το ίδιο νόμιμο mountpoint με EXDEV(18) — το σφάλμα ήταν ΠΡΑΓΜΑΤΙΚΟ·
-                   capture-adversarial + fixed point 27/0 (26 σενάρια, ακριβής ισότητα) — μαζί με φρουρούς API: ΩΜΟ dict ως profile ⇒ canonical-profile-not-validated, PATHNAME αντί για Anchor ⇒ anchor-required, group-writable vault ⇒ anchor-group-world-writable·
-                   capture-mutation-witness 15/0 — 14/14 ΦΟΝΕΥΣΙΜΕΣ σκοτωμένες + 1 ΔΗΛΩΜΕΝΑ ΜΗ ΠΑΡΑΤΗΡΗΣΙΜΗ (η δήλωση ΕΙΝΑΙ ΔΙΑΨΕΥΣΙΜΗ)·
-                   proof-census-adversarial 14/0 — ΜΑΖΙ ΜΕ ΤΟ ΑΚΡΙΒΕΣ MUTANT ΤΟΥ ΔΗΜΙΟΥΡΓΟΥ (authority-v2/other/forgotten-proof.py) που ΤΩΡΑ ΚΟΚΚΙΝΙΖΕΙ·
-                   producer-topology 13/0 — ΚΑΘΟΛΙΚΗ απογραφή ΟΛΩΝ των services (όχι μόνο του producer): orchestrator/ingestion/corpus-service/producer ΟΛΑ με καρφωμένο uid, output ΟΛΟΚΛΗΡΟ ro, κλειδιά ro, κανένα authority store· 7 μεταλλαγμένες τοπολογίες απορρίπτονται·
-                   capture-seat-differential 8/0 · producer-os-boundary 11/0 (EROFS 30) · verify-capability-closure 5/0 · ceremony 8/0 · witness-quorum 8/0 · gate-negative-fixtures 12/0·
+   :command "bash authority-v2/run-proofs.sh   (ΜΙΑ έδρα· ΑΝΑΔΡΟΜΙΚΗ σάρωση· ΤΑΞΙΝΟΜΗΣΗ ΑΚΡΙΒΩΣ ΜΙΑ ΦΟΡΑ· ΕΝΑΣ κατάλογος εισόδων authority-v2/proofs/)"
+   :actual-result "EXECUTED 2026-08-01 [ROLE-SEPARATION-AND-WORKSPACE]: authority-v2 proofs 14 passed / 0 failed / 1 BLOCKED (docker E2E — κανένας daemon)·
+                   ΛΕΙΤΟΥΡΓΙΚΗ ΠΑΛΙΝΔΡΟΜΗΣΗ ΔΙΟΡΘΩΘΗΚΕ ΚΑΙ ΑΠΟΔΕΙΧΘΗΚΕ: με output/ ΠΡΑΓΜΑΤΙΚΑ read-only (chmod a-w) η write-health-file γράφει κανονικά στο runtime-state-dir — HEALTH=/…/run/.healthy EXISTS=T·
+                   producer-topology 24/0 — ΚΑΘΕ service ταξινομείται ΑΚΡΙΒΩΣ ΜΙΑ ΦΟΡΑ σε ρόλο (producer 11002 / reader 11003 / authority 11001 / proof-runner)· 9 μεταλλαγμένες τοπολογίες απορρίπτονται, ΜΑΖΙ ΜΕ ΤΟ IMAGE-TAG BYPASS·
+                   capture-adversarial + fixed point 33/0 (33 σενάρια) — capability types: ΜΕΤΑΒΟΛΗ ⇒ capability-immutable, ΚΑΤΑΣΚΕΥΗ ⇒ capability-forgery, profile με σωστό id αλλά άλλα bytes ⇒ canonical-profile-unpinned, stale anchor ⇒ anchor-stale ΚΑΙ ΜΕΣΑ ΑΠΟ ΤΗΝ capture()·
+                   capture-mutation-witness 19/0 — 18/18 ΦΟΝΕΥΣΙΜΕΣ σκοτωμένες (μαζί: μεταβλητό capability, κατασκευάσιμο capability, χωρίς pinned digest, χωρίς επανέλεγχο ταυτότητας, ΚΟΙΝΗ κατάργηση ΚΑΙ ΤΩΝ ΔΥΟ ελέγχων μεταβολής) + 3 ΔΗΛΩΜΕΝΑ μη παρατηρήσιμα με ΔΙΑΨΕΥΣΙΜΕΣ δηλώσεις·
+                   proof-census-adversarial 19/0 — ΜΗ ΕΚΤΕΛΕΣΙΜΗ ξεχασμένη απόδειξη, αυθαίρετο .lisp, SYMLINK, ΒΑΠΤΙΣΗ ως tool ΚΑΙ ως helper ⇒ ΟΛΑ ΚΟΚΚΙΝΙΖΟΥΝ·
+                   capture-mountpoint 6/0 · seat-differential 8/0 · producer-os-boundary 11/0 · capability-closure 5/0 · ceremony 8/0 · witness-quorum 8/0 · gate-negative-fixtures 12/0·
                    level7-disarm 20/0 · release-authority 14/0 · transparency-log 21/0"
-   :negative-witness "ΚΑΘΕ εύρημα ΚΑΙ ΤΩΝ ΤΡΙΩΝ ετυμηγοριών ξαναεισάγεται ως μετάλλαξη και ΠΡΕΠΕΙ να σκοτωθεί: hash-of-hash, φύλλο χωρίς 0x00, duplicate-last, ΛΑΘΟΣ ΜΟΝΟ ΣΤΟ n=18 (και η παραλλαγή του χωρίς δεύτερο αλγόριθμο), μερική εγγραφή, κατάργηση fingerprint, κατάργηση άρνησης hardlink, διαρροή descriptors, ΑΥΘΑΙΡΕΤΟ PATHNAME ΑΓΚΥΡΑΣ, αποδοχή μη έγκυρου UTF-8, αποδοχή διπλότυπου profile, κανένας καθαρισμός μερικού quarantine, κατάργηση διασταύρωσης φάσεων.
-                      Ο ΙΔΙΟΣ ο runner έπιασε ΔΥΟ αδήλωτα εκτελέσιμα εκτός του καταλόγου εισόδων μόλις έγινε αναδρομικός."
+   :negative-witness "ΚΑΘΕ εύρημα ΚΑΙ ΤΩΝ ΤΕΣΣΑΡΩΝ ετυμηγοριών ξαναεισάγεται ως μετάλλαξη: hash-of-hash, φύλλο χωρίς 0x00, duplicate-last, ΛΑΘΟΣ ΜΟΝΟ ΣΤΟ n=18 (+ παραλλαγή), μερική εγγραφή, διαρροή descriptors, αυθαίρετο pathname άγκυρας, invalid UTF-8, διπλότυπο profile, κανένας καθαρισμός, μεταβλητό/κατασκευάσιμο capability, profile χωρίς pinned digest, stale fd χωρίς επανέλεγχο, torn set.
+                      ΤΡΕΙΣ μεταλλάξεις δηλώνονται ΜΗ ΠΑΡΑΤΗΡΗΣΙΜΕΣ ΑΤΟΜΙΚΑ (in-capture fixed point· και οι ΔΥΟ ΑΜΟΙΒΑΙΑ ΕΦΕΔΡΙΚΟΙ έλεγχοι μεταβολής) — και η ΚΟΙΝΗ κατάργηση των δύο εφεδρικών ΣΚΟΤΩΝΕΤΑΙ. Κάθε δήλωση είναι ΔΙΑΨΕΥΣΙΜΗ."
    :residual-assumptions ("[ΑΝΑΚΛΗΣΗ ΙΣΧΥΕΙ] Δ2 = IMPLEMENTED-NOT-PROVED, Δ3 = IMPLEMENTED-NOT-PROVED. ΟΥΤΕ CLOSED ΟΥΤΕ PROVED."
-                          "[ΑΝΑΚΛΗΣΗ ΙΣΧΥΕΙ] Ο ισχυρισμός «η απόκλιση της Merkle έδρας είναι ΔΟΜΙΚΑ ΑΔΥΝΑΤΗ» παραμένει ΑΠΟΣΥΡΜΕΝΟΣ. Ό,τι ισχύει είναι ΑΝΙΧΝΕΥΣΗ (vectors n=0..64 + δεύτερος δομικά διαφορετικός αλγόριθμος για κάθε n + διαφορικό με τον παραγωγικό πυρήνα), ΟΧΙ φέρουσα απόδειξη."
-                          "το TSA conjunct του νέου kernel ΔΕΝ έχει υλοποιηθεί ακόμη (απαίτηση 2/4)"
-                          "η capture είναι υλοποίηση αναφοράς σε Python, ΟΧΙ ο τελικός formally-verified checker (απαίτηση 6)· ο production writer παραμένει ΑΠΕΝΕΡΓΟΠΟΙΗΜΕΝΟΣ"
-                          "ΟΙ ΥΠΗΡΕΣΙΕΣ COMPOSE ΔΕΝ ΕΚΤΕΛΕΣΤΗΚΑΝ: `docker compose config` ΕΠΙΚΥΡΩΘΗΚΕ και η ΔΗΛΩΜΕΝΗ τοπολογία ΟΛΩΝ των services ελέγχεται εκτελεστικά, ΑΛΛΑ δεν υπάρχει docker daemon εδώ. BLOCKED — NOT EXECUTED."
-                          "ΤΟ CI JOB ΔΕΝ ΕΧΕΙ ΤΡΕΞΕΙ ΠΡΑΣΙΝΟ: workflow_dispatch ⇒ 403 (χωρίς actions:write), 0 runs/0 status contexts στον κλάδο. ΣΥΡΜΑΤΩΜΕΝΟ, ΟΧΙ ΠΡΑΣΙΝΟ — κλείνει ΜΟΝΟ από τον δημιουργό."))
+                          "[ΑΝΑΚΛΗΣΗ ΙΣΧΥΕΙ] «Merkle divergence δομικά αδύνατη» — ΑΠΟΣΥΡΜΕΝΟ. ΑΝΙΧΝΕΥΣΗ, όχι φέρουσα απόδειξη."
+                          "Ο ADMISSION KERNEL (απαίτηση 2/4) ΔΕΝ ΕΧΕΙ ΥΛΟΠΟΙΗΘΕΙ. Η υπηρεσία authority-signer υπάρχει ως ΕΔΡΑ ΙΚΑΝΟΤΗΤΑΣ (μόνη κάτοχος ιδιωτικού κλειδιού και authority store) και ΑΡΝΕΙΤΑΙ ΡΗΤΑ — ΔΕΝ προσποιείται ότι υπογράφει."
+                          "η capture είναι υλοποίηση αναφοράς σε Python, ΟΧΙ ο τελικός formally-verified checker (απαίτηση 6)"
+                          "ΤΟ DOCKER E2E ΔΕΝ ΕΚΤΕΛΕΣΤΗΚΕ: το test ΥΠΑΡΧΕΙ και είναι απογεγραμμένο (requires-docker), αλλά ΔΕΝ υπάρχει τρέχων docker daemon σε αυτό το περιβάλλον ⇒ BLOCKED (exit 2). Ο συνολικός runner επιστρέφει exit 3 = ΑΤΕΛΕΣ, ΠΟΤΕ pass."
+                          "ΤΟ CI ΔΕΝ ΕΧΕΙ ΤΡΕΞΕΙ ΠΡΑΣΙΝΟ: workflow_dispatch ⇒ 403, 0 runs / 0 status contexts. ΟΙ ΤΟΠΙΚΟΙ ΑΡΙΘΜΟΙ ΔΕΝ ΕΧΟΥΝ ΑΝΕΞΑΡΤΗΤΗ ΕΠΙΒΕΒΑΙΩΣΗ."))
 
   ;; ── 6 ────────────────────────────────────────────────────────────────────
   (:id 6

@@ -107,8 +107,7 @@
   "--release-gate : καμία δημοσιευμένη έκδοση χωρίς επαληθεύσιμη αμεταβλητότητα."
   (let ((total 0) (fails '())
         (output-root (uiop:ensure-directory-pathname
-                      (or (uiop:getenv "ORCHESTRATOR_OUTPUT_DIR")
-                          (orchestrator.paths:institution-dir "output/")))))
+                      (orchestrator.paths:output-root))))
     (flet ((chk (label ok &optional detail)
              (incf total)
              (if ok (format t "  ✓ ~A~%" label)

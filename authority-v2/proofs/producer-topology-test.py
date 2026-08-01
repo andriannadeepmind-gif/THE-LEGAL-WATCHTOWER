@@ -1,34 +1,28 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Η ΔΗΛΩΜΕΝΗ ΤΟΠΟΛΟΓΙΑ **ΚΑΘΕ** SERVICE — ΕΛΕΓΜΕΝΗ, ΟΧΙ ΙΣΧΥΡΙΣΜΕΝΗ
+"""ΔΙΑΧΩΡΙΣΜΟΣ ΡΟΛΩΝ ΣΕ ΚΑΘΕ SERVICE — ΕΛΕΓΜΕΝΟΣ, ΟΧΙ ΙΣΧΥΡΙΣΜΕΝΟΣ
 
-ΕΤΥΜΗΓΟΡΙΑ ΔΗΜΙΟΥΡΓΟΥ (P0): «Το ασφαλές producer προστέθηκε, αλλά είναι
-προαιρετικό profile. Το κανονικό orchestrator και το ingestion εξακολουθούν να
-έχουν ολόκληρο το /app/output:rw. Το topology test εξετάζει ΜΟΝΟ το
-services.producer. Άρα η ασφαλής διαδρομή υπάρχει, αλλά ΔΕΝ είναι η ΜΟΝΑΔΙΚΗ
-δυνατή διαδρομή.» ΟΡΘΟ — και είναι το χειρότερο είδος ψευδο-πράσινου: ο
-ελεγκτής κοίταζε ακριβώς εκεί όπου ήξερε ότι θα βρει το σωστό.
+ΕΤΥΜΗΓΟΡΙΕΣ ΔΗΜΙΟΥΡΓΟΥ ΠΟΥ ΚΛΕΙΝΟΥΝ ΕΔΩ:
+  P0 «Ο producer λαμβάνει ολόκληρο το ./keys και PRIVATE_KEY_PATH=…private.pem.
+      Το read-only εμποδίζει ΑΛΛΟΙΩΣΗ, όχι ΑΝΑΓΝΩΣΗ ή ΥΠΟΚΛΟΠΗ.»
+      ⇒ Απαγορεύεται η ΥΠΑΡΞΗ ιδιωτικού κλειδιού σε μη-authority υπηρεσία, ακόμη
+        και :ro, ακόμη και ως env μεταβλητή.
+  P0 «Το ./deployment παραμένει writable στον producer ⇒ μπορεί να αλλοιώσει
+      specs, vectors και verification inputs.»
+      ⇒ Το /app/deployment ΠΡΕΠΕΙ να είναι read-only· εγγράψιμο επιτρέπεται ΜΟΝΟ
+        ο ΔΗΛΩΜΕΝΟΣ evidence υποτόμος, και ΜΟΝΟ αν η πηγή του είναι ΕΚΤΟΣ του
+        ./deployment (ξεχωριστός host τόμος).
+  P1 «Ο verifier αναγνωρίζει runtime μόνο με image == "orchestrator:latest".
+      Αλλαγή tag ή alias παρακάμπτει τους ελέγχους.»
+      ⇒ Runtime = ΟΠΟΙΑΔΗΠΟΤΕ υπηρεσία χτίζεται από ΤΟ Dockerfile ΤΟΥ ΕΡΓΟΥ Ή
+        χρησιμοποιεί image που κάποια υπηρεσία του αρχείου χτίζει από αυτό. Το
+        tag ΔΕΝ είναι κριτήριο.
 
-ΤΩΡΑ Η ΑΠΟΓΡΑΦΗ ΕΙΝΑΙ ΚΑΘΟΛΙΚΗ: κάθε service του docker-compose.yml εξετάζεται.
-ΑΠΑΓΟΡΕΥΜΕΝΑ ΓΙΑ ΚΑΘΕ SERVICE (ό,τι κι αν λέγεται, σε όποιο profile κι αν ζει):
-  · εγγράψιμο /app/output ολόκληρο ή οποιαδήποτε διαδρομή releases/
-  · εγγράψιμα ιδιωτικά κλειδιά (/app/keys ή *.pem/*.key)
-  · οποιοδήποτε mount του authority store (/var/lib/lawmax/authority)
-ΓΙΑ ΤΑ SERVICES ΤΟΥ RUNTIME IMAGE επιπλέον:
-  · ΠΡΕΠΕΙ να δηλώνουν ΚΑΡΦΩΜΕΝΟ μη-root uid (11002 producer ή 11003 reader)
-  · ΠΡΕΠΕΙ να έχουν το /app/output προσαρτημένο read-only
+ΚΑΘΕ υπηρεσία ταξινομείται ΑΚΡΙΒΩΣ ΜΙΑ ΦΟΡΑ σε ρόλο (producer/reader/authority/
+proof-runner). Αταξινόμητη υπηρεσία ⇒ ΣΦΑΛΜΑ (καμία σιωπηλή εξαίρεση).
 
-ΕΞΑΙΡΕΣΗ ΜΕ ΟΝΟΜΑ ΚΑΙ ΑΙΤΙΑ: το `authority-v2-proofs` ΕΙΝΑΙ ο προνομιούχος
-εκτελεστής αποδείξεων (privileged, όλο το repo rw). ΔΕΝ είναι παραγωγική
-υπηρεσία και ΔΕΝ τρέχει το runtime image· δηλώνεται ΡΗΤΑ εδώ ως εξαίρεση, με
-ΕΛΕΓΧΟ ότι όντως δεν χρησιμοποιεί το runtime image (αλλιώς η εξαίρεση θα ήταν
-κερκόπορτα).
-
-ΤΙΜΙΟ ΟΡΙΟ: ελέγχεται η ΔΗΛΩΜΕΝΗ τοπολογία (το αρχείο compose), ΟΧΙ εκτελούμενος
-container. Η εκτέλεση απαιτεί docker daemon και δηλώνεται χωριστά ως BLOCKED.
-
-ΜΗ ΚΕΝΟΤΗΤΑ: ο ΙΔΙΟΣ ελεγκτής τρέχει πάνω σε ΜΕΤΑΛΛΑΓΜΕΝΑ services και ΟΦΕΙΛΕΙ
-να τα απορρίψει.
+ΤΙΜΙΟ ΟΡΙΟ: ελέγχεται η ΔΗΛΩΜΕΝΗ τοπολογία. Η ΕΚΤΕΛΕΣΗ απαιτεί docker daemon και
+δηλώνεται χωριστά (authority-v2/proofs/docker-e2e-test.sh).
 """
 import copy
 import os
@@ -43,10 +37,12 @@ except ImportError:
 _HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(_HERE))
 COMPOSE = os.path.join(REPO, "docker-compose.yml")
-RUNTIME_IMAGE = "orchestrator:latest"
-PRODUCER_UID, READER_UID = "11002", "11003"
+
+PRODUCER_UID, READER_UID, AUTHORITY_UID = "11002", "11003", "11001"
 AUTHORITY_STORE = "/var/lib/lawmax/authority"
-# Εξαίρεση ΜΕ ΟΝΟΜΑ, ΑΙΤΙΑ και ΕΛΕΓΧΟ (δεν επιτρέπεται να τρέχει το runtime image).
+PRIVATE_MARKERS = ("keys/private", "/private.pem", "private.key", "/app/keys/private")
+# Ρόλοι: ΚΑΘΕ υπηρεσία ταξινομείται ΑΚΡΙΒΩΣ ΜΙΑ φορά.
+ROLE_BY_UID = {PRODUCER_UID: "producer", READER_UID: "reader", AUTHORITY_UID: "authority"}
 PROOF_RUNNER = "authority-v2-proofs"
 
 passed = failed = 0
@@ -64,7 +60,7 @@ def no(m):
     print("  FAIL " + m)
 
 
-def parse_mounts(svc):
+def mounts_of(svc):
     out = []
     for v in svc.get("volumes", []):
         if isinstance(v, str):
@@ -78,107 +74,181 @@ def parse_mounts(svc):
     return out
 
 
-def check_service(name, svc, corpora):
-    """Παραβιάσεις για ΟΠΟΙΟΔΗΠΟΤΕ service. Κενή λίστα = συμμορφούμενο."""
-    bad = []
-    runtime = svc.get("image") == RUNTIME_IMAGE
-    mounts = parse_mounts(svc)
+def env_of(svc):
+    e = svc.get("environment", {})
+    if isinstance(e, list):
+        return dict(x.split("=", 1) for x in e if "=" in x)
+    return {k: ("" if v is None else str(v)) for k, v in e.items()}
 
-    for src, tgt, mode in mounts:
-        both = src + " " + tgt
-        if mode != "ro":
-            if tgt.rstrip("/") == "/app/output":
-                bad.append("ΕΓΓΡΑΨΙΜΟ ΟΛΟ το /app/output")
-            if "/releases" in both:
-                bad.append("rw mount αγγίζει releases: %s→%s" % (src, tgt))
-            if "/app/keys" in tgt or tgt.endswith(".pem") or tgt.endswith(".key"):
-                bad.append("ΕΓΓΡΑΨΙΜΑ ιδιωτικά κλειδιά: %s" % tgt)
-        if AUTHORITY_STORE in both:
-            bad.append("mount του authority store: %s→%s" % (src, tgt))
+
+def build_images(doc):
+    """Images που ΧΤΙΖΟΝΤΑΙ από το Dockerfile του έργου — το tag ΔΕΝ είναι κριτήριο."""
+    imgs = set()
+    for svc in doc.get("services", {}).values():
+        b = svc.get("build")
+        if not b:
+            continue
+        df = b.get("dockerfile", "Dockerfile") if isinstance(b, dict) else "Dockerfile"
+        if df == "Dockerfile" and svc.get("image"):
+            imgs.add(svc["image"])
+    return imgs
+
+
+def is_runtime(svc, built):
+    b = svc.get("build")
+    if b:
+        df = b.get("dockerfile", "Dockerfile") if isinstance(b, dict) else "Dockerfile"
+        if df == "Dockerfile":
+            return True
+    return svc.get("image") in built
+
+
+def check(name, svc, corpora, built):
+    bad = []
+    runtime = is_runtime(svc, built)
+    ms, env = mounts_of(svc), env_of(svc)
+    uid = str(svc.get("user", "")).split(":")[0]
+    role = ROLE_BY_UID.get(uid)
+
+    if runtime and role is None:
+        bad.append("runtime service ΧΩΡΙΣ ΤΑΞΙΝΟΜΗΜΕΝΟ ρόλο (user=%r)" % svc.get("user"))
+
+    # ── ΙΔΙΩΤΙΚΟ ΚΛΕΙΔΙ: ΥΠΑΡΞΗ, όχι εγγραψιμότητα ─────────────────────────
+    if role != "authority":
+        for src, tgt, _mode in ms:
+            if any(m in (src + " " + tgt) for m in PRIVATE_MARKERS):
+                bad.append("ΒΛΕΠΕΙ ιδιωτικό κλειδί (έστω :ro): %s→%s" % (src, tgt))
+        for k, v in env.items():
+            if "PRIVATE_KEY" in k or any(m in v for m in PRIVATE_MARKERS):
+                bad.append("δηλώνει ιδιωτικό κλειδί σε env: %s=%s" % (k, v))
+        for src, tgt, _m in ms:
+            if AUTHORITY_STORE in (src + " " + tgt):
+                bad.append("προσαρτά authority store: %s→%s" % (src, tgt))
+
+    for src, tgt, mode in ms:
+        if mode == "ro":
+            continue
+        t = tgt.rstrip("/")
+        if t == "/app/output":
+            bad.append("ΕΓΓΡΑΨΙΜΟ ΟΛΟ το /app/output")
+        if "/releases" in (src + " " + tgt):
+            bad.append("rw mount αγγίζει releases: %s→%s" % (src, tgt))
+        # deployment: εγγράψιμο ΜΟΝΟ αν η ΠΗΓΗ είναι ΕΚΤΟΣ του ./deployment
+        if t.startswith("/app/deployment"):
+            if src.replace("./", "").startswith("deployment"):
+                bad.append("ΕΓΓΡΑΨΙΜΟ deployment ΑΠΟ ΤΟ ΙΔΙΟ ΤΟ deployment: %s→%s" % (src, tgt))
 
     if runtime:
-        uid = str(svc.get("user", "")).split(":")[0]
-        if uid not in (PRODUCER_UID, READER_UID):
-            bad.append("runtime service ΧΩΡΙΣ καρφωμένο uid (user=%r)" % svc.get("user"))
-        if not any(t.rstrip("/") == "/app/output" and m == "ro" for _, t, m in mounts):
+        if not any(t.rstrip("/") == "/app/output" and m == "ro" for _s, t, m in ms):
             bad.append("το /app/output ΔΕΝ είναι προσαρτημένο read-only")
-        # Θετική απαίτηση ΜΟΝΟ για producers: πρέπει να μπορούν να γράψουν candidates.
-        if uid == PRODUCER_UID:
-            rw_t = {t for _, t, m in mounts if m != "ro"}
-            for c in corpora:
-                if "/app/output/%s/candidates" % c not in rw_t:
-                    bad.append("λείπει rw candidates για το corpus %s" % c)
-    return bad
+        if not any(t.rstrip("/") == "/app/deployment" and m == "ro" for _s, t, m in ms):
+            bad.append("το /app/deployment ΔΕΝ είναι προσαρτημένο read-only")
+        tm = " ".join(svc.get("tmpfs", []) or [])
+        if "/run/lawmax" not in tm:
+            bad.append("καμία tmpfs για /run/lawmax (η υγεία θα έγραφε σε evidence)")
+        if role == "producer":
+            if env.get("ORCHESTRATOR_OUTPUT_DIR", "").rstrip("/") != "/app/candidates":
+                bad.append("ORCHESTRATOR_OUTPUT_DIR=%r — ο παραγωγός ΠΡΕΠΕΙ να γράφει στο candidate workspace"
+                           % env.get("ORCHESTRATOR_OUTPUT_DIR"))
+            if env.get("LAWMAX_RUNTIME_DIR", "").rstrip("/") != "/run/lawmax":
+                bad.append("LAWMAX_RUNTIME_DIR=%r" % env.get("LAWMAX_RUNTIME_DIR"))
+            if not any(t.rstrip("/") == "/app/candidates" and m != "ro" for _s, t, m in ms):
+                bad.append("ο παραγωγός ΔΕΝ έχει εγγράψιμο /app/candidates — ΚΕΝΗ τοπολογία")
+        if role == "reader":
+            if any(m != "ro" and not t.startswith("/app/deployment") for _s, t, m in ms):
+                bad.append("ο reader έχει εγγράψιμο mount εκτός evidence")
+        if svc.get("read_only") is not True:
+            bad.append("read_only rootfs ΔΕΝ δηλώθηκε")
+        if svc.get("cap_drop") != ["ALL"]:
+            bad.append("cap_drop ≠ [ALL] (got=%r)" % (svc.get("cap_drop"),))
+        if "no-new-privileges:true" not in (svc.get("security_opt") or []):
+            bad.append("no-new-privileges ΔΕΝ δηλώθηκε")
+    return bad, role, runtime
 
 
 with open(COMPOSE, encoding="utf-8") as fh:
     doc = yaml.safe_load(fh)
 services = doc.get("services", {})
+BUILT = build_images(doc)
 CORPORA = sorted(c for c in os.listdir(os.path.join(REPO, "output"))
                  if os.path.isdir(os.path.join(REPO, "output", c, "releases")))
 
-print("== ΚΑΘΟΛΙΚΗ ΑΠΟΓΡΑΦΗ: %d services, corpora με releases/: %s =="
-      % (len(services), ", ".join(CORPORA)))
+print("== ΤΑΞΙΝΟΜΗΣΗ ΡΟΛΩΝ: %d services· images από ΤΟ Dockerfile: %s =="
+      % (len(services), ", ".join(sorted(BUILT)) or "—"))
+if not BUILT:
+    no("ΚΕΝΟΣ ΜΑΡΤΥΡΑΣ: καμία υπηρεσία δεν χτίζεται από το Dockerfile")
 
-runtime_services = [n for n, s in services.items() if s.get("image") == RUNTIME_IMAGE]
-if not runtime_services:
-    no("ΚΕΝΟΣ ΜΑΡΤΥΡΑΣ: κανένα service με το runtime image")
-else:
-    ok("services με το runtime image: %s" % ", ".join(sorted(runtime_services)))
-
+classified = {}
 for name in sorted(services):
     svc = services[name]
     if name == PROOF_RUNNER:
-        if svc.get("image") == RUNTIME_IMAGE:
+        if is_runtime(svc, BUILT):
             no("η ΔΗΛΩΜΕΝΗ ΕΞΑΙΡΕΣΗ %s τρέχει το runtime image — ΚΕΡΚΟΠΟΡΤΑ" % name)
         else:
-            ok("%s: ΔΗΛΩΜΕΝΗ ΕΞΑΙΡΕΣΗ (εκτελεστής αποδείξεων, ΟΧΙ runtime image)" % name)
+            classified[name] = "proof-runner"
+            ok("%s: proof-runner (ΔΗΛΩΜΕΝΗ εξαίρεση, ΟΧΙ runtime image)" % name)
         continue
-    bad = check_service(name, svc, CORPORA)
+    bad, role, runtime = check(name, svc, CORPORA, BUILT)
+    classified[name] = role or ("runtime-unclassified" if runtime else "non-runtime")
     if bad:
         for b in bad:
-            no("%s: %s" % (name, b))
+            no("%s [%s]: %s" % (name, role or "—", b))
     else:
-        u = svc.get("user", "—")
-        ok("%s: συμμορφώνεται (user=%s· output ro· κανένα releases/keys/authority rw)"
-           % (name, u))
+        ok("%s: ρόλος=%s · output ro · deployment ro · κανένα ιδιωτικό κλειδί · tmpfs /run/lawmax"
+           % (name, role or "non-runtime"))
 
-print("\n== ΜΗ ΚΕΝΟΤΗΤΑ: ΜΕΤΑΛΛΑΓΜΕΝΑ SERVICES ΠΡΕΠΕΙ ΝΑ ΑΠΟΡΡΙΠΤΟΝΤΑΙ ==")
+# ΚΑΘΕ υπηρεσία ΑΚΡΙΒΩΣ ΜΙΑ φορά — καμία αταξινόμητη.
+unclassified = [n for n, r in classified.items() if r in (None, "runtime-unclassified")]
+(ok if not unclassified else no)(
+    "ΚΑΘΕ υπηρεσία ταξινομήθηκε ΑΚΡΙΒΩΣ ΜΙΑ φορά (αταξινόμητες: %s)"
+    % (unclassified or "καμία"))
+roles = sorted(set(classified.values()))
+(ok if "authority" in roles and "producer" in roles and "reader" in roles else no)(
+    "υπάρχουν ΚΑΙ ΟΙ ΤΡΕΙΣ διακριτοί ρόλοι (βρέθηκαν: %s)" % ", ".join(roles))
+
+print("\n== ΜΗ ΚΕΝΟΤΗΤΑ: ΜΕΤΑΛΛΑΓΜΕΝΕΣ ΤΟΠΟΛΟΓΙΕΣ ΠΡΕΠΕΙ ΝΑ ΑΠΟΡΡΙΠΤΟΝΤΑΙ ==")
 BASE = copy.deepcopy(services["producer"])
 
 
-def mutate(name, fn, expect_token):
-    m = copy.deepcopy(BASE)
+def mutate(name, fn, token, base=None, built=None):
+    m = copy.deepcopy(base if base is not None else BASE)
     fn(m)
-    bad = check_service("μεταλλαγμένο", m, CORPORA)
-    if any(expect_token in b for b in bad):
-        ok("%s ⇒ ΑΠΟΡΡΙΨΗ («%s»)" % (name, expect_token))
-    else:
-        no("%s ⇒ ΕΓΙΝΕ ΔΕΚΤΟ (παραβιάσεις: %s)" % (name, bad))
+    bad, _r, _rt = check("μεταλλαγμένο", m, CORPORA, built if built is not None else BUILT)
+    (ok if any(token in b for b in bad) else no)(
+        "%s ⇒ %s" % (name, ("ΑΠΟΡΡΙΨΗ («%s»)" % token) if any(token in b for b in bad)
+                     else "ΕΓΙΝΕ ΔΕΚΤΗ (%s)" % bad))
 
 
-def _output_rw(m):
-    m["volumes"] = [v.replace(":/app/output:ro", ":/app/output:rw")
-                    if isinstance(v, str) else v for v in m["volumes"]]
-
-
-mutate("ΟΛΟ το output ως rw", _output_rw, "ΕΓΓΡΑΨΙΜΟ ΟΛΟ")
-mutate("τρέξιμο ως root", lambda m: m.update(user="0:0"), "καρφωμένο uid")
-mutate("χωρίς user", lambda m: m.pop("user"), "καρφωμένο uid")
+mutate("ΑΝΑΓΝΩΣΙΜΟ ιδιωτικό κλειδί (:ro)",
+       lambda m: m["volumes"].append("./keys/private:/app/keys/private:ro"),
+       "ΒΛΕΠΕΙ ιδιωτικό κλειδί")
+mutate("PRIVATE_KEY_PATH σε env",
+       lambda m: m["environment"].update({"PRIVATE_KEY_PATH": "/app/keys/private.pem"}),
+       "ιδιωτικό κλειδί σε env")
+mutate("ΕΓΓΡΑΨΙΜΟ deployment από το ίδιο το deployment",
+       lambda m: m["volumes"].append("./deployment/self:/app/deployment/self:rw"),
+       "ΕΓΓΡΑΨΙΜΟ deployment ΑΠΟ ΤΟ ΙΔΙΟ")
+mutate("ΟΛΟ το output ως rw",
+       lambda m: m["volumes"].__setitem__(
+           m["volumes"].index("./output:/app/output:ro"), "./output:/app/output:rw"),
+       "ΕΓΓΡΑΨΙΜΟ ΟΛΟ")
+mutate("output workspace πίσω στο /app/output",
+       lambda m: m["environment"].update({"ORCHESTRATOR_OUTPUT_DIR": "/app/output"}),
+       "ΠΡΕΠΕΙ να γράφει στο candidate workspace")
+mutate("χωρίς tmpfs /run/lawmax (health σε evidence)",
+       lambda m: m.pop("tmpfs"), "καμία tmpfs")
+mutate("τρέξιμο ως root", lambda m: m.update(user="0:0"), "ΤΑΞΙΝΟΜΗΜΕΝΟ ρόλο")
 mutate("προσάρτηση authority store",
        lambda m: m["volumes"].append("%s:%s:rw" % (AUTHORITY_STORE, AUTHORITY_STORE)),
        "authority store")
-mutate("εγγράψιμο releases",
-       lambda m: m["volumes"].append("./output/%s/releases:/app/output/%s/releases:rw"
-                                     % (CORPORA[0], CORPORA[0])),
-       "rw mount αγγίζει releases")
-mutate("εγγράψιμα κλειδιά",
-       lambda m: m["volumes"].append("./keys:/app/keys:rw"), "ιδιωτικά κλειδιά")
-mutate("λείπει candidates corpus",
-       lambda m: m["volumes"].remove("./output/%s/candidates:/app/output/%s/candidates:rw"
-                                     % (CORPORA[0], CORPORA[0])),
-       "λείπει rw candidates")
+# ΤΟ ΑΚΡΙΒΕΣ P1: αλλαγή tag ΔΕΝ πρέπει να παρακάμπτει τους ελέγχους.
+mutate("IMAGE-TAG BYPASS (άλλο tag, ίδιο Dockerfile)",
+       lambda m: (m.update(image="orchestrator:sneaky"),
+                  m["volumes"].__setitem__(
+                      m["volumes"].index("./output:/app/output:ro"),
+                      "./output:/app/output:rw")),
+       "ΕΓΓΡΑΨΙΜΟ ΟΛΟ")
 
-print("\n── topology ΟΛΩΝ των services (ΔΗΛΩΜΕΝΗ· η ΕΚΤΕΛΕΣΗ απαιτεί docker daemon): "
+print("\n── ρόλοι/τοπολογία ΟΛΩΝ των services (ΔΗΛΩΜΕΝΗ· η ΕΚΤΕΛΕΣΗ απαιτεί daemon): "
       "%d passed, %d failed ──" % (passed, failed))
 sys.exit(0 if failed == 0 else 1)
