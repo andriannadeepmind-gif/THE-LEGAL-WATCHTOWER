@@ -63,7 +63,7 @@ in_proofs=(); code_outside=()
 for f in "${all_files[@]}"; do
   case "$f" in
     "$PROOFS_DIR"/*)
-      rest="${f#$PROOFS_DIR/}"
+      rest="${f#"$PROOFS_DIR"/}"
       case "$rest" in
         */*) echo "::error::ΥΠΟΚΑΤΑΛΟΓΟΣ ΣΤΟ proofs/: $f — ο κατάλογος εισόδων είναι ΕΠΙΠΕΔΟΣ"; exit 1;;
       esac
@@ -147,11 +147,12 @@ for f in "${order[@]}"; do
   echo "▶ [setup] $f"
   if [ "$(id -u)" -ne 0 ]; then
     setup_ok=0; echo "  ⊘ BLOCKED — απαιτείται root για την προετοιμασία"
-  elif exec_entry "$f" >/dev/null 2>&1; then
+  elif exec_entry "$f"; then
     echo "  ✓ προετοιμασία ΟΚ"
   else
+    rc=$?
     setup_ok=0; fail=$((fail+1)); FAILED+=("$f (setup απέτυχε)")
-    echo "  ✗ Η ΠΡΟΕΤΟΙΜΑΣΙΑ ΑΠΕΤΥΧΕ"
+    echo "  ✗ Η ΠΡΟΕΤΟΙΜΑΣΙΑ ΑΠΕΤΥΧΕ (exit $rc)"
   fi
   echo
 done

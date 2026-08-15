@@ -91,6 +91,9 @@ logs/
 *.orig
 build-*.txt
 build-*.log
+# Runtime synchronization residue; never source and otherwise destabilizes the
+# standalone/verifier proof hash when authority-v2 runs before Docker E2E.
+deployment/self/proposals.sexp.lock
 
 # Output directories
 output/

@@ -176,9 +176,10 @@
 (format t "~%== self-description honesty: emitted algorithm string ==~%")
 ;; Κλείδωμα κριτή: το corpus-proof.json ΔΕΝ επιτρέπεται να αυτο-περιγράφεται
 ;; ως raw-concat ενώ χτίζει RFC-6962 δέντρο (0x00/0x01, unbalanced split).
-(check "corpus-proof.json declares rfc6962 (όχι raw-concat)"
+(check "corpus-proof.json declares the exact canonical profile (όχι legacy alias/raw-concat)"
        (let ((json (corpus-proof-json "sha256:ab" 1 :anchored-at "t")))
-         (and (search "sha256-merkle/rfc6962+RS256" json)
+         (and (search "lawmax-merkle-sha256-v1+RS256" json)
+              (not (search "sha256-merkle/rfc6962" json))
               (not (search "raw-concat" json)))))
 
 (format t "~%========================================~%")

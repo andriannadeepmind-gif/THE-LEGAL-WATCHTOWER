@@ -76,7 +76,14 @@
    Fail-closed: υπάρχον journal σώματος ⇒ ΣΦΑΛΜΑ (καμία σιωπηλή διπλοεισαγωγή)."
   (let* ((body (%graph-body-for corpus-id))
          (body-string (orchestrator.identity:body-id-string body))
-         (graph (orchestrator.version-graph:make-graph body-string)))
+         (graph (orchestrator.version-graph:make-graph body-string))
+         ;; ΜΙΑ λογική bulk transaction, ΜΙΑ χρονική τομή. Το παλιό μονοπάτι
+         ;; ξαναδιάβαζε το wall clock ανά record και μπορούσε να παραγάγει
+         ;; 12Z→11Z αν το VM/NTP ρολόι έκανε βήμα πίσω κατά την πολύλεπτη
+         ;; εισαγωγή. Ο journal guard παραμένει αυστηρός· ο producer πλέον
+         ;; μεταφέρει ρητά το ίδιο canonical instant σε κάθε version,
+         ;; observation και knowledge-gap (η σειρά αποδεικνύεται από το seq).
+         (import-recorded-at (orchestrator.journal:iso-now)))
     (when (probe-file (orchestrator.version-graph::vg-path graph))
       (error "import ~A: υπάρχει ήδη journal γράφου (~A) — ρητό καθάρισμα πρώτα, ποτέ σιωπηλό append"
              corpus-id (orchestrator.version-graph::vg-path graph)))
@@ -136,14 +143,16 @@
                      ;; ΩΣ ΕΧΕΙ, αλλά ΠΟΤΕ σιωπηλά — κάθε εύρημα σύνταξης-μεταφοράς
                      ;; αναγνωρίζεται ρητά και journal-άρεται ως text-observation.
                      :hygiene-waiver (orchestrator.version-graph:text-hygiene text))
-                    :derivation (format nil "bootstrap:~A" corpus-id))
+                    :derivation (format nil "bootstrap:~A" corpus-id)
+                    :recorded-at import-recorded-at)
                    (incf imported)
                    ;; κενά γνώσης: ΚΑΘΕ αναθεώρηση που άγγιξε το άρθρο —
                    ;; οι προγενέστερες εκδόσεις κειμένου ΔΕΝ ανακατασκευάζονται
                    (dolist (rev (or (gethash eid all-revs) (gethash base-eid all-revs)))
                      (orchestrator.version-graph:add-knowledge-gap!
                       graph :provision-id pid :act-ref (second rev)
-                            :kind :unknown-text :effective (first rev))
+                            :kind :unknown-text :effective (first rev)
+                            :recorded-at import-recorded-at)
                      (incf gaps))))))
             (values graph
                     (list :corpus corpus-id :body body-string

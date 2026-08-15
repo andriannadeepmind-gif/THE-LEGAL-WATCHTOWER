@@ -31,7 +31,20 @@ no(){ f=$((f+1)); echo "  FAIL $*"; }
 [ "$(id -u)" -eq 0 ] || { echo "::error::BLOCKED — απαιτείται root"; exit 2; }
 command -v setpriv >/dev/null || { echo "::error::BLOCKED — setpriv ΑΠΩΝ"; exit 2; }
 command -v unshare >/dev/null || { echo "::error::BLOCKED — unshare ΑΠΩΝ"; exit 2; }
-id lawmax-producer >/dev/null 2>&1 || bash "$REPO/authority-v2/capability/identities.sh" >/dev/null 2>&1
+command -v mount >/dev/null || { echo "::error::BLOCKED — mount ΑΠΩΝ"; exit 2; }
+command -v python3 >/dev/null || { echo "::error::BLOCKED — python3 ΑΠΩΝ"; exit 2; }
+command -v sbcl >/dev/null || { echo "::error::BLOCKED — sbcl ΑΠΩΝ"; exit 2; }
+if ! id lawmax-producer >/dev/null 2>&1; then
+  IDENTITY_LOG="$(mktemp)"
+  bash "$REPO/authority-v2/capability/identities.sh" >"$IDENTITY_LOG" 2>&1
+  IDENTITY_RC=$?
+  if [ "$IDENTITY_RC" -ne 0 ]; then
+    echo "::error::η δημιουργία ταυτοτήτων απέτυχε (exit $IDENTITY_RC)"
+    sed 's/^/       │ /' "$IDENTITY_LOG"
+    exit 2
+  fi
+  rm -f "$IDENTITY_LOG"
+fi
 id lawmax-producer >/dev/null 2>&1 || { echo "::error::BLOCKED — ταυτότητες δεν δημιουργήθηκαν"; exit 2; }
 
 WORK="$(mktemp -d)"; trap 'rm -rf "$WORK"' EXIT
@@ -99,7 +112,13 @@ echo "CANDIDATES=\$(setpriv --reuid=lawmax-producer --regid=lawmax-producer \
    --clear-groups python3 "$PROBE" "$OUT/candidates/probe.txt")"
 EOF
 OUT2="$(unshare -m sh "$INNER" 2>&1)"
+OUT2_RC=$?
 echo "$OUT2" | sed 's/^/       │ /'
+
+if [ "$OUT2_RC" -ne 0 ]; then
+  echo "::error::BLOCKED — το mount-namespace probe απέτυχε (exit $OUT2_RC)"
+  exit 2
+fi
 
 grep -q "MOUNTINFO-RO=yes" <<<"$OUT2" \
   && ok "το /proc/self/mountinfo ΕΠΙΒΕΒΑΙΩΝΕΙ ro bind mount (όχι μόνο exit code)" \
@@ -130,8 +149,14 @@ echo "== ③ ΤΟ ΠΑΡΑΓΩΓΙΚΟ ENTRYPOINT ΥΠΟ PRODUCER UID, ΜΕΣΑ 
 # ΑΝΩΤΑΤΗ ΜΟΡΦΗ: το core χτίζεται ΜΙΑ φορά (ως root)· ο producer το ΦΟΡΤΩΝΕΙ σε
 # ms. Η μεταγλώττιση ΔΕΝ είναι μέρος του ορίου ασφαλείας — αφαιρείται εντελώς.
 CORE="$WORK/authority-cli.core"
-LAWMAX_REPO="$REPO" sbcl --script "$REPO/authority-v2/tests/build-authority-core.lisp" "$CORE" >/dev/null 2>&1
-[ -s "$CORE" ] || { echo "::error::BLOCKED — core δεν χτίστηκε"; exit 2; }
+CORE_LOG="$WORK/core-build.log"
+LAWMAX_REPO="$REPO" sbcl --script "$REPO/authority-v2/tests/build-authority-core.lisp" "$CORE" >"$CORE_LOG" 2>&1
+CORE_RC=$?
+if [ "$CORE_RC" -ne 0 ] || [ ! -s "$CORE" ]; then
+  echo "::error::το authority CLI core δεν χτίστηκε (exit $CORE_RC, size=$(wc -c <"$CORE" 2>/dev/null || echo 0))"
+  sed 's/^/       │ /' "$CORE_LOG"
+  exit 1
+fi
 chmod 0644 "$CORE"
 
 REAL="$WORK/real"
@@ -141,27 +166,41 @@ REAL_BEFORE="$(sha256sum "$REAL/releases/sha256-aaa/temporal-proof/existing.txt"
 chown -R lawmax-producer:lawmax-producer "$REAL"   # ΞΑΝΑ: καμία άμυνα από δικαιώματα
 chmod 0755 "$REAL"
 
-OUT3="$(unshare -m sh -c "
-    mount --bind '$REAL/releases' '$REAL/releases' || exit 91
-    mount -o remount,bind,ro '$REAL/releases'      || exit 92
-    grep -F ' $REAL/releases ' /proc/self/mountinfo | grep -qE '(^| )ro(,|  )' || exit 93
-    cd '$REPO'
-    LAWMAX_REPO='$REPO' setpriv --reuid=lawmax-producer --regid=lawmax-producer \
-      --clear-groups sbcl --core '$CORE' --script \
-      '$REPO/authority-v2/tests/probe-producer-real.lisp' '$REAL/' 2>/dev/null | tail -1
-" 2>/dev/null | tr -d '\r')"
-case "$OUT3" in
-  *"staging=IN-CANDIDATES"*) ok "ΠΡΑΓΜΑΤΙΚΗ create-staging-directory ⇒ candidates/ (producer UID)";;
-  *)                         no "staging: $OUT3";;
-esac
-case "$OUT3" in
-  *"attest=SEAT-DELETED"*) ok "η έδρα --attest-release ΔΕΝ ΥΠΑΡΧΕΙ· η ΙΔΙΑ resolve-command του main απαντά ΚΑΤΑΡΓΗΜΕΝΗ (producer UID)";;
-  *)                       no "attest: $OUT3";;
-esac
-case "$OUT3" in
-  *"direct-write=REFUSED-BY-KERNEL"*) ok "απευθείας εγγραφή στο ro releases/ ⇒ ΑΡΝΗΣΗ ΠΥΡΗΝΑ";;
-  *)                                   no "direct-write: $OUT3";;
-esac
+REAL_INNER="$WORK/real-inner.sh"
+cat > "$REAL_INNER" <<EOF
+#!/usr/bin/env bash
+set -uo pipefail
+mount --bind '$REAL/releases' '$REAL/releases' || { rc=\$?; echo "::error::real probe bind mount failed (exit \$rc)"; exit 91; }
+mount -o remount,bind,ro '$REAL/releases' || { rc=\$?; echo "::error::real probe ro remount failed (exit \$rc)"; exit 92; }
+grep -F ' $REAL/releases ' /proc/self/mountinfo | grep -qE '(^| )ro(,|  )' || { echo "::error::real probe mountinfo is not ro"; exit 93; }
+cd '$REPO' || { rc=\$?; echo "::error::real probe cd failed (exit \$rc)"; exit 94; }
+LAWMAX_REPO='$REPO' exec setpriv --reuid=lawmax-producer --regid=lawmax-producer \
+  --clear-groups sbcl --core '$CORE' --script \
+  '$REPO/authority-v2/tests/probe-producer-real.lisp' '$REAL/'
+EOF
+chmod 0755 "$REAL_INNER"
+OUT3="$(unshare -m bash "$REAL_INNER" 2>&1 | tr -d '\r')"
+OUT3_RC=$?
+echo "$OUT3" | sed 's/^/       │ /'
+RESULT_LINE="$(printf '%s\n' "$OUT3" | awk '/staging=.*attest=.*direct-write=/{line=$0} END {print line}')"
+if [ "$OUT3_RC" -ne 0 ]; then
+  no "το παραγωγικό probe απέτυχε (exit $OUT3_RC) — το stderr εμφανίστηκε αυτούσιο"
+elif [ -z "$RESULT_LINE" ]; then
+  no "το παραγωγικό probe επέστρεψε exit 0 χωρίς structured staging/attest/direct-write verdict"
+else
+  case "$RESULT_LINE" in
+    *"staging=IN-CANDIDATES"*) ok "ΠΡΑΓΜΑΤΙΚΗ create-staging-directory ⇒ candidates/ (producer UID)";;
+    *)                         no "staging verdict: '$RESULT_LINE'";;
+  esac
+  case "$RESULT_LINE" in
+    *"attest=SEAT-DELETED"*) ok "η έδρα --attest-release ΔΕΝ ΥΠΑΡΧΕΙ· η ΙΔΙΑ resolve-command του main απαντά ΚΑΤΑΡΓΗΜΕΝΗ (producer UID)";;
+    *)                       no "attest verdict: '$RESULT_LINE'";;
+  esac
+  case "$RESULT_LINE" in
+    *"direct-write=REFUSED:"*) ok "απευθείας εγγραφή στο ro releases/ ⇒ ΑΡΝΗΣΗ ΠΥΡΗΝΑ (ακριβής condition στο log)";;
+    *)                           no "direct-write verdict: '$RESULT_LINE'";;
+  esac
+fi
 REAL_AFTER="$(sha256sum "$REAL/releases/sha256-aaa/temporal-proof/existing.txt" | cut -d' ' -f1)"
 [ "$REAL_BEFORE" = "$REAL_AFTER" ] && ok "το legacy evidence ΑΘΙΚΤΟ μετά την πραγματική εκτέλεση" \
                                    || no "ΤΟ LEGACY EVIDENCE ΑΛΛΟΙΩΘΗΚΕ"

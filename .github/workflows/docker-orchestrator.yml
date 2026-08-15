@@ -10,6 +10,9 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+env:
+  GIT_COMMIT: ${{ github.sha }}
+
 jobs:
   dependency-policy-gate:
     name: Dependency Policy Gate
@@ -18,6 +21,10 @@ jobs:
     steps:
     - name: ⬇️ Checkout
       uses: actions/checkout@v4
+
+    - name: 🔏 Validate exact checkout identity
+      shell: bash
+      run: bash scripts/require-git-commit.sh "$GIT_COMMIT"
 
     - name: 🔐 Capture Runtime Closure
       run: |
@@ -107,6 +114,9 @@ jobs:
         # Dockerfile — δηλαδή ο verifier του proof manifest (η πύλη ολότητας)
         # ήταν ο ΜΟΝΟΣ χωρίς αντίπαλο. Τώρα τρέχει.
         python3 docker/verify-proof-manifest-test.py
+    - name: 🧨 Prove GIT_COMMIT propagation rejects defaults, malformed and mismatched SHAs
+      shell: bash
+      run: bash scripts/require-git-commit-test.sh
 
   authority-v2-boundary:
     name: 🔒 authority-v2 — Merkle seat differential, capture fixed point, OS boundary
@@ -178,7 +188,7 @@ jobs:
         # Builds the gate stage; its RUN step emits a signed corpus from Lisp and
         # verifies it with deployment/verify/{verify.py,verify.mjs}. A mismatch
         # (or a tampered byte slipping through) fails the build.
-        docker build --build-arg GIT_COMMIT=${{ github.sha }} --target verifier-conformance --tag orchestrator:verifier-conformance .
+        docker build --build-arg GIT_COMMIT="$GIT_COMMIT" --target verifier-conformance --tag orchestrator:verifier-conformance .
 
   standalone-tests:
     needs: [dependency-policy-gate]
@@ -197,7 +207,7 @@ jobs:
         # Builds the standalone-test stage. Each tests/*-test.lisp runs under
         # docker/run-standalone-test.lisp and calls (sb-ext:exit 1) on any failed
         # check, so a single failing assertion fails this build — and the CI job.
-        docker build --build-arg GIT_COMMIT=${{ github.sha }} --target standalone-test --tag orchestrator:standalone-test .
+        docker build --build-arg GIT_COMMIT="$GIT_COMMIT" --target standalone-test --tag orchestrator:standalone-test .
 
   build-and-test:
     needs: [dependency-policy-gate, verifier-conformance, standalone-tests, ci-integrity-selfcheck]
@@ -222,7 +232,7 @@ jobs:
     - name: 📆 Build Docker image
       id: build
       run: |
-        docker build --build-arg GIT_COMMIT=${{ github.sha }} --cache-from type=local,src=/tmp/.buildx-cache --tag orchestrator:test .
+        docker build --build-arg GIT_COMMIT="$GIT_COMMIT" --cache-from type=local,src=/tmp/.buildx-cache --tag orchestrator:test .
         echo "digest=$(docker inspect orchestrator:test --format='{{.Id}}')" >> $GITHUB_OUTPUT
 
     - name: 📦 Generate SBOM (supply-chain manifest)
@@ -360,7 +370,11 @@ jobs:
     name: 🔖 Tag if all tests pass
     runs-on: ubuntu-latest
     needs: [build-and-test, authority-v2-boundary]
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+    outputs:
+      tag_name: ${{ steps.tag.outputs.tag_name }}
 
     steps:
     - name: ⬇️ Checkout
@@ -368,14 +382,30 @@ jobs:
 
     - name: 🔹 Generate tag name
       id: tag
-      run: echo "TAG_NAME=v1.3.${{ github.run_number }}" >> $GITHUB_ENV
+      shell: bash
+      run: |
+        TAG_NAME="v1.3.${{ github.run_number }}"
+        echo "TAG_NAME=$TAG_NAME" >> "$GITHUB_ENV"
+        echo "tag_name=$TAG_NAME" >> "$GITHUB_OUTPUT"
 
     - name: 🔖 Create Git tag
       run: |
         git config user.name "github-actions"
         git config user.email "actions@github.com"
-        git tag $TAG_NAME
-        git push origin $TAG_NAME
+        git tag -- "$TAG_NAME"
+        git push origin "refs/tags/$TAG_NAME"
 
-    - name: 🚀 Release created
-      run: echo "🌟 Release tag $TAG_NAME pushed successfully"
+    - name: 🚀 Tag created
+      run: echo "🌟 Release tag $TAG_NAME pushed successfully; provenance follows through the reusable workflow"
+
+  provenance:
+    name: 🔏 Reusable provenance and GitHub Release
+    needs: [tag-release]
+    if: needs.tag-release.result == 'success'
+    permissions:
+      contents: write
+      id-token: write
+    uses: ./.github/workflows/provenance.yml
+    with:
+      release_tag: ${{ needs.tag-release.outputs.tag_name }}
+    secrets: inherit

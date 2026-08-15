@@ -29,12 +29,20 @@
                               ((search "/releases/" n) "IN-RELEASES")
                               (t "ELSEWHERE"))))))
 
-;; ② Η ΠΡΑΓΜΑΤΙΚΗ run-attest-release: αρνείται πριν γράψει;
+;; ② Η ΠΡΑΓΜΑΤΙΚΗ έδρα resolve-command: η --attest-release παραμένει retired.
 (note "attest"
-      (handler-case
-          (progn (funcall (find-symbol "RUN-ATTEST-RELEASE" :orchestrator.cli) "probe") "NOT-REFUSED")
-        (orchestrator.epistemic:legacy-authority-seat-removed () "REFUSED")
-        (error (e) (format nil "OTHER:~A" (type-of e)))))
+      (let ((fn (find-symbol "RUN-ATTEST-RELEASE" :orchestrator.cli)))
+        (if (and fn (fboundp fn))
+            "STILL-CALLABLE"
+            (multiple-value-bind (handler kind)
+                (funcall (find-symbol "RESOLVE-COMMAND" :orchestrator.cli) "--attest-release")
+              (if (eq kind :retired)
+                  (handler-case (progn (funcall handler nil) "HANDLER-DID-NOT-SIGNAL")
+                    (orchestrator.cli::retired-command-invoked () "SEAT-DELETED")
+                    (error (e)
+                      (format *error-output* "DIAG-ATTEST ~A: ~A~%" (type-of e) e)
+                      (format nil "WRONG-CONDITION:~A" (type-of e))))
+                  (format nil "UNEXPECTED-KIND:~A" kind))))))
 
 ;; ③ Απευθείας απόπειρα εγγραφής στο read-only releases/ (ό,τι θα έκανε ο παλιός κώδικας)
 (note "direct-write"
@@ -44,7 +52,9 @@
                                     :if-does-not-exist :create)
                    (write-string "PWNED" o))
                  "SUCCEEDED")
-        (error () "REFUSED-BY-KERNEL")))
+        (error (e)
+          (format *error-output* "DIAG-DIRECT-WRITE ~A: ~A~%" (type-of e) e)
+          (format nil "REFUSED:~A" (type-of e)))))
 
 (format t "~{~A~^ ~}~%" (nreverse *findings*))
 (sb-ext:exit :code 0)

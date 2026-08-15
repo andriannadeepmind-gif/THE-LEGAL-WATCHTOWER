@@ -169,6 +169,17 @@
 (defun %time<= (a b &optional (what-a "χρόνος") (what-b "χρόνος"))
   (<= (%time-key a what-a) (%time-key b what-b)))
 
+(defun %resolve-recorded-at (recorded-at)
+  "Ρητό transaction-time ή μία λήψη από τη μοναδική journal clock seat.
+   Η ρητή τιμή χρησιμοποιείται από μαζικές ατομικές εισαγωγές: ΟΛΕΣ οι
+   γραμμές της ίδιας λογικής συναλλαγής φέρουν το ίδιο :at και διατάσσονται
+   από το journal seq. Κακή μορφή απορρίπτεται πριν από οποιαδήποτε εγγραφή."
+  (let ((at (or recorded-at (orchestrator.journal:iso-now))))
+    (unless (legal-instant-p at)
+      (error 'invalid-edge
+             :reason (format nil "recorded-at δεν είναι canonical legal-instant: ~S" at)))
+    at))
+
 (define-condition invalid-edge (error)
   ((reason :initarg :reason :reader invalid-edge-reason))
   (:report (lambda (c s) (format s "Άκυρη ακμή: ~A" (invalid-edge-reason c)))))
@@ -717,20 +728,22 @@
         :enacted enacted :effective effective :fek-date fek-date
         :assurance assurance :confidence confidence))
 
-(defun add-knowledge-gap! (graph &key provision-id act-ref kind effective until)
+(defun add-knowledge-gap! (graph &key provision-id act-ref kind effective until
+                                      recorded-at)
   "ΤΙΜΙΑ ΑΓΝΟΙΑ πρώτης τάξης: δηλωμένο κενό ανακατασκευής (π.χ. text-less
    αναθεώρηση) — journaled, ορατό σε κάθε ερώτημα που πέφτει στο κενό.
    [Υ2β] Με UNTIL (legal-date): το κενό γίνεται ΔΙΑΣΤΗΜΑ [effective, until)
    — μπλοκάρει μόνο τομές μέσα του· χωρίς UNTIL: όλη η ακάλυπτη περίοδος."
   (%require-date effective "effective (κενού γνώσης)")
   (when until (%require-date until "until (κενού γνώσης)"))
-  (let* ((rid (format nil "gap:~A@~A..~A:~A" provision-id effective
+  (let* ((at (%resolve-recorded-at recorded-at))
+         (rid (format nil "gap:~A@~A..~A:~A" provision-id effective
                       (or until "open") (or act-ref "")))
          (line (%journal! graph (list :kind :knowledge-gap :record-id rid
                                       :provision-id provision-id :act-ref act-ref
                                       :gap-kind kind :effective effective
                                       :gap-until until
-                                      :at (orchestrator.journal:iso-now))
+                                      :at at)
                           :verify nil))
          (g (make-knowledge-gap :provision-id provision-id :act-ref act-ref
                                 :kind kind :effective effective :until until
@@ -742,17 +755,19 @@
   "[+3/0104] Semantic record-id παρατήρησης — ξαναβγαίνει από τα πεδία (③)."
   (format nil "obs:~A:~{~(~A~)~^,~}" version-hash findings))
 
-(defun %journal-observation! (graph provision-id version-hash findings)
+(defun %journal-observation! (graph provision-id version-hash findings
+                              &key recorded-at)
   "[+3/0104] Journal-άρει text-observation ΜΕΤΑ την εγκατάσταση της έκδοσης
    που αφορά (declare-before-reference). Καλείται ΜΟΝΟ από τις δύο εισδοχές
    (submit-genesis!/admit-edge!) όταν το spec φέρει :hygiene — η σύζευξη
    spec↔record είναι δομική, όχι πειθαρχία καλούντος."
-  (let* ((rid (%observation-rid version-hash findings))
+  (let* ((at (%resolve-recorded-at recorded-at))
+         (rid (%observation-rid version-hash findings))
          (line (%journal! graph (list :kind :text-observation :record-id rid
                                       :provision-id provision-id
                                       :version version-hash
                                       :findings findings
-                                      :at (orchestrator.journal:iso-now))
+                                      :at at)
                           :verify nil))
          (o (make-text-observation :provision-id provision-id
                                    :version-hash version-hash
@@ -768,7 +783,7 @@
               :key #'to-provision-id :test-not #'equal)
       (vg-observations graph)))
 
-(defun submit-genesis! (graph vspec &key derivation)
+(defun submit-genesis! (graph vspec &key derivation recorded-at)
   "Εισδοχή έκδοσης-γένεσης (bootstrap/import) — δεν προέρχεται από ακμή.
    Ο έλεγχος σύγκρουσης (G4) προηγείται ΚΑΘΕ εγγραφής — κανένα ορφανό record."
   (when (%open-version graph (getf vspec :provision-id))
@@ -777,7 +792,8 @@
   ;; η γένεση σώματος είναι γεγονός, όχι αίρεση — fail-closed.
   (when (commencement-cid (getf vspec :commencement))
     (error 'invalid-edge :reason "genesis με :conditional commencement — η γένεση απαιτεί (:fixed legal-date)"))
-  (let* ((vh (%version-hash-2 (getf vspec :provision-id) (getf vspec :text)
+  (let* ((at (%resolve-recorded-at recorded-at))
+         (vh (%version-hash-2 (getf vspec :provision-id) (getf vspec :text)
                               (getf vspec :heading) (getf vspec :commencement)
                               (getf vspec :status) :genesis))
          (line (%journal! graph
@@ -791,7 +807,7 @@
                                 :previous "genesis"
                                 :created-by (or derivation "bootstrap")
                                 :assurance (getf vspec :assurance)
-                                :at (orchestrator.journal:iso-now))
+                                :at at)
                           :verify nil))
          (v (make-text-version
              :version-hash vh :provision-id (getf vspec :provision-id)
@@ -805,7 +821,7 @@
     ;; [+3/0104] spec με ευρήματα ⇒ ΥΠΟΧΡΕΩΤΙΚΟ journaled observation
     (when (getf vspec :hygiene)
       (%journal-observation! graph (getf vspec :provision-id) vh
-                             (getf vspec :hygiene)))
+                             (getf vspec :hygiene) :recorded-at at))
     v))
 
 (defun quarantine! (graph material reason)

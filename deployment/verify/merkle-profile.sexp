@@ -140,4 +140,4 @@
   ;; Οι πύλες των ΑΛΛΩΝ ΔΥΟ δημοσιευτών αποδεικνύονται ΦΕΡΟΥΣΕΣ εκτελέσιμα
   ;; (GUARDED απορρίπτει / UNGUARDED δέχεται), όχι με κειμενικό substring.
   (:id "census-empty-articles" :target :policy :description "build-artifact-census με κενό σύνολο άρθρων")
-  (:id "tlog-invalid-root"     :target :policy :description "tlog-append-root! με μη έγκυρο release root")))
+  (:id "tlog-invalid-root"     :target :policy :description "η retired tlog-append-root! απορρίπτει κάθε κλήση μέσω %seat-removed")))

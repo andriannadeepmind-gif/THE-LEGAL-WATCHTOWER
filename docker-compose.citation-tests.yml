@@ -6,6 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile
       target: builder
+      args:
+        GIT_COMMIT: ${GIT_COMMIT:?set GIT_COMMIT to the exact 40-hex checkout HEAD}
     image: orchestrator-citation-tests:latest
     container_name: orchestrator-citation-verification
 

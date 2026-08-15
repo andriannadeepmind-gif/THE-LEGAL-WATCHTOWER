@@ -15,7 +15,7 @@
 # ισχυρισμό. Απουσία εργαλείου ⇒ BLOCKED (exit 2), ΠΟΤΕ pass.
 set -uo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-cd "$REPO"
+cd "$REPO" || exit 1
 p=0; f=0
 ok(){ p=$((p+1)); echo "  ok   $*"; }
 no(){ f=$((f+1)); echo "  FAIL $*"; }
@@ -53,7 +53,9 @@ if [ "$(id -u)" -eq 0 ] && command -v setpriv >/dev/null && command -v unshare >
   if bash "$REPO/authority-v2/proofs/producer-os-boundary-test.sh" >/tmp/osb.$$.log 2>&1; then
     ok "OS boundary test: $(grep -c '  ok' /tmp/osb.$$.log) έλεγχοι, 0 αποτυχίες (producer UID, ro releases/)"
   else
-    no "OS boundary test ΑΠΕΤΥΧΕ:"; grep FAIL /tmp/osb.$$.log | head -3
+    rc=$?
+    no "OS boundary test ΑΠΕΤΥΧΕ (exit $rc) — πλήρες diagnostic log:"
+    sed 's/^/       │ /' /tmp/osb.$$.log
   fi
   rm -f /tmp/osb.$$.log
 else

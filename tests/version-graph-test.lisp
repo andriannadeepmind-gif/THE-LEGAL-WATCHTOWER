@@ -263,6 +263,53 @@
             (and (assoc *q-pid* uncertain :test #'equal)
                  (plusp (length quarantine)))))
 
+;;; ⑪ Bulk transaction-time: μία ρητή τομή μεταφέρεται σε version,
+;;; observation και gap, ενώ ο journal rollback guard παραμένει fail-closed.
+(let* ((at "2026-05-10T12:00:00Z")
+       (g (orchestrator.version-graph:make-graph (vg-body "bulk-recorded-at")))
+       (v (orchestrator.version-graph:submit-genesis!
+           g (orchestrator.version-graph:make-version-spec
+              :provision-id "gr/test#art:bulk-1" :text "με \"ascii\""
+              :valid-from "2020-01-01" :assurance :extracted-verified
+              :hygiene-waiver '(:ascii-quote))
+           :recorded-at at)))
+  (orchestrator.version-graph:add-knowledge-gap!
+   g :provision-id "gr/test#art:bulk-1" :act-ref "ΦΕΚ Α 1/2020"
+   :kind :unknown-text :effective "2020-01-02" :recorded-at at)
+  (vg-check "⑪ bulk recorded-at μεταφέρεται byte-exact σε version + observation + gap"
+            (and (equal at (orchestrator.version-graph:tv-recorded-from v))
+                 (every (lambda (o)
+                          (equal at (orchestrator.version-graph:to-recorded-from o)))
+                        (orchestrator.version-graph:graph-observations g))
+                 (every (lambda (gap)
+                          (equal at (orchestrator.version-graph::kg-recorded-from gap)))
+                        (orchestrator.version-graph:graph-gaps g))
+                 (equal at (orchestrator.version-graph:graph-latest-at g))))
+  (vg-check "⑪β malformed explicit recorded-at ⇒ invalid-edge ΠΡΙΝ journal write"
+            (let ((seq-before (orchestrator.version-graph:graph-seq g)))
+              (and (handler-case
+                       (progn
+                         (orchestrator.version-graph:submit-genesis!
+                          g (orchestrator.version-graph:make-version-spec
+                             :provision-id "gr/test#art:bulk-2" :text "Καθαρό."
+                             :valid-from "2020-01-01" :assurance :extracted-verified)
+                          :recorded-at "2026-05-10 12:00:01")
+                         nil)
+                     (orchestrator.version-graph:invalid-edge () t))
+                   (= seq-before (orchestrator.version-graph:graph-seq g)))))
+  (vg-check "⑪γ παλαιότερο explicit recorded-at ⇒ ο monotonic journal guard ακόμη ΑΠΟΡΡΙΠΤΕΙ"
+            (let ((seq-before (orchestrator.version-graph:graph-seq g)))
+              (and (handler-case
+                       (progn
+                         (orchestrator.version-graph:submit-genesis!
+                          g (orchestrator.version-graph:make-version-spec
+                             :provision-id "gr/test#art:bulk-3" :text "Καθαρό."
+                             :valid-from "2020-01-01" :assurance :extracted-verified)
+                          :recorded-at "2026-05-10T11:59:59Z")
+                         nil)
+                     (orchestrator.journal:non-monotonic-transaction-time () t))
+                   (= seq-before (orchestrator.version-graph:graph-seq g))))))
+
 (format t "~%========================================~%")
 (format t "VERSION-GRAPH [0088 Φ2]: ~D passed, ~D failed~%" *vg-pass* *vg-fail*)
 (format t "========================================~%")

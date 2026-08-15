@@ -9,7 +9,9 @@
           (cond ((search "/candidates/" n) "IN-CANDIDATES")
                 ((search "/releases/" n) "IN-RELEASES")
                 (t "ELSEWHERE"))))
-    (error (e) (format nil "ERROR:~A" (type-of e)))))
+    (error (e)
+      (format *error-output* "DIAG-STAGING ~A: ~A~%" (type-of e) e)
+      (format nil "ERROR:~A" (type-of e)))))
 (note "attest"
   ;; [CAPTURE-AND-BOUNDARY-CORRECTION] Η ΣΥΝΑΡΤΗΣΗ ΔΕΝ ΥΠΑΡΧΕΙ ΠΙΑ — διαγράφηκε.
   ;; Η απόδειξη περνά από την ΙΔΙΑ έδρα επίλυσης με τον dispatcher του main
@@ -21,13 +23,18 @@
             (funcall (find-symbol "RESOLVE-COMMAND" :orchestrator.cli) "--attest-release")
           (if (eq kind :retired)
               (handler-case (progn (funcall handler nil) "HANDLER-DID-NOT-SIGNAL")
-                (error () "SEAT-DELETED"))
+                (orchestrator.cli::retired-command-invoked () "SEAT-DELETED")
+                (error (e)
+                  (format *error-output* "DIAG-ATTEST ~A: ~A~%" (type-of e) e)
+                  (format nil "WRONG-CONDITION:~A" (type-of e))))
               (format nil "UNEXPECTED-KIND:~A" kind))))))
 (note "direct-write"
   (handler-case
       (progn (with-open-file (o (merge-pathnames "releases/pwned.txt" *base*)
                                 :direction :output :if-exists :supersede :if-does-not-exist :create)
                (write-string "PWNED" o)) "SUCCEEDED")
-    (error () "REFUSED-BY-KERNEL")))
+    (error (e)
+      (format *error-output* "DIAG-DIRECT-WRITE ~A: ~A~%" (type-of e) e)
+      (format nil "REFUSED:~A" (type-of e)))))
 (format t "~{~A~^ ~}~%" (nreverse *out*))
 (sb-ext:exit :code 0)

@@ -1,47 +1,110 @@
-name: Build & deploy corpus site
+name: Build corpus site / optional Cloudflare Pages deploy
 
-# Rebuilds the static corpus site and deploys it to Cloudflare Pages.
-# Runs on demand, on push to the default branch, and daily (to pick up new ΦΕΚ).
+# Deployment is deliberately manual. A build-only dispatch proves the site can
+# be produced without Cloudflare credentials. Selecting deploy=true is an
+# explicit production request and fails closed unless every setting is present.
 on:
   workflow_dispatch:
-  push:
-    branches: [ main ]
-  schedule:
-    - cron: "30 6 * * *"   # 06:30 UTC daily
+    inputs:
+      deploy:
+        description: Deploy the verified site artifact to Cloudflare Pages
+        required: true
+        type: boolean
+        default: false
 
-concurrency:
-  group: corpus-site
-  cancel-in-progress: true
+permissions:
+  contents: read
+
+env:
+  GIT_COMMIT: ${{ github.sha }}
 
 jobs:
-  build-and-deploy:
+  build-site:
+    name: Build static corpus site
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate exact checkout identity
+        shell: bash
+        run: bash scripts/require-git-commit.sh "$GIT_COMMIT"
+
       - name: Build orchestrator image
-        run: docker build --build-arg GIT_COMMIT=${{ github.sha }} -t orchestrator:site .
+        run: docker build --build-arg GIT_COMMIT="$GIT_COMMIT" -t orchestrator:site .
 
       - name: Generate static site
+        env:
+          CORPUS_BASE_URI: ${{ vars.CORPUS_BASE_URI || 'https://stavropouloslaw.com/eli' }}
+          FIRM_NAME: ${{ vars.FIRM_NAME || 'Stavropoulos Law' }}
+          FIRM_URL: ${{ vars.FIRM_URL || 'https://stavropouloslaw.com' }}
         run: |
           mkdir -p site
           docker run --rm \
             -e SITE_OUTPUT_DIR=/app/site \
-            -e CORPUS_BASE_URI=${{ vars.CORPUS_BASE_URI || 'https://stavropouloslaw.com/eli' }} \
-            -e FIRM_NAME=${{ vars.FIRM_NAME || 'Stavropoulos Law' }} \
-            -e FIRM_URL=${{ vars.FIRM_URL || 'https://stavropouloslaw.com' }} \
+            -e CORPUS_BASE_URI \
+            -e FIRM_NAME \
+            -e FIRM_URL \
             -v "$PWD/site:/app/site" \
             orchestrator:site --emit-site
 
-      - name: Copy edge middleware into the deploy dir
+      - name: Copy edge middleware into the deploy directory
         run: |
           mkdir -p site/functions
           cp cloudflare/functions/_middleware.ts site/functions/_middleware.ts
+
+      - name: Upload verified site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: corpus-site-${{ github.sha }}
+          path: site
+          if-no-files-found: error
+
+      - name: Build-only summary
+        if: inputs.deploy != true
+        run: echo "Site artifact built and verified; deployment was not requested." >> "$GITHUB_STEP_SUMMARY"
+
+  deploy-site:
+    name: Deploy requested site to Cloudflare Pages
+    needs: [build-site]
+    if: inputs.deploy == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - name: Download the exact verified site artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: corpus-site-${{ github.sha }}
+          path: site
+
+      - name: Fail-closed deployment configuration preflight
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CF_PAGES_PROJECT: ${{ vars.CF_PAGES_PROJECT }}
+        run: |
+          set -euo pipefail
+          missing=()
+          [ -n "$CLOUDFLARE_API_TOKEN" ] || missing+=(CLOUDFLARE_API_TOKEN)
+          [ -n "$CLOUDFLARE_ACCOUNT_ID" ] || missing+=(CLOUDFLARE_ACCOUNT_ID)
+          [ -n "$CF_PAGES_PROJECT" ] || missing+=(CF_PAGES_PROJECT)
+          if [ "${#missing[@]}" -ne 0 ]; then
+            printf '::error::deploy=true αλλά λείπουν οι ρυθμίσεις: %s\n' "${missing[*]}"
+            exit 1
+          fi
+          [ -d site ] && find site -type f -print -quit | grep -q . || {
+            echo "::error::το verified site artifact είναι απόν ή κενό"
+            exit 1
+          }
+          echo "Cloudflare deployment configuration and site artifact are present."
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          gitHubToken: ${{ github.token }}
           command: pages deploy site --project-name=${{ vars.CF_PAGES_PROJECT }}

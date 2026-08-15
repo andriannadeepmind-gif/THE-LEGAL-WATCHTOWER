@@ -18,8 +18,11 @@
 # με PyYAML, και ΤΡΕΧΩΝ docker daemon. Ό,τι λείπει δηλώνεται BLOCKED ΟΝΟΜΑΣΤΙΚΑ.
 set -uo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$REPO"
+cd "$REPO" || exit 1
 BLOCKED=(); FAILED=(); PASSED=()
+
+GIT_COMMIT="$(bash "$REPO/scripts/require-git-commit.sh" "${GIT_COMMIT:-$(git -C "$REPO" rev-parse --verify 'HEAD^{commit}')}" )" || exit 1
+export GIT_COMMIT
 
 hr(){ printf '\n%s\n' "═══════════════════════════════════════════════════════════════════"; }
 run(){                                   # run <ετικέτα> <εντολή...>

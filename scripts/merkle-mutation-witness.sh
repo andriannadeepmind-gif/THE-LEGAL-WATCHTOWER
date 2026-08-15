@@ -383,18 +383,18 @@ else:
 #   census-empty-articles: build-artifact-census με ΚΕΝΟ σύνολο άρθρων ⇒
 #     ΑΠΟΡΡΙΨΗ· με τον guard μεταλλαγμένο ώστε να δίνει +empty-tree-hash+ ⇒
 #     ΔΕΚΤΟ (θα υπέγραφε δέσμευση για ΤΙΠΟΤΑ) ⇒ ο guard είναι φέρων.
-#   tlog-invalid-root: tlog-append-root! με μη-έγκυρο root ⇒ ΑΠΟΡΡΙΨΗ· με τον
-#     guard νεκρωμένο (unless t) ⇒ ΔΕΚΤΟ ⇒ ο guard είναι φέρων.
+#   tlog-invalid-root (ιστορικό stable id): η σημερινή tlog-append-root!
+#     είναι ΚΑΤΑΡΓΗΜΕΝΗ και οφείλει να σηματοδοτεί ΑΚΡΙΒΩΣ
+#     legacy-authority-seat-removed για ΚΑΘΕ root. Η μετάλλαξη κάνει
+#     μόνο την έδρα να επιστρέφει· ΔΕΝ επαναφέρει legacy writer.
 CENSUS_SRC = os.path.join(repo, "systems/orchestrator-epistemic/artifact-census.lisp")
 TLOG_SRC   = os.path.join(repo, "systems/orchestrator-epistemic/transparency-log.lisp")
 CENSUS_GUARD_OLD = '(error "census: κενό σύνολο άρθρων")'
 CENSUS_GUARD_NEW = "orchestrator.merkle:+empty-tree-hash+"
-TLOG_GUARD_OLD = """  (unless (and (stringp release-root)
-               (eql 0 (search "sha256:" release-root))
-               (= (length release-root) 71)
-               (every (lambda (c) (find c "0123456789abcdef"))
-                      (subseq release-root 7)))"""
-TLOG_GUARD_NEW = "  (unless t"
+TLOG_SEAT_OLD = """  (%seat-removed "tlog-append-root!"
+                 (format nil "απόπειρα authoritative log-append root '~A'" release-root)))"""
+TLOG_SEAT_NEW = """  ;; MUTANT: η retired έδρα σιωπά, χωρίς να επαναφερθεί writer.
+  :mutant-seat-alive)"""
 
 PUBLISHER_PROBE = r"""
 (require :asdf) (require :sb-posix)
@@ -417,11 +417,13 @@ PUBLISHER_PROBE = r"""
 (defun probe-tlog (dir)
   (handler-case
       (progn (orchestrator.epistemic:tlog-append-root! dir "not-a-root") :accepted)
-    (error (e) (let ((s (format nil "~A ~S" e (type-of e))))
-                 (if (or (search "μη έγκυρο release root" s)
-                         (search "VALIDATION-ERROR" s))
-                     :rejected
-                     (progn (format t "DIAG-TLOG ~A~%" s) :other))))))
+    (orchestrator.epistemic:legacy-authority-seat-removed (e)
+      (if (equal (orchestrator.epistemic:legacy-authority-seat-removed-seat e)
+                 "tlog-append-root!")
+          :retired
+          (progn (format t "DIAG-TLOG WRONG-SEAT ~A~%" e) :other)))
+    (error (e) (progn (format t "DIAG-TLOG WRONG-CONDITION ~A ~S~%" e (type-of e))
+                      :other))))
 (format t "C-GUARDED ~A~%" (probe-census))
 (format t "T-GUARDED ~A~%" (probe-tlog #p"{work}/tlog-guarded/"))
 ;; ΜΕΤΑΛΛΑΞΗ: τα μεταλλαγμένα αντίγραφα φορτώνονται ΠΑΝΩ στην εικόνα
@@ -442,15 +444,15 @@ else:
         t_src = open(TLOG_SRC, encoding="utf-8").read()
         if CENSUS_GUARD_OLD not in c_src:
             record("census-empty-articles", "policy", 0, "  (::error:: anchor δεν βρέθηκε)")
-        elif TLOG_GUARD_OLD not in t_src:
-            record("tlog-invalid-root", "policy", 0, "  (::error:: anchor δεν βρέθηκε)")
+        elif TLOG_SEAT_OLD not in t_src:
+            record("tlog-invalid-root", "policy", 0, "  (::error:: retired-seat anchor δεν βρέθηκε)")
         else:
             mut_census = os.path.join(d, "mut-census.lisp")
             mut_tlog = os.path.join(d, "mut-tlog.lisp")
             open(mut_census, "w", encoding="utf-8").write(
                 c_src.replace(CENSUS_GUARD_OLD, CENSUS_GUARD_NEW, 1))
             open(mut_tlog, "w", encoding="utf-8").write(
-                t_src.replace(TLOG_GUARD_OLD, TLOG_GUARD_NEW, 1))
+                t_src.replace(TLOG_SEAT_OLD, TLOG_SEAT_NEW, 1))
             for sub in ("census-artifacts", "tlog-guarded", "tlog-unguarded"):
                 os.makedirs(os.path.join(d, sub))
             probe = os.path.join(d, "publishers.lisp")
@@ -464,7 +466,7 @@ else:
                         ("C-GUARDED", "C-UNGUARDED", "T-GUARDED", "T-UNGUARDED"))
             norm = lambda s: (s or "").strip().lstrip(":").upper()
             c_kill = norm(vals.get("C-GUARDED")) == "REJECTED" and norm(vals.get("C-UNGUARDED")) == "ACCEPTED"
-            t_kill = norm(vals.get("T-GUARDED")) == "REJECTED" and norm(vals.get("T-UNGUARDED")) == "ACCEPTED"
+            t_kill = norm(vals.get("T-GUARDED")) == "RETIRED" and norm(vals.get("T-UNGUARDED")) == "ACCEPTED"
             record("census-empty-articles", "policy", 1 if c_kill else 0,
                    "" if c_kill else f"  (guarded={vals.get('C-GUARDED')} unguarded={vals.get('C-UNGUARDED')} rc={r.returncode})")
             record("tlog-invalid-root", "policy", 1 if t_kill else 0,

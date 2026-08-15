@@ -26,7 +26,10 @@ command -v docker >/dev/null 2>&1 || { echo "::error::BLOCKED — NOT EXECUTED: 
 docker info >/dev/null 2>&1        || { echo "::error::BLOCKED — NOT EXECUTED: ΚΑΝΕΝΑΣ docker daemon (το CLI μόνο του ΔΕΝ αρκεί)"; exit 2; }
 docker compose version >/dev/null 2>&1 || { echo "::error::BLOCKED — NOT EXECUTED: docker compose ΑΠΩΝ"; exit 2; }
 
-cd "$REPO"
+cd "$REPO" || exit 1
+GIT_COMMIT="$(bash "$REPO/scripts/require-git-commit.sh" "${GIT_COMMIT:-$(git -C "$REPO" rev-parse --verify 'HEAD^{commit}')}" )" || exit 1
+export GIT_COMMIT
+echo "source identity: GIT_COMMIT=$GIT_COMMIT"
 CORPUS="${LAWMAX_E2E_CORPUS:-syntagma}"
 COMPOSE=(docker compose --profile producer --profile authority)
 

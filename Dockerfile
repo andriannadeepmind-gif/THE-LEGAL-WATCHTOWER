@@ -55,13 +55,19 @@ FROM ${DEBIAN_DIGEST} AS builder
 # Build arguments for reproducibility
 ARG SBCL_VERSION
 ARG SOURCE_DATE_EPOCH
-ARG GIT_COMMIT=unknown
+ARG GIT_COMMIT
 ARG BUILD_DATE
 
 ENV DEBIAN_FRONTEND=noninteractive \
     LC_ALL=C.UTF-8 \
     LANG=C.UTF-8 \
     SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH}
+
+# Source identity is mandatory for every target, including builder-only compose
+# tests. The later proof-stage assertion remains as an independent ratchet.
+RUN echo "${GIT_COMMIT}" | grep -Eq '^[0-9a-f]{40}$' \
+    || { echo "FATAL: GIT_COMMIT build-arg πρέπει να είναι ακριβές 40-hex SHA (δόθηκε: '${GIT_COMMIT}')"; exit 1; }
+ENV GIT_COMMIT=${GIT_COMMIT}
 
 # Install build dependencies
 # NOTE: Python removed - PDF extraction now uses libpoppler-glib via CFFI (DARPA-grade)
@@ -174,7 +180,8 @@ RUN echo "${GIT_COMMIT}" | grep -Eq '^[0-9a-f]{40}$' \
 
 COPY tests/ /app/tests/
 COPY Dockerfile /app/Dockerfile
-COPY docker/run-standalone-test.lisp docker/run-standalone-suites.sh docker/standalone-suite-exclusions.txt docker/suite-census.txt docker/sha256.lisp docker/dep-hash.lisp docker/verify-proof-manifest.py docker/entrypoint.lisp docker/sbom.json /app/docker/
+COPY docker/run-standalone-test.lisp docker/run-standalone-suites.sh docker/standalone-suite-exclusions.txt docker/suite-census.txt docker/verifier-census.txt docker/sha256.lisp docker/dep-hash.lisp docker/verify-proof-manifest.py docker/entrypoint.lisp docker/sbom.json /app/docker/
+COPY authority-v2/ /app/authority-v2/
 
 # [audit#2] Το suite inventory ΠΑΡΑΓΕΤΑΙ από το filesystem (glob tests/*-test.lisp)
 # μείον τη ΜΙΑ δηλωμένη πηγή εξαιρέσεων (docker/standalone-suite-exclusions.txt) —
@@ -337,6 +344,9 @@ ARG BUILD_DATE
 ARG GIT_COMMIT
 ARG VERSION=1.2.0
 
+RUN echo "${GIT_COMMIT}" | grep -Eq '^[0-9a-f]{40}$' \
+    || { echo "FATAL: runtime GIT_COMMIT πρέπει να είναι ακριβές 40-hex SHA (δόθηκε: '${GIT_COMMIT}')"; exit 1; }
+
 # OCI standard labels
 LABEL org.opencontainers.image.title="Orchestrator" \
       org.opencontainers.image.description="Greek Legal Corpus Orchestrator - Research-Grade Production Runtime" \
@@ -352,7 +362,8 @@ LABEL org.opencontainers.image.title="Orchestrator" \
 
 ENV DEBIAN_FRONTEND=noninteractive \
     LC_ALL=C.UTF-8 \
-    LANG=C.UTF-8
+    LANG=C.UTF-8 \
+    GIT_COMMIT=${GIT_COMMIT}
 
 # Install minimal runtime dependencies
 # NOTE: Python REMOVED - All operations are now pure Lisp:

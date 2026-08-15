@@ -522,7 +522,9 @@
   ;; :internal  = υπολογισμός/σύγκριση εντός συστήματος, καμία δημοσίευση
   '(("source/proof-carrying.lisp"                        :publisher "empty-corpus-publication")
     ("systems/orchestrator-epistemic/artifact-census.lisp" :publisher "κενό σύνολο άρθρων")
-    ("systems/orchestrator-epistemic/transparency-log.lisp" :publisher "(list release-root)")
+    ;; Ο legacy writer έχει αποσυρθεί μέσω %seat-removed. Το αρχείο παραμένει
+    ;; μόνο reader/verifier παγωμένων logs και δεν δημοσιεύει πλέον ρίζες.
+    ("systems/orchestrator-epistemic/transparency-log.lisp" :internal "")
     ("source/corpus-fingerprint.lisp"                    :internal "")
     ("source/legal-audit-system.lisp"                    :internal "")
     ("source/semantic-authority.lisp"                    :internal "")
