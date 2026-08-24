@@ -86,7 +86,13 @@
    :focus "η ΑΠΟΣΤΑΣΗ δήλωσης από μηχανισμό επιβολής"
    :special-charge "ΒΡΕΣ την GATE-4 (README:304 «no subprocess»): πού υλοποιείται,
                     τι σαρώνει, ΑΝ καλύπτει το source/pdf-authority.lisp"
-   :status :running :dossier-sha256 :pending))
+   :status :SEALED
+   :dossier-sha256 "6ab0457e1a7b2993941b95ce8bbf431910876892157e103c7a797d2f4731352d"
+   :files-read 79 :dossier-lines 408
+   :gates (:citation-resolver "101/101 μετά από 2 διορθώσεις της ΙΔΙΑΣ της διαδρομής"
+           :constitution-checker :pass)
+   :correction-note "2 γυμνές παραπομπές διορθώθηκαν ΑΠΟ ΤΗ ΔΙΑΔΡΟΜΗ σε πλήρεις
+                     διαδρομές systems/orchestrator-omega-modules/…"))
 
  :central-mechanical-lane
  (:id "Φ1A-C0" :nature :ADDITIONAL-NOT-SUBSTITUTE

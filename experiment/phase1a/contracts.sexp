@@ -12,7 +12,7 @@
    :presence :absent
    :domain "Δηλωμένη πύλη CI που επιβάλλει «no subprocess» στον αγωγό."
    :assumptions "Ότι κάθε GATE-N του πίνακα README:300-305 αντιστοιχεί σε εκτελέσιμο guard."
-   :guarantees "ΚΑΜΙΑ. Εξαντλητική αναζήτηση σε *.lisp/*.md/*.asd/*.yml/*.yaml: το «GATE-4» με σημασία «pipeline integrity / no subprocess» εμφανίζεται ΜΟΝΟ στο README.md:304. Το μόνο άλλο «GATE-4A» (article-root-generator-omega.lisp:175, hybrid-generator-phase1.lisp:289) είναι ΑΣΧΕΤΟ (Single Emission Law)."
+   :guarantees "ΚΑΜΙΑ. Εξαντλητική αναζήτηση σε *.lisp/*.md/*.asd/*.yml/*.yaml: το «GATE-4» με σημασία «pipeline integrity / no subprocess» εμφανίζεται ΜΟΝΟ στο README.md:304. Το μόνο άλλο «GATE-4A» (systems/orchestrator-omega-modules/article-root-generator-omega.lisp:175, systems/orchestrator-omega-modules/hybrid-generator-phase1.lisp:289) είναι ΑΣΧΕΤΟ (Single Emission Law)."
    :failure-semantics "Δεν υπάρχει μηχανισμός να αποτύχει· η δήλωση δεν μπορεί ποτέ να γίνει κόκκινη."
    :operating-model "Μόνο γραμμή πίνακα Markdown."
    :materiality "P1 με άγκυρα: η ΑΠΟΛΥΤΗ δήλωση README:20-21 «The only subprocess is the Lisp runtime itself» δεν φρουρείται από κανέναν μηχανισμό, ΚΑΙ το source/pdf-authority.lisp εκκινεί 5 subprocess χωρίς να το πιάνει τίποτα."
