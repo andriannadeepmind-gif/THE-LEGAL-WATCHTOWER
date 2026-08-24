@@ -81,6 +81,7 @@ EVAL_TREE=$(git rev-parse HEAD^{tree})
 STAMP=$(date -u +%Y%m%dT%H%M%SZ)
 RECEIPTS="$REPO/experiment/artifacts/gate-receipts"
 RUN_DIR="$RECEIPTS/$STAMP"
+mkdir -p "$RECEIPTS"
 if [ -e "$RUN_DIR" ]; then
   echo "::error::ΤΟ $RUN_DIR ΥΠΑΡΧΕΙ ΗΔΗ — ο κατάλογος εκτέλεσης είναι ΑΠΟΚΛΕΙΣΤΙΚΟΣ" >&2
   exit 2
