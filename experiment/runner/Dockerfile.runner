@@ -50,7 +50,7 @@ RUN set -eu; \
     case "$v" in *2.4.0*) : ;; *) echo "::error::ΛΑΘΟΣ ΕΚΔΟΣΗ: $v"; exit 1;; esac
 
 # ── ΣΤΑΔΙΟ 2: runner — καθαρό, χωρίς μεταγλωττιστή C, χωρίς bootstrap sbcl ───
-FROM ubuntu@sha256:33ceb71981b602c1a7443a53469e4dba065f7503eab3078a2d7a57a2ab987517 AS runner
+FROM ubuntu@sha256:33ceb71981b602c1a7443a53469e4dba065f7503eab3078a2d7a57a2ab987517 AS runner-sbcl240
 ENV DEBIAN_FRONTEND=noninteractive LC_ALL=C.UTF-8 LANG=C.UTF-8
 
 COPY debs /toolchain
@@ -91,6 +91,48 @@ RUN mkdir -p /root/.config/common-lisp/source-registry.conf.d \
       > /root/.config/common-lisp/source-registry.conf.d/10-third-party.conf
 
 # ── Κάθε εγγραφή χρόνου εκτέλεσης ΕΞΩ από το corpus ─────────────────────────
+ENV ASDF_OUTPUT_TRANSLATIONS=/:/work/fasl/ \
+    PYTHONPYCACHEPREFIX=/work/pycache \
+    TMPDIR=/work/tmp \
+    HOME=/root
+
+COPY runner-entry.sh /runner/entry.sh
+RUN chmod +x /runner/entry.sh && sbcl --version && python3 -c 'import yaml'
+ENTRYPOINT ["/runner/entry.sh"]
+
+# ── ΣΤΑΔΙΟ 3: runner-sbcl229 — Η ΠΑΓΩΜΕΝΗ ΕΠΙΛΟΓΗ ────────────────────────────
+# ΠΕΙΡΑΜΑΤΙΚΟ ΕΥΡΗΜΑ (όχι προτίμηση): στο SBCL 2.4.0 το vendored
+# third-party/log4cl-v1.1.2 ΔΕΝ ΜΕΤΑΓΛΩΤΤΙΖΕΤΑΙ:
+#   «Lock on package SB-C violated when interning LAMBDA-PARENT
+#    while in package LOG4CL-IMPL»
+# Το σφάλμα ειναι ΚΑΘΟΛΙΚΟ και ΝΤΕΤΕΡΜΙΝΙΣΤΙΚΟ: 104/104 σουίτες που πρόλαβαν
+# να εκτελεστούν στο στάδιο runner-sbcl240 απέτυχαν με ΑΚΡΙΒΩΣ αυτό.
+# ΣΥΝΕΠΕΙΑ ΓΙΑ ΤΟ CORPUS: το δηλωμένο ARG SBCL_VERSION=2.4.0 (Dockerfile:16)
+# δεν ειναι απλώς ανεπιβλητο — ειναι ΑΣΥΜΒΑΤΟ. Αν είχε επιβληθεί, το build δεν
+# θα περνούσε. Το corpus χτίζεται στο 2.2.9, ό,τι δίνει σιωπηλά το apt.
+# ΤΟ ΕΥΡΗΜΑ ΔΕΝ ΔΙΟΡΘΩΝΕΤΑΙ ΕΔΩ: το corpus ειναι τεκμήριο, όχι ασθενής.
+# ΑΠΟΦΑΣΗ: παγώνεται το 2.2.9 — content-addressed από το ΙΔΙΟ store (sha256 στο
+# toolchain manifest), ΟΧΙ από ζωντανό apt. Το στάδιο 2.4.0 παραμένει ως
+# ΤΕΚΜΗΡΙΟ της ασυμβατότητας, όχι ως εκτελεστής.
+FROM ubuntu@sha256:33ceb71981b602c1a7443a53469e4dba065f7503eab3078a2d7a57a2ab987517 AS runner-sbcl229
+ENV DEBIAN_FRONTEND=noninteractive LC_ALL=C.UTF-8 LANG=C.UTF-8
+
+COPY debs /toolchain
+RUN set -eu; \
+    for _ in 1 2 3 4 5; do \
+      dpkg --unpack /toolchain/*.deb >/dev/null 2>&1 || true; \
+      dpkg --configure -a >/dev/null 2>&1 || true; \
+    done; \
+    dpkg --unpack /toolchain/*.deb; \
+    dpkg --configure -a; \
+    bad="$(dpkg-query -W -f='${Package} ${Status}\n' | grep -v 'install ok installed' || true)"; \
+    [ -z "$bad" ] || { echo "::error::ΑΤΕΛΗΣ ΕΓΚΑΤΑΣΤΑΣΗ:"; echo "$bad"; exit 1; }; \
+    rm -rf /toolchain /var/lib/apt/lists/*
+
+RUN mkdir -p /root/.config/common-lisp/source-registry.conf.d \
+ && printf '(:tree "/app/third-party/")\n(:tree "/app/source/cl-dependencies/")\n' \
+      > /root/.config/common-lisp/source-registry.conf.d/10-third-party.conf
+
 ENV ASDF_OUTPUT_TRANSLATIONS=/:/work/fasl/ \
     PYTHONPYCACHEPREFIX=/work/pycache \
     TMPDIR=/work/tmp \
