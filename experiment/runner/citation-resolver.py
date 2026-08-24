@@ -24,7 +24,9 @@ import sys
 MANIFEST = "experiment/artifacts/corpus-manifest.tsv"
 
 CITATION = re.compile(
-    r'\b([A-Za-z0-9_./\-Ͱ-Ͽ]+\.(?:lisp|asd|md|sexp|sh|py|js|json|yml|yaml|ttl|txt|jsonld))'
+    # (?<![\w.]) αντί για \b: το \b ΔΕΝ πιάνει διαδρομές που αρχίζουν με «.»
+    # (π.χ. .github/workflows/…) — εντοπίστηκε σε πραγματικό dossier της Φ1A-L7.
+    r'(?<![\w./-])(\.?[A-Za-z0-9_./\-Ͱ-Ͽ]+\.(?:lisp|asd|md|sexp|sh|py|js|json|yml|yaml|ttl|txt|jsonld))'
     r':L?(\d+)(?:\s*-\s*L?(\d+))?'
     r'(?:@sha256:([0-9a-f]{6,64}))?'
 )
