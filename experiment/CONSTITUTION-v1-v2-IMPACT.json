@@ -1,0 +1,39 @@
+{
+ "$schema": "lawmax/constitution-impact/1",
+ "status": "DRAFT",
+ "v1_sha256": "5b3ab5bf9561d535adbf5049b975ac2ab8e9a63db32dfb14a07d82d78b729be6",
+ "v2_draft_sha256": "sha256:52c389edd341659e2ada9d767b3de26db981751d1c845e73eea19753d8ece52b",
+ "artifacts_currently_bound_to_v1": [
+  "experiment/OBJECTIVE-CONSTITUTION.json",
+  "experiment/runner/constitution-checker.py",
+  "experiment/artifacts/SUSPENSION-CHECKPOINT.sexp",
+  "experiment/artifacts/FREEZE.sexp",
+  "experiment/artifacts/ISOLATION-MANIFEST.sexp"
+ ],
+ "phase1a_factual_dossiers": {
+  "invariant_under_v1_v2": true,
+  "why": "Τα dossiers καταγράφουν ΓΕΓΟΝΟΤΑ του παγωμένου corpus (τι υπάρχει, τι λείπει, ποιες πύλες κοκκινίζουν). ΚΑΜΙΑ διάταξη του v2 δεν αλλάζει τι είναι γεγονός. Η αλλαγή αφορά ΠΩΣ ΚΡΙΝΟΝΤΑΙ candidates στις Φ2-Φ4 — φάσεις που ΔΕΝ έχουν αρχίσει.",
+  "consequence": "ΚΑΜΙΑ επανάγνωση lane. Μεταφορά μέσω PHASE1A-EVIDENCE-TRANSFER-CERTIFICATE."
+ },
+ "obligations_transfer": {
+  "citation": "μεταφέρεται ΑΝΑΛΛΟΙΩΤΗ — η πύλη δεν εξαρτάται από τη σχέση κυριαρχίας",
+  "coverage": "μεταφέρεται ΑΝΑΛΛΟΙΩΤΗ",
+  "entailment": "μεταφέρεται ΑΝΑΛΛΟΙΩΤΗ",
+  "read_ledger": "μεταφέρεται ΑΝΑΛΛΟΙΩΤΗ",
+  "macro_layer": "μεταφέρεται ΑΝΑΛΛΟΙΩΤΗ"
+ },
+ "requires_recheck_under_v2": [
+  "κάθε ΜΕΛΛΟΝΤΙΚΗ σύγκριση candidates (καμία δεν έχει γίνει — Φ2 δεν άρχισε)",
+  "OBLIGATIONS.json: οι υποχρεώσεις F/D/S/M θα δεθούν στο v2 μετά την επικύρωση (DOMAIN-CLOSURE-CERTIFICATE, Ω-based dominance, DAG closure, [W] class)",
+  "PROTOCOL-EPOCH-3 §permitted-final-claims: ευθυγράμμιση ονομάτων με c7 (PROVED-GREATEST-IN-SEALED-Q_t) στην επόμενη epoch — ΟΧΙ αλλοίωση της τρέχουσας"
+ ],
+ "does_not_require": [
+  "καμία αλλαγή frozen corpus",
+  "καμία αλλαγή main",
+  "καμία αλλαγή υπαρχόντων dossiers",
+  "καμία επανεκτέλεση L2/L3/L5/L6",
+  "καμία επανεκτέλεση των gate receipts της Φ1A"
+ ],
+ "risk_if_ratified_late": "Καμία απώλεια: η Φ2 δεν επιτρέπεται να αρχίσει πριν τη σφράγιση Φ1A, άρα το παράθυρο επικύρωσης δεν καθυστερεί τίποτα που θα μπορούσε να τρέχει παράλληλα.",
+ "risk_if_never_ratified": "Η Φ2 θα έτρεχε υπό v1: χωρίς πεπερασμένο Q_t δεν υπάρχει αποδείξιμος τερματισμός· χωρίς Ω οι δευτερεύοντες άξονες δεν συμμετέχουν στην κυριαρχία· χωρίς admitted-challenger κανόνα το UNKNOWN μπλοκάρει επ' άπειρον. Το v1 παραμένει ΕΓΚΥΡΟ αλλά μη-τερματίζον."
+}

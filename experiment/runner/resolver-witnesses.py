@@ -110,6 +110,8 @@ def identity_of(rows):
 
 AUTH = '''(:lawmax-lane-scope-authority/1
  :read-only-mount "{mount}"
+ :resolve-probe-symlink "alpha/link.lisp"
+ :resolve-probe-escape "../etc/passwd"
  :identity "{identity}"
  :lanes
  ((:lane "W-DIR"  :cluster-roots ("alpha" "beta"))
@@ -210,10 +212,12 @@ MALF = "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμη�
 
 
 def head(mnt, lane, roots, dbytes, fver, tot, res, prob, ma, cr, inc, out):
-    return (f"resolver v6 sha256:<SHA>\n"
+    return (f"resolver v7 sha256:<SHA>\n"
             f"manifest sha256:<SHA>\n"
             f"scope-authority sha256:<SHA>\n"
             f"frozen mount {mnt} [ro,nodev,nosuid,noexec] · access {ACCESS}\n"
+            f"resolve-enforcement: ΑΠΟΔΕΔΕΙΓΜΕΝΗ — «alpha/link.lisp» και "
+            f"«../etc/passwd» ΑΠΕΤΥΧΑΝ όπως απαιτείται\n"
             f"corpus-identity sha256:<SHA> (ξαναϋπολογισμένη από το TSV: ΤΑΥΤΙΖΕΤΑΙ)\n"
             f"lane {lane} · cluster-roots {roots}\n"
             f"dossier d.sexp {dbytes}B sha256:<SHA>\n"
@@ -381,7 +385,7 @@ def custom():
         setup(w, m, f'(:x "{A1}")', auth=bad)
         return run(w, ["--lane", "W-DIR", "d.sexp"]), \
             ('::error::SCOPE-AUTHORITY «experiment/phase1a/LANE-SCOPE-AUTHORITY.sexp»: '
-             'UNTERMINATED STRING που άνοιξε στη γραμμή 14')
+             'UNTERMINATED STRING που άνοιξε στη γραμμή 16')
 
     @case("N-PARSE dangling escape", "negative", 2)
     def _(w, m):
@@ -491,6 +495,22 @@ def custom():
             subprocess.run(["umount", plain], capture_output=True)
         return (rc, out), (f"::error::ΤΟ {plain} ΔΕΝ ΕΧΕΙ «nodev»: "
                            f"['relatime', 'ro']")
+
+    @case("N-BLOCK probe που ΔΕΝ αποτυγχάνει ⇒ BLOCKED, ΠΟΤΕ PASS", "negative", 3)
+    def _(w, m):
+        # δηλώνουμε ως «symlink probe» ένα ΚΑΝΟΝΙΚΟ αρχείο: θα ανοίξει, άρα
+        # η τήρηση των flags ΔΕΝ αποδεικνύεται ⇒ η πύλη ΠΡΕΠΕΙ να επιστρέψει
+        # BLOCKED (exit 3), όχι PASS και όχι FAIL.
+        auth = AUTH.format(mount=m, identity=identity_of(base_rows())).replace(
+            ':resolve-probe-symlink "alpha/link.lisp"',
+            ':resolve-probe-symlink "alpha/a.lisp"')
+        setup(w, m, f'(:x "{A1}")', auth=auth)
+        rc, out = run(w, ["--lane", "W-DIR", "d.sexp"])
+        return (rc, out.split("\n")[-2] + "\n" + out.split("\n")[-1]), \
+            ("::error::BLOCKED — ΤΟ RESOLVE_NO_SYMLINKS ΔΕΝ ΤΗΡΕΙΤΑΙ: το "
+             "«alpha/a.lisp» άνοιξε ενώ ΕΠΡΕΠΕ να αποτύχει. Ο πυρήνας δέχτηκε "
+             "τη δομή αλλά ΔΕΝ επιβάλλει την ιδιότητα. ⇒ BLOCKED\n"
+             "VERDICT: BLOCKED")
 
     @case("N-MOUNT δεν είναι mount", "negative", 2)
     def _(w, m):
