@@ -510,6 +510,26 @@
    :severity :p2
    :evidence "version-graph.lisp:288-300,407-418 vs 1727-1729,2096-2104,2595-2596"
    :is-it-in-the-known-defect-list :unknown)
+  (:what "Ο ΕΛΕΓΚΤΗΣ ΤΟΥ AUDIT TRAIL ΑΠΟΤΥΓΧΑΝΕΙ ΠΑΝΤΑ, ΜΕ ΔΥΟ ΑΝΕΞΑΡΤΗΤΑ ΣΦΑΛΜΑΤΑ: (α) το log-activity δίνει :previous-hash NIL στην ΠΡΩΤΗ εγγραφή, ενώ το verify-audit-trail ξεκινά με previous-hash \"GENESIS\" — (equal NIL \"GENESIS\") ⇒ «Hash chain broken» στην πρώτη εγγραφή ΚΑΘΕ trail· (β) η επαλήθευση JWS καλεί (verify-jws signature *signing-public-key-path* :expected-payload content) ενώ η υπογραφή είναι (verify-jws jws payload public-key) — ΤΕΣΣΕΡΑ ορίσματα σε ΤΡΙΩΝ-παραμέτρων συνάρτηση, ΚΑΙ με τα ορίσματα σε λάθος θέσεις ⇒ program-error, που το handler-case το μετατρέπει σε log:warn + NIL ⇒ «Invalid signature». Άρα: με ενεργή κρυπτογραφική υπογραφή το audit trail ΔΕΝ επαληθεύεται ΠΟΤΕ, και η αιτία κρύβεται σε warning."
+   :severity :p0
+   :evidence "legal-audit-system.lisp:233-236,486-509,545-554 · jws-authority.lisp:394"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "compute-entry-hash (audit) χρησιμοποιεί «~A|~A|~A|…» — ΜΗ ΕΝΡΙΞΙΜΗ κωδικοποίηση: μετατόπιση του «|» μεταξύ actor/target/action δίνει ΙΔΙΟ hash για ΔΙΑΦΟΡΕΤΙΚΕΣ εγγραφές (ίδια κλάση που το review-queue ΔΙΟΡΘΩΣΕ ρητά με %canon-encode και το authority-proof-bundle με separator-deny). Η αλυσίδα audit είναι πλαστογραφήσιμη με field-shifting."
+   :severity :p1
+   :evidence "legal-audit-system.lisp:271-283 vs review-queue.lisp:100-117"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "generate-uuid του audit: (random (expt 2 32)) με το ΠΡΟΕΠΙΛΕΓΜΕΝΟ *random-state* — ΟΧΙ CSPRNG και, στο SBCL, ΙΔΙΑ ακολουθία σε κάθε εκκίνηση εικόνας. Τα entry-id/trail-id είναι προβλέψιμα ΚΑΙ επαναλαμβανόμενα μεταξύ εκτελέσεων· το trail-entry-index (equal hash) τα αντικαθιστά σιωπηλά σε σύγκρουση. (Το ίδιο μοτίβο στο generate-activity-id.)"
+   :severity :p1
+   :evidence "legal-audit-system.lisp:780-793"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "government-source %pdf->text καλεί το ΜΗ-ΕΞΑΓΟΜΕΝΟ extract-pdf-text — τη διαδρομή που ΠΕΦΤΕΙ ΣΙΩΠΗΛΑ στον regex «fallback PDF parser» με μόνο (warn) όταν λείπει η poppler. Άρα η κρατική ροή εισαγωγής μπορεί να τροφοδοτήσει τον amendment-extractor με αποσπασματικό κείμενο, και οι :high-confidence πράξεις που προκύπτουν αυτο-εφαρμόζονται."
+   :severity :p1
+   :evidence "government-source.lisp:487-502 · pdf-authority.lisp:904-964"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "mcp-server *corpus-list-fn*: ελέγχει (find-package :orchestrator.spec) αλλά κάνει find-symbol στο :orchestrator.cli (λάθος φρουρός — απόν package ⇒ σφάλμα), και σε αποτυχία επιστρέφει ΣΤΑΘΕΡΗ λίστα '(\"syntagma\" \"poinikos\"). Ένας AI πράκτορας που ρωτά «ποιους κώδικες σερβίρεις» παίρνει ΜΑΝΤΕΨΙΑ, όχι το μητρώο."
+   :severity :p1
+   :evidence "mcp-server.lisp:102-107"
+   :is-it-in-the-known-defect-list :unknown)
   (:what "GATE-5 (validation-authority) ΕΙΝΑΙ ΔΟΜΙΚΑ ΝΕΚΡΟ: ΕΞΙ εσωτερικές κλήσεις περνούν το CONTEXT ΘΕΣΙΑΚΑ σε συναρτήσεις που το δηλώνουν ως &key — (check-broken-patterns ttl-content context) vs (defun check-broken-patterns (ttl &key context)) κ.λπ. Κάθε τέτοια κλήση σηματοδοτεί program-error («odd number of &KEY arguments») ΠΡΙΝ γίνει οποιοσδήποτε έλεγχος. Άρα το validate-canonical-ttl ΠΟΤΕ δεν επικυρώνει: ή σκάει με σφάλμα άσχετο με το περιεχόμενο, ή (αν ο καλών το τυλίγει) η επικύρωση απουσιάζει εντελώς. Καταναλωτής υπάρχει: systems/orchestrator-omega-modules/unified-frbr-generator.lisp:434."
    :severity :p0
    :evidence "validation-authority.lisp:67,70,73,77,93,173,210,213,216,220,230,250"
