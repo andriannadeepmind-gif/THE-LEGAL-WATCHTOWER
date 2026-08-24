@@ -1,8 +1,14 @@
 (:lawmax-phase1a-cluster/1
  :cluster "source"
  :status :partial
- :files-read 52
+ :files-read 73
  :files-total 133
+ :read-since-checkpoint-3 ("injection.lisp" "guard-metaeval.lisp" "trace-core.lisp" "logging.lisp"
+   "legal-identity.lisp" "legal-id-registry.lisp" "json-emit.lisp" "deliberation.lisp" "mcp-server.lisp"
+   "review-service.lisp" "knowledge-graph.lisp" "knowledge-packs.lisp" "government-source.lisp"
+   "ingestion-daemon.lisp" "legislation-ingestion.lisp" "validation-authority.lisp" "legal-ast.lisp"
+   "legal-audit-system.lisp" "legal-authority-receipt.lisp" "authority-evidence-replay.lisp"
+   "blockchain-authority.lisp")
  :read-since-checkpoint-2 ("asn1-der.lisp" "circuit-breaker.lisp" "component-scan.lisp"
    "consolidation-proof.lisp" "consolidation-feed.lisp" "corpus-provenance.lisp" "corpus-diff.lisp"
    "consolidation-engine.lisp" "consolidation-bridge.lisp" "corpus-fingerprint.lisp"
@@ -601,6 +607,36 @@
   (:what "Το ΜΟΤΙΒΟ «(apply (find-symbol \"X\" :orchestrator.consolidation) args)» επαναλαμβάνεται αυτούσιο σε ≥2 αρχεία, ρητά δηλωμένο ως «the same defensive pattern the other intelligence modules use» — αντιγραμμένο boilerplate που μετατρέπει απούσα εξάρτηση σε undefined-function αντί για δηλωμένη άγνοια."
    :severity :p2
    :evidence "anomaly-detection.lisp:24-31 · ast-gate.lisp:40-47"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "blockchain-authority: ethereum-anchor και arweave-upload επιστρέφουν NIL «σιωπηλά αν δεν έχει ρυθμιστεί» (ρητό σχόλιο «CONDITIONAL: Skip silently if not configured»), και ο συγκεντρωτής anchor-to-chains κάνει (when result (push …)) — άρα ΑΠΟΥΣΙΑ ρύθμισης παράγει ΚΕΝΟ σύνολο αγκυρών χωρίς καμία διάκριση από «δοκιμάστηκε και απέτυχε». Ο καλών δεν μπορεί να ξεχωρίσει «δεν αγκυρώθηκε γιατί δεν υπάρχει RPC» από «αγκυρώθηκε σε 0 αλυσίδες»."
+   :severity :p1
+   :evidence "blockchain-authority.lisp:640-641,749-750,906-909"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "blockchain-authority verify-anchor: το τελικό (t nil) του case σημαίνει ότι ΑΓΝΩΣΤΗ αλυσίδα, ΜΗ ρυθμισμένο *ethereum-rpc-url*, και «η συναλλαγή δεν επαληθεύτηκε» δίνουν ΤΟ ΙΔΙΟ NIL. Boolean επιστροφή αντί για τριαδική (verified/unverified/unknown) ⇒ η άγνοια κωδικοποιείται ως αρνητική επαλήθευση."
+   :severity :p1
+   :evidence "blockchain-authority.lisp:912-944"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "legal-ast ast-copy: αντιγράφει ΜΟΝΟ τα τέσσερα slots της βάσης ast-node (id/type/text/source-blocks) + children· ΟΛΑ τα slots των 16 υποκλάσεων χάνονται σιωπηλά. Αντίγραφο amendment-node χάνει amendment-type/target-law/target-article/target-paragraph — δηλαδή ΤΙ τροποποιεί· αντίγραφο article-node χάνει article-number/article-title. Καμία προειδοποίηση, καμία δήλωση απώλειας."
+   :severity :p1
+   :evidence "legal-ast.lisp:1904-1918 · υποκλάσεις με ίδια slots: legal-ast.lisp:427-445,841-865"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "legal-ast when-let: το docstring δηλώνει ρητά «This matches the Alexandria when-let convention» και «execute BODY only if ALL values are non-nil», αλλά η υλοποίηση παίρνει (first bindings) και ΑΓΝΟΕΙ σιωπηλά κάθε επόμενο binding. Δεύτερη έδρα του ονόματος when-let σε repo που φορτώνει ήδη alexandria (η ίδια alexandria:when-let χρησιμοποιείται στο blockchain-authority.lisp:953-971)."
+   :severity :p2
+   :evidence "legal-ast.lisp:2138-2148 · alexandria:when-let σε χρήση: blockchain-authority.lisp:953-971"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "blockchain-authority: το mod-inverse (εκτεταμένος Ευκλείδης, κρίσιμο για ECDSA/RSA) υλοποιείται ΔΕΥΤΕΡΗ φορά, αυτούσιο, ενώ υπάρχει ήδη έδρα στο jws-authority.lisp. Δύο ανεξάρτητες υλοποιήσεις της ίδιας αριθμοθεωρητικής πράξης σε δύο μονοπάτια υπογραφής."
+   :severity :p2
+   :evidence "blockchain-authority.lisp:259-269 · jws-authority.lisp:711"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "blockchain-authority: όλα τα :timestamp των αποδείξεων αγκύρωσης προέρχονται από (get-universal-time) — ΟΧΙ από την έδρα orchestrator.time, ΟΧΙ ντετερμινιστικά, και ΟΧΙ από την ίδια την αλυσίδα (η αλυσίδα έχει block timestamp). Η «απόδειξη χρόνου» της αγκύρωσης είναι το τοπικό ρολόι του κόμβου που την κατέγραψε."
+   :severity :p2
+   :evidence "blockchain-authority.lisp:710,794,879"
    :is-it-in-the-known-defect-list :unknown))
 
  :hidden-execution-paths
@@ -667,7 +703,15 @@
   (:path "*scope-assumptions* — δυναμική μεταβλητή που μεταφέρει «υποθέσεις» έξω από την επιστροφή"
    :trigger "version-at με :scope-mode :conservative και scope-covers-p = :unknown"
    :why-hidden "Πλευρικό κανάλι: ένα pushnew μέσα σε φιλτράρισμα καθορίζει αν το αποτέλεσμα θα σημανθεί analytical-not-authoritative· η σήμανση εξαρτάται από τη ΣΕΙΡΑ αποτίμησης των κατηγορημάτων."
-   :evidence "version-graph.lisp:193-195,1020-1028,2137-2162"))
+   :evidence "version-graph.lisp:193-195,1020-1028,2137-2162")
+  (:path "blockchain-authority.lisp → (initialize-from-environment) σε load-toplevel"
+   :trigger "ΑΠΛΗ ΦΟΡΤΩΣΗ του αρχείου — καμία κλήση, καμία απόφαση, κανένα gate"
+   :why-hidden "Πέντε μεταβλητές περιβάλλοντος (ETHEREUM_RPC_URL, ETHEREUM_PRIVATE_KEY, ETHEREUM_CHAIN_ID, ARWEAVE_WALLET_PATH, IPFS_API_URL) μεταβάλλουν ΚΑΤΑ ΤΗ ΦΟΡΤΩΣΗ αν το σύστημα θα αγκυρώνει σε αλυσίδα ή θα σιωπά, ΚΑΙ εισάγουν ΙΔΙΩΤΙΚΟ ΚΛΕΙΔΙ στην εικόνα. Δεν καταγράφεται σε journal, δεν εκπέμπεται receipt, δεν αναφέρεται σε κανένα capability report. Κακοσχηματισμένο ETHEREUM_CHAIN_ID γίνεται (warn) και η μεταβλητή μένει στην προηγούμενη τιμή."
+   :evidence "blockchain-authority.lisp:951-972")
+  (:path "legal-ast: τοπικός ορισμός when-let που ΣΚΙΑΖΕΙ τη σύμβαση της alexandria"
+   :trigger "Οποιοσδήποτε γράψει (when-let ((a x) (b y)) …) μέσα στο orchestrator.legal-ast"
+   :why-hidden "Το ίδιο όνομα, το ίδιο docstring-συμβόλαιο, ΔΙΑΦΟΡΕΤΙΚΗ σημασιολογία: τα bindings πέραν του πρώτου εξαφανίζονται· η αναφορά στο body γίνεται unbound variable αντί για «όλα non-nil»."
+   :evidence "legal-ast.lisp:2138-2148"))
 
  :duplicate-seats
  ((:concept "«χρόνος για δημοσιευμένο artifact»"
@@ -705,7 +749,13 @@
            "canonical-representation.lisp:338-342 (generate-manifest-id — ironclad απευθείας, ΕΝΩ το ίδιο αρχείο αλλού χρησιμοποιεί hash:compute-hash)"))
   (:concept "«ώρα δημιουργίας/υποβολής» μέσα στο ίδιο αρχείο"
    :seats ("archive-authority.lisp:87 ((get-universal-time))"
-           "archive-authority.lisp:131-132 (orchestrator.time:now :source :system)")))
+           "archive-authority.lisp:131-132 (orchestrator.time:now :source :system)"))
+  (:concept "modular multiplicative inverse (εκτεταμένος Ευκλείδης) σε μονοπάτι υπογραφής"
+   :seats ("jws-authority.lisp:711 (mod-inverse — RSA CRT qinv, jws-authority.lisp:697)"
+           "blockchain-authority.lisp:259-269 (mod-inverse — secp256k1 point add/double/ecrecover, L306,L312,L351)"))
+  (:concept "when-let"
+   :seats ("legal-ast.lisp:2138-2148 (τοπικός ορισμός, ΜΟΝΟ πρώτο binding)"
+           "alexandria:when-let (σε ενεργή χρήση στο ίδιο repo: blockchain-authority.lisp:953-971)")))
 
  :unknowns
  ("Ποιος θέτει το *advisor* και με ποιο μοντέλο — δεν βρίσκεται στα αρχεία που διάβασα."
@@ -714,32 +764,20 @@
 
  :remaining
  ("ai-citation-strategy.lisp" "ai-corpus-dump.lisp" "ai-ingest-manifest.lisp"
-  "akoma-ntoso-emitter.lisp"
-  "asn1-der.lisp" "authority-evidence-replay.lisp"
-  "blockchain-authority.lisp"
-  "circuit-breaker.lisp" "citation-authority.lisp"
-  "component-scan.lisp" "consolidation-bridge.lisp" "consolidation-engine.lisp"
-  "consolidation-feed.lisp" "consolidation-proof.lisp" "corpus-diff.lisp"
-  "corpus-eu-links.lisp" "corpus-fingerprint.lisp" "corpus-intelligence.lisp" "corpus-provenance.lisp"
-  "corpus-search.lisp" "corpus-service.lisp" "corpus-sparql.lisp" "deliberation.lisp"
-  "embeddings-authority.lisp" "eu-interop-layer.lisp" "execution-trace.lisp" "fluid-induction.lisp"
-  "generation.lisp" "government-source.lisp" "graph-reasoning.lisp" "greek-legislation-ontology.lisp"
-  "greek-lemmatizer.lisp" "greek-nlp-core.lisp" "greek-tokenizer-advanced.lisp" "guard-metaeval.lisp"
-  "guard-ops-pack.lisp" "http-server.lisp" "ingestion-daemon.lisp" "injection.lisp" "introspection.lisp"
-  "json-emit.lisp" "jws-authority.lisp" "knowledge-graph.lisp" "knowledge-packs.lisp" "layout-types.lisp"
-  "legal-ast.lisp" "legal-audit-system.lisp" "legal-authority-receipt.lisp" "legal-casegrammar.lisp"
-  "legal-conflict-resolution.lisp" "legal-counterfactual.lisp" "legal-decisions.lisp" "legal-deontic.lisp"
-  "legal-dialectic.lisp" "legal-event-calculus.lisp" "legal-extraction-verify.lisp" "legal-hypergraph.lisp"
-  "legal-hypo.lisp" "legal-id-registry.lisp" "legal-identity.lisp" "legal-inference-engine.lisp"
-  "legal-knowledge.lisp" "legal-penalty.lisp" "legal-precedent.lisp" "legal-qa.lisp"
-  "legal-reasoning-bridge.lisp" "legal-references.lisp" "legal-strategy.lisp" "legal-subsumption.lisp"
-  "legal-temporal.lisp" "legislation-ingestion.lisp" "lexicon-neurolingo.lisp" "logging.lisp"
-  "mcp-server.lisp" "memory.lisp" "narrative-provenance.lisp" "orthography-lexicon.lisp" "paths.lisp"
-  "proposals.lisp" "protocols.lisp" "provenance-link.lisp" "rdfs-inference.lisp"
-  "reasoning-authority.lisp" "review-queue.lisp" "review-service.lisp" "self-history.lisp" "self-model.lisp"
-  "semantic-authority.lisp" "semantic-versioning-system.lisp" "shacl-validator.lisp"
-  "signed-embedding-manifest.lisp" "source-profile.lisp" "sparql-endpoint.lisp" "static-site.lisp"
-  "text-canonicalizer.lisp" "timestamp-authority.lisp" "trace-core.lisp" "turtle-parser.lisp"
-  "typographic-classifier.lisp" "validate-ast.lisp" "validate-layout-graph.lisp"
-  "validate-logical-blocks.lisp" "validation-authority.lisp" "what-if.lisp"
-  "x509-authority.lisp"))
+  "akoma-ntoso-emitter.lisp" "citation-authority.lisp" "corpus-eu-links.lisp"
+  "corpus-service.lisp" "corpus-sparql.lisp" "embeddings-authority.lisp" "eu-interop-layer.lisp"
+  "execution-trace.lisp" "fluid-induction.lisp" "generation.lisp" "graph-reasoning.lisp"
+  "greek-legislation-ontology.lisp" "greek-lemmatizer.lisp" "greek-nlp-core.lisp"
+  "greek-tokenizer-advanced.lisp" "guard-ops-pack.lisp" "layout-types.lisp"
+  "legal-casegrammar.lisp" "legal-conflict-resolution.lisp" "legal-counterfactual.lisp"
+  "legal-decisions.lisp" "legal-deontic.lisp" "legal-dialectic.lisp" "legal-event-calculus.lisp"
+  "legal-extraction-verify.lisp" "legal-hypergraph.lisp" "legal-hypo.lisp"
+  "legal-inference-engine.lisp" "legal-knowledge.lisp" "legal-penalty.lisp"
+  "legal-precedent.lisp" "legal-qa.lisp" "legal-reasoning-bridge.lisp" "legal-references.lisp"
+  "legal-strategy.lisp" "legal-subsumption.lisp" "legal-temporal.lisp" "lexicon-neurolingo.lisp"
+  "narrative-provenance.lisp" "orthography-lexicon.lisp" "protocols.lisp" "provenance-link.lisp"
+  "rdfs-inference.lisp" "reasoning-authority.lisp" "semantic-authority.lisp"
+  "semantic-versioning-system.lisp" "shacl-validator.lisp" "signed-embedding-manifest.lisp"
+  "source-profile.lisp" "sparql-endpoint.lisp" "static-site.lisp" "text-canonicalizer.lisp"
+  "turtle-parser.lisp" "typographic-classifier.lisp" "validate-ast.lisp"
+  "validate-layout-graph.lisp" "validate-logical-blocks.lisp"))

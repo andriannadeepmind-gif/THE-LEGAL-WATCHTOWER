@@ -61,6 +61,15 @@ def main():
         seen = set()
         for m in CITATION.finditer(text):
             rel, start, end, sha12 = m.group(1), int(m.group(2)), m.group(3), m.group(4)
+            # ΚΑΝΟΝΙΚΟΠΟΙΗΣΗ ΤΟΥ ΔΗΛΩΜΕΝΟΥ MOUNT PREFIX: μια παραπομπή
+            # /frozen/ro/deployment/x.md ΕΙΝΑΙ η canonical deployment/x.md — το
+            # /frozen/ro είναι το read-only mount του ΙΔΙΟΥ commit. Είναι
+            # ΑΚΡΙΒΕΣΤΕΡΗ γραφή, όχι σφάλμα. Αφαιρείται ΜΟΝΟ αυτό το ένα,
+            # δηλωμένο πρόθεμα — καμία άλλη χαλάρωση.
+            for prefix in ("/frozen/ro/", "/frozen/watchtower/", "/app/"):
+                if rel.startswith(prefix):
+                    rel = rel[len(prefix):]
+                    break
             key = (rel, start, end, sha12)
             if key in seen:
                 continue
