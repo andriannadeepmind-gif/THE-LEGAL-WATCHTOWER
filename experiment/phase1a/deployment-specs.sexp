@@ -178,7 +178,7 @@
    :failure-semantics "καμία — κανένας μηχανισμός επαλήθευσης αυτών των δηλώσεων δεν υπάρχει στη συστάδα"
    :operating-model "στατικά .ttl/.jsonld αρχεία με ημερομηνίες 2021 & 2025-11-13, version 1.2.0, δικό τους λεξιλόγιο (infra:, law:, bc:, ipfs:, qes:) ασύνδετο με τα LAWMAX-* specs"
    :materiality "P0 — είναι το ΜΟΝΟ σημείο της συστάδας που εκδίδει ΨΕΥΔΗ αποδεικτικά (Δ-6/Δ-7)"
-   :evidence "deployment/authority.ttl:L22-25,L59-60,L262-273,L349-379 ; deployment/manifest.ttl:L14-21,L33-48 ; deployment/provenance-narrative.ttl:L17-23 ; deployment/ontology.ttl:L15-25 ; deployment/identity.ttl:L10-17 ; deployment/ai-feedback.ttl:L11-24 ; publisher.jsonld ; deployment/shapes/legal-shapes.ttl:L11-20 ; deployment/shapes/eli-shapes.ttl:L180-189")
+   :evidence "deployment/authority.ttl:L22-25,L59-60,L262-273,L349-379 ; deployment/manifest.ttl:L14-21,L33-48 ; deployment/provenance-narrative.ttl:L17-23 ; deployment/ontology.ttl:L15-25 ; deployment/identity.ttl:L10-17 ; deployment/ai-feedback.ttl:L11-24 ; deployment/publisher.jsonld ; deployment/shapes/legal-shapes.ttl:L11-20 ; deployment/shapes/eli-shapes.ttl:L180-189")
 
   (:name "Trust bootstrap ceremony (owner root key, out-of-band pin, delegation)"
    :presence :spec-only
@@ -308,10 +308,10 @@
    :is-it-in-the-known-defect-list :no)
 
   (:id :Δ-3
-   :what "P0 — ΤΟ ΙΔΙΟ ΤΟ ΚΑΝΟΝΙΚΟ ΚΕΙΜΕΝΟ ΑΠΟΓΡΑΦΕΙ ΕΠΤΑ ΑΠΟΚΛΙΝΟΥΣΕΣ ΕΔΡΕΣ MERKLE ΣΤΟΝ ΚΩΔΙΚΑ ΚΑΙ ΑΝΑΒΑΛΛΕΙ ΤΗΝ ΕΝΩΣΗ. Ρητά: «Ο αντίπαλος [0057] απέδειξε ότι στα ΙΔΙΑ φύλλα δίνουν ΑΠΟΚΛΙΝΟΥΣΕΣ ρίζες — μη-αποδεκτό για ΜΙΑ έννοια». Δύο από τις έδρες διδάσκουν ακριβώς την απαγορευμένη κλάση: anchor-blockchain.lisp:133 «duplicate-last (η ίδια CVE-2012-2459 κλάση που το κριτήριο καταδικάζει)» και corpus-fingerprint.lisp:94 «odd→self-pair»· δύο χρησιμοποιούν SHA-512· μία είναι concat (ΟΧΙ δέντρο)· μία είναι νεκρό exported API. Η αιτιολογία αναβολής («αλλάζει proof bytes ⇒ νέες release ids») είναι τίμια, αλλά το αποτέλεσμα είναι ότι η δηλωμένη εγγύηση «ΟΛΑ τα Merkle δέντρα του συστήματος υπακούν σε ΕΝΑ κανόνα» ΔΕΝ ισχύει στο παγωμένο commit."
+   :what "P0 — ΤΟ ΙΔΙΟ ΤΟ ΚΑΝΟΝΙΚΟ ΚΕΙΜΕΝΟ ΑΠΟΓΡΑΦΕΙ ΕΠΤΑ ΑΠΟΚΛΙΝΟΥΣΕΣ ΕΔΡΕΣ MERKLE ΣΤΟΝ ΚΩΔΙΚΑ ΚΑΙ ΑΝΑΒΑΛΛΕΙ ΤΗΝ ΕΝΩΣΗ. Ρητά: «Ο αντίπαλος [0057] απέδειξε ότι στα ΙΔΙΑ φύλλα δίνουν ΑΠΟΚΛΙΝΟΥΣΕΣ ρίζες — μη-αποδεκτό για ΜΙΑ έννοια». Δύο από τις έδρες διδάσκουν ακριβώς την απαγορευμένη κλάση: systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:133 «duplicate-last (η ίδια CVE-2012-2459 κλάση που το κριτήριο καταδικάζει)» και source/corpus-fingerprint.lisp:94 «odd→self-pair»· δύο χρησιμοποιούν SHA-512· μία είναι concat (ΟΧΙ δέντρο)· μία είναι νεκρό exported API. Η αιτιολογία αναβολής («αλλάζει proof bytes ⇒ νέες release ids») είναι τίμια, αλλά το αποτέλεσμα είναι ότι η δηλωμένη εγγύηση «ΟΛΑ τα Merkle δέντρα του συστήματος υπακούν σε ΕΝΑ κανόνα» ΔΕΝ ισχύει στο παγωμένο commit."
    :severity :p0
    :evidence "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L16-24,L26-46"
-   :anchors-to-code "source/proof-carrying.lisp · systems/orchestrator-epistemic/…merkle-tree.lisp · source/corpus-fingerprint.lisp:94 · source/legal-audit-system.lisp:571,576 · systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:133 · source/semantic-authority.lisp:653 · source/hash-authority.lisp:55 — ΥΠΑΡΞΗ/ΠΕΡΙΕΧΟΜΕΝΟ :unknown, άλλη διαδρομή"
+   :anchors-to-code "source/proof-carrying.lisp · systems/orchestrator-epistemic/merkle-tree.lisp · source/corpus-fingerprint.lisp:94 · source/legal-audit-system.lisp:571,576 · systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:133 · source/semantic-authority.lisp:653 · source/hash-authority.lisp:55 — ΥΠΑΡΞΗ/ΠΕΡΙΕΧΟΜΕΝΟ :unknown, άλλη διαδρομή"
    :is-it-in-the-known-defect-list :yes-declared-in-spec-itself)
 
   (:id :Δ-4
@@ -378,7 +378,7 @@
   (:id :Δ-14
    :what "P1 — ΣΥΝΥΠΑΡΞΗ ΔΥΟ ΑΣΥΜΒΑΤΩΝ ΚΑΘΕΣΤΩΤΩΝ TRUST ANCHOR. Το PCL μονοπάτι ορίζει ΥΠΟΧΡΕΩΤΙΚΟ out-of-band pinned key (αλλιώς untrusted-key / exit 3 «NOT proof of authenticity»). Το release μονοπάτι παραμένει self-certifying: «η JWS υπογραφή του release root επαληθεύεται με verify/public.jwk ΜΕΣΑ στο ίδιο το release» και «Όποιος ελέγχει το output/<corpus>/releases/ κατασκευάζει πλήρως self-consistent ψευδο-anchored κατάσταση». Τα ίδια τα conformance vectors φέρουν verify/public.jwk μέσα σε κάθε release directory. Δηλωμένο ως Θ9 ΑΝΟΙΧΤΟ και ως ο λόγος ύπαρξης του TRUST-BOOTSTRAP-SPEC — που είναι ΑΝΕΓΚΡΙΤΟ."
    :severity :p1
-   :evidence "deployment/PROOF-CARRYING-LAW.md:L104-109 ; deployment/verify/README.md:L27-34,L58 ; deployment/LAWMAX-THREAT-MODEL.md:L37 ; deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L1-16,L37,L64-74,L84-88 ; verify/vectors/sha256-9977ffdaf9f2548f83abfbedf039fdf6767b1d212aafa4b806de280919333460/verify/public.jwk"
+   :evidence "deployment/PROOF-CARRYING-LAW.md:L104-109 ; deployment/verify/README.md:L27-34,L58 ; deployment/LAWMAX-THREAT-MODEL.md:L37 ; deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L1-16,L37,L64-74,L84-88 ; deployment/verify/vectors/sha256-9977ffdaf9f2548f83abfbedf039fdf6767b1d212aafa4b806de280919333460/verify/public.jwk"
    :is-it-in-the-known-defect-list :yes-declared-in-spec-itself)
 
   (:id :Δ-15
@@ -526,7 +526,7 @@
            "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L9" "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L14" "deployment/LAWMAX-OMEGA-PLAN.md:L225"))
   (:concept "απογραφή εντολών/ικανοτήτων/συμβολαίων/συστατικών"
    :seats ("deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L40-76,L79+" "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L13-19"
-           "LAWMAX-REPO-ONTOLOGY-MAP.sexp" "deployment/LAWMAX-REPO-GRAPH.json:L1-3"
+           "deployment/LAWMAX-REPO-ONTOLOGY-MAP.sexp" "deployment/LAWMAX-REPO-GRAPH.json:L1-3"
            "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L9" "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L19"))
   (:concept "κανονιστική πρωτοκαθεδρία (ποιο κείμενο δεσμεύει)"
    :seats ("deployment/LAWMAX-OMEGA-PLAN.md:L5-6" "deployment/LAWMAX-CEILING-CROSSWALK.md:L3-5,L73-74"
@@ -542,8 +542,8 @@
   (:concept "σύνθεση hashes (composition rule)"
    :seats ("deployment/verify/merkle-profile.sexp:L51-53 (0x01 || ΩΜΑ bytes)" "deployment/verify/canonical-serialization-spec.md:L61-63 (0x1F μεταξύ HEX strings)"))
   (:concept "SHACL σχήματα επικύρωσης νομικών πόρων"
-   :seats ("shapes/legal-shapes.ttl" "shapes/eli-shapes.ttl"
-           "verify/vectors/sha256-9977ffda…/shapes/{manifest,article,lineage}-shape.ttl"))
+   :seats ("deployment/shapes/legal-shapes.ttl" "deployment/shapes/eli-shapes.ttl"
+           "deployment/verify/vectors/sha256-9977ffdaf9f2548f83abfbedf039fdf6767b1d212aafa4b806de280919333460/shapes/manifest-shape.ttl" "deployment/verify/vectors/sha256-9977ffdaf9f2548f83abfbedf039fdf6767b1d212aafa4b806de280919333460/shapes/article-shape.ttl" "deployment/verify/vectors/sha256-9977ffdaf9f2548f83abfbedf039fdf6767b1d212aafa4b806de280919333460/shapes/lineage-shape.ttl"))
   (:concept "σημασιολογική στοίβα δημοσίευσης (δύο ασύνδετες γενιές τεχνημάτων)"
    :seats ("LAWMAX-* specs (2026, Lisp/PCL/RFC 9162/RS256)"
            "*.ttl + publisher.jsonld + templates/ + shapes/ (2021 & 2025-11-13 v1.2.0, Jena/Ethereum/IPFS/eIDAS)")))
