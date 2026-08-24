@@ -1,35 +1,50 @@
 #!/usr/bin/env python3
-"""ΠΥΛΗ ΠΑΡΑΠΟΜΠΩΝ — κάθε ισχυρισμός λύνεται στο παγωμένο corpus ή η φάση κοκκινίζει.
+"""ΠΥΛΗ ΠΑΡΑΠΟΜΠΩΝ (versioned gate) — κάθε ισχυρισμός λύνεται στο παγωμένο
+corpus ή η φάση κοκκινίζει.
 
-ΓΙΑΤΙ ΥΠΑΡΧΕΙ: ένας πράκτορας μπορεί να γράψει οτιδήποτε. Το μόνο που δεν μπορεί
-να πλαστογραφήσει είναι μια παραπομπή που ΛΥΝΕΤΑΙ σε αρχείο, γραμμή και hash του
-σφραγισμένου manifest. Ό,τι δεν λύνεται ΔΕΝ είναι ισχυρισμός — είναι αφήγηση.
+ΓΙΑΤΙ ΥΠΑΡΧΕΙ: ένας πράκτορας μπορεί να γράψει οτιδήποτε. Το μόνο που δεν
+μπορεί να πλαστογραφήσει είναι μια παραπομπή που ΛΥΝΕΤΑΙ σε αρχείο, γραμμή και
+hash του σφραγισμένου manifest. Ό,τι δεν λύνεται ΔΕΝ είναι ισχυρισμός.
 
-ΤΙΜΙΟ ΟΡΙΟ, ΔΗΛΩΜΕΝΟ: αυτό ΔΕΝ είναι read-ledger. Δεν αποδεικνύει ΤΙ ΔΙΑΒΑΣΕ ο
-πράκτορας — αποδεικνύει ότι κάθε ΙΣΧΥΡΙΣΜΟΣ του αγκυρώνεται σε πραγματικό,
-υπαρκτό σημείο του παγωμένου δέντρου. Το πρώτο δεν είναι διαθέσιμο για
-υποπράκτορες· το δεύτερο είναι, και είναι αυτό που κρίνει.
+ΤΙΜΙΟ ΟΡΙΟ, ΔΗΛΩΜΕΝΟ: ΔΕΝ είναι read-ledger. Δεν αποδεικνύει ΤΙ ΔΙΑΒΑΣΕ ο
+πράκτορας — αποδεικνύει ότι κάθε ΙΣΧΥΡΙΣΜΟΣ αγκυρώνεται σε υπαρκτό σημείο.
 
-Μορφές που δέχεται:
-    path:123
-    path:L10-L42
-    path:L10-L42@sha256:0123456789ab
-Έξοδος 0 ΜΟΝΟ αν ΚΑΘΕ παραπομπή λύνεται. Κενή είσοδος ⇒ σφάλμα (καμία
-«επαληθεύτηκαν 0» ψευδο-επιτυχία).
+ΚΑΝΟΝΙΚΟΠΟΙΗΣΗ ΔΙΑΔΡΟΜΩΝ — ΔΗΛΩΜΕΝΗ, ΟΧΙ ΕΥΡΕΤΙΚΗ (EARLY CORRECTION §4):
+  ① Το ΜΟΝΟ αποδεκτό absolute πρόθεμα είναι ΑΚΡΙΒΩΣ "/frozen/ro/" — το
+     δηλωμένο read-only mount του παγωμένου commit. Κάθε άλλο absolute
+     (/app/, /frozen/watchtower/, /tmp/, /etc/…) ΑΠΟΡΡΙΠΤΕΤΑΙ ονομαστικά.
+  ② Κάθε διαδρομή με ".." ΑΠΟΡΡΙΠΤΕΤΑΙ (path traversal) πριν από κάθε άλλη
+     επεξεργασία.
+  ③ Cluster-relative επίλυση ΜΟΝΟ ως προς το ΣΦΡΑΓΙΣΜΕΝΟ cluster_root της
+     συγκεκριμένης lane (--lane). ΠΟΤΕ με μαντεψιά προθέματος.
+  ④ Το canonical path ΠΡΕΠΕΙ να υπάρχει στο frozen manifest. Symlink escape
+     είναι δομικά αδύνατο: το manifest απαριθμεί ΜΟΝΟ πραγματικά μέλη του
+     παγωμένου δέντρου, με τα symlinks σημασμένα — και απορρίπτονται ρητά.
+
+Μορφές: path:123 · path:L10-L42 · path:L10-L42@sha256:0123456789ab
+Έξοδος 0 ΜΟΝΟ αν ΚΑΘΕ παραπομπή λύνεται. Κενή είσοδος ⇒ σφάλμα.
 """
+import hashlib
 import os
 import re
 import sys
 
+RESOLVER_VERSION = "3"
 MANIFEST = "experiment/artifacts/corpus-manifest.tsv"
+REGISTRY = "experiment/phase1a/LANE-REGISTRY.sexp"
+
+# ΤΟ ΕΝΑ ΚΑΙ ΜΟΝΟ αποδεκτό absolute πρόθεμα.
+FROZEN_MOUNT = "/frozen/ro/"
 
 CITATION = re.compile(
-    # (?<![\w.]) αντί για \b: το \b ΔΕΝ πιάνει διαδρομές που αρχίζουν με «.»
-    # (π.χ. .github/workflows/…) — εντοπίστηκε σε πραγματικό dossier της Φ1A-L7.
-    r'(?<![\w./-])(\.?[A-Za-z0-9_./\-Ͱ-Ͽ]+\.(?:lisp|asd|md|sexp|sh|py|js|json|yml|yaml|ttl|txt|jsonld))'
+    # (?<![\w./-]) αντί για \b: το \b δεν πιάνει διαδρομές με αρχικό «.»
+    # (π.χ. .github/workflows/…) — εντοπίστηκε σε πραγματικό dossier.
+    r'(?<![\w./-])(/?\.?[A-Za-z0-9_./\-Ͱ-Ͽ]+\.'
+    r'(?:lisp|asd|md|sexp|sh|py|js|mjs|ts|json|jsonld|yml|yaml|ttl|txt|cddl|zip))'
     r':L?(\d+)(?:\s*-\s*L?(\d+))?'
     r'(?:@sha256:([0-9a-f]{6,64}))?'
 )
+
 
 def load_manifest(path):
     index = {}
@@ -40,16 +55,48 @@ def load_manifest(path):
             parts = line.rstrip("\n").split("\t")
             if len(parts) < 6:
                 continue
-            rel, _kind, sha, _bytes, lines, _cls = parts[:6]
-            index[rel] = (sha, int(lines))
+            rel, kind, sha, _bytes, lines, _cls = parts[:6]
+            index[rel] = (sha, int(lines), kind)
     return index
+
+
+def load_cluster_root(lane_id):
+    """Το cluster_root ΔΙΑΒΑΖΕΤΑΙ από το σφραγισμένο registry — δεν μαντεύεται."""
+    if not os.path.exists(REGISTRY):
+        return None
+    text = open(REGISTRY, encoding="utf-8").read()
+    m = re.search(r':lane\s+"' + re.escape(lane_id) + r'".*?:cluster-root\s+"([^"]*)"',
+                  text, re.S)
+    return m.group(1) if m else None
+
+
+def normalize(raw):
+    """Επιστρέφει (canonical_path | None, reason_if_rejected). Δηλωμένοι κανόνες."""
+    if ".." in raw.split("/"):
+        return None, "PATH TRAVERSAL: περιέχει «..»"
+    if raw.startswith("/"):
+        if not raw.startswith(FROZEN_MOUNT):
+            return None, f"ΜΗ ΑΠΟΔΕΚΤΟ ABSOLUTE ΠΡΟΘΕΜΑ (μόνο {FROZEN_MOUNT})"
+        return raw[len(FROZEN_MOUNT):], None
+    return raw, None
+
 
 def main():
     if not os.path.exists(MANIFEST):
         print(f"::error::ΑΠΩΝ το corpus manifest: {MANIFEST}")
         return 2
+    args = list(sys.argv[1:])
+    lane_id = None
+    if "--lane" in args:
+        i = args.index("--lane")
+        lane_id = args[i + 1] if i + 1 < len(args) else None
+        del args[i:i + 2]
+    cluster_root = load_cluster_root(lane_id) if lane_id else None
+
     index = load_manifest(MANIFEST)
-    targets = [p for p in sys.argv[1:] if os.path.isfile(p)]
+    manifest_sha = hashlib.sha256(open(MANIFEST, "rb").read()).hexdigest()
+    self_sha = hashlib.sha256(open(__file__, "rb").read()).hexdigest()
+    targets = [p for p in args if os.path.isfile(p)]
     if not targets:
         print("::error::ΚΑΜΙΑ είσοδος — καμία ψευδο-επιτυχία")
         return 2
@@ -60,27 +107,31 @@ def main():
         text = open(path, encoding="utf-8", errors="replace").read()
         seen = set()
         for m in CITATION.finditer(text):
-            rel, start, end, sha12 = m.group(1), int(m.group(2)), m.group(3), m.group(4)
-            # ΚΑΝΟΝΙΚΟΠΟΙΗΣΗ ΤΟΥ ΔΗΛΩΜΕΝΟΥ MOUNT PREFIX: μια παραπομπή
-            # /frozen/ro/deployment/x.md ΕΙΝΑΙ η canonical deployment/x.md — το
-            # /frozen/ro είναι το read-only mount του ΙΔΙΟΥ commit. Είναι
-            # ΑΚΡΙΒΕΣΤΕΡΗ γραφή, όχι σφάλμα. Αφαιρείται ΜΟΝΟ αυτό το ένα,
-            # δηλωμένο πρόθεμα — καμία άλλη χαλάρωση.
-            for prefix in ("/frozen/ro/", "/frozen/watchtower/", "/app/"):
-                if rel.startswith(prefix):
-                    rel = rel[len(prefix):]
-                    break
-            key = (rel, start, end, sha12)
+            raw, start = m.group(1), int(m.group(2))
+            end, sha12 = m.group(3), m.group(4)
+            key = (raw, start, end, sha12)
             if key in seen:
                 continue
             seen.add(key)
             total += 1
+
+            rel, why = normalize(raw)
+            if rel is None:
+                problems.append((path, m.group(0), why))
+                continue
+            if rel not in index and cluster_root:
+                cand = f"{cluster_root.rstrip('/')}/{rel}"
+                if cand in index:
+                    rel = cand
             if rel not in index:
                 problems.append((path, m.group(0), "ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest"))
                 continue
-            sha, nlines = index[rel]
-            # Το manifest μετράει newlines· ένα αρχείο χωρίς τελικό newline έχει
-            # μία γραμμή παραπάνω από τα newlines. Δεχόμαστε nlines+1 ως ανώτατο.
+            sha, nlines, kind = index[rel]
+            if kind == "symlink":
+                problems.append((path, m.group(0), "SYMLINK — δεν παραπέμπουμε σε σύνδεσμο"))
+                continue
+            # Το manifest μετράει newlines· αρχείο χωρίς τελικό newline έχει μία
+            # γραμμή παραπάνω. Ανώτατο αποδεκτό: nlines+1.
             limit = nlines + 1
             hi = int(end) if end else start
             if start < 1 or hi > limit:
@@ -95,12 +146,15 @@ def main():
                 continue
             resolved += 1
 
+    print(f"resolver v{RESOLVER_VERSION} sha256:{self_sha[:16]} · "
+          f"manifest sha256:{manifest_sha[:16]} · lane={lane_id or '—'}")
     print(f"παραπομπές: {total} · λύθηκαν: {resolved} · ΠΡΟΒΛΗΜΑΤΙΚΕΣ: {len(problems)}")
     for src, cit, why in problems:
         print(f"  ✗ [{src}] {cit} — {why}")
     if total == 0:
-        print("::error::ΜΗΔΕΝ παραπομπές βρέθηκαν — ισχυρισμοί χωρίς άγκυρα δεν γίνονται δεκτοί")
+        print("::error::ΜΗΔΕΝ παραπομπές — ισχυρισμοί χωρίς άγκυρα δεν γίνονται δεκτοί")
         return 2
     return 1 if problems else 0
+
 
 sys.exit(main())

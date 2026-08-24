@@ -249,7 +249,7 @@
  ((:statement "leaf=SHA-256(0x00||bytes) · node=SHA-256(0x01||L||R) επί ΩΜΩΝ bytes · split = μεγαλύτερη δύναμη 2 ΑΥΣΤΗΡΑ < n · ΠΟΤΕ duplicate-last · order-sensitive"
    :enforced-by "merkle-profile.sexp ως ΜΟΝΗ πηγή + generated blocks + 101 κοινά golden vectors + 13 mutation witnesses"
    :verified-here "ΝΑΙ — 101/101 vectors ελέγχθηκαν αριθμητικά και ταιριάζουν"
-   :evidence "deployment/verify/merkle-profile.sexp:L44-62,L122-143 ; verify/vectors/merkle/vectors.json")
+   :evidence "deployment/verify/merkle-profile.sexp:L44-62,L122-143 ; deployment/verify/vectors/merkle/vectors.json")
   (:statement "ΚΑΜΙΑ Unicode normalization, ΚΑΜΙΑ μετατροπή LF/CRLF, τελικό newline ΑΚΡΙΒΩΣ ως έχει, UTF-8 χωρίς BOM"
    :enforced-by "merkle-profile :byte-encoding + witnesses unicode-normalize/crlf-normalize + vectors nfc/nfd, lf/crlf, trailing/no-trailing"
    :evidence "deployment/verify/merkle-profile.sexp:L64-74,L128-129,L92-93"
@@ -546,7 +546,7 @@
            "deployment/verify/vectors/sha256-9977ffdaf9f2548f83abfbedf039fdf6767b1d212aafa4b806de280919333460/shapes/manifest-shape.ttl" "deployment/verify/vectors/sha256-9977ffdaf9f2548f83abfbedf039fdf6767b1d212aafa4b806de280919333460/shapes/article-shape.ttl" "deployment/verify/vectors/sha256-9977ffdaf9f2548f83abfbedf039fdf6767b1d212aafa4b806de280919333460/shapes/lineage-shape.ttl"))
   (:concept "σημασιολογική στοίβα δημοσίευσης (δύο ασύνδετες γενιές τεχνημάτων)"
    :seats ("LAWMAX-* specs (2026, Lisp/PCL/RFC 9162/RS256)"
-           "*.ttl + publisher.jsonld + templates/ + shapes/ (2021 & 2025-11-13 v1.2.0, Jena/Ethereum/IPFS/eIDAS)")))
+           "deployment/*.ttl + deployment/publisher.jsonld + deployment/templates/ + deployment/shapes/ (2021 & 2025-11-13 v1.2.0, Jena/Ethereum/IPFS/eIDAS)")))
 
  ;; ══════════════════════════════════════════════════════════════════════
  :unknowns

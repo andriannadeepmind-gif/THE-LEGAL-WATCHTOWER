@@ -1,8 +1,13 @@
 (:lawmax-phase1a-cluster/1
  :cluster "source"
  :status :partial
- :files-read 73
+ :files-read 98
  :files-total 133
+ :read-since-checkpoint-4 ("guard-ops-pack.lisp" "legal-temporal.lisp" "legal-event-calculus.lisp" "legal-dialectic.lisp" "legal-hypo.lisp" "legal-counterfactual.lisp"
+   "graph-reasoning.lisp" "corpus-sparql.lisp" "execution-trace.lisp" "legal-strategy.lisp" "legal-conflict-resolution.lisp"
+   "legal-qa.lisp" "legal-precedent.lisp" "provenance-link.lisp" "ai-corpus-dump.lisp" "legal-references.lisp"
+   "corpus-eu-links.lisp" "legal-reasoning-bridge.lisp" "legal-penalty.lisp" "legal-hypergraph.lisp" "legal-deontic.lisp"
+   "akoma-ntoso-emitter.lisp" "generation.lisp" "greek-legislation-ontology.lisp" "protocols.lisp")
  :read-since-checkpoint-3 ("injection.lisp" "guard-metaeval.lisp" "trace-core.lisp" "logging.lisp"
    "legal-identity.lisp" "legal-id-registry.lisp" "json-emit.lisp" "deliberation.lisp" "mcp-server.lisp"
    "review-service.lisp" "knowledge-graph.lisp" "knowledge-packs.lisp" "government-source.lisp"
@@ -637,6 +642,131 @@
   (:what "blockchain-authority: όλα τα :timestamp των αποδείξεων αγκύρωσης προέρχονται από (get-universal-time) — ΟΧΙ από την έδρα orchestrator.time, ΟΧΙ ντετερμινιστικά, και ΟΧΙ από την ίδια την αλυσίδα (η αλυσίδα έχει block timestamp). Η «απόδειξη χρόνου» της αγκύρωσης είναι το τοπικό ρολόι του κόμβου που την κατέγραψε."
    :severity :p2
    :evidence "blockchain-authority.lisp:710,794,879"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "Η ΓΕΦΥΡΑ ΤΟΥ ΔΕΟΝΤΙΚΟΥ L5 ΠΡΟΣ ΤΟΝ L2 ΕΙΝΑΙ ΝΕΚΡΗ. Η κεφαλίδα του legal-deontic δηλώνει ρητά ότι «η δεοντική σύγκρουση γίνεται (:conflict …) και την κρίνει ο υπάρχων L2» (lex superior/specialis/posterior), αλλά ο κανόνας-γέφυρα παράγει (:conflict-of-norms ?sa ?sb :on ?act :from ?na ?nb) — ΔΙΑΦΟΡΕΤΙΚΟ κατηγόρημα από το (:conflict CA A CB B) που ταιριάζουν ΟΛΟΙ οι κανόνες του L2, ΚΑΙ με τις πηγές ως ΕΝΙΑΙΑ strings «corpus:article» αντί για δύο χωριστούς όρους. Το σύμβολο :conflict-of-norms εμφανίζεται ΑΚΡΙΒΩΣ ΜΙΑ φορά σε ΟΛΟ το παγωμένο repo — στο σημείο παραγωγής του. ΜΗΔΕΝ καταναλωτές: καμία δεοντική σύγκρουση δεν φτάνει ποτέ στην επίλυση συγκρούσεων."
+   :severity :p0
+   :evidence "legal-deontic.lisp:14-18,34,160-167 (παραγωγή) · legal-conflict-resolution.lisp:69-112 (οι κανόνες L2 ταιριάζουν :conflict, όχι :conflict-of-norms) · grep -rn conflict-of-norms /frozen/ro ⇒ 1 σημείο, μόνο η παραγωγή"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "ΕΝΤΕΚΑ ΕΔΡΕΣ JSON string escaping, ΤΕΣΣΕΡΙΣ από τις οποίες παράγουν ΑΚΥΡΟ JSON. Τα corpus-eu-links:113-121, government-source:239-250, corpus-diff:36-44 και corpus-search:70-78 έχουν (t (write-char ch s)) ως τελευταία περίπτωση: οι χαρακτήρες ελέγχου U+0000–U+001F πλην \\n \\r \\t περνούν ΑΚΑΤΕΡΓΑΣΤΟΙ, κάτι που το RFC 8259 §7 απαγορεύει — αυστηρός parser ΑΠΟΡΡΙΠΤΕΙ το έγγραφο. Στο ΙΔΙΟ repo τα review-service:190-204, mcp-server:41-53, legal-qa:95-106, ai-corpus-dump:40-50 ΚΑΝΟΥΝ τη σωστή \\u-διαφυγή — και η ΔΗΛΩΜΕΝΗ έδρα json-emit:39-58 (write-json-value, ολική) δεν χρησιμοποιείται από καμία τους. Το σώμα είναι OCR-αρισμένα PDF ΦΕΚ, όπου οι χαρακτήρες ελέγχου είναι αναμενόμενοι."
+   :severity :p1
+   :evidence "corpus-eu-links.lisp:113-121 · government-source.lisp:239-250 · corpus-diff.lisp:36-44 · corpus-search.lisp:70-78 · (σωστές) review-service.lisp:190-204 · mcp-server.lisp:41-53 · legal-qa.lisp:95-106 · ai-corpus-dump.lisp:40-50 · (δηλωμένη έδρα) json-emit.lisp:39-58 · (11η, inline) corpus-sparql.lisp:102-104"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "ΔΥΟ ΑΣΥΜΒΑΤΕΣ ΕΔΡΕΣ ΣΥΓΚΡΙΣΗΣ ΝΟΜΙΚΩΝ ΗΜΕΡΟΜΗΝΙΩΝ, με ΨΕΥΔΗ δήλωση αποκλειστικότητας. Το legal-temporal δηλώνει στην κεφαλίδα του «η ΜΙΑ έδρα» ημερολογιακής αριθμητικής και υλοποιεί date< / date<= ως ΣΚΕΤΟ string< / string<= (λεξικογραφικά), με την ΕΠΙΚΥΡΩΣΗ μορφής ρητά ανατεθειμένη σε ΣΧΟΛΙΟ («ευθύνη της typed έδρας version-graph:legal-date-p») — καμία επιβολή στον κώδικα. Παράλληλα ο μετακυκλικός αποτιμητής φραγμών έχει ΠΛΗΡΕΣ δεύτερο ημερολόγιο (DATE<, DATE<=, DATE>, DATE>=, DAYS-BETWEEN, WITHIN-DAYS, ΗΜΕΡΑ-ΕΒΔΟΜΑΔΑΣ, ΕΡΓΑΣΙΜΗ-P, ΕΠΟΜΕΝΗ-ΕΡΓΑΣΙΜΗ) υλοποιημένο ΑΡΙΘΜΗΤΙΚΑ μέσω (ymd->day …). Οι δύο έδρες τροφοδοτούν ΔΙΑΦΟΡΕΤΙΚΑ trusted μονοπάτια: το event calculus παίρνει τα πιστοποιητικά date</date<= από τον αποτιμητή, ενώ η κρίση ΕΜΠΡΟΘΕΣΜΟ/ΕΚΠΡΟΘΕΣΜΟ της στρατηγικής Σ9 στηρίζεται στο string<=."
+   :severity :p1
+   :evidence "legal-temporal.lisp:3,16-20 (αξίωση «ΜΙΑ έδρα»),41-46 (string< / string<=) · guard-metaeval.lisp:652-666 (δεύτερο πλήρες ημερολόγιο) · legal-event-calculus.lisp:47,56 (:where date<= / date<) · legal-strategy.lisp:62-63 (ΕΜΠΡΟΘΕΣΜΟ μέσω string<=)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "penalty-severity/milder-penalty ΔΕΝ ΕΧΟΥΝ :unknown — το μέτρο του «επιεικέστερου» (άρθρο 2 ΠΚ) απαντά ΠΑΝΤΑ. Άγνωστο ελάχιστο γίνεται 0 και άγνωστο μέγιστο most-positive-fixnum, οπότε αποτυχία ανάλυσης ορίων εμφανίζεται ως ΕΓΚΥΡΟ εύρος· και όταν το κείμενο δίνει μόνο το είδος («τιμωρείται με κάθειρξη») μπαίνουν ΣΙΩΠΗΛΑ τα εκ του νόμου όρια (or mn lo)/(or mx hi), ώστε δύο διαφορετικές διατάξεις με μη-αναλυμένα όρια συγκρίνονται ως :equal. Το πεδίο τιμών του WHICH είναι {:a :b :equal} — δεν υπάρχει τρόπος να πει «δεν ξέρω ποια είναι ηπιότερη» σε ΠΟΙΝΙΚΟ μονοπάτι."
+   :severity :p1
+   :evidence "legal-penalty.lisp:111-115,126-137 (σιωπηλά εκ του νόμου όρια) · 153-158 (0 / most-positive-fixnum) · 165-176 (WHICH ∈ {:a :b :equal}, καμία :unknown)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "Ο γράφος παραπομπών ΔΕΝ ΑΝΑΠΤΥΣΣΕΙ ΕΥΡΗ, ενώ το δηλώνει. Το docstring του extract-article-refs λέει «Handles single citations, comma lists and ranges» και η κεφαλίδα φέρνει ως παράδειγμα «των άρθρων 235 - 263Α», αλλά ο κώδικας συλλέγει ΜΟΝΟ τα αριθμητικά tokens του run: το «235 - 263Α» δίνει ΔΥΟ κόμβους (235, 263Α) αντί για 29. Επιπλέον το reference-graph ΠΕΤΑΕΙ κάθε παραπομπή που δεν επιλύεται σε υπαρκτό άρθρο, και ο έλεγχος verify-references είναι ρητά «ADVISORY … not a hard failure». Η ΑΝΑΛΥΣΗ ΕΠΙΠΤΩΣΗΣ χτίζεται αποκλειστικά από αυτές τις ακμές — άρα απαντά υπο-περιεκτικά, σιωπηλά."
+   :severity :p1
+   :evidence "legal-references.lisp:6-8,58-69 (αξίωση ranges vs υλοποίηση),101-112 (απόρριψη ανεπίλυτων),129-144 (advisory) · legal-reasoning-bridge.lisp:32-45 (τα facts μόνο από graph-edges)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "source/protocols.lisp: 263 γραμμές, 40 defgeneric, ΜΗΔΕΝ μέθοδοι, ΜΗΔΕΝ καταναλωτές. Καμία μέθοδος δεν ορίζεται για validate-rdf, anchor-to-blockchain, validate-data, store-corpus, log-audit-event, create-session, get-config-value, resolve-path, compute-hash, call-service, initialize-component, handle-error, circuit-breaker-state — κάθε κλήση θα έδινε no-applicable-method. Κανένα αρχείο του repo δεν αναφέρει το πακέτο :orchestrator.protocols εκτός από το ίδιο. Δηλώνει compute-hash (δεύτερη έδρα ονόματος έναντι της δηλωμένης hash-authority), circuit-breaker-state, resolve-path, log-audit-event — ονόματα που ΗΔΗ έχουν πραγματικές έδρες αλλού. Και το generate-rdf ορίζεται ΔΕΥΤΕΡΗ φορά ως defgeneric με ΑΣΥΜΒΑΤΗ lambda-list σε άλλο σύστημα. Το αρχείο φορτώνεται από το orchestrator-infrastructure.asd:188."
+   :severity :p1
+   :evidence "protocols.lisp:1-263 (40 defgeneric χωρίς defmethod)· 56 (generate-rdf (object &key format)) vs systems/orchestrator-omega-modules/frbr-protocol.lisp:11 (generate-rdf (frbr-instance)) · 145 (compute-hash) vs hash-authority.lisp:11-46 · 200-263 (δεύτερο, περιττό export των ίδιων 40 συμβόλων) · orchestrator-infrastructure.asd:188"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "execution-trace: το μαγαζί ιχνών δηλώνεται «append-only εντός συνεδρίας» και το σχόλιο του +max-events+ λέει ότι πέραν του ορίου «τα ΑΡΧΑΙΟΤΕΡΑ μισά συμπυκνώνονται (δηλωμένα)» — ο κώδικας ΔΕΝ συμπυκνώνει τίποτα: κρατά το νεότερο μισό και ΠΕΤΑΕΙ τα 10.000 αρχαιότερα γεγονότα ΧΩΡΙΣ σύνοψη, χωρίς γεγονός-δείκτη, χωρίς μετρητή απορριφθέντων. Τα ids συνεχίζουν μονότονα, άρα find-event σε πεταμένο id δίνει NIL — αδιάκριτο από «δεν υπήρξε ποτέ». Η προέλευση εκτέλεσης χάνεται σιωπηλά ακριβώς στις μακριές συνεδρίες."
+   :severity :p1
+   :evidence "execution-trace.lisp:14-15,46-47 (αξίωση append-only) · 52-53 (σχόλιο «συμπυκνώνονται (δηλωμένα)») · 61-64 (η πραγματική απόρριψη) · 101-102 (find-event)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "provenance-link declare-trace-debt!: ΟΠΟΙΟΣΔΗΠΟΤΕ εντός εικόνας μπορεί να δηλώσει «χρέος» για ΟΠΟΙΟΔΗΠΟΤΕ σύμβολο, και το σύμβολο ΕΞΑΙΡΕΙΤΑΙ αμέσως από την παράβαση «εκτελέστηκε ΧΩΡΙΣ συμβόλαιο» και μετακινείται από το ΑΠΑΡΑΔΕΚΤΟ σύνολο silent στο αποδεκτό debts. Καμία αυθεντικοποίηση, καμία καταγραφή σε journal, κανένα receipt, καμία έγκριση — ο επικυρωτής προέλευσης απενεργοποιείται κατά σύμβολο με μία κλήση συνάρτησης. Επιπλέον ο έλεγχος «ξεπερασμένο hash πηγής» παρακάμπτεται ΣΙΩΠΗΛΑ όταν το known-file-hash δίνει NIL."
+   :severity :p1
+   :evidence "provenance-link.lisp:19-27 (declare-trace-debt!) · 66-71 (η εξαίρεση) · 101-105 (silent→debts) · 84-88 (σιωπηλή παράκαμψη σε NIL hash)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "legal-hypergraph: το %ttl-lit αυτοδηλώνεται «the single escaping choke point for the hypergraph emitter» και τεκμηριώνει ρητά τον κίνδυνο έγχυσης triples από «attacker-controlled text» — αλλά φρουρεί ΜΟΝΟ τα literals. Τα IRIs χτίζονται με ΑΦΙΛΤΡΑΡΙΣΤΗ παρεμβολή των ΙΔΙΩΝ δεδομένων από το σώμα: <~A/hyperedge/~A> από το edge-subject, <~A/art/~A> από κάθε member, από το target κάθε operation και από το edge-source. Ένα id που περιέχει «>» ή κενό σπάει τη γραμματική· ένα id της μορφής «x> . <y> <p> <o> . <z» ΕΓΧΕΕΙ ΤΡΙΠΛΕΤΕΣ στον γράφο."
+   :severity :p1
+   :evidence "legal-hypergraph.lisp:46-51 (η αξίωση «single choke point») · 75-81 (subject+members ανεπίδραστα) · 101-111 (target) · 130-132 (edge-source)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "corpus-eu-links %year-number: για διψήφιο έτος, (>= ai 70) ⇒ 1900+ai αλλιώς 2000+ai. Κάθε ενωσιακή πράξη ΠΡΙΝ ΤΟ 1970 (π.χ. «Οδηγία 69/335/ΕΟΚ», που πράγματι μνημονεύεται στην ελληνική φορολογική νομοθεσία) αποδίδεται στο ΕΤΟΣ 2069 και παράγει CELEX «32069L0335» και ELI «…/dir/2069/335/oj». Το module διαφημίζεται ότι «mints the OFFICIAL European identifiers» και τα εκπέμπει ως «celex»/«eli» χωρίς κανένα πεδίο αβεβαιότητας ή επαλήθευσης ύπαρξης."
+   :severity :p1
+   :evidence "corpus-eu-links.lisp:9-12 (αξίωση «OFFICIAL»),47-55 (η ευρετική),57-67 (μιντάρισμα),123-128 (εκπομπή χωρίς σήμανση)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "graph-reasoning: ΔΥΟ ΔΙΑΦΟΡΕΤΙΚΕΣ ΠΟΛΙΤΙΚΕΣ ΟΡΙΖΟΝΤΑ στο ΙΔΙΟ αρχείο. Το impact μετρά ρητά τους κόμβους πέραν του ορίου και τους επιστρέφει ως δεύτερη τιμή, με σχόλιο «καταμέτρησε, μην σιωπήσεις». Το explain — που παράγει ΔΕΝΤΡΟ ΑΠΟΔΕΙΞΗΣ — απλώς σταματά στο max-depth 8 και επιστρέφει (:derived κανόνας NIL)· το explanation->string το τυπώνει σαν κανόνα ΧΩΡΙΣ προϋποθέσεις, δηλαδή σαν ΠΛΗΡΗ απόδειξη. Η κολοβωμένη απόδειξη είναι οπτικά αδιάκριτη από την πλήρη."
+   :severity :p1
+   :evidence "graph-reasoning.lisp:24-39 (σιωπηλή κοπή),41-51 (η εκτύπωση δεν σημαίνει κοπή) · 54-90 (η τίμια πολιτική του impact, ιδίως 61-63,88-89)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "Τα πακέτα γνώσης εγκαθίστανται με ΤΡΕΙΣ ΑΣΥΜΒΑΤΕΣ πολιτικές ατομικότητας. Το :guard-ops δουλεύει σε ΑΝΤΙΓΡΑΦΟ και δημοσιεύει ατομικά, με ρητό σχόλιο ότι αυτό ήταν εύρημα επιθεώρησης («αναγνώστες σε άλλα νήματα βλέπουν πάντα ΠΛΗΡΗ γλώσσα»). Το :procedure ΜΕΤΑΒΑΛΛΕΙ το καθολικό *operators* εντός βρόχου, ένα entry τη φορά — αναγνώστης σε άλλο νήμα βλέπει μισο-εγκατεστημένο δικονομικό δίκαιο. Το :lexicon γράφει ΠΡΩΤΑ στο *generation-lexicon* και ΜΕΤΑ υπολογίζει τις μορφές, άρα άγνωστη κλιτική κλάση αφήνει ΜΙΣΟ-ΕΓΚΑΤΕΣΤΗΜΕΝΟ λήμμα και σφάλμα τύπου αντί για δηλωμένη απόρριψη. Η ίδια κλάση σφάλματος κλείστηκε σε μία έδρα και άφησε τις άλλες δύο ανοιχτές."
+   :severity :p1
+   :evidence "guard-ops-pack.lisp:17-29 (COW, ατομικό) · legal-strategy.lisp:32-41 (setf στο καθολικό ανά entry) · generation.lisp:50-63 (γράψιμο πριν τον υπολογισμό μορφών),215-227 (:install καλεί define-noun με δεδομένα πακέτου)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "legal-strategy plan-course: η ΤΑΥΤΟΤΗΤΑ ΚΑΤΑΣΤΑΣΗΣ του BFS είναι (sort (mapcar (lambda (f) (format nil \"~S\" f)) st) #'string<) — εξαρτάται από τις δυναμικές μεταβλητές του εκτυπωτή. Με δεσμευμένο *print-length* ή *print-level* (συνήθες σε REPL/debug/error handler) διαφορετικές καταστάσεις τυπώνονται κολοβωμένες και ΣΥΓΚΡΟΥΟΝΤΑΙ ως ίδιες, οπότε το seen κόβει σιωπηλά υπαρκτές δικονομικές πορείες· *package* και *print-case* αλλάζουν επίσης το κλειδί. Μη-εγχυτική ταυτότητα σε μονοπάτι που αποφαίνεται «ΔΕΝ υπάρχει παραδεκτή πορεία»."
+   :severity :p1
+   :evidence "legal-strategy.lisp:87-91,107-109,131-136"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "evaluate-deontic ΔΕΝ είναι fixpoint: εκτελεί apply-norms → run-inference ΑΚΡΙΒΩΣ ΔΥΟ φορές, με το ίδιο το σχόλιο να παραδέχεται ότι «νέα facts μπορεί να ενεργοποίησαν κι άλλους κανόνες». Αν ο τρίτος γύρος ενεργοποιούσε κανόνα, η δεοντική θέση ΔΕΝ παράγεται και δεν δηλώνεται τίποτα — το αποτέλεσμα παρουσιάζεται ως πλήρης «δεοντική ανάλυση» με μετρητές θέσεων/συγκρούσεων."
+   :severity :p1
+   :evidence "legal-deontic.lisp:169-183 (ιδίως 176-179) · deontic-report 184-205"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "akoma-ntoso-emitter xml-text-escape/xml-attr-escape διαφεύγουν ΜΟΝΟ & < > (και \" στα attributes). Οι χαρακτήρες ελέγχου C0 πλην TAB/LF/CR είναι ΑΠΑΓΟΡΕΥΜΕΝΟΙ στο XML 1.0 και ΔΕΝ διαφεύγουν ούτε ως αριθμητικές αναφορές: κείμενο από OCR-αρισμένο ΦΕΚ που τους περιέχει παράγει Akoma Ntoso που ΚΑΘΕ συμμορφούμενος parser απορρίπτει. Επιπλέον νέες γραμμές/tab μέσα σε τιμές attribute υφίστανται σιωπηλή κανονικοποίηση από τον parser, αλλοιώνοντας eId/refersTo/date."
+   :severity :p1
+   :evidence "akoma-ntoso-emitter.lisp:46-53,55-63 · χρήση σε 117-133 (eId, num, heading, text),148-183 (FRBR, eventRef)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "akoma-ntoso-emitter akn-element-name: η ρήτρα (otherwise \"hcontainer\") βρίσκεται μέσα σε ECASE. Στο ecase το otherwise ΔΕΝ είναι προεπιλογή — είναι κανονικό κλειδί (το σύμβολο otherwise). Άρα η «προεπιλογή» είναι ΝΕΚΡΟΣ ΚΩΔΙΚΑΣ και οποιοδήποτε provision-kind εκτός των έξι απαριθμημένων σηματοδοτεί type-error αντί να πέσει σε hcontainer. Το slot είναι τυποποιημένο ως ελεύθερο keyword. (Λανθάνον: οι σημερινοί παραγωγοί εκπέμπουν μόνο :article/:paragraph.)"
+   :severity :p2
+   :evidence "akoma-ntoso-emitter.lisp:71-80 · consolidation-engine.lisp:93 ((kind :article :type keyword)) · consolidation-bridge.lisp:71,81 (οι μόνοι σημερινοί παραγωγοί)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "Η οντολογία εκπέμπεται με ΜΗ ΝΤΕΤΕΡΜΙΝΙΣΤΙΚΗ ΣΕΙΡΑ: το all-concepts διατρέχει το sb-mop:class-direct-subclasses, του οποίου η σειρά αδελφών είναι ΑΠΡΟΣΔΙΟΡΙΣΤΗ από το πρότυπο MOP. Το emit-ontology-ttl παράγει το TTL με αυτή τη σειρά (άρα όχι byte-σταθερό μεταξύ εικόνων), και το ontology-outranks-facts του L2 χτίζει με αυτήν τη λίστα (:outranks …) που τροφοδοτεί τη σειρά εισαγωγής facts στο JTMS. Το ίδιο ισχύει για το edge-types του hypergraph."
+   :severity :p2
+   :evidence "greek-legislation-ontology.lisp:87-98,214-219 (αξίωση type-agnostic emitter),229 · legal-conflict-resolution.lisp:44-60 · legal-hypergraph.lisp:186-192"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "ΤΡΙΤΗ έδρα Turtle literal escaping με ΔΙΑΦΟΡΕΤΙΚΗ κάλυψη: το %ttl-esc της οντολογίας διαφεύγει \", \\ και \\n αλλά ΟΧΙ \\r — και το CR ΑΠΑΓΟΡΕΥΕΤΑΙ μέσα σε STRING_LITERAL_QUOTE της Turtle 1.1, οπότε ετικέτα/σχόλιο με CR παράγει άκυρο TTL. Το %ttl-lit του hypergraph (ίδια έννοια) καλύπτει \\r και \\t."
+   :severity :p2
+   :evidence "greek-legislation-ontology.lisp:208-212 · legal-hypergraph.lisp:46-62"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "legal-reasoning-bridge: ΔΥΟ εξαγόμενες έδρες «ανάλυση επίπτωσης», μία θεμελιωμένη και μία όχι. Το grounded-impact επιβάλλει ΟΛΑ τα κλειδιά, δένει body↔graph, και ταιριάζει receipt-hash με tv-version-hash (θάνατος TRUST-01). Το reason-impact/impact-report παραμένουν εξαγόμενα και εκτυπώνουν ΤΗΝ ΙΔΙΑ ανάλυση χωρίς ΚΑΜΙΑ θεμελίωση, χωρίς valid-at/known-at, χωρίς receipts και χωρίς προειδοποίηση. Επιπλέον η μακρόβια μηχανή ανά doc βασίζεται σε ΣΧΟΛΙΟ («ίδιο αντικείμενο ⇒ ίδια facts εγγυημένα») — τα provision structs είναι μεταβλητά και τίποτα δεν το επιβάλλει, άρα επιτόπια μεταβολή σερβίρει μπαγιάτικα citation facts από την cache."
+   :severity :p1
+   :evidence "legal-reasoning-bridge.lisp:96-170 (θεμελιωμένη) · 20-22,69-89,172-181 (αθεμελίωτη, εξαγόμενη) · 47-67 (η cache και η υπόθεση αμεταβλητότητας)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "execution-trace clear-events!: εξαγόμενη συνάρτηση που ΣΒΗΝΕΙ ΟΛΟΚΛΗΡΟ το ίχνος εκτέλεσης και το *last-conclusion*. Το docstring λέει «ΜΟΝΟ για πύλες/δοκιμές σε σκιά — η παραγωγή δεν σβήνει ίχνη», αλλά δεν υπάρχει ΚΑΝΕΝΑΣ έλεγχος σκιώδους λειτουργίας, κανένα gate, καμία καταγραφή της ίδιας της διαγραφής. Αυθεντία με επιβολή :none πάνω στο μοναδικό μαγαζί προέλευσης εκτέλεσης."
+   :severity :p1
+   :evidence "execution-trace.lisp:116-118 · η εξαγωγή στη γραμμή 29"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "corpus-sparql: η επέκταση προθεμάτων είναι ΚΕΙΜΕΝΙΚΗ, όχι λεξική. Το %expand-one αντικαθιστά κάθε «prefix:local» ΟΠΟΥΔΗΠΟΤΕ στο ερώτημα — ΚΑΙ ΜΕΣΑ ΣΕ ΚΥΡΙΟΛΕΚΤΙΚΑ: το «eli:x» μέσα σε \"…\" γίνεται IRI. Ταυτόχρονα το %expand-prefixes ΣΒΗΝΕΙ με regex κάθε δήλωση PREFIX του χρήστη αλλά επεκτείνει ΜΟΝΟ τα τρία ενσωματωμένα, οπότε τα δικά του προθέματα μένουν ανεπέκτατα αντί να απορριφθούν. Και το τελικό error JSON χτίζεται με (substitute #\\Space #\\\") — δεν διαφεύγει backslash ούτε χαρακτήρες ελέγχου."
+   :severity :p1
+   :evidence "corpus-sparql.lisp:42-60 (κειμενική αντικατάσταση),62-67 (διαγραφή δηλώσεων PREFIX),94-104 (error JSON) · 73-74,100-101 (find-symbol χωρίς έλεγχο NIL)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "legal-counterfactual minimal-blockers: πλήρης απαρίθμηση συνδυασμών έως max-size με ΠΛΗΡΗ επανυπαγωγή (νέα μηχανή subsume) ανά υποσύνολο — O(n^max-size) πλήρεις συμπερασμούς, χωρίς fuel, χωρίς χρονικό όριο, χωρίς φραγμό στο πλήθος γεγονότων. Η δικαιολόγηση «το %derive είναι γραμμικό, άρα η συστηματική δοκιμή είναι φθηνή» είναι ΣΧΟΛΙΟ, όχι μετρημένος ή επιβεβλημένος φραγμός."
+   :severity :p2
+   :evidence "legal-counterfactual.lisp:9-12 (η αξίωση),20-23 (%concluded-p χτίζει ΝΕΑ μηχανή ανά κλήση),38-60"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "legal-hypo case-factors: η αφαίρεση ενός γεγονότος εξαρτάται από το ΥΠΟΛΟΙΠΟ σύνολο γεγονότων — ένα keyword θεωρείται «οντότητα» (και άρα πέφτει από τον παράγοντα) μόνο αν εμφανίζεται στο cddr ΑΛΛΟΥ γεγονότος. Προσθήκη ενός άσχετου γεγονότος μεταβάλλει σιωπηλά τον παράγοντα από (pred obj) σε (pred), αλλάζοντας κοινούς παράγοντες, διακρίσεις CATO, κατάταξη προηγουμένων και την πρόβλεψη knn-verdict."
+   :severity :p2
+   :evidence "legal-hypo.lisp:23-39 (ιδίως 33-38) · 47-66 (η κατάταξη) · 68-84 (η πρόβλεψη)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "provenance-link validate-provenance: οι έλεγχοι ανά γεγονός είναι ΑΠΟΚΛΕΙΣΤΙΚΟΙ κλάδοι ενός cond — γεγονός χωρίς σύμβολο δεν ελέγχεται ούτε για συμβόλαιο ούτε για συστατικό, και γεγονός χωρίς συμβόλαιο δεν ελέγχεται για συστατικό. Ένα γεγονός με τρεις παραβάσεις αναφέρει μία· η λίστα παραβάσεων υποεκτιμά συστηματικά."
+   :severity :p2
+   :evidence "provenance-link.lisp:60-88 (το cond στις 64-75)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "legal-penalty %unit-days: όταν καμία μονάδα χρόνου δεν αναγνωρίζεται, η προεπιλογή είναι (t 365) — «κάθειρξη μετριέται πάντα σε έτη». Κάθε αριθμός σε απόσπασμα ποινής χωρίς αναγνωρίσιμη μονάδα πολλαπλασιάζεται ΣΙΩΠΗΛΑ επί 365. Ταυτόχρονα το %amount παίρνει τον ΠΡΩΤΟ αριθμό του tail (όλο το κείμενο μετά τη λέξη-ποινή), οπότε ένας αριθμός παραπομπής («ν. 4619/2019») μπορεί να διαβαστεί ως όριο ποινής."
+   :severity :p2
+   :evidence "legal-penalty.lisp:82-86 · 67-76 (%amount στο tail) · 126-137 (το tail = subseq μετά τη λέξη)"
    :is-it-in-the-known-defect-list :unknown))
 
  :hidden-execution-paths
@@ -711,7 +841,19 @@
   (:path "legal-ast: τοπικός ορισμός when-let που ΣΚΙΑΖΕΙ τη σύμβαση της alexandria"
    :trigger "Οποιοσδήποτε γράψει (when-let ((a x) (b y)) …) μέσα στο orchestrator.legal-ast"
    :why-hidden "Το ίδιο όνομα, το ίδιο docstring-συμβόλαιο, ΔΙΑΦΟΡΕΤΙΚΗ σημασιολογία: τα bindings πέραν του πρώτου εξαφανίζονται· η αναφορά στο body γίνεται unbound variable αντί για «όλα non-nil»."
-   :evidence "legal-ast.lisp:2138-2148"))
+   :evidence "legal-ast.lisp:2138-2148")
+  (:path ":guard-ops — πακέτο ΓΝΩΣΗΣ (δεδομένα) που ΕΠΕΚΤΕΙΝΕΙ ΤΗ ΓΛΩΣΣΑ των φραγμών"
+   :trigger "Φόρτωση πακέτου γνώσης είδους :guard-ops· κάθε entry (:op όνομα (παράμετροι) σώμα) περνά στο define-derived"
+   :why-hidden "Το ΣΩΜΑ του νέου τελεστή είναι ΔΕΔΟΜΕΝΟ από αρχείο πακέτου και γίνεται εκτελέσιμος τελεστής του μετακυκλικού αποτιμητή που παράγει τα πιστοποιητικά των αποδείξεων. Ο αποτιμητής απαγορεύει επανορισμό ΠΡΩΤΟΓΕΝΟΥΣ και δεσμευμένης ειδικής μορφής, αλλά η επιφάνεια «δεδομένα → γλώσσα απόδειξης» υπάρχει και δεν φαίνεται σε κανένα call graph."
+   :evidence "guard-ops-pack.lisp:15-31 · guard-metaeval.lisp:216-228 (οι φρουροί του define-derived)")
+  (:path "orchestrator.protocols — 40 defgeneric χωρίς καμία μέθοδο, φορτωμένα στην εικόνα"
+   :trigger "Φόρτωση του orchestrator-infrastructure (asd:188)"
+   :why-hidden "Καταλαμβάνουν ΟΝΟΜΑΤΑ εννοιών που έχουν πραγματικές έδρες αλλού (compute-hash, resolve-path, log-audit-event, circuit-breaker-state, validate-data). Μια κλήση δεν αποτυγχάνει «δεν υπάρχει» αλλά με no-applicable-method, και ένα (defmethod compute-hash …) οπουδήποτε θα προσαρτούσε σιωπηλά συμπεριφορά σε αυτή τη ΣΚΙΩΔΗ έδρα αντί για τη δηλωμένη."
+   :evidence "protocols.lisp:1-263 · orchestrator-infrastructure.asd:188 · hash-authority.lisp:11-46 (η πραγματική έδρα)")
+  (:path "define-noun στο load-toplevel καλεί orchestrator.citation-authority:add-lemma-forms"
+   :trigger "Φόρτωση του generation.lisp — 15 κλήσεις define-noun στις γραμμές 175-189"
+   :why-hidden "Η ΦΟΡΤΩΣΗ ενός αρχείου γένεσης λόγου ΜΕΤΑΒΑΛΛΕΙ το λεξικό ΚΑΤΑΝΟΗΣΗΣ ενός άλλου πακέτου (citation-authority), με 6 μορφές ανά λήμμα. Διασταυρούμενη μεταβολή κατάστασης μεταξύ πακέτων τη στιγμή του load, χωρίς gate ή receipt."
+   :evidence "generation.lisp:50-63,175-189 · 215-227 (η ίδια πόρτα ανοιχτή σε πακέτα γνώσης)"))
 
  :duplicate-seats
  ((:concept "«χρόνος για δημοσιευμένο artifact»"
@@ -755,7 +897,37 @@
            "blockchain-authority.lisp:259-269 (mod-inverse — secp256k1 point add/double/ecrecover, L306,L312,L351)"))
   (:concept "when-let"
    :seats ("legal-ast.lisp:2138-2148 (τοπικός ορισμός, ΜΟΝΟ πρώτο binding)"
-           "alexandria:when-let (σε ενεργή χρήση στο ίδιο repo: blockchain-authority.lisp:953-971)")))
+           "alexandria:when-let (σε ενεργή χρήση στο ίδιο repo: blockchain-authority.lisp:953-971)"))
+  (:concept "JSON string escaping"
+   :seats ("json-emit.lisp:39-58 (Η ΔΗΛΩΜΕΝΗ ΕΔΡΑ — ολική write-json-value)"
+           "orchestrator.spec:json-string-escape (καταναλώνεται από corpus-intelligence.lisp:206, citation-authority.lisp:716)"
+           "legal-qa.lisp:95-106 (ορθό)" "ai-corpus-dump.lisp:40-50 (ορθό)"
+           "review-service.lisp:190-204 (ορθό)" "mcp-server.lisp:41-53 (ορθό)"
+           "corpus-eu-links.lisp:113-121 (ΑΚΥΡΟ JSON σε control chars)"
+           "government-source.lisp:239-250 (ΑΚΥΡΟ)" "corpus-diff.lisp:36-44 (ΑΚΥΡΟ)"
+           "corpus-search.lisp:70-78 (ΑΚΥΡΟ)"
+           "corpus-sparql.lisp:102-104 (inline (substitute #\\Space #\\\"))"))
+  (:concept "σύγκριση/αριθμητική νομικών ημερομηνιών"
+   :seats ("legal-temporal.lisp:28-53 (date-plus-days/date</date<= — λεξικογραφικά, αξιώνει «η ΜΙΑ έδρα»)"
+           "guard-metaeval.lisp:652-666 (DATE</DATE<=/DATE>/DATE>=/DAYS-BETWEEN/WITHIN-DAYS/ΕΡΓΑΣΙΜΗ-P — αριθμητικά μέσω ymd->day)"
+           "version-graph.lisp legal-date-p/%time-key (typed έδρα στην οποία τα άλλα δύο ΑΝΑΘΕΤΟΥΝ με σχόλιο)"))
+  (:concept "Turtle literal escaping"
+   :seats ("legal-hypergraph.lisp:46-62 (%ttl-lit — \", \\\\, \\n, \\r, \\t)"
+           "greek-legislation-ontology.lisp:208-212 (%ttl-esc — ΧΩΡΙΣ \\r, ΧΩΡΙΣ \\t)"))
+  (:concept "«ανάλυση επίπτωσης άρθρου»"
+   :seats ("legal-reasoning-bridge.lisp:96-170 (grounded-impact — διτεμπορικά θεμελιωμένη, receipts)"
+           "legal-reasoning-bridge.lisp:69-89,172-181 (reason-impact/impact-report — αθεμελίωτη, εξαγόμενη)"
+           "graph-reasoning.lisp:54-90 (impact πάνω στον ενιαίο γράφο — τρίτη, διαφορετικό υπόστρωμα)"))
+  (:concept "compute-hash (γενικό hash ως ΟΝΟΜΑ έδρας)"
+   :seats ("hash-authority.lisp:11-46 (η δηλωμένη έδρα)"
+           "protocols.lisp:145-149 (defgeneric compute-hash/verify-hash/supported-hash-types — ΜΗΔΕΝ μέθοδοι)"))
+  (:concept "εγκατάσταση πακέτου γνώσης (ατομικότητα)"
+   :seats ("guard-ops-pack.lisp:17-29 (copy-on-write + ατομική δημοσίευση)"
+           "legal-strategy.lisp:32-41 (in-place setf καθολικού ανά entry)"
+           "generation.lisp:215-227 → 50-63 (γράψιμο πριν την επικύρωση, χωρίς rollback)"))
+  (:concept "generate-rdf (defgeneric)"
+   :seats ("protocols.lisp:56 ((object &key format) — 0 μέθοδοι)"
+           "systems/orchestrator-omega-modules/frbr-protocol.lisp:11 ((frbr-instance) — 12 μέθοδοι, ΑΣΥΜΒΑΤΗ lambda-list)")))
 
  :unknowns
  ("Ποιος θέτει το *advisor* και με ποιο μοντέλο — δεν βρίσκεται στα αρχεία που διάβασα."
@@ -763,21 +935,15 @@
   "Αν το fetch-command προέρχεται από αρχείο ρύθμισης ελεγχόμενο από τον operator ή από corpus δεδομένα.")
 
  :remaining
- ("ai-citation-strategy.lisp" "ai-corpus-dump.lisp" "ai-ingest-manifest.lisp"
-  "akoma-ntoso-emitter.lisp" "citation-authority.lisp" "corpus-eu-links.lisp"
-  "corpus-service.lisp" "corpus-sparql.lisp" "embeddings-authority.lisp" "eu-interop-layer.lisp"
-  "execution-trace.lisp" "fluid-induction.lisp" "generation.lisp" "graph-reasoning.lisp"
-  "greek-legislation-ontology.lisp" "greek-lemmatizer.lisp" "greek-nlp-core.lisp"
-  "greek-tokenizer-advanced.lisp" "guard-ops-pack.lisp" "layout-types.lisp"
-  "legal-casegrammar.lisp" "legal-conflict-resolution.lisp" "legal-counterfactual.lisp"
-  "legal-decisions.lisp" "legal-deontic.lisp" "legal-dialectic.lisp" "legal-event-calculus.lisp"
-  "legal-extraction-verify.lisp" "legal-hypergraph.lisp" "legal-hypo.lisp"
-  "legal-inference-engine.lisp" "legal-knowledge.lisp" "legal-penalty.lisp"
-  "legal-precedent.lisp" "legal-qa.lisp" "legal-reasoning-bridge.lisp" "legal-references.lisp"
-  "legal-strategy.lisp" "legal-subsumption.lisp" "legal-temporal.lisp" "lexicon-neurolingo.lisp"
-  "narrative-provenance.lisp" "orthography-lexicon.lisp" "protocols.lisp" "provenance-link.lisp"
-  "rdfs-inference.lisp" "reasoning-authority.lisp" "semantic-authority.lisp"
-  "semantic-versioning-system.lisp" "shacl-validator.lisp" "signed-embedding-manifest.lisp"
-  "source-profile.lisp" "sparql-endpoint.lisp" "static-site.lisp" "text-canonicalizer.lisp"
-  "turtle-parser.lisp" "typographic-classifier.lisp" "validate-ast.lisp"
-  "validate-layout-graph.lisp" "validate-logical-blocks.lisp"))
+ ("ai-citation-strategy.lisp" "ai-ingest-manifest.lisp" "citation-authority.lisp"
+  "corpus-service.lisp" "embeddings-authority.lisp" "eu-interop-layer.lisp"
+  "fluid-induction.lisp" "greek-lemmatizer.lisp" "greek-nlp-core.lisp"
+  "greek-tokenizer-advanced.lisp" "layout-types.lisp" "legal-casegrammar.lisp"
+  "legal-decisions.lisp" "legal-extraction-verify.lisp" "legal-inference-engine.lisp"
+  "legal-knowledge.lisp" "legal-subsumption.lisp" "lexicon-neurolingo.lisp"
+  "narrative-provenance.lisp" "orthography-lexicon.lisp" "rdfs-inference.lisp"
+  "reasoning-authority.lisp" "semantic-authority.lisp" "semantic-versioning-system.lisp"
+  "shacl-validator.lisp" "signed-embedding-manifest.lisp" "source-profile.lisp"
+  "sparql-endpoint.lisp" "static-site.lisp" "text-canonicalizer.lisp" "turtle-parser.lisp"
+  "typographic-classifier.lisp" "validate-ast.lisp" "validate-layout-graph.lisp"
+  "validate-logical-blocks.lisp"))

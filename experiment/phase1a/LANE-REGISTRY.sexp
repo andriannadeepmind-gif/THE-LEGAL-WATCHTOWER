@@ -40,6 +40,7 @@
 
  :lanes
  ((:lane "Φ1A-L1" :cluster "source/" :files 133
+   :cluster-root "source"
    :dossier "experiment/phase1a/source.sexp"
    :focus "πυρήνας Common Lisp· cognition/merkle-authority/proof-carrying/
            deterministic-time/version-graph/authority-proof-bundle/document-fetch/
@@ -48,6 +49,7 @@
                     δηλωμένη τίμια άγνοια με υποχρέωση ελέγχου από τον καλούντα"
    :status :running :dossier-sha256 :pending)
   (:lane "Φ1A-L2" :cluster "systems/" :files 175
+   :cluster-root "systems"
    :dossier "experiment/phase1a/systems.sexp"
    :focus "ASDF συστήματα· έδρες εγγραφής authoritative state· epistemic/cli/
            infrastructure· η ΔΕΥΤΕΡΗ έδρα δοκιμών (12 αρχεία FiveAM εκτός tests/)"
@@ -55,6 +57,7 @@
                     και αν η άγνοια διαδίδεται τίμια προς τα έξω"
    :status :running :dossier-sha256 :pending)
   (:lane "Φ1A-L3" :cluster "authority-v2/" :files 63
+   :cluster-root "authority-v2"
    :dossier "experiment/phase1a/authority-v2.sexp"
    :focus "Level-7 VCCT-RSM· kernel/schema/capability/roles/store/log/capture/
            genesis/proofs/toolchain"
@@ -62,6 +65,7 @@
                     :implemented-not-proved / :externally-blocked στον κώδικα"
    :status :running :dossier-sha256 :pending)
   (:lane "Φ1A-L4" :cluster "deployment/ (κανονικές προδιαγραφές)"
+   :cluster-root "deployment"
    :dossier "experiment/phase1a/deployment-specs.sexp"
    :focus "LAWMAX-*, SYSTEM-CONSTITUTION, PROOF-CARRYING-LAW, *.ttl, shapes/,
            verify/, templates/, mcp/"
@@ -69,12 +73,14 @@
                     ΛΑΘΟΣ Merkle ⇒ τρίτος βγάζει λάθος ρίζα ⇒ P0"
    :status :running :dossier-sha256 :pending)
   (:lane "Φ1A-L5" :cluster "deployment/ (κατάσταση & γνώση)"
+   :cluster-root "deployment"
    :dossier "experiment/phase1a/deployment-state.sexp"
    :focus "self/, self-study/, knowledge/, data/, state/, collab/, *.js, *.sh"
    :special-charge "κάθε .js/.sh: τι κάνει, τι δίκτυο αγγίζει, τι γράφει, ΠΟΙΟΣ
                     το καλεί, και αν είναι σε έμπιστο μονοπάτι"
    :status :running :dossier-sha256 :pending)
   (:lane "Φ1A-L6" :cluster "tests/ + docker/ + scripts/" :files 176
+   :cluster-root "tests"
    :dossier "experiment/phase1a/harness.sexp"
    :focus "ΤΙ ΕΓΓΥΩΝΤΑΙ οι σουίτες, όχι τι τεστάρουν· ταυτολογίες· τι ΔΕΝ
            καλύπτει ο μηχανισμός απογραφής"
@@ -82,6 +88,7 @@
                     proof-carrying, mcp-live-resolver — corpus ή harness;"
    :status :running :dossier-sha256 :pending)
   (:lane "Φ1A-L7" :cluster "ρίζα + configs + docs + .github + cloudflare + tools" :files 79
+   :cluster-root ""
    :dossier "experiment/phase1a/contracts.sexp"
    :focus "η ΑΠΟΣΤΑΣΗ δήλωσης από μηχανισμό επιβολής"
    :special-charge "ΒΡΕΣ την GATE-4 (README:304 «no subprocess»): πού υλοποιείται,

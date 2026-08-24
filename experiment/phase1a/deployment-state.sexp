@@ -63,7 +63,7 @@
    :failure-semantics ":unknown — ποιος επαληθεύει τα sidecars στο runtime και τι γίνεται σε αστοχία δεν φαίνεται σε αυτή τη συστάδα."
    :operating-model "extraction_method «pdf-adapter+raw-text-fsm@1» και για τα 6· errata: syntagma 2, astikos 2, kpoinikis 1, kdioikitikis 1, poinikos 0, kpolitikis 0."
    :materiality "Είναι «το γράμμα του νόμου» του συστήματος."
-   :evidence "/frozen/ro/deployment/data/*_clean.json.prov.json:L1 /frozen/ro/deployment/collab/dialogue/0109-claude.md:L94-L106")
+   :evidence "/frozen/ro/deployment/data/syntagma_clean.json.prov.json:L1 /frozen/ro/deployment/data/astikos_clean.json.prov.json:L1 /frozen/ro/deployment/collab/dialogue/0109-claude.md:L94-L106")
 
   (:name "Σώμα νομολογίας — 164 αποφάσεις"
    :presence :present
@@ -133,7 +133,7 @@
    :failure-semantics "Δηλωμένο fail-closed."
    :operating-model "Επέκταση «ΜΟΝΟ με νέα εγγραφή εδώ + receipt + ρητή έγκριση δημιουργού» — δηλωμένο σε σχόλιο, ΟΧΙ επιβεβλημένο από μηχανισμό ορατό σε αυτή τη συστάδα."
    :materiality "Ορίζουν τι μπορεί καν να αναγνωριστεί ως νόμος, ως γεγονός ισχύος, ως εμβέλεια."
-   :evidence "/frozen/ro/deployment/data/body-kind-registry.sexp:L1-L15 /frozen/ro/deployment/data/instrument-kind-registry.sexp:L1-L34 /frozen/ro/deployment/data/scope-tag-registry.sexp:L1-L60")
+   :evidence "/frozen/ro/deployment/data/body-kind-registry.sexp:L1-L15 /frozen/ro/deployment/data/instrument-kind-registry.sexp:L1-L34 /frozen/ro/deployment/data/scope-tag-registry.sexp:L1-L32")
 
   (:name "Δίκτυο — ανάκτηση ΦΕΚ PDF από et.gr (network edge)"
    :presence :present
@@ -301,7 +301,7 @@
    :evidence "/frozen/ro/deployment/cron-auto-update.sh:L40-L44")
   (:statement "Νέο είδος σώματος/γεγονότος/scope μπαίνει ΜΟΝΟ με εγγραφή στο μητρώο + receipt + ρητή έγκριση δημιουργού."
    :enforced-by ":convention (σχόλιο στο ίδιο το αρχείο)· ο loader επιβάλλει ΜΟΝΟ το κλειστό σύνολο, όχι τη διαδικασία έγκρισης"
-   :evidence "/frozen/ro/deployment/data/body-kind-registry.sexp:L3-L4 /frozen/ro/deployment/data/instrument-kind-registry.sexp:L7 /frozen/ro/deployment/data/scope-tag-registry.sexp:L40")
+   :evidence "/frozen/ro/deployment/data/body-kind-registry.sexp:L3-L4 /frozen/ro/deployment/data/instrument-kind-registry.sexp:L7 /frozen/ro/deployment/data/scope-tag-registry.sexp:L6")
   (:statement "Άκυρο πακέτο γνώσης ⇒ κρατιέται ΠΛΗΡΩΣ η προηγούμενη γνώση (καμία μισο-εγκατεστημένη γνώση)."
    :enforced-by ":code (snapshot πριν την εγκατάσταση + restore σε σφάλμα, εύρημα επιθεώρησης 05-07-2026)"
    :evidence "/frozen/ro/source/knowledge-packs.lisp:L130-L146")
@@ -385,8 +385,8 @@
   (:what "ΤΟ ΚΡΥΠΤΟΓΡΑΦΙΚΟ PROFILE ΗΤΑΝ ΑΔΡΑΝΕΣ: :leaf-prefix-byte, :node-prefix-byte, :hash-algorithm, :hash-representation, :mutation-witnesses ΟΛΑ αγνοούνταν — ο generator hardcode-αρε #(0)/#(1)/:sha256 και το harness είχε δική του λίστα μαρτύρων. Το ακριβές σενάριο του κριτή («άλλαξε μόνο το profile ⇒ έμενε πράσινο») ίσχυε."
    :severity :p0 :evidence "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L39-L58" :is-it-in-the-known-defect-list :yes)
 
-  (:what "ΔΥΟ ΕΔΡΕΣ MERKLE ΦΥΛΛΟΥ ΣΤΟ ΣΤΡΩΜΑ ΑΥΘΕΝΤΙΑΣ: η capture.py:230 υπολόγιζε SHA256(0x00 ‖ SHA256(bytes)) ενώ η παραγωγική hash-leaf-file υπολογίζει SHA256(0x00 ‖ ΩΜΑ BYTES) — ασύμβατο. Βρέθηκε από τον δημιουργό, όχι από πύλη."
-   :severity :p0 :evidence "/frozen/ro/deployment/collab/dialogue/0122-claude.md:L~18-L30" :is-it-in-the-known-defect-list :yes)
+  (:what "ΔΥΟ ΕΔΡΕΣ MERKLE ΦΥΛΛΟΥ ΣΤΟ ΣΤΡΩΜΑ ΑΥΘΕΝΤΙΑΣ (ΙΣΤΟΡΙΚΟ — ΚΛΕΙΣΤΟ ΣΤΟ ΠΑΓΩΜΕΝΟ COMMIT): κατά το δελτίο [0122] η capture.py (γρ. 230 ΤΟΤΕ) υπολόγιζε SHA256(0x00 ‖ SHA256(bytes)) ενώ η παραγωγική hash-leaf-file υπολογίζει SHA256(0x00 ‖ ΩΜΑ BYTES) — ασύμβατο· βρέθηκε από τον δημιουργό, όχι από πύλη. ΕΠΑΛΗΘΕΥΣΑ ΣΤΟ ΠΑΓΩΜΕΝΟ ΑΡΧΕΙΟ: η διόρθωση υπάρχει — ο κανόνας φύλλου δηλώνεται πλέον ρητά ως «leaf = SHA-256(0x00 ‖ ΩΜΑ BYTES)» και η ανάκληση του ισχυρισμού ζει ως RETRACTED_CLAIMS μέσα στον κώδικα. Η γραμμή 230 ΔΕΝ φέρει πλέον το σφάλμα."
+   :severity :p1 :evidence "/frozen/ro/deployment/collab/dialogue/0122-claude.md:L~18-L30 /frozen/ro/authority-v2/capture/capture.py:L176 /frozen/ro/authority-v2/capture/capture.py:L85 /frozen/ro/authority-v2/capture/capture.py:L33" :is-it-in-the-known-defect-list :yes)
 
   (:what "5 ταυτολογικά «deterministic» tests (f(x)=f(x) στην ίδια διεργασία)· και το αρνητικό fixture του ίδιου του verify-proof-manifest.py ΥΠΑΡΧΕΙ αλλά είναι ΟΡΦΑΝΟ (0 αναφορές σε CI/Dockerfile)."
    :severity :p1 :evidence "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L181,L388-L390" :is-it-in-the-known-defect-list :yes)
@@ -420,7 +420,7 @@
   (:what "Το prov sidecar φέρει source_digest αλλά ΚΑΜΙΑ source_url, ΚΑΜΙΑ ημερομηνία λήψης, ΚΑΜΙΑ υπογραφή — το digest της πηγής είναι ΟΡΦΑΝΟ: δεν μπορεί να αντιπαραβληθεί με τίποτα εκτός συστήματος. Επιπλέον το content_sha256 σφραγίζει το ΜΕΤΑ-errata κείμενο, άρα οι χειροκίνητες παρεμβάσεις δεν είναι ανεξάρτητα ελέγξιμες."
    :severity :p1 :evidence "/frozen/ro/deployment/data/decisions/areios-pagos/ap_2015_1.json.prov.json:L1 /frozen/ro/deployment/data/astikos_clean.json.prov.json:L1" :is-it-in-the-known-defect-list :no)
 
-  (:what "fetch-fek-by-number.sh ΔΕΝ διαγράφει το μη-PDF αρχείο εξόδου σε αποτυχία (σε αντίθεση με fetch-fek.sh:L79) — αφήνει HTML anti-bot σελίδα ή error body στη θέση του PDF."
+  (:what "fetch-fek-by-number.sh ΔΕΝ διαγράφει το μη-PDF αρχείο εξόδου σε αποτυχία (σε αντίθεση με /frozen/ro/deployment/fetch-fek.sh:L79) — αφήνει HTML anti-bot σελίδα ή error body στη θέση του PDF."
    :severity :p1 :evidence "/frozen/ro/deployment/fetch-fek-by-number.sh:L32-L45 /frozen/ro/deployment/fetch-fek.sh:L78-L80" :is-it-in-the-known-defect-list :no)
 
   ;; --- ΣΤ. SHELL / PYTHON ΣΕ ΣΥΣΤΗΜΑ «100% COMMON LISP» ---
@@ -472,8 +472,8 @@
   (:what "Δηλωμένη επιζώσα μετάλλαξη M14: η κατάργηση του fixed point μέσα στην capture() ΔΕΝ σκοτώνεται — «Παραμένει στον κώδικα ως άμυνα, όχι ως ελεγμένη ιδιότητα»."
    :severity :p2 :evidence "/frozen/ro/deployment/collab/dialogue/0123-claude.md:L58-L71" :is-it-in-the-known-defect-list :yes)
 
-  (:what "ΑΝΟΙΧΤΟ ΥΠΟΛΕΙΜΜΑ: τα εκπεμπόμενα artifacts φέρουν ΑΚΟΜΗ μη-κανονικές ετικέτες αλγορίθμου — census JSON «odd»:«rfc6962-split» (artifact-census.lisp:116) και tlog «merkle»:«rfc6962-sha256» (transparency-log.lisp:84) — αντί για το κανονικό lawmax-merkle-sha256-v1."
-   :severity :p1 :evidence "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L147-L152" :is-it-in-the-known-defect-list :yes)
+  (:what "ΑΝΟΙΧΤΟ ΥΠΟΛΕΙΜΜΑ (ΜΕΡΙΚΩΣ ΕΠΑΛΗΘΕΥΜΕΝΟ ΑΠΟ ΜΕΝΑ): το census JSON εκπέμπει ΑΚΟΜΗ μη-κανονική ετικέτα αλγορίθμου «odd»:«rfc6962-split» αντί για lawmax-merkle-sha256-v1 — ΤΟ ΕΠΙΒΕΒΑΙΩΣΑ ΖΩΝΤΑΝΟ στη γραμμή 116 της παραγωγικής έδρας. Το δεύτερο σκέλος του δελτίου [0120] (tlog «merkle»:«rfc6962-sha256» στο /frozen/ro/systems/orchestrator-epistemic/transparency-log.lisp:L84 — γραμμή που σήμερα φέρει σχόλιο για τα legacy fixtures, ΟΧΙ τον writer) ΔΕΝ ΕΠΑΛΗΘΕΥΕΤΑΙ στο παγωμένο commit: grep σε ΟΛΟ το repo δίνει το string ΜΟΝΟ σε παγωμένα legacy fixtures και στο αρχείο του αφαιρεμένου writer — οι tlog writers έχουν αφαιρεθεί. Άρα το υπόλειμμα είναι ΖΩΝΤΑΝΟ για το census, ΙΣΤΟΡΙΚΟ για το tlog, και το δελτίο [0120] είναι ως προς αυτό stale."
+   :severity :p1 :evidence "/frozen/ro/systems/orchestrator-epistemic/artifact-census.lisp:L116 /frozen/ro/authority-v2/fixtures/legacy-tlog/REMOVED-tlog-writers.lisp.txt:L18 /frozen/ro/authority-v2/fixtures/legacy-tlog/tlog-n1.json:L1 /frozen/ro/systems/orchestrator-epistemic/transparency-log.lisp:L79-L85 /frozen/ro/deployment/collab/dialogue/0120-claude.md:L147-L152" :is-it-in-the-known-defect-list :yes)
 
   (:what "discover-fek.test.js: 10 assertions ΟΛΕΣ πάνω σε ένα καρφωμένο payload· process.exit(0) άνευ όρων στο τέλος και η γραμμή αναφοράς τυπώνει το «0 failed» ως σταθερά κειμένου — δεν μπορεί ποτέ να αναφέρει αποτυχία μέσω exit code παρά μόνο αν πετάξει το assert."
    :severity :p1 :evidence "/frozen/ro/deployment/discover-fek.test.js:L8-L9,L42-L43" :is-it-in-the-known-defect-list :no))
@@ -517,10 +517,10 @@
    :why-hidden "Ολόκληρη «χαμένη κλάση» εκτέλεσης OS που ΔΕΝ ήταν στην απογραφή του Phase 0 — τη βρήκε ο αντίπαλος. Αναβλήθηκε σε Phase 5/6, δεν έχει κλείσει στο παγωμένο commit."
    :evidence "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L125-L127")
 
-  (:path "Αφύλακτο main.lisp:1552 → ανάγνωση κανονικής έδρας → ACE στον daemon· eval/load sinks σε legal-ast/trace-core/layout-types/parsing/greek-tokenizer"
+  (:path "ΙΣΤΟΡΙΚΟ, ΕΠΑΛΗΘΕΥΜΕΝΑ ΚΛΕΙΣΤΟ: αφύλακτη ανάγνωση κανονικής έδρας στο main.lisp (γρ. 1552 ΤΟΤΕ) → ACE στον daemon· μαζί με eval/load sinks σε legal-ast/trace-core/layout-types/parsing/greek-tokenizer"
    :trigger "Αλλοίωση αρχείου κατάστασης (filesystem tampering) που ο daemon διαβάζει"
-   :why-hidden "Arbitrary code execution μέσω ανάγνωσης δεδομένων· δηλωμένο ως Κ-1 ζωντανό εύρημα. Δηλώνεται κλεισμένο στους [0095]/[0096] με τη ΜΙΑ safe-read έδρα, αλλά η επαλήθευση απαιτεί owner build."
-   :evidence "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L~88-L96 /frozen/ro/deployment/collab/dialogue/0096-claude.md:L~28-L36")
+   :why-hidden "Ήταν arbitrary code execution μέσω ανάγνωσης δεδομένων, δηλωμένο ως Κ-1 ζωντανό εύρημα. ΕΠΑΛΗΘΕΥΣΑ ΣΤΟ ΠΑΓΩΜΕΝΟ COMMIT ότι η κλάση έχει κλείσει σε αυτή την έδρα: το load-review-queue διαβάζει πλέον μέσω orchestrator.safe-read:read-data-file. Το καταγράφω ως κλειστό μονοπάτι, ΟΧΙ ως ενεργό — η γραμμή 1552 σήμερα είναι απλός format εκτύπωσης. ΔΕΝ επαλήθευσα τα υπόλοιπα sinks (εκτός διαδρομής)."
+   :evidence "/frozen/ro/systems/orchestrator-cli/main.lisp:L1504-L1515 /frozen/ro/deployment/collab/STATE-OF-PLAY.md:L~88-L96 /frozen/ro/deployment/collab/dialogue/0096-claude.md:L~28-L36")
 
   (:path "fek-diagnose.js → page.screenshot({path:'fek-debug.png'}) σε ΣΧΕΤΙΚΟ path (CWD)"
    :trigger "Χειροκίνητη εκτέλεση"
@@ -541,7 +541,7 @@
            "/frozen/ro/deployment/data/syntagma_clean.zip → syntagma_clean.json (124 άρθρα, sha256 74e7c84e…, date 14/03/1986, ΚΑΜΙΑ provenance, 0 αναφορές στο repo)"))
   (:concept "ΒΙΩΜΑΤΙΚΗ ΜΝΗΜΗ / «τι έζησα» — δύο δηλωμένες έδρες, η μία ανύπαρκτη"
    :seats ("/frozen/ro/deployment/self/history.sexp:L1 (υπάρχει, 3 εγγραφές)"
-           "deployment/self/episodes.sexp (ΔΗΛΩΝΕΤΑΙ σε self-glossary.sexp:L38 και LAWMAX-MEMORY-KERNEL-SPEC.md:L35,L62 — ΔΕΝ ΥΠΑΡΧΕΙ)"))
+           "deployment/self/episodes.sexp — ΔΕΝ ΥΠΑΡΧΕΙ· ΔΗΛΩΝΕΤΑΙ σε /frozen/ro/deployment/knowledge/self-glossary.sexp:L38 και /frozen/ro/deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L35 και /frozen/ro/deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L62"))
   (:concept "«ΤΙ ΔΕΝ ΚΑΤΑΛΑΒΑ» — έξι κατακερματισμένες αποθήκες χωρίς κοινή διεπαφή ερωτήματος"
    :seats ("deployment/state/lessons.jsonl" "deployment/state/failure-ledger.jsonl"
            "deployment/self/episodes.sexp" "/frozen/ro/deployment/self/history.sexp:L1"
@@ -562,11 +562,11 @@
   (:concept "ΚΑΤΑΣΚΕΥΗ ΝΤΕΤΕΡΜΙΝΙΣΤΙΚΟΥ BLOB URL ΦΕΚ (τεύχος→GG, 5ψήφιο padding)"
    :seats ("/frozen/ro/deployment/fetch-fek-by-number.sh:L21-L29" "/frozen/ro/deployment/discover-fek.js:L85-L88"))
   (:concept "MERKLE ΦΥΛΛΟ — δύο ασύμβατοι ορισμοί στο στρώμα αυθεντίας (κλεισμένο στο [0122])"
-   :seats ("capture.py:230 SHA256(0x00 ‖ SHA256(bytes)) — /frozen/ro/deployment/collab/dialogue/0122-claude.md:L~18"
+   :seats ("capture.py ΤΟΤΕ SHA256(0x00 ‖ SHA256(bytes)) — /frozen/ro/deployment/collab/dialogue/0122-claude.md:L~18· ΣΗΜΕΡΑ διορθωμένο: /frozen/ro/authority-v2/capture/capture.py:L176"
            "orchestrator.merkle:hash-leaf-file SHA256(0x00 ‖ ΩΜΑ BYTES) — /frozen/ro/deployment/collab/dialogue/0122-claude.md:L~20"))
   (:concept "ΔΙΠΛΕΣ/ΤΡΙΠΛΕΣ ΕΔΡΕΣ ΚΩΔΙΚΑ (μετρημένες από τον έλεγχο ταβανιού)"
    :seats ("protocols ×2 (source/ vs orchestrator-spec)" "mod-inverse ×2 (jws vs blockchain — ΚΡΥΠΤΟΓΡΑΦΙΚΟ ΠΡΩΤΟΓΟΝΟ)"
-           "tokenizer ×3" "normalize-greek ×3 (greek-lemmatizer.lisp:42, text-canonicalizer.lisp:409, legal-id-registry.lisp:71)"
+           "tokenizer ×3" "normalize-greek ×3 (defun σε /frozen/ro/source/greek-lemmatizer.lisp:L41 · /frozen/ro/source/text-canonicalizer.lisp:L409 · /frozen/ro/source/legal-id-registry.lisp:L74 — ΕΠΑΛΗΘΕΥΜΕΝΟ ΑΠΟ ΜΕΝΑ)"
            "Turtle-escaping ×3 (η μία αυτο-τιτλοφορείται «Single source of truth»)" "JSON ×2" "XML ×2"
            "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L173-L177"))
   (:concept "ΔΙΠΛΕΣ ΕΔΡΕΣ ΣΕ ΕΠΙΠΕΔΟ ΣΧΕΔΙΟΥ (ασυμφιλίωτες ως έχουν)"
@@ -584,7 +584,7 @@
  ;; ==========================================================================
  :unknowns
  ("Αν ο Lisp πυρήνας ΟΝΤΩΣ επαληθεύει τα prov sidecars στο runtime, και τι κάνει σε mismatch — ο επαληθευτής δεν βρίσκεται σε αυτή τη συστάδα (deployment/verify/ είναι άλλη διαδρομή)."
-  "Αν το orchestrator.core όντως καλεί το fetch-fek.sh μέσω source.fetch_cmd — δηλώνεται σε σχόλιο (fetch-fek.sh:L10-L11) και σε configs/<corpus>.yaml που δεν ανήκει σε αυτή τη συστάδα."
+  "Αν το orchestrator.core όντως καλεί το fetch-fek.sh μέσω source.fetch_cmd — δηλώνεται σε σχόλιο (/frozen/ro/deployment/fetch-fek.sh:L10-L11) και σε configs/<corpus>.yaml που δεν ανήκει σε αυτή τη συστάδα."
   "Ποιος γράφει το deployment/self/history.sexp και υπό ποιες συνθήκες — η έδρα εγγραφής δεν διαβάστηκε (source/memory.lisp είναι εκτός διαδρομής)."
   "Αν οι 19 sites του /bin/sh -c στο document-fetch έχουν έκτοτε κλείσει — δηλώνονται αναβλημένα σε Phase 5/6 και δεν βρήκα δελτίο που να τα κλείνει."
   "Γιατί υπάρχει το syntagma_clean.zip και ποια είναι η προέλευσή του — καμία αναφορά, κανένα sidecar, καμία μνεία σε κανένα από τα 113 δελτία διαλόγου που είδα."
