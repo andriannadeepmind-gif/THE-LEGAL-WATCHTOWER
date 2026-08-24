@@ -49,12 +49,15 @@
    :dossier-sha256-prefix "6ab0457e1a7b2993" :resolver 3
    :citations 101 :resolved 101 :problems 0 :exit 0)
   (:lane "Φ1A-L2" :dossier "experiment/phase1a/systems.sexp"
-   :dossier-sha256-prefix "8dafb52f355eb458" :resolver 3
-   :citations 224 :resolved 175 :problems 49 :exit 1
-   :status :RETURNED-TO-LANE
-   :note "49 γυμνά ονόματα χωρίς κατάλογο. Επιστράφηκε ΣΤΗ ΔΙΑΔΡΟΜΗ με ρητή
-          προειδοποίηση για ομώνυμα αρχεία (deploy-epistemic.lisp υπάρχει σε ΔΥΟ
-          θέσεις και το ίδιο της το εύρημα #3 στηρίζεται στη διάκρισή τους).")
+   :dossier-sha256-prefix "e11b7b76d7fdb18c" :resolver 3
+   :citations 214 :resolved 214 :problems 0 :exit 0
+   :lane-corrected 49
+   :note "49 γυμνά ονόματα διορθώθηκαν ΑΠΟ ΤΗ ΔΙΑΔΡΟΜΗ. Δύο είχαν και λάθος
+          εύρος από συνενωμένο cat -n (reports.lisp L86-99→L6-19,
+          mock-data.lisp L21-24→L6-9). Τα ομώνυμα deploy-epistemic.lisp
+          διαχωρίστηκαν ρητά — το εύρημα #3 (σκληρή πύλη vs προειδοποίηση)
+          παραμένει άθικτο. Πλήθος 224→214: 10 πρώην γυμνά ταυτίστηκαν μετά
+          το πρόθεμα με ήδη υπάρχουσες πλήρεις παραπομπές.")
   (:lane "Φ1A-L1" :dossier "experiment/phase1a/source.sexp"
    :status :IN-PROGRESS :files-read 98 :of 133))
 
@@ -73,7 +76,10 @@
   (:lane "Φ1A-L6" :resolver 2 :citations 98 :resolved 98 :problems 0
    :why-superseded "v2→v3· επιβεβαιώθηκε ξανά, ίδιο αποτέλεσμα")
   (:lane "Φ1A-L5" :resolver 2 :citations 152 :resolved 138 :problems 14
-   :why-superseded "πριν από τη διόρθωση της lane· τώρα 156/156 με v3"))
+   :why-superseded "πριν από τη διόρθωση της lane· τώρα 156/156 με v3")
+  (:lane "Φ1A-L2" :resolver 3 :dossier-sha256-prefix "8dafb52f355eb458"
+   :citations 224 :resolved 175 :problems 49
+   :why-superseded "πριν από τη διόρθωση της lane· τώρα 214/214"))
 
  ;; ── ΣΥΜΦΙΛΙΩΣΗ ΤΩΝ ΑΡΧΙΚΩΝ 11 (§2/§5) — ΑΚΡΙΒΕΣ DISPOSITION ────────────
  :l7-initial-eleven
