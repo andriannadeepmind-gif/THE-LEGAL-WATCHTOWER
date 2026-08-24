@@ -5,7 +5,7 @@
 Ό,τι δεν έτρεξε γράφεται NOT-EXECUTED· ό,τι δεν παρσάρεται γράφεται UNKNOWN.
 ΠΟΤΕ PASS χωρίς exit code 0.
 """
-import hashlib, json, os, re, subprocess, sys, time, datetime
+import hashlib, json, os, re, shutil, subprocess, sys, time, datetime
 
 FROZEN = sys.argv[1]
 IMAGE  = sys.argv[2]
@@ -41,16 +41,25 @@ for i, fn in enumerate(suites, 1):
     path = os.path.join(FROZEN, "tests", fn)
     sha  = hashlib.sha256(open(path, "rb").read()).hexdigest()
     gated = name not in suite_excl
+    # §14.7 ΦΡΕΣΚΟ DISPOSABLE OVERLAY ΑΝΑ ΣΟΥΙΤΑ: η επιφάνεια εγγραφής προς το
+    # corpus είναι ΚΑΙΝΟΥΡΓΙΑ σε κάθε σουίτα, ώστε καμία σουίτα να μην κληρονομεί
+    # κατάσταση από προηγούμενη. Το FASL cache μένει ΚΟΙΝΟ και ΧΩΡΙΣΤΑ
+    # προσαρτημένο: είναι ντετερμινιστικό προϊόν μεταγλώττισης με κλειδί τη
+    # διαδρομή πηγής, ΟΧΙ κατάσταση δοκιμής — δηλώνεται ρητά ως τέτοιο.
+    suite_work = os.path.join(WORK, "suites", name)
+    if os.path.isdir(suite_work):
+        shutil.rmtree(suite_work)
+    os.makedirs(suite_work, exist_ok=True)
+    fasl_shared = os.path.join(WORK, "fasl")
+    os.makedirs(fasl_shared, exist_ok=True)
     before = set()
-    up = os.path.join(WORK, "upper")
-    if os.path.isdir(up):
-        for r, _d, fs in os.walk(up):
-            for f in fs:
-                before.add(os.path.relpath(os.path.join(r, f), up))
+    up = os.path.join(suite_work, "upper")
     t = time.time()
     proc = subprocess.run(
         ["docker", "run", "--rm", "--privileged",
-         "-v", f"{FROZEN}:/corpus:ro", "-v", f"{WORK}:/work", IMAGE,
+         "-v", f"{FROZEN}:/corpus:ro",
+         "-v", f"{suite_work}:/work",
+         "-v", f"{fasl_shared}:/work/fasl", IMAGE,
          "sbcl", "--script", "/app/docker/run-standalone-test.lisp", f"/app/tests/{fn}"],
         capture_output=True, text=True, timeout=1800)
     dur = round(time.time() - t, 1)

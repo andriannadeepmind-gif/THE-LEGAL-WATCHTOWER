@@ -3,7 +3,8 @@
 
 (:lawmax-execution-census/1
  :total-entries 193
- :by-type ((:aggregator 4) (:declared-nonsuite 8) (:e2e 1) (:proof 15) (:self-check 12) (:suite 137) (:suite-fiveam 1) (:test-file-outside-inventory 12) (:tooling-checker 3))
+ :by-type ((:aggregator 4) (:declared-nonsuite 8) (:declared-suite-exclusion 1) (:e2e 1) (:proof 15) (:self-check 12) (:suite 136) (:suite-fiveam 1) (:test-file-outside-inventory 12) (:tooling-checker 3))
+ :note-counting "ΔΙΟΡΘΩΣΗ §14.2: το tests/comparison-test.lisp είναι ΕΝΑ αρχείο, μετρημένο ΜΙΑ φορά ως :declared-suite-exclusion. Αρχεία σουιτών: 136. Εκτελέστηκαν: 136. Gated: 135."
  :note-146 "Το 146 είναι ΕΓΓΡΑΦΕΣ του καταλόγου tests/ (144 .lisp + 2 φάκελοι). ΔΕΝ είναι σουίτες."
  :entries
   (
@@ -551,7 +552,7 @@
     :invocation "sbcl --script /app/docker/run-standalone-test.lisp /app/tests/write-authority-test.lisp" :prerequisites "runner image· corpus read-only"
     :inclusion-reason "glob tests/*-test.lisp μείον εξαιρέσεις"
     :expected-exit 0 :actual "βλ. suite-census.sexp" :status :EXECUTED)
-   (:id "suite-excluded:comparison" :path "tests/comparison-test.lisp" :type :suite
+   (:id "suite-excluded:comparison" :path "tests/comparison-test.lisp" :type :declared-suite-exclusion
     :invocation "—" :prerequisites "—"
     :inclusion-reason "ΔΗΛΩΜΕΝΗ εξαίρεση σουίτας"
     :expected-exit — :actual "—" :status :EXCLUDED-DECLARED)
