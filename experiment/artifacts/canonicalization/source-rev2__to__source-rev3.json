@@ -1,0 +1,6552 @@
+{
+ "source": "source-rev2.sexp",
+ "source_sha256": "858f4c903e91a11289d3e4830541dbca687a14cd403883758fa04ea559f68807",
+ "target": "source-rev3.sexp",
+ "target_sha256": "5bb2675adb08e55fe735861a87c55dd862085b87747dd33e8b2986ba8e06b5ea",
+ "derivation": "ΠΑΡΑΤΗΡΟΥΜΕΝΗ ΔΙΑΦΟΡΑ ΤΩΝ ΔΥΟ ΑΡΧΕΙΩΝ — ΟΧΙ έξοδος του εργαλείου που έκανε τη μετάβαση",
+ "skeleton_slots": 346,
+ "old_tokens": 346,
+ "new_tokens": 422,
+ "kinds": {
+  "IDENTITY": 298,
+  "EXPANSION": 48,
+  "PREFIX": 0
+ },
+ "target_substitutions": 0,
+ "reorderings": 0,
+ "losses": 0,
+ "mapping": [
+  {
+   "slot": 0,
+   "kind": "IDENTITY",
+   "old_target": "source/safe-read.lisp",
+   "new_target": "source/safe-read.lisp",
+   "old": [
+    {
+     "token": "source/safe-read.lisp:39-349",
+     "offset": 4448
+    }
+   ],
+   "new": [
+    {
+     "token": "source/safe-read.lisp:L39-L349@sha256:590133b311d0",
+     "offset": 4448
+    }
+   ]
+  },
+  {
+   "slot": 1,
+   "kind": "IDENTITY",
+   "old_target": "source/safe-read.lisp",
+   "new_target": "source/safe-read.lisp",
+   "old": [
+    {
+     "token": "source/safe-read.lisp:312-339",
+     "offset": 5097
+    }
+   ],
+   "new": [
+    {
+     "token": "source/safe-read.lisp:L312-L339@sha256:590133b311d0",
+     "offset": 5119
+    }
+   ]
+  },
+  {
+   "slot": 2,
+   "kind": "IDENTITY",
+   "old_target": "source/merkle-authority.lisp",
+   "new_target": "source/merkle-authority.lisp",
+   "old": [
+    {
+     "token": "source/merkle-authority.lisp:54-235",
+     "offset": 5912
+    }
+   ],
+   "new": [
+    {
+     "token": "source/merkle-authority.lisp:L54-L235@sha256:ad734ad2052d",
+     "offset": 5956
+    }
+   ]
+  },
+  {
+   "slot": 3,
+   "kind": "IDENTITY",
+   "old_target": "source/proof-carrying.lisp",
+   "new_target": "source/proof-carrying.lisp",
+   "old": [
+    {
+     "token": "source/proof-carrying.lisp:50-295",
+     "offset": 6813
+    }
+   ],
+   "new": [
+    {
+     "token": "source/proof-carrying.lisp:L50-L295@sha256:c18f7ddb07b1",
+     "offset": 6879
+    }
+   ]
+  },
+  {
+   "slot": 4,
+   "kind": "IDENTITY",
+   "old_target": "source/journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "source/journal.lisp:104-576",
+     "offset": 7946
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:L104-L576@sha256:ee440c102989",
+     "offset": 8034
+    }
+   ]
+  },
+  {
+   "slot": 5,
+   "kind": "IDENTITY",
+   "old_target": "source/constitutional-gate.lisp",
+   "new_target": "source/constitutional-gate.lisp",
+   "old": [
+    {
+     "token": "source/constitutional-gate.lisp:22-71",
+     "offset": 8694
+    }
+   ],
+   "new": [
+    {
+     "token": "source/constitutional-gate.lisp:L22-L71@sha256:33522d186e21",
+     "offset": 8804
+    }
+   ]
+  },
+  {
+   "slot": 6,
+   "kind": "IDENTITY",
+   "old_target": "source/deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "source/deterministic-time.lisp:52-220",
+     "offset": 9437
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:L52-L220@sha256:6dbda9c2fc1c",
+     "offset": 9569
+    }
+   ]
+  },
+  {
+   "slot": 7,
+   "kind": "IDENTITY",
+   "old_target": "source/cognition.lisp",
+   "new_target": "source/cognition.lisp",
+   "old": [
+    {
+     "token": "source/cognition.lisp:62-184",
+     "offset": 10177
+    }
+   ],
+   "new": [
+    {
+     "token": "source/cognition.lisp:L62-L184@sha256:f54ace6cb73d",
+     "offset": 10331
+    }
+   ]
+  },
+  {
+   "slot": 8,
+   "kind": "IDENTITY",
+   "old_target": "source/document-fetch.lisp",
+   "new_target": "source/document-fetch.lisp",
+   "old": [
+    {
+     "token": "source/document-fetch.lisp:92-323",
+     "offset": 10941
+    }
+   ],
+   "new": [
+    {
+     "token": "source/document-fetch.lisp:L92-L323@sha256:bb114b83fd80",
+     "offset": 11117
+    }
+   ]
+  },
+  {
+   "slot": 9,
+   "kind": "IDENTITY",
+   "old_target": "source/self-constitution.lisp",
+   "new_target": "source/self-constitution.lisp",
+   "old": [
+    {
+     "token": "source/self-constitution.lisp:29-132",
+     "offset": 11681
+    }
+   ],
+   "new": [
+    {
+     "token": "source/self-constitution.lisp:L29-L132@sha256:24cfed7c844e",
+     "offset": 11879
+    }
+   ]
+  },
+  {
+   "slot": 10,
+   "kind": "IDENTITY",
+   "old_target": "source/hash-authority.lisp",
+   "new_target": "source/hash-authority.lisp",
+   "old": [
+    {
+     "token": "source/hash-authority.lisp:11-59",
+     "offset": 12234
+    }
+   ],
+   "new": [
+    {
+     "token": "source/hash-authority.lisp:L11-L59@sha256:280a7c5bb315",
+     "offset": 12454
+    }
+   ]
+  },
+  {
+   "slot": 11,
+   "kind": "IDENTITY",
+   "old_target": "source/write-authority.lisp",
+   "new_target": "source/write-authority.lisp",
+   "old": [
+    {
+     "token": "source/write-authority.lisp:12-73",
+     "offset": 12789
+    }
+   ],
+   "new": [
+    {
+     "token": "source/write-authority.lisp:L12-L73@sha256:f2fbb95e2a76",
+     "offset": 13031
+    }
+   ]
+  },
+  {
+   "slot": 12,
+   "kind": "IDENTITY",
+   "old_target": "source/institution.lisp",
+   "new_target": "source/institution.lisp",
+   "old": [
+    {
+     "token": "source/institution.lisp:26-61",
+     "offset": 13308
+    }
+   ],
+   "new": [
+    {
+     "token": "source/institution.lisp:L26-L61@sha256:8c8f820e39b5",
+     "offset": 13572
+    }
+   ]
+  },
+  {
+   "slot": 13,
+   "kind": "IDENTITY",
+   "old_target": "config.lisp",
+   "new_target": "config.lisp",
+   "old": [
+    {
+     "token": "config.lisp:7-49",
+     "offset": 13926
+    }
+   ],
+   "new": [
+    {
+     "token": "config.lisp:7-49",
+     "offset": 14212
+    }
+   ]
+  },
+  {
+   "slot": 14,
+   "kind": "IDENTITY",
+   "old_target": "source/authority-proof-bundle.lisp",
+   "new_target": "source/authority-proof-bundle.lisp",
+   "old": [
+    {
+     "token": "source/authority-proof-bundle.lisp:295-658",
+     "offset": 15208
+    }
+   ],
+   "new": [
+    {
+     "token": "source/authority-proof-bundle.lisp:L295-L658@sha256:1946af4ad92b",
+     "offset": 15494
+    }
+   ]
+  },
+  {
+   "slot": 15,
+   "kind": "IDENTITY",
+   "old_target": "source/version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "source/version-graph.lisp:221-1459",
+     "offset": 16382
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:L221-L1459@sha256:d6b181de2ad1",
+     "offset": 16690
+    }
+   ]
+  },
+  {
+   "slot": 16,
+   "kind": "IDENTITY",
+   "old_target": "source/version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "source/version-graph.lisp:2458-2613",
+     "offset": 17272
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:L2458-L2613@sha256:d6b181de2ad1",
+     "offset": 17602
+    }
+   ]
+  },
+  {
+   "slot": 17,
+   "kind": "IDENTITY",
+   "old_target": "source/amendment-extractor.lisp",
+   "new_target": "source/amendment-extractor.lisp",
+   "old": [
+    {
+     "token": "source/amendment-extractor.lisp:340-546",
+     "offset": 18152
+    }
+   ],
+   "new": [
+    {
+     "token": "source/amendment-extractor.lisp:L340-L546@sha256:407642a40548",
+     "offset": 18504
+    }
+   ]
+  },
+  {
+   "slot": 18,
+   "kind": "IDENTITY",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "source/pdf-authority.lisp:381-1439",
+     "offset": 18960
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L381-L1439@sha256:c4e2054c0e4f",
+     "offset": 19334
+    }
+   ]
+  },
+  {
+   "slot": 19,
+   "kind": "IDENTITY",
+   "old_target": "capability-registry.lisp",
+   "new_target": "capability-registry.lisp",
+   "old": [
+    {
+     "token": "capability-registry.lisp:40-207",
+     "offset": 19825
+    }
+   ],
+   "new": [
+    {
+     "token": "capability-registry.lisp:40-207",
+     "offset": 20221
+    }
+   ]
+  },
+  {
+   "slot": 20,
+   "kind": "IDENTITY",
+   "old_target": "source/capability-api.lisp",
+   "new_target": "source/capability-api.lisp",
+   "old": [
+    {
+     "token": "source/capability-api.lisp:37-147",
+     "offset": 19859
+    }
+   ],
+   "new": [
+    {
+     "token": "source/capability-api.lisp:L37-L147@sha256:493200e4807d",
+     "offset": 20255
+    }
+   ]
+  },
+  {
+   "slot": 21,
+   "kind": "IDENTITY",
+   "old_target": "source/contracts.lisp",
+   "new_target": "source/contracts.lisp",
+   "old": [
+    {
+     "token": "source/contracts.lisp:43-167",
+     "offset": 20598
+    }
+   ],
+   "new": [
+    {
+     "token": "source/contracts.lisp:L43-L167@sha256:e9e619500aee",
+     "offset": 21016
+    }
+   ]
+  },
+  {
+   "slot": 22,
+   "kind": "IDENTITY",
+   "old_target": "source/canonical-representation.lisp",
+   "new_target": "source/canonical-representation.lisp",
+   "old": [
+    {
+     "token": "source/canonical-representation.lisp:91-278",
+     "offset": 21299
+    }
+   ],
+   "new": [
+    {
+     "token": "source/canonical-representation.lisp:L91-L278@sha256:a72286188ff9",
+     "offset": 21739
+    }
+   ]
+  },
+  {
+   "slot": 23,
+   "kind": "IDENTITY",
+   "old_target": "source/canonical-uris.lisp",
+   "new_target": "source/canonical-uris.lisp",
+   "old": [
+    {
+     "token": "source/canonical-uris.lisp:53-264",
+     "offset": 21954
+    }
+   ],
+   "new": [
+    {
+     "token": "source/canonical-uris.lisp:L53-L264@sha256:3481b0caf826",
+     "offset": 22416
+    }
+   ]
+  },
+  {
+   "slot": 24,
+   "kind": "IDENTITY",
+   "old_target": "source/autonomy.lisp",
+   "new_target": "source/autonomy.lisp",
+   "old": [
+    {
+     "token": "source/autonomy.lisp:26-124",
+     "offset": 22656
+    }
+   ],
+   "new": [
+    {
+     "token": "source/autonomy.lisp:L26-L124@sha256:4c36bb35f209",
+     "offset": 23140
+    }
+   ]
+  },
+  {
+   "slot": 25,
+   "kind": "IDENTITY",
+   "old_target": "source/components.lisp",
+   "new_target": "source/components.lisp",
+   "old": [
+    {
+     "token": "source/components.lisp:26-98",
+     "offset": 23204
+    }
+   ],
+   "new": [
+    {
+     "token": "source/components.lisp:L26-L98@sha256:62460c81018c",
+     "offset": 23710
+    }
+   ]
+  },
+  {
+   "slot": 26,
+   "kind": "IDENTITY",
+   "old_target": "source/archive-authority.lisp",
+   "new_target": "source/archive-authority.lisp",
+   "old": [
+    {
+     "token": "source/archive-authority.lisp:56-159",
+     "offset": 23824
+    }
+   ],
+   "new": [
+    {
+     "token": "source/archive-authority.lisp:L56-L159@sha256:36f78fe7b609",
+     "offset": 24352
+    }
+   ]
+  },
+  {
+   "slot": 27,
+   "kind": "IDENTITY",
+   "old_target": "source/ast-gate.lisp",
+   "new_target": "source/ast-gate.lisp",
+   "old": [
+    {
+     "token": "source/ast-gate.lisp:53-127",
+     "offset": 24503
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ast-gate.lisp:L53-L127@sha256:65724a01525c",
+     "offset": 25053
+    }
+   ]
+  },
+  {
+   "slot": 28,
+   "kind": "IDENTITY",
+   "old_target": "source/anomaly-detection.lisp",
+   "new_target": "source/anomaly-detection.lisp",
+   "old": [
+    {
+     "token": "source/anomaly-detection.lisp:54-93",
+     "offset": 25084
+    }
+   ],
+   "new": [
+    {
+     "token": "source/anomaly-detection.lisp:L54-L93@sha256:43c44bf86b01",
+     "offset": 25656
+    }
+   ]
+  },
+  {
+   "slot": 29,
+   "kind": "IDENTITY",
+   "old_target": "source/adoption-decision.lisp",
+   "new_target": "source/adoption-decision.lisp",
+   "old": [
+    {
+     "token": "source/adoption-decision.lisp:23-132",
+     "offset": 25828
+    }
+   ],
+   "new": [
+    {
+     "token": "source/adoption-decision.lisp:L23-L132@sha256:fd26b0d91f89",
+     "offset": 26422
+    }
+   ]
+  },
+  {
+   "slot": 30,
+   "kind": "IDENTITY",
+   "old_target": "source/safe-read.lisp",
+   "new_target": "source/safe-read.lisp",
+   "old": [
+    {
+     "token": "source/safe-read.lisp:152-186",
+     "offset": 26283
+    }
+   ],
+   "new": [
+    {
+     "token": "source/safe-read.lisp:L152-L186@sha256:590133b311d0",
+     "offset": 26899
+    }
+   ]
+  },
+  {
+   "slot": 31,
+   "kind": "IDENTITY",
+   "old_target": "source/constitutional-gate.lisp",
+   "new_target": "source/constitutional-gate.lisp",
+   "old": [
+    {
+     "token": "source/constitutional-gate.lisp:49-71",
+     "offset": 26628
+    }
+   ],
+   "new": [
+    {
+     "token": "source/constitutional-gate.lisp:L49-L71@sha256:33522d186e21",
+     "offset": 27266
+    }
+   ]
+  },
+  {
+   "slot": 32,
+   "kind": "IDENTITY",
+   "old_target": "source/journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "source/journal.lisp:343-350",
+     "offset": 26920
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:L343-L350@sha256:ee440c102989",
+     "offset": 27580
+    }
+   ]
+  },
+  {
+   "slot": 33,
+   "kind": "IDENTITY",
+   "old_target": "source/proof-carrying.lisp",
+   "new_target": "source/proof-carrying.lisp",
+   "old": [
+    {
+     "token": "source/proof-carrying.lisp:185-207",
+     "offset": 27188
+    }
+   ],
+   "new": [
+    {
+     "token": "source/proof-carrying.lisp:L185-L207@sha256:c18f7ddb07b1",
+     "offset": 27870
+    }
+   ]
+  },
+  {
+   "slot": 34,
+   "kind": "IDENTITY",
+   "old_target": "source/write-authority.lisp",
+   "new_target": "source/write-authority.lisp",
+   "old": [
+    {
+     "token": "source/write-authority.lisp:16-51",
+     "offset": 27539
+    }
+   ],
+   "new": [
+    {
+     "token": "source/write-authority.lisp:L16-L51@sha256:f2fbb95e2a76",
+     "offset": 28243
+    }
+   ]
+  },
+  {
+   "slot": 35,
+   "kind": "IDENTITY",
+   "old_target": "source/cognition.lisp",
+   "new_target": "source/cognition.lisp",
+   "old": [
+    {
+     "token": "source/cognition.lisp:62-89",
+     "offset": 27850
+    }
+   ],
+   "new": [
+    {
+     "token": "source/cognition.lisp:L62-L89@sha256:f54ace6cb73d",
+     "offset": 28576
+    }
+   ]
+  },
+  {
+   "slot": 36,
+   "kind": "IDENTITY",
+   "old_target": "source/document-fetch.lisp",
+   "new_target": "source/document-fetch.lisp",
+   "old": [
+    {
+     "token": "source/document-fetch.lisp:228-256",
+     "offset": 28139
+    }
+   ],
+   "new": [
+    {
+     "token": "source/document-fetch.lisp:L228-L256@sha256:bb114b83fd80",
+     "offset": 28887
+    }
+   ]
+  },
+  {
+   "slot": 37,
+   "kind": "IDENTITY",
+   "old_target": "source/journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "source/journal.lisp:180-187",
+     "offset": 28412
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:L180-L187@sha256:ee440c102989",
+     "offset": 29182
+    }
+   ]
+  },
+  {
+   "slot": 38,
+   "kind": "IDENTITY",
+   "old_target": "source/deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "source/deterministic-time.lisp:202-220",
+     "offset": 28687
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:L202-L220@sha256:6dbda9c2fc1c",
+     "offset": 29479
+    }
+   ]
+  },
+  {
+   "slot": 39,
+   "kind": "IDENTITY",
+   "old_target": "source/capability-registry.lisp",
+   "new_target": "source/capability-registry.lisp",
+   "old": [
+    {
+     "token": "source/capability-registry.lisp:122-134",
+     "offset": 29044
+    }
+   ],
+   "new": [
+    {
+     "token": "source/capability-registry.lisp:L122-L134@sha256:d9161b5bc1cd",
+     "offset": 29858
+    }
+   ]
+  },
+  {
+   "slot": 40,
+   "kind": "IDENTITY",
+   "old_target": "source/capability-api.lisp",
+   "new_target": "source/capability-api.lisp",
+   "old": [
+    {
+     "token": "source/capability-api.lisp:108-111",
+     "offset": 29400
+    }
+   ],
+   "new": [
+    {
+     "token": "source/capability-api.lisp:L108-L111@sha256:493200e4807d",
+     "offset": 30236
+    }
+   ]
+  },
+  {
+   "slot": 41,
+   "kind": "IDENTITY",
+   "old_target": "source/capability-registry.lisp",
+   "new_target": "source/capability-registry.lisp",
+   "old": [
+    {
+     "token": "source/capability-registry.lisp:195-206",
+     "offset": 29437
+    }
+   ],
+   "new": [
+    {
+     "token": "source/capability-registry.lisp:L195-L206@sha256:d9161b5bc1cd",
+     "offset": 30295
+    }
+   ]
+  },
+  {
+   "slot": 42,
+   "kind": "IDENTITY",
+   "old_target": "source/version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "source/version-graph.lisp:2479-2522",
+     "offset": 29767
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:L2479-L2522@sha256:d6b181de2ad1",
+     "offset": 30647
+    }
+   ]
+  },
+  {
+   "slot": 43,
+   "kind": "IDENTITY",
+   "old_target": "source/version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "source/version-graph.lisp:645-686",
+     "offset": 30100
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:L645-L686@sha256:d6b181de2ad1",
+     "offset": 31002
+    }
+   ]
+  },
+  {
+   "slot": 44,
+   "kind": "EXPANSION",
+   "old_target": "source/authority-proof-bundle.lisp",
+   "new_target": "source/authority-proof-bundle.lisp",
+   "old": [
+    {
+     "token": "source/authority-proof-bundle.lisp:295-330,646-657",
+     "offset": 30438
+    }
+   ],
+   "new": [
+    {
+     "token": "source/authority-proof-bundle.lisp:L295-L330@sha256:1946af4ad92b",
+     "offset": 31362
+    },
+    {
+     "token": "source/authority-proof-bundle.lisp:L646-L657@sha256:1946af4ad92b",
+     "offset": 31427
+    }
+   ]
+  },
+  {
+   "slot": 45,
+   "kind": "EXPANSION",
+   "old_target": "source/safe-read.lisp",
+   "new_target": "source/safe-read.lisp",
+   "old": [
+    {
+     "token": "source/safe-read.lisp:82-99,152-186",
+     "offset": 30718
+    }
+   ],
+   "new": [
+    {
+     "token": "source/safe-read.lisp:L82-L99@sha256:590133b311d0",
+     "offset": 31721
+    },
+    {
+     "token": "source/safe-read.lisp:L152-L186@sha256:590133b311d0",
+     "offset": 31771
+    }
+   ]
+  },
+  {
+   "slot": 46,
+   "kind": "IDENTITY",
+   "old_target": "source/safe-read.lisp",
+   "new_target": "source/safe-read.lisp",
+   "old": [
+    {
+     "token": "source/safe-read.lisp:326-339",
+     "offset": 30936
+    }
+   ],
+   "new": [
+    {
+     "token": "source/safe-read.lisp:L326-L339@sha256:590133b311d0",
+     "offset": 32005
+    }
+   ]
+  },
+  {
+   "slot": 47,
+   "kind": "IDENTITY",
+   "old_target": "source/merkle-authority.lisp",
+   "new_target": "source/merkle-authority.lisp",
+   "old": [
+    {
+     "token": "source/merkle-authority.lisp:101-119",
+     "offset": 31120
+    }
+   ],
+   "new": [
+    {
+     "token": "source/merkle-authority.lisp:L101-L119@sha256:ad734ad2052d",
+     "offset": 32211
+    }
+   ]
+  },
+  {
+   "slot": 48,
+   "kind": "IDENTITY",
+   "old_target": "source/proof-carrying.lisp",
+   "new_target": "source/proof-carrying.lisp",
+   "old": [
+    {
+     "token": "source/proof-carrying.lisp:206-207",
+     "offset": 31325
+    }
+   ],
+   "new": [
+    {
+     "token": "source/proof-carrying.lisp:L206-L207@sha256:c18f7ddb07b1",
+     "offset": 32438
+    }
+   ]
+  },
+  {
+   "slot": 49,
+   "kind": "EXPANSION",
+   "old_target": "source/journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "source/journal.lisp:343-350,469-479",
+     "offset": 31509
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:L343-L350@sha256:ee440c102989",
+     "offset": 32644
+    },
+    {
+     "token": "source/journal.lisp:L469-L479@sha256:ee440c102989",
+     "offset": 32694
+    }
+   ]
+  },
+  {
+   "slot": 50,
+   "kind": "IDENTITY",
+   "old_target": "source/journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "source/journal.lisp:126-170",
+     "offset": 31720
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:L126-L170@sha256:ee440c102989",
+     "offset": 32919
+    }
+   ]
+  },
+  {
+   "slot": 51,
+   "kind": "IDENTITY",
+   "old_target": "source/journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "source/journal.lisp:531-542",
+     "offset": 31947
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:L531-L542@sha256:ee440c102989",
+     "offset": 33168
+    }
+   ]
+  },
+  {
+   "slot": 52,
+   "kind": "IDENTITY",
+   "old_target": "source/journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "source/journal.lisp:369-381",
+     "offset": 32152
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:L369-L381@sha256:ee440c102989",
+     "offset": 33395
+    }
+   ]
+  },
+  {
+   "slot": 53,
+   "kind": "IDENTITY",
+   "old_target": "source/deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "source/deterministic-time.lisp:155-176",
+     "offset": 32368
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:L155-L176@sha256:6dbda9c2fc1c",
+     "offset": 33633
+    }
+   ]
+  },
+  {
+   "slot": 54,
+   "kind": "IDENTITY",
+   "old_target": "source/document-fetch.lisp",
+   "new_target": "source/document-fetch.lisp",
+   "old": [
+    {
+     "token": "source/document-fetch.lisp:243-291",
+     "offset": 32602
+    }
+   ],
+   "new": [
+    {
+     "token": "source/document-fetch.lisp:L243-L291@sha256:bb114b83fd80",
+     "offset": 33889
+    }
+   ]
+  },
+  {
+   "slot": 55,
+   "kind": "IDENTITY",
+   "old_target": "source/document-fetch.lisp",
+   "new_target": "source/document-fetch.lisp",
+   "old": [
+    {
+     "token": "source/document-fetch.lisp:46-90",
+     "offset": 32796
+    }
+   ],
+   "new": [
+    {
+     "token": "source/document-fetch.lisp:L46-L90@sha256:bb114b83fd80",
+     "offset": 34105
+    }
+   ]
+  },
+  {
+   "slot": 56,
+   "kind": "IDENTITY",
+   "old_target": "source/self-constitution.lisp",
+   "new_target": "source/self-constitution.lisp",
+   "old": [
+    {
+     "token": "source/self-constitution.lisp:105-115",
+     "offset": 32975
+    }
+   ],
+   "new": [
+    {
+     "token": "source/self-constitution.lisp:L105-L115@sha256:24cfed7c844e",
+     "offset": 34306
+    }
+   ]
+  },
+  {
+   "slot": 57,
+   "kind": "IDENTITY",
+   "old_target": "source/constitutional-gate.lisp",
+   "new_target": "source/constitutional-gate.lisp",
+   "old": [
+    {
+     "token": "source/constitutional-gate.lisp:44-45",
+     "offset": 33280
+    }
+   ],
+   "new": [
+    {
+     "token": "source/constitutional-gate.lisp:L44-L45@sha256:33522d186e21",
+     "offset": 34633
+    }
+   ]
+  },
+  {
+   "slot": 58,
+   "kind": "IDENTITY",
+   "old_target": "source/deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "source/deterministic-time.lisp:93-101",
+     "offset": 33590
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:L93-L101@sha256:6dbda9c2fc1c",
+     "offset": 34965
+    }
+   ]
+  },
+  {
+   "slot": 59,
+   "kind": "IDENTITY",
+   "old_target": "source/deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "source/deterministic-time.lisp:155-158",
+     "offset": 33978
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:L155-L158@sha256:6dbda9c2fc1c",
+     "offset": 35375
+    }
+   ]
+  },
+  {
+   "slot": 60,
+   "kind": "EXPANSION",
+   "old_target": "source/cognition.lisp",
+   "new_target": "source/cognition.lisp",
+   "old": [
+    {
+     "token": "source/cognition.lisp:65-66,88-89",
+     "offset": 34389
+    }
+   ],
+   "new": [
+    {
+     "token": "source/cognition.lisp:L65-L66@sha256:f54ace6cb73d",
+     "offset": 35808
+    },
+    {
+     "token": "source/cognition.lisp:L88-L89@sha256:f54ace6cb73d",
+     "offset": 35858
+    }
+   ]
+  },
+  {
+   "slot": 61,
+   "kind": "IDENTITY",
+   "old_target": "source/cognition.lisp",
+   "new_target": "source/cognition.lisp",
+   "old": [
+    {
+     "token": "source/cognition.lisp:85-87",
+     "offset": 34761
+    }
+   ],
+   "new": [
+    {
+     "token": "source/cognition.lisp:L85-L87@sha256:f54ace6cb73d",
+     "offset": 36246
+    }
+   ]
+  },
+  {
+   "slot": 62,
+   "kind": "IDENTITY",
+   "old_target": "source/write-authority.lisp",
+   "new_target": "source/write-authority.lisp",
+   "old": [
+    {
+     "token": "source/write-authority.lisp:29-30",
+     "offset": 35043
+    }
+   ],
+   "new": [
+    {
+     "token": "source/write-authority.lisp:L29-L30@sha256:f2fbb95e2a76",
+     "offset": 36550
+    }
+   ]
+  },
+  {
+   "slot": 63,
+   "kind": "IDENTITY",
+   "old_target": "config.lisp",
+   "new_target": "config.lisp",
+   "old": [
+    {
+     "token": "config.lisp:44",
+     "offset": 35335
+    }
+   ],
+   "new": [
+    {
+     "token": "config.lisp:44",
+     "offset": 36864
+    }
+   ]
+  },
+  {
+   "slot": 64,
+   "kind": "IDENTITY",
+   "old_target": "source/document-fetch.lisp",
+   "new_target": "source/document-fetch.lisp",
+   "old": [
+    {
+     "token": "source/document-fetch.lisp:71-79",
+     "offset": 35658
+    }
+   ],
+   "new": [
+    {
+     "token": "source/document-fetch.lisp:L71-L79@sha256:bb114b83fd80",
+     "offset": 37187
+    }
+   ]
+  },
+  {
+   "slot": 65,
+   "kind": "IDENTITY",
+   "old_target": "source/journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "source/journal.lisp:67",
+     "offset": 35816
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:L67-L67@sha256:ee440c102989",
+     "offset": 37367
+    }
+   ]
+  },
+  {
+   "slot": 66,
+   "kind": "IDENTITY",
+   "old_target": "source/version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "source/version-graph.lisp:471-497",
+     "offset": 35904
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:L471-L497@sha256:d6b181de2ad1",
+     "offset": 37480
+    }
+   ]
+  },
+  {
+   "slot": 67,
+   "kind": "IDENTITY",
+   "old_target": "memory.lisp",
+   "new_target": "memory.lisp",
+   "old": [
+    {
+     "token": "memory.lisp:110,164",
+     "offset": 36226
+    }
+   ],
+   "new": [
+    {
+     "token": "memory.lisp:110,164",
+     "offset": 37824
+    }
+   ]
+  },
+  {
+   "slot": 68,
+   "kind": "IDENTITY",
+   "old_target": "source/journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "source/journal.lisp:61-86",
+     "offset": 36280
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:L61-L86@sha256:ee440c102989",
+     "offset": 37878
+    }
+   ]
+  },
+  {
+   "slot": 69,
+   "kind": "IDENTITY",
+   "old_target": "source/version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "source/version-graph.lisp:471-497",
+     "offset": 36308
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:L471-L497@sha256:d6b181de2ad1",
+     "offset": 37928
+    }
+   ]
+  },
+  {
+   "slot": 70,
+   "kind": "IDENTITY",
+   "old_target": "memory.lisp",
+   "new_target": "memory.lisp",
+   "old": [
+    {
+     "token": "memory.lisp:110",
+     "offset": 36344
+    }
+   ],
+   "new": [
+    {
+     "token": "memory.lisp:110",
+     "offset": 37986
+    }
+   ]
+  },
+  {
+   "slot": 71,
+   "kind": "EXPANSION",
+   "old_target": "source/canonical-representation.lisp",
+   "new_target": "source/canonical-representation.lisp",
+   "old": [
+    {
+     "token": "source/canonical-representation.lisp:162-192,227-241",
+     "offset": 36904
+    }
+   ],
+   "new": [
+    {
+     "token": "source/canonical-representation.lisp:L162-L192@sha256:a72286188ff9",
+     "offset": 38546
+    },
+    {
+     "token": "source/canonical-representation.lisp:L227-L241@sha256:a72286188ff9",
+     "offset": 38613
+    }
+   ]
+  },
+  {
+   "slot": 72,
+   "kind": "IDENTITY",
+   "old_target": "source/canonical-representation.lisp",
+   "new_target": "source/canonical-representation.lisp",
+   "old": [
+    {
+     "token": "source/canonical-representation.lisp:141-160",
+     "offset": 37343
+    }
+   ],
+   "new": [
+    {
+     "token": "source/canonical-representation.lisp:L141-L160@sha256:a72286188ff9",
+     "offset": 39066
+    }
+   ]
+  },
+  {
+   "slot": 73,
+   "kind": "IDENTITY",
+   "old_target": "source/archive-authority.lisp",
+   "new_target": "source/archive-authority.lisp",
+   "old": [
+    {
+     "token": "source/archive-authority.lisp:70-94",
+     "offset": 37845
+    }
+   ],
+   "new": [
+    {
+     "token": "source/archive-authority.lisp:L70-L94@sha256:36f78fe7b609",
+     "offset": 39590
+    }
+   ]
+  },
+  {
+   "slot": 74,
+   "kind": "EXPANSION",
+   "old_target": "source/adoption-decision.lisp",
+   "new_target": "source/adoption-decision.lisp",
+   "old": [
+    {
+     "token": "source/adoption-decision.lisp:90-95,126-131",
+     "offset": 38316
+    }
+   ],
+   "new": [
+    {
+     "token": "source/adoption-decision.lisp:L90-L95@sha256:fd26b0d91f89",
+     "offset": 40083
+    },
+    {
+     "token": "source/adoption-decision.lisp:L126-L131@sha256:fd26b0d91f89",
+     "offset": 40141
+    }
+   ]
+  },
+  {
+   "slot": 75,
+   "kind": "IDENTITY",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "source/pdf-authority.lisp:1360-1370",
+     "offset": 38664
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L1360-L1370@sha256:c4e2054c0e4f",
+     "offset": 40505
+    }
+   ]
+  },
+  {
+   "slot": 76,
+   "kind": "IDENTITY",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "source/pdf-authority.lisp:1399-1425",
+     "offset": 39044
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L1399-L1425@sha256:c4e2054c0e4f",
+     "offset": 40907
+    }
+   ]
+  },
+  {
+   "slot": 77,
+   "kind": "IDENTITY",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "source/pdf-authority.lisp:349-355",
+     "offset": 39356
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L349-L355@sha256:c4e2054c0e4f",
+     "offset": 41241
+    }
+   ]
+  },
+  {
+   "slot": 78,
+   "kind": "IDENTITY",
+   "old_target": "source/amendment-extractor.lisp",
+   "new_target": "source/amendment-extractor.lisp",
+   "old": [
+    {
+     "token": "source/amendment-extractor.lisp:189-190",
+     "offset": 39750
+    }
+   ],
+   "new": [
+    {
+     "token": "source/amendment-extractor.lisp:L189-L190@sha256:407642a40548",
+     "offset": 41657
+    }
+   ]
+  },
+  {
+   "slot": 79,
+   "kind": "IDENTITY",
+   "old_target": "source/authority-proof-bundle.lisp",
+   "new_target": "source/authority-proof-bundle.lisp",
+   "old": [
+    {
+     "token": "source/authority-proof-bundle.lisp:507-511",
+     "offset": 40302
+    }
+   ],
+   "new": [
+    {
+     "token": "source/authority-proof-bundle.lisp:L507-L511@sha256:1946af4ad92b",
+     "offset": 42231
+    }
+   ]
+  },
+  {
+   "slot": 80,
+   "kind": "EXPANSION",
+   "old_target": "source/version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "source/version-graph.lisp:288-300,407-418",
+     "offset": 40795
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:L288-L300@sha256:d6b181de2ad1",
+     "offset": 42746
+    },
+    {
+     "token": "source/version-graph.lisp:L407-L418@sha256:d6b181de2ad1",
+     "offset": 42802
+    }
+   ]
+  },
+  {
+   "slot": 81,
+   "kind": "EXPANSION",
+   "old_target": "source/legal-audit-system.lisp",
+   "new_target": "source/legal-audit-system.lisp",
+   "old": [
+    {
+     "token": "source/legal-audit-system.lisp:233-236,486-509,545-554",
+     "offset": 41683
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-audit-system.lisp:L233-L236@sha256:53613cdd00f0",
+     "offset": 43704
+    },
+    {
+     "token": "source/legal-audit-system.lisp:L486-L509@sha256:53613cdd00f0",
+     "offset": 43765
+    },
+    {
+     "token": "source/legal-audit-system.lisp:L545-L554@sha256:53613cdd00f0",
+     "offset": 43826
+    }
+   ]
+  },
+  {
+   "slot": 82,
+   "kind": "IDENTITY",
+   "old_target": "source/jws-authority.lisp",
+   "new_target": "source/jws-authority.lisp",
+   "old": [
+    {
+     "token": "source/jws-authority.lisp:394",
+     "offset": 41740
+    }
+   ],
+   "new": [
+    {
+     "token": "source/jws-authority.lisp:L394-L394@sha256:0d57d11e3cf7",
+     "offset": 43889
+    }
+   ]
+  },
+  {
+   "slot": 83,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-audit-system.lisp",
+   "new_target": "source/legal-audit-system.lisp",
+   "old": [
+    {
+     "token": "source/legal-audit-system.lisp:271-283",
+     "offset": 42197
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-audit-system.lisp:L271-L283@sha256:53613cdd00f0",
+     "offset": 44372
+    }
+   ]
+  },
+  {
+   "slot": 84,
+   "kind": "IDENTITY",
+   "old_target": "source/review-queue.lisp",
+   "new_target": "source/review-queue.lisp",
+   "old": [
+    {
+     "token": "source/review-queue.lisp:100-117",
+     "offset": 42239
+    }
+   ],
+   "new": [
+    {
+     "token": "source/review-queue.lisp:L100-L117@sha256:21c06b13b40e",
+     "offset": 44436
+    }
+   ]
+  },
+  {
+   "slot": 85,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-audit-system.lisp",
+   "new_target": "source/legal-audit-system.lisp",
+   "old": [
+    {
+     "token": "source/legal-audit-system.lisp:780-793",
+     "offset": 42702
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-audit-system.lisp:L780-L793@sha256:53613cdd00f0",
+     "offset": 44921
+    }
+   ]
+  },
+  {
+   "slot": 86,
+   "kind": "IDENTITY",
+   "old_target": "source/government-source.lisp",
+   "new_target": "source/government-source.lisp",
+   "old": [
+    {
+     "token": "source/government-source.lisp:487-502",
+     "offset": 43168
+    }
+   ],
+   "new": [
+    {
+     "token": "source/government-source.lisp:L487-L502@sha256:1b747a0bcb7a",
+     "offset": 45409
+    }
+   ]
+  },
+  {
+   "slot": 87,
+   "kind": "IDENTITY",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "source/pdf-authority.lisp:904-964",
+     "offset": 43208
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L904-L964@sha256:c4e2054c0e4f",
+     "offset": 45471
+    }
+   ]
+  },
+  {
+   "slot": 88,
+   "kind": "IDENTITY",
+   "old_target": "source/mcp-server.lisp",
+   "new_target": "source/mcp-server.lisp",
+   "old": [
+    {
+     "token": "source/mcp-server.lisp:102-107",
+     "offset": 43645
+    }
+   ],
+   "new": [
+    {
+     "token": "source/mcp-server.lisp:L102-L107@sha256:084246b54052",
+     "offset": 45930
+    }
+   ]
+  },
+  {
+   "slot": 89,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/unified-frbr-generator.lisp",
+   "new_target": "systems/orchestrator-omega-modules/unified-frbr-generator.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/unified-frbr-generator.lisp:434",
+     "offset": 44259
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/unified-frbr-generator.lisp:L434-L434@sha256:6499660bbe1f",
+     "offset": 46566
+    }
+   ]
+  },
+  {
+   "slot": 90,
+   "kind": "EXPANSION",
+   "old_target": "source/validation-authority.lisp",
+   "new_target": "source/validation-authority.lisp",
+   "old": [
+    {
+     "token": "source/validation-authority.lisp:67,70,73,77,93,173,210,213,216,220,230,250",
+     "offset": 44359
+    }
+   ],
+   "new": [
+    {
+     "token": "source/validation-authority.lisp:L67-L67@sha256:562d7ec7585c",
+     "offset": 46692
+    },
+    {
+     "token": "source/validation-authority.lisp:L70-L70@sha256:562d7ec7585c",
+     "offset": 46753
+    },
+    {
+     "token": "source/validation-authority.lisp:L73-L73@sha256:562d7ec7585c",
+     "offset": 46814
+    },
+    {
+     "token": "source/validation-authority.lisp:L77-L77@sha256:562d7ec7585c",
+     "offset": 46875
+    },
+    {
+     "token": "source/validation-authority.lisp:L93-L93@sha256:562d7ec7585c",
+     "offset": 46936
+    },
+    {
+     "token": "source/validation-authority.lisp:L173-L173@sha256:562d7ec7585c",
+     "offset": 46997
+    },
+    {
+     "token": "source/validation-authority.lisp:L210-L210@sha256:562d7ec7585c",
+     "offset": 47060
+    },
+    {
+     "token": "source/validation-authority.lisp:L213-L213@sha256:562d7ec7585c",
+     "offset": 47123
+    },
+    {
+     "token": "source/validation-authority.lisp:L216-L216@sha256:562d7ec7585c",
+     "offset": 47186
+    },
+    {
+     "token": "source/validation-authority.lisp:L220-L220@sha256:562d7ec7585c",
+     "offset": 47249
+    },
+    {
+     "token": "source/validation-authority.lisp:L230-L230@sha256:562d7ec7585c",
+     "offset": 47312
+    },
+    {
+     "token": "source/validation-authority.lisp:L250-L250@sha256:562d7ec7585c",
+     "offset": 47375
+    }
+   ]
+  },
+  {
+   "slot": 91,
+   "kind": "IDENTITY",
+   "old_target": "source/proposals.lisp",
+   "new_target": "source/proposals.lisp",
+   "old": [
+    {
+     "token": "source/proposals.lisp:129-140",
+     "offset": 44974
+    }
+   ],
+   "new": [
+    {
+     "token": "source/proposals.lisp:L129-L140@sha256:7c955512cf54",
+     "offset": 47977
+    }
+   ]
+  },
+  {
+   "slot": 92,
+   "kind": "IDENTITY",
+   "old_target": "source/consolidation-proof.lisp",
+   "new_target": "source/consolidation-proof.lisp",
+   "old": [
+    {
+     "token": "source/consolidation-proof.lisp:113-123",
+     "offset": 45535
+    }
+   ],
+   "new": [
+    {
+     "token": "source/consolidation-proof.lisp:L113-L123@sha256:4416d1aec20e",
+     "offset": 48560
+    }
+   ]
+  },
+  {
+   "slot": 93,
+   "kind": "IDENTITY",
+   "old_target": "source/canonical-uris.lisp",
+   "new_target": "source/canonical-uris.lisp",
+   "old": [
+    {
+     "token": "source/canonical-uris.lisp:58-63",
+     "offset": 45891
+    }
+   ],
+   "new": [
+    {
+     "token": "source/canonical-uris.lisp:L58-L63@sha256:3481b0caf826",
+     "offset": 48938
+    }
+   ]
+  },
+  {
+   "slot": 94,
+   "kind": "IDENTITY",
+   "old_target": "source/corpus-provenance.lisp",
+   "new_target": "source/corpus-provenance.lisp",
+   "old": [
+    {
+     "token": "source/corpus-provenance.lisp:26-33",
+     "offset": 46060
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-provenance.lisp:L26-L33@sha256:a34e93dd0294",
+     "offset": 49129
+    }
+   ]
+  },
+  {
+   "slot": 95,
+   "kind": "IDENTITY",
+   "old_target": "source/canonical-uris.lisp",
+   "new_target": "source/canonical-uris.lisp",
+   "old": [
+    {
+     "token": "source/canonical-uris.lisp:57-63",
+     "offset": 46099
+    }
+   ],
+   "new": [
+    {
+     "token": "source/canonical-uris.lisp:L57-L63@sha256:3481b0caf826",
+     "offset": 49190
+    }
+   ]
+  },
+  {
+   "slot": 96,
+   "kind": "IDENTITY",
+   "old_target": "source/corpus-provenance.lisp",
+   "new_target": "source/corpus-provenance.lisp",
+   "old": [
+    {
+     "token": "source/corpus-provenance.lisp:35-39",
+     "offset": 46450
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-provenance.lisp:L35-L39@sha256:a34e93dd0294",
+     "offset": 49563
+    }
+   ]
+  },
+  {
+   "slot": 97,
+   "kind": "EXPANSION",
+   "old_target": "source/component-scan.lisp",
+   "new_target": "source/component-scan.lisp",
+   "old": [
+    {
+     "token": "source/component-scan.lisp:26-28,305-316",
+     "offset": 46888
+    }
+   ],
+   "new": [
+    {
+     "token": "source/component-scan.lisp:L26-L28@sha256:c9413bd50c2c",
+     "offset": 50023
+    },
+    {
+     "token": "source/component-scan.lisp:L305-L316@sha256:c9413bd50c2c",
+     "offset": 50078
+    }
+   ]
+  },
+  {
+   "slot": 98,
+   "kind": "IDENTITY",
+   "old_target": "source/component-scan.lisp",
+   "new_target": "source/component-scan.lisp",
+   "old": [
+    {
+     "token": "source/component-scan.lisp:139-149",
+     "offset": 47406
+    }
+   ],
+   "new": [
+    {
+     "token": "source/component-scan.lisp:L139-L149@sha256:c9413bd50c2c",
+     "offset": 50612
+    }
+   ]
+  },
+  {
+   "slot": 99,
+   "kind": "IDENTITY",
+   "old_target": "source/safe-read.lisp",
+   "new_target": "source/safe-read.lisp",
+   "old": [
+    {
+     "token": "source/safe-read.lisp:312-339",
+     "offset": 47444
+    }
+   ],
+   "new": [
+    {
+     "token": "source/safe-read.lisp:L312-L339@sha256:590133b311d0",
+     "offset": 50672
+    }
+   ]
+  },
+  {
+   "slot": 100,
+   "kind": "IDENTITY",
+   "old_target": "source/component-scan.lisp",
+   "new_target": "source/component-scan.lisp",
+   "old": [
+    {
+     "token": "source/component-scan.lisp:45-56",
+     "offset": 47859
+    }
+   ],
+   "new": [
+    {
+     "token": "source/component-scan.lisp:L45-L56@sha256:c9413bd50c2c",
+     "offset": 51109
+    }
+   ]
+  },
+  {
+   "slot": 101,
+   "kind": "EXPANSION",
+   "old_target": "source/corpus-intelligence.lisp",
+   "new_target": "source/corpus-intelligence.lisp",
+   "old": [
+    {
+     "token": "source/corpus-intelligence.lisp:75-93,175-177",
+     "offset": 48288
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-intelligence.lisp:L75-L93@sha256:56ef2b5920c8",
+     "offset": 51560
+    },
+    {
+     "token": "source/corpus-intelligence.lisp:L175-L177@sha256:56ef2b5920c8",
+     "offset": 51620
+    }
+   ]
+  },
+  {
+   "slot": 102,
+   "kind": "IDENTITY",
+   "old_target": "source/paths.lisp",
+   "new_target": "source/paths.lisp",
+   "old": [
+    {
+     "token": "source/paths.lisp:311-323",
+     "offset": 48703
+    }
+   ],
+   "new": [
+    {
+     "token": "source/paths.lisp:L311-L323@sha256:1eba7353aca4",
+     "offset": 52051
+    }
+   ]
+  },
+  {
+   "slot": 103,
+   "kind": "EXPANSION",
+   "old_target": "source/http-server.lisp",
+   "new_target": "source/http-server.lisp",
+   "old": [
+    {
+     "token": "source/http-server.lisp:51-54,157,206-213",
+     "offset": 49036
+    }
+   ],
+   "new": [
+    {
+     "token": "source/http-server.lisp:L51-L54@sha256:e3854504b380",
+     "offset": 52406
+    },
+    {
+     "token": "source/http-server.lisp:L157-L157@sha256:e3854504b380",
+     "offset": 52458
+    },
+    {
+     "token": "source/http-server.lisp:L206-L213@sha256:e3854504b380",
+     "offset": 52512
+    }
+   ]
+  },
+  {
+   "slot": 104,
+   "kind": "EXPANSION",
+   "old_target": "source/circuit-breaker.lisp",
+   "new_target": "source/circuit-breaker.lisp",
+   "old": [
+    {
+     "token": "source/circuit-breaker.lisp:23-33,52-71,112-129,211-218",
+     "offset": 49516
+    }
+   ],
+   "new": [
+    {
+     "token": "source/circuit-breaker.lisp:L23-L33@sha256:00ac735a0170",
+     "offset": 53004
+    },
+    {
+     "token": "source/circuit-breaker.lisp:L52-L71@sha256:00ac735a0170",
+     "offset": 53060
+    },
+    {
+     "token": "source/circuit-breaker.lisp:L112-L129@sha256:00ac735a0170",
+     "offset": 53116
+    },
+    {
+     "token": "source/circuit-breaker.lisp:L211-L218@sha256:00ac735a0170",
+     "offset": 53174
+    }
+   ]
+  },
+  {
+   "slot": 105,
+   "kind": "IDENTITY",
+   "old_target": "memory.lisp",
+   "new_target": "memory.lisp",
+   "old": [
+    {
+     "token": "memory.lisp:258-272",
+     "offset": 49871
+    }
+   ],
+   "new": [
+    {
+     "token": "memory.lisp:258-272",
+     "offset": 53531
+    }
+   ]
+  },
+  {
+   "slot": 106,
+   "kind": "IDENTITY",
+   "old_target": "memory.lisp",
+   "new_target": "memory.lisp",
+   "old": [
+    {
+     "token": "memory.lisp:48-50",
+     "offset": 50200
+    }
+   ],
+   "new": [
+    {
+     "token": "memory.lisp:48-50",
+     "offset": 53860
+    }
+   ]
+  },
+  {
+   "slot": 107,
+   "kind": "EXPANSION",
+   "old_target": "source/consolidation-bridge.lisp",
+   "new_target": "source/consolidation-bridge.lisp",
+   "old": [
+    {
+     "token": "source/consolidation-bridge.lisp:258-270,272-305",
+     "offset": 50601
+    }
+   ],
+   "new": [
+    {
+     "token": "source/consolidation-bridge.lisp:L258-L270@sha256:89f64cc69da1",
+     "offset": 54261
+    },
+    {
+     "token": "source/consolidation-bridge.lisp:L272-L305@sha256:89f64cc69da1",
+     "offset": 54324
+    }
+   ]
+  },
+  {
+   "slot": 108,
+   "kind": "IDENTITY",
+   "old_target": "source/corpus-diff.lisp",
+   "new_target": "source/corpus-diff.lisp",
+   "old": [
+    {
+     "token": "source/corpus-diff.lisp:36-44",
+     "offset": 50938
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-diff.lisp:L36-L44@sha256:b69bdbac9560",
+     "offset": 54675
+    }
+   ]
+  },
+  {
+   "slot": 109,
+   "kind": "IDENTITY",
+   "old_target": "source/corpus-search.lisp",
+   "new_target": "source/corpus-search.lisp",
+   "old": [
+    {
+     "token": "source/corpus-search.lisp:70-78",
+     "offset": 50970
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-search.lisp:L70-L78@sha256:8effbaf5f62f",
+     "offset": 54729
+    }
+   ]
+  },
+  {
+   "slot": 110,
+   "kind": "IDENTITY",
+   "old_target": "source/proof-carrying.lisp",
+   "new_target": "source/proof-carrying.lisp",
+   "old": [
+    {
+     "token": "source/proof-carrying.lisp:88-99",
+     "offset": 51005
+    }
+   ],
+   "new": [
+    {
+     "token": "source/proof-carrying.lisp:L88-L99@sha256:c18f7ddb07b1",
+     "offset": 54786
+    }
+   ]
+  },
+  {
+   "slot": 111,
+   "kind": "IDENTITY",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "source/pdf-authority.lisp:139-174",
+     "offset": 51364
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L139-L174@sha256:c4e2054c0e4f",
+     "offset": 55167
+    }
+   ]
+  },
+  {
+   "slot": 112,
+   "kind": "IDENTITY",
+   "old_target": "source/anomaly-detection.lisp",
+   "new_target": "source/anomaly-detection.lisp",
+   "old": [
+    {
+     "token": "source/anomaly-detection.lisp:24-31",
+     "offset": 51785
+    }
+   ],
+   "new": [
+    {
+     "token": "source/anomaly-detection.lisp:L24-L31@sha256:43c44bf86b01",
+     "offset": 55610
+    }
+   ]
+  },
+  {
+   "slot": 113,
+   "kind": "IDENTITY",
+   "old_target": "source/ast-gate.lisp",
+   "new_target": "source/ast-gate.lisp",
+   "old": [
+    {
+     "token": "source/ast-gate.lisp:40-47",
+     "offset": 51823
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ast-gate.lisp:L40-L47@sha256:65724a01525c",
+     "offset": 55670
+    }
+   ]
+  },
+  {
+   "slot": 114,
+   "kind": "EXPANSION",
+   "old_target": "source/blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "source/blockchain-authority.lisp:640-641,749-750,906-909",
+     "offset": 52377
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:L640-L641@sha256:caadc9c75a98",
+     "offset": 56246
+    },
+    {
+     "token": "source/blockchain-authority.lisp:L749-L750@sha256:caadc9c75a98",
+     "offset": 56309
+    },
+    {
+     "token": "source/blockchain-authority.lisp:L906-L909@sha256:caadc9c75a98",
+     "offset": 56372
+    }
+   ]
+  },
+  {
+   "slot": 115,
+   "kind": "IDENTITY",
+   "old_target": "source/blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "source/blockchain-authority.lisp:912-944",
+     "offset": 52821
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:L912-L944@sha256:caadc9c75a98",
+     "offset": 56822
+    }
+   ]
+  },
+  {
+   "slot": 116,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-ast.lisp",
+   "new_target": "source/legal-ast.lisp",
+   "old": [
+    {
+     "token": "source/legal-ast.lisp:1904-1918",
+     "offset": 53329
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-ast.lisp:L1904-L1918@sha256:3735c7d8e763",
+     "offset": 57352
+    }
+   ]
+  },
+  {
+   "slot": 117,
+   "kind": "EXPANSION",
+   "old_target": "source/legal-ast.lisp",
+   "new_target": "source/legal-ast.lisp",
+   "old": [
+    {
+     "token": "source/legal-ast.lisp:427-445,841-865",
+     "offset": 53389
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-ast.lisp:L427-L445@sha256:3735c7d8e763",
+     "offset": 57434
+    },
+    {
+     "token": "source/legal-ast.lisp:L841-L865@sha256:3735c7d8e763",
+     "offset": 57486
+    }
+   ]
+  },
+  {
+   "slot": 118,
+   "kind": "IDENTITY",
+   "old_target": "source/blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "source/blockchain-authority.lisp:953-971",
+     "offset": 53833
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:L953-L971@sha256:caadc9c75a98",
+     "offset": 57944
+    }
+   ]
+  },
+  {
+   "slot": 119,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-ast.lisp",
+   "new_target": "source/legal-ast.lisp",
+   "old": [
+    {
+     "token": "source/legal-ast.lisp:2138-2148",
+     "offset": 53908
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-ast.lisp:L2138-L2148@sha256:3735c7d8e763",
+     "offset": 58041
+    }
+   ]
+  },
+  {
+   "slot": 120,
+   "kind": "IDENTITY",
+   "old_target": "source/blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "source/blockchain-authority.lisp:953-971",
+     "offset": 53972
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:L953-L971@sha256:caadc9c75a98",
+     "offset": 58127
+    }
+   ]
+  },
+  {
+   "slot": 121,
+   "kind": "IDENTITY",
+   "old_target": "source/blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "source/blockchain-authority.lisp:259-269",
+     "offset": 54357
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:L259-L269@sha256:caadc9c75a98",
+     "offset": 58534
+    }
+   ]
+  },
+  {
+   "slot": 122,
+   "kind": "IDENTITY",
+   "old_target": "source/jws-authority.lisp",
+   "new_target": "source/jws-authority.lisp",
+   "old": [
+    {
+     "token": "source/jws-authority.lisp:711",
+     "offset": 54400
+    }
+   ],
+   "new": [
+    {
+     "token": "source/jws-authority.lisp:L711-L711@sha256:0d57d11e3cf7",
+     "offset": 58599
+    }
+   ]
+  },
+  {
+   "slot": 123,
+   "kind": "EXPANSION",
+   "old_target": "source/blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "source/blockchain-authority.lisp:710,794,879",
+     "offset": 54833
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:L710-L710@sha256:caadc9c75a98",
+     "offset": 59058
+    },
+    {
+     "token": "source/blockchain-authority.lisp:L794-L794@sha256:caadc9c75a98",
+     "offset": 59121
+    },
+    {
+     "token": "source/blockchain-authority.lisp:L879-L879@sha256:caadc9c75a98",
+     "offset": 59184
+    }
+   ]
+  },
+  {
+   "slot": 124,
+   "kind": "EXPANSION",
+   "old_target": "source/legal-deontic.lisp",
+   "new_target": "source/legal-deontic.lisp",
+   "old": [
+    {
+     "token": "source/legal-deontic.lisp:14-18,34,160-167",
+     "offset": 55627
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-deontic.lisp:L14-L18@sha256:3b584b2845ae",
+     "offset": 59996
+    },
+    {
+     "token": "source/legal-deontic.lisp:L34-L34@sha256:3b584b2845ae",
+     "offset": 60050
+    },
+    {
+     "token": "source/legal-deontic.lisp:L160-L167@sha256:3b584b2845ae",
+     "offset": 60104
+    }
+   ]
+  },
+  {
+   "slot": 125,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-conflict-resolution.lisp",
+   "new_target": "source/legal-conflict-resolution.lisp",
+   "old": [
+    {
+     "token": "source/legal-conflict-resolution.lisp:69-112",
+     "offset": 55683
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-conflict-resolution.lisp:L69-L112@sha256:eae756342fff",
+     "offset": 60173
+    }
+   ]
+  },
+  {
+   "slot": 126,
+   "kind": "IDENTITY",
+   "old_target": "source/corpus-eu-links.lisp",
+   "new_target": "source/corpus-eu-links.lisp",
+   "old": [
+    {
+     "token": "source/corpus-eu-links.lisp:113-121",
+     "offset": 56634
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-eu-links.lisp:L113-L121@sha256:63fb33b5c39b",
+     "offset": 61146
+    }
+   ]
+  },
+  {
+   "slot": 127,
+   "kind": "IDENTITY",
+   "old_target": "source/government-source.lisp",
+   "new_target": "source/government-source.lisp",
+   "old": [
+    {
+     "token": "source/government-source.lisp:239-250",
+     "offset": 56672
+    }
+   ],
+   "new": [
+    {
+     "token": "source/government-source.lisp:L239-L250@sha256:1b747a0bcb7a",
+     "offset": 61206
+    }
+   ]
+  },
+  {
+   "slot": 128,
+   "kind": "IDENTITY",
+   "old_target": "source/corpus-diff.lisp",
+   "new_target": "source/corpus-diff.lisp",
+   "old": [
+    {
+     "token": "source/corpus-diff.lisp:36-44",
+     "offset": 56712
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-diff.lisp:L36-L44@sha256:b69bdbac9560",
+     "offset": 61268
+    }
+   ]
+  },
+  {
+   "slot": 129,
+   "kind": "IDENTITY",
+   "old_target": "source/corpus-search.lisp",
+   "new_target": "source/corpus-search.lisp",
+   "old": [
+    {
+     "token": "source/corpus-search.lisp:70-78",
+     "offset": 56744
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-search.lisp:L70-L78@sha256:8effbaf5f62f",
+     "offset": 61322
+    }
+   ]
+  },
+  {
+   "slot": 130,
+   "kind": "IDENTITY",
+   "old_target": "source/review-service.lisp",
+   "new_target": "source/review-service.lisp",
+   "old": [
+    {
+     "token": "source/review-service.lisp:190-204",
+     "offset": 56787
+    }
+   ],
+   "new": [
+    {
+     "token": "source/review-service.lisp:L190-L204@sha256:7e0378ae7c28",
+     "offset": 61387
+    }
+   ]
+  },
+  {
+   "slot": 131,
+   "kind": "IDENTITY",
+   "old_target": "source/mcp-server.lisp",
+   "new_target": "source/mcp-server.lisp",
+   "old": [
+    {
+     "token": "source/mcp-server.lisp:41-53",
+     "offset": 56824
+    }
+   ],
+   "new": [
+    {
+     "token": "source/mcp-server.lisp:L41-L53@sha256:084246b54052",
+     "offset": 61446
+    }
+   ]
+  },
+  {
+   "slot": 132,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-qa.lisp",
+   "new_target": "source/legal-qa.lisp",
+   "old": [
+    {
+     "token": "source/legal-qa.lisp:95-106",
+     "offset": 56855
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-qa.lisp:L95-L106@sha256:8c10f4e56920",
+     "offset": 61499
+    }
+   ]
+  },
+  {
+   "slot": 133,
+   "kind": "IDENTITY",
+   "old_target": "source/ai-corpus-dump.lisp",
+   "new_target": "source/ai-corpus-dump.lisp",
+   "old": [
+    {
+     "token": "source/ai-corpus-dump.lisp:40-50",
+     "offset": 56885
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ai-corpus-dump.lisp:L40-L50@sha256:b1d9f34c24ae",
+     "offset": 61551
+    }
+   ]
+  },
+  {
+   "slot": 134,
+   "kind": "IDENTITY",
+   "old_target": "source/json-emit.lisp",
+   "new_target": "source/json-emit.lisp",
+   "old": [
+    {
+     "token": "source/json-emit.lisp:39-58",
+     "offset": 56936
+    }
+   ],
+   "new": [
+    {
+     "token": "source/json-emit.lisp:L39-L58@sha256:5f1b1b7d8d91",
+     "offset": 61624
+    }
+   ]
+  },
+  {
+   "slot": 135,
+   "kind": "IDENTITY",
+   "old_target": "source/corpus-sparql.lisp",
+   "new_target": "source/corpus-sparql.lisp",
+   "old": [
+    {
+     "token": "source/corpus-sparql.lisp:102-104",
+     "offset": 56980
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-sparql.lisp:L102-L104@sha256:8b1997dd98b1",
+     "offset": 61690
+    }
+   ]
+  },
+  {
+   "slot": 136,
+   "kind": "EXPANSION",
+   "old_target": "source/legal-temporal.lisp",
+   "new_target": "source/legal-temporal.lisp",
+   "old": [
+    {
+     "token": "source/legal-temporal.lisp:3,16-20",
+     "offset": 57911
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-temporal.lisp:L3-L3@sha256:74ec15418b7c",
+     "offset": 62643
+    },
+    {
+     "token": "source/legal-temporal.lisp:L16-L20@sha256:74ec15418b7c",
+     "offset": 62696
+    }
+   ]
+  },
+  {
+   "slot": 137,
+   "kind": "IDENTITY",
+   "old_target": "source/guard-metaeval.lisp",
+   "new_target": "source/guard-metaeval.lisp",
+   "old": [
+    {
+     "token": "source/guard-metaeval.lisp:652-666",
+     "offset": 57995
+    }
+   ],
+   "new": [
+    {
+     "token": "source/guard-metaeval.lisp:L652-L666@sha256:6c11b3a60282",
+     "offset": 62800
+    }
+   ]
+  },
+  {
+   "slot": 138,
+   "kind": "EXPANSION",
+   "old_target": "source/legal-event-calculus.lisp",
+   "new_target": "source/legal-event-calculus.lisp",
+   "old": [
+    {
+     "token": "source/legal-event-calculus.lisp:47,56",
+     "offset": 58060
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-event-calculus.lisp:L47-L47@sha256:ff1a2f83f6ff",
+     "offset": 62887
+    },
+    {
+     "token": "source/legal-event-calculus.lisp:L56-L56@sha256:ff1a2f83f6ff",
+     "offset": 62948
+    }
+   ]
+  },
+  {
+   "slot": 139,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-strategy.lisp",
+   "new_target": "source/legal-strategy.lisp",
+   "old": [
+    {
+     "token": "source/legal-strategy.lisp:62-63",
+     "offset": 58125
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-strategy.lisp:L62-L63@sha256:1268e149217a",
+     "offset": 63035
+    }
+   ]
+  },
+  {
+   "slot": 140,
+   "kind": "EXPANSION",
+   "old_target": "source/legal-penalty.lisp",
+   "new_target": "source/legal-penalty.lisp",
+   "old": [
+    {
+     "token": "source/legal-penalty.lisp:111-115,126-137",
+     "offset": 58842
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-penalty.lisp:L111-L115@sha256:7ea6f2047ce9",
+     "offset": 63774
+    },
+    {
+     "token": "source/legal-penalty.lisp:L126-L137@sha256:7ea6f2047ce9",
+     "offset": 63830
+    }
+   ]
+  },
+  {
+   "slot": 141,
+   "kind": "EXPANSION",
+   "old_target": "source/legal-references.lisp",
+   "new_target": "source/legal-references.lisp",
+   "old": [
+    {
+     "token": "source/legal-references.lisp:6-8,58-69",
+     "offset": 59681
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-references.lisp:L6-L8@sha256:d5c1a0763803",
+     "offset": 64683
+    },
+    {
+     "token": "source/legal-references.lisp:L58-L69@sha256:d5c1a0763803",
+     "offset": 64738
+    }
+   ]
+  },
+  {
+   "slot": 142,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-reasoning-bridge.lisp",
+   "new_target": "source/legal-reasoning-bridge.lisp",
+   "old": [
+    {
+     "token": "source/legal-reasoning-bridge.lisp:32-45",
+     "offset": 59800
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-reasoning-bridge.lisp:L32-L45@sha256:ba8a680fbe54",
+     "offset": 64875
+    }
+   ]
+  },
+  {
+   "slot": 143,
+   "kind": "IDENTITY",
+   "old_target": "orchestrator-infrastructure.asd",
+   "new_target": "orchestrator-infrastructure.asd",
+   "old": [
+    {
+     "token": "orchestrator-infrastructure.asd:188",
+     "offset": 60704
+    }
+   ],
+   "new": [
+    {
+     "token": "orchestrator-infrastructure.asd:L188-L188@sha256:eafe37e8517f",
+     "offset": 65801
+    }
+   ]
+  },
+  {
+   "slot": 144,
+   "kind": "IDENTITY",
+   "old_target": "protocols.lisp",
+   "new_target": "protocols.lisp",
+   "old": [
+    {
+     "token": "protocols.lisp:1-263",
+     "offset": 60773
+    }
+   ],
+   "new": [
+    {
+     "token": "protocols.lisp:1-263",
+     "offset": 65896
+    }
+   ]
+  },
+  {
+   "slot": 145,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/frbr-protocol.lisp",
+   "new_target": "systems/orchestrator-omega-modules/frbr-protocol.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-protocol.lisp:11",
+     "offset": 60869
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-protocol.lisp:L11-L11@sha256:15edc8b34f1b",
+     "offset": 65992
+    }
+   ]
+  },
+  {
+   "slot": 146,
+   "kind": "IDENTITY",
+   "old_target": "source/hash-authority.lisp",
+   "new_target": "source/hash-authority.lisp",
+   "old": [
+    {
+     "token": "source/hash-authority.lisp:11-46",
+     "offset": 60981
+    }
+   ],
+   "new": [
+    {
+     "token": "source/hash-authority.lisp:L11-L46@sha256:280a7c5bb315",
+     "offset": 66129
+    }
+   ]
+  },
+  {
+   "slot": 147,
+   "kind": "IDENTITY",
+   "old_target": "orchestrator-infrastructure.asd",
+   "new_target": "orchestrator-infrastructure.asd",
+   "old": [
+    {
+     "token": "orchestrator-infrastructure.asd:188",
+     "offset": 61074
+    }
+   ],
+   "new": [
+    {
+     "token": "orchestrator-infrastructure.asd:L188-L188@sha256:eafe37e8517f",
+     "offset": 66244
+    }
+   ]
+  },
+  {
+   "slot": 148,
+   "kind": "EXPANSION",
+   "old_target": "source/execution-trace.lisp",
+   "new_target": "source/execution-trace.lisp",
+   "old": [
+    {
+     "token": "source/execution-trace.lisp:14-15,46-47",
+     "offset": 61712
+    }
+   ],
+   "new": [
+    {
+     "token": "source/execution-trace.lisp:L14-L15@sha256:70aa123251f4",
+     "offset": 66908
+    },
+    {
+     "token": "source/execution-trace.lisp:L46-L47@sha256:70aa123251f4",
+     "offset": 66964
+    }
+   ]
+  },
+  {
+   "slot": 149,
+   "kind": "IDENTITY",
+   "old_target": "source/provenance-link.lisp",
+   "new_target": "source/provenance-link.lisp",
+   "old": [
+    {
+     "token": "source/provenance-link.lisp:19-27",
+     "offset": 62489
+    }
+   ],
+   "new": [
+    {
+     "token": "source/provenance-link.lisp:L19-L27@sha256:5354f41c3f06",
+     "offset": 67757
+    }
+   ]
+  },
+  {
+   "slot": 150,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-hypergraph.lisp",
+   "new_target": "source/legal-hypergraph.lisp",
+   "old": [
+    {
+     "token": "source/legal-hypergraph.lisp:46-51",
+     "offset": 63259
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-hypergraph.lisp:L46-L51@sha256:a5eeb778d594",
+     "offset": 68549
+    }
+   ]
+  },
+  {
+   "slot": 151,
+   "kind": "IDENTITY",
+   "old_target": "source/corpus-eu-links.lisp",
+   "new_target": "source/corpus-eu-links.lisp",
+   "old": [
+    {
+     "token": "source/corpus-eu-links.lisp:9-12",
+     "offset": 63945
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-eu-links.lisp:L9-L12@sha256:63fb33b5c39b",
+     "offset": 69257
+    }
+   ]
+  },
+  {
+   "slot": 152,
+   "kind": "IDENTITY",
+   "old_target": "source/graph-reasoning.lisp",
+   "new_target": "source/graph-reasoning.lisp",
+   "old": [
+    {
+     "token": "source/graph-reasoning.lisp:24-39",
+     "offset": 64619
+    }
+   ],
+   "new": [
+    {
+     "token": "source/graph-reasoning.lisp:L24-L39@sha256:81d3b4593cdd",
+     "offset": 69953
+    }
+   ]
+  },
+  {
+   "slot": 153,
+   "kind": "IDENTITY",
+   "old_target": "source/guard-ops-pack.lisp",
+   "new_target": "source/guard-ops-pack.lisp",
+   "old": [
+    {
+     "token": "source/guard-ops-pack.lisp:17-29",
+     "offset": 65507
+    }
+   ],
+   "new": [
+    {
+     "token": "source/guard-ops-pack.lisp:L17-L29@sha256:6c3c38bd1d0c",
+     "offset": 70863
+    }
+   ]
+  },
+  {
+   "slot": 154,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-strategy.lisp",
+   "new_target": "source/legal-strategy.lisp",
+   "old": [
+    {
+     "token": "source/legal-strategy.lisp:32-41",
+     "offset": 65557
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-strategy.lisp:L32-L41@sha256:1268e149217a",
+     "offset": 70935
+    }
+   ]
+  },
+  {
+   "slot": 155,
+   "kind": "IDENTITY",
+   "old_target": "source/generation.lisp",
+   "new_target": "source/generation.lisp",
+   "old": [
+    {
+     "token": "source/generation.lisp:50-63",
+     "offset": 65622
+    }
+   ],
+   "new": [
+    {
+     "token": "source/generation.lisp:L50-L63@sha256:e92ce44484e9",
+     "offset": 71022
+    }
+   ]
+  },
+  {
+   "slot": 156,
+   "kind": "EXPANSION",
+   "old_target": "source/legal-strategy.lisp",
+   "new_target": "source/legal-strategy.lisp",
+   "old": [
+    {
+     "token": "source/legal-strategy.lisp:87-91,107-109,131-136",
+     "offset": 66370
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-strategy.lisp:L87-L91@sha256:1268e149217a",
+     "offset": 71792
+    },
+    {
+     "token": "source/legal-strategy.lisp:L107-L109@sha256:1268e149217a",
+     "offset": 71847
+    },
+    {
+     "token": "source/legal-strategy.lisp:L131-L136@sha256:1268e149217a",
+     "offset": 71904
+    }
+   ]
+  },
+  {
+   "slot": 157,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-deontic.lisp",
+   "new_target": "source/legal-deontic.lisp",
+   "old": [
+    {
+     "token": "source/legal-deontic.lisp:169-183",
+     "offset": 66881
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-deontic.lisp:L169-L183@sha256:3b584b2845ae",
+     "offset": 72423
+    }
+   ]
+  },
+  {
+   "slot": 158,
+   "kind": "EXPANSION",
+   "old_target": "source/akoma-ntoso-emitter.lisp",
+   "new_target": "source/akoma-ntoso-emitter.lisp",
+   "old": [
+    {
+     "token": "source/akoma-ntoso-emitter.lisp:46-53,55-63",
+     "offset": 67507
+    }
+   ],
+   "new": [
+    {
+     "token": "source/akoma-ntoso-emitter.lisp:L46-L53@sha256:650a0e0fe875",
+     "offset": 73071
+    },
+    {
+     "token": "source/akoma-ntoso-emitter.lisp:L55-L63@sha256:650a0e0fe875",
+     "offset": 73131
+    }
+   ]
+  },
+  {
+   "slot": 159,
+   "kind": "IDENTITY",
+   "old_target": "source/akoma-ntoso-emitter.lisp",
+   "new_target": "source/akoma-ntoso-emitter.lisp",
+   "old": [
+    {
+     "token": "source/akoma-ntoso-emitter.lisp:71-80",
+     "offset": 68170
+    }
+   ],
+   "new": [
+    {
+     "token": "source/akoma-ntoso-emitter.lisp:L71-L80@sha256:650a0e0fe875",
+     "offset": 73810
+    }
+   ]
+  },
+  {
+   "slot": 160,
+   "kind": "IDENTITY",
+   "old_target": "source/consolidation-engine.lisp",
+   "new_target": "source/consolidation-engine.lisp",
+   "old": [
+    {
+     "token": "source/consolidation-engine.lisp:93",
+     "offset": 68210
+    }
+   ],
+   "new": [
+    {
+     "token": "source/consolidation-engine.lisp:L93-L93@sha256:b70c25f2d524",
+     "offset": 73872
+    }
+   ]
+  },
+  {
+   "slot": 161,
+   "kind": "EXPANSION",
+   "old_target": "source/consolidation-bridge.lisp",
+   "new_target": "source/consolidation-bridge.lisp",
+   "old": [
+    {
+     "token": "source/consolidation-bridge.lisp:71,81",
+     "offset": 68280
+    }
+   ],
+   "new": [
+    {
+     "token": "source/consolidation-bridge.lisp:L71-L71@sha256:89f64cc69da1",
+     "offset": 73967
+    },
+    {
+     "token": "source/consolidation-bridge.lisp:L81-L81@sha256:89f64cc69da1",
+     "offset": 74028
+    }
+   ]
+  },
+  {
+   "slot": 162,
+   "kind": "EXPANSION",
+   "old_target": "source/greek-legislation-ontology.lisp",
+   "new_target": "source/greek-legislation-ontology.lisp",
+   "old": [
+    {
+     "token": "source/greek-legislation-ontology.lisp:87-98,214-219",
+     "offset": 68887
+    }
+   ],
+   "new": [
+    {
+     "token": "source/greek-legislation-ontology.lisp:L87-L98@sha256:f6c6abee3574",
+     "offset": 74657
+    },
+    {
+     "token": "source/greek-legislation-ontology.lisp:L214-L219@sha256:f6c6abee3574",
+     "offset": 74724
+    }
+   ]
+  },
+  {
+   "slot": 163,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-conflict-resolution.lisp",
+   "new_target": "source/legal-conflict-resolution.lisp",
+   "old": [
+    {
+     "token": "source/legal-conflict-resolution.lisp:44-60",
+     "offset": 68977
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-conflict-resolution.lisp:L44-L60@sha256:eae756342fff",
+     "offset": 74830
+    }
+   ]
+  },
+  {
+   "slot": 164,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-hypergraph.lisp",
+   "new_target": "source/legal-hypergraph.lisp",
+   "old": [
+    {
+     "token": "source/legal-hypergraph.lisp:186-192",
+     "offset": 69023
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-hypergraph.lisp:L186-L192@sha256:a5eeb778d594",
+     "offset": 74898
+    }
+   ]
+  },
+  {
+   "slot": 165,
+   "kind": "IDENTITY",
+   "old_target": "source/greek-legislation-ontology.lisp",
+   "new_target": "source/greek-legislation-ontology.lisp",
+   "old": [
+    {
+     "token": "source/greek-legislation-ontology.lisp:208-212",
+     "offset": 69451
+    }
+   ],
+   "new": [
+    {
+     "token": "source/greek-legislation-ontology.lisp:L208-L212@sha256:f6c6abee3574",
+     "offset": 75348
+    }
+   ]
+  },
+  {
+   "slot": 166,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-hypergraph.lisp",
+   "new_target": "source/legal-hypergraph.lisp",
+   "old": [
+    {
+     "token": "source/legal-hypergraph.lisp:46-62",
+     "offset": 69500
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-hypergraph.lisp:L46-L62@sha256:a5eeb778d594",
+     "offset": 75419
+    }
+   ]
+  },
+  {
+   "slot": 167,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-reasoning-bridge.lisp",
+   "new_target": "source/legal-reasoning-bridge.lisp",
+   "old": [
+    {
+     "token": "source/legal-reasoning-bridge.lisp:96-170",
+     "offset": 70259
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-reasoning-bridge.lisp:L96-L170@sha256:ba8a680fbe54",
+     "offset": 76200
+    }
+   ]
+  },
+  {
+   "slot": 168,
+   "kind": "IDENTITY",
+   "old_target": "source/execution-trace.lisp",
+   "new_target": "source/execution-trace.lisp",
+   "old": [
+    {
+     "token": "source/execution-trace.lisp:116-118",
+     "offset": 70877
+    }
+   ],
+   "new": [
+    {
+     "token": "source/execution-trace.lisp:L116-L118@sha256:70aa123251f4",
+     "offset": 76840
+    }
+   ]
+  },
+  {
+   "slot": 169,
+   "kind": "IDENTITY",
+   "old_target": "source/corpus-sparql.lisp",
+   "new_target": "source/corpus-sparql.lisp",
+   "old": [
+    {
+     "token": "source/corpus-sparql.lisp:42-60",
+     "offset": 71533
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-sparql.lisp:L42-L60@sha256:8b1997dd98b1",
+     "offset": 77518
+    }
+   ]
+  },
+  {
+   "slot": 170,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-counterfactual.lisp",
+   "new_target": "source/legal-counterfactual.lisp",
+   "old": [
+    {
+     "token": "source/legal-counterfactual.lisp:9-12",
+     "offset": 72157
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-counterfactual.lisp:L9-L12@sha256:80d15b90e05d",
+     "offset": 78164
+    }
+   ]
+  },
+  {
+   "slot": 171,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-hypo.lisp",
+   "new_target": "source/legal-hypo.lisp",
+   "old": [
+    {
+     "token": "source/legal-hypo.lisp:23-39",
+     "offset": 72751
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-hypo.lisp:L23-L39@sha256:872011401024",
+     "offset": 78780
+    }
+   ]
+  },
+  {
+   "slot": 172,
+   "kind": "IDENTITY",
+   "old_target": "source/provenance-link.lisp",
+   "new_target": "source/provenance-link.lisp",
+   "old": [
+    {
+     "token": "source/provenance-link.lisp:60-88",
+     "offset": 73244
+    }
+   ],
+   "new": [
+    {
+     "token": "source/provenance-link.lisp:L60-L88@sha256:5354f41c3f06",
+     "offset": 79295
+    }
+   ]
+  },
+  {
+   "slot": 173,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-penalty.lisp",
+   "new_target": "source/legal-penalty.lisp",
+   "old": [
+    {
+     "token": "source/legal-penalty.lisp:82-86",
+     "offset": 73791
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-penalty.lisp:L82-L86@sha256:7ea6f2047ce9",
+     "offset": 79864
+    }
+   ]
+  },
+  {
+   "slot": 174,
+   "kind": "IDENTITY",
+   "old_target": "source/text-canonicalizer.lisp",
+   "new_target": "source/text-canonicalizer.lisp",
+   "old": [
+    {
+     "token": "source/text-canonicalizer.lisp:19",
+     "offset": 74640
+    }
+   ],
+   "new": [
+    {
+     "token": "source/text-canonicalizer.lisp:L19-L19@sha256:747fad14d692",
+     "offset": 80735
+    }
+   ]
+  },
+  {
+   "slot": 175,
+   "kind": "IDENTITY",
+   "old_target": "source/text-canonicalizer.lisp",
+   "new_target": "source/text-canonicalizer.lisp",
+   "old": [
+    {
+     "token": "source/text-canonicalizer.lisp:18-22",
+     "offset": 75611
+    }
+   ],
+   "new": [
+    {
+     "token": "source/text-canonicalizer.lisp:L18-L22@sha256:747fad14d692",
+     "offset": 81731
+    }
+   ]
+  },
+  {
+   "slot": 176,
+   "kind": "IDENTITY",
+   "old_target": "source/text-canonicalizer.lisp",
+   "new_target": "source/text-canonicalizer.lisp",
+   "old": [
+    {
+     "token": "source/text-canonicalizer.lisp:503-513",
+     "offset": 76426
+    }
+   ],
+   "new": [
+    {
+     "token": "source/text-canonicalizer.lisp:L503-L513@sha256:747fad14d692",
+     "offset": 82568
+    }
+   ]
+  },
+  {
+   "slot": 177,
+   "kind": "IDENTITY",
+   "old_target": "source/text-canonicalizer.lisp",
+   "new_target": "source/text-canonicalizer.lisp",
+   "old": [
+    {
+     "token": "source/text-canonicalizer.lisp:13",
+     "offset": 77063
+    }
+   ],
+   "new": [
+    {
+     "token": "source/text-canonicalizer.lisp:L13-L13@sha256:747fad14d692",
+     "offset": 83227
+    }
+   ]
+  },
+  {
+   "slot": 178,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-references.lisp",
+   "new_target": "source/legal-references.lisp",
+   "old": [
+    {
+     "token": "source/legal-references.lisp:44-48",
+     "offset": 77167
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-references.lisp:L44-L48@sha256:d5c1a0763803",
+     "offset": 83356
+    }
+   ]
+  },
+  {
+   "slot": 179,
+   "kind": "IDENTITY",
+   "old_target": "source/text-canonicalizer.lisp",
+   "new_target": "source/text-canonicalizer.lisp",
+   "old": [
+    {
+     "token": "source/text-canonicalizer.lisp:20",
+     "offset": 77690
+    }
+   ],
+   "new": [
+    {
+     "token": "source/text-canonicalizer.lisp:L20-L20@sha256:747fad14d692",
+     "offset": 83901
+    }
+   ]
+  },
+  {
+   "slot": 180,
+   "kind": "IDENTITY",
+   "old_target": "source/source-profile.lisp",
+   "new_target": "source/source-profile.lisp",
+   "old": [
+    {
+     "token": "source/source-profile.lisp:434-441",
+     "offset": 78440
+    }
+   ],
+   "new": [
+    {
+     "token": "source/source-profile.lisp:L434-L441@sha256:3a7df8a07d26",
+     "offset": 84676
+    }
+   ]
+  },
+  {
+   "slot": 181,
+   "kind": "IDENTITY",
+   "old_target": "source/source-profile.lisp",
+   "new_target": "source/source-profile.lisp",
+   "old": [
+    {
+     "token": "source/source-profile.lisp:263-270",
+     "offset": 79428
+    }
+   ],
+   "new": [
+    {
+     "token": "source/source-profile.lisp:L263-L270@sha256:3a7df8a07d26",
+     "offset": 85686
+    }
+   ]
+  },
+  {
+   "slot": 182,
+   "kind": "IDENTITY",
+   "old_target": "source/source-profile.lisp",
+   "new_target": "source/source-profile.lisp",
+   "old": [
+    {
+     "token": "source/source-profile.lisp:33-34",
+     "offset": 80118
+    }
+   ],
+   "new": [
+    {
+     "token": "source/source-profile.lisp:L33-L34@sha256:3a7df8a07d26",
+     "offset": 86398
+    }
+   ]
+  },
+  {
+   "slot": 183,
+   "kind": "IDENTITY",
+   "old_target": "source/source-profile.lisp",
+   "new_target": "source/source-profile.lisp",
+   "old": [
+    {
+     "token": "source/source-profile.lisp:209-232",
+     "offset": 80780
+    }
+   ],
+   "new": [
+    {
+     "token": "source/source-profile.lisp:L209-L232@sha256:3a7df8a07d26",
+     "offset": 87082
+    }
+   ]
+  },
+  {
+   "slot": 184,
+   "kind": "IDENTITY",
+   "old_target": "source/signed-embedding-manifest.lisp",
+   "new_target": "source/signed-embedding-manifest.lisp",
+   "old": [
+    {
+     "token": "source/signed-embedding-manifest.lisp:241-266",
+     "offset": 81710
+    }
+   ],
+   "new": [
+    {
+     "token": "source/signed-embedding-manifest.lisp:L241-L266@sha256:b66e205e29a5",
+     "offset": 88034
+    }
+   ]
+  },
+  {
+   "slot": 185,
+   "kind": "IDENTITY",
+   "old_target": "source/signed-embedding-manifest.lisp",
+   "new_target": "source/signed-embedding-manifest.lisp",
+   "old": [
+    {
+     "token": "source/signed-embedding-manifest.lisp:304-321",
+     "offset": 82483
+    }
+   ],
+   "new": [
+    {
+     "token": "source/signed-embedding-manifest.lisp:L304-L321@sha256:b66e205e29a5",
+     "offset": 88829
+    }
+   ]
+  },
+  {
+   "slot": 186,
+   "kind": "IDENTITY",
+   "old_target": "source/signed-embedding-manifest.lisp",
+   "new_target": "source/signed-embedding-manifest.lisp",
+   "old": [
+    {
+     "token": "source/signed-embedding-manifest.lisp:695-706",
+     "offset": 83101
+    }
+   ],
+   "new": [
+    {
+     "token": "source/signed-embedding-manifest.lisp:L695-L706@sha256:b66e205e29a5",
+     "offset": 89469
+    }
+   ]
+  },
+  {
+   "slot": 187,
+   "kind": "IDENTITY",
+   "old_target": "source/shacl-validator.lisp",
+   "new_target": "source/shacl-validator.lisp",
+   "old": [
+    {
+     "token": "source/shacl-validator.lisp:132-167",
+     "offset": 83853
+    }
+   ],
+   "new": [
+    {
+     "token": "source/shacl-validator.lisp:L132-L167@sha256:a0339815440c",
+     "offset": 90243
+    }
+   ]
+  },
+  {
+   "slot": 188,
+   "kind": "IDENTITY",
+   "old_target": "source/shacl-validator.lisp",
+   "new_target": "source/shacl-validator.lisp",
+   "old": [
+    {
+     "token": "source/shacl-validator.lisp:102-109",
+     "offset": 84632
+    }
+   ],
+   "new": [
+    {
+     "token": "source/shacl-validator.lisp:L102-L109@sha256:a0339815440c",
+     "offset": 91044
+    }
+   ]
+  },
+  {
+   "slot": 189,
+   "kind": "IDENTITY",
+   "old_target": "source/turtle-parser.lisp",
+   "new_target": "source/turtle-parser.lisp",
+   "old": [
+    {
+     "token": "source/turtle-parser.lisp:8",
+     "offset": 85374
+    }
+   ],
+   "new": [
+    {
+     "token": "source/turtle-parser.lisp:L8-L8@sha256:4c1fb3a38dce",
+     "offset": 91808
+    }
+   ]
+  },
+  {
+   "slot": 190,
+   "kind": "IDENTITY",
+   "old_target": "source/turtle-parser.lisp",
+   "new_target": "source/turtle-parser.lisp",
+   "old": [
+    {
+     "token": "source/turtle-parser.lisp:93",
+     "offset": 86062
+    }
+   ],
+   "new": [
+    {
+     "token": "source/turtle-parser.lisp:L93-L93@sha256:4c1fb3a38dce",
+     "offset": 92520
+    }
+   ]
+  },
+  {
+   "slot": 191,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-knowledge.lisp",
+   "new_target": "source/legal-knowledge.lisp",
+   "old": [
+    {
+     "token": "source/legal-knowledge.lisp:144-146",
+     "offset": 86727
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-knowledge.lisp:L144-L146@sha256:d0c50f4e981e",
+     "offset": 93210
+    }
+   ]
+  },
+  {
+   "slot": 192,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-knowledge.lisp",
+   "new_target": "source/legal-knowledge.lisp",
+   "old": [
+    {
+     "token": "source/legal-knowledge.lisp:27-35",
+     "offset": 87543
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-knowledge.lisp:L27-L35@sha256:d0c50f4e981e",
+     "offset": 94048
+    }
+   ]
+  },
+  {
+   "slot": 193,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-deontic.lisp",
+   "new_target": "source/legal-deontic.lisp",
+   "old": [
+    {
+     "token": "source/legal-deontic.lisp:113-141",
+     "offset": 88423
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-deontic.lisp:L113-L141@sha256:3b584b2845ae",
+     "offset": 94950
+    }
+   ]
+  },
+  {
+   "slot": 194,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-knowledge.lisp",
+   "new_target": "source/legal-knowledge.lisp",
+   "old": [
+    {
+     "token": "source/legal-knowledge.lisp:68-77",
+     "offset": 88476
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-knowledge.lisp:L68-L77@sha256:d0c50f4e981e",
+     "offset": 95025
+    }
+   ]
+  },
+  {
+   "slot": 195,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-subsumption.lisp",
+   "new_target": "source/legal-subsumption.lisp",
+   "old": [
+    {
+     "token": "source/legal-subsumption.lisp:137-160",
+     "offset": 88539
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-subsumption.lisp:L137-L160@sha256:a09f4835a11c",
+     "offset": 95110
+    }
+   ]
+  },
+  {
+   "slot": 196,
+   "kind": "IDENTITY",
+   "old_target": "source/fluid-induction.lisp",
+   "new_target": "source/fluid-induction.lisp",
+   "old": [
+    {
+     "token": "source/fluid-induction.lisp:176-189",
+     "offset": 89304
+    }
+   ],
+   "new": [
+    {
+     "token": "source/fluid-induction.lisp:L176-L189@sha256:3c12a25e4863",
+     "offset": 95897
+    }
+   ]
+  },
+  {
+   "slot": 197,
+   "kind": "IDENTITY",
+   "old_target": "source/embeddings-authority.lisp",
+   "new_target": "source/embeddings-authority.lisp",
+   "old": [
+    {
+     "token": "source/embeddings-authority.lisp:6-8",
+     "offset": 90182
+    }
+   ],
+   "new": [
+    {
+     "token": "source/embeddings-authority.lisp:L6-L8@sha256:0f08cd969fc6",
+     "offset": 96797
+    }
+   ]
+  },
+  {
+   "slot": 198,
+   "kind": "EXPANSION",
+   "old_target": "source/embeddings-authority.lisp",
+   "new_target": "source/embeddings-authority.lisp",
+   "old": [
+    {
+     "token": "source/embeddings-authority.lisp:61-68,70-82,111-125,162-175",
+     "offset": 90853
+    }
+   ],
+   "new": [
+    {
+     "token": "source/embeddings-authority.lisp:L61-L68@sha256:0f08cd969fc6",
+     "offset": 97490
+    },
+    {
+     "token": "source/embeddings-authority.lisp:L70-L82@sha256:0f08cd969fc6",
+     "offset": 97551
+    },
+    {
+     "token": "source/embeddings-authority.lisp:L111-L125@sha256:0f08cd969fc6",
+     "offset": 97612
+    },
+    {
+     "token": "source/embeddings-authority.lisp:L162-L175@sha256:0f08cd969fc6",
+     "offset": 97675
+    }
+   ]
+  },
+  {
+   "slot": 199,
+   "kind": "IDENTITY",
+   "old_target": "source/blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "source/blockchain-authority.lisp:951-972",
+     "offset": 90916
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:L951-L972@sha256:caadc9c75a98",
+     "offset": 97740
+    }
+   ]
+  },
+  {
+   "slot": 200,
+   "kind": "EXPANSION",
+   "old_target": "source/legal-subsumption.lisp",
+   "new_target": "source/legal-subsumption.lisp",
+   "old": [
+    {
+     "token": "source/legal-subsumption.lisp:33-37,48-66",
+     "offset": 91490
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-subsumption.lisp:L33-L37@sha256:a09f4835a11c",
+     "offset": 98336
+    },
+    {
+     "token": "source/legal-subsumption.lisp:L48-L66@sha256:a09f4835a11c",
+     "offset": 98394
+    }
+   ]
+  },
+  {
+   "slot": 201,
+   "kind": "IDENTITY",
+   "old_target": "source/text-canonicalizer.lisp",
+   "new_target": "source/text-canonicalizer.lisp",
+   "old": [
+    {
+     "token": "source/text-canonicalizer.lisp:571-597",
+     "offset": 92149
+    }
+   ],
+   "new": [
+    {
+     "token": "source/text-canonicalizer.lisp:L571-L597@sha256:747fad14d692",
+     "offset": 99069
+    }
+   ]
+  },
+  {
+   "slot": 202,
+   "kind": "IDENTITY",
+   "old_target": "source/narrative-provenance.lisp",
+   "new_target": "source/narrative-provenance.lisp",
+   "old": [
+    {
+     "token": "source/narrative-provenance.lisp:266",
+     "offset": 93222
+    }
+   ],
+   "new": [
+    {
+     "token": "source/narrative-provenance.lisp:L266-L266@sha256:bb5aaa7b01a0",
+     "offset": 100164
+    }
+   ]
+  },
+  {
+   "slot": 203,
+   "kind": "IDENTITY",
+   "old_target": "source/narrative-provenance.lisp",
+   "new_target": "source/narrative-provenance.lisp",
+   "old": [
+    {
+     "token": "source/narrative-provenance.lisp:907-930",
+     "offset": 94387
+    }
+   ],
+   "new": [
+    {
+     "token": "source/narrative-provenance.lisp:L907-L930@sha256:bb5aaa7b01a0",
+     "offset": 101355
+    }
+   ]
+  },
+  {
+   "slot": 204,
+   "kind": "IDENTITY",
+   "old_target": "source/semantic-authority.lisp",
+   "new_target": "source/semantic-authority.lisp",
+   "old": [
+    {
+     "token": "source/semantic-authority.lisp:730-754",
+     "offset": 94430
+    }
+   ],
+   "new": [
+    {
+     "token": "source/semantic-authority.lisp:L730-L754@sha256:3b7ab18ddb0a",
+     "offset": 101420
+    }
+   ]
+  },
+  {
+   "slot": 205,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-extraction-verify.lisp",
+   "new_target": "source/legal-extraction-verify.lisp",
+   "old": [
+    {
+     "token": "source/legal-extraction-verify.lisp:356-361",
+     "offset": 95231
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-extraction-verify.lisp:L356-L361@sha256:d03e8fa588fd",
+     "offset": 102243
+    }
+   ]
+  },
+  {
+   "slot": 206,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-extraction-verify.lisp",
+   "new_target": "source/legal-extraction-verify.lisp",
+   "old": [
+    {
+     "token": "source/legal-extraction-verify.lisp:38-40",
+     "offset": 95930
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-extraction-verify.lisp:L38-L40@sha256:d03e8fa588fd",
+     "offset": 102964
+    }
+   ]
+  },
+  {
+   "slot": 207,
+   "kind": "EXPANSION",
+   "old_target": "source/legal-extraction-verify.lisp",
+   "new_target": "source/legal-extraction-verify.lisp",
+   "old": [
+    {
+     "token": "source/legal-extraction-verify.lisp:383-387,389-395",
+     "offset": 96885
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-extraction-verify.lisp:L383-L387@sha256:d03e8fa588fd",
+     "offset": 103941
+    },
+    {
+     "token": "source/legal-extraction-verify.lisp:L389-L395@sha256:d03e8fa588fd",
+     "offset": 104007
+    }
+   ]
+  },
+  {
+   "slot": 208,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-deontic.lisp",
+   "new_target": "source/legal-deontic.lisp",
+   "old": [
+    {
+     "token": "source/legal-deontic.lisp:87",
+     "offset": 96939
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-deontic.lisp:L87-L87@sha256:3b584b2845ae",
+     "offset": 104075
+    }
+   ]
+  },
+  {
+   "slot": 209,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-subsumption.lisp",
+   "new_target": "source/legal-subsumption.lisp",
+   "old": [
+    {
+     "token": "source/legal-subsumption.lisp:88-93",
+     "offset": 96986
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-subsumption.lisp:L88-L93@sha256:a09f4835a11c",
+     "offset": 104147
+    }
+   ]
+  },
+  {
+   "slot": 210,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-extraction-verify.lisp",
+   "new_target": "source/legal-extraction-verify.lisp",
+   "old": [
+    {
+     "token": "source/legal-extraction-verify.lisp:371-380",
+     "offset": 97037
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-extraction-verify.lisp:L371-L380@sha256:d03e8fa588fd",
+     "offset": 104220
+    }
+   ]
+  },
+  {
+   "slot": 211,
+   "kind": "EXPANSION",
+   "old_target": "source/sparql-endpoint.lisp",
+   "new_target": "source/sparql-endpoint.lisp",
+   "old": [
+    {
+     "token": "source/sparql-endpoint.lisp:10,117",
+     "offset": 97615
+    }
+   ],
+   "new": [
+    {
+     "token": "source/sparql-endpoint.lisp:L10-L10@sha256:8528099d891a",
+     "offset": 104820
+    },
+    {
+     "token": "source/sparql-endpoint.lisp:L117-L117@sha256:8528099d891a",
+     "offset": 104876
+    }
+   ]
+  },
+  {
+   "slot": 212,
+   "kind": "IDENTITY",
+   "old_target": "source/sparql-endpoint.lisp",
+   "new_target": "source/sparql-endpoint.lisp",
+   "old": [
+    {
+     "token": "source/sparql-endpoint.lisp:554-573",
+     "offset": 98446
+    }
+   ],
+   "new": [
+    {
+     "token": "source/sparql-endpoint.lisp:L554-L573@sha256:8528099d891a",
+     "offset": 105730
+    }
+   ]
+  },
+  {
+   "slot": 213,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-subsumption.lisp",
+   "new_target": "source/legal-subsumption.lisp",
+   "old": [
+    {
+     "token": "source/legal-subsumption.lisp:33-66",
+     "offset": 98535
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-subsumption.lisp:L33-L66@sha256:a09f4835a11c",
+     "offset": 105841
+    }
+   ]
+  },
+  {
+   "slot": 214,
+   "kind": "IDENTITY",
+   "old_target": "source/eu-interop-layer.lisp",
+   "new_target": "source/eu-interop-layer.lisp",
+   "old": [
+    {
+     "token": "source/eu-interop-layer.lisp:376-387",
+     "offset": 99178
+    }
+   ],
+   "new": [
+    {
+     "token": "source/eu-interop-layer.lisp:L376-L387@sha256:a3807069a264",
+     "offset": 106506
+    }
+   ]
+  },
+  {
+   "slot": 215,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-audit-system.lisp",
+   "new_target": "source/legal-audit-system.lisp",
+   "old": [
+    {
+     "token": "source/legal-audit-system.lisp:780-787",
+     "offset": 99256
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-audit-system.lisp:L780-L787@sha256:53613cdd00f0",
+     "offset": 106606
+    }
+   ]
+  },
+  {
+   "slot": 216,
+   "kind": "IDENTITY",
+   "old_target": "source/ai-ingest-manifest.lisp",
+   "new_target": "source/ai-ingest-manifest.lisp",
+   "old": [
+    {
+     "token": "source/ai-ingest-manifest.lisp:30-38",
+     "offset": 100053
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ai-ingest-manifest.lisp:L30-L38@sha256:60194efad04d",
+     "offset": 107425
+    }
+   ]
+  },
+  {
+   "slot": 217,
+   "kind": "EXPANSION",
+   "old_target": "source/narrative-provenance.lisp",
+   "new_target": "source/narrative-provenance.lisp",
+   "old": [
+    {
+     "token": "source/narrative-provenance.lisp:32-34,76",
+     "offset": 100111
+    }
+   ],
+   "new": [
+    {
+     "token": "source/narrative-provenance.lisp:L32-L34@sha256:bb5aaa7b01a0",
+     "offset": 107505
+    },
+    {
+     "token": "source/narrative-provenance.lisp:L76-L76@sha256:bb5aaa7b01a0",
+     "offset": 107566
+    }
+   ]
+  },
+  {
+   "slot": 218,
+   "kind": "EXPANSION",
+   "old_target": "source/ai-citation-strategy.lisp",
+   "new_target": "source/ai-citation-strategy.lisp",
+   "old": [
+    {
+     "token": "source/ai-citation-strategy.lisp:31-33,389",
+     "offset": 100155
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ai-citation-strategy.lisp:L31-L33@sha256:af9cd72d5bf2",
+     "offset": 107629
+    },
+    {
+     "token": "source/ai-citation-strategy.lisp:L389-L389@sha256:af9cd72d5bf2",
+     "offset": 107690
+    }
+   ]
+  },
+  {
+   "slot": 219,
+   "kind": "IDENTITY",
+   "old_target": "source/semantic-versioning-system.lisp",
+   "new_target": "source/semantic-versioning-system.lisp",
+   "old": [
+    {
+     "token": "source/semantic-versioning-system.lisp:43",
+     "offset": 100200
+    }
+   ],
+   "new": [
+    {
+     "token": "source/semantic-versioning-system.lisp:L43-L43@sha256:14fe14638ea7",
+     "offset": 107755
+    }
+   ]
+  },
+  {
+   "slot": 220,
+   "kind": "IDENTITY",
+   "old_target": "source/rdfs-inference.lisp",
+   "new_target": "source/rdfs-inference.lisp",
+   "old": [
+    {
+     "token": "source/rdfs-inference.lisp:399-431",
+     "offset": 100899
+    }
+   ],
+   "new": [
+    {
+     "token": "source/rdfs-inference.lisp:L399-L431@sha256:cc47768ad655",
+     "offset": 108479
+    }
+   ]
+  },
+  {
+   "slot": 221,
+   "kind": "IDENTITY",
+   "old_target": "source/reasoning-authority.lisp",
+   "new_target": "source/reasoning-authority.lisp",
+   "old": [
+    {
+     "token": "source/reasoning-authority.lisp:455-480",
+     "offset": 100960
+    }
+   ],
+   "new": [
+    {
+     "token": "source/reasoning-authority.lisp:L455-L480@sha256:c4da9cef6085",
+     "offset": 108562
+    }
+   ]
+  },
+  {
+   "slot": 222,
+   "kind": "IDENTITY",
+   "old_target": "source/citation-authority.lisp",
+   "new_target": "source/citation-authority.lisp",
+   "old": [
+    {
+     "token": "source/citation-authority.lisp:408-476",
+     "offset": 101002
+    }
+   ],
+   "new": [
+    {
+     "token": "source/citation-authority.lisp:L408-L476@sha256:f4ad0fd3855e",
+     "offset": 108626
+    }
+   ]
+  },
+  {
+   "slot": 223,
+   "kind": "IDENTITY",
+   "old_target": "source/validate-logical-blocks.lisp",
+   "new_target": "source/validate-logical-blocks.lisp",
+   "old": [
+    {
+     "token": "source/validate-logical-blocks.lisp:148-163",
+     "offset": 101637
+    }
+   ],
+   "new": [
+    {
+     "token": "source/validate-logical-blocks.lisp:L148-L163@sha256:f8714abbe650",
+     "offset": 109283
+    }
+   ]
+  },
+  {
+   "slot": 224,
+   "kind": "IDENTITY",
+   "old_target": "source/typographic-classifier.lisp",
+   "new_target": "source/typographic-classifier.lisp",
+   "old": [
+    {
+     "token": "source/typographic-classifier.lisp:458-473",
+     "offset": 101730
+    }
+   ],
+   "new": [
+    {
+     "token": "source/typographic-classifier.lisp:L458-L473@sha256:d08a6d8588c3",
+     "offset": 109398
+    }
+   ]
+  },
+  {
+   "slot": 225,
+   "kind": "IDENTITY",
+   "old_target": "source/ai-citation-strategy.lisp",
+   "new_target": "source/ai-citation-strategy.lisp",
+   "old": [
+    {
+     "token": "source/ai-citation-strategy.lisp:589-601",
+     "offset": 102298
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ai-citation-strategy.lisp:L589-L601@sha256:af9cd72d5bf2",
+     "offset": 109988
+    }
+   ]
+  },
+  {
+   "slot": 226,
+   "kind": "IDENTITY",
+   "old_target": "source/lexicon-neurolingo.lisp",
+   "new_target": "source/lexicon-neurolingo.lisp",
+   "old": [
+    {
+     "token": "source/lexicon-neurolingo.lisp:3-4",
+     "offset": 102881
+    }
+   ],
+   "new": [
+    {
+     "token": "source/lexicon-neurolingo.lisp:L3-L4@sha256:aebdb35a0ab8",
+     "offset": 110593
+    }
+   ]
+  },
+  {
+   "slot": 227,
+   "kind": "IDENTITY",
+   "old_target": "source/greek-lemmatizer.lisp",
+   "new_target": "source/greek-lemmatizer.lisp",
+   "old": [
+    {
+     "token": "source/greek-lemmatizer.lisp:5-6",
+     "offset": 102959
+    }
+   ],
+   "new": [
+    {
+     "token": "source/greek-lemmatizer.lisp:L5-L6@sha256:12b56d83d333",
+     "offset": 110693
+    }
+   ]
+  },
+  {
+   "slot": 228,
+   "kind": "IDENTITY",
+   "old_target": "source/reasoning-authority.lisp",
+   "new_target": "source/reasoning-authority.lisp",
+   "old": [
+    {
+     "token": "source/reasoning-authority.lisp:5-6",
+     "offset": 102994
+    }
+   ],
+   "new": [
+    {
+     "token": "source/reasoning-authority.lisp:L5-L6@sha256:c4da9cef6085",
+     "offset": 110750
+    }
+   ]
+  },
+  {
+   "slot": 229,
+   "kind": "IDENTITY",
+   "old_target": "source/semantic-authority.lisp",
+   "new_target": "source/semantic-authority.lisp",
+   "old": [
+    {
+     "token": "source/semantic-authority.lisp:757-790",
+     "offset": 103615
+    }
+   ],
+   "new": [
+    {
+     "token": "source/semantic-authority.lisp:L757-L790@sha256:3b7ab18ddb0a",
+     "offset": 111393
+    }
+   ]
+  },
+  {
+   "slot": 230,
+   "kind": "EXPANSION",
+   "old_target": "source/document-fetch.lisp",
+   "new_target": "source/document-fetch.lisp",
+   "old": [
+    {
+     "token": "source/document-fetch.lisp:92-106,308-323",
+     "offset": 104135
+    }
+   ],
+   "new": [
+    {
+     "token": "source/document-fetch.lisp:L92-L106@sha256:bb114b83fd80",
+     "offset": 111935
+    },
+    {
+     "token": "source/document-fetch.lisp:L308-L323@sha256:bb114b83fd80",
+     "offset": 111991
+    }
+   ]
+  },
+  {
+   "slot": 231,
+   "kind": "IDENTITY",
+   "old_target": "config.lisp",
+   "new_target": "config.lisp",
+   "old": [
+    {
+     "token": "config.lisp:48-49",
+     "offset": 104593
+    }
+   ],
+   "new": [
+    {
+     "token": "config.lisp:48-49",
+     "offset": 112464
+    }
+   ]
+  },
+  {
+   "slot": 232,
+   "kind": "IDENTITY",
+   "old_target": "config.lisp",
+   "new_target": "config.lisp",
+   "old": [
+    {
+     "token": "config.lisp:51-60",
+     "offset": 104879
+    }
+   ],
+   "new": [
+    {
+     "token": "config.lisp:51-60",
+     "offset": 112750
+    }
+   ]
+  },
+  {
+   "slot": 233,
+   "kind": "EXPANSION",
+   "old_target": "source/proof-carrying.lisp",
+   "new_target": "source/proof-carrying.lisp",
+   "old": [
+    {
+     "token": "source/proof-carrying.lisp:143-155,168-183",
+     "offset": 105255
+    }
+   ],
+   "new": [
+    {
+     "token": "source/proof-carrying.lisp:L143-L155@sha256:c18f7ddb07b1",
+     "offset": 113126
+    },
+    {
+     "token": "source/proof-carrying.lisp:L168-L183@sha256:c18f7ddb07b1",
+     "offset": 113183
+    }
+   ]
+  },
+  {
+   "slot": 234,
+   "kind": "IDENTITY",
+   "old_target": "source/deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "source/deterministic-time.lisp:202-220",
+     "offset": 105615
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:L202-L220@sha256:6dbda9c2fc1c",
+     "offset": 113557
+    }
+   ]
+  },
+  {
+   "slot": 235,
+   "kind": "EXPANSION",
+   "old_target": "source/journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "source/journal.lisp:180-187,347-349",
+     "offset": 106019
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:L180-L187@sha256:ee440c102989",
+     "offset": 113983
+    },
+    {
+     "token": "source/journal.lisp:L347-L349@sha256:ee440c102989",
+     "offset": 114033
+    }
+   ]
+  },
+  {
+   "slot": 236,
+   "kind": "IDENTITY",
+   "old_target": "source/constitutional-gate.lisp",
+   "new_target": "source/constitutional-gate.lisp",
+   "old": [
+    {
+     "token": "source/constitutional-gate.lisp:59-65",
+     "offset": 106268
+    }
+   ],
+   "new": [
+    {
+     "token": "source/constitutional-gate.lisp:L59-L65@sha256:33522d186e21",
+     "offset": 114296
+    }
+   ]
+  },
+  {
+   "slot": 237,
+   "kind": "EXPANSION",
+   "old_target": "source/journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "source/journal.lisp:45-48,210-213",
+     "offset": 106635
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:L45-L48@sha256:ee440c102989",
+     "offset": 114685
+    },
+    {
+     "token": "source/journal.lisp:L210-L213@sha256:ee440c102989",
+     "offset": 114733
+    }
+   ]
+  },
+  {
+   "slot": 238,
+   "kind": "IDENTITY",
+   "old_target": "source/cognition.lisp",
+   "new_target": "source/cognition.lisp",
+   "old": [
+    {
+     "token": "source/cognition.lisp:69-89",
+     "offset": 106964
+    }
+   ],
+   "new": [
+    {
+     "token": "source/cognition.lisp:L69-L89@sha256:f54ace6cb73d",
+     "offset": 115078
+    }
+   ]
+  },
+  {
+   "slot": 239,
+   "kind": "IDENTITY",
+   "old_target": "source/anomaly-detection.lisp",
+   "new_target": "source/anomaly-detection.lisp",
+   "old": [
+    {
+     "token": "source/anomaly-detection.lisp:24-31",
+     "offset": 107336
+    }
+   ],
+   "new": [
+    {
+     "token": "source/anomaly-detection.lisp:L24-L31@sha256:43c44bf86b01",
+     "offset": 115472
+    }
+   ]
+  },
+  {
+   "slot": 240,
+   "kind": "IDENTITY",
+   "old_target": "source/ast-gate.lisp",
+   "new_target": "source/ast-gate.lisp",
+   "old": [
+    {
+     "token": "source/ast-gate.lisp:40-47",
+     "offset": 107374
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ast-gate.lisp:L40-L47@sha256:65724a01525c",
+     "offset": 115532
+    }
+   ]
+  },
+  {
+   "slot": 241,
+   "kind": "IDENTITY",
+   "old_target": "source/amendment-extractor.lisp",
+   "new_target": "source/amendment-extractor.lisp",
+   "old": [
+    {
+     "token": "source/amendment-extractor.lisp:189-199",
+     "offset": 107662
+    }
+   ],
+   "new": [
+    {
+     "token": "source/amendment-extractor.lisp:L189-L199@sha256:407642a40548",
+     "offset": 115842
+    }
+   ]
+  },
+  {
+   "slot": 242,
+   "kind": "IDENTITY",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "source/pdf-authority.lisp:1386-1439",
+     "offset": 108029
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L1386-L1439@sha256:c4e2054c0e4f",
+     "offset": 116231
+    }
+   ]
+  },
+  {
+   "slot": 243,
+   "kind": "IDENTITY",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "source/pdf-authority.lisp:139-174",
+     "offset": 108406
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L139-L174@sha256:c4e2054c0e4f",
+     "offset": 116630
+    }
+   ]
+  },
+  {
+   "slot": 244,
+   "kind": "IDENTITY",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "source/pdf-authority.lisp:904-964",
+     "offset": 108773
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L904-L964@sha256:c4e2054c0e4f",
+     "offset": 117019
+    }
+   ]
+  },
+  {
+   "slot": 245,
+   "kind": "EXPANSION",
+   "old_target": "source/version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "source/version-graph.lisp:1497-1531,1557-1591",
+     "offset": 109141
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:L1497-L1531@sha256:d6b181de2ad1",
+     "offset": 117409
+    },
+    {
+     "token": "source/version-graph.lisp:L1557-L1591@sha256:d6b181de2ad1",
+     "offset": 117467
+    }
+   ]
+  },
+  {
+   "slot": 246,
+   "kind": "EXPANSION",
+   "old_target": "source/version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "source/version-graph.lisp:193-195,1020-1028,2137-2162",
+     "offset": 109585
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:L193-L195@sha256:d6b181de2ad1",
+     "offset": 117923
+    },
+    {
+     "token": "source/version-graph.lisp:L1020-L1028@sha256:d6b181de2ad1",
+     "offset": 117979
+    },
+    {
+     "token": "source/version-graph.lisp:L2137-L2162@sha256:d6b181de2ad1",
+     "offset": 118037
+    }
+   ]
+  },
+  {
+   "slot": 247,
+   "kind": "IDENTITY",
+   "old_target": "source/blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "source/blockchain-authority.lisp:951-972",
+     "offset": 110277
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:L951-L972@sha256:caadc9c75a98",
+     "offset": 118733
+    }
+   ]
+  },
+  {
+   "slot": 248,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-ast.lisp",
+   "new_target": "source/legal-ast.lisp",
+   "old": [
+    {
+     "token": "source/legal-ast.lisp:2138-2148",
+     "offset": 110711
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-ast.lisp:L2138-L2148@sha256:3735c7d8e763",
+     "offset": 119189
+    }
+   ]
+  },
+  {
+   "slot": 249,
+   "kind": "IDENTITY",
+   "old_target": "source/guard-ops-pack.lisp",
+   "new_target": "source/guard-ops-pack.lisp",
+   "old": [
+    {
+     "token": "source/guard-ops-pack.lisp:15-31",
+     "offset": 111321
+    }
+   ],
+   "new": [
+    {
+     "token": "source/guard-ops-pack.lisp:L15-L31@sha256:6c3c38bd1d0c",
+     "offset": 119821
+    }
+   ]
+  },
+  {
+   "slot": 250,
+   "kind": "IDENTITY",
+   "old_target": "source/guard-metaeval.lisp",
+   "new_target": "source/guard-metaeval.lisp",
+   "old": [
+    {
+     "token": "source/guard-metaeval.lisp:216-228",
+     "offset": 111356
+    }
+   ],
+   "new": [
+    {
+     "token": "source/guard-metaeval.lisp:L216-L228@sha256:6c11b3a60282",
+     "offset": 119878
+    }
+   ]
+  },
+  {
+   "slot": 251,
+   "kind": "IDENTITY",
+   "old_target": "protocols.lisp",
+   "new_target": "protocols.lisp",
+   "old": [
+    {
+     "token": "protocols.lisp:1-263",
+     "offset": 111957
+    }
+   ],
+   "new": [
+    {
+     "token": "protocols.lisp:1-263",
+     "offset": 120501
+    }
+   ]
+  },
+  {
+   "slot": 252,
+   "kind": "IDENTITY",
+   "old_target": "orchestrator-infrastructure.asd",
+   "new_target": "orchestrator-infrastructure.asd",
+   "old": [
+    {
+     "token": "orchestrator-infrastructure.asd:188",
+     "offset": 111980
+    }
+   ],
+   "new": [
+    {
+     "token": "orchestrator-infrastructure.asd:L188-L188@sha256:eafe37e8517f",
+     "offset": 120524
+    }
+   ]
+  },
+  {
+   "slot": 253,
+   "kind": "IDENTITY",
+   "old_target": "source/hash-authority.lisp",
+   "new_target": "source/hash-authority.lisp",
+   "old": [
+    {
+     "token": "source/hash-authority.lisp:11-46",
+     "offset": 112018
+    }
+   ],
+   "new": [
+    {
+     "token": "source/hash-authority.lisp:L11-L46@sha256:280a7c5bb315",
+     "offset": 120588
+    }
+   ]
+  },
+  {
+   "slot": 254,
+   "kind": "EXPANSION",
+   "old_target": "source/generation.lisp",
+   "new_target": "source/generation.lisp",
+   "old": [
+    {
+     "token": "source/generation.lisp:50-63,175-189",
+     "offset": 112512
+    }
+   ],
+   "new": [
+    {
+     "token": "source/generation.lisp:L50-L63@sha256:e92ce44484e9",
+     "offset": 121104
+    },
+    {
+     "token": "source/generation.lisp:L175-L189@sha256:e92ce44484e9",
+     "offset": 121155
+    }
+   ]
+  },
+  {
+   "slot": 255,
+   "kind": "EXPANSION",
+   "old_target": "source/legal-knowledge.lisp",
+   "new_target": "source/legal-knowledge.lisp",
+   "old": [
+    {
+     "token": "source/legal-knowledge.lisp:148-154,168-174,260-277",
+     "offset": 113086
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-knowledge.lisp:L148-L154@sha256:d0c50f4e981e",
+     "offset": 121745
+    },
+    {
+     "token": "source/legal-knowledge.lisp:L168-L174@sha256:d0c50f4e981e",
+     "offset": 121803
+    },
+    {
+     "token": "source/legal-knowledge.lisp:L260-L277@sha256:d0c50f4e981e",
+     "offset": 121861
+    }
+   ]
+  },
+  {
+   "slot": 256,
+   "kind": "EXPANSION",
+   "old_target": "source/signed-embedding-manifest.lisp",
+   "new_target": "source/signed-embedding-manifest.lisp",
+   "old": [
+    {
+     "token": "source/signed-embedding-manifest.lisp:158-161,68-79,186",
+     "offset": 113669
+    }
+   ],
+   "new": [
+    {
+     "token": "source/signed-embedding-manifest.lisp:L158-L161@sha256:b66e205e29a5",
+     "offset": 122450
+    },
+    {
+     "token": "source/signed-embedding-manifest.lisp:L68-L79@sha256:b66e205e29a5",
+     "offset": 122518
+    },
+    {
+     "token": "source/signed-embedding-manifest.lisp:L186-L186@sha256:b66e205e29a5",
+     "offset": 122584
+    }
+   ]
+  },
+  {
+   "slot": 257,
+   "kind": "IDENTITY",
+   "old_target": "source/embeddings-authority.lisp",
+   "new_target": "source/embeddings-authority.lisp",
+   "old": [
+    {
+     "token": "source/embeddings-authority.lisp:99-148",
+     "offset": 113727
+    }
+   ],
+   "new": [
+    {
+     "token": "source/embeddings-authority.lisp:L99-L148@sha256:0f08cd969fc6",
+     "offset": 122654
+    }
+   ]
+  },
+  {
+   "slot": 258,
+   "kind": "EXPANSION",
+   "old_target": "source/source-profile.lisp",
+   "new_target": "source/source-profile.lisp",
+   "old": [
+    {
+     "token": "source/source-profile.lisp:415-432,447-458,462-468,473-481,487-493",
+     "offset": 114289
+    }
+   ],
+   "new": [
+    {
+     "token": "source/source-profile.lisp:L415-L432@sha256:3a7df8a07d26",
+     "offset": 123238
+    },
+    {
+     "token": "source/source-profile.lisp:L447-L458@sha256:3a7df8a07d26",
+     "offset": 123295
+    },
+    {
+     "token": "source/source-profile.lisp:L462-L468@sha256:3a7df8a07d26",
+     "offset": 123352
+    },
+    {
+     "token": "source/source-profile.lisp:L473-L481@sha256:3a7df8a07d26",
+     "offset": 123409
+    },
+    {
+     "token": "source/source-profile.lisp:L487-L493@sha256:3a7df8a07d26",
+     "offset": 123466
+    }
+   ]
+  },
+  {
+   "slot": 259,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-extraction-verify.lisp",
+   "new_target": "source/legal-extraction-verify.lisp",
+   "old": [
+    {
+     "token": "source/legal-extraction-verify.lisp:348-355",
+     "offset": 114792
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-extraction-verify.lisp:L348-L355@sha256:d03e8fa588fd",
+     "offset": 123959
+    }
+   ]
+  },
+  {
+   "slot": 260,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-inference-engine.lisp",
+   "new_target": "source/legal-inference-engine.lisp",
+   "old": [
+    {
+     "token": "source/legal-inference-engine.lisp:514-520",
+     "offset": 115407
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-inference-engine.lisp:L514-L520@sha256:947062df7119",
+     "offset": 124596
+    }
+   ]
+  },
+  {
+   "slot": 261,
+   "kind": "EXPANSION",
+   "old_target": "source/legal-knowledge.lisp",
+   "new_target": "source/legal-knowledge.lisp",
+   "old": [
+    {
+     "token": "source/legal-knowledge.lisp:190-207,32-35",
+     "offset": 115452
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-knowledge.lisp:L190-L207@sha256:d0c50f4e981e",
+     "offset": 124663
+    },
+    {
+     "token": "source/legal-knowledge.lisp:L32-L35@sha256:d0c50f4e981e",
+     "offset": 124721
+    }
+   ]
+  },
+  {
+   "slot": 262,
+   "kind": "IDENTITY",
+   "old_target": "source/deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "source/deterministic-time.lisp:164-176",
+     "offset": 115577
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:L164-L176@sha256:6dbda9c2fc1c",
+     "offset": 124860
+    }
+   ]
+  },
+  {
+   "slot": 263,
+   "kind": "IDENTITY",
+   "old_target": "source/deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "source/deterministic-time.lisp:129-162",
+     "offset": 115672
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:L129-L162@sha256:6dbda9c2fc1c",
+     "offset": 124977
+    }
+   ]
+  },
+  {
+   "slot": 264,
+   "kind": "IDENTITY",
+   "old_target": "source/deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "source/deterministic-time.lisp:84-119",
+     "offset": 115772
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:L84-L119@sha256:6dbda9c2fc1c",
+     "offset": 125099
+    }
+   ]
+  },
+  {
+   "slot": 265,
+   "kind": "IDENTITY",
+   "old_target": "source/journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "source/journal.lisp:50-59",
+     "offset": 115878
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:L50-L59@sha256:ee440c102989",
+     "offset": 125227
+    }
+   ]
+  },
+  {
+   "slot": 266,
+   "kind": "IDENTITY",
+   "old_target": "source/safe-read.lisp",
+   "new_target": "source/safe-read.lisp",
+   "old": [
+    {
+     "token": "source/safe-read.lisp:312-339",
+     "offset": 116047
+    }
+   ],
+   "new": [
+    {
+     "token": "source/safe-read.lisp:L312-L339@sha256:590133b311d0",
+     "offset": 125418
+    }
+   ]
+  },
+  {
+   "slot": 267,
+   "kind": "IDENTITY",
+   "old_target": "source/journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "source/journal.lisp:61-86",
+     "offset": 116107
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:L61-L86@sha256:ee440c102989",
+     "offset": 125500
+    }
+   ]
+  },
+  {
+   "slot": 268,
+   "kind": "IDENTITY",
+   "old_target": "source/journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "source/journal.lisp:399-402",
+     "offset": 116159
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:L399-L402@sha256:ee440c102989",
+     "offset": 125574
+    }
+   ]
+  },
+  {
+   "slot": 269,
+   "kind": "IDENTITY",
+   "old_target": "source/safe-read.lisp",
+   "new_target": "source/safe-read.lisp",
+   "old": [
+    {
+     "token": "source/safe-read.lisp:275-308",
+     "offset": 116319
+    }
+   ],
+   "new": [
+    {
+     "token": "source/safe-read.lisp:L275-L308@sha256:590133b311d0",
+     "offset": 125756
+    }
+   ]
+  },
+  {
+   "slot": 270,
+   "kind": "IDENTITY",
+   "old_target": "source/journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "source/journal.lisp:265-292",
+     "offset": 116384
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:L265-L292@sha256:ee440c102989",
+     "offset": 125843
+    }
+   ]
+  },
+  {
+   "slot": 271,
+   "kind": "IDENTITY",
+   "old_target": "source/safe-read.lisp",
+   "new_target": "source/safe-read.lisp",
+   "old": [
+    {
+     "token": "source/safe-read.lisp:32",
+     "offset": 116529
+    }
+   ],
+   "new": [
+    {
+     "token": "source/safe-read.lisp:L32-L32@sha256:590133b311d0",
+     "offset": 126010
+    }
+   ]
+  },
+  {
+   "slot": 272,
+   "kind": "IDENTITY",
+   "old_target": "source/journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "source/journal.lisp:352-361",
+     "offset": 116568
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:L352-L361@sha256:ee440c102989",
+     "offset": 126074
+    }
+   ]
+  },
+  {
+   "slot": 273,
+   "kind": "IDENTITY",
+   "old_target": "source/journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "source/journal.lisp:61-86",
+     "offset": 116727
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:L61-L86@sha256:ee440c102989",
+     "offset": 126255
+    }
+   ]
+  },
+  {
+   "slot": 274,
+   "kind": "IDENTITY",
+   "old_target": "source/version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "source/version-graph.lisp:471-497",
+     "offset": 116799
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:L471-L497@sha256:d6b181de2ad1",
+     "offset": 126349
+    }
+   ]
+  },
+  {
+   "slot": 275,
+   "kind": "IDENTITY",
+   "old_target": "source/version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "source/version-graph.lisp:288-300",
+     "offset": 117000
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:L288-L300@sha256:d6b181de2ad1",
+     "offset": 126572
+    }
+   ]
+  },
+  {
+   "slot": 276,
+   "kind": "IDENTITY",
+   "old_target": "source/version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "source/version-graph.lisp:1727-1729",
+     "offset": 117124
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:L1727-L1729@sha256:d6b181de2ad1",
+     "offset": 126718
+    }
+   ]
+  },
+  {
+   "slot": 277,
+   "kind": "IDENTITY",
+   "old_target": "source/version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "source/version-graph.lisp:2096-2104",
+     "offset": 117240
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:L2096-L2104@sha256:d6b181de2ad1",
+     "offset": 126856
+    }
+   ]
+  },
+  {
+   "slot": 278,
+   "kind": "IDENTITY",
+   "old_target": "source/adoption-decision.lisp",
+   "new_target": "source/adoption-decision.lisp",
+   "old": [
+    {
+     "token": "source/adoption-decision.lisp:90-94",
+     "offset": 117321
+    }
+   ],
+   "new": [
+    {
+     "token": "source/adoption-decision.lisp:L90-L94@sha256:fd26b0d91f89",
+     "offset": 126959
+    }
+   ]
+  },
+  {
+   "slot": 279,
+   "kind": "IDENTITY",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "source/pdf-authority.lisp:1427-1439",
+     "offset": 117469
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L1427-L1439@sha256:c4e2054c0e4f",
+     "offset": 127129
+    }
+   ]
+  },
+  {
+   "slot": 280,
+   "kind": "IDENTITY",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "source/pdf-authority.lisp:944-964",
+     "offset": 117554
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L944-L964@sha256:c4e2054c0e4f",
+     "offset": 127236
+    }
+   ]
+  },
+  {
+   "slot": 281,
+   "kind": "IDENTITY",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "source/pdf-authority.lisp:381-446",
+     "offset": 117657
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L381-L446@sha256:c4e2054c0e4f",
+     "offset": 127361
+    }
+   ]
+  },
+  {
+   "slot": 282,
+   "kind": "IDENTITY",
+   "old_target": "source/document-fetch.lisp",
+   "new_target": "source/document-fetch.lisp",
+   "old": [
+    {
+     "token": "source/document-fetch.lisp:258-291",
+     "offset": 117845
+    }
+   ],
+   "new": [
+    {
+     "token": "source/document-fetch.lisp:L258-L291@sha256:bb114b83fd80",
+     "offset": 127571
+    }
+   ]
+  },
+  {
+   "slot": 283,
+   "kind": "IDENTITY",
+   "old_target": "source/archive-authority.lisp",
+   "new_target": "source/archive-authority.lisp",
+   "old": [
+    {
+     "token": "source/archive-authority.lisp:70-94",
+     "offset": 117952
+    }
+   ],
+   "new": [
+    {
+     "token": "source/archive-authority.lisp:L70-L94@sha256:36f78fe7b609",
+     "offset": 127700
+    }
+   ]
+  },
+  {
+   "slot": 284,
+   "kind": "IDENTITY",
+   "old_target": "source/hash-authority.lisp",
+   "new_target": "source/hash-authority.lisp",
+   "old": [
+    {
+     "token": "source/hash-authority.lisp:11-46",
+     "offset": 118091
+    }
+   ],
+   "new": [
+    {
+     "token": "source/hash-authority.lisp:L11-L46@sha256:280a7c5bb315",
+     "offset": 127861
+    }
+   ]
+  },
+  {
+   "slot": 285,
+   "kind": "IDENTITY",
+   "old_target": "source/journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "source/journal.lisp:88-92",
+     "offset": 118181
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:L88-L92@sha256:ee440c102989",
+     "offset": 127973
+    }
+   ]
+  },
+  {
+   "slot": 286,
+   "kind": "IDENTITY",
+   "old_target": "source/adoption-decision.lisp",
+   "new_target": "source/adoption-decision.lisp",
+   "old": [
+    {
+     "token": "source/adoption-decision.lisp:91-94",
+     "offset": 118275
+    }
+   ],
+   "new": [
+    {
+     "token": "source/adoption-decision.lisp:L91-L94@sha256:fd26b0d91f89",
+     "offset": 128089
+    }
+   ]
+  },
+  {
+   "slot": 287,
+   "kind": "IDENTITY",
+   "old_target": "source/canonical-representation.lisp",
+   "new_target": "source/canonical-representation.lisp",
+   "old": [
+    {
+     "token": "source/canonical-representation.lisp:338-342",
+     "offset": 118364
+    }
+   ],
+   "new": [
+    {
+     "token": "source/canonical-representation.lisp:L338-L342@sha256:a72286188ff9",
+     "offset": 128200
+    }
+   ]
+  },
+  {
+   "slot": 288,
+   "kind": "IDENTITY",
+   "old_target": "source/archive-authority.lisp",
+   "new_target": "source/archive-authority.lisp",
+   "old": [
+    {
+     "token": "source/archive-authority.lisp:87",
+     "offset": 118587
+    }
+   ],
+   "new": [
+    {
+     "token": "source/archive-authority.lisp:L87-L87@sha256:36f78fe7b609",
+     "offset": 128445
+    }
+   ]
+  },
+  {
+   "slot": 289,
+   "kind": "IDENTITY",
+   "old_target": "source/archive-authority.lisp",
+   "new_target": "source/archive-authority.lisp",
+   "old": [
+    {
+     "token": "source/archive-authority.lisp:131-132",
+     "offset": 118656
+    }
+   ],
+   "new": [
+    {
+     "token": "source/archive-authority.lisp:L131-L132@sha256:36f78fe7b609",
+     "offset": 128539
+    }
+   ]
+  },
+  {
+   "slot": 290,
+   "kind": "IDENTITY",
+   "old_target": "source/jws-authority.lisp",
+   "new_target": "source/jws-authority.lisp",
+   "old": [
+    {
+     "token": "source/jws-authority.lisp:711",
+     "offset": 118840
+    }
+   ],
+   "new": [
+    {
+     "token": "source/jws-authority.lisp:L711-L711@sha256:0d57d11e3cf7",
+     "offset": 128745
+    }
+   ]
+  },
+  {
+   "slot": 291,
+   "kind": "IDENTITY",
+   "old_target": "source/jws-authority.lisp",
+   "new_target": "source/jws-authority.lisp",
+   "old": [
+    {
+     "token": "source/jws-authority.lisp:697",
+     "offset": 118899
+    }
+   ],
+   "new": [
+    {
+     "token": "source/jws-authority.lisp:L697-L697@sha256:0d57d11e3cf7",
+     "offset": 128830
+    }
+   ]
+  },
+  {
+   "slot": 292,
+   "kind": "IDENTITY",
+   "old_target": "source/blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "source/blockchain-authority.lisp:259-269",
+     "offset": 118943
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:L259-L269@sha256:caadc9c75a98",
+     "offset": 128900
+    }
+   ]
+  },
+  {
+   "slot": 293,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-ast.lisp",
+   "new_target": "source/legal-ast.lisp",
+   "old": [
+    {
+     "token": "source/legal-ast.lisp:2138-2148",
+     "offset": 119091
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-ast.lisp:L2138-L2148@sha256:3735c7d8e763",
+     "offset": 129070
+    }
+   ]
+  },
+  {
+   "slot": 294,
+   "kind": "IDENTITY",
+   "old_target": "source/blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "source/blockchain-authority.lisp:953-971",
+     "offset": 119226
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:L953-L971@sha256:caadc9c75a98",
+     "offset": 129227
+    }
+   ]
+  },
+  {
+   "slot": 295,
+   "kind": "IDENTITY",
+   "old_target": "source/json-emit.lisp",
+   "new_target": "source/json-emit.lisp",
+   "old": [
+    {
+     "token": "source/json-emit.lisp:39-58",
+     "offset": 119318
+    }
+   ],
+   "new": [
+    {
+     "token": "source/json-emit.lisp:L39-L58@sha256:5f1b1b7d8d91",
+     "offset": 129341
+    }
+   ]
+  },
+  {
+   "slot": 296,
+   "kind": "IDENTITY",
+   "old_target": "source/corpus-intelligence.lisp",
+   "new_target": "source/corpus-intelligence.lisp",
+   "old": [
+    {
+     "token": "source/corpus-intelligence.lisp:206",
+     "offset": 119458
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-intelligence.lisp:L206-L206@sha256:56ef2b5920c8",
+     "offset": 129503
+    }
+   ]
+  },
+  {
+   "slot": 297,
+   "kind": "IDENTITY",
+   "old_target": "source/citation-authority.lisp",
+   "new_target": "source/citation-authority.lisp",
+   "old": [
+    {
+     "token": "source/citation-authority.lisp:716",
+     "offset": 119495
+    }
+   ],
+   "new": [
+    {
+     "token": "source/citation-authority.lisp:L716-L716@sha256:f4ad0fd3855e",
+     "offset": 129566
+    }
+   ]
+  },
+  {
+   "slot": 298,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-qa.lisp",
+   "new_target": "source/legal-qa.lisp",
+   "old": [
+    {
+     "token": "source/legal-qa.lisp:95-106",
+     "offset": 119544
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-qa.lisp:L95-L106@sha256:8c10f4e56920",
+     "offset": 129641
+    }
+   ]
+  },
+  {
+   "slot": 299,
+   "kind": "IDENTITY",
+   "old_target": "source/ai-corpus-dump.lisp",
+   "new_target": "source/ai-corpus-dump.lisp",
+   "old": [
+    {
+     "token": "source/ai-corpus-dump.lisp:40-50",
+     "offset": 119581
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ai-corpus-dump.lisp:L40-L50@sha256:b1d9f34c24ae",
+     "offset": 129700
+    }
+   ]
+  },
+  {
+   "slot": 300,
+   "kind": "IDENTITY",
+   "old_target": "source/review-service.lisp",
+   "new_target": "source/review-service.lisp",
+   "old": [
+    {
+     "token": "source/review-service.lisp:190-204",
+     "offset": 119634
+    }
+   ],
+   "new": [
+    {
+     "token": "source/review-service.lisp:L190-L204@sha256:7e0378ae7c28",
+     "offset": 129775
+    }
+   ]
+  },
+  {
+   "slot": 301,
+   "kind": "IDENTITY",
+   "old_target": "source/mcp-server.lisp",
+   "new_target": "source/mcp-server.lisp",
+   "old": [
+    {
+     "token": "source/mcp-server.lisp:41-53",
+     "offset": 119678
+    }
+   ],
+   "new": [
+    {
+     "token": "source/mcp-server.lisp:L41-L53@sha256:084246b54052",
+     "offset": 129841
+    }
+   ]
+  },
+  {
+   "slot": 302,
+   "kind": "IDENTITY",
+   "old_target": "source/corpus-eu-links.lisp",
+   "new_target": "source/corpus-eu-links.lisp",
+   "old": [
+    {
+     "token": "source/corpus-eu-links.lisp:113-121",
+     "offset": 119727
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-eu-links.lisp:L113-L121@sha256:63fb33b5c39b",
+     "offset": 129912
+    }
+   ]
+  },
+  {
+   "slot": 303,
+   "kind": "IDENTITY",
+   "old_target": "source/government-source.lisp",
+   "new_target": "source/government-source.lisp",
+   "old": [
+    {
+     "token": "source/government-source.lisp:239-250",
+     "offset": 119806
+    }
+   ],
+   "new": [
+    {
+     "token": "source/government-source.lisp:L239-L250@sha256:1b747a0bcb7a",
+     "offset": 130013
+    }
+   ]
+  },
+  {
+   "slot": 304,
+   "kind": "IDENTITY",
+   "old_target": "source/corpus-diff.lisp",
+   "new_target": "source/corpus-diff.lisp",
+   "old": [
+    {
+     "token": "source/corpus-diff.lisp:36-44",
+     "offset": 119854
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-diff.lisp:L36-L44@sha256:b69bdbac9560",
+     "offset": 130083
+    }
+   ]
+  },
+  {
+   "slot": 305,
+   "kind": "IDENTITY",
+   "old_target": "source/corpus-search.lisp",
+   "new_target": "source/corpus-search.lisp",
+   "old": [
+    {
+     "token": "source/corpus-search.lisp:70-78",
+     "offset": 119905
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-search.lisp:L70-L78@sha256:8effbaf5f62f",
+     "offset": 130156
+    }
+   ]
+  },
+  {
+   "slot": 306,
+   "kind": "IDENTITY",
+   "old_target": "source/corpus-sparql.lisp",
+   "new_target": "source/corpus-sparql.lisp",
+   "old": [
+    {
+     "token": "source/corpus-sparql.lisp:102-104",
+     "offset": 119958
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-sparql.lisp:L102-L104@sha256:8b1997dd98b1",
+     "offset": 130231
+    }
+   ]
+  },
+  {
+   "slot": 307,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-temporal.lisp",
+   "new_target": "source/legal-temporal.lisp",
+   "old": [
+    {
+     "token": "source/legal-temporal.lisp:28-53",
+     "offset": 120098
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-temporal.lisp:L28-L53@sha256:74ec15418b7c",
+     "offset": 130393
+    }
+   ]
+  },
+  {
+   "slot": 308,
+   "kind": "IDENTITY",
+   "old_target": "source/guard-metaeval.lisp",
+   "new_target": "source/guard-metaeval.lisp",
+   "old": [
+    {
+     "token": "source/guard-metaeval.lisp:652-666",
+     "offset": 120212
+    }
+   ],
+   "new": [
+    {
+     "token": "source/guard-metaeval.lisp:L652-L666@sha256:6c11b3a60282",
+     "offset": 130529
+    }
+   ]
+  },
+  {
+   "slot": 309,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-hypergraph.lisp",
+   "new_target": "source/legal-hypergraph.lisp",
+   "old": [
+    {
+     "token": "source/legal-hypergraph.lisp:46-62",
+     "offset": 120502
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-hypergraph.lisp:L46-L62@sha256:a5eeb778d594",
+     "offset": 130841
+    }
+   ]
+  },
+  {
+   "slot": 310,
+   "kind": "IDENTITY",
+   "old_target": "source/greek-legislation-ontology.lisp",
+   "new_target": "source/greek-legislation-ontology.lisp",
+   "old": [
+    {
+     "token": "source/greek-legislation-ontology.lisp:208-212",
+     "offset": 120587
+    }
+   ],
+   "new": [
+    {
+     "token": "source/greek-legislation-ontology.lisp:L208-L212@sha256:f6c6abee3574",
+     "offset": 130948
+    }
+   ]
+  },
+  {
+   "slot": 311,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-reasoning-bridge.lisp",
+   "new_target": "source/legal-reasoning-bridge.lisp",
+   "old": [
+    {
+     "token": "source/legal-reasoning-bridge.lisp:96-170",
+     "offset": 120724
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-reasoning-bridge.lisp:L96-L170@sha256:ba8a680fbe54",
+     "offset": 131107
+    }
+   ]
+  },
+  {
+   "slot": 312,
+   "kind": "EXPANSION",
+   "old_target": "source/legal-reasoning-bridge.lisp",
+   "new_target": "source/legal-reasoning-bridge.lisp",
+   "old": [
+    {
+     "token": "source/legal-reasoning-bridge.lisp:69-89,172-181",
+     "offset": 120833
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-reasoning-bridge.lisp:L69-L89@sha256:ba8a680fbe54",
+     "offset": 131238
+    },
+    {
+     "token": "source/legal-reasoning-bridge.lisp:L172-L181@sha256:ba8a680fbe54",
+     "offset": 131301
+    }
+   ]
+  },
+  {
+   "slot": 313,
+   "kind": "IDENTITY",
+   "old_target": "source/graph-reasoning.lisp",
+   "new_target": "source/graph-reasoning.lisp",
+   "old": [
+    {
+     "token": "source/graph-reasoning.lisp:54-90",
+     "offset": 120949
+    }
+   ],
+   "new": [
+    {
+     "token": "source/graph-reasoning.lisp:L54-L90@sha256:81d3b4593cdd",
+     "offset": 131433
+    }
+   ]
+  },
+  {
+   "slot": 314,
+   "kind": "IDENTITY",
+   "old_target": "source/hash-authority.lisp",
+   "new_target": "source/hash-authority.lisp",
+   "old": [
+    {
+     "token": "source/hash-authority.lisp:11-46",
+     "offset": 121117
+    }
+   ],
+   "new": [
+    {
+     "token": "source/hash-authority.lisp:L11-L46@sha256:280a7c5bb315",
+     "offset": 131623
+    }
+   ]
+  },
+  {
+   "slot": 315,
+   "kind": "IDENTITY",
+   "old_target": "protocols.lisp",
+   "new_target": "protocols.lisp",
+   "old": [
+    {
+     "token": "protocols.lisp:145-149",
+     "offset": 121181
+    }
+   ],
+   "new": [
+    {
+     "token": "protocols.lisp:145-149",
+     "offset": 131709
+    }
+   ]
+  },
+  {
+   "slot": 316,
+   "kind": "IDENTITY",
+   "old_target": "source/guard-ops-pack.lisp",
+   "new_target": "source/guard-ops-pack.lisp",
+   "old": [
+    {
+     "token": "source/guard-ops-pack.lisp:17-29",
+     "offset": 121349
+    }
+   ],
+   "new": [
+    {
+     "token": "source/guard-ops-pack.lisp:L17-L29@sha256:6c3c38bd1d0c",
+     "offset": 131877
+    }
+   ]
+  },
+  {
+   "slot": 317,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-strategy.lisp",
+   "new_target": "source/legal-strategy.lisp",
+   "old": [
+    {
+     "token": "source/legal-strategy.lisp:32-41",
+     "offset": 121432
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-strategy.lisp:L32-L41@sha256:1268e149217a",
+     "offset": 131982
+    }
+   ]
+  },
+  {
+   "slot": 318,
+   "kind": "IDENTITY",
+   "old_target": "source/generation.lisp",
+   "new_target": "source/generation.lisp",
+   "old": [
+    {
+     "token": "source/generation.lisp:215-227",
+     "offset": 121514
+    }
+   ],
+   "new": [
+    {
+     "token": "source/generation.lisp:L215-L227@sha256:e92ce44484e9",
+     "offset": 132086
+    }
+   ]
+  },
+  {
+   "slot": 319,
+   "kind": "IDENTITY",
+   "old_target": "protocols.lisp",
+   "new_target": "protocols.lisp",
+   "old": [
+    {
+     "token": "protocols.lisp:56",
+     "offset": 121653
+    }
+   ],
+   "new": [
+    {
+     "token": "protocols.lisp:56",
+     "offset": 132247
+    }
+   ]
+  },
+  {
+   "slot": 320,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/frbr-protocol.lisp",
+   "new_target": "systems/orchestrator-omega-modules/frbr-protocol.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-protocol.lisp:11",
+     "offset": 121719
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-protocol.lisp:L11-L11@sha256:15edc8b34f1b",
+     "offset": 132313
+    }
+   ]
+  },
+  {
+   "slot": 321,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-hypergraph.lisp",
+   "new_target": "source/legal-hypergraph.lisp",
+   "old": [
+    {
+     "token": "source/legal-hypergraph.lisp:46-62",
+     "offset": 121908
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-hypergraph.lisp:L46-L62@sha256:a5eeb778d594",
+     "offset": 132527
+    }
+   ]
+  },
+  {
+   "slot": 322,
+   "kind": "IDENTITY",
+   "old_target": "source/greek-legislation-ontology.lisp",
+   "new_target": "source/greek-legislation-ontology.lisp",
+   "old": [
+    {
+     "token": "source/greek-legislation-ontology.lisp:208-212",
+     "offset": 122003
+    }
+   ],
+   "new": [
+    {
+     "token": "source/greek-legislation-ontology.lisp:L208-L212@sha256:f6c6abee3574",
+     "offset": 132644
+    }
+   ]
+  },
+  {
+   "slot": 323,
+   "kind": "IDENTITY",
+   "old_target": "source/shacl-validator.lisp",
+   "new_target": "source/shacl-validator.lisp",
+   "old": [
+    {
+     "token": "source/shacl-validator.lisp:311-323",
+     "offset": 122090
+    }
+   ],
+   "new": [
+    {
+     "token": "source/shacl-validator.lisp:L311-L323@sha256:a0339815440c",
+     "offset": 132753
+    }
+   ]
+  },
+  {
+   "slot": 324,
+   "kind": "IDENTITY",
+   "old_target": "source/signed-embedding-manifest.lisp",
+   "new_target": "source/signed-embedding-manifest.lisp",
+   "old": [
+    {
+     "token": "source/signed-embedding-manifest.lisp:383-396",
+     "offset": 122159
+    }
+   ],
+   "new": [
+    {
+     "token": "source/signed-embedding-manifest.lisp:L383-L396@sha256:b66e205e29a5",
+     "offset": 132844
+    }
+   ]
+  },
+  {
+   "slot": 325,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-references.lisp",
+   "new_target": "source/legal-references.lisp",
+   "old": [
+    {
+     "token": "source/legal-references.lisp:39-42",
+     "offset": 122291
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-references.lisp:L39-L42@sha256:d5c1a0763803",
+     "offset": 132998
+    }
+   ]
+  },
+  {
+   "slot": 326,
+   "kind": "IDENTITY",
+   "old_target": "source/corpus-eu-links.lisp",
+   "new_target": "source/corpus-eu-links.lisp",
+   "old": [
+    {
+     "token": "source/corpus-eu-links.lisp:27",
+     "offset": 122377
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-eu-links.lisp:L27-L27@sha256:63fb33b5c39b",
+     "offset": 133106
+    }
+   ]
+  },
+  {
+   "slot": 327,
+   "kind": "IDENTITY",
+   "old_target": "source/embeddings-authority.lisp",
+   "new_target": "source/embeddings-authority.lisp",
+   "old": [
+    {
+     "token": "source/embeddings-authority.lisp:286",
+     "offset": 122446
+    }
+   ],
+   "new": [
+    {
+     "token": "source/embeddings-authority.lisp:L286-L286@sha256:0f08cd969fc6",
+     "offset": 133200
+    }
+   ]
+  },
+  {
+   "slot": 328,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-penalty.lisp",
+   "new_target": "source/legal-penalty.lisp",
+   "old": [
+    {
+     "token": "source/legal-penalty.lisp:65",
+     "offset": 122519
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-penalty.lisp:L65-L65@sha256:7ea6f2047ce9",
+     "offset": 133299
+    }
+   ]
+  },
+  {
+   "slot": 329,
+   "kind": "EXPANSION",
+   "old_target": "source/text-canonicalizer.lisp",
+   "new_target": "source/text-canonicalizer.lisp",
+   "old": [
+    {
+     "token": "source/text-canonicalizer.lisp:313,318,324,330",
+     "offset": 122575
+    }
+   ],
+   "new": [
+    {
+     "token": "source/text-canonicalizer.lisp:L313-L313@sha256:747fad14d692",
+     "offset": 133380
+    },
+    {
+     "token": "source/text-canonicalizer.lisp:L318-L318@sha256:747fad14d692",
+     "offset": 133441
+    },
+    {
+     "token": "source/text-canonicalizer.lisp:L324-L324@sha256:747fad14d692",
+     "offset": 133502
+    },
+    {
+     "token": "source/text-canonicalizer.lisp:L330-L330@sha256:747fad14d692",
+     "offset": 133563
+    }
+   ]
+  },
+  {
+   "slot": 330,
+   "kind": "IDENTITY",
+   "old_target": "source/source-profile.lisp",
+   "new_target": "source/source-profile.lisp",
+   "old": [
+    {
+     "token": "source/source-profile.lisp:341-353",
+     "offset": 122739
+    }
+   ],
+   "new": [
+    {
+     "token": "source/source-profile.lisp:L341-L353@sha256:3a7df8a07d26",
+     "offset": 133741
+    }
+   ]
+  },
+  {
+   "slot": 331,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-knowledge.lisp",
+   "new_target": "source/legal-knowledge.lisp",
+   "old": [
+    {
+     "token": "source/legal-knowledge.lisp:68-77",
+     "offset": 123020
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-knowledge.lisp:L68-L77@sha256:d0c50f4e981e",
+     "offset": 134044
+    }
+   ]
+  },
+  {
+   "slot": 332,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-deontic.lisp",
+   "new_target": "source/legal-deontic.lisp",
+   "old": [
+    {
+     "token": "source/legal-deontic.lisp:113-141",
+     "offset": 123116
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-deontic.lisp:L113-L141@sha256:3b584b2845ae",
+     "offset": 134162
+    }
+   ]
+  },
+  {
+   "slot": 333,
+   "kind": "IDENTITY",
+   "old_target": "source/narrative-provenance.lisp",
+   "new_target": "source/narrative-provenance.lisp",
+   "old": [
+    {
+     "token": "source/narrative-provenance.lisp:907-930",
+     "offset": 123293
+    }
+   ],
+   "new": [
+    {
+     "token": "source/narrative-provenance.lisp:L907-L930@sha256:bb5aaa7b01a0",
+     "offset": 134361
+    }
+   ]
+  },
+  {
+   "slot": 334,
+   "kind": "IDENTITY",
+   "old_target": "source/semantic-authority.lisp",
+   "new_target": "source/semantic-authority.lisp",
+   "old": [
+    {
+     "token": "source/semantic-authority.lisp:730-754",
+     "offset": 123373
+    }
+   ],
+   "new": [
+    {
+     "token": "source/semantic-authority.lisp:L730-L754@sha256:3b7ab18ddb0a",
+     "offset": 134463
+    }
+   ]
+  },
+  {
+   "slot": 335,
+   "kind": "IDENTITY",
+   "old_target": "source/rdfs-inference.lisp",
+   "new_target": "source/rdfs-inference.lisp",
+   "old": [
+    {
+     "token": "source/rdfs-inference.lisp:283-431",
+     "offset": 123517
+    }
+   ],
+   "new": [
+    {
+     "token": "source/rdfs-inference.lisp:L283-L431@sha256:cc47768ad655",
+     "offset": 134629
+    }
+   ]
+  },
+  {
+   "slot": 336,
+   "kind": "IDENTITY",
+   "old_target": "source/reasoning-authority.lisp",
+   "new_target": "source/reasoning-authority.lisp",
+   "old": [
+    {
+     "token": "source/reasoning-authority.lisp:417-480",
+     "offset": 123627
+    }
+   ],
+   "new": [
+    {
+     "token": "source/reasoning-authority.lisp:L417-L480@sha256:c4da9cef6085",
+     "offset": 134761
+    }
+   ]
+  },
+  {
+   "slot": 337,
+   "kind": "IDENTITY",
+   "old_target": "source/ai-ingest-manifest.lisp",
+   "new_target": "source/ai-ingest-manifest.lisp",
+   "old": [
+    {
+     "token": "source/ai-ingest-manifest.lisp:30-38",
+     "offset": 123810
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ai-ingest-manifest.lisp:L30-L38@sha256:60194efad04d",
+     "offset": 134966
+    }
+   ]
+  },
+  {
+   "slot": 338,
+   "kind": "EXPANSION",
+   "old_target": "source/narrative-provenance.lisp",
+   "new_target": "source/narrative-provenance.lisp",
+   "old": [
+    {
+     "token": "source/narrative-provenance.lisp:32-34,76",
+     "offset": 123922
+    }
+   ],
+   "new": [
+    {
+     "token": "source/narrative-provenance.lisp:L32-L34@sha256:bb5aaa7b01a0",
+     "offset": 135100
+    },
+    {
+     "token": "source/narrative-provenance.lisp:L76-L76@sha256:bb5aaa7b01a0",
+     "offset": 135161
+    }
+   ]
+  },
+  {
+   "slot": 339,
+   "kind": "EXPANSION",
+   "old_target": "source/ai-citation-strategy.lisp",
+   "new_target": "source/ai-citation-strategy.lisp",
+   "old": [
+    {
+     "token": "source/ai-citation-strategy.lisp:31-33,389",
+     "offset": 123987
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ai-citation-strategy.lisp:L31-L33@sha256:af9cd72d5bf2",
+     "offset": 135245
+    },
+    {
+     "token": "source/ai-citation-strategy.lisp:L389-L389@sha256:af9cd72d5bf2",
+     "offset": 135306
+    }
+   ]
+  },
+  {
+   "slot": 340,
+   "kind": "IDENTITY",
+   "old_target": "source/semantic-versioning-system.lisp",
+   "new_target": "source/semantic-versioning-system.lisp",
+   "old": [
+    {
+     "token": "source/semantic-versioning-system.lisp:43",
+     "offset": 124053
+    }
+   ],
+   "new": [
+    {
+     "token": "source/semantic-versioning-system.lisp:L43-L43@sha256:14fe14638ea7",
+     "offset": 135392
+    }
+   ]
+  },
+  {
+   "slot": 341,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-audit-system.lisp",
+   "new_target": "source/legal-audit-system.lisp",
+   "old": [
+    {
+     "token": "source/legal-audit-system.lisp:780-787",
+     "offset": 124189
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-audit-system.lisp:L780-L787@sha256:53613cdd00f0",
+     "offset": 135553
+    }
+   ]
+  },
+  {
+   "slot": 342,
+   "kind": "IDENTITY",
+   "old_target": "source/eu-interop-layer.lisp",
+   "new_target": "source/eu-interop-layer.lisp",
+   "old": [
+    {
+     "token": "source/eu-interop-layer.lisp:381-387",
+     "offset": 124273
+    }
+   ],
+   "new": [
+    {
+     "token": "source/eu-interop-layer.lisp:L381-L387@sha256:a3807069a264",
+     "offset": 135659
+    }
+   ]
+  },
+  {
+   "slot": 343,
+   "kind": "IDENTITY",
+   "old_target": "source/static-site.lisp",
+   "new_target": "source/static-site.lisp",
+   "old": [
+    {
+     "token": "source/static-site.lisp:61-68",
+     "offset": 124389
+    }
+   ],
+   "new": [
+    {
+     "token": "source/static-site.lisp:L61-L68@sha256:7493c7a7dc89",
+     "offset": 135797
+    }
+   ]
+  },
+  {
+   "slot": 344,
+   "kind": "IDENTITY",
+   "old_target": "source/akoma-ntoso-emitter.lisp",
+   "new_target": "source/akoma-ntoso-emitter.lisp",
+   "old": [
+    {
+     "token": "source/akoma-ntoso-emitter.lisp:46-63",
+     "offset": 124448
+    }
+   ],
+   "new": [
+    {
+     "token": "source/akoma-ntoso-emitter.lisp:L46-L63@sha256:650a0e0fe875",
+     "offset": 135878
+    }
+   ]
+  },
+  {
+   "slot": 345,
+   "kind": "IDENTITY",
+   "old_target": "source/sparql-endpoint.lisp",
+   "new_target": "source/sparql-endpoint.lisp",
+   "old": [
+    {
+     "token": "source/sparql-endpoint.lisp:576-600",
+     "offset": 124547
+    }
+   ],
+   "new": [
+    {
+     "token": "source/sparql-endpoint.lisp:L576-L600@sha256:8528099d891a",
+     "offset": 135999
+    }
+   ]
+  }
+ ]
+}

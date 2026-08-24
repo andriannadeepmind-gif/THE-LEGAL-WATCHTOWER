@@ -1,0 +1,3086 @@
+{
+ "source": "harness.sexp",
+ "source_sha256": "9ddd1820acf40205c1256bccac8c8d689e1683ae7512566168df4ae302237ea9",
+ "target": "harness-rev2.sexp",
+ "target_sha256": "8e5910f4dc6d328410cc5e72d4bbe4004f19656678215f6653756c9c2919eb9e",
+ "derivation": "ΠΑΡΑΤΗΡΟΥΜΕΝΗ ΔΙΑΦΟΡΑ ΤΩΝ ΔΥΟ ΑΡΧΕΙΩΝ — ΟΧΙ έξοδος του εργαλείου που έκανε τη μετάβαση",
+ "skeleton_slots": 163,
+ "old_tokens": 163,
+ "new_tokens": 196,
+ "kinds": {
+  "IDENTITY": 134,
+  "EXPANSION": 29,
+  "PREFIX": 0
+ },
+ "target_substitutions": 0,
+ "reorderings": 0,
+ "losses": 0,
+ "mapping": [
+  {
+   "slot": 0,
+   "kind": "IDENTITY",
+   "old_target": "docker/run-standalone-suites.sh",
+   "new_target": "docker/run-standalone-suites.sh",
+   "old": [
+    {
+     "token": "docker/run-standalone-suites.sh:L53-102",
+     "offset": 4733
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/run-standalone-suites.sh:L53-L102@sha256:1635612e4ce1",
+     "offset": 4733
+    }
+   ]
+  },
+  {
+   "slot": 1,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L195-207",
+     "offset": 5553
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L195-L207@sha256:e7791538ff71",
+     "offset": 5574
+    }
+   ]
+  },
+  {
+   "slot": 2,
+   "kind": "IDENTITY",
+   "old_target": "docker/standalone-suite-exclusions.txt",
+   "new_target": "docker/standalone-suite-exclusions.txt",
+   "old": [
+    {
+     "token": "docker/standalone-suite-exclusions.txt:L36-43",
+     "offset": 5596
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/standalone-suite-exclusions.txt:L36-L43@sha256:c77601c33ea3",
+     "offset": 5638
+    }
+   ]
+  },
+  {
+   "slot": 3,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L221-236",
+     "offset": 6385
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L221-L236@sha256:e7791538ff71",
+     "offset": 6448
+    }
+   ]
+  },
+  {
+   "slot": 4,
+   "kind": "IDENTITY",
+   "old_target": "docker/suite-census.txt",
+   "new_target": "docker/suite-census.txt",
+   "old": [
+    {
+     "token": "docker/suite-census.txt:L2-136",
+     "offset": 6428
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/suite-census.txt:L2-L136@sha256:2f1acb99c7b8",
+     "offset": 6512
+    }
+   ]
+  },
+  {
+   "slot": 5,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L95-119",
+     "offset": 7201
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L95-L119@sha256:e7791538ff71",
+     "offset": 7306
+    }
+   ]
+  },
+  {
+   "slot": 6,
+   "kind": "IDENTITY",
+   "old_target": "docker/verifier-census.txt",
+   "new_target": "docker/verifier-census.txt",
+   "old": [
+    {
+     "token": "docker/verifier-census.txt:L13-21",
+     "offset": 7243
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verifier-census.txt:L13-L21@sha256:fe17aedd2ab5",
+     "offset": 7369
+    }
+   ]
+  },
+  {
+   "slot": 7,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L177,L302",
+     "offset": 7279
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L177,L302",
+     "offset": 7426
+    }
+   ]
+  },
+  {
+   "slot": 8,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L197-221",
+     "offset": 7940
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L197-221",
+     "offset": 8087
+    }
+   ]
+  },
+  {
+   "slot": 9,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L316",
+     "offset": 7993
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L316",
+     "offset": 8140
+    }
+   ]
+  },
+  {
+   "slot": 10,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L129-150",
+     "offset": 8233
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L129-L150@sha256:e7791538ff71",
+     "offset": 8380
+    }
+   ]
+  },
+  {
+   "slot": 11,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L213-218",
+     "offset": 8276
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L213-218",
+     "offset": 8444
+    }
+   ]
+  },
+  {
+   "slot": 12,
+   "kind": "IDENTITY",
+   "old_target": "tests/reader-census-test.lisp",
+   "new_target": "tests/reader-census-test.lisp",
+   "old": [
+    {
+     "token": "tests/reader-census-test.lisp:L110-117",
+     "offset": 8298
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/reader-census-test.lisp:L110-L117@sha256:aa257ee2186e",
+     "offset": 8466
+    }
+   ]
+  },
+  {
+   "slot": 13,
+   "kind": "EXPANSION",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L121-125,L147-150",
+     "offset": 8896
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L121-L125@sha256:e7791538ff71",
+     "offset": 9085
+    },
+    {
+     "token": "docker/verify-proof-manifest.py:L147-L150@sha256:e7791538ff71",
+     "offset": 9147
+    }
+   ]
+  },
+  {
+   "slot": 14,
+   "kind": "EXPANSION",
+   "old_target": "tests/semantic-validity-test.lisp",
+   "new_target": "tests/semantic-validity-test.lisp",
+   "old": [
+    {
+     "token": "tests/semantic-validity-test.lisp:L139-140,L163-164",
+     "offset": 8948
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/semantic-validity-test.lisp:L139-L140@sha256:1308d9adb964",
+     "offset": 9211
+    },
+    {
+     "token": "tests/semantic-validity-test.lisp:L163-L164@sha256:1308d9adb964",
+     "offset": 9275
+    }
+   ]
+  },
+  {
+   "slot": 15,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L290",
+     "offset": 9640
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L290",
+     "offset": 9979
+    }
+   ]
+  },
+  {
+   "slot": 16,
+   "kind": "EXPANSION",
+   "old_target": "scripts/merkle-mutation-witness.sh",
+   "new_target": "scripts/merkle-mutation-witness.sh",
+   "old": [
+    {
+     "token": "scripts/merkle-mutation-witness.sh:L30-38,L51-57,L473-493",
+     "offset": 9947
+    }
+   ],
+   "new": [
+    {
+     "token": "scripts/merkle-mutation-witness.sh:L30-L38@sha256:a3e8052cd9b3",
+     "offset": 10286
+    },
+    {
+     "token": "scripts/merkle-mutation-witness.sh:L51-L57@sha256:a3e8052cd9b3",
+     "offset": 10349
+    },
+    {
+     "token": "scripts/merkle-mutation-witness.sh:L473-L493@sha256:a3e8052cd9b3",
+     "offset": 10412
+    }
+   ]
+  },
+  {
+   "slot": 17,
+   "kind": "IDENTITY",
+   "old_target": "docker/run-standalone-suites-test.sh",
+   "new_target": "docker/run-standalone-suites-test.sh",
+   "old": [
+    {
+     "token": "docker/run-standalone-suites-test.sh:L47-104",
+     "offset": 10956
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/run-standalone-suites-test.sh:L47-L104@sha256:2ca4ae49206a",
+     "offset": 11428
+    }
+   ]
+  },
+  {
+   "slot": 18,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest-test.py",
+   "new_target": "docker/verify-proof-manifest-test.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest-test.py:L132-231",
+     "offset": 11003
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest-test.py:L132-L231@sha256:e11e560e7518",
+     "offset": 11496
+    }
+   ]
+  },
+  {
+   "slot": 19,
+   "kind": "IDENTITY",
+   "old_target": ".github/workflows/docker-orchestrator.yml",
+   "new_target": ".github/workflows/docker-orchestrator.yml",
+   "old": [
+    {
+     "token": ".github/workflows/docker-orchestrator.yml:L52-109",
+     "offset": 11051
+    }
+   ],
+   "new": [
+    {
+     "token": ".github/workflows/docker-orchestrator.yml:L52-L109@sha256:f1a4bb69e6e4",
+     "offset": 11565
+    }
+   ]
+  },
+  {
+   "slot": 20,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L172-173",
+     "offset": 11489
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L172-173",
+     "offset": 12024
+    }
+   ]
+  },
+  {
+   "slot": 21,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L168-169",
+     "offset": 11513
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L168-L169@sha256:e7791538ff71",
+     "offset": 12048
+    }
+   ]
+  },
+  {
+   "slot": 22,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L169-173",
+     "offset": 11696
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L169-173",
+     "offset": 12252
+    }
+   ]
+  },
+  {
+   "slot": 23,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L168-169",
+     "offset": 11718
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L168-L169@sha256:e7791538ff71",
+     "offset": 12274
+    }
+   ]
+  },
+  {
+   "slot": 24,
+   "kind": "IDENTITY",
+   "old_target": "docker/run-standalone-suites.sh",
+   "new_target": "docker/run-standalone-suites.sh",
+   "old": [
+    {
+     "token": "docker/run-standalone-suites.sh:L25-103",
+     "offset": 12018
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/run-standalone-suites.sh:L25-L103@sha256:1635612e4ce1",
+     "offset": 12595
+    }
+   ]
+  },
+  {
+   "slot": 25,
+   "kind": "EXPANSION",
+   "old_target": "docker/standalone-suite-exclusions.txt",
+   "new_target": "docker/standalone-suite-exclusions.txt",
+   "old": [
+    {
+     "token": "docker/standalone-suite-exclusions.txt:L16,L36-43",
+     "offset": 12329
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/standalone-suite-exclusions.txt:L16-L16@sha256:c77601c33ea3",
+     "offset": 12927
+    },
+    {
+     "token": "docker/standalone-suite-exclusions.txt:L36-L43@sha256:c77601c33ea3",
+     "offset": 12994
+    }
+   ]
+  },
+  {
+   "slot": 26,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L316",
+     "offset": 12779
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L316",
+     "offset": 13461
+    }
+   ]
+  },
+  {
+   "slot": 27,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L159-290",
+     "offset": 12830
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L159-L290@sha256:e7791538ff71",
+     "offset": 13512
+    }
+   ]
+  },
+  {
+   "slot": 28,
+   "kind": "IDENTITY",
+   "old_target": "source/deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "source/deterministic-time.lisp:L206-220",
+     "offset": 13179
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:L206-L220@sha256:6dbda9c2fc1c",
+     "offset": 13882
+    }
+   ]
+  },
+  {
+   "slot": 29,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L61-64",
+     "offset": 13221
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L61-64",
+     "offset": 13945
+    }
+   ]
+  },
+  {
+   "slot": 30,
+   "kind": "IDENTITY",
+   "old_target": "source/paths.lisp",
+   "new_target": "source/paths.lisp",
+   "old": [
+    {
+     "token": "source/paths.lisp:L108-129",
+     "offset": 13564
+    }
+   ],
+   "new": [
+    {
+     "token": "source/paths.lisp:L108-L129@sha256:1eba7353aca4",
+     "offset": 14288
+    }
+   ]
+  },
+  {
+   "slot": 31,
+   "kind": "IDENTITY",
+   "old_target": "tests/graph-import-parity-test.lisp",
+   "new_target": "tests/graph-import-parity-test.lisp",
+   "old": [
+    {
+     "token": "tests/graph-import-parity-test.lisp:L27-30",
+     "offset": 13593
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/graph-import-parity-test.lisp:L27-L30@sha256:59bf40b4b122",
+     "offset": 14338
+    }
+   ]
+  },
+  {
+   "slot": 32,
+   "kind": "IDENTITY",
+   "old_target": "tests/level7-disarm-test.lisp",
+   "new_target": "tests/level7-disarm-test.lisp",
+   "old": [
+    {
+     "token": "tests/level7-disarm-test.lisp:L141",
+     "offset": 13872
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/level7-disarm-test.lisp:L141-L141@sha256:4b36181796c5",
+     "offset": 14638
+    }
+   ]
+  },
+  {
+   "slot": 33,
+   "kind": "IDENTITY",
+   "old_target": "tests/transparency-log-test.lisp",
+   "new_target": "tests/transparency-log-test.lisp",
+   "old": [
+    {
+     "token": "tests/transparency-log-test.lisp:L79",
+     "offset": 13909
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/transparency-log-test.lisp:L79-L79@sha256:d898803ebf34",
+     "offset": 14700
+    }
+   ]
+  },
+  {
+   "slot": 34,
+   "kind": "EXPANSION",
+   "old_target": "scripts/verify-runtime-closure.sh",
+   "new_target": "scripts/verify-runtime-closure.sh",
+   "old": [
+    {
+     "token": "scripts/verify-runtime-closure.sh:L18,L24,L127-138",
+     "offset": 14203
+    }
+   ],
+   "new": [
+    {
+     "token": "scripts/verify-runtime-closure.sh:L18-L18@sha256:85336a78b612",
+     "offset": 15018
+    },
+    {
+     "token": "scripts/verify-runtime-closure.sh:L24-L24@sha256:85336a78b612",
+     "offset": 15080
+    },
+    {
+     "token": "scripts/verify-runtime-closure.sh:L127-L138@sha256:85336a78b612",
+     "offset": 15142
+    }
+   ]
+  },
+  {
+   "slot": 35,
+   "kind": "IDENTITY",
+   "old_target": "docker/run-standalone-suites.sh",
+   "new_target": "docker/run-standalone-suites.sh",
+   "old": [
+    {
+     "token": "docker/run-standalone-suites.sh:L53-57",
+     "offset": 14448
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/run-standalone-suites.sh:L53-L57@sha256:1635612e4ce1",
+     "offset": 15400
+    }
+   ]
+  },
+  {
+   "slot": 36,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L209-236",
+     "offset": 14489
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L209-L236@sha256:e7791538ff71",
+     "offset": 15462
+    }
+   ]
+  },
+  {
+   "slot": 37,
+   "kind": "EXPANSION",
+   "old_target": "docker/run-standalone-suites.sh",
+   "new_target": "docker/run-standalone-suites.sh",
+   "old": [
+    {
+     "token": "docker/run-standalone-suites.sh:L55-57,L100-102",
+     "offset": 14661
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/run-standalone-suites.sh:L55-L57@sha256:1635612e4ce1",
+     "offset": 15655
+    },
+    {
+     "token": "docker/run-standalone-suites.sh:L100-L102@sha256:1635612e4ce1",
+     "offset": 15715
+    }
+   ]
+  },
+  {
+   "slot": 38,
+   "kind": "IDENTITY",
+   "old_target": "docker/run-standalone-suites.sh",
+   "new_target": "docker/run-standalone-suites.sh",
+   "old": [
+    {
+     "token": "docker/run-standalone-suites.sh:L64-74",
+     "offset": 14852
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/run-standalone-suites.sh:L64-L74@sha256:1635612e4ce1",
+     "offset": 15920
+    }
+   ]
+  },
+  {
+   "slot": 39,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L195-207",
+     "offset": 15033
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L195-L207@sha256:e7791538ff71",
+     "offset": 16122
+    }
+   ]
+  },
+  {
+   "slot": 40,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L251-257",
+     "offset": 15237
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L251-L257@sha256:e7791538ff71",
+     "offset": 16347
+    }
+   ]
+  },
+  {
+   "slot": 41,
+   "kind": "EXPANSION",
+   "old_target": "scripts/merkle-mutation-witness.sh",
+   "new_target": "scripts/merkle-mutation-witness.sh",
+   "old": [
+    {
+     "token": "scripts/merkle-mutation-witness.sh:L51-57,L489-493",
+     "offset": 15433
+    }
+   ],
+   "new": [
+    {
+     "token": "scripts/merkle-mutation-witness.sh:L51-L57@sha256:a3e8052cd9b3",
+     "offset": 16564
+    },
+    {
+     "token": "scripts/merkle-mutation-witness.sh:L489-L493@sha256:a3e8052cd9b3",
+     "offset": 16627
+    }
+   ]
+  },
+  {
+   "slot": 42,
+   "kind": "IDENTITY",
+   "old_target": "scripts/merkle-mutation-witness.sh",
+   "new_target": "scripts/merkle-mutation-witness.sh",
+   "old": [
+    {
+     "token": "scripts/merkle-mutation-witness.sh:L479-488",
+     "offset": 15622
+    }
+   ],
+   "new": [
+    {
+     "token": "scripts/merkle-mutation-witness.sh:L479-L488@sha256:a3e8052cd9b3",
+     "offset": 16830
+    }
+   ]
+  },
+  {
+   "slot": 43,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L320-326,L414",
+     "offset": 15829
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L320-326,L414",
+     "offset": 17058
+    }
+   ]
+  },
+  {
+   "slot": 44,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L302",
+     "offset": 16002
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L302",
+     "offset": 17231
+    }
+   ]
+  },
+  {
+   "slot": 45,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L100",
+     "offset": 16057
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L100-L100@sha256:e7791538ff71",
+     "offset": 17286
+    }
+   ]
+  },
+  {
+   "slot": 46,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L177",
+     "offset": 16131
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L177",
+     "offset": 17385
+    }
+   ]
+  },
+  {
+   "slot": 47,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L177",
+     "offset": 16533
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L177",
+     "offset": 17787
+    }
+   ]
+  },
+  {
+   "slot": 48,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L302",
+     "offset": 16551
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L302",
+     "offset": 17805
+    }
+   ]
+  },
+  {
+   "slot": 49,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L95-119",
+     "offset": 16569
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L95-L119@sha256:e7791538ff71",
+     "offset": 17823
+    }
+   ]
+  },
+  {
+   "slot": 50,
+   "kind": "IDENTITY",
+   "old_target": "tests/proof-carrying-test.lisp",
+   "new_target": "tests/proof-carrying-test.lisp",
+   "old": [
+    {
+     "token": "tests/proof-carrying-test.lisp:L179-182",
+     "offset": 16725
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/proof-carrying-test.lisp:L179-L182@sha256:9b82147539a8",
+     "offset": 18000
+    }
+   ]
+  },
+  {
+   "slot": 51,
+   "kind": "IDENTITY",
+   "old_target": "tests/merkle-single-truth-test.lisp",
+   "new_target": "tests/merkle-single-truth-test.lisp",
+   "old": [
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L510-513",
+     "offset": 16849
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L510-L513@sha256:c38cbb174e51",
+     "offset": 18145
+    }
+   ]
+  },
+  {
+   "slot": 52,
+   "kind": "IDENTITY",
+   "old_target": "source/proof-carrying.lisp",
+   "new_target": "source/proof-carrying.lisp",
+   "old": [
+    {
+     "token": "source/proof-carrying.lisp:L177",
+     "offset": 17021
+    }
+   ],
+   "new": [
+    {
+     "token": "source/proof-carrying.lisp:L177-L177@sha256:c18f7ddb07b1",
+     "offset": 18338
+    }
+   ]
+  },
+  {
+   "slot": 53,
+   "kind": "IDENTITY",
+   "old_target": "tests/proof-carrying-test.lisp",
+   "new_target": "tests/proof-carrying-test.lisp",
+   "old": [
+    {
+     "token": "tests/proof-carrying-test.lisp:L179-182",
+     "offset": 17441
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/proof-carrying-test.lisp:L179-L182@sha256:9b82147539a8",
+     "offset": 18783
+    }
+   ]
+  },
+  {
+   "slot": 54,
+   "kind": "IDENTITY",
+   "old_target": "tests/merkle-single-truth-test.lisp",
+   "new_target": "tests/merkle-single-truth-test.lisp",
+   "old": [
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L510-513",
+     "offset": 17483
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L510-L513@sha256:c38cbb174e51",
+     "offset": 18846
+    }
+   ]
+  },
+  {
+   "slot": 55,
+   "kind": "IDENTITY",
+   "old_target": "source/proof-carrying.lisp",
+   "new_target": "source/proof-carrying.lisp",
+   "old": [
+    {
+     "token": "source/proof-carrying.lisp:L175-183",
+     "offset": 17530
+    }
+   ],
+   "new": [
+    {
+     "token": "source/proof-carrying.lisp:L175-L183@sha256:c18f7ddb07b1",
+     "offset": 18914
+    }
+   ]
+  },
+  {
+   "slot": 56,
+   "kind": "IDENTITY",
+   "old_target": "tests/hash-seat-registry-test.lisp",
+   "new_target": "tests/hash-seat-registry-test.lisp",
+   "old": [
+    {
+     "token": "tests/hash-seat-registry-test.lisp:L110-116",
+     "offset": 18265
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/hash-seat-registry-test.lisp:L110-L116@sha256:8b49b0868174",
+     "offset": 19670
+    }
+   ]
+  },
+  {
+   "slot": 57,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/hash-seat-registry.sexp",
+   "new_target": "deployment/verify/hash-seat-registry.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/hash-seat-registry.sexp:L36",
+     "offset": 18311
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/hash-seat-registry.sexp:L36-L36@sha256:04caae1483d2",
+     "offset": 19737
+    }
+   ]
+  },
+  {
+   "slot": 58,
+   "kind": "EXPANSION",
+   "old_target": "tests/merkle-single-truth-test.lisp",
+   "new_target": "tests/merkle-single-truth-test.lisp",
+   "old": [
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L519-533,L553-560",
+     "offset": 19041
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L519-L533@sha256:c38cbb174e51",
+     "offset": 20491
+    },
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L553-L560@sha256:c38cbb174e51",
+     "offset": 20557
+    }
+   ]
+  },
+  {
+   "slot": 59,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-epistemic/transparency-log.lisp",
+   "new_target": "systems/orchestrator-epistemic/transparency-log.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/transparency-log.lisp:L117-132,L134-149",
+     "offset": 19097
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/transparency-log.lisp:L117-L132@sha256:00dd41938b0e",
+     "offset": 20625
+    },
+    {
+     "token": "systems/orchestrator-epistemic/transparency-log.lisp:L134-L149@sha256:00dd41938b0e",
+     "offset": 20708
+    }
+   ]
+  },
+  {
+   "slot": 60,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L2214-2216",
+     "offset": 19328
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L2214-L2216@sha256:8cf601f197ad",
+     "offset": 20951
+    }
+   ]
+  },
+  {
+   "slot": 61,
+   "kind": "IDENTITY",
+   "old_target": "tests/mcp-live-resolver-test.lisp",
+   "new_target": "tests/mcp-live-resolver-test.lisp",
+   "old": [
+    {
+     "token": "tests/mcp-live-resolver-test.lisp:L6",
+     "offset": 20032
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/mcp-live-resolver-test.lisp:L6-L6@sha256:134a575d8401",
+     "offset": 21676
+    }
+   ]
+  },
+  {
+   "slot": 62,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L2214-2216",
+     "offset": 20071
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L2214-L2216@sha256:8cf601f197ad",
+     "offset": 21738
+    }
+   ]
+  },
+  {
+   "slot": 63,
+   "kind": "EXPANSION",
+   "old_target": "source/deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "source/deterministic-time.lisp:L164-176,L200-220",
+     "offset": 20119
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:L164-L176@sha256:6dbda9c2fc1c",
+     "offset": 21807
+    },
+    {
+     "token": "source/deterministic-time.lisp:L200-L220@sha256:6dbda9c2fc1c",
+     "offset": 21868
+    }
+   ]
+  },
+  {
+   "slot": 64,
+   "kind": "IDENTITY",
+   "old_target": "docker/run-standalone-test.lisp",
+   "new_target": "docker/run-standalone-test.lisp",
+   "old": [
+    {
+     "token": "docker/run-standalone-test.lisp:L13-46",
+     "offset": 20170
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/run-standalone-test.lisp:L13-L46@sha256:8ad5d9180e23",
+     "offset": 21931
+    }
+   ]
+  },
+  {
+   "slot": 65,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L61-64",
+     "offset": 20211
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L61-64",
+     "offset": 21993
+    }
+   ]
+  },
+  {
+   "slot": 66,
+   "kind": "EXPANSION",
+   "old_target": "tests/reader-census-test.lisp",
+   "new_target": "tests/reader-census-test.lisp",
+   "old": [
+    {
+     "token": "tests/reader-census-test.lisp:L78-81,L100-117",
+     "offset": 20846
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/reader-census-test.lisp:L78-L81@sha256:aa257ee2186e",
+     "offset": 22628
+    },
+    {
+     "token": "tests/reader-census-test.lisp:L100-L117@sha256:aa257ee2186e",
+     "offset": 22686
+    }
+   ]
+  },
+  {
+   "slot": 67,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L129-150",
+     "offset": 20894
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L129-L150@sha256:e7791538ff71",
+     "offset": 22748
+    }
+   ]
+  },
+  {
+   "slot": 68,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L79",
+     "offset": 20937
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L79",
+     "offset": 22812
+    }
+   ]
+  },
+  {
+   "slot": 69,
+   "kind": "EXPANSION",
+   "old_target": "tests/reader-census-test.lisp",
+   "new_target": "tests/reader-census-test.lisp",
+   "old": [
+    {
+     "token": "tests/reader-census-test.lisp:L3-11,L78-81",
+     "offset": 21557
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/reader-census-test.lisp:L3-L11@sha256:aa257ee2186e",
+     "offset": 23432
+    },
+    {
+     "token": "tests/reader-census-test.lisp:L78-L81@sha256:aa257ee2186e",
+     "offset": 23489
+    }
+   ]
+  },
+  {
+   "slot": 70,
+   "kind": "EXPANSION",
+   "old_target": "tests/hash-seat-registry-test.lisp",
+   "new_target": "tests/hash-seat-registry-test.lisp",
+   "old": [
+    {
+     "token": "tests/hash-seat-registry-test.lisp:L11-16,L83-87",
+     "offset": 21602
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/hash-seat-registry-test.lisp:L11-L16@sha256:8b49b0868174",
+     "offset": 23549
+    },
+    {
+     "token": "tests/hash-seat-registry-test.lisp:L83-L87@sha256:8b49b0868174",
+     "offset": 23612
+    }
+   ]
+  },
+  {
+   "slot": 71,
+   "kind": "EXPANSION",
+   "old_target": "tests/semantic-validity-test.lisp",
+   "new_target": "tests/semantic-validity-test.lisp",
+   "old": [
+    {
+     "token": "tests/semantic-validity-test.lisp:L139-140,L163-164",
+     "offset": 22257
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/semantic-validity-test.lisp:L139-L140@sha256:1308d9adb964",
+     "offset": 24281
+    },
+    {
+     "token": "tests/semantic-validity-test.lisp:L163-L164@sha256:1308d9adb964",
+     "offset": 24345
+    }
+   ]
+  },
+  {
+   "slot": 72,
+   "kind": "IDENTITY",
+   "old_target": "tests/temporal-verifier-test.lisp",
+   "new_target": "tests/temporal-verifier-test.lisp",
+   "old": [
+    {
+     "token": "tests/temporal-verifier-test.lisp:L238-244",
+     "offset": 22311
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/temporal-verifier-test.lisp:L238-L244@sha256:131ddd162dca",
+     "offset": 24411
+    }
+   ]
+  },
+  {
+   "slot": 73,
+   "kind": "EXPANSION",
+   "old_target": "tests/release-vector-conformance-test.lisp",
+   "new_target": "tests/release-vector-conformance-test.lisp",
+   "old": [
+    {
+     "token": "tests/release-vector-conformance-test.lisp:L10-11,L40-43",
+     "offset": 22356
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/release-vector-conformance-test.lisp:L10-L11@sha256:b50fbfded630",
+     "offset": 24477
+    },
+    {
+     "token": "tests/release-vector-conformance-test.lisp:L40-L43@sha256:b50fbfded630",
+     "offset": 24548
+    }
+   ]
+  },
+  {
+   "slot": 74,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L215",
+     "offset": 22415
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L215",
+     "offset": 24621
+    }
+   ]
+  },
+  {
+   "slot": 75,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L129-150",
+     "offset": 22433
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L129-L150@sha256:e7791538ff71",
+     "offset": 24639
+    }
+   ]
+  },
+  {
+   "slot": 76,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L200",
+     "offset": 22938
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L200",
+     "offset": 25165
+    }
+   ]
+  },
+  {
+   "slot": 77,
+   "kind": "IDENTITY",
+   "old_target": "tests/graph-import-parity-test.lisp",
+   "new_target": "tests/graph-import-parity-test.lisp",
+   "old": [
+    {
+     "token": "tests/graph-import-parity-test.lisp:L27-30",
+     "offset": 23243
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/graph-import-parity-test.lisp:L27-L30@sha256:59bf40b4b122",
+     "offset": 25470
+    }
+   ]
+  },
+  {
+   "slot": 78,
+   "kind": "IDENTITY",
+   "old_target": "tests/legal-authority-receipt-test.lisp",
+   "new_target": "tests/legal-authority-receipt-test.lisp",
+   "old": [
+    {
+     "token": "tests/legal-authority-receipt-test.lisp:L26-29",
+     "offset": 23288
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/legal-authority-receipt-test.lisp:L26-L29@sha256:1deee843f6d6",
+     "offset": 25536
+    }
+   ]
+  },
+  {
+   "slot": 79,
+   "kind": "IDENTITY",
+   "old_target": "source/version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "source/version-graph.lisp:L441-444",
+     "offset": 23337
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:L441-L444@sha256:d6b181de2ad1",
+     "offset": 25606
+    }
+   ]
+  },
+  {
+   "slot": 80,
+   "kind": "IDENTITY",
+   "old_target": "source/paths.lisp",
+   "new_target": "source/paths.lisp",
+   "old": [
+    {
+     "token": "source/paths.lisp:L108-129",
+     "offset": 23374
+    }
+   ],
+   "new": [
+    {
+     "token": "source/paths.lisp:L108-L129@sha256:1eba7353aca4",
+     "offset": 25664
+    }
+   ]
+  },
+  {
+   "slot": 81,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L189,L200-201",
+     "offset": 23403
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L189,L200-201",
+     "offset": 25714
+    }
+   ]
+  },
+  {
+   "slot": 82,
+   "kind": "EXPANSION",
+   "old_target": "docker/run-standalone-suites.sh",
+   "new_target": "docker/run-standalone-suites.sh",
+   "old": [
+    {
+     "token": "docker/run-standalone-suites.sh:L53-54,L77-92",
+     "offset": 24251
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/run-standalone-suites.sh:L53-L54@sha256:1635612e4ce1",
+     "offset": 26562
+    },
+    {
+     "token": "docker/run-standalone-suites.sh:L77-L92@sha256:1635612e4ce1",
+     "offset": 26622
+    }
+   ]
+  },
+  {
+   "slot": 83,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/version-graph-import.lisp",
+   "new_target": "systems/orchestrator-cli/version-graph-import.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/version-graph-import.lisp:L71-77",
+     "offset": 24299
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/version-graph-import.lisp:L71-L77@sha256:5bb8ec538886",
+     "offset": 26684
+    }
+   ]
+  },
+  {
+   "slot": 84,
+   "kind": "IDENTITY",
+   "old_target": "tests/graph-import-parity-test.lisp",
+   "new_target": "tests/graph-import-parity-test.lisp",
+   "old": [
+    {
+     "token": "tests/graph-import-parity-test.lisp:L26-30",
+     "offset": 24359
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/graph-import-parity-test.lisp:L26-L30@sha256:59bf40b4b122",
+     "offset": 26765
+    }
+   ]
+  },
+  {
+   "slot": 85,
+   "kind": "IDENTITY",
+   "old_target": "tests/legal-authority-receipt-test.lisp",
+   "new_target": "tests/legal-authority-receipt-test.lisp",
+   "old": [
+    {
+     "token": "tests/legal-authority-receipt-test.lisp:L25-30",
+     "offset": 24404
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/legal-authority-receipt-test.lisp:L25-L30@sha256:1deee843f6d6",
+     "offset": 26831
+    }
+   ]
+  },
+  {
+   "slot": 86,
+   "kind": "EXPANSION",
+   "old_target": "docker/verify-proof-manifest-test.py",
+   "new_target": "docker/verify-proof-manifest-test.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest-test.py:L11,L86,L107-110",
+     "offset": 25123
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest-test.py:L11-L11@sha256:e11e560e7518",
+     "offset": 27571
+    },
+    {
+     "token": "docker/verify-proof-manifest-test.py:L86-L86@sha256:e11e560e7518",
+     "offset": 27636
+    },
+    {
+     "token": "docker/verify-proof-manifest-test.py:L107-L110@sha256:e11e560e7518",
+     "offset": 27701
+    }
+   ]
+  },
+  {
+   "slot": 87,
+   "kind": "EXPANSION",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L129-150,L261-282",
+     "offset": 25179
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L129-L150@sha256:e7791538ff71",
+     "offset": 27770
+    },
+    {
+     "token": "docker/verify-proof-manifest.py:L261-L282@sha256:e7791538ff71",
+     "offset": 27832
+    }
+   ]
+  },
+  {
+   "slot": 88,
+   "kind": "IDENTITY",
+   "old_target": "tests/level7-disarm-test.lisp",
+   "new_target": "tests/level7-disarm-test.lisp",
+   "old": [
+    {
+     "token": "tests/level7-disarm-test.lisp:L134-143",
+     "offset": 25674
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/level7-disarm-test.lisp:L134-L143@sha256:4b36181796c5",
+     "offset": 28339
+    }
+   ]
+  },
+  {
+   "slot": 89,
+   "kind": "EXPANSION",
+   "old_target": "tests/merkle-single-truth-test.lisp",
+   "new_target": "tests/merkle-single-truth-test.lisp",
+   "old": [
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L524,L553-560",
+     "offset": 26225
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L524-L524@sha256:c38cbb174e51",
+     "offset": 28911
+    },
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L553-L560@sha256:c38cbb174e51",
+     "offset": 28977
+    }
+   ]
+  },
+  {
+   "slot": 90,
+   "kind": "IDENTITY",
+   "old_target": "tests/hash-seat-registry-test.lisp",
+   "new_target": "tests/hash-seat-registry-test.lisp",
+   "old": [
+    {
+     "token": "tests/hash-seat-registry-test.lisp:L138-141",
+     "offset": 26578
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/hash-seat-registry-test.lisp:L138-L141@sha256:8b49b0868174",
+     "offset": 29346
+    }
+   ]
+  },
+  {
+   "slot": 91,
+   "kind": "EXPANSION",
+   "old_target": "tests/merkle-single-truth-test.lisp",
+   "new_target": "tests/merkle-single-truth-test.lisp",
+   "old": [
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L523-525,L562-565",
+     "offset": 26882
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L523-L525@sha256:c38cbb174e51",
+     "offset": 29671
+    },
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L562-L565@sha256:c38cbb174e51",
+     "offset": 29737
+    }
+   ]
+  },
+  {
+   "slot": 92,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L129-150",
+     "offset": 27389
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L129-L150@sha256:e7791538ff71",
+     "offset": 30256
+    }
+   ]
+  },
+  {
+   "slot": 93,
+   "kind": "IDENTITY",
+   "old_target": "tests/reader-census-test.lisp",
+   "new_target": "tests/reader-census-test.lisp",
+   "old": [
+    {
+     "token": "tests/reader-census-test.lisp:L110-117",
+     "offset": 27432
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/reader-census-test.lisp:L110-L117@sha256:aa257ee2186e",
+     "offset": 30320
+    }
+   ]
+  },
+  {
+   "slot": 94,
+   "kind": "EXPANSION",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L261-282,L292-295",
+     "offset": 27795
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L261-L282@sha256:e7791538ff71",
+     "offset": 30704
+    },
+    {
+     "token": "docker/verify-proof-manifest.py:L292-L295@sha256:e7791538ff71",
+     "offset": 30766
+    }
+   ]
+  },
+  {
+   "slot": 95,
+   "kind": "EXPANSION",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L170-173,L261-282",
+     "offset": 28242
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L170-L173@sha256:e7791538ff71",
+     "offset": 31225
+    },
+    {
+     "token": "docker/verify-proof-manifest.py:L261-L282@sha256:e7791538ff71",
+     "offset": 31287
+    }
+   ]
+  },
+  {
+   "slot": 96,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L200-201",
+     "offset": 28294
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L200-201",
+     "offset": 31351
+    }
+   ]
+  },
+  {
+   "slot": 97,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L308",
+     "offset": 28846
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L308",
+     "offset": 31903
+    }
+   ]
+  },
+  {
+   "slot": 98,
+   "kind": "EXPANSION",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L85-87,L89-95",
+     "offset": 28892
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L85-L87@sha256:e7791538ff71",
+     "offset": 31949
+    },
+    {
+     "token": "docker/verify-proof-manifest.py:L89-L95@sha256:e7791538ff71",
+     "offset": 32009
+    }
+   ]
+  },
+  {
+   "slot": 99,
+   "kind": "EXPANSION",
+   "old_target": "docker/verify-proof-manifest-test.py",
+   "new_target": "docker/verify-proof-manifest-test.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest-test.py:L18-25,L92",
+     "offset": 28940
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest-test.py:L18-L25@sha256:e11e560e7518",
+     "offset": 32071
+    },
+    {
+     "token": "docker/verify-proof-manifest-test.py:L92-L92@sha256:e11e560e7518",
+     "offset": 32136
+    }
+   ]
+  },
+  {
+   "slot": 100,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L308",
+     "offset": 28990
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L308",
+     "offset": 32203
+    }
+   ]
+  },
+  {
+   "slot": 101,
+   "kind": "IDENTITY",
+   "old_target": "tests/merkle-single-truth-test.lisp",
+   "new_target": "tests/merkle-single-truth-test.lisp",
+   "old": [
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L519-533",
+     "offset": 29509
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L519-L533@sha256:c38cbb174e51",
+     "offset": 32722
+    }
+   ]
+  },
+  {
+   "slot": 102,
+   "kind": "IDENTITY",
+   "old_target": "tests/reader-census-test.lisp",
+   "new_target": "tests/reader-census-test.lisp",
+   "old": [
+    {
+     "token": "tests/reader-census-test.lisp:L18-35",
+     "offset": 29556
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/reader-census-test.lisp:L18-L35@sha256:aa257ee2186e",
+     "offset": 32790
+    }
+   ]
+  },
+  {
+   "slot": 103,
+   "kind": "IDENTITY",
+   "old_target": "docker/verifier-census.txt",
+   "new_target": "docker/verifier-census.txt",
+   "old": [
+    {
+     "token": "docker/verifier-census.txt:L4-10",
+     "offset": 29595
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verifier-census.txt:L4-L10@sha256:fe17aedd2ab5",
+     "offset": 32850
+    }
+   ]
+  },
+  {
+   "slot": 104,
+   "kind": "IDENTITY",
+   "old_target": "scripts/verify-gate-5-validation.lisp",
+   "new_target": "scripts/verify-gate-5-validation.lisp",
+   "old": [
+    {
+     "token": "scripts/verify-gate-5-validation.lisp:L3-14",
+     "offset": 30185
+    }
+   ],
+   "new": [
+    {
+     "token": "scripts/verify-gate-5-validation.lisp:L3-L14@sha256:7284cbbdb42c",
+     "offset": 33461
+    }
+   ]
+  },
+  {
+   "slot": 105,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest-test.py",
+   "new_target": "docker/verify-proof-manifest-test.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest-test.py:L106-109",
+     "offset": 30231
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest-test.py:L106-L109@sha256:e11e560e7518",
+     "offset": 33528
+    }
+   ]
+  },
+  {
+   "slot": 106,
+   "kind": "IDENTITY",
+   "old_target": "docker/run-standalone-test.lisp",
+   "new_target": "docker/run-standalone-test.lisp",
+   "old": [
+    {
+     "token": "docker/run-standalone-test.lisp:L31-46",
+     "offset": 30763
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/run-standalone-test.lisp:L31-L46@sha256:8ad5d9180e23",
+     "offset": 34081
+    }
+   ]
+  },
+  {
+   "slot": 107,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L169-173",
+     "offset": 31175
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L169-173",
+     "offset": 34514
+    }
+   ]
+  },
+  {
+   "slot": 108,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L168-169",
+     "offset": 31197
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L168-L169@sha256:e7791538ff71",
+     "offset": 34536
+    }
+   ]
+  },
+  {
+   "slot": 109,
+   "kind": "EXPANSION",
+   "old_target": ".github/workflows/docker-orchestrator.yml",
+   "new_target": ".github/workflows/docker-orchestrator.yml",
+   "old": [
+    {
+     "token": ".github/workflows/docker-orchestrator.yml:L52-109,L114-115",
+     "offset": 31948
+    }
+   ],
+   "new": [
+    {
+     "token": ".github/workflows/docker-orchestrator.yml:L52-L109@sha256:f1a4bb69e6e4",
+     "offset": 35308
+    },
+    {
+     "token": ".github/workflows/docker-orchestrator.yml:L114-L115@sha256:f1a4bb69e6e4",
+     "offset": 35379
+    }
+   ]
+  },
+  {
+   "slot": 110,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L189-326",
+     "offset": 32009
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L189-326",
+     "offset": 35453
+    }
+   ]
+  },
+  {
+   "slot": 111,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L280",
+     "offset": 32298
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L280",
+     "offset": 35742
+    }
+   ]
+  },
+  {
+   "slot": 112,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L197-201,L279-281,L320-326",
+     "offset": 32637
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L197-201,L279-281,L320-326",
+     "offset": 36081
+    }
+   ]
+  },
+  {
+   "slot": 113,
+   "kind": "IDENTITY",
+   "old_target": "scripts/gen-merkle-truth.lisp",
+   "new_target": "scripts/gen-merkle-truth.lisp",
+   "old": [
+    {
+     "token": "scripts/gen-merkle-truth.lisp:L532-545",
+     "offset": 32677
+    }
+   ],
+   "new": [
+    {
+     "token": "scripts/gen-merkle-truth.lisp:L532-L545@sha256:01392374918b",
+     "offset": 36121
+    }
+   ]
+  },
+  {
+   "slot": 114,
+   "kind": "EXPANSION",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L76-78,L209-210",
+     "offset": 33031
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L76-L78@sha256:e7791538ff71",
+     "offset": 36496
+    },
+    {
+     "token": "docker/verify-proof-manifest.py:L209-L210@sha256:e7791538ff71",
+     "offset": 36556
+    }
+   ]
+  },
+  {
+   "slot": 115,
+   "kind": "IDENTITY",
+   "old_target": "deps.lock",
+   "new_target": "deps.lock",
+   "old": [
+    {
+     "token": "deps.lock:L23",
+     "offset": 33344
+    }
+   ],
+   "new": [
+    {
+     "token": "deps.lock:L23",
+     "offset": 36883
+    }
+   ]
+  },
+  {
+   "slot": 116,
+   "kind": "IDENTITY",
+   "old_target": "deps.lock",
+   "new_target": "deps.lock",
+   "old": [
+    {
+     "token": "deps.lock:L23",
+     "offset": 33529
+    }
+   ],
+   "new": [
+    {
+     "token": "deps.lock:L23",
+     "offset": 37068
+    }
+   ]
+  },
+  {
+   "slot": 117,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L202",
+     "offset": 33988
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L202",
+     "offset": 37527
+    }
+   ]
+  },
+  {
+   "slot": 118,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L269-276",
+     "offset": 34006
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L269-L276@sha256:e7791538ff71",
+     "offset": 37545
+    }
+   ]
+  },
+  {
+   "slot": 119,
+   "kind": "IDENTITY",
+   "old_target": "tests/graph-import-parity-test.lisp",
+   "new_target": "tests/graph-import-parity-test.lisp",
+   "old": [
+    {
+     "token": "tests/graph-import-parity-test.lisp:L26-30",
+     "offset": 34564
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/graph-import-parity-test.lisp:L26-L30@sha256:59bf40b4b122",
+     "offset": 38124
+    }
+   ]
+  },
+  {
+   "slot": 120,
+   "kind": "IDENTITY",
+   "old_target": "tests/legal-authority-receipt-test.lisp",
+   "new_target": "tests/legal-authority-receipt-test.lisp",
+   "old": [
+    {
+     "token": "tests/legal-authority-receipt-test.lisp:L25-29",
+     "offset": 34609
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/legal-authority-receipt-test.lisp:L25-L29@sha256:1deee843f6d6",
+     "offset": 38190
+    }
+   ]
+  },
+  {
+   "slot": 121,
+   "kind": "IDENTITY",
+   "old_target": "source/paths.lisp",
+   "new_target": "source/paths.lisp",
+   "old": [
+    {
+     "token": "source/paths.lisp:L108-129",
+     "offset": 34658
+    }
+   ],
+   "new": [
+    {
+     "token": "source/paths.lisp:L108-L129@sha256:1eba7353aca4",
+     "offset": 38260
+    }
+   ]
+  },
+  {
+   "slot": 122,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L189",
+     "offset": 34785
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L189",
+     "offset": 38408
+    }
+   ]
+  },
+  {
+   "slot": 123,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L200",
+     "offset": 34813
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L200",
+     "offset": 38436
+    }
+   ]
+  },
+  {
+   "slot": 124,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L189,L200-201",
+     "offset": 35059
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L189,L200-201",
+     "offset": 38682
+    }
+   ]
+  },
+  {
+   "slot": 125,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L170-173",
+     "offset": 35086
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L170-L173@sha256:e7791538ff71",
+     "offset": 38709
+    }
+   ]
+  },
+  {
+   "slot": 126,
+   "kind": "IDENTITY",
+   "old_target": "tests/reader-census-test.lisp",
+   "new_target": "tests/reader-census-test.lisp",
+   "old": [
+    {
+     "token": "tests/reader-census-test.lisp:L78-81",
+     "offset": 35391
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/reader-census-test.lisp:L78-L81@sha256:aa257ee2186e",
+     "offset": 39035
+    }
+   ]
+  },
+  {
+   "slot": 127,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L129-150",
+     "offset": 35430
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L129-L150@sha256:e7791538ff71",
+     "offset": 39095
+    }
+   ]
+  },
+  {
+   "slot": 128,
+   "kind": "IDENTITY",
+   "old_target": "tests/hash-seat-registry-test.lisp",
+   "new_target": "tests/hash-seat-registry-test.lisp",
+   "old": [
+    {
+     "token": "tests/hash-seat-registry-test.lisp:L18-23",
+     "offset": 35846
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/hash-seat-registry-test.lisp:L18-L23@sha256:8b49b0868174",
+     "offset": 39532
+    }
+   ]
+  },
+  {
+   "slot": 129,
+   "kind": "IDENTITY",
+   "old_target": "tests/architecture-multiplicity-test.lisp",
+   "new_target": "tests/architecture-multiplicity-test.lisp",
+   "old": [
+    {
+     "token": "tests/architecture-multiplicity-test.lisp:L15-20",
+     "offset": 35890
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/architecture-multiplicity-test.lisp:L15-L20@sha256:ca01fc897a50",
+     "offset": 39597
+    }
+   ]
+  },
+  {
+   "slot": 130,
+   "kind": "IDENTITY",
+   "old_target": "tests/json-emit-test.lisp",
+   "new_target": "tests/json-emit-test.lisp",
+   "old": [
+    {
+     "token": "tests/json-emit-test.lisp:L13",
+     "offset": 35941
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/json-emit-test.lisp:L13-L13@sha256:fe327c2700ea",
+     "offset": 39669
+    }
+   ]
+  },
+  {
+   "slot": 131,
+   "kind": "IDENTITY",
+   "old_target": "tests/param-type-roundtrip-test.lisp",
+   "new_target": "tests/param-type-roundtrip-test.lisp",
+   "old": [
+    {
+     "token": "tests/param-type-roundtrip-test.lisp:L23",
+     "offset": 35973
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/param-type-roundtrip-test.lisp:L23-L23@sha256:0f0cb5d87268",
+     "offset": 39725
+    }
+   ]
+  },
+  {
+   "slot": 132,
+   "kind": "IDENTITY",
+   "old_target": "tests/safe-read-test.lisp",
+   "new_target": "tests/safe-read-test.lisp",
+   "old": [
+    {
+     "token": "tests/safe-read-test.lisp:L12",
+     "offset": 36016
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/safe-read-test.lisp:L12-L12@sha256:6308c41d0968",
+     "offset": 39792
+    }
+   ]
+  },
+  {
+   "slot": 133,
+   "kind": "IDENTITY",
+   "old_target": "tests/review-queue-safe-read-test.lisp",
+   "new_target": "tests/review-queue-safe-read-test.lisp",
+   "old": [
+    {
+     "token": "tests/review-queue-safe-read-test.lisp:L20",
+     "offset": 36048
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/review-queue-safe-read-test.lisp:L20-L20@sha256:314c2de43aef",
+     "offset": 39848
+    }
+   ]
+  },
+  {
+   "slot": 134,
+   "kind": "IDENTITY",
+   "old_target": "tests/deps-hash-test.lisp",
+   "new_target": "tests/deps-hash-test.lisp",
+   "old": [
+    {
+     "token": "tests/deps-hash-test.lisp:L21-24",
+     "offset": 36093
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/deps-hash-test.lisp:L21-L24@sha256:2cb3d092b8b5",
+     "offset": 39917
+    }
+   ]
+  },
+  {
+   "slot": 135,
+   "kind": "IDENTITY",
+   "old_target": "tests/release-vector-conformance-test.lisp",
+   "new_target": "tests/release-vector-conformance-test.lisp",
+   "old": [
+    {
+     "token": "tests/release-vector-conformance-test.lisp:L40-43",
+     "offset": 36128
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/release-vector-conformance-test.lisp:L40-L43@sha256:b50fbfded630",
+     "offset": 39973
+    }
+   ]
+  },
+  {
+   "slot": 136,
+   "kind": "EXPANSION",
+   "old_target": "tests/semantic-validity-test.lisp",
+   "new_target": "tests/semantic-validity-test.lisp",
+   "old": [
+    {
+     "token": "tests/semantic-validity-test.lisp:L139-140,L163-164",
+     "offset": 36445
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/semantic-validity-test.lisp:L139-L140@sha256:1308d9adb964",
+     "offset": 40311
+    },
+    {
+     "token": "tests/semantic-validity-test.lisp:L163-L164@sha256:1308d9adb964",
+     "offset": 40375
+    }
+   ]
+  },
+  {
+   "slot": 137,
+   "kind": "IDENTITY",
+   "old_target": "tests/temporal-verifier-test.lisp",
+   "new_target": "tests/temporal-verifier-test.lisp",
+   "old": [
+    {
+     "token": "tests/temporal-verifier-test.lisp:L238-244",
+     "offset": 36499
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/temporal-verifier-test.lisp:L238-L244@sha256:131ddd162dca",
+     "offset": 40441
+    }
+   ]
+  },
+  {
+   "slot": 138,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L215",
+     "offset": 36544
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L215",
+     "offset": 40507
+    }
+   ]
+  },
+  {
+   "slot": 139,
+   "kind": "IDENTITY",
+   "old_target": "docker/run-standalone-test.lisp",
+   "new_target": "docker/run-standalone-test.lisp",
+   "old": [
+    {
+     "token": "docker/run-standalone-test.lisp:L41-46",
+     "offset": 36776
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/run-standalone-test.lisp:L41-L46@sha256:8ad5d9180e23",
+     "offset": 40739
+    }
+   ]
+  },
+  {
+   "slot": 140,
+   "kind": "EXPANSION",
+   "old_target": "docker/run-standalone-suites.sh",
+   "new_target": "docker/run-standalone-suites.sh",
+   "old": [
+    {
+     "token": "docker/run-standalone-suites.sh:L53-54,L77",
+     "offset": 37091
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/run-standalone-suites.sh:L53-L54@sha256:1635612e4ce1",
+     "offset": 41075
+    },
+    {
+     "token": "docker/run-standalone-suites.sh:L77-L77@sha256:1635612e4ce1",
+     "offset": 41135
+    }
+   ]
+  },
+  {
+   "slot": 141,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/version-graph-import.lisp",
+   "new_target": "systems/orchestrator-cli/version-graph-import.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/version-graph-import.lisp:L71-77",
+     "offset": 37136
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/version-graph-import.lisp:L71-L77@sha256:5bb8ec538886",
+     "offset": 41197
+    }
+   ]
+  },
+  {
+   "slot": 142,
+   "kind": "EXPANSION",
+   "old_target": "tests/cockpit-test.lisp",
+   "new_target": "tests/cockpit-test.lisp",
+   "old": [
+    {
+     "token": "tests/cockpit-test.lisp:L27,L187,L206",
+     "offset": 37440
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/cockpit-test.lisp:L27-L27@sha256:50cbe90db768",
+     "offset": 41522
+    },
+    {
+     "token": "tests/cockpit-test.lisp:L187-L187@sha256:50cbe90db768",
+     "offset": 41574
+    },
+    {
+     "token": "tests/cockpit-test.lisp:L206-L206@sha256:50cbe90db768",
+     "offset": 41628
+    }
+   ]
+  },
+  {
+   "slot": 143,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L280",
+     "offset": 37578
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L280",
+     "offset": 41782
+    }
+   ]
+  },
+  {
+   "slot": 144,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L279-281",
+     "offset": 37754
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L279-281",
+     "offset": 41958
+    }
+   ]
+  },
+  {
+   "slot": 145,
+   "kind": "IDENTITY",
+   "old_target": "scripts/gen-merkle-truth.lisp",
+   "new_target": "scripts/gen-merkle-truth.lisp",
+   "old": [
+    {
+     "token": "scripts/gen-merkle-truth.lisp:L532-545",
+     "offset": 37776
+    }
+   ],
+   "new": [
+    {
+     "token": "scripts/gen-merkle-truth.lisp:L532-L545@sha256:01392374918b",
+     "offset": 41980
+    }
+   ]
+  },
+  {
+   "slot": 146,
+   "kind": "IDENTITY",
+   "old_target": "tests/proof-carrying-test.lisp",
+   "new_target": "tests/proof-carrying-test.lisp",
+   "old": [
+    {
+     "token": "tests/proof-carrying-test.lisp:L179",
+     "offset": 37933
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/proof-carrying-test.lisp:L179-L179@sha256:9b82147539a8",
+     "offset": 42158
+    }
+   ]
+  },
+  {
+   "slot": 147,
+   "kind": "IDENTITY",
+   "old_target": "tests/merkle-single-truth-test.lisp",
+   "new_target": "tests/merkle-single-truth-test.lisp",
+   "old": [
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L510",
+     "offset": 37971
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L510-L510@sha256:c38cbb174e51",
+     "offset": 42221
+    }
+   ]
+  },
+  {
+   "slot": 148,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L85",
+     "offset": 38089
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L85-L85@sha256:e7791538ff71",
+     "offset": 42364
+    }
+   ]
+  },
+  {
+   "slot": 149,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old": [
+    {
+     "token": "Dockerfile:L308",
+     "offset": 38127
+    }
+   ],
+   "new": [
+    {
+     "token": "Dockerfile:L308",
+     "offset": 42426
+    }
+   ]
+  },
+  {
+   "slot": 150,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest-test.py",
+   "new_target": "docker/verify-proof-manifest-test.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest-test.py:L92",
+     "offset": 38145
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest-test.py:L92-L92@sha256:e11e560e7518",
+     "offset": 42444
+    }
+   ]
+  },
+  {
+   "slot": 151,
+   "kind": "IDENTITY",
+   "old_target": "docker/standalone-suite-exclusions.txt",
+   "new_target": "docker/standalone-suite-exclusions.txt",
+   "old": [
+    {
+     "token": "docker/standalone-suite-exclusions.txt:L16",
+     "offset": 38272
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/standalone-suite-exclusions.txt:L16-L16@sha256:c77601c33ea3",
+     "offset": 42595
+    }
+   ]
+  },
+  {
+   "slot": 152,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest.py",
+   "new_target": "docker/verify-proof-manifest.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest.py:L78",
+     "offset": 38317
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest.py:L78-L78@sha256:e7791538ff71",
+     "offset": 42664
+    }
+   ]
+  },
+  {
+   "slot": 153,
+   "kind": "IDENTITY",
+   "old_target": "source/deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "source/deterministic-time.lisp:L155",
+     "offset": 38440
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:L155-L155@sha256:6dbda9c2fc1c",
+     "offset": 42811
+    }
+   ]
+  },
+  {
+   "slot": 154,
+   "kind": "IDENTITY",
+   "old_target": "source/deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "source/deterministic-time.lisp:L164",
+     "offset": 38478
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:L164-L164@sha256:6dbda9c2fc1c",
+     "offset": 42874
+    }
+   ]
+  },
+  {
+   "slot": 155,
+   "kind": "IDENTITY",
+   "old_target": "tests/merkle-single-truth-test.lisp",
+   "new_target": "tests/merkle-single-truth-test.lisp",
+   "old": [
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L519",
+     "offset": 38794
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L519-L519@sha256:c38cbb174e51",
+     "offset": 43215
+    }
+   ]
+  },
+  {
+   "slot": 156,
+   "kind": "IDENTITY",
+   "old_target": "tests/reader-census-test.lisp",
+   "new_target": "tests/reader-census-test.lisp",
+   "old": [
+    {
+     "token": "tests/reader-census-test.lisp:L27",
+     "offset": 38837
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/reader-census-test.lisp:L27-L27@sha256:aa257ee2186e",
+     "offset": 43283
+    }
+   ]
+  },
+  {
+   "slot": 157,
+   "kind": "IDENTITY",
+   "old_target": "docker/standalone-suite-exclusions.txt",
+   "new_target": "docker/standalone-suite-exclusions.txt",
+   "old": [
+    {
+     "token": "docker/standalone-suite-exclusions.txt:L36",
+     "offset": 38960
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/standalone-suite-exclusions.txt:L36-L36@sha256:c77601c33ea3",
+     "offset": 43430
+    }
+   ]
+  },
+  {
+   "slot": 158,
+   "kind": "IDENTITY",
+   "old_target": "docker/verify-proof-manifest-test.py",
+   "new_target": "docker/verify-proof-manifest-test.py",
+   "old": [
+    {
+     "token": "docker/verify-proof-manifest-test.py:L43",
+     "offset": 39005
+    }
+   ],
+   "new": [
+    {
+     "token": "docker/verify-proof-manifest-test.py:L43-L43@sha256:e11e560e7518",
+     "offset": 43499
+    }
+   ]
+  },
+  {
+   "slot": 159,
+   "kind": "IDENTITY",
+   "old_target": "source/paths.lisp",
+   "new_target": "source/paths.lisp",
+   "old": [
+    {
+     "token": "source/paths.lisp:L108",
+     "offset": 39140
+    }
+   ],
+   "new": [
+    {
+     "token": "source/paths.lisp:L108-L108@sha256:1eba7353aca4",
+     "offset": 43658
+    }
+   ]
+  },
+  {
+   "slot": 160,
+   "kind": "IDENTITY",
+   "old_target": "tests/reader-census-test.lisp",
+   "new_target": "tests/reader-census-test.lisp",
+   "old": [
+    {
+     "token": "tests/reader-census-test.lisp:L80",
+     "offset": 39165
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/reader-census-test.lisp:L80-L80@sha256:aa257ee2186e",
+     "offset": 43708
+    }
+   ]
+  },
+  {
+   "slot": 161,
+   "kind": "IDENTITY",
+   "old_target": "tests/level7-disarm-test.lisp",
+   "new_target": "tests/level7-disarm-test.lisp",
+   "old": [
+    {
+     "token": "tests/level7-disarm-test.lisp:L141",
+     "offset": 39212
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/level7-disarm-test.lisp:L141-L141@sha256:4b36181796c5",
+     "offset": 43779
+    }
+   ]
+  },
+  {
+   "slot": 162,
+   "kind": "IDENTITY",
+   "old_target": "tests/merkle-single-truth-test.lisp",
+   "new_target": "tests/merkle-single-truth-test.lisp",
+   "old": [
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L30",
+     "offset": 39249
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/merkle-single-truth-test.lisp:L30-L30@sha256:c38cbb174e51",
+     "offset": 43841
+    }
+   ]
+  }
+ ]
+}

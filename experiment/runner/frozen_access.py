@@ -46,17 +46,15 @@ class _OpenHow(ctypes.Structure):
                 ("resolve", ctypes.c_uint64)]
 
 
-class AccessMode:
-    OPENAT2 = "openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS"
-    FALLBACK = "openat-chain/O_NOFOLLOW (ΑΣΘΕΝΕΣΤΕΡΟ — δηλώνεται)"
+class AccessBlocked(Exception):
+    """openat2 μη διαθέσιμο Ή flags μη τηρούμενα ⇒ BLOCKED, ΠΟΤΕ PASS."""
 
 
-_mode = None
+ACCESS_MECHANISM = ("openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS")
 
 
 def access_mode():
-    """Ποια υλοποίηση χρησιμοποιήθηκε πραγματικά — μπαίνει στα receipts."""
-    return _mode or AccessMode.OPENAT2
+    return ACCESS_MECHANISM
 
 
 def _openat2(dirfd, rel, flags):
@@ -64,45 +62,42 @@ def _openat2(dirfd, rel, flags):
     fd = _libc.syscall(SYS_openat2, dirfd, rel.encode("utf-8"),
                        ctypes.byref(how), ctypes.sizeof(how))
     if fd < 0:
-        raise OSError(ctypes.get_errno(), os.strerror(ctypes.get_errno()), rel)
+        e = ctypes.get_errno()
+        if e == 38:                                    # ENOSYS
+            raise AccessBlocked(
+                "openat2(2) ΜΗ ΔΙΑΘΕΣΙΜΟ (ENOSYS). ΔΕΝ υπάρχει ασθενέστερη "
+                "εναλλακτική που να παράγει PASS: η εγγύηση «καμία ακολούθηση "
+                "symlink σε κανένα συστατικό, ατομικά κατά την ανάλυση» δεν "
+                "αναπαράγεται με openat+O_NOFOLLOW χωρίς παράθυρο. ⇒ BLOCKED")
+        raise OSError(e, os.strerror(e), rel)
     return fd
 
 
-def _openat_chain(dirfd, rel, flags):
-    parts = [p for p in rel.split("/") if p]
-    if not parts:
-        raise OSError(22, "ΚΕΝΗ ΔΙΑΔΡΟΜΗ", rel)
-    cur, owned = dirfd, False
-    try:
-        for comp in parts[:-1]:
-            if comp in (".", ".."):
-                raise OSError(22, "ΑΚΥΡΟ ΣΥΣΤΑΤΙΚΟ", rel)
-            nfd = os.open(comp, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
-                          dir_fd=cur)
-            if owned:
-                os.close(cur)
-            cur, owned = nfd, True
-        if parts[-1] in (".", ".."):
-            raise OSError(22, "ΑΚΥΡΟ ΣΥΣΤΑΤΙΚΟ", rel)
-        return os.open(parts[-1], flags | os.O_NOFOLLOW, dir_fd=cur)
-    finally:
-        if owned:
-            os.close(cur)
-
-
 def open_beneath(root_fd, rel, flags=os.O_RDONLY):
-    """Άνοιγμα ΑΥΣΤΗΡΑ κάτω από τη ρίζα. Σηκώνει OSError."""
-    global _mode
-    if _mode != AccessMode.FALLBACK:
+    """Άνοιγμα ΑΥΣΤΗΡΑ κάτω από τη ρίζα. ΚΑΜΙΑ ΕΝΑΛΛΑΚΤΙΚΗ ΔΙΑΔΡΟΜΗ."""
+    return _openat2(root_fd, rel, flags)
+
+
+def probe_resolve_enforcement(root_fd, symlink_rel, escape_rel):
+    """ΘΕΤΙΚΗ ΑΠΟΔΕΙΞΗ ότι ο πυρήνας ΤΗΡΕΙ τα flags — δεν αρκεί που δέχτηκε
+    τη δομή. Δύο ανοίγματα που ΠΡΕΠΕΙ να αποτύχουν:
+      · symlink            ⇒ RESOLVE_NO_SYMLINKS
+      · «..» έξω από ρίζα  ⇒ RESOLVE_BENEATH
+    Αν ΟΠΟΙΟΔΗΠΟΤΕ πετύχει, τα flags ΔΕΝ τηρούνται ⇒ BLOCKED."""
+    for rel, which in ((symlink_rel, "RESOLVE_NO_SYMLINKS"),
+                       (escape_rel, "RESOLVE_BENEATH")):
         try:
-            fd = _openat2(root_fd, rel, flags)
-            _mode = AccessMode.OPENAT2
-            return fd
-        except OSError as e:
-            if e.errno != 38:                      # ENOSYS
-                raise
-            _mode = AccessMode.FALLBACK
-    return _openat_chain(root_fd, rel, flags)
+            fd = _openat2(root_fd, rel, os.O_RDONLY)
+        except AccessBlocked:
+            raise
+        except OSError:
+            continue
+        os.close(fd)
+        raise AccessBlocked(
+            f"ΤΟ {which} ΔΕΝ ΤΗΡΕΙΤΑΙ: το «{rel}» άνοιξε ενώ ΕΠΡΕΠΕ να "
+            f"αποτύχει. Ο πυρήνας δέχτηκε τη δομή αλλά ΔΕΝ επιβάλλει την "
+            f"ιδιότητα. ⇒ BLOCKED")
+    return True
 
 
 def read_beneath(root_fd, rel):

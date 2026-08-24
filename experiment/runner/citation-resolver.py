@@ -36,7 +36,8 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import frozen_access as fa
 
-RESOLVER_VERSION = "6"
+RESOLVER_VERSION = "7"
+EXIT_PASS, EXIT_FAIL, EXIT_GATE_ERROR, EXIT_BLOCKED = 0, 1, 2, 3
 MANIFEST = "experiment/artifacts/corpus-manifest.tsv"
 AUTHORITY = "experiment/phase1a/LANE-SCOPE-AUTHORITY.sexp"
 MANIFEST_COLUMNS = ("path", "git_mode", "kind", "git_blob_sha1", "content_sha256",
@@ -309,6 +310,8 @@ def main():
 
     try:
         mount = authority_string(":read-only-mount")
+        probe_symlink = authority_string(":resolve-probe-symlink")
+        probe_escape = authority_string(":resolve-probe-escape")
         with open("/proc/self/mountinfo", encoding="utf-8") as fh:
             opts = next((set(l.split()[5].split(","))
                          for l in fh if len(l.split()) > 5 and l.split()[4] == mount), None)
@@ -328,9 +331,13 @@ def main():
                 "ΤΑΥΤΟΤΗΤΑ MANIFEST ΔΕΝ ΤΑΙΡΙΑΖΕΙ ΜΕ ΤΗ ΣΦΡΑΓΙΣΜΕΝΗ ΑΥΘΕΝΤΙΑ.\n"
                 f"  ξαναϋπολογισμένη : {recomputed}\n"
                 f"  σφραγισμένη      : {sealed_identity}")
+    except fa.AccessBlocked as e:
+        print(f"::error::BLOCKED — {e}")
+        print("VERDICT: BLOCKED")
+        return EXIT_BLOCKED
     except GateFailure as e:
         print(f"::error::{e}")
-        return 2
+        return EXIT_GATE_ERROR
 
     missing = [p for p in args if not os.path.isfile(p)]
     if missing:
@@ -343,6 +350,13 @@ def main():
 
     basenames = {r.rsplit("/", 1)[-1] for r in index}
     rfd = os.open(mount, os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        fa.probe_resolve_enforcement(rfd, probe_symlink, probe_escape)
+    except fa.AccessBlocked as e:
+        os.close(rfd)
+        print(f"::error::BLOCKED — {e}")
+        print("VERDICT: BLOCKED")
+        return EXIT_BLOCKED
     filecache = {}
 
     def verify(rel, meta):
@@ -350,6 +364,8 @@ def main():
             return filecache[rel]
         try:
             data, st = fa.read_beneath(rfd, rel)
+        except fa.AccessBlocked:
+            raise
         except OSError as e:
             r = (False, f"ΔΕΝ ΑΝΟΙΓΕΙ ΑΣΦΑΛΩΣ ΣΤΟ SNAPSHOT (errno {e.errno})", None)
             filecache[rel] = r
@@ -458,12 +474,15 @@ def main():
     self_sha = hashlib.sha256(open(__file__, "rb").read()).hexdigest()
     auth_sha = hashlib.sha256(open(AUTHORITY, "rb").read()).hexdigest()
     man_sha = hashlib.sha256(manifest_raw).hexdigest()
-    exit_code = 2 if total == 0 else (1 if problems else 0)
+    exit_code = (EXIT_GATE_ERROR if total == 0
+                 else (EXIT_FAIL if problems else EXIT_PASS))
 
     print(f"resolver v{RESOLVER_VERSION} sha256:{self_sha}")
     print(f"manifest sha256:{man_sha}")
     print(f"scope-authority sha256:{auth_sha}")
     print(f"frozen mount {mount} [ro,nodev,nosuid,noexec] · access {fa.access_mode()}")
+    print(f"resolve-enforcement: ΑΠΟΔΕΔΕΙΓΜΕΝΗ — «{probe_symlink}» και "
+          f"«{probe_escape}» ΑΠΕΤΥΧΑΝ όπως απαιτείται")
     print(f"corpus-identity {sealed_identity} (ξαναϋπολογισμένη από το TSV: ΤΑΥΤΙΖΕΤΑΙ)")
     print(f"lane {lane_id} · cluster-roots {lane_roots}")
     for d in dossiers:
@@ -493,17 +512,19 @@ def main():
                        "files_verified": sum(1 for v in filecache.values() if v[0]),
                        "forms": by_form, "in_cluster": in_cluster,
                        "exit_code": exit_code,
-                       "verdict": ("RECOGNIZED-CITATION-INTEGRITY" if exit_code == 0
-                                   else "FAIL"),
+                       "verdict": ("RECOGNIZED-CITATION-INTEGRITY"
+                                   if exit_code == EXIT_PASS else "FAIL"),
+                       "access_enforcement_proved": True,
+                       "unique_citation_keys": total,
                        "problem_list": [{"dossier": s, "token": t, "code": w}
                                         for s, t, w in problems]}, fh,
                       ensure_ascii=False, indent=1)
 
     if total == 0:
         print("::error::ΜΗΔΕΝ παραπομπές — ισχυρισμοί χωρίς άγκυρα δεν γίνονται δεκτοί")
-        return 2
+        return EXIT_GATE_ERROR
     if problems:
-        return 1
+        return EXIT_FAIL
     print("VERDICT: RECOGNIZED-CITATION-INTEGRITY")
     print("  ΤΙ ΣΗΜΑΙΝΕΙ: κάθε token παραπομπής ΠΟΥ ΑΝΑΓΝΩΡΙΣΤΗΚΕ αντιστοιχεί σε")
     print("  πραγματικά bytes και πραγματικό εύρος του παγωμένου snapshot.")

@@ -113,6 +113,87 @@ def skeleton(text, paths, basenames):
     return re.sub(f"{MARK}(?: +{MARK})+", MARK, sk), cits
 
 
+def resolve_target(run):
+    return run[len(MOUNT) + 1:] if run.startswith(MOUNT + "/") else run
+
+
+def rle_targets(cits):
+    """Ακολουθία ΔΙΑΚΡΙΤΩΝ ΔΙΑΔΟΧΙΚΩΝ στόχων με πλήθη.
+    «a a b a» ⇒ [(a,2),(b,1),(a,1)]. Διατηρεί ΣΕΙΡΑ και ΤΑΥΤΟΤΗΤΑ, ενώ
+    επιτρέπει την επέκταση λίστας κόμματος (αύξηση πλήθους μέσα σε run)."""
+    out = []
+    for c in cits:
+        t = resolve_target(c[2])
+        if out and out[-1][0] == t:
+            out[-1][1] += 1
+        else:
+            out.append([t, 1])
+    return out
+
+
+def target_correspondence(old_cits, new_cits, old_text, new_text, paths, basenames):
+    """ΑΠΟΔΕΙΞΗ ότι καμία μετάβαση ΔΕΝ αντικατέστησε, αναδιέταξε ή έχασε στόχο.
+
+    Ο σκελετός ΔΕΝ πιάνει αντικατάσταση στόχου (X→Y) ούτε αναδιάταξη — και
+    τα δύο τον αφήνουν αναλλοίωτο. Εδώ συγκρίνεται η ΑΚΟΛΟΥΘΙΑ ΣΤΟΧΩΝ με
+    run-length κωδικοποίηση. Επιτρέπονται ΑΚΡΙΒΩΣ ΤΡΕΙΣ μορφές ανά run:
+      IDENTITY   ίδιος στόχος, ίδιο πλήθος
+      EXPANSION  ίδιος στόχος, ΜΕΓΑΛΥΤΕΡΟ πλήθος (λίστα κόμματος)
+      PREFIX     νέος στόχος = «<πρόθεμα>/<παλιός>», ο παλιός ΧΩΡΙΣ «/» —
+                 δηλωμένη προθεματική μετανάστευση· ΙΔΙΟ αρχείο, πλήρης διαδρομή
+    Διαφορετικό μήκος ακολουθίας, άλλος στόχος, ή ΜΕΙΩΣΗ πλήθους ⇒ ΑΠΟΤΥΧΙΑ."""
+    o, n = rle_targets(old_cits), rle_targets(new_cits)
+    if len(o) != len(n):
+        return None, (f"ΑΚΟΛΟΥΘΙΑ ΣΤΟΧΩΝ: {len(o)} runs ≠ {len(n)} runs — "
+                      f"αναδιάταξη ή απώλεια")
+    mapping, kinds = [], {"IDENTITY": 0, "EXPANSION": 0, "PREFIX": 0}
+    for i, ((ot, oc), (nt, nc)) in enumerate(zip(o, n)):
+        if ot == nt:
+            kind = "EXPANSION" if nc > oc else "IDENTITY"
+        elif nt.endswith("/" + ot) and "/" not in ot:
+            kind = "PREFIX"
+        else:
+            return None, f"run {i}: ΑΝΤΙΚΑΤΑΣΤΑΣΗ ΣΤΟΧΟΥ «{ot}» → «{nt}»"
+        if nc < oc:
+            return None, f"run {i} «{ot}»: ΧΑΘΗΚΑΝ tokens ({oc} → {nc})"
+        kinds[kind] += 1
+        mapping.append({"run": i, "kind": kind, "old_target": ot,
+                        "new_target": nt, "old_count": oc, "new_count": nc})
+    return (mapping, kinds), None
+
+
+def write_map(src, dst, mapping, kinds, src_sha, dst_sha):
+    """ΑΜΕΤΑΒΛΗΤΟΣ ΧΑΡΤΗΣ ΑΝΑ ΜΕΤΑΒΑΣΗ — ΠΑΡΑΓΕΤΑΙ ΑΠΟ ΤΑ ΙΔΙΑ ΤΑ ΑΡΧΕΙΑ,
+    ΟΧΙ από το εργαλείο που έκανε τη μετάβαση. Οι μεταβάσεις έγιναν από
+    ΔΙΑΦΟΡΕΤΙΚΕΣ εκδόσεις εργαλείων· χάρτης παραγόμενος από την τρέχουσα
+    έκδοση θα ήταν ΑΝΑΚΑΤΑΣΚΕΥΗ, όχι τεκμήριο. Ο χάρτης εδώ είναι η
+    ΠΑΡΑΤΗΡΟΥΜΕΝΗ διαφορά των δύο σφραγισμένων κειμένων."""
+    d = os.path.join(REPO, "experiment/artifacts/canonicalization")
+    os.makedirs(d, exist_ok=True)
+    path = os.path.join(d, f"{src[:-5]}__to__{dst[:-5]}.json")
+    payload = {"source": src, "source_sha256": src_sha,
+               "target": dst, "target_sha256": dst_sha,
+               "derivation": "ΠΑΡΑΤΗΡΟΥΜΕΝΗ ΔΙΑΦΟΡΑ ΤΩΝ ΔΥΟ ΑΡΧΕΙΩΝ — ΟΧΙ "
+                             "έξοδος του εργαλείου που έκανε τη μετάβαση",
+               "target_runs": len(mapping),
+               "old_tokens": sum(m["old_count"] for m in mapping),
+               "new_tokens": sum(m["new_count"] for m in mapping),
+               "kinds": kinds,
+               "target_substitutions": 0, "reorderings": 0, "losses": 0,
+               "mapping": mapping}
+    if os.path.exists(path):
+        prev = json.load(open(path, encoding="utf-8"))
+        if (prev["source_sha256"], prev["target_sha256"]) != (src_sha, dst_sha):
+            fails.append(f"{path}: ΥΠΑΡΧΩΝ ΧΑΡΤΗΣ ΜΕ ΑΛΛΑ HASHES — ΑΜΕΤΑΒΛΗΤΟΣ")
+        return
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as fh:
+        json.dump(payload, fh, ensure_ascii=False, indent=1)
+        fh.flush()
+        os.fsync(fh.fileno())
+    os.rename(tmp, path)
+
+
 def read_frozen(rel):
     """Ανάγνωση χωρίς ακολούθηση symlink σε κανένα συστατικό — δική του κάθοδος."""
     parts = rel.split("/")
@@ -180,12 +261,24 @@ def main():
             sk, cits = skeleton(text, paths, basenames)
             canon_total = sum(1 for _s, _e, _r, b in cits if CANON.match(b))
             if prev_text is not None:
-                psk, _ = skeleton(prev_text, paths, basenames)
+                psk, pcits = skeleton(prev_text, paths, basenames)
                 ok(psk == sk,
                    f"{lane}: {prev_name} → {name} — ΣΚΕΛΕΤΟΣ ΤΑΥΤΟΣΗΜΟΣ "
                    f"(κανένα byte εκτός παραπομπών)",
                    f"{lane}: {prev_name} → {name} — ΣΚΕΛΕΤΟΣ ΔΙΑΦΕΡΕΙ: "
                    f"ΑΛΛΑΞΑΝ bytes ΕΚΤΟΣ παραπομπών")
+                res, why = target_correspondence(pcits, cits, prev_text, text,
+                                                 paths, basenames)
+                ok(res is not None,
+                   f"{lane}: {prev_name} → {name} — ΑΝΤΙΣΤΟΙΧΙΑ ΣΤΟΧΩΝ: "
+                   f"{len(pcits)}→{len(cits)} tokens · "
+                   f"{res[1] if res else ''} · καμία αντικατάσταση, καμία "
+                   f"αναδιάταξη, καμία απώλεια",
+                   f"{lane}: {prev_name} → {name} — ΑΝΤΙΣΤΟΙΧΙΑ ΣΤΟΧΩΝ "
+                   f"ΕΣΠΑΣΕ: {why}")
+                if res is not None:
+                    write_map(prev_name, name, res[0], res[1],
+                              hashes[prev_name], hashes[name])
             prev_text, prev_name = text, name
         # ── ΤΕΛΙΚΗ ΑΝΑΘΕΩΡΗΣΗ: κάθε ΚΑΝΟΝΙΚΗ παραπομπή στα ΠΡΑΓΜΑΤΙΚΑ bytes
         bad = []

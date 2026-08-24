@@ -1,0 +1,4906 @@
+{
+ "source": "systems.sexp",
+ "source_sha256": "e11b7b76d7fdb18cd7cf4d348eac7b81529cc9c004f8d6d56cc93a644ae9c141",
+ "target": "systems-rev2.sexp",
+ "target_sha256": "54849c597201ccb0de29b6b86c1c87829cf2f1d255011180f1c855a3c7613521",
+ "derivation": "ΠΑΡΑΤΗΡΟΥΜΕΝΗ ΔΙΑΦΟΡΑ ΤΩΝ ΔΥΟ ΑΡΧΕΙΩΝ — ΟΧΙ έξοδος του εργαλείου που έκανε τη μετάβαση",
+ "skeleton_slots": 247,
+ "old_tokens": 247,
+ "new_tokens": 357,
+ "kinds": {
+  "IDENTITY": 179,
+  "EXPANSION": 68,
+  "PREFIX": 0
+ },
+ "target_substitutions": 0,
+ "reorderings": 0,
+ "losses": 0,
+ "mapping": [
+  {
+   "slot": 0,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-epistemic/transparency-log.lisp",
+   "new_target": "systems/orchestrator-epistemic/transparency-log.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/transparency-log.lisp:L19-L31,L45-L72,L117-L169",
+     "offset": 2068
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/transparency-log.lisp:L19-L31@sha256:00dd41938b0e",
+     "offset": 2068
+    },
+    {
+     "token": "systems/orchestrator-epistemic/transparency-log.lisp:L45-L72@sha256:00dd41938b0e",
+     "offset": 2149
+    },
+    {
+     "token": "systems/orchestrator-epistemic/transparency-log.lisp:L117-L169@sha256:00dd41938b0e",
+     "offset": 2230
+    }
+   ]
+  },
+  {
+   "slot": 1,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/authority-boundary.lisp",
+   "new_target": "systems/orchestrator-epistemic/authority-boundary.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/authority-boundary.lisp:L21-L37",
+     "offset": 2842
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/authority-boundary.lisp:L21-L37@sha256:bd8e54d23159",
+     "offset": 3008
+    }
+   ]
+  },
+  {
+   "slot": 2,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/transparency-log.lisp",
+   "new_target": "systems/orchestrator-epistemic/transparency-log.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/transparency-log.lisp:L131-L132",
+     "offset": 2907
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/transparency-log.lisp:L131-L132@sha256:00dd41938b0e",
+     "offset": 3093
+    }
+   ]
+  },
+  {
+   "slot": 3,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L939-L953,L955-L968",
+     "offset": 2972
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L939-L953@sha256:d84de9735268",
+     "offset": 3178
+    },
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L955-L968@sha256:d84de9735268",
+     "offset": 3261
+    }
+   ]
+  },
+  {
+   "slot": 4,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-epistemic/authority-boundary.lisp",
+   "new_target": "systems/orchestrator-epistemic/authority-boundary.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/authority-boundary.lisp:L44-L58,L64-L96",
+     "offset": 3822
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/authority-boundary.lisp:L44-L58@sha256:bd8e54d23159",
+     "offset": 4121
+    },
+    {
+     "token": "systems/orchestrator-epistemic/authority-boundary.lisp:L64-L96@sha256:bd8e54d23159",
+     "offset": 4204
+    }
+   ]
+  },
+  {
+   "slot": 5,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L790-L854,L867-L937",
+     "offset": 4611
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L790-L854@sha256:d84de9735268",
+     "offset": 5005
+    },
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L867-L937@sha256:d84de9735268",
+     "offset": 5088
+    }
+   ]
+  },
+  {
+   "slot": 6,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L1133-L1204,L255-L258,L315-L346",
+     "offset": 5382
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L1133-L1204@sha256:d84de9735268",
+     "offset": 5869
+    },
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L255-L258@sha256:d84de9735268",
+     "offset": 5954
+    },
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L315-L346@sha256:d84de9735268",
+     "offset": 6037
+    }
+   ]
+  },
+  {
+   "slot": 7,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-epistemic/release-spine.lisp",
+   "new_target": "systems/orchestrator-epistemic/release-spine.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/release-spine.lisp:L38-L71,L73-L126",
+     "offset": 6460
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/release-spine.lisp:L38-L71@sha256:0d15c02aa17f",
+     "offset": 7113
+    },
+    {
+     "token": "systems/orchestrator-epistemic/release-spine.lisp:L73-L126@sha256:0d15c02aa17f",
+     "offset": 7191
+    }
+   ]
+  },
+  {
+   "slot": 8,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L264-L346",
+     "offset": 7259
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L264-L346@sha256:d84de9735268",
+     "offset": 8002
+    }
+   ]
+  },
+  {
+   "slot": 9,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L348-L418",
+     "offset": 8042
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L348-L418@sha256:d84de9735268",
+     "offset": 8805
+    }
+   ]
+  },
+  {
+   "slot": 10,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1807-L1838,L1840-L1892,L1894-L1900",
+     "offset": 8987
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1807-L1838@sha256:8cf601f197ad",
+     "offset": 9770
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1840-L1892@sha256:8cf601f197ad",
+     "offset": 9837
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1894-L1900@sha256:8cf601f197ad",
+     "offset": 9904
+    }
+   ]
+  },
+  {
+   "slot": 11,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L267-L299,L1068-L1093,L1095-L1118",
+     "offset": 9946
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L267-L299@sha256:8cf601f197ad",
+     "offset": 10859
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1068-L1093@sha256:8cf601f197ad",
+     "offset": 10924
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1095-L1118@sha256:8cf601f197ad",
+     "offset": 10991
+    }
+   ]
+  },
+  {
+   "slot": 12,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/cli-util.lisp",
+   "new_target": "systems/orchestrator-cli/cli-util.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L23-L140",
+     "offset": 10986
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L23-L140@sha256:e1fe765dc1a3",
+     "offset": 12029
+    }
+   ]
+  },
+  {
+   "slot": 13,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-meta/registry.lisp",
+   "new_target": "systems/orchestrator-meta/registry.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-meta/registry.lisp:L23-L54",
+     "offset": 11036
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-meta/registry.lisp:L23-L54@sha256:28dfd8988659",
+     "offset": 12099
+    }
+   ]
+  },
+  {
+   "slot": 14,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/constitutional-dispatch.lisp",
+   "new_target": "systems/orchestrator-cli/constitutional-dispatch.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/constitutional-dispatch.lisp:L22-L76",
+     "offset": 11920
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/constitutional-dispatch.lisp:L22-L76@sha256:b1506f7b8465",
+     "offset": 13003
+    }
+   ]
+  },
+  {
+   "slot": 15,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/gates-runner.lisp",
+   "new_target": "systems/orchestrator-cli/gates-runner.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/gates-runner.lisp:L17-L63",
+     "offset": 12798
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/gates-runner.lisp:L17-L63@sha256:0c20c1ff1599",
+     "offset": 13901
+    }
+   ]
+  },
+  {
+   "slot": 16,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/release-gate.lisp",
+   "new_target": "systems/orchestrator-cli/release-gate.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/release-gate.lisp:L33-L104,L106-L239",
+     "offset": 13796
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/release-gate.lisp:L33-L104@sha256:84ff800ddf7c",
+     "offset": 14919
+    },
+    {
+     "token": "systems/orchestrator-cli/release-gate.lisp:L106-L239@sha256:84ff800ddf7c",
+     "offset": 14991
+    }
+   ]
+  },
+  {
+   "slot": 17,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/golden-gate.lisp",
+   "new_target": "systems/orchestrator-cli/golden-gate.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/golden-gate.lisp:L42-L110",
+     "offset": 14706
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/golden-gate.lisp:L42-L110@sha256:1856d172a557",
+     "offset": 15912
+    }
+   ]
+  },
+  {
+   "slot": 18,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1588-L1598",
+     "offset": 14759
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1588-L1598@sha256:8cf601f197ad",
+     "offset": 15985
+    }
+   ]
+  },
+  {
+   "slot": 19,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/capability-gate.lisp",
+   "new_target": "systems/orchestrator-cli/capability-gate.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/capability-gate.lisp:L18-L34,L38-L86",
+     "offset": 15546
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/capability-gate.lisp:L18-L34@sha256:439e8c40e0a9",
+     "offset": 16792
+    },
+    {
+     "token": "systems/orchestrator-cli/capability-gate.lisp:L38-L86@sha256:439e8c40e0a9",
+     "offset": 16866
+    }
+   ]
+  },
+  {
+   "slot": 20,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/advisor.lisp",
+   "new_target": "systems/orchestrator-cli/advisor.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/advisor.lisp:L23-L70,L74-L88,L110-L152,L154-L198",
+     "offset": 16705
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/advisor.lisp:L23-L70@sha256:ba2abe1b3968",
+     "offset": 18037
+    },
+    {
+     "token": "systems/orchestrator-cli/advisor.lisp:L74-L88@sha256:ba2abe1b3968",
+     "offset": 18103
+    },
+    {
+     "token": "systems/orchestrator-cli/advisor.lisp:L110-L152@sha256:ba2abe1b3968",
+     "offset": 18169
+    },
+    {
+     "token": "systems/orchestrator-cli/advisor.lisp:L154-L198@sha256:ba2abe1b3968",
+     "offset": 18237
+    }
+   ]
+  },
+  {
+   "slot": 21,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/self-extension.lisp",
+   "new_target": "systems/orchestrator-cli/self-extension.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L1-L57,L26-L38,L465-L503",
+     "offset": 17795
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L1-L57@sha256:37f5bbd5e1bb",
+     "offset": 19321
+    },
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L26-L38@sha256:37f5bbd5e1bb",
+     "offset": 19393
+    },
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L465-L503@sha256:37f5bbd5e1bb",
+     "offset": 19466
+    }
+   ]
+  },
+  {
+   "slot": 22,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/approval-policy.lisp",
+   "new_target": "systems/orchestrator-cli/approval-policy.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L110-L121",
+     "offset": 17867
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L110-L121@sha256:9f49c1e72540",
+     "offset": 19543
+    }
+   ]
+  },
+  {
+   "slot": 23,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/approval-policy.lisp",
+   "new_target": "systems/orchestrator-cli/approval-policy.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L20-L47,L62-L94,L96-L113,L115-L121",
+     "offset": 18871
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L20-L47@sha256:9f49c1e72540",
+     "offset": 20567
+    },
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L62-L94@sha256:9f49c1e72540",
+     "offset": 20641
+    },
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L96-L113@sha256:9f49c1e72540",
+     "offset": 20715
+    },
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L115-L121@sha256:9f49c1e72540",
+     "offset": 20790
+    }
+   ]
+  },
+  {
+   "slot": 24,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/decisions.lisp",
+   "new_target": "systems/orchestrator-cli/decisions.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L88-L112,L115-L132,L134-L149",
+     "offset": 19755
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L88-L112@sha256:2cbbf00a8561",
+     "offset": 21669
+    },
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L115-L132@sha256:2cbbf00a8561",
+     "offset": 21738
+    },
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L134-L149@sha256:2cbbf00a8561",
+     "offset": 21808
+    }
+   ]
+  },
+  {
+   "slot": 25,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/decisions.lisp",
+   "new_target": "systems/orchestrator-cli/decisions.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L150-L216",
+     "offset": 20547
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L150-L216@sha256:2cbbf00a8561",
+     "offset": 22601
+    }
+   ]
+  },
+  {
+   "slot": 26,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/decisions.lisp",
+   "new_target": "systems/orchestrator-cli/decisions.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L168-L183",
+     "offset": 21473
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L168-L183@sha256:2cbbf00a8561",
+     "offset": 23547
+    }
+   ]
+  },
+  {
+   "slot": 27,
+   "kind": "EXPANSION",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "source/pdf-authority.lisp:L1386-L1398,L1400-L1424,L1427-L1441",
+     "offset": 21525
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L1386-L1398@sha256:c4e2054c0e4f",
+     "offset": 23619
+    },
+    {
+     "token": "source/pdf-authority.lisp:L1400-L1424@sha256:c4e2054c0e4f",
+     "offset": 23677
+    },
+    {
+     "token": "source/pdf-authority.lisp:L1427-L1441@sha256:c4e2054c0e4f",
+     "offset": 23735
+    }
+   ]
+  },
+  {
+   "slot": 28,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-tests/package.lisp",
+   "new_target": "systems/orchestrator-tests/package.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-tests/package.lisp:L6-L13",
+     "offset": 22669
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-tests/package.lisp:L6-L13@sha256:2c18f6846141",
+     "offset": 24875
+    }
+   ]
+  },
+  {
+   "slot": 29,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-tests/suite.lisp",
+   "new_target": "systems/orchestrator-tests/suite.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-tests/suite.lisp:L11-L26,L69-L98",
+     "offset": 22718
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-tests/suite.lisp:L11-L26@sha256:6b24e98274b7",
+     "offset": 24944
+    },
+    {
+     "token": "systems/orchestrator-tests/suite.lisp:L69-L98@sha256:6b24e98274b7",
+     "offset": 25010
+    }
+   ]
+  },
+  {
+   "slot": 30,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-tests/unit/test-ai-core.lisp",
+   "new_target": "systems/orchestrator-tests/unit/test-ai-core.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-tests/unit/test-ai-core.lisp:L13,L64-L74,L417-L452",
+     "offset": 22774
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-tests/unit/test-ai-core.lisp:L13-L13@sha256:36107c3e94b2",
+     "offset": 25078
+    },
+    {
+     "token": "systems/orchestrator-tests/unit/test-ai-core.lisp:L64-L74@sha256:36107c3e94b2",
+     "offset": 25156
+    },
+    {
+     "token": "systems/orchestrator-tests/unit/test-ai-core.lisp:L417-L452@sha256:36107c3e94b2",
+     "offset": 25234
+    }
+   ]
+  },
+  {
+   "slot": 31,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-tests/integration/ai-export-integration-test.lisp",
+   "new_target": "systems/orchestrator-tests/integration/ai-export-integration-test.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-tests/integration/ai-export-integration-test.lisp:L15-L16,L192-L215",
+     "offset": 22848
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-tests/integration/ai-export-integration-test.lisp:L15-L16@sha256:7ebe3bcbbcb5",
+     "offset": 25316
+    },
+    {
+     "token": "systems/orchestrator-tests/integration/ai-export-integration-test.lisp:L192-L215@sha256:7ebe3bcbbcb5",
+     "offset": 25415
+    }
+   ]
+  },
+  {
+   "slot": 32,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-tests/reproducibility/hash-stability-test.lisp",
+   "new_target": "systems/orchestrator-tests/reproducibility/hash-stability-test.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-tests/reproducibility/hash-stability-test.lisp:L8-L13",
+     "offset": 22939
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-tests/reproducibility/hash-stability-test.lisp:L8-L13@sha256:f16a24cbe5c5",
+     "offset": 25518
+    }
+   ]
+  },
+  {
+   "slot": 33,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-core/executor.lisp",
+   "new_target": "systems/orchestrator-core/executor.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-core/executor.lisp:L10-L32,L38-L57,L104-L129,L164-L204",
+     "offset": 23799
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-core/executor.lisp:L10-L32@sha256:0f690dd499fb",
+     "offset": 26398
+    },
+    {
+     "token": "systems/orchestrator-core/executor.lisp:L38-L57@sha256:0f690dd499fb",
+     "offset": 26466
+    },
+    {
+     "token": "systems/orchestrator-core/executor.lisp:L104-L129@sha256:0f690dd499fb",
+     "offset": 26534
+    },
+    {
+     "token": "systems/orchestrator-core/executor.lisp:L164-L204@sha256:0f690dd499fb",
+     "offset": 26604
+    }
+   ]
+  },
+  {
+   "slot": 34,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-core/source-detection.lisp",
+   "new_target": "systems/orchestrator-core/source-detection.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-core/source-detection.lisp:L105-L196",
+     "offset": 24623
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-core/source-detection.lisp:L105-L196@sha256:7e63b2cd6554",
+     "offset": 27422
+    }
+   ]
+  },
+  {
+   "slot": 35,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1448-L1485",
+     "offset": 24683
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1448-L1485@sha256:8cf601f197ad",
+     "offset": 27502
+    }
+   ]
+  },
+  {
+   "slot": 36,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp",
+   "new_target": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:L23-L27,L62-L105",
+     "offset": 25558
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:L23-L27@sha256:4da7b2505a06",
+     "offset": 28397
+    },
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:L62-L105@sha256:4da7b2505a06",
+     "offset": 28488
+    }
+   ]
+  },
+  {
+   "slot": 37,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-engine-sbcl/backends/mock.lisp",
+   "new_target": "systems/orchestrator-engine-sbcl/backends/mock.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/backends/mock.lisp:L13-L26",
+     "offset": 25640
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/backends/mock.lisp:L13-L26@sha256:c94c9538c3f0",
+     "offset": 28582
+    }
+   ]
+  },
+  {
+   "slot": 38,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L976",
+     "offset": 25702
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L976-L976@sha256:d84de9735268",
+     "offset": 28664
+    }
+   ]
+  },
+  {
+   "slot": 39,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/metrics-stub.lisp",
+   "new_target": "systems/orchestrator-omega-modules/metrics-stub.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/metrics-stub.lisp:L1-L20",
+     "offset": 26472
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/metrics-stub.lisp:L1-L20@sha256:3912248685ed",
+     "offset": 29459
+    }
+   ]
+  },
+  {
+   "slot": 40,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/frbr-conditions.lisp",
+   "new_target": "systems/orchestrator-omega-modules/frbr-conditions.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-conditions.lisp:L166-L176",
+     "offset": 26534
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-conditions.lisp:L166-L176@sha256:1ccf51c61354",
+     "offset": 29541
+    }
+   ]
+  },
+  {
+   "slot": 41,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/cli-util.lisp",
+   "new_target": "systems/orchestrator-cli/cli-util.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L192-L199",
+     "offset": 27382
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L192-L199@sha256:e1fe765dc1a3",
+     "offset": 30409
+    }
+   ]
+  },
+  {
+   "slot": 42,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L803-L850,L911",
+     "offset": 27433
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L803-L850@sha256:8cf601f197ad",
+     "offset": 30480
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L911-L911@sha256:8cf601f197ad",
+     "offset": 30545
+    }
+   ]
+  },
+  {
+   "slot": 43,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/cockpit.lisp",
+   "new_target": "systems/orchestrator-cli/cockpit.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cockpit.lisp:L228-L268",
+     "offset": 27485
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cockpit.lisp:L228-L268@sha256:a7be9b8a2338",
+     "offset": 30612
+    }
+   ]
+  },
+  {
+   "slot": 44,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/cockpit.lisp",
+   "new_target": "systems/orchestrator-cli/cockpit.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cockpit.lisp:L21-L25,L31-L40,L219-L268,L277-L299",
+     "offset": 28253
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cockpit.lisp:L21-L25@sha256:a7be9b8a2338",
+     "offset": 31400
+    },
+    {
+     "token": "systems/orchestrator-cli/cockpit.lisp:L31-L40@sha256:a7be9b8a2338",
+     "offset": 31466
+    },
+    {
+     "token": "systems/orchestrator-cli/cockpit.lisp:L219-L268@sha256:a7be9b8a2338",
+     "offset": 31532
+    },
+    {
+     "token": "systems/orchestrator-cli/cockpit.lisp:L277-L299@sha256:a7be9b8a2338",
+     "offset": 31600
+    }
+   ]
+  },
+  {
+   "slot": 45,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/cli-util.lisp",
+   "new_target": "systems/orchestrator-cli/cli-util.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L142-L182",
+     "offset": 29063
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L142-L182@sha256:e1fe765dc1a3",
+     "offset": 32404
+    }
+   ]
+  },
+  {
+   "slot": 46,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/constitutional-dispatch.lisp",
+   "new_target": "systems/orchestrator-cli/constitutional-dispatch.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/constitutional-dispatch.lisp:L53-L55",
+     "offset": 29114
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/constitutional-dispatch.lisp:L53-L55@sha256:b1506f7b8465",
+     "offset": 32475
+    }
+   ]
+  },
+  {
+   "slot": 47,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/cli-util.lisp",
+   "new_target": "systems/orchestrator-cli/cli-util.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L209-L249",
+     "offset": 29837
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L209-L249@sha256:e1fe765dc1a3",
+     "offset": 33218
+    }
+   ]
+  },
+  {
+   "slot": 48,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/commands.lisp",
+   "new_target": "systems/orchestrator-cli/commands.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/commands.lisp:L1-L67",
+     "offset": 30652
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/commands.lisp:L1-L67@sha256:4709db534afb",
+     "offset": 34053
+    }
+   ]
+  },
+  {
+   "slot": 49,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/package.lisp",
+   "new_target": "systems/orchestrator-cli/package.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/package.lisp:L9-L16",
+     "offset": 30700
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/package.lisp:L9-L16@sha256:58f0b0463f33",
+     "offset": 34121
+    }
+   ]
+  },
+  {
+   "slot": 50,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-epistemic/authority-boundary.lisp",
+   "new_target": "systems/orchestrator-epistemic/authority-boundary.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/authority-boundary.lisp:L5-L15,L52-L58",
+     "offset": 31117
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/authority-boundary.lisp:L5-L15@sha256:bd8e54d23159",
+     "offset": 34558
+    },
+    {
+     "token": "systems/orchestrator-epistemic/authority-boundary.lisp:L52-L58@sha256:bd8e54d23159",
+     "offset": 34640
+    }
+   ]
+  },
+  {
+   "slot": 51,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L947-L950",
+     "offset": 31189
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L947-L950@sha256:d84de9735268",
+     "offset": 34725
+    }
+   ]
+  },
+  {
+   "slot": 52,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/release-authority.lisp",
+   "new_target": "systems/orchestrator-cli/release-authority.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/release-authority.lisp:L154-L163",
+     "offset": 31254
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/release-authority.lisp:L154-L163@sha256:3558de1d09cd",
+     "offset": 34810
+    }
+   ]
+  },
+  {
+   "slot": 53,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L1103-L1127",
+     "offset": 31572
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L1103-L1127@sha256:d84de9735268",
+     "offset": 35148
+    }
+   ]
+  },
+  {
+   "slot": 54,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/release-authority.lisp",
+   "new_target": "systems/orchestrator-cli/release-authority.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/release-authority.lisp:L171-L191",
+     "offset": 31639
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/release-authority.lisp:L171-L191@sha256:3558de1d09cd",
+     "offset": 35235
+    }
+   ]
+  },
+  {
+   "slot": 55,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/self-reflection.lisp",
+   "new_target": "systems/orchestrator-cli/self-reflection.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/self-reflection.lisp:L195-L204,L665-L666",
+     "offset": 32074
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/self-reflection.lisp:L195-L204@sha256:e0667808aea7",
+     "offset": 35690
+    },
+    {
+     "token": "systems/orchestrator-cli/self-reflection.lisp:L665-L666@sha256:e0667808aea7",
+     "offset": 35766
+    }
+   ]
+  },
+  {
+   "slot": 56,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/cockpit.lisp",
+   "new_target": "systems/orchestrator-cli/cockpit.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cockpit.lisp:L60-L70",
+     "offset": 32142
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cockpit.lisp:L60-L70@sha256:a7be9b8a2338",
+     "offset": 35844
+    }
+   ]
+  },
+  {
+   "slot": 57,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/approval-policy.lisp",
+   "new_target": "systems/orchestrator-cli/approval-policy.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L115-L121",
+     "offset": 32190
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L115-L121@sha256:9f49c1e72540",
+     "offset": 35912
+    }
+   ]
+  },
+  {
+   "slot": 58,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L784-L789",
+     "offset": 32248
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L784-L789@sha256:8cf601f197ad",
+     "offset": 35990
+    }
+   ]
+  },
+  {
+   "slot": 59,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/approval-policy.lisp",
+   "new_target": "systems/orchestrator-cli/approval-policy.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L110-L121",
+     "offset": 32758
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L110-L121@sha256:9f49c1e72540",
+     "offset": 36520
+    }
+   ]
+  },
+  {
+   "slot": 60,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/self-extension.lisp",
+   "new_target": "systems/orchestrator-cli/self-extension.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L364-L440,L465-L490",
+     "offset": 32816
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L364-L440@sha256:37f5bbd5e1bb",
+     "offset": 36598
+    },
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L465-L490@sha256:37f5bbd5e1bb",
+     "offset": 36673
+    }
+   ]
+  },
+  {
+   "slot": 61,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/advisor.lisp",
+   "new_target": "systems/orchestrator-cli/advisor.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/advisor.lisp:L99-L103,L184-L198",
+     "offset": 32883
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/advisor.lisp:L99-L103@sha256:ba2abe1b3968",
+     "offset": 36750
+    },
+    {
+     "token": "systems/orchestrator-cli/advisor.lisp:L184-L198@sha256:ba2abe1b3968",
+     "offset": 36817
+    }
+   ]
+  },
+  {
+   "slot": 62,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L255-L258,L348-L354,L430-L442",
+     "offset": 33696
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L255-L258@sha256:d84de9735268",
+     "offset": 37641
+    },
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L348-L354@sha256:d84de9735268",
+     "offset": 37724
+    },
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L430-L442@sha256:d84de9735268",
+     "offset": 37807
+    }
+   ]
+  },
+  {
+   "slot": 63,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L280,L1187,L1834,L1888,L2500-L2516",
+     "offset": 33781
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L280-L280@sha256:8cf601f197ad",
+     "offset": 37892
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1187-L1187@sha256:8cf601f197ad",
+     "offset": 37957
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1834-L1834@sha256:8cf601f197ad",
+     "offset": 38024
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1888-L1888@sha256:8cf601f197ad",
+     "offset": 38091
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L2500-L2516@sha256:8cf601f197ad",
+     "offset": 38158
+    }
+   ]
+  },
+  {
+   "slot": 64,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/cli-util.lisp",
+   "new_target": "systems/orchestrator-cli/cli-util.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L192-L199,L213-L228",
+     "offset": 33853
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L192-L199@sha256:e1fe765dc1a3",
+     "offset": 38227
+    },
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L213-L228@sha256:e1fe765dc1a3",
+     "offset": 38296
+    }
+   ]
+  },
+  {
+   "slot": 65,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/golden-gate.lisp",
+   "new_target": "systems/orchestrator-cli/golden-gate.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/golden-gate.lisp:L48-L57",
+     "offset": 33914
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/golden-gate.lisp:L48-L57@sha256:1856d172a557",
+     "offset": 38367
+    }
+   ]
+  },
+  {
+   "slot": 66,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/constitutional-dispatch.lisp",
+   "new_target": "systems/orchestrator-cli/constitutional-dispatch.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/constitutional-dispatch.lisp:L37-L39",
+     "offset": 33966
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/constitutional-dispatch.lisp:L37-L39@sha256:b1506f7b8465",
+     "offset": 38439
+    }
+   ]
+  },
+  {
+   "slot": 67,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L784-L789,L803-L850,L900-L912,L1295-L1368",
+     "offset": 34465
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L784-L789@sha256:8cf601f197ad",
+     "offset": 38958
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L803-L850@sha256:8cf601f197ad",
+     "offset": 39023
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L900-L912@sha256:8cf601f197ad",
+     "offset": 39088
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1295-L1368@sha256:8cf601f197ad",
+     "offset": 39153
+    }
+   ]
+  },
+  {
+   "slot": 68,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/cli-util.lisp",
+   "new_target": "systems/orchestrator-cli/cli-util.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L192-L199",
+     "offset": 34544
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L192-L199@sha256:e1fe765dc1a3",
+     "offset": 39222
+    }
+   ]
+  },
+  {
+   "slot": 69,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/gates-runner.lisp",
+   "new_target": "systems/orchestrator-cli/gates-runner.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/gates-runner.lisp:L17-L63",
+     "offset": 34847
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/gates-runner.lisp:L17-L63@sha256:0c20c1ff1599",
+     "offset": 39545
+    }
+   ]
+  },
+  {
+   "slot": 70,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1351-L1355",
+     "offset": 34900
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1351-L1355@sha256:8cf601f197ad",
+     "offset": 39618
+    }
+   ]
+  },
+  {
+   "slot": 71,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/decisions.lisp",
+   "new_target": "systems/orchestrator-cli/decisions.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L77-L87",
+     "offset": 35197
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L77-L87@sha256:2cbbf00a8561",
+     "offset": 39935
+    }
+   ]
+  },
+  {
+   "slot": 72,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L622",
+     "offset": 35541
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L622-L622@sha256:8cf601f197ad",
+     "offset": 40299
+    }
+   ]
+  },
+  {
+   "slot": 73,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/release-gate.lisp",
+   "new_target": "systems/orchestrator-cli/release-gate.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/release-gate.lisp:L209-L233",
+     "offset": 35583
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/release-gate.lisp:L209-L233@sha256:84ff800ddf7c",
+     "offset": 40366
+    }
+   ]
+  },
+  {
+   "slot": 74,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/golden-gate.lisp",
+   "new_target": "systems/orchestrator-cli/golden-gate.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/golden-gate.lisp:L64",
+     "offset": 35638
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/golden-gate.lisp:L64-L64@sha256:1856d172a557",
+     "offset": 40441
+    }
+   ]
+  },
+  {
+   "slot": 75,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/transparency-log.lisp",
+   "new_target": "systems/orchestrator-epistemic/transparency-log.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/transparency-log.lisp:L134-L169",
+     "offset": 35905
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/transparency-log.lisp:L134-L169@sha256:00dd41938b0e",
+     "offset": 40732
+    }
+   ]
+  },
+  {
+   "slot": 76,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L831-L851",
+     "offset": 36217
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L831-L851@sha256:d84de9735268",
+     "offset": 41064
+    }
+   ]
+  },
+  {
+   "slot": 77,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L876-L922",
+     "offset": 36540
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L876-L922@sha256:d84de9735268",
+     "offset": 41407
+    }
+   ]
+  },
+  {
+   "slot": 78,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/release-gate.lisp",
+   "new_target": "systems/orchestrator-cli/release-gate.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/release-gate.lisp:L38-L48",
+     "offset": 36605
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/release-gate.lisp:L38-L48@sha256:84ff800ddf7c",
+     "offset": 41492
+    }
+   ]
+  },
+  {
+   "slot": 79,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L315-L346,L1188-L1193",
+     "offset": 36872
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L315-L346@sha256:d84de9735268",
+     "offset": 41779
+    },
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L1188-L1193@sha256:d84de9735268",
+     "offset": 41862
+    }
+   ]
+  },
+  {
+   "slot": 80,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L348-L377",
+     "offset": 37102
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L348-L377@sha256:d84de9735268",
+     "offset": 42102
+    }
+   ]
+  },
+  {
+   "slot": 81,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/release-gate.lisp",
+   "new_target": "systems/orchestrator-cli/release-gate.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/release-gate.lisp:L150-L173",
+     "offset": 37352
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/release-gate.lisp:L150-L173@sha256:84ff800ddf7c",
+     "offset": 42372
+    }
+   ]
+  },
+  {
+   "slot": 82,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/cli-util.lisp",
+   "new_target": "systems/orchestrator-cli/cli-util.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L46-L64,L97-L106",
+     "offset": 37623
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L46-L64@sha256:e1fe765dc1a3",
+     "offset": 42663
+    },
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L97-L106@sha256:e1fe765dc1a3",
+     "offset": 42730
+    }
+   ]
+  },
+  {
+   "slot": 83,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/release-authority.lisp",
+   "new_target": "systems/orchestrator-cli/release-authority.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/release-authority.lisp:L17-L90",
+     "offset": 37956
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/release-authority.lisp:L17-L90@sha256:3558de1d09cd",
+     "offset": 43075
+    }
+   ]
+  },
+  {
+   "slot": 84,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp:L77-L85",
+     "offset": 38233
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp:L77-L85@sha256:c93423a640d1",
+     "offset": 43372
+    }
+   ]
+  },
+  {
+   "slot": 85,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp:L127-L154",
+     "offset": 38574
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp:L127-L154@sha256:c93423a640d1",
+     "offset": 43733
+    }
+   ]
+  },
+  {
+   "slot": 86,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-core/executor.lisp",
+   "new_target": "systems/orchestrator-core/executor.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-core/executor.lisp:L164-L170",
+     "offset": 38801
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-core/executor.lisp:L164-L170@sha256:0f690dd499fb",
+     "offset": 43980
+    }
+   ]
+  },
+  {
+   "slot": 87,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/self-extension.lisp",
+   "new_target": "systems/orchestrator-cli/self-extension.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L26-L38,L48-L52",
+     "offset": 39048
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L26-L38@sha256:37f5bbd5e1bb",
+     "offset": 44247
+    },
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L48-L52@sha256:37f5bbd5e1bb",
+     "offset": 44320
+    }
+   ]
+  },
+  {
+   "slot": 88,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/approval-policy.lisp",
+   "new_target": "systems/orchestrator-cli/approval-policy.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L23-L30",
+     "offset": 39270
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L23-L30@sha256:9f49c1e72540",
+     "offset": 44554
+    }
+   ]
+  },
+  {
+   "slot": 89,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/release-gate.lisp",
+   "new_target": "systems/orchestrator-cli/release-gate.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/release-gate.lisp:L66-L72,L189-L198",
+     "offset": 39972
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/release-gate.lisp:L66-L72@sha256:84ff800ddf7c",
+     "offset": 45276
+    },
+    {
+     "token": "systems/orchestrator-cli/release-gate.lisp:L189-L198@sha256:84ff800ddf7c",
+     "offset": 45347
+    }
+   ]
+  },
+  {
+   "slot": 90,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L939-L953",
+     "offset": 40035
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L939-L953@sha256:d84de9735268",
+     "offset": 45422
+    }
+   ]
+  },
+  {
+   "slot": 91,
+   "kind": "IDENTITY",
+   "old_target": "tests/level7-disarm-test.lisp",
+   "new_target": "tests/level7-disarm-test.lisp",
+   "old": [
+    {
+     "token": "tests/level7-disarm-test.lisp:L63-L65",
+     "offset": 40100
+    }
+   ],
+   "new": [
+    {
+     "token": "tests/level7-disarm-test.lisp:L63-L65@sha256:4b36181796c5",
+     "offset": 45507
+    }
+   ]
+  },
+  {
+   "slot": 92,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L900-L912,L803-L850,L1295-L1368",
+     "offset": 40712
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L900-L912@sha256:8cf601f197ad",
+     "offset": 46139
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L803-L850@sha256:8cf601f197ad",
+     "offset": 46204
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1295-L1368@sha256:8cf601f197ad",
+     "offset": 46269
+    }
+   ]
+  },
+  {
+   "slot": 93,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/cli-util.lisp",
+   "new_target": "systems/orchestrator-cli/cli-util.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L192-L199",
+     "offset": 40781
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L192-L199@sha256:e1fe765dc1a3",
+     "offset": 46338
+    }
+   ]
+  },
+  {
+   "slot": 94,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/cockpit.lisp",
+   "new_target": "systems/orchestrator-cli/cockpit.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cockpit.lisp:L228-L268",
+     "offset": 40832
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cockpit.lisp:L228-L268@sha256:a7be9b8a2338",
+     "offset": 46409
+    }
+   ]
+  },
+  {
+   "slot": 95,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/gates-runner.lisp",
+   "new_target": "systems/orchestrator-cli/gates-runner.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/gates-runner.lisp:L28-L37",
+     "offset": 41381
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/gates-runner.lisp:L28-L37@sha256:0c20c1ff1599",
+     "offset": 46978
+    }
+   ]
+  },
+  {
+   "slot": 96,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L843-L850,L2529-L2544",
+     "offset": 41434
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L843-L850@sha256:8cf601f197ad",
+     "offset": 47051
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L2529-L2544@sha256:8cf601f197ad",
+     "offset": 47116
+    }
+   ]
+  },
+  {
+   "slot": 97,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/constitutional-dispatch.lisp",
+   "new_target": "systems/orchestrator-cli/constitutional-dispatch.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/constitutional-dispatch.lisp:L49-L76",
+     "offset": 41493
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/constitutional-dispatch.lisp:L49-L76@sha256:b1506f7b8465",
+     "offset": 47185
+    }
+   ]
+  },
+  {
+   "slot": 98,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L488-L504,L511-L527,L529",
+     "offset": 41908
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L488-L504@sha256:d84de9735268",
+     "offset": 47620
+    },
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L511-L527@sha256:d84de9735268",
+     "offset": 47703
+    },
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L529-L529@sha256:d84de9735268",
+     "offset": 47786
+    }
+   ]
+  },
+  {
+   "slot": 99,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L255-L258,L513-L525,L1195-L1202",
+     "offset": 42324
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L255-L258@sha256:d84de9735268",
+     "offset": 48207
+    },
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L513-L525@sha256:d84de9735268",
+     "offset": 48290
+    },
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L1195-L1202@sha256:d84de9735268",
+     "offset": 48373
+    }
+   ]
+  },
+  {
+   "slot": 100,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp:L156-L161",
+     "offset": 42911
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp:L156-L161@sha256:c93423a640d1",
+     "offset": 48960
+    }
+   ]
+  },
+  {
+   "slot": 101,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L1096-L1101",
+     "offset": 42985
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L1096-L1101@sha256:d84de9735268",
+     "offset": 49054
+    }
+   ]
+  },
+  {
+   "slot": 102,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/cli-util.lisp",
+   "new_target": "systems/orchestrator-cli/cli-util.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L192-L199",
+     "offset": 43416
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L192-L199@sha256:e1fe765dc1a3",
+     "offset": 49505
+    }
+   ]
+  },
+  {
+   "slot": 103,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/approval-policy.lisp",
+   "new_target": "systems/orchestrator-cli/approval-policy.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L62-L94,L96-L108,L115-L121",
+     "offset": 44098
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L62-L94@sha256:9f49c1e72540",
+     "offset": 50207
+    },
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L96-L108@sha256:9f49c1e72540",
+     "offset": 50281
+    },
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L115-L121@sha256:9f49c1e72540",
+     "offset": 50356
+    }
+   ]
+  },
+  {
+   "slot": 104,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/self-extension.lisp",
+   "new_target": "systems/orchestrator-cli/self-extension.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L364-L440,L465-L490",
+     "offset": 44173
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L364-L440@sha256:37f5bbd5e1bb",
+     "offset": 50434
+    },
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L465-L490@sha256:37f5bbd5e1bb",
+     "offset": 50509
+    }
+   ]
+  },
+  {
+   "slot": 105,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1448-L1485,L1341-L1342",
+     "offset": 44683
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1448-L1485@sha256:8cf601f197ad",
+     "offset": 51029
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1341-L1342@sha256:8cf601f197ad",
+     "offset": 51096
+    }
+   ]
+  },
+  {
+   "slot": 106,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-core/source-detection.lisp",
+   "new_target": "systems/orchestrator-core/source-detection.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-core/source-detection.lisp:L173-L196",
+     "offset": 44744
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-core/source-detection.lisp:L173-L196@sha256:7e63b2cd6554",
+     "offset": 51165
+    }
+   ]
+  },
+  {
+   "slot": 107,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/frbr-classes.lisp",
+   "new_target": "systems/orchestrator-omega-modules/frbr-classes.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-classes.lisp:L1-L5",
+     "offset": 45528
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-classes.lisp:L1-L5@sha256:4a0dfb97760e",
+     "offset": 51969
+    }
+   ]
+  },
+  {
+   "slot": 108,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/frbr-conditions.lisp",
+   "new_target": "systems/orchestrator-omega-modules/frbr-conditions.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-conditions.lisp:L1-L5",
+     "offset": 45589
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-conditions.lisp:L1-L5@sha256:1ccf51c61354",
+     "offset": 52050
+    }
+   ]
+  },
+  {
+   "slot": 109,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/frbr-protocol.lisp",
+   "new_target": "systems/orchestrator-omega-modules/frbr-protocol.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-protocol.lisp:L1-L5",
+     "offset": 45653
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-protocol.lisp:L1-L5@sha256:15edc8b34f1b",
+     "offset": 52134
+    }
+   ]
+  },
+  {
+   "slot": 110,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/turtle-dsl.lisp",
+   "new_target": "systems/orchestrator-omega-modules/turtle-dsl.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/turtle-dsl.lisp:L1-L4",
+     "offset": 45715
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/turtle-dsl.lisp:L1-L4@sha256:9d59987d5409",
+     "offset": 52216
+    }
+   ]
+  },
+  {
+   "slot": 111,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/work-generator-omega.lisp",
+   "new_target": "systems/orchestrator-omega-modules/work-generator-omega.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/work-generator-omega.lisp:L1-L4",
+     "offset": 45774
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/work-generator-omega.lisp:L1-L4@sha256:9c5779f467cc",
+     "offset": 52295
+    }
+   ]
+  },
+  {
+   "slot": 112,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/expression-generator-omega.lisp",
+   "new_target": "systems/orchestrator-omega-modules/expression-generator-omega.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/expression-generator-omega.lisp:L1-L4",
+     "offset": 45843
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/expression-generator-omega.lisp:L1-L4@sha256:7e442025d7b0",
+     "offset": 52384
+    }
+   ]
+  },
+  {
+   "slot": 113,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/frbr-pipeline-stage.lisp",
+   "new_target": "systems/orchestrator-omega-modules/frbr-pipeline-stage.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-pipeline-stage.lisp:L1-L4",
+     "offset": 45918
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-pipeline-stage.lisp:L1-L4@sha256:c8bf99af6f25",
+     "offset": 52479
+    }
+   ]
+  },
+  {
+   "slot": 114,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/metrics-stub.lisp",
+   "new_target": "systems/orchestrator-omega-modules/metrics-stub.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/metrics-stub.lisp:L1-L5",
+     "offset": 45986
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/metrics-stub.lisp:L1-L5@sha256:3912248685ed",
+     "offset": 52567
+    }
+   ]
+  },
+  {
+   "slot": 115,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/README.md",
+   "new_target": "systems/orchestrator-omega-modules/README.md",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/README.md:L1-L60",
+     "offset": 46507
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/README.md:L1-L60@sha256:646024104f50",
+     "offset": 53108
+    }
+   ]
+  },
+  {
+   "slot": 116,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega.asd",
+   "new_target": "systems/orchestrator-omega.asd",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega.asd:L1",
+     "offset": 46916
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega.asd:L1-L1@sha256:f92cbe714cc3",
+     "offset": 53537
+    }
+   ]
+  },
+  {
+   "slot": 117,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/constitutional-dispatch.lisp",
+   "new_target": "systems/orchestrator-cli/constitutional-dispatch.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/constitutional-dispatch.lisp:L13-L14,L41-L47,L71-L74",
+     "offset": 47382
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/constitutional-dispatch.lisp:L13-L14@sha256:b1506f7b8465",
+     "offset": 54026
+    },
+    {
+     "token": "systems/orchestrator-cli/constitutional-dispatch.lisp:L41-L47@sha256:b1506f7b8465",
+     "offset": 54108
+    },
+    {
+     "token": "systems/orchestrator-cli/constitutional-dispatch.lisp:L71-L74@sha256:b1506f7b8465",
+     "offset": 54190
+    }
+   ]
+  },
+  {
+   "slot": 118,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/decisions.lisp",
+   "new_target": "systems/orchestrator-cli/decisions.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L88-L92,L94-L112",
+     "offset": 47823
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L88-L92@sha256:2cbbf00a8561",
+     "offset": 54635
+    },
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L94-L112@sha256:2cbbf00a8561",
+     "offset": 54703
+    }
+   ]
+  },
+  {
+   "slot": 119,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L2517-L2525",
+     "offset": 48185
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L2517-L2525@sha256:8cf601f197ad",
+     "offset": 55077
+    }
+   ]
+  },
+  {
+   "slot": 120,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/package.lisp",
+   "new_target": "systems/orchestrator-cli/package.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/package.lisp:L9-L16",
+     "offset": 48558
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/package.lisp:L9-L16@sha256:58f0b0463f33",
+     "offset": 55470
+    }
+   ]
+  },
+  {
+   "slot": 121,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/commands.lisp",
+   "new_target": "systems/orchestrator-cli/commands.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/commands.lisp:L26-L67",
+     "offset": 48605
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/commands.lisp:L26-L67@sha256:4709db534afb",
+     "offset": 55537
+    }
+   ]
+  },
+  {
+   "slot": 122,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-tests/suite.lisp",
+   "new_target": "systems/orchestrator-tests/suite.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-tests/suite.lisp:L32-L100",
+     "offset": 48958
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-tests/suite.lisp:L32-L100@sha256:6b24e98274b7",
+     "offset": 55910
+    }
+   ]
+  },
+  {
+   "slot": 123,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-tests/package.lisp",
+   "new_target": "systems/orchestrator-tests/package.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-tests/package.lisp:L6-L13",
+     "offset": 49007
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-tests/package.lisp:L6-L13@sha256:2c18f6846141",
+     "offset": 55979
+    }
+   ]
+  },
+  {
+   "slot": 124,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-tests/reproducibility/hash-stability-test.lisp",
+   "new_target": "systems/orchestrator-tests/reproducibility/hash-stability-test.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-tests/reproducibility/hash-stability-test.lisp:L8-L13",
+     "offset": 49618
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-tests/reproducibility/hash-stability-test.lisp:L8-L13@sha256:f16a24cbe5c5",
+     "offset": 56610
+    }
+   ]
+  },
+  {
+   "slot": 125,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-tests/unit/test-ai-core.lisp",
+   "new_target": "systems/orchestrator-tests/unit/test-ai-core.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-tests/unit/test-ai-core.lisp:L417-L439,L441-L452",
+     "offset": 49695
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-tests/unit/test-ai-core.lisp:L417-L439@sha256:36107c3e94b2",
+     "offset": 56707
+    },
+    {
+     "token": "systems/orchestrator-tests/unit/test-ai-core.lisp:L441-L452@sha256:36107c3e94b2",
+     "offset": 56787
+    }
+   ]
+  },
+  {
+   "slot": 126,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-tests/integration/ai-export-integration-test.lisp",
+   "new_target": "systems/orchestrator-tests/integration/ai-export-integration-test.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-tests/integration/ai-export-integration-test.lisp:L192-L215",
+     "offset": 49767
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-tests/integration/ai-export-integration-test.lisp:L192-L215@sha256:7ebe3bcbbcb5",
+     "offset": 56869
+    }
+   ]
+  },
+  {
+   "slot": 127,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/golden-gate.lisp",
+   "new_target": "systems/orchestrator-cli/golden-gate.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/golden-gate.lisp:L88-L98",
+     "offset": 49850
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/golden-gate.lisp:L88-L98@sha256:1856d172a557",
+     "offset": 56972
+    }
+   ]
+  },
+  {
+   "slot": 128,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/cockpit.lisp",
+   "new_target": "systems/orchestrator-cli/cockpit.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cockpit.lisp:L228-L244,L252-L268",
+     "offset": 50210
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cockpit.lisp:L228-L244@sha256:a7be9b8a2338",
+     "offset": 57352
+    },
+    {
+     "token": "systems/orchestrator-cli/cockpit.lisp:L252-L268@sha256:a7be9b8a2338",
+     "offset": 57420
+    }
+   ]
+  },
+  {
+   "slot": 129,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/cli-util.lisp",
+   "new_target": "systems/orchestrator-cli/cli-util.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L192-L199",
+     "offset": 50270
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L192-L199@sha256:e1fe765dc1a3",
+     "offset": 57490
+    }
+   ]
+  },
+  {
+   "slot": 130,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/ingestion-commands.lisp",
+   "new_target": "systems/orchestrator-cli/ingestion-commands.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/ingestion-commands.lisp:L442-L465",
+     "offset": 50741
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/ingestion-commands.lisp:L442-L465@sha256:986b0f53be46",
+     "offset": 57981
+    }
+   ]
+  },
+  {
+   "slot": 131,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp",
+   "new_target": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:L23-L27,L62-L91",
+     "offset": 51215
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:L23-L27@sha256:4da7b2505a06",
+     "offset": 58475
+    },
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:L62-L91@sha256:4da7b2505a06",
+     "offset": 58566
+    }
+   ]
+  },
+  {
+   "slot": 132,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L976",
+     "offset": 51296
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L976-L976@sha256:d84de9735268",
+     "offset": 58659
+    }
+   ]
+  },
+  {
+   "slot": 133,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp:L108-L118,L124",
+     "offset": 51806
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp:L108-L118@sha256:c93423a640d1",
+     "offset": 59194
+    },
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp:L124-L124@sha256:c93423a640d1",
+     "offset": 59286
+    }
+   ]
+  },
+  {
+   "slot": 134,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L1121-L1127",
+     "offset": 51885
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L1121-L1127@sha256:d84de9735268",
+     "offset": 59380
+    }
+   ]
+  },
+  {
+   "slot": 135,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/release-authority.lisp",
+   "new_target": "systems/orchestrator-cli/release-authority.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/release-authority.lisp:L142-L148",
+     "offset": 51952
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/release-authority.lisp:L142-L148@sha256:3558de1d09cd",
+     "offset": 59467
+    }
+   ]
+  },
+  {
+   "slot": 136,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/metrics-stub.lisp",
+   "new_target": "systems/orchestrator-omega-modules/metrics-stub.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/metrics-stub.lisp:L5-L20",
+     "offset": 52339
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/metrics-stub.lisp:L5-L20@sha256:3912248685ed",
+     "offset": 59874
+    }
+   ]
+  },
+  {
+   "slot": 137,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/frbr-conditions.lisp",
+   "new_target": "systems/orchestrator-omega-modules/frbr-conditions.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-conditions.lisp:L166-L176",
+     "offset": 52401
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-conditions.lisp:L166-L176@sha256:1ccf51c61354",
+     "offset": 59956
+    }
+   ]
+  },
+  {
+   "slot": 138,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-meta/registry.lisp",
+   "new_target": "systems/orchestrator-meta/registry.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-meta/registry.lisp:L23-L54",
+     "offset": 52786
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-meta/registry.lisp:L23-L54@sha256:28dfd8988659",
+     "offset": 60361
+    }
+   ]
+  },
+  {
+   "slot": 139,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/cli-util.lisp",
+   "new_target": "systems/orchestrator-cli/cli-util.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L46-L64",
+     "offset": 52852
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L46-L64@sha256:e1fe765dc1a3",
+     "offset": 60447
+    }
+   ]
+  },
+  {
+   "slot": 140,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-spec/version.lisp",
+   "new_target": "systems/orchestrator-spec/version.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-spec/version.lisp:L15-L23",
+     "offset": 53258
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-spec/version.lisp:L15-L23@sha256:3321e909fb36",
+     "offset": 60873
+    }
+   ]
+  },
+  {
+   "slot": 141,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L6",
+     "offset": 53307
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L6-L6@sha256:8cf601f197ad",
+     "offset": 60942
+    }
+   ]
+  },
+  {
+   "slot": 142,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-meta/tool-versions.lisp",
+   "new_target": "systems/orchestrator-meta/tool-versions.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-meta/tool-versions.lisp:L11-L16",
+     "offset": 53347
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-meta/tool-versions.lisp:L11-L16@sha256:a8b8727ee69e",
+     "offset": 61005
+    }
+   ]
+  },
+  {
+   "slot": 143,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-core/executor.lisp",
+   "new_target": "systems/orchestrator-core/executor.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-core/executor.lisp:L10-L32,L104-L129,L172-L204",
+     "offset": 53853
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-core/executor.lisp:L10-L32@sha256:0f690dd499fb",
+     "offset": 61531
+    },
+    {
+     "token": "systems/orchestrator-core/executor.lisp:L104-L129@sha256:0f690dd499fb",
+     "offset": 61599
+    },
+    {
+     "token": "systems/orchestrator-core/executor.lisp:L172-L204@sha256:0f690dd499fb",
+     "offset": 61669
+    }
+   ]
+  },
+  {
+   "slot": 144,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/decisions.lisp",
+   "new_target": "systems/orchestrator-cli/decisions.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L186-L191,L205-L208",
+     "offset": 54206
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L186-L191@sha256:2cbbf00a8561",
+     "offset": 62024
+    },
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L205-L208@sha256:2cbbf00a8561",
+     "offset": 62094
+    }
+   ]
+  },
+  {
+   "slot": 145,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/authority-boundary.lisp",
+   "new_target": "systems/orchestrator-epistemic/authority-boundary.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/authority-boundary.lisp:L82-L95",
+     "offset": 54599
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/authority-boundary.lisp:L82-L95@sha256:bd8e54d23159",
+     "offset": 62497
+    }
+   ]
+  },
+  {
+   "slot": 146,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L838-L851",
+     "offset": 54664
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L838-L851@sha256:d84de9735268",
+     "offset": 62582
+    }
+   ]
+  },
+  {
+   "slot": 147,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/cli-util.lisp",
+   "new_target": "systems/orchestrator-cli/cli-util.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L238-L244",
+     "offset": 54997
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L238-L244@sha256:e1fe765dc1a3",
+     "offset": 62935
+    }
+   ]
+  },
+  {
+   "slot": 148,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-tests/unit/test-ai-core.lisp",
+   "new_target": "systems/orchestrator-tests/unit/test-ai-core.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-tests/unit/test-ai-core.lisp:L13,L51-L54",
+     "offset": 55395
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-tests/unit/test-ai-core.lisp:L13-L13@sha256:36107c3e94b2",
+     "offset": 63353
+    },
+    {
+     "token": "systems/orchestrator-tests/unit/test-ai-core.lisp:L51-L54@sha256:36107c3e94b2",
+     "offset": 63431
+    }
+   ]
+  },
+  {
+   "slot": 149,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-tests/integration/ai-export-integration-test.lisp",
+   "new_target": "systems/orchestrator-tests/integration/ai-export-integration-test.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-tests/integration/ai-export-integration-test.lisp:L15-L16",
+     "offset": 55459
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-tests/integration/ai-export-integration-test.lisp:L15-L16@sha256:7ebe3bcbbcb5",
+     "offset": 63511
+    }
+   ]
+  },
+  {
+   "slot": 150,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-tests/fixtures/mock-data.lisp",
+   "new_target": "systems/orchestrator-tests/fixtures/mock-data.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-tests/fixtures/mock-data.lisp:L6-L9",
+     "offset": 55540
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-tests/fixtures/mock-data.lisp:L6-L9@sha256:d46bed3a6567",
+     "offset": 63612
+    }
+   ]
+  },
+  {
+   "slot": 151,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/self-extension.lisp",
+   "new_target": "systems/orchestrator-cli/self-extension.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L104,L160,L248,L507-L509",
+     "offset": 55951
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L104-L104@sha256:37f5bbd5e1bb",
+     "offset": 64043
+    },
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L160-L160@sha256:37f5bbd5e1bb",
+     "offset": 64118
+    },
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L248-L248@sha256:37f5bbd5e1bb",
+     "offset": 64193
+    },
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L507-L509@sha256:37f5bbd5e1bb",
+     "offset": 64268
+    }
+   ]
+  },
+  {
+   "slot": 152,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/generation-gate.lisp",
+   "new_target": "systems/orchestrator-cli/generation-gate.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/generation-gate.lisp:L67",
+     "offset": 56023
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/generation-gate.lisp:L67-L67@sha256:3634207d4def",
+     "offset": 64345
+    }
+   ]
+  },
+  {
+   "slot": 153,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/inference-gate.lisp",
+   "new_target": "systems/orchestrator-cli/inference-gate.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/inference-gate.lisp:L400",
+     "offset": 56075
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/inference-gate.lisp:L400-L400@sha256:6565deeeebbc",
+     "offset": 64421
+    }
+   ]
+  },
+  {
+   "slot": 154,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/memory-commands.lisp",
+   "new_target": "systems/orchestrator-cli/memory-commands.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/memory-commands.lisp:L110",
+     "offset": 56127
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/memory-commands.lisp:L110-L110@sha256:e4c634bc8998",
+     "offset": 64498
+    }
+   ]
+  },
+  {
+   "slot": 155,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/approval-policy.lisp",
+   "new_target": "systems/orchestrator-cli/approval-policy.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L202-L204",
+     "offset": 56180
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L202-L204@sha256:9f49c1e72540",
+     "offset": 64576
+    }
+   ]
+  },
+  {
+   "slot": 156,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/advisor.lisp",
+   "new_target": "systems/orchestrator-cli/advisor.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/advisor.lisp:L266-L269,L314-L315",
+     "offset": 56238
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/advisor.lisp:L266-L269@sha256:ba2abe1b3968",
+     "offset": 64654
+    },
+    {
+     "token": "systems/orchestrator-cli/advisor.lisp:L314-L315@sha256:ba2abe1b3968",
+     "offset": 64722
+    }
+   ]
+  },
+  {
+   "slot": 157,
+   "kind": "IDENTITY",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "source/pdf-authority.lisp:L1405",
+     "offset": 56298
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L1405-L1405@sha256:c4e2054c0e4f",
+     "offset": 64792
+    }
+   ]
+  },
+  {
+   "slot": 158,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-gr-syntagma/parsing.lisp",
+   "new_target": "systems/orchestrator-gr-syntagma/parsing.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-gr-syntagma/parsing.lisp:L132-L144,L193,L232,L242,L251,L1045",
+     "offset": 56661
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-gr-syntagma/parsing.lisp:L132-L144@sha256:d6674636bc34",
+     "offset": 65181
+    },
+    {
+     "token": "systems/orchestrator-gr-syntagma/parsing.lisp:L193-L193@sha256:d6674636bc34",
+     "offset": 65257
+    },
+    {
+     "token": "systems/orchestrator-gr-syntagma/parsing.lisp:L232-L232@sha256:d6674636bc34",
+     "offset": 65333
+    },
+    {
+     "token": "systems/orchestrator-gr-syntagma/parsing.lisp:L242-L242@sha256:d6674636bc34",
+     "offset": 65409
+    },
+    {
+     "token": "systems/orchestrator-gr-syntagma/parsing.lisp:L251-L251@sha256:d6674636bc34",
+     "offset": 65485
+    },
+    {
+     "token": "systems/orchestrator-gr-syntagma/parsing.lisp:L1045-L1045@sha256:d6674636bc34",
+     "offset": 65561
+    }
+   ]
+  },
+  {
+   "slot": 159,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-meta/reports.lisp",
+   "new_target": "systems/orchestrator-meta/reports.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-meta/reports.lisp:L6-L19",
+     "offset": 57128
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-meta/reports.lisp:L6-L19@sha256:0f3aee9c828f",
+     "offset": 66024
+    }
+   ]
+  },
+  {
+   "slot": 160,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/commands.lisp",
+   "new_target": "systems/orchestrator-cli/commands.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/commands.lisp:L62-L67",
+     "offset": 57176
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/commands.lisp:L62-L67@sha256:4709db534afb",
+     "offset": 66092
+    }
+   ]
+  },
+  {
+   "slot": 161,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L255-L258,L519-L522,L529,L1199-L1201",
+     "offset": 57576
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L255-L258@sha256:d84de9735268",
+     "offset": 66512
+    },
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L519-L522@sha256:d84de9735268",
+     "offset": 66595
+    },
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L529-L529@sha256:d84de9735268",
+     "offset": 66678
+    },
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L1199-L1201@sha256:d84de9735268",
+     "offset": 66761
+    }
+   ]
+  },
+  {
+   "slot": 162,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L348-L414",
+     "offset": 57965
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L348-L414@sha256:d84de9735268",
+     "offset": 67145
+    }
+   ]
+  },
+  {
+   "slot": 163,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1834-L1836,L1887-L1892",
+     "offset": 58316
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1834-L1836@sha256:8cf601f197ad",
+     "offset": 67516
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1887-L1892@sha256:8cf601f197ad",
+     "offset": 67583
+    }
+   ]
+  },
+  {
+   "slot": 164,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L267-L284",
+     "offset": 58707
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L267-L284@sha256:8cf601f197ad",
+     "offset": 67982
+    }
+   ]
+  },
+  {
+   "slot": 165,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1187",
+     "offset": 58984
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1187-L1187@sha256:8cf601f197ad",
+     "offset": 68279
+    }
+   ]
+  },
+  {
+   "slot": 166,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/gates-runner.lisp",
+   "new_target": "systems/orchestrator-cli/gates-runner.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/gates-runner.lisp:L28-L37",
+     "offset": 59329
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/gates-runner.lisp:L28-L37@sha256:0c20c1ff1599",
+     "offset": 68650
+    }
+   ]
+  },
+  {
+   "slot": 167,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L784-L789,L825-L850,L911",
+     "offset": 59712
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L784-L789@sha256:8cf601f197ad",
+     "offset": 69053
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L825-L850@sha256:8cf601f197ad",
+     "offset": 69118
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L911-L911@sha256:8cf601f197ad",
+     "offset": 69183
+    }
+   ]
+  },
+  {
+   "slot": 168,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/constitutional-dispatch.lisp",
+   "new_target": "systems/orchestrator-cli/constitutional-dispatch.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/constitutional-dispatch.lisp:L37-L47,L71-L74",
+     "offset": 60125
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/constitutional-dispatch.lisp:L37-L47@sha256:b1506f7b8465",
+     "offset": 69601
+    },
+    {
+     "token": "systems/orchestrator-cli/constitutional-dispatch.lisp:L71-L74@sha256:b1506f7b8465",
+     "offset": 69683
+    }
+   ]
+  },
+  {
+   "slot": 169,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/advisor.lisp",
+   "new_target": "systems/orchestrator-cli/advisor.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/advisor.lisp:L154-L198,L200-L213",
+     "offset": 60607
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/advisor.lisp:L154-L198@sha256:ba2abe1b3968",
+     "offset": 70177
+    },
+    {
+     "token": "systems/orchestrator-cli/advisor.lisp:L200-L213@sha256:ba2abe1b3968",
+     "offset": 70245
+    }
+   ]
+  },
+  {
+   "slot": 170,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/self-extension.lisp",
+   "new_target": "systems/orchestrator-cli/self-extension.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L436,L465-L490",
+     "offset": 61004
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L436-L436@sha256:37f5bbd5e1bb",
+     "offset": 70652
+    },
+    {
+     "token": "systems/orchestrator-cli/self-extension.lisp:L465-L490@sha256:37f5bbd5e1bb",
+     "offset": 70727
+    }
+   ]
+  },
+  {
+   "slot": 171,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/approval-policy.lisp",
+   "new_target": "systems/orchestrator-cli/approval-policy.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L115-L121",
+     "offset": 61066
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/approval-policy.lisp:L115-L121@sha256:9f49c1e72540",
+     "offset": 70804
+    }
+   ]
+  },
+  {
+   "slot": 172,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/golden-gate.lisp",
+   "new_target": "systems/orchestrator-cli/golden-gate.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/golden-gate.lisp:L48-L57,L99-L107",
+     "offset": 61446
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/golden-gate.lisp:L48-L57@sha256:1856d172a557",
+     "offset": 71204
+    },
+    {
+     "token": "systems/orchestrator-cli/golden-gate.lisp:L99-L107@sha256:1856d172a557",
+     "offset": 71274
+    }
+   ]
+  },
+  {
+   "slot": 173,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1588-L1598,L1611-L1616",
+     "offset": 61507
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1588-L1598@sha256:8cf601f197ad",
+     "offset": 71347
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1611-L1616@sha256:8cf601f197ad",
+     "offset": 71414
+    }
+   ]
+  },
+  {
+   "slot": 174,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1311-L1313,L1351-L1368",
+     "offset": 61873
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1311-L1313@sha256:8cf601f197ad",
+     "offset": 71788
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1351-L1368@sha256:8cf601f197ad",
+     "offset": 71855
+    }
+   ]
+  },
+  {
+   "slot": 175,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L430-L442",
+     "offset": 62215
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L430-L442@sha256:d84de9735268",
+     "offset": 72205
+    }
+   ]
+  },
+  {
+   "slot": 176,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L2500-L2516",
+     "offset": 62633
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L2500-L2516@sha256:8cf601f197ad",
+     "offset": 72643
+    }
+   ]
+  },
+  {
+   "slot": 177,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/cli-util.lisp",
+   "new_target": "systems/orchestrator-cli/cli-util.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L251-L260",
+     "offset": 62682
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L251-L260@sha256:e1fe765dc1a3",
+     "offset": 72712
+    }
+   ]
+  },
+  {
+   "slot": 178,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-core/executor.lisp",
+   "new_target": "systems/orchestrator-core/executor.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-core/executor.lisp:L19-L32,L111-L129",
+     "offset": 63058
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-core/executor.lisp:L19-L32@sha256:0f690dd499fb",
+     "offset": 73108
+    },
+    {
+     "token": "systems/orchestrator-core/executor.lisp:L111-L129@sha256:0f690dd499fb",
+     "offset": 73176
+    }
+   ]
+  },
+  {
+   "slot": 179,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/cli-util.lisp",
+   "new_target": "systems/orchestrator-cli/cli-util.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L213-L228",
+     "offset": 63414
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L213-L228@sha256:e1fe765dc1a3",
+     "offset": 73544
+    }
+   ]
+  },
+  {
+   "slot": 180,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/decisions.lisp",
+   "new_target": "systems/orchestrator-cli/decisions.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L192-L204",
+     "offset": 63879
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L192-L204@sha256:2cbbf00a8561",
+     "offset": 74029
+    }
+   ]
+  },
+  {
+   "slot": 181,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/frbr-protocol.lisp",
+   "new_target": "systems/orchestrator-omega-modules/frbr-protocol.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-protocol.lisp:L5",
+     "offset": 64138
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-protocol.lisp:L5-L5@sha256:15edc8b34f1b",
+     "offset": 74308
+    }
+   ]
+  },
+  {
+   "slot": 182,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/frbr-conditions.lisp",
+   "new_target": "systems/orchestrator-omega-modules/frbr-conditions.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-conditions.lisp:L5",
+     "offset": 64208
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-conditions.lisp:L5-L5@sha256:1ccf51c61354",
+     "offset": 74401
+    }
+   ]
+  },
+  {
+   "slot": 183,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/frbr-consistency-validator.lisp",
+   "new_target": "systems/orchestrator-omega-modules/frbr-consistency-validator.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-consistency-validator.lisp:L17",
+     "offset": 64280
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-consistency-validator.lisp:L17-L17@sha256:a67b1b292eff",
+     "offset": 74496
+    }
+   ]
+  },
+  {
+   "slot": 184,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/rdf-canonicalization.lisp",
+   "new_target": "systems/orchestrator-omega-modules/rdf-canonicalization.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/rdf-canonicalization.lisp:L20",
+     "offset": 64364
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/rdf-canonicalization.lisp:L20-L20@sha256:c71a98335a03",
+     "offset": 74604
+    }
+   ]
+  },
+  {
+   "slot": 185,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/article-root-generator-omega.lisp",
+   "new_target": "systems/orchestrator-omega-modules/article-root-generator-omega.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/article-root-generator-omega.lisp:L19",
+     "offset": 64442
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/article-root-generator-omega.lisp:L19-L19@sha256:dfe99cf68b63",
+     "offset": 74706
+    }
+   ]
+  },
+  {
+   "slot": 186,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/prov-activity-generator-omega.lisp",
+   "new_target": "systems/orchestrator-omega-modules/prov-activity-generator-omega.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/prov-activity-generator-omega.lisp:L14",
+     "offset": 64528
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/prov-activity-generator-omega.lisp:L14-L14@sha256:8fcb0d0ad6a7",
+     "offset": 74816
+    }
+   ]
+  },
+  {
+   "slot": 187,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/corpus-root-generator.lisp",
+   "new_target": "systems/orchestrator-omega-modules/corpus-root-generator.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/corpus-root-generator.lisp:L7",
+     "offset": 64615
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/corpus-root-generator.lisp:L7-L7@sha256:d9e808462adf",
+     "offset": 74927
+    }
+   ]
+  },
+  {
+   "slot": 188,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/hybrid-generator-phase1.lisp",
+   "new_target": "systems/orchestrator-omega-modules/hybrid-generator-phase1.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/hybrid-generator-phase1.lisp:L13",
+     "offset": 64693
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/hybrid-generator-phase1.lisp:L13-L13@sha256:1c4aba67d9a5",
+     "offset": 75028
+    }
+   ]
+  },
+  {
+   "slot": 189,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/unified-frbr-generator.lisp",
+   "new_target": "systems/orchestrator-omega-modules/unified-frbr-generator.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/unified-frbr-generator.lisp:L22",
+     "offset": 64774
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/unified-frbr-generator.lisp:L22-L22@sha256:6499660bbe1f",
+     "offset": 75133
+    }
+   ]
+  },
+  {
+   "slot": 190,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/config-accessor.lisp",
+   "new_target": "systems/orchestrator-omega-modules/config-accessor.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/config-accessor.lisp:L11",
+     "offset": 64854
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/config-accessor.lisp:L11-L11@sha256:2a7994de7c2c",
+     "offset": 75237
+    }
+   ]
+  },
+  {
+   "slot": 191,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/html-rdfa-generator.lisp",
+   "new_target": "systems/orchestrator-omega-modules/html-rdfa-generator.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/html-rdfa-generator.lisp:L12",
+     "offset": 64927
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/html-rdfa-generator.lisp:L12-L12@sha256:b9f7b012f59d",
+     "offset": 75334
+    }
+   ]
+  },
+  {
+   "slot": 192,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/frbr-classes.lisp",
+   "new_target": "systems/orchestrator-omega-modules/frbr-classes.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-classes.lisp:L5",
+     "offset": 65112
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-classes.lisp:L5-L5@sha256:4a0dfb97760e",
+     "offset": 75543
+    }
+   ]
+  },
+  {
+   "slot": 193,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/frbr-article-root.lisp",
+   "new_target": "systems/orchestrator-omega-modules/frbr-article-root.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-article-root.lisp:L21",
+     "offset": 65181
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-article-root.lisp:L21-L21@sha256:a40bb8adad54",
+     "offset": 75635
+    }
+   ]
+  },
+  {
+   "slot": 194,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/greek-law-types.lisp",
+   "new_target": "systems/orchestrator-omega-modules/greek-law-types.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/greek-law-types.lisp:L22",
+     "offset": 65256
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/greek-law-types.lisp:L22-L22@sha256:dc2195424595",
+     "offset": 75734
+    }
+   ]
+  },
+  {
+   "slot": 195,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/prov-activity.lisp",
+   "new_target": "systems/orchestrator-omega-modules/prov-activity.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/prov-activity.lisp:L19",
+     "offset": 65329
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/prov-activity.lisp:L19-L19@sha256:a1096d288a03",
+     "offset": 75831
+    }
+   ]
+  },
+  {
+   "slot": 196,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/metrics-stub.lisp",
+   "new_target": "systems/orchestrator-omega-modules/metrics-stub.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/metrics-stub.lisp:L5-L8",
+     "offset": 65513
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/metrics-stub.lisp:L5-L8@sha256:3912248685ed",
+     "offset": 76039
+    }
+   ]
+  },
+  {
+   "slot": 197,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L2537",
+     "offset": 65706
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L2537-L2537@sha256:8cf601f197ad",
+     "offset": 76252
+    }
+   ]
+  },
+  {
+   "slot": 198,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/gates-runner.lisp",
+   "new_target": "systems/orchestrator-cli/gates-runner.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/gates-runner.lisp:L29",
+     "offset": 65800
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/gates-runner.lisp:L29-L29@sha256:0c20c1ff1599",
+     "offset": 76372
+    }
+   ]
+  },
+  {
+   "slot": 199,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L846",
+     "offset": 65900
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L846-L846@sha256:8cf601f197ad",
+     "offset": 76496
+    }
+   ]
+  },
+  {
+   "slot": 200,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L1097",
+     "offset": 66085
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L1097-L1097@sha256:d84de9735268",
+     "offset": 76706
+    }
+   ]
+  },
+  {
+   "slot": 201,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp:L157",
+     "offset": 66165
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp:L157-L157@sha256:c93423a640d1",
+     "offset": 76812
+    }
+   ]
+  },
+  {
+   "slot": 202,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L974",
+     "offset": 66352
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L974-L974@sha256:d84de9735268",
+     "offset": 77024
+    }
+   ]
+  },
+  {
+   "slot": 203,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp:L30",
+     "offset": 66455
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp:L30-L30@sha256:c93423a640d1",
+     "offset": 77152
+    }
+   ]
+  },
+  {
+   "slot": 204,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-ai-core/ingest-manifest.lisp",
+   "new_target": "systems/orchestrator-ai-core/ingest-manifest.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-ai-core/ingest-manifest.lisp:L109-L155",
+     "offset": 66646
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-ai-core/ingest-manifest.lisp:L109-L155@sha256:fc25d45bfc6e",
+     "offset": 77367
+    }
+   ]
+  },
+  {
+   "slot": 205,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-ai-core/config.lisp",
+   "new_target": "systems/orchestrator-ai-core/config.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-ai-core/config.lisp:L286-L325",
+     "offset": 66765
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-ai-core/config.lisp:L286-L325@sha256:836c3c1970de",
+     "offset": 77506
+    }
+   ]
+  },
+  {
+   "slot": 206,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-ai-core/ingest-manifest.lisp",
+   "new_target": "systems/orchestrator-ai-core/ingest-manifest.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-ai-core/ingest-manifest.lisp:L36",
+     "offset": 66931
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-ai-core/ingest-manifest.lisp:L36-L36@sha256:fc25d45bfc6e",
+     "offset": 77692
+    }
+   ]
+  },
+  {
+   "slot": 207,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-ai-core/config.lisp",
+   "new_target": "systems/orchestrator-ai-core/config.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-ai-core/config.lisp:L219",
+     "offset": 67030
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-ai-core/config.lisp:L219-L219@sha256:836c3c1970de",
+     "offset": 77815
+    }
+   ]
+  },
+  {
+   "slot": 208,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-ai-core/provenance-model.lisp",
+   "new_target": "systems/orchestrator-ai-core/provenance-model.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-ai-core/provenance-model.lisp:L288",
+     "offset": 67155
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-ai-core/provenance-model.lisp:L288-L288@sha256:a9694e698a7a",
+     "offset": 77965
+    }
+   ]
+  },
+  {
+   "slot": 209,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-ai-core/config.lisp",
+   "new_target": "systems/orchestrator-ai-core/config.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-ai-core/config.lisp:L326",
+     "offset": 67248
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-ai-core/config.lisp:L326-L326@sha256:836c3c1970de",
+     "offset": 78083
+    }
+   ]
+  },
+  {
+   "slot": 210,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-tests/suite.lisp",
+   "new_target": "systems/orchestrator-tests/suite.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-tests/suite.lisp:L32",
+     "offset": 67424
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-tests/suite.lisp:L32-L32@sha256:6b24e98274b7",
+     "offset": 78284
+    }
+   ]
+  },
+  {
+   "slot": 211,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-tests/suite.lisp",
+   "new_target": "systems/orchestrator-tests/suite.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-tests/suite.lisp:L69",
+     "offset": 67502
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-tests/suite.lisp:L69-L69@sha256:6b24e98274b7",
+     "offset": 78386
+    }
+   ]
+  },
+  {
+   "slot": 212,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-tests/reproducibility/hash-stability-test.lisp",
+   "new_target": "systems/orchestrator-tests/reproducibility/hash-stability-test.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-tests/reproducibility/hash-stability-test.lisp:L8",
+     "offset": 67659
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-tests/reproducibility/hash-stability-test.lisp:L8-L8@sha256:f16a24cbe5c5",
+     "offset": 78567
+    }
+   ]
+  },
+  {
+   "slot": 213,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-tests/unit/test-ai-core.lisp",
+   "new_target": "systems/orchestrator-tests/unit/test-ai-core.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-tests/unit/test-ai-core.lisp:L417",
+     "offset": 67743
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-tests/unit/test-ai-core.lisp:L417-L417@sha256:36107c3e94b2",
+     "offset": 78674
+    }
+   ]
+  },
+  {
+   "slot": 214,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-tests/unit/test-ai-core.lisp",
+   "new_target": "systems/orchestrator-tests/unit/test-ai-core.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-tests/unit/test-ai-core.lisp:L441",
+     "offset": 67811
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-tests/unit/test-ai-core.lisp:L441-L441@sha256:36107c3e94b2",
+     "offset": 78767
+    }
+   ]
+  },
+  {
+   "slot": 215,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-tests/integration/ai-export-integration-test.lisp",
+   "new_target": "systems/orchestrator-tests/integration/ai-export-integration-test.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-tests/integration/ai-export-integration-test.lisp:L192",
+     "offset": 67879
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-tests/integration/ai-export-integration-test.lisp:L192-L192@sha256:7ebe3bcbbcb5",
+     "offset": 78860
+    }
+   ]
+  },
+  {
+   "slot": 216,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/golden-gate.lisp",
+   "new_target": "systems/orchestrator-cli/golden-gate.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/golden-gate.lisp:L88-L98",
+     "offset": 67968
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/golden-gate.lisp:L88-L98@sha256:1856d172a557",
+     "offset": 78974
+    }
+   ]
+  },
+  {
+   "slot": 217,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/cockpit.lisp",
+   "new_target": "systems/orchestrator-cli/cockpit.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cockpit.lisp:L258-L268",
+     "offset": 68129
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cockpit.lisp:L258-L268@sha256:a7be9b8a2338",
+     "offset": 79155
+    }
+   ]
+  },
+  {
+   "slot": 218,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L803-L824",
+     "offset": 68227
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L803-L824@sha256:8cf601f197ad",
+     "offset": 79273
+    }
+   ]
+  },
+  {
+   "slot": 219,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L825-L850",
+     "offset": 68303
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L825-L850@sha256:8cf601f197ad",
+     "offset": 79369
+    }
+   ]
+  },
+  {
+   "slot": 220,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/decisions.lisp",
+   "new_target": "systems/orchestrator-cli/decisions.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L173,L1072,L1248",
+     "offset": 68430
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L173-L173@sha256:2cbbf00a8561",
+     "offset": 79516
+    },
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L1072-L1072@sha256:2cbbf00a8561",
+     "offset": 79586
+    },
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L1248-L1248@sha256:2cbbf00a8561",
+     "offset": 79658
+    }
+   ]
+  },
+  {
+   "slot": 221,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L174,L2341",
+     "offset": 68519
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L174-L174@sha256:8cf601f197ad",
+     "offset": 79762
+    },
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L2341-L2341@sha256:8cf601f197ad",
+     "offset": 79827
+    }
+   ]
+  },
+  {
+   "slot": 222,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/ingestion-commands.lisp",
+   "new_target": "systems/orchestrator-cli/ingestion-commands.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/ingestion-commands.lisp:L294,L431",
+     "offset": 68602
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/ingestion-commands.lisp:L294-L294@sha256:986b0f53be46",
+     "offset": 79931
+    },
+    {
+     "token": "systems/orchestrator-cli/ingestion-commands.lisp:L431-L431@sha256:986b0f53be46",
+     "offset": 80010
+    }
+   ]
+  },
+  {
+   "slot": 223,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-engine-sbcl/adapters/pdf-adapter.lisp",
+   "new_target": "systems/orchestrator-engine-sbcl/adapters/pdf-adapter.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/adapters/pdf-adapter.lisp:L2144",
+     "offset": 68710
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/adapters/pdf-adapter.lisp:L2144-L2144@sha256:9089ca358247",
+     "offset": 80138
+    }
+   ]
+  },
+  {
+   "slot": 224,
+   "kind": "IDENTITY",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "source/pdf-authority.lisp:L1386",
+     "offset": 68871
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L1386-L1386@sha256:c4e2054c0e4f",
+     "offset": 80325
+    }
+   ]
+  },
+  {
+   "slot": 225,
+   "kind": "IDENTITY",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "source/pdf-authority.lisp:L1403",
+     "offset": 68943
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L1403-L1403@sha256:c4e2054c0e4f",
+     "offset": 80423
+    }
+   ]
+  },
+  {
+   "slot": 226,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/decisions.lisp",
+   "new_target": "systems/orchestrator-cli/decisions.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L181",
+     "offset": 69035
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L181-L181@sha256:2cbbf00a8561",
+     "offset": 80541
+    }
+   ]
+  },
+  {
+   "slot": 227,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/golden-gate.lisp",
+   "new_target": "systems/orchestrator-cli/golden-gate.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/golden-gate.lisp:L52-L55",
+     "offset": 69273
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/golden-gate.lisp:L52-L55@sha256:1856d172a557",
+     "offset": 80804
+    }
+   ]
+  },
+  {
+   "slot": 228,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1593-L1597",
+     "offset": 69325
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L1593-L1597@sha256:8cf601f197ad",
+     "offset": 80876
+    }
+   ]
+  },
+  {
+   "slot": 229,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/cli-util.lisp",
+   "new_target": "systems/orchestrator-cli/cli-util.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L188-L190",
+     "offset": 69420
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L188-L190@sha256:e1fe765dc1a3",
+     "offset": 80991
+    }
+   ]
+  },
+  {
+   "slot": 230,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-core/source-detection.lisp",
+   "new_target": "systems/orchestrator-core/source-detection.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-core/source-detection.lisp:L41-L47",
+     "offset": 69471
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-core/source-detection.lisp:L41-L47@sha256:7e63b2cd6554",
+     "offset": 81062
+    }
+   ]
+  },
+  {
+   "slot": 231,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/log.lisp",
+   "new_target": "systems/orchestrator-cli/log.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/log.lisp:L6-L15",
+     "offset": 69612
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/log.lisp:L6-L15@sha256:ffa1203cb62e",
+     "offset": 81223
+    }
+   ]
+  },
+  {
+   "slot": 232,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/package.lisp",
+   "new_target": "systems/orchestrator-cli/package.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/package.lisp:L8",
+     "offset": 69709
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/package.lisp:L8-L8@sha256:58f0b0463f33",
+     "offset": 81340
+    }
+   ]
+  },
+  {
+   "slot": 233,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/config-loader.lisp",
+   "new_target": "systems/orchestrator-cli/config-loader.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/config-loader.lisp:L6",
+     "offset": 69875
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/config-loader.lisp:L6-L6@sha256:381ef7be7b9f",
+     "offset": 81529
+    }
+   ]
+  },
+  {
+   "slot": 234,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/decisions.lisp",
+   "new_target": "systems/orchestrator-cli/decisions.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L224-L229",
+     "offset": 69964
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L224-L229@sha256:2cbbf00a8561",
+     "offset": 81641
+    }
+   ]
+  },
+  {
+   "slot": 235,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-ai-core/config.lisp",
+   "new_target": "systems/orchestrator-ai-core/config.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-ai-core/config.lisp:L193",
+     "offset": 70069
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-ai-core/config.lisp:L193-L193@sha256:836c3c1970de",
+     "offset": 81766
+    }
+   ]
+  },
+  {
+   "slot": 236,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/release-authority.lisp",
+   "new_target": "systems/orchestrator-cli/release-authority.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/release-authority.lisp:L99",
+     "offset": 70155
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/release-authority.lisp:L99-L99@sha256:3558de1d09cd",
+     "offset": 81877
+    }
+   ]
+  },
+  {
+   "slot": 237,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-spec/version.lisp",
+   "new_target": "systems/orchestrator-spec/version.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-spec/version.lisp:L15",
+     "offset": 70296
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-spec/version.lisp:L15-L15@sha256:3321e909fb36",
+     "offset": 82042
+    }
+   ]
+  },
+  {
+   "slot": 238,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-spec/version.lisp",
+   "new_target": "systems/orchestrator-spec/version.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-spec/version.lisp:L18",
+     "offset": 70379
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-spec/version.lisp:L18-L18@sha256:3321e909fb36",
+     "offset": 82149
+    }
+   ]
+  },
+  {
+   "slot": 239,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L6",
+     "offset": 70499
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L6-L6@sha256:8cf601f197ad",
+     "offset": 82293
+    }
+   ]
+  },
+  {
+   "slot": 240,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-meta/tool-versions.lisp",
+   "new_target": "systems/orchestrator-meta/tool-versions.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-meta/tool-versions.lisp:L15",
+     "offset": 70570
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-meta/tool-versions.lisp:L15-L15@sha256:a8b8727ee69e",
+     "offset": 82387
+    }
+   ]
+  },
+  {
+   "slot": 241,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "new_target": "systems/orchestrator-epistemic/deploy-epistemic.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L975",
+     "offset": 70763
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-epistemic/deploy-epistemic.lisp:L975-L975@sha256:d84de9735268",
+     "offset": 82604
+    }
+   ]
+  },
+  {
+   "slot": 242,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp",
+   "new_target": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:L91",
+     "offset": 70835
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:L91-L91@sha256:4da7b2505a06",
+     "offset": 82701
+    }
+   ]
+  },
+  {
+   "slot": 243,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-gr-syntagma/parsing.lisp",
+   "new_target": "systems/orchestrator-gr-syntagma/parsing.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-gr-syntagma/parsing.lisp:L138,L193,L232,L242,L251,L1045",
+     "offset": 70936
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-gr-syntagma/parsing.lisp:L138-L138@sha256:d6674636bc34",
+     "offset": 82826
+    },
+    {
+     "token": "systems/orchestrator-gr-syntagma/parsing.lisp:L193-L193@sha256:d6674636bc34",
+     "offset": 82902
+    },
+    {
+     "token": "systems/orchestrator-gr-syntagma/parsing.lisp:L232-L232@sha256:d6674636bc34",
+     "offset": 82978
+    },
+    {
+     "token": "systems/orchestrator-gr-syntagma/parsing.lisp:L242-L242@sha256:d6674636bc34",
+     "offset": 83054
+    },
+    {
+     "token": "systems/orchestrator-gr-syntagma/parsing.lisp:L251-L251@sha256:d6674636bc34",
+     "offset": 83130
+    },
+    {
+     "token": "systems/orchestrator-gr-syntagma/parsing.lisp:L1045-L1045@sha256:d6674636bc34",
+     "offset": 83206
+    }
+   ]
+  },
+  {
+   "slot": 244,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L769",
+     "offset": 71026
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/main.lisp:L769-L769@sha256:8cf601f197ad",
+     "offset": 83297
+    }
+   ]
+  },
+  {
+   "slot": 245,
+   "kind": "EXPANSION",
+   "old_target": "systems/orchestrator-cli/cli-util.lisp",
+   "new_target": "systems/orchestrator-cli/cli-util.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L172-L173,L205",
+     "offset": 71093
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L172-L173@sha256:e1fe765dc1a3",
+     "offset": 83389
+    },
+    {
+     "token": "systems/orchestrator-cli/cli-util.lisp:L205-L205@sha256:e1fe765dc1a3",
+     "offset": 83458
+    }
+   ]
+  },
+  {
+   "slot": 246,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/decisions.lisp",
+   "new_target": "systems/orchestrator-cli/decisions.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L181",
+     "offset": 71212
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-cli/decisions.lisp:L181-L181@sha256:2cbbf00a8561",
+     "offset": 83592
+    }
+   ]
+  }
+ ]
+}

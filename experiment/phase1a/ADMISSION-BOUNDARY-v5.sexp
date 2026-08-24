@@ -53,16 +53,20 @@
  :aggregate (:unique-citation-keys 1654 :resolved 1627 :problems 27)
 
  ;; ── ΤΑΞΙΝΟΜΗΣΗ ΤΩΝ 27 ΥΠΟΛΟΙΠΩΝ ─────────────────────────────────────
+ :residual-arithmetic "21 + 1 + 5 = 27 ✓  (η προηγούμενη καταγραφή έλεγε
+                        22 + 1 + 4 — ΛΑΘΟΣ ΚΑΤΑΝΟΜΗ: το άθροισμα ήταν σωστό
+                        αλλά η κατανομή όχι· το άκυρο εύρος της L1 είχε
+                        προσμετρηθεί λάθος και ένα L4 token έλειπε)"
  :residual-taxonomy
  ((:class :SYNTAX-ONLY :count 0
    :meaning "μηχανικά κανονικοποιήσιμο χωρίς καμία κρίση"
    :note "ΕΞΑΝΤΛΗΘΗΚΕ. Και τα 1.627 κανονικοποιήθηκαν ντετερμινιστικά.")
-  (:class :AMBIGUOUS-PATH :count 22 :lanes ("Φ1A-L1" "Φ1A-L7")
+  (:class :AMBIGUOUS-PATH :count 21 :breakdown (:Φ1A-L1 11 :Φ1A-L7 10)
    :meaning "η ΔΙΑΔΡΟΜΗ δεν προσδιορίζεται μονοσήμαντα· μόνο η διαδρομή
              που έγραψε τον ισχυρισμό ξέρει ποιο αρχείο διάβασε")
-  (:class :INVALID-RANGE :count 1 :lanes ("Φ1A-L1")
+  (:class :INVALID-RANGE :count 1 :breakdown (:Φ1A-L1 1)
    :meaning "το αρχείο ταυτοποιείται· το εύρος ΔΕΝ υπάρχει")
-  (:class :SEMANTIC-DECISION :count 4 :lanes ("Φ1A-L4")
+  (:class :SEMANTIC-DECISION :count 5 :breakdown (:Φ1A-L4 5)
    :meaning "αφράγματο εύρος «+» — απαιτεί απόφαση για το ΤΕΛΟΣ")
   (:class :ENTAILMENT-FAILURE :count :NOT-DETERMINABLE-BY-THIS-GATE
    :meaning "το span υπάρχει αλλά ΔΕΝ στηρίζει τον ισχυρισμό"

@@ -1,0 +1,362 @@
+{
+ "kind": "lawmax-progress/1",
+ "catalogue_sha256": "sha256:74f88410e5bb786b7886db3a37f95d702c8df105e597dce14b386183246a1654",
+ "gate_receipt": "experiment/artifacts/gate-receipts/latest/RECEIPT.json",
+ "gate_receipt_sha256": "sha256:3505770e0f576593dffaf6b9c0d602681114f3e584fc097c2da023131a646ad7",
+ "rule": "ΜΟΝΟ το VERIFIED συνεισφέρει. Καμία μερική πίστωση, καμία λεκτική εκτίμηση.",
+ "total_weight": 100.0,
+ "verified_weight": 1.0,
+ "percent_complete": 1.0,
+ "by_category": {
+  "construction-evaluator-readiness": {
+   "weight": 9.999999999999998,
+   "verified": 1.0,
+   "n": 12,
+   "n_verified": 1,
+   "percent": 10.0
+  },
+  "phase1-baseline-comprehension": {
+   "weight": 14.0,
+   "verified": 0.0,
+   "n": 12,
+   "n_verified": 0,
+   "percent": 0.0
+  },
+  "frontier-research": {
+   "weight": 18.0,
+   "verified": 0.0,
+   "n": 6,
+   "n_verified": 0,
+   "percent": 0.0
+  },
+  "dominance-proof": {
+   "weight": 18.0,
+   "verified": 0.0,
+   "n": 5,
+   "n_verified": 0,
+   "percent": 0.0
+  },
+  "synthesis": {
+   "weight": 18.0,
+   "verified": 0.0,
+   "n": 6,
+   "n_verified": 0,
+   "percent": 0.0
+  },
+  "maximality-certificate": {
+   "weight": 12.0,
+   "verified": 0.0,
+   "n": 4,
+   "n_verified": 0,
+   "percent": 0.0
+  },
+  "final-deliverables": {
+   "weight": 10.0,
+   "verified": 0.0,
+   "n": 4,
+   "n_verified": 0,
+   "percent": 0.0
+  }
+ },
+ "status_counts": {
+  "VERIFIED": 1,
+  "NOT-STARTED": 9,
+  "BLOCKED": 39
+ },
+ "obligations": {
+  "D-01": {
+   "status": "BLOCKED",
+   "weight": 3.0,
+   "category": "dominance-proof",
+   "detail": "εξαρτήσεις: F-06"
+  },
+  "D-02": {
+   "status": "BLOCKED",
+   "weight": 4.0,
+   "category": "dominance-proof",
+   "detail": "εξαρτήσεις: D-01"
+  },
+  "D-03": {
+   "status": "BLOCKED",
+   "weight": 4.0,
+   "category": "dominance-proof",
+   "detail": "εξαρτήσεις: D-02"
+  },
+  "D-04": {
+   "status": "BLOCKED",
+   "weight": 4.0,
+   "category": "dominance-proof",
+   "detail": "εξαρτήσεις: D-03"
+  },
+  "D-05": {
+   "status": "BLOCKED",
+   "weight": 3.0,
+   "category": "dominance-proof",
+   "detail": "εξαρτήσεις: D-04"
+  },
+  "EV-01": {
+   "status": "VERIFIED",
+   "weight": 1.0,
+   "category": "construction-evaluator-readiness",
+   "detail": "frozen/git_leaves=35640"
+  },
+  "EV-02": {
+   "status": "NOT-STARTED",
+   "weight": 1.0,
+   "category": "construction-evaluator-readiness",
+   "detail": "isolation/namespace_change_proved=None"
+  },
+  "EV-03": {
+   "status": "BLOCKED",
+   "weight": 0.8,
+   "category": "construction-evaluator-readiness",
+   "detail": "εξαρτήσεις: EV-02"
+  },
+  "EV-04": {
+   "status": "BLOCKED",
+   "weight": 0.8,
+   "category": "construction-evaluator-readiness",
+   "detail": "εξαρτήσεις: EV-02"
+  },
+  "EV-05": {
+   "status": "NOT-STARTED",
+   "weight": 1.0,
+   "category": "construction-evaluator-readiness",
+   "detail": "access/weaker_fallback_exists=None"
+  },
+  "EV-06": {
+   "status": "BLOCKED",
+   "weight": 1.0,
+   "category": "construction-evaluator-readiness",
+   "detail": "εξαρτήσεις: EV-05"
+  },
+  "EV-07": {
+   "status": "NOT-STARTED",
+   "weight": 1.0,
+   "category": "construction-evaluator-readiness",
+   "detail": "evaluator/worktree_dirty_entries=30"
+  },
+  "EV-08": {
+   "status": "NOT-STARTED",
+   "weight": 0.8,
+   "category": "construction-evaluator-readiness",
+   "detail": "instruments_executed/witness_suite_exit=None"
+  },
+  "EV-09": {
+   "status": "NOT-STARTED",
+   "weight": 0.8,
+   "category": "construction-evaluator-readiness",
+   "detail": "instruments_executed/migration_verifier_exit=None"
+  },
+  "EV-10": {
+   "status": "NOT-STARTED",
+   "weight": 0.6,
+   "category": "construction-evaluator-readiness",
+   "detail": "instruments_executed/event_ledger_verify_exit=None"
+  },
+  "EV-11": {
+   "status": "NOT-STARTED",
+   "weight": 0.6,
+   "category": "construction-evaluator-readiness",
+   "detail": "instruments_executed/attestation_after=None"
+  },
+  "EV-12": {
+   "status": "NOT-STARTED",
+   "weight": 0.6,
+   "category": "construction-evaluator-readiness",
+   "detail": "experiment/PROTOCOL-EPOCH-3.sexp"
+  },
+  "F-01": {
+   "status": "BLOCKED",
+   "weight": 2.0,
+   "category": "frontier-research",
+   "detail": "εξαρτήσεις: P1-SEAL"
+  },
+  "F-02": {
+   "status": "BLOCKED",
+   "weight": 3.0,
+   "category": "frontier-research",
+   "detail": "εξαρτήσεις: F-01"
+  },
+  "F-03": {
+   "status": "BLOCKED",
+   "weight": 4.0,
+   "category": "frontier-research",
+   "detail": "εξαρτήσεις: F-02"
+  },
+  "F-04": {
+   "status": "BLOCKED",
+   "weight": 4.0,
+   "category": "frontier-research",
+   "detail": "εξαρτήσεις: F-03"
+  },
+  "F-05": {
+   "status": "BLOCKED",
+   "weight": 3.0,
+   "category": "frontier-research",
+   "detail": "εξαρτήσεις: F-03"
+  },
+  "F-06": {
+   "status": "BLOCKED",
+   "weight": 2.0,
+   "category": "frontier-research",
+   "detail": "εξαρτήσεις: F-04"
+  },
+  "M-01": {
+   "status": "BLOCKED",
+   "weight": 4.0,
+   "category": "maximality-certificate",
+   "detail": "εξαρτήσεις: S-01, F-04"
+  },
+  "M-02": {
+   "status": "BLOCKED",
+   "weight": 4.0,
+   "category": "maximality-certificate",
+   "detail": "εξαρτήσεις: M-01"
+  },
+  "M-03": {
+   "status": "BLOCKED",
+   "weight": 2.0,
+   "category": "maximality-certificate",
+   "detail": "εξαρτήσεις: M-01"
+  },
+  "M-04": {
+   "status": "BLOCKED",
+   "weight": 2.0,
+   "category": "maximality-certificate",
+   "detail": "εξαρτήσεις: M-02"
+  },
+  "P1-COVERAGE": {
+   "status": "BLOCKED",
+   "weight": 3.0,
+   "category": "phase1-baseline-comprehension",
+   "detail": "εξαρτήσεις: P1-GATE-1, P1-GATE-2, P1-GATE-3, P1-GATE-4, P1-GATE-5, P1-GATE-6, P1-GATE-7"
+  },
+  "P1-ENTAILMENT": {
+   "status": "BLOCKED",
+   "weight": 4.0,
+   "category": "phase1-baseline-comprehension",
+   "detail": "εξαρτήσεις: P1-COVERAGE"
+  },
+  "P1-GATE-1": {
+   "status": "BLOCKED",
+   "weight": 0.6,
+   "category": "phase1-baseline-comprehension",
+   "detail": "εξαρτήσεις: EV-06"
+  },
+  "P1-GATE-2": {
+   "status": "BLOCKED",
+   "weight": 0.6,
+   "category": "phase1-baseline-comprehension",
+   "detail": "predicate ✓ αλλά εξαρτήσεις: ['EV-06']"
+  },
+  "P1-GATE-3": {
+   "status": "BLOCKED",
+   "weight": 0.6,
+   "category": "phase1-baseline-comprehension",
+   "detail": "predicate ✓ αλλά εξαρτήσεις: ['EV-06']"
+  },
+  "P1-GATE-4": {
+   "status": "BLOCKED",
+   "weight": 0.6,
+   "category": "phase1-baseline-comprehension",
+   "detail": "εξαρτήσεις: EV-06"
+  },
+  "P1-GATE-5": {
+   "status": "BLOCKED",
+   "weight": 0.6,
+   "category": "phase1-baseline-comprehension",
+   "detail": "predicate ✓ αλλά εξαρτήσεις: ['EV-06']"
+  },
+  "P1-GATE-6": {
+   "status": "BLOCKED",
+   "weight": 0.6,
+   "category": "phase1-baseline-comprehension",
+   "detail": "predicate ✓ αλλά εξαρτήσεις: ['EV-06']"
+  },
+  "P1-GATE-7": {
+   "status": "BLOCKED",
+   "weight": 0.6,
+   "category": "phase1-baseline-comprehension",
+   "detail": "εξαρτήσεις: EV-06"
+  },
+  "P1-MACRO": {
+   "status": "NOT-STARTED",
+   "weight": 0.5,
+   "category": "phase1-baseline-comprehension",
+   "detail": "experiment/phase1a/MACRO-LAYER.sexp"
+  },
+  "P1-READ-LEDGER": {
+   "status": "BLOCKED",
+   "weight": 2.0,
+   "category": "phase1-baseline-comprehension",
+   "detail": "εξαρτήσεις: P1-GATE-1, P1-GATE-2, P1-GATE-3, P1-GATE-4, P1-GATE-5, P1-GATE-6, P1-GATE-7"
+  },
+  "P1-SEAL": {
+   "status": "BLOCKED",
+   "weight": 0.3,
+   "category": "phase1-baseline-comprehension",
+   "detail": "εξαρτήσεις: P1-COVERAGE, P1-ENTAILMENT, P1-READ-LEDGER, P1-MACRO"
+  },
+  "S-01": {
+   "status": "BLOCKED",
+   "weight": 4.0,
+   "category": "synthesis",
+   "detail": "εξαρτήσεις: D-05"
+  },
+  "S-02": {
+   "status": "BLOCKED",
+   "weight": 4.0,
+   "category": "synthesis",
+   "detail": "εξαρτήσεις: S-01"
+  },
+  "S-03": {
+   "status": "BLOCKED",
+   "weight": 3.0,
+   "category": "synthesis",
+   "detail": "εξαρτήσεις: S-01"
+  },
+  "S-04": {
+   "status": "BLOCKED",
+   "weight": 3.0,
+   "category": "synthesis",
+   "detail": "εξαρτήσεις: S-02"
+  },
+  "S-05": {
+   "status": "BLOCKED",
+   "weight": 2.0,
+   "category": "synthesis",
+   "detail": "εξαρτήσεις: S-03"
+  },
+  "S-06": {
+   "status": "BLOCKED",
+   "weight": 2.0,
+   "category": "synthesis",
+   "detail": "εξαρτήσεις: S-04"
+  },
+  "Z-01": {
+   "status": "BLOCKED",
+   "weight": 4.0,
+   "category": "final-deliverables",
+   "detail": "εξαρτήσεις: S-06, M-04"
+  },
+  "Z-02": {
+   "status": "BLOCKED",
+   "weight": 2.0,
+   "category": "final-deliverables",
+   "detail": "εξαρτήσεις: Z-01"
+  },
+  "Z-03": {
+   "status": "BLOCKED",
+   "weight": 2.0,
+   "category": "final-deliverables",
+   "detail": "εξαρτήσεις: Z-01"
+  },
+  "Z-04": {
+   "status": "BLOCKED",
+   "weight": 2.0,
+   "category": "final-deliverables",
+   "detail": "εξαρτήσεις: Z-03, M-04"
+  }
+ }
+}

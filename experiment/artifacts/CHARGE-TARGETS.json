@@ -1,0 +1,344 @@
+{
+ "Φ1A-L1": {
+  "dossier": "experiment/phase1a/source-rev3.sexp",
+  "tokens": 12,
+  "items": [
+   {
+    "token": "config.lisp:7-49",
+    "byte_offset": 14212,
+    "line": 182,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 13629,
+    "claim_block_name": "YAML global configuration",
+    "claim_block_span": [
+     13629,
+     14230
+    ]
+   },
+   {
+    "token": "capability-registry.lisp:40-207",
+    "byte_offset": 20221,
+    "line": 242,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 19396,
+    "claim_block_name": "capability registry + transport-agnostic API projection",
+    "claim_block_span": [
+     19396,
+     20312
+    ]
+   },
+   {
+    "token": "config.lisp:44",
+    "byte_offset": 36864,
+    "line": 484,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 31063,
+    "claim_block_name": "policy του καταναλωτή στο APB (required-tier, freshness floors, witnes",
+    "claim_block_span": [
+     31063,
+     55764
+    ]
+   },
+   {
+    "token": "memory.lisp:110,164",
+    "byte_offset": 37824,
+    "line": 490,
+    "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy",
+    "claim_block_offset": 31063,
+    "claim_block_name": "policy του καταναλωτή στο APB (required-tier, freshness floors, witnes",
+    "claim_block_span": [
+     31063,
+     55764
+    ]
+   },
+   {
+    "token": "memory.lisp:110",
+    "byte_offset": 37986,
+    "line": 492,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 31063,
+    "claim_block_name": "policy του καταναλωτή στο APB (required-tier, freshness floors, witnes",
+    "claim_block_span": [
+     31063,
+     55764
+    ]
+   },
+   {
+    "token": "memory.lisp:258-272",
+    "byte_offset": 53531,
+    "line": 604,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 31063,
+    "claim_block_name": "policy του καταναλωτή στο APB (required-tier, freshness floors, witnes",
+    "claim_block_span": [
+     31063,
+     55764
+    ]
+   },
+   {
+    "token": "memory.lisp:48-50",
+    "byte_offset": 53860,
+    "line": 608,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 31063,
+    "claim_block_name": "policy του καταναλωτή στο APB (required-tier, freshness floors, witnes",
+    "claim_block_span": [
+     31063,
+     55764
+    ]
+   },
+   {
+    "token": "protocols.lisp:1-263",
+    "byte_offset": 65896,
+    "line": 684,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 31063,
+    "claim_block_name": "policy του καταναλωτή στο APB (required-tier, freshness floors, witnes",
+    "claim_block_span": [
+     31063,
+     66351
+    ]
+   },
+   {
+    "token": "config.lisp:48-49",
+    "byte_offset": 112464,
+    "line": 980,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 31063,
+    "claim_block_name": "policy του καταναλωτή στο APB (required-tier, freshness floors, witnes",
+    "claim_block_span": [
+     31063,
+     124779
+    ]
+   },
+   {
+    "token": "config.lisp:51-60",
+    "byte_offset": 112750,
+    "line": 984,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 31063,
+    "claim_block_name": "policy του καταναλωτή στο APB (required-tier, freshness floors, witnes",
+    "claim_block_span": [
+     31063,
+     124779
+    ]
+   },
+   {
+    "token": "protocols.lisp:145-149",
+    "byte_offset": 131709,
+    "line": 1143,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 31063,
+    "claim_block_name": "policy του καταναλωτή στο APB (required-tier, freshness floors, witnes",
+    "claim_block_span": [
+     31063,
+     136466
+    ]
+   },
+   {
+    "token": "protocols.lisp:56",
+    "byte_offset": 132247,
+    "line": 1149,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 31063,
+    "claim_block_name": "policy του καταναλωτή στο APB (required-tier, freshness floors, witnes",
+    "claim_block_span": [
+     31063,
+     136466
+    ]
+   }
+  ]
+ },
+ "Φ1A-L4": {
+  "dossier": "experiment/phase1a/deployment-specs-rev3.sexp",
+  "tokens": 5,
+  "items": [
+   {
+    "token": "deployment/verify/vectors/merkle/vectors.json:L1-8+",
+    "byte_offset": 4555,
+    "line": 30,
+    "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy",
+    "claim_block_offset": 2884,
+    "claim_block_name": "lawmax-merkle-sha256-v1 — ΜΙΑ κανονική πηγή Merkle + παραγόμενα κείμεν",
+    "claim_block_span": [
+     2884,
+     4608
+    ]
+   },
+   {
+    "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L9-37,L40-76,L79+",
+    "byte_offset": 10560,
+    "line": 91,
+    "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy",
+    "claim_block_offset": 9838,
+    "claim_block_name": "13 κλειδωμένα primitives + capability-map + command-map (Αρχιτεκτονικό",
+    "claim_block_span": [
+     9838,
+     10628
+    ]
+   },
+   {
+    "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L79+",
+    "byte_offset": 47377,
+    "line": 356,
+    "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy",
+    "claim_block_offset": 25113,
+    "claim_block_name": "SHACL eli-shapes — κλειστό σύνολο επιτρεπτών αδειών",
+    "claim_block_span": [
+     25113,
+     47471
+    ]
+   },
+   {
+    "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L40-76,L79+",
+    "byte_offset": 48591,
+    "line": 362,
+    "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy",
+    "claim_block_offset": 25113,
+    "claim_block_name": "SHACL eli-shapes — κλειστό σύνολο επιτρεπτών αδειών",
+    "claim_block_span": [
+     25113,
+     48692
+    ]
+   },
+   {
+    "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L28-29,L79+",
+    "byte_offset": 59500,
+    "line": 428,
+    "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy",
+    "claim_block_offset": 25113,
+    "claim_block_name": "SHACL eli-shapes — κλειστό σύνολο επιτρεπτών αδειών",
+    "claim_block_span": [
+     25113,
+     59601
+    ]
+   }
+  ]
+ },
+ "Φ1A-L7": {
+  "dossier": "experiment/phase1a/contracts-rev3.sexp",
+  "tokens": 10,
+  "items": [
+   {
+    "token": "README:300-305",
+    "byte_offset": 835,
+    "line": 14,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 645,
+    "claim_block_name": "GATE-4 — Pipeline integrity (no subprocess)",
+    "claim_block_span": [
+     645,
+     1806
+    ]
+   },
+   {
+    "token": "README:20-21",
+    "byte_offset": 1544,
+    "line": 18,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 645,
+    "claim_block_name": "GATE-4 — Pipeline integrity (no subprocess)",
+    "claim_block_span": [
+     645,
+     1806
+    ]
+   },
+   {
+    "token": "README:185-187",
+    "byte_offset": 2004,
+    "line": 25,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 1810,
+    "claim_block_name": "Ολομέλεια πυλών --gates (25 εντολές -gate)",
+    "claim_block_span": [
+     1810,
+     2688
+    ]
+   },
+   {
+    "token": "README:18",
+    "byte_offset": 4119,
+    "line": 51,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 3555,
+    "claim_block_name": "Python ως ΥΠΟΧΡΕΩΤΙΚΗ εξάρτηση κατασκευής του runtime",
+    "claim_block_span": [
+     3555,
+     4502
+    ]
+   },
+   {
+    "token": "README:19",
+    "byte_offset": 4980,
+    "line": 62,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 4506,
+    "claim_block_name": "Shell ως έδρα εκτέλεσης ΚΑΙ κρίσης της αποδεικτικής αλυσίδας",
+    "claim_block_span": [
+     4506,
+     5407
+    ]
+   },
+   {
+    "token": "README:332",
+    "byte_offset": 9506,
+    "line": 117,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 8950,
+    "claim_block_name": "Reproducibility — byte-identical output υπό SOURCE_DATE_EPOCH",
+    "claim_block_span": [
+     8950,
+     9819
+    ]
+   },
+   {
+    "token": "README:64-65",
+    "byte_offset": 22948,
+    "line": 256,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 12726,
+    "claim_block_name": "tag-release (αυτόματο git tag σε main)",
+    "claim_block_span": [
+     12726,
+     26692
+    ]
+   },
+   {
+    "token": "README:230",
+    "byte_offset": 28109,
+    "line": 298,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 12726,
+    "claim_block_name": "tag-release (αυτόματο git tag σε main)",
+    "claim_block_span": [
+     12726,
+     28356
+    ]
+   },
+   {
+    "token": "README:174-181",
+    "byte_offset": 31869,
+    "line": 332,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 12726,
+    "claim_block_name": "tag-release (αυτόματο git tag σε main)",
+    "claim_block_span": [
+     12726,
+     32102
+    ]
+   },
+   {
+    "token": "README:19-21",
+    "byte_offset": 32493,
+    "line": 341,
+    "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end",
+    "claim_block_offset": 12726,
+    "claim_block_name": "tag-release (αυτόματο git tag σε main)",
+    "claim_block_span": [
+     12726,
+     35441
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,2852 @@
+{
+ "source": "contracts-rev2.sexp",
+ "source_sha256": "e7ae502e8fb3469ac232c7e8808461459220e36eac90cea70c9f59d05b1bcc22",
+ "target": "contracts-rev3.sexp",
+ "target_sha256": "0b0116df0f8eb913c8a3e5bee74f001c2407c0b40aa31a5b20b082d2bab7886c",
+ "derivation": "ΠΑΡΑΤΗΡΟΥΜΕΝΗ ΔΙΑΦΟΡΑ ΤΩΝ ΔΥΟ ΑΡΧΕΙΩΝ — ΟΧΙ έξοδος του εργαλείου που έκανε τη μετάβαση",
+ "old_tokens": 258,
+ "new_tokens": 258,
+ "expansions": 0,
+ "target_substitutions": 0,
+ "reorderings": 0,
+ "mapping": [
+  {
+   "old_token": "README:300-305",
+   "old_offset": 835,
+   "target": "README",
+   "new": [
+    {
+     "token": "README:300-305",
+     "offset": 835
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L304-L304@sha256:97c747e9aa82",
+   "old_offset": 1045,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L304-L304@sha256:97c747e9aa82",
+     "offset": 1045
+    }
+   ]
+  },
+  {
+   "old_token": "systems/orchestrator-omega-modules/article-root-generator-omega.lisp:L175-L175@sha256:dfe99cf68b63",
+   "old_offset": 1110,
+   "target": "systems/orchestrator-omega-modules/article-root-generator-omega.lisp",
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/article-root-generator-omega.lisp:L175-L175@sha256:dfe99cf68b63",
+     "offset": 1110
+    }
+   ]
+  },
+  {
+   "old_token": "systems/orchestrator-omega-modules/hybrid-generator-phase1.lisp:L289-L289@sha256:1c4aba67d9a5",
+   "old_offset": 1210,
+   "target": "systems/orchestrator-omega-modules/hybrid-generator-phase1.lisp",
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/hybrid-generator-phase1.lisp:L289-L289@sha256:1c4aba67d9a5",
+     "offset": 1210
+    }
+   ]
+  },
+  {
+   "old_token": "README:20-21",
+   "old_offset": 1544,
+   "target": "README",
+   "new": [
+    {
+     "token": "README:20-21",
+     "offset": 1544
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L304-L304@sha256:97c747e9aa82",
+   "old_offset": 1765,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L304-L304@sha256:97c747e9aa82",
+     "offset": 1765
+    }
+   ]
+  },
+  {
+   "old_token": "README:185-187",
+   "old_offset": 2004,
+   "target": "README",
+   "new": [
+    {
+     "token": "README:185-187",
+     "offset": 2004
+    }
+   ]
+  },
+  {
+   "old_token": "README:300-305",
+   "old_offset": 2483,
+   "target": "README",
+   "new": [
+    {
+     "token": "README:300-305",
+     "offset": 2483
+    }
+   ]
+  },
+  {
+   "old_token": ".github/workflows/docker-orchestrator.yml:L292-L308@sha256:f1a4bb69e6e4",
+   "old_offset": 2575,
+   "target": ".github/workflows/docker-orchestrator.yml",
+   "new": [
+    {
+     "token": ".github/workflows/docker-orchestrator.yml:L292-L308@sha256:f1a4bb69e6e4",
+     "offset": 2575
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L185-L187@sha256:97c747e9aa82",
+   "old_offset": 2647,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L185-L187@sha256:97c747e9aa82",
+     "offset": 2647
+    }
+   ]
+  },
+  {
+   "old_token": "source/document-fetch.lisp:L92-L106@sha256:bb114b83fd80",
+   "old_offset": 3395,
+   "target": "source/document-fetch.lisp",
+   "new": [
+    {
+     "token": "source/document-fetch.lisp:L92-L106@sha256:bb114b83fd80",
+     "offset": 3395
+    }
+   ]
+  },
+  {
+   "old_token": "source/pdf-authority.lisp:L1386-L1425@sha256:c4e2054c0e4f",
+   "old_offset": 3451,
+   "target": "source/pdf-authority.lisp",
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L1386-L1425@sha256:c4e2054c0e4f",
+     "offset": 3451
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:371-373",
+   "old_offset": 3509,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L371-L373@sha256:9280f921e1a7",
+     "offset": 3509
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:316",
+   "old_offset": 3844,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L316-L316@sha256:9280f921e1a7",
+     "offset": 3866
+    }
+   ]
+  },
+  {
+   "old_token": "README:18",
+   "old_offset": 4071,
+   "target": "README",
+   "new": [
+    {
+     "token": "README:18",
+     "offset": 4119
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:241-245",
+   "old_offset": 4248,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L241-L245@sha256:9280f921e1a7",
+     "offset": 4296
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:259",
+   "old_offset": 4267,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L259-L259@sha256:9280f921e1a7",
+     "offset": 4337
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:284-285",
+   "old_offset": 4282,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L284-L285@sha256:9280f921e1a7",
+     "offset": 4378
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:316",
+   "old_offset": 4301,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L316-L316@sha256:9280f921e1a7",
+     "offset": 4419
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:394",
+   "old_offset": 4316,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L394-L394@sha256:9280f921e1a7",
+     "offset": 4460
+    }
+   ]
+  },
+  {
+   "old_token": "README:19",
+   "old_offset": 4810,
+   "target": "README",
+   "new": [
+    {
+     "token": "README:19",
+     "offset": 4980
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:167",
+   "old_offset": 4933,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L167-L167@sha256:9280f921e1a7",
+     "offset": 5103
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:167",
+   "old_offset": 5015,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L167-L167@sha256:9280f921e1a7",
+     "offset": 5211
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:189-192",
+   "old_offset": 5030,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L189-L192@sha256:9280f921e1a7",
+     "offset": 5252
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:290",
+   "old_offset": 5049,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L290-L290@sha256:9280f921e1a7",
+     "offset": 5293
+    }
+   ]
+  },
+  {
+   "old_token": ".github/workflows/docker-orchestrator.yml:L298-L299@sha256:f1a4bb69e6e4",
+   "old_offset": 5064,
+   "target": ".github/workflows/docker-orchestrator.yml",
+   "new": [
+    {
+     "token": ".github/workflows/docker-orchestrator.yml:L298-L299@sha256:f1a4bb69e6e4",
+     "offset": 5334
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:36-37",
+   "old_offset": 5641,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L36-L37@sha256:9280f921e1a7",
+     "offset": 5911
+    }
+   ]
+  },
+  {
+   "old_token": "deps.lock:1-7",
+   "old_offset": 5914,
+   "target": "deps.lock",
+   "new": [
+    {
+     "token": "deps.lock:L1-L7@sha256:c4b43d610f97",
+     "offset": 6206
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:29-48",
+   "old_offset": 5928,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L29-L48@sha256:9280f921e1a7",
+     "offset": 6242
+    }
+   ]
+  },
+  {
+   "old_token": "docker-compose.yml:L29-L32@sha256:ff93c313b8fe",
+   "old_offset": 6754,
+   "target": "docker-compose.yml",
+   "new": [
+    {
+     "token": "docker-compose.yml:L29-L32@sha256:ff93c313b8fe",
+     "offset": 7090
+    }
+   ]
+  },
+  {
+   "old_token": "docker-compose.yml:L283-L312@sha256:ff93c313b8fe",
+   "old_offset": 6801,
+   "target": "docker-compose.yml",
+   "new": [
+    {
+     "token": "docker-compose.yml:L283-L312@sha256:ff93c313b8fe",
+     "offset": 7137
+    }
+   ]
+  },
+  {
+   "old_token": "docker-compose.yml:L314-L363@sha256:ff93c313b8fe",
+   "old_offset": 6850,
+   "target": "docker-compose.yml",
+   "new": [
+    {
+     "token": "docker-compose.yml:L314-L363@sha256:ff93c313b8fe",
+     "offset": 7186
+    }
+   ]
+  },
+  {
+   "old_token": "docker-compose.yml:L399-L403@sha256:ff93c313b8fe",
+   "old_offset": 6899,
+   "target": "docker-compose.yml",
+   "new": [
+    {
+     "token": "docker-compose.yml:L399-L403@sha256:ff93c313b8fe",
+     "offset": 7235
+    }
+   ]
+  },
+  {
+   "old_token": "docker-compose.yml:L327-L340@sha256:ff93c313b8fe",
+   "old_offset": 7465,
+   "target": "docker-compose.yml",
+   "new": [
+    {
+     "token": "docker-compose.yml:L327-L340@sha256:ff93c313b8fe",
+     "offset": 7801
+    }
+   ]
+  },
+  {
+   "old_token": "SEMANTIC-CONTRACT.md:L38-L38@sha256:260308c8e7ee",
+   "old_offset": 8185,
+   "target": "SEMANTIC-CONTRACT.md",
+   "new": [
+    {
+     "token": "SEMANTIC-CONTRACT.md:L38-L38@sha256:260308c8e7ee",
+     "offset": 8521
+    }
+   ]
+  },
+  {
+   "old_token": "SEMANTIC-CONTRACT.md:L51-L51@sha256:260308c8e7ee",
+   "old_offset": 8234,
+   "target": "SEMANTIC-CONTRACT.md",
+   "new": [
+    {
+     "token": "SEMANTIC-CONTRACT.md:L51-L51@sha256:260308c8e7ee",
+     "offset": 8570
+    }
+   ]
+  },
+  {
+   "old_token": "docs/SECURITY-REDTEAM.md:L54-L62@sha256:489f6a4c7a31",
+   "old_offset": 8302,
+   "target": "docs/SECURITY-REDTEAM.md",
+   "new": [
+    {
+     "token": "docs/SECURITY-REDTEAM.md:L54-L62@sha256:489f6a4c7a31",
+     "offset": 8638
+    }
+   ]
+  },
+  {
+   "old_token": "SEMANTIC-CONTRACT.md:L36-L56@sha256:260308c8e7ee",
+   "old_offset": 8444,
+   "target": "SEMANTIC-CONTRACT.md",
+   "new": [
+    {
+     "token": "SEMANTIC-CONTRACT.md:L36-L56@sha256:260308c8e7ee",
+     "offset": 8780
+    }
+   ]
+  },
+  {
+   "old_token": "docs/SECURITY-REDTEAM.md:L54-L66@sha256:489f6a4c7a31",
+   "old_offset": 8493,
+   "target": "docs/SECURITY-REDTEAM.md",
+   "new": [
+    {
+     "token": "docs/SECURITY-REDTEAM.md:L54-L66@sha256:489f6a4c7a31",
+     "offset": 8829
+    }
+   ]
+  },
+  {
+   "old_token": "source/blockchain-authority.lisp:L927-L942@sha256:caadc9c75a98",
+   "old_offset": 8546,
+   "target": "source/blockchain-authority.lisp",
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:L927-L942@sha256:caadc9c75a98",
+     "offset": 8882
+    }
+   ]
+  },
+  {
+   "old_token": "README:332",
+   "old_offset": 9170,
+   "target": "README",
+   "new": [
+    {
+     "token": "README:332",
+     "offset": 9506
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L332-L332@sha256:97c747e9aa82",
+   "old_offset": 9315,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L332-L332@sha256:97c747e9aa82",
+     "offset": 9651
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:17",
+   "old_offset": 9355,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L17-L17@sha256:9280f921e1a7",
+     "offset": 9691
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:64",
+   "old_offset": 9369,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L64-L64@sha256:9280f921e1a7",
+     "offset": 9730
+    }
+   ]
+  },
+  {
+   "old_token": "SEMANTIC-CONTRACT.md:L56-L62@sha256:260308c8e7ee",
+   "old_offset": 9383,
+   "target": "SEMANTIC-CONTRACT.md",
+   "new": [
+    {
+     "token": "SEMANTIC-CONTRACT.md:L56-L62@sha256:260308c8e7ee",
+     "offset": 9769
+    }
+   ]
+  },
+  {
+   "old_token": "README:20-21",
+   "old_offset": 10079,
+   "target": "README",
+   "new": [
+    {
+     "token": "README:20-21",
+     "offset": 10465
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:452",
+   "old_offset": 10266,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L452-L452@sha256:9280f921e1a7",
+     "offset": 10652
+    }
+   ]
+  },
+  {
+   "old_token": "docker/entrypoint.lisp:L67-L77@sha256:b4f283f2abed",
+   "old_offset": 10281,
+   "target": "docker/entrypoint.lisp",
+   "new": [
+    {
+     "token": "docker/entrypoint.lisp:L67-L77@sha256:b4f283f2abed",
+     "offset": 10693
+    }
+   ]
+  },
+  {
+   "old_token": "docker/entrypoint.lisp:L115-L154@sha256:b4f283f2abed",
+   "old_offset": 10332,
+   "target": "docker/entrypoint.lisp",
+   "new": [
+    {
+     "token": "docker/entrypoint.lisp:L115-L154@sha256:b4f283f2abed",
+     "offset": 10744
+    }
+   ]
+  },
+  {
+   "old_token": "build.lisp:L43-L47@sha256:baa3527f5cf6",
+   "old_offset": 10385,
+   "target": "build.lisp",
+   "new": [
+    {
+     "token": "build.lisp:L43-L47@sha256:baa3527f5cf6",
+     "offset": 10797
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:172-173",
+   "old_offset": 10737,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L172-L173@sha256:9280f921e1a7",
+     "offset": 11149
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:320-326",
+   "old_offset": 10980,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L320-L326@sha256:9280f921e1a7",
+     "offset": 11414
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:414",
+   "old_offset": 10999,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L414-L414@sha256:9280f921e1a7",
+     "offset": 11455
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:29-48",
+   "old_offset": 11239,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L29-L48@sha256:9280f921e1a7",
+     "offset": 11721
+    }
+   ]
+  },
+  {
+   "old_token": "deps.lock:1-7",
+   "old_offset": 11256,
+   "target": "deps.lock",
+   "new": [
+    {
+     "token": "deps.lock:L1-L7@sha256:c4b43d610f97",
+     "offset": 11760
+    }
+   ]
+  },
+  {
+   "old_token": ".github/workflows/docker-orchestrator.yml:L292-L308@sha256:f1a4bb69e6e4",
+   "old_offset": 11542,
+   "target": ".github/workflows/docker-orchestrator.yml",
+   "new": [
+    {
+     "token": ".github/workflows/docker-orchestrator.yml:L292-L308@sha256:f1a4bb69e6e4",
+     "offset": 12068
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:312-316",
+   "old_offset": 11901,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L312-L316@sha256:9280f921e1a7",
+     "offset": 12427
+    }
+   ]
+  },
+  {
+   "old_token": "CLAUDE.md:L1-L40@sha256:b9d6ce92e217",
+   "old_offset": 12137,
+   "target": "CLAUDE.md",
+   "new": [
+    {
+     "token": "CLAUDE.md:L1-L40@sha256:b9d6ce92e217",
+     "offset": 12685
+    }
+   ]
+  },
+  {
+   "old_token": ".github/workflows/docker-orchestrator.yml:L359-L378@sha256:f1a4bb69e6e4",
+   "old_offset": 12422,
+   "target": ".github/workflows/docker-orchestrator.yml",
+   "new": [
+    {
+     "token": ".github/workflows/docker-orchestrator.yml:L359-L378@sha256:f1a4bb69e6e4",
+     "offset": 12970
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L20-L21@sha256:97c747e9aa82",
+   "old_offset": 12704,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L20-L21@sha256:97c747e9aa82",
+     "offset": 13252
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L19-L19@sha256:97c747e9aa82",
+   "old_offset": 12867,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L19-L19@sha256:97c747e9aa82",
+     "offset": 13415
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L18-L18@sha256:97c747e9aa82",
+   "old_offset": 13003,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L18-L18@sha256:97c747e9aa82",
+     "offset": 13551
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L8-L8@sha256:97c747e9aa82",
+   "old_offset": 13148,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L8-L8@sha256:97c747e9aa82",
+     "offset": 13696
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L16-L16@sha256:97c747e9aa82",
+   "old_offset": 13184,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L16-L16@sha256:97c747e9aa82",
+     "offset": 13732
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L389-L389@sha256:97c747e9aa82",
+   "old_offset": 13222,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L389-L389@sha256:97c747e9aa82",
+     "offset": 13770
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:5",
+   "old_offset": 13362,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L5-L5@sha256:9280f921e1a7",
+     "offset": 13910
+    }
+   ]
+  },
+  {
+   "old_token": "PROVENANCE.yaml:L292-L295@sha256:bce8df3c6d34",
+   "old_offset": 13510,
+   "target": "PROVENANCE.yaml",
+   "new": [
+    {
+     "token": "PROVENANCE.yaml:L292-L295@sha256:bce8df3c6d34",
+     "offset": 14082
+    }
+   ]
+  },
+  {
+   "old_token": "DEPENDENCY-CONTRACT.md:L168-L173@sha256:65a3f5df825c",
+   "old_offset": 13705,
+   "target": "DEPENDENCY-CONTRACT.md",
+   "new": [
+    {
+     "token": "DEPENDENCY-CONTRACT.md:L168-L173@sha256:65a3f5df825c",
+     "offset": 14277
+    }
+   ]
+  },
+  {
+   "old_token": "DEPENDENCY-CONTRACT.md:L183-L188@sha256:65a3f5df825c",
+   "old_offset": 13985,
+   "target": "DEPENDENCY-CONTRACT.md",
+   "new": [
+    {
+     "token": "DEPENDENCY-CONTRACT.md:L183-L188@sha256:65a3f5df825c",
+     "offset": 14557
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:108",
+   "old_offset": 14038,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L108-L108@sha256:9280f921e1a7",
+     "offset": 14610
+    }
+   ]
+  },
+  {
+   "old_token": "build.lisp:L11-L11@sha256:baa3527f5cf6",
+   "old_offset": 14053,
+   "target": "build.lisp",
+   "new": [
+    {
+     "token": "build.lisp:L11-L11@sha256:baa3527f5cf6",
+     "offset": 14651
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:23",
+   "old_offset": 14204,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L23-L23@sha256:9280f921e1a7",
+     "offset": 14802
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:29",
+   "old_offset": 14218,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L29-L29@sha256:9280f921e1a7",
+     "offset": 14841
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:53",
+   "old_offset": 14232,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L53-L53@sha256:9280f921e1a7",
+     "offset": 14880
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:333",
+   "old_offset": 14246,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L333-L333@sha256:9280f921e1a7",
+     "offset": 14919
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:17",
+   "old_offset": 14372,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L17-L17@sha256:9280f921e1a7",
+     "offset": 15071
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:64",
+   "old_offset": 14386,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L64-L64@sha256:9280f921e1a7",
+     "offset": 15110
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:206",
+   "old_offset": 14400,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L206-L206@sha256:9280f921e1a7",
+     "offset": 15149
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:391-397",
+   "old_offset": 14581,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L391-L397@sha256:9280f921e1a7",
+     "offset": 15356
+    }
+   ]
+  },
+  {
+   "old_token": "docker-compose.yml:L59-L61@sha256:ff93c313b8fe",
+   "old_offset": 14715,
+   "target": "docker-compose.yml",
+   "new": [
+    {
+     "token": "docker-compose.yml:L59-L61@sha256:ff93c313b8fe",
+     "offset": 15512
+    }
+   ]
+  },
+  {
+   "old_token": "docker-compose.yml:L310-L310@sha256:ff93c313b8fe",
+   "old_offset": 14762,
+   "target": "docker-compose.yml",
+   "new": [
+    {
+     "token": "docker-compose.yml:L310-L310@sha256:ff93c313b8fe",
+     "offset": 15559
+    }
+   ]
+  },
+  {
+   "old_token": "docker-compose.yml:L355-L357@sha256:ff93c313b8fe",
+   "old_offset": 14811,
+   "target": "docker-compose.yml",
+   "new": [
+    {
+     "token": "docker-compose.yml:L355-L357@sha256:ff93c313b8fe",
+     "offset": 15608
+    }
+   ]
+  },
+  {
+   "old_token": "deps.lock:7",
+   "old_offset": 15108,
+   "target": "deps.lock",
+   "new": [
+    {
+     "token": "deps.lock:L7-L7@sha256:c4b43d610f97",
+     "offset": 15905
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L304-L304@sha256:97c747e9aa82",
+   "old_offset": 15456,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L304-L304@sha256:97c747e9aa82",
+     "offset": 16277
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L304-L304@sha256:97c747e9aa82",
+   "old_offset": 15781,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L304-L304@sha256:97c747e9aa82",
+     "offset": 16602
+    }
+   ]
+  },
+  {
+   "old_token": "source/pdf-authority.lisp:L1386-L1425@sha256:c4e2054c0e4f",
+   "old_offset": 15821,
+   "target": "source/pdf-authority.lisp",
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L1386-L1425@sha256:c4e2054c0e4f",
+     "offset": 16642
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L185-L187@sha256:97c747e9aa82",
+   "old_offset": 15879,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L185-L187@sha256:97c747e9aa82",
+     "offset": 16700
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L253-L253@sha256:97c747e9aa82",
+   "old_offset": 15970,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L253-L253@sha256:97c747e9aa82",
+     "offset": 16791
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L253-L253@sha256:97c747e9aa82",
+   "old_offset": 16165,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L253-L253@sha256:97c747e9aa82",
+     "offset": 16986
+    }
+   ]
+  },
+  {
+   "old_token": "source/pdf-authority.lisp:L28-L28@sha256:c4e2054c0e4f",
+   "old_offset": 16257,
+   "target": "source/pdf-authority.lisp",
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L28-L28@sha256:c4e2054c0e4f",
+     "offset": 17078
+    }
+   ]
+  },
+  {
+   "old_token": "source/pdf-authority.lisp:L28-L28@sha256:c4e2054c0e4f",
+   "old_offset": 16613,
+   "target": "source/pdf-authority.lisp",
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L28-L28@sha256:c4e2054c0e4f",
+     "offset": 17434
+    }
+   ]
+  },
+  {
+   "old_token": "source/pdf-authority.lisp:L1386-L1425@sha256:c4e2054c0e4f",
+   "old_offset": 16667,
+   "target": "source/pdf-authority.lisp",
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L1386-L1425@sha256:c4e2054c0e4f",
+     "offset": 17488
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L8-L8@sha256:97c747e9aa82",
+   "old_offset": 17145,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L8-L8@sha256:97c747e9aa82",
+     "offset": 17966
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L16-L16@sha256:97c747e9aa82",
+   "old_offset": 17181,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L16-L16@sha256:97c747e9aa82",
+     "offset": 18002
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L389-L389@sha256:97c747e9aa82",
+   "old_offset": 17219,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L389-L389@sha256:97c747e9aa82",
+     "offset": 18040
+    }
+   ]
+  },
+  {
+   "old_token": ".github/workflows/docker-orchestrator.yml:L298-L299@sha256:f1a4bb69e6e4",
+   "old_offset": 17259,
+   "target": ".github/workflows/docker-orchestrator.yml",
+   "new": [
+    {
+     "token": ".github/workflows/docker-orchestrator.yml:L298-L299@sha256:f1a4bb69e6e4",
+     "offset": 18080
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:316",
+   "old_offset": 17331,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L316-L316@sha256:9280f921e1a7",
+     "offset": 18152
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:5",
+   "old_offset": 17427,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L5-L5@sha256:9280f921e1a7",
+     "offset": 18274
+    }
+   ]
+  },
+  {
+   "old_token": "PROVENANCE.yaml:L292-L295@sha256:bce8df3c6d34",
+   "old_offset": 17505,
+   "target": "PROVENANCE.yaml",
+   "new": [
+    {
+     "token": "PROVENANCE.yaml:L292-L295@sha256:bce8df3c6d34",
+     "offset": 18376
+    }
+   ]
+  },
+  {
+   "old_token": "DEPENDENCY-CONTRACT.md:L168-L173@sha256:65a3f5df825c",
+   "old_offset": 17599,
+   "target": "DEPENDENCY-CONTRACT.md",
+   "new": [
+    {
+     "token": "DEPENDENCY-CONTRACT.md:L168-L173@sha256:65a3f5df825c",
+     "offset": 18470
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:5",
+   "old_offset": 17826,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L5-L5@sha256:9280f921e1a7",
+     "offset": 18697
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:41-43",
+   "old_offset": 17839,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L41-L43@sha256:9280f921e1a7",
+     "offset": 18734
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:68-77",
+   "old_offset": 17856,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L68-L77@sha256:9280f921e1a7",
+     "offset": 18773
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:363-377",
+   "old_offset": 17873,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L363-L377@sha256:9280f921e1a7",
+     "offset": 18812
+    }
+   ]
+  },
+  {
+   "old_token": "PROVENANCE.yaml:L292-L295@sha256:bce8df3c6d34",
+   "old_offset": 17892,
+   "target": "PROVENANCE.yaml",
+   "new": [
+    {
+     "token": "PROVENANCE.yaml:L292-L295@sha256:bce8df3c6d34",
+     "offset": 18853
+    }
+   ]
+  },
+  {
+   "old_token": "DEPENDENCY-CONTRACT.md:L168-L173@sha256:65a3f5df825c",
+   "old_offset": 17938,
+   "target": "DEPENDENCY-CONTRACT.md",
+   "new": [
+    {
+     "token": "DEPENDENCY-CONTRACT.md:L168-L173@sha256:65a3f5df825c",
+     "offset": 18899
+    }
+   ]
+  },
+  {
+   "old_token": "source/blockchain-authority.lisp:L927-L942@sha256:caadc9c75a98",
+   "old_offset": 18163,
+   "target": "source/blockchain-authority.lisp",
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:L927-L942@sha256:caadc9c75a98",
+     "offset": 19124
+    }
+   ]
+  },
+  {
+   "old_token": "SEMANTIC-CONTRACT.md:L36-L56@sha256:260308c8e7ee",
+   "old_offset": 18453,
+   "target": "SEMANTIC-CONTRACT.md",
+   "new": [
+    {
+     "token": "SEMANTIC-CONTRACT.md:L36-L56@sha256:260308c8e7ee",
+     "offset": 19414
+    }
+   ]
+  },
+  {
+   "old_token": "source/blockchain-authority.lisp:L927-L942@sha256:caadc9c75a98",
+   "old_offset": 18502,
+   "target": "source/blockchain-authority.lisp",
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:L927-L942@sha256:caadc9c75a98",
+     "offset": 19463
+    }
+   ]
+  },
+  {
+   "old_token": "docs/SECURITY-REDTEAM.md:L54-L66@sha256:489f6a4c7a31",
+   "old_offset": 18565,
+   "target": "docs/SECURITY-REDTEAM.md",
+   "new": [
+    {
+     "token": "docs/SECURITY-REDTEAM.md:L54-L66@sha256:489f6a4c7a31",
+     "offset": 19526
+    }
+   ]
+  },
+  {
+   "old_token": "SEMANTIC-CONTRACT.md:L22-L24@sha256:260308c8e7ee",
+   "old_offset": 18670,
+   "target": "SEMANTIC-CONTRACT.md",
+   "new": [
+    {
+     "token": "SEMANTIC-CONTRACT.md:L22-L24@sha256:260308c8e7ee",
+     "offset": 19631
+    }
+   ]
+  },
+  {
+   "old_token": "SEMANTIC-CONTRACT.md:L22-L24@sha256:260308c8e7ee",
+   "old_offset": 19013,
+   "target": "SEMANTIC-CONTRACT.md",
+   "new": [
+    {
+     "token": "SEMANTIC-CONTRACT.md:L22-L24@sha256:260308c8e7ee",
+     "offset": 19974
+    }
+   ]
+  },
+  {
+   "old_token": ".github/workflows/provenance.yml:L128-L128@sha256:9eec887461e4",
+   "old_offset": 19062,
+   "target": ".github/workflows/provenance.yml",
+   "new": [
+    {
+     "token": ".github/workflows/provenance.yml:L128-L128@sha256:9eec887461e4",
+     "offset": 20023
+    }
+   ]
+  },
+  {
+   "old_token": ".github/workflows/provenance.yml:L143-L151@sha256:9eec887461e4",
+   "old_offset": 19125,
+   "target": ".github/workflows/provenance.yml",
+   "new": [
+    {
+     "token": ".github/workflows/provenance.yml:L143-L151@sha256:9eec887461e4",
+     "offset": 20086
+    }
+   ]
+  },
+  {
+   "old_token": "PROVENANCE.yaml:L286-L286@sha256:bce8df3c6d34",
+   "old_offset": 19342,
+   "target": "PROVENANCE.yaml",
+   "new": [
+    {
+     "token": "PROVENANCE.yaml:L286-L286@sha256:bce8df3c6d34",
+     "offset": 20303
+    }
+   ]
+  },
+  {
+   "old_token": "PROVENANCE.yaml:L289-L289@sha256:bce8df3c6d34",
+   "old_offset": 19414,
+   "target": "PROVENANCE.yaml",
+   "new": [
+    {
+     "token": "PROVENANCE.yaml:L289-L289@sha256:bce8df3c6d34",
+     "offset": 20375
+    }
+   ]
+  },
+  {
+   "old_token": "DEPENDENCY-CONTRACT.md:L194-L194@sha256:65a3f5df825c",
+   "old_offset": 19493,
+   "target": "DEPENDENCY-CONTRACT.md",
+   "new": [
+    {
+     "token": "DEPENDENCY-CONTRACT.md:L194-L194@sha256:65a3f5df825c",
+     "offset": 20454
+    }
+   ]
+  },
+  {
+   "old_token": "DEPENDENCY-CONTRACT.md:L213-L213@sha256:65a3f5df825c",
+   "old_offset": 19546,
+   "target": "DEPENDENCY-CONTRACT.md",
+   "new": [
+    {
+     "token": "DEPENDENCY-CONTRACT.md:L213-L213@sha256:65a3f5df825c",
+     "offset": 20507
+    }
+   ]
+  },
+  {
+   "old_token": "SEMANTIC-CONTRACT.md:L61-L61@sha256:260308c8e7ee",
+   "old_offset": 19624,
+   "target": "SEMANTIC-CONTRACT.md",
+   "new": [
+    {
+     "token": "SEMANTIC-CONTRACT.md:L61-L61@sha256:260308c8e7ee",
+     "offset": 20585
+    }
+   ]
+  },
+  {
+   "old_token": "PROVENANCE.yaml:L286-L286@sha256:bce8df3c6d34",
+   "old_offset": 19894,
+   "target": "PROVENANCE.yaml",
+   "new": [
+    {
+     "token": "PROVENANCE.yaml:L286-L286@sha256:bce8df3c6d34",
+     "offset": 20855
+    }
+   ]
+  },
+  {
+   "old_token": "PROVENANCE.yaml:L289-L289@sha256:bce8df3c6d34",
+   "old_offset": 19940,
+   "target": "PROVENANCE.yaml",
+   "new": [
+    {
+     "token": "PROVENANCE.yaml:L289-L289@sha256:bce8df3c6d34",
+     "offset": 20901
+    }
+   ]
+  },
+  {
+   "old_token": "DEPENDENCY-CONTRACT.md:L194-L194@sha256:65a3f5df825c",
+   "old_offset": 19986,
+   "target": "DEPENDENCY-CONTRACT.md",
+   "new": [
+    {
+     "token": "DEPENDENCY-CONTRACT.md:L194-L194@sha256:65a3f5df825c",
+     "offset": 20947
+    }
+   ]
+  },
+  {
+   "old_token": "SEMANTIC-CONTRACT.md:L61-L61@sha256:260308c8e7ee",
+   "old_offset": 20039,
+   "target": "SEMANTIC-CONTRACT.md",
+   "new": [
+    {
+     "token": "SEMANTIC-CONTRACT.md:L61-L61@sha256:260308c8e7ee",
+     "offset": 21000
+    }
+   ]
+  },
+  {
+   "old_token": "deps.lock:5-6",
+   "old_offset": 20088,
+   "target": "deps.lock",
+   "new": [
+    {
+     "token": "deps.lock:L5-L6@sha256:c4b43d610f97",
+     "offset": 21049
+    }
+   ]
+  },
+  {
+   "old_token": "SEMANTIC-CONTRACT.md:L60-L60@sha256:260308c8e7ee",
+   "old_offset": 20153,
+   "target": "SEMANTIC-CONTRACT.md",
+   "new": [
+    {
+     "token": "SEMANTIC-CONTRACT.md:L60-L60@sha256:260308c8e7ee",
+     "offset": 21136
+    }
+   ]
+  },
+  {
+   "old_token": "deps.lock:2",
+   "old_offset": 20293,
+   "target": "deps.lock",
+   "new": [
+    {
+     "token": "deps.lock:L2-L2@sha256:c4b43d610f97",
+     "offset": 21276
+    }
+   ]
+  },
+  {
+   "old_token": "SEMANTIC-CONTRACT.md:L60-L60@sha256:260308c8e7ee",
+   "old_offset": 20397,
+   "target": "SEMANTIC-CONTRACT.md",
+   "new": [
+    {
+     "token": "SEMANTIC-CONTRACT.md:L60-L60@sha256:260308c8e7ee",
+     "offset": 21404
+    }
+   ]
+  },
+  {
+   "old_token": "deps.lock:2",
+   "old_offset": 20446,
+   "target": "deps.lock",
+   "new": [
+    {
+     "token": "deps.lock:L2-L2@sha256:c4b43d610f97",
+     "offset": 21453
+    }
+   ]
+  },
+  {
+   "old_token": "DEPENDENCY-CONTRACT.md:L183-L188@sha256:65a3f5df825c",
+   "old_offset": 20509,
+   "target": "DEPENDENCY-CONTRACT.md",
+   "new": [
+    {
+     "token": "DEPENDENCY-CONTRACT.md:L183-L188@sha256:65a3f5df825c",
+     "offset": 21540
+    }
+   ]
+  },
+  {
+   "old_token": "systems/orchestrator-omega-modules/omega-package.lisp:L46-L46@sha256:6e4e14e66418",
+   "old_offset": 20679,
+   "target": "systems/orchestrator-omega-modules/omega-package.lisp",
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/omega-package.lisp:L46-L46@sha256:6e4e14e66418",
+     "offset": 21710
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L116-L211@sha256:97c747e9aa82",
+   "old_offset": 20763,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L116-L211@sha256:97c747e9aa82",
+     "offset": 21794
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile.test:29",
+   "old_offset": 20923,
+   "target": "Dockerfile.test",
+   "new": [
+    {
+     "token": "Dockerfile.test:L29-L29@sha256:af607b4c7c5e",
+     "offset": 21954
+    }
+   ]
+  },
+  {
+   "old_token": "MANUAL-STEPS-HERMETIC.md:L59-L59@sha256:cfd4fd227483",
+   "old_offset": 20943,
+   "target": "MANUAL-STEPS-HERMETIC.md",
+   "new": [
+    {
+     "token": "MANUAL-STEPS-HERMETIC.md:L59-L59@sha256:cfd4fd227483",
+     "offset": 21999
+    }
+   ]
+  },
+  {
+   "old_token": "DEPENDENCY-CONTRACT.md:L183-L188@sha256:65a3f5df825c",
+   "old_offset": 21060,
+   "target": "DEPENDENCY-CONTRACT.md",
+   "new": [
+    {
+     "token": "DEPENDENCY-CONTRACT.md:L183-L188@sha256:65a3f5df825c",
+     "offset": 22116
+    }
+   ]
+  },
+  {
+   "old_token": "systems/orchestrator-omega-modules/omega-package.lisp:L46-L46@sha256:6e4e14e66418",
+   "old_offset": 21113,
+   "target": "systems/orchestrator-omega-modules/omega-package.lisp",
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/omega-package.lisp:L46-L46@sha256:6e4e14e66418",
+     "offset": 22169
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile.test:29",
+   "old_offset": 21195,
+   "target": "Dockerfile.test",
+   "new": [
+    {
+     "token": "Dockerfile.test:L29-L29@sha256:af607b4c7c5e",
+     "offset": 22251
+    }
+   ]
+  },
+  {
+   "old_token": "docker-compose.yml:L17-L17@sha256:ff93c313b8fe",
+   "old_offset": 21295,
+   "target": "docker-compose.yml",
+   "new": [
+    {
+     "token": "docker-compose.yml:L17-L17@sha256:ff93c313b8fe",
+     "offset": 22376
+    }
+   ]
+  },
+  {
+   "old_token": "docker-compose.yml:L17-L17@sha256:ff93c313b8fe",
+   "old_offset": 21599,
+   "target": "docker-compose.yml",
+   "new": [
+    {
+     "token": "docker-compose.yml:L17-L17@sha256:ff93c313b8fe",
+     "offset": 22680
+    }
+   ]
+  },
+  {
+   "old_token": "docker-compose.yml:L133-L133@sha256:ff93c313b8fe",
+   "old_offset": 21646,
+   "target": "docker-compose.yml",
+   "new": [
+    {
+     "token": "docker-compose.yml:L133-L133@sha256:ff93c313b8fe",
+     "offset": 22727
+    }
+   ]
+  },
+  {
+   "old_token": "docker-compose.yml:L210-L210@sha256:ff93c313b8fe",
+   "old_offset": 21695,
+   "target": "docker-compose.yml",
+   "new": [
+    {
+     "token": "docker-compose.yml:L210-L210@sha256:ff93c313b8fe",
+     "offset": 22776
+    }
+   ]
+  },
+  {
+   "old_token": "README:64-65",
+   "old_offset": 21867,
+   "target": "README",
+   "new": [
+    {
+     "token": "README:64-65",
+     "offset": 22948
+    }
+   ]
+  },
+  {
+   "old_token": "docker-compose.yml:L8-L8@sha256:ff93c313b8fe",
+   "old_offset": 22102,
+   "target": "docker-compose.yml",
+   "new": [
+    {
+     "token": "docker-compose.yml:L8-L8@sha256:ff93c313b8fe",
+     "offset": 23183
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:172-173",
+   "old_offset": 22147,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L172-L173@sha256:9280f921e1a7",
+     "offset": 23228
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L64-L65@sha256:97c747e9aa82",
+   "old_offset": 22166,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L64-L65@sha256:97c747e9aa82",
+     "offset": 23269
+    }
+   ]
+  },
+  {
+   "old_token": "docker-compose.yml:L376-L397@sha256:ff93c313b8fe",
+   "old_offset": 22547,
+   "target": "docker-compose.yml",
+   "new": [
+    {
+     "token": "docker-compose.yml:L376-L397@sha256:ff93c313b8fe",
+     "offset": 23650
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:23",
+   "old_offset": 22596,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L23-L23@sha256:9280f921e1a7",
+     "offset": 23699
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:108",
+   "old_offset": 22804,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L108-L108@sha256:9280f921e1a7",
+     "offset": 23932
+    }
+   ]
+  },
+  {
+   "old_token": "build.lisp:L11-L11@sha256:baa3527f5cf6",
+   "old_offset": 22820,
+   "target": "build.lisp",
+   "new": [
+    {
+     "token": "build.lisp:L11-L11@sha256:baa3527f5cf6",
+     "offset": 23974
+    }
+   ]
+  },
+  {
+   "old_token": "DEPENDENCY-CONTRACT.md:L207-L207@sha256:65a3f5df825c",
+   "old_offset": 22863,
+   "target": "DEPENDENCY-CONTRACT.md",
+   "new": [
+    {
+     "token": "DEPENDENCY-CONTRACT.md:L207-L207@sha256:65a3f5df825c",
+     "offset": 24017
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile.test:9-30",
+   "old_offset": 23026,
+   "target": "Dockerfile.test",
+   "new": [
+    {
+     "token": "Dockerfile.test:L9-L30@sha256:af607b4c7c5e",
+     "offset": 24180
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:108",
+   "old_offset": 23047,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L108-L108@sha256:9280f921e1a7",
+     "offset": 24223
+    }
+   ]
+  },
+  {
+   "old_token": "build.lisp:L11-L11@sha256:baa3527f5cf6",
+   "old_offset": 23062,
+   "target": "build.lisp",
+   "new": [
+    {
+     "token": "build.lisp:L11-L11@sha256:baa3527f5cf6",
+     "offset": 24264
+    }
+   ]
+  },
+  {
+   "old_token": "DEPENDENCY-CONTRACT.md:L207-L207@sha256:65a3f5df825c",
+   "old_offset": 23101,
+   "target": "DEPENDENCY-CONTRACT.md",
+   "new": [
+    {
+     "token": "DEPENDENCY-CONTRACT.md:L207-L207@sha256:65a3f5df825c",
+     "offset": 24303
+    }
+   ]
+  },
+  {
+   "old_token": ".github/workflows/docker-orchestrator.yml:L228-L234@sha256:f1a4bb69e6e4",
+   "old_offset": 23206,
+   "target": ".github/workflows/docker-orchestrator.yml",
+   "new": [
+    {
+     "token": ".github/workflows/docker-orchestrator.yml:L228-L234@sha256:f1a4bb69e6e4",
+     "offset": 24408
+    }
+   ]
+  },
+  {
+   "old_token": ".github/workflows/docker-orchestrator.yml:L228-L234@sha256:f1a4bb69e6e4",
+   "old_offset": 23512,
+   "target": ".github/workflows/docker-orchestrator.yml",
+   "new": [
+    {
+     "token": ".github/workflows/docker-orchestrator.yml:L228-L234@sha256:f1a4bb69e6e4",
+     "offset": 24714
+    }
+   ]
+  },
+  {
+   "old_token": ".github/workflows/docker-orchestrator.yml:L338-L346@sha256:f1a4bb69e6e4",
+   "old_offset": 23982,
+   "target": ".github/workflows/docker-orchestrator.yml",
+   "new": [
+    {
+     "token": ".github/workflows/docker-orchestrator.yml:L338-L346@sha256:f1a4bb69e6e4",
+     "offset": 25184
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:394-410",
+   "old_offset": 24054,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L394-L410@sha256:9280f921e1a7",
+     "offset": 25256
+    }
+   ]
+  },
+  {
+   "old_token": ".github/workflows/docker-orchestrator.yml:L306-L306@sha256:f1a4bb69e6e4",
+   "old_offset": 24073,
+   "target": ".github/workflows/docker-orchestrator.yml",
+   "new": [
+    {
+     "token": ".github/workflows/docker-orchestrator.yml:L306-L306@sha256:f1a4bb69e6e4",
+     "offset": 25297
+    }
+   ]
+  },
+  {
+   "old_token": "configs/constitution.yaml:L90-L90@sha256:c2daf8934d68",
+   "old_offset": 24336,
+   "target": "configs/constitution.yaml",
+   "new": [
+    {
+     "token": "configs/constitution.yaml:L90-L90@sha256:c2daf8934d68",
+     "offset": 25560
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/fetch-fek.sh:L16-L16@sha256:42acffc89892",
+   "old_offset": 24493,
+   "target": "deployment/fetch-fek.sh",
+   "new": [
+    {
+     "token": "deployment/fetch-fek.sh:L16-L16@sha256:42acffc89892",
+     "offset": 25717
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/fetch-fek.sh:L67-L67@sha256:42acffc89892",
+   "old_offset": 24545,
+   "target": "deployment/fetch-fek.sh",
+   "new": [
+    {
+     "token": "deployment/fetch-fek.sh:L67-L67@sha256:42acffc89892",
+     "offset": 25769
+    }
+   ]
+  },
+  {
+   "old_token": ".dockerignore:77",
+   "old_offset": 24622,
+   "target": ".dockerignore",
+   "new": [
+    {
+     "token": ".dockerignore:L77-L77@sha256:d6f658bdd2a1",
+     "offset": 25846
+    }
+   ]
+  },
+  {
+   "old_token": "package.json:L1-L5@sha256:8c4d176620ed",
+   "old_offset": 24731,
+   "target": "package.json",
+   "new": [
+    {
+     "token": "package.json:L1-L5@sha256:8c4d176620ed",
+     "offset": 25980
+    }
+   ]
+  },
+  {
+   "old_token": "configs/constitution.yaml:L90-L90@sha256:c2daf8934d68",
+   "old_offset": 24770,
+   "target": "configs/constitution.yaml",
+   "new": [
+    {
+     "token": "configs/constitution.yaml:L90-L90@sha256:c2daf8934d68",
+     "offset": 26019
+    }
+   ]
+  },
+  {
+   "old_token": "source/document-fetch.lisp:L92-L106@sha256:bb114b83fd80",
+   "old_offset": 24824,
+   "target": "source/document-fetch.lisp",
+   "new": [
+    {
+     "token": "source/document-fetch.lisp:L92-L106@sha256:bb114b83fd80",
+     "offset": 26073
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/fetch-fek.sh:L16-L23@sha256:42acffc89892",
+   "old_offset": 24880,
+   "target": "deployment/fetch-fek.sh",
+   "new": [
+    {
+     "token": "deployment/fetch-fek.sh:L16-L23@sha256:42acffc89892",
+     "offset": 26129
+    }
+   ]
+  },
+  {
+   "old_token": ".dockerignore:77",
+   "old_offset": 24932,
+   "target": ".dockerignore",
+   "new": [
+    {
+     "token": ".dockerignore:L77-L77@sha256:d6f658bdd2a1",
+     "offset": 26181
+    }
+   ]
+  },
+  {
+   "old_token": "docs/SECURITY-REDTEAM.md:L84-L88@sha256:489f6a4c7a31",
+   "old_offset": 25229,
+   "target": "docs/SECURITY-REDTEAM.md",
+   "new": [
+    {
+     "token": "docs/SECURITY-REDTEAM.md:L84-L88@sha256:489f6a4c7a31",
+     "offset": 26503
+    }
+   ]
+  },
+  {
+   "old_token": "configs/constitution.yaml:L90-L90@sha256:c2daf8934d68",
+   "old_offset": 25282,
+   "target": "configs/constitution.yaml",
+   "new": [
+    {
+     "token": "configs/constitution.yaml:L90-L90@sha256:c2daf8934d68",
+     "offset": 26556
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:400",
+   "old_offset": 25336,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L400-L400@sha256:9280f921e1a7",
+     "offset": 26610
+    }
+   ]
+  },
+  {
+   "old_token": "orchestrator-tooling.asd:L5-L20@sha256:e8d7e64f5a71",
+   "old_offset": 25559,
+   "target": "orchestrator-tooling.asd",
+   "new": [
+    {
+     "token": "orchestrator-tooling.asd:L5-L20@sha256:e8d7e64f5a71",
+     "offset": 26859
+    }
+   ]
+  },
+  {
+   "old_token": "orchestrator-core-runtime.asd:L31-L31@sha256:dba3a133277b",
+   "old_offset": 26003,
+   "target": "orchestrator-core-runtime.asd",
+   "new": [
+    {
+     "token": "orchestrator-core-runtime.asd:L31-L31@sha256:dba3a133277b",
+     "offset": 27303
+    }
+   ]
+  },
+  {
+   "old_token": "orchestrator.asd:L41-L41@sha256:21f72d016312",
+   "old_offset": 26061,
+   "target": "orchestrator.asd",
+   "new": [
+    {
+     "token": "orchestrator.asd:L41-L41@sha256:21f72d016312",
+     "offset": 27361
+    }
+   ]
+  },
+  {
+   "old_token": "orchestrator-tests-runtime.asd:L24-L24@sha256:4d44073cbf6f",
+   "old_offset": 26106,
+   "target": "orchestrator-tests-runtime.asd",
+   "new": [
+    {
+     "token": "orchestrator-tests-runtime.asd:L24-L24@sha256:4d44073cbf6f",
+     "offset": 27406
+    }
+   ]
+  },
+  {
+   "old_token": "orchestrator-omega.asd:L139-L139@sha256:6c6f2d597908",
+   "old_offset": 26165,
+   "target": "orchestrator-omega.asd",
+   "new": [
+    {
+     "token": "orchestrator-omega.asd:L139-L139@sha256:6c6f2d597908",
+     "offset": 27465
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:189-192",
+   "old_offset": 26218,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L189-L192@sha256:9280f921e1a7",
+     "offset": 27518
+    }
+   ]
+  },
+  {
+   "old_token": "orchestrator-core-runtime.asd:L29-L29@sha256:dba3a133277b",
+   "old_offset": 26462,
+   "target": "orchestrator-core-runtime.asd",
+   "new": [
+    {
+     "token": "orchestrator-core-runtime.asd:L29-L29@sha256:dba3a133277b",
+     "offset": 27784
+    }
+   ]
+  },
+  {
+   "old_token": "orchestrator-tests-runtime.asd:L22-L22@sha256:4d44073cbf6f",
+   "old_offset": 26520,
+   "target": "orchestrator-tests-runtime.asd",
+   "new": [
+    {
+     "token": "orchestrator-tests-runtime.asd:L22-L22@sha256:4d44073cbf6f",
+     "offset": 27842
+    }
+   ]
+  },
+  {
+   "old_token": "orchestrator-tooling.asd:L20-L20@sha256:e8d7e64f5a71",
+   "old_offset": 26579,
+   "target": "orchestrator-tooling.asd",
+   "new": [
+    {
+     "token": "orchestrator-tooling.asd:L20-L20@sha256:e8d7e64f5a71",
+     "offset": 27901
+    }
+   ]
+  },
+  {
+   "old_token": "README:230",
+   "old_offset": 26787,
+   "target": "README",
+   "new": [
+    {
+     "token": "README:230",
+     "offset": 28109
+    }
+   ]
+  },
+  {
+   "old_token": "build.lisp:L34-L34@sha256:baa3527f5cf6",
+   "old_offset": 26915,
+   "target": "build.lisp",
+   "new": [
+    {
+     "token": "build.lisp:L34-L34@sha256:baa3527f5cf6",
+     "offset": 28237
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L227-L230@sha256:97c747e9aa82",
+   "old_offset": 26954,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L227-L230@sha256:97c747e9aa82",
+     "offset": 28276
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:16",
+   "old_offset": 27404,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L16-L16@sha256:9280f921e1a7",
+     "offset": 28726
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:56",
+   "old_offset": 27418,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L56-L56@sha256:9280f921e1a7",
+     "offset": 28765
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:41-43",
+   "old_offset": 27432,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L41-L43@sha256:9280f921e1a7",
+     "offset": 28804
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:68-69",
+   "old_offset": 27449,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L68-L69@sha256:9280f921e1a7",
+     "offset": 28843
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:374",
+   "old_offset": 27466,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L374-L374@sha256:9280f921e1a7",
+     "offset": 28882
+    }
+   ]
+  },
+  {
+   "old_token": "MANUAL-STEPS-HERMETIC.md:L29-L29@sha256:cfd4fd227483",
+   "old_offset": 27532,
+   "target": "MANUAL-STEPS-HERMETIC.md",
+   "new": [
+    {
+     "token": "MANUAL-STEPS-HERMETIC.md:L29-L29@sha256:cfd4fd227483",
+     "offset": 28974
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:5",
+   "old_offset": 27768,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L5-L5@sha256:9280f921e1a7",
+     "offset": 29210
+    }
+   ]
+  },
+  {
+   "old_token": "PROVENANCE.yaml:L293-L293@sha256:bce8df3c6d34",
+   "old_offset": 27789,
+   "target": "PROVENANCE.yaml",
+   "new": [
+    {
+     "token": "PROVENANCE.yaml:L293-L293@sha256:bce8df3c6d34",
+     "offset": 29255
+    }
+   ]
+  },
+  {
+   "old_token": "MANUAL-STEPS-HERMETIC.md:L5-L5@sha256:cfd4fd227483",
+   "old_offset": 27923,
+   "target": "MANUAL-STEPS-HERMETIC.md",
+   "new": [
+    {
+     "token": "MANUAL-STEPS-HERMETIC.md:L5-L5@sha256:cfd4fd227483",
+     "offset": 29389
+    }
+   ]
+  },
+  {
+   "old_token": "MANUAL-STEPS-HERMETIC.md:L21-L22@sha256:cfd4fd227483",
+   "old_offset": 27974,
+   "target": "MANUAL-STEPS-HERMETIC.md",
+   "new": [
+    {
+     "token": "MANUAL-STEPS-HERMETIC.md:L21-L22@sha256:cfd4fd227483",
+     "offset": 29440
+    }
+   ]
+  },
+  {
+   "old_token": "MANUAL-STEPS-HERMETIC.md:L29-L29@sha256:cfd4fd227483",
+   "old_offset": 28027,
+   "target": "MANUAL-STEPS-HERMETIC.md",
+   "new": [
+    {
+     "token": "MANUAL-STEPS-HERMETIC.md:L29-L29@sha256:cfd4fd227483",
+     "offset": 29493
+    }
+   ]
+  },
+  {
+   "old_token": "SYSTEM-HIERARCHY.txt:L2-L2@sha256:d5665164bce2",
+   "old_offset": 28159,
+   "target": "SYSTEM-HIERARCHY.txt",
+   "new": [
+    {
+     "token": "SYSTEM-HIERARCHY.txt:L2-L2@sha256:d5665164bce2",
+     "offset": 29625
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L6-L6@sha256:97c747e9aa82",
+   "old_offset": 28227,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L6-L6@sha256:97c747e9aa82",
+     "offset": 29693
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L389-L389@sha256:97c747e9aa82",
+   "old_offset": 28263,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L389-L389@sha256:97c747e9aa82",
+     "offset": 29729
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:338",
+   "old_offset": 28305,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L338-L338@sha256:9280f921e1a7",
+     "offset": 29771
+    }
+   ]
+  },
+  {
+   "old_token": "orchestrator.asd:L13-L13@sha256:21f72d016312",
+   "old_offset": 28322,
+   "target": "orchestrator.asd",
+   "new": [
+    {
+     "token": "orchestrator.asd:L13-L13@sha256:21f72d016312",
+     "offset": 29814
+    }
+   ]
+  },
+  {
+   "old_token": "CHANGELOG.md:L3-L3@sha256:3d1f519e64dd",
+   "old_offset": 28369,
+   "target": "CHANGELOG.md",
+   "new": [
+    {
+     "token": "CHANGELOG.md:L3-L3@sha256:3d1f519e64dd",
+     "offset": 29861
+    }
+   ]
+  },
+  {
+   "old_token": "SYSTEM-HIERARCHY.txt:L2-L2@sha256:d5665164bce2",
+   "old_offset": 28486,
+   "target": "SYSTEM-HIERARCHY.txt",
+   "new": [
+    {
+     "token": "SYSTEM-HIERARCHY.txt:L2-L2@sha256:d5665164bce2",
+     "offset": 29978
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L389-L389@sha256:97c747e9aa82",
+   "old_offset": 28533,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L389-L389@sha256:97c747e9aa82",
+     "offset": 30025
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:338",
+   "old_offset": 28573,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L338-L338@sha256:9280f921e1a7",
+     "offset": 30065
+    }
+   ]
+  },
+  {
+   "old_token": ".github/workflows/docker-orchestrator.yml:L371-L371@sha256:f1a4bb69e6e4",
+   "old_offset": 28588,
+   "target": ".github/workflows/docker-orchestrator.yml",
+   "new": [
+    {
+     "token": ".github/workflows/docker-orchestrator.yml:L371-L371@sha256:f1a4bb69e6e4",
+     "offset": 30106
+    }
+   ]
+  },
+  {
+   "old_token": "SYSTEM-HIERARCHY.txt:L5-L8@sha256:d5665164bce2",
+   "old_offset": 28711,
+   "target": "SYSTEM-HIERARCHY.txt",
+   "new": [
+    {
+     "token": "SYSTEM-HIERARCHY.txt:L5-L8@sha256:d5665164bce2",
+     "offset": 30229
+    }
+   ]
+  },
+  {
+   "old_token": "SYSTEM-HIERARCHY.txt:L5-L8@sha256:d5665164bce2",
+   "old_offset": 28972,
+   "target": "SYSTEM-HIERARCHY.txt",
+   "new": [
+    {
+     "token": "SYSTEM-HIERARCHY.txt:L5-L8@sha256:d5665164bce2",
+     "offset": 30490
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:452",
+   "old_offset": 29019,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L452-L452@sha256:9280f921e1a7",
+     "offset": 30537
+    }
+   ]
+  },
+  {
+   "old_token": "build.lisp:L44-L44@sha256:baa3527f5cf6",
+   "old_offset": 29034,
+   "target": "build.lisp",
+   "new": [
+    {
+     "token": "build.lisp:L44-L44@sha256:baa3527f5cf6",
+     "offset": 30578
+    }
+   ]
+  },
+  {
+   "old_token": "deps.archives.lock:1",
+   "old_offset": 29253,
+   "target": "deps.archives.lock",
+   "new": [
+    {
+     "token": "deps.archives.lock:L1-L1@sha256:af1f9d2642ca",
+     "offset": 30797
+    }
+   ]
+  },
+  {
+   "old_token": ".env.example:22-29",
+   "old_offset": 29536,
+   "target": ".env.example",
+   "new": [
+    {
+     "token": ".env.example:L22-L29@sha256:645f4518c145",
+     "offset": 31104
+    }
+   ]
+  },
+  {
+   "old_token": "docker-compose.yml:L409-L411@sha256:ff93c313b8fe",
+   "old_offset": 29555,
+   "target": "docker-compose.yml",
+   "new": [
+    {
+     "token": "docker-compose.yml:L409-L411@sha256:ff93c313b8fe",
+     "offset": 31145
+    }
+   ]
+  },
+  {
+   "old_token": "docs/AUDIT-8-QUIRKS.md:L3-L3@sha256:a11ee92c0e39",
+   "old_offset": 29845,
+   "target": "docs/AUDIT-8-QUIRKS.md",
+   "new": [
+    {
+     "token": "docs/AUDIT-8-QUIRKS.md:L3-L3@sha256:a11ee92c0e39",
+     "offset": 31435
+    }
+   ]
+  },
+  {
+   "old_token": "tools/independent-audit.py:L1-L20@sha256:69a9dc8dc288",
+   "old_offset": 29948,
+   "target": "tools/independent-audit.py",
+   "new": [
+    {
+     "token": "tools/independent-audit.py:L1-L20@sha256:69a9dc8dc288",
+     "offset": 31538
+    }
+   ]
+  },
+  {
+   "old_token": "docs/AUDIT-8-QUIRKS.md:L3-L3@sha256:a11ee92c0e39",
+   "old_offset": 30002,
+   "target": "docs/AUDIT-8-QUIRKS.md",
+   "new": [
+    {
+     "token": "docs/AUDIT-8-QUIRKS.md:L3-L3@sha256:a11ee92c0e39",
+     "offset": 31592
+    }
+   ]
+  },
+  {
+   "old_token": "README:174-181",
+   "old_offset": 30279,
+   "target": "README",
+   "new": [
+    {
+     "token": "README:174-181",
+     "offset": 31869
+    }
+   ]
+  },
+  {
+   "old_token": "docker-compose.architecture-tests.yml:L1-L16@sha256:08805212b09e",
+   "old_offset": 30365,
+   "target": "docker-compose.architecture-tests.yml",
+   "new": [
+    {
+     "token": "docker-compose.architecture-tests.yml:L1-L16@sha256:08805212b09e",
+     "offset": 31955
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L174-L181@sha256:97c747e9aa82",
+   "old_offset": 30430,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L174-L181@sha256:97c747e9aa82",
+     "offset": 32020
+    }
+   ]
+  },
+  {
+   "old_token": "configs/constitution.yaml:L90-L90@sha256:c2daf8934d68",
+   "old_offset": 30832,
+   "target": "configs/constitution.yaml",
+   "new": [
+    {
+     "token": "configs/constitution.yaml:L90-L90@sha256:c2daf8934d68",
+     "offset": 32422
+    }
+   ]
+  },
+  {
+   "old_token": "README:19-21",
+   "old_offset": 30903,
+   "target": "README",
+   "new": [
+    {
+     "token": "README:19-21",
+     "offset": 32493
+    }
+   ]
+  },
+  {
+   "old_token": "source/document-fetch.lisp:L92-L106@sha256:bb114b83fd80",
+   "old_offset": 31037,
+   "target": "source/document-fetch.lisp",
+   "new": [
+    {
+     "token": "source/document-fetch.lisp:L92-L106@sha256:bb114b83fd80",
+     "offset": 32627
+    }
+   ]
+  },
+  {
+   "old_token": "configs/constitution.yaml:L90-L90@sha256:c2daf8934d68",
+   "old_offset": 31093,
+   "target": "configs/constitution.yaml",
+   "new": [
+    {
+     "token": "configs/constitution.yaml:L90-L90@sha256:c2daf8934d68",
+     "offset": 32683
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/fetch-fek.sh:L16-L23@sha256:42acffc89892",
+   "old_offset": 31147,
+   "target": "deployment/fetch-fek.sh",
+   "new": [
+    {
+     "token": "deployment/fetch-fek.sh:L16-L23@sha256:42acffc89892",
+     "offset": 32737
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:400",
+   "old_offset": 31199,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L400-L400@sha256:9280f921e1a7",
+     "offset": 32789
+    }
+   ]
+  },
+  {
+   "old_token": "source/pdf-authority.lisp:L1399-L1425@sha256:c4e2054c0e4f",
+   "old_offset": 31500,
+   "target": "source/pdf-authority.lisp",
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:L1399-L1425@sha256:c4e2054c0e4f",
+     "offset": 33116
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:371-373",
+   "old_offset": 31558,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L371-L373@sha256:9280f921e1a7",
+     "offset": 33174
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:167",
+   "old_offset": 31851,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L167-L167@sha256:9280f921e1a7",
+     "offset": 33489
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:189-192",
+   "old_offset": 31866,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L189-L192@sha256:9280f921e1a7",
+     "offset": 33530
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:290",
+   "old_offset": 31885,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L290-L290@sha256:9280f921e1a7",
+     "offset": 33571
+    }
+   ]
+  },
+  {
+   "old_token": "README:18",
+   "old_offset": 32121,
+   "target": "README",
+   "new": [
+    {
+     "token": "README:18",
+     "offset": 33833
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:259",
+   "old_offset": 32238,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L259-L259@sha256:9280f921e1a7",
+     "offset": 33950
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:284-285",
+   "old_offset": 32253,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L284-L285@sha256:9280f921e1a7",
+     "offset": 33991
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:316",
+   "old_offset": 32272,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L316-L316@sha256:9280f921e1a7",
+     "offset": 34032
+    }
+   ]
+  },
+  {
+   "old_token": ".github/workflows/docker-orchestrator.yml:L228-L234@sha256:f1a4bb69e6e4",
+   "old_offset": 32551,
+   "target": ".github/workflows/docker-orchestrator.yml",
+   "new": [
+    {
+     "token": ".github/workflows/docker-orchestrator.yml:L228-L234@sha256:f1a4bb69e6e4",
+     "offset": 34337
+    }
+   ]
+  },
+  {
+   "old_token": "docker/entrypoint.lisp:L67-L77@sha256:b4f283f2abed",
+   "old_offset": 32884,
+   "target": "docker/entrypoint.lisp",
+   "new": [
+    {
+     "token": "docker/entrypoint.lisp:L67-L77@sha256:b4f283f2abed",
+     "offset": 34670
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:452",
+   "old_offset": 32935,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L452-L452@sha256:9280f921e1a7",
+     "offset": 34721
+    }
+   ]
+  },
+  {
+   "old_token": "docker-compose.yml:L376-L397@sha256:ff93c313b8fe",
+   "old_offset": 33205,
+   "target": "docker-compose.yml",
+   "new": [
+    {
+     "token": "docker-compose.yml:L376-L397@sha256:ff93c313b8fe",
+     "offset": 35017
+    }
+   ]
+  },
+  {
+   "old_token": ".github/workflows/docker-orchestrator.yml:L359-L378@sha256:f1a4bb69e6e4",
+   "old_offset": 33555,
+   "target": ".github/workflows/docker-orchestrator.yml",
+   "new": [
+    {
+     "token": ".github/workflows/docker-orchestrator.yml:L359-L378@sha256:f1a4bb69e6e4",
+     "offset": 35367
+    }
+   ]
+  },
+  {
+   "old_token": "entrypoint.lisp:L1-L83@sha256:779402eaf674",
+   "old_offset": 33771,
+   "target": "entrypoint.lisp",
+   "new": [
+    {
+     "token": "entrypoint.lisp:L1-L83@sha256:779402eaf674",
+     "offset": 35583
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:104",
+   "old_offset": 33923,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L104-L104@sha256:9280f921e1a7",
+     "offset": 35735
+    }
+   ]
+  },
+  {
+   "old_token": "docker/entrypoint.lisp:L1-L182@sha256:b4f283f2abed",
+   "old_offset": 33977,
+   "target": "docker/entrypoint.lisp",
+   "new": [
+    {
+     "token": "docker/entrypoint.lisp:L1-L182@sha256:b4f283f2abed",
+     "offset": 35815
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:409",
+   "old_offset": 34045,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L409-L409@sha256:9280f921e1a7",
+     "offset": 35883
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:452",
+   "old_offset": 34084,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L452-L452@sha256:9280f921e1a7",
+     "offset": 35948
+    }
+   ]
+  },
+  {
+   "old_token": "orchestrator.asd:L19-L28@sha256:21f72d016312",
+   "old_offset": 34180,
+   "target": "orchestrator.asd",
+   "new": [
+    {
+     "token": "orchestrator.asd:L19-L28@sha256:21f72d016312",
+     "offset": 36070
+    }
+   ]
+  },
+  {
+   "old_token": "orchestrator-core-runtime.asd:L17-L26@sha256:dba3a133277b",
+   "old_offset": 34227,
+   "target": "orchestrator-core-runtime.asd",
+   "new": [
+    {
+     "token": "orchestrator-core-runtime.asd:L17-L26@sha256:dba3a133277b",
+     "offset": 36117
+    }
+   ]
+  },
+  {
+   "old_token": "build.lisp:L34-L34@sha256:baa3527f5cf6",
+   "old_offset": 34361,
+   "target": "build.lisp",
+   "new": [
+    {
+     "token": "build.lisp:L34-L34@sha256:baa3527f5cf6",
+     "offset": 36251
+    }
+   ]
+  },
+  {
+   "old_token": "entrypoint.lisp:L16-L16@sha256:779402eaf674",
+   "old_offset": 34431,
+   "target": "entrypoint.lisp",
+   "new": [
+    {
+     "token": "entrypoint.lisp:L16-L16@sha256:779402eaf674",
+     "offset": 36321
+    }
+   ]
+  },
+  {
+   "old_token": "README.md:L227-L227@sha256:97c747e9aa82",
+   "old_offset": 34493,
+   "target": "README.md",
+   "new": [
+    {
+     "token": "README.md:L227-L227@sha256:97c747e9aa82",
+     "offset": 36383
+    }
+   ]
+  },
+  {
+   "old_token": "PROVENANCE.yaml:L286-L286@sha256:bce8df3c6d34",
+   "old_offset": 34614,
+   "target": "PROVENANCE.yaml",
+   "new": [
+    {
+     "token": "PROVENANCE.yaml:L286-L286@sha256:bce8df3c6d34",
+     "offset": 36504
+    }
+   ]
+  },
+  {
+   "old_token": "DEPENDENCY-CONTRACT.md:L194-L194@sha256:65a3f5df825c",
+   "old_offset": 34708,
+   "target": "DEPENDENCY-CONTRACT.md",
+   "new": [
+    {
+     "token": "DEPENDENCY-CONTRACT.md:L194-L194@sha256:65a3f5df825c",
+     "offset": 36598
+    }
+   ]
+  },
+  {
+   "old_token": "DEPENDENCY-CONTRACT.md:L213-L213@sha256:65a3f5df825c",
+   "old_offset": 34761,
+   "target": "DEPENDENCY-CONTRACT.md",
+   "new": [
+    {
+     "token": "DEPENDENCY-CONTRACT.md:L213-L213@sha256:65a3f5df825c",
+     "offset": 36651
+    }
+   ]
+  },
+  {
+   "old_token": "deps.lock:6",
+   "old_offset": 34861,
+   "target": "deps.lock",
+   "new": [
+    {
+     "token": "deps.lock:L6-L6@sha256:c4b43d610f97",
+     "offset": 36751
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:48",
+   "old_offset": 34875,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L48-L48@sha256:9280f921e1a7",
+     "offset": 36789
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:445-447",
+   "old_offset": 35399,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L445-L447@sha256:9280f921e1a7",
+     "offset": 37338
+    }
+   ]
+  },
+  {
+   "old_token": "docker/entrypoint.lisp:L162-L164@sha256:b4f283f2abed",
+   "old_offset": 35466,
+   "target": "docker/entrypoint.lisp",
+   "new": [
+    {
+     "token": "docker/entrypoint.lisp:L162-L164@sha256:b4f283f2abed",
+     "offset": 37427
+    }
+   ]
+  },
+  {
+   "old_token": "SYSTEM-HIERARCHY.txt:L5-L8@sha256:d5665164bce2",
+   "old_offset": 35616,
+   "target": "SYSTEM-HIERARCHY.txt",
+   "new": [
+    {
+     "token": "SYSTEM-HIERARCHY.txt:L5-L8@sha256:d5665164bce2",
+     "offset": 37577
+    }
+   ]
+  },
+  {
+   "old_token": "Dockerfile:452",
+   "old_offset": 35704,
+   "target": "Dockerfile",
+   "new": [
+    {
+     "token": "Dockerfile:L452-L452@sha256:9280f921e1a7",
+     "offset": 37665
+    }
+   ]
+  },
+  {
+   "old_token": "build.lisp:L44-L44@sha256:baa3527f5cf6",
+   "old_offset": 35753,
+   "target": "build.lisp",
+   "new": [
+    {
+     "token": "build.lisp:L44-L44@sha256:baa3527f5cf6",
+     "offset": 37740
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/collab/dialogue/0094-claude.md:L82-L82@sha256:3bbb04c93d56",
+   "old_offset": 36304,
+   "target": "deployment/collab/dialogue/0094-claude.md",
+   "new": [
+    {
+     "token": "deployment/collab/dialogue/0094-claude.md:L82-L82@sha256:3bbb04c93d56",
+     "offset": 38291
+    }
+   ]
+  },
+  {
+   "old_token": "README:300-305",
+   "old_offset": 37120,
+   "target": "README",
+   "new": [
+    {
+     "token": "README:300-305",
+     "offset": 39107
+    }
+   ]
+  }
+ ]
+}

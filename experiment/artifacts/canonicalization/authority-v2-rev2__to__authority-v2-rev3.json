@@ -1,0 +1,2555 @@
+{
+ "source": "authority-v2-rev2.sexp",
+ "source_sha256": "5f4506e44973dc792439039b26c32df75b42a3766eaacdfc7ba2a66d450dbda4",
+ "target": "authority-v2-rev3.sexp",
+ "target_sha256": "45eb97102c342e3f212fc5a8c67344d395406e02f763a181535a1af7a50066ad",
+ "derivation": "ΠΑΡΑΤΗΡΟΥΜΕΝΗ ΔΙΑΦΟΡΑ ΤΩΝ ΔΥΟ ΑΡΧΕΙΩΝ — ΟΧΙ έξοδος του εργαλείου που έκανε τη μετάβαση",
+ "old_tokens": 231,
+ "new_tokens": 231,
+ "expansions": 0,
+ "target_substitutions": 0,
+ "reorderings": 0,
+ "mapping": [
+  {
+   "old_token": "authority-v2/capability/identities.sh:L28-L88@sha256:814455cc6b0a",
+   "old_offset": 3366,
+   "target": "authority-v2/capability/identities.sh",
+   "new": [
+    {
+     "token": "authority-v2/capability/identities.sh:L28-L88@sha256:814455cc6b0a",
+     "offset": 3366
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/verify-capability-closure.sh:L14-L86@sha256:a0eaba8f338a",
+   "old_offset": 3448,
+   "target": "authority-v2/proofs/verify-capability-closure.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/verify-capability-closure.sh:L14-L86@sha256:a0eaba8f338a",
+     "offset": 3448
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/store/STORAGE-API.sexp:L48-L50@sha256:e8ccb6e50589",
+   "old_offset": 3541,
+   "target": "authority-v2/store/STORAGE-API.sexp",
+   "new": [
+    {
+     "token": "authority-v2/store/STORAGE-API.sexp:L48-L50@sha256:e8ccb6e50589",
+     "offset": 3541
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/capture.py:L143-L160@sha256:9593561c6c06",
+   "old_offset": 5596,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "authority-v2/capture/capture.py:L143-L160@sha256:9593561c6c06",
+     "offset": 5596
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/capture.py:L181-L246@sha256:9593561c6c06",
+   "old_offset": 7213,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "authority-v2/capture/capture.py:L181-L246@sha256:9593561c6c06",
+     "offset": 7213
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/CAPTURE-PROTOCOL.sexp:L114-L152@sha256:e119bee77c97",
+   "old_offset": 7414,
+   "target": "authority-v2/capture/CAPTURE-PROTOCOL.sexp",
+   "new": [
+    {
+     "token": "authority-v2/capture/CAPTURE-PROTOCOL.sexp:L114-L152@sha256:e119bee77c97",
+     "offset": 7414
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/capture-mutation-witness.py:L50-L162@sha256:9b3a416ab601",
+   "old_offset": 8635,
+   "target": "authority-v2/proofs/capture-mutation-witness.py",
+   "new": [
+    {
+     "token": "authority-v2/proofs/capture-mutation-witness.py:L50-L162@sha256:9b3a416ab601",
+     "offset": 8635
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L119-L119@sha256:7c82bef1def3",
+   "old_offset": 8810,
+   "target": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp",
+   "new": [
+    {
+     "token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L119-L119@sha256:7c82bef1def3",
+     "offset": 8810
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/capture-seat-differential-test.sh:L24-L115@sha256:766fc5d4ff9b",
+   "old_offset": 9907,
+   "target": "authority-v2/proofs/capture-seat-differential-test.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/capture-seat-differential-test.sh:L24-L115@sha256:766fc5d4ff9b",
+     "offset": 9907
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/tests/probe-canonical-files.lisp:L15-L22@sha256:943a1770c0a4",
+   "old_offset": 10006,
+   "target": "authority-v2/tests/probe-canonical-files.lisp",
+   "new": [
+    {
+     "token": "authority-v2/tests/probe-canonical-files.lisp:L15-L22@sha256:943a1770c0a4",
+     "offset": 10006
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/tests/probe-merkle-root-of-files.lisp:L28-L34@sha256:1a368b4f99b7",
+   "old_offset": 10096,
+   "target": "authority-v2/tests/probe-merkle-root-of-files.lisp",
+   "new": [
+    {
+     "token": "authority-v2/tests/probe-merkle-root-of-files.lisp:L28-L34@sha256:1a368b4f99b7",
+     "offset": 10096
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-proofs.sh:L37-L195@sha256:a47922d94bb5",
+   "old_offset": 11413,
+   "target": "authority-v2/run-proofs.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-proofs.sh:L37-L195@sha256:a47922d94bb5",
+     "offset": 11413
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/PROOF-CENSUS.txt:L20-L84@sha256:331b0e5a3316",
+   "old_offset": 11471,
+   "target": "authority-v2/PROOF-CENSUS.txt",
+   "new": [
+    {
+     "token": "authority-v2/PROOF-CENSUS.txt:L20-L84@sha256:331b0e5a3316",
+     "offset": 11471
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/proof-census-adversarial-test.py:L95-L189@sha256:0490322908af",
+   "old_offset": 11545,
+   "target": "authority-v2/proofs/proof-census-adversarial-test.py",
+   "new": [
+    {
+     "token": "authority-v2/proofs/proof-census-adversarial-test.py:L95-L189@sha256:0490322908af",
+     "offset": 11545
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/verify-completion-matrix.py:L21-L104@sha256:ce297276ed75",
+   "old_offset": 12869,
+   "target": "authority-v2/proofs/verify-completion-matrix.py",
+   "new": [
+    {
+     "token": "authority-v2/proofs/verify-completion-matrix.py:L21-L104@sha256:ce297276ed75",
+     "offset": 12869
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/verify-proof-manifest.py:L17-L78@sha256:cc4a0f5dc5f9",
+   "old_offset": 12962,
+   "target": "authority-v2/proofs/verify-proof-manifest.py",
+   "new": [
+    {
+     "token": "authority-v2/proofs/verify-proof-manifest.py:L17-L78@sha256:cc4a0f5dc5f9",
+     "offset": 12962
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/gate-negative-fixtures.py:L71-L124@sha256:f14bc571beb7",
+   "old_offset": 13051,
+   "target": "authority-v2/proofs/gate-negative-fixtures.py",
+   "new": [
+    {
+     "token": "authority-v2/proofs/gate-negative-fixtures.py:L71-L124@sha256:f14bc571beb7",
+     "offset": 13051
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/kernel/admission-model.sexp:L18-L33@sha256:e2b4f4ea09eb",
+   "old_offset": 14452,
+   "target": "authority-v2/kernel/admission-model.sexp",
+   "new": [
+    {
+     "token": "authority-v2/kernel/admission-model.sexp:L18-L33@sha256:e2b4f4ea09eb",
+     "offset": 14452
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L127-L127@sha256:7c82bef1def3",
+   "old_offset": 14567,
+   "target": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp",
+   "new": [
+    {
+     "token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L127-L127@sha256:7c82bef1def3",
+     "offset": 14567
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/docker-e2e-test.sh:L86-L91@sha256:10d9da1b5d66",
+   "old_offset": 14656,
+   "target": "authority-v2/proofs/docker-e2e-test.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/docker-e2e-test.sh:L86-L91@sha256:10d9da1b5d66",
+     "offset": 14656
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/schema/transition-certificate.cddl:L28-L39@sha256:909a91aa4bac",
+   "old_offset": 15671,
+   "target": "authority-v2/schema/transition-certificate.cddl",
+   "new": [
+    {
+     "token": "authority-v2/schema/transition-certificate.cddl:L28-L39@sha256:909a91aa4bac",
+     "offset": 15671
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/schema/state.cddl:L18-L27@sha256:77f42d146a16",
+   "old_offset": 16676,
+   "target": "authority-v2/schema/state.cddl",
+   "new": [
+    {
+     "token": "authority-v2/schema/state.cddl:L18-L27@sha256:77f42d146a16",
+     "offset": 16676
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/store/STORAGE-API.sexp:L17-L27@sha256:e8ccb6e50589",
+   "old_offset": 17846,
+   "target": "authority-v2/store/STORAGE-API.sexp",
+   "new": [
+    {
+     "token": "authority-v2/store/STORAGE-API.sexp:L17-L27@sha256:e8ccb6e50589",
+     "offset": 17846
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/log/witness-policy.sexp:L19-L28@sha256:68b5978b3e38",
+   "old_offset": 18951,
+   "target": "authority-v2/log/witness-policy.sexp",
+   "new": [
+    {
+     "token": "authority-v2/log/witness-policy.sexp:L19-L28@sha256:68b5978b3e38",
+     "offset": 18951
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ROLES-MODEL.sexp:L19-L24@sha256:e12ce36e8b17",
+   "old_offset": 19937,
+   "target": "authority-v2/roles/ROLES-MODEL.sexp",
+   "new": [
+    {
+     "token": "authority-v2/roles/ROLES-MODEL.sexp:L19-L24@sha256:e12ce36e8b17",
+     "offset": 19937
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ceremony.sh:L30-L44@sha256:c7fff2b735af",
+   "old_offset": 21032,
+   "target": "authority-v2/roles/ceremony.sh",
+   "new": [
+    {
+     "token": "authority-v2/roles/ceremony.sh:L30-L44@sha256:c7fff2b735af",
+     "offset": 21032
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/ceremony-rehearsal-test.sh:L10-L21@sha256:65fe29eeef29",
+   "old_offset": 21172,
+   "target": "authority-v2/proofs/ceremony-rehearsal-test.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/ceremony-rehearsal-test.sh:L10-L21@sha256:65fe29eeef29",
+     "offset": 21172
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/producer-os-boundary-test.sh:L40-L51@sha256:6e085a0beb91",
+   "old_offset": 22568,
+   "target": "authority-v2/proofs/producer-os-boundary-test.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/producer-os-boundary-test.sh:L40-L51@sha256:6e085a0beb91",
+     "offset": 22568
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/tests/probe-producer-real.lisp:L1-L33@sha256:c29440c0d33c",
+   "old_offset": 22691,
+   "target": "authority-v2/tests/probe-producer-real.lisp",
+   "new": [
+    {
+     "token": "authority-v2/tests/probe-producer-real.lisp:L1-L33@sha256:c29440c0d33c",
+     "offset": 22691
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/producer-topology-test.py:L31-L46@sha256:74942b063a3a",
+   "old_offset": 23941,
+   "target": "authority-v2/proofs/producer-topology-test.py",
+   "new": [
+    {
+     "token": "authority-v2/proofs/producer-topology-test.py:L31-L46@sha256:74942b063a3a",
+     "offset": 23941
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/genesis/genesis-policy.sexp:L19-L78@sha256:9a04b3cd8970",
+   "old_offset": 25499,
+   "target": "authority-v2/genesis/genesis-policy.sexp",
+   "new": [
+    {
+     "token": "authority-v2/genesis/genesis-policy.sexp:L19-L78@sha256:9a04b3cd8970",
+     "offset": 25499
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/genesis/legacy-snapshot.py:L36-L41@sha256:4b260f80ea54",
+   "old_offset": 25584,
+   "target": "authority-v2/genesis/legacy-snapshot.py",
+   "new": [
+    {
+     "token": "authority-v2/genesis/legacy-snapshot.py:L36-L41@sha256:4b260f80ea54",
+     "offset": 25584
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/genesis/legacy-snapshot.py:L199-L259@sha256:4b260f80ea54",
+   "old_offset": 25652,
+   "target": "authority-v2/genesis/legacy-snapshot.py",
+   "new": [
+    {
+     "token": "authority-v2/genesis/legacy-snapshot.py:L199-L259@sha256:4b260f80ea54",
+     "offset": 25652
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/genesis/conformance-check.py:L29-L43@sha256:2ab75cc33e93",
+   "old_offset": 25738,
+   "target": "authority-v2/genesis/conformance-check.py",
+   "new": [
+    {
+     "token": "authority-v2/genesis/conformance-check.py:L29-L43@sha256:2ab75cc33e93",
+     "offset": 25738
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/genesis/conformance-check.py:L96-L155@sha256:2ab75cc33e93",
+   "old_offset": 25808,
+   "target": "authority-v2/genesis/conformance-check.py",
+   "new": [
+    {
+     "token": "authority-v2/genesis/conformance-check.py:L96-L155@sha256:2ab75cc33e93",
+     "offset": 25808
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/genesis/build-adoption-certificate.py:L37-L42@sha256:1b6defdfb37d",
+   "old_offset": 25895,
+   "target": "authority-v2/genesis/build-adoption-certificate.py",
+   "new": [
+    {
+     "token": "authority-v2/genesis/build-adoption-certificate.py:L37-L42@sha256:1b6defdfb37d",
+     "offset": 25895
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/genesis/build-adoption-certificate.py:L66-L138@sha256:1b6defdfb37d",
+   "old_offset": 25974,
+   "target": "authority-v2/genesis/build-adoption-certificate.py",
+   "new": [
+    {
+     "token": "authority-v2/genesis/build-adoption-certificate.py:L66-L138@sha256:1b6defdfb37d",
+     "offset": 25974
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/fixtures/legacy-tlog/MANIFEST.json:L1-L24@sha256:45a21968e310",
+   "old_offset": 27181,
+   "target": "authority-v2/fixtures/legacy-tlog/MANIFEST.json",
+   "new": [
+    {
+     "token": "authority-v2/fixtures/legacy-tlog/MANIFEST.json:L1-L24@sha256:45a21968e310",
+     "offset": 27181
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/fixtures/legacy-tlog/REMOVED-tlog-writers.lisp.txt:L1-L26@sha256:05b4af8402ac",
+   "old_offset": 27272,
+   "target": "authority-v2/fixtures/legacy-tlog/REMOVED-tlog-writers.lisp.txt",
+   "new": [
+    {
+     "token": "authority-v2/fixtures/legacy-tlog/REMOVED-tlog-writers.lisp.txt:L1-L26@sha256:05b4af8402ac",
+     "offset": 27272
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/tests/probe-frozen-mutants.lisp:L11-L51@sha256:c264e50e7e9d",
+   "old_offset": 27379,
+   "target": "authority-v2/tests/probe-frozen-mutants.lisp",
+   "new": [
+    {
+     "token": "authority-v2/tests/probe-frozen-mutants.lisp:L11-L51@sha256:c264e50e7e9d",
+     "offset": 27379
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/delta23-evidence-bundle.sh:L72-L87@sha256:eb0d61ed6b78",
+   "old_offset": 27468,
+   "target": "authority-v2/proofs/delta23-evidence-bundle.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/delta23-evidence-bundle.sh:L72-L87@sha256:eb0d61ed6b78",
+     "offset": 27468
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/delta23-evidence-bundle.sh:L98-L107@sha256:eb0d61ed6b78",
+   "old_offset": 27543,
+   "target": "authority-v2/proofs/delta23-evidence-bundle.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/delta23-evidence-bundle.sh:L98-L107@sha256:eb0d61ed6b78",
+     "offset": 27543
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/fixtures/test-keys/genesis-test-ed25519.pub:L1-3",
+   "old_offset": 28627,
+   "target": "authority-v2/fixtures/test-keys/genesis-test-ed25519.pub",
+   "new": [
+    {
+     "token": "authority-v2/fixtures/test-keys/genesis-test-ed25519.pub:L1-L3@sha256:79407cf2dbfb",
+     "offset": 28627
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/fixtures/test-keys/README.md:L1-L30@sha256:6d65cbac89b7",
+   "old_offset": 28705,
+   "target": "authority-v2/fixtures/test-keys/README.md",
+   "new": [
+    {
+     "token": "authority-v2/fixtures/test-keys/README.md:L1-L30@sha256:6d65cbac89b7",
+     "offset": 28726
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/toolchain/everparse.Dockerfile:L21-72",
+   "old_offset": 29619,
+   "target": "authority-v2/toolchain/everparse.Dockerfile",
+   "new": [
+    {
+     "token": "authority-v2/toolchain/everparse.Dockerfile:L21-L72@sha256:b041f71c2b5b",
+     "offset": 29640
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/toolchain/perennial.Dockerfile:L17-57",
+   "old_offset": 29686,
+   "target": "authority-v2/toolchain/perennial.Dockerfile",
+   "new": [
+    {
+     "token": "authority-v2/toolchain/perennial.Dockerfile:L17-L57@sha256:0518176d8d72",
+     "offset": 29728
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/toolchain/trusted-toolchain-manifest.sexp:L25-L69@sha256:f2e3a4f320f1",
+   "old_offset": 29753,
+   "target": "authority-v2/toolchain/trusted-toolchain-manifest.sexp",
+   "new": [
+    {
+     "token": "authority-v2/toolchain/trusted-toolchain-manifest.sexp:L25-L69@sha256:f2e3a4f320f1",
+     "offset": 29816
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proof-manifest.sexp:L20-L26@sha256:b56b4cbb392f",
+   "old_offset": 29852,
+   "target": "authority-v2/proof-manifest.sexp",
+   "new": [
+    {
+     "token": "authority-v2/proof-manifest.sexp:L20-L26@sha256:b56b4cbb392f",
+     "offset": 29915
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/toolchain/trusted-toolchain-manifest.sexp:L18-L105@sha256:f2e3a4f320f1",
+   "old_offset": 30801,
+   "target": "authority-v2/toolchain/trusted-toolchain-manifest.sexp",
+   "new": [
+    {
+     "token": "authority-v2/toolchain/trusted-toolchain-manifest.sexp:L18-L105@sha256:f2e3a4f320f1",
+     "offset": 30864
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capability/identities.sh:L46-L46@sha256:814455cc6b0a",
+   "old_offset": 31309,
+   "target": "authority-v2/capability/identities.sh",
+   "new": [
+    {
+     "token": "authority-v2/capability/identities.sh:L46-L46@sha256:814455cc6b0a",
+     "offset": 31372
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capability/identities.sh:L76-L77@sha256:814455cc6b0a",
+   "old_offset": 31375,
+   "target": "authority-v2/capability/identities.sh",
+   "new": [
+    {
+     "token": "authority-v2/capability/identities.sh:L76-L77@sha256:814455cc6b0a",
+     "offset": 31438
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/verify-capability-closure.sh:L47-L53@sha256:a0eaba8f338a",
+   "old_offset": 31457,
+   "target": "authority-v2/proofs/verify-capability-closure.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/verify-capability-closure.sh:L47-L53@sha256:a0eaba8f338a",
+     "offset": 31520
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capability/identities.sh:L47-L47@sha256:814455cc6b0a",
+   "old_offset": 31737,
+   "target": "authority-v2/capability/identities.sh",
+   "new": [
+    {
+     "token": "authority-v2/capability/identities.sh:L47-L47@sha256:814455cc6b0a",
+     "offset": 31800
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capability/identities.sh:L80-L81@sha256:814455cc6b0a",
+   "old_offset": 31803,
+   "target": "authority-v2/capability/identities.sh",
+   "new": [
+    {
+     "token": "authority-v2/capability/identities.sh:L80-L81@sha256:814455cc6b0a",
+     "offset": 31866
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/verify-capability-closure.sh:L56-L61@sha256:a0eaba8f338a",
+   "old_offset": 31885,
+   "target": "authority-v2/proofs/verify-capability-closure.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/verify-capability-closure.sh:L56-L61@sha256:a0eaba8f338a",
+     "offset": 31948
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/verify-capability-closure.sh:L70-L75@sha256:a0eaba8f338a",
+   "old_offset": 31962,
+   "target": "authority-v2/proofs/verify-capability-closure.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/verify-capability-closure.sh:L70-L75@sha256:a0eaba8f338a",
+     "offset": 32025
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/toolchain/trusted-toolchain-manifest.sexp:L95-L97@sha256:f2e3a4f320f1",
+   "old_offset": 32055,
+   "target": "authority-v2/toolchain/trusted-toolchain-manifest.sexp",
+   "new": [
+    {
+     "token": "authority-v2/toolchain/trusted-toolchain-manifest.sexp:L95-L97@sha256:f2e3a4f320f1",
+     "offset": 32118
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capability/identities.sh:L48-L49@sha256:814455cc6b0a",
+   "old_offset": 32352,
+   "target": "authority-v2/capability/identities.sh",
+   "new": [
+    {
+     "token": "authority-v2/capability/identities.sh:L48-L49@sha256:814455cc6b0a",
+     "offset": 32415
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capability/identities.sh:L70-L70@sha256:814455cc6b0a",
+   "old_offset": 32418,
+   "target": "authority-v2/capability/identities.sh",
+   "new": [
+    {
+     "token": "authority-v2/capability/identities.sh:L70-L70@sha256:814455cc6b0a",
+     "offset": 32481
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/verify-capability-closure.sh:L62-L67@sha256:a0eaba8f338a",
+   "old_offset": 32500,
+   "target": "authority-v2/proofs/verify-capability-closure.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/verify-capability-closure.sh:L62-L67@sha256:a0eaba8f338a",
+     "offset": 32563
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/verify-capability-closure.sh:L77-L82@sha256:a0eaba8f338a",
+   "old_offset": 32577,
+   "target": "authority-v2/proofs/verify-capability-closure.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/verify-capability-closure.sh:L77-L82@sha256:a0eaba8f338a",
+     "offset": 32640
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/producer-os-boundary-test.sh:L78-L126@sha256:6e085a0beb91",
+   "old_offset": 32895,
+   "target": "authority-v2/proofs/producer-os-boundary-test.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/producer-os-boundary-test.sh:L78-L126@sha256:6e085a0beb91",
+     "offset": 32958
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/capture.py:L94-L99@sha256:9593561c6c06",
+   "old_offset": 33293,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "authority-v2/capture/capture.py:L94-L99@sha256:9593561c6c06",
+     "offset": 33356
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/capture.py:L143-L160@sha256:9593561c6c06",
+   "old_offset": 33353,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "authority-v2/capture/capture.py:L143-L160@sha256:9593561c6c06",
+     "offset": 33416
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/capture.py:L168-L170@sha256:9593561c6c06",
+   "old_offset": 33415,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "authority-v2/capture/capture.py:L168-L170@sha256:9593561c6c06",
+     "offset": 33478
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/capture.py:L317-L360@sha256:9593561c6c06",
+   "old_offset": 33838,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "authority-v2/capture/capture.py:L317-L360@sha256:9593561c6c06",
+     "offset": 33901
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/capture.py:L77-L81@sha256:9593561c6c06",
+   "old_offset": 34138,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "authority-v2/capture/capture.py:L77-L81@sha256:9593561c6c06",
+     "offset": 34201
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/capture.py:L648-L656@sha256:9593561c6c06",
+   "old_offset": 34198,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "authority-v2/capture/capture.py:L648-L656@sha256:9593561c6c06",
+     "offset": 34261
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ROLES-MODEL.sexp:L28-L37@sha256:e12ce36e8b17",
+   "old_offset": 34571,
+   "target": "authority-v2/roles/ROLES-MODEL.sexp",
+   "new": [
+    {
+     "token": "authority-v2/roles/ROLES-MODEL.sexp:L28-L37@sha256:e12ce36e8b17",
+     "offset": 34634
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ROLES-MODEL.sexp:L90-L95@sha256:e12ce36e8b17",
+   "old_offset": 34635,
+   "target": "authority-v2/roles/ROLES-MODEL.sexp",
+   "new": [
+    {
+     "token": "authority-v2/roles/ROLES-MODEL.sexp:L90-L95@sha256:e12ce36e8b17",
+     "offset": 34698
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ceremony.sh:L30-L44@sha256:c7fff2b735af",
+   "old_offset": 34701,
+   "target": "authority-v2/roles/ceremony.sh",
+   "new": [
+    {
+     "token": "authority-v2/roles/ceremony.sh:L30-L44@sha256:c7fff2b735af",
+     "offset": 34764
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ROLES-MODEL.sexp:L39-L44@sha256:e12ce36e8b17",
+   "old_offset": 34957,
+   "target": "authority-v2/roles/ROLES-MODEL.sexp",
+   "new": [
+    {
+     "token": "authority-v2/roles/ROLES-MODEL.sexp:L39-L44@sha256:e12ce36e8b17",
+     "offset": 35020
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/schema/transition-certificate.cddl:L125-L129@sha256:909a91aa4bac",
+   "old_offset": 35037,
+   "target": "authority-v2/schema/transition-certificate.cddl",
+   "new": [
+    {
+     "token": "authority-v2/schema/transition-certificate.cddl:L125-L129@sha256:909a91aa4bac",
+     "offset": 35100
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-proofs.sh:L75-L126@sha256:a47922d94bb5",
+   "old_offset": 35354,
+   "target": "authority-v2/run-proofs.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-proofs.sh:L75-L126@sha256:a47922d94bb5",
+     "offset": 35417
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/PROOF-CENSUS.txt:L20-L84@sha256:331b0e5a3316",
+   "old_offset": 35412,
+   "target": "authority-v2/PROOF-CENSUS.txt",
+   "new": [
+    {
+     "token": "authority-v2/PROOF-CENSUS.txt:L20-L84@sha256:331b0e5a3316",
+     "offset": 35475
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L23-L25@sha256:7c82bef1def3",
+   "old_offset": 35797,
+   "target": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp",
+   "new": [
+    {
+     "token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L23-L25@sha256:7c82bef1def3",
+     "offset": 35860
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L252-L259@sha256:7c82bef1def3",
+   "old_offset": 35868,
+   "target": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp",
+   "new": [
+    {
+     "token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L252-L259@sha256:7c82bef1def3",
+     "offset": 35931
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proof-manifest.sexp:L16-L18@sha256:b56b4cbb392f",
+   "old_offset": 35957,
+   "target": "authority-v2/proof-manifest.sexp",
+   "new": [
+    {
+     "token": "authority-v2/proof-manifest.sexp:L16-L18@sha256:b56b4cbb392f",
+     "offset": 36020
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proof-manifest.sexp:L60-L64@sha256:b56b4cbb392f",
+   "old_offset": 36018,
+   "target": "authority-v2/proof-manifest.sexp",
+   "new": [
+    {
+     "token": "authority-v2/proof-manifest.sexp:L60-L64@sha256:b56b4cbb392f",
+     "offset": 36081
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ceremony.sh:L30-L44@sha256:c7fff2b735af",
+   "old_offset": 36349,
+   "target": "authority-v2/roles/ceremony.sh",
+   "new": [
+    {
+     "token": "authority-v2/roles/ceremony.sh:L30-L44@sha256:c7fff2b735af",
+     "offset": 36412
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ceremony.sh:L133-L137@sha256:c7fff2b735af",
+   "old_offset": 36408,
+   "target": "authority-v2/roles/ceremony.sh",
+   "new": [
+    {
+     "token": "authority-v2/roles/ceremony.sh:L133-L137@sha256:c7fff2b735af",
+     "offset": 36471
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-proofs.sh:L26-L26@sha256:a47922d94bb5",
+   "old_offset": 36714,
+   "target": "authority-v2/run-proofs.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-proofs.sh:L26-L26@sha256:a47922d94bb5",
+     "offset": 36777
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-proofs.sh:L163-L180@sha256:a47922d94bb5",
+   "old_offset": 36769,
+   "target": "authority-v2/run-proofs.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-proofs.sh:L163-L180@sha256:a47922d94bb5",
+     "offset": 36832
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L130-L130@sha256:7c82bef1def3",
+   "old_offset": 36842,
+   "target": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp",
+   "new": [
+    {
+     "token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L130-L130@sha256:7c82bef1def3",
+     "offset": 36905
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/schema/state.cddl:L29-L35@sha256:77f42d146a16",
+   "old_offset": 37221,
+   "target": "authority-v2/schema/state.cddl",
+   "new": [
+    {
+     "token": "authority-v2/schema/state.cddl:L29-L35@sha256:77f42d146a16",
+     "offset": 37284
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/schema/state.cddl:L71-L85@sha256:77f42d146a16",
+   "old_offset": 37454,
+   "target": "authority-v2/schema/state.cddl",
+   "new": [
+    {
+     "token": "authority-v2/schema/state.cddl:L71-L85@sha256:77f42d146a16",
+     "offset": 37517
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/schema/transition-certificate.cddl:L82-L82@sha256:909a91aa4bac",
+   "old_offset": 37655,
+   "target": "authority-v2/schema/transition-certificate.cddl",
+   "new": [
+    {
+     "token": "authority-v2/schema/transition-certificate.cddl:L82-L82@sha256:909a91aa4bac",
+     "offset": 37718
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/kernel/admission-model.sexp:L58-L63@sha256:e2b4f4ea09eb",
+   "old_offset": 37747,
+   "target": "authority-v2/kernel/admission-model.sexp",
+   "new": [
+    {
+     "token": "authority-v2/kernel/admission-model.sexp:L58-L63@sha256:e2b4f4ea09eb",
+     "offset": 37810
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/kernel/admission-model.sexp:L43-L44@sha256:e2b4f4ea09eb",
+   "old_offset": 37993,
+   "target": "authority-v2/kernel/admission-model.sexp",
+   "new": [
+    {
+     "token": "authority-v2/kernel/admission-model.sexp:L43-L44@sha256:e2b4f4ea09eb",
+     "offset": 38056
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/schema/transition-certificate.cddl:L44-L44@sha256:909a91aa4bac",
+   "old_offset": 38078,
+   "target": "authority-v2/schema/transition-certificate.cddl",
+   "new": [
+    {
+     "token": "authority-v2/schema/transition-certificate.cddl:L44-L44@sha256:909a91aa4bac",
+     "offset": 38141
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/CAPTURE-PROTOCOL.sexp:L27-L61@sha256:e119bee77c97",
+   "old_offset": 38359,
+   "target": "authority-v2/capture/CAPTURE-PROTOCOL.sexp",
+   "new": [
+    {
+     "token": "authority-v2/capture/CAPTURE-PROTOCOL.sexp:L27-L61@sha256:e119bee77c97",
+     "offset": 38422
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/capture.py:L895-L912@sha256:9593561c6c06",
+   "old_offset": 38446,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "authority-v2/capture/capture.py:L895-L912@sha256:9593561c6c06",
+     "offset": 38509
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/log/witness-policy.sexp:L71-L78@sha256:68b5978b3e38",
+   "old_offset": 38727,
+   "target": "authority-v2/log/witness-policy.sexp",
+   "new": [
+    {
+     "token": "authority-v2/log/witness-policy.sexp:L71-L78@sha256:68b5978b3e38",
+     "offset": 38790
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/witness-quorum-test.py:L71-L77@sha256:909a8bccea9c",
+   "old_offset": 38808,
+   "target": "authority-v2/proofs/witness-quorum-test.py",
+   "new": [
+    {
+     "token": "authority-v2/proofs/witness-quorum-test.py:L71-L77@sha256:909a8bccea9c",
+     "offset": 38871
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-proofs.sh:L163-L194@sha256:a47922d94bb5",
+   "old_offset": 39112,
+   "target": "authority-v2/run-proofs.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-proofs.sh:L163-L194@sha256:a47922d94bb5",
+     "offset": 39175
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-all.sh:L29-L33@sha256:3c2ba7169352",
+   "old_offset": 39171,
+   "target": "authority-v2/run-all.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-all.sh:L29-L33@sha256:3c2ba7169352",
+     "offset": 39234
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-all.sh:L70-L72@sha256:3c2ba7169352",
+   "old_offset": 39223,
+   "target": "authority-v2/run-all.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-all.sh:L70-L72@sha256:3c2ba7169352",
+     "offset": 39286
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/docker-e2e-test.sh:L25-L27@sha256:10d9da1b5d66",
+   "old_offset": 39291,
+   "target": "authority-v2/proofs/docker-e2e-test.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/docker-e2e-test.sh:L25-L27@sha256:10d9da1b5d66",
+     "offset": 39354
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-proofs.sh:L62-L73@sha256:a47922d94bb5",
+   "old_offset": 39553,
+   "target": "authority-v2/run-proofs.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-proofs.sh:L62-L73@sha256:a47922d94bb5",
+     "offset": 39616
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-proofs.sh:L98-L125@sha256:a47922d94bb5",
+   "old_offset": 39608,
+   "target": "authority-v2/run-proofs.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-proofs.sh:L98-L125@sha256:a47922d94bb5",
+     "offset": 39671
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-proofs.sh:L106-L125@sha256:a47922d94bb5",
+   "old_offset": 39844,
+   "target": "authority-v2/run-proofs.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-proofs.sh:L106-L125@sha256:a47922d94bb5",
+     "offset": 39907
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-proofs.sh:L53-L57@sha256:a47922d94bb5",
+   "old_offset": 40014,
+   "target": "authority-v2/run-proofs.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-proofs.sh:L53-L57@sha256:a47922d94bb5",
+     "offset": 40077
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L85-L87@sha256:7c82bef1def3",
+   "old_offset": 40267,
+   "target": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp",
+   "new": [
+    {
+     "token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L85-L87@sha256:7c82bef1def3",
+     "offset": 40330
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/toolchain/everparse.Dockerfile:L11-12",
+   "old_offset": 40354,
+   "target": "authority-v2/toolchain/everparse.Dockerfile",
+   "new": [
+    {
+     "token": "authority-v2/toolchain/everparse.Dockerfile:L11-L12@sha256:b041f71c2b5b",
+     "offset": 40417
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/store/STORAGE-API.sexp:L20-L27@sha256:e8ccb6e50589",
+   "old_offset": 40580,
+   "target": "authority-v2/store/STORAGE-API.sexp",
+   "new": [
+    {
+     "token": "authority-v2/store/STORAGE-API.sexp:L20-L27@sha256:e8ccb6e50589",
+     "offset": 40664
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L155-L155@sha256:7c82bef1def3",
+   "old_offset": 40660,
+   "target": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp",
+   "new": [
+    {
+     "token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L155-L155@sha256:7c82bef1def3",
+     "offset": 40744
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/genesis/genesis-policy.sexp:L30-L36@sha256:9a04b3cd8970",
+   "old_offset": 40991,
+   "target": "authority-v2/genesis/genesis-policy.sexp",
+   "new": [
+    {
+     "token": "authority-v2/genesis/genesis-policy.sexp:L30-L36@sha256:9a04b3cd8970",
+     "offset": 41075
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/producer-os-boundary-test.sh:L125-L126@sha256:6e085a0beb91",
+   "old_offset": 41076,
+   "target": "authority-v2/proofs/producer-os-boundary-test.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/producer-os-boundary-test.sh:L125-L126@sha256:6e085a0beb91",
+     "offset": 41160
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/producer-os-boundary-test.sh:L165-L167@sha256:6e085a0beb91",
+   "old_offset": 41155,
+   "target": "authority-v2/proofs/producer-os-boundary-test.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/producer-os-boundary-test.sh:L165-L167@sha256:6e085a0beb91",
+     "offset": 41239
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/genesis/genesis-policy.sexp:L24-L28@sha256:9a04b3cd8970",
+   "old_offset": 41427,
+   "target": "authority-v2/genesis/genesis-policy.sexp",
+   "new": [
+    {
+     "token": "authority-v2/genesis/genesis-policy.sexp:L24-L28@sha256:9a04b3cd8970",
+     "offset": 41511
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/genesis/out/legacy-conformance.json:L1-L1@sha256:72e35810db61",
+   "old_offset": 41512,
+   "target": "authority-v2/genesis/out/legacy-conformance.json",
+   "new": [
+    {
+     "token": "authority-v2/genesis/out/legacy-conformance.json:L1-L1@sha256:72e35810db61",
+     "offset": 41596
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/kernel/admission-model.sexp:L1-L118@sha256:e2b4f4ea09eb",
+   "old_offset": 43085,
+   "target": "authority-v2/kernel/admission-model.sexp",
+   "new": [
+    {
+     "token": "authority-v2/kernel/admission-model.sexp:L1-L118@sha256:e2b4f4ea09eb",
+     "offset": 43169
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/store/STORAGE-API.sexp:L1-L73@sha256:e8ccb6e50589",
+   "old_offset": 43170,
+   "target": "authority-v2/store/STORAGE-API.sexp",
+   "new": [
+    {
+     "token": "authority-v2/store/STORAGE-API.sexp:L1-L73@sha256:e8ccb6e50589",
+     "offset": 43254
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/log/witness-policy.sexp:L1-L78@sha256:68b5978b3e38",
+   "old_offset": 43249,
+   "target": "authority-v2/log/witness-policy.sexp",
+   "new": [
+    {
+     "token": "authority-v2/log/witness-policy.sexp:L1-L78@sha256:68b5978b3e38",
+     "offset": 43333
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ROLES-MODEL.sexp:L1-L95@sha256:e12ce36e8b17",
+   "old_offset": 43329,
+   "target": "authority-v2/roles/ROLES-MODEL.sexp",
+   "new": [
+    {
+     "token": "authority-v2/roles/ROLES-MODEL.sexp:L1-L95@sha256:e12ce36e8b17",
+     "offset": 43413
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/CAPTURE-PROTOCOL.sexp:L1-L174@sha256:e119bee77c97",
+   "old_offset": 43408,
+   "target": "authority-v2/capture/CAPTURE-PROTOCOL.sexp",
+   "new": [
+    {
+     "token": "authority-v2/capture/CAPTURE-PROTOCOL.sexp:L1-L174@sha256:e119bee77c97",
+     "offset": 43492
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/schema/transition-certificate.cddl:L1-L129@sha256:909a91aa4bac",
+   "old_offset": 43495,
+   "target": "authority-v2/schema/transition-certificate.cddl",
+   "new": [
+    {
+     "token": "authority-v2/schema/transition-certificate.cddl:L1-L129@sha256:909a91aa4bac",
+     "offset": 43579
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/schema/state.cddl:L1-L85@sha256:77f42d146a16",
+   "old_offset": 43587,
+   "target": "authority-v2/schema/state.cddl",
+   "new": [
+    {
+     "token": "authority-v2/schema/state.cddl:L1-L85@sha256:77f42d146a16",
+     "offset": 43671
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/toolchain/trusted-toolchain-manifest.sexp:L1-L105@sha256:f2e3a4f320f1",
+   "old_offset": 43661,
+   "target": "authority-v2/toolchain/trusted-toolchain-manifest.sexp",
+   "new": [
+    {
+     "token": "authority-v2/toolchain/trusted-toolchain-manifest.sexp:L1-L105@sha256:f2e3a4f320f1",
+     "offset": 43745
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/PROOF-CENSUS.txt:L50-L84@sha256:331b0e5a3316",
+   "old_offset": 43760,
+   "target": "authority-v2/PROOF-CENSUS.txt",
+   "new": [
+    {
+     "token": "authority-v2/PROOF-CENSUS.txt:L50-L84@sha256:331b0e5a3316",
+     "offset": 43844
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/genesis/out/legacy-adoption-certificate.unsigned.json:L1-L1@sha256:5139d99fcef0",
+   "old_offset": 44721,
+   "target": "authority-v2/genesis/out/legacy-adoption-certificate.unsigned.json",
+   "new": [
+    {
+     "token": "authority-v2/genesis/out/legacy-adoption-certificate.unsigned.json:L1-L1@sha256:5139d99fcef0",
+     "offset": 44805
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/genesis/out/legacy-snapshot.json:L1-L1@sha256:fed7db72e87c",
+   "old_offset": 44830,
+   "target": "authority-v2/genesis/out/legacy-snapshot.json",
+   "new": [
+    {
+     "token": "authority-v2/genesis/out/legacy-snapshot.json:L1-L1@sha256:fed7db72e87c",
+     "offset": 44914
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/genesis/build-adoption-certificate.py:L73-L73@sha256:1b6defdfb37d",
+   "old_offset": 44918,
+   "target": "authority-v2/genesis/build-adoption-certificate.py",
+   "new": [
+    {
+     "token": "authority-v2/genesis/build-adoption-certificate.py:L73-L73@sha256:1b6defdfb37d",
+     "offset": 45002
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L103-L103@sha256:7c82bef1def3",
+   "old_offset": 45013,
+   "target": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp",
+   "new": [
+    {
+     "token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L103-L103@sha256:7c82bef1def3",
+     "offset": 45097
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/verify-completion-matrix.py:L11-L12@sha256:ce297276ed75",
+   "old_offset": 46018,
+   "target": "authority-v2/proofs/verify-completion-matrix.py",
+   "new": [
+    {
+     "token": "authority-v2/proofs/verify-completion-matrix.py:L11-L12@sha256:ce297276ed75",
+     "offset": 46102
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/verify-proof-manifest.py:L54-L59@sha256:cc4a0f5dc5f9",
+   "old_offset": 46134,
+   "target": "authority-v2/proofs/verify-proof-manifest.py",
+   "new": [
+    {
+     "token": "authority-v2/proofs/verify-proof-manifest.py:L54-L59@sha256:cc4a0f5dc5f9",
+     "offset": 46218
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/gate-negative-fixtures.py:L77-L121@sha256:f14bc571beb7",
+   "old_offset": 46223,
+   "target": "authority-v2/proofs/gate-negative-fixtures.py",
+   "new": [
+    {
+     "token": "authority-v2/proofs/gate-negative-fixtures.py:L77-L121@sha256:f14bc571beb7",
+     "offset": 46307
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-proofs.sh:L40-L41@sha256:a47922d94bb5",
+   "old_offset": 47008,
+   "target": "authority-v2/run-proofs.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-proofs.sh:L40-L41@sha256:a47922d94bb5",
+     "offset": 47092
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-proofs.sh:L43-L48@sha256:a47922d94bb5",
+   "old_offset": 47063,
+   "target": "authority-v2/run-proofs.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-proofs.sh:L43-L48@sha256:a47922d94bb5",
+     "offset": 47147
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/PROOF-CENSUS.txt:L34-L36@sha256:331b0e5a3316",
+   "old_offset": 47169,
+   "target": "authority-v2/PROOF-CENSUS.txt",
+   "new": [
+    {
+     "token": "authority-v2/PROOF-CENSUS.txt:L34-L36@sha256:331b0e5a3316",
+     "offset": 47253
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/proof-census-adversarial-test.py:L130-L164@sha256:0490322908af",
+   "old_offset": 47264,
+   "target": "authority-v2/proofs/proof-census-adversarial-test.py",
+   "new": [
+    {
+     "token": "authority-v2/proofs/proof-census-adversarial-test.py:L130-L164@sha256:0490322908af",
+     "offset": 47348
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/capture.py:L72-L75@sha256:9593561c6c06",
+   "old_offset": 48342,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "authority-v2/capture/capture.py:L72-L75@sha256:9593561c6c06",
+     "offset": 48426
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/capture-adversarial-test.py:L357-L364@sha256:664bc26df207",
+   "old_offset": 48509,
+   "target": "authority-v2/proofs/capture-adversarial-test.py",
+   "new": [
+    {
+     "token": "authority-v2/proofs/capture-adversarial-test.py:L357-L364@sha256:664bc26df207",
+     "offset": 48593
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/witness-quorum-test.py:L17-L19@sha256:909a8bccea9c",
+   "old_offset": 49285,
+   "target": "authority-v2/proofs/witness-quorum-test.py",
+   "new": [
+    {
+     "token": "authority-v2/proofs/witness-quorum-test.py:L17-L19@sha256:909a8bccea9c",
+     "offset": 49369
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/log/witness-policy.sexp:L48-L49@sha256:68b5978b3e38",
+   "old_offset": 49407,
+   "target": "authority-v2/log/witness-policy.sexp",
+   "new": [
+    {
+     "token": "authority-v2/log/witness-policy.sexp:L48-L49@sha256:68b5978b3e38",
+     "offset": 49491
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/log/witness-policy.sexp:L63-L64@sha256:68b5978b3e38",
+   "old_offset": 49472,
+   "target": "authority-v2/log/witness-policy.sexp",
+   "new": [
+    {
+     "token": "authority-v2/log/witness-policy.sexp:L63-L64@sha256:68b5978b3e38",
+     "offset": 49556
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L164-L170@sha256:7c82bef1def3",
+   "old_offset": 49553,
+   "target": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp",
+   "new": [
+    {
+     "token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L164-L170@sha256:7c82bef1def3",
+     "offset": 49637
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ceremony.sh:L67-L67@sha256:c7fff2b735af",
+   "old_offset": 50129,
+   "target": "authority-v2/roles/ceremony.sh",
+   "new": [
+    {
+     "token": "authority-v2/roles/ceremony.sh:L67-L67@sha256:c7fff2b735af",
+     "offset": 50213
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ceremony.sh:L70-L70@sha256:c7fff2b735af",
+   "old_offset": 50188,
+   "target": "authority-v2/roles/ceremony.sh",
+   "new": [
+    {
+     "token": "authority-v2/roles/ceremony.sh:L70-L70@sha256:c7fff2b735af",
+     "offset": 50272
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ceremony.sh:L124-L124@sha256:c7fff2b735af",
+   "old_offset": 50247,
+   "target": "authority-v2/roles/ceremony.sh",
+   "new": [
+    {
+     "token": "authority-v2/roles/ceremony.sh:L124-L124@sha256:c7fff2b735af",
+     "offset": 50331
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ROLES-MODEL.sexp:L28-L65@sha256:e12ce36e8b17",
+   "old_offset": 50324,
+   "target": "authority-v2/roles/ROLES-MODEL.sexp",
+   "new": [
+    {
+     "token": "authority-v2/roles/ROLES-MODEL.sexp:L28-L65@sha256:e12ce36e8b17",
+     "offset": 50408
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L181-L185@sha256:7c82bef1def3",
+   "old_offset": 50404,
+   "target": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp",
+   "new": [
+    {
+     "token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L181-L185@sha256:7c82bef1def3",
+     "offset": 50488
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/fixtures/genesis-cert-fixture.json:L1-L1@sha256:22288c825837",
+   "old_offset": 51411,
+   "target": "authority-v2/fixtures/genesis-cert-fixture.json",
+   "new": [
+    {
+     "token": "authority-v2/fixtures/genesis-cert-fixture.json:L1-L1@sha256:22288c825837",
+     "offset": 51495
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/fixtures/test-keys/genesis-test-ed25519.pub:L1-3",
+   "old_offset": 51564,
+   "target": "authority-v2/fixtures/test-keys/genesis-test-ed25519.pub",
+   "new": [
+    {
+     "token": "authority-v2/fixtures/test-keys/genesis-test-ed25519.pub:L1-L3@sha256:79407cf2dbfb",
+     "offset": 51648
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/fixtures/test-keys/README.md:L10-L17@sha256:6d65cbac89b7",
+   "old_offset": 51642,
+   "target": "authority-v2/fixtures/test-keys/README.md",
+   "new": [
+    {
+     "token": "authority-v2/fixtures/test-keys/README.md:L10-L17@sha256:6d65cbac89b7",
+     "offset": 51747
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/genesis/out/legacy-adoption-certificate.unsigned.json:L1-L1@sha256:5139d99fcef0",
+   "old_offset": 51728,
+   "target": "authority-v2/genesis/out/legacy-adoption-certificate.unsigned.json",
+   "new": [
+    {
+     "token": "authority-v2/genesis/out/legacy-adoption-certificate.unsigned.json:L1-L1@sha256:5139d99fcef0",
+     "offset": 51833
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/PROOF-CENSUS.txt:L69-L72@sha256:331b0e5a3316",
+   "old_offset": 52458,
+   "target": "authority-v2/PROOF-CENSUS.txt",
+   "new": [
+    {
+     "token": "authority-v2/PROOF-CENSUS.txt:L69-L72@sha256:331b0e5a3316",
+     "offset": 52563
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-proofs.sh:L119-L125@sha256:a47922d94bb5",
+   "old_offset": 52532,
+   "target": "authority-v2/run-proofs.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-proofs.sh:L119-L125@sha256:a47922d94bb5",
+     "offset": 52637
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-proofs.sh:L159-L161@sha256:a47922d94bb5",
+   "old_offset": 52589,
+   "target": "authority-v2/run-proofs.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-proofs.sh:L159-L161@sha256:a47922d94bb5",
+     "offset": 52694
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/genesis/build-adoption-certificate.py:L45-L138@sha256:1b6defdfb37d",
+   "old_offset": 52662,
+   "target": "authority-v2/genesis/build-adoption-certificate.py",
+   "new": [
+    {
+     "token": "authority-v2/genesis/build-adoption-certificate.py:L45-L138@sha256:1b6defdfb37d",
+     "offset": 52767
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/toolchain/everparse.Dockerfile:L50-54,L64-72",
+   "old_offset": 53619,
+   "target": "authority-v2/toolchain/everparse.Dockerfile",
+   "new": [
+    {
+     "token": "authority-v2/toolchain/everparse.Dockerfile:L50-54,L64-72",
+     "offset": 53724
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/toolchain/perennial.Dockerfile:L43-47,L49-57",
+   "old_offset": 53693,
+   "target": "authority-v2/toolchain/perennial.Dockerfile",
+   "new": [
+    {
+     "token": "authority-v2/toolchain/perennial.Dockerfile:L43-47,L49-57",
+     "offset": 53798
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proof-manifest.sexp:L20-L26@sha256:b56b4cbb392f",
+   "old_offset": 53767,
+   "target": "authority-v2/proof-manifest.sexp",
+   "new": [
+    {
+     "token": "authority-v2/proof-manifest.sexp:L20-L26@sha256:b56b4cbb392f",
+     "offset": 53872
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L82-L82@sha256:7c82bef1def3",
+   "old_offset": 53844,
+   "target": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp",
+   "new": [
+    {
+     "token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L82-L82@sha256:7c82bef1def3",
+     "offset": 53949
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L153-L153@sha256:7c82bef1def3",
+   "old_offset": 53915,
+   "target": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp",
+   "new": [
+    {
+     "token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L153-L153@sha256:7c82bef1def3",
+     "offset": 54020
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/delta23-evidence-bundle.sh:L3-L4@sha256:eb0d61ed6b78",
+   "old_offset": 54628,
+   "target": "authority-v2/proofs/delta23-evidence-bundle.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/delta23-evidence-bundle.sh:L3-L4@sha256:eb0d61ed6b78",
+     "offset": 54733
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/delta23-evidence-bundle.sh:L48-L61@sha256:eb0d61ed6b78",
+   "old_offset": 54701,
+   "target": "authority-v2/proofs/delta23-evidence-bundle.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/delta23-evidence-bundle.sh:L48-L61@sha256:eb0d61ed6b78",
+     "offset": 54806
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/delta23-evidence-bundle.sh:L118-L119@sha256:eb0d61ed6b78",
+   "old_offset": 54776,
+   "target": "authority-v2/proofs/delta23-evidence-bundle.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/delta23-evidence-bundle.sh:L118-L119@sha256:eb0d61ed6b78",
+     "offset": 54881
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/PROOF-CENSUS.txt:L64-L64@sha256:331b0e5a3316",
+   "old_offset": 54869,
+   "target": "authority-v2/PROOF-CENSUS.txt",
+   "new": [
+    {
+     "token": "authority-v2/PROOF-CENSUS.txt:L64-L64@sha256:331b0e5a3316",
+     "offset": 54974
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/verify-capability-closure.sh:L40-L45@sha256:a0eaba8f338a",
+   "old_offset": 55735,
+   "target": "authority-v2/proofs/verify-capability-closure.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/verify-capability-closure.sh:L40-L45@sha256:a0eaba8f338a",
+     "offset": 55840
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/producer-os-boundary-test.sh:L108-L116@sha256:6e085a0beb91",
+   "old_offset": 55846,
+   "target": "authority-v2/proofs/producer-os-boundary-test.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/producer-os-boundary-test.sh:L108-L116@sha256:6e085a0beb91",
+     "offset": 55951
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/CAPTURE-PROTOCOL.sexp:L63-L89@sha256:e119bee77c97",
+   "old_offset": 57077,
+   "target": "authority-v2/capture/CAPTURE-PROTOCOL.sexp",
+   "new": [
+    {
+     "token": "authority-v2/capture/CAPTURE-PROTOCOL.sexp:L63-L89@sha256:e119bee77c97",
+     "offset": 57182
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/capture.py:L155-L156@sha256:9593561c6c06",
+   "old_offset": 57216,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "authority-v2/capture/capture.py:L155-L156@sha256:9593561c6c06",
+     "offset": 57321
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/canonical-profile.json:L3-L3@sha256:7c1005aec472",
+   "old_offset": 57864,
+   "target": "authority-v2/capture/canonical-profile.json",
+   "new": [
+    {
+     "token": "authority-v2/capture/canonical-profile.json:L3-L3@sha256:7c1005aec472",
+     "offset": 57969
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/CAPTURE-PROTOCOL.sexp:L135-L135@sha256:e119bee77c97",
+   "old_offset": 57950,
+   "target": "authority-v2/capture/CAPTURE-PROTOCOL.sexp",
+   "new": [
+    {
+     "token": "authority-v2/capture/CAPTURE-PROTOCOL.sexp:L135-L135@sha256:e119bee77c97",
+     "offset": 58055
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/capture.py:L77-L81@sha256:9593561c6c06",
+   "old_offset": 58056,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "authority-v2/capture/capture.py:L77-L81@sha256:9593561c6c06",
+     "offset": 58161
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/capture.py:L981-L991@sha256:9593561c6c06",
+   "old_offset": 58598,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "authority-v2/capture/capture.py:L981-L991@sha256:9593561c6c06",
+     "offset": 58703
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/tests/probe-attest-refusal.lisp:L1-L35@sha256:deb0595fdfb0",
+   "old_offset": 59231,
+   "target": "authority-v2/tests/probe-attest-refusal.lisp",
+   "new": [
+    {
+     "token": "authority-v2/tests/probe-attest-refusal.lisp:L1-L35@sha256:deb0595fdfb0",
+     "offset": 59336
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/tests/probe-producer-under-uid.lisp:L1-L50@sha256:407bb5a0ec69",
+   "old_offset": 59319,
+   "target": "authority-v2/tests/probe-producer-under-uid.lisp",
+   "new": [
+    {
+     "token": "authority-v2/tests/probe-producer-under-uid.lisp:L1-L50@sha256:407bb5a0ec69",
+     "offset": 59424
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/tests/probe-producer-real.lisp:L1-L33@sha256:c29440c0d33c",
+   "old_offset": 59411,
+   "target": "authority-v2/tests/probe-producer-real.lisp",
+   "new": [
+    {
+     "token": "authority-v2/tests/probe-producer-real.lisp:L1-L33@sha256:c29440c0d33c",
+     "offset": 59516
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/PROOF-CENSUS.txt:L31-L36@sha256:331b0e5a3316",
+   "old_offset": 59510,
+   "target": "authority-v2/PROOF-CENSUS.txt",
+   "new": [
+    {
+     "token": "authority-v2/PROOF-CENSUS.txt:L31-L36@sha256:331b0e5a3316",
+     "offset": 59615
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/PROOF-CENSUS.txt:L75-L75@sha256:331b0e5a3316",
+   "old_offset": 59568,
+   "target": "authority-v2/PROOF-CENSUS.txt",
+   "new": [
+    {
+     "token": "authority-v2/PROOF-CENSUS.txt:L75-L75@sha256:331b0e5a3316",
+     "offset": 59673
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/PROOF-CENSUS.txt:L83-L83@sha256:331b0e5a3316",
+   "old_offset": 59626,
+   "target": "authority-v2/PROOF-CENSUS.txt",
+   "new": [
+    {
+     "token": "authority-v2/PROOF-CENSUS.txt:L83-L83@sha256:331b0e5a3316",
+     "offset": 59731
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-proofs.sh:L105-L105@sha256:a47922d94bb5",
+   "old_offset": 59686,
+   "target": "authority-v2/run-proofs.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-proofs.sh:L105-L105@sha256:a47922d94bb5",
+     "offset": 59791
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L115-L122@sha256:7c82bef1def3",
+   "old_offset": 60330,
+   "target": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp",
+   "new": [
+    {
+     "token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L115-L122@sha256:7c82bef1def3",
+     "offset": 60435
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/PROOF-CENSUS.txt:L51-L66@sha256:331b0e5a3316",
+   "old_offset": 60426,
+   "target": "authority-v2/PROOF-CENSUS.txt",
+   "new": [
+    {
+     "token": "authority-v2/PROOF-CENSUS.txt:L51-L66@sha256:331b0e5a3316",
+     "offset": 60531
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ceremony.sh:L25-L25@sha256:c7fff2b735af",
+   "old_offset": 60896,
+   "target": "authority-v2/roles/ceremony.sh",
+   "new": [
+    {
+     "token": "authority-v2/roles/ceremony.sh:L25-L25@sha256:c7fff2b735af",
+     "offset": 61001
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ceremony.sh:L46-L51@sha256:c7fff2b735af",
+   "old_offset": 60955,
+   "target": "authority-v2/roles/ceremony.sh",
+   "new": [
+    {
+     "token": "authority-v2/roles/ceremony.sh:L46-L51@sha256:c7fff2b735af",
+     "offset": 61060
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/ceremony-rehearsal-test.sh:L5-L5@sha256:65fe29eeef29",
+   "old_offset": 61030,
+   "target": "authority-v2/proofs/ceremony-rehearsal-test.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/ceremony-rehearsal-test.sh:L5-L5@sha256:65fe29eeef29",
+     "offset": 61135
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/PROOF-CENSUS.txt:L42-L44@sha256:331b0e5a3316",
+   "old_offset": 61119,
+   "target": "authority-v2/PROOF-CENSUS.txt",
+   "new": [
+    {
+     "token": "authority-v2/PROOF-CENSUS.txt:L42-L44@sha256:331b0e5a3316",
+     "offset": 61224
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/verify-capability-closure.sh:L48-L53@sha256:a0eaba8f338a",
+   "old_offset": 61619,
+   "target": "authority-v2/proofs/verify-capability-closure.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/verify-capability-closure.sh:L48-L53@sha256:a0eaba8f338a",
+     "offset": 61724
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/verify-capability-closure.sh:L56-L58@sha256:a0eaba8f338a",
+   "old_offset": 61696,
+   "target": "authority-v2/proofs/verify-capability-closure.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/verify-capability-closure.sh:L56-L58@sha256:a0eaba8f338a",
+     "offset": 61801
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/verify-capability-closure.sh:L62-L64@sha256:a0eaba8f338a",
+   "old_offset": 61773,
+   "target": "authority-v2/proofs/verify-capability-closure.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/verify-capability-closure.sh:L62-L64@sha256:a0eaba8f338a",
+     "offset": 61878
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/verify-capability-closure.sh:L70-L75@sha256:a0eaba8f338a",
+   "old_offset": 61850,
+   "target": "authority-v2/proofs/verify-capability-closure.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/verify-capability-closure.sh:L70-L75@sha256:a0eaba8f338a",
+     "offset": 61955
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/capture-mountpoint-test.sh:L113-L142@sha256:348977712438",
+   "old_offset": 62399,
+   "target": "authority-v2/proofs/capture-mountpoint-test.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/capture-mountpoint-test.sh:L113-L142@sha256:348977712438",
+     "offset": 62504
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L110-L112@sha256:7c82bef1def3",
+   "old_offset": 62985,
+   "target": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp",
+   "new": [
+    {
+     "token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L110-L112@sha256:7c82bef1def3",
+     "offset": 63090
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L239-L243@sha256:7c82bef1def3",
+   "old_offset": 63058,
+   "target": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp",
+   "new": [
+    {
+     "token": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L239-L243@sha256:7c82bef1def3",
+     "offset": 63163
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/verify-completion-matrix.py:L22-L24@sha256:ce297276ed75",
+   "old_offset": 63147,
+   "target": "authority-v2/proofs/verify-completion-matrix.py",
+   "new": [
+    {
+     "token": "authority-v2/proofs/verify-completion-matrix.py:L22-L24@sha256:ce297276ed75",
+     "offset": 63252
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/tests/probe-producer-real.lisp:L26-L31@sha256:c29440c0d33c",
+   "old_offset": 63812,
+   "target": "authority-v2/tests/probe-producer-real.lisp",
+   "new": [
+    {
+     "token": "authority-v2/tests/probe-producer-real.lisp:L26-L31@sha256:c29440c0d33c",
+     "offset": 63917
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/tests/probe-producer-under-uid.lisp:L40-L47@sha256:407bb5a0ec69",
+   "old_offset": 63900,
+   "target": "authority-v2/tests/probe-producer-under-uid.lisp",
+   "new": [
+    {
+     "token": "authority-v2/tests/probe-producer-under-uid.lisp:L40-L47@sha256:407bb5a0ec69",
+     "offset": 64005
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/producer-os-boundary-test.sh:L144-L152@sha256:6e085a0beb91",
+   "old_offset": 63993,
+   "target": "authority-v2/proofs/producer-os-boundary-test.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/producer-os-boundary-test.sh:L144-L152@sha256:6e085a0beb91",
+     "offset": 64098
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/producer-os-boundary-test.sh:L34-L35@sha256:6e085a0beb91",
+   "old_offset": 64732,
+   "target": "authority-v2/proofs/producer-os-boundary-test.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/producer-os-boundary-test.sh:L34-L35@sha256:6e085a0beb91",
+     "offset": 64837
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capability/identities.sh:L73-L81@sha256:814455cc6b0a",
+   "old_offset": 64825,
+   "target": "authority-v2/capability/identities.sh",
+   "new": [
+    {
+     "token": "authority-v2/capability/identities.sh:L73-L81@sha256:814455cc6b0a",
+     "offset": 64930
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/delta23-evidence-bundle.sh:L52-L61@sha256:eb0d61ed6b78",
+   "old_offset": 65322,
+   "target": "authority-v2/proofs/delta23-evidence-bundle.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/delta23-evidence-bundle.sh:L52-L61@sha256:eb0d61ed6b78",
+     "offset": 65427
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/delta23-evidence-bundle.sh:L110-L115@sha256:eb0d61ed6b78",
+   "old_offset": 65397,
+   "target": "authority-v2/proofs/delta23-evidence-bundle.sh",
+   "new": [
+    {
+     "token": "authority-v2/proofs/delta23-evidence-bundle.sh:L110-L115@sha256:eb0d61ed6b78",
+     "offset": 65502
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/PROOF-CENSUS.txt:L52-L52@sha256:331b0e5a3316",
+   "old_offset": 65490,
+   "target": "authority-v2/PROOF-CENSUS.txt",
+   "new": [
+    {
+     "token": "authority-v2/PROOF-CENSUS.txt:L52-L52@sha256:331b0e5a3316",
+     "offset": 65595
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/PROOF-CENSUS.txt:L56-L56@sha256:331b0e5a3316",
+   "old_offset": 65548,
+   "target": "authority-v2/PROOF-CENSUS.txt",
+   "new": [
+    {
+     "token": "authority-v2/PROOF-CENSUS.txt:L56-L56@sha256:331b0e5a3316",
+     "offset": 65653
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/PROOF-CENSUS.txt:L64-L64@sha256:331b0e5a3316",
+   "old_offset": 65606,
+   "target": "authority-v2/PROOF-CENSUS.txt",
+   "new": [
+    {
+     "token": "authority-v2/PROOF-CENSUS.txt:L64-L64@sha256:331b0e5a3316",
+     "offset": 65711
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-all.sh:L40-L41@sha256:3c2ba7169352",
+   "old_offset": 65984,
+   "target": "authority-v2/run-all.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-all.sh:L40-L41@sha256:3c2ba7169352",
+     "offset": 66089
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-all.sh:L60-L61@sha256:3c2ba7169352",
+   "old_offset": 66036,
+   "target": "authority-v2/run-all.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-all.sh:L60-L61@sha256:3c2ba7169352",
+     "offset": 66141
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/PROOF-CENSUS.txt:L55-L55@sha256:331b0e5a3316",
+   "old_offset": 66090,
+   "target": "authority-v2/PROOF-CENSUS.txt",
+   "new": [
+    {
+     "token": "authority-v2/PROOF-CENSUS.txt:L55-L55@sha256:331b0e5a3316",
+     "offset": 66195
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ceremony.sh:L25-L25@sha256:c7fff2b735af",
+   "old_offset": 66502,
+   "target": "authority-v2/roles/ceremony.sh",
+   "new": [
+    {
+     "token": "authority-v2/roles/ceremony.sh:L25-L25@sha256:c7fff2b735af",
+     "offset": 66607
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ceremony.sh:L46-L51@sha256:c7fff2b735af",
+   "old_offset": 66561,
+   "target": "authority-v2/roles/ceremony.sh",
+   "new": [
+    {
+     "token": "authority-v2/roles/ceremony.sh:L46-L51@sha256:c7fff2b735af",
+     "offset": 66666
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/tests/build-authority-core.lisp:L4-L14@sha256:b8c377fdd104",
+   "old_offset": 66989,
+   "target": "authority-v2/tests/build-authority-core.lisp",
+   "new": [
+    {
+     "token": "authority-v2/tests/build-authority-core.lisp:L4-L14@sha256:b8c377fdd104",
+     "offset": 67094
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-all.sh:L44-L54@sha256:3c2ba7169352",
+   "old_offset": 67063,
+   "target": "authority-v2/run-all.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-all.sh:L44-L54@sha256:3c2ba7169352",
+     "offset": 67168
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/capture-mutation-witness.py:L216-L219@sha256:9b3a416ab601",
+   "old_offset": 67469,
+   "target": "authority-v2/proofs/capture-mutation-witness.py",
+   "new": [
+    {
+     "token": "authority-v2/proofs/capture-mutation-witness.py:L216-L219@sha256:9b3a416ab601",
+     "offset": 67574
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/capture-mutation-witness.py:L248-L252@sha256:9b3a416ab601",
+   "old_offset": 67547,
+   "target": "authority-v2/proofs/capture-mutation-witness.py",
+   "new": [
+    {
+     "token": "authority-v2/proofs/capture-mutation-witness.py:L248-L252@sha256:9b3a416ab601",
+     "offset": 67652
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/capture-mutation-witness.py:L263-L264@sha256:9b3a416ab601",
+   "old_offset": 67625,
+   "target": "authority-v2/proofs/capture-mutation-witness.py",
+   "new": [
+    {
+     "token": "authority-v2/proofs/capture-mutation-witness.py:L263-L264@sha256:9b3a416ab601",
+     "offset": 67730
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/capture.py:L248-L248@sha256:9593561c6c06",
+   "old_offset": 68059,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "authority-v2/capture/capture.py:L248-L248@sha256:9593561c6c06",
+     "offset": 68164
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/log/witness-policy.sexp:L47-L69@sha256:68b5978b3e38",
+   "old_offset": 68380,
+   "target": "authority-v2/log/witness-policy.sexp",
+   "new": [
+    {
+     "token": "authority-v2/log/witness-policy.sexp:L47-L69@sha256:68b5978b3e38",
+     "offset": 68485
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/witness-quorum-test.py:L17-L19@sha256:909a8bccea9c",
+   "old_offset": 68458,
+   "target": "authority-v2/proofs/witness-quorum-test.py",
+   "new": [
+    {
+     "token": "authority-v2/proofs/witness-quorum-test.py:L17-L19@sha256:909a8bccea9c",
+     "offset": 68563
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/proofs/witness-quorum-test.py:L52-L78@sha256:909a8bccea9c",
+   "old_offset": 68529,
+   "target": "authority-v2/proofs/witness-quorum-test.py",
+   "new": [
+    {
+     "token": "authority-v2/proofs/witness-quorum-test.py:L52-L78@sha256:909a8bccea9c",
+     "offset": 68634
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ROLES-MODEL.sexp:L28-L65@sha256:e12ce36e8b17",
+   "old_offset": 68698,
+   "target": "authority-v2/roles/ROLES-MODEL.sexp",
+   "new": [
+    {
+     "token": "authority-v2/roles/ROLES-MODEL.sexp:L28-L65@sha256:e12ce36e8b17",
+     "offset": 68803
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ceremony.sh:L67-L67@sha256:c7fff2b735af",
+   "old_offset": 68775,
+   "target": "authority-v2/roles/ceremony.sh",
+   "new": [
+    {
+     "token": "authority-v2/roles/ceremony.sh:L67-L67@sha256:c7fff2b735af",
+     "offset": 68880
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ceremony.sh:L70-L70@sha256:c7fff2b735af",
+   "old_offset": 68834,
+   "target": "authority-v2/roles/ceremony.sh",
+   "new": [
+    {
+     "token": "authority-v2/roles/ceremony.sh:L70-L70@sha256:c7fff2b735af",
+     "offset": 68939
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/roles/ceremony.sh:L124-L124@sha256:c7fff2b735af",
+   "old_offset": 68893,
+   "target": "authority-v2/roles/ceremony.sh",
+   "new": [
+    {
+     "token": "authority-v2/roles/ceremony.sh:L124-L124@sha256:c7fff2b735af",
+     "offset": 68998
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/capture.py:L196-L205@sha256:9593561c6c06",
+   "old_offset": 69067,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "authority-v2/capture/capture.py:L196-L205@sha256:9593561c6c06",
+     "offset": 69172
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/capture.py:L208-L225@sha256:9593561c6c06",
+   "old_offset": 69159,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "authority-v2/capture/capture.py:L208-L225@sha256:9593561c6c06",
+     "offset": 69264
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/genesis/legacy-snapshot.py:L57-L71@sha256:4b260f80ea54",
+   "old_offset": 69251,
+   "target": "authority-v2/genesis/legacy-snapshot.py",
+   "new": [
+    {
+     "token": "authority-v2/genesis/legacy-snapshot.py:L57-L71@sha256:4b260f80ea54",
+     "offset": 69356
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/schema/transition-certificate.cddl:L20-L25@sha256:909a91aa4bac",
+   "old_offset": 69697,
+   "target": "authority-v2/schema/transition-certificate.cddl",
+   "new": [
+    {
+     "token": "authority-v2/schema/transition-certificate.cddl:L20-L25@sha256:909a91aa4bac",
+     "offset": 69802
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/schema/state.cddl:L9-L14@sha256:77f42d146a16",
+   "old_offset": 69786,
+   "target": "authority-v2/schema/state.cddl",
+   "new": [
+    {
+     "token": "authority-v2/schema/state.cddl:L9-L14@sha256:77f42d146a16",
+     "offset": 69891
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capture/canonical-profile.json:L5-L16@sha256:7c1005aec472",
+   "old_offset": 70028,
+   "target": "authority-v2/capture/canonical-profile.json",
+   "new": [
+    {
+     "token": "authority-v2/capture/canonical-profile.json:L5-L16@sha256:7c1005aec472",
+     "offset": 70133
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/tests/probe-canonical-files.lisp:L15-L22@sha256:943a1770c0a4",
+   "old_offset": 70182,
+   "target": "authority-v2/tests/probe-canonical-files.lisp",
+   "new": [
+    {
+     "token": "authority-v2/tests/probe-canonical-files.lisp:L15-L22@sha256:943a1770c0a4",
+     "offset": 70287
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/tests/probe-producer-real.lisp:L1-L33@sha256:c29440c0d33c",
+   "old_offset": 70356,
+   "target": "authority-v2/tests/probe-producer-real.lisp",
+   "new": [
+    {
+     "token": "authority-v2/tests/probe-producer-real.lisp:L1-L33@sha256:c29440c0d33c",
+     "offset": 70461
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/tests/probe-producer-under-uid.lisp:L1-L50@sha256:407bb5a0ec69",
+   "old_offset": 70449,
+   "target": "authority-v2/tests/probe-producer-under-uid.lisp",
+   "new": [
+    {
+     "token": "authority-v2/tests/probe-producer-under-uid.lisp:L1-L50@sha256:407bb5a0ec69",
+     "offset": 70554
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/genesis/genesis-policy.sexp:L65-L78@sha256:9a04b3cd8970",
+   "old_offset": 70637,
+   "target": "authority-v2/genesis/genesis-policy.sexp",
+   "new": [
+    {
+     "token": "authority-v2/genesis/genesis-policy.sexp:L65-L78@sha256:9a04b3cd8970",
+     "offset": 70742
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/genesis/build-adoption-certificate.py:L88-L113@sha256:1b6defdfb37d",
+   "old_offset": 70735,
+   "target": "authority-v2/genesis/build-adoption-certificate.py",
+   "new": [
+    {
+     "token": "authority-v2/genesis/build-adoption-certificate.py:L88-L113@sha256:1b6defdfb37d",
+     "offset": 70840
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-proofs.sh:L159-L184@sha256:a47922d94bb5",
+   "old_offset": 71005,
+   "target": "authority-v2/run-proofs.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-proofs.sh:L159-L184@sha256:a47922d94bb5",
+     "offset": 71110
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/run-all.sh:L60-L61@sha256:3c2ba7169352",
+   "old_offset": 71098,
+   "target": "authority-v2/run-all.sh",
+   "new": [
+    {
+     "token": "authority-v2/run-all.sh:L60-L61@sha256:3c2ba7169352",
+     "offset": 71203
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/fixtures/test-keys/README.md:L10-L11@sha256:6d65cbac89b7",
+   "old_offset": 72629,
+   "target": "authority-v2/fixtures/test-keys/README.md",
+   "new": [
+    {
+     "token": "authority-v2/fixtures/test-keys/README.md:L10-L11@sha256:6d65cbac89b7",
+     "offset": 72734
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/capability/identities.sh:L44-L45@sha256:814455cc6b0a",
+   "old_offset": 72871,
+   "target": "authority-v2/capability/identities.sh",
+   "new": [
+    {
+     "token": "authority-v2/capability/identities.sh:L44-L45@sha256:814455cc6b0a",
+     "offset": 72976
+    }
+   ]
+  }
+ ]
+}

@@ -201,8 +201,29 @@ def main():
     print(json.dumps({k: {kk: vv for kk, vv in v.items() if kk != "map"}
                       for k, v in report.items()}, ensure_ascii=False, indent=1))
     if apply_mode:
-        mp = f"{REPO}/experiment/artifacts/l1-admission-forensics/CANONICALIZATION-MAP.json"
-        json.dump(report, open(mp, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        # ΑΜΕΤΑΒΛΗΤΟΣ ΧΑΡΤΗΣ ΑΝΑ ΜΕΤΑΒΑΣΗ. Ένα κοινό αρχείο ξαναγραφόταν σε
+        # κάθε εφαρμογή, άρα οι προηγούμενες μεταβάσεις ΧΑΝΟΝΤΑΝ. Τώρα κάθε
+        # μετάβαση «πηγή → στόχος» έχει ΔΙΚΟ ΤΗΣ αρχείο που δεν ξαναγράφεται.
+        d = f"{REPO}/experiment/artifacts/canonicalization"
+        os.makedirs(d, exist_ok=True)
+        for t, e in report.items():
+            if "target" not in e:
+                continue
+            src = os.path.basename(t)[:-5]
+            dst = os.path.basename(e["target"])[:-5]
+            mp = f"{d}/{src}__to__{dst}.json"
+            if os.path.exists(mp):
+                prev = json.load(open(mp, encoding="utf-8"))
+                if (prev["source_sha256"] != e["source_sha256"]
+                        or prev["target_sha256"] != e["target_sha256"]):
+                    print(f"::error::{mp}: ΥΠΑΡΧΩΝ ΧΑΡΤΗΣ ΜΕ ΑΛΛΑ HASHES — "
+                          f"οι χάρτες είναι ΑΜΕΤΑΒΛΗΤΟΙ")
+                    return 2
+                continue
+            with open(mp, "w", encoding="utf-8") as fh:
+                json.dump(e, fh, ensure_ascii=False, indent=1)
+                fh.flush()
+                os.fsync(fh.fileno())
     return 0
 
 

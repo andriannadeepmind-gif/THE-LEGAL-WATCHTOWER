@@ -1,0 +1,1468 @@
+{
+ "source": "deployment-state.sexp",
+ "source_sha256": "27dfbfc852110beade15117a7d02e01ab48485377a623b040dc9f92b1ae79923",
+ "target": "deployment-state-rev2.sexp",
+ "target_sha256": "6897eb6486c83b799a8edf7febafef90b8e896949ab3a9a9c55a5e24b8bdb2bd",
+ "derivation": "ΠΑΡΑΤΗΡΟΥΜΕΝΗ ΔΙΑΦΟΡΑ ΤΩΝ ΔΥΟ ΑΡΧΕΙΩΝ — ΟΧΙ έξοδος του εργαλείου που έκανε τη μετάβαση",
+ "target_runs": 181,
+ "old_tokens": 194,
+ "new_tokens": 229,
+ "kinds": {
+  "IDENTITY": 156,
+  "EXPANSION": 25,
+  "PREFIX": 0
+ },
+ "target_substitutions": 0,
+ "reorderings": 0,
+ "losses": 0,
+ "mapping": [
+  {
+   "run": 0,
+   "kind": "IDENTITY",
+   "old_target": "deployment/self/history.sexp",
+   "new_target": "deployment/self/history.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 1,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0116-claude.md",
+   "new_target": "deployment/collab/dialogue/0116-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 2,
+   "kind": "IDENTITY",
+   "old_target": "deployment/knowledge/self-glossary.sexp",
+   "new_target": "deployment/knowledge/self-glossary.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 3,
+   "kind": "IDENTITY",
+   "old_target": ".gitignore",
+   "new_target": ".gitignore",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 4,
+   "kind": "IDENTITY",
+   "old_target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "new_target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 5,
+   "kind": "IDENTITY",
+   "old_target": "deployment/knowledge/self-glossary.sexp",
+   "new_target": "deployment/knowledge/self-glossary.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 6,
+   "kind": "IDENTITY",
+   "old_target": ".gitignore",
+   "new_target": ".gitignore",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 7,
+   "kind": "IDENTITY",
+   "old_target": "deployment/state/daemon-status.json",
+   "new_target": "deployment/state/daemon-status.json",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 8,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/STATE-OF-PLAY.md",
+   "new_target": "deployment/collab/STATE-OF-PLAY.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 9,
+   "kind": "IDENTITY",
+   "old_target": "deployment/data/syntagma_clean.json.prov.json",
+   "new_target": "deployment/data/syntagma_clean.json.prov.json",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 10,
+   "kind": "IDENTITY",
+   "old_target": "deployment/data/astikos_clean.json.prov.json",
+   "new_target": "deployment/data/astikos_clean.json.prov.json",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 11,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0109-claude.md",
+   "new_target": "deployment/collab/dialogue/0109-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 12,
+   "kind": "IDENTITY",
+   "old_target": "deployment/data/decisions/areios-pagos/ap_2015_1.json.prov.json",
+   "new_target": "deployment/data/decisions/areios-pagos/ap_2015_1.json.prov.json",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 13,
+   "kind": "IDENTITY",
+   "old_target": "deployment/data/astikos_clean.json.prov.json",
+   "new_target": "deployment/data/astikos_clean.json.prov.json",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 14,
+   "kind": "IDENTITY",
+   "old_target": "deployment/data/decisions/areios-pagos/ap_2015_1.json.prov.json",
+   "new_target": "deployment/data/decisions/areios-pagos/ap_2015_1.json.prov.json",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 15,
+   "kind": "IDENTITY",
+   "old_target": "deployment/data/astikos_clean.json.prov.json",
+   "new_target": "deployment/data/astikos_clean.json.prov.json",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 16,
+   "kind": "EXPANSION",
+   "old_target": "deployment/collab/dialogue/0109-claude.md",
+   "new_target": "deployment/collab/dialogue/0109-claude.md",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 17,
+   "kind": "EXPANSION",
+   "old_target": "source/knowledge-packs.lisp",
+   "new_target": "source/knowledge-packs.lisp",
+   "old_count": 1,
+   "new_count": 3
+  },
+  {
+   "run": 18,
+   "kind": "IDENTITY",
+   "old_target": "deployment/knowledge/self-glossary.sexp",
+   "new_target": "deployment/knowledge/self-glossary.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 19,
+   "kind": "IDENTITY",
+   "old_target": "deployment/knowledge/casegrammar-core.sexp",
+   "new_target": "deployment/knowledge/casegrammar-core.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 20,
+   "kind": "IDENTITY",
+   "old_target": "deployment/knowledge/tatbestand-core.sexp",
+   "new_target": "deployment/knowledge/tatbestand-core.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 21,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/STATE-OF-PLAY.md",
+   "new_target": "deployment/collab/STATE-OF-PLAY.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 22,
+   "kind": "IDENTITY",
+   "old_target": "deployment/data/body-kind-registry.sexp",
+   "new_target": "deployment/data/body-kind-registry.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 23,
+   "kind": "IDENTITY",
+   "old_target": "deployment/data/instrument-kind-registry.sexp",
+   "new_target": "deployment/data/instrument-kind-registry.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 24,
+   "kind": "IDENTITY",
+   "old_target": "deployment/data/scope-tag-registry.sexp",
+   "new_target": "deployment/data/scope-tag-registry.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 25,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek.sh",
+   "new_target": "deployment/fetch-fek.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 26,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek.js",
+   "new_target": "deployment/fetch-fek.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 27,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek-by-number.sh",
+   "new_target": "deployment/fetch-fek-by-number.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 28,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek-by-number.js",
+   "new_target": "deployment/fetch-fek-by-number.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 29,
+   "kind": "IDENTITY",
+   "old_target": "deployment/discover-fek.js",
+   "new_target": "deployment/discover-fek.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 30,
+   "kind": "IDENTITY",
+   "old_target": "deployment/discover-fek.test.js",
+   "new_target": "deployment/discover-fek.test.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 31,
+   "kind": "IDENTITY",
+   "old_target": "deployment/cron-auto-update.sh",
+   "new_target": "deployment/cron-auto-update.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 32,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/AI-DIALOGUE.md",
+   "new_target": "deployment/collab/AI-DIALOGUE.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 33,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/STATE-OF-PLAY.md",
+   "new_target": "deployment/collab/STATE-OF-PLAY.md",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 34,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0116-claude.md",
+   "new_target": "deployment/collab/dialogue/0116-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 35,
+   "kind": "EXPANSION",
+   "old_target": "deployment/knowledge/self-glossary.sexp",
+   "new_target": "deployment/knowledge/self-glossary.sexp",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 36,
+   "kind": "IDENTITY",
+   "old_target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "new_target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 37,
+   "kind": "IDENTITY",
+   "old_target": "deployment/self-study/EXTERNAL-REVIEW-2026-07-05.md",
+   "new_target": "deployment/self-study/EXTERNAL-REVIEW-2026-07-05.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 38,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0109-claude.md",
+   "new_target": "deployment/collab/dialogue/0109-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 39,
+   "kind": "IDENTITY",
+   "old_target": ".gitignore",
+   "new_target": ".gitignore",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 40,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fek-capture.js",
+   "new_target": "deployment/fek-capture.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 41,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fek-diagnose.js",
+   "new_target": "deployment/fek-diagnose.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 42,
+   "kind": "IDENTITY",
+   "old_target": "deployment/self/history.sexp",
+   "new_target": "deployment/self/history.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 43,
+   "kind": "IDENTITY",
+   "old_target": "deployment/knowledge/self-glossary.sexp",
+   "new_target": "deployment/knowledge/self-glossary.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 44,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/STATE-OF-PLAY.md",
+   "new_target": "deployment/collab/STATE-OF-PLAY.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 45,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0121-claude.md",
+   "new_target": "deployment/collab/dialogue/0121-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 46,
+   "kind": "EXPANSION",
+   "old_target": "deployment/cron-auto-update.sh",
+   "new_target": "deployment/cron-auto-update.sh",
+   "old_count": 2,
+   "new_count": 5
+  },
+  {
+   "run": 47,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek-by-number.sh",
+   "new_target": "deployment/fetch-fek-by-number.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 48,
+   "kind": "IDENTITY",
+   "old_target": "deployment/self-study/EXTERNAL-REVIEW-2026-07-05.md",
+   "new_target": "deployment/self-study/EXTERNAL-REVIEW-2026-07-05.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 49,
+   "kind": "IDENTITY",
+   "old_target": "source/knowledge-packs.lisp",
+   "new_target": "source/knowledge-packs.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 50,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/case-workspace.lisp",
+   "new_target": "systems/orchestrator-cli/case-workspace.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 51,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0109-claude.md",
+   "new_target": "deployment/collab/dialogue/0109-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 52,
+   "kind": "EXPANSION",
+   "old_target": "deployment/collab/dialogue/0125-claude.md",
+   "new_target": "deployment/collab/dialogue/0125-claude.md",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 53,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0109-claude.md",
+   "new_target": "deployment/collab/dialogue/0109-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 54,
+   "kind": "IDENTITY",
+   "old_target": "deployment/self/history.sexp",
+   "new_target": "deployment/self/history.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 55,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0116-claude.md",
+   "new_target": "deployment/collab/dialogue/0116-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 56,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek.sh",
+   "new_target": "deployment/fetch-fek.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 57,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek-by-number.sh",
+   "new_target": "deployment/fetch-fek-by-number.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 58,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek.js",
+   "new_target": "deployment/fetch-fek.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 59,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek-by-number.js",
+   "new_target": "deployment/fetch-fek-by-number.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 60,
+   "kind": "IDENTITY",
+   "old_target": "deployment/cron-auto-update.sh",
+   "new_target": "deployment/cron-auto-update.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 61,
+   "kind": "IDENTITY",
+   "old_target": "deployment/data/body-kind-registry.sexp",
+   "new_target": "deployment/data/body-kind-registry.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 62,
+   "kind": "IDENTITY",
+   "old_target": "deployment/data/instrument-kind-registry.sexp",
+   "new_target": "deployment/data/instrument-kind-registry.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 63,
+   "kind": "IDENTITY",
+   "old_target": "deployment/data/scope-tag-registry.sexp",
+   "new_target": "deployment/data/scope-tag-registry.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 64,
+   "kind": "IDENTITY",
+   "old_target": "source/knowledge-packs.lisp",
+   "new_target": "source/knowledge-packs.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 65,
+   "kind": "IDENTITY",
+   "old_target": ".gitignore",
+   "new_target": ".gitignore",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 66,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0124-claude.md",
+   "new_target": "deployment/collab/dialogue/0124-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 67,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0125-claude.md",
+   "new_target": "deployment/collab/dialogue/0125-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 68,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0124-claude.md",
+   "new_target": "deployment/collab/dialogue/0124-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 69,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/AI-DIALOGUE.md",
+   "new_target": "deployment/collab/AI-DIALOGUE.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 70,
+   "kind": "IDENTITY",
+   "old_target": "deployment/knowledge/self-glossary.sexp",
+   "new_target": "deployment/knowledge/self-glossary.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 71,
+   "kind": "IDENTITY",
+   "old_target": ".gitignore",
+   "new_target": ".gitignore",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 72,
+   "kind": "IDENTITY",
+   "old_target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "new_target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 73,
+   "kind": "IDENTITY",
+   "old_target": "deployment/data/syntagma_clean.json.prov.json",
+   "new_target": "deployment/data/syntagma_clean.json.prov.json",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 74,
+   "kind": "EXPANSION",
+   "old_target": "deployment/collab/dialogue/0109-claude.md",
+   "new_target": "deployment/collab/dialogue/0109-claude.md",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 75,
+   "kind": "IDENTITY",
+   "old_target": "deployment/self/history.sexp",
+   "new_target": "deployment/self/history.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 76,
+   "kind": "IDENTITY",
+   "old_target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "new_target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 77,
+   "kind": "IDENTITY",
+   "old_target": ".gitignore",
+   "new_target": ".gitignore",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 78,
+   "kind": "EXPANSION",
+   "old_target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "new_target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 79,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0116-claude.md",
+   "new_target": "deployment/collab/dialogue/0116-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 80,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/STATE-OF-PLAY.md",
+   "new_target": "deployment/collab/STATE-OF-PLAY.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 81,
+   "kind": "IDENTITY",
+   "old_target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "new_target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 82,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0116-claude.md",
+   "new_target": "deployment/collab/dialogue/0116-claude.md",
+   "old_count": 3,
+   "new_count": 3
+  },
+  {
+   "run": 83,
+   "kind": "EXPANSION",
+   "old_target": "deployment/collab/dialogue/0123-claude.md",
+   "new_target": "deployment/collab/dialogue/0123-claude.md",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 84,
+   "kind": "EXPANSION",
+   "old_target": "deployment/collab/dialogue/0116-claude.md",
+   "new_target": "deployment/collab/dialogue/0116-claude.md",
+   "old_count": 2,
+   "new_count": 3
+  },
+  {
+   "run": 85,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0125-claude.md",
+   "new_target": "deployment/collab/dialogue/0125-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 86,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0124-claude.md",
+   "new_target": "deployment/collab/dialogue/0124-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 87,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0119-claude.md",
+   "new_target": "deployment/collab/dialogue/0119-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 88,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0120-claude.md",
+   "new_target": "deployment/collab/dialogue/0120-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 89,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0119-claude.md",
+   "new_target": "deployment/collab/dialogue/0119-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 90,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0120-claude.md",
+   "new_target": "deployment/collab/dialogue/0120-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 91,
+   "kind": "IDENTITY",
+   "old_target": "authority-v2/capture/capture.py",
+   "new_target": "authority-v2/capture/capture.py",
+   "old_count": 3,
+   "new_count": 3
+  },
+  {
+   "run": 92,
+   "kind": "EXPANSION",
+   "old_target": "deployment/collab/dialogue/0116-claude.md",
+   "new_target": "deployment/collab/dialogue/0116-claude.md",
+   "old_count": 2,
+   "new_count": 3
+  },
+  {
+   "run": 93,
+   "kind": "EXPANSION",
+   "old_target": "deployment/cron-auto-update.sh",
+   "new_target": "deployment/cron-auto-update.sh",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 94,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0116-claude.md",
+   "new_target": "deployment/collab/dialogue/0116-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 95,
+   "kind": "IDENTITY",
+   "old_target": "source/knowledge-packs.lisp",
+   "new_target": "source/knowledge-packs.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 96,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek.js",
+   "new_target": "deployment/fetch-fek.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 97,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek-by-number.js",
+   "new_target": "deployment/fetch-fek-by-number.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 98,
+   "kind": "EXPANSION",
+   "old_target": "deployment/fetch-fek.sh",
+   "new_target": "deployment/fetch-fek.sh",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 99,
+   "kind": "EXPANSION",
+   "old_target": "deployment/fetch-fek.js",
+   "new_target": "deployment/fetch-fek.js",
+   "old_count": 1,
+   "new_count": 5
+  },
+  {
+   "run": 100,
+   "kind": "IDENTITY",
+   "old_target": "deployment/discover-fek.js",
+   "new_target": "deployment/discover-fek.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 101,
+   "kind": "EXPANSION",
+   "old_target": "deployment/fetch-fek-by-number.js",
+   "new_target": "deployment/fetch-fek-by-number.js",
+   "old_count": 1,
+   "new_count": 3
+  },
+  {
+   "run": 102,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/STATE-OF-PLAY.md",
+   "new_target": "deployment/collab/STATE-OF-PLAY.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 103,
+   "kind": "IDENTITY",
+   "old_target": "deployment/data/decisions/areios-pagos/ap_2015_1.json.prov.json",
+   "new_target": "deployment/data/decisions/areios-pagos/ap_2015_1.json.prov.json",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 104,
+   "kind": "IDENTITY",
+   "old_target": "deployment/data/astikos_clean.json.prov.json",
+   "new_target": "deployment/data/astikos_clean.json.prov.json",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 105,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek.sh",
+   "new_target": "deployment/fetch-fek.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 106,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek-by-number.sh",
+   "new_target": "deployment/fetch-fek-by-number.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 107,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek.sh",
+   "new_target": "deployment/fetch-fek.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 108,
+   "kind": "IDENTITY",
+   "old_target": "deployment/cron-auto-update.sh",
+   "new_target": "deployment/cron-auto-update.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 109,
+   "kind": "EXPANSION",
+   "old_target": "deployment/collab/STATE-OF-PLAY.md",
+   "new_target": "deployment/collab/STATE-OF-PLAY.md",
+   "old_count": 1,
+   "new_count": 3
+  },
+  {
+   "run": 110,
+   "kind": "EXPANSION",
+   "old_target": "deployment/collab/dialogue/0124-claude.md",
+   "new_target": "deployment/collab/dialogue/0124-claude.md",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 111,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0123-claude.md",
+   "new_target": "deployment/collab/dialogue/0123-claude.md",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 112,
+   "kind": "EXPANSION",
+   "old_target": "deployment/collab/dialogue/0120-claude.md",
+   "new_target": "deployment/collab/dialogue/0120-claude.md",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 113,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0121-claude.md",
+   "new_target": "deployment/collab/dialogue/0121-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 114,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0119-claude.md",
+   "new_target": "deployment/collab/dialogue/0119-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 115,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0125-claude.md",
+   "new_target": "deployment/collab/dialogue/0125-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 116,
+   "kind": "EXPANSION",
+   "old_target": "deployment/collab/dialogue/0121-claude.md",
+   "new_target": "deployment/collab/dialogue/0121-claude.md",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 117,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0120-claude.md",
+   "new_target": "deployment/collab/dialogue/0120-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 118,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/APPROVAL-ACT-F7-HARDENING.md",
+   "new_target": "deployment/collab/APPROVAL-ACT-F7-HARDENING.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 119,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/AI-DIALOGUE.md",
+   "new_target": "deployment/collab/AI-DIALOGUE.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 120,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0062-claude.md",
+   "new_target": "deployment/collab/dialogue/0062-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 121,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0116-claude.md",
+   "new_target": "deployment/collab/dialogue/0116-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 122,
+   "kind": "EXPANSION",
+   "old_target": "deployment/collab/STATE-OF-PLAY.md",
+   "new_target": "deployment/collab/STATE-OF-PLAY.md",
+   "old_count": 1,
+   "new_count": 3
+  },
+  {
+   "run": 123,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0116-claude.md",
+   "new_target": "deployment/collab/dialogue/0116-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 124,
+   "kind": "EXPANSION",
+   "old_target": "deployment/collab/RESERVATION-OF-RIGHTS.md",
+   "new_target": "deployment/collab/RESERVATION-OF-RIGHTS.md",
+   "old_count": 1,
+   "new_count": 3
+  },
+  {
+   "run": 125,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0062-claude.md",
+   "new_target": "deployment/collab/dialogue/0062-claude.md",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 126,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0116-claude.md",
+   "new_target": "deployment/collab/dialogue/0116-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 127,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0123-claude.md",
+   "new_target": "deployment/collab/dialogue/0123-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 128,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/transparency-log.lisp",
+   "new_target": "systems/orchestrator-epistemic/transparency-log.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 129,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/artifact-census.lisp",
+   "new_target": "systems/orchestrator-epistemic/artifact-census.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 130,
+   "kind": "IDENTITY",
+   "old_target": "authority-v2/fixtures/legacy-tlog/REMOVED-tlog-writers.lisp.txt",
+   "new_target": "authority-v2/fixtures/legacy-tlog/REMOVED-tlog-writers.lisp.txt",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 131,
+   "kind": "IDENTITY",
+   "old_target": "authority-v2/fixtures/legacy-tlog/tlog-n1.json",
+   "new_target": "authority-v2/fixtures/legacy-tlog/tlog-n1.json",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 132,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-epistemic/transparency-log.lisp",
+   "new_target": "systems/orchestrator-epistemic/transparency-log.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 133,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0120-claude.md",
+   "new_target": "deployment/collab/dialogue/0120-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 134,
+   "kind": "EXPANSION",
+   "old_target": "deployment/discover-fek.test.js",
+   "new_target": "deployment/discover-fek.test.js",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 135,
+   "kind": "IDENTITY",
+   "old_target": "deployment/cron-auto-update.sh",
+   "new_target": "deployment/cron-auto-update.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 136,
+   "kind": "IDENTITY",
+   "old_target": "deployment/discover-fek.js",
+   "new_target": "deployment/discover-fek.js",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 137,
+   "kind": "EXPANSION",
+   "old_target": "deployment/cron-auto-update.sh",
+   "new_target": "deployment/cron-auto-update.sh",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 138,
+   "kind": "IDENTITY",
+   "old_target": ".gitignore",
+   "new_target": ".gitignore",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 139,
+   "kind": "IDENTITY",
+   "old_target": "source/knowledge-packs.lisp",
+   "new_target": "source/knowledge-packs.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 140,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/case-workspace.lisp",
+   "new_target": "systems/orchestrator-cli/case-workspace.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 141,
+   "kind": "IDENTITY",
+   "old_target": "deployment/knowledge/dialogue.sexp",
+   "new_target": "deployment/knowledge/dialogue.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 142,
+   "kind": "EXPANSION",
+   "old_target": "deployment/cron-auto-update.sh",
+   "new_target": "deployment/cron-auto-update.sh",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 143,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek-by-number.sh",
+   "new_target": "deployment/fetch-fek-by-number.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 144,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek-by-number.js",
+   "new_target": "deployment/fetch-fek-by-number.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 145,
+   "kind": "IDENTITY",
+   "old_target": "deployment/self-study/EXTERNAL-REVIEW-2026-07-05.md",
+   "new_target": "deployment/self-study/EXTERNAL-REVIEW-2026-07-05.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 146,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0109-claude.md",
+   "new_target": "deployment/collab/dialogue/0109-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 147,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/STATE-OF-PLAY.md",
+   "new_target": "deployment/collab/STATE-OF-PLAY.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 148,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-cli/main.lisp",
+   "new_target": "systems/orchestrator-cli/main.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 149,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fek-diagnose.js",
+   "new_target": "deployment/fek-diagnose.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 150,
+   "kind": "EXPANSION",
+   "old_target": "deployment/discover-fek.js",
+   "new_target": "deployment/discover-fek.js",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 151,
+   "kind": "EXPANSION",
+   "old_target": "deployment/fek-capture.js",
+   "new_target": "deployment/fek-capture.js",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 152,
+   "kind": "IDENTITY",
+   "old_target": "deployment/self/history.sexp",
+   "new_target": "deployment/self/history.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 153,
+   "kind": "IDENTITY",
+   "old_target": "deployment/knowledge/self-glossary.sexp",
+   "new_target": "deployment/knowledge/self-glossary.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 154,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md",
+   "new_target": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 155,
+   "kind": "IDENTITY",
+   "old_target": "deployment/self/history.sexp",
+   "new_target": "deployment/self/history.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 156,
+   "kind": "IDENTITY",
+   "old_target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "new_target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 157,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek.sh",
+   "new_target": "deployment/fetch-fek.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 158,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek.js",
+   "new_target": "deployment/fetch-fek.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 159,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek-by-number.sh",
+   "new_target": "deployment/fetch-fek-by-number.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 160,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek-by-number.js",
+   "new_target": "deployment/fetch-fek-by-number.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 161,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek.sh",
+   "new_target": "deployment/fetch-fek.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 162,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek.js",
+   "new_target": "deployment/fetch-fek.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 163,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek-by-number.js",
+   "new_target": "deployment/fetch-fek-by-number.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 164,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek.sh",
+   "new_target": "deployment/fetch-fek.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 165,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek-by-number.sh",
+   "new_target": "deployment/fetch-fek-by-number.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 166,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek.js",
+   "new_target": "deployment/fetch-fek.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 167,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek-by-number.js",
+   "new_target": "deployment/fetch-fek-by-number.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 168,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek.js",
+   "new_target": "deployment/fetch-fek.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 169,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek-by-number.js",
+   "new_target": "deployment/fetch-fek-by-number.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 170,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fek-diagnose.js",
+   "new_target": "deployment/fek-diagnose.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 171,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek-by-number.sh",
+   "new_target": "deployment/fetch-fek-by-number.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 172,
+   "kind": "IDENTITY",
+   "old_target": "deployment/discover-fek.js",
+   "new_target": "deployment/discover-fek.js",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 173,
+   "kind": "IDENTITY",
+   "old_target": "authority-v2/capture/capture.py",
+   "new_target": "authority-v2/capture/capture.py",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 174,
+   "kind": "IDENTITY",
+   "old_target": "source/greek-lemmatizer.lisp",
+   "new_target": "source/greek-lemmatizer.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 175,
+   "kind": "IDENTITY",
+   "old_target": "source/text-canonicalizer.lisp",
+   "new_target": "source/text-canonicalizer.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 176,
+   "kind": "IDENTITY",
+   "old_target": "source/legal-id-registry.lisp",
+   "new_target": "source/legal-id-registry.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 177,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0116-claude.md",
+   "new_target": "deployment/collab/dialogue/0116-claude.md",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 178,
+   "kind": "IDENTITY",
+   "old_target": ".gitignore",
+   "new_target": ".gitignore",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 179,
+   "kind": "IDENTITY",
+   "old_target": "authority-v2/genesis/genesis-policy.sexp",
+   "new_target": "authority-v2/genesis/genesis-policy.sexp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 180,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek.sh",
+   "new_target": "deployment/fetch-fek.sh",
+   "old_count": 1,
+   "new_count": 1
+  }
+ ]
+}

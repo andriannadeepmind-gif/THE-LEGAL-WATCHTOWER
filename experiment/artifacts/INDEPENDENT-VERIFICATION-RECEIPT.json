@@ -1,7 +1,7 @@
 {
  "kind": "independent-migration-verification/2",
- "utc": "2026-08-24T22:40:54Z",
- "verifier_sha256": "b4047bdfd53d288f374dcfbb52345f4de0a305fa58a5b575255eb71eb7ea4c49",
+ "utc": "2026-08-24T23:18:17Z",
+ "verifier_sha256": "16eb303d942e9622152667271f29bf7a58a3bbc9f47ea496bd29b593ceb933be",
  "imports_resolver_or_canonicalizer": false,
  "independent_of": [
   "citation-resolver.py",
@@ -10,7 +10,7 @@
   "frozen_access.py"
  ],
  "central_invariant": "ΣΚΕΛΕΤΟΣ(rev_n) == ΣΚΕΛΕΤΟΣ(rev_n+1) byte-for-byte",
- "checks_passed": 30,
+ "checks_passed": 46,
  "checks_failed": 0,
  "result": "PASS",
  "scope": "μετασχηματισμός και αγκύρωση· ΟΧΙ αλήθεια ισχυρισμών",

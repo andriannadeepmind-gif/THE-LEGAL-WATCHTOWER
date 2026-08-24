@@ -1,0 +1,2537 @@
+{
+ "source": "deployment-state-rev3.sexp",
+ "source_sha256": "24d06a15df313b8b49dcc282b694ba0b5012b491340cd756a4df3073bcbde233",
+ "target": "deployment-state-rev4.sexp",
+ "target_sha256": "39dc5cafe52cba8ba786c46dbb3dc0794f26cf8b70ab25447721be35338a04fd",
+ "derivation": "ΠΑΡΑΤΗΡΟΥΜΕΝΗ ΔΙΑΦΟΡΑ ΤΩΝ ΔΥΟ ΑΡΧΕΙΩΝ — ΟΧΙ έξοδος του εργαλείου που έκανε τη μετάβαση",
+ "old_tokens": 229,
+ "new_tokens": 230,
+ "expansions": 1,
+ "target_substitutions": 0,
+ "reorderings": 0,
+ "mapping": [
+  {
+   "old_token": "/frozen/ro/deployment/self/history.sexp:L1-L3@sha256:3e0b6766e32d",
+   "old_offset": 2104,
+   "target": "deployment/self/history.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/self/history.sexp:L1-L3@sha256:3e0b6766e32d",
+     "offset": 2104
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L379-L379@sha256:2727147538b3",
+   "old_offset": 2170,
+   "target": "deployment/collab/dialogue/0116-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L379-L379@sha256:2727147538b3",
+     "offset": 2170
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L38-L38@sha256:c40b7a9d2690",
+   "old_offset": 2884,
+   "target": "deployment/knowledge/self-glossary.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L38-L38@sha256:c40b7a9d2690",
+     "offset": 2884
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/.gitignore:L47-L47@sha256:7c8ebc41610b",
+   "old_offset": 2963,
+   "target": ".gitignore",
+   "new": [
+    {
+     "token": "/frozen/ro/.gitignore:L47-L47@sha256:7c8ebc41610b",
+     "offset": 2963
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L278-L278@sha256:b5a3bb502fcd",
+   "old_offset": 3013,
+   "target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L278-L278@sha256:b5a3bb502fcd",
+     "offset": 3013
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L38-L38@sha256:c40b7a9d2690",
+   "old_offset": 3574,
+   "target": "deployment/knowledge/self-glossary.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L38-L38@sha256:c40b7a9d2690",
+     "offset": 3574
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/.gitignore:L40-L40@sha256:7c8ebc41610b",
+   "old_offset": 3653,
+   "target": ".gitignore",
+   "new": [
+    {
+     "token": "/frozen/ro/.gitignore:L40-L40@sha256:7c8ebc41610b",
+     "offset": 3653
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/state/daemon-status.json:L1-L1@sha256:486b23c20b2f",
+   "old_offset": 4417,
+   "target": "deployment/state/daemon-status.json",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/state/daemon-status.json:L1-L1@sha256:486b23c20b2f",
+     "offset": 4417
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L51-L51@sha256:d8054f835a9d",
+   "old_offset": 4490,
+   "target": "deployment/collab/STATE-OF-PLAY.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L51-L51@sha256:d8054f835a9d",
+     "offset": 4490
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/data/syntagma_clean.json.prov.json:L1-L1@sha256:ada4e0aa5541",
+   "old_offset": 5388,
+   "target": "deployment/data/syntagma_clean.json.prov.json",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/data/syntagma_clean.json.prov.json:L1-L1@sha256:ada4e0aa5541",
+     "offset": 5388
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/data/astikos_clean.json.prov.json:L1-L1@sha256:88ec4f8cb992",
+   "old_offset": 5471,
+   "target": "deployment/data/astikos_clean.json.prov.json",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/data/astikos_clean.json.prov.json:L1-L1@sha256:88ec4f8cb992",
+     "offset": 5471
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L94-L106@sha256:422d8e49517c",
+   "old_offset": 5553,
+   "target": "deployment/collab/dialogue/0109-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L94-L106@sha256:422d8e49517c",
+     "offset": 5553
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/data/decisions/areios-pagos/ap_2015_1.json.prov.json:L1-L1@sha256:f7fa68b791e2",
+   "old_offset": 6218,
+   "target": "deployment/data/decisions/areios-pagos/ap_2015_1.json.prov.json",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/data/decisions/areios-pagos/ap_2015_1.json.prov.json:L1-L1@sha256:f7fa68b791e2",
+     "offset": 6218
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/data/astikos_clean.json.prov.json:L1-L1@sha256:88ec4f8cb992",
+   "old_offset": 6991,
+   "target": "deployment/data/astikos_clean.json.prov.json",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/data/astikos_clean.json.prov.json:L1-L1@sha256:88ec4f8cb992",
+     "offset": 6991
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/data/decisions/areios-pagos/ap_2015_1.json.prov.json:L1-L1@sha256:f7fa68b791e2",
+   "old_offset": 7073,
+   "target": "deployment/data/decisions/areios-pagos/ap_2015_1.json.prov.json",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/data/decisions/areios-pagos/ap_2015_1.json.prov.json:L1-L1@sha256:f7fa68b791e2",
+     "offset": 7073
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/data/astikos_clean.json.prov.json:L1-L1@sha256:88ec4f8cb992",
+   "old_offset": 8055,
+   "target": "deployment/data/astikos_clean.json.prov.json",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/data/astikos_clean.json.prov.json:L1-L1@sha256:88ec4f8cb992",
+     "offset": 8055
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L17-L50@sha256:422d8e49517c",
+   "old_offset": 8137,
+   "target": "deployment/collab/dialogue/0109-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L17-L50@sha256:422d8e49517c",
+     "offset": 8137
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L108-L120@sha256:422d8e49517c",
+   "old_offset": 8218,
+   "target": "deployment/collab/dialogue/0109-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L108-L120@sha256:422d8e49517c",
+     "offset": 8218
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/source/knowledge-packs.lisp:L40-L40@sha256:ea774f532b44",
+   "old_offset": 10540,
+   "target": "source/knowledge-packs.lisp",
+   "new": [
+    {
+     "token": "/frozen/ro/source/knowledge-packs.lisp:L40-L40@sha256:ea774f532b44",
+     "offset": 10540
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/source/knowledge-packs.lisp:L59-L83@sha256:ea774f532b44",
+   "old_offset": 10607,
+   "target": "source/knowledge-packs.lisp",
+   "new": [
+    {
+     "token": "/frozen/ro/source/knowledge-packs.lisp:L59-L83@sha256:ea774f532b44",
+     "offset": 10607
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/source/knowledge-packs.lisp:L105-L150@sha256:ea774f532b44",
+   "old_offset": 10674,
+   "target": "source/knowledge-packs.lisp",
+   "new": [
+    {
+     "token": "/frozen/ro/source/knowledge-packs.lisp:L105-L150@sha256:ea774f532b44",
+     "offset": 10674
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L10-L10@sha256:c40b7a9d2690",
+   "old_offset": 10743,
+   "target": "deployment/knowledge/self-glossary.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L10-L10@sha256:c40b7a9d2690",
+     "offset": 10743
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/knowledge/casegrammar-core.sexp:L2-L2@sha256:8d863083fc32",
+   "old_offset": 10822,
+   "target": "deployment/knowledge/casegrammar-core.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/knowledge/casegrammar-core.sexp:L2-L2@sha256:8d863083fc32",
+     "offset": 10822
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/knowledge/tatbestand-core.sexp:L1-L41@sha256:1ce1281267f1",
+   "old_offset": 10902,
+   "target": "deployment/knowledge/tatbestand-core.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/knowledge/tatbestand-core.sexp:L1-L41@sha256:1ce1281267f1",
+     "offset": 10902
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L18-L18@sha256:d8054f835a9d",
+   "old_offset": 11844,
+   "target": "deployment/collab/STATE-OF-PLAY.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L18-L18@sha256:d8054f835a9d",
+     "offset": 11844
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/data/body-kind-registry.sexp:L1-L15@sha256:674e35e92a98",
+   "old_offset": 12765,
+   "target": "deployment/data/body-kind-registry.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/data/body-kind-registry.sexp:L1-L15@sha256:674e35e92a98",
+     "offset": 12765
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/data/instrument-kind-registry.sexp:L1-L34@sha256:07ea6fa4a572",
+   "old_offset": 12843,
+   "target": "deployment/data/instrument-kind-registry.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/data/instrument-kind-registry.sexp:L1-L34@sha256:07ea6fa4a572",
+     "offset": 12843
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/data/scope-tag-registry.sexp:L1-L32@sha256:65e450bf14be",
+   "old_offset": 12927,
+   "target": "deployment/data/scope-tag-registry.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/data/scope-tag-registry.sexp:L1-L32@sha256:65e450bf14be",
+     "offset": 12927
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.sh:L1-L80@sha256:42acffc89892",
+   "old_offset": 13835,
+   "target": "deployment/fetch-fek.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.sh:L1-L80@sha256:42acffc89892",
+     "offset": 13835
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.js:L1-L115@sha256:6c92f25b051b",
+   "old_offset": 13897,
+   "target": "deployment/fetch-fek.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.js:L1-L115@sha256:6c92f25b051b",
+     "offset": 13897
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L1-L45@sha256:c43d47b68d1a",
+   "old_offset": 13960,
+   "target": "deployment/fetch-fek-by-number.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L1-L45@sha256:c43d47b68d1a",
+     "offset": 13960
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek-by-number.js:L1-L138@sha256:2889ba9bc0aa",
+   "old_offset": 14032,
+   "target": "deployment/fetch-fek-by-number.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L1-L138@sha256:2889ba9bc0aa",
+     "offset": 14032
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/discover-fek.js:L1-L169@sha256:69c52b81a4ea",
+   "old_offset": 14986,
+   "target": "deployment/discover-fek.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/discover-fek.js:L1-L169@sha256:69c52b81a4ea",
+     "offset": 14986
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/discover-fek.test.js:L1-L43@sha256:a030e60f4ddc",
+   "old_offset": 15052,
+   "target": "deployment/discover-fek.test.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/discover-fek.test.js:L1-L43@sha256:a030e60f4ddc",
+     "offset": 15052
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/cron-auto-update.sh:L32-L86@sha256:01231faab127",
+   "old_offset": 15841,
+   "target": "deployment/cron-auto-update.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/cron-auto-update.sh:L32-L86@sha256:01231faab127",
+     "offset": 15841
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/AI-DIALOGUE.md:L1-L20@sha256:d1edcd1844bb",
+   "old_offset": 16733,
+   "target": "deployment/collab/AI-DIALOGUE.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/AI-DIALOGUE.md:L1-L20@sha256:d1edcd1844bb",
+     "offset": 16733
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L1-L8@sha256:d8054f835a9d",
+   "old_offset": 16804,
+   "target": "deployment/collab/STATE-OF-PLAY.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L1-L8@sha256:d8054f835a9d",
+     "offset": 16804
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L13-L13@sha256:d8054f835a9d",
+   "old_offset": 17726,
+   "target": "deployment/collab/STATE-OF-PLAY.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L13-L13@sha256:d8054f835a9d",
+     "offset": 17726
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L411-L413@sha256:2727147538b3",
+   "old_offset": 17805,
+   "target": "deployment/collab/dialogue/0116-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L411-L413@sha256:2727147538b3",
+     "offset": 17805
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L10-L12@sha256:c40b7a9d2690",
+   "old_offset": 19479,
+   "target": "deployment/knowledge/self-glossary.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L10-L12@sha256:c40b7a9d2690",
+     "offset": 19479
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L38-L38@sha256:c40b7a9d2690",
+   "old_offset": 19558,
+   "target": "deployment/knowledge/self-glossary.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L38-L38@sha256:c40b7a9d2690",
+     "offset": 19558
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L1-L9@sha256:b5a3bb502fcd",
+   "old_offset": 20231,
+   "target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L1-L9@sha256:b5a3bb502fcd",
+     "offset": 20231
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/self-study/EXTERNAL-REVIEW-2026-07-05.md:L1-L17@sha256:5bcb7cdc60a9",
+   "old_offset": 20323,
+   "target": "deployment/self-study/EXTERNAL-REVIEW-2026-07-05.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/self-study/EXTERNAL-REVIEW-2026-07-05.md:L1-L17@sha256:5bcb7cdc60a9",
+     "offset": 20323
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L74-L77@sha256:422d8e49517c",
+   "old_offset": 21096,
+   "target": "deployment/collab/dialogue/0109-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L74-L77@sha256:422d8e49517c",
+     "offset": 21096
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/.gitignore:L54-L54@sha256:7c8ebc41610b",
+   "old_offset": 21177,
+   "target": ".gitignore",
+   "new": [
+    {
+     "token": "/frozen/ro/.gitignore:L54-L54@sha256:7c8ebc41610b",
+     "offset": 21177
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fek-capture.js:L1-L79@sha256:f72084e42236",
+   "old_offset": 22068,
+   "target": "deployment/fek-capture.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fek-capture.js:L1-L79@sha256:f72084e42236",
+     "offset": 22068
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fek-diagnose.js:L1-L78@sha256:766f64c5b557",
+   "old_offset": 22132,
+   "target": "deployment/fek-diagnose.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fek-diagnose.js:L1-L78@sha256:766f64c5b557",
+     "offset": 22132
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/self/history.sexp:L1-L1@sha256:3e0b6766e32d",
+   "old_offset": 22706,
+   "target": "deployment/self/history.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/self/history.sexp:L1-L1@sha256:3e0b6766e32d",
+     "offset": 22706
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L16-L16@sha256:c40b7a9d2690",
+   "old_offset": 22772,
+   "target": "deployment/knowledge/self-glossary.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L16-L16@sha256:c40b7a9d2690",
+     "offset": 22772
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L69-L71@sha256:d8054f835a9d",
+   "old_offset": 22851,
+   "target": "deployment/collab/STATE-OF-PLAY.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L69-L71@sha256:d8054f835a9d",
+     "offset": 22851
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0121-claude.md:L99-L108@sha256:e7a08f0666db",
+   "old_offset": 23243,
+   "target": "deployment/collab/dialogue/0121-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0121-claude.md:L99-L108@sha256:e7a08f0666db",
+     "offset": 23243
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/cron-auto-update.sh:L11-L12@sha256:01231faab127",
+   "old_offset": 23598,
+   "target": "deployment/cron-auto-update.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/cron-auto-update.sh:L11-L12@sha256:01231faab127",
+     "offset": 23598
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/cron-auto-update.sh:L40-L44@sha256:01231faab127",
+   "old_offset": 23668,
+   "target": "deployment/cron-auto-update.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/cron-auto-update.sh:L40-L44@sha256:01231faab127",
+     "offset": 23668
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/cron-auto-update.sh:L14-L30@sha256:01231faab127",
+   "old_offset": 24147,
+   "target": "deployment/cron-auto-update.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/cron-auto-update.sh:L14-L30@sha256:01231faab127",
+     "offset": 24147
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/cron-auto-update.sh:L34-L34@sha256:01231faab127",
+   "old_offset": 24217,
+   "target": "deployment/cron-auto-update.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/cron-auto-update.sh:L34-L34@sha256:01231faab127",
+     "offset": 24217
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/cron-auto-update.sh:L53-L54@sha256:01231faab127",
+   "old_offset": 24287,
+   "target": "deployment/cron-auto-update.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/cron-auto-update.sh:L53-L54@sha256:01231faab127",
+     "offset": 24287
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L18-L18@sha256:c43d47b68d1a",
+   "old_offset": 24357,
+   "target": "deployment/fetch-fek-by-number.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L18-L18@sha256:c43d47b68d1a",
+     "offset": 24357
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/self-study/EXTERNAL-REVIEW-2026-07-05.md:L12-L12@sha256:5bcb7cdc60a9",
+   "old_offset": 24714,
+   "target": "deployment/self-study/EXTERNAL-REVIEW-2026-07-05.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/self-study/EXTERNAL-REVIEW-2026-07-05.md:L12-L12@sha256:5bcb7cdc60a9",
+     "offset": 24714
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/source/knowledge-packs.lisp:L105-L150@sha256:ea774f532b44",
+   "old_offset": 25166,
+   "target": "source/knowledge-packs.lisp",
+   "new": [
+    {
+     "token": "/frozen/ro/source/knowledge-packs.lisp:L105-L150@sha256:ea774f532b44",
+     "offset": 25166
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/systems/orchestrator-cli/case-workspace.lisp:L40-L40@sha256:0750c6bc50e7",
+   "old_offset": 25235,
+   "target": "systems/orchestrator-cli/case-workspace.lisp",
+   "new": [
+    {
+     "token": "/frozen/ro/systems/orchestrator-cli/case-workspace.lisp:L40-L40@sha256:0750c6bc50e7",
+     "offset": 25235
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L48-L50@sha256:422d8e49517c",
+   "old_offset": 25664,
+   "target": "deployment/collab/dialogue/0109-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L48-L50@sha256:422d8e49517c",
+     "offset": 25664
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0125-claude.md:L47-L60@sha256:f39c3c1ce9fa",
+   "old_offset": 26175,
+   "target": "deployment/collab/dialogue/0125-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0125-claude.md:L47-L60@sha256:f39c3c1ce9fa",
+     "offset": 26175
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0125-claude.md:L128-L129@sha256:f39c3c1ce9fa",
+   "old_offset": 26256,
+   "target": "deployment/collab/dialogue/0125-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0125-claude.md:L128-L129@sha256:f39c3c1ce9fa",
+     "offset": 26256
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L90-L106@sha256:422d8e49517c",
+   "old_offset": 27125,
+   "target": "deployment/collab/dialogue/0109-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L90-L106@sha256:422d8e49517c",
+     "offset": 27125
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/self/history.sexp:L1-L3@sha256:3e0b6766e32d",
+   "old_offset": 27376,
+   "target": "deployment/self/history.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/self/history.sexp:L1-L3@sha256:3e0b6766e32d",
+     "offset": 27376
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L379-L379@sha256:2727147538b3",
+   "old_offset": 27442,
+   "target": "deployment/collab/dialogue/0116-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L379-L379@sha256:2727147538b3",
+     "offset": 27442
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.sh:L42-L42@sha256:42acffc89892",
+   "old_offset": 27709,
+   "target": "deployment/fetch-fek.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.sh:L42-L42@sha256:42acffc89892",
+     "offset": 27709
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L36-L36@sha256:c43d47b68d1a",
+   "old_offset": 27772,
+   "target": "deployment/fetch-fek-by-number.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L36-L36@sha256:c43d47b68d1a",
+     "offset": 27772
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.js:L45-L45@sha256:6c92f25b051b",
+   "old_offset": 27845,
+   "target": "deployment/fetch-fek.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.js:L45-L45@sha256:6c92f25b051b",
+     "offset": 27845
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek-by-number.js:L43-L43@sha256:2889ba9bc0aa",
+   "old_offset": 27908,
+   "target": "deployment/fetch-fek-by-number.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L43-L43@sha256:2889ba9bc0aa",
+     "offset": 27908
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/cron-auto-update.sh:L40-L44@sha256:01231faab127",
+   "old_offset": 28105,
+   "target": "deployment/cron-auto-update.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/cron-auto-update.sh:L40-L44@sha256:01231faab127",
+     "offset": 28105
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/data/body-kind-registry.sexp:L3-L4@sha256:674e35e92a98",
+   "old_offset": 28442,
+   "target": "deployment/data/body-kind-registry.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/data/body-kind-registry.sexp:L3-L4@sha256:674e35e92a98",
+     "offset": 28442
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/data/instrument-kind-registry.sexp:L7-L7@sha256:07ea6fa4a572",
+   "old_offset": 28519,
+   "target": "deployment/data/instrument-kind-registry.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/data/instrument-kind-registry.sexp:L7-L7@sha256:07ea6fa4a572",
+     "offset": 28519
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/data/scope-tag-registry.sexp:L6-L6@sha256:65e450bf14be",
+   "old_offset": 28602,
+   "target": "deployment/data/scope-tag-registry.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/data/scope-tag-registry.sexp:L6-L6@sha256:65e450bf14be",
+     "offset": 28602
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/source/knowledge-packs.lisp:L130-L146@sha256:ea774f532b44",
+   "old_offset": 28911,
+   "target": "source/knowledge-packs.lisp",
+   "new": [
+    {
+     "token": "/frozen/ro/source/knowledge-packs.lisp:L130-L146@sha256:ea774f532b44",
+     "offset": 28911
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/.gitignore:L37-L54@sha256:7c8ebc41610b",
+   "old_offset": 29859,
+   "target": ".gitignore",
+   "new": [
+    {
+     "token": "/frozen/ro/.gitignore:L37-L54@sha256:7c8ebc41610b",
+     "offset": 29859
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0124-claude.md:L44-L65@sha256:0aac45bd3140",
+   "old_offset": 30232,
+   "target": "deployment/collab/dialogue/0124-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0124-claude.md:L44-L65@sha256:0aac45bd3140",
+     "offset": 30232
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0125-claude.md:L53-L60@sha256:f39c3c1ce9fa",
+   "old_offset": 30313,
+   "target": "deployment/collab/dialogue/0125-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0125-claude.md:L53-L60@sha256:f39c3c1ce9fa",
+     "offset": 30313
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0124-claude.md:L76-L94@sha256:0aac45bd3140",
+   "old_offset": 30712,
+   "target": "deployment/collab/dialogue/0124-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0124-claude.md:L76-L94@sha256:0aac45bd3140",
+     "offset": 30712
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/AI-DIALOGUE.md:L7-L18@sha256:d1edcd1844bb",
+   "old_offset": 31240,
+   "target": "deployment/collab/AI-DIALOGUE.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/AI-DIALOGUE.md:L7-L18@sha256:d1edcd1844bb",
+     "offset": 31240
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L38-L38@sha256:c40b7a9d2690",
+   "old_offset": 31987,
+   "target": "deployment/knowledge/self-glossary.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L38-L38@sha256:c40b7a9d2690",
+     "offset": 31987
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/.gitignore:L40,L47",
+   "old_offset": 32066,
+   "target": ".gitignore",
+   "new": [
+    {
+     "token": "/frozen/ro/.gitignore:L40-L40@sha256:7c8ebc41610b",
+     "offset": 32066
+    },
+    {
+     "token": "/frozen/ro/.gitignore:L47-L47@sha256:7c8ebc41610b",
+     "offset": 32116
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L278-L278@sha256:b5a3bb502fcd",
+   "old_offset": 32130,
+   "target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L278-L278@sha256:b5a3bb502fcd",
+     "offset": 32200
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/data/syntagma_clean.json.prov.json:L1-L1@sha256:ada4e0aa5541",
+   "old_offset": 33068,
+   "target": "deployment/data/syntagma_clean.json.prov.json",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/data/syntagma_clean.json.prov.json:L1-L1@sha256:ada4e0aa5541",
+     "offset": 33138
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L103-L106@sha256:422d8e49517c",
+   "old_offset": 33151,
+   "target": "deployment/collab/dialogue/0109-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L103-L106@sha256:422d8e49517c",
+     "offset": 33221
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L108-L113@sha256:422d8e49517c",
+   "old_offset": 33234,
+   "target": "deployment/collab/dialogue/0109-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L108-L113@sha256:422d8e49517c",
+     "offset": 33304
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/self/history.sexp:L1-L3@sha256:3e0b6766e32d",
+   "old_offset": 33758,
+   "target": "deployment/self/history.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/self/history.sexp:L1-L3@sha256:3e0b6766e32d",
+     "offset": 33828
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L303-L303@sha256:b5a3bb502fcd",
+   "old_offset": 33845,
+   "target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L303-L303@sha256:b5a3bb502fcd",
+     "offset": 33915
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/.gitignore:L37-L54@sha256:7c8ebc41610b",
+   "old_offset": 34528,
+   "target": ".gitignore",
+   "new": [
+    {
+     "token": "/frozen/ro/.gitignore:L37-L54@sha256:7c8ebc41610b",
+     "offset": 34598
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L447-L447@sha256:b5a3bb502fcd",
+   "old_offset": 35203,
+   "target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L447-L447@sha256:b5a3bb502fcd",
+     "offset": 35273
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L551-L551@sha256:b5a3bb502fcd",
+   "old_offset": 35299,
+   "target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L551-L551@sha256:b5a3bb502fcd",
+     "offset": 35369
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L411-L413@sha256:2727147538b3",
+   "old_offset": 35792,
+   "target": "deployment/collab/dialogue/0116-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L411-L413@sha256:2727147538b3",
+     "offset": 35862
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L13-L13@sha256:d8054f835a9d",
+   "old_offset": 35875,
+   "target": "deployment/collab/STATE-OF-PLAY.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L13-L13@sha256:d8054f835a9d",
+     "offset": 35945
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L517-L523@sha256:b5a3bb502fcd",
+   "old_offset": 36366,
+   "target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L517-L523@sha256:b5a3bb502fcd",
+     "offset": 36436
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L396-L413@sha256:2727147538b3",
+   "old_offset": 37064,
+   "target": "deployment/collab/dialogue/0116-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L396-L413@sha256:2727147538b3",
+     "offset": 37134
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L415-L420@sha256:2727147538b3",
+   "old_offset": 37739,
+   "target": "deployment/collab/dialogue/0116-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L415-L420@sha256:2727147538b3",
+     "offset": 37809
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L365-L368@sha256:2727147538b3",
+   "old_offset": 38192,
+   "target": "deployment/collab/dialogue/0116-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L365-L368@sha256:2727147538b3",
+     "offset": 38262
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0123-claude.md:L12-L23@sha256:afa8d725693e",
+   "old_offset": 38796,
+   "target": "deployment/collab/dialogue/0123-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0123-claude.md:L12-L23@sha256:afa8d725693e",
+     "offset": 38866
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0123-claude.md:L54-L54@sha256:afa8d725693e",
+   "old_offset": 38877,
+   "target": "deployment/collab/dialogue/0123-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0123-claude.md:L54-L54@sha256:afa8d725693e",
+     "offset": 38947
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L348-L351@sha256:2727147538b3",
+   "old_offset": 39463,
+   "target": "deployment/collab/dialogue/0116-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L348-L351@sha256:2727147538b3",
+     "offset": 39533
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L363-L390@sha256:2727147538b3",
+   "old_offset": 39546,
+   "target": "deployment/collab/dialogue/0116-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L363-L390@sha256:2727147538b3",
+     "offset": 39616
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L344-L348@sha256:2727147538b3",
+   "old_offset": 39904,
+   "target": "deployment/collab/dialogue/0116-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L344-L348@sha256:2727147538b3",
+     "offset": 39974
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0125-claude.md:L4-L21@sha256:f39c3c1ce9fa",
+   "old_offset": 40523,
+   "target": "deployment/collab/dialogue/0125-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0125-claude.md:L4-L21@sha256:f39c3c1ce9fa",
+     "offset": 40593
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0124-claude.md:L44-L51@sha256:0aac45bd3140",
+   "old_offset": 40603,
+   "target": "deployment/collab/dialogue/0124-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0124-claude.md:L44-L51@sha256:0aac45bd3140",
+     "offset": 40673
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0119-claude.md:L18-L21@sha256:b74f89bd38f7",
+   "old_offset": 41129,
+   "target": "deployment/collab/dialogue/0119-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0119-claude.md:L18-L21@sha256:b74f89bd38f7",
+     "offset": 41199
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L13-L17@sha256:e1bebfdda643",
+   "old_offset": 41210,
+   "target": "deployment/collab/dialogue/0120-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L13-L17@sha256:e1bebfdda643",
+     "offset": 41280
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0119-claude.md:L30-L39@sha256:b74f89bd38f7",
+   "old_offset": 41526,
+   "target": "deployment/collab/dialogue/0119-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0119-claude.md:L30-L39@sha256:b74f89bd38f7",
+     "offset": 41596
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L39-L58@sha256:e1bebfdda643",
+   "old_offset": 42006,
+   "target": "deployment/collab/dialogue/0120-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L39-L58@sha256:e1bebfdda643",
+     "offset": 42076
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/authority-v2/capture/capture.py:L176-L176@sha256:9593561c6c06",
+   "old_offset": 42766,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "/frozen/ro/authority-v2/capture/capture.py:L176-L176@sha256:9593561c6c06",
+     "offset": 42836
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/authority-v2/capture/capture.py:L85-L85@sha256:9593561c6c06",
+   "old_offset": 42839,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "/frozen/ro/authority-v2/capture/capture.py:L85-L85@sha256:9593561c6c06",
+     "offset": 42909
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/authority-v2/capture/capture.py:L33-L33@sha256:9593561c6c06",
+   "old_offset": 42910,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "/frozen/ro/authority-v2/capture/capture.py:L33-L33@sha256:9593561c6c06",
+     "offset": 42980
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L181-L181@sha256:2727147538b3",
+   "old_offset": 43249,
+   "target": "deployment/collab/dialogue/0116-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L181-L181@sha256:2727147538b3",
+     "offset": 43319
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L388-L390@sha256:2727147538b3",
+   "old_offset": 43332,
+   "target": "deployment/collab/dialogue/0116-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L388-L390@sha256:2727147538b3",
+     "offset": 43402
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L167-L172@sha256:2727147538b3",
+   "old_offset": 43804,
+   "target": "deployment/collab/dialogue/0116-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L167-L172@sha256:2727147538b3",
+     "offset": 43874
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/cron-auto-update.sh:L59-L73@sha256:01231faab127",
+   "old_offset": 44264,
+   "target": "deployment/cron-auto-update.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/cron-auto-update.sh:L59-L73@sha256:01231faab127",
+     "offset": 44334
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/cron-auto-update.sh:L81-L82@sha256:01231faab127",
+   "old_offset": 44334,
+   "target": "deployment/cron-auto-update.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/cron-auto-update.sh:L81-L82@sha256:01231faab127",
+     "offset": 44404
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L178-L180@sha256:2727147538b3",
+   "old_offset": 44589,
+   "target": "deployment/collab/dialogue/0116-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L178-L180@sha256:2727147538b3",
+     "offset": 44659
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/source/knowledge-packs.lisp:L146-L150@sha256:ea774f532b44",
+   "old_offset": 44953,
+   "target": "source/knowledge-packs.lisp",
+   "new": [
+    {
+     "token": "/frozen/ro/source/knowledge-packs.lisp:L146-L150@sha256:ea774f532b44",
+     "offset": 45023
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.js:L81-L94@sha256:6c92f25b051b",
+   "old_offset": 45419,
+   "target": "deployment/fetch-fek.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.js:L81-L94@sha256:6c92f25b051b",
+     "offset": 45489
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek-by-number.js:L108-L121@sha256:2889ba9bc0aa",
+   "old_offset": 45482,
+   "target": "deployment/fetch-fek-by-number.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L108-L121@sha256:2889ba9bc0aa",
+     "offset": 45552
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.sh:L13-L20@sha256:42acffc89892",
+   "old_offset": 46094,
+   "target": "deployment/fetch-fek.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.sh:L13-L20@sha256:42acffc89892",
+     "offset": 46164
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.sh:L34-L40@sha256:42acffc89892",
+   "old_offset": 46157,
+   "target": "deployment/fetch-fek.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.sh:L34-L40@sha256:42acffc89892",
+     "offset": 46227
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.js:L3-L10@sha256:6c92f25b051b",
+   "old_offset": 46220,
+   "target": "deployment/fetch-fek.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.js:L3-L10@sha256:6c92f25b051b",
+     "offset": 46290
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.js:L39-L41@sha256:6c92f25b051b",
+   "old_offset": 46282,
+   "target": "deployment/fetch-fek.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.js:L39-L41@sha256:6c92f25b051b",
+     "offset": 46352
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.js:L51-L51@sha256:6c92f25b051b",
+   "old_offset": 46345,
+   "target": "deployment/fetch-fek.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.js:L51-L51@sha256:6c92f25b051b",
+     "offset": 46415
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.js:L62-L68@sha256:6c92f25b051b",
+   "old_offset": 46408,
+   "target": "deployment/fetch-fek.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.js:L62-L68@sha256:6c92f25b051b",
+     "offset": 46478
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.js:L88-L92@sha256:6c92f25b051b",
+   "old_offset": 46471,
+   "target": "deployment/fetch-fek.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.js:L88-L92@sha256:6c92f25b051b",
+     "offset": 46541
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/discover-fek.js:L108-L108@sha256:69c52b81a4ea",
+   "old_offset": 46534,
+   "target": "deployment/discover-fek.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/discover-fek.js:L108-L108@sha256:69c52b81a4ea",
+     "offset": 46604
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek-by-number.js:L49-L49@sha256:2889ba9bc0aa",
+   "old_offset": 46602,
+   "target": "deployment/fetch-fek-by-number.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L49-L49@sha256:2889ba9bc0aa",
+     "offset": 46672
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek-by-number.js:L57-L61@sha256:2889ba9bc0aa",
+   "old_offset": 46675,
+   "target": "deployment/fetch-fek-by-number.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L57-L61@sha256:2889ba9bc0aa",
+     "offset": 46745
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek-by-number.js:L116-L119@sha256:2889ba9bc0aa",
+   "old_offset": 46748,
+   "target": "deployment/fetch-fek-by-number.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L116-L119@sha256:2889ba9bc0aa",
+     "offset": 46818
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L50-L51@sha256:d8054f835a9d",
+   "old_offset": 47319,
+   "target": "deployment/collab/STATE-OF-PLAY.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L50-L51@sha256:d8054f835a9d",
+     "offset": 47389
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/data/decisions/areios-pagos/ap_2015_1.json.prov.json:L1-L1@sha256:f7fa68b791e2",
+   "old_offset": 48343,
+   "target": "deployment/data/decisions/areios-pagos/ap_2015_1.json.prov.json",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/data/decisions/areios-pagos/ap_2015_1.json.prov.json:L1-L1@sha256:f7fa68b791e2",
+     "offset": 48413
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/data/astikos_clean.json.prov.json:L1-L1@sha256:88ec4f8cb992",
+   "old_offset": 48444,
+   "target": "deployment/data/astikos_clean.json.prov.json",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/data/astikos_clean.json.prov.json:L1-L1@sha256:88ec4f8cb992",
+     "offset": 48514
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.sh:L79-L79@sha256:42acffc89892",
+   "old_offset": 48664,
+   "target": "deployment/fetch-fek.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.sh:L79-L79@sha256:42acffc89892",
+     "offset": 48734
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L32-L45@sha256:c43d47b68d1a",
+   "old_offset": 48818,
+   "target": "deployment/fetch-fek-by-number.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L32-L45@sha256:c43d47b68d1a",
+     "offset": 48888
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.sh:L78-L80@sha256:42acffc89892",
+   "old_offset": 48891,
+   "target": "deployment/fetch-fek.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.sh:L78-L80@sha256:42acffc89892",
+     "offset": 48961
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/cron-auto-update.sh:L46-L86@sha256:01231faab127",
+   "old_offset": 49944,
+   "target": "deployment/cron-auto-update.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/cron-auto-update.sh:L46-L86@sha256:01231faab127",
+     "offset": 50014
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L125-L127@sha256:d8054f835a9d",
+   "old_offset": 50014,
+   "target": "deployment/collab/STATE-OF-PLAY.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L125-L127@sha256:d8054f835a9d",
+     "offset": 50084
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L328-L330@sha256:d8054f835a9d",
+   "old_offset": 50090,
+   "target": "deployment/collab/STATE-OF-PLAY.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L328-L330@sha256:d8054f835a9d",
+     "offset": 50160
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L344-L346@sha256:d8054f835a9d",
+   "old_offset": 50166,
+   "target": "deployment/collab/STATE-OF-PLAY.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L344-L346@sha256:d8054f835a9d",
+     "offset": 50236
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0124-claude.md:L86-L88@sha256:0aac45bd3140",
+   "old_offset": 50242,
+   "target": "deployment/collab/dialogue/0124-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0124-claude.md:L86-L88@sha256:0aac45bd3140",
+     "offset": 50312
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0124-claude.md:L109-L109@sha256:0aac45bd3140",
+   "old_offset": 50323,
+   "target": "deployment/collab/dialogue/0124-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0124-claude.md:L109-L109@sha256:0aac45bd3140",
+     "offset": 50393
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0123-claude.md:L79-L88@sha256:afa8d725693e",
+   "old_offset": 50406,
+   "target": "deployment/collab/dialogue/0123-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0123-claude.md:L79-L88@sha256:afa8d725693e",
+     "offset": 50476
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0123-claude.md:L100-L101@sha256:afa8d725693e",
+   "old_offset": 50776,
+   "target": "deployment/collab/dialogue/0123-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0123-claude.md:L100-L101@sha256:afa8d725693e",
+     "offset": 50846
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L112-L124@sha256:e1bebfdda643",
+   "old_offset": 51751,
+   "target": "deployment/collab/dialogue/0120-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L112-L124@sha256:e1bebfdda643",
+     "offset": 51821
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L160-L178@sha256:e1bebfdda643",
+   "old_offset": 51834,
+   "target": "deployment/collab/dialogue/0120-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L160-L178@sha256:e1bebfdda643",
+     "offset": 51904
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0121-claude.md:L99-L108@sha256:e7a08f0666db",
+   "old_offset": 51917,
+   "target": "deployment/collab/dialogue/0121-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0121-claude.md:L99-L108@sha256:e7a08f0666db",
+     "offset": 51987
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0119-claude.md:L93-L97@sha256:b74f89bd38f7",
+   "old_offset": 52290,
+   "target": "deployment/collab/dialogue/0119-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0119-claude.md:L93-L97@sha256:b74f89bd38f7",
+     "offset": 52360
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0125-claude.md:L106-L131@sha256:f39c3c1ce9fa",
+   "old_offset": 52770,
+   "target": "deployment/collab/dialogue/0125-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0125-claude.md:L106-L131@sha256:f39c3c1ce9fa",
+     "offset": 52840
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0121-claude.md:L17-L33@sha256:e7a08f0666db",
+   "old_offset": 53241,
+   "target": "deployment/collab/dialogue/0121-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0121-claude.md:L17-L33@sha256:e7a08f0666db",
+     "offset": 53311
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0121-claude.md:L123-L126@sha256:e7a08f0666db",
+   "old_offset": 53322,
+   "target": "deployment/collab/dialogue/0121-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0121-claude.md:L123-L126@sha256:e7a08f0666db",
+     "offset": 53392
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L142-L145@sha256:e1bebfdda643",
+   "old_offset": 53405,
+   "target": "deployment/collab/dialogue/0120-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L142-L145@sha256:e1bebfdda643",
+     "offset": 53475
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/APPROVAL-ACT-F7-HARDENING.md:L30-L40@sha256:c2bb4fc84502",
+   "old_offset": 53912,
+   "target": "deployment/collab/APPROVAL-ACT-F7-HARDENING.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/APPROVAL-ACT-F7-HARDENING.md:L30-L40@sha256:c2bb4fc84502",
+     "offset": 53982
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/AI-DIALOGUE.md:L7-L26@sha256:d1edcd1844bb",
+   "old_offset": 54709,
+   "target": "deployment/collab/AI-DIALOGUE.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/AI-DIALOGUE.md:L7-L26@sha256:d1edcd1844bb",
+     "offset": 54779
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0062-claude.md:L1-L1@sha256:a89d263cc2cd",
+   "old_offset": 54780,
+   "target": "deployment/collab/dialogue/0062-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0062-claude.md:L1-L1@sha256:a89d263cc2cd",
+     "offset": 54850
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L156-L157@sha256:2727147538b3",
+   "old_offset": 55325,
+   "target": "deployment/collab/dialogue/0116-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L156-L157@sha256:2727147538b3",
+     "offset": 55395
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L2-L3@sha256:d8054f835a9d",
+   "old_offset": 55850,
+   "target": "deployment/collab/STATE-OF-PLAY.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L2-L3@sha256:d8054f835a9d",
+     "offset": 55920
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L7-L7@sha256:d8054f835a9d",
+   "old_offset": 55922,
+   "target": "deployment/collab/STATE-OF-PLAY.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L7-L7@sha256:d8054f835a9d",
+     "offset": 55992
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L13-L13@sha256:d8054f835a9d",
+   "old_offset": 55994,
+   "target": "deployment/collab/STATE-OF-PLAY.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L13-L13@sha256:d8054f835a9d",
+     "offset": 56064
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L155-L157@sha256:2727147538b3",
+   "old_offset": 56068,
+   "target": "deployment/collab/dialogue/0116-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L155-L157@sha256:2727147538b3",
+     "offset": 56138
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/RESERVATION-OF-RIGHTS.md:L4-L4@sha256:aa262c4e43af",
+   "old_offset": 56796,
+   "target": "deployment/collab/RESERVATION-OF-RIGHTS.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/RESERVATION-OF-RIGHTS.md:L4-L4@sha256:aa262c4e43af",
+     "offset": 56866
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/RESERVATION-OF-RIGHTS.md:L15-L15@sha256:aa262c4e43af",
+   "old_offset": 56876,
+   "target": "deployment/collab/RESERVATION-OF-RIGHTS.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/RESERVATION-OF-RIGHTS.md:L15-L15@sha256:aa262c4e43af",
+     "offset": 56946
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/RESERVATION-OF-RIGHTS.md:L19-L19@sha256:aa262c4e43af",
+   "old_offset": 56958,
+   "target": "deployment/collab/RESERVATION-OF-RIGHTS.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/RESERVATION-OF-RIGHTS.md:L19-L19@sha256:aa262c4e43af",
+     "offset": 57028
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0062-claude.md:L1-L1@sha256:a89d263cc2cd",
+   "old_offset": 57040,
+   "target": "deployment/collab/dialogue/0062-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0062-claude.md:L1-L1@sha256:a89d263cc2cd",
+     "offset": 57110
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0062-claude.md:L5-L20@sha256:a89d263cc2cd",
+   "old_offset": 57561,
+   "target": "deployment/collab/dialogue/0062-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0062-claude.md:L5-L20@sha256:a89d263cc2cd",
+     "offset": 57631
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L162-L166@sha256:2727147538b3",
+   "old_offset": 57988,
+   "target": "deployment/collab/dialogue/0116-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L162-L166@sha256:2727147538b3",
+     "offset": 58058
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0123-claude.md:L58-L71@sha256:afa8d725693e",
+   "old_offset": 58307,
+   "target": "deployment/collab/dialogue/0123-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0123-claude.md:L58-L71@sha256:afa8d725693e",
+     "offset": 58377
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/systems/orchestrator-epistemic/transparency-log.lisp:L84-L84@sha256:00dd41938b0e",
+   "old_offset": 58741,
+   "target": "systems/orchestrator-epistemic/transparency-log.lisp",
+   "new": [
+    {
+     "token": "/frozen/ro/systems/orchestrator-epistemic/transparency-log.lisp:L84-L84@sha256:00dd41938b0e",
+     "offset": 58811
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/systems/orchestrator-epistemic/artifact-census.lisp:L116-L116@sha256:bb9159b22802",
+   "old_offset": 59230,
+   "target": "systems/orchestrator-epistemic/artifact-census.lisp",
+   "new": [
+    {
+     "token": "/frozen/ro/systems/orchestrator-epistemic/artifact-census.lisp:L116-L116@sha256:bb9159b22802",
+     "offset": 59300
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/authority-v2/fixtures/legacy-tlog/REMOVED-tlog-writers.lisp.txt:L18-L18@sha256:05b4af8402ac",
+   "old_offset": 59323,
+   "target": "authority-v2/fixtures/legacy-tlog/REMOVED-tlog-writers.lisp.txt",
+   "new": [
+    {
+     "token": "/frozen/ro/authority-v2/fixtures/legacy-tlog/REMOVED-tlog-writers.lisp.txt:L18-L18@sha256:05b4af8402ac",
+     "offset": 59393
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/authority-v2/fixtures/legacy-tlog/tlog-n1.json:L1-L1@sha256:aba4bad4e347",
+   "old_offset": 59426,
+   "target": "authority-v2/fixtures/legacy-tlog/tlog-n1.json",
+   "new": [
+    {
+     "token": "/frozen/ro/authority-v2/fixtures/legacy-tlog/tlog-n1.json:L1-L1@sha256:aba4bad4e347",
+     "offset": 59496
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/systems/orchestrator-epistemic/transparency-log.lisp:L79-L85@sha256:00dd41938b0e",
+   "old_offset": 59510,
+   "target": "systems/orchestrator-epistemic/transparency-log.lisp",
+   "new": [
+    {
+     "token": "/frozen/ro/systems/orchestrator-epistemic/transparency-log.lisp:L79-L85@sha256:00dd41938b0e",
+     "offset": 59580
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L147-L152@sha256:e1bebfdda643",
+   "old_offset": 59602,
+   "target": "deployment/collab/dialogue/0120-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L147-L152@sha256:e1bebfdda643",
+     "offset": 59672
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/discover-fek.test.js:L8-L9@sha256:a030e60f4ddc",
+   "old_offset": 60022,
+   "target": "deployment/discover-fek.test.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/discover-fek.test.js:L8-L9@sha256:a030e60f4ddc",
+     "offset": 60092
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/discover-fek.test.js:L42-L43@sha256:a030e60f4ddc",
+   "old_offset": 60091,
+   "target": "deployment/discover-fek.test.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/discover-fek.test.js:L42-L43@sha256:a030e60f4ddc",
+     "offset": 60161
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/cron-auto-update.sh:L46-L61@sha256:01231faab127",
+   "old_offset": 60818,
+   "target": "deployment/cron-auto-update.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/cron-auto-update.sh:L46-L61@sha256:01231faab127",
+     "offset": 60888
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/discover-fek.js:L104-L136@sha256:69c52b81a4ea",
+   "old_offset": 60888,
+   "target": "deployment/discover-fek.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/discover-fek.js:L104-L136@sha256:69c52b81a4ea",
+     "offset": 60958
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/discover-fek.js:L56-L60@sha256:69c52b81a4ea",
+   "old_offset": 61417,
+   "target": "deployment/discover-fek.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/discover-fek.js:L56-L60@sha256:69c52b81a4ea",
+     "offset": 61487
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/cron-auto-update.sh:L52-L52@sha256:01231faab127",
+   "old_offset": 61483,
+   "target": "deployment/cron-auto-update.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/cron-auto-update.sh:L52-L52@sha256:01231faab127",
+     "offset": 61553
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/cron-auto-update.sh:L63-L73@sha256:01231faab127",
+   "old_offset": 61553,
+   "target": "deployment/cron-auto-update.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/cron-auto-update.sh:L63-L73@sha256:01231faab127",
+     "offset": 61623
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/.gitignore:L38-L39@sha256:7c8ebc41610b",
+   "old_offset": 61623,
+   "target": ".gitignore",
+   "new": [
+    {
+     "token": "/frozen/ro/.gitignore:L38-L39@sha256:7c8ebc41610b",
+     "offset": 61693
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/source/knowledge-packs.lisp:L105-L150@sha256:ea774f532b44",
+   "old_offset": 62085,
+   "target": "source/knowledge-packs.lisp",
+   "new": [
+    {
+     "token": "/frozen/ro/source/knowledge-packs.lisp:L105-L150@sha256:ea774f532b44",
+     "offset": 62155
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/systems/orchestrator-cli/case-workspace.lisp:L40-L40@sha256:0750c6bc50e7",
+   "old_offset": 62154,
+   "target": "systems/orchestrator-cli/case-workspace.lisp",
+   "new": [
+    {
+     "token": "/frozen/ro/systems/orchestrator-cli/case-workspace.lisp:L40-L40@sha256:0750c6bc50e7",
+     "offset": 62224
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/knowledge/dialogue.sexp:L1-L1@sha256:1f02873ba4fe",
+   "old_offset": 62238,
+   "target": "deployment/knowledge/dialogue.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/knowledge/dialogue.sexp:L1-L1@sha256:1f02873ba4fe",
+     "offset": 62308
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/cron-auto-update.sh:L34-L34@sha256:01231faab127",
+   "old_offset": 62641,
+   "target": "deployment/cron-auto-update.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/cron-auto-update.sh:L34-L34@sha256:01231faab127",
+     "offset": 62711
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/cron-auto-update.sh:L52-L54@sha256:01231faab127",
+   "old_offset": 62711,
+   "target": "deployment/cron-auto-update.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/cron-auto-update.sh:L52-L54@sha256:01231faab127",
+     "offset": 62781
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L18-L18@sha256:c43d47b68d1a",
+   "old_offset": 62781,
+   "target": "deployment/fetch-fek-by-number.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L18-L18@sha256:c43d47b68d1a",
+     "offset": 62851
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek-by-number.js:L29-L29@sha256:2889ba9bc0aa",
+   "old_offset": 62854,
+   "target": "deployment/fetch-fek-by-number.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L29-L29@sha256:2889ba9bc0aa",
+     "offset": 62924
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/self-study/EXTERNAL-REVIEW-2026-07-05.md:L12-L12@sha256:5bcb7cdc60a9",
+   "old_offset": 63308,
+   "target": "deployment/self-study/EXTERNAL-REVIEW-2026-07-05.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/self-study/EXTERNAL-REVIEW-2026-07-05.md:L12-L12@sha256:5bcb7cdc60a9",
+     "offset": 63378
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L48-L50@sha256:422d8e49517c",
+   "old_offset": 63768,
+   "target": "deployment/collab/dialogue/0109-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L48-L50@sha256:422d8e49517c",
+     "offset": 63838
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L125-L127@sha256:d8054f835a9d",
+   "old_offset": 64238,
+   "target": "deployment/collab/STATE-OF-PLAY.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L125-L127@sha256:d8054f835a9d",
+     "offset": 64308
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/systems/orchestrator-cli/main.lisp:L1504-L1515@sha256:8cf601f197ad",
+   "old_offset": 65041,
+   "target": "systems/orchestrator-cli/main.lisp",
+   "new": [
+    {
+     "token": "/frozen/ro/systems/orchestrator-cli/main.lisp:L1504-L1515@sha256:8cf601f197ad",
+     "offset": 65111
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fek-diagnose.js:L74-L74@sha256:766f64c5b557",
+   "old_offset": 65514,
+   "target": "deployment/fek-diagnose.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fek-diagnose.js:L74-L74@sha256:766f64c5b557",
+     "offset": 65584
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/discover-fek.js:L51-L51@sha256:69c52b81a4ea",
+   "old_offset": 65900,
+   "target": "deployment/discover-fek.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/discover-fek.js:L51-L51@sha256:69c52b81a4ea",
+     "offset": 65970
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/discover-fek.js:L154-L157@sha256:69c52b81a4ea",
+   "old_offset": 65966,
+   "target": "deployment/discover-fek.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/discover-fek.js:L154-L157@sha256:69c52b81a4ea",
+     "offset": 66036
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fek-capture.js:L27-L27@sha256:f72084e42236",
+   "old_offset": 66034,
+   "target": "deployment/fek-capture.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fek-capture.js:L27-L27@sha256:f72084e42236",
+     "offset": 66104
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fek-capture.js:L73-L77@sha256:f72084e42236",
+   "old_offset": 66099,
+   "target": "deployment/fek-capture.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fek-capture.js:L73-L77@sha256:f72084e42236",
+     "offset": 66169
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/self/history.sexp:L1-L1@sha256:3e0b6766e32d",
+   "old_offset": 66834,
+   "target": "deployment/self/history.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/self/history.sexp:L1-L1@sha256:3e0b6766e32d",
+     "offset": 66904
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L38-L38@sha256:c40b7a9d2690",
+   "old_offset": 66993,
+   "target": "deployment/knowledge/self-glossary.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L38-L38@sha256:c40b7a9d2690",
+     "offset": 67063
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L35-L35@sha256:ba0b1d094f92",
+   "old_offset": 67076,
+   "target": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L35-L35@sha256:ba0b1d094f92",
+     "offset": 67146
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L62-L62@sha256:ba0b1d094f92",
+   "old_offset": 67159,
+   "target": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L62-L62@sha256:ba0b1d094f92",
+     "offset": 67229
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/self/history.sexp:L1-L1@sha256:3e0b6766e32d",
+   "old_offset": 67465,
+   "target": "deployment/self/history.sexp",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/self/history.sexp:L1-L1@sha256:3e0b6766e32d",
+     "offset": 67535
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L321-L321@sha256:b5a3bb502fcd",
+   "old_offset": 67626,
+   "target": "deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L321-L321@sha256:b5a3bb502fcd",
+     "offset": 67696
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.sh:L1-L1@sha256:42acffc89892",
+   "old_offset": 67820,
+   "target": "deployment/fetch-fek.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.sh:L1-L1@sha256:42acffc89892",
+     "offset": 67890
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.js:L1-L1@sha256:6c92f25b051b",
+   "old_offset": 67883,
+   "target": "deployment/fetch-fek.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.js:L1-L1@sha256:6c92f25b051b",
+     "offset": 67953
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L1-L1@sha256:c43d47b68d1a",
+   "old_offset": 67957,
+   "target": "deployment/fetch-fek-by-number.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L1-L1@sha256:c43d47b68d1a",
+     "offset": 68027
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek-by-number.js:L1-L1@sha256:2889ba9bc0aa",
+   "old_offset": 68030,
+   "target": "deployment/fetch-fek-by-number.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L1-L1@sha256:2889ba9bc0aa",
+     "offset": 68100
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.sh:L34-L40@sha256:42acffc89892",
+   "old_offset": 68201,
+   "target": "deployment/fetch-fek.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.sh:L34-L40@sha256:42acffc89892",
+     "offset": 68271
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.js:L32-L38@sha256:6c92f25b051b",
+   "old_offset": 68266,
+   "target": "deployment/fetch-fek.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.js:L32-L38@sha256:6c92f25b051b",
+     "offset": 68336
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek-by-number.js:L31-L35@sha256:2889ba9bc0aa",
+   "old_offset": 68342,
+   "target": "deployment/fetch-fek-by-number.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L31-L35@sha256:2889ba9bc0aa",
+     "offset": 68412
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.sh:L42-L42@sha256:42acffc89892",
+   "old_offset": 68532,
+   "target": "deployment/fetch-fek.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.sh:L42-L42@sha256:42acffc89892",
+     "offset": 68602
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L36-L36@sha256:c43d47b68d1a",
+   "old_offset": 68597,
+   "target": "deployment/fetch-fek-by-number.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L36-L36@sha256:c43d47b68d1a",
+     "offset": 68667
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.js:L45-L45@sha256:6c92f25b051b",
+   "old_offset": 68683,
+   "target": "deployment/fetch-fek.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.js:L45-L45@sha256:6c92f25b051b",
+     "offset": 68753
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek-by-number.js:L43-L43@sha256:2889ba9bc0aa",
+   "old_offset": 68748,
+   "target": "deployment/fetch-fek-by-number.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L43-L43@sha256:2889ba9bc0aa",
+     "offset": 68818
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.js:L62-L68@sha256:6c92f25b051b",
+   "old_offset": 68923,
+   "target": "deployment/fetch-fek.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.js:L62-L68@sha256:6c92f25b051b",
+     "offset": 68993
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek-by-number.js:L57-L61@sha256:2889ba9bc0aa",
+   "old_offset": 68988,
+   "target": "deployment/fetch-fek-by-number.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L57-L61@sha256:2889ba9bc0aa",
+     "offset": 69058
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fek-diagnose.js:L29-L32@sha256:766f64c5b557",
+   "old_offset": 69074,
+   "target": "deployment/fek-diagnose.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fek-diagnose.js:L29-L32@sha256:766f64c5b557",
+     "offset": 69144
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L21-L29@sha256:c43d47b68d1a",
+   "old_offset": 69237,
+   "target": "deployment/fetch-fek-by-number.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L21-L29@sha256:c43d47b68d1a",
+     "offset": 69307
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/discover-fek.js:L85-L88@sha256:69c52b81a4ea",
+   "old_offset": 69312,
+   "target": "deployment/discover-fek.js",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/discover-fek.js:L85-L88@sha256:69c52b81a4ea",
+     "offset": 69382
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/authority-v2/capture/capture.py:L176-L176@sha256:9593561c6c06",
+   "old_offset": 69613,
+   "target": "authority-v2/capture/capture.py",
+   "new": [
+    {
+     "token": "/frozen/ro/authority-v2/capture/capture.py:L176-L176@sha256:9593561c6c06",
+     "offset": 69683
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/source/greek-lemmatizer.lisp:L41-L41@sha256:12b56d83d333",
+   "old_offset": 70077,
+   "target": "source/greek-lemmatizer.lisp",
+   "new": [
+    {
+     "token": "/frozen/ro/source/greek-lemmatizer.lisp:L41-L41@sha256:12b56d83d333",
+     "offset": 70147
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/source/text-canonicalizer.lisp:L409-L409@sha256:747fad14d692",
+   "old_offset": 70147,
+   "target": "source/text-canonicalizer.lisp",
+   "new": [
+    {
+     "token": "/frozen/ro/source/text-canonicalizer.lisp:L409-L409@sha256:747fad14d692",
+     "offset": 70217
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/source/legal-id-registry.lisp:L74-L74@sha256:12789d6ba9dd",
+   "old_offset": 70221,
+   "target": "source/legal-id-registry.lisp",
+   "new": [
+    {
+     "token": "/frozen/ro/source/legal-id-registry.lisp:L74-L74@sha256:12789d6ba9dd",
+     "offset": 70291
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L173-L177@sha256:2727147538b3",
+   "old_offset": 70431,
+   "target": "deployment/collab/dialogue/0116-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L173-L177@sha256:2727147538b3",
+     "offset": 70501
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L421-L432@sha256:2727147538b3",
+   "old_offset": 70975,
+   "target": "deployment/collab/dialogue/0116-claude.md",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L421-L432@sha256:2727147538b3",
+     "offset": 71045
+    }
+   ]
+  },
+  {
+   "old_token": ".gitignore:L11-L11@sha256:7c8ebc41610b",
+   "old_offset": 71190,
+   "target": ".gitignore",
+   "new": [
+    {
+     "token": ".gitignore:L11-L11@sha256:7c8ebc41610b",
+     "offset": 71260
+    }
+   ]
+  },
+  {
+   "old_token": "authority-v2/genesis/genesis-policy.sexp:L35-L35@sha256:9a04b3cd8970",
+   "old_offset": 71365,
+   "target": "authority-v2/genesis/genesis-policy.sexp",
+   "new": [
+    {
+     "token": "authority-v2/genesis/genesis-policy.sexp:L35-L35@sha256:9a04b3cd8970",
+     "offset": 71435
+    }
+   ]
+  },
+  {
+   "old_token": "/frozen/ro/deployment/fetch-fek.sh:L10-L11@sha256:42acffc89892",
+   "old_offset": 71911,
+   "target": "deployment/fetch-fek.sh",
+   "new": [
+    {
+     "token": "/frozen/ro/deployment/fetch-fek.sh:L10-L11@sha256:42acffc89892",
+     "offset": 71981
+    }
+   ]
+  }
+ ]
+}

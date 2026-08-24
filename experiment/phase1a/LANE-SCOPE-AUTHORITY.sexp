@@ -24,6 +24,12 @@
  (:commit "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03"
   :tree-sha1 "23b7a6f4450f50d151d38e13020bee9872e73bcd"
   :read-only-mount "/frozen/ro"
+  :resolve-probe-symlink "output/astikos/releases/latest"
+  :resolve-probe-escape "../etc/passwd"
+  :resolve-probe-purpose
+   "ΘΕΤΙΚΗ ΑΠΟΔΕΙΞΗ ότι ο πυρήνας ΤΗΡΕΙ τα RESOLVE flags. Και τα δύο ΠΡΕΠΕΙ
+    να αποτύχουν σε κάθε εκτέλεση· αν οποιοδήποτε ανοίξει, η πύλη επιστρέφει
+    BLOCKED. Δεν αρκεί που το openat2 δέχτηκε τη δομή."
   :mount-lifetime "ΔΕΝ επιβιώνει μεταξύ κλήσεων σε αυτό το περιβάλλον —
                    η πύλη mount μπαίνει ΚΑΘΕ φορά, αλλιώς καμία ανάγνωση")
 
