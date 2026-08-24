@@ -1,0 +1,92 @@
+{
+ "lane": "Φ1A-L1",
+ "cluster_roots": [
+  "source"
+ ],
+ "resolver_sha256": "4c197d081bcb5e77bc3f918fb36a8c633f9badd66705fc95991649ff3ed6371a",
+ "manifest_sha256": "1bde12ccac8e924c7be50adbd311813e991aef4d1c9ae9f54ced16c2ad370ec5",
+ "scope_authority_sha256": "dad69668f4ee083d873fe017fc8d13f94ec9bb231a2649a898f4685e70dce6f5",
+ "corpus_identity": "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6",
+ "access_mechanism": "openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS",
+ "mount": "/frozen/ro",
+ "dossiers": [
+  {
+   "path": "experiment/phase1a/source-rev3.sexp",
+   "bytes": 181849,
+   "sha256": "5bb2675adb08e55fe735861a87c55dd862085b87747dd33e8b2986ba8e06b5ea"
+  }
+ ],
+ "citations": 360,
+ "resolved": 348,
+ "problems": 12,
+ "files_verified": 101,
+ "forms": {
+  "mount-anchored": 0,
+  "corpus-relative": 348
+ },
+ "in_cluster": 345,
+ "exit_code": 1,
+ "verdict": "FAIL",
+ "problem_list": [
+  {
+   "dossier": "experiment/phase1a/source-rev3.sexp",
+   "token": "config.lisp:7-49",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/source-rev3.sexp",
+   "token": "capability-registry.lisp:40-207",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/source-rev3.sexp",
+   "token": "config.lisp:44",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/source-rev3.sexp",
+   "token": "memory.lisp:110,164",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/source-rev3.sexp",
+   "token": "memory.lisp:110",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/source-rev3.sexp",
+   "token": "memory.lisp:258-272",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/source-rev3.sexp",
+   "token": "memory.lisp:48-50",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/source-rev3.sexp",
+   "token": "protocols.lisp:1-263",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/source-rev3.sexp",
+   "token": "config.lisp:48-49",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/source-rev3.sexp",
+   "token": "config.lisp:51-60",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/source-rev3.sexp",
+   "token": "protocols.lisp:145-149",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/source-rev3.sexp",
+   "token": "protocols.lisp:56",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  }
+ ]
+}

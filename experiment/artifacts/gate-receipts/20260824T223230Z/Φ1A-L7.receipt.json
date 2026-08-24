@@ -1,0 +1,857 @@
+{
+ "lane": "Φ1A-L7",
+ "cluster_roots": [
+  "*",
+  "configs",
+  "docs",
+  ".github",
+  "cloudflare",
+  "tools"
+ ],
+ "resolver_sha256": "2e5592c5638712322a2b3a7456bf3bc9924ee75ce4d235b4c560ad63709f0f5c",
+ "manifest_sha256": "1bde12ccac8e924c7be50adbd311813e991aef4d1c9ae9f54ced16c2ad370ec5",
+ "scope_authority_sha256": "dad69668f4ee083d873fe017fc8d13f94ec9bb231a2649a898f4685e70dce6f5",
+ "corpus_identity": "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6",
+ "access_mechanism": "openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS",
+ "mount": "/frozen/ro",
+ "dossiers": [
+  {
+   "path": "experiment/phase1a/contracts-rev2.sexp",
+   "bytes": 46090,
+   "sha256": "e7ae502e8fb3469ac232c7e8808461459220e36eac90cea70c9f59d05b1bcc22"
+  }
+ ],
+ "citations": 164,
+ "resolved": 0,
+ "problems": 164,
+ "files_verified": 39,
+ "forms": {
+  "mount-anchored": 0,
+  "corpus-relative": 0
+ },
+ "in_cluster": 0,
+ "exit_code": 1,
+ "verdict": "FAIL",
+ "problem_list": [
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README:300-305",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README.md:L304-L304@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "systems/orchestrator-omega-modules/article-root-generator-omega.lisp:L175-L175@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "systems/orchestrator-omega-modules/hybrid-generator-phase1.lisp:L289-L289@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README:20-21",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README:185-187",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": ".github/workflows/docker-orchestrator.yml:L292-L308@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README.md:L185-L187@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "source/document-fetch.lisp:L92-L106@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "source/pdf-authority.lisp:L1386-L1425@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:371-373",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:316",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README:18",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:241-245",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:259",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:284-285",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:394",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README:19",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:167",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:189-192",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:290",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": ".github/workflows/docker-orchestrator.yml:L298-L299@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:36-37",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "deps.lock:1-7",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:29-48",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docker-compose.yml:L29-L32@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docker-compose.yml:L283-L312@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docker-compose.yml:L314-L363@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docker-compose.yml:L399-L403@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docker-compose.yml:L327-L340@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "SEMANTIC-CONTRACT.md:L38-L38@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "SEMANTIC-CONTRACT.md:L51-L51@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docs/SECURITY-REDTEAM.md:L54-L62@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "SEMANTIC-CONTRACT.md:L36-L56@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docs/SECURITY-REDTEAM.md:L54-L66@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "source/blockchain-authority.lisp:L927-L942@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README:332",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README.md:L332-L332@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:17",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:64",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "SEMANTIC-CONTRACT.md:L56-L62@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:452",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docker/entrypoint.lisp:L67-L77@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docker/entrypoint.lisp:L115-L154@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "build.lisp:L43-L47@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:172-173",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:320-326",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:414",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:312-316",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "CLAUDE.md:L1-L40@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": ".github/workflows/docker-orchestrator.yml:L359-L378@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README.md:L20-L21@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README.md:L19-L19@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README.md:L18-L18@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README.md:L8-L8@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README.md:L16-L16@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README.md:L389-L389@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:5",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "PROVENANCE.yaml:L292-L295@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "DEPENDENCY-CONTRACT.md:L168-L173@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "DEPENDENCY-CONTRACT.md:L183-L188@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:108",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "build.lisp:L11-L11@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:23",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:29",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:53",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:333",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:206",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:391-397",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docker-compose.yml:L59-L61@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docker-compose.yml:L310-L310@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docker-compose.yml:L355-L357@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "deps.lock:7",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README.md:L253-L253@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "source/pdf-authority.lisp:L28-L28@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:41-43",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:68-77",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:363-377",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "SEMANTIC-CONTRACT.md:L22-L24@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": ".github/workflows/provenance.yml:L128-L128@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": ".github/workflows/provenance.yml:L143-L151@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "PROVENANCE.yaml:L286-L286@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "PROVENANCE.yaml:L289-L289@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "DEPENDENCY-CONTRACT.md:L194-L194@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "DEPENDENCY-CONTRACT.md:L213-L213@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "SEMANTIC-CONTRACT.md:L61-L61@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "deps.lock:5-6",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "SEMANTIC-CONTRACT.md:L60-L60@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "deps.lock:2",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "systems/orchestrator-omega-modules/omega-package.lisp:L46-L46@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README.md:L116-L211@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile.test:29",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "MANUAL-STEPS-HERMETIC.md:L59-L59@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docker-compose.yml:L17-L17@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docker-compose.yml:L133-L133@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docker-compose.yml:L210-L210@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README:64-65",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docker-compose.yml:L8-L8@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README.md:L64-L65@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docker-compose.yml:L376-L397@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "DEPENDENCY-CONTRACT.md:L207-L207@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile.test:9-30",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": ".github/workflows/docker-orchestrator.yml:L228-L234@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": ".github/workflows/docker-orchestrator.yml:L338-L346@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:394-410",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": ".github/workflows/docker-orchestrator.yml:L306-L306@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "configs/constitution.yaml:L90-L90@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "deployment/fetch-fek.sh:L16-L16@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "deployment/fetch-fek.sh:L67-L67@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": ".dockerignore:77",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "package.json:L1-L5@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "deployment/fetch-fek.sh:L16-L23@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docs/SECURITY-REDTEAM.md:L84-L88@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:400",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "orchestrator-tooling.asd:L5-L20@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "orchestrator-core-runtime.asd:L31-L31@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "orchestrator.asd:L41-L41@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "orchestrator-tests-runtime.asd:L24-L24@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "orchestrator-omega.asd:L139-L139@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "orchestrator-core-runtime.asd:L29-L29@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "orchestrator-tests-runtime.asd:L22-L22@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "orchestrator-tooling.asd:L20-L20@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README:230",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "build.lisp:L34-L34@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README.md:L227-L230@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:16",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:56",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:68-69",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:374",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "MANUAL-STEPS-HERMETIC.md:L29-L29@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "PROVENANCE.yaml:L293-L293@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "MANUAL-STEPS-HERMETIC.md:L5-L5@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "MANUAL-STEPS-HERMETIC.md:L21-L22@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "SYSTEM-HIERARCHY.txt:L2-L2@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README.md:L6-L6@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:338",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "orchestrator.asd:L13-L13@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "CHANGELOG.md:L3-L3@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": ".github/workflows/docker-orchestrator.yml:L371-L371@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "SYSTEM-HIERARCHY.txt:L5-L8@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "build.lisp:L44-L44@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "deps.archives.lock:1",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": ".env.example:22-29",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docker-compose.yml:L409-L411@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docs/AUDIT-8-QUIRKS.md:L3-L3@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "tools/independent-audit.py:L1-L20@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README:174-181",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docker-compose.architecture-tests.yml:L1-L16@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README.md:L174-L181@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README:19-21",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "source/pdf-authority.lisp:L1399-L1425@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "entrypoint.lisp:L1-L83@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:104",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docker/entrypoint.lisp:L1-L182@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:409",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "orchestrator.asd:L19-L28@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "orchestrator-core-runtime.asd:L17-L26@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "entrypoint.lisp:L16-L16@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "README.md:L227-L227@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "deps.lock:6",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:48",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "Dockerfile:445-447",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "docker/entrypoint.lisp:L162-L164@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev2.sexp",
+   "token": "deployment/collab/dialogue/0094-claude.md:L82-L82@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  }
+ ]
+}

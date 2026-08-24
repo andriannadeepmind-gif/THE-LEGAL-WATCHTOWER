@@ -933,8 +933,8 @@ docs/history/ΦΑΣΕΙΣ-Α-Δ-COMPLETE.md	100644	file	a38816c70dc58edb35ec6bdb
 docs/history/ΦΑΣΕΙΣ-Ε-ΣΤ-COMPLETE.md	100644	file	fdd18da7c0e06fd414ac92b99529d50f0b4c18fb	241258c1e5d90a8bba251bd50d14bbec268f1c4fbabd92187f9bbb777fa27a29	4298	167	1	text
 entrypoint.lisp	100644	file	16f74e41e7eb08f0638687ef31987b8616a62be1	779402eaf674f5e6dc70ce40a4a509c9c96e609ef0509d2c119dd90d6437d324	5227	83	1	text
 evidence/README.md	100644	file	86dc1a23f8c06e2ab710db4033f7f7b7f53744ca	dfc9b4dbd84591c46678221bc6ebb495261f2bd2221b034a6f3d2a0acea360db	1004	13	1	text
-evidence/self/.gitkeep	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	1	text
-evidence/version-graph/.gitkeep	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	1	text
+evidence/self/.gitkeep	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	0	text
+evidence/version-graph/.gitkeep	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	0	text
 examples/README.md	100644	file	1753f730f37e3c7b79cb0ce5b36c2847d7a72a53	0c8353075814b107fa402f08c6753cb77772b71518ca1e41be4ab0e616785bc2	2488	96	1	text
 examples/benchmark-results.json	100644	file	a56126722c6e2576aa638a730e5c9fc3eb684776	52c3a404a7173189ebb2d770f7c1d7fcf641f98666009cd69398cd172aadc900	5224	190	1	text
 examples/citation-embeddings-report.json	100644	file	a143bb94bba60bd48f0ddff2eaed3bcba15ac57a	82acb9439df2677b791d82bcffd4d517b827ca0e06385f89671eb2a18de1bcf7	2597	103	1	text
@@ -1929,7 +1929,7 @@ input/kodikas_politikis_dikonomias.pdf	100644	file	27985c5924ea4f79417088846238b
 input/poinikos_kodikas.pdf	100644	file	8ed80e137a72421e0626b88e35200a33dd3bc8fd	90efb7316436aa40ab1feef2640a5164e231f4704763ec7b1816a3a83c18ca9e	1360167	-1	0	binary
 input/syntagma_2019.pdf	100644	file	b2d004af3c446123f065e3fe31d2bbf403bcc23e	fd72ebd51101fd78513ab1eba4919ad99250203ad7e9843b21582ce3dcb60b39	2231354	-1	0	binary
 keys/private/README.md	100644	file	ef26d4df567e7b38207596101bf9660c7d6c631c	d4cf217b7aa97461d9c5ea5acee61544a04c3d094ca68a44ea500b442456c662	530	6	1	text
-keys/public/.gitkeep	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	1	text
+keys/public/.gitkeep	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	0	text
 keys/public/README.md	100644	file	fc93631de9e421cf13586e3bc109b0f8c4865fff	bc2fde0c896b49cd1d3cdd74be0ce07a665cbb267bc014a2e97a357417b22b1b	1577	20	1	text
 orchestrator-ai-core.asd	100644	file	9e5df7d4458ca4ce8230b4749f7d6d739f8de681	0dbbf9ad927a900611bbfda6d02438cb44e00c982f1d466ba75f6d2a0c41d096	1300	33	1	text
 orchestrator-cli.asd	100644	file	80c48428f0046aac456f3b000029664f4362a066	cb70edfd017f27993c11d80ab895b453484770739c9664f45db441a341353158	9438	78	1	text
@@ -31859,7 +31859,7 @@ output_run1/syntagma-manifest.ttl	100644	file	269a7abc2fe8e56968c76f578a5f950dbe
 output_run1/void.ttl	100644	file	21eddcc9cdb4a4a83ec7d2197589323c2eebffe7	c8157cafa118baedaf7fc3e3d0d0b34a39176435edfc0ebed45059d4441ad812	1997	49	1	text
 package-lock.json	100644	file	07db7f9cd3305dd4a2b32303e37d0e68f21944cf	60a1c813c2801c5e1bfa592200a6febfe72c80831c9a7c662ecb885d291e4266	1605	56	1	text
 package.json	100644	file	0af6f28ee54516f2241555f16e190f64f093cb36	8c4d176620ed9bd237a8391310d9a1d0cc8b58086d8814f176332a0028f0ae99	56	5	1	text
-releases/.gitkeep	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	1	text
+releases/.gitkeep	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	0	text
 scripts/capture-runtime-closure.lisp	100644	file	984cca7ffc1301b3b6ad8177b84ac74f224acf5c	f7d81247656620f4bb69cf9de8f8e1285796252f00c03eb4f72f5615643c36ff	20063	365	1	text
 scripts/gen-deps-lock.lisp	100644	file	c21e35999fca0d9ed26d726dd257855322814b34	26526b63c03fa522d84d377729d9f79aa6629c4e5de01d75799b6ce253b2b985	2214	36	1	text
 scripts/gen-merkle-truth.lisp	100755	executable	59d8dcc8a03a9ed2b24b83a0f09eb6ea5782d3a3	01392374918b353f0c7189e75bd7db344d4f9b6bf62fe8d1feafaea72b4df957	30511	549	1	text
@@ -32408,8 +32408,8 @@ third-party/babel-20241012-git/src/strings.lisp	100644	file	ba0208989378c47d2fb3
 third-party/babel-20241012-git/tests/ascii.txt	100644	file	cf71b05707b379d0541d7065d818bd944e2b7b56	9c5f70886c31aac46b7a1ed8f6eed90159f81ad464faf7c630cf0a5a2f95ee74	4072	212	1	text
 third-party/babel-20241012-git/tests/ascii.txt-utf8	100644	file	cf71b05707b379d0541d7065d818bd944e2b7b56	9c5f70886c31aac46b7a1ed8f6eed90159f81ad464faf7c630cf0a5a2f95ee74	4072	212	1	text
 third-party/babel-20241012-git/tests/benchmarks.lisp	100644	file	1b1d294160b9f8f563ecc53e83cda2006bdba4a1	7e99dd0e483ddf3fdf322603c874437f44cdd86ef5e46fb1cd167e10b4d01214	2112	43	1	text
-third-party/babel-20241012-git/tests/ebcdic-fi.txt	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	1	text
-third-party/babel-20241012-git/tests/ebcdic-fi.txt-utf8	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	1	text
+third-party/babel-20241012-git/tests/ebcdic-fi.txt	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	0	text
+third-party/babel-20241012-git/tests/ebcdic-fi.txt-utf8	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	0	text
 third-party/babel-20241012-git/tests/ebcdic-us.txt	100644	file	910ad2d81b98cf334e88317de97b92977cf6f729	b93a7c9e3eb8b7342bf21d492ee8a05ff1689af0527531da350229147cebcf2d	3853	-1	0	binary
 third-party/babel-20241012-git/tests/ebcdic-us.txt-utf8	100644	file	e4bd6fbe04e50d498640381b8d65fe24b40cb983	fc977636f1ee5c96b8bf9e854c4505c5eaed91012614a104882f06cad7f03384	4068	212	1	text
 third-party/babel-20241012-git/tests/gen-test-files.sh	100644	file	df1f05a5dc1926ae7cc24c8401fb30ad82cb6375	073d3c8b3ecbdc7253f95e6cbfd7411240d16b69f8b5b8bcb90eda127d77ccc4	1571	37	1	text
@@ -32613,9 +32613,9 @@ third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/blog/list.html	1
 third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/blog/single.html	100644	file	95d2ebc32cb5f42bfb36547a14779d27c9b140fc	ddc357c3475f6c604ab3c3e201d729fa53013f5ba929d4d6d01775979a9dd28c	77	4	1	text
 third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/blog/summary.html	100644	file	681023262890f6cada28b3fbd8c98b7d37a17895	21e0cb7ece3261cbf48593d0397c64a3d1ad5ac4640c6abb7b4fbfa4e27516a8	145	5	1	text
 third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/index.html	100644	file	decab2d1fbf189c0c95c26e16cc0f303e6ea36e6	4707de3d4e7d6f9c83b1f6e6949b3a7f3196251bd9e1f428e549d42d0181c110	664	15	1	text
-third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/content-footer.html	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	1	text
+third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/content-footer.html	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	0	text
 third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/custom-css.html	100644	file	cb2d89a0d5ad3ed77ccabbe7f8e168a68724a87f	d8af736adee1ddc7d6aac5246a6e1e44f86d8851c945ab825b0bf56da7c834d2	233	6	1	text
-third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/custom-head.html	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	1	text
+third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/custom-head.html	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	0	text
 third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/edit-meta.html	100644	file	5cea91778d9be3dedc3658c331a944278e94dc8c	d240629842ef9a8245a70fc2cdd153cab318e1408ed10dc49b041542fb218fa9	112	5	0	text
 third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/edit-page.html	100644	file	7e103f9eeb42856245c0a79903291ca47dc6d478	65f5dfe21102e2be151edfd6dd186761419c2406f4bb3ae5c8cbb051557ebfbb	230	3	1	text
 third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/footer.html	100644	file	8c61601d0481e8315019f90ef4369f0fe39a4760	f2d47c154aeca2972aea79727a4401d12e5ba8b81e1e767ce48dc34b8fe8e0fd	408	11	1	text
@@ -32628,12 +32628,12 @@ third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/meta/ch
 third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/meta/google-analytics-async.html	100644	file	512fd8244f109664b426bc3dae1d5caf380f681d	de462cf33fcb844dbf7dd8214259f5cf044d87ab14d70d630fe4098483e5e1c7	521	15	1	text
 third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/meta/google-site-verification.html	100644	file	1378201a2a531603f52244ff504d76b544683fe7	6591823f070b649ea247f6ede0b325ff5f155ffd9d6e7a4a597278fc955203fe	305	9	1	text
 third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/meta/tag-manager.html	100644	file	d4d28fdf38660a504b5f735c2ba5928fde8b32bc	e9016c16a20fd4d6a4aa32fef8fcd0c34397715d9351dfa1d9571602e05cd855	617	13	1	text
-third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/notification.html	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	1	text
+third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/notification.html	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	0	text
 third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/pagination.html	100644	file	d831da4a0fbb7c3990f303c1efa6f7145932cf51	c9f3ae3bf4b450460ebdc43537b26eee267f4d982d3e03f875cb641a786a5b4d	1854	44	1	text
 third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/powered.html	100644	file	f9e41526f3b1aabab3830a1aeca64612e686a0d6	4d5f1ce74859e47007e868479bd8d356fb663aa13300337c1036afc6ec1616b2	233	1	1	text
 third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/prepend-body.html	100644	file	979998ac4acff70e99fccfb3e9bd556c5dbca279	8ca53043c149ae8cd8ae77f8145977085886a3cc47bf7c2899709564c7fbb24b	417	10	1	text
 third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/search.html	100644	file	cf9a2a7f14995c97640e3ce07cf20f74ea48d28b	02738bc8fc672b1292eee1e5ce642e75439d6d1d2658f1af97adb0c00f1814f9	1816	57	1	text
-third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/sidebar-footer.html	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	1	text
+third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/sidebar-footer.html	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	0	text
 third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/sidebar.html	100644	file	843cdfad6705becb69e66b985380a0f3d95e001b	0a07388bccab76b273de090f3b0166a1e43ec2f7b59f6ac217cecf5c0bd2d6a1	308	10	1	text
 third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/site-header.html	100644	file	525eecbe5935b60cbdee242c67cfbd0fedbf9f3f	492ed2268c3c8ec82c31dd87d6d6ea9dec7276f090db46952725b1028407ee48	346	12	1	text
 third-party/bordeaux-threads-v0.9.4/docs/themes/techdoc/layouts/partials/table-of-contents.html	100644	file	4e6532fcf551ac4973f8e60fbca62605c32bf17a	1413f4a21b233628524b42e852974ed4903aad7d24bcaca2796a92f9d78d0c4e	144	6	1	text
@@ -33111,7 +33111,7 @@ third-party/cxml-20250622-git/doc/klacks.xml	100644	file	9b3b608013966be0517eeb8
 third-party/cxml-20250622-git/doc/quickstart.xml	100644	file	efbaf35d4ee3b9f1c4d487b9b786fe668476baf6	5e135339359c29157ae1bd1f7db1f215a9f8a1461d8f9263a559cbf39df0218b	8401	247	1	text
 third-party/cxml-20250622-git/doc/sax.xml	100644	file	aa0c74d59352f856f0f12cb43b69e2307716805d	149800c5c00fd708abe446e5f72eaa4a2f07a11bef89dc0aa9fa38e158e55e9c	31615	730	1	text
 third-party/cxml-20250622-git/doc/xmls-compat.xml	100644	file	09560f901a07e337c0ef3e14dd3a4c40fd3f4e1e	b99622d7c1ecb287d206033d58962ba74e848cfdb2f0145c920229905a0629fd	5374	119	1	text
-third-party/cxml-20250622-git/documentation.css	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	1	text
+third-party/cxml-20250622-git/documentation.css	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	0	text
 third-party/cxml-20250622-git/dom/dom-builder.lisp	100644	file	4af06b779275bceb808f268732bf40e27e6c1c5c	7fb6d927926b0c6a1dd637fc254e182fc0fc71af553f6b352de32d85d0d12cf4	9662	236	1	text
 third-party/cxml-20250622-git/dom/dom-impl.lisp	100644	file	9f6f84586ba38235bf9ab37321ee1b5883c3eaa5	f4d3ba01b811b69de505d5ee7f0250eca4c0076e895997482f21dbb46e861b32	52210	1479	1	text
 third-party/cxml-20250622-git/dom/dom-sax.lisp	100644	file	36bb02fc6b48935521fcfd3fe79f1a141f0b7dbd	19bd99e10166879974eaf8f53d58d1d0cb1c48a5bc7051d2f48d3f44ba275e3f	3626	95	1	text
@@ -35191,7 +35191,7 @@ third-party/plexippus-xpath-20190521-git/dist.sh	100644	file	ed7d34da1406018fdbb
 third-party/plexippus-xpath-20190521-git/doc/GNUmakefile	100644	file	f78a47fad7201f48c08a1a8bf6fbca539f8d04e5	5c71bd668d4a8e1c9797e20e4cd589a9d0d8aaa81ddea4f3227f1b08555f203f	292	12	1	text
 third-party/plexippus-xpath-20190521-git/doc/atdoc.css	100644	file	13005551f6176555541074f177e6c94c05a6d6d2	534ababb73e1cd056dae76d5b4fcc279c9de4cb8c9be331d9ce5420422357347	1785	123	1	text
 third-party/plexippus-xpath-20190521-git/doc/atdoc.lisp	100644	file	6fe8f5e9fdebc6a7c42619dd6619eda2512e5b93	7a58ef07565d06b020aa2b7b88524ca759211a6717989bcb1882733601bec87f	1502	50	1	text
-third-party/plexippus-xpath-20190521-git/doc/atdoc/.keep	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	1	text
+third-party/plexippus-xpath-20190521-git/doc/atdoc/.keep	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	0	text
 third-party/plexippus-xpath-20190521-git/doc/examples.xml	100644	file	23ca3537dff009aa6aeed5468714d71150bf54a7	eb264af638eec01814fdd2c6f85cd423bd02a509bd9783c0fd331f53c82db509	9508	250	1	text
 third-party/plexippus-xpath-20190521-git/doc/index.css	100644	file	b833d4f9829a2a1cc4b6a46581190b68c72bbd43	f8780bd3b56569313347d8b711f9a0f9deba34b5ec83b03489a69dd0da95cd8e	3227	182	1	text
 third-party/plexippus-xpath-20190521-git/doc/index.xml	100644	file	36dca9bb5f21e5ed7894cb65721035ec2fa4f708	7bd4d177164488adb35ce9f4d92b587908e581981c19866560b06efe8f4e2daa	1347	47	1	text
@@ -35434,7 +35434,7 @@ third-party/trivia-20241012-git/trivia.quasiquote.asd	100644	file	c6bab046f84458
 third-party/trivia-20241012-git/trivia.test.asd	100644	file	5f80f941e4f8636ff090b63370d84e1c0413db4f	eda0e18cafa0a5ab895dd260cfb6880d0bd74f33f28a4d35aef32d0bb82ca9d1	713	21	1	text
 third-party/trivia-20241012-git/trivia.trivial.asd	100644	file	647c337e9f9560bc4f0088c94a1c5d41708cc91c	9d88b017e3f1ef80be1739b885bfcca6ebf84fdd621084d8a8713e9a32846548	364	9	1	text
 third-party/trivial-backtrace-git/COPYING	100644	file	3798a6664a3dcf32883e88f60a005410303ce4f9	555309d36f8e6efa4920eae6e382caae3671dfab6becdec39146ad232eba318e	1215	25	1	text
-third-party/trivial-backtrace-git/README	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	1	text
+third-party/trivial-backtrace-git/README	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	0	text
 third-party/trivial-backtrace-git/README.md	100644	file	ddc2c527e1728d8fc2805a34f7d06863b3caa096	136a9a403620d519c3149d2339ef9d95d6eb30df4d5f4dde963e7283692b3c7e	221	6	1	text
 third-party/trivial-backtrace-git/dev/backtrace.lisp	100644	file	a96e2d81a2de32ed7cc9406de655da1bcc4b3a94	79e46787a7f21074c38e8f7b47e315208561ee8f53b35e5beed5f50143dabc94	4049	131	1	text
 third-party/trivial-backtrace-git/dev/fallback.lisp	100644	file	343a932b06fd21bc11c5cafbfd5bd598130c2759	3f5363acb797a2af210b2f8673a78993c584fe6954ffd462a1cf72979ac893bf	442	11	1	text
@@ -35490,7 +35490,7 @@ third-party/trivial-file-size-20241012-git/LICENSE.txt	100644	file	5272a187e106a
 third-party/trivial-file-size-20241012-git/README.md	100644	file	dc93c0fd97e1d14494c41cae8ecb9cd045d7a25d	e2f766af713a538f9a78ad7759ef95fe02c020169608462c369cb82dfa99f376	1151	34	1	text
 third-party/trivial-file-size-20241012-git/package.lisp	100644	file	1de65f9434a74e5ecdd32a06c7d30565ca067958	b2583d7464678fe45f9dc9eae1be1b6e1fc87705ca51fedbb6ce7707ffc328b9	170	8	1	text
 third-party/trivial-file-size-20241012-git/tests.lisp	100644	file	6cfed5332b1c7711b59c734f62d552352a684860	a7642d139f2ca24b35bba8b99d8f02978cd3084f11df20d9b1d2e22a52b7cbb9	967	34	1	text
-third-party/trivial-file-size-20241012-git/tests/empty-file	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	1	text
+third-party/trivial-file-size-20241012-git/tests/empty-file	100644	file	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855	0	0	0	text
 third-party/trivial-file-size-20241012-git/tests/one-byte-file	100644	file	c1b0730e0133447badcfd47fd144e254807b06e1	2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881	1	1	0	text
 third-party/trivial-file-size-20241012-git/tests/two-byte-file	100644	file	78981922613b2afb6025042ff6bd878ac1994e85	87428fc522803d31065e7bce3cf03fe475096631e5e07bbd7a0fde60c4cf25c7	2	1	1	text
 third-party/trivial-file-size-20241012-git/trivial-file-size.asd	100644	file	7bc729e31b20cfed27bedd57e31963c22af60e12	dc56f7d2c0eeba2551c7bd4eab37b40f9203bc7a392a71d727a5d5d43a1c2274	941	26	1	text

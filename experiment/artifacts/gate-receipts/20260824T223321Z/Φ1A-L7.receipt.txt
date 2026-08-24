@@ -1,0 +1,70 @@
+resolver v6 sha256:92ed2c4eb3db53e205c9ca6183fb9f40d0d67583565da2db05f9c337024eb263
+manifest sha256:1bde12ccac8e924c7be50adbd311813e991aef4d1c9ae9f54ced16c2ad370ec5
+scope-authority sha256:dad69668f4ee083d873fe017fc8d13f94ec9bb231a2649a898f4685e70dce6f5
+frozen mount /frozen/ro [ro,nodev,nosuid,noexec] · access openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS
+corpus-identity sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6 (ξαναϋπολογισμένη από το TSV: ΤΑΥΤΙΖΕΤΑΙ)
+lane Φ1A-L7 · cluster-roots ['*', 'configs', 'docs', '.github', 'cloudflare', 'tools']
+dossier experiment/phase1a/contracts-rev2.sexp 46090B sha256:e7ae502e8fb3469ac232c7e8808461459220e36eac90cea70c9f59d05b1bcc22
+αρχεία επαληθευμένα στο snapshot: 39
+παραπομπές: 164 · λύθηκαν: 104 · ΠΡΟΒΛΗΜΑΤΙΚΕΣ: 60
+μορφές: mount-anchored=0 corpus-relative=104 · εντός συστάδας=88 · εκτός=16
+  ✗ [experiment/phase1a/contracts-rev2.sexp] README:300-305 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] README:20-21 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] README:185-187 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:371-373 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:316 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] README:18 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:241-245 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:259 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:284-285 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:394 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] README:19 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:167 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:189-192 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:290 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:36-37 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] deps.lock:1-7 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:29-48 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] README:332 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:17 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:64 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:452 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:172-173 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:320-326 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:414 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:312-316 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:5 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:108 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:23 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:29 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:53 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:333 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:206 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:391-397 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] deps.lock:7 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:41-43 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:68-77 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:363-377 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] deps.lock:5-6 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] deps.lock:2 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile.test:29 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] README:64-65 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile.test:9-30 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:394-410 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] .dockerignore:77 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:400 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] README:230 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:16 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:56 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:68-69 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:374 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:338 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] deps.archives.lock:1 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] .env.example:22-29 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] README:174-181 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] README:19-21 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:104 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:409 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] deps.lock:6 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:48 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/contracts-rev2.sexp] Dockerfile:445-447 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>

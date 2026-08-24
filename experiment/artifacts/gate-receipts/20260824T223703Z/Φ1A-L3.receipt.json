@@ -1,0 +1,31 @@
+{
+ "lane": "Φ1A-L3",
+ "cluster_roots": [
+  "authority-v2"
+ ],
+ "resolver_sha256": "4c197d081bcb5e77bc3f918fb36a8c633f9badd66705fc95991649ff3ed6371a",
+ "manifest_sha256": "1bde12ccac8e924c7be50adbd311813e991aef4d1c9ae9f54ced16c2ad370ec5",
+ "scope_authority_sha256": "dad69668f4ee083d873fe017fc8d13f94ec9bb231a2649a898f4685e70dce6f5",
+ "corpus_identity": "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6",
+ "access_mechanism": "openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS",
+ "mount": "/frozen/ro",
+ "dossiers": [
+  {
+   "path": "experiment/phase1a/authority-v2-rev4.sexp",
+   "bytes": 94180,
+   "sha256": "fa93d9e2cab1d31d1e3dc2798c0d0c4ffd679bd8df1ebd1652ff482d122f39ff"
+  }
+ ],
+ "citations": 211,
+ "resolved": 211,
+ "problems": 0,
+ "files_verified": 53,
+ "forms": {
+  "mount-anchored": 0,
+  "corpus-relative": 211
+ },
+ "in_cluster": 211,
+ "exit_code": 0,
+ "verdict": "RECOGNIZED-CITATION-INTEGRITY",
+ "problem_list": []
+}

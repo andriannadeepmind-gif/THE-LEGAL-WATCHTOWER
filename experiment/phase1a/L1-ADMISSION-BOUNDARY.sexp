@@ -8,6 +8,14 @@
 ;;;; τα μεταδεδομένα αναθεώρησης ζουν ΕΔΩ. Μία έδρα ανά έννοια.
 
 (:lawmax-l1-admission-boundary/1
+ :status :HISTORIC-V4/SUPERSEDED
+ :superseded-by "experiment/phase1a/ADMISSION-BOUNDARY-v5.sexp"
+ :why-superseded
+  "Παρήχθη με πύλη v4 που (α) είχε ΣΤΑΤΙΚΗ λίστα επεκτάσεων και αγνοούσε
+   σιωπηλά Dockerfile/.gitignore/.env.example/deps.lock/MANIFEST.sha256 κ.ά.,
+   (β) ΔΕΝ άγγιζε filesystem — έκρινε μόνο από το TSV, άρα περνούσε ΚΑΙ ΜΕ
+   ΝΕΚΡΟ MOUNT, (γ) δεχόταν έγκυρο ΠΡΟΘΕΜΑ κακοσχηματισμένου token.
+   ΤΑ ΝΟΥΜΕΡΑ ΤΟΥ ΔΕΝ ΙΣΧΥΟΥΝ. Διατηρείται ΜΟΝΟ ως ιστορικό τεκμήριο."
  :verdict :FRONTIER-BLOCKED
  :frontier-location "ΑΠΟΚΛΕΙΣΤΙΚΑ στο όριο αποδοχής L1 × v4. Καμία άλλη διαδρομή."
  :lane-status :QUARANTINED

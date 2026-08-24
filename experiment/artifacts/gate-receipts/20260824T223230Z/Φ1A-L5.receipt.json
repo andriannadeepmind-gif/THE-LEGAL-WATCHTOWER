@@ -1,0 +1,989 @@
+{
+ "lane": "Φ1A-L5",
+ "cluster_roots": [
+  "deployment/self",
+  "deployment/self-study",
+  "deployment/knowledge",
+  "deployment/data",
+  "deployment/state",
+  "deployment/collab",
+  "deployment/*.js",
+  "deployment/*.sh"
+ ],
+ "resolver_sha256": "2e5592c5638712322a2b3a7456bf3bc9924ee75ce4d235b4c560ad63709f0f5c",
+ "manifest_sha256": "1bde12ccac8e924c7be50adbd311813e991aef4d1c9ae9f54ced16c2ad370ec5",
+ "scope_authority_sha256": "dad69668f4ee083d873fe017fc8d13f94ec9bb231a2649a898f4685e70dce6f5",
+ "corpus_identity": "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6",
+ "access_mechanism": "openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS",
+ "mount": "/frozen/ro",
+ "dossiers": [
+  {
+   "path": "experiment/phase1a/deployment-state-rev2.sexp",
+   "bytes": 94841,
+   "sha256": "6897eb6486c83b799a8edf7febafef90b8e896949ab3a9a9c55a5e24b8bdb2bd"
+  }
+ ],
+ "citations": 190,
+ "resolved": 0,
+ "problems": 190,
+ "files_verified": 50,
+ "forms": {
+  "mount-anchored": 0,
+  "corpus-relative": 0
+ },
+ "in_cluster": 0,
+ "exit_code": 1,
+ "verdict": "FAIL",
+ "problem_list": [
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/self/history.sexp:L1-L3@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L379-L379@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L38-L38@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/.gitignore:L47",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L278-L278@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/.gitignore:L40",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/state/daemon-status.json:L1-L1@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L51-L51@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/data/syntagma_clean.json.prov.json:L1-L1@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/data/astikos_clean.json.prov.json:L1-L1@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L94-L106@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/data/decisions/areios-pagos/ap_2015_1.json.prov.json:L1-L1@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L17-L50@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L108-L120@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/source/knowledge-packs.lisp:L40-L40@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/source/knowledge-packs.lisp:L59-L83@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/source/knowledge-packs.lisp:L105-L150@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L10-L10@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/knowledge/casegrammar-core.sexp:L2-L2@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/knowledge/tatbestand-core.sexp:L1-L41@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L18-L18@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/data/body-kind-registry.sexp:L1-L15@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/data/instrument-kind-registry.sexp:L1-L34@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/data/scope-tag-registry.sexp:L1-L32@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek.sh:L1-L80@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek.js:L1-L115@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L1-L45@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L1-L138@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/discover-fek.js:L1-L169@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/discover-fek.test.js:L1-L43@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/cron-auto-update.sh:L32-L86@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/AI-DIALOGUE.md:L1-L20@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L1-L8@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L13-L13@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L411-L413@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L10-L12@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L1-L9@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/self-study/EXTERNAL-REVIEW-2026-07-05.md:L1-L17@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L74-L77@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/.gitignore:L54",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fek-capture.js:L1-L79@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fek-diagnose.js:L1-L78@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/self/history.sexp:L1-L1@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/knowledge/self-glossary.sexp:L16-L16@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L69-L71@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0121-claude.md:L99-L108@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/cron-auto-update.sh:L11-L12@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/cron-auto-update.sh:L40-L44@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/cron-auto-update.sh:L14-L30@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/cron-auto-update.sh:L34-L34@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/cron-auto-update.sh:L53-L54@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L18-L18@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/self-study/EXTERNAL-REVIEW-2026-07-05.md:L12-L12@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/systems/orchestrator-cli/case-workspace.lisp:L40-L40@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L48-L50@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0125-claude.md:L47-L60@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0125-claude.md:L128-L129@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L90-L106@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek.sh:L42-L42@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L36-L36@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek.js:L45-L45@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L43-L43@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/data/body-kind-registry.sexp:L3-L4@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/data/instrument-kind-registry.sexp:L7-L7@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/data/scope-tag-registry.sexp:L6-L6@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/source/knowledge-packs.lisp:L130-L146@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/.gitignore:L37-L54",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0124-claude.md:L44-L65@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0125-claude.md:L53-L60@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0124-claude.md:L76-L94@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/AI-DIALOGUE.md:L7-L18@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/.gitignore:L40,L47",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L103-L106@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0109-claude.md:L108-L113@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L303-L303@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L447-L447@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L551-L551@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L517-L523@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L396-L413@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L415-L420@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L365-L368@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0123-claude.md:L12-L23@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0123-claude.md:L54-L54@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L348-L351@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L363-L390@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L344-L348@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0125-claude.md:L4-L21@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0124-claude.md:L44-L51@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0119-claude.md:L18-L21@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L13-L17@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0119-claude.md:L30-L39@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L39-L58@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/authority-v2/capture/capture.py:L176-L176@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/authority-v2/capture/capture.py:L85-L85@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/authority-v2/capture/capture.py:L33-L33@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L181-L181@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L388-L390@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L167-L172@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/cron-auto-update.sh:L59-L73@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/cron-auto-update.sh:L81-L82@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L178-L180@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/source/knowledge-packs.lisp:L146-L150@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek.js:L81-L94@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L108-L121@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek.sh:L13-L20@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek.sh:L34-L40@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek.js:L3-L10@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek.js:L39-L41@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek.js:L51-L51@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek.js:L62-L68@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek.js:L88-L92@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/discover-fek.js:L108-L108@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L49-L49@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L57-L61@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L116-L119@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L50-L51@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek.sh:L79-L79@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L32-L45@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek.sh:L78-L80@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/cron-auto-update.sh:L46-L86@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L125-L127@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L328-L330@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L344-L346@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0124-claude.md:L86-L88@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0124-claude.md:L109-L109@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0123-claude.md:L79-L88@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0123-claude.md:L100-L101@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L112-L124@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L160-L178@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0119-claude.md:L93-L97@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0125-claude.md:L106-L131@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0121-claude.md:L17-L33@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0121-claude.md:L123-L126@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L142-L145@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/APPROVAL-ACT-F7-HARDENING.md:L30-L40@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/AI-DIALOGUE.md:L7-L26@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0062-claude.md:L1-L1@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L156-L157@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L2-L3@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/STATE-OF-PLAY.md:L7-L7@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L155-L157@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/RESERVATION-OF-RIGHTS.md:L4-L4@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/RESERVATION-OF-RIGHTS.md:L15-L15@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/RESERVATION-OF-RIGHTS.md:L19-L19@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0062-claude.md:L5-L20@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L162-L166@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0123-claude.md:L58-L71@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/systems/orchestrator-epistemic/transparency-log.lisp:L84-L84@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/systems/orchestrator-epistemic/artifact-census.lisp:L116-L116@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/authority-v2/fixtures/legacy-tlog/REMOVED-tlog-writers.lisp.txt:L18-L18@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/authority-v2/fixtures/legacy-tlog/tlog-n1.json:L1-L1@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/systems/orchestrator-epistemic/transparency-log.lisp:L79-L85@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0120-claude.md:L147-L152@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/discover-fek.test.js:L8-L9@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/discover-fek.test.js:L42-L43@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/cron-auto-update.sh:L46-L61@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/discover-fek.js:L104-L136@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/discover-fek.js:L56-L60@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/cron-auto-update.sh:L52-L52@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/cron-auto-update.sh:L63-L73@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/.gitignore:L38-L39",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/knowledge/dialogue.sexp:L1-L1@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/cron-auto-update.sh:L52-L54@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L29-L29@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/systems/orchestrator-cli/main.lisp:L1504-L1515@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fek-diagnose.js:L74-L74@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/discover-fek.js:L51-L51@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/discover-fek.js:L154-L157@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fek-capture.js:L27-L27@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fek-capture.js:L73-L77@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L35-L35@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L62-L62@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/self-study/INTELLIGENCE-AUDIT-2026-07-05.md:L321-L321@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek.sh:L1-L1@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek.js:L1-L1@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L1-L1@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L1-L1@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek.js:L32-L38@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek-by-number.js:L31-L35@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fek-diagnose.js:L29-L32@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek-by-number.sh:L21-L29@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/discover-fek.js:L85-L88@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/source/greek-lemmatizer.lisp:L41-L41@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/source/text-canonicalizer.lisp:L409-L409@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/source/legal-id-registry.lisp:L74-L74@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L173-L177@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/collab/dialogue/0116-claude.md:L421-L432@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": ".gitignore:L11",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "authority-v2/genesis/genesis-policy.sexp:L35-L35@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-state-rev2.sexp",
+   "token": "/frozen/ro/deployment/fetch-fek.sh:L10-L11@sha256",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  }
+ ]
+}

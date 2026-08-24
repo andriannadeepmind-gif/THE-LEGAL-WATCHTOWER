@@ -11,8 +11,13 @@
 
 (:lawmax-lane-scope-authority/1
  :status :SEALED
+ :revision 2
  :mutable nil
  :changes-require "ρητή εντολή δημιουργού — ΟΧΙ γεγονός κατάστασης διαδρομής"
+ :revision-2-reason
+  "Ρητή εντολή δημιουργού: domain-separated ταυτότητα που περιλαμβάνει
+   ΠΡΑΓΜΑΤΙΚΑ schema/commit/tree/leaf-root στο preimage, και διόρθωση του
+   trailing_newline για κενά αρχεία. ΚΑΜΙΑ αλλαγή εμβέλειας ή roots."
 
  ;; ── ΤΟ ΠΑΓΩΜΕΝΟ ΔΕΝΤΡΟ ────────────────────────────────────────────────
  :frozen
@@ -24,15 +29,38 @@
 
  ;; ── Η ΤΑΥΤΟΤΗΤΑ ΤΟΥ CORPUS ────────────────────────────────────────────
  :corpus-manifest
- (:schema 3
+ (:schema 4
   :leaves 35640
   :by-kind (:file 35559 :executable 75 :symlink 6)
-  :identity-kind :PATH-AND-KIND-COMPLETE
-  :identity "sha256:3127f4941b899afcbffcd405b00d9e613fe4732301ba8ed990d22a0685514019"
+  :identity-kind :DOMAIN-SEPARATED-PATH-AND-KIND-COMPLETE
+  :identity "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6"
+  :identity-preimage
+   "SHA256(\"LAWMAX-CORPUS-IDENTITY/1\\0\" ‖ u32be(schema) ‖ commit(20 raw)
+           ‖ tree(20 raw) ‖ leaf-root(32 raw))"
+  :leaf-root "sha256:3127f4941b899afcbffcd405b00d9e613fe4732301ba8ed990d22a0685514019"
   :enumeration-authority :GIT-TREE
-  :legacy-content-only-root
-   "sha256:ad8fd575cce147a8b765cd32fafa77f670491b8def589c88feb09f265d5f346b"
-  :legacy-status :LEGACY-ARTIFACT-NOT-CORPUS-IDENTITY)
+  :access "openat2 · RESOLVE_BENEATH|RESOLVE_NO_SYMLINKS|RESOLVE_NO_XDEV|RESOLVE_NO_MAGICLINKS"
+
+  :superseded-identities
+  ((:schema 2 :root "sha256:ad8fd575cce147a8b765cd32fafa77f670491b8def589c88feb09f265d5f346b"
+    :covered-leaves 35634 :defect "os.walk· έλειπαν 6 symlinks· χωρίς διαδρομή/mode/kind")
+   (:schema 3 :root "sha256:3127f4941b899afcbffcd405b00d9e613fe4732301ba8ed990d22a0685514019"
+    :covered-leaves 35640
+    :defect "ΗΤΑΝ ΜΟΝΟ LEAF ROOT. Δήλωνε ότι «δεσμεύει commit και tree» ενώ
+             αυτά ήταν ΕΚΤΟΣ preimage — δύο δέντρα με ίδια φύλλα σε άλλο
+             commit έδιναν ΙΔΙΑ ρίζα. Επιπλέον 14 ΚΕΝΑ αρχεία δηλώνονταν
+             trailing_newline=1, που είναι αναληθές: δεν υπάρχει newline."))
+
+  :schema-3-to-4-delta
+  (:rows-changed 14 :what "ΚΕΝΑ text αρχεία: trailing_newline 1 → 0"
+   :corpus-bytes-unchanged t
+   :leaf-root-unchanged t
+   :why-leaf-root-unchanged "το trailing_newline ΔΕΝ είναι μέρος του leaf preimage"
+   :files ("evidence/self/.gitkeep" "evidence/version-graph/.gitkeep"
+           "keys/public/.gitkeep" "releases/.gitkeep"
+           "third-party/babel-20241012-git/tests/ebcdic-fi.txt"
+           "third-party/babel-20241012-git/tests/ebcdic-fi.txt-utf8"
+           "… 14 συνολικά, όλα e69de29b (κενό git blob)")))
 
  ;; ── ΣΗΜΑΣΙΟΛΟΓΙΑ ΔΙΑΔΡΟΜΩΝ — ΔΗΛΩΜΕΝΗ, ΟΧΙ ΕΥΡΕΤΙΚΗ ──────────────────
  :citation-forms

@@ -1,59 +1,54 @@
 ;;;; experiment/artifacts/corpus-manifest.sexp
-;;;; ΤΑΥΤΟΤΗΤΑ ΠΑΓΩΜΕΝΟΥ CORPUS — schema 3, PATH-AND-KIND-COMPLETE
+;;;; ΤΑΥΤΟΤΗΤΑ ΠΑΓΩΜΕΝΟΥ CORPUS — schema 4
 ;;;; ΠΑΡΑΓΩΓΟΣ: experiment/runner/corpus-manifest.py — ΜΗΝ γράφεται με το χέρι.
 
-(:lawmax-corpus-manifest/3
- :schema 3
+(:lawmax-corpus-manifest/4
+ :schema 4
  :enumeration-authority :GIT-TREE
  :enumeration-command "git ls-tree -r -z --full-tree e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03"
- :why-not-filesystem
-  "Το os.walk του schema 2 ΕΞΑΦΑΝΙΖΕ τα symlink-προς-κατάλογο: ούτε ως αρχεία
-   ούτε ως κατάλογοι προς κάθοδο. Έλειπαν 6 εγγραφές (35.634 αντί 35.640).
-   Το filesystem ΔΕΝ είναι αυθεντία πληρότητας· το git tree είναι."
-
  :commit "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03"
  :tree-sha1 "23b7a6f4450f50d151d38e13020bee9872e73bcd"
  :leaves 35640
  :by-kind (:file 35559 :executable 75 :symlink 6)
 
+ :access
+ (:mechanism "openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS"
+  :guarantee "Ο ΠΥΡΗΝΑΣ επιβάλλει κατά την ανάλυση: καμία έξοδος από τη ρίζα,
+              κανένα symlink σε κανένα συστατικό, καμία διάσχιση filesystem.
+              ΔΕΝ υπάρχει έλεγχος-και-μετά-άνοιγμα, άρα ΔΕΝ υπάρχει παράθυρο."
+  :same-descriptor "fstat και read στον ΙΔΙΟ descriptor — ΤΟ ΙΔΙΟ inode")
+
  :identity
- (:kind :PATH-AND-KIND-COMPLETE
-  :root "sha256:3127f4941b899afcbffcd405b00d9e613fe4732301ba8ed990d22a0685514019"
-  :leaf-preimage
-   "u32be(len(path))‖path ‖ u32be(len(mode))‖mode ‖ u32be(len(kind))‖kind
-    ‖ content_sha256(32 raw bytes) ‖ u64be(bytes)"
-  :leaf-hash "SHA256(0x00 ‖ preimage)"
-  :node-hash "SHA256(0x01 ‖ left ‖ right)"
-  :split "ΑΥΣΤΗΡΗ δύναμη του 2 (RFC 6962/9162 §2.1.1)· ΠΟΤΕ duplicate-last (CVE-2012-2459)"
+ (:kind :DOMAIN-SEPARATED-PATH-AND-KIND-COMPLETE
+  :value "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6"
+  :preimage "LAWMAX-CORPUS-IDENTITY/1\\0 ‖ u32be(schema) ‖ commit(20 raw)
+             ‖ tree(20 raw) ‖ leaf-root(32 raw)"
+  :binds-inside-preimage ("schema" "commit sha1" "tree sha1" "leaf root")
+  :leaf-root "sha256:3127f4941b899afcbffcd405b00d9e613fe4732301ba8ed990d22a0685514019"
+  :leaf-preimage "0x00 ‖ u32be(len path)‖path ‖ u32be(len mode)‖mode
+                  ‖ u32be(len kind)‖kind ‖ content_sha256(32) ‖ u64be(bytes)"
+  :node "0x01 ‖ L ‖ R"
+  :split "ΑΥΣΤΗΡΗ δύναμη του 2 (RFC 6962/9162 §2.1.1)· ΠΟΤΕ duplicate-last"
   :order "ταξινόμηση κατά ΩΜΑ BYTES διαδρομής"
-  :binds ("commit sha1" "tree sha1" "κάθε διαδρομή" "κάθε git mode" "κάθε kind"
-          "κάθε content sha256" "κάθε μέγεθος")
-  :what-it-catches
-   "Μετακίνηση αρχείου, μετατροπή αρχείου σε symlink, αλλαγή δικαιώματος
-    εκτέλεσης, ΚΑΙ αλλαγή περιεχομένου. Η ρίζα ΑΛΛΑΖΕΙ σε κάθε μία.")
+  :correction-over-schema-3
+   "Το schema 3 δήλωνε ότι η leaf root «δεσμεύει commit και tree». ΔΕΝ τα
+    δέσμευε: ήταν διπλανά πεδία, εκτός preimage. Δύο δέντρα με ίδια φύλλα σε
+    διαφορετικό commit έδιναν ΙΔΙΑ ρίζα. Τώρα είναι μέσα στο preimage.")
 
- :legacy-identity
- (:kind :CONTENT-ONLY
-  :root "sha256:ad8fd575cce147a8b765cd32fafa77f670491b8def589c88feb09f265d5f346b"
-  :status :LEGACY-ARTIFACT
-  :must-not-be-called "πλήρης ταυτότητα corpus"
-  :why "Δεσμευόταν ΜΟΝΟ σε περιεχόμενα 35.634 αρχείων. ΔΕΝ περιείχε τα 6
-        symlinks, ΔΕΝ δέσμευε διαδρομές, ΔΕΝ δέσμευε modes/kinds. Διατηρείται
-        ως ιστορικό τεκμήριο των αποδείξεων που εκδόθηκαν υπό αυτόν.")
+ :legacy-roots
+ ((:root "sha256:ad8fd575cce147a8b765cd32fafa77f670491b8def589c88feb09f265d5f346b"
+   :schema 2 :covered-leaves 35634 :status :LEGACY-CONTENT-ONLY
+   :why "os.walk· έλειπαν 6 symlinks· καμία δέσμευση διαδρομής/mode/kind")
+  (:root "sha256:3127f4941b899afcbffcd405b00d9e613fe4732301ba8ed990d22a0685514019"
+   :schema 3 :covered-leaves 35640 :status :LEGACY-LEAF-ROOT-ONLY
+   :why "σωστά φύλλα, αλλά η ρίζα ΔΕΝ δέσμευε schema/commit/tree στο preimage,
+         και το κενό text αρχείο δηλωνόταν trailing_newline=1 (αναληθές)"))
+ :corpus-bytes-unchanged-across-all-schemas t
 
- :mount-attestation
- (:mount "/frozen/ro" :verified-per-path t
-  :method "Για ΚΑΘΕ leaf: ανάγνωση από το mount (lstat, χωρίς ακολούθηση
-           symlink), επανυπολογισμός του git blob sha1 από τα ΠΡΑΓΜΑΤΙΚΑ bytes,
-           απαίτηση ταύτισης με το sha1 του tree."
-  :paths-verified 35640 :mismatches 0
-  :establishes "Το mount ΕΙΝΑΙ ο παγωμένος commit — ανά διαδρομή, όχι συνολικά.")
-
- :columns ("path" "git_mode" "kind" "git_blob_sha1" "content_sha256" "bytes" "logical_lines" "trailing_newline" "class")
  :line-encoding
- (:text "logical_lines ≥ 0 · αρχείο χωρίς τελικό newline μετρά και την
-         τελευταία ημιτελή γραμμή · κενό αρχείο = 0"
-  :binary "logical_lines = -1 — καμία σημασία γραμμών"
-  :symlink "logical_lines = -2 — καμία σημασία γραμμών· το
-            «περιεχόμενο» είναι η συμβολοσειρά του στόχου, ΔΕΝ ακολουθείται")
+ (:text "logical_lines ≥ 0· αρχείο χωρίς τελικό newline μετρά και την τελευταία
+         ημιτελή γραμμή· ΚΕΝΟ αρχείο ⇒ 0 γραμμές ΚΑΙ trailing_newline 0"
+  :binary "logical_lines = -1"
+  :symlink "logical_lines = -2· περιεχόμενο = ο στόχος· ΔΕΝ ακολουθείται")
+ :columns ("path" "git_mode" "kind" "git_blob_sha1" "content_sha256" "bytes" "logical_lines" "trailing_newline" "class")
  :tsv "experiment/artifacts/corpus-manifest.tsv")
