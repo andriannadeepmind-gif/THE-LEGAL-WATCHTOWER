@@ -1,0 +1,130 @@
+{
+  "$schema": "lawmax/omega-ceiling-constitution/1",
+  "title": "Ω-CEILING CONSTITUTION v1",
+  "ratified_by": "δημιουργός — ρητή συνταγματική απόφαση",
+  "supersedes": "OBJECTIVE-CONSTITUTION.draft.json (διάταξη V1..V9 — ΑΠΟΡΡΙΦΘΗΚΕ)",
+  "rejection_reason": "Η λεξικογραφική V1→V9 επέτρεπε σε μικρότερη, ευκολότερα αποδείξιμη κατασκευή να νικήσει ουσιωδώς ισχυρότερη αρχιτεκτονική.",
+  "sealed": true,
+  "transfer_rule": "ΑΚΡΙΒΗΣ ΜΕΤΑΦΟΡΑ. Ο evaluator ΔΕΝ προσθέτει, δεν αφαιρεί και δεν αναδιατάσσει προτεραιότητες κατά την κρίση του.",
+
+  "s1_supreme_purpose": {
+    "not_seeking": ["απλούστερη λύση","ευκολότερα αποδείξιμη λύση","μικρότερο TCB","φθηνότερη ή ταχύτερη λύση","την καλύτερη από περιορισμένο σύνολο ιδεών που έτυχε να παραγάγουν οι πράκτορες"],
+    "seeking": "τη ΜΕΓΑΛΥΤΕΡΗ υλοποιήσιμη σήμερα σημασιολογική, νομική και θεσμική capability construction που ικανοποιεί ΟΛΕΣ τις αδιαπραγμάτευτες υποχρεώσεις",
+    "proof_subordination": "Το proof system ΥΠΗΡΕΤΕΙ την ανώτερη αρχιτεκτονική. ΑΠΑΓΟΡΕΥΕΤΑΙ να μικρύνει την αρχιτεκτονική ώστε να γίνει ευκολότερη η απόδειξη."
+  },
+
+  "s2_sealed_definitions": {
+    "must_seal_before_any_candidate_result": ["t0","D_t","U_t","B_plus","B_minus","H_1..H_n","materiality_thresholds","uncertainty_rules","evidence_requirements"],
+    "capability_contract": ["domain","assumptions","guarantees","failure semantics","operating model","materiality","evidence"],
+    "presence_rule": "Capability ΔΕΝ θεωρείται παρούσα επειδή εμφανίζεται σε κείμενο, feature list ή ισχυρισμό πράκτορα. ΜΟΝΟ όταν ικανοποιείται το κοινό contract με αποδεκτό evidence.",
+    "U_t_sources": ["frozen repository","εξωτερικό architecture-family census","technology census","δημόσιες frontier constructions","omission challengers","νέες πρωτότυπες συνθέσεις"],
+    "U_t_prohibition": "ΤΟ U_t ΔΕΝ ΟΡΙΖΕΤΑΙ ΑΠΟΚΛΕΙΣΤΙΚΑ ΑΠΟ ΤΟ G_today."
+  },
+
+  "s3_trivalent_feasibility": {
+    "H_range": ["PASS","FAIL","UNKNOWN"],
+    "F_plus": "{A ∈ D_t | H(A)=PASS}",
+    "F_unknown": "{A ∈ D_t | H(A)=UNKNOWN}",
+    "exclusion_rule": "ΜΟΝΟ αποδεδειγμένο FAIL αποκλείει οριστικά candidate.",
+    "unknown_is_not": ["αποτυχία","κυριαρχία από απλούστερη λύση","άδεια κλεισίματος του branch"],
+    "blocking_rule": "Αν candidate στο F? μπορεί να περιέχει ουσιώδη capability που ΔΕΝ υπάρχει στον provisional winner, η διαδικασία παραμένει FRONTIER-BLOCKED μέχρι ολοκλήρωση αξιολόγησης ή έγκυρο infeasibility/refutation certificate.",
+    "hard_rule": "Η αδυναμία ολοκλήρωσης δύσκολης απόδειξης ΔΕΝ χαρίζει νίκη σε μικρότερο σύστημα."
+  },
+
+  "s4_hard_feasibility_gates": [
+    "Νομική και θεσμική σημασιολογική ορθότητα",
+    "Υλοποιησιμότητα με τεχνολογίες διαθέσιμες στο t0",
+    "Preservation ΟΛΩΝ των έγκυρων baseline capabilities",
+    "Ρητή disposition ΚΑΘΕ γνωστού baseline defect",
+    "Καμία σιωπηρή απώλεια authority, state ή institutional role",
+    "Καμία duplicated authority ή δεύτερη πηγή αλήθειας",
+    "Καμία facade, placeholder, workaround ή silent fallback",
+    "Πλήρης provenance και ελεγκτική αναπαραγωγή των ισχυρισμών",
+    "Ρητή αντιστοίχιση formal model προς executable construction",
+    "Determinism, durability, recovery και liveness στα απαιτούμενα operating models",
+    "Common Lisp-native σημασιολογία ΧΩΡΙΣ τεχνητό περιορισμό σε υποσύνολο",
+    "Πλήρες constructive implementation witness και dependency-ordered blueprint",
+    "Phase isolation, immutable objectives και απαγόρευση αυτοπιστοποίησης"
+  ],
+  "s4_proof_floor_rule": "Η proof coverage περνά προκαθορισμένο assurance floor. ΔΕΝ επιτρέπεται μεγαλύτερη proof convenience να αγοράσει μικρότερη capability surface.",
+
+  "s5_baseline": {
+    "B_plus": "όλα τα passing normative behaviours, capabilities και invariants",
+    "B_minus": "γνωστά failures, crashes, stale declarations, missing dependencies, harness ambiguities",
+    "relation": "B⁺ ⪯K A",
+    "defects_are_not_invariants": true,
+    "defect_obligations": ["οι τέσσερις αποτυχημένες suites","οι επτά αποτυχίες της δεύτερης έδρας","το memory fault","τα οκτώ unresolved systems","η stale hash-seat declaration","κάθε harness/corpus ambiguity"],
+    "disposition_options": ["διόρθωση με differential evidence","απόδειξη ότι η αιτία δεν ανήκει στον candidate","παραμονή BLOCKED"],
+    "T1_meaning": "Μη χάσεις καμία έγκυρη δυνατότητα και μη χειροτερέψεις καμία γνωστή κατάσταση."
+  },
+
+  "s6_capability_refinement_order": {
+    "A_preceq_B_iff": "για κάθε q ∈ K(A) το B: ίσο ή μεγαλύτερο domain · ίσες ή ΑΣΘΕΝΕΣΤΕΡΕΣ assumptions · ίσες ή ΙΣΧΥΡΟΤΕΡΕΣ guarantees · όχι ασθενέστερα failure/recovery semantics · ίδιο evidence floor",
+    "strict": "A ≺K B αν A ⪯K B ΚΑΙ το B προσθέτει ≥1 ουσιώδη capability ή ενισχύει αυστηρά υπάρχον contract",
+    "forbidden_substitutes": ["feature count","scalar score","LLM βαθμολογία","αθροιστικό weighted average","αριθμό proofs","αριθμό tests"],
+    "no_numeric_compensation": "Μία capability ΔΕΝ αντισταθμίζει αριθμητικά την απώλεια άλλης χωρίς προγενέστερη συνταγματική εξουσιοδότηση."
+  },
+
+  "s7_winner_condition": {
+    "requires": ["W ∈ F⁺", "∀A ∈ F⁺ : A ⪯K W", "για κάθε A ∈ F? με πιθανή capability εκτός W: ολοκληρωμένη αξιολόγηση Ή έγκυρο refutation/infeasibility certificate"],
+    "kind": "GREATEST feasible capability element — ΟΧΙ απλώς maximal element",
+    "else": "NO WINNER"
+  },
+
+  "s8_join_synthesis": {
+    "mandatory": "Για ασύγκριτους maximal A,B: ΠΡΩΤΑ construction J(A,B) με K(J) ⊇ K(A) ∪ K(B), διατηρώντας ΟΛΕΣ τις hard gates.",
+    "loop": ["κατασκεύασε feasible superset/join","ανεξάρτητη adversarial evaluation","αντικατάστησε τα μέλη που κυριαρχεί","επανάλαβε μέχρι closure"],
+    "failure_requires": "συγκεκριμένο incompatibility certificate ΑΝΑ μη συνδυάσιμη capability",
+    "pareto_rule": "PARETO-FRONTIER / NO UNIQUE WINNER ΜΟΝΟ αφού αποτύχει ΑΠΟΔΕΔΕΙΓΜΕΝΑ η join synthesis. Πλήρης ισοπαλία = equivalence, ΟΧΙ Pareto. Το Pareto είναι για ΓΝΗΣΙΑ ασυγκρισιμότητα."
+  },
+
+  "s9_secondary_axes": {
+    "applies_only_after": "greatest capability envelope βρέθηκε Ή αποδείχθηκε αδυναμία join",
+    "axes": ["theorem strength και proof coverage","σύνολο εξαλειφθέντων error classes","independence των verification paths","evolvability και migration strength","determinism, durability, recovery, liveness","provenance και auditability","TCB assumptions","performance envelope"],
+    "per_axis_required": ["κατεύθυνση","μονάδα","materiality threshold","uncertainty interval","κοινό workload","ίδιο failure model"],
+    "method": "ΠΡΩΤΑ materiality-aware Pareto dominance· lexicographic tie-break ΜΟΝΟ μεταξύ πραγματικά συγκρίσιμων survivors",
+    "excluded_from_ranking_and_pruning": ["οικονομικό κόστος","elapsed time","model effort","compute consumption","implementation effort","code volume","ευκολία απόδειξης","familiarity","απλότητα"],
+    "simplicity_rule": "Η απλότητα είναι πλεονέκτημα ΜΟΝΟ ως semantic compression: ίδια ή μεγαλύτερη capability με όχι ασθενέστερα contracts. Απλότητα μέσω αφαίρεσης capability ΑΠΑΓΟΡΕΥΕΤΑΙ."
+  },
+
+  "s10_no_prover_driven_architecture": {
+    "acl2_status": "CANDIDATE-ACL2-KERNEL — ΔΕΝ είναι επιλεγμένη έδρα",
+    "prohibition": "ΚΑΝΕΝΑ από ACL2, Coq, SPIN, SMT, verified subset, compiler restriction ή άλλο proof tool δεν ορίζει ή συρρικνώνει το candidate domain.",
+    "order": "ΠΡΩΤΑ η πλήρης σημασιολογική και θεσμική αρχιτεκτονική· ΜΕΤΑ ο ισχυρότερος proof/refinement stack που μπορεί να την επαληθεύσει.",
+    "subset_rule": "Απόδειξη υποσυνόλου είναι απόδειξη ΜΟΝΟ του υποσυνόλου, όχι λόγος αφαίρεσης του υπόλοιπου συστήματος."
+  },
+
+  "s11_anti_simplification_obligations": ["AS1 POSITIVE-BASELINE-REFINEMENT","AS2 THEOREM-NON-WEAKENING","AS3 CAPABILITY-OMISSION-CERTIFICATION","AS4 JOIN/SUPERSET-CHALLENGE","AS5 COMMON-WORKLOAD-AND-FAULT-MODEL","AS6 IMPLEMENTATION-MODEL-REFINEMENT","AS7 DOMAIN-SCOPE-HONESTY","AS8 UNKNOWN-CHALLENGER-RETENTION","AS9 NO-BUDGET-PRUNING","AS10 POST-SELECTION-DOMINANCE-ATTACK"],
+  "s11_counter_design": "Κάθε provisional winner δέχεται ΝΕΟ independent counter-design pass με αποκλειστικό σκοπό να κατασκευάσει σύστημα που τον κυριαρχεί. Επιτυχία ⇒ ακύρωση winner και επανάνοιγμα αναζήτησης.",
+
+  "s12_forbidden_termination_grounds": ["fixed number of rounds","stagnation","token/context exhaustion","χρόνος","κόστος","LLM consensus","πλειοψηφία πρακτόρων","δυσκολία proof","μεγάλη construction","δεν βρέθηκε κάτι καλύτερο"],
+  "s12_exhaustion_result": "SUSPENDED + EXACT CHECKPOINT — ΠΟΤΕ FINAL",
+
+  "s13_claim_limits": {
+    "strongest_legal_claim": "GREATEST-FEASIBLE-CAPABILITY-ELEMENT-WITHIN-SEALED-D_t-U_t-AT-t0",
+    "requires": ["εξωτερικό coverage argument για το D_t","closure proof της αναζήτησης","κάθε branch ελεγμένο ή έγκυρα κλεισμένο","omission challengers χωρίς uncovered family"],
+    "invalidation": "Νέα capability family ή νέα τεχνολογία ΑΚΥΡΩΝΕΙ το ceiling certificate και ανοίγει νέο epoch.",
+    "no_forced_winner": "Αν δεν υπάρχει greatest element, ΔΕΝ εξαναγκάζεται τεχνητός νικητής."
+  },
+
+  "s14_admission_report_corrections_required_before_runtime_comparative_conclusions": [
+    "199 systems έναντι αθροίσματος 198",
+    "137 suites έναντι 136 executed",
+    "104/104 στο SBCL 2.4.0 με ακριβές subset manifest",
+    "τα οκτώ unresolved systems με ονομαστική disposition",
+    "η ασάφεια «ίδιο config digest αλλά διαφορετικό image ID»",
+    "διάκριση rebuild του SBCL 2.4.0 από τον actual baseline 2.2.9",
+    "νέο SBCL process και νέο disposable overlay ανά suite",
+    "ακύρωση κάθε αποτελέσματος μετά το JONATHAN memory fault στο ίδιο Lisp image",
+    "OS-level read-only corpus για agents και tests",
+    "T14 ως MODEL-CHECKED, όχι implementation-proved, μέχρι refinement relation + non-vacuity witness"
+  ],
+  "s14_terminology": "Δύο rebuilds στον ίδιο host/daemon = REPEATABILITY του ίδιου περιβάλλοντος, ΟΧΙ πλήρως ανεξάρτητη replication.",
+  "s14_e2e": "PRODUCTION-EQUIVALENT-DOCKER-E2E: BLOCKED — δεν εμποδίζει τη στατική αρχαιολογία· απαγορεύει production-equivalent runtime ή τελικό seal.",
+
+  "s15_authorization": "PHASE-1A STATIC READ-ONLY ARCHAEOLOGY: AUTHORIZED",
+  "s15_preflight_reopen_only_if": ["αλλάξει η ταυτότητα του corpus","αλλάξει η ακεραιότητα του runner","αλλάξει η phase isolation","αλλάξει το σφραγισμένο Σύνταγμα"],
+
+  "frozen_corpus_commit": "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03",
+  "frozen_corpus_merkle": "sha256:ad8fd575cce147a8b765cd32fafa77f670491b8def589c88feb09f265d5f346b"
+}
