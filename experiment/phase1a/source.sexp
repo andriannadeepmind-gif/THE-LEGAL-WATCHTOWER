@@ -1,12 +1,23 @@
 (:lawmax-phase1a-cluster/1
  :cluster "source"
  :status :partial
- :files-read 13
+ :files-read 52
  :files-total 133
+ :read-since-checkpoint-2 ("asn1-der.lisp" "circuit-breaker.lisp" "component-scan.lisp"
+   "consolidation-proof.lisp" "consolidation-feed.lisp" "corpus-provenance.lisp" "corpus-diff.lisp"
+   "consolidation-engine.lisp" "consolidation-bridge.lisp" "corpus-fingerprint.lisp"
+   "corpus-intelligence.lisp" "corpus-search.lisp" "paths.lisp" "http-server.lisp"
+   "jws-authority.lisp" "x509-authority.lisp" "timestamp-authority.lisp" "memory.lisp"
+   "proposals.lisp" "self-history.lisp" "introspection.lisp" "what-if.lisp" "self-model.lisp"
+   "review-queue.lisp")
  :read-so-far ("cognition.lisp" "safe-read.lisp" "merkle-authority.lisp" "proof-carrying.lisp"
                "deterministic-time.lisp" "journal.lisp" "self-constitution.lisp" "document-fetch.lisp"
                "constitutional-gate.lisp" "write-authority.lisp" "hash-authority.lisp"
-               "institution.lisp" "config.lisp")
+               "institution.lisp" "config.lisp" "authority-proof-bundle.lisp" "version-graph.lisp"
+               "amendment-extractor.lisp" "pdf-authority.lisp" "adoption-decision.lisp"
+               "anomaly-detection.lisp" "ast-gate.lisp" "autonomy.lisp" "components.lisp"
+               "archive-authority.lisp" "capability-api.lisp" "capability-registry.lisp"
+               "contracts.lisp" "canonical-representation.lisp" "canonical-uris.lisp")
 
  :capabilities
  ((:name "data-only s-expression deserialization (ΜΙΑ έδρα)"
@@ -147,7 +158,157 @@
    :failure-semantics "load-config: σφάλμα ⇒ WARN + NIL (σιωπηλή αποτυχία στο επίπεδο της συνάρτησης)· ο καλών load-default-config την μετατρέπει σε error."
    :operating-model "Global mutable hash-table· relative path (εξαρτάται από cwd)."
    :materiality "Πηγή canonical URIs."
-   :evidence "config.lisp:7-49"))
+   :evidence "config.lisp:7-49")
+
+  (:name "hermetic fail-closed επαληθευτής αλυσίδας εξουσίας (APB)"
+   :presence :present
+   :domain "Επαλήθευση release bundle: JWS release-statement, census, receipt-set, tlog inclusion, RFC-3161 TSR, owner Ed25519 delegation/revocation, consistency vs consumer checkpoint."
+   :assumptions "ΟΛΑ τα σημεία εμπιστοσύνης δίνονται ΕΞΩΘΕΝ (trusted owner JWK ή RFC-7638 thumbprint, pinned TSA CA path, known-revocations, policy) — ΠΟΤΕ από το bundle."
+   :guarantees "Κλειστή διατεταγμένη taxonomy βαθμίδων· κάθε κατηγόρημα ανεξάρτητο + fail-closed (εξαίρεση = αποτυχία με ονομαστικό λόγο)· ενριξιμότητα canonical δήλωσης (separators #x1e/#x1f απαγορευμένοι, length-prefixed verifier-set)· cross-type replay αδύνατο (ένα tag ανά τύπο)· delegation ελέγχεται στο genTime ΤΟΥ TSR, όχι σε caller clock· anti-rollback (:min-tlog-leaf-index, :gentime-floor)· offset-bearing χρόνοι ΑΠΟΡΡΙΠΤΟΝΤΑΙ."
+   :failure-semantics "apb-verdict με :awarded-tier = η ΑΝΩΤΑΤΗ με ΟΛΟ το σύνολο περασμένο· :reasons ονομαστικά· :delegation-state ∈ {:active :revoked :expired :not-yet :absent :stale :floor-unparseable}."
+   :operating-model "Καθαρή συνάρτηση πάνω σε bundle + εξωτερικά pins."
+   :materiality "Η δεύτερη βαθμίδα εμπιστοσύνης — τι μπορεί να αποδείξει τρίτος."
+   :evidence "authority-proof-bundle.lisp:295-658")
+
+  (:name "διτεμπορικός γράφος εκδόσεων (νομικός χρόνος)"
+   :presence :present
+   :domain "Αμετάβλητοι κόμβοι-κείμενα × typed ακμές τροποποίησης × καθεστωτικές ακμές × αιρέσεις έναρξης ισχύος, με [valid-from,valid-until) × [recorded-from,recorded-until)."
+   :assumptions "Το journal είναι η αυθεντία· η προβολή μνήμης ξαναχτίζεται με ΠΛΗΡΕΣ replay· legal-date/legal-instant typed (γνήσιος γρηγοριανός έλεγχος, ASCII-only ψηφία)."
+   :guarantees "G1 replay-then-append (ασυμφωνία ⇒ καραντίνα)· G2 ολική διάταξη· G3 payload-hash + chain ανά γραμμή (αλλοίωση ΟΠΟΙΟΥΔΗΠΟΤΕ πεδίου σπάει το replay)· G5 retract αντί διαγραφής· καραντίνα ΩΣ ΤΥΠΟΣ (αόρατη στην επιλογή)· μη υποστηριζόμενες πράξεις ⇒ ΡΗΤΟ :unsupported-op· scope :unknown ⇒ typed SCOPE-UNCERTAIN ή ρητό :conservative με μη-αφαιρέσιμο analytical marker."
+   :failure-semantics "invalid-edge (client) vs journal-corruption (server-integrity) — ΞΕΧΩΡΙΣΤΟΙ τύποι· temporal-uncertainty αντί μαντεψιάς· κενό γνώσης δηλωμένο."
+   :operating-model "Stateful προβολή· κάθε πράξη journal-first."
+   :materiality "Η απάντηση «τι ίσχυε πότε, κατά τη γνώση του πότε»."
+   :evidence "version-graph.lisp:221-1459")
+
+  (:name "deterministic effectivity attestation (χωρίς online κλειδί)"
+   :presence :present
+   :domain "Πιστοποιητικό ισχύος διάταξης στην τομή (valid-at, known-at) — value-canonical string + sha256."
+   :assumptions "Ο anchor είναι OPAQUE τύπος: verified κατασκευάζεται ΜΟΝΟ από release-anchor-for (private constructor)· provisional από δημόσιο make-provisional-anchor."
+   :guarantees "Καμία υπογραφή — ο verifier ΑΝΑΠΑΡΑΓΕΙ byte-wise· plist που «μοιάζει» anchored ΔΕΝ γίνεται δεκτό· assurance μέσα στο hash· read-only slots (provisional δεν «βάφεται» verified)."
+   :failure-semantics "outcome sum type: resolved | no-version-in-force | not-yet-effective | suspended | scope-uncertain | unknown-provision | uncertain."
+   :operating-model "Καθαρή συνάρτηση πάνω στον γράφο."
+   :materiality "Το εξαγόμενο πιστοποιητικό προς τρίτους."
+   :evidence "version-graph.lisp:2458-2613")
+
+  (:name "ντετερμινιστική εξαγωγή νομοτεχνικών πράξεων από ΦΕΚ"
+   :presence :present
+   :domain "Κείμενο τροποποιητικού → λίστα πράξεων (:replace-text/:repeal/:insert/:mark-amended) με scope routing."
+   :assumptions "Ελληνικοί νομοτεχνικοί τύποι· ο resolver έρχεται από το registry (orchestrator.legal-id) — ΧΩΡΙΣ resolver καμία δρομολόγηση."
+   :guarantees "Balanced «…» (καμία περικοπή)· μάσκα παραθέσεων (νέο κείμενο δεν ξαναδρομολογεί)· scope ΑΥΣΤΗΡΑ ενδο-ενοτικό· αυτο-αναφορά σε δικό του άρθρο ⇒ :low + :self-reference· αντίφαση με census ⇒ :identity :contradicted."
+   :failure-semantics "Χαμηλής εμπιστοσύνης πράξεις ΑΝΑΓΝΩΡΙΖΟΝΤΑΙ, ποτέ δεν πέφτουν σιωπηλά· μόνο :high αυτο-εφαρμόζεται."
+   :operating-model "Καθαρή συνάρτηση (regex/cl-ppcre)· κανένα LLM."
+   :materiality "Ο κρίκος «δημοσιευμένο ΦΕΚ → ενοποίηση»."
+   :evidence "amendment-extractor.lisp:340-546")
+
+  (:name "PDF text/layout extraction (libpoppler CFFI) + OCR κλιμάκωση"
+   :presence :present
+   :domain "PDF → κείμενο (plain / header-footer clipped / column-reflowed) και layout graph (spans/lines/blocks/pages)."
+   :assumptions "libpoppler-glib φορτώνεται ΤΕΜΠΕΛΙΚΑ στο runtime (όχι στο save-core)· OCR απαιτεί pdftoppm+tesseract+ell."
+   :guarantees "extract-text-any επιστρέφει ΚΑΙ την ΠΗΓΗ (:text-layer|:ocr|:none)· ocr-available-p ρητό· XY-cut reflow καθαρή/δοκιμασμένη συνάρτηση."
+   :failure-semantics "typed conditions (pdf-not-found/pdf-open-error/pdf-layout-error)· αλλά ανά-σελίδα σφάλμα layout ⇒ ΚΕΝΗ σελίδα με warn."
+   :operating-model "FFI + εξωτερικές διεργασίες + /tmp."
+   :materiality "Η μοναδική ανάγνωση αυθεντικών ΦΕΚ bytes."
+   :evidence "pdf-authority.lisp:381-1439")
+
+  (:name "capability registry + transport-agnostic API projection"
+   :presence :present
+   :domain "Δηλωτικό συμβόλαιο ανά δυνατότητα (name/params/result/trust/proof/fn)· HTTP/MCP/CLI = προβολές."
+   :assumptions "Κλειστό +param-types+ = {:string :keyword :any :integer :boolean}."
+   :guarantees "ΝΟΜΟΣ ΜΙΑΣ ΕΔΡΑΣ: επανεγγραφή από ΑΛΛΟ αρχείο ⇒ capability-seat-collision· ανώνυμο runtime site ΔΕΝ επαναδιεκδικεί· :trust επιβάλλεται ΔΙΠΛΑ (pre-check + invoke)· coercion fail-closed· ΚΑΝΕΝΑ intern σε μη-έμπιστη είσοδο (find-symbol μόνο) — intern-DoS δομικά αδύνατο."
+   :failure-semantics "403/404/400/500 ονομαστικά· καμία εξαίρεση δεν διαφεύγει."
+   :operating-model "Global hash-tables (*capabilities*, *capability-owners*)."
+   :materiality "Το σημείο όπου «κανένα LLM στο trusted path» γίνεται μηχανισμός."
+   :evidence "capability-registry.lisp:40-207 · capability-api.lisp:37-147")
+
+  (:name "μητρώο συμβολαίων + μηχανικός επικυρωτής"
+   :presence :present
+   :domain "Δηλωμένες υποσχέσεις ανά συνάρτηση/πρωτόκολλο/εντολή με legal-critical/policy-level/tests/audit/rollback."
+   :assumptions "Τα κατηγορήματα ύπαρξης (capability/role/test) δίνονται ΑΠΟ ΤΟΝ ΚΑΛΟΥΝΤΑ (διαχωρισμός στρωμάτων)."
+   :guarantees "legal-critical ΧΩΡΙΣ policy-level/tests ⇒ παράβαση· με side-effects ΧΩΡΙΣ audit/rollback ⇒ παράβαση· ανύπαρκτη ικανότητα/ρόλος/τεστ ⇒ παράβαση."
+   :failure-semantics "Λίστα παραβάσεων (strings)· ΔΕΝ μπλοκάρει από μόνο του — ο καλών (πύλη) το κάνει."
+   :operating-model "Global διατεταγμένη λίστα *contracts*."
+   :materiality "Η μηχανική μορφή των υποσχέσεων."
+   :evidence "contracts.lisp:43-167")
+
+  (:name "canonical JSON (RFC 8785 JCS) + canonical vector bytes + canonical ids"
+   :presence :present
+   :domain "Ντετερμινιστική σειριοποίηση για hashing/υπογραφή· IEEE-754 binary32 little-endian για embeddings· περιεχομενο-παραγόμενα @id."
+   :assumptions "ΔΗΛΩΝΕΙ συμμόρφωση RFC 8785 και «bit-perfect reproducibility across implementations»."
+   :guarantees "Ταξινόμηση κλειδιών, χωρίς κενά, πεζά \\u escapes, NaN/Inf → 0.0 στα διανύσματα."
+   :failure-semantics "etypecase ⇒ σφάλμα σε μη υποστηριζόμενο τύπο."
+   :operating-model "Καθαρές συναρτήσεις."
+   :materiality "Κάθε version-hash/edge-hash του version-graph περνά από εδώ (canonical-hash)."
+   :evidence "canonical-representation.lisp:91-278")
+
+  (:name "canonical URI sovereignty"
+   :presence :present
+   :domain "Η ΜΙΑ πηγή όλων των URI (base/eli/corpus/identity/policy/ontology) από configs/constitution.yaml."
+   :assumptions "ΚΑΝΕΝΑ default — «If configuration is missing, the system MUST fail hard»."
+   :guarantees "Κάθε getter ΣΦΑΛΛΕΙ αν λείπει η ρύθμιση· validate-uri/assert-canonical-uri· ωμός ακέραιος ως ταυτότητα άρθρου εκπέμπει ΟΡΑΤΟ :identity-debt ίχνος."
+   :failure-semantics "error (fail-hard)."
+   :operating-model "Global hash-table *canonical-config*."
+   :materiality "Η μία ταυτότητα του συστήματος στο διαδίκτυο."
+   :evidence "canonical-uris.lisp:53-264")
+
+  (:name "αυτόνομος οδηγός αποστολών"
+   :presence :present
+   :domain "Στόχος + αντικείμενα + βήμα → εκτέλεση με προϋπολογισμό, δρομέα στη μνήμη, στάση σε συστηματική αποτυχία."
+   :assumptions "Το ΒΗΜΑ είναι υπεύθυνο να επαληθεύει (ο οδηγός δεν εμπιστεύεται, καταγράφει)."
+   :guarantees "Καμία αυτόνομη μετάλλαξη: ό,τι παράγεται πάει σε ΟΥΡΑ ΠΡΟΤΑΣΕΩΝ· N συνεχόμενα σφάλματα ⇒ ΣΤΑΣΗ + αναφορά· ατζέντα κλείνει ΜΟΝΟ όταν καλυφθούν όλα."
+   :failure-semantics "Σφάλμα βήματος ⇒ :error μετρημένο και δηλωμένο (όχι σιωπή)."
+   :operating-model "Global μητρώο αποστολών· γράφει στη μνήμη/ιστορία."
+   :materiality "Το «τρέχει μόνο του» του συστήματος."
+   :evidence "autonomy.lisp:26-124")
+
+  (:name "μητρώο συστατικών + γράφος ακμών"
+   :presence :present
+   :domain "Ταυτότητα κάθε συστατικού (system/file/package/symbol/gate) + ακμές εξάρτησης."
+   :assumptions "Η ΚΑΤΑΣΚΕΥΗ ζει στο component-scan — εδώ μόνο ταυτότητες/ακμές."
+   :guarantees "Διπλό id ⇒ ΣΦΑΛΜΑ duplicate-component-id (ποτέ σιωπηλή αντικατάσταση)· role NIL = ΟΡΑΤΟ χρέος."
+   :failure-semantics "error."
+   :operating-model "Global hash-table + λίστα ακμών."
+   :materiality "«Ό,τι δεν ταυτοποιείται δεν θεωρείται γνωστό»."
+   :evidence "components.lisp:26-98")
+
+  (:name "υποβολή στο Archive.org (Wayback) ως «100-year proof»"
+   :presence :spec-only
+   :domain "Δημόσια τρίτη μαρτυρία χρονικής ύπαρξης release."
+   :assumptions "drakma· δίκτυο."
+   :guarantees "ΚΑΜΙΑ επαληθεύσιμη: δεν ελέγχεται HTTP status, δεν εξάγεται το πραγματικό archived URL, δεν επαληθεύεται η αρχειοθέτηση."
+   :failure-semantics "Σφάλμα ⇒ plist :status :failed (τίμιο)· ΑΛΛΑ η «επιτυχία» δηλώνεται χωρίς τεκμήριο."
+   :operating-model "Δίκτυο, χωρίς SSRF φρουρό, χωρίς ντετερμινιστικό χρόνο."
+   :materiality "Δηλώνεται ως απόδειξη χρονικής προτεραιότητας."
+   :evidence "archive-authority.lisp:56-159")
+
+  (:name "AST δομική πύλη πάνω στο σερβιρισμένο corpus"
+   :presence :present
+   :domain "Ανύψωση ενοποιημένου corpus σε legal-ast document-node και εκτέλεση των Layer-4 validators."
+   :assumptions "Οι accessors της consolidation επιλύονται ΔΥΝΑΜΙΚΑ (find-symbol) — «defensive pattern» κοινό με άλλα modules."
+   :guarantees "Lettered article ids (100Α) μένουν strings (η διακριτότητα διατηρείται)· *require-trace-chain* NIL εδώ (δηλωμένο)."
+   :failure-semantics "(values valid-p result) — ΣΥΜΒΟΥΛΕΥΤΙΚΗ πύλη, δεν μπλοκάρει."
+   :operating-model "Καθαρό CLOS."
+   :materiality "Ζωντανεύει προηγουμένως νεκρούς validators."
+   :evidence "ast-gate.lisp:53-127")
+
+  (:name "ανίχνευση ανωμαλιών εξαγωγής ανά άρθρο"
+   :presence :present
+   :domain "Υπογραφές σφάλματος εξαγωγής: κενό, καθόλου ελληνικά, χαμηλός λόγος ελληνικών, υπολειμματικός θόρυβος (URL/print chrome)."
+   :assumptions "Ελληνικό corpus."
+   :guarantees "Ντετερμινιστικό, υψηλής ακρίβειας· δεν τιμωρεί σύντομα/καταργημένα άρθρα."
+   :failure-semantics "(values ok-p findings) με ονομαστικούς λόγους ανά άρθρο."
+   :operating-model "Καθαρή συνάρτηση + find-symbol accessors."
+   :materiality "Τροφοδοτεί την ουρά ανθρώπινου ελέγχου."
+   :evidence "anomaly-detection.lisp:54-93")
+
+  (:name "ledger υιοθετήσεων (what-if governed adoption)"
+   :presence :present
+   :domain "Απόφαση υιοθέτησης πρότασης: verdict ∈ {:allowed :requires-human :shadow-only :denied} + διαρκές ledger."
+   :assumptions "Η υιοθέτηση ΧΩΡΙΣ what-if είναι «αδύνατη εκ κατασκευής»· απαιτείται δηλωμένο Ίδρυμα, αρχεία, σχέδιο σκιάς."
+   :guarantees "Ελλείψεις ⇒ :denied· legal-critical χωρίς άνθρωπο/πολιτική ⇒ :requires-human· require-durable! στο ledger· validate-adoption-records επαληθεύει υπογραφή + ύπαρξη πρότασης."
+   :failure-semantics "NOT-DURABLE σφάλμα αν δεν αποθηκεύτηκε."
+   :operating-model "Journal ledger + trace emit."
+   :materiality "«Τίποτα δεν γίνεται trusted επειδή δουλεύει»."
+   :evidence "adoption-decision.lisp:23-132"))
 
  :authorities
  ((:name "safe-read: η ΜΙΑ έδρα cl:read σε data path"
@@ -202,7 +363,37 @@
    :what-it-can-decide "Αν κάθε output-bound timestamp είναι παγωμένος· εφαρμόζεται αυτόματα στο LOAD."
    :who-can-invoke "Το περιβάλλον της διεργασίας."
    :enforcement :os
-   :evidence "deterministic-time.lisp:202-220"))
+   :evidence "deterministic-time.lisp:202-220")
+
+  (:name "capability seat owner (ΝΟΜΟΣ ΜΙΑΣ ΕΔΡΑΣ)"
+   :what-it-can-decide "Ποιο αρχείο κατέχει μια δυνατότητα· εμποδίζει σιωπηλή αντικατάσταση trust/fn/schema/proof από άλλο αρχείο."
+   :who-can-invoke "register-capability στο LOAD (μέσω orchestrator.paths:current-load-file)."
+   :enforcement :code
+   :evidence "capability-registry.lisp:122-134")
+
+  (:name ":trust της δυνατότητας (κανένα LLM στο trusted path)"
+   :what-it-can-decide "Αν μια δυνατότητα εκτελείται σε trusted επιφάνεια· διπλή επιβολή (pre-check + έδρα)."
+   :who-can-invoke "Ο δηλωτής της δυνατότητας ορίζει το :trust· η επιφάνεια ορίζει το :require-trust."
+   :enforcement :code
+   :evidence "capability-api.lisp:108-111 · capability-registry.lisp:195-206")
+
+  (:name "opaque release anchor (verified vs provisional)"
+   :what-it-can-decide "Ποιο assurance μπορεί να φέρει ένα attestation· verified ΜΟΝΟ από private constructor."
+   :who-can-invoke "release-anchor-for (verified)· οποιοσδήποτε (provisional)."
+   :enforcement :code
+   :evidence "version-graph.lisp:2479-2522")
+
+  (:name "hygiene waiver (πόρτα εισδοχής κειμένου)"
+   :what-it-can-decide "Αν κείμενο με σύνταξη-μεταφοράς εισέρχεται στον γράφο· απαιτείται waiver που ΚΑΤΟΝΟΜΑΖΕΙ ΑΚΡΙΒΩΣ τα ευρήματα."
+   :who-can-invoke "Ο καλών της make-version-spec (import/bootstrap)."
+   :enforcement :code
+   :evidence "version-graph.lisp:645-686")
+
+  (:name "policy του καταναλωτή στο APB (required-tier, freshness floors, witness)"
+   :what-it-can-decide "Ποια βαθμίδα αρκεί, αν απαιτείται checkpoint/μάρτυρας, ποιο είναι το anti-rollback κατώφλι."
+   :who-can-invoke "Ο ΕΞΩΤΕΡΙΚΟΣ καταναλωτής — ποτέ το bundle."
+   :enforcement :code
+   :evidence "authority-proof-bundle.lisp:295-330,646-657"))
 
  :invariants
  ((:statement "Καμία εκτέλεση κώδικα από δεδομένα: *read-eval* NIL + ολική #-deny + %data-only-p στο αποτέλεσμα."
@@ -274,6 +465,122 @@
   (:what "%magic-file-p τυλίγει ΟΛΟΚΛΗΡΟ το σώμα σε ignore-errors: I/O σφάλμα (permission, ΕΙΟ) δεν διακρίνεται από «δεν είναι PDF». Κρίση: ΟΡΙΑΚΑ τίμιο (ο caller παίρνει NIL και το μεταφράζει σε :not-a-pdf) αλλά η ΑΙΤΙΑ χάνεται."
    :severity :p2
    :evidence "document-fetch.lisp:71-79"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "ΔΙΠΛΗ ΕΔΡΑ canonical sexp serialization με ΨΕΥΔΗ δήλωση ανάθεσης: το journal.lisp:67 γράφει «Καταναλωτές: version-graph (%canon-sexp deleg.)» αλλά το version-graph.lisp:471-497 έχει ΔΙΚΗ ΤΟΥ πανομοιότυπη υλοποίηση, ΟΧΙ κλήση της journal:canon-sexp. Κάθε payload-hash/chain/condition-id/regime-id/attestation-hash του δικαιικού χρόνου παράγεται από το ΑΝΤΙΓΡΑΦΟ — απόκλιση των δύο εδρών θα έσπαγε σιωπηλά κάθε αποθηκευμένη ταυτότητα. (Το memory.lisp ΟΝΤΩΣ αναθέτει: memory.lisp:110,164.)"
+   :severity :p1
+   :evidence "journal.lisp:61-86 · version-graph.lisp:471-497 · memory.lisp:110"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "canonical-representation δηλώνει RFC 8785 (JCS) και «bit-perfect reproducibility across implementations», αλλά: (α) η αριθμητική σειριοποίηση είναι (format ~,17G) + regex καθάρισμα, ΟΧΙ ο αλγόριθμος ECMAScript Number::toString που ορίζει το RFC 8785 §3.2.2.3 — αποκλίνει από ΚΑΘΕ συμμορφούμενη ξένη υλοποίηση σε πολλά doubles· (β) η ταξινόμηση κλειδιών γίνεται με string< (code points), ενώ το RFC απαιτεί UTF-16 code units — διαφορά σε κλειδιά εκτός BMP."
+   :severity :p1
+   :evidence "canonical-representation.lisp:162-192,227-241"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "canonicalize-json ΑΜΦΙΣΗΜΙΑ τύπου: λίστα από plists (π.χ. ((:a 1) (:b 2))) ταξινομείται ως ALIST ⇒ σειριοποιείται ως JSON object αντί για array of objects, με τιμές (cdr) ως arrays. Η ίδια Lisp τιμή δεν διακρίνεται από πίνακα αντικειμένων — σε έδρα κανονικοποίησης που τροφοδοτεί hashes/υπογραφές."
+   :severity :p1
+   :evidence "canonical-representation.lisp:141-160"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "archive-authority: το «100-year proof» ΔΕΝ επαληθεύεται. Δεν ελέγχεται HTTP status· όταν το σώμα είναι string επιστρέφεται ως :archived-url η URL ΥΠΟΒΟΛΗΣ (save-url), όχι η πραγματική αρχειοθετημένη URL· και δηλώνεται :status :success ανεξαρτήτως. Επιπλέον καμία SSRF πύλη (drakma :redirect 10 σε αυθαίρετο URL) — αντίθετα με το document-fetch που έχει φρουρό ανά hop."
+   :severity :p1
+   :evidence "archive-authority.lisp:70-94"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "adoption-decision: η ΥΠΟΓΡΑΦΗ της απόφασης παράγεται με (prin1-to-string decision) — αναπαράσταση, ΟΧΙ αξία. Είναι ακριβώς η κλάση σφάλματος που γέννησε τη canon-sexp (non-simple strings ⇒ #A(...)): ένα decision plist με format-παραγόμενο string μπορεί να δώσει ΑΛΛΟ sha μετά από round-trip, και το validate-adoption-records να το κηρύξει πλαστό."
+   :severity :p1
+   :evidence "adoption-decision.lisp:90-95,126-131"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "extract-layout-graph: σφάλμα εξαγωγής σελίδας ⇒ ΚΕΝΗ σελίδα-placeholder με μόνο (warn) — σιωπηλή απώλεια περιεχομένου σε αγωγό corpus. Ο καλών δεν μπορεί να διακρίνει «σελίδα χωρίς κείμενο» από «σελίδα που απέτυχε»."
+   :severity :p1
+   :evidence "pdf-authority.lisp:1360-1370"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "extract-text-via-ocr: προσωρινός κατάλογος /tmp/lawmax-ocr-<get-universal-time>/ — ΠΡΟΒΛΕΨΙΜΟ όνομα σε κοινόχρηστο /tmp (κίνδυνος pre-creation/symlink) και χρήση wall-clock αντί της έδρας χρόνου. Επιπλέον (error () nil) καταπίνει ΚΑΘΕ αιτία αποτυχίας OCR."
+   :severity :p2
+   :evidence "pdf-authority.lisp:1399-1425"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "path-to-uri: μόνο τα κενά κωδικοποιούνται ως %20· #, %, ?, [ ] σε όνομα αρχείου παράγουν λάθος file:// URI (το # κόβει το path). Ένα ΦΕΚ με # στο όνομα δεν ανοίγει, ή ανοίγει άλλο αρχείο."
+   :severity :p2
+   :evidence "pdf-authority.lisp:349-355"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "%ngz: (funcall (find-symbol \"NORMALIZE-GREEK\" :orchestrator.legal-id) s) ΧΩΡΙΣ έλεγχο — αν το πακέτο/σύμβολο λείπει, funcall πάνω σε NIL (undefined-function). Το ΙΔΙΟ αρχείο ελέγχει σωστά στη make-registry-resolver (L196-198): ασύμμετρη άμυνα στο ίδιο εξαρτησιακό όριο."
+   :severity :p2
+   :evidence "amendment-extractor.lisp:189-190 vs 196-198"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "APB: ο ΕΜΠΙΣΤΟΣ owner thumbprint υπολογίζεται με (ignore-errors (ed25519-jwk-thumbprint trusted-owner-root-jwk)) — κακοσχηματισμένο ΕΜΠΙΣΤΟ pin γίνεται σιωπηλά NIL, το OWN1 αποτυγχάνει και η βαθμίδα υποβαθμίζεται σε internally-release-consistent ΧΩΡΙΣ να ειπωθεί ότι το ίδιο το pin ήταν άκυρο. Κρίση: fail-closed ως προς τη βαθμίδα, αλλά η ΑΙΤΙΑ καταπίνεται — ο καταναλωτής δεν μαθαίνει ότι έδωσε χαλασμένη ρίζα."
+   :severity :p2
+   :evidence "authority-proof-bundle.lisp:507-511"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "version-graph: δύο διαφορετικές κανονικοποιήσεις ταυτότητας συνυπάρχουν στο ΙΔΙΟ αρχείο — %version-hash-2/%edge-hash μέσω canonical-representation:canonical-hash (canonical JSON), ενώ condition/regime/event/attestation ids μέσω journal:sha256-hex πάνω σε %canon-sexp (canonical sexp). Δύο σχήματα ταυτότητας για μία έννοια («ταυτότητα εγγραφής») στην ίδια έδρα."
+   :severity :p2
+   :evidence "version-graph.lisp:288-300,407-418 vs 1727-1729,2096-2104,2595-2596"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "GATE-5 (validation-authority) ΕΙΝΑΙ ΔΟΜΙΚΑ ΝΕΚΡΟ: ΕΞΙ εσωτερικές κλήσεις περνούν το CONTEXT ΘΕΣΙΑΚΑ σε συναρτήσεις που το δηλώνουν ως &key — (check-broken-patterns ttl-content context) vs (defun check-broken-patterns (ttl &key context)) κ.λπ. Κάθε τέτοια κλήση σηματοδοτεί program-error («odd number of &KEY arguments») ΠΡΙΝ γίνει οποιοσδήποτε έλεγχος. Άρα το validate-canonical-ttl ΠΟΤΕ δεν επικυρώνει: ή σκάει με σφάλμα άσχετο με το περιεχόμενο, ή (αν ο καλών το τυλίγει) η επικύρωση απουσιάζει εντελώς. Καταναλωτής υπάρχει: systems/orchestrator-omega-modules/unified-frbr-generator.lisp:434."
+   :severity :p0
+   :evidence "validation-authority.lisp:67,70,73,77,93,173,210,213,216,220,230,250"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "ΕΓΚΡΙΣΗ ΠΡΟΤΑΣΗΣ ΣΦΡΑΓΙΖΕΤΑΙ ΑΚΟΜΗ ΚΙ ΑΝ Η ΕΝΕΡΓΕΙΑ ΑΠΕΤΥΧΕ: το %transition τρέχει το ON-APPROVE hook (αυτό που ΕΦΑΡΜΟΖΕΙ πραγματικά την πρόταση) μέσα σε (ignore-errors …) και ΣΥΝΕΧΙΖΕΙ να γράψει status «approved» στο append-only ledger. Ο παράμετρος FAIL-MSG υπάρχει αλλά είναι (declare (ignorable …)) και δεν χρησιμοποιείται ΠΟΤΕ — αποδεικτικό ότι το μονοπάτι σφάλματος εγκαταλείφθηκε. Η θεσμική εγγραφή λέει «εγκρίθηκε» ενώ τίποτα δεν εφαρμόστηκε."
+   :severity :p0
+   :evidence "proposals.lisp:129-140"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "verify-consolidation-ledger είναι ΤΑΥΤΟΛΟΓΙΑ, όχι επαλήθευση: «independently REPLAY» σημαίνει ΞΑΝΑΤΡΕΧΕΙ την ΙΔΙΑ consolidate με τα ΙΔΙΑ ορίσματα και συγκρίνει base-hash/result-hash/ΠΛΗΘΟΣ βημάτων. Τα καταγεγραμμένα before/after hashes των βημάτων ΔΕΝ συγκρίνονται ποτέ. Ένα ledger με πλαστά step hashes (ίδιο πλήθος) περνά· και η «απόδειξη» εξαρτάται από τον ΙΔΙΟ κώδικα που παρήγαγε το αποτέλεσμα — κανένας ανεξάρτητος verifier δεν υπάρχει."
+   :severity :p1
+   :evidence "consolidation-proof.lisp:113-123"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "corpus-provenance ΠΑΡΑΚΑΜΠΤΕΙ τη «fail hard» πολιτική των canonical URIs: το %ensure-uris ΓΡΑΦΕΙ σιωπηλά default base-uri «https://stavropouloslaw.com/eli» στο global *canonical-config* ώστε «οι PROV-O generators να μη σφάλλουν ποτέ» — ακριβώς το αντίθετο του canonical-uris.lisp:58-63 («NO fallback defaults… MUST fail hard»). Ένα module παρουσίασης καθορίζει την ταυτότητα του Ιδρύματος."
+   :severity :p1
+   :evidence "corpus-provenance.lisp:26-33 vs canonical-uris.lisp:57-63"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "corpus-provenance %ts: ημερομηνία απούσα/κακοσχηματισμένη ⇒ ΣΙΩΠΗΛΗ αντικατάσταση με σταθερό 2025-01-01 μέσα σε PROV-O έγγραφο προέλευσης. Το τεκμήριο προέλευσης φέρει ΚΑΤΑΣΚΕΥΑΣΜΕΝΗ χρονοσφραγίδα που δεν διακρίνεται από αληθινή."
+   :severity :p1
+   :evidence "corpus-provenance.lisp:35-39"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "component-scan: file-hash τυλιγμένο σε ignore-errors ⇒ NIL, ΚΑΙ το stale-components θεωρεί ΡΗΤΑ «(null now) ⇒ ΟΧΙ stale». Άρα οποιοδήποτε I/O σφάλμα (permissions, EIO) πάνω σε αρχείο πηγής μετατρέπει την ανίχνευση απόκλισης hash σε σιωπηλό «καθαρό». Ο έλεγχος ακεραιότητας απενεργοποιείται από αποτυχία ανάγνωσης."
+   :severity :p1
+   :evidence "component-scan.lisp:26-28,305-316"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "component-scan freeze-components!: το manifest ταυτοτήτων γράφεται με (prin1 all s) — ΟΧΙ μέσω της ΜΙΑΣ έδρας εγγραφής (safe-read:data-to-string), ενώ ΔΙΑΒΑΖΕΤΑΙ από τη safe-read (+data-readtable+ που ΑΠΟΡΡΙΠΤΕΙ κάθε #-σύνταξη). Ένα specialized base-char string θα τυπωνόταν #A(...) και το manifest θα γινόταν μη αναγνώσιμο — ακριβώς η κλάση που η data-to-string υπάρχει για να εξαλείψει."
+   :severity :p2
+   :evidence "component-scan.lisp:139-149 vs safe-read.lisp:312-339"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "component-scan %scan-file-text: οι ΕΔΡΕΣ δηλώσεων (defpackage/defcontract/declare-capability!) ανιχνεύονται με REGEX πάνω στο κείμενο του αρχείου — ένα αναφερόμενο όνομα μέσα σε σχόλιο/string μετριέται ως έδρα. Η «ταυτότητα συστατικού» στηρίζεται σε λεξικογραφική εικασία, όχι σε ανάγνωση κώδικα."
+   :severity :p2
+   :evidence "component-scan.lisp:45-56"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "corpus-intelligence: το define-corpus-check τυλίγει ΚΑΘΕ σώμα ελέγχου σε handler-case ⇒ ΟΠΟΙΟΔΗΠΟΤΕ σφάλμα γίνεται finding :skipped, και το report-clean-p ΑΓΝΟΕΙ ρητά τα skips («advisories / skips do not count»). Άρα ένας ΣΠΑΣΜΕΝΟΣ έλεγχος παράγει «καθαρός κώδικας». Η αποτυχία επαλήθευσης γίνεται επιτυχία."
+   :severity :p1
+   :evidence "corpus-intelligence.lisp:75-93,175-177"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "paths.lisp with-temp-file: το όνομα προσωρινού αρχείου είναι «orch-<unix-timestamp>.tmp» σε κοινό :temp κατάλογο — ΠΡΟΒΛΕΨΙΜΟ (symlink/pre-creation attack) και, υπό ντετερμινιστικό χρόνο, ΤΑΥΤΟ σε κάθε εκτέλεση (σύγκρουση). Επιπλέον κληρονομεί το epoch bug του get-unix-timestamp."
+   :severity :p2
+   :evidence "paths.lisp:311-323"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "http-server: το +status-text+ δεν περιέχει 503 (ούτε 403/429), ενώ ο κώδικας εκπέμπει 503 στο overload — το reason phrase γίνεται (or … \"OK\") ⇒ αποστέλλεται «HTTP/1.1 503 OK». Το ίδιο για κάθε 403 της capability-api."
+   :severity :p2
+   :evidence "http-server.lisp:51-54,157,206-213"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "circuit-breaker: ο έλεγχος κατάστασης «(when (eq (cb-state breaker) :open) …)» γίνεται ΕΚΤΟΣ του κλειδώματος, αμέσως μετά το κλείσιμό του — TOCTOU: ταυτόχρονο άνοιγμα κυκλώματος δεν τηρείται. Επίσης οι προεπιλογές υπάρχουν σε ΤΡΕΙΣ θέσεις (defconstant +default-*+, defclass initform, make-circuit-breaker lambda list) και τα +default-*+ είναι ΝΕΚΡΑ."
+   :severity :p2
+   :evidence "circuit-breaker.lisp:23-33,52-71,112-129,211-218"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "memory fire-due-intentions: (ignore-errors (funcall fn …)) — μια ΣΠΑΣΜΕΝΗ συνθήκη πρόθεσης δεν διακρίνεται από «ψευδής». Το docstring δηλώνει τιμιότητα μόνο για ΑΓΝΩΣΤΗ συνθήκη· η σφάλλουσα καταπίνεται σιωπηλά."
+   :severity :p2
+   :evidence "memory.lisp:258-272"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "memory *session*: ταυτότητα συνεδρίας = (format nil \"s~36R\" (get-universal-time)) στο LOAD — δύο διεργασίες που ξεκινούν το ίδιο δευτερόλεπτο μοιράζονται ταυτότητα συνεδρίας, και σε ντετερμινιστικό build είναι σταθερή."
+   :severity :p2
+   :evidence "memory.lisp:48-50"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "consolidation-bridge %extract-ops/%op-applicable: (and f …) πάνω σε find-symbol — αν το πακέτο του extractor δεν είναι φορτωμένο, το law->record επιστρέφει NIL, δηλαδή «ο νόμος ΔΕΝ τροποποιεί αυτόν τον κώδικα». Απούσα εξάρτηση γίνεται σιωπηλά «καμία τροποποίηση» στον αυτόνομο βρόχο ενοποίησης."
+   :severity :p1
+   :evidence "consolidation-bridge.lisp:258-270,272-305"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "corpus-diff/corpus-search: τοπικά jstr JSON escapers που ΔΕΝ κωδικοποιούν control chars < 0x20 (σε αντίθεση με το %j του proof-carrying) — ένα άρθρο με U+0001 παράγει ΑΚΥΡΟ JSON στο δημόσιο endpoint."
+   :severity :p2
+   :evidence "corpus-diff.lisp:36-44 · corpus-search.lisp:70-78 vs proof-carrying.lisp:88-99"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "pdf-authority load-poppler-libraries: το *poppler-load-attempted* latch δεν καθαρίζεται ΠΟΤΕ — μία παροδική αποτυχία φόρτωσης παγιδεύει τη διεργασία μόνιμα σε «poppler μη διαθέσιμη» με μόνο log:warn, ενώ κάθε PDF λειτουργία μετά σφάλλει."
+   :severity :p2
+   :evidence "pdf-authority.lisp:139-174"
+   :is-it-in-the-known-defect-list :unknown)
+  (:what "Το ΜΟΤΙΒΟ «(apply (find-symbol \"X\" :orchestrator.consolidation) args)» επαναλαμβάνεται αυτούσιο σε ≥2 αρχεία, ρητά δηλωμένο ως «the same defensive pattern the other intelligence modules use» — αντιγραμμένο boilerplate που μετατρέπει απούσα εξάρτηση σε undefined-function αντί για δηλωμένη άγνοια."
+   :severity :p2
+   :evidence "anomaly-detection.lisp:24-31 · ast-gate.lisp:40-47"
    :is-it-in-the-known-defect-list :unknown))
 
  :hidden-execution-paths
@@ -312,7 +619,35 @@
   (:path "cognition: register-classifier / *advisor* — αυθαίρετα κλεισίματα σε global λίστα"
    :trigger "Οποιοδήποτε φορτωμένο module"
    :why-hidden "Τα κλεισίματα τρέχουν μέσα στο decompose υπό ignore-errors — κώδικας που εκτελείται στο trusted μονοπάτι χωρίς μητρώο/έλεγχο."
-   :evidence "cognition.lisp:69-89"))
+   :evidence "cognition.lisp:69-89")
+  (:path "anomaly-detection / ast-gate → (apply (find-symbol \"…\" :orchestrator.consolidation) args)"
+   :trigger "Κάθε κλήση των %legal-document-provisions/%provision-text/…"
+   :why-hidden "Τα ονόματα δένονται ΩΣ STRINGS σε macrolet-παραγόμενες συναρτήσεις· καμία στατική εξάρτηση, καμία ένδειξη αν το πακέτο δεν φορτώθηκε."
+   :evidence "anomaly-detection.lisp:24-31 · ast-gate.lisp:40-47")
+  (:path "amendment-extractor %ngz → find-symbol NORMALIZE-GREEK σε :orchestrator.legal-id"
+   :trigger "Κάθε %all-quoted-spans/%segment-starts"
+   :why-hidden "Δυναμική επίλυση χωρίς έλεγχο· η ΜΙΑ έδρα δρομολόγησης εισάγεται με string lookup."
+   :evidence "amendment-extractor.lisp:189-199")
+  (:path "pdf-authority → uiop:run-program (\"which\"…, \"pdftoppm\"…, \"tesseract\"…)"
+   :trigger "extract-text-any όταν το text layer έχει < 600 χαρακτήρες"
+   :why-hidden "Αυτόματη κλιμάκωση σε ΤΡΕΙΣ εξωτερικές διεργασίες + εγγραφή σε προβλέψιμο /tmp path, ενεργοποιούμενη από ένα κατώφλι μήκους κειμένου."
+   :evidence "pdf-authority.lisp:1386-1439")
+  (:path "pdf-authority: lazy CFFI load-poppler-libraries με *poppler-load-attempted* latch"
+   :trigger "Πρώτη κλήση οποιασδήποτε PDF λειτουργίας"
+   :why-hidden "Μία αποτυχία φόρτωσης ΚΛΕΙΔΩΝΕΙ μόνιμα τη διεργασία σε «μη διαθέσιμο» (το latch δεν καθαρίζεται) — παροδικό σφάλμα γίνεται μόνιμη υποβάθμιση, με μόνο log:warn."
+   :evidence "pdf-authority.lisp:139-174")
+  (:path "extract-pdf-text → extract-text-fallback (regex «PDF parser»)"
+   :trigger "prefer-poppler NIL ή μη φορτωμένη poppler"
+   :why-hidden "Δεύτερη, κρυφή διαδρομή ανάγνωσης PDF που παράγει αποσπασματικό κείμενο με regex πάνω σε latin-1 bytes και μόνο (warn) — ενώ η δηλωμένη ΜΙΑ έδρα είναι η extract-text-any."
+   :evidence "pdf-authority.lisp:904-964 vs 1427-1439")
+  (:path "instrument-kind-entries / scope-dimension-entries: ΜΟΝΙΜΟ closure cache"
+   :trigger "Πρώτη ανάγνωση των μητρώων deployment/data/*.sexp"
+   :why-hidden "(let ((cache nil)) …) — το μητρώο διαβάζεται ΜΙΑ φορά ανά διεργασία· αλλαγή του αρχείου δεν γίνεται ποτέ ορατή, χωρίς invalidation ή δήλωση."
+   :evidence "version-graph.lisp:1497-1531,1557-1591")
+  (:path "*scope-assumptions* — δυναμική μεταβλητή που μεταφέρει «υποθέσεις» έξω από την επιστροφή"
+   :trigger "version-at με :scope-mode :conservative και scope-covers-p = :unknown"
+   :why-hidden "Πλευρικό κανάλι: ένα pushnew μέσα σε φιλτράρισμα καθορίζει αν το αποτέλεσμα θα σημανθεί analytical-not-authoritative· η σήμανση εξαρτάται από τη ΣΕΙΡΑ αποτίμησης των κατηγορημάτων."
+   :evidence "version-graph.lisp:193-195,1020-1028,2137-2162"))
 
  :duplicate-seats
  ((:concept "«χρόνος για δημοσιευμένο artifact»"
@@ -327,7 +662,30 @@
   (:concept "ανάγνωση sexp δεδομένων"
    :seats ("safe-read.lisp:275-308 (η δηλωμένη ΜΙΑ έδρα)"
            "journal.lisp:265-292 (%load-lines — δικός του tolerant read loop με *read-eval* nil, ΧΩΡΙΣ #-deny/caps/%data-only-p· ρητά εξαιρεμένος στο safe-read.lisp:32)"
-           "journal.lisp:352-361 (%validate-serializable — read-from-string, ΤΡΙΤΟΣ reader)")))
+           "journal.lisp:352-361 (%validate-serializable — read-from-string, ΤΡΙΤΟΣ reader)"))
+  (:concept "canonical sexp της ΑΞΙΑΣ (value-canonical)"
+   :seats ("journal.lisp:61-86 (canon-sexp — δηλωμένη ΜΙΑ έδρα)"
+           "version-graph.lisp:471-497 (%canon-sexp — ΠΑΝΟΜΟΙΟΤΥΠΟ αντίγραφο, ενώ το journal δηλώνει ότι το version-graph «deleg.»)"))
+  (:concept "ταυτότητα εγγραφής (record identity hashing)"
+   :seats ("version-graph.lisp:288-300 (%version-hash-2 → canonical-representation:canonical-hash / canonical JSON)"
+           "version-graph.lisp:1727-1729 (condition id → journal:sha256-hex ∘ %canon-sexp / canonical sexp)"
+           "version-graph.lisp:2096-2104 (%regime-hash — canonical sexp)"
+           "adoption-decision.lisp:90-94 (prin1-to-string + ironclad απευθείας — ΤΡΙΤΟ σχήμα)"))
+  (:concept "«η ΜΙΑ ανάγνωση PDF εγγράφου»"
+   :seats ("pdf-authority.lisp:1427-1439 (extract-text-any — δηλωμένη η ΜΙΑ)"
+           "pdf-authority.lisp:944-964 (extract-pdf-text — δεύτερη ενιαία είσοδος με fallback)"
+           "pdf-authority.lisp:381-446 / 508-537 / 658-697 (τρεις παράλληλες πλήρεις διαδρομές εξαγωγής, καθεμία με δικό της άνοιγμα εγγράφου)"))
+  (:concept "εξερχόμενη HTTP λήψη"
+   :seats ("document-fetch.lisp:258-291 (%fetch-url-to-file — SSRF φρουρός ανά hop, :redirect nil)"
+           "archive-authority.lisp:70-94 (drakma:http-request :redirect 10 — ΚΑΝΕΝΑΣ φρουρός)"))
+  (:concept "generic content hash"
+   :seats ("hash-authority.lisp:11-46 (compute-hash — δηλωμένη έδρα γενικού hash)"
+           "journal.lisp:88-92 (sha256-hex — δεύτερη γενική έδρα, ironclad απευθείας)"
+           "adoption-decision.lisp:91-94 και 128-131 (ironclad απευθείας, τρίτη)"
+           "canonical-representation.lisp:338-342 (generate-manifest-id — ironclad απευθείας, ΕΝΩ το ίδιο αρχείο αλλού χρησιμοποιεί hash:compute-hash)"))
+  (:concept "«ώρα δημιουργίας/υποβολής» μέσα στο ίδιο αρχείο"
+   :seats ("archive-authority.lisp:87 ((get-universal-time))"
+           "archive-authority.lisp:131-132 (orchestrator.time:now :source :system)")))
 
  :unknowns
  ("Ποιος θέτει το *advisor* και με ποιο μοντέλο — δεν βρίσκεται στα αρχεία που διάβασα."
@@ -335,13 +693,13 @@
   "Αν το fetch-command προέρχεται από αρχείο ρύθμισης ελεγχόμενο από τον operator ή από corpus δεδομένα.")
 
  :remaining
- ("adoption-decision.lisp" "ai-citation-strategy.lisp" "ai-corpus-dump.lisp" "ai-ingest-manifest.lisp"
-  "akoma-ntoso-emitter.lisp" "amendment-extractor.lisp" "anomaly-detection.lisp" "archive-authority.lisp"
-  "asn1-der.lisp" "ast-gate.lisp" "authority-evidence-replay.lisp" "authority-proof-bundle.lisp"
-  "autonomy.lisp" "blockchain-authority.lisp" "canonical-representation.lisp" "canonical-uris.lisp"
-  "capability-api.lisp" "capability-registry.lisp" "circuit-breaker.lisp" "citation-authority.lisp"
-  "component-scan.lisp" "components.lisp" "consolidation-bridge.lisp" "consolidation-engine.lisp"
-  "consolidation-feed.lisp" "consolidation-proof.lisp" "contracts.lisp" "corpus-diff.lisp"
+ ("ai-citation-strategy.lisp" "ai-corpus-dump.lisp" "ai-ingest-manifest.lisp"
+  "akoma-ntoso-emitter.lisp"
+  "asn1-der.lisp" "authority-evidence-replay.lisp"
+  "blockchain-authority.lisp"
+  "circuit-breaker.lisp" "citation-authority.lisp"
+  "component-scan.lisp" "consolidation-bridge.lisp" "consolidation-engine.lisp"
+  "consolidation-feed.lisp" "consolidation-proof.lisp" "corpus-diff.lisp"
   "corpus-eu-links.lisp" "corpus-fingerprint.lisp" "corpus-intelligence.lisp" "corpus-provenance.lisp"
   "corpus-search.lisp" "corpus-service.lisp" "corpus-sparql.lisp" "deliberation.lisp"
   "embeddings-authority.lisp" "eu-interop-layer.lisp" "execution-trace.lisp" "fluid-induction.lisp"
@@ -357,11 +715,11 @@
   "legal-reasoning-bridge.lisp" "legal-references.lisp" "legal-strategy.lisp" "legal-subsumption.lisp"
   "legal-temporal.lisp" "legislation-ingestion.lisp" "lexicon-neurolingo.lisp" "logging.lisp"
   "mcp-server.lisp" "memory.lisp" "narrative-provenance.lisp" "orthography-lexicon.lisp" "paths.lisp"
-  "pdf-authority.lisp" "proposals.lisp" "protocols.lisp" "provenance-link.lisp" "rdfs-inference.lisp"
+  "proposals.lisp" "protocols.lisp" "provenance-link.lisp" "rdfs-inference.lisp"
   "reasoning-authority.lisp" "review-queue.lisp" "review-service.lisp" "self-history.lisp" "self-model.lisp"
   "semantic-authority.lisp" "semantic-versioning-system.lisp" "shacl-validator.lisp"
   "signed-embedding-manifest.lisp" "source-profile.lisp" "sparql-endpoint.lisp" "static-site.lisp"
   "text-canonicalizer.lisp" "timestamp-authority.lisp" "trace-core.lisp" "turtle-parser.lisp"
   "typographic-classifier.lisp" "validate-ast.lisp" "validate-layout-graph.lisp"
-  "validate-logical-blocks.lisp" "validation-authority.lisp" "version-graph.lisp" "what-if.lisp"
+  "validate-logical-blocks.lisp" "validation-authority.lisp" "what-if.lisp"
   "x509-authority.lisp"))

@@ -85,6 +85,68 @@
   :value "Το σύστημα ΞΕΡΕΙ και ΕΛΕΓΧΕΙ αυτή την κλάση. Το κενό είναι στη
           ΔΙΑΤΥΠΩΣΗ του δημόσιου ισχυρισμού, όχι στην επίγνωση.")
 
+ ;; ── ΕΥΡΗΜΑ 1A-03 (εντοπίστηκε από τη ΔΕΥΤΕΡΗ οικογένεια μέτρησης) ────────
+ (:id "1A-03"
+  :severity :p1-PROVISIONAL
+  :status :MEASURED-WITH-FULL-TRACE
+  :class :trusted-path-shell-seat
+  :how-found "Ο sexp-tokenizer (2η οικογένεια, ΟΧΙ regex) εντόπισε os-exec κλήση
+              που η regex σάρωση ΔΕΝ ανέδειξε: source/document-fetch.lisp:99.
+              Η ΔΙΑΦΩΝΙΑ των δύο οικογενειών είναι που το ανέδειξε — ακριβώς ο
+              λόγος ύπαρξης της δεύτερης (κανόνας R5)."
+  :claim "README.md:19 «Zero shell-script orchestration in the trusted path» ·
+          README.md:20 «The only subprocess is the Lisp runtime itself»"
+  :reality "source/document-fetch.lisp:92-106 — run-fetch-command εκτελεί
+            ΑΥΘΑΙΡΕΤΟ COMMAND string μέσω /bin/sh -c, με sb-ext:posix-environ
+            και FETCH_TIMEOUT στο περιβάλλον."
+  ;; Το ΠΛΗΡΕΣ συμβόλαιο κατά R6 — ρόλος/authority/inputs/outputs/failure:
+  :role "network-edge fetcher ΥΠΟΧΩΡΗΣΗΣ: το ΚΥΡΙΟ μονοπάτι λήψης είναι καθαρή
+         Lisp (drakma, fetch-pdf-sources — systems/orchestrator-cli/main.lisp:961-970)·
+         το shell καλείται ΜΟΝΟ όταν το ΦΕΚ δεν παρσάρεται και υπάρχει ρητό
+         source.fetch_cmd στο config (main.lisp docstring :965)"
+  :authority "Ο COMMAND ΔΕΝ έρχεται από επιτιθέμενο ή δεδομένα: έρχεται από το
+              config του corpus (source.fetch_cmd), δηλαδή από τον ΧΕΙΡΙΣΤΗ.
+              Χωρίς fetch_cmd ⇒ (values nil :no-command), καμία εκτέλεση
+              (source/document-fetch.lisp:315-316)"
+  :inputs "config string source.fetch_cmd + {{out}} substitution (%substitute-out :317)"
+  :outputs "μόνο exit-code + stderr· το προϊόν στο δίσκο ΕΠΙΚΥΡΩΝΕΤΑΙ με %PDF
+            magic πριν από κάθε πρόσληψη — anti-bot HTML ΑΠΟΡΡΙΠΤΕΤΑΙ
+            (fetch-pdf docstring :308-314)"
+  :failure-semantics "«never throws»: handler-case ⇒ (values -1 σφάλμα)
+                      (source/document-fetch.lisp:97 και :106)· ρητά statuses :ok /
+                      (:fetch-failed code stderr) / :no-file-produced / :not-a-pdf"
+  :system-awareness "Η ΙΔΙΑ η απογραφή του corpus το ΞΕΡΕΙ ονομαστικά: το
+                     run-fetch-command είναι στη λίστα της ενότητας G «OS PROCESS
+                     EXECUTION (shell / external binaries)»
+                     (deployment/verify/census-execution-constructs.sh:43)"
+  :verdict-provisional "Σχεδιασμένη, οριοθετημένη, επικυρωμένη έδρα υποχώρησης —
+                        ΟΧΙ κερκόπορτα. Αλλά ο δημόσιος ισχυρισμός του README
+                        είναι ΑΠΟΛΥΤΟΣ και αυτή η έδρα τον ΔΙΑΨΕΥΔΕΙ κατά γράμμα:
+                        /bin/sh στο source/. Ίδια κλάση με το 1A-01, ισχυρότερο
+                        τεκμήριο. Τελική κρίση: διαδρομές Φ1A-L1/L7."
+  :upgrade-condition "Φ1A-L1 (έδρα)· Φ1A-L7 (GATE-4 κάλυψη)· Φ1A-L2 (καλούντες CLI)")
+
+ ;; ── ΔΙΑΣΤΑΥΡΩΣΗ ΔΥΟ ΟΙΚΟΓΕΝΕΙΩΝ (κανόνας R5 σε εφαρμογή) ─────────────────
+ :two-family-crosscheck
+ (:family-1 "regex σάρωση (mechanical-scan.py) — γραμμή προς γραμμή, με αποκλεισμό σχολίων"
+  :family-2 "sexp tokenizer (sexp-census.py) — tokens Common Lisp, κλήση = κεφαλή λίστας·
+             συμβολοσειρές/σχόλια/#\χ ΔΕΝ μετρούν"
+  :os-exec-agreement ("source/pdf-authority.lisp:1409" "source/pdf-authority.lisp:1419"
+                      "docker/entrypoint.lisp:71" "tests/* (9 θέσεις)")
+  :family-2-only ("source/document-fetch.lisp:99 — ΤΟ ΕΥΡΗΜΑ 1A-03"
+                  "source/pdf-authority.lisp:1389,1391,1393 — τα τρία probes του ocr-available-p")
+  :counts-comparison
+   ((:os-exec (:regex 13) (:tokenizer 17))
+    (:silent-ignore (:regex 293) (:tokenizer 285)
+     :why-differ "ο tokenizer δεν μετρά εμφανίσεις σε σχόλια/συμβολοσειρές")
+    (:eval (:regex 174) (:tokenizer 2)
+     :why-differ "το regex μετρούσε ΚΑΘΕ λέξη eval (μαζί με ονόματα όπως
+                  read-eval, eval-when σε κείμενο)· ο tokenizer μετρά ΜΟΝΟ
+                  κλήσεις (eval …) σε κεφαλή λίστας — 2 πραγματικές"))
+  :moral "Η regex οικογένεια ΥΠΕΡΜΕΤΡΟΥΣΕ το eval κατά 87× και ΥΠΟΜΕΤΡΟΥΣΕ το
+          os-exec κατά 4 θέσεις — μεταξύ των οποίων η σοβαρότερη. Καμία μόνη
+          οικογένεια δεν αρκεί.")
+
  ;; ── ΜΕΤΡΗΣΕΙΣ ΠΡΟΣ ΣΗΜΑΣΙΟΛΟΓΙΚΗ ΑΞΙΟΛΟΓΗΣΗ (ΟΧΙ ΑΚΟΜΗ ΕΥΡΗΜΑΤΑ) ────────
  ;; ΚΑΝΟΝΑΣ: ωμός αριθμός ΔΕΝ είναι ελάττωμα. Κάθε έδρα χρειάζεται ανάγνωση
  ;; πριν χαρακτηριστεί. Καταγράφονται με άγκυρες στο mechanical-map.sexp.

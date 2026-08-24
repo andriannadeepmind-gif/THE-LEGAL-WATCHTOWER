@@ -1,7 +1,7 @@
 (:lawmax-phase1a-cluster/1
  :cluster "authority-v2"
  :status :partial
- :files-read 11
+ :files-read 40
  :frozen-mount "/frozen/ro/authority-v2  (commit e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03)"
  :file-inventory-note
  "find -type f κάτω από /frozen/ro/authority-v2 δίνει 61 regular files (όχι 63 όπως
@@ -103,6 +103,79 @@
    :materiality ":split-view-resistance-claim nil — ρητή άρνηση ισχυρισμού."
    :evidence "authority-v2/log/witness-policy.sexp:L19-28 · L47-59 · L62-69 · L72-78")
 
+  (:name "Candidate capture σε ιδιωτικό quarantine (TOCTOU-ανθεκτική, openat2)"
+   :presence :present
+   :domain "Ανάγνωση εχθρικού candidates/ και παραγωγή αμετάβλητου snapshot + δύο Merkle ριζών"
+   :assumptions "Linux ≥ 5.6 (openat2)· απουσία ⇒ ΑΡΝΗΣΗ openat2-unavailable, ποτέ fallback
+                 (capture.py:L152-154)· τα golden vectors στο deployment/verify/vectors/merkle/
+                 vectors.json είναι αυθεντικά (ΔΕΝ είναι pinned — βλ. defect)"
+   :guarantees "ΦΑΣΗ Α αντιγράφει ΧΩΡΙΣ κανένα hash· ΦΑΣΗ Β μετράει ΑΠΟΚΛΕΙΣΤΙΚΑ από το
+                quarantine· διασταύρωση (path,size)+total_bytes· δεύτερη πλήρης μέτρηση ΜΕΣΑ
+                στην capture() ⇒ fixed-point-violation· σταθεροποίηση ΟΛΟΥ ΤΟΥ ΣΥΝΟΛΟΥ
+                (set-mutated-during-capture) ΚΑΙ ανά αρχείο (mutated-during-capture)·
+                capability τύποι σφραγισμένοι και μη κατασκευάσιμοι (_MINT)· canonical profile
+                pinned by sha256"
+   :failure-semantics "CaptureRefused σε ΚΑΘΕ ανωμαλία· κάθε OSError μεταφράζεται σε ελεγχόμενη
+                       άρνηση (_ERRNO_REASON)· μερικό quarantine καθαρίζεται και η αποτυχία
+                       καθαρισμού είναι ΟΡΑΤΗ (cleanup-incomplete)"
+   :operating-model "ΕΚΤΕΛΕΣΙΜΟΣ ΚΩΔΙΚΑΣ (1017 γραμμές Python) — αλλά ταξινομημένος ως `helper`
+                     στην απογραφή, δηλαδή ΔΕΝ τρέχει από τον runner και ΔΕΝ είναι απόδειξη·
+                     ρητά ΟΧΙ production writer (CAPTURE-PROTOCOL :out-of-scope L169-174)"
+   :materiality "Είναι το ΜΟΝΟ ουσιαστικά εκτελέσιμο μέρος της συστάδας που κάνει authority-
+                 σχετική δουλειά. Η παραγωγική του έδρα δηλώνεται ως μελλοντικό εξαγόμενο artifact."
+   :evidence "authority-v2/capture/capture.py:L143-160 (openat2) · L223-288 (open_anchor) ·
+              L317-360 (_Sealed capability types) · L626-657 (pinned profile) ·
+              L673-740 (ΦΑΣΗ Α) · L743-785 (σταθεροποίηση συνόλου) · L792-888 (ΦΑΣΗ Β) ·
+              L895-991 (capture + διασταύρωση + fixed point)")
+
+  (:name "Μετα-απόδειξη: μάρτυρας μεταλλάξεων της capture"
+   :presence :present
+   :domain "Απόδειξη ότι το αντιπαλικό harness ΟΝΤΩΣ ελέγχει τις ιδιότητες που ισχυρίζεται"
+   :assumptions "κάθε μετάλλαξη πρέπει να εφαρμοστεί ΑΚΡΙΒΩΣ μία φορά (src.count(old)==1),
+                 αλλιώς FAIL ΚΕΝΗ ΜΕΤΑΛΛΑΞΗ"
+   :guarantees "21 μεταλλάξεις· 18 ΠΡΕΠΕΙ να σκοτωθούν· 3 δηλώνονται ΜΗ ΠΑΡΑΤΗΡΗΣΙΜΕΣ και η
+                δήλωση είναι ΔΙΑΨΕΥΣΙΜΗ: αν σκοτωθούν ⇒ FAIL (L253-262)· θετικός μάρτυρας:
+                ο αμετάλλακτος κώδικας ΠΡΕΠΕΙ να περνά"
+   :failure-semantics "exit 1 σε οποιονδήποτε ανεξήγητο επιζώντα ή ψευδή δήλωση"
+   :operating-model "Χτίζει πλήρες μίνι-δέντρο σε tmp με μεταλλαγμένη capture.py και ΑΥΤΟΥΣΙΟ
+                     harness· symlink στα ΠΡΑΓΜΑΤΙΚΑ deployment/ golden vectors (L212)"
+   :materiality "ΕΠΑΛΗΘΕΥΤΗΚΕ ΑΡΙΘΜΗΤΙΚΑ: 21 entries − 3 NON_OBSERVABLE = 18 φονεύσιμες,
+                 + 1 θετικός μάρτυρας = 19 assertions ⇒ η δήλωση «19/0, 18/18» του matrix L119
+                 ΕΙΝΑΙ ΑΚΡΙΒΗΣ."
+   :evidence "authority-v2/proofs/capture-mutation-witness.py:L50-162 (21 MUTANTS) ·
+              L174-186 (3 NON_OBSERVABLE) · L190-197 (COMBOS) · L225-231 (θετικός μάρτυρας) ·
+              L253-267 (κριτήριο) · LEVEL7-COMPLETION-MATRIX.sexp:L119")
+
+  (:name "Μηχανικές πύλες συνέπειας του matrix και του proof-manifest"
+   :presence :present
+   :domain "Συντακτική/αριθμητική συνέπεια των ΔΥΟ δηλωτικών αρχείων"
+   :assumptions "τα αρχεία διαβάζονται ως ΚΕΙΜΕΝΟ με regex — καμία ανάγνωση s-expression"
+   :guarantees "κλειστό λεξιλόγιο status· υποχρεωτικά πεδία· :proved απαιτεί μη-NOT-EXECUTED
+                actual-result ΚΑΙ μη-κενά proof-objects· gate ≠ :passed όσο φέρουσα ≠ :proved·
+                summary υπολογισμένο ≠ δηλωμένο ⇒ ΑΠΟΡΡΙΨΗ"
+   :failure-semantics "exit 1 με απαρίθμηση ασυνεπειών· κενός πίνακας ⇒ fail-closed"
+   :operating-model "Δύο verifiers + 12 αρνητικά fixtures που τους επιτίθενται σε αντίγραφα tmp"
+   :materiality "ΕΠΑΛΗΘΕΥΤΗΚΕ ΑΡΙΘΜΗΤΙΚΑ: matrix 13 γραμμές (3 inp + 7 eb + 3 ns) ταιριάζει με
+                 το δηλωμένο summary· proof-manifest 17 θεωρήματα (T1-T9, P1-P2, S1-S2, C1,
+                 R1-R3) ταιριάζει με :total 17. Οι δύο δηλώσεις είναι ΑΡΙΘΜΗΤΙΚΑ ΣΩΣΤΕΣ."
+   :evidence "authority-v2/proofs/verify-completion-matrix.py:L21-24,L58-104 ·
+              authority-v2/proofs/verify-proof-manifest.py:L17,L49-78 ·
+              authority-v2/proofs/gate-negative-fixtures.py:L71-121 (12 cases)")
+
+  (:name "Απογραφή αποδείξεων με αναδρομική σάρωση και ΕΝΑΝ κατάλογο εισόδων"
+   :presence :present
+   :domain "Αδυνατότητα 'ξεχασμένης απόδειξης' κάτω από authority-v2/"
+   :assumptions "ΤΟ ΚΡΙΣΙΜΟ: ο κώδικας αναγνωρίζεται ΑΠΟ ΤΗΝ ΚΑΤΑΛΗΞΗ .py/.sh/.lisp (βλ. defect)"
+   :guarantees "κανένα symlink κάτω από authority-v2/· proofs/ ΕΠΙΠΕΔΟΣ· κάθε αρχείο στο proofs/
+                εγγεγραμμένο· καμία νεκρή εγγραφή· καμία ΒΑΠΤΙΣΗ απόδειξης ως tool/helper·
+                κλειστό σχήμα τρόπων· απαγόρευση διπλότυπης εγγραφής"
+   :failure-semantics "exit 1 σε απόκλιση προς οποιαδήποτε κατεύθυνση· BLOCKED ⇒ exit 3 (ΠΟΤΕ 0)·
+                       AUTHORITY_V2_REQUIRE_ALL=1 ⇒ BLOCKED γίνεται ΣΦΑΛΜΑ"
+   :operating-model "bash· find -type f· σύγκριση με PROOF-CENSUS.txt· 15 αποδείξεις + 4 tools
+                     + 16 helpers = 35 καταχωρήσεις"
+   :materiality "Είναι η απάντηση σε ρητή ετυμηγορία δημιουργού για glob-based census."
+   :evidence "authority-v2/run-proofs.sh:L37-126 · authority-v2/PROOF-CENSUS.txt:L39-84")
+
   (:name "TUF-class roles model (5 ρόλοι, 1-of-1 offline root)"
    :presence :spec-only
    :domain "Ιεραρχία κλειδιών/ρόλων και υποχρεωτικές άμυνες"
@@ -178,11 +251,233 @@
           docker/suite-census.txt). Δεν είναι επαληθεύσιμα από τη συστάδα authority-v2 μόνη."
    :severity :p2
    :evidence "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L110-112 · L239-243"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "ΑΣΥΜΜΕΤΡΙΑ PINNING ΣΤΟΝ ΙΔΙΟ ΕΛΕΓΧΟ: το canonical profile ελέγχεται απέναντι σε
+          ΚΑΡΦΩΜΕΝΟ sha256 (κλείσιμο ρητού P1 του δημιουργού «αυθαίρετο pathname ΧΩΡΙΣ pinned
+          digest ⇒ άλλο profile με σωστό id γίνεται δεκτό»), ΑΛΛΑ τα golden Merkle vectors —
+          η ΜΟΝΗ εξωτερική αναφορά της verify_merkle_seat() — διαβάζονται με σκέτο open()
+          από παράμετρο pathname, ΧΩΡΙΣ pinned digest, ΧΩΡΙΣ anchor, ΧΩΡΙΣ O_NOFOLLOW.
+          Η verify_merkle_seat(vectors_path=…) δέχεται ΟΠΟΙΟΔΗΠΟΤΕ αρχείο. Το αντιπαλικό
+          harness ΔΕΝ έχει σενάριο για αυτό: το capture-adversarial-test.py δοκιμάζει την
+          ΤΑΥΤΟΣΗΜΗ επίθεση για το profile (L357-364) και ΚΑΜΙΑ για τα vectors."
+   :severity :p1
+   :evidence "authority-v2/capture/capture.py:L74-75 (GOLDEN_VECTORS από pathname) ·
+              L248,L256-261 (open() χωρίς digest) · L80-81,L648-656 (το profile ΕΙΝΑΙ pinned) ·
+              authority-v2/proofs/capture-adversarial-test.py:L357-364 (η επίθεση δοκιμάζεται
+              ΜΟΝΟ για το profile)"
+   :is-it-in-the-known-defect-list :no)
+
+  (:what "Ο ισχυρισμός «Καμία εξάρτηση από όνομα ή bit εκτέλεσης» της απογραφής ΕΙΝΑΙ ΨΕΥΔΗΣ
+          στον ίδιο τον κώδικα που τον διατυπώνει: η ταξινόμηση κώδικα ΕΚΤΟΣ του proofs/
+          γίνεται με `case $f in *.py|*.sh|*.lisp)` — δηλαδή ΑΚΡΙΒΩΣ με ευρετικό ΟΝΟΜΑΤΟΣ
+          (κατάληξη). Αρχείο χωρίς κατάληξη (π.χ. authority-v2/other/forgotten-proof), ή με
+          .pl/.rb/.js/.bash/.mjs, ΔΕΝ ταξινομείται καθόλου και διαφεύγει σιωπηλά. Το
+          proof-census-adversarial-test.py φυτεύει ΜΟΝΟ .py/.lisp, άρα δεν πιάνει την κλάση."
+   :severity :p1
+   :evidence "authority-v2/run-proofs.sh:L48 (ο ισχυρισμός) · L43-47 (η δήλωση «ΚΑΘΕ αρχείο
+              κώδικα») · L71 (η υλοποίηση: *.py|*.sh|*.lisp) ·
+              authority-v2/PROOF-CENSUS.txt:L34-36 (ο ίδιος ισχυρισμός)"
+   :is-it-in-the-known-defect-list :no)
+
+  (:what "Οι δύο «πύλες τιμιότητας» (verify-completion-matrix.py, verify-proof-manifest.py)
+          επαληθεύουν ΜΟΝΟ ΣΥΝΤΑΚΤΙΚΗ ΑΥΤΟ-ΣΥΝΕΠΕΙΑ ΤΟΥ ΚΕΙΜΕΝΟΥ. Το :actual-result είναι
+          ελεύθερο κείμενο: ο μόνος έλεγχος είναι ότι δεν περιέχει τη συμβολοσειρά
+          'NOT-EXECUTED'. Καμία γραμμή δεν συνδέεται με artifact, log, hash ή εκτέλεση. Το
+          :proof-artifact ελέγχεται ως ΥΠΑΡΞΗ ΤΗΣ ΛΕΞΗΣ μέσα στο body, όχι ως αρχείο που
+          υπάρχει. Ούτε το :implementation ελέγχεται ότι δείχνει σε υπαρκτά αρχεία. Άρα ο
+          ισχυρισμός «αδύνατη η χειροκίνητη βαθμολογία» ισχύει ΜΟΝΟ για τα αριθμητικά
+          αθροίσματα, ΟΧΙ για τα αποτελέσματα εκτέλεσης."
+   :severity :p1
+   :evidence "authority-v2/proofs/verify-completion-matrix.py:L68-76 (μόνο 'NOT-EXECUTED' in
+              actual) · L11-12 (ο ισχυρισμός) ·
+              authority-v2/proofs/verify-proof-manifest.py:L54-56 (':proof-artifact' not in
+              body — substring) · L57-59 (ο έλεγχος prover ΠΑΡΑΚΑΜΠΤΕΤΑΙ για provers εκτός
+              της λίστας :provers, π.χ. 'KaRaMeL/Goose', 'byte comparison')"
+   :is-it-in-the-known-defect-list :no)
+
+  (:what "Το λεξιλόγιο απορρίψεων της CAPTURE-PROTOCOL.sexp ΔΕΝ συμφωνεί με τον κώδικα και
+          κανένα gate δεν το ελέγχει: το πρωτόκολλο δηλώνει 25 :rejection-reasons· η capture.py
+          παράγει 44 διακριτούς λόγους, από τους οποίους 21 ΔΕΝ είναι δηλωμένοι (anchor-stale,
+          capability-forgery, capability-immutable, canonical-profile-unpinned, cleanup-incomplete,
+          set-mutated-during-capture, limit-exceeded, os-error, quarantine-no-space κ.ά.), ενώ
+          2 δηλωμένοι ΔΕΝ παράγονται ΠΟΤΕ: :symlink-present και :declared-root-mismatch. Το
+          :symlink-present είναι η επικεφαλής άρνηση του βήματος 1 του πρωτοκόλλου — symlink
+          μέσα στο candidate εμφανίζεται στην πράξη ως escapes-root (ELOOP)."
+   :severity :p2
+   :evidence "authority-v2/capture/CAPTURE-PROTOCOL.sexp:L64-89 (25 δηλωμένοι· L65
+              :symlink-present· L72 :declared-root-mismatch) ·
+              authority-v2/capture/capture.py:L155-156 (symlink ⇒ escapes-root) ·
+              L111-118,L121-131 (μη δηλωμένες κλάσεις) · L317-360 (capability-*)"
+   :is-it-in-the-known-defect-list :no)
+
+  (:what "Το capture/canonical-profile.json δείχνει σε ΑΝΥΠΑΡΚΤΟ μονοπάτι για το διαφορικό
+          test: λέει 'authority-v2/tests/capture-seat-differential-test.sh' ενώ το αρχείο ζει
+          στο authority-v2/proofs/. Επειδή το profile είναι PINNED BY SHA256, η διόρθωση του
+          σχολίου απαιτεί ΚΑΙ αλλαγή του καρφωμένου digest στην capture.py."
+   :severity :p2
+   :evidence "authority-v2/capture/canonical-profile.json:L3 ·
+              authority-v2/capture/CAPTURE-PROTOCOL.sexp:L135 (σωστό μονοπάτι) ·
+              authority-v2/capture/capture.py:L80-81 (το pinning που παγώνει το λάθος)"
+   :is-it-in-the-known-defect-list :no)
+
+  (:what "Στην capture(), το `finally` block σηκώνει CaptureRefused('cleanup-incomplete') όταν
+          αποτύχει ο καθαρισμός. Αν η αρχική άρνηση ήταν επίσης CaptureRefused (π.χ.
+          hardlink-present σε πραγματική επίθεση), η ΑΙΤΙΑ ΑΝΤΙΚΑΘΙΣΤΑΤΑΙ: ο καλών βλέπει
+          'cleanup-incomplete' αντί για τον λόγο της επίθεσης (η αρχική μένει μόνο ως
+          __context__). Fail-closed διατηρείται, η ΔΙΑΓΝΩΣΗ όχι."
+   :severity :p2
+   :evidence "authority-v2/capture/capture.py:L983-991"
+   :is-it-in-the-known-defect-list :no)
+
+  (:what "ΤΟ ΚΕΝΤΡΙΚΟ ΕΥΡΗΜΑ ΤΗΣ ΣΥΣΤΑΔΑΣ — 7 ΑΠΟ ΤΑ 13 ΔΗΛΩΤΙΚΑ ΑΡΤΕΦΑΚΤΑ ΔΕΝ ΔΙΑΒΑΖΟΝΤΑΙ
+          ΑΠΟ ΚΑΝΕΝΑΝ ΕΚΤΕΛΕΣΙΜΟ ΚΩΔΙΚΑ ΤΗΣ ΣΥΣΤΑΔΑΣ. Μηχανική επαλήθευση με αναζήτηση του
+          ΟΝΟΜΑΤΟΣ ΑΡΧΕΙΟΥ σε ΚΑΘΕ .py/.sh/.lisp κάτω από authority-v2/:
+            kernel/admission-model.sexp            → 0 αναγνώστες
+            store/STORAGE-API.sexp                 → 0 αναγνώστες
+            log/witness-policy.sexp                → 0 αναγνώστες
+            roles/ROLES-MODEL.sexp                 → 0 αναγνώστες
+            capture/CAPTURE-PROTOCOL.sexp          → 0 αναγνώστες
+            schema/transition-certificate.cddl     → 0 αναγνώστες
+            schema/state.cddl                      → 0 αναγνώστες
+            toolchain/trusted-toolchain-manifest.sexp → 0 αναγνώστες
+          Διαβάζονται ΜΟΝΟ: LEVEL7-COMPLETION-MATRIX.sexp, proof-manifest.sexp, PROOF-CENSUS.txt,
+          capture/canonical-profile.json, genesis/genesis-policy.sexp.
+          Συνέπεια: ΚΑΜΙΑ αλλαγή σε αυτά τα 8 αρχεία ΔΕΝ μπορεί να αποτύχει καμία απόδειξη."
+   :severity :p0
+   :evidence "authority-v2/kernel/admission-model.sexp:L1-118 (κανένας αναγνώστης) ·
+              authority-v2/log/witness-policy.sexp:L1-78 · authority-v2/roles/ROLES-MODEL.sexp:L1-95 ·
+              authority-v2/store/STORAGE-API.sexp:L1-73 · authority-v2/schema/state.cddl:L1-85 ·
+              authority-v2/schema/transition-certificate.cddl:L1-129 ·
+              authority-v2/capture/CAPTURE-PROTOCOL.sexp:L1-174 ·
+              authority-v2/toolchain/trusted-toolchain-manifest.sexp:L1-105"
+   :is-it-in-the-known-defect-list :no)
+
+  (:what "ΣΠΑΣΜΕΝΗ ΑΥΤΟ-ΔΕΣΜΕΥΣΗ ΤΟΥ SEQUENCE-0 CERTIFICATE ΣΤΟ ΠΑΓΩΜΕΝΟ ΔΕΝΤΡΟ: το committed
+          genesis/out/legacy-adoption-certificate.unsigned.json δηλώνει
+          legacy_manifest_digest = sha256:5d59acffa31c085ab6fc12c73dcd0f1dd51b2a1e4cac8a52778642469c45e2c0,
+          ενώ το sha256 του committed genesis/out/legacy-snapshot.json είναι
+          sha256:fed7db72e87cd83b6c1f268926e5b8bbc688c4d768d02582cf65e5effc16fdc5. ΔΕΝ ΤΑΙΡΙΑΖΟΥΝ.
+          (Ο αδελφός δεσμός detail_digest ΤΟΥ conformance ΤΑΙΡΙΑΖΕΙ — άρα δεν είναι σφάλμα
+          υπολογισμού αλλά ΞΕΠΕΡΑΣΜΕΝΟ artifact.) Το matrix γραμμή 4 επικαλείται αυτό ακριβώς
+          το certificate ως «υπάρχει ήδη με 13/13 πεδία»."
+   :severity :p0
+   :evidence "authority-v2/genesis/out/legacy-adoption-certificate.unsigned.json:L1 (πεδίο
+              legacy_manifest_digest) · authority-v2/genesis/out/legacy-snapshot.json:L1 ·
+              authority-v2/genesis/build-adoption-certificate.py:L73 (η δέσμευση) ·
+              authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L103"
+   :is-it-in-the-known-defect-list :no)
+
+  (:what "ΤΟ ΜΟΝΑΔΙΚΟ ΥΠΟΓΕΓΡΑΜΜΕΝΟ ARTIFACT ΤΗΣ ΣΥΣΤΑΔΑΣ ΕΧΕΙ ΑΠΟΚΛΙΝΕΙ ΑΠΟ ΤΟ ΠΑΡΑΓΟΜΕΝΟ:
+          το fixtures/genesis-cert-fixture.json (υπογραφή ΕΠΑΛΗΘΕΥΤΗΚΕ ΕΠΙΤΟΠΟΥ με
+          openssl pkeyutl -verify → Signature Verified Successfully) φέρει
+          source_commit 57c0cd868c80f87df8e298c9aa75b8ccf2503391, ενώ το τρέχον draft φέρει
+          b26abbd68caf49481714288f06bfc2cb387ecdd2. Επιπλέον ΔΙΑΦΕΡΟΥΝ ΔΟΜΙΚΑ: το fixture
+          δεν έχει τα πεδία historical_run_artifacts και legacy_release_count_by_naming, το
+          legacy_releases είναι λίστα ΣΥΜΒΟΛΟΣΕΙΡΩΝ αντί λίστα ΑΝΤΙΚΕΙΜΕΝΩΝ, και τα
+          legacy_manifest_digest / new_verifier_result διαφέρουν. Άρα η ΜΟΝΗ κρυπτογραφική
+          δέσμευση της συστάδας πιστοποιεί ΑΛΛΟ σχήμα certificate από αυτό που παράγει ο κώδικας."
+   :severity :p1
+   :evidence "authority-v2/fixtures/genesis-cert-fixture.json:L1 ·
+              authority-v2/fixtures/genesis-cert-fixture.sig (64 bytes, ed25519) ·
+              authority-v2/fixtures/test-keys/genesis-test-ed25519.pub:L1-3 ·
+              authority-v2/genesis/out/legacy-adoption-certificate.unsigned.json:L1 ·
+              authority-v2/fixtures/test-keys/README.md:L19-24"
+   :is-it-in-the-known-defect-list :no)
+
+  (:what "ΟΛΟΚΛΗΡΟ ΤΟ genesis/ ΕΙΝΑΙ ΕΚΤΟΣ ΚΑΘΕ ΠΥΛΗΣ: τα 4 εκτελέσιμα (legacy-snapshot.py,
+          conformance-check.py, build-adoption-certificate.py, genesis-policy.sexp) είναι
+          ταξινομημένα ως `helper` στην απογραφή, δηλαδή ΔΕΝ τρέχουν ΠΟΤΕ από τον runner. Κανένα
+          proof δεν αναφέρει τα genesis/out/*, το genesis-cert-fixture.json, ή την υπογραφή του.
+          Μηχανικός έλεγχος: 0 αναφορές σε 'genesis-cert-fixture' και 'legacy-adoption-certificate'
+          σε ΟΛΟΝ τον κώδικα του repo εκτός του ίδιου του builder. Οι μόνες δεσμεύσεις που
+          επαληθεύτηκαν (από ΕΜΕΝΑ, όχι από πύλη): genesis_policy_hash ΤΑΙΡΙΑΖΕΙ,
+          MANIFEST.json ↔ tlog-n1/2/3 ΤΑΙΡΙΑΖΟΥΝ, fixture signature ΕΠΑΛΗΘΕΥΕΤΑΙ."
+   :severity :p1
+   :evidence "authority-v2/PROOF-CENSUS.txt:L70-72 (helper) · authority-v2/run-proofs.sh:L120,L161
+              (helpers ΠΑΡΑΚΑΜΠΤΟΝΤΑΙ) · authority-v2/genesis/build-adoption-certificate.py:L45-138"
+   :is-it-in-the-known-defect-list :no)
+
+  (:what "ΤΟ ΔΗΛΩΜΕΝΟ ΜΟΝΟΠΑΤΙ ΑΡΣΗΣ ΤΩΝ :externally-blocked ΕΙΝΑΙ ΑΤΕΛΕΣ: και τα δύο hermetic
+          Dockerfiles κάνουν `COPY toolchain-sources/ /build/sources/` και μετά sha256sum -c σε
+          fstar/karamel/everparse/perennial/goose/gotxn tarballs. Ο κατάλογος toolchain-sources/
+          ΔΕΝ ΥΠΑΡΧΕΙ πουθενά στο repo και ΚΑΝΕΝΑ αρχείο, script ή τεκμηρίωση δεν τον αναφέρει
+          εκτός των δύο Dockerfiles. Άρα ακόμη και με συμπληρωμένα τα PIN-REQUIRED, η εντολή του
+          matrix (`docker build -f …everparse.Dockerfile --target cddl-gate .`) αποτυγχάνει στο
+          COPY: η προμήθεια των tarballs δεν έχει καμία ορισμένη διαδικασία."
+   :severity :p1
+   :evidence "authority-v2/toolchain/everparse.Dockerfile:L50-54 ·
+              authority-v2/toolchain/perennial.Dockerfile:L43-47 ·
+              authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L82,L153 ·
+              authority-v2/proof-manifest.sexp:L21-24"
+   :is-it-in-the-known-defect-list :no)
+
+  (:what "ΤΕΣΤ-ΤΑΥΤΟΛΟΓΙΑ ΜΕ ΔΙΠΛΗ ΕΔΡΑ: το witness-quorum-test.py, που το matrix γραμμή 8
+          παρουσιάζει ως την εκτελεσμένη απόδειξη της πολιτικής μαρτύρων, ΔΕΝ ΑΝΟΙΓΕΙ ΠΟΤΕ
+          το log/witness-policy.sexp. Ξαναδηλώνει τις σταθερές inline (MAX_CHECKPOINT_AGE=86400,
+          MAX_OBSERVATION_LAG=3600, REQUIRED_SIGNATURES=3) και ΞΑΝΑΥΛΟΠΟΙΕΙ την κρίση
+          (evaluate_quorum). Άρα τα «8 passed» επαληθεύουν το ΔΙΚΟ ΤΟΥΣ μοντέλο, όχι το
+          artifact που δηλώνεται ως implementation. Αλλαγή του :required-signatures 3 σε 1
+          μέσα στο witness-policy.sexp ΔΕΝ κοκκινίζει τίποτα."
+   :severity :p1
+   :evidence "authority-v2/proofs/witness-quorum-test.py:L17-19 (οι σταθερές ξανά) ·
+              L52-78 (η πολιτική ξανά) · L1-117 (καμία αναφορά στο .sexp) ·
+              authority-v2/log/witness-policy.sexp:L48-49,L63-64 (οι ΙΔΙΕΣ τιμές, άλλη έδρα) ·
+              authority-v2/LEVEL7-COMPLETION-MATRIX.sexp:L164-170"
+   :is-it-in-the-known-defect-list :no)
+
+  (:what "Το ίδιο σχήμα στους ρόλους: το ceremony.sh καρφώνει τα 5 ονόματα ρόλων και τα 4
+          delegations στον κώδικα (for r in release targets snapshot timestamp) και ΔΕΝ διαβάζει
+          το roles/ROLES-MODEL.sexp. Άρα η «πρόβα 4 τελετών» δεν επαληθεύει το μοντέλο ρόλων —
+          επαληθεύει έναν δεύτερο, ανεξάρτητο ορισμό των ίδιων ρόλων."
+   :severity :p1
+   :evidence "authority-v2/roles/ceremony.sh:L67 (5 ρόλοι καρφωμένοι) · L70,L124 (4 delegations) ·
+              authority-v2/roles/ROLES-MODEL.sexp:L28-65 (η άλλη έδρα)"
+   :is-it-in-the-known-defect-list :no)
+
+  (:what "Το ceremony.sh, αν κληθεί ΧΩΡΙΣ το LAWMAX_CEREMONY_WORK, γράφει ed25519 ΙΔΙΩΤΙΚΑ
+          ΚΛΕΙΔΙΑ μέσα στο δέντρο του repository (authority-v2/fixtures/ceremony). Μόνο το
+          ceremony-rehearsal-test.sh θέτει mktemp -d· η άμεση κλήση (που η απογραφή επιτρέπει
+          ρητά ως tool-declared) δεν το κάνει."
+   :severity :p2
+   :evidence "authority-v2/roles/ceremony.sh:L25 (WORK default = $ROOT/authority-v2/fixtures/ceremony) ·
+              L46-51 (new_key γράφει .key) · authority-v2/proofs/ceremony-rehearsal-test.sh:L5"
+   :is-it-in-the-known-defect-list :no)
+
+  (:what "verify-capability-closure.sh: το `setpriv` τρέχεται ως root, άρα το script ΕΧΕΙ την
+          ικανότητα να καθαρίσει μόνο του τα probe αρχεία — αλλά στις ΑΡΝΗΤΙΚΕΣ περιπτώσεις
+          (L58, L64) καθαρίζει ως root, ενώ στις ΘΕΤΙΚΕΣ (L50, L72) ως ο χρήστης με `|| true`.
+          Αν το rm ως χρήστης αποτύχει, το probe αρχείο μένει ΜΕΣΑ στο authority store και
+          καμία επόμενη εκτέλεση δεν το καταγγέλλει."
+   :severity :p2
+   :evidence "authority-v2/proofs/verify-capability-closure.sh:L50,L58,L64,L72"
    :is-it-in-the-known-defect-list :unknown))
 
- :hidden-execution-paths ()
+ :hidden-execution-paths
+ ((:path "authority-v2/proofs/docker-e2e-test.sh εκτελείται ΔΥΟ ΦΟΡΕΣ ανά run-all.sh"
+   :trigger "run-all.sh καλεί run-proofs.sh (που το τρέχει ως requires-docker εγγραφή της\n             απογραφής) ΚΑΙ ΜΕΤΑ το ξανακαλεί ρητά"
+   :why-hidden "μετριέται σε ΔΥΟ διαφορετικά ισοζύγια — μία φορά στο 15-άρι της απογραφής\n                και μία φορά στο τελικό ΣΥΝΟΛΟ του run-all"
+   :evidence "authority-v2/run-all.sh:L40-41 · L60-61 · authority-v2/PROOF-CENSUS.txt:L55"))
  :duplicate-seats
- ((:concept "sha256-digest / ed25519-sig / ed25519-pub / sequence-no / utc-seconds / profile-id
+ ((:concept "ΠΟΛΙΤΙΚΗ ΚΒΟΡΟΥΜ/ΦΡΕΣΚΑΔΑΣ ΜΑΡΤΥΡΩΝ — δύο ανεξάρτητοι ορισμοί, κανένας σύνδεσμος"
+   :seats ("authority-v2/log/witness-policy.sexp:L47-69"
+           "authority-v2/proofs/witness-quorum-test.py:L17-19,L52-78"))
+  (:concept "ΣΥΝΟΛΟ ΡΟΛΩΝ ΚΑΙ DELEGATIONS — μοντέλο vs καρφωμένος κώδικας τελετής"
+   :seats ("authority-v2/roles/ROLES-MODEL.sexp:L28-65"
+           "authority-v2/roles/ceremony.sh:L67,L70,L124"))
+  (:concept "MTH / Merkle έδρα — τρεις υλοποιήσεις (η τριπλή είναι ΣΚΟΠΙΜΗ, καταγράφεται ως γεγονός)"
+   :seats ("authority-v2/capture/capture.py:L196-205 (_mth_recursive)"
+           "authority-v2/capture/capture.py:L208-225 (_mth_streaming)"
+           "deployment/verify/verify-merkle.py (ανεξάρτητη, καλείται από το harness)"
+           "orchestrator.merkle:merkle-root-of-files (παραγωγικός Lisp πυρήνας, μέσω probe)"))
+  (:concept "canonical set — json profile ΚΑΙ σταθερά +EPISTEMIC-CANONICAL-FILES+ του πυρήνα
+             (η ταύτιση ΕΛΕΓΧΕΤΑΙ εκτελεστικά — δηλωμένη διπλή έδρα με γέφυρα)"
+   :seats ("authority-v2/capture/canonical-profile.json:L5-16"
+           "systems/orchestrator-epistemic/release-manifest.lisp (μέσω authority-v2/tests/probe-canonical-files.lisp)"))
+  (:concept "docker-e2e εκτέλεση — καταγράφεται δύο φορές ανά run-all"
+   :seats ("authority-v2/run-proofs.sh:L159-184 (ως εγγραφή απογραφής)"
+           "authority-v2/run-all.sh:L60-61 (ρητή δεύτερη κλήση)"))
+  (:concept "sha256-digest / ed25519-sig / ed25519-pub / sequence-no / utc-seconds / profile-id
              ορίζονται ΔΥΟ ΦΟΡΕΣ, μία σε κάθε .cddl αρχείο"
    :seats ("authority-v2/schema/transition-certificate.cddl:L20-25"
            "authority-v2/schema/state.cddl:L9-14")))
