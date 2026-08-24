@@ -1,0 +1,6841 @@
+{
+ "lane": "Φ1A-L1",
+ "roots_from_parser": [
+  "source"
+ ],
+ "frozen": {
+  "L1-dossier            experiment/phase1a/source.sexp": "dd3ce7cc6bd973d284dd00adb417afa3e1030bcdca9da32997b435fb4c5e8aef",
+  "resolver-v4           experiment/runner/citation-resolver.py": "24809ecd48b410ce656229cda4a87191256f25642f164844d465b1a581a925f9",
+  "witness-suite         experiment/runner/resolver-witnesses.py": "3b75fc5d67dea3664e0e2385db09fe8ea7c273fd6f39a95d3c4084d539650024",
+  "manifest-v2 (tsv)     experiment/artifacts/corpus-manifest.tsv": "29cf2b0ce1af2c9b08711d4aca0a7177f41fcb77d40d68904f170fa6abd41c7e",
+  "manifest-v2 (sexp)    experiment/artifacts/corpus-manifest.sexp": "4fdf3bb02ec83001399942679b436f4699138d51cfbb54850e2027190551285f",
+  "LANE-REGISTRY         experiment/phase1a/LANE-REGISTRY.sexp": "fffdc910bf95986a549244388a6914211034a5478daf0dea1860b6be7a51f404",
+  "raw-gate-log          .../GATE-v4-L1-RAW.log": "3bfb9dd242eba1068a7fbd593d179346238727c4fa077ece38a99ff0a1b2124d"
+ },
+ "total_failing": 283,
+ "histogram_gate_codes": {
+  "ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest": 283
+ },
+ "classes": {
+  "A  VALID-CORPUS-ROOT-RELATIVE": [],
+  "B  VALID-LANE-RELATIVE (μοναδική root)": [
+   {
+    "token": "safe-read.lisp:39-349",
+    "raw": "safe-read.lisp",
+    "start": 39,
+    "end": "349",
+    "sha12": null,
+    "normalized": "safe-read.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/safe-read.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/safe-read.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/safe-read.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "safe-read.lisp:312-339",
+    "raw": "safe-read.lisp",
+    "start": 312,
+    "end": "339",
+    "sha12": null,
+    "normalized": "safe-read.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/safe-read.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/safe-read.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/safe-read.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "merkle-authority.lisp:54-235",
+    "raw": "merkle-authority.lisp",
+    "start": 54,
+    "end": "235",
+    "sha12": null,
+    "normalized": "merkle-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/merkle-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/merkle-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/merkle-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "proof-carrying.lisp:50-295",
+    "raw": "proof-carrying.lisp",
+    "start": 50,
+    "end": "295",
+    "sha12": null,
+    "normalized": "proof-carrying.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/proof-carrying.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/proof-carrying.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/proof-carrying.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "journal.lisp:104-576",
+    "raw": "journal.lisp",
+    "start": 104,
+    "end": "576",
+    "sha12": null,
+    "normalized": "journal.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/journal.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/journal.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/journal.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "constitutional-gate.lisp:22-71",
+    "raw": "constitutional-gate.lisp",
+    "start": 22,
+    "end": "71",
+    "sha12": null,
+    "normalized": "constitutional-gate.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/constitutional-gate.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/constitutional-gate.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/constitutional-gate.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "deterministic-time.lisp:52-220",
+    "raw": "deterministic-time.lisp",
+    "start": 52,
+    "end": "220",
+    "sha12": null,
+    "normalized": "deterministic-time.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/deterministic-time.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/deterministic-time.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/deterministic-time.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "cognition.lisp:62-184",
+    "raw": "cognition.lisp",
+    "start": 62,
+    "end": "184",
+    "sha12": null,
+    "normalized": "cognition.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/cognition.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/cognition.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/cognition.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "document-fetch.lisp:92-323",
+    "raw": "document-fetch.lisp",
+    "start": 92,
+    "end": "323",
+    "sha12": null,
+    "normalized": "document-fetch.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/document-fetch.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/document-fetch.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/document-fetch.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "self-constitution.lisp:29-132",
+    "raw": "self-constitution.lisp",
+    "start": 29,
+    "end": "132",
+    "sha12": null,
+    "normalized": "self-constitution.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/self-constitution.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/self-constitution.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/self-constitution.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "hash-authority.lisp:11-59",
+    "raw": "hash-authority.lisp",
+    "start": 11,
+    "end": "59",
+    "sha12": null,
+    "normalized": "hash-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/hash-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/hash-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/hash-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "write-authority.lisp:12-73",
+    "raw": "write-authority.lisp",
+    "start": 12,
+    "end": "73",
+    "sha12": null,
+    "normalized": "write-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/write-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/write-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/write-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "institution.lisp:26-61",
+    "raw": "institution.lisp",
+    "start": 26,
+    "end": "61",
+    "sha12": null,
+    "normalized": "institution.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/institution.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/institution.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/institution.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "authority-proof-bundle.lisp:295-658",
+    "raw": "authority-proof-bundle.lisp",
+    "start": 295,
+    "end": "658",
+    "sha12": null,
+    "normalized": "authority-proof-bundle.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/authority-proof-bundle.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/authority-proof-bundle.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/authority-proof-bundle.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "version-graph.lisp:221-1459",
+    "raw": "version-graph.lisp",
+    "start": 221,
+    "end": "1459",
+    "sha12": null,
+    "normalized": "version-graph.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/version-graph.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/version-graph.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/version-graph.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "version-graph.lisp:2458-2613",
+    "raw": "version-graph.lisp",
+    "start": 2458,
+    "end": "2613",
+    "sha12": null,
+    "normalized": "version-graph.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/version-graph.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/version-graph.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/version-graph.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "amendment-extractor.lisp:340-546",
+    "raw": "amendment-extractor.lisp",
+    "start": 340,
+    "end": "546",
+    "sha12": null,
+    "normalized": "amendment-extractor.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/amendment-extractor.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/amendment-extractor.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/amendment-extractor.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "pdf-authority.lisp:381-1439",
+    "raw": "pdf-authority.lisp",
+    "start": 381,
+    "end": "1439",
+    "sha12": null,
+    "normalized": "pdf-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/pdf-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/pdf-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/pdf-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "capability-api.lisp:37-147",
+    "raw": "capability-api.lisp",
+    "start": 37,
+    "end": "147",
+    "sha12": null,
+    "normalized": "capability-api.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/capability-api.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/capability-api.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/capability-api.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "contracts.lisp:43-167",
+    "raw": "contracts.lisp",
+    "start": 43,
+    "end": "167",
+    "sha12": null,
+    "normalized": "contracts.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/contracts.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/contracts.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/contracts.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "canonical-representation.lisp:91-278",
+    "raw": "canonical-representation.lisp",
+    "start": 91,
+    "end": "278",
+    "sha12": null,
+    "normalized": "canonical-representation.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/canonical-representation.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/canonical-representation.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/canonical-representation.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "canonical-uris.lisp:53-264",
+    "raw": "canonical-uris.lisp",
+    "start": 53,
+    "end": "264",
+    "sha12": null,
+    "normalized": "canonical-uris.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/canonical-uris.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/canonical-uris.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/canonical-uris.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "autonomy.lisp:26-124",
+    "raw": "autonomy.lisp",
+    "start": 26,
+    "end": "124",
+    "sha12": null,
+    "normalized": "autonomy.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/autonomy.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/autonomy.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/autonomy.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "components.lisp:26-98",
+    "raw": "components.lisp",
+    "start": 26,
+    "end": "98",
+    "sha12": null,
+    "normalized": "components.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/components.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/components.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/components.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "archive-authority.lisp:56-159",
+    "raw": "archive-authority.lisp",
+    "start": 56,
+    "end": "159",
+    "sha12": null,
+    "normalized": "archive-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/archive-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/archive-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/archive-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "ast-gate.lisp:53-127",
+    "raw": "ast-gate.lisp",
+    "start": 53,
+    "end": "127",
+    "sha12": null,
+    "normalized": "ast-gate.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/ast-gate.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/ast-gate.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/ast-gate.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "anomaly-detection.lisp:54-93",
+    "raw": "anomaly-detection.lisp",
+    "start": 54,
+    "end": "93",
+    "sha12": null,
+    "normalized": "anomaly-detection.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/anomaly-detection.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/anomaly-detection.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/anomaly-detection.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "adoption-decision.lisp:23-132",
+    "raw": "adoption-decision.lisp",
+    "start": 23,
+    "end": "132",
+    "sha12": null,
+    "normalized": "adoption-decision.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/adoption-decision.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/adoption-decision.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/adoption-decision.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "safe-read.lisp:152-186",
+    "raw": "safe-read.lisp",
+    "start": 152,
+    "end": "186",
+    "sha12": null,
+    "normalized": "safe-read.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/safe-read.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/safe-read.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/safe-read.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "constitutional-gate.lisp:49-71",
+    "raw": "constitutional-gate.lisp",
+    "start": 49,
+    "end": "71",
+    "sha12": null,
+    "normalized": "constitutional-gate.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/constitutional-gate.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/constitutional-gate.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/constitutional-gate.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "journal.lisp:343-350",
+    "raw": "journal.lisp",
+    "start": 343,
+    "end": "350",
+    "sha12": null,
+    "normalized": "journal.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/journal.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/journal.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/journal.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "proof-carrying.lisp:185-207",
+    "raw": "proof-carrying.lisp",
+    "start": 185,
+    "end": "207",
+    "sha12": null,
+    "normalized": "proof-carrying.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/proof-carrying.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/proof-carrying.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/proof-carrying.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "write-authority.lisp:16-51",
+    "raw": "write-authority.lisp",
+    "start": 16,
+    "end": "51",
+    "sha12": null,
+    "normalized": "write-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/write-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/write-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/write-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "cognition.lisp:62-89",
+    "raw": "cognition.lisp",
+    "start": 62,
+    "end": "89",
+    "sha12": null,
+    "normalized": "cognition.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/cognition.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/cognition.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/cognition.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "document-fetch.lisp:228-256",
+    "raw": "document-fetch.lisp",
+    "start": 228,
+    "end": "256",
+    "sha12": null,
+    "normalized": "document-fetch.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/document-fetch.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/document-fetch.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/document-fetch.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "journal.lisp:180-187",
+    "raw": "journal.lisp",
+    "start": 180,
+    "end": "187",
+    "sha12": null,
+    "normalized": "journal.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/journal.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/journal.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/journal.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "deterministic-time.lisp:202-220",
+    "raw": "deterministic-time.lisp",
+    "start": 202,
+    "end": "220",
+    "sha12": null,
+    "normalized": "deterministic-time.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/deterministic-time.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/deterministic-time.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/deterministic-time.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "capability-registry.lisp:122-134",
+    "raw": "capability-registry.lisp",
+    "start": 122,
+    "end": "134",
+    "sha12": null,
+    "normalized": "capability-registry.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/capability-registry.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/capability-registry.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/capability-registry.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "capability-api.lisp:108-111",
+    "raw": "capability-api.lisp",
+    "start": 108,
+    "end": "111",
+    "sha12": null,
+    "normalized": "capability-api.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/capability-api.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/capability-api.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/capability-api.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "capability-registry.lisp:195-206",
+    "raw": "capability-registry.lisp",
+    "start": 195,
+    "end": "206",
+    "sha12": null,
+    "normalized": "capability-registry.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/capability-registry.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/capability-registry.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/capability-registry.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "version-graph.lisp:2479-2522",
+    "raw": "version-graph.lisp",
+    "start": 2479,
+    "end": "2522",
+    "sha12": null,
+    "normalized": "version-graph.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/version-graph.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/version-graph.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/version-graph.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "version-graph.lisp:645-686",
+    "raw": "version-graph.lisp",
+    "start": 645,
+    "end": "686",
+    "sha12": null,
+    "normalized": "version-graph.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/version-graph.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/version-graph.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/version-graph.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "authority-proof-bundle.lisp:295-330",
+    "raw": "authority-proof-bundle.lisp",
+    "start": 295,
+    "end": "330",
+    "sha12": null,
+    "normalized": "authority-proof-bundle.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/authority-proof-bundle.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/authority-proof-bundle.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/authority-proof-bundle.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "safe-read.lisp:82-99",
+    "raw": "safe-read.lisp",
+    "start": 82,
+    "end": "99",
+    "sha12": null,
+    "normalized": "safe-read.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/safe-read.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/safe-read.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/safe-read.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "safe-read.lisp:326-339",
+    "raw": "safe-read.lisp",
+    "start": 326,
+    "end": "339",
+    "sha12": null,
+    "normalized": "safe-read.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/safe-read.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/safe-read.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/safe-read.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "merkle-authority.lisp:101-119",
+    "raw": "merkle-authority.lisp",
+    "start": 101,
+    "end": "119",
+    "sha12": null,
+    "normalized": "merkle-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/merkle-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/merkle-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/merkle-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "proof-carrying.lisp:206-207",
+    "raw": "proof-carrying.lisp",
+    "start": 206,
+    "end": "207",
+    "sha12": null,
+    "normalized": "proof-carrying.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/proof-carrying.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/proof-carrying.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/proof-carrying.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "journal.lisp:126-170",
+    "raw": "journal.lisp",
+    "start": 126,
+    "end": "170",
+    "sha12": null,
+    "normalized": "journal.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/journal.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/journal.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/journal.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "journal.lisp:531-542",
+    "raw": "journal.lisp",
+    "start": 531,
+    "end": "542",
+    "sha12": null,
+    "normalized": "journal.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/journal.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/journal.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/journal.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "journal.lisp:369-381",
+    "raw": "journal.lisp",
+    "start": 369,
+    "end": "381",
+    "sha12": null,
+    "normalized": "journal.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/journal.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/journal.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/journal.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "deterministic-time.lisp:155-176",
+    "raw": "deterministic-time.lisp",
+    "start": 155,
+    "end": "176",
+    "sha12": null,
+    "normalized": "deterministic-time.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/deterministic-time.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/deterministic-time.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/deterministic-time.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "document-fetch.lisp:243-291",
+    "raw": "document-fetch.lisp",
+    "start": 243,
+    "end": "291",
+    "sha12": null,
+    "normalized": "document-fetch.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/document-fetch.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/document-fetch.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/document-fetch.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "document-fetch.lisp:46-90",
+    "raw": "document-fetch.lisp",
+    "start": 46,
+    "end": "90",
+    "sha12": null,
+    "normalized": "document-fetch.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/document-fetch.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/document-fetch.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/document-fetch.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "self-constitution.lisp:105-115",
+    "raw": "self-constitution.lisp",
+    "start": 105,
+    "end": "115",
+    "sha12": null,
+    "normalized": "self-constitution.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/self-constitution.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/self-constitution.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/self-constitution.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "constitutional-gate.lisp:44-45",
+    "raw": "constitutional-gate.lisp",
+    "start": 44,
+    "end": "45",
+    "sha12": null,
+    "normalized": "constitutional-gate.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/constitutional-gate.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/constitutional-gate.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/constitutional-gate.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "deterministic-time.lisp:93-101",
+    "raw": "deterministic-time.lisp",
+    "start": 93,
+    "end": "101",
+    "sha12": null,
+    "normalized": "deterministic-time.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/deterministic-time.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/deterministic-time.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/deterministic-time.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "deterministic-time.lisp:155-158",
+    "raw": "deterministic-time.lisp",
+    "start": 155,
+    "end": "158",
+    "sha12": null,
+    "normalized": "deterministic-time.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/deterministic-time.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/deterministic-time.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/deterministic-time.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "cognition.lisp:65-66",
+    "raw": "cognition.lisp",
+    "start": 65,
+    "end": "66",
+    "sha12": null,
+    "normalized": "cognition.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/cognition.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/cognition.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/cognition.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "cognition.lisp:85-87",
+    "raw": "cognition.lisp",
+    "start": 85,
+    "end": "87",
+    "sha12": null,
+    "normalized": "cognition.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/cognition.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/cognition.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/cognition.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "write-authority.lisp:29-30",
+    "raw": "write-authority.lisp",
+    "start": 29,
+    "end": "30",
+    "sha12": null,
+    "normalized": "write-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/write-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/write-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/write-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "document-fetch.lisp:71-79",
+    "raw": "document-fetch.lisp",
+    "start": 71,
+    "end": "79",
+    "sha12": null,
+    "normalized": "document-fetch.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/document-fetch.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/document-fetch.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/document-fetch.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "journal.lisp:67",
+    "raw": "journal.lisp",
+    "start": 67,
+    "end": null,
+    "sha12": null,
+    "normalized": "journal.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/journal.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/journal.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/journal.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "version-graph.lisp:471-497",
+    "raw": "version-graph.lisp",
+    "start": 471,
+    "end": "497",
+    "sha12": null,
+    "normalized": "version-graph.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/version-graph.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/version-graph.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/version-graph.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "journal.lisp:61-86",
+    "raw": "journal.lisp",
+    "start": 61,
+    "end": "86",
+    "sha12": null,
+    "normalized": "journal.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/journal.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/journal.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/journal.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "canonical-representation.lisp:162-192",
+    "raw": "canonical-representation.lisp",
+    "start": 162,
+    "end": "192",
+    "sha12": null,
+    "normalized": "canonical-representation.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/canonical-representation.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/canonical-representation.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/canonical-representation.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "canonical-representation.lisp:141-160",
+    "raw": "canonical-representation.lisp",
+    "start": 141,
+    "end": "160",
+    "sha12": null,
+    "normalized": "canonical-representation.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/canonical-representation.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/canonical-representation.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/canonical-representation.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "archive-authority.lisp:70-94",
+    "raw": "archive-authority.lisp",
+    "start": 70,
+    "end": "94",
+    "sha12": null,
+    "normalized": "archive-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/archive-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/archive-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/archive-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "adoption-decision.lisp:90-95",
+    "raw": "adoption-decision.lisp",
+    "start": 90,
+    "end": "95",
+    "sha12": null,
+    "normalized": "adoption-decision.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/adoption-decision.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/adoption-decision.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/adoption-decision.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "pdf-authority.lisp:1360-1370",
+    "raw": "pdf-authority.lisp",
+    "start": 1360,
+    "end": "1370",
+    "sha12": null,
+    "normalized": "pdf-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/pdf-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/pdf-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/pdf-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "pdf-authority.lisp:1399-1425",
+    "raw": "pdf-authority.lisp",
+    "start": 1399,
+    "end": "1425",
+    "sha12": null,
+    "normalized": "pdf-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/pdf-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/pdf-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/pdf-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "pdf-authority.lisp:349-355",
+    "raw": "pdf-authority.lisp",
+    "start": 349,
+    "end": "355",
+    "sha12": null,
+    "normalized": "pdf-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/pdf-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/pdf-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/pdf-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "amendment-extractor.lisp:189-190",
+    "raw": "amendment-extractor.lisp",
+    "start": 189,
+    "end": "190",
+    "sha12": null,
+    "normalized": "amendment-extractor.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/amendment-extractor.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/amendment-extractor.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/amendment-extractor.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "authority-proof-bundle.lisp:507-511",
+    "raw": "authority-proof-bundle.lisp",
+    "start": 507,
+    "end": "511",
+    "sha12": null,
+    "normalized": "authority-proof-bundle.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/authority-proof-bundle.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/authority-proof-bundle.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/authority-proof-bundle.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "version-graph.lisp:288-300",
+    "raw": "version-graph.lisp",
+    "start": 288,
+    "end": "300",
+    "sha12": null,
+    "normalized": "version-graph.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/version-graph.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/version-graph.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/version-graph.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-audit-system.lisp:233-236",
+    "raw": "legal-audit-system.lisp",
+    "start": 233,
+    "end": "236",
+    "sha12": null,
+    "normalized": "legal-audit-system.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-audit-system.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-audit-system.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-audit-system.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "jws-authority.lisp:394",
+    "raw": "jws-authority.lisp",
+    "start": 394,
+    "end": null,
+    "sha12": null,
+    "normalized": "jws-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/jws-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/jws-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/jws-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-audit-system.lisp:271-283",
+    "raw": "legal-audit-system.lisp",
+    "start": 271,
+    "end": "283",
+    "sha12": null,
+    "normalized": "legal-audit-system.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-audit-system.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-audit-system.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-audit-system.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "review-queue.lisp:100-117",
+    "raw": "review-queue.lisp",
+    "start": 100,
+    "end": "117",
+    "sha12": null,
+    "normalized": "review-queue.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/review-queue.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/review-queue.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/review-queue.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-audit-system.lisp:780-793",
+    "raw": "legal-audit-system.lisp",
+    "start": 780,
+    "end": "793",
+    "sha12": null,
+    "normalized": "legal-audit-system.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-audit-system.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-audit-system.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-audit-system.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "government-source.lisp:487-502",
+    "raw": "government-source.lisp",
+    "start": 487,
+    "end": "502",
+    "sha12": null,
+    "normalized": "government-source.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/government-source.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/government-source.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/government-source.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "pdf-authority.lisp:904-964",
+    "raw": "pdf-authority.lisp",
+    "start": 904,
+    "end": "964",
+    "sha12": null,
+    "normalized": "pdf-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/pdf-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/pdf-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/pdf-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "mcp-server.lisp:102-107",
+    "raw": "mcp-server.lisp",
+    "start": 102,
+    "end": "107",
+    "sha12": null,
+    "normalized": "mcp-server.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/mcp-server.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/mcp-server.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/mcp-server.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "validation-authority.lisp:67",
+    "raw": "validation-authority.lisp",
+    "start": 67,
+    "end": null,
+    "sha12": null,
+    "normalized": "validation-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/validation-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/validation-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/validation-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "proposals.lisp:129-140",
+    "raw": "proposals.lisp",
+    "start": 129,
+    "end": "140",
+    "sha12": null,
+    "normalized": "proposals.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/proposals.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/proposals.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/proposals.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "consolidation-proof.lisp:113-123",
+    "raw": "consolidation-proof.lisp",
+    "start": 113,
+    "end": "123",
+    "sha12": null,
+    "normalized": "consolidation-proof.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/consolidation-proof.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/consolidation-proof.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/consolidation-proof.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "canonical-uris.lisp:58-63",
+    "raw": "canonical-uris.lisp",
+    "start": 58,
+    "end": "63",
+    "sha12": null,
+    "normalized": "canonical-uris.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/canonical-uris.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/canonical-uris.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/canonical-uris.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "corpus-provenance.lisp:26-33",
+    "raw": "corpus-provenance.lisp",
+    "start": 26,
+    "end": "33",
+    "sha12": null,
+    "normalized": "corpus-provenance.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/corpus-provenance.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/corpus-provenance.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/corpus-provenance.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "canonical-uris.lisp:57-63",
+    "raw": "canonical-uris.lisp",
+    "start": 57,
+    "end": "63",
+    "sha12": null,
+    "normalized": "canonical-uris.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/canonical-uris.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/canonical-uris.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/canonical-uris.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "corpus-provenance.lisp:35-39",
+    "raw": "corpus-provenance.lisp",
+    "start": 35,
+    "end": "39",
+    "sha12": null,
+    "normalized": "corpus-provenance.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/corpus-provenance.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/corpus-provenance.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/corpus-provenance.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "component-scan.lisp:26-28",
+    "raw": "component-scan.lisp",
+    "start": 26,
+    "end": "28",
+    "sha12": null,
+    "normalized": "component-scan.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/component-scan.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/component-scan.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/component-scan.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "component-scan.lisp:139-149",
+    "raw": "component-scan.lisp",
+    "start": 139,
+    "end": "149",
+    "sha12": null,
+    "normalized": "component-scan.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/component-scan.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/component-scan.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/component-scan.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "component-scan.lisp:45-56",
+    "raw": "component-scan.lisp",
+    "start": 45,
+    "end": "56",
+    "sha12": null,
+    "normalized": "component-scan.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/component-scan.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/component-scan.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/component-scan.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "corpus-intelligence.lisp:75-93",
+    "raw": "corpus-intelligence.lisp",
+    "start": 75,
+    "end": "93",
+    "sha12": null,
+    "normalized": "corpus-intelligence.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/corpus-intelligence.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/corpus-intelligence.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/corpus-intelligence.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "paths.lisp:311-323",
+    "raw": "paths.lisp",
+    "start": 311,
+    "end": "323",
+    "sha12": null,
+    "normalized": "paths.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/paths.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/paths.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/paths.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "http-server.lisp:51-54",
+    "raw": "http-server.lisp",
+    "start": 51,
+    "end": "54",
+    "sha12": null,
+    "normalized": "http-server.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/http-server.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/http-server.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/http-server.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "circuit-breaker.lisp:23-33",
+    "raw": "circuit-breaker.lisp",
+    "start": 23,
+    "end": "33",
+    "sha12": null,
+    "normalized": "circuit-breaker.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/circuit-breaker.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/circuit-breaker.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/circuit-breaker.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "consolidation-bridge.lisp:258-270",
+    "raw": "consolidation-bridge.lisp",
+    "start": 258,
+    "end": "270",
+    "sha12": null,
+    "normalized": "consolidation-bridge.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/consolidation-bridge.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/consolidation-bridge.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/consolidation-bridge.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "corpus-diff.lisp:36-44",
+    "raw": "corpus-diff.lisp",
+    "start": 36,
+    "end": "44",
+    "sha12": null,
+    "normalized": "corpus-diff.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/corpus-diff.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/corpus-diff.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/corpus-diff.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "corpus-search.lisp:70-78",
+    "raw": "corpus-search.lisp",
+    "start": 70,
+    "end": "78",
+    "sha12": null,
+    "normalized": "corpus-search.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/corpus-search.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/corpus-search.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/corpus-search.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "proof-carrying.lisp:88-99",
+    "raw": "proof-carrying.lisp",
+    "start": 88,
+    "end": "99",
+    "sha12": null,
+    "normalized": "proof-carrying.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/proof-carrying.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/proof-carrying.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/proof-carrying.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "pdf-authority.lisp:139-174",
+    "raw": "pdf-authority.lisp",
+    "start": 139,
+    "end": "174",
+    "sha12": null,
+    "normalized": "pdf-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/pdf-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/pdf-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/pdf-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "anomaly-detection.lisp:24-31",
+    "raw": "anomaly-detection.lisp",
+    "start": 24,
+    "end": "31",
+    "sha12": null,
+    "normalized": "anomaly-detection.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/anomaly-detection.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/anomaly-detection.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/anomaly-detection.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "ast-gate.lisp:40-47",
+    "raw": "ast-gate.lisp",
+    "start": 40,
+    "end": "47",
+    "sha12": null,
+    "normalized": "ast-gate.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/ast-gate.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/ast-gate.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/ast-gate.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "blockchain-authority.lisp:640-641",
+    "raw": "blockchain-authority.lisp",
+    "start": 640,
+    "end": "641",
+    "sha12": null,
+    "normalized": "blockchain-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/blockchain-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/blockchain-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/blockchain-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "blockchain-authority.lisp:912-944",
+    "raw": "blockchain-authority.lisp",
+    "start": 912,
+    "end": "944",
+    "sha12": null,
+    "normalized": "blockchain-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/blockchain-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/blockchain-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/blockchain-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-ast.lisp:1904-1918",
+    "raw": "legal-ast.lisp",
+    "start": 1904,
+    "end": "1918",
+    "sha12": null,
+    "normalized": "legal-ast.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-ast.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-ast.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-ast.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-ast.lisp:427-445",
+    "raw": "legal-ast.lisp",
+    "start": 427,
+    "end": "445",
+    "sha12": null,
+    "normalized": "legal-ast.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-ast.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-ast.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-ast.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "blockchain-authority.lisp:953-971",
+    "raw": "blockchain-authority.lisp",
+    "start": 953,
+    "end": "971",
+    "sha12": null,
+    "normalized": "blockchain-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/blockchain-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/blockchain-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/blockchain-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-ast.lisp:2138-2148",
+    "raw": "legal-ast.lisp",
+    "start": 2138,
+    "end": "2148",
+    "sha12": null,
+    "normalized": "legal-ast.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-ast.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-ast.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-ast.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "blockchain-authority.lisp:259-269",
+    "raw": "blockchain-authority.lisp",
+    "start": 259,
+    "end": "269",
+    "sha12": null,
+    "normalized": "blockchain-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/blockchain-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/blockchain-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/blockchain-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "jws-authority.lisp:711",
+    "raw": "jws-authority.lisp",
+    "start": 711,
+    "end": null,
+    "sha12": null,
+    "normalized": "jws-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/jws-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/jws-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/jws-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "blockchain-authority.lisp:710",
+    "raw": "blockchain-authority.lisp",
+    "start": 710,
+    "end": null,
+    "sha12": null,
+    "normalized": "blockchain-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/blockchain-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/blockchain-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/blockchain-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-deontic.lisp:14-18",
+    "raw": "legal-deontic.lisp",
+    "start": 14,
+    "end": "18",
+    "sha12": null,
+    "normalized": "legal-deontic.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-deontic.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-deontic.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-deontic.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-conflict-resolution.lisp:69-112",
+    "raw": "legal-conflict-resolution.lisp",
+    "start": 69,
+    "end": "112",
+    "sha12": null,
+    "normalized": "legal-conflict-resolution.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-conflict-resolution.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-conflict-resolution.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-conflict-resolution.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "corpus-eu-links.lisp:113-121",
+    "raw": "corpus-eu-links.lisp",
+    "start": 113,
+    "end": "121",
+    "sha12": null,
+    "normalized": "corpus-eu-links.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/corpus-eu-links.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/corpus-eu-links.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/corpus-eu-links.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "government-source.lisp:239-250",
+    "raw": "government-source.lisp",
+    "start": 239,
+    "end": "250",
+    "sha12": null,
+    "normalized": "government-source.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/government-source.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/government-source.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/government-source.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "review-service.lisp:190-204",
+    "raw": "review-service.lisp",
+    "start": 190,
+    "end": "204",
+    "sha12": null,
+    "normalized": "review-service.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/review-service.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/review-service.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/review-service.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "mcp-server.lisp:41-53",
+    "raw": "mcp-server.lisp",
+    "start": 41,
+    "end": "53",
+    "sha12": null,
+    "normalized": "mcp-server.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/mcp-server.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/mcp-server.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/mcp-server.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-qa.lisp:95-106",
+    "raw": "legal-qa.lisp",
+    "start": 95,
+    "end": "106",
+    "sha12": null,
+    "normalized": "legal-qa.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-qa.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-qa.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-qa.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "ai-corpus-dump.lisp:40-50",
+    "raw": "ai-corpus-dump.lisp",
+    "start": 40,
+    "end": "50",
+    "sha12": null,
+    "normalized": "ai-corpus-dump.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/ai-corpus-dump.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/ai-corpus-dump.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/ai-corpus-dump.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "json-emit.lisp:39-58",
+    "raw": "json-emit.lisp",
+    "start": 39,
+    "end": "58",
+    "sha12": null,
+    "normalized": "json-emit.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/json-emit.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/json-emit.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/json-emit.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "corpus-sparql.lisp:102-104",
+    "raw": "corpus-sparql.lisp",
+    "start": 102,
+    "end": "104",
+    "sha12": null,
+    "normalized": "corpus-sparql.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/corpus-sparql.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/corpus-sparql.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/corpus-sparql.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-temporal.lisp:3",
+    "raw": "legal-temporal.lisp",
+    "start": 3,
+    "end": null,
+    "sha12": null,
+    "normalized": "legal-temporal.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-temporal.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-temporal.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-temporal.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "guard-metaeval.lisp:652-666",
+    "raw": "guard-metaeval.lisp",
+    "start": 652,
+    "end": "666",
+    "sha12": null,
+    "normalized": "guard-metaeval.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/guard-metaeval.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/guard-metaeval.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/guard-metaeval.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-event-calculus.lisp:47",
+    "raw": "legal-event-calculus.lisp",
+    "start": 47,
+    "end": null,
+    "sha12": null,
+    "normalized": "legal-event-calculus.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-event-calculus.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-event-calculus.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-event-calculus.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-strategy.lisp:62-63",
+    "raw": "legal-strategy.lisp",
+    "start": 62,
+    "end": "63",
+    "sha12": null,
+    "normalized": "legal-strategy.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-strategy.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-strategy.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-strategy.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-penalty.lisp:111-115",
+    "raw": "legal-penalty.lisp",
+    "start": 111,
+    "end": "115",
+    "sha12": null,
+    "normalized": "legal-penalty.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-penalty.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-penalty.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-penalty.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-references.lisp:6-8",
+    "raw": "legal-references.lisp",
+    "start": 6,
+    "end": "8",
+    "sha12": null,
+    "normalized": "legal-references.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-references.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-references.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-references.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-reasoning-bridge.lisp:32-45",
+    "raw": "legal-reasoning-bridge.lisp",
+    "start": 32,
+    "end": "45",
+    "sha12": null,
+    "normalized": "legal-reasoning-bridge.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-reasoning-bridge.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-reasoning-bridge.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-reasoning-bridge.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "hash-authority.lisp:11-46",
+    "raw": "hash-authority.lisp",
+    "start": 11,
+    "end": "46",
+    "sha12": null,
+    "normalized": "hash-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/hash-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/hash-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/hash-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "execution-trace.lisp:14-15",
+    "raw": "execution-trace.lisp",
+    "start": 14,
+    "end": "15",
+    "sha12": null,
+    "normalized": "execution-trace.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/execution-trace.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/execution-trace.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/execution-trace.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "provenance-link.lisp:19-27",
+    "raw": "provenance-link.lisp",
+    "start": 19,
+    "end": "27",
+    "sha12": null,
+    "normalized": "provenance-link.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/provenance-link.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/provenance-link.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/provenance-link.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-hypergraph.lisp:46-51",
+    "raw": "legal-hypergraph.lisp",
+    "start": 46,
+    "end": "51",
+    "sha12": null,
+    "normalized": "legal-hypergraph.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-hypergraph.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-hypergraph.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-hypergraph.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "corpus-eu-links.lisp:9-12",
+    "raw": "corpus-eu-links.lisp",
+    "start": 9,
+    "end": "12",
+    "sha12": null,
+    "normalized": "corpus-eu-links.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/corpus-eu-links.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/corpus-eu-links.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/corpus-eu-links.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "graph-reasoning.lisp:24-39",
+    "raw": "graph-reasoning.lisp",
+    "start": 24,
+    "end": "39",
+    "sha12": null,
+    "normalized": "graph-reasoning.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/graph-reasoning.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/graph-reasoning.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/graph-reasoning.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "guard-ops-pack.lisp:17-29",
+    "raw": "guard-ops-pack.lisp",
+    "start": 17,
+    "end": "29",
+    "sha12": null,
+    "normalized": "guard-ops-pack.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/guard-ops-pack.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/guard-ops-pack.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/guard-ops-pack.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-strategy.lisp:32-41",
+    "raw": "legal-strategy.lisp",
+    "start": 32,
+    "end": "41",
+    "sha12": null,
+    "normalized": "legal-strategy.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-strategy.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-strategy.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-strategy.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "generation.lisp:50-63",
+    "raw": "generation.lisp",
+    "start": 50,
+    "end": "63",
+    "sha12": null,
+    "normalized": "generation.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/generation.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/generation.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/generation.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-strategy.lisp:87-91",
+    "raw": "legal-strategy.lisp",
+    "start": 87,
+    "end": "91",
+    "sha12": null,
+    "normalized": "legal-strategy.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-strategy.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-strategy.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-strategy.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-deontic.lisp:169-183",
+    "raw": "legal-deontic.lisp",
+    "start": 169,
+    "end": "183",
+    "sha12": null,
+    "normalized": "legal-deontic.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-deontic.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-deontic.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-deontic.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "akoma-ntoso-emitter.lisp:46-53",
+    "raw": "akoma-ntoso-emitter.lisp",
+    "start": 46,
+    "end": "53",
+    "sha12": null,
+    "normalized": "akoma-ntoso-emitter.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/akoma-ntoso-emitter.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/akoma-ntoso-emitter.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/akoma-ntoso-emitter.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "akoma-ntoso-emitter.lisp:71-80",
+    "raw": "akoma-ntoso-emitter.lisp",
+    "start": 71,
+    "end": "80",
+    "sha12": null,
+    "normalized": "akoma-ntoso-emitter.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/akoma-ntoso-emitter.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/akoma-ntoso-emitter.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/akoma-ntoso-emitter.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "consolidation-engine.lisp:93",
+    "raw": "consolidation-engine.lisp",
+    "start": 93,
+    "end": null,
+    "sha12": null,
+    "normalized": "consolidation-engine.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/consolidation-engine.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/consolidation-engine.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/consolidation-engine.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "consolidation-bridge.lisp:71",
+    "raw": "consolidation-bridge.lisp",
+    "start": 71,
+    "end": null,
+    "sha12": null,
+    "normalized": "consolidation-bridge.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/consolidation-bridge.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/consolidation-bridge.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/consolidation-bridge.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "greek-legislation-ontology.lisp:87-98",
+    "raw": "greek-legislation-ontology.lisp",
+    "start": 87,
+    "end": "98",
+    "sha12": null,
+    "normalized": "greek-legislation-ontology.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/greek-legislation-ontology.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/greek-legislation-ontology.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/greek-legislation-ontology.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-conflict-resolution.lisp:44-60",
+    "raw": "legal-conflict-resolution.lisp",
+    "start": 44,
+    "end": "60",
+    "sha12": null,
+    "normalized": "legal-conflict-resolution.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-conflict-resolution.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-conflict-resolution.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-conflict-resolution.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-hypergraph.lisp:186-192",
+    "raw": "legal-hypergraph.lisp",
+    "start": 186,
+    "end": "192",
+    "sha12": null,
+    "normalized": "legal-hypergraph.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-hypergraph.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-hypergraph.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-hypergraph.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "greek-legislation-ontology.lisp:208-212",
+    "raw": "greek-legislation-ontology.lisp",
+    "start": 208,
+    "end": "212",
+    "sha12": null,
+    "normalized": "greek-legislation-ontology.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/greek-legislation-ontology.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/greek-legislation-ontology.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/greek-legislation-ontology.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-hypergraph.lisp:46-62",
+    "raw": "legal-hypergraph.lisp",
+    "start": 46,
+    "end": "62",
+    "sha12": null,
+    "normalized": "legal-hypergraph.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-hypergraph.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-hypergraph.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-hypergraph.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-reasoning-bridge.lisp:96-170",
+    "raw": "legal-reasoning-bridge.lisp",
+    "start": 96,
+    "end": "170",
+    "sha12": null,
+    "normalized": "legal-reasoning-bridge.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-reasoning-bridge.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-reasoning-bridge.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-reasoning-bridge.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "execution-trace.lisp:116-118",
+    "raw": "execution-trace.lisp",
+    "start": 116,
+    "end": "118",
+    "sha12": null,
+    "normalized": "execution-trace.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/execution-trace.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/execution-trace.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/execution-trace.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "corpus-sparql.lisp:42-60",
+    "raw": "corpus-sparql.lisp",
+    "start": 42,
+    "end": "60",
+    "sha12": null,
+    "normalized": "corpus-sparql.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/corpus-sparql.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/corpus-sparql.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/corpus-sparql.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-counterfactual.lisp:9-12",
+    "raw": "legal-counterfactual.lisp",
+    "start": 9,
+    "end": "12",
+    "sha12": null,
+    "normalized": "legal-counterfactual.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-counterfactual.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-counterfactual.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-counterfactual.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-hypo.lisp:23-39",
+    "raw": "legal-hypo.lisp",
+    "start": 23,
+    "end": "39",
+    "sha12": null,
+    "normalized": "legal-hypo.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-hypo.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-hypo.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-hypo.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "provenance-link.lisp:60-88",
+    "raw": "provenance-link.lisp",
+    "start": 60,
+    "end": "88",
+    "sha12": null,
+    "normalized": "provenance-link.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/provenance-link.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/provenance-link.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/provenance-link.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-penalty.lisp:82-86",
+    "raw": "legal-penalty.lisp",
+    "start": 82,
+    "end": "86",
+    "sha12": null,
+    "normalized": "legal-penalty.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-penalty.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-penalty.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-penalty.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "text-canonicalizer.lisp:19",
+    "raw": "text-canonicalizer.lisp",
+    "start": 19,
+    "end": null,
+    "sha12": null,
+    "normalized": "text-canonicalizer.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/text-canonicalizer.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/text-canonicalizer.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/text-canonicalizer.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "text-canonicalizer.lisp:18-22",
+    "raw": "text-canonicalizer.lisp",
+    "start": 18,
+    "end": "22",
+    "sha12": null,
+    "normalized": "text-canonicalizer.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/text-canonicalizer.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/text-canonicalizer.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/text-canonicalizer.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "text-canonicalizer.lisp:503-513",
+    "raw": "text-canonicalizer.lisp",
+    "start": 503,
+    "end": "513",
+    "sha12": null,
+    "normalized": "text-canonicalizer.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/text-canonicalizer.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/text-canonicalizer.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/text-canonicalizer.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "text-canonicalizer.lisp:13",
+    "raw": "text-canonicalizer.lisp",
+    "start": 13,
+    "end": null,
+    "sha12": null,
+    "normalized": "text-canonicalizer.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/text-canonicalizer.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/text-canonicalizer.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/text-canonicalizer.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-references.lisp:44-48",
+    "raw": "legal-references.lisp",
+    "start": 44,
+    "end": "48",
+    "sha12": null,
+    "normalized": "legal-references.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-references.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-references.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-references.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "text-canonicalizer.lisp:20",
+    "raw": "text-canonicalizer.lisp",
+    "start": 20,
+    "end": null,
+    "sha12": null,
+    "normalized": "text-canonicalizer.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/text-canonicalizer.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/text-canonicalizer.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/text-canonicalizer.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "source-profile.lisp:434-441",
+    "raw": "source-profile.lisp",
+    "start": 434,
+    "end": "441",
+    "sha12": null,
+    "normalized": "source-profile.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/source-profile.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/source-profile.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/source-profile.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "source-profile.lisp:263-270",
+    "raw": "source-profile.lisp",
+    "start": 263,
+    "end": "270",
+    "sha12": null,
+    "normalized": "source-profile.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/source-profile.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/source-profile.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/source-profile.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "source-profile.lisp:33-34",
+    "raw": "source-profile.lisp",
+    "start": 33,
+    "end": "34",
+    "sha12": null,
+    "normalized": "source-profile.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/source-profile.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/source-profile.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/source-profile.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "source-profile.lisp:209-232",
+    "raw": "source-profile.lisp",
+    "start": 209,
+    "end": "232",
+    "sha12": null,
+    "normalized": "source-profile.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/source-profile.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/source-profile.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/source-profile.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "signed-embedding-manifest.lisp:241-266",
+    "raw": "signed-embedding-manifest.lisp",
+    "start": 241,
+    "end": "266",
+    "sha12": null,
+    "normalized": "signed-embedding-manifest.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/signed-embedding-manifest.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/signed-embedding-manifest.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/signed-embedding-manifest.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "signed-embedding-manifest.lisp:304-321",
+    "raw": "signed-embedding-manifest.lisp",
+    "start": 304,
+    "end": "321",
+    "sha12": null,
+    "normalized": "signed-embedding-manifest.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/signed-embedding-manifest.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/signed-embedding-manifest.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/signed-embedding-manifest.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "signed-embedding-manifest.lisp:695-706",
+    "raw": "signed-embedding-manifest.lisp",
+    "start": 695,
+    "end": "706",
+    "sha12": null,
+    "normalized": "signed-embedding-manifest.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/signed-embedding-manifest.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/signed-embedding-manifest.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/signed-embedding-manifest.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "shacl-validator.lisp:132-167",
+    "raw": "shacl-validator.lisp",
+    "start": 132,
+    "end": "167",
+    "sha12": null,
+    "normalized": "shacl-validator.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/shacl-validator.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/shacl-validator.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/shacl-validator.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "shacl-validator.lisp:102-109",
+    "raw": "shacl-validator.lisp",
+    "start": 102,
+    "end": "109",
+    "sha12": null,
+    "normalized": "shacl-validator.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/shacl-validator.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/shacl-validator.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/shacl-validator.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "turtle-parser.lisp:8",
+    "raw": "turtle-parser.lisp",
+    "start": 8,
+    "end": null,
+    "sha12": null,
+    "normalized": "turtle-parser.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/turtle-parser.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/turtle-parser.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/turtle-parser.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "turtle-parser.lisp:93",
+    "raw": "turtle-parser.lisp",
+    "start": 93,
+    "end": null,
+    "sha12": null,
+    "normalized": "turtle-parser.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/turtle-parser.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/turtle-parser.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/turtle-parser.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-knowledge.lisp:144-146",
+    "raw": "legal-knowledge.lisp",
+    "start": 144,
+    "end": "146",
+    "sha12": null,
+    "normalized": "legal-knowledge.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-knowledge.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-knowledge.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-knowledge.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-knowledge.lisp:27-35",
+    "raw": "legal-knowledge.lisp",
+    "start": 27,
+    "end": "35",
+    "sha12": null,
+    "normalized": "legal-knowledge.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-knowledge.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-knowledge.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-knowledge.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-deontic.lisp:113-141",
+    "raw": "legal-deontic.lisp",
+    "start": 113,
+    "end": "141",
+    "sha12": null,
+    "normalized": "legal-deontic.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-deontic.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-deontic.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-deontic.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-knowledge.lisp:68-77",
+    "raw": "legal-knowledge.lisp",
+    "start": 68,
+    "end": "77",
+    "sha12": null,
+    "normalized": "legal-knowledge.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-knowledge.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-knowledge.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-knowledge.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-subsumption.lisp:137-160",
+    "raw": "legal-subsumption.lisp",
+    "start": 137,
+    "end": "160",
+    "sha12": null,
+    "normalized": "legal-subsumption.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-subsumption.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-subsumption.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-subsumption.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "fluid-induction.lisp:176-189",
+    "raw": "fluid-induction.lisp",
+    "start": 176,
+    "end": "189",
+    "sha12": null,
+    "normalized": "fluid-induction.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/fluid-induction.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/fluid-induction.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/fluid-induction.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "embeddings-authority.lisp:6-8",
+    "raw": "embeddings-authority.lisp",
+    "start": 6,
+    "end": "8",
+    "sha12": null,
+    "normalized": "embeddings-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/embeddings-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/embeddings-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/embeddings-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "embeddings-authority.lisp:61-68",
+    "raw": "embeddings-authority.lisp",
+    "start": 61,
+    "end": "68",
+    "sha12": null,
+    "normalized": "embeddings-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/embeddings-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/embeddings-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/embeddings-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "blockchain-authority.lisp:951-972",
+    "raw": "blockchain-authority.lisp",
+    "start": 951,
+    "end": "972",
+    "sha12": null,
+    "normalized": "blockchain-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/blockchain-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/blockchain-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/blockchain-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-subsumption.lisp:33-37",
+    "raw": "legal-subsumption.lisp",
+    "start": 33,
+    "end": "37",
+    "sha12": null,
+    "normalized": "legal-subsumption.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-subsumption.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-subsumption.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-subsumption.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "text-canonicalizer.lisp:571-597",
+    "raw": "text-canonicalizer.lisp",
+    "start": 571,
+    "end": "597",
+    "sha12": null,
+    "normalized": "text-canonicalizer.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/text-canonicalizer.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/text-canonicalizer.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/text-canonicalizer.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "narrative-provenance.lisp:266",
+    "raw": "narrative-provenance.lisp",
+    "start": 266,
+    "end": null,
+    "sha12": null,
+    "normalized": "narrative-provenance.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/narrative-provenance.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/narrative-provenance.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/narrative-provenance.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "narrative-provenance.lisp:907-930",
+    "raw": "narrative-provenance.lisp",
+    "start": 907,
+    "end": "930",
+    "sha12": null,
+    "normalized": "narrative-provenance.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/narrative-provenance.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/narrative-provenance.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/narrative-provenance.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "semantic-authority.lisp:730-754",
+    "raw": "semantic-authority.lisp",
+    "start": 730,
+    "end": "754",
+    "sha12": null,
+    "normalized": "semantic-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/semantic-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/semantic-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/semantic-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-extraction-verify.lisp:356-361",
+    "raw": "legal-extraction-verify.lisp",
+    "start": 356,
+    "end": "361",
+    "sha12": null,
+    "normalized": "legal-extraction-verify.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-extraction-verify.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-extraction-verify.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-extraction-verify.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-extraction-verify.lisp:38-40",
+    "raw": "legal-extraction-verify.lisp",
+    "start": 38,
+    "end": "40",
+    "sha12": null,
+    "normalized": "legal-extraction-verify.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-extraction-verify.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-extraction-verify.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-extraction-verify.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-extraction-verify.lisp:383-387",
+    "raw": "legal-extraction-verify.lisp",
+    "start": 383,
+    "end": "387",
+    "sha12": null,
+    "normalized": "legal-extraction-verify.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-extraction-verify.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-extraction-verify.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-extraction-verify.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-deontic.lisp:87",
+    "raw": "legal-deontic.lisp",
+    "start": 87,
+    "end": null,
+    "sha12": null,
+    "normalized": "legal-deontic.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-deontic.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-deontic.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-deontic.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-subsumption.lisp:88-93",
+    "raw": "legal-subsumption.lisp",
+    "start": 88,
+    "end": "93",
+    "sha12": null,
+    "normalized": "legal-subsumption.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-subsumption.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-subsumption.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-subsumption.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-extraction-verify.lisp:371-380",
+    "raw": "legal-extraction-verify.lisp",
+    "start": 371,
+    "end": "380",
+    "sha12": null,
+    "normalized": "legal-extraction-verify.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-extraction-verify.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-extraction-verify.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-extraction-verify.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "sparql-endpoint.lisp:10",
+    "raw": "sparql-endpoint.lisp",
+    "start": 10,
+    "end": null,
+    "sha12": null,
+    "normalized": "sparql-endpoint.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/sparql-endpoint.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/sparql-endpoint.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/sparql-endpoint.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "sparql-endpoint.lisp:554-573",
+    "raw": "sparql-endpoint.lisp",
+    "start": 554,
+    "end": "573",
+    "sha12": null,
+    "normalized": "sparql-endpoint.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/sparql-endpoint.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/sparql-endpoint.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/sparql-endpoint.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-subsumption.lisp:33-66",
+    "raw": "legal-subsumption.lisp",
+    "start": 33,
+    "end": "66",
+    "sha12": null,
+    "normalized": "legal-subsumption.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-subsumption.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-subsumption.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-subsumption.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "eu-interop-layer.lisp:376-387",
+    "raw": "eu-interop-layer.lisp",
+    "start": 376,
+    "end": "387",
+    "sha12": null,
+    "normalized": "eu-interop-layer.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/eu-interop-layer.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/eu-interop-layer.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/eu-interop-layer.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-audit-system.lisp:780-787",
+    "raw": "legal-audit-system.lisp",
+    "start": 780,
+    "end": "787",
+    "sha12": null,
+    "normalized": "legal-audit-system.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-audit-system.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-audit-system.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-audit-system.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "ai-ingest-manifest.lisp:30-38",
+    "raw": "ai-ingest-manifest.lisp",
+    "start": 30,
+    "end": "38",
+    "sha12": null,
+    "normalized": "ai-ingest-manifest.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/ai-ingest-manifest.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/ai-ingest-manifest.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/ai-ingest-manifest.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "narrative-provenance.lisp:32-34",
+    "raw": "narrative-provenance.lisp",
+    "start": 32,
+    "end": "34",
+    "sha12": null,
+    "normalized": "narrative-provenance.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/narrative-provenance.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/narrative-provenance.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/narrative-provenance.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "ai-citation-strategy.lisp:31-33",
+    "raw": "ai-citation-strategy.lisp",
+    "start": 31,
+    "end": "33",
+    "sha12": null,
+    "normalized": "ai-citation-strategy.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/ai-citation-strategy.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/ai-citation-strategy.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/ai-citation-strategy.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "semantic-versioning-system.lisp:43",
+    "raw": "semantic-versioning-system.lisp",
+    "start": 43,
+    "end": null,
+    "sha12": null,
+    "normalized": "semantic-versioning-system.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/semantic-versioning-system.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/semantic-versioning-system.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/semantic-versioning-system.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "rdfs-inference.lisp:399-431",
+    "raw": "rdfs-inference.lisp",
+    "start": 399,
+    "end": "431",
+    "sha12": null,
+    "normalized": "rdfs-inference.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/rdfs-inference.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/rdfs-inference.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/rdfs-inference.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "reasoning-authority.lisp:455-480",
+    "raw": "reasoning-authority.lisp",
+    "start": 455,
+    "end": "480",
+    "sha12": null,
+    "normalized": "reasoning-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/reasoning-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/reasoning-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/reasoning-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "citation-authority.lisp:408-476",
+    "raw": "citation-authority.lisp",
+    "start": 408,
+    "end": "476",
+    "sha12": null,
+    "normalized": "citation-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/citation-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/citation-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/citation-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "validate-logical-blocks.lisp:148-163",
+    "raw": "validate-logical-blocks.lisp",
+    "start": 148,
+    "end": "163",
+    "sha12": null,
+    "normalized": "validate-logical-blocks.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/validate-logical-blocks.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/validate-logical-blocks.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/validate-logical-blocks.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "typographic-classifier.lisp:458-473",
+    "raw": "typographic-classifier.lisp",
+    "start": 458,
+    "end": "473",
+    "sha12": null,
+    "normalized": "typographic-classifier.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/typographic-classifier.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/typographic-classifier.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/typographic-classifier.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "ai-citation-strategy.lisp:589-601",
+    "raw": "ai-citation-strategy.lisp",
+    "start": 589,
+    "end": "601",
+    "sha12": null,
+    "normalized": "ai-citation-strategy.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/ai-citation-strategy.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/ai-citation-strategy.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/ai-citation-strategy.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "lexicon-neurolingo.lisp:3-4",
+    "raw": "lexicon-neurolingo.lisp",
+    "start": 3,
+    "end": "4",
+    "sha12": null,
+    "normalized": "lexicon-neurolingo.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/lexicon-neurolingo.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/lexicon-neurolingo.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/lexicon-neurolingo.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "greek-lemmatizer.lisp:5-6",
+    "raw": "greek-lemmatizer.lisp",
+    "start": 5,
+    "end": "6",
+    "sha12": null,
+    "normalized": "greek-lemmatizer.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/greek-lemmatizer.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/greek-lemmatizer.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/greek-lemmatizer.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "reasoning-authority.lisp:5-6",
+    "raw": "reasoning-authority.lisp",
+    "start": 5,
+    "end": "6",
+    "sha12": null,
+    "normalized": "reasoning-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/reasoning-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/reasoning-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/reasoning-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "semantic-authority.lisp:757-790",
+    "raw": "semantic-authority.lisp",
+    "start": 757,
+    "end": "790",
+    "sha12": null,
+    "normalized": "semantic-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/semantic-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/semantic-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/semantic-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "document-fetch.lisp:92-106",
+    "raw": "document-fetch.lisp",
+    "start": 92,
+    "end": "106",
+    "sha12": null,
+    "normalized": "document-fetch.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/document-fetch.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/document-fetch.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/document-fetch.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "proof-carrying.lisp:143-155",
+    "raw": "proof-carrying.lisp",
+    "start": 143,
+    "end": "155",
+    "sha12": null,
+    "normalized": "proof-carrying.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/proof-carrying.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/proof-carrying.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/proof-carrying.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "constitutional-gate.lisp:59-65",
+    "raw": "constitutional-gate.lisp",
+    "start": 59,
+    "end": "65",
+    "sha12": null,
+    "normalized": "constitutional-gate.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/constitutional-gate.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/constitutional-gate.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/constitutional-gate.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "journal.lisp:45-48",
+    "raw": "journal.lisp",
+    "start": 45,
+    "end": "48",
+    "sha12": null,
+    "normalized": "journal.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/journal.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/journal.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/journal.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "cognition.lisp:69-89",
+    "raw": "cognition.lisp",
+    "start": 69,
+    "end": "89",
+    "sha12": null,
+    "normalized": "cognition.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/cognition.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/cognition.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/cognition.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "amendment-extractor.lisp:189-199",
+    "raw": "amendment-extractor.lisp",
+    "start": 189,
+    "end": "199",
+    "sha12": null,
+    "normalized": "amendment-extractor.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/amendment-extractor.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/amendment-extractor.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/amendment-extractor.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "pdf-authority.lisp:1386-1439",
+    "raw": "pdf-authority.lisp",
+    "start": 1386,
+    "end": "1439",
+    "sha12": null,
+    "normalized": "pdf-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/pdf-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/pdf-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/pdf-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "version-graph.lisp:1497-1531",
+    "raw": "version-graph.lisp",
+    "start": 1497,
+    "end": "1531",
+    "sha12": null,
+    "normalized": "version-graph.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/version-graph.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/version-graph.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/version-graph.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "version-graph.lisp:193-195",
+    "raw": "version-graph.lisp",
+    "start": 193,
+    "end": "195",
+    "sha12": null,
+    "normalized": "version-graph.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/version-graph.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/version-graph.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/version-graph.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "guard-ops-pack.lisp:15-31",
+    "raw": "guard-ops-pack.lisp",
+    "start": 15,
+    "end": "31",
+    "sha12": null,
+    "normalized": "guard-ops-pack.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/guard-ops-pack.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/guard-ops-pack.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/guard-ops-pack.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "guard-metaeval.lisp:216-228",
+    "raw": "guard-metaeval.lisp",
+    "start": 216,
+    "end": "228",
+    "sha12": null,
+    "normalized": "guard-metaeval.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/guard-metaeval.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/guard-metaeval.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/guard-metaeval.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-knowledge.lisp:148-154",
+    "raw": "legal-knowledge.lisp",
+    "start": 148,
+    "end": "154",
+    "sha12": null,
+    "normalized": "legal-knowledge.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-knowledge.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-knowledge.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-knowledge.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "signed-embedding-manifest.lisp:158-161",
+    "raw": "signed-embedding-manifest.lisp",
+    "start": 158,
+    "end": "161",
+    "sha12": null,
+    "normalized": "signed-embedding-manifest.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/signed-embedding-manifest.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/signed-embedding-manifest.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/signed-embedding-manifest.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "embeddings-authority.lisp:99-148",
+    "raw": "embeddings-authority.lisp",
+    "start": 99,
+    "end": "148",
+    "sha12": null,
+    "normalized": "embeddings-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/embeddings-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/embeddings-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/embeddings-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "source-profile.lisp:415-432",
+    "raw": "source-profile.lisp",
+    "start": 415,
+    "end": "432",
+    "sha12": null,
+    "normalized": "source-profile.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/source-profile.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/source-profile.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/source-profile.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-extraction-verify.lisp:348-355",
+    "raw": "legal-extraction-verify.lisp",
+    "start": 348,
+    "end": "355",
+    "sha12": null,
+    "normalized": "legal-extraction-verify.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-extraction-verify.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-extraction-verify.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-extraction-verify.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-inference-engine.lisp:514-520",
+    "raw": "legal-inference-engine.lisp",
+    "start": 514,
+    "end": "520",
+    "sha12": null,
+    "normalized": "legal-inference-engine.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-inference-engine.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-inference-engine.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-inference-engine.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-knowledge.lisp:190-207",
+    "raw": "legal-knowledge.lisp",
+    "start": 190,
+    "end": "207",
+    "sha12": null,
+    "normalized": "legal-knowledge.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-knowledge.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-knowledge.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-knowledge.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "deterministic-time.lisp:164-176",
+    "raw": "deterministic-time.lisp",
+    "start": 164,
+    "end": "176",
+    "sha12": null,
+    "normalized": "deterministic-time.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/deterministic-time.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/deterministic-time.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/deterministic-time.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "deterministic-time.lisp:129-162",
+    "raw": "deterministic-time.lisp",
+    "start": 129,
+    "end": "162",
+    "sha12": null,
+    "normalized": "deterministic-time.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/deterministic-time.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/deterministic-time.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/deterministic-time.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "deterministic-time.lisp:84-119",
+    "raw": "deterministic-time.lisp",
+    "start": 84,
+    "end": "119",
+    "sha12": null,
+    "normalized": "deterministic-time.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/deterministic-time.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/deterministic-time.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/deterministic-time.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "journal.lisp:50-59",
+    "raw": "journal.lisp",
+    "start": 50,
+    "end": "59",
+    "sha12": null,
+    "normalized": "journal.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/journal.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/journal.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/journal.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "journal.lisp:399-402",
+    "raw": "journal.lisp",
+    "start": 399,
+    "end": "402",
+    "sha12": null,
+    "normalized": "journal.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/journal.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/journal.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/journal.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "safe-read.lisp:275-308",
+    "raw": "safe-read.lisp",
+    "start": 275,
+    "end": "308",
+    "sha12": null,
+    "normalized": "safe-read.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/safe-read.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/safe-read.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/safe-read.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "journal.lisp:265-292",
+    "raw": "journal.lisp",
+    "start": 265,
+    "end": "292",
+    "sha12": null,
+    "normalized": "journal.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/journal.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/journal.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/journal.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "safe-read.lisp:32",
+    "raw": "safe-read.lisp",
+    "start": 32,
+    "end": null,
+    "sha12": null,
+    "normalized": "safe-read.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/safe-read.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/safe-read.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/safe-read.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "journal.lisp:352-361",
+    "raw": "journal.lisp",
+    "start": 352,
+    "end": "361",
+    "sha12": null,
+    "normalized": "journal.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/journal.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/journal.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/journal.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "version-graph.lisp:1727-1729",
+    "raw": "version-graph.lisp",
+    "start": 1727,
+    "end": "1729",
+    "sha12": null,
+    "normalized": "version-graph.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/version-graph.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/version-graph.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/version-graph.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "version-graph.lisp:2096-2104",
+    "raw": "version-graph.lisp",
+    "start": 2096,
+    "end": "2104",
+    "sha12": null,
+    "normalized": "version-graph.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/version-graph.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/version-graph.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/version-graph.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "adoption-decision.lisp:90-94",
+    "raw": "adoption-decision.lisp",
+    "start": 90,
+    "end": "94",
+    "sha12": null,
+    "normalized": "adoption-decision.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/adoption-decision.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/adoption-decision.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/adoption-decision.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "pdf-authority.lisp:1427-1439",
+    "raw": "pdf-authority.lisp",
+    "start": 1427,
+    "end": "1439",
+    "sha12": null,
+    "normalized": "pdf-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/pdf-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/pdf-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/pdf-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "pdf-authority.lisp:944-964",
+    "raw": "pdf-authority.lisp",
+    "start": 944,
+    "end": "964",
+    "sha12": null,
+    "normalized": "pdf-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/pdf-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/pdf-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/pdf-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "pdf-authority.lisp:381-446",
+    "raw": "pdf-authority.lisp",
+    "start": 381,
+    "end": "446",
+    "sha12": null,
+    "normalized": "pdf-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/pdf-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/pdf-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/pdf-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "document-fetch.lisp:258-291",
+    "raw": "document-fetch.lisp",
+    "start": 258,
+    "end": "291",
+    "sha12": null,
+    "normalized": "document-fetch.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/document-fetch.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/document-fetch.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/document-fetch.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "journal.lisp:88-92",
+    "raw": "journal.lisp",
+    "start": 88,
+    "end": "92",
+    "sha12": null,
+    "normalized": "journal.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/journal.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/journal.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/journal.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "adoption-decision.lisp:91-94",
+    "raw": "adoption-decision.lisp",
+    "start": 91,
+    "end": "94",
+    "sha12": null,
+    "normalized": "adoption-decision.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/adoption-decision.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/adoption-decision.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/adoption-decision.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "canonical-representation.lisp:338-342",
+    "raw": "canonical-representation.lisp",
+    "start": 338,
+    "end": "342",
+    "sha12": null,
+    "normalized": "canonical-representation.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/canonical-representation.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/canonical-representation.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/canonical-representation.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "archive-authority.lisp:87",
+    "raw": "archive-authority.lisp",
+    "start": 87,
+    "end": null,
+    "sha12": null,
+    "normalized": "archive-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/archive-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/archive-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/archive-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "archive-authority.lisp:131-132",
+    "raw": "archive-authority.lisp",
+    "start": 131,
+    "end": "132",
+    "sha12": null,
+    "normalized": "archive-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/archive-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/archive-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/archive-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "jws-authority.lisp:697",
+    "raw": "jws-authority.lisp",
+    "start": 697,
+    "end": null,
+    "sha12": null,
+    "normalized": "jws-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/jws-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/jws-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/jws-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "corpus-intelligence.lisp:206",
+    "raw": "corpus-intelligence.lisp",
+    "start": 206,
+    "end": null,
+    "sha12": null,
+    "normalized": "corpus-intelligence.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/corpus-intelligence.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/corpus-intelligence.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/corpus-intelligence.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "citation-authority.lisp:716",
+    "raw": "citation-authority.lisp",
+    "start": 716,
+    "end": null,
+    "sha12": null,
+    "normalized": "citation-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/citation-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/citation-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/citation-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-temporal.lisp:28-53",
+    "raw": "legal-temporal.lisp",
+    "start": 28,
+    "end": "53",
+    "sha12": null,
+    "normalized": "legal-temporal.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-temporal.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-temporal.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-temporal.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-reasoning-bridge.lisp:69-89",
+    "raw": "legal-reasoning-bridge.lisp",
+    "start": 69,
+    "end": "89",
+    "sha12": null,
+    "normalized": "legal-reasoning-bridge.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-reasoning-bridge.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-reasoning-bridge.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-reasoning-bridge.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "graph-reasoning.lisp:54-90",
+    "raw": "graph-reasoning.lisp",
+    "start": 54,
+    "end": "90",
+    "sha12": null,
+    "normalized": "graph-reasoning.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/graph-reasoning.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/graph-reasoning.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/graph-reasoning.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "generation.lisp:215-227",
+    "raw": "generation.lisp",
+    "start": 215,
+    "end": "227",
+    "sha12": null,
+    "normalized": "generation.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/generation.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/generation.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/generation.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "shacl-validator.lisp:311-323",
+    "raw": "shacl-validator.lisp",
+    "start": 311,
+    "end": "323",
+    "sha12": null,
+    "normalized": "shacl-validator.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/shacl-validator.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/shacl-validator.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/shacl-validator.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "signed-embedding-manifest.lisp:383-396",
+    "raw": "signed-embedding-manifest.lisp",
+    "start": 383,
+    "end": "396",
+    "sha12": null,
+    "normalized": "signed-embedding-manifest.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/signed-embedding-manifest.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/signed-embedding-manifest.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/signed-embedding-manifest.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-references.lisp:39-42",
+    "raw": "legal-references.lisp",
+    "start": 39,
+    "end": "42",
+    "sha12": null,
+    "normalized": "legal-references.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-references.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-references.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-references.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "corpus-eu-links.lisp:27",
+    "raw": "corpus-eu-links.lisp",
+    "start": 27,
+    "end": null,
+    "sha12": null,
+    "normalized": "corpus-eu-links.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/corpus-eu-links.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/corpus-eu-links.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/corpus-eu-links.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "embeddings-authority.lisp:286",
+    "raw": "embeddings-authority.lisp",
+    "start": 286,
+    "end": null,
+    "sha12": null,
+    "normalized": "embeddings-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/embeddings-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/embeddings-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/embeddings-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "legal-penalty.lisp:65",
+    "raw": "legal-penalty.lisp",
+    "start": 65,
+    "end": null,
+    "sha12": null,
+    "normalized": "legal-penalty.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/legal-penalty.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/legal-penalty.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/legal-penalty.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "text-canonicalizer.lisp:313",
+    "raw": "text-canonicalizer.lisp",
+    "start": 313,
+    "end": null,
+    "sha12": null,
+    "normalized": "text-canonicalizer.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/text-canonicalizer.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/text-canonicalizer.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/text-canonicalizer.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "source-profile.lisp:341-353",
+    "raw": "source-profile.lisp",
+    "start": 341,
+    "end": "353",
+    "sha12": null,
+    "normalized": "source-profile.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/source-profile.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/source-profile.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/source-profile.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "rdfs-inference.lisp:283-431",
+    "raw": "rdfs-inference.lisp",
+    "start": 283,
+    "end": "431",
+    "sha12": null,
+    "normalized": "rdfs-inference.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/rdfs-inference.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/rdfs-inference.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/rdfs-inference.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "reasoning-authority.lisp:417-480",
+    "raw": "reasoning-authority.lisp",
+    "start": 417,
+    "end": "480",
+    "sha12": null,
+    "normalized": "reasoning-authority.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/reasoning-authority.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/reasoning-authority.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/reasoning-authority.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "eu-interop-layer.lisp:381-387",
+    "raw": "eu-interop-layer.lisp",
+    "start": 381,
+    "end": "387",
+    "sha12": null,
+    "normalized": "eu-interop-layer.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/eu-interop-layer.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/eu-interop-layer.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/eu-interop-layer.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "static-site.lisp:61-68",
+    "raw": "static-site.lisp",
+    "start": 61,
+    "end": "68",
+    "sha12": null,
+    "normalized": "static-site.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/static-site.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/static-site.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/static-site.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "akoma-ntoso-emitter.lisp:46-63",
+    "raw": "akoma-ntoso-emitter.lisp",
+    "start": 46,
+    "end": "63",
+    "sha12": null,
+    "normalized": "akoma-ntoso-emitter.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/akoma-ntoso-emitter.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/akoma-ntoso-emitter.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/akoma-ntoso-emitter.lisp» (εύρος έγκυρο)"
+   },
+   {
+    "token": "sparql-endpoint.lisp:576-600",
+    "raw": "sparql-endpoint.lisp",
+    "start": 576,
+    "end": "600",
+    "sha12": null,
+    "normalized": "sparql-endpoint.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/sparql-endpoint.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/sparql-endpoint.lisp"
+    ],
+    "result": "ΜΟΝΟΣΗΜΑΝΤΟ → «source/sparql-endpoint.lisp» (εύρος έγκυρο)"
+   }
+  ],
+  "C  REGISTRY/ROOT-PARSER-DEFECT": [],
+  "D  AMBIGUOUS": [
+   {
+    "token": "config.lisp:7-49",
+    "raw": "config.lisp",
+    "start": 7,
+    "end": "49",
+    "sha12": null,
+    "normalized": "config.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/config.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/config.lisp",
+     "systems/orchestrator-ai-core/config.lisp",
+     "third-party/cl+ssl-20250622-git/src/config.lisp",
+     "third-party/lparallel-v2.8.4/src/util/config.lisp"
+    ],
+    "result": "λύνει σε «source/config.lisp» ΑΛΛΑ υπάρχουν 3 ακόμη υποψήφιοι στο corpus: ['systems/orchestrator-ai-core/config.lisp', 'third-party/cl+ssl-20250622-git/src/config.lisp', 'third-party/lparallel-v2.8.4/src/util/config.lisp']"
+   },
+   {
+    "token": "config.lisp:44",
+    "raw": "config.lisp",
+    "start": 44,
+    "end": null,
+    "sha12": null,
+    "normalized": "config.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/config.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/config.lisp",
+     "systems/orchestrator-ai-core/config.lisp",
+     "third-party/cl+ssl-20250622-git/src/config.lisp",
+     "third-party/lparallel-v2.8.4/src/util/config.lisp"
+    ],
+    "result": "λύνει σε «source/config.lisp» ΑΛΛΑ υπάρχουν 3 ακόμη υποψήφιοι στο corpus: ['systems/orchestrator-ai-core/config.lisp', 'third-party/cl+ssl-20250622-git/src/config.lisp', 'third-party/lparallel-v2.8.4/src/util/config.lisp']"
+   },
+   {
+    "token": "memory.lisp:110",
+    "raw": "memory.lisp",
+    "start": 110,
+    "end": null,
+    "sha12": null,
+    "normalized": "memory.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/memory.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/memory.lisp",
+     "third-party/cffi-20250622-git/tests/memory.lisp"
+    ],
+    "result": "λύνει σε «source/memory.lisp» ΑΛΛΑ υπάρχουν 1 ακόμη υποψήφιοι στο corpus: ['third-party/cffi-20250622-git/tests/memory.lisp']"
+   },
+   {
+    "token": "memory.lisp:258-272",
+    "raw": "memory.lisp",
+    "start": 258,
+    "end": "272",
+    "sha12": null,
+    "normalized": "memory.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/memory.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/memory.lisp",
+     "third-party/cffi-20250622-git/tests/memory.lisp"
+    ],
+    "result": "λύνει σε «source/memory.lisp» ΑΛΛΑ υπάρχουν 1 ακόμη υποψήφιοι στο corpus: ['third-party/cffi-20250622-git/tests/memory.lisp']"
+   },
+   {
+    "token": "memory.lisp:48-50",
+    "raw": "memory.lisp",
+    "start": 48,
+    "end": "50",
+    "sha12": null,
+    "normalized": "memory.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/memory.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/memory.lisp",
+     "third-party/cffi-20250622-git/tests/memory.lisp"
+    ],
+    "result": "λύνει σε «source/memory.lisp» ΑΛΛΑ υπάρχουν 1 ακόμη υποψήφιοι στο corpus: ['third-party/cffi-20250622-git/tests/memory.lisp']"
+   },
+   {
+    "token": "protocols.lisp:1-263",
+    "raw": "protocols.lisp",
+    "start": 1,
+    "end": "263",
+    "sha12": null,
+    "normalized": "protocols.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/protocols.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/protocols.lisp",
+     "systems/orchestrator-spec/protocols.lisp"
+    ],
+    "result": "λύνει σε «source/protocols.lisp» ΑΛΛΑ υπάρχουν 1 ακόμη υποψήφιοι στο corpus: ['systems/orchestrator-spec/protocols.lisp']"
+   },
+   {
+    "token": "config.lisp:48-49",
+    "raw": "config.lisp",
+    "start": 48,
+    "end": "49",
+    "sha12": null,
+    "normalized": "config.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/config.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/config.lisp",
+     "systems/orchestrator-ai-core/config.lisp",
+     "third-party/cl+ssl-20250622-git/src/config.lisp",
+     "third-party/lparallel-v2.8.4/src/util/config.lisp"
+    ],
+    "result": "λύνει σε «source/config.lisp» ΑΛΛΑ υπάρχουν 3 ακόμη υποψήφιοι στο corpus: ['systems/orchestrator-ai-core/config.lisp', 'third-party/cl+ssl-20250622-git/src/config.lisp', 'third-party/lparallel-v2.8.4/src/util/config.lisp']"
+   },
+   {
+    "token": "config.lisp:51-60",
+    "raw": "config.lisp",
+    "start": 51,
+    "end": "60",
+    "sha12": null,
+    "normalized": "config.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/config.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/config.lisp",
+     "systems/orchestrator-ai-core/config.lisp",
+     "third-party/cl+ssl-20250622-git/src/config.lisp",
+     "third-party/lparallel-v2.8.4/src/util/config.lisp"
+    ],
+    "result": "λύνει σε «source/config.lisp» ΑΛΛΑ υπάρχουν 3 ακόμη υποψήφιοι στο corpus: ['systems/orchestrator-ai-core/config.lisp', 'third-party/cl+ssl-20250622-git/src/config.lisp', 'third-party/lparallel-v2.8.4/src/util/config.lisp']"
+   },
+   {
+    "token": "protocols.lisp:145-149",
+    "raw": "protocols.lisp",
+    "start": 145,
+    "end": "149",
+    "sha12": null,
+    "normalized": "protocols.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/protocols.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/protocols.lisp",
+     "systems/orchestrator-spec/protocols.lisp"
+    ],
+    "result": "λύνει σε «source/protocols.lisp» ΑΛΛΑ υπάρχουν 1 ακόμη υποψήφιοι στο corpus: ['systems/orchestrator-spec/protocols.lisp']"
+   },
+   {
+    "token": "protocols.lisp:56",
+    "raw": "protocols.lisp",
+    "start": 56,
+    "end": null,
+    "sha12": null,
+    "normalized": "protocols.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/protocols.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/protocols.lisp",
+     "systems/orchestrator-spec/protocols.lisp"
+    ],
+    "result": "λύνει σε «source/protocols.lisp» ΑΛΛΑ υπάρχουν 1 ακόμη υποψήφιοι στο corpus: ['systems/orchestrator-spec/protocols.lisp']"
+   }
+  ],
+  "E  OUT-OF-DECLARED-SCOPE": [],
+  "F  NONEXISTENT-FILE": [],
+  "G  INVALID-RANGE-OR-HASH": [
+   {
+    "token": "capability-registry.lisp:40-207",
+    "raw": "capability-registry.lisp",
+    "start": 40,
+    "end": "207",
+    "sha12": null,
+    "normalized": "capability-registry.lisp",
+    "form": "corpus-relative",
+    "normalize_error": null,
+    "allowed_roots": [
+     "source"
+    ],
+    "computed_keys": [
+     {
+      "key": "source/capability-registry.lisp",
+      "basis": "lane-relative υπό root «source»",
+      "in_manifest": true
+     }
+    ],
+    "corpus_wide_candidates": [
+     "source/capability-registry.lisp"
+    ],
+    "result": "lane-relative «source/capability-registry.lisp» ΑΛΛΑ RANGE-OUT αρχείο 206 λογικές γραμμές, ζητήθηκε 40-207"
+   }
+  ]
+ }
+}

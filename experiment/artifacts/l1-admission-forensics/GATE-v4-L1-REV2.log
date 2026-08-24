@@ -1,0 +1,18 @@
+resolver v4 sha256:24809ecd48b410ce656229cda4a87191256f25642f164844d465b1a581a925f9
+manifest sha256:29cf2b0ce1af2c9b08711d4aca0a7177f41fcb77d40d68904f170fa6abd41c7e
+registry sha256:fffdc910bf95986a549244388a6914211034a5478daf0dea1860b6be7a51f404
+lane Φ1A-L1 · cluster-roots ['source']
+dossier experiment/phase1a/source-rev2.sexp sha256:858f4c903e91a11289d3e4830541dbca687a14cd403883758fa04ea559f68807
+παραπομπές: 286 · λύθηκαν: 275 · ΠΡΟΒΛΗΜΑΤΙΚΕΣ: 11
+μορφές: mount-anchored=0 corpus-relative=275 · εντός συστάδας=272 · εκτός=3
+  ✗ [experiment/phase1a/source-rev2.sexp] config.lisp:7-49 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] capability-registry.lisp:40-207 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] config.lisp:44 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] memory.lisp:110 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] memory.lisp:258-272 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] memory.lisp:48-50 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] protocols.lisp:1-263 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] config.lisp:48-49 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] config.lisp:51-60 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] protocols.lisp:145-149 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] protocols.lisp:56 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest

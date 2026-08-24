@@ -1,0 +1,80 @@
+═══ Φ1A-L1  experiment/phase1a/source-rev2.sexp  (exit=1) ═══
+resolver v4 sha256:24809ecd48b410ce656229cda4a87191256f25642f164844d465b1a581a925f9
+manifest sha256:29cf2b0ce1af2c9b08711d4aca0a7177f41fcb77d40d68904f170fa6abd41c7e
+registry sha256:051d66fa24ebeff43e6e29fdcdca7f2783d49c1082bf60987ee79f2b54f63364
+lane Φ1A-L1 · cluster-roots ['source']
+dossier experiment/phase1a/source-rev2.sexp sha256:858f4c903e91a11289d3e4830541dbca687a14cd403883758fa04ea559f68807
+παραπομπές: 286 · λύθηκαν: 275 · ΠΡΟΒΛΗΜΑΤΙΚΕΣ: 11
+μορφές: mount-anchored=0 corpus-relative=275 · εντός συστάδας=272 · εκτός=3
+  ✗ [experiment/phase1a/source-rev2.sexp] config.lisp:7-49 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] capability-registry.lisp:40-207 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] config.lisp:44 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] memory.lisp:110 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] memory.lisp:258-272 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] memory.lisp:48-50 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] protocols.lisp:1-263 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] config.lisp:48-49 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] config.lisp:51-60 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] protocols.lisp:145-149 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+  ✗ [experiment/phase1a/source-rev2.sexp] protocols.lisp:56 — ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+
+═══ Φ1A-L2  experiment/phase1a/systems.sexp  (exit=0) ═══
+resolver v4 sha256:24809ecd48b410ce656229cda4a87191256f25642f164844d465b1a581a925f9
+manifest sha256:29cf2b0ce1af2c9b08711d4aca0a7177f41fcb77d40d68904f170fa6abd41c7e
+registry sha256:051d66fa24ebeff43e6e29fdcdca7f2783d49c1082bf60987ee79f2b54f63364
+lane Φ1A-L2 · cluster-roots ['systems']
+dossier experiment/phase1a/systems.sexp sha256:e11b7b76d7fdb18cd7cf4d348eac7b81529cc9c004f8d6d56cc93a644ae9c141
+παραπομπές: 214 · λύθηκαν: 214 · ΠΡΟΒΛΗΜΑΤΙΚΕΣ: 0
+μορφές: mount-anchored=0 corpus-relative=214 · εντός συστάδας=209 · εκτός=5
+VERDICT: CITATION-INTEGRITY-PASS (ΟΧΙ claim-entailment· ΟΧΙ απόδειξη πληρότητας παραπομπών· ΟΧΙ read-ledger)
+
+═══ Φ1A-L3  experiment/phase1a/authority-v2.sexp  (exit=0) ═══
+resolver v4 sha256:24809ecd48b410ce656229cda4a87191256f25642f164844d465b1a581a925f9
+manifest sha256:29cf2b0ce1af2c9b08711d4aca0a7177f41fcb77d40d68904f170fa6abd41c7e
+registry sha256:051d66fa24ebeff43e6e29fdcdca7f2783d49c1082bf60987ee79f2b54f63364
+lane Φ1A-L3 · cluster-roots ['authority-v2']
+dossier experiment/phase1a/authority-v2.sexp sha256:c3bf9ce0fe3dd0db3f3a0084201093af969b986afd9cc28843713866935c78f9
+παραπομπές: 165 · λύθηκαν: 165 · ΠΡΟΒΛΗΜΑΤΙΚΕΣ: 0
+μορφές: mount-anchored=0 corpus-relative=165 · εντός συστάδας=165 · εκτός=0
+VERDICT: CITATION-INTEGRITY-PASS (ΟΧΙ claim-entailment· ΟΧΙ απόδειξη πληρότητας παραπομπών· ΟΧΙ read-ledger)
+
+═══ Φ1A-L4  experiment/phase1a/deployment-specs.sexp  (exit=0) ═══
+resolver v4 sha256:24809ecd48b410ce656229cda4a87191256f25642f164844d465b1a581a925f9
+manifest sha256:29cf2b0ce1af2c9b08711d4aca0a7177f41fcb77d40d68904f170fa6abd41c7e
+registry sha256:051d66fa24ebeff43e6e29fdcdca7f2783d49c1082bf60987ee79f2b54f63364
+lane Φ1A-L4 · cluster-roots ['deployment/*.md', 'deployment/*.sexp', 'deployment/*.ttl', 'deployment/*.json', 'deployment/*.jsonld', 'deployment/shapes', 'deployment/verify', 'deployment/templates', 'deployment/mcp']
+dossier experiment/phase1a/deployment-specs.sexp sha256:f895deb6721317b7979ffe44346628c064a2c0c1682b2642658e94f9d507730b
+παραπομπές: 200 · λύθηκαν: 200 · ΠΡΟΒΛΗΜΑΤΙΚΕΣ: 0
+μορφές: mount-anchored=0 corpus-relative=200 · εντός συστάδας=195 · εκτός=5
+VERDICT: CITATION-INTEGRITY-PASS (ΟΧΙ claim-entailment· ΟΧΙ απόδειξη πληρότητας παραπομπών· ΟΧΙ read-ledger)
+
+═══ Φ1A-L5  experiment/phase1a/deployment-state.sexp  (exit=0) ═══
+resolver v4 sha256:24809ecd48b410ce656229cda4a87191256f25642f164844d465b1a581a925f9
+manifest sha256:29cf2b0ce1af2c9b08711d4aca0a7177f41fcb77d40d68904f170fa6abd41c7e
+registry sha256:051d66fa24ebeff43e6e29fdcdca7f2783d49c1082bf60987ee79f2b54f63364
+lane Φ1A-L5 · cluster-roots ['deployment/self', 'deployment/self-study', 'deployment/knowledge', 'deployment/data', 'deployment/state', 'deployment/collab', 'deployment/*.js', 'deployment/*.sh']
+dossier experiment/phase1a/deployment-state.sexp sha256:27dfbfc852110beade15117a7d02e01ab48485377a623b040dc9f92b1ae79923
+παραπομπές: 156 · λύθηκαν: 156 · ΠΡΟΒΛΗΜΑΤΙΚΕΣ: 0
+μορφές: mount-anchored=155 corpus-relative=1 · εντός συστάδας=136 · εκτός=20
+VERDICT: CITATION-INTEGRITY-PASS (ΟΧΙ claim-entailment· ΟΧΙ απόδειξη πληρότητας παραπομπών· ΟΧΙ read-ledger)
+
+═══ Φ1A-L6  experiment/phase1a/harness.sexp  (exit=0) ═══
+resolver v4 sha256:24809ecd48b410ce656229cda4a87191256f25642f164844d465b1a581a925f9
+manifest sha256:29cf2b0ce1af2c9b08711d4aca0a7177f41fcb77d40d68904f170fa6abd41c7e
+registry sha256:051d66fa24ebeff43e6e29fdcdca7f2783d49c1082bf60987ee79f2b54f63364
+lane Φ1A-L6 · cluster-roots ['tests', 'docker', 'scripts']
+dossier experiment/phase1a/harness.sexp sha256:9ddd1820acf40205c1256bccac8c8d689e1683ae7512566168df4ae302237ea9
+παραπομπές: 98 · λύθηκαν: 98 · ΠΡΟΒΛΗΜΑΤΙΚΕΣ: 0
+μορφές: mount-anchored=0 corpus-relative=98 · εντός συστάδας=84 · εκτός=14
+VERDICT: CITATION-INTEGRITY-PASS (ΟΧΙ claim-entailment· ΟΧΙ απόδειξη πληρότητας παραπομπών· ΟΧΙ read-ledger)
+
+═══ Φ1A-L7  experiment/phase1a/contracts.sexp  (exit=0) ═══
+resolver v4 sha256:24809ecd48b410ce656229cda4a87191256f25642f164844d465b1a581a925f9
+manifest sha256:29cf2b0ce1af2c9b08711d4aca0a7177f41fcb77d40d68904f170fa6abd41c7e
+registry sha256:051d66fa24ebeff43e6e29fdcdca7f2783d49c1082bf60987ee79f2b54f63364
+lane Φ1A-L7 · cluster-roots ['*', 'configs', 'docs', '.github', 'cloudflare', 'tools']
+dossier experiment/phase1a/contracts.sexp sha256:6ab0457e1a7b2993941b95ce8bbf431910876892157e103c7a797d2f4731352d
+παραπομπές: 101 · λύθηκαν: 101 · ΠΡΟΒΛΗΜΑΤΙΚΕΣ: 0
+μορφές: mount-anchored=0 corpus-relative=101 · εντός συστάδας=86 · εκτός=15
+VERDICT: CITATION-INTEGRITY-PASS (ΟΧΙ claim-entailment· ΟΧΙ απόδειξη πληρότητας παραπομπών· ΟΧΙ read-ledger)
+

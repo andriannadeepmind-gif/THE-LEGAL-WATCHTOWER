@@ -49,11 +49,21 @@ for dirpath, dirnames, filenames in os.walk(ROOT):
         else:
             data = open(full, "rb").read()
             kind = "file"
+        # §6 ΑΚΡΙΒΕΣ LOGICAL LINE COUNT (όχι απλό count("\n")):
+        #   "a\nb\n" ⇒ 2 λογικές γραμμές · "a\nb" ⇒ 2 · "" ⇒ 0
+        # Το παλιό σχήμα αποθήκευε newlines και ο resolver δεχόταν πάντα
+        # nlines+1 — σε αρχείο που ΤΕΛΕΙΩΝΕΙ σε newline αυτό δεχόταν ΑΝΥΠΑΡΚΤΗ
+        # επόμενη γραμμή. Τώρα το όριο είναι ΑΚΡΙΒΩΣ το logical count.
         try:
-            lines = data.decode("utf-8").count("\n")
+            text = data.decode("utf-8")
+            nl = text.count("\n")
+            trailing = 1 if (text.endswith("\n") or text == "") else 0
+            lines = nl if trailing else nl + 1
+            if text == "":
+                lines = 0
         except UnicodeDecodeError:
-            lines = -1                      # δυαδικό: ΔΕΝ προσποιούμαστε γραμμές
-        rows.append((rel, kind, sha256(data), len(data), lines, klass(rel)))
+            lines, trailing = -1, -1        # δυαδικό: ΔΕΝ προσποιούμαστε γραμμές
+        rows.append((rel, kind, sha256(data), len(data), lines, klass(rel), trailing))
 
 rows.sort(key=lambda r: r[0].encode())      # ντετερμινιστική σειρά bytes
 root = mth([leaf(open(os.path.join(ROOT, r[0]), "rb").read()
@@ -63,7 +73,7 @@ root = mth([leaf(open(os.path.join(ROOT, r[0]), "rb").read()
 os.makedirs(OUTDIR, exist_ok=True)
 tsv = os.path.join(OUTDIR, "corpus-manifest.tsv")
 with open(tsv, "w", encoding="utf-8") as fh:
-    fh.write("# path\tkind\tsha256\tbytes\tlines\tclass\n")
+    fh.write("# path\tkind\tsha256\tbytes\tlogical_lines\tclass\ttrailing_newline\n")
     for r in rows:
         fh.write("\t".join(str(x) for x in r) + "\n")
 tsv_sha = sha256(open(tsv, "rb").read())
@@ -83,7 +93,7 @@ with open(os.path.join(OUTDIR, "corpus-manifest.sexp"), "w", encoding="utf-8") a
     fh.write(")\n")
     fh.write(' :merkle-algorithm "RFC 6962/9162 §2.1.1 — ΑΚΡΙΒΩΣ source/merkle-authority.lisp του corpus"\n')
     fh.write(f' :merkle-root "{root}"\n')
-    fh.write(f' :detail-file "experiment/artifacts/corpus-manifest.tsv"\n')
+    fh.write(f' :schema-version 2\n :detail-file "experiment/artifacts/corpus-manifest.tsv"\n')
     fh.write(f' :detail-sha256 "{tsv_sha}"\n')
     fh.write(' :rule "Ό,τι ΔΕΝ είναι σε αυτό το manifest ΔΕΝ υπάρχει για το πείραμα.")\n')
 

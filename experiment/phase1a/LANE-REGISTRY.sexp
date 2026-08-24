@@ -21,6 +21,30 @@
   εφήμερο χειριστή: επιβιώνει επανεκκίνησης, επιτρέπει αντικαταστάτη πράκτορα
   στην ίδια διαδρομή, και είναι επαληθεύσιμο από τρίτον."
 
+ :cluster-root-semantics
+ "ΔΗΛΩΜΕΝΗ, ΟΧΙ ΕΥΡΕΤΙΚΗ. Κάθε στοιχείο του :cluster-roots είναι ΜΗ ΚΕΝΟ και
+  ερμηνεύεται με ΑΚΡΙΒΩΣ έναν από δύο τρόπους, χωρίς τρίτη ανάγνωση:
+    ① ΧΩΡΙΣ «*» ⇒ ΚΑΤΑΛΟΓΟΣ. Ταιριάζει το ίδιο το μονοπάτι ή οτιδήποτε ΚΑΤΩ
+      από αυτό (rel == d  ή  rel αρχίζει με d+\"/\").
+    ② ΜΕ «*» ⇒ GLOB πάνω σε ΟΛΟΚΛΗΡΟ το σχετικό μονοπάτι, όπου το «*»
+      ΔΕΝ διασχίζει «/». Άρα «*» = αρχείο ρίζας του corpus· «deployment/*.js»
+      = άμεσο παιδί του deployment/ με κατάληξη .js.
+  ΤΑ CLUSTER-ROOTS ΔΕΝ ΕΠΙΛΥΟΥΝ ΠΑΡΑΠΟΜΠΕΣ. Χρησιμεύουν ΜΟΝΟ στην αναφορά
+  περιεκτικότητας (εντός/εκτός συστάδας). Η επίλυση γίνεται ΠΑΝΤΑ ως προς τη
+  ρίζα του corpus — καμία cluster-relative επίλυση, καμία fallback δοκιμή."
+
+ :cluster-roots-provenance
+ "Κάθε σύνολο roots αντιγράφεται από το :scope / :cluster ΤΟΥ ΙΔΙΟΥ σφραγισμένου
+  dossier της διαδρομής, ΟΧΙ από τις παραπομπές του (αυτό θα ήταν κυκλικό):
+    L1 source.sexp:2 · L2 systems.sexp:2 · L3 authority-v2.sexp:2
+    L4 deployment-specs.sexp:2,6 (θετική απαρίθμηση των 38 top-level specs +
+       shapes/verify/templates/mcp — ΟΧΙ αποκλεισμός)
+    L5 deployment-state.sexp:2 · L6 harness.sexp:2 · L7 contracts.sexp:6
+  ΔΙΟΡΘΩΣΗ ΕΛΕΓΧΟΥ: οι προηγούμενες ΕΝΙΚΕΣ :cluster-root ήταν ΨΕΥΔΕΙΣ για
+  L4/L5 (και οι δύο «deployment», ενώ οι συστάδες είναι ξένες μεταξύ τους),
+  για L6 («tests», ενώ docker/ και scripts/ ΔΕΝ είναι κάτω από tests/) και
+  για L7 (κενή συμβολοσειρά — καμία σημασία). Αντικαταστάθηκαν από σύνολα."
+
  :contract
  ((:version 1 :sha256 "e0a176a26b5aab4fcf1098aa38227a701e0e002887157061222910501225b3f5"
    :used-in :attempt-1)
@@ -42,16 +66,35 @@
 
  :lanes
  ((:lane "Φ1A-L1" :cluster "source/" :files 133
-   :cluster-root "source"
+   :cluster-roots ("source")
    :dossier "experiment/phase1a/source.sexp"
    :focus "πυρήνας Common Lisp· cognition/merkle-authority/proof-carrying/
            deterministic-time/version-graph/authority-proof-bundle/document-fetch/
            pdf-authority/amendment-*/journal/self-constitution"
    :special-charge "ονομαστική κρίση των ignore-errors: σιωπηλό fallback ή
                     δηλωμένη τίμια άγνοια με υποχρέωση ελέγχου από τον καλούντα"
-   :status :running :dossier-sha256 :pending)
+   :status :QUARANTINED
+   :status-note "ΟΧΙ sealed. ΟΧΙ complete. Η πύλη v4 απέτυχε στο πρωτότυπο
+                 (283/286) και εξακολουθεί να αποτυγχάνει στο μεταναστευμένο
+                 (11/286). Πλήρες μητρώο: experiment/phase1a/L1-ADMISSION-BOUNDARY.sexp"
+   :revisions
+   ((:rev 1 :path "experiment/phase1a/source.sexp"
+     :sha256 "dd3ce7cc6bd973d284dd00adb417afa3e1030bcdca9da32997b435fb4c5e8aef"
+     :gate-v4 (:citations 286 :resolved 3 :problems 283 :verdict :FAIL)
+     :status :SUPERSEDED-BUT-IMMUTABLE)
+    (:rev 2 :path "experiment/phase1a/source-rev2.sexp"
+     :sha256 "858f4c903e91a11289d3e4830541dbca687a14cd403883758fa04ea559f68807"
+     :supersedes-sha256 "dd3ce7cc6bd973d284dd00adb417afa3e1030bcdca9da32997b435fb4c5e8aef"
+     :produced-by :DETERMINISTIC-CITATION-ONLY-MIGRATION
+     :produced-by-note "ΟΧΙ από πράκτορα. Μηχανικός μετασχηματισμός με
+                        αμφίδρομη απόδειξη ότι κανένα byte ισχυρισμού δεν
+                        άλλαξε (αντίστροφη ανακατασκευή → ίδιο sha256)."
+     :gate-v4 (:citations 286 :resolved 275 :problems 11 :verdict :FAIL)
+     :status :CURRENT-GATE-FAILED
+     :remaining "10 AMBIGUOUS + 1 INVALID-RANGE — απαιτούν κρίση της διαδρομής"))
+   :current-revision 2)
   (:lane "Φ1A-L2" :cluster "systems/" :files 175
-   :cluster-root "systems"
+   :cluster-roots ("systems")
    :dossier "experiment/phase1a/systems.sexp"
    :focus "ASDF συστήματα· έδρες εγγραφής authoritative state· epistemic/cli/
            infrastructure· η ΔΕΥΤΕΡΗ έδρα δοκιμών (12 αρχεία FiveAM εκτός tests/)"
@@ -59,7 +102,7 @@
                     και αν η άγνοια διαδίδεται τίμια προς τα έξω"
    :status :running :dossier-sha256 :pending)
   (:lane "Φ1A-L3" :cluster "authority-v2/" :files 63
-   :cluster-root "authority-v2"
+   :cluster-roots ("authority-v2")
    :dossier "experiment/phase1a/authority-v2.sexp"
    :focus "Level-7 VCCT-RSM· kernel/schema/capability/roles/store/log/capture/
            genesis/proofs/toolchain"
@@ -67,7 +110,10 @@
                     :implemented-not-proved / :externally-blocked στον κώδικα"
    :status :running :dossier-sha256 :pending)
   (:lane "Φ1A-L4" :cluster "deployment/ (κανονικές προδιαγραφές)"
-   :cluster-root "deployment"
+   :cluster-roots ("deployment/*.md" "deployment/*.sexp" "deployment/*.ttl"
+                    "deployment/*.json" "deployment/*.jsonld"
+                    "deployment/shapes" "deployment/verify"
+                    "deployment/templates" "deployment/mcp")
    :dossier "experiment/phase1a/deployment-specs.sexp"
    :focus "LAWMAX-*, SYSTEM-CONSTITUTION, PROOF-CARRYING-LAW, *.ttl, shapes/,
            verify/, templates/, mcp/"
@@ -75,14 +121,16 @@
                     ΛΑΘΟΣ Merkle ⇒ τρίτος βγάζει λάθος ρίζα ⇒ P0"
    :status :running :dossier-sha256 :pending)
   (:lane "Φ1A-L5" :cluster "deployment/ (κατάσταση & γνώση)"
-   :cluster-root "deployment"
+   :cluster-roots ("deployment/self" "deployment/self-study" "deployment/knowledge"
+                    "deployment/data" "deployment/state" "deployment/collab"
+                    "deployment/*.js" "deployment/*.sh")
    :dossier "experiment/phase1a/deployment-state.sexp"
    :focus "self/, self-study/, knowledge/, data/, state/, collab/, *.js, *.sh"
    :special-charge "κάθε .js/.sh: τι κάνει, τι δίκτυο αγγίζει, τι γράφει, ΠΟΙΟΣ
                     το καλεί, και αν είναι σε έμπιστο μονοπάτι"
    :status :running :dossier-sha256 :pending)
   (:lane "Φ1A-L6" :cluster "tests/ + docker/ + scripts/" :files 176
-   :cluster-root "tests"
+   :cluster-roots ("tests" "docker" "scripts")
    :dossier "experiment/phase1a/harness.sexp"
    :focus "ΤΙ ΕΓΓΥΩΝΤΑΙ οι σουίτες, όχι τι τεστάρουν· ταυτολογίες· τι ΔΕΝ
            καλύπτει ο μηχανισμός απογραφής"
@@ -90,7 +138,7 @@
                     proof-carrying, mcp-live-resolver — corpus ή harness;"
    :status :running :dossier-sha256 :pending)
   (:lane "Φ1A-L7" :cluster "ρίζα + configs + docs + .github + cloudflare + tools" :files 79
-   :cluster-root ""
+   :cluster-roots ("*" "configs" "docs" ".github" "cloudflare" "tools")
    :dossier "experiment/phase1a/contracts.sexp"
    :focus "η ΑΠΟΣΤΑΣΗ δήλωσης από μηχανισμό επιβολής"
    :special-charge "ΒΡΕΣ την GATE-4 (README:304 «no subprocess»): πού υλοποιείται,
