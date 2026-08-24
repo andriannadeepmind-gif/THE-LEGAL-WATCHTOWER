@@ -8,7 +8,8 @@
 ;;;; reconciliation ΜΟΝΟ μετά τη σφράγισή τους.
 
 (:lawmax-phase1a-lane-registry/1
- :phase-status "PHASE-1A: RUNNING — CENTRAL MECHANICAL LANE ACTIVE — INDEPENDENT LANES RUNNING"
+ :phase-status "PHASE-1A: ALL SEVEN LANES DELIVERED — CITATION GATES PASSED — PHASE SEAL BLOCKED"
+ :seal-blockers "read-ledger absent (§3) · macro layer unexamined (§6) — βλ. SEVEN-DOSSIERS-STATUS.sexp"
  :corpus "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03"
  :read-source "/frozen/ro (OS-level read-only· πύλη πριν από κάθε σάρωση)"
 
@@ -36,7 +37,8 @@
   :verdict "ΔΕΝ διαγράφεται από το πρωτόκολλο. Καταγράφεται ως αποτυχημένη
             απόπειρα με ονομαστική αιτία, κατά §12: εξάντληση πόρου ⇒ ποτέ FINAL.")
 
- :attempt-2 (:status :RUNNING :contract-version 2)
+ :attempt-2 (:status :ALL-DELIVERED :contract-version 2
+  :dossier-hashes "experiment/phase1a/SEVEN-DOSSIERS-STATUS.sexp")
 
  :lanes
  ((:lane "Φ1A-L1" :cluster "source/" :files 133

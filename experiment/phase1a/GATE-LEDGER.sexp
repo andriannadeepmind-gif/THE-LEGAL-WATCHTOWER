@@ -59,7 +59,8 @@
           παραμένει άθικτο. Πλήθος 224→214: 10 πρώην γυμνά ταυτίστηκαν μετά
           το πρόθεμα με ήδη υπάρχουσες πλήρεις παραπομπές.")
   (:lane "Φ1A-L1" :dossier "experiment/phase1a/source.sexp"
-   :status :IN-PROGRESS :files-read 98 :of 133))
+   :dossier-sha256-prefix "dd3ce7cc6bd973d2" :resolver 3
+   :citations 286 :resolved 286 :problems 0 :exit 0))
 
  ;; ── SUPERSEDED ΑΠΟΤΕΛΕΣΜΑΤΑ (διατηρούνται, δεν διαγράφονται) ────────────
  :superseded-results

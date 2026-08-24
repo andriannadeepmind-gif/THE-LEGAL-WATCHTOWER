@@ -1,8 +1,18 @@
 (:lawmax-phase1a-cluster/1
  :cluster "source"
- :status :partial
- :files-read 98
+ :status :complete
+ :files-read 133
  :files-total 133
+ :read-since-checkpoint-6 ("ai-citation-strategy.lisp" "ai-ingest-manifest.lisp" "citation-authority.lisp" "corpus-service.lisp"
+   "eu-interop-layer.lisp" "greek-lemmatizer.lisp" "greek-nlp-core.lisp" "greek-tokenizer-advanced.lisp"
+   "layout-types.lisp" "legal-casegrammar.lisp" "legal-decisions.lisp" "legal-extraction-verify.lisp"
+   "legal-inference-engine.lisp" "lexicon-neurolingo.lisp" "narrative-provenance.lisp" "orthography-lexicon.lisp"
+   "rdfs-inference.lisp" "reasoning-authority.lisp" "semantic-authority.lisp" "semantic-versioning-system.lisp"
+   "sparql-endpoint.lisp" "static-site.lisp" "typographic-classifier.lisp" "validate-ast.lisp"
+   "validate-layout-graph.lisp" "validate-logical-blocks.lisp")
+ :read-since-checkpoint-5 ("fluid-induction.lisp" "legal-knowledge.lisp" "shacl-validator.lisp" "legal-subsumption.lisp"
+   "signed-embedding-manifest.lisp" "embeddings-authority.lisp" "text-canonicalizer.lisp" "turtle-parser.lisp"
+   "source-profile.lisp")
  :read-since-checkpoint-4 ("guard-ops-pack.lisp" "legal-temporal.lisp" "legal-event-calculus.lisp" "legal-dialectic.lisp" "legal-hypo.lisp" "legal-counterfactual.lisp"
    "graph-reasoning.lisp" "corpus-sparql.lisp" "execution-trace.lisp" "legal-strategy.lisp" "legal-conflict-resolution.lisp"
    "legal-qa.lisp" "legal-precedent.lisp" "provenance-link.lisp" "ai-corpus-dump.lisp" "legal-references.lisp"
@@ -767,6 +777,196 @@
   (:what "legal-penalty %unit-days: όταν καμία μονάδα χρόνου δεν αναγνωρίζεται, η προεπιλογή είναι (t 365) — «κάθειρξη μετριέται πάντα σε έτη». Κάθε αριθμός σε απόσπασμα ποινής χωρίς αναγνωρίσιμη μονάδα πολλαπλασιάζεται ΣΙΩΠΗΛΑ επί 365. Ταυτόχρονα το %amount παίρνει τον ΠΡΩΤΟ αριθμό του tail (όλο το κείμενο μετά τη λέξη-ποινή), οπότε ένας αριθμός παραπομπής («ν. 4619/2019») μπορεί να διαβαστεί ως όριο ποινής."
    :severity :p2
    :evidence "legal-penalty.lisp:82-86 · 67-76 (%amount στο tail) · 126-137 (το tail = subseq μετά τη λέξη)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "text-canonicalizer remove-fek-noise: ΔΙΑΓΡΑΦΕΙ ΚΕΙΜΕΝΟ ΝΟΜΟΥ με άπληστες regex, ΕΝΕΡΓΟ ΕΞ ΟΡΙΣΜΟΥ, ως ΤΕΛΕΥΤΑΙΟ στάδιο του προεπιλεγμένου pipeline. Τα μοτίβα «ΜΕΡΟΣ\\s+[…][Α-Ωα-ωά-ώA-Za-z\\s]+», «ΚΕΦΑΛΑΙΟ\\s+[…][Α-Ωα-ωά-ώA-Za-z\\s]+» περιλαμβάνουν το \\s στην ΕΠΑΝΑΛΑΜΒΑΝΟΜΕΝΗ κλάση — καταναλώνουν λέξεις ΚΑΙ αλλαγές γραμμής πέρα από τον τίτλο· το «ΤΜΗΜΑ\\s+[Α-ΩA-Z][΄]?[^.]*» με [^.]* καταπίνει τα ΠΑΝΤΑ ως την πρώτη τελεία. Το αποτέλεσμα γράφεται με regex-replace-all σε \"\" — δηλαδή αφαιρείται από το ΚΑΝΟΝΙΚΟ ΚΕΙΜΕΝΟ που κατόπιν κατακερματίζεται, δημοσιεύεται και σερβίρεται. Η κεφαλίδα του ίδιου αρχείου δηλώνει «PRESERVE MEANING: No semantic changes»."
+   :severity :p0
+   :evidence "text-canonicalizer.lisp:19 (η αξίωση) · 138-146 (:remove-fek-noise στο προεπιλεγμένο pipeline) · 610-612 (*enable-fek-noise-removal* t) · 624-632 (τα άπληστα μοτίβα) · 655-668 (η διαγραφή) · 664 (και συμπτύσσει \\s{2,} σε ένα κενό, ακυρώνοντας το προηγούμενο normalize-line-breaks)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "text-canonicalizer: το ΑΡΧΕΙΟ ΜΕΤΑΣΧΗΜΑΤΙΣΜΩΝ είναι ΕΤΙΚΕΤΕΣ, όχι επεξεργασίες — η κανονικοποίηση είναι ΜΗ ΑΝΤΙΣΤΡΕΨΙΜΗ ενώ δηλώνει «REVERSIBLE (where possible): Track transformations» και «TRACEABLE: Maintain provenance chain». Κάθε transformation-record φέρει :before/:after ΠΕΡΙΓΡΑΦΕΣ («multiple spaces»→«single space», «σ (medial at word end)»→«ς (final)», «hyphen+space»→«joined») και :position ΠΑΝΤΑ 0 (με σχόλιο «Could track actual position if needed»). Ένα record ανά ΚΛΑΣΗ μετασχηματισμού, ανεξαρτήτως πλήθους αντικαταστάσεων. Το πρωτότυπο κείμενο δεν ανακατασκευάζεται από το ίχνος."
+   :severity :p1
+   :evidence "text-canonicalizer.lisp:18-22 (οι αξιώσεις) · 197-204 (position 0, before/after ως strings-ετικέτες) · σημεία καταγραφής: 314,320,326,332,352-357,362-367,398-402,437-441,494-499,507-512,525-529,560-565"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "text-canonicalizer normalize-greek tonos: (cl-ppcre:regex-replace-all \"\\\\x{0301}\" result \"\\\\x{0384}\") — το ΔΕΥΤΕΡΟ όρισμα είναι ΣΥΜΒΟΛΟΣΕΙΡΑ ΑΝΤΙΚΑΤΑΣΤΑΣΗΣ, όχι regex: το cl-ppcre δεν ερμηνεύει εκεί \\x{…}. Το συνδυαστικό οξεία U+0301 ΔΕΝ γίνεται U+0384 — αντικαθίσταται από τους ΚΥΡΙΟΛΕΚΤΙΚΟΥΣ χαρακτήρες. Και η ίδια η πρόθεση είναι εσφαλμένη: το U+0384 είναι ΑΠΟΣΤΑΤΙΚΟΣ τόνος, όχι συνδυαστικός — η ορθή NFC θα συνέθετε α+U+0301 ⇒ U+03AC. Η καταγραφή δηλώνει «before: combining acute / after: Greek tonos»."
+   :severity :p1
+   :evidence "text-canonicalizer.lisp:503-513"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "text-canonicalizer: η NFC κανονικοποίηση ΔΗΛΩΝΕΤΑΙ και ΔΕΝ ΥΠΑΡΧΕΙ. Η κεφαλίδα υπόσχεται «UNICODE: NFC normalization for consistent encoding» και το *enable-unicode-normalization* είναι T· η normalize-unicode κάνει ΤΕΣΣΕΡΙΣ αντικαταστάσεις στίξης (curly quotes→\", ‘’→', en/em dash→-, …→...) και τίποτε άλλο, με δικό της docstring που παραδέχεται «Full NFC requires SBCL unicode support». Η αντικατάσταση – — από - καταστρέφει τα ΕΥΡΗ παραπομπών («άρθρα 235–263») που κατόπιν διαβάζει ο εξαγωγέας παραπομπών."
+   :severity :p1
+   :evidence "text-canonicalizer.lisp:13 (αξίωση NFC) · 376-407 (η υλοποίηση) · 392-395 (οι αντικαταστάσεις) · legal-references.lisp:44-48 (ο καταναλωτής των ευρών)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "text-canonicalizer: το ταυτοτικό των κανονικών μπλοκ είναι ΚΑΘΟΛΙΚΟΣ ΜΕΤΡΗΤΗΣ ΕΙΚΟΝΑΣ («CBLOCK-~A» από (incf *canonical-block-counter*)) — εξαρτάται από το πόσα μπλοκ κανονικοποιήθηκαν ΝΩΡΙΤΕΡΑ στην ίδια εικόνα, όχι από το περιεχόμενο. Το id μπαίνει στην ΑΛΥΣΙΔΑ ΠΡΟΕΛΕΥΣΗΣ (extend-trace :canonical-block-ids). Η κεφαλίδα δηλώνει «DETERMINISTIC: Same input → same output»."
+   :severity :p1
+   :evidence "text-canonicalizer.lisp:20 (η αξίωση) · 210 · 263-278 · 811-813 (χειροκίνητο reset — σύμβαση, όχι δομή)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "source-profile: Η ΣΥΝΑΙΝΕΣΗ ΠΟΛΛΑΠΛΩΝ ΠΗΓΩΝ ΣΥΓΚΡΙΝΕΙ ΟΝΟΜΑΤΑ ΑΡΧΕΙΩΝ, ΟΧΙ ΚΕΙΜΕΝΟ. Το %dir->records παράγει (:identity ΟΝΟΜΑ :content ΟΝΟΜΑ :payload διαδρομή) — το content-hash είναι ο κατακερματισμός του ΟΝΟΜΑΤΟΣ ΑΡΧΕΙΟΥ. Το %resolve-group αποφασίζει ΣΥΜΦΩΝΙΑ μετρώντας διακριτά content-hash. Άρα δύο κανάλια βασισμένα σε κατάλογο (institutional feed-dir ΚΑΙ manual-drop χρησιμοποιούν και τα δύο το %dir->records) με ομώνυμα αρχεία ΔΙΑΦΟΡΕΤΙΚΟΥ ΠΕΡΙΕΧΟΜΕΝΟΥ πιστοποιούνται ως :agreed με corroboration — «επιβεβαίωση» χωρίς καμία σύγκριση κειμένου."
+   :severity :p0
+   :evidence "source-profile.lisp:434-441 (%dir->records) · 442-458 (institutional feed-dir → %dir->records) · 496-501 (manual-drop → %dir->records) · 341-353 (η απόφαση συμφωνίας από content-hash) · 6-9,28-31 (η αξίωση «never trusts a single fragile scrape when a higher channel can confirm it»)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "source-profile: ΑΠΟΤΥΧΙΑ ΚΑΝΑΛΙΟΥ ⇒ ΣΙΩΠΗΛΗ ΑΝΑΒΑΘΜΙΣΗ ΣΕ ΕΜΠΙΣΤΟ. Το acquire τυλίγει τον acquirer σε (handler-case … (error () nil)), οπότε δίκτυο/parse/auth σφάλμα δίνει NIL — αδιάκριτο από «τίποτα νέο». Το %resolve-group τότε βλέπει ΜΙΑ πηγή, βρίσκει 1 διακριτό hash και τη σημαίνει :sole, την οποία το acquire-with-consensus κατατάσσει στα TRUSTED «safe to apply automatically». Έτσι η πτώση του διασταυρωτικού καναλιού μετατρέπει ασυνεπίβεβαιωτο scrape (authority 40, «fragile and legally grey») σε αυτόματα εφαρμοστέο κείμενο, παρά το *auto-trust-authority* 80 που φρουρεί ΜΟΝΟ τον κλάδο της διαφωνίας."
+   :severity :p1
+   :evidence "source-profile.lisp:263-270 (η κατάποση) · 345-353 (:sole) · 370-374 (τα :sole στα TRUSTED) · 306-310 (το κατώφλι που δεν εφαρμόζεται εδώ)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "source-profile make-consensus-source: (ignore-errors (funcall on-conflict conflicts)) — ο ΧΕΙΡΙΣΤΗΣ ΣΥΓΚΡΟΥΣΕΩΝ, δηλαδή ΑΚΡΙΒΩΣ ο μηχανισμός που στέλνει τη διαφωνία σε άνθρωπο, έχει τα σφάλματά του καταπιεμένα. Οι συγκρουόμενες διατάξεις έχουν ΗΔΗ εξαιρεθεί από τα trusted, οπότε αποτυχία της ουράς ελέγχου τις εξαφανίζει τελείως: ούτε δημοσιεύονται ούτε τις βλέπει κανείς. Η αξίωση του module είναι «human-in-the-loop exactly where they do not [agree]»."
+   :severity :p1
+   :evidence "source-profile.lisp:33-34 (η αξίωση) · 539-552 (ιδίως 542-543)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "source-profile %canonical: η «deterministic, order-stable» μορφή σύγκρισης εξαρτάται από τις μεταβλητές του ΕΚΤΥΠΩΤΗ — (format nil \"~S\" x) για strings και για κάθε άγνωστο τύπο (επηρεάζεται από *package* στα σύμβολα) και (princ-to-string (car e)) για κλειδιά alist (επηρεάζεται από *print-case*). Επιπλέον ΣΥΓΚΡΟΥΟΝΤΑΙ δομές: το plist (:a \"b\") και το alist ((\"A\" . \"b\")) δίνουν ΤΟ ΙΔΙΟ {A=\"b\"} και άρα το ίδιο content-hash — δύο πηγές με διαφορετική δομή δεδομένων πιστοποιούνται ως σύμφωνες."
+   :severity :p1
+   :evidence "source-profile.lisp:209-232 (ιδίως 215,226-231,232) · 234-239 (το content-hash) · 341-353 (η χρήση στη συναίνεση)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "signed-embedding-manifest: Ο ΚΥΚΛΟΣ export→load→verify ΕΙΝΑΙ ΔΟΜΙΚΑ ΑΔΥΝΑΤΟΣ. Η υπογραφή καλύπτει 20 πεδία (id, eli-uri, url, τίτλους, textHash, textLength, model, dimensions, vectorHash, author, dateCreated, γλώσσα, δικαιοδοσία, άδεια, blockchainAnchor), αλλά η δυαδική μορφή .embedding αποθηκεύει ΜΟΝΟ magic/version/flags/dimensions/text-hash/reserved/vector/signature. Το load-signed-manifest ανασυγκροτεί manifest με 5 από τα 22 πεδία — όλα τα υπόλοιπα NIL — και το verify-manifest-signature ξαναχτίζει το ωφέλιμο φορτίο ΑΠΟ ΑΥΤΟ. Το φορτίο δεν μπορεί ποτέ να ταυτιστεί με το υπογεγραμμένο. Δεύτερος, ανεξάρτητος λόγος: το διάνυσμα γράφεται ως float32 (απωλεστικά) ενώ το vectorHash υπολογίστηκε πάνω στο πρωτότυπο."
+   :severity :p0
+   :evidence "signed-embedding-manifest.lisp:241-266 (τι καλύπτει η υπογραφή) · 453-538 (τι αποθηκεύει η δυαδική μορφή· 517-522 float32) · 544-615 (ο φορτωτής: 5 πεδία) · 304-321 (η επαλήθευση ξαναχτίζει από το κενό manifest) · 163-168 (το vectorHash του πρωτοτύπου)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "signed-embedding-manifest verify-manifest-signature: (handler-case (jws:verify-jws …) (error () nil)) ισοπεδώνει ΚΑΘΕ σφάλμα — απόν αρχείο δημόσιου κλειδιού, μη αναγνώσιμο PEM, μη υποστηριζόμενος αλγόριθμος, I/O — σε «η υπογραφή απέτυχε», και μετά σηματοδοτεί signature-verification-error με ΣΥΓΚΕΚΡΙΜΕΝΟ, ΨΕΥΔΗ λόγο «JWS signature verification failed». Το «δεν μπόρεσα να ελέγξω» παρουσιάζεται ως «έλεγξα και είναι άκυρη»."
+   :severity :p1
+   :evidence "signed-embedding-manifest.lisp:304-321"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "signed-embedding-manifest: οι «Placeholder accessors (should be defined in article model)» ΦΑΒΡΙΚΑΡΟΥΝ δεδομένα αντί να αποτύχουν: article-number επιστρέφει 1, article-text επιστρέφει \"\", article-title-el/en επιστρέφουν \"\" για κάθε μη-λίστα. Το create-corpus-manifests τα καλεί, οπότε ένα σώμα από μη-plist αντικείμενα παράγει manifests ΟΛΑ με number 1 (που γράφουν το ίδιο article-001.jsonld/.ttl/.embedding) και ΚΕΝΟ κείμενο — δηλαδή υπογεγραμμένα embeddings του κενού string."
+   :severity :p1
+   :evidence "signed-embedding-manifest.lisp:695-706 (τα stubs, με το ίδιο τους το σχόλιο) · 644-679 (η χρήση τους)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "shacl-validator: το «conforms» ΔΕΝ είναι ορθό ως προς τα shapes που του δόθηκαν. Αποτιμώνται ΜΟΝΟ οι περιορισμοί κάτω από sh:property· κάθε άλλο συστατικό SHACL Core που εμφανίζεται στο γράφο shapes (sh:node, sh:or, sh:not, sh:and, sh:xone, sh:closed, sh:qualifiedValueShape, sh:equals, sh:disjoint, sh:lessThan, sh:uniqueLang, sh:languageIn) καθώς και οι περιορισμοί στο ΙΔΙΟ το node shape ΑΓΝΟΟΥΝΤΑΙ ΣΙΩΠΗΛΑ — δεν απαριθμούνται, δεν αναφέρονται ως μη υποστηριζόμενα. Το VALIDATION-REPORT επιστρέφει conforms=true με πλήρη σιωπή για ό,τι δεν ελέγχθηκε."
+   :severity :p1
+   :evidence "shacl-validator.lisp:132-167 (ο parser κρατά μόνο 10 συστατικά) · 218-280 (η αποτίμηση) · 286-299 (conforms = notany Violation)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "shacl-validator rdf-list->terms: αποκωδικοποιεί rdf:first/rdf:rest ΧΩΡΙΣ φρουρό κύκλου — γράφος shapes με κυκλική αλυσίδα rdf:rest δεν φτάνει ποτέ σε rdf:nil και ο βρόχος ΔΕΝ ΤΕΡΜΑΤΙΖΕΙ. Χρησιμοποιείται για το sh:in, δηλαδή σε δεδομένα shapes που ο επικυρωτής δέχεται από έξω. Παράλληλα το sh:pattern μεταγλωττίζεται με cl-ppcre ΑΝΑ ΤΙΜΗ (όχι ανά shape) και χωρίς φραγμό υπολογισμού — κατά-στροφική οπισθοδρόμηση σε shapes αρχείο κρεμάει τον επικυρωτή, και κακοσχηματισμένη regex ματαιώνει ΟΛΟΚΛΗΡΟ το validate χάνοντας όλα τα ήδη ευρεθέντα αποτελέσματα."
+   :severity :p1
+   :evidence "shacl-validator.lisp:102-109 (χωρίς φρουρό κύκλου) · 246-264 (create-scanner εντός του dolist των τιμών) · 139-146 (parse-integer χωρίς handler)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "turtle-parser: το @base ΑΝΑΓΝΩΡΙΖΕΤΑΙ, ΑΠΟΘΗΚΕΥΕΤΑΙ ΚΑΙ ΔΕΝ ΔΙΑΒΑΖΕΤΑΙ ΠΟΤΕ. Το parser-base γράφεται στη γραμμή 360 και το σύμβολο δεν εμφανίζεται πουθενά αλλού σε ΟΛΟ το παγωμένο repo· το read-iriref επιστρέφει το IRI αυτούσιο χωρίς επίλυση ως προς τη βάση. Άρα τα ΣΧΕΤΙΚΑ IRI αποθηκεύονται ως «article/1» και συγκρίνονται με string= έναντι πλήρων IRI στον SHACL — οι στόχοι δεν βρίσκονται και οι περιορισμοί σιωπηλά δεν πυροδοτούν. Η κεφαλίδα δηλώνει «@prefix / @base directives» ως υποστηριζόμενα."
+   :severity :p1
+   :evidence "turtle-parser.lisp:8 (η αξίωση) · 113-132 (καμία επίλυση) · 180,358-362 (γράφεται, ποτέ δεν διαβάζεται· grep -rn parser-base /frozen/ro ⇒ 1 σημείο)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "turtle-parser: οι ακολουθίες διαφυγής \\uXXXX/\\UXXXXXXXX διαβάζονται με (loop repeat 4/8 collect (lx-next lx)) και το lx-next ΔΕΝ ελέγχει όρια. Κολοβό αρχείο στο τέλος μιας διαφυγής δίνει ΩΜΟ σφάλμα δείκτη πίνακα, ΟΧΙ την turtle-parse-error που δηλώνει το module — καλών που πιάνει turtle-parse-error δεν το πιάνει. Επίσης (code-char …) πάνω σε τιμή surrogate (D800–DFFF) δίνει NIL στο SBCL και το επόμενο write-char σηματοδοτεί σφάλμα τύπου."
+   :severity :p2
+   :evidence "turtle-parser.lisp:93 (lx-next χωρίς έλεγχο) · 125-130 (IRI) · 158-163 (literal) · 33-38 (η δηλωμένη συνθήκη)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "legal-knowledge: ΤΡΕΙΣ ΔΙΑΦΟΡΕΤΙΚΕΣ ΑΙΤΙΕΣ ΕΜΦΑΝΙΖΟΝΤΑΙ ΩΣ ΜΙΑ «ΑΓΝΟΙΑ». Το plan-goal σημαίνει :frontier όταν (α) κανένας κανόνας δεν οδηγεί στον στόχο, (β) εξαντλήθηκε το *max-depth* 8, (γ) εντοπίστηκε κύκλος στο visited. Και οι τρεις τυπώνονται ως «✗ … δεν το θεμελιώνω· βαρύνει εσένα να το αποδείξεις» και συγκεντρώνονται από το plan-frontier ως «τα αδιάσπαστα κενά» / «το μέτωπο της άγνοιάς μου». Όριο αναζήτησης παρουσιάζεται στον χρήστη ως κενό γνώσης."
+   :severity :p1
+   :evidence "legal-knowledge.lisp:144-146 · 176-218 (ιδίως 184-185) · 232-240 · 320-329 (η φράση :missing) · 278-284"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "legal-knowledge: *resolvers* και *extra-rules* ΕΝΕΙΟΥΝ ΓΕΓΟΝΟΤΑ ΚΑΙ ΚΑΝΟΝΕΣ ΣΤΟΝ ΕΝΟΠΟΙΗΜΕΝΟ ΣΥΛΛΟΓΙΣΤΗ ΧΩΡΙΣ ΚΑΜΙΑ ΠΥΛΗ. Το register-resolver δέχεται ΑΥΘΑΙΡΕΤΗ συνάρτηση· το %acquire την καλεί κατά τον σχεδιασμό απόδειξης· τα επιστρεφόμενα «αποκτημένα» γεγονότα μπαίνουν με (append acquired facts) ως ΠΡΟΚΕΙΜΕΝΑ στη μηχανή και το αποτέλεσμα τυπώνεται «✓ Το απέδειξα». Τα αποκτημένα γεγονότα δεν φέρουν πηγή, receipt ή διάκριση μέσα στο δέντρο απόδειξης — είναι αδιάκριτα από τα δοθέντα. Το ίδιο το docstring δηλώνει «καμία σύζευξη εδώ», δηλαδή η απόφαση εμπιστοσύνης ανατίθεται εξ ολοκλήρου σε ανώνυμους καλούντες."
+   :severity :p1
+   :evidence "legal-knowledge.lisp:27-35 (*extra-rules* στους planning-rules) · 148-154 (register-resolver) · 168-174 (%acquire) · 260-277 (τα αποκτημένα ως προκείμενα + «✓ Το απέδειξα»)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "ΔΥΟ ΔΙΑΦΟΡΕΤΙΚΕΣ ΣΗΜΑΣΙΟΛΟΓΙΕΣ ΤΑΙΡΙΑΣΜΑΤΟΣ ΓΙΑ ΤΟ ΙΔΙΟ ΕΡΩΤΗΜΑ, ΣΤΗΝ ΙΔΙΑ ΑΝΑΦΟΡΑ. Το apply-norms του L5 στοιχειοθετεί με το ευρετηριασμένο match-patterns (πλήρες join με οπισθοδρόμηση). Το conclusion-status και το norm-gaps του Σ4 κρίνουν «στοιχειοθετείται / ΤΙ ΛΕΙΠΕΙ» με το satisfy-patterns, που είναι ρητά GREEDY: παίρνει το ΠΡΩΤΟ γεγονός που ενοποιείται ανά πρότυπο και ΔΕΝ οπισθοδρομεί. Άρα το subsumption-report μπορεί να τυπώσει «ΔΕΝ στοιχειοθετείται — ΛΕΙΠΕΙ Χ» για κανόνα που το subsume ΟΝΤΩΣ συμπέρανε, και η «μετα-γνώση της άγνοιας» υπολογίζεται από ασθενέστερο ταιριαστή από αυτόν που αποφασίζει."
+   :severity :p1
+   :evidence "legal-deontic.lisp:113-141 (match-patterns) · legal-knowledge.lisp:68-77 (satisfy-patterns, greedy) · legal-subsumption.lisp:137-160 (conclusion-status),162-171 (norm-gaps),225-270 (η αναφορά)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "fluid-induction solve-task: ΤΡΙΤΗ, ΑΔΗΛΩΤΗ ΕΚΒΑΣΗ. Το πρόγραμμα επικυρώνεται ότι εξηγεί ΟΛΑ τα ζεύγη ΕΚΠΑΙΔΕΥΣΗΣ, μετά εφαρμόζεται στο test-input μέσω apply-program που τυλίγει τα πάντα σε (handler-case … (error () nil)). Αν το πρόγραμμα σφάλει στη ΔΟΚΙΜΗ (π.χ. %strip-border σε μικρό πλέγμα, %guard-cells υπέρβαση), επιστρέφεται (values NIL πρόγραμμα NIL) — πρόβλεψη NIL ΧΩΡΙΣ λόγο, ενώ το συμβόλαιο δηλώνει «Τίποτα; ⇒ (nil nil λόγος)». Επιπλέον το %map-programs είναι χειροκίνητα ξετυλιγμένο έως βάθος 3: max-depth 5 ψάχνει έως 3 αλλά το μήνυμα τιμιότητας τυπώνει «βάθος ≤5»."
+   :severity :p1
+   :evidence "fluid-induction.lisp:176-189 (apply-program) · 211-225 (ξετύλιγμα έως 3) · 236-251 (το συμβόλαιο και το μήνυμα)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "embeddings-authority: ΟΛΟΚΛΗΡΟ ΤΟ ΤΟΠΙΚΟ ΜΟΝΟΠΑΤΙ ΕΝΣΩΜΑΤΩΣΕΩΝ ΣΗΜΑΤΟΔΟΤΕΙ ΠΑΝΤΑ. Το ensure-model-loaded σφάλλει επειδή «word-vector ingestion is not a current capability» (ο loader διαγράφηκε), οπότε embed-text, embed-texts, similarity, find-similar, compute-similarity-matrix, cluster-by-similarity, oov-words, vocabulary-coverage είναι εξαγόμενα και μη λειτουργικά — ενώ η κεφαλίδα διαφημίζει «GloVe/Word2Vec (fallback - no external dependency)» ως διαθέσιμο backend. Επιπλέον cosine-similarity/euclidean-distance/dot-product ΔΕΝ ελέγχουν ισότητα διαστάσεων: διάνυσμα μεγαλύτερο από το πρώτο αγνοείται σιωπηλά στην ουρά του, δίνοντας ΛΑΘΟΣ ομοιότητα αντί για σφάλμα."
+   :severity :p1
+   :evidence "embeddings-authority.lisp:6-8 (η αξίωση fallback) · 217-224,440-444 (τα διαγραμμένα) · 450-454 · 229-263 · 296-316,318-328,348-351 (χωρίς έλεγχο διαστάσεων)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "embeddings-authority: το *openai-endpoint* είναι ΑΠΛΗ defvar και το κλειδί έρχεται από τη μεταβλητή περιβάλλοντος OPENAI_API_KEY — μεταβολή της μεταβλητής endpoint στέλνει το ΜΥΣΤΙΚΟ σε αυθαίρετο host μέσω κεφαλίδας Authorization. Καμία καρφίτσωση host, κανένας φρουρός SSRF, καμία καταγραφή. Είναι το δεύτερο μυστικό που εισάγεται από περιβάλλον στην εικόνα (το πρώτο: ETHEREUM_PRIVATE_KEY στο blockchain-authority)."
+   :severity :p1
+   :evidence "embeddings-authority.lisp:61-68,70-82,111-125,162-175 · blockchain-authority.lisp:951-972"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "legal-subsumption %devar: το φράγμα +max-distinct-vars+ 256 είναι ΑΝΑ ΚΛΗΣΗ (ο πίνακας vars είναι φρέσκος προεπιλεγμένος όρος), όχι καθολικό — τα σύμβολα δεν αποδεσμεύονται ποτέ από το πακέτο. Απεριόριστες κλήσεις με νέα ονόματα εξακολουθούν να αυξάνουν μόνιμα το πακέτο κατά 256 σύμβολα τη φορά, ενώ το docstring δηλώνει ότι εμποδίζει input-derived ονόματα να «γεμίζουν ΜΟΝΙΜΑ το package». Ρυθμιστής ρυθμού, όχι εξάλειψη της κλάσης σφάλματος."
+   :severity :p2
+   :evidence "legal-subsumption.lisp:33-37,48-66"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "text-canonicalizer normalize-quotes: μετατρέπει κάθε ζεύγος ευθειών εισαγωγικών σε γαλλικά («…») όταν το κείμενο περιέχει ελληνικό γράμμα. Στην ελληνική νομοθεσία το εισαγωγικό περιεχόμενο ΕΙΝΑΙ το κείμενο αντικατάστασης μιας τροποποιητικής διάταξης («αντικαθίσταται ως εξής: …»): η αλλαγή χαρακτήρων αλλάζει το κανονικό κείμενο που κατακερματίζεται. Με περιττό πλήθος εισαγωγικών η ζευγαροποίηση από το \"([^\"]+)\" είναι αυθαίρετη. Το ίδιο το σχόλιο παραδέχεται «This is simplified - real implementation would track nesting»."
+   :severity :p2
+   :evidence "text-canonicalizer.lisp:571-597 (ιδίως 583-586)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "narrative-provenance: ΤΟ ΙΧΝΟΣ ΠΡΟΕΛΕΥΣΗΣ ΕΙΝΑΙ ΦΑΒΡΙΚΑΡΙΣΜΕΝΟ ΚΑΙ ΣΤΑΘΕΡΟ — δεν διαβάζει το αντικείμενο narrative. Από τους 12 συγγραφείς φάσεων, ΟΙ 11 δεν αναφέρουν καθόλου την παράμετρο (μόνο το write-narrative-overview τη διαβάζει, 8 φορές)· τα write-chronological-timeline, write-agent-contributions, write-instruments-registry, write-evidence-trail έχουν ΜΗΔΕΝ αναφορές. Εκπέμπονται ως PROV-O/schema.org γεγονότα για ΠΡΑΓΜΑΤΙΚΟ νομικό σώμα: σταθερή συναλλαγή Ethereum «0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb7» με blockNumber «18500000» και gasUsed «150000», το κανονικό IPFS παράδειγμα-CID «QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco», κατακερματισμοί κυριολεκτικά «sha256:abc123...» / «sha256:def456...», commit «abc123def456», και URL επαλήθευσης QES σε ΠΡΑΓΜΑΤΙΚΟ κυβερνητικό τομέα «https://validate.aped.gov.gr/QES-2024-STAV-001». Ο χρόνος έναρξης κάθε αφήγησης είναι το σταθερό initform «2019-01-01T00:00:00Z»."
+   :severity :p0
+   :evidence "narrative-provenance.lisp:266 (generate-narrative-trail) · 597-635 (write-anchoring-phase: σταθερές ώρες, tx hash, gas, IPFS CID· μηδέν αναφορές στο narrative) · 798-844 (write-evidence-trail: placeholder hashes, QES URL, commit· μηδέν αναφορές) · 664-696,697-743,744-797 (μηδέν αναφορές) · 79-80 (σταθερό start-time)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "ΔΥΟ ΤΑΥΤΟΛΟΓΙΚΟΙ ΕΠΑΛΗΘΕΥΤΕΣ ΠΟΥ ΔΕΝ ΜΠΟΡΟΥΝ ΝΑ ΕΠΙΣΤΡΕΨΟΥΝ NIL, ΜΕ ΤΟ ΙΔΙΟ ΙΔΙΩΜΑ, ΣΕ ΔΥΟ ΑΡΧΕΙΑ. Και το verify-provenance-chain και το verify-authority-chain χτίζουν λίστα checks κάνοντας ΜΟΝΟ (push (cons :κλειδί T)) μέσα σε (when …) — καμία διαδρομή δεν σπρώχνει NIL — και τελειώνουν με (values (every #'cdr checks) checks). Αποτυχία ελέγχου σημαίνει ΑΠΟΥΣΙΑ στοιχείου, όχι ψευδές στοιχείο· και αν ΟΛΟΙ οι έλεγχοι αποτύχουν, checks = NIL και το (every #'cdr NIL) είναι T. Δηλαδή: αφήγηση χωρίς δραστηριότητες/βήματα/ελέγχους και με ασυνεπές χρονολόγιο επιστρέφει «η αλυσίδα προέλευσης επαληθεύτηκε»· ισχυρισμός αυθεντίας χωρίς QES, χωρίς αγκύρωση, χωρίς IPFS, χωρίς αποδόσεις και χωρίς διαπιστευτήρια επιστρέφει «η αλυσίδα αυθεντίας επαληθεύτηκε»."
+   :severity :p0
+   :evidence "narrative-provenance.lisp:907-930 · semantic-authority.lisp:730-754"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "legal-extraction-verify: Η ΠΥΛΗ ΤΟΥ ΣΥΜΒΟΥΛΟΥ ΕΠΑΛΗΘΕΥΕΙ ΤΟ ΠΑΡΑΘΕΜΑ, ΟΧΙ ΤΟΝ ΙΣΧΥΡΙΣΜΟ. Το V2 απαιτεί το χωρίο-απόδειξη να υπάρχει αυτολεξεί στο κείμενο ΚΑΙ να φέρει δεοντικό τελεστή· το V3 ελέγχει το CONSEQUENT μόνο για (null consequent). ΤΙΠΟΤΑ δεν δένει το consequent — τη ΡΥΘΜΙΖΟΜΕΝΗ ΠΡΑΞΗ που θα καταχωρηθεί ως κανόνας στο L5 και θα υπαχθεί σε πραγματικά περιστατικά — με το κείμενο της διάταξης. Ο σύμβουλος παραθέτει γνήσιο χωρίο και δηλώνει ΟΠΟΙΑΔΗΠΟΤΕ πράξη: η πύλη το δέχεται. Επιπλέον το deontic-marker-in δέχεται αν ΕΣΤΩ ΜΙΑ πρόταση του χωρίου φέρει τη ζητούμενη τυπικότητα, οπότε μακρύ παράθεμα με ανάμεικτες τυπικότητες τεκμηριώνει όποια από αυτές συμφέρει."
+   :severity :p0
+   :evidence "legal-extraction-verify.lisp:356-361 (V3) · 362-370 (V2) · 383-387 (ο κανόνας χτίζεται με το consequent του συμβούλου) · 321-327 (αρκεί μία πρόταση)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "legal-extraction-verify: ο συμβολικός «κριτής» του συμβούλου είναι ΕΥΡΕΤΙΚΟΣ ΤΑΞΙΝΟΜΗΤΗΣ ΕΛΛΗΝΙΚΩΝ ΣΥΜΒΟΛΟΣΕΙΡΩΝ με ΔΗΛΩΜΕΝΗ ορθότητα ~81,5%. Τα ίδια τα σχόλια καταγράφουν τη μέτρηση (163 δείγματα, 5 κριτές· 56% → 81,5% → γ' γύρος) — δηλαδή περίπου 1 στις 5 ταξινομήσεις είναι λάθος. Το verdict struct ΔΕΝ φέρει βαθμό βεβαιότητας και το verify-and-register καταχωρεί τον κανόνα ως επαληθευμένο, σε module που δηλώνει «έτσι … ΧΩΡΙΣ να πέφτει το 0 λάθος»."
+   :severity :p0
+   :evidence "legal-extraction-verify.lisp:38-40 (η μέτρηση) · 303-313 (το docstring με τα ποσοστά) · 53-102 (οι λίστες στελεχών) · 333-337 (verdict χωρίς βεβαιότητα) · 389-395 (η καταχώρηση)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "legal-extraction-verify: το ID του κανόνα παράγεται ΜΟΝΟ από την πηγή — (intern (format nil \"NORM-~A\" source) :keyword) — και το register-norm γράφει σε hash κατά id. Δεύτερη επαληθευμένη πρόταση για ΤΟ ΙΔΙΟ άρθρο ΣΒΗΝΕΙ ΣΙΩΠΗΛΑ την πρώτη, ανεξαρτήτως τυπικότητας ή πράξης: μια διάταξη που φέρει και υποχρέωση και άδεια μπορεί να κρατήσει μόνο μία. Και ο ίδιος ο έλεγχος αυτο-αντίφασης V4 ψάχνει στα all-norms, από όπου ο προηγούμενος κανόνας έχει ήδη εξαφανιστεί. Ο κανόνας παράγεται πάντα με :antecedent nil, δηλαδή ΑΝΕΠΙΦΥΛΑΚΤΟΣ — και το case-norms της υπαγωγής κρατά ΜΟΝΟ όσους ΕΧΟΥΝ antecedent, οπότε κανένας κανόνας αυτής της πύλης δεν συμμετέχει ποτέ σε υπαγωγή υπόθεσης."
+   :severity :p1
+   :evidence "legal-extraction-verify.lisp:383-387,389-395 · legal-deontic.lisp:87 (register-norm) · legal-subsumption.lisp:88-93 (case-norms) · legal-extraction-verify.lisp:371-380 (V4)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "sparql-endpoint: το ORDER BY ΔΗΛΩΝΕΤΑΙ ΚΑΙ ΔΕΝ ΕΦΑΡΜΟΖΕΤΑΙ ΠΟΤΕ. Η κεφαλίδα το απαριθμεί δύο φορές ως υποστηριζόμενο και υπάρχει slot order-by, αλλά το σύμβολο δεν εμφανίζεται σε κανένα μονοπάτι αποτίμησης — δεν τίθεται καν από το parse-modifiers. Το sparql-select εφαρμόζει DISTINCT, OFFSET και LIMIT πάνω σε ΑΤΑΞΙΝΟΜΗΤΟ σύνολο, οπότε «ORDER BY ?x LIMIT 10» επιστρέφει δέκα ΑΥΘΑΙΡΕΤΕΣ γραμμές παρουσιασμένες ως τις πρώτες δέκα κατά σειρά."
+   :severity :p1
+   :evidence "sparql-endpoint.lisp:10,117 (οι αξιώσεις) · 80 (το slot) · 313-337 (parse-modifiers) · 388-415 (η αποτίμηση: DISTINCT/OFFSET/LIMIT, καμία ταξινόμηση)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "sparql-endpoint results-to-json / results-to-xml: ΚΑΘΕ δέσμευση εκπέμπεται με τύπο «uri» ανεξαρτήτως τι είναι — κυριολεκτικά, αριθμοί, boolean αναφέρονται στον πελάτη ως IRI, παραβιάζοντας τη μορφή αποτελεσμάτων SPARQL 1.1. Επιπλέον το XML γράφει <uri>~A</uri> ΧΩΡΙΣ ΚΑΜΙΑ ΔΙΑΦΥΓΗ XML: τιμή με < > & παράγει κακοσχηματισμένο XML και τιμή με «</uri><uri>» εγχέει δεσμεύσεις. Και το results-to-json κάνει (intern var :keyword) πάνω σε ΟΝΟΜΑ ΜΕΤΑΒΛΗΤΗΣ ΤΟΥ ΠΕΛΑΤΗ — απεριόριστο intern από μη αυθεντικοποιημένο αίτημα, ακριβώς το sink που το legal-subsumption θωράκισε με δηλωμένο φράγμα."
+   :severity :p1
+   :evidence "sparql-endpoint.lisp:554-573 (τύπος uri + intern) · 576-600 (XML χωρίς διαφυγή) · legal-subsumption.lisp:33-66 (η θωρακισμένη έδρα του ίδιου sink)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "eu-interop-layer generate-did: η ΤΑΥΤΟΤΗΤΑ (DID) με την οποία ο οργανισμός εγγράφεται στο EBSI παράγεται από (format nil \"~A-~A\" (now :source :system) (random 1000000)) και κατακερματίζεται. Το random χρησιμοποιεί το ΠΡΟΕΠΙΛΕΓΜΕΝΟ *random-state*, που το SBCL αρχικοποιεί ΤΑΥΤΟΣΗΜΑ σε κάθε εκκίνηση εικόνας — άρα η ακολουθία είναι αναπαραγώγιμη και η εντροπία το πολύ ~20 bits συν το ρολόι. Κρυπτογραφική ταυτότητα χωρίς CSPRNG. Ίδια κλάση σφάλματος με το generate-uuid του audit."
+   :severity :p1
+   :evidence "eu-interop-layer.lisp:376-387 (και EBSI_DID από περιβάλλον, γρ. 378) · legal-audit-system.lisp:780-787 (η ίδια κλάση)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "Η ΚΛΑΣΗ ΣΦΑΛΜΑΤΟΣ «σιωπηλό fallback σε RDF namespace» ΚΛΕΙΣΤΗΚΕ ΣΕ ΜΙΑ ΕΔΡΑ ΚΑΙ ΕΜΕΙΝΕ ΑΝΟΙΧΤΗ ΣΕ ΤΡΕΙΣ. Το ai-ingest-manifest τεκμηριώνει ρητά τη διόρθωση («ΔΕΝ get-base-uri … ΟΥΤΕ σιωπηλό (ignore-errors) fallback. Ένα RDF prefix ΟΦΕΙΛΕΙ να είναι σταθερό») και ορίζει σταθερά +institution-vocabulary-base+. Το narrative-provenance (3 prefixes + το corpus-uri initform), το ai-citation-strategy (3 prefixes) και το semantic-versioning-system (delta prefix) εξακολουθούν να χρησιμοποιούν (or (ignore-errors (get-base-uri)) \"https://…\"): σφάλμα της αρχής URI αλλάζει ΣΙΩΠΗΛΑ την ταυτότητα ΚΑΘΕ κατηγορήματος του εκπεμπόμενου γράφου, χωρίς καμία σήμανση."
+   :severity :p1
+   :evidence "ai-ingest-manifest.lisp:30-38 (η κλεισμένη έδρα) · narrative-provenance.lisp:32-34,76 · ai-citation-strategy.lisp:31-33,389 · semantic-versioning-system.lisp:43"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "rdfs-inference run-inference και reasoning-authority compute-closure: ΚΟΛΟΒΟ ΚΛΕΙΣΙΜΟ ΔΗΛΩΝΕΤΑΙ ΩΣ ΠΛΗΡΕΣ. Και οι δύο σταματούν στο max-iterations (100 / 1000), εκπέμπουν (warn …) στο *error-output* και ΕΠΙΣΤΡΕΦΟΥΝ κανονικά· το rdfs-inference θέτει επιπλέον (knowledge-base-inferred-p kb) t και τυπώνει «RDFS inference complete». Ο καλών που ελέγχει το inferred-p ΔΕΝ μπορεί να ξεχωρίσει πλήρες κλείσιμο από κομμένο. Το ίδιο μοτίβο και στο pagerank του citation-authority, που τυπώνει «Reached max iterations» και επιστρέφει μη συγκλίνουσα κεντρικότητα ως αποτέλεσμα."
+   :severity :p1
+   :evidence "rdfs-inference.lisp:399-431 (ιδίως 417-420,428-431) · reasoning-authority.lisp:455-480 · citation-authority.lisp:408-476 (ιδίως 475)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "validate-logical-blocks: η ΠΥΛΗ ΠΟΙΟΤΗΤΑΣ ΤΟΥ ΕΠΙΠΕΔΟΥ 2 ΠΕΡΝΑΕΙ ΑΚΡΙΒΩΣ ΤΙΣ ΔΥΟ ΣΥΝΘΗΚΕΣ ΑΠΟΤΥΧΗΜΕΝΗΣ ΤΑΞΙΝΟΜΗΣΗΣ. Μπλοκ ταξινομημένο ως :unknown δίνει record-warning και ΕΠΙΣΤΡΕΦΕΙ T («Warning, not error»)· μπλοκ με βεβαιότητα ΚΑΤΩ από το *minimum-confidence* δίνει record-warning και ΕΠΙΣΤΡΕΦΕΙ T. Ταυτόχρονα οι ίδιες οι «βεβαιότητες» του ταξινομητή είναι ΣΤΑΘΕΡΕΣ ΚΥΡΙΟΛΕΞΙΕΣ ανά κλάδο μοτίβου (0.95, 0.98), όχι μετρήσεις — άρα το κατώφλι συγκρίνει σταθερά με σταθερά και δεν φράζει τίποτα."
+   :severity :p1
+   :evidence "validate-logical-blocks.lisp:148-163 (:unknown ⇒ T),165-179 (χαμηλή βεβαιότητα ⇒ T) · typographic-classifier.lisp:458-473 (οι σταθερές βεβαιότητες)"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "ai-citation-strategy send-prometheus-metric: το resource και το agent παρεμβάλλονται ΑΦΙΛΤΡΑΡΙΣΤΑ στη γραμμή έκθεσης Prometheus — (format nil \"resource=\\\"~A\\\",agent=\\\"~A\\\"\" …) και μετά \"~A{~A} 1~%\" — και γίνονται POST σε αυθαίρετο ρυθμισμένο endpoint. Το agent προέρχεται από παρακολούθηση αιτημάτων (User-Agent), άρα τιμή με εισαγωγικό ή αλλαγή γραμμής εγχέει αυθαίρετες μετρικές στο pushgateway."
+   :severity :p2
+   :evidence "ai-citation-strategy.lisp:589-601"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "lexicon-neurolingo: η κεφαλίδα δηλώνει «1.2M+ Greek Morphological Entries» ενώ η μόνη διαθέσιμη υλοποίηση είναι make-placeholder-lexicon με ΤΡΕΙΣ λέξεις. Η ένδειξη έλλειψης είναι (warn …) σε :before μέθοδο — ΔΕΝ αρνείται: το lexicon-lookup συνεχίζει και επιστρέφει NIL για καθετί εκτός των τριών, αδιάκριτο από «δεν είναι λέξη». Παρόμοια, greek-lemmatizer και reasoning-authority αυτοδηλώνουν «STATUS: Not yet loaded by any .asd - pending integration»."
+   :severity :p2
+   :evidence "lexicon-neurolingo.lisp:3-4 (η αξίωση),246-265 (το stub και το warn) · greek-lemmatizer.lisp:5-6 · reasoning-authority.lisp:5-6"
+   :is-it-in-the-known-defect-list :unknown)
+
+  (:what "semantic-authority generate-authority-manifest: κάθε παραγόμενο manifest προσθέτει ΑΝΕΥ ΟΡΩΝ απόδοση στον «Spyridon Stavropoulos» ως «Creator» ΚΑΙ επαληθεύσιμο διαπιστευτήριο τύπου :qes με εκδότη «APED» — τη ΠΡΑΓΜΑΤΙΚΗ ελληνική αρχή διαπίστευσης ηλεκτρονικών υπογραφών — και proof την κυριολεξία «signature-proof». Η ίδια συνάρτηση σωστά απαιτεί qes-hash και blockchain-uri fail-closed («no hardcoded defaults»), αλλά το διαπιστευτήριο που δηλώνει ποιος το πιστοποίησε είναι σταθερό placeholder."
+   :severity :p1
+   :evidence "semantic-authority.lisp:757-790 (ιδίως 767-768 η αξίωση, 779-788 η σταθερή απόδοση/διαπιστευτήριο)"
    :is-it-in-the-known-defect-list :unknown))
 
  :hidden-execution-paths
@@ -853,7 +1053,27 @@
   (:path "define-noun στο load-toplevel καλεί orchestrator.citation-authority:add-lemma-forms"
    :trigger "Φόρτωση του generation.lisp — 15 κλήσεις define-noun στις γραμμές 175-189"
    :why-hidden "Η ΦΟΡΤΩΣΗ ενός αρχείου γένεσης λόγου ΜΕΤΑΒΑΛΛΕΙ το λεξικό ΚΑΤΑΝΟΗΣΗΣ ενός άλλου πακέτου (citation-authority), με 6 μορφές ανά λήμμα. Διασταυρούμενη μεταβολή κατάστασης μεταξύ πακέτων τη στιγμή του load, χωρίς gate ή receipt."
-   :evidence "generation.lisp:50-63,175-189 · 215-227 (η ίδια πόρτα ανοιχτή σε πακέτα γνώσης)"))
+   :evidence "generation.lisp:50-63,175-189 · 215-227 (η ίδια πόρτα ανοιχτή σε πακέτα γνώσης)")
+  (:path "orchestrator.knowledge:*resolvers* — abduction που ΚΑΛΕΙ αυθαίρετη συνάρτηση και εισάγει το αποτέλεσμά της ως ΠΡΟΚΕΙΜΕΝΟ"
+   :trigger "plan-goal → %acquire, όταν ένας ground υπο-στόχος δεν παράγεται από κανόνα"
+   :why-hidden "Δεν φαίνεται σε κανένα call graph: η συνάρτηση καταχωρείται δυναμικά από τον καλούντα και εκτελείται στο μέσο του σχεδιασμού απόδειξης. Τα «αποκτημένα» γεγονότα μπαίνουν αδιάκριτα δίπλα στα δοθέντα και η έξοδος λέει «✓ Το απέδειξα»."
+   :evidence "legal-knowledge.lisp:148-154,168-174,260-277")
+  (:path "signed-embedding-manifest → embeddings-authority:embed-via-openai → δίκτυο OpenAI, και το αποτέλεσμα ΥΠΟΓΡΑΦΕΤΑΙ με JWS"
+   :trigger "create-embedding-manifest χωρίς :pre-computed-vector"
+   :why-hidden "Μη ντετερμινιστικό, εξωτερικό, δικτυακό περιεχόμενο αποκτά κρυπτογραφική σφραγίδα προέλευσης, ORCID πραγματικού προσώπου και άδεια CC-BY, και εκπέμπεται ως emb:SignedEmbedding. Η υπογραφή βεβαιώνει ακεραιότητα, ποτέ ορθότητα· τίποτα στο artifact δεν δηλώνει ότι το διάνυσμα προήλθε από τρίτο πάροχο."
+   :evidence "signed-embedding-manifest.lisp:158-161,68-79,186 · embeddings-authority.lisp:99-148")
+  (:path "source-profile: ΟΛΟΙ οι backends ενώνονται μέσω find-symbol σε πακέτα που μπορεί να λείπουν"
+   :trigger "default-source-profiles / make-consensus-source σε εικόνα χωρίς orchestrator.gov-source, orchestrator.eu-interop, orchestrator.ingestion ή drakma"
+   :why-hidden "Το κανάλι δεν σφάλλει — γίνεται απλώς ΜΗ ΔΙΑΘΕΣΙΜΟ και εξαφανίζεται από τη συναίνεση χωρίς μήνυμα. Η στοίβα απόκτησης μπορεί να συρρικνωθεί σε ένα μόνο κανάλι από απούσα εξάρτηση, και το αποτέλεσμα σημαίνεται :sole ⇒ TRUSTED."
+   :evidence "source-profile.lisp:415-432,447-458,462-468,473-481,487-493 · 529-535 · 263-270,345-353")
+  (:path "legal-extraction-verify V1 → (funcall (find-symbol \"NODE\" :orchestrator.graph) …) χωρίς έλεγχο NIL"
+   :trigger "verify-proposal με :graph, σε εικόνα όπου το πακέτο/σύμβολο λείπει"
+   :why-hidden "Η ΠΥΛΗ του μη-έμπιστου συμβούλου ματαιώνεται με ΩΜΟ σφάλμα funcall-NIL αντί για δηλωμένη απόρριψη· το verify-and-register δεν καταχωρεί, αλλά ο καλών δεν λαμβάνει verdict με λόγους."
+   :evidence "legal-extraction-verify.lisp:348-355")
+  (:path "orchestrator.protocols + MOP-ανακάλυψη κανόνων ⇒ ΜΗ ΝΤΕΤΕΡΜΙΝΙΣΤΙΚΗ ΕΠΙΛΟΓΗ ΑΠΟΔΕΙΞΗΣ"
+   :trigger "plan-goal/pursue/think σε οποιοδήποτε ερώτημα που κλείνει με ≥2 κανόνες"
+   :why-hidden "Το all-legal-rules παράγει τη λίστα κανόνων από sb-mop:class-direct-subclasses, του οποίου η σειρά αδελφών είναι απροσδιόριστη· το plan-goal κρατά τον ΠΡΩΤΟ κανόνα που κλείνει. Η ΤΙΜΗ ΑΛΗΘΕΙΑΣ είναι σταθερή (well-founded fixpoint), αλλά η ΑΠΟΔΕΙΞΗ που παρουσιάζεται στον άνθρωπο μπορεί να διαφέρει μεταξύ εικόνων για το ίδιο ερώτημα και τα ίδια δεδομένα."
+   :evidence "legal-inference-engine.lisp:514-520 · legal-knowledge.lisp:190-207,32-35"))
 
  :duplicate-seats
  ((:concept "«χρόνος για δημοσιευμένο artifact»"
@@ -927,23 +1147,56 @@
            "generation.lisp:215-227 → 50-63 (γράψιμο πριν την επικύρωση, χωρίς rollback)"))
   (:concept "generate-rdf (defgeneric)"
    :seats ("protocols.lisp:56 ((object &key format) — 0 μέθοδοι)"
-           "systems/orchestrator-omega-modules/frbr-protocol.lisp:11 ((frbr-instance) — 12 μέθοδοι, ΑΣΥΜΒΑΤΗ lambda-list)")))
+           "systems/orchestrator-omega-modules/frbr-protocol.lisp:11 ((frbr-instance) — 12 μέθοδοι, ΑΣΥΜΒΑΤΗ lambda-list)"))
+  (:concept "Turtle literal escaping (πλήρης απαρίθμηση εδρών)"
+   :seats ("legal-hypergraph.lisp:46-62 (%ttl-lit — αυτοδηλωμένο «single choke point»)"
+           "greek-legislation-ontology.lisp:208-212 (%ttl-esc — χωρίς \\r/\\t)"
+           "shacl-validator.lisp:311-323 (%ttl-str — πλήρες)"
+           "signed-embedding-manifest.lisp:383-396 (%ttl-lit — πλήρες)"))
+  (:concept "κλάση ελληνικών χαρακτήρων για regex"
+   :seats ("legal-references.lisp:39-42 (+gl+ — U+0370-U+03FF, U+1F00-U+1FFF)"
+           "corpus-eu-links.lisp:27 (+gl+ — ρητή απαρίθμηση)"
+           "embeddings-authority.lisp:286 (κλάση εντός tokenize)"
+           "legal-penalty.lisp:65 (*num-token*)"
+           "text-canonicalizer.lisp:313,318,324,330 (τέσσερα διαφορετικά εύρη ανά μοτίβο)"))
+  (:concept "«συναίνεση/επιβεβαίωση περιεχομένου μεταξύ πηγών»"
+   :seats ("source-profile.lisp:341-353 (content-hash του %canonical — και για κατάλογο = όνομα αρχείου)"
+           "authority-evidence-replay.lisp (byte-ισοδυναμία πηγή→spans→εξαγωγή→graph-text — πραγματική)"))
+  (:concept "αποτίμηση «τι λείπει για να ισχύσει ο κανόνας»"
+   :seats ("legal-knowledge.lisp:68-77 (satisfy-patterns — greedy, χωρίς οπισθοδρόμηση)"
+           "legal-deontic.lisp:113-141 (apply-norms → match-patterns — ευρετηριασμένο, πλήρες)"))
+  (:concept "«επαλήθευση αλυσίδας» με ταυτολογικό (every #'cdr checks)"
+   :seats ("narrative-provenance.lisp:907-930 (verify-provenance-chain)"
+           "semantic-authority.lisp:730-754 (verify-authority-chain)"))
+  (:concept "κλείσιμο RDFS (apply-rdfs-rules + βρόχος fixpoint)"
+   :seats ("rdfs-inference.lisp:283-431 (apply-rdfs2..11 + apply-rdfs-rules + run-inference, max 100)"
+           "reasoning-authority.lisp:417-480 (apply-rdfs-rules + compute-closure, max 1000, «not yet loaded by any .asd»)"))
+  (:concept "σιωπηλό fallback ρίζας RDF namespace"
+   :seats ("ai-ingest-manifest.lisp:30-38 (ΚΛΕΙΣΤΗΚΕ: ονομασμένη σταθερά +institution-vocabulary-base+)"
+           "narrative-provenance.lisp:32-34,76 (ανοιχτό)"
+           "ai-citation-strategy.lisp:31-33,389 (ανοιχτό)"
+           "semantic-versioning-system.lisp:43 (ανοιχτό)"))
+  (:concept "μη-κρυπτογραφικό (random …) σε ταυτότητα/αναγνωριστικό"
+   :seats ("legal-audit-system.lisp:780-787 (generate-uuid του audit trail)"
+           "eu-interop-layer.lisp:381-387 (generate-did για εγγραφή στο EBSI)"))
+  (:concept "HTML escaping"
+   :seats ("static-site.lisp:61-68 (%esc — πλήρες)"
+           "akoma-ntoso-emitter.lisp:46-63 (xml-text-escape/xml-attr-escape — μερικό, XML)"
+           "sparql-endpoint.lisp:576-600 (results-to-xml — ΚΑΜΙΑ διαφυγή)"))
+  (:concept "μηχανή συμπερασμού πάνω σε γεγονότα"
+   :seats ("legal-inference-engine.lisp (JTMS + Van Gelder alternating fixpoint — η δηλωμένη έδρα)"
+           "rdfs-inference.lisp (forward-chaining RDFS πάνω σε triples)"
+           "reasoning-authority.lisp (OWL-RL/RDFS, τρίτη)"
+           "guard-metaeval.lisp (μετακυκλικός αποτιμητής φραγμών, τέταρτη σημασιολογία)")))
 
  :unknowns
  ("Ποιος θέτει το *advisor* και με ποιο μοντέλο — δεν βρίσκεται στα αρχεία που διάβασα."
   "Ποιος καλεί το orchestrator.constitution:evaluate και αν η μεσολάβηση είναι πράγματι καθολική."
   "Αν το fetch-command προέρχεται από αρχείο ρύθμισης ελεγχόμενο από τον operator ή από corpus δεδομένα.")
 
- :remaining
- ("ai-citation-strategy.lisp" "ai-ingest-manifest.lisp" "citation-authority.lisp"
-  "corpus-service.lisp" "embeddings-authority.lisp" "eu-interop-layer.lisp"
-  "fluid-induction.lisp" "greek-lemmatizer.lisp" "greek-nlp-core.lisp"
-  "greek-tokenizer-advanced.lisp" "layout-types.lisp" "legal-casegrammar.lisp"
-  "legal-decisions.lisp" "legal-extraction-verify.lisp" "legal-inference-engine.lisp"
-  "legal-knowledge.lisp" "legal-subsumption.lisp" "lexicon-neurolingo.lisp"
-  "narrative-provenance.lisp" "orthography-lexicon.lisp" "rdfs-inference.lisp"
-  "reasoning-authority.lisp" "semantic-authority.lisp" "semantic-versioning-system.lisp"
-  "shacl-validator.lisp" "signed-embedding-manifest.lisp" "source-profile.lisp"
-  "sparql-endpoint.lisp" "static-site.lisp" "text-canonicalizer.lisp" "turtle-parser.lisp"
-  "typographic-classifier.lisp" "validate-ast.lisp" "validate-layout-graph.lisp"
-  "validate-logical-blocks.lisp"))
+ :remaining ()   ; ΟΛΑ τα 133 αρχεία του /frozen/ro/source διαβάστηκαν
+ :note-on-completion
+ "ΟΛΑ τα 133 .lisp του /frozen/ro/source διαβάστηκαν. Κάθε ισχυρισμός φέρει άγκυρα path:Lx-Ly.
+  Οι ικανότητες που δεν είχαν και τα 7 πεδία με τεκμήριο ΔΕΝ γράφτηκαν ως :present.
+  Οι κρίσεις ignore-errors είναι ονομαστικές μέσα στα :defects (σιωπηλή κατάποση vs
+  δηλωμένη τίμια άγνοια με ρητή επιστροφή NIL που ο καλών ΥΠΟΧΡΕΟΥΤΑΙ να ελέγξει).")
