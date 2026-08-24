@@ -1,0 +1,15 @@
+resolver v5 sha256:070ad89c114f4b7c379dce7d74db905a09c88bca4ef74d961ca404357f329c12
+manifest sha256:2c3a759da7f806c9cd16efd09902e12e9414e540a190d390d304d1ffc4b3adc8
+scope-authority sha256:30df3ec548d86ce31f2d7c8250589a36afd14d34785a8eaeee9cbb57c9936b83
+frozen mount /frozen/ro (read-only, επαληθευμένο στο /proc/self/mountinfo)
+corpus-identity sha256:3127f4941b899afcbffcd405b00d9e613fe4732301ba8ed990d22a0685514019 (ξαναϋπολογισμένη από το TSV: ΤΑΥΤΙΖΕΤΑΙ)
+lane Φ1A-L4 · cluster-roots ['deployment/*.md', 'deployment/*.sexp', 'deployment/*.ttl', 'deployment/*.json', 'deployment/*.jsonld', 'deployment/shapes', 'deployment/verify', 'deployment/templates', 'deployment/mcp']
+dossier experiment/phase1a/deployment-specs-rev2.sexp sha256:d48c47d92ec1e529ca9ede7e9752601deaa537ef8743f5cce6dc3de3cf6490b8
+αρχεία επαληθευμένα στο mount: 62
+παραπομπές: 289 · λύθηκαν: 284 · ΠΡΟΒΛΗΜΑΤΙΚΕΣ: 5
+μορφές: mount-anchored=0 corpus-relative=284 · εντός συστάδας=278 · εκτός=6
+  ✗ [experiment/phase1a/deployment-specs-rev2.sexp] deployment/verify/vectors/merkle/vectors.json:L1-8+ — ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy
+  ✗ [experiment/phase1a/deployment-specs-rev2.sexp] deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L9-37 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/deployment-specs-rev2.sexp] deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L79+ — ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy
+  ✗ [experiment/phase1a/deployment-specs-rev2.sexp] deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L40-76 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>
+  ✗ [experiment/phase1a/deployment-specs-rev2.sexp] deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L28-29 — LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>

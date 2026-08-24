@@ -1,0 +1,16 @@
+resolver v5 sha256:6ead7296028cf95cce37b3fe38bda165e117a2988d6755ca40817d1470a4ae1d
+manifest sha256:2c3a759da7f806c9cd16efd09902e12e9414e540a190d390d304d1ffc4b3adc8
+scope-authority sha256:30df3ec548d86ce31f2d7c8250589a36afd14d34785a8eaeee9cbb57c9936b83
+frozen mount /frozen/ro (read-only, επαληθευμένο στο /proc/self/mountinfo)
+corpus-identity sha256:3127f4941b899afcbffcd405b00d9e613fe4732301ba8ed990d22a0685514019 (ξαναϋπολογισμένη από το TSV: ΤΑΥΤΙΖΕΤΑΙ)
+lane Φ1A-L5 · cluster-roots ['deployment/self', 'deployment/self-study', 'deployment/knowledge', 'deployment/data', 'deployment/state', 'deployment/collab', 'deployment/*.js', 'deployment/*.sh']
+dossier experiment/phase1a/deployment-state-rev2.sexp sha256:6897eb6486c83b799a8edf7febafef90b8e896949ab3a9a9c55a5e24b8bdb2bd
+αρχεία επαληθευμένα στο mount: 49
+παραπομπές: 183 · λύθηκαν: 183 · ΠΡΟΒΛΗΜΑΤΙΚΕΣ: 0
+μορφές: mount-anchored=182 corpus-relative=1 · εντός συστάδας=162 · εκτός=21
+VERDICT: RECOGNIZED-CITATION-INTEGRITY
+  ΤΙ ΣΗΜΑΙΝΕΙ: κάθε token παραπομπής ΠΟΥ ΑΝΑΓΝΩΡΙΣΤΗΚΕ αντιστοιχεί σε
+  πραγματικά bytes και πραγματικό εύρος του παγωμένου δέντρου.
+  ΤΙ ΔΕΝ ΣΗΜΑΙΝΕΙ: ΔΕΝ αποδεικνύει ότι κάθε claim ΕΧΕΙ παραπομπή
+  (CLAIM-CITATION-COVERAGE: ΑΝΟΙΧΤΟ) ούτε ότι το cited span ΣΤΗΡΙΖΕΙ
+  τον ισχυρισμό (CLAIM-ENTAILMENT: ΑΝΟΙΧΤΟ). Ούτε είναι read-ledger.
