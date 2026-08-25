@@ -1,0 +1,43 @@
+{
+ "$schema": "lawmax/blind-agent-isolation-refined/2",
+ "status": "UNVERIFIED-UNTIL-FRESH-SESSION-CANARY",
+ "supersedes": "experiment/BLIND-AGENT-ISOLATION-REFINED.json (commit b81f8030) — append-only· ΔΕΝ διαγράφεται· η παρούσα ΣΤΕΝΕΥΕΙ τρεις υπερ-γενικές αξιώσεις (B, C, D) που δεν δοκιμάστηκαν πλήρως.",
+ "why_rev2": "Ο δημιουργός επεσήμανε ότι το REV1 παρουσίασε ως αποδεδειγμένα, μηχανικά ευρήματα ορισμένα πράγματα που στην πραγματικότητα ΔΕΝ δοκιμάστηκαν με πραγματικό restricted tool call. Το REV2 τα διορθώνει και ορίζει ρητά τι μένει UNTESTED μέχρι το fresh-session canary.",
+ "corrections": {
+  "Fact_B_PATH_SECRECY": {
+   "rev1_claim": "«Το Read ΔΕΝ έχει path guard· ένα Read-only allowlist διαβάζει οποιοδήποτε absolute path» — VERIFIED.",
+   "what_was_actually_shown": "Μόνο ότι οι στόχοι είναι root-readable ΣΤΟΝ HOST (ls ως uid 0 στο αρχικό mount namespace). Αυτό αποδεικνύει HOST REACHABILITY των bytes — ΟΧΙ ότι ένα restricted `Read` tool ενός sealed agent τα διάβασε. Δεν έγινε ΚΑΝΕΝΑ πραγματικό forbidden `Read` tool call από restricted agent (ο built-in agent αρνήθηκε λόγω persona, tool_uses:0 — INADMISSIBLE).",
+   "corrected_status": "PATH-SECRECY UNTESTED. Παραμένει ανοιχτό μέχρι πραγματικό forbidden `Read` tool call από τον restricted lane-blind-reader agent στο fresh session, με μηχανική απόφαση DENY καταγεγραμμένη σε hook receipt.",
+   "note": "Η υπόθεση ότι το γενικό `Read` δεν έχει path-argument guard παραμένει ΕΥΛΟΓΗ (κανένα per-agent path-scoping δεν υπάρχει στο 2.1.245 πλην PreToolUse hooks), αλλά είναι ΥΠΟΘΕΣΗ, όχι μετρημένο αποτέλεσμα."
+  },
+  "Fact_C_HOT_LOAD": {
+   "rev1_claim": "«Custom agent defs ΔΕΝ κάνουν hot-load» — γενική αξίωση.",
+   "what_was_actually_shown": "Ένας φάκελος .claude/agents/ που δημιουργήθηκε ΓΙΑ ΠΡΩΤΗ ΦΟΡΑ ΜΕΤΑ την εκκίνηση της ΠΑΡΟΥΣΑΣ συνεδρίας δεν ανακαλύφθηκε σε αυτή τη συνεδρία (Agent tool: «Agent type not found»).",
+   "corrected_status": "Δεν ισχυρίζομαι γενικά ότι ΟΛΑ τα agent definitions δεν κάνουν hot-load. Ισχυρίζομαι ΜΟΝΟ το παρατηρηθέν: ένας νεοδημιουργημένος .claude/agents/ ορισμός δεν ήταν διαθέσιμος εντός της ήδη τρέχουσας συνεδρίας. Το κατά πόσον ένας ορισμός που ΥΠΑΡΧΕΙ ΣΤΟ CHECKOUT ΚΑΤΑ ΤΗΝ ΕΚΚΙΝΗΣΗ φορτώνεται, το επιβεβαιώνει το fresh session (ο lane-blind-reader είναι committed ΠΡΙΝ ξεκινήσει η νέα συνεδρία ακριβώς γι' αυτό)."
+  },
+  "Fact_D_PRETOOLUSE": {
+   "rev1_claim": "«Δεν φορτώνεται PreToolUse hook· γενική αδυναμία».",
+   "what_was_actually_shown": "Στην παρούσα συνεδρία (α) δεν υπήρχε ενεργό PreToolUse hook στα settings που φόρτωσε στην εκκίνηση, και (β) ο νέος custom agent δεν ήταν διαθέσιμος για να δοκιμαστεί.",
+   "corrected_status": "Δηλώνω ΜΟΝΟ αυτά τα δύο γεγονότα. ΔΕΝ παρουσιάζω ως αποδεδειγμένη γενική αδυναμία του PreToolUse μηχανισμού ό,τι δεν δοκιμάστηκε. Το αν ένα subagent-scoped PreToolUse hook όντως πυροδοτείται στο `Read` ενός subagent είναι ΑΚΡΙΒΩΣ το πρώτο πράγμα που δοκιμάζει το fresh-session canary (τα hook scripts επαληθεύτηκαν ήδη μηχανικά με synthetic payloads — 17/17 σωστές αποφάσεις — αλλά το ΑΝ το Claude Code τα καλεί για subagent μένει UNTESTED)."
+  }
+ },
+ "local_hook_logic_proof": {
+  "scope": "Αποδεικνύει ΜΟΝΟ ότι τα enforcement scripts είναι σωστά/ντετερμινιστικά — ΟΧΙ ότι το Claude Code τα πυροδοτεί.",
+  "lane_guard": "12/12 synthetic PreToolUse payloads: allow μόνο εντός sealed (inbox + abs-into-sealed + write-inside), deny σε foreign lane, /root/.claude, /proc, dotdot-traversal, symlink-escape, write-outside, non-file tool, missing path, glob-default-cwd.",
+  "agent_guard": "5/5: allow ΜΟΝΟ exact subagent_type lane-blind-reader + pinned prompt hash· deny wrong-prompt, wrong-type, unexpected-tool· Task+exact-prompt allow.",
+  "receipt_schema": "append-only JSONL· πεδία: ts, hook, event, session_id, cwd, agent_type, agent_id, tool, input_hash(canonical), payload_hash, targets/decision/reason."
+ },
+ "verdict_after_rev2": {
+  "DEFAULT-GENERAL-PURPOSE-AGENT": "FAILED (αμετάβλητο)",
+  "PER-AGENT-OS-NAMESPACE": "BLOCKED (αμετάβλητο)",
+  "CUSTOM-TOOL-BROKER-NONINTERFERENCE": "tool-inventory: VERIFIED (Fact A, αμετάβλητο)· path-secrecy: UNTESTED (ήταν εσφαλμένα 'NOT-CERTIFIED' με υπονοούμενο μέτρημα· τώρα ρητά UNTESTED)",
+  "OVERALL": "BLIND-AGENT-ISOLATION-BLOCKED (διατηρείται) — καμία αξίωση PASS. Η πιστοποίηση εξαρτάται αποκλειστικά από το fresh-session canary."
+ },
+ "not_affected": [
+  "v1 σφραγισμένο (5b3ab5bf9561d535adbf5049b975ac2ab8e9a63db32dfb14a07d82d78b729be6)",
+  "παγωμένο corpus e621dbe1 (immutable commit· byte-identical)",
+  "ντετερμινιστικά citation receipts",
+  "per-lane mount-namespace isolation του citation-resolver (isolation-test 13/13)"
+ ],
+ "stop_directive": "Δεν δηλώνεται isolation PASS. Δεν ζητείται ακόμη επανεκκίνηση για μελέτη. Παραδίδεται μόνο το έτοιμο fresh-session canary package + handoff, και σταματώ."
+}

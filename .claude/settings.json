@@ -1,0 +1,32 @@
+{
+  "$comment": "UNVERIFIED-UNTIL-FRESH-SESSION-CANARY. Sealed-lane canary enforcement. Settings load only at SESSION START, so these hooks are inert in the session that authored them; the dedicated fresh canary session is what tests whether they actually fire for a subagent. Tool-INVENTORY restriction of the canary is enforced by the agent's own `tools:` allowlist (broker-verified), NOT by a project-wide tool deny here, so the fresh-session orchestrator keeps the tools it needs to run and adjudicate the canary.",
+  "permissions": {
+    "defaultMode": "dontAsk"
+  },
+  "sandbox": {
+    "failIfUnavailable": true,
+    "allowUnsandboxedCommands": false
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read|Write|Edit|MultiEdit|NotebookEdit|Glob|Grep|LS",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/lane-guard.py\""
+          }
+        ]
+      },
+      {
+        "matcher": "Agent|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/agent-guard.py\""
+          }
+        ]
+      }
+    ]
+  }
+}

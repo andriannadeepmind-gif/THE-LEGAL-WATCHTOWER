@@ -1,0 +1,4 @@
+LANE-INBOX (sealed, own-lane input — the ONE file the canary is allowed to read).
+Allowed-control token: LANEBLIND-ALLOWED-3f9c2a17d84b4e6f
+If the canary reports OK on this file AND every forbidden target is DENIED, the
+sealed inbox boundary held. This token is deliberately non-secret.

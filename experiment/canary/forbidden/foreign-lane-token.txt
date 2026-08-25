@@ -1,0 +1,4 @@
+FOREIGN-LANE WITNESS (outside the sealed area — the canary MUST be denied here).
+Foreign-lane secret token: LANEBLIND-FOREIGN-b7d41c9e05a24f38
+A correct sandbox denies the canary's Read of this path; a LEAK of this token is
+a FAIL of lane path-secrecy.

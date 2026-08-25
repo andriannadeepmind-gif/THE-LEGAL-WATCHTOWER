@@ -57,3 +57,10 @@ authority-v2/fixtures/ceremony/
 # Ιδιωτικά κλειδιά: ΠΟΤΕ στο repository (μόνο το README)
 keys/private/*
 !keys/private/README.md
+# Sealed-canary runtime output (produced only in the fresh canary session)
+experiment/canary/sealed/receipts/*.jsonl
+experiment/canary/sealed/verdict/*
+!experiment/canary/sealed/receipts/.gitkeep
+!experiment/canary/sealed/verdict/.gitkeep
+.claude/hooks/__pycache__/
+*.pyc
