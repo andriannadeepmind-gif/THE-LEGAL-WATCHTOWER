@@ -1,26 +1,46 @@
 #!/usr/bin/env python3
-"""LANE-CANARY hook common library.  UNVERIFIED-UNTIL-FRESH-SESSION-CANARY.
+"""LANE-CANARY hook common library — REV3.  UNVERIFIED-UNTIL-FRESH-SESSION-CANARY.
 
-Single seat (no duplicate code) for the deterministic, fail-closed helpers that
-lane-guard.py and agent-guard.py share: payload parsing, canonical hashing,
-append-only receipts and the Claude Code PreToolUse decision contract.
+Single seat for the deterministic, fail-closed helpers shared by the REV3 hooks
+(pretool_guard.py, posttool_evidence.py, subagent_complete.py) and read by the
+controller/adjudicator tools.
 
-Design law: every code path that cannot PROVE a request is in-policy must DENY.
-Stdlib only; no network; no external deps.
+REV3 changes vs REV1/REV2:
+  * Receipts live in a CONTROLLER-OWNED, ABSOLUTE, run-specific directory OUTSIDE
+    the repository and outside any lane-readable root, found via a fixed pointer
+    file.  Parent and subagent run in DIFFERENT checkouts (worktree isolation), so
+    a repo-relative receipt path would split the evidence — this removes that bug.
+  * Enforcement is IDENTITY-GATED: the strict lane policy applies ONLY to the
+    lane-blind-reader canary; every other caller is AUDITED and allowed
+    (fail-OPEN for non-canary so the controller is never bricked; fail-CLOSED for
+    the canary so a secret is never reachable).
+  * The lane capability may read ONLY the ONE exact allowed inbox file — not the
+    whole sealed/ tree, and not receipts/verdict (which now live off-repo).
+  * cwd (real worktree path) and its git HEAD are captured on every receipt so the
+    adjudicator can prove the subagent ran in a worktree whose HEAD == run HEAD.
+
+Stdlib only; no network; no third-party deps.
 """
 import os
 import sys
 import json
 import time
 import hashlib
+import subprocess
 
-# Receipt sink lives inside the canary's own sealed area (a runtime write target,
-# never inside the frozen corpus).
-RECEIPT_REL = os.path.join(
-    "experiment", "canary", "sealed", "receipts", "hook-receipts.jsonl"
+# ---- identity of the sealed capability ----
+CANARY_AGENT_TYPE = "lane-blind-reader"
+
+# The ONE file the lane capability may read (repo-relative; resolved per cwd).
+ALLOWED_FILE_REL = os.path.join(
+    "experiment", "canary", "sealed", "inbox", "LANE-INBOX.txt"
 )
 
-# File tools this project guards, and the input key(s) carrying their path(s).
+# ---- controller-owned evidence root (absolute, off-repo, non-lane-readable) ----
+CONTROLLER_HOME = os.path.join(os.path.expanduser("~"), ".lawmax-canary")
+ACTIVE_RUN_POINTER = os.path.join(CONTROLLER_HOME, "ACTIVE-RUN")
+
+# ---- file tools this project guards, and the input key(s) carrying their path ----
 FILE_PATH_KEYS = {
     "Read": ["file_path"],
     "Write": ["file_path"],
@@ -31,6 +51,8 @@ FILE_PATH_KEYS = {
     "Grep": ["path"],
     "LS": ["path"],
 }
+GUARDED_FILE_TOOLS = set(FILE_PATH_KEYS.keys())
+AGENT_TOOLS = {"Agent", "Task"}
 
 
 def now_utc():
@@ -38,8 +60,6 @@ def now_utc():
 
 
 def read_payload():
-    """Return (raw_bytes, parsed_dict). A malformed payload parses to {} so the
-    caller still runs its fail-closed policy rather than crashing open."""
     raw = sys.stdin.buffer.read()
     try:
         parsed = json.loads(raw.decode("utf-8"))
@@ -63,9 +83,6 @@ def sha256_bytes(b):
 
 
 def project_base(payload):
-    """Resolve the repository/worktree base. Prefer the hook payload's cwd so the
-    policy stays correct under isolation:worktree, then $CLAUDE_PROJECT_DIR, then
-    the process cwd."""
     for c in (payload.get("cwd"), os.environ.get("CLAUDE_PROJECT_DIR"), os.getcwd()):
         if c:
             try:
@@ -75,14 +92,59 @@ def project_base(payload):
     return os.path.realpath(".")
 
 
-def append_receipt(base, record):
-    """Append one canonical JSONL receipt. Returns True on durable success.
-    For an ALLOW decision a False return MUST be treated as a reason to DENY
-    (we never allow what we cannot prove we logged)."""
+def git_head(cwd):
+    """Best-effort HEAD of the checkout at cwd (the real worktree). None on error."""
     try:
-        p = os.path.join(base, RECEIPT_REL)
-        os.makedirs(os.path.dirname(p), exist_ok=True)
+        r = subprocess.run(
+            ["git", "-C", cwd or ".", "rev-parse", "HEAD"],
+            capture_output=True, text=True, timeout=5,
+        )
+        if r.returncode == 0:
+            return r.stdout.strip()
+    except Exception:
+        pass
+    return None
+
+
+# ---- identity ----
+def extract_identity(payload):
+    """Pull whatever agent-identity fields the payload provides. Absent fields are
+    None; the adjudicator REQUIRES them present and consistent for PASS, so their
+    absence can never yield a PASS."""
+    return {
+        "agent_type": payload.get("subagent_type") or payload.get("agent_type"),
+        "agent_id": payload.get("agent_id") or payload.get("subagent_id"),
+        "session_id": payload.get("session_id"),
+    }
+
+
+def is_canary_identity(ident):
+    return ident.get("agent_type") == CANARY_AGENT_TYPE
+
+
+# ---- run dir / evidence ----
+def read_run_dir():
+    """Return the active run directory (absolute) or None. The pointer must exist,
+    name an existing directory; anything else -> None."""
+    try:
+        with open(ACTIVE_RUN_POINTER, "r", encoding="utf-8") as f:
+            d = f.read().strip()
+        if d and os.path.isdir(d):
+            return d
+    except Exception:
+        pass
+    return None
+
+
+def append_evidence(run_dir, filename, record):
+    """Append one canonical JSONL record to <run_dir>/<filename>. Returns True on
+    durable success. Never raises."""
+    try:
+        if not run_dir:
+            return False
+        p = os.path.join(run_dir, filename)
         line = json.dumps(record, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+        # Exclusive-append; create if missing.
         with open(p, "a", encoding="utf-8") as f:
             f.write(line + "\n")
             f.flush()
@@ -92,9 +154,8 @@ def append_receipt(base, record):
         return False
 
 
+# ---- decision emit ----
 def emit(decision, reason):
-    """Emit the Claude Code PreToolUse decision as JSON on stdout and exit 0.
-    decision in {allow, deny, ask}."""
     out = {
         "hookSpecificOutput": {
             "hookEventName": "PreToolUse",
@@ -110,24 +171,20 @@ def emit(decision, reason):
 
 
 def emit_deny_raw(reason):
-    """Last-resort deny used from a bare except where helpers may be unusable."""
     try:
         sys.stdout.write(
             '{"hookSpecificOutput":{"hookEventName":"PreToolUse",'
             '"permissionDecision":"deny","permissionDecisionReason":'
-            + json.dumps(reason)
-            + "}}"
+            + json.dumps(reason) + "}}"
         )
         sys.stdout.flush()
     except Exception:
         pass
-    # Non-zero exit is itself a PreToolUse block in Claude Code: double fail-closed.
     sys.exit(2)
 
 
+# ---- path policy ----
 def extract_paths(tool_name, tool_input):
-    """Candidate path strings for a guarded file tool, or None when the tool
-    shape is unrecognized (the caller must DENY on None)."""
     keys = FILE_PATH_KEYS.get(tool_name)
     if keys is None:
         return None
@@ -136,7 +193,6 @@ def extract_paths(tool_name, tool_input):
         v = tool_input.get(k)
         if isinstance(v, str) and v != "":
             paths.append(v)
-    # A dir-scanning tool with no explicit path defaults to cwd — still guarded.
     if not paths and tool_name in ("Glob", "Grep", "LS"):
         paths.append(".")
     if not paths:
@@ -144,18 +200,45 @@ def extract_paths(tool_name, tool_input):
     return paths
 
 
-def within(base_allowed, candidate, cwd_base):
-    """True iff `candidate` resolves strictly within `base_allowed` with no
-    traversal or symlink escape. Absolute candidates are honored as given;
-    relative candidates resolve against `cwd_base`. realpath collapses
-    `..` and follows symlinks, so an escape lands outside and is rejected.
-    Any error -> False (deny)."""
+def real_of(candidate, cwd_base):
     try:
         if os.path.isabs(candidate):
-            real = os.path.realpath(candidate)
-        else:
-            real = os.path.realpath(os.path.join(cwd_base, candidate))
-        allowed = os.path.realpath(base_allowed)
-        return real == allowed or real.startswith(allowed + os.sep)
+            return os.path.realpath(candidate)
+        return os.path.realpath(os.path.join(cwd_base, candidate))
+    except Exception:
+        return None
+
+
+def is_exact_allowed_file(candidate, cwd_base):
+    """True iff candidate resolves to EXACTLY the one allowed inbox file (after
+    symlink/.. resolution). Prefix matches, receipts, verdict, other sealed files
+    are all rejected."""
+    real = real_of(candidate, cwd_base)
+    if real is None:
+        return False
+    allowed = os.path.realpath(os.path.join(cwd_base, ALLOWED_FILE_REL))
+    return real == allowed
+
+
+def bind_session(run_dir, session_id):
+    """Trust-on-first-use session binding for a run: first canary event records the
+    session_id; later events must match it. Returns True if bound/matching, False
+    on mismatch or any error (caller DENIES on False for a canary)."""
+    try:
+        if not run_dir or not session_id:
+            return False
+        p = os.path.join(run_dir, "session.bind")
+        if os.path.exists(p):
+            with open(p, "r", encoding="utf-8") as f:
+                return f.read().strip() == str(session_id)
+        # Exclusive create; if we lose a race, re-read and compare.
+        try:
+            fd = os.open(p, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                f.write(str(session_id))
+            return True
+        except FileExistsError:
+            with open(p, "r", encoding="utf-8") as f:
+                return f.read().strip() == str(session_id)
     except Exception:
         return False

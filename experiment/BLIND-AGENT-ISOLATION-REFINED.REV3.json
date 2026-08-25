@@ -1,0 +1,45 @@
+{
+ "$schema": "lawmax/blind-agent-isolation-refined/3",
+ "status": "UNVERIFIED-UNTIL-FRESH-SESSION-CANARY",
+ "kind": "CONSTRUCTION-ONLY readiness report. No canary was run. No isolation PASS is claimed.",
+ "supersedes": "experiment/BLIND-AGENT-ISOLATION-REFINED.REV2.json (append-only; not deleted).",
+ "headline_live_finding": {
+  "what": "While building REV3, the PreToolUse hook committed in C1 (66f21b96) TOOK EFFECT inside this already-running session and mechanically DENIED this session's own main-agent Write.",
+  "evidence": "A receipt in the C1 in-repo sink recorded ts, tool=Write, decision=deny, reason=outside-sealed-area, session_id=3c6da32f-8e33-5def-a677-b3e3feec4ae7 (THIS session). The Write tool returned the denial to the model. Also observed: the custom agent type lane-blind-reader became available to the Agent tool mid-session after commit.",
+  "consequence": "The earlier 'session-start-only' assumption (REV2 Fact D) is FALSIFIED in this environment: the hook command is re-executed from disk on each tool call, so committed hooks are effectively LIVE for any session on this branch. This is the interposition point the probe sought — proven to fire mid-session and actually block a real tool call — but shown so far only for the MAIN agent, not yet a subagent.",
+  "scope_limit": "This proves interposition + enforcement for the main agent. It does NOT yet prove subagent tool calls reach the hook, nor path-secrecy for the lane-blind-reader agent. Those remain for the single final canary."
+ },
+ "corrections_carried_and_extended": {
+  "Fact_B_path_secrecy": "Still UNTESTED for a restricted Read (no forbidden Read tool call by a restricted agent yet). REV3 makes the eventual test mechanical (deny receipt + absence of a posttool success), not self-report.",
+  "Fact_C_hot_load": "Further updated: a custom agent def created mid-session was not found earlier, BUT after commit the agent type DID become available this session — so even 'created-after-start is never discovered' is not general. Treated as environment-dependent and UNKNOWN; the fresh session is still the clean test.",
+  "Fact_D_pretooluse": "Overtaken by the headline finding: PreToolUse hooks are NOT inert in a running session here — they fired and denied. Stated as observed fact, not general law."
+ },
+ "rev3_construction": {
+  "settings": ".claude/settings.json now sets sandbox.enabled/failIfUnavailable/allowUnsandboxedCommands, worktree.baseRef=head, includeGitInstructions=false, permissions.defaultMode=dontAsk, and registers three ALL-TOOLS hooks: PreToolUse->pretool_guard, PostToolUse->posttool_evidence, SubagentStop->subagent_complete.",
+  "single_seat": "pretool_guard.py is the sole PreToolUse decision seat (identity-gated: strict fail-closed for the canary; audit + fail-open for every other caller so the controller is never bricked). lane-guard.py/agent-guard.py are deprecated shims that delegate to it (kept so any stale in-memory config still routes to current logic). No undocumented Agent isolation field is relied upon; worktree comes from settings.",
+  "evidence_offrepo": "Receipts are written to a controller-owned, absolute, run-specific dir (~/.lawmax-canary/run-<random>/) created with exclusive creation by controller_setup.py, which refuses if a run is already active. Parent and subagent (different checkouts) thus write to ONE sink. Repo-relative receipt path removed.",
+  "lane_capability": "The canary may Read ONLY the one exact allowed inbox file (is_exact_allowed_file, symlink/.. resolved); non-Read tools, other paths, null/absent agent_id, unbound/mismatched session_id, or no active run ⇒ DENY.",
+  "evidence_binding": "PreToolUse (intent/decision) + PostToolUse (actual outcome, bound by tool_use_id) + SubagentStop (completion gate). cwd (real worktree) and its git HEAD captured on every receipt for the HEAD==run-HEAD proof.",
+  "adjudicator": "experiment/canary/tools/adjudicate.py — independent, deterministic, receipts-only. PASS requires exactly: 1 spawn ALLOW (exact type+pin), 8 canary reads from one non-null agent_id in one bound session, 1 allowed success, 7 forbidden DENY with no posttool leak, matching worktree HEAD, a completion before adjudication, and no duplicate/extra/unknown event. FAIL>INCONCLUSIVE>PASS. Model self-report is not consulted.",
+  "git_token": "The git target is the REAL .git/description (creator plants LANEBLIND-GIT there), not a stand-in.",
+  "startup_context_seal": "experiment/canary/spec/STARTUP-CONTEXT-SEAL.json hash-seals the auto-loaded context. The canary is NOT blind to the project CLAUDE.md; blindness is claimed only for the mechanically-excluded targets."
+ },
+ "synthetic_tests_passed": {
+  "pretool_guard": "19/19 payloads: non-canary Write/Bash/Read ALLOW; canary allowed-inbox ALLOW; canary foreign/git/proc/traversal/symlink/sealed-not-inbox/Bash/missing-id/wrong-session/no-run DENY; Agent gate allow-exact / deny-wrong-prompt / deny-wrong-type.",
+  "adjudicator": "3/3 end-to-end: PERFECT->PASS, injected forbidden leak->FAIL, null agent_id->INCONCLUSIVE."
+ },
+ "max_pass_label": "SPECIFIED TOOL/PATH ENFORCEMENT OBSERVED FOR THIS EXACT RUN AND CONFIGURATION",
+ "explicitly_not_claimed": [
+  "general noninterference",
+  "timeless / mathematical isolation",
+  "independent OS-namespace isolation (shared mount ns, uid 0 remain)",
+  "blindness to auto-loaded startup context"
+ ],
+ "standing_order_ack": "No fresh session, no canary, no agent, no study were run. Delivered: new HEAD, diff, hashes, synthetic tests, this readiness report. After REV3, ONE final canary is permitted; if it FAILs or stays INCONCLUSIVE, this in-process route ends and work moves to separate top-level sessions/containers or a lane-scoped custom read capability. No further runner-correction cycle.",
+ "not_affected": [
+  "v1 sealed (5b3ab5bf9561d535adbf5049b975ac2ab8e9a63db32dfb14a07d82d78b729be6)",
+  "frozen corpus e621dbe1 (immutable; byte-identical)",
+  "deterministic citation receipts",
+  "per-lane mount-namespace isolation of the citation-resolver (isolation-test 13/13)"
+ ]
+}

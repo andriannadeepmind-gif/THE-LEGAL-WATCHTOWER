@@ -1,29 +1,47 @@
 {
-  "$comment": "UNVERIFIED-UNTIL-FRESH-SESSION-CANARY. Sealed-lane canary enforcement. Settings load only at SESSION START, so these hooks are inert in the session that authored them; the dedicated fresh canary session is what tests whether they actually fire for a subagent. Tool-INVENTORY restriction of the canary is enforced by the agent's own `tools:` allowlist (broker-verified), NOT by a project-wide tool deny here, so the fresh-session orchestrator keeps the tools it needs to run and adjudicate the canary.",
+  "$comment": "REV3. UNVERIFIED-UNTIL-FRESH-SESSION-CANARY. Sealed-lane canary enforcement for a fresh, dedicated session. NOTE: in this environment PreToolUse hooks were observed to take effect for the running session (the hook command is re-executed from disk on every tool call), so treat these as LIVE for any session on this branch. Enforcement is identity-gated: strict only for the lane-blind-reader canary; every other caller is audited and allowed so the controller is never bricked. The Agent gate restricts ALL callers to spawning only the canary, so do not run unrelated work on this branch with these settings active.",
   "permissions": {
     "defaultMode": "dontAsk"
   },
   "sandbox": {
+    "enabled": true,
     "failIfUnavailable": true,
     "allowUnsandboxedCommands": false
   },
+  "worktree": {
+    "baseRef": "head"
+  },
+  "includeGitInstructions": false,
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Read|Write|Edit|MultiEdit|NotebookEdit|Glob|Grep|LS",
+        "matcher": ".*",
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/lane-guard.py\""
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/pretool_guard.py\""
           }
         ]
-      },
+      }
+    ],
+    "PostToolUse": [
       {
-        "matcher": "Agent|Task",
+        "matcher": ".*",
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/agent-guard.py\""
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/posttool_evidence.py\""
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/subagent_complete.py\""
           }
         ]
       }
