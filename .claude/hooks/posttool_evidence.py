@@ -9,9 +9,14 @@ each executed tool call, bound to the same tool_use_id, so the adjudicator can:
     execute, so any post record bound to a denied read (INCLUDING one carrying
     is_error:true) is an anomaly (repair 9);
   * scan the final Agent/Task response — a real output channel — for a forbidden decoy
-    token (repair 10).  The raw response text is recorded ONLY for Agent/Task spawns
-    (the parent's subagent result) and lives off-repo in the run dir.
-Advisory only: never blocks.
+    token (repair 10).  The raw response text is recorded for Agent/Task spawns and for
+    Read outputs, off-repo in the run dir.
+
+REV3.2: the ENTIRE output is scanned BEFORE any truncation (output_scan block: full
+length, full SHA-256, allowed-token presence, and the FULL set of forbidden tokens
+found), eliminating the truncation blind spot — a forbidden token past the storage cap
+can no longer escape.  Records are appended (kind="posttool") to the single ordered,
+locked, hash-chained journal.  Advisory only: never blocks.
 """
 import os
 import sys
@@ -82,9 +87,15 @@ def main():
     #                        (repair 9). Denied reads never execute, so no forbidden
     #                        content is ever stored here.
     if tool in C.AGENT_TOOLS or tool == "Read":
-        rec["response_text"] = (resp_text or "")[:MAX_RESPONSE_TEXT]
+        full = resp_text or ""
+        # Complete scan of the FULL output before truncation (REV3.2, sec.4.6).
+        rec["output_scan"] = C.scan_output(full)
+        # Truncated copy retained for human debugging only; the adjudicator trusts the
+        # output_scan block, never this capped text.
+        rec["response_text"] = full[:MAX_RESPONSE_TEXT]
+        rec["response_truncated"] = len(full) > MAX_RESPONSE_TEXT
 
-    C.append_evidence(run_dir, "posttool.jsonl", rec)
+    C.append_journal(run_dir, "posttool", rec)
     sys.exit(0)
 
 

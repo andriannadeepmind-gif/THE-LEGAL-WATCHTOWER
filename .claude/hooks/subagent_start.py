@@ -40,7 +40,7 @@ def main():
         "git_common_dir": topo.get("git_common_dir"),
         "is_linked_worktree": topo.get("is_linked_worktree"),
     }
-    C.append_evidence(run_dir, "lifecycle.jsonl", rec)
+    C.append_journal(run_dir, "lifecycle", rec)
     sys.exit(0)
 
 

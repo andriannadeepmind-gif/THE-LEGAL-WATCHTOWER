@@ -22,10 +22,13 @@ pass UNRECORDED if the agent tools-allowlist fails. Three branches:
        but never broadly, explicitly allowed.
      With no active run the guard is dormant for non-canary callers (NEUTRAL).
 
-Evidence is appended to <run_dir>/pretool.jsonl in the controller-owned, absolute,
-off-repo run directory (found via the ACTIVE-RUN pointer). Each record carries the
+Evidence is appended (kind="pretool") to the single ordered event journal
+<run_dir>/journal.jsonl in the controller-owned, absolute, off-repo run directory
+(found via the ACTIVE-RUN pointer), under an inter-process lock that assigns each event
+a unique monotonic seq and a hash-chain link (REV3.2). Each record carries the
 tool_use_id, identity triple, canonical input hash, and full worktree topology
-(cwd, git-dir, git-common-dir, linked-worktree flag, HEAD, tree).
+(cwd, git-dir, git-common-dir, linked-worktree flag, HEAD, tree). This hook's DECISION
+semantics are unchanged from REV3.1; only the evidence transport is unified.
 """
 import os
 import sys
@@ -81,14 +84,14 @@ def decide(payload):
         rec["expected_prompt_sha256"] = PINNED_PROMPT_SHA256
         if subagent != C.CANARY_AGENT_TYPE:
             rec["decision"] = "deny"; rec["reason"] = "subagent-type-not-allowed"
-            C.append_evidence(run_dir, "pretool.jsonl", rec)
+            C.append_journal(run_dir, "pretool", rec)
             return "deny", "pretool_guard: subagent_type not the sealed canary"
         if prompt_sha != PINNED_PROMPT_SHA256:
             rec["decision"] = "deny"; rec["reason"] = "prompt-hash-mismatch"
-            C.append_evidence(run_dir, "pretool.jsonl", rec)
+            C.append_journal(run_dir, "pretool", rec)
             return "deny", "pretool_guard: prompt SHA-256 != pinned"
         rec["decision"] = "allow"; rec["reason"] = "exact-canary-spawn"
-        C.append_evidence(run_dir, "pretool.jsonl", rec)
+        C.append_journal(run_dir, "pretool", rec)
         return "allow", "pretool_guard: exact sealed canary spawn authorized"
 
     # ---- branch 2: caller IS the canary -> strict, fail-closed ----
@@ -98,28 +101,28 @@ def decide(payload):
             return "deny", "pretool_guard: canary call with no active run dir"
         if not ident.get("agent_id"):
             rec["decision"] = "deny"; rec["reason"] = "canary-missing-agent-id"
-            C.append_evidence(run_dir, "pretool.jsonl", rec)
+            C.append_journal(run_dir, "pretool", rec)
             return "deny", "pretool_guard: canary missing stable agent_id"
         if not C.bind_identity(run_dir, ident):
             rec["decision"] = "deny"; rec["reason"] = "canary-identity-unbound-or-mismatch"
-            C.append_evidence(run_dir, "pretool.jsonl", rec)
+            C.append_journal(run_dir, "pretool", rec)
             return "deny", "pretool_guard: canary identity triple unbound/mismatched"
         if tool != "Read":
             rec["decision"] = "deny"; rec["reason"] = "canary-non-read-tool"
-            C.append_evidence(run_dir, "pretool.jsonl", rec)
+            C.append_journal(run_dir, "pretool", rec)
             return "deny", "pretool_guard: canary may use only Read"
         paths = C.extract_paths(tool, tool_input)
         if not paths or len(paths) != 1:
             rec["decision"] = "deny"; rec["reason"] = "canary-bad-read-shape"
-            C.append_evidence(run_dir, "pretool.jsonl", rec)
+            C.append_journal(run_dir, "pretool", rec)
             return "deny", "pretool_guard: canary Read shape invalid"
         rec["target"] = paths[0]
         if not C.is_exact_allowed_file(paths[0], cwd):
             rec["decision"] = "deny"; rec["reason"] = "canary-path-not-allowed"
-            C.append_evidence(run_dir, "pretool.jsonl", rec)
+            C.append_journal(run_dir, "pretool", rec)
             return "deny", "pretool_guard: path is not the one allowed inbox file"
         rec["decision"] = "allow"; rec["reason"] = "canary-allowed-inbox"
-        if not C.append_evidence(run_dir, "pretool.jsonl", rec):
+        if not C.append_journal(run_dir, "pretool", rec):
             return "deny", "pretool_guard: canary allow unloggable; fail-closed deny"
         return "allow", "pretool_guard: canary read of the one allowed inbox file"
 
@@ -136,15 +139,15 @@ def decide(payload):
         # protected forbidden target while a run is active -> DENY, any identity.
         if paths and all(C.is_exact_allowed_file(p, cwd) for p in paths):
             rec["decision"] = "neutral"; rec["reason"] = "non-canary-inbox-neutral"
-            C.append_evidence(run_dir, "pretool.jsonl", rec)
+            C.append_journal(run_dir, "pretool", rec)
             return "neutral", ""
         rec["decision"] = "deny"; rec["reason"] = "protected-forbidden-any-identity"
-        C.append_evidence(run_dir, "pretool.jsonl", rec)
+        C.append_journal(run_dir, "pretool", rec)
         return "deny", "pretool_guard: protected forbidden target denied for any identity during active run"
 
     # Non-file tool during an active run (controller Bash/python, etc.): neutral+audit.
     rec["decision"] = "neutral"; rec["reason"] = "non-canary-nonfile-neutral"
-    C.append_evidence(run_dir, "pretool.jsonl", rec)
+    C.append_journal(run_dir, "pretool", rec)
     return "neutral", ""
 
 

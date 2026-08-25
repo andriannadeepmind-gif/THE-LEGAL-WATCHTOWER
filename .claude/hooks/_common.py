@@ -30,6 +30,7 @@ import os
 import sys
 import json
 import time
+import fcntl
 import hashlib
 import subprocess
 
@@ -204,21 +205,130 @@ def read_run_dir():
     return None
 
 
-def append_evidence(run_dir, filename, record):
-    """Append one canonical JSONL record to <run_dir>/<filename>. Returns True on
-    durable success. Never raises."""
+# ---- unified ordered, locked, hash-chained event journal (REV3.2, sec.4.1) ----
+# One shared append-only seat for ALL canary-relevant events (agent spawn pre/post,
+# subagent start/stop, every read pre/post, controller audits).  Each event gets a
+# UNIQUE MONOTONIC seq assigned under an inter-process lock, and a tamper-evident hash
+# chain links every record to its predecessor.  Separate per-family JSONL files carrying
+# only wall-clock timestamps are retired: across four independent hook PROCESSES they
+# cannot prove one total order, and equal-second timestamps cannot be tie-broken.  The
+# adjudicator replays THIS journal and proves, from seq alone,
+#     AgentPre < SubagentStart < ReadPre/Post < SubagentStop < AgentPost < Adjudication
+# rejecting any duplicate/non-monotonic seq or broken chain link.
+JOURNAL_FILE = "journal.jsonl"
+JOURNAL_LOCK = "journal.lock"
+JOURNAL_GENESIS = "sha256:" + hashlib.sha256(
+    b"LAWMAX-CANARY-JOURNAL-GENESIS/REV3.2").hexdigest()
+
+
+def journal_path(run_dir):
+    return os.path.join(run_dir, JOURNAL_FILE)
+
+
+def chain_link(prev_chain, envelope_without_chain):
+    """Deterministic hash-chain step: sha256(prev_chain || canonical(envelope)).  The
+    envelope passed MUST NOT contain its own 'chain' key.  Single seat for the chain
+    formula so the hook writers, the adjudicator verifier and the committed fixtures all
+    agree byte-for-byte."""
+    body = json.dumps(envelope_without_chain, sort_keys=True,
+                      separators=(",", ":"), ensure_ascii=False)
+    return "sha256:" + hashlib.sha256(
+        (prev_chain + "\n" + body).encode("utf-8")).hexdigest()
+
+
+def _journal_tail(jpath):
+    """Return (last_seq, last_chain) from the existing journal, else (0, GENESIS)."""
+    last_seq, last_chain = 0, JOURNAL_GENESIS
     try:
-        if not run_dir:
-            return False
-        p = os.path.join(run_dir, filename)
-        line = json.dumps(record, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-        with open(p, "a", encoding="utf-8") as f:
+        with open(jpath, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    e = json.loads(line)
+                except Exception:
+                    continue
+                s = e.get("seq")
+                if isinstance(s, int) and s > last_seq:
+                    last_seq = s
+                if isinstance(e.get("chain"), str):
+                    last_chain = e["chain"]
+    except FileNotFoundError:
+        pass
+    return last_seq, last_chain
+
+
+def append_journal(run_dir, kind, record):
+    """Append one event to the single ordered journal under an EXCLUSIVE inter-process
+    lock, assigning the next monotonic seq and the next hash-chain link.  Returns True
+    on durable success; never raises.  A canary ALLOW that cannot be journaled is turned
+    into a fail-closed DENY by the caller, exactly as the pre-REV3.2 evidence write was."""
+    if not run_dir:
+        return False
+    lf = None
+    try:
+        lock_path = os.path.join(run_dir, JOURNAL_LOCK)
+        jpath = journal_path(run_dir)
+        lf = os.open(lock_path, os.O_CREAT | os.O_RDWR, 0o600)
+        fcntl.flock(lf, fcntl.LOCK_EX)
+        last_seq, prev_chain = _journal_tail(jpath)
+        env = {"seq": last_seq + 1, "prev": prev_chain, "kind": kind,
+               "ts": now_utc(), "payload": record}
+        env["chain"] = chain_link(prev_chain, env)
+        line = json.dumps(env, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+        with open(jpath, "a", encoding="utf-8") as f:
             f.write(line + "\n")
             f.flush()
             os.fsync(f.fileno())
         return True
     except Exception:
         return False
+    finally:
+        if lf is not None:
+            try:
+                fcntl.flock(lf, fcntl.LOCK_UN)
+            except Exception:
+                pass
+            try:
+                os.close(lf)
+            except Exception:
+                pass
+
+
+# ---- full-output complete scan (REV3.2, sec.4.6 truncation-blind-spot elimination) ----
+def load_channel_tokens():
+    """The allowed + forbidden output-channel token universe, from the committed MANIFEST
+    (single source of truth).  Returns (allowed_token, [forbidden_tokens]).  Read at
+    capture time so the FULL output can be scanned before any truncation."""
+    try:
+        here = os.path.dirname(os.path.realpath(__file__))
+        repo = os.path.realpath(os.path.join(here, "..", ".."))
+        man = json.load(open(os.path.join(
+            repo, "experiment", "canary", "spec", "MANIFEST.json"), "r", encoding="utf-8"))
+        return (man.get("allowed_output_channel_token"),
+                list(man.get("forbidden_output_channel_tokens", [])))
+    except Exception:
+        return None, []
+
+
+def scan_output(full_text):
+    """Scan the ENTIRE output (before any truncation) and return a complete-scan block:
+    full length, full SHA-256, allowed-token presence, and the FULL set of forbidden
+    tokens found.  A forbidden token ANYWHERE in the output — including past any storage
+    cap — is recorded here; the adjudicator trusts this block, not the truncated text,
+    and treats a missing/incomplete block as INCONCLUSIVE (never PASS)."""
+    text = full_text if isinstance(full_text, str) else (
+        "" if full_text is None else str(full_text))
+    allowed, forbidden = load_channel_tokens()
+    present = sorted({t for t in forbidden if t and t in text})
+    return {
+        "complete_scan": True,
+        "full_len": len(text),
+        "full_sha256": "sha256:" + hashlib.sha256(text.encode("utf-8", "replace")).hexdigest(),
+        "allowed_token_present": bool(allowed and allowed in text),
+        "forbidden_tokens_present": present,
+    }
 
 
 # ---- decision emit ----

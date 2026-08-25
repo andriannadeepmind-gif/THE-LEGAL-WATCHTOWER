@@ -49,10 +49,14 @@ def main():
         "git_common_dir": topo.get("git_common_dir"),
         "is_linked_worktree": topo.get("is_linked_worktree"),
         "stop_reason": payload.get("stop_reason") or payload.get("reason"),
+        # Complete scan of the FULL final response before truncation (REV3.2, sec.4.6):
+        # the SubagentStop output channel is checked SEPARATELY from the Agent Post.
+        "output_scan": C.scan_output(final),
         "final_response": final[:MAX_FINAL_TEXT],
         "final_response_len": len(final),
+        "final_response_truncated": len(final) > MAX_FINAL_TEXT,
     }
-    C.append_evidence(run_dir, "lifecycle.jsonl", rec)
+    C.append_journal(run_dir, "lifecycle", rec)
     sys.exit(0)
 
 
