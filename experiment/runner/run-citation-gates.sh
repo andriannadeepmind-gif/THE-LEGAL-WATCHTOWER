@@ -168,12 +168,15 @@ run_one_lane() {                    # επιστρέφει 0 OK, 1 gate-fail, 3 
   mkdir -p "$WORK/iso/workspaces/$L/.iso-out"
   # -B + PYTHONDONTWRITEBYTECODE: κανένα __pycache__ μέσα στο σφραγισμένο
   # workspace — αλλιώς κάθε lane θα αυτο-μολυνόταν από τα δικά της .pyc
+  local rc=0
+  # ΠΡΟΣΟΧΗ set -e: gate-fail (exit 1/3) είναι ΑΠΟΤΕΛΕΣΜΑ, όχι σφάλμα script —
+  # χωρίς το «|| rc=$?» το errexit σκότωνε σιωπηλά όλο τον runner στην πρώτη
+  # κόκκινη lane (συνέβη: το run 012214Z πέθανε στο ⑤ χωρίς ίχνος)
   iso_run_lane "$L" env PYTHONDONTWRITEBYTECODE=1 python3 -B \
      experiment/runner/citation-resolver.py \
      --lane "$L" --commit "$FROZEN_COMMIT" --tree "$FROZEN_TREE" \
      --diagnostic ".iso-out/diagnostic.json" --receipt ".iso-out/receipt.json" \
-     "$f"
-  local rc=$?
+     "$f" || rc=$?
   # τα outputs γράφτηκαν μέσα στο workspace (.iso-out) — μεταφορά στο outbox
   # ΚΑΙ αφαίρεση πριν τον μετά-έλεγχο, ώστε ο έλεγχος να κρίνει ΜΟΝΟ inputs
   if [ -d "$WORK/iso/workspaces/$L/.iso-out" ]; then
@@ -186,10 +189,10 @@ run_one_lane() {                    # επιστρέφει 0 OK, 1 gate-fail, 3 
 
 for L in $LANES; do
   f="${DOSSIER[$L]}"
-  run_one_lane "$L" "$f"; rc=$?
+  rc=0; run_one_lane "$L" "$f" || rc=$?
   if [ "$rc" = 9 ]; then
     say "   $L CONTAMINATED — καταστροφή workspace, επανάληψη ΜΟΝΟ αυτής της lane"
-    run_one_lane "$L" "$f"; rc=$?
+    rc=0; run_one_lane "$L" "$f" || rc=$?
     [ "$rc" = 9 ] && die "$L: ΔΕΥΤΕΡΗ ΜΟΛΥΝΣΗ ⇒ ABORT όλου του run (βλ. seals/CONTAMINATION.log)"
   fi
   echo "$rc" > "$WORK/iso/outbox/$L/.exit"
