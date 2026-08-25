@@ -1,0 +1,89 @@
+{
+ "lane": "Φ1A-L7",
+ "cluster_roots": [
+  "*",
+  "configs",
+  "docs",
+  ".github",
+  "cloudflare",
+  "tools"
+ ],
+ "resolver_sha256": "75de66fbe2857a177da827864cfb5a85e2592003c64cbd526d941e06e91daf72",
+ "manifest_sha256": "1bde12ccac8e924c7be50adbd311813e991aef4d1c9ae9f54ced16c2ad370ec5",
+ "scope_authority_sha256": "a72668dcfed4b877d01ade97a1549631dc683082855e9a4cd8276cf445eb8791",
+ "corpus_identity": "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6",
+ "access_mechanism": "openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS",
+ "mount": "/frozen/ro",
+ "dossiers": [
+  {
+   "path": "experiment/phase1a/contracts-rev3.sexp",
+   "bytes": 48077,
+   "sha256": "0b0116df0f8eb913c8a3e5bee74f001c2407c0b40aa31a5b20b082d2bab7886c"
+  }
+ ],
+ "citations": 164,
+ "resolved": 154,
+ "problems": 10,
+ "files_verified": 39,
+ "forms": {
+  "mount-anchored": 0,
+  "corpus-relative": 154
+ },
+ "in_cluster": 138,
+ "exit_code": 1,
+ "verdict": "FAIL",
+ "access_enforcement_proved": true,
+ "unique_citation_keys": 164,
+ "problem_list": [
+  {
+   "dossier": "experiment/phase1a/contracts-rev3.sexp",
+   "token": "README:300-305",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev3.sexp",
+   "token": "README:20-21",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev3.sexp",
+   "token": "README:185-187",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev3.sexp",
+   "token": "README:18",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev3.sexp",
+   "token": "README:19",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev3.sexp",
+   "token": "README:332",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev3.sexp",
+   "token": "README:64-65",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev3.sexp",
+   "token": "README:230",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev3.sexp",
+   "token": "README:174-181",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  },
+  {
+   "dossier": "experiment/phase1a/contracts-rev3.sexp",
+   "token": "README:19-21",
+   "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+  }
+ ]
+}

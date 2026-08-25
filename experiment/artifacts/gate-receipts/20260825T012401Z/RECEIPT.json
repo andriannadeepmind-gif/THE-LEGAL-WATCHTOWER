@@ -1,0 +1,517 @@
+{
+ "kind": "lawmax-gate-run/3",
+ "timestamp_utc": "20260825T012401Z",
+ "evaluator": {
+  "commit": "0da3eb36f020a1f3adcc15d17ce31602a636fb38",
+  "tree": "4f15632df9e0c50eb3aea8762301678d8d37a922",
+  "worktree_dirty_entries": 0,
+  "clean_construction_commit": true
+ },
+ "frozen": {
+  "commit": "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03",
+  "tree": "23b7a6f4450f50d151d38e13020bee9872e73bcd",
+  "git_leaves": 35640
+ },
+ "isolation": {
+  "parent_mount_ns": "mnt:[4026531832]",
+  "child_mount_ns": "mnt:[4026532259]",
+  "namespace_change_proved": true,
+  "namespace_bypass_via_env_marker": false,
+  "lock_path": "/run/lawmax-citation-gates.lock",
+  "lock_inode": 1622022,
+  "lock_fd_ownership_proof": "readlink(/proc/self/fd/9)==lock ΚΑΙ ανεξάρτητη flock --nonblock ⇒ EWOULDBLOCK",
+  "mount_options": "ro,nosuid,nodev,noexec,relatime",
+  "snapshot_source": "git objects (git archive) → tmpfs σε ιδιωτικό namespace",
+  "reachable_from_outside": false,
+  "write_probe": "EROFS (errno 30), ΑΚΡΙΒΗΣ",
+  "unmount": "trap EXIT INT TERM HUP + θάνατος namespace"
+ },
+ "access": {
+  "mechanism": "openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS",
+  "weaker_fallback_exists": false,
+  "enforcement_probed_per_gate": true,
+  "enosys_or_unenforced_flags": "BLOCKED (exit 3), ΠΟΤΕ PASS"
+ },
+ "toolchain": {
+  "python": "3.11.15",
+  "kernel": "6.18.44-fc-v21",
+  "git": "git version 2.43.0",
+  "tar": "tar (GNU tar) 1.35",
+  "mount": "mount from util-linux 2.39.3 (libmount 2.39.3: selinux, smack, btrfs, verity, namespaces, idmapping, statx, assert, debug)",
+  "unshare": "unshare from util-linux 2.39.3",
+  "flock": "flock from util-linux 2.39.3"
+ },
+ "construction": {
+  "citation-resolver.py": "sha256:75de66fbe2857a177da827864cfb5a85e2592003c64cbd526d941e06e91daf72",
+  "citation_grammar.py": "sha256:852cb59481cc016a246ac7a500d0dbb231d07e5ff4f510cbb2a61b5237994161",
+  "frozen_access.py": "sha256:22b464e14d718bf8d9421fdd27c5eb22345d21ce02c2c16612025d9f393336e7",
+  "corpus-manifest.py": "sha256:c28b185cb2356a6843c1540444cc379b8a04b61aaebcc2f365a42c42e31a4817",
+  "canonicalize-citations.py": "sha256:e8f80cabe4498f4a8c6f3a34f4262b1c0cc6a221244b0374fef7d3a207857000",
+  "migration-verifier.py": "sha256:16eb303d942e9622152667271f29bf7a58a3bbc9f47ea496bd29b593ceb933be",
+  "resolver-witnesses.py": "sha256:d20858551a7899704dd058a728e8bb0885c4af07cad94cf567286d8923630b70",
+  "event-ledger.py": "sha256:5fd26b7c183c2557783073deb314c728ce0d29dc8c4b3c594996d0eb087b74f6",
+  "build-receipt.py": "sha256:74a1235061e45bf78ce556778f5719d3e63b0a4730cc21131cf235e32ac705cc",
+  "run-citation-gates.sh": "sha256:de3ca20e7dab87b66a00eb7814c4a2529268f873b04ec0670a315daaeeefd866",
+  "PROTOCOL-EPOCH-2.sexp": "sha256:aacd64895d8e7e5312ab55a5e51cc1727274c348a56f542e909d02f7a86e9814",
+  "PROTOCOL-EPOCH-3.sexp": "sha256:189db6a0cd3873759fa012f303358d46e3eabb0d6abede3621f672b321c5e5f1",
+  "LANE-SCOPE-AUTHORITY.sexp": "sha256:a72668dcfed4b877d01ade97a1549631dc683082855e9a4cd8276cf445eb8791",
+  "corpus-manifest.tsv": "sha256:1bde12ccac8e924c7be50adbd311813e991aef4d1c9ae9f54ced16c2ad370ec5",
+  "EVENT-LEDGER.jsonl": "sha256:5d012dc1b46ad4edfcce459752c16fecfad89ba4e298dd580c389e81eb7b846f"
+ },
+ "instruments_executed": {
+  "gates": 7,
+  "witness_suite_exit": 0,
+  "migration_verifier_exit": 0,
+  "event_ledger_verify_exit": 0,
+  "attestation_before": true,
+  "attestation_after": true,
+  "note": "ΕΚΤΕΛΕΣΤΗΚΑΝ. Το hashing ενός εργαλείου ΔΕΝ είναι εκτέλεσή του."
+ },
+ "counts": {
+  "unique_citation_keys": 1654,
+  "resolved": 1627,
+  "problems": 27,
+  "files_verified": 418,
+  "textual_occurrences": 1654,
+  "comma_expanded_anchors": 438,
+  "revision_transitions": 16
+ },
+ "count_semantics": {
+  "unique_citation_keys": "διακριτά (path, spec, tail) ανά dossier",
+  "textual_occurrences": "εγγραφές διαγνωστικού — μία ανά αναγνωρισμένο token",
+  "comma_expanded_anchors": "νέα tokens μείον παλιά, αθροισμένα σε όλες τις μεταβάσεις",
+  "revision_transitions": "αμετάβλητοι χάρτες σε experiment/artifacts/canonicalization/"
+ },
+ "lanes_failed": 3,
+ "lanes_blocked": 0,
+ "results": [
+  {
+   "lane": "Φ1A-L1",
+   "exit_code": 1,
+   "cluster_roots": [
+    "source"
+   ],
+   "resolver_sha256": "75de66fbe2857a177da827864cfb5a85e2592003c64cbd526d941e06e91daf72",
+   "manifest_sha256": "1bde12ccac8e924c7be50adbd311813e991aef4d1c9ae9f54ced16c2ad370ec5",
+   "scope_authority_sha256": "a72668dcfed4b877d01ade97a1549631dc683082855e9a4cd8276cf445eb8791",
+   "corpus_identity": "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6",
+   "access_mechanism": "openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS",
+   "mount": "/frozen/ro",
+   "dossiers": [
+    {
+     "path": "experiment/phase1a/source-rev3.sexp",
+     "bytes": 181849,
+     "sha256": "5bb2675adb08e55fe735861a87c55dd862085b87747dd33e8b2986ba8e06b5ea"
+    }
+   ],
+   "citations": 360,
+   "resolved": 348,
+   "problems": 12,
+   "files_verified": 101,
+   "forms": {
+    "mount-anchored": 0,
+    "corpus-relative": 348
+   },
+   "in_cluster": 345,
+   "verdict": "FAIL",
+   "access_enforcement_proved": true,
+   "unique_citation_keys": 360,
+   "problem_list": [
+    {
+     "dossier": "experiment/phase1a/source-rev3.sexp",
+     "token": "config.lisp:7-49",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    },
+    {
+     "dossier": "experiment/phase1a/source-rev3.sexp",
+     "token": "capability-registry.lisp:40-207",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    },
+    {
+     "dossier": "experiment/phase1a/source-rev3.sexp",
+     "token": "config.lisp:44",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    },
+    {
+     "dossier": "experiment/phase1a/source-rev3.sexp",
+     "token": "memory.lisp:110,164",
+     "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+    },
+    {
+     "dossier": "experiment/phase1a/source-rev3.sexp",
+     "token": "memory.lisp:110",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    },
+    {
+     "dossier": "experiment/phase1a/source-rev3.sexp",
+     "token": "memory.lisp:258-272",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    },
+    {
+     "dossier": "experiment/phase1a/source-rev3.sexp",
+     "token": "memory.lisp:48-50",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    },
+    {
+     "dossier": "experiment/phase1a/source-rev3.sexp",
+     "token": "protocols.lisp:1-263",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    },
+    {
+     "dossier": "experiment/phase1a/source-rev3.sexp",
+     "token": "config.lisp:48-49",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    },
+    {
+     "dossier": "experiment/phase1a/source-rev3.sexp",
+     "token": "config.lisp:51-60",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    },
+    {
+     "dossier": "experiment/phase1a/source-rev3.sexp",
+     "token": "protocols.lisp:145-149",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    },
+    {
+     "dossier": "experiment/phase1a/source-rev3.sexp",
+     "token": "protocols.lisp:56",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    }
+   ]
+  },
+  {
+   "lane": "Φ1A-L2",
+   "exit_code": 0,
+   "cluster_roots": [
+    "systems"
+   ],
+   "resolver_sha256": "75de66fbe2857a177da827864cfb5a85e2592003c64cbd526d941e06e91daf72",
+   "manifest_sha256": "1bde12ccac8e924c7be50adbd311813e991aef4d1c9ae9f54ced16c2ad370ec5",
+   "scope_authority_sha256": "a72668dcfed4b877d01ade97a1549631dc683082855e9a4cd8276cf445eb8791",
+   "corpus_identity": "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6",
+   "access_mechanism": "openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS",
+   "mount": "/frozen/ro",
+   "dossiers": [
+    {
+     "path": "experiment/phase1a/systems-rev2.sexp",
+     "bytes": 112188,
+     "sha256": "54849c597201ccb0de29b6b86c1c87829cf2f1d255011180f1c855a3c7613521"
+    }
+   ],
+   "citations": 296,
+   "resolved": 296,
+   "problems": 0,
+   "files_verified": 70,
+   "forms": {
+    "mount-anchored": 0,
+    "corpus-relative": 296
+   },
+   "in_cluster": 289,
+   "verdict": "RECOGNIZED-CITATION-INTEGRITY",
+   "access_enforcement_proved": true,
+   "unique_citation_keys": 296,
+   "problem_list": []
+  },
+  {
+   "lane": "Φ1A-L3",
+   "exit_code": 0,
+   "cluster_roots": [
+    "authority-v2"
+   ],
+   "resolver_sha256": "75de66fbe2857a177da827864cfb5a85e2592003c64cbd526d941e06e91daf72",
+   "manifest_sha256": "1bde12ccac8e924c7be50adbd311813e991aef4d1c9ae9f54ced16c2ad370ec5",
+   "scope_authority_sha256": "a72668dcfed4b877d01ade97a1549631dc683082855e9a4cd8276cf445eb8791",
+   "corpus_identity": "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6",
+   "access_mechanism": "openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS",
+   "mount": "/frozen/ro",
+   "dossiers": [
+    {
+     "path": "experiment/phase1a/authority-v2-rev4.sexp",
+     "bytes": 94180,
+     "sha256": "fa93d9e2cab1d31d1e3dc2798c0d0c4ffd679bd8df1ebd1652ff482d122f39ff"
+    }
+   ],
+   "citations": 211,
+   "resolved": 211,
+   "problems": 0,
+   "files_verified": 53,
+   "forms": {
+    "mount-anchored": 0,
+    "corpus-relative": 211
+   },
+   "in_cluster": 211,
+   "verdict": "RECOGNIZED-CITATION-INTEGRITY",
+   "access_enforcement_proved": true,
+   "unique_citation_keys": 211,
+   "problem_list": []
+  },
+  {
+   "lane": "Φ1A-L4",
+   "exit_code": 1,
+   "cluster_roots": [
+    "deployment/*.md",
+    "deployment/*.sexp",
+    "deployment/*.ttl",
+    "deployment/*.json",
+    "deployment/*.jsonld",
+    "deployment/shapes",
+    "deployment/verify",
+    "deployment/templates",
+    "deployment/mcp"
+   ],
+   "resolver_sha256": "75de66fbe2857a177da827864cfb5a85e2592003c64cbd526d941e06e91daf72",
+   "manifest_sha256": "1bde12ccac8e924c7be50adbd311813e991aef4d1c9ae9f54ced16c2ad370ec5",
+   "scope_authority_sha256": "a72668dcfed4b877d01ade97a1549631dc683082855e9a4cd8276cf445eb8791",
+   "corpus_identity": "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6",
+   "access_mechanism": "openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS",
+   "mount": "/frozen/ro",
+   "dossiers": [
+    {
+     "path": "experiment/phase1a/deployment-specs-rev3.sexp",
+     "bytes": 97133,
+     "sha256": "56abf057df4f144ff1a079cd748a9e3963d7ddc1a654af558764f5fd4d160dcc"
+    }
+   ],
+   "citations": 290,
+   "resolved": 285,
+   "problems": 5,
+   "files_verified": 63,
+   "forms": {
+    "mount-anchored": 0,
+    "corpus-relative": 285
+   },
+   "in_cluster": 279,
+   "verdict": "FAIL",
+   "access_enforcement_proved": true,
+   "unique_citation_keys": 290,
+   "problem_list": [
+    {
+     "dossier": "experiment/phase1a/deployment-specs-rev3.sexp",
+     "token": "deployment/verify/vectors/merkle/vectors.json:L1-8+",
+     "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+    },
+    {
+     "dossier": "experiment/phase1a/deployment-specs-rev3.sexp",
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L9-37,L40-76,L79+",
+     "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+    },
+    {
+     "dossier": "experiment/phase1a/deployment-specs-rev3.sexp",
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L79+",
+     "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+    },
+    {
+     "dossier": "experiment/phase1a/deployment-specs-rev3.sexp",
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L40-76,L79+",
+     "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+    },
+    {
+     "dossier": "experiment/phase1a/deployment-specs-rev3.sexp",
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L28-29,L79+",
+     "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+    }
+   ]
+  },
+  {
+   "lane": "Φ1A-L5",
+   "exit_code": 0,
+   "cluster_roots": [
+    "deployment/self",
+    "deployment/self-study",
+    "deployment/knowledge",
+    "deployment/data",
+    "deployment/state",
+    "deployment/collab",
+    "deployment/*.js",
+    "deployment/*.sh"
+   ],
+   "resolver_sha256": "75de66fbe2857a177da827864cfb5a85e2592003c64cbd526d941e06e91daf72",
+   "manifest_sha256": "1bde12ccac8e924c7be50adbd311813e991aef4d1c9ae9f54ced16c2ad370ec5",
+   "scope_authority_sha256": "a72668dcfed4b877d01ade97a1549631dc683082855e9a4cd8276cf445eb8791",
+   "corpus_identity": "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6",
+   "access_mechanism": "openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS",
+   "mount": "/frozen/ro",
+   "dossiers": [
+    {
+     "path": "experiment/phase1a/deployment-state-rev4.sexp",
+     "bytes": 95067,
+     "sha256": "39dc5cafe52cba8ba786c46dbb3dc0794f26cf8b70ab25447721be35338a04fd"
+    }
+   ],
+   "citations": 189,
+   "resolved": 189,
+   "problems": 0,
+   "files_verified": 50,
+   "forms": {
+    "mount-anchored": 187,
+    "corpus-relative": 2
+   },
+   "in_cluster": 162,
+   "verdict": "RECOGNIZED-CITATION-INTEGRITY",
+   "access_enforcement_proved": true,
+   "unique_citation_keys": 189,
+   "problem_list": []
+  },
+  {
+   "lane": "Φ1A-L6",
+   "exit_code": 0,
+   "cluster_roots": [
+    "tests",
+    "docker",
+    "scripts"
+   ],
+   "resolver_sha256": "75de66fbe2857a177da827864cfb5a85e2592003c64cbd526d941e06e91daf72",
+   "manifest_sha256": "1bde12ccac8e924c7be50adbd311813e991aef4d1c9ae9f54ced16c2ad370ec5",
+   "scope_authority_sha256": "a72668dcfed4b877d01ade97a1549631dc683082855e9a4cd8276cf445eb8791",
+   "corpus_identity": "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6",
+   "access_mechanism": "openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS",
+   "mount": "/frozen/ro",
+   "dossiers": [
+    {
+     "path": "experiment/phase1a/harness-rev4.sexp",
+     "bytes": 60898,
+     "sha256": "8aab586cbe336d4aa1d23e681d4807f7f689026347d46f6fcceb443547d74ba3"
+    }
+   ],
+   "citations": 144,
+   "resolved": 144,
+   "problems": 0,
+   "files_verified": 42,
+   "forms": {
+    "mount-anchored": 0,
+    "corpus-relative": 144
+   },
+   "in_cluster": 104,
+   "verdict": "RECOGNIZED-CITATION-INTEGRITY",
+   "access_enforcement_proved": true,
+   "unique_citation_keys": 144,
+   "problem_list": []
+  },
+  {
+   "lane": "Φ1A-L7",
+   "exit_code": 1,
+   "cluster_roots": [
+    "*",
+    "configs",
+    "docs",
+    ".github",
+    "cloudflare",
+    "tools"
+   ],
+   "resolver_sha256": "75de66fbe2857a177da827864cfb5a85e2592003c64cbd526d941e06e91daf72",
+   "manifest_sha256": "1bde12ccac8e924c7be50adbd311813e991aef4d1c9ae9f54ced16c2ad370ec5",
+   "scope_authority_sha256": "a72668dcfed4b877d01ade97a1549631dc683082855e9a4cd8276cf445eb8791",
+   "corpus_identity": "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6",
+   "access_mechanism": "openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS",
+   "mount": "/frozen/ro",
+   "dossiers": [
+    {
+     "path": "experiment/phase1a/contracts-rev3.sexp",
+     "bytes": 48077,
+     "sha256": "0b0116df0f8eb913c8a3e5bee74f001c2407c0b40aa31a5b20b082d2bab7886c"
+    }
+   ],
+   "citations": 164,
+   "resolved": 154,
+   "problems": 10,
+   "files_verified": 39,
+   "forms": {
+    "mount-anchored": 0,
+    "corpus-relative": 154
+   },
+   "in_cluster": 138,
+   "verdict": "FAIL",
+   "access_enforcement_proved": true,
+   "unique_citation_keys": 164,
+   "problem_list": [
+    {
+     "dossier": "experiment/phase1a/contracts-rev3.sexp",
+     "token": "README:300-305",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    },
+    {
+     "dossier": "experiment/phase1a/contracts-rev3.sexp",
+     "token": "README:20-21",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    },
+    {
+     "dossier": "experiment/phase1a/contracts-rev3.sexp",
+     "token": "README:185-187",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    },
+    {
+     "dossier": "experiment/phase1a/contracts-rev3.sexp",
+     "token": "README:18",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    },
+    {
+     "dossier": "experiment/phase1a/contracts-rev3.sexp",
+     "token": "README:19",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    },
+    {
+     "dossier": "experiment/phase1a/contracts-rev3.sexp",
+     "token": "README:332",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    },
+    {
+     "dossier": "experiment/phase1a/contracts-rev3.sexp",
+     "token": "README:64-65",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    },
+    {
+     "dossier": "experiment/phase1a/contracts-rev3.sexp",
+     "token": "README:230",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    },
+    {
+     "dossier": "experiment/phase1a/contracts-rev3.sexp",
+     "token": "README:174-181",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    },
+    {
+     "dossier": "experiment/phase1a/contracts-rev3.sexp",
+     "token": "README:19-21",
+     "code": "LEGACY-SHORTHAND — ΟΧΙ κανονιστική μορφή path:L<start>-L<end>@sha256:<12>"
+    }
+   ]
+  }
+ ],
+ "verdict_scope": {
+  "proves": "RECOGNIZED-CITATION-INTEGRITY",
+  "does_not_prove": [
+   "CLAIM-CITATION-COVERAGE",
+   "CLAIM-ENTAILMENT",
+   "read-ledger",
+   "macro-layer"
+  ]
+ },
+ "artifact_hashes": {
+  "Φ1A-L1.receipt.txt": "sha256:ad0703bddcbdf5bbb1a59eaf60a8cf7aef49e154869790e36fbd155d6b8ec2dd",
+  "Φ1A-L1.diagnostic.json": "sha256:0328162933b8ac41246aa09d4997faa9d7fe9b939fd50dc53eeb397144eba2e6",
+  "Φ1A-L1.receipt.json": "sha256:fd149701e212322bbd9cac60a4f74c39defc05e3be8ab3ff4dd68a9596babc8a",
+  "Φ1A-L2.receipt.txt": "sha256:89364397afea72fd3c82e27e7cf3527fd284527000d186badcef4ee6e2ccd0c3",
+  "Φ1A-L2.diagnostic.json": "sha256:abe43ef93d8ac5b78b34d51a70fd0fb4110ca5d2053ac808220c56e732c9744f",
+  "Φ1A-L2.receipt.json": "sha256:97d087dc2091c512fc50043decd046c20defe42503f2511456217277b176677e",
+  "Φ1A-L3.receipt.txt": "sha256:c88215487374551718e46f79200fb8a393accf2fdad3a01046b13c6c15b815b6",
+  "Φ1A-L3.diagnostic.json": "sha256:325822bc8469f29e515c67652a7f4e53c35ed6636c95a88cc642fbf566e56873",
+  "Φ1A-L3.receipt.json": "sha256:e9163d084854f0eae6374a1a0238632ecfe32b755526aceaefb841a9fc652442",
+  "Φ1A-L4.receipt.txt": "sha256:72836856c9a7763b1013be563738ade2d0bd6c78600ec29ac54bca6ed4bfd0d7",
+  "Φ1A-L4.diagnostic.json": "sha256:e4a6b7b672152c015481e355a398d073d945d07590f01816e665e926f0d23a0d",
+  "Φ1A-L4.receipt.json": "sha256:52e04a663dbeaa776fcd45cfb22e1cef190a9996eb03bffe8d2d0a2cc58177bc",
+  "Φ1A-L5.receipt.txt": "sha256:13b73d4d74f57c8d8734dcb14a247a8a8131749ae3dd8721bc5eecb725a88c62",
+  "Φ1A-L5.diagnostic.json": "sha256:b16ec500f7ba76d5cc11d6f05c04966338c4b87af7cdc55cf58cbfe485c16e67",
+  "Φ1A-L5.receipt.json": "sha256:afdc429293a4310c0c4e41095d0cb7a9edaa6979c06fbfddf6db2b1cd4ab1463",
+  "Φ1A-L6.receipt.txt": "sha256:14d1fb54cfa20d303867d669733935ea98ab943b1d72e337dfe81288e9a1e770",
+  "Φ1A-L6.diagnostic.json": "sha256:c95c7f2bbdbe56bbffcd68169d2460e150df1a2b1159e74dc9a5484797ad8f99",
+  "Φ1A-L6.receipt.json": "sha256:13356cdf9ef705e1826b4099e70c517d16e57bed0c5042b795c2162b1beebd9b",
+  "Φ1A-L7.receipt.txt": "sha256:c06ade5d061f5a0a7e6b8ac772a0f0a94cd28f246bafb9be907542db5f3e5bc9",
+  "Φ1A-L7.diagnostic.json": "sha256:64ae4006ad4496f7d5fc62ba604ee6959ee4843888b6788c205ad1ee0d733c51",
+  "Φ1A-L7.receipt.json": "sha256:77fc9bc9daee98035b982aeb1a33ac18053250b0cd6b3fc749b7d2279cbe6bf6",
+  "witnesses.txt": "sha256:5bc7aea0f3d689099ea82e4ee12a5cf029e7b9062b3cbdc9029f39a9162e4788",
+  "migration-verifier.txt": "sha256:a3009ca8c19586df4204f63f9a2d3cf961f8850e5f79fe0bec953a6ded7caa68",
+  "event-ledger.txt": "sha256:1df3dd357355d9ef6c888157c2de8c51e0ff6661c9b683473df6b2df763d9ee0",
+  "attestation-before.txt": "sha256:33222b09f17c4f960f44b57478fa6f9f313ae7bd988fb12300dc04554a4e3f2c",
+  "attestation-after.txt": "sha256:33222b09f17c4f960f44b57478fa6f9f313ae7bd988fb12300dc04554a4e3f2c"
+ }
+}

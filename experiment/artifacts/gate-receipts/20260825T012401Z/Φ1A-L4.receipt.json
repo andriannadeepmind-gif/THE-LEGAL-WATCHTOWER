@@ -1,0 +1,67 @@
+{
+ "lane": "Φ1A-L4",
+ "cluster_roots": [
+  "deployment/*.md",
+  "deployment/*.sexp",
+  "deployment/*.ttl",
+  "deployment/*.json",
+  "deployment/*.jsonld",
+  "deployment/shapes",
+  "deployment/verify",
+  "deployment/templates",
+  "deployment/mcp"
+ ],
+ "resolver_sha256": "75de66fbe2857a177da827864cfb5a85e2592003c64cbd526d941e06e91daf72",
+ "manifest_sha256": "1bde12ccac8e924c7be50adbd311813e991aef4d1c9ae9f54ced16c2ad370ec5",
+ "scope_authority_sha256": "a72668dcfed4b877d01ade97a1549631dc683082855e9a4cd8276cf445eb8791",
+ "corpus_identity": "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6",
+ "access_mechanism": "openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS",
+ "mount": "/frozen/ro",
+ "dossiers": [
+  {
+   "path": "experiment/phase1a/deployment-specs-rev3.sexp",
+   "bytes": 97133,
+   "sha256": "56abf057df4f144ff1a079cd748a9e3963d7ddc1a654af558764f5fd4d160dcc"
+  }
+ ],
+ "citations": 290,
+ "resolved": 285,
+ "problems": 5,
+ "files_verified": 63,
+ "forms": {
+  "mount-anchored": 0,
+  "corpus-relative": 285
+ },
+ "in_cluster": 279,
+ "exit_code": 1,
+ "verdict": "FAIL",
+ "access_enforcement_proved": true,
+ "unique_citation_keys": 290,
+ "problem_list": [
+  {
+   "dossier": "experiment/phase1a/deployment-specs-rev3.sexp",
+   "token": "deployment/verify/vectors/merkle/vectors.json:L1-8+",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-specs-rev3.sexp",
+   "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L9-37,L40-76,L79+",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-specs-rev3.sexp",
+   "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L79+",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-specs-rev3.sexp",
+   "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L40-76,L79+",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  },
+  {
+   "dossier": "experiment/phase1a/deployment-specs-rev3.sexp",
+   "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L28-29,L79+",
+   "code": "ΚΑΚΟΣΧΗΜΑΤΙΣΜΕΝΗ ΠΑΡΑΠΟΜΠΗ — δεν ερμηνεύεται ούτε ως legacy"
+  }
+ ]
+}

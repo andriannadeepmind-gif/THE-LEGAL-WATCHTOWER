@@ -1,0 +1,49 @@
+  ✓ /frozen/ro: mount επιβεβαιωμένο
+  ✓ git tree: 35640 φύλλα
+  ✓ Φ1A-L1: source.sexp → source-rev2.sexp — ΣΚΕΛΕΤΟΣ ΤΑΥΤΟΣΗΜΟΣ (κανένα byte εκτός παραπομπών)
+  ✓ Φ1A-L1: source.sexp → source-rev2.sexp — ΑΝΤΙΣΤΟΙΧΙΑ ΣΤΟΧΩΝ: 346→346 tokens · {'IDENTITY': 17, 'EXPANSION': 0, 'PREFIX': 278} · καμία αντικατάσταση, καμία αναδιάταξη, καμία απώλεια
+  ✓ Φ1A-L1: source-rev2.sexp → source-rev3.sexp — ΣΚΕΛΕΤΟΣ ΤΑΥΤΟΣΗΜΟΣ (κανένα byte εκτός παραπομπών)
+  ✓ Φ1A-L1: source-rev2.sexp → source-rev3.sexp — ΑΝΤΙΣΤΟΙΧΙΑ ΣΤΟΧΩΝ: 346→422 tokens · {'IDENTITY': 248, 'EXPANSION': 47, 'PREFIX': 0} · καμία αντικατάσταση, καμία αναδιάταξη, καμία απώλεια
+  ✓ Φ1A-L1: και οι 409 κανονικές παραπομπές της τελικής αναθεώρησης λύνονται σε ΠΡΑΓΜΑΤΙΚΑ bytes/εύρη
+  ✓ Φ1A-L2: systems.sexp → systems-rev2.sexp — ΣΚΕΛΕΤΟΣ ΤΑΥΤΟΣΗΜΟΣ (κανένα byte εκτός παραπομπών)
+  ✓ Φ1A-L2: systems.sexp → systems-rev2.sexp — ΑΝΤΙΣΤΟΙΧΙΑ ΣΤΟΧΩΝ: 247→357 tokens · {'IDENTITY': 163, 'EXPANSION': 64, 'PREFIX': 0} · καμία αντικατάσταση, καμία αναδιάταξη, καμία απώλεια
+  ✓ Φ1A-L2: και οι 357 κανονικές παραπομπές της τελικής αναθεώρησης λύνονται σε ΠΡΑΓΜΑΤΙΚΑ bytes/εύρη
+  ✓ Φ1A-L3: authority-v2.sexp → authority-v2-rev2.sexp — ΣΚΕΛΕΤΟΣ ΤΑΥΤΟΣΗΜΟΣ (κανένα byte εκτός παραπομπών)
+  ✓ Φ1A-L3: authority-v2.sexp → authority-v2-rev2.sexp — ΑΝΤΙΣΤΟΙΧΙΑ ΣΤΟΧΩΝ: 186→231 tokens · {'IDENTITY': 141, 'EXPANSION': 35, 'PREFIX': 0} · καμία αντικατάσταση, καμία αναδιάταξη, καμία απώλεια
+  ✓ Φ1A-L3: authority-v2-rev2.sexp → authority-v2-rev3.sexp — ΣΚΕΛΕΤΟΣ ΤΑΥΤΟΣΗΜΟΣ (κανένα byte εκτός παραπομπών)
+  ✓ Φ1A-L3: authority-v2-rev2.sexp → authority-v2-rev3.sexp — ΑΝΤΙΣΤΟΙΧΙΑ ΣΤΟΧΩΝ: 231→231 tokens · {'IDENTITY': 176, 'EXPANSION': 0, 'PREFIX': 0} · καμία αντικατάσταση, καμία αναδιάταξη, καμία απώλεια
+  ✓ Φ1A-L3: authority-v2-rev3.sexp → authority-v2-rev4.sexp — ΣΚΕΛΕΤΟΣ ΤΑΥΤΟΣΗΜΟΣ (κανένα byte εκτός παραπομπών)
+  ✓ Φ1A-L3: authority-v2-rev3.sexp → authority-v2-rev4.sexp — ΑΝΤΙΣΤΟΙΧΙΑ ΣΤΟΧΩΝ: 231→233 tokens · {'IDENTITY': 174, 'EXPANSION': 2, 'PREFIX': 0} · καμία αντικατάσταση, καμία αναδιάταξη, καμία απώλεια
+  ✓ Φ1A-L3: και οι 233 κανονικές παραπομπές της τελικής αναθεώρησης λύνονται σε ΠΡΑΓΜΑΤΙΚΑ bytes/εύρη
+  ✓ Φ1A-L4: deployment-specs.sexp → deployment-specs-rev2.sexp — ΣΚΕΛΕΤΟΣ ΤΑΥΤΟΣΗΜΟΣ (κανένα byte εκτός παραπομπών)
+  ✓ Φ1A-L4: deployment-specs.sexp → deployment-specs-rev2.sexp — ΑΝΤΙΣΤΟΙΧΙΑ ΣΤΟΧΩΝ: 257→382 tokens · {'IDENTITY': 170, 'EXPANSION': 68, 'PREFIX': 0} · καμία αντικατάσταση, καμία αναδιάταξη, καμία απώλεια
+  ✓ Φ1A-L4: deployment-specs-rev2.sexp → deployment-specs-rev3.sexp — ΣΚΕΛΕΤΟΣ ΤΑΥΤΟΣΗΜΟΣ (κανένα byte εκτός παραπομπών)
+  ✓ Φ1A-L4: deployment-specs-rev2.sexp → deployment-specs-rev3.sexp — ΑΝΤΙΣΤΟΙΧΙΑ ΣΤΟΧΩΝ: 382→382 tokens · {'IDENTITY': 238, 'EXPANSION': 0, 'PREFIX': 0} · καμία αντικατάσταση, καμία αναδιάταξη, καμία απώλεια
+  ✓ Φ1A-L4: και οι 374 κανονικές παραπομπές της τελικής αναθεώρησης λύνονται σε ΠΡΑΓΜΑΤΙΚΑ bytes/εύρη
+  ✓ Φ1A-L5: deployment-state.sexp → deployment-state-rev2.sexp — ΣΚΕΛΕΤΟΣ ΤΑΥΤΟΣΗΜΟΣ (κανένα byte εκτός παραπομπών)
+  ✓ Φ1A-L5: deployment-state.sexp → deployment-state-rev2.sexp — ΑΝΤΙΣΤΟΙΧΙΑ ΣΤΟΧΩΝ: 194→229 tokens · {'IDENTITY': 156, 'EXPANSION': 25, 'PREFIX': 0} · καμία αντικατάσταση, καμία αναδιάταξη, καμία απώλεια
+  ✓ Φ1A-L5: deployment-state-rev2.sexp → deployment-state-rev3.sexp — ΣΚΕΛΕΤΟΣ ΤΑΥΤΟΣΗΜΟΣ (κανένα byte εκτός παραπομπών)
+  ✓ Φ1A-L5: deployment-state-rev2.sexp → deployment-state-rev3.sexp — ΑΝΤΙΣΤΟΙΧΙΑ ΣΤΟΧΩΝ: 229→229 tokens · {'IDENTITY': 181, 'EXPANSION': 0, 'PREFIX': 0} · καμία αντικατάσταση, καμία αναδιάταξη, καμία απώλεια
+  ✓ Φ1A-L5: deployment-state-rev3.sexp → deployment-state-rev4.sexp — ΣΚΕΛΕΤΟΣ ΤΑΥΤΟΣΗΜΟΣ (κανένα byte εκτός παραπομπών)
+  ✓ Φ1A-L5: deployment-state-rev3.sexp → deployment-state-rev4.sexp — ΑΝΤΙΣΤΟΙΧΙΑ ΣΤΟΧΩΝ: 229→230 tokens · {'IDENTITY': 180, 'EXPANSION': 1, 'PREFIX': 0} · καμία αντικατάσταση, καμία αναδιάταξη, καμία απώλεια
+  ✓ Φ1A-L5: και οι 230 κανονικές παραπομπές της τελικής αναθεώρησης λύνονται σε ΠΡΑΓΜΑΤΙΚΑ bytes/εύρη
+  ✓ Φ1A-L6: harness.sexp → harness-rev2.sexp — ΣΚΕΛΕΤΟΣ ΤΑΥΤΟΣΗΜΟΣ (κανένα byte εκτός παραπομπών)
+  ✓ Φ1A-L6: harness.sexp → harness-rev2.sexp — ΑΝΤΙΣΤΟΙΧΙΑ ΣΤΟΧΩΝ: 163→196 tokens · {'IDENTITY': 118, 'EXPANSION': 28, 'PREFIX': 0} · καμία αντικατάσταση, καμία αναδιάταξη, καμία απώλεια
+  ✓ Φ1A-L6: harness-rev2.sexp → harness-rev3.sexp — ΣΚΕΛΕΤΟΣ ΤΑΥΤΟΣΗΜΟΣ (κανένα byte εκτός παραπομπών)
+  ✓ Φ1A-L6: harness-rev2.sexp → harness-rev3.sexp — ΑΝΤΙΣΤΟΙΧΙΑ ΣΤΟΧΩΝ: 196→196 tokens · {'IDENTITY': 146, 'EXPANSION': 0, 'PREFIX': 0} · καμία αντικατάσταση, καμία αναδιάταξη, καμία απώλεια
+  ✓ Φ1A-L6: harness-rev3.sexp → harness-rev4.sexp — ΣΚΕΛΕΤΟΣ ΤΑΥΤΟΣΗΜΟΣ (κανένα byte εκτός παραπομπών)
+  ✓ Φ1A-L6: harness-rev3.sexp → harness-rev4.sexp — ΑΝΤΙΣΤΟΙΧΙΑ ΣΤΟΧΩΝ: 196→202 tokens · {'IDENTITY': 141, 'EXPANSION': 5, 'PREFIX': 0} · καμία αντικατάσταση, καμία αναδιάταξη, καμία απώλεια
+  ✓ Φ1A-L6: και οι 202 κανονικές παραπομπές της τελικής αναθεώρησης λύνονται σε ΠΡΑΓΜΑΤΙΚΑ bytes/εύρη
+  ✓ Φ1A-L7: contracts.sexp → contracts-rev2.sexp — ΣΚΕΛΕΤΟΣ ΤΑΥΤΟΣΗΜΟΣ (κανένα byte εκτός παραπομπών)
+  ✓ Φ1A-L7: contracts.sexp → contracts-rev2.sexp — ΑΝΤΙΣΤΟΙΧΙΑ ΣΤΟΧΩΝ: 253→258 tokens · {'IDENTITY': 180, 'EXPANSION': 5, 'PREFIX': 0} · καμία αντικατάσταση, καμία αναδιάταξη, καμία απώλεια
+  ✓ Φ1A-L7: contracts-rev2.sexp → contracts-rev3.sexp — ΣΚΕΛΕΤΟΣ ΤΑΥΤΟΣΗΜΟΣ (κανένα byte εκτός παραπομπών)
+  ✓ Φ1A-L7: contracts-rev2.sexp → contracts-rev3.sexp — ΑΝΤΙΣΤΟΙΧΙΑ ΣΤΟΧΩΝ: 258→258 tokens · {'IDENTITY': 185, 'EXPANSION': 0, 'PREFIX': 0} · καμία αντικατάσταση, καμία αναδιάταξη, καμία απώλεια
+  ✓ Φ1A-L7: και οι 244 κανονικές παραπομπές της τελικής αναθεώρησης λύνονται σε ΠΡΑΓΜΑΤΙΚΑ bytes/εύρη
+  ✓ L7 split: το «DEPENDENCY-CONTRACT.md:194+213» υπήρχε στο σφραγισμένο και ΔΕΝ υπάρχει στη rev2
+  ✓ L7 split: γραμμές 194 και 213 του DEPENDENCY-CONTRACT.md αναφέρουν ΚΑΙ ΟΙ ΔΥΟ docker/verify-deps.sh — ΑΝΕΞΑΡΤΗΤΑ επαληθευμένο
+  ✓ L7 split: υπάρχει κανονική παραπομπή L194-L194
+  ✓ L7 split: υπάρχει κανονική παραπομπή L213-L213
+  ✓ L7 split: ΔΕΝ δημιουργήθηκε ψευδές εύρος L194-L213
+
+INDEPENDENT-VERIFICATION-PASS — 46 έλεγχοι
+ΕΜΒΕΛΕΙΑ: μετασχηματισμός και αγκύρωση. ΟΧΙ αλήθεια ισχυρισμών.
