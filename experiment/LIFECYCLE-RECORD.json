@@ -4,7 +4,7 @@
   "law": "DRAFT",
   "epoch": "DRAFT",
   "checker": "DRAFT",
-  "evaluator": "FROZEN",
+  "evaluator": "CONSTRUCTION",
   "phase1a": "RUNNING",
   "phase2A": "LOCKED",
   "phase2B": "LOCKED",
@@ -21,6 +21,15 @@
     "freeze_receipt": "experiment/artifacts/gate-receipts/20260825T012401Z/RECEIPT.json"
    },
    "guard": "απαιτεί freeze receipt"
+  },
+  {
+   "utc": "2026-08-25T08:39:25Z",
+   "track": "evaluator",
+   "from": "FROZEN",
+   "to": "CONSTRUCTION",
+   "kind": "REVOCATION",
+   "reason": "Ο δημιουργός απέρριψε το CONSTRUCTION FREEZE 69d11908: το acceptance #1 (blind-agent isolation) απέτυχε τεχνικά — βλ. BLIND-AGENT-ISOLATION-BLOCKED.json και event-ledger κρίκους 17-18. Διαφανής επαναφορά, όχι tamper.",
+   "authority": "event-ledger (hash-chained) — αυτό το record είναι convenience view"
   }
  ]
 }
