@@ -1,0 +1,77 @@
+{
+ "$schema": "lawmax/blocker-closure-matrix/2",
+ "verdict": "FRONTIER-BLOCKED",
+ "distinction": {
+  "LAW-WRITTEN": "η διάταξη υπάρχει στο REV3 draft",
+  "MECHANICALLY-CLOSED": "υπάρχει ΕΚΤΕΛΕΣΙΜΟΣ έλεγχος/μάρτυρας που το επιβάλλει και ΕΤΡΕΞΕ με receipt"
+ },
+ "blockers": [
+  {
+   "id": 1,
+   "what": "checker false-open",
+   "law": "LAW-WRITTEN (c12)",
+   "mech": "MECHANICALLY-CLOSED",
+   "evidence": "checker-fixtures.py: 11/11 — F0 (το ακριβές σενάριο) ΚΛΕΙΝΕΙ σε preflight ΚΑΙ active· F1-F7 garbage/unbound/no-replay/failed-replay/κύκλος/NOT-YET-blocking/dirty όλα απορρίπτονται"
+  },
+  {
+   "id": 2,
+   "what": "epoch αντιφάσεις (t0 διπλό, materiality διπλή έδρα, H-gates vs c10)",
+   "law": "LAW-WRITTEN (single_seat_rule c2)",
+   "mech": "MECHANICALLY-CLOSED",
+   "evidence": "EPOCH REV3: t0 ΜΙΑ έδρα AUTO-RECORDED-AT-SEAL· policy pre-Φ2A / instantiation στο closure· H5/H6/H7/H11 ευθυγραμμισμένα"
+  },
+  {
+   "id": 3,
+   "what": "precommit vs Φ2A discovery αντίφαση",
+   "law": "LAW-WRITTEN (c3: 8 pre-Φ2A policies + 5 closure seals)",
+   "mech": "OPEN — τα inputs εκκρεμούν σφράγιση (evaluator research + creator ratification)"
+  },
+  {
+   "id": 4,
+   "what": "ευθύνη έρευνας στον δημιουργό",
+   "law": "LAW-WRITTEN (c3 responsibility)",
+   "mech": "OPEN — τα πακέτα δεν έχουν παραχθεί"
+  },
+  {
+   "id": 5,
+   "what": "ΠL_i ≠ αρχιτεκτονικές",
+   "law": "LAW-WRITTEN (c5: C_t carrier, ρ map, Q_t=C_t/≡, 5 αποδείξεις)",
+   "mech": "OPEN — αποδείξεις = παραδοτέο closure certificate (Φ2)"
+  },
+  {
+   "id": 6,
+   "what": "Ω πλήρες preorder + admission + UB chain + termination",
+   "law": "LAW-WRITTEN (c6/c8)",
+   "mech": "OPEN — αποδείξεις στη Φ2/Φ3"
+  },
+  {
+   "id": 7,
+   "what": "ratification κύκλος + lifecycle μέσα στα bytes",
+   "law": "LAW-WRITTEN (c11 two-step + status-neutral body)",
+   "mech": "MECHANICALLY-CLOSED",
+   "evidence": "FSM guards (g_law_ratify: ελέγχει C πρόγονο, bytes, ΟΧΙ κύκλο)· fixture F5· checker CH-03 (πεδία κατάστασης ⇒ UNMET)· CH-06"
+  },
+  {
+   "id": 8,
+   "what": "v1 disposition map",
+   "law": "LAW-WRITTEN (amendment REV3)",
+   "mech": "MECHANICALLY-CLOSED",
+   "evidence": "CH-04: 30/30 v1 sections με disposition+αιτιολόγηση — ελέγχεται"
+  },
+  {
+   "id": 9,
+   "what": "evidence transfer χωρίς μεταφορά κρίσεων ως πλήρων",
+   "law": "LAW-WRITTEN (transfer cert REV3)",
+   "mech": "MECHANICALLY-CLOSED",
+   "evidence": "7 tips με lineage sha256 δεμένα στον migration-verifier (46 έλεγχοι)"
+  },
+  {
+   "id": 10,
+   "what": "runner lane isolation",
+   "law": "LAW-WRITTEN (H13 phase isolation)",
+   "mech": "MECHANICALLY-CLOSED",
+   "evidence": "lane-isolation.sh (μία έδρα, sourced από τον ΥΠΑΡΧΟΝΤΑ runner)· isolation-test.sh 13/13: per-lane mount namespace (ENOENT δομικά), ακριβής allowlist, CONTAMINATED/ABORT+single-lane rerun, hash seals, μεταφορά μόνο μετά από ΟΛΑ τα seals, SEAL-MISMATCH block"
+  }
+ ],
+ "gate_to_phase2": "attestation (two-step) + 8/8 inputs SEALED-με-περιεχόμενο + Φ1A SEALED + evaluator FROZEN + FSM μεταβάσεις + preflight PASS + ρητή εντολή δημιουργού"
+}

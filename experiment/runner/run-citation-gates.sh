@@ -65,6 +65,8 @@ if flock --nonblock --exclusive "$LOCK" true 2>/dev/null; then
 fi
 LOCK_PROOF="fd9→$LOCK · ανεξάρτητη απόπειρα ⇒ EWOULDBLOCK"
 
+. "$REPO/experiment/runner/lane-isolation.sh"
+
 cd "$REPO"
 
 # ── ΚΑΘΑΡΟ WORKTREE — ΠΡΙΝ ΑΠΟ ΟΠΟΙΑΔΗΠΟΤΕ ΕΞΟΔΟ ────────────────────────
@@ -150,21 +152,67 @@ declare -A DOSSIER=(
   [Φ1A-L6]=experiment/phase1a/harness-rev4.sexp
   [Φ1A-L7]=experiment/phase1a/contracts-rev3.sexp
 )
-say "⑤ πύλες:"
+say "⑤ πύλες — ΜΕ ΑΠΟΜΟΝΩΣΗ LANE (lane-isolation.sh):"
+iso_init "$WORK/iso"
+# Κοινά ΣΦΡΑΓΙΣΜΕΝΑ inputs κάθε lane + τα δικά της: ΤΙΠΟΤΑ άλλο.
+COMMON_INPUTS="experiment/artifacts/corpus-manifest.tsv
+experiment/phase1a/LANE-SCOPE-AUTHORITY.sexp
+experiment/runner/citation-resolver.py
+experiment/runner/citation_grammar.py
+experiment/runner/frozen_access.py"
+
+run_one_lane() {                    # επιστρέφει 0 OK, 1 gate-fail, 3 blocked
+  local L="$1" f="$2"
+  iso_build_workspace "$L" $COMMON_INPUTS "$f"
+  iso_verify_workspace "$L" pre || return 9
+  mkdir -p "$WORK/iso/workspaces/$L/.iso-out"
+  # -B + PYTHONDONTWRITEBYTECODE: κανένα __pycache__ μέσα στο σφραγισμένο
+  # workspace — αλλιώς κάθε lane θα αυτο-μολυνόταν από τα δικά της .pyc
+  iso_run_lane "$L" env PYTHONDONTWRITEBYTECODE=1 python3 -B \
+     experiment/runner/citation-resolver.py \
+     --lane "$L" --commit "$FROZEN_COMMIT" --tree "$FROZEN_TREE" \
+     --diagnostic ".iso-out/diagnostic.json" --receipt ".iso-out/receipt.json" \
+     "$f"
+  local rc=$?
+  # τα outputs γράφτηκαν μέσα στο workspace (.iso-out) — μεταφορά στο outbox
+  # ΚΑΙ αφαίρεση πριν τον μετά-έλεγχο, ώστε ο έλεγχος να κρίνει ΜΟΝΟ inputs
+  if [ -d "$WORK/iso/workspaces/$L/.iso-out" ]; then
+    cp -p "$WORK/iso/workspaces/$L/.iso-out/"* "$WORK/iso/outbox/$L/" 2>/dev/null || true
+    rm -rf "$WORK/iso/workspaces/$L/.iso-out"
+  fi
+  iso_verify_workspace "$L" post || return 9
+  return $rc
+}
+
 for L in $LANES; do
-  set +e
-  python3 experiment/runner/citation-resolver.py --lane "$L" \
-     --commit "$FROZEN_COMMIT" --tree "$FROZEN_TREE" \
-     --diagnostic "$WORK/$L.diagnostic.json" --receipt "$WORK/$L.receipt.json" \
-     "${DOSSIER[$L]}" > "$WORK/$L.out.txt" 2>&1
-  rc=$?; set -e
-  echo "$rc" > "$WORK/$L.exit"
+  f="${DOSSIER[$L]}"
+  run_one_lane "$L" "$f"; rc=$?
+  if [ "$rc" = 9 ]; then
+    say "   $L CONTAMINATED — καταστροφή workspace, επανάληψη ΜΟΝΟ αυτής της lane"
+    run_one_lane "$L" "$f"; rc=$?
+    [ "$rc" = 9 ] && die "$L: ΔΕΥΤΕΡΗ ΜΟΛΥΝΣΗ ⇒ ABORT όλου του run (βλ. seals/CONTAMINATION.log)"
+  fi
+  echo "$rc" > "$WORK/iso/outbox/$L/.exit"
   [ "$rc" = 3 ] && blocked "$L επέστρεψε BLOCKED"
-  for f in out.txt diagnostic.json receipt.json; do
-    [ -f "$WORK/$L.$f" ] && cp -f "$WORK/$L.$f" "$RUN_DIR/$L.${f/out.txt/receipt.txt}"
-  done
-  say "   $L exit=$rc"
+  iso_seal_outbox "$L"                       # Ι4: σφράγιση ΠΡΙΝ από κάθε μεταφορά
+  say "   $L exit=$rc · outbox ΣΦΡΑΓΙΣΜΕΝΟ"
 done
+
+# Ι5: μεταφορά ΜΟΝΟ αφού σφραγιστούν ΟΛΕΣ — με επαλήθευση seal
+iso_all_sealed $LANES || die "ΔΕΝ σφραγίστηκαν όλα τα outboxes"
+for L in $LANES; do
+  iso_transfer "$L" "$WORK/xfer/$L" || die "$L: SEAL-MISMATCH στη μεταφορά"
+  for suf in receipt.json diagnostic.json; do
+    [ -f "$WORK/xfer/$L/$suf" ] && cp -p "$WORK/xfer/$L/$suf" "$WORK/$L.$suf"
+  done
+  [ -f "$WORK/xfer/$L/.stdout" ] && cp -p "$WORK/xfer/$L/.stdout" "$WORK/$L.out.txt"
+  cp -p "$WORK/iso/outbox/$L/.exit" "$WORK/$L.exit"
+  for f2 in out.txt diagnostic.json receipt.json; do
+    [ -f "$WORK/$L.$f2" ] && { cp -f "$WORK/$L.$f2" "$RUN_DIR/.$L.tmp" && mv -f "$RUN_DIR/.$L.tmp" "$RUN_DIR/$L.${f2/out.txt/receipt.txt}"; }
+  done
+  cp -p "$WORK/iso/seals/$L.OUTPUT-SEAL.json" "$RUN_DIR/$L.OUTPUT-SEAL.json"
+done
+say "   μεταφορά: ΟΛΕΣ οι lanes μετά από επαλήθευση seal ✓"
 
 # ── ⑥ ΠΡΑΓΜΑΤΙΚΗ ΕΚΤΕΛΕΣΗ ΤΩΝ ΥΠΟΛΟΙΠΩΝ ΟΡΓΑΝΩΝ ───────────────────────
 say "⑥ όργανα (ΕΚΤΕΛΕΣΗ, όχι hashing):"

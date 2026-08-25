@@ -1,0 +1,15 @@
+{
+ "kind": "lawmax-lifecycle-record/1",
+ "state": {
+  "law": "DRAFT",
+  "epoch": "DRAFT",
+  "checker": "DRAFT",
+  "evaluator": "CONSTRUCTION",
+  "phase1a": "RUNNING",
+  "phase2A": "LOCKED",
+  "phase2B": "LOCKED",
+  "phase3": "LOCKED",
+  "phase4": "LOCKED"
+ },
+ "history": []
+}
