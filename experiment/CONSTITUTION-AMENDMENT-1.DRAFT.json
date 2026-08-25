@@ -1,0 +1,71 @@
+{
+ "$schema": "lawmax/constitution-amendment/1.DRAFT",
+ "amendment": 1,
+ "status": "DRAFT-NOT-IN-FORCE",
+ "from_version": {
+  "file": "OBJECTIVE-CONSTITUTION.json",
+  "sha256": "5b3ab5bf9561d535adbf5049b975ac2ab8e9a63db32dfb14a07d82d78b729be6",
+  "preservation": "ΑΠΟΛΥΤΩΣ ΑΜΕΤΑΒΛΗΤΟ — byte-identical για πάντα"
+ },
+ "to_version": {
+  "file": "OBJECTIVE-CONSTITUTION.v2.DRAFT.json",
+  "sha256": "52c389edd341659e2ada9d767b3de26db981751d1c845e73eea19753d8ece52b"
+ },
+ "articles": [
+  {
+   "a": 1,
+   "what": "Διαχωρισμός νόμου/epoch/κατάστασης",
+   "moves": "t0, D_t, U_t, B±, H_i, materiality, workloads, cutoff, corpus/runner identities → OBJECTIVE-EPOCH-1· s14 counts και E2E state → state ledgers"
+  },
+  {
+   "a": 2,
+   "what": "Πεπερασμένο θεώρημα-πεδίο",
+   "adds": "O_t/Q_t, Q_t=(Π L_i)/≡material, DOMAIN-CLOSURE-CERTIFICATE, monotonic epoch invalidation"
+  },
+  {
+   "a": 3,
+   "what": "Ω αντικαθιστά το K-only",
+   "adds": "joint refinement: contracts + 8 σφραγισμένοι material άξονες· anti-inflation· όχι scalar/αντιστάθμιση"
+  },
+  {
+   "a": 4,
+   "what": "Feasibility/UNKNOWN αυστηροποίηση",
+   "adds": "H() ορισμοί iff· F?≡F_unknown· admitted challenger για blocking· branch closure μόνο με UB ή refutation certificate"
+  },
+  {
+   "a": 5,
+   "what": "Θετικός τερματισμός",
+   "adds": "finite DAG, 3 leaf kinds, M∈N⁴ αυστηρά φθίνον, FINAL⟺M=(0,0,0,0)+reproduced root"
+  },
+  {
+   "a": 6,
+   "what": "Greatest ως class + n-ary join",
+   "adds": "[W] equivalence class· 8 topologies· incompatibility πλήρες· 2 επιτρεπτά αποτελέσματα· απαγόρευση ονομασίας"
+  },
+  {
+   "a": 7,
+   "what": "IMPLEMENTABLE_AT_t0 + inert IR",
+   "adds": "constructive predicate· τελικό αντικείμενο = IR+blueprint· runtime conformance χωριστό"
+  },
+  {
+   "a": 8,
+   "what": "Common Lisp authority ρητή",
+   "adds": "5 διατηρούμενα· verified subsets ως kernels· non-Lisp μόνο σε final boundaries με refinement relation"
+  },
+  {
+   "a": 9,
+   "what": "Checker v2",
+   "adds": "12 απαιτήσεις ελέγχου· ο παλιός linter συμπληρωματικός"
+  },
+  {
+   "a": 10,
+   "what": "Amendment chain",
+   "adds": "hash-bound αλυσίδα· απαγόρευση in-place· evidence transfer certificate ανά αναθεώρηση"
+  }
+ ],
+ "ratification": {
+  "by": "δημιουργός",
+  "state": "ΕΚΚΡΕΜΕΙ",
+  "effect_before_ratification": "ΚΑΝΕΝΑ — ισχύει αποκλειστικά το v1"
+ }
+}

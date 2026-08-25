@@ -1,0 +1,1500 @@
+{
+ "source": "contracts.sexp",
+ "source_sha256": "6ab0457e1a7b2993941b95ce8bbf431910876892157e103c7a797d2f4731352d",
+ "target": "contracts-rev2.sexp",
+ "target_sha256": "e7ae502e8fb3469ac232c7e8808461459220e36eac90cea70c9f59d05b1bcc22",
+ "derivation": "ΠΑΡΑΤΗΡΟΥΜΕΝΗ ΔΙΑΦΟΡΑ ΤΩΝ ΔΥΟ ΑΡΧΕΙΩΝ — ΟΧΙ έξοδος του εργαλείου που έκανε τη μετάβαση",
+ "target_runs": 185,
+ "old_tokens": 253,
+ "new_tokens": 258,
+ "kinds": {
+  "IDENTITY": 180,
+  "EXPANSION": 5,
+  "PREFIX": 0
+ },
+ "target_substitutions": 0,
+ "reorderings": 0,
+ "losses": 0,
+ "mapping": [
+  {
+   "run": 0,
+   "kind": "IDENTITY",
+   "old_target": "README",
+   "new_target": "README",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 1,
+   "kind": "IDENTITY",
+   "old_target": "README.md",
+   "new_target": "README.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 2,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/article-root-generator-omega.lisp",
+   "new_target": "systems/orchestrator-omega-modules/article-root-generator-omega.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 3,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/hybrid-generator-phase1.lisp",
+   "new_target": "systems/orchestrator-omega-modules/hybrid-generator-phase1.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 4,
+   "kind": "IDENTITY",
+   "old_target": "README",
+   "new_target": "README",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 5,
+   "kind": "IDENTITY",
+   "old_target": "README.md",
+   "new_target": "README.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 6,
+   "kind": "IDENTITY",
+   "old_target": "README",
+   "new_target": "README",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 7,
+   "kind": "IDENTITY",
+   "old_target": ".github/workflows/docker-orchestrator.yml",
+   "new_target": ".github/workflows/docker-orchestrator.yml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 8,
+   "kind": "IDENTITY",
+   "old_target": "README.md",
+   "new_target": "README.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 9,
+   "kind": "IDENTITY",
+   "old_target": "source/document-fetch.lisp",
+   "new_target": "source/document-fetch.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 10,
+   "kind": "IDENTITY",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 11,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 12,
+   "kind": "IDENTITY",
+   "old_target": "README",
+   "new_target": "README",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 13,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 5,
+   "new_count": 5
+  },
+  {
+   "run": 14,
+   "kind": "IDENTITY",
+   "old_target": "README",
+   "new_target": "README",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 15,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 4,
+   "new_count": 4
+  },
+  {
+   "run": 16,
+   "kind": "IDENTITY",
+   "old_target": ".github/workflows/docker-orchestrator.yml",
+   "new_target": ".github/workflows/docker-orchestrator.yml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 17,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 18,
+   "kind": "IDENTITY",
+   "old_target": "deps.lock",
+   "new_target": "deps.lock",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 19,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 20,
+   "kind": "IDENTITY",
+   "old_target": "docker-compose.yml",
+   "new_target": "docker-compose.yml",
+   "old_count": 5,
+   "new_count": 5
+  },
+  {
+   "run": 21,
+   "kind": "EXPANSION",
+   "old_target": "SEMANTIC-CONTRACT.md",
+   "new_target": "SEMANTIC-CONTRACT.md",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 22,
+   "kind": "IDENTITY",
+   "old_target": "docs/SECURITY-REDTEAM.md",
+   "new_target": "docs/SECURITY-REDTEAM.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 23,
+   "kind": "IDENTITY",
+   "old_target": "SEMANTIC-CONTRACT.md",
+   "new_target": "SEMANTIC-CONTRACT.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 24,
+   "kind": "IDENTITY",
+   "old_target": "docs/SECURITY-REDTEAM.md",
+   "new_target": "docs/SECURITY-REDTEAM.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 25,
+   "kind": "IDENTITY",
+   "old_target": "source/blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 26,
+   "kind": "IDENTITY",
+   "old_target": "README",
+   "new_target": "README",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 27,
+   "kind": "IDENTITY",
+   "old_target": "README.md",
+   "new_target": "README.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 28,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 29,
+   "kind": "IDENTITY",
+   "old_target": "SEMANTIC-CONTRACT.md",
+   "new_target": "SEMANTIC-CONTRACT.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 30,
+   "kind": "IDENTITY",
+   "old_target": "README",
+   "new_target": "README",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 31,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 32,
+   "kind": "IDENTITY",
+   "old_target": "docker/entrypoint.lisp",
+   "new_target": "docker/entrypoint.lisp",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 33,
+   "kind": "IDENTITY",
+   "old_target": "build.lisp",
+   "new_target": "build.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 34,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 4,
+   "new_count": 4
+  },
+  {
+   "run": 35,
+   "kind": "IDENTITY",
+   "old_target": "deps.lock",
+   "new_target": "deps.lock",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 36,
+   "kind": "IDENTITY",
+   "old_target": ".github/workflows/docker-orchestrator.yml",
+   "new_target": ".github/workflows/docker-orchestrator.yml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 37,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 38,
+   "kind": "IDENTITY",
+   "old_target": "CLAUDE.md",
+   "new_target": "CLAUDE.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 39,
+   "kind": "IDENTITY",
+   "old_target": ".github/workflows/docker-orchestrator.yml",
+   "new_target": ".github/workflows/docker-orchestrator.yml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 40,
+   "kind": "IDENTITY",
+   "old_target": "README.md",
+   "new_target": "README.md",
+   "old_count": 6,
+   "new_count": 6
+  },
+  {
+   "run": 41,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 42,
+   "kind": "IDENTITY",
+   "old_target": "PROVENANCE.yaml",
+   "new_target": "PROVENANCE.yaml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 43,
+   "kind": "IDENTITY",
+   "old_target": "DEPENDENCY-CONTRACT.md",
+   "new_target": "DEPENDENCY-CONTRACT.md",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 44,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 45,
+   "kind": "IDENTITY",
+   "old_target": "build.lisp",
+   "new_target": "build.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 46,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 8,
+   "new_count": 8
+  },
+  {
+   "run": 47,
+   "kind": "IDENTITY",
+   "old_target": "docker-compose.yml",
+   "new_target": "docker-compose.yml",
+   "old_count": 3,
+   "new_count": 3
+  },
+  {
+   "run": 48,
+   "kind": "IDENTITY",
+   "old_target": "deps.lock",
+   "new_target": "deps.lock",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 49,
+   "kind": "IDENTITY",
+   "old_target": "README.md",
+   "new_target": "README.md",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 50,
+   "kind": "IDENTITY",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 51,
+   "kind": "IDENTITY",
+   "old_target": "README.md",
+   "new_target": "README.md",
+   "old_count": 3,
+   "new_count": 3
+  },
+  {
+   "run": 52,
+   "kind": "IDENTITY",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old_count": 3,
+   "new_count": 3
+  },
+  {
+   "run": 53,
+   "kind": "IDENTITY",
+   "old_target": "README.md",
+   "new_target": "README.md",
+   "old_count": 3,
+   "new_count": 3
+  },
+  {
+   "run": 54,
+   "kind": "IDENTITY",
+   "old_target": ".github/workflows/docker-orchestrator.yml",
+   "new_target": ".github/workflows/docker-orchestrator.yml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 55,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 56,
+   "kind": "IDENTITY",
+   "old_target": "PROVENANCE.yaml",
+   "new_target": "PROVENANCE.yaml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 57,
+   "kind": "IDENTITY",
+   "old_target": "DEPENDENCY-CONTRACT.md",
+   "new_target": "DEPENDENCY-CONTRACT.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 58,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 4,
+   "new_count": 4
+  },
+  {
+   "run": 59,
+   "kind": "IDENTITY",
+   "old_target": "PROVENANCE.yaml",
+   "new_target": "PROVENANCE.yaml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 60,
+   "kind": "IDENTITY",
+   "old_target": "DEPENDENCY-CONTRACT.md",
+   "new_target": "DEPENDENCY-CONTRACT.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 61,
+   "kind": "IDENTITY",
+   "old_target": "source/blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 62,
+   "kind": "IDENTITY",
+   "old_target": "SEMANTIC-CONTRACT.md",
+   "new_target": "SEMANTIC-CONTRACT.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 63,
+   "kind": "IDENTITY",
+   "old_target": "source/blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 64,
+   "kind": "IDENTITY",
+   "old_target": "docs/SECURITY-REDTEAM.md",
+   "new_target": "docs/SECURITY-REDTEAM.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 65,
+   "kind": "IDENTITY",
+   "old_target": "SEMANTIC-CONTRACT.md",
+   "new_target": "SEMANTIC-CONTRACT.md",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 66,
+   "kind": "IDENTITY",
+   "old_target": ".github/workflows/provenance.yml",
+   "new_target": ".github/workflows/provenance.yml",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 67,
+   "kind": "IDENTITY",
+   "old_target": "PROVENANCE.yaml",
+   "new_target": "PROVENANCE.yaml",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 68,
+   "kind": "EXPANSION",
+   "old_target": "DEPENDENCY-CONTRACT.md",
+   "new_target": "DEPENDENCY-CONTRACT.md",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 69,
+   "kind": "IDENTITY",
+   "old_target": "SEMANTIC-CONTRACT.md",
+   "new_target": "SEMANTIC-CONTRACT.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 70,
+   "kind": "IDENTITY",
+   "old_target": "PROVENANCE.yaml",
+   "new_target": "PROVENANCE.yaml",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 71,
+   "kind": "IDENTITY",
+   "old_target": "DEPENDENCY-CONTRACT.md",
+   "new_target": "DEPENDENCY-CONTRACT.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 72,
+   "kind": "IDENTITY",
+   "old_target": "SEMANTIC-CONTRACT.md",
+   "new_target": "SEMANTIC-CONTRACT.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 73,
+   "kind": "IDENTITY",
+   "old_target": "deps.lock",
+   "new_target": "deps.lock",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 74,
+   "kind": "IDENTITY",
+   "old_target": "SEMANTIC-CONTRACT.md",
+   "new_target": "SEMANTIC-CONTRACT.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 75,
+   "kind": "IDENTITY",
+   "old_target": "deps.lock",
+   "new_target": "deps.lock",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 76,
+   "kind": "IDENTITY",
+   "old_target": "SEMANTIC-CONTRACT.md",
+   "new_target": "SEMANTIC-CONTRACT.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 77,
+   "kind": "IDENTITY",
+   "old_target": "deps.lock",
+   "new_target": "deps.lock",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 78,
+   "kind": "IDENTITY",
+   "old_target": "DEPENDENCY-CONTRACT.md",
+   "new_target": "DEPENDENCY-CONTRACT.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 79,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/omega-package.lisp",
+   "new_target": "systems/orchestrator-omega-modules/omega-package.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 80,
+   "kind": "IDENTITY",
+   "old_target": "README.md",
+   "new_target": "README.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 81,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile.test",
+   "new_target": "Dockerfile.test",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 82,
+   "kind": "IDENTITY",
+   "old_target": "MANUAL-STEPS-HERMETIC.md",
+   "new_target": "MANUAL-STEPS-HERMETIC.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 83,
+   "kind": "IDENTITY",
+   "old_target": "DEPENDENCY-CONTRACT.md",
+   "new_target": "DEPENDENCY-CONTRACT.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 84,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/omega-package.lisp",
+   "new_target": "systems/orchestrator-omega-modules/omega-package.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 85,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile.test",
+   "new_target": "Dockerfile.test",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 86,
+   "kind": "IDENTITY",
+   "old_target": "docker-compose.yml",
+   "new_target": "docker-compose.yml",
+   "old_count": 4,
+   "new_count": 4
+  },
+  {
+   "run": 87,
+   "kind": "IDENTITY",
+   "old_target": "README",
+   "new_target": "README",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 88,
+   "kind": "IDENTITY",
+   "old_target": "docker-compose.yml",
+   "new_target": "docker-compose.yml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 89,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 90,
+   "kind": "IDENTITY",
+   "old_target": "README.md",
+   "new_target": "README.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 91,
+   "kind": "IDENTITY",
+   "old_target": "docker-compose.yml",
+   "new_target": "docker-compose.yml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 92,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 93,
+   "kind": "IDENTITY",
+   "old_target": "build.lisp",
+   "new_target": "build.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 94,
+   "kind": "IDENTITY",
+   "old_target": "DEPENDENCY-CONTRACT.md",
+   "new_target": "DEPENDENCY-CONTRACT.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 95,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile.test",
+   "new_target": "Dockerfile.test",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 96,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 97,
+   "kind": "IDENTITY",
+   "old_target": "build.lisp",
+   "new_target": "build.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 98,
+   "kind": "IDENTITY",
+   "old_target": "DEPENDENCY-CONTRACT.md",
+   "new_target": "DEPENDENCY-CONTRACT.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 99,
+   "kind": "IDENTITY",
+   "old_target": ".github/workflows/docker-orchestrator.yml",
+   "new_target": ".github/workflows/docker-orchestrator.yml",
+   "old_count": 3,
+   "new_count": 3
+  },
+  {
+   "run": 100,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 101,
+   "kind": "IDENTITY",
+   "old_target": ".github/workflows/docker-orchestrator.yml",
+   "new_target": ".github/workflows/docker-orchestrator.yml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 102,
+   "kind": "IDENTITY",
+   "old_target": "configs/constitution.yaml",
+   "new_target": "configs/constitution.yaml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 103,
+   "kind": "EXPANSION",
+   "old_target": "deployment/fetch-fek.sh",
+   "new_target": "deployment/fetch-fek.sh",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 104,
+   "kind": "IDENTITY",
+   "old_target": ".dockerignore",
+   "new_target": ".dockerignore",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 105,
+   "kind": "IDENTITY",
+   "old_target": "package.json",
+   "new_target": "package.json",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 106,
+   "kind": "IDENTITY",
+   "old_target": "configs/constitution.yaml",
+   "new_target": "configs/constitution.yaml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 107,
+   "kind": "IDENTITY",
+   "old_target": "source/document-fetch.lisp",
+   "new_target": "source/document-fetch.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 108,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek.sh",
+   "new_target": "deployment/fetch-fek.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 109,
+   "kind": "IDENTITY",
+   "old_target": ".dockerignore",
+   "new_target": ".dockerignore",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 110,
+   "kind": "IDENTITY",
+   "old_target": "docs/SECURITY-REDTEAM.md",
+   "new_target": "docs/SECURITY-REDTEAM.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 111,
+   "kind": "IDENTITY",
+   "old_target": "configs/constitution.yaml",
+   "new_target": "configs/constitution.yaml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 112,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 113,
+   "kind": "IDENTITY",
+   "old_target": "orchestrator-tooling.asd",
+   "new_target": "orchestrator-tooling.asd",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 114,
+   "kind": "IDENTITY",
+   "old_target": "orchestrator-core-runtime.asd",
+   "new_target": "orchestrator-core-runtime.asd",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 115,
+   "kind": "IDENTITY",
+   "old_target": "orchestrator.asd",
+   "new_target": "orchestrator.asd",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 116,
+   "kind": "IDENTITY",
+   "old_target": "orchestrator-tests-runtime.asd",
+   "new_target": "orchestrator-tests-runtime.asd",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 117,
+   "kind": "IDENTITY",
+   "old_target": "orchestrator-omega.asd",
+   "new_target": "orchestrator-omega.asd",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 118,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 119,
+   "kind": "IDENTITY",
+   "old_target": "orchestrator-core-runtime.asd",
+   "new_target": "orchestrator-core-runtime.asd",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 120,
+   "kind": "IDENTITY",
+   "old_target": "orchestrator-tests-runtime.asd",
+   "new_target": "orchestrator-tests-runtime.asd",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 121,
+   "kind": "IDENTITY",
+   "old_target": "orchestrator-tooling.asd",
+   "new_target": "orchestrator-tooling.asd",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 122,
+   "kind": "IDENTITY",
+   "old_target": "README",
+   "new_target": "README",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 123,
+   "kind": "IDENTITY",
+   "old_target": "build.lisp",
+   "new_target": "build.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 124,
+   "kind": "IDENTITY",
+   "old_target": "README.md",
+   "new_target": "README.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 125,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 5,
+   "new_count": 5
+  },
+  {
+   "run": 126,
+   "kind": "IDENTITY",
+   "old_target": "MANUAL-STEPS-HERMETIC.md",
+   "new_target": "MANUAL-STEPS-HERMETIC.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 127,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 128,
+   "kind": "IDENTITY",
+   "old_target": "PROVENANCE.yaml",
+   "new_target": "PROVENANCE.yaml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 129,
+   "kind": "IDENTITY",
+   "old_target": "MANUAL-STEPS-HERMETIC.md",
+   "new_target": "MANUAL-STEPS-HERMETIC.md",
+   "old_count": 3,
+   "new_count": 3
+  },
+  {
+   "run": 130,
+   "kind": "IDENTITY",
+   "old_target": "SYSTEM-HIERARCHY.txt",
+   "new_target": "SYSTEM-HIERARCHY.txt",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 131,
+   "kind": "EXPANSION",
+   "old_target": "README.md",
+   "new_target": "README.md",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 132,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 133,
+   "kind": "IDENTITY",
+   "old_target": "orchestrator.asd",
+   "new_target": "orchestrator.asd",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 134,
+   "kind": "IDENTITY",
+   "old_target": "CHANGELOG.md",
+   "new_target": "CHANGELOG.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 135,
+   "kind": "IDENTITY",
+   "old_target": "SYSTEM-HIERARCHY.txt",
+   "new_target": "SYSTEM-HIERARCHY.txt",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 136,
+   "kind": "IDENTITY",
+   "old_target": "README.md",
+   "new_target": "README.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 137,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 138,
+   "kind": "IDENTITY",
+   "old_target": ".github/workflows/docker-orchestrator.yml",
+   "new_target": ".github/workflows/docker-orchestrator.yml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 139,
+   "kind": "IDENTITY",
+   "old_target": "SYSTEM-HIERARCHY.txt",
+   "new_target": "SYSTEM-HIERARCHY.txt",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 140,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 141,
+   "kind": "IDENTITY",
+   "old_target": "build.lisp",
+   "new_target": "build.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 142,
+   "kind": "IDENTITY",
+   "old_target": "deps.archives.lock",
+   "new_target": "deps.archives.lock",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 143,
+   "kind": "IDENTITY",
+   "old_target": ".env.example",
+   "new_target": ".env.example",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 144,
+   "kind": "IDENTITY",
+   "old_target": "docker-compose.yml",
+   "new_target": "docker-compose.yml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 145,
+   "kind": "IDENTITY",
+   "old_target": "docs/AUDIT-8-QUIRKS.md",
+   "new_target": "docs/AUDIT-8-QUIRKS.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 146,
+   "kind": "IDENTITY",
+   "old_target": "tools/independent-audit.py",
+   "new_target": "tools/independent-audit.py",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 147,
+   "kind": "IDENTITY",
+   "old_target": "docs/AUDIT-8-QUIRKS.md",
+   "new_target": "docs/AUDIT-8-QUIRKS.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 148,
+   "kind": "IDENTITY",
+   "old_target": "README",
+   "new_target": "README",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 149,
+   "kind": "IDENTITY",
+   "old_target": "docker-compose.architecture-tests.yml",
+   "new_target": "docker-compose.architecture-tests.yml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 150,
+   "kind": "IDENTITY",
+   "old_target": "README.md",
+   "new_target": "README.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 151,
+   "kind": "IDENTITY",
+   "old_target": "configs/constitution.yaml",
+   "new_target": "configs/constitution.yaml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 152,
+   "kind": "IDENTITY",
+   "old_target": "README",
+   "new_target": "README",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 153,
+   "kind": "IDENTITY",
+   "old_target": "source/document-fetch.lisp",
+   "new_target": "source/document-fetch.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 154,
+   "kind": "IDENTITY",
+   "old_target": "configs/constitution.yaml",
+   "new_target": "configs/constitution.yaml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 155,
+   "kind": "IDENTITY",
+   "old_target": "deployment/fetch-fek.sh",
+   "new_target": "deployment/fetch-fek.sh",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 156,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 157,
+   "kind": "IDENTITY",
+   "old_target": "source/pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 158,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 4,
+   "new_count": 4
+  },
+  {
+   "run": 159,
+   "kind": "IDENTITY",
+   "old_target": "README",
+   "new_target": "README",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 160,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 3,
+   "new_count": 3
+  },
+  {
+   "run": 161,
+   "kind": "IDENTITY",
+   "old_target": ".github/workflows/docker-orchestrator.yml",
+   "new_target": ".github/workflows/docker-orchestrator.yml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 162,
+   "kind": "IDENTITY",
+   "old_target": "docker/entrypoint.lisp",
+   "new_target": "docker/entrypoint.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 163,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 164,
+   "kind": "IDENTITY",
+   "old_target": "docker-compose.yml",
+   "new_target": "docker-compose.yml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 165,
+   "kind": "IDENTITY",
+   "old_target": ".github/workflows/docker-orchestrator.yml",
+   "new_target": ".github/workflows/docker-orchestrator.yml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 166,
+   "kind": "IDENTITY",
+   "old_target": "entrypoint.lisp",
+   "new_target": "entrypoint.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 167,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 168,
+   "kind": "IDENTITY",
+   "old_target": "docker/entrypoint.lisp",
+   "new_target": "docker/entrypoint.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 169,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 170,
+   "kind": "IDENTITY",
+   "old_target": "orchestrator.asd",
+   "new_target": "orchestrator.asd",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 171,
+   "kind": "IDENTITY",
+   "old_target": "orchestrator-core-runtime.asd",
+   "new_target": "orchestrator-core-runtime.asd",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 172,
+   "kind": "IDENTITY",
+   "old_target": "build.lisp",
+   "new_target": "build.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 173,
+   "kind": "IDENTITY",
+   "old_target": "entrypoint.lisp",
+   "new_target": "entrypoint.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 174,
+   "kind": "IDENTITY",
+   "old_target": "README.md",
+   "new_target": "README.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 175,
+   "kind": "IDENTITY",
+   "old_target": "PROVENANCE.yaml",
+   "new_target": "PROVENANCE.yaml",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 176,
+   "kind": "EXPANSION",
+   "old_target": "DEPENDENCY-CONTRACT.md",
+   "new_target": "DEPENDENCY-CONTRACT.md",
+   "old_count": 1,
+   "new_count": 2
+  },
+  {
+   "run": 177,
+   "kind": "IDENTITY",
+   "old_target": "deps.lock",
+   "new_target": "deps.lock",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 178,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 2,
+   "new_count": 2
+  },
+  {
+   "run": 179,
+   "kind": "IDENTITY",
+   "old_target": "docker/entrypoint.lisp",
+   "new_target": "docker/entrypoint.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 180,
+   "kind": "IDENTITY",
+   "old_target": "SYSTEM-HIERARCHY.txt",
+   "new_target": "SYSTEM-HIERARCHY.txt",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 181,
+   "kind": "IDENTITY",
+   "old_target": "Dockerfile",
+   "new_target": "Dockerfile",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 182,
+   "kind": "IDENTITY",
+   "old_target": "build.lisp",
+   "new_target": "build.lisp",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 183,
+   "kind": "IDENTITY",
+   "old_target": "deployment/collab/dialogue/0094-claude.md",
+   "new_target": "deployment/collab/dialogue/0094-claude.md",
+   "old_count": 1,
+   "new_count": 1
+  },
+  {
+   "run": 184,
+   "kind": "IDENTITY",
+   "old_target": "README",
+   "new_target": "README",
+   "old_count": 1,
+   "new_count": 1
+  }
+ ]
+}

@@ -1,0 +1,17 @@
+resolver v7 sha256:75de66fbe2857a177da827864cfb5a85e2592003c64cbd526d941e06e91daf72
+manifest sha256:1bde12ccac8e924c7be50adbd311813e991aef4d1c9ae9f54ced16c2ad370ec5
+scope-authority sha256:a72668dcfed4b877d01ade97a1549631dc683082855e9a4cd8276cf445eb8791
+frozen mount /frozen/ro [ro,nodev,nosuid,noexec] · access openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS
+resolve-enforcement: ΑΠΟΔΕΔΕΙΓΜΕΝΗ — «output/astikos/releases/latest» και «../etc/passwd» ΑΠΕΤΥΧΑΝ όπως απαιτείται
+corpus-identity sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6 (ξαναϋπολογισμένη από το TSV: ΤΑΥΤΙΖΕΤΑΙ)
+lane Φ1A-L5 · cluster-roots ['deployment/self', 'deployment/self-study', 'deployment/knowledge', 'deployment/data', 'deployment/state', 'deployment/collab', 'deployment/*.js', 'deployment/*.sh']
+dossier experiment/phase1a/deployment-state-rev4.sexp 95067B sha256:39dc5cafe52cba8ba786c46dbb3dc0794f26cf8b70ab25447721be35338a04fd
+αρχεία επαληθευμένα στο snapshot: 50
+παραπομπές: 189 · λύθηκαν: 189 · ΠΡΟΒΛΗΜΑΤΙΚΕΣ: 0
+μορφές: mount-anchored=187 corpus-relative=2 · εντός συστάδας=162 · εκτός=27
+VERDICT: RECOGNIZED-CITATION-INTEGRITY
+  ΤΙ ΣΗΜΑΙΝΕΙ: κάθε token παραπομπής ΠΟΥ ΑΝΑΓΝΩΡΙΣΤΗΚΕ αντιστοιχεί σε
+  πραγματικά bytes και πραγματικό εύρος του παγωμένου snapshot.
+  ΤΙ ΔΕΝ ΣΗΜΑΙΝΕΙ: ΔΕΝ αποδεικνύει ότι κάθε claim ΕΧΕΙ παραπομπή
+  (CLAIM-CITATION-COVERAGE: ΑΝΟΙΧΤΟ) ούτε ότι το cited span ΣΤΗΡΙΖΕΙ
+  τον ισχυρισμό (CLAIM-ENTAILMENT: ΑΝΟΙΧΤΟ). Ούτε είναι read-ledger.

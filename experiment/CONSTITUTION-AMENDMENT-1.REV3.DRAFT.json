@@ -1,0 +1,139 @@
+{
+ "$schema": "lawmax/constitution-amendment/1.REV3.DRAFT",
+ "amendment": 1,
+ "revision": 3,
+ "normative_body": "STATUS-NEUTRAL — lifecycle στο εξωτερικό FSM record",
+ "from_version": {
+  "file": "OBJECTIVE-CONSTITUTION.json",
+  "sha256": "5b3ab5bf9561d535adbf5049b975ac2ab8e9a63db32dfb14a07d82d78b729be6",
+  "preservation": "byte-identical για πάντα"
+ },
+ "to_version": {
+  "file": "OBJECTIVE-CONSTITUTION.v2.REV3.DRAFT.json",
+  "sha256": "0560ef0fb2d81a009f2264aa89021cf2d37f0f12c180d0aa9bd38af2fc285164"
+ },
+ "v1_disposition_map": {
+  "title": {
+   "disposition": "PRESERVED-META",
+   "where_why": "ταυτότητα εγγράφου"
+  },
+  "$schema": {
+   "disposition": "SUPERSEDED",
+   "where_why": "νέο schema 2.REV3"
+  },
+  "ratified_by": {
+   "disposition": "PRESERVED-META",
+   "where_why": "ιστορικό"
+  },
+  "supersedes": {
+   "disposition": "PRESERVED-META",
+   "where_why": "ιστορικό της απόρριψης V1..V9"
+  },
+  "rejection_reason": {
+   "disposition": "PRESERVED-META",
+   "where_why": "ιστορικό"
+  },
+  "sealed": {
+   "disposition": "SUPERSEDED",
+   "where_why": "το lifecycle ζει στο εξωτερικό FSM record — status-neutral body"
+  },
+  "transfer_rule": {
+   "disposition": "PRESERVED",
+   "where_why": "c1/c10 — ο evaluator δεν αναδιατάσσει προτεραιότητες"
+  },
+  "s1_supreme_purpose": {
+   "disposition": "PRESERVED",
+   "where_why": "c1 αυτούσιο στην ουσία"
+  },
+  "s2_sealed_definitions": {
+   "disposition": "AMENDED",
+   "where_why": "capability contract+presence+U_t rule → c10· t0/D_t/U_t/B±/thresholds → epoch (single seat)· contract επεκτάθηκε σε 15 πεδία"
+  },
+  "s3_trivalent_feasibility": {
+   "disposition": "AMENDED",
+   "where_why": "c6: H() με iff, διαμέριση F+/F-/F?, admitted challenger, UB chain q⪯UB(q)⪯W· hard_rule ΑΥΤΟΥΣΙΟ"
+  },
+  "s4_hard_feasibility_gates": {
+   "disposition": "AMENDED",
+   "where_why": "→ epoch H_1..H_13· τα απόλυτα 5/6/7/11 ευθυγραμμίστηκαν με c10 (πολυ-αυθεντία/adapter/verified-subset)"
+  },
+  "s4_proof_floor_rule": {
+   "disposition": "PRESERVED",
+   "where_why": "c1 proof_subordination + άξονας assurance floor"
+  },
+  "s5_baseline": {
+   "disposition": "AMENDED",
+   "where_why": "→ epoch δείκτες· T1 ζει ως AS1 (αυτούσιο στο c10b)"
+  },
+  "s6_capability_refinement_order": {
+   "disposition": "SUPERSEDED",
+   "where_why": "⪯K → ⪯Ω (c6): οι άξονες μπήκαν ΣΤΗ σχέση· ΙΣΧΥΡΟΤΕΡΗ, όχι χαλαρότερη· forbidden_substitutes διατηρούνται"
+  },
+  "s7_winner_condition": {
+   "disposition": "AMENDED",
+   "where_why": "c7: greatest = equivalence class [W]· προστέθηκε ρητό PROVED-NO-GREATEST μονοπάτι — ποτέ τεχνητός νικητής"
+  },
+  "s8_join_synthesis": {
+   "disposition": "AMENDED",
+   "where_why": "c9: 8 topologies + composition grammar + coverage theorem· incompatibility καθολικό επί της grammar"
+  },
+  "s9_secondary_axes": {
+   "disposition": "SUPERSEDED",
+   "where_why": "απορροφήθηκαν ΩΣ ΣΥΣΤΑΤΙΚΟ του Ω· excluded criteria διατηρούνται (c3 responsibility + c1 not_seeking)"
+  },
+  "s10_no_prover_driven_architecture": {
+   "disposition": "PRESERVED",
+   "where_why": "c10 αυτούσιο"
+  },
+  "s11_anti_simplification_obligations": {
+   "disposition": "PRESERVED",
+   "where_why": "c10b ΑΥΤΟΥΣΙΑ bytes + precedence"
+  },
+  "s11_counter_design": {
+   "disposition": "PRESERVED",
+   "where_why": "c10b αυτούσιο"
+  },
+  "s12_forbidden_termination_grounds": {
+   "disposition": "PRESERVED",
+   "where_why": "c8 αυτούσιο"
+  },
+  "s12_exhaustion_result": {
+   "disposition": "PRESERVED",
+   "where_why": "c8 αυτούσιο"
+  },
+  "s13_claim_limits": {
+   "disposition": "AMENDED",
+   "where_why": "c13+c1b: strongest claim → PROVED-GREATEST-IN-SEALED-Q_t με ΡΗΤΟ coverage-theorem bridge στην ανοικτού κόσμου διατύπωση· invalidation → μονοτονικό epoch n+1· no_forced_winner ενισχύθηκε σε c7 απαγόρευση"
+  },
+  "s14_admission_report_corrections_required_before_runtime_comparative_conclusions": {
+   "disposition": "SUPERSEDED",
+   "where_why": "λειτουργική κατάσταση → state ledgers· ΟΙ ΥΠΟΧΡΕΩΣΕΙΣ ΜΕΤΑΦΕΡΘΗΚΑΝ ως obligations, δεν χάθηκαν"
+  },
+  "s14_terminology": {
+   "disposition": "PRESERVED",
+   "where_why": "ορολογία repeatability/replication ισχύει"
+  },
+  "s14_e2e": {
+   "disposition": "SUPERSEDED",
+   "where_why": "phase status → state"
+  },
+  "s15_authorization": {
+   "disposition": "SUPERSEDED",
+   "where_why": "phase status → FSM"
+  },
+  "s15_preflight_reopen_only_if": {
+   "disposition": "AMENDED",
+   "where_why": "→ FSM guards + epoch invalidation"
+  },
+  "frozen_corpus_commit": {
+   "disposition": "AMENDED",
+   "where_why": "→ epoch (single seat)"
+  },
+  "frozen_corpus_merkle": {
+   "disposition": "AMENDED",
+   "where_why": "→ epoch ως LEGACY root· νέα schema-4 ταυτότητα"
+  }
+ },
+ "disposition_completeness": "30/30 v1 sections — ΠΛΗΡΗΣ",
+ "ratification": "ΔΥΟ ΒΗΜΑΤΑ κατά c11 — ΕΚΚΡΕΜΕΙ"
+}

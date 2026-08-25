@@ -1,0 +1,127 @@
+{
+ "$schema": "lawmax/objective-epoch/1.REV3.DRAFT",
+ "normative_body": "STATUS-NEUTRAL — κατάσταση στο FSM record",
+ "bound_to_constitution": {
+  "version": "v2.REV3.DRAFT",
+  "sha256": "0560ef0fb2d81a009f2264aa89021cf2d37f0f12c180d0aa9bd38af2fc285164"
+ },
+ "single_seat_note": "ΚΑΘΕ στοιχείο ΜΙΑ έδρα. Οι αντιφάσεις του REV2 (t0 διπλό, materiality «πριν ΚΑΙ μέσα στη Φ2», H-gates σε σύγκρουση με c10) ΔΙΟΡΘΩΘΗΚΑΝ — καμία διπλή authority.",
+ "t0": {
+  "seat": "ΕΔΩ ΚΑΙ ΜΟΝΟ ΕΔΩ",
+  "policy": "AUTO-RECORDED-AT-SEAL: η ΑΚΡΙΒΗΣ στιγμή UTC καταγράφεται αυτόματα όταν σφραγιστεί το πακέτο pre-Φ2A· ΚΑΝΕΙΣ δεν τη «διαλέγει»",
+  "cutoff_semantics": "INCLUSIVE: τεχνολογία δημόσια διαθέσιμη ΕΩΣ ΚΑΙ t0",
+  "value": null,
+  "status": "PENDING-SEAL"
+ },
+ "frozen_corpus": {
+  "commit": "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03",
+  "tree_sha1": "23b7a6f4450f50d151d38e13020bee9872e73bcd",
+  "git_leaves": 35640,
+  "manifest_schema": 4,
+  "identity": "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6",
+  "legacy_content_only_root": "sha256:ad8fd575cce147a8b765cd32fafa77f670491b8def589c88feb09f265d5f346b"
+ },
+ "H_gates": {
+  "seat": "ΕΔΩ — ευθυγραμμισμένες με c10· οι v1 διατυπώσεις 5/6/7/11 ΔΕΝ ισχύουν πλέον ως απόλυτα",
+  "H": [
+   "H1 Νομική και θεσμική σημασιολογική ορθότητα",
+   "H2 Υλοποιησιμότητα με τεχνολογίες διαθέσιμες στο t0",
+   "H3 Preservation ΟΛΩΝ των έγκυρων baseline capabilities",
+   "H4 Ρητή disposition ΚΑΘΕ γνωστού baseline defect",
+   "H5 Καμία ΣΙΩΠΗΡΗ απώλεια authority/state/institutional role — ρητή θεσμική ΠΟΛΥ-αυθεντία με jurisdiction/quorum/adjudication ΕΠΙΤΡΕΠΕΤΑΙ",
+   "H6 Καμία ΑΣΥΝΤΟΝΙΣΤΗ ή ΑΝΤΙΦΑΤΙΚΗ αυθεντία — όχι απαγόρευση ρητής συντονισμένης πολυ-αυθεντίας",
+   "H7 Καμία facade που ΚΡΥΒΕΙ ΑΝΥΠΑΡΚΤΗ δυνατότητα — αποδεδειγμένος adapter ΕΠΙΤΡΕΠΕΤΑΙ· κανένα placeholder/silent fallback",
+   "H8 Πλήρης provenance και ελεγκτική αναπαραγωγή",
+   "H9 Ρητή αντιστοίχιση formal model → executable construction",
+   "H10 Determinism, durability, recovery, liveness στα απαιτούμενα operating models",
+   "H11 Common Lisp-native σημασιολογία — verified kernel/subset ΕΠΙΤΡΕΠΕΤΑΙ ΜΟΝΟ με checked refinement προς το συνολικό σύστημα, χωρίς συρρίκνωση envelope",
+   "H12 Πλήρες constructive realization witness + dependency-ordered blueprint",
+   "H13 Phase isolation, immutable objectives, απαγόρευση αυτοπιστοποίησης"
+  ],
+  "proof_floor": "carried from v1 s4"
+ },
+ "precommit_pre_phi2A": {
+  "seal_point": "ΠΡΙΝ από τη Φ2A",
+  "inputs": {
+   "mission_and_hard_invariants": {
+    "owner": "evaluator-drafts/creator-ratifies",
+    "value": null,
+    "evidence": [],
+    "status": "PENDING-SEAL"
+   },
+   "axes_directions_measurement_methods": {
+    "owner": "evaluator-research",
+    "value": null,
+    "evidence": [],
+    "status": "PENDING-SEAL"
+   },
+   "materiality_uncertainty_policy": {
+    "owner": "evaluator-proposes-evidence-backed/creator-decides-institutional-preferences-only",
+    "value": null,
+    "evidence": [],
+    "status": "PENDING-SEAL"
+   },
+   "workload_fault_model_protocol": {
+    "owner": "evaluator-research",
+    "value": null,
+    "evidence": [],
+    "status": "PENDING-SEAL"
+   },
+   "source_admissibility_policy": {
+    "owner": "evaluator-research",
+    "value": null,
+    "evidence": [],
+    "status": "PENDING-SEAL"
+   },
+   "resource_policy": {
+    "owner": "evaluator-proposes/creator-confirms-external-constraints-only",
+    "no_low_ceiling": true,
+    "value": null,
+    "evidence": [],
+    "status": "PENDING-SEAL"
+   },
+   "admission_rejection_rules": {
+    "owner": "evaluator-research",
+    "value": null,
+    "evidence": [],
+    "status": "PENDING-SEAL"
+   },
+   "discovery_meta_grammar_omission_protocol": {
+    "owner": "evaluator-research",
+    "value": null,
+    "evidence": [],
+    "status": "PENDING-SEAL"
+   }
+  }
+ },
+ "closure_boundary_seals": {
+  "seal_point": "στο τέλος της Φ2A",
+  "items": [
+   "finite vocabulary (I_t, κάθε L_i με απόδειξη πεπερασμένου)",
+   "construction domain C_t (από grammar)",
+   "Q_t = C_t/≡material",
+   "composition grammar + coverage theorem",
+   "ΠΛΗΡΕΣ obligation universe"
+  ],
+  "status": "LOCKED-UNTIL-PHI2A"
+ },
+ "technology_sources": {
+  "owner": "evaluator-research",
+  "method": "έρευνα πρωτογενών πηγών + αρχειοθέτηση/hash-binding + omission challenge",
+  "archived": [],
+  "status": "PENDING-SEAL"
+ },
+ "baseline": {
+  "B_plus": "Phase-1A dossiers (facts)",
+  "B_minus": "L7-CANDIDATE-DEFECTS + lane dossiers· UNRECONCILED"
+ },
+ "state_pointers": [
+  "experiment/LIFECYCLE-RECORD.json",
+  "experiment/phase1a/LANE-STATE-LEDGER.sexp",
+  "experiment/phase1a/EVENT-LEDGER.jsonl"
+ ],
+ "checker_binding": {
+  "value": null,
+  "status": "PENDING —δεσμεύεται στη σφράγιση"
+ }
+}

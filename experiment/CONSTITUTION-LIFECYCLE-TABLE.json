@@ -1,0 +1,69 @@
+{
+ "$schema": "lawmax/constitution-lifecycle/1",
+ "states": {
+  "law": [
+   "DRAFT-NOT-IN-FORCE",
+   "RATIFIED-SEALED",
+   "IN-FORCE",
+   "SUPERSEDED"
+  ],
+  "epoch": [
+   "DRAFT",
+   "SEALED-INACTIVE",
+   "ACTIVE",
+   "INVALIDATED→n+1"
+  ],
+  "checker": [
+   "draft-lint",
+   "preflight",
+   "active"
+  ],
+  "phase": [
+   "LOCKED",
+   "AUTHORIZED",
+   "RUNNING",
+   "SEALED"
+  ]
+ },
+ "current": {
+  "v1": "IN-FORCE (5b3ab5bf…)",
+  "v2.REV2": "DRAFT-NOT-IN-FORCE",
+  "epoch-1.REV2": "DRAFT (8/8 precommit inputs PENDING-SEAL)",
+  "checker.REV2": "draft-lint (preflight ΚΛΕΙΝΕΙ ορθώς)",
+  "Φ1A": "RUNNING (3 lanes quarantined, seal blocked)",
+  "Φ2A/Φ2B/Φ3/Φ4": "LOCKED"
+ },
+ "transitions": [
+  {
+   "from": "v2 DRAFT",
+   "to": "RATIFIED-SEALED",
+   "gate": "RATIFICATION-ATTESTATION: v1+v2+amendment+epoch+checker sha256 + evaluator commit/tree + ρητή έγκριση δημιουργού",
+   "bytes_change": false
+  },
+  {
+   "from": "epoch DRAFT",
+   "to": "SEALED-INACTIVE",
+   "gate": "8/8 precommit inputs SEALED (t0 UTC, cutoff, sources, materiality, uncertainty, workloads, envelope, vocabulary, admission) — τιμές από τον ΔΗΜΙΟΥΡΓΟ"
+  },
+  {
+   "from": "checker draft-lint",
+   "to": "preflight PASS",
+   "gate": "καθαρό commit-bound snapshot ∧ αλυσίδα συνεπής ∧ inputs sealed ∧ attestation παρόν"
+  },
+  {
+   "from": "Φ2A LOCKED",
+   "to": "AUTHORIZED",
+   "gate": "preflight PASS ∧ Φ1A SEALED (coverage+entailment+read-ledger+macro) ∧ ρητή εντολή δημιουργού"
+  },
+  {
+   "from": "closure boundary",
+   "to": "Φ2B/Φ3",
+   "gate": "DOMAIN-CLOSURE-CERTIFICATE πλήρες ∧ Q_t παγωμένο ∧ grammar+coverage theorem"
+  },
+  {
+   "from": "epoch ACTIVE",
+   "to": "INVALIDATED→n+1",
+   "gate": "νέος material candidate μετά το closure — ΠΟΤΕ σιωπηλή προσθήκη"
+  }
+ ]
+}

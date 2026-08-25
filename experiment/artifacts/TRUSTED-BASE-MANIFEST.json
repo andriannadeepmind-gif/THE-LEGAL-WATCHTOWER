@@ -1,0 +1,140 @@
+{
+ "$schema": "lawmax/trusted-base-manifest/1",
+ "generated_utc": "2026-08-24T11:54:06Z",
+ "scope": "ΚΑΘΕ συνιστώσα στην οποία στηρίζεται οποιοσδήποτε ισχυρισμός. Ό,τι δεν είναι εδώ, δεν επιτρέπεται να φέρει απόδειξη.",
+ "proof_kernels": [
+  {
+   "name": "Coq",
+   "binary": "/usr/bin/coqc",
+   "sha256": "f14ab0c140bdfdb31c7e7e1f20379703973376480a4eea2d43d0fa56ddae03ec",
+   "version": "The Coq Proof Assistant, version 8.18.0\ncompiled with OCaml 4.14.1",
+   "role": "proof kernel — θεωρήματα γραμματικής/κυριαρχίας/FSM",
+   "verified": false
+  },
+  {
+   "name": "ACL2",
+   "binary": "/usr/bin/acl2",
+   "sha256": "0e5bf472c00f9b50bfde41ffc3dbefb23911fe2d062f6c606235ca143f48958c",
+   "version": "GCL (GNU Common Lisp)  2.6.14 Fri Jan 13 10:47:56 AM EST 2023  ANSI    git: Version_2_6_15pre7",
+   "role": "proof kernel επί εκτελέσιμου CL υποσυνόλου",
+   "verified": false
+  }
+ ],
+ "solvers_checkers": [
+  {
+   "name": "Z3",
+   "binary": "/usr/bin/z3",
+   "sha256": "c05be002097e2f2106efeeac03e58032e3f5cca10104f95d7a0ddc0bd3f907cb",
+   "version": "Z3 version 4.8.12 - 64 bit",
+   "role": "SMT — κωδικοποίηση Α",
+   "verified": false
+  },
+  {
+   "name": "cvc5",
+   "binary": "/usr/bin/cvc5",
+   "sha256": "f2f4cc5eea252833c4645072c3de46f2c3d4d56f3107f099383516ee885cee10",
+   "version": "This is cvc5 version 1.1.2",
+   "role": "SMT — ΑΝΕΞΑΡΤΗΤΗ κωδικοποίηση Β",
+   "verified": false
+  },
+  {
+   "name": "SPIN",
+   "binary": null,
+   "sha256": null,
+   "version": "",
+   "role": "model checker — χρονικές ιδιότητες του runner FSM",
+   "verified": false
+  },
+  {
+   "name": "E",
+   "binary": null,
+   "sha256": null,
+   "version": "",
+   "role": "ATP — δεύτερη οικογένεια",
+   "verified": false
+  }
+ ],
+ "execution": {
+  "sbcl_frozen": {
+   "version": "2.2.9 (ubuntu noble 2:2.2.9-1ubuntu2)",
+   "selection_reason": "ΠΕΙΡΑΜΑΤΙΚΟ: το vendored log4cl-v1.1.2 ΔΕΝ μεταγλωττίζεται σε 2.4.0 (package lock SB-C· 104/104 σουίτες απέτυχαν). Το δηλωμένο ARG SBCL_VERSION=2.4.0 είναι ΑΣΥΜΒΑΤΟ με το corpus.",
+   "content_addressed": true,
+   "source": "toolchain.manifest.sexp :runtime-packages"
+  },
+  "sbcl_2_4_0_evidence_stage": {
+   "built_from_source": true,
+   "source_sha256": "83d8b74f08d2254c59b9790bc1f669e09099457b884720ececbf45f4b46d1776",
+   "core_sha256": "93d2f949cb36210710c6489a674b8f8d89ead07eea4c13253a002aa3ca61c697",
+   "role": "ΤΕΚΜΗΡΙΟ ασυμβατότητας — ΔΕΝ εκτελεί σουίτες"
+  },
+  "asdf": {
+   "version": "3.3.1",
+   "role": "system resolution",
+   "bundled_with": "SBCL"
+  },
+  "sbcl_contribs": [
+   {
+    "system": "sb-cltl2",
+    "asd": "/usr/lib/sbcl/contrib/sb-cltl2.asd",
+    "sha256": "53e04573891e1f3ee54d13958ca5931b98c6e5700da55cc8deb5e22a21eea80a"
+   },
+   {
+    "system": "sb-concurrency",
+    "asd": "/usr/lib/sbcl/contrib/sb-concurrency.asd",
+    "sha256": "41462a1803dcd09292a5fb2c2d809aaa93962e9ea8494ffc3515cf26c655ebec"
+   },
+   {
+    "system": "sb-posix",
+    "asd": "/usr/lib/sbcl/contrib/sb-posix.asd",
+    "sha256": "b33df990e1207c2589f30755485526d5d3e9faa565169df3777d22e77ab8f3d3"
+   },
+   {
+    "system": "sb-rotate-byte",
+    "asd": "/usr/lib/sbcl/contrib/sb-rotate-byte.asd",
+    "sha256": "48984f11a1cc9947c3d14aadfc7fb79ef87d4231ed45609a76e08966d2edec58"
+   }
+  ],
+  "python": {
+   "version": "Python 3.11.15",
+   "role": "checkers/census — ΣΤΟ TCB· μετριασμός: ανεξάρτητη επανυλοποίηση κρίσιμων checkers σε CL"
+  }
+ },
+ "isolation": {
+  "docker": "Docker version 29.3.1, build c2be9cc",
+  "kernel": "Linux 6.18.44-fc-v21",
+  "overlayfs": "read-only corpus + upper layer — φέρει το T15 σε επίπεδο OS",
+  "verified": false
+ },
+ "corpus": {
+  "commit": "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03",
+  "merkle_root": "sha256:ad8fd575cce147a8b765cd32fafa77f670491b8def589c88feb09f265d5f346b",
+  "files": 35634,
+  "manifest_sha256": "92394c037b1337435adc1d78c719e91a141e7d67d9a14b89e4a3362bdb35b631"
+ },
+ "vendored_dependencies": {
+  "count_resolved": 199,
+  "from_third_party_tree": 170,
+  "note": "πλήρες μητρώο system→.asd→sha256→authority στο experiment/artifacts/asdf-resolution.sexp"
+ },
+ "runner_scripts": {
+  "Dockerfile.runner": "2a790de2e259358635891f9e9b43cfd081067710cf59e69172ae08d9ea01de14",
+  "asdf-resolution.lisp": "d71568d666eb3bfe46c09f5c681ca1e839b89e734eacd15d98e84816dae3f0e3",
+  "build-runner.sh": "210c663c4db09e1a04273dac6d8379788f30c8a97f457c116eef2f135d5c78e5",
+  "census.py": "f0ce97efcc96477194384ae6ba8c3f8d7ec62d78ef6273c4e997877daac58a26",
+  "corpus-manifest.py": "b400bfac0486eef02b609b58c341e6a48fcc83ce973829db7b8cc6d40ad91ff7",
+  "fetch-toolchain.sh": "9a6c309518a2668732ee308a11997c60de76f6fcd26be51c2b6f0c6ee28f3314",
+  "gen-toolchain-manifest.py": "84610a95dd50bfbcd042290e05702ea8cc8e414d4dd493d5ccc517b73e2fe8ad",
+  "rebuild-receipt.sh": "3ad950dae2868e26fafaf04f1503d0104968e6b637e1081e0dc65ca42e5f8adf",
+  "runner-entry.sh": "806a8a4c449483500e57de7e0aa9bd555ee7f8d9db83a5a9dc6667375e5b6199",
+  "toolchain.manifest.sexp": "f126b5e463cd21820d4373905468f59b112f719879ebf0e8282b2ef8784e038d",
+  "verify-toolchain.py": "33a128e5d5c303027a5e190b9b3ca7d8feb4157fdd8909b6f52b169cc1e389b8"
+ },
+ "residual_untrusted": [
+  "SBCL: ΑΝΕΠΑΛΗΘΕΥΤΟΣ μεταγλωττιστής, αυτο-φιλοξενούμενος (trusting-trust) — ΔΗΛΩΜΕΝΟ, ΟΧΙ ΛΥΜΕΝΟ",
+  "GCL 2.6.14 κάτω από το ACL2",
+  "Linux kernel + Docker/overlayfs για την απομόνωση φάσεων",
+  "Python 3.12 για τους checkers (μετριάζεται με δεύτερη υλοποίηση σε CL)",
+  "Ο πηγαίος SBCL 2.4.0 ΔΕΝ έχει ανεξάρτητη υπογραφή (μόνο sha256 των ληφθέντων bytes)"
+ ],
+ "claim_conditionality": "ΚΑΘΕ θεώρημα είναι ΡΗΤΑ conditional πάνω σε αυτό το TCB. Καμία απόδειξη δεν ονομάζεται απόλυτη end-to-end."
+}

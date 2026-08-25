@@ -1,0 +1,76 @@
+{
+ "$schema": "lawmax/constitution-amendment/1.REV2.DRAFT",
+ "amendment": 1,
+ "revision": 2,
+ "status": "DRAFT-NOT-IN-FORCE",
+ "from_version": {
+  "file": "OBJECTIVE-CONSTITUTION.json",
+  "sha256": "5b3ab5bf9561d535adbf5049b975ac2ab8e9a63db32dfb14a07d82d78b729be6",
+  "preservation": "byte-identical για πάντα"
+ },
+ "supersedes_draft": {
+  "file": "OBJECTIVE-CONSTITUTION.v2.DRAFT.json",
+  "sha256": "52c389edd341659e2ada9d767b3de26db981751d1c845e73eea19753d8ece52b",
+  "kept_as": "ιστορικό checkpoint 9d68e56a"
+ },
+ "to_version": {
+  "file": "OBJECTIVE-CONSTITUTION.v2.REV2.DRAFT.json",
+  "sha256": "840dcbb23877806fbdd0ebdecc6dabee81f622862755ae926ef2efa2dcda1d34"
+ },
+ "rev2_articles": [
+  {
+   "a": 1,
+   "closes": "BLOCKER-1",
+   "what": "Precommit barrier (c3): 8 σφραγιζόμενα inputs ΠΡΙΝ από κάθε candidate· απαγόρευση ορισμού εντός Φ2"
+  },
+  {
+   "a": 2,
+   "closes": "BLOCKER-2",
+   "what": "Φ2A / closure boundary / Φ2B-Φ3 (c4)· late candidate ⇒ epoch invalidation"
+  },
+  {
+   "a": 3,
+   "closes": "BLOCKER-3",
+   "what": "Πεπερασμένο I_t και L_i με ΑΠΟΔΕΙΞΕΙΣ· Q_t περιλαμβάνει κάθε Ω-διάσταση· ≡material αποφασίσιμη, κανονική, CONGRUENCE ως προς H/Ω/joins/implementability/blueprints (c5)"
+  },
+  {
+   "a": 4,
+   "closes": "BLOCKER-4",
+   "what": "Κάθε άξονας αποδεδειγμένα μεταβατική preorder — όχι threshold· status algebra διαμέρισης· F+={q∈Q_t|H(q)=PASS}· UNKNOWN που υπερέχει σε ΟΠΟΙΟΝΔΗΠΟΤΕ άξονα μπλοκάρει FINAL (c6)"
+  },
+  {
+   "a": 5,
+   "closes": "BLOCKER-5",
+   "what": "Κανένας τεχνητός νικητής: greatest με πλήρη απόδειξη Ή proved-no-greatest + πλήρες frontier με blueprint ανά στοιχείο (c7)"
+  },
+  {
+   "a": 6,
+   "closes": "BLOCKER-6",
+   "what": "Composition grammar + coverage theorem· end-to-end realization witness αντί σκέτου blueprint (c9)"
+  },
+  {
+   "a": 7,
+   "closes": "BLOCKER-7",
+   "what": "Ρητή πολυ-αυθεντία/adapter/verified-subset με refinement· contract 15 πεδίων (c10)"
+  },
+  {
+   "a": 8,
+   "closes": "BLOCKER-8",
+   "what": "M μόνο μετά DAG freeze· εναλλακτικά multiset/rank (c8)"
+  },
+  {
+   "a": 9,
+   "closes": "BLOCKER-9",
+   "what": "AS1-AS10 + counter-design ΑΥΤΟΥΣΙΑ hash-bound με precedence (c10b)· ratification ΜΟΝΟ με χωριστό attestation — ποτέ αλλαγή bytes (c11)"
+  },
+  {
+   "a": 10,
+   "closes": "BLOCKER-10",
+   "what": "Checker: commit-bound snapshot, hash recompute, απόρριψη dummy, lifecycle modes, activation gates, self-binding στο epoch (c12)"
+  }
+ ],
+ "ratification": {
+  "by": "δημιουργός",
+  "state": "ΕΚΚΡΕΜΕΙ"
+ }
+}

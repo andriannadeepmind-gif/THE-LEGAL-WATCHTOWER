@@ -1,0 +1,218 @@
+{
+ "$schema": "lawmax/phase1a-evidence-transfer/2.REV3.DRAFT",
+ "bound_to_constitution": {
+  "version": "v2.REV3.DRAFT",
+  "sha256": "0560ef0fb2d81a009f2264aa89021cf2d37f0f12c180d0aa9bd38af2fc285164"
+ },
+ "corpus_unchanged": {
+  "commit": "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03",
+  "tree_sha1": "23b7a6f4450f50d151d38e13020bee9872e73bcd",
+  "identity": "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6"
+ },
+ "authoritative_tips": {
+  "Φ1A-L1": {
+   "tip": "source-rev3.sexp",
+   "status": "QUARANTINED",
+   "lineage": [
+    "source.sexp",
+    "source-rev2.sexp",
+    "source-rev3.sexp"
+   ],
+   "lineage_sha256": [
+    {
+     "file": "source.sexp",
+     "sha256": "dd3ce7cc6bd973d284dd00adb417afa3e1030bcdca9da32997b435fb4c5e8aef"
+    },
+    {
+     "file": "source-rev2.sexp",
+     "sha256": "858f4c903e91a11289d3e4830541dbca687a14cd403883758fa04ea559f68807"
+    },
+    {
+     "file": "source-rev3.sexp",
+     "sha256": "5bb2675adb08e55fe735861a87c55dd862085b87747dd33e8b2986ba8e06b5ea"
+    }
+   ],
+   "authoritative_tip_sha256": "5bb2675adb08e55fe735861a87c55dd862085b87747dd33e8b2986ba8e06b5ea",
+   "lineage_proof": "κάθε μετάβαση της αλυσίδας επαληθεύεται από τον migration-verifier (σκελετός byte-identical + run-length αντιστοιχία στόχων)· receipt: INDEPENDENT-VERIFICATION-RECEIPT.json"
+  },
+  "Φ1A-L2": {
+   "tip": "systems-rev2.sexp",
+   "status": "REUSABLE-AFTER-VERIFICATION",
+   "lineage": [
+    "systems.sexp",
+    "systems-rev2.sexp"
+   ],
+   "lineage_sha256": [
+    {
+     "file": "systems.sexp",
+     "sha256": "e11b7b76d7fdb18cd7cf4d348eac7b81529cc9c004f8d6d56cc93a644ae9c141"
+    },
+    {
+     "file": "systems-rev2.sexp",
+     "sha256": "54849c597201ccb0de29b6b86c1c87829cf2f1d255011180f1c855a3c7613521"
+    }
+   ],
+   "authoritative_tip_sha256": "54849c597201ccb0de29b6b86c1c87829cf2f1d255011180f1c855a3c7613521",
+   "lineage_proof": "κάθε μετάβαση της αλυσίδας επαληθεύεται από τον migration-verifier (σκελετός byte-identical + run-length αντιστοιχία στόχων)· receipt: INDEPENDENT-VERIFICATION-RECEIPT.json"
+  },
+  "Φ1A-L3": {
+   "tip": "authority-v2-rev4.sexp",
+   "status": "REUSABLE-AFTER-VERIFICATION",
+   "lineage": [
+    "authority-v2.sexp",
+    "authority-v2-rev2.sexp",
+    "authority-v2-rev3.sexp",
+    "authority-v2-rev4.sexp"
+   ],
+   "lineage_sha256": [
+    {
+     "file": "authority-v2.sexp",
+     "sha256": "c3bf9ce0fe3dd0db3f3a0084201093af969b986afd9cc28843713866935c78f9"
+    },
+    {
+     "file": "authority-v2-rev2.sexp",
+     "sha256": "5f4506e44973dc792439039b26c32df75b42a3766eaacdfc7ba2a66d450dbda4"
+    },
+    {
+     "file": "authority-v2-rev3.sexp",
+     "sha256": "45eb97102c342e3f212fc5a8c67344d395406e02f763a181535a1af7a50066ad"
+    },
+    {
+     "file": "authority-v2-rev4.sexp",
+     "sha256": "fa93d9e2cab1d31d1e3dc2798c0d0c4ffd679bd8df1ebd1652ff482d122f39ff"
+    }
+   ],
+   "authoritative_tip_sha256": "fa93d9e2cab1d31d1e3dc2798c0d0c4ffd679bd8df1ebd1652ff482d122f39ff",
+   "lineage_proof": "κάθε μετάβαση της αλυσίδας επαληθεύεται από τον migration-verifier (σκελετός byte-identical + run-length αντιστοιχία στόχων)· receipt: INDEPENDENT-VERIFICATION-RECEIPT.json"
+  },
+  "Φ1A-L4": {
+   "tip": "deployment-specs-rev3.sexp",
+   "status": "QUARANTINED",
+   "lineage": [
+    "deployment-specs.sexp",
+    "deployment-specs-rev2.sexp",
+    "deployment-specs-rev3.sexp"
+   ],
+   "lineage_sha256": [
+    {
+     "file": "deployment-specs.sexp",
+     "sha256": "f895deb6721317b7979ffe44346628c064a2c0c1682b2642658e94f9d507730b"
+    },
+    {
+     "file": "deployment-specs-rev2.sexp",
+     "sha256": "d48c47d92ec1e529ca9ede7e9752601deaa537ef8743f5cce6dc3de3cf6490b8"
+    },
+    {
+     "file": "deployment-specs-rev3.sexp",
+     "sha256": "56abf057df4f144ff1a079cd748a9e3963d7ddc1a654af558764f5fd4d160dcc"
+    }
+   ],
+   "authoritative_tip_sha256": "56abf057df4f144ff1a079cd748a9e3963d7ddc1a654af558764f5fd4d160dcc",
+   "lineage_proof": "κάθε μετάβαση της αλυσίδας επαληθεύεται από τον migration-verifier (σκελετός byte-identical + run-length αντιστοιχία στόχων)· receipt: INDEPENDENT-VERIFICATION-RECEIPT.json"
+  },
+  "Φ1A-L5": {
+   "tip": "deployment-state-rev4.sexp",
+   "status": "REUSABLE-AFTER-VERIFICATION",
+   "lineage": [
+    "deployment-state.sexp",
+    "deployment-state-rev2.sexp",
+    "deployment-state-rev3.sexp",
+    "deployment-state-rev4.sexp"
+   ],
+   "lineage_sha256": [
+    {
+     "file": "deployment-state.sexp",
+     "sha256": "27dfbfc852110beade15117a7d02e01ab48485377a623b040dc9f92b1ae79923"
+    },
+    {
+     "file": "deployment-state-rev2.sexp",
+     "sha256": "6897eb6486c83b799a8edf7febafef90b8e896949ab3a9a9c55a5e24b8bdb2bd"
+    },
+    {
+     "file": "deployment-state-rev3.sexp",
+     "sha256": "24d06a15df313b8b49dcc282b694ba0b5012b491340cd756a4df3073bcbde233"
+    },
+    {
+     "file": "deployment-state-rev4.sexp",
+     "sha256": "39dc5cafe52cba8ba786c46dbb3dc0794f26cf8b70ab25447721be35338a04fd"
+    }
+   ],
+   "authoritative_tip_sha256": "39dc5cafe52cba8ba786c46dbb3dc0794f26cf8b70ab25447721be35338a04fd",
+   "lineage_proof": "κάθε μετάβαση της αλυσίδας επαληθεύεται από τον migration-verifier (σκελετός byte-identical + run-length αντιστοιχία στόχων)· receipt: INDEPENDENT-VERIFICATION-RECEIPT.json"
+  },
+  "Φ1A-L6": {
+   "tip": "harness-rev4.sexp",
+   "status": "REUSABLE-AFTER-VERIFICATION",
+   "lineage": [
+    "harness.sexp",
+    "harness-rev2.sexp",
+    "harness-rev3.sexp",
+    "harness-rev4.sexp"
+   ],
+   "lineage_sha256": [
+    {
+     "file": "harness.sexp",
+     "sha256": "9ddd1820acf40205c1256bccac8c8d689e1683ae7512566168df4ae302237ea9"
+    },
+    {
+     "file": "harness-rev2.sexp",
+     "sha256": "8e5910f4dc6d328410cc5e72d4bbe4004f19656678215f6653756c9c2919eb9e"
+    },
+    {
+     "file": "harness-rev3.sexp",
+     "sha256": "b5b05343cefc0bc48fa70f14192920a358e9de42ff5a951ec6dbbcb8069ed45f"
+    },
+    {
+     "file": "harness-rev4.sexp",
+     "sha256": "8aab586cbe336d4aa1d23e681d4807f7f689026347d46f6fcceb443547d74ba3"
+    }
+   ],
+   "authoritative_tip_sha256": "8aab586cbe336d4aa1d23e681d4807f7f689026347d46f6fcceb443547d74ba3",
+   "lineage_proof": "κάθε μετάβαση της αλυσίδας επαληθεύεται από τον migration-verifier (σκελετός byte-identical + run-length αντιστοιχία στόχων)· receipt: INDEPENDENT-VERIFICATION-RECEIPT.json"
+  },
+  "Φ1A-L7": {
+   "tip": "contracts-rev3.sexp",
+   "status": "QUARANTINED",
+   "lineage": [
+    "contracts.sexp",
+    "contracts-rev2.sexp",
+    "contracts-rev3.sexp"
+   ],
+   "lineage_sha256": [
+    {
+     "file": "contracts.sexp",
+     "sha256": "6ab0457e1a7b2993941b95ce8bbf431910876892157e103c7a797d2f4731352d"
+    },
+    {
+     "file": "contracts-rev2.sexp",
+     "sha256": "e7ae502e8fb3469ac232c7e8808461459220e36eac90cea70c9f59d05b1bcc22"
+    },
+    {
+     "file": "contracts-rev3.sexp",
+     "sha256": "0b0116df0f8eb913c8a3e5bee74f001c2407c0b40aa31a5b20b082d2bab7886c"
+    }
+   ],
+   "authoritative_tip_sha256": "0b0116df0f8eb913c8a3e5bee74f001c2407c0b40aa31a5b20b082d2bab7886c",
+   "lineage_proof": "κάθε μετάβαση της αλυσίδας επαληθεύεται από τον migration-verifier (σκελετός byte-identical + run-length αντιστοιχία στόχων)· receipt: INDEPENDENT-VERIFICATION-RECEIPT.json"
+  }
+ },
+ "what_transfers_as_facts": [
+  "immutable factual observations (τι υπάρχει στο παγωμένο δέντρο)",
+  "citations — υπό το τρέχον gate καθεστώς κάθε tip"
+ ],
+ "what_does_NOT_transfer_as_complete": {
+  "normative_judgments": "Οι κρίσεις των dossiers (:materiality, :presence, P0/P1 χαρακτηρισμοί, «δομικά αδύνατο» κ.λπ.) ΔΕΝ μεταφέρονται ως ΠΛΗΡΕΙΣ/τελικές. Μεταφέρονται ως CANDIDATE-JUDGMENTS που θα κριθούν υπό coverage+entailment και υπό το v2 όπου εμπλέκεται σύγκριση.",
+  "why": "Οι παλαιές κρίσεις εκδόθηκαν χωρίς claim-coverage/entailment gates και υπό το v1 πλαίσιο· η μεταφορά τους ως πλήρων θα ήταν αυτοπιστοποίηση."
+ },
+ "reuse_conditions": {
+  "L2_L3_L5_L6": "επαναχρησιμοποιούνται ΜΟΝΟ μετά από hash verification του tip ΚΑΙ φρέσκο gate receipt υπό τον τρέχοντα resolver — ΟΧΙ αυτόματα",
+  "L1_L4_L7": "QUARANTINED — μόνο μέσω των prepared charges"
+ },
+ "open_obligations_transfer": [
+  "CLAIM-CITATION-COVERAGE: OPEN",
+  "CLAIM-ENTAILMENT: OPEN",
+  "READ-LEDGER: OPEN",
+  "MACRO-LAYER: OPEN"
+ ],
+ "targeted_supplements": "Τα 15 πεδία contract του c10 μπορεί να απαιτήσουν ΣΤΟΧΕΥΜΕΝΑ supplements (π.χ. ownership/authority, evidence grade) — ΜΟΝΟ αν ο impact checker αποδείξει το κενό, ΠΟΤΕ συνολική επανάληψη Φ1A."
+}

@@ -1,0 +1,6248 @@
+{
+ "source": "source.sexp",
+ "source_sha256": "dd3ce7cc6bd973d284dd00adb417afa3e1030bcdca9da32997b435fb4c5e8aef",
+ "target": "source-rev2.sexp",
+ "target_sha256": "858f4c903e91a11289d3e4830541dbca687a14cd403883758fa04ea559f68807",
+ "derivation": "ΠΑΡΑΤΗΡΟΥΜΕΝΗ ΔΙΑΦΟΡΑ ΤΩΝ ΔΥΟ ΑΡΧΕΙΩΝ — ΟΧΙ έξοδος του εργαλείου που έκανε τη μετάβαση",
+ "skeleton_slots": 346,
+ "old_tokens": 346,
+ "new_tokens": 346,
+ "kinds": {
+  "IDENTITY": 19,
+  "EXPANSION": 0,
+  "PREFIX": 327
+ },
+ "target_substitutions": 0,
+ "reorderings": 0,
+ "losses": 0,
+ "mapping": [
+  {
+   "slot": 0,
+   "kind": "PREFIX",
+   "old_target": "safe-read.lisp",
+   "new_target": "source/safe-read.lisp",
+   "old": [
+    {
+     "token": "safe-read.lisp:39-349",
+     "offset": 4448
+    }
+   ],
+   "new": [
+    {
+     "token": "source/safe-read.lisp:39-349",
+     "offset": 4448
+    }
+   ]
+  },
+  {
+   "slot": 1,
+   "kind": "PREFIX",
+   "old_target": "safe-read.lisp",
+   "new_target": "source/safe-read.lisp",
+   "old": [
+    {
+     "token": "safe-read.lisp:312-339",
+     "offset": 5090
+    }
+   ],
+   "new": [
+    {
+     "token": "source/safe-read.lisp:312-339",
+     "offset": 5097
+    }
+   ]
+  },
+  {
+   "slot": 2,
+   "kind": "PREFIX",
+   "old_target": "merkle-authority.lisp",
+   "new_target": "source/merkle-authority.lisp",
+   "old": [
+    {
+     "token": "merkle-authority.lisp:54-235",
+     "offset": 5898
+    }
+   ],
+   "new": [
+    {
+     "token": "source/merkle-authority.lisp:54-235",
+     "offset": 5912
+    }
+   ]
+  },
+  {
+   "slot": 3,
+   "kind": "PREFIX",
+   "old_target": "proof-carrying.lisp",
+   "new_target": "source/proof-carrying.lisp",
+   "old": [
+    {
+     "token": "proof-carrying.lisp:50-295",
+     "offset": 6792
+    }
+   ],
+   "new": [
+    {
+     "token": "source/proof-carrying.lisp:50-295",
+     "offset": 6813
+    }
+   ]
+  },
+  {
+   "slot": 4,
+   "kind": "PREFIX",
+   "old_target": "journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "journal.lisp:104-576",
+     "offset": 7918
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:104-576",
+     "offset": 7946
+    }
+   ]
+  },
+  {
+   "slot": 5,
+   "kind": "PREFIX",
+   "old_target": "constitutional-gate.lisp",
+   "new_target": "source/constitutional-gate.lisp",
+   "old": [
+    {
+     "token": "constitutional-gate.lisp:22-71",
+     "offset": 8659
+    }
+   ],
+   "new": [
+    {
+     "token": "source/constitutional-gate.lisp:22-71",
+     "offset": 8694
+    }
+   ]
+  },
+  {
+   "slot": 6,
+   "kind": "PREFIX",
+   "old_target": "deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "deterministic-time.lisp:52-220",
+     "offset": 9395
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:52-220",
+     "offset": 9437
+    }
+   ]
+  },
+  {
+   "slot": 7,
+   "kind": "PREFIX",
+   "old_target": "cognition.lisp",
+   "new_target": "source/cognition.lisp",
+   "old": [
+    {
+     "token": "cognition.lisp:62-184",
+     "offset": 10128
+    }
+   ],
+   "new": [
+    {
+     "token": "source/cognition.lisp:62-184",
+     "offset": 10177
+    }
+   ]
+  },
+  {
+   "slot": 8,
+   "kind": "PREFIX",
+   "old_target": "document-fetch.lisp",
+   "new_target": "source/document-fetch.lisp",
+   "old": [
+    {
+     "token": "document-fetch.lisp:92-323",
+     "offset": 10885
+    }
+   ],
+   "new": [
+    {
+     "token": "source/document-fetch.lisp:92-323",
+     "offset": 10941
+    }
+   ]
+  },
+  {
+   "slot": 9,
+   "kind": "PREFIX",
+   "old_target": "self-constitution.lisp",
+   "new_target": "source/self-constitution.lisp",
+   "old": [
+    {
+     "token": "self-constitution.lisp:29-132",
+     "offset": 11618
+    }
+   ],
+   "new": [
+    {
+     "token": "source/self-constitution.lisp:29-132",
+     "offset": 11681
+    }
+   ]
+  },
+  {
+   "slot": 10,
+   "kind": "PREFIX",
+   "old_target": "hash-authority.lisp",
+   "new_target": "source/hash-authority.lisp",
+   "old": [
+    {
+     "token": "hash-authority.lisp:11-59",
+     "offset": 12164
+    }
+   ],
+   "new": [
+    {
+     "token": "source/hash-authority.lisp:11-59",
+     "offset": 12234
+    }
+   ]
+  },
+  {
+   "slot": 11,
+   "kind": "PREFIX",
+   "old_target": "write-authority.lisp",
+   "new_target": "source/write-authority.lisp",
+   "old": [
+    {
+     "token": "write-authority.lisp:12-73",
+     "offset": 12712
+    }
+   ],
+   "new": [
+    {
+     "token": "source/write-authority.lisp:12-73",
+     "offset": 12789
+    }
+   ]
+  },
+  {
+   "slot": 12,
+   "kind": "PREFIX",
+   "old_target": "institution.lisp",
+   "new_target": "source/institution.lisp",
+   "old": [
+    {
+     "token": "institution.lisp:26-61",
+     "offset": 13224
+    }
+   ],
+   "new": [
+    {
+     "token": "source/institution.lisp:26-61",
+     "offset": 13308
+    }
+   ]
+  },
+  {
+   "slot": 13,
+   "kind": "IDENTITY",
+   "old_target": "config.lisp",
+   "new_target": "config.lisp",
+   "old": [
+    {
+     "token": "config.lisp:7-49",
+     "offset": 13835
+    }
+   ],
+   "new": [
+    {
+     "token": "config.lisp:7-49",
+     "offset": 13926
+    }
+   ]
+  },
+  {
+   "slot": 14,
+   "kind": "PREFIX",
+   "old_target": "authority-proof-bundle.lisp",
+   "new_target": "source/authority-proof-bundle.lisp",
+   "old": [
+    {
+     "token": "authority-proof-bundle.lisp:295-658",
+     "offset": 15117
+    }
+   ],
+   "new": [
+    {
+     "token": "source/authority-proof-bundle.lisp:295-658",
+     "offset": 15208
+    }
+   ]
+  },
+  {
+   "slot": 15,
+   "kind": "PREFIX",
+   "old_target": "version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "version-graph.lisp:221-1459",
+     "offset": 16284
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:221-1459",
+     "offset": 16382
+    }
+   ]
+  },
+  {
+   "slot": 16,
+   "kind": "PREFIX",
+   "old_target": "version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "version-graph.lisp:2458-2613",
+     "offset": 17167
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:2458-2613",
+     "offset": 17272
+    }
+   ]
+  },
+  {
+   "slot": 17,
+   "kind": "PREFIX",
+   "old_target": "amendment-extractor.lisp",
+   "new_target": "source/amendment-extractor.lisp",
+   "old": [
+    {
+     "token": "amendment-extractor.lisp:340-546",
+     "offset": 18040
+    }
+   ],
+   "new": [
+    {
+     "token": "source/amendment-extractor.lisp:340-546",
+     "offset": 18152
+    }
+   ]
+  },
+  {
+   "slot": 18,
+   "kind": "PREFIX",
+   "old_target": "pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "pdf-authority.lisp:381-1439",
+     "offset": 18841
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:381-1439",
+     "offset": 18960
+    }
+   ]
+  },
+  {
+   "slot": 19,
+   "kind": "IDENTITY",
+   "old_target": "capability-registry.lisp",
+   "new_target": "capability-registry.lisp",
+   "old": [
+    {
+     "token": "capability-registry.lisp:40-207",
+     "offset": 19699
+    }
+   ],
+   "new": [
+    {
+     "token": "capability-registry.lisp:40-207",
+     "offset": 19825
+    }
+   ]
+  },
+  {
+   "slot": 20,
+   "kind": "PREFIX",
+   "old_target": "capability-api.lisp",
+   "new_target": "source/capability-api.lisp",
+   "old": [
+    {
+     "token": "capability-api.lisp:37-147",
+     "offset": 19733
+    }
+   ],
+   "new": [
+    {
+     "token": "source/capability-api.lisp:37-147",
+     "offset": 19859
+    }
+   ]
+  },
+  {
+   "slot": 21,
+   "kind": "PREFIX",
+   "old_target": "contracts.lisp",
+   "new_target": "source/contracts.lisp",
+   "old": [
+    {
+     "token": "contracts.lisp:43-167",
+     "offset": 20465
+    }
+   ],
+   "new": [
+    {
+     "token": "source/contracts.lisp:43-167",
+     "offset": 20598
+    }
+   ]
+  },
+  {
+   "slot": 22,
+   "kind": "PREFIX",
+   "old_target": "canonical-representation.lisp",
+   "new_target": "source/canonical-representation.lisp",
+   "old": [
+    {
+     "token": "canonical-representation.lisp:91-278",
+     "offset": 21159
+    }
+   ],
+   "new": [
+    {
+     "token": "source/canonical-representation.lisp:91-278",
+     "offset": 21299
+    }
+   ]
+  },
+  {
+   "slot": 23,
+   "kind": "PREFIX",
+   "old_target": "canonical-uris.lisp",
+   "new_target": "source/canonical-uris.lisp",
+   "old": [
+    {
+     "token": "canonical-uris.lisp:53-264",
+     "offset": 21807
+    }
+   ],
+   "new": [
+    {
+     "token": "source/canonical-uris.lisp:53-264",
+     "offset": 21954
+    }
+   ]
+  },
+  {
+   "slot": 24,
+   "kind": "PREFIX",
+   "old_target": "autonomy.lisp",
+   "new_target": "source/autonomy.lisp",
+   "old": [
+    {
+     "token": "autonomy.lisp:26-124",
+     "offset": 22502
+    }
+   ],
+   "new": [
+    {
+     "token": "source/autonomy.lisp:26-124",
+     "offset": 22656
+    }
+   ]
+  },
+  {
+   "slot": 25,
+   "kind": "PREFIX",
+   "old_target": "components.lisp",
+   "new_target": "source/components.lisp",
+   "old": [
+    {
+     "token": "components.lisp:26-98",
+     "offset": 23043
+    }
+   ],
+   "new": [
+    {
+     "token": "source/components.lisp:26-98",
+     "offset": 23204
+    }
+   ]
+  },
+  {
+   "slot": 26,
+   "kind": "PREFIX",
+   "old_target": "archive-authority.lisp",
+   "new_target": "source/archive-authority.lisp",
+   "old": [
+    {
+     "token": "archive-authority.lisp:56-159",
+     "offset": 23656
+    }
+   ],
+   "new": [
+    {
+     "token": "source/archive-authority.lisp:56-159",
+     "offset": 23824
+    }
+   ]
+  },
+  {
+   "slot": 27,
+   "kind": "PREFIX",
+   "old_target": "ast-gate.lisp",
+   "new_target": "source/ast-gate.lisp",
+   "old": [
+    {
+     "token": "ast-gate.lisp:53-127",
+     "offset": 24328
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ast-gate.lisp:53-127",
+     "offset": 24503
+    }
+   ]
+  },
+  {
+   "slot": 28,
+   "kind": "PREFIX",
+   "old_target": "anomaly-detection.lisp",
+   "new_target": "source/anomaly-detection.lisp",
+   "old": [
+    {
+     "token": "anomaly-detection.lisp:54-93",
+     "offset": 24902
+    }
+   ],
+   "new": [
+    {
+     "token": "source/anomaly-detection.lisp:54-93",
+     "offset": 25084
+    }
+   ]
+  },
+  {
+   "slot": 29,
+   "kind": "PREFIX",
+   "old_target": "adoption-decision.lisp",
+   "new_target": "source/adoption-decision.lisp",
+   "old": [
+    {
+     "token": "adoption-decision.lisp:23-132",
+     "offset": 25639
+    }
+   ],
+   "new": [
+    {
+     "token": "source/adoption-decision.lisp:23-132",
+     "offset": 25828
+    }
+   ]
+  },
+  {
+   "slot": 30,
+   "kind": "PREFIX",
+   "old_target": "safe-read.lisp",
+   "new_target": "source/safe-read.lisp",
+   "old": [
+    {
+     "token": "safe-read.lisp:152-186",
+     "offset": 26087
+    }
+   ],
+   "new": [
+    {
+     "token": "source/safe-read.lisp:152-186",
+     "offset": 26283
+    }
+   ]
+  },
+  {
+   "slot": 31,
+   "kind": "PREFIX",
+   "old_target": "constitutional-gate.lisp",
+   "new_target": "source/constitutional-gate.lisp",
+   "old": [
+    {
+     "token": "constitutional-gate.lisp:49-71",
+     "offset": 26425
+    }
+   ],
+   "new": [
+    {
+     "token": "source/constitutional-gate.lisp:49-71",
+     "offset": 26628
+    }
+   ]
+  },
+  {
+   "slot": 32,
+   "kind": "PREFIX",
+   "old_target": "journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "journal.lisp:343-350",
+     "offset": 26710
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:343-350",
+     "offset": 26920
+    }
+   ]
+  },
+  {
+   "slot": 33,
+   "kind": "PREFIX",
+   "old_target": "proof-carrying.lisp",
+   "new_target": "source/proof-carrying.lisp",
+   "old": [
+    {
+     "token": "proof-carrying.lisp:185-207",
+     "offset": 26971
+    }
+   ],
+   "new": [
+    {
+     "token": "source/proof-carrying.lisp:185-207",
+     "offset": 27188
+    }
+   ]
+  },
+  {
+   "slot": 34,
+   "kind": "PREFIX",
+   "old_target": "write-authority.lisp",
+   "new_target": "source/write-authority.lisp",
+   "old": [
+    {
+     "token": "write-authority.lisp:16-51",
+     "offset": 27315
+    }
+   ],
+   "new": [
+    {
+     "token": "source/write-authority.lisp:16-51",
+     "offset": 27539
+    }
+   ]
+  },
+  {
+   "slot": 35,
+   "kind": "PREFIX",
+   "old_target": "cognition.lisp",
+   "new_target": "source/cognition.lisp",
+   "old": [
+    {
+     "token": "cognition.lisp:62-89",
+     "offset": 27619
+    }
+   ],
+   "new": [
+    {
+     "token": "source/cognition.lisp:62-89",
+     "offset": 27850
+    }
+   ]
+  },
+  {
+   "slot": 36,
+   "kind": "PREFIX",
+   "old_target": "document-fetch.lisp",
+   "new_target": "source/document-fetch.lisp",
+   "old": [
+    {
+     "token": "document-fetch.lisp:228-256",
+     "offset": 27901
+    }
+   ],
+   "new": [
+    {
+     "token": "source/document-fetch.lisp:228-256",
+     "offset": 28139
+    }
+   ]
+  },
+  {
+   "slot": 37,
+   "kind": "PREFIX",
+   "old_target": "journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "journal.lisp:180-187",
+     "offset": 28167
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:180-187",
+     "offset": 28412
+    }
+   ]
+  },
+  {
+   "slot": 38,
+   "kind": "PREFIX",
+   "old_target": "deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "deterministic-time.lisp:202-220",
+     "offset": 28435
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:202-220",
+     "offset": 28687
+    }
+   ]
+  },
+  {
+   "slot": 39,
+   "kind": "PREFIX",
+   "old_target": "capability-registry.lisp",
+   "new_target": "source/capability-registry.lisp",
+   "old": [
+    {
+     "token": "capability-registry.lisp:122-134",
+     "offset": 28785
+    }
+   ],
+   "new": [
+    {
+     "token": "source/capability-registry.lisp:122-134",
+     "offset": 29044
+    }
+   ]
+  },
+  {
+   "slot": 40,
+   "kind": "PREFIX",
+   "old_target": "capability-api.lisp",
+   "new_target": "source/capability-api.lisp",
+   "old": [
+    {
+     "token": "capability-api.lisp:108-111",
+     "offset": 29134
+    }
+   ],
+   "new": [
+    {
+     "token": "source/capability-api.lisp:108-111",
+     "offset": 29400
+    }
+   ]
+  },
+  {
+   "slot": 41,
+   "kind": "PREFIX",
+   "old_target": "capability-registry.lisp",
+   "new_target": "source/capability-registry.lisp",
+   "old": [
+    {
+     "token": "capability-registry.lisp:195-206",
+     "offset": 29164
+    }
+   ],
+   "new": [
+    {
+     "token": "source/capability-registry.lisp:195-206",
+     "offset": 29437
+    }
+   ]
+  },
+  {
+   "slot": 42,
+   "kind": "PREFIX",
+   "old_target": "version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "version-graph.lisp:2479-2522",
+     "offset": 29487
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:2479-2522",
+     "offset": 29767
+    }
+   ]
+  },
+  {
+   "slot": 43,
+   "kind": "PREFIX",
+   "old_target": "version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "version-graph.lisp:645-686",
+     "offset": 29813
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:645-686",
+     "offset": 30100
+    }
+   ]
+  },
+  {
+   "slot": 44,
+   "kind": "PREFIX",
+   "old_target": "authority-proof-bundle.lisp",
+   "new_target": "source/authority-proof-bundle.lisp",
+   "old": [
+    {
+     "token": "authority-proof-bundle.lisp:295-330,646-657",
+     "offset": 30144
+    }
+   ],
+   "new": [
+    {
+     "token": "source/authority-proof-bundle.lisp:295-330,646-657",
+     "offset": 30438
+    }
+   ]
+  },
+  {
+   "slot": 45,
+   "kind": "PREFIX",
+   "old_target": "safe-read.lisp",
+   "new_target": "source/safe-read.lisp",
+   "old": [
+    {
+     "token": "safe-read.lisp:82-99,152-186",
+     "offset": 30417
+    }
+   ],
+   "new": [
+    {
+     "token": "source/safe-read.lisp:82-99,152-186",
+     "offset": 30718
+    }
+   ]
+  },
+  {
+   "slot": 46,
+   "kind": "PREFIX",
+   "old_target": "safe-read.lisp",
+   "new_target": "source/safe-read.lisp",
+   "old": [
+    {
+     "token": "safe-read.lisp:326-339",
+     "offset": 30628
+    }
+   ],
+   "new": [
+    {
+     "token": "source/safe-read.lisp:326-339",
+     "offset": 30936
+    }
+   ]
+  },
+  {
+   "slot": 47,
+   "kind": "PREFIX",
+   "old_target": "merkle-authority.lisp",
+   "new_target": "source/merkle-authority.lisp",
+   "old": [
+    {
+     "token": "merkle-authority.lisp:101-119",
+     "offset": 30805
+    }
+   ],
+   "new": [
+    {
+     "token": "source/merkle-authority.lisp:101-119",
+     "offset": 31120
+    }
+   ]
+  },
+  {
+   "slot": 48,
+   "kind": "PREFIX",
+   "old_target": "proof-carrying.lisp",
+   "new_target": "source/proof-carrying.lisp",
+   "old": [
+    {
+     "token": "proof-carrying.lisp:206-207",
+     "offset": 31003
+    }
+   ],
+   "new": [
+    {
+     "token": "source/proof-carrying.lisp:206-207",
+     "offset": 31325
+    }
+   ]
+  },
+  {
+   "slot": 49,
+   "kind": "PREFIX",
+   "old_target": "journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "journal.lisp:343-350,469-479",
+     "offset": 31180
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:343-350,469-479",
+     "offset": 31509
+    }
+   ]
+  },
+  {
+   "slot": 50,
+   "kind": "PREFIX",
+   "old_target": "journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "journal.lisp:126-170",
+     "offset": 31384
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:126-170",
+     "offset": 31720
+    }
+   ]
+  },
+  {
+   "slot": 51,
+   "kind": "PREFIX",
+   "old_target": "journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "journal.lisp:531-542",
+     "offset": 31604
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:531-542",
+     "offset": 31947
+    }
+   ]
+  },
+  {
+   "slot": 52,
+   "kind": "PREFIX",
+   "old_target": "journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "journal.lisp:369-381",
+     "offset": 31802
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:369-381",
+     "offset": 32152
+    }
+   ]
+  },
+  {
+   "slot": 53,
+   "kind": "PREFIX",
+   "old_target": "deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "deterministic-time.lisp:155-176",
+     "offset": 32011
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:155-176",
+     "offset": 32368
+    }
+   ]
+  },
+  {
+   "slot": 54,
+   "kind": "PREFIX",
+   "old_target": "document-fetch.lisp",
+   "new_target": "source/document-fetch.lisp",
+   "old": [
+    {
+     "token": "document-fetch.lisp:243-291",
+     "offset": 32238
+    }
+   ],
+   "new": [
+    {
+     "token": "source/document-fetch.lisp:243-291",
+     "offset": 32602
+    }
+   ]
+  },
+  {
+   "slot": 55,
+   "kind": "PREFIX",
+   "old_target": "document-fetch.lisp",
+   "new_target": "source/document-fetch.lisp",
+   "old": [
+    {
+     "token": "document-fetch.lisp:46-90",
+     "offset": 32425
+    }
+   ],
+   "new": [
+    {
+     "token": "source/document-fetch.lisp:46-90",
+     "offset": 32796
+    }
+   ]
+  },
+  {
+   "slot": 56,
+   "kind": "PREFIX",
+   "old_target": "self-constitution.lisp",
+   "new_target": "source/self-constitution.lisp",
+   "old": [
+    {
+     "token": "self-constitution.lisp:105-115",
+     "offset": 32597
+    }
+   ],
+   "new": [
+    {
+     "token": "source/self-constitution.lisp:105-115",
+     "offset": 32975
+    }
+   ]
+  },
+  {
+   "slot": 57,
+   "kind": "PREFIX",
+   "old_target": "constitutional-gate.lisp",
+   "new_target": "source/constitutional-gate.lisp",
+   "old": [
+    {
+     "token": "constitutional-gate.lisp:44-45",
+     "offset": 32895
+    }
+   ],
+   "new": [
+    {
+     "token": "source/constitutional-gate.lisp:44-45",
+     "offset": 33280
+    }
+   ]
+  },
+  {
+   "slot": 58,
+   "kind": "PREFIX",
+   "old_target": "deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "deterministic-time.lisp:93-101",
+     "offset": 33198
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:93-101",
+     "offset": 33590
+    }
+   ]
+  },
+  {
+   "slot": 59,
+   "kind": "PREFIX",
+   "old_target": "deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "deterministic-time.lisp:155-158",
+     "offset": 33579
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:155-158",
+     "offset": 33978
+    }
+   ]
+  },
+  {
+   "slot": 60,
+   "kind": "PREFIX",
+   "old_target": "cognition.lisp",
+   "new_target": "source/cognition.lisp",
+   "old": [
+    {
+     "token": "cognition.lisp:65-66,88-89",
+     "offset": 33983
+    }
+   ],
+   "new": [
+    {
+     "token": "source/cognition.lisp:65-66,88-89",
+     "offset": 34389
+    }
+   ]
+  },
+  {
+   "slot": 61,
+   "kind": "PREFIX",
+   "old_target": "cognition.lisp",
+   "new_target": "source/cognition.lisp",
+   "old": [
+    {
+     "token": "cognition.lisp:85-87",
+     "offset": 34348
+    }
+   ],
+   "new": [
+    {
+     "token": "source/cognition.lisp:85-87",
+     "offset": 34761
+    }
+   ]
+  },
+  {
+   "slot": 62,
+   "kind": "PREFIX",
+   "old_target": "write-authority.lisp",
+   "new_target": "source/write-authority.lisp",
+   "old": [
+    {
+     "token": "write-authority.lisp:29-30",
+     "offset": 34623
+    }
+   ],
+   "new": [
+    {
+     "token": "source/write-authority.lisp:29-30",
+     "offset": 35043
+    }
+   ]
+  },
+  {
+   "slot": 63,
+   "kind": "IDENTITY",
+   "old_target": "config.lisp",
+   "new_target": "config.lisp",
+   "old": [
+    {
+     "token": "config.lisp:44",
+     "offset": 34908
+    }
+   ],
+   "new": [
+    {
+     "token": "config.lisp:44",
+     "offset": 35335
+    }
+   ]
+  },
+  {
+   "slot": 64,
+   "kind": "PREFIX",
+   "old_target": "document-fetch.lisp",
+   "new_target": "source/document-fetch.lisp",
+   "old": [
+    {
+     "token": "document-fetch.lisp:71-79",
+     "offset": 35231
+    }
+   ],
+   "new": [
+    {
+     "token": "source/document-fetch.lisp:71-79",
+     "offset": 35658
+    }
+   ]
+  },
+  {
+   "slot": 65,
+   "kind": "PREFIX",
+   "old_target": "journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "journal.lisp:67",
+     "offset": 35382
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:67",
+     "offset": 35816
+    }
+   ]
+  },
+  {
+   "slot": 66,
+   "kind": "PREFIX",
+   "old_target": "version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "version-graph.lisp:471-497",
+     "offset": 35463
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:471-497",
+     "offset": 35904
+    }
+   ]
+  },
+  {
+   "slot": 67,
+   "kind": "IDENTITY",
+   "old_target": "memory.lisp",
+   "new_target": "memory.lisp",
+   "old": [
+    {
+     "token": "memory.lisp:110,164",
+     "offset": 35778
+    }
+   ],
+   "new": [
+    {
+     "token": "memory.lisp:110,164",
+     "offset": 36226
+    }
+   ]
+  },
+  {
+   "slot": 68,
+   "kind": "PREFIX",
+   "old_target": "journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "journal.lisp:61-86",
+     "offset": 35832
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:61-86",
+     "offset": 36280
+    }
+   ]
+  },
+  {
+   "slot": 69,
+   "kind": "PREFIX",
+   "old_target": "version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "version-graph.lisp:471-497",
+     "offset": 35853
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:471-497",
+     "offset": 36308
+    }
+   ]
+  },
+  {
+   "slot": 70,
+   "kind": "IDENTITY",
+   "old_target": "memory.lisp",
+   "new_target": "memory.lisp",
+   "old": [
+    {
+     "token": "memory.lisp:110",
+     "offset": 35882
+    }
+   ],
+   "new": [
+    {
+     "token": "memory.lisp:110",
+     "offset": 36344
+    }
+   ]
+  },
+  {
+   "slot": 71,
+   "kind": "PREFIX",
+   "old_target": "canonical-representation.lisp",
+   "new_target": "source/canonical-representation.lisp",
+   "old": [
+    {
+     "token": "canonical-representation.lisp:162-192,227-241",
+     "offset": 36442
+    }
+   ],
+   "new": [
+    {
+     "token": "source/canonical-representation.lisp:162-192,227-241",
+     "offset": 36904
+    }
+   ]
+  },
+  {
+   "slot": 72,
+   "kind": "PREFIX",
+   "old_target": "canonical-representation.lisp",
+   "new_target": "source/canonical-representation.lisp",
+   "old": [
+    {
+     "token": "canonical-representation.lisp:141-160",
+     "offset": 36874
+    }
+   ],
+   "new": [
+    {
+     "token": "source/canonical-representation.lisp:141-160",
+     "offset": 37343
+    }
+   ]
+  },
+  {
+   "slot": 73,
+   "kind": "PREFIX",
+   "old_target": "archive-authority.lisp",
+   "new_target": "source/archive-authority.lisp",
+   "old": [
+    {
+     "token": "archive-authority.lisp:70-94",
+     "offset": 37369
+    }
+   ],
+   "new": [
+    {
+     "token": "source/archive-authority.lisp:70-94",
+     "offset": 37845
+    }
+   ]
+  },
+  {
+   "slot": 74,
+   "kind": "PREFIX",
+   "old_target": "adoption-decision.lisp",
+   "new_target": "source/adoption-decision.lisp",
+   "old": [
+    {
+     "token": "adoption-decision.lisp:90-95,126-131",
+     "offset": 37833
+    }
+   ],
+   "new": [
+    {
+     "token": "source/adoption-decision.lisp:90-95,126-131",
+     "offset": 38316
+    }
+   ]
+  },
+  {
+   "slot": 75,
+   "kind": "PREFIX",
+   "old_target": "pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "pdf-authority.lisp:1360-1370",
+     "offset": 38174
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:1360-1370",
+     "offset": 38664
+    }
+   ]
+  },
+  {
+   "slot": 76,
+   "kind": "PREFIX",
+   "old_target": "pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "pdf-authority.lisp:1399-1425",
+     "offset": 38547
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:1399-1425",
+     "offset": 39044
+    }
+   ]
+  },
+  {
+   "slot": 77,
+   "kind": "PREFIX",
+   "old_target": "pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "pdf-authority.lisp:349-355",
+     "offset": 38852
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:349-355",
+     "offset": 39356
+    }
+   ]
+  },
+  {
+   "slot": 78,
+   "kind": "PREFIX",
+   "old_target": "amendment-extractor.lisp",
+   "new_target": "source/amendment-extractor.lisp",
+   "old": [
+    {
+     "token": "amendment-extractor.lisp:189-190",
+     "offset": 39239
+    }
+   ],
+   "new": [
+    {
+     "token": "source/amendment-extractor.lisp:189-190",
+     "offset": 39750
+    }
+   ]
+  },
+  {
+   "slot": 79,
+   "kind": "PREFIX",
+   "old_target": "authority-proof-bundle.lisp",
+   "new_target": "source/authority-proof-bundle.lisp",
+   "old": [
+    {
+     "token": "authority-proof-bundle.lisp:507-511",
+     "offset": 39784
+    }
+   ],
+   "new": [
+    {
+     "token": "source/authority-proof-bundle.lisp:507-511",
+     "offset": 40302
+    }
+   ]
+  },
+  {
+   "slot": 80,
+   "kind": "PREFIX",
+   "old_target": "version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "version-graph.lisp:288-300,407-418",
+     "offset": 40270
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:288-300,407-418",
+     "offset": 40795
+    }
+   ]
+  },
+  {
+   "slot": 81,
+   "kind": "PREFIX",
+   "old_target": "legal-audit-system.lisp",
+   "new_target": "source/legal-audit-system.lisp",
+   "old": [
+    {
+     "token": "legal-audit-system.lisp:233-236,486-509,545-554",
+     "offset": 41151
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-audit-system.lisp:233-236,486-509,545-554",
+     "offset": 41683
+    }
+   ]
+  },
+  {
+   "slot": 82,
+   "kind": "PREFIX",
+   "old_target": "jws-authority.lisp",
+   "new_target": "source/jws-authority.lisp",
+   "old": [
+    {
+     "token": "jws-authority.lisp:394",
+     "offset": 41201
+    }
+   ],
+   "new": [
+    {
+     "token": "source/jws-authority.lisp:394",
+     "offset": 41740
+    }
+   ]
+  },
+  {
+   "slot": 83,
+   "kind": "PREFIX",
+   "old_target": "legal-audit-system.lisp",
+   "new_target": "source/legal-audit-system.lisp",
+   "old": [
+    {
+     "token": "legal-audit-system.lisp:271-283",
+     "offset": 41651
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-audit-system.lisp:271-283",
+     "offset": 42197
+    }
+   ]
+  },
+  {
+   "slot": 84,
+   "kind": "PREFIX",
+   "old_target": "review-queue.lisp",
+   "new_target": "source/review-queue.lisp",
+   "old": [
+    {
+     "token": "review-queue.lisp:100-117",
+     "offset": 41686
+    }
+   ],
+   "new": [
+    {
+     "token": "source/review-queue.lisp:100-117",
+     "offset": 42239
+    }
+   ]
+  },
+  {
+   "slot": 85,
+   "kind": "PREFIX",
+   "old_target": "legal-audit-system.lisp",
+   "new_target": "source/legal-audit-system.lisp",
+   "old": [
+    {
+     "token": "legal-audit-system.lisp:780-793",
+     "offset": 42142
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-audit-system.lisp:780-793",
+     "offset": 42702
+    }
+   ]
+  },
+  {
+   "slot": 86,
+   "kind": "PREFIX",
+   "old_target": "government-source.lisp",
+   "new_target": "source/government-source.lisp",
+   "old": [
+    {
+     "token": "government-source.lisp:487-502",
+     "offset": 42601
+    }
+   ],
+   "new": [
+    {
+     "token": "source/government-source.lisp:487-502",
+     "offset": 43168
+    }
+   ]
+  },
+  {
+   "slot": 87,
+   "kind": "PREFIX",
+   "old_target": "pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "pdf-authority.lisp:904-964",
+     "offset": 42634
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:904-964",
+     "offset": 43208
+    }
+   ]
+  },
+  {
+   "slot": 88,
+   "kind": "PREFIX",
+   "old_target": "mcp-server.lisp",
+   "new_target": "source/mcp-server.lisp",
+   "old": [
+    {
+     "token": "mcp-server.lisp:102-107",
+     "offset": 43064
+    }
+   ],
+   "new": [
+    {
+     "token": "source/mcp-server.lisp:102-107",
+     "offset": 43645
+    }
+   ]
+  },
+  {
+   "slot": 89,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/unified-frbr-generator.lisp",
+   "new_target": "systems/orchestrator-omega-modules/unified-frbr-generator.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/unified-frbr-generator.lisp:434",
+     "offset": 43671
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/unified-frbr-generator.lisp:434",
+     "offset": 44259
+    }
+   ]
+  },
+  {
+   "slot": 90,
+   "kind": "PREFIX",
+   "old_target": "validation-authority.lisp",
+   "new_target": "source/validation-authority.lisp",
+   "old": [
+    {
+     "token": "validation-authority.lisp:67,70,73,77,93,173,210,213,216,220,230,250",
+     "offset": 43771
+    }
+   ],
+   "new": [
+    {
+     "token": "source/validation-authority.lisp:67,70,73,77,93,173,210,213,216,220,230,250",
+     "offset": 44359
+    }
+   ]
+  },
+  {
+   "slot": 91,
+   "kind": "PREFIX",
+   "old_target": "proposals.lisp",
+   "new_target": "source/proposals.lisp",
+   "old": [
+    {
+     "token": "proposals.lisp:129-140",
+     "offset": 44379
+    }
+   ],
+   "new": [
+    {
+     "token": "source/proposals.lisp:129-140",
+     "offset": 44974
+    }
+   ]
+  },
+  {
+   "slot": 92,
+   "kind": "PREFIX",
+   "old_target": "consolidation-proof.lisp",
+   "new_target": "source/consolidation-proof.lisp",
+   "old": [
+    {
+     "token": "consolidation-proof.lisp:113-123",
+     "offset": 44933
+    }
+   ],
+   "new": [
+    {
+     "token": "source/consolidation-proof.lisp:113-123",
+     "offset": 45535
+    }
+   ]
+  },
+  {
+   "slot": 93,
+   "kind": "PREFIX",
+   "old_target": "canonical-uris.lisp",
+   "new_target": "source/canonical-uris.lisp",
+   "old": [
+    {
+     "token": "canonical-uris.lisp:58-63",
+     "offset": 45282
+    }
+   ],
+   "new": [
+    {
+     "token": "source/canonical-uris.lisp:58-63",
+     "offset": 45891
+    }
+   ]
+  },
+  {
+   "slot": 94,
+   "kind": "PREFIX",
+   "old_target": "corpus-provenance.lisp",
+   "new_target": "source/corpus-provenance.lisp",
+   "old": [
+    {
+     "token": "corpus-provenance.lisp:26-33",
+     "offset": 45444
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-provenance.lisp:26-33",
+     "offset": 46060
+    }
+   ]
+  },
+  {
+   "slot": 95,
+   "kind": "PREFIX",
+   "old_target": "canonical-uris.lisp",
+   "new_target": "source/canonical-uris.lisp",
+   "old": [
+    {
+     "token": "canonical-uris.lisp:57-63",
+     "offset": 45476
+    }
+   ],
+   "new": [
+    {
+     "token": "source/canonical-uris.lisp:57-63",
+     "offset": 46099
+    }
+   ]
+  },
+  {
+   "slot": 96,
+   "kind": "PREFIX",
+   "old_target": "corpus-provenance.lisp",
+   "new_target": "source/corpus-provenance.lisp",
+   "old": [
+    {
+     "token": "corpus-provenance.lisp:35-39",
+     "offset": 45820
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-provenance.lisp:35-39",
+     "offset": 46450
+    }
+   ]
+  },
+  {
+   "slot": 97,
+   "kind": "PREFIX",
+   "old_target": "component-scan.lisp",
+   "new_target": "source/component-scan.lisp",
+   "old": [
+    {
+     "token": "component-scan.lisp:26-28,305-316",
+     "offset": 46251
+    }
+   ],
+   "new": [
+    {
+     "token": "source/component-scan.lisp:26-28,305-316",
+     "offset": 46888
+    }
+   ]
+  },
+  {
+   "slot": 98,
+   "kind": "PREFIX",
+   "old_target": "component-scan.lisp",
+   "new_target": "source/component-scan.lisp",
+   "old": [
+    {
+     "token": "component-scan.lisp:139-149",
+     "offset": 46762
+    }
+   ],
+   "new": [
+    {
+     "token": "source/component-scan.lisp:139-149",
+     "offset": 47406
+    }
+   ]
+  },
+  {
+   "slot": 99,
+   "kind": "PREFIX",
+   "old_target": "safe-read.lisp",
+   "new_target": "source/safe-read.lisp",
+   "old": [
+    {
+     "token": "safe-read.lisp:312-339",
+     "offset": 46793
+    }
+   ],
+   "new": [
+    {
+     "token": "source/safe-read.lisp:312-339",
+     "offset": 47444
+    }
+   ]
+  },
+  {
+   "slot": 100,
+   "kind": "PREFIX",
+   "old_target": "component-scan.lisp",
+   "new_target": "source/component-scan.lisp",
+   "old": [
+    {
+     "token": "component-scan.lisp:45-56",
+     "offset": 47201
+    }
+   ],
+   "new": [
+    {
+     "token": "source/component-scan.lisp:45-56",
+     "offset": 47859
+    }
+   ]
+  },
+  {
+   "slot": 101,
+   "kind": "PREFIX",
+   "old_target": "corpus-intelligence.lisp",
+   "new_target": "source/corpus-intelligence.lisp",
+   "old": [
+    {
+     "token": "corpus-intelligence.lisp:75-93,175-177",
+     "offset": 47623
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-intelligence.lisp:75-93,175-177",
+     "offset": 48288
+    }
+   ]
+  },
+  {
+   "slot": 102,
+   "kind": "PREFIX",
+   "old_target": "paths.lisp",
+   "new_target": "source/paths.lisp",
+   "old": [
+    {
+     "token": "paths.lisp:311-323",
+     "offset": 48031
+    }
+   ],
+   "new": [
+    {
+     "token": "source/paths.lisp:311-323",
+     "offset": 48703
+    }
+   ]
+  },
+  {
+   "slot": 103,
+   "kind": "PREFIX",
+   "old_target": "http-server.lisp",
+   "new_target": "source/http-server.lisp",
+   "old": [
+    {
+     "token": "http-server.lisp:51-54,157,206-213",
+     "offset": 48357
+    }
+   ],
+   "new": [
+    {
+     "token": "source/http-server.lisp:51-54,157,206-213",
+     "offset": 49036
+    }
+   ]
+  },
+  {
+   "slot": 104,
+   "kind": "PREFIX",
+   "old_target": "circuit-breaker.lisp",
+   "new_target": "source/circuit-breaker.lisp",
+   "old": [
+    {
+     "token": "circuit-breaker.lisp:23-33,52-71,112-129,211-218",
+     "offset": 48830
+    }
+   ],
+   "new": [
+    {
+     "token": "source/circuit-breaker.lisp:23-33,52-71,112-129,211-218",
+     "offset": 49516
+    }
+   ]
+  },
+  {
+   "slot": 105,
+   "kind": "IDENTITY",
+   "old_target": "memory.lisp",
+   "new_target": "memory.lisp",
+   "old": [
+    {
+     "token": "memory.lisp:258-272",
+     "offset": 49178
+    }
+   ],
+   "new": [
+    {
+     "token": "memory.lisp:258-272",
+     "offset": 49871
+    }
+   ]
+  },
+  {
+   "slot": 106,
+   "kind": "IDENTITY",
+   "old_target": "memory.lisp",
+   "new_target": "memory.lisp",
+   "old": [
+    {
+     "token": "memory.lisp:48-50",
+     "offset": 49507
+    }
+   ],
+   "new": [
+    {
+     "token": "memory.lisp:48-50",
+     "offset": 50200
+    }
+   ]
+  },
+  {
+   "slot": 107,
+   "kind": "PREFIX",
+   "old_target": "consolidation-bridge.lisp",
+   "new_target": "source/consolidation-bridge.lisp",
+   "old": [
+    {
+     "token": "consolidation-bridge.lisp:258-270,272-305",
+     "offset": 49908
+    }
+   ],
+   "new": [
+    {
+     "token": "source/consolidation-bridge.lisp:258-270,272-305",
+     "offset": 50601
+    }
+   ]
+  },
+  {
+   "slot": 108,
+   "kind": "PREFIX",
+   "old_target": "corpus-diff.lisp",
+   "new_target": "source/corpus-diff.lisp",
+   "old": [
+    {
+     "token": "corpus-diff.lisp:36-44",
+     "offset": 50238
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-diff.lisp:36-44",
+     "offset": 50938
+    }
+   ]
+  },
+  {
+   "slot": 109,
+   "kind": "PREFIX",
+   "old_target": "corpus-search.lisp",
+   "new_target": "source/corpus-search.lisp",
+   "old": [
+    {
+     "token": "corpus-search.lisp:70-78",
+     "offset": 50263
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-search.lisp:70-78",
+     "offset": 50970
+    }
+   ]
+  },
+  {
+   "slot": 110,
+   "kind": "PREFIX",
+   "old_target": "proof-carrying.lisp",
+   "new_target": "source/proof-carrying.lisp",
+   "old": [
+    {
+     "token": "proof-carrying.lisp:88-99",
+     "offset": 50291
+    }
+   ],
+   "new": [
+    {
+     "token": "source/proof-carrying.lisp:88-99",
+     "offset": 51005
+    }
+   ]
+  },
+  {
+   "slot": 111,
+   "kind": "PREFIX",
+   "old_target": "pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "pdf-authority.lisp:139-174",
+     "offset": 50643
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:139-174",
+     "offset": 51364
+    }
+   ]
+  },
+  {
+   "slot": 112,
+   "kind": "PREFIX",
+   "old_target": "anomaly-detection.lisp",
+   "new_target": "source/anomaly-detection.lisp",
+   "old": [
+    {
+     "token": "anomaly-detection.lisp:24-31",
+     "offset": 51057
+    }
+   ],
+   "new": [
+    {
+     "token": "source/anomaly-detection.lisp:24-31",
+     "offset": 51785
+    }
+   ]
+  },
+  {
+   "slot": 113,
+   "kind": "PREFIX",
+   "old_target": "ast-gate.lisp",
+   "new_target": "source/ast-gate.lisp",
+   "old": [
+    {
+     "token": "ast-gate.lisp:40-47",
+     "offset": 51088
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ast-gate.lisp:40-47",
+     "offset": 51823
+    }
+   ]
+  },
+  {
+   "slot": 114,
+   "kind": "PREFIX",
+   "old_target": "blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "blockchain-authority.lisp:640-641,749-750,906-909",
+     "offset": 51635
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:640-641,749-750,906-909",
+     "offset": 52377
+    }
+   ]
+  },
+  {
+   "slot": 115,
+   "kind": "PREFIX",
+   "old_target": "blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "blockchain-authority.lisp:912-944",
+     "offset": 52072
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:912-944",
+     "offset": 52821
+    }
+   ]
+  },
+  {
+   "slot": 116,
+   "kind": "PREFIX",
+   "old_target": "legal-ast.lisp",
+   "new_target": "source/legal-ast.lisp",
+   "old": [
+    {
+     "token": "legal-ast.lisp:1904-1918",
+     "offset": 52573
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-ast.lisp:1904-1918",
+     "offset": 53329
+    }
+   ]
+  },
+  {
+   "slot": 117,
+   "kind": "PREFIX",
+   "old_target": "legal-ast.lisp",
+   "new_target": "source/legal-ast.lisp",
+   "old": [
+    {
+     "token": "legal-ast.lisp:427-445,841-865",
+     "offset": 52626
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-ast.lisp:427-445,841-865",
+     "offset": 53389
+    }
+   ]
+  },
+  {
+   "slot": 118,
+   "kind": "PREFIX",
+   "old_target": "blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "blockchain-authority.lisp:953-971",
+     "offset": 53063
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:953-971",
+     "offset": 53833
+    }
+   ]
+  },
+  {
+   "slot": 119,
+   "kind": "PREFIX",
+   "old_target": "legal-ast.lisp",
+   "new_target": "source/legal-ast.lisp",
+   "old": [
+    {
+     "token": "legal-ast.lisp:2138-2148",
+     "offset": 53131
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-ast.lisp:2138-2148",
+     "offset": 53908
+    }
+   ]
+  },
+  {
+   "slot": 120,
+   "kind": "PREFIX",
+   "old_target": "blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "blockchain-authority.lisp:953-971",
+     "offset": 53188
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:953-971",
+     "offset": 53972
+    }
+   ]
+  },
+  {
+   "slot": 121,
+   "kind": "PREFIX",
+   "old_target": "blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "blockchain-authority.lisp:259-269",
+     "offset": 53566
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:259-269",
+     "offset": 54357
+    }
+   ]
+  },
+  {
+   "slot": 122,
+   "kind": "PREFIX",
+   "old_target": "jws-authority.lisp",
+   "new_target": "source/jws-authority.lisp",
+   "old": [
+    {
+     "token": "jws-authority.lisp:711",
+     "offset": 53602
+    }
+   ],
+   "new": [
+    {
+     "token": "source/jws-authority.lisp:711",
+     "offset": 54400
+    }
+   ]
+  },
+  {
+   "slot": 123,
+   "kind": "PREFIX",
+   "old_target": "blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "blockchain-authority.lisp:710,794,879",
+     "offset": 54028
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:710,794,879",
+     "offset": 54833
+    }
+   ]
+  },
+  {
+   "slot": 124,
+   "kind": "PREFIX",
+   "old_target": "legal-deontic.lisp",
+   "new_target": "source/legal-deontic.lisp",
+   "old": [
+    {
+     "token": "legal-deontic.lisp:14-18,34,160-167",
+     "offset": 54815
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-deontic.lisp:14-18,34,160-167",
+     "offset": 55627
+    }
+   ]
+  },
+  {
+   "slot": 125,
+   "kind": "PREFIX",
+   "old_target": "legal-conflict-resolution.lisp",
+   "new_target": "source/legal-conflict-resolution.lisp",
+   "old": [
+    {
+     "token": "legal-conflict-resolution.lisp:69-112",
+     "offset": 54864
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-conflict-resolution.lisp:69-112",
+     "offset": 55683
+    }
+   ]
+  },
+  {
+   "slot": 126,
+   "kind": "PREFIX",
+   "old_target": "corpus-eu-links.lisp",
+   "new_target": "source/corpus-eu-links.lisp",
+   "old": [
+    {
+     "token": "corpus-eu-links.lisp:113-121",
+     "offset": 55808
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-eu-links.lisp:113-121",
+     "offset": 56634
+    }
+   ]
+  },
+  {
+   "slot": 127,
+   "kind": "PREFIX",
+   "old_target": "government-source.lisp",
+   "new_target": "source/government-source.lisp",
+   "old": [
+    {
+     "token": "government-source.lisp:239-250",
+     "offset": 55839
+    }
+   ],
+   "new": [
+    {
+     "token": "source/government-source.lisp:239-250",
+     "offset": 56672
+    }
+   ]
+  },
+  {
+   "slot": 128,
+   "kind": "PREFIX",
+   "old_target": "corpus-diff.lisp",
+   "new_target": "source/corpus-diff.lisp",
+   "old": [
+    {
+     "token": "corpus-diff.lisp:36-44",
+     "offset": 55872
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-diff.lisp:36-44",
+     "offset": 56712
+    }
+   ]
+  },
+  {
+   "slot": 129,
+   "kind": "PREFIX",
+   "old_target": "corpus-search.lisp",
+   "new_target": "source/corpus-search.lisp",
+   "old": [
+    {
+     "token": "corpus-search.lisp:70-78",
+     "offset": 55897
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-search.lisp:70-78",
+     "offset": 56744
+    }
+   ]
+  },
+  {
+   "slot": 130,
+   "kind": "PREFIX",
+   "old_target": "review-service.lisp",
+   "new_target": "source/review-service.lisp",
+   "old": [
+    {
+     "token": "review-service.lisp:190-204",
+     "offset": 55933
+    }
+   ],
+   "new": [
+    {
+     "token": "source/review-service.lisp:190-204",
+     "offset": 56787
+    }
+   ]
+  },
+  {
+   "slot": 131,
+   "kind": "PREFIX",
+   "old_target": "mcp-server.lisp",
+   "new_target": "source/mcp-server.lisp",
+   "old": [
+    {
+     "token": "mcp-server.lisp:41-53",
+     "offset": 55963
+    }
+   ],
+   "new": [
+    {
+     "token": "source/mcp-server.lisp:41-53",
+     "offset": 56824
+    }
+   ]
+  },
+  {
+   "slot": 132,
+   "kind": "PREFIX",
+   "old_target": "legal-qa.lisp",
+   "new_target": "source/legal-qa.lisp",
+   "old": [
+    {
+     "token": "legal-qa.lisp:95-106",
+     "offset": 55987
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-qa.lisp:95-106",
+     "offset": 56855
+    }
+   ]
+  },
+  {
+   "slot": 133,
+   "kind": "PREFIX",
+   "old_target": "ai-corpus-dump.lisp",
+   "new_target": "source/ai-corpus-dump.lisp",
+   "old": [
+    {
+     "token": "ai-corpus-dump.lisp:40-50",
+     "offset": 56010
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ai-corpus-dump.lisp:40-50",
+     "offset": 56885
+    }
+   ]
+  },
+  {
+   "slot": 134,
+   "kind": "PREFIX",
+   "old_target": "json-emit.lisp",
+   "new_target": "source/json-emit.lisp",
+   "old": [
+    {
+     "token": "json-emit.lisp:39-58",
+     "offset": 56054
+    }
+   ],
+   "new": [
+    {
+     "token": "source/json-emit.lisp:39-58",
+     "offset": 56936
+    }
+   ]
+  },
+  {
+   "slot": 135,
+   "kind": "PREFIX",
+   "old_target": "corpus-sparql.lisp",
+   "new_target": "source/corpus-sparql.lisp",
+   "old": [
+    {
+     "token": "corpus-sparql.lisp:102-104",
+     "offset": 56091
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-sparql.lisp:102-104",
+     "offset": 56980
+    }
+   ]
+  },
+  {
+   "slot": 136,
+   "kind": "PREFIX",
+   "old_target": "legal-temporal.lisp",
+   "new_target": "source/legal-temporal.lisp",
+   "old": [
+    {
+     "token": "legal-temporal.lisp:3,16-20",
+     "offset": 57015
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-temporal.lisp:3,16-20",
+     "offset": 57911
+    }
+   ]
+  },
+  {
+   "slot": 137,
+   "kind": "PREFIX",
+   "old_target": "guard-metaeval.lisp",
+   "new_target": "source/guard-metaeval.lisp",
+   "old": [
+    {
+     "token": "guard-metaeval.lisp:652-666",
+     "offset": 57092
+    }
+   ],
+   "new": [
+    {
+     "token": "source/guard-metaeval.lisp:652-666",
+     "offset": 57995
+    }
+   ]
+  },
+  {
+   "slot": 138,
+   "kind": "PREFIX",
+   "old_target": "legal-event-calculus.lisp",
+   "new_target": "source/legal-event-calculus.lisp",
+   "old": [
+    {
+     "token": "legal-event-calculus.lisp:47,56",
+     "offset": 57150
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-event-calculus.lisp:47,56",
+     "offset": 58060
+    }
+   ]
+  },
+  {
+   "slot": 139,
+   "kind": "PREFIX",
+   "old_target": "legal-strategy.lisp",
+   "new_target": "source/legal-strategy.lisp",
+   "old": [
+    {
+     "token": "legal-strategy.lisp:62-63",
+     "offset": 57208
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-strategy.lisp:62-63",
+     "offset": 58125
+    }
+   ]
+  },
+  {
+   "slot": 140,
+   "kind": "PREFIX",
+   "old_target": "legal-penalty.lisp",
+   "new_target": "source/legal-penalty.lisp",
+   "old": [
+    {
+     "token": "legal-penalty.lisp:111-115,126-137",
+     "offset": 57918
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-penalty.lisp:111-115,126-137",
+     "offset": 58842
+    }
+   ]
+  },
+  {
+   "slot": 141,
+   "kind": "PREFIX",
+   "old_target": "legal-references.lisp",
+   "new_target": "source/legal-references.lisp",
+   "old": [
+    {
+     "token": "legal-references.lisp:6-8,58-69",
+     "offset": 58750
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-references.lisp:6-8,58-69",
+     "offset": 59681
+    }
+   ]
+  },
+  {
+   "slot": 142,
+   "kind": "PREFIX",
+   "old_target": "legal-reasoning-bridge.lisp",
+   "new_target": "source/legal-reasoning-bridge.lisp",
+   "old": [
+    {
+     "token": "legal-reasoning-bridge.lisp:32-45",
+     "offset": 58862
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-reasoning-bridge.lisp:32-45",
+     "offset": 59800
+    }
+   ]
+  },
+  {
+   "slot": 143,
+   "kind": "IDENTITY",
+   "old_target": "orchestrator-infrastructure.asd",
+   "new_target": "orchestrator-infrastructure.asd",
+   "old": [
+    {
+     "token": "orchestrator-infrastructure.asd:188",
+     "offset": 59759
+    }
+   ],
+   "new": [
+    {
+     "token": "orchestrator-infrastructure.asd:188",
+     "offset": 60704
+    }
+   ]
+  },
+  {
+   "slot": 144,
+   "kind": "IDENTITY",
+   "old_target": "protocols.lisp",
+   "new_target": "protocols.lisp",
+   "old": [
+    {
+     "token": "protocols.lisp:1-263",
+     "offset": 59828
+    }
+   ],
+   "new": [
+    {
+     "token": "protocols.lisp:1-263",
+     "offset": 60773
+    }
+   ]
+  },
+  {
+   "slot": 145,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/frbr-protocol.lisp",
+   "new_target": "systems/orchestrator-omega-modules/frbr-protocol.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-protocol.lisp:11",
+     "offset": 59924
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-protocol.lisp:11",
+     "offset": 60869
+    }
+   ]
+  },
+  {
+   "slot": 146,
+   "kind": "PREFIX",
+   "old_target": "hash-authority.lisp",
+   "new_target": "source/hash-authority.lisp",
+   "old": [
+    {
+     "token": "hash-authority.lisp:11-46",
+     "offset": 60036
+    }
+   ],
+   "new": [
+    {
+     "token": "source/hash-authority.lisp:11-46",
+     "offset": 60981
+    }
+   ]
+  },
+  {
+   "slot": 147,
+   "kind": "IDENTITY",
+   "old_target": "orchestrator-infrastructure.asd",
+   "new_target": "orchestrator-infrastructure.asd",
+   "old": [
+    {
+     "token": "orchestrator-infrastructure.asd:188",
+     "offset": 60122
+    }
+   ],
+   "new": [
+    {
+     "token": "orchestrator-infrastructure.asd:188",
+     "offset": 61074
+    }
+   ]
+  },
+  {
+   "slot": 148,
+   "kind": "PREFIX",
+   "old_target": "execution-trace.lisp",
+   "new_target": "source/execution-trace.lisp",
+   "old": [
+    {
+     "token": "execution-trace.lisp:14-15,46-47",
+     "offset": 60760
+    }
+   ],
+   "new": [
+    {
+     "token": "source/execution-trace.lisp:14-15,46-47",
+     "offset": 61712
+    }
+   ]
+  },
+  {
+   "slot": 149,
+   "kind": "PREFIX",
+   "old_target": "provenance-link.lisp",
+   "new_target": "source/provenance-link.lisp",
+   "old": [
+    {
+     "token": "provenance-link.lisp:19-27",
+     "offset": 61530
+    }
+   ],
+   "new": [
+    {
+     "token": "source/provenance-link.lisp:19-27",
+     "offset": 62489
+    }
+   ]
+  },
+  {
+   "slot": 150,
+   "kind": "PREFIX",
+   "old_target": "legal-hypergraph.lisp",
+   "new_target": "source/legal-hypergraph.lisp",
+   "old": [
+    {
+     "token": "legal-hypergraph.lisp:46-51",
+     "offset": 62293
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-hypergraph.lisp:46-51",
+     "offset": 63259
+    }
+   ]
+  },
+  {
+   "slot": 151,
+   "kind": "PREFIX",
+   "old_target": "corpus-eu-links.lisp",
+   "new_target": "source/corpus-eu-links.lisp",
+   "old": [
+    {
+     "token": "corpus-eu-links.lisp:9-12",
+     "offset": 62972
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-eu-links.lisp:9-12",
+     "offset": 63945
+    }
+   ]
+  },
+  {
+   "slot": 152,
+   "kind": "PREFIX",
+   "old_target": "graph-reasoning.lisp",
+   "new_target": "source/graph-reasoning.lisp",
+   "old": [
+    {
+     "token": "graph-reasoning.lisp:24-39",
+     "offset": 63639
+    }
+   ],
+   "new": [
+    {
+     "token": "source/graph-reasoning.lisp:24-39",
+     "offset": 64619
+    }
+   ]
+  },
+  {
+   "slot": 153,
+   "kind": "PREFIX",
+   "old_target": "guard-ops-pack.lisp",
+   "new_target": "source/guard-ops-pack.lisp",
+   "old": [
+    {
+     "token": "guard-ops-pack.lisp:17-29",
+     "offset": 64520
+    }
+   ],
+   "new": [
+    {
+     "token": "source/guard-ops-pack.lisp:17-29",
+     "offset": 65507
+    }
+   ]
+  },
+  {
+   "slot": 154,
+   "kind": "PREFIX",
+   "old_target": "legal-strategy.lisp",
+   "new_target": "source/legal-strategy.lisp",
+   "old": [
+    {
+     "token": "legal-strategy.lisp:32-41",
+     "offset": 64563
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-strategy.lisp:32-41",
+     "offset": 65557
+    }
+   ]
+  },
+  {
+   "slot": 155,
+   "kind": "PREFIX",
+   "old_target": "generation.lisp",
+   "new_target": "source/generation.lisp",
+   "old": [
+    {
+     "token": "generation.lisp:50-63",
+     "offset": 64621
+    }
+   ],
+   "new": [
+    {
+     "token": "source/generation.lisp:50-63",
+     "offset": 65622
+    }
+   ]
+  },
+  {
+   "slot": 156,
+   "kind": "PREFIX",
+   "old_target": "legal-strategy.lisp",
+   "new_target": "source/legal-strategy.lisp",
+   "old": [
+    {
+     "token": "legal-strategy.lisp:87-91,107-109,131-136",
+     "offset": 65362
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-strategy.lisp:87-91,107-109,131-136",
+     "offset": 66370
+    }
+   ]
+  },
+  {
+   "slot": 157,
+   "kind": "PREFIX",
+   "old_target": "legal-deontic.lisp",
+   "new_target": "source/legal-deontic.lisp",
+   "old": [
+    {
+     "token": "legal-deontic.lisp:169-183",
+     "offset": 65866
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-deontic.lisp:169-183",
+     "offset": 66881
+    }
+   ]
+  },
+  {
+   "slot": 158,
+   "kind": "PREFIX",
+   "old_target": "akoma-ntoso-emitter.lisp",
+   "new_target": "source/akoma-ntoso-emitter.lisp",
+   "old": [
+    {
+     "token": "akoma-ntoso-emitter.lisp:46-53,55-63",
+     "offset": 66485
+    }
+   ],
+   "new": [
+    {
+     "token": "source/akoma-ntoso-emitter.lisp:46-53,55-63",
+     "offset": 67507
+    }
+   ]
+  },
+  {
+   "slot": 159,
+   "kind": "PREFIX",
+   "old_target": "akoma-ntoso-emitter.lisp",
+   "new_target": "source/akoma-ntoso-emitter.lisp",
+   "old": [
+    {
+     "token": "akoma-ntoso-emitter.lisp:71-80",
+     "offset": 67141
+    }
+   ],
+   "new": [
+    {
+     "token": "source/akoma-ntoso-emitter.lisp:71-80",
+     "offset": 68170
+    }
+   ]
+  },
+  {
+   "slot": 160,
+   "kind": "PREFIX",
+   "old_target": "consolidation-engine.lisp",
+   "new_target": "source/consolidation-engine.lisp",
+   "old": [
+    {
+     "token": "consolidation-engine.lisp:93",
+     "offset": 67174
+    }
+   ],
+   "new": [
+    {
+     "token": "source/consolidation-engine.lisp:93",
+     "offset": 68210
+    }
+   ]
+  },
+  {
+   "slot": 161,
+   "kind": "PREFIX",
+   "old_target": "consolidation-bridge.lisp",
+   "new_target": "source/consolidation-bridge.lisp",
+   "old": [
+    {
+     "token": "consolidation-bridge.lisp:71,81",
+     "offset": 67237
+    }
+   ],
+   "new": [
+    {
+     "token": "source/consolidation-bridge.lisp:71,81",
+     "offset": 68280
+    }
+   ]
+  },
+  {
+   "slot": 162,
+   "kind": "PREFIX",
+   "old_target": "greek-legislation-ontology.lisp",
+   "new_target": "source/greek-legislation-ontology.lisp",
+   "old": [
+    {
+     "token": "greek-legislation-ontology.lisp:87-98,214-219",
+     "offset": 67837
+    }
+   ],
+   "new": [
+    {
+     "token": "source/greek-legislation-ontology.lisp:87-98,214-219",
+     "offset": 68887
+    }
+   ]
+  },
+  {
+   "slot": 163,
+   "kind": "PREFIX",
+   "old_target": "legal-conflict-resolution.lisp",
+   "new_target": "source/legal-conflict-resolution.lisp",
+   "old": [
+    {
+     "token": "legal-conflict-resolution.lisp:44-60",
+     "offset": 67920
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-conflict-resolution.lisp:44-60",
+     "offset": 68977
+    }
+   ]
+  },
+  {
+   "slot": 164,
+   "kind": "PREFIX",
+   "old_target": "legal-hypergraph.lisp",
+   "new_target": "source/legal-hypergraph.lisp",
+   "old": [
+    {
+     "token": "legal-hypergraph.lisp:186-192",
+     "offset": 67959
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-hypergraph.lisp:186-192",
+     "offset": 69023
+    }
+   ]
+  },
+  {
+   "slot": 165,
+   "kind": "PREFIX",
+   "old_target": "greek-legislation-ontology.lisp",
+   "new_target": "source/greek-legislation-ontology.lisp",
+   "old": [
+    {
+     "token": "greek-legislation-ontology.lisp:208-212",
+     "offset": 68380
+    }
+   ],
+   "new": [
+    {
+     "token": "source/greek-legislation-ontology.lisp:208-212",
+     "offset": 69451
+    }
+   ]
+  },
+  {
+   "slot": 166,
+   "kind": "PREFIX",
+   "old_target": "legal-hypergraph.lisp",
+   "new_target": "source/legal-hypergraph.lisp",
+   "old": [
+    {
+     "token": "legal-hypergraph.lisp:46-62",
+     "offset": 68422
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-hypergraph.lisp:46-62",
+     "offset": 69500
+    }
+   ]
+  },
+  {
+   "slot": 167,
+   "kind": "PREFIX",
+   "old_target": "legal-reasoning-bridge.lisp",
+   "new_target": "source/legal-reasoning-bridge.lisp",
+   "old": [
+    {
+     "token": "legal-reasoning-bridge.lisp:96-170",
+     "offset": 69174
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-reasoning-bridge.lisp:96-170",
+     "offset": 70259
+    }
+   ]
+  },
+  {
+   "slot": 168,
+   "kind": "PREFIX",
+   "old_target": "execution-trace.lisp",
+   "new_target": "source/execution-trace.lisp",
+   "old": [
+    {
+     "token": "execution-trace.lisp:116-118",
+     "offset": 69785
+    }
+   ],
+   "new": [
+    {
+     "token": "source/execution-trace.lisp:116-118",
+     "offset": 70877
+    }
+   ]
+  },
+  {
+   "slot": 169,
+   "kind": "PREFIX",
+   "old_target": "corpus-sparql.lisp",
+   "new_target": "source/corpus-sparql.lisp",
+   "old": [
+    {
+     "token": "corpus-sparql.lisp:42-60",
+     "offset": 70434
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-sparql.lisp:42-60",
+     "offset": 71533
+    }
+   ]
+  },
+  {
+   "slot": 170,
+   "kind": "PREFIX",
+   "old_target": "legal-counterfactual.lisp",
+   "new_target": "source/legal-counterfactual.lisp",
+   "old": [
+    {
+     "token": "legal-counterfactual.lisp:9-12",
+     "offset": 71051
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-counterfactual.lisp:9-12",
+     "offset": 72157
+    }
+   ]
+  },
+  {
+   "slot": 171,
+   "kind": "PREFIX",
+   "old_target": "legal-hypo.lisp",
+   "new_target": "source/legal-hypo.lisp",
+   "old": [
+    {
+     "token": "legal-hypo.lisp:23-39",
+     "offset": 71638
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-hypo.lisp:23-39",
+     "offset": 72751
+    }
+   ]
+  },
+  {
+   "slot": 172,
+   "kind": "PREFIX",
+   "old_target": "provenance-link.lisp",
+   "new_target": "source/provenance-link.lisp",
+   "old": [
+    {
+     "token": "provenance-link.lisp:60-88",
+     "offset": 72124
+    }
+   ],
+   "new": [
+    {
+     "token": "source/provenance-link.lisp:60-88",
+     "offset": 73244
+    }
+   ]
+  },
+  {
+   "slot": 173,
+   "kind": "PREFIX",
+   "old_target": "legal-penalty.lisp",
+   "new_target": "source/legal-penalty.lisp",
+   "old": [
+    {
+     "token": "legal-penalty.lisp:82-86",
+     "offset": 72664
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-penalty.lisp:82-86",
+     "offset": 73791
+    }
+   ]
+  },
+  {
+   "slot": 174,
+   "kind": "PREFIX",
+   "old_target": "text-canonicalizer.lisp",
+   "new_target": "source/text-canonicalizer.lisp",
+   "old": [
+    {
+     "token": "text-canonicalizer.lisp:19",
+     "offset": 73506
+    }
+   ],
+   "new": [
+    {
+     "token": "source/text-canonicalizer.lisp:19",
+     "offset": 74640
+    }
+   ]
+  },
+  {
+   "slot": 175,
+   "kind": "PREFIX",
+   "old_target": "text-canonicalizer.lisp",
+   "new_target": "source/text-canonicalizer.lisp",
+   "old": [
+    {
+     "token": "text-canonicalizer.lisp:18-22",
+     "offset": 74470
+    }
+   ],
+   "new": [
+    {
+     "token": "source/text-canonicalizer.lisp:18-22",
+     "offset": 75611
+    }
+   ]
+  },
+  {
+   "slot": 176,
+   "kind": "PREFIX",
+   "old_target": "text-canonicalizer.lisp",
+   "new_target": "source/text-canonicalizer.lisp",
+   "old": [
+    {
+     "token": "text-canonicalizer.lisp:503-513",
+     "offset": 75278
+    }
+   ],
+   "new": [
+    {
+     "token": "source/text-canonicalizer.lisp:503-513",
+     "offset": 76426
+    }
+   ]
+  },
+  {
+   "slot": 177,
+   "kind": "PREFIX",
+   "old_target": "text-canonicalizer.lisp",
+   "new_target": "source/text-canonicalizer.lisp",
+   "old": [
+    {
+     "token": "text-canonicalizer.lisp:13",
+     "offset": 75908
+    }
+   ],
+   "new": [
+    {
+     "token": "source/text-canonicalizer.lisp:13",
+     "offset": 77063
+    }
+   ]
+  },
+  {
+   "slot": 178,
+   "kind": "PREFIX",
+   "old_target": "legal-references.lisp",
+   "new_target": "source/legal-references.lisp",
+   "old": [
+    {
+     "token": "legal-references.lisp:44-48",
+     "offset": 76005
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-references.lisp:44-48",
+     "offset": 77167
+    }
+   ]
+  },
+  {
+   "slot": 179,
+   "kind": "PREFIX",
+   "old_target": "text-canonicalizer.lisp",
+   "new_target": "source/text-canonicalizer.lisp",
+   "old": [
+    {
+     "token": "text-canonicalizer.lisp:20",
+     "offset": 76521
+    }
+   ],
+   "new": [
+    {
+     "token": "source/text-canonicalizer.lisp:20",
+     "offset": 77690
+    }
+   ]
+  },
+  {
+   "slot": 180,
+   "kind": "PREFIX",
+   "old_target": "source-profile.lisp",
+   "new_target": "source/source-profile.lisp",
+   "old": [
+    {
+     "token": "source-profile.lisp:434-441",
+     "offset": 77264
+    }
+   ],
+   "new": [
+    {
+     "token": "source/source-profile.lisp:434-441",
+     "offset": 78440
+    }
+   ]
+  },
+  {
+   "slot": 181,
+   "kind": "PREFIX",
+   "old_target": "source-profile.lisp",
+   "new_target": "source/source-profile.lisp",
+   "old": [
+    {
+     "token": "source-profile.lisp:263-270",
+     "offset": 78245
+    }
+   ],
+   "new": [
+    {
+     "token": "source/source-profile.lisp:263-270",
+     "offset": 79428
+    }
+   ]
+  },
+  {
+   "slot": 182,
+   "kind": "PREFIX",
+   "old_target": "source-profile.lisp",
+   "new_target": "source/source-profile.lisp",
+   "old": [
+    {
+     "token": "source-profile.lisp:33-34",
+     "offset": 78928
+    }
+   ],
+   "new": [
+    {
+     "token": "source/source-profile.lisp:33-34",
+     "offset": 80118
+    }
+   ]
+  },
+  {
+   "slot": 183,
+   "kind": "PREFIX",
+   "old_target": "source-profile.lisp",
+   "new_target": "source/source-profile.lisp",
+   "old": [
+    {
+     "token": "source-profile.lisp:209-232",
+     "offset": 79583
+    }
+   ],
+   "new": [
+    {
+     "token": "source/source-profile.lisp:209-232",
+     "offset": 80780
+    }
+   ]
+  },
+  {
+   "slot": 184,
+   "kind": "PREFIX",
+   "old_target": "signed-embedding-manifest.lisp",
+   "new_target": "source/signed-embedding-manifest.lisp",
+   "old": [
+    {
+     "token": "signed-embedding-manifest.lisp:241-266",
+     "offset": 80506
+    }
+   ],
+   "new": [
+    {
+     "token": "source/signed-embedding-manifest.lisp:241-266",
+     "offset": 81710
+    }
+   ]
+  },
+  {
+   "slot": 185,
+   "kind": "PREFIX",
+   "old_target": "signed-embedding-manifest.lisp",
+   "new_target": "source/signed-embedding-manifest.lisp",
+   "old": [
+    {
+     "token": "signed-embedding-manifest.lisp:304-321",
+     "offset": 81272
+    }
+   ],
+   "new": [
+    {
+     "token": "source/signed-embedding-manifest.lisp:304-321",
+     "offset": 82483
+    }
+   ]
+  },
+  {
+   "slot": 186,
+   "kind": "PREFIX",
+   "old_target": "signed-embedding-manifest.lisp",
+   "new_target": "source/signed-embedding-manifest.lisp",
+   "old": [
+    {
+     "token": "signed-embedding-manifest.lisp:695-706",
+     "offset": 81883
+    }
+   ],
+   "new": [
+    {
+     "token": "source/signed-embedding-manifest.lisp:695-706",
+     "offset": 83101
+    }
+   ]
+  },
+  {
+   "slot": 187,
+   "kind": "PREFIX",
+   "old_target": "shacl-validator.lisp",
+   "new_target": "source/shacl-validator.lisp",
+   "old": [
+    {
+     "token": "shacl-validator.lisp:132-167",
+     "offset": 82628
+    }
+   ],
+   "new": [
+    {
+     "token": "source/shacl-validator.lisp:132-167",
+     "offset": 83853
+    }
+   ]
+  },
+  {
+   "slot": 188,
+   "kind": "PREFIX",
+   "old_target": "shacl-validator.lisp",
+   "new_target": "source/shacl-validator.lisp",
+   "old": [
+    {
+     "token": "shacl-validator.lisp:102-109",
+     "offset": 83400
+    }
+   ],
+   "new": [
+    {
+     "token": "source/shacl-validator.lisp:102-109",
+     "offset": 84632
+    }
+   ]
+  },
+  {
+   "slot": 189,
+   "kind": "PREFIX",
+   "old_target": "turtle-parser.lisp",
+   "new_target": "source/turtle-parser.lisp",
+   "old": [
+    {
+     "token": "turtle-parser.lisp:8",
+     "offset": 84135
+    }
+   ],
+   "new": [
+    {
+     "token": "source/turtle-parser.lisp:8",
+     "offset": 85374
+    }
+   ]
+  },
+  {
+   "slot": 190,
+   "kind": "PREFIX",
+   "old_target": "turtle-parser.lisp",
+   "new_target": "source/turtle-parser.lisp",
+   "old": [
+    {
+     "token": "turtle-parser.lisp:93",
+     "offset": 84816
+    }
+   ],
+   "new": [
+    {
+     "token": "source/turtle-parser.lisp:93",
+     "offset": 86062
+    }
+   ]
+  },
+  {
+   "slot": 191,
+   "kind": "PREFIX",
+   "old_target": "legal-knowledge.lisp",
+   "new_target": "source/legal-knowledge.lisp",
+   "old": [
+    {
+     "token": "legal-knowledge.lisp:144-146",
+     "offset": 85474
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-knowledge.lisp:144-146",
+     "offset": 86727
+    }
+   ]
+  },
+  {
+   "slot": 192,
+   "kind": "PREFIX",
+   "old_target": "legal-knowledge.lisp",
+   "new_target": "source/legal-knowledge.lisp",
+   "old": [
+    {
+     "token": "legal-knowledge.lisp:27-35",
+     "offset": 86283
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-knowledge.lisp:27-35",
+     "offset": 87543
+    }
+   ]
+  },
+  {
+   "slot": 193,
+   "kind": "PREFIX",
+   "old_target": "legal-deontic.lisp",
+   "new_target": "source/legal-deontic.lisp",
+   "old": [
+    {
+     "token": "legal-deontic.lisp:113-141",
+     "offset": 87156
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-deontic.lisp:113-141",
+     "offset": 88423
+    }
+   ]
+  },
+  {
+   "slot": 194,
+   "kind": "PREFIX",
+   "old_target": "legal-knowledge.lisp",
+   "new_target": "source/legal-knowledge.lisp",
+   "old": [
+    {
+     "token": "legal-knowledge.lisp:68-77",
+     "offset": 87202
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-knowledge.lisp:68-77",
+     "offset": 88476
+    }
+   ]
+  },
+  {
+   "slot": 195,
+   "kind": "PREFIX",
+   "old_target": "legal-subsumption.lisp",
+   "new_target": "source/legal-subsumption.lisp",
+   "old": [
+    {
+     "token": "legal-subsumption.lisp:137-160",
+     "offset": 87258
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-subsumption.lisp:137-160",
+     "offset": 88539
+    }
+   ]
+  },
+  {
+   "slot": 196,
+   "kind": "PREFIX",
+   "old_target": "fluid-induction.lisp",
+   "new_target": "source/fluid-induction.lisp",
+   "old": [
+    {
+     "token": "fluid-induction.lisp:176-189",
+     "offset": 88016
+    }
+   ],
+   "new": [
+    {
+     "token": "source/fluid-induction.lisp:176-189",
+     "offset": 89304
+    }
+   ]
+  },
+  {
+   "slot": 197,
+   "kind": "PREFIX",
+   "old_target": "embeddings-authority.lisp",
+   "new_target": "source/embeddings-authority.lisp",
+   "old": [
+    {
+     "token": "embeddings-authority.lisp:6-8",
+     "offset": 88887
+    }
+   ],
+   "new": [
+    {
+     "token": "source/embeddings-authority.lisp:6-8",
+     "offset": 90182
+    }
+   ]
+  },
+  {
+   "slot": 198,
+   "kind": "PREFIX",
+   "old_target": "embeddings-authority.lisp",
+   "new_target": "source/embeddings-authority.lisp",
+   "old": [
+    {
+     "token": "embeddings-authority.lisp:61-68,70-82,111-125,162-175",
+     "offset": 89551
+    }
+   ],
+   "new": [
+    {
+     "token": "source/embeddings-authority.lisp:61-68,70-82,111-125,162-175",
+     "offset": 90853
+    }
+   ]
+  },
+  {
+   "slot": 199,
+   "kind": "PREFIX",
+   "old_target": "blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "blockchain-authority.lisp:951-972",
+     "offset": 89607
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:951-972",
+     "offset": 90916
+    }
+   ]
+  },
+  {
+   "slot": 200,
+   "kind": "PREFIX",
+   "old_target": "legal-subsumption.lisp",
+   "new_target": "source/legal-subsumption.lisp",
+   "old": [
+    {
+     "token": "legal-subsumption.lisp:33-37,48-66",
+     "offset": 90174
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-subsumption.lisp:33-37,48-66",
+     "offset": 91490
+    }
+   ]
+  },
+  {
+   "slot": 201,
+   "kind": "PREFIX",
+   "old_target": "text-canonicalizer.lisp",
+   "new_target": "source/text-canonicalizer.lisp",
+   "old": [
+    {
+     "token": "text-canonicalizer.lisp:571-597",
+     "offset": 90826
+    }
+   ],
+   "new": [
+    {
+     "token": "source/text-canonicalizer.lisp:571-597",
+     "offset": 92149
+    }
+   ]
+  },
+  {
+   "slot": 202,
+   "kind": "PREFIX",
+   "old_target": "narrative-provenance.lisp",
+   "new_target": "source/narrative-provenance.lisp",
+   "old": [
+    {
+     "token": "narrative-provenance.lisp:266",
+     "offset": 91892
+    }
+   ],
+   "new": [
+    {
+     "token": "source/narrative-provenance.lisp:266",
+     "offset": 93222
+    }
+   ]
+  },
+  {
+   "slot": 203,
+   "kind": "PREFIX",
+   "old_target": "narrative-provenance.lisp",
+   "new_target": "source/narrative-provenance.lisp",
+   "old": [
+    {
+     "token": "narrative-provenance.lisp:907-930",
+     "offset": 93050
+    }
+   ],
+   "new": [
+    {
+     "token": "source/narrative-provenance.lisp:907-930",
+     "offset": 94387
+    }
+   ]
+  },
+  {
+   "slot": 204,
+   "kind": "PREFIX",
+   "old_target": "semantic-authority.lisp",
+   "new_target": "source/semantic-authority.lisp",
+   "old": [
+    {
+     "token": "semantic-authority.lisp:730-754",
+     "offset": 93086
+    }
+   ],
+   "new": [
+    {
+     "token": "source/semantic-authority.lisp:730-754",
+     "offset": 94430
+    }
+   ]
+  },
+  {
+   "slot": 205,
+   "kind": "PREFIX",
+   "old_target": "legal-extraction-verify.lisp",
+   "new_target": "source/legal-extraction-verify.lisp",
+   "old": [
+    {
+     "token": "legal-extraction-verify.lisp:356-361",
+     "offset": 93880
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-extraction-verify.lisp:356-361",
+     "offset": 95231
+    }
+   ]
+  },
+  {
+   "slot": 206,
+   "kind": "PREFIX",
+   "old_target": "legal-extraction-verify.lisp",
+   "new_target": "source/legal-extraction-verify.lisp",
+   "old": [
+    {
+     "token": "legal-extraction-verify.lisp:38-40",
+     "offset": 94572
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-extraction-verify.lisp:38-40",
+     "offset": 95930
+    }
+   ]
+  },
+  {
+   "slot": 207,
+   "kind": "PREFIX",
+   "old_target": "legal-extraction-verify.lisp",
+   "new_target": "source/legal-extraction-verify.lisp",
+   "old": [
+    {
+     "token": "legal-extraction-verify.lisp:383-387,389-395",
+     "offset": 95520
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-extraction-verify.lisp:383-387,389-395",
+     "offset": 96885
+    }
+   ]
+  },
+  {
+   "slot": 208,
+   "kind": "PREFIX",
+   "old_target": "legal-deontic.lisp",
+   "new_target": "source/legal-deontic.lisp",
+   "old": [
+    {
+     "token": "legal-deontic.lisp:87",
+     "offset": 95567
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-deontic.lisp:87",
+     "offset": 96939
+    }
+   ]
+  },
+  {
+   "slot": 209,
+   "kind": "PREFIX",
+   "old_target": "legal-subsumption.lisp",
+   "new_target": "source/legal-subsumption.lisp",
+   "old": [
+    {
+     "token": "legal-subsumption.lisp:88-93",
+     "offset": 95607
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-subsumption.lisp:88-93",
+     "offset": 96986
+    }
+   ]
+  },
+  {
+   "slot": 210,
+   "kind": "PREFIX",
+   "old_target": "legal-extraction-verify.lisp",
+   "new_target": "source/legal-extraction-verify.lisp",
+   "old": [
+    {
+     "token": "legal-extraction-verify.lisp:371-380",
+     "offset": 95651
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-extraction-verify.lisp:371-380",
+     "offset": 97037
+    }
+   ]
+  },
+  {
+   "slot": 211,
+   "kind": "PREFIX",
+   "old_target": "sparql-endpoint.lisp",
+   "new_target": "source/sparql-endpoint.lisp",
+   "old": [
+    {
+     "token": "sparql-endpoint.lisp:10,117",
+     "offset": 96222
+    }
+   ],
+   "new": [
+    {
+     "token": "source/sparql-endpoint.lisp:10,117",
+     "offset": 97615
+    }
+   ]
+  },
+  {
+   "slot": 212,
+   "kind": "PREFIX",
+   "old_target": "sparql-endpoint.lisp",
+   "new_target": "source/sparql-endpoint.lisp",
+   "old": [
+    {
+     "token": "sparql-endpoint.lisp:554-573",
+     "offset": 97046
+    }
+   ],
+   "new": [
+    {
+     "token": "source/sparql-endpoint.lisp:554-573",
+     "offset": 98446
+    }
+   ]
+  },
+  {
+   "slot": 213,
+   "kind": "PREFIX",
+   "old_target": "legal-subsumption.lisp",
+   "new_target": "source/legal-subsumption.lisp",
+   "old": [
+    {
+     "token": "legal-subsumption.lisp:33-66",
+     "offset": 97128
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-subsumption.lisp:33-66",
+     "offset": 98535
+    }
+   ]
+  },
+  {
+   "slot": 214,
+   "kind": "PREFIX",
+   "old_target": "eu-interop-layer.lisp",
+   "new_target": "source/eu-interop-layer.lisp",
+   "old": [
+    {
+     "token": "eu-interop-layer.lisp:376-387",
+     "offset": 97764
+    }
+   ],
+   "new": [
+    {
+     "token": "source/eu-interop-layer.lisp:376-387",
+     "offset": 99178
+    }
+   ]
+  },
+  {
+   "slot": 215,
+   "kind": "PREFIX",
+   "old_target": "legal-audit-system.lisp",
+   "new_target": "source/legal-audit-system.lisp",
+   "old": [
+    {
+     "token": "legal-audit-system.lisp:780-787",
+     "offset": 97835
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-audit-system.lisp:780-787",
+     "offset": 99256
+    }
+   ]
+  },
+  {
+   "slot": 216,
+   "kind": "PREFIX",
+   "old_target": "ai-ingest-manifest.lisp",
+   "new_target": "source/ai-ingest-manifest.lisp",
+   "old": [
+    {
+     "token": "ai-ingest-manifest.lisp:30-38",
+     "offset": 98625
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ai-ingest-manifest.lisp:30-38",
+     "offset": 100053
+    }
+   ]
+  },
+  {
+   "slot": 217,
+   "kind": "PREFIX",
+   "old_target": "narrative-provenance.lisp",
+   "new_target": "source/narrative-provenance.lisp",
+   "old": [
+    {
+     "token": "narrative-provenance.lisp:32-34,76",
+     "offset": 98676
+    }
+   ],
+   "new": [
+    {
+     "token": "source/narrative-provenance.lisp:32-34,76",
+     "offset": 100111
+    }
+   ]
+  },
+  {
+   "slot": 218,
+   "kind": "PREFIX",
+   "old_target": "ai-citation-strategy.lisp",
+   "new_target": "source/ai-citation-strategy.lisp",
+   "old": [
+    {
+     "token": "ai-citation-strategy.lisp:31-33,389",
+     "offset": 98713
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ai-citation-strategy.lisp:31-33,389",
+     "offset": 100155
+    }
+   ]
+  },
+  {
+   "slot": 219,
+   "kind": "PREFIX",
+   "old_target": "semantic-versioning-system.lisp",
+   "new_target": "source/semantic-versioning-system.lisp",
+   "old": [
+    {
+     "token": "semantic-versioning-system.lisp:43",
+     "offset": 98751
+    }
+   ],
+   "new": [
+    {
+     "token": "source/semantic-versioning-system.lisp:43",
+     "offset": 100200
+    }
+   ]
+  },
+  {
+   "slot": 220,
+   "kind": "PREFIX",
+   "old_target": "rdfs-inference.lisp",
+   "new_target": "source/rdfs-inference.lisp",
+   "old": [
+    {
+     "token": "rdfs-inference.lisp:399-431",
+     "offset": 99443
+    }
+   ],
+   "new": [
+    {
+     "token": "source/rdfs-inference.lisp:399-431",
+     "offset": 100899
+    }
+   ]
+  },
+  {
+   "slot": 221,
+   "kind": "PREFIX",
+   "old_target": "reasoning-authority.lisp",
+   "new_target": "source/reasoning-authority.lisp",
+   "old": [
+    {
+     "token": "reasoning-authority.lisp:455-480",
+     "offset": 99497
+    }
+   ],
+   "new": [
+    {
+     "token": "source/reasoning-authority.lisp:455-480",
+     "offset": 100960
+    }
+   ]
+  },
+  {
+   "slot": 222,
+   "kind": "PREFIX",
+   "old_target": "citation-authority.lisp",
+   "new_target": "source/citation-authority.lisp",
+   "old": [
+    {
+     "token": "citation-authority.lisp:408-476",
+     "offset": 99532
+    }
+   ],
+   "new": [
+    {
+     "token": "source/citation-authority.lisp:408-476",
+     "offset": 101002
+    }
+   ]
+  },
+  {
+   "slot": 223,
+   "kind": "PREFIX",
+   "old_target": "validate-logical-blocks.lisp",
+   "new_target": "source/validate-logical-blocks.lisp",
+   "old": [
+    {
+     "token": "validate-logical-blocks.lisp:148-163",
+     "offset": 100160
+    }
+   ],
+   "new": [
+    {
+     "token": "source/validate-logical-blocks.lisp:148-163",
+     "offset": 101637
+    }
+   ]
+  },
+  {
+   "slot": 224,
+   "kind": "PREFIX",
+   "old_target": "typographic-classifier.lisp",
+   "new_target": "source/typographic-classifier.lisp",
+   "old": [
+    {
+     "token": "typographic-classifier.lisp:458-473",
+     "offset": 100246
+    }
+   ],
+   "new": [
+    {
+     "token": "source/typographic-classifier.lisp:458-473",
+     "offset": 101730
+    }
+   ]
+  },
+  {
+   "slot": 225,
+   "kind": "PREFIX",
+   "old_target": "ai-citation-strategy.lisp",
+   "new_target": "source/ai-citation-strategy.lisp",
+   "old": [
+    {
+     "token": "ai-citation-strategy.lisp:589-601",
+     "offset": 100807
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ai-citation-strategy.lisp:589-601",
+     "offset": 102298
+    }
+   ]
+  },
+  {
+   "slot": 226,
+   "kind": "PREFIX",
+   "old_target": "lexicon-neurolingo.lisp",
+   "new_target": "source/lexicon-neurolingo.lisp",
+   "old": [
+    {
+     "token": "lexicon-neurolingo.lisp:3-4",
+     "offset": 101383
+    }
+   ],
+   "new": [
+    {
+     "token": "source/lexicon-neurolingo.lisp:3-4",
+     "offset": 102881
+    }
+   ]
+  },
+  {
+   "slot": 227,
+   "kind": "PREFIX",
+   "old_target": "greek-lemmatizer.lisp",
+   "new_target": "source/greek-lemmatizer.lisp",
+   "old": [
+    {
+     "token": "greek-lemmatizer.lisp:5-6",
+     "offset": 101454
+    }
+   ],
+   "new": [
+    {
+     "token": "source/greek-lemmatizer.lisp:5-6",
+     "offset": 102959
+    }
+   ]
+  },
+  {
+   "slot": 228,
+   "kind": "PREFIX",
+   "old_target": "reasoning-authority.lisp",
+   "new_target": "source/reasoning-authority.lisp",
+   "old": [
+    {
+     "token": "reasoning-authority.lisp:5-6",
+     "offset": 101482
+    }
+   ],
+   "new": [
+    {
+     "token": "source/reasoning-authority.lisp:5-6",
+     "offset": 102994
+    }
+   ]
+  },
+  {
+   "slot": 229,
+   "kind": "PREFIX",
+   "old_target": "semantic-authority.lisp",
+   "new_target": "source/semantic-authority.lisp",
+   "old": [
+    {
+     "token": "semantic-authority.lisp:757-790",
+     "offset": 102096
+    }
+   ],
+   "new": [
+    {
+     "token": "source/semantic-authority.lisp:757-790",
+     "offset": 103615
+    }
+   ]
+  },
+  {
+   "slot": 230,
+   "kind": "PREFIX",
+   "old_target": "document-fetch.lisp",
+   "new_target": "source/document-fetch.lisp",
+   "old": [
+    {
+     "token": "document-fetch.lisp:92-106,308-323",
+     "offset": 102609
+    }
+   ],
+   "new": [
+    {
+     "token": "source/document-fetch.lisp:92-106,308-323",
+     "offset": 104135
+    }
+   ]
+  },
+  {
+   "slot": 231,
+   "kind": "IDENTITY",
+   "old_target": "config.lisp",
+   "new_target": "config.lisp",
+   "old": [
+    {
+     "token": "config.lisp:48-49",
+     "offset": 103060
+    }
+   ],
+   "new": [
+    {
+     "token": "config.lisp:48-49",
+     "offset": 104593
+    }
+   ]
+  },
+  {
+   "slot": 232,
+   "kind": "IDENTITY",
+   "old_target": "config.lisp",
+   "new_target": "config.lisp",
+   "old": [
+    {
+     "token": "config.lisp:51-60",
+     "offset": 103346
+    }
+   ],
+   "new": [
+    {
+     "token": "config.lisp:51-60",
+     "offset": 104879
+    }
+   ]
+  },
+  {
+   "slot": 233,
+   "kind": "PREFIX",
+   "old_target": "proof-carrying.lisp",
+   "new_target": "source/proof-carrying.lisp",
+   "old": [
+    {
+     "token": "proof-carrying.lisp:143-155,168-183",
+     "offset": 103722
+    }
+   ],
+   "new": [
+    {
+     "token": "source/proof-carrying.lisp:143-155,168-183",
+     "offset": 105255
+    }
+   ]
+  },
+  {
+   "slot": 234,
+   "kind": "PREFIX",
+   "old_target": "deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "deterministic-time.lisp:202-220",
+     "offset": 104075
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:202-220",
+     "offset": 105615
+    }
+   ]
+  },
+  {
+   "slot": 235,
+   "kind": "PREFIX",
+   "old_target": "journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "journal.lisp:180-187,347-349",
+     "offset": 104472
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:180-187,347-349",
+     "offset": 106019
+    }
+   ]
+  },
+  {
+   "slot": 236,
+   "kind": "PREFIX",
+   "old_target": "constitutional-gate.lisp",
+   "new_target": "source/constitutional-gate.lisp",
+   "old": [
+    {
+     "token": "constitutional-gate.lisp:59-65",
+     "offset": 104714
+    }
+   ],
+   "new": [
+    {
+     "token": "source/constitutional-gate.lisp:59-65",
+     "offset": 106268
+    }
+   ]
+  },
+  {
+   "slot": 237,
+   "kind": "PREFIX",
+   "old_target": "journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "journal.lisp:45-48,210-213",
+     "offset": 105074
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:45-48,210-213",
+     "offset": 106635
+    }
+   ]
+  },
+  {
+   "slot": 238,
+   "kind": "PREFIX",
+   "old_target": "cognition.lisp",
+   "new_target": "source/cognition.lisp",
+   "old": [
+    {
+     "token": "cognition.lisp:69-89",
+     "offset": 105396
+    }
+   ],
+   "new": [
+    {
+     "token": "source/cognition.lisp:69-89",
+     "offset": 106964
+    }
+   ]
+  },
+  {
+   "slot": 239,
+   "kind": "PREFIX",
+   "old_target": "anomaly-detection.lisp",
+   "new_target": "source/anomaly-detection.lisp",
+   "old": [
+    {
+     "token": "anomaly-detection.lisp:24-31",
+     "offset": 105761
+    }
+   ],
+   "new": [
+    {
+     "token": "source/anomaly-detection.lisp:24-31",
+     "offset": 107336
+    }
+   ]
+  },
+  {
+   "slot": 240,
+   "kind": "PREFIX",
+   "old_target": "ast-gate.lisp",
+   "new_target": "source/ast-gate.lisp",
+   "old": [
+    {
+     "token": "ast-gate.lisp:40-47",
+     "offset": 105792
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ast-gate.lisp:40-47",
+     "offset": 107374
+    }
+   ]
+  },
+  {
+   "slot": 241,
+   "kind": "PREFIX",
+   "old_target": "amendment-extractor.lisp",
+   "new_target": "source/amendment-extractor.lisp",
+   "old": [
+    {
+     "token": "amendment-extractor.lisp:189-199",
+     "offset": 106073
+    }
+   ],
+   "new": [
+    {
+     "token": "source/amendment-extractor.lisp:189-199",
+     "offset": 107662
+    }
+   ]
+  },
+  {
+   "slot": 242,
+   "kind": "PREFIX",
+   "old_target": "pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "pdf-authority.lisp:1386-1439",
+     "offset": 106433
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:1386-1439",
+     "offset": 108029
+    }
+   ]
+  },
+  {
+   "slot": 243,
+   "kind": "PREFIX",
+   "old_target": "pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "pdf-authority.lisp:139-174",
+     "offset": 106803
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:139-174",
+     "offset": 108406
+    }
+   ]
+  },
+  {
+   "slot": 244,
+   "kind": "PREFIX",
+   "old_target": "pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "pdf-authority.lisp:904-964",
+     "offset": 107163
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:904-964",
+     "offset": 108773
+    }
+   ]
+  },
+  {
+   "slot": 245,
+   "kind": "PREFIX",
+   "old_target": "version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "version-graph.lisp:1497-1531,1557-1591",
+     "offset": 107524
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:1497-1531,1557-1591",
+     "offset": 109141
+    }
+   ]
+  },
+  {
+   "slot": 246,
+   "kind": "PREFIX",
+   "old_target": "version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "version-graph.lisp:193-195,1020-1028,2137-2162",
+     "offset": 107961
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:193-195,1020-1028,2137-2162",
+     "offset": 109585
+    }
+   ]
+  },
+  {
+   "slot": 247,
+   "kind": "PREFIX",
+   "old_target": "blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "blockchain-authority.lisp:951-972",
+     "offset": 108646
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:951-972",
+     "offset": 110277
+    }
+   ]
+  },
+  {
+   "slot": 248,
+   "kind": "PREFIX",
+   "old_target": "legal-ast.lisp",
+   "new_target": "source/legal-ast.lisp",
+   "old": [
+    {
+     "token": "legal-ast.lisp:2138-2148",
+     "offset": 109073
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-ast.lisp:2138-2148",
+     "offset": 110711
+    }
+   ]
+  },
+  {
+   "slot": 249,
+   "kind": "PREFIX",
+   "old_target": "guard-ops-pack.lisp",
+   "new_target": "source/guard-ops-pack.lisp",
+   "old": [
+    {
+     "token": "guard-ops-pack.lisp:15-31",
+     "offset": 109676
+    }
+   ],
+   "new": [
+    {
+     "token": "source/guard-ops-pack.lisp:15-31",
+     "offset": 111321
+    }
+   ]
+  },
+  {
+   "slot": 250,
+   "kind": "PREFIX",
+   "old_target": "guard-metaeval.lisp",
+   "new_target": "source/guard-metaeval.lisp",
+   "old": [
+    {
+     "token": "guard-metaeval.lisp:216-228",
+     "offset": 109704
+    }
+   ],
+   "new": [
+    {
+     "token": "source/guard-metaeval.lisp:216-228",
+     "offset": 111356
+    }
+   ]
+  },
+  {
+   "slot": 251,
+   "kind": "IDENTITY",
+   "old_target": "protocols.lisp",
+   "new_target": "protocols.lisp",
+   "old": [
+    {
+     "token": "protocols.lisp:1-263",
+     "offset": 110298
+    }
+   ],
+   "new": [
+    {
+     "token": "protocols.lisp:1-263",
+     "offset": 111957
+    }
+   ]
+  },
+  {
+   "slot": 252,
+   "kind": "IDENTITY",
+   "old_target": "orchestrator-infrastructure.asd",
+   "new_target": "orchestrator-infrastructure.asd",
+   "old": [
+    {
+     "token": "orchestrator-infrastructure.asd:188",
+     "offset": 110321
+    }
+   ],
+   "new": [
+    {
+     "token": "orchestrator-infrastructure.asd:188",
+     "offset": 111980
+    }
+   ]
+  },
+  {
+   "slot": 253,
+   "kind": "PREFIX",
+   "old_target": "hash-authority.lisp",
+   "new_target": "source/hash-authority.lisp",
+   "old": [
+    {
+     "token": "hash-authority.lisp:11-46",
+     "offset": 110359
+    }
+   ],
+   "new": [
+    {
+     "token": "source/hash-authority.lisp:11-46",
+     "offset": 112018
+    }
+   ]
+  },
+  {
+   "slot": 254,
+   "kind": "PREFIX",
+   "old_target": "generation.lisp",
+   "new_target": "source/generation.lisp",
+   "old": [
+    {
+     "token": "generation.lisp:50-63,175-189",
+     "offset": 110846
+    }
+   ],
+   "new": [
+    {
+     "token": "source/generation.lisp:50-63,175-189",
+     "offset": 112512
+    }
+   ]
+  },
+  {
+   "slot": 255,
+   "kind": "PREFIX",
+   "old_target": "legal-knowledge.lisp",
+   "new_target": "source/legal-knowledge.lisp",
+   "old": [
+    {
+     "token": "legal-knowledge.lisp:148-154,168-174,260-277",
+     "offset": 111413
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-knowledge.lisp:148-154,168-174,260-277",
+     "offset": 113086
+    }
+   ]
+  },
+  {
+   "slot": 256,
+   "kind": "PREFIX",
+   "old_target": "signed-embedding-manifest.lisp",
+   "new_target": "source/signed-embedding-manifest.lisp",
+   "old": [
+    {
+     "token": "signed-embedding-manifest.lisp:158-161,68-79,186",
+     "offset": 111989
+    }
+   ],
+   "new": [
+    {
+     "token": "source/signed-embedding-manifest.lisp:158-161,68-79,186",
+     "offset": 113669
+    }
+   ]
+  },
+  {
+   "slot": 257,
+   "kind": "PREFIX",
+   "old_target": "embeddings-authority.lisp",
+   "new_target": "source/embeddings-authority.lisp",
+   "old": [
+    {
+     "token": "embeddings-authority.lisp:99-148",
+     "offset": 112040
+    }
+   ],
+   "new": [
+    {
+     "token": "source/embeddings-authority.lisp:99-148",
+     "offset": 113727
+    }
+   ]
+  },
+  {
+   "slot": 258,
+   "kind": "PREFIX",
+   "old_target": "source-profile.lisp",
+   "new_target": "source/source-profile.lisp",
+   "old": [
+    {
+     "token": "source-profile.lisp:415-432,447-458,462-468,473-481,487-493",
+     "offset": 112595
+    }
+   ],
+   "new": [
+    {
+     "token": "source/source-profile.lisp:415-432,447-458,462-468,473-481,487-493",
+     "offset": 114289
+    }
+   ]
+  },
+  {
+   "slot": 259,
+   "kind": "PREFIX",
+   "old_target": "legal-extraction-verify.lisp",
+   "new_target": "source/legal-extraction-verify.lisp",
+   "old": [
+    {
+     "token": "legal-extraction-verify.lisp:348-355",
+     "offset": 113091
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-extraction-verify.lisp:348-355",
+     "offset": 114792
+    }
+   ]
+  },
+  {
+   "slot": 260,
+   "kind": "PREFIX",
+   "old_target": "legal-inference-engine.lisp",
+   "new_target": "source/legal-inference-engine.lisp",
+   "old": [
+    {
+     "token": "legal-inference-engine.lisp:514-520",
+     "offset": 113699
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-inference-engine.lisp:514-520",
+     "offset": 115407
+    }
+   ]
+  },
+  {
+   "slot": 261,
+   "kind": "PREFIX",
+   "old_target": "legal-knowledge.lisp",
+   "new_target": "source/legal-knowledge.lisp",
+   "old": [
+    {
+     "token": "legal-knowledge.lisp:190-207,32-35",
+     "offset": 113737
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-knowledge.lisp:190-207,32-35",
+     "offset": 115452
+    }
+   ]
+  },
+  {
+   "slot": 262,
+   "kind": "PREFIX",
+   "old_target": "deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "deterministic-time.lisp:164-176",
+     "offset": 113855
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:164-176",
+     "offset": 115577
+    }
+   ]
+  },
+  {
+   "slot": 263,
+   "kind": "PREFIX",
+   "old_target": "deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "deterministic-time.lisp:129-162",
+     "offset": 113943
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:129-162",
+     "offset": 115672
+    }
+   ]
+  },
+  {
+   "slot": 264,
+   "kind": "PREFIX",
+   "old_target": "deterministic-time.lisp",
+   "new_target": "source/deterministic-time.lisp",
+   "old": [
+    {
+     "token": "deterministic-time.lisp:84-119",
+     "offset": 114036
+    }
+   ],
+   "new": [
+    {
+     "token": "source/deterministic-time.lisp:84-119",
+     "offset": 115772
+    }
+   ]
+  },
+  {
+   "slot": 265,
+   "kind": "PREFIX",
+   "old_target": "journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "journal.lisp:50-59",
+     "offset": 114135
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:50-59",
+     "offset": 115878
+    }
+   ]
+  },
+  {
+   "slot": 266,
+   "kind": "PREFIX",
+   "old_target": "safe-read.lisp",
+   "new_target": "source/safe-read.lisp",
+   "old": [
+    {
+     "token": "safe-read.lisp:312-339",
+     "offset": 114297
+    }
+   ],
+   "new": [
+    {
+     "token": "source/safe-read.lisp:312-339",
+     "offset": 116047
+    }
+   ]
+  },
+  {
+   "slot": 267,
+   "kind": "PREFIX",
+   "old_target": "journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "journal.lisp:61-86",
+     "offset": 114350
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:61-86",
+     "offset": 116107
+    }
+   ]
+  },
+  {
+   "slot": 268,
+   "kind": "PREFIX",
+   "old_target": "journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "journal.lisp:399-402",
+     "offset": 114395
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:399-402",
+     "offset": 116159
+    }
+   ]
+  },
+  {
+   "slot": 269,
+   "kind": "PREFIX",
+   "old_target": "safe-read.lisp",
+   "new_target": "source/safe-read.lisp",
+   "old": [
+    {
+     "token": "safe-read.lisp:275-308",
+     "offset": 114548
+    }
+   ],
+   "new": [
+    {
+     "token": "source/safe-read.lisp:275-308",
+     "offset": 116319
+    }
+   ]
+  },
+  {
+   "slot": 270,
+   "kind": "PREFIX",
+   "old_target": "journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "journal.lisp:265-292",
+     "offset": 114606
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:265-292",
+     "offset": 116384
+    }
+   ]
+  },
+  {
+   "slot": 271,
+   "kind": "PREFIX",
+   "old_target": "safe-read.lisp",
+   "new_target": "source/safe-read.lisp",
+   "old": [
+    {
+     "token": "safe-read.lisp:32",
+     "offset": 114744
+    }
+   ],
+   "new": [
+    {
+     "token": "source/safe-read.lisp:32",
+     "offset": 116529
+    }
+   ]
+  },
+  {
+   "slot": 272,
+   "kind": "PREFIX",
+   "old_target": "journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "journal.lisp:352-361",
+     "offset": 114776
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:352-361",
+     "offset": 116568
+    }
+   ]
+  },
+  {
+   "slot": 273,
+   "kind": "PREFIX",
+   "old_target": "journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "journal.lisp:61-86",
+     "offset": 114928
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:61-86",
+     "offset": 116727
+    }
+   ]
+  },
+  {
+   "slot": 274,
+   "kind": "PREFIX",
+   "old_target": "version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "version-graph.lisp:471-497",
+     "offset": 114993
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:471-497",
+     "offset": 116799
+    }
+   ]
+  },
+  {
+   "slot": 275,
+   "kind": "PREFIX",
+   "old_target": "version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "version-graph.lisp:288-300",
+     "offset": 115187
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:288-300",
+     "offset": 117000
+    }
+   ]
+  },
+  {
+   "slot": 276,
+   "kind": "PREFIX",
+   "old_target": "version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "version-graph.lisp:1727-1729",
+     "offset": 115304
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:1727-1729",
+     "offset": 117124
+    }
+   ]
+  },
+  {
+   "slot": 277,
+   "kind": "PREFIX",
+   "old_target": "version-graph.lisp",
+   "new_target": "source/version-graph.lisp",
+   "old": [
+    {
+     "token": "version-graph.lisp:2096-2104",
+     "offset": 115413
+    }
+   ],
+   "new": [
+    {
+     "token": "source/version-graph.lisp:2096-2104",
+     "offset": 117240
+    }
+   ]
+  },
+  {
+   "slot": 278,
+   "kind": "PREFIX",
+   "old_target": "adoption-decision.lisp",
+   "new_target": "source/adoption-decision.lisp",
+   "old": [
+    {
+     "token": "adoption-decision.lisp:90-94",
+     "offset": 115487
+    }
+   ],
+   "new": [
+    {
+     "token": "source/adoption-decision.lisp:90-94",
+     "offset": 117321
+    }
+   ]
+  },
+  {
+   "slot": 279,
+   "kind": "PREFIX",
+   "old_target": "pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "pdf-authority.lisp:1427-1439",
+     "offset": 115628
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:1427-1439",
+     "offset": 117469
+    }
+   ]
+  },
+  {
+   "slot": 280,
+   "kind": "PREFIX",
+   "old_target": "pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "pdf-authority.lisp:944-964",
+     "offset": 115706
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:944-964",
+     "offset": 117554
+    }
+   ]
+  },
+  {
+   "slot": 281,
+   "kind": "PREFIX",
+   "old_target": "pdf-authority.lisp",
+   "new_target": "source/pdf-authority.lisp",
+   "old": [
+    {
+     "token": "pdf-authority.lisp:381-446",
+     "offset": 115802
+    }
+   ],
+   "new": [
+    {
+     "token": "source/pdf-authority.lisp:381-446",
+     "offset": 117657
+    }
+   ]
+  },
+  {
+   "slot": 282,
+   "kind": "PREFIX",
+   "old_target": "document-fetch.lisp",
+   "new_target": "source/document-fetch.lisp",
+   "old": [
+    {
+     "token": "document-fetch.lisp:258-291",
+     "offset": 115983
+    }
+   ],
+   "new": [
+    {
+     "token": "source/document-fetch.lisp:258-291",
+     "offset": 117845
+    }
+   ]
+  },
+  {
+   "slot": 283,
+   "kind": "PREFIX",
+   "old_target": "archive-authority.lisp",
+   "new_target": "source/archive-authority.lisp",
+   "old": [
+    {
+     "token": "archive-authority.lisp:70-94",
+     "offset": 116083
+    }
+   ],
+   "new": [
+    {
+     "token": "source/archive-authority.lisp:70-94",
+     "offset": 117952
+    }
+   ]
+  },
+  {
+   "slot": 284,
+   "kind": "PREFIX",
+   "old_target": "hash-authority.lisp",
+   "new_target": "source/hash-authority.lisp",
+   "old": [
+    {
+     "token": "hash-authority.lisp:11-46",
+     "offset": 116215
+    }
+   ],
+   "new": [
+    {
+     "token": "source/hash-authority.lisp:11-46",
+     "offset": 118091
+    }
+   ]
+  },
+  {
+   "slot": 285,
+   "kind": "PREFIX",
+   "old_target": "journal.lisp",
+   "new_target": "source/journal.lisp",
+   "old": [
+    {
+     "token": "journal.lisp:88-92",
+     "offset": 116298
+    }
+   ],
+   "new": [
+    {
+     "token": "source/journal.lisp:88-92",
+     "offset": 118181
+    }
+   ]
+  },
+  {
+   "slot": 286,
+   "kind": "PREFIX",
+   "old_target": "adoption-decision.lisp",
+   "new_target": "source/adoption-decision.lisp",
+   "old": [
+    {
+     "token": "adoption-decision.lisp:91-94",
+     "offset": 116385
+    }
+   ],
+   "new": [
+    {
+     "token": "source/adoption-decision.lisp:91-94",
+     "offset": 118275
+    }
+   ]
+  },
+  {
+   "slot": 287,
+   "kind": "PREFIX",
+   "old_target": "canonical-representation.lisp",
+   "new_target": "source/canonical-representation.lisp",
+   "old": [
+    {
+     "token": "canonical-representation.lisp:338-342",
+     "offset": 116467
+    }
+   ],
+   "new": [
+    {
+     "token": "source/canonical-representation.lisp:338-342",
+     "offset": 118364
+    }
+   ]
+  },
+  {
+   "slot": 288,
+   "kind": "PREFIX",
+   "old_target": "archive-authority.lisp",
+   "new_target": "source/archive-authority.lisp",
+   "old": [
+    {
+     "token": "archive-authority.lisp:87",
+     "offset": 116683
+    }
+   ],
+   "new": [
+    {
+     "token": "source/archive-authority.lisp:87",
+     "offset": 118587
+    }
+   ]
+  },
+  {
+   "slot": 289,
+   "kind": "PREFIX",
+   "old_target": "archive-authority.lisp",
+   "new_target": "source/archive-authority.lisp",
+   "old": [
+    {
+     "token": "archive-authority.lisp:131-132",
+     "offset": 116745
+    }
+   ],
+   "new": [
+    {
+     "token": "source/archive-authority.lisp:131-132",
+     "offset": 118656
+    }
+   ]
+  },
+  {
+   "slot": 290,
+   "kind": "PREFIX",
+   "old_target": "jws-authority.lisp",
+   "new_target": "source/jws-authority.lisp",
+   "old": [
+    {
+     "token": "jws-authority.lisp:711",
+     "offset": 116922
+    }
+   ],
+   "new": [
+    {
+     "token": "source/jws-authority.lisp:711",
+     "offset": 118840
+    }
+   ]
+  },
+  {
+   "slot": 291,
+   "kind": "PREFIX",
+   "old_target": "jws-authority.lisp",
+   "new_target": "source/jws-authority.lisp",
+   "old": [
+    {
+     "token": "jws-authority.lisp:697",
+     "offset": 116974
+    }
+   ],
+   "new": [
+    {
+     "token": "source/jws-authority.lisp:697",
+     "offset": 118899
+    }
+   ]
+  },
+  {
+   "slot": 292,
+   "kind": "PREFIX",
+   "old_target": "blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "blockchain-authority.lisp:259-269",
+     "offset": 117011
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:259-269",
+     "offset": 118943
+    }
+   ]
+  },
+  {
+   "slot": 293,
+   "kind": "PREFIX",
+   "old_target": "legal-ast.lisp",
+   "new_target": "source/legal-ast.lisp",
+   "old": [
+    {
+     "token": "legal-ast.lisp:2138-2148",
+     "offset": 117152
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-ast.lisp:2138-2148",
+     "offset": 119091
+    }
+   ]
+  },
+  {
+   "slot": 294,
+   "kind": "PREFIX",
+   "old_target": "blockchain-authority.lisp",
+   "new_target": "source/blockchain-authority.lisp",
+   "old": [
+    {
+     "token": "blockchain-authority.lisp:953-971",
+     "offset": 117280
+    }
+   ],
+   "new": [
+    {
+     "token": "source/blockchain-authority.lisp:953-971",
+     "offset": 119226
+    }
+   ]
+  },
+  {
+   "slot": 295,
+   "kind": "PREFIX",
+   "old_target": "json-emit.lisp",
+   "new_target": "source/json-emit.lisp",
+   "old": [
+    {
+     "token": "json-emit.lisp:39-58",
+     "offset": 117365
+    }
+   ],
+   "new": [
+    {
+     "token": "source/json-emit.lisp:39-58",
+     "offset": 119318
+    }
+   ]
+  },
+  {
+   "slot": 296,
+   "kind": "PREFIX",
+   "old_target": "corpus-intelligence.lisp",
+   "new_target": "source/corpus-intelligence.lisp",
+   "old": [
+    {
+     "token": "corpus-intelligence.lisp:206",
+     "offset": 117498
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-intelligence.lisp:206",
+     "offset": 119458
+    }
+   ]
+  },
+  {
+   "slot": 297,
+   "kind": "PREFIX",
+   "old_target": "citation-authority.lisp",
+   "new_target": "source/citation-authority.lisp",
+   "old": [
+    {
+     "token": "citation-authority.lisp:716",
+     "offset": 117528
+    }
+   ],
+   "new": [
+    {
+     "token": "source/citation-authority.lisp:716",
+     "offset": 119495
+    }
+   ]
+  },
+  {
+   "slot": 298,
+   "kind": "PREFIX",
+   "old_target": "legal-qa.lisp",
+   "new_target": "source/legal-qa.lisp",
+   "old": [
+    {
+     "token": "legal-qa.lisp:95-106",
+     "offset": 117570
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-qa.lisp:95-106",
+     "offset": 119544
+    }
+   ]
+  },
+  {
+   "slot": 299,
+   "kind": "PREFIX",
+   "old_target": "ai-corpus-dump.lisp",
+   "new_target": "source/ai-corpus-dump.lisp",
+   "old": [
+    {
+     "token": "ai-corpus-dump.lisp:40-50",
+     "offset": 117600
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ai-corpus-dump.lisp:40-50",
+     "offset": 119581
+    }
+   ]
+  },
+  {
+   "slot": 300,
+   "kind": "PREFIX",
+   "old_target": "review-service.lisp",
+   "new_target": "source/review-service.lisp",
+   "old": [
+    {
+     "token": "review-service.lisp:190-204",
+     "offset": 117646
+    }
+   ],
+   "new": [
+    {
+     "token": "source/review-service.lisp:190-204",
+     "offset": 119634
+    }
+   ]
+  },
+  {
+   "slot": 301,
+   "kind": "PREFIX",
+   "old_target": "mcp-server.lisp",
+   "new_target": "source/mcp-server.lisp",
+   "old": [
+    {
+     "token": "mcp-server.lisp:41-53",
+     "offset": 117683
+    }
+   ],
+   "new": [
+    {
+     "token": "source/mcp-server.lisp:41-53",
+     "offset": 119678
+    }
+   ]
+  },
+  {
+   "slot": 302,
+   "kind": "PREFIX",
+   "old_target": "corpus-eu-links.lisp",
+   "new_target": "source/corpus-eu-links.lisp",
+   "old": [
+    {
+     "token": "corpus-eu-links.lisp:113-121",
+     "offset": 117725
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-eu-links.lisp:113-121",
+     "offset": 119727
+    }
+   ]
+  },
+  {
+   "slot": 303,
+   "kind": "PREFIX",
+   "old_target": "government-source.lisp",
+   "new_target": "source/government-source.lisp",
+   "old": [
+    {
+     "token": "government-source.lisp:239-250",
+     "offset": 117797
+    }
+   ],
+   "new": [
+    {
+     "token": "source/government-source.lisp:239-250",
+     "offset": 119806
+    }
+   ]
+  },
+  {
+   "slot": 304,
+   "kind": "PREFIX",
+   "old_target": "corpus-diff.lisp",
+   "new_target": "source/corpus-diff.lisp",
+   "old": [
+    {
+     "token": "corpus-diff.lisp:36-44",
+     "offset": 117838
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-diff.lisp:36-44",
+     "offset": 119854
+    }
+   ]
+  },
+  {
+   "slot": 305,
+   "kind": "PREFIX",
+   "old_target": "corpus-search.lisp",
+   "new_target": "source/corpus-search.lisp",
+   "old": [
+    {
+     "token": "corpus-search.lisp:70-78",
+     "offset": 117882
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-search.lisp:70-78",
+     "offset": 119905
+    }
+   ]
+  },
+  {
+   "slot": 306,
+   "kind": "PREFIX",
+   "old_target": "corpus-sparql.lisp",
+   "new_target": "source/corpus-sparql.lisp",
+   "old": [
+    {
+     "token": "corpus-sparql.lisp:102-104",
+     "offset": 117928
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-sparql.lisp:102-104",
+     "offset": 119958
+    }
+   ]
+  },
+  {
+   "slot": 307,
+   "kind": "PREFIX",
+   "old_target": "legal-temporal.lisp",
+   "new_target": "source/legal-temporal.lisp",
+   "old": [
+    {
+     "token": "legal-temporal.lisp:28-53",
+     "offset": 118061
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-temporal.lisp:28-53",
+     "offset": 120098
+    }
+   ]
+  },
+  {
+   "slot": 308,
+   "kind": "PREFIX",
+   "old_target": "guard-metaeval.lisp",
+   "new_target": "source/guard-metaeval.lisp",
+   "old": [
+    {
+     "token": "guard-metaeval.lisp:652-666",
+     "offset": 118168
+    }
+   ],
+   "new": [
+    {
+     "token": "source/guard-metaeval.lisp:652-666",
+     "offset": 120212
+    }
+   ]
+  },
+  {
+   "slot": 309,
+   "kind": "PREFIX",
+   "old_target": "legal-hypergraph.lisp",
+   "new_target": "source/legal-hypergraph.lisp",
+   "old": [
+    {
+     "token": "legal-hypergraph.lisp:46-62",
+     "offset": 118451
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-hypergraph.lisp:46-62",
+     "offset": 120502
+    }
+   ]
+  },
+  {
+   "slot": 310,
+   "kind": "PREFIX",
+   "old_target": "greek-legislation-ontology.lisp",
+   "new_target": "source/greek-legislation-ontology.lisp",
+   "old": [
+    {
+     "token": "greek-legislation-ontology.lisp:208-212",
+     "offset": 118529
+    }
+   ],
+   "new": [
+    {
+     "token": "source/greek-legislation-ontology.lisp:208-212",
+     "offset": 120587
+    }
+   ]
+  },
+  {
+   "slot": 311,
+   "kind": "PREFIX",
+   "old_target": "legal-reasoning-bridge.lisp",
+   "new_target": "source/legal-reasoning-bridge.lisp",
+   "old": [
+    {
+     "token": "legal-reasoning-bridge.lisp:96-170",
+     "offset": 118659
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-reasoning-bridge.lisp:96-170",
+     "offset": 120724
+    }
+   ]
+  },
+  {
+   "slot": 312,
+   "kind": "PREFIX",
+   "old_target": "legal-reasoning-bridge.lisp",
+   "new_target": "source/legal-reasoning-bridge.lisp",
+   "old": [
+    {
+     "token": "legal-reasoning-bridge.lisp:69-89,172-181",
+     "offset": 118761
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-reasoning-bridge.lisp:69-89,172-181",
+     "offset": 120833
+    }
+   ]
+  },
+  {
+   "slot": 313,
+   "kind": "PREFIX",
+   "old_target": "graph-reasoning.lisp",
+   "new_target": "source/graph-reasoning.lisp",
+   "old": [
+    {
+     "token": "graph-reasoning.lisp:54-90",
+     "offset": 118870
+    }
+   ],
+   "new": [
+    {
+     "token": "source/graph-reasoning.lisp:54-90",
+     "offset": 120949
+    }
+   ]
+  },
+  {
+   "slot": 314,
+   "kind": "PREFIX",
+   "old_target": "hash-authority.lisp",
+   "new_target": "source/hash-authority.lisp",
+   "old": [
+    {
+     "token": "hash-authority.lisp:11-46",
+     "offset": 119031
+    }
+   ],
+   "new": [
+    {
+     "token": "source/hash-authority.lisp:11-46",
+     "offset": 121117
+    }
+   ]
+  },
+  {
+   "slot": 315,
+   "kind": "IDENTITY",
+   "old_target": "protocols.lisp",
+   "new_target": "protocols.lisp",
+   "old": [
+    {
+     "token": "protocols.lisp:145-149",
+     "offset": 119088
+    }
+   ],
+   "new": [
+    {
+     "token": "protocols.lisp:145-149",
+     "offset": 121181
+    }
+   ]
+  },
+  {
+   "slot": 316,
+   "kind": "PREFIX",
+   "old_target": "guard-ops-pack.lisp",
+   "new_target": "source/guard-ops-pack.lisp",
+   "old": [
+    {
+     "token": "guard-ops-pack.lisp:17-29",
+     "offset": 119256
+    }
+   ],
+   "new": [
+    {
+     "token": "source/guard-ops-pack.lisp:17-29",
+     "offset": 121349
+    }
+   ]
+  },
+  {
+   "slot": 317,
+   "kind": "PREFIX",
+   "old_target": "legal-strategy.lisp",
+   "new_target": "source/legal-strategy.lisp",
+   "old": [
+    {
+     "token": "legal-strategy.lisp:32-41",
+     "offset": 119332
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-strategy.lisp:32-41",
+     "offset": 121432
+    }
+   ]
+  },
+  {
+   "slot": 318,
+   "kind": "PREFIX",
+   "old_target": "generation.lisp",
+   "new_target": "source/generation.lisp",
+   "old": [
+    {
+     "token": "generation.lisp:215-227",
+     "offset": 119407
+    }
+   ],
+   "new": [
+    {
+     "token": "source/generation.lisp:215-227",
+     "offset": 121514
+    }
+   ]
+  },
+  {
+   "slot": 319,
+   "kind": "IDENTITY",
+   "old_target": "protocols.lisp",
+   "new_target": "protocols.lisp",
+   "old": [
+    {
+     "token": "protocols.lisp:56",
+     "offset": 119539
+    }
+   ],
+   "new": [
+    {
+     "token": "protocols.lisp:56",
+     "offset": 121653
+    }
+   ]
+  },
+  {
+   "slot": 320,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-omega-modules/frbr-protocol.lisp",
+   "new_target": "systems/orchestrator-omega-modules/frbr-protocol.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-protocol.lisp:11",
+     "offset": 119605
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-omega-modules/frbr-protocol.lisp:11",
+     "offset": 121719
+    }
+   ]
+  },
+  {
+   "slot": 321,
+   "kind": "PREFIX",
+   "old_target": "legal-hypergraph.lisp",
+   "new_target": "source/legal-hypergraph.lisp",
+   "old": [
+    {
+     "token": "legal-hypergraph.lisp:46-62",
+     "offset": 119794
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-hypergraph.lisp:46-62",
+     "offset": 121908
+    }
+   ]
+  },
+  {
+   "slot": 322,
+   "kind": "PREFIX",
+   "old_target": "greek-legislation-ontology.lisp",
+   "new_target": "source/greek-legislation-ontology.lisp",
+   "old": [
+    {
+     "token": "greek-legislation-ontology.lisp:208-212",
+     "offset": 119882
+    }
+   ],
+   "new": [
+    {
+     "token": "source/greek-legislation-ontology.lisp:208-212",
+     "offset": 122003
+    }
+   ]
+  },
+  {
+   "slot": 323,
+   "kind": "PREFIX",
+   "old_target": "shacl-validator.lisp",
+   "new_target": "source/shacl-validator.lisp",
+   "old": [
+    {
+     "token": "shacl-validator.lisp:311-323",
+     "offset": 119962
+    }
+   ],
+   "new": [
+    {
+     "token": "source/shacl-validator.lisp:311-323",
+     "offset": 122090
+    }
+   ]
+  },
+  {
+   "slot": 324,
+   "kind": "PREFIX",
+   "old_target": "signed-embedding-manifest.lisp",
+   "new_target": "source/signed-embedding-manifest.lisp",
+   "old": [
+    {
+     "token": "signed-embedding-manifest.lisp:383-396",
+     "offset": 120024
+    }
+   ],
+   "new": [
+    {
+     "token": "source/signed-embedding-manifest.lisp:383-396",
+     "offset": 122159
+    }
+   ]
+  },
+  {
+   "slot": 325,
+   "kind": "PREFIX",
+   "old_target": "legal-references.lisp",
+   "new_target": "source/legal-references.lisp",
+   "old": [
+    {
+     "token": "legal-references.lisp:39-42",
+     "offset": 120149
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-references.lisp:39-42",
+     "offset": 122291
+    }
+   ]
+  },
+  {
+   "slot": 326,
+   "kind": "PREFIX",
+   "old_target": "corpus-eu-links.lisp",
+   "new_target": "source/corpus-eu-links.lisp",
+   "old": [
+    {
+     "token": "corpus-eu-links.lisp:27",
+     "offset": 120228
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-eu-links.lisp:27",
+     "offset": 122377
+    }
+   ]
+  },
+  {
+   "slot": 327,
+   "kind": "PREFIX",
+   "old_target": "embeddings-authority.lisp",
+   "new_target": "source/embeddings-authority.lisp",
+   "old": [
+    {
+     "token": "embeddings-authority.lisp:286",
+     "offset": 120290
+    }
+   ],
+   "new": [
+    {
+     "token": "source/embeddings-authority.lisp:286",
+     "offset": 122446
+    }
+   ]
+  },
+  {
+   "slot": 328,
+   "kind": "PREFIX",
+   "old_target": "legal-penalty.lisp",
+   "new_target": "source/legal-penalty.lisp",
+   "old": [
+    {
+     "token": "legal-penalty.lisp:65",
+     "offset": 120356
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-penalty.lisp:65",
+     "offset": 122519
+    }
+   ]
+  },
+  {
+   "slot": 329,
+   "kind": "PREFIX",
+   "old_target": "text-canonicalizer.lisp",
+   "new_target": "source/text-canonicalizer.lisp",
+   "old": [
+    {
+     "token": "text-canonicalizer.lisp:313,318,324,330",
+     "offset": 120405
+    }
+   ],
+   "new": [
+    {
+     "token": "source/text-canonicalizer.lisp:313,318,324,330",
+     "offset": 122575
+    }
+   ]
+  },
+  {
+   "slot": 330,
+   "kind": "PREFIX",
+   "old_target": "source-profile.lisp",
+   "new_target": "source/source-profile.lisp",
+   "old": [
+    {
+     "token": "source-profile.lisp:341-353",
+     "offset": 120562
+    }
+   ],
+   "new": [
+    {
+     "token": "source/source-profile.lisp:341-353",
+     "offset": 122739
+    }
+   ]
+  },
+  {
+   "slot": 331,
+   "kind": "PREFIX",
+   "old_target": "legal-knowledge.lisp",
+   "new_target": "source/legal-knowledge.lisp",
+   "old": [
+    {
+     "token": "legal-knowledge.lisp:68-77",
+     "offset": 120836
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-knowledge.lisp:68-77",
+     "offset": 123020
+    }
+   ]
+  },
+  {
+   "slot": 332,
+   "kind": "PREFIX",
+   "old_target": "legal-deontic.lisp",
+   "new_target": "source/legal-deontic.lisp",
+   "old": [
+    {
+     "token": "legal-deontic.lisp:113-141",
+     "offset": 120925
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-deontic.lisp:113-141",
+     "offset": 123116
+    }
+   ]
+  },
+  {
+   "slot": 333,
+   "kind": "PREFIX",
+   "old_target": "narrative-provenance.lisp",
+   "new_target": "source/narrative-provenance.lisp",
+   "old": [
+    {
+     "token": "narrative-provenance.lisp:907-930",
+     "offset": 121095
+    }
+   ],
+   "new": [
+    {
+     "token": "source/narrative-provenance.lisp:907-930",
+     "offset": 123293
+    }
+   ]
+  },
+  {
+   "slot": 334,
+   "kind": "PREFIX",
+   "old_target": "semantic-authority.lisp",
+   "new_target": "source/semantic-authority.lisp",
+   "old": [
+    {
+     "token": "semantic-authority.lisp:730-754",
+     "offset": 121168
+    }
+   ],
+   "new": [
+    {
+     "token": "source/semantic-authority.lisp:730-754",
+     "offset": 123373
+    }
+   ]
+  },
+  {
+   "slot": 335,
+   "kind": "PREFIX",
+   "old_target": "rdfs-inference.lisp",
+   "new_target": "source/rdfs-inference.lisp",
+   "old": [
+    {
+     "token": "rdfs-inference.lisp:283-431",
+     "offset": 121305
+    }
+   ],
+   "new": [
+    {
+     "token": "source/rdfs-inference.lisp:283-431",
+     "offset": 123517
+    }
+   ]
+  },
+  {
+   "slot": 336,
+   "kind": "PREFIX",
+   "old_target": "reasoning-authority.lisp",
+   "new_target": "source/reasoning-authority.lisp",
+   "old": [
+    {
+     "token": "reasoning-authority.lisp:417-480",
+     "offset": 121408
+    }
+   ],
+   "new": [
+    {
+     "token": "source/reasoning-authority.lisp:417-480",
+     "offset": 123627
+    }
+   ]
+  },
+  {
+   "slot": 337,
+   "kind": "PREFIX",
+   "old_target": "ai-ingest-manifest.lisp",
+   "new_target": "source/ai-ingest-manifest.lisp",
+   "old": [
+    {
+     "token": "ai-ingest-manifest.lisp:30-38",
+     "offset": 121584
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ai-ingest-manifest.lisp:30-38",
+     "offset": 123810
+    }
+   ]
+  },
+  {
+   "slot": 338,
+   "kind": "PREFIX",
+   "old_target": "narrative-provenance.lisp",
+   "new_target": "source/narrative-provenance.lisp",
+   "old": [
+    {
+     "token": "narrative-provenance.lisp:32-34,76",
+     "offset": 121689
+    }
+   ],
+   "new": [
+    {
+     "token": "source/narrative-provenance.lisp:32-34,76",
+     "offset": 123922
+    }
+   ]
+  },
+  {
+   "slot": 339,
+   "kind": "PREFIX",
+   "old_target": "ai-citation-strategy.lisp",
+   "new_target": "source/ai-citation-strategy.lisp",
+   "old": [
+    {
+     "token": "ai-citation-strategy.lisp:31-33,389",
+     "offset": 121747
+    }
+   ],
+   "new": [
+    {
+     "token": "source/ai-citation-strategy.lisp:31-33,389",
+     "offset": 123987
+    }
+   ]
+  },
+  {
+   "slot": 340,
+   "kind": "PREFIX",
+   "old_target": "semantic-versioning-system.lisp",
+   "new_target": "source/semantic-versioning-system.lisp",
+   "old": [
+    {
+     "token": "semantic-versioning-system.lisp:43",
+     "offset": 121806
+    }
+   ],
+   "new": [
+    {
+     "token": "source/semantic-versioning-system.lisp:43",
+     "offset": 124053
+    }
+   ]
+  },
+  {
+   "slot": 341,
+   "kind": "PREFIX",
+   "old_target": "legal-audit-system.lisp",
+   "new_target": "source/legal-audit-system.lisp",
+   "old": [
+    {
+     "token": "legal-audit-system.lisp:780-787",
+     "offset": 121935
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-audit-system.lisp:780-787",
+     "offset": 124189
+    }
+   ]
+  },
+  {
+   "slot": 342,
+   "kind": "PREFIX",
+   "old_target": "eu-interop-layer.lisp",
+   "new_target": "source/eu-interop-layer.lisp",
+   "old": [
+    {
+     "token": "eu-interop-layer.lisp:381-387",
+     "offset": 122012
+    }
+   ],
+   "new": [
+    {
+     "token": "source/eu-interop-layer.lisp:381-387",
+     "offset": 124273
+    }
+   ]
+  },
+  {
+   "slot": 343,
+   "kind": "PREFIX",
+   "old_target": "static-site.lisp",
+   "new_target": "source/static-site.lisp",
+   "old": [
+    {
+     "token": "static-site.lisp:61-68",
+     "offset": 122121
+    }
+   ],
+   "new": [
+    {
+     "token": "source/static-site.lisp:61-68",
+     "offset": 124389
+    }
+   ]
+  },
+  {
+   "slot": 344,
+   "kind": "PREFIX",
+   "old_target": "akoma-ntoso-emitter.lisp",
+   "new_target": "source/akoma-ntoso-emitter.lisp",
+   "old": [
+    {
+     "token": "akoma-ntoso-emitter.lisp:46-63",
+     "offset": 122173
+    }
+   ],
+   "new": [
+    {
+     "token": "source/akoma-ntoso-emitter.lisp:46-63",
+     "offset": 124448
+    }
+   ]
+  },
+  {
+   "slot": 345,
+   "kind": "PREFIX",
+   "old_target": "sparql-endpoint.lisp",
+   "new_target": "source/sparql-endpoint.lisp",
+   "old": [
+    {
+     "token": "sparql-endpoint.lisp:576-600",
+     "offset": 122265
+    }
+   ],
+   "new": [
+    {
+     "token": "source/sparql-endpoint.lisp:576-600",
+     "offset": 124547
+    }
+   ]
+  }
+ ]
+}

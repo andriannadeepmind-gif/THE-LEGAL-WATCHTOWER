@@ -1,0 +1,78 @@
+══════════════════════════════════════════════════════════════════════════════
+§1  ΠΑΓΩΜΕΝΕΣ ΤΑΥΤΟΤΗΤΕΣ — ΠΛΗΡΗ SHA-256
+══════════════════════════════════════════════════════════════════════════════
+  L1-dossier            experiment/phase1a/source.sexp
+      sha256:dd3ce7cc6bd973d284dd00adb417afa3e1030bcdca9da32997b435fb4c5e8aef
+  resolver-v4           experiment/runner/citation-resolver.py
+      sha256:24809ecd48b410ce656229cda4a87191256f25642f164844d465b1a581a925f9
+  witness-suite         experiment/runner/resolver-witnesses.py
+      sha256:3b75fc5d67dea3664e0e2385db09fe8ea7c273fd6f39a95d3c4084d539650024
+  manifest-v2 (tsv)     experiment/artifacts/corpus-manifest.tsv
+      sha256:29cf2b0ce1af2c9b08711d4aca0a7177f41fcb77d40d68904f170fa6abd41c7e
+  manifest-v2 (sexp)    experiment/artifacts/corpus-manifest.sexp
+      sha256:4fdf3bb02ec83001399942679b436f4699138d51cfbb54850e2027190551285f
+  LANE-REGISTRY         experiment/phase1a/LANE-REGISTRY.sexp
+      sha256:fffdc910bf95986a549244388a6914211034a5478daf0dea1860b6be7a51f404
+  raw-gate-log          .../GATE-v4-L1-RAW.log
+      sha256:3bfb9dd242eba1068a7fbd593d179346238727c4fa077ece38a99ff0a1b2124d
+  resolver-v3           ΑΝΑΚΤΗΣΗ ΑΠΟ GIT:
+      (υπολογίζεται χωριστά — βλ. §1b)
+
+══════════════════════════════════════════════════════════════════════════════
+§3  ΤΙ ΠΑΡΗΓΑΓΕ ΠΡΑΓΜΑΤΙΚΑ Ο PARSER ΓΙΑ ΤΗΝ L1
+══════════════════════════════════════════════════════════════════════════════
+  load_lane_roots('Φ1A-L1') → ['source']
+  πλήθος roots: 1
+    · «source»  ⇒  ΚΑΤΑΛΟΓΟΣ (αναδρομικά)
+  ΤΙ ΓΡΑΦΕΙ ΤΟ REGISTRY (πηγή αλήθειας):
+    LANE-REGISTRY.sexp:19: ΠΡΩΤΟΚΟΛΛΙΚΗ ταυτότητα καταχωρούνται ΔΙΑΡΚΗ lane IDs (Φ1A-L1..L7), δεμένα σε
+    LANE-REGISTRY.sexp:68: ((:lane "Φ1A-L1" :cluster "source/" :files 133
+  ΕΛΕΓΧΟΣ ΤΑΥΤΙΣΗΣ: ό,τι τύπωσε η ίδια η πύλη στο raw log:
+    lane Φ1A-L1 · cluster-roots ['source']
+
+══════════════════════════════════════════════════════════════════════════════
+§4  ΜΗΧΑΝΙΚΗ ΚΑΤΑΤΑΞΗ ΚΑΙ ΤΩΝ 283
+══════════════════════════════════════════════════════════════════════════════
+  A  VALID-CORPUS-ROOT-RELATIVE                 0
+  B  VALID-LANE-RELATIVE (μοναδική root)      272
+  C  REGISTRY/ROOT-PARSER-DEFECT                0
+  D  AMBIGUOUS                                 10
+  E  OUT-OF-DECLARED-SCOPE                      0
+  F  NONEXISTENT-FILE                           0
+  G  INVALID-RANGE-OR-HASH                      1
+  ΣΥΝΟΛΟ                                      283   (αναμ. 283 — ✓)
+
+══════════════════════════════════════════════════════════════════════════════
+§5a HISTOGRAM ΑΝΑ ERROR CODE (όπως το τύπωσε η ΠΥΛΗ)
+══════════════════════════════════════════════════════════════════════════════
+   283  ΑΓΝΩΣΤΗ ΔΙΑΔΡΟΜΗ στο manifest
+
+══════════════════════════════════════════════════════════════════════════════
+§5b ΠΛΗΡΗΣ ΜΑΡΤΥΡΑΣ ΑΝΑ ΚΑΤΗΓΟΡΙΑ
+     token → επιτρεπόμενες roots → υπολογισμένο manifest key → αποτέλεσμα
+══════════════════════════════════════════════════════════════════════════════
+
+── A  VALID-CORPUS-ROOT-RELATIVE (0) ──
+     ΚΕΝΗ ΚΑΤΗΓΟΡΙΑ — κανένας μάρτυρας, καμία εικασία.
+
+── B  VALID-LANE-RELATIVE (μοναδική root) (272) ──
+  token                : safe-read.lisp:39-349
+  raw                  : safe-read.lisp
+  normalize            : rel='safe-read.lisp' form='corpus-relative' err=None
+  επιτρεπόμενες roots  : ['source']
+  υπολογ. manifest key : 'source/safe-read.lisp'  (lane-relative υπό root «source»)  ΣΤΟ MANIFEST: True
+  υποψήφιοι στο corpus : ['source/safe-read.lisp']
+  ΑΠΟΤΕΛΕΣΜΑ           : ΜΟΝΟΣΗΜΑΝΤΟ → «source/safe-read.lisp» (εύρος έγκυρο)
+
+  token                : safe-read.lisp:312-339
+  raw                  : safe-read.lisp
+  normalize            : rel='safe-read.lisp' form='corpus-relative' err=None
+  επιτρεπόμενες roots  : ['source']
+  υπολογ. manifest key : 'source/safe-read.lisp'  (lane-relative υπό root «source»)  ΣΤΟ MANIFEST: True
+  υποψήφιοι στο corpus : ['source/safe-read.lisp']
+  ΑΠΟΤΕΛΕΣΜΑ           : ΜΟΝΟΣΗΜΑΝΤΟ → «source/safe-read.lisp» (εύρος έγκυρο)
+
+  token                : merkle-authority.lisp:54-235
+  raw                  : merkle-authority.lisp
+  normalize            : rel='merkle-authority.lisp' form='corpus-relative' err=None
+  επιτρεπόμενες roots  : ['source']

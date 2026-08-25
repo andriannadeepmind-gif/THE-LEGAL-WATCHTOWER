@@ -1,0 +1,73 @@
+{
+ "$schema": "lawmax/objective-epoch/1.DRAFT",
+ "status": "DRAFT-NOT-IN-FORCE",
+ "bound_to_constitution": {
+  "version": "v2.DRAFT",
+  "sha256": "52c389edd341659e2ada9d767b3de26db981751d1c845e73eea19753d8ece52b"
+ },
+ "t0": "2026-08-24",
+ "frozen_corpus": {
+  "commit": "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03",
+  "tree_sha1": "23b7a6f4450f50d151d38e13020bee9872e73bcd",
+  "git_leaves": 35640,
+  "manifest_schema": 4,
+  "identity": "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6",
+  "legacy_content_only_root": "sha256:ad8fd575cce147a8b765cd32fafa77f670491b8def589c88feb09f265d5f346b",
+  "legacy_note": "Η v1 ενσωμάτωνε την legacy ρίζα ΩΣ ΝΟΜΟ· εδώ είναι ΔΕΔΟΜΕΝΟ epoch."
+ },
+ "runner_identities": {
+  "protocol_epoch_3": "sha256:189db6a0cd3873759fa012f303358d46e3eabb0d6abede3621f672b321c5e5f1",
+  "scope_authority": "sha256:a72668dcfed4b877d01ade97a1549631dc683082855e9a4cd8276cf445eb8791",
+  "obligations_catalogue": "sha256:74f88410e5bb786b7886db3a37f95d702c8df105e597dce14b386183246a1654",
+  "resolver": "sha256:75de66fbe2857a177da827864cfb5a85e2592003c64cbd526d941e06e91daf72",
+  "citation_grammar": "sha256:852cb59481cc016a246ac7a500d0dbb231d07e5ff4f510cbb2a61b5237994161",
+  "frozen_access": "sha256:22b464e14d718bf8d9421fdd27c5eb22345d21ce02c2c16612025d9f393336e7",
+  "manifest_generator": "sha256:c28b185cb2356a6843c1540444cc379b8a04b61aaebcc2f365a42c42e31a4817"
+ },
+ "H_gates": {
+  "moved_from": "v1 s4 — από συνταγματικό δίκαιο σε epoch data",
+  "H_1..H_13": [
+   "Νομική και θεσμική σημασιολογική ορθότητα",
+   "Υλοποιησιμότητα με τεχνολογίες διαθέσιμες στο t0",
+   "Preservation ΟΛΩΝ των έγκυρων baseline capabilities",
+   "Ρητή disposition ΚΑΘΕ γνωστού baseline defect",
+   "Καμία σιωπηρή απώλεια authority, state ή institutional role",
+   "Καμία duplicated authority ή δεύτερη πηγή αλήθειας",
+   "Καμία facade, placeholder, workaround ή silent fallback",
+   "Πλήρης provenance και ελεγκτική αναπαραγωγή",
+   "Ρητή αντιστοίχιση formal model προς executable construction",
+   "Determinism, durability, recovery, liveness στα απαιτούμενα operating models",
+   "Common Lisp-native σημασιολογία ΧΩΡΙΣ τεχνητό περιορισμό σε υποσύνολο",
+   "Πλήρες constructive implementation witness + dependency-ordered blueprint",
+   "Phase isolation, immutable objectives, απαγόρευση αυτοπιστοποίησης"
+  ],
+  "proof_floor_rule": "carried from v1 s4"
+ },
+ "baseline": {
+  "B_plus": "όλα τα passing normative behaviours/capabilities/invariants — ζουν στα Phase-1A dossiers",
+  "B_minus": "L7-CANDIDATE-DEFECTS.sexp + lane dossiers· ΟΛΑ UNRECONCILED-CANDIDATE-DEFECTS",
+  "s5_defect_obligations_carried": true
+ },
+ "U_t_sources": [
+  "frozen repository",
+  "architecture-family census",
+  "technology census",
+  "δημόσιες frontier constructions",
+  "omission challengers",
+  "νέες συνθέσεις"
+ ],
+ "materiality_uncertainty": "ΕΚΚΡΕΜΕΙ σφράγιση ΜΕΣΑ στο DOMAIN-CLOSURE-CERTIFICATE (Φ2 — υποχρέωση F-01/F-02)",
+ "workloads_and_resource_envelope": "ΕΚΚΡΕΜΕΙ σφράγιση στο ίδιο certificate",
+ "technology_cutoff": {
+  "date": "t0",
+  "sources": "ΕΚΚΡΕΜΕΙ — omission ledger στη Φ2"
+ },
+ "state_ledger_pointers": {
+  "moved_from_v1_s14": "Οι διορθώσεις απογραφής (199/198, 137/136, 104/104, οκτώ unresolved, config digest, 2.4.0/2.2.9, per-suite isolation, JONATHAN fault, OS-level read-only, T14 MODEL-CHECKED) και το E2E state είναι ΛΕΙΤΟΥΡΓΙΚΗ ΚΑΤΑΣΤΑΣΗ.",
+  "live_in": [
+   "experiment/phase1a/LANE-STATE-LEDGER.sexp",
+   "experiment/phase1a/EVENT-LEDGER.jsonl",
+   "experiment/artifacts/PROGRESS-RECEIPT.json"
+  ]
+ }
+}

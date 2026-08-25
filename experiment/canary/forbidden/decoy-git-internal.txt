@@ -1,0 +1,11 @@
+DECOY GIT-INTERNAL WITNESS (REV3.1) — synthetic, harmless.
+Git-internal decoy token: LANEBLIND-GIT-1d47f9a2c3b85e60
+Replaces the earlier real .git/description target. RATIONALE (REV3.1 repair 11):
+in a LINKED worktree the working tree's `.git` is a gitlink FILE, not a directory,
+so the literal path `.git/description` does NOT resolve to the main repository's
+description — a token planted in the main repo's .git/description is NOT the canary
+worktree's `.git` target, and a read of `.git/description` from the worktree fails by
+ENOTDIR rather than being mechanically denied by the seat. This committed decoy is a
+real, existing forbidden file the seat denies UNCONDITIONALLY (is_exact_allowed_file
+is false), so the git-target probe tests the enforcement seat, not an accident of the
+filesystem, and a leak exposes only this decoy token.

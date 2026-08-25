@@ -1,0 +1,5146 @@
+{
+ "source": "deployment-specs.sexp",
+ "source_sha256": "f895deb6721317b7979ffe44346628c064a2c0c1682b2642658e94f9d507730b",
+ "target": "deployment-specs-rev2.sexp",
+ "target_sha256": "d48c47d92ec1e529ca9ede7e9752601deaa537ef8743f5cce6dc3de3cf6490b8",
+ "derivation": "ΠΑΡΑΤΗΡΟΥΜΕΝΗ ΔΙΑΦΟΡΑ ΤΩΝ ΔΥΟ ΑΡΧΕΙΩΝ — ΟΧΙ έξοδος του εργαλείου που έκανε τη μετάβαση",
+ "skeleton_slots": 257,
+ "old_tokens": 257,
+ "new_tokens": 382,
+ "kinds": {
+  "IDENTITY": 186,
+  "EXPANSION": 71,
+  "PREFIX": 0
+ },
+ "target_substitutions": 0,
+ "reorderings": 0,
+ "losses": 0,
+ "mapping": [
+  {
+   "slot": 0,
+   "kind": "IDENTITY",
+   "old_target": "deployment/PROOF-CARRYING-LAW.md",
+   "new_target": "deployment/PROOF-CARRYING-LAW.md",
+   "old": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L1-153",
+     "offset": 2760
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L1-L153@sha256:aed9f075bbb6",
+     "offset": 2760
+    }
+   ]
+  },
+  {
+   "slot": 1,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/README.md",
+   "new_target": "deployment/verify/README.md",
+   "old": [
+    {
+     "token": "deployment/verify/README.md:L1-110",
+     "offset": 2802
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L1-L110@sha256:2f01958e3e1d",
+     "offset": 2823
+    }
+   ]
+  },
+  {
+   "slot": 2,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/merkle-profile.sexp",
+   "new_target": "deployment/verify/merkle-profile.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L1-143",
+     "offset": 4323
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L1-L143@sha256:1a64d0e9885f",
+     "offset": 4365
+    }
+   ]
+  },
+  {
+   "slot": 3,
+   "kind": "IDENTITY",
+   "old_target": "deployment/PROOF-CARRYING-LAW.md",
+   "new_target": "deployment/PROOF-CARRYING-LAW.md",
+   "old": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L12-74",
+     "offset": 4370
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L12-L74@sha256:aed9f075bbb6",
+     "offset": 4433
+    }
+   ]
+  },
+  {
+   "slot": 4,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/README.md",
+   "new_target": "deployment/verify/README.md",
+   "old": [
+    {
+     "token": "deployment/verify/README.md:L63-110",
+     "offset": 4412
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L63-L110@sha256:2f01958e3e1d",
+     "offset": 4496
+    }
+   ]
+  },
+  {
+   "slot": 5,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/vectors/merkle/vectors.json",
+   "new_target": "deployment/verify/vectors/merkle/vectors.json",
+   "old": [
+    {
+     "token": "deployment/verify/vectors/merkle/vectors.json:L1-8+",
+     "offset": 4450
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/vectors/merkle/vectors.json:L1-8+",
+     "offset": 4555
+    }
+   ]
+  },
+  {
+   "slot": 6,
+   "kind": "IDENTITY",
+   "old_target": "deployment/AUTONOMY.md",
+   "new_target": "deployment/AUTONOMY.md",
+   "old": [
+    {
+     "token": "deployment/AUTONOMY.md:L1-89",
+     "offset": 5417
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L1-L89@sha256:f9298d544346",
+     "offset": 5522
+    }
+   ]
+  },
+  {
+   "slot": 7,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/canonical-serialization-spec.md",
+   "new_target": "deployment/verify/canonical-serialization-spec.md",
+   "old": [
+    {
+     "token": "deployment/verify/canonical-serialization-spec.md:L1-70",
+     "offset": 6360
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/canonical-serialization-spec.md:L1-L70@sha256:c12d8b752b10",
+     "offset": 6486
+    }
+   ]
+  },
+  {
+   "slot": 8,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/assess-gate-manifest.lisp",
+   "new_target": "deployment/verify/assess-gate-manifest.lisp",
+   "old": [
+    {
+     "token": "deployment/verify/assess-gate-manifest.lisp:L1-60",
+     "offset": 7278
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-manifest.lisp:L1-L60@sha256:1264ac0ccb5b",
+     "offset": 7425
+    }
+   ]
+  },
+  {
+   "slot": 9,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/gate-registry.sexp",
+   "new_target": "deployment/verify/gate-registry.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/gate-registry.sexp:L1-43",
+     "offset": 7330
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/gate-registry.sexp:L1-L43@sha256:0ea0668d9967",
+     "offset": 7498
+    }
+   ]
+  },
+  {
+   "slot": 10,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/golden/astikos.fingerprint.sexp",
+   "new_target": "deployment/verify/golden/astikos.fingerprint.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/golden/astikos.fingerprint.sexp:L1",
+     "offset": 8234
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/golden/astikos.fingerprint.sexp:L1-L1@sha256:dbca1aa914f4",
+     "offset": 8423
+    }
+   ]
+  },
+  {
+   "slot": 11,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/golden/poinikos.fingerprint.sexp",
+   "new_target": "deployment/verify/golden/poinikos.fingerprint.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/golden/poinikos.fingerprint.sexp:L1",
+     "offset": 8289
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/golden/poinikos.fingerprint.sexp:L1-L1@sha256:679d2d6cb564",
+     "offset": 8501
+    }
+   ]
+  },
+  {
+   "slot": 12,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/golden/constitution.fingerprint.sexp",
+   "new_target": "deployment/verify/golden/constitution.fingerprint.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/golden/constitution.fingerprint.sexp:L1",
+     "offset": 8345
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/golden/constitution.fingerprint.sexp:L1-L1@sha256:92621ee67703",
+     "offset": 8580
+    }
+   ]
+  },
+  {
+   "slot": 13,
+   "kind": "EXPANSION",
+   "old_target": "deployment/AUTONOMY.md",
+   "new_target": "deployment/AUTONOMY.md",
+   "old": [
+    {
+     "token": "deployment/AUTONOMY.md:L26,L72,L80,L84-86",
+     "offset": 8405
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L26-L26@sha256:f9298d544346",
+     "offset": 8663
+    },
+    {
+     "token": "deployment/AUTONOMY.md:L72-L72@sha256:f9298d544346",
+     "offset": 8714
+    },
+    {
+     "token": "deployment/AUTONOMY.md:L80-L80@sha256:f9298d544346",
+     "offset": 8765
+    },
+    {
+     "token": "deployment/AUTONOMY.md:L84-L86@sha256:f9298d544346",
+     "offset": 8816
+    }
+   ]
+  },
+  {
+   "slot": 14,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/vectors/README.md",
+   "new_target": "deployment/verify/vectors/README.md",
+   "old": [
+    {
+     "token": "deployment/verify/vectors/README.md:L1-46",
+     "offset": 9285
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/vectors/README.md:L1-L46@sha256:9ef93edde222",
+     "offset": 9705
+    }
+   ]
+  },
+  {
+   "slot": 15,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/vectors/INDEX.json",
+   "new_target": "deployment/verify/vectors/INDEX.json",
+   "old": [
+    {
+     "token": "deployment/verify/vectors/INDEX.json:L1-6",
+     "offset": 9329
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/vectors/INDEX.json:L1-L6@sha256:913dfca1489f",
+     "offset": 9770
+    }
+   ]
+  },
+  {
+   "slot": 16,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L9-37,L40-76,L79+",
+     "offset": 10098
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L9-37,L40-76,L79+",
+     "offset": 10560
+    }
+   ]
+  },
+  {
+   "slot": 17,
+   "kind": "IDENTITY",
+   "old_target": "deployment/SYSTEM-CONSTITUTION.sexp",
+   "new_target": "deployment/SYSTEM-CONSTITUTION.sexp",
+   "old": [
+    {
+     "token": "deployment/SYSTEM-CONSTITUTION.sexp:L1-40",
+     "offset": 10904
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/SYSTEM-CONSTITUTION.sexp:L1-L40@sha256:0b25b3eaedbb",
+     "offset": 11366
+    }
+   ]
+  },
+  {
+   "slot": 18,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "new_target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L1-62",
+     "offset": 11690
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L1-L62@sha256:48a65a766d1c",
+     "offset": 12173
+    }
+   ]
+  },
+  {
+   "slot": 19,
+   "kind": "IDENTITY",
+   "old_target": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md",
+   "new_target": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md",
+   "old": [
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L1-240",
+     "offset": 12572
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L1-L240@sha256:7dc1ad0474e0",
+     "offset": 13076
+    }
+   ]
+  },
+  {
+   "slot": 20,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-CPEI-TARGET-SPEC.md",
+   "new_target": "deployment/LAWMAX-CPEI-TARGET-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L40-44,L142-143,L147-175,L179-197",
+     "offset": 13456
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L40-L44@sha256:88d3f19cd8b5",
+     "offset": 13981
+    },
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L142-L143@sha256:88d3f19cd8b5",
+     "offset": 14047
+    },
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L147-L175@sha256:88d3f19cd8b5",
+     "offset": 14115
+    },
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L179-L197@sha256:88d3f19cd8b5",
+     "offset": 14183
+    }
+   ]
+  },
+  {
+   "slot": 21,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-CPEI-TARGET-SPEC.sexp",
+   "new_target": "deployment/LAWMAX-CPEI-TARGET-SPEC.sexp",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.sexp:L10-26",
+     "offset": 13530
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.sexp:L10-L26@sha256:bf02917b7df6",
+     "offset": 14253
+    }
+   ]
+  },
+  {
+   "slot": 22,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md",
+   "new_target": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:L71,L197-234",
+     "offset": 14499
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:L71-L71@sha256:868467cda19c",
+     "offset": 15243
+    },
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:L197-L234@sha256:868467cda19c",
+     "offset": 15318
+    }
+   ]
+  },
+  {
+   "slot": 23,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT-CLOSURE-MATRIX.md",
+   "new_target": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT-CLOSURE-MATRIX.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT-CLOSURE-MATRIX.md:L1-13",
+     "offset": 14561
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT-CLOSURE-MATRIX.md:L1-L13@sha256:d96292a02311",
+     "offset": 15397
+    }
+   ]
+  },
+  {
+   "slot": 24,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md",
+   "new_target": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md:L1-104",
+     "offset": 15450
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md:L1-L104@sha256:17113f6970f2",
+     "offset": 16307
+    }
+   ]
+  },
+  {
+   "slot": 25,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new_target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L1-84",
+     "offset": 16397
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L1-L84@sha256:9eb423ea714e",
+     "offset": 17275
+    }
+   ]
+  },
+  {
+   "slot": 26,
+   "kind": "IDENTITY",
+   "old_target": "deployment/mcp/README.md",
+   "new_target": "deployment/mcp/README.md",
+   "old": [
+    {
+     "token": "deployment/mcp/README.md:L1-47",
+     "offset": 17103
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/mcp/README.md:L1-L47@sha256:efcff811c926",
+     "offset": 18002
+    }
+   ]
+  },
+  {
+   "slot": 27,
+   "kind": "IDENTITY",
+   "old_target": "deployment/mcp/claude_desktop_config.json",
+   "new_target": "deployment/mcp/claude_desktop_config.json",
+   "old": [
+    {
+     "token": "deployment/mcp/claude_desktop_config.json:L1-12",
+     "offset": 17136
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/mcp/claude_desktop_config.json:L1-L12@sha256:cc096393f0d8",
+     "offset": 18056
+    }
+   ]
+  },
+  {
+   "slot": 28,
+   "kind": "EXPANSION",
+   "old_target": "deployment/authority.ttl",
+   "new_target": "deployment/authority.ttl",
+   "old": [
+    {
+     "token": "deployment/authority.ttl:L22-25,L59-60,L262-273,L349-379",
+     "offset": 18043
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L22-L25@sha256:0cbd6e1d7bcb",
+     "offset": 18984
+    },
+    {
+     "token": "deployment/authority.ttl:L59-L60@sha256:0cbd6e1d7bcb",
+     "offset": 19037
+    },
+    {
+     "token": "deployment/authority.ttl:L262-L273@sha256:0cbd6e1d7bcb",
+     "offset": 19090
+    },
+    {
+     "token": "deployment/authority.ttl:L349-L379@sha256:0cbd6e1d7bcb",
+     "offset": 19145
+    }
+   ]
+  },
+  {
+   "slot": 29,
+   "kind": "EXPANSION",
+   "old_target": "deployment/manifest.ttl",
+   "new_target": "deployment/manifest.ttl",
+   "old": [
+    {
+     "token": "deployment/manifest.ttl:L14-21,L33-48",
+     "offset": 18102
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/manifest.ttl:L14-L21@sha256:5d340e54bc3f",
+     "offset": 19202
+    },
+    {
+     "token": "deployment/manifest.ttl:L33-L48@sha256:5d340e54bc3f",
+     "offset": 19254
+    }
+   ]
+  },
+  {
+   "slot": 30,
+   "kind": "IDENTITY",
+   "old_target": "deployment/provenance-narrative.ttl",
+   "new_target": "deployment/provenance-narrative.ttl",
+   "old": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L17-23",
+     "offset": 18142
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L17-L23@sha256:abf4e150b218",
+     "offset": 19308
+    }
+   ]
+  },
+  {
+   "slot": 31,
+   "kind": "IDENTITY",
+   "old_target": "deployment/ontology.ttl",
+   "new_target": "deployment/ontology.ttl",
+   "old": [
+    {
+     "token": "deployment/ontology.ttl:L15-25",
+     "offset": 18187
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/ontology.ttl:L15-L25@sha256:a95ac5b0ec4f",
+     "offset": 19374
+    }
+   ]
+  },
+  {
+   "slot": 32,
+   "kind": "IDENTITY",
+   "old_target": "deployment/identity.ttl",
+   "new_target": "deployment/identity.ttl",
+   "old": [
+    {
+     "token": "deployment/identity.ttl:L10-17",
+     "offset": 18220
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/identity.ttl:L10-L17@sha256:79377e10db82",
+     "offset": 19428
+    }
+   ]
+  },
+  {
+   "slot": 33,
+   "kind": "IDENTITY",
+   "old_target": "deployment/ai-feedback.ttl",
+   "new_target": "deployment/ai-feedback.ttl",
+   "old": [
+    {
+     "token": "deployment/ai-feedback.ttl:L11-24",
+     "offset": 18253
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/ai-feedback.ttl:L11-L24@sha256:130d7ed0c9ee",
+     "offset": 19482
+    }
+   ]
+  },
+  {
+   "slot": 34,
+   "kind": "IDENTITY",
+   "old_target": "deployment/shapes/legal-shapes.ttl",
+   "new_target": "deployment/shapes/legal-shapes.ttl",
+   "old": [
+    {
+     "token": "deployment/shapes/legal-shapes.ttl:L11-20",
+     "offset": 18319
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/shapes/legal-shapes.ttl:L11-L20@sha256:4d54ae48b2d5",
+     "offset": 19569
+    }
+   ]
+  },
+  {
+   "slot": 35,
+   "kind": "IDENTITY",
+   "old_target": "deployment/shapes/eli-shapes.ttl",
+   "new_target": "deployment/shapes/eli-shapes.ttl",
+   "old": [
+    {
+     "token": "deployment/shapes/eli-shapes.ttl:L180-189",
+     "offset": 18363
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/shapes/eli-shapes.ttl:L180-L189@sha256:bab6fff5c9d8",
+     "offset": 19634
+    }
+   ]
+  },
+  {
+   "slot": 36,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "new_target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L1-88",
+     "offset": 19200
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L1-L88@sha256:96f255d404e0",
+     "offset": 20492
+    }
+   ]
+  },
+  {
+   "slot": 37,
+   "kind": "IDENTITY",
+   "old_target": "deployment/SYSTEM-CONSTITUTION.sexp",
+   "new_target": "deployment/SYSTEM-CONSTITUTION.sexp",
+   "old": [
+    {
+     "token": "deployment/SYSTEM-CONSTITUTION.sexp:L9-13",
+     "offset": 19625
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/SYSTEM-CONSTITUTION.sexp:L9-L13@sha256:0b25b3eaedbb",
+     "offset": 20938
+    }
+   ]
+  },
+  {
+   "slot": 38,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "new_target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L60-61,L65-67",
+     "offset": 19669
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L60-L61@sha256:d73ef93f0b48",
+     "offset": 21003
+    },
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L65-L67@sha256:d73ef93f0b48",
+     "offset": 21070
+    }
+   ]
+  },
+  {
+   "slot": 39,
+   "kind": "IDENTITY",
+   "old_target": "deployment/PROOF-CARRYING-LAW.md",
+   "new_target": "deployment/PROOF-CARRYING-LAW.md",
+   "old": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L91-102",
+     "offset": 20039
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L91-L102@sha256:aed9f075bbb6",
+     "offset": 21454
+    }
+   ]
+  },
+  {
+   "slot": 40,
+   "kind": "EXPANSION",
+   "old_target": "deployment/AUTONOMY.md",
+   "new_target": "deployment/AUTONOMY.md",
+   "old": [
+    {
+     "token": "deployment/AUTONOMY.md:L27,L45-47,L71",
+     "offset": 20082
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L27-L27@sha256:f9298d544346",
+     "offset": 21518
+    },
+    {
+     "token": "deployment/AUTONOMY.md:L45-L47@sha256:f9298d544346",
+     "offset": 21569
+    },
+    {
+     "token": "deployment/AUTONOMY.md:L71-L71@sha256:f9298d544346",
+     "offset": 21620
+    }
+   ]
+  },
+  {
+   "slot": 41,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new_target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L20",
+     "offset": 20122
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L20-L20@sha256:9eb423ea714e",
+     "offset": 21673
+    }
+   ]
+  },
+  {
+   "slot": 42,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new_target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L19,L23-25,L81",
+     "offset": 20384
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L19-L19@sha256:9eb423ea714e",
+     "offset": 21959
+    },
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L23-L25@sha256:9eb423ea714e",
+     "offset": 22027
+    },
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L81-L81@sha256:9eb423ea714e",
+     "offset": 22095
+    }
+   ]
+  },
+  {
+   "slot": 43,
+   "kind": "EXPANSION",
+   "old_target": "deployment/PROOF-CARRYING-LAW.md",
+   "new_target": "deployment/PROOF-CARRYING-LAW.md",
+   "old": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L104-109,L126-133",
+     "offset": 20757
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L104-L109@sha256:aed9f075bbb6",
+     "offset": 22481
+    },
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L126-L133@sha256:aed9f075bbb6",
+     "offset": 22544
+    }
+   ]
+  },
+  {
+   "slot": 44,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/README.md",
+   "new_target": "deployment/verify/README.md",
+   "old": [
+    {
+     "token": "deployment/verify/README.md:L27-34",
+     "offset": 20810
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L27-L34@sha256:2f01958e3e1d",
+     "offset": 22609
+    }
+   ]
+  },
+  {
+   "slot": 45,
+   "kind": "EXPANSION",
+   "old_target": "deployment/verify/gate-registry.sexp",
+   "new_target": "deployment/verify/gate-registry.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/gate-registry.sexp:L5-8,L19-43",
+     "offset": 21102
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/gate-registry.sexp:L5-L8@sha256:0ea0668d9967",
+     "offset": 22922
+    },
+    {
+     "token": "deployment/verify/gate-registry.sexp:L19-L43@sha256:0ea0668d9967",
+     "offset": 22985
+    }
+   ]
+  },
+  {
+   "slot": 46,
+   "kind": "EXPANSION",
+   "old_target": "deployment/verify/assess-gate-manifest.lisp",
+   "new_target": "deployment/verify/assess-gate-manifest.lisp",
+   "old": [
+    {
+     "token": "deployment/verify/assess-gate-manifest.lisp:L5-13,L59",
+     "offset": 21153
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-manifest.lisp:L5-L13@sha256:1264ac0ccb5b",
+     "offset": 23052
+    },
+    {
+     "token": "deployment/verify/assess-gate-manifest.lisp:L59-L59@sha256:1264ac0ccb5b",
+     "offset": 23123
+    }
+   ]
+  },
+  {
+   "slot": 47,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/merkle-profile.sexp",
+   "new_target": "deployment/verify/merkle-profile.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L17-19",
+     "offset": 21487
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L17-L19@sha256:1a64d0e9885f",
+     "offset": 23475
+    }
+   ]
+  },
+  {
+   "slot": 48,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/README.md",
+   "new_target": "deployment/verify/README.md",
+   "old": [
+    {
+     "token": "deployment/verify/README.md:L107-109",
+     "offset": 21534
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L107-L109@sha256:2f01958e3e1d",
+     "offset": 23543
+    }
+   ]
+  },
+  {
+   "slot": 49,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L3,L28-31",
+     "offset": 21816
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L3-L3@sha256:a826bc3fa5de",
+     "offset": 23846
+    },
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L28-L31@sha256:a826bc3fa5de",
+     "offset": 23921
+    }
+   ]
+  },
+  {
+   "slot": 50,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-CPEI-TARGET-SPEC.md",
+   "new_target": "deployment/LAWMAX-CPEI-TARGET-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L121,L181-182",
+     "offset": 21877
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L121-L121@sha256:88d3f19cd8b5",
+     "offset": 24000
+    },
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L181-L182@sha256:88d3f19cd8b5",
+     "offset": 24068
+    }
+   ]
+  },
+  {
+   "slot": 51,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "new_target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L4-5,L84-85",
+     "offset": 21931
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L4-L5@sha256:7343da75e6d6",
+     "offset": 24138
+    },
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L84-L85@sha256:7343da75e6d6",
+     "offset": 24204
+    }
+   ]
+  },
+  {
+   "slot": 52,
+   "kind": "EXPANSION",
+   "old_target": "deployment/verify/assess-gate-plenary.sh",
+   "new_target": "deployment/verify/assess-gate-plenary.sh",
+   "old": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L18-19,L47-53",
+     "offset": 22266
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L18-L19@sha256:096473e06d88",
+     "offset": 24555
+    },
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L47-L53@sha256:096473e06d88",
+     "offset": 24624
+    }
+   ]
+  },
+  {
+   "slot": 53,
+   "kind": "EXPANSION",
+   "old_target": "deployment/AUTONOMY.md",
+   "new_target": "deployment/AUTONOMY.md",
+   "old": [
+    {
+     "token": "deployment/AUTONOMY.md:L72,L80",
+     "offset": 22634
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L72-L72@sha256:f9298d544346",
+     "offset": 25006
+    },
+    {
+     "token": "deployment/AUTONOMY.md:L80-L80@sha256:f9298d544346",
+     "offset": 25057
+    }
+   ]
+  },
+  {
+   "slot": 54,
+   "kind": "IDENTITY",
+   "old_target": "deployment/shapes/eli-shapes.ttl",
+   "new_target": "deployment/shapes/eli-shapes.ttl",
+   "old": [
+    {
+     "token": "deployment/shapes/eli-shapes.ttl:L180-189",
+     "offset": 22918
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/shapes/eli-shapes.ttl:L180-L189@sha256:bab6fff5c9d8",
+     "offset": 25361
+    }
+   ]
+  },
+  {
+   "slot": 55,
+   "kind": "EXPANSION",
+   "old_target": "deployment/verify/merkle-profile.sexp",
+   "new_target": "deployment/verify/merkle-profile.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L44-62,L122-143",
+     "offset": 23544
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L44-L62@sha256:1a64d0e9885f",
+     "offset": 26008
+    },
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L122-L143@sha256:1a64d0e9885f",
+     "offset": 26074
+    }
+   ]
+  },
+  {
+   "slot": 56,
+   "kind": "EXPANSION",
+   "old_target": "deployment/verify/merkle-profile.sexp",
+   "new_target": "deployment/verify/merkle-profile.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L64-74,L128-129,L92-93",
+     "offset": 23922
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L64-L74@sha256:1a64d0e9885f",
+     "offset": 26466
+    },
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L128-L129@sha256:1a64d0e9885f",
+     "offset": 26532
+    },
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L92-L93@sha256:1a64d0e9885f",
+     "offset": 26600
+    }
+   ]
+  },
+  {
+   "slot": 57,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/canonical-serialization-spec.md",
+   "new_target": "deployment/verify/canonical-serialization-spec.md",
+   "old": [
+    {
+     "token": "deployment/verify/canonical-serialization-spec.md:L34-38",
+     "offset": 24005
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/canonical-serialization-spec.md:L34-L38@sha256:c12d8b752b10",
+     "offset": 26688
+    }
+   ]
+  },
+  {
+   "slot": 58,
+   "kind": "IDENTITY",
+   "old_target": "deployment/PROOF-CARRYING-LAW.md",
+   "new_target": "deployment/PROOF-CARRYING-LAW.md",
+   "old": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L104-109",
+     "offset": 24365
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L104-L109@sha256:aed9f075bbb6",
+     "offset": 27069
+    }
+   ]
+  },
+  {
+   "slot": 59,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/README.md",
+   "new_target": "deployment/verify/README.md",
+   "old": [
+    {
+     "token": "deployment/verify/README.md:L27-34",
+     "offset": 24409
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L27-L34@sha256:2f01958e3e1d",
+     "offset": 27134
+    }
+   ]
+  },
+  {
+   "slot": 60,
+   "kind": "EXPANSION",
+   "old_target": "deployment/verify/merkle-profile.sexp",
+   "new_target": "deployment/verify/merkle-profile.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L76-80,L130",
+     "offset": 24657
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L76-L80@sha256:1a64d0e9885f",
+     "offset": 27403
+    },
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L130-L130@sha256:1a64d0e9885f",
+     "offset": 27469
+    }
+   ]
+  },
+  {
+   "slot": 61,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/assess-gate-manifest.lisp",
+   "new_target": "deployment/verify/assess-gate-manifest.lisp",
+   "old": [
+    {
+     "token": "deployment/verify/assess-gate-manifest.lisp:L5-13",
+     "offset": 24921
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-manifest.lisp:L5-L13@sha256:1264ac0ccb5b",
+     "offset": 27751
+    }
+   ]
+  },
+  {
+   "slot": 62,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/gate-registry.sexp",
+   "new_target": "deployment/verify/gate-registry.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/gate-registry.sexp:L5-8",
+     "offset": 24973
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/gate-registry.sexp:L5-L8@sha256:0ea0668d9967",
+     "offset": 27824
+    }
+   ]
+  },
+  {
+   "slot": 63,
+   "kind": "EXPANSION",
+   "old_target": "deployment/verify/hash-seat-registry.sexp",
+   "new_target": "deployment/verify/hash-seat-registry.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/hash-seat-registry.sexp:L8-12,L13-37",
+     "offset": 25186
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/hash-seat-registry.sexp:L8-L12@sha256:04caae1483d2",
+     "offset": 28058
+    },
+    {
+     "token": "deployment/verify/hash-seat-registry.sexp:L13-L37@sha256:04caae1483d2",
+     "offset": 28127
+    }
+   ]
+  },
+  {
+   "slot": 64,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L28-31",
+     "offset": 25476
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L28-L31@sha256:a826bc3fa5de",
+     "offset": 28432
+    }
+   ]
+  },
+  {
+   "slot": 65,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "new_target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L84-85",
+     "offset": 25534
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L84-L85@sha256:7343da75e6d6",
+     "offset": 28511
+    }
+   ]
+  },
+  {
+   "slot": 66,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L36-37",
+     "offset": 25881
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L36-L37@sha256:a826bc3fa5de",
+     "offset": 28879
+    }
+   ]
+  },
+  {
+   "slot": 67,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "new_target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L90-91",
+     "offset": 25939
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L90-L91@sha256:7343da75e6d6",
+     "offset": 28958
+    }
+   ]
+  },
+  {
+   "slot": 68,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "new_target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L41",
+     "offset": 25988
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L41-L41@sha256:48a65a766d1c",
+     "offset": 29028
+    }
+   ]
+  },
+  {
+   "slot": 69,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md",
+   "new_target": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L21-24,L97-106",
+     "offset": 26191
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L21-L24@sha256:ba0b1d094f92",
+     "offset": 29255
+    },
+    {
+     "token": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L97-L106@sha256:ba0b1d094f92",
+     "offset": 29323
+    }
+   ]
+  },
+  {
+   "slot": 70,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md",
+   "new_target": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L23-24",
+     "offset": 26398
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L23-L24@sha256:ba0b1d094f92",
+     "offset": 29544
+    }
+   ]
+  },
+  {
+   "slot": 71,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md",
+   "new_target": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md:L12-16,L73",
+     "offset": 26707
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md:L12-L16@sha256:17113f6970f2",
+     "offset": 29874
+    },
+    {
+     "token": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md:L73-L73@sha256:17113f6970f2",
+     "offset": 29953
+    }
+   ]
+  },
+  {
+   "slot": 72,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md",
+   "new_target": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md:L68-73",
+     "offset": 26951
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md:L68-L73@sha256:17113f6970f2",
+     "offset": 30214
+    }
+   ]
+  },
+  {
+   "slot": 73,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md",
+   "new_target": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:L197-213",
+     "offset": 27210
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:L197-L213@sha256:868467cda19c",
+     "offset": 30494
+    }
+   ]
+  },
+  {
+   "slot": 74,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L9-14,L101-107",
+     "offset": 27507
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L9-L14@sha256:e1cfc6adeeba",
+     "offset": 30812
+    },
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L101-L107@sha256:e1cfc6adeeba",
+     "offset": 30878
+    }
+   ]
+  },
+  {
+   "slot": 75,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L93,L96-99",
+     "offset": 27779
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L93-L93@sha256:e1cfc6adeeba",
+     "offset": 31165
+    },
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L96-L99@sha256:e1cfc6adeeba",
+     "offset": 31232
+    }
+   ]
+  },
+  {
+   "slot": 76,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new_target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L23-25,L76-77,L82-84",
+     "offset": 28030
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L23-L25@sha256:9eb423ea714e",
+     "offset": 31500
+    },
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L76-L77@sha256:9eb423ea714e",
+     "offset": 31568
+    },
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L82-L84@sha256:9eb423ea714e",
+     "offset": 31636
+    }
+   ]
+  },
+  {
+   "slot": 77,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md",
+   "new_target": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L2-3",
+     "offset": 28234
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L2-L3@sha256:3970009d118d",
+     "offset": 31847
+    }
+   ]
+  },
+  {
+   "slot": 78,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "new_target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L10",
+     "offset": 28280
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L10-L10@sha256:6c3465046d9b",
+     "offset": 31914
+    }
+   ]
+  },
+  {
+   "slot": 79,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/canonical-serialization-spec.md",
+   "new_target": "deployment/verify/canonical-serialization-spec.md",
+   "old": [
+    {
+     "token": "deployment/verify/canonical-serialization-spec.md:L32-38",
+     "offset": 29730
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/canonical-serialization-spec.md:L32-L38@sha256:c12d8b752b10",
+     "offset": 33388
+    }
+   ]
+  },
+  {
+   "slot": 80,
+   "kind": "EXPANSION",
+   "old_target": "deployment/verify/merkle-profile.sexp",
+   "new_target": "deployment/verify/merkle-profile.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L64-74,L92-93,L128-129",
+     "offset": 29789
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L64-L74@sha256:1a64d0e9885f",
+     "offset": 33468
+    },
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L92-L93@sha256:1a64d0e9885f",
+     "offset": 33534
+    },
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L128-L129@sha256:1a64d0e9885f",
+     "offset": 33600
+    }
+   ]
+  },
+  {
+   "slot": 81,
+   "kind": "IDENTITY",
+   "old_target": "deployment/PROOF-CARRYING-LAW.md",
+   "new_target": "deployment/PROOF-CARRYING-LAW.md",
+   "old": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L38-42",
+     "offset": 29852
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L38-L42@sha256:aed9f075bbb6",
+     "offset": 33670
+    }
+   ]
+  },
+  {
+   "slot": 82,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/README.md",
+   "new_target": "deployment/verify/README.md",
+   "old": [
+    {
+     "token": "deployment/verify/README.md:L94-100",
+     "offset": 29894
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L94-L100@sha256:2f01958e3e1d",
+     "offset": 33733
+    }
+   ]
+  },
+  {
+   "slot": 83,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "new_target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L39",
+     "offset": 29932
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L39-L39@sha256:48a65a766d1c",
+     "offset": 33792
+    }
+   ]
+  },
+  {
+   "slot": 84,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L77",
+     "offset": 29972
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L77-L77@sha256:e1cfc6adeeba",
+     "offset": 33856
+    }
+   ]
+  },
+  {
+   "slot": 85,
+   "kind": "IDENTITY",
+   "old_target": "deployment/authority.ttl",
+   "new_target": "deployment/authority.ttl",
+   "old": [
+    {
+     "token": "deployment/authority.ttl:L362",
+     "offset": 30439
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L362-L362@sha256:0cbd6e1d7bcb",
+     "offset": 34347
+    }
+   ]
+  },
+  {
+   "slot": 86,
+   "kind": "EXPANSION",
+   "old_target": "deployment/PROOF-CARRYING-LAW.md",
+   "new_target": "deployment/PROOF-CARRYING-LAW.md",
+   "old": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L94-97,L100-102,L129-132",
+     "offset": 30723
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L94-L97@sha256:aed9f075bbb6",
+     "offset": 34656
+    },
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L100-L102@sha256:aed9f075bbb6",
+     "offset": 34717
+    },
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L129-L132@sha256:aed9f075bbb6",
+     "offset": 34780
+    }
+   ]
+  },
+  {
+   "slot": 87,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/README.md",
+   "new_target": "deployment/verify/README.md",
+   "old": [
+    {
+     "token": "deployment/verify/README.md:L11-17",
+     "offset": 30783
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L11-L17@sha256:2f01958e3e1d",
+     "offset": 34845
+    }
+   ]
+  },
+  {
+   "slot": 88,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new_target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L20,L66",
+     "offset": 30820
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L20-L20@sha256:9eb423ea714e",
+     "offset": 34903
+    },
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L66-L66@sha256:9eb423ea714e",
+     "offset": 34971
+    }
+   ]
+  },
+  {
+   "slot": 89,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new_target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L74",
+     "offset": 30870
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L74-L74@sha256:9260439b476e",
+     "offset": 35041
+    }
+   ]
+  },
+  {
+   "slot": 90,
+   "kind": "EXPANSION",
+   "old_target": "deployment/provenance-narrative.ttl",
+   "new_target": "deployment/provenance-narrative.ttl",
+   "old": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L297-298,L507",
+     "offset": 30919
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L297-L298@sha256:abf4e150b218",
+     "offset": 35114
+    },
+    {
+     "token": "deployment/provenance-narrative.ttl:L507-L507@sha256:abf4e150b218",
+     "offset": 35180
+    }
+   ]
+  },
+  {
+   "slot": 91,
+   "kind": "IDENTITY",
+   "old_target": "deployment/authority.ttl",
+   "new_target": "deployment/authority.ttl",
+   "old": [
+    {
+     "token": "deployment/authority.ttl:L362",
+     "offset": 30971
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L362-L362@sha256:0cbd6e1d7bcb",
+     "offset": 35248
+    }
+   ]
+  },
+  {
+   "slot": 92,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp",
+   "new_target": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:133",
+     "offset": 31347
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:L133-L133@sha256:4da7b2505a06",
+     "offset": 35649
+    }
+   ]
+  },
+  {
+   "slot": 93,
+   "kind": "IDENTITY",
+   "old_target": "source/corpus-fingerprint.lisp",
+   "new_target": "source/corpus-fingerprint.lisp",
+   "old": [
+    {
+     "token": "source/corpus-fingerprint.lisp:94",
+     "offset": 31492
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-fingerprint.lisp:L94-L94@sha256:40cb907b5ffa",
+     "offset": 35820
+    }
+   ]
+  },
+  {
+   "slot": 94,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L16-24,L26-46",
+     "offset": 31881
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L16-L24@sha256:e1cfc6adeeba",
+     "offset": 36234
+    },
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L26-L46@sha256:e1cfc6adeeba",
+     "offset": 36301
+    }
+   ]
+  },
+  {
+   "slot": 95,
+   "kind": "IDENTITY",
+   "old_target": "source/corpus-fingerprint.lisp",
+   "new_target": "source/corpus-fingerprint.lisp",
+   "old": [
+    {
+     "token": "source/corpus-fingerprint.lisp:94",
+     "offset": 32035
+    }
+   ],
+   "new": [
+    {
+     "token": "source/corpus-fingerprint.lisp:L94-L94@sha256:40cb907b5ffa",
+     "offset": 36469
+    }
+   ]
+  },
+  {
+   "slot": 96,
+   "kind": "EXPANSION",
+   "old_target": "source/legal-audit-system.lisp",
+   "new_target": "source/legal-audit-system.lisp",
+   "old": [
+    {
+     "token": "source/legal-audit-system.lisp:571,576",
+     "offset": 32071
+    }
+   ],
+   "new": [
+    {
+     "token": "source/legal-audit-system.lisp:L571-L571@sha256:53613cdd00f0",
+     "offset": 36530
+    },
+    {
+     "token": "source/legal-audit-system.lisp:L576-L576@sha256:53613cdd00f0",
+     "offset": 36591
+    }
+   ]
+  },
+  {
+   "slot": 97,
+   "kind": "IDENTITY",
+   "old_target": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp",
+   "new_target": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp",
+   "old": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:133",
+     "offset": 32112
+    }
+   ],
+   "new": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:L133-L133@sha256:4da7b2505a06",
+     "offset": 36654
+    }
+   ]
+  },
+  {
+   "slot": 98,
+   "kind": "IDENTITY",
+   "old_target": "source/semantic-authority.lisp",
+   "new_target": "source/semantic-authority.lisp",
+   "old": [
+    {
+     "token": "source/semantic-authority.lisp:653",
+     "offset": 32181
+    }
+   ],
+   "new": [
+    {
+     "token": "source/semantic-authority.lisp:L653-L653@sha256:3b7ab18ddb0a",
+     "offset": 36749
+    }
+   ]
+  },
+  {
+   "slot": 99,
+   "kind": "IDENTITY",
+   "old_target": "source/hash-authority.lisp",
+   "new_target": "source/hash-authority.lisp",
+   "old": [
+    {
+     "token": "source/hash-authority.lisp:55",
+     "offset": 32218
+    }
+   ],
+   "new": [
+    {
+     "token": "source/hash-authority.lisp:L55-L55@sha256:280a7c5bb315",
+     "offset": 36812
+    }
+   ]
+  },
+  {
+   "slot": 100,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-TEMPORAL-SEMANTICS-SPEC.md",
+   "new_target": "deployment/LAWMAX-TEMPORAL-SEMANTICS-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-TEMPORAL-SEMANTICS-SPEC.md:L292-343",
+     "offset": 33360
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TEMPORAL-SEMANTICS-SPEC.md:L292-L343@sha256:f0cd213d5622",
+     "offset": 37979
+    }
+   ]
+  },
+  {
+   "slot": 101,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md",
+   "new_target": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:L215-234",
+     "offset": 33416
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:L215-L234@sha256:868467cda19c",
+     "offset": 38056
+    }
+   ]
+  },
+  {
+   "slot": 102,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT-CLOSURE-MATRIX.md",
+   "new_target": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT-CLOSURE-MATRIX.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT-CLOSURE-MATRIX.md:L140",
+     "offset": 33474
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT-CLOSURE-MATRIX.md:L140-L140@sha256:d96292a02311",
+     "offset": 38135
+    }
+   ]
+  },
+  {
+   "slot": 103,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L26-27",
+     "offset": 33543
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L26-L27@sha256:a826bc3fa5de",
+     "offset": 38229
+    }
+   ]
+  },
+  {
+   "slot": 104,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md",
+   "new_target": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L13-16,L44-45",
+     "offset": 34562
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L13-L16@sha256:c5b5c97dddcf",
+     "offset": 39269
+    },
+    {
+     "token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L44-L45@sha256:c5b5c97dddcf",
+     "offset": 39345
+    }
+   ]
+  },
+  {
+   "slot": 105,
+   "kind": "EXPANSION",
+   "old_target": "deployment/authority.ttl",
+   "new_target": "deployment/authority.ttl",
+   "old": [
+    {
+     "token": "deployment/authority.ttl:L41,L449",
+     "offset": 34626
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L41-L41@sha256:0cbd6e1d7bcb",
+     "offset": 39423
+    },
+    {
+     "token": "deployment/authority.ttl:L449-L449@sha256:0cbd6e1d7bcb",
+     "offset": 39476
+    }
+   ]
+  },
+  {
+   "slot": 106,
+   "kind": "IDENTITY",
+   "old_target": "deployment/manifest.ttl",
+   "new_target": "deployment/manifest.ttl",
+   "old": [
+    {
+     "token": "deployment/manifest.ttl:L127-128",
+     "offset": 34662
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/manifest.ttl:L127-L128@sha256:5d340e54bc3f",
+     "offset": 39533
+    }
+   ]
+  },
+  {
+   "slot": 107,
+   "kind": "IDENTITY",
+   "old_target": "deployment/ontology.ttl",
+   "new_target": "deployment/ontology.ttl",
+   "old": [
+    {
+     "token": "deployment/ontology.ttl:L53",
+     "offset": 34697
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/ontology.ttl:L53-L53@sha256:a95ac5b0ec4f",
+     "offset": 39589
+    }
+   ]
+  },
+  {
+   "slot": 108,
+   "kind": "IDENTITY",
+   "old_target": "deployment/publisher.jsonld",
+   "new_target": "deployment/publisher.jsonld",
+   "old": [
+    {
+     "token": "deployment/publisher.jsonld:L149",
+     "offset": 34727
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/publisher.jsonld:L149-L149@sha256:76d746527ad7",
+     "offset": 39643
+    }
+   ]
+  },
+  {
+   "slot": 109,
+   "kind": "IDENTITY",
+   "old_target": "deployment/provenance-narrative.ttl",
+   "new_target": "deployment/provenance-narrative.ttl",
+   "old": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L393",
+     "offset": 34762
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L393-L393@sha256:abf4e150b218",
+     "offset": 39703
+    }
+   ]
+  },
+  {
+   "slot": 110,
+   "kind": "IDENTITY",
+   "old_target": "deployment/templates/ai-ingest-manifest.ttl",
+   "new_target": "deployment/templates/ai-ingest-manifest.ttl",
+   "old": [
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L160",
+     "offset": 34805
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L160-L160@sha256:ae926b02d482",
+     "offset": 39771
+    }
+   ]
+  },
+  {
+   "slot": 111,
+   "kind": "IDENTITY",
+   "old_target": "deployment/shapes/eli-shapes.ttl",
+   "new_target": "deployment/shapes/eli-shapes.ttl",
+   "old": [
+    {
+     "token": "deployment/shapes/eli-shapes.ttl:L180-189",
+     "offset": 34856
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/shapes/eli-shapes.ttl:L180-L189@sha256:bab6fff5c9d8",
+     "offset": 39847
+    }
+   ]
+  },
+  {
+   "slot": 112,
+   "kind": "EXPANSION",
+   "old_target": "deployment/authority.ttl",
+   "new_target": "deployment/authority.ttl",
+   "old": [
+    {
+     "token": "deployment/authority.ttl:L59-60,L262-273,L349-365,L370-379,L409,L426,L493,L554",
+     "offset": 36125
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L59-L60@sha256:0cbd6e1d7bcb",
+     "offset": 41137
+    },
+    {
+     "token": "deployment/authority.ttl:L262-L273@sha256:0cbd6e1d7bcb",
+     "offset": 41190
+    },
+    {
+     "token": "deployment/authority.ttl:L349-L365@sha256:0cbd6e1d7bcb",
+     "offset": 41245
+    },
+    {
+     "token": "deployment/authority.ttl:L370-L379@sha256:0cbd6e1d7bcb",
+     "offset": 41300
+    },
+    {
+     "token": "deployment/authority.ttl:L409-L409@sha256:0cbd6e1d7bcb",
+     "offset": 41355
+    },
+    {
+     "token": "deployment/authority.ttl:L426-L426@sha256:0cbd6e1d7bcb",
+     "offset": 41410
+    },
+    {
+     "token": "deployment/authority.ttl:L493-L493@sha256:0cbd6e1d7bcb",
+     "offset": 41465
+    },
+    {
+     "token": "deployment/authority.ttl:L554-L554@sha256:0cbd6e1d7bcb",
+     "offset": 41520
+    }
+   ]
+  },
+  {
+   "slot": 113,
+   "kind": "EXPANSION",
+   "old_target": "deployment/manifest.ttl",
+   "new_target": "deployment/manifest.ttl",
+   "old": [
+    {
+     "token": "deployment/manifest.ttl:L40,L123",
+     "offset": 36206
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/manifest.ttl:L40-L40@sha256:5d340e54bc3f",
+     "offset": 41577
+    },
+    {
+     "token": "deployment/manifest.ttl:L123-L123@sha256:5d340e54bc3f",
+     "offset": 41629
+    }
+   ]
+  },
+  {
+   "slot": 114,
+   "kind": "IDENTITY",
+   "old_target": "deployment/SYSTEM-CONSTITUTION.sexp",
+   "new_target": "deployment/SYSTEM-CONSTITUTION.sexp",
+   "old": [
+    {
+     "token": "deployment/SYSTEM-CONSTITUTION.sexp:L16",
+     "offset": 36241
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/SYSTEM-CONSTITUTION.sexp:L16-L16@sha256:0b25b3eaedbb",
+     "offset": 41685
+    }
+   ]
+  },
+  {
+   "slot": 115,
+   "kind": "EXPANSION",
+   "old_target": "deployment/provenance-narrative.ttl",
+   "new_target": "deployment/provenance-narrative.ttl",
+   "old": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L17-23,L292-299,L385-386,L503-512,L518-525",
+     "offset": 37257
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L17-L23@sha256:abf4e150b218",
+     "offset": 42725
+    },
+    {
+     "token": "deployment/provenance-narrative.ttl:L292-L299@sha256:abf4e150b218",
+     "offset": 42789
+    },
+    {
+     "token": "deployment/provenance-narrative.ttl:L385-L386@sha256:abf4e150b218",
+     "offset": 42855
+    },
+    {
+     "token": "deployment/provenance-narrative.ttl:L503-L512@sha256:abf4e150b218",
+     "offset": 42921
+    },
+    {
+     "token": "deployment/provenance-narrative.ttl:L518-L525@sha256:abf4e150b218",
+     "offset": 42987
+    }
+   ]
+  },
+  {
+   "slot": 116,
+   "kind": "EXPANSION",
+   "old_target": "deployment/authority.ttl",
+   "new_target": "deployment/authority.ttl",
+   "old": [
+    {
+     "token": "deployment/authority.ttl:L278-282,L337,L343-344",
+     "offset": 37338
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L278-L282@sha256:0cbd6e1d7bcb",
+     "offset": 43055
+    },
+    {
+     "token": "deployment/authority.ttl:L337-L337@sha256:0cbd6e1d7bcb",
+     "offset": 43110
+    },
+    {
+     "token": "deployment/authority.ttl:L343-L344@sha256:0cbd6e1d7bcb",
+     "offset": 43165
+    }
+   ]
+  },
+  {
+   "slot": 117,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new_target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L74-75",
+     "offset": 37388
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L74-L75@sha256:9eb423ea714e",
+     "offset": 43222
+    }
+   ]
+  },
+  {
+   "slot": 118,
+   "kind": "IDENTITY",
+   "old_target": "deployment/AUTONOMY.md",
+   "new_target": "deployment/AUTONOMY.md",
+   "old": [
+    {
+     "token": "deployment/AUTONOMY.md:L13-16",
+     "offset": 37437
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L13-L16@sha256:f9298d544346",
+     "offset": 43292
+    }
+   ]
+  },
+  {
+   "slot": 119,
+   "kind": "EXPANSION",
+   "old_target": "deployment/verify/assess-gate-plenary.sh",
+   "new_target": "deployment/verify/assess-gate-plenary.sh",
+   "old": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L3-8,L18-19,L34-40,L47-53,L75-86",
+     "offset": 38183
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L3-L8@sha256:096473e06d88",
+     "offset": 44059
+    },
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L18-L19@sha256:096473e06d88",
+     "offset": 44126
+    },
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L34-L40@sha256:096473e06d88",
+     "offset": 44195
+    },
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L47-L53@sha256:096473e06d88",
+     "offset": 44264
+    },
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L75-L86@sha256:096473e06d88",
+     "offset": 44333
+    }
+   ]
+  },
+  {
+   "slot": 120,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/assess-gate-plenary.sh",
+   "new_target": "deployment/verify/assess-gate-plenary.sh",
+   "old": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L2-13",
+     "offset": 38997
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L2-L13@sha256:096473e06d88",
+     "offset": 45142
+    }
+   ]
+  },
+  {
+   "slot": 121,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/assess-gate-manifest.lisp",
+   "new_target": "deployment/verify/assess-gate-manifest.lisp",
+   "old": [
+    {
+     "token": "deployment/verify/assess-gate-manifest.lisp:L3-13",
+     "offset": 39046
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-manifest.lisp:L3-L13@sha256:1264ac0ccb5b",
+     "offset": 45212
+    }
+   ]
+  },
+  {
+   "slot": 122,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/assess-gate-plenary-test.sh",
+   "new_target": "deployment/verify/assess-gate-plenary-test.sh",
+   "old": [
+    {
+     "token": "deployment/verify/assess-gate-plenary-test.sh:L3",
+     "offset": 39098
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-plenary-test.sh:L3-L3@sha256:2024a2d1e73a",
+     "offset": 45285
+    }
+   ]
+  },
+  {
+   "slot": 123,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new_target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L18,L19,L41,L62,L125,L134",
+     "offset": 39748
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L18-L18@sha256:9260439b476e",
+     "offset": 45958
+    },
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L19-L19@sha256:9260439b476e",
+     "offset": 46029
+    },
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L41-L41@sha256:9260439b476e",
+     "offset": 46100
+    },
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L62-L62@sha256:9260439b476e",
+     "offset": 46171
+    },
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L125-L125@sha256:9260439b476e",
+     "offset": 46242
+    },
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L134-L134@sha256:9260439b476e",
+     "offset": 46315
+    }
+   ]
+  },
+  {
+   "slot": 124,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "new_target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L14,L204,L225",
+     "offset": 39819
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L14-L14@sha256:6c3465046d9b",
+     "offset": 46390
+    },
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L204-L204@sha256:6c3465046d9b",
+     "offset": 46450
+    },
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L225-L225@sha256:6c3465046d9b",
+     "offset": 46512
+    }
+   ]
+  },
+  {
+   "slot": 125,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-AUTODIDACTIC-LOOP.md",
+   "new_target": "deployment/LAWMAX-AUTODIDACTIC-LOOP.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-AUTODIDACTIC-LOOP.md:L57,L106",
+     "offset": 39867
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-AUTODIDACTIC-LOOP.md:L57-L57@sha256:6152c2a7cb14",
+     "offset": 46576
+    },
+    {
+     "token": "deployment/LAWMAX-AUTODIDACTIC-LOOP.md:L106-L106@sha256:6152c2a7cb14",
+     "offset": 46643
+    }
+   ]
+  },
+  {
+   "slot": 126,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md",
+   "new_target": "deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md:L42,L85,L146,L147",
+     "offset": 39917
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md:L42-L42@sha256:77bc078e177d",
+     "offset": 46714
+    },
+    {
+     "token": "deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md:L85-L85@sha256:77bc078e177d",
+     "offset": 46789
+    },
+    {
+     "token": "deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md:L146-L146@sha256:77bc078e177d",
+     "offset": 46864
+    },
+    {
+     "token": "deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md:L147-L147@sha256:77bc078e177d",
+     "offset": 46941
+    }
+   ]
+  },
+  {
+   "slot": 127,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "new_target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L9",
+     "offset": 39989
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L9-L9@sha256:7343da75e6d6",
+     "offset": 47025
+    }
+   ]
+  },
+  {
+   "slot": 128,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md",
+   "new_target": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L14",
+     "offset": 40034
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L14-L14@sha256:3970009d118d",
+     "offset": 47093
+    }
+   ]
+  },
+  {
+   "slot": 129,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "new_target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L61",
+     "offset": 40084
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L61-L61@sha256:d73ef93f0b48",
+     "offset": 47167
+    }
+   ]
+  },
+  {
+   "slot": 130,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "new_target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L18",
+     "offset": 40134
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L18-L18@sha256:48a65a766d1c",
+     "offset": 47241
+    }
+   ]
+  },
+  {
+   "slot": 131,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/gate-registry.sexp",
+   "new_target": "deployment/verify/gate-registry.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/gate-registry.sexp:L19-43",
+     "offset": 40179
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/gate-registry.sexp:L19-L43@sha256:0ea0668d9967",
+     "offset": 47310
+    }
+   ]
+  },
+  {
+   "slot": 132,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L79+",
+     "offset": 40225
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L79+",
+     "offset": 47377
+    }
+   ]
+  },
+  {
+   "slot": 133,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new_target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L19,L66",
+     "offset": 40959
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L19-L19@sha256:9260439b476e",
+     "offset": 48111
+    },
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L66-L66@sha256:9260439b476e",
+     "offset": 48182
+    }
+   ]
+  },
+  {
+   "slot": 134,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "new_target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L9",
+     "offset": 41012
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L9-L9@sha256:7343da75e6d6",
+     "offset": 48255
+    }
+   ]
+  },
+  {
+   "slot": 135,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md",
+   "new_target": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L2-3,L13-19,L26,L33-41",
+     "offset": 41057
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L2-L3@sha256:3970009d118d",
+     "offset": 48323
+    },
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L13-L19@sha256:3970009d118d",
+     "offset": 48388
+    },
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L26-L26@sha256:3970009d118d",
+     "offset": 48455
+    },
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L33-L41@sha256:3970009d118d",
+     "offset": 48522
+    }
+   ]
+  },
+  {
+   "slot": 136,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L40-76,L79+",
+     "offset": 41121
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L40-76,L79+",
+     "offset": 48591
+    }
+   ]
+  },
+  {
+   "slot": 137,
+   "kind": "EXPANSION",
+   "old_target": "deployment/mcp/README.md",
+   "new_target": "deployment/mcp/README.md",
+   "old": [
+    {
+     "token": "deployment/mcp/README.md:L28-30,L44-47",
+     "offset": 41799
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/mcp/README.md:L28-L30@sha256:efcff811c926",
+     "offset": 49269
+    },
+    {
+     "token": "deployment/mcp/README.md:L44-L47@sha256:efcff811c926",
+     "offset": 49322
+    }
+   ]
+  },
+  {
+   "slot": 138,
+   "kind": "EXPANSION",
+   "old_target": "deployment/PROOF-CARRYING-LAW.md",
+   "new_target": "deployment/PROOF-CARRYING-LAW.md",
+   "old": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L104-109,L136-139",
+     "offset": 41840
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L104-L109@sha256:aed9f075bbb6",
+     "offset": 49377
+    },
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L136-L139@sha256:aed9f075bbb6",
+     "offset": 49440
+    }
+   ]
+  },
+  {
+   "slot": 139,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/README.md",
+   "new_target": "deployment/verify/README.md",
+   "old": [
+    {
+     "token": "deployment/verify/README.md:L58",
+     "offset": 41893
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L58-L58@sha256:2f01958e3e1d",
+     "offset": 49505
+    }
+   ]
+  },
+  {
+   "slot": 140,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "new_target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L37",
+     "offset": 41927
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L37-L37@sha256:48a65a766d1c",
+     "offset": 49563
+    }
+   ]
+  },
+  {
+   "slot": 141,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/golden/constitution.fingerprint.sexp",
+   "new_target": "deployment/verify/golden/constitution.fingerprint.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/golden/constitution.fingerprint.sexp:L1",
+     "offset": 42576
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/golden/constitution.fingerprint.sexp:L1-L1@sha256:92621ee67703",
+     "offset": 50236
+    }
+   ]
+  },
+  {
+   "slot": 142,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/golden/astikos.fingerprint.sexp",
+   "new_target": "deployment/verify/golden/astikos.fingerprint.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/golden/astikos.fingerprint.sexp:L1",
+     "offset": 42636
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/golden/astikos.fingerprint.sexp:L1-L1@sha256:dbca1aa914f4",
+     "offset": 50319
+    }
+   ]
+  },
+  {
+   "slot": 143,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/golden/poinikos.fingerprint.sexp",
+   "new_target": "deployment/verify/golden/poinikos.fingerprint.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/golden/poinikos.fingerprint.sexp:L1",
+     "offset": 42691
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/golden/poinikos.fingerprint.sexp:L1-L1@sha256:679d2d6cb564",
+     "offset": 50397
+    }
+   ]
+  },
+  {
+   "slot": 144,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/golden/kpolitikis.fingerprint.sexp",
+   "new_target": "deployment/verify/golden/kpolitikis.fingerprint.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/golden/kpolitikis.fingerprint.sexp:L1",
+     "offset": 42747
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/golden/kpolitikis.fingerprint.sexp:L1-L1@sha256:ae57d5f5a82c",
+     "offset": 50476
+    }
+   ]
+  },
+  {
+   "slot": 145,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/golden/kpoinikis.fingerprint.sexp",
+   "new_target": "deployment/verify/golden/kpoinikis.fingerprint.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/golden/kpoinikis.fingerprint.sexp:L1",
+     "offset": 42805
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/golden/kpoinikis.fingerprint.sexp:L1-L1@sha256:21d388419d89",
+     "offset": 50557
+    }
+   ]
+  },
+  {
+   "slot": 146,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/golden/kdioikitikis.fingerprint.sexp",
+   "new_target": "deployment/verify/golden/kdioikitikis.fingerprint.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/golden/kdioikitikis.fingerprint.sexp:L1",
+     "offset": 42862
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/golden/kdioikitikis.fingerprint.sexp:L1-L1@sha256:d2828a720636",
+     "offset": 50637
+    }
+   ]
+  },
+  {
+   "slot": 147,
+   "kind": "EXPANSION",
+   "old_target": "deployment/AUTONOMY.md",
+   "new_target": "deployment/AUTONOMY.md",
+   "old": [
+    {
+     "token": "deployment/AUTONOMY.md:L26,L84-86",
+     "offset": 42922
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L26-L26@sha256:f9298d544346",
+     "offset": 50720
+    },
+    {
+     "token": "deployment/AUTONOMY.md:L84-L86@sha256:f9298d544346",
+     "offset": 50771
+    }
+   ]
+  },
+  {
+   "slot": 148,
+   "kind": "IDENTITY",
+   "old_target": "deployment/PROOF-CARRYING-LAW.md",
+   "new_target": "deployment/PROOF-CARRYING-LAW.md",
+   "old": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L104-109",
+     "offset": 43842
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L104-L109@sha256:aed9f075bbb6",
+     "offset": 51708
+    }
+   ]
+  },
+  {
+   "slot": 149,
+   "kind": "EXPANSION",
+   "old_target": "deployment/verify/README.md",
+   "new_target": "deployment/verify/README.md",
+   "old": [
+    {
+     "token": "deployment/verify/README.md:L27-34,L58",
+     "offset": 43886
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L27-L34@sha256:2f01958e3e1d",
+     "offset": 51773
+    },
+    {
+     "token": "deployment/verify/README.md:L58-L58@sha256:2f01958e3e1d",
+     "offset": 51829
+    }
+   ]
+  },
+  {
+   "slot": 150,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "new_target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L37",
+     "offset": 43927
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L37-L37@sha256:48a65a766d1c",
+     "offset": 51887
+    }
+   ]
+  },
+  {
+   "slot": 151,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "new_target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L1-16,L37,L64-74,L84-88",
+     "offset": 43967
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L1-L16@sha256:96f255d404e0",
+     "offset": 51951
+    },
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L37-L37@sha256:96f255d404e0",
+     "offset": 52020
+    },
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L64-L74@sha256:96f255d404e0",
+     "offset": 52090
+    },
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L84-L88@sha256:96f255d404e0",
+     "offset": 52160
+    }
+   ]
+  },
+  {
+   "slot": 152,
+   "kind": "EXPANSION",
+   "old_target": "deployment/AUTONOMY.md",
+   "new_target": "deployment/AUTONOMY.md",
+   "old": [
+    {
+     "token": "deployment/AUTONOMY.md:L30-31,L35-48,L50-54,L72,L80",
+     "offset": 44752
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L30-L31@sha256:f9298d544346",
+     "offset": 52949
+    },
+    {
+     "token": "deployment/AUTONOMY.md:L35-L48@sha256:f9298d544346",
+     "offset": 53000
+    },
+    {
+     "token": "deployment/AUTONOMY.md:L50-L54@sha256:f9298d544346",
+     "offset": 53051
+    },
+    {
+     "token": "deployment/AUTONOMY.md:L72-L72@sha256:f9298d544346",
+     "offset": 53102
+    },
+    {
+     "token": "deployment/AUTONOMY.md:L80-L80@sha256:f9298d544346",
+     "offset": 53153
+    }
+   ]
+  },
+  {
+   "slot": 153,
+   "kind": "IDENTITY",
+   "old_target": "deployment/SYSTEM-CONSTITUTION.sexp",
+   "new_target": "deployment/SYSTEM-CONSTITUTION.sexp",
+   "old": [
+    {
+     "token": "deployment/SYSTEM-CONSTITUTION.sexp:L22",
+     "offset": 44806
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/SYSTEM-CONSTITUTION.sexp:L22-L22@sha256:0b25b3eaedbb",
+     "offset": 53206
+    }
+   ]
+  },
+  {
+   "slot": 154,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new_target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L21-22,L98,L103,L138-139",
+     "offset": 45627
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L21-L22@sha256:9260439b476e",
+     "offset": 54051
+    },
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L98-L98@sha256:9260439b476e",
+     "offset": 54122
+    },
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L103-L103@sha256:9260439b476e",
+     "offset": 54193
+    },
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L138-L139@sha256:9260439b476e",
+     "offset": 54266
+    }
+   ]
+  },
+  {
+   "slot": 155,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "new_target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L16-17",
+     "offset": 45697
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L16-L17@sha256:6c3465046d9b",
+     "offset": 54341
+    }
+   ]
+  },
+  {
+   "slot": 156,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/consciousness-audit/MANIFEST.sha256",
+   "new_target": "deployment/verify/consciousness-audit/MANIFEST.sha256",
+   "old": [
+    {
+     "token": "deployment/verify/consciousness-audit/MANIFEST.sha256:L1",
+     "offset": 45738
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/consciousness-audit/MANIFEST.sha256:L1",
+     "offset": 54403
+    }
+   ]
+  },
+  {
+   "slot": 157,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L79+",
+     "offset": 45797
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L79+",
+     "offset": 54462
+    }
+   ]
+  },
+  {
+   "slot": 158,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "new_target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L5-6",
+     "offset": 46483
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L5-L6@sha256:6c3465046d9b",
+     "offset": 55148
+    }
+   ]
+  },
+  {
+   "slot": 159,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "new_target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L3-5,L73-74",
+     "offset": 46522
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L3-L5@sha256:d73ef93f0b48",
+     "offset": 55208
+    },
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L73-L74@sha256:d73ef93f0b48",
+     "offset": 55273
+    }
+   ]
+  },
+  {
+   "slot": 160,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-CPEI-TARGET-SPEC.md",
+   "new_target": "deployment/LAWMAX-CPEI-TARGET-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L40-41",
+     "offset": 46575
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L40-L41@sha256:88d3f19cd8b5",
+     "offset": 55342
+    }
+   ]
+  },
+  {
+   "slot": 161,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md",
+   "new_target": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L7-10",
+     "offset": 46622
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L7-L10@sha256:ba0b1d094f92",
+     "offset": 55410
+    }
+   ]
+  },
+  {
+   "slot": 162,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "new_target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L46",
+     "offset": 47031
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L46-L46@sha256:48a65a766d1c",
+     "offset": 55840
+    }
+   ]
+  },
+  {
+   "slot": 163,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "new_target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L54-56",
+     "offset": 47071
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L54-L56@sha256:96f255d404e0",
+     "offset": 55904
+    }
+   ]
+  },
+  {
+   "slot": 164,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new_target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L33",
+     "offset": 47495
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L33-L33@sha256:9eb423ea714e",
+     "offset": 56349
+    }
+   ]
+  },
+  {
+   "slot": 165,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "new_target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L45",
+     "offset": 47541
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L45-L45@sha256:48a65a766d1c",
+     "offset": 56419
+    }
+   ]
+  },
+  {
+   "slot": 166,
+   "kind": "IDENTITY",
+   "old_target": "deployment/provenance-narrative.ttl",
+   "new_target": "deployment/provenance-narrative.ttl",
+   "old": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L507",
+     "offset": 47581
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L507-L507@sha256:abf4e150b218",
+     "offset": 56483
+    }
+   ]
+  },
+  {
+   "slot": 167,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "new_target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L21-22,L86",
+     "offset": 47624
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L21-L22@sha256:96f255d404e0",
+     "offset": 56551
+    },
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L86-L86@sha256:96f255d404e0",
+     "offset": 56621
+    }
+   ]
+  },
+  {
+   "slot": 168,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md",
+   "new_target": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L8-18,L28-38",
+     "offset": 48250
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L8-L18@sha256:c5b5c97dddcf",
+     "offset": 57264
+    },
+    {
+     "token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L28-L38@sha256:c5b5c97dddcf",
+     "offset": 57339
+    }
+   ]
+  },
+  {
+   "slot": 169,
+   "kind": "EXPANSION",
+   "old_target": "deployment/templates/ai-ingest-manifest.ttl",
+   "new_target": "deployment/templates/ai-ingest-manifest.ttl",
+   "old": [
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L16,L27,L137-138,L142-157,L160,L176,L391",
+     "offset": 48313
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L16-L16@sha256:ae926b02d482",
+     "offset": 57417
+    },
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L27-L27@sha256:ae926b02d482",
+     "offset": 57489
+    },
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L137-L138@sha256:ae926b02d482",
+     "offset": 57561
+    },
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L142-L157@sha256:ae926b02d482",
+     "offset": 57635
+    },
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L160-L160@sha256:ae926b02d482",
+     "offset": 57709
+    },
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L176-L176@sha256:ae926b02d482",
+     "offset": 57783
+    },
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L391-L391@sha256:ae926b02d482",
+     "offset": 57857
+    }
+   ]
+  },
+  {
+   "slot": 170,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-CEILING-CROSSWALK.sexp",
+   "new_target": "deployment/LAWMAX-CEILING-CROSSWALK.sexp",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.sexp:L46",
+     "offset": 48783
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.sexp:L46-L46@sha256:a8682406e889",
+     "offset": 58316
+    }
+   ]
+  },
+  {
+   "slot": 171,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "new_target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L2-3,L23-39",
+     "offset": 48830
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L2-L3@sha256:d73ef93f0b48",
+     "offset": 58387
+    },
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L23-L39@sha256:d73ef93f0b48",
+     "offset": 58452
+    }
+   ]
+  },
+  {
+   "slot": 172,
+   "kind": "EXPANSION",
+   "old_target": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md",
+   "new_target": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md",
+   "old": [
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L75,L90,L105,L148",
+     "offset": 49470
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L75-L75@sha256:7dc1ad0474e0",
+     "offset": 59108
+    },
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L90-L90@sha256:7dc1ad0474e0",
+     "offset": 59164
+    },
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L105-L105@sha256:7dc1ad0474e0",
+     "offset": 59220
+    },
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L148-L148@sha256:7dc1ad0474e0",
+     "offset": 59278
+    }
+   ]
+  },
+  {
+   "slot": 173,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "new_target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L61-62",
+     "offset": 49518
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L61-L62@sha256:96f255d404e0",
+     "offset": 59338
+    }
+   ]
+  },
+  {
+   "slot": 174,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/gate-registry.sexp",
+   "new_target": "deployment/verify/gate-registry.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/gate-registry.sexp:L19-43",
+     "offset": 49569
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/gate-registry.sexp:L19-L43@sha256:0ea0668d9967",
+     "offset": 59410
+    }
+   ]
+  },
+  {
+   "slot": 175,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L28-29,L79+",
+     "offset": 49615
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L28-29,L79+",
+     "offset": 59477
+    }
+   ]
+  },
+  {
+   "slot": 176,
+   "kind": "EXPANSION",
+   "old_target": "deployment/verify/README.md",
+   "new_target": "deployment/verify/README.md",
+   "old": [
+    {
+     "token": "deployment/verify/README.md:L3,L14-15",
+     "offset": 50152
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L3-L3@sha256:2f01958e3e1d",
+     "offset": 60014
+    },
+    {
+     "token": "deployment/verify/README.md:L14-L15@sha256:2f01958e3e1d",
+     "offset": 60068
+    }
+   ]
+  },
+  {
+   "slot": 177,
+   "kind": "IDENTITY",
+   "old_target": "deployment/PROOF-CARRYING-LAW.md",
+   "new_target": "deployment/PROOF-CARRYING-LAW.md",
+   "old": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L72-73",
+     "offset": 50192
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L72-L73@sha256:aed9f075bbb6",
+     "offset": 60126
+    }
+   ]
+  },
+  {
+   "slot": 178,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/merkle-profile.sexp",
+   "new_target": "deployment/verify/merkle-profile.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L21-24",
+     "offset": 50234
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L21-L24@sha256:1a64d0e9885f",
+     "offset": 60189
+    }
+   ]
+  },
+  {
+   "slot": 179,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L87-95",
+     "offset": 50570
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L87-L95@sha256:e1cfc6adeeba",
+     "offset": 60546
+    }
+   ]
+  },
+  {
+   "slot": 180,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/merkle-profile.sexp",
+   "new_target": "deployment/verify/merkle-profile.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L33-36",
+     "offset": 51149
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L33-L36@sha256:1a64d0e9885f",
+     "offset": 61146
+    }
+   ]
+  },
+  {
+   "slot": 181,
+   "kind": "EXPANSION",
+   "old_target": "deployment/PROOF-CARRYING-LAW.md",
+   "new_target": "deployment/PROOF-CARRYING-LAW.md",
+   "old": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L94,L114,L117",
+     "offset": 51196
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L94-L94@sha256:aed9f075bbb6",
+     "offset": 61214
+    },
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L114-L114@sha256:aed9f075bbb6",
+     "offset": 61275
+    },
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L117-L117@sha256:aed9f075bbb6",
+     "offset": 61338
+    }
+   ]
+  },
+  {
+   "slot": 182,
+   "kind": "EXPANSION",
+   "old_target": "deployment/verify/hash-seat-registry.sexp",
+   "new_target": "deployment/verify/hash-seat-registry.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/hash-seat-registry.sexp:L7,L16",
+     "offset": 51245
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/hash-seat-registry.sexp:L7-L7@sha256:04caae1483d2",
+     "offset": 61403
+    },
+    {
+     "token": "deployment/verify/hash-seat-registry.sexp:L16-L16@sha256:04caae1483d2",
+     "offset": 61471
+    }
+   ]
+  },
+  {
+   "slot": 183,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L16,L21",
+     "offset": 51296
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L16-L16@sha256:e1cfc6adeeba",
+     "offset": 61543
+    },
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L21-L21@sha256:e1cfc6adeeba",
+     "offset": 61610
+    }
+   ]
+  },
+  {
+   "slot": 184,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "new_target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L62",
+     "offset": 51345
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L62-L62@sha256:96f255d404e0",
+     "offset": 61679
+    }
+   ]
+  },
+  {
+   "slot": 185,
+   "kind": "EXPANSION",
+   "old_target": "deployment/PROOF-CARRYING-LAW.md",
+   "new_target": "deployment/PROOF-CARRYING-LAW.md",
+   "old": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L74,L76,L111-134",
+     "offset": 52271
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L74-L74@sha256:aed9f075bbb6",
+     "offset": 62629
+    },
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L76-L76@sha256:aed9f075bbb6",
+     "offset": 62690
+    },
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L111-L134@sha256:aed9f075bbb6",
+     "offset": 62751
+    }
+   ]
+  },
+  {
+   "slot": 186,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/README.md",
+   "new_target": "deployment/verify/README.md",
+   "old": [
+    {
+     "token": "deployment/verify/README.md:L107-109",
+     "offset": 52323
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L107-L109@sha256:2f01958e3e1d",
+     "offset": 62816
+    }
+   ]
+  },
+  {
+   "slot": 187,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/merkle-profile.sexp",
+   "new_target": "deployment/verify/merkle-profile.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L52-53",
+     "offset": 52362
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L52-L53@sha256:1a64d0e9885f",
+     "offset": 62876
+    }
+   ]
+  },
+  {
+   "slot": 188,
+   "kind": "EXPANSION",
+   "old_target": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md",
+   "new_target": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md",
+   "old": [
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L1,L178,L214,L226,L231",
+     "offset": 52682
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L1-L1@sha256:7dc1ad0474e0",
+     "offset": 63217
+    },
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L178-L178@sha256:7dc1ad0474e0",
+     "offset": 63271
+    },
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L214-L214@sha256:7dc1ad0474e0",
+     "offset": 63329
+    },
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L226-L226@sha256:7dc1ad0474e0",
+     "offset": 63387
+    },
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L231-L231@sha256:7dc1ad0474e0",
+     "offset": 63445
+    }
+   ]
+  },
+  {
+   "slot": 189,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/canonical-serialization-spec.md",
+   "new_target": "deployment/verify/canonical-serialization-spec.md",
+   "old": [
+    {
+     "token": "deployment/verify/canonical-serialization-spec.md:L23-29",
+     "offset": 53194
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/canonical-serialization-spec.md:L23-L29@sha256:c12d8b752b10",
+     "offset": 63964
+    }
+   ]
+  },
+  {
+   "slot": 190,
+   "kind": "EXPANSION",
+   "old_target": "deployment/AUTONOMY.md",
+   "new_target": "deployment/AUTONOMY.md",
+   "old": [
+    {
+     "token": "deployment/AUTONOMY.md:L30-31,L35-48,L71",
+     "offset": 53814
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L30-L31@sha256:f9298d544346",
+     "offset": 64605
+    },
+    {
+     "token": "deployment/AUTONOMY.md:L35-L48@sha256:f9298d544346",
+     "offset": 64656
+    },
+    {
+     "token": "deployment/AUTONOMY.md:L71-L71@sha256:f9298d544346",
+     "offset": 64707
+    }
+   ]
+  },
+  {
+   "slot": 191,
+   "kind": "EXPANSION",
+   "old_target": "deployment/AUTONOMY.md",
+   "new_target": "deployment/AUTONOMY.md",
+   "old": [
+    {
+     "token": "deployment/AUTONOMY.md:L72,L80",
+     "offset": 54140
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L72-L72@sha256:f9298d544346",
+     "offset": 65043
+    },
+    {
+     "token": "deployment/AUTONOMY.md:L80-L80@sha256:f9298d544346",
+     "offset": 65094
+    }
+   ]
+  },
+  {
+   "slot": 192,
+   "kind": "IDENTITY",
+   "old_target": "deployment/AUTONOMY.md",
+   "new_target": "deployment/AUTONOMY.md",
+   "old": [
+    {
+     "token": "deployment/AUTONOMY.md:L50-53",
+     "offset": 54430
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L50-L53@sha256:f9298d544346",
+     "offset": 65404
+    }
+   ]
+  },
+  {
+   "slot": 193,
+   "kind": "IDENTITY",
+   "old_target": "deployment/AUTONOMY.md",
+   "new_target": "deployment/AUTONOMY.md",
+   "old": [
+    {
+     "token": "deployment/AUTONOMY.md:L53-54",
+     "offset": 54753
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L53-L54@sha256:f9298d544346",
+     "offset": 65748
+    }
+   ]
+  },
+  {
+   "slot": 194,
+   "kind": "EXPANSION",
+   "old_target": "deployment/verify/assess-gate-plenary.sh",
+   "new_target": "deployment/verify/assess-gate-plenary.sh",
+   "old": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L47-53,L75-86",
+     "offset": 55142
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L47-L53@sha256:096473e06d88",
+     "offset": 66158
+    },
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L75-L86@sha256:096473e06d88",
+     "offset": 66227
+    }
+   ]
+  },
+  {
+   "slot": 195,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new_target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L30-32,L80",
+     "offset": 55486
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L30-L32@sha256:9eb423ea714e",
+     "offset": 66585
+    },
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L80-L80@sha256:9eb423ea714e",
+     "offset": 66653
+    }
+   ]
+  },
+  {
+   "slot": 196,
+   "kind": "EXPANSION",
+   "old_target": "deployment/mcp/README.md",
+   "new_target": "deployment/mcp/README.md",
+   "old": [
+    {
+     "token": "deployment/mcp/README.md:L28-30,L44-47",
+     "offset": 55953
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/mcp/README.md:L28-L30@sha256:efcff811c926",
+     "offset": 67137
+    },
+    {
+     "token": "deployment/mcp/README.md:L44-L47@sha256:efcff811c926",
+     "offset": 67190
+    }
+   ]
+  },
+  {
+   "slot": 197,
+   "kind": "IDENTITY",
+   "old_target": "deployment/mcp/claude_desktop_config.json",
+   "new_target": "deployment/mcp/claude_desktop_config.json",
+   "old": [
+    {
+     "token": "deployment/mcp/claude_desktop_config.json:L5-9",
+     "offset": 55994
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/mcp/claude_desktop_config.json:L5-L9@sha256:cc096393f0d8",
+     "offset": 67245
+    }
+   ]
+  },
+  {
+   "slot": 198,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new_target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L74",
+     "offset": 56349
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L74-L74@sha256:9260439b476e",
+     "offset": 67621
+    }
+   ]
+  },
+  {
+   "slot": 199,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-AUTODIDACTIC-LOOP.md",
+   "new_target": "deployment/LAWMAX-AUTODIDACTIC-LOOP.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-AUTODIDACTIC-LOOP.md:L108",
+     "offset": 56398
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-AUTODIDACTIC-LOOP.md:L108-L108@sha256:6152c2a7cb14",
+     "offset": 67694
+    }
+   ]
+  },
+  {
+   "slot": 200,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "new_target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L34",
+     "offset": 56444
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L34-L34@sha256:6c3465046d9b",
+     "offset": 67765
+    }
+   ]
+  },
+  {
+   "slot": 201,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/blind-failure-test.sh",
+   "new_target": "deployment/verify/blind-failure-test.sh",
+   "old": [
+    {
+     "token": "deployment/verify/blind-failure-test.sh:L17-18",
+     "offset": 56659
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/blind-failure-test.sh:L17-L18@sha256:8fd5cb56cc43",
+     "offset": 68004
+    }
+   ]
+  },
+  {
+   "slot": 202,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/README.md",
+   "new_target": "deployment/verify/README.md",
+   "old": [
+    {
+     "token": "deployment/verify/README.md:L51-58",
+     "offset": 57092
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L51-L58@sha256:2f01958e3e1d",
+     "offset": 68458
+    }
+   ]
+  },
+  {
+   "slot": 203,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/canonical-serialization-spec.md",
+   "new_target": "deployment/verify/canonical-serialization-spec.md",
+   "old": [
+    {
+     "token": "deployment/verify/canonical-serialization-spec.md:L32-38",
+     "offset": 57317
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/canonical-serialization-spec.md:L32-L38@sha256:c12d8b752b10",
+     "offset": 68704
+    }
+   ]
+  },
+  {
+   "slot": 204,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/merkle-profile.sexp",
+   "new_target": "deployment/verify/merkle-profile.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L64-74",
+     "offset": 57376
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L64-L74@sha256:1a64d0e9885f",
+     "offset": 68784
+    }
+   ]
+  },
+  {
+   "slot": 205,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-TEMPORAL-SEMANTICS-SPEC.md",
+   "new_target": "deployment/LAWMAX-TEMPORAL-SEMANTICS-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-TEMPORAL-SEMANTICS-SPEC.md:L298",
+     "offset": 57508
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TEMPORAL-SEMANTICS-SPEC.md:L298-L298@sha256:f0cd213d5622",
+     "offset": 68937
+    }
+   ]
+  },
+  {
+   "slot": 206,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md",
+   "new_target": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:L215",
+     "offset": 57560
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:L215-L215@sha256:868467cda19c",
+     "offset": 69014
+    }
+   ]
+  },
+  {
+   "slot": 207,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L30",
+     "offset": 57713
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L30-L30@sha256:e1cfc6adeeba",
+     "offset": 69192
+    }
+   ]
+  },
+  {
+   "slot": 208,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L31",
+     "offset": 57758
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L31-L31@sha256:e1cfc6adeeba",
+     "offset": 69261
+    }
+   ]
+  },
+  {
+   "slot": 209,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L33",
+     "offset": 57803
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L33-L33@sha256:e1cfc6adeeba",
+     "offset": 69330
+    }
+   ]
+  },
+  {
+   "slot": 210,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L34",
+     "offset": 57859
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L34-L34@sha256:e1cfc6adeeba",
+     "offset": 69410
+    }
+   ]
+  },
+  {
+   "slot": 211,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L36",
+     "offset": 57904
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L36-L36@sha256:e1cfc6adeeba",
+     "offset": 69479
+    }
+   ]
+  },
+  {
+   "slot": 212,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L39",
+     "offset": 57949
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L39-L39@sha256:e1cfc6adeeba",
+     "offset": 69548
+    }
+   ]
+  },
+  {
+   "slot": 213,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new_target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L41",
+     "offset": 58005
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L41-L41@sha256:e1cfc6adeeba",
+     "offset": 69628
+    }
+   ]
+  },
+  {
+   "slot": 214,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/assess-gate-plenary.sh",
+   "new_target": "deployment/verify/assess-gate-plenary.sh",
+   "old": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L2-13",
+     "offset": 58104
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L2-L13@sha256:096473e06d88",
+     "offset": 69751
+    }
+   ]
+  },
+  {
+   "slot": 215,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/assess-gate-manifest.lisp",
+   "new_target": "deployment/verify/assess-gate-manifest.lisp",
+   "old": [
+    {
+     "token": "deployment/verify/assess-gate-manifest.lisp:L3-13",
+     "offset": 58153
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-manifest.lisp:L3-L13@sha256:1264ac0ccb5b",
+     "offset": 69821
+    }
+   ]
+  },
+  {
+   "slot": 216,
+   "kind": "IDENTITY",
+   "old_target": "deployment/PROOF-CARRYING-LAW.md",
+   "new_target": "deployment/PROOF-CARRYING-LAW.md",
+   "old": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L62-69",
+     "offset": 58288
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L62-L69@sha256:aed9f075bbb6",
+     "offset": 69977
+    }
+   ]
+  },
+  {
+   "slot": 217,
+   "kind": "IDENTITY",
+   "old_target": "deployment/PROOF-CARRYING-LAW.md",
+   "new_target": "deployment/PROOF-CARRYING-LAW.md",
+   "old": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L111-134",
+     "offset": 58342
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L111-L134@sha256:aed9f075bbb6",
+     "offset": 70052
+    }
+   ]
+  },
+  {
+   "slot": 218,
+   "kind": "IDENTITY",
+   "old_target": "deployment/PROOF-CARRYING-LAW.md",
+   "new_target": "deployment/PROOF-CARRYING-LAW.md",
+   "old": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L94-97",
+     "offset": 58472
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L94-L97@sha256:aed9f075bbb6",
+     "offset": 70203
+    }
+   ]
+  },
+  {
+   "slot": 219,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/README.md",
+   "new_target": "deployment/verify/README.md",
+   "old": [
+    {
+     "token": "deployment/verify/README.md:L14-17",
+     "offset": 58514
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L14-L17@sha256:2f01958e3e1d",
+     "offset": 70266
+    }
+   ]
+  },
+  {
+   "slot": 220,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new_target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L20",
+     "offset": 58551
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L20-L20@sha256:9eb423ea714e",
+     "offset": 70324
+    }
+   ]
+  },
+  {
+   "slot": 221,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new_target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L74",
+     "offset": 58608
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L74-L74@sha256:9260439b476e",
+     "offset": 70405
+    }
+   ]
+  },
+  {
+   "slot": 222,
+   "kind": "IDENTITY",
+   "old_target": "deployment/provenance-narrative.ttl",
+   "new_target": "deployment/provenance-narrative.ttl",
+   "old": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L507",
+     "offset": 58657
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L507-L507@sha256:abf4e150b218",
+     "offset": 70478
+    }
+   ]
+  },
+  {
+   "slot": 223,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "new_target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L86",
+     "offset": 58700
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L86-L86@sha256:96f255d404e0",
+     "offset": 70546
+    }
+   ]
+  },
+  {
+   "slot": 224,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/gate-registry.sexp",
+   "new_target": "deployment/verify/gate-registry.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/gate-registry.sexp:L19-43",
+     "offset": 58799
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/gate-registry.sexp:L19-L43@sha256:0ea0668d9967",
+     "offset": 70669
+    }
+   ]
+  },
+  {
+   "slot": 225,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L79+",
+     "offset": 58845
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L79+",
+     "offset": 70736
+    }
+   ]
+  },
+  {
+   "slot": 226,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "new_target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L18",
+     "offset": 58912
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L18-L18@sha256:48a65a766d1c",
+     "offset": 70803
+    }
+   ]
+  },
+  {
+   "slot": 227,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "new_target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L61",
+     "offset": 58952
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L61-L61@sha256:d73ef93f0b48",
+     "offset": 70867
+    }
+   ]
+  },
+  {
+   "slot": 228,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "new_target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L9",
+     "offset": 59008
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L9-L9@sha256:7343da75e6d6",
+     "offset": 70947
+    }
+   ]
+  },
+  {
+   "slot": 229,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md",
+   "new_target": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L14",
+     "offset": 59053
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L14-L14@sha256:3970009d118d",
+     "offset": 71015
+    }
+   ]
+  },
+  {
+   "slot": 230,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "new_target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L225",
+     "offset": 59098
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L225-L225@sha256:6c3465046d9b",
+     "offset": 71084
+    }
+   ]
+  },
+  {
+   "slot": 231,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L40-76,L79+",
+     "offset": 59214
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L40-76,L79+",
+     "offset": 71225
+    }
+   ]
+  },
+  {
+   "slot": 232,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md",
+   "new_target": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L13-19",
+     "offset": 59277
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L13-L19@sha256:3970009d118d",
+     "offset": 71288
+    }
+   ]
+  },
+  {
+   "slot": 233,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-REPO-GRAPH.json",
+   "new_target": "deployment/LAWMAX-REPO-GRAPH.json",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-REPO-GRAPH.json:L1-3",
+     "offset": 59379
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-REPO-GRAPH.json:L1-L3@sha256:439f573f9f21",
+     "offset": 71411
+    }
+   ]
+  },
+  {
+   "slot": 234,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "new_target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L9",
+     "offset": 59431
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L9-L9@sha256:7343da75e6d6",
+     "offset": 71484
+    }
+   ]
+  },
+  {
+   "slot": 235,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new_target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L19",
+     "offset": 59476
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L19-L19@sha256:9260439b476e",
+     "offset": 71552
+    }
+   ]
+  },
+  {
+   "slot": 236,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "new_target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L5-6",
+     "offset": 59602
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L5-L6@sha256:6c3465046d9b",
+     "offset": 71702
+    }
+   ]
+  },
+  {
+   "slot": 237,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "new_target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L3-5,L73-74",
+     "offset": 59641
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L3-L5@sha256:d73ef93f0b48",
+     "offset": 71762
+    },
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L73-L74@sha256:d73ef93f0b48",
+     "offset": 71827
+    }
+   ]
+  },
+  {
+   "slot": 238,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-CPEI-TARGET-SPEC.md",
+   "new_target": "deployment/LAWMAX-CPEI-TARGET-SPEC.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L40-41",
+     "offset": 59705
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L40-L41@sha256:88d3f19cd8b5",
+     "offset": 71907
+    }
+   ]
+  },
+  {
+   "slot": 239,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new_target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L7",
+     "offset": 59752
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L7-L7@sha256:a826bc3fa5de",
+     "offset": 71975
+    }
+   ]
+  },
+  {
+   "slot": 240,
+   "kind": "IDENTITY",
+   "old_target": "deployment/authority.ttl",
+   "new_target": "deployment/authority.ttl",
+   "old": [
+    {
+     "token": "deployment/authority.ttl:L41",
+     "offset": 59857
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L41-L41@sha256:0cbd6e1d7bcb",
+     "offset": 72103
+    }
+   ]
+  },
+  {
+   "slot": 241,
+   "kind": "IDENTITY",
+   "old_target": "deployment/authority.ttl",
+   "new_target": "deployment/authority.ttl",
+   "old": [
+    {
+     "token": "deployment/authority.ttl:L449",
+     "offset": 59888
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L449-L449@sha256:0cbd6e1d7bcb",
+     "offset": 72158
+    }
+   ]
+  },
+  {
+   "slot": 242,
+   "kind": "IDENTITY",
+   "old_target": "deployment/manifest.ttl",
+   "new_target": "deployment/manifest.ttl",
+   "old": [
+    {
+     "token": "deployment/manifest.ttl:L127",
+     "offset": 59920
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/manifest.ttl:L127-L127@sha256:5d340e54bc3f",
+     "offset": 72215
+    }
+   ]
+  },
+  {
+   "slot": 243,
+   "kind": "IDENTITY",
+   "old_target": "deployment/ontology.ttl",
+   "new_target": "deployment/ontology.ttl",
+   "old": [
+    {
+     "token": "deployment/ontology.ttl:L53",
+     "offset": 59951
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/ontology.ttl:L53-L53@sha256:a95ac5b0ec4f",
+     "offset": 72271
+    }
+   ]
+  },
+  {
+   "slot": 244,
+   "kind": "IDENTITY",
+   "old_target": "deployment/publisher.jsonld",
+   "new_target": "deployment/publisher.jsonld",
+   "old": [
+    {
+     "token": "deployment/publisher.jsonld:L149",
+     "offset": 59992
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/publisher.jsonld:L149-L149@sha256:76d746527ad7",
+     "offset": 72336
+    }
+   ]
+  },
+  {
+   "slot": 245,
+   "kind": "IDENTITY",
+   "old_target": "deployment/provenance-narrative.ttl",
+   "new_target": "deployment/provenance-narrative.ttl",
+   "old": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L393",
+     "offset": 60027
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L393-L393@sha256:abf4e150b218",
+     "offset": 72396
+    }
+   ]
+  },
+  {
+   "slot": 246,
+   "kind": "IDENTITY",
+   "old_target": "deployment/templates/ai-ingest-manifest.ttl",
+   "new_target": "deployment/templates/ai-ingest-manifest.ttl",
+   "old": [
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L160",
+     "offset": 60070
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L160-L160@sha256:ae926b02d482",
+     "offset": 72464
+    }
+   ]
+  },
+  {
+   "slot": 247,
+   "kind": "IDENTITY",
+   "old_target": "deployment/shapes/eli-shapes.ttl",
+   "new_target": "deployment/shapes/eli-shapes.ttl",
+   "old": [
+    {
+     "token": "deployment/shapes/eli-shapes.ttl:L180-189",
+     "offset": 60132
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/shapes/eli-shapes.ttl:L180-L189@sha256:bab6fff5c9d8",
+     "offset": 72551
+    }
+   ]
+  },
+  {
+   "slot": 248,
+   "kind": "EXPANSION",
+   "old_target": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md",
+   "new_target": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L15,L44-45",
+     "offset": 60176
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L15-L15@sha256:c5b5c97dddcf",
+     "offset": 72616
+    },
+    {
+     "token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L44-L45@sha256:c5b5c97dddcf",
+     "offset": 72692
+    }
+   ]
+  },
+  {
+   "slot": 249,
+   "kind": "IDENTITY",
+   "old_target": "deployment/PROOF-CARRYING-LAW.md",
+   "new_target": "deployment/PROOF-CARRYING-LAW.md",
+   "old": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L139",
+     "offset": 60295
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L139-L139@sha256:aed9f075bbb6",
+     "offset": 72828
+    }
+   ]
+  },
+  {
+   "slot": 250,
+   "kind": "IDENTITY",
+   "old_target": "deployment/LAWMAX-TEMPORAL-IDENTITY-DESIGN.md",
+   "new_target": "deployment/LAWMAX-TEMPORAL-IDENTITY-DESIGN.md",
+   "old": [
+    {
+     "token": "deployment/LAWMAX-TEMPORAL-IDENTITY-DESIGN.md:L116",
+     "offset": 60346
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TEMPORAL-IDENTITY-DESIGN.md:L116-L116@sha256:c32612fe2275",
+     "offset": 72904
+    }
+   ]
+  },
+  {
+   "slot": 251,
+   "kind": "EXPANSION",
+   "old_target": "deployment/authority.ttl",
+   "new_target": "deployment/authority.ttl",
+   "old": [
+    {
+     "token": "deployment/authority.ttl:L262-273,L349-365",
+     "offset": 60430
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L262-L273@sha256:0cbd6e1d7bcb",
+     "offset": 73013
+    },
+    {
+     "token": "deployment/authority.ttl:L349-L365@sha256:0cbd6e1d7bcb",
+     "offset": 73068
+    }
+   ]
+  },
+  {
+   "slot": 252,
+   "kind": "IDENTITY",
+   "old_target": "deployment/authority.ttl",
+   "new_target": "deployment/authority.ttl",
+   "old": [
+    {
+     "token": "deployment/authority.ttl:L370-379",
+     "offset": 60486
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L370-L379@sha256:0cbd6e1d7bcb",
+     "offset": 73136
+    }
+   ]
+  },
+  {
+   "slot": 253,
+   "kind": "IDENTITY",
+   "old_target": "deployment/manifest.ttl",
+   "new_target": "deployment/manifest.ttl",
+   "old": [
+    {
+     "token": "deployment/manifest.ttl:L40",
+     "offset": 60540
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/manifest.ttl:L40-L40@sha256:5d340e54bc3f",
+     "offset": 73211
+    }
+   ]
+  },
+  {
+   "slot": 254,
+   "kind": "IDENTITY",
+   "old_target": "deployment/authority.ttl",
+   "new_target": "deployment/authority.ttl",
+   "old": [
+    {
+     "token": "deployment/authority.ttl:L337",
+     "offset": 60594
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L337-L337@sha256:0cbd6e1d7bcb",
+     "offset": 73289
+    }
+   ]
+  },
+  {
+   "slot": 255,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/merkle-profile.sexp",
+   "new_target": "deployment/verify/merkle-profile.sexp",
+   "old": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L51-53",
+     "offset": 60698
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L51-L53@sha256:1a64d0e9885f",
+     "offset": 73418
+    }
+   ]
+  },
+  {
+   "slot": 256,
+   "kind": "IDENTITY",
+   "old_target": "deployment/verify/canonical-serialization-spec.md",
+   "new_target": "deployment/verify/canonical-serialization-spec.md",
+   "old": [
+    {
+     "token": "deployment/verify/canonical-serialization-spec.md:L61-63",
+     "offset": 60765
+    }
+   ],
+   "new": [
+    {
+     "token": "deployment/verify/canonical-serialization-spec.md:L61-L63@sha256:c12d8b752b10",
+     "offset": 73506
+    }
+   ]
+  }
+ ]
+}

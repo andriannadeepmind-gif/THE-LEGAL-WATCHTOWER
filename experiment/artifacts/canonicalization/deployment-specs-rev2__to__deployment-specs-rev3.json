@@ -1,0 +1,4216 @@
+{
+ "source": "deployment-specs-rev2.sexp",
+ "source_sha256": "d48c47d92ec1e529ca9ede7e9752601deaa537ef8743f5cce6dc3de3cf6490b8",
+ "target": "deployment-specs-rev3.sexp",
+ "target_sha256": "56abf057df4f144ff1a079cd748a9e3963d7ddc1a654af558764f5fd4d160dcc",
+ "derivation": "ΠΑΡΑΤΗΡΟΥΜΕΝΗ ΔΙΑΦΟΡΑ ΤΩΝ ΔΥΟ ΑΡΧΕΙΩΝ — ΟΧΙ έξοδος του εργαλείου που έκανε τη μετάβαση",
+ "old_tokens": 382,
+ "new_tokens": 382,
+ "expansions": 0,
+ "target_substitutions": 0,
+ "reorderings": 0,
+ "mapping": [
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L1-L153@sha256:aed9f075bbb6",
+   "old_offset": 2760,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L1-L153@sha256:aed9f075bbb6",
+     "offset": 2760
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/README.md:L1-L110@sha256:2f01958e3e1d",
+   "old_offset": 2823,
+   "target": "deployment/verify/README.md",
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L1-L110@sha256:2f01958e3e1d",
+     "offset": 2823
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/merkle-profile.sexp:L1-L143@sha256:1a64d0e9885f",
+   "old_offset": 4365,
+   "target": "deployment/verify/merkle-profile.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L1-L143@sha256:1a64d0e9885f",
+     "offset": 4365
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L12-L74@sha256:aed9f075bbb6",
+   "old_offset": 4433,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L12-L74@sha256:aed9f075bbb6",
+     "offset": 4433
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/README.md:L63-L110@sha256:2f01958e3e1d",
+   "old_offset": 4496,
+   "target": "deployment/verify/README.md",
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L63-L110@sha256:2f01958e3e1d",
+     "offset": 4496
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/vectors/merkle/vectors.json:L1-8+",
+   "old_offset": 4555,
+   "target": "deployment/verify/vectors/merkle/vectors.json",
+   "new": [
+    {
+     "token": "deployment/verify/vectors/merkle/vectors.json:L1-8+",
+     "offset": 4555
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L1-L89@sha256:f9298d544346",
+   "old_offset": 5522,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L1-L89@sha256:f9298d544346",
+     "offset": 5522
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/canonical-serialization-spec.md:L1-L70@sha256:c12d8b752b10",
+   "old_offset": 6486,
+   "target": "deployment/verify/canonical-serialization-spec.md",
+   "new": [
+    {
+     "token": "deployment/verify/canonical-serialization-spec.md:L1-L70@sha256:c12d8b752b10",
+     "offset": 6486
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/assess-gate-manifest.lisp:L1-L60@sha256:1264ac0ccb5b",
+   "old_offset": 7425,
+   "target": "deployment/verify/assess-gate-manifest.lisp",
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-manifest.lisp:L1-L60@sha256:1264ac0ccb5b",
+     "offset": 7425
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/gate-registry.sexp:L1-L43@sha256:0ea0668d9967",
+   "old_offset": 7498,
+   "target": "deployment/verify/gate-registry.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/gate-registry.sexp:L1-L43@sha256:0ea0668d9967",
+     "offset": 7498
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/golden/astikos.fingerprint.sexp:L1-L1@sha256:dbca1aa914f4",
+   "old_offset": 8423,
+   "target": "deployment/verify/golden/astikos.fingerprint.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/golden/astikos.fingerprint.sexp:L1-L1@sha256:dbca1aa914f4",
+     "offset": 8423
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/golden/poinikos.fingerprint.sexp:L1-L1@sha256:679d2d6cb564",
+   "old_offset": 8501,
+   "target": "deployment/verify/golden/poinikos.fingerprint.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/golden/poinikos.fingerprint.sexp:L1-L1@sha256:679d2d6cb564",
+     "offset": 8501
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/golden/constitution.fingerprint.sexp:L1-L1@sha256:92621ee67703",
+   "old_offset": 8580,
+   "target": "deployment/verify/golden/constitution.fingerprint.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/golden/constitution.fingerprint.sexp:L1-L1@sha256:92621ee67703",
+     "offset": 8580
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L26-L26@sha256:f9298d544346",
+   "old_offset": 8663,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L26-L26@sha256:f9298d544346",
+     "offset": 8663
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L72-L72@sha256:f9298d544346",
+   "old_offset": 8714,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L72-L72@sha256:f9298d544346",
+     "offset": 8714
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L80-L80@sha256:f9298d544346",
+   "old_offset": 8765,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L80-L80@sha256:f9298d544346",
+     "offset": 8765
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L84-L86@sha256:f9298d544346",
+   "old_offset": 8816,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L84-L86@sha256:f9298d544346",
+     "offset": 8816
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/vectors/README.md:L1-L46@sha256:9ef93edde222",
+   "old_offset": 9705,
+   "target": "deployment/verify/vectors/README.md",
+   "new": [
+    {
+     "token": "deployment/verify/vectors/README.md:L1-L46@sha256:9ef93edde222",
+     "offset": 9705
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/vectors/INDEX.json:L1-L6@sha256:913dfca1489f",
+   "old_offset": 9770,
+   "target": "deployment/verify/vectors/INDEX.json",
+   "new": [
+    {
+     "token": "deployment/verify/vectors/INDEX.json:L1-L6@sha256:913dfca1489f",
+     "offset": 9770
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L9-37,L40-76,L79+",
+   "old_offset": 10560,
+   "target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L9-37,L40-76,L79+",
+     "offset": 10560
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/SYSTEM-CONSTITUTION.sexp:L1-L40@sha256:0b25b3eaedbb",
+   "old_offset": 11366,
+   "target": "deployment/SYSTEM-CONSTITUTION.sexp",
+   "new": [
+    {
+     "token": "deployment/SYSTEM-CONSTITUTION.sexp:L1-L40@sha256:0b25b3eaedbb",
+     "offset": 11366
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-THREAT-MODEL.md:L1-L62@sha256:48a65a766d1c",
+   "old_offset": 12173,
+   "target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L1-L62@sha256:48a65a766d1c",
+     "offset": 12173
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L1-L240@sha256:7dc1ad0474e0",
+   "old_offset": 13076,
+   "target": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md",
+   "new": [
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L1-L240@sha256:7dc1ad0474e0",
+     "offset": 13076
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L40-L44@sha256:88d3f19cd8b5",
+   "old_offset": 13981,
+   "target": "deployment/LAWMAX-CPEI-TARGET-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L40-L44@sha256:88d3f19cd8b5",
+     "offset": 13981
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L142-L143@sha256:88d3f19cd8b5",
+   "old_offset": 14047,
+   "target": "deployment/LAWMAX-CPEI-TARGET-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L142-L143@sha256:88d3f19cd8b5",
+     "offset": 14047
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L147-L175@sha256:88d3f19cd8b5",
+   "old_offset": 14115,
+   "target": "deployment/LAWMAX-CPEI-TARGET-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L147-L175@sha256:88d3f19cd8b5",
+     "offset": 14115
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L179-L197@sha256:88d3f19cd8b5",
+   "old_offset": 14183,
+   "target": "deployment/LAWMAX-CPEI-TARGET-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L179-L197@sha256:88d3f19cd8b5",
+     "offset": 14183
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CPEI-TARGET-SPEC.sexp:L10-L26@sha256:bf02917b7df6",
+   "old_offset": 14253,
+   "target": "deployment/LAWMAX-CPEI-TARGET-SPEC.sexp",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.sexp:L10-L26@sha256:bf02917b7df6",
+     "offset": 14253
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:L71-L71@sha256:868467cda19c",
+   "old_offset": 15243,
+   "target": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:L71-L71@sha256:868467cda19c",
+     "offset": 15243
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:L197-L234@sha256:868467cda19c",
+   "old_offset": 15318,
+   "target": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:L197-L234@sha256:868467cda19c",
+     "offset": 15318
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT-CLOSURE-MATRIX.md:L1-L13@sha256:d96292a02311",
+   "old_offset": 15397,
+   "target": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT-CLOSURE-MATRIX.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT-CLOSURE-MATRIX.md:L1-L13@sha256:d96292a02311",
+     "offset": 15397
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md:L1-L104@sha256:17113f6970f2",
+   "old_offset": 16307,
+   "target": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md:L1-L104@sha256:17113f6970f2",
+     "offset": 16307
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L1-L84@sha256:9eb423ea714e",
+   "old_offset": 17275,
+   "target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L1-L84@sha256:9eb423ea714e",
+     "offset": 17275
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/mcp/README.md:L1-L47@sha256:efcff811c926",
+   "old_offset": 18002,
+   "target": "deployment/mcp/README.md",
+   "new": [
+    {
+     "token": "deployment/mcp/README.md:L1-L47@sha256:efcff811c926",
+     "offset": 18002
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/mcp/claude_desktop_config.json:L1-L12@sha256:cc096393f0d8",
+   "old_offset": 18056,
+   "target": "deployment/mcp/claude_desktop_config.json",
+   "new": [
+    {
+     "token": "deployment/mcp/claude_desktop_config.json:L1-L12@sha256:cc096393f0d8",
+     "offset": 18056
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L22-L25@sha256:0cbd6e1d7bcb",
+   "old_offset": 18984,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L22-L25@sha256:0cbd6e1d7bcb",
+     "offset": 18984
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L59-L60@sha256:0cbd6e1d7bcb",
+   "old_offset": 19037,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L59-L60@sha256:0cbd6e1d7bcb",
+     "offset": 19037
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L262-L273@sha256:0cbd6e1d7bcb",
+   "old_offset": 19090,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L262-L273@sha256:0cbd6e1d7bcb",
+     "offset": 19090
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L349-L379@sha256:0cbd6e1d7bcb",
+   "old_offset": 19145,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L349-L379@sha256:0cbd6e1d7bcb",
+     "offset": 19145
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/manifest.ttl:L14-L21@sha256:5d340e54bc3f",
+   "old_offset": 19202,
+   "target": "deployment/manifest.ttl",
+   "new": [
+    {
+     "token": "deployment/manifest.ttl:L14-L21@sha256:5d340e54bc3f",
+     "offset": 19202
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/manifest.ttl:L33-L48@sha256:5d340e54bc3f",
+   "old_offset": 19254,
+   "target": "deployment/manifest.ttl",
+   "new": [
+    {
+     "token": "deployment/manifest.ttl:L33-L48@sha256:5d340e54bc3f",
+     "offset": 19254
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/provenance-narrative.ttl:L17-L23@sha256:abf4e150b218",
+   "old_offset": 19308,
+   "target": "deployment/provenance-narrative.ttl",
+   "new": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L17-L23@sha256:abf4e150b218",
+     "offset": 19308
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/ontology.ttl:L15-L25@sha256:a95ac5b0ec4f",
+   "old_offset": 19374,
+   "target": "deployment/ontology.ttl",
+   "new": [
+    {
+     "token": "deployment/ontology.ttl:L15-L25@sha256:a95ac5b0ec4f",
+     "offset": 19374
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/identity.ttl:L10-L17@sha256:79377e10db82",
+   "old_offset": 19428,
+   "target": "deployment/identity.ttl",
+   "new": [
+    {
+     "token": "deployment/identity.ttl:L10-L17@sha256:79377e10db82",
+     "offset": 19428
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/ai-feedback.ttl:L11-L24@sha256:130d7ed0c9ee",
+   "old_offset": 19482,
+   "target": "deployment/ai-feedback.ttl",
+   "new": [
+    {
+     "token": "deployment/ai-feedback.ttl:L11-L24@sha256:130d7ed0c9ee",
+     "offset": 19482
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/shapes/legal-shapes.ttl:L11-L20@sha256:4d54ae48b2d5",
+   "old_offset": 19569,
+   "target": "deployment/shapes/legal-shapes.ttl",
+   "new": [
+    {
+     "token": "deployment/shapes/legal-shapes.ttl:L11-L20@sha256:4d54ae48b2d5",
+     "offset": 19569
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/shapes/eli-shapes.ttl:L180-L189@sha256:bab6fff5c9d8",
+   "old_offset": 19634,
+   "target": "deployment/shapes/eli-shapes.ttl",
+   "new": [
+    {
+     "token": "deployment/shapes/eli-shapes.ttl:L180-L189@sha256:bab6fff5c9d8",
+     "offset": 19634
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L1-L88@sha256:96f255d404e0",
+   "old_offset": 20492,
+   "target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L1-L88@sha256:96f255d404e0",
+     "offset": 20492
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/SYSTEM-CONSTITUTION.sexp:L9-L13@sha256:0b25b3eaedbb",
+   "old_offset": 20938,
+   "target": "deployment/SYSTEM-CONSTITUTION.sexp",
+   "new": [
+    {
+     "token": "deployment/SYSTEM-CONSTITUTION.sexp:L9-L13@sha256:0b25b3eaedbb",
+     "offset": 20938
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L60-L61@sha256:d73ef93f0b48",
+   "old_offset": 21003,
+   "target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L60-L61@sha256:d73ef93f0b48",
+     "offset": 21003
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L65-L67@sha256:d73ef93f0b48",
+   "old_offset": 21070,
+   "target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L65-L67@sha256:d73ef93f0b48",
+     "offset": 21070
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L91-L102@sha256:aed9f075bbb6",
+   "old_offset": 21454,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L91-L102@sha256:aed9f075bbb6",
+     "offset": 21454
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L27-L27@sha256:f9298d544346",
+   "old_offset": 21518,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L27-L27@sha256:f9298d544346",
+     "offset": 21518
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L45-L47@sha256:f9298d544346",
+   "old_offset": 21569,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L45-L47@sha256:f9298d544346",
+     "offset": 21569
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L71-L71@sha256:f9298d544346",
+   "old_offset": 21620,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L71-L71@sha256:f9298d544346",
+     "offset": 21620
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L20-L20@sha256:9eb423ea714e",
+   "old_offset": 21673,
+   "target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L20-L20@sha256:9eb423ea714e",
+     "offset": 21673
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L19-L19@sha256:9eb423ea714e",
+   "old_offset": 21959,
+   "target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L19-L19@sha256:9eb423ea714e",
+     "offset": 21959
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L23-L25@sha256:9eb423ea714e",
+   "old_offset": 22027,
+   "target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L23-L25@sha256:9eb423ea714e",
+     "offset": 22027
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L81-L81@sha256:9eb423ea714e",
+   "old_offset": 22095,
+   "target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L81-L81@sha256:9eb423ea714e",
+     "offset": 22095
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L104-L109@sha256:aed9f075bbb6",
+   "old_offset": 22481,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L104-L109@sha256:aed9f075bbb6",
+     "offset": 22481
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L126-L133@sha256:aed9f075bbb6",
+   "old_offset": 22544,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L126-L133@sha256:aed9f075bbb6",
+     "offset": 22544
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/README.md:L27-L34@sha256:2f01958e3e1d",
+   "old_offset": 22609,
+   "target": "deployment/verify/README.md",
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L27-L34@sha256:2f01958e3e1d",
+     "offset": 22609
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/gate-registry.sexp:L5-L8@sha256:0ea0668d9967",
+   "old_offset": 22922,
+   "target": "deployment/verify/gate-registry.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/gate-registry.sexp:L5-L8@sha256:0ea0668d9967",
+     "offset": 22922
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/gate-registry.sexp:L19-L43@sha256:0ea0668d9967",
+   "old_offset": 22985,
+   "target": "deployment/verify/gate-registry.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/gate-registry.sexp:L19-L43@sha256:0ea0668d9967",
+     "offset": 22985
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/assess-gate-manifest.lisp:L5-L13@sha256:1264ac0ccb5b",
+   "old_offset": 23052,
+   "target": "deployment/verify/assess-gate-manifest.lisp",
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-manifest.lisp:L5-L13@sha256:1264ac0ccb5b",
+     "offset": 23052
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/assess-gate-manifest.lisp:L59-L59@sha256:1264ac0ccb5b",
+   "old_offset": 23123,
+   "target": "deployment/verify/assess-gate-manifest.lisp",
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-manifest.lisp:L59-L59@sha256:1264ac0ccb5b",
+     "offset": 23123
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/merkle-profile.sexp:L17-L19@sha256:1a64d0e9885f",
+   "old_offset": 23475,
+   "target": "deployment/verify/merkle-profile.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L17-L19@sha256:1a64d0e9885f",
+     "offset": 23475
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/README.md:L107-L109@sha256:2f01958e3e1d",
+   "old_offset": 23543,
+   "target": "deployment/verify/README.md",
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L107-L109@sha256:2f01958e3e1d",
+     "offset": 23543
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L3-L3@sha256:a826bc3fa5de",
+   "old_offset": 23846,
+   "target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L3-L3@sha256:a826bc3fa5de",
+     "offset": 23846
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L28-L31@sha256:a826bc3fa5de",
+   "old_offset": 23921,
+   "target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L28-L31@sha256:a826bc3fa5de",
+     "offset": 23921
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L121-L121@sha256:88d3f19cd8b5",
+   "old_offset": 24000,
+   "target": "deployment/LAWMAX-CPEI-TARGET-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L121-L121@sha256:88d3f19cd8b5",
+     "offset": 24000
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L181-L182@sha256:88d3f19cd8b5",
+   "old_offset": 24068,
+   "target": "deployment/LAWMAX-CPEI-TARGET-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L181-L182@sha256:88d3f19cd8b5",
+     "offset": 24068
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L4-L5@sha256:7343da75e6d6",
+   "old_offset": 24138,
+   "target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L4-L5@sha256:7343da75e6d6",
+     "offset": 24138
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L84-L85@sha256:7343da75e6d6",
+   "old_offset": 24204,
+   "target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L84-L85@sha256:7343da75e6d6",
+     "offset": 24204
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/assess-gate-plenary.sh:L18-L19@sha256:096473e06d88",
+   "old_offset": 24555,
+   "target": "deployment/verify/assess-gate-plenary.sh",
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L18-L19@sha256:096473e06d88",
+     "offset": 24555
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/assess-gate-plenary.sh:L47-L53@sha256:096473e06d88",
+   "old_offset": 24624,
+   "target": "deployment/verify/assess-gate-plenary.sh",
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L47-L53@sha256:096473e06d88",
+     "offset": 24624
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L72-L72@sha256:f9298d544346",
+   "old_offset": 25006,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L72-L72@sha256:f9298d544346",
+     "offset": 25006
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L80-L80@sha256:f9298d544346",
+   "old_offset": 25057,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L80-L80@sha256:f9298d544346",
+     "offset": 25057
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/shapes/eli-shapes.ttl:L180-L189@sha256:bab6fff5c9d8",
+   "old_offset": 25361,
+   "target": "deployment/shapes/eli-shapes.ttl",
+   "new": [
+    {
+     "token": "deployment/shapes/eli-shapes.ttl:L180-L189@sha256:bab6fff5c9d8",
+     "offset": 25361
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/merkle-profile.sexp:L44-L62@sha256:1a64d0e9885f",
+   "old_offset": 26008,
+   "target": "deployment/verify/merkle-profile.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L44-L62@sha256:1a64d0e9885f",
+     "offset": 26008
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/merkle-profile.sexp:L122-L143@sha256:1a64d0e9885f",
+   "old_offset": 26074,
+   "target": "deployment/verify/merkle-profile.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L122-L143@sha256:1a64d0e9885f",
+     "offset": 26074
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/merkle-profile.sexp:L64-L74@sha256:1a64d0e9885f",
+   "old_offset": 26466,
+   "target": "deployment/verify/merkle-profile.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L64-L74@sha256:1a64d0e9885f",
+     "offset": 26466
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/merkle-profile.sexp:L128-L129@sha256:1a64d0e9885f",
+   "old_offset": 26532,
+   "target": "deployment/verify/merkle-profile.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L128-L129@sha256:1a64d0e9885f",
+     "offset": 26532
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/merkle-profile.sexp:L92-L93@sha256:1a64d0e9885f",
+   "old_offset": 26600,
+   "target": "deployment/verify/merkle-profile.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L92-L93@sha256:1a64d0e9885f",
+     "offset": 26600
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/canonical-serialization-spec.md:L34-L38@sha256:c12d8b752b10",
+   "old_offset": 26688,
+   "target": "deployment/verify/canonical-serialization-spec.md",
+   "new": [
+    {
+     "token": "deployment/verify/canonical-serialization-spec.md:L34-L38@sha256:c12d8b752b10",
+     "offset": 26688
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L104-L109@sha256:aed9f075bbb6",
+   "old_offset": 27069,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L104-L109@sha256:aed9f075bbb6",
+     "offset": 27069
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/README.md:L27-L34@sha256:2f01958e3e1d",
+   "old_offset": 27134,
+   "target": "deployment/verify/README.md",
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L27-L34@sha256:2f01958e3e1d",
+     "offset": 27134
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/merkle-profile.sexp:L76-L80@sha256:1a64d0e9885f",
+   "old_offset": 27403,
+   "target": "deployment/verify/merkle-profile.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L76-L80@sha256:1a64d0e9885f",
+     "offset": 27403
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/merkle-profile.sexp:L130-L130@sha256:1a64d0e9885f",
+   "old_offset": 27469,
+   "target": "deployment/verify/merkle-profile.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L130-L130@sha256:1a64d0e9885f",
+     "offset": 27469
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/assess-gate-manifest.lisp:L5-L13@sha256:1264ac0ccb5b",
+   "old_offset": 27751,
+   "target": "deployment/verify/assess-gate-manifest.lisp",
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-manifest.lisp:L5-L13@sha256:1264ac0ccb5b",
+     "offset": 27751
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/gate-registry.sexp:L5-L8@sha256:0ea0668d9967",
+   "old_offset": 27824,
+   "target": "deployment/verify/gate-registry.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/gate-registry.sexp:L5-L8@sha256:0ea0668d9967",
+     "offset": 27824
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/hash-seat-registry.sexp:L8-L12@sha256:04caae1483d2",
+   "old_offset": 28058,
+   "target": "deployment/verify/hash-seat-registry.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/hash-seat-registry.sexp:L8-L12@sha256:04caae1483d2",
+     "offset": 28058
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/hash-seat-registry.sexp:L13-L37@sha256:04caae1483d2",
+   "old_offset": 28127,
+   "target": "deployment/verify/hash-seat-registry.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/hash-seat-registry.sexp:L13-L37@sha256:04caae1483d2",
+     "offset": 28127
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L28-L31@sha256:a826bc3fa5de",
+   "old_offset": 28432,
+   "target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L28-L31@sha256:a826bc3fa5de",
+     "offset": 28432
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L84-L85@sha256:7343da75e6d6",
+   "old_offset": 28511,
+   "target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L84-L85@sha256:7343da75e6d6",
+     "offset": 28511
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L36-L37@sha256:a826bc3fa5de",
+   "old_offset": 28879,
+   "target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L36-L37@sha256:a826bc3fa5de",
+     "offset": 28879
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L90-L91@sha256:7343da75e6d6",
+   "old_offset": 28958,
+   "target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L90-L91@sha256:7343da75e6d6",
+     "offset": 28958
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-THREAT-MODEL.md:L41-L41@sha256:48a65a766d1c",
+   "old_offset": 29028,
+   "target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L41-L41@sha256:48a65a766d1c",
+     "offset": 29028
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L21-L24@sha256:ba0b1d094f92",
+   "old_offset": 29255,
+   "target": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L21-L24@sha256:ba0b1d094f92",
+     "offset": 29255
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L97-L106@sha256:ba0b1d094f92",
+   "old_offset": 29323,
+   "target": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L97-L106@sha256:ba0b1d094f92",
+     "offset": 29323
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L23-L24@sha256:ba0b1d094f92",
+   "old_offset": 29544,
+   "target": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L23-L24@sha256:ba0b1d094f92",
+     "offset": 29544
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md:L12-L16@sha256:17113f6970f2",
+   "old_offset": 29874,
+   "target": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md:L12-L16@sha256:17113f6970f2",
+     "offset": 29874
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md:L73-L73@sha256:17113f6970f2",
+   "old_offset": 29953,
+   "target": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md:L73-L73@sha256:17113f6970f2",
+     "offset": 29953
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md:L68-L73@sha256:17113f6970f2",
+   "old_offset": 30214,
+   "target": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNDERSTANDING-LEARNING-SCHEMA.md:L68-L73@sha256:17113f6970f2",
+     "offset": 30214
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:L197-L213@sha256:868467cda19c",
+   "old_offset": 30494,
+   "target": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:L197-L213@sha256:868467cda19c",
+     "offset": 30494
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L9-L14@sha256:e1cfc6adeeba",
+   "old_offset": 30812,
+   "target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L9-L14@sha256:e1cfc6adeeba",
+     "offset": 30812
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L101-L107@sha256:e1cfc6adeeba",
+   "old_offset": 30878,
+   "target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L101-L107@sha256:e1cfc6adeeba",
+     "offset": 30878
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L93-L93@sha256:e1cfc6adeeba",
+   "old_offset": 31165,
+   "target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L93-L93@sha256:e1cfc6adeeba",
+     "offset": 31165
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L96-L99@sha256:e1cfc6adeeba",
+   "old_offset": 31232,
+   "target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L96-L99@sha256:e1cfc6adeeba",
+     "offset": 31232
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L23-L25@sha256:9eb423ea714e",
+   "old_offset": 31500,
+   "target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L23-L25@sha256:9eb423ea714e",
+     "offset": 31500
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L76-L77@sha256:9eb423ea714e",
+   "old_offset": 31568,
+   "target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L76-L77@sha256:9eb423ea714e",
+     "offset": 31568
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L82-L84@sha256:9eb423ea714e",
+   "old_offset": 31636,
+   "target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L82-L84@sha256:9eb423ea714e",
+     "offset": 31636
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L2-L3@sha256:3970009d118d",
+   "old_offset": 31847,
+   "target": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L2-L3@sha256:3970009d118d",
+     "offset": 31847
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLAN.md:L10-L10@sha256:6c3465046d9b",
+   "old_offset": 31914,
+   "target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L10-L10@sha256:6c3465046d9b",
+     "offset": 31914
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/canonical-serialization-spec.md:L32-L38@sha256:c12d8b752b10",
+   "old_offset": 33388,
+   "target": "deployment/verify/canonical-serialization-spec.md",
+   "new": [
+    {
+     "token": "deployment/verify/canonical-serialization-spec.md:L32-L38@sha256:c12d8b752b10",
+     "offset": 33388
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/merkle-profile.sexp:L64-L74@sha256:1a64d0e9885f",
+   "old_offset": 33468,
+   "target": "deployment/verify/merkle-profile.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L64-L74@sha256:1a64d0e9885f",
+     "offset": 33468
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/merkle-profile.sexp:L92-L93@sha256:1a64d0e9885f",
+   "old_offset": 33534,
+   "target": "deployment/verify/merkle-profile.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L92-L93@sha256:1a64d0e9885f",
+     "offset": 33534
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/merkle-profile.sexp:L128-L129@sha256:1a64d0e9885f",
+   "old_offset": 33600,
+   "target": "deployment/verify/merkle-profile.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L128-L129@sha256:1a64d0e9885f",
+     "offset": 33600
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L38-L42@sha256:aed9f075bbb6",
+   "old_offset": 33670,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L38-L42@sha256:aed9f075bbb6",
+     "offset": 33670
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/README.md:L94-L100@sha256:2f01958e3e1d",
+   "old_offset": 33733,
+   "target": "deployment/verify/README.md",
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L94-L100@sha256:2f01958e3e1d",
+     "offset": 33733
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-THREAT-MODEL.md:L39-L39@sha256:48a65a766d1c",
+   "old_offset": 33792,
+   "target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L39-L39@sha256:48a65a766d1c",
+     "offset": 33792
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L77-L77@sha256:e1cfc6adeeba",
+   "old_offset": 33856,
+   "target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L77-L77@sha256:e1cfc6adeeba",
+     "offset": 33856
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L362-L362@sha256:0cbd6e1d7bcb",
+   "old_offset": 34347,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L362-L362@sha256:0cbd6e1d7bcb",
+     "offset": 34347
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L94-L97@sha256:aed9f075bbb6",
+   "old_offset": 34656,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L94-L97@sha256:aed9f075bbb6",
+     "offset": 34656
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L100-L102@sha256:aed9f075bbb6",
+   "old_offset": 34717,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L100-L102@sha256:aed9f075bbb6",
+     "offset": 34717
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L129-L132@sha256:aed9f075bbb6",
+   "old_offset": 34780,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L129-L132@sha256:aed9f075bbb6",
+     "offset": 34780
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/README.md:L11-L17@sha256:2f01958e3e1d",
+   "old_offset": 34845,
+   "target": "deployment/verify/README.md",
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L11-L17@sha256:2f01958e3e1d",
+     "offset": 34845
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L20-L20@sha256:9eb423ea714e",
+   "old_offset": 34903,
+   "target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L20-L20@sha256:9eb423ea714e",
+     "offset": 34903
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L66-L66@sha256:9eb423ea714e",
+   "old_offset": 34971,
+   "target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L66-L66@sha256:9eb423ea714e",
+     "offset": 34971
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L74-L74@sha256:9260439b476e",
+   "old_offset": 35041,
+   "target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L74-L74@sha256:9260439b476e",
+     "offset": 35041
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/provenance-narrative.ttl:L297-L298@sha256:abf4e150b218",
+   "old_offset": 35114,
+   "target": "deployment/provenance-narrative.ttl",
+   "new": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L297-L298@sha256:abf4e150b218",
+     "offset": 35114
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/provenance-narrative.ttl:L507-L507@sha256:abf4e150b218",
+   "old_offset": 35180,
+   "target": "deployment/provenance-narrative.ttl",
+   "new": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L507-L507@sha256:abf4e150b218",
+     "offset": 35180
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L362-L362@sha256:0cbd6e1d7bcb",
+   "old_offset": 35248,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L362-L362@sha256:0cbd6e1d7bcb",
+     "offset": 35248
+    }
+   ]
+  },
+  {
+   "old_token": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:L133-L133@sha256:4da7b2505a06",
+   "old_offset": 35649,
+   "target": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp",
+   "new": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:L133-L133@sha256:4da7b2505a06",
+     "offset": 35649
+    }
+   ]
+  },
+  {
+   "old_token": "source/corpus-fingerprint.lisp:L94-L94@sha256:40cb907b5ffa",
+   "old_offset": 35820,
+   "target": "source/corpus-fingerprint.lisp",
+   "new": [
+    {
+     "token": "source/corpus-fingerprint.lisp:L94-L94@sha256:40cb907b5ffa",
+     "offset": 35820
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L16-L24@sha256:e1cfc6adeeba",
+   "old_offset": 36234,
+   "target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L16-L24@sha256:e1cfc6adeeba",
+     "offset": 36234
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L26-L46@sha256:e1cfc6adeeba",
+   "old_offset": 36301,
+   "target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L26-L46@sha256:e1cfc6adeeba",
+     "offset": 36301
+    }
+   ]
+  },
+  {
+   "old_token": "source/corpus-fingerprint.lisp:L94-L94@sha256:40cb907b5ffa",
+   "old_offset": 36469,
+   "target": "source/corpus-fingerprint.lisp",
+   "new": [
+    {
+     "token": "source/corpus-fingerprint.lisp:L94-L94@sha256:40cb907b5ffa",
+     "offset": 36469
+    }
+   ]
+  },
+  {
+   "old_token": "source/legal-audit-system.lisp:L571-L571@sha256:53613cdd00f0",
+   "old_offset": 36530,
+   "target": "source/legal-audit-system.lisp",
+   "new": [
+    {
+     "token": "source/legal-audit-system.lisp:L571-L571@sha256:53613cdd00f0",
+     "offset": 36530
+    }
+   ]
+  },
+  {
+   "old_token": "source/legal-audit-system.lisp:L576-L576@sha256:53613cdd00f0",
+   "old_offset": 36591,
+   "target": "source/legal-audit-system.lisp",
+   "new": [
+    {
+     "token": "source/legal-audit-system.lisp:L576-L576@sha256:53613cdd00f0",
+     "offset": 36591
+    }
+   ]
+  },
+  {
+   "old_token": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:L133-L133@sha256:4da7b2505a06",
+   "old_offset": 36654,
+   "target": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp",
+   "new": [
+    {
+     "token": "systems/orchestrator-engine-sbcl/stages/anchor-blockchain.lisp:L133-L133@sha256:4da7b2505a06",
+     "offset": 36654
+    }
+   ]
+  },
+  {
+   "old_token": "source/semantic-authority.lisp:L653-L653@sha256:3b7ab18ddb0a",
+   "old_offset": 36749,
+   "target": "source/semantic-authority.lisp",
+   "new": [
+    {
+     "token": "source/semantic-authority.lisp:L653-L653@sha256:3b7ab18ddb0a",
+     "offset": 36749
+    }
+   ]
+  },
+  {
+   "old_token": "source/hash-authority.lisp:L55-L55@sha256:280a7c5bb315",
+   "old_offset": 36812,
+   "target": "source/hash-authority.lisp",
+   "new": [
+    {
+     "token": "source/hash-authority.lisp:L55-L55@sha256:280a7c5bb315",
+     "offset": 36812
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-TEMPORAL-SEMANTICS-SPEC.md:L292-L343@sha256:f0cd213d5622",
+   "old_offset": 37979,
+   "target": "deployment/LAWMAX-TEMPORAL-SEMANTICS-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TEMPORAL-SEMANTICS-SPEC.md:L292-L343@sha256:f0cd213d5622",
+     "offset": 37979
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:L215-L234@sha256:868467cda19c",
+   "old_offset": 38056,
+   "target": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:L215-L234@sha256:868467cda19c",
+     "offset": 38056
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT-CLOSURE-MATRIX.md:L140-L140@sha256:d96292a02311",
+   "old_offset": 38135,
+   "target": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT-CLOSURE-MATRIX.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT-CLOSURE-MATRIX.md:L140-L140@sha256:d96292a02311",
+     "offset": 38135
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L26-L27@sha256:a826bc3fa5de",
+   "old_offset": 38229,
+   "target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L26-L27@sha256:a826bc3fa5de",
+     "offset": 38229
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L13-L16@sha256:c5b5c97dddcf",
+   "old_offset": 39269,
+   "target": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L13-L16@sha256:c5b5c97dddcf",
+     "offset": 39269
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L44-L45@sha256:c5b5c97dddcf",
+   "old_offset": 39345,
+   "target": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L44-L45@sha256:c5b5c97dddcf",
+     "offset": 39345
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L41-L41@sha256:0cbd6e1d7bcb",
+   "old_offset": 39423,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L41-L41@sha256:0cbd6e1d7bcb",
+     "offset": 39423
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L449-L449@sha256:0cbd6e1d7bcb",
+   "old_offset": 39476,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L449-L449@sha256:0cbd6e1d7bcb",
+     "offset": 39476
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/manifest.ttl:L127-L128@sha256:5d340e54bc3f",
+   "old_offset": 39533,
+   "target": "deployment/manifest.ttl",
+   "new": [
+    {
+     "token": "deployment/manifest.ttl:L127-L128@sha256:5d340e54bc3f",
+     "offset": 39533
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/ontology.ttl:L53-L53@sha256:a95ac5b0ec4f",
+   "old_offset": 39589,
+   "target": "deployment/ontology.ttl",
+   "new": [
+    {
+     "token": "deployment/ontology.ttl:L53-L53@sha256:a95ac5b0ec4f",
+     "offset": 39589
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/publisher.jsonld:L149-L149@sha256:76d746527ad7",
+   "old_offset": 39643,
+   "target": "deployment/publisher.jsonld",
+   "new": [
+    {
+     "token": "deployment/publisher.jsonld:L149-L149@sha256:76d746527ad7",
+     "offset": 39643
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/provenance-narrative.ttl:L393-L393@sha256:abf4e150b218",
+   "old_offset": 39703,
+   "target": "deployment/provenance-narrative.ttl",
+   "new": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L393-L393@sha256:abf4e150b218",
+     "offset": 39703
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/templates/ai-ingest-manifest.ttl:L160-L160@sha256:ae926b02d482",
+   "old_offset": 39771,
+   "target": "deployment/templates/ai-ingest-manifest.ttl",
+   "new": [
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L160-L160@sha256:ae926b02d482",
+     "offset": 39771
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/shapes/eli-shapes.ttl:L180-L189@sha256:bab6fff5c9d8",
+   "old_offset": 39847,
+   "target": "deployment/shapes/eli-shapes.ttl",
+   "new": [
+    {
+     "token": "deployment/shapes/eli-shapes.ttl:L180-L189@sha256:bab6fff5c9d8",
+     "offset": 39847
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L59-L60@sha256:0cbd6e1d7bcb",
+   "old_offset": 41137,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L59-L60@sha256:0cbd6e1d7bcb",
+     "offset": 41137
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L262-L273@sha256:0cbd6e1d7bcb",
+   "old_offset": 41190,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L262-L273@sha256:0cbd6e1d7bcb",
+     "offset": 41190
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L349-L365@sha256:0cbd6e1d7bcb",
+   "old_offset": 41245,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L349-L365@sha256:0cbd6e1d7bcb",
+     "offset": 41245
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L370-L379@sha256:0cbd6e1d7bcb",
+   "old_offset": 41300,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L370-L379@sha256:0cbd6e1d7bcb",
+     "offset": 41300
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L409-L409@sha256:0cbd6e1d7bcb",
+   "old_offset": 41355,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L409-L409@sha256:0cbd6e1d7bcb",
+     "offset": 41355
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L426-L426@sha256:0cbd6e1d7bcb",
+   "old_offset": 41410,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L426-L426@sha256:0cbd6e1d7bcb",
+     "offset": 41410
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L493-L493@sha256:0cbd6e1d7bcb",
+   "old_offset": 41465,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L493-L493@sha256:0cbd6e1d7bcb",
+     "offset": 41465
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L554-L554@sha256:0cbd6e1d7bcb",
+   "old_offset": 41520,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L554-L554@sha256:0cbd6e1d7bcb",
+     "offset": 41520
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/manifest.ttl:L40-L40@sha256:5d340e54bc3f",
+   "old_offset": 41577,
+   "target": "deployment/manifest.ttl",
+   "new": [
+    {
+     "token": "deployment/manifest.ttl:L40-L40@sha256:5d340e54bc3f",
+     "offset": 41577
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/manifest.ttl:L123-L123@sha256:5d340e54bc3f",
+   "old_offset": 41629,
+   "target": "deployment/manifest.ttl",
+   "new": [
+    {
+     "token": "deployment/manifest.ttl:L123-L123@sha256:5d340e54bc3f",
+     "offset": 41629
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/SYSTEM-CONSTITUTION.sexp:L16-L16@sha256:0b25b3eaedbb",
+   "old_offset": 41685,
+   "target": "deployment/SYSTEM-CONSTITUTION.sexp",
+   "new": [
+    {
+     "token": "deployment/SYSTEM-CONSTITUTION.sexp:L16-L16@sha256:0b25b3eaedbb",
+     "offset": 41685
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/provenance-narrative.ttl:L17-L23@sha256:abf4e150b218",
+   "old_offset": 42725,
+   "target": "deployment/provenance-narrative.ttl",
+   "new": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L17-L23@sha256:abf4e150b218",
+     "offset": 42725
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/provenance-narrative.ttl:L292-L299@sha256:abf4e150b218",
+   "old_offset": 42789,
+   "target": "deployment/provenance-narrative.ttl",
+   "new": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L292-L299@sha256:abf4e150b218",
+     "offset": 42789
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/provenance-narrative.ttl:L385-L386@sha256:abf4e150b218",
+   "old_offset": 42855,
+   "target": "deployment/provenance-narrative.ttl",
+   "new": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L385-L386@sha256:abf4e150b218",
+     "offset": 42855
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/provenance-narrative.ttl:L503-L512@sha256:abf4e150b218",
+   "old_offset": 42921,
+   "target": "deployment/provenance-narrative.ttl",
+   "new": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L503-L512@sha256:abf4e150b218",
+     "offset": 42921
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/provenance-narrative.ttl:L518-L525@sha256:abf4e150b218",
+   "old_offset": 42987,
+   "target": "deployment/provenance-narrative.ttl",
+   "new": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L518-L525@sha256:abf4e150b218",
+     "offset": 42987
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L278-L282@sha256:0cbd6e1d7bcb",
+   "old_offset": 43055,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L278-L282@sha256:0cbd6e1d7bcb",
+     "offset": 43055
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L337-L337@sha256:0cbd6e1d7bcb",
+   "old_offset": 43110,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L337-L337@sha256:0cbd6e1d7bcb",
+     "offset": 43110
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L343-L344@sha256:0cbd6e1d7bcb",
+   "old_offset": 43165,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L343-L344@sha256:0cbd6e1d7bcb",
+     "offset": 43165
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L74-L75@sha256:9eb423ea714e",
+   "old_offset": 43222,
+   "target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L74-L75@sha256:9eb423ea714e",
+     "offset": 43222
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L13-L16@sha256:f9298d544346",
+   "old_offset": 43292,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L13-L16@sha256:f9298d544346",
+     "offset": 43292
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/assess-gate-plenary.sh:L3-L8@sha256:096473e06d88",
+   "old_offset": 44059,
+   "target": "deployment/verify/assess-gate-plenary.sh",
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L3-L8@sha256:096473e06d88",
+     "offset": 44059
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/assess-gate-plenary.sh:L18-L19@sha256:096473e06d88",
+   "old_offset": 44126,
+   "target": "deployment/verify/assess-gate-plenary.sh",
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L18-L19@sha256:096473e06d88",
+     "offset": 44126
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/assess-gate-plenary.sh:L34-L40@sha256:096473e06d88",
+   "old_offset": 44195,
+   "target": "deployment/verify/assess-gate-plenary.sh",
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L34-L40@sha256:096473e06d88",
+     "offset": 44195
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/assess-gate-plenary.sh:L47-L53@sha256:096473e06d88",
+   "old_offset": 44264,
+   "target": "deployment/verify/assess-gate-plenary.sh",
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L47-L53@sha256:096473e06d88",
+     "offset": 44264
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/assess-gate-plenary.sh:L75-L86@sha256:096473e06d88",
+   "old_offset": 44333,
+   "target": "deployment/verify/assess-gate-plenary.sh",
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L75-L86@sha256:096473e06d88",
+     "offset": 44333
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/assess-gate-plenary.sh:L2-L13@sha256:096473e06d88",
+   "old_offset": 45142,
+   "target": "deployment/verify/assess-gate-plenary.sh",
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L2-L13@sha256:096473e06d88",
+     "offset": 45142
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/assess-gate-manifest.lisp:L3-L13@sha256:1264ac0ccb5b",
+   "old_offset": 45212,
+   "target": "deployment/verify/assess-gate-manifest.lisp",
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-manifest.lisp:L3-L13@sha256:1264ac0ccb5b",
+     "offset": 45212
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/assess-gate-plenary-test.sh:L3-L3@sha256:2024a2d1e73a",
+   "old_offset": 45285,
+   "target": "deployment/verify/assess-gate-plenary-test.sh",
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-plenary-test.sh:L3-L3@sha256:2024a2d1e73a",
+     "offset": 45285
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L18-L18@sha256:9260439b476e",
+   "old_offset": 45958,
+   "target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L18-L18@sha256:9260439b476e",
+     "offset": 45958
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L19-L19@sha256:9260439b476e",
+   "old_offset": 46029,
+   "target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L19-L19@sha256:9260439b476e",
+     "offset": 46029
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L41-L41@sha256:9260439b476e",
+   "old_offset": 46100,
+   "target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L41-L41@sha256:9260439b476e",
+     "offset": 46100
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L62-L62@sha256:9260439b476e",
+   "old_offset": 46171,
+   "target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L62-L62@sha256:9260439b476e",
+     "offset": 46171
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L125-L125@sha256:9260439b476e",
+   "old_offset": 46242,
+   "target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L125-L125@sha256:9260439b476e",
+     "offset": 46242
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L134-L134@sha256:9260439b476e",
+   "old_offset": 46315,
+   "target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L134-L134@sha256:9260439b476e",
+     "offset": 46315
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLAN.md:L14-L14@sha256:6c3465046d9b",
+   "old_offset": 46390,
+   "target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L14-L14@sha256:6c3465046d9b",
+     "offset": 46390
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLAN.md:L204-L204@sha256:6c3465046d9b",
+   "old_offset": 46450,
+   "target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L204-L204@sha256:6c3465046d9b",
+     "offset": 46450
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLAN.md:L225-L225@sha256:6c3465046d9b",
+   "old_offset": 46512,
+   "target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L225-L225@sha256:6c3465046d9b",
+     "offset": 46512
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-AUTODIDACTIC-LOOP.md:L57-L57@sha256:6152c2a7cb14",
+   "old_offset": 46576,
+   "target": "deployment/LAWMAX-AUTODIDACTIC-LOOP.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-AUTODIDACTIC-LOOP.md:L57-L57@sha256:6152c2a7cb14",
+     "offset": 46576
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-AUTODIDACTIC-LOOP.md:L106-L106@sha256:6152c2a7cb14",
+   "old_offset": 46643,
+   "target": "deployment/LAWMAX-AUTODIDACTIC-LOOP.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-AUTODIDACTIC-LOOP.md:L106-L106@sha256:6152c2a7cb14",
+     "offset": 46643
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md:L42-L42@sha256:77bc078e177d",
+   "old_offset": 46714,
+   "target": "deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md:L42-L42@sha256:77bc078e177d",
+     "offset": 46714
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md:L85-L85@sha256:77bc078e177d",
+   "old_offset": 46789,
+   "target": "deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md:L85-L85@sha256:77bc078e177d",
+     "offset": 46789
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md:L146-L146@sha256:77bc078e177d",
+   "old_offset": 46864,
+   "target": "deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md:L146-L146@sha256:77bc078e177d",
+     "offset": 46864
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md:L147-L147@sha256:77bc078e177d",
+   "old_offset": 46941,
+   "target": "deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md:L147-L147@sha256:77bc078e177d",
+     "offset": 46941
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L9-L9@sha256:7343da75e6d6",
+   "old_offset": 47025,
+   "target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L9-L9@sha256:7343da75e6d6",
+     "offset": 47025
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L14-L14@sha256:3970009d118d",
+   "old_offset": 47093,
+   "target": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L14-L14@sha256:3970009d118d",
+     "offset": 47093
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L61-L61@sha256:d73ef93f0b48",
+   "old_offset": 47167,
+   "target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L61-L61@sha256:d73ef93f0b48",
+     "offset": 47167
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-THREAT-MODEL.md:L18-L18@sha256:48a65a766d1c",
+   "old_offset": 47241,
+   "target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L18-L18@sha256:48a65a766d1c",
+     "offset": 47241
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/gate-registry.sexp:L19-L43@sha256:0ea0668d9967",
+   "old_offset": 47310,
+   "target": "deployment/verify/gate-registry.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/gate-registry.sexp:L19-L43@sha256:0ea0668d9967",
+     "offset": 47310
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L79+",
+   "old_offset": 47377,
+   "target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L79+",
+     "offset": 47377
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L19-L19@sha256:9260439b476e",
+   "old_offset": 48111,
+   "target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L19-L19@sha256:9260439b476e",
+     "offset": 48111
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L66-L66@sha256:9260439b476e",
+   "old_offset": 48182,
+   "target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L66-L66@sha256:9260439b476e",
+     "offset": 48182
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L9-L9@sha256:7343da75e6d6",
+   "old_offset": 48255,
+   "target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L9-L9@sha256:7343da75e6d6",
+     "offset": 48255
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L2-L3@sha256:3970009d118d",
+   "old_offset": 48323,
+   "target": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L2-L3@sha256:3970009d118d",
+     "offset": 48323
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L13-L19@sha256:3970009d118d",
+   "old_offset": 48388,
+   "target": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L13-L19@sha256:3970009d118d",
+     "offset": 48388
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L26-L26@sha256:3970009d118d",
+   "old_offset": 48455,
+   "target": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L26-L26@sha256:3970009d118d",
+     "offset": 48455
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L33-L41@sha256:3970009d118d",
+   "old_offset": 48522,
+   "target": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L33-L41@sha256:3970009d118d",
+     "offset": 48522
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L40-76,L79+",
+   "old_offset": 48591,
+   "target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L40-76,L79+",
+     "offset": 48591
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/mcp/README.md:L28-L30@sha256:efcff811c926",
+   "old_offset": 49269,
+   "target": "deployment/mcp/README.md",
+   "new": [
+    {
+     "token": "deployment/mcp/README.md:L28-L30@sha256:efcff811c926",
+     "offset": 49269
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/mcp/README.md:L44-L47@sha256:efcff811c926",
+   "old_offset": 49322,
+   "target": "deployment/mcp/README.md",
+   "new": [
+    {
+     "token": "deployment/mcp/README.md:L44-L47@sha256:efcff811c926",
+     "offset": 49322
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L104-L109@sha256:aed9f075bbb6",
+   "old_offset": 49377,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L104-L109@sha256:aed9f075bbb6",
+     "offset": 49377
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L136-L139@sha256:aed9f075bbb6",
+   "old_offset": 49440,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L136-L139@sha256:aed9f075bbb6",
+     "offset": 49440
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/README.md:L58-L58@sha256:2f01958e3e1d",
+   "old_offset": 49505,
+   "target": "deployment/verify/README.md",
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L58-L58@sha256:2f01958e3e1d",
+     "offset": 49505
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-THREAT-MODEL.md:L37-L37@sha256:48a65a766d1c",
+   "old_offset": 49563,
+   "target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L37-L37@sha256:48a65a766d1c",
+     "offset": 49563
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/golden/constitution.fingerprint.sexp:L1-L1@sha256:92621ee67703",
+   "old_offset": 50236,
+   "target": "deployment/verify/golden/constitution.fingerprint.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/golden/constitution.fingerprint.sexp:L1-L1@sha256:92621ee67703",
+     "offset": 50236
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/golden/astikos.fingerprint.sexp:L1-L1@sha256:dbca1aa914f4",
+   "old_offset": 50319,
+   "target": "deployment/verify/golden/astikos.fingerprint.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/golden/astikos.fingerprint.sexp:L1-L1@sha256:dbca1aa914f4",
+     "offset": 50319
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/golden/poinikos.fingerprint.sexp:L1-L1@sha256:679d2d6cb564",
+   "old_offset": 50397,
+   "target": "deployment/verify/golden/poinikos.fingerprint.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/golden/poinikos.fingerprint.sexp:L1-L1@sha256:679d2d6cb564",
+     "offset": 50397
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/golden/kpolitikis.fingerprint.sexp:L1-L1@sha256:ae57d5f5a82c",
+   "old_offset": 50476,
+   "target": "deployment/verify/golden/kpolitikis.fingerprint.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/golden/kpolitikis.fingerprint.sexp:L1-L1@sha256:ae57d5f5a82c",
+     "offset": 50476
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/golden/kpoinikis.fingerprint.sexp:L1-L1@sha256:21d388419d89",
+   "old_offset": 50557,
+   "target": "deployment/verify/golden/kpoinikis.fingerprint.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/golden/kpoinikis.fingerprint.sexp:L1-L1@sha256:21d388419d89",
+     "offset": 50557
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/golden/kdioikitikis.fingerprint.sexp:L1-L1@sha256:d2828a720636",
+   "old_offset": 50637,
+   "target": "deployment/verify/golden/kdioikitikis.fingerprint.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/golden/kdioikitikis.fingerprint.sexp:L1-L1@sha256:d2828a720636",
+     "offset": 50637
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L26-L26@sha256:f9298d544346",
+   "old_offset": 50720,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L26-L26@sha256:f9298d544346",
+     "offset": 50720
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L84-L86@sha256:f9298d544346",
+   "old_offset": 50771,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L84-L86@sha256:f9298d544346",
+     "offset": 50771
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L104-L109@sha256:aed9f075bbb6",
+   "old_offset": 51708,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L104-L109@sha256:aed9f075bbb6",
+     "offset": 51708
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/README.md:L27-L34@sha256:2f01958e3e1d",
+   "old_offset": 51773,
+   "target": "deployment/verify/README.md",
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L27-L34@sha256:2f01958e3e1d",
+     "offset": 51773
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/README.md:L58-L58@sha256:2f01958e3e1d",
+   "old_offset": 51829,
+   "target": "deployment/verify/README.md",
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L58-L58@sha256:2f01958e3e1d",
+     "offset": 51829
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-THREAT-MODEL.md:L37-L37@sha256:48a65a766d1c",
+   "old_offset": 51887,
+   "target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L37-L37@sha256:48a65a766d1c",
+     "offset": 51887
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L1-L16@sha256:96f255d404e0",
+   "old_offset": 51951,
+   "target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L1-L16@sha256:96f255d404e0",
+     "offset": 51951
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L37-L37@sha256:96f255d404e0",
+   "old_offset": 52020,
+   "target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L37-L37@sha256:96f255d404e0",
+     "offset": 52020
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L64-L74@sha256:96f255d404e0",
+   "old_offset": 52090,
+   "target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L64-L74@sha256:96f255d404e0",
+     "offset": 52090
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L84-L88@sha256:96f255d404e0",
+   "old_offset": 52160,
+   "target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L84-L88@sha256:96f255d404e0",
+     "offset": 52160
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L30-L31@sha256:f9298d544346",
+   "old_offset": 52949,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L30-L31@sha256:f9298d544346",
+     "offset": 52949
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L35-L48@sha256:f9298d544346",
+   "old_offset": 53000,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L35-L48@sha256:f9298d544346",
+     "offset": 53000
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L50-L54@sha256:f9298d544346",
+   "old_offset": 53051,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L50-L54@sha256:f9298d544346",
+     "offset": 53051
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L72-L72@sha256:f9298d544346",
+   "old_offset": 53102,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L72-L72@sha256:f9298d544346",
+     "offset": 53102
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L80-L80@sha256:f9298d544346",
+   "old_offset": 53153,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L80-L80@sha256:f9298d544346",
+     "offset": 53153
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/SYSTEM-CONSTITUTION.sexp:L22-L22@sha256:0b25b3eaedbb",
+   "old_offset": 53206,
+   "target": "deployment/SYSTEM-CONSTITUTION.sexp",
+   "new": [
+    {
+     "token": "deployment/SYSTEM-CONSTITUTION.sexp:L22-L22@sha256:0b25b3eaedbb",
+     "offset": 53206
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L21-L22@sha256:9260439b476e",
+   "old_offset": 54051,
+   "target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L21-L22@sha256:9260439b476e",
+     "offset": 54051
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L98-L98@sha256:9260439b476e",
+   "old_offset": 54122,
+   "target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L98-L98@sha256:9260439b476e",
+     "offset": 54122
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L103-L103@sha256:9260439b476e",
+   "old_offset": 54193,
+   "target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L103-L103@sha256:9260439b476e",
+     "offset": 54193
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L138-L139@sha256:9260439b476e",
+   "old_offset": 54266,
+   "target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L138-L139@sha256:9260439b476e",
+     "offset": 54266
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLAN.md:L16-L17@sha256:6c3465046d9b",
+   "old_offset": 54341,
+   "target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L16-L17@sha256:6c3465046d9b",
+     "offset": 54341
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/consciousness-audit/MANIFEST.sha256:L1",
+   "old_offset": 54403,
+   "target": "deployment/verify/consciousness-audit/MANIFEST.sha256",
+   "new": [
+    {
+     "token": "deployment/verify/consciousness-audit/MANIFEST.sha256:L1-L1@sha256:2b2c796dbf6f",
+     "offset": 54403
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L79+",
+   "old_offset": 54462,
+   "target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L79+",
+     "offset": 54485
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLAN.md:L5-L6@sha256:6c3465046d9b",
+   "old_offset": 55148,
+   "target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L5-L6@sha256:6c3465046d9b",
+     "offset": 55171
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L3-L5@sha256:d73ef93f0b48",
+   "old_offset": 55208,
+   "target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L3-L5@sha256:d73ef93f0b48",
+     "offset": 55231
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L73-L74@sha256:d73ef93f0b48",
+   "old_offset": 55273,
+   "target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L73-L74@sha256:d73ef93f0b48",
+     "offset": 55296
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L40-L41@sha256:88d3f19cd8b5",
+   "old_offset": 55342,
+   "target": "deployment/LAWMAX-CPEI-TARGET-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L40-L41@sha256:88d3f19cd8b5",
+     "offset": 55365
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L7-L10@sha256:ba0b1d094f92",
+   "old_offset": 55410,
+   "target": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-MEMORY-KERNEL-SPEC.md:L7-L10@sha256:ba0b1d094f92",
+     "offset": 55433
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-THREAT-MODEL.md:L46-L46@sha256:48a65a766d1c",
+   "old_offset": 55840,
+   "target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L46-L46@sha256:48a65a766d1c",
+     "offset": 55863
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L54-L56@sha256:96f255d404e0",
+   "old_offset": 55904,
+   "target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L54-L56@sha256:96f255d404e0",
+     "offset": 55927
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L33-L33@sha256:9eb423ea714e",
+   "old_offset": 56349,
+   "target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L33-L33@sha256:9eb423ea714e",
+     "offset": 56372
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-THREAT-MODEL.md:L45-L45@sha256:48a65a766d1c",
+   "old_offset": 56419,
+   "target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L45-L45@sha256:48a65a766d1c",
+     "offset": 56442
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/provenance-narrative.ttl:L507-L507@sha256:abf4e150b218",
+   "old_offset": 56483,
+   "target": "deployment/provenance-narrative.ttl",
+   "new": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L507-L507@sha256:abf4e150b218",
+     "offset": 56506
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L21-L22@sha256:96f255d404e0",
+   "old_offset": 56551,
+   "target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L21-L22@sha256:96f255d404e0",
+     "offset": 56574
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L86-L86@sha256:96f255d404e0",
+   "old_offset": 56621,
+   "target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L86-L86@sha256:96f255d404e0",
+     "offset": 56644
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L8-L18@sha256:c5b5c97dddcf",
+   "old_offset": 57264,
+   "target": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L8-L18@sha256:c5b5c97dddcf",
+     "offset": 57287
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L28-L38@sha256:c5b5c97dddcf",
+   "old_offset": 57339,
+   "target": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L28-L38@sha256:c5b5c97dddcf",
+     "offset": 57362
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/templates/ai-ingest-manifest.ttl:L16-L16@sha256:ae926b02d482",
+   "old_offset": 57417,
+   "target": "deployment/templates/ai-ingest-manifest.ttl",
+   "new": [
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L16-L16@sha256:ae926b02d482",
+     "offset": 57440
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/templates/ai-ingest-manifest.ttl:L27-L27@sha256:ae926b02d482",
+   "old_offset": 57489,
+   "target": "deployment/templates/ai-ingest-manifest.ttl",
+   "new": [
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L27-L27@sha256:ae926b02d482",
+     "offset": 57512
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/templates/ai-ingest-manifest.ttl:L137-L138@sha256:ae926b02d482",
+   "old_offset": 57561,
+   "target": "deployment/templates/ai-ingest-manifest.ttl",
+   "new": [
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L137-L138@sha256:ae926b02d482",
+     "offset": 57584
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/templates/ai-ingest-manifest.ttl:L142-L157@sha256:ae926b02d482",
+   "old_offset": 57635,
+   "target": "deployment/templates/ai-ingest-manifest.ttl",
+   "new": [
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L142-L157@sha256:ae926b02d482",
+     "offset": 57658
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/templates/ai-ingest-manifest.ttl:L160-L160@sha256:ae926b02d482",
+   "old_offset": 57709,
+   "target": "deployment/templates/ai-ingest-manifest.ttl",
+   "new": [
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L160-L160@sha256:ae926b02d482",
+     "offset": 57732
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/templates/ai-ingest-manifest.ttl:L176-L176@sha256:ae926b02d482",
+   "old_offset": 57783,
+   "target": "deployment/templates/ai-ingest-manifest.ttl",
+   "new": [
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L176-L176@sha256:ae926b02d482",
+     "offset": 57806
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/templates/ai-ingest-manifest.ttl:L391-L391@sha256:ae926b02d482",
+   "old_offset": 57857,
+   "target": "deployment/templates/ai-ingest-manifest.ttl",
+   "new": [
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L391-L391@sha256:ae926b02d482",
+     "offset": 57880
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CEILING-CROSSWALK.sexp:L46-L46@sha256:a8682406e889",
+   "old_offset": 58316,
+   "target": "deployment/LAWMAX-CEILING-CROSSWALK.sexp",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.sexp:L46-L46@sha256:a8682406e889",
+     "offset": 58339
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L2-L3@sha256:d73ef93f0b48",
+   "old_offset": 58387,
+   "target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L2-L3@sha256:d73ef93f0b48",
+     "offset": 58410
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L23-L39@sha256:d73ef93f0b48",
+   "old_offset": 58452,
+   "target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L23-L39@sha256:d73ef93f0b48",
+     "offset": 58475
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L75-L75@sha256:7dc1ad0474e0",
+   "old_offset": 59108,
+   "target": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md",
+   "new": [
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L75-L75@sha256:7dc1ad0474e0",
+     "offset": 59131
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L90-L90@sha256:7dc1ad0474e0",
+   "old_offset": 59164,
+   "target": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md",
+   "new": [
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L90-L90@sha256:7dc1ad0474e0",
+     "offset": 59187
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L105-L105@sha256:7dc1ad0474e0",
+   "old_offset": 59220,
+   "target": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md",
+   "new": [
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L105-L105@sha256:7dc1ad0474e0",
+     "offset": 59243
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L148-L148@sha256:7dc1ad0474e0",
+   "old_offset": 59278,
+   "target": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md",
+   "new": [
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L148-L148@sha256:7dc1ad0474e0",
+     "offset": 59301
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L61-L62@sha256:96f255d404e0",
+   "old_offset": 59338,
+   "target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L61-L62@sha256:96f255d404e0",
+     "offset": 59361
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/gate-registry.sexp:L19-L43@sha256:0ea0668d9967",
+   "old_offset": 59410,
+   "target": "deployment/verify/gate-registry.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/gate-registry.sexp:L19-L43@sha256:0ea0668d9967",
+     "offset": 59433
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L28-29,L79+",
+   "old_offset": 59477,
+   "target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L28-29,L79+",
+     "offset": 59500
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/README.md:L3-L3@sha256:2f01958e3e1d",
+   "old_offset": 60014,
+   "target": "deployment/verify/README.md",
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L3-L3@sha256:2f01958e3e1d",
+     "offset": 60037
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/README.md:L14-L15@sha256:2f01958e3e1d",
+   "old_offset": 60068,
+   "target": "deployment/verify/README.md",
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L14-L15@sha256:2f01958e3e1d",
+     "offset": 60091
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L72-L73@sha256:aed9f075bbb6",
+   "old_offset": 60126,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L72-L73@sha256:aed9f075bbb6",
+     "offset": 60149
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/merkle-profile.sexp:L21-L24@sha256:1a64d0e9885f",
+   "old_offset": 60189,
+   "target": "deployment/verify/merkle-profile.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L21-L24@sha256:1a64d0e9885f",
+     "offset": 60212
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L87-L95@sha256:e1cfc6adeeba",
+   "old_offset": 60546,
+   "target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L87-L95@sha256:e1cfc6adeeba",
+     "offset": 60569
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/merkle-profile.sexp:L33-L36@sha256:1a64d0e9885f",
+   "old_offset": 61146,
+   "target": "deployment/verify/merkle-profile.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L33-L36@sha256:1a64d0e9885f",
+     "offset": 61169
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L94-L94@sha256:aed9f075bbb6",
+   "old_offset": 61214,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L94-L94@sha256:aed9f075bbb6",
+     "offset": 61237
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L114-L114@sha256:aed9f075bbb6",
+   "old_offset": 61275,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L114-L114@sha256:aed9f075bbb6",
+     "offset": 61298
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L117-L117@sha256:aed9f075bbb6",
+   "old_offset": 61338,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L117-L117@sha256:aed9f075bbb6",
+     "offset": 61361
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/hash-seat-registry.sexp:L7-L7@sha256:04caae1483d2",
+   "old_offset": 61403,
+   "target": "deployment/verify/hash-seat-registry.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/hash-seat-registry.sexp:L7-L7@sha256:04caae1483d2",
+     "offset": 61426
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/hash-seat-registry.sexp:L16-L16@sha256:04caae1483d2",
+   "old_offset": 61471,
+   "target": "deployment/verify/hash-seat-registry.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/hash-seat-registry.sexp:L16-L16@sha256:04caae1483d2",
+     "offset": 61494
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L16-L16@sha256:e1cfc6adeeba",
+   "old_offset": 61543,
+   "target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L16-L16@sha256:e1cfc6adeeba",
+     "offset": 61566
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L21-L21@sha256:e1cfc6adeeba",
+   "old_offset": 61610,
+   "target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L21-L21@sha256:e1cfc6adeeba",
+     "offset": 61633
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L62-L62@sha256:96f255d404e0",
+   "old_offset": 61679,
+   "target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L62-L62@sha256:96f255d404e0",
+     "offset": 61702
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L74-L74@sha256:aed9f075bbb6",
+   "old_offset": 62629,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L74-L74@sha256:aed9f075bbb6",
+     "offset": 62652
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L76-L76@sha256:aed9f075bbb6",
+   "old_offset": 62690,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L76-L76@sha256:aed9f075bbb6",
+     "offset": 62713
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L111-L134@sha256:aed9f075bbb6",
+   "old_offset": 62751,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L111-L134@sha256:aed9f075bbb6",
+     "offset": 62774
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/README.md:L107-L109@sha256:2f01958e3e1d",
+   "old_offset": 62816,
+   "target": "deployment/verify/README.md",
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L107-L109@sha256:2f01958e3e1d",
+     "offset": 62839
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/merkle-profile.sexp:L52-L53@sha256:1a64d0e9885f",
+   "old_offset": 62876,
+   "target": "deployment/verify/merkle-profile.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L52-L53@sha256:1a64d0e9885f",
+     "offset": 62899
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L1-L1@sha256:7dc1ad0474e0",
+   "old_offset": 63217,
+   "target": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md",
+   "new": [
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L1-L1@sha256:7dc1ad0474e0",
+     "offset": 63240
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L178-L178@sha256:7dc1ad0474e0",
+   "old_offset": 63271,
+   "target": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md",
+   "new": [
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L178-L178@sha256:7dc1ad0474e0",
+     "offset": 63294
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L214-L214@sha256:7dc1ad0474e0",
+   "old_offset": 63329,
+   "target": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md",
+   "new": [
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L214-L214@sha256:7dc1ad0474e0",
+     "offset": 63352
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L226-L226@sha256:7dc1ad0474e0",
+   "old_offset": 63387,
+   "target": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md",
+   "new": [
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L226-L226@sha256:7dc1ad0474e0",
+     "offset": 63410
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L231-L231@sha256:7dc1ad0474e0",
+   "old_offset": 63445,
+   "target": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md",
+   "new": [
+    {
+     "token": "deployment/ΧΑΡΤΗΣ-ΝΟΗΣΗΣ.md:L231-L231@sha256:7dc1ad0474e0",
+     "offset": 63468
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/canonical-serialization-spec.md:L23-L29@sha256:c12d8b752b10",
+   "old_offset": 63964,
+   "target": "deployment/verify/canonical-serialization-spec.md",
+   "new": [
+    {
+     "token": "deployment/verify/canonical-serialization-spec.md:L23-L29@sha256:c12d8b752b10",
+     "offset": 63987
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L30-L31@sha256:f9298d544346",
+   "old_offset": 64605,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L30-L31@sha256:f9298d544346",
+     "offset": 64628
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L35-L48@sha256:f9298d544346",
+   "old_offset": 64656,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L35-L48@sha256:f9298d544346",
+     "offset": 64679
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L71-L71@sha256:f9298d544346",
+   "old_offset": 64707,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L71-L71@sha256:f9298d544346",
+     "offset": 64730
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L72-L72@sha256:f9298d544346",
+   "old_offset": 65043,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L72-L72@sha256:f9298d544346",
+     "offset": 65066
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L80-L80@sha256:f9298d544346",
+   "old_offset": 65094,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L80-L80@sha256:f9298d544346",
+     "offset": 65117
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L50-L53@sha256:f9298d544346",
+   "old_offset": 65404,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L50-L53@sha256:f9298d544346",
+     "offset": 65427
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/AUTONOMY.md:L53-L54@sha256:f9298d544346",
+   "old_offset": 65748,
+   "target": "deployment/AUTONOMY.md",
+   "new": [
+    {
+     "token": "deployment/AUTONOMY.md:L53-L54@sha256:f9298d544346",
+     "offset": 65771
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/assess-gate-plenary.sh:L47-L53@sha256:096473e06d88",
+   "old_offset": 66158,
+   "target": "deployment/verify/assess-gate-plenary.sh",
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L47-L53@sha256:096473e06d88",
+     "offset": 66181
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/assess-gate-plenary.sh:L75-L86@sha256:096473e06d88",
+   "old_offset": 66227,
+   "target": "deployment/verify/assess-gate-plenary.sh",
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L75-L86@sha256:096473e06d88",
+     "offset": 66250
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L30-L32@sha256:9eb423ea714e",
+   "old_offset": 66585,
+   "target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L30-L32@sha256:9eb423ea714e",
+     "offset": 66608
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L80-L80@sha256:9eb423ea714e",
+   "old_offset": 66653,
+   "target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L80-L80@sha256:9eb423ea714e",
+     "offset": 66676
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/mcp/README.md:L28-L30@sha256:efcff811c926",
+   "old_offset": 67137,
+   "target": "deployment/mcp/README.md",
+   "new": [
+    {
+     "token": "deployment/mcp/README.md:L28-L30@sha256:efcff811c926",
+     "offset": 67160
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/mcp/README.md:L44-L47@sha256:efcff811c926",
+   "old_offset": 67190,
+   "target": "deployment/mcp/README.md",
+   "new": [
+    {
+     "token": "deployment/mcp/README.md:L44-L47@sha256:efcff811c926",
+     "offset": 67213
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/mcp/claude_desktop_config.json:L5-L9@sha256:cc096393f0d8",
+   "old_offset": 67245,
+   "target": "deployment/mcp/claude_desktop_config.json",
+   "new": [
+    {
+     "token": "deployment/mcp/claude_desktop_config.json:L5-L9@sha256:cc096393f0d8",
+     "offset": 67268
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L74-L74@sha256:9260439b476e",
+   "old_offset": 67621,
+   "target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L74-L74@sha256:9260439b476e",
+     "offset": 67644
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-AUTODIDACTIC-LOOP.md:L108-L108@sha256:6152c2a7cb14",
+   "old_offset": 67694,
+   "target": "deployment/LAWMAX-AUTODIDACTIC-LOOP.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-AUTODIDACTIC-LOOP.md:L108-L108@sha256:6152c2a7cb14",
+     "offset": 67717
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLAN.md:L34-L34@sha256:6c3465046d9b",
+   "old_offset": 67765,
+   "target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L34-L34@sha256:6c3465046d9b",
+     "offset": 67788
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/blind-failure-test.sh:L17-L18@sha256:8fd5cb56cc43",
+   "old_offset": 68004,
+   "target": "deployment/verify/blind-failure-test.sh",
+   "new": [
+    {
+     "token": "deployment/verify/blind-failure-test.sh:L17-L18@sha256:8fd5cb56cc43",
+     "offset": 68027
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/README.md:L51-L58@sha256:2f01958e3e1d",
+   "old_offset": 68458,
+   "target": "deployment/verify/README.md",
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L51-L58@sha256:2f01958e3e1d",
+     "offset": 68481
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/canonical-serialization-spec.md:L32-L38@sha256:c12d8b752b10",
+   "old_offset": 68704,
+   "target": "deployment/verify/canonical-serialization-spec.md",
+   "new": [
+    {
+     "token": "deployment/verify/canonical-serialization-spec.md:L32-L38@sha256:c12d8b752b10",
+     "offset": 68727
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/merkle-profile.sexp:L64-L74@sha256:1a64d0e9885f",
+   "old_offset": 68784,
+   "target": "deployment/verify/merkle-profile.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L64-L74@sha256:1a64d0e9885f",
+     "offset": 68807
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-TEMPORAL-SEMANTICS-SPEC.md:L298-L298@sha256:f0cd213d5622",
+   "old_offset": 68937,
+   "target": "deployment/LAWMAX-TEMPORAL-SEMANTICS-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TEMPORAL-SEMANTICS-SPEC.md:L298-L298@sha256:f0cd213d5622",
+     "offset": 68960
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:L215-L215@sha256:868467cda19c",
+   "old_offset": 69014,
+   "target": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:L215-L215@sha256:868467cda19c",
+     "offset": 69037
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L30-L30@sha256:e1cfc6adeeba",
+   "old_offset": 69192,
+   "target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L30-L30@sha256:e1cfc6adeeba",
+     "offset": 69215
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L31-L31@sha256:e1cfc6adeeba",
+   "old_offset": 69261,
+   "target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L31-L31@sha256:e1cfc6adeeba",
+     "offset": 69284
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L33-L33@sha256:e1cfc6adeeba",
+   "old_offset": 69330,
+   "target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L33-L33@sha256:e1cfc6adeeba",
+     "offset": 69353
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L34-L34@sha256:e1cfc6adeeba",
+   "old_offset": 69410,
+   "target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L34-L34@sha256:e1cfc6adeeba",
+     "offset": 69433
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L36-L36@sha256:e1cfc6adeeba",
+   "old_offset": 69479,
+   "target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L36-L36@sha256:e1cfc6adeeba",
+     "offset": 69502
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L39-L39@sha256:e1cfc6adeeba",
+   "old_offset": 69548,
+   "target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L39-L39@sha256:e1cfc6adeeba",
+     "offset": 69571
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L41-L41@sha256:e1cfc6adeeba",
+   "old_offset": 69628,
+   "target": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-PROOF-OBJECT-SPEC.md:L41-L41@sha256:e1cfc6adeeba",
+     "offset": 69651
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/assess-gate-plenary.sh:L2-L13@sha256:096473e06d88",
+   "old_offset": 69751,
+   "target": "deployment/verify/assess-gate-plenary.sh",
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-plenary.sh:L2-L13@sha256:096473e06d88",
+     "offset": 69774
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/assess-gate-manifest.lisp:L3-L13@sha256:1264ac0ccb5b",
+   "old_offset": 69821,
+   "target": "deployment/verify/assess-gate-manifest.lisp",
+   "new": [
+    {
+     "token": "deployment/verify/assess-gate-manifest.lisp:L3-L13@sha256:1264ac0ccb5b",
+     "offset": 69844
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L62-L69@sha256:aed9f075bbb6",
+   "old_offset": 69977,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L62-L69@sha256:aed9f075bbb6",
+     "offset": 70000
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L111-L134@sha256:aed9f075bbb6",
+   "old_offset": 70052,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L111-L134@sha256:aed9f075bbb6",
+     "offset": 70075
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L94-L97@sha256:aed9f075bbb6",
+   "old_offset": 70203,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L94-L97@sha256:aed9f075bbb6",
+     "offset": 70226
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/README.md:L14-L17@sha256:2f01958e3e1d",
+   "old_offset": 70266,
+   "target": "deployment/verify/README.md",
+   "new": [
+    {
+     "token": "deployment/verify/README.md:L14-L17@sha256:2f01958e3e1d",
+     "offset": 70289
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L20-L20@sha256:9eb423ea714e",
+   "old_offset": 70324,
+   "target": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:L20-L20@sha256:9eb423ea714e",
+     "offset": 70347
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L74-L74@sha256:9260439b476e",
+   "old_offset": 70405,
+   "target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L74-L74@sha256:9260439b476e",
+     "offset": 70428
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/provenance-narrative.ttl:L507-L507@sha256:abf4e150b218",
+   "old_offset": 70478,
+   "target": "deployment/provenance-narrative.ttl",
+   "new": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L507-L507@sha256:abf4e150b218",
+     "offset": 70501
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L86-L86@sha256:96f255d404e0",
+   "old_offset": 70546,
+   "target": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:L86-L86@sha256:96f255d404e0",
+     "offset": 70569
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/gate-registry.sexp:L19-L43@sha256:0ea0668d9967",
+   "old_offset": 70669,
+   "target": "deployment/verify/gate-registry.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/gate-registry.sexp:L19-L43@sha256:0ea0668d9967",
+     "offset": 70692
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L79+",
+   "old_offset": 70736,
+   "target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L79+",
+     "offset": 70759
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-THREAT-MODEL.md:L18-L18@sha256:48a65a766d1c",
+   "old_offset": 70803,
+   "target": "deployment/LAWMAX-THREAT-MODEL.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-THREAT-MODEL.md:L18-L18@sha256:48a65a766d1c",
+     "offset": 70826
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L61-L61@sha256:d73ef93f0b48",
+   "old_offset": 70867,
+   "target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L61-L61@sha256:d73ef93f0b48",
+     "offset": 70890
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L9-L9@sha256:7343da75e6d6",
+   "old_offset": 70947,
+   "target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L9-L9@sha256:7343da75e6d6",
+     "offset": 70970
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L14-L14@sha256:3970009d118d",
+   "old_offset": 71015,
+   "target": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L14-L14@sha256:3970009d118d",
+     "offset": 71038
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLAN.md:L225-L225@sha256:6c3465046d9b",
+   "old_offset": 71084,
+   "target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L225-L225@sha256:6c3465046d9b",
+     "offset": 71107
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L40-76,L79+",
+   "old_offset": 71225,
+   "target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L40-76,L79+",
+     "offset": 71248
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L13-L19@sha256:3970009d118d",
+   "old_offset": 71288,
+   "target": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-REPO-ONTOLOGY-MAP.md:L13-L19@sha256:3970009d118d",
+     "offset": 71311
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-REPO-GRAPH.json:L1-L3@sha256:439f573f9f21",
+   "old_offset": 71411,
+   "target": "deployment/LAWMAX-REPO-GRAPH.json",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-REPO-GRAPH.json:L1-L3@sha256:439f573f9f21",
+     "offset": 71434
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L9-L9@sha256:7343da75e6d6",
+   "old_offset": 71484,
+   "target": "deployment/LAWMAX-CONSOLIDATION-PLAN.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CONSOLIDATION-PLAN.md:L9-L9@sha256:7343da75e6d6",
+     "offset": 71507
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L19-L19@sha256:9260439b476e",
+   "old_offset": 71552,
+   "target": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLUS-REPO-AUDIT.md:L19-L19@sha256:9260439b476e",
+     "offset": 71575
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-OMEGA-PLAN.md:L5-L6@sha256:6c3465046d9b",
+   "old_offset": 71702,
+   "target": "deployment/LAWMAX-OMEGA-PLAN.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-OMEGA-PLAN.md:L5-L6@sha256:6c3465046d9b",
+     "offset": 71725
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L3-L5@sha256:d73ef93f0b48",
+   "old_offset": 71762,
+   "target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L3-L5@sha256:d73ef93f0b48",
+     "offset": 71785
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L73-L74@sha256:d73ef93f0b48",
+   "old_offset": 71827,
+   "target": "deployment/LAWMAX-CEILING-CROSSWALK.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CEILING-CROSSWALK.md:L73-L74@sha256:d73ef93f0b48",
+     "offset": 71850
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L40-L41@sha256:88d3f19cd8b5",
+   "old_offset": 71907,
+   "target": "deployment/LAWMAX-CPEI-TARGET-SPEC.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-CPEI-TARGET-SPEC.md:L40-L41@sha256:88d3f19cd8b5",
+     "offset": 71930
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L7-L7@sha256:a826bc3fa5de",
+   "old_offset": 71975,
+   "target": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-ARCHITECTURE-CONSTITUTION.sexp:L7-L7@sha256:a826bc3fa5de",
+     "offset": 71998
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L41-L41@sha256:0cbd6e1d7bcb",
+   "old_offset": 72103,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L41-L41@sha256:0cbd6e1d7bcb",
+     "offset": 72126
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L449-L449@sha256:0cbd6e1d7bcb",
+   "old_offset": 72158,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L449-L449@sha256:0cbd6e1d7bcb",
+     "offset": 72181
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/manifest.ttl:L127-L127@sha256:5d340e54bc3f",
+   "old_offset": 72215,
+   "target": "deployment/manifest.ttl",
+   "new": [
+    {
+     "token": "deployment/manifest.ttl:L127-L127@sha256:5d340e54bc3f",
+     "offset": 72238
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/ontology.ttl:L53-L53@sha256:a95ac5b0ec4f",
+   "old_offset": 72271,
+   "target": "deployment/ontology.ttl",
+   "new": [
+    {
+     "token": "deployment/ontology.ttl:L53-L53@sha256:a95ac5b0ec4f",
+     "offset": 72294
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/publisher.jsonld:L149-L149@sha256:76d746527ad7",
+   "old_offset": 72336,
+   "target": "deployment/publisher.jsonld",
+   "new": [
+    {
+     "token": "deployment/publisher.jsonld:L149-L149@sha256:76d746527ad7",
+     "offset": 72359
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/provenance-narrative.ttl:L393-L393@sha256:abf4e150b218",
+   "old_offset": 72396,
+   "target": "deployment/provenance-narrative.ttl",
+   "new": [
+    {
+     "token": "deployment/provenance-narrative.ttl:L393-L393@sha256:abf4e150b218",
+     "offset": 72419
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/templates/ai-ingest-manifest.ttl:L160-L160@sha256:ae926b02d482",
+   "old_offset": 72464,
+   "target": "deployment/templates/ai-ingest-manifest.ttl",
+   "new": [
+    {
+     "token": "deployment/templates/ai-ingest-manifest.ttl:L160-L160@sha256:ae926b02d482",
+     "offset": 72487
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/shapes/eli-shapes.ttl:L180-L189@sha256:bab6fff5c9d8",
+   "old_offset": 72551,
+   "target": "deployment/shapes/eli-shapes.ttl",
+   "new": [
+    {
+     "token": "deployment/shapes/eli-shapes.ttl:L180-L189@sha256:bab6fff5c9d8",
+     "offset": 72574
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L15-L15@sha256:c5b5c97dddcf",
+   "old_offset": 72616,
+   "target": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L15-L15@sha256:c5b5c97dddcf",
+     "offset": 72639
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L44-L45@sha256:c5b5c97dddcf",
+   "old_offset": 72692,
+   "target": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-DATASET-PACKAGE-PROJECTION.md:L44-L45@sha256:c5b5c97dddcf",
+     "offset": 72715
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/PROOF-CARRYING-LAW.md:L139-L139@sha256:aed9f075bbb6",
+   "old_offset": 72828,
+   "target": "deployment/PROOF-CARRYING-LAW.md",
+   "new": [
+    {
+     "token": "deployment/PROOF-CARRYING-LAW.md:L139-L139@sha256:aed9f075bbb6",
+     "offset": 72851
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/LAWMAX-TEMPORAL-IDENTITY-DESIGN.md:L116-L116@sha256:c32612fe2275",
+   "old_offset": 72904,
+   "target": "deployment/LAWMAX-TEMPORAL-IDENTITY-DESIGN.md",
+   "new": [
+    {
+     "token": "deployment/LAWMAX-TEMPORAL-IDENTITY-DESIGN.md:L116-L116@sha256:c32612fe2275",
+     "offset": 72927
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L262-L273@sha256:0cbd6e1d7bcb",
+   "old_offset": 73013,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L262-L273@sha256:0cbd6e1d7bcb",
+     "offset": 73036
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L349-L365@sha256:0cbd6e1d7bcb",
+   "old_offset": 73068,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L349-L365@sha256:0cbd6e1d7bcb",
+     "offset": 73091
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L370-L379@sha256:0cbd6e1d7bcb",
+   "old_offset": 73136,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L370-L379@sha256:0cbd6e1d7bcb",
+     "offset": 73159
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/manifest.ttl:L40-L40@sha256:5d340e54bc3f",
+   "old_offset": 73211,
+   "target": "deployment/manifest.ttl",
+   "new": [
+    {
+     "token": "deployment/manifest.ttl:L40-L40@sha256:5d340e54bc3f",
+     "offset": 73234
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/authority.ttl:L337-L337@sha256:0cbd6e1d7bcb",
+   "old_offset": 73289,
+   "target": "deployment/authority.ttl",
+   "new": [
+    {
+     "token": "deployment/authority.ttl:L337-L337@sha256:0cbd6e1d7bcb",
+     "offset": 73312
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/merkle-profile.sexp:L51-L53@sha256:1a64d0e9885f",
+   "old_offset": 73418,
+   "target": "deployment/verify/merkle-profile.sexp",
+   "new": [
+    {
+     "token": "deployment/verify/merkle-profile.sexp:L51-L53@sha256:1a64d0e9885f",
+     "offset": 73441
+    }
+   ]
+  },
+  {
+   "old_token": "deployment/verify/canonical-serialization-spec.md:L61-L63@sha256:c12d8b752b10",
+   "old_offset": 73506,
+   "target": "deployment/verify/canonical-serialization-spec.md",
+   "new": [
+    {
+     "token": "deployment/verify/canonical-serialization-spec.md:L61-L63@sha256:c12d8b752b10",
+     "offset": 73529
+    }
+   ]
+  }
+ ]
+}

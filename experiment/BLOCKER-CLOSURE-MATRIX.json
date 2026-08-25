@@ -1,0 +1,88 @@
+{
+ "$schema": "lawmax/blocker-closure-matrix/1",
+ "verdict": "FRONTIER-BLOCKED",
+ "rev2_draft": "sha256:840dcbb23877806fbdd0ebdecc6dabee81f622862755ae926ef2efa2dcda1d34",
+ "blockers": [
+  {
+   "id": 1,
+   "what": "Precommit barrier",
+   "law": "c3 — ΓΡΑΜΜΕΝΟΣ",
+   "closure": "8/8 inputs SEALED στο epoch με τιμές από τον δημιουργό",
+   "status": "LAW-DRAFTED · INPUTS PENDING-SEAL (8/8)",
+   "owner": "δημιουργός (τιμές) + evaluator (σφράγιση)"
+  },
+  {
+   "id": 2,
+   "what": "Φ2A/closure/Φ2B split",
+   "law": "c4 — ΓΡΑΜΜΕΝΟΣ",
+   "closure": "ενεργοποιείται με το v2· δομικό, όχι εκκρεμές artifact",
+   "status": "LAW-DRAFTED",
+   "owner": "ratification"
+  },
+  {
+   "id": 3,
+   "what": "Πεπερασμένο I_t/L_i + congruence ≡material",
+   "law": "c5 — ΓΡΑΜΜΕΝΟΣ",
+   "closure": "ΑΠΟΔΕΙΞΕΙΣ μέσα στο DOMAIN-CLOSURE-CERTIFICATE (Φ2)",
+   "status": "LAW-DRAFTED · PROOFS NOT-YET (ορθώς — παραδοτέο Φ2)",
+   "owner": "Φ2"
+  },
+  {
+   "id": 4,
+   "what": "Ω transitivity + status algebra + UNKNOWN",
+   "law": "c6 — ΓΡΑΜΜΕΝΟΣ",
+   "closure": "αποδείξεις preorder ανά άξονα στο ίδιο certificate",
+   "status": "LAW-DRAFTED · PROOFS NOT-YET",
+   "owner": "Φ2"
+  },
+  {
+   "id": 5,
+   "what": "Όχι τεχνητός νικητής",
+   "law": "c7 — ΓΡΑΜΜΕΝΟΣ",
+   "closure": "ενεργό με το v2",
+   "status": "LAW-DRAFTED",
+   "owner": "ratification"
+  },
+  {
+   "id": 6,
+   "what": "Grammar + coverage theorem + realization witness",
+   "law": "c9 — ΓΡΑΜΜΕΝΟΣ",
+   "closure": "grammar στο closure boundary· witness ανά υποψήφιο στη Φ2B",
+   "status": "LAW-DRAFTED · ARTIFACTS NOT-YET",
+   "owner": "Φ2"
+  },
+  {
+   "id": 7,
+   "what": "Πολυ-αυθεντία/adapter/subset + contract 15 πεδίων",
+   "law": "c10 — ΓΡΑΜΜΕΝΟΣ",
+   "closure": "ενεργό με το v2· τα H_i του epoch ευθυγραμμίζονται στη σφράγισή του",
+   "status": "LAW-DRAFTED",
+   "owner": "ratification + epoch seal"
+  },
+  {
+   "id": 8,
+   "what": "Termination measure μετά το freeze",
+   "law": "c8 — ΓΡΑΜΜΕΝΟΣ",
+   "closure": "ενεργό με το v2· το DAG ίδιο είναι παραδοτέο Φ2B/Φ3",
+   "status": "LAW-DRAFTED",
+   "owner": "ratification"
+  },
+  {
+   "id": 9,
+   "what": "AS αυτούσια + ratification χωρίς αλλαγή bytes",
+   "law": "c10b+c11 — ΓΡΑΜΜΕΝΟΣ",
+   "closure": "attestation του δημιουργού",
+   "status": "LAW-DRAFTED · ATTESTATION PENDING",
+   "owner": "δημιουργός"
+  },
+  {
+   "id": 10,
+   "what": "Lifecycle-aware ceiling checker",
+   "law": "c12 — ΓΡΑΜΜΕΝΟΣ",
+   "closure": "υλοποίηση REV2 ΥΠΑΡΧΕΙ και τρέχει· MET 12 · NOT-YET 8 · UNMET 0· preflight αρνείται ορθώς· δένεται στο epoch κατά τη σφράγιση",
+   "status": "IMPLEMENTED-AS-DRAFT",
+   "owner": "evaluator → epoch seal"
+  }
+ ],
+ "gate_to_phase2": "ΟΛΑ τα LAW-DRAFTED → RATIFIED μέσω attestation ΚΑΙ inputs SEALED ΚΑΙ preflight PASS ΚΑΙ Φ1A SEALED. Τα NOT-YET των Φ2 παραδοτέων ΔΕΝ μπλοκάρουν την ενεργοποίηση — μπλοκάρουν το FINAL."
+}

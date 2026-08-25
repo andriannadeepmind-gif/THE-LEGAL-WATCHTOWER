@@ -1,0 +1,40 @@
+{
+ "lane": "Φ1A-L5",
+ "cluster_roots": [
+  "deployment/self",
+  "deployment/self-study",
+  "deployment/knowledge",
+  "deployment/data",
+  "deployment/state",
+  "deployment/collab",
+  "deployment/*.js",
+  "deployment/*.sh"
+ ],
+ "resolver_sha256": "75de66fbe2857a177da827864cfb5a85e2592003c64cbd526d941e06e91daf72",
+ "manifest_sha256": "1bde12ccac8e924c7be50adbd311813e991aef4d1c9ae9f54ced16c2ad370ec5",
+ "scope_authority_sha256": "a72668dcfed4b877d01ade97a1549631dc683082855e9a4cd8276cf445eb8791",
+ "corpus_identity": "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6",
+ "access_mechanism": "openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS",
+ "mount": "/frozen/ro",
+ "dossiers": [
+  {
+   "path": "experiment/phase1a/deployment-state-rev4.sexp",
+   "bytes": 95067,
+   "sha256": "39dc5cafe52cba8ba786c46dbb3dc0794f26cf8b70ab25447721be35338a04fd"
+  }
+ ],
+ "citations": 189,
+ "resolved": 189,
+ "problems": 0,
+ "files_verified": 50,
+ "forms": {
+  "mount-anchored": 187,
+  "corpus-relative": 2
+ },
+ "in_cluster": 162,
+ "exit_code": 0,
+ "verdict": "RECOGNIZED-CITATION-INTEGRITY",
+ "access_enforcement_proved": true,
+ "unique_citation_keys": 189,
+ "problem_list": []
+}

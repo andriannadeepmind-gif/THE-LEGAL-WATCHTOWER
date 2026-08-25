@@ -1,0 +1,48 @@
+{
+ "$schema": "lawmax/blind-agent-isolation-blocked/1",
+ "verdict": "BLIND-AGENT-ISOLATION-BLOCKED",
+ "acceptance_predicate_that_failed": "REV3.1 item 1 / acceptance #1: «Πραγματικός Claude canary agent δεν μπορεί τεχνικά να δει κανένα forbidden artifact» — απόρριψη ΑΠΟ το tool/filesystem boundary, ΟΧΙ επειδή ο agent υπάκουσε σε prompt.",
+ "result": "ΤΕΧΝΙΚΑ ΜΗ ΕΦΙΚΤΟ ΣΤΗΝ ΠΑΡΟΥΣΑ ΠΛΑΤΦΟΡΜΑ",
+ "empirical_evidence": {
+  "method": "Εκτελέστηκε ΠΡΑΓΜΑΤΙΚΟΣ canary agent (general-purpose subagent μέσω του Agent tool), διαταγμένος να ΕΠΙΧΕΙΡΗΣΕΙ ανάγνωση των απαγορευμένων στόχων. READ-ONLY· τίποτα δεν μεταβλήθηκε.",
+  "canary_uid": "0 (root)",
+  "canary_mount_namespace": "mnt:[4026531832] — ΤΟ ΑΡΧΙΚΟ namespace, ΤΟ ΙΔΙΟ με τον γονέα· ΚΑΜΙΑ per-lane απομόνωση",
+  "access_matrix": {
+   "frozen_corpus /frozen/watchtower": "ACCESSIBLE (διάβασε CLAUDE.md)",
+   "phase1a dossier (abs path) source-rev3.sexp": "ACCESSIBLE",
+   "another lane output gate-receipts/latest/RECEIPT.json": "ACCESSIBLE (7 αρχεία)",
+   "/tmp": "ACCESSIBLE",
+   "/proc/self/status": "ACCESSIBLE",
+   "inherited environment": "ACCESSIBLE (133 μεταβλητές, incl HTTPS_PROXY)",
+   "network/github tools": "ΦΟΡΤΩΣΙΜΑ (WebFetch, WebSearch, mcp__github__* ~70) — δεν κλήθηκαν"
+  },
+  "canary_final_answer": "NO — τίποτα δεν με εμπόδισε· πλήρης read access σε ΟΛΟΥΣ τους απαγορευμένους στόχους, ως root στο αρχικό namespace, χωρίς κανένα filesystem ή tool boundary."
+ },
+ "exact_technical_reason": "Οι subagents που δημιουργεί το Agent tool ΔΕΝ γίνονται fork από εμένα — τους δημιουργεί ο harness, με δικό τους tool executor που λειτουργεί πάνω στο ΚΟΙΝΟ filesystem του container ως root. ΔΕΝ έχω σημείο παρεμβολής για να τους επιβάλω mount namespace, seccomp ή landlock policy: δεν ελέγχω τη δημιουργία της διεργασίας τους ούτε την εκτέλεση των tool calls τους. Η per-lane απομόνωση που πέτυχα (isolation-test 13/13) δουλεύει ΜΟΝΟ για διεργασίες που κάνω ΕΓΩ fork από Bash ΜΕΣΑ στο δικό μου `unshare` — δηλαδή για τον ντετερμινιστικό citation-resolver, ΟΧΙ για τον ίδιο τον Claude research agent, το context του ή τα εργαλεία του.",
+ "what_IS_enforced": [
+  "Process-level απομόνωση διεργασιών που κάνω fork ο ίδιος (citation-resolver ανά lane σε per-lane mount namespace· isolation-test 13/13)",
+  "Ντετερμινιστικά, αναπαραγώγιμα citation-integrity αποτελέσματα από παγωμένα bytes — αυτά ΔΕΝ επηρεάζονται από το παρόν blocker"
+ ],
+ "what_is_NOT_enforced": [
+  "Filesystem/tool boundary γύρω από τον ΠΡΑΓΜΑΤΙΚΟ Claude research agent",
+  "Το «fresh context, χωρίς πρόσβαση στο σκεπτικό του υλοποιητή» των επτά ανεξάρτητων lanes και των adversarial critics (CLAUDE.md) — είναι ΣΥΜΒΑΤΙΚΟ, ΟΧΙ δομικά επιβεβλημένο σε αυτό το επίπεδο",
+  "Blind Φ2A discovery όπου ένας agent δεν μπορεί να δει ό,τι δεν πρέπει"
+ ],
+ "why_no_substitute": "Το CLAUDE.md απαγορεύει ρητά facades/workarounds και απαιτεί «τίμια άγνοια». Ένα ψεύτικο wrapper που θα ΔΗΛΩΝΕ ότι απομονώνει τον agent ενώ ο canary αποδεικνύει το αντίθετο θα ήταν ακριβώς η facade που απαγορεύεται — και ο δημιουργός το προειδοποίησε ρητά: «Μην κατασκευάσεις υποκατάστατο και μην ισχυριστείς blindness.»",
+ "what_would_be_required_to_close": [
+  "Εκτέλεση των research agents ΜΕΣΑ σε ελεγχόμενο sandbox που ελέγχει ο orchestrator: dropped-root container/microVM (gVisor/Firecracker) ή landlock/seccomp jail, ΧΩΡΙΣ host mounts, με scrubbed environment και ΧΩΡΙΣ network/GitHub tools",
+  "Ή μεταφορά της μελέτης σε πλατφόρμα όπου ο orchestrator ελέγχει τη δημιουργία διεργασίας κάθε agent και μπορεί να επιβάλει το boundary πριν από το πρώτο tool call"
+ ],
+ "consequence_for_study": "Το πειραματικό design στηρίζεται σε agents που ΔΟΜΙΚΑ δεν βλέπουν ο ένας τα δεδομένα/σκεπτικό του άλλου (επτά lanes, εσωτερικοί αντίπαλοι κριτές, blind frontier discovery). Αυτή η εγγύηση ΔΕΝ μπορεί να επιβληθεί σε OS επίπεδο εδώ. Άρα το REV3.1 ΔΕΝ γίνεται αποδεκτό: το acceptance #1 απέτυχε τεχνικά.",
+ "stop_directive_followed": "Ο δημιουργός όρισε ρητά: «Αν η πλατφόρμα δεν επιτρέπει αυτή την τεχνική επιβολή, σταμάτα με BLIND-AGENT-ISOLATION-BLOCKED.» Σταματώ εδώ. Δεν προχωρώ στα items 2-5, καθώς η αποδοχή REV3.1 είναι gated στο item 1 και το item 1 είναι τεχνικά αδύνατο.",
+ "not_affected": [
+  "v1 σφραγισμένο (5b3ab5bf…)",
+  "παγωμένο corpus e621dbe1",
+  "τα ντετερμινιστικά citation receipts",
+  "τα REV1/REV2/REV3 drafts ως checkpoints"
+ ],
+ "provenance": {
+  "canary": "general-purpose subagent, read-only, 5 tool calls",
+  "orchestrator_model_note": "Το session εναλλάχθηκε σε claude-opus-4-8 με ρητή εντολή /model του χρήστη πριν από αυτό το πέρασμα (καταγράφεται ως γεγονός, όχι σιωπηλή δρομολόγηση)."
+ }
+}

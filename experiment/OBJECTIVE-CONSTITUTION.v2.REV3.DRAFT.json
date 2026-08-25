@@ -1,0 +1,291 @@
+{
+ "$schema": "lawmax/omega-ceiling-constitution/2.REV3.DRAFT",
+ "title": "Ω-CEILING CONSTITUTION v2 — REV3 DRAFT",
+ "normative_body": "STATUS-NEUTRAL — αυτό το κείμενο ΔΕΝ δηλώνει πουθενά αν είναι σε ισχύ. Το lifecycle ζει ΑΠΟΚΛΕΙΣΤΙΚΑ στο εξωτερικό authoritative record (experiment/LIFECYCLE-RECORD.json, μέσω lifecycle-fsm.py). Έτσι τα bytes του νόμου δεν αλλάζουν ΠΟΤΕ για λόγους κατάστασης.",
+ "revises": {
+  "file": "OBJECTIVE-CONSTITUTION.v2.REV2.DRAFT.json",
+  "sha256": "840dcbb23877806fbdd0ebdecc6dabee81f622862755ae926ef2efa2dcda1d34",
+  "kept_as": "checkpoint 32e394ce"
+ },
+ "amends": "OBJECTIVE-CONSTITUTION.json",
+ "amends_sha256": "5b3ab5bf9561d535adbf5049b975ac2ab8e9a63db32dfb14a07d82d78b729be6",
+ "c1_supreme_purpose": {
+  "carried_from": "v1 s1 — ΑΜΕΤΑΒΛΗΤΟ",
+  "seeking": "τη ΜΕΓΑΛΥΤΕΡΗ υλοποιήσιμη σήμερα σημασιολογική, νομική και θεσμική capability construction που ικανοποιεί ΟΛΕΣ τις αδιαπραγμάτευτες υποχρεώσεις",
+  "not_seeking": [
+   "απλούστερη λύση",
+   "ευκολότερα αποδείξιμη λύση",
+   "μικρότερο TCB",
+   "φθηνότερη ή ταχύτερη λύση",
+   "την καλύτερη από περιορισμένο σύνολο ιδεών που έτυχε να παραγάγουν οι πράκτορες"
+  ],
+  "proof_subordination": "Το proof system ΥΠΗΡΕΤΕΙ την ανώτερη αρχιτεκτονική. ΑΠΑΓΟΡΕΥΕΤΑΙ να μικρύνει την αρχιτεκτονική ώστε να γίνει ευκολότερη η απόδειξη."
+ },
+ "c1b_purpose_vs_verdict": {
+  "research_purpose": "ΑΝΩΤΑΤΟΣ ΕΡΕΥΝΗΤΙΚΟΣ ΣΚΟΠΟΣ (ανοικτός κόσμος): η μεγαλύτερη υλοποιήσιμη σήμερα κατασκευή. Κατευθύνει την Φ2A ανακάλυψη, τους omission challenges και το εύρος του U_t.",
+  "mechanical_verdict": "ΜΗΧΑΝΙΚΑ ΑΠΟΔΕΙΞΙΜΟ VERDICT (σφραγισμένο πεδίο): θεώρημα ΜΟΝΟ πάνω στο σφραγισμένο Q_t του epoch.",
+  "bridge_rule": "ΚΑΜΙΑ ανοικτού κόσμου αξίωση «απόλυτο ανώτατο σήμερα» δεν εκφέρεται ΧΩΡΙΣ coverage theorem που ΠΡΑΓΜΑΤΙΚΑ τη συνεπάγεται: απόδειξη ότι κάθε γνωστή-στο-t0 family/technology είτε χαρτογραφείται στο Q_t είτε καταγράφεται στο omission ledger με αιτία. Χωρίς αυτό, η ισχυρότερη επιτρεπτή διατύπωση είναι ΡΗΤΑ σχετική με το σφραγισμένο πεδίο."
+ },
+ "c2_separation_and_lifecycle": {
+  "law": "ΑΥΤΟ το κείμενο — status-neutral",
+  "epoch": "OBJECTIVE-EPOCH-n — hash-bound δεδομένα, ΜΙΑ κανονιστική έδρα ανά στοιχείο",
+  "state": "LIFECYCLE-RECORD.json (FSM) + evidence/state ledgers",
+  "single_seat_rule": "ΚΑΘΕ στοιχείο έχει ΑΚΡΙΒΩΣ ΜΙΑ κανονιστική έδρα. Διπλή δήλωση (π.χ. t0 και σε νόμο και σε epoch με άλλη τιμή) = ΑΚΥΡΟΤΗΤΑ."
+ },
+ "c3_precommit_and_phase_structure": {
+  "defect_corrected": "Το REV2 απαιτούσε «πλήρες finite vocabulary πριν εμφανιστεί candidate» ΚΑΙ Φ2A που υπάρχει για να ανακαλύψει άγνωστες οικογένειες — αντίφαση. Η σφράγιση χωρίζεται σε ΔΥΟ σημεία.",
+  "seal_before_phi2A": [
+   "αποστολή και hard invariants",
+   "άξονες, κατεύθυνση και ΜΕΘΟΔΟΙ ΜΕΤΡΗΣΗΣ",
+   "materiality/uncertainty POLICY (μεθοδολογία, όχι αριθμοί ανά υποψήφιο)",
+   "workload και fault-model PROTOCOL",
+   "source-admissibility policy",
+   "resource POLICY",
+   "admission/rejection rules",
+   "discovery META-GRAMMAR και omission-challenge protocol"
+  ],
+  "phi2A": "ανακαλύπτει families, vocabulary και candidates — ΧΩΡΙΣ επιλογή νικητή, ΧΩΡΙΣ συγκρίσεις κυριαρχίας",
+  "seal_at_closure_boundary": [
+   "ΠΕΠΕΡΑΣΜΕΝΟ vocabulary",
+   "construction domain C_t",
+   "Q_t",
+   "composition grammar + coverage theorem",
+   "ΠΛΗΡΕΣ obligation universe"
+  ],
+  "phi2B_phi3": "συγκρίσεις ΜΟΝΟ μετά το closure, πάνω σε ΑΜΕΤΑΒΛΗΤΟ Q_t",
+  "late_candidate": "νέος material candidate μετά το closure ⇒ ΑΚΥΡΩΣΗ epoch, μονοτονικό n+1 — ΠΟΤΕ σιωπηλή προσθήκη",
+  "responsibility": {
+   "rule": "Η ΤΕΧΝΙΚΗ ΕΡΕΥΝΑ ΔΕΝ ΜΕΤΑΦΕΡΕΤΑΙ ΣΤΟΝ ΔΗΜΙΟΥΡΓΟ.",
+   "evaluator_produces": [
+    "t0: καταγράφεται ΑΥΤΟΜΑΤΑ κατά τη σφράγιση — κανείς δεν το «διαλέγει»",
+    "technology sources: έρευνα, επιλογή από πρωτογενείς πηγές, αρχειοθέτηση/hash-binding, υποβολή σε omission challenge",
+    "uncertainty methodology, workloads, vocabulary, admission rules: ερευνητική/τυπική υποχρέωση του evaluator",
+    "materiality και resource envelope: EVIDENCE-BACKED ΠΡΟΤΑΣΗ"
+   ],
+   "creator_decides": "ΜΟΝΟ γνήσιες θεσμικές προτιμήσεις ή πραγματικούς εξωτερικούς περιορισμούς· επικυρώνει ΟΛΟΚΛΗΡΩΜΕΝΟ τεκμηριωμένο πακέτο· δεν επινοεί τεχνικούς αριθμούς",
+   "no_low_ceiling": "Η ΑΠΟΥΣΙΑ περιορισμού χρόνου/κόστους ΔΕΝ μετατρέπεται σε χαμηλό resource ceiling — το envelope τεκμηριώνεται από τις απαιτήσεις της κατασκευής, όχι από ευκολία."
+  }
+ },
+ "c5_domain": {
+  "defect_corrected": "Το Π L_i είναι χώρος ATTRIBUTE PROFILES, όχι αρχιτεκτονικών: περιέχει μη υλοποιήσιμους συνδυασμούς και συγχωνεύει διαφορετικές constructions. Το θεώρημα δεν μπορεί να ποσοδεικτεί εκεί.",
+  "C_t": "ΠΕΠΕΡΑΣΜΕΝΟΣ construction/architecture IR carrier, ΠΑΡΑΓΟΜΕΝΟΣ από τη σφραγισμένη grammar (κάθε στοιχείο = έγκυρη παραγωγή της)",
+  "realization_map": "ρ: C_t → Π_i L_i — αποδίδει σε κάθε construction το attribute profile της",
+  "Q_t": "Q_t = C_t / ≡material — quotient ΤΩΝ CONSTRUCTIONS, όχι των profiles",
+  "required_proofs": [
+   "REALIZABILITY: το θεώρημα ποσοδεικτεί ΜΟΝΟ σε υλοποιήσιμα στοιχεία (C_t)",
+   "COVERAGE: κάθε γνωστή family χαρτογραφείται σε στοιχείο/class του C_t ή στο omission ledger",
+   "REPRESENTATIVE INVARIANCE: κάθε κρίση ανεξάρτητη από την επιλογή αντιπροσώπου της class",
+   "CONGRUENCE: ≡material συμβατή με H, Ω, joins, implementability, blueprints",
+   "FINITENESS: |C_t| πεπερασμένο (από την grammar) και κάθε L_i πεπερασμένο"
+  ],
+  "decidability": "≡material αποφασίσιμη με δηλωμένο τερματίζοντα αλγόριθμο"
+ },
+ "c6_omega_admission_feasibility": {
+  "omega_preorder_obligation": "ΟΛΟΚΛΗΡΟ το Ω αποδεικνύεται PREORDER (reflexive + transitive), όχι μόνο οι άξονες: αποδείξεις μεταβατικότητας/ανακλαστικότητας ΚΑΙ για capability refinement, assumptions, guarantees, failure/recovery semantics και contract matching, ΚΑΙ για τη ΣΥΝΘΕΣΗ όλων (τομή preorders = preorder — το επιχείρημα γράφεται ρητά στο DOMAIN-CLOSURE-CERTIFICATE).",
+  "axis_rule": "ΚΑΘΕ άξονας του Ω ορίζεται ως ΑΠΟΔΕΔΕΙΓΜΕΝΑ ΜΕΤΑΒΑΤΙΚΗ preorder πάνω στα levels του. ΑΠΑΓΟΡΕΥΕΤΑΙ σκέτο threshold «not materially worse»: η σχέση διαφοράς-κάτω-από-κατώφλι ΔΕΝ είναι μεταβατική (a~b, b~c δεν συνεπάγει a~c) και θα καθιστούσε το Ω ασυνεπές.",
+  "sealed_axes": [
+   "proof/assurance πέρα από το floor",
+   "eliminated error classes",
+   "verification independence",
+   "evolvability και migration",
+   "determinism, durability, recovery, liveness",
+   "provenance, auditability, introspection",
+   "TCB assumptions",
+   "performance, scaling, runtime resource envelope"
+  ],
+  "A_preceqOmega_B_iff": [
+   "κάθε mission-relevant capability contract του A refinάρεται ΠΛΗΡΩΣ από το B",
+   "το B ΔΕΝ έχει ισχυρότερες assumptions",
+   "το B ΔΕΝ έχει ασθενέστερες guarantees/failure/recovery semantics",
+   "σε ΚΑΘΕ σφραγισμένο άξονα: level(A) ⊑ level(B) στην αποδεδειγμένη preorder του άξονα"
+  ],
+  "status_algebra": {
+   "per_gate": "H_i(q) ∈ {PASS, FAIL, UNKNOWN} — αμοιβαία αποκλειόμενα, εξαντλητικά",
+   "lift": "H(q)=PASS ⟺ ∀i H_i=PASS · H(q)=FAIL ⟺ ∃i με ανεξάρτητα ελέγξιμο FAIL certificate · H(q)=UNKNOWN διαφορετικά",
+   "partition": "F+ = {q ∈ Q_t | H(q)=PASS} · F- = {q | H(q)=FAIL} · F? = F_unknown = Q_t ∖ (F+ ∪ F-) — ΔΙΑΜΕΡΙΣΗ του Q_t"
+  },
+  "admission_states": {
+   "values": [
+    "ADMITTED",
+    "PENDING",
+    "REJECTED-WITH-CERTIFICATE"
+   ],
+   "admitted": "ονομασμένο contract + evidence ουσιώδους διαφοράς — ΠΛΗΡΕΣ implementability witness ΔΕΝ απαιτείται για είσοδο στην έρευνα: αυτό θα απέκλειε ακριβώς τις νέες, δύσκολες αλλά πιθανώς ανώτερες constructions. Το witness απαιτείται για το ΤΕΛΙΚΟ verdict, όχι για τη μελέτη.",
+   "pending_blocks_closure": "MATERIAL PENDING challenger ΜΠΛΟΚΑΡΕΙ ΤΟ CLOSURE BOUNDARY — όχι μόνο το FINAL. Το Q_t δεν σφραγίζεται με ανοιχτό material challenger.",
+   "rejected": "ΜΟΝΟ με certificate (infeasibility ή non-materiality)"
+  },
+  "unknown_blocking": {
+   "admission": "Υποθετική πιθανότητα ΕΚΤΟΣ Q_t δεν μπλοκάρει τίποτα. Μπαίνει στο Q_t μόνο ως admitted challenger: ονομασμένο contract + evidence ουσιώδους διαφοράς + constructive implementability witness.",
+   "blocking": "ΚΑΘΕ q ∈ F? που θα μπορούσε να υπερέχει σε ΟΠΟΙΑΔΗΠΟΤΕ διάσταση του Ω μπλοκάρει το FINAL — ΑΚΟΜΗ ΚΙ ΑΝ δεν προσθέτει νέο capability. Η υπεροχή σε έναν άξονα αρκεί.",
+   "closure_only_via": [
+    "H(q)=PASS (και τότε συγκρίνεται κανονικά)",
+    "ηχηρό FAIL certificate",
+    "αποδεδειγμένο upper bound: UB(q) ⪯Ω W μηχανικά ελέγξιμο"
+   ]
+  },
+  "ub_chain": "Κλείσιμο branch με upper bound απαιτεί ΚΑΙ ΤΑ ΔΥΟ σκέλη μηχανικά ελέγξιμα: q ⪯Ω UB(q) ΚΑΙ UB(q) ⪯Ω W. Χωρίς το πρώτο σκέλος, το «UB» δεν φράσσει τίποτα.",
+  "hard_rule_preserved": "Η αδυναμία ολοκλήρωσης δύσκολης απόδειξης ΔΕΝ χαρίζει νίκη σε μικρότερο σύστημα."
+ },
+ "c7_no_artificial_winner": {
+  "honest_maximum": "Η ΜΕΓΙΣΤΗ μαθηματικά έντιμη εγγύηση είναι ΜΙΑ από:",
+  "outcome_A": "PROVED-GREATEST-IN-SEALED-Q_t: greatest equivalence class [W] με ΠΛΗΡΗ απόδειξη ∀A∈F+: A ⪯Ω W",
+  "outcome_B": "PROVED-NO-GREATEST + COMPLETE-PARETO-FRONTIER: απόδειξη ότι greatest ΔΕΝ υπάρχει, ΚΑΙ πλήρες frontier με join challenges ΚΑΙ implementation blueprint ΓΙΑ ΚΑΘΕ μη κυριαρχούμενο στοιχείο",
+  "prohibition": "Η αναγκαστική επιλογή «νικητή» όταν υπάρχουν ασύγκριτα maximal στοιχεία είναι ΨΕΥΔΗΣ απόδειξη και μπορεί να παραδώσει ΚΑΤΩΤΕΡΟ σύστημα. ΑΠΑΓΟΡΕΥΕΤΑΙ.",
+  "naming": "SELECTED-NONDOMINATED-FOR-IMPLEMENTATION (αν ο δημιουργός επιλέξει στοιχείο του frontier) ΔΕΝ ονομάζεται ΠΟΤΕ greatest."
+ },
+ "c8_termination": {
+  "defect_corrected": "Το freeze του DAG ΔΕΝ αποδεικνύει μόνο του ότι το M μειώνεται — χρειάζεται αποδεικτική υποχρέωση ανά μετάβαση.",
+  "requirements": [
+   "ΣΦΡΑΓΙΣΜΕΝΟ ΠΛΗΡΕΣ obligation universe στο closure boundary",
+   "ΑΠΟΔΕΙΞΗ well-founded rank/multiset decrease ΓΙΑ ΚΑΘΕ είδος μετάβασης (Dershowitz-Manna όπου χρειάζεται multiset)",
+   "FAIRNESS: καμία υποχρέωση δεν λιμοκτονεί — κάθε ανοιχτή υποχρέωση επισκέπτεται σε πεπερασμένο αριθμό βημάτων",
+   "BIJECTIVE COVERAGE: τα φύλλα του DAG καλύπτουν το Q_t αμφιμονοσήμαντα (κάθε class σε ακριβώς ένα leaf path)",
+   "REPLAY ΟΛΩΝ των certificates πριν από FINAL — όχι εμπιστοσύνη σε καταγεγραμμένα αποτελέσματα"
+  ],
+  "leaf_kinds_exhaustive": [
+   "FEASIBLE-WITNESS",
+   "INFEASIBLE-CERTIFICATE",
+   "DOMINATED-UPPER-BOUND"
+  ],
+  "final_iff": "παγωμένο DAG ∧ όλες οι παραπάνω αποδείξεις ∧ M=(0,0,0,0) ∧ αναπαραγωγή ΙΔΙΑΣ closure root ∧ επιτυχές replay",
+  "exhaustion": "SUSPENDED + EXACT CHECKPOINT — ΠΟΤΕ FINAL",
+  "forbidden_termination_grounds": [
+   "fixed number of rounds",
+   "stagnation",
+   "token/context exhaustion",
+   "χρόνος",
+   "κόστος",
+   "LLM consensus",
+   "πλειοψηφία πρακτόρων",
+   "δυσκολία proof",
+   "μεγάλη construction",
+   "δεν βρέθηκε κάτι καλύτερο"
+  ]
+ },
+ "c9_join_closure_and_implementability": {
+  "topology_incompleteness": "Οι 8 topologies ΔΕΝ θεωρούνται πλήρεις επειδή απαριθμήθηκαν. Απαιτείται COMPOSITION GRAMMAR (παραγωγική σύνταξη συνθέσεων) + COVERAGE THEOREM: κάθε σύνθεση εκφράσιμη στη grammar ανάγεται σε συνδυασμό των σφραγισμένων topologies — αλλιώς η grammar επεκτείνεται ΠΡΙΝ το closure.",
+  "base_topologies": [
+   "direct integration",
+   "modular composition",
+   "policy/mode-parametric composition",
+   "transactional/temporal isolation",
+   "jurisdiction/role partition",
+   "verified bridge",
+   "federated institutional composition",
+   "shared metamodel με deterministic admission"
+  ],
+  "incompatibility_certificate": "αποκλείει ΚΑΘΕ παραγωγή της grammar — όχι μία συγκόλληση",
+  "implementability_witness": "Το blueprint ΔΕΝ αρκεί. Απαιτείται END-TO-END realization/refinement witness:",
+  "witness_must_include": [
+   "όλες οι συνδέσεις",
+   "όλα τα dependencies",
+   "pinned toolchains",
+   "συνολικοί πόροι (μετρήσιμο envelope)",
+   "migration",
+   "ΕΚΤΕΛΕΣΙΜΕΣ acceptance gates"
+  ],
+  "final_object": "inert architecture IR + blueprint + witness· runtime conformance = μεταγενέστερο χωριστό certificate"
+ },
+ "c10_construction_rules": {
+  "refined_prohibitions": {
+   "authority": "ΑΠΑΓΟΡΕΥΕΤΑΙ η ΑΣΥΝΤΟΝΙΣΤΗ/ΑΝΤΙΦΑΤΙΚΗ αυθεντία. ΕΠΙΤΡΕΠΕΤΑΙ ρητή θεσμική ΠΟΛΥ-αυθεντία με jurisdiction, quorum και adjudication — μια ανώτερη θεσμική αρχιτεκτονική δεν αποκλείεται από απόλυτο «no duplicated authority».",
+   "facade": "ΑΠΑΓΟΡΕΥΕΤΑΙ facade που ΚΡΥΒΕΙ ΑΝΥΠΑΡΚΤΗ δυνατότητα. ΕΠΙΤΡΕΠΕΤΑΙ αποδεδειγμένος adapter.",
+   "subset": "ΕΠΙΤΡΕΠΕΤΑΙ verified kernel/subset όταν υπάρχει CHECKED refinement προς το ΣΥΝΟΛΙΚΟ σύστημα και δεν συρρικνώνεται το envelope."
+  },
+  "capability_contract_extended": [
+   "semantic identity",
+   "mission trace",
+   "domain",
+   "assumptions",
+   "guarantees",
+   "failure semantics",
+   "operating model",
+   "ownership/authority",
+   "scaling",
+   "resource envelope",
+   "recovery",
+   "evolution/migration",
+   "composition/interference",
+   "materiality",
+   "evidence grade"
+  ],
+  "presence_rule": "Capability ΔΕΝ θεωρείται παρούσα επειδή εμφανίζεται σε κείμενο, feature list ή ισχυρισμό πράκτορα. ΜΟΝΟ όταν ικανοποιείται το κοινό contract με αποδεκτό evidence.",
+  "U_t_prohibition": "ΤΟ U_t ΔΕΝ ΟΡΙΖΕΤΑΙ ΑΠΟΚΛΕΙΣΤΙΚΑ ΑΠΟ ΤΟ G_today.",
+  "no_prover_driven_architecture": {
+   "acl2_status": "CANDIDATE-ACL2-KERNEL — ΔΕΝ είναι επιλεγμένη έδρα",
+   "prohibition": "ΚΑΝΕΝΑ από ACL2, Coq, SPIN, SMT, verified subset, compiler restriction ή άλλο proof tool δεν ορίζει ή συρρικνώνει το candidate domain.",
+   "order": "ΠΡΩΤΑ η πλήρης σημασιολογική και θεσμική αρχιτεκτονική· ΜΕΤΑ ο ισχυρότερος proof/refinement stack που μπορεί να την επαληθεύσει.",
+   "subset_rule": "Απόδειξη υποσυνόλου είναι απόδειξη ΜΟΝΟ του υποσυνόλου, όχι λόγος αφαίρεσης του υπόλοιπου συστήματος."
+  },
+  "cl_authority": {
+   "cl_retains": [
+    "authoritative legal semantics",
+    "institutional roles",
+    "state-transition/admission protocols",
+    "condition/restart policy",
+    "extension metamodel",
+    "τελική κανονιστική authority"
+   ],
+   "non_lisp": "μόνο σε ρητά final boundaries με checked abstraction/refinement relation, χωρίς ανεξάρτητη κανονιστική αλήθεια"
+  }
+ },
+ "c10b_anti_simplification_verbatim": {
+  "incorporation": "HASH-BOUND ΑΥΤΟΥΣΙΑ ΕΝΣΩΜΑΤΩΣΗ από το v1 — όχι ονόματα",
+  "source": {
+   "file": "OBJECTIVE-CONSTITUTION.json",
+   "sha256": "5b3ab5bf9561d535adbf5049b975ac2ab8e9a63db32dfb14a07d82d78b729be6",
+   "json_pointers": [
+    "/s11_anti_simplification_obligations",
+    "/s11_counter_design"
+   ]
+  },
+  "verbatim_s11": [
+   "AS1 POSITIVE-BASELINE-REFINEMENT",
+   "AS2 THEOREM-NON-WEAKENING",
+   "AS3 CAPABILITY-OMISSION-CERTIFICATION",
+   "AS4 JOIN/SUPERSET-CHALLENGE",
+   "AS5 COMMON-WORKLOAD-AND-FAULT-MODEL",
+   "AS6 IMPLEMENTATION-MODEL-REFINEMENT",
+   "AS7 DOMAIN-SCOPE-HONESTY",
+   "AS8 UNKNOWN-CHALLENGER-RETENTION",
+   "AS9 NO-BUDGET-PRUNING",
+   "AS10 POST-SELECTION-DOMINANCE-ATTACK"
+  ],
+  "verbatim_counter_design": "Κάθε provisional winner δέχεται ΝΕΟ independent counter-design pass με αποκλειστικό σκοπό να κατασκευάσει σύστημα που τον κυριαρχεί. Επιτυχία ⇒ ακύρωση winner και επανάνοιγμα αναζήτησης.",
+  "precedence": "Σε ΣΥΓΚΡΟΥΣΗ οποιασδήποτε διάταξης του v2 με τις AS1-AS10, ΥΠΕΡΙΣΧΥΟΥΝ οι AS — είναι ο αντι-απλουστευτικός πυρήνας και καμία μεταγενέστερη διάταξη δεν τον στενεύει σιωπηλά."
+ },
+ "c11_ratification_two_step": {
+  "no_self_reference": "ΑΠΑΓΟΡΕΥΕΤΑΙ attestation μέσα σε commit να περιέχει το hash του ΙΔΙΟΥ commit — κυκλική αυτοαναφορά.",
+  "step_1": "construction commit C: περιέχει τα ΤΕΛΙΚΑ αμετάβλητα bytes του v2 (και amendment/epoch/checker).",
+  "step_2": "εξωτερικά υπογεγραμμένο artifact Ή επόμενο commit C+1 που δεσμεύει το C: hash του C, hashes όλων των artifacts ΟΠΩΣ ζουν στο C, ρητή δήλωση έγκρισης του δημιουργού.",
+  "lineage_verification": "ο guard επαληθεύει: το C είναι πρόγονος του HEAD· τα v2 bytes στο δέντρο του C ταυτίζονται με το attestation· το attestation ΔΕΝ ζει μέσα στο C.",
+  "lifecycle": "η μετάβαση καταγράφεται ΜΟΝΟ στο LIFECYCLE-RECORD μέσω FSM guard — τα bytes του νόμου δεν αγγίζονται.",
+  "evidence_transfer": "κάθε αναθεώρηση απαιτεί EVIDENCE-TRANSFER-CERTIFICATE· τα factual dossiers μεταφέρονται ως FACTS· επιτρέπονται ΣΤΟΧΕΥΜΕΝΑ supplements αν ο impact checker αποδείξει ότι το v2 απαιτεί νέα πεδία ή τεκμήρια — ΟΧΙ συνολική επανάληψη Φ1A."
+ },
+ "c12_checker": {
+  "replaces": "ο ΠΡΟΗΓΟΥΜΕΝΟΣ checker αποδείχθηκε FALSE-OPEN με executable fixture (SEALED χωρίς τιμές + padded attestation ⇒ ΑΝΟΙΚΤΗ πύλη). Αντικαθίσταται — και η αντικατάσταση αποδεικνύεται με ΑΡΝΗΤΙΚΟΥΣ executable μάρτυρες (fixture suite), όχι με δήλωση.",
+  "requirements": [
+   "επαληθεύει git exit codes, ΑΚΡΙΒΕΣ HEAD/tree και αμετάβλητο snapshot",
+   "ελέγχει ΠΡΑΓΜΑΤΙΚΟ περιεχόμενο, schema, hashes ΚΑΙ evidence κάθε precommit input — {status:SEALED} χωρίς value/evidence ΑΠΟΡΡΙΠΤΕΤΑΙ",
+   "δεσμεύει v1, v2, amendment, sealed epoch, checker, construction root και ratification authority",
+   "απαιτεί Φ1A seal ΚΑΙ ρητή εντολή ενεργοποίησης",
+   "phase-indexed FSM (lifecycle-fsm.py) ως πηγή κατάστασης",
+   "PARSE/REPLAY των proofs — ΟΧΙ existence/keyword checks: κάθε certificate φέρει replay spec και ο checker το ΕΚΤΕΛΕΙ",
+   "ΚΑΘΕ εφαρμοστέο NOT-YET = BLOCKING στα preflight/active",
+   "πραγματικά διαφορετική συμπεριφορά ανά mode",
+   "απορρίπτει unbound artifacts (χωρίς hash δέσμευση στο epoch) και τετριμμένα (μονογράμματα/padded)"
+  ]
+ },
+ "c13_final_claims": {
+  "permitted": [
+   "PROVED-GREATEST-IN-SEALED-Q_t"
+  ],
+  "outcomes": [
+   "PROVED-GREATEST-IN-SEALED-Q_t (με coverage theorem, closure proof, replay ΟΛΩΝ των certificates)",
+   "PROVED-NO-GREATEST + COMPLETE-PARETO-FRONTIER (με πλήρη incompatibility certificates και blueprint ανά στοιχείο)",
+   "CEILING-PROOF-BLOCKED (με ΑΚΡΙΒΕΣ, ΕΛΑΧΙΣΤΟ, ΟΝΟΜΑΣΤΙΚΟ σύνολο μη αποδειχθεισών υποχρεώσεων)"
+  ],
+  "open_world": "το bridge_rule του c1b διέπει κάθε δημόσια διατύπωση",
+  "invalidation": "νέα family/technology ⇒ μονοτονικό epoch n+1"
+ }
+}

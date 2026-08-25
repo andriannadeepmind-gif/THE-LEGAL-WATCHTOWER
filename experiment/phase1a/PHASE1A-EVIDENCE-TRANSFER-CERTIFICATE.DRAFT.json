@@ -1,0 +1,58 @@
+{
+ "$schema": "lawmax/phase1a-evidence-transfer/1.DRAFT",
+ "status": "DRAFT — σφραγίζεται ΜΑΖΙ με την επικύρωση του v2, όχι πριν",
+ "purpose": "Απόδειξη ότι η συνταγματική αναθεώρηση v1→v2 ΔΕΝ απαιτεί νέα ανάγνωση των ολοκληρωμένων Phase-1A lanes.",
+ "corpus_unchanged": {
+  "commit": "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03",
+  "tree_sha1": "23b7a6f4450f50d151d38e13020bee9872e73bcd",
+  "identity_schema4": "sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6",
+  "predicate": "ίδιο commit, ίδιο tree, ίδια ταυτότητα — μηχανικά επαληθεύσιμο με το single-shot runner"
+ },
+ "lane_scopes_unchanged": {
+  "authority": "experiment/phase1a/LANE-SCOPE-AUTHORITY.sexp",
+  "authority_sha256": "sha256:a72668dcfed4b877d01ade97a1549631dc683082855e9a4cd8276cf445eb8791",
+  "note": "Η αναθεώρηση δεν αγγίζει κανένα cluster-root."
+ },
+ "factual_dossiers_invariant": {
+  "why": "Κάθε dossier καταγράφει παρατηρήσεις πάνω στο ΠΑΓΩΜΕΝΟ δέντρο. Το v2 αλλάζει τη σχέση ΚΡΙΣΗΣ candidates (Ω, Q_t, τερματισμός) — καμία από αυτές δεν συμμετέχει στην παρατήρηση. Άρα κάθε dossier είναι invariant κατά την αναθεώρηση.",
+  "dossier_sha256": {
+   "source.sexp": "sha256:dd3ce7cc6bd973d284dd00adb417afa3e1030bcdca9da32997b435fb4c5e8aef",
+   "source-rev2.sexp": "sha256:858f4c903e91a11289d3e4830541dbca687a14cd403883758fa04ea559f68807",
+   "source-rev3.sexp": "sha256:5bb2675adb08e55fe735861a87c55dd862085b87747dd33e8b2986ba8e06b5ea",
+   "systems.sexp": "sha256:e11b7b76d7fdb18cd7cf4d348eac7b81529cc9c004f8d6d56cc93a644ae9c141",
+   "systems-rev2.sexp": "sha256:54849c597201ccb0de29b6b86c1c87829cf2f1d255011180f1c855a3c7613521",
+   "authority-v2.sexp": "sha256:c3bf9ce0fe3dd0db3f3a0084201093af969b986afd9cc28843713866935c78f9",
+   "authority-v2-rev2.sexp": "sha256:5f4506e44973dc792439039b26c32df75b42a3766eaacdfc7ba2a66d450dbda4",
+   "authority-v2-rev3.sexp": "sha256:45eb97102c342e3f212fc5a8c67344d395406e02f763a181535a1af7a50066ad",
+   "authority-v2-rev4.sexp": "sha256:fa93d9e2cab1d31d1e3dc2798c0d0c4ffd679bd8df1ebd1652ff482d122f39ff",
+   "deployment-specs.sexp": "sha256:f895deb6721317b7979ffe44346628c064a2c0c1682b2642658e94f9d507730b",
+   "deployment-specs-rev2.sexp": "sha256:d48c47d92ec1e529ca9ede7e9752601deaa537ef8743f5cce6dc3de3cf6490b8",
+   "deployment-specs-rev3.sexp": "sha256:56abf057df4f144ff1a079cd748a9e3963d7ddc1a654af558764f5fd4d160dcc",
+   "deployment-state.sexp": "sha256:27dfbfc852110beade15117a7d02e01ab48485377a623b040dc9f92b1ae79923",
+   "deployment-state-rev2.sexp": "sha256:6897eb6486c83b799a8edf7febafef90b8e896949ab3a9a9c55a5e24b8bdb2bd",
+   "deployment-state-rev3.sexp": "sha256:24d06a15df313b8b49dcc282b694ba0b5012b491340cd756a4df3073bcbde233",
+   "deployment-state-rev4.sexp": "sha256:39dc5cafe52cba8ba786c46dbb3dc0794f26cf8b70ab25447721be35338a04fd",
+   "harness.sexp": "sha256:9ddd1820acf40205c1256bccac8c8d689e1683ae7512566168df4ae302237ea9",
+   "harness-rev2.sexp": "sha256:8e5910f4dc6d328410cc5e72d4bbe4004f19656678215f6653756c9c2919eb9e",
+   "harness-rev3.sexp": "sha256:b5b05343cefc0bc48fa70f14192920a358e9de42ff5a951ec6dbbcb8069ed45f",
+   "harness-rev4.sexp": "sha256:8aab586cbe336d4aa1d23e681d4807f7f689026347d46f6fcceb443547d74ba3",
+   "contracts.sexp": "sha256:6ab0457e1a7b2993941b95ce8bbf431910876892157e103c7a797d2f4731352d",
+   "contracts-rev2.sexp": "sha256:e7ae502e8fb3469ac232c7e8808461459220e36eac90cea70c9f59d05b1bcc22",
+   "contracts-rev3.sexp": "sha256:0b0116df0f8eb913c8a3e5bee74f001c2407c0b40aa31a5b20b082d2bab7886c"
+  }
+ },
+ "obligations_transfer_unaltered": {
+  "citation-integrity": "μεταφέρεται ως έχει — 3 lanes εκκρεμούν (12/5/10 tokens)",
+  "claim-citation-coverage": "μεταφέρεται ως έχει — OPEN",
+  "claim-entailment": "μεταφέρεται ως έχει — OPEN",
+  "read-ledger": "μεταφέρεται ως έχει — OPEN",
+  "macro-layer": "μεταφέρεται ως έχει — OPEN"
+ },
+ "recheck_scope": "ΜΟΝΟ constitutional/closure claims: μελλοντικές συγκρίσεις candidates, ονόματα τελικών αξιώσεων, δέσιμο Φ2+ artifacts στο v2. ΚΑΜΙΑ επανάγνωση lane, ΚΑΝΕΝΑ rerun L2/L3/L5/L6.",
+ "untouched": [
+  "frozen corpus",
+  "main",
+  "όλα τα υπάρχοντα dossiers",
+  "OBJECTIVE-CONSTITUTION.json (v1)"
+ ]
+}

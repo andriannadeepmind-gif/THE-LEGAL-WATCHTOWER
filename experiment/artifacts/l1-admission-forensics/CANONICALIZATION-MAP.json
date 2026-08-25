@@ -1,0 +1,133 @@
+{
+ "experiment/phase1a/authority-v2-rev3.sexp": {
+  "canonical": 229,
+  "single": 0,
+  "range": 0,
+  "comma_expanded": 2,
+  "comma_extra_refs": 2,
+  "malformed": 0,
+  "unresolvable": 0,
+  "bad_range": 0,
+  "edits": 2,
+  "source_sha256": "45eb97102c342e3f212fc5a8c67344d395406e02f763a181535a1af7a50066ad",
+  "reverse_proof": "PASS",
+  "target": "experiment/phase1a/authority-v2-rev4.sexp",
+  "target_sha256": "fa93d9e2cab1d31d1e3dc2798c0d0c4ffd679bd8df1ebd1652ff482d122f39ff",
+  "map": [
+   {
+    "new_offset": 53724,
+    "new": "authority-v2/toolchain/everparse.Dockerfile:L50-L54@sha256:b041f71c2b5b authority-v2/toolchain/everparse.Dockerfile:L64-L72@sha256:b041f71c2b5b",
+    "old": "authority-v2/toolchain/everparse.Dockerfile:L50-54,L64-72",
+    "kind": "comma",
+    "old_offset": 53724
+   },
+   {
+    "new_offset": 53884,
+    "new": "authority-v2/toolchain/perennial.Dockerfile:L43-L47@sha256:0518176d8d72 authority-v2/toolchain/perennial.Dockerfile:L49-L57@sha256:0518176d8d72",
+    "old": "authority-v2/toolchain/perennial.Dockerfile:L43-47,L49-57",
+    "kind": "comma",
+    "old_offset": 53798
+   }
+  ]
+ },
+ "experiment/phase1a/deployment-specs-rev3.sexp": {
+  "canonical": 374,
+  "single": 0,
+  "range": 0,
+  "comma_expanded": 0,
+  "comma_extra_refs": 0,
+  "malformed": 8,
+  "unresolvable": 0,
+  "bad_range": 0,
+  "edits": 0,
+  "source_sha256": "56abf057df4f144ff1a079cd748a9e3963d7ddc1a654af558764f5fd4d160dcc"
+ },
+ "experiment/phase1a/deployment-state-rev3.sexp": {
+  "canonical": 228,
+  "single": 0,
+  "range": 0,
+  "comma_expanded": 1,
+  "comma_extra_refs": 1,
+  "malformed": 0,
+  "unresolvable": 0,
+  "bad_range": 0,
+  "edits": 1,
+  "source_sha256": "24d06a15df313b8b49dcc282b694ba0b5012b491340cd756a4df3073bcbde233",
+  "reverse_proof": "PASS",
+  "target": "experiment/phase1a/deployment-state-rev4.sexp",
+  "target_sha256": "39dc5cafe52cba8ba786c46dbb3dc0794f26cf8b70ab25447721be35338a04fd",
+  "map": [
+   {
+    "new_offset": 32066,
+    "new": "/frozen/ro/.gitignore:L40-L40@sha256:7c8ebc41610b /frozen/ro/.gitignore:L47-L47@sha256:7c8ebc41610b",
+    "old": "/frozen/ro/.gitignore:L40,L47",
+    "kind": "comma",
+    "old_offset": 32066
+   }
+  ]
+ },
+ "experiment/phase1a/harness-rev3.sexp": {
+  "canonical": 191,
+  "single": 0,
+  "range": 0,
+  "comma_expanded": 5,
+  "comma_extra_refs": 6,
+  "malformed": 0,
+  "unresolvable": 0,
+  "bad_range": 0,
+  "edits": 5,
+  "source_sha256": "b5b05343cefc0bc48fa70f14192920a358e9de42ff5a951ec6dbbcb8069ed45f",
+  "reverse_proof": "PASS",
+  "target": "experiment/phase1a/harness-rev4.sexp",
+  "target_sha256": "8aab586cbe336d4aa1d23e681d4807f7f689026347d46f6fcceb443547d74ba3",
+  "map": [
+   {
+    "new_offset": 7426,
+    "new": "Dockerfile:L177-L177@sha256:9280f921e1a7 Dockerfile:L302-L302@sha256:9280f921e1a7",
+    "old": "Dockerfile:L177,L302",
+    "kind": "comma",
+    "old_offset": 7426
+   },
+   {
+    "new_offset": 17299,
+    "new": "Dockerfile:L320-L326@sha256:9280f921e1a7 Dockerfile:L414-L414@sha256:9280f921e1a7",
+    "old": "Dockerfile:L320-326,L414",
+    "kind": "comma",
+    "old_offset": 17238
+   },
+   {
+    "new_offset": 26207,
+    "new": "Dockerfile:L189-L189@sha256:9280f921e1a7 Dockerfile:L200-L201@sha256:9280f921e1a7",
+    "old": "Dockerfile:L189,L200-201",
+    "kind": "comma",
+    "old_offset": 26089
+   },
+   {
+    "new_offset": 36769,
+    "new": "Dockerfile:L197-L201@sha256:9280f921e1a7 Dockerfile:L279-L281@sha256:9280f921e1a7 Dockerfile:L320-L326@sha256:9280f921e1a7",
+    "old": "Dockerfile:L197-201,L279-281,L320-326",
+    "kind": "comma",
+    "old_offset": 36594
+   },
+   {
+    "new_offset": 39578,
+    "new": "Dockerfile:L189-L189@sha256:9280f921e1a7 Dockerfile:L200-L201@sha256:9280f921e1a7",
+    "old": "Dockerfile:L189,L200-201",
+    "kind": "comma",
+    "old_offset": 39318
+   }
+  ]
+ },
+ "experiment/phase1a/contracts-rev3.sexp": {
+  "canonical": 244,
+  "single": 0,
+  "range": 0,
+  "comma_expanded": 0,
+  "comma_extra_refs": 0,
+  "malformed": 0,
+  "unresolvable": 14,
+  "bad_range": 0,
+  "edits": 0,
+  "source_sha256": "0b0116df0f8eb913c8a3e5bee74f001c2407c0b40aa31a5b20b082d2bab7886c"
+ }
+}

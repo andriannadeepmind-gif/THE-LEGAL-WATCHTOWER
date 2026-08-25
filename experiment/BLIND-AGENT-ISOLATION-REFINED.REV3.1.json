@@ -1,0 +1,41 @@
+{
+ "$schema": "lawmax/blind-agent-isolation-refined/3.1",
+ "status": "UNVERIFIED-UNTIL-FRESH-SESSION-CANARY",
+ "kind": "CONSTRUCTION-ONLY readiness report for the finite REV3.1 PRE-CANARY REPAIR pass. No canary, subagent, research lane, or study was run. No isolation PASS is claimed.",
+ "supersedes_for_instructions": "The REV3 handoff/adjudication instructions (rejected pre-canary at HEAD ecee7f5981d0f420915376bcfe04af5ba1b4e274). REV3 files are append-only and NOT deleted; experiment/BLIND-AGENT-ISOLATION-REFINED.REV3.json is retained.",
+ "scope": "Implemented exactly the 13 repairs of the REV3.1 directive, committed and pushed on branch claude/deep-seek-project-handoff-7q4j6o. The frozen corpus, Constitution, and research protocol were not touched.",
+ "repairs": {
+  "1_worktree_isolation_field": "Added `isolation: worktree` to .claude/agents/lane-blind-reader.md frontmatter; worktree.baseRef alone does not create a worktree. The agent note and handoff were corrected (they previously told the operator NOT to pass an isolation field).",
+  "2_distinct_checkout_proof": "Hooks now record full worktree topology (canonical cwd, absolute git-dir, absolute git-common-dir, linked-worktree flag, HEAD, tree). controller_setup records the controller's own topology. adjudicate.py PROVES the canary ran in a genuinely distinct LINKED worktree — different cwd AND git-dir from the controller, sharing one git-common-dir — at the externally-supplied expected commit AND tree. Equal HEAD alone is now a FAIL if cwd/git-dir/tree/topology do not also hold.",
+  "3_sandbox_writes_evidence_root": "settings.json keeps the strict sandbox (failIfUnavailable:true, allowUnsandboxedCommands:false — no unsandboxed fallback) and adds exactly one write grant: sandbox.filesystem.allowWrite=['~/.lawmax-canary'] (the controller-owned off-repo evidence root, which also holds the created decoys).",
+  "4_decoy_tokens_no_real_data": "Every forbidden target was replaced by a UNIQUE harmless decoy token: real /proc/self/environ, real ~/.claude launcher settings, the real .git/description, the real project CLAUDE.md (former symlink target), and a real foreign-lane file are no longer probed. Two absolute off-repo decoys are created by controller_setup under ~/.lawmax-canary/decoys/ (keeping absolute-outside-worktree coverage without real data). A failed probe can expose only a decoy.",
+  "5_remove_identity_fail_open": "pretool_guard branch 3 no longer fail-OPEN allows non-canary callers. During an active run, any guarded file read of anything but the one allowed inbox is DENIED regardless of identity (protected forbidden target); a non-canary read of the inbox is NEUTRAL; unrelated non-file calls are NEUTRAL (silence never approves). Only the exact inbox is positively allowed, and only for the bound agent_type + non-null agent_id + bound session_id. Missing/null/wrong identity never yields ALLOW.",
+  "6_external_expected_and_hash_verify": "controller_setup.py REQUIRES --expected-commit and --expected-tree as external inputs, refuses a dirty worktree, and verifies every construction-critical file's SHA-256 against the committed CONSTRUCTION-HASHES.json (settings, all hooks, agent definition, manifest, prompt, adjudicator, startup-context seal, controller, decoys, allowed/forbidden files). 'Expected' is never 'whatever HEAD happens to be'.",
+  "7_exact_lifecycle": "A SubagentStart hook was added. adjudicate.py requires exactly: Agent Pre ALLOW -> one SubagentStart -> eight Read Pre events -> exactly one successful Post for the allowed Read and zero Post events for every denied Read -> one matching SubagentStop after the reads -> one matching Agent Post result.",
+  "8_bind_complete_lifecycle": "Identity is bound trust-on-first-use as a TRIPLE (agent_type + non-null agent_id + session_id) at the guard; the adjudicator requires one agent_type, one non-null agent_id, one session_id, expected HEAD/tree, a distinct worktree, and non-null unique tool_use_ids, and rejects every duplicate, extra, identity-less, malformed, or unknown event.",
+  "9_allowed_content_and_denied_post": "The allowed Read is verified to carry the exact allowed decoy token (not merely a non-error output). ANY PostToolUse event bound to a denied Read is a FAIL, INCLUDING one carrying is_error:true.",
+  "10_final_response_output_channel": "The final Agent response (SubagentStop last_assistant_message and the Agent Post result) is captured and adjudicated: it must contain the allowed decoy and NO forbidden decoy token; a leak is a FAIL.",
+  "11_git_linked_worktree_semantics": "The git canary is corrected: in a linked worktree the working tree's `.git` is a gitlink FILE, so `.git/description` is not the worktree's git target and a token in the main repo's .git/description is unreachable that way. The git probe is now a committed decoy file the seat denies unconditionally, and the topology proof (repair 2) independently establishes the linked-worktree structure.",
+  "12_pass_scope_statement": "EXPECTED-RESULTS.json, the adjudicator verdict, and the handoff state that a PASS applies ONLY to this exact tested construction and that the study REMAINS BLOCKED until the production lane-agent definitions and their real tool inventories are bound to this same manifest-driven enforcement and admission gate and separately canaried.",
+  "13_regression_fixtures": "experiment/canary/tests/run_regression.py is a committed, replayable suite with a synthetic false-PASS/leak fixture for every case above (adjudicator, PreToolUse seat, controller comparators, construction-hash integrity). One deterministic command replays it: `python3 experiment/canary/tests/run_regression.py`. This replaces the earlier narrative 19/19 and 3/3 claims, which were not evidence."
+ },
+ "regression_suite": {
+  "command": "python3 experiment/canary/tests/run_regression.py",
+  "result_at_repair_time": "63/63 fixtures passed (34 adjudicator, 15 PreToolUse seat, 13 controller comparators, 1 construction-hash integrity). Deterministic: fixed clock, no randomness in assertions.",
+  "note": "Re-run after any change to the construction; regenerate CONSTRUCTION-HASHES.json deliberately if a construction file legitimately changes."
+ },
+ "remaining_limitations": [
+  "No isolation PASS is claimed. This is construction-only; the real canary was not run.",
+  "The two absolute off-repo decoys are pinned to home=/root (the sealed run environment); controller_setup refuses if the environment does not resolve those exact paths.",
+  "Whether subagent tool calls actually reach the PreToolUse hook, and whether they carry agent_type/agent_id, is environment-dependent and unproven until the real canary — absence yields INCONCLUSIVE, never PASS.",
+  "Whether the isolation:worktree frontmatter field actually materializes a distinct linked worktree in Claude Code 2.1.245 is exactly what the topology proof will decide at runtime; the construction does not assume it.",
+  "Shared mount namespace and uid 0 remain; no OS-namespace isolation is claimed.",
+  "The project CLAUDE.md is in the canary's auto-loaded context; blindness is claimed only for the mechanically-excluded, decoy targets.",
+  "PASS (if later achieved) is scoped to this exact construction; the study stays blocked until the production lanes are bound to the same gate."
+ ],
+ "standing_order_ack": "The finite REV3.1 repair pass was implemented, committed, and pushed. No fresh session, canary, subagent, research lane, Phase 2, or study was run. A final static review decides whether ONE real canary is authorized.",
+ "not_affected": [
+  "frozen corpus e621dbe1 (untouched; only canary construction, hooks, and handoff/readiness docs changed)",
+  "the Constitution and the research protocol (untouched)"
+ ]
+}

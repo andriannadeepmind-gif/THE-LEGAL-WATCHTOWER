@@ -1,0 +1,717 @@
+{
+ "kind": "lawmax-obligations/1",
+ "sealed": true,
+ "rule": "ΜΟΝΟ το VERIFIED συνεισφέρει. Καμία μερική πίστωση, καμία λεκτική εκτίμηση.",
+ "statuses": [
+  "NOT-STARTED",
+  "RUNNING",
+  "BLOCKED",
+  "VERIFIED"
+ ],
+ "acceptance_kinds": {
+  "file_exists": "το αρχείο υπάρχει στο repo",
+  "cmd_exit_zero": "η εντολή εκτελείται και επιστρέφει 0",
+  "receipt_equals": "πεδίο του τελευταίου gate receipt ισούται με τιμή",
+  "receipt_gte": "πεδίο ≥ τιμή",
+  "lane_pass": "η διαδρομή έχει verdict RECOGNIZED-CITATION-INTEGRITY στο receipt",
+  "not_yet_constructible": "ΔΕΝ μπορεί να γίνει VERIFIED — μένει BLOCKED"
+ },
+ "category_weights": {
+  "construction-evaluator-readiness": 9.999999999999998,
+  "phase1-baseline-comprehension": 14.0,
+  "frontier-research": 18.0,
+  "dominance-proof": 18.0,
+  "synthesis": 18.0,
+  "maximality-certificate": 12.0,
+  "final-deliverables": 10.0
+ },
+ "total_weight": 100.0,
+ "obligations": [
+  {
+   "id": "EV-01",
+   "category": "construction-evaluator-readiness",
+   "weight": 1.0,
+   "depends_on": [],
+   "acceptance": {
+    "kind": "receipt_equals",
+    "pointer": [
+     "frozen",
+     "git_leaves"
+    ],
+    "value": 35640
+   },
+   "note": "απαρίθμηση corpus από git tree, 35.640 φύλλα"
+  },
+  {
+   "id": "EV-02",
+   "category": "construction-evaluator-readiness",
+   "weight": 1.0,
+   "depends_on": [
+    "EV-01"
+   ],
+   "acceptance": {
+    "kind": "receipt_equals",
+    "pointer": [
+     "isolation",
+     "namespace_change_proved"
+    ],
+    "value": true
+   },
+   "note": "αλλαγή mount namespace ΑΠΟΔΕΔΕΙΓΜΕΝΗ, όχι από environment marker"
+  },
+  {
+   "id": "EV-03",
+   "category": "construction-evaluator-readiness",
+   "weight": 0.8,
+   "depends_on": [
+    "EV-02"
+   ],
+   "acceptance": {
+    "kind": "receipt_equals",
+    "pointer": [
+     "isolation",
+     "reachable_from_outside"
+    ],
+    "value": false
+   },
+   "note": "snapshot απρόσιτο εκτός namespace"
+  },
+  {
+   "id": "EV-04",
+   "category": "construction-evaluator-readiness",
+   "weight": 0.8,
+   "depends_on": [
+    "EV-02"
+   ],
+   "acceptance": {
+    "kind": "receipt_equals",
+    "pointer": [
+     "isolation",
+     "write_probe"
+    ],
+    "value": "EROFS (errno 30), ΑΚΡΙΒΗΣ"
+   },
+   "note": ""
+  },
+  {
+   "id": "EV-05",
+   "category": "construction-evaluator-readiness",
+   "weight": 1.0,
+   "depends_on": [
+    "EV-01"
+   ],
+   "acceptance": {
+    "kind": "receipt_equals",
+    "pointer": [
+     "access",
+     "weaker_fallback_exists"
+    ],
+    "value": false
+   },
+   "note": "καμία ασθενέστερη διαδρομή πρόσβασης"
+  },
+  {
+   "id": "EV-06",
+   "category": "construction-evaluator-readiness",
+   "weight": 1.0,
+   "depends_on": [
+    "EV-05"
+   ],
+   "acceptance": {
+    "kind": "receipt_equals",
+    "pointer": [
+     "access",
+     "enforcement_probed_per_gate"
+    ],
+    "value": true
+   },
+   "note": "τήρηση RESOLVE flags αποδεικνύεται σε ΚΑΘΕ πύλη"
+  },
+  {
+   "id": "EV-07",
+   "category": "construction-evaluator-readiness",
+   "weight": 1.0,
+   "depends_on": [],
+   "acceptance": {
+    "kind": "receipt_equals",
+    "pointer": [
+     "evaluator",
+     "worktree_dirty_entries"
+    ],
+    "value": 0
+   },
+   "note": "receipt δεμένο σε καθαρό construction commit"
+  },
+  {
+   "id": "EV-08",
+   "category": "construction-evaluator-readiness",
+   "weight": 0.8,
+   "depends_on": [],
+   "acceptance": {
+    "kind": "receipt_equals",
+    "pointer": [
+     "instruments_executed",
+     "witness_suite_exit"
+    ],
+    "value": 0
+   },
+   "note": "witness suite ΕΚΤΕΛΕΣΤΗΚΕ"
+  },
+  {
+   "id": "EV-09",
+   "category": "construction-evaluator-readiness",
+   "weight": 0.8,
+   "depends_on": [],
+   "acceptance": {
+    "kind": "receipt_equals",
+    "pointer": [
+     "instruments_executed",
+     "migration_verifier_exit"
+    ],
+    "value": 0
+   },
+   "note": "ανεξάρτητος verifier ΕΚΤΕΛΕΣΤΗΚΕ"
+  },
+  {
+   "id": "EV-10",
+   "category": "construction-evaluator-readiness",
+   "weight": 0.6,
+   "depends_on": [],
+   "acceptance": {
+    "kind": "receipt_equals",
+    "pointer": [
+     "instruments_executed",
+     "event_ledger_verify_exit"
+    ],
+    "value": 0
+   },
+   "note": "hash-chain μητρώου ΕΠΑΛΗΘΕΥΤΗΚΕ"
+  },
+  {
+   "id": "EV-11",
+   "category": "construction-evaluator-readiness",
+   "weight": 0.6,
+   "depends_on": [],
+   "acceptance": {
+    "kind": "receipt_equals",
+    "pointer": [
+     "instruments_executed",
+     "attestation_after"
+    ],
+    "value": true
+   },
+   "note": "attestation ΠΡΙΝ και ΜΕΤΑ"
+  },
+  {
+   "id": "EV-12",
+   "category": "construction-evaluator-readiness",
+   "weight": 0.6,
+   "depends_on": [],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/PROTOCOL-EPOCH-3.sexp"
+   },
+   "note": ""
+  },
+  {
+   "id": "P1-GATE-1",
+   "category": "phase1-baseline-comprehension",
+   "weight": 0.6,
+   "depends_on": [
+    "EV-06"
+   ],
+   "acceptance": {
+    "kind": "lane_pass",
+    "lane": "Φ1A-L1"
+   },
+   "note": "Φ1A-L1: RECOGNIZED-CITATION-INTEGRITY"
+  },
+  {
+   "id": "P1-GATE-2",
+   "category": "phase1-baseline-comprehension",
+   "weight": 0.6,
+   "depends_on": [
+    "EV-06"
+   ],
+   "acceptance": {
+    "kind": "lane_pass",
+    "lane": "Φ1A-L2"
+   },
+   "note": "Φ1A-L2: RECOGNIZED-CITATION-INTEGRITY"
+  },
+  {
+   "id": "P1-GATE-3",
+   "category": "phase1-baseline-comprehension",
+   "weight": 0.6,
+   "depends_on": [
+    "EV-06"
+   ],
+   "acceptance": {
+    "kind": "lane_pass",
+    "lane": "Φ1A-L3"
+   },
+   "note": "Φ1A-L3: RECOGNIZED-CITATION-INTEGRITY"
+  },
+  {
+   "id": "P1-GATE-4",
+   "category": "phase1-baseline-comprehension",
+   "weight": 0.6,
+   "depends_on": [
+    "EV-06"
+   ],
+   "acceptance": {
+    "kind": "lane_pass",
+    "lane": "Φ1A-L4"
+   },
+   "note": "Φ1A-L4: RECOGNIZED-CITATION-INTEGRITY"
+  },
+  {
+   "id": "P1-GATE-5",
+   "category": "phase1-baseline-comprehension",
+   "weight": 0.6,
+   "depends_on": [
+    "EV-06"
+   ],
+   "acceptance": {
+    "kind": "lane_pass",
+    "lane": "Φ1A-L5"
+   },
+   "note": "Φ1A-L5: RECOGNIZED-CITATION-INTEGRITY"
+  },
+  {
+   "id": "P1-GATE-6",
+   "category": "phase1-baseline-comprehension",
+   "weight": 0.6,
+   "depends_on": [
+    "EV-06"
+   ],
+   "acceptance": {
+    "kind": "lane_pass",
+    "lane": "Φ1A-L6"
+   },
+   "note": "Φ1A-L6: RECOGNIZED-CITATION-INTEGRITY"
+  },
+  {
+   "id": "P1-GATE-7",
+   "category": "phase1-baseline-comprehension",
+   "weight": 0.6,
+   "depends_on": [
+    "EV-06"
+   ],
+   "acceptance": {
+    "kind": "lane_pass",
+    "lane": "Φ1A-L7"
+   },
+   "note": "Φ1A-L7: RECOGNIZED-CITATION-INTEGRITY"
+  },
+  {
+   "id": "P1-COVERAGE",
+   "category": "phase1-baseline-comprehension",
+   "weight": 3.0,
+   "depends_on": [
+    "P1-GATE-1",
+    "P1-GATE-2",
+    "P1-GATE-3",
+    "P1-GATE-4",
+    "P1-GATE-5",
+    "P1-GATE-6",
+    "P1-GATE-7"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase1a/CLAIM-CITATION-COVERAGE.sexp"
+   },
+   "note": "μητρώο claim-id → citation IDs, ≥1 έγκυρη ανά claim block"
+  },
+  {
+   "id": "P1-ENTAILMENT",
+   "category": "phase1-baseline-comprehension",
+   "weight": 4.0,
+   "depends_on": [
+    "P1-COVERAGE"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase1a/CLAIM-ENTAILMENT.sexp"
+   },
+   "note": "απόδειξη ότι το cited span ΣΤΗΡΙΖΕΙ τον ισχυρισμό"
+  },
+  {
+   "id": "P1-READ-LEDGER",
+   "category": "phase1-baseline-comprehension",
+   "weight": 2.0,
+   "depends_on": [
+    "P1-GATE-1",
+    "P1-GATE-2",
+    "P1-GATE-3",
+    "P1-GATE-4",
+    "P1-GATE-5",
+    "P1-GATE-6",
+    "P1-GATE-7"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase1a/READ-LEDGER.sexp"
+   },
+   "note": "ανά αρχείο: canonical path · manifest hash · εύρη · tool receipt · lane ID"
+  },
+  {
+   "id": "P1-MACRO",
+   "category": "phase1-baseline-comprehension",
+   "weight": 0.5,
+   "depends_on": [],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase1a/MACRO-LAYER.sexp"
+   },
+   "note": "reader conditionals · dispatch macros · macro-generated constructs"
+  },
+  {
+   "id": "P1-SEAL",
+   "category": "phase1-baseline-comprehension",
+   "weight": 0.3,
+   "depends_on": [
+    "P1-COVERAGE",
+    "P1-ENTAILMENT",
+    "P1-READ-LEDGER",
+    "P1-MACRO"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase1a/PHASE-1A-SEAL.sexp"
+   },
+   "note": ""
+  },
+  {
+   "id": "F-01",
+   "category": "frontier-research",
+   "weight": 2.0,
+   "depends_on": [
+    "P1-SEAL"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase2/SEARCH-SPACE-DEFINITION.sexp"
+   },
+   "note": "ορισμός D_today: τι είναι κατασκευάσιμο σήμερα"
+  },
+  {
+   "id": "F-02",
+   "category": "frontier-research",
+   "weight": 3.0,
+   "depends_on": [
+    "F-01"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase2/CAPABILITY-LATTICE.sexp"
+   },
+   "note": "πλέγμα ικανοτήτων με τη σφραγισμένη σχέση ⪯K"
+  },
+  {
+   "id": "F-03",
+   "category": "frontier-research",
+   "weight": 4.0,
+   "depends_on": [
+    "F-02"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase2/CANDIDATE-ARCHITECTURES.sexp"
+   },
+   "note": "blind discovery — υποψήφιες αρχιτεκτονικές ΧΩΡΙΣ αναφορά στην τρέχουσα"
+  },
+  {
+   "id": "F-04",
+   "category": "frontier-research",
+   "weight": 4.0,
+   "depends_on": [
+    "F-03"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase2/SEARCH-COMPLETENESS-PROOF.sexp"
+   },
+   "note": "ΠΙΣΤΟΠΟΙΗΜΕΝΗ ΠΛΗΡΟΤΗΤΑ: καμία υποψήφια εκτός D_today δεν παραλείφθηκε"
+  },
+  {
+   "id": "F-05",
+   "category": "frontier-research",
+   "weight": 3.0,
+   "depends_on": [
+    "F-03"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase2/FEASIBILITY-TRIVALENT.sexp"
+   },
+   "note": "{PASS, FAIL, UNKNOWN} ανά υποψήφια — καμία σιωπηλή απόρριψη"
+  },
+  {
+   "id": "F-06",
+   "category": "frontier-research",
+   "weight": 2.0,
+   "depends_on": [
+    "F-04"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase2/PHASE-2-SEAL.sexp"
+   },
+   "note": ""
+  },
+  {
+   "id": "D-01",
+   "category": "dominance-proof",
+   "weight": 3.0,
+   "depends_on": [
+    "F-06"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase3/ADVERSARIAL-CHARGES.sexp"
+   },
+   "note": "ανεξάρτητοι αντιπαλικοί κριτές ανά υποψήφια"
+  },
+  {
+   "id": "D-02",
+   "category": "dominance-proof",
+   "weight": 4.0,
+   "depends_on": [
+    "D-01"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase3/PAIRWISE-DOMINANCE.sexp"
+   },
+   "note": "σχέση κυριαρχίας για ΚΑΘΕ ζεύγος"
+  },
+  {
+   "id": "D-03",
+   "category": "dominance-proof",
+   "weight": 4.0,
+   "depends_on": [
+    "D-02"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase3/PARETO-FRONTIER.sexp"
+   },
+   "note": "ΟΛΟΚΛΗΡΩΜΕΝΟ Pareto frontier εντός σφραγισμένου πεδίου"
+  },
+  {
+   "id": "D-04",
+   "category": "dominance-proof",
+   "weight": 4.0,
+   "depends_on": [
+    "D-03"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase3/JOIN-SUPERSET-SYNTHESIS.sexp"
+   },
+   "note": "ΥΠΟΧΡΕΩΤΙΚΗ join/superset σύνθεση ΠΡΙΝ από κάθε Pareto exit"
+  },
+  {
+   "id": "D-05",
+   "category": "dominance-proof",
+   "weight": 3.0,
+   "depends_on": [
+    "D-04"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase3/PHASE-3-SEAL.sexp"
+   },
+   "note": ""
+  },
+  {
+   "id": "S-01",
+   "category": "synthesis",
+   "weight": 4.0,
+   "depends_on": [
+    "D-05"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase4/OMEGA-MAX-ARCHITECTURE.sexp"
+   },
+   "note": "η ΜΕΓΙΣΤΗ κατασκευή — GREATEST, όχι απλώς maximal"
+  },
+  {
+   "id": "S-02",
+   "category": "synthesis",
+   "weight": 4.0,
+   "depends_on": [
+    "S-01"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase4/PROOF-CHAIN-TO-COMMON-LISP.sexp"
+   },
+   "note": "αλυσίδα απόδειξης από τη σύλληψη στην κατασκευή σε Common Lisp"
+  },
+  {
+   "id": "S-03",
+   "category": "synthesis",
+   "weight": 3.0,
+   "depends_on": [
+    "S-01"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase4/INVARIANTS-AND-INTERFACES.sexp"
+   },
+   "note": ""
+  },
+  {
+   "id": "S-04",
+   "category": "synthesis",
+   "weight": 3.0,
+   "depends_on": [
+    "S-02"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase4/PROOF-OBLIGATIONS.sexp"
+   },
+   "note": ""
+  },
+  {
+   "id": "S-05",
+   "category": "synthesis",
+   "weight": 2.0,
+   "depends_on": [
+    "S-03"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase4/MIGRATION-SEQUENCE.sexp"
+   },
+   "note": ""
+  },
+  {
+   "id": "S-06",
+   "category": "synthesis",
+   "weight": 2.0,
+   "depends_on": [
+    "S-04"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase4/ACCEPTANCE-GATES.sexp"
+   },
+   "note": ""
+  },
+  {
+   "id": "M-01",
+   "category": "maximality-certificate",
+   "weight": 4.0,
+   "depends_on": [
+    "S-01",
+    "F-04"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase4/MAXIMALITY-CERTIFICATE.sexp"
+   },
+   "note": "ΜΗΧΑΝΙΚΑ ΕΛΕΓΞΙΜΟ πιστοποιητικό"
+  },
+  {
+   "id": "M-02",
+   "category": "maximality-certificate",
+   "weight": 4.0,
+   "depends_on": [
+    "M-01"
+   ],
+   "acceptance": {
+    "kind": "cmd_exit_zero",
+    "cmd": [
+     "python3",
+     "experiment/runner/verify-maximality.py"
+    ]
+   },
+   "note": "ο ελεγκτής του πιστοποιητικού ΤΡΕΧΕΙ και επιστρέφει 0"
+  },
+  {
+   "id": "M-03",
+   "category": "maximality-certificate",
+   "weight": 2.0,
+   "depends_on": [
+    "M-01"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase4/LEXICOGRAPHIC-WINNER.sexp"
+   },
+   "note": "μοναδικός νικητής ΜΟΝΟ μέσω της σφραγισμένης λεξικογραφικής διάταξης"
+  },
+  {
+   "id": "M-04",
+   "category": "maximality-certificate",
+   "weight": 2.0,
+   "depends_on": [
+    "M-02"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase4/FINAL-CLAIM.sexp"
+   },
+   "note": "PROVED-GLOBAL-MAXIMAL-WITHIN-SEALED-D_TODAY Ή CEILING-PROOF-BLOCKED με ακριβές, ελάχιστο, ονομαστικό σύνολο μη αποδειχθεισών υποχρεώσεων"
+  },
+  {
+   "id": "Z-01",
+   "category": "final-deliverables",
+   "weight": 4.0,
+   "depends_on": [
+    "S-06",
+    "M-04"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase4/IMPLEMENTATION-BLUEPRINT.sexp"
+   },
+   "note": "στάδια · εξαρτήσεις · invariants · interfaces · migration · proof obligations · acceptance gates · ΣΥΓΚΕΚΡΙΜΕΝΗ σειρά κατασκευής"
+  },
+  {
+   "id": "Z-02",
+   "category": "final-deliverables",
+   "weight": 2.0,
+   "depends_on": [
+    "Z-01"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase4/CONSTRUCTION-ORDER.sexp"
+   },
+   "note": ""
+  },
+  {
+   "id": "Z-03",
+   "category": "final-deliverables",
+   "weight": 2.0,
+   "depends_on": [
+    "Z-01"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase4/OMEGA-MAX-DOSSIER.md"
+   },
+   "note": "ενιαίο αναγνώσιμο παραδοτέο"
+  },
+  {
+   "id": "Z-04",
+   "category": "final-deliverables",
+   "weight": 2.0,
+   "depends_on": [
+    "Z-03",
+    "M-04"
+   ],
+   "acceptance": {
+    "kind": "file_exists",
+    "path": "experiment/phase4/DELIVERY-SEAL.sexp"
+   },
+   "note": ""
+  }
+ ]
+}

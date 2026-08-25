@@ -1,0 +1,143 @@
+# =============================================================================
+# LAWMAX EXPERIMENT RUNNER — content-addressed· χτίζεται ΧΩΡΙΣ ΔΙΚΤΥΟ
+# =============================================================================
+# ΓΙΑΤΙ ΥΠΑΡΧΕΙ: το production Dockerfile κατεβάζει ΟΛΗ την OS toolchain —
+# ΜΑΖΙ ΜΕ ΤΟΝ ΙΔΙΟ ΤΟΝ SBCL — από ζωντανό mirror ΧΩΡΙΣ έκδοση: δηλώνει
+# `ARG SBCL_VERSION=2.4.0` (γραμμή 16) και εγκαθιστά `apt-get install sbcl`
+# (γραμμή 69). Ο runner ΔΕΝ κληρονομεί αυτή την κλάση σφάλματος.
+#
+# Η ΕΠΙΛΟΓΗ ΕΚΔΟΣΗΣ ΕΙΝΑΙ ΣΥΝΕΙΔΗΤΗ: παγώνουμε το ΔΗΛΩΜΕΝΟ 2.4.0, χτισμένο
+# ΑΠΟ ΠΗΓΗ (sha256 στο manifest), με bootstrap το apt 2.2.9 — το οποίο ΔΕΝ
+# επιβιώνει στο τελικό image. Το 2.2.9 ΔΕΝ παρουσιάζεται ως εκπλήρωση του pin.
+#
+# ΕΔΡΑ: όργανο μέτρησης, ρητά ΕΚΤΟΣ trusted path. ΔΕΝ αντικαθιστά το
+# production image και ΔΕΝ μεταβάλλει το εξεταζόμενο corpus.
+#
+#   docker build --network=none -f experiment/runner/Dockerfile.runner \
+#                -t lawmax-runner:<closure> /var/cache/lawmax-runner
+
+# ── ΣΤΑΔΙΟ 1: bootstrap — χτίσιμο του SBCL 2.4.0 από πηγή ────────────────────
+FROM ubuntu@sha256:33ceb71981b602c1a7443a53469e4dba065f7503eab3078a2d7a57a2ab987517 AS bootstrap
+ARG SOURCE_DATE_EPOCH=1735689600
+ENV SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH} DEBIAN_FRONTEND=noninteractive LC_ALL=C.UTF-8
+
+COPY debs       /toolchain/runtime
+COPY build-debs /toolchain/build
+COPY src        /toolchain/src
+
+# dpkg σε σταθερό σημείο: τα Pre-Depends θέλουν ΔΙΑΜΟΡΦΩΜΕΝΟ προαπαιτούμενο,
+# άρα μία σειρά δεν αρκεί. Τελικό πέρασμα ΑΥΣΤΗΡΟ (fail-closed).
+RUN set -eu; \
+    for _ in 1 2 3 4 5; do \
+      dpkg --unpack /toolchain/runtime/*.deb /toolchain/build/*.deb >/dev/null 2>&1 || true; \
+      dpkg --configure -a >/dev/null 2>&1 || true; \
+    done; \
+    dpkg --unpack /toolchain/runtime/*.deb /toolchain/build/*.deb; \
+    dpkg --configure -a; \
+    bad="$(dpkg-query -W -f='${Package} ${Status}\n' | grep -v 'install ok installed' || true)"; \
+    [ -z "$bad" ] || { echo "::error::ΑΤΕΛΗΣ ΕΓΚΑΤΑΣΤΑΣΗ:"; echo "$bad"; exit 1; }
+
+# Το bootstrap Lisp είναι το 2.2.9 του apt — ΕΡΓΑΛΕΙΟ, όχι προϊόν.
+RUN set -eu; \
+    cd /tmp && tar xjf /toolchain/src/sbcl-2.4.0-source.tar.bz2 && cd sbcl-2.4.0 && \
+    unset SBCL_HOME && \
+    bash make.sh --prefix=/opt/sbcl \
+        --xc-host='sbcl --no-userinit --no-sysinit --disable-debugger' >/tmp/sbcl-build.log 2>&1 \
+      || { echo "::error::ΑΠΕΤΥΧΕ το χτίσιμο του SBCL 2.4.0"; tail -40 /tmp/sbcl-build.log; exit 1; }; \
+    bash install.sh >>/tmp/sbcl-build.log 2>&1; \
+    # ── ΘΕΤΙΚΟΣ ΜΑΡΤΥΡΑΣ: ΑΚΡΙΒΩΣ η δηλωμένη έκδοση, όχι «κάποια» ──
+    v="$(/opt/sbcl/bin/sbcl --version)"; echo "ΧΤΙΣΤΗΚΕ: $v"; \
+    case "$v" in *2.4.0*) : ;; *) echo "::error::ΛΑΘΟΣ ΕΚΔΟΣΗ: $v"; exit 1;; esac
+
+# ── ΣΤΑΔΙΟ 2: runner — καθαρό, χωρίς μεταγλωττιστή C, χωρίς bootstrap sbcl ───
+FROM ubuntu@sha256:33ceb71981b602c1a7443a53469e4dba065f7503eab3078a2d7a57a2ab987517 AS runner-sbcl240
+ENV DEBIAN_FRONTEND=noninteractive LC_ALL=C.UTF-8 LANG=C.UTF-8
+
+COPY debs /toolchain
+RUN set -eu; \
+    for _ in 1 2 3 4 5; do \
+      dpkg --unpack /toolchain/*.deb >/dev/null 2>&1 || true; \
+      dpkg --configure -a >/dev/null 2>&1 || true; \
+    done; \
+    dpkg --unpack /toolchain/*.deb; \
+    dpkg --configure -a; \
+    bad="$(dpkg-query -W -f='${Package} ${Status}\n' | grep -v 'install ok installed' || true)"; \
+    [ -z "$bad" ] || { echo "::error::ΑΤΕΛΗΣ ΕΓΚΑΤΑΣΤΑΣΗ:"; echo "$bad"; exit 1; }; \
+    # το bootstrap 2.2.9 ΔΕΝ επιτρέπεται να επιβιώσει στο όργανο μέτρησης
+    dpkg --purge --force-depends sbcl >/dev/null 2>&1 || true; \
+    rm -rf /toolchain /var/lib/apt/lists/*
+
+COPY --from=bootstrap /opt/sbcl /opt/sbcl
+ENV SBCL_HOME=/opt/sbcl/lib/sbcl PATH=/opt/sbcl/bin:/usr/local/bin:/usr/bin:/bin
+
+# ── ASDF registry: ΤΑΥΤΟΣΗΜΟ ΜΕ ΤΗΝ ΠΑΡΑΓΩΓΗ (Dockerfile:112) ──────────────
+# ΑΝΑΚΛΗΣΗ ΠΡΟΗΓΟΥΜΕΝΗΣ ΜΟΥ ΕΚΤΙΜΗΣΗΣ: είχα χαρακτηρίσει το
+# (:tree "/app/source/cl-dependencies/") νεκρό επειδή ο κατάλογος λείπει.
+# ΤΟ ΤΕΚΜΗΡΙΟ ΤΟ ΔΙΑΨΕΥΔΕΙ:
+#   ① deps/closure-schema.json:44 — ΚΑΝΟΝΙΣΤΙΚΟ σχήμα: το source_id pattern
+#      επιτρέπει ΡΗΤΑ ^source/cl-dependencies/[A-Za-z0-9._+-]+$, ισότιμα με
+#      το third-party/. Είναι ΕΓΚΕΚΡΙΜΕΝΗ ρίζα εξαρτήσεων, όχι κατάλοιπο.
+#   ② docker/IMPLEMENTATION-SUMMARY.md:274 — ΠΡΟΟΡΙΖΟΜΕΝΗ χρήση, αυτολεξεί:
+#      «Populate source/cl-dependencies/closer-mop/ with actual code».
+#   ③ Έδρες: Dockerfile:109,112 · entrypoint.lisp:14 · DEPENDENCY-CONTRACT.md:204 ·
+#      scripts/capture-runtime-closure.lisp:315 · deployment/verify/vectors/run-vectors.sh:22 ·
+#      deps/closure-schema.json:44 — ΕΞΙ, όχι τέσσερις.
+#   ④ Το repository είναι SHALLOW clone (50 commits): «δεν υπήρξε ΠΟΤΕ» ΔΕΝ
+#      αποδεικνύεται. Πέρα από το όριο του shallow = UNKNOWN, όχι «κενό».
+# ΑΡΑ: καμία αφαίρεση. Ο runner δηλώνει ΚΑΙ ΤΙΣ ΔΥΟ ρίζες, byte-ταυτόσημα με
+# την παραγωγή, ώστε η επίλυση συστημάτων να ΜΗΝ διαφέρει σε τίποτε.
+RUN mkdir -p /root/.config/common-lisp/source-registry.conf.d \
+ && printf '(:tree "/app/third-party/")\n(:tree "/app/source/cl-dependencies/")\n' \
+      > /root/.config/common-lisp/source-registry.conf.d/10-third-party.conf
+
+# ── Κάθε εγγραφή χρόνου εκτέλεσης ΕΞΩ από το corpus ─────────────────────────
+ENV ASDF_OUTPUT_TRANSLATIONS=/:/work/fasl/ \
+    PYTHONPYCACHEPREFIX=/work/pycache \
+    TMPDIR=/work/tmp \
+    HOME=/root
+
+COPY runner-entry.sh /runner/entry.sh
+RUN chmod +x /runner/entry.sh && sbcl --version && python3 -c 'import yaml'
+ENTRYPOINT ["/runner/entry.sh"]
+
+# ── ΣΤΑΔΙΟ 3: runner-sbcl229 — Η ΠΑΓΩΜΕΝΗ ΕΠΙΛΟΓΗ ────────────────────────────
+# ΠΕΙΡΑΜΑΤΙΚΟ ΕΥΡΗΜΑ (όχι προτίμηση): στο SBCL 2.4.0 το vendored
+# third-party/log4cl-v1.1.2 ΔΕΝ ΜΕΤΑΓΛΩΤΤΙΖΕΤΑΙ:
+#   «Lock on package SB-C violated when interning LAMBDA-PARENT
+#    while in package LOG4CL-IMPL»
+# Το σφάλμα ειναι ΚΑΘΟΛΙΚΟ και ΝΤΕΤΕΡΜΙΝΙΣΤΙΚΟ: 104/104 σουίτες που πρόλαβαν
+# να εκτελεστούν στο στάδιο runner-sbcl240 απέτυχαν με ΑΚΡΙΒΩΣ αυτό.
+# ΣΥΝΕΠΕΙΑ ΓΙΑ ΤΟ CORPUS: το δηλωμένο ARG SBCL_VERSION=2.4.0 (Dockerfile:16)
+# δεν ειναι απλώς ανεπιβλητο — ειναι ΑΣΥΜΒΑΤΟ. Αν είχε επιβληθεί, το build δεν
+# θα περνούσε. Το corpus χτίζεται στο 2.2.9, ό,τι δίνει σιωπηλά το apt.
+# ΤΟ ΕΥΡΗΜΑ ΔΕΝ ΔΙΟΡΘΩΝΕΤΑΙ ΕΔΩ: το corpus ειναι τεκμήριο, όχι ασθενής.
+# ΑΠΟΦΑΣΗ: παγώνεται το 2.2.9 — content-addressed από το ΙΔΙΟ store (sha256 στο
+# toolchain manifest), ΟΧΙ από ζωντανό apt. Το στάδιο 2.4.0 παραμένει ως
+# ΤΕΚΜΗΡΙΟ της ασυμβατότητας, όχι ως εκτελεστής.
+FROM ubuntu@sha256:33ceb71981b602c1a7443a53469e4dba065f7503eab3078a2d7a57a2ab987517 AS runner-sbcl229
+ENV DEBIAN_FRONTEND=noninteractive LC_ALL=C.UTF-8 LANG=C.UTF-8
+
+COPY debs /toolchain
+RUN set -eu; \
+    for _ in 1 2 3 4 5; do \
+      dpkg --unpack /toolchain/*.deb >/dev/null 2>&1 || true; \
+      dpkg --configure -a >/dev/null 2>&1 || true; \
+    done; \
+    dpkg --unpack /toolchain/*.deb; \
+    dpkg --configure -a; \
+    bad="$(dpkg-query -W -f='${Package} ${Status}\n' | grep -v 'install ok installed' || true)"; \
+    [ -z "$bad" ] || { echo "::error::ΑΤΕΛΗΣ ΕΓΚΑΤΑΣΤΑΣΗ:"; echo "$bad"; exit 1; }; \
+    rm -rf /toolchain /var/lib/apt/lists/*
+
+RUN mkdir -p /root/.config/common-lisp/source-registry.conf.d \
+ && printf '(:tree "/app/third-party/")\n(:tree "/app/source/cl-dependencies/")\n' \
+      > /root/.config/common-lisp/source-registry.conf.d/10-third-party.conf
+
+ENV ASDF_OUTPUT_TRANSLATIONS=/:/work/fasl/ \
+    PYTHONPYCACHEPREFIX=/work/pycache \
+    TMPDIR=/work/tmp \
+    HOME=/root
+
+COPY runner-entry.sh /runner/entry.sh
+RUN chmod +x /runner/entry.sh && sbcl --version && python3 -c 'import yaml'
+ENTRYPOINT ["/runner/entry.sh"]

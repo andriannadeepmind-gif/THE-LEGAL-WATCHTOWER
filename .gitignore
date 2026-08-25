@@ -57,3 +57,6 @@ authority-v2/fixtures/ceremony/
 # Ιδιωτικά κλειδιά: ΠΟΤΕ στο repository (μόνο το README)
 keys/private/*
 !keys/private/README.md
+.claude/hooks/__pycache__/
+*.pyc
+# Sealed-canary REV3 receipts live OFF-repo in ~/.lawmax-canary/ (nothing to ignore here)

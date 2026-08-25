@@ -1,0 +1,17 @@
+resolver v7 sha256:75de66fbe2857a177da827864cfb5a85e2592003c64cbd526d941e06e91daf72
+manifest sha256:1bde12ccac8e924c7be50adbd311813e991aef4d1c9ae9f54ced16c2ad370ec5
+scope-authority sha256:a72668dcfed4b877d01ade97a1549631dc683082855e9a4cd8276cf445eb8791
+frozen mount /frozen/ro [ro,nodev,nosuid,noexec] · access openat2/RESOLVE_BENEATH|NO_SYMLINKS|NO_XDEV|NO_MAGICLINKS
+resolve-enforcement: ΑΠΟΔΕΔΕΙΓΜΕΝΗ — «output/astikos/releases/latest» και «../etc/passwd» ΑΠΕΤΥΧΑΝ όπως απαιτείται
+corpus-identity sha256:99602490aedba5f942413ec2454d189a5ccbc503deb64efdd146f9640e0f03a6 (ξαναϋπολογισμένη από το TSV: ΤΑΥΤΙΖΕΤΑΙ)
+lane Φ1A-L2 · cluster-roots ['systems']
+dossier experiment/phase1a/systems-rev2.sexp 112188B sha256:54849c597201ccb0de29b6b86c1c87829cf2f1d255011180f1c855a3c7613521
+αρχεία επαληθευμένα στο snapshot: 70
+παραπομπές: 296 · λύθηκαν: 296 · ΠΡΟΒΛΗΜΑΤΙΚΕΣ: 0
+μορφές: mount-anchored=0 corpus-relative=296 · εντός συστάδας=289 · εκτός=7
+VERDICT: RECOGNIZED-CITATION-INTEGRITY
+  ΤΙ ΣΗΜΑΙΝΕΙ: κάθε token παραπομπής ΠΟΥ ΑΝΑΓΝΩΡΙΣΤΗΚΕ αντιστοιχεί σε
+  πραγματικά bytes και πραγματικό εύρος του παγωμένου snapshot.
+  ΤΙ ΔΕΝ ΣΗΜΑΙΝΕΙ: ΔΕΝ αποδεικνύει ότι κάθε claim ΕΧΕΙ παραπομπή
+  (CLAIM-CITATION-COVERAGE: ΑΝΟΙΧΤΟ) ούτε ότι το cited span ΣΤΗΡΙΖΕΙ
+  τον ισχυρισμό (CLAIM-ENTAILMENT: ΑΝΟΙΧΤΟ). Ούτε είναι read-ledger.

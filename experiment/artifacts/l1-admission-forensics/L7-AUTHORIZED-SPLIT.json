@@ -1,0 +1,18 @@
+{
+ "authorized_by": "ρητή εντολή δημιουργού",
+ "why_not_mechanical": "«194+213» ΔΕΝ είναι εύρος. Είναι ΔΥΟ ΔΙΑΦΟΡΕΤΙΚΕΣ γραμμές που αναφέρονται ΚΑΙ ΟΙ ΔΥΟ στο docker/verify-deps.sh. Μηχανική μετατροπή σε «194-213» θα ΕΙΣΗΓΑΓΕ ΨΕΥΔΗ ισχυρισμό για 20 γραμμές που κανείς δεν επικαλέστηκε.",
+ "verified_in_frozen_file": {
+  "line_194": "docker/verify-deps.sh",
+  "line_213": "   docker/verify-deps.sh",
+  "file_sha256_12": "65a3f5df825c",
+  "logical_lines": 258
+ },
+ "old": "DEPENDENCY-CONTRACT.md:194+213",
+ "new": "DEPENDENCY-CONTRACT.md:L194-L194@sha256:65a3f5df825c DEPENDENCY-CONTRACT.md:L213-L213@sha256:65a3f5df825c",
+ "textual_occurrences": 2,
+ "sha256_before": "1027be2b3d96ee1227e558713417048a852a12ba3843b7fae6cdcf1fcd990c1b",
+ "sha256_after": "e7ae502e8fb3469ac232c7e8808461459220e36eac90cea70c9f59d05b1bcc22",
+ "claim_bytes_changed": false,
+ "reversibility": "ΑΜΦΙΔΡΟΜΟ: αντικατάσταση του new με το old επαναφέρει το προηγούμενο",
+ "reverse_reconstruction_matches": true
+}
