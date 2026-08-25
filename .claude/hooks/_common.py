@@ -1,23 +1,28 @@
 #!/usr/bin/env python3
-"""LANE-CANARY hook common library — REV3.  UNVERIFIED-UNTIL-FRESH-SESSION-CANARY.
+"""LANE-CANARY hook common library — REV3.1.  UNVERIFIED-UNTIL-FRESH-SESSION-CANARY.
 
-Single seat for the deterministic, fail-closed helpers shared by the REV3 hooks
-(pretool_guard.py, posttool_evidence.py, subagent_complete.py) and read by the
-controller/adjudicator tools.
+Single seat for the deterministic, fail-closed helpers shared by the REV3.1 hooks
+(pretool_guard.py, posttool_evidence.py, subagent_start.py, subagent_complete.py)
+and read by the controller/adjudicator tools.
 
-REV3 changes vs REV1/REV2:
-  * Receipts live in a CONTROLLER-OWNED, ABSOLUTE, run-specific directory OUTSIDE
-    the repository and outside any lane-readable root, found via a fixed pointer
-    file.  Parent and subagent run in DIFFERENT checkouts (worktree isolation), so
-    a repo-relative receipt path would split the evidence — this removes that bug.
-  * Enforcement is IDENTITY-GATED: the strict lane policy applies ONLY to the
-    lane-blind-reader canary; every other caller is AUDITED and allowed
-    (fail-OPEN for non-canary so the controller is never bricked; fail-CLOSED for
-    the canary so a secret is never reachable).
-  * The lane capability may read ONLY the ONE exact allowed inbox file — not the
-    whole sealed/ tree, and not receipts/verdict (which now live off-repo).
-  * cwd (real worktree path) and its git HEAD are captured on every receipt so the
-    adjudicator can prove the subagent ran in a worktree whose HEAD == run HEAD.
+REV3.1 changes vs REV3 (pre-canary repair pass — see
+experiment/BLIND-AGENT-ISOLATION-REFINED.REV3.1.json):
+  * Worktree topology, not just HEAD.  Every receipt now records the canonical cwd,
+    the absolute git-dir, the absolute git-common-dir, whether the checkout is a
+    LINKED worktree, HEAD, and the HEAD tree.  The adjudicator proves the canary ran
+    in a genuinely distinct linked worktree (different cwd + different git-dir sharing
+    one common-dir) at the externally-supplied expected commit AND tree — equal HEAD
+    alone is no longer accepted.
+  * Identity is bound trust-on-first-use as a TRIPLE: agent_type, non-null agent_id,
+    and session_id.  A canary event whose identity is missing or inconsistent with the
+    first bound identity is DENIED (fail-closed); it can never yield an ALLOW.
+  * The identity fail-OPEN is removed.  During an active run every guarded file read
+    of anything other than the ONE allowed inbox is DENIED regardless of identity;
+    unrelated non-file calls are NEUTRAL (no explicit allow), never broadly allowed.
+  * The evidence root is controller-owned, absolute, off-repo and run-specific, found
+    via a fixed pointer file.  Its base is overridable with $LAWMAX_CANARY_HOME so the
+    committed regression suite can drive the guard deterministically; the default is
+    the real ~/.lawmax-canary.
 
 Stdlib only; no network; no third-party deps.
 """
@@ -36,9 +41,21 @@ ALLOWED_FILE_REL = os.path.join(
     "experiment", "canary", "sealed", "inbox", "LANE-INBOX.txt"
 )
 
+
 # ---- controller-owned evidence root (absolute, off-repo, non-lane-readable) ----
-CONTROLLER_HOME = os.path.join(os.path.expanduser("~"), ".lawmax-canary")
-ACTIVE_RUN_POINTER = os.path.join(CONTROLLER_HOME, "ACTIVE-RUN")
+def controller_home():
+    """Base directory for canary evidence.  Overridable via $LAWMAX_CANARY_HOME so the
+    committed regression fixtures can point the guard at a throwaway sink; defaults to
+    the real ~/.lawmax-canary for a live run.  Single seat for this path."""
+    env = os.environ.get("LAWMAX_CANARY_HOME")
+    if env:
+        return os.path.realpath(env)
+    return os.path.join(os.path.expanduser("~"), ".lawmax-canary")
+
+
+def active_run_pointer():
+    return os.path.join(controller_home(), "ACTIVE-RUN")
+
 
 # ---- file tools this project guards, and the input key(s) carrying their path ----
 FILE_PATH_KEYS = {
@@ -82,6 +99,14 @@ def sha256_bytes(b):
     return "sha256:" + hashlib.sha256(b).hexdigest()
 
 
+def sha256_file(path):
+    try:
+        with open(path, "rb") as f:
+            return "sha256:" + hashlib.sha256(f.read()).hexdigest()
+    except Exception:
+        return None
+
+
 def project_base(payload):
     for c in (payload.get("cwd"), os.environ.get("CLAUDE_PROJECT_DIR"), os.getcwd()):
         if c:
@@ -92,11 +117,11 @@ def project_base(payload):
     return os.path.realpath(".")
 
 
-def git_head(cwd):
-    """Best-effort HEAD of the checkout at cwd (the real worktree). None on error."""
+# ---- git worktree topology (repair 2: distinct checkout, not just equal HEAD) ----
+def _git(cwd, *args):
     try:
         r = subprocess.run(
-            ["git", "-C", cwd or ".", "rev-parse", "HEAD"],
+            ["git", "-C", cwd or ".", *args],
             capture_output=True, text=True, timeout=5,
         )
         if r.returncode == 0:
@@ -106,11 +131,54 @@ def git_head(cwd):
     return None
 
 
+def git_head(cwd):
+    """Best-effort HEAD of the checkout at cwd (the real worktree). None on error."""
+    return _git(cwd, "rev-parse", "HEAD")
+
+
+def git_topology(cwd):
+    """Canonical worktree topology used to prove the canary ran in a genuinely distinct
+    linked worktree at the expected commit AND tree.  All paths are absolute realpaths
+    so two checkouts can be compared without cwd ambiguity."""
+    head = _git(cwd, "rev-parse", "HEAD")
+    tree = _git(cwd, "rev-parse", "HEAD^{tree}")
+    gd = _git(cwd, "rev-parse", "--absolute-git-dir")
+    cd = _git(cwd, "rev-parse", "--git-common-dir")
+
+    def _abs(base, p):
+        if not p:
+            return None
+        try:
+            if not os.path.isabs(p):
+                p = os.path.join(base or ".", p)
+            return os.path.realpath(p)
+        except Exception:
+            return None
+
+    base = None
+    try:
+        base = os.path.realpath(cwd) if cwd else os.path.realpath(".")
+    except Exception:
+        base = None
+    git_dir = _abs(base, gd)
+    common_dir = _abs(base, cd)
+    is_linked = bool(git_dir and common_dir and git_dir != common_dir)
+    return {
+        "cwd_real": base,
+        "cwd_head": head,
+        "cwd_tree": tree,
+        "git_dir": git_dir,
+        "git_common_dir": common_dir,
+        "is_linked_worktree": is_linked,
+    }
+
+
 # ---- identity ----
 def extract_identity(payload):
     """Pull whatever agent-identity fields the payload provides. Absent fields are
-    None; the adjudicator REQUIRES them present and consistent for PASS, so their
-    absence can never yield a PASS."""
+    None; the guard DENIES a canary event whose identity is missing/inconsistent, and
+    the adjudicator REQUIRES the triple present and consistent for PASS, so absence can
+    never yield a PASS."""
     return {
         "agent_type": payload.get("subagent_type") or payload.get("agent_type"),
         "agent_id": payload.get("agent_id") or payload.get("subagent_id"),
@@ -124,10 +192,10 @@ def is_canary_identity(ident):
 
 # ---- run dir / evidence ----
 def read_run_dir():
-    """Return the active run directory (absolute) or None. The pointer must exist,
+    """Return the active run directory (absolute) or None. The pointer must exist and
     name an existing directory; anything else -> None."""
     try:
-        with open(ACTIVE_RUN_POINTER, "r", encoding="utf-8") as f:
+        with open(active_run_pointer(), "r", encoding="utf-8") as f:
             d = f.read().strip()
         if d and os.path.isdir(d):
             return d
@@ -144,7 +212,6 @@ def append_evidence(run_dir, filename, record):
             return False
         p = os.path.join(run_dir, filename)
         line = json.dumps(record, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-        # Exclusive-append; create if missing.
         with open(p, "a", encoding="utf-8") as f:
             f.write(line + "\n")
             f.flush()
@@ -168,6 +235,13 @@ def emit(decision, reason):
         sys.stdout.flush()
     finally:
         sys.exit(0)
+
+
+def emit_neutral():
+    """No decision: exit 0 with empty stdout so the call continues through the normal
+    permission flow.  Per the hooks contract, silence never *approves* a call — it only
+    declines to override — so this is the 'neutral, not broadly-allowed' outcome."""
+    sys.exit(0)
 
 
 def emit_deny_raw(reason):
@@ -220,25 +294,31 @@ def is_exact_allowed_file(candidate, cwd_base):
     return real == allowed
 
 
-def bind_session(run_dir, session_id):
-    """Trust-on-first-use session binding for a run: first canary event records the
-    session_id; later events must match it. Returns True if bound/matching, False
-    on mismatch or any error (caller DENIES on False for a canary)."""
+# ---- trust-on-first-use identity binding ----
+def bind_identity(run_dir, ident):
+    """TOFU-bind the canary identity TRIPLE (agent_type, agent_id, session_id) for a
+    run.  The first canary event records all three; later events must match all three.
+    Returns True only if every field is present (non-null) and matches the bound triple.
+    Any missing field, mismatch, or error -> False (caller DENIES for a canary)."""
     try:
-        if not run_dir or not session_id:
+        if not run_dir:
             return False
-        p = os.path.join(run_dir, "session.bind")
-        if os.path.exists(p):
-            with open(p, "r", encoding="utf-8") as f:
-                return f.read().strip() == str(session_id)
-        # Exclusive create; if we lose a race, re-read and compare.
+        at = ident.get("agent_type")
+        aid = ident.get("agent_id")
+        sid = ident.get("session_id")
+        if not (at and aid and sid):
+            return False
+        want = {"agent_type": str(at), "agent_id": str(aid), "session_id": str(sid)}
+        p = os.path.join(run_dir, "identity.bind")
+        payload = json.dumps(want, sort_keys=True, separators=(",", ":"))
         try:
             fd = os.open(p, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
             with os.fdopen(fd, "w", encoding="utf-8") as f:
-                f.write(str(session_id))
+                f.write(payload)
             return True
         except FileExistsError:
             with open(p, "r", encoding="utf-8") as f:
-                return f.read().strip() == str(session_id)
+                have = json.loads(f.read().strip() or "{}")
+            return have == want
     except Exception:
         return False

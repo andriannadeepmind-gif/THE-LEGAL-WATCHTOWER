@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
-"""POSTTOOL_EVIDENCE — REV3 PostToolUse hook (ALL tools).
+"""POSTTOOL_EVIDENCE — REV3.1 PostToolUse hook (ALL tools).
 UNVERIFIED-UNTIL-FRESH-SESSION-CANARY.
 
 PreToolUse receipts prove intent/decision only. This records the ACTUAL OUTCOME of
-each executed tool call, bound to the same tool_use_id, so the adjudicator can
-distinguish a real allowed success from a merely-intended one and confirm no
-forbidden read produced content. A DENIED call does not execute, so it yields no
-PostToolUse record — the asymmetry is itself evidence. Advisory only: never blocks.
+each executed tool call, bound to the same tool_use_id, so the adjudicator can:
+  * distinguish a real allowed success from a merely-intended one;
+  * FAIL on ANY PostToolUse event that follows a DENIED read — a denied call does not
+    execute, so any post record bound to a denied read (INCLUDING one carrying
+    is_error:true) is an anomaly (repair 9);
+  * scan the final Agent/Task response — a real output channel — for a forbidden decoy
+    token (repair 10).  The raw response text is recorded ONLY for Agent/Task spawns
+    (the parent's subagent result) and lives off-repo in the run dir.
+Advisory only: never blocks.
 """
 import os
 import sys
@@ -16,6 +21,8 @@ import hashlib
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 import _common as C  # noqa: E402
 
+MAX_RESPONSE_TEXT = 262144  # cap stored final-response text (chars)
+
 
 def main():
     _raw, payload = C.read_payload()
@@ -24,6 +31,7 @@ def main():
     ident = C.extract_identity(payload)
     run_dir = C.read_run_dir()
     cwd = payload.get("cwd") or C.project_base(payload)
+    topo = C.git_topology(cwd)
 
     resp = payload.get("tool_response")
     if resp is None:
@@ -49,7 +57,12 @@ def main():
         "agent_type": ident.get("agent_type"),
         "agent_id": ident.get("agent_id"),
         "cwd": payload.get("cwd"),
-        "cwd_head": C.git_head(cwd),
+        "cwd_real": topo.get("cwd_real"),
+        "cwd_head": topo.get("cwd_head"),
+        "cwd_tree": topo.get("cwd_tree"),
+        "git_dir": topo.get("git_dir"),
+        "git_common_dir": topo.get("git_common_dir"),
+        "is_linked_worktree": topo.get("is_linked_worktree"),
         "input_hash": C.canonical_hash(tool_input),
         "produced_output": len(resp_bytes) > 0,
         "response_len": len(resp_bytes),
@@ -62,6 +75,15 @@ def main():
         paths = C.extract_paths(tool, tool_input)
         if paths:
             rec["target"] = paths[0]
+    # Record raw returned text for the channels the adjudicator must inspect by content:
+    #   * Agent/Task spawn -> the final subagent response (output channel, repair 10);
+    #   * Read            -> so the ALLOWED read can be verified to carry the exact
+    #                        allowed decoy token, not merely a non-error output
+    #                        (repair 9). Denied reads never execute, so no forbidden
+    #                        content is ever stored here.
+    if tool in C.AGENT_TOOLS or tool == "Read":
+        rec["response_text"] = (resp_text or "")[:MAX_RESPONSE_TEXT]
+
     C.append_evidence(run_dir, "posttool.jsonl", rec)
     sys.exit(0)
 

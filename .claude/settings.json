@@ -1,12 +1,15 @@
 {
-  "$comment": "REV3. UNVERIFIED-UNTIL-FRESH-SESSION-CANARY. Sealed-lane canary enforcement for a fresh, dedicated session. NOTE: in this environment PreToolUse hooks were observed to take effect for the running session (the hook command is re-executed from disk on every tool call), so treat these as LIVE for any session on this branch. Enforcement is identity-gated: strict only for the lane-blind-reader canary; every other caller is audited and allowed so the controller is never bricked. The Agent gate restricts ALL callers to spawning only the canary, so do not run unrelated work on this branch with these settings active.",
+  "$comment": "REV3.1. UNVERIFIED-UNTIL-FRESH-SESSION-CANARY. Sealed-lane canary enforcement for a fresh, dedicated session. NOTE: in this environment PreToolUse hooks were observed to take effect for the running session (the hook command is re-executed from disk on every tool call), so treat these as LIVE for any session on this branch. Enforcement is identity-gated AND fail-closed: strict for the lane-blind-reader canary; the identity fail-OPEN is removed, so during an active run every protected forbidden target is denied regardless of identity and unrelated calls are neutral (never broadly allowed). The Agent gate restricts ALL callers to spawning only the canary, so do not run unrelated work on this branch with these settings active. Sandbox is strict (no unsandboxed fallback); the ONLY extra write grant is the controller-owned off-repo evidence root ~/.lawmax-canary. Worktree isolation for the canary is requested by the agent frontmatter (isolation: worktree); worktree.baseRef only pins the base ref.",
   "permissions": {
     "defaultMode": "dontAsk"
   },
   "sandbox": {
     "enabled": true,
     "failIfUnavailable": true,
-    "allowUnsandboxedCommands": false
+    "allowUnsandboxedCommands": false,
+    "filesystem": {
+      "allowWrite": ["~/.lawmax-canary"]
+    }
   },
   "worktree": {
     "baseRef": "head"
@@ -31,6 +34,17 @@
           {
             "type": "command",
             "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/posttool_evidence.py\""
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/subagent_start.py\""
           }
         ]
       }

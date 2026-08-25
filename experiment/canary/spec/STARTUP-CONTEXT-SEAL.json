@@ -1,7 +1,7 @@
 {
-  "$schema": "lawmax/startup-context-seal/1",
+  "$schema": "lawmax/startup-context-seal/1.1",
   "status": "UNVERIFIED-UNTIL-FRESH-SESSION-CANARY",
-  "purpose": "Requirement 7: record and hash-seal ALL startup context that auto-loads into a custom agent, so no false blindness is claimed for context that cannot be removed or sealed. The canary IS exposed to the sealed items below; blindness is claimed ONLY for what the hooks mechanically exclude (other lanes, .git, /root/.claude, /proc, env, transcripts).",
+  "purpose": "Repair 7 (and REV3.1): record and hash-seal ALL startup context that auto-loads into the custom agent, so no false blindness is claimed for context that cannot be removed or sealed. The canary IS exposed to the sealed items below; blindness is claimed ONLY for what the hooks mechanically exclude (other paths, decoys, absolute off-repo targets, symlink escapes). Per-file integrity of the full construction set (settings, hooks, agent definition, manifest, prompt, adjudicator, this seal, and the controller/decoys) is additionally pinned in CONSTRUCTION-HASHES.json and re-verified at setup.",
   "auto_loaded_context": {
     "project_memory": {
       "path": "CLAUDE.md",
@@ -10,18 +10,18 @@
     },
     "agent_definition": {
       "path": ".claude/agents/lane-blind-reader.md",
-      "sha256": "sha256:009c564c8c4df7b7b2f02620dd02d07288faf24a9bdc3cf3fe9ceeb9792a806f",
-      "note": "The agent's own system prompt."
+      "sha256": "sha256:7bc972b69bfbdd2480f16abedf23cb20f70c32f5ca69c1614c64c39921d64e6a",
+      "note": "The agent's own system prompt (REV3.1 adds isolation: worktree to its frontmatter)."
     },
     "user_memory": {
       "path": "~/.claude/CLAUDE.md",
       "sha256": null,
-      "note": "ABSENT in this environment at seal time."
+      "note": "ABSENT in this environment at seal time. If present in the fresh session it must be re-hashed; an unexpected user memory invalidates this seal."
     },
     "managed_policy_instructions": {
-      "note": "None discovered as a readable on-disk file at seal time; ~/.claude/launcher-settings.json is settings (hooks/permissions), not context injected into the agent. If the platform injects managed/system instructions not present on disk, they cannot be hashed here — declared as an UNSEALABLE residue, not as blindness."
+      "note": "None discovered as a readable on-disk file at seal time; ~/.claude/launcher-settings.json is settings (hooks/permissions), not context injected into the agent, and is no longer a probe target (replaced by an off-repo decoy). If the platform injects managed/system instructions not present on disk, they cannot be hashed here — declared as an UNSEALABLE residue, not as blindness."
     }
   },
   "sealed_meaning": "PASS may claim only that the canary could not READ the mechanically-excluded targets. It may NOT claim the canary had an empty/blind context: at minimum the project CLAUDE.md above is in its context.",
-  "verify": "In the fresh session, re-hash CLAUDE.md and .claude/agents/lane-blind-reader.md before the run; a mismatch invalidates this seal and the run."
+  "verify": "In the fresh session, re-hash CLAUDE.md and .claude/agents/lane-blind-reader.md before the run (controller_setup does this for the whole construction set via CONSTRUCTION-HASHES.json and the expected commit/tree); any mismatch invalidates this seal and the run."
 }
