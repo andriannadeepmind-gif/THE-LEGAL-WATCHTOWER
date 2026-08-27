@@ -1,0 +1,32 @@
+{
+  "schema": "watchtower/coordinator-freeze-verification-record/1",
+  "purpose": "Answer-neutral coordinator record that the external pre-Phase-2 freeze bundle v2-R3 was transport-verified. Contains no capsule bytes, no blind-input content and no reviewer-gate content. This record is logistics only and is NOT an optimality proof.",
+  "freeze_version": "2.3.0-R3-PRE-PHASE-2-FROZEN-CANDIDATE",
+  "recorded_date": "2026-08-27",
+  "study_location": "OUTSIDE this repository (coordinator study-output area). No capsule is stored in this repository.",
+  "repository_state": {
+    "baseline_commit_B0": "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03",
+    "baseline_writes_for_study": 0,
+    "phase_3_started": false,
+    "note": "The main branch and the B0 baseline tree are untouched. This coordinator dossier lives on a working branch and adds no capsule and no study answer to the repository."
+  },
+  "immutable_hashes": {
+    "freeze_bundle_sha256": "0c65f332ae074bd52cfeac5256d915a9687f57a86ea541faaa122ded18c784b2",
+    "blind_capsule_sha256": "ac571a7a17971808811a98ae5a7dc9c9b0850f9bfdc808c90ae0b499060a10d3",
+    "reviewer_capsule_sha256": "a34c37aa4850ac4aa4758b37829a8d7f5c1624c4e089138b53a6988128fa25eb"
+  },
+  "verifier_results": {
+    "verify_bundle_py": "OUTER_FREEZE_VALID",
+    "verify_freeze_py": "FREEZE_STRUCTURE_VALID (self-test 33/33)",
+    "verify_freeze_mjs": "FREEZE_STRUCTURE_VALID (self-test 33/33)",
+    "nature": "transport/inventory/commitment integrity only; not an optimality proof"
+  },
+  "governing_rules": {
+    "mathematical": "UNIVERSAL_PROOF_ONLY",
+    "commercial": "EVERY_PRODUCT_EVERY_AXIS_STRICTLY_BETTER (66 cells across CoCounsel Legal, Lexis+ with Protege, Harvey; each capability surface a proper subset)",
+    "b0_transformation": "EXACT_VERIFIED_REPOSITORY_TRANSFORMATION (E_star is the implemented successor of B0, not a greenfield/parallel system)"
+  },
+  "current_study_status": "FINAL_OPTIMALITY_BLOCKED",
+  "permitted_final_status": "FINAL_B0_SUCCESSOR_GREATEST_ELEMENT_AND_STRICT_ALL_AXIS_COMMERCIAL_SUPERIORITY_VERIFIED_UNDER_HASHED_TCB",
+  "role_boundary": "The environment connected to this repository is the CREATOR_COORDINATOR / review environment. It is NOT eligible to run the blind Phase-2 producer, because a session inside this project still has filesystem, project-instruction and project-memory exposure. The blind producer runs only in a new, empty, upload-only workspace with a genuinely new session."
+}
