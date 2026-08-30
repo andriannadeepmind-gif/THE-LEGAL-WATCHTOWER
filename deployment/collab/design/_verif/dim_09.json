@@ -1,0 +1,32 @@
+{
+ "id": "DIM-10",
+ "name": "Transaction / durability / liveness orchestration (AX-11, AX-15, AX-16) \u2014 split from planning: distinct ladders",
+ "families": [
+  "best-effort-effects: tool/workflow side effects with no transaction concept",
+  "fail-open-degradation: errors converted to defaults/synthesized content and execution continues (use-default restarts, error-swallowing executors)",
+  "llm-validated-semantic-transactions: commit/abort decided by model confidence or divergence (the semantic-ACID commit criterion of arXiv 2608.13900)",
+  "durable-execution-journal-plus-compensation: every step journaled before execution, idempotency-keyed at-least-once retry, saga compensation and intent/outcome journaling for external effects outside the atomic section (absorbs: Temporal/Cloudflare/AWS durable execution, RAC compensation, AX-11 guarantee-profile clause ii, liveness-certificates-for-stochastic-steps candidate \u2014 external calls typed may-fail-forever with bounded typed refusal; ALSO ABSORBS, recorded here per IH P2-1 after the v1 audit found it silently dropped: Transactional multi-agent argumentation \u2014 the DIM-10 durable-execution COMPOSED WITH DIM-05 arbitration composite, i.e. argumentation moves executed as journaled, compensable, admission-gated transactional steps)",
+  "atomic-single-commit-point-store: shadow-commit/WAL with fsync barriers, atomic rename as THE commit point, read-back recompute verification, crash-recovery to exactly sigma_pre or sigma_post, machine-checked crash-refinement (absorbs: Perennial/GoJournal crash Hoare logic candidate, the six-item STORAGE-API transaction); per the v2 AX-11 relabeling (CF P1-7) the platform-scoped durability clause (i) is RESOURCE_BOUNDED like AX-15, with only the two-generals/atomic-commitment clause (ii) ABSOLUTE",
+  "budgeted-typed-termination: every trusted loop carries a well-founded variant/budget; terminal type = {SUCCESS+cert, typed FAIL, typed REFUSED} with no hang inhabitant; replayable logical-clock timeouts (the AX-16 guarantee profile)"
+ ],
+ "eliminations": [
+  {
+   "family": "best-effort-effects",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-AGT (pre-durable-execution mode) and K-COM",
+   "lemma": "Violates H6: partially-applied transitions are observable; no all-or-nothing accountable transition exists. The AX-11 guarantee profile shows single-commit-point atomicity is constructible on the declared platform class."
+  },
+  {
+   "family": "fail-open-degradation",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-B0-SHIPPED (instantiates it at named seats)",
+   "lemma": "Violates H3: silent degradation fabricates a passing state. The shipped tree's named residuals at their seats \u2014 frbr-conditions.lisp use-default restarts; parallel-executor.lisp marks failed stages executed; constitutional-gate.lisp:44-45 fail-open on predicate error (verified in-repo this session and independently re-verified by two of the three adversaries) \u2014 are exactly this family, which is why K-B0-SHIPPED sits in D_T only (CA P0-2): a class whose sole member instantiates an INVARIANT_VIOLATION family cannot occupy U_T on aspiration. Carried as open obligations against K-B0-SHIPPED, never absorbed."
+  },
+  {
+   "family": "llm-validated-semantic-transactions",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-AGT",
+   "lemma": "Violates H1: the commit decision is a statistical judgment in the trusted path (confidence-divergence validation). Semantic transaction BOUNDARIES survive as untrusted proposals re-entering through the deterministic admission predicate. Representative K-AGT retained in D_T."
+  }
+ ]
+}

@@ -1,0 +1,16 @@
+{
+  "schema": "watchtower/creator-freeze-approval-receipt/1",
+  "status": "AWAITING_CREATOR_TIMESTAMP_AND_APPROVAL",
+  "freeze_bundle_sha256": "0c65f332ae074bd52cfeac5256d915a9687f57a86ea541faaa122ded18c784b2",
+  "blind_capsule_sha256": "ac571a7a17971808811a98ae5a7dc9c9b0850f9bfdc808c90ae0b499060a10d3",
+  "reviewer_capsule_sha256": "a34c37aa4850ac4aa4758b37829a8d7f5c1624c4e089138b53a6988128fa25eb",
+  "approval_text": "I approve these immutable pre-Phase-2 v2-R3 policy and capsule hashes for launch, including FOC-18/T6 strict every-product/every-axis commercial superiority and FOC-19/T7 exact B0 repository transformation. This approval is not acceptance of Phase 2 and not an optimality proof.",
+  "timestamp_utc": "TO_BE_SUPPLIED_BY_CREATOR",
+  "verifier_evidence": {
+    "verify_bundle_py": "OUTER_FREEZE_VALID",
+    "verify_freeze_py": "FREEZE_STRUCTURE_VALID (VALIDATOR_A_SELF_TEST_PASS 33/33)",
+    "verify_freeze_mjs": "FREEZE_STRUCTURE_VALID (VALIDATOR_B_SELF_TEST_PASS 33/33)",
+    "recorded_date": "2026-08-27"
+  },
+  "note": "Keep the actual approval external to the sealed freeze bundle so approval does not change any frozen byte. To finalize: set timestamp_utc to the UTC moment of your approval and set status to APPROVED. Do NOT edit any file inside 0-VERIFY-FIRST/."
+}

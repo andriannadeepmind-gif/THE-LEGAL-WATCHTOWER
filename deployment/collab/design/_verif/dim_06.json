@@ -1,0 +1,26 @@
+{
+ "id": "DIM-07",
+ "name": "Memory / institutional state (AX-07)",
+ "families": [
+  "stateless: no matter context survives a request",
+  "llm-consumed-preference-memory: persistent context retrieved heuristically and applied by the model (the Harvey Memory/Spaces family)",
+  "canonical-typed-matter-state: single-seat typed matter record with capability closure and deterministic reads, its writes admitted per the frozen H4 wording (single canonical serialization point \u2014 physical or consensus-logical per the v2 S2 lattice refinement of the AX-07/AX-12 'single-writer' rungs)",
+  "hash-chained-certified-episode-memory: append-only SHA-256 episode chain with chain discipline sealed inside the hashed body, continuous recompute verification, signed checkpoints bound into release spines for checkpoint-relative fork detection (absorbs: governed forgetting / state relinquishment candidate as typed certificate-carrying retirement transitions \u2014 never silent deletion, Always-On six-axis state governance). NOTE: the fork-consistency cap ('no feasible system exceeds checkpoint-relative detection without a live external witness quorum') is RESOURCE_BOUNDED on the declared witness set, not ABSOLUTE, per the v2 AX-07/AX-12 relabeling (CF P1-2) \u2014 witness networks are enrollable today",
+  "erasure-compatible-committed-memory: hash chain over salted per-episode commitments H(salt||body) with crypto-shredding (destroy salt and/or body) and verifiable-redaction certificates \u2014 chain verification and inclusion proofs survive lawful erasure while content is provably gone; reconciles GDPR Art. 17 and professional-secrecy destruction duties with tamper-evidence (family added per CA P1-8; the reconciliation mechanism is standard in the surveyed transparency literature). Recorded alongside it: the AX-07 LATTICE REFINEMENT (incomparable_rule S2, version-stamped) amending the ceiling's clause (b) from 'recomputes the whole chain from canonical episode bodies' to 'from canonical episode COMMITMENTS, with redacted bodies carrying typed erasure certificates' \u2014 as previously worded, 'complete tamper-evidence' and 'lawful erasure' could not both rank",
+  "verifiable-authority-directory: key-transparency-style log tree + prefix tree over the authority map (which key/role may sign which class of act), with named third-party auditors and split-view gossip (absorbs: KEYTRANS/Signal-AKV/MINGLE pattern)"
+ ],
+ "eliminations": [
+  {
+   "family": "stateless",
+   "lemma_kind": "DOMINANCE_CONJECTURE",
+   "retained_representative": "K-HUM (per-request un-mechanized recall)",
+   "lemma": "Pre-registered dominance conjecture on AX-07: R1 vs the R5 guarantee profile; institutional legal work requires matter continuity, and no axis is conjectured to improve by discarding it. (The v1 clause 'already substantially attained by B0's memory.lisp seat' is struck from the ground \u2014 it was attainment-witness prose stated as rank, forbidden by the freeze's own rule per IH P1-4.) Adjudicated by full verdicts against retained representative K-HUM."
+  },
+  {
+   "family": "llm-consumed-preference-memory",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-COM",
+   "lemma": "Violates H1 and H5: heuristic retrieval + model application of remembered context is a statistical trusted-path step, and recall is not a pure function of the committed prefix. Representative K-COM retained in D_T; that Harvey Memory instantiates this family is VERIFIED_FROM_SECONDARY (vendor-declared) material grounding at most a KNOWN_UPPER_BOUND cap on K-COM's AX-07, never a rank."
+  }
+ ]
+}

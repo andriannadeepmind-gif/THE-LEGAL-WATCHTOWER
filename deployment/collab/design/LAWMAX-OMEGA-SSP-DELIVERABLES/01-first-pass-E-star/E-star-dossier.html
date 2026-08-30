@@ -1,0 +1,587 @@
+<title>E★ Dominance Dossier</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,500;0,600;0,700;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --bg:#e7eaf0; --surface:#f7f8fb; --surface-2:#eef1f6; --raise:#ffffff;
+  --border:#d2d8e3; --border-strong:#b9c1d0;
+  --ink:#0f131b; --body:#2a3140; --muted:#55606f; --faint:#828d9e;
+  --accent:#0d6e88; --accent-soft:#0d6e8818;
+  --now:#0a7a56; --now-bg:#0a7a5618;
+  --cond:#a95a08; --cond-bg:#a95a0818;
+  --bench:#6b28d4; --bench-bg:#6b28d414;
+  --fix:#b91238; --fix-bg:#b9123814;
+  --shadow:0 1px 2px #1a233208, 0 8px 30px #1a23320f;
+  --beam:#0d6e8822;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0a0d13; --surface:#111725; --surface-2:#161d2c; --raise:#1b2333;
+  --border:#28313f; --border-strong:#3a4557;
+  --ink:#eef2f9; --body:#c7cfdd; --muted:#93a0b4; --faint:#68748a;
+  --accent:#4fc6e6; --accent-soft:#4fc6e61f;
+  --now:#37d39b; --now-bg:#37d39b1c;
+  --cond:#f2ab52; --cond-bg:#f2ab5218;
+  --bench:#a98bf7; --bench-bg:#a98bf71c;
+  --fix:#fb6a82; --fix-bg:#fb6a8218;
+  --shadow:0 1px 2px #0006, 0 12px 40px #0007;
+  --beam:#4fc6e61a;
+}}
+:root[data-theme="dark"]{
+  --bg:#0a0d13; --surface:#111725; --surface-2:#161d2c; --raise:#1b2333;
+  --border:#28313f; --border-strong:#3a4557;
+  --ink:#eef2f9; --body:#c7cfdd; --muted:#93a0b4; --faint:#68748a;
+  --accent:#4fc6e6; --accent-soft:#4fc6e61f;
+  --now:#37d39b; --now-bg:#37d39b1c;
+  --cond:#f2ab52; --cond-bg:#f2ab5218;
+  --bench:#a98bf7; --bench-bg:#a98bf71c;
+  --fix:#fb6a82; --fix-bg:#fb6a8218;
+  --shadow:0 1px 2px #0006, 0 12px 40px #0007;
+  --beam:#4fc6e61a;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--body);
+  font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:16px; line-height:1.62; -webkit-font-smoothing:antialiased;
+  text-underline-offset:2px;
+}
+.wrap{max-width:1080px; margin:0 auto; padding:0 24px}
+h1,h2,h3{font-family:"Spectral",Georgia,serif; color:var(--ink); text-wrap:balance; line-height:1.15; font-weight:600}
+p{margin:0 0 1em}
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+code{font-size:.87em; background:var(--surface-2); border:1px solid var(--border); padding:.05em .4em; border-radius:5px; color:var(--body); word-break:break-word}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+.eyebrow{font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky; top:0; z-index:20; background:color-mix(in srgb,var(--bg) 86%,transparent); backdrop-filter:blur(10px); border-bottom:1px solid var(--border)}
+.topbar .row{display:flex; align-items:center; justify-content:space-between; gap:16px; height:52px}
+.brandmark{display:flex; align-items:center; gap:9px; font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:13px; letter-spacing:.04em; color:var(--ink)}
+.brandmark .star{color:var(--accent)}
+.tnav{display:flex; gap:20px; font-size:12.5px; font-family:"IBM Plex Mono",monospace}
+.tnav a{color:var(--muted)} .tnav a:hover{color:var(--accent); text-decoration:none}
+.tgl{appearance:none; cursor:pointer; background:var(--surface-2); border:1px solid var(--border); color:var(--muted); border-radius:7px; height:32px; padding:0 12px; font:inherit; font-size:12px; font-family:"IBM Plex Mono",monospace}
+.tgl:hover{color:var(--accent); border-color:var(--accent)}
+@media(max-width:720px){.tnav{display:none}}
+
+/* ---------- hero ---------- */
+.hero{position:relative; overflow:hidden; border-bottom:1px solid var(--border)}
+.hero::before{content:""; position:absolute; inset:0; background:
+   radial-gradient(120% 90% at 82% -10%, var(--beam), transparent 60%),
+   radial-gradient(60% 60% at 12% 110%, var(--accent-soft), transparent 70%); pointer-events:none}
+.hero .wrap{position:relative; padding:64px 24px 52px}
+.kicker{display:flex; flex-wrap:wrap; gap:8px 18px; align-items:center; margin-bottom:22px}
+.kicker .sep{width:5px;height:5px;border-radius:50%;background:var(--border-strong)}
+h1.title{font-size:clamp(38px,7vw,72px); margin:0 0 .18em; letter-spacing:-.015em; font-weight:700}
+h1.title .e{color:var(--accent)}
+.lede{font-family:"Spectral",Georgia,serif; font-size:clamp(19px,2.4vw,24px); line-height:1.4; color:var(--body); max-width:40ch; font-weight:500}
+.lede em{color:var(--ink); font-style:italic}
+
+.stamp{margin:30px 0 8px; display:flex; flex-wrap:wrap; gap:18px; align-items:stretch}
+.seal{flex:1 1 300px; min-width:270px; border:1.5px solid var(--fix); background:var(--fix-bg); border-radius:14px; padding:18px 20px; position:relative}
+.seal .lab{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--fix); font-weight:600}
+.seal .val{font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:clamp(18px,2.5vw,25px); color:var(--ink); margin-top:4px; letter-spacing:-.01em}
+.seal .sub{font-size:13px; color:var(--muted); margin-top:8px; line-height:1.45}
+.counts{flex:1 1 320px; min-width:270px; display:grid; grid-template-columns:1fr 1fr; gap:9px; align-content:start}
+.cchip{border:1px solid var(--border); background:var(--surface); border-radius:11px; padding:11px 13px; display:flex; align-items:baseline; gap:9px}
+.cchip .n{font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:22px; color:var(--ink); font-variant-numeric:tabular-nums}
+.cchip .t{font-size:11.5px; line-height:1.25; color:var(--muted)}
+.cchip.big{grid-column:1/-1; border-color:var(--fix); background:var(--fix-bg)}
+.cchip.big .n{color:var(--fix)}
+.dot{width:9px;height:9px;border-radius:2.5px;display:inline-block;flex:none;transform:translateY(1px)}
+.d-now{background:var(--now)} .d-cond{background:var(--cond)} .d-bench{background:var(--bench)} .d-fix{background:var(--fix)}
+
+/* ---------- sections ---------- */
+section{padding:52px 0; border-bottom:1px solid var(--border)}
+.snum{font-family:"IBM Plex Mono",monospace; font-size:13px; color:var(--accent); font-weight:600; letter-spacing:.05em}
+h2{font-size:clamp(24px,3.6vw,34px); margin:6px 0 .5em; letter-spacing:-.01em}
+h3{font-size:19px; margin:34px 0 12px}
+.sub{color:var(--muted); max-width:66ch; font-size:15.5px}
+.lead{font-size:17px; color:var(--body); max-width:66ch}
+
+.card{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:22px 24px; box-shadow:var(--shadow)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+.callout{border-left:3px solid var(--accent); background:var(--surface-2); padding:14px 18px; border-radius:0 10px 10px 0; font-size:15px; margin:18px 0}
+.callout.warn{border-left-color:var(--fix); background:var(--fix-bg)}
+.tag{display:inline-flex;align-items:center;gap:6px;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.06em;padding:3px 9px;border-radius:999px;text-transform:uppercase;white-space:nowrap}
+.tag.now{color:var(--now);background:var(--now-bg);border:1px solid color-mix(in srgb,var(--now) 40%,transparent)}
+.tag.cond{color:var(--cond);background:var(--cond-bg);border:1px solid color-mix(in srgb,var(--cond) 40%,transparent)}
+.tag.bench{color:var(--bench);background:var(--bench-bg);border:1px solid color-mix(in srgb,var(--bench) 40%,transparent)}
+.tag.fix{color:var(--fix);background:var(--fix-bg);border:1px solid color-mix(in srgb,var(--fix) 40%,transparent)}
+.spec{color:var(--cond);font-weight:600}
+.deliv{color:var(--now);font-weight:600}
+
+ul.clean{margin:0 0 1em; padding-left:0; list-style:none}
+ul.clean li{position:relative; padding-left:22px; margin-bottom:9px; font-size:15px}
+ul.clean li::before{content:"›"; position:absolute; left:4px; top:-1px; color:var(--accent); font-weight:700}
+ul.clean li b{color:var(--ink)}
+
+/* strengths / weakness tables */
+.ftable{width:100%; border-collapse:collapse; font-size:14px}
+.ftable th,.ftable td{text-align:left; padding:11px 13px; border-bottom:1px solid var(--border); vertical-align:top}
+.ftable th{font-family:"IBM Plex Mono",monospace; font-size:11px; text-transform:uppercase; letter-spacing:.09em; color:var(--muted); font-weight:600; background:var(--surface-2)}
+.ftable td b{color:var(--ink)}
+.ftable .path{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); word-break:break-all}
+.scroll{overflow-x:auto; border:1px solid var(--border); border-radius:14px; background:var(--surface)}
+.scroll table{min-width:640px}
+
+/* ---------- architecture ---------- */
+.arch{display:flex; flex-direction:column; gap:0; margin:8px 0}
+.layer{border:1px solid var(--border); background:var(--surface); padding:16px 20px; position:relative}
+.layer:first-child{border-radius:14px 14px 0 0}
+.layer:last-child{border-radius:0 0 14px 14px}
+.layer + .layer{border-top:none}
+.layer .lh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:5px}
+.layer .lt{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+.layer .ld{font-size:13.5px;color:var(--muted)}
+.layer.untrusted{background:repeating-linear-gradient(135deg,var(--surface),var(--surface) 9px,var(--surface-2) 9px,var(--surface-2) 18px); border-style:dashed; border-color:var(--border-strong)}
+.layer.core{border-color:var(--accent); box-shadow:inset 0 0 0 1px var(--accent-soft)}
+.kernel{margin-top:12px;border:1.5px dashed var(--cond);background:var(--cond-bg);border-radius:10px;padding:12px 14px}
+.kernel .kt{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;color:var(--cond)}
+.kernel code{background:transparent;border:none;padding:0;color:var(--body);font-size:12.5px}
+.flow{display:flex;align-items:center;justify-content:center;gap:9px;padding:7px 0;color:var(--faint);font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.04em}
+.flow .ar{color:var(--accent);font-size:15px;line-height:1}
+.seatline{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.seat{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--now);background:var(--now-bg);border:1px solid color-mix(in srgb,var(--now) 32%,transparent);padding:2px 8px;border-radius:6px}
+
+/* ---------- matrix ---------- */
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin:14px 0 18px;font-size:12.5px;color:var(--muted)}
+.legend .li{display:flex;align-items:center;gap:7px}
+.mwrap{overflow-x:auto;border:1px solid var(--border);border-radius:14px}
+.matrix{min-width:680px;width:100%;border-collapse:separate;border-spacing:0}
+.matrix th,.matrix td{padding:0}
+.matrix thead th{position:sticky;top:0;background:var(--surface-2);font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:10px 10px;text-align:center;border-bottom:1px solid var(--border)}
+.matrix thead th.axh{text-align:left;width:44%}
+.mrow{cursor:pointer;transition:background .12s}
+.mrow:hover{background:var(--accent-soft)}
+.mrow td{border-bottom:1px solid var(--border);padding:9px 10px;vertical-align:middle}
+.mrow .axc{display:flex;gap:10px;align-items:baseline}
+.mrow .axid{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:12px;color:var(--ink);flex:none;width:44px}
+.mrow .axnm{font-size:13.5px;color:var(--body);line-height:1.3}
+.cellmark{width:100%;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.03em}
+.cellmark.now{background:var(--now-bg);color:var(--now);border:1px solid color-mix(in srgb,var(--now) 34%,transparent)}
+.cellmark.cond{background:var(--cond-bg);color:var(--cond);border:1px solid color-mix(in srgb,var(--cond) 34%,transparent)}
+.cellmark.bench{background:var(--bench-bg);color:var(--bench);border:1px solid color-mix(in srgb,var(--bench) 34%,transparent)}
+.cellmark.fix{background:var(--fix-bg);color:var(--fix);border:1px solid color-mix(in srgb,var(--fix) 34%,transparent)}
+.mcol{width:18.6%}
+.detail{background:var(--surface-2)}
+.detail td{padding:0 !important;border-bottom:1px solid var(--border)}
+.detail .inner{padding:16px 18px 18px 64px;display:grid;gap:12px}
+.detail.hidden{display:none}
+.dfield .dl{font-family:"IBM Plex Mono",monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--faint);margin-bottom:3px}
+.dfield .dv{font-size:14px;color:var(--body)}
+.dfield .dv .path,.dfield .dv code{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--accent)}
+@media(max-width:640px){.detail .inner{padding-left:18px}}
+
+/* ---------- changeset ---------- */
+.cs{display:flex;flex-direction:column;gap:10px}
+.csrow{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.csrow .cid{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--faint);font-size:13px;padding-top:2px}
+.verb{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;letter-spacing:.05em;padding:2px 8px;border-radius:6px;text-transform:uppercase;white-space:nowrap;display:inline-block;margin:0 4px 4px 0}
+.verb.add{color:var(--now);background:var(--now-bg);border:1px solid color-mix(in srgb,var(--now) 34%,transparent)}
+.verb.mod{color:var(--accent);background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 34%,transparent)}
+.verb.rem{color:var(--fix);background:var(--fix-bg);border:1px solid color-mix(in srgb,var(--fix) 34%,transparent)}
+.csrow .gap{font-size:13px;color:var(--muted);margin:2px 0 6px}
+.csrow .chg{font-size:14.5px;color:var(--body)}
+.csrow .chg b{color:var(--ink)}
+.csrow .meta{margin-top:7px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:12px}
+.csrow .files{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--accent);word-break:break-all}
+.csrow .disc{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--faint)}
+.csrow .disc b{color:var(--muted)}
+
+/* ---------- road / chain ---------- */
+figure{margin:16px 0;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px}
+figcaption{margin-top:12px;font-size:13px;color:var(--muted);text-align:center;font-family:"IBM Plex Mono",monospace}
+svg{max-width:100%;height:auto;display:block;margin:0 auto}
+.road{overflow-x:auto}
+.roadinner{display:flex;align-items:stretch;gap:0;min-width:720px}
+.phase{flex:1;background:var(--surface-2);border:1px solid var(--border);border-radius:11px;padding:13px 14px;min-width:120px}
+.phase .pn{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;color:var(--accent);letter-spacing:.05em}
+.phase .ph{font-family:"Spectral",serif;font-weight:600;color:var(--ink);font-size:15px;margin:3px 0 5px}
+.phase .pd{font-size:12px;color:var(--muted);line-height:1.4}
+.gate{flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;width:74px;color:var(--cond)}
+.gate .gi{font-size:16px;line-height:1}
+.gate .gt{font-family:"IBM Plex Mono",monospace;font-size:8.5px;text-transform:uppercase;letter-spacing:.05em;text-align:center;margin-top:3px;color:var(--muted)}
+
+/* ---------- blockers ---------- */
+.blk{display:grid;gap:11px;counter-reset:b}
+.blkrow{display:grid;grid-template-columns:auto 1fr;gap:15px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--fix);border-radius:12px;padding:15px 18px}
+.blkrow .bn{counter-increment:b;font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--fix);font-size:20px;font-variant-numeric:tabular-nums}
+.blkrow .bn::before{content:counter(b)}
+.blkrow .bt{font-weight:600;color:var(--ink);font-size:15.5px;margin-bottom:3px}
+.blkrow .bd{font-size:13.5px;color:var(--muted)}
+.blkrow .bd code{font-size:11.5px}
+
+/* ---------- footer ---------- */
+footer{padding:40px 0 60px;color:var(--faint);font-size:13px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:baseline}
+footer b{color:var(--muted)}
+.finalword{font-family:"Spectral",serif;font-style:italic;font-size:18px;color:var(--body);max-width:60ch;margin:0 auto 30px;text-align:center;line-height:1.5}
+.hr-strong{height:1px;background:var(--border);border:none;margin:0}
+
+@media(prefers-reduced-motion:no-preference){
+  .reveal{opacity:0;transform:translateY(12px);animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+}
+</style>
+
+<div class="topbar"><div class="wrap"><div class="row">
+  <div class="brandmark"><span class="star">★</span> WATCHTOWER&nbsp;E★ · LAWMAX‑Ω</div>
+  <nav class="tnav">
+    <a href="#thesis">Thesis</a><a href="#b0">B0</a><a href="#matrix">Matrix</a>
+    <a href="#changeset">Changeset</a><a href="#road">Road</a><a href="#status">Status</a>
+  </nav>
+  <button class="tgl" id="tgl" aria-label="Toggle theme">◐ theme</button>
+</div></div></div>
+
+<header class="hero"><div class="wrap reveal">
+  <div class="kicker">
+    <span class="eyebrow">LAWMAX‑Ω · Pre‑Phase‑3</span><span class="sep"></span>
+    <span class="eyebrow">B0 = <code style="background:none;border:none;padding:0;color:var(--accent)">e621dbe1</code></span><span class="sep"></span>
+    <span class="eyebrow">Design + Road, not a verdict</span>
+  </div>
+  <h1 class="title"><span class="e">E★</span> — the strongest<br>buildable‑today successor</h1>
+  <p class="lede">The exact plan to turn <em>THE LEGAL WATCHTOWER</em> into a proof‑carrying legal core that dominates the commercial floor on every frozen axis — and the honest map of what is <em>not yet built</em>.</p>
+
+  <div class="stamp">
+    <div class="seal">
+      <div class="lab">Honest terminal status</div>
+      <div class="val">FINAL_OPTIMALITY_BLOCKED</div>
+      <div class="sub">Rule: <code style="background:none;border:none;padding:0;color:var(--fix)">UNIVERSAL_PROOF_ONLY</code> (fail‑closed). 0 cells VERIFIED. This dossier delivers the supreme <b>design</b> and the <b>road</b>; it does not claim a discharged proof.</div>
+    </div>
+    <div class="counts" aria-label="66-cell status distribution">
+      <div class="cchip"><span class="n">27</span><span class="t"><span class="dot d-now"></span> provable now<br>from executing seats</span></div>
+      <div class="cchip"><span class="n">27</span><span class="t"><span class="dot d-cond"></span> conditional on<br>kernel&nbsp;K + toolchain</span></div>
+      <div class="cchip"><span class="n">9</span><span class="t"><span class="dot d-bench"></span> needs executable<br>benchmark</span></div>
+      <div class="cchip"><span class="n">3</span><span class="t"><span class="dot d-fix"></span> floor restated<br>— must fix</span></div>
+      <div class="cchip big"><span class="n">0</span><span class="t">cells discharged as <b>VERIFIED</b> — the ceiling is proof‑gated, never assumed</span></div>
+    </div>
+  </div>
+</div></header>
+
+<main>
+
+<section id="thesis"><div class="wrap">
+  <div class="snum">§1</div><h2>The thesis — and what is honestly spec‑only</h2>
+  <p class="lead">E★'s one load‑bearing idea is a <b>pure, total admission kernel K</b> that mediates every trusted state transition, emits a proof‑carrying <code>transition_certificate</code> per admitted conclusion, keeps <b>no LLM in the trusted path</b>, and is honest‑total: for every input it returns exactly <code>Reject(all‑reasons)</code> or <code>Accept(new_state, certificate)</code> — never a hang, an exception, or a silent third exit, with typed <code>UNKNOWN</code> a first‑class answer rather than a guess.</p>
+
+  <div class="grid2" style="margin-top:22px">
+    <div class="card">
+      <h3 style="margin-top:0;color:var(--cond)">Stated as spec‑only — because it is</h3>
+      <p class="sub" style="font-size:14.5px">The kernel K is <code>authority-v2/kernel/admission-model.sexp</code>: <span class="spec">:implementation-status :specification-only</span>, target <b>F★, not Common Lisp</b>, and all nine theorems <span class="spec">T1–T9 :blocked-toolchain</span>. Grep confirms: the conjunct names appear in <b>zero</b> <code>.lisp</code> files; <b>no</b> <code>transition_certificate</code> emitter exists. <b>K executes nowhere and must not be stated as delivered.</b> Every kernel‑mediated guarantee — atomic commit, unique‑latest arbitration, signed transition, monotone‑capability, property transport — is therefore <span class="spec">DESIGN / CONDITIONAL</span>.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;color:var(--now)">What is delivered today</h3>
+      <p class="sub" style="font-size:14.5px">Independently executing Lisp/OS seats that already beat the floor (LLM‑in‑path + top‑k RAG + vendor‑asserted citations), with no LLM in the trusted path:</p>
+      <div class="seatline">
+        <span class="seat">authority-evidence-replay.lisp</span>
+        <span class="seat">authority-proof-bundle.lisp</span>
+        <span class="seat">version-graph.lisp</span>
+        <span class="seat">memory.lisp</span>
+        <span class="seat">journal.lisp</span>
+        <span class="seat">constitutional-dispatch.lisp</span>
+        <span class="seat">merkle-authority.lisp</span>
+      </div>
+    </div>
+  </div>
+  <div class="callout warn"><b>Honesty carve‑outs (adversary‑confirmed).</b> The AX‑09 honesty counters exist only as a comment + test‑fixture strings — <b>not</b> standing measured invariants. External witness quorum is <code>:disabled</code>, split‑view‑resistance <code>nil</code> → every zero‑split‑brain claim is single‑host‑scoped. The strict‑superset direction presumes an untrusted candidate‑generation layer that is <b>not yet built</b>.</div>
+</div></section>
+
+<section id="b0"><div class="wrap">
+  <div class="snum">§2</div><h2>What B0 already is</h2>
+  <p class="sub">The current repository — 315 Lisp files, ~105k lines, 12 systems — is not a blank slate. These strengths are already at or near the ceiling and E★ keeps them unchanged.</p>
+
+  <h3>Real strengths (kept into E★)</h3>
+  <div class="scroll"><table class="ftable">
+    <thead><tr><th>Strength</th><th>Seat</th><th>Error class it eliminates</th></tr></thead>
+    <tbody>
+      <tr><td><b>JTMS inference gate, LLM‑free</b></td><td class="path">inference-gate.lisp</td><td>Well‑founded defeaters, repealed‑node non‑propagation, cyclic termination; derivations re‑checkable offline</td></tr>
+      <tr><td><b>Deontic / constitutional gates</b></td><td class="path">constitutional-dispatch.lisp</td><td><code>:around</code> barrier — no command reaches its method without passing the constitution (bypass structurally impossible)</td></tr>
+      <tr><td><b>Single‑writer Merkle / RDF canon</b></td><td class="path">merkle-authority.lisp</td><td>RFC‑6962, CVE‑2012‑2459‑safe; recompute‑and‑compare lineage trusts no declared root</td></tr>
+      <tr><td><b>Capability closure (OS‑DAC)</b></td><td class="path">verify-capability-closure.sh</td><td>Kernel <code>EACCES</code> on the store for every non‑writer identity</td></tr>
+      <tr><td><b>Atomic anti‑fork journal</b></td><td class="path">journal.lisp</td><td>Atomic rename + double fsync + <code>SYNC-FAILURE</code> fail‑closed + RATCHET‑2 compare‑and‑append + <code>flock(2)</code></td></tr>
+      <tr><td><b>No‑LLM‑in‑trusted‑path</b></td><td class="path">cross‑cutting</td><td>The single load‑bearing invariant E★ preserves everywhere</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Real weaknesses the adversaries found (repo‑confirmed)</h3>
+  <ul class="clean">
+    <li><b>Kernel K spec‑only + T1–T9 blocked</b> — the load‑bearing object executes nowhere; every "commits via K" claim is vaporware today.</li>
+    <li><b>emit-graph no fsync / atomic‑rename</b> (AX‑15, sharpest hole) — a power loss mid‑write leaves a truncated canonical <code>.ttl</code>; durability covers ledgers, not the artifact path.</li>
+    <li><b>Hardcoded 120‑article limit</b> — <code>(integer 1 120)</code> at <code>frbr-pipeline-stage.lisp:348,504</code>; undefined behaviour beyond 120.</li>
+    <li><b>Wall‑clock nondeterminism</b> — omega timestamps default to wall‑clock; <code>parallel-executor.lisp</code> intra‑tier nondeterministic.</li>
+    <li><b>Witness external quorum <code>:disabled</code></b> — no distributed guarantee; single host only.</li>
+    <li><b>AX‑19 report no‑ops</b>; <code>parallel-executor</code> swallows per‑stage errors → nil; constitutional gate <code>evaluate</code> <b>fails open</b> on predicate error.</li>
+  </ul>
+</div></section>
+
+<section id="arch"><div class="wrap">
+  <div class="snum">§3</div><h2>E★ architecture — one executable, four layers</h2>
+  <p class="sub">All generation is pushed outside the trust boundary; every conclusion is verified <em>out</em> before it is admitted. Buildable in the existing SBCL/Lisp systems.</p>
+  <div class="arch" style="margin-top:20px">
+    <div class="layer untrusted">
+      <div class="lh"><span class="lt">Untrusted zone</span><span class="tag cond">not yet built</span></div>
+      <div class="ld">LLM / agent candidate producers — drafting, review, RAG, decomposition advice → write only to <code>candidates/</code>. No path into the kernel.</div>
+    </div>
+    <div class="flow"><span class="ar">▼</span> candidate + evidence <span style="opacity:.6">(data only — the Θ13 LLM boundary)</span> <span class="ar">▼</span></div>
+    <div class="layer core">
+      <div class="lh"><span class="lt">Trusted core · LLM‑free</span></div>
+      <div class="kernel">
+        <div class="kt">ADMISSION KERNEL K — spec‑only today, F★ target</div>
+        <code>K(old, candidate, evidence, policy) → Reject(all‑reasons) | Accept(new, transition_certificate)</code>
+        <div class="ld" style="margin-top:6px">9 conjuncts · total · pure (no clock / RNG / IO)</div>
+      </div>
+      <div class="ld" style="margin-top:10px">Executing seats that enforce a strict <em>subset</em> of K today:</div>
+      <div class="seatline">
+        <span class="seat">JTMS inference‑gate</span><span class="seat">deontic / constitutional gates</span>
+        <span class="seat">bitemporal version‑graph</span><span class="seat">evidence‑replay</span><span class="seat">proof‑bundle</span>
+      </div>
+    </div>
+    <div class="flow"><span class="ar">▼</span> admitted transition <span class="ar">▼</span></div>
+    <div class="layer">
+      <div class="lh"><span class="lt">Single‑writer integrity core</span></div>
+      <div class="ld"><code>journal.lisp</code> — atomic rename + double fsync + RATCHET‑2 CAS + OS‑DAC capability closure. <span style="color:var(--cond)">Single‑host today; external quorum <code>:disabled</code>.</span></div>
+    </div>
+    <div class="flow"><span class="ar">▼</span> committed state <span class="ar">▼</span></div>
+    <div class="layer">
+      <div class="lh"><span class="lt">Proof / audit surface</span></div>
+      <div class="ld">Merkle inclusion proofs + PROV‑O + span‑DAG execution trace — re‑verifiable <b>offline</b> by any third party, zero producer trust.</div>
+    </div>
+  </div>
+  <p class="sub" style="margin-top:16px;font-size:13.5px"><b>TCB today:</b> SBCL runtime + executing Lisp seats + OS‑DAC + format checkers (operational rank&nbsp;2). <b>Not yet in the TCB:</b> the machine‑checked kernel K and its extracted binary — those need the F★/Coq/CompCert chain that is <code>:blocked-toolchain</code>.</p>
+</div></section>
+
+<section id="matrix"><div class="wrap">
+  <div class="snum">§4</div><h2>The 66‑cell dominance matrix</h2>
+  <p class="sub">22 frozen mechanism axes × 3 baselines — CoCounsel Legal, Lexis+ with Protégé, Harvey. A <b>planned</b> ledger (per <code>phase_2_limit</code>), not a run log. Non‑compensatory: one weak axis blocks the claim. Tap a row for the mechanism, the B0 seat, and the honest claim.</p>
+  <div class="legend">
+    <span class="li"><span class="dot d-now"></span> <b style="color:var(--now)">NOW</b> — provable from an executing seat, no K dependence</span>
+    <span class="li"><span class="dot d-cond"></span> <b style="color:var(--cond)">COND</b> — needs K implemented + T1–T9 discharged</span>
+    <span class="li"><span class="dot d-bench"></span> <b style="color:var(--bench)">BENCH</b> — needs an executable benchmark</span>
+    <span class="li"><span class="dot d-fix"></span> <b style="color:var(--fix)">FIX</b> — floor restated, must fix</span>
+  </div>
+  <div class="mwrap"><table class="matrix">
+    <thead><tr>
+      <th class="axh">Axis</th>
+      <th class="mcol">CoCounsel</th><th class="mcol">Protégé</th><th class="mcol">Harvey</th>
+    </tr></thead>
+    <tbody id="mbody"></tbody>
+  </table></div>
+  <p class="sub" style="margin-top:16px;font-size:13.5px"><b>Explicit non‑claims:</b> T6 (deterministic replay) is <b>not</b> discharged — <code>:blocked-toolchain</code>; AX‑14's 0‑bit reproduction is a benchmark, not a proof. AX‑17 "deterministic p100" is a category error (op‑count ≠ wall‑clock) reclassified as an AX‑14 corollary. Dominance is asserted only over each baseline's <b>declared</b> capabilities — competitor internals are unknown, so <code>NEEDS_BLACK_BOX_PRODUCT_RUN = 0</code> as a primary status: no "structurally lacks" claim is made.</p>
+</div></section>
+
+<section id="superset"><div class="wrap">
+  <div class="snum">§5</div><h2>Capability superset — split by build status</h2>
+  <p class="sub">The claim is <code>Capabilities(E★) ⊋ Capabilities(b)</code> over each baseline's <b>declared</b> set. Honestly, containment is established for one half and is a design target for the other.</p>
+  <div class="grid2" style="margin-top:20px">
+    <div class="card">
+      <h3 style="margin-top:0;color:var(--now)">Established — executing in B0</h3>
+      <ul class="clean" style="margin-bottom:0">
+        <li>Grounding / source‑binding, citation‑authority‑chain validation, provenance / lineage</li>
+        <li>Institutional memory, bitemporal / temporal state, workflow DAG</li>
+        <li><b>Strict lift:</b> hermetic re‑derivation (no vendor trust), recompute‑and‑compare lineage, tamper‑evident single‑writer memory, offline machine‑checkable proof objects, generate‑and‑defeat‑own‑counter‑design gate</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;color:var(--cond)">Design target — spec‑only</h3>
+      <ul class="clean" style="margin-bottom:0">
+        <li><b>Agentic multi‑step research / drafting / review / RAG</b> — the generator lives in the untrusted <code>candidates/</code> zone, which holds an 830‑byte README, not a producer</li>
+        <li>All‑or‑nothing signed‑certificate commit (K), unique‑latest arbitration (K/T4), monotone‑capability certificate (K/T5), machine‑checked property transport (T1–T9)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout"><b>Honest superset verdict.</b> The ⊋ is established for the grounding / citation / provenance / memory / temporal / audit half; the generative half is a design target. Until the untrusted candidate layer is built, "retains all floor capabilities" is a <em>target</em>, not a proved containment.</div>
+</div></section>
+
+<section id="changeset"><div class="wrap">
+  <div class="snum">§6</div><h2>B0 → E★ changeset</h2>
+  <p class="sub">The concrete transformation — grounded in real modules. <b>Every item requires a creator‑approved sealed delta (FOC‑19) before any repo write.</b> Nothing opens itself.</p>
+  <div class="cs" id="cs" style="margin-top:20px"></div>
+</div></section>
+
+<section id="road"><div class="wrap">
+  <div class="snum">§7</div><h2>The proof spine & the road</h2>
+  <p class="sub">Every obligation on the spine — FOC‑01…19 and T1…T7 — is <code>:blocked-toolchain</code> or unbuilt today. The spine is a plan, not a result. The greatest‑element chain is the strictly‑ordered discharge path.</p>
+
+  <figure>
+    <svg viewBox="0 0 720 250" role="img" aria-label="Greatest-element discharge chain: FOC-04 to T2 to T3 to T4 to terminal T5, with T6 and T9 branching off as blocked.">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+        </marker>
+        <marker id="arb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="var(--fix)"/>
+        </marker>
+      </defs>
+      <g font-family="IBM Plex Mono, monospace" font-size="12.5" text-anchor="middle">
+        <!-- main chain -->
+        <g>
+          <rect x="40" y="16" width="150" height="40" rx="8" fill="var(--surface-2)" stroke="var(--border-strong)"/>
+          <text x="115" y="33" fill="var(--ink)" font-weight="600">FOC‑04</text>
+          <text x="115" y="48" fill="var(--muted)" font-size="10">evidence admissibility</text>
+        </g>
+        <line x1="115" y1="56" x2="115" y2="76" stroke="currentColor" marker-end="url(#ar)"/>
+        <g>
+          <rect x="40" y="78" width="150" height="40" rx="8" fill="var(--now-bg)" stroke="var(--now)"/>
+          <text x="115" y="95" fill="var(--ink)" font-weight="600">FOC‑08 = T2</text>
+          <text x="115" y="110" fill="var(--muted)" font-size="10">totality — no third exit</text>
+        </g>
+        <line x1="115" y1="118" x2="115" y2="138" stroke="currentColor" marker-end="url(#ar)"/>
+        <g>
+          <rect x="40" y="140" width="150" height="40" rx="8" fill="var(--surface-2)" stroke="var(--border-strong)"/>
+          <text x="115" y="157" fill="var(--ink)" font-weight="600">FOC‑09 = T3</text>
+          <text x="115" y="172" fill="var(--muted)" font-size="10">sequence advances</text>
+        </g>
+        <!-- horizontal to T4/T5 -->
+        <line x1="190" y1="160" x2="270" y2="160" stroke="currentColor" marker-end="url(#ar)"/>
+        <g>
+          <rect x="272" y="140" width="150" height="40" rx="8" fill="var(--surface-2)" stroke="var(--border-strong)"/>
+          <text x="347" y="157" fill="var(--ink)" font-weight="600">FOC‑10 = T4</text>
+          <text x="347" y="172" fill="var(--muted)" font-size="10">unique‑latest writer</text>
+        </g>
+        <line x1="422" y1="160" x2="502" y2="160" stroke="currentColor" marker-end="url(#ar)"/>
+        <g>
+          <rect x="504" y="136" width="172" height="48" rx="9" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="590" y="156" fill="var(--ink)" font-weight="600">T5 · TERMINAL</text>
+          <text x="590" y="172" fill="var(--muted)" font-size="10">monotone‑capability</text>
+        </g>
+        <!-- blocked branch -->
+        <line x1="347" y1="140" x2="347" y2="70" stroke="var(--fix)" stroke-dasharray="4 3" marker-end="url(#arb)"/>
+        <g>
+          <rect x="272" y="30" width="150" height="40" rx="8" fill="var(--fix-bg)" stroke="var(--fix)" stroke-dasharray="4 3"/>
+          <text x="347" y="47" fill="var(--fix)" font-weight="600">T6 · T9</text>
+          <text x="347" y="62" fill="var(--muted)" font-size="10">off‑chain · BLOCKED</text>
+        </g>
+      </g>
+    </svg>
+    <figcaption>FOC‑04 → T2 → T3 → T4 → T5. T6 (replay) and T9 (certificate‑soundness) hang off the spine, blocked — and must not be claimed.</figcaption>
+  </figure>
+
+  <h3>The phase path — nothing opens itself</h3>
+  <div class="road"><div class="roadinner" style="margin-top:6px">
+    <div class="phase"><div class="pn">P2</div><div class="ph">Unblock toolchain</div><div class="pd">Offline F★/Coq/CompCert mirror; license decision</div></div>
+    <div class="gate"><div class="gi" style="color:var(--cond)">⟐</div><div class="gt">εγκρίνω P2</div></div>
+    <div class="phase"><div class="pn">P3</div><div class="ph">Implement K + emitter</div><div class="pd">K in F★, <code>transition_certificate</code> (C1, C2)</div></div>
+    <div class="gate"><div class="gi" style="color:var(--cond)">⟐</div><div class="gt">εγκρίνω P3</div></div>
+    <div class="phase"><div class="pn">P4</div><div class="ph">Discharge spine</div><div class="pd">FOC‑04→T2→T3→T4→T5 machine‑checked</div></div>
+    <div class="gate"><div class="gi" style="color:var(--cond)">⟐</div><div class="gt">εγκρίνω P4</div></div>
+    <div class="phase"><div class="pn">P5</div><div class="ph">Integrity hardening</div><div class="pd">C3, C5–C13 sealed deltas</div></div>
+    <div class="gate"><div class="gi" style="color:var(--cond)">⟐</div><div class="gt">εγκρίνω P5</div></div>
+    <div class="phase"><div class="pn">P6</div><div class="ph">Generality + superset</div><div class="pd">C4, C14, C15 — 2nd legal order, run benchmarks</div></div>
+  </div></div>
+  <p class="sub" style="margin-top:14px;font-size:13.5px">Each phase per CLAUDE.md: <code>plan → ρητή έγκριση δημιουργού → υλοποίηση → εσωτερική αντιπαλική επιθεώρηση → κλείσιμο ευρημάτων → πλήρες proof → owner docker proof → ρητή εντολή merge</code>. Only the creator merges.</p>
+</div></section>
+
+<section id="status"><div class="wrap">
+  <div class="snum">§8</div><h2>Honest terminal status</h2>
+  <p class="lead" style="color:var(--fix);font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:20px;letter-spacing:-.01em">FINAL_OPTIMALITY_BLOCKED</p>
+  <p class="sub">Five named blockers, each verified against the repo at <code>e621dbe1</code>:</p>
+  <div class="blk" style="margin-top:18px">
+    <div class="blkrow"><div class="bn"></div><div><div class="bt">Kernel‑K implementation</div><div class="bd"><code>admission-model.sexp</code> is <code>:specification-only</code>; K executes nowhere; no certificate emitter exists in any <code>.lisp</code>.</div></div></div>
+    <div class="blkrow"><div class="bn"></div><div><div class="bt">F★ / Coq / CompCert toolchain unblock</div><div class="bd">All 9 theorems T1–T9 are <code>:blocked-toolchain</code> (toolchain absent in‑image, network 403). 0/17 proved, 0/13 Level‑7.</div></div></div>
+    <div class="blkrow"><div class="bn"></div><div><div class="bt">Cross‑legal‑order generality</div><div class="bd">AX‑22 is <code>FLOOR_RESTATED_MUST_FIX</code>: six Greek codes are one legal order; no ≥2‑distinct‑order run exists. Ratio 1.0 is asserted, not shown.</div></div></div>
+    <div class="blkrow"><div class="bn"></div><div><div class="bt">External quorum</div><div class="bd"><code>:external-quorum-status :disabled</code>, <code>:split-view-resistance-claim nil</code>; every zero‑split‑brain claim is single‑host‑scoped.</div></div></div>
+    <div class="blkrow"><div class="bn"></div><div><div class="bt">Independent reproduction</div><div class="bd">Determinism / latency / throughput (AX‑14/17/18, 9 cells) are <code>NEEDS_EXECUTABLE_BENCHMARK</code>; T6 replay blocked; no run has certified them.</div></div></div>
+  </div>
+</div></section>
+
+</main>
+
+<hr class="hr-strong">
+<div style="padding:44px 0 0"><p class="finalword">E★ is the strongest <em>buildable‑today</em> successor by design — a pure total admission kernel with proof‑carrying certificates, an LLM‑free trusted core on real, already‑executing seats, and a link‑by‑link discharge plan. It is not yet built, and this dossier does not pretend otherwise.</p></div>
+
+<footer><div class="wrap">
+  <div>Authority <b>Stavropoulos Law® · LAWMAX‑Ω</b> — τίποτα μέτριο · κανένα μπάλωμα · τίμια άγνοια</div>
+  <div>B0 <b>e621dbe1</b> · design + road · <b>no repo write</b> without a creator‑approved sealed delta (FOC‑19)</div>
+</div></footer>
+
+<script>
+const AXES=[{"id":"AX-01","name":"legal-reasoning correctness and defeater sensitivity","st":"cond","mech":"Extend negation-layer.lisp into a defeater-closure admission gate emitting a reproducible evidence-rank certificate (defeaters enumerated, each {defeated|undefeated|UNKNOWN}), no LLM in the trusted derivation path.","b0":"inference-gate.lisp (JTMS well-founded-defeater gate, real, runs) + deontic-gate.lisp (~91.5% heuristic); meta-ontology.lisp declares AX-01 ABSENT-by-design.","claim":"Would add defeater-closure=closed over the LLM-authored, defeater-open answer, but the negation-layer defeater gate (one defun today) and the certificate are specified-not-implemented."},
+{"id":"AX-02","name":"multi-step task decomposition and plan completeness","st":"cond","mech":"Promote validate-pipeline to a total pre-execution decision that REJECTS (all reasons) any plan failing dependency-closure, acyclicity, or goal-coverage.","b0":"dependency-graph.lisp (build-dependency-graph, topological-sort, cycle-signal, real) + pipeline-dsl.lisp; type-match COMPUTED but NOT gated.","claim":"Would decide dependency-closure+acyclicity+goal-coverage before execution, but B0 computes the type-match without gating and the completeness conjunct is spec-only."},
+{"id":"AX-03","name":"agent coordination, dependency control, parallelism, arbitration","st":"cond","mech":"Parallelism scheduled off the verified DAG; arbitration = total single-writer kernel K with unique-latest + monotonic-sequence; OS capability closure denies every non-writer identity.","b0":"verify-capability-closure.sh (real OS-DAC single writer, EACCES); parallel-executor.lisp swallows per-stage errors→nil.","claim":"Real OS-DAC gives one canonical writer, but unique-latest + deterministic-replay arbitration is the spec-only kernel K (T4/T5/T6 blocked); double-writer=0 is not yet by-construction."},
+{"id":"AX-04","name":"source-selection & grounding independent of corpus size","st":"now","mech":"Ground by canonical-identity (ELI/eId) over an invariant-gated closed set folded into one Merkle root; each unit ships a portable inclusion proof or /as-known returns typed UNKNOWN; O(1) lookup, invariant to corpus size.","b0":"primary-anchor.lisp (dual digest) + authority-evidence-replay.lisp (re-extraction byte-equivalence) + corpus-fingerprint.lisp (unique-eId/no-gap invariant gate).","claim":"A total function over an invariant-gated set with a third-party-verifiable Merkle inclusion path beats relevance retrieval with silent miss; independent of corpus size."},
+{"id":"AX-05","name":"citation & legal-authority validation mechanism","st":"now","mech":"Hermetic fail-closed re-derivation: refuse bundle-declared roots, re-derive source→spans→extraction→normalization→graph byte-equivalence, award tier only from independently verified predicates; trusted root not recoverable from the bundle.","b0":"authority-proof-bundle.lisp (Ed25519 owner-pin, delegation-valid-at-genTime, revocation) + authority-evidence-replay.lisp (626-line producer-independent re-derivation).","claim":"Re-derives the authority tier hermetically with no self-authorization vs non-reproducible vendor status; unresolved cross-cites surfaced, not silently trusted."},
+{"id":"AX-06","name":"evidence provenance & transformation-lineage completeness","st":"now","mech":"Lineage = replayable cryptographically chained function: SHA-256 before/after each op enabling byte-exact replay, genealogy bound into receipt-id, deterministic PROV-O, validate-provenance a gating completeness invariant.","b0":"merkle-authority.lisp (RFC-6962 single seat) + authority-evidence-replay.lisp (recompute-and-compare lineage, leading axis) + consolidation-proof.lisp.","claim":"Recomputes lineage rather than asserting it and gates critical steps vs human-inspection trace-back."},
+{"id":"AX-07","name":"matter context, institutional & reflective memory","st":"now","mech":"Append-only SHA-256 episode chain, one writer per store, memory_recorded a COMPUTED append+read-back invariant (never a stored flag), human-signed-only reflective consolidation, no LLM in the memory path.","b0":"memory.lisp (append-only SHA-256 chain, verify-episode-chain, downgrade-resistant; episodes.sexp gitignored/runtime-created).","claim":"SHA-256-chained single-writer memory with append+read-back proof beats the DECLARED workspace persistence (competitor internals unknown)."},
+{"id":"AX-08","name":"temporal & legal-state consistency","st":"now","mech":"Bitemporal version-graph: in-force computed as a fold over live journal events with zero stored derived state; effectivity a closed MONOTONE no-negation AST; replay re-verifies payload+chain+semantic hash, fail-closed on contradiction.","b0":"version-graph.lisp (bitemporal valid × known-at, :suspensive/:resolutory, replay chain, ~1000+ lines) + transparency-log.lisp (RFC-6962 consistency proofs).","claim":"Fold-computed, replay-verified, fail-closed bitemporal state with no stored derived state beats a point-in-time good-law flag."},
+{"id":"AX-09","name":"contradiction, uncertainty, coverage & blind-spot handling","st":"cond","mech":"Honest ignorance as measured invariants (false_uncertainty=0, silent_scope_omissions=0, unverified_satisfactions=0) plus fail-closed contradiction (typed error, journaled-retract-only) and adversarial negative-witness gates.","b0":"rdf-canonicalization.lisp (NFC fail-hard) + verify-proof-manifest.py (cannot false-green) + version-graph.lisp (typed fail-closed contradiction). Counters exist ONLY as a comment/test strings.","claim":"Fail-closed contradiction + typed UNKNOWN + no-LLM would dominate a best-effort answer, but the honesty counters are test-fixture strings, not machine-measured standing invariants."},
+{"id":"AX-10","name":"self-falsification, counter-design generation & escalation","st":"now","mech":"Adversarial self-falsification as a release-gating invariant: fresh-context critic agents on two axes + redteam-audit-v2 metamorphic families and 6 counter-proposal fixtures that MUST all be Rejected; merge blocked unless every counter-design is defeated.","b0":"capture-mutation-witness.py (mutation-kill) + run-proofs.sh (un-gameable honesty gate) + legal-counterfactual.lisp + output/redteam-audit-v2/ fixtures.","claim":"Builds and must defeat the strongest counter-design pre-emit vs review-verifies-cites; a self-falsification precondition, not a review pass."},
+{"id":"AX-11","name":"workflow/tool orchestration with explicit transaction semantics","st":"cond","mech":"Total-function kernel K as single commit boundary: 9 conjuncts all-or-nothing, sequence=old+1, no-rollback, unique-latest, each step committing atomically as a signed transition_certificate or changing nothing.","b0":"write-authority.lisp (emit-graph sole RDF writer) + journal.lisp (atomic rename + fsync + RATCHET-2 CAS). emit-graph :supersede has NO fsync; K is :specification-only.","claim":"Would add all-or-nothing commit + signed certificate, but '11 machine-checked invariants' are really 11 SPECIFIED conjuncts, 0 machine-checked, and no cert is emitted."},
+{"id":"AX-12","name":"institutional decision authority, review & accountable transition","st":"cond","mech":"Authority = typed role-attributable capability (TUF-class offline root, threshold, revocation); every transition signed via K's certificate; human sole merge; publisher-independent proof-carrying verification.","b0":"constitutional-dispatch.lisp (:around barrier, bypass structurally impossible) + capability-registry.lisp + adoption-decision.lisp (signed ledger). evaluate FAILS OPEN on predicate error.","claim":"Would bind every transition to a role signature under an offline root, but the signing is via the unimplemented K certificate and the gate currently fails OPEN."},
+{"id":"AX-13","name":"auditability, provenance-complete replay & reproducibility","st":"now","mech":"Producer-independent full-derivation replay: refuse declared roots, re-derive source bytes→spans→…→root with recompute-and-compare at every step; portable per-provision Merkle inclusion proof + PROV-O; third party verifies offline.","b0":"authority-evidence-replay.lisp (recompute-and-compare) + release-spine.lisp (independent re-verification) + gates-runner.lisp.","claim":"Offline recompute-and-compare of the authority root beats an internal check that the reader must trust."},
+{"id":"AX-14","name":"determinism under frozen inputs & nondeterminism control","st":"bench","mech":"Pure clock-/RNG-/IO-free kernel + one deterministic-time seat (SOURCE_DATE_EPOCH) + enumerated declared-nondeterminism closure; determinism/run1 vs run2 hold the deterministic partition to bit-for-bit reproduction.","b0":"config.lisp (effective-deterministic-timestamp) + rdf-canonicalization.lisp (canonical ordering). omega timestamp defaults to WALL-CLOCK unless frozen.","claim":"A deterministic no-LLM partition beats sampling-nondeterministic LLM steps, but 'reproduction error = 0 bits' is unmeasured (T6 replay blocked-toolchain)."},
+{"id":"AX-15","name":"durability, crash consistency & bounded recovery","st":"now","mech":"Integrity ratchet in one journal seat: WRITE-FILE-ATOMIC (tmp+rename) + fsync of data AND parent dir; fail-closed Persistence Receipt (fsync fault → SYNC-FAILURE, never :durable); RATCHET-2 compare-and-append makes forks impossible.","b0":"journal.lisp (atomic rename(2) + fsync, RATCHET-1 honest durability with fault injection, RATCHET-2 CAS + flock). Sharpest hole: emit-graph :supersede & deploy.lisp have NO fsync.","claim":"The journal's atomic rename + double fsync + fail-closed receipt + bounded recovery beats DECLARED persistence-as-feature, for the governance/journal path."},
+{"id":"AX-16","name":"progress & liveness under the declared operating model","st":"cond","mech":"Total LLM-free trusted decision: K returns Reject|Accept for every input (no exception/undefined/hang); T2 completeness, T3 sequence-advances, T7 Reject→no-state-change pin progress; single-writer CAS yields bounded retry, not deadlock.","b0":"autonomy.lisp (bounded-error resume, max-consecutive-errors) + run-proofs.sh (deterministic fail-closed exit codes). executor retry NOT idempotency-checked.","claim":"A total, bounded-step, terminating decision would beat an inspectable-but-not-provably-halting agent, but K's totality and T2/T3/T7 are undischarged."},
+{"id":"AX-17","name":"latency across frozen workload distributions","st":"bench","mech":"Pure deterministic SBCL over a Merkle-pinned snapshot; execution-trace span DAG hashed into a replay-certified latency envelope (same frozen workload → bit-identical trace + identical op count).","b0":"instrumentation.lisp (with-instrumentation timing, in-memory). Effectively ABSENT — metrics gate nothing, enforce no budget/SLA, discarded on context cleanup; thinnest axis.","claim":"A no-LLM deterministic path is more reproducible than a random-variable tail, but 'deterministic p100' is a category error (op-count ≠ wall-clock) and is unmeasured."},
+{"id":"AX-18","name":"throughput, scale & resource-normalized performance","st":"bench","mech":"Throughput unit = proof-carrying artifact (provision + inclusion proof + trace) re-verifiable offline in O(log n); corpus scale governed by RFC 9162 consistency proofs under single-writer append-only ratchet.","b0":"frbr-pipeline-stage.lisp (lparallel, but HARDCODES (integer 1 120) → undefined >120 articles) + inference-gate.lisp (3000-event chain demo).","claim":"Portable O(log n) offline consistency audit beats a vendor-internal re-run audit, but that is audit-cost; the throughput/scale number itself is unmeasured."},
+{"id":"AX-19","name":"introspection, explanation & inspectable causal account","st":"now","mech":"Every trusted conclusion emits a machine-checkable causal proof object (typed data-only span DAG + per-authority Merkle inclusion proof), with an honest-ignorance gate forbidding a chainless conclusion; re-verifiable offline.","b0":"provenance-gate.lisp (registry-verified traces) + deliberation.lisp (MOP visible-thought invariant) + execution-trace.lisp (span DAG). omega report-* are no-op stubs.","claim":"A re-verifiable proof object beats inspectable steps where an LLM explains an LLM."},
+{"id":"AX-20","name":"evolvability with monotonic capability & invariant preservation","st":"cond","mech":"Every evolution step admitted only through K (sequence-monotonicity, no-rollback, profile-continuity); capability ratcheted by a fail-closed gate scoring candidates on frozen benchmarks against a committed per-metric floor, refusing any release below floor.","b0":"capability-gate.lisp (fail-closed read-only ratchet) + architecture-gate.lisp (ontological-closure) + capability-baseline.sexp. Baseline records RAW COUNTS, not per-metric floors.","claim":"A K + frozen-benchmark ratchet would beat mutable memory accumulation, but K admission is spec-only and the baseline holds raw tallies (8/13), not per-metric floors."},
+{"id":"AX-21","name":"formal assurance & architecture→source→executable transport","st":"cond","mech":"Trusted decisions specified as a language-neutral pure model carrying 9 named theorems (incl. T9 certificate-soundness), on a 5-link refinement chain (spec → F★/Coq → extracted source → CompCert binary → reproducible-build byte-identity).","b0":"admission-model.sexp (T1-T9, :specification-only, 0/17 proved, 0/13 Level-7, all :blocked-toolchain) + verify-proof-manifest.py (format/manifest checker). Central proof-debt axis.","claim":"A pure kernel + independent checker + closed TCB (rank 2) exceeds heuristic-check-with-LLM (rank ≤1), but 'rank 2-3 / machine-checked proof object' is not earned because T9 is blocked."},
+{"id":"AX-22","name":"mechanism generality across legal orders without redesign","st":"fix","mech":"Jurisdiction-neutral trusted core (FRBR/ELI/PROV-O + consistency validator + RDF canonicalizer + version-graph + K) parameterized by a thin per-order content module; guarantees claimed to transport unchanged across legal orders.","b0":"greek-law-types.lisp (Greek law-type registry) + transition-certificate.cddl (content-neutral). Domain validation is Greece-COUPLED — *constitution-articles*=120 (structure.lisp).","claim":"'Reuses one core across 6 codes, ratio 1.0' is reuse across subject matter within a single Greek order — corpus breadth — which the cell itself names as the floor; the ≥2-distinct-legal-orders threshold is UNMET."}];
+
+const LAB={now:"NOW",cond:"COND",bench:"BENCH",fix:"FIX"};
+const body=document.getElementById('mbody');
+AXES.forEach((a,i)=>{
+  const tr=document.createElement('tr'); tr.className='mrow'; tr.tabIndex=0; tr.setAttribute('role','button');
+  tr.setAttribute('aria-expanded','false');
+  tr.innerHTML=`<td><div class="axc"><span class="axid">${a.id}</span><span class="axnm">${a.name}</span></div></td>`+
+    Array(3).fill(`<td><div class="cellmark ${a.st}">${LAB[a.st]}</div></td>`).join('');
+  const det=document.createElement('tr'); det.className='detail hidden';
+  det.innerHTML=`<td colspan="4"><div class="inner">
+    <div class="dfield"><div class="dl">E★ mechanism</div><div class="dv">${a.mech}</div></div>
+    <div class="dfield"><div class="dl">B0 today</div><div class="dv"><span class="path">${a.b0}</span></div></div>
+    <div class="dfield"><div class="dl">Honest claim</div><div class="dv">${a.claim}</div></div>
+  </div></td>`;
+  const toggle=()=>{const h=det.classList.toggle('hidden');tr.setAttribute('aria-expanded',String(!h));};
+  tr.addEventListener('click',toggle);
+  tr.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
+  body.appendChild(tr); body.appendChild(det);
+});
+
+const CS=[
+ {id:"C1",v:[["mod","IMPLEMENT"],["mod","UNBLOCK"]],gap:"Kernel K spec-only; T1–T9 blocked",chg:"Implement K in the F★ target + unblock the F★/EverParse/Coq/Perennial/CompCert toolchain (offline mirror + license decision) to discharge T1–T9.",f:"admission-model.sexp · trusted-toolchain-manifest.sexp",d:"T1–T9; AX-01/02/03/09/11/12/16/20/21"},
+ {id:"C2",v:[["add","ADD"]],gap:"No certificate emitter",chg:"Add the transition_certificate emitter (verified-extracted; not a second CL seat).",f:"transition-certificate.cddl → extracted checker",d:"T9; AX-11/12/20"},
+ {id:"C3",v:[["mod","MODIFY"]],gap:"emit-graph non-atomic (AX-15 hole)",chg:"Atomic temp + fsync(data) + fsync(parent dir) + rename; fail-closed Persistence Receipt.",f:"write-authority.lisp (emit-graph) · deploy.lisp",d:"AX-15 system-wide"},
+ {id:"C4",v:[["mod","REPLACE"]],gap:"Hardcoded 120-article cap",chg:"Replace (integer 1 120) with a config-driven corpus bound.",f:"frbr-pipeline-stage.lisp:348,504",d:"AX-18 defined-behaviour; AX-22"},
+ {id:"C5",v:[["mod","MODIFY"]],gap:"Wall-clock nondeterminism",chg:"Single frozen-clock seat (SOURCE_DATE_EPOCH); collapse duplicate time reads.",f:"omega timestamp path · circuit-breaker.lisp · config.lisp",d:"AX-14 (enables T6 run)"},
+ {id:"C6",v:[["mod","REFACTOR"]],gap:"Intra-tier nondeterminism + error-swallow",chg:"Deterministic intra-tier order + transactional rollback (no continue-on-fail).",f:"parallel-executor.lisp",d:"AX-03/14/16"},
+ {id:"C7",v:[["add","ENABLE"]],gap:"External quorum disabled",chg:"Enable external witness quorum (C2SP/Ed25519 cosigning); flip status, set split-view claim.",f:"witness-policy.sexp",d:"AX-03/08 distributed scope"},
+ {id:"C8",v:[["mod","REPLACE"]],gap:"Runtime asserts, not proofs",chg:"Replace asserts/comment-counters with standing machine-checked invariants (false_uncertainty / silent_scope_omissions / unverified_satisfactions) + adversarial witness.",f:"version-graph.lisp · honesty-counter seat",d:"AX-09"},
+ {id:"C9",v:[["mod","IMPLEMENT"]],gap:"AX-19 no-op reporting",chg:"Implement the introspection emitters; effect-typed lineage so an untraced trusted act cannot compile.",f:"omega report-stage-progress / report-unified-statistics",d:"AX-19"},
+ {id:"C10",v:[["mod","MODIFY"],["rem","REMOVE"]],gap:"Constitutional gate fails open",chg:"Make evaluate fail-closed on predicate error; remove value-fabricating use-default* restarts (skip/abort only).",f:"constitutional-dispatch.lisp · frbr-conditions.lisp",d:"AX-10/12"},
+ {id:"C11",v:[["mod","REFACTOR"]],gap:"Defeater gate absent",chg:"Refactor negation-layer.lisp (one OWL-disjointness defun) into the defeater-closure admission gate emitting {defeated|undefeated|UNKNOWN}.",f:"negation-layer.lisp",d:"AX-01"},
+ {id:"C12",v:[["mod","MODIFY"]],gap:"Consolidation aggregate-only",chg:"Ledger from aggregate hash + step-count to a per-step before/after hash chain.",f:"consolidation-proof.lisp",d:"AX-06"},
+ {id:"C13",v:[["mod","REPLACE"]],gap:"Capability baseline raw counts",chg:"Replace raw tallies (E2E-OK 8/13) with per-metric floor thresholds + negative-witness Reject/Accept pair; wire K-admission ratchet.",f:"capability-baseline.sexp · capability-gate.lisp",d:"AX-20"},
+ {id:"C14",v:[["add","ADD"]],gap:"Untrusted generator absent",chg:"Add the LLM/agent candidate-producer layer in the untrusted candidates/ zone (verified out before trust).",f:"candidates/ producers",d:"superset ⊋"},
+ {id:"C15",v:[["mod","MOVE"]],gap:"AX-22 Greece-coupled",chg:"Move hardcoded 120/FEK//exp/ell/revision-calendar out of domain validation into legal-order profiles as data; run ≥2 structurally distinct orders.",f:"structure.lisp · historical.lisp · greek-law-types.lisp",d:"AX-22"}
+];
+const cs=document.getElementById('cs');
+CS.forEach(c=>{
+  const row=document.createElement('div'); row.className='csrow';
+  row.innerHTML=`<div class="cid">${c.id}</div><div>
+    <div>${c.v.map(x=>`<span class="verb ${x[0]}">${x[1]}</span>`).join('')}</div>
+    <div class="gap">${c.gap}</div>
+    <div class="chg">${c.chg}</div>
+    <div class="meta"><span class="files">${c.f}</span><span class="disc"><b>discharges</b> ${c.d}</span></div>
+  </div>`;
+  cs.appendChild(row);
+});
+
+// theme toggle (3-state aware, persisted)
+(function(){
+  const root=document.documentElement, btn=document.getElementById('tgl');
+  let saved=null; try{saved=localStorage.getItem('estar-theme');}catch(e){}
+  if(saved==='dark'||saved==='light') root.setAttribute('data-theme',saved);
+  function cur(){const a=root.getAttribute('data-theme'); if(a)return a;
+    return (window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}
+  btn.addEventListener('click',()=>{const n=cur()==='dark'?'light':'dark';
+    root.setAttribute('data-theme',n); try{localStorage.setItem('estar-theme',n);}catch(e){}});
+})();
+</script>

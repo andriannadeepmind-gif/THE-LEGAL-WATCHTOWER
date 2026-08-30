@@ -1,0 +1,7 @@
+config space: 9216 configurations · properties: 7
+baseline (no defects): violations = NONE
+combinations tested: singles=10 pairs=45 triples=120 total=175
+
+no survivors: every single, pair and triple of seeded defects is detected
+
+C4: PASS

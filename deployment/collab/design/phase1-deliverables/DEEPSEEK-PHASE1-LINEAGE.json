@@ -1,0 +1,734 @@
+{
+ "schema": "lawmax-deepseek-phase1-lineage/1",
+ "phase": "phase-1",
+ "study": "the-legal-watchtower-architecture-study",
+ "source_commit": "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03",
+ "source_tree": "23b7a6f4450f50d151d38e13020bee9872e73bcd",
+ "historical_baseline_commit": "57c0cd868c80f87df8e298c9aa75b8ccf2503391",
+ "corroboration_commit": "2b910271f11fc462eee1378fb9a77623c791fcbf",
+ "generated_at_utc": "2026-08-26T00:36:43Z",
+ "worktree_clean_at_generation": true,
+ "evidence_classes": {
+  "MECHANICALLY-PROVED": 73,
+  "EMPIRICALLY-REPRODUCED": 2,
+  "SOURCE-GROUNDED-INFERENCE": 23,
+  "UNRESOLVED": 6
+ },
+ "self_sha256_convention": "sha256 of this file with the 64 hex characters of self_sha256 replaced by 64 '0'.",
+ "self_sha256": "a66630cfc800992a9707d62b2f339abce29641b915ba50068379d9d7e8276720",
+ "admission_verdict": "HISTORICAL-DEEPSEEK-PHASE1-ADMITTED",
+ "admission_note": "Every identity required by the creator instruction was verified byte-exactly before any new repository reading. No identity failed; no fallback was used.",
+ "historical_workspace": "C:\\Users\\David Spiridon\\Downloads\\LAWMAX-DEEPSEEK-OMEGA-MODEL-HANDOFF-2026-08-03\\LAWMAX-DEEPSEEK-OMEGA-MODEL-HANDOFF\\v2\\workspace",
+ "artifact_subtree_resolved_to": "full/output/blind/phase-1",
+ "artifact_subtree_note": "The instruction cited the artifacts as blind/phase-1/*. In the workspace that subtree exists under four run directories (full, pilot, pilot-archive-2, pilot-archive-2026-08-04). Only 'full' reproduces the five required hashes; the three pilot runs do not. The full-run subtree is therefore the admitted one, and this resolution is itself part of the admission.",
+ "verified_identities": {
+  "study_id": {
+   "required": "lawmax-omega-max-deepseek-v4-v2-full",
+   "observed": "lawmax-omega-max-deepseek-v4-v2-full",
+   "match": true,
+   "source": "full/state/FINAL-SEAL.json + full/state/study-state.json"
+  },
+  "real_provider_phase1_seal": {
+   "required": "cbcc70ee9b15939b04d9e363dfe05696ec5836b686660b7bdce246699d0dc9f3",
+   "observed": "cbcc70ee9b15939b04d9e363dfe05696ec5836b686660b7bdce246699d0dc9f3",
+   "match": true,
+   "source": "full/state/seals/phase-1.json :: seal_sha256"
+  },
+  "historical_final_seal": {
+   "required": "bba20ec17d471809362bc65aa6dfd2b6668f02e717b18011e70892089466b9c4",
+   "observed": "bba20ec17d471809362bc65aa6dfd2b6668f02e717b18011e70892089466b9c4",
+   "match": true,
+   "source": "full/state/FINAL-SEAL.json :: seal_sha256"
+  },
+  "historical_turnstore_root": {
+   "required": "c7449b0fdb69fde45ef49a38a6b611e0ad5fb6eb13641b1625e043f0f7eece11",
+   "observed": "c7449b0fdb69fde45ef49a38a6b611e0ad5fb6eb13641b1625e043f0f7eece11",
+   "match": true,
+   "source": "full/state/FINAL-SEAL.json :: turnstore_manifest.root_sha256 (turn_count 3522, admission_count 3523)"
+  },
+  "corpus_root": {
+   "required": "d62ab7bdd46bd8bd8657c025897b7f533b3b0bbbb5050a11aa390be477e2e5c8",
+   "observed": "d62ab7bdd46bd8bd8657c025897b7f533b3b0bbbb5050a11aa390be477e2e5c8",
+   "match": true,
+   "source": "FINAL-SEAL.json / snapshot-source.json / coverage/phase-1.json"
+  },
+  "historical_target_commit": {
+   "required": "57c0cd868c80f87df8e298c9aa75b8ccf2503391",
+   "observed": "57c0cd868c80f87df8e298c9aa75b8ccf2503391",
+   "match": true,
+   "source": "seals/phase-1.json :: expected_commit"
+  }
+ },
+ "verified_coverage": {
+  "complete_enumeration": {
+   "required": true,
+   "observed": true,
+   "files_total": 35564,
+   "files_uncovered": 0
+  },
+  "reading_complete": {
+   "required": true,
+   "observed": true
+  },
+  "chunks_complete": {
+   "required": true,
+   "observed": true,
+   "planned_chunks_total": 1202,
+   "planned_chunks_read": 1202
+  },
+  "required_read_files": {
+   "required": 1000,
+   "observed": 1000,
+   "unread": 0
+  },
+  "evidence_ledger_lines": {
+   "required": 5372,
+   "observed": 5372,
+   "sha256": "7c9f19421af789b7c6fdc1b429844f8477d8e59594ac7a654893bbf3addccaf8",
+   "equals_seal_field": true
+  },
+  "citations_checked": {
+   "required": 536,
+   "observed": 536
+  },
+  "tool_receipts": {
+   "required": 5378,
+   "observed": 5378
+  },
+  "files_read_total": 2105
+ },
+ "grounded_comprehension_v3": {
+  "status": "NOT_CLAIMED",
+  "verification": "The token 'grounded-comprehension' occurs nowhere in the historical study's state or output trees. The claim is not broadened here."
+ },
+ "historical_phases_2_to_4": {
+  "status": "ARCHIVAL_ONLY_NOT_ADMITTED",
+  "present_in_workspace": true,
+  "treatment": "Their existence was observed while listing the workspace; no claim, number or conclusion from full/output/final or from phase-2/3/4 seals, coverage or evidence was read into any deliverable of this phase."
+ },
+ "admitted_artifacts": [
+  {
+   "path": "blind/phase-1/CURRENT-SYSTEM-MAP.md",
+   "bytes": 39077,
+   "required_sha256": "11a2e06a7b85cafa3dcd29b384c2e22b235dd253b28ab29b23bb3b9d97dbcb54",
+   "observed_sha256": "11a2e06a7b85cafa3dcd29b384c2e22b235dd253b28ab29b23bb3b9d97dbcb54",
+   "match": true
+  },
+  {
+   "path": "blind/phase-1/CURRENT-SYSTEM-EVIDENCE.json",
+   "bytes": 294918,
+   "required_sha256": "689dc8c35877ca9f34b9aaab0680019aa40db6ca09aadcc98216da0b0be38c90",
+   "observed_sha256": "689dc8c35877ca9f34b9aaab0680019aa40db6ca09aadcc98216da0b0be38c90",
+   "match": true
+  },
+  {
+   "path": "blind/phase-1/CAPABILITY-INVENTORY.json",
+   "bytes": 23119,
+   "required_sha256": "8517dbb50a475d0e002b837631f0324ca33e4988e646821f0798687e288e9068",
+   "observed_sha256": "8517dbb50a475d0e002b837631f0324ca33e4988e646821f0798687e288e9068",
+   "match": true
+  },
+  {
+   "path": "blind/phase-1/TRUST-AND-WRITER-SEATS.json",
+   "bytes": 15003,
+   "required_sha256": "141aa0d1b727f35e736fc429f2e889484d0aa40e5cda84ac624e01908f30aaf4",
+   "observed_sha256": "141aa0d1b727f35e736fc429f2e889484d0aa40e5cda84ac624e01908f30aaf4",
+   "match": true
+  },
+  {
+   "path": "blind/phase-1/WORKING-MEMORY.md",
+   "bytes": 3136,
+   "required_sha256": "4437358a668a6b2e8235fef5dd3b73d89d997a8c8362e76f86425383e67dc871",
+   "observed_sha256": "4437358a668a6b2e8235fef5dd3b73d89d997a8c8362e76f86425383e67dc871",
+   "match": true
+  }
+ ],
+ "commit_pair": {
+  "from": "57c0cd868c80f87df8e298c9aa75b8ccf2503391",
+  "to": "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03",
+  "relationship": "ancestor",
+  "merge_base": "57c0cd868c80f87df8e298c9aa75b8ccf2503391",
+  "commits_in_between": 13,
+  "paths_changed": 100,
+  "added": 76,
+  "modified": 24,
+  "lines_added": 8265,
+  "lines_deleted": 414
+ },
+ "delta_set": [
+  {
+   "status": "M",
+   "path": ".github/workflows/docker-orchestrator.yml"
+  },
+  {
+   "status": "M",
+   "path": ".gitignore"
+  },
+  {
+   "status": "M",
+   "path": "Dockerfile"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/PROOF-CENSUS.txt"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/capability/identities.sh"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/capture/CAPTURE-PROTOCOL.sexp"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/capture/canonical-profile.json"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/capture/capture.py"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/fixtures/genesis-cert-fixture.json"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/fixtures/genesis-cert-fixture.sig"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/fixtures/legacy-authority/REMOVED-attest-release.lisp.txt"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/fixtures/legacy-tlog/MANIFEST.json"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/fixtures/legacy-tlog/REMOVED-tlog-writers.lisp.txt"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/fixtures/legacy-tlog/tlog-n1.json"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/fixtures/legacy-tlog/tlog-n2.json"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/fixtures/legacy-tlog/tlog-n3.json"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/fixtures/test-keys/README.md"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/fixtures/test-keys/genesis-test-ed25519.pub"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/genesis/build-adoption-certificate.py"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/genesis/conformance-check.py"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/genesis/genesis-policy.sexp"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/genesis/legacy-snapshot.py"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/genesis/out/legacy-adoption-certificate.unsigned.json"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/genesis/out/legacy-conformance.json"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/genesis/out/legacy-snapshot.json"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/kernel/admission-model.sexp"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/log/witness-policy.sexp"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/proof-manifest.sexp"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/proofs/capture-adversarial-test.py"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/proofs/capture-mountpoint-test.sh"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/proofs/capture-mutation-witness.py"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/proofs/capture-seat-differential-test.sh"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/proofs/ceremony-rehearsal-test.sh"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/proofs/delta23-evidence-bundle.sh"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/proofs/docker-e2e-test.sh"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/proofs/gate-negative-fixtures.py"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/proofs/producer-os-boundary-test.sh"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/proofs/producer-topology-test.py"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/proofs/proof-census-adversarial-test.py"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/proofs/verify-capability-closure.sh"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/proofs/verify-completion-matrix.py"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/proofs/verify-proof-manifest.py"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/proofs/witness-quorum-test.py"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/roles/ROLES-MODEL.sexp"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/roles/ceremony.sh"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/run-all.sh"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/run-proofs.sh"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/schema/state.cddl"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/schema/transition-certificate.cddl"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/store/STORAGE-API.sexp"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/tests/_mutator.py"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/tests/build-authority-core.lisp"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/tests/probe-attest-refusal.lisp"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/tests/probe-candidate-bundle.lisp"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/tests/probe-canonical-files.lisp"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/tests/probe-emit-load-graph.lisp"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/tests/probe-frozen-mutants.lisp"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/tests/probe-load-graph.lisp"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/tests/probe-merkle-root-of-files.lisp"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/tests/probe-producer-real.lisp"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/tests/probe-producer-under-uid.lisp"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/tests/staging-helper.lisp"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/toolchain/everparse.Dockerfile"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/toolchain/perennial.Dockerfile"
+  },
+  {
+   "status": "A",
+   "path": "authority-v2/toolchain/trusted-toolchain-manifest.sexp"
+  },
+  {
+   "status": "A",
+   "path": "candidates/README.md"
+  },
+  {
+   "status": "M",
+   "path": "deployment/collab/AI-DIALOGUE.md"
+  },
+  {
+   "status": "M",
+   "path": "deployment/collab/STATE-OF-PLAY.md"
+  },
+  {
+   "status": "A",
+   "path": "deployment/collab/dialogue/0122-claude.md"
+  },
+  {
+   "status": "A",
+   "path": "deployment/collab/dialogue/0123-claude.md"
+  },
+  {
+   "status": "A",
+   "path": "deployment/collab/dialogue/0124-claude.md"
+  },
+  {
+   "status": "A",
+   "path": "deployment/collab/dialogue/0125-claude.md"
+  },
+  {
+   "status": "M",
+   "path": "docker-compose.yml"
+  },
+  {
+   "status": "M",
+   "path": "docker/suite-census.txt"
+  },
+  {
+   "status": "A",
+   "path": "evidence/README.md"
+  },
+  {
+   "status": "A",
+   "path": "evidence/self/.gitkeep"
+  },
+  {
+   "status": "A",
+   "path": "evidence/version-graph/.gitkeep"
+  },
+  {
+   "status": "A",
+   "path": "keys/private/README.md"
+  },
+  {
+   "status": "A",
+   "path": "keys/public/.gitkeep"
+  },
+  {
+   "status": "A",
+   "path": "keys/public/README.md"
+  },
+  {
+   "status": "M",
+   "path": "orchestrator-epistemic.asd"
+  },
+  {
+   "status": "M",
+   "path": "source/mcp-server.lisp"
+  },
+  {
+   "status": "M",
+   "path": "source/paths.lisp"
+  },
+  {
+   "status": "M",
+   "path": "systems/orchestrator-cli/cli-util.lisp"
+  },
+  {
+   "status": "M",
+   "path": "systems/orchestrator-cli/golden-gate.lisp"
+  },
+  {
+   "status": "M",
+   "path": "systems/orchestrator-cli/ingestion-commands.lisp"
+  },
+  {
+   "status": "M",
+   "path": "systems/orchestrator-cli/main.lisp"
+  },
+  {
+   "status": "M",
+   "path": "systems/orchestrator-cli/release-authority.lisp"
+  },
+  {
+   "status": "M",
+   "path": "systems/orchestrator-cli/release-gate.lisp"
+  },
+  {
+   "status": "M",
+   "path": "systems/orchestrator-cli/version-graph-import.lisp"
+  },
+  {
+   "status": "M",
+   "path": "systems/orchestrator-engine-sbcl/stages/deploy-epistemic.lisp"
+  },
+  {
+   "status": "A",
+   "path": "systems/orchestrator-epistemic/authority-boundary.lisp"
+  },
+  {
+   "status": "M",
+   "path": "systems/orchestrator-epistemic/deploy-epistemic.lisp"
+  },
+  {
+   "status": "M",
+   "path": "systems/orchestrator-epistemic/package.lisp"
+  },
+  {
+   "status": "M",
+   "path": "systems/orchestrator-epistemic/transparency-log.lisp"
+  },
+  {
+   "status": "M",
+   "path": "systems/orchestrator-gr-syntagma/pipeline.lisp"
+  },
+  {
+   "status": "A",
+   "path": "tests/level7-disarm-test.lisp"
+  },
+  {
+   "status": "M",
+   "path": "tests/release-authority-test.lisp"
+  },
+  {
+   "status": "M",
+   "path": "tests/transparency-log-test.lisp"
+  }
+ ],
+ "retained_claims": [
+  {
+   "claim": "source/ holds 133 first-party Lisp files",
+   "status": "retained-unchanged",
+   "evidence": "EV-I-005"
+  },
+  {
+   "claim": "17 ASDF defsystems",
+   "status": "retained-unchanged",
+   "evidence": "EV-I-007"
+  },
+  {
+   "claim": "orchestrator-omega is implemented (25 modules), not spec-only",
+   "status": "retained-unchanged",
+   "evidence": "EV-I-008"
+  },
+  {
+   "claim": "The system is SBCL-locked (sb-posix, sb-thread, sb-ext, sb-unix)",
+   "status": "retained-unchanged",
+   "evidence": "carried from the admitted map; the delta adds further SBCL-only dependencies (sb-unix:unix-getpid in tests/level7-disarm-test.lisp, sb-posix:getpid in deploy-epistemic.lisp) and so strengthens it"
+  },
+  {
+   "claim": "29 hash-authority bypasses across 17 files at the historical target",
+   "status": "retained-and-reproduced",
+   "evidence": "EV-P-003"
+  },
+  {
+   "claim": "orchestrator-infrastructure is the source monolith carrying all of source/",
+   "status": "retained-unchanged",
+   "evidence": "carried from the admitted map; source/ is untouched by the delta"
+  },
+  {
+   "claim": "71 analysed capabilities of which 25 have no gate at all",
+   "status": "retained-as-inherited-analysis",
+   "evidence": "CAPABILITY-INVENTORY.json; this phase did not re-derive the analytic inventory and does not restate it as its own finding"
+  },
+  {
+   "claim": "The eleven declared static-analysis limitations of the baseline",
+   "status": "retained-unrelieved",
+   "evidence": "EV-U-005"
+  }
+ ],
+ "invalidated_claims": [
+  {
+   "claim": "systems/ holds 174 files",
+   "now": "175 (authority-boundary.lisp added)",
+   "evidence": "EV-I-006"
+  },
+  {
+   "claim": "41 write-authority bypasses across 18 files",
+   "now": "the match count 41 is exact at the historical target but the file count is 20, not 18; at the current target the figures are 40 across 19 files",
+   "evidence": "EV-P-001, EV-P-002"
+  },
+  {
+   "claim": "release authority is 'content-addressed release authority ... latest promoted only to attested'",
+   "now": "the release seat is demoted to an untrusted candidate producer; --attest-release is deleted and retired, promote-latest! and release-attested-p fail closed",
+   "evidence": "EV-T-003, EV-T-005"
+  },
+  {
+   "claim": "the transparency log is appended by the Lisp system",
+   "now": "the writers are deleted from the tree and the append seat fails closed",
+   "evidence": "EV-T-002, EV-T-004"
+  },
+  {
+   "claim": "the source-bytes-to-public-output path terminates in a published release",
+   "now": "it terminates in a candidate bundle; no path from producer to publication exists, because the admission kernel that would grant authority is unimplemented",
+   "evidence": "EV-K-001, EV-K-003"
+  }
+ ],
+ "newly_verified_claims": [
+  "EV-A-001",
+  "EV-A-002",
+  "EV-A-003",
+  "EV-A-004",
+  "EV-A-005",
+  "EV-A-006",
+  "EV-A-007",
+  "EV-A-008",
+  "EV-A-009",
+  "EV-A-010",
+  "EV-I-001",
+  "EV-I-002",
+  "EV-I-003",
+  "EV-I-004",
+  "EV-I-009",
+  "EV-D-001",
+  "EV-D-002",
+  "EV-D-003",
+  "EV-T-001",
+  "EV-T-002",
+  "EV-T-003",
+  "EV-T-004",
+  "EV-T-005",
+  "EV-T-006",
+  "EV-T-007",
+  "EV-T-008",
+  "EV-T-009",
+  "EV-T-010",
+  "EV-T-011",
+  "EV-K-001",
+  "EV-K-002",
+  "EV-K-003",
+  "EV-K-004",
+  "EV-K-005",
+  "EV-K-006",
+  "EV-P-002",
+  "EV-P-004",
+  "EV-P-005",
+  "EV-P-006",
+  "EV-C-001",
+  "EV-C-002",
+  "EV-N-001",
+  "EV-N-002",
+  "EV-N-003",
+  "EV-N-004",
+  "EV-N-005",
+  "EV-N-006",
+  "EV-N-007",
+  "EV-N-008",
+  "EV-N-009",
+  "EV-N-010",
+  "EV-N-011",
+  "EV-N-012",
+  "EV-N-013",
+  "EV-N-014",
+  "EV-V-001",
+  "EV-V-002",
+  "EV-V-003",
+  "EV-V-004",
+  "EV-V-005",
+  "EV-V-006",
+  "EV-V-007",
+  "EV-V-008",
+  "EV-V-009",
+  "EV-V-010",
+  "EV-V-011",
+  "EV-V-012",
+  "EV-V-013",
+  "EV-V-014",
+  "EV-V-015",
+  "EV-V-016",
+  "EV-V-017",
+  "EV-U-001",
+  "EV-U-002",
+  "EV-U-003",
+  "EV-U-004",
+  "EV-U-006",
+  "EV-N-015",
+  "EV-N-016",
+  "EV-D-004",
+  "EV-N-017",
+  "EV-N-018",
+  "EV-N-019",
+  "EV-V-018"
+ ],
+ "baseline_integrity_finding": {
+  "id": "EV-P-005/EV-P-006",
+  "finding": "The admitted evidence artifact carries read coverage only: 513 records, all of kind durable-read-coverage with status UNKNOWN. The baseline's substantive pathology figures are cited to evidence identifiers that do not occur in it (EV-1-02836 and EV-1-02837 resolve only in the separately-sealed phase-1 ledger; EV-1-082 resolves nowhere).",
+  "consequence": "Inherited numeric claims were not taken on trust. The two load-bearing ones were re-executed from the queries recorded in the sealed ledger and reproduced exactly at the historical target, which is what makes EV-P-001 and EV-P-003 admissible."
+ },
+ "claude_p1a_corroboration": {
+  "commit": "2b910271f11fc462eee1378fb9a77623c791fcbf",
+  "read_method": "git objects only (git show / git diff / git cat-file); the branch was never checked out and neither its .claude/settings.json nor any hook was read or executed",
+  "source_drift_between_e621dbe1_and_2b910271": "none in first-party source",
+  "dossiers_imported": 25,
+  "citations_extracted": 2755,
+  "citations_resolving_at_target": 2752,
+  "citations_rejected": 3,
+  "rejected_detail": "source/capability-registry.lisp:40-207 (repeated in three dossier revisions); the file has 206 lines. Admitted in corrected form 40-206.",
+  "candidate_defects_imported": 30,
+  "candidate_defects_independently_confirmed_here": 12,
+  "candidate_defects_confirmed_with_correction": 2,
+  "authority": "candidate corroboration only; nothing was admitted on the dossier's word"
+ }
+}

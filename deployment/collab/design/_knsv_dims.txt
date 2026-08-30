@@ -1,0 +1,110 @@
+#### DIM-01 Reasoning substrate (AX-01, AX-19)
+   - LLM-direct: chain-of-thought legal conclusions emitted by a statistical model inside the trusted path
+   - LLM-simulated-formal: model narrates formal reasoning; no solver ever executes (the 'scope laundering' pattern of arXiv 2606.16118)
+   - credulous-argumentation: credulous single-extension SELECTION under preferred/stable semantics (one extension reported, chosen by search order)
+   - unique-status-certified-argumentation-above-grounded: ideal/eager semantics and sceptical-preferred acceptance with certified exhaustive-extension enumeration — unique per query (H5 holds), decidable on the committed fin
+   - recorded-unchecked-justification: rules and authorities recorded per conclusion but never machine-checked (AX-01 R2)
+   - monotonic-classical-solver: FOL/SMT/Prolog with exceptions encoded ad hoc, machine-checked (absorbs: VeriCoT/L4L SMT adjudication substrate)
+   - grounded-defeasible-certified: alternating-fixpoint well-founded/grounded labelling over a committed finite defeasible rulebase with offline-recheckable derivation certificates and certified defeater search (absorbs: ASP
+   - grounded-defeasible-over-decidable-theories: grounded/well-founded defeat calculus whose atoms range over decidable theories (linear arithmetic, dates/deadlines), with exhaustive defeater search discharged via solver que
+   - prioritized-default-verified-calculus: Catala-class statute-shaped defaults+exceptions with verified compilation (absorbs: 'Closing the Loop' extended-Catala kernel, LogiKEy HOL embeddings as spec-level workbench)
+   - precedential-constraint-CBR: Horty-style/hierarchical factor reasoning with decidable forced-decision checks (absorbs: hierarchical precedential constraint, case frames in statutory interpretation)
+#### DIM-02 Grounding / corpus admission (AX-04)
+   - similarity-retrieval-trusted: embedding/heuristic RAG selection acting as the trusted grounding decision
+   - declared-unenforced-policy: source policy stated but not mechanically enforced (AX-04 R2)
+   - enforced-typed-admission: sources enter only through typed, policy-checked admission; selection by exact committed identifier only; corpus-size-independent by construction
+   - attested-capture-dual-digest: publisher-signature transport (PAdES/CMS) or k-of-n independent capture-witness quorum over byte digests, plus deterministic extraction E with byte-equality replay and Merkle inclusion; the 
+   - graph-constrained-grounding: retrieval/traversal over canonical identifiers in a committed legal knowledge graph (absorbs: SAT-Graph canonical-primitive API, Falkor-IRAC hard path constraints, provenance-bound factor asc
+   - untrusted-candidate-retrieval: any statistical retrieval confined outside the trusted path, output re-entering only through admission (H1-conformant use of RAG)
+#### DIM-03 Authority / citation validation (AX-05) — split from grounding: distinct frozen ladder
+   - unvalidated-citation: citations emitted unchecked
+   - LLM-judged-support: a model decides whether cited authority supports the proposition
+   - db-grounded-partial-support-check: deterministic citator-database existence + good-law + relevance check, human-consumed, partial/sampled coverage, no offline certificate (the Shepard's Verify / KeyCite / Deep Research V
+   - grammar-total-proof-carrying-resolution: total coverage-gated recognizer over a declared decidable citation grammar L(G); every hit resolves through a verified receipt chain (owner-pinned signatures, delegation, revocati
+#### DIM-04 State / temporal legal-state (AX-08)
+   - atemporal-snapshot: implicit current-law semantics only
+   - LLM-internal-temporal-knowledge: the model's parametric memory supplies which version of the law applies
+   - timestamped-unused: temporal metadata stored but not used in evaluation
+   - version-indexed-date-conditioned-retrieval: date-of-application as first-class retrieval key over an in-place-revised corpus (absorbs: French versioned-corpus benchmark mechanism, LexKairos-motivated substrate-provided t
+   - total-bitemporal-view: one pure function View(t_legal, t_knowledge) over Merkle-committed snapshots plus typed amendment events (repeal/substitution/insertion event calculus), typed UNKNOWN off committed coverage (absorb
+   - externally-anchored-time: eIDAS qualified timestamps (statutory burden-shifting presumption), Roughtime malfeasance-provable sources, witness-timestamped cosignatures at <=1-minute granularity (absorbs: legally-anchored 
+#### DIM-05 Coordination / write authority (AX-03, AX-12) — H4 frozen operative content: every write becomes canonical only by passing the single decidable admission predicate BEFORE canonicalization, at one serialization point (physical single writer OR machine-checked-nonforking logical serialization)
+   - uncoordinated-concurrent-mutation: agents mutate shared state with no dependency control
+   - LLM-arbitration: majority vote / debate / model-judged conflict resolution as the trusted arbitration
+   - multi-writer-convergent-CRDT: concurrent writers with merge semantics as the canonical store, operations replicated and accepted BEFORE any admission predicate runs (absorbs: Keyhive convergent capabilities, ERA epoch-re
+   - deterministic-merge-CRDT-with-admission-at-merge: convergent replication where every operation passes the single decidable admission predicate AT the deterministic total-order merge point, before becoming canonical — can
+   - single-writer-kernel-arbitration: one kernel-enforced writer seat with a total, pure, decidable admission predicate; confluent deterministic tiered parallelism (antichain + disjoint footprints + atomic tier commit), exte
+   - bft-replicated-total-order: consensus-ordered log (Mysticeti-class) realizing one LOGICAL writer across mutually distrusting operators, admission evaluated at consensus commit (absorbs: heterogeneous/asymmetric quorum de
+#### DIM-06 Assurance transport / verification-artifact substrate (AX-21)
+   - prose-spec-only: design assurance by documents and human review
+   - LLM-as-judge-assurance: model scoring/critique as the assurance verdict
+   - benchmark-only-assurance: test suites and leaderboard deltas as the sole evidence for correctness claims
+   - per-output-translation-validation: verify each emitted artifact against its spec rather than verifying the generator (absorbs: Alive2/TRACTOR pattern, proof-carrying certificates trust-boundary architecture with assumpti
+   - verified-kernel-chain: machine-checked proofs replayable by a small kernel (offline Lean 4 for the admission kernel and calculus metatheory) + verified compilation where it exists (CompCert/CakeML; DO-178C-qualified cred
+   - tcb-minimized-root: enumerated, hash-committed TCB with full-source bootstrap (StageX/live-bootstrap), reproducible builds (Debian-grade policy gates), binary transparency, TEE attestation binding OMS-signed model weight
+#### DIM-07 Memory / institutional state (AX-07)
+   - stateless: no matter context survives a request
+   - llm-consumed-preference-memory: persistent context retrieved heuristically and applied by the model (the Harvey Memory/Spaces family)
+   - canonical-typed-matter-state: single-seat typed matter record with capability closure and deterministic reads, its writes admitted per the frozen H4 wording (single canonical serialization point — physical or consensus-l
+   - hash-chained-certified-episode-memory: append-only SHA-256 episode chain with chain discipline sealed inside the hashed body, continuous recompute verification, signed checkpoints bound into release spines for checkpoint
+   - erasure-compatible-committed-memory: hash chain over salted per-episode commitments H(salt||body) with crypto-shredding (destroy salt and/or body) and verifiable-redaction certificates — chain verification and inclusion 
+   - verifiable-authority-directory: key-transparency-style log tree + prefix tree over the authority map (which key/role may sign which class of act), with named third-party auditors and split-view gossip (absorbs: KEYTRANS/
+#### DIM-08 Provenance / transformation lineage (AX-06, AX-13)
+   - no-provenance: artifacts carry no origin record
+   - post-hoc-model-influenceable-logs: free-form logging written after actions, mutable by or through the acting model; includes aggregate-only ledgers (base/result hash + step count)
+   - structured-prov-graphs: typed W3C-PROV-style provenance records as first-class data (absorbs: PROV-AGENT agent-centric extension)
+   - per-step-recompute-DAG: every transformation committed as (input-hash, deterministic-op-id, output-hash), chained under a domain-separated Merkle root inside the signed release identity, third-party re-executed and byte-
+   - pre-action-independent-receipts: cryptographic receipt written by an independent gate BEFORE each action executes — an audit trail the model cannot influence, with deterministic replay as a design requirement (absorbs: a
+   - proof-carrying-state-updates: succinct proofs attached to each delta attesting the delta AND its causal history satisfy the validity predicate — O(1) validation without replay (absorbs: PC-CRDT PaPoC 2025, hash-chronicle
+#### DIM-09 Integrity witnessing / equivocation resistance — split from provenance: the frontier's single-writer+witness hybrid fits neither base dimension (AX-07/AX-08 fork-consistency bounds — RESOURCE_BOUNDED on the declared witness set in v2 — and AX-12 fork evidence)
+   - declared-root-trust: verifier accepts the producer's stated head/root
+   - emergent-gossip-detection: peer-to-peer gossip assumed to surface equivocation
+   - internal-consistency-only: single hash-chained/Merkle log verifiable for append-only consistency; fork detection only relative to a verifier-held prior checkpoint (the honest fork-consistency floor the shipped tree curre
+   - single-writer-plus-witness-quorum: one authoritative sequencer whose checkpoints are consistency-verified and timestamp-cosigned by independent witnesses under client-side nested k-of-n trust policies; static tiled read 
+   - full-bft-replication: the write path itself replicated under Byzantine consensus with machine-checked nonforking (absorbs: heterogeneous/asymmetric quorum and FBA composition — Satrapy)
+#### DIM-10 Transaction / durability / liveness orchestration (AX-11, AX-15, AX-16) — split from planning: distinct ladders
+   - best-effort-effects: tool/workflow side effects with no transaction concept
+   - fail-open-degradation: errors converted to defaults/synthesized content and execution continues (use-default restarts, error-swallowing executors)
+   - llm-validated-semantic-transactions: commit/abort decided by model confidence or divergence (the semantic-ACID commit criterion of arXiv 2608.13900)
+   - durable-execution-journal-plus-compensation: every step journaled before execution, idempotency-keyed at-least-once retry, saga compensation and intent/outcome journaling for external effects outside the atomic section (
+   - atomic-single-commit-point-store: shadow-commit/WAL with fsync barriers, atomic rename as THE commit point, read-back recompute verification, crash-recovery to exactly sigma_pre or sigma_post, machine-checked crash-refin
+   - budgeted-typed-termination: every trusted loop carries a well-founded variant/budget; terminal type = {SUCCESS+cert, typed FAIL, typed REFUSED} with no hang inhabitant; replayable logical-clock timeouts (the AX-16 guaran
+#### DIM-11 Plan decomposition (AX-02)
+   - implicit-llm-planning: the model decomposes and sequences work inside the trusted path
+   - declared-plan-unchecked: steps and ordering reified as data, completeness never machine-checked
+   - formalize-then-solve: LLM emits a formal planning problem (PDDL-class), a sound/complete external planner/validator solves and checks it, validator feedback drives repair/reward (absorbs: VAL-in-the-loop, planner-in-loop
+   - typed-dag-contract-plans: finite typed dataflow DAG with produces/consumes checking, fail-closed macroexpansion admission (defective plan cannot come into existence), unique deterministic tie-broken schedule, offline-rec
+   - verified-orchestration-topology: statically verified workflow graphs, temporal-policy DSL compiled to DFAs, machine-checked mandatory human-review nodes, MSC syntax-directed projection giving deadlock-freedom by construc
+   - dual-informal-formal-lemma-handoff: untrusted planner proposes a lemma DAG, each node autoformalized and kernel-checked before use (absorbs: Aristotle architecture; composes with DIM-04 total-bitemporal-view to yield poi
+#### DIM-12 Ignorance handling (AX-09, AX-02 residue)
+   - silent-guessing: fluent completion over gaps; uncertainty unreported
+   - uncalibrated-self-confidence: model-reported confidence as the trusted uncertainty signal
+   - heuristic-flagging: some conflicts flagged with no coverage guarantee
+   - typed-unknown-trichotomy-with-census: every query returns PASS+cert, FAIL+counter-cert, or typed UNKNOWN from a CLOSED committed enumeration of unknowability causes; positively-proven coverage census; UNKNOWN terminal EX
+   - conformal-statistical-annotation-tier: distribution-free abstention/back-off with certified error rates layered over the non-formalizable residue, with known impossibility bounds for structured outputs (arXiv 2606.29054)
+   - exact-stability-computation: decidable 'which unknowns can flip this outcome' analysis on the result model, naming what to investigate next (absorbs: van Woerkom stability/relevance machinery). CONSISTENCY NOTE (CF P0-3 
+   - test-time-proof-search: inference-budgeted search converting UNKNOWN into kernel-checked PROVED, with failure remaining typed UNKNOWN (absorbs: AlphaProof/Kimina TTRL as untrusted search + trusted checking)
+#### DIM-13 Self-falsification / adversarial counter-design (AX-10)
+   - no-falsification: no adversarial process exists
+   - llm-adjudicated-critique: LLM critiques LLM with a model deciding whether the refutation stands
+   - committed-mutation-kill: hash-committed finite mutation-operator and counter-design class M with 100% kill matrix as an offline-recomputable release artifact; surviving mutant = typed UNKNOWN blocking release and escalat
+   - kernel-checked-counterexamples: disproofs, countermodels, and defeaters that are themselves Lean/SMT-verified rather than judged (absorbs: Learning to Disprove, VERGE, formal-referee self-play, LogiKEy Nitpick/Nunchaku m
+   - n-version-formalization-diffing: independently generated formalizations of the same provision with SAT-exhaustive enumeration of behavioral disagreements as the ambiguity/escalation signal (absorbs: 'By Their Fruits', ro
+   - fresh-context-kill-mandate-critics: institutionalized adversarial phase gates with structurally independent reviewers, cross-model families, context isolation (absorbs: Refute-or-Promote); guarantee-form statement per th
+#### DIM-14 Evolution / capability monotonicity (AX-20)
+   - unmanaged-change: modification without invariant or capability tracking
+   - unconstrained-self-evolution: continuous self-modification claiming preserved invariants without per-step proof
+   - benchmark-gated-model-swap: proprietary model swapped into production on leaderboard/benchmark evidence with no floor-preservation object (the Thomson/Tenet pattern)
+   - floor-vector-ratchet: committed capability-floor vector serialized into a hash-chained census; each evolution step recomputes prior floors, proves pointwise non-regression and floor-set growth, refuses otherwise (the AX-
+   - verifier-gated-improvement: kernel-verified reward loops and proof-carrying self-modification — a change installs only after machine-checked invariant-preservation certification, with statistical learning confined to uni
+#### DIM-15 Cross-legal-order generality (AX-22)
+   - single-order-hardcoded: one legal order's constants baked into trusted mechanism code
+   - profile-parametric-noninterference: every trusted mechanism a single function of a hash-committed legal-order profile (article ranges, publisher keys, citation grammar, deontic lexicon, calendar), with a noninterference 
+   - single-calculus-multi-order: one formal legal calculus instantiated across structurally distinct orders (absorbs: extended-Catala German/US/cross-jurisdictional demonstrations, LogiKEy logic-pluralism)
+   - profile-composition-conflict-of-laws-meta-rules: reasoning ACROSS orders inside one derivation — typed cross-order references, choice-of-law rules as a committed meta-rulebase over legal-order profiles (themselves codifi
+#### DIM-16 Formalization admission / interpretive-artifact provenance (AX-01 boundary, AX-12) — dimension ADDED per CA P1-4: DIM-02 admits source BYTES; nothing previously governed how the committed formal RULEBASE — the single highest-risk artifact in every admissible class — comes into being and is contested. These are admission mechanisms, distinct from DIM-06 assurance and DIM-13 falsification; classes differ materially on them, and the taxonomy can now express e.g. that a K-CAT instance running on government-published formal law occupies a strictly different trust cell than one running on privately authored formalizations of the same statutes
+   - human-authoritative-codification: expert-authored formal rulebase; each rule admitted under a signed record binding it to its NL source span and to the human authority asserting the mapping (the H1-conformant floor: the 
+   - publisher-authoritative-formal-law: the formalization is itself the legally operative artifact (Catala at DGFiP-class) — dissolves the interpretive gap for covered law; the only family that raises the AX-01 MODEL_RELATIV
+   - llm-autoformalize-human-gate: LLM proposes formalizations strictly as untrusted candidates; a human authority reviews and signs admission (the GDPR-formalization line, arXiv 2604.14607)
+   - n-version-formalization-admission: independently generated formalizations of the same provision SAT-diffed BEFORE admission; behavioral disagreement is a typed ambiguity/escalation object that blocks admission ('By Their
+   - round-trip-verbalization-invariant: committed verbalization of the admitted rulebase with machine-checked round-trip drift detection as a STANDING admission invariant, re-run on every rulebase change ('Know Your Limits' 

@@ -1,0 +1,235 @@
+{
+  "schema": "watchtower/proof-of-ceiling-contract/2",
+  "contract_version": "2.3.0-R3-PRE-PHASE-2-FROZEN-CANDIDATE",
+  "authoritative": false,
+  "authority_note": "CANDIDATE ONLY. Not phase authority. Must not be declared final. Independent contract review and explicit creator approval precede Phase 3.",
+  "revision_note_R3": "R3 preserves R2 and adds the creator's stronger requirements before launch: CoCounsel Legal, Lexis+ with Protégé and Harvey are mandatory named lower bounds; FOC-18/T6 require E_star to be strictly better than each product on every closed binding architecture-and-mechanism axis and to provide a proper capability superset. FOC-19/T7 require E_star to be the exact implemented evolutionary successor of Andrianna B0, with a complete post-reveal repository census and file/package/symbol/store/gate transformation plan. Equality, trade-off, averaging, compensation, content advantage, inaccessible evidence, UNKNOWN, a disconnected greenfield result or capability regression cannot pass. Policy may not be tuned after producer output.",
+  "cutoff": "2026-08-27",
+  "supersedes_draft": {
+    "name": "WATCHTOWER-PROOF-OF-CEILING-CONTRACT v1.1.0",
+    "role": "historical, unapproved supervisory draft; mathematical concepts reused; status table NOT inherited and not evidence of completion or failure."
+  },
+  "validator_nature": {
+    "what_they_are": "verify_freeze.py and verify_freeze.mjs are DIVERSE STRUCTURAL VALIDATORS: two separately-authored programs that check the structural well-formedness and internal consistency of this frozen reviewer package and print FREEZE_STRUCTURE_VALID.",
+    "what_they_are_not": "They are NOT independent final-proof verifiers and NOT an optimality proof. They cannot establish U_T closure, greatest-element, uniqueness, refinement, or any theorem. A re-hashed semantic mutation of the contract (e.g. a winner-only U_T with a regenerated seal) is out of reach of a structural validator by construction; detecting it is a later proof obligation (FOC-04, T2), not a gate check. Both were authored in one session and are diverse, not cryptographically independent.",
+    "agreement_rule": "Both must agree; disagreement is BLOCKED."
+  },
+  "transport_note": "A ZIP or other archive is a NEUTRAL TRANSPORT CONTAINER. It binds bytes but does not itself prove architecture quality or mathematical optimality. Creator approval is a separate hash-bound receipt and does not alter frozen bytes.",
+  "cited_documents": [
+    {
+      "file": "B7-PRODUCER-SESSION-EVIDENCE-RECOVERY.md",
+      "role": "Evidence that the original producer-session disclosure cannot be recovered and the fixed rule therefore requires a fresh blind epoch.",
+      "byte_length": 5413,
+      "sha256": "cac550b7e03a276668e88de5b078cb743470afc37b1779d044c7e7fdb54e5e48"
+    }
+  ],
+  "baseline_B0": {
+    "repository": "https://github.com/andriannadeepmind-gif/THE-LEGAL-WATCHTOWER.git",
+    "branch": "main",
+    "commit": "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03",
+    "tree": "23b7a6f4450f50d151d38e13020bee9872e73bcd",
+    "leaf_count": 35640,
+    "identity_note": "The existing Common Lisp institutional legal watchtower at B0 is the mandatory lower bound of comparison. Not RAG; not replaceable by RAG, generic retrieval, a Phase-1 summary or an abstract comparator. Any unknown reachable surface of B0 is a blocker."
+  },
+  "phase_1_binding": {
+    "archive": "PHASE-1-DELIVERABLES.zip",
+    "byte_length": 1170654,
+    "sha256": "3E927EBA2E90410C47FC955C0B6F704F054630DE141F275CF89A4AB31EAB3E93",
+    "tracked_path_count": 35640,
+    "state": "ACCEPTED",
+    "acceptance_condition": "P1=ACCEPTED holds ONLY while this archive hash verifies AND its internal source_commit/source_tree equal baseline_B0.commit/tree."
+  },
+  "typed_definitions": {
+    "B0": "the exact existing repo/commit above.",
+    "B_COMM": "the sealed mandatory named commercial mechanism baselines in COMMERCIAL-FRONTIER-BASELINES.json: CoCounsel Legal, Lexis+ with Protégé and Harvey, each compared separately rather than as a composite.",
+    "A_BIND": "the exact closed binding architecture-and-mechanism axis registry AX-01..AX-22 in ALL-AXIS-DOMINANCE-SPEC.json.",
+    "U_T": "every executable implementation constructible at cutoff from independently-inventoried present-day technology, inside a frozen resource/toolchain/legal envelope. U_T is a plural universal set and is NOT the winner or any single-candidate set.",
+    "A_T": "typed architecture specifications of the frozen grammar.",
+    "D_T": "normalized executable equivalence-class representatives; D_T = U_T / approx_T.",
+    "F_T": "executables of D_T passing all hard invariants, universal B0 refinement, FOC-18 commercial eligibility, and total conformance to their Spec(e).",
+    "E_star": "the exact final executable greatest-element candidate.",
+    "A_star": "Spec(E_star)."
+  },
+  "domain_closure": {
+    "non_vacuity_obligation": "B0 in U_T AND E_star in U_T AND D_T = U_T/approx_T (each u maps to exactly one class d; each d has a real u).",
+    "independence_rule": "U_T is defined and sealed independently of D_T and BEFORE any winner; not defined post hoc from examined candidates; D_T is not a chosen subset of the quotient image.",
+    "non_empty_witness_required": ["U_T", "D_T", "F_T"],
+    "D_T_equals_winner_forbidden": true,
+    "U_T_winner_only_forbidden": true,
+    "closure_admissible_only_by": ["complete finite enumeration", "exhaustive symbolic class partition with a mechanically proved per-class upper bound"],
+    "not_closure": ["tournament", "web research", "many contenders", "K rounds with no new find"]
+  },
+  "objective_order": {
+    "bins": "each objective pre-committed, with a conservative uncertainty rule, to a typed integer/rational bin.",
+    "ge_T": "top tier where vectors differ: e >=_T x iff componentwise no-worse; mixed => INCOMPARABLE. Equal vectors: e >=_T x iff e universally trace-refines x.",
+    "strict_and_equiv": "e >_T x iff e>=_T x and not x>=_T e; e approx_T x iff both.",
+    "required_lemmas": ["reflexivity", "transitivity", "antisymmetry modulo approx_T", "approx_T is an equivalence and a congruence", "UNKNOWN never becomes equality or dominance"],
+    "commercial_strict_rule": "For every b in B_COMM and every a in A_BIND, StrictBetter_a(E_star,b). Strictness is componentwise and non-compensatory. Equality, interval overlap, incomparability or UNKNOWN fails that cell and T6.",
+    "forbidden_substitutes": ["feature count", "scalar score", "LLM score", "weighted average", "unweighted average", "composite or geometric score", "overall win", "better on one or some axes", "cross-axis compensation", "trade-off acceptance", "content quantity", "number of proofs", "number of tests", "cost", "time", "effort", "simplicity via capability removal"]
+  },
+  "theorems": [
+    {"id": "T1", "statement": "Dom(B0) subset Dom(E_star) AND universal trace/capability/liveness refinement of B0 by E_star; candidate-defined admission does not shrink the domain.", "state": "BLOCKED"},
+    {"id": "T2", "statement": "E_star is the greatest element of F_T, via independent U_T, surjective closure, and a dominance proof for every executable class.", "state": "BLOCKED"},
+    {"id": "T3", "statement": "Uniqueness up to material equivalence approx_T; an incomparable maximum makes T3 FAIL; disclosure is not proof.", "state": "BLOCKED"},
+    {"id": "T4", "statement": "Total architecture->source->executable refinement and property transport.", "state": "BLOCKED"},
+    {"id": "T5", "statement": "Non-vacuous conditional ceiling: hashed jointly-satisfiable TCB, actual-build instantiation, T1..T4 plus T6 and T7, independent replay.", "state": "BLOCKED"},
+    {"id": "T6", "statement": "For every b in B_COMM and every a in A_BIND, E_star is STRICTLY_BETTER on a; E_star universally refines and materially improves every reachable baseline capability/trace; Capabilities(b) is a proper subset of Capabilities(E_star).", "state": "BLOCKED"},
+    {"id": "T7", "statement": "There exists a finite approved exact repository change sequence Delta_B0 with Apply(B0,Delta_B0)=E_star; each verified increment preserves all still-binding B0 capabilities/invariants; the final Andrianna source/build/executable instantiate A_star/E_star; and the repository crosswalk/manifest is total and contains no parallel authority.", "state": "BLOCKED"}
+  ],
+  "final_theorem": {
+    "greatest_element": "E_star in F_T AND B0 refines-into E_star AND for all x in F_T: E_star >=_T x.",
+    "uniqueness": "for all x in F_T: (x >=_T E_star) => (x approx_T E_star).",
+    "strict_commercial_superiority": "for all b in B_COMM and for all a in A_BIND: StrictBetter_a(E_star,b), and Capabilities(b) is a proper subset of Capabilities(E_star).",
+    "andrianna_transformational_realization": "there exists a finite approved Delta_B0 such that Apply(B0,Delta_B0)=E_star, every approved increment preserves all still-binding B0 capabilities/invariants, and the final Andrianna repository build is the exact proved E_star rather than a disconnected system.",
+    "weaker_pareto_note": "'for all x in F_T: not (x >_T E_star)' proves only Pareto non-dominance, NOT the ceiling. 'No worse on all and better on one' is also insufficient for the creator's commercial-superiority claim."
+  },
+  "assurance_classes": ["PROVED_UNBOUNDED", "EXHAUSTIVE_FINITE", "BOUNDED_CHECK", "TESTED", "MEASURED", "DATED_OPEN_WORLD_CENSUS", "BLOCKED"],
+  "fail_closed": {
+    "any_of_these_forces_BLOCKED": ["missing", "extra", "null", "unknown", "warning", "skip", "timeout", "unexecuted obligation", "verifier disagreement"],
+    "number_word_count_discipline": "A governed count named in prose must be mechanically derivable and agree, in digits OR spelled out (thirty-eight, eight, nine, two, three, four). [R5 B1/B2/B6]",
+    "cross_document_count_agreement": "Same governed quantity in two documents must be identical; disagreement is BLOCKED. [R5 B3]",
+    "seal_prose_vs_counts_agreement": "A seal's prose must not state a governed count that disagrees with its own machine-read counts. [R5 B6]",
+    "no_null_validation": "Every validation field must be a concrete value; a null validation is BLOCKED. [R5 B4]",
+    "exit_code_completeness": "Every exit code a checker can emit must be declared; an undeclared exit code is treated as BLOCKED. [R5 B5]"
+  },
+  "verifiers": {
+    "two_diverse": true,
+    "verifier_A": "verify_freeze.py",
+    "verifier_B": "verify_freeze.mjs",
+    "role": "diverse structural validators (see validator_nature); both must agree; disagreement is BLOCKED.",
+    "required_gate_checks_R3": [
+      "CONTRACT-SEAL.json is REQUIRED; absent seal => structure invalid (not pass).",
+      "Exact inventory: sealed_files must equal the actual package files (no missing, no extra unsealed file).",
+      "Seal/contract state equality: seal.current_state must equal contract.current_state; every sealed file hash and byte-length must verify.",
+      "Cited-document hash-binding: every cited_documents entry must resolve and its hash+length must match.",
+      "Structural winner-only guard: U_T definition must be plural/universal and U_T_winner_only_forbidden must hold (structural only; not a proof).",
+      "FOC-16 universal escalation exists and forbids every fixed search cap from authorizing success.",
+      "FOC-18 and T6 exist and bind exactly the three named commercial products, all 22 axes and all 66 cells.",
+      "Commercial strictness is componentwise: equality, average, weighted/composite scoring, compensation, trade-off and better-on-one-axis are forbidden.",
+      "Every commercial UNKNOWN, unavailable result, unmapped capability or content-confounded comparison blocks.",
+      "Capability surfaces must be proper subsets under universal trace/capability refinement; feature counts cannot substitute.",
+      "Commercial product updates trigger CEILING_REVALIDATION_REQUIRED.",
+      "FOC-19/T7 require E_star to be the exact implemented successor of Andrianna B0 with a total repository census, bidirectional crosswalk and approved file/package/symbol-level change plan.",
+      "A disconnected greenfield result, wrapper-only substitute, parallel authority, capability regression, unexplained B0 surface or unproved removal/migration blocks.",
+      "The blind producer capsule and hidden reviewer capsule are cryptographically separated and the producer sees only the reviewer-capsule commitment."
+    ],
+    "mutation_controls_required": true,
+    "epoch_rule": "Any change to a verifier after it has seen a result opens a NEW epoch, preserves failed history, re-seals result-blind, and replays affected obligations."
+  },
+  "negative_controls": {
+    "persisted": true,
+    "structural_validator_cases": [
+      "NC-1 seal absent => fail",
+      "NC-2 extra unsealed file present => fail",
+      "NC-3 seal/contract state drift => fail",
+      "NC-4 a required inventory entry omitted => fail",
+      "NC-5 U_T changed to a winner-only definition (structural signature) => fail",
+      "NC-27 one named commercial baseline omitted => fail",
+      "NC-28 weighted, average or composite commercial score accepted => fail",
+      "NC-29 better on one/some axes accepted => fail",
+      "NC-30 equality on any binding commercial axis accepted => fail",
+      "NC-31 worse result compensated by another axis accepted => fail",
+      "NC-32 UNKNOWN, inaccessible or non-comparable evidence accepted => fail",
+      "NC-33 product marketing substituted for like-for-like and proof evidence => fail",
+      "NC-34 proprietary content advantage credited as mechanism superiority => fail",
+      "NC-35 product update leaves certificate current => fail",
+      "NC-36 missing capability refinement or non-proper superset accepted => fail",
+      "NC-37 post-result threshold or axis deletion accepted => fail",
+      "NC-38 any of the 66 required cells missing or not STRICTLY_BETTER => fail"
+      ,"NC-39 disconnected greenfield system accepted instead of Andrianna B0 successor => fail"
+      ,"NC-40 missing exact path/package/symbol/store/gate delta mapping => fail"
+      ,"NC-41 B0 capability/invariant loss hidden as refactor or replacement => fail"
+      ,"NC-42 duplicate authority, second source of truth or parallel subsystem accepted => fail"
+      ,"NC-43 removal or migration accepted without exhaustive caller/consumer/store proof => fail"
+      ,"NC-44 repository write before creator-approved immutable delta plan or final manifest drift => fail"
+    ],
+    "note": "NC-5 catches the STRUCTURAL signature of a winner-only U_T. A carefully re-hashed semantic winner-only U_T that preserves plural phrasing is by construction out of a structural validator's reach and is deferred to FOC-04/T2 (domain-closure proof)."
+  },
+  "explicit_assumptions_and_TCB": {
+    "TCB_must_be": "hashed, jointly satisfiable, and fully visible.",
+    "honest_TCB_note": "No verified compiler chain exists for arbitrary SBCL/CLOS machine code; a stated assumption.",
+    "abstraction_relations_required": ["abstraction functions concrete->abstract", "initialization/representation invariant", "forward or stuttering simulation", "pure-kernel conformance", "recovery only to pre-state or post-state, never hybrid", "publication observation refinement", "authority/admission theorem", "separate liveness theorem with explicit fairness/storage/source assumptions"]
+  },
+  "architecture_neutral": {
+    "no_prover_driven_architecture": "ACL2/Rocq/TLA+/Alloy/Apalache/F*/Perennial/CompCert etc. are selectable evidence mechanisms/contenders, NOT the winner decision and NOT a reason to shrink the domain. First the full architecture; then the strongest proof stack that verifies it.",
+    "subset_rule": "A proof of a subset is a proof of the subset only."
+  },
+  "strict_all_axis_commercial_dominance": {
+    "obligation": "FOC-18",
+    "theorem": "T6",
+    "baseline_file": "COMMERCIAL-FRONTIER-BASELINES.json",
+    "dominance_file": "ALL-AXIS-DOMINANCE-SPEC.json",
+    "mandatory_products": ["CoCounsel Legal", "Lexis+ with Protégé", "Harvey"],
+    "baseline_count": 3,
+    "binding_axis_count": 22,
+    "required_matrix_cells": 66,
+    "only_passing_cell": "STRICTLY_BETTER",
+    "every_product_every_axis": true,
+    "capability_proper_superset_required": true,
+    "content_quantity_excluded": true,
+    "grounding_and_validation_mechanisms_included": true,
+    "no_average_or_compensation": true,
+    "equality_blocks": true,
+    "unknown_blocks": true,
+    "inaccessible_blocks": true,
+    "absolute_ceiling_rule": "If any commercial baseline already occupies a proved absolute ceiling on a binding axis, strict improvement is impossible and the commercial-superiority claim remains BLOCKED; equality is not renamed superiority.",
+    "axis_closure_rule": "Every material observable commercial mechanism property maps to exactly one binding axis or receives a mechanically checked irrelevance proof. An unmapped property opens a new axis epoch and forces replay.",
+    "evidence_tracks": ["MECHANISM_NORMALIZED", "ACTUAL_PRODUCT_BLACK_BOX", "ARCHITECTURE_CLASS_PROOF"],
+    "product_update_rule": "Any validated update to a mandatory product moves the live status to CEILING_REVALIDATION_REQUIRED and reopens FOC-18/T6."
+  },
+  "andrianna_b0_transformation": {
+    "obligation": "FOC-19",
+    "theorem": "T7",
+    "policy_file": "B0-TRANSFORMATION-AND-REPOSITORY-DELTA-SPEC.json",
+    "target": "The final E_star is the verified evolutionary successor implemented in the Andrianna B0 repository, not a disconnected design or adjacent system.",
+    "blind_phase_2_artifact": "PHASE-2-IMPLEMENTATION-ABSTRACTION-MAP.json",
+    "post_reveal_requirements": "Exhaustive semantic repository census; total architecture-to-path/package/symbol/store/gate crosswalk; exact ADD/MODIFY/REFACTOR/MOVE/REPLACE/REMOVE plan; capability preservation matrix; migration DAG; verification matrix; removal proofs; final implementation manifest.",
+    "repository_write_gate": "Zero writes until the sealed Phase-2 result is reviewed, B0 is revealed and the complete immutable repo-delta plan receives creator approval.",
+    "anti_greenfield": true,
+    "anti_parallel_authority": true,
+    "unexplained_B0_surface_blocks": true,
+    "capability_regression_blocks": true
+  },
+  "phase_3_start_freeze": {
+    "rule": "At the START of Phase 3, BEFORE any candidate construction or evaluation, freeze and hash: the domain grammar/envelope (U_T/D_T definition), objective order, material-equivalence rule, hard-invariant registry, evaluator inputs, TCB, exact named-product versions, observable capability census, axis evidence lattices and result-blind calibration procedure. Only then do later phases produce and discharge the real proof objects.",
+    "obligation": "FOC-15",
+    "scope_note": "The policy and field schemas are frozen before Phase 2. Concrete U_T/D_T, objective bins, equivalence rules, invariant registry, evaluator inputs and TCB are instantiated and hash-frozen after accepted blind Phase 2 but before Phase-3 candidate comparison. Population of these predeclared fields is not a policy change."
+  },
+  "universal_escalation": {
+    "obligation": "FOC-16",
+    "policy_file": "UNIVERSAL-ESCALATION-PROTOCOL.json",
+    "termination_policy": "UNIVERSAL_PROOF_ONLY",
+    "success_requires": "Domain closure, complete canonical-class coverage or symbolic upper bounds, greatest element, uniqueness, executable refinement, FOC-18/T6 strict all-axis commercial superiority, zero live material defeaters and independent replay.",
+    "fixed_caps_cannot_authorize_success": true,
+    "failure_to_close": "FINAL_OPTIMALITY_BLOCKED"
+  },
+  "continual_evolution": {
+    "obligation": "FOC-17",
+    "epoch_theorem": "At every certified epoch t: for all x in F_t, Omega_t >=_t x.",
+    "monotonic_ratchet": "Omega_(t+1) preserves all still-binding invariants and reachable capabilities of Omega_t and is no worse on every binding objective before it may replace Omega_t.",
+    "reopen_rule": "Any validated new constructible class, challenger, frontier fact, workload, objective, invariant, equivalence rule, evaluator input, TCB change, proof counterexample or update to CoCounsel Legal, Lexis+ with Protégé or Harvey moves status to CEILING_REVALIDATION_REQUIRED and reopens affected obligations including FOC-18/T6.",
+    "stale_certificate_forbidden": true,
+    "restoration_rule": "Current-ceiling status returns only after full affected-proof replay and independent reproduction."
+  },
+  "trust_root": {
+    "mode": "HASH_BOUND_CREATOR_APPROVAL_RECEIPT",
+    "state": "PENDING_CREATOR_APPROVAL",
+    "receipt_is_external_to_freeze": true,
+    "required_receipt_fields": ["freeze_bundle_sha256", "blind_capsule_sha256", "reviewer_capsule_sha256", "approval_text", "timestamp_utc"],
+    "note": "The approval receipt authorizes the immutable hash set without modifying or resealing it. Cryptographic role keys may later strengthen provenance but are not substituted for the mathematical proof obligations."
+  },
+  "current_state": {
+    "P1": "ACCEPTED",
+    "P2": "FRESH_RERUN_PREPARED_NOT_LAUNCHED",
+    "P3": "UNAUTHORIZED",
+    "FINAL_PROOF": "NOT_YET_PRODUCED",
+    "COMMERCIAL_SUPERIORITY": "NOT_YET_PROVED",
+    "B0_TRANSFORMATION": "NOT_YET_PLANNED",
+    "P2_block_reference": "Original Phase-2 lineage remains blocked because the producer-session isolation evidence is irrecoverable; only a fresh blind epoch can replace it.",
+    "derived_verdict": "FINAL_OPTIMALITY_BLOCKED"
+  },
+  "permitted_final_status": "FINAL_B0_SUCCESSOR_GREATEST_ELEMENT_AND_STRICT_ALL_AXIS_COMMERCIAL_SUPERIORITY_VERIFIED_UNDER_HASHED_TCB",
+  "non_final_statuses": ["ARCHITECTURE_ONLY_EVIDENCE", "SCOPED_NONDOMINANCE_EVIDENCED", "COMMERCIAL_SUPERIORITY_BLOCKED", "FINAL_OPTIMALITY_BLOCKED"],
+  "forbidden_verdicts": ["best effort", "state of the art without theorem", "likely optimal", "no better solution found", "all agents agreed", "excellent architecture", "better overall", "better on average", "better on some axes", "equal but acceptable", "trade-off accepted"],
+  "final_claim_shape": "The exact implemented evolutionary successor of the Andrianna B0 repository is the GREATEST feasible capability element within the sealed, closed, timestamped domain D_T of today's constructible implementations AND STRICTLY BETTER than CoCounsel Legal, Lexis+ with Protégé and Harvey on every closed binding architecture-and-mechanism axis with a proper capability superset — backed by a total exact repository transformation manifest, mechanically checked theorems within the closed model and a dated open-world frontier certificate."
+}

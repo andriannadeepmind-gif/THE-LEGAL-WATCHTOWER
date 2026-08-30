@@ -1,0 +1,6 @@
+{
+ "id": "K-COM+",
+ "name": "Partially-Verified Commercial Hybrid",
+ "signature": "DIM-01 LLM-direct core with a deterministic verification RIM | DIM-03 independent deterministic certifier for citations/quotes (grammar-admitted fragments, R4-grade target on AX-05) | DIM-04 date-conditioned retrieval partial | DIM-10 durable-execution partial | DIM-12 conformal-abstention on rim outputs | DIM-16 grammar-admitted formal fragments at the rim, unattested model interpretation at the core | remaining dimensions: K-COM-grade families",
+ "includes": "Members: none shipped yet \u2014 the realistic 12-month competitor class (CA P2-13): an LLM harness whose citations, quotes, and deadline arithmetic pass through an independent deterministic certifier while everything else stays model-trusted. REGION: D_T only \u2014 H1 violated outside the rim. Added so the 17-class quotient covers this cell BEFORE a vendor occupies it: it is the class most likely to contest specific axes first (AX-05 at R4-grade), and its future members are adjudicated exactly like K-COM \u2014 VERIFIED_FROM_SECONDARY never grounds a rank; KNOWN_UPPER_BOUND caps from behavioral evidence; dominance via the cap calculus."
+}

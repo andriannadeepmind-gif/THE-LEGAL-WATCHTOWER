@@ -1,0 +1,6 @@
+{
+ "id": "K-GRAPH",
+ "name": "Probability-Isolated Deterministic Knowledge-Graph Service",
+ "signature": "DIM-02 graph-constrained-grounding over canonical identifiers | DIM-04 point-in-time version retrieval as deterministic traversal | DIM-01 no reasoning calculus \u2014 structural/temporal/causal traversal only, LLM confined to intent translation and narrative synthesis at the rim | DIM-13 verifier-agent citation checks | DIM-16 publisher/curator-authoritative graph schema (canonical identifiers as committed interpretive artifacts) | remaining dimensions: mid families",
+ "includes": "Members: SAT-Graph API (Brazilian Federal Senate), Falkor-IRAC, Ukrainian citation-graph oracle. REGION: boundary case, stated precisely: as shipped (LLM intent translation uncontrolled in the query path) it violates H1 at the query boundary -> D_T only; the variant where the translated query is echoed back as a typed, human-confirmed or grammar-admitted object is invariant-admissible and is absorbed into K-SUP's DIM-02 family. Both facts recorded; no silent resolution. (This shipped/admissible split is the discipline the v2 K-B0 split now applies uniformly.)"
+}

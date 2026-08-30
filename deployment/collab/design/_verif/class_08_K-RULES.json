@@ -1,0 +1,6 @@
+{
+ "id": "K-RULES",
+ "name": "Deterministic Monotonic Rule Engine (classical expert system)",
+ "signature": "DIM-01 monotonic-classical-solver (conjectured-dominated family \u2014 retained representative) | DIM-02 enforced-typed-admission | DIM-03 existence-checked citations | DIM-04 explicit but single-time legal-time model | DIM-05 single-writer | DIM-06 machine-checked-spec at best | DIM-07 canonical-typed-matter-state | DIM-08 structured-prov-graphs | DIM-09 internal-consistency-only | DIM-10 explicit-transactions | DIM-11 declared plans, checked | DIM-12 typed UNKNOWN (fail-closed) | DIM-13 systematic testing | DIM-14 versioned floors | DIM-15 ad-hoc parameterization | DIM-16 human-authoritative-codification",
+ "includes": "Members: pre-LLM legal expert systems and modern fail-closed SMT/Prolog rule services. REGION: U_T (violates no H-invariant) \u2014 deliberately retained as the conjectured-dominated admissible member: it proves the admissible region is not a singleton and gives the tournament a class it can adjudicate cleanly on AX-01 (no defeater sensitivity) with all 22 ranks KNOWN, exercising the delta_rule end-to-end."
+}

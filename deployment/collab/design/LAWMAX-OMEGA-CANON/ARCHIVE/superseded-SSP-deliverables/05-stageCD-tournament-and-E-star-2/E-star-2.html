@@ -1,0 +1,219 @@
+<title>E★★ v2 — Ceiling-Vector</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,500;0,600;0,700;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#e7eaf0;--surface:#f7f8fb;--surface-2:#eef1f6;--border:#d2d8e3;--border-strong:#b9c1d0;
+  --ink:#0f131b;--body:#2a3140;--muted:#55606f;--faint:#828d9e;--accent:#0d6e88;--accent-soft:#0d6e8818;
+  --good:#0a7a56;--good-bg:#0a7a5618;--warn:#a95a08;--warn-bg:#a95a0818;--info:#6b28d4;--info-bg:#6b28d414;--crit:#b91238;--crit-bg:#b9123814;
+  --shadow:0 1px 2px #1a233208,0 8px 30px #1a23320f;--beam:#0d6e8822;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0a0d13;--surface:#111725;--surface-2:#161d2c;--border:#28313f;--border-strong:#3a4557;
+  --ink:#eef2f9;--body:#c7cfdd;--muted:#93a0b4;--faint:#68748a;--accent:#4fc6e6;--accent-soft:#4fc6e61f;
+  --good:#37d39b;--good-bg:#37d39b1c;--warn:#f2ab52;--warn-bg:#f2ab5218;--info:#a98bf7;--info-bg:#a98bf71c;--crit:#fb6a82;--crit-bg:#fb6a8218;
+  --shadow:0 1px 2px #0006,0 12px 40px #0007;--beam:#4fc6e61a;
+}}
+:root[data-theme="dark"]{
+  --bg:#0a0d13;--surface:#111725;--surface-2:#161d2c;--border:#28313f;--border-strong:#3a4557;
+  --ink:#eef2f9;--body:#c7cfdd;--muted:#93a0b4;--faint:#68748a;--accent:#4fc6e6;--accent-soft:#4fc6e61f;
+  --good:#37d39b;--good-bg:#37d39b1c;--warn:#f2ab52;--warn-bg:#f2ab5218;--info:#a98bf7;--info-bg:#a98bf71c;--crit:#fb6a82;--crit-bg:#fb6a8218;
+  --shadow:0 1px 2px #0006,0 12px 40px #0007;--beam:#4fc6e61a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--body);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Spectral",Georgia,serif;color:var(--ink);text-wrap:balance;line-height:1.15;font-weight:600}
+p{margin:0 0 1em}
+code{font-family:"IBM Plex Mono",monospace;font-size:.86em;background:var(--surface-2);border:1px solid var(--border);padding:.05em .4em;border-radius:5px;word-break:break-word}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.topbar .row{display:flex;align-items:center;justify-content:space-between;gap:16px;height:52px}
+.brand{display:flex;align-items:center;gap:9px;font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:13px;color:var(--ink)}
+.brand .g{color:var(--accent)}
+.tnav{display:flex;gap:18px;font-size:12.5px;font-family:"IBM Plex Mono",monospace}
+.tnav a{color:var(--muted);text-decoration:none}.tnav a:hover{color:var(--accent)}
+.tgl{cursor:pointer;background:var(--surface-2);border:1px solid var(--border);color:var(--muted);border-radius:7px;height:32px;padding:0 12px;font:inherit;font-size:12px;font-family:"IBM Plex Mono",monospace}
+@media(max-width:820px){.tnav{display:none}}
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 82% -10%,var(--beam),transparent 60%),radial-gradient(60% 60% at 10% 110%,var(--accent-soft),transparent 70%);pointer-events:none}
+.hero .wrap{position:relative;padding:58px 24px 44px}
+h1.title{font-size:clamp(38px,7vw,70px);margin:.3em 0 .15em;letter-spacing:-.02em;font-weight:700}
+h1.title .s{color:var(--accent)}
+.lede{font-family:"Spectral",serif;font-size:clamp(18px,2.3vw,23px);line-height:1.42;color:var(--body);max-width:46ch;font-weight:500}
+.lede em{color:var(--ink);font-style:italic}
+.verdict{margin:28px 0 6px;display:flex;flex-wrap:wrap;gap:16px;align-items:stretch}
+.seal{flex:1 1 340px;min-width:280px;border:1.5px solid var(--warn);background:var(--warn-bg);border-radius:14px;padding:18px 20px}
+.seal .lab{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--warn);font-weight:600}
+.seal .val{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:clamp(15px,2vw,19px);color:var(--ink);margin-top:5px;letter-spacing:-.01em}
+.seal .sub{font-size:13px;color:var(--muted);margin-top:9px;line-height:1.45}
+.counts{flex:1 1 300px;min-width:260px;display:grid;grid-template-columns:1fr 1fr;gap:9px;align-content:start}
+.cc{border:1px solid var(--border);background:var(--surface);border-radius:11px;padding:11px 13px;display:flex;align-items:baseline;gap:9px}
+.cc .n{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:22px;color:var(--ink);font-variant-numeric:tabular-nums}
+.cc .t{font-size:11px;line-height:1.25;color:var(--muted)}
+.dot{width:9px;height:9px;border-radius:2.5px;display:inline-block;flex:none;transform:translateY(1px)}
+.d-at{background:var(--good)}.d-below{background:var(--warn)}.d-cond{background:var(--info)}.d-unk{background:var(--crit)}
+section{padding:48px 0;border-bottom:1px solid var(--border)}
+.snum{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--accent);font-weight:600}
+h2{font-size:clamp(23px,3.4vw,32px);margin:6px 0 .5em}
+.sub{color:var(--muted);max-width:70ch;font-size:15.5px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;box-shadow:var(--shadow)}
+/* architecture */
+.arch{display:flex;flex-direction:column;gap:0;margin:8px 0}
+.layer{border:1px solid var(--border);background:var(--surface);padding:13px 18px;position:relative}
+.layer:first-child{border-radius:12px 12px 0 0}.layer:last-child{border-radius:0 0 12px 12px}
+.layer+.layer{border-top:none}
+.layer .lt{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:12px;letter-spacing:.05em;color:var(--ink)}
+.layer .ld{font-size:13px;color:var(--muted);margin-top:3px}
+.layer.core{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent-soft)}
+.layer.untrusted{background:repeating-linear-gradient(135deg,var(--surface),var(--surface) 9px,var(--surface-2) 9px,var(--surface-2) 18px);border-style:dashed;border-color:var(--border-strong)}
+.flow{text-align:center;padding:5px 0;color:var(--faint);font-family:"IBM Plex Mono",monospace;font-size:11px}
+.flow .ar{color:var(--accent)}
+/* axis matrix */
+.legend{display:flex;flex-wrap:wrap;gap:13px;margin:14px 0 16px;font-size:12.5px;color:var(--muted)}
+.legend .li{display:flex;align-items:center;gap:7px}
+.axgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:9px}
+.ax{border:1px solid var(--border);border-radius:11px;padding:11px 13px;background:var(--surface);border-left-width:3px}
+.ax.AT{border-left-color:var(--good)}.ax.BELOW{border-left-color:var(--warn)}.ax.COND{border-left-color:var(--info)}.ax.UNKNOWN{border-left-color:var(--crit)}
+.ax .id{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:12px;color:var(--ink)}
+.ax .st{font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:600;letter-spacing:.04em;padding:1px 6px;border-radius:5px;float:right}
+.ax.AT .st{color:var(--good);background:var(--good-bg)}.ax.BELOW .st{color:var(--warn);background:var(--warn-bg)}.ax.COND .st{color:var(--info);background:var(--info-bg)}.ax.UNKNOWN .st{color:var(--crit);background:var(--crit-bg)}
+.ax .nm{font-size:13px;color:var(--body);margin:3px 0 4px;line-height:1.3}
+.ax .no{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--faint)}
+/* BO register */
+.bo{display:flex;flex-direction:column;gap:7px;margin-top:16px}
+.borow{display:grid;grid-template-columns:auto auto 1fr;gap:12px;align-items:baseline;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 13px}
+.borow.dec{border-color:color-mix(in srgb,var(--crit) 40%,transparent);background:var(--crit-bg)}
+.borow .bid{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:12px;color:var(--accent)}
+.borow.dec .bid{color:var(--crit)}
+.borow .bax{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted);white-space:nowrap}
+.borow .bt{font-size:12.5px;color:var(--body);line-height:1.35}
+.decflag{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;color:var(--crit);background:var(--crit-bg);border:1px solid color-mix(in srgb,var(--crit) 34%,transparent);border-radius:5px;padding:0 5px;margin-left:6px}
+/* flags */
+.flags{display:grid;gap:9px;margin-top:14px;counter-reset:f}
+.frow{display:grid;grid-template-columns:auto 1fr;gap:13px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--info);border-radius:11px;padding:12px 16px}
+.frow .fn{counter-increment:f;font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--info);font-size:18px}
+.frow .fn::before{content:counter(f)}
+.frow .ft{font-size:14px;color:var(--body)}.frow .ft b{color:var(--ink)}
+.callout{border-left:3px solid var(--accent);background:var(--surface-2);padding:13px 17px;border-radius:0 10px 10px 0;font-size:14.5px;margin:16px 0}
+ul.clean{margin:0;padding-left:0;list-style:none}
+ul.clean li{position:relative;padding-left:20px;margin-bottom:7px;font-size:14.5px}
+ul.clean li::before{content:"›";position:absolute;left:3px;color:var(--accent);font-weight:700}
+ul.clean li b{color:var(--ink)}
+footer{padding:36px 0 56px;color:var(--faint);font-size:13px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between}
+footer b{color:var(--muted)}
+.finalword{font-family:"Spectral",serif;font-style:italic;font-size:18px;color:var(--body);max-width:62ch;margin:0 auto 26px;text-align:center;line-height:1.5}
+</style>
+
+<div class="topbar"><div class="wrap"><div class="row">
+  <div class="brand"><span class="g">★★</span> E★★ v2 · LAWMAX-Ω</div>
+  <nav class="tnav"><a href="#arch">Αρχιτεκτονική</a><a href="#axes">22 άξονες</a><a href="#bo">Build obligations</a><a href="#flags">Αποφάσεις σου</a><a href="#bottom">Κατάσταση</a></nav>
+  <button class="tgl" id="tgl">◐ theme</button>
+</div></div></div>
+
+<header class="hero"><div class="wrap">
+  <span class="eyebrow">Στάδια C+D κλεισμένα αντιπαλικά · ROUND_CLOSED · B0 = e621dbe1</span>
+  <h1 class="title">E<span class="s">★★</span> — η ceiling-vector<br>αρχιτεκτονική</h1>
+  <p class="lede"><em>Μία</em> μηχανή, παραγμένη από το διάνυσμα των 22 ταβανιών — όχι σύνθεση προκατόχων. Κάθε αξίωση είναι είτε entailed σήμερα, είτε δεμένη σε <em>ονομασμένο</em> build obligation. Καμία δεν είναι κενή.</p>
+  <div class="verdict">
+    <div class="seal">
+      <div class="lab">CEILING-BAR verdict</div>
+      <div class="val">ACCEPT(E★★) δεν εκδίδεται σήμερα</div>
+      <div class="sub"><b>16 άξονες μπλοκάρουν</b>, καθένας με named build obligation· ο AX-10 μόνο με εκτέλεση. <b>0 άξονες refuted, 0 χωρίς δρόμο discharge.</b> Μόνο <b>1</b> ζεύγος στηρίζεται ποτέ στο <code>proven_impossible</code> — και αυτό είναι draft, όχι θεώρημα ακόμη.</div>
+    </div>
+    <div class="counts" aria-label="22-axis distribution">
+      <div class="cc"><span class="n" style="color:var(--good)">8</span><span class="t"><span class="dot d-at"></span> AT ceiling<br>σήμερα (entailment)</span></div>
+      <div class="cc"><span class="n" style="color:var(--warn)">7</span><span class="t"><span class="dot d-below"></span> KNOWN below<br>με ονομασμένο κενό</span></div>
+      <div class="cc"><span class="n" style="color:var(--info)">6</span><span class="t"><span class="dot d-cond"></span> conditional<br>on named build</span></div>
+      <div class="cc"><span class="n" style="color:var(--crit)">1</span><span class="t"><span class="dot d-unk"></span> UNKNOWN<br>exec-only (AX-10)</span></div>
+    </div>
+  </div>
+</div></header>
+
+<main>
+
+<section id="arch"><div class="wrap">
+  <div class="snum">§1</div><h2>Η αρχιτεκτονική — Mode A, ένα gate, μία κεφαλή</h2>
+  <p class="sub">Ο ΥΠΕΡΤΑΤΟΣ ΝΟΜΟΣ «κάνε το σφάλμα δομικά αδύνατο»: όλη η νοημοσύνη στην αναξιόπιστη ζώνη, όλες οι εγγυήσεις σε <b>ένα</b> total, pure, decidable admission relation. Πιν- αρισμένο mode: φυσικός single writer + external cosigning witness quorum. Κάθε στρώμα κατασκευάσιμο σήμερα, γειωμένο σε πραγματική έδρα του census.</p>
+  <div class="arch" style="margin-top:18px">
+    <div class="layer untrusted"><span class="lt">UNTRUSTED — L12 candidate producers</span><div class="ld">LLM/agent παραγωγοί (drafting, research, decomposition) → γράφουν μόνο σε <code>candidates/</code>· verified-out πριν κάθε εισδοχή. Καμία διαδρομή στον πυρήνα.</div></div>
+    <div class="flow"><span class="ar">▼</span> candidate + evidence (data only — Θ13 LLM boundary) <span class="ar">▼</span></div>
+    <div class="layer"><span class="lt">L0 · TCB</span><div class="ld">Lean-4 checker + pinned SBCL + 3 diverse verifiers (verify.py/.mjs/.lisp) ως diverse-execution mitigation· ένα injected logical clock· wall-clock εξαλειμμένο. CakeML retargeting = ονομασμένη ανώτερη επιλογή (BO-24, απόφασή σου).</div></div>
+    <div class="layer core"><span class="lt">L1 · THE GATE K</span><div class="ld">Pure SBCL πάνω στο <code>admission-model.sexp</code>· κάθε acceptance ΚΑΙ refusal υπογεγραμμένο, read-back-durable· constitutional-gate flipped fail-closed (σήμερα fails open — BO-02). T1–T9 machine-checked (BO-02).</div></div>
+    <div class="layer core"><span class="lt">L4 · ONE ROOT ACCEPTANCE RELATION A</span><div class="ld">Μία σχέση A πάνω σε μία committed defeasible βάση, με τα Caminada–Amgoud postulates ως θεωρήματα. Cells (statute-Catala / decidable-theory SMT / Horty case-law / coNP escalation) μπαίνουν ως <b>certificate oracles</b>, ποτέ ως παράλληλες μηχανές· cross-cell defeat έχει έδρα ΜΕΣΑ στο A.</div></div>
+    <div class="layer"><span class="lt">L2 · Storage/durability</span><div class="ld">Μία atomic writer έδρα (tmp→fsync→rename→fsync(dir)→read-back compare), γενικευμένη από την εκτελούμενη <code>require-durable!</code> στο <code>emit-graph</code>/<code>deploy.lisp</code> (η οξύτερη τρύπα του census)· WAL· crash-refinement (BO-13).</div></div>
+    <div class="layer"><span class="lt">L5 · Proof/audit surface</span><div class="ld">Merkle inclusion + PROV-O + span-DAG, offline επανελέγξιμο από τρίτους με μηδενική εμπιστοσύνη· recompute-and-compare ή transparent STARK (ισοδύναμα μέγιστα).</div></div>
+  </div>
+</div></section>
+
+<section id="axes"><div class="wrap">
+  <div class="snum">§2</div><h2>Οι 22 άξονες — πού κάθεται το E★★ v2</h2>
+  <p class="sub">Αυστηρή τυποποίηση τεκμηρίων (ο honesty αντίπαλος έκλεισε 70 κελιά όπου AT_CEILING στηριζόταν σε άγραφο kernel → CONDITIONAL). Τα riders του παγωμένου οργάνου ορίζουν ποιοι άξονες επιτρέπουν design-entailment ranking και ποιοι απαιτούν εκτελεσμένο τεκμήριο.</p>
+  <div class="legend">
+    <span class="li"><span class="dot d-at"></span> <b style="color:var(--good)">AT</b> στο ταβάνι σήμερα (entailment)</span>
+    <span class="li"><span class="dot d-below"></span> <b style="color:var(--warn)">BELOW</b> KNOWN rank, ονομασμένο κενό</span>
+    <span class="li"><span class="dot d-cond"></span> <b style="color:var(--info)">COND</b> on named build (≡ UNKNOWN)</span>
+    <span class="li"><span class="dot d-unk"></span> <b style="color:var(--crit)">UNKNOWN</b> exec-only</span>
+  </div>
+  <div class="axgrid" id="axg"></div>
+</div></section>
+
+<section id="bo"><div class="wrap">
+  <div class="snum">§3</div><h2>Ο δρόμος προς VERIFIED — 26 build obligations</h2>
+  <p class="sub">Κάθε μπλοκαρισμένος άξονας και κάθε conditional rank δένεται σε <b>ένα ονομασμένο artifact με acceptance test</b> — κανένα UNKNOWN δεν κλείνει με πρόζα. Τα <span style="color:var(--crit);font-weight:600">decisive</span> (BO-01..04) μπλοκάρουν το ACCEPT ανεξάρτητα. Αυτό το register είναι η γέφυρα προς το Στάδιο F (Lean corpus → CI) και ταυτίζεται με το B0→E★★ changeset (Στάδιο E).</p>
+  <div class="bo" id="bol"></div>
+</div></section>
+
+<section id="flags"><div class="wrap">
+  <div class="snum">§4</div><h2>Έξι αποφάσεις που είναι μόνο δικές σου</h2>
+  <p class="sub">Ο νόμος: μόνο ο δημιουργός εγκρίνει/συγχωνεύει. Τίποτα εδώ δεν αυτο-ενεργοποιείται. Οι αντίπαλοι επέβαλαν να κατονομαστούν ρητά αντί να ληφθούν σιωπηλά:</p>
+  <div class="flags">
+    <div class="frow"><div class="fn"></div><div class="ft"><b>AX-17 raised clause</b> — υιοθέτηση του ανώτερου ταβανιού (∀-input worst-case envelope) που βρήκε το tournament· σήμερα PENDING_CREATOR_APPROVAL.</div></div>
+    <div class="frow"><div class="fn"></div><div class="ft"><b>B0 continuity ruling</b> — αν η εισδοχή του E★★ πρέπει να περάσει από την υπάρχουσα B0 ratchet αλυσίδα ως πιστοποιημένη εξέλιξη (η αρχιτεκτονική το κάνει διαθέσιμο, δεν το προϋποθέτει).</div></div>
+    <div class="frow"><div class="fn"></div><div class="ft"><b>Kernel substrate</b> — CakeML-class verified transport (ανώτερο, κατονομασμένο) vs δηλωμένο SBCL scope (BO-24).</div></div>
+    <div class="frow"><div class="fn"></div><div class="ft"><b>Substrate-proof uniformity</b> — αν υπάρχουσες offline-επανελέγξιμες substrate-class μηχανοποιήσεις γειώνουν rungs πριν το replay (επηρεάζει AX-18, K-BFT AX-03).</div></div>
+    <div class="frow"><div class="fn"></div><div class="ft"><b>Mode-C / AX-03 relativity-note</b> — freeze-authority amendment για το ternary του άξονα συντονισμού.</div></div>
+    <div class="frow"><div class="fn"></div><div class="ft"><b>Deferred license policy</b> — η τριπλή αντίφαση αδειών (census P0-8) κλείνει μόνο κατά τον standing κανόνα σου (All-Rights-Reserved).</div></div>
+  </div>
+  <div class="callout">Επιπλέον <b>remit</b> (record-completion rider, όχι round 3): δύο S1 pairwise ερωτήματα + η <b>απουσία άξονα εμπιστευτικότητας/επαγγελματικού απορρήτου</b> — πιθανό κενό οργάνου για νομικό θεσμό — παραπέμπονται σε σένα ως taxonomy notes.</div>
+</div></section>
+
+<section id="bottom"><div class="wrap">
+  <div class="snum">§5</div><h2>Τίμια κατάσταση</h2>
+  <ul class="clean">
+    <li><b>AT ceiling σήμερα (8):</b> AX-05, AX-06, AX-07, AX-09, AX-11 στο R5· AX-17 στο R5 <b>μόνο υπό το παλιό clause</b>· AX-20 R4· AX-22 R3 — όλα με rider που επιτρέπει design-entailment.</li>
+    <li><b>KNOWN below με κατονομασμένο κενό (7):</b> AX-01 R4, AX-02 R4, AX-03 R3, AX-12 R4, AX-16 R3, AX-18 R3, και <b>AX-21 R2 — το βαθύτερο κενό του πεδίου και του σχεδίου</b> (κινείται μόνο με BO-03/BO-24).</li>
+    <li><b>Conditional (6):</b> AX-04, AX-08, AX-13, AX-14, AX-15, AX-19 — κάθε ένα με το discharging artifact + acceptance test του.</li>
+    <li><b>UNKNOWN, exec-only (1):</b> AX-10 — καμία entailment δεν το κινεί· μόνο η εκτέλεση του BO-01.</li>
+    <li><b>Deviation-by-DRAFT (η 2η σκέλος του CEILING-BAR):</b> ακριβώς ένα, οριοθετημένο — το coNP escalation-cell envelope· απαιτεί BO-26 mechanization + δική σου S2 υιοθέτηση.</li>
+  </ul>
+  <div class="callout" style="border-left-color:var(--crit);background:var(--crit-bg)"><b>Το αναλλοίωτο τιμιότητας:</b> κάθε «AT-by-entailment» στηρίζεται σε rider που το όργανο επιτρέπει· κάθε άλλο είναι CONDITIONAL ή UNKNOWN με το artifact του. <b>VERIFIED εκδίδεται μόνο από μηχανικό έλεγχο + ανεξάρτητη αναπαραγωγή — κανένα δεν εκδίδεται εδώ.</b></div>
+</div></section>
+
+</main>
+
+<div style="padding:40px 0 0"><p class="finalword">Το E★★ v2 είναι ο υποψήφιος του ανωτάτου του σήμερα: μία μηχανή στην οποία το κατηγόρημα αποδοχής έγινε <em>πλήρως εκφορτώσιμο</em> από ένα απαριθμημένο σύνολο 26 artifacts + 6 δικές σου αποφάσεις — όχι ένα σύστημα που ισχυρίζεται ότι έφτασε. Η διαφορά είναι όλη η τιμιότητα.</p></div>
+
+<footer><div class="wrap">
+  <div><b>Stavropoulos Law® · LAWMAX-Ω</b> — τίποτα μέτριο · κανένα μπάλωμα · τίμια άγνοια</div>
+  <div>Στάδια C+D · ROUND_CLOSED · καμία εγγραφή στο repo χωρίς σφραγισμένο delta (FOC-19)</div>
+</div></footer>
+
+<script>
+const AX=[{"id":"AX-01","name":"legal-reasoning correctness / defeaters","st":"BELOW","note":"R4 → BO-04/05/06"},{"id":"AX-02","name":"plan completeness","st":"BELOW","note":"R4 → BO-07"},{"id":"AX-03","name":"coordination / arbitration","st":"BELOW","note":"R3 → BO-08"},{"id":"AX-04","name":"grounding independent of corpus","st":"COND","note":"→ BO-09"},{"id":"AX-05","name":"citation validation","st":"AT","note":"R5"},{"id":"AX-06","name":"provenance / lineage","st":"AT","note":"R5"},{"id":"AX-07","name":"institutional memory","st":"AT","note":"R5"},{"id":"AX-08","name":"temporal / legal-state","st":"COND","note":"→ BO-10 (only executing partial witness)"},{"id":"AX-09","name":"contradiction / uncertainty","st":"AT","note":"R5"},{"id":"AX-10","name":"self-falsification","st":"UNKNOWN","note":"exec-only → BO-01"},{"id":"AX-11","name":"transaction semantics","st":"AT","note":"R5"},{"id":"AX-12","name":"decision authority","st":"BELOW","note":"R4 → BO-02"},{"id":"AX-13","name":"auditability / replay","st":"COND","note":"→ BO-11"},{"id":"AX-14","name":"determinism","st":"COND","note":"→ BO-12"},{"id":"AX-15","name":"durability / recovery","st":"COND","note":"→ BO-13"},{"id":"AX-16","name":"liveness","st":"BELOW","note":"R3 → BO-14"},{"id":"AX-17","name":"latency","st":"AT","note":"R5 (old clause; raised pending)"},{"id":"AX-18","name":"throughput / scale","st":"BELOW","note":"R3 → BO-16/17"},{"id":"AX-19","name":"introspection","st":"COND","note":"→ BO-18"},{"id":"AX-20","name":"evolvability","st":"AT","note":"R4 (R5 conditional)"},{"id":"AX-21","name":"formal assurance transport","st":"BELOW","note":"R2 — deepest gap → BO-03/24"},{"id":"AX-22","name":"cross-order generality","st":"AT","note":"R3 (R4/R5 conditional)"}];
+const BO=[{"id":"BO-01","ax":"AX-10","art":"Executed adversarial campaign: hash-committed mutation/counter-design registry + offline 100%-kill matrix + blocking gate in operation","dec":true},{"id":"BO-02","ax":"AX-12","art":"Lean-4 discharge of admission-model.sexp T1–T9 + fail-closed rewrite of constitutional-gate.lisp:44-45","dec":true},{"id":"BO-03","ax":"AX-21","art":"Spec-level proof program: K totality/determinism, seq-monotone, RFC-6962 prefix, labelling T1–T6, PCK forcing, seam postulates","dec":true},{"id":"BO-04","ax":"AX-01","art":"Lean encoder-soundness proof for the defeasible→SAT reduction (escalation-cell certificate route)","dec":true},{"id":"BO-05","ax":"AX-01","art":"Certified exhaustive-extension enumeration certifier (proof-logging SAT/ASP; LRAT checked by cake_lpr)","dec":false},{"id":"BO-06","ax":"AX-01 case-law","art":"Independent Horty forcing-certificate checker + machine-checked extremal-completion stability lemma","dec":false},{"id":"BO-07","ax":"AX-02","art":"Lean-4 plan-admission machinery (proof-term skeletons; sorries = typed obligations)","dec":false},{"id":"BO-08","ax":"AX-03","art":"Mechanized single-writer exclusion proof (deadlock/lost-update/unarbitrated-conflict) for the Mode-A tier-commit","dec":false},{"id":"BO-09","ax":"AX-04","art":"Structural bypass-impossibility demo (glob fallback deleted) + witness-quorum enrollment","dec":false},{"id":"BO-10","ax":"AX-08","art":"Total View(t_legal,t_knowledge) seat + recorded re-runnable past-time evaluation witness","dec":false},{"id":"BO-11","ax":"AX-13","art":"All-class replay demonstration (≥1 decision from every trusted class) + closure-totality fix","dec":false},{"id":"BO-12","ax":"AX-14","art":"Divergence-free perturbed-environment replay demo + deterministic intra-tier ordering fix","dec":false},{"id":"BO-13","ax":"AX-15/11","art":"Atomic writer seat generalized to emit-graph/deploy.lisp; six-item WAL; Lean crash-refinement (FSCQ)","dec":false},{"id":"BO-14","ax":"AX-16","art":"Liveness proof corpus: variant function + budget obligation per wait point, machine-checked","dec":false},{"id":"BO-15","ax":"AX-17","art":"Deterministic cost meter + hash-chained cost ledger + fail-closed budget gate + external-time bracketing","dec":false},{"id":"BO-16","ax":"AX-18","art":"Lean-verified O(log n) Merkle inclusion/consistency checker, byte-tested vs merkle-authority.lisp","dec":false},{"id":"BO-17","ax":"AX-18/13","art":"Succinct transition receipts for the admission spine (transparent STARK, dual-mode)","dec":false},{"id":"BO-18","ax":"AX-19","art":"Independent trace-vs-explanation comparison harness","dec":false},{"id":"BO-19","ax":"AX-20","art":"Preservation-proof corpus per committed spec'd class; floor vector serialized into the census chain","dec":false},{"id":"BO-20","ax":"AX-05","art":"Grammar-total FSM recognizer from committed grammar (≤120 clamp deleted); per-citation certificates; RFC-3161","dec":false},{"id":"BO-21","ax":"AX-06","art":"Per-step hash ledger in consolidation-proof.lisp (aggregate→per-step) + census-totality blocking gate","dec":false},{"id":"BO-22","ax":"AX-09","art":"Stability-certificate engine; closed UNKNOWN-cause sum type; blocking anomaly queue","dec":false},{"id":"BO-23","ax":"AX-22","art":"Profile schema + Greece extraction + parametricity gate; second structurally distinct order instantiated","dec":false},{"id":"BO-24","ax":"AX-21 substrate","art":"Kernel-substrate decision: CakeML-class verified kernel (refinement proofs) vs declared-SBCL diverse re-verification","dec":false},{"id":"BO-25","ax":"AX-07","art":"Salted per-leaf commitment migration + typed erasure certificates + signed memory checkpoint","dec":false},{"id":"BO-26","ax":"§7(a)","art":"Lean formalization of the coNP-cell impossibility theorem (the CEILING-BAR proven_impossible artifact)","dec":false}];
+const axg=document.getElementById('axg');
+AX.forEach(a=>{const d=document.createElement('div');d.className='ax '+a.st;
+  d.innerHTML=`<span class="st">${a.st}</span><span class="id">${a.id}</span><div class="nm">${a.name}</div><div class="no">${a.note}</div>`;axg.appendChild(d);});
+const bol=document.getElementById('bol');
+BO.forEach(b=>{const d=document.createElement('div');d.className='borow'+(b.dec?' dec':'');
+  d.innerHTML=`<span class="bid">${b.id}</span><span class="bax">${b.ax}</span><span class="bt">${b.art}${b.dec?'<span class="decflag">DECISIVE</span>':''}</span>`;bol.appendChild(d);});
+(function(){const root=document.documentElement,btn=document.getElementById('tgl');let s=null;try{s=localStorage.getItem('estar2-th');}catch(e){}
+ if(s==='dark'||s==='light')root.setAttribute('data-theme',s);
+ const cur=()=>root.getAttribute('data-theme')||((window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light');
+ btn.addEventListener('click',()=>{const n=cur()==='dark'?'light':'dark';root.setAttribute('data-theme',n);try{localStorage.setItem('estar2-th',n);}catch(e){}});})();
+</script>

@@ -1,0 +1,106 @@
+{
+  "schema": "watchtower/commercial-frontier-baselines/1",
+  "version": "1.0.0",
+  "policy_status": "FROZEN_BEFORE_FRESH_PHASE_2",
+  "cutoff": "2026-08-27",
+  "scope": "Architecture and mechanism only. Proprietary corpus quantity, exclusivity, jurisdictional coverage, brand, adoption and price confer no comparison credit. The mechanisms that select, ground, validate, cite, remember, plan, coordinate, execute, inspect and evolve remain in scope.",
+  "mandatory_baseline_ids": [
+    "B-COMM-01-THOMSON-REUTERS-COCOUNSEL-LEGAL",
+    "B-COMM-02-LEXISNEXIS-LEXIS-PLUS-WITH-PROTEGE",
+    "B-COMM-03-HARVEY"
+  ],
+  "baseline_count": 3,
+  "individual_comparison_rule": "E_star must strictly dominate every mandatory baseline separately on every binding mechanism axis. A union, average, composite baseline or best-of-products surrogate cannot hide a failure against one named product.",
+  "baselines": [
+    {
+      "id": "B-COMM-01-THOMSON-REUTERS-COCOUNSEL-LEGAL",
+      "vendor": "Thomson Reuters",
+      "product": "CoCounsel Legal (including its Westlaw and Practical Law grounding surface)",
+      "aliases": ["CoCounsel", "CoCounsel Legal", "Westlaw Precision / CoCounsel"],
+      "official_sources": [
+        "https://legal.thomsonreuters.com/en/products/cocounsel-legal",
+        "https://legal.thomsonreuters.com/en/products/cocounsel-legal/features"
+      ],
+      "source_access_date": "2026-08-27",
+      "public_mechanism_lower_bound": [
+        "matter-specific multi-step planning with inspectable steps",
+        "agentic research, analysis, drafting and document review",
+        "citation-linked work product and authority verification workflow",
+        "persistent matter workspaces and prior-matter context",
+        "large tabular document analysis and trace-back to source",
+        "document, collaboration and practice-system integrations"
+      ],
+      "internal_architecture_visibility": "PROPRIETARY_NOT_PUBLICLY_COMPLETE",
+      "evidence_rule": "Official claims seed the capability census but never prove Watchtower superiority. A licensed like-for-like black-box evaluation, an evidence-bounded behavioral abstraction and the closed architecture-class proof are all required; missing access or an unobservable material behavior remains UNKNOWN and blocks T6.",
+      "update_rule": "Any validated product or capability update after the cutoff opens a new comparator epoch and triggers CEILING_REVALIDATION_REQUIRED."
+    },
+    {
+      "id": "B-COMM-02-LEXISNEXIS-LEXIS-PLUS-WITH-PROTEGE",
+      "vendor": "LexisNexis",
+      "product": "Lexis+ with Protégé",
+      "aliases": ["Protégé", "Lexis+ with Protégé", "Lexis+ AI successor"],
+      "official_sources": [
+        "https://www.lexisnexis.com/en-us/products/lexis-plus-protege.page",
+        "https://www.lexisnexis.com/community/pressroom/b/news/posts/lexis-with-protege-accelerates-frictionless-agentic-productivity-from-first-idea-to-review-ready-legal-work-product"
+      ],
+      "source_access_date": "2026-08-27",
+      "public_mechanism_lower_bound": [
+        "task-dependent model, agent, skill and source selection",
+        "context continuity from exploration and strategy through research, analysis, drafting and review",
+        "agentic drafting and reusable legal workflows",
+        "linked citation and citation-intelligence verification workflow",
+        "organization-document and institutional-knowledge grounding",
+        "multiple general and legal AI model configurations"
+      ],
+      "internal_architecture_visibility": "PROPRIETARY_NOT_PUBLICLY_COMPLETE",
+      "evidence_rule": "Official claims seed the capability census but never prove Watchtower superiority. A licensed like-for-like black-box evaluation, an evidence-bounded behavioral abstraction and the closed architecture-class proof are all required; missing access or an unobservable material behavior remains UNKNOWN and blocks T6.",
+      "update_rule": "Any validated product or capability update after the cutoff opens a new comparator epoch and triggers CEILING_REVALIDATION_REQUIRED."
+    },
+    {
+      "id": "B-COMM-03-HARVEY",
+      "vendor": "Harvey AI Corporation",
+      "product": "Harvey",
+      "aliases": ["Harvey", "Harvey AI"],
+      "official_sources": [
+        "https://www.harvey.ai/platform",
+        "https://www.harvey.ai/platform/agents",
+        "https://www.harvey.ai/platform/vault",
+        "https://www.harvey.ai/blog/introducing-agent-builder"
+      ],
+      "source_access_date": "2026-08-27",
+      "public_mechanism_lower_bound": [
+        "end-to-end purpose-built legal agents",
+        "parallel agent teams that split and coordinate large tasks",
+        "document vault, bulk analysis and knowledge-base mechanisms",
+        "shared matter spaces, workflows and artifacts",
+        "custom reusable workflow-agent construction",
+        "cited review-ready outputs across research, drafting and analysis"
+      ],
+      "internal_architecture_visibility": "PROPRIETARY_NOT_PUBLICLY_COMPLETE",
+      "evidence_rule": "Official claims seed the capability census but never prove Watchtower superiority. A licensed like-for-like black-box evaluation, an evidence-bounded behavioral abstraction and the closed architecture-class proof are all required; missing access or an unobservable material behavior remains UNKNOWN and blocks T6.",
+      "update_rule": "Any validated product or capability update after the cutoff opens a new comparator epoch and triggers CEILING_REVALIDATION_REQUIRED."
+    }
+  ],
+  "normalization": {
+    "excluded_content_advantages": [
+      "size or exclusivity of a proprietary legal corpus",
+      "number of covered jurisdictions or licensed publications",
+      "brand, market share, customer count or institutional prestige",
+      "price, implementation effort or elapsed study time"
+    ],
+    "included_mechanism_properties": [
+      "source selection and grounding logic",
+      "citation and authority validation logic",
+      "planning, coordination, memory, provenance and workflow semantics",
+      "correctness, consistency, progress, liveness, determinism, durability, recovery, performance, auditability, introspection and evolvability"
+    ],
+    "two_track_evidence": [
+      "MECHANISM_NORMALIZED: common public or synthetic materials, frozen tasks, calibrated tool and model envelopes, identical scoring semantics and result-blind thresholds",
+      "PRODUCT_BLACK_BOX: the actual named products on the same externally observable tasks and inputs, with every unavailable or non-comparable result recorded as UNKNOWN"
+    ],
+    "no_content_substitution": "A superior corpus answer cannot compensate for an inferior mechanism, and a mechanism claim cannot borrow authority from proprietary content."
+  },
+  "axis_closure_rule": "Every materially observable architecture or mechanism property of every mandatory baseline must map to exactly one frozen binding axis or receive a mechanically checked irrelevance proof. An unmapped property sets AXIS_DOMAIN_OPEN and blocks FOC-18/T6.",
+  "unknown_rule": "UNKNOWN, inaccessible, unlicensed, unobserved, non-comparable, missing, null, skipped or timed-out evidence never counts as equality or superiority and blocks the commercial-superiority claim.",
+  "initial_state": "COMMERCIAL_SUPERIORITY_NOT_YET_EVALUATED"
+}

@@ -1,0 +1,22 @@
+C1 — KNOWN-BREAK REPLAY AGAINST THE REDUCED KERNEL
+
+id    root   kernel clause          result   description
+A-1   R3     L3.c                   CLOSED   semantic artifact change without differential gate
+A-2   R1     L1.a + L1.e            CLOSED   revocation time-of-check/time-of-use
+A-3   R2     L2 corroboration axis  CLOSED   no minimum source corroboration
+A-4   R3     L3.a + L3.b            CLOSED   answer certificate outlives erasure
+A-5   R2     L2.b + L2.c            CLOSED   quarantine suppression invisible to freshness
+A-6   R1     L1.d                   CLOSED   civil-time to cut mapping unprotected
+B-1   R1     L1.a                   CLOSED   revocation x partition: stale control view
+B-2   R1     L1.d                   CLOSED   civil time falls between checkpoints
+B-3   R2     L2.c                   CLOSED   negative disposition suppresses completeness risk
+B-4   R2     L2.d                   CLOSED   query proof vs query semantics mismatch
+B-5   R3     L3.c                   CLOSED   golden corpus blind spot
+B-6   R2     L2 corroboration axis  CLOSED   false corroboration independence
+B-7   R2     L2 attribution bound   CLOSED   key attribution laundered into human attribution
+B-8   method OperationEffect (+1)   CLOSED   self-declared composition footprint is a trust root
+
+C2 — DELETE-THE-PATCHES (mechanical): scanning kernel sources for break-specific guards
+  0 break-specific guards in executable code — safety comes from the general laws
+
+REPLAY: PASS

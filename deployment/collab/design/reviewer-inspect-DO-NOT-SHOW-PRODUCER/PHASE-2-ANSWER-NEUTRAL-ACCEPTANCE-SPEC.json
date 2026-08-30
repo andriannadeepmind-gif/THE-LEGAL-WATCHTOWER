@@ -1,0 +1,104 @@
+{
+  "schema": "watchtower/phase-2-answer-neutral-acceptance-spec/1",
+  "version": "1.1.0-R3",
+  "policy_status": "FROZEN_BEFORE_FRESH_PHASE_2",
+  "answer_neutral": true,
+  "producer_authority": "The producer may submit a candidate or report BLOCKED. It cannot accept, seal as complete, or authorize Phase 3.",
+  "permitted_producer_statuses": [
+    "PHASE_2_CANDIDATE_READY_FOR_INDEPENDENT_REVIEW",
+    "PHASE_2_BLOCKED"
+  ],
+  "forbidden_producer_statuses": [
+    "PHASE_2_COMPLETE",
+    "PHASE_2_ACCEPTED",
+    "FRONTIER_VERIFIED",
+    "GLOBAL_OPTIMUM_PROVED",
+    "PHASE_3_AUTHORIZED"
+  ],
+  "hard_gates": [
+    "blindness evidence receives an explicit VERIFIED, FAILED or UNVERIFIED label and is never conflated with mathematical optimality",
+    "exact closed artifact inventory with SHA-256 and byte lengths",
+    "all JSON and JSONL parse; all identifiers and references resolve",
+    "all governed counts are derived from primary records and agree everywhere",
+    "no null, unknown, skipped, timed-out or unexecuted item is silently treated as pass",
+    "all claims are no stronger than their evidence class",
+    "all required design surfaces are substantively specified",
+    "all consequential decisions have pre-selection requirements, objectives, thresholds, contenders, evidence, challenge and residuals",
+    "at least three materially distinct complete architectures plus one original synthesis are evaluated unless an exhaustive smaller domain is proved",
+    "every provisional selection faces a recorded dominance challenge",
+    "public frontier claims use current primary sources with exact provenance and limitations",
+    "CoCounsel Legal, Lexis+ with Protégé and Harvey are mandatory named public lower bounds and each is inventoried separately",
+    "the candidate is designed and challenged against strict improvement on every frozen mechanism axis for every named commercial baseline",
+    "no equality, average, weighted score, composite score, trade-off, compensation or better-on-one-axis result can satisfy commercial superiority",
+    "UNKNOWN, inaccessible or non-comparable commercial evidence remains blocking and is never silently omitted",
+    "the mechanism-only comparison excludes proprietary corpus quantity while retaining grounding, validation, planning, coordination, memory, provenance, workflow and evolution mechanisms",
+    "every observable commercial capability is mapped to the frozen axis registry or receives a mechanically checked irrelevance proof",
+    "Common Lisp choices are semantic and evidence-based rather than cosmetic",
+    "Phase 3, implementation, repository comparison and migration do not begin",
+    "the baseline repository receives zero writes and is not visible to the producer"
+    ,"every proposed mechanism has a total implementation-abstraction record so it can later be mapped onto the withheld B0 repository without inventing B0 facts"
+    ,"the final target is a verified transformation of B0, never a disconnected greenfield design, adjacent replacement or parallel authority"
+  ],
+  "required_design_surfaces": [
+    "institutional identity and constitutional axioms",
+    "offices, roles, jurisdiction, powers and separation",
+    "source registry, identity and legal-authority semantics",
+    "observation and acquisition",
+    "evidence, provenance, attestation and transformation lineage",
+    "temporal legal validity, publication, commencement and correction",
+    "legal propositions, interpretation, conflict and defeaters",
+    "epistemic state, uncertainty, coverage, lag and blind spots",
+    "scheduling, liveness, retries, recovery and deterministic replay",
+    "gap and delayed-publication detection",
+    "backfill and anti-entropy reconciliation",
+    "anomaly quarantine and correction",
+    "reflective memory and decision history",
+    "self-model validation and causally effective metacognition",
+    "internal adversarial reasoning and institutional approval",
+    "query, explanation, citation and publication boundaries",
+    "evolution without duplicate authority or semantic regression",
+    "formal invariants, proof obligations and abstraction relations",
+    "Common Lisp package, protocol, CLOS, method-combination, condition/restart, persistence, concurrency and deployment topology",
+    "exact limits, assumptions, defeaters and unresolved proof obligations",
+    "architecture-family grammar seed for later universal escalation"
+    ,"named commercial-frontier capability census and source limitations"
+    ,"complete three-baseline by twenty-two-axis strict-dominance matrix plan"
+    ,"mechanism-normalized and actual-product black-box evaluation design"
+    ,"total implementation-abstraction map for later exact B0 repository transformation"
+  ],
+  "consequential_decision_fields": [
+    "id",
+    "scope",
+    "hard_invariants",
+    "failure_model",
+    "objective_order",
+    "materiality_thresholds",
+    "feasible_contenders",
+    "primary_evidence",
+    "selected_contender",
+    "dominance_challenges",
+    "decision_status",
+    "defeaters",
+    "residual_uncertainty"
+  ],
+  "comparison_rule": {
+    "candidate_search_dominance_only": "During open candidate search, ordinary Pareto dominance may prune an internal candidate only if both are feasible under identical assumptions, A is no worse on every binding objective, A is materially better on at least one, and A adds no unmodelled cost or weaker invariant. This search heuristic cannot satisfy FOC-18 or T6.",
+    "commercial_strict_all_axis_dominance": "For every named commercial baseline b and every frozen binding mechanism axis a, E_star must be materially and evidentially STRICTLY BETTER on a. Equality on one axis, improvement on only some axes, any regression, any compensation or any UNKNOWN blocks the claim.",
+    "capability_proper_superset": "For every named commercial baseline, E_star universally refines every reachable observable capability and trace, materially improves each mapped capability and has a proper-superset capability surface.",
+    "incomparable": "A mixed objective result remains INCOMPARABLE unless resolved by the predeclared objective order. It may not be averaged away.",
+    "unknown": "UNKNOWN remains UNKNOWN and blocks selection if material. For a named commercial baseline every axis is material, so any UNKNOWN blocks FOC-18/T6.",
+    "phase_2_claim_limit": "The strongest permitted positive claim is: non-dominated among the evaluated blind frontier candidates under the declared Phase-2 constraints and evidence."
+  },
+  "commercial_gate_files": [
+    "COMMERCIAL-FRONTIER-BASELINES.json",
+    "ALL-AXIS-DOMINANCE-SPEC.json"
+  ],
+  "semantic_review_rule": "Structural validators are necessary but insufficient. Independent review must inspect the meaning of active claims, method/control semantics, authority, temporal behavior, crash windows, cross-artifact agreement and whether the checker was weakened to fit the result.",
+  "checker_epoch_rule": "Any modification to an acceptance rule or validator after any producer output becomes visible creates a new preserved review epoch. It cannot retroactively certify the output. Only pre-frozen rules may decide the first review.",
+  "acceptance_outcomes": {
+    "semantic_and_artifact_gates_pass": "PHASE_2_CANDIDATE_ACCEPTED_FOR_PROOF_PIPELINE",
+    "semantic_or_artifact_gate_fails": "PHASE_2_BLOCKED",
+    "blindness_label": "BLINDNESS_VERIFIED, BLINDNESS_FAILED or BLINDNESS_UNVERIFIED is reported separately and never upgrades or downgrades the final theorem.",
+    "phase_3_after_acceptance": "Requires the separately frozen pre-Phase-3 FOC-15 instantiation. Acceptance of a Phase-2 candidate is not a ceiling proof."
+  }
+}

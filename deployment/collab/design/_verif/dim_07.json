@@ -1,0 +1,26 @@
+{
+ "id": "DIM-08",
+ "name": "Provenance / transformation lineage (AX-06, AX-13)",
+ "families": [
+  "no-provenance: artifacts carry no origin record",
+  "post-hoc-model-influenceable-logs: free-form logging written after actions, mutable by or through the acting model; includes aggregate-only ledgers (base/result hash + step count)",
+  "structured-prov-graphs: typed W3C-PROV-style provenance records as first-class data (absorbs: PROV-AGENT agent-centric extension)",
+  "per-step-recompute-DAG: every transformation committed as (input-hash, deterministic-op-id, output-hash), chained under a domain-separated Merkle root inside the signed release identity, third-party re-executed and byte-compared, census-total over the release closure (the AX-06 guarantee profile; absorbs: verified parsing of signed evidence envelopes \u2014 EverParse/Pulse over COSE/CBOR making malformed-provenance structurally unrepresentable, replay-divergence-proof audit semantics candidate \u2014 each journal entry bound to exact model/kernel identity with divergence detection on re-execution)",
+  "pre-action-independent-receipts: cryptographic receipt written by an independent gate BEFORE each action executes \u2014 an audit trail the model cannot influence, with deterministic replay as a design requirement (absorbs: agrepl transport-boundary record/replay fidelity-1.0, Signet/Agent-Receipts, ISO-42001/EU-AI-Act-Art.12 anchoring)",
+  "proof-carrying-state-updates: succinct proofs attached to each delta attesting the delta AND its causal history satisfy the validity predicate \u2014 O(1) validation without replay (absorbs: PC-CRDT PaPoC 2025, hash-chronicle causal binding). CONSISTENCY QUALIFICATION (CA P2-14): the succinct proofs here cover update-validity predicates over bounded structures, NOT whole-pipeline arithmetization; this is consistent with the v2 AX-13/AX-18 split, under which recompute-and-compare and TRANSPARENT proof-of-recomputation (STARK-class, no trusted setup, same hash-assumption family as the SHA-256 commitments) are equally maximal in assurance, and any exclusion of succinct systems is a RESOURCE_BOUNDED toolchain/arithmetization-cost clause, never a trusted-setup claim"
+ ],
+ "eliminations": [
+  {
+   "family": "no-provenance",
+   "lemma_kind": "DOMINANCE_CONJECTURE",
+   "retained_representative": "K-HUM",
+   "lemma": "Pre-registered dominance conjecture on AX-06: R1 vs R5 per the frozen guarantee profile; no compensating advantage conjectured. (B0 seat citations moved to the attainment-witness appendix.) Adjudicated by full verdicts against retained representative K-HUM."
+  },
+  {
+   "family": "post-hoc-model-influenceable-logs",
+   "lemma_kind": "DOMINANCE_CONJECTURE",
+   "retained_representative": "K-AGT",
+   "lemma": "Pre-registered dominance conjecture on AX-06: caps at R2, and the AX-06 derivation's two-history counterexample proves aggregate-only ledgers admit distinct histories with identical aggregates \u2014 strictly below per-step commitment, the maximum granularity of the frozen guarantee profile (whose cost clause is RESOURCE_BOUNDED in v2: the linear-recompute floor holds for the declared toolchain; transparent proof-of-recomputation would lower verification cost with no assurance loss). K-B0-SHIPPED's consolidation-proof.lisp aggregate residual is carried as an open obligation at its seat. Adjudicated by full verdicts against retained representative K-AGT."
+  }
+ ]
+}

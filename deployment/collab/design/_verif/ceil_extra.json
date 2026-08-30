@@ -1,0 +1,123 @@
+{
+ "document": "SSP-Omega CEILING THEOREMS v2 (reconciled)",
+ "supersedes": "v1 (_ssp_ceilings.json)",
+ "artifact_path": "/tmp/claude-0/-home-user-THE-LEGAL-WATCHTOWER/8a568901-aaa2-51c4-86b4-eb7bbdff4e90/scratchpad/_ssp_ceilings_v2.json",
+ "instrument_split": "Every ceiling is SPLIT into (a) a FROZEN, design-neutral guarantee statement + derivation + kind + relativity note + lean obligation \u2014 no reference to any candidate design, B0 included \u2014 and (b) a NON-FROZEN attainment_witness_appendix that may cite B0 files. Only part (a) is the instrument; K-SUP and all closure constructions must be redefined as joins over the part-(a) guarantee profiles only.",
+ "honest_independence_statement": "The v1 claim that the ceilings were definable before any candidate was examined is retracted as false: v1 attainment mechanisms were authored with B0 open on the desk and every ceiling carried a b0_gap field. The honest form, adopted here: the frozen guarantee statements and derivations are design-neutral and carry no candidate reference; the witness appendices use B0 as ONE constructive attainment witness, which biases mechanism choice but not the guarantee bound; the appendices are excluded from the frozen instrument and from any dominance or K-SUP construction.",
+ "witness_appendix_convention": "attainment_witness_appendix sections are NON-FROZEN. Every claim of attainment, at-ceiling grade, or supreme grade is retyped as HYPOTHESIS: a candidate rank, UNKNOWN pending independently re-checkable verification artifacts (replay artifacts and discharged proof obligations). An assessor's unverifiable claim of a rank is not a rank. Empirical premises about external parties (publisher signing practice, network services) carry an evidence-status tag; VERIFIED_FROM_SECONDARY (search-excerpt or vendor/publisher-declared) material never grounds a rank \u2014 at most a KNOWN_UPPER_BOUND cap per the freeze v2. Resource facts (toolchain availability, witness enrollment, verified-compiler substrates) live in appendices or RESOURCE_BOUNDED clauses, never inside ABSOLUTE labels.",
+ "kind_taxonomy_note": "ceiling_kind may be composite: clauses within one ceiling can carry different kinds (e.g. ABSOLUTE negative half / RESOURCE_BOUNDED positive clauses). An ABSOLUTE label may not lean on toolchain availability or cost; every such clause is carved out as RESOURCE_BOUNDED. Witness-quorum-conditioned caps are RESOURCE_BOUNDED throughout (witness networks are operational today), matching the labeling standard AX-21 already used in v1.",
+ "changelog": [
+  {
+   "finding": "UNIVERSAL (instrument-and-honesty P0-1)",
+   "change": "All 22 ceilings split into frozen design-neutral guarantee (statement/derivation/kind/relativity/lean obligation, all B0 references removed) plus non-frozen attainment_witness_appendix; independence claim restated honestly in the header; 'definable before any candidate is examined' retracted."
+  },
+  {
+   "finding": "UNIVERSAL (instrument-and-honesty P1-4)",
+   "change": "Every 'already at ceiling grade' / 'supreme-grade' / 'attained, not merely approached' / 'B0 already attains the ceiling' sentence retyped as HYPOTHESIS pending verification artifacts (AX-04, AX-07, AX-14 appendices); attainment conjecture removed from all frozen derivations \u2014 derivations bound, appendices conjecture."
+  },
+  {
+   "finding": "UNIVERSAL (task directive)",
+   "change": "New evidence status VERIFIED_FROM_SECONDARY adopted in the witness_appendix_convention; vendor/publisher-declared material never grounds a rank, at most a KNOWN_UPPER_BOUND cap (rank type defined in freeze v2; referenced from AX-09's verdict-class derivation)."
+  },
+  {
+   "finding": "ceiling-falsifier P0-1 + closure-attacker P0-3 + instrument-and-honesty P2-3 (AX-01)",
+   "change": "Ceiling RAISED to ideal/sceptical-preferred certified acceptance per the supreme law; grounded restated as the unique maximum among TRACTABLE unique-status semantics only; grounded STRICT-SUBSET ideal recorded as the gap with an even-cycle witness obligation (T6); the false 'unique maximal semantics' dichotomy corrected (ideal/eager are unique, deterministic, decidable \u2014 they lose only P-time, which is no H-invariant); grounded-only operation retyped as an AX-17 RESOURCE choice; circular tailoring to the incumbent JTMS seat removed by the frozen/appendix split."
+  },
+  {
+   "finding": "ceiling-falsifier P0-2 (AX-06, AX-13, AX-18)",
+   "change": "H8-circularity removed: H8 restated as zero-producer-trust semantics, not a privileged procedure; assurance clause made ABSOLUTE with recompute-and-compare AND transparent proof-of-recomputation EQUALLY MAXIMAL under the same hash-assumption family; false trusted-setup premise deleted (STARKs are transparent); 'necessary and sufficient' reduced to 'sufficient' in AX-06; the absolute Omega(s)/Omega(k) recomputation floors demoted to RESOURCE_BOUNDED cost clauses (operative only for a proof-less declared toolchain); AX-13/AX-06 kinds split ABSOLUTE-assurance / RESOURCE_BOUNDED-cost."
+  },
+  {
+   "finding": "ceiling-falsifier P0-3 (AX-09 + unknown_rule)",
+   "change": "Clause (d) amended with the certified-invariance carve-out: UNKNOWN propagates except to derived verdicts carrying a stability certificate proving invariance over ALL completions of the unknown; AX-09 gains the fourth verdict class PASS/FAIL-STABLE-OVER-UNKNOWNS; lean obligation gains T6 stability soundness; the freeze/closure inconsistency (DIM-12 exact-stability absorption vs unconditional propagation) is resolved in favor of the stronger form."
+  },
+  {
+   "finding": "ceiling-falsifier P1-1 (AX-03)",
+   "change": "Ceiling restated: arbitration at a single LOGICAL serialization point (physical single writer OR machine-checked nonforking replicated total order); FLP misuse struck (FLP scoped to the fully asynchronous model; partially-synchronous BFT unaffected); the commutativity bound retracted \u2014 concurrency bounded by Calvin-class deterministic conflict-ordered execution, which exceeds the commuting fraction; new T-conflict-ordered lean obligation with a witness schedule beyond the antichain fraction."
+  },
+  {
+   "finding": "ceiling-falsifier P1-2 (AX-07, AX-12; AX-08 note)",
+   "change": "Witness-quorum-conditioned fork-consistency caps relabeled RESOURCE_BOUNDED (witness networks operational today; enrollment a feasible act; 'not within unilateral reach' retracted); AX-07 self-attestation clause reworded to 'without introducing a hardware trust anchor' (TEE attestation relocates, not eliminates); AX-08's relativity note corrected so sub-bound (b)'s anti-rollback half carries the same carve-out; AX-12 gains T-witness-lift conditional theorem."
+  },
+  {
+   "finding": "ceiling-falsifier P1-3 (AX-14)",
+   "change": "The 'cannot determinize untrusted producers' exclusion retracted: producers ARE determinizable per pinned hardware/software class (pinned weights + batch-invariant kernels); restated with the cross-hardware bit-portability residue handled by record/replay; ABSOLUTE core (output = f(closure)) retained; lean obligation gains the class-indexed producer-determinization theorem."
+  },
+  {
+   "finding": "ceiling-falsifier P1-4 (AX-10)",
+   "change": "Ceiling RAISED to two-regime form: proof-carrying exclusion of infinite defect classes on any verified perimeter (Rice bars deciding, not proof-checking \u2014 proof-carrying admission is total and decidable) + committed-finite mutation-kill as the FLOOR for the unverified remainder + typed-UNKNOWN escalation outside both; 'nothing feasible today exceeds it' resource phrasing deleted from the ABSOLUTE label; lean obligation gains regime R1."
+  },
+  {
+   "finding": "ceiling-falsifier P1-5 (AX-20)",
+   "change": "Ceiling widened to executable measures PLUS machine-checked preservation/refinement proofs, the union monotone; impossibility clause narrowed to capabilities neither measured nor proof-covered; deciding/proof-checking conflation fixed in the derivation; lean obligation extended with ProvenClasses and proof re-check conjuncts."
+  },
+  {
+   "finding": "ceiling-falsifier P1-6 (AX-04)",
+   "change": "Third mechanism added: attested-channel capture (DECO/TLSNotary-class TLS oracles, TEE-attested fetchers); corroboration bound restated as a monotone function of the declared witness set (resource-parameterized, no absolute maximum); ABSOLUTE label scoped to the negative half only ('no local computation creates authenticity after the fact'); kind split accordingly; lean obligation gains T-negative and T-monotone."
+  },
+  {
+   "finding": "ceiling-falsifier P1-7 + instrument-and-honesty P2-6 (AX-11 vs AX-15)",
+   "change": "Kind inconsistency resolved: AX-11 clause (i) (fsync-scoped single-node atomicity/durability) relabeled RESOURCE_BOUNDED matching AX-15; clause (ii) (two-generals/atomic-commitment) carved as the ABSOLUTE half; 'the only two families' folk-theorem restated as the reduction claim (WAL, shadow-paging, CoW/log-structured hybrids all reduce to one atomic switch) with the reduction made a machine-checked obligation."
+  },
+  {
+   "finding": "ceiling-falsifier P1-8 (AX-21)",
+   "change": "The frozen statement now NAMES the superior transport per supreme-law rule 3: CakeML/Brack verified-compilation substrate strictly shrinks the TCB and is excluded only by the declared SBCL commitment (a scope choice, not a limit); substrate-comparison lemma added to the lean obligation; statement genericized over a declared toolchain commitment T."
+  },
+  {
+   "finding": "ceiling-falsifier P2-1 (AX-05)",
+   "change": "Semantic-support impossibility scoped to NL-vs-NL; formal-proposition support-verification moved INSIDE the ceiling as decidable derivation provenance (AX-01 x AX-04 composition); SUPPORT-formal theorem added to the lean obligation; appendix gains the rule-to-span admission-record arm."
+  },
+  {
+   "finding": "ceiling-falsifier P2-2 (AX-02)",
+   "change": "'Plan must exist as a committed artifact BEFORE execution' corrected to 'plan is a deterministic derivation from frozen inputs' (pre-commitment sufficient, not necessary); decidable class extended to declared-finite-domain VAL-class validation and sound+complete synthesis with existence/nonexistence certificates; T5 planner theorem added."
+  },
+  {
+   "finding": "ceiling-falsifier P2-3 (AX-17)",
+   "change": "Wall-clock ceiling raised from producer attestation to k-of-n external-time-authority bracketing (Roughtime-class, eIDAS qualified timestamps, timestamped witness cosignatures) \u2014 zero producer trust, residue relocated to the external quorum; producer-signed rate demoted to a typed lower rung; bracketing theorem with explicit quorum hypothesis added."
+  },
+  {
+   "finding": "ceiling-falsifier P2-4 (AX-19)",
+   "change": "Two rungs stated IN THE CEILING STATEMENT: structural local-invariant (rung 1, available now) and verified-perimeter (rung 2, strictly stronger, gated on AX-21 resources); Rice scoped to deciding arbitrary code, not verifying constrained proof-carrying code; conditional rung-2 obligation added; kind annotated MODEL_RELATIVE with rung-2 resource-bounding."
+  },
+  {
+   "finding": "ceiling-falsifier P2-5 (AX-18)",
+   "change": "'Irreducibly serial per transition' retracted; floor restated as batched amortized serialization ceil(n/b)*c_batch with O(1) amortized hashing per item and O(log n) proof material; amortization lemma added; statement and lean obligation updated."
+  },
+  {
+   "finding": "closure-attacker P1-8 (AX-07 clause b)",
+   "change": "Tamper-evidence clause amended to recompute over episode COMMITMENTS with salted per-leaf commitments and typed verifiable-redaction/erasure certificates, reconciling complete tamper-evidence with lawful-erasure duties (GDPR Art. 17 class); T1r redaction-soundness obligation added; recorded as an S2 lattice refinement in the relativity note."
+  },
+  {
+   "finding": "closure-attacker P2-14 (AX-13/AX-18 vs DIM-08)",
+   "change": "Internal inconsistency on succinct proofs resolved: the v2 assurance/cost split retains transparent succinct proofs as an equally-maximal assurance mode and records bounded-structure update-validity proofs (proof-carrying CRDT class) as implemented evidence that the linear cost floor is toolchain-relative."
+  },
+  {
+   "finding": "closure-attacker P2-12 (AX-22)",
+   "change": "Relativity note extended: inter-order composition (conflict-of-laws meta-rules as committed meta-rulebases over profiles, typed cross-order references, UNKNOWN for uncodified renvoi) recorded as inside the parametricity ceiling and delegated to the closure's DIM-15 family addition; composition theorem added to the lean obligation."
+  },
+  {
+   "finding": "instrument-and-honesty P1-5b (AX-07/AX-08/AX-12/AX-18 wording)",
+   "change": "'Single-writer' replaced throughout the frozen texts by 'single canonical serialization point (physical single writer, or machine-checked nonforking logical writer)', executing the pre-registered S2 lattice refinement before any verdict issues, so consensus-class candidates are rankable without gloss."
+  },
+  {
+   "finding": "instrument-and-honesty P2-2 (AX-04, AX-18)",
+   "change": "Merkle Theta(log n) claim scoped to 'optimal among hash-based schemes with no setup assumptions' with constant-size accumulators/vector commitments acknowledged under other assumption families; SNARK trusted-setup exclusion replaced by the honest toolchain-cost ground in AX-18."
+  },
+  {
+   "finding": "instrument-and-honesty P2-4 (AX-01)",
+   "change": "Theorem-count conflation fixed: admission theorems T1-T9 stated as 0/9 proved, part of the repo-wide 0/17 proof debt (0/13 Level-7 kept where it belongs in AX-21); same normalization applied in AX-12 and AX-20 appendices."
+  },
+  {
+   "finding": "instrument-and-honesty P2-5 (AX-04)",
+   "change": "The PAdES/CMS FEK-signature premise tagged as an UNVERIFIED capture-time hypothesis (evidence status at best VERIFIED_FROM_SECONDARY) with the typed fallback: if unsigned, clause (i) proceeds by corroboration and/or attested-channel capture only."
+  },
+  {
+   "finding": "instrument-and-honesty P1-3 / ceiling-falsifier consistency sweep",
+   "change": "All 'feasible today' / 'infeasible today' resource phrasing removed from ABSOLUTE clauses corpus-wide (AX-06, AX-10, AX-12, AX-13, AX-18); open-class negative certifications nowhere asserted \u2014 completeness claims are everywhere relative to committed registries, matching AX-10's committed-class discipline."
+  },
+  {
+   "finding": "NO-CHANGE justifications",
+   "change": "AX-15 and AX-16: no adversarial finding attacked their frozen content; changes limited to the universal split, design-neutralization, and hypothesis retyping. AX-15 gains only the kind-consistency cross-note with AX-11. Refutations issued: none \u2014 every finding touching this component was accepted and closed at its seat; no correction was found weaker than an available stronger conception, and where a critique named a stronger ceiling (AX-01, AX-10, AX-17, AX-20, AX-03, AX-14) the stronger form was adopted per the supreme law."
+  }
+ ]
+}

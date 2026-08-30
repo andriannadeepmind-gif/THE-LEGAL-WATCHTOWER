@@ -1,0 +1,52 @@
+L1.d civil-time frontier selection — exhaustive over 6000 (config, t) cases
+  SelectionSound            : HOLDS
+  NoGuessOnAmbiguity        : HOLDS
+  FrontierMonotoneInTime    : HOLDS
+  NoUnnecessaryUnknown      : HOLDS
+  mutation battery:
+    guess_on_ambiguity   vs NoGuessOnAmbiguity    : CAUGHT — 1900 guesses under ambiguity
+    nearest_checkpoint   vs SelectionSound        : CAUGHT — 2538 unsound selections
+    wall_clock           vs NoGuessOnAmbiguity    : CAUGHT — 1900 guesses under ambiguity
+    raw_bounds           vs NoUnnecessaryUnknown  : CAUGHT — 1108 refusals where a unique sound frontier existed
+    always_unknown       vs NoUnnecessaryUnknown  : CAUGHT — 3332 refusals where a unique sound frontier existed
+
+L1.d: PASS
+L2 closure evidence — exhaustive over 44 bounded cases
+  Conservation                                : HOLDS
+  TerminalDispositionDurable                  : HOLDS
+  AbsenceRequiresUniverseAndBasis             : HOLDS
+  CompletenessOnlyInSupportedSubset           : HOLDS
+  CorroborationRequiresEvidencedIndependence  : HOLDS
+  AttributionWithinBound                      : HOLDS
+  mutation battery:
+    silent_drop                  vs Conservation                                : CAUGHT
+    sampled_terminal             vs TerminalDispositionDurable                  : CAUGHT
+    absence_without_universe     vs AbsenceRequiresUniverseAndBasis             : CAUGHT
+    completeness_outside_subset  vs CompletenessOnlyInSupportedSubset           : CAUGHT
+    assume_independence          vs CorroborationRequiresEvidencedIndependence  : CAUGHT
+    over_attribute               vs AttributionWithinBound                      : CAUGHT
+
+L2: PASS
+L3 artifact lifecycle — exhaustive over 806 bounded cases
+  ArtifactImmutable                     : HOLDS
+  StatusIsFrontierIndexed               : HOLDS
+  DurableBindsCommitmentNotPlaintext    : HOLDS
+  ErasureRemovesRecoverableContent      : HOLDS
+  SemanticChangeRequiresImpactClosure   : HOLDS
+  mutation battery:
+    mutate_artifact            vs ArtifactImmutable                     : CAUGHT
+    status_frozen_at_issuance  vs StatusIsFrontierIndexed               : CAUGHT
+    plaintext_in_durable       vs DurableBindsCommitmentNotPlaintext    : CAUGHT
+    golden_corpus_only         vs SemanticChangeRequiresImpactClosure   : CAUGHT
+
+L3: PASS
+OperationEffect / composition obligations — exhaustive over 576 cases
+  DeclaredMatchesDerived          : HOLDS
+  UnknownIsTop                    : HOLDS
+  OverlapGeneratesObligation      : HOLDS
+  mutation battery:
+    trust_declared       vs DeclaredMatchesDerived          : CAUGHT
+    unknown_is_bottom    vs UnknownIsTop                    : CAUGHT
+    skip_overlap_test    vs OverlapGeneratesObligation      : CAUGHT
+
+FOOTPRINT: PASS

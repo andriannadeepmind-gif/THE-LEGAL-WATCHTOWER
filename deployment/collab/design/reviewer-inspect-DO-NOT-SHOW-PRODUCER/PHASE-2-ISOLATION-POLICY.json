@@ -1,0 +1,93 @@
+{
+  "schema": "watchtower/fresh-phase-2-isolation-policy/1",
+  "version": "1.0.0",
+  "epoch": "FRESH-PHASE-2-EPOCH-1",
+  "policy_status": "FROZEN_BEFORE_LAUNCH",
+  "purpose": "Reduce anchoring while producing a new frontier candidate. Isolation qualifies the independence claim; final mathematical optimality never depends on a producer's self-report of blindness.",
+  "launch_precondition": {
+    "required_workspace": "A new empty Code workspace with no repository connection or mounted repository.",
+    "baseline_connected_session_may_run": false,
+    "fallback_if_platform_requires_repository": "Use a newly created empty study-only repository containing only the blind producer input capsule. It must have no remote, submodule, inherited history, object database, cache or filesystem path connected to the baseline implementation.",
+    "fail_if_visible": [
+      "any checkout, object database, branch, source, test, documentation or artifact from the baseline implementation",
+      "any earlier study-phase input or output",
+      "any previous proposed architecture, review, remediation, checker or acceptance artifact"
+    ]
+  },
+  "permitted_inputs": [
+    "the exact files sealed in PHASE-2-BLIND-PRODUCER-INPUT.zip",
+    "public primary sources needed for current frontier research",
+    "files created by the producer inside the fresh output workspace"
+  ],
+  "forbidden_inputs": [
+    "the baseline repository or any mirror, checkout, Git object, branch, source, test, documentation or issue",
+    "Phase-1 artifacts, summaries or findings",
+    "all prior Phase-2 outputs, reviews, checkers, negative controls and candidate architectures",
+    "the reviewer-only frozen-gates capsule or its contents",
+    "any hidden reviewer implementation beyond the public rules included in the blind capsule",
+    "prior conversations, memory, session summaries, personal-context retrieval, connected file stores or code-search connectors",
+    "any architecture answer supplied by the creator or another model"
+  ],
+  "forbidden_actions": [
+    "open",
+    "read",
+    "search",
+    "list",
+    "enumerate",
+    "hash",
+    "stat",
+    "quote",
+    "summarize",
+    "infer from filenames",
+    "use through a subagent or connector"
+  ],
+  "public_network_rule": "Public research is permitted only for primary specifications, official manuals/source, official legal sources and research papers. Accessed URLs and supported claims must be recorded contemporaneously.",
+  "first_action_gate": {
+    "required": true,
+    "action": "Before architecture research or design, create PHASE-2-ENVIRONMENT-ATTESTATION.json and PHASE-2-ACCESS-LEDGER.jsonl from the visible empty workspace and sealed input inventory.",
+    "must_record": [
+      "session identifier",
+      "working directory",
+      "visible top-level inputs",
+      "whether any Git repository or remote is present",
+      "whether any forbidden path or connector is mounted or available",
+      "blind input capsule SHA-256",
+      "reviewer capsule commitment SHA-256"
+    ]
+  },
+  "contemporaneous_ledger": {
+    "required": true,
+    "file": "PHASE-2-ACCESS-LEDGER.jsonl",
+    "record_each": [
+      "local filesystem read or enumeration",
+      "network source access",
+      "tool or subagent invocation",
+      "input or output file creation",
+      "attempted access denied by policy"
+    ],
+    "fields": [
+      "sequence",
+      "timestamp_utc",
+      "actor",
+      "tool_class",
+      "target",
+      "purpose",
+      "result",
+      "content_read",
+      "policy_class"
+    ],
+    "append_only": true
+  },
+  "incident_rule": {
+    "any_forbidden_input_visible_in_preflight_before_work": "STOP_BEFORE_ARCHITECTURE_WORK_AND_REPROVISION_ONCE",
+    "forbidden_content_exposure_discovered_after_work": "SET_BLINDNESS_STATUS_TO_FAILED_AND_PRESERVE_THE_CANDIDATE_AS_NONBLIND_INPUT",
+    "missing_or_incomplete_access_evidence_after_work": "SET_BLINDNESS_STATUS_TO_UNVERIFIED",
+    "effect_on_final_ceiling": "Neither FAILED nor UNVERIFIED can support a blind-independence claim. Neither can establish or refute final optimality; the later universal proof gate remains decisive.",
+    "no_repeated_phase_2_rerun_for_logging_defects": true
+  },
+  "repository_rule": {
+    "baseline_repository_writes": 0,
+    "study_repo_writes": "Only if the platform requires a new empty study-only repo; then only sealed blind inputs and fresh outputs are permitted.",
+    "phase_3_reveal": "The baseline repository normally becomes visible only after the fresh Phase-2 producer has stopped and its submission archive hash is fixed. Any deviation changes the blindness label, not the mathematical success theorem."
+  }
+}

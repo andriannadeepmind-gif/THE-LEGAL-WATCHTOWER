@@ -1,0 +1,558 @@
+{
+ "schema": "lawmax-defect-and-gap-obligations/1",
+ "phase": "phase-1",
+ "source_commit": "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03",
+ "source_tree": "23b7a6f4450f50d151d38e13020bee9872e73bcd",
+ "historical_baseline_commit": "57c0cd868c80f87df8e298c9aa75b8ccf2503391",
+ "corroboration_commit": "2b910271f11fc462eee1378fb9a77623c791fcbf",
+ "generated_at_utc": "2026-08-26T00:36:43Z",
+ "worktree_clean_at_generation": true,
+ "evidence_classes": {
+  "MECHANICALLY-PROVED": 73,
+  "EMPIRICALLY-REPRODUCED": 2,
+  "SOURCE-GROUNDED-INFERENCE": 23,
+  "UNRESOLVED": 6
+ },
+ "self_sha256_convention": "sha256 of this file with the 64 hex characters of self_sha256 replaced by 64 '0'.",
+ "self_sha256": "258469b0d829d8fd46f8fd7c1241694a941467bbf67ed8c03cfbdf822bf7ef43",
+ "counts": {
+  "defects_total": 27,
+  "by_severity": {
+   "P0": 3,
+   "P1": 11,
+   "P2": 13
+  },
+  "by_kind": {
+   "dead-authority": 1,
+   "declared-not-implemented": 2,
+   "contradiction": 3,
+   "false-green": 1,
+   "broken-deployment": 1,
+   "functional-regression": 1,
+   "unguarded-boundary": 1,
+   "unverifiable-guarantee": 2,
+   "residual-bypass": 1,
+   "dead-code": 1,
+   "stale-artefact": 1,
+   "lost-contract-text": 1,
+   "supply-chain": 1,
+   "quickstart-broken": 1,
+   "orphan": 1,
+   "empty-contract": 1,
+   "divergent-identity": 1,
+   "architectural-bottleneck": 1,
+   "platform-lock": 1,
+   "analytic-result": 1,
+   "stale-binding": 1,
+   "misstated-fact": 1,
+   "never-executed-gate": 1
+  },
+  "obligations_total": 29,
+  "unresolved_evidence_rows": 6
+ },
+ "standing": "Every defect below is grounded in a citation to the admitted commit and carries the evidence rows that establish it. None is imported on another study's authority: the twelve that the Claude Phase-1A lane also raised were re-verified here against e621dbe1 before being recorded, and two of those are recorded in corrected form.",
+ "not_a_defect_note": "Much of what this system declares about itself is unusually honest: the completion matrix, the proof manifest, the storage API and the capture protocol all state plainly what is not done, and one of them retracts its own strongest claim. That honesty is why the P0 findings could be established at all. It is recorded here so the successor design does not mistake candour for a defect, nor a defect for candour.",
+ "defects": [
+  {
+   "id": "DEF-01",
+   "severity": "P0",
+   "kind": "dead-authority",
+   "title": "The system has no working authority path in either direction",
+   "statement": "Every legacy authority seat is disarmed and fails closed, and the admission kernel that was to replace them is declared specification-only and is not implemented in any language. The authority-signer service exists solely to refuse. Between the two, nothing can promote a candidate to a published release.",
+   "evidence": [
+    "EV-T-002",
+    "EV-T-003",
+    "EV-T-005",
+    "EV-K-001",
+    "EV-K-002",
+    "EV-K-003"
+   ],
+   "honest_note": "This is a deliberate, documented state, not a concealed one. The system says so plainly in three separate places. It is recorded here as a P0 obligation because the architecture that must dominate it has to supply an authority path, not because the state was hidden.",
+   "obligation": "OBL-01"
+  },
+  {
+   "id": "DEF-02",
+   "severity": "P0",
+   "kind": "declared-not-implemented",
+   "title": "Zero of thirteen Level-7 requirements are proved and zero of seventeen theorems",
+   "statement": "0/13 requirements proved (3 implemented-not-proved, 7 externally blocked, 3 not started) and 0/17 theorems proved, all seventeen blocked on absent toolchains. The honesty gates confirm the matrix and manifest are internally consistent; consistency is not achievement.",
+   "evidence": [
+    "EV-K-004",
+    "EV-K-005",
+    "EV-K-006"
+   ],
+   "obligation": "OBL-02"
+  },
+  {
+   "id": "DEF-03",
+   "severity": "P0",
+   "kind": "contradiction",
+   "title": "Hermetic construction is claimed in three contracts and refuted by the build",
+   "statement": "Dockerfile:5, DEPENDENCY-CONTRACT.md:233 and PROVENANCE.yaml:292-294 assert a hermetic, no-network build; the Dockerfile runs apt-get update at lines 41, 68, 241 and 363, the last inside the final runtime stage. Under --network=none the first such stage fails.",
+   "evidence": [
+    "EV-C-008",
+    "EV-C-007"
+   ],
+   "corroboration": "Independently raised by the Claude Phase-1A contracts lane and confirmed here against the admitted commit.",
+   "obligation": "OBL-03"
+  },
+  {
+   "id": "DEF-04",
+   "severity": "P1",
+   "kind": "false-green",
+   "title": "The completion matrix contradicts itself about executed results",
+   "statement": "Row 12 records level7-disarm 9/0 and transparency-log 23/0; row 5 records 20/0 and 21/0 for the same suites. Static enumeration at the target commit gives 20 and 21, so row 5 is current and row 12 is stale — 23 is the value that held at the historical baseline. The matrix's own verifier cannot detect this: for a non-proved row it requires only that the result string exist and not contain 'NOT-EXECUTED'.",
+   "second_instance": "Row 5 also records producer-topology 24/0. On a zero-failure run the checker emits exactly 17 assertions: one for the declared proof-runner exception, one per remaining service, two summary assertions and one per mutation (1 + 5 + 2 + 9). Both terms are fixed by the tree — six services in the compose file, nine mutate() calls in the checker — so 24/0 is arithmetically impossible, and the collaboration record independently states 17/0 for the same run. Two of row 5's other figures are statically corroborated by the code (adversarial 33/0 against EXPECTED_SCENARIOS = 33; mutation-witness 19/0 against 21 mutants less 3 declared non-observable, plus one positive witness). Row 5 is therefore mostly current and still carries at least one number the code cannot produce.",
+   "evidence": [
+    "EV-N-004",
+    "EV-N-005",
+    "EV-N-006",
+    "EV-N-019"
+   ],
+   "obligation": "OBL-04"
+  },
+  {
+   "id": "DEF-05",
+   "severity": "P1",
+   "kind": "broken-deployment",
+   "title": "The main service carries a malformed tmpfs option",
+   "statement": "docker-compose.yml:17 ends '- /tmp:size=256m,mode=1777\"' with a stray double quote absent from the other four tmpfs blocks. YAML accepts it as a plain scalar, so it fails at container start, on the service the documentation tells operators to run.",
+   "evidence": [
+    "EV-N-001",
+    "EV-N-003"
+   ],
+   "corroboration": "Found independently here and by the Claude Phase-1A lane.",
+   "obligation": "OBL-05"
+  },
+  {
+   "id": "DEF-06",
+   "severity": "P1",
+   "kind": "functional-regression",
+   "title": "The ingestion service lost the command that makes it ingest",
+   "statement": "The pre-delta ingestion service declared command: [\"--run-ingestion\"]. The rewritten block has no command key, so it would run the image default. It also lost networks, dns, restart, mem_limit, cpus, depends_on and ORCHESTRATOR_CORPUS, while the comment above it still says the service needs outbound network access.",
+   "evidence": [
+    "EV-N-002",
+    "EV-N-003"
+   ],
+   "obligation": "OBL-06"
+  },
+  {
+   "id": "DEF-07",
+   "severity": "P1",
+   "kind": "unguarded-boundary",
+   "title": "The proof runner is the least constrained service in the deployment",
+   "statement": "authority-v2-proofs runs privileged, mounts the whole repository read-write, uses an unpinned base image while the Dockerfile pins a digest, and apt-get installs its toolchain at run time. The topology proof exempts it by name, so none of that proof's own constraints apply to the service that produces the boundary proofs.",
+   "evidence": [
+    "EV-N-011"
+   ],
+   "obligation": "OBL-07"
+  },
+  {
+   "id": "DEF-08",
+   "severity": "P1",
+   "kind": "unverifiable-guarantee",
+   "title": "Blockchain and timestamp anchoring verify a status code, not the bytes",
+   "statement": "The verification path discards the response body and returns (= status 200) for Arweave and IPFS; the Ethereum branch checks a receipt status field. Nothing checks that the anchored bytes hash to the claimed value, while SEMANTIC-CONTRACT states a guarantee of tamper detection.",
+   "evidence": [
+    "EV-C-012"
+   ],
+   "obligation": "OBL-08"
+  },
+  {
+   "id": "DEF-09",
+   "severity": "P1",
+   "kind": "declared-not-implemented",
+   "title": "A declared gate exists only as a table row",
+   "statement": "GATE-4 'Pipeline integrity (no subprocess)' appears nowhere but README.md:304, while source/pdf-authority.lisp launches five subprocesses and its own header denies doing so, and the runtime image installs the very binaries it calls. README.md:253 likewise lists source/gate-guards.lisp, which does not exist.",
+   "evidence": [
+    "EV-C-004",
+    "EV-C-005",
+    "EV-C-006",
+    "EV-C-007"
+   ],
+   "obligation": "OBL-09"
+  },
+  {
+   "id": "DEF-10",
+   "severity": "P2",
+   "kind": "residual-bypass",
+   "title": "The proof census classifies by file extension while claiming not to",
+   "statement": "run-proofs.sh:71 recognises stray code outside proofs/ by the allowlist *.py|*.sh|*.lisp, so an extensionless executable or any other extension is dropped from classification. PROOF-CENSUS.txt:31-36 states that classification depends on neither name nor execute bit. The adversarial test plants only .py and .lisp strays, so the gap is untested.",
+   "evidence": [
+    "EV-N-007",
+    "EV-N-008"
+   ],
+   "residual_today": "Benign at this commit: all 28 non-code files under authority-v2/ outside proofs/ are data or specification.",
+   "obligation": "OBL-10"
+  },
+  {
+   "id": "DEF-11",
+   "severity": "P2",
+   "kind": "dead-code",
+   "title": "A proof probe that has no caller and could not succeed if it had one",
+   "statement": "Two probes are dead in the same two ways. probe-attest-refusal.lisp and probe-producer-under-uid.lisp each have no caller anywhere in the tree — a search across all twelve authority-v2 probes shows the other ten are called — and each funcalls RUN-ATTEST-RELEASE, which the same delta deleted and which the disarm suite asserts unbound. Reached, they would raise a type error and report NOT-REFUSED rather than their success token.",
+   "evidence": [
+    "EV-N-009",
+    "EV-N-010",
+    "EV-N-017"
+   ],
+   "obligation": "OBL-11"
+  },
+  {
+   "id": "DEF-12",
+   "severity": "P2",
+   "kind": "contradiction",
+   "title": "Two specifications disagree about where their own check lives",
+   "statement": "canonical-profile.json:3 names authority-v2/tests/capture-seat-differential-test.sh; the file is at authority-v2/proofs/. CAPTURE-PROTOCOL.sexp cites the correct path.",
+   "evidence": [
+    "EV-N-012"
+   ],
+   "obligation": "OBL-12"
+  },
+  {
+   "id": "DEF-13",
+   "severity": "P2",
+   "kind": "stale-artefact",
+   "title": "Published artefacts pin a commit that is neither study commit",
+   "statement": "deployment/LAWMAX-REPO-GRAPH.json pins 85b8f7f1658d9348ede4dbd116642fcc7b9aa5dd.",
+   "evidence": [
+    "EV-N-013"
+   ],
+   "obligation": "OBL-14"
+  },
+  {
+   "id": "DEF-14",
+   "severity": "P2",
+   "kind": "lost-contract-text",
+   "title": "The suite-census ratchet rule lost its only written statement",
+   "statement": "The delta deleted the census header that stated the rule (removal or addition of a suite must turn the build red) while adding one entry.",
+   "evidence": [
+    "EV-N-014"
+   ],
+   "obligation": "OBL-15"
+  },
+  {
+   "id": "DEF-15",
+   "severity": "P1",
+   "kind": "supply-chain",
+   "title": "The SBOM step executes unpinned remote code",
+   "statement": "The workflow that produces the supply-chain manifest pipes an unpinned install.sh from raw.githubusercontent.com into a shell.",
+   "evidence": [
+    "EV-C-011"
+   ],
+   "obligation": "OBL-16"
+  },
+  {
+   "id": "DEF-16",
+   "severity": "P1",
+   "kind": "contradiction",
+   "title": "Quicklisp is forbidden in three places and downloaded in a fourth",
+   "statement": "Dockerfile:108 and build.lisp:11 declare no Quicklisp; Dockerfile.test downloads it over the network as root and quickloads fiveam.",
+   "evidence": [
+    "EV-C-010"
+   ],
+   "obligation": "OBL-17"
+  },
+  {
+   "id": "DEF-17",
+   "severity": "P2",
+   "kind": "quickstart-broken",
+   "title": "The documented quickstart cannot build by default",
+   "statement": "compose passes GIT_COMMIT default 'dev'; the Dockerfile fails the build unless it is exactly 40 hex characters. It succeeds only if the operator exports GIT_COMMIT, which the quickstart does not say.",
+   "evidence": [
+    "EV-C-009"
+   ],
+   "obligation": "OBL-18"
+  },
+  {
+   "id": "DEF-18",
+   "severity": "P2",
+   "kind": "orphan",
+   "title": "An ASDF system with no components and no executable reference",
+   "statement": "orchestrator-tooling.asd declares :components () and is referenced only from two documents; no system depends on it and no build, workflow or compose file loads it.",
+   "evidence": [
+    "EV-C-013"
+   ],
+   "obligation": "OBL-19"
+  },
+  {
+   "id": "DEF-19",
+   "severity": "P2",
+   "kind": "empty-contract",
+   "title": "An archive lockfile that locks nothing",
+   "statement": "deps.archives.lock is 20 bytes: a single comment line.",
+   "evidence": [
+    "EV-C-014"
+   ],
+   "obligation": "OBL-20"
+  },
+  {
+   "id": "DEF-20",
+   "severity": "P2",
+   "kind": "divergent-identity",
+   "title": "The system disagrees with itself about its own version",
+   "statement": "SYSTEM-HIERARCHY.txt says v1.3; orchestrator.asd and the Dockerfile say 1.2.0.",
+   "evidence": [
+    "EV-C-015"
+   ],
+   "obligation": "OBL-21"
+  },
+  {
+   "id": "DEF-21",
+   "severity": "P1",
+   "kind": "architectural-bottleneck",
+   "title": "The entire self-model of capability lives in one subsystem",
+   "statement": "All 36 declare-capability! sites are in systems/orchestrator-cli/, and authority-v2 declares none. The system's account of what it can do is the CLI's account, and the authority architecture is absent from it.",
+   "evidence": [
+    "EV-T-005"
+   ],
+   "obligation": "OBL-22"
+  },
+  {
+   "id": "DEF-22",
+   "severity": "P1",
+   "kind": "unverifiable-guarantee",
+   "title": "No published release conforms to the epoch that is supposed to govern it",
+   "statement": "All 24 evaluated legacy releases fail all six conformance conjuncts; not one conjunct passes anywhere. The adoption certificate that records this is itself unsigned, with canonical encoding pending, and confers no authority.",
+   "evidence": [
+    "EV-V-007",
+    "EV-V-011"
+   ],
+   "obligation": "OBL-23"
+  },
+  {
+   "id": "DEF-23",
+   "severity": "P2",
+   "kind": "platform-lock",
+   "title": "The capture reference implementation cannot run on the development platform",
+   "statement": "capture.py requires Linux 5.6 or newer for openat2 and refuses rather than degrading. On this Windows checkout the whole capture boundary is untestable outside a container.",
+   "evidence": [
+    "EV-V-005"
+   ],
+   "obligation": "OBL-24"
+  },
+  {
+   "id": "DEF-25",
+   "severity": "P2",
+   "kind": "analytic-result",
+   "title": "A conformance conjunct is a constant, so its verdict is guaranteed",
+   "statement": "conformance-check.py:82 sets C5 to a hardcoded False with a fixed reason. The 0/24 headline is therefore assured on that conjunct regardless of evidence. The other five conjuncts are genuine filesystem checks and all five fail on all 24 releases independently, so the substantive conclusion survives — but the number as printed is not wholly empirical.",
+   "evidence": [
+    "EV-N-015",
+    "EV-V-007"
+   ],
+   "obligation": "OBL-27"
+  },
+  {
+   "id": "DEF-26",
+   "severity": "P2",
+   "kind": "stale-binding",
+   "title": "The genesis certificate binds a commit eight commits behind its own tree",
+   "statement": "The sequence-0 adoption certificate records source_commit b26abbd68, commit 5 of the 13-commit delta. Nothing reads the field back, so nothing would notice. The archive root it binds remains materially valid, because zero paths under output/, output_run1/ or releases/ changed across the whole delta.",
+   "evidence": [
+    "EV-N-016",
+    "EV-D-004"
+   ],
+   "obligation": "OBL-28"
+  },
+  {
+   "id": "DEF-27",
+   "severity": "P2",
+   "kind": "misstated-fact",
+   "title": "The one-seat consolidation misstates its own size, twice and differently",
+   "statement": "The exact idiom occurred 17 times at the historical target and the delta added exactly 17 output-root call sites. source/paths.lisp:145 says five; dialogue/0125-claude.md says thirteen. Neither is 17. The consolidation itself is real and correct; only its account of itself is wrong.",
+   "evidence": [
+    "EV-N-018"
+   ],
+   "obligation": "OBL-29"
+  },
+  {
+   "id": "DEF-24",
+   "severity": "P1",
+   "kind": "never-executed-gate",
+   "title": "The CI job that now gates release has never run",
+   "statement": "authority-v2-boundary was added and tag-release was made to depend on it, but the completion matrix records zero Actions runs and zero status contexts. Every recorded proof number is a local, unwitnessed number.",
+   "evidence": [
+    "EV-V-017",
+    "EV-U-001"
+   ],
+   "obligation": "OBL-25"
+  }
+ ],
+ "obligations_for_the_design_phase": [
+  {
+   "id": "OBL-01",
+   "from_defect": "DEF-01",
+   "must": "Supply a working, verifiable authority path.",
+   "dominance_test": "The successor architecture must exhibit an implemented decision procedure that turns a candidate into a published release, and must show what refuses it. A specification that no code realises does not discharge this."
+  },
+  {
+   "id": "OBL-02",
+   "from_defect": "DEF-02",
+   "must": "Either discharge the blocked proofs or replace the claim with one that can be discharged with tools that exist.",
+   "dominance_test": "For each load-bearing requirement, name the artefact that would move it to proved and the environment in which that artefact can be produced. 'Blocked on an absent toolchain' may not be the terminal state of a load-bearing requirement in the successor design."
+  },
+  {
+   "id": "OBL-03",
+   "from_defect": "DEF-03",
+   "must": "Make the build match its own hermeticity contract, or withdraw the contract.",
+   "dominance_test": "Either --network=none builds, or no document asserts that it does."
+  },
+  {
+   "id": "OBL-04",
+   "from_defect": "DEF-04",
+   "must": "Bind recorded results to the code they describe.",
+   "dominance_test": "A recorded execution result must carry the tree or blob identity it was produced against, and the honesty gate must reject a result whose identity does not match the committed tree."
+  },
+  {
+   "id": "OBL-05",
+   "from_defect": "DEF-05",
+   "must": "Validate deployment definitions, not only their security shape.",
+   "dominance_test": "A malformed mount option and a missing command must both be caught before release."
+  },
+  {
+   "id": "OBL-06",
+   "from_defect": "DEF-06",
+   "must": "Restore ingestion's entry point and its network configuration, or delete the service.",
+   "dominance_test": "No service may exist whose declared purpose its definition cannot perform."
+  },
+  {
+   "id": "OBL-07",
+   "from_defect": "DEF-07",
+   "must": "Constrain the proof runner, or make its exemption explicit and bounded.",
+   "dominance_test": "The component that produces the boundary proofs must not be the component with the fewest boundaries."
+  },
+  {
+   "id": "OBL-08",
+   "from_defect": "DEF-08",
+   "must": "Verify anchored content, not transport status, or downgrade the guarantee to what the code performs.",
+   "dominance_test": "Every use of the word GUARANTEE must name the code that establishes it."
+  },
+  {
+   "id": "OBL-09",
+   "from_defect": "DEF-09",
+   "must": "Every declared gate must have an implementation or be withdrawn.",
+   "dominance_test": "A gate table row with no executable behind it is a false statement about the system's defences."
+  },
+  {
+   "id": "OBL-10",
+   "from_defect": "DEF-10",
+   "must": "Classify by content and mode, not by extension, or narrow the census's claim.",
+   "dominance_test": "An extensionless executable planted outside the entry directory must turn the census red."
+  },
+  {
+   "id": "OBL-11",
+   "from_defect": "DEF-11",
+   "must": "Delete or repair the dead probe.",
+   "dominance_test": "A file may not be simultaneously accounted for by the census and unreachable by any runner."
+  },
+  {
+   "id": "OBL-12",
+   "from_defect": "DEF-12",
+   "must": "Make the two specifications agree on the path.",
+   "dominance_test": "Cross-references between contracts must resolve."
+  },
+  {
+   "id": "OBL-13",
+   "from_defect": "DEF-09",
+   "must": "Audit GATE-1, GATE-2, GATE-3 and GATE-5 as GATE-4 was audited.",
+   "dominance_test": "This phase checked only GATE-4 exhaustively; the other four are an open residual, not a clean bill."
+  },
+  {
+   "id": "OBL-14",
+   "from_defect": "DEF-13",
+   "must": "Regenerate or remove the stale repository graph.",
+   "dominance_test": "No published artefact may pin a commit that is not in the release's own lineage."
+  },
+  {
+   "id": "OBL-15",
+   "from_defect": "DEF-14",
+   "must": "Restore the ratchet rule's written statement.",
+   "dominance_test": "A mechanism whose rule exists nowhere in writing cannot be reviewed."
+  },
+  {
+   "id": "OBL-16",
+   "from_defect": "DEF-15",
+   "must": "Pin the SBOM tooling by digest.",
+   "dominance_test": "No supply-chain workflow may execute code it has not pinned."
+  },
+  {
+   "id": "OBL-17",
+   "from_defect": "DEF-16",
+   "must": "Remove the Quicklisp path or withdraw the claim.",
+   "dominance_test": "A prohibition asserted in three files may not be violated in a fourth."
+  },
+  {
+   "id": "OBL-18",
+   "from_defect": "DEF-17",
+   "must": "Make the documented quickstart work as written.",
+   "dominance_test": "The first command in the README must succeed on a clean clone."
+  },
+  {
+   "id": "OBL-19",
+   "from_defect": "DEF-18",
+   "must": "Delete the orphan system or give it components.",
+   "dominance_test": "No .asd may persist that nothing loads and nothing populates."
+  },
+  {
+   "id": "OBL-20",
+   "from_defect": "DEF-19",
+   "must": "Populate or delete deps.archives.lock.",
+   "dominance_test": "An empty lockfile is worse than none: it looks like a control."
+  },
+  {
+   "id": "OBL-21",
+   "from_defect": "DEF-20",
+   "must": "One version seat.",
+   "dominance_test": "The system must be able to say its own version once."
+  },
+  {
+   "id": "OBL-22",
+   "from_defect": "DEF-21",
+   "must": "Make the capability register cover the authority architecture.",
+   "dominance_test": "A gate plenary over the register must be capable of failing because of an authority defect."
+  },
+  {
+   "id": "OBL-23",
+   "from_defect": "DEF-22",
+   "must": "Decide what the 24 legacy releases are: evidence, or law.",
+   "dominance_test": "The successor design must state, for every already-published artefact, whether it carries authority and by what act."
+  },
+  {
+   "id": "OBL-24",
+   "from_defect": "DEF-23",
+   "must": "Make the boundary testable where it is developed, or declare the platform.",
+   "dominance_test": "A safety boundary that only one platform can exercise is a boundary only that platform has."
+  },
+  {
+   "id": "OBL-25",
+   "from_defect": "DEF-24",
+   "must": "Obtain one independent green execution before any number is treated as evidence.",
+   "dominance_test": "No count in the completion matrix may be cited as evidence until an execution outside the author's machine has produced it."
+  },
+  {
+   "id": "OBL-27",
+   "from_defect": "DEF-25",
+   "must": "A checker's conjunct must test something.",
+   "dominance_test": "No conformance result may rest on a constant; a property that cannot be tested yet must be reported as untested, not as failed."
+  },
+  {
+   "id": "OBL-28",
+   "from_defect": "DEF-26",
+   "must": "Bind genesis evidence to the tree it ships in, and check the binding.",
+   "dominance_test": "Regenerating the certificate on a different commit must change it, and some mechanism must read the field back."
+  },
+  {
+   "id": "OBL-29",
+   "from_defect": "DEF-27",
+   "must": "Let the code count itself.",
+   "dominance_test": "Where a consolidation states how much it consolidated, the number must be derived, not written by hand."
+  },
+  {
+   "id": "OBL-26",
+   "from_defect": null,
+   "must": "Repair the baseline's own evidence discipline in the successor study.",
+   "dominance_test": "Every substantive claim must resolve to an evidence record inside the artifact set that carries it. The admitted baseline's headline pathology figures did not (EV-P-005, EV-P-006); they had to be re-derived here."
+  }
+ ]
+}

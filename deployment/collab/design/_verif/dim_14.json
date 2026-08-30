@@ -1,0 +1,18 @@
+{
+ "id": "DIM-15",
+ "name": "Cross-legal-order generality (AX-22)",
+ "families": [
+  "single-order-hardcoded: one legal order's constants baked into trusted mechanism code",
+  "profile-parametric-noninterference: every trusted mechanism a single function of a hash-committed legal-order profile (article ranges, publisher keys, citation grammar, deontic lexicon, calendar), with a noninterference theorem that no trusted decision reads un-profiled jurisdiction facts; inexpressible orders typed UNKNOWN (the AX-22 guarantee profile; absorbs: cross-order portability harness/benchmark candidate)",
+  "single-calculus-multi-order: one formal legal calculus instantiated across structurally distinct orders (absorbs: extended-Catala German/US/cross-jurisdictional demonstrations, LogiKEy logic-pluralism)",
+  "profile-composition-conflict-of-laws-meta-rules: reasoning ACROSS orders inside one derivation \u2014 typed cross-order references, choice-of-law rules as a committed meta-rulebase over legal-order profiles (themselves codified law, hence formalizable), foreign-law proof as typed evidence obligations, renvoi chains bounded and typed; uncodified renvoi and unprofiled foreign orders type UNKNOWN (family added per CA P2-12: cross-border matters are neither a profile swap nor one calculus over separate orders)"
+ ],
+ "eliminations": [
+  {
+   "family": "single-order-hardcoded",
+   "lemma_kind": "DOMINANCE_CONJECTURE",
+   "retained_representative": "K-B0-SHIPPED (Greek constants at named seats) and K-COM (per-order products)",
+   "lemma": "Pre-registered dominance conjecture on AX-22: R1-R2 vs R3-R5 attainable by data extraction of already-localized constants; the neutral lower layers already exist, so parametrization is conjectured to cost no other axis. The shipped tree's Greece-coupled seats (the B0 map enumerates every Greek constant and its seat) are carried as an open obligation against K-B0-SHIPPED at their seats, stated, not hidden. Adjudicated by full verdicts against the retained representatives."
+  }
+ ]
+}

@@ -1,0 +1,50 @@
+{
+  "schema": "watchtower/study-role-separation/1",
+  "version": "1.0.0",
+  "roles": [
+    {
+      "role": "CREATOR_COORDINATOR",
+      "may_see": ["outer freeze bundle", "both capsule hashes", "all phase outputs"],
+      "may_do": ["approve immutable hashes", "provision clean environments", "route sealed artifacts"],
+      "may_not_do": ["supply an architecture answer to the blind producer", "rewrite frozen gates after output"]
+    },
+    {
+      "role": "FRESH_PHASE_2_PRODUCER",
+      "may_see": ["blind producer capsule", "permitted public primary sources"],
+      "may_do": ["produce a blind architecture candidate", "report PHASE_2_BLOCKED"],
+      "may_not_do": ["see B0 or prior study", "see reviewer capsule", "self-accept", "begin Phase 3"]
+    },
+    {
+      "role": "PHASE_2_INDEPENDENT_REVIEWER",
+      "may_see": ["frozen reviewer capsule", "frozen producer submission", "complete retained producer transcript"],
+      "may_do": ["apply only pre-frozen gates", "issue PHASE_2_ACCEPTED_FRESH_BLIND_EPOCH or exact blocker"],
+      "may_not_do": ["edit producer artifacts", "weaken or tune gates", "begin Phase 3"]
+    },
+    {
+      "role": "PHASE_3_DOMINANCE_JUDGE",
+      "may_see": ["accepted blind Phase 2", "B0 and Phase 1", "FOC-15 freeze objects"],
+      "may_do": ["compare and generate challengers under the frozen order"],
+      "may_not_do": ["change FOC-15/FOC-16 policy", "certify the final ceiling"]
+    },
+    {
+      "role": "PHASE_4_SYNTHESIZER",
+      "may_see": ["Phase-3 evidence and admitted contenders"],
+      "may_do": ["construct the strongest incumbent", "reopen affected obligations"],
+      "may_not_do": ["prune without certificate", "declare finality"]
+    },
+    {
+      "role": "PHASE_5_RED_TEAM",
+      "may_see": ["frozen domain and all incumbents"],
+      "may_do": ["escalate across every canonical class and attack operator"],
+      "may_not_do": ["stop successfully on a fixed cap", "upgrade UNKNOWN", "ignore an incomparable challenger"]
+    },
+    {
+      "role": "PHASE_6_REPLICATOR_A_OR_B",
+      "may_see": ["sealed proof inputs required for clean-room reproduction"],
+      "may_do": ["independently rebuild and verify proof objects"],
+      "may_not_do": ["share working state with the other replicator before both commit results"]
+    }
+  ],
+  "session_rule": "Producer, reviewer, judge, synthesizer, red team and each replicator use distinct sessions. A fork, resume or inherited subagent is not an independent role.",
+  "acceptance_rule": "No actor accepts its own produced artifact."
+}

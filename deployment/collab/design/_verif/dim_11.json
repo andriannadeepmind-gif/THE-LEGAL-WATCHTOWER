@@ -1,0 +1,33 @@
+{
+ "id": "DIM-12",
+ "name": "Ignorance handling (AX-09, AX-02 residue)",
+ "families": [
+  "silent-guessing: fluent completion over gaps; uncertainty unreported",
+  "uncalibrated-self-confidence: model-reported confidence as the trusted uncertainty signal",
+  "heuristic-flagging: some conflicts flagged with no coverage guarantee",
+  "typed-unknown-trichotomy-with-census: every query returns PASS+cert, FAIL+counter-cert, or typed UNKNOWN from a CLOSED committed enumeration of unknowability causes; positively-proven coverage census; UNKNOWN terminal EXCEPT via the v2 certified-invariance carve-out \u2014 a derived verdict provably invariant over all completions of an UNKNOWN input is KNOWN-with-stability-certificate, the fourth verdict branch the v2 AX-09 ceiling adds (CF P0-3); absence of such a certificate leaves UNKNOWN standing, and nothing else ever upgrades it (absorbs: Walton-Sartor formally-undetermined interpretive status, oracle-coverage certification candidate \u2014 certifying the checking oracle's own completeness so 'verifier blind' is distinguished from 'model wrong', per the Ukrainian citation-graph 59% lesson)",
+  "conformal-statistical-annotation-tier: distribution-free abstention/back-off with certified error rates layered over the non-formalizable residue, with known impossibility bounds for structured outputs (arXiv 2606.29054) \u2014 annotates but never upgrades a typed UNKNOWN to a trusted pass (absorbs: two-tier certificate scheme candidate, calibrated uncertainty over argumentation semantics candidate, abstention-coupled-to-transactional-rollback/escalation candidate via DIM-10)",
+  "exact-stability-computation: decidable 'which unknowns can flip this outcome' analysis on the result model, naming what to investigate next (absorbs: van Woerkom stability/relevance machinery). CONSISTENCY NOTE (CF P0-3 closed at its seat): under v1's unconditional unknown_rule(4) this family's output \u2014 a KNOWN fact derived over UNKNOWN inputs \u2014 was forbidden by the very freeze that absorbed it into K-SUP; the v2 certified-invariance carve-out resolves the contradiction IN THE FAMILY'S FAVOR: its stability certificates are precisely the KNOWN-with-stability-certificate discharge, offline-recheckable, quantified over all completions (H2 intact, H5 intact, fail-closed). The carve-out also unblocks tournament verdicts on pairs whose outcome is invariant to an UNKNOWN axis's value",
+  "test-time-proof-search: inference-budgeted search converting UNKNOWN into kernel-checked PROVED, with failure remaining typed UNKNOWN (absorbs: AlphaProof/Kimina TTRL as untrusted search + trusted checking)"
+ ],
+ "eliminations": [
+  {
+   "family": "silent-guessing",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-COM",
+   "lemma": "Violates H2 verbatim: guessing must be structurally impossible and UNKNOWN first-class; this family has no UNKNOWN inhabitant at all."
+  },
+  {
+   "family": "uncalibrated-self-confidence",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-AGT",
+   "lemma": "Violates H1 (statistical self-assessment as the trusted uncertainty verdict) and H2 (a confidence number can silently upgrade to a pass). Calibrated conformal machinery survives separately because its guarantee is distribution-level and it is confined to the annotation tier."
+  },
+  {
+   "family": "heuristic-flagging",
+   "lemma_kind": "DOMINANCE_CONJECTURE",
+   "retained_representative": "K-COM",
+   "lemma": "Pre-registered dominance conjecture on AX-09: R2 vs the R5 guarantee profile (ABSOLUTE in its assurance-semantics clause). (The v1 'every component has an existing B0 seat' clause is moved to the attainment-witness appendix \u2014 it was rank-flavored prose.) Adjudicated by full verdicts against retained representative K-COM."
+  }
+ ]
+}

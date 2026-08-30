@@ -1,0 +1,6 @@
+{
+ "id": "K-TLOG",
+ "name": "Witnessed Transparency Institution",
+ "signature": "Same trusted symbolic core options as K-ARG/K-CAT, distinguished on: DIM-09 single-writer-plus-witness-quorum (k-of-n timestamped cosignatures, client-side trust policies, static tiled read path, SCITT receipts, hardware witnesses, forensic attribution) | DIM-07 + verifiable-authority-directory with named external auditors | DIM-04 + externally-anchored-time (eIDAS/Roughtime) | DIM-08 pre-action-independent-receipts + per-step-recompute-DAG | DIM-16 inherited from the chosen symbolic core's surviving family | remaining dimensions: surviving mid-to-max families",
+ "includes": "Members (of the integrity architecture): C2SP/Sigsum/Rekor-v2/Static-CT pattern transposed to a legal single-writer store; no legal-domain instance exists yet. REGION: U_T. Distinct from K-B0-SHIPPED exactly where the shipped tree honestly declares NIL (external witness quorum, split-view resistance) \u2014 it lifts the fork-consistency floor by adding the one resource (independent witnesses) that the v2 AX-07/AX-08 ceilings name in their RESOURCE_BOUNDED carve-outs: the single-organization cap is resource-conditioned, not ABSOLUTE, and witness networks (transparency.dev, hardware witnesses) are enrollable today (CF P1-2)."
+}

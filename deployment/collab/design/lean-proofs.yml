@@ -1,0 +1,67 @@
+# Machine-checking των E★★ θεωρημάτων σε GitHub-hosted runner (ανοιχτό δίκτυο).
+# Τρέχει αυτόματα σε κάθε push που αγγίζει proofs/lean/** και χειροκίνητα (workflow_dispatch).
+# Fail-closed: κόκκινο αν έστω ένα θεώρημα δεν ελέγχεται· κανένα sorry/axiom δεν περνά απαρατήρητο.
+name: lean-proofs
+
+on:
+  push:
+    paths:
+      - 'proofs/lean/**'
+      - '.github/workflows/lean-proofs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: "Lean 4 — μηχανικός έλεγχος θεωρημάτων"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: proofs/lean
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install elan (pinned Lean via lean-toolchain)
+        run: |
+          curl -sSfL https://elan.lean-lang.org/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Toolchain report
+        run: |
+          elan show
+          cat lean-toolchain
+
+      - name: Build all proof modules
+        run: |
+          lake build 2>&1 | tee build.log
+
+      - name: "Gate: κανένα sorry / κανένα αδήλωτο axiom"
+        run: |
+          set -euo pipefail
+          if grep -rn --include='*.lean' -E '\bsorry\b' .; then
+            echo '::error::sorry βρέθηκε — ο έλεγχος ΔΕΝ είναι πλήρης'; exit 1
+          fi
+          # Επιτρεπόμενα axioms μόνο όσα δηλώνονται ρητά στο AXIOMS.md (μία έδρα δήλωσης)
+          grep -rn --include='*.lean' -E '^\s*axiom\b' . | while read -r line; do
+            name=$(echo "$line" | sed -E 's/.*axiom\s+([A-Za-z0-9_.]+).*/\1/')
+            grep -q "$name" AXIOMS.md || { echo "::error::αδήλωτο axiom: $name"; exit 1; }
+          done
+          echo "OK: 0 sorry, όλα τα axioms δηλωμένα στο AXIOMS.md"
+
+      - name: "Απολογισμός: ποια θεωρήματα ελέγχθηκαν"
+        run: |
+          grep -rhn --include='*.lean' -E '^\s*theorem\s+[A-Za-z0-9_]+' . \
+            | sed -E 's/.*theorem\s+([A-Za-z0-9_]+).*/\1/' | sort > checked-theorems.txt
+          echo "Μηχανικά ελεγμένα θεωρήματα: $(wc -l < checked-theorems.txt)"
+          cat checked-theorems.txt
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lean-proof-evidence
+          path: |
+            proofs/lean/build.log
+            proofs/lean/checked-theorems.txt

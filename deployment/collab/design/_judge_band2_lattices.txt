@@ -1,0 +1,72 @@
+====================================================================================================
+{
+ "axis_id": "AX-07",
+ "rank_levels": [
+  "R1 stateless: no matter context survives a request",
+  "R2 unstructured-memory: persistent but untyped context; retrieval heuristic",
+  "R3 canonical-matter-state: canonical typed matter record with a single canonical serialization point \u2014 physical single writer OR consensus-established logical writer with machine-checked nonforking \u2014 under capability closure (H4), whose operative content is frozen design-neutrally: a write becomes canonical only by passing the single decidable admission predicate BEFORE canonicalization at that serialization point; reads deterministic",
+  "R4 provenance-carrying-institutional-memory: memory entries admitted only through validation, each carrying provenance; retrieval deterministic and replayable (H5)",
+  "R5 reflective-certified-memory: memory writes are all-or-nothing accountable state transitions (H6) and reflective updates (memory about the system's own performance) are themselves verified and offline replayable"
+ ],
+ "delta_rule": "Strict gap iff rank_A >= rank_B + 1 on this frozen ladder; R3+ requires evidence that the single-canonical-serialization-point property (physical single writer, or consensus-established logical writer with machine-checked nonforking) is structurally enforced, not conventionally observed."
+}
+====================================================================================================
+{
+ "axis_id": "AX-08",
+ "rank_levels": [
+  "R1 atemporal: implicit current-snapshot semantics only",
+  "R2 timestamped-sources: temporal metadata stored but not used in evaluation",
+  "R3 explicit-legal-time-model: validity intervals are typed; every query evaluated at a declared legal time; out-of-interval authority structurally unusable",
+  "R4 checked-temporal-consistency: cross-claim temporal coherence machine-checked; anachronistic derivations rejected fail-closed (H3)",
+  "R5 certified-bitemporal: legal time and knowledge time both tracked; every answer certified consistent at a stated (t_legal, t_knowledge) pair and replayable at that pair (H5,H8)"
+ ],
+ "delta_rule": "Strict gap iff rank_A >= rank_B + 1 on this frozen ladder; evaluation-at-time claims (R3+) require re-runnable evidence at a past time point, else UNKNOWN."
+}
+====================================================================================================
+{
+ "axis_id": "AX-09",
+ "rank_levels": [
+  "R1 silent: contradictions, gaps, and uncertainty unreported",
+  "R2 heuristic-flagging: some conflicts flagged, no guarantee of surfacing",
+  "R3 typed-surfacing: contradiction, uncertainty, and typed UNKNOWN are first-class outputs; guessing structurally impossible (H2)",
+  "R4 coverage-accounted: machine-checked accounting of exactly what was examined vs not; enumerated blind-spot classes with per-answer status",
+  "R5 certified-frontier: every answer carries an offline re-checkable certificate delimiting the verified region, typing everything outside it UNKNOWN, with breach fail-closed (H3,H8)"
+ ],
+ "delta_rule": "Strict gap iff rank_A >= rank_B + 1 on this frozen ladder; R4/R5 require the coverage accounting itself to be recomputable, not self-reported. v2: a derived verdict carrying a certified invariance (stability) certificate per unknown_rule(4) \u2014 machine-checked, quantifying over ALL completions of the UNKNOWN inputs it ranges over, offline re-checkable \u2014 is a KNOWN certified outcome of this axis's frontier accounting, fully compatible with H2 (it is quantification over completions, not guessing); absent the certificate the derived verdict is UNKNOWN."
+}
+====================================================================================================
+{
+ "axis_id": "AX-10",
+ "rank_levels": [
+  "R1 no-falsification: no adversarial process exists",
+  "R2 manual-review: human review only, unstructured, at discretion",
+  "R3 systematic-adversarial-testing: pre-registered attack and mediocrity classes executed every cycle with tracked findings",
+  "R4 institutional-counter-design: structurally independent adversarial review \u2014 fresh context, no access to implementer rationale \u2014 is a blocking admission gate; every finding reaches a recorded, append-only-auditable terminal disposition: fixed at its point of origin, refuted with recorded proof, or tracked to a scheduled removal",
+  "R5 escalation-complete: falsification runs are themselves certified and replayable; any unresolved finding blocks admission fail-closed (H3); escalation to counter-design/redesign is a typed obligation, not a choice"
+ ],
+ "delta_rule": "Strict gap iff rank_A >= rank_B + 1 on this frozen ladder; independence at R4+ must be structural (no access to implementer rationale), else the rank does not apply."
+}
+====================================================================================================
+{
+ "axis_id": "AX-11",
+ "rank_levels": [
+  "R1 best-effort-effects: tool/workflow side effects applied with no transaction concept",
+  "R2 manual-compensation: failures repaired by hand-written undo paths",
+  "R3 explicit-transactions: declared transaction boundaries with automatic rollback on failure",
+  "R4 all-or-nothing-enforced: atomicity machine-enforced across every workflow and external effect; partially-applied transitions structurally impossible (H6)",
+  "R5 certified-transactional-orchestration: every commit certificate-carrying in a monotonic sequence, offline replayable with zero producer trust (H5,H6,H8)"
+ ],
+ "delta_rule": "Strict gap iff rank_A >= rank_B + 1 on this frozen ladder; R4+ requires evidence covering external (tool-side) effects, not only internal state \u2014 internal-only atomicity caps at R3."
+}
+====================================================================================================
+{
+ "axis_id": "AX-12",
+ "rank_levels": [
+  "R1 implicit-authority: anyone/anything can transition state",
+  "R2 unenforced-roles: authority documented but not mechanically checked",
+  "R3 capability-gated-transitions: every state transition requires a capability-checked authority under capability closure (H4), read design-neutrally: the transition becomes canonical only by passing the single decidable admission predicate BEFORE canonicalization at a single canonical serialization point (physical single writer OR consensus-established logical writer with machine-checked nonforking); unauthorized attempts rejected fail-closed (H3)",
+  "R4 accountable-transitions: every transition is all-or-nothing and records the authorizing principal, basis, and certificate non-repudiably (H6)",
+  "R5 certified-governance: the authority model itself is formalized and verified; an unauthorized or review-skipping transition is structurally impossible, and review obligations are typed, blocking obligations"
+ ],
+ "delta_rule": "Strict gap iff rank_A >= rank_B + 1 on this frozen ladder; ranks assigned only where enforcement is demonstrated on ALL transition classes, else the lowest class governs the rank."
+}

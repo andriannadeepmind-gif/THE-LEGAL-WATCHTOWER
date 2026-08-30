@@ -1,0 +1,6 @@
+{
+ "id": "K-CRDT",
+ "name": "Local-First Convergent Matter Fabric",
+ "signature": "DIM-05 multi-writer-convergent-CRDT (H4-eliminated family \u2014 retained representative; the surviving admission-at-merge family is NOT instantiated by any member) | DIM-08 proof-carrying-state-updates + hash-chronicle causal binding | DIM-07 full-history convergent documents (Automerge-3 economics) | DIM-09 emergent-gossip-detection (retained representative for that conjectured-dominated family) | DIM-12/13: convergence-class guarantees with any number of Byzantine peers | DIM-16 low/unattested | remaining dimensions: mixed",
+ "includes": "Members: Keyhive/beelay (unaudited preview), Automerge-3 stacks, ERA group management, BFT-CRDT line. REGION: D_T only \u2014 violates H4 under its frozen wording (operations replicate and are accepted before any admission predicate runs), so outside U_T; retained as a feasible-in-world comparison member with genuinely superior properties on specific rungs (offline operation, tamper-evidence without quorum) that the tournament must weigh axis-by-axis rather than dismiss. A future member instantiating deterministic-merge-CRDT-with-admission-at-merge would be re-adjudicated against the frozen H4 wording and could enter U_T \u2014 the taxonomy now expresses that path instead of foreclosing it."
+}

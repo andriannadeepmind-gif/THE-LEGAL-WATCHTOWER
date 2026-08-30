@@ -1,0 +1,6 @@
+{
+ "id": "K-TEE",
+ "name": "Attested Replayable LLM Pipeline",
+ "signature": "DIM-01 LLM-direct (eliminated family) BUT DIM-14/06 tcb-minimized-root attestation: OMS-signed pinned weights, batch-invariant deterministic inference (bit-identical outputs), agrepl record/replay fidelity 1.0, TEE attestation bound to transparency logs | DIM-08 pre-action-independent-receipts | DIM-09 single-writer-plus-witness on the log | DIM-16 unattested | remaining dimensions: low families",
+ "includes": "Members: Attestable-Audits pattern, vLLM batch-invariant + OMS + Rekor composition. REGION: D_T only \u2014 H1/H2 violated (deterministic guessing is still guessing; replayable hallucination is still hallucination). Retained as the class that PROVES axis independence: it attains near-ceiling AX-13/AX-14 ranks while failing H1 \u2014 so AX-13/AX-14 rank and invariant-admissibility are demonstrably orthogonal, which the FOC-04 argument uses. Its substrate is also the reason two v1 lemmas were repaired (CA P2-10, CF P1-3): determinized untrusted producers make ballots and candidate generation offline-recomputable, so eliminations resting on 'not replayable' were false conjuncts and now rest on H1 alone."
+}

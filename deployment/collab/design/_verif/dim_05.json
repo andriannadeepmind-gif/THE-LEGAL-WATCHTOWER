@@ -1,0 +1,32 @@
+{
+ "id": "DIM-06",
+ "name": "Assurance transport / verification-artifact substrate (AX-21)",
+ "families": [
+  "prose-spec-only: design assurance by documents and human review",
+  "LLM-as-judge-assurance: model scoring/critique as the assurance verdict",
+  "benchmark-only-assurance: test suites and leaderboard deltas as the sole evidence for correctness claims",
+  "per-output-translation-validation: verify each emitted artifact against its spec rather than verifying the generator (absorbs: Alive2/TRACTOR pattern, proof-carrying certificates trust-boundary architecture with assumption-tiered certificate algebra, typed CoT faithfulness certificates, round-trip drift detection as standing invariant, differential random testing against the formal model)",
+  "verified-kernel-chain: machine-checked proofs replayable by a small kernel (offline Lean 4 for the admission kernel and calculus metatheory) + verified compilation where it exists (CompCert/CakeML; DO-178C-qualified credit) + vericoding for spec-to-source legs (absorbs: verified argumentation-kernel candidate, small verified checker for the defeasible legal calculus candidate, verified refinement transport for workflows candidate via Lean4Agent/TLA+ legs). SUPERIOR-CONCEPTION NOTE carried per the supreme law and CF P1-8: retargeting the trusted kernel to a verified-compilation substrate (CakeML/Brack) removes the diverse-double-execution mitigation from the compiler link and is excluded only by the declared SBCL commitment \u2014 a RESOURCE_BOUNDED scope choice, declared, not a limit",
+  "tcb-minimized-root: enumerated, hash-committed TCB with full-source bootstrap (StageX/live-bootstrap), reproducible builds (Debian-grade policy gates), binary transparency, TEE attestation binding OMS-signed model weights and harness code to outputs (absorbs: attested-execution-bound-to-transparency-log candidate, binary/firmware transparency candidate, cross-hardware attested determinism candidate, qualification-packaging candidate)"
+ ],
+ "eliminations": [
+  {
+   "family": "prose-spec-only",
+   "lemma_kind": "DOMINANCE_CONJECTURE",
+   "retained_representative": "K-HUM",
+   "lemma": "Pre-registered dominance conjecture on AX-21: R1-R2 while the frozen guarantee profile shows machine-checked spec properties (R3) are attainable with an offline-vendored Lean 4 toolchain; no compensating advantage conjectured. Adjudicated by full verdicts against retained representative K-HUM."
+  },
+  {
+   "family": "LLM-as-judge-assurance",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-COM",
+   "lemma": "Violates H1 and H8: the assurance verdict is a statistical output and is not recomputable by a zero-trust third party. Kernel-checked alternatives exist at expert-novel difficulty (Aristotle IMO 2025: no proof, no answer)."
+  },
+  {
+   "family": "benchmark-only-assurance",
+   "lemma_kind": "DOMINANCE_CONJECTURE",
+   "retained_representative": "K-COM and K-AGT",
+   "lemma": "Pre-registered dominance conjecture on AX-21: benchmarks transport no property to the executable (capped R1-R2 \u2014 committed guarantees not tracked as objects), while per-output-translation-validation achieves checkable per-artifact guarantees at comparable cost. Adjudicated by full verdicts against retained representatives K-COM and K-AGT."
+  }
+ ]
+}

@@ -1,0 +1,26 @@
+{
+ "id": "DIM-13",
+ "name": "Self-falsification / adversarial counter-design (AX-10)",
+ "families": [
+  "no-falsification: no adversarial process exists",
+  "llm-adjudicated-critique: LLM critiques LLM with a model deciding whether the refutation stands",
+  "committed-mutation-kill: hash-committed finite mutation-operator and counter-design class M with 100% kill matrix as an offline-recomputable release artifact; surviving mutant = typed UNKNOWN blocking release and escalating as a certificate-carrying transition. Per the v2 AX-10 correction (CF P1-4): mutation kill over the committed finite class is the FLOOR mechanism for the unverified remainder \u2014 proof-carrying exclusion of entire INFINITE defect classes (a machine-checked functional-correctness proof refutes all semantics-altering mutants relative to the spec for the verified perimeter) strictly exceeds it wherever a proof covers the seat, and Rice's theorem bars deciding arbitrary code, not checking a supplied proof",
+  "kernel-checked-counterexamples: disproofs, countermodels, and defeaters that are themselves Lean/SMT-verified rather than judged (absorbs: Learning to Disprove, VERGE, formal-referee self-play, LogiKEy Nitpick/Nunchaku model-finding as routine audit candidate, differential random testing against the formal model, ValidArgLLM extract-and-execute divergence detection)",
+  "n-version-formalization-diffing: independently generated formalizations of the same provision with SAT-exhaustive enumeration of behavioral disagreements as the ambiguity/escalation signal (absorbs: 'By Their Fruits', round-trip drift detection as the standing-invariant variant) \u2014 its ADMISSION-time use is now seated at DIM-16 (n-version-formalization-admission); this DIM-13 family is its falsification use over already-admitted artifacts",
+  "fresh-context-kill-mandate-critics: institutionalized adversarial phase gates with structurally independent reviewers, cross-model families, context isolation (absorbs: Refute-or-Promote); guarantee-form statement per the v2 AX-10 R4 de-tailoring (IH P1-5a): structurally independent adversarial review with no access to implementer rationale is a blocking admission gate, and every finding reaches a recorded terminal disposition \u2014 fixed, refuted-with-proof, or tracked-to-scheduled-removal"
+ ],
+ "eliminations": [
+  {
+   "family": "no-falsification",
+   "lemma_kind": "DOMINANCE_CONJECTURE",
+   "retained_representative": "K-COM",
+   "lemma": "Pre-registered dominance conjecture on AX-10: R1 vs the R5 guarantee profile. The v1 ground 'B0 already runs mutation-kill suites, so the family is strictly below the demonstrated floor' is retyped: that is attainment-witness material, and 'no vendor declares any adversarial mechanism' is an ABSENCE of declaration, which under the v2 evidence discipline establishes NOTHING (stays UNKNOWN) \u2014 it is recorded as motivation only. Adjudicated by full verdicts against retained representative K-COM using KNOWN_UPPER_BOUND caps where behavioral evidence exists."
+  },
+  {
+   "family": "llm-adjudicated-critique",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-COM",
+   "lemma": "Violates H1 and H8: the refutation verdict is a statistical judgment, not a recomputable artifact. Kernel-checked refutation is demonstrated at scale (Lean-verified disproofs), so nothing is lost by the constraint. LLM critics SURVIVE as generators inside fresh-context-kill-mandate-critics \u2014 only adjudication must be non-statistical."
+  }
+ ]
+}

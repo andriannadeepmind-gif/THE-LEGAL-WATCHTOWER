@@ -1,0 +1,6 @@
+{
+ "id": "K-CBR",
+ "name": "Precedential-Constraint Case-Based Reasoner",
+ "signature": "DIM-01 precedential-constraint-CBR (Horty/hierarchical + Carneades proof standards) | DIM-02 provenance-bound factor ascription over enforced-typed-admission | DIM-03 grammar-total resolution for cited cases | DIM-04 version-indexed case-base with temporal validity | DIM-05 single-writer | DIM-06 per-output-translation-validation | DIM-07 canonical-typed-matter-state | DIM-08 structured-prov-graphs | DIM-09 internal-consistency-only | DIM-10 atomic store | DIM-11 typed-dag-contract-plans | DIM-12 exact-stability-computation (which unknown dimensions can flip the outcome, now KNOWN-with-stability-certificate-bearing under the v2 carve-out) + typed UNKNOWN | DIM-13 kernel-checked-counterexamples (forced-decision violations) | DIM-14 floor-vector-ratchet | DIM-15 profile-parametric (factor schemas per order) | DIM-16 human-authoritative-codification of factor schemas and ascriptions (curated, signed)",
+ "includes": "Frontier members: Horty result-model stability line (van Woerkom), hierarchical precedential constraint (ICAIL 2023), conflicting-precedent extensions. REGION: U_T. Holds the case-law/common-law cell no statutory class covers; its known gap (curated factor ascription) is exactly the grounded-factor-ascription family it composes from DIM-02."
+}

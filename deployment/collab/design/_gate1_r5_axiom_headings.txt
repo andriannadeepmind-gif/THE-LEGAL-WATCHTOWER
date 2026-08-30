@@ -1,0 +1,40 @@
+# PHASE-2 CREATOR AXIOMS
+## 0. NOTATION
+## 1. C-AXIOMS (CREATOR-GIVEN)
+### C1 — Institutional, not instrumental
+### C2 — Categorical non-confusion
+### C3 — Adapters confer nothing
+### C4 — Metacognition is semantics, not presentation
+### C5 — Explicit self-model
+### C6 — No unresolved delegation
+### C7 — No duplicate truth or hidden authority
+### C8 — Non-optimization constraints
+### C9 — Falsification discipline
+### C10 — Bounded claim strength
+### C11 — Lisp by evidence
+### C12 — Blindness
+## 2. L-AXIOMS (LEGAL-ORDER-GIVEN)
+### L1 — Publication is constitutive, not informational
+### L2 — Entry into force is separate from publication
+### L3 — Separation of powers is the domain's own organizing principle
+### L4 — The Gazette is itself a signing authority
+### L5 — The Gazette can be wrong, and correcting it is a formal legal procedure
+### L6 — Codification is an institution with its own authority
+### L7 — Cross-order authority is real and non-uniform
+### L8 — Doctrine is not authority
+## 3. A-AXIOMS (ARCHITECT-ADOPTED)
+### A1 — Jurisdictional limit of the Watchtower (generalisation of C3)
+### A2 — Monotone record, non-monotone conclusions
+### A3 — Kernel purity and total order
+### A4 — Evidence degrades monotonically under transformation
+### A5 — Every temporal legal fact is defeasible and evidenced
+### A6 — Metacognition must have truth conditions, a falsifier, and a power
+### A7 — Silence and blindness are different, and must be distinguishable
+### A8 — Non-authority is testable by deletability
+### A9 — Machine-learned components hold no institutional power
+### A10 — Entrenchment
+### A11 — Interpretation is adjudicated, never computed
+### A12 — The record is the institution's memory; the image is only a cache
+## 4. OBJECTIVE VECTOR (DECLARED ONCE, USED EVERYWHERE)
+### Materiality thresholds (global)
+## 5. ADMISSIBLE CONCLUSION FORM

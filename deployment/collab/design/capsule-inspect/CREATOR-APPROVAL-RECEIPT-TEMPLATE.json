@@ -1,0 +1,10 @@
+{
+  "schema": "watchtower/creator-freeze-approval-receipt/1",
+  "status": "TEMPLATE_NOT_APPROVAL",
+  "freeze_bundle_sha256": "TO_BE_FILLED_AFTER_OUTER_ZIP_IS_BUILT",
+  "blind_capsule_sha256": "ac571a7a17971808811a98ae5a7dc9c9b0850f9bfdc808c90ae0b499060a10d3",
+  "reviewer_capsule_sha256": "a34c37aa4850ac4aa4758b37829a8d7f5c1624c4e089138b53a6988128fa25eb",
+  "approval_text": "I approve these immutable pre-Phase-2 v2-R3 policy and capsule hashes for launch, including FOC-18/T6 strict every-product/every-axis commercial superiority and FOC-19/T7 exact B0 repository transformation. This approval is not acceptance of Phase 2 and not an optimality proof.",
+  "timestamp_utc": "TO_BE_SUPPLIED_BY_CREATOR",
+  "note": "Keep the actual approval external to the sealed freeze bundle so approval does not change any frozen byte."
+}

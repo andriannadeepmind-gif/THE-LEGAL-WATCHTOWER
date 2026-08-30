@@ -1,0 +1,25 @@
+{
+ "id": "DIM-09",
+ "name": "Integrity witnessing / equivocation resistance \u2014 split from provenance: the frontier's single-writer+witness hybrid fits neither base dimension (AX-07/AX-08 fork-consistency bounds \u2014 RESOURCE_BOUNDED on the declared witness set in v2 \u2014 and AX-12 fork evidence)",
+ "families": [
+  "declared-root-trust: verifier accepts the producer's stated head/root",
+  "emergent-gossip-detection: peer-to-peer gossip assumed to surface equivocation",
+  "internal-consistency-only: single hash-chained/Merkle log verifiable for append-only consistency; fork detection only relative to a verifier-held prior checkpoint (the honest fork-consistency floor the shipped tree currently declares)",
+  "single-writer-plus-witness-quorum: one authoritative sequencer whose checkpoints are consistency-verified and timestamp-cosigned by independent witnesses under client-side nested k-of-n trust policies; static tiled read path from dumb storage; portable countersigned receipts (absorbs: C2SP tlog-witness/tlog-policy, Sigsum minimalism, SCITT RFC 9943 policy-gated registration receipts, CCF COSE receipt profile, hardware-rooted witnesses \u2014 Armored Witness/TKey, mirror/monitor role as first-class, forensic attribution \u2014 >=t+1 culprit identification and accountable liveness, Byzantine-resilient deterministic reconstruction, post-quantum signature agility as a committed floor item)",
+  "full-bft-replication: the write path itself replicated under Byzantine consensus with machine-checked nonforking (absorbs: heterogeneous/asymmetric quorum and FBA composition \u2014 Satrapy)"
+ ],
+ "eliminations": [
+  {
+   "family": "declared-root-trust",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-COM (operator-declared heads)",
+   "lemma": "Violates H8 verbatim: never trust a declared root. Every guarantee profile's verification mode is recompute-and-compare (or transparent proof-of-recomputation under the same assumption family, per v2); a declared root carries zero verifiable information."
+  },
+  {
+   "family": "emergent-gossip-detection",
+   "lemma_kind": "DOMINANCE_CONJECTURE",
+   "retained_representative": "K-CRDT (peer-to-peer gossip/anti-entropy is its native detection mode)",
+   "lemma": "Pre-registered dominance conjecture stated ON THE FROZEN AX-13 RUNGS (restated per CA P2-9 \u2014 the v1 lemma cited history, not the ladder): gossip detection yields no offline-recomputable certificate (H8-inadmissible as evidence), capping the family at <=R2 on AX-13, while designated witness cosignatures ship self-contained offline-verifiable split-view proofs at R5-grade with forensic attribution. The decade-scale deployed negative result (IETF trans-gossip never deployed; witness cosigning shipped across CT/Go-sumDB/Sigstore) is CORROBORATION ONLY, not the ground. Adjudicated by full verdicts against retained representative K-CRDT."
+  }
+ ]
+}

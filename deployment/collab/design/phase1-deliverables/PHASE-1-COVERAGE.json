@@ -1,0 +1,188 @@
+{
+ "schema": "lawmax-phase1-coverage/1",
+ "phase": "phase-1",
+ "source_commit": "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03",
+ "source_tree": "23b7a6f4450f50d151d38e13020bee9872e73bcd",
+ "historical_baseline_commit": "57c0cd868c80f87df8e298c9aa75b8ccf2503391",
+ "corroboration_commit": "2b910271f11fc462eee1378fb9a77623c791fcbf",
+ "generated_at_utc": "2026-08-26T00:36:43Z",
+ "worktree_clean_at_generation": true,
+ "evidence_classes": {
+  "MECHANICALLY-PROVED": 73,
+  "EMPIRICALLY-REPRODUCED": 2,
+  "SOURCE-GROUNDED-INFERENCE": 23,
+  "UNRESOLVED": 6
+ },
+ "self_sha256_convention": "sha256 of this file with the 64 hex characters of self_sha256 replaced by 64 '0'.",
+ "self_sha256": "8ad598878ffff4f65690497b378e19a3b4abfbe1b8976ac2e3b1eebb42c06e30",
+ "enumeration": {
+  "tracked_paths_total": 35640,
+  "enumerated": 35640,
+  "uncovered": 0,
+  "complete_enumeration": true,
+  "by_class": {
+   "configuration_contract": 74,
+   "documentation": 262,
+   "test_proof": 390,
+   "first_party_source": 346,
+   "binary_enumeration_only": 196,
+   "generated_state_data": 31065,
+   "vendored_dependency": 3307
+  }
+ },
+ "delta_closure": {
+  "from": "57c0cd868c80f87df8e298c9aa75b8ccf2503391",
+  "to": "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03",
+  "paths_in_delta": 100,
+  "added": 76,
+  "modified": 24,
+  "read_in_full": 100,
+  "unread": 0,
+  "reading_complete": true,
+  "delta_by_class": {
+   "test_proof": 39,
+   "first_party_source": 23,
+   "configuration_contract": 19,
+   "documentation": 11,
+   "generated_state_data": 6,
+   "binary_enumeration_only": 2
+  },
+  "note": "Every one of the 100 changed or new paths was read at the target commit: all 23 first-party files, all 39 proofs, probes and fixtures, all 19 configuration and contract files, all 11 documents including the four new dialogue records, and all 6 generated artefacts. The two binary paths — a 64-byte Ed25519 signature and a PEM public key — were admitted by digest and by content dump respectively."
+ },
+ "unchanged_material_reread": {
+  "policy": "Unchanged material was re-read only where the historical claim was missing, ambiguous, contradicted or invalidated. No file was re-read to manufacture activity.",
+  "files_reread_with_reason": [
+   {
+    "path": "systems/orchestrator-epistemic/release-manifest.lisp",
+    "reason": "to verify the canonical-file constant against the new capture profile independently of the runtime differential test (EV-V-003)"
+   },
+   {
+    "path": "source/pdf-authority.lisp",
+    "reason": "to adjudicate the imported GATE-4 and subprocess claims (EV-C-004, EV-C-006)"
+   },
+   {
+    "path": "source/blockchain-authority.lisp",
+    "reason": "to adjudicate the imported anchoring-guarantee claim (EV-C-012)"
+   },
+   {
+    "path": "README.md",
+    "reason": "to adjudicate the imported gate-table and missing-file claims"
+   },
+   {
+    "path": "Dockerfile",
+    "reason": "to adjudicate the hermeticity contradiction and the GIT_COMMIT gate"
+   },
+   {
+    "path": "Dockerfile.test",
+    "reason": "to adjudicate the Quicklisp contradiction"
+   },
+   {
+    "path": ".github/workflows/docker-orchestrator.yml",
+    "reason": "changed by the delta, and to adjudicate the SBOM supply-chain claim"
+   },
+   {
+    "path": "DEPENDENCY-CONTRACT.md / PROVENANCE.yaml / SYSTEM-HIERARCHY.txt / deps.archives.lock / orchestrator-tooling.asd / orchestrator.asd / build.lisp",
+    "reason": "to adjudicate imported contract, version and orphan claims"
+   },
+   {
+    "path": "deployment/verify/vectors/merkle/vectors.json",
+    "reason": "to verify the capture protocol's coverage claim (EV-V-004)"
+   },
+   {
+    "path": "systems/orchestrator-cli/main.lisp (whole file, not only the diff)",
+    "reason": "to establish the dispatcher's single resolution seat and the health-file regression in context"
+   }
+  ],
+  "count": 10
+ },
+ "first_party_content_coverage": {
+  "first_party_source_files_total": 346,
+  "read_in_full_this_phase": 26,
+  "delta_first_party_read": 23,
+  "unchanged_first_party_reread_for_cause": 3,
+  "covered_by_admitted_baseline_and_unchanged": 320,
+  "note": "26 first-party source files were read line by line in this phase: all 23 the delta touched, plus release-manifest.lisp, pdf-authority.lisp and blockchain-authority.lisp, re-read to adjudicate specific imported claims. Seven further unchanged files of other classes were re-read for the same reason. The remaining 320 first-party files are unchanged since the historical target and are carried on the admitted baseline's sealed complete-reading coverage (1000/1000 required reads, 1202/1202 chunks, 0 uncovered files)."
+ },
+ "evidence_counts": {
+  "admitted_deepseek_evidence": {
+   "count": 5372,
+   "unit": "sealed phase-1 ledger lines",
+   "note": "admitted as a whole by seal-hash equality; 513 of the derived records are carried in the admitted evidence artifact, all of them read-coverage records"
+  },
+  "claude_p1a_corroboration": {
+   "count": 2755,
+   "unit": "citations extracted from 25 dossiers and mechanically resolved",
+   "accepted": 2752,
+   "rejected": 3
+  },
+  "delta_read_evidence": {
+   "count": 84,
+   "unit": "evidence rows first established in this phase"
+  },
+  "rejected_historical_claims": {
+   "count": 7,
+   "unit": "claims rejected or corrected",
+   "detail": "2 evidence rows carrying corrections/invalidations (EV-I-006, EV-P-001) plus 5 architectural claims invalidated by the delta, enumerated in DEEPSEEK-PHASE1-LINEAGE.json :: invalidated_claims"
+  }
+ },
+ "evidence_ledger": {
+  "rows": 104,
+  "by_class": {
+   "MECHANICALLY-PROVED": 73,
+   "EMPIRICALLY-REPRODUCED": 2,
+   "SOURCE-GROUNDED-INFERENCE": 23,
+   "UNRESOLVED": 6
+  }
+ },
+ "completeness_statement": "Full comprehension is NOT claimed. Enumeration is complete (35,640 of 35,640 paths classified, zero unclassified) and delta reading is complete (100 of 100 changed paths read). Content comprehension is not complete, and the exact residual is stated below rather than estimated.",
+ "residual_set": [
+  {
+   "id": "RES-1",
+   "what": "3,307 vendored dependency files under third-party/",
+   "treatment": "manifest, hash and enumeration only",
+   "why_admissible": "no architectural claim in this phase rests on their semantics"
+  },
+  {
+   "id": "RES-2",
+   "what": "31,065 generated/state/data files",
+   "treatment": "enumeration, digest and structural sampling; the three genesis outputs and the merkle vectors were read in full because claims rest on them",
+   "why_admissible": "they are outputs of the system under study, not its design"
+  },
+  {
+   "id": "RES-3",
+   "what": "196 binary or opaque-crypto files",
+   "treatment": "enumeration and digest only",
+   "why_admissible": "not readable as text; no claim rests on their content"
+  },
+  {
+   "id": "RES-4",
+   "what": "320 first-party source files unchanged since the historical target",
+   "treatment": "carried on the admitted baseline's sealed complete-reading coverage",
+   "why_admissible": "the instruction forbids re-reading unchanged material merely to claim activity; where a historical claim about them was missing, ambiguous or contradicted, the file was re-read (see unchanged_material_reread)"
+  },
+  {
+   "id": "RES-5",
+   "what": "GATE-1, GATE-2, GATE-3 and GATE-5 implementation status",
+   "treatment": "not audited",
+   "why_admissible": "recorded as open obligation OBL-13"
+  },
+  {
+   "id": "RES-6",
+   "what": "The other 22 Phase-1A dossiers' substantive claims",
+   "treatment": "citations mechanically resolved; substantive claims adjudicated only for the contracts cluster",
+   "why_admissible": "corroboration is candidate evidence by instruction; nothing was admitted on their word"
+  },
+  {
+   "id": "RES-7",
+   "what": "All runtime behaviour",
+   "treatment": "not observed; nothing was executed",
+   "why_admissible": "the phase is read-only by instruction; recorded as EV-U-001..EV-U-003"
+  }
+ ],
+ "instrumentation_limitations": [
+  "No execution was performed, so no proof, gate, test or build result in this repository is confirmed by this phase. Every count attributed to a proof run is reported as the repository's own record of it, and where such a record contradicts the committed code that is recorded as a defect (DEF-04).",
+  "The Windows development platform cannot exercise the capture boundary at all: capture.py requires openat2 and refuses on any other kernel (DEF-23).",
+  "The historical DeepSeek turnstore (1.36 GB sqlite) was not opened; admission rested on the sealed manifest root, which matched.",
+  "No new instrument, runner or framework was built. Total instrument-building budget spent: zero, as instructed. The only scripts written were a path classifier, a citation resolver and these deliverable generators, all of which are analysis of git objects and none of which is a system component."
+ ]
+}

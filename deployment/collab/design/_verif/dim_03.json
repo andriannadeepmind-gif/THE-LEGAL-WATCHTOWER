@@ -1,0 +1,32 @@
+{
+ "id": "DIM-04",
+ "name": "State / temporal legal-state (AX-08)",
+ "families": [
+  "atemporal-snapshot: implicit current-law semantics only",
+  "LLM-internal-temporal-knowledge: the model's parametric memory supplies which version of the law applies",
+  "timestamped-unused: temporal metadata stored but not used in evaluation",
+  "version-indexed-date-conditioned-retrieval: date-of-application as first-class retrieval key over an in-place-revised corpus (absorbs: French versioned-corpus benchmark mechanism, LexKairos-motivated substrate-provided temporality)",
+  "total-bitemporal-view: one pure function View(t_legal, t_knowledge) over Merkle-committed snapshots plus typed amendment events (repeal/substitution/insertion event calculus), typed UNKNOWN off committed coverage (absorbs: LRMoo/FRBRoo diachronic component versioning, temporalised belief-revision semantics, executable point-in-time legal state candidate, point-in-time plan validation candidate as the DIM-11 composite)",
+  "externally-anchored-time: eIDAS qualified timestamps (statutory burden-shifting presumption), Roughtime malfeasance-provable sources, witness-timestamped cosignatures at <=1-minute granularity (absorbs: legally-anchored time layer candidate, timestamped-cosignature temporal anchor candidate); per the v2 AX-17 correction (CF P2-3), k-of-n external-time-authority bracketing is the wall-clock ceiling, with the residue being trust in that quorum, not producer attestation"
+ ],
+ "eliminations": [
+  {
+   "family": "atemporal-snapshot",
+   "lemma_kind": "DOMINANCE_CONJECTURE",
+   "retained_representative": "K-COM",
+   "lemma": "Pre-registered dominance conjecture on AX-08: R1 vs the R5 certified-bitemporal guarantee profile; wrong-law application is a documented benchmark failure mode (arXiv 2608.14610). (That B0 seats exist for the bitemporal mechanism is attainment-witness appendix material, struck from this conjecture's ground.) Adjudicated by full verdicts against retained representative K-COM."
+  },
+  {
+   "family": "LLM-internal-temporal-knowledge",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-COM",
+   "lemma": "Violates H1 and H2: temporal applicability decided by parametric guessing; LexKairos verifies even the best models fail precise time-sensitive statutory metadata and time-limit reasoning, and UNKNOWN is never a possible output of this family."
+  },
+  {
+   "family": "timestamped-unused",
+   "lemma_kind": "DOMINANCE_CONJECTURE",
+   "retained_representative": "K-AGT",
+   "lemma": "Pre-registered dominance conjecture on AX-08: R2 vs attainable R3+ (typed validity intervals with out-of-interval authority structurally unusable) at conjectured zero cost elsewhere \u2014 the metadata already exists, only enforcement is absent. Adjudicated by full verdicts against retained representative K-AGT."
+  }
+ ]
+}

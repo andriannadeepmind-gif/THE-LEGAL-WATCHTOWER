@@ -1,0 +1,26 @@
+{
+ "id": "DIM-02",
+ "name": "Grounding / corpus admission (AX-04)",
+ "families": [
+  "similarity-retrieval-trusted: embedding/heuristic RAG selection acting as the trusted grounding decision",
+  "declared-unenforced-policy: source policy stated but not mechanically enforced (AX-04 R2)",
+  "enforced-typed-admission: sources enter only through typed, policy-checked admission; selection by exact committed identifier only; corpus-size-independent by construction",
+  "attested-capture-dual-digest: publisher-signature transport (PAdES/CMS) or k-of-n independent capture-witness quorum over byte digests, plus deterministic extraction E with byte-equality replay and Merkle inclusion; the corroboration limb's assurance is parameterized by the declared witness set (RESOURCE_BOUNDED clause per the v2 AX-04 carve-out), and attested-channel capture (TLS-oracle / TEE-attested fetcher) is the third mechanism the v2 ceiling enumerates",
+  "graph-constrained-grounding: retrieval/traversal over canonical identifiers in a committed legal knowledge graph (absorbs: SAT-Graph canonical-primitive API, Falkor-IRAC hard path constraints, provenance-bound factor ascription candidate \u2014 factors tied to source spans with lineage)",
+  "untrusted-candidate-retrieval: any statistical retrieval confined outside the trusted path, output re-entering only through admission (H1-conformant use of RAG)"
+ ],
+ "eliminations": [
+  {
+   "family": "similarity-retrieval-trusted",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-COM",
+   "lemma": "Violates H1 (neural encoder's ranking is the trusted grounding decision) and sits at AX-04 R1: grounding truth varies with corpus size, breaking the corpus-size-independence the AX-04 guarantee profile proves attainable. Survives only as untrusted-candidate-retrieval (H1 confinement)."
+  },
+  {
+   "family": "declared-unenforced-policy",
+   "lemma_kind": "DOMINANCE_CONJECTURE",
+   "retained_representative": "K-COM",
+   "lemma": "Pre-registered dominance conjecture on AX-04: R2 vs R3+ where enforcement is structural (bypass impossible), per the frozen AX-04 guarantee profile; that enforced typed admission is buildable is attainment-witness (appendix) material, not part of this conjecture's ground. Adjudicated only by a full 22-axis verdict set against retained representative K-COM."
+  }
+ ]
+}

@@ -1,0 +1,12 @@
+{
+  "checker_sha256": "70e8eb18e21934731315bc36b95f52dab51ea651aefcdb1cccb8825b97c542a0",
+  "policy_sha256": "e5dbe82f549df9ab902537516bbcd727d1131c7acd7d7d4c784a8815246e6239",
+  "corpus_sha256": "e73bf438c16cbc0b8e531742e1c9ed0b76d138441f32b506eab98b678bf983cd",
+  "mutations": 54,
+  "detected": 54,
+  "escaped": [],
+  "uncovered_rule_classes": [],
+  "baseline_before": 0,
+  "baseline_after": 0,
+  "result": "PASS"
+}

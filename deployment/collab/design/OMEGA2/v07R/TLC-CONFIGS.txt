@@ -1,0 +1,35 @@
+# TLC configurations for KernelL1.tla — four designs, concatenated
+# (each block: CONSTANTS / SPECIFICATION / CHECK_DEADLOCK / INVARIANTs)
+
+CONSTANTS
+  MaxPos = 4
+  MaxCommits = 2
+  Design = "kernel_L1"
+SPECIFICATION Spec
+INVARIANT OnePerPosition
+INVARIANT AuthorisationIsGenuine
+INVARIANT NoInvalidationBetweenAuthAndLanding
+CONSTANTS
+  MaxPos = 4
+  MaxCommits = 2
+  Design = "local_view"
+SPECIFICATION Spec
+INVARIANT OnePerPosition
+INVARIANT AuthorisationIsGenuine
+INVARIANT NoInvalidationBetweenAuthAndLanding
+CONSTANTS
+  MaxPos = 4
+  MaxCommits = 2
+  Design = "grant_ref"
+SPECIFICATION Spec
+INVARIANT OnePerPosition
+INVARIANT AuthorisationIsGenuine
+INVARIANT NoInvalidationBetweenAuthAndLanding
+CONSTANTS
+  MaxPos = 4
+  MaxCommits = 2
+  Design = "one_shot"
+SPECIFICATION Spec
+INVARIANT OnePerPosition
+INVARIANT AuthorisationIsGenuine
+INVARIANT NoInvalidationBetweenAuthAndLanding

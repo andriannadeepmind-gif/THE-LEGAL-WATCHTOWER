@@ -1,0 +1,105 @@
+{
+  "schema": "watchtower/pre-phase-2-reviewer-seal/1",
+  "contract_version": "2.3.0-R3-PRE-PHASE-2-FROZEN-CANDIDATE",
+  "epoch": "PRE-PHASE-2-FREEZE-R3",
+  "hash_algorithm": "SHA-256",
+  "sealed_files": [
+    {
+      "file": "ALL-AXIS-DOMINANCE-SPEC.json",
+      "byte_length": 7671,
+      "sha256": "2400683b8bfe495b0c33b05b8bde75e272823ef605a4828c25e4cf2aa7257e85"
+    },
+    {
+      "file": "B0-TRANSFORMATION-AND-REPOSITORY-DELTA-SPEC.json",
+      "byte_length": 6637,
+      "sha256": "cf7872580162fcf44689d343db5e2cb748c445b62685be925e948c8119297a88"
+    },
+    {
+      "file": "B7-PRODUCER-SESSION-EVIDENCE-RECOVERY.md",
+      "byte_length": 5413,
+      "sha256": "cac550b7e03a276668e88de5b078cb743470afc37b1779d044c7e7fdb54e5e48"
+    },
+    {
+      "file": "COMMERCIAL-FRONTIER-BASELINES.json",
+      "byte_length": 7331,
+      "sha256": "5619933ec4cc34201b613c0c2e687b1ba19c32b6a2a2a2f03bb8507a692f16e5"
+    },
+    {
+      "file": "COORDINATOR-LAUNCH-POLICY.json",
+      "byte_length": 4804,
+      "sha256": "72634788ac7d764f15d4b9dc2250595ac044467ee57a5fc412531751039313ac"
+    },
+    {
+      "file": "NEGATIVE-CONTROLS.json",
+      "byte_length": 7862,
+      "sha256": "0330aaab7a5fd2e1236605d5ec713417d3b6d3adefefe204a13caaf0d8d69162"
+    },
+    {
+      "file": "PHASE-2-ANSWER-NEUTRAL-ACCEPTANCE-SPEC.json",
+      "byte_length": 7714,
+      "sha256": "de468d7dcc28cd88745d63c4656c8cf81d25c4d84066e737433ccacb14e45bd4"
+    },
+    {
+      "file": "PHASE-2-ISOLATION-POLICY.json",
+      "byte_length": 4676,
+      "sha256": "cf702d13e5a6592b135e1c69c42ec4b35552724f1d60f3306b15bb27244f5f45"
+    },
+    {
+      "file": "PHASE-2-OUTPUT-CONTRACT.json",
+      "byte_length": 5469,
+      "sha256": "5ce6c4272b1e56ce2ae5a76a05b1c8eaffbb52bd70c7ddc2204222815b82ea2c"
+    },
+    {
+      "file": "PROOF-OBLIGATIONS.jsonl",
+      "byte_length": 12600,
+      "sha256": "edd882180ec62310f08820806bdeef8e5bbfc09e86742825192b8d9d2dd3297a"
+    },
+    {
+      "file": "PROOF-OF-CEILING-CONTRACT.json",
+      "byte_length": 22654,
+      "sha256": "3a57c86bfa7e8c857aef3f5928585b4c63ea3cbbddb09d7ba9f95f5ebd74ef5d"
+    },
+    {
+      "file": "PROOF-OF-CEILING-CONTRACT.md",
+      "byte_length": 5015,
+      "sha256": "9b7e66dcfa616282f4a6fb405eacc0ccac0bb6b916d9d5ca776a10d68705f6fe"
+    },
+    {
+      "file": "REVIEW-RUNBOOK.md",
+      "byte_length": 4677,
+      "sha256": "76997d418191a58b0a9bfca610c3a4b6352fc7a070291d9b52f64f00f218d1d2"
+    },
+    {
+      "file": "ROLE-SEPARATION.json",
+      "byte_length": 2551,
+      "sha256": "17097a0622686428e16a5dd4d48b552c10e7fe6318cfe8f15c8a878531690b8b"
+    },
+    {
+      "file": "UNIVERSAL-ESCALATION-PROTOCOL.json",
+      "byte_length": 14933,
+      "sha256": "e314e1afae05c065fe8a1cf99a303305c094978273f773a9943940a5064a8210"
+    },
+    {
+      "file": "verify_freeze.mjs",
+      "byte_length": 19006,
+      "sha256": "40e6cdce6d4c4237d7304fc60f1c3b00680b74d88674fb731486ce160bd8d6fe"
+    },
+    {
+      "file": "verify_freeze.py",
+      "byte_length": 23483,
+      "sha256": "e4c12d13e22b3f97cddce5014b8cfa61d9d2c064bc0c7ee80a15e471054b7684"
+    }
+  ],
+  "self_exclusion": "REVIEWER-SEAL.json is excluded from its own hash inventory.",
+  "current_state": {
+    "P1": "ACCEPTED",
+    "P2": "FRESH_RERUN_PREPARED_NOT_LAUNCHED",
+    "P3": "UNAUTHORIZED",
+    "FINAL_PROOF": "NOT_YET_PRODUCED",
+    "COMMERCIAL_SUPERIORITY": "NOT_YET_PROVED",
+    "B0_TRANSFORMATION": "NOT_YET_PLANNED",
+    "P2_block_reference": "Original Phase-2 lineage remains blocked because the producer-session isolation evidence is irrecoverable; only a fresh blind epoch can replace it.",
+    "derived_verdict": "FINAL_OPTIMALITY_BLOCKED"
+  },
+  "nature": "Structural freeze seal. It binds bytes and frozen policy; it is not an optimality proof, a commercial-superiority proof, a B0 transformation proof or creator approval."
+}

@@ -1,0 +1,176 @@
+[
+ {
+  "id": "OBL-01",
+  "from_defect": "DEF-01",
+  "must": "Supply a working, verifiable authority path.",
+  "dominance_test": "The successor architecture must exhibit an implemented decision procedure that turns a candidate into a published release, and must show what refuses it. A specification that no code realises does not discharge this."
+ },
+ {
+  "id": "OBL-02",
+  "from_defect": "DEF-02",
+  "must": "Either discharge the blocked proofs or replace the claim with one that can be discharged with tools that exist.",
+  "dominance_test": "For each load-bearing requirement, name the artefact that would move it to proved and the environment in which that artefact can be produced. 'Blocked on an absent toolchain' may not be the terminal state of a load-bearing requirement in the successor design."
+ },
+ {
+  "id": "OBL-03",
+  "from_defect": "DEF-03",
+  "must": "Make the build match its own hermeticity contract, or withdraw the contract.",
+  "dominance_test": "Either --network=none builds, or no document asserts that it does."
+ },
+ {
+  "id": "OBL-04",
+  "from_defect": "DEF-04",
+  "must": "Bind recorded results to the code they describe.",
+  "dominance_test": "A recorded execution result must carry the tree or blob identity it was produced against, and the honesty gate must reject a result whose identity does not match the committed tree."
+ },
+ {
+  "id": "OBL-05",
+  "from_defect": "DEF-05",
+  "must": "Validate deployment definitions, not only their security shape.",
+  "dominance_test": "A malformed mount option and a missing command must both be caught before release."
+ },
+ {
+  "id": "OBL-06",
+  "from_defect": "DEF-06",
+  "must": "Restore ingestion's entry point and its network configuration, or delete the service.",
+  "dominance_test": "No service may exist whose declared purpose its definition cannot perform."
+ },
+ {
+  "id": "OBL-07",
+  "from_defect": "DEF-07",
+  "must": "Constrain the proof runner, or make its exemption explicit and bounded.",
+  "dominance_test": "The component that produces the boundary proofs must not be the component with the fewest boundaries."
+ },
+ {
+  "id": "OBL-08",
+  "from_defect": "DEF-08",
+  "must": "Verify anchored content, not transport status, or downgrade the guarantee to what the code performs.",
+  "dominance_test": "Every use of the word GUARANTEE must name the code that establishes it."
+ },
+ {
+  "id": "OBL-09",
+  "from_defect": "DEF-09",
+  "must": "Every declared gate must have an implementation or be withdrawn.",
+  "dominance_test": "A gate table row with no executable behind it is a false statement about the system's defences."
+ },
+ {
+  "id": "OBL-10",
+  "from_defect": "DEF-10",
+  "must": "Classify by content and mode, not by extension, or narrow the census's claim.",
+  "dominance_test": "An extensionless executable planted outside the entry directory must turn the census red."
+ },
+ {
+  "id": "OBL-11",
+  "from_defect": "DEF-11",
+  "must": "Delete or repair the dead probe.",
+  "dominance_test": "A file may not be simultaneously accounted for by the census and unreachable by any runner."
+ },
+ {
+  "id": "OBL-12",
+  "from_defect": "DEF-12",
+  "must": "Make the two specifications agree on the path.",
+  "dominance_test": "Cross-references between contracts must resolve."
+ },
+ {
+  "id": "OBL-13",
+  "from_defect": "DEF-09",
+  "must": "Audit GATE-1, GATE-2, GATE-3 and GATE-5 as GATE-4 was audited.",
+  "dominance_test": "This phase checked only GATE-4 exhaustively; the other four are an open residual, not a clean bill."
+ },
+ {
+  "id": "OBL-14",
+  "from_defect": "DEF-13",
+  "must": "Regenerate or remove the stale repository graph.",
+  "dominance_test": "No published artefact may pin a commit that is not in the release's own lineage."
+ },
+ {
+  "id": "OBL-15",
+  "from_defect": "DEF-14",
+  "must": "Restore the ratchet rule's written statement.",
+  "dominance_test": "A mechanism whose rule exists nowhere in writing cannot be reviewed."
+ },
+ {
+  "id": "OBL-16",
+  "from_defect": "DEF-15",
+  "must": "Pin the SBOM tooling by digest.",
+  "dominance_test": "No supply-chain workflow may execute code it has not pinned."
+ },
+ {
+  "id": "OBL-17",
+  "from_defect": "DEF-16",
+  "must": "Remove the Quicklisp path or withdraw the claim.",
+  "dominance_test": "A prohibition asserted in three files may not be violated in a fourth."
+ },
+ {
+  "id": "OBL-18",
+  "from_defect": "DEF-17",
+  "must": "Make the documented quickstart work as written.",
+  "dominance_test": "The first command in the README must succeed on a clean clone."
+ },
+ {
+  "id": "OBL-19",
+  "from_defect": "DEF-18",
+  "must": "Delete the orphan system or give it components.",
+  "dominance_test": "No .asd may persist that nothing loads and nothing populates."
+ },
+ {
+  "id": "OBL-20",
+  "from_defect": "DEF-19",
+  "must": "Populate or delete deps.archives.lock.",
+  "dominance_test": "An empty lockfile is worse than none: it looks like a control."
+ },
+ {
+  "id": "OBL-21",
+  "from_defect": "DEF-20",
+  "must": "One version seat.",
+  "dominance_test": "The system must be able to say its own version once."
+ },
+ {
+  "id": "OBL-22",
+  "from_defect": "DEF-21",
+  "must": "Make the capability register cover the authority architecture.",
+  "dominance_test": "A gate plenary over the register must be capable of failing because of an authority defect."
+ },
+ {
+  "id": "OBL-23",
+  "from_defect": "DEF-22",
+  "must": "Decide what the 24 legacy releases are: evidence, or law.",
+  "dominance_test": "The successor design must state, for every already-published artefact, whether it carries authority and by what act."
+ },
+ {
+  "id": "OBL-24",
+  "from_defect": "DEF-23",
+  "must": "Make the boundary testable where it is developed, or declare the platform.",
+  "dominance_test": "A safety boundary that only one platform can exercise is a boundary only that platform has."
+ },
+ {
+  "id": "OBL-25",
+  "from_defect": "DEF-24",
+  "must": "Obtain one independent green execution before any number is treated as evidence.",
+  "dominance_test": "No count in the completion matrix may be cited as evidence until an execution outside the author's machine has produced it."
+ },
+ {
+  "id": "OBL-27",
+  "from_defect": "DEF-25",
+  "must": "A checker's conjunct must test something.",
+  "dominance_test": "No conformance result may rest on a constant; a property that cannot be tested yet must be reported as untested, not as failed."
+ },
+ {
+  "id": "OBL-28",
+  "from_defect": "DEF-26",
+  "must": "Bind genesis evidence to the tree it ships in, and check the binding.",
+  "dominance_test": "Regenerating the certificate on a different commit must change it, and some mechanism must read the field back."
+ },
+ {
+  "id": "OBL-29",
+  "from_defect": "DEF-27",
+  "must": "Let the code count itself.",
+  "dominance_test": "Where a consolidation states how much it consolidated, the number must be derived, not written by hand."
+ },
+ {
+  "id": "OBL-26",
+  "from_defect": null,
+  "must": "Repair the baseline's own evidence discipline in the successor study.",
+  "dominance_test": "Every substantive claim must resolve to an evidence record inside the artifact set that carries it. The admitted baseline's headline pathology figures did not (EV-P-005, EV-P-006); they had to be re-derived here."
+ }
+]

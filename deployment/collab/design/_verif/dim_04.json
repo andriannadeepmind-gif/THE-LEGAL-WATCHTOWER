@@ -1,0 +1,32 @@
+{
+ "id": "DIM-05",
+ "name": "Coordination / write authority (AX-03, AX-12) \u2014 H4 frozen operative content: every write becomes canonical only by passing the single decidable admission predicate BEFORE canonicalization, at one serialization point (physical single writer OR machine-checked-nonforking logical serialization)",
+ "families": [
+  "uncoordinated-concurrent-mutation: agents mutate shared state with no dependency control",
+  "LLM-arbitration: majority vote / debate / model-judged conflict resolution as the trusted arbitration",
+  "multi-writer-convergent-CRDT: concurrent writers with merge semantics as the canonical store, operations replicated and accepted BEFORE any admission predicate runs (absorbs: Keyhive convergent capabilities, ERA epoch-resolved duelling-admin arbitration, Automerge full-history documents)",
+  "deterministic-merge-CRDT-with-admission-at-merge: convergent replication where every operation passes the single decidable admission predicate AT the deterministic total-order merge point, before becoming canonical \u2014 canonical state a pure function of the committed operation set (Byzantine-resilient deterministic reconstruction). ADJUDICATION under frozen H4 (CA P1-7): the family QUALIFIES \u2014 the deterministic merge is the one serialization point and admission precedes canonicalization \u2014 so it SURVIVES as an admissible family, structurally distinct from shipped CRDTs. No shipped member instantiates it; K-CRDT's members do not",
+  "single-writer-kernel-arbitration: one kernel-enforced writer seat with a total, pure, decidable admission predicate; confluent deterministic tiered parallelism (antichain + disjoint footprints + atomic tier commit), extensible per the v2 AX-03 correction to deterministic conflict-ordered execution (Calvin-class pre-committed serialization order over non-commuting effects); every acceptance AND refusal a signed, durable derivation (absorbs: Cedar-in-Lean verified policy/authorization kernel candidate, accountable-human-decision-authority protocol objects candidate \u2014 maker-checker, quorum sign-off, delegation lattices, Faramesh non-bypassable action-authorization boundary, dissent-preservation/voting/deliberation primitives candidate as typed institutional-arbitration objects, semantic-conflict isolation ordered by the lex superior/posterior/specialis authority lattice candidate, MSC-projection deadlock-free coordination)",
+  "bft-replicated-total-order: consensus-ordered log (Mysticeti-class) realizing one LOGICAL writer across mutually distrusting operators, admission evaluated at consensus commit (absorbs: heterogeneous/asymmetric quorum declarations at the membership layer); explicitly named by the v2 AX-03 ceiling's 'single logical serialization point' wording (CF P1-1)"
+ ],
+ "eliminations": [
+  {
+   "family": "uncoordinated-concurrent-mutation",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-AGT (uncoordinated harness mode)",
+   "lemma": "Violates H5 and H4 (frozen wording): committed output depends on interleaving of non-commuting effects, hence is not a function of frozen inputs (unreplayable), and no admission-before-canonicalization point exists anywhere. This is also the shipped tree's named residual at its seat (parallel-executor.lisp shared-context mutation), carried as an open obligation against K-B0-SHIPPED, not silently absorbed."
+  },
+  {
+   "family": "LLM-arbitration",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-COM",
+   "lemma": "Violates H1: statistical arbitration in the trusted path \u2014 replayable statistical judgment is still statistical judgment, and H1 alone carries the elimination. The v1 H8 conjunct ('a vote is not an offline-recomputable derivation') is WITHDRAWN as false (CA P2-10): with OMS-pinned weights and batch-invariant kernels, recorded ballots and tallies ARE offline-recomputable; a false conjunct in a lemma invites exactly the adversarial reopening it received. Conformal social choice (arXiv 2604.07667) yields distribution-level guarantees only and survives as an untrusted advisory layer."
+  },
+  {
+   "family": "multi-writer-convergent-CRDT",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-CRDT",
+   "lemma": "Violates H4 under its FROZEN operative wording: shipped CRDTs replicate and accept operations before any admission predicate runs \u2014 merge-after-acceptance, not admission-before-canonicalization at a serialization point. Under the same frozen wording K-BFT qualifies (admission at consensus commit, one logical serialization point with machine-checked nonforking): the v1 asymmetry \u2014 'logical single writer' granted to BFT and denied to CRDTs with the discriminator unstated (CA P1-7) \u2014 is repaired by stating the discriminator, making this lemma a proof instead of taste. The newly enumerated deterministic-merge-CRDT-with-admission-at-merge family is NOT covered by this elimination and survives. K-CRDT is RETAINED in D_T as a comparison member with genuinely superior properties on specific rungs (offline operation, tamper-evidence without quorum), weighed axis-by-axis."
+  }
+ ]
+}

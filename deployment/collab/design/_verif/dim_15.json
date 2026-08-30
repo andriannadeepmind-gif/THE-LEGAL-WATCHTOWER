@@ -1,0 +1,19 @@
+{
+ "id": "DIM-16",
+ "name": "Formalization admission / interpretive-artifact provenance (AX-01 boundary, AX-12) \u2014 dimension ADDED per CA P1-4: DIM-02 admits source BYTES; nothing previously governed how the committed formal RULEBASE \u2014 the single highest-risk artifact in every admissible class \u2014 comes into being and is contested. These are admission mechanisms, distinct from DIM-06 assurance and DIM-13 falsification; classes differ materially on them, and the taxonomy can now express e.g. that a K-CAT instance running on government-published formal law occupies a strictly different trust cell than one running on privately authored formalizations of the same statutes",
+ "families": [
+  "human-authoritative-codification: expert-authored formal rulebase; each rule admitted under a signed record binding it to its NL source span and to the human authority asserting the mapping (the H1-conformant floor: the NL-to-formal mapping enters only as attested, admitted input whose certificate records who asserted it)",
+  "publisher-authoritative-formal-law: the formalization is itself the legally operative artifact (Catala at DGFiP-class) \u2014 dissolves the interpretive gap for covered law; the only family that raises the AX-01 MODEL_RELATIVE ceiling's PRACTICAL reach, because the committed model coincides with the legally binding text",
+  "llm-autoformalize-human-gate: LLM proposes formalizations strictly as untrusted candidates; a human authority reviews and signs admission (the GDPR-formalization line, arXiv 2604.14607)",
+  "n-version-formalization-admission: independently generated formalizations of the same provision SAT-diffed BEFORE admission; behavioral disagreement is a typed ambiguity/escalation object that blocks admission ('By Their Fruits' as an admission mechanism \u2014 distinct from its DIM-13 falsification use over already-admitted artifacts)",
+  "round-trip-verbalization-invariant: committed verbalization of the admitted rulebase with machine-checked round-trip drift detection as a STANDING admission invariant, re-run on every rulebase change ('Know Your Limits' line)"
+ ],
+ "eliminations": [
+  {
+   "family": "unattested-LLM-formalization-trusted",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-COM and K-AGT (model-internal interpretation stands in for a rulebase)",
+   "lemma": "Violates H1: the NL-to-formal mapping enters the trusted path solely on a statistical model's authority, with no attested admission record \u2014 the mapping IS a trusted model output, exactly the escape hatch the AX-01 guarantee profile closes ('a statistical model cannot be trusted to certify the NL-to-formal mapping'). Retained representatives K-COM and K-AGT carry it in D_T."
+  }
+ ]
+}

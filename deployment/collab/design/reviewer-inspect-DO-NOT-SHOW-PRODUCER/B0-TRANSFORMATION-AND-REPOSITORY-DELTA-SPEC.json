@@ -1,0 +1,91 @@
+{
+  "schema": "watchtower/b0-transformation-and-repository-delta-spec/1",
+  "version": "1.0.0",
+  "policy_status": "FROZEN_BEFORE_FRESH_PHASE_2",
+  "obligation": "FOC-19",
+  "theorem": "T7",
+  "source_baseline": {
+    "repository": "https://github.com/andriannadeepmind-gif/THE-LEGAL-WATCHTOWER.git",
+    "branch": "main",
+    "commit": "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03",
+    "tree": "23b7a6f4450f50d151d38e13020bee9872e73bcd"
+  },
+  "target_rule": "E_star must be the verified evolutionary successor of B0 implemented through an exact, reviewable transformation of the Andrianna repository. A disconnected greenfield system, adjacent replacement, facade, wrapper-only substitute, second authority or duplicate subsystem cannot satisfy FOC-19/T7.",
+  "preservation_rule": "Every reachable B0 capability, invariant, trace, public protocol, durable state meaning, recovery property, deployment path and verification gate is preserved or migrated to a strictly stronger verified form. Any unexplained or regressed B0 surface blocks.",
+  "phase_order": {
+    "phase_2": "The blind producer cannot inspect B0. It must emit PHASE-2-IMPLEMENTATION-ABSTRACTION-MAP.json, mapping every proposed architecture mechanism to abstract implementation responsibilities, interfaces, state, dependencies, invariants, migration assumptions and verification needs.",
+    "post_phase_2_reveal": "After the Phase-2 submission hash is fixed and the candidate passes independent review, reveal B0 and complete an exhaustive semantic repository census before planning a change.",
+    "before_repository_write": "Produce, hash and independently review the complete crosswalk, changeset plan, capability-preservation matrix, migration DAG and verification matrix. Repository mutation remains unauthorized until creator approval of that immutable plan.",
+    "implementation": "Apply the approved changes in a dedicated branch/worktree of the Andrianna repository, as verified vertical increments of the final architecture. No study ZIP or supervisory report is committed to the repository.",
+    "final": "The exact built executable, source tree, change manifest and proof objects instantiate E_star; T7 and all preceding obligations are replayed against the resulting commit."
+  },
+  "required_post_reveal_artifacts": [
+    "B0-SEMANTIC-REPOSITORY-CENSUS.jsonl",
+    "B0-TO-E-STAR-CAPABILITY-PRESERVATION-MATRIX.json",
+    "B0-TO-E-STAR-ARCHITECTURE-CROSSWALK.jsonl",
+    "B0-TO-E-STAR-CHANGESET-PLAN.jsonl",
+    "B0-TO-E-STAR-REFACTOR-PLAN.md",
+    "B0-TO-E-STAR-MIGRATION-DAG.json",
+    "B0-TO-E-STAR-VERIFICATION-MATRIX.json",
+    "B0-TO-E-STAR-REMOVAL-PROOFS.jsonl",
+    "B0-TO-E-STAR-FINAL-IMPLEMENTATION-MANIFEST.json"
+  ],
+  "repository_census_closure": {
+    "required_surfaces": [
+      "tracked files and generated boundaries",
+      "ASDF systems, components and load order",
+      "packages, exported and internal protocols",
+      "definitions, callers, writers and readers",
+      "authority and state-transition points",
+      "durable stores, schemas, migrations and recovery paths",
+      "concurrency ownership and scheduling",
+      "deployment, operational and integration paths",
+      "tests, proof gates, fixtures and toolchain assumptions",
+      "existing capabilities, invariants and theorem debts"
+    ],
+    "closure_rule": "Every in-scope tracked path, definition, authority, writer, store, command, capability and verification gate has exactly one stable census identity and disposition. One unexplained surface blocks FOC-19.",
+    "unknown_rule": "UNKNOWN never authorizes a repository change or a preservation claim."
+  },
+  "changeset_record_fields": [
+    "change_id",
+    "change_kind",
+    "current_paths_and_symbols",
+    "target_paths_and_symbols",
+    "asdf_and_package_impact",
+    "current_semantics",
+    "target_semantics",
+    "architecture_obligation_ids",
+    "commercial_axis_ids",
+    "capabilities_and_invariants_preserved",
+    "dependencies_and_predecessors",
+    "state_and_data_migration",
+    "verification_and_proof_obligations",
+    "failure_and_recovery_behavior",
+    "removal_or_replacement_proof",
+    "status"
+  ],
+  "change_kinds": ["ADD", "MODIFY", "REFACTOR", "MOVE", "REPLACE", "REMOVE"],
+  "change_semantics": {
+    "ADD": "Adds a final-architecture capability with explicit authority, consumers, invariants and verification; no orphan or speculative subsystem.",
+    "MODIFY": "Changes an existing semantic authority in place with complete caller/consumer impact and preservation evidence.",
+    "REFACTOR": "Preserves declared observable semantics while improving internal structure; requires differential or bisimulation-style evidence over the complete affected surface.",
+    "MOVE": "Moves ownership without creating dual authority, split state or compatibility ambiguity.",
+    "REPLACE": "Supersedes an existing mechanism only after the replacement proves universal capability/trace refinement and migration closure.",
+    "REMOVE": "Permitted only with exhaustive caller/consumer/store/deployment evidence proving redundancy, completed migration or stronger replacement."
+  },
+  "anti_duplication_rules": {
+    "parallel_authority_forbidden": true,
+    "second_source_of_truth_forbidden": true,
+    "hidden_fallback_forbidden": true,
+    "wrapper_only_substitution_forbidden": true,
+    "unbounded_compatibility_shim_forbidden": true,
+    "abandoned_old_path_forbidden": true
+  },
+  "crosswalk_totality": "Every Phase-2 architecture mechanism maps to one or more exact B0 repository changes or receives a proof that B0 already implements a strictly sufficient form. Every planned repository change maps back to a frozen architecture, preservation, commercial-axis or proof obligation. Orphans in either direction block.",
+  "migration_rule": "The migration DAG is acyclic, dependency-complete and composed of verified vertical increments that always belong to the final architecture. Each increment declares pre-state, post-state, preserved properties, recovery behavior and evidence. A deliberately inferior interim architecture is forbidden.",
+  "formal_rule": "There exists a finite approved change sequence Delta_B0 such that Apply(B0,Delta_B0)=E_star; every intermediate approved increment preserves all still-binding B0 invariants and capabilities; the final source, build and executable instantiate the proved A_star/E_star; and the crosswalk/manifest is total and exact.",
+  "required_final_status": "B0_TRANSFORMATION_TO_E_STAR_VERIFIED",
+  "failure_status": "B0_TRANSFORMATION_BLOCKED",
+  "current_state": "BLOCKED",
+  "repository_writes_before_creator_approval": 0
+}

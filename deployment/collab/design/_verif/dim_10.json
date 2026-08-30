@@ -1,0 +1,26 @@
+{
+ "id": "DIM-11",
+ "name": "Plan decomposition (AX-02)",
+ "families": [
+  "implicit-llm-planning: the model decomposes and sequences work inside the trusted path",
+  "declared-plan-unchecked: steps and ordering reified as data, completeness never machine-checked",
+  "formalize-then-solve: LLM emits a formal planning problem (PDDL-class), a sound/complete external planner/validator solves and checks it, validator feedback drives repair/reward (absorbs: VAL-in-the-loop, planner-in-loop PDDL formalization, LLM-as-formalizer scaling result arXiv 2603.23844); per the v2 AX-02 correction (CF P2-2), H5 requires the plan be a DETERMINISTIC DERIVATION from frozen inputs \u2014 not necessarily pre-committed \u2014 so sound/complete plan synthesis with existence certificates over committed finite domains is inside the decidable class",
+  "typed-dag-contract-plans: finite typed dataflow DAG with produces/consumes checking, fail-closed macroexpansion admission (defective plan cannot come into existence), unique deterministic tie-broken schedule, offline-recheckable plan certificate (the AX-02 guarantee profile)",
+  "verified-orchestration-topology: statically verified workflow graphs, temporal-policy DSL compiled to DFAs, machine-checked mandatory human-review nodes, MSC syntax-directed projection giving deadlock-freedom by construction (absorbs: Agentproof, Lean4Agent, TraceFix TLA+ counterexample repair)",
+  "dual-informal-formal-lemma-handoff: untrusted planner proposes a lemma DAG, each node autoformalized and kernel-checked before use (absorbs: Aristotle architecture; composes with DIM-04 total-bitemporal-view to yield point-in-time plan validation \u2014 each step checked against legal state as-of its effective date)"
+ ],
+ "eliminations": [
+  {
+   "family": "implicit-llm-planning",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-COM",
+   "lemma": "Violates H1 (plan is a statistical artifact never verified out) \u2014 and the frontier quantifies the cost: SOTA LLM planners degrade to <=20% at scale while formalize-then-solve holds 100% (arXiv 2603.23844). Representative K-COM retained in D_T."
+  },
+  {
+   "family": "declared-plan-unchecked",
+   "lemma_kind": "DOMINANCE_CONJECTURE",
+   "retained_representative": "K-COM",
+   "lemma": "Pre-registered dominance conjecture on AX-02: R2 vs R5 attainable at macroexpansion time \u2014 checking a committed finite DAG is O(V+E), so no compensating advantage is conjectured. (The DEFPIPELINE seat detail is attainment-witness appendix material; the ungated type-match is an open obligation against K-B0-SHIPPED.) Adjudicated by full verdicts against retained representative K-COM."
+  }
+ ]
+}

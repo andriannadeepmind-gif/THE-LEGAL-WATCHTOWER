@@ -1,0 +1,191 @@
+[
+ {
+  "id": "DEF-01",
+  "severity": "P0",
+  "kind": "dead-authority",
+  "title": "The system has no working authority path in either direction",
+  "obligation": "OBL-01"
+ },
+ {
+  "id": "DEF-02",
+  "severity": "P0",
+  "kind": "declared-not-implemented",
+  "title": "Zero of thirteen Level-7 requirements are proved and zero of seventeen theorems",
+  "obligation": "OBL-02"
+ },
+ {
+  "id": "DEF-03",
+  "severity": "P0",
+  "kind": "contradiction",
+  "title": "Hermetic construction is claimed in three contracts and refuted by the build",
+  "obligation": "OBL-03"
+ },
+ {
+  "id": "DEF-04",
+  "severity": "P1",
+  "kind": "false-green",
+  "title": "The completion matrix contradicts itself about executed results",
+  "obligation": "OBL-04"
+ },
+ {
+  "id": "DEF-05",
+  "severity": "P1",
+  "kind": "broken-deployment",
+  "title": "The main service carries a malformed tmpfs option",
+  "obligation": "OBL-05"
+ },
+ {
+  "id": "DEF-06",
+  "severity": "P1",
+  "kind": "functional-regression",
+  "title": "The ingestion service lost the command that makes it ingest",
+  "obligation": "OBL-06"
+ },
+ {
+  "id": "DEF-07",
+  "severity": "P1",
+  "kind": "unguarded-boundary",
+  "title": "The proof runner is the least constrained service in the deployment",
+  "obligation": "OBL-07"
+ },
+ {
+  "id": "DEF-08",
+  "severity": "P1",
+  "kind": "unverifiable-guarantee",
+  "title": "Blockchain and timestamp anchoring verify a status code, not the bytes",
+  "obligation": "OBL-08"
+ },
+ {
+  "id": "DEF-09",
+  "severity": "P1",
+  "kind": "declared-not-implemented",
+  "title": "A declared gate exists only as a table row",
+  "obligation": "OBL-09"
+ },
+ {
+  "id": "DEF-10",
+  "severity": "P2",
+  "kind": "residual-bypass",
+  "title": "The proof census classifies by file extension while claiming not to",
+  "obligation": "OBL-10"
+ },
+ {
+  "id": "DEF-11",
+  "severity": "P2",
+  "kind": "dead-code",
+  "title": "A proof probe that has no caller and could not succeed if it had one",
+  "obligation": "OBL-11"
+ },
+ {
+  "id": "DEF-12",
+  "severity": "P2",
+  "kind": "contradiction",
+  "title": "Two specifications disagree about where their own check lives",
+  "obligation": "OBL-12"
+ },
+ {
+  "id": "DEF-13",
+  "severity": "P2",
+  "kind": "stale-artefact",
+  "title": "Published artefacts pin a commit that is neither study commit",
+  "obligation": "OBL-14"
+ },
+ {
+  "id": "DEF-14",
+  "severity": "P2",
+  "kind": "lost-contract-text",
+  "title": "The suite-census ratchet rule lost its only written statement",
+  "obligation": "OBL-15"
+ },
+ {
+  "id": "DEF-15",
+  "severity": "P1",
+  "kind": "supply-chain",
+  "title": "The SBOM step executes unpinned remote code",
+  "obligation": "OBL-16"
+ },
+ {
+  "id": "DEF-16",
+  "severity": "P1",
+  "kind": "contradiction",
+  "title": "Quicklisp is forbidden in three places and downloaded in a fourth",
+  "obligation": "OBL-17"
+ },
+ {
+  "id": "DEF-17",
+  "severity": "P2",
+  "kind": "quickstart-broken",
+  "title": "The documented quickstart cannot build by default",
+  "obligation": "OBL-18"
+ },
+ {
+  "id": "DEF-18",
+  "severity": "P2",
+  "kind": "orphan",
+  "title": "An ASDF system with no components and no executable reference",
+  "obligation": "OBL-19"
+ },
+ {
+  "id": "DEF-19",
+  "severity": "P2",
+  "kind": "empty-contract",
+  "title": "An archive lockfile that locks nothing",
+  "obligation": "OBL-20"
+ },
+ {
+  "id": "DEF-20",
+  "severity": "P2",
+  "kind": "divergent-identity",
+  "title": "The system disagrees with itself about its own version",
+  "obligation": "OBL-21"
+ },
+ {
+  "id": "DEF-21",
+  "severity": "P1",
+  "kind": "architectural-bottleneck",
+  "title": "The entire self-model of capability lives in one subsystem",
+  "obligation": "OBL-22"
+ },
+ {
+  "id": "DEF-22",
+  "severity": "P1",
+  "kind": "unverifiable-guarantee",
+  "title": "No published release conforms to the epoch that is supposed to govern it",
+  "obligation": "OBL-23"
+ },
+ {
+  "id": "DEF-23",
+  "severity": "P2",
+  "kind": "platform-lock",
+  "title": "The capture reference implementation cannot run on the development platform",
+  "obligation": "OBL-24"
+ },
+ {
+  "id": "DEF-25",
+  "severity": "P2",
+  "kind": "analytic-result",
+  "title": "A conformance conjunct is a constant, so its verdict is guaranteed",
+  "obligation": "OBL-27"
+ },
+ {
+  "id": "DEF-26",
+  "severity": "P2",
+  "kind": "stale-binding",
+  "title": "The genesis certificate binds a commit eight commits behind its own tree",
+  "obligation": "OBL-28"
+ },
+ {
+  "id": "DEF-27",
+  "severity": "P2",
+  "kind": "misstated-fact",
+  "title": "The one-seat consolidation misstates its own size, twice and differently",
+  "obligation": "OBL-29"
+ },
+ {
+  "id": "DEF-24",
+  "severity": "P1",
+  "kind": "never-executed-gate",
+  "title": "The CI job that now gates release has never run",
+  "obligation": "OBL-25"
+ }
+]

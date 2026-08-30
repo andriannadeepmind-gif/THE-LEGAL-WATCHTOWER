@@ -1,0 +1,55 @@
+AX-15
+    R1 volatile: committed state lost on crash
+    R2 periodic-persistence: snapshots with declared or undeclared loss windows
+    R3 write-ahead-durable: every committed transition durable before acknowledgment; recovery best-effort
+    R4 crash-consistent-atomic: recovery always reaches a consistent state containing exactly the committed transitions — no torn or partial transitions observable (H6)
+    R5 bounded-certified-recovery: recovery to the last certified state within a pre-declared bound, with the recovery procedure itself verified and its outcome replayable/checkable (H5,H8)
+
+AX-16
+    R1 no-liveness-claims: waits unbounded, hangs possible and silent
+    R2 heuristic-timeouts: timeouts exist but starvation and livelock unanalyzed
+    R3 typed-progress-obligations: operating model declared; every wait/blocking point typed with a progress obligation; starvation classes identified
+    R4 verified-liveness: progress proven under the declared operating model; on breach the system terminates fail-closed with a typed violation — it blocks, it never hangs silently (H3)
+    R5 certified-accountable-stall: liveness proofs offline re-checkable and any stall is itself a typed, surfaced, certificate-carrying state with an accountable cause
+
+AX-17
+    R1 uncharacterized: no latency model or bounds of any kind
+    R2 observed-only: empirical measurements exist but no committed characterization
+    R3 declared-complexity-class: per frozen-workload-class latency complexity/behavior class declared and pre-registered
+    R4 verified-class-bounds: declared classes derived and machine-checked from the architecture (algorithmic/structural analysis), not merely measured
+    R5 certified-worst-case-envelope: per-class worst-case envelope certified; envelope breach is a fail-closed typed violation, never silent degradation (H3)
+
+AX-18
+    R1 uncharacterized: no throughput/scaling model
+    R2 observed-only: empirical throughput known, no committed scaling characterization
+    R3 declared-scaling-class: resource-normalized scaling class declared per frozen workload class (how throughput moves with resources and load)
+    R4 verified-scaling-bounds: scaling classes derived and machine-checked from the architecture, including identified saturation points
+    R5 certified-envelope-with-accountable-saturation: resource-normalized performance envelope certified; saturation and overload behavior fail-closed, typed, and accounted — never silent shedding or degradation (H3)
+
+AX-19
+    R1 opaque: no account of why a conclusion holds
+    R2 post-hoc-narrative: explanations generated after the fact, unverified against the actual decision process
+    R3 faithful-trace: explanations mechanically generated from the actual decision trace; nothing in the explanation absent from the trace
+    R4 inspectable-causal-account: every conclusion queryable down to admitted inputs; which-inputs-mattered and what-would-change questions answerable from the recorded derivation
+    R5 certified-explanation: the explanation is the proof/derivation object itself (or provably equivalent to it); divergence between explanation and decision is structurally impossible, and the account is offline re-checkable (H8)
+
+AX-20
+    R1 unmanaged-change: modifications without invariant or capability tracking
+    R2 versioned-releases: change is versioned but committed guarantees are not tracked as objects
+    R3 floor-regression-gated: committed capability floors and invariants encoded as blocking checks; a change that fails them cannot merge (H3)
+    R4 monotone-admission: evolution steps are admitted transitions — a machine check proves no committed floor is lowered before admission (H6,H7)
+    R5 certified-evolution: every evolution step carries an offline re-checkable proof of invariant preservation and capability monotonicity across the whole committed floor set (H7,H8)
+
+AX-21
+    R1 informal-design: prose documents only, no machine-checked properties
+    R2 reviewed-specs: structured specifications, human-verified only
+    R3 machine-checked-spec-properties: core invariants (including H1-H8 as applicable) formalized and machine-proven at the specification level
+    R4 verified-spec-to-source: refinement from architecture specification to source machine-checked, so the source provably implements the proven spec
+    R5 end-to-end-transport: the full chain specification -> source -> executable is verified (verified compilation, translation validation, or equivalent), and the whole chain is third-party re-checkable with zero producer trust (H8)
+
+AX-22
+    R1 single-order-hardcoded: one legal order's structure baked into the mechanism
+    R2 ad-hoc-parameterization: other legal orders reachable only via per-order code changes or patches
+    R3 declared-order-abstraction: all order-specific content isolated as data behind a typed legal-order interface; the mechanism contains no order-specific logic by design
+    R4 demonstrated-multi-order: at least two structurally distinct legal orders instantiated with zero mechanism change, with the zero-change claim independently verified
+    R5 certified-generality: the mechanism is proven parametric over a formalized legal-order signature; instantiating a new order is data admission only, and the proof is offline re-checkable (H8)

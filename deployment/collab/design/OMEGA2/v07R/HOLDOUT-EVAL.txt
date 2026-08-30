@@ -1,0 +1,15 @@
+holdout seed phrase digest: 614f6e87cd5354425b8b0eb2f9cc80eef71b9a8b7f2d015f49b78049720c531a
+seed: 7011944674383582274
+
+L1.d frontier selection — 4000 holdout fixtures
+    SelectionSound                    : PASS
+    NoGuessOnAmbiguity                : PASS
+    NoUnnecessaryUnknown              : PASS
+L3 artifact status — 4000 holdout fixtures
+    StatusIsFrontierIndexed           : PASS
+composite safety (defect-free) — 6000 holdout fixtures
+    CompositeSafety                   : PASS
+composite defect detection — 400 holdout fixtures
+    AllRandomDefectSetsDetected       : PASS
+
+HOLDOUT: PASS

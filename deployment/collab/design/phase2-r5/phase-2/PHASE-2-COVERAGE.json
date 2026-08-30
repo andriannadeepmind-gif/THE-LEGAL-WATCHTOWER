@@ -1,0 +1,299 @@
+{
+  "phase": "PHASE-2",
+  "date": "2026-08-26",
+  "creator_directive_sha256": "c2f4b68d36530d47204ab748096947045d62d9be15dca209de594099d346b330",
+  "coverage_rule": "COMPLETE means the design surface is fully specified with owners, states, transitions, invalid transitions and assigned obligations. PARTIAL means something the surface requires is left unspecified or unattainable, and the exact residual is stated. An unproved claim about a fully specified design is recorded as a defeater, not as PARTIAL; an unspecified or unattainable element is recorded as PARTIAL. Second audit round: an unproved claim about a fully specified design is a defeater, not a PARTIAL; surface 14 moved from PARTIAL to COMPLETE on that basis once the self-reference defect was structurally remedied.",
+  "summary": {
+    "required_surfaces": 20,
+    "COMPLETE": 16,
+    "PARTIAL": 4,
+    "BLOCKED": 0,
+    "NOT_APPLICABLE": 0
+  },
+  "surfaces": [
+    {
+      "n": 1,
+      "surface": "Institutional identity and constitutional axioms",
+      "status": "COMPLETE",
+      "where": "FRONTIER-ARCHITECTURE.md sec.2; CREATOR-AXIOMS.md sec.1-3; AUTHORITY-AND-STATE-MODEL.md sec.A.2.1",
+      "content": "Identity, mandate, jurisdiction and competence as entrenched constitutional propositions; seven entrenched axioms with individual falsifiers; amendable provisions enumerated and exclusively assigned; genesis specified as an external, named, signed, time-anchored entry e0 after which the founding principal holds no continuing power.",
+      "defeaters": [
+        "DF-007",
+        "DF-042"
+      ]
+    },
+    {
+      "n": 2,
+      "surface": "Offices, roles, jurisdiction, separation of powers, and deliberation",
+      "status": "COMPLETE",
+      "where": "FRONTIER-ARCHITECTURE.md sec.3, sec.16; AUTHORITY-AND-STATE-MODEL.md Part A",
+      "content": "Twelve offices with exclusive typed powers and explicit forbidden powers; the separation invariants SP-1..SP-6 discharged in Alloy; acts without power are void rather than rejected; deliberation is by docket with mandatory contradiction; a human Rapporteur office holds mandatory review of declared high-consequence classes and standing power to reopen. Admission is call-path independent and evaluated in V_w (I-46, SA-12), so an office cannot issue outside its powers by any code path.",
+      "defeaters": [
+        "DF-001",
+        "DF-034",
+        "DF-002"
+      ]
+    },
+    {
+      "n": 3,
+      "surface": "Source registry and source-authority semantics",
+      "status": "COMPLETE",
+      "where": "FRONTIER-ARCHITECTURE.md sec.4; DECISION-MATRIX D03, D04",
+      "content": "A source is a modelled publication process (organ, instrument types, legal order, constitutive flag, channels, enumeration model, cadence model, signature model, vitality probe, correction model), not a URL. Authority is a derived relation over organ x instrument type x legal order x time combined with evidentiary status and confirmed identity; the derivation function's domain excludes channels (I-02).",
+      "defeaters": [
+        "DF-004",
+        "DF-020"
+      ]
+    },
+    {
+      "n": 4,
+      "surface": "Observation and acquisition",
+      "status": "COMPLETE",
+      "where": "FRONTIER-ARCHITECTURE.md sec.5; DECISION-MATRIX D14",
+      "content": "Observation is stateless shell work with all effects injected through an environment object; it produces only OBSERVATION entries (I-03, narrowed in the second audit round when PROPOSAL ceased to be an entry kind and moved to the proposal spool, I-45). Acquisition is an Archive act, content-addressed, with mandatory retention of signed containers (I-06), and the store is R-bounded so it can hold nothing the record does not name (I-43). Transformations form a closed algebra with monotone rank effect; non-deterministic processes record their output as an artifact and are marked process-deterministic false. Bytes enter the artifact store only by atomic promotion from a staging area after the naming ACQUISITION entry commits (I-47), so the R-boundedness invariant has no crash window: the unavoidable window leaves R naming a digest A lacks, which I-44 governs.",
+      "defeaters": [
+        "DF-022",
+        "DF-044"
+      ]
+    },
+    {
+      "n": 5,
+      "surface": "Evidence, provenance, attestation, and transformation lineage",
+      "status": "COMPLETE",
+      "where": "FRONTIER-ARCHITECTURE.md sec.6; AUTHORITY-AND-STATE-MODEL.md Part D; DECISION-MATRIX D06, D07",
+      "content": "Five-rank evidentiary lattice with an incomparable doctrinal branch and an absorbing bottom; monotone degradation as an ACL2 theorem (PO-004); upward transitions require new acquisition plus authentication; attestation classes distinguished by independence, with self-attestation typed so it cannot serve as independent evidence about the institution; native typed lineage exported to W3C PROV and in-toto.",
+      "defeaters": [
+        "DF-006",
+        "DF-008",
+        "DF-036",
+        "DF-044"
+      ]
+    },
+    {
+      "n": 6,
+      "surface": "Temporal legal validity and publication time",
+      "status": "COMPLETE",
+      "where": "FRONTIER-ARCHITECTURE.md sec.7; AUTHORITY-AND-STATE-MODEL.md Part C, Part G; REQUIREMENTS I-11, I-12, I-13, I-14, I-39, I-40",
+      "content": "Nine independent axes at provision granularity, each an adjudicated defeasible proposition; interval endpoints CLOSED/OPEN/UNKNOWN/CONDITIONAL; defaults such as the ten-day rule applied as named defeasible rules and never as stored values; abrogation/annulment/correction trichotomy with six composition rules and four invalid compositions; consolidation classes that never merge (I-14); interval algebra soundness (PO-039) and amendment-chain confluence (PO-040) obligations added by hostile-audit finding HF-009.",
+      "defeaters": [
+        "DF-005",
+        "DF-010",
+        "DF-041"
+      ]
+    },
+    {
+      "n": 7,
+      "surface": "Legal propositions, interpretation, conflict, and defeaters",
+      "status": "COMPLETE",
+      "where": "FRONTIER-ARCHITECTURE.md sec.8; DECISION-MATRIX D08, D09",
+      "content": "Every legal proposition is the conclusion of arguments over strict and defeasible rules with three attack forms; conflict resolved by a declared, inspectable, itself-defeasible preference ordering encoding lex superior / lex specialis / lex posterior, with UNDECIDED as an outcome and no arbitrary tie-break; the defeater classes of R-07 as first-class entries, including a SELF-MODEL class that lets an answer be defeated because the institution discovered it was blind.",
+      "defeaters": [
+        "DF-015",
+        "DF-016",
+        "DF-038"
+      ]
+    },
+    {
+      "n": 8,
+      "surface": "Epistemic state, uncertainty, blind spots, and confidence",
+      "status": "PARTIAL",
+      "where": "FRONTIER-ARCHITECTURE.md sec.9; AUTHORITY-AND-STATE-MODEL.md Part E; DECISION-MATRIX D08",
+      "content": "Assumption-based labels over a closed seven-class assumption vocabulary as substrate, ASPIC+ adjudication above it; confidence is a structural status drawn from a six-value ordered vocabulary and never a number; answer strength is the meet of its supporting leaves.",
+      "residual": "Two elements are specified as bounded rather than complete, and the bounds are policy parameters with no principled value. (1) Only grounded argumentation semantics is admitted by default; preferred-semantics questions are answered only under a bounded search carrying SEMANTICS-INCOMPLETE, because unbounded preferred-extension search admits no decreasing measure and so is not ACL2-admissible. (2) Label computation is bounded by B_label, whose value is empirical and unset in this phase; exhaustion yields LABEL-INCOMPLETE, which cannot support a publication. Both incompletenesses are named statuses rather than silent approximations, but neither is closed.",
+      "defeaters": [
+        "DF-014",
+        "DF-015",
+        "DF-018",
+        "DF-039"
+      ]
+    },
+    {
+      "n": 9,
+      "surface": "Scheduling, liveness, retries, recovery, and deterministic replay",
+      "status": "COMPLETE",
+      "where": "FRONTIER-ARCHITECTURE.md sec.10; FAILURE-AND-RECOVERY-MODEL.md sec.1-15, sec.17; DECISION-MATRIX D12, D13, D14",
+      "content": "One deterministic logical scheduler, identical in production, replay and simulation, with all nondeterminism injected through an environment object and environment traces recorded so any past interval is exactly re-executable. Retries are a remedy chosen by an office through the condition system, recorded as a warranted act. Recovery is recomputation: verify integrity, locate checkpoint, redo, re-evaluate reopening predicates, re-run a deletability experiment, re-execute publication-critical falsifiers before the publication power is restored. Liveness properties L-1..L-6 stated, each with an assigned tool except L-6, which is explicitly labelled an operating expectation because it depends on source behaviour. Fault class F15 (verification-kernel divergence) added with I-41; recovery re-runs the K_v/V_w differential before the publication power is restored. Recovery additionally reconciles staging: any R-named digest absent from A and present in S is promoted (idempotent, resumable), and torn staged objects are discarded with a record (I-47).",
+      "defeaters": [
+        "DF-012",
+        "DF-017",
+        "DF-022"
+      ]
+    },
+    {
+      "n": 10,
+      "surface": "Gap and delayed-publication detection",
+      "status": "PARTIAL",
+      "where": "FRONTIER-ARCHITECTURE.md sec.11; AUTHORITY-AND-STATE-MODEL.md Part F.1; DECISION-MATRIX D15",
+      "content": "Three structural detectors exploiting properties of the source's own publication process (enumeration closure, reference closure, cadence anomaly) plus content-independent vitality probes that separate SOURCE-SILENT from self-blindness, plus cross-channel corroboration where a second channel exists. Four coverage states with SOURCE-SILENT enterable only on a successful probe.",
+      "residual": "The capability is unattainable for sources exposing no structural signal. Greek supreme-court publication practice is a confirmed instance: no enumeration invariant comparable to Gazette issue numbering was located (RL-052). For such sources coverage is permanently INDETERMINATE-COVERAGE and completeness claims are permanently suppressed, so the institution can never claim completeness about domestic jurisprudence. Reference closure partially compensates by turning citations in acquired material into acquisition obligations, but it cannot detect a decision that nothing acquired cites. This is a limit of the observable world, reported honestly rather than approximated.",
+      "defeaters": [
+        "DF-020",
+        "DF-023"
+      ]
+    },
+    {
+      "n": 11,
+      "surface": "Backfill and anti-entropy reconciliation",
+      "status": "COMPLETE",
+      "where": "FRONTIER-ARCHITECTURE.md sec.12; DECISION-MATRIX D16; FAILURE-AND-RECOVERY-MODEL.md sec.6",
+      "content": "Backfill is an append of observations with earlier t_observe and later t_record, so no log reordering is ever required and corruption is structurally impossible; the kernel re-derives and differences become adjudicable DIVERGENCE objects. Anti-entropy compares retained artifact digests against re-observation, stratified by legal salience and citation recency with full verification of every artifact supporting a published answer; digest change on an unchanged identity raises SOURCE-MUTATION for adjudication into lawful correction, unannounced revision, substitution, or transient error.",
+      "defeaters": [
+        "DF-023",
+        "DF-040",
+        "DF-044"
+      ]
+    },
+    {
+      "n": 12,
+      "surface": "Anomaly quarantine and correction",
+      "status": "COMPLETE",
+      "where": "FRONTIER-ARCHITECTURE.md sec.13; AUTHORITY-AND-STATE-MODEL.md Part C.3; DECISION-MATRIX D17",
+      "content": "Quarantine is a derived status computed by the kernel, not a separate store, so it adds no authority and preserves the deletability test while keeping non-support structural: the support relation's domain is computed to exclude quarantined entries, so a query that forgets to filter cannot exist. Five-state machine with named invalid transitions; automatic correction of content is forbidden because it would manufacture evidence.",
+      "defeaters": [
+        "DF-025"
+      ]
+    },
+    {
+      "n": 13,
+      "surface": "Reflective memory and decision history",
+      "status": "COMPLETE",
+      "where": "FRONTIER-ARCHITECTURE.md sec.14; AUTHORITY-AND-STATE-MODEL.md Part E.4, Part E.5; DECISION-MATRIX D19",
+      "content": "Every decision carries an executable reopening predicate drawn from a closed decidable language, evaluated as part of the fold, which converts institutional memory from an archive into a control mechanism. Memory retains the question, the evidence set as of decision time, every argument including the losing ones, the contradiction attempt, the preference applications, the reasons and the kernel version. Published answers have their own lifecycle with four outcomes and a published CORRECTION-OBLIGED status.",
+      "defeaters": [
+        "DF-028",
+        "DF-030"
+      ]
+    },
+    {
+      "n": 14,
+      "surface": "Self-model validation and metacognitive control",
+      "status": "COMPLETE",
+      "where": "FRONTIER-ARCHITECTURE.md sec.15; REQUIREMENTS R-08, I-21..I-24; DECISION-MATRIX D18",
+      "content": "Self-model propositions live in the same epistemic store, subject to the same defeat mechanics, and must declare the A6 triple: truth condition over the record, executable falsifier, institutional consequence. Causation is structural: the observation plan is a derived function of self-model propositions computed inside the kernel (I-22). The Inspectorate executes falsifiers on a separate schedule and may suspend the publication power institution-wide (I-23) while holding no power to create positive propositions. R-08 separates constitutional facts, which are outside A6, from self-model propositions, which are inside it, with an anti-evasion audit. SECOND AUDIT ROUND: the Inspectorate no longer uses K_v at all. Verdicts and every self-model falsifier outcome are computed by V_w (I-41), an independently authored, separately ACL2-admitted verification kernel sharing no code with K_v (I-42, build-time import-closure audit PO-042), reading R and A|_R directly and never reading K_v output; coverage falsifiers are recomputed from raw observation entries including vitality-probe results. Disagreement is fault F15 and suspends the publication power, with no majority rule and no automatic resolution.",
+      "defeaters": [
+        "DF-043",
+        "DF-026",
+        "DF-027"
+      ],
+      "status_note": "Changed from PARTIAL to COMPLETE in the second audit round. The residual that made it PARTIAL - that the self-model was produced by the kernel that audits it - was ruled a defect by the creator and is structurally remedied. What remains is common-mode failure across the two kernels, which is a defeater (DF-043, OPEN) rather than an unspecified or unattainable element of the surface."
+    },
+    {
+      "n": 15,
+      "surface": "Internal adversarial reasoning and institutional approval",
+      "status": "COMPLETE",
+      "where": "FRONTIER-ARCHITECTURE.md sec.16; REQUIREMENTS I-25..I-27; DECISION-MATRIX D19",
+      "content": "Admission of a defeasible conclusion requires either a constructed counter-argument or CONTRADICTION-NOT-CONSTRUCTIBLE with a syntactic witness that the derivation used no defeasible rule, which is decidable on the argument tree; absence of the record voids the admission rather than skipping a step. Seven admission conditions including premise-strength thresholds, resolved preferences, no undischarged no-good, complete labels, and Rapporteur review for declared high-consequence classes. A model critic may propose objections but a proposal must be reified as an argument before it counts. Machine-learned output is contained in the proposal spool, outside the kernel signature (I-45), so a proposal cannot be reified as a premise even by error.",
+      "defeaters": [
+        "DF-015",
+        "DF-034",
+        "DF-045"
+      ]
+    },
+    {
+      "n": 16,
+      "surface": "Query, explanation, citation, and publication boundaries",
+      "status": "COMPLETE",
+      "where": "FRONTIER-ARCHITECTURE.md sec.17; AUTHORITY-AND-STATE-MODEL.md Part E.5, Part G.3; REQUIREMENTS R-10, I-35..I-37; DECISION-MATRIX D26",
+      "content": "An answer is a warranted extract of admitted propositions carrying all nine temporal axes, evidentiary basis with statuses, argument structure, defeaters and disposition, coverage status of every source relied on, consolidation class, kernel version, and an explicit statement of what is not known. Five publication gates. Structured refusal is a first-class output naming the missing evidence and the acquisition action that would resolve it. Language models are confined to proposal generation and surface rendering, the latter verified by a deterministic round-trip claim-slot check.",
+      "defeaters": [
+        "DF-031",
+        "DF-035",
+        "DF-041",
+        "DF-045"
+      ]
+    },
+    {
+      "n": 17,
+      "surface": "Evolution without duplicate authority or semantic regression",
+      "status": "PARTIAL",
+      "where": "FRONTIER-ARCHITECTURE.md sec.18; REQUIREMENTS I-30..I-34; DECISION-MATRIX D25",
+      "content": "Versioned interpretation: state = K_v(R, A|_R) parameterised by v; changing v produces a second reading of an unchanged record rather than rewriting history, and differences are first-class DIVERGENCE objects requiring adjudication. This is the answer the event-sourcing tradition lacks. Kernel promotion requires discharging a regression obligation; class redefinition requires a migration warrant, which a metaclass intercepts (defence in depth; claim WC-11 withdrawn); entrenched axioms cannot be amended; charter amendment requires re-discharge of the structural proof obligations plus dual-office countersignature.",
+      "residual": "Semantic-regression prevention is bounded by the regression corpus and no further. A kernel change correct on the curated-plus-sampled corpus and wrong outside it is promoted without objection, and coverage of the decision space is sampled rather than measured. Corpus composition is itself a self-model proposition, so its adequacy is falsifiable, but the bound is real: the claim is 'no unexplained divergence on the designated corpus', never 'no semantic regression'.",
+      "defeaters": [
+        "DF-019",
+        "DF-009"
+      ]
+    },
+    {
+      "n": 18,
+      "surface": "Formal invariants and executable proof obligations",
+      "status": "PARTIAL",
+      "where": "REQUIREMENTS-AND-INVARIANTS.md Parts I-X; FRONTIER-ARCHITECTURE.md sec.19; DECISION-MATRIX D20",
+      "content": "Every invariant carries a quantification, an enforcement point, violation semantics and an assigned discharge; every proof obligation is assigned across four tools chosen by fit: ACL2 for kernel functional properties, because its logic is a subset of ANSI Common Lisp so the kernel needs no extraction step and no re-implementation step; Alloy 6 for charter structure and finite-scope lifecycle; TLA+/Apalache for protocol safety, liveness and the staged-admission protocol; deterministic simulation for whole-system properties not reducible to a kernel theorem; plus build-time audits and scheduled runtime sweeps for structural properties. Counts are derived into PHASE-2-SEAL.json rather than restated here (R4, HF-023 family).",
+      "residual": "No obligation is discharged in this phase, which is a design phase; the obligations are assigned and stated, not met. The properties that are additionally NOT PROVABLE by the assigned tools are enumerated canonically in PHASE-2-REQUIREMENTS-AND-INVARIANTS.md Part X, and are not re-listed or re-counted here (R4, HF-032: this residual previously stated a length smaller than the list it introduced). UP-7 - common-mode failure across the two kernels, DF-043 - is the deepest OPEN technical residual in the design.",
+      "defeaters": [
+        "DF-011",
+        "DF-012",
+        "DF-013",
+        "DF-016",
+        "DF-018",
+        "DF-029",
+        "DF-043",
+        "DF-048",
+        "DF-049"
+      ]
+    },
+    {
+      "n": 19,
+      "surface": "Common Lisp package, protocol, condition/restart, persistence, concurrency, and deployment topology",
+      "status": "COMPLETE",
+      "where": "LISP-NATIVE-DESIGN.md sec.1-14; FRONTIER-ARCHITECTURE.md sec.20; DECISION-MATRIX D21, D22, D23, D24, D25, D28-equivalent (D13, D14)",
+      "content": "One package and one ASDF system per office with package-inferred-system internally and package hygiene; institutional acts as generic functions under a custom method combination in which a warrant group gates the primary; a condition taxonomy mirroring institutional fault classes with restarts as the remedy catalogue and restart selection recorded as a warranted act; MOP metaclasses enforcing warranted slot access, persistence and warranted class evolution; single-threaded regions with immutable messages plus parallel read-only derivation; record plus content-addressed artifact store as the only authorities with images as caches; deployment as one institution image with isolated observation workers and an optional replicated record. Section 13 enumerates seven parts of the design explicitly NOT claimed as Lisp-specific, including the concurrency topology and the eight-kind type discipline, with the sum-type concession recorded as DF-032. SECOND AUDIT ROUND: the method combination and the MOP metaclass are reclassified from guarantees to defence in depth, because enforcement moved to the append point in V_w; the MOP hooks are corrected (ensure-class-using-class; slot-makunbound-using-class; construction warrant) and the slot-access guarantee is pinned to SBCL and cited as implementation-dependent (DF-046); package/system closure disjointness (I-42) becomes load-bearing because it is what makes kernel independence checkable. THIRD AUDIT ROUND: the no-model/code-gap claim is corrected to a bounded comparative claim with three named residual seams (DF-011, DF-048); kernel purity is attributed to ACL2 admissibility plus a COMMON-LISP denylist rather than to the package import list (HF-026); the package facility is reclassified from authority enforcement to hygiene (claim WC-6 withdrawn), with I-42 disjointness as the surviving load-bearing package-graph role (HF-028); and the institutional method combination is corrected from MULTIPLE-VALUE-PROG1 to UNWIND-PROTECT so that :record methods genuinely run on non-local exit (HF-027).",
+      "defeaters": [
+        "DF-002",
+        "DF-011",
+        "DF-029",
+        "DF-030",
+        "DF-032",
+        "DF-046",
+        "DF-048",
+        "DF-049"
+      ]
+    },
+    {
+      "n": 20,
+      "surface": "Exact limits of the architecture and unresolved proof obligations",
+      "status": "COMPLETE",
+      "where": "FRONTIER-ARCHITECTURE.md sec.21; REPORT.md sec.6; FAILURE-AND-RECOVERY-MODEL.md sec.18; NON-DOMINANCE.md sec.5-6; DEFEATER-REGISTER.jsonl",
+      "content": "The capabilities the architecture does not have; the explicitly unproved properties; the out-of-scope fault classes; the things this phase does not establish; the open defeaters, each naming what would confirm it and the consequence if confirmed; the condition under which the Lisp justification lapses; the condition under which non-dominance fails. The strongest self-identified attack, DF-033 (the apparatus may be disproportionate to the mandate), is stated as such rather than defended. Second audit round: the deepest residual is now DF-043 (common-mode failure across the two kernels), which replaced DF-026 (self-reference) when the latter was structurally remedied.",
+      "defeaters": [
+        "DF-033",
+        "DF-043"
+      ]
+    }
+  ],
+  "counts_note": "Acceptance-contract counts are NOT restated in this file. They are extracted from the artifacts by the sealing script and recorded in PHASE-2-SEAL.json, with any count that cannot be derived flagged hand_asserted. Second-round finding HF-023: a hand-maintained count block is a duplicate of a truth whose authority lives in the records, which axiom A8 forbids. The summary block above is retained because it counts THIS file own surfaces array and is verified against it at sealing time.",
+  "second_audit_round": {
+    "ruling": "The creator ruled HF-001 (the self-model is produced by the kernel that audits it) a DEFECT rather than an inherent limit, and directed audit of D02/D22, K(R)/A, PROPOSAL, MOP, and A8/counts.",
+    "findings": [
+      "HF-001 closed by revision: two kernels, I-41/I-42, decision D27",
+      "HF-020 closed by revision: state = K_v(R, A|_R), I-43/I-44, decision D29",
+      "HF-021 closed by revision: proposal spool outside the kernel signature, I-45, decision D28",
+      "HF-022 closed by revision: admission-side warrant reconstruction, I-46, contender D02-e; DF-002 BOUNDED -> ELIMINATED",
+      "HF-023 closed by revision: all counts derived from the artifacts; in-file totals blocks removed; DF-047",
+      "HF-024 closed by revision: MOP hooks corrected and guarantee scope stated; DF-046"
+    ],
+    "all_closed_by_revision": true
+  },
+  "third_audit_round": {
+    "trigger": "Creator set status PHASE_2_BLOCKED and directed a global cross-artifact remediation rather than a seal-only patch.",
+    "directed_items": [
+      "D22/package-lock authority claims",
+      "propagate K_v(R, A|_R)",
+      "remove every stale PROPOSAL-entry claim",
+      "include A8 in the formal non-dominance comparison and update stale counts",
+      "correct the no-model/code-gap, import-purity and unconditional-method claims",
+      "define the I-43 staging/crash/atomic-promotion protocol"
+    ],
+    "findings": [
+      "HF-025 no-model/code-gap overclaim",
+      "HF-026 import-purity does not establish purity",
+      "HF-027 :record methods not unconditional under MULTIPLE-VALUE-PROG1, and the bypass-proof claim false",
+      "HF-028 claim WC-6 false: the package facility does not enforce authority",
+      "HF-029 I-43 crash window undefined",
+      "HF-030 A8 absent from the formal non-dominance comparison"
+    ],
+    "all_closed_by_revision": true,
+    "method": "A cross-artifact semantic checker was written and run against the whole package; every finding below was produced by it or by the creator directive, and the checker is re-run to clean before sealing."
+  }
+}

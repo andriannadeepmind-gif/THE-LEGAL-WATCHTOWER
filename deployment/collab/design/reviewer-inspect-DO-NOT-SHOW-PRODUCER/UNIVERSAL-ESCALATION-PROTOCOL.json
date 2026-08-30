@@ -1,0 +1,192 @@
+{
+  "schema": "watchtower/universal-escalation-protocol/1",
+  "version": "1.1.0-R3",
+  "policy_status": "FROZEN_BEFORE_FRESH_PHASE_2",
+  "answer_neutral": true,
+  "purpose": "Prevent any later phase from certifying the best candidate found as the ceiling. Success requires a mechanically checked greatest-element result over the sealed present-day constructible domain.",
+  "claim_scope": {
+    "cutoff": "2026-08-27",
+    "target": "THE LEGAL WATCHTOWER as an executable Common Lisp institutional legal-intelligence system",
+    "lower_bound": "The actual current executable system B0, whose identity is withheld from the blind producer and revealed only after blind Phase 2 ends, plus the three public mandatory commercial mechanism baselines CoCounsel Legal, Lexis+ with Protégé and Harvey.",
+    "ceiling_claim": "The exact implemented evolutionary successor of Andrianna B0 is the GREATEST feasible executable capability element within the sealed, closed, timestamped domain D_T of present-day constructible implementations AND strictly better than each mandatory named commercial baseline on every binding architecture-and-mechanism axis.",
+    "open_world_limit": "The theorem is scoped to the sealed cutoff, envelope, grammar, equivalence relation, objectives and TCB. It is not a claim about future technology or an unmodelled implementation."
+  },
+  "domain_rules": {
+    "U_T": "Every executable implementation constructible at the cutoff from the independently inventoried present-day technology envelope. It is defined before a winner and may not be a candidate list chosen after evaluation.",
+    "D_T": "The exact quotient U_T / material_equivalence. Every U_T member maps to exactly one represented equivalence class and every represented class has at least one constructible witness.",
+    "F_T": "Members of D_T satisfying every hard invariant, total conformance, universal refinement of B0 and the FOC-18 eligibility rule. No member can support the final claim unless it is strictly better than each mandatory commercial baseline on each binding mechanism axis.",
+    "closure_routes": [
+      "complete finite enumeration",
+      "exhaustive symbolic partition with mechanically checked coverage and a proved upper bound for every class"
+    ],
+    "domain_expansion": "If any red team constructs a feasible present-day implementation outside the sealed grammar or partition, domain closure fails. Open a new domain epoch, preserve the failed epoch, expand the grammar result-blind, and replay all affected obligations.",
+    "winner_only_domain_forbidden": true,
+    "post_hoc_domain_forbidden": true,
+    "finite_rounds_without_counterexample_is_not_closure": true
+  },
+  "commercial_frontier_gate": {
+    "obligation": "FOC-18",
+    "theorem": "T6",
+    "baseline_registry": "COMMERCIAL-FRONTIER-BASELINES.json",
+    "dominance_spec": "ALL-AXIS-DOMINANCE-SPEC.json",
+    "mandatory_baselines": [
+      "B-COMM-01-THOMSON-REUTERS-COCOUNSEL-LEGAL",
+      "B-COMM-02-LEXISNEXIS-LEXIS-PLUS-WITH-PROTEGE",
+      "B-COMM-03-HARVEY"
+    ],
+    "formal_rule": "For every named baseline b and every binding axis a, StrictBetter_a(E_star,b), and Capabilities(b) is a proper subset of Capabilities(E_star).",
+    "all_cells_required": 66,
+    "only_passing_cell": "STRICTLY_BETTER",
+    "no_compensation": true,
+    "equality_fails": true,
+    "unknown_fails": true,
+    "content_scope": "Proprietary content volume and exclusivity are excluded; the mechanisms for grounding, validation, reasoning, planning, coordination, memory, provenance, workflow and evolution are included.",
+    "inaccessible_baseline_rule": "Missing product access or an unobservable material mechanism remains UNKNOWN and blocks T6; it cannot be omitted, estimated as inferior or replaced with a marketing claim.",
+    "update_rule": "A validated update to any mandatory product revokes the current commercial certificate and triggers CEILING_REVALIDATION_REQUIRED."
+  },
+  "B0_transformation_gate": {
+    "obligation": "FOC-19",
+    "theorem": "T7",
+    "policy_file": "B0-TRANSFORMATION-AND-REPOSITORY-DELTA-SPEC.json",
+    "formal_rule": "There exists a finite approved exact repository change sequence Delta_B0 with Apply(B0,Delta_B0)=E_star; each verified increment preserves all still-binding B0 capabilities and invariants; the final Andrianna build is the proved E_star.",
+    "anti_greenfield": "A disconnected system, adjacent replacement, facade, wrapper-only substitute, duplicate authority or second source of truth fails.",
+    "required_delta": "After B0 reveal, specify every ADD, MODIFY, REFACTOR, MOVE, REPLACE and REMOVE at exact file/package/symbol/store/gate level with dependencies, migration, recovery and verification evidence.",
+    "write_gate": "The Andrianna repository remains unchanged until the complete immutable transformation plan is independently reviewed and creator-approved."
+  },
+  "architecture_grammar": {
+    "required_dimensions": [
+      "institutional identity, authority and separation of powers",
+      "legal-source identity and legal-authority semantics",
+      "temporal legal-state and proposition representation",
+      "evidence, provenance, attestation and transformation lineage",
+      "epistemic truth maintenance, uncertainty and defeaters",
+      "observation, acquisition, scheduling, reconciliation and replay",
+      "durable state, crash recovery and correction",
+      "concurrency, ownership and admission",
+      "reflective memory, self-model causation and goal control",
+      "internal adversarial deliberation and institutional decision",
+      "query, explanation, citation and publication boundaries",
+      "formal specification, proof boundary and executable refinement",
+      "Common Lisp protocols, CLOS method combinations, conditions/restarts, packages, ASDF, MOP decisions and live evolution",
+      "runtime, deployment, performance and operational observability"
+      ,"named commercial capability coverage and content-independent mechanism comparison"
+    ],
+    "required_construction_operators": [
+      "substitute one mechanism",
+      "compose compatible mechanisms",
+      "partition authority or state",
+      "centralize authority or state",
+      "replicate with an explicit consistency law",
+      "specialize by legal order, source class or temporal regime",
+      "hybridize distinct architecture families",
+      "refine an abstract protocol into an executable mechanism",
+      "remove a mechanism and prove redundancy",
+      "invert an architectural assumption",
+      "recombine mechanisms across layers",
+      "synthesize a new family not copied from a surveyed contender"
+    ],
+    "coverage_rule": "Every required dimension, production operator and feasible cross-dimension composition class must be covered by a witness or by a mechanically checkable infeasibility or upper-bound certificate.",
+    "unbounded_syntax_rule": "Potentially infinite source-level variants are handled by canonical material-equivalence classes and symbolic class bounds; literal enumeration of every program text is neither required nor accepted as a substitute for closure."
+  },
+  "escalation_engine": {
+    "termination_policy": "UNIVERSAL_PROOF_ONLY",
+    "incumbent_rule": "A provisional incumbent has no presumption of correctness. Pareto dominance may guide internal search only. Final commercial eligibility separately requires strict improvement over each named commercial baseline on every binding mechanism axis; equality, compensation, incomparability or UNKNOWN on any one cell blocks FOC-18/T6.",
+    "mandatory_attack_operators": [
+      "component substitution",
+      "cross-layer recombination",
+      "assumption inversion",
+      "mechanism deletion",
+      "authority-confusion attack",
+      "state-ownership and concurrency attack",
+      "crash-window and recovery attack",
+      "common-mode failure attack",
+      "proof-model versus executable-gap attack",
+      "baseline-capability regression attack",
+      "metacognition-as-decoration attack",
+      "named-commercial-baseline omission attack",
+      "content-advantage misattributed to mechanism attack",
+      "equality-or-UNKNOWN disguised as commercial superiority attack",
+      "weighted-average or cross-axis compensation attack",
+      "commercial capability not mapped to the frozen axis registry attack",
+      "novel architecture synthesis"
+    ],
+    "counterexample_loop": [
+      "select the strongest current feasible incumbent",
+      "attempt every applicable attack operator across every uncovered grammar class",
+      "admit each valid challenger into the canonical class registry",
+      "replace or synthesize when dominance or incomparability is found",
+      "reopen every affected proof obligation",
+      "repeat until class coverage and per-class upper-bound proofs jointly close"
+    ],
+    "no_success_caps": [
+      "round count",
+      "elapsed time",
+      "token or compute budget",
+      "candidate count",
+      "reviewer agreement",
+      "absence of a new challenger during K attempts",
+      "benchmark lead without a domain theorem"
+      ,"aggregate or average commercial score"
+      ,"strict improvement on fewer than all binding commercial axes"
+    ]
+  },
+  "finite_convergence": {
+    "canonical_class_digest": "Every admitted design is normalized under material_equivalence and memoized; an equivalent design cannot create a new search state.",
+    "cycle_rule": "Repeated canonical states are detected and do not authorize success; they prove only that a search branch has cycled.",
+    "dominance_pruning": "A class may be pruned only with a replayable dominance or infeasibility certificate whose assumptions are a subset of the frozen TCB.",
+    "symbolic_bounds": "A family with unbounded concrete instances closes only through a mechanically checked parametric upper-bound proof.",
+    "failure_to_close": "If the grammar cannot be closed finitely or symbolically, the result is FINAL_OPTIMALITY_BLOCKED rather than an infinite run or a guessed optimum."
+  },
+  "success_gate": {
+    "all_required": [
+      "sealed domain and quotient closure",
+      "all hard invariants proved for the executable",
+      "universal B0 trace, capability, persistence and liveness refinement",
+      "total comparison with UNKNOWN never upgraded",
+      "greatest-element theorem for every member of F_T",
+      "uniqueness up to material equivalence",
+      "total architecture-to-source-to-executable refinement",
+      "zero live material defeaters",
+      "two independent clean-room reproductions",
+      "hash-bound actual-build and TCB instantiation"
+      ,"FOC-18 strict all-axis dominance over CoCounsel Legal, Lexis+ with Protégé and Harvey"
+      ,"T6 proof that all 66 named-baseline by binding-axis cells are STRICTLY_BETTER and each commercial capability surface is a proper subset"
+      ,"FOC-19/T7 total exact transformation of Andrianna B0 into the proved E_star with no unexplained surface, capability regression or parallel authority"
+    ],
+    "success_status": "FINAL_B0_SUCCESSOR_GREATEST_ELEMENT_AND_STRICT_ALL_AXIS_COMMERCIAL_SUPERIORITY_VERIFIED_UNDER_HASHED_TCB",
+    "otherwise_status": "FINAL_OPTIMALITY_BLOCKED"
+  },
+  "continual_frontier_maintenance": {
+    "obligation": "FOC-17",
+    "purpose": "Keep the deployed system at the proved present-day ceiling through proof-carrying evolution rather than treating one final certificate as timeless.",
+    "epoch_invariant": "For every certified epoch t and every x in F_t, Omega_t >=_t x.",
+    "monotonic_ratchet": "A successor Omega_(t+1) is admissible only if it preserves every still-binding invariant and reachable capability of Omega_t and is no worse on every binding objective under the new epoch order.",
+    "reopen_triggers": [
+      "a newly constructible architecture class or mechanism",
+      "a new challenger claiming material superiority",
+      "a capability, version or mechanism update to CoCounsel Legal, Lexis+ with Protégé or Harvey",
+      "a changed primary-source frontier fact",
+      "a new reachable baseline capability or workload",
+      "a changed objective, invariant, equivalence rule, evaluator input or TCB assumption",
+      "a counterexample to any active proof or abstraction relation"
+    ],
+    "state_transition": [
+      "CERTIFIED_CEILING_AT_EPOCH_t",
+      "CEILING_REVALIDATION_REQUIRED",
+      "candidate admission, synthesis and full affected-proof replay",
+      "CERTIFIED_CEILING_AT_EPOCH_t_plus_1 only after independent reproduction"
+    ],
+    "stale_certificate_rule": "Once a reopen trigger is validated, the old certificate remains historical evidence but cannot support a current-best claim.",
+    "frontier_census": "Continuously monitor current primary sources, public implementations and independently generated counter-designs; every material discovery receives a stable record and disposition.",
+    "failure_rule": "If the successor cannot be proved greatest, preserve the strongest valid executable and report CEILING_REVALIDATION_REQUIRED / FINAL_OPTIMALITY_BLOCKED rather than retaining a stale supremacy claim.",
+    "future_limit": "No theorem at epoch t quantifies over unknown future technology. The guarantee is renewed for each closed, timestamped present-day epoch."
+  },
+  "phase_application": {
+    "phase_2": "Blindly produce the strongest frontier architecture plus an answer-neutral architecture-family grammar seed, open assumptions and defeaters. Independently inventory the three named commercial mechanism baselines and design a complete 66-cell all-axis challenge plan. It does not prove FOC-18, T6 or the final ceiling.",
+    "phase_3": "Reveal B0; freeze the concrete domain/order/equivalence/invariants/evaluator/TCB, the named-product versions, axis calibration and evidence lattices before comparison; then run adversarial judging.",
+    "phase_4": "Complete the exhaustive B0 semantic census and exact repository crosswalk; synthesize the strongest incumbent as an approved transformation of the Andrianna repository; specify every addition, modification, refactor, move, replacement and removal before implementation; reopen every affected obligation.",
+    "phase_5": "Run the counterexample-guided evolutionary tournament over canonical classes until the universal success gate closes or remains BLOCKED.",
+    "phase_6": "Independently reconstruct, replay and mechanically verify closure, greatest element, uniqueness, executable refinement, T6 strict all-axis commercial superiority and T7 exact B0-to-E_star repository transformation.",
+    "final": "Issue the success status only if every required proof object verifies, including all 66 strict commercial cells and proper capability supersets; deploy the continual frontier-maintenance loop; otherwise preserve the strongest valid design with FINAL_OPTIMALITY_BLOCKED / COMMERCIAL_SUPERIORITY_BLOCKED."
+  }
+}

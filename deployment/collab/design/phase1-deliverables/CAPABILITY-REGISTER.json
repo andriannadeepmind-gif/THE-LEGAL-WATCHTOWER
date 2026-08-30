@@ -1,0 +1,608 @@
+{
+ "schema": "lawmax-capability-register/1",
+ "phase": "phase-1",
+ "source_commit": "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03",
+ "source_tree": "23b7a6f4450f50d151d38e13020bee9872e73bcd",
+ "historical_baseline_commit": "57c0cd868c80f87df8e298c9aa75b8ccf2503391",
+ "corroboration_commit": "2b910271f11fc462eee1378fb9a77623c791fcbf",
+ "generated_at_utc": "2026-08-26T00:36:43Z",
+ "worktree_clean_at_generation": true,
+ "evidence_classes": {
+  "MECHANICALLY-PROVED": 73,
+  "EMPIRICALLY-REPRODUCED": 2,
+  "SOURCE-GROUNDED-INFERENCE": 23,
+  "UNRESOLVED": 6
+ },
+ "self_sha256_convention": "sha256 of this file with the 64 hex characters of self_sha256 replaced by 64 '0'.",
+ "self_sha256": "bd3eee2e24d0d7298f6a7f34b307e57af27cd38933f2dfda9e421619e9179514",
+ "scope_note": "Three registers coexist in this system and they do not agree on what a capability is. This file records all three, keeps them separate, and states what each one actually proves. It does not merge them.",
+ "register_1_self_model_declarations": {
+  "what": "Capabilities the running system declares about itself via orchestrator.self-model:declare-capability!.",
+  "count": 36,
+  "location_finding": "All 36 declarations live in systems/orchestrator-cli/. No capability is declared by source/, by any engine or model subsystem, or by authority-v2. The self-model's view of the system is the CLI's view of the system.",
+  "gate_binding": {
+   "declared_gates_distinct": 25,
+   "declared_gates_missing_as_commands": [],
+   "gate_commands_registered": 25,
+   "gate_commands_unreferenced_by_any_capability": [],
+   "verdict": "Exact bijection: every one of the 25 declared gates is a registered command, and every registered -gate command is claimed by at least one capability. The declaration layer is internally sound.",
+   "limit": "The bijection binds names, not behaviour. It shows no gate name is invented and none is orphaned; it does not show that any gate tests what its capability claims, and this phase executed nothing."
+  },
+  "ungated": {
+   "count": 4,
+   "capabilities": [
+    "πλαστή-ικανότητα",
+    "πρόσληψη-νομολογίας",
+    "ταυτότητα-άρθρων",
+    "ομοιότητα-υποθέσεων"
+   ],
+   "meaning": "These declare an authority with no automated verification attached to it."
+  },
+  "capabilities": [
+   {
+    "name": "σύμβουλος",
+    "path": "systems/orchestrator-cli/advisor.lisp",
+    "line": 362,
+    "gate": "--advisor-gate",
+    "package": ":orchestrator.cli",
+    "functions": [
+     "validate-dream",
+     "install-advisor!"
+    ]
+   },
+   {
+    "name": "πολιτικές-έγκρισης",
+    "path": "systems/orchestrator-cli/approval-policy.lisp",
+    "line": 295,
+    "gate": "--policy-gate",
+    "package": ":orchestrator.cli",
+    "functions": [
+     "run-policy-approve",
+     "measured-evolution-precision"
+    ]
+   },
+   {
+    "name": "αρχιτεκτονική-περιφρούρηση",
+    "path": "systems/orchestrator-cli/architecture-gate.lisp",
+    "line": 476,
+    "gate": "--architecture-constitution-gate",
+    "package": ":orchestrator.cli",
+    "functions": [
+     "run-architecture-constitution-gate",
+     "%load-architecture-constitution"
+    ]
+   },
+   {
+    "name": "μέτρο-ικανότητας",
+    "path": "systems/orchestrator-cli/capability-gate.lisp",
+    "line": 163,
+    "gate": "--capability-gate",
+    "package": ":orchestrator.cli",
+    "functions": [
+     "run-capability-gate",
+     "run-capability-baseline",
+     "%capability-metrics"
+    ]
+   },
+   {
+    "name": "πλαστή-ικανότητα",
+    "path": "systems/orchestrator-cli/component-gate.lisp",
+    "line": 207,
+    "gate": null,
+    "package": ":orchestrator.cli",
+    "functions": [
+     "συνάρτηση-που-δεν-υπάρχει"
+    ]
+   },
+   {
+    "name": "συστατικά",
+    "path": "systems/orchestrator-cli/component-gate.lisp",
+    "line": 249,
+    "gate": "--component-gate",
+    "package": ":orchestrator.components",
+    "functions": [
+     "register-component!",
+     "build-component-registry!",
+     "validate-components"
+    ]
+   },
+   {
+    "name": "συμβόλαια",
+    "path": "systems/orchestrator-cli/contract-gate.lisp",
+    "line": 181,
+    "gate": "--contract-gate",
+    "package": ":orchestrator.contracts",
+    "functions": [
+     "declare-contract!",
+     "validate-contracts",
+     "contract-dependent-names"
+    ]
+   },
+   {
+    "name": "πρόσληψη-νομολογίας",
+    "path": "systems/orchestrator-cli/decisions.lisp",
+    "line": 2147,
+    "gate": null,
+    "package": ":orchestrator.cli",
+    "functions": [
+     "run-materialize-decisions",
+     "run-understanding"
+    ]
+   },
+   {
+    "name": "δεοντικό",
+    "path": "systems/orchestrator-cli/deontic-gate.lisp",
+    "line": 96,
+    "gate": "--deontic-gate",
+    "package": ":orchestrator.deontic",
+    "functions": [
+     "evaluate-deontic",
+     "classify-deontic-sentence"
+    ]
+   },
+   {
+    "name": "διάλογος",
+    "path": "systems/orchestrator-cli/dialogue-gate.lisp",
+    "line": 290,
+    "gate": "--dialogue-gate",
+    "package": ":orchestrator.cognition",
+    "functions": [
+     "process-request"
+    ]
+   },
+   {
+    "name": "παραδοτέο",
+    "path": "systems/orchestrator-cli/draft-commands.lisp",
+    "line": 397,
+    "gate": "--draft-gate",
+    "package": ":orchestrator.cli",
+    "functions": [
+     "draft-memo",
+     "gap-questions"
+    ]
+   },
+   {
+    "name": "ιστορία-συμβάντων",
+    "path": "systems/orchestrator-cli/event-gate.lisp",
+    "line": 102,
+    "gate": "--event-gate",
+    "package": ":orchestrator.eventcalculus",
+    "functions": [
+     "ec-initiation",
+     "ec-clipping",
+     "ec-holds"
+    ]
+   },
+   {
+    "name": "ελεγχόμενη-αυτοεξέλιξη",
+    "path": "systems/orchestrator-cli/evolution-gate.lisp",
+    "line": 480,
+    "gate": "--self-evolution-gate",
+    "package": ":orchestrator.adoption",
+    "functions": [
+     "can-adopt",
+     "what-if",
+     "record-adoption!",
+     "validate-adoption-records"
+    ]
+   },
+   {
+    "name": "εξωτερική-μαρτυρία",
+    "path": "systems/orchestrator-cli/external-benchmark-gate.lisp",
+    "line": 576,
+    "gate": "--external-benchmark-gate",
+    "package": ":orchestrator.cli",
+    "functions": [
+     "run-external-benchmark-gate",
+     "%ebg-validate"
+    ]
+   },
+   {
+    "name": "ρευστή-επαγωγή",
+    "path": "systems/orchestrator-cli/fluid-gate.lisp",
+    "line": 131,
+    "gate": "--fluid-gate",
+    "package": ":orchestrator.fluid",
+    "functions": [
+     "solve-task",
+     "all-solutions"
+    ]
+   },
+   {
+    "name": "γένεση-ελληνικών",
+    "path": "systems/orchestrator-cli/generation-gate.lisp",
+    "line": 97,
+    "gate": "--generation-gate",
+    "package": ":orchestrator.generation",
+    "functions": [
+     "noun-form",
+     "sentence",
+     "np"
+    ]
+   },
+   {
+    "name": "χρυσή-περιφρούρηση",
+    "path": "systems/orchestrator-cli/golden-gate.lisp",
+    "line": 115,
+    "gate": "--golden-gate",
+    "package": ":orchestrator.cli",
+    "functions": [
+     "run-golden-gate",
+     "%golden-current-manifest"
+    ]
+   },
+   {
+    "name": "λογισμός-φραγμών",
+    "path": "systems/orchestrator-cli/inference-gate.lisp",
+    "line": 460,
+    "gate": "--inference-gate",
+    "package": ":orchestrator.metaeval",
+    "functions": [
+     "meta-eval",
+     "guards-pass-p",
+     "verify-guard"
+    ]
+   },
+   {
+    "name": "συμπερασμός-wfs",
+    "path": "systems/orchestrator-cli/inference-gate.lisp",
+    "line": 464,
+    "gate": "--inference-gate",
+    "package": ":orchestrator.inference",
+    "functions": [
+     "run-inference",
+     "explain",
+     "query"
+    ]
+   },
+   {
+    "name": "πυρήνας-iq",
+    "path": "systems/orchestrator-cli/iq-gate.lisp",
+    "line": 189,
+    "gate": "--iq-gate",
+    "package": ":orchestrator.inference",
+    "functions": [
+     "run-iq-gate"
+    ]
+   },
+   {
+    "name": "μνήμη",
+    "path": "systems/orchestrator-cli/memory-commands.lisp",
+    "line": 182,
+    "gate": "--memory-gate",
+    "package": ":orchestrator.memory",
+    "functions": [
+     "record-episode",
+     "similar-episodes"
+    ]
+   },
+   {
+    "name": "εκτελεστική-προέλευση",
+    "path": "systems/orchestrator-cli/provenance-gate.lisp",
+    "line": 274,
+    "gate": "--provenance-gate",
+    "package": ":orchestrator.trace",
+    "functions": [
+     "emit!",
+     "validate-provenance",
+     "last-conclusion-report",
+     "trace-coverage"
+    ]
+   },
+   {
+    "name": "εξουσία-εκδόσεων",
+    "path": "systems/orchestrator-cli/release-authority.lisp",
+    "line": 171,
+    "gate": "--release-gate",
+    "package": ":orchestrator.cli",
+    "functions": [
+     "run-cut-release",
+     "%release-corpus-context"
+    ]
+   },
+   {
+    "name": "περιφρούρηση-εκδόσεων",
+    "path": "systems/orchestrator-cli/release-gate.lisp",
+    "line": 244,
+    "gate": "--release-gate",
+    "package": ":orchestrator.cli",
+    "functions": [
+     "run-release-gate",
+     "%rg-verify-release"
+    ]
+   },
+   {
+    "name": "πακέτα-γνώσης",
+    "path": "systems/orchestrator-cli/self-extension.lisp",
+    "line": 661,
+    "gate": "--extension-gate",
+    "package": ":orchestrator.knowledge-packs",
+    "functions": [
+     "ensure-fresh",
+     "with-packs-overlay"
+    ]
+   },
+   {
+    "name": "αυτοεπέκταση",
+    "path": "systems/orchestrator-cli/self-extension.lisp",
+    "line": 665,
+    "gate": "--extension-gate",
+    "package": ":orchestrator.cli",
+    "functions": [
+     "run-self-extend",
+     "run-evolve",
+     "dream-grammar"
+    ]
+   },
+   {
+    "name": "ταυτότητα-άρθρων",
+    "path": "systems/orchestrator-cli/self-reflection.lisp",
+    "line": 259,
+    "gate": null,
+    "package": ":orchestrator.legal-id",
+    "functions": [
+     "build-article-uri",
+     "registry-by-corpus",
+     "normalize-greek",
+     "parse-article-label",
+     "provision-id=",
+     "provision-id-string"
+    ]
+   },
+   {
+    "name": "αυτοεπίγνωση",
+    "path": "systems/orchestrator-cli/self-reflection.lisp",
+    "line": 655,
+    "gate": "--mirror-gate",
+    "package": ":orchestrator.self-model",
+    "functions": [
+     "declare-capability!",
+     "capability-impact",
+     "capability-gap-report"
+    ]
+   },
+   {
+    "name": "γλωσσική-αντίληψη",
+    "path": "systems/orchestrator-cli/subsumption-commands.lisp",
+    "line": 345,
+    "gate": "--subsumption-gate",
+    "package": ":orchestrator.casegrammar",
+    "functions": [
+     "parse-narrative",
+     "parse-provision",
+     "parse-definition"
+    ]
+   },
+   {
+    "name": "υπαγωγή",
+    "path": "systems/orchestrator-cli/subsumption-commands.lisp",
+    "line": 349,
+    "gate": "--subsumption-gate",
+    "package": ":orchestrator.subsumption",
+    "functions": [
+     "subsume",
+     "conclusion-status",
+     "norm-gaps",
+     "proof-grade"
+    ]
+   },
+   {
+    "name": "αντιδικία",
+    "path": "systems/orchestrator-cli/subsumption-commands.lisp",
+    "line": 353,
+    "gate": "--subsumption-gate",
+    "package": ":orchestrator.dialectic",
+    "functions": [
+     "dialectic-report"
+    ]
+   },
+   {
+    "name": "υποθετικός-λόγος",
+    "path": "systems/orchestrator-cli/subsumption-commands.lisp",
+    "line": 357,
+    "gate": "--subsumption-gate",
+    "package": ":orchestrator.counterfactual",
+    "functions": [
+     "critical-facts",
+     "minimal-blockers"
+    ]
+   },
+   {
+    "name": "δικονομικός-σχεδιασμός",
+    "path": "systems/orchestrator-cli/subsumption-commands.lisp",
+    "line": 361,
+    "gate": "--subsumption-gate",
+    "package": ":orchestrator.strategy",
+    "functions": [
+     "strategy-report",
+     "plan-goal",
+     "think"
+    ]
+   },
+   {
+    "name": "ομοιότητα-υποθέσεων",
+    "path": "systems/orchestrator-cli/subsumption-commands.lisp",
+    "line": 365,
+    "gate": null,
+    "package": ":orchestrator.hypo",
+    "functions": [
+     "case-factors",
+     "rank-precedents",
+     "knn-verdict"
+    ]
+   },
+   {
+    "name": "μάθηση-κατανόησης",
+    "path": "systems/orchestrator-cli/understanding-learning.lisp",
+    "line": 575,
+    "gate": "--understanding-gate",
+    "package": ":orchestrator.cli",
+    "functions": [
+     "record-dialogue-failure!",
+     "generate-understanding-proposal",
+     "shadow-evaluate-rule",
+     "validate-understanding-rule",
+     "run-self-study-night",
+     "%self-study-cycle"
+    ]
+   },
+   {
+    "name": "τιμιότητα-επαλήθευσης",
+    "path": "systems/orchestrator-cli/verify-truth-gate.lisp",
+    "line": 349,
+    "gate": "--verify-truth-gate",
+    "package": ":orchestrator.cli",
+    "functions": [
+     "run-verify-truth-gate",
+     "%vt-check"
+    ]
+   }
+  ]
+ },
+ "register_2_declared_gate_table": {
+  "what": "The GATE-1..GATE-5 table in README.md:300-305, which is a different naming scheme from the 25 -gate commands and is not connected to them.",
+  "rows": [
+   {
+    "gate": "GATE-1",
+    "purpose": "Time discipline (deterministic-time.lisp)",
+    "implementation_status": "not audited in this phase"
+   },
+   {
+    "gate": "GATE-2",
+    "purpose": "Write surface (write-authority.lisp)",
+    "implementation_status": "not audited in this phase"
+   },
+   {
+    "gate": "GATE-3",
+    "purpose": "Hash authority (hash-authority.lisp)",
+    "implementation_status": "not audited in this phase"
+   },
+   {
+    "gate": "GATE-4",
+    "purpose": "Pipeline integrity (no subprocess)",
+    "implementation_status": "ABSENT — the only occurrence in the tree with this meaning is the README row itself (EV-C-004)"
+   },
+   {
+    "gate": "GATE-5",
+    "purpose": "Validation (fail-fast on invalid)",
+    "implementation_status": "not audited in this phase"
+   }
+  ],
+  "unresolved": "Whether GATE-1, GATE-2, GATE-3 and GATE-5 have implementations was checked exhaustively only for GATE-4. This is an open obligation (OBL-13)."
+ },
+ "register_3_level7_requirements": {
+  "what": "The thirteen Level-7 requirements of the new authority architecture, which are capabilities the system intends to have and does not yet have.",
+  "source": "authority-v2/LEVEL7-COMPLETION-MATRIX.sexp",
+  "summary": {
+   "total": 13,
+   "proved": 0,
+   "implemented_not_proved": 3,
+   "externally_blocked": 7,
+   "not_started": 3,
+   "level7_gate": "not-passed"
+  },
+  "requirements": [
+   {
+    "id": 1,
+    "title": "One authority process behind an OS-enforced write capability",
+    "status": "implemented-not-proved",
+    "load_bearing": true,
+    "note": "Identities and permissions are installed by a script and probed executably; without root the proof reports BLOCKED, never PASS. No MAC profile exists and the proof is executional, not formal."
+   },
+   {
+    "id": 2,
+    "title": "Pure closed-schema admission kernel K plus nine theorems",
+    "status": "externally-blocked",
+    "load_bearing": true,
+    "note": "SPECIFICATION ONLY. K is not implemented in any language (EV-K-001)."
+   },
+   {
+    "id": 3,
+    "title": "Deterministic CBOR under CDDL via EverParse",
+    "status": "externally-blocked",
+    "load_bearing": true,
+    "note": "Schemas are written and closed; the verifying toolchain is absent and the hermetic build fails deliberately on placeholder pins."
+   },
+   {
+    "id": 4,
+    "title": "Transition certificate binding all fifteen required fields",
+    "status": "externally-blocked",
+    "load_bearing": true,
+    "note": "The CDDL exists; emission requires the verified parser of requirement 3."
+   },
+   {
+    "id": 5,
+    "title": "Retirement of the legacy authority seats; TSA as a conjunct",
+    "status": "implemented-not-proved",
+    "load_bearing": true,
+    "note": "The retirement is real and structural (EV-T-001..EV-T-009). The replacement is not."
+   },
+   {
+    "id": 6,
+    "title": "Small independent certificate checker, formally proved sound",
+    "status": "not-started",
+    "load_bearing": true
+   },
+   {
+    "id": 7,
+    "title": "Crash-safe authority store on Perennial/GoTxn with proofs",
+    "status": "externally-blocked",
+    "load_bearing": true,
+    "note": "Interface only; implementation absent by design, production writer disabled (EV-K-002)."
+   },
+   {
+    "id": 8,
+    "title": "C2SP tiles/checkpoints, Ed25519 log signature, witness quorum",
+    "status": "externally-blocked",
+    "load_bearing": true,
+    "note": "Policy only; wire format blocked on unretrievable normative text; external quorum disabled and no split-view resistance claimed (EV-V-013)."
+   },
+   {
+    "id": 9,
+    "title": "TUF-class roles with rotation, revocation, rollback/freeze defence",
+    "status": "externally-blocked",
+    "load_bearing": true,
+    "note": "Model and ceremony tooling complete and rehearsable; TUF conformance explicitly not claimed; production root ceremony is a declared stop point."
+   },
+   {
+    "id": "9b",
+    "title": "End-to-end refinement obligation and reproducible build",
+    "status": "externally-blocked",
+    "load_bearing": true,
+    "note": "Five-link chain declared; links 1-2 blocked, link 3 blocked on a commercial licence decision, link 4 not started, link 5 declared residual TCB."
+   },
+   {
+    "id": 10,
+    "title": "Site/latest/proofs only from committed accepted state",
+    "status": "not-started",
+    "load_bearing": true,
+    "note": "Depends on requirement 7."
+   },
+   {
+    "id": 11,
+    "title": "ERS renewal chain and algorithm agility",
+    "status": "not-started",
+    "load_bearing": false
+   },
+   {
+    "id": 12,
+    "title": "Per-layer mutation witnesses and negative fixtures",
+    "status": "implemented-not-proved",
+    "load_bearing": true,
+    "note": "Substantial and adversarial, but its own recorded results are internally inconsistent (DEF-04)."
+   }
+  ]
+ },
+ "register_4_inherited_analysis": {
+  "what": "The DeepSeek Phase-1 analytic inventory of 71 capabilities.",
+  "status": "retained as inherited analysis; not re-derived in this phase",
+  "source": "blind/phase-1/CAPABILITY-INVENTORY.json (sha256 8517dbb50a475d0e002b837631f0324ca33e4988e646821f0798687e288e9068)",
+  "inherited_finding": "Of 71 capabilities: 25 have no gate, 5 have parenthetical or indirect gates, 15 have CLI gates, 26 have dedicated test-based gates.",
+  "caution": "That figure is an analytic count over cognitive and institutional organs, not a count of declare-capability! sites. It is not comparable to the 36 of register 1 and the two must not be conflated."
+ },
+ "authority_v2_capability_gap": {
+  "finding": "authority-v2 declares no capability in the self-model register at all. The subsystem that now holds the whole of the system's authority story is invisible to the system's own account of what it can do.",
+  "consequence": "Any future gate plenary over the self-model register will pass without ever looking at the authority architecture.",
+  "evidence": "EV-T-005 (the release capability's description was rewritten, but no new capability was declared for the authority-v2 side); enumeration of all 36 declaration sites, none of which is under authority-v2/."
+ }
+}

@@ -1,0 +1,305 @@
+[
+ {
+  "id": "DF-000"
+ },
+ {
+  "id": "DF-001",
+  "target": "D01 selection: chartered offices with exclusive typed powers",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-002",
+  "target": "D02/D22: where the warrant guarantee lives",
+  "status": "ELIMINATED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-003",
+  "target": "D03: Registry-assigned norm identity",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-004",
+  "target": "D04: authority as a derived relation over organ, instrument type, order and time",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-005",
+  "target": "D05: nine temporal axes",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-006",
+  "target": "D06: native lineage with PROV and in-toto export",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-007",
+  "target": "A10 entrenchment; D11 record integrity",
+  "status": "OPEN",
+  "class": "axiom"
+ },
+ {
+  "id": "DF-008",
+  "target": "D07: five-rank evidentiary lattice",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-009",
+  "target": "D10: record plus artifacts as the only authorities",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-010",
+  "target": "D12: hybrid logical clocks",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-011",
+  "target": "D20/D21: ACL2-verified kernel executed under SBCL",
+  "status": "OPEN",
+  "class": "claim"
+ },
+ {
+  "id": "DF-012",
+  "target": "D20: TLA+ protocol obligations",
+  "status": "BOUNDED",
+  "class": "claim"
+ },
+ {
+  "id": "DF-013",
+  "target": "D20: charter obligations discharged in Alloy 6",
+  "status": "BOUNDED",
+  "class": "claim"
+ },
+ {
+  "id": "DF-014",
+  "target": "A3 kernel totality; D08 label computation",
+  "status": "BOUNDED",
+  "class": "axiom"
+ },
+ {
+  "id": "DF-015",
+  "target": "D08: grounded semantics as the admitted default",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-016",
+  "target": "D09/I-19: lex superior > lex specialis > lex posterior as the default ordering",
+  "status": "OPEN",
+  "class": "claim"
+ },
+ {
+  "id": "DF-017",
+  "target": "D13: single-threaded regions",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-018",
+  "target": "R-07: closed assumption vocabulary",
+  "status": "OPEN",
+  "class": "claim"
+ },
+ {
+  "id": "DF-019",
+  "target": "I-32: regression obligation on kernel promotion",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-020",
+  "target": "D15: enumeration-closure gap detection",
+  "status": "BOUNDED",
+  "class": "assumption"
+ },
+ {
+  "id": "DF-021",
+  "target": "OA-4: the Greek legal corpus is small enough for in-memory derived state",
+  "status": "OPEN",
+  "class": "assumption"
+ },
+ {
+  "id": "DF-022",
+  "target": "D14: deterministic scheduler",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-023",
+  "target": "D15/D16: coverage for sources without structural signal; sampling latency",
+  "status": "OPEN",
+  "class": "decision"
+ },
+ {
+  "id": "DF-024",
+  "target": "Research ledger precision",
+  "status": "BOUNDED",
+  "class": "evidence"
+ },
+ {
+  "id": "DF-025",
+  "target": "D17: quarantine as derived status",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-026",
+  "target": "D18/A6: metacognitive causality",
+  "status": "BOUNDED",
+  "class": "axiom"
+ },
+ {
+  "id": "DF-027",
+  "target": "D18: self-model in the shared epistemic store",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-028",
+  "target": "I-26: executable reopening predicates",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-029",
+  "target": "D23: macro-generated proof obligations",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-030",
+  "target": "D24: restart selection as a warranted act",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-031",
+  "target": "I-37/D26: round-trip verified surface rendering",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-032",
+  "target": "D21/Lisp design: choice of Common Lisp",
+  "status": "BOUNDED",
+  "class": "claim"
+ },
+ {
+  "id": "DF-033",
+  "target": "The architecture as a whole",
+  "status": "OPEN",
+  "class": "architectural"
+ },
+ {
+  "id": "DF-034",
+  "target": "D19: the Rapporteur human office",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-035",
+  "target": "A9: machine-learned containment",
+  "status": "BOUNDED",
+  "class": "axiom"
+ },
+ {
+  "id": "DF-036",
+  "target": "A4/I-04: monotone evidentiary degradation",
+  "status": "ELIMINATED",
+  "class": "axiom"
+ },
+ {
+  "id": "DF-037",
+  "target": "C3/A1/SA-9: adapters and models confer no authority",
+  "status": "ELIMINATED",
+  "class": "axiom"
+ },
+ {
+  "id": "DF-038",
+  "target": "I-20: doctrine cannot ground authority",
+  "status": "ELIMINATED",
+  "class": "invariant"
+ },
+ {
+  "id": "DF-039",
+  "target": "C7/I-18: no silent degradation under resource pressure",
+  "status": "ELIMINATED",
+  "class": "invariant"
+ },
+ {
+  "id": "DF-040",
+  "target": "A2/A3: backfill and correction cannot corrupt history",
+  "status": "ELIMINATED",
+  "class": "axiom"
+ },
+ {
+  "id": "DF-041",
+  "target": "I-14 / the WATCHTOWER-RECONSTRUCTION consolidation class",
+  "status": "BOUNDED",
+  "class": "architectural"
+ },
+ {
+  "id": "DF-042",
+  "target": "A.2.1 genesis; A10 entrenchment",
+  "status": "OPEN",
+  "class": "architectural"
+ },
+ {
+  "id": "DF-043",
+  "target": "I-41/I-42: the two-kernel remedy for HF-001",
+  "status": "OPEN",
+  "class": "architectural"
+ },
+ {
+  "id": "DF-044",
+  "target": "I-43: R-boundedness of the artifact store",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-045",
+  "target": "D28/I-45: proposals in a deletable spool",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-046",
+  "target": "I-33 / Lisp design section 5.1: the MOP slot-access interception",
+  "status": "BOUNDED",
+  "class": "claim"
+ },
+ {
+  "id": "DF-047",
+  "target": "The seal's own counts",
+  "status": "BOUNDED",
+  "class": "evidence"
+ },
+ {
+  "id": "DF-048",
+  "target": "Lisp design section 1.0: the ACL2 surface-syntax shim",
+  "status": "BOUNDED",
+  "class": "claim"
+ },
+ {
+  "id": "DF-049",
+  "target": "D22 / Lisp design section 6: what the package model actually secures",
+  "status": "BOUNDED",
+  "class": "decision"
+ },
+ {
+  "id": "DF-050",
+  "target": "I-27 / the institutional method combination: cleanup completion",
+  "status": "OPEN",
+  "class": "claim"
+ }
+]

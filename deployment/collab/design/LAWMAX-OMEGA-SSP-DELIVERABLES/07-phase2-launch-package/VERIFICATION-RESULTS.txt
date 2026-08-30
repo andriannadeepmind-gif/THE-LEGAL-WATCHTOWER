@@ -1,0 +1,70 @@
+THE LEGAL WATCHTOWER — pre-Phase-2 freeze v2-R3
+Coordinator verification record  (recorded 2026-08-27)
+================================================================
+
+This file records the "Before launch" verification of the sealed freeze bundle.
+It is transport/inventory/commitment integrity only — NOT an optimality proof.
+The honest study status remains: FINAL_OPTIMALITY_BLOCKED.
+
+--------------------------------------------------------------------------------
+1) OUTER FREEZE BUNDLE (as received)
+--------------------------------------------------------------------------------
+file            : WATCHTOWERPREPHASE2FREEZEv2R3.zip
+sha256 (outer)  : 0c65f332ae074bd52cfeac5256d915a9687f57a86ea541faaa122ded18c784b2
+inner files (7) : CREATOR-APPROVAL-RECEIPT-TEMPLATE.json
+                  OUTER-SEAL.json
+                  PHASE-2-BLIND-PRODUCER-INPUT.zip
+                  PHASE-2-REVIEWER-FROZEN-GATES.zip
+                  PRE-PHASE-2-FREEZE-MANIFEST.json
+                  README-FIRST.md
+                  verify_bundle.py
+
+--------------------------------------------------------------------------------
+2) `python3 verify_bundle.py`   (exit code 0)
+--------------------------------------------------------------------------------
+OUTER_FREEZE_VALID
+BLIND_CAPSULE_SHA256=ac571a7a17971808811a98ae5a7dc9c9b0850f9bfdc808c90ae0b499060a10d3
+REVIEWER_CAPSULE_SHA256=a34c37aa4850ac4aa4758b37829a8d7f5c1624c4e089138b53a6988128fa25eb
+RULE=UNIVERSAL_PROOF_ONLY
+COMMERCIAL_RULE=EVERY_PRODUCT_EVERY_AXIS_STRICTLY_BETTER
+B0_RULE=EXACT_VERIFIED_REPOSITORY_TRANSFORMATION
+CURRENT=FINAL_OPTIMALITY_BLOCKED
+
+--------------------------------------------------------------------------------
+3) Reviewer-capsule structural validators  (inspection only)
+--------------------------------------------------------------------------------
+`python3 verify_freeze.py`   (exit code 0)
+    VALIDATOR_A_SELF_TEST_PASS: 33/33
+    FREEZE_STRUCTURE_VALID
+    NATURE: structural freeze validator; NOT an optimality proof
+    CURRENT_STUDY_STATE: FINAL_OPTIMALITY_BLOCKED
+
+`node verify_freeze.mjs`     (exit code 0)   [node v22.22.2]
+    VALIDATOR_B_SELF_TEST_PASS: 33/33
+    FREEZE_STRUCTURE_VALID
+    NATURE: structural freeze validator; NOT an optimality proof
+    CURRENT_STUDY_STATE: FINAL_OPTIMALITY_BLOCKED
+
+--------------------------------------------------------------------------------
+4) THE THREE IMMUTABLE HASHES TO APPROVE  (README-FIRST step 3)
+--------------------------------------------------------------------------------
+freeze_bundle_sha256   : 0c65f332ae074bd52cfeac5256d915a9687f57a86ea541faaa122ded18c784b2
+blind_capsule_sha256   : ac571a7a17971808811a98ae5a7dc9c9b0850f9bfdc808c90ae0b499060a10d3
+reviewer_capsule_sha256: a34c37aa4850ac4aa4758b37829a8d7f5c1624c4e089138b53a6988128fa25eb
+
+Approval is EXTERNAL to the sealed bundle (approval changes no frozen byte).
+A pre-filled receipt is provided at: CREATOR-APPROVAL-RECEIPT.filled.json
+(the creator supplies only the timestamp + the act of approval).
+
+--------------------------------------------------------------------------------
+5) VERDICT
+--------------------------------------------------------------------------------
+OUTER_FREEZE_VALID .......... PASS
+FREEZE_STRUCTURE_VALID (py) .. PASS  (33/33)
+FREEZE_STRUCTURE_VALID (node)  PASS  (33/33)
+Split-copy hash re-check ..... PASS  (blind + reviewer copies match frozen hashes)
+
+=> The bundle is transport-valid and READY_FOR_CREATOR_APPROVAL.
+=> This says nothing about optimality. The study remains FINAL_OPTIMALITY_BLOCKED
+   until the full universal-proof pipeline (Phases 2-6) is completed and
+   independently reproduced.

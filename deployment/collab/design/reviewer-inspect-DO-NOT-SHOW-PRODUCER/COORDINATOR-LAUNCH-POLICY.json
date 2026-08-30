@@ -1,0 +1,80 @@
+{
+  "schema": "watchtower/coordinator-fresh-phase-2-launch-policy/1",
+  "version": "1.0.0",
+  "policy_status": "FROZEN_BEFORE_LAUNCH",
+  "current_connected_project": {
+    "repository": "https://github.com/andriannadeepmind-gif/THE-LEGAL-WATCHTOWER.git",
+    "baseline_commit": "e621dbe1d00f3a18039b63fc0dfc3ff08ce21a03",
+    "eligible_to_run_blind_phase_2": false,
+    "reason": "A new chat inside the same project still has filesystem, project-instruction and project-memory exposure. Conversation freshness is not input isolation."
+  },
+  "official_behavior_relied_on": [
+    {
+      "claim": "Auto memory is project-local and all worktrees/subdirectories of one Git repository share it; MEMORY.md is loaded at conversation start.",
+      "source": "https://code.claude.com/docs/en/memory"
+    },
+    {
+      "claim": "Sessions are saved conversations tied to a project directory and can be resumed or searched across projects by ID.",
+      "source": "https://code.claude.com/docs/en/sessions"
+    },
+    {
+      "claim": "Claude Code reads instructions, settings, hooks, skills and memory from the project and user .claude directories.",
+      "source": "https://code.claude.com/docs/en/claude-directory"
+    },
+    {
+      "claim": "Bare non-interactive mode can start without host hooks, plugins, auto memory or CLAUDE.md when the execution surface permits it.",
+      "source": "https://docs.anthropic.com/en/docs/claude-code/headless"
+    }
+  ],
+  "eligible_launch_routes_in_order": [
+    {
+      "route": "NEW_UPLOAD_ONLY_CLOUD_WORKSPACE",
+      "requirements": [
+        "new conversation, not resume, continue, branch, fork or subagent of an old session",
+        "new cloud environment with no mounted repository and no connected file-store or code-search connector",
+        "only PHASE-2-BLIND-PRODUCER-INPUT.zip uploaded",
+        "full session and tool transcript retained until independent acceptance"
+      ]
+    },
+    {
+      "route": "NEW_STERILE_STUDY_REPOSITORY",
+      "requirements": [
+        "use only if the Code platform requires a repository",
+        "new repository with a new root commit containing only the blind capsule or its extracted sealed files",
+        "no fork, mirror, import, template, submodule, alternate object database or remote relation to the baseline",
+        "new cloud environment and new no-context session",
+        "the sterile repository identity and complete tree hash recorded before launch"
+      ]
+    },
+    {
+      "route": "LOCAL_BARE_ISOLATED_SANDBOX",
+      "requirements": [
+        "only if a genuinely separate sandbox/container/VM can mount the blind input read-only and an empty output writable",
+        "fresh CLAUDE_CONFIG_DIR and bare mode so host hooks, plugins, auto memory and CLAUDE.md do not load",
+        "the baseline repository and prior study storage are not mounted",
+        "complete transcript and environment attestation preserved"
+      ]
+    }
+  ],
+  "preflight_must_pass_before_units_are_spent": [
+    "workspace contains only the sealed blind capsule inputs",
+    "no baseline repository, Git object, prior study artifact, project memory, CLAUDE.md, session transcript or reviewer capsule is present",
+    "no connector can retrieve the baseline or prior study",
+    "the new session is not a resume, branch, fork or inherited subagent",
+    "the producer reports no prior architecture knowledge in its initial context",
+    "blind capsule and reviewer commitment hashes match the outer freeze manifest"
+  ],
+  "evidence_model": {
+    "primary": "Physical absence of forbidden inputs in a new environment plus the fixed input inventory and retained platform transcript, used to qualify the blind-independence claim.",
+    "corroborating": "The producer's append-only access ledger and research ledger.",
+    "explicit_non_claim": "A producer-written logger is not an OS monitor and is never treated as independent evidence. Isolation evidence is provenance evidence, not the final optimality proof.",
+    "network_rule": "No named-project, repository or prior-study search is permitted. Public research queries and URLs must be visible in the retained transcript and research ledger."
+  },
+  "immediate_stop_conditions": [
+    "any prior project memory or answer appears",
+    "any baseline or prior-study file/path/repository is visible",
+    "the reviewer capsule is visible",
+    "the environment cannot establish its exact initial input inventory"
+  ],
+  "on_stop": "When detected before architecture work, do not continue research; record PRELAUNCH_ISOLATION_BLOCKED and provision a truly clean route once. If missing evidence is discovered after work, preserve the candidate with BLINDNESS_UNVERIFIED rather than repeating Phase 2. The final ceiling depends on the universal proof, not this label."
+}

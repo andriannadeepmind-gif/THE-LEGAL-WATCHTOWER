@@ -1,0 +1,134 @@
+[
+{
+"id": "AX-01",
+"kind": "MODEL_RELATIVE (semantics-relative); the grounded-only restriction inside it is RESOURCE_BOUNDED (AX-17 cost class), never a possibility bound",
+"head": "FROZEN GUARANTEE. Maximum achievable legal-reasoning correctness under H1-H8 is: provable soundness AND completeness of every emitted legal conclusion with respect to IDEAL / SCEPTICAL-PREFERRED CERTIFIED ACCEPTANCE over an explic",
+"k": "MR+RB"
+},
+{
+"id": "AX-02",
+"kind": "MODEL_RELATIVE",
+"head": "FROZEN GUARANTEE. Maximum achievable plan-decomposition assurance under H1-H8 is: for a plan that is a DETERMINISTIC DERIVATION FROM FROZEN INPUTS (a pure function of the committed closure — pre-commitment of the plan artifact is ",
+"k": "MR"
+},
+{
+"id": "AX-09",
+"kind": "ABSOLUTE",
+"head": "FROZEN GUARANTEE. Maximum achievable contradiction/uncertainty/coverage/blind-spot handling under H1-H8 is certified totality over FOUR verdict classes: every query against the committed corpus and rulebase returns exactly one of ",
+"k": "ABS"
+},
+{
+"id": "AX-04",
+"kind": "ABSOLUTE (negative half: no after-the-fact authenticity) / RESOURCE_BOUNDED (positive clauses: publisher PKI, witness-set parameterization, attested-channel trust anchors)",
+"head": "FROZEN GUARANTEE. For any system satisfying H1-H8, the maximum attainable grounding of a served legal text t is: (i) ORIGIN AUTHENTICITY no stronger than what can be TRANSPORTED, CORROBORATED, or CHANNEL-ATTESTED — (a) transport: ",
+"k": "ABS+RB"
+},
+{
+"id": "AX-05",
+"kind": "MODEL_RELATIVE",
+"head": "FROZEN GUARANTEE. Relative to a declared decidable citation grammar G for the legal order and a fixed authority-chain semantics, the maximum attainable by any H1-H8 system is: SOUND AND COMPLETE PROOF-CARRYING RESOLUTION OVER L(G)",
+"k": "MR"
+},
+{
+"id": "AX-06",
+"kind": "ABSOLUTE (assurance-semantics clause, under stated hash assumptions) / RESOURCE_BOUNDED (cost clause)",
+"head": "FROZEN GUARANTEE. The maximum evidence-provenance and transformation-lineage ASSURANCE attainable by any H1-H8 system is: the verifier's knowledge of an artifact's lineage is bounded by what is derivable from committed bytes under",
+"k": "ABS+RB"
+},
+{
+"id": "AX-07",
+"kind": "ABSOLUTE (clauses a, b, d; no-retrodiction; anchored self-attestation limit) / RESOURCE_BOUNDED (clause c fork-consistency cap, liftable by an external witness quorum — an operationally available resource)",
+"head": "FROZEN GUARANTEE. For any feasible system under H1-H8, institutional/reflective memory can guarantee at most: (a) provenance-complete capture — every certified state transition (H6) is committed as an episode carrying content dige",
+"k": "ABS+RB"
+},
+{
+"id": "AX-08",
+"kind": "MODEL_RELATIVE (clause c) / ABSOLUTE (clause a; clause b internal-consistency half, under hash assumptions) / RESOURCE_BOUNDED (clause b anti-rollback-beyond-held-floor half — witness quorum)",
+"head": "FROZEN GUARANTEE. For any feasible system under H1-H8, temporal and legal-state consistency can guarantee at most: (a) gapless monotone history — every admitted transition satisfies seq' = seq + 1 exactly, serialized through a sin",
+"k": "ABS+MR+RB"
+},
+{
+"id": "AX-03",
+"kind": "RESOURCE_BOUNDED",
+"head": "FROZEN GUARANTEE. The maximum feasible coordination under H1-H8 is DETERMINISTIC PARALLELISM WITH ATOMIC TIER COMMIT AT A SINGLE LOGICAL SERIALIZATION POINT: the committed result is bitwise equal to the unique canonical serial exe",
+"k": "RB"
+},
+{
+"id": "AX-11",
+"kind": "RESOURCE_BOUNDED (clause i, fsync-scoped on the declared platform) / ABSOLUTE (clause ii, two-generals/atomic-commitment impossibility)",
+"head": "FROZEN GUARANTEE. The maximum feasible transaction semantics for workflow/tool orchestration under H1-H8 is: (i) [RESOURCE_BOUNDED — fsync-scoped, relative to the declared storage platform] for all effects on media the system cont",
+"k": "ABS+RB"
+},
+{
+"id": "AX-12",
+"kind": "ABSOLUTE (decidable-admission, genesis-anchor, fail-closed-totality, process-not-substance clauses) / RESOURCE_BOUNDED (equivocation clause — witness quorum)",
+"head": "FROZEN GUARANTEE. The maximum feasible institutional decision authority under H1-H8 is: every trusted state transition is admitted by one total, pure, decidable kernel predicate K(state, transition, certificate) evaluated at the s",
+"k": "ABS+RB"
+},
+{
+"id": "AX-13",
+"kind": "ABSOLUTE (assurance clause: audit knowledge bounded by the committed closure under stated hash assumptions) / RESOURCE_BOUNDED (cost clause)",
+"head": "FROZEN GUARANTEE. Maximum auditability is: every trusted output ships with a certificate binding it, via collision-resistant hash commitments, to the COMPLETE closure of its derivation (source bytes, code identity, pinned toolchai",
+"k": "ABS+RB"
+},
+{
+"id": "AX-14",
+"kind": "ABSOLUTE (output = f(committed closure) core; per-pinned-class scope for producer determinization stated inside the closure semantics)",
+"head": "FROZEN GUARANTEE. Maximum determinism is: every trusted derivation is a total mathematical function of its committed input closure — byte-identical output on every re-execution within the pinned hardware/software class declared in",
+"k": "ABS"
+},
+{
+"id": "AX-15",
+"kind": "RESOURCE_BOUNDED",
+"head": "FROZEN GUARANTEE. On the declared operating model (single node, POSIX filesystem, commodity SSD with honored write barriers), the maximum achievable is: (a) DURABILITY — a state transition is durable exactly when its data, metadat",
+"k": "RB"
+},
+{
+"id": "AX-16",
+"kind": "RESOURCE_BOUNDED",
+"head": "FROZEN GUARANTEE. Under the declared operating model (single node, fair scheduler, eventually-available storage, finite committed inputs, external calls that may fail forever), the maximum achievable liveness is CONDITIONAL BOUNDE",
+"k": "RB"
+},
+{
+"id": "AX-17",
+"kind": "RESOURCE_BOUNDED",
+"head": "FROZEN GUARANTEE. For latency over a frozen workload distribution, the maximum assurance any H1-H8 system can provide is: (a) an EXACT, offline-verifiable deterministic cost certificate — for every workload item x, a cost value C(",
+"k": "RB"
+},
+{
+"id": "AX-18",
+"kind": "RESOURCE_BOUNDED",
+"head": "FROZEN GUARANTEE. Resource-normalized throughput of any H1-H8 system on p workers is bounded by T_p >= max(W/p, S, ceil(n/b) * c_batch): W = total verification/generation work, S = span of the input dependency DAG, and ceil(n/b) *",
+"k": "RB"
+},
+{
+"id": "AX-19",
+"kind": "MODEL_RELATIVE (rung 1 relative to the declared capability-effect semantics; rung 2 additionally RESOURCE_BOUNDED on AX-21 verification resources)",
+"head": "FROZEN GUARANTEE. The maximum inspectable causal account any H1-H8 system can give for a trusted decision is the decision's own replayable derivation: a trace, recomputable to bit-equality by third parties from committed inputs (H",
+"k": "MR+RB"
+},
+{
+"id": "AX-10",
+"kind": "ABSOLUTE (with the two-regime structure; completeness always relative to committed specs and committed classes)",
+"head": "FROZEN GUARANTEE. The maximum any feasible H1-H8 system can achieve in self-falsification is a TWO-REGIME certified adequacy (v1 raised): (1) PROOF-CARRYING EXCLUSION OF INFINITE DEFECT CLASSES wherever a machine-checked functiona",
+"k": "ABS"
+},
+{
+"id": "AX-20",
+"kind": "ABSOLUTE (with the widened measures-plus-proofs formula; the impossibility clause narrowed to capabilities neither measured nor proof-covered)",
+"head": "FROZEN GUARANTEE. The maximum feasible evolvability guarantee is ratchet-monotonicity over the UNION of committed executable measures AND machine-checked preservation proofs (v1 raised): every admitted evolution step S_n to S_(n+1",
+"k": "ABS"
+},
+{
+"id": "AX-21",
+"kind": "RESOURCE_BOUNDED",
+"head": "FROZEN GUARANTEE. For a declared toolchain commitment T, the maximum feasible architecture-to-source-to-executable assurance is a refinement chain in which every link is either (a) a machine-checked proof replayable offline by a s",
+"k": "RB"
+},
+{
+"id": "AX-22",
+"kind": "MODEL_RELATIVE",
+"head": "FROZEN GUARANTEE. The maximum feasible cross-legal-order generality is profile-parametricity: every trusted mechanism (admission, provenance, replay, certificates, structural validation, citation grammar, deontic classification) i",
+"k": "MR"
+}
+]

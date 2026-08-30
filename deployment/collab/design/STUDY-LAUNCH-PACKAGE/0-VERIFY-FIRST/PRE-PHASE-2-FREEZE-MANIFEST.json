@@ -1,0 +1,39 @@
+{
+  "schema": "watchtower/pre-phase-2-freeze-manifest/1",
+  "version": "2.3.0-R3-PRE-PHASE-2-FROZEN-CANDIDATE",
+  "cutoff": "2026-08-27",
+  "placement": "C:\\THE-LEGAL-WATCHTOWER-STUDY-OUTPUT\\PRE-PHASE-2-FREEZE-v2-R3\\",
+  "repository_writes": 0,
+  "phase_3_started": false,
+  "capsules": [
+    {
+      "file": "PHASE-2-BLIND-PRODUCER-INPUT.zip",
+      "role": "only input disclosed to the fresh Phase-2 producer",
+      "byte_length": 24840,
+      "sha256": "ac571a7a17971808811a98ae5a7dc9c9b0850f9bfdc808c90ae0b499060a10d3"
+    },
+    {
+      "file": "PHASE-2-REVIEWER-FROZEN-GATES.zip",
+      "role": "hidden reviewer rules committed before producer output",
+      "byte_length": 64338,
+      "sha256": "a34c37aa4850ac4aa4758b37829a8d7f5c1624c4e089138b53a6988128fa25eb"
+    }
+  ],
+  "separation_rule": "The producer receives only the blind capsule and its reviewer-hash commitment. The reviewer capsule is disclosed only after the producer submission hash is fixed.",
+  "mathematical_success_rule": "UNIVERSAL_PROOF_ONLY",
+  "commercial_success_rule": "For each of CoCounsel Legal, Lexis+ with Protégé and Harvey, every one of 22 binding mechanism axes is STRICTLY_BETTER and each capability surface is a proper subset of E_star; all 66 cells pass.",
+  "B0_transformation_rule": "E_star is the exact implemented evolutionary successor of Andrianna B0 under a creator-approved total repository delta and T7 proof; not a disconnected or parallel system.",
+  "continual_evolution_rule": "Every validated frontier or named-product change opens a new proof epoch; current-ceiling status is restored only after a monotonic successor and independent universal-proof replay.",
+  "permitted_final_status": "FINAL_B0_SUCCESSOR_GREATEST_ELEMENT_AND_STRICT_ALL_AXIS_COMMERCIAL_SUPERIORITY_VERIFIED_UNDER_HASHED_TCB",
+  "otherwise_status": "FINAL_OPTIMALITY_BLOCKED",
+  "current_state": {
+    "P1": "ACCEPTED",
+    "P2": "FRESH_RERUN_PREPARED_NOT_LAUNCHED",
+    "P3": "UNAUTHORIZED",
+    "FINAL_PROOF": "NOT_YET_PRODUCED",
+    "COMMERCIAL_SUPERIORITY": "NOT_YET_PROVED",
+    "B0_TRANSFORMATION": "NOT_YET_PLANNED",
+    "P2_block_reference": "Original Phase-2 lineage remains blocked because the producer-session isolation evidence is irrecoverable; only a fresh blind epoch can replace it.",
+    "derived_verdict": "FINAL_OPTIMALITY_BLOCKED"
+  }
+}

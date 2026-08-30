@@ -1,0 +1,90 @@
+{
+  "schema": "watchtower/all-axis-commercial-dominance-spec/1",
+  "version": "1.0.0",
+  "policy_status": "FROZEN_BEFORE_FRESH_PHASE_2",
+  "obligation": "FOC-18",
+  "theorem": "T6",
+  "scope": "Strict architecture-and-mechanism superiority over every mandatory named commercial baseline, independently of proprietary legal-content volume or exclusivity.",
+  "formal_rule": "For every b in B_COMM and every a in A_BIND: StrictBetter_a(E_star,b). Also Capabilities(b) is a proper subset of Capabilities(E_star) under universal trace/capability refinement.",
+  "strict_better": {
+    "quantitative": "After result-blind calibration, the conservative lower bound for E_star must exceed the conservative upper bound for baseline b by at least epsilon_a, where epsilon_a is derived before measurement from instrument resolution and reproducibility error. Equality, interval overlap or a post-hoc epsilon fails.",
+    "qualitative": "The frozen typed evidence lattice for axis a must mechanically prove rank_a(E_star) strictly above rank_a(b). Equality, incomparability and assessor preference fail.",
+    "logical": "E_star proves a strictly stronger property over a domain that contains the baseline property domain; a smaller domain, stronger assumptions or a shifted boundary fails.",
+    "capability": "Every reachable baseline capability and trace is refined by E_star and at least one material property of that same capability is strictly improved; the complete E_star capability set is a proper superset.",
+    "absolute_ceiling": "If a baseline is already at a proved absolute ceiling on any binding axis, strict improvement is impossible and T6 remains BLOCKED. Equality at the ceiling is not renamed superiority."
+  },
+  "non_compensation": {
+    "componentwise_strict": true,
+    "weighted_score_forbidden": true,
+    "average_forbidden": true,
+    "geometric_or_composite_score_forbidden": true,
+    "tradeoff_forbidden": true,
+    "better_on_one_axis_forbidden": true,
+    "equal_on_any_binding_axis_forbidden": true,
+    "worse_on_any_binding_axis_forbidden": true,
+    "unknown_as_pass_forbidden": true,
+    "best_of_products_composite_forbidden": true
+  },
+  "binding_axes": [
+    {"id": "AX-01", "name": "legal-reasoning correctness and defeater sensitivity", "evidence_mode": "logical+quantitative"},
+    {"id": "AX-02", "name": "multi-step task decomposition and plan completeness", "evidence_mode": "logical+quantitative"},
+    {"id": "AX-03", "name": "agent coordination, dependency control, parallelism and arbitration", "evidence_mode": "logical+quantitative"},
+    {"id": "AX-04", "name": "source-selection and grounding mechanism independent of corpus size", "evidence_mode": "logical+quantitative"},
+    {"id": "AX-05", "name": "citation and legal-authority validation mechanism", "evidence_mode": "logical+quantitative"},
+    {"id": "AX-06", "name": "evidence provenance and transformation-lineage completeness", "evidence_mode": "logical+quantitative"},
+    {"id": "AX-07", "name": "matter context, institutional memory and reflective-memory semantics", "evidence_mode": "logical+quantitative"},
+    {"id": "AX-08", "name": "temporal and legal-state consistency", "evidence_mode": "logical+quantitative"},
+    {"id": "AX-09", "name": "contradiction, uncertainty, coverage and blind-spot handling", "evidence_mode": "logical+quantitative"},
+    {"id": "AX-10", "name": "self-falsification, counter-design generation and escalation", "evidence_mode": "logical+quantitative"},
+    {"id": "AX-11", "name": "workflow and tool orchestration with explicit transaction semantics", "evidence_mode": "logical+quantitative"},
+    {"id": "AX-12", "name": "institutional decision authority, review and accountable state transition", "evidence_mode": "logical"},
+    {"id": "AX-13", "name": "auditability, provenance-complete replay and reproducibility", "evidence_mode": "logical+quantitative"},
+    {"id": "AX-14", "name": "determinism under frozen inputs and declared nondeterminism control", "evidence_mode": "logical+quantitative"},
+    {"id": "AX-15", "name": "durability, crash consistency and bounded recovery", "evidence_mode": "logical+quantitative"},
+    {"id": "AX-16", "name": "progress and liveness under the declared operating model", "evidence_mode": "logical+quantitative"},
+    {"id": "AX-17", "name": "latency across frozen workload distributions", "evidence_mode": "quantitative"},
+    {"id": "AX-18", "name": "throughput, scale and resource-normalized performance", "evidence_mode": "quantitative"},
+    {"id": "AX-19", "name": "introspection, explanation and inspectable causal account", "evidence_mode": "logical+quantitative"},
+    {"id": "AX-20", "name": "evolvability with monotonic capability and invariant preservation", "evidence_mode": "logical+quantitative"},
+    {"id": "AX-21", "name": "formal assurance and architecture-to-source-to-executable property transport", "evidence_mode": "logical"},
+    {"id": "AX-22", "name": "mechanism generality across legal orders without content-specific redesign", "evidence_mode": "logical+quantitative"}
+  ],
+  "axis_count": 22,
+  "axis_closure": {
+    "rule": "The registry is complete only when every material mechanism property discovered in B0, every mandatory commercial baseline, current primary-source research and red-team synthesis maps to one axis or is mechanically proved irrelevant. Discovery of an unmapped material property opens a new preserved axis epoch and forces full replay.",
+    "post_result_axis_deletion_forbidden": true,
+    "post_result_axis_weakening_forbidden": true,
+    "unmapped_property_status": "AXIS_DOMAIN_OPEN"
+  },
+  "evaluation_tracks": {
+    "mechanism_normalized": "Use common public or synthetic material, frozen task families, result-blind calibration and an explicitly normalized model/tool envelope. Report model and tool dependence instead of attributing it to architecture.",
+    "actual_product_black_box": "Evaluate the actual named service on identical externally observable tasks and inputs. Preserve full prompts, outputs, citations, timings, versions and environment. Product access or comparison gaps remain UNKNOWN.",
+    "architecture_class_proof": "Map every behaviorally distinguishable baseline mechanism into the sealed architecture grammar and prove class coverage or a stronger upper bound. Public marketing claims and finite benchmarks alone cannot prove T6."
+  },
+  "required_matrix": {
+    "rows": "exactly the 3 mandatory baseline IDs",
+    "columns": "exactly AX-01 through AX-22",
+    "cells": 66,
+    "cell_fields": [
+      "baseline_id",
+      "axis_id",
+      "baseline_evidence",
+      "E_star_evidence",
+      "normalization",
+      "strict_margin_or_proof",
+      "uncertainty",
+      "verdict",
+      "reproduction_receipts"
+    ],
+    "only_passing_cell_verdict": "STRICTLY_BETTER",
+    "all_66_cells_must_pass": true
+  },
+  "capability_proper_superset": {
+    "rule": "For every mandatory baseline b, Dom(b) is a subset of Dom(E_star), every reachable observable capability/trace of b is refined by E_star, each mapped capability is materially improved, and E_star has at least one additional material capability not present in b.",
+    "missing_or_equal_capability_status": "COMMERCIAL_SUPERIORITY_BLOCKED"
+  },
+  "phase_2_limit": "Phase 2 must design for, inventory and challenge this rule, but cannot discharge FOC-18 or prove T6. It submits the baseline ledger, complete 66-cell planned matrix and mechanism-only evaluation plan for independent review.",
+  "success_status": "STRICT_ALL_AXIS_COMMERCIAL_SUPERIORITY_VERIFIED",
+  "failure_status": "COMMERCIAL_SUPERIORITY_BLOCKED",
+  "initial_state": "BLOCKED"
+}

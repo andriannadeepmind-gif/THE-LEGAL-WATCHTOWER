@@ -1,0 +1,6 @@
+{
+ "id": "K-HUM",
+ "name": "Expert-Human Practice Baseline",
+ "signature": "All dimensions at R1-R2 rungs: manual reasoning, manual citation checking (court-mandated verification certificates), paper/DMS memory (retained representative for DIM-07 stateless-per-request recall, DIM-08 no-provenance, DIM-06 prose-spec-only, DIM-14 unmanaged-change), no replay, no lineage, human review as the only falsification; DIM-16 human interpretation, un-mechanized \u2014 no formal artifact admitted; institutional authority real but un-mechanized",
+ "includes": "Members: conventional law-firm practice, including the 2026 court-ordered manual-verification regime. REGION: D_T only \u2014 fails H5/H8 (nothing replayable or recomputable) and H2 in the structural sense (no typed UNKNOWN). Retained as the feasibility floor and legal-validity anchor: any class claiming dominance must beat it on the axes where it is surprisingly strong (AX-12 accountable human authority is R3-equivalent by institution), keeping the tournament honest about what mechanization actually adds \u2014 and it now serves as the named retained representative for four conjectured-dominated families."
+}

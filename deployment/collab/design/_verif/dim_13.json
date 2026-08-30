@@ -1,0 +1,31 @@
+{
+ "id": "DIM-14",
+ "name": "Evolution / capability monotonicity (AX-20)",
+ "families": [
+  "unmanaged-change: modification without invariant or capability tracking",
+  "unconstrained-self-evolution: continuous self-modification claiming preserved invariants without per-step proof",
+  "benchmark-gated-model-swap: proprietary model swapped into production on leaderboard/benchmark evidence with no floor-preservation object (the Thomson/Tenet pattern)",
+  "floor-vector-ratchet: committed capability-floor vector serialized into a hash-chained census; each evolution step recomputes prior floors, proves pointwise non-regression and floor-set growth, refuses otherwise (the AX-20 guarantee profile; absorbs: TUF/gittuf threshold delegable rotatable root over the system's own code and policy refs, log-instance rotation with verifiable checkpoint hand-off, post-quantum signature agility as committed floor items)",
+  "verifier-gated-improvement: kernel-verified reward loops and proof-carrying self-modification \u2014 a change installs only after machine-checked invariant-preservation certification, with statistical learning confined to uniformly capacity-bounded reachable families per the 2026 impossibility results (absorbs: 'Closing the Loop' verified reward, survival-satisficing Godel-machine line, LLM-assisted proof repair/maintenance pricing down the $350/SLOC upkeep cost). Per the v2 AX-20 correction (CF P1-5): machine-checked refinement/invariant-preservation proofs certify non-regression over INFINITE behavior classes not reducible to executable measures, the admission gate staying decidable because the candidate arrives with the proof \u2014 the monotone union of executable measures and proof-covered behavior classes is the ceiling formula"
+ ],
+ "eliminations": [
+  {
+   "family": "unmanaged-change",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-HUM (un-versioned practice change) and K-COM",
+   "lemma": "Violates H7: nothing prevents an admitted evolution from lowering a committed floor."
+  },
+  {
+   "family": "unconstrained-self-evolution",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "none feasible-in-world shipped; tracked in the class registry for the completeness critic",
+   "lemma": "Violates H7 on its own terms, which is sufficient and true: an admitted evolution step CLAIMING preserved invariants without per-step proof provides no guarantee that a committed floor was not lowered. The v1 'proved impossibility, not merely by risk' overclaim is WITHDRAWN (CA P2-11): the cited joint-unsatisfiability results ({continuous self-evolution, isolation from external data, safety invariance} \u2014 arXiv 2510.04399, 2603.28650) delimit the DATA-ISOLATED case only; a self-evolving system consuming external data is outside the theorems' hypotheses, so they are cited as delimiting that case, never as covering the whole family."
+  },
+  {
+   "family": "benchmark-gated-model-swap",
+   "lemma_kind": "DOMINANCE_CONJECTURE",
+   "retained_representative": "K-COM",
+   "lemma": "Pre-registered dominance conjecture on AX-20: guarantees are not tracked as objects (caps at R2 \u2014 a declared-mechanism-class KNOWN_UPPER_BOUND cap) while floor-vector-ratchet targets R4-R5. The cost figure ('Thomson's ~$450K final retraining run') is VERIFIED_FROM_SECONDARY (press/vendor-relayed) and is recorded as motivation only, never as evidence: cheap retraining makes the missing floor object MORE dangerous, not compensating. Adjudicated by full verdicts against retained representative K-COM via the cap calculus."
+  }
+ ]
+}

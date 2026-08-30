@@ -1,0 +1,102 @@
+{
+  "artifact": "PHASE-2-STRUCTURAL-RECORDS.json",
+  "status": "CANONICAL",
+  "authority": "PHASE-2-R5-INSTRUCTION finding 4: substring presence does not prove protocol semantics. These are structured canonical records; the prose in the design documents is a RENDERING of them, not the source.",
+  "note": "The checker validates relations and ordering against these records. Six words appearing in a large document prove nothing; an ordered state machine with typed transitions can be checked.",
+
+  "staged_admission": {
+    "invariant": "I-47",
+    "obligation": "PO-047",
+    "stores": [
+      {"id": "S", "role": "staging", "authority": false, "derived": false,
+       "visible_to_kernel": false,
+       "note": "pre-institutional; not R, not A, not P"},
+      {"id": "R", "role": "record", "authority": true, "derived": false, "visible_to_kernel": true},
+      {"id": "A", "role": "artifact-store", "authority": true, "derived": false, "visible_to_kernel": true},
+      {"id": "P", "role": "proposal-spool", "authority": false, "derived": false, "visible_to_kernel": false}
+    ],
+    "steps": [
+      {"n": 1, "action": "fetch", "target": "S", "durable": false,
+       "description": "bytes land in S under their computed digest d"},
+      {"n": 2, "action": "fsync", "target": "S", "durable": true,
+       "description": "object and directory made durable in staging"},
+      {"n": 3, "action": "append-entry", "target": "R", "entry_kind": "ACQUISITION",
+       "description": "d becomes named by R"},
+      {"n": 4, "action": "promote", "from": "S", "to": "A", "atomic": true,
+       "mechanism": "same-volume rename", "idempotent": true, "resumable": true,
+       "description": "single atomic operation; no torn intermediate"},
+      {"n": 5, "action": "fsync", "target": "A", "durable": true}
+    ],
+    "ordering_constraint": {
+      "rule": "append-entry MUST precede promote",
+      "append_step": 3,
+      "promote_step": 4,
+      "rejected_alternative": "promote before append",
+      "why_rejected": "would leave A holding bytes R does not name, which is a bare I-43 violation governed by nothing",
+      "why_chosen": "leaves R naming a digest A lacks, a state I-44 already governs",
+      "principle": "where a crash window is unavoidable, place it where an existing invariant governs the resulting state"
+    },
+    "prohibitions": [
+      {"id": "no-cross-volume", "rule": "cross-volume staging is prohibited",
+       "reason": "a copy is not a rename and a copy has a torn window"},
+      {"id": "no-direct-write", "rule": "nothing enters A except by promotion from S"}
+    ],
+    "crash_windows": [
+      {"between": [1, 2], "state": "partial bytes in S",
+       "reconciliation": "digest mismatch against name; discard; recorded as STAGING-TORN",
+       "invariant_touched": null},
+      {"between": [2, 3], "state": "complete object in S, unnamed by R",
+       "reconciliation": "staging orphan; re-offered to the acquisition plan; garbage-collected with a record after the retention window",
+       "invariant_touched": null,
+       "note": "not in A, so I-43 holds"},
+      {"between": [3, 4], "state": "R names d; A lacks it; S has it",
+       "reconciliation": "resumable idempotent promotion at recovery",
+       "invariant_touched": "I-44",
+       "status_during": "DERIVATION-INCOMPLETE"},
+      {"between": [4, 4], "state": "rename either happened or did not",
+       "reconciliation": "none required; atomic",
+       "invariant_touched": null},
+      {"between": [3, 4], "state": "R names d; nowhere resolvable (S also lost)",
+       "reconciliation": "I-44 governs permanently until re-acquisition; identical to F3 corruption",
+       "invariant_touched": "I-44"}
+    ],
+    "terminal_dispositions": ["promoted", "discarded-as-torn", "garbage-collected-with-record"],
+    "silent_discard_possible": false
+  },
+
+  "method_combination": {
+    "name": "institutional",
+    "finding": "HF-027",
+    "special_variables": ["*act-warrant-results*", "*act-outcome*"],
+    "special_declaration_required": true,
+    "special_declaration_form": "defvar",
+    "why_special": "without defvar, LET establishes LEXICAL bindings and the :record methods, compiled in a different lexical environment, would not see them at all",
+    "binding_placement": "outside-unwind-protect",
+    "why_binding_placement": "a dynamic binding established by LET is in effect for the dynamic extent of the LET BODY; cleanup forms of an UNWIND-PROTECT that ENCLOSES that LET run after it has exited, so the binding would already be undone when :record methods run",
+    "warrant_evaluation_placement": "inside-protected-form",
+    "assignment_operator": "setf",
+    "why_setf": "the warrant results are computed inside the protected form and must be ASSIGNED to the already-established binding; re-binding there would recreate the placement defect",
+    "structural_order": ["defvar", "let", "unwind-protect", "protected-form", "cleanup-forms"],
+    "qualifier_groups": ["warrant", "defeater", "around", "record", "primary"],
+    "outcome_values": [
+      {"value": ":performed", "means": "primary completed normally"},
+      {"value": ":void-unwarranted", "means": "warrant group failed; no primary ran"},
+      {"value": ":void-defeated", "means": "a defeater vetoed; no primary ran"},
+      {"value": ":incomplete", "means": "control left the protected form without reaching any of the above — an error or throw from a warrant method, a defeater, or the primary"}
+    ],
+    "cleanup_guarantee": {
+      "claimed": "UNWIND-PROTECT guarantees ENTRY into the cleanup forms on normal or non-local exit from the protected form",
+      "not_claimed": "that every :record cleanup form completes",
+      "residual": "ANSI provides no further protection to a cleanup form that itself performs a non-local exit; a :record method that transfers control prevents later :record methods from running",
+      "residual_defeater": "DF-050",
+      "residual_obligation": "PO-048",
+      "authority": "R5 finding 10"
+    },
+    "verification_required": {
+      "macroexpansion_inspection": true,
+      "interpreter": "SBCL, pinned version",
+      "status": "NOT PERFORMED — no Common Lisp implementation is available in this environment",
+      "consequence": "recorded as an undischarged obligation, not as a passed check"
+    }
+  }
+}

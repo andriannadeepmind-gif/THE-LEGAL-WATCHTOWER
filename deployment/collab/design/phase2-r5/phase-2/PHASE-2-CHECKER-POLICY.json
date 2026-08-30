@@ -1,0 +1,116 @@
+{
+  "artifact": "PHASE-2-CHECKER-POLICY.json",
+  "status": "FROZEN",
+  "frozen_at": "R5 remediation, before any change to PHASE-2-XCHECK.py",
+  "authority": "PHASE-2-R5-INSTRUCTION finding 3: 'Freeze a checker policy and mutation corpus BEFORE changing the checker. Persist and hash them.'",
+  "purpose": "This document is the specification the checker must satisfy. It was written before the checker was modified, so the checker is repaired against a fixed instrument rather than the instrument being tuned until the package passes.",
+
+  "invalidation_rule": {
+    "statement": "Any change to PHASE-2-XCHECK.py after this policy is frozen INVALIDATES the mutation run and requires independent review.",
+    "mechanism": "PHASE-2-MUTATION-HARNESS.py records the SHA-256 of PHASE-2-XCHECK.py, of this policy and of the corpus in its result record. A run whose recorded checker digest differs from the digest of the checker at verification time is void.",
+    "consequence": "A CLEAN result carries no weight unless the three digests in the run record match the sealed digests."
+  },
+
+  "execution_environment": {
+    "python_pinned": "CPython 3.10.8 (the interpreter available in this environment)",
+    "python_minimum": "3.8",
+    "forward_compatibility_requirement": "The checker source MUST compile warning-free under -W error::SyntaxWarning. R5 finding 2 observed a SyntaxWarning on CPython 3.12.13 from an invalid escape sequence that CPython 3.10 accepted silently; the strict compile is therefore a MANDATORY PRECONDITION, not a convenience, because the defect class is version-dependent and would otherwise reappear on a reviewer's newer interpreter.",
+    "mandatory_precondition_command": "python -W error::SyntaxWarning -m py_compile PHASE-2-XCHECK.py",
+    "determinism": "No network. No clock. No randomness. No environment variables consulted. Reads only files inside the Phase-2 directory."
+  },
+
+  "exit_codes": {
+    "0": "CLEAN — no issue found",
+    "1": "ISSUES FOUND",
+    "2": "SELF-TEST FAILED — the checker is not trustworthy and its verdict must be disregarded",
+    "3": "PRECONDITION FAILED — strict compile or policy/corpus digest mismatch",
+    "note": "Recorded here, in the checker source, in PHASE-2-MANIFEST.json and in PHASE-2-SEAL.json, per R5 finding 2."
+  },
+
+  "rule_semantics": {
+    "single_rule_object_requirement": {
+      "statement": "Self-test probes and production scanning MUST use the identical compiled pattern object with identical flags.",
+      "rationale": "R5 finding 1: the self-test probed FORBIDDEN patterns with re.I while production scanned without it. The active heading of PHASE-2-LISP-NATIVE-DESIGN.md section 1 therefore evaded rule WC-2 and the R4 CLEAN result was FALSE. A rule tested under different semantics than it runs under is not tested.",
+      "implementation": "Every rule is compiled exactly once into a Rule object carrying its own pattern, flags and id. Both the self-test and the production scan call Rule.search()/Rule.finditer(). No call site may pass flags."
+    },
+    "case_policy": {
+      "forbidden_claims": "IGNORECASE. Withdrawn-claim wordings must be caught in headings, table cells and prose regardless of case.",
+      "counts": "IGNORECASE, and spelled-number forms are enumerated explicitly."
+    },
+    "no_blanket_exemptions": {
+      "statement": "There is no blanket GENERATED exemption. PHASE-2-SEAL.json and PHASE-2-MANIFEST.json are scanned for stale claims and for prose counts exactly like every other artifact.",
+      "rationale": "R5 finding 5: exempting generated files from prose checks let false active statements survive inside the seal itself.",
+      "only_permitted_exemptions": [
+        "PHASE-2-XCHECK.py — its own source necessarily contains the patterns it searches for",
+        "PHASE-2-MUTATION-CORPUS.jsonl — contains the planted defect strings by construction",
+        "PHASE-2-CHECKER-POLICY.json — this file, which quotes rule ids and rationale",
+        "PHASE-2-MUTATION-HARNESS.py — the harness that applies the corpus",
+        "START-THE-LEGAL-WATCHTOWER-PHASE-2.md — the creator directive: a permitted INPUT, immutable, not an artifact"
+      ],
+      "canonical_count_lines": "Lines matching the canonical-source prefixes (CANDIDATE_IDS, ORIGINAL_SYNTHESES, AUDIT_ROUNDS, DISTINCT_*) are the declared origin of their counts and are exempt from the prose-count rule ONLY on those lines."
+    }
+  },
+
+  "required_rule_classes": [
+    {
+      "id": "STALE-CLAIM",
+      "requirement": "Absolute blacklist of withdrawn-claim wordings (WC-n). Any occurrence anywhere, in any case, is a live assertion.",
+      "must_cover": ["WC-1", "WC-2", "WC-3", "WC-4", "WC-5", "WC-6", "WC-7", "WC-8", "WC-9", "WC-11"]
+    },
+    {
+      "id": "COUNT-DRIFT-PROSE",
+      "requirement": "No artifact may restate a current count in prose. Must detect numeric, spelled, capitalised, hyphenated, multiplication-expression and array-length forms.",
+      "must_cover_forms": ["numeric (47)", "spelled (forty-seven)", "capitalised (Thirty-eight)", "hyphenated spelled", "multiplication (46 x 15 = 690)", "list-length assertions"]
+    },
+    {
+      "id": "COUNT-DRIFT-DERIVED",
+      "requirement": "Every count reported in the seal must equal a value recomputed from the structured records at check time. No hard-coded expected values in the checker."
+    },
+    {
+      "id": "UP-SET-EQUALITY",
+      "requirement": "Exact set equality of UP ids. The canonical enumeration lives in PHASE-2-REQUIREMENTS-AND-INVARIANTS.md Part X. Any other artifact must either reference the canonical list without re-enumeration, or contain a UP id set exactly equal to the canonical set. Re-listing a strict subset is a defect (R5 finding 6)."
+    },
+    {
+      "id": "STATUS-DRIFT",
+      "requirement": "Defeater statuses in every artifact must match the register; the seal's open list must equal the register's OPEN set; a BOUNDED/ELIMINATED defeater may not be presented as open (status transitions excepted)."
+    },
+    {
+      "id": "VALIDATION-STRICT",
+      "requirement": "Under a PHASE_2_COMPLETE seal every validation field must be literal boolean true. null, missing, non-boolean or false must fail (R5 finding 11)."
+    },
+    {
+      "id": "ISOLATION-TRUTH",
+      "requirement": "The seal must not claim zero forbidden-input access while the recorded incident list is non-empty. Content reads and directory enumerations are counted separately and both must be reported (R5 finding 12)."
+    },
+    {
+      "id": "SELECTED-CANDIDATE",
+      "requirement": "Exactly one candidate marked selected; it must be A6; the seal must name CDAI; every enumerated candidate id must appear in the evaluated-set table."
+    },
+    {
+      "id": "DANGLING-REF",
+      "requirement": "Structured set equality for I, PO, UP, DF, RL, AC, WC, D and candidate ids."
+    },
+    {
+      "id": "STRUCTURAL-RECORD",
+      "requirement": "The staged-admission state machine and the method-combination obligations must be validated against STRUCTURED CANONICAL RECORDS (relations and ordering), not by substring or shape-regex presence. Prose is a rendering of the record, not the source (R5 finding 4).",
+      "canonical_records": ["PHASE-2-STRUCTURAL-RECORDS.json"]
+    },
+    {
+      "id": "SEAL-INVENTORY-HYGIENE",
+      "requirement": "No sealed inventory entry may be a volatile non-deliverable (dot-directory path). Inventory equality: every hashable member present, no unaccounted member."
+    }
+  ],
+
+  "mutation_requirements": {
+    "statement": "Every production rule class above must have at least one mutation in PHASE-2-MUTATION-CORPUS.jsonl. Every mutation must make the checker exit non-zero. The untouched baseline must exit 0.",
+    "coverage_obligation": "A rule class with no mutation is an untested rule and the harness reports it as a coverage gap, which is itself a failure.",
+    "case_variant_obligation": "Count and stale-claim mutations must include case variants and spelled-number variants (R5 finding 5)."
+  },
+
+  "known_false_clean_precedents": [
+    "R3: the checker was weakened with historical-context heuristics until it stopped detecting live defects (HF-033).",
+    "R4: six count patterns contained literal control characters from shell-escaping damage and could never match (found by negative control).",
+    "R4: the first negative-control run was itself invalid because the checker was exiting non-zero on its own broken patterns rather than on detection.",
+    "R4/R5: self-test and production used different regex flags, so rule WC-2 was untested in production and an active heading evaded it (R5 finding 1). THIS IS WHY THE FLAG POLICY ABOVE IS A HARD REQUIREMENT."
+  ]
+}

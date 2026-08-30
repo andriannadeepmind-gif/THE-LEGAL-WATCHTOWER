@@ -1,0 +1,41 @@
+{
+  "schema": "watchtower/pre-phase-2-outer-seal/1",
+  "version": "2.3.0-R3-PRE-PHASE-2-FROZEN-CANDIDATE",
+  "hash_algorithm": "SHA-256",
+  "sealed_files": [
+    {
+      "file": "CREATOR-APPROVAL-RECEIPT-TEMPLATE.json",
+      "byte_length": 827,
+      "sha256": "9207fa5ba5148f3ec1566ec3abd111180810db452224967df71f5b37e09004dc"
+    },
+    {
+      "file": "PHASE-2-BLIND-PRODUCER-INPUT.zip",
+      "byte_length": 24840,
+      "sha256": "ac571a7a17971808811a98ae5a7dc9c9b0850f9bfdc808c90ae0b499060a10d3"
+    },
+    {
+      "file": "PHASE-2-REVIEWER-FROZEN-GATES.zip",
+      "byte_length": 64338,
+      "sha256": "a34c37aa4850ac4aa4758b37829a8d7f5c1624c4e089138b53a6988128fa25eb"
+    },
+    {
+      "file": "PRE-PHASE-2-FREEZE-MANIFEST.json",
+      "byte_length": 2341,
+      "sha256": "0a1cd6d966bdb2b12e162ee3f088492c770551f37e66c4c78e172e4431eba0da"
+    },
+    {
+      "file": "README-FIRST.md",
+      "byte_length": 4952,
+      "sha256": "ef7f1fa6202d9acccb9242db436418fad02f7455cacabb629971815eeda43b41"
+    },
+    {
+      "file": "verify_bundle.py",
+      "byte_length": 7469,
+      "sha256": "42c14b4c3bee1e09feaf175333bedbc09d29edd079a910d29cf200389707f526"
+    }
+  ],
+  "self_exclusion": "OUTER-SEAL.json is excluded from its own hash inventory.",
+  "capsule_separation": "Producer receives blind capsule only; reviewer capsule remains hidden until producer termination and submission hash fixation.",
+  "success_rule": "FINAL_B0_SUCCESSOR_GREATEST_ELEMENT_AND_STRICT_ALL_AXIS_COMMERCIAL_SUPERIORITY_VERIFIED_UNDER_HASHED_TCB",
+  "current_status": "READY_FOR_CREATOR_APPROVAL_NOT_LAUNCHED"
+}

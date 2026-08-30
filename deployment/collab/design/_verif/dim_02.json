@@ -1,0 +1,30 @@
+{
+ "id": "DIM-03",
+ "name": "Authority / citation validation (AX-05) \u2014 split from grounding: distinct frozen ladder",
+ "families": [
+  "unvalidated-citation: citations emitted unchecked",
+  "LLM-judged-support: a model decides whether cited authority supports the proposition",
+  "db-grounded-partial-support-check: deterministic citator-database existence + good-law + relevance check, human-consumed, partial/sampled coverage, no offline certificate (the Shepard's Verify / KeyCite / Deep Research Verify family)",
+  "grammar-total-proof-carrying-resolution: total coverage-gated recognizer over a declared decidable citation grammar L(G); every hit resolves through a verified receipt chain (owner-pinned signatures, delegation, revocation, bitemporal validity) to a per-citation offline-recheckable certificate; every non-L(G) citation-like string is typed UNKNOWN-CITATION that blocks (absorbs: citator-coupled formal reasoning candidate, Proof-Carrying Numbers claim-binding, VeriCite as untrusted candidate stage, authority-state/good-law-at-legal-time checking). SCOPE NOTE (CA P1-6): its authority-state component subsumes a citator database ONLY conditional on committed negative-treatment data of citator-equivalent coverage; without that committed data asset, case-law authority-state caps below R4 and types UNKNOWN \u2014 the mechanism does not conjure the data. Formal-proposition support checking (derivation provenance binding rule R to pinpoint span S) is INSIDE the ceiling per CF P2-1; only NL-proposition-vs-NL-authority semantic support remains excluded under H1"
+ ],
+ "eliminations": [
+  {
+   "family": "unvalidated-citation",
+   "lemma_kind": "DOMINANCE_CONJECTURE",
+   "retained_representative": "K-AGT",
+   "lemma": "Pre-registered dominance conjecture on AX-05: R1 while behavioral evidence establishes even the commercial floor ships R2-R3-class mechanisms (as KNOWN_UPPER_BOUND cap material, not vendor-declared ranks) and the frozen AX-05 guarantee profile proves R5 attainable over L(G); >= 1 full-rank gap conjectured with no compensating advantage. Adjudicated by full verdicts against retained representative K-AGT (agentic stacks emitting unvalidated citations)."
+  },
+  {
+   "family": "LLM-judged-support",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-COM",
+   "lemma": "Violates H1: support-checking verdict issued by a statistical model in the trusted path. The Ukrainian citation-graph result (17-33% false citations from leading systems, 59% of flags being verifier-coverage gaps) shows why the verdict must be a recomputable derivation, not model judgment."
+  },
+  {
+   "family": "db-grounded-partial-support-check",
+   "lemma_kind": "DOMINANCE_CONJECTURE",
+   "retained_representative": "K-COM",
+   "lemma": "Pre-registered dominance conjecture on AX-05: partial/sampled coverage scores one rank below the check's nominal rung by the frozen delta rule, and no offline certificate exists (H8: verdict rests on the producer's database), capping at ~R3 \u2014 stated as a KNOWN_UPPER_BOUND cap from the declared-mechanism-class argument, not as a rank. The v1 subsumption clause is CORRECTED (CA P1-6): grammar-total-proof-carrying-resolution subsumes the citator DB as its authority-state component ONLY conditional on committed treatment data of citator-equivalent coverage; absent that data the case-law leg of the dominating family itself caps below R4. Adjudicated by full 22-axis verdicts against retained representative K-COM using the cap calculus (rank_k(A) >= cap_k(K-COM) on all axes, delta-satisfying gap on >= 1)."
+  }
+ ]
+}

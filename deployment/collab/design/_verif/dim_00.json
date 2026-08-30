@@ -1,0 +1,48 @@
+{
+ "id": "DIM-01",
+ "name": "Reasoning substrate (AX-01, AX-19)",
+ "families": [
+  "LLM-direct: chain-of-thought legal conclusions emitted by a statistical model inside the trusted path",
+  "LLM-simulated-formal: model narrates formal reasoning; no solver ever executes (the 'scope laundering' pattern of arXiv 2606.16118)",
+  "credulous-argumentation: credulous single-extension SELECTION under preferred/stable semantics (one extension reported, chosen by search order)",
+  "unique-status-certified-argumentation-above-grounded: ideal/eager semantics and sceptical-preferred acceptance with certified exhaustive-extension enumeration \u2014 unique per query (H5 holds), decidable on the committed finite rulebase (H3 holds), certificate-carrying with finite offline-checkable certificates; strictly contains grounded acceptance (decides even-attack-cycle norm conflicts that grounded leaves undefined); cost is coNP-class, governed under AX-17 certified cost budgets. ADOPTED per the supreme law as the raised AX-01 conception the v2 ceiling names (grounded is maximal only among polynomial-time unique semantics; ideal/eager sit strictly above under a declared cost budget)",
+  "recorded-unchecked-justification: rules and authorities recorded per conclusion but never machine-checked (AX-01 R2)",
+  "monotonic-classical-solver: FOL/SMT/Prolog with exceptions encoded ad hoc, machine-checked (absorbs: VeriCoT/L4L SMT adjudication substrate)",
+  "grounded-defeasible-certified: alternating-fixpoint well-founded/grounded labelling over a committed finite defeasible rulebase with offline-recheckable derivation certificates and certified defeater search (absorbs: ASPIC+/DDL/Turnip line, LLM-ASPIC+ with LLM as untrusted parser only, s(CASP) goal-directed justification trees, proof-carrying argument certificates candidate, defeater-coverage-certified compilation candidate, Carneades per-issue proof standards and burden allocation candidate)",
+  "grounded-defeasible-over-decidable-theories: grounded/well-founded defeat calculus whose atoms range over decidable theories (linear arithmetic, dates/deadlines), with exhaustive defeater search discharged via solver queries \u2014 covers the arithmetic/deadline workload cell that a purely propositional labeller can only answer as typed UNKNOWN (added per CA P1-6 so the theory cell is held by a surviving defeasible family, not ceded to monotonic SMT)",
+  "prioritized-default-verified-calculus: Catala-class statute-shaped defaults+exceptions with verified compilation (absorbs: 'Closing the Loop' extended-Catala kernel, LogiKEy HOL embeddings as spec-level workbench)",
+  "precedential-constraint-CBR: Horty-style/hierarchical factor reasoning with decidable forced-decision checks (absorbs: hierarchical precedential constraint, case frames in statutory interpretation)"
+ ],
+ "eliminations": [
+  {
+   "family": "LLM-direct",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-COM",
+   "lemma": "Violates H1 (statistical model is the trusted legal reasoner) and H2 (guessing is structurally possible \u2014 fluent completion is the failure mode 700+ sanction cases document). Retained in D_T inside the commercial-floor class K-COM as a dominance target."
+  },
+  {
+   "family": "LLM-simulated-formal",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "K-COM (agentic harness mode)",
+   "lemma": "Violates H1: the 'formal' step IS the model. arXiv 2606.16118 verifies scope laundering (solver-inconsistent conclusions reported without executing formal reasoning) persists across all tested models; only actual solver execution counts."
+  },
+  {
+   "family": "credulous-argumentation",
+   "lemma_kind": "INVARIANT_VIOLATION",
+   "retained_representative": "none needed \u2014 the family's deterministic strengthenings survive as unique-status-certified-argumentation-above-grounded",
+   "lemma": "Violates H5 ONLY in its credulous-selection form: reporting ONE preferred/stable extension chosen by search order is not a pure function of frozen inputs. The v1 lemma's generalization ('preferred/stable semantics yield non-unique extensions, so the trusted decision is not a function of frozen inputs') is WITHDRAWN as a false proof (CA P0-3, CF P0-1): sceptical acceptance, full-extension-set computation, and ideal/eager semantics are total, deterministic, pure functions of the committed rulebase \u2014 replayable bit-for-bit; NP/coNP-hardness affects the AX-17 complexity class, not H5 purity, and polynomial time is nowhere an H1-H8 invariant. Those strengthenings are carried as the SURVIVING family unique-status-certified-argumentation-above-grounded, and the AX-01 ceiling is correspondingly raised (grounded proven maximal only among polynomial-time unique semantics; grounded is a proper subset of ideal, recorded as the gap)."
+  },
+  {
+   "family": "recorded-unchecked-justification",
+   "lemma_kind": "DOMINANCE_CONJECTURE",
+   "retained_representative": "K-COM",
+   "lemma": "Pre-registered dominance conjecture on AX-01: the family caps at R2 on the frozen ladder while grounded-defeasible-certified targets R5 (per the frozen AX-01 guarantee profile; attainment-witness material is appendix-only), a >= 3-rank gap. Per-axis no-regression is CONJECTURED, not established; the family leaves the candidate grammar only after a full 22-axis verdict set against retained representative K-COM (whose signature carries it)."
+  },
+  {
+   "family": "monotonic-classical-solver",
+   "lemma_kind": "DOMINANCE_CONJECTURE",
+   "retained_representative": "K-RULES and K-NSV (both retained in U_T and D_T)",
+   "lemma": "Pre-registered dominance conjecture on AX-01: without typed defeater objects the frozen ladder caps the family at R3 (R4 requires defeasibility as typed, searched objects) while grounded-defeasible-certified targets R5. The v1 clause 'no compensating advantage on any axis (grounded labelling is P-time vs NP for SMT, so not even AX-17 favors it)' is WITHDRAWN (CA P1-6): the AX-17 parenthetical compared incomparable workloads \u2014 SMT-over-theories answers arithmetic/date questions a propositional labeller types UNKNOWN, so the two families do not share a frozen workload class and the AX-17 delta_rule cannot be applied as v1 claimed. The arithmetic cell is now covered by the surviving family grounded-defeasible-over-decidable-theories. Adjudication ONLY by full 22-axis verdicts against K-RULES and K-NSV \u2014 which is exactly why both are retained; K-NSV currently holds the strongest EVIDENCED ranks on AX-21-adjacent legs of any implemented system, so the comparison is substantive."
+  }
+ ]
+}
