@@ -594,3 +594,29 @@ PDF→clean και πληρότητα τροποποιήσεων ΑΜΕΤΡΗΤ�
 
 **ΤΙΠΟΤΑ ΔΕΝ ΕΓΚΡΙΘΗΚΕ.** Απαιτείται ρητό «εγκρίνω <Track>» ανά Track πριν γραφτεί
 κώδικας.
+
+## [0131] CHANGE-PROPOSAL v1.1 — Η ΜΙΑ TARGET ARCHITECTURE · DESTRUCTION PASS · FALSIFIED — `claude/blind-input-capsule-phase-2-efiajz`
+
+Απάντηση στην απόρριψη του v1.0. Design only, καμία γραμμή κώδικα. **Δεν ζητείται
+έγκριση υλοποίησης ούτε freeze.** Πλήρες: `design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.1.md`.
+
+- **Disposition Π1–Π11** (ACCEPT/MODIFY/REJECT/MISSING)· η ανώτερη μορφή έγινε
+  target σε Π4–Π10, η κατώτερη μόνο ως μεταβατικό στάδιο με **ημ. θανάτου +
+  falsifier**· Π6→temporal proof contract+event calculus· Π7→όλο το Ο4 §5.1–§5.6·
+  Π8→typed argument με εκτελέσιμη αξιολόγηση· Π11→πλήρης αποστολή (U-01+U-02).
+- **Μία κανονική target** + `SUPERSEDED-REGISTER.md` (15 παλαιότερες ιστορικές).
+- **Αναπαραγώγιμο evidence pack** `formal-v1.1/`: 9 μοντέλα, 20 έλεγχοι, 0
+  αποκλίσεις, tool version + digests. **Ο αριθμός agents δεν είναι απόδειξη.**
+- **ΑΝΕΞΑΡΤΗΤΟ DESTRUCTION PASS (13 kill tests): 9 FALSIFIED · 3 UNCERTAIN · 1
+  SURVIVES ⇒ ΣΥΝΟΛΙΚΑ FALSIFIED.** Έξι counterexamples **αναπαρήχθησαν από τον
+  συντάκτη** (`falsifiers/run-falsifiers.sh`, όλα VIOLATED): KT1 clock-skew
+  (`TrustStateSkew`)· KT3 σπολίαση (`MatterCellSpoliation`)· KT6 UNDEC≡OUT
+  (`ArgKill`)· KT8 publish-χωρίς-evidence (`PublicRootKT8`)· KT9 version-pull
+  fingerprint (`OfflineConsumeLeak`)· KT4 content-id drift (`MigrationRepro`).
+  Χωρίς μοντέλο: KT2/KT12 aggregate leak· KT11 γραμματική G· KT13 AY self-auth.
+- **Δύο σκληρά ταβάνια δηλωμένα** (KT1 real-time revocation, KT9 zero-leakage).
+- **Εννέα διατεταγμένες δομικές αλλαγές** πριν καν γίνει υποψήφιος για freeze (§6.1).
+
+**FALSIFIED ⇒ ΔΕΝ ΕΙΝΑΙ FREEZEABLE.** Απαιτείται: §6.1 αλλαγές → νέο destruction
+pass → επιβίωση kill tests → ρητό «εγκρίνω freeze target». Track-0 (Π1–Π3) μόνο ως
+emergency containment, χωρίς κώδικα πριν από ρητή εντολή.
