@@ -1,0 +1,46 @@
+tool: Version 2.19 of 08 August 2024
+jar-sha256: 936a262061c914694dfd669a543be24573c45d5aa0ff20a8b96b23d01e050e88
+
+── v1.1 NEW TARGET MODELS ──
+ok    TemporalProjection   safe     PASS      (want PASS    ) sha=81b07ea9f49b
+ok    TemporalProjection   unsafe   VIOLATED  (want VIOLATED) sha=81b07ea9f49b
+ok    ArgumentEval         safe     PASS      (want PASS    ) sha=4d81bf943cf3
+ok    ArgumentEval         unsafe   VIOLATED  (want VIOLATED) sha=4d81bf943cf3
+── O4 §5 + admission + isolation + migration (from Round 3) ──
+ok    TrustState           safe     PASS      (want PASS    ) sha=f927609a5fe9
+ok    TrustState           unsafe   VIOLATED  (want VIOLATED) sha=f927609a5fe9
+ok    Admission            safe     PASS      (want PASS    ) sha=f9f1b1c5eb69
+ok    Admission            partial_failclosed PASS      (want PASS    ) sha=f9f1b1c5eb69
+ok    Admission            asis     VIOLATED  (want VIOLATED) sha=f9f1b1c5eb69
+ok    MatterCell           safe     PASS      (want PASS    ) sha=230106c9cc5d
+ok    MatterCell           unsafe   VIOLATED  (want VIOLATED) sha=230106c9cc5d
+ok    Noninterference      safe     PASS      (want PASS    ) sha=c77e020b628d
+ok    Noninterference      unsafe   VIOLATED  (want VIOLATED) sha=c77e020b628d
+ok    Migration            safe     PASS      (want PASS    ) sha=fe104311d6c1
+ok    Migration            unsafe   VIOLATED  (want VIOLATED) sha=fe104311d6c1
+ok    PublicRoot           safe     PASS      (want PASS    ) sha=d85e672a110a
+ok    PublicRoot           unsafe   VIOLATED  (want VIOLATED) sha=d85e672a110a
+ok    OfflineConsume       safe     PASS      (want PASS    ) sha=7ddfbe64efe7
+ok    OfflineConsume       unsafe   VIOLATED  (want VIOLATED) sha=7ddfbe64efe7
+
+divergences: 0
+
+# ΑΝΑΠΑΡΑΓΩΓΗ
+TLA_JAR=<tla2tools.jar> ./run-pack.sh   # απαιτεί TLC 2.19, OpenJDK
+
+# ΤΙ ΑΠΟΔΕΙΚΝΥΕΙ ΚΑΘΕ ΜΟΝΤΕΛΟ (kill test ↦ μοντέλο)
+KT1 revocation×partition      -> TrustState        (INV_BoundedExposure)
+KT2 cross-matter noninterf.   -> Noninterference   (INV_NoImplicitFlow)
+KT3 deletion×audit            -> MatterCell        (INV_ErasedIsComplete/HoldExcludesErasure)
+KT4 schema migration          -> Migration         (INV_OldProofsStillVerify)
+KT5 temporal projection       -> TemporalProjection (NoUnknownLaw/ProofReproduces/NoFutureLaw)
+KT6 case-law typed argument   -> ArgumentEval       (AcceptedEqualsEvaluation)
+KT7 AI proposal admission     -> Admission          (NoAdmissionWithoutEvidence)
+KT8 root != truth             -> PublicRoot         (RootIsNotSource)
+KT9 public blind to matters   -> OfflineConsume     (PublicBlindToMatters)
+
+# ΟΡΙΑ: μοντέλα φραγμένα· δεσμεύουν την ΠΡΟΔΙΑΓΡΑΦΗ, όχι την υλοποίηση.
+# Καμία αντιστοίχιση μοντέλου<->κώδικα δεν διεκδικείται.
+# KT10-KT13 (verifier common-mode, γραμματική G/self-play, aggregate
+# declassification, AY-scale) ΔΕΝ καλύπτονται από μοντέλα — πηγαίνουν στο
+# destruction pass ως ανοιχτοί άξονες.
