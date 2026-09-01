@@ -1,192 +1,190 @@
-# AS-IS EVIDENCE MANIFEST — ΑΝΑΠΑΡΑΓΩΓΙΜΟ, ΑΝΑ ΕΝΤΟΛΗ
+# AS-IS EVIDENCE MANIFEST v2 — ΠΛΗΡΩΣ ΑΝΑΠΑΡΑΓΩΓΙΜΟ
 
-**Σκοπός (εντολή v1.3 #11):** «Οι 13 verifiers / 541 calls δεν είναι απόδειξη
-από μόνα τους.» Αυτό το αρχείο δίνει, ανά ισχυρισμό AS-IS, την **ακριβή εντολή**,
-το **path**, το **commit SHA** και το **πραγματικό output/digest** — ώστε τρίτος
-να αναπαράγει χωρίς να μας εμπιστευτεί. Ό,τι **δεν** ανάγεται σε ντετερμινιστική
-εντολή υποβαθμίζεται ρητά σε `REPORTED / NOT REPRODUCIBLE`.
+**Σκοπός:** ανά ισχυρισμό AS-IS, η **πλήρης** εντολή (καμία συντετμημένη διαδρομή),
+το **πλήρες 64-char digest** ή committed artifact, και το πραγματικό output — ώστε
+τρίτος να αναπαράγει χωρίς εμπιστοσύνη. Ό,τι δεν ανάγεται σε ντετερμινιστική εντολή
+= `REPORTED / NOT REPRODUCIBLE` (§3).
 
 **Commit υπό audit:** `78277cc05dbb252e0fc3bada5ae10dd6cfa39413`.
-Το τρέχον HEAD `973b614b` είναι **απόγονος** που προσθέτει **μόνο** design docs
-(v1.2)· καμία πηγή/output δεν άλλαξε μεταξύ των δύο (επαληθεύσιμο:
-`git diff --stat 78277cc0 973b614b` αγγίζει μόνο `deployment/collab/…`).
+Preamble κάθε εντολής: `cd <repo-root> && A=78277cc05dbb252e0fc3bada5ae10dd6cfa39413`.
+HEAD (`973b614b…`, και ο απόγονος v1.3) προσθέτει **μόνο** design docs — έλεγχος:
+`git diff --stat 78277cc0 HEAD -- ':!deployment/collab'` → κενό.
 
-**Βαθμίδες τεκμηρίου:**
-- `REPRODUCIBLE-OFFLINE` — μία ντετερμινιστική git/grep εντολή, χωρίς δίκτυο.
-- `REPRODUCIBLE-ONLINE` — μία κλήση στο GitHub REST API (κατάσταση CI). Εξαρτάται
-  από ζωντανό μητρώο· ο αριθμός μπορεί να αυξηθεί με νέα runs.
-- `REPORTED / NOT REPRODUCIBLE` — ερμηνευτικός ισχυρισμός agent που **δεν**
-  ανάγεται σε μία εντολή· κρατιέται ως ένδειξη, **όχι** ως απόδειξη.
+**Βαθμίδες:** `REPRODUCIBLE-OFFLINE` (git/grep, χωρίς δίκτυο) · `REPRODUCIBLE-ONLINE`
+(GitHub REST API· η **ιδιότητα** αναπαραγώγιμη, ο απόλυτος αριθμός runs αυξάνει) ·
+`REPORTED / NOT REPRODUCIBLE` (κρίση agent, όχι μία εντολή).
 
 ---
 
 ## 1. REPRODUCIBLE-OFFLINE
 
-Κάθε εντολή τρέχει από τη ρίζα του repo, με `A=78277cc05dbb252e0fc3bada5ae10dd6cfa39413`.
-
-### EV-1 · Ακριβώς 6 served corpora (hardcoded)
+### EV-1 · Ακριβώς 6 served corpora (hardcoded) — CONFIRMED
 ```
-$ git show $A:systems/orchestrator-cli/main.lisp | sed -n 622,625p
+git show $A:systems/orchestrator-cli/main.lisp | sed -n '622,625p'
+```
+Output:
+```
 (defparameter *served-corpora*
   '("syntagma" "poinikos" "kpoinikis" "astikos" "kpolitikis" "kdioikitikis")
   "The six core Greek legal codes served together by the multi-corpus endpoint.
    Codes whose corpus data is not yet ingested are skipped gracefully.")
 ```
-**Verdict: CONFIRMED.** Έξι, ονομαστικά, hardcoded.
+Blob digest του αρχείου (πλήρες):
+`8cf601f197ad5223d8b63711806b4635ab8e8f0b26e7d0a0f45e3bc02306a6ae`.
 
-### EV-2 · Πλήθος git-tracked `article-*.txt` κάτω από `output/`
+### EV-2 · **ARTIFACT count** `article-*.txt` (ΟΧΙ unique legal-content) — CONFIRMED
 ```
-$ git ls-tree -r --name-only $A -- output | grep -cE '/article-[^/]*\.txt$'
-4550
-$ git ls-tree -r --name-only $A -- output | grep -oE '^output/[^/]+/article-[^/]*\.txt$' \
-    | sed -E 's#^output/([^/]+)/.*#\1#' | sort | uniq -c
-   2035 astikos
-    120 constitution
-    285 kdioikitikis
-    594 kpoinikis
-   1054 kpolitikis
-    462 poinikos
+git ls-tree -r --name-only $A -- output | grep -cE '/article-[^/]*\.txt$'
 ```
-**Verdict: CONFIRMED με ΔΙΟΡΘΩΣΗ.** Το **αναπαραγώγιμο git-tracked** σύνολο είναι
-**4.550** (όχι 4.694). Η τιμή 4.694 του v1.2 §12 προήλθε από `find output` στο
-**working tree** (μη-tracked/παράγωγα συμπεριλαμβανόμενα) και από μήκη λιστών
-`deployment/data/*_clean.json` — διαφορετική μέθοδος. **Ο ακριβής αριθμός είναι
-μέθοδο-εξαρτώμενος· η αναπαραγώγιμη έδρα είναι το git-tree = 4.550.** Το «6 σώματα»
-(EV-1) παραμένει ανεπηρέαστο.
+→ `4550`. Per-corpus:
+```
+git ls-tree -r --name-only $A -- output | grep -oE '^output/[^/]+/article-[^/]*\.txt$' \
+  | sed -E 's#^output/([^/]+)/.*#\1#' | sort | uniq -c
+```
+→ `2035 astikos · 120 constitution · 285 kdioikitikis · 594 kpoinikis · 1054 kpolitikis · 462 poinikos`.
 
-### EV-3 · Νομολογία — κατανομή δικαστηρίων (input)
-```
-$ git ls-tree -r --name-only $A -- input/decisions | grep -oE '^input/decisions/[^/]+/' | sort | uniq -c
-    161 input/decisions/areios-pagos/
-      2 input/decisions/efeteio-peiraios/
-      1 input/decisions/protodikeio-athinon/
-$ git ls-tree -r --name-only $A -- deployment/data/decisions | grep -cE '[0-9]\.json$'
-164
-```
-**Verdict: CONFIRMED.** 161/164 = 98,2% Άρειος Πάγος· μηδέν ΣτΕ/Ελ.Συν./ΔΕΕ/ΕΔΔΑ.
+**ΡΗΤΗ ΟΡΙΟΘΕΤΗΣΗ:** το `4550` είναι **πλήθος git-tracked ARTIFACT αρχείων**
+`article-*.txt` κάτω από `output/` — **ΟΧΙ** πλήθος μοναδικών νομικών διατάξεων.
+Το κάθε άρθρο εκπέμπεται σε πολλαπλές σειριοποιήσεις (.txt/.html/.ttl/.jsonld/.hash)
+και υπάρχουν παράγωγα/legacy δέντρα· ο αριθμός μοναδικού νομικού περιεχομένου δεν
+μετριέται εδώ. Η τιμή 4.694 της v1.2 §12 προήλθε από διαφορετική μέθοδο (`find` στο
+working tree + μήκη `deployment/data/*_clean.json`) — **μέθοδο-εξαρτώμενη**. Η μόνη
+αναπαραγώγιμη έδρα είναι το git-tree artifact count = **4550**. Το «6 σώματα» (EV-1)
+είναι ανεξάρτητο.
 
-### EV-4 · ECLI: μηδενική υλοποίηση σε `source/`
+### EV-3 · Νομολογία 161/164 = 98,2% Άρειος Πάγος — CONFIRMED
 ```
-$ git grep -iEl 'ecli' $A -- 'source/*' | wc -l
-0
+git ls-tree -r --name-only $A -- input/decisions \
+  | grep -oE '^input/decisions/[^/]+/' | sort | uniq -c
 ```
-**Verdict: CONFIRMED.**
+→ `161 areios-pagos/ · 2 efeteio-peiraios/ · 1 protodikeio-athinon/`.
+```
+git ls-tree -r --name-only $A -- deployment/data/decisions | grep -cE '[0-9]\.json$'
+```
+→ `164`. Μηδέν ΣτΕ/Ελ.Συν./ΔΕΕ/ΕΔΔΑ.
 
-### EV-5 · OpenAPI/Swagger: κανένα spec αρχείο
+### EV-4 · ECLI: μηδενική υλοποίηση σε `source/` — CONFIRMED
 ```
-$ git ls-tree -r --name-only $A | grep -iE 'openapi|swagger' | wc -l
-0
+git grep -iEl 'ecli' $A -- 'source/*' | wc -l
 ```
-**Verdict: CONFIRMED.**
+→ `0`.
 
-### EV-6 · Falsifier runner: 6 kill tests, `TPKill` ουδέποτε
+### EV-5 · OpenAPI/Swagger: κανένα spec — CONFIRMED
 ```
-$ git show $A:.../formal-v1.1/falsifiers/run-falsifiers.sh | grep -cE '^chk [A-Z]'
-6
-$ git show $A:.../formal-v1.1/falsifiers/run-falsifiers.sh | grep -c 'TPKill'
-0
+git ls-tree -r --name-only $A | grep -iE 'openapi|swagger' | wc -l
 ```
-**Verdict: CONFIRMED.** Το KT5 μοντέλο (`TPKill.tla`) υπάρχει αλλά δεν καλείται.
+→ `0`.
 
-### EV-7 · «20 έλεγχοι» → πραγματικά 19
+### EV-6 · Falsifier runner: 6 kill tests, `TPKill` ουδέποτε — CONFIRMED
 ```
-$ git show $A:.../formal-v1.1/run-pack.sh | grep -cE '^check (\.|"\$O4")'
-19
-$ git show $A:.../formal-v1.1/EVIDENCE-PACK-RESULTS.txt | grep -cE '^(ok|DIFF)'
-19
+git show $A:deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/formal-v1.1/falsifiers/run-falsifiers.sh | grep -cE '^chk [A-Z]'
+git show $A:deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/formal-v1.1/falsifiers/run-falsifiers.sh | grep -c 'TPKill'
 ```
-**Verdict: CONFIRMED.** Πραγματικές κλήσεις 19· καταγεγραμμένες γραμμές 19· ο
-ισχυρισμός «20» (v1.1 ×2, [0131] ×1) είναι υπερμέτρηση κατά ένα.
+→ `6` και `0`. Blob digest του runner (πλήρες):
+`a23dbd6e82211c4339687c44bcfc11e87587f86c8ff02231044d0b59160c8774`.
 
-### EV-8 · Διπλή έδρα — byte-ταυτόσημα μοντέλα σε δύο καταλόγους
+### EV-7 · «20 έλεγχοι» → πραγματικά 19 — CONFIRMED
 ```
-$ for m in MatterCell PublicRoot; do
-    git show $A:.../O4-NORMATIVE/formal/$m.tla        | sha256sum
-    git show $A:.../CHANGE-PROPOSAL/formal-v1.1/falsifiers/$m.tla | sha256sum
-  done
-  MatterCell : 230106c9cc5de049…  (και στα δύο) → IDENTICAL
-  PublicRoot : d85e672a110aa244…  (και στα δύο) → IDENTICAL
+git show $A:deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/formal-v1.1/run-pack.sh | grep -cE '^check (\.|"\$O4")'
+git show $A:deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/formal-v1.1/EVIDENCE-PACK-RESULTS.txt | grep -cE '^(ok|DIFF)'
 ```
-**Verdict: CONFIRMED.** Δύο αντίγραφα ανά μοντέλο — παραβίαση «μία έδρα ανά έννοια».
+→ `19` και `19`. Digests (πλήρη): run-pack.sh
+`e8acf05b5c6cf1d019a3f980a09d62bd95b12e2f563494c0d8409ad42b71315c` ·
+EVIDENCE-PACK-RESULTS.txt
+`70c5de982abd90a776f0e484fb2f43fab71c21bf7e9dfd6af854088522e13816`.
 
-### EV-9 · Citation collectors = stubs (ρητοί δείκτες)
+### EV-8 · Διπλή έδρα — byte-ταυτόσημα μοντέλα (πλήρη digests) — CONFIRMED
 ```
-$ git show $A:source/ai-citation-strategy.lisp | grep -niE 'would setup actual|would integrate with actual|simplified'
-523:  ;; In production, would setup actual HTTP endpoint
-524:  ;; This is simplified
-530:  ;; Would integrate with actual telemetry system
-773:          ;; This is simplified
+git show $A:deployment/collab/design/OMEGA2/O4-NORMATIVE/formal/MatterCell.tla | sha256sum
+git show $A:deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/formal-v1.1/falsifiers/MatterCell.tla | sha256sum
+git show $A:deployment/collab/design/OMEGA2/O4-NORMATIVE/formal/PublicRoot.tla | sha256sum
+git show $A:deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/formal-v1.1/falsifiers/PublicRoot.tla | sha256sum
 ```
-**Verdict: CONFIRMED** (ως προς την ύπαρξη stub markers). Το «default = καθαρός
-stub» (dispatch) είναι **REPORTED** (βλ. §3, R-3).
+→ MatterCell (και τα δύο):
+`230106c9cc5de0492c85d43dcebb5088e34e0f33028c40db26984740f590d5fa`
+→ PublicRoot (και τα δύο):
+`d85e672a110aa244c4109e4c22715e33d00151e06cb84ca2ae2f0e20387743d0`.
 
-### EV-10 · P0 — `content-gate` έχει ΕΝΑ σημείο κλήσης, εκτός `emit-site`
+### EV-9 · Citation collectors = stubs (ρητοί δείκτες) — CONFIRMED (ύπαρξη markers)
 ```
-$ git grep -n 'content-gate' $A -- 'systems/orchestrator-cli/*.lisp'
-…/content-validation.lisp:204:(defun content-gate …)          # ορισμός
-…/main.lisp:1696: … (content-gate …)                          # ΜΟΝΑΔΙΚΗ κλήση
+git show $A:source/ai-citation-strategy.lisp | grep -niE 'would setup actual|would integrate with actual|simplified'
 ```
-**Verdict: CONFIRMED** (ένα call site, στη verification όχι στο `emit-site`). Ότι
-το βήμα δημοσίευσης είναι «ανεπιφύλακτο `soft`» ⇒ **REPORTED** (ροή ελέγχου, R-4).
+→ `523: In production, would setup actual HTTP endpoint · 524: This is simplified ·
+530: Would integrate with actual telemetry system · 773: This is simplified`.
+Blob digest (πλήρες): `af9cd72d5bf202d4bdb8129cc44cf1453401880a8f80affc9f98412c74bfa61c`.
+(Το «default = καθαρός stub» = **REPORTED**, §3 R-3.)
 
-### EV-11 · Υπερ-ισχυρισμοί — μηχανικά αναγνώσιμοι
+### EV-10 · P0 — `content-gate` ένα call site, εκτός `emit-site` — CONFIRMED (call sites)
 ```
-$ git grep -n 'PRIMARY_SEMANTIC_AUTHORITY' $A -- deployment/provenance-narrative.ttl
-120:    infra:authorityStatus "PRIMARY_SEMANTIC_AUTHORITY"@en
-$ git grep -n 'Verified all 120' $A -- source/narrative-provenance.lisp
-501:  (format stream "  … Verified all 120 articles agains…")
-$ git grep -c 'blockchain-anchored' $A -- SEMANTIC-CONTRACT.md   → 1
-$ git ls-tree -r --name-only $A | grep -c '\.ots$'               → 0
-$ git grep -il 'Primary Semantic Authority' $A | wc -l           → 223
+git grep -n 'content-gate' $A -- 'systems/orchestrator-cli/content-validation.lisp' 'systems/orchestrator-cli/main.lisp'
 ```
-**Verdict: CONFIRMED.** Ο ισχυρισμός «Primary Semantic Authority» υπάρχει σε
-**223** tracked αρχεία (περιλαμβάνει output/ captured banners)· μηχανικά αναγνώσιμο
-`authorityStatus`· κατασκευασμένη «Verified all 120 articles»· εγγύηση
-«blockchain-anchored» με **0** `.ots`. **Ασύμβατο με §11 του v1.3.**
+→ `content-validation.lisp:204` (ορισμός) · `main.lisp:1696` (μοναδική κλήση, εντός
+verification). (Το «η δημοσίευση είναι ανεπιφύλακτο soft» = **REPORTED**, §3 R-4.)
+
+### EV-11 · Υπερ-ισχυρισμοί — μηχανικά αναγνώσιμοι — CONFIRMED
+```
+git grep -c 'PRIMARY_SEMANTIC_AUTHORITY' $A -- deployment/provenance-narrative.ttl   # → 1 (line 120)
+git grep -n 'Verified all 120' $A -- source/narrative-provenance.lisp                 # → line 501
+git grep -c 'blockchain-anchored' $A -- SEMANTIC-CONTRACT.md                          # → 1
+git ls-tree -r --name-only $A | grep -c '\.ots$'                                      # → 0
+git grep -il 'Primary Semantic Authority' $A | wc -l                                  # → 223
+```
+Ο ισχυρισμός υπάρχει σε **223** tracked αρχεία (περιλαμβάνει `output/` captured
+banners)· μηχανικά αναγνώσιμο `authorityStatus "PRIMARY_SEMANTIC_AUTHORITY"`·
+κατασκευασμένη «Verified all 120 articles»· εγγύηση «blockchain-anchored» με **0**
+`.ots`. **Ασύμβατο με v1.3 §11.**
 
 ---
 
-## 2. REPRODUCIBLE-ONLINE (GitHub REST API)
+## 2. REPRODUCIBLE-ONLINE (GitHub REST API) — ΠΛΗΡΗΣ PAGINATION
 
-### EV-12 · CI: 100% αποτυχία, καμία επιτυχία ποτέ
+### EV-12 · CI: μηδέν `conclusion=success` σε ΟΛΑ τα καταγεγραμμένα runs — CONFIRMED
+Εντολές (REST, πλήρης pagination — 30/σελίδα cap):
 ```
-GET /repos/andriannadeepmind-gif/THE-LEGAL-WATCHTOWER/actions/workflows/docker-orchestrator.yml/runs
-  → total_count = 35 · σελίδα (30) conclusions: {failure: 30}
-  → κορυφαίο run: αυτός ο κλάδος ανάπτυξης (v1.2 push), 2026-09-01, conclusion=failure
-GET …/provenance.yml/runs                → (v1.2 μέτρηση) 33 runs, όλα failure
-GET …/deploy-corpus.yml/runs             → 0 runs ποτέ
+GET /repos/andriannadeepmind-gif/THE-LEGAL-WATCHTOWER/actions/workflows/docker-orchestrator.yml/runs?per_page=30&page=1
+GET /repos/andriannadeepmind-gif/THE-LEGAL-WATCHTOWER/actions/workflows/docker-orchestrator.yml/runs?per_page=30&page=2
+GET /repos/andriannadeepmind-gif/THE-LEGAL-WATCHTOWER/actions/workflows/provenance.yml/runs?per_page=30&page=1
+GET /repos/andriannadeepmind-gif/THE-LEGAL-WATCHTOWER/actions/workflows/provenance.yml/runs?per_page=30&page=2
+GET /repos/andriannadeepmind-gif/THE-LEGAL-WATCHTOWER/actions/workflows/deploy-corpus.yml/runs?per_page=30&page=1
 ```
-**Verdict: CONFIRMED.** ≥ 68 runs, **0 επιτυχίες**. Η αποτυχία υπάρχει **και στο
-ίδιο το push του v1.2** αυτού του κλάδου. Ο αριθμός runs αυξάνει με τον χρόνο —
-η **ιδιότητα** «καμία επιτυχία» είναι το αναπαραγώγιμο.
+Μετρημένα (2026-09-01):
+
+| workflow | total_count | runs examined (όλες οι σελίδες) | conclusion=success |
+|---|---|---|---|
+| `docker-orchestrator.yml` | 36 | 36 (30+6) | **0** |
+| `provenance.yml` | 35 | 35 (30+5) | **0** |
+| `deploy-corpus.yml` | 0 | 0 | **0** |
+| **σύνολο** | **71** | **71** | **0** |
+
+**ΑΚΡΙΒΗΣ ΙΣΧΥΡΙΣΜΟΣ:** και στα **71** καταγεγραμμένα runs, `conclusion=success`
+εμφανίζεται **0 φορές** (όλα `failure`)· η αξίωση «0 successes» τεκμηριώνεται με
+**πλήρη** pagination, όχι μία σελίδα. **ΤΙΜΙΑ ΕΠΙΦΥΛΑΞΗ:** πολλές αποτυχίες είναι
+**περιβαλλοντικές** (docker daemon απών, `deb.debian.org` 403, API session limit —
+ρητά στα ίδια τα commit bodies), όχι απόδειξη σπασμένου build. Το αναπαραγώγιμο
+γεγονός είναι «καμία επιτυχία στο μητρώο CI», ΟΧΙ «ο κώδικας δεν χτίζεται». Ο
+αριθμός runs αυξάνει με τον χρόνο· η **ιδιότητα** (0 successes) είναι το σταθερό.
 
 ---
 
 ## 3. REPORTED / NOT REPRODUCIBLE — υποβαθμισμένα ρητά
 
-Οι παρακάτω ισχυρισμοί του v1.2 §12 **στηρίζονται σε ανάγνωση/κρίση agent** και
-**δεν** ανάγονται σε μία ντετερμινιστική εντολή. Κρατιούνται ως **ενδείξεις προς
-επαλήθευση**, **όχι** ως απόδειξη· βαθμίδα `REPORTED / NOT REPRODUCIBLE`.
+Ερμηνευτικοί ισχυρισμοί agent που **δεν** ανάγονται σε μία εντολή. Ενδείξεις, όχι
+απόδειξη· βαθμίδα `REPORTED / NOT REPRODUCIBLE` μέχρι να κατατεθεί εκτελέσιμο τεστ.
 
-| # | ισχυρισμός | γιατί δεν είναι αναπαραγώγιμο ως έχει | τι θα το ανήγαγε σε REPRODUCIBLE |
-|---|---|---|---|
-| R-1 | «καμία εθνική απογραφή· ο απαριθμητής καλύπτει 1 τεύχος × 1 έτος» | απαιτεί ανάγνωση της σημασιολογίας του `enumerate-new-fek` + της παραγωγής — κρίση, όχι grep | εκτελέσιμο τεστ που δείχνει ότι το coverage ledger **δεν** είναι ολική συνάρτηση στον χώρο ΦΕΚ |
-| R-2 | «η συνομιλιακή εφαρμογή υπάρχει και είναι πραγματική (`--cockpit`)» | το «πραγματική» είναι κρίση· χωρίς boot/HTTP δεν αποδεικνύεται λειτουργία | εκτέλεση `--cockpit` + HTTP probe σε καθαρό περιβάλλον (εκτός εύρους read-only) |
-| R-3 | «ο default συλλέκτης παραπομπών = καθαρός stub» | εξάρτηση από dispatch ροή· απαιτεί ανάγνωση, όχι μία εντολή | test που καλεί τον default observer και δείχνει no-op |
-| R-4 | «κόκκινη πύλη δεν εμποδίζει την έκδοση (`emit-site`)» | ισχυρισμός ροής ελέγχου (main.lisp:1335-1358)· απαιτεί εκτέλεση για απόδειξη | test: red content-gate → δείξε ότι το `emit-site` παρ' όλα αυτά γράφει |
-| R-5 | «version-graph 2.613 γρ., per-event, καλύπτει terminating events» | το LOC είναι μετρήσιμο· το «καλύπτει σωστά» είναι κρίση επί TLA/tests χωρίς εκτέλεση | model-check `TPKill.tla` + εκτέλεση `version-graph-test` ④β |
-| R-6 | «CI 67/67» (v1.2 συνολικό) | ο συνολικός αριθμός runs είναι χρονικά μεταβλητός | η **ιδιότητα** «0 επιτυχίες» (EV-12) είναι το αναπαραγώγιμο, όχι ο αριθμός |
-
-**Συνέπεια για το v1.2/v1.3:** όπου το v1.2 §12 έγραφε `ΕΠΑΛΗΘΕΥΜΕΝΟ/VERIFIED`
-για R-1…R-6, ισχύει **`REPORTED / NOT REPRODUCIBLE`** μέχρι να κατατεθεί το
-αντίστοιχο εκτελέσιμο τεστ. Τα EV-1…EV-12 παραμένουν `CONFIRMED` (αναπαραγώγιμα).
+| # | ισχυρισμός | τι θα το ανήγαγε σε REPRODUCIBLE |
+|---|---|---|
+| R-1 | «καμία εθνική απογραφή· απαριθμητής 1 τεύχος × 1 έτος» | test: coverage ledger ΔΕΝ είναι ολική συνάρτηση στον χώρο ΦΕΚ |
+| R-2 | «η συνομιλιακή εφαρμογή `--cockpit` είναι πραγματική/λειτουργική» | boot + HTTP probe σε καθαρό περιβάλλον (εκτός read-only εύρους) |
+| R-3 | «ο default συλλέκτης παραπομπών = καθαρός stub» | test: κλήση default observer δείχνει no-op |
+| R-4 | «κόκκινη πύλη δεν εμποδίζει `emit-site`» | test: red content-gate → `emit-site` γράφει |
+| R-5 | «version-graph per-event, καλύπτει terminating events (KT5)» | model-check `TPKill.tla` + `version-graph-test ④β` |
+| R-6 | (v1.2) «CI 67/67» — απόλυτος αριθμός | αντικαταστάθηκε από EV-12 (ιδιότητα «0 successes», πλήρης pagination) |
 
 ---
 
-## 4. ΤΙ ΔΕΝ ΑΠΟΔΕΙΚΝΥΕΙ ΑΥΤΟ ΤΟ ΑΡΧΕΙΟ
+## 4. ΤΙ ΔΕΝ ΑΠΟΔΕΙΚΝΥΕΙ
 
-- Δεν αποδεικνύει **ορθότητα** του νομικού περιεχομένου — μετρά αρχεία και
-  συμβολοσειρές, όχι νομική αλήθεια.
-- Δεν εκτέλεσε κώδικα, build, test, ή TLC — καμία εκτέλεση (read-only mandate).
-- Δεν αποδεικνύει ανυπαρξία άλλων ευρημάτων — είναι μητρώο ιχνηλασιμότητας, όχι
-  απόδειξη πληρότητας.
+Δεν αποδεικνύει ορθότητα νομικού περιεχομένου (μετρά artifacts/strings, όχι νομική
+αλήθεια)· δεν εκτέλεσε κώδικα/build/test/TLC· δεν αποδεικνύει ανυπαρξία άλλων
+ευρημάτων (μητρώο ιχνηλασιμότητας, όχι απόδειξη πληρότητας)· η CI αξίωση αφορά το
+**μητρώο runs**, όχι τη χτισιμότητα του κώδικα.

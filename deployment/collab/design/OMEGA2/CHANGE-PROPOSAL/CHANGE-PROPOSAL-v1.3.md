@@ -132,28 +132,38 @@ acquisition receipt — όχι απλώς RFC-3161. «Χρόνος bytes» χω�
 
 **Ενοποιείται στον δημόσιο στόχο** — δεν είναι δεύτερη αρχιτεκτονική· είναι το
 **μηχανικά καταναλώσιμο πρόσωπο** των υπαρχουσών εδρών (PCL-1, census-2,
-attestation/checkpoint, trust-bootstrap, key-lifecycle). Πλήρη wire schemas:
-`MACHINE-LEGAL-TRUST-PROTOCOL.md`. Εδώ: οι έδρες και τα claims.
+attestation/checkpoint, trust-bootstrap, key-lifecycle). Πλήρη wire schemas +
+crypto profile: `MACHINE-LEGAL-TRUST-PROTOCOL.md` (v2).
 
-Κάθε πιστοποιητικό φέρει **υποχρεωτικά**: `claim` (ακριβής ισχυρισμός) · `scope`
-(τι καλύπτει, τι όχι) · `valid_time` + `known_time` · `source_roots` (Merkle/
-authority roots) · `coverage_boundary` · `assurance_level` · `expiry`/`freshness` ·
-`signer` (kid + delegation) · `transparency_log_inclusion` · `verification_result`.
+**Τρία διακριτά επίπεδα** (κλείνει το «issuer self-verdict» finding):
 
-| πιστοποιητικό | claim | υπάρχουσα έδρα | κενό; |
+- **`IssuedClaim`** — ο εκδότης υπογράφει έναν **typed** claim (`claim_type` +
+  κλειστό `payload` ανά profile) + proof material. **ΠΟΤΕ** `verification_result`,
+  **ΠΟΤΕ** inline `assurance_level` (μόνο `qualification_state_ref` προς ξεχωριστό
+  υπογεγραμμένο `QualificationStateRecord`). Ανθρώπινο κείμενο μόνο ως προαιρετικό
+  `description`, **ποτέ** input επαλήθευσης.
+- **`TrustBundle`** — **container** μεταφοράς (ΟΧΙ certificate)· δεν ισχυρίζεται τίποτα.
+- **`VerificationReceipt`** — το αποτέλεσμα που παράγει ο **τοπικός** verifier·
+  **δεν** υπογράφεται από τον εκδότη ως αυτο-ετυμηγορία.
+
+**Profiles του `IssuedClaim`** (ο αριθμός ΔΕΝ είναι στόχος — σημασιολογική πληρότητα):
+
+| profile (`claim_type`) | claim | υπάρχουσα έδρα | κενό; |
 |---|---|---|---|
-| **`SourceAuthenticityReceipt`** | «αυτά τα bytes προέρχονται από την Χ επίσημη αρχή/μητρώο, αποκτήθηκαν έτσι, σε αυτόν τον χρόνο» | `acquisition-receipt/1` + `raw-artifact/1` + `authority-proof-bundle/1` + `institutional-register/1` + RFC-3161 | έδρες ✅· **σύνθεση σε ένα cert = ΝΕΟ** |
-| **`LegalStateCertificate`** | «σε (valid,known) το νομικό αντικείμενο έχει αυτό το κείμενο και αυτή τη νομική κατάσταση» | `legal-state-attestation/1` + `knowledge-checkpoint/1` + PCL-1 inclusion | έδρες ✅· cert = ΝΕΟ |
-| **`TemporalProjectionCertificate`** | «η προβολή στο (valid,known) είναι αυτή, αναπαραγώγιμα» | version-graph `snapshot-at(valid_at,known_at)` + census-2 `temporal{graph_root,receipt_set_root,valid_at,known_at}` | έδρες ✅· cert = ΝΕΟ |
-| **`CoverageAndFreshnessCertificate`** | «η κάλυψη του χώρου Χ είναι αυτή, με αυτή τη φρεσκάδα· τα κενά είναι ρητά» | **coverage ledger (v1.2 §4)** + census-2 `known_at` + TUF `timestamp` role | **coverage ledger = ΝΕΟ ΚΕΝΟ** (AS-IS R-1: καμία εθνική απογραφή) |
-| **`JurisprudenceCertificate`** | «αυτή η απόφαση, με αυτή την ταυτότητα/ECLI, αυτές τις τυπωμένες σχέσεις και θέση στη γραμμή αυθεντίας» | M4 + USC §6.3 relations + **Level-7 plane** (§5) | Level-7 = **ΝΕΟ ΚΕΝΟ** (CEILING-CROSSWALK status ✗) |
-| **`CorrectionOrRevocationRecord`** | «αυτό αντικαταστάθηκε/ανακλήθηκε/διορθώθηκε — από ποιον, πότε, με ποια εξουσία» | uncertainty resolution (USC §8) + `WITHDRAWN`/`SUPERSEDED` + relation-retract (USC §6.3) + key/delegation revocation (key-lifecycle §2.5) | έδρες ✅· cert = ΝΕΟ |
-| **`TrustBundle`** | «η συνολική, αυτο-επαληθεύσιμη δέσμη για offline κατανάλωση» | census-2 + `corpus-proof.json` (PCL) + trust-bootstrap `tra/3` (`owner_root_fingerprint`, `delegation_seq`, `witness_checkpoints`) + delegation chain | έδρες ✅· σύνθεση = ΝΕΟ |
+| `source-authenticity` | «bytes από την Χ επίσημη αρχή/μητρώο, αποκτήθηκαν έτσι, σε αυτόν τον χρόνο» | acquisition-receipt/1 + raw-artifact/1 + authority-proof-bundle/1 + institutional-register/1 + RFC-3161 (χρόνος μόνο) | έδρες ✅· σύνθεση = ΝΕΟ |
+| `legal-state` | «σε (valid,known) το κείμενο & νομική κατάσταση» | legal-state-attestation/1 + knowledge-checkpoint/1 + PCL inclusion | έδρες ✅· ΝΕΟ |
+| `temporal-projection` | «η προβολή στο (valid,known), αναπαραγώγιμα» | version-graph snapshot-at + census-2 temporal | έδρες ✅· ΝΕΟ |
+| `coverage-and-freshness` | «κάλυψη χώρου Χ + φρεσκάδα, ρητά κενά» | census-2 known_at + TUF timestamp — **αλλά** coverage ledger | **ΝΕΟ ΚΕΝΟ** (national census, AS-IS R-1) |
+| `judgment-identity-and-text` *(νομολογία, source-verifiable)* | «ταυτότητα/ECLI/κείμενο απόφασης» | M4 + acquisition + PCL inclusion | έδρες ✅· ΝΕΟ |
+| `jurisprudential-analysis` *(νομολογία, institutional)* | «ratio/obiter/holding/authority-weight, με reviewer adoption» | Level-7 plane + passage anchors + reviewer_adoption_act | **ΝΕΟ ΚΕΝΟ** (Level-7 status ✗)· **AI inference ΠΟΤΕ ως θεσμικό ratio** |
+| `legal-object-correction-or-withdrawal` | «νομικό αντικείμενο SUPERSEDED/WITHDRAWN/CORRECTION» | uncertainty resolution + relation-retract | έδρες ✅· ΝΕΟ |
+| `trust-key-or-delegation-revocation` *(ΞΕΧΩΡΙΣΤΟ)* | «κλειδί/εξουσιοδότηση ανακλήθηκε — reason/revoked_at/invalid_from» | key-lifecycle §2.5 | έδρες ✅· ΝΕΟ |
 
-**Ιδιότητα του πρωτοκόλλου:** κάθε πιστοποιητικό είναι **proof-carrying** (κατά
-`LAWMAX-PROOF-OBJECT-SPEC.md §0`, De Bruijn): περιέχει **το ίδιο το αντικείμενο
-απόδειξης**, ώστε τρίτος να ξαναϋπολογίσει χωρίς εμπιστοσύνη. Καμία υπογραφή δεν
-είναι *αντί* απόδειξης· είναι *επιπλέον*.
+**Ιδιότητα:** κάθε `IssuedClaim` είναι **proof-carrying** (PROOF-OBJECT §0, De Bruijn):
+περιέχει το αντικείμενο απόδειξης. Υπογραφή = *επιπλέον* απόδειξης, ποτέ *αντί*·
+**το «VERIFIED» δεν το γράφει ποτέ ο εκδότης** — το παράγει ο τοπικός verifier.
+Temporal fields **μόνο** στα profiles που τα ορίζουν (όχι στο κοινό envelope). Μία
+authority root (`release_root`)· το `pcl_text_root` = legacy cross-check (§MLTP 5).
 
 ---
 
@@ -161,13 +171,19 @@ authority roots) · `coverage_boundary` · `assurance_level` · `expiry`/`freshn
 
 ### 4.1 Ο ελεγκτής — μικρός, offline, χωρίς βιβλιοθήκη
 
-Έδρα: `PROOF-CARRYING-LAW.md §5-6` (6 γραμμές, μόνο SHA-256) + `LAWMAX-PROOF-OBJECT-SPEC.md §4`
-(LOC-ceiling gate, «να τον audit-άρει ο καθένας σε ένα απόγευμα»). Ελέγχει:
+Έδρα: `PROOF-CARRYING-LAW.md §5-6` + `LAWMAX-PROOF-OBJECT-SPEC.md §4` (LOC-ceiling
+gate, «να τον audit-άρει ο καθένας σε ένα απόγευμα»). **Δύο διακριτές πρωτόγονες,
+ποτέ συγχεόμενες (MLTP §4):** **SHA-256** για Merkle **inclusion**· **RS256 (ή
+Ed25519)** για **signatures/delegation/witnesses**. Ο ελεγκτής είναι μικρός αλλά
+**δεν** είναι hash-only — φέρει RS256/Ed25519 verifier. («TrustBundle verified only
+with SHA-256» = **λάθος**· αντιφάσκει με PCL RS256 + trust-bootstrap delegation.)
+Ελέγχει:
 
-1. **Merkle inclusion** (RFC 9162, profile `lawmax-merkle-sha256-v1`) — το κείμενο
-   χασάρει στο δηλωμένο root.
-2. **Authentic against pinned key** — root υπογεγραμμένο από **pinned** κλειδί που
-   ο verifier παίρνει **out-of-band**, ΠΟΤΕ από το bundle (PCL §4 trust anchor).
+1. **Merkle inclusion** (RFC 9162, profile `lawmax-merkle-sha256-v1`, **SHA-256**) —
+   το κείμενο χασάρει στο δηλωμένο root.
+2. **Signature authentic against pinned key** (**RS256/Ed25519**) — root/claims
+   υπογεγραμμένα από **pinned** κλειδί που ο verifier παίρνει **out-of-band**, ΠΟΤΕ
+   από το bundle (PCL §4 trust anchor).
 3. **Delegation chain** — root → delegation statement (scope, not-before/after,
    seq) → delegated key (trust-bootstrap §3).
 4. **Transparency-log inclusion + consistency** — RFC 9162 §2.1.2 consistency
@@ -189,7 +205,8 @@ statement υπογεγραμμένο από το παλιό κλειδί· revoc
 
 - **Επιφάνειες:** OpenAPI (εκδοχοποιημένο — **ΝΕΟ ΚΕΝΟ**, AS-IS EV-5: κανένα σήμερα)
   · versioned MCP (υπάρχον seat `source/mcp-server.lisp` = 4 εργαλεία, **προς
-  επέκταση**) · SDKs για offline verification (νέα, λεπτά — μόνο SHA-256 + ο ελεγκτής §4.1).
+  επέκταση**) · SDKs για offline verification (νέα, λεπτά — SHA-256 για inclusion +
+  RS256/Ed25519 για signatures, ο ελεγκτής §4.1).
 - **Provider-side κανόνας (δεσμευτικός):** ένα AI/provider σύστημα που στηρίζεται
   σε δημόσια νομική αναπαράσταση **χωρίς έγκυρη, φρέσκια πιστοποίηση** ΠΡΕΠΕΙ να
   επιστρέφει **`UNVERIFIED_FOR_MACHINE_RELIANCE`** ή **`UNKNOWN`** — ποτέ σιωπηλή

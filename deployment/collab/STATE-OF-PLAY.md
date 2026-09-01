@@ -4,7 +4,7 @@
 ετυμηγορίες, εκκρεμότητες, μπλοκαρίσματα. Ο διάλογος: `AI-DIALOGUE.md`.
 Πηγή αλήθειας παραμένουν τα gates/μητρώα — αυτό είναι ΣΥΝΟΨΗ, όχι απόδειξη.
 
-*Τελευταία ενημέρωση: Claude · 2026-09-01 (γ) — **[0133] CHANGE-PROPOSAL v1.3 ΚΑΤΑΤΕΘΕΙΜΕΝΗ — `CURRENT PUBLIC CANDIDATE / NOT YET FREEZEABLE`]**: Design only, καμία γραμμή κώδικα, **ΚΑΝΕΝΑ destruction pass** (εντολή «STOP BEFORE»), καμία αξίωση qualification. Parent `973b614b`. Έξι παραδοτέα: v1.3 (δημόσιος στόχος ως **Machine Legal Trust Root**), `MACHINE-LEGAL-TRUST-PROTOCOL.md` (7 πιστοποιητικά proof-carrying + offline verifier), `V1.3-SEMANTIC-CROSSWALK.md`, `AS-IS-EVIDENCE-MANIFEST.md`, ενημερωμένα SUPERSEDED-REGISTER + QUALIFICATION-TESTS. **Επτά διορθώσεις:** ταυτότητα→USC Work/Expression/Manifestation/Item (raw bytes=item όχι work, λύνει Q07)· αυθεντικότητα→authority+institutional registry+authority-proof-bundle+divergence-witnesses (RFC-3161=μόνο χρόνος)· Machine Legal Trust Protocol· offline verifier (SHA-256, pinned root out-of-band, tlog consistency+gossip, provider rule UNVERIFIED_FOR_MACHINE_RELIANCE/UNKNOWN)· νομολογία→Level-7 line-of-authority· cockpit signed intent→M5 ποτέ παράκαμψη· Root Authority συνεχής/ανακλητή+PROVIDER-ADOPTION. **Ταξινόμηση:** v1.2=HISTORICAL/SUPERSEDED· CPEI+CEILING-CROSSWALK=DEFERRED/SEPARATE PRIVATE—NOT SUPERSEDED· ARCHITECTURE-CONSTITUTION=ACTIVE ENFORCED· PCL/trust/key/temporal/USC=ACTIVE SHARED TRUST FOUNDATIONS. **AS-IS τιμιότητα:** EV-1…EV-12 CONFIRMED αναπαραγώγιμα (git-tracked article-*.txt=**4.550** όχι 4.694)· R-1…R-6 υποβαθμίστηκαν σε REPORTED/NOT REPRODUCIBLE. Επόμενο (ρητή εντολή): destruction pass v1.3.*
+*Τελευταία ενημέρωση: Claude · 2026-09-01 (δ) — **[0134] v1.3 SEMANTIC CLOSURE — MLTP v2 τρία επίπεδα, ΠΡΙΝ το destruction pass]**: Design only, κανένας κώδικας, **ΚΑΝΕΝΑ destruction pass** (εντολή «STOP BEFORE»), καμία αξίωση qualification, καμία νέα αρχιτεκτονική, καμία αλλαγή scope. Ένα semantic-closure commit πάνω στο `e0d589e`. **11 διορθώσεις γνωστών αντιφάσεων, μηχανικά επαληθευμένες (`V1.3-CONSISTENCY-AUDIT.md` 33/33 PASS):** MLTP τρία επίπεδα (IssuedClaim/TrustBundle/VerificationReceipt — issuer ΠΟΤΕ self-verdict· assurance→signed QualificationStateRecord)· `claim_type`+typed payload· crypto profile SHA-256(inclusion)+RS256/Ed25519(signatures)· μία authority root `release_root`, `pcl_text_root`=legacy cross-check· TrustBundle=container, correction≠revocation, temporal μόνο όπου ισχύει· νομολογία split (judgment-identity vs jurisprudential-analysis, AI inference ΠΟΤΕ ως θεσμικό ratio)· transparency-witness≠auditor· revocation retroactive σε compromise· AS-IS πλήρως αναπαραγώγιμο (71 CI runs/0 successes, artifact-count 4.550)· 8 προδηλωμένοι kill witnesses (μη εκτελεσμένοι). Qualification sync v1.3 (Q03/Q13/Q15/Q21/Q22). Επόμενο ΜΟΝΟ με χωριστή ρητή εντολή: destruction pass v1.3.*
 
 ## Κατάσταση συστήματος (τελευταία μετρημένη)
 
@@ -730,3 +730,44 @@ Q01–Q20 · υλοποίηση · deployment · **καμία διόρθωση �
 
 **ΔΕΝ ΕΓΙΝΕ:** destruction pass v1.3 · τυπικά μοντέλα v1.3 · υλοποίηση · deployment ·
 καμία βαθμίδα qualification. Επόμενο βήμα ΜΟΝΟ με ρητή εντολή δημιουργού.
+
+## [0134] v1.3 SEMANTIC CLOSURE — MLTP v2 τρία επίπεδα — πάνω στο `e0d589e`
+
+**Design only, κανένας κώδικας, ΚΑΝΕΝΑ destruction pass** (εντολή δημιουργού «STOP
+BEFORE DESTRUCTION»), καμία αξίωση qualification, **καμία νέα παράλληλη
+αρχιτεκτονική, καμία αλλαγή public/private scope**. Ένα semantic-closure commit που
+κλείνει τις **γνωστές εσωτερικές αντιφάσεις** MLTP + qualification tests, ώστε το
+destruction pass να μη σπαταλήσει γύρο σε ήδη γνωστούς falsifiers.
+
+- **Μηχανική επαλήθευση:** `V1.3-CONSISTENCY-AUDIT.md` — 11 αντιφάσεις (C1–C11), κάθε
+  μία με grep έλεγχο· **33/33 PASS** (εκτελέστηκε).
+- **MLTP v2 τρία επίπεδα:** `IssuedClaim` (signed typed claim, ΠΟΤΕ self-verdict, ΠΟΤΕ
+  inline assurance) / `TrustBundle` (container) / `VerificationReceipt` (τοπικό
+  αποτέλεσμα). `verification_result` αφαιρέθηκε από issuer certs· `assurance_level` →
+  `qualification_state_ref` → ξεχωριστό υπογεγραμμένο `QualificationStateRecord`.
+- **`claim_type` + typed payload** αντί ελεύθερου string· ανθρώπινο κείμενο μόνο `description`.
+- **Crypto profile:** SHA-256 (inclusion) + **RS256/Ed25519** (signatures/delegation/
+  witnesses)· domain separation, algorithm ids, signature payload, error taxonomy.
+  **Καμία «TrustBundle verified only with SHA-256».**
+- **Canonical roots:** μία authority root = `release_root`· `pcl_text_root` = legacy
+  cross-check (TEMPORAL-IDENTITY PCL-02)· versioned migration profile.
+- **Ταξινομία:** TrustBundle = container· χωριστά `legal-object-correction-or-withdrawal`
+  vs `trust-key-or-delegation-revocation`· temporal μόνο όπου ισχύει· «7» δεν είναι στόχος.
+- **Νομολογία split:** `judgment-identity-and-text` (source-verifiable) vs
+  `jurisprudential-analysis` (institutional: passage anchors, attribution, methodology,
+  dissent, reviewer adoption, typed uncertainty). **AI inference ΠΟΤΕ θεσμικό ratio.**
+- **Εξωτερικοί ελεγκτές split:** transparency witnesses (publication/time/split-view)
+  vs independent auditors (metrics). GitHub/TSAs δεν αποδεικνύουν περιεχόμενο/metrics.
+- **Revocation:** `revocation_reason`/`revoked_at`/`invalid_from`/`compromise_known_at`
+  + αναδρομική ακύρωση σε key-compromise — «pre-revocation stays valid» ΔΕΝ είναι απόλυτο.
+- **AS-IS v2 πλήρως αναπαραγώγιμο:** καμία `...`, 64-char digests, **πλήρης CI
+  pagination — 71 runs (docker 36 + provenance 35 + deploy-corpus 0), 0 successes**·
+  article-file count ρητά ως **artifact count** (git-tracked **4.550**, όχι unique
+  legal-content)· R-1…R-6 = REPORTED/NOT REPRODUCIBLE.
+- **8 προδηλωμένοι kill witnesses** (`V1.3-KILL-WITNESSES.md`, ΜΗ εκτελεσμένοι).
+- **Qualification sync v1.3:** Q03 (authority proof, όχι RFC-3161 μόνο)· Q13
+  (Work→Expression→Manifestation→Item)· Q15 (signed intent→M5 + direct-publish bypass
+  μάρτυρας)· Q21/Q22 (χωρίς embedded verification_result / «SHA-256 μόνο»)· header→v1.3.
+
+**ΔΕΝ ΕΓΙΝΕ:** destruction pass v1.3 · υλοποίηση · deployment · qualification claim.
+Επόμενο βήμα ΜΟΝΟ μετά από εξέταση δημιουργού και χωριστή ρητή εντολή για destruction.
