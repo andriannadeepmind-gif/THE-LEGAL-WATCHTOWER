@@ -1,6 +1,16 @@
 # CHANGE-PROPOSAL v1.3 — ΤΟ ΔΗΜΟΣΙΟ ΠΑΡΑΤΗΡΗΤΗΡΙΟ ΩΣ MACHINE LEGAL TRUST ROOT
 # LAWMAX OMEGA — THE-LEGAL-WATCHTOWER OF GREECE
 
+> **ΚΑΤΑΣΤΑΣΗ ΑΠΟ 2026-09-01: `HISTORICAL / SUPERSEDED`** (`SUPERSEDED-REGISTER.md §1ε`).
+> Αντικαταστάθηκε από το `CHANGE-PROPOSAL-v1.4.md` (`CURRENT PUBLIC CANDIDATE / NOT YET
+> FREEZEABLE`). Το Stage A επιβεβαίωσε μηχανικά 31 ρίζες κατάρριψης αυτού του κειμένου
+> (`V1.3-DESTRUCTION-PASS/STAGE-A-ADJUDICATION.md`)· καμία πλήρης ετυμηγορία για το σύνολο.
+> Νέες έδρες: MLTP → `MACHINE-LEGAL-TRUST-PROTOCOL.md` v3 (ίδιο αρχείο)· crosswalk →
+> `PUBLIC-OBSERVATORY-CROSSWALK.md`· kill witnesses → `PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md §7`.
+> Το κείμενο κάτω από αυτό το banner διατηρείται **αμετάβλητο** ως τεκμήριο· η δήλωση
+> «CURRENT PUBLIC CANDIDATE» που ακολουθεί είναι ιστορική και **δεν ισχύει πλέον**.
+
+
 **ΚΑΤΑΣΤΑΣΗ: `CURRENT PUBLIC CANDIDATE / NOT YET FREEZEABLE`.**
 **ΔΕΝ ΥΠΑΡΧΕΙ ΣΗΜΕΡΑ ΚΑΝΟΝΙΚΟΣ ΠΑΓΩΜΕΝΟΣ ΣΤΟΧΟΣ.**
 

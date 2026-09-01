@@ -1,0 +1,416 @@
+{
+ "adversary_id": "A1",
+ "protocol_axis": "(α) MODEL/SECURITY BREAK — trust model, verifier contract, key/delegation/revocation chain, identity model, offline-resolvability, time/freshness, public→private boundary. Focus: issuer self-verdict leakage through any layer; delegated-key vs root confusion in the verifier contract.",
+ "mandatory_kws": [
+  "KW-1",
+  "KW-9"
+ ],
+ "findings": [
+  {
+   "id": "A1-F1",
+   "kw_ref": "KW-1",
+   "title": "Issuer self-verdict field is not rejected by the verifier contract — it is ignored",
+   "claim": "An IssuedClaim carrying issuer-signed `verification_result: \"VERIFIED\"` is rejected (KW-1 want; Q21(α)).",
+   "stand_up": "Issuer emits a fully valid IssuedClaim (valid payload, inclusion proof, root-delegated key in scope, resolvable QualificationStateRecord, anchored issued_at) and adds the envelope field `\"verification_result\":\"VERIFIED\"`, signing the whole envelope. Walk MLTP §8.3 verify_bundle steps A–J: no step reads any envelope field other than claim_type/signature/issued_at/qualification_state_ref; no schema/unknown-field validation exists; result = `return VERIFIED`. The issuer's 'VERIFIED' rides through untouched. A second implementer who adds an (unspecified) schema check rejects the same bundle — two verifiers disagree, which Q21(δ) itself declares a failure.",
+   "spec_expected": "KW-1: reject (self-verdict; result lives only in Layer C). Q21(α): IssuedClaim with own verification_result ⇒ απορρίπτεται, citing §7. KILL-WITNESSES rule (line 9-10): every witness names the expected typed error from the MLTP §4 taxonomy.",
+   "spec_actual_reading": "MLTP §1.0:49 is a schema prohibition with no verifier consequence. MLTP §1.0:56-57 states the verifier acts ONLY on the typed payload, which as written means extra envelope fields are ignored, not rejected. The §4 error taxonomy (lines 244-250) contains no name for self-verdict/forbidden-field/schema violation (grep 0). §8.3 verify_bundle (383-423) contains no schema or envelope validation step (grep 0 for verification_result/schema/validate). Q21(α) cites §7 for the rejection, but §7:340-342 is a statement of intent ('the issuer cannot pre-declare VERIFIED'), not a verifier rule. KW-1's want column names no typed error, violating the file's own rule. Nothing in the spec as written makes the mutation red.",
+   "doc_refs": [
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.3-KILL-WITNESSES.md:9",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.3-KILL-WITNESSES.md:18",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:49",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:56",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:57",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:244",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:340",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:383",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:423",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:263",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:266"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && M=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md; Q=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md; sed -n '56,57p' $M; sed -n '383,423p' $M | grep -cE 'verification_result|schema|validate'; sed -n '244,250p' $M | grep -ciE 'self|schema|forbidden|envelope|malformed'; sed -n '263,264p' $Q; sed -n '340,342p' $M",
+    "raw_output": "- **Το `description` (ελεύθερο κείμενο) ΔΕΝ διαβάζεται ποτέ από τον verifier.** Ο\n  verifier δρα **μόνο** στο typed `payload`.\n0\n0\n**Αρνητικός μάρτυρας:** (α) `IssuedClaim` που φέρει δικό του `verification_result:\nVERIFIED` ⇒ **απορρίπτεται** (issuer self-verdict, §7)· (β) inline `assurance_level`\n**Το αποτέλεσμα το παράγει ο καταναλωτής, όχι ο εκδότης.** Ο εκδότης δεν μπορεί να\nπρο-δηλώσει «VERIFIED». Αν ο verifier υπογράψει, υπογράφει **ως verifier** (δικό του\nreceipt), ποτέ ως αυτο-ετυμηγορία του εκδότη."
+   },
+   "severity": "P1"
+  },
+  {
+   "id": "A1-F2",
+   "kw_ref": "NEW",
+   "title": "IssuedClaim signing input is undefined — no context string, no declared target; envelope fields that drive scope/revocation/qualification checks may be unsigned",
+   "claim": "The IssuedClaim signature binds the fields the verifier relies on (claim_type, issued_at, qualification_state_ref, issuer, kid).",
+   "stand_up": "Reading (i), which §1.0:35 ('payload = ΤΟ ΜΟΝΟ input της επαλήθευσης') and §1.0:57 push: sig covers canonical_bytes(payload) only. A re-packager (no key needed) takes a legitimately signed claim and rewrites unsigned envelope fields: (a) `issued_at.trusted_time` to pre-date an `invalid_from` (§8.3 G then passes); (b) `qualification_state_ref` to point at any stronger QualificationStateRecord in the bundle (H never binds q.subject to the claim); (c) `claim_type` to a type inside the key's scope so step B's `c.claim_type IN d.scope` passes on an unsigned label. Reading (ii): sig covers the whole envelope — then `description` (declared 'never verification input') is signing input and two implementations choosing different readings produce different verdicts on the same bundle, violating Q21(δ). The spec commits to neither.",
+   "spec_expected": "MLTP §4:240-242: sig = SIGN(kid, context_string ‖ 0x1F ‖ canonical_bytes(target)) with an explicit context string per signature-payload type and an explicitly declared target; the verifier 'rebuilds the same payload'. Q21(δ): two independent verifiers give identical results.",
+   "spec_actual_reading": "§4:232-235 enumerates exactly four context strings (release-root, delegation, witness-checkpoint, qual-state) — none for IssuedClaim. §4:241-242 lists example targets (release_root string, delegation statement, witness checkpoint) — the claim is absent. §1.0:41 only says 'sig — §4 signature payload'. There is no sentence stating which bytes of the envelope are signed. The canonical-serialization spec (JCS) hashes whatever object it is given, so it cannot resolve the ambiguity.",
+   "doc_refs": [
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:35",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:41",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:57",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:232",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:240",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:394",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:409",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:414",
+    "deployment/verify/canonical-serialization-spec.md:61",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:266"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && M=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md; grep -n 'mltp2:' $M; sed -n '35p;41p' $M",
+    "raw_output": "233:ανά τύπο signature payload (π.χ. `\"mltp2:release-root\"`, `\"mltp2:delegation\"`,\n234:`\"mltp2:witness-checkpoint\"`, `\"mltp2:qual-state\"`) ώστε υπογραφή ενός τύπου να μη\n  \"payload\": <TYPED, κλειστό ανά profile — §2· ΤΟ ΜΟΝΟ input της επαλήθευσης>,\n                 \"sig\": <base64url — §4 signature payload> },"
+   },
+   "severity": "P0"
+  },
+  {
+   "id": "A1-F3",
+   "kw_ref": "NEW",
+   "title": "'Trusted signature time' is issuer-written: the verifier reads issued_at.trusted_time directly and never verifies the RFC-3161/tlog anchor — retroactive revocation (§9) keys off a self-declared field",
+   "claim": "Revocation is checked against a TRUSTED (anchored, non-self-declared) signature time (MLTP §1.0:50-53, §9:455-459), closing KW-6/KW-14/KW-16.",
+   "stand_up": "Key-compromise scenario per §9: delegated key K_d compromised, revocation {reason: key-compromise, invalid_from: T_c} published. Attacker signs a fresh IssuedClaim with K_d at T > T_c and writes `issued_at: {trusted_time: T_0 < T_c, anchor: {tsr_sha256: <sha256 of any bytes, e.g. a genuine older TSR over unrelated data>}}`. §8.3 G: `t_sig = c.issued_at.trusted_time` = T_0; `revoked(K_d) AND t_sig >= invalid_from` = false; passes. With trusted now present, `return VERIFIED`. Expected: retroactively-revoked. No step in verify_bundle resolves tsr_sha256 to a TSR, verifies a TSA signature, checks the TSR messageImprint against the claim, or derives t_sig from a witnessed tlog checkpoint time.",
+   "spec_expected": "§1.0:50-51: issued_at = trusted signature-time anchor (TSR or tlog leaf), NOT self-declared timestamp; §9:446: only signatures with independent RFC-3161 time before invalid_from survive; §9:455-459: revocation checked against issued_at.trusted_time 'anchored'.",
+   "spec_actual_reading": "§1.0:43 the 'anchor' is a sha256 of a TSR (or a leaf index), not the TSR. §6 TrustBundle (293-308) carries no TSR/timestamp-token field (grep 0). §8.1 LocalTrustState has no TSA trust anchor field (only witness_key_registry, and trusted_time.evidence for the consumer's own 'now'). §8.3 verify_bundle (383-423) contains no tsr/TSR/TSA token; line 409 reads the issuer-written value with '(anchored)' as a comment. The word 'anchored' is not a verification step. As written, t_sig is exactly the self-declared timestamp the spec says it is not.",
+   "doc_refs": [
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:43",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:50",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:293",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:308",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:354",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:364",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:409",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:411",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:446",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:455",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.3-KILL-WITNESSES.md:23",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.3-KILL-WITNESSES.md:31"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && M=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md; grep -n 'tsr' $M; sed -n '383,423p' $M | grep -cE 'tsr|TSR|TSA'; sed -n '293,308p' $M | grep -ciE 'tsr|timestamp'; sed -n '409p' $M",
+    "raw_output": "43:                 \"anchor\": <tsr_sha256 (RFC-3161) | tlog_leaf_index> },   # ΑΞΙΟΠΙΣΤΟΣ χρόνος υπογραφής — §9\n87:            \"time_anchor\": {\"tsr_sha256\",\"tlog_leaf_index\"} | null,  # RFC-3161 = ΜΟΝΟ χρόνος\n0\n0\n     t_sig = c.issued_at.trusted_time  (anchored)                     else UNKNOWN"
+   },
+   "severity": "P0"
+  },
+  {
+   "id": "A1-F4",
+   "kw_ref": "KW-9",
+   "title": "The 'wrong verifier' (thumbprint(embedded key) == pinned root; root signature verified directly against pinned key) is still prescribed by an ACTIVE foundation (PCL §5), by v1.3 §4.1 item 2, and by qualification witness Q22(α)",
+   "claim": "The design's verifier does NOT compare the delegated key's thumbprint to the pinned owner root; the chain is root → signed delegation → delegated key → claim (KW-9 want; MLTP §8.2).",
+   "stand_up": "Legitimate bundle: owner root R (pinned fingerprint), root-signed delegation to release key K_d (scope release-signing + claim types), claims signed by K_d, K_d's public key embedded. Verifier per PCL §5:130-132 (ACTIVE SHARED TRUST FOUNDATION consumed unchanged) or per Q22(α):275-276: embedded public_key thumbprint ≠ pinned ⇒ `untrusted-key`; also `RS256_verify(PINNED_KEY, …)` fails because the root never signed the release (trust-bootstrap §2.3). Verifier per MLTP §8.2/§8.3-B: valid. Same bundle, opposite verdicts from two active documents — Q21(δ) failure — and the outcome KW-9 itself names ('would reject every legitimate release') is now a qualification criterion.",
+   "spec_expected": "MLTP §8.2:372-375: pinned root identifies ONLY the owner root; the delegated key has a DIFFERENT thumbprint and is never compared as equal to root; a verifier doing thumbprint(delegated)==pinned_root is wrong. Trust-bootstrap §2.3:28-29: root signs ONLY delegations/revocations/ceremony, never per-release. SUPERSEDED-REGISTER §1γ:109-110: v1.3 consumes foundations without restating them; changes require a new spec version.",
+   "spec_actual_reading": "PCL §5:131 `require thumbprint(corpus_proof.public_key) == thumbprint(PINNED_KEY) # else untrusted-key` and :132 `RS256_verify(PINNED_KEY, …)` — the exact wrong comparison, in an ACTIVE foundation (REGISTER:101) that MLTP §8:348 seats itself on. v1.3 §4.1:185-187 says 'root/claims υπογεγραμμένα από pinned κλειδί … (PCL §4 trust anchor)' — claims signed by the pinned key, contradicting §8.2. Q22(α):275-276 'embedded public_key που δεν κάνει thumbprint-match ⇒ untrusted-key' — the only pinned object in LocalTrustState (§8.1:355) is the owner-root fingerprint, so a legitimate delegated key fails Q22(α) by construction. MLTP declares versioned precedence only over KEY-LIFECYCLE §2.5 (:461-467), never over PCL §5. The consistency audit C12c greps for the v1 literal `thumbprint(bundle release key) == thumbprint(PINNED_ROOT)` only and never scans PROOF-CARRYING-LAW.md (0 references), so it is blind to the live instance.",
+   "doc_refs": [
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.3-KILL-WITNESSES.md:26",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:348",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:355",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:372",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:375",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:465",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:185",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:187",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:275",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:276",
+    "deployment/PROOF-CARRYING-LAW.md:104",
+    "deployment/PROOF-CARRYING-LAW.md:131",
+    "deployment/PROOF-CARRYING-LAW.md:132",
+    "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:28",
+    "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:29",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/SUPERSEDED-REGISTER.md:101",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/SUPERSEDED-REGISTER.md:109",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.3-CONSISTENCY-AUDIT.md:41"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && D=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL; grep -n 'thumbprint' deployment/PROOF-CARRYING-LAW.md $D/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md $D/MACHINE-LEGAL-TRUST-PROTOCOL.md; sed -n '185,186p' $D/CHANGE-PROPOSAL-v1.3.md; sed -n '28,29p' deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md; sed -n '80p' $D/V1.3-CONSISTENCY-AUDIT.sh; grep -c 'PROOF-CARRYING-LAW' $D/V1.3-CONSISTENCY-AUDIT.sh",
+    "raw_output": "deployment/PROOF-CARRYING-LAW.md:108:> (or its RFC 7638 thumbprint). If a proof embeds a `public_key`, it must match\ndeployment/PROOF-CARRYING-LAW.md:109:> the pinned key by thumbprint; otherwise the result is `untrusted-key`.\ndeployment/PROOF-CARRYING-LAW.md:131:     require thumbprint(corpus_proof.public_key) == thumbprint(PINNED_KEY)   # else untrusted-key\n.../PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:276:thumbprint-match ⇒ `untrusted-key`· (β) verifier που «επαληθεύει» RS256/Ed25519\n.../MACHINE-LEGAL-TRUST-PROTOCOL.md:373:  release key έχει **ΔΙΑΦΟΡΕΤΙΚΟ** thumbprint — **ποτέ** δεν συγκρίνεται ως «ίσο με\n.../MACHINE-LEGAL-TRUST-PROTOCOL.md:374:  το root». Verifier που κάνει `thumbprint(delegated) == pinned_root` είναι **λάθος**\n.../MACHINE-LEGAL-TRUST-PROTOCOL.md:395:     require sig_verify(c.signature, d.delegated_key)              # ΟΧΙ thumbprint == root\n   υπογεγραμμένα από **pinned** κλειδί που ο verifier παίρνει **out-of-band**, ΠΟΤΕ\n   από το bundle (PCL §4 trust anchor).\n3. Το root key υπογράφει ΜΟΝΟ: (α) delegation statements (§3),\n   (β) revocations, (γ) το ceremony record. ΠΟΤΕ per-release/per-query.\nck C12c \"$(c 'thumbprint(bundle release key) == thumbprint(PINNED_ROOT)' $M)\" eq 0\n0"
+   },
+   "severity": "P1"
+  },
+  {
+   "id": "A1-F5",
+   "kw_ref": "NEW",
+   "title": "Delegated-key binding is missing: delegations carry fingerprints, LocalTrustState carries a fingerprint, sig_verify is written against fingerprints, and no step binds an embedded delegated public key to the delegation's fingerprint; kid↔fingerprint join undefined",
+   "claim": "The chain root → signed delegation → delegated key → claim is closed: the key that verifies a claim is the key the root delegated.",
+   "stand_up": "Attacker obtains a genuine root-signed delegation D for fingerprint F (kid K). They embed their own public key P' in the bundle labelled kid K and sign claims with the private half of P'. §8.3 B: `delegation_for(K, chain)` finds D (join by kid); scope passes; `sig_verify(c.signature, d.delegated_key)` — D holds only a fingerprint F, so the verifier must fetch a key; the only source in the bundle is P' (labelled K); no step requires thumbprint(P') == F. Signature verifies. VERIFIED. Expected: untrusted-key. Symmetric gap at the root: `sig_verify(d, lts.pinned_owner_root)` where pinned_owner_root is a fingerprint (§8.1:355) and the owner-root public key is neither in LocalTrustState nor allowed from the bundle (§8.1:351) — the root signature check is type-incorrect as written.",
+   "spec_expected": "MLTP §8.2:370 chain diagram; §8.3-B:388-395; §4:259-262 'the verifier checks EVERY signature with the corresponding public key'. Q22(α): embedded key must thumbprint-match (against the correct object).",
+   "spec_actual_reading": "Trust-bootstrap §3:38-39 delegation = {delegate: <release-key fingerprint>, …} — a fingerprint, not a key. MLTP §8.1:355 pinned_owner_root = fingerprint. §8.3:390 and :395 call sig_verify on fingerprints. grep 'thumbprint' in MLTP hits only the negative rules (373-375, 395); no positive binding thumbprint(embedded_delegated_pub) == d.delegate exists. `kid` is a free string (PCL:97 `\"kid\":\"stavropoulos-law-root\"`, KEY-LIFECYCLE §2.3) while delegations identify by fingerprint — `delegation_for(c.signature.kid, …)` has no defined join. KW-9 correctly removes the root comparison but the spec never adds the delegated comparison that replaces it.",
+   "doc_refs": [
+    "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:38",
+    "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:39",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:259",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:262",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:351",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:355",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:370",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:390",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:393",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:395",
+    "deployment/PROOF-CARRYING-LAW.md:97",
+    "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:45"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && M=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md; sed -n '38,39p' deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md; sed -n '355p;390p;393p;395p' $M; grep -n 'thumbprint' $M",
+    "raw_output": "  `{delegate: <release-key fingerprint>, scope: release-signing,\n  not-before, not-after (≤ 1 έτος), seq}` — το per-release JWS υπογράφεται\n  pinned_owner_root:      <fingerprint του owner-root.pub, out-of-band, ≥2 κανάλια>,\n     require sig_verify(d, lts.pinned_owner_root)                 # ΜΟΝΟ ο root υπογράφει delegations\n     d = delegation_for(c.signature.kid, bundle.delegation_chain) else untrusted-key\n     require sig_verify(c.signature, d.delegated_key)              # ΟΧΙ thumbprint == root\n373:  release key έχει **ΔΙΑΦΟΡΕΤΙΚΟ** thumbprint — **ποτέ** δεν συγκρίνεται ως «ίσο με\n374:  το root». Verifier που κάνει `thumbprint(delegated) == pinned_root` είναι **λάθος**\n395:     require sig_verify(c.signature, d.delegated_key)              # ΟΧΙ thumbprint == root"
+   },
+   "severity": "P1"
+  },
+  {
+   "id": "A1-F6",
+   "kw_ref": "NEW",
+   "title": "Delegation validity window is never compared to the claim's signature time; seq-supersession and revocation-by-delegation_seq are not enforced — expired or superseded delegations verify",
+   "claim": "A claim signed under an expired or superseded delegation is rejected (delegation-expired / delegation-invalid / revoked); Q23: delegation chain valid at TSR genTime.",
+   "stand_up": "(1) Delegation D1 for K_d with not_after = 2026-01-01, signed 2025-06-01. Claim signed with K_d, issued_at.trusted_time = 2026-06-01. §8.3-B:391 checks `d.not_before <= d.signed_time <= d.not_after` — D1's own signing time, inside its own window — passes; the claim's t_sig is never compared with d.not_after; step G finds no kid revocation. VERIFIED. Expected: delegation-expired. (2) Root replaced D1 (seq 1) with D2 (seq 2) and published `trust-key-or-delegation-revocation{revoked_subject: seq 1}`. Attacker ships a bundle containing only D1 and omits the seq-based revocation. B accepts D1 (valid root signature, in window); G:411 checks `revoked(c.signature.kid, r)` — keyed by kid only, so a revocation whose subject is a delegation_seq is never matched. VERIFIED. Expected: revoked/delegation-invalid.",
+   "spec_expected": "Q23:283 'delegation chain valid στο genTime του TSR'; §4 taxonomy has delegation-expired and delegation-invalid; trust-bootstrap §3:41 'Ανάκληση = νεότερο statement με μεγαλύτερο seq'; §2.8:161 revoked_subject ∈ {kid | delegation_seq}.",
+   "spec_actual_reading": "§8.3:391 compares the delegation's own signed_time to its own window — a tautology for any honestly signed delegation and unrelated to when the claim was signed. `delegation-expired` appears 0 times in verify_bundle; `seq` appears 0 times in verify_bundle; the only revocation predicate (:411) takes c.signature.kid. Q23's genTime rule has no corresponding line in the contract.",
+   "doc_refs": [
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:161",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:248",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:391",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:411",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:283",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:286",
+    "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:41"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && M=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md; sed -n '391p;411p;161p' $M; sed -n '283p' deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md; sed -n '383,423p' $M | grep -c 'seq'; sed -n '383,423p' $M | grep -c 'delegation-expired'",
+    "raw_output": "     require d.not_before <= d.signed_time <= d.not_after\n     if revoked(c.signature.kid, r) AND t_sig >= r.invalid_from:  return retroactively-revoked  # fail-closed\npayload = { \"revoked_subject\": <kid | delegation_seq>,\n**Κριτήριο:** delegation chain valid στο `genTime` του TSR· tlog inclusion +\n0\n0"
+   },
+   "severity": "P1"
+  },
+  {
+   "id": "A1-F7",
+   "kw_ref": "NEW",
+   "title": "Self-verdict leaks through the QualificationStateRecord layer: its signature is never verified, its role is self-declared, 'release-authority kid' is undefined, the signer is not required to be a registered auditor, evidence receipts may be unsigned, and q.subject is never bound to the claim",
+   "claim": "Assurance level cannot be self-certified: only independent-auditor / auditor-quorum / provider-registry can issue a QualificationStateRecord, and the release issuer can never qualify itself (MLTP §3:190-209; §8.3-H; KW-12).",
+   "stand_up": "Issuer generates a fresh key K_q (or has the owner root delegate a sibling key K_q — scope is only checked against claim_type of IssuedClaims, never against QSR signing). Issuer produces QSR{subject: anything, level: mission-qualified, signer: {role: \"auditor-quorum\", kid: K_q, sig: …}, evidence_refs: [r1, r2], auditor_receipts: [two VerificationReceipts it produced itself with local_signature = null (§7:338 permits null)]}. §8.3-H: `q.signer.role allowed_for(mission-qualified)` — 'auditor-quorum' is allowed (string equality on a self-declared field); `q.signer.kid NOT release-authority kid` — K_q is not it (and the term is undefined anyway: KEY-LIFECYCLE §1 'release-authority' is the release-root JWS key, distinct from the delegated claim-signing keys); no `sig_verify(q.signer.sig, …)` exists in H; no `q.signer.kid IN auditors` exists; `evidence_resolves(...)` is defined only as 'παρόν και επιλύσιμο' (present and resolvable, §3:205) — signature verification of the receipts is unspecified and the receipts may be unsigned. level = mission-qualified is attached to every claim referencing it, including claims about a different subject (H never checks q.subject). Expected: unauthorized-qualification-issuer.",
+   "spec_expected": "§3:190-209 table of permitted signer roles; 'Ο release issuer ΔΕΝ μπορεί να υπογράψει QualificationStateRecord για τον εαυτό του'; evidence_refs must resolve to receipts of independent auditors from the LocalTrustState auditor registry; §3:204-206 verifier checks role, evidence, quorum, freshness, expiry. §4:220 QSRs are RS256/Ed25519-signed with context 'mltp2:qual-state'.",
+   "spec_actual_reading": "§8.3-H (412-418) contains zero sig_verify calls (grep count 0 in 412-418; the only sig_verify calls in verify_bundle are lines 390 and 395). The role check operates on a self-declared string. The exclusion is phrased as 'NOT release-authority kid' — a single undefined key identity — not 'IN lts.auditor_registry'. Nothing states the auditor registry must be sourced independently of the issuer or must exclude issuer-controlled/root-delegated keys. §7:338 `local_signature … | null` allows unsigned receipts to be the 'independent auditor evidence' of §6:303. No line binds q.subject to c. The layer built to prevent self-assurance is, as written, the easiest place to inject it.",
+   "doc_refs": [
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:178",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:186",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:187",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:200",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:205",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:220",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:303",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:338",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:412",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:418",
+    "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:19",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.3-KILL-WITNESSES.md:29"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && M=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md; sed -n '412,418p' $M | grep -c 'sig_verify'; sed -n '383,423p' $M | grep -n 'sig_verify'; sed -n '186,187p;338p' $M; grep -n 'release-authority kid' $M",
+    "raw_output": "0\n8:     require sig_verify(d, lts.pinned_owner_root)                 # ΜΟΝΟ ο root υπογράφει delegations\n13:     require sig_verify(c.signature, d.delegated_key)              # ΟΧΙ thumbprint == root\n  \"signer\": {\"role\": <\"independent-auditor\" | \"auditor-quorum\" | \"provider-registry\">,\n             \"alg\",\"kid\",\"sig\"} }\n  \"local_signature\": {\"alg\",\"kid\",\"sig\"} | null }        # ΤΟΥ VERIFIER, ποτέ του issuer\n416:     require q.signer.kid NOT release-authority kid                 else unauthorized-qualification-issuer"
+   },
+   "severity": "P0"
+  },
+  {
+   "id": "A1-F8",
+   "kw_ref": "NEW",
+   "title": "Self-adoption: reviewer_adoption_act may be signed by the issuer's own key — no reviewer registry, `unadopted()` undefined, attribution self-named",
+   "claim": "Interpretive ratio is institutionally certified only via an independent reviewer adoption act; AI inference never becomes institutional ratio (MLTP §2.6; v1.3 §5; KW-7).",
+   "stand_up": "Watchtower produces a `jurisprudential-analysis` claim whose ratio text originated from PLANE-3 inference, attaches `attribution` = its own actor-ref, `methodology_version` = pinned, and `reviewer_adoption_act` = a record signed by its own delegated key K_d (or any key at all — no verification target is defined). §8.3-I: `unadopted(analysis_claims)` — a signed act is present, so under any plausible reading of an undefined predicate the claim is 'adopted'. VERIFIED. Expected: unadopted-analysis / UNVERIFIED_FOR_MACHINE_RELIANCE. KW-7's want is satisfied only on absence of the field, not on who signed it.",
+   "spec_expected": "§2.6:143-147: attribution + methodology_version + reviewer_adoption_act mandatory; raw AI inference never as institutionally certified ratio; without adoption ⇒ UNVERIFIED_FOR_MACHINE_RELIANCE. §4 taxonomy: unadopted-analysis.",
+   "spec_actual_reading": "LocalTrustState (§8.1:354-364) has no reviewer registry (grep 'reviewer' in that block: 0) — the verifier has no notion of who is an eligible reviewer. `unadopted()` (:420) is undefined and `unadopted-analysis` is never raised in the contract. Nothing forbids attribution/adoption by the issuer itself. 'Reviewer adoption' is therefore a presence check, i.e. a self-verdict on interpretation through the payload.",
+   "doc_refs": [
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:138",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:140",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:143",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:147",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:250",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:354",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:364",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:420",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:248",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.3-KILL-WITNESSES.md:24"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && M=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md; sed -n '354,364p' $M | grep -ci 'reviewer'; sed -n '420p' $M; sed -n '383,423p' $M | grep -c 'unadopted-analysis'",
+    "raw_output": "0\n  if unadopted(analysis_claims): return UNVERIFIED_FOR_MACHINE_RELIANCE\n0"
+   },
+   "severity": "P1"
+  },
+  {
+   "id": "A1-F9",
+   "kw_ref": "NEW",
+   "title": "`issuer` is unbound to the signing key and typed as a USC de-jure authority id — a signed claim can present itself as issued by a court or the Gazette",
+   "claim": "The identity model prevents the machine trust root from presenting as, or being confused with, the de jure authority (v1.3 §7:299-302, §10:345; Q-tests §5:378-381).",
+   "stand_up": "Holder of any in-scope delegated key emits a `judgment-identity-and-text` claim with envelope `issuer: {authority_id: \"auth1:<Άρειος Πάγος>\"}`. §8.3 never reads c.issuer (grep 0), so every step passes; VERIFIED. Downstream providers reading the claim see it 'issued by' a de jure court — the machine-readable over-claim the design flags as P0 in EV-11 (`PRIMARY_SEMANTIC_AUTHORITY`) reappears inside a signed, verifier-approved object. Secondary: `issuer.verifier_id` lets a Layer-C actor author Layer-A claims, with no defined semantics.",
+   "spec_expected": "v1.3 §7:299-302 and §10:345: de jure authority always the state/courts; Watchtower never issuer of law. §4:259-262 every signature checked against the corresponding public key — implying the signer identity, not a free-text issuer, is what the verifier trusts.",
+   "spec_actual_reading": "§1.0:38 `\"issuer\": { \"authority_id\" | \"verifier_id\" }` — authority_id is USC §2.2's `auth1:` id space (parliament, court, ministry…). No verify_bundle step binds c.issuer to c.signature.kid's delegation or to any registry. The field is a free assertion inside the trusted object.",
+   "doc_refs": [
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:38",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:383",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:423",
+    "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:350",
+    "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:355",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:299",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:345",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/AS-IS-EVIDENCE-MANIFEST.md:132",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:378"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && M=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md; sed -n '38p' $M; sed -n '383,423p' $M | grep -cE 'c\\.issuer|issuer\\.'",
+    "raw_output": "  \"issuer\": { \"authority_id\" | \"verifier_id\" },\n0"
+   },
+   "severity": "P1"
+  },
+  {
+   "id": "A1-F10",
+   "kw_ref": "NEW",
+   "title": "14 of 23 taxonomy errors are never raised by the verifier contract (incl. insufficient-provenance, unknown-claim-type, unknown-alg, delegation-expired, root-mismatch, unadopted-analysis); the contract returns values outside the closed `result` sum",
+   "claim": "The offline verifier contract (§8.3) is complete enough that two independent implementations produce identical VerificationReceipts (Q21 δ, kernel diversity), and every declared closure (e.g. §2.1 insufficient-provenance, KW-4) is a step of the contract.",
+   "stand_up": "Two implementers build verify_bundle strictly from §8.3. Bundle contains a `source-authenticity` claim with time_anchor only (no authority_proof_ref/institutional_register_id). Implementer A follows §8.3 literally: step A inclusion passes; no provenance step exists; VERIFIED. Implementer B reads §2.1 and adds an insufficient-provenance step; UNKNOWN. Identical inputs, different receipts. Likewise for unknown `alg` (§4:238 says unknown-alg, §8.3 has no alg step), free `claim_type` (Q21γ unknown-claim-type, absent from §8.3), pcl_text_root presented as authority root (§5:283 root-mismatch, §8.3-C names no error). §8.3:411 returns `retroactively-revoked` and :422 returns `UNKNOWN_FRESHNESS` as the receipt result, while §7:334 closes result to {VERIFIED, UNVERIFIED_FOR_MACHINE_RELIANCE, UNKNOWN}.",
+   "spec_expected": "§4:244-250 closed nominal taxonomy 'the verifier returns'; §2.1:90-91 insufficient-provenance ⇒ UNKNOWN; §4:238 unknown-alg fail-closed; §5:283 root-mismatch; Q21(δ) identical results across verifiers; §7:334 closed result sum.",
+   "spec_actual_reading": "Mechanical count over 383-423: text-hash-mismatch 0, inclusion-failed 0, path-too-long 0, root-mismatch 0, unknown-alg 0, sig-invalid 0, delegation-invalid 0, delegation-expired 0, consistency-failed 0, expired 0, insufficient-provenance 0, unknown-claim-type 0, unadopted-analysis 0 (the 'revoked' hit is the function name revoked(), not the error). The pseudocode is the only executable-shaped contract and it omits the steps that the closures of KW-4, Q21(γ), Q22(γ) and §5 depend on.",
+   "doc_refs": [
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:90",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:91",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:238",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:244",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:250",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:283",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:334",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:397",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:411",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:422",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:265",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:278",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.3-KILL-WITNESSES.md:21"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && M=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md; TAX=$(sed -n '245,250p' $M | tr -d '`' | tr '·' '\\n' | sed 's/^[ \\t]*//;s/[ \\t]*$//' | grep -v '^$'); echo \"$TAX\" | wc -l; for n in $TAX; do echo \"$n => $(sed -n '383,423p' $M | grep -cF -- \"$n\")\"; done; sed -n '334p;411p;422p' $M",
+    "raw_output": "23\ntext-hash-mismatch => 0\ninclusion-failed => 0\npath-too-long => 0\nroot-mismatch => 0\nuntrusted-key => 1\nunknown-alg => 0\nsig-invalid => 0\ndelegation-invalid => 0\ndelegation-expired => 0\ndelegation-scope-violation => 1\nconsistency-failed => 0\nsplit-view => 2\nexpired => 0\nrevoked => 1\nretroactively-revoked => 1\nuntrusted-registry => 2\ndangling-qualification-ref => 1\nunauthorized-qualification-issuer => 2\ninsufficient-provenance => 0\nunknown-claim-type => 0\nunadopted-analysis => 0\nUNKNOWN_FRESHNESS => 3\nUNKNOWN(reason). => 0\n  \"result\": <\"VERIFIED\" | \"UNVERIFIED_FOR_MACHINE_RELIANCE\" | \"UNKNOWN\">,\n     if revoked(c.signature.kid, r) AND t_sig >= r.invalid_from:  return retroactively-revoked  # fail-closed\n  if freshness_verdict == UNKNOWN_FRESHNESS: return UNKNOWN_FRESHNESS   # ποτέ VERIFIED χωρίς trusted now"
+   },
+   "severity": "P2"
+  },
+  {
+   "id": "A1-F11",
+   "kw_ref": "NEW",
+   "title": "Public→private boundary at the schema level: the public cockpit's signed intent is seated inside the PRIVATE target's InstitutionalAct envelope (CPEI §2), whose sibling fields carry matter-solving content",
+   "claim": "v1.3 §0:46-48: the public schema has no field in which private/matter content could be written — 'καμία διαρροή να φρουρηθεί, γιατί κανένα πεδίο να γραφτεί'; the boundary is structural, one-way PUBLIC→PRIVATE.",
+   "stand_up": "A `signed_proposal_intent` is, per v1.3 §6:270-271, a field of `%ask-envelope`/InstitutionalAct (CPEI §2). The public M5 queue therefore ingests InstitutionalAct instances. CPEI §2:153-170 defines that envelope with `claim` (σώμα απάντησης + θέσεις υπαγωγής), `counterproof` (ενστάσεις αντιδικίας), `weakest_link`, `mode: legal-trusted/…/conversation-reference`. An operator submits an intent whose envelope siblings contain litigation objections/subsumption positions for a live matter; nothing in the public target types them out. Q20's negative witness (add a Matter-typed field ⇒ compile failure) does not fire because the content rides in fields that already exist. The register's own classification says CPEI is 'εκτός εύρους' and 'όχι εδώ — δικό του scope' for the public candidate, yet the crosswalk marks the seat REUSE of `LAWMAX-CPEI-TARGET-SPEC.md §2`.",
+   "spec_expected": "v1.3 §0:36-48 structural absence of type, no field to write; Q20:246-251 public schema has no Matter/Case/Client type and filtering-instead-of-structure fails the family; SUPERSEDED-REGISTER:69 public target excludes CPEI.",
+   "spec_actual_reading": "The boundary claim is about type names (Matter/Case/Client). The cockpit path reuses an envelope from the deferred private target whose existing untyped fields are the matter-solving primitives themselves. REGISTER:84-86 permits borrowing 'επιμέρους έδρες', which weakens but does not close the attack: the borrowed seat is the private target's output envelope, not a leaf primitive, and no text restricts which of its fields the public M5 accepts. Verdict rests on argument about field semantics, hence ARGUMENT-ONLY.",
+   "doc_refs": [
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:36",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:46",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:48",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:270",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:271",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.3-SEMANTIC-CROSSWALK.md:84",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.3-SEMANTIC-CROSSWALK.md:85",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/SUPERSEDED-REGISTER.md:50",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/SUPERSEDED-REGISTER.md:69",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/SUPERSEDED-REGISTER.md:84",
+    "deployment/LAWMAX-CPEI-TARGET-SPEC.md:151",
+    "deployment/LAWMAX-CPEI-TARGET-SPEC.md:159",
+    "deployment/LAWMAX-CPEI-TARGET-SPEC.md:160",
+    "deployment/LAWMAX-CPEI-TARGET-SPEC.md:163",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:246",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:251"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "ARGUMENT-ONLY",
+   "mechanical": null,
+   "severity": "P2"
+  },
+  {
+   "id": "A1-F12",
+   "kw_ref": "NEW",
+   "title": "Revocation freshness is unbounded: a bundle omitting a newer revocation and carrying an older 'current' revocation checkpoint verifies as long as its tlog view is consistent with the consumer's last checkpoint",
+   "claim": "Offline revocation is resolvable (§6:304-305, 316-317) and consumers 'see' retroactive revocations via consistency/gossip (§9:452-453), so a compromised key cannot verify after invalid_from.",
+   "stand_up": "Consumer has trusted_time.now (F passes) and lts.revocation_state = checkpoint C_old (tree_size N). Key K_d compromised; revocation record published at tlog index > N. Attacker ships a bundle with transparency.tree_size = N (consistent with lts.last_accepted_tlog — trivially, identical), revocation.checkpoint = C_old with valid inclusion, revocation.records without the new record, and claims signed by K_d with issued_at as in A1-F3 or genuinely pre-compromise-anchored but post-invalid_from (compromise_known_at earlier than the anchored time is exactly the §9 case). §8.3 G: r = lts.revocation_state ∪ bundle.records — no entry for K_d. VERIFIED. Expected: UNKNOWN (revocation state stale) — the contract never bounds the age of the revocation checkpoint against trusted now, and gossip detects forks, not omission.",
+   "spec_expected": "§6:304-305 'τρέχον revocation checkpoint'; §9:451-453 revocations published to tlog so consumers see them; §8.3-F/J freshness gate.",
+   "spec_actual_reading": "'Current' is issuer-declared. Steps F/J gate only on the presence of trusted_time, never on revocation_state age. Step E's consistency check accepts any tree_size ≥ the consumer's last, including equal. No max-staleness field exists for revocation_state in LocalTrustState (§8.1:360) nor for bundle.revocation.checkpoint.",
+   "doc_refs": [
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:304",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:316",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:360",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:402",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:405",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:410",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:451",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:453",
+    "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:59",
+    "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:62"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "ARGUMENT-ONLY",
+   "mechanical": null,
+   "severity": "P2"
+  },
+  {
+   "id": "A1-F13",
+   "kw_ref": "NEW",
+   "title": "Two incompatible rotation mechanisms: KEY-LIFECYCLE §2.4 / v1.3 §4.1 continuity statements signed by the OLD key vs MLTP §8.3-B 'ONLY the root signs delegations'",
+   "claim": "Key rotation of the release/claim-signing key preserves an unbroken, verifier-accepted chain (v1.3 §4.1:196-198; KEY-LIFECYCLE §2.4).",
+   "stand_up": "Operator rotates K_N → K_{N+1} per KEY-LIFECYCLE §2.4 / v1.3 §4.1: continuity statement 'kid-N+1 succeeds kid-N from <date>' signed by K_N; claims now signed by K_{N+1}, signature carries key_lineage [K_N, K_{N+1}]. §8.3-B: `for d in delegation_chain: require sig_verify(d, lts.pinned_owner_root)` — the continuity statement is not root-signed ⇒ fails (or, if not placed in delegation_chain, K_{N+1} has no delegation ⇒ untrusted-key). `key_lineage` is never read by verify_bundle. So either legitimate rotated releases are rejected, or the implementer accepts old-key-signed continuity as delegation — an unwritten sub-delegation path that re-opens exactly the delegated-vs-root confusion of KW-9 (an old delegated key minting successors indefinitely, beyond its own not_after and outside seq supersession).",
+   "spec_expected": "One rotation mechanism accepted by the verifier. Trust-bootstrap §3:38-42 (root re-delegates with higher seq) and MLTP §8.3-B:390 (only root signs delegations).",
+   "spec_actual_reading": "v1.3 §4.1:196-198 and KEY-LIFECYCLE §2.4:49-50 specify old-key-signed continuity; MLTP §8.3-B:390 accepts root-signed delegations only; `key_lineage` (§1.0:40) has no consumer in the contract. Two ACTIVE documents give opposite verdicts to the same rotated-key bundle; no versioned precedence is declared for §2.4 (only for §2.5).",
+   "doc_refs": [
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:196",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:198",
+    "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:49",
+    "deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md:50",
+    "deployment/LAWMAX-TRUST-BOOTSTRAP-SPEC.md:41",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:40",
+    "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:390"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && sed -n '49p' deployment/LAWMAX-KEY-LIFECYCLE-SPEC.md; sed -n '197,198p' deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md; sed -n '390p' deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md; sed -n '383,423p' deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md | grep -c 'key_lineage'",
+    "raw_output": "- Νέο κλειδί υπογράφεται από το ΠΑΛΙΟ (continuity statement: «το kid-N+1\nrevocation**: append-only key registry, `kid`+`alg`+`key_lineage`, continuity\nstatement υπογεγραμμένο από το παλιό κλειδί· revocation out-of-band (key-lifecycle §2.4-2.5).\n     require sig_verify(d, lts.pinned_owner_root)                 # ΜΟΝΟ ο root υπογράφει delegations\n0"
+   },
+   "severity": "P2"
+  }
+ ],
+ "kw_coverage": [
+  {
+   "kw": "KW-1",
+   "verdict": "FALSIFIED",
+   "finding_id": "A1-F1"
+  },
+  {
+   "kw": "KW-9",
+   "verdict": "FALSIFIED",
+   "finding_id": "A1-F4"
+  }
+ ],
+ "unknown_axes_explored": [
+  "IssuedClaim signing input / context-string coverage (F2: undefined — no mltp2 context for the claim; payload-only vs envelope ambiguity)",
+  "issued_at anchor verification: is trusted_time derived from a verified TSR/tlog time or read from the issuer? (F3: read from issuer; anchor is a bare sha256; no TSR in bundle; no TSA anchor in LocalTrustState)",
+  "Delegated-key ↔ fingerprint binding, kid↔fingerprint join, sig_verify against fingerprints, source of the owner-root public key (F5)",
+  "Delegation validity window vs claim signature time; seq supersession; revocation keyed by delegation_seq (F6)",
+  "QualificationStateRecord authentication: signature verification, self-declared role, definition of 'release-authority kid', signer ∈ auditor_registry, nullable local_signature on evidence receipts, q.subject binding to claim (F7)",
+  "Issuer self-verdict through the payload: reviewer_adoption_act self-signed; absence of reviewer registry; unadopted() undefined (F8)",
+  "`issuer` envelope field binding and the auth1: de-jure authority id space; verifier_id as a Layer-A issuer (F9)",
+  "Taxonomy completeness of the verifier contract; closed result sum vs values returned (F10)",
+  "Public↔private boundary via the cockpit intent seated in the private InstitutionalAct envelope (F11)",
+  "Revocation-checkpoint staleness / omission under a tlog view that is trivially consistent with the consumer's last checkpoint (F12)",
+  "Rotation continuity statement (old key signs new) vs root-only delegation signing; key_lineage unused (F13)",
+  "Witness quorum offline: GitHub commit history is not an offline-verifiable signature; two TSAs timestamp any bytes and cannot witness non-equivocation — explored; NO finding beyond noting that §10 honestly scopes witnesses to publication/time and KW-5's closure is gossip, not witnesses (SURVIVES as scoped)",
+  "LocalTrustState.trusted_time evidence unverified — consumer-supplied; explored; NO finding (consumer harms only itself; spec is consistent that LTS is the consumer's own)",
+  "`description` free text as a leak channel across the boundary — explored; NO finding (issuer-controlled public content, no observation of private matters)",
+  "pcl_text_root presented as authority root (§5 root-mismatch) — explored; §8.3-C has a check though it names no error (folded into F10)",
+  "First-time consumer with empty last_accepted_tlog (TOFU on first bundle) — explored; not written either way; not escalated as it is the inherent limit trust-bootstrap §4 acknowledges via out-of-band pin"
+ ],
+ "summary": "Both mandatory witnesses fall. KW-1 (issuer self-verdict): the spec prohibits `verification_result` in the schema but the verifier contract (MLTP §8.3) has no schema/envelope validation step, §1.0 says the verifier acts ONLY on the typed payload (so the field is ignored, not rejected), the §4 taxonomy has no error name for it, and Q21(α) cites §7 which contains only a statement of intent — the mutation does not go red (A1-F1, P1, mechanical). KW-9 (delegated ≡ root): the wrong comparison is still prescribed by PCL §5 lines 131-132 (an ACTIVE SHARED TRUST FOUNDATION consumed unchanged and never overridden by versioned precedence), restated in v1.3 §4.1 item 2 ('root/claims signed by pinned key'), and enshrined as qualification witness Q22(α), which by construction rejects every legitimate delegated-key bundle; the consistency audit C12c greps a v1 literal and never scans PCL (A1-F4, P1, mechanical). Beyond the declared witnesses, the open hunt found three P0 breaks in the verifier contract, all in my focus area: (1) the IssuedClaim signing input is undefined — no context string or target for the claim — so under the reading the spec itself pushes (payload = the ONLY input) the fields that drive scope, revocation and qualification checks (claim_type, issued_at, qualification_state_ref) are unsigned (A1-F2); (2) 'trusted signature time' is issuer-written — verify_bundle reads issued_at.trusted_time directly, the anchor is a bare sha256, the bundle carries no TSR and LocalTrustState no TSA anchor — so the headline §9 retroactive-revocation closure of KW-6/KW-14/KW-16 keys off a self-declared field (A1-F3); (3) the QualificationStateRecord — the layer built to prevent self-assurance — has its signature verified nowhere in §8.3-H, its role is a self-declared string, 'release-authority kid' is undefined, the signer need not be a registered auditor, evidence receipts may be unsigned (§7 local_signature | null), and q.subject is never bound to the claim, so the issuer can mint 'mission-qualified' for itself via a sibling or fresh key (A1-F7). Further P1s: the delegated public key is never bound to the delegation's fingerprint and sig_verify is written against fingerprints (A1-F5); delegation windows are checked against the delegation's own signing time rather than the claim's, seq supersession and delegation_seq revocations are unenforced (A1-F6); reviewer adoption can be self-signed with no reviewer registry (A1-F8); the `issuer` field is unbound and typed in the de-jure auth1: id space, allowing a signed claim to present as issued by a court (A1-F9). P2s: 14/23 taxonomy errors never raised and result-sum violations undermine kernel diversity (A1-F10); the public cockpit intent is seated in the private target's InstitutionalAct envelope (A1-F11); revocation freshness is unbounded (A1-F12); two incompatible rotation mechanisms (A1-F13). Net: the three-layer separation is sound as a diagram, but the written verifier contract does not enforce it — self-verdict re-enters through issued_at, the QSR, the adoption act, and the issuer field, and the delegated/root distinction is asserted in §8.2 while remaining unimplemented (binding) and contradicted (PCL §5, Q22α, v1.3 §4.1)."
+}

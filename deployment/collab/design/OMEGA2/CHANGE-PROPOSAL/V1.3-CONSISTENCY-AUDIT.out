@@ -1,40 +1,40 @@
-### V1.3 CONSISTENCY AUDIT — aed4eba9 — 2026-09-01T18:22:17Z
+### V1.3 CONSISTENCY AUDIT — 9dabc2bb — 2026-09-01T21:36:28Z
 # C1 issuer self-verdict
 C1a    | actual=1    | want ge1    | PASS
 C1b    | actual=1    | want ge1    | PASS
 C1c    | actual=1    | want eq1    | PASS
 # C2 crypto profile (not SHA-only)
-C2a    | actual=8    | want ge1    | PASS
+C2a    | actual=4    | want ge1    | PASS
 C2b    | actual=1    | want ge1    | PASS
 C2c    | actual=0    | want eq0    | PASS
 C2d    | actual=0    | want eq0    | PASS
 # C3 typed claim
-C3a    | actual=7    | want ge1    | PASS
+C3a    | actual=20   | want ge1    | PASS
 C3b    | actual=1    | want ge1    | PASS
 # C4 one authority root
-C4a    | actual=5    | want ge1    | PASS
+C4a    | actual=30   | want ge1    | PASS
 C4b    | actual=1    | want ge1    | PASS
 # C5 assurance separated
-C5a    | actual=7    | want ge1    | PASS
-C5b    | actual=6    | want ge1    | PASS
+C5a    | actual=4    | want ge1    | PASS
+C5b    | actual=8    | want ge1    | PASS
 # C6 taxonomy
 C6a    | actual=2    | want ge1    | PASS
 C6b    | actual=2    | want ge1    | PASS
-C6c    | actual=4    | want ge1    | PASS
-C6d    | actual=2    | want ge1    | PASS
+C6c    | actual=1    | want ge1    | PASS
+C6d    | actual=1    | want ge1    | PASS
 # C7 jurisprudence split
-C7a    | actual=2    | want ge1    | PASS
-C7b    | actual=2    | want ge1    | PASS
-C7c    | actual=3    | want ge1    | PASS
+C7a    | actual=3    | want ge1    | PASS
+C7b    | actual=5    | want ge1    | PASS
+C7c    | actual=4    | want ge1    | PASS
 C7d    | actual=1    | want ge1    | PASS
 # C8 witness vs auditor
 C8a    | actual=1    | want ge1    | PASS
 C8b    | actual=1    | want ge1    | PASS
 C8c    | actual=1    | want ge1    | PASS
 # C9 revocation semantics
-C9a    | actual=7    | want ge1    | PASS
+C9a    | actual=9    | want ge1    | PASS
 C9b    | actual=3    | want ge1    | PASS
-C9c    | actual=4    | want ge1    | PASS
+C9c    | actual=6    | want ge1    | PASS
 # C10 AS-IS reproducible
 C10a   | actual=0    | want eq0    | PASS
 C10b   | actual=3    | want ge1    | PASS
@@ -46,23 +46,23 @@ C11b   | actual=0    | want eq0    | PASS
 C11c   | actual=0    | want eq0    | PASS
 C11d   | actual=1    | want ge1    | PASS
 # C12 delegation chain (errata #2)
-C12a   | actual=4    | want ge2    | PASS
+C12a   | actual=6    | want ge2    | PASS
 C12b   | actual=1    | want ge1    | PASS
 C12c   | actual=0    | want eq0    | PASS
 C12d   | actual=1    | want ge1    | PASS
 # C13 LocalTrustState + UNKNOWN_FRESHNESS (errata #3)
-C13a   | actual=7    | want ge3    | PASS
-C13b   | actual=6    | want ge3    | PASS
+C13a   | actual=6    | want ge3    | PASS
+C13b   | actual=7    | want ge3    | PASS
 C13c   | actual=2    | want ge1    | PASS
-C13d   | actual=7    | want ge2    | PASS
+C13d   | actual=11   | want ge2    | PASS
 # C14 offline-resolvable bundle (errata #4)
-C14a   | actual=3    | want ge2    | PASS
-C14b   | actual=4    | want ge2    | PASS
+C14a   | actual=5    | want ge2    | PASS
+C14b   | actual=2    | want ge2    | PASS
 C14c   | actual=3    | want ge2    | PASS
-C14d   | actual=5    | want ge2    | PASS
+C14d   | actual=4    | want ge2    | PASS
 # C15 no self-qualification (errata #5)
-C15a   | actual=4    | want ge2    | PASS
-C15b   | actual=4    | want ge2    | PASS
+C15a   | actual=7    | want ge2    | PASS
+C15b   | actual=5    | want ge2    | PASS
 C15c   | actual=1    | want ge1    | PASS
 C15d   | actual=1    | want ge1    | PASS
 # C16 signature-time revocation (errata #6)
@@ -70,7 +70,7 @@ C16a   | actual=7    | want ge3    | PASS
 C16b   | actual=2    | want ge2    | PASS
 C16c   | actual=0    | want eq0    | PASS
 # C17 KEY-LIFECYCLE precedence (errata #7)
-C17a   | actual=1    | want ge1    | PASS
+C17a   | actual=5    | want ge1    | PASS
 C17b   | actual=1    | want ge1    | PASS
 C17c   | actual=1    | want ge1    | PASS
 # C18 stale residuals across ALL active docs (errata #1)
@@ -78,10 +78,9 @@ C18a   | actual=0    | want eq0    | PASS
 C18b   | actual=0    | want eq0    | PASS
 C18c   | actual=0    | want eq0    | PASS
 C18d   | actual=0    | want eq0    | PASS
-C18e   | actual=3    | want ge2    | PASS
+C18e   | actual=2    | want ge2    | PASS
 # C19 kill witnesses present & un-executed
 C19a   | actual=16   | want ge16   | PASS
-C19b   | actual=2    | want ge1    | PASS
+C19b   | actual=3    | want ge1    | PASS
 ### SUMMARY: checks=64 pass=64 fail=0
 ### EXIT 0 — ALL PASS
-exit_code=0

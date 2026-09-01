@@ -1,0 +1,318 @@
+{
+ "adversary_id": "A3",
+ "protocol_axis": "α — MODEL/SECURITY BREAK (trust model, verifier contract, qualification chain, identity model, offline-resolvability, one-way boundary)",
+ "mandatory_kws": [
+  "KW-3",
+  "KW-11"
+ ],
+ "findings": [
+  {
+   "id": "A3-F1",
+   "kw_ref": "KW-11",
+   "title": "Dangling qualification_state_ref yields result VERIFIED; VerificationReceipt has no field to carry 'level none'",
+   "claim": "MLTP guarantees that a dangling qualification_state_ref is never silently accepted (level none, typed error dangling-qualification-ref).",
+   "stand_up": "Bundle B with one legal-state IssuedClaim c: valid delegation chain, valid RS256 sig, valid PCL inclusion, valid tlog consistency + 2 witnesses, anchored issued_at, and qualification_state_ref = 'qsr:deadbeef' that matches nothing in bundle.qualification_records and no tlog leaf. LocalTrustState has trusted_time.now and evidence. Trace of §8.3: A–G pass; H line 414: resolve fails → 'level none' — no return; I: no analysis claims; J line 422 not taken (freshness ok); line 423: return VERIFIED. The VerificationReceipt (§7, lines 330-339) contains result: VERIFIED and possibly a checks[] entry named dangling-qualification-ref, but there is no level field, so 'none' is dropped. The provider rule (CP §4.2:210-216) keys on the result and relies. Same trace for a claim whose qualification_state_ref is absent altogether, and — because CP §8:313-320 states every level is currently 'ΟΧΙ' — for every bundle the system could issue today.",
+   "spec_expected": "KW:28 want: dangling-qualification-ref ⇒ level none — 'ποτέ σιωπηλή αποδοχή'. MLTP §4:244-250 lists dangling-qualification-ref in the closed error taxonomy. MLTP §8:431-432: 'αποτυχία οποιουδήποτε βήματος ⇒ UNVERIFIED_FOR_MACHINE_RELIANCE/UNKNOWN — ποτέ σιωπηλή παρουσίαση ως αυθεντικού'. MLTP §3:205-209 'Οποιοδήποτε λείπει ⇒ level = none'.",
+   "spec_actual_reading": "§8.3 H (414) assigns a pseudocode-local variable 'level none' and falls through. The only return statements in §8.3 are at 411 (retroactively-revoked), 420 (unadopted analysis), 422 (UNKNOWN_FRESHNESS) and 423 (VERIFIED). §7's VerificationReceipt schema has zero 'level' fields, so the computed level cannot reach the consumer. Two passages of the same spec assign opposite verdicts to the same input: §8:431 (any failed step ⇒ non-VERIFIED) versus §8.3:423 (VERIFIED). The KW-11 mutation therefore does not 'redden' anything consumer-visible — a false witness under KW:9-12.",
+   "doc_refs": [
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:414",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:422",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:423",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:330",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:339",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:431",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:205",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:209",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:248",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:210",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:315",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.3-KILL-WITNESSES.md:28",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.3-KILL-WITNESSES.md:11"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && F=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md && sed -n '414p;422,423p' $F && echo \"level-fields-in-VerificationReceipt(§7 330-339): $(sed -n '330,339p' $F | grep -c level)\" && sed -n '431,432p' $F",
+    "raw_output": "     q = resolve(c.qualification_state_ref, bundle.qualification_records)  else dangling-qualification-ref → level none\n  if freshness_verdict == UNKNOWN_FRESHNESS: return UNKNOWN_FRESHNESS   # ποτέ VERIFIED χωρίς trusted now\n  return VERIFIED\nlevel-fields-in-VerificationReceipt(§7 330-339): 0\n**Provider-side κανόνας:** αποτυχία οποιουδήποτε βήματος ⇒\n`UNVERIFIED_FOR_MACHINE_RELIANCE`/`UNKNOWN` — ποτέ σιωπηλή παρουσίαση ως αυθεντικού"
+   },
+   "severity": "P0"
+  },
+  {
+   "id": "A3-F2",
+   "kw_ref": "NEW",
+   "title": "QualificationStateRecord is never signature-verified; signer role is self-declared; signer kid is never bound to LocalTrustState.auditor_registry; 'auditor-quorum' is unrepresentable with one {kid,sig}",
+   "claim": "The qualification chain (§3 + §8.3 H) prevents the release issuer from qualifying itself and admits only records issued by independent auditors / an auditor quorum / a provider registry.",
+   "stand_up": "Release issuer assembles a bundle containing Q = {subject:'watchtower', level:'mission-qualified', evidence_refs:[r1,r2], auditor_receipts:[R1,R2 with local_signature:null (nullable per §7:338) and verifier.id strings copied from two names present in lts.auditor_registry], issued_at anchored, expiry far in the future, signer:{role:'auditor-quorum', alg:'Ed25519', kid:'aud-q-1', sig:<random bytes>}}. §8.3 H trace: resolve ok (414); role auditor-quorum allowed_for mission-qualified (415) ✓; kid 'aud-q-1' ≠ release-authority kid (416) ✓; evidence_resolves (417) — no signature check is written for Q or for R1/R2; expiry ok (418) ⇒ level mission-qualified ⇒ VERIFIED. Variant that survives even if sig_verify is added for Q: the owner root (pinned) signs a delegation {delegate:K2, scope:{legal-state}}; K2 signs Q with role 'independent-auditor'; line 416 compares kid against the undefined 'release-authority kid' (at most the release-signing key) — K2 passes; the same sovereign is now its own auditor. Variant 3: §3:195-196 require 'auditor-quorum (≥2 ανεξάρτητοι)' but the signer schema (186-187) holds exactly one {kid,sig}; whoever aggregates the quorum into a single signature is structurally the bundle assembler.",
+   "spec_expected": "MLTP §3:190-203: only independent-auditor / auditor-quorum / provider-registry may issue; 'Ο release issuer ΔΕΝ μπορεί να υπογράψει QualificationStateRecord για τον εαυτό του'. §4:220 lists QualificationStateRecord among signature targets (context 'mltp2:qual-state'). §4:259-262: 'ο verifier ελέγχει ΚΑΘΕ υπογραφή με το αντίστοιχο δημόσιο κλειδί'. KW:29 (KW-12) want: unauthorized-qualification-issuer.",
+   "spec_actual_reading": "sig_verify occurs only at 390 (delegations) and 395 (issued_claims). §8.3 H (413-418) checks q.signer.role — a string written by the signer — and q.signer.kid against one designated kid; it never verifies q.signer.sig and never requires q.signer.kid ∈ lts.auditor_registry. §3:205-206's own checklist (role, evidence set, quorum, freshness, expiry) also omits signature verification. lts.auditor_registry (358) is used only to resolve embedded auditor_keys (400) and is never bound to q.signer. 'release-authority kid' appears only at 201 and 416 and is never defined in terms the verifier holds (pinned_owner_root, delegation_chain).",
+   "doc_refs": [
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:390",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:395",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:413",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:418",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:186",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:187",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:195",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:201",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:205",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:220",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:259",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:338",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:358",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:400",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.3-KILL-WITNESSES.md:29"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && F=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md && grep -n \"sig_verify\" $F && sed -n '415,417p' $F && sed -n '186,187p' $F",
+    "raw_output": "390:     require sig_verify(d, lts.pinned_owner_root)                 # ΜΟΝΟ ο root υπογράφει delegations\n395:     require sig_verify(c.signature, d.delegated_key)              # ΟΧΙ thumbprint == root\n     require q.signer.role allowed_for(q.level)                     else unauthorized-qualification-issuer\n     require q.signer.kid NOT release-authority kid                 else unauthorized-qualification-issuer\n     require evidence_resolves(q.evidence_refs, q.auditor_receipts, auditors, quorum_for(q.level))\n  \"signer\": {\"role\": <\"independent-auditor\" | \"auditor-quorum\" | \"provider-registry\">,\n             \"alg\",\"kid\",\"sig\"} }"
+   },
+   "severity": "P0"
+  },
+  {
+   "id": "A3-F3",
+   "kw_ref": "KW-11",
+   "title": "Qualification reference resolution is undefined: record has no id, subject is never compared to the claim, and §6's tlog-inclusion path contradicts §8.3 and is not offline-resolvable",
+   "claim": "A qualification_state_ref that resolves is a correct, subject-bound, offline-checkable qualification of the claim that carries it.",
+   "stand_up": "(a) Borrowed subject: a genuine auditor-quorum record Q_v12 = {subject:'CHANGE-PROPOSAL-v1.2 release line', level:'implementation-qualified', unexpired}. The issuer places Q_v12 in a v1.3 bundle and points every v1.3 claim's qualification_state_ref at it. §8.3 H (413-418) never reads q.subject, so implementation-qualified attaches to the v1.3 claims — 'resolves-but-wrong-subject' is never typed. (b) tlog path: the bundle omits the record from qualification_records but ships an RFC 9162 inclusion proof for a leaf hash H_Q. Per §6:314-315 this 'resolves'; per §8.3:414 (resolve only against bundle.qualification_records) it is dangling — two passages, two verdicts. Even under §6's reading the verifier holds only H_Q: level, expiry, signer, evidence_refs are unavailable, so lines 415-418 cannot execute offline. (c) Record identity: §3 (174-210) has no id / record_id field, so what a ref names is unspecified; if resolution is by free label the issuer mints one record per label; if by canonical-hash it is unspecified whether 'sig' is inside the hash (two hashes for one record content).",
+   "spec_expected": "MLTP §6:314-315: every qualification_state_ref MUST resolve in the same bundle 'ή με inclusion proof στο tlog'; §6:301 'ΠΛΗΡΩΣ OFFLINE-RESOLVABLE'; §3:178 subject = 'τι αφορά'; §1.0:44 ref = 'id ενός QualificationStateRecord §3'; KW:28 want: level none on dangling, never silent acceptance.",
+   "spec_actual_reading": "'subject' occurs in MLTP only at 151, 161, 178 — never in §8.3. §3 contains zero id/record_id fields. §8.3:414 resolves solely against bundle.qualification_records; the tlog alternative of §6 has no verifier step and cannot yield record content from a hash. Resolution is therefore an unspecified lookup with no binding to the claim's subject.",
+   "doc_refs": [
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:44",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:151",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:161",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:174",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:178",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:210",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:301",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:314",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:315",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:414",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.3-KILL-WITNESSES.md:28"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && F=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md && grep -n \"subject\" $F && echo \"id-fields-in-§3-record(174-210): $(sed -n '174,210p' $F | grep -c '\\\"id\\\"\\|record_id')\" && sed -n '314,315p;414p' $F",
+    "raw_output": "151:payload = { \"subject\": <work_id | expression_id>,\n161:payload = { \"revoked_subject\": <kid | delegation_seq>,\n178:  \"subject\": <τι αφορά>,\nid-fields-in-§3-record(174-210): 0\n- Κάθε `qualification_state_ref` **πρέπει** να επιλύεται σε `qualification_records`\n  του ίδιου bundle (ή με inclusion proof στο tlog) — αλλιώς `dangling-qualification-ref`.\n     q = resolve(c.qualification_state_ref, bundle.qualification_records)  else dangling-qualification-ref → level none"
+   },
+   "severity": "P1"
+  },
+  {
+   "id": "A3-F4",
+   "kw_ref": "KW-3",
+   "title": "Same judgment from two channels yields two expression_ids by construction (judgments are single-document ⇒ content digest); Q13/Q07 count expression_id as identity and demand zero duplicates; KW-3's cited witness tests a different mutation",
+   "claim": "v1.3 §2.1 delivers 'one legal identity, many items' for a decision delivered by two channels, and the declared witness W-UNRELATED-CORPUS-IDENTITY-CHURN kills a design that mints a second identity from the second channel's bytes.",
+   "stand_up": "Judgment ΑΠ 1234/2020 arrives via channel A (court-registry delivery, un-anonymized PDF → text) and channel B (areios-pagos.gr HTML, anonymized: names → initials, page header/footer stripped). 'judgment' is a Rule-B class (USC:176) ⇒ ONLY single-document-expression ⇒ expression_id = lse1:hash(work, language, content_sha256(§2-normalized text)) (USC:164-166). §2 normalization is NFC + LF + trailing-whitespace/BOM only (canonical-serialization-spec.md:34-36); it cannot equate anonymized vs original, OCR vs HTML, or header variants. Result: work_id identical, expression_id_A ≠ expression_id_B. Q13:169-170 defines identity = work_id AND expression_id; Q13:176-177 (γ) and Q07:117-119 require zero duplicate identities for the same decision from two channels ⇒ the design fails its own witness in the ordinary case — and MLTP §2.5:123 (per-claim anonymization status) shows the two texts are meant to coexist as one decision. Witness check (KW:9-12): a mutated design that mints a second expression_id from channel B's content passes W-UNRELATED-CORPUS-IDENTITY-CHURN (USC:642), whose stand-up is 'εισαγωγή άσχετης απόφασης (corpus seq 100→101) → ΚΑΘΕ υπάρχον expression_id ΑΜΕΤΑΒΛΗΤΟ' — existing ids stay unchanged; a new one is simply added. The declared witness does not redden the declared mutation ⇒ KW-3 is a false witness by the file's own rule.",
+   "spec_expected": "KW:20 want: 'μία νομική ταυτότητα, πολλά items· ταυτότητα ΟΧΙ από raw-byte digest'. Q07:119 'ίδια απόφαση από δύο κανάλια ⇒ μία ταυτότητα, όχι δύο'. Q13:176-177 (γ). Q24:293-294 same work/expression ⇒ same expression_id.",
+   "spec_actual_reading": "CP:100 concedes same expression_id only '(αν ίδιο §2-normalized κείμενο)'. USC:164-166 makes single-document expression identity a content digest and USC:176 confines judgments to that kind; Q13:169-170 then counts expression_id as identity. The three passages cannot hold simultaneously for an anonymized/original pair. Q24:293 is tautological (two manifestations of the SAME expression ⇒ same expression_id) and never exercises the two-channel case. The cited USC witness tests unrelated-import stability of existing ids, not second-channel duplication.",
+   "doc_refs": [
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.3-KILL-WITNESSES.md:9",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.3-KILL-WITNESSES.md:12",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.3-KILL-WITNESSES.md:20",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:164",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:166",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:176",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:642",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/verify/canonical-serialization-spec.md:34",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/verify/canonical-serialization-spec.md:36",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:98",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:100",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:102",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:117",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:119",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:169",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:177",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:293",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:123"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && D=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL && sed -n '20p' $D/V1.3-KILL-WITNESSES.md && sed -n '642p' deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md && sed -n '164,166p;176p' deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md && sed -n '100p' $D/CHANGE-PROPOSAL-v1.3.md && sed -n '169,170p;176,177p' $D/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md && sed -n '34,36p' deployment/verify/canonical-serialization-spec.md",
+    "raw_output": "| **KW-3** | raw-byte identity churn | εισαγωγή δεύτερου manifestation/κανάλι της ίδιας απόφασης· σχεδίαση που παράγει **δεύτερο** `work_id`/`expression_id` από τα raw bytes | **W-UNRELATED-CORPUS-IDENTITY-CHURN** — μία νομική ταυτότητα, πολλά items· ταυτότητα ΟΧΙ από raw-byte digest | v1.3 §2.1, MLTP §2.5, Q13/Q24 |\n| **W-UNRELATED-CORPUS-IDENTITY-CHURN** | εισαγωγή άσχετης απόφασης (corpus seq 100→101) → ΚΑΘΕ υπάρχον expression_id ΑΜΕΤΑΒΛΗΤΟ· μόνο νέες attestations δυνατές· expression schema με πεδίο cut/checkpoint → reject |\nsingle-document-expression: {\"work\", \"language\",\n                         \"content_sha256\": <sha256(UTF-8(§2-normalized\n                           κείμενο — Η ΙΔΙΑ normalization των\n- Rule-B works χωρίς body-kind: ΜΟΝΟ single-document [Κ-S8] — provision-\n⇒ **ίδιο `work_id`** και (αν ίδιο §2-normalized κείμενο) **ίδιο `expression_id`**,\n**Κριτήριο:** ταυτότητα = `work_id` (identity_domain + official_key) και\n`expression_id` (κείμενο + valid_at) — **τα raw bytes ταυτοποιούν το ITEM μιας\n(`W-UNRELATED-CORPUS-IDENTITY-CHURN`)· (γ) ίδια απόφαση από δύο κανάλια που παράγει\n**δύο** ταυτότητες ⇒ αποτυγχάνει (πρέπει μία νομική ταυτότητα, πολλά items).\n- **NFC** Unicode normalization.\n- Γραμμές με **LF** (ποτέ CRLF).\n- Χωρίς trailing whitespace ανά γραμμή· χωρίς BOM."
+   },
+   "severity": "P1"
+  },
+  {
+   "id": "A3-F5",
+   "kw_ref": "NEW",
+   "title": "Bytes↔legal-object binding is unexpressible in MLTP: source-authenticity names no work/expression, legal-state and judgment-identity-and-text name no artifact/receipt, and the manifestation level is absent from every profile",
+   "claim": "The MLTP typed profiles let an offline verifier (or auditor reading the bundle) establish that a RELEASED legal object's text derives from bytes whose official provenance is attested (CP §2.2 'ενισχυμένο Σ-1', Q03).",
+   "stand_up": "Bundle: SA = source-authenticity{raw_artifact: digest of the genuine ΦΕΚ Α΄95/2019 bytes, acquisition_receipt_id, authority_id, institutional_register_id, authority_proof_ref, acquired_at, time_anchor} and LS = legal-state{work_id: gr/nomos/2019/4619, expression_id: lse1:E*, legal_state: IN, attestation_id, knowledge_checkpoint_id} where E* is a text that never appeared in any ΦΕΚ, included by the issuer under release_root R signed by the delegated key. §8.3: A inclusion of LS under R ✓ (the issuer built R); B sigs ✓; C root ✓; D–H ✓; J ⇒ VERIFIED. No typed field lets anyone check that E* derives from SA's bytes: SA carries no work/expression (81-88: 0 hits), LS carries no artifact/receipt (95-99: 0 hits). For judgment-identity-and-text (120-125: 0 hits) the payload carries no digest or expression at all, so §8.3:387 pcl_inclusion(c.payload, c.proof_material) has no typed leaf to recompute — the 'text' in the profile's name is bound only by the issuer's say-so. manifestation_id/lsm1 appears nowhere in MLTP (0 hits) although CP §2.1 adopts the four-level model 'αυτούσια'; Q24's manifestation-level criterion is therefore unobservable from any bundle.",
+   "spec_expected": "CP:124-127: RELEASED requires authority-proof-bundle AND institutional_register_id AND acquisition receipt. Q03:78-80: 100% of RELEASED objects 'φέρουν source-authenticity IssuedClaim'. PCL:4-5: checkable 'without trusting the publisher'. USC:52: extraction-receipt/2 + normalization-receipt are 'Η ΜΟΝΗ γέφυρα' raw→text. CP:85-96 four levels adopted.",
+   "spec_actual_reading": "Each profile carries one end of the provenance chain — byte end (§2.1) or legal end (§2.2, §2.5) — never both; MLTP omits the USC bridge (extraction-receipt/2 with manifestation_id) and the manifestation level. 'φέρουν' in Q03 has no wire-level referent, so the enhanced Σ-1 is a policy the issuer asserts, not a property the verifier checks.",
+   "doc_refs": [
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:81",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:88",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:95",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:99",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:120",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:125",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:386",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:387",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:85",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:124",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:127",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:78",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:80",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:293",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:52",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/PROOF-CARRYING-LAW.md:5"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && F=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md && echo \"manifestation_id|lsm1 in MLTP: $(grep -c 'lsm1\\|manifestation_id' $F)\" && echo \"work/expression fields in §2.1 source-authenticity (81-88): $(sed -n '81,88p' $F | grep -c 'work_id\\|expression_id\\|lsw1\\|lse1')\" && echo \"artifact/receipt fields in §2.2 legal-state (95-99): $(sed -n '95,99p' $F | grep -c 'raw_artifact\\|acq1\\|acquisition\\|digest')\" && echo \"digest/expression fields in §2.5 judgment (120-125): $(sed -n '120,125p' $F | grep -c 'expression_id\\|lse1\\|digest\\|acq1\\|content_sha256')\" && sed -n '386,387p' $F",
+    "raw_output": "manifestation_id|lsm1 in MLTP: 0\nwork/expression fields in §2.1 source-authenticity (81-88): 0\nartifact/receipt fields in §2.2 legal-state (95-99): 0\ndigest/expression fields in §2.5 judgment (120-125): 0\n  for c in bundle.issued_claims:\n     checks += pcl_inclusion(c.payload, c.proof_material)"
+   },
+   "severity": "P1"
+  },
+  {
+   "id": "A3-F6",
+   "kw_ref": "NEW",
+   "title": "IssuedClaim signature coverage is undefined (no context string, payload declared the only input) and the RFC-3161 imprint target is unspecified — issued_at, proof_material, qualification_state_ref and claim_type may be unsigned; §9 retroactive revocation depends on an unstated binding",
+   "claim": "An IssuedClaim's signature and its issued_at anchor bind the whole claim (payload, proof_material, claim_type, qualification_state_ref) and the anchor proves when the SIGNATURE existed.",
+   "stand_up": "(a) Delegated key K is compromised with invalid_from = T0. Attacker takes c0, legitimately signed at T-1 < T0, whose issued_at.anchor is a TSR that — as far as the spec states — imprints canonical_bytes(payload) (the only object §1.0 names as verification input). Attacker replaces proof_material and qualification_state_ref, re-signs with K at T+1 > T0 and keeps the old TSR. §8.3 G (409-411): t_sig = issued_at.trusted_time = T-1 < invalid_from ⇒ not retroactively-revoked; the mutated claim verifies. (b) Any re-bundler (mirror/CDN/MITM) repoints c.qualification_state_ref at the strongest record in the bundle; nothing states the ref is under the signature (compounds A3-F3). (c) claim_type/profile are not stated to be signed, and §8.3 performs no payload-shape validation, so relabeling is bounded by nothing in the verifier contract.",
+   "spec_expected": "MLTP §4:240-242: sig = SIGN(kid, context_string ‖ 0x1F ‖ canonical_bytes(target)), 'target = το ρητά δηλωμένο αντικείμενο'; §4:232-235 a context string per signature-payload type; §1.0:43,50-53 issued_at = trusted SIGNATURE-time anchor; §9:446 'μόνο υπογραφές με ανεξάρτητο RFC-3161 χρόνο πριν το invalid_from επιβιώνουν'.",
+   "spec_actual_reading": "The context-string list (233-234) names release-root, delegation, witness-checkpoint, qual-state — no IssuedClaim entry; the 'target' of an IssuedClaim signature is never declared while §1.0:35 and :57 say the payload is the ONLY verification input. No sentence states what bytes the RFC-3161 imprint covers (0 hits for imprint/messageImprint). A TSR over the payload proves the payload existed, not that the signature did — which is exactly what §9's compromise-window rule needs.",
+   "doc_refs": [
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:35",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:43",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:50",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:53",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:57",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:232",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:235",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:240",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:242",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:409",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:411",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:446"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && F=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md && grep -n \"mltp2:\" $F && sed -n '35p;43p;240p' $F && echo \"TSR-imprint statements: $(grep -c 'imprint\\|messageImprint' $F)\"",
+    "raw_output": "233:ανά τύπο signature payload (π.χ. `\"mltp2:release-root\"`, `\"mltp2:delegation\"`,\n234:`\"mltp2:witness-checkpoint\"`, `\"mltp2:qual-state\"`) ώστε υπογραφή ενός τύπου να μη\n  \"payload\": <TYPED, κλειστό ανά profile — §2· ΤΟ ΜΟΝΟ input της επαλήθευσης>,\n                 \"anchor\": <tsr_sha256 (RFC-3161) | tlog_leaf_index> },   # ΑΞΙΟΠΙΣΤΟΣ χρόνος υπογραφής — §9\n**Signature payload (ρητά):** `sig = SIGN(kid, context_string ‖ 0x1F ‖ canonical_bytes(target))`\nTSR-imprint statements: 0"
+   },
+   "severity": "P1"
+  },
+  {
+   "id": "A3-F7",
+   "kw_ref": "NEW",
+   "title": "legal_state UNDEC: §2.2 says the local verifier returns UNKNOWN, §8.3 has no UNDEC branch and returns VERIFIED (KT6 regression, kernel-diversity violated by construction)",
+   "claim": "A legal-state IssuedClaim with legal_state UNDEC is never returned as VERIFIED by the local verifier.",
+   "stand_up": "legal-state IssuedClaim with legal_state: 'UNDEC' (two conflicting official authorities, live official-sources-conflict), all crypto/inclusion/tlog/witness/revocation checks valid, trusted time present, qualification resolved. §8.3 (383-423) never inspects payload.legal_state (0 UNDEC hits) ⇒ falls to line 423: return VERIFIED. §2.2:97 requires UNKNOWN for the same input. Two independent implementations following the two passages disagree, which Q21:261-262 (identical result across implementations) declares a failure — so the spec forces a Q21 failure whichever passage an implementer picks.",
+   "spec_expected": "MLTP §2.2:97 'UNDEC ⇒ local verifier: UNKNOWN'; CP §5:248 'UNDEC ⇒ UNKNOWN (KT6)'; QT Q10:146-147 two conflicting authorities ⇒ must be UNDEC/UNKNOWN, never a decided answer presented as verified.",
+   "spec_actual_reading": "§8.3's only return values are retroactively-revoked (411), UNVERIFIED_FOR_MACHINE_RELIANCE for unadopted analysis (420), UNKNOWN_FRESHNESS (422) and VERIFIED (423); no step reads legal_state. The §2.2 comment is a rule without a seat in the verifier contract.",
+   "doc_refs": [
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:97",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:383",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:423",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:248",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:146",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:147",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:261"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && F=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md && grep -n \"UNDEC\" $F && echo \"UNDEC-in-§8.3(383-423): $(sed -n '383,423p' $F | grep -c UNDEC)\" && sed -n '423p' $F",
+    "raw_output": "97:            \"legal_state\": <\"IN\" | \"OUT\" | \"UNDEC\">,        # UNDEC ⇒ local verifier: UNKNOWN\nUNDEC-in-§8.3(383-423): 0\n  return VERIFIED"
+   },
+   "severity": "P1"
+  },
+  {
+   "id": "A3-F8",
+   "kw_ref": "NEW",
+   "title": "Every public IssuedClaim carries an untyped free-text 'description' — the one-way boundary's 'no field to write' claim is false as written; protection is a verifier-ignores-it guard, which Q20 classifies as failure",
+   "claim": "The public schema is structurally incapable of carrying private matter/client material (CP §0: 'καμία διαρροή να φρουρηθεί, γιατί κανένα πεδίο να γραφτεί'; Q20: structural, not a guard).",
+   "stand_up": "A reviewer's jurisprudential-analysis IssuedClaim is issued with description: 'adopted for matter K-2026-17 (client X) — see hypothesis workspace note'. The envelope accepts it (MLTP:45), the verifier ignores it (MLTP:56-57), the claim is signed, released and tlog-anchored with no deletion (§2.7:157). Q20's negative witness (QT:249-251) — 'add a matter field ⇒ must not compile; if it compiles and is merely filtered, the family FAILS' — is defeated without adding any field. The same free-text channel exists in ratio[].claim (MLTP:132) and typed_uncertainty evidence in public signed objects.",
+   "spec_expected": "CP §0:46-48: no Matter/Case/Client type — 'καμία διαρροή να φρουρηθεί, γιατί κανένα πεδίο να γραφτεί'. QT Q20:246-251: structural impossibility; guard-and-filter = failure.",
+   "spec_actual_reading": "MLTP §1.0:45 defines an optional untyped human-text field on every public IssuedClaim; the only protection is 'ΔΕΝ διαβάζεται ποτέ από τον verifier' (56-57), i.e., a runtime guard on the consumer side, not absence of a write channel. The boundary claim in CP §0 is contradicted by the wire schema it introduces.",
+   "doc_refs": [
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:45",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:56",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:57",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:132",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:157",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:46",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:48",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:246",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:251"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && D=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL && sed -n '45p' $D/MACHINE-LEGAL-TRUST-PROTOCOL.md && sed -n '46,48p' $D/CHANGE-PROPOSAL-v1.3.md",
+    "raw_output": "  \"description\": <ΠΡΟΑΙΡΕΤΙΚΟ ανθρώπινο κείμενο — ΠΟΤΕ input επαλήθευσης> }\n  υποθέσεις, χρήση, πελάτες ή προνομιακό υλικό. Το δημόσιο σχήμα **δεν έχει τύπο**\n  `Matter`/`Case`/`Client` — καμία διαρροή να φρουρηθεί, γιατί κανένα πεδίο να\n  γραφτεί."
+   },
+   "severity": "P2"
+  },
+  {
+   "id": "A3-F9",
+   "kw_ref": "NEW",
+   "title": "Work identity and provenance are offline-unverifiable: LocalTrustState pins no authority/institutional-register registry, authority_proof_ref is presence-checked only, and 'provisional_id' (counted as identity by Q07) is never defined",
+   "claim": "An offline consumer can detect two work_ids for one judgment (Q07/Q24) and can distinguish genuine institutional provenance from a well-formed but issuer-invented auth1:/ireg1:/authority-proof triple (KW-4 want).",
+   "stand_up": "The issuer mints ireg1:A (founding_locator = pre-corpus{…}) and later ireg1:B (founding_locator = provision-id{ΚΠολΔ art. N, tv_hash}) for the Areios Pagos numbering register (USC:314-324 admits either locator form); the same judgment gets work_id_A ≠ work_id_B (USC:255-259). Bundles carry judgment claims under both; LocalTrustState (MLTP:354-364) holds no authority/register registry (0 hits) so the verifier accepts two distinct works. Second: source-authenticity with syntactically present but issuer-invented authority_id / institutional_register_id / authority_proof_ref passes the §2.1:90-91 presence rule; §8.3 never examines authority_proof (0 hits in 383-423) — KW-4's insufficient-provenance is satisfied by any well-formed triple, so 'time only' and 'provenance' are indistinguishable to the consumer. Third: 'provisional_id' is counted as identity by Q07:116-117 ('ντετερμινιστικό προσωρινό αναγνωριστικό'), appears once in MLTP (120) and is defined nowhere; a design that derives it from content_sha256 satisfies the text literally and reintroduces byte identity.",
+   "spec_expected": "Q07:117-119 zero duplicate identities; Q24:290-298; CP §2.2:116-119 authority/register identity resilient to restructuring; KW:21 (KW-4) want insufficient-provenance; PCL:4-5 'checkable by anyone … without trusting the publisher'.",
+   "spec_actual_reading": "Identity uniqueness and institutional provenance are issuer-internal invariants (USC gated registries) with no consumer-side anchor: LocalTrustState pins keys, witnesses, auditors, tlog and time, not the authority/register registries that work_id and source-authenticity depend on. The offline verifier checks provenance by field presence only, and provisional identity has no definition to attack or defend.",
+   "doc_refs": [
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:90",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:91",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:120",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:354",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:364",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:383",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:423",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:255",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:259",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:314",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md:324",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:116",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md:119",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.3.md:116",
+    "/home/user/THE-LEGAL-WATCHTOWER/deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.3-KILL-WITNESSES.md:21"
+   ],
+   "verdict": "FALSIFIED",
+   "evidence_class": "MECHANICAL",
+   "mechanical": {
+    "command": "cd /home/user/THE-LEGAL-WATCHTOWER && D=deployment/collab/design/OMEGA2/CHANGE-PROPOSAL && F=$D/MACHINE-LEGAL-TRUST-PROTOCOL.md && echo \"authority/register registry in LocalTrustState(354-364): $(sed -n '354,364p' $F | grep -c 'authority\\|register')\" && echo \"authority_proof checks in §8.3(383-423): $(sed -n '383,423p' $F | grep -c authority_proof)\" && grep -rn \"provisional\" $D/CHANGE-PROPOSAL-v1.3.md $F $D/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md",
+    "raw_output": "authority/register registry in LocalTrustState(354-364): 0\nauthority_proof checks in §8.3(383-423): 0\ndeployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md:120:payload = { \"work_id\":\"lsw1:… (judgment domain)\", \"ecli\" | \"provisional_id\","
+   },
+   "severity": "P2"
+  }
+ ],
+ "kw_coverage": [
+  {
+   "kw": "KW-3",
+   "verdict": "FALSIFIED",
+   "finding_id": "A3-F4"
+  },
+  {
+   "kw": "KW-11",
+   "verdict": "FALSIFIED",
+   "finding_id": "A3-F1"
+  }
+ ],
+ "unknown_axes_explored": [
+  "Consumer-visible carriage of qualification level: VerificationReceipt (§7) has no level field; §8.3 H's 'level none' is dropped and J returns VERIFIED — finding A3-F1 (P0).",
+  "Cryptographic binding of QualificationStateRecord: signature never verified in §8.3, role self-declared, signer kid never bound to lts.auditor_registry, 'auditor-quorum' unrepresentable with a single {kid,sig}, sibling delegated key under the same pinned owner root evades the 'release-authority kid' check — finding A3-F2 (P0).",
+  "Qualification reference semantics: record has no id, subject never compared to the claim, §6 tlog-inclusion path absent from §8.3 and not offline-resolvable — finding A3-F3 (P1).",
+  "Identity under adversarial/ordinary second manifestations: judgments confined to single-document-expression (content digest); anonymized vs original text of one decision ⇒ two expression_ids while Q13 counts expression_id as identity; KW-3's cited USC witness tests unrelated-import stability, not second-channel duplication — finding A3-F4 (P1).",
+  "Bytes↔legal-object binding across typed profiles and absence of the manifestation level (lsm1) from every MLTP profile; judgment-identity-and-text has no typed leaf for pcl_inclusion — finding A3-F5 (P1).",
+  "IssuedClaim signature coverage (no context string, payload declared the only input) and unspecified RFC-3161 imprint target; interaction with §9 retroactive revocation and with re-pointing of unsigned qualification_state_ref — finding A3-F6 (P1).",
+  "UNDEC handling: §2.2 says UNKNOWN, §8.3 returns VERIFIED — finding A3-F7 (P1).",
+  "Free-text channels (description, ratio[].claim, typed_uncertainty evidence) in public signed objects versus the 'no field to write' one-way boundary claim and Q20's structural criterion — finding A3-F8 (P2).",
+  "Issuer-minted institutional-register/authority ids with no consumer-side registry in LocalTrustState; authority_proof_ref presence-only; provisional_id undefined though counted as identity by Q07 — finding A3-F9 (P2).",
+  "UNKNOWN_FRESHNESS returned by §8.3 J (line 422) but absent from §7's closed result sum (line 334: VERIFIED | UNVERIFIED_FOR_MACHINE_RELIANCE | UNKNOWN) — noted as a typed-result mismatch; left to the KW-13 holder, no separate finding filed.",
+  "Correction/withdrawal claims (§2.7) are never consulted by §8.3: a legal-state claim for a WITHDRAWN expression still verifies — judged consistent with the bitemporal 'no deletion, consumer reconciles at its cut' design; no finding.",
+  "Bundle-granularity of the verdict: one unadopted analysis claim makes the whole bundle UNVERIFIED_FOR_MACHINE_RELIANCE (§8.3 I) — coarse but fail-closed; no security finding.",
+  "Temporal ordering between a claim's issued_at and its QualificationStateRecord's issued_at (retro-qualification of earlier claims): unspecified, but no acceptance-of-forgery scenario could be constructed from it; no finding.",
+  "Numbering-mode assertion change (unified → per-formation) altering the judgment official_key shape and hence work_id — a USC-internal hazard (USC §1.4/§2.2 'numbering' assertion outside the hash); no v1.3 text to attack; UNCERTAIN, no finding.",
+  "Two seats for auditor_receipts (record-internal §3 vs bundle-level §6; only the former used at §8.3:417) — a duplication/mediocrity concern belonging to axis β; not pursued here."
+ ],
+ "summary": "Both mandatory witnesses fall. KW-11: a dangling qualification_state_ref produces 'level none' in a pseudocode-local variable, §8.3 then returns VERIFIED, and the VerificationReceipt schema has no field for level — silent acceptance is the specified behaviour, and §8:431 contradicts §8.3:423 for the same input (A3-F1, P0). KW-3: judgments are single-document expressions keyed by a content digest; an anonymized and an original copy of one decision get two expression_ids while Q13 defines identity as work_id AND expression_id with zero duplicates; the witness KW-3 cites (W-UNRELATED-CORPUS-IDENTITY-CHURN) tests an unrelated import, not a second channel, so it does not kill the mutation (A3-F4, P1). The unknown-axis hunt found a second P0: §8.3 never verifies the QualificationStateRecord's signature, accepts a self-declared role, never binds the signer to LocalTrustState.auditor_registry, and cannot represent a quorum (A3-F2). Further P1 breaks: qualification refs have no id and no subject binding and §6's tlog path is not offline-resolvable (A3-F3); no MLTP profile carries manifestation_id and no profile binds bytes to a legal object (A3-F5); IssuedClaim signature coverage and the RFC-3161 imprint target are undefined, undermining §9 (A3-F6); UNDEC yields VERIFIED (A3-F7). P2: a free-text description field contradicts the 'no field to write' boundary claim (A3-F8); work identity and provenance are offline-unverifiable and provisional_id is undefined (A3-F9). All findings are mechanically reproducible over the repo text at 9dabc2bb; no state was modified."
+}

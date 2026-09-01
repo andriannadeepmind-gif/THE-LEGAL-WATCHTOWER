@@ -1,0 +1,97 @@
+### V1.4 CONTRADICTION/OMISSION AUDIT — 9dabc2bb — 2026-09-01T21:36:27Z
+# P1 καμία ταξινόμηση «CPEI = ιδιωτικό» σε ACTIVE έγγραφο (μόνο ως ανακληθέν παράθεμα)
+P1a   | actual=1      | want ge 1      | PASS
+P1b   | actual=1      | want ge 1      | PASS
+P1c   | actual=1      | want ge 1      | PASS
+P1d   | actual=1      | want ge 1      | PASS
+P1e   | actual=1      | want ge 1      | PASS
+P1f   | actual=11     | want ge 1      | PASS
+P1g   | actual=1      | want ge 1      | PASS
+# P2 και οι 12 στρώσεις L1–L12 ονομαστικά στο v1.4 §1.1 και στο crosswalk §B.0
+P2a   | actual=12     | want eq 12     | PASS
+P2b   | actual=12     | want eq 12     | PASS
+# P3 κανένα νευρωνικό συστατικό στο trusted path
+P3a   | actual=1      | want ge 1      | PASS
+P3b   | actual=1      | want ge 1      | PASS
+P3c   | actual=1      | want ge 1      | PASS
+P3d   | actual=1      | want ge 1      | PASS
+P3e   | actual=3      | want ge 2      | PASS
+# P4 καμία μη επαληθευμένη ερμηνεία ως θεσμικό γεγονός
+P4a   | actual=4      | want ge 1      | PASS
+P4b   | actual=1      | want ge 1      | PASS
+P4c   | actual=1      | want ge 1      | PASS
+P4d   | actual=1      | want ge 1      | PASS
+P4e   | actual=1      | want ge 1      | PASS
+P4f   | actual=2      | want eq 2      | PASS
+# P5 καμία απαίτηση χωρίς έδρα/τεστ/τεκμήριο· κάθε αναφερόμενο id ορισμένο
+P5a   | actual=124    | want eq 124    | PASS
+P5b   | actual=124    | want eq 124    | PASS
+P5c   | actual=124    | want eq 124    | PASS
+P5d   | actual=0      | want eq 0      | PASS
+P5e   | actual=5      | want eq 5      | PASS
+P5f   | actual=63     | want eq 63     | PASS
+P5g   | actual=0      | want eq 0      | PASS
+P5h   | actual=63     | want eq 63     | PASS
+P5i   | actual=42     | want eq 42     | PASS
+P5j   | actual=0      | want eq 0      | PASS
+P5k   | actual=15     | want eq 15     | PASS
+P5l   | actual=0      | want eq 0      | PASS
+P5m   | actual=13     | want eq 13     | PASS
+P5n   | actual=0      | want eq 0      | PASS
+P5o   | actual=0      | want eq 0      | PASS
+P5p   | actual=8      | want eq 8      | PASS
+P5q   | actual=153    | want eq 153    | PASS
+P5r   | actual=0      | want eq 0      | PASS
+P5s   | actual=0      | want eq 0      | PASS
+P5t   | actual=15     | want eq 15     | PASS
+P1h   | actual=0      | want eq 0      | PASS
+P6b   | actual=1      | want eq 1      | PASS
+P6e   | actual=0      | want eq 0      | PASS
+C8    | actual=35     | want eq 35     | PASS
+C9    | actual=35     | want eq 35     | PASS
+C10   | actual=1      | want ge 1      | PASS
+C13a  | actual=1      | want ge 1      | PASS
+C13b  | actual=0      | want eq 0      | PASS
+C13c  | actual=0      | want eq 0      | PASS
+C13d  | actual=0      | want eq 0      | PASS
+C17   | actual=6      | want eq 6      | PASS
+# P6 μία κανονική γραμμή: v1.4 CURRENT, v1.3 HISTORICAL, banners
+P6a   | actual=1      | want eq 1      | PASS
+P6c   | actual=1      | want eq 1      | PASS
+P6d   | actual=3      | want eq 3      | PASS
+P6g   | actual=1      | want ge 1      | PASS
+# C καταμετρήσεις έναντι του filesystem και μεταξύ εγγράφων
+C1    | actual=133    | want eq 133    | PASS
+C2    | actual=48     | want eq 48     | PASS
+C1b   | actual=133    | want eq 133    | PASS
+C2b   | actual=48     | want eq 48     | PASS
+C3    | actual=153    | want eq 153    | PASS
+C4    | actual=135    | want eq 135    | PASS
+C5    | actual=10     | want eq 10     | PASS
+C6    | actual=8      | want eq 8      | PASS
+C7    | actual=1      | want ge 1      | PASS
+C7b   | actual=1      | want ge 1      | PASS
+C11   | actual=0      | want eq 0      | PASS
+C12a  | actual=0      | want eq 0      | PASS
+C12b  | actual=0      | want eq 0      | PASS
+C14a  | actual=2      | want ge 1      | PASS
+C14b  | actual=1      | want ge 1      | PASS
+C15   | actual=6      | want eq 6      | PASS
+C16a  | actual=9      | want ge 3      | PASS
+C16b  | actual=14     | want ge 3      | PASS
+C16c  | actual=3      | want ge 2      | PASS
+C18a  | actual=42     | want eq 42     | PASS
+C18b  | actual=63     | want eq 63     | PASS
+C18c  | actual=15     | want eq 15     | PASS
+C18d  | actual=13     | want eq 13     | PASS
+C18e  | actual=15     | want eq 15     | PASS
+C19   | actual=0      | want eq 0      | PASS
+C20   | actual=1      | want ge 1      | PASS
+C21   | actual=1      | want ge 1      | PASS
+C22   | actual=1      | want ge 1      | PASS
+C23   | actual=11     | want ge 10     | PASS
+# F regression floor: V1.3-CONSISTENCY-AUDIT.sh
+F1    | actual=0      | want eq 0      | PASS
+F2    | actual=0      | want eq 0      | PASS
+### SUMMARY: checks=86 pass=86 fail=0
+### EXIT 0 — ALL PASS

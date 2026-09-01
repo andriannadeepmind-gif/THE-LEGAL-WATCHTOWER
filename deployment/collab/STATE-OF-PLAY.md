@@ -4,7 +4,7 @@
 ετυμηγορίες, εκκρεμότητες, μπλοκαρίσματα. Ο διάλογος: `AI-DIALOGUE.md`.
 Πηγή αλήθειας παραμένουν τα gates/μητρώα — αυτό είναι ΣΥΝΟΨΗ, όχι απόδειξη.
 
-*Τελευταία ενημέρωση: Claude · 2026-09-01 (ε) — **[0135] v1.3 ERRATA + ΕΚΤΕΛΕΣΙΜΟΣ AUDIT — CONDITIONAL GO TO DESTRUCTION]**: ένα ελάχιστο design-only errata commit πάνω στο `aed4eba9`, καμία νέα αρχιτεκτονική/scope. 8 errata: stale κατάλοιπα (v1.2-prereq, JurisprudenceCertificate, witnesses-as-auditors, «7 certs»)· delegated-key chain root→delegation(scope)→key→claim, ΟΧΙ thumbprint==root, `delegation-scope-violation`· `verify_bundle(bundle, LocalTrustState)` με trusted-time evidence ⇒ `UNKNOWN_FRESHNESS` ποτέ VERIFIED χωρίς αξιόπιστο now (κλείνει KT1)· TrustBundle offline-resolvable + embedded registries UNTRUSTED· έμμεση αυτοπιστοποίηση κλειστή (issuer roles, release issuer ποτέ για εαυτό, quorum)· trusted `issued_at`, revocation έναντι signature time· KEY-LIFECYCLE §2.5 ↔ MLTP §9 versioned precedence· audit = committed `.sh` + `.out` με exit code, C1–C19. +8 kill witnesses (KW-9…16). **Πύλη: exit 0 ⇒ άμεσο destruction pass· exit 1 ⇒ στάση.** Καμία υλοποίηση, κανένα freeze, καμία αξίωση qualification.*
+*Τελευταία ενημέρωση: Claude · 2026-09-01 (στ) — **[0136] STAGE A ΑΝΑΠΑΡΑΓΩΓΙΜΗ ΚΡΙΣΗ + STAGE B v1.4 CPEI PUBLIC OBSERVATORY PROFILE — ΑΚΑΤΑΘΕΤΟ, ΣΤΑΣΗ ΓΙΑ ΕΠΙΘΕΩΡΗΣΗ]**: Stage A: 46 ευρήματα A1–A4 → 31 ρίζες CONFIRMED / 15 DUPLICATE_OF / 0 REFUTED / 0 UNREPRODUCIBLE, ξανατρεγμένα σε απομονωμένο HEAD με SHA-256, καμία επισκευή. Stage B: ένας ενοποιημένος δημόσιος υποψήφιος v1.4 (CPEI ανακλήθηκε από «ιδιωτικό» — κοινή αρχιτεκτονική, 3 profiles, 12/12 στρώσεις)· MLTP v3· διευκρίνιση χρονολογίων + Citation-Bound Verification Profile ενσωματωμένη· dispositions 133/133 + 48/48· 153 capabilities· 124 απαιτήσεις × 10 κρίκοι· Q01–Q42· KW-1 έως KW-63· D-01 έως D-13· VS-01 έως VS-15· βήματα 0–14· μητρώο. Audits: v1.4 **86/86 exit 0**, v1.3 floor **64/64 exit 0**. 8 `UNKNOWN` με owner/προθεσμία. **Κανένα commit, push, destruction programme, freeze, qualification — αναμένεται εντολή δημιουργού.***
 
 ## Κατάσταση συστήματος (τελευταία μετρημένη)
 
@@ -796,3 +796,24 @@ destruction pass να μη σπαταλήσει γύρο σε ήδη γνωστ�
   `SPEC SURVIVED — ELIGIBLE FOR FREEZE REVIEW` ή `FALSIFIED — NOT FREEZEABLE`).
 
 **ΔΕΝ ΕΓΙΝΕ:** υλοποίηση · deployment · freeze · qualification claim.
+
+## [0136] STAGE A ΑΝΑΠΑΡΑΓΩΓΙΜΗ ΚΡΙΣΗ + STAGE B v1.4 — CPEI PUBLIC OBSERVATORY PROFILE — πάνω στο `9dabc2bb` (ΑΚΑΤΑΘΕΤΟ)
+
+**Εντολή δημιουργού «PUBLIC ABSOLUTE-CEILING CLOSURE — ONE FINAL PUBLIC CANDIDATE, NO
+MORE DESIGN LOOPS»** + μη-μπλοκάρουσα διευκρίνιση (νομικός χρόνος ≠ χρόνος ελέγχου·
+Citation-Bound Verification Profile). Design only, working tree, **κανένα commit**.
+
+- **Stage A** (`V1.3-DESTRUCTION-PASS/STAGE-A-*`): 31 ρίζες RC-01 έως RC-31 CONFIRMED
+  (P0 9 / P1 15 / P2 7), 15 DUPLICATE_OF, 0 REFUTED, 0 UNREPRODUCIBLE· 42 εντολές
+  ξανατρεγμένες (39 ταυτόσημες, 3 κοσμητικές αποκλίσεις)· καμία επισκευή· A5–A8 δεν
+  έτρεξαν ποτέ ⇒ NO VERDICT για το πλήρες v1.3.
+- **Stage B** (`CHANGE-PROPOSAL/`): `CHANGE-PROPOSAL-v1.4.md` (CURRENT PUBLIC CANDIDATE /
+  NOT YET FREEZEABLE), `MACHINE-LEGAL-TRUST-PROTOCOL.md` v3, `PUBLIC-OBSERVATORY-CROSSWALK.md`,
+  `TRACEABILITY-MATRIX.md`, `PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md`, `DOMINANCE-MATRIX.md`,
+  `VERTICAL-SLICES.md`, `IMPLEMENTATION-SEQUENCE.md`, `SUPERSEDED-REGISTER.md` (Διόρθωση 2:
+  CPEI ≠ ιδιωτικό), `V1.4-CONTRADICTION-OMISSION-AUDIT.sh/.md/.out`· banners στα v1.3
+  αρχεία· `LAWMAX-CEILING-CROSSWALK.md §1β` δείκτης.
+- **Audits:** v1.4 contradiction/omission 86/86 exit 0· v1.3 consistency (floor) 64/64 exit 0.
+- **Ανοιχτά:** U-1 έως U-8 με owner/προθεσμία (v1.4 §12).
+- **ΔΕΝ ΕΓΙΝΕ:** commit · push · destruction/validation programme · επισκευή κώδικα ·
+  refactor · freeze · qualification · υλοποίηση. **Πύλη: ρητή επόμενη εντολή δημιουργού.**

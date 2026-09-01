@@ -41,6 +41,19 @@ canon (CPEI) ώστε ΔΥΟ μυαλά να χτίζουν ΕΝΑ σπίτι. �
 σαρκώνει. Κανένα από τα 15 δεν απαιτεί νέο primitive (όλα ⊆ των 13) ούτε νέο
 top-level subsystem.
 
+## 1β · Δείκτης (2026-09-01): πλήρες capability universe του PUBLIC OBSERVATORY PROFILE
+
+Τα 15 επίπεδα του §1 επεκτείνονται σε πλήρες capability universe (CAP-01 έως CAP-153,
+κάθε capability με ακριβώς μία κατάσταση `HAS_SEAT` / `EXCLUDED_WITH_PROOF` /
+`UNKNOWN_WITH_OWNER_AND_DEADLINE`) στο
+`deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-CROSSWALK.md §B`,
+ως μέρος του `CHANGE-PROPOSAL-v1.4.md` (CPEI PUBLIC OBSERVATORY PROFILE — τρέχων
+δημόσιος υποψήφιος, **όχι** canonical, **όχι** frozen). Τα Επίπεδα 7 και 8 (status ✗
+στον πίνακα §1) αποκτούν έδρα εκεί (v1.4 §4.9, §4.8)· το Επίπεδο 13 (δόγμα) και το
+15 (φρουρός) παραμένουν δεσμευτικά και για το public profile. Το CPEI είναι κοινή
+αρχιτεκτονική με τρία profiles (v1.4 §1), όχι ιδιωτικός στόχος. Αυτό το αρχείο δεν
+αλλάζει κατά τα λοιπά· ο δείκτης είναι η μόνη προσθήκη.
+
 ## 2 · Τι προσθέτει ο σκελετός στο ταβάνι (η άλλη κατεύθυνση)
 
 Το όραμα των 15 επιπέδων περιγράφει ικανότητες· ΔΕΝ περιγράφει τη μορφή που

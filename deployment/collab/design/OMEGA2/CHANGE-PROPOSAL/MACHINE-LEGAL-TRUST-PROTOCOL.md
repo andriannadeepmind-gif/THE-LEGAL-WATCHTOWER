@@ -1,492 +1,1130 @@
-# MACHINE LEGAL TRUST PROTOCOL (MLTP) v2 — ΤΡΙΑ ΕΠΙΠΕΔΑ, TYPED CLAIMS, ΠΡΑΓΜΑΤΙΚΟ CRYPTO PROFILE
-# Υποσύστημα του `CHANGE-PROPOSAL-v1.3.md §3-4` — ΟΧΙ δεύτερη αρχιτεκτονική
+# MACHINE LEGAL TRUST PROTOCOL (MLTP) v3 — ΤΡΙΑ ΕΠΙΠΕΔΑ, TYPED CLAIMS, ΠΛΗΡΗΣ ΔΕΣΜΕΥΣΗ ΥΠΟΓΡΑΦΗΣ, ΑΥΘΕΝΤΙΚΟΠΟΙΗΜΕΝΟΣ ΧΡΟΝΟΣ, DISTRIBUTED TRUST MESH
+# Υποσύστημα του `CHANGE-PROPOSAL-v1.4.md §4.10` — ΟΧΙ δεύτερη αρχιτεκτονική
 
-**Design only.** Semantic-closure αναθεώρηση της v1 (η v1 είχε γνωστές εσωτερικές
-αντιφάσεις: self-asserted `verification_result`, hash-only verification αντί signature verification,
-ελεύθερο `claim` string, TrustBundle-ως-certificate, κοινά temporal fields παντού,
-απόλυτη revocation). **Καμία υλοποίηση, κανένα destruction pass, καμία αξίωση
-qualification.** Κάθε πεδίο ανάγεται σε υπάρχουσα έδρα (PCL/census-2/attestation/
-checkpoint/trust-bootstrap/key-lifecycle/USC).
+**Design only.** Έκδοση v3 = κλείσιμο, ΣΤΗΝ ΕΔΡΑ, των 31 ριζών (RC-01 έως RC-31)
+που επιβεβαίωσε το Stage A (`V1.3-DESTRUCTION-PASS/STAGE-A-ADJUDICATION.md`) πάνω
+στη v2. Η v2 είχε σωστή μακροδομή (τρία επίπεδα) αλλά το συμβόλαιο του verifier
+(§8.3) δεν παρέδιδε τους invariants που το κείμενο υποσχόταν. **Καμία υλοποίηση,
+κανένα destruction pass, καμία αξίωση qualification.** Κάθε πεδίο ανάγεται σε
+υπάρχουσα έδρα ή σε ρητά δηλωμένο κενό (`PUBLIC-OBSERVATORY-CROSSWALK.md`).
 
-**Θεμελιώδης διαχωρισμός (κλείνει το «issuer self-verdict» finding):**
+**Σημειογραφία:** `<τύπος>` = τυπική θέση σχήματος (τι μπαίνει εκεί), όχι
+εκκρεμότητα. Κάθε σχήμα εδώ είναι ΚΛΕΙΣΤΟ: άγνωστο πεδίο ⇒ `malformed-envelope`.
+
+**Θεμελιώδης διαχωρισμός (αμετάβλητος από τη v2):**
 
 ```
-Layer A  IssuedClaim          — ο EKΔΟΤΗΣ υπογράφει έναν typed claim + proof material.
-                                ΠΟΤΕ δεν γράφει «VERIFIED». ΠΟΤΕ δεν αυτοχαρακτηρίζει assurance.
-Layer B  TrustBundle          — CONTAINER μεταφοράς. Δεν ισχυρίζεται τίποτα· μεταφέρει.
-Layer C  VerificationReceipt  — ο ΤΟΠΙΚΟΣ verifier/auditor παράγει το ΑΠΟΤΕΛΕΣΜΑ.
-                                Δεν υπογράφεται ποτέ από τον εκδότη ως αυτο-ετυμηγορία.
+Layer 0  TrustStatements       — ο OWNER ROOT υπογράφει ΜΟΝΟ: delegations, revocations,
+                                 registry snapshots, ceremony record. ΠΟΤΕ claims.
+Layer A  IssuedClaim           — ο ΕΚΔΟΤΗΣ (delegated key) υπογράφει έναν typed claim +
+                                 proof material. ΠΟΤΕ δεν γράφει «VERIFIED». ΠΟΤΕ assurance.
+Layer B  TrustBundle           — CONTAINER μεταφοράς. Δεν ισχυρίζεται τίποτα· μεταφέρει
+                                 ΚΑΘΕ αντικείμενο που ο offline verifier χρειάζεται.
+Layer C  VerificationReceipt   — ο ΤΟΠΙΚΟΣ verifier/auditor παράγει το ΑΠΟΤΕΛΕΣΜΑ.
+                                 Δεν υπογράφεται ποτέ από τον εκδότη ως αυτο-ετυμηγορία.
 ```
-
-Ο αριθμός των profiles **δεν είναι στόχος** (η v1 κυνηγούσε «7»)· στόχος είναι η
-**σημασιολογική πληρότητα**.
 
 ---
 
-## 1. LAYER A — `IssuedClaim` (υπογεγραμμένος typed claim)
+## 0. ΤΙ ΑΛΛΑΖΕΙ ΑΠΟ ΤΗ v2 — ΜΙΑ ΓΡΑΜΜΗ ΑΝΑ ΡΙΖΑ STAGE A
 
-### 1.0 Envelope — ΜΟΝΟ ό,τι ισχύει για ΚΑΘΕ profile (κανένα temporal εδώ)
+| ρίζα | ελάττωμα v2 (μηχανικά επιβεβαιωμένο) | κλείσιμο v3 (έδρα) |
+|---|---|---|
+| RC-01 | signing input IssuedClaim αόριστο | §1.2: context `mltp3:issued-claim`, target = ΟΛΟΚΛΗΡΟ το envelope πλην `signature.sig` — κανένα ανυπόγραφο πεδίο |
+| RC-02 | κανένας φορέας/δέσμευση delegated κλειδιού | §6 `keys[]` (JWK), `kid ≡ RFC 7638 thumbprint`, §8.3 βήμα K1 δεσμεύει κλειδί↔delegation |
+| RC-03 | `issued_at` (v2 όνομα· v3: `signed_at`) issuer-written | §1.3 + §6 `time_evidence[]` (TSR DER bytes) + §8.1 `tsa_trust_anchors` + §8.3 βήμα T: ο verifier ΠΑΡΑΓΕΙ `t_sig` από genTime, imprint επί της υπογραφής |
+| RC-04 | παράθυρο delegation vs `d.signed_time` | §8.3 βήμα K3: `not_before ≤ t_sig ≤ not_after` else `delegation-expired` |
+| RC-05 | επιλογή delegation/seq αόριστη | §8.3 βήμα K2: μέγιστο seq ανά kid, `delegation_seq` του claim πρέπει να ισούται, ανάκληση κατά kid ΚΑΙ seq |
+| RC-06 | QSR χωρίς sig_verify/registry/quorum | §3 signer = λίστα, §8.3 βήμα Q: κάθε υπογραφή ελέγχεται έναντι registry allowlist, role από registry, quorum μετρήσιμο, receipts υπογεγραμμένα |
+| RC-07 | dangling ⇒ VERIFIED, receipt χωρίς level | §7 per-claim `level` + `result`· §8.3: dangling ⇒ `UNVERIFIED_FOR_MACHINE_RELIANCE` |
+| RC-08 | QSR χωρίς id/subject binding | §3 `record_id`, typed `subject`, §8.3 βήμα Q2 subject == release_root/claim_id, receipts `bundle_digest` δεσμευμένο |
+| RC-09 | φρεσκάδα δεν υπολογίζεται | §8.3 βήμα F: FRESH/STALE από `max_staleness` και `expiry`, `expired` εκπέμπεται |
+| RC-10 | κανένα provenance βήμα | §8.3 βήμα P: κάθε released αντικείμενο απαιτεί πλήρη source-authenticity claim, αλλιώς `insufficient-provenance` |
+| RC-11 | provenance ids χωρίς consumer άγκυρα | §8.1 `authority_registry_root`, `institutional_register_root`· §6 inclusion proofs registry εγγραφών· §2.1 `authority-proof/2` (κρατική προέλευση) ≠ `release-authority-proof` (owner→delegate) |
+| RC-12 | 11 errors χωρίς βήμα, result εκτός sum | §4.4 πίνακας error → βήμα (πλήρης)· §7 κλειστό result sum, `reason` = error |
+| RC-13 | UNDEC ⇒ VERIFIED | §8.3 βήμα S: UNDEC ⇒ `UNKNOWN(undecided-legal-state)` |
+| RC-14 | self-verdict πεδίο αγνοείται | §8.3 βήμα 0: κλειστό schema, `malformed-envelope` |
+| RC-15 | PCL §5 pinned-key μοντέλο ενεργό | §4.5 versioned precedence MLTP v3 §8 επί PCL §4-5 (η PCL-2 delegation-aware επέκταση = βήμα 6 υλοποίησης) |
+| RC-16 | «SHA-256 μόνο» περιγραφέας | `PUBLIC-OBSERVATORY-CROSSWALK.md` γραμμή verifier = EXTEND (inclusion SHA-256 + signatures Ed25519/RS256) |
+| RC-17 | inclusion ≠ release_root, root χωρίς υπογραφή | §8.3 βήμα R: `proof.merkle_root == release_root`, υπογραφή release_root (context `mltp3:release-root`), tlog inclusion του release_root |
+| RC-18 | `profile` ≠ `claim_type` | §1.1: `schema_id` ΠΑΡΑΓΩΓΟ του `claim_type` (ο verifier το ξαναϋπολογίζει)· πεδίο `profile` ΑΦΑΙΡΕΘΗΚΕ |
+| RC-19 | ανάκληση: αντίφαση εξουσίας, ανυπόγραφα records | §2.9 + §9: RevocationStatement υπογεγραμμένο ΜΟΝΟ από owner root (Layer 0), προτεραιότητα = αυστηρότερο `invalid_from`, subject-εξουσία |
+| RC-20 | reviewer adoption αυτο-υπογράψιμο | §8.1 `reviewer_registry`, §8.3 βήμα J: adoption act ελέγχεται έναντι registered reviewer ∉ issuer keys, `unadopted-analysis` |
+| RC-21 | `issuer` ελεύθερο, `auth1:` σύγκρουση | §1.0: `issuer` ΑΦΑΙΡΕΘΗΚΕ· ταυτότητα εκδότη = `issuer_name` ΜΕΣΑ στη root-signed delegation |
+| RC-22 | ελεύθερο `description` | §1.0: ΑΦΑΙΡΕΘΗΚΕ από κάθε υπογεγραμμένο αντικείμενο· ανθρώπινο κείμενο ΜΟΝΟ ως typed, passage-anchored, reviewer-adopted πεδίο (§2.6) |
+| RC-23 | cockpit intent σε untyped envelope | `CHANGE-PROPOSAL-v1.4.md §1.4` PUBLIC InstitutionalAct profile (κλειστό σύνολο πεδίων) |
+| RC-24 | καμία μονοτονία/ηλικία checkpoint | §8.3 βήμα L: `tree_size` μονότονο, revocation checkpoint ≤ `max_revocation_staleness` |
+| RC-25 | δύο μηχανισμοί rotation | §9.3: rotation = νέα root delegation (seq+1)· continuity statement = πληροφοριακό lineage, ΠΟΤΕ αυθεντία· versioned precedence επί KEY-LIFECYCLE §2.4 |
+| RC-26 | crypto χωρίς παραμέτρους | §4.1: ΜΙΑ fingerprint συνάρτηση (RFC 7638), RSA floor 3072 (era-1 μόνο), Ed25519 = RFC 8032 strict, `alg` ≡ τύπος κλειδιού |
+| RC-27 | proof_material για 3/8 profiles | §2: `proof_material` ΟΡΙΣΜΕΝΟ και για τα 8 profiles |
+| RC-28 | two-channel ταυτότητα ασαφής | §2.5: `derived_from_expression` για anonymized κείμενο· invariant δύο καναλιών = ίδιο `work_id` (Q13 γ διορθωμένο) |
+| RC-29 | καμία γέφυρα bytes↔νομικό αντικείμενο | §2.1/§2.2/§2.5: `manifestation_id` (lsm1) + `acquisition_receipt_id` + `extraction_receipt_id` σε κάθε profile που αφορά κείμενο |
+| RC-30 | provider-adoption αυτο-εκδόσιμο | §8.1 `provider_registry`, §8.3 βήμα Q4 provider attestations υπογεγραμμένες από registered providers |
+| RC-31 | witnesses ≠ μη-equivocation | §10: τρεις τάξεις (publication witnesses / cross-client witnesses / auditors)· split-view αξίωση ΜΟΝΟ με cross-client witness quorum· first-time consumer ⇒ `UNKNOWN(split-view-unverifiable)` |
+| CL-1 | διευκρίνιση δημιουργού 2026-09-01: δημόσιος νομικός χρόνος ≠ εσωτερικός χρόνος ελέγχου | §2.0: `legal-timeline/1` στο payload (περιγράφει τον νόμο) vs `audit-timeline/1` στο proof/audit layer (λογοδοσία)· ο χρόνος γνώσης ΠΟΤΕ δεν κρίνει νομική ισχύ· το envelope πεδίο χρόνου υπογραφής μετονομάζεται `issued_at` → `signed_at` (μία σημασία ανά όνομα) |
+| CL-2 | διευκρίνιση δημιουργού 2026-09-01: citation-bound verification | §2.10: `CertifiedResult` με typed `citation/1` **μέσα** στην υπογραφή· αφαίρεση/αλλοίωση ⇒ `citation-unbound` ⇒ `UNVERIFIED_FOR_ATTRIBUTED_RELIANCE`· διπλή παραπομπή (de jure εκδότης + Watchtower ως πηγή της επαληθευμένης αναπαράστασης) |
+
+---
+
+## 1. LAYER A — `IssuedClaim`
+
+### 1.0 Envelope — ΚΛΕΙΣΤΟ σύνολο πεδίων, ΟΛΑ υπογεγραμμένα
 
 ```
-{ "mltp": "2",
+{ "mltp": "3",
   "layer": "IssuedClaim",
+  "claim_id": <"clm1:" + canonical-hash(envelope χωρίς signature)>,
   "claim_type": <ΚΛΕΙΣΤΟ sum — §1.1· ΠΟΤΕ ελεύθερο string>,
-  "profile": <το id του typed payload schema του claim_type>,
-  "payload": <TYPED, κλειστό ανά profile — §2· ΤΟ ΜΟΝΟ input της επαλήθευσης>,
-  "proof_material": <το αναπαραγώγιμο αντικείμενο απόδειξης — Merkle path,
-                     attestation, snapshot-manifest κ.λπ., ανά profile>,
-  "issuer": { "authority_id" | "verifier_id" },
-  "signature": { "alg": <"RS256" | "Ed25519">, "kid",
-                 "delegation_seq", "key_lineage": [...],
-                 "sig": <base64url — §4 signature payload> },
-  "issued_at": { "trusted_time": <legal-instant>,
-                 "anchor": <tsr_sha256 (RFC-3161) | tlog_leaf_index> },   # ΑΞΙΟΠΙΣΤΟΣ χρόνος υπογραφής — §9
-  "qualification_state_ref": <id ενός QualificationStateRecord §3· ΠΟΤΕ inline level>,
-  "description": <ΠΡΟΑΙΡΕΤΙΚΟ ανθρώπινο κείμενο — ΠΟΤΕ input επαλήθευσης> }
+  "schema_id": <ΠΑΡΑΓΩΓΟ: "mltp3/" + claim_type + "/1" — ο verifier το ξαναϋπολογίζει>,
+  "payload": <TYPED κατά schema_id — §2>,
+  "proof_material": <TYPED κατά schema_id — §2, ΥΠΟΧΡΕΩΤΙΚΟ και στα 8 profiles>,
+  "release_ref": { "release_root": "sha256:<hex>", "release_generation": {"era": 2, "seq": <int>} },
+  "signature": { "alg": <"Ed25519" | "RS256">,
+                 "kid": <RFC 7638 JWK thumbprint του delegated κλειδιού — §4.1>,
+                 "delegation_seq": <int — το seq της delegation που εξουσιοδοτεί το kid>,
+                 "sig": <base64url — §1.2 signing input> },
+  "signed_at": { "trusted_time": <legal-instant>,
+                 "anchor": { "kind": <"rfc3161" | "witnessed-checkpoint">,
+                             "evidence_ref": <id εγγραφής στο TrustBundle.time_evidence — §6> } },
+  "qualification_state_ref": <"qsr1:" record_id — §3> }
 ```
 
 **Ρητοί κανόνες:**
 - **ΚΑΝΕΝΑ `verification_result` σε IssuedClaim** — το αποτέλεσμα ζει στο Layer C.
-- **`issued_at` = trusted signature-time anchor** (TSR ή tlog leaf), **ΟΧΙ**
-  self-declared timestamp. Η ανάκληση (§9) ελέγχεται **έναντι αυτού**, ποτέ έναντι
-  γενικού legal effective-time του payload. Χωρίς αξιόπιστο anchor ⇒ ο verifier
-  δεν μπορεί να τοποθετήσει την υπογραφή στον χρόνο ⇒ `UNKNOWN`.
-- **ΚΑΝΕΝΑ inline `assurance_level`** — μόνο `qualification_state_ref` προς
-  ξεχωριστό, υπογεγραμμένο `QualificationStateRecord` (§3) με evidence + expiry.
-- **Το `description` (ελεύθερο κείμενο) ΔΕΝ διαβάζεται ποτέ από τον verifier.** Ο
-  verifier δρα **μόνο** στο typed `payload`.
-- **Temporal fields ΜΟΝΟ όπου ισχύουν** (§2 per-profile), όχι στο envelope.
+- **ΚΑΝΕΝΑ `assurance_level` inline** — μόνο `qualification_state_ref`.
+- **ΚΑΝΕΝΑ ελεύθερο κείμενο** — τα πεδία `description` και `issuer` της v2
+  **αφαιρέθηκαν**. Ανθρώπινο κείμενο είναι ΠΟΤΕ input επαλήθευσης, και επομένως
+  ΠΟΤΕ δεν ζει μέσα σε υπογεγραμμένο IssuedClaim (RC-22). Η ταυτότητα του εκδότη
+  δεν είναι πεδίο του claim: είναι το `issuer_name` της root-signed delegation
+  (§2.9) που εξουσιοδοτεί το `signature.kid` (RC-21). Καμία σύγκρουση με το
+  `auth1:` namespace του USC §2.2 — αυτό ονομάζει ΜΟΝΟ κρατικές/θεσμικές αρχές.
+- **`signed_at` = trusted signature-time anchor** (RFC-3161 TSR ή witnessed
+  checkpoint), **ΟΧΙ** self-declared timestamp. (Στη v2 το πεδίο λεγόταν `issued_at`·
+  μετονομάστηκε γιατί `issued_at` είναι πλέον πεδίο του **νομικού** χρονολογίου §2.0 —
+  η ημερομηνία έκδοσης της πράξης — και ένα όνομα έχει μία σημασία.) Είναι
+  **εσωτερικός χρόνος ελέγχου** (§2.0): δεν εμφανίζεται ποτέ ως χρόνος του νόμου. Ο verifier **δεν διαβάζει** το
+  `trusted_time`· το **ξαναπαράγει** από το evidence (§8.3 βήμα T) και απαιτεί
+  ισότητα. Χωρίς επαληθεύσιμο evidence ⇒ `UNKNOWN(no-trusted-signature-time)`.
+- **Temporal fields ΜΟΝΟ όπου ισχύουν** (§2 ανά profile), όχι στο envelope.
+- **`release_ref` σε κάθε claim**: κάθε claim δηλώνει σε ποιο release_root ανήκει·
+  ο verifier απαιτεί `proof_material` inclusion **σε αυτό** το root (RC-17).
 
-### 1.1 `claim_type` — ΚΛΕΙΣΤΟ sum (semantic completeness, όχι αριθμός)
+### 1.1 `claim_type` — ΚΛΕΙΣΤΟ sum (8 profiles, semantic completeness)
 
 ```
 source-authenticity | legal-state | temporal-projection |
 coverage-and-freshness | judgment-identity-and-text |
 jurisprudential-analysis | legal-object-correction-or-withdrawal |
-trust-key-or-delegation-revocation
+normative-impact-projection
 ```
 
-Επέκταση = **νέο profile με typed payload + spec έγκριση**, ποτέ ελεύθερο string
-(πρότυπο USC versioned registry).
+- **`schema_id` δεν είναι ανεξάρτητο πεδίο επιλογής**: `schema_id :=
+  "mltp3/" ‖ claim_type ‖ "/1"`. Ο verifier το ξαναϋπολογίζει από το `claim_type`
+  και απορρίπτει διαφορά (`malformed-envelope`). Ένα μόνο πεδίο ορίζει τύπο,
+  scope και schema (RC-18).
+- Η ανάκληση κλειδιού/εξουσιοδότησης **δεν είναι πλέον claim_type**: είναι
+  Layer-0 `RevocationStatement` υπογεγραμμένο από τον owner root (§2.9, RC-19).
+  Η διάκριση «διόρθωση νομικού αντικειμένου» (§2.7) vs «ανάκληση κλειδιού» (§2.9)
+  διατηρείται — διαφορετικά αντικείμενα, διαφορετικοί υπογράφοντες.
+- Επέκταση = **νέο profile με typed payload + spec έγκριση**, ποτέ ελεύθερο string.
+
+### 1.2 Signing input — ΠΛΗΡΗΣ ΔΕΣΜΕΥΣΗ (RC-01)
+
+```
+signed_fields(c) := canonical_bytes( c με signature.sig αφαιρεμένο )
+sig := SIGN(kid, "mltp3:issued-claim" ‖ 0x1F ‖ signed_fields(c))
+```
+
+- Το `signed_fields` περιλαμβάνει ΚΑΘΕ πεδίο του envelope: `claim_id`,
+  `claim_type`, `schema_id`, `payload`, `proof_material`, `release_ref`,
+  `signature.alg/kid/delegation_seq`, `signed_at`, `qualification_state_ref`.
+  Δεν υπάρχει ανυπόγραφο πεδίο — άρα κανένας re-packager δεν μπορεί να αλλάξει
+  `signed_at`, `qualification_state_ref` ή `claim_type` χωρίς ακύρωση της υπογραφής.
+- Canonical encoding: `deployment/verify/canonical-serialization-spec.md` (JCS-class,
+  sorted keys, NFC, LF, χωρίς floats, `0x1F` διαχωριστικό συνθέσεων).
+- Ο verifier **ξαναχτίζει** το ίδιο `signed_fields` και επαληθεύει (§8.3 βήμα K4).
+
+### 1.3 Χρόνος υπογραφής — τι αποδεικνύει το anchor (RC-03)
+
+- **RFC-3161:** το `messageImprint` του TSR = `SHA-256(signature.sig)` — δηλαδή
+  χρονοσφραγίζεται **η υπογραφή**, όχι το payload. Έτσι το genTime αποδεικνύει
+  «η υπογραφή υπήρχε τη στιγμή Τ», που είναι ακριβώς ό,τι απαιτεί η αναδρομική
+  ανάκληση §9. Το TSR (DER) ΚΑΙ η αλυσίδα της TSA βρίσκονται στο
+  `TrustBundle.time_evidence[]`· οι έμπιστες TSA ρίζες στο
+  `LocalTrustState.tsa_trust_anchors`.
+- **Witnessed checkpoint:** εναλλακτικά, `SHA-256(signature.sig)` περιλαμβάνεται
+  ως φύλλο στο tlog και ένα checkpoint υπογεγραμμένο από ≥2 registered
+  cross-client witnesses (§10) φέρει χρόνο. Τότε `t_sig` = ο χρόνος του
+  checkpoint (άνω φράγμα: η υπογραφή υπήρχε το αργότερο τότε).
+- `tlog_leaf_index` **μόνο του** ΔΕΝ είναι anchor (δίνει σειρά, όχι χρόνο) —
+  αφαιρέθηκε ως αυτόνομη επιλογή.
 
 ---
 
-## 2. TYPED PAYLOADS ΑΝΑ PROFILE (temporal μόνο όπου ισχύει)
+## 2. TYPED PAYLOADS ΑΝΑ PROFILE — `proof_material` ΥΠΟΧΡΕΩΤΙΚΟ ΠΑΝΤΟΥ (RC-27)
 
-Στήλη «temporal»: ✔ = φέρει `(valid_time, known_time)`· ✘ = **δεν** φέρει (δικά του
-πεδία χρόνου).
+Στήλη «temporal»: ✔ = φέρει `(valid_time, known_time)`· ✘ = **δεν** φέρει (δικά
+του πεδία χρόνου). Κάθε profile ονομάζει ρητά ΤΙ επαληθεύει το `proof_material`
+του στο βήμα R του §8.3.
 
-### 2.1 `source-authenticity` · temporal: ✘ (χρόνος = acquisition/anchor)
+### 2.0 ΔΥΟ ΧΡΟΝΟΛΟΓΙΑ, ΠΟΤΕ ΣΥΓΧΕΟΜΕΝΑ — νομικός χρόνος (payload) vs χρόνος ελέγχου (proof/audit) (CL-1)
+
 ```
-payload = { "raw_artifact": {"digest_algorithm":"sha256","digest","byte_length"},
-            "acquisition_receipt_id": "acq1:…",              # USC §5.1 (origin sum)
-            "authority_id": "auth1:…",                       # USC §2.2
-            "institutional_register_id": "ireg1:…",          # USC §2.1β
-            "authority_proof_ref": <authority-proof-bundle/1>,# USC §0.1
-            "acquired_at": <legal-instant>,
-            "time_anchor": {"tsr_sha256","tlog_leaf_index"} | null,  # RFC-3161 = ΜΟΝΟ χρόνος
-            "divergence_ref": <official-sources-conflict uncertainty> | null }
+lawmax/legal-timeline/1  — ΠΕΡΙΓΡΑΦΕΙ ΤΟΝ ΝΟΜΟ· ζει ΜΟΝΟ στο payload· είναι το δημόσιο και AI-facing χρονολόγιο
+  { "issued_at":      <legal-date — έκδοση της πράξης/απόφασης από τη de jure αρχή>,
+    "published_at":   <legal-date — δημοσίευση (ΦΕΚ/επίσημο κανάλι)> | null,
+    "effective_from": <legal-date — έναρξη ισχύος> | null,
+    "effective_to":   <legal-date — λήξη ισχύος> | null,
+    "ceased_by":      <lsw1 work_id | rel1 relation_id — η πράξη/απόφαση που έπαυσε την ισχύ> | null,
+    "cessation_type": <ΚΛΕΙΣΤΟ: "repeal" | "sunset" | "replacement" | "suspension" | "annulment" | "transition"> | null }
+  Κανόνας: ceased_by ≠ null ⇔ cessation_type ≠ null· effective_to ≠ null ⇒ cessation_type ≠ null εκτός "sunset"
+  με δηλωμένη ημερομηνία. Επέκταση του sum = νέα έκδοση registry, ποτέ ελεύθερο string.
+
+lawmax/audit-timeline/1  — ΛΟΓΟΔΟΣΙΑ ΤΟΥ ΙΔΡΥΜΑΤΟΣ· ζει ΜΟΝΟ στο proof_material / audit layer· ΠΟΤΕ στο payload
+  { "acquired_at":  <legal-instant — πότε το Ίδρυμα απέκτησε τα bytes>,
+    "verified_at":  <legal-instant — πότε η proposer-blind M5 επαλήθευσε>,
+    "released_at":  <legal-instant — πότε μπήκε σε release_root>,
+    "corrected_at": <legal-instant> | null,
+    "revoked_at":   <legal-instant> | null }
 ```
-**Κανόνας:** RFC-3161 μόνο ⇒ ΑΝΕΠΑΡΚΕΣ· χωρίς `authority_proof_ref` ΚΑΙ
-`institutional_register_id` ο local verifier παράγει `UNKNOWN` (§4 error `insufficient-provenance`).
+- **Ο χρόνος γνώσης/απόκτησης ΠΟΤΕ δεν κρίνει νομική ισχύ** και ΠΟΤΕ δεν παρουσιάζεται
+  ως μέρος του νομικού κανόνα. Υπάρχει για λογοδοσία, ανίχνευση καθυστερημένης πηγής,
+  μέτρηση φρεσκάδας, ανακατασκευή ιστορικής απάντησης, διόρθωση, διερεύνηση συμβάντων.
+- **Η διτεμπορικότητα διατηρείται εσωτερικά** (`valid_time × known_time` στον γράφο,
+  v1.4 §4.5)· το `known_time` ενός payload είναι η **τομή γνώσης του release**
+  (ποιο release απαντά), όχι «πότε το μάθαμε» ανά αντικείμενο.
+- **Ο verifier** χρησιμοποιεί το audit-timeline ΜΟΝΟ για freshness (§8.3 F), ανάκληση
+  (V), προέλευση (P) — ποτέ για το βήμα S (νομική κατάσταση). Ανθρώπινες και συνήθεις
+  AI απαντήσεις δεν χρειάζεται να το εμφανίζουν· η πλήρης χρονική λογοδοσία είναι
+  διαθέσιμη στο audit endpoint (v1.4 §4.7).
+- Κάθε profile που αφορά νομικό αντικείμενο φέρει `legal_timeline` στο payload και
+  κάθε `proof_material` φέρει `audit_timeline`.
+
+### 2.1 `source-authenticity` · temporal: ✘ — Η ΓΕΦΥΡΑ BYTES ↔ ΝΟΜΙΚΟ ΑΝΤΙΚΕΙΜΕΝΟ (RC-29, RC-11)
+```
+payload = { "raw_artifact": {"digest_algorithm": "sha256", "digest": "<hex>", "byte_length": <int>},
+            "manifestation_id": "lsm1:<hash>",                 # USC §1.3 — ΥΠΟΧΡΕΩΤΙΚΟ
+            "expression_id": "lse1:<hash>",                    # USC §1.2
+            "work_id": "lsw1:<hash>",                          # USC §1.1
+            "acquisition_receipt_id": "acq1:<hash>",           # USC §5.1 (origin sum)
+            "extraction_receipt_id": "xrc2:<hash>",            # USC §5.3 extraction-receipt/2
+            "authority_id": "auth1:<hash>",                    # USC §2.2 — ΤΟ ΚΡΑΤΙΚΟ/ΘΕΣΜΙΚΟ όργανο
+            "institutional_register_id": "ireg1:<hash>",       # USC §2.1β
+            "authority_proof_ref": "aprf2:<hash>",             # §2.1α authority-proof/2 (κρατική προέλευση)
+            "custody_chain_ref": "cust1:<hash>",               # §2.1β custody chain
+            "time_anchor": { "kind": "rfc3161", "evidence_ref": <id στο time_evidence> },
+            "divergence_ref": <"unc1:<hash>" official-sources-conflict | null> }
+proof_material = { "acquisition_receipt": <πλήρες acquisition-receipt/1 αντικείμενο>,
+                   "extraction_receipt": <πλήρες extraction-receipt/2 αντικείμενο>,
+                   "authority_proof": <πλήρες authority-proof/2 αντικείμενο — §2.1α>,
+                   "custody_chain": <λίστα custody events, καθένα με actor-ref + χρόνο + digest>,
+                   "registry_inclusion": { "authority_record": <inclusion proof του auth1 record
+                                                                 στο authority_registry_root>,
+                                           "register_record": <inclusion proof του ireg1 record
+                                                                 στο institutional_register_root> },
+                   "audit_timeline": <lawmax/audit-timeline/1 — §2.0 (acquired_at ζει ΕΔΩ, όχι στο payload)>,
+                   "release_inclusion": <PCL path του canonical claim leaf ≤64 στο release_root> }
+```
+**Κανόνας (RC-10):** RFC-3161 μόνο ⇒ ΑΝΕΠΑΡΚΕΣ. Ο local verifier απαιτεί ΚΑΙ τα
+τέσσερα: `authority_id`, `institutional_register_id`, `authority_proof_ref`,
+`acquisition_receipt_id` — μη-null ΚΑΙ επιλύσιμα μέσα στο bundle ΚΑΙ (για τα δύο
+registry ids) με inclusion proof σε registry root που ο καταναλωτής έχει pinned
+(§8.1). Οποιοδήποτε λείπει ⇒ `insufficient-provenance`.
+
+#### 2.1α `authority-proof/2` — απόδειξη ΚΡΑΤΙΚΗΣ προέλευσης (νέα έδρα, διακριτή από την `authority-proof-bundle/1`)
+
+Η υπάρχουσα `lawmax/authority-proof-bundle/1` (`source/authority-evidence-replay.lisp`,
+required keys: `delegation-scope`, `authority-statement-jws`, `tra`, `census`,
+`release-manifest`) αποδεικνύει την **εξουσία του Watchtower επί του δικού του
+γράφου** (owner → delegate). Στη v3 ονομάζεται ρητά **`release-authority-proof`**
+και ζει στο `TrustBundle.release_anchor` (§6). ΔΕΝ αποδεικνύει κρατική έκδοση.
+
+Η κρατική προέλευση αποδεικνύεται από το **`authority-proof/2`** — τυπωμένο
+evidence με **βαθμό ισχύος** (ο verifier τον εκθέτει στο receipt, δεν τον κρύβει):
+
+```
+authority-proof/2 = { "id": "aprf2:<hash>",
+  "manifestation_id": "lsm1:<hash>",
+  "channel": <"official-host-tls" | "official-signed-artifact" | "official-register-entry" |
+              "manual-deposit-attested" | "archive-import">,
+  "strength": <"S3-signed-by-authority" | "S2-official-channel-attested" |
+               "S1-register-entry-only" | "S0-declared-only">,
+  "evidence": { "tls_chain_at_acquisition": <λίστα DER certs> | null,
+                "official_signature": { "format": <"PAdES" | "XAdES" | "CAdES">,
+                                        "signer_cert": <DER>, "verified_against": <trust-list ref> } | null,
+                "register_entry": { "register_id": "ireg1:<hash>", "entry_key": <string>,
+                                    "entry_digest": "<hex>", "observed_at": <legal-instant> } | null,
+                "depositor": <actor-ref/1 USC §2.4> | null },
+  "recorded_at": <legal-instant> }
+```
+- `S0-declared-only` ⇒ ο verifier επιστρέφει `insufficient-provenance` (δεν είναι
+  απόδειξη). `S1` ⇒ επιτρεπτό μόνο για αντικείμενα που το register δεν εκδίδει
+  υπογεγραμμένα· το receipt εκθέτει `provenance_strength: S1`. Ο καταναλωτής
+  αποφασίζει με βάση τον βαθμό — ποτέ σιωπηλή εξίσωση S1 με S3.
+- **Τίμιο όριο:** το Watchtower αποδεικνύει ΔΕΣΙΜΟ σε επίσημο κανάλι/μητρώο/υπογραφή·
+  δεν αποδεικνύει ότι η πηγή λέει αλήθεια (THREAT-MODEL §4).
+
+#### 2.1β custody chain
+Κάθε μεταβίβαση των bytes (fetch → vault → extraction) = γεγονός `{actor, at, digest_in,
+digest_out, tool_manifest_sha256}`. Το vault (M2) είναι append-only· η αλυσίδα
+ξεκινά από τον acquirer και τελειώνει στο `raw_artifact.digest`.
 
 ### 2.2 `legal-state` · temporal: ✔
 ```
-payload = { "work_id":"lsw1:…", "expression_id":"lse1:…",
-            "valid_time": <legal-date | {from,to}>, "known_time": <legal-instant>,
-            "legal_state": <"IN" | "OUT" | "UNDEC">,        # UNDEC ⇒ local verifier: UNKNOWN
-            "attestation_id":"lsa1:…", "knowledge_checkpoint_id":"kchk1:…" }
-proof_material = { "pcl_inclusion": <PCL path ≤64>, "uncertainty_roots": {...} }
+payload = { "work_id": "lsw1:<hash>", "expression_id": "lse1:<hash>",
+            "manifestation_ids": [ "lsm1:<hash>" ],            # τα items από τα οποία παράχθηκε η expression
+            "valid_time": <legal-date | {"from": <legal-date>, "to": <legal-date>}>,
+            "known_time": <legal-instant>,
+            "legal_state": <"IN" | "OUT" | "UNDEC">,            # UNDEC ⇒ verifier: UNKNOWN(undecided-legal-state) — §8.3 βήμα S
+            "legal_timeline": <lawmax/legal-timeline/1 — §2.0: issued_at, published_at, effective_from, effective_to, ceased_by, cessation_type>,
+            "attestation_id": "lsa1:<hash>",                   # USC §1.2γ
+            "knowledge_checkpoint_id": "kchk1:<hash>" }         # USC §1.2β
+proof_material = { "release_inclusion": <PCL path ≤64 στο release_root>,
+                   "receipt": <LegalAuthorityReceipt — TEMPORAL-IDENTITY §1.5, με πλήρη amendment-genealogy>,
+                   "audit_timeline": <lawmax/audit-timeline/1 — §2.0>,
+                   "uncertainty_roots": { "open": "<hex>", "resolved": "<hex>" } }
 ```
+Το βήμα R επαληθεύει: receipt-id recompute → merkle path → release_root· η
+genealogy επαναπαίζεται ακμή-προς-ακμή (§8.3 R3) — τίποτε «κατά δήλωση».
 
 ### 2.3 `temporal-projection` · temporal: ✔
 ```
-payload = { "body", "valid_time","known_time",
-            "release_root": "sha256:…" }                     # §5 ΜΟΝΗ authority root
+payload = { "body": <"gr/<σώμα>">, "valid_time": <legal-date>, "known_time": <legal-instant>,
+            "projection_root": "sha256:<hex>",                 # ρίζα της προβολής στην τομή
+            "release_root": "sha256:<hex>" }                   # §5 ΜΟΝΗ authority root — ίση με release_ref
 proof_material = { "snapshot_manifest": <version-graph snapshot-at + per-step fold>,
-                   "census_temporal": {graph_root,receipt_set_root,valid_at,known_at} }
+                   "census_temporal": { "graph_root": "<hex>", "receipt_set_root": "<hex>",
+                                        "valid_at": <legal-date>, "known_at": <legal-instant> },
+                   "audit_timeline": <lawmax/audit-timeline/1 — §2.0>,
+                   "release_inclusion": <PCL path ≤64> }
 ```
 
-### 2.4 `coverage-and-freshness` · temporal: ✔ (known_time = «ως πότε ξέρω»)
+### 2.4 `coverage-and-freshness` · temporal: ✔ (known_time = «ως πότε ξέρω») — ΑΠΟΓΡΑΦΗ ΩΣ ΟΛΙΚΗ ΣΥΝΑΡΤΗΣΗ
 ```
-payload = { "space": <π.χ. "fek/A">, "known_time",
-            "coverage_ledger_root": <ΝΕΟ ΚΕΝΟ — national census, AS-IS R-1>,
-            "freshness": {"as_of","max_staleness"},
-            "gaps": [ {"position","state":"UNKNOWN","first_observed_at"} ] }
+payload = { "space": <census-space id, π.χ. "gr/gazette/A" | "gr/court/areios-pagos">,
+            "known_time": <legal-instant>,
+            "coverage_ledger_root": "sha256:<hex>",           # RFC 9162 MTH όλων των θέσεων του χώρου
+            "position_count": <int>,                           # πλήθος θέσεων = |δηλωμένο universe|
+            "state_counts": { "INGESTED": <int>, "EXPLICITLY-ABSENT": <int>,
+                              "QUARANTINED": <int>, "UNKNOWN": <int> },   # άθροισμα == position_count
+            "freshness": { "as_of": <legal-instant>, "max_staleness": <duration> },
+            "gaps": [ { "position": <census position key>, "state": "UNKNOWN",
+                        "gap_reason": <ΚΛΕΙΣΤΟ: "not-yet-published" | "fetch-failed" | "quarantined" |
+                                       "legally-unavailable" | "unpublished-by-source">,
+                        "first_observed_at": <legal-instant>,
+                        "retry_state": { "attempts": <int>, "next_at": <legal-instant> | null,
+                                         "escalated": <bool> } } ] }
+proof_material = { "ledger_inclusion": [ <inclusion proof ανά θέση που παρατίθεται στο gaps> ],
+                   "universe_declaration_ref": "cens1:<hash>",   # η δηλωμένη απογραφή (§4.1 v1.4) — root-signed registry snapshot
+                   "audit_timeline": <lawmax/audit-timeline/1 — §2.0>,
+                   "release_inclusion": <PCL path ≤64> }
 ```
+**Κανόνας:** «τα πάντα» λέγεται ΜΟΝΟ έναντι δηλωμένου `universe_declaration_ref`.
+Θέση χωρίς κατάσταση ⇒ ο verifier απορρίπτει (`coverage-not-total`).
 
 ### 2.5 `judgment-identity-and-text` · temporal: ✔ — SOURCE-VERIFIABLE (νομολογία #7α)
 ```
-payload = { "work_id":"lsw1:… (judgment domain)", "ecli" | "provisional_id",
-            "court","chamber","formation","jurisdiction_level",
-            "number","year","decision_date","publication_date",
-            "anonymization": {"status","provenance"},
-            "valid_time","known_time" }
-proof_material = { "source_seal": <acquisition + PCL inclusion των bytes> }
+payload = { "work_id": "lsw1:<hash>",                        # judgment domain (USC §1.4)
+            "expression_id": "lse1:<hash>",
+            "manifestation_id": "lsm1:<hash>",
+            "content_sha256": "<hex>",                       # του §2-normalized κειμένου της expression
+            "ecli": <string> | null, "provisional_id": <"prov1:" + canonical-hash(official_key) — USC §1.4 key> ,
+            "court": "auth1:<hash>", "chamber": <string> | null, "formation": <string> | null,
+            "jurisdiction_level": <ΚΛΕΙΣΤΟ registry>,
+            "number": <int>, "year": <int>,
+            "legal_timeline": <lawmax/legal-timeline/1 — issued_at = ημερομηνία έκδοσης της απόφασης, published_at = δημοσίευση· effective/cessation μόνο για αποφάσεις με erga-omnes ισχύ>,
+            "anonymization": { "status": <"none" | "partial" | "full">,
+                               "provenance": <"source" | "watchtower">,
+                               "derived_from_expression": "lse1:<hash>" | null },   # RC-28
+            "procedural_history_ref": "pref1:<hash>" | null,
+            "valid_time": <legal-date>, "known_time": <legal-instant> }
+proof_material = { "source_seal": { "acquisition_receipt": <acquisition-receipt/1>,
+                                    "extraction_receipt": <extraction-receipt/2>,
+                                    "bytes_inclusion": <PCL path των raw bytes leaf> },
+                   "audit_timeline": <lawmax/audit-timeline/1 — §2.0>,
+                   "release_inclusion": <PCL path ≤64> }
 ```
 **Μόνο ό,τι επαληθεύεται από την πηγή.** Καμία ερμηνεία εδώ.
+**Ταυτότητα δύο καναλιών (RC-28):** ίδια απόφαση από δύο κανάλια ⇒ **ίδιο `work_id`**
+(ο invariant). Αν το κείμενο διαφέρει (π.χ. ανωνυμοποιημένη vs πλήρης έκδοση) ⇒
+**διακριτές expressions** του ΙΔΙΟΥ work, με `anonymization.derived_from_expression`
+να δένει τη μία στην άλλη. Το `provisional_id` είναι ντετερμινιστικό: hash του
+official key (μητρώο, αριθμός, έτος, σειρά) — ποτέ των bytes.
 
 ### 2.6 `jurisprudential-analysis` · temporal: ✔ — INSTITUTIONAL ATTESTATION (νομολογία #7β)
 ```
-payload = { "judgment_ref": <2.5 work_id>,
-            "ratio": [ {"claim","passage_anchor":{artifact_digest,start,end}} ],
-            "obiter":[ {...passage_anchor} ],
-            "holding","legal_issue","disposition",
-            "separate_opinions":[ {"kind":"dissent|concurrence","passage_anchor"} ],
-            "authority_weight": {"value","basis":"Ολομέλεια>Τμήμα | count | consistency"},
-            "later_treatment":[ {"relation":<USC §6.3 kind>,"target"} ],
-            "attribution": <actor-ref του θεσμικού συντάκτη>,
-            "methodology_version": <pinned>,
-            "reviewer_adoption_act": <signed adoption record>,
-            "typed_uncertainty":[ <USC §8 kinds> ] }
+payload = { "judgment_ref": "lsw1:<hash>",                     # §2.5 work_id
+            "expression_ref": "lse1:<hash>",
+            "ratio":   [ { "text": <string>, "passage_anchor": {"artifact_digest": "<hex>", "start": <int>, "end": <int>} } ],
+            "obiter":  [ { "text": <string>, "passage_anchor": {"artifact_digest": "<hex>", "start": <int>, "end": <int>} } ],
+            "holding": { "text": <string>, "state": <"IN" | "OUT" | "UNDEC">, "passage_anchor": {"artifact_digest": "<hex>", "start": <int>, "end": <int>} },
+            "legal_issue": { "text": <string>, "passage_anchor": {"artifact_digest": "<hex>", "start": <int>, "end": <int>} },
+            "disposition": <ΚΛΕΙΣΤΟ registry: "granted" | "dismissed" | "annulled" | "remanded" | "partly-granted">,
+            "separate_opinions": [ { "kind": <"dissent" | "concurrence">, "passage_anchor": {"artifact_digest": "<hex>", "start": <int>, "end": <int>} } ],
+            "authority_level": <ΚΛΕΙΣΤΟ registry: "plenary" | "chamber" | "single-judge">,
+            "authority_weight": { "value": <int>, "basis": <ΚΛΕΙΣΤΟ: "plenary-over-chamber" | "line-count" | "line-consistency"> },
+            "later_treatment": [ { "relation": <USC §6.3 kind ∪ {"followed","applied","distinguished","doubted","limited","overruled","annulled"}>,
+                                   "target": "lsw1:<hash>", "relation_id": "rel1:<hash>" } ],
+            "attribution": <actor-ref/1 του θεσμικού συντάκτη — PLANE-2>,
+            "methodology_version": <pinned registry id>,
+            "reviewer_adoption_act": { "act_id": "adopt1:<hash>", "reviewer_kid": <RFC 7638 thumbprint>,
+                                       "adopted_digest": "<hex — canonical-hash του payload χωρίς το act>",
+                                       "adopted_at": { "trusted_time": <legal-instant>, "anchor": {"kind": "rfc3161", "evidence_ref": <id>} },
+                                       "sig": <base64url — context "mltp3:reviewer-adoption"> },
+            "typed_uncertainty": [ <lawmax/uncertainty/1 — USC §8> ],
+            "valid_time": <legal-date>, "known_time": <legal-instant> }
+proof_material = { "passage_inclusion": [ <inclusion proof του artifact_digest στο release_root ανά anchor> ],
+                   "adoption_inclusion": <inclusion proof του act_id στο tlog>,
+                   "relation_evidence": [ <USC §6.3 relation records με endpoint pins> ],
+                   "audit_timeline": <lawmax/audit-timeline/1 — §2.0>,
+                   "release_inclusion": <PCL path ≤64> }
 ```
 **Δομικοί κανόνες:** κάθε ratio/holding **αγκυρωμένο σε passage_anchor** (`PLANE-0`)·
 **attribution + methodology_version + reviewer_adoption_act ΥΠΟΧΡΕΩΤΙΚΑ**· **raw AI
 inference (`PLANE-3`) ΠΟΤΕ ως θεσμικά πιστοποιημένο ratio** (μπορεί μόνο ως
-`typed_uncertainty` πρόταση προς reviewer). Χωρίς reviewer_adoption_act ⇒ ο local
-verifier το επιστρέφει ως `UNVERIFIED_FOR_MACHINE_RELIANCE`, όχι ως πιστοποιημένο.
+`typed_uncertainty` πρόταση προς reviewer). Ο `reviewer_kid` πρέπει να ανήκει στο
+`LocalTrustState.reviewer_registry` ΚΑΙ να μην ανήκει σε κανένα issuer key
+(delegation_chain ∪ owner root) — αλλιώς `unadopted-analysis` ⇒
+`UNVERIFIED_FOR_MACHINE_RELIANCE` (RC-20). Το `text` των ratio/holding είναι
+θεσμικό δημόσιο κείμενο (PLANE-2), υπογεγραμμένο από reviewer — όχι ελεύθερο
+σχόλιο εκδότη.
 
 ### 2.7 `legal-object-correction-or-withdrawal` · temporal: ✔ (νομικό αντικείμενο)
 ```
-payload = { "subject": <work_id | expression_id>,
+payload = { "subject": { "kind": <"work" | "expression" | "manifestation">, "id": <lsw1 | lse1 | lsm1> },
             "transition": <"SUPERSEDED" | "WITHDRAWN" | "CORRECTION">,
-            "authority_id", "effective_valid_time","known_time",
-            "supersedes" | "superseded_by",
-            "uncertainty_resolution_ref": <USC §8>, "relation_retract_ref": <USC §6.3> }
+            "authority_id": "auth1:<hash>",                    # ποια αρχή θεμελιώνει τη μετάβαση (π.χ. διόρθωση ΦΕΚ)
+            "legal_timeline": <lawmax/legal-timeline/1 — η ισχύς της διορθωτικής/καταργητικής πράξης>,
+            "effective_valid_time": <legal-date>, "known_time": <legal-instant>,
+            "supersedes": <id> | null, "superseded_by": <id> | null,
+            "uncertainty_resolution_ref": "unc1:<hash>" | null,
+            "relation_retract_ref": "rel1:<hash>" | null }
+proof_material = { "journal_inclusion": <inclusion proof του journaled μεταβατικού γεγονότος στο graph_root>,
+                   "authority_evidence": <authority-proof/2 της διορθωτικής πράξης> | null,
+                   "audit_timeline": <lawmax/audit-timeline/1 — corrected_at/revoked_at ζουν ΕΔΩ>,
+                   "release_inclusion": <PCL path ≤64> }
 ```
 **Καμία διαγραφή**· ανακληθέν ορατό στη διτεμπορική του τομή.
 
-### 2.8 `trust-key-or-delegation-revocation` · temporal: ✘ — ΞΕΧΩΡΙΣΤΟ από 2.7 (#6, #9)
+### 2.8 `normative-impact-projection` · temporal: ✔ — ΔΗΜΟΣΙΟ L7 (v1.4 §4.8)
 ```
-payload = { "revoked_subject": <kid | delegation_seq>,
-            "revocation_reason": <"superseded" | "key-compromise" |
-                                  "delegation-expired" | "policy">,
-            "revoked_at": <legal-instant>,
-            "compromise_known_at": <legal-instant> | null,   # μόνο σε key-compromise
-            "invalid_from": <legal-instant>,                 # §9 retroactivity
-            "replacement_kid": <kid> | null }
+payload = { "trigger_event_ref": <event id του bitemporal graph>,
+            "valid_time": <legal-date>, "known_time": <legal-instant>,
+            "affected": { "provisions": [ <provision-id> ], "delegated_acts": [ "lsw1:<hash>" ],
+                          "broken_references": [ "rel1:<hash>" ], "consolidated_texts": [ "lse1:<hash>" ],
+                          "eu_transpositions": [ "rel1:<hash>" ], "jurisprudential_lines": [ "line1:<hash>" ] },
+            "impact_root": "sha256:<hex>",                     # MTH της λίστας affected (ντετερμινιστική σειρά)
+            "method_version": <pinned registry id> }
+proof_material = { "replay_manifest": <ο ντετερμινιστικός υπολογισμός: είσοδοι (graph_root, event), βήματα, έξοδος>,
+                   "dependency_proofs": [ <inclusion proof κάθε affected στοιχείου στο graph_root> ],
+                   "audit_timeline": <lawmax/audit-timeline/1 — §2.0>,
+                   "release_inclusion": <PCL path ≤64> }
 ```
-**ΔΙΑΦΟΡΕΤΙΚΟ αντικείμενο από 2.7:** εδώ ανακαλείται **κλειδί/εξουσιοδότηση**, εκεί
-**νομικό αντικείμενο**. Δεν συγχωνεύονται (v1 σφάλμα).
+**Κανόνας:** η προβολή είναι **επαναπαίξιμη** (ο auditor ξανατρέχει το
+`replay_manifest` και συγκρίνει `impact_root`)· δεν είναι γνώμη. Καμία πρόβλεψη
+έκβασης υπόθεσης — ο τύπος δεν έχει πεδίο για αυτό (v1.4 §1.3).
+
+### 2.9 LAYER 0 — `RevocationStatement` και οι λοιπές root-signed δηλώσεις (ΟΧΙ IssuedClaim) (RC-19)
+```
+DelegationStatement = { "kind": "delegation", "seq": <int>,
+  "delegate_kid": <RFC 7638 thumbprint>, "issuer_name": <string — θεσμικό όνομα εκδότη>,
+  "scope": [ <claim_type> ] ∪ { "release-signing" },
+  "not_before": <legal-instant>, "not_after": <legal-instant>,   # ≤ 1 έτος
+  "sig": { "alg", "kid": <owner root thumbprint>, "sig": <base64url — context "mltp3:delegation"> } }
+
+RevocationStatement = { "kind": "trust-key-or-delegation-revocation",
+  "revoked_subject": { "kind": <"kid" | "delegation_seq">, "value": <thumbprint | int> },
+  "revocation_reason": <"superseded" | "key-compromise" | "delegation-expired" | "policy">,
+  "revoked_at": <legal-instant>,
+  "compromise_known_at": <legal-instant> | null,      # μόνο σε key-compromise
+  "invalid_from": <legal-instant>,                    # §9 retroactivity
+  "replacement_delegation_seq": <int> | null,
+  "sig": { "alg", "kid": <owner root thumbprint>, "sig": <base64url — context "mltp3:revocation"> } }
+
+RegistrySnapshot = { "kind": <"auditor-registry" | "reviewer-registry" | "provider-registry" |
+                              "witness-registry" | "authority-registry" | "institutional-register" |
+                              "census-universe">,
+  "seq": <int>, "root": "sha256:<hex>", "entry_count": <int>, "snapshot_at": <legal-instant>,
+  "sig": { "alg", "kid": <owner root thumbprint>, "sig": <base64url — context "mltp3:registry-snapshot"> } }
+```
+- **ΜΟΝΟ ο owner root** (ή το threshold owner root, §10.2) υπογράφει Layer 0. Ένα
+  delegated κλειδί ΔΕΝ μπορεί να ανακαλέσει τίποτα — δεν υπάρχει scope που να το
+  επιτρέπει (RC-19 β). Ένα RevocationStatement υπογεγραμμένο από μη-root κλειδί
+  ⇒ `untrusted-key` και ΑΓΝΟΕΙΤΑΙ ως ανάκληση (όχι fail-open: η κατάσταση παραμένει
+  ό,τι λένε τα root-signed statements).
+- Owner-root συμβιβασμός: ανάκληση out-of-band σε ≥2 κανάλια (TRUST-BOOTSTRAP §2)
+  + νέο ceremony record· ο καταναλωτής αλλάζει pinned root χειροκίνητα — καμία
+  αυτόματη διαδρομή (θα ήταν το ίδιο κλειδί που εξουσιοδοτεί τον διάδοχό του).
+
+### 2.10 CITATION-BOUND VERIFICATION PROFILE — `CertifiedResult` + `citation/1` (CL-2, v1.4 §4.16)
+
+Κάθε **πιστοποιημένο** αποτέλεσμα API/MCP/SDK (η `proof-carrying-answer/1` του v1.4
+§4.7 όταν παραδίδεται σε καταναλωτή) είναι `CertifiedResult`: υπογεγραμμένο από
+delegated κλειδί με scope `certified-result`, και **περιέχει μέσα στα υπογεγραμμένα
+bytes** ένα typed αντικείμενο παραπομπής.
+
+```
+lawmax/citation/1 = {
+  "official_source_uri":   <URI της de jure πηγής — ΦΕΚ τεύχος/σελίδα, δικαστική απόφαση (ELI/ECLI όπου υπάρχει)>,
+  "watchtower_release_uri": <canonical URI της τομής: <base>/release/<release_root>/claim/<claim_id>>,
+  "claim_id":              "clm1:<hash>",
+  "certificate_uri":       <URI του TrustBundle/receipt: <base>/bundle/<bundle_id>>,
+  "attribution_text":      <ΠΑΡΑΓΩΓΟ από citation_policy_id — ΔΙΠΛΗ παραπομπή:
+                            «<de jure εκδότης>, <πράξη/απόφαση>, <ΦΕΚ/ECLI>» ΚΑΙ
+                            «Επαληθευμένη μηχανική αναπαράσταση, ενοποίηση, απόδειξη και πιστοποίηση:
+                             LAWMAX OMEGA — THE LEGAL WATCHTOWER OF GREECE, release <seq>, claim <claim_id>»>,
+  "citation_policy_id":    <"lawmax/citation-policy/1" — registry, versioned> }
+
+CertifiedResult = {
+  "mltp": "3", "layer": "CertifiedResult",
+  "result_id": <"res1:" + canonical-hash(CertifiedResult χωρίς signature.sig)>,
+  "answer": <proof-carrying-answer/1 — v1.4 §4.7>,
+  "citation": <lawmax/citation/1>,
+  "citation_digest": <canonical-hash(citation)>,          # δεσμεύει την παραπομπή ΚΑΙ μέσα στην απάντηση
+  "release_ref": { "release_root", "release_generation" },
+  "signed_at": { "trusted_time", "anchor" },               # όπως §1.0
+  "signature": { "alg", "kid", "delegation_seq", "sig": <context "mltp3:certified-result"> } }
+
+CitationToken = SIGN(kid, "mltp3:citation" ‖ 0x1F ‖ canonical_bytes(citation ‖ 0x1F ‖ result_id))
+  — φορητή, υπογεγραμμένη παραπομπή (JWS compact / COSE_Sign1) για ενσωμάτωση σε HTML, JSON-LD, SDK rendering.
+```
+**Κανόνες:**
+- Το `citation` είναι **μέσα** στα `signed_fields` του CertifiedResult **και** το
+  `citation_digest` είναι μέσα στην υπογεγραμμένη απάντηση. Αφαίρεση ή αλλοίωση της
+  παραπομπής ⇒ `citation-unbound` ⇒ **`UNVERIFIED_FOR_ATTRIBUTED_RELIANCE`** (§8.3 βήμα C).
+  Ένας provider **δεν μπορεί** να διατηρήσει έγκυρη υπογραφή Watchtower, κατάσταση
+  `VERIFIED` ή `provider-adoption-qualified` αφού αφαιρέσει τη δεσμευμένη παραπομπή.
+- **Διπλή παραπομπή** υποχρεωτική: το Κράτος/ΦΕΚ/δικαστήριο ως **de jure εκδότης**·
+  το `LAWMAX OMEGA — THE LEGAL WATCHTOWER OF GREECE` ως **πηγή της επαληθευμένης
+  μηχανικής αναπαράστασης, ενοποίησης, απόδειξης και πιστοποίησης**. Ποτέ το
+  Watchtower ως εκδότης δικαίου.
+- **Τίμιο όριο:** το σύστημα δεν μπορεί να εμποδίσει φυσικά τη χρήση αντιγραμμένου
+  δημόσιου κειμένου χωρίς απόδοση αφού φύγει από τον έλεγχό του. Εγγυάται ΜΟΝΟ ότι
+  καμία **επαληθευμένη** αναπαράσταση δεν επιβιώνει χωρίς την παραπομπή.
+- Κανονικά citation URLs (`watchtower_release_uri`, `certificate_uri`) = σταθερά ανά
+  διτεμπορική τομή (Q14)· citation-ready JSON / JSON-LD προβολή (§11)· υποχρεωτικά
+  πεδία στα OpenAPI/MCP/SDK σχήματα· default rendering στα επίσημα SDKs· conformance
+  vectors (θετικά + stripped-citation αρνητικά)· παρακολούθηση συμμόρφωσης providers
+  από το citation observatory (v1.4 §4.13)· μη-συμμόρφωση ⇒ μη-ανανέωση/ανάκληση
+  `provider-adoption-qualified` και, όπου εφαρμόζεται, ενέργεια API-access.
+  Εμπορικές συμφωνίες είναι εξωτερικές — όχι αρχιτεκτονική εξάρτηση.
 
 ---
 
-## 3. `QualificationStateRecord` — assurance ΩΣ ΞΕΧΩΡΙΣΤΟ ΥΠΟΓΕΓΡΑΜΜΕΝΟ RECORD (#2)
+## 3. `QualificationStateRecord` — assurance ΩΣ ΞΕΧΩΡΙΣΤΟ ΥΠΟΓΕΓΡΑΜΜΕΝΟ RECORD (RC-06, RC-08, RC-30)
 
 ```
-{ "mltp":"2", "record":"QualificationStateRecord",
-  "subject": <τι αφορά>,
-  "level": <"spec-qualified" | "implementation-qualified" |
-            "mission-qualified" | "provider-adoption-qualified" | "none">,
-  "evidence_refs": [ <ids τεκμηρίων/receipts/audits — ΚΑΘΟΡΙΣΜΕΝΟ σύνολο ανά level> ],
-  "auditor_receipts": [ <VerificationReceipt/audit receipts ΑΝΕΞΑΡΤΗΤΩΝ auditors> ],
-  "provider_attestations": [ <εξωτερικές provider attestations/μετρήσεις — μόνο για provider-adoption> ],
-  "issued_at": {"trusted_time","anchor"},                   # trusted anchor, όπως §1.0
-  "expiry",                                                 # καμία βαθμίδα μόνιμη (Q28)
-  "signer": {"role": <"independent-auditor" | "auditor-quorum" | "provider-registry">,
-             "alg","kid","sig"} }
+{ "mltp": "3", "record": "QualificationStateRecord",
+  "record_id": <"qsr1:" + canonical-hash(record χωρίς signers[].sig)>,
+  "subject": { "kind": <"release" | "claim">, "release_root": "sha256:<hex>", "claim_id": "clm1:<hash>" | null },
+  "level": <"spec-qualified" | "implementation-qualified" | "mission-greece-qualified" |
+            "security-operations-qualified" | "provider-adoption-qualified" | "none">,
+  "evidence_refs": [ <ids τεκμηρίων — ΚΑΘΟΡΙΣΜΕΝΟ σύνολο ανά level, §3.1> ],
+  "auditor_receipts": [ <VerificationReceipt με local_signature ΜΗ-null — §7> ],
+  "provider_attestations": [ { "provider_kid": <thumbprint ∈ provider_registry>, "statement": <typed adoption statement>,
+                               "sig": <base64url — context "mltp3:provider-attestation"> } ],   # μόνο provider-adoption
+  "signed_at": { "trusted_time": <legal-instant>, "anchor": { "kind": "rfc3161", "evidence_ref": <id> } },
+  "expiry": <legal-instant>,                               # καμία βαθμίδα μόνιμη (Q28)
+  "signers": [ { "alg", "kid": <thumbprint ∈ auditor_registry | provider_registry>,
+                 "sig": <base64url — context "mltp3:qual-state"> } ] }
 ```
 
-**Ποιος επιτρέπεται να εκδίδει κάθε level (κλείνει την έμμεση αυτοπιστοποίηση):**
+### 3.1 Ποιος επιτρέπεται να εκδίδει κάθε level — ο ρόλος προέρχεται ΑΠΟ ΤΟ REGISTRY, όχι από το record
 
-| level | επιτρεπόμενος signer role | υποχρεωτικό evidence |
-|---|---|---|
-| `spec-qualified` | independent-auditor (≥1) | destruction-pass adjudication record + consistency-audit output |
-| `implementation-qualified` | auditor-quorum (≥2 ανεξάρτητοι) | Q01–Q28 auditor receipts, proposer-blind re-derivation |
-| `mission-qualified` | auditor-quorum (≥2) | MISSION GREECE-1 auditor receipts (Μ-1…Μ-6) + independent source census |
-| `provider-adoption-qualified` | provider-registry (εξωτερικό) | provider attestations/μετρήσεις — **όχι** δικές μας |
-| `none` | — | — |
+| level | signers (όλοι από registry του καταναλωτή) | quorum | υποχρεωτικό evidence |
+|---|---|---|---|
+| `spec-qualified` | independent-auditor | ≥1 | adjudication record του destruction programme + contradiction/omission audit output (`V1.4-CONTRADICTION-OMISSION-AUDIT.out`) |
+| `implementation-qualified` | independent-auditor | ≥2 διακριτοί | Q01–Q42 auditor receipts, proposer-blind re-derivation, 15 vertical-slice evidence bundles |
+| `mission-greece-qualified` | independent-auditor | ≥2 διακριτοί | MISSION GREECE-1 receipts (Μ-1 έως Μ-6) + ανεξάρτητη απογραφή πηγών |
+| `security-operations-qualified` | independent-auditor | ≥2 διακριτοί | SLO receipts, supply-chain provenance verification, disaster-replay receipt (Q19), split-view drill |
+| `provider-adoption-qualified` | provider-registry members | ≥2 διακριτοί providers | provider attestations (όχι δικές μας) |
+| `none` | — | — | — |
 
 - **Ο release issuer ΔΕΝ μπορεί να υπογράψει QualificationStateRecord για τον
-  εαυτό του.** Signer με role `release-issuer` ή kid της release-authority ⇒ error
-  `unauthorized-qualification-issuer`. Τα `evidence_refs` **πρέπει** να αναλύονται σε
-  `auditor_receipts` ανεξάρτητων auditors (LocalTrustState auditor registry, §8).
-- Ο verifier ελέγχει: signer **role** επιτρεπτό για το level · **evidence set**
-  παρόν και επιλύσιμο · **quorum** (≥2 όπου απαιτείται) · **freshness** (issued_at
-  anchor) · **expiry**. Οποιοδήποτε λείπει ⇒ level = `none`.
-- Οι IssuedClaims **δείχνουν** εδώ (`qualification_state_ref`), **ποτέ** δεν
-  αυτοχαρακτηρίζονται. Dangling ref (δεν επιλύεται στο bundle) ⇒
-  `dangling-qualification-ref` ⇒ level `none`. Λήξη `expiry` ⇒ `none`.
+  εαυτό του — δομικά:** τα registries του καταναλωτή (auditor/provider) πρέπει να
+  είναι **ξένα** προς το σύνολο issuer keys = {owner root} ∪ {κάθε `delegate_kid`
+  στο `delegation_chain`}. Ο verifier ελέγχει τη διαζευξιμότητα (§8.3 βήμα Q1)·
+  τομή ≠ ∅ ⇒ `unauthorized-qualification-issuer`. Καμία denylist ενός kid.
+- **Κάθε υπογραφή του `signers[]` επαληθεύεται** (context `mltp3:qual-state`) με το
+  δημόσιο κλειδί που το registry συνδέει με το kid. Quorum = πλήθος **διακριτών**
+  registry kids με έγκυρη υπογραφή. Άγνωστο kid ⇒ δεν μετρά ΚΑΙ ⇒
+  `unauthorized-qualification-issuer`.
+- **Auditor receipts** μετρούν ως evidence ΜΟΝΟ αν `local_signature` ≠ null,
+  επαληθεύεται έναντι registry, `bundle_digest` == digest του release manifest του
+  `subject.release_root`, και `result == VERIFIED`.
+- **Subject binding:** ο verifier απαιτεί `subject.release_root == bundle.release_anchor.release_root`
+  (και, για `subject.kind == claim`, `claim_id` ίσο με το claim που το επικαλείται).
+  Μεταφύτευση record σε άλλο release ⇒ `qualification-subject-mismatch`.
+- Dangling `qualification_state_ref` (δεν επιλύεται στο `qualification_records`
+  του bundle) ⇒ `dangling-qualification-ref` ⇒ level `none` ΚΑΙ claim result
+  `UNVERIFIED_FOR_MACHINE_RELIANCE` (ποτέ VERIFIED — RC-07). Λήξη `expiry` ⇒
+  `expired` ⇒ level `none`.
+- Η επίλυση γίνεται **ΜΟΝΟ** από το `qualification_records` του bundle (η v2
+  εναλλακτική «ή με tlog inclusion» αφαιρέθηκε: από hash δεν προκύπτει record).
 
 ---
 
-## 4. CRYPTOGRAPHIC PROFILE — ΠΡΑΓΜΑΤΙΚΟ (κλείνει το «only SHA-256» finding)
+## 4. CRYPTOGRAPHIC PROFILE — ΠΛΗΡΕΙΣ ΠΑΡΑΜΕΤΡΟΙ (RC-26)
 
-**Δύο διακριτές πρωτόγονες λειτουργίες — ΠΟΤΕ συγχεόμενες:**
+### 4.1 Πρωτόγονες, παράμετροι, ταυτότητες κλειδιών
 
-| λειτουργία | αλγόριθμος | που |
+| λειτουργία | αλγόριθμος / παράμετρος | που |
 |---|---|---|
-| **Hashing / Merkle inclusion** | **SHA-256**, RFC 9162 profile `lawmax-merkle-sha256-v1` (leaf `0x00`, node `0x01`, unbalanced split, no-duplicate-last) | inclusion proofs, roots, `*_id` |
-| **Signatures** | **RS256** (υφιστάμενο PCL profile) **· δηλωμένη μετάβαση → Ed25519** (key-lifecycle §2.1, `kid`+`alg`+`key_lineage`) | corpus-proof JWS, delegation, witness checkpoints, QualificationStateRecord |
+| **Hashing / Merkle inclusion** | **SHA-256**, RFC 9162 profile `lawmax-merkle-sha256-v1` (leaf `0x00`, node `0x01`, unbalanced split, no-duplicate-last) | inclusion proofs, roots, κάθε `*_id` |
+| **Signatures (era-2, κανονικό)** | **Ed25519** (RFC 8032), επαλήθευση **strict**: απόρριψη μη-κανονικού `S` (S ≥ L), απόρριψη σημείων εκτός της κύριας υποομάδας (small-order), καμία ZIP215-χαλάρωση | delegations, revocations, registry snapshots, release root, IssuedClaims, witness checkpoints, QSR, receipts, reviewer adoption, provider attestations |
+| **Signatures (era-1, legacy)** | **RS256** = RSASSA-PKCS1-v1_5/SHA-256, modulus **≥ 3072 bit**, `e = 65537` | ΜΟΝΟ επαλήθευση era-1 releases (PCL corpus-proof JWS)· ποτέ νέες υπογραφές |
+| **Ταυτότητα κλειδιού** | `kid` ≡ **RFC 7638 JWK thumbprint (SHA-256)** του δημόσιου κλειδιού — Η ΜΙΑ συνάρτηση fingerprint· η «sha256 του δημόσιου κλειδιού» της TRUST-BOOTSTRAP §2 ΟΡΙΖΕΤΑΙ ως αυτή (versioned precedence, §4.5) | παντού |
+| **Δέσμευση `alg`↔κλειδί** | `alg` πρέπει να ταιριάζει με το `kty`/`crv` του JWK του `kid` (Ed25519 ⇔ OKP/Ed25519· RS256 ⇔ RSA) — αλλιώς `unknown-alg` | κάθε υπογραφή |
+| **RFC-3161** | TSR DER (RFC 3161/5816), `messageImprint` = SHA-256, TSA cert chain επαληθεύεται έναντι `tsa_trust_anchors`· `accuracy` προστίθεται στο `clock_uncertainty` | `signed_at`, QSR `signed_at`, source `time_anchor` |
+| **Threshold owner root** | FROST-Ed25519 t-of-n (προεπιλογή 3-of-5) — η δημόσια πλευρά είναι ΕΝΑ Ed25519 κλειδί· ο verifier δεν αλλάζει (§10.2) | Layer 0 |
 
-> **Η επαλήθευση υπογραφής ΑΠΑΙΤΕΙ RS256/Ed25519 primitive — ΟΧΙ «μόνο SHA-256».**
-> Το «μόνο SHA-256» ισχύει **αποκλειστικά** για τον έλεγχο **inclusion** (PCL §5),
-> όχι για signatures/delegation/witnesses. Ο ελεγκτής είναι μικρός (LOC-ceiling,
-> PROOF-OBJECT §4) αλλά **δεν** είναι hash-only: φέρει έναν RS256 (ή Ed25519)
-> verifier. Αυτό κλείνει την αντίφαση της v1 με PCL RS256 + trust-bootstrap delegation.
+**Canonical encoding:** `deployment/verify/canonical-serialization-spec.md`
+(deterministic JSON, sorted keys, NFC, LF, χωρίς floats, ρητά type tags,
+διαχωριστικά `0x1F`). **CBOR προβολή** (RFC 8949 deterministic encoding) ορίζεται
+ΜΟΝΟ ως interoperability projection για SCITT (§11) — η υπογραφή γίνεται ΠΑΝΤΑ
+πάνω στο canonical JSON· η CBOR μορφή φέρει το ίδιο `sig` και τον ίδιο digest.
 
-**Canonical encoding:** `deployment/verify/canonical-serialization-spec.md` —
-deterministic JSON, sorted keys, NFC, LF, χωρίς floats, ρητά type tags, διαχωριστικά
-`0x1F` για συνθέσεις hash (TEMPORAL-IDENTITY §1.0).
+### 4.2 Domain separation — ΠΛΗΡΗΣ ΚΛΕΙΣΤΟΣ κατάλογος context strings
 
-**Domain separation:** Merkle leaf `0x00` / node `0x01`· επιπλέον **context string**
-ανά τύπο signature payload (π.χ. `"mltp2:release-root"`, `"mltp2:delegation"`,
-`"mltp2:witness-checkpoint"`, `"mltp2:qual-state"`) ώστε υπογραφή ενός τύπου να μη
-γίνεται δεκτή ως άλλου.
+```
+mltp3:issued-claim · mltp3:delegation · mltp3:revocation · mltp3:registry-snapshot ·
+mltp3:release-root · mltp3:witness-checkpoint · mltp3:qual-state · mltp3:receipt ·
+mltp3:reviewer-adoption · mltp3:provider-attestation · mltp3:compiler-attestation ·
+mltp3:cockpit-intent · mltp3:certified-result · mltp3:citation
+```
+`sig = SIGN(kid, context_string ‖ 0x1F ‖ canonical_bytes(target))` όπου target =
+το πλήρες αντικείμενο χωρίς το πεδίο `sig`. Υπογραφή με λάθος context ⇒
+`sig-invalid`. Ο κατάλογος είναι κλειστός: νέο context = νέα έκδοση MLTP.
 
-**Algorithm identifiers:** κάθε signature φέρει `alg` ∈ {`RS256`,`Ed25519`} + `kid`.
-Άγνωστο `alg` ⇒ error `unknown-alg` (fail-closed, ποτέ «try next»).
+### 4.3 Error taxonomy — ΚΛΕΙΣΤΗ, ΟΝΟΜΑΣΤΙΚΗ (35 ονόματα)
 
-**Signature payload (ρητά):** `sig = SIGN(kid, context_string ‖ 0x1F ‖ canonical_bytes(target))`
-όπου `target` = το ρητά δηλωμένο αντικείμενο (π.χ. release_root string, delegation
-statement, witness checkpoint). Ο verifier ξαναχτίζει το ίδιο payload και ελέγχει.
+```
+malformed-envelope · unknown-claim-type · schema-mismatch ·
+text-hash-mismatch · inclusion-failed · path-too-long · root-mismatch ·
+untrusted-key · unknown-alg · sig-invalid · key-binding-mismatch ·
+delegation-invalid · delegation-expired · delegation-scope-violation ·
+no-trusted-signature-time · consistency-failed · split-view · split-view-unverifiable ·
+witness-quorum-failed · untrusted-registry · stale-revocation-state ·
+revoked · retroactively-revoked · expired · stale ·
+dangling-qualification-ref · unauthorized-qualification-issuer ·
+qualification-subject-mismatch · insufficient-provenance · coverage-not-total ·
+undecided-legal-state · unadopted-analysis · compiler-divergence · citation-unbound ·
+UNKNOWN_FRESHNESS
+```
+Ο πίνακας §4.4 καλύπτει και τα 35 ένα-προς-ένα· όνομα χωρίς βήμα = ελάττωμα αυτού
+του κειμένου (ελέγχεται μηχανικά από τον `V1.4-CONTRADICTION-OMISSION-AUDIT.sh`).
 
-**Error taxonomy (κλειστή, ονομαστική):**
-`text-hash-mismatch · inclusion-failed · path-too-long · root-mismatch ·
-untrusted-key · unknown-alg · sig-invalid · delegation-invalid · delegation-expired ·
-delegation-scope-violation · consistency-failed · split-view · expired · revoked ·
-retroactively-revoked · untrusted-registry · dangling-qualification-ref ·
-unauthorized-qualification-issuer · insufficient-provenance · unknown-claim-type ·
-unadopted-analysis · UNKNOWN_FRESHNESS · UNKNOWN(reason)`.
+### 4.4 Κάθε error έχει ονομαστικό βήμα εκπομπής στο §8.3 (RC-12)
 
-- `delegation-scope-violation`: έγκυρο delegated key υπογράφει claim με `claim_type`
-  **εκτός** του `scope` της delegation του.
-- `untrusted-registry`: embedded witness/auditor registry που **δεν** επιλύεται μέσω
-  `LocalTrustState`/pinned root.
-- `UNKNOWN_FRESHNESS`: η υπογραφή επαληθεύεται ιστορικά, αλλά **χωρίς** αξιόπιστο
-  current-time evidence δεν κρίνεται freshness/expiry ⇒ **ποτέ `VERIFIED`**.
+| error | βήμα §8.3 | claim result |
+|---|---|---|
+| malformed-envelope, unknown-claim-type, schema-mismatch | 0 (malformed-envelope και σε Q2 για record_id) | UNVERIFIED_FOR_MACHINE_RELIANCE |
+| untrusted-key | K0, K1, K2 | UNVERIFIED_FOR_MACHINE_RELIANCE |
+| unknown-alg | K2 (alg↔κλειδί) | UNVERIFIED_FOR_MACHINE_RELIANCE |
+| key-binding-mismatch | K1 | UNVERIFIED_FOR_MACHINE_RELIANCE |
+| delegation-invalid | K1 (root→root), K2 (seq) | UNVERIFIED_FOR_MACHINE_RELIANCE |
+| no-trusted-signature-time | T | UNKNOWN |
+| delegation-expired | K3 | UNVERIFIED_FOR_MACHINE_RELIANCE |
+| delegation-scope-violation | K3 | UNVERIFIED_FOR_MACHINE_RELIANCE |
+| sig-invalid | K4 | UNVERIFIED_FOR_MACHINE_RELIANCE |
+| text-hash-mismatch, inclusion-failed, path-too-long | R1 (PCL §5 `inclusion()`) | UNVERIFIED_FOR_MACHINE_RELIANCE |
+| root-mismatch | R2 | UNVERIFIED_FOR_MACHINE_RELIANCE |
+| compiler-divergence | R4 | UNVERIFIED_FOR_MACHINE_RELIANCE (ολόκληρο το bundle) |
+| consistency-failed | L1 (άκυρο/ελλιπές consistency proof) | UNVERIFIED_FOR_MACHINE_RELIANCE (ολόκληρο το bundle) |
+| split-view | L1 (μη μονότονο tree_size ή ασύμβατες ρίζες), L3 (revocation checkpoint οπισθοδρομεί) | UNVERIFIED_FOR_MACHINE_RELIANCE (ολόκληρο το bundle) |
+| split-view-unverifiable | L2 | UNKNOWN |
+| witness-quorum-failed, untrusted-registry | L2, D | UNVERIFIED_FOR_MACHINE_RELIANCE |
+| stale-revocation-state | L3 | UNKNOWN |
+| revoked, retroactively-revoked | V | UNVERIFIED_FOR_MACHINE_RELIANCE |
+| insufficient-provenance, coverage-not-total | P | UNKNOWN |
+| undecided-legal-state | S | UNKNOWN |
+| UNKNOWN_FRESHNESS | F0 | UNKNOWN |
+| stale, expired | F | UNKNOWN |
+| dangling-qualification-ref, unauthorized-qualification-issuer, qualification-subject-mismatch | Q | UNVERIFIED_FOR_MACHINE_RELIANCE |
+| unadopted-analysis | J | UNVERIFIED_FOR_MACHINE_RELIANCE |
+| citation-unbound | C (CertifiedResult χωρίς/με αλλοιωμένη παραπομπή) | UNVERIFIED_FOR_ATTRIBUTED_RELIANCE |
 
-**Delegation / witness signature verification:** root key (out-of-band pinned)
-υπογράφει delegation statements (scope, not-before/after, seq) — RS256/Ed25519·
-witnesses υπογράφουν checkpoints· ο verifier ελέγχει ΚΑΘΕ υπογραφή με το αντίστοιχο
-δημόσιο κλειδί (root pinned out-of-band, witness keys από witness registry).
+### 4.5 Versioned precedence έναντι foundations (RC-15, RC-25, RC-26)
+
+- **PCL §4-5 (`authentic()`):** το μοντέλο «`thumbprint(public_key) == PINNED_KEY`
+  ΚΑΙ `RS256_verify(PINNED_KEY)`» ισχύει **ΜΟΝΟ για era-1 releases**. Για era-2
+  υπερισχύει το §8 αυτού του κειμένου: η ρίζα υπογράφεται από delegated
+  release key, εξουσιοδοτημένο από τον pinned owner root. Η επέκταση της PCL σε
+  PCL-2 (delegation-aware, Ed25519) είναι το βήμα 6 της υλοποίησης — μέχρι τότε η
+  PCL-1 verifier επαληθεύει μόνο era-1. Καμία σύγκρουση ετυμηγορίας: ο
+  `release_profile` (§5) επιλέγει.
+- **TRUST-BOOTSTRAP §2 «fingerprint = sha256 του δημόσιου κλειδιού»:** ορίζεται
+  ως RFC 7638 thumbprint (§4.1). Το TRUST-BOOTSTRAP §3 delegation statement
+  προσλαμβάνει τη μορφή §2.9.
+- **KEY-LIFECYCLE §2.4 (continuity statement από το παλιό κλειδί):** πληροφοριακό
+  lineage ΜΟΝΟ (§9.3)· η αυθεντία διαδοχής είναι ΠΑΝΤΑ νέα root delegation.
+- **KEY-LIFECYCLE §2.5:** όπως στη v2 — μόνο για scheduled rotation· key-compromise
+  = §9 αυτού του κειμένου (η παραπομπή υπάρχει και στα δύο).
 
 ---
 
-## 5. CANONICAL ROOTS — ΜΙΑ AUTHORITY ROOT (κλείνει τη σύγκρουση #5)
+## 5. CANONICAL ROOTS — ΜΙΑ AUTHORITY ROOT, ΥΠΟΓΕΓΡΑΜΜΕΝΗ ΚΑΙ ΔΕΣΜΕΥΤΙΚΗ (RC-17)
 
 `LAWMAX-TEMPORAL-IDENTITY-DESIGN.md §1.5/§8 (PCL-02)` ορίζει ρητά: **«Μία ρίζα:
 receipt-set-root + graph-root ΜΕΣΑ στο canonical set → release root → TSR → tlog.
-Το `pcl_text_root` πεθαίνει· cross-check στο spine verify.»** Ενώ το
-`LAWMAX-PROOF-OBJECT-SPEC.md §2 (census-2)` **ακόμη περιέχει** πεδίο `pcl_text_root`.
+Το `pcl_text_root` πεθαίνει· cross-check στο spine verify.»**
 
-**Επίλυση (target + versioned legacy migration):**
 - **TARGET authority root = `release_root`** (era-2): το canonical-set root που
-  δεσμεύει `receipt_set_root` + `graph_root`, σφραγισμένο με TSR + tlog. **Η ΜΟΝΗ**
-  ρίζα αυθεντίας. Κάθε MLTP `temporal-projection` / `TrustBundle` δείχνει σε αυτήν.
+  δεσμεύει `receipt_set_root` + `graph_root` + census-2, σφραγισμένο με TSR + tlog.
+  **Η ΜΟΝΗ** ρίζα αυθεντίας. Κάθε IssuedClaim δηλώνει `release_ref.release_root`
+  και ο verifier απαιτεί το `proof_material` inclusion **σε αυτήν** — όχι στη ρίζα
+  που κουβαλά το ίδιο το proof (RC-17).
+- **`ReleaseRootSignature`:** `{ "release_root", "release_generation", "census_digest",
+  "sig": {alg, kid: <delegated release key>, sig — context "mltp3:release-root"} }`
+  μέσα στο `release_anchor`· ο verifier το επαληθεύει με κλειδί εξουσιοδοτημένο
+  για `release-signing`.
 - **`pcl_text_root` = LEGACY CROSS-CHECK, όχι authority root.** Παραμένει στο
-  census-2 **μόνο** ως era-1 συμβατότητα και ως **spine cross-check** (μη
-  authoritative). Σημασιολογία ρητή: era-1 releases = `trust-status :legacy-sealed`·
-  το πρώτο era-2 census δεσμεύει `prev_release_root` και η tlog αλυσίδα συνεχίζεται
-  (TEMPORAL-IDENTITY §5/M0).
-- **Καμία optional δεύτερη authority root χωρίς σημασιολογία.** Ένα `pcl_text_root`
-  που παρουσιάζεται ως authority root ⇒ error `root-mismatch`.
-
-**Versioned legacy migration profile:** `release_profile ∈ {era-1-legacy, era-2}`·
-ο verifier επιλέγει κανόνες κατά `release_profile`· era-1 verify δέχεται
-`pcl_text_root` ως cross-check, era-2 verify το αγνοεί ως authority.
+  census-2 **μόνο** ως era-1 συμβατότητα και ως **spine cross-check**. Ένα
+  `pcl_text_root` που παρουσιάζεται ως authority root ⇒ `root-mismatch`.
+- **Versioned legacy migration profile:** `release_profile ∈ {era-1-legacy, era-2}`·
+  era-1 verify = PCL-1 `authentic()` με pinned RS256 key· era-2 verify = §8.3.
+  `trust-status :legacy-sealed` για era-1· το πρώτο era-2 census δεσμεύει
+  `prev_release_root` και η tlog αλυσίδα συνεχίζεται (TEMPORAL-IDENTITY §5/M0).
 
 ---
 
-## 6. LAYER B — `TrustBundle` (CONTAINER, ΟΧΙ certificate)
+## 6. LAYER B — `TrustBundle` (CONTAINER, ΟΧΙ certificate) — ΠΛΗΡΩΣ OFFLINE-RESOLVABLE
 
 ```
-{ "mltp":"2", "layer":"TrustBundle",
+{ "mltp": "3", "layer": "TrustBundle",
+  "bundle_id": <"bnd1:" + canonical-hash(bundle)>,
+  "release_profile": <"era-1-legacy" | "era-2">,
   "issued_claims": [ <IssuedClaim §1> ],
+  "certified_results": [ <CertifiedResult §2.10 — μόνο σε bundles που παραδίδουν αποτελέσματα σε καταναλωτή> ],
   "census": <census-2 (materials in-toto)>,
-  "release_anchor": <trust-bootstrap tra/3: owner_root_fingerprint,
-                     delegation_seq, witness_checkpoints>,
-  "delegation_chain": [ <root→delegate statements, ΚΑΘΕ ΕΝΑ με scope> ],
-  "transparency": { "log_id","tree_size","log_root","consistency_from" },
-  # ---- ΠΛΗΡΩΣ OFFLINE-RESOLVABLE: περιλαμβάνει Ή δεσμεύει με inclusion proofs ----
-  "qualification_records": [ <QualificationStateRecord §3 για κάθε qualification_state_ref> ],
-  "auditor_receipts":      [ <VerificationReceipt/audit evidence ανεξάρτητων auditors> ],
-  "revocation": { "records": [ <trust-key-or-delegation-revocation IssuedClaims> ],
-                  "checkpoint": <τρέχον revocation checkpoint + tlog inclusion> },
-  "witness_checkpoints":   [ <signed checkpoints των transparency witnesses> ],
-  "embedded_registries":   { "witness_keys": [...], "auditor_keys": [...] }   # UNTRUSTED μέχρι επίλυση
+  "release_anchor": { "release_root": "sha256:<hex>", "release_generation": {"era": 2, "seq": <int>},
+                      "release_root_signature": <ReleaseRootSignature §5>,
+                      "release_authority_proof": <lawmax/authority-proof-bundle/1 — owner→delegate, §2.1α>,
+                      "prev_release_root": "sha256:<hex>" | null },
+  "delegation_chain": [ <DelegationStatement §2.9 — ΚΑΘΕ ΕΝΑ root-signed, με scope> ],
+  "keys": [ <JWK δημόσιο κλειδί για ΚΑΘΕ kid που εμφανίζεται σε υπογραφή του bundle,
+             συμπεριλαμβανομένου του owner root ως αντικείμενο-προς-ταύτιση> ],       # RC-02
+  "time_evidence": [ { "id": <string>, "kind": <"rfc3161" | "witnessed-checkpoint">,
+                       "tsr_der": <base64 DER> | null, "tsa_chain": [ <DER> ] | null,
+                       "checkpoint": <SignedCheckpoint §10.1> | null } ],                 # RC-03
+  "dual_compiler_attestation": { "compiler_a": { "id", "runtime", "legal_state_root": "sha256:<hex>", "projection_roots": {<name>: "sha256:<hex>"},
+                                                 "sig": {alg, kid, sig — context "mltp3:compiler-attestation"} },
+                                 "compiler_b": { "id", "runtime", "legal_state_root": "sha256:<hex>", "projection_roots": {<name>: "sha256:<hex>"},
+                                                 "sig": {alg, kid, sig — context "mltp3:compiler-attestation"} } },   # v1.4 §4.6
+  "transparency": { "log_id": <string>, "tree_size": <int>, "log_root": "sha256:<hex>",
+                    "consistency_from": { "tree_size": <int>, "log_root": "sha256:<hex>" } | null,
+                    "consistency_proof": [ "<hex>" ],
+                    "inclusion": { "release_root_leaf_index": <int>, "proof": [ "<hex>" ] } },
+  "witness_checkpoints": [ <SignedCheckpoint §10.1 — publication witnesses ΚΑΙ cross-client witnesses> ],
+  "qualification_records": [ <QualificationStateRecord §3 για ΚΑΘΕ qualification_state_ref> ],
+  "auditor_receipts": [ <VerificationReceipt §7 ανεξάρτητων auditors, local_signature ΜΗ-null> ],
+  "revocation": { "statements": [ <RevocationStatement §2.9 — root-signed> ],
+                  "checkpoint": { "tree_size": <int>, "log_root": "sha256:<hex>", "checkpoint_at": <legal-instant>,
+                                  "inclusion_proofs": [ <ανά statement> ] } },
+  "registry_snapshots": [ <RegistrySnapshot §2.9 — root-signed, για auth1/ireg1/census-universe που τα claims επικαλούνται> ],
+  "registry_records": [ { "snapshot_kind", "record": <το πλήρες auth1/ireg1/census record>, "inclusion_proof": [ "<hex>" ] } ],
+  "embedded_registries": { "witness_keys": [ <JWK> ], "auditor_keys": [ <JWK> ], "reviewer_keys": [ <JWK> ], "provider_keys": [ <JWK> ] }   # UNTRUSTED μέχρι επίλυση
 }
 ```
 **Το TrustBundle δεν ισχυρίζεται τίποτα από μόνο του — μεταφέρει.** Δεν φέρει
-`verification_result`, δεν φέρει claim.
+`verification_result`, δεν φέρει claim, δεν φέρει ελεύθερο κείμενο.
 
-**Κανόνες offline-resolvability (#4):**
+**Κανόνες offline-resolvability:**
 - Κάθε `qualification_state_ref` **πρέπει** να επιλύεται σε `qualification_records`
-  του ίδιου bundle (ή με inclusion proof στο tlog) — αλλιώς `dangling-qualification-ref`.
-- Auditor receipts, revocation records + current revocation checkpoint, witness
-  checkpoints: **μέσα** ή **δεσμευμένα με inclusion proof** — ποτέ «κάπου αλλού».
+  του ίδιου bundle — αλλιώς `dangling-qualification-ref`.
+- Auditor receipts, revocation statements + checkpoint, witness checkpoints, time
+  evidence, δημόσια κλειδιά, registry εγγραφές με inclusion proofs: **μέσα**
+  στο bundle — ποτέ «κάπου αλλού». Κάθε `evidence_ref`/`aprf2`/`acq1`/`xrc2`/`cust1`
+  αναφορά ενός claim επιλύεται σε αντικείμενο του ίδιου bundle (RC-11).
 - **Embedded keys/registries είναι UNTRUSTED** μέχρι να επιλυθούν μέσω
-  `LocalTrustState` (witness-key registry, auditor registry) ή μέσω pinned owner
-  root (delegation). Embedded registry χωρίς επίλυση ⇒ `untrusted-registry`· ένας
-  witness που υπάρχει **μόνο** στο bundle **δεν** μετρά για quorum.
-
-Ένας καταναλωτής το τροφοδοτεί στον local verifier (§8) με το δικό του
-`LocalTrustState` και **παράγει** `VerificationReceipt`.
+  `LocalTrustState` (registries) ή μέσω pinned owner root (delegation, registry
+  snapshots). Embedded registry χωρίς επίλυση ⇒ `untrusted-registry`· ένας
+  witness/auditor/reviewer/provider που υπάρχει **μόνο** στο bundle **δεν** μετρά.
+- `keys[]` είναι φορέας, όχι αυθεντία: ένα κλειδί «ισχύει» μόνο αν το thumbprint του
+  ταιριάζει με `delegate_kid` root-signed delegation (issuer keys) ή με εγγραφή
+  registry του καταναλωτή (auditors/witnesses/reviewers/providers).
 
 ---
 
-## 7. LAYER C — `VerificationReceipt` (τοπικό αποτέλεσμα, ΟΧΙ issuer-signed)
+## 7. LAYER C — `VerificationReceipt` (τοπικό αποτέλεσμα, ΟΧΙ issuer-signed) — ΜΕ LEVEL ΑΝΑ CLAIM (RC-07)
 
 ```
-{ "mltp":"2", "layer":"VerificationReceipt",
-  "bundle_digest": "sha256:…",
-  "checks": [ {"name":<§4 error taxonomy name ή "ok">, "profile", "result"} ],
-  "result": <"VERIFIED" | "UNVERIFIED_FOR_MACHINE_RELIANCE" | "UNKNOWN">,
-  "reason": <ονομαστικό, όταν όχι VERIFIED>,
-  "verifier": {"id","version","kernel_diversity": <#ανεξάρτητων υλοποιήσεων>},
+{ "mltp": "3", "layer": "VerificationReceipt",
+  "bundle_digest": "sha256:<hex>",
+  "release_root": "sha256:<hex>",
+  "result": <"VERIFIED" | "UNVERIFIED_FOR_MACHINE_RELIANCE" | "UNVERIFIED_FOR_ATTRIBUTED_RELIANCE" | "UNKNOWN">,
+                                                                              # = min επί των claims, των certified results και των bundle-level ελέγχων
+  "reason": <§4.3 error name | "ok">,
+  "certified_results": [ { "result_id": "res1:<hash>", "result": <"VERIFIED" | "UNVERIFIED_FOR_MACHINE_RELIANCE" | "UNVERIFIED_FOR_ATTRIBUTED_RELIANCE" | "UNKNOWN">,
+                           "reason": <§4.3 error name | "ok">, "citation_bound": <bool> } ],
+  "claims": [ { "claim_id": "clm1:<hash>", "claim_type": <claim_type>,
+                "result": <"VERIFIED" | "UNVERIFIED_FOR_MACHINE_RELIANCE" | "UNKNOWN">,
+                "reason": <§4.3 error name | "ok">,
+                "level": <"spec-qualified" | "implementation-qualified" | "mission-greece-qualified" |
+                          "security-operations-qualified" | "provider-adoption-qualified" | "none">,
+                "provenance_strength": <"S3-signed-by-authority" | "S2-official-channel-attested" | "S1-register-entry-only" | null>,
+                "t_sig": <legal-instant> | null,
+                "freshness": <"FRESH" | "STALE" | "UNKNOWN_FRESHNESS"> } ],
+  "checks": [ { "step": <§8.3 step id>, "name": <§4.3 error name | "ok">, "detail": <typed value> } ],
+  "trusted_now": { "now": <legal-instant> | null, "evidence_kind": <string> | null, "clock_uncertainty": <duration> },
+  "verifier": { "id": <string>, "version": <string>, "kernel": <"lisp-kernel" | "rust-kernel" | "ocaml-kernel" | "python-reference">,
+                "kernel_diversity": <int — πλήθος ανεξάρτητων υλοποιήσεων που έδωσαν ταυτόσημο receipt> },
   "produced_at": <legal-instant>,
-  "local_signature": {"alg","kid","sig"} | null }        # ΤΟΥ VERIFIER, ποτέ του issuer
+  "local_signature": { "alg", "kid", "sig": <base64url — context "mltp3:receipt"> } | null }   # ΤΟΥ VERIFIER, ποτέ του issuer
 ```
 **Το αποτέλεσμα το παράγει ο καταναλωτής, όχι ο εκδότης.** Ο εκδότης δεν μπορεί να
 προ-δηλώσει «VERIFIED». Αν ο verifier υπογράψει, υπογράφει **ως verifier** (δικό του
-receipt), ποτέ ως αυτο-ετυμηγορία του εκδότη.
+receipt), ποτέ ως αυτο-ετυμηγορία του εκδότη. Το `result` ανήκει **αυστηρά** στο
+κλειστό sum· `retroactively-revoked`, `UNKNOWN_FRESHNESS` κ.λπ. είναι `reason`,
+ποτέ `result` (RC-12). Receipt που χρησιμοποιείται ως auditor evidence (§3) ΠΡΕΠΕΙ
+να έχει `local_signature ≠ null`.
+
+**Ιδιότητα ντετερμινισμού (Q21 δ):** δύο verifiers με το ΙΔΙΟ `LocalTrustState`
+και το ΙΔΙΟ bundle παράγουν receipts με ταυτόσημα `result`, `claims[].result`,
+`claims[].level`, `claims[].reason` και `checks[]` (τα `verifier`, `produced_at`,
+`local_signature` εξαιρούνται από τη σύγκριση).
 
 ---
 
 ## 8. OFFLINE VERIFIER — ΤΟ ΣΥΜΒΟΛΑΙΟ
 
-Έδρα: PCL §5-6 (inclusion, SHA-256) + RS256/Ed25519 verifier (§4) + PROOF-OBJECT §4
-(LOC-ceiling, kernel diversity).
+Έδρα: PCL §5 `inclusion()` (SHA-256, RFC 9162) + Ed25519/RS256 verifier (§4) +
+RFC-3161 verifier (§1.3) + PROOF-OBJECT §4 (LOC-ceiling, kernel diversity). Η
+**δεύτερη ανεξάρτητη υλοποίηση** (v1.4 §4.4: Rust ή OCaml) καταναλώνει το ίδιο
+συμβόλαιο· ταυτόσημο receipt = κριτήριο kernel diversity.
 
 ### 8.1 `LocalTrustState` — ό,τι ο καταναλωτής φέρνει ΑΠΟ ΜΟΝΟΣ ΤΟΥ (ποτέ από το bundle)
 
 ```
 LocalTrustState = {
-  pinned_owner_root:      <fingerprint του owner-root.pub, out-of-band, ≥2 κανάλια>,
-                          # ΤΑΥΤΟΠΟΙΕΙ ΑΠΟΚΛΕΙΣΤΙΚΑ τον OWNER ROOT — ποτέ delegated κλειδί
-  witness_key_registry:   <γνωστά δημόσια κλειδιά transparency witnesses>,
-  auditor_registry:       <γνωστοί independent auditors + policy quorum ανά level>,
-  last_accepted_tlog:     {tree_size, log_root},          # για consistency / split-view
-  revocation_state:       <τελευταίο αποδεκτό revocation checkpoint>,
-  trusted_time:           { now: <legal-instant> | null,
-                            evidence: <TSR/beacon/witness-checkpoint time> | null,
-                            clock_uncertainty: <duration> }   # null ⇒ ΚΑΜΙΑ αξίωση freshness
+  pinned_owner_root:            <RFC 7638 thumbprint του owner-root JWK, out-of-band, ≥2 κανάλια>,
+                                # ΤΑΥΤΟΠΟΙΕΙ ΑΠΟΚΛΕΙΣΤΙΚΑ τον OWNER ROOT — ποτέ delegated κλειδί
+  tsa_trust_anchors:            [ <DER root/intermediate certs έμπιστων TSAs> ],           # RC-03
+  witness_registry:             { publication: [ {kid, jwk, name} ], cross_client: [ {kid, jwk, institution} ],
+                                  cross_client_quorum: <int ≥ 2> },                                    # RC-31
+  auditor_registry:             [ { kid, jwk, name, role: "independent-auditor" } ],       # allowlist, RC-06
+  reviewer_registry:            [ { kid, jwk, name, role: "institutional-reviewer" } ],    # RC-20
+  provider_registry:            [ { kid, jwk, name, role: "provider" } ],                  # RC-30
+  quorum_policy:                { level: <int> ανά level — προεπιλογές §3.1 },
+  authority_registry_root:      { seq, root, from_snapshot_sig_kid: <owner root> },        # RC-11
+  institutional_register_root:  { seq, root, from_snapshot_sig_kid: <owner root> },        # RC-11
+  census_universe_root:         { seq, root } | null,                                      # §2.4
+  last_accepted_tlog:           { tree_size, log_root } | null,                            # consistency / split-view
+  revocation_state:             { statements: [ <RevocationStatement> ], checkpoint: {tree_size, log_root, checkpoint_at} } | null,
+  max_revocation_staleness:     <duration>,                                                # RC-24
+  trusted_time:                 { now: <legal-instant> | null,
+                                  evidence: <TSR/beacon/witness-checkpoint> | null,
+                                  clock_uncertainty: <duration> }                          # null ⇒ ΚΑΜΙΑ αξίωση freshness
 }
 ```
+Οι registry ρίζες (`authority_registry_root`, `institutional_register_root`,
+`census_universe_root`) προέρχονται από root-signed `RegistrySnapshot` που ο
+καταναλωτής έχει ήδη αποδεχθεί (ή που το bundle φέρει ΚΑΙ ο verifier επαληθεύει με
+τον pinned root και μονοτονία `seq`).
 
-### 8.2 Αλυσίδα κλειδιών — ΔΙΟΡΘΩΜΕΝΗ (#2)
+### 8.2 Αλυσίδα κλειδιών
 
 ```
 pinned_owner_root ──(signed delegation: scope, not-before/after, seq)──► delegated_key ──(sig)──► IssuedClaim
+                  ──(signed revocation / registry snapshot)──► Layer 0 κατάσταση
 ```
 - Το `pinned_owner_root` ταυτοποιεί **αποκλειστικά** τον owner root. Το delegated
   release key έχει **ΔΙΑΦΟΡΕΤΙΚΟ** thumbprint — **ποτέ** δεν συγκρίνεται ως «ίσο με
-  το root». Verifier που κάνει `thumbprint(delegated) == pinned_root` είναι **λάθος**
-  (θα απέρριπτε κάθε νόμιμο release ή θα δεχόταν κλειδί που παριστάνει root).
-- Κάθε delegation φέρει **`scope`** (σύνολο επιτρεπόμενων `claim_type` + `release-signing`
-  κ.λπ.). Το scope **ελέγχεται έναντι του `claim_type`** κάθε IssuedClaim που το
-  delegated key υπογράφει. Έγκυρο κλειδί, λάθος scope ⇒ `delegation-scope-violation`.
+  το root». Verifier που κάνει `thumbprint(delegated) == pinned_root` είναι **λάθος**.
+- Το κλειδί που επαληθεύει ένα claim είναι **ακριβώς** το κλειδί του οποίου το
+  thumbprint ισούται με `delegate_kid` μιας root-signed delegation (βήμα K1).
+- Κάθε delegation φέρει **`scope`**. Το scope **ελέγχεται έναντι του `claim_type`**
+  κάθε IssuedClaim (και `release-signing` για την υπογραφή της ρίζας). Έγκυρο
+  κλειδί, λάθος scope ⇒ `delegation-scope-violation`.
 
-### 8.3 Ψευδοκώδικας — `verify_bundle(bundle, LocalTrustState)`
+### 8.3 Ψευδοκώδικας — `verify_bundle(bundle, lts)` (ΠΛΗΡΕΣ ΣΥΜΒΟΛΑΙΟ)
 
 ```
 verify_bundle(bundle, lts) -> VerificationReceipt:
-  checks = []
-  # A. inclusion (SHA-256 μόνο, RFC 9162)
+  R = new receipt; bundle_result = VERIFIED
+
+  # 0. ΚΛΕΙΣΤΟ SCHEMA (RC-14, RC-18)
+  for obj in every object of bundle (bundle, claims, records, statements):
+     require fields(obj) == closed_field_set(obj.kind)                  else malformed-envelope
   for c in bundle.issued_claims:
-     checks += pcl_inclusion(c.payload, c.proof_material)
-  # B. key chain (RS256/Ed25519) — root → delegation → delegated key → claim
+     require c.claim_type ∈ CLAIM_TYPES                                  else unknown-claim-type
+     require c.schema_id == "mltp3/" ‖ c.claim_type ‖ "/1"               else malformed-envelope
+     require validates(c.payload, schema(c.schema_id)) AND validates(c.proof_material, schema(c.schema_id))
+                                                                          else schema-mismatch
+     require c.claim_id == "clm1:" ‖ canonical-hash(c without signature)  else malformed-envelope
+
+  # K0. OWNER ROOT ΚΑΙ LAYER 0
+  root_jwk = the jwk in bundle.keys with jwk_thumbprint(jwk) == lts.pinned_owner_root   else untrusted-key
+  for s in bundle.delegation_chain ∪ bundle.revocation.statements ∪ bundle.registry_snapshots:
+     require s.sig.kid == lts.pinned_owner_root AND alg_matches(s.sig.alg, root_jwk)     else untrusted-key
+     require verify(root_jwk, context(s.kind), s without sig, s.sig.sig)                 else sig-invalid
+  # ΜΟΝΟ ο root υπογράφει Layer 0· delegated κλειδιά δεν έχουν scope για αυτό (RC-19)
+
+  # K1. ΔΕΣΜΕΥΣΗ ΚΛΕΙΔΙΟΥ ↔ DELEGATION (RC-02)
   for d in bundle.delegation_chain:
-     require sig_verify(d, lts.pinned_owner_root)                 # ΜΟΝΟ ο root υπογράφει delegations
-     require d.not_before <= d.signed_time <= d.not_after
+     require exists k in bundle.keys with jwk_thumbprint(k) == d.delegate_kid           else key-binding-mismatch
+     require d.delegate_kid != lts.pinned_owner_root                                     else delegation-invalid   # root never delegates to itself
+
+  # L. TRANSPARENCY, ΜΟΝΟΤΟΝΙΑ, WITNESSES (RC-17, RC-24, RC-31)
+  R_rel = bundle.release_anchor.release_root
+  require tlog_inclusion(R_rel, bundle.transparency)                                     else inclusion-failed
+  if lts.last_accepted_tlog != null:
+     require bundle.transparency.tree_size >= lts.last_accepted_tlog.tree_size            else split-view          # L1 μονοτονία
+     require well_formed(bundle.transparency.consistency_proof)                           else consistency-failed  # L1
+     require consistency(lts.last_accepted_tlog, bundle.transparency, consistency_proof)  else split-view          # L1
+  witnesses = resolve(bundle.embedded_registries.witness_keys, lts.witness_registry)      else untrusted-registry  # D
+  pub_ok    = count_valid(bundle.witness_checkpoints, witnesses.publication)  >= 1
+  xc_ok     = count_valid(bundle.witness_checkpoints, witnesses.cross_client) >= lts.witness_registry.cross_client_quorum
+  require pub_ok                                                                          else witness-quorum-failed  # L2
+  if lts.last_accepted_tlog == null AND NOT xc_ok:
+     bundle_result = min(bundle_result, UNKNOWN(split-view-unverifiable))                                     # L2 first-time consumer
+  elif NOT xc_ok:
+     require false                                                                        else witness-quorum-failed
+  # L3. ΑΝΑΚΛΗΣΗ: ΗΛΙΚΙΑ CHECKPOINT
+  rev = merge(lts.revocation_state, bundle.revocation)   # μόνο root-signed statements (K0)
+  if lts.trusted_time.now != null AND now - rev.checkpoint.checkpoint_at > lts.max_revocation_staleness:
+     bundle_result = min(bundle_result, UNKNOWN(stale-revocation-state))
+  if lts.revocation_state != null: require rev.checkpoint.tree_size >= lts.revocation_state.checkpoint.tree_size  else split-view
+
+  # R. ΜΙΑ ΡΙΖΑ: ΥΠΟΓΡΑΦΗ ΚΑΙ ΔΕΣΜΕΥΣΗ (RC-17)
+  rs = bundle.release_anchor.release_root_signature
+  d_rel = delegation_for(rs.sig.kid)   # K2 rule: max seq, root-signed
+  require "release-signing" ∈ d_rel.scope                                                 else delegation-scope-violation
+  require verify(key(rs.sig.kid), "mltp3:release-root", rs without sig, rs.sig.sig)     else sig-invalid
+  require rs.release_root == R_rel AND census_digest(bundle.census) == rs.census_digest  else root-mismatch   # R2
+  # R4. ΔΥΟ ΑΝΕΞΑΡΤΗΤΟΙ COMPILERS (v1.4 §4.6)
+  a = bundle.dual_compiler_attestation.compiler_a; b = bundle.dual_compiler_attestation.compiler_b
+  require a.runtime != b.runtime AND verify_each(a, b, "mltp3:compiler-attestation")     else sig-invalid
+  require a.legal_state_root == b.legal_state_root AND a.projection_roots == b.projection_roots   else compiler-divergence
+
+  # F0. TRUSTED NOW (κλείνει KT1)
+  if lts.trusted_time.now == null OR lts.trusted_time.evidence == null:
+     freshness_global = UNKNOWN_FRESHNESS      # ιστορική υπογραφή ΜΠΟΡΕΙ να επαληθευτεί, freshness ΟΧΙ
+  else: freshness_global = EVALUABLE; now = lts.trusted_time.now
+
+  # ΑΝΑ CLAIM
   for c in bundle.issued_claims:
-     d = delegation_for(c.signature.kid, bundle.delegation_chain) else untrusted-key
-     require c.claim_type IN d.scope                                else delegation-scope-violation
-     require sig_verify(c.signature, d.delegated_key)              # ΟΧΙ thumbprint == root
-  # C. one authority root (§5)
-  require bundle.release_anchor.release_root is THE authority root   # pcl_text_root = cross-check μόνο
-  # D. registries: embedded = UNTRUSTED μέχρι επίλυση
-  witnesses = resolve(bundle.embedded_registries.witness_keys, lts.witness_key_registry)  else untrusted-registry
-  auditors  = resolve(bundle.embedded_registries.auditor_keys,  lts.auditor_registry)     else untrusted-registry
-  # E. transparency + gossip (split-view) — witnesses μόνο για publication/time/consistency
-  require tlog_inclusion(bundle) AND consistency(bundle.transparency, lts.last_accepted_tlog)  else split-view
-  require witness_quorum(bundle.witness_checkpoints, witnesses, quorum=2)
-  # F. trusted time — ΧΩΡΙΣ αξιόπιστο now, ΚΑΜΙΑ αξίωση freshness (κλείνει KT1)
-  if lts.trusted_time.now is null OR lts.trusted_time.evidence is null:
-     freshness_verdict = UNKNOWN_FRESHNESS                            # ιστορική υπογραφή ΜΠΟΡΕΙ να επαληθευτεί
-  # G. revocation (§9) — έναντι TRUSTED SIGNATURE TIME, όχι legal effective-time
-  for c in bundle.issued_claims:
-     t_sig = c.issued_at.trusted_time  (anchored)                     else UNKNOWN
-     r = lts.revocation_state ∪ bundle.revocation.records  (resolved, checkpointed)
-     if revoked(c.signature.kid, r) AND t_sig >= r.invalid_from:  return retroactively-revoked  # fail-closed
-  # H. qualification — ΟΧΙ self-qualification
-  for c in bundle.issued_claims:
-     q = resolve(c.qualification_state_ref, bundle.qualification_records)  else dangling-qualification-ref → level none
-     require q.signer.role allowed_for(q.level)                     else unauthorized-qualification-issuer
-     require q.signer.kid NOT release-authority kid                 else unauthorized-qualification-issuer
-     require evidence_resolves(q.evidence_refs, q.auditor_receipts, auditors, quorum_for(q.level))
-     if freshness_verdict == UNKNOWN_FRESHNESS OR now > q.expiry: q.level = none
-  # I. analysis claims
-  if unadopted(analysis_claims): return UNVERIFIED_FOR_MACHINE_RELIANCE
-  # J. result
-  if freshness_verdict == UNKNOWN_FRESHNESS: return UNKNOWN_FRESHNESS   # ποτέ VERIFIED χωρίς trusted now
-  return VERIFIED
+     cr = {claim_id: c.claim_id, result: VERIFIED, level: none, freshness: freshness_global}
+     # K2. ΕΠΙΛΟΓΗ DELEGATION (RC-05)
+     ds = [d in bundle.delegation_chain with d.delegate_kid == c.signature.kid]
+     require ds non-empty                                                                 else untrusted-key
+     d = argmax_seq(ds)
+     require c.signature.delegation_seq == d.seq                                          else delegation-invalid
+     require alg_matches(c.signature.alg, key(c.signature.kid))                           else unknown-alg
+     # T. ΑΥΘΕΝΤΙΚΟΠΟΙΗΜΕΝΟΣ ΧΡΟΝΟΣ ΥΠΟΓΡΑΦΗΣ (RC-03)
+     ev = resolve(c.signed_at.anchor.evidence_ref, bundle.time_evidence)                  else no-trusted-signature-time
+     if ev.kind == "rfc3161":
+        require verify_tsr(ev.tsr_der, ev.tsa_chain, lts.tsa_trust_anchors)              else no-trusted-signature-time
+        require ev.messageImprint == SHA-256(c.signature.sig)                             else no-trusted-signature-time
+        t_sig = ev.genTime
+     else:  # witnessed-checkpoint
+        require checkpoint_valid(ev.checkpoint, witnesses.cross_client, quorum)           else no-trusted-signature-time
+        require leaf_included(SHA-256(c.signature.sig), ev.checkpoint)                    else no-trusted-signature-time
+        t_sig = ev.checkpoint.time
+     require c.signed_at.trusted_time == t_sig                                            else no-trusted-signature-time
+     cr.t_sig = t_sig
+     # K3. ΠΑΡΑΘΥΡΟ ΚΑΙ SCOPE ΣΤΟΝ ΧΡΟΝΟ ΥΠΟΓΡΑΦΗΣ (RC-04, RC-18)
+     require d.not_before <= t_sig <= d.not_after                                         else delegation-expired
+     require c.claim_type ∈ d.scope                                                       else delegation-scope-violation
+     # K4. ΥΠΟΓΡΑΦΗ ΠΑΝΩ ΣΕ ΟΛΟ ΤΟ ENVELOPE (RC-01)
+     require verify(key(c.signature.kid), "mltp3:issued-claim", signed_fields(c), c.signature.sig)   else sig-invalid
+     # V. ΑΝΑΚΛΗΣΗ ΕΝΑΝΤΙ t_sig, ΑΥΣΤΗΡΟΤΕΡΗ ΠΡΟΤΕΡΑΙΟΤΗΤΑ (RC-05, RC-19, §9)
+     applicable = [s in rev.statements with s.revoked_subject matches (c.signature.kid OR d.seq)]
+     if applicable non-empty:
+        inv = min(s.invalid_from for s in applicable)     # αυστηρότερο κερδίζει
+        if t_sig >= inv: fail(cr, retroactively-revoked if any(s.revocation_reason == "key-compromise") else revoked)
+     # R1-R3. INCLUSION ΣΤΗ ΜΙΑ ΡΙΖΑ (RC-17, RC-27)
+     require c.release_ref.release_root == R_rel                                          else root-mismatch
+     require pcl_inclusion(claim_leaf(c), c.proof_material.release_inclusion) == OK       else <PCL error>   # R1
+     require c.proof_material.release_inclusion.merkle_root == R_rel                      else root-mismatch # R2
+     require profile_proof_ok(c)   # R3: ανά profile — receipt replay, source_seal, ledger, passage, journal, replay_manifest
+     # P. PROVENANCE (RC-10, RC-11)
+     if c.claim_type ∈ {legal-state, temporal-projection, judgment-identity-and-text, jurisprudential-analysis, normative-impact-projection}:
+        for m in manifestations_referenced(c):
+           sa = source_authenticity_claim_for(m, bundle.issued_claims)                     else insufficient-provenance
+           require all non-null: sa.authority_id, sa.institutional_register_id, sa.authority_proof_ref, sa.acquisition_receipt_id
+                                                                                          else insufficient-provenance
+           require sa.proof_material.authority_proof.strength != "S0-declared-only"       else insufficient-provenance
+           require registry_inclusion_ok(sa, lts.authority_registry_root, lts.institutional_register_root)  else insufficient-provenance
+           cr.provenance_strength = min(cr.provenance_strength, sa.proof_material.authority_proof.strength)
+     if c.claim_type == coverage-and-freshness:
+        require sum(c.payload.state_counts) == c.payload.position_count == entries(c.proof_material.universe_declaration_ref)  else coverage-not-total
+     # S. UNDEC (RC-13)
+     if c.claim_type == legal-state AND c.payload.legal_state == "UNDEC": set(cr, UNKNOWN, undecided-legal-state)
+     if c.claim_type == jurisprudential-analysis AND c.payload.holding.state == "UNDEC": set(cr, UNKNOWN, undecided-legal-state)
+     # J. REVIEWER ADOPTION (RC-20)
+     if c.claim_type == jurisprudential-analysis:
+        act = c.payload.reviewer_adoption_act
+        require act.reviewer_kid ∈ lts.reviewer_registry AND act.reviewer_kid ∉ issuer_keys(bundle)   else unadopted-analysis
+        require verify(key(act.reviewer_kid), "mltp3:reviewer-adoption", act without sig, act.sig)     else unadopted-analysis
+        require act.adopted_digest == canonical-hash(c.payload without reviewer_adoption_act)          else unadopted-analysis
+     # Q. QUALIFICATION (RC-06, RC-07, RC-08, RC-30)
+     q = resolve(c.qualification_state_ref, bundle.qualification_records)
+     if q == null: fail(cr, dangling-qualification-ref); cr.level = none
+     else:
+        require issuer_keys(bundle) ∩ (kids(lts.auditor_registry) ∪ kids(lts.provider_registry)) == ∅   else unauthorized-qualification-issuer  # Q1
+        require q.record_id == "qsr1:" ‖ canonical-hash(q without signers[].sig)                         else malformed-envelope
+        require q.subject.release_root == R_rel AND (q.subject.kind == "release" OR q.subject.claim_id == c.claim_id)
+                                                                                          else qualification-subject-mismatch  # Q2
+        reg = provider_registry if q.level == provider-adoption-qualified else auditor_registry
+        valid_signers = { s.kid : s in q.signers, s.kid ∈ kids(lts[reg]), verify(key(s.kid), "mltp3:qual-state", q without signers[].sig, s.sig) }
+        require |valid_signers| >= lts.quorum_policy[q.level]                             else unauthorized-qualification-issuer  # Q3
+        require evidence_ok(q)   # §3.1: receipts signed by registered auditors, bundle_digest == release manifest digest, result VERIFIED;
+                                 # provider attestations signed by registered providers ∉ issuer keys (Q4)
+                                                                                          else unauthorized-qualification-issuer
+        cr.level = q.level
+        if freshness_global == EVALUABLE AND now > q.expiry: set(cr, UNKNOWN, expired); cr.level = none
+     # F. ΦΡΕΣΚΑΔΑ (RC-09)
+     if freshness_global == UNKNOWN_FRESHNESS: set(cr, UNKNOWN, UNKNOWN_FRESHNESS)
+     elif c.claim_type == coverage-and-freshness:
+        cr.freshness = FRESH if now - c.payload.freshness.as_of <= c.payload.freshness.max_staleness else STALE
+        if cr.freshness == STALE: set(cr, UNKNOWN, stale)
+     R.claims += cr
+     bundle_result = min(bundle_result, cr.result)
+
+  # C. CITATION-BOUND CERTIFIED RESULTS (§2.10)
+  for x in bundle.certified_results:
+     rr = {result_id: x.result_id, result: VERIFIED, citation_bound: false}
+     require x.citation present AND fields(x.citation) == closed_field_set("citation/1")   else citation-unbound
+     require canonical-hash(x.citation) == x.citation_digest                              else citation-unbound
+     require x.citation.claim_id ∈ ids(bundle.issued_claims) AND x.citation.watchtower_release_uri names R_rel   else citation-unbound
+     rr.citation_bound = true
+     d = delegation_for(x.signature.kid) (K2 rule); require "certified-result" ∈ d.scope   else delegation-scope-violation
+     t = authenticated_time(x.signed_at) (βήμα T); require d.not_before <= t <= d.not_after   else delegation-expired
+     require verify(key(x.signature.kid), "mltp3:certified-result", x without signature.sig, x.signature.sig)   else sig-invalid
+     require result_of_claim(x.citation.claim_id) == VERIFIED                             else propagate that claim result
+     R.certified_results += rr
+     bundle_result = min(bundle_result, rr.result)
+  # citation-unbound ⇒ rr.result = UNVERIFIED_FOR_ATTRIBUTED_RELIANCE (§4.4)· ελέγχεται ΠΡΙΝ την υπογραφή ώστε το
+  # αφαιρεμένο/αλλοιωμένο citation να ονομάζεται ρητά και όχι ως γενικό sig-invalid
+
+  # Ε. ΤΕΛΙΚΟ
+  R.result = bundle_result; R.reason = first_failing_reason_or_ok
+  return R
 ```
+`min` επί των results: `UNVERIFIED_FOR_MACHINE_RELIANCE < UNVERIFIED_FOR_ATTRIBUTED_RELIANCE < UNKNOWN < VERIFIED`
+(η στέρηση παραπομπής ακυρώνει τη «πιστοποιημένη» χρήση, όχι την ιστορική επαλήθευση των claims).
+`fail(cr, e)` θέτει `cr.result` κατά τον πίνακα §4.4 και `cr.reason = e`· `set(cr, UNKNOWN, e)`
+ομοίως για UNKNOWN. Κανένα βήμα δεν είναι προαιρετικό. Ο πίνακας §4.4 είναι ο
+έλεγχος πληρότητας: κάθε error εμφανίζεται σε ακριβώς ένα βήμα παραπάνω.
 
 **Stopped/rewound clock (KT1):** ο verifier **δεν** εμπιστεύεται ποτέ το τοπικό
 ρολόι ως `now`· χρειάζεται `trusted_time.evidence` (TSR/beacon/witness checkpoint
 εντός `clock_uncertainty`). Χωρίς αυτό, η **ιστορική** υπογραφή επαληθεύεται
-(inclusion + chain), αλλά το αποτέλεσμα είναι **`UNKNOWN_FRESHNESS`, ποτέ `VERIFIED`**.
+(inclusion + chain), αλλά το αποτέλεσμα είναι **`UNKNOWN` με reason
+`UNKNOWN_FRESHNESS`, ποτέ `VERIFIED`**.
 
 **Provider-side κανόνας:** αποτυχία οποιουδήποτε βήματος ⇒
 `UNVERIFIED_FOR_MACHINE_RELIANCE`/`UNKNOWN` — ποτέ σιωπηλή παρουσίαση ως αυθεντικού
-(v1.3 §4.2). **Απορρίψεις** (PROOF-OBJECT §5): ZK-SNARK/STARK, W3C VC/DID ως CORE,
-LLM στο trusted path.
+(v1.4 §4.7/§4.15). **Απορρίψεις** (PROOF-OBJECT §5, `DOMINANCE-MATRIX.md`): blockchain,
+ZK-SNARK/STARK, W3C VC/DID ως CORE, LLM στο trusted path.
 
 ---
 
-## 9. REVOCATION SEMANTICS — ΟΧΙ ΑΠΟΛΥΤΟ «pre-revocation stays valid» (#9)
+## 9. REVOCATION SEMANTICS — ΟΧΙ ΑΠΟΛΥΤΟ «pre-revocation stays valid»
 
 Το «ό,τι υπογράφηκε πριν την ανάκληση παραμένει έγκυρο» ισχύει **μόνο** για
 προγραμματισμένη rotation/supersession — **ΟΧΙ** σε key compromise. Κανόνες:
 
 | `revocation_reason` | `invalid_from` | συνέπεια |
 |---|---|---|
-| `superseded` / `delegation-expired` / `policy` | = `revoked_at` | υπογραφές πριν το `revoked_at` με ανεξάρτητο RFC-3161 χρόνο **παραμένουν έγκυρες** (key-lifecycle §2.5) |
-| `key-compromise` | = `compromise_known_at` **ή νωρίτερα** (policy) | υπογραφές μετά το `invalid_from` **ΑΚΥΡΩΝΟΝΤΑΙ ΑΝΑΔΡΟΜΙΚΑ** ακόμη κι αν φέρουν προγενέστερο timestamp· **μόνο** υπογραφές με ανεξάρτητο RFC-3161 χρόνο **πριν** το `invalid_from` επιβιώνουν· ο verifier επιστρέφει `retroactively-revoked` για τις υπόλοιπες |
+| `superseded` / `delegation-expired` / `policy` | = `revoked_at` | υπογραφές με αυθεντικοποιημένο `t_sig` **πριν** το `revoked_at` **παραμένουν έγκυρες** (key-lifecycle §2.5) |
+| `key-compromise` | = `compromise_known_at` **ή νωρίτερα** (policy) | υπογραφές με `t_sig ≥ invalid_from` **ΑΚΥΡΩΝΟΝΤΑΙ ΑΝΑΔΡΟΜΙΚΑ**· **μόνο** υπογραφές με ανεξάρτητο RFC-3161 χρόνο (επί της υπογραφής, §1.3) **πριν** το `invalid_from` επιβιώνουν· ο verifier επιστρέφει reason `retroactively-revoked` |
 
-**Υποχρεωτικά πεδία** (§2.8): `revocation_reason`, `revoked_at`, `invalid_from`,
+**9.1 Υποχρεωτικά πεδία** (§2.9): `revocation_reason`, `revoked_at`, `invalid_from`,
 `compromise_known_at` (για compromise) — **fail-closed**: απόν πεδίο ⇒ η ανάκληση
-θεωρείται `key-compromise` με `invalid_from = revoked_at` (η αυστηρότερη ερμηνεία),
-ποτέ αγνοείται. Η αναδρομική ακύρωση είναι **ρητή policy**, όχι σιωπηλή — και
-δημοσιεύεται ως `trust-key-or-delegation-revocation` IssuedClaim στο tlog (ώστε οι
-consumers να την δουν μέσω consistency/gossip).
+θεωρείται `key-compromise` με `invalid_from = revoked_at`, ποτέ αγνοείται. Η
+αναδρομική ακύρωση είναι **ρητή policy**, όχι σιωπηλή — δημοσιεύεται ως root-signed
+`RevocationStatement` στο tlog (ώστε οι consumers να τη δουν μέσω consistency/gossip
+και witnessed checkpoints) και ΑΝΑΔΡΟΜΙΚΑ επηρεάζει κάθε υπογραφή με `t_sig ≥ invalid_from`.
 
-**Χρόνος σύγκρισης (#6):** η ανάκληση ελέγχεται **έναντι του trusted signature time**
-(`issued_at.trusted_time`, anchored — §1.0), **ΟΧΙ** έναντι του legal effective-time
-του payload. Μια υπογραφή με `t_sig ≥ invalid_from` είναι `retroactively-revoked`
-ανεξάρτητα από το πότε ισχύει νομικά το αντικείμενο που πιστοποιεί. Χωρίς anchored
-`issued_at` ⇒ `UNKNOWN` (δεν τοποθετείται στον χρόνο, άρα δεν κρίνεται).
+**9.2 Χρόνος σύγκρισης:** η ανάκληση ελέγχεται **έναντι του trusted signature time**
+(`t_sig`, παραγόμενο από το time evidence — §8.3 βήμα T), **ΟΧΙ** έναντι του legal
+effective-time του payload. Χωρίς αυθεντικοποιημένο `t_sig` ⇒ `UNKNOWN`. Πολλαπλά
+statements για το ίδιο subject ⇒ ισχύει το **ελάχιστο** `invalid_from` (RC-19 γ).
 
-**Versioned precedence (#7) — μία ετυμηγορία ανά υπογραφή:** το
-`LAWMAX-KEY-LIFECYCLE-SPEC.md §2.5` («ό,τι υπογράφηκε πριν την ανάκληση + RFC-3161
-χρόνος παραμένει έγκυρο») ισχύει **μόνο** για `superseded`/`delegation-expired`/
-`policy` (προγραμματισμένη rotation). Για `key-compromise`, **το MLTP v2 §9 έχει
-ρητή versioned precedence** και η αναδρομική ακύρωση υπερισχύει. Το KEY-LIFECYCLE
-§2.5 φέρει αντίστοιχη παραπομπή· δύο ACTIVE specs **δεν** δίνουν αντίθετη ετυμηγορία
-για την ίδια υπογραφή.
+**9.3 Rotation — ΕΝΑΣ μηχανισμός (RC-25):** διαδοχή κλειδιού = νέα root-signed
+`DelegationStatement` με `seq+1` για το νέο `delegate_kid` ΚΑΙ `RevocationStatement`
+(`superseded`) για το παλιό. Η «continuity statement υπογεγραμμένη από το παλιό
+κλειδί» (KEY-LIFECYCLE §2.4) παραμένει ΜΟΝΟ ως πληροφοριακό `key_lineage` στο
+registry — ο verifier ΔΕΝ την καταναλώνει ως αυθεντία. Δύο ACTIVE specs **δεν**
+δίνουν αντίθετη ετυμηγορία: versioned precedence §4.5.
+
+**Versioned precedence — μία ετυμηγορία ανά υπογραφή:** το
+`LAWMAX-KEY-LIFECYCLE-SPEC.md §2.5` ισχύει **μόνο** για `superseded`/`delegation-expired`/
+`policy`. Για `key-compromise`, **το MLTP v3 §9 έχει ρητή versioned precedence** και η
+αναδρομική ακύρωση υπερισχύει. Το KEY-LIFECYCLE §2.5 φέρει αντίστοιχη παραπομπή.
+
+**9.4 Έκτακτη ανάκληση:** `RevocationStatement` με `key-compromise` μπορεί να
+δημοσιευθεί από το threshold owner root (§10.2) σε οποιοδήποτε από τα ≥2 κανάλια
+witnesses· ο καταναλωτής που το λαμβάνει με έγκυρο root signature το εφαρμόζει
+ΑΜΕΣΑ (δεν περιμένει checkpoint) — η προσθήκη ανάκλησης είναι πάντα ασφαλής
+κατεύθυνση (fail-closed).
 
 ---
 
-## 10. ΕΞΩΤΕΡΙΚΟΙ ΕΛΕΓΚΤΕΣ — ΔΥΟ ΔΙΑΚΡΙΤΕΣ ΤΑΞΕΙΣ (#8)
+## 10. ΕΞΩΤΕΡΙΚΟΙ ΕΛΕΓΚΤΕΣ — ΤΡΕΙΣ ΔΙΑΚΡΙΤΕΣ ΤΑΞΕΙΣ + DISTRIBUTED TRUST MESH (RC-31, v1.4 §4.10)
 
 | τάξη | τι αποδεικνύει | τι ΔΕΝ αποδεικνύει | έδρα |
 |---|---|---|---|
-| **Transparency witnesses** | δημοσίευση checkpoint, χρόνο (TSA), consistency/μη-equivocation (split-view) | **ΟΧΙ** ορθότητα περιεχομένου, **ΟΧΙ** metrics | GitHub history, ≥2 RFC-3161 TSAs, opt. external CT (trust-bootstrap §4) |
-| **Independent auditors/verifiers** | αναπαραγωγή coverage, freshness, legal-state, jurisprudence metrics **από την πηγή** | — | proposer-blind re-derivation (v1.3 M5), δεύτερη υλοποίηση (kernel diversity) |
+| **Transparency witnesses — publication** (GitHub mirror, ≥2 RFC-3161 TSAs) | ότι κάτι δημοσιεύτηκε και **πότε** | **ΟΧΙ** μη-equivocation (μια TSA χρονοσφραγίζει οποιοδήποτε digest· ένα mirror του ίδιου owner δεν είναι ανεξάρτητο) | trust-bootstrap §4 |
+| **Cross-client witnesses** (≥2 ανεξάρτητα θεσμικά witnesses που **υπογράφουν checkpoints** αφού επαληθεύσουν consistency με το ΔΙΚΟ τους προηγούμενο checkpoint) | **consistency / μη-equivocation (split-view)** για κάθε consumer, ακόμη και first-time | **ΟΧΙ** ορθότητα περιεχομένου | §10.1 SignedCheckpoint· registry §8.1 |
+| **Independent auditors/verifiers** | αναπαραγωγή coverage, freshness, legal-state, jurisprudence metrics **από την πηγή** | — | proposer-blind re-derivation (M5), δεύτερη υλοποίηση (kernel diversity) |
 
 **Ρητά:** GitHub/TSAs **δεν** πιστοποιούν ότι το περιεχόμενο είναι σωστό ή ότι τα
-metrics ισχύουν — πιστοποιούν **μόνο** ότι κάτι δημοσιεύτηκε, πότε, και ότι δεν
-υπάρχει split view. Η ορθότητα περιεχομένου/metrics απαιτεί **independent auditor**,
-όχι witness. Ένα `VerificationReceipt` που στηρίζει content-correctness σε witness
-μόνο ⇒ σφάλμα ταξινομίας.
+metrics ισχύουν — πιστοποιούν **μόνο** ότι κάτι δημοσιεύτηκε και πότε. Η
+μη-equivocation απαιτεί **cross-client witnesses** (ή τον ίδιο τον consumer με
+προηγούμενο checkpoint). Η ορθότητα περιεχομένου/metrics απαιτεί **independent
+auditor**, όχι witness. Ένα `VerificationReceipt` που στηρίζει content-correctness
+σε witness μόνο ⇒ σφάλμα ταξινομίας. Ένας first-time consumer χωρίς cross-client
+quorum λαμβάνει `UNKNOWN(split-view-unverifiable)` — ποτέ VERIFIED.
+
+### 10.1 `SignedCheckpoint`
+```
+{ "log_id": <string>, "tree_size": <int>, "log_root": "sha256:<hex>", "time": <legal-instant>,
+  "witness_kind": <"publication" | "cross-client">,
+  "prev_witnessed": { "tree_size": <int>, "log_root": "sha256:<hex>" } | null,   # cross-client: ΥΠΟΧΡΕΩΤΙΚΟ μετά το πρώτο
+  "sig": { "alg", "kid": <thumbprint ∈ witness_registry>, "sig": <base64url — context "mltp3:witness-checkpoint"> } }
+```
+Ένα cross-client witness υπογράφει ΜΟΝΟ αφού επαληθεύσει consistency proof από το
+`prev_witnessed` του — έτσι δύο forks δεν μπορούν και τα δύο να πάρουν υπογραφή
+του ίδιου witness. Πρότυπο: witness cosigning όπως στα CT/sigstore witness networks.
+
+### 10.2 Distributed Trust Mesh — η επιλεγμένη μορφή (η ανάλυση κυριαρχίας στο `DOMINANCE-MATRIX.md` D-07 έως D-11)
+
+| στοιχείο | επιλογή | γιατί (σύνοψη) |
+|---|---|---|
+| Owner root | **threshold Ed25519 (FROST) 3-of-5**, μερίδια σε ανεξάρτητες custody (δημιουργός offline ×2, HSM ×2, escrow ×1) | καμία μονή συσκευή/πρόσωπο δεν υπογράφει Layer 0· η δημόσια πλευρά παραμένει ένα Ed25519 κλειδί — ο verifier αμετάβλητος |
+| Release-signing keys | delegated Ed25519 σε **HSM** ανά ανεξάρτητη υποδομή (τουλάχιστον δύο: παραγωγή + auditor-hosted), delegation ≤ 90 ημέρες | κλοπή = χρονικά φραγμένη· rotation = §9.3 |
+| Transparency | **δύο** append-only logs: το tlog του Watchtower + **ανεξάρτητο θεσμικό log** (cross-logging: κάθε release_root γράφεται και στα δύο) | ένα log του owner δεν αποδεικνύει μη-equivocation |
+| Witnesses | ≥2 cross-client witnesses (θεσμικά: π.χ. πανεπιστήμιο, δικηγορικός σύλλογος, αρχείο) + ≥2 TSAs + GitHub mirror | §10 |
+| Interoperability | **SCITT-compatible** Signed Statements + Receipts (§11) | οι providers καταναλώνουν μια τυποποιημένη μορφή χωρίς να χάσουν τη σημασιολογία MLTP |
+| Έκτακτη ανάκληση | §9.4 | — |
+| Απορρίψεις | blockchain, ZK, VC/DID ως core | δεν κυριαρχούν (DOMINANCE D-11) |
 
 ---
 
-## 11. ΤΙ ΔΕΝ ΚΑΝΕΙ ΑΥΤΟ ΤΟ SPEC
+## 11. ΔΙΑΛΕΙΤΟΥΡΓΙΚΟΤΗΤΑ — SCITT ΠΡΟΒΟΛΗ (v1.4 §4.11)
+
+| MLTP v3 αντικείμενο | SCITT αντίστοιχο | κανόνας |
+|---|---|---|
+| `IssuedClaim` | Signed Statement (COSE_Sign1) με `payload` = canonical JSON του envelope, protected header: `alg`, `kid`, `cwt.iss` = `issuer_name` της delegation, `cty` = `application/mltp3+json` | η υπογραφή MLTP (`signature.sig`) είναι η υπογραφή του COSE_Sign1 πάνω στο ίδιο signed input — μία υπογραφή, δύο συντακτικές μορφές |
+| tlog inclusion + `SignedCheckpoint` | SCITT Receipt (COSE countersignature με inclusion proof) | ο verifier δέχεται receipt από **registered** transparency service (log_id ∈ witness_registry) |
+| `TrustBundle` | Statement + Receipts + όλα τα resolvable αντικείμενα ως attached bundle | το bundle παραμένει η μονάδα offline επαλήθευσης |
+| `RevocationStatement` | Signed Statement τύπου revocation στο ίδιο log | root-signed |
+| `CertifiedResult` + `citation/1` | JSON-LD προβολή (`@context` lawmax/citation/1 → schema.org `Legislation`/`LegalForceStatus` και ELI ιδιότητες), `CitationToken` ως COSE_Sign1 | η παραπομπή ταξιδεύει με την υπογραφή της· JSON-LD = προβολή, όχι πηγή αλήθειας |
+
+Τα πρότυπα είναι επιφάνειες διαλειτουργικότητας, **όχι** ανταγωνιστική πηγή
+αλήθειας: η σημασιολογία (ποιος υπογράφει τι, τι σημαίνει VERIFIED) ζει ΜΟΝΟ εδώ.
+
+---
+
+## 12. ΤΙ ΔΕΝ ΚΑΝΕΙ ΑΥΤΟ ΤΟ SPEC
 
 Καμία υλοποίηση· κανένα νέο store/primitive/subsystem· κανένα destruction pass·
-καμία αξίωση qualification. Η **σύνθεση** (τρία επίπεδα + typed profiles) είναι
-**σχεδιαστική**· οι επιμέρους έδρες υπάρχουν και απαριθμούνται στο
-`V1.3-SEMANTIC-CROSSWALK.md`. Πλήρης κατάλογος διορθωμένων αντιφάσεων:
-`V1.3-CONSISTENCY-AUDIT.md`.
+καμία αξίωση qualification. Η **σύνθεση** (τρία επίπεδα + Layer 0 + typed profiles +
+trust mesh) είναι **σχεδιαστική**· οι επιμέρους έδρες υπάρχουν και απαριθμούνται με
+disposition στο `PUBLIC-OBSERVATORY-CROSSWALK.md`. Οι kill witnesses που
+αντιστοιχούν σε κάθε ρίζα RC-01 έως RC-31 ζουν στο
+`PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md §7` (KW-17 έως KW-47) — **προδηλωμένοι,
+ΜΗ εκτελεσμένοι**.
