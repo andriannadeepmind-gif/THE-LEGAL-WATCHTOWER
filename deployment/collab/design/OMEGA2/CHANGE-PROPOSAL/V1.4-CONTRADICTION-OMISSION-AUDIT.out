@@ -1,4 +1,4 @@
-### V1.4 CONTRADICTION/OMISSION AUDIT — 39e8ffb9 — 2026-09-01T22:45:53Z
+### V1.4 CONTRADICTION/OMISSION AUDIT — 6dc80e45 — 2026-09-01T23:39:35Z
 # P1 καμία ταξινόμηση «CPEI = ιδιωτικό» σε ACTIVE έγγραφο (μόνο ως ανακληθέν παράθεμα)
 P1a   | actual=1      | want ge 1      | PASS
 P1b   | actual=1      | want ge 1      | PASS
@@ -29,9 +29,9 @@ P5b   | actual=128    | want eq 128    | PASS
 P5c   | actual=128    | want eq 128    | PASS
 P5d   | actual=0      | want eq 0      | PASS
 P5e   | actual=5      | want eq 5      | PASS
-P5f   | actual=94     | want eq 94     | PASS
+P5f   | actual=103    | want eq 103    | PASS
 P5g   | actual=0      | want eq 0      | PASS
-P5h   | actual=94     | want eq 94     | PASS
+P5h   | actual=103    | want eq 103    | PASS
 P5i   | actual=43     | want eq 43     | PASS
 P5j   | actual=0      | want eq 0      | PASS
 P5k   | actual=15     | want eq 15     | PASS
@@ -81,7 +81,7 @@ C16a  | actual=9      | want ge 3      | PASS
 C16b  | actual=14     | want ge 3      | PASS
 C16c  | actual=3      | want ge 2      | PASS
 C18a  | actual=43     | want eq 43     | PASS
-C18b  | actual=94     | want eq 94     | PASS
+C18b  | actual=103    | want eq 103    | PASS
 C18c  | actual=15     | want eq 15     | PASS
 C18d  | actual=13     | want eq 13     | PASS
 C18e  | actual=15     | want eq 15     | PASS
@@ -97,9 +97,14 @@ E3    | actual=1      | want ge 1      | PASS
 E4    | actual=1      | want ge 1      | PASS
 E5    | actual=2      | want ge 1      | PASS
 E6    | actual=1      | want eq 1      | PASS
-E7    | actual=31     | want eq 31     | PASS
+E7    | actual=40     | want eq 40     | PASS
+E8    | actual=1      | want eq 1      | PASS
+E9    | actual=1      | want eq 1      | PASS
+E10   | actual=3      | want ge 1      | PASS
+E11   | actual=0      | want eq 0      | PASS
+E12   | actual=1      | want eq 1      | PASS
 # F regression floor: V1.3-CONSISTENCY-AUDIT.sh
 F1    | actual=0      | want eq 0      | PASS
 F2    | actual=0      | want eq 0      | PASS
-### SUMMARY: checks=93 pass=93 fail=0
+### SUMMARY: checks=98 pass=98 fail=0
 ### EXIT 0 — ALL PASS

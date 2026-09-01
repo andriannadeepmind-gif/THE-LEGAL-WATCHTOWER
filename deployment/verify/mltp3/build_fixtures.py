@@ -117,6 +117,29 @@ def digest_of(obj):
     return PREFIX + hashlib.sha256(canon(obj).encode()).hexdigest()
 
 
+def sha256_file(path):
+    return hashlib.sha256(open(path, "rb").read()).hexdigest()
+
+
+def build_profile(schemas_path, **ov):
+    schemas = json.load(open(schemas_path, encoding="utf-8"))
+    body = {"mltp": "3", "layer": "MLTPProfileManifest",
+            "profile_id": ov.get("profile_id", "mltp3-executable-reference/1"),
+            "schemas_sha256": ov.get("schemas_sha256", sha256_file(schemas_path)),
+            "canonicalization_profile": "rfc8785-jcs-no-bool/1",
+            "signature_contexts_digest": hashlib.sha256(canon(sorted(schemas["sig_contexts"])).encode()).hexdigest(),
+            "id_domains_digest": hashlib.sha256(canon(schemas["id_domains"]).encode()).hexdigest(),
+            "merkle_profile": "lawmax-merkle-sha256-v1",
+            "error_taxonomy_version": ov.get("error_taxonomy_version", "1"),
+            "qualification_policy_version": "1",
+            "min_verifier_version": ov.get("min_verifier_version", "1"),
+            "activation": 1700000000, "expiry": 1900000000, "revoked": ov.get("revoked", "false"),
+            "owner_kid": kid("owner_root")}
+    signer = ov.get("sign_role", "owner_root")
+    body["sig"] = sign_as(signer, "mltp3:profile-manifest", body)
+    return body
+
+
 # ---- keys (deterministic seeds) -----------------------------------------------
 def seed(n):
     return bytes([n]) * 32
@@ -418,6 +441,7 @@ def build(opts=None):
                           for reg in ("tsa", "witness", "auditor", "provider", "reviewer")},
            "trusted_citation_policies": ["lawmax/citation-policy/1"],
            "last_revocation_checkpoint": {"tree_size": 0, "log_root": mth([])}}
+    profile = build_profile(os.path.join(HERE, "schemas.json"))
 
     keys_pub = {"schema": "mltp3-keys/1",
                 "keys": {r: {"kid": KEYS[r]["kid"], "x": KEYS[r]["x"],
@@ -428,14 +452,14 @@ def build(opts=None):
                 "result": "VERIFIED", "reason": "ok",
                 "certified_results": [{"result_id": result_id, "result": "VERIFIED", "citation_bound": "true"}]}
 
-    return {"bundle": bundle, "lts": lts, "keys": keys_pub, "expected": expected,
+    return {"bundle": bundle, "lts": lts, "keys": keys_pub, "expected": expected, "profile": profile,
             "bundle_id": bundle_id, "release_root": release_root, "n_claims": len(claims)}
 
 
 def main():
     os.makedirs(FIX, exist_ok=True)
     out = build()
-    for name in ("keys", "bundle", "lts", "expected"):
+    for name in ("keys", "bundle", "lts", "expected", "profile"):
         with open(os.path.join(FIX, name + ".json"), "w", encoding="utf-8") as fh:
             fh.write(json.dumps(out[name], ensure_ascii=False, sort_keys=True, separators=(",", ":")))
             fh.write("\n")

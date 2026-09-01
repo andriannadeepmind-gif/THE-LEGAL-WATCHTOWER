@@ -1,4 +1,4 @@
-### V1.3 CONSISTENCY AUDIT — 39e8ffb9 — 2026-09-01T22:45:54Z
+### V1.3 CONSISTENCY AUDIT — 6dc80e45 — 2026-09-01T23:39:37Z
 # C1 issuer self-verdict
 C1a    | actual=1    | want ge1    | PASS
 C1b    | actual=1    | want ge1    | PASS
@@ -51,7 +51,7 @@ C12b   | actual=1    | want ge1    | PASS
 C12c   | actual=0    | want eq0    | PASS
 C12d   | actual=1    | want ge1    | PASS
 # C13 LocalTrustState + UNKNOWN_FRESHNESS (errata #3)
-C13a   | actual=6    | want ge3    | PASS
+C13a   | actual=7    | want ge3    | PASS
 C13b   | actual=7    | want ge3    | PASS
 C13c   | actual=2    | want ge1    | PASS
 C13d   | actual=11   | want ge2    | PASS

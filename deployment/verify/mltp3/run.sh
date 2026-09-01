@@ -6,10 +6,10 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-for t in python3 go node; do
+for t in python3 go node openssl; do
   command -v "$t" >/dev/null 2>&1 || { echo "BLOCKED — required tool missing: $t"; exit 3; }
 done
 python3 -c "import ctypes; ctypes.CDLL('libsodium.so.23')" 2>/dev/null || \
-  { echo "BLOCKED — SECOND VETTED CRYPTOGRAPHIC VERIFIER UNAVAILABLE (libsodium)"; exit 3; }
+  { echo "BLOCKED — BUILDER CRYPTO BACKEND UNAVAILABLE (libsodium — the builder signer, not a verifier)"; exit 3; }
 
 exec python3 harness.py

@@ -1,6 +1,6 @@
 {
  "schema": "mltp3-mutations/1",
- "count": 31,
+ "count": 40,
  "mutations": [
   {
    "name": "selfid-claim",
@@ -280,6 +280,87 @@
     "sig-invalid"
    ],
    "desc": "crypto neg: replay under different domain separator"
+  },
+  {
+   "name": "profile-modified-schema",
+   "kw": 95,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "untrusted-profile"
+   ],
+   "desc": "C1.1: modified schema, unchanged profile digest"
+  },
+  {
+   "name": "profile-downgraded-taxonomy",
+   "kw": 96,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "untrusted-profile"
+   ],
+   "desc": "C1.1: downgraded claim/error taxonomy"
+  },
+  {
+   "name": "profile-changed-context",
+   "kw": 97,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "untrusted-profile"
+   ],
+   "desc": "C1.1: changed signature context"
+  },
+  {
+   "name": "profile-changed-id-domain",
+   "kw": 98,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "untrusted-profile"
+   ],
+   "desc": "C1.1: changed ID domain"
+  },
+  {
+   "name": "profile-untrusted-version",
+   "kw": 99,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "untrusted-profile"
+   ],
+   "desc": "C1.1: min_verifier_version above supported"
+  },
+  {
+   "name": "profile-unsigned-by-owner",
+   "kw": 100,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "untrusted-profile"
+   ],
+   "desc": "C1.1: profile not signed by pinned owner root"
+  },
+  {
+   "name": "bundle-supplies-own-owner-root",
+   "kw": 101,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "untrusted-root"
+   ],
+   "desc": "C1.2: bundle cannot replace LocalTrustState owner root"
+  },
+  {
+   "name": "nonmonotonic-revocation",
+   "kw": 102,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "nonmonotonic-revocation-state"
+   ],
+   "desc": "C1.2: trust-state must advance monotonically"
+  },
+  {
+   "name": "embedded-registry-only-witness",
+   "kw": 103,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "unsigned-revocation-checkpoint"
+   ],
+   "desc": "C1.2: bundle-embedded registry members do not count"
   }
  ]
 }

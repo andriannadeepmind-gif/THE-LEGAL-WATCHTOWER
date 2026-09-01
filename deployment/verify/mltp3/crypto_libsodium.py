@@ -33,10 +33,32 @@ def _load():
 
 
 _LIB, _LIBNAME = _load()
+_LIB.sodium_version_string.restype = ctypes.c_char_p
+_LIB.sodium_library_version_major.restype = ctypes.c_int
+_LIB.sodium_library_version_minor.restype = ctypes.c_int
+
+
+def backend_info() -> dict:
+    """Real evidence (C1.3): release version from sodium_version_string(), not the
+    soname/filename. Also the loaded object path and the ABI major.minor."""
+    import os
+    soname = _LIBNAME
+    path = soname
+    for base in ("/usr/lib/x86_64-linux-gnu", "/lib/x86_64-linux-gnu"):
+        cand = os.path.join(base, soname)
+        if os.path.exists(cand):
+            path = os.path.realpath(cand)
+            break
+    return {"library": "libsodium",
+            "release_version": _LIB.sodium_version_string().decode(),
+            "soname": soname,
+            "loaded_path": path,
+            "abi": "%d.%d" % (_LIB.sodium_library_version_major(), _LIB.sodium_library_version_minor())}
 
 
 def backend_id() -> str:
-    return f"libsodium/{_LIBNAME}"
+    b = backend_info()
+    return "libsodium %s (soname %s, ABI %s)" % (b["release_version"], b["soname"], b["abi"])
 
 
 def b64u(b: bytes) -> str:

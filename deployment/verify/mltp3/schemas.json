@@ -15,28 +15,54 @@
   },
   "id_rule": "each *_id = prefix + hex(sha256(id_domain 0x1F canonical(BODY))) where BODY EXCLUDES the id, the signature, any detached time attestation, any release_root, and any inclusion proof. An id that appears in its own preimage is a self-referential-id defect.",
   "sig_contexts": [
-    "mltp3:issued-claim", "mltp3:delegation", "mltp3:revocation", "mltp3:registry-snapshot",
-    "mltp3:release-root", "mltp3:time-attestation", "mltp3:witness-checkpoint", "mltp3:qual-state",
-    "mltp3:reviewer-adoption", "mltp3:provider-attestation", "mltp3:provider-conformance",
-    "mltp3:compiler-attestation", "mltp3:cockpit-intent", "mltp3:certified-result", "mltp3:citation"
+    "mltp3:issued-claim",
+    "mltp3:delegation",
+    "mltp3:revocation",
+    "mltp3:registry-snapshot",
+    "mltp3:release-root",
+    "mltp3:time-attestation",
+    "mltp3:witness-checkpoint",
+    "mltp3:qual-state",
+    "mltp3:reviewer-adoption",
+    "mltp3:provider-attestation",
+    "mltp3:provider-conformance",
+    "mltp3:compiler-attestation",
+    "mltp3:cockpit-intent",
+    "mltp3:certified-result",
+    "mltp3:citation",
+    "mltp3:profile-manifest"
   ],
   "sig_rule": "sig = Ed25519(secret, context 0x1F canonical(object without its own sig field)). Wrong context => sig-invalid (domain-separation replay defence).",
   "claim_types": [
-    "source-authenticity", "legal-state", "temporal-projection", "coverage-and-freshness",
-    "judgment-identity-and-text", "jurisprudential-analysis",
-    "legal-object-correction-or-withdrawal", "normative-impact-projection"
+    "source-authenticity",
+    "legal-state",
+    "temporal-projection",
+    "coverage-and-freshness",
+    "judgment-identity-and-text",
+    "jurisprudential-analysis",
+    "legal-object-correction-or-withdrawal",
+    "normative-impact-projection"
   ],
   "legal_relation_verbs": {
-    "parser_certifiable": ["cites"],
-    "reviewer_adoption_required": ["followed", "applied", "distinguished", "overruled", "doubted", "limited"],
+    "parser_certifiable": [
+      "cites"
+    ],
+    "reviewer_adoption_required": [
+      "followed",
+      "applied",
+      "distinguished",
+      "overruled",
+      "doubted",
+      "limited"
+    ],
     "note": "correction #15: a deterministic parser certifies only structural `cites`. Treatment verbs need anchored evidence + reviewer adoption, or an authentic official structured disposition."
   },
   "crypto": {
     "signature": "Ed25519 (RFC 8032), strict verification",
-    "builder_backend": "libsodium 23.3.0 (ctypes)",
+    "builder_backend": "libsodium 1.0.18 (soname libsodium.so.23, ABI 10.3), via ctypes — real version from sodium_version_string(), not the soname",
     "verifier_a_backend": "Go stdlib crypto/ed25519 (pure Go, filippo edwards25519 — NOT OpenSSL)",
     "verifier_b_backend": "Node built-in node:crypto (OpenSSL 3.5.5)",
-    "independence": "the two verifiers use genuinely different vetted backends (pure-Go vs OpenSSL); the builder uses a third (libsodium). No homemade primitive is in any trusted path.",
+    "independence": "the two VERIFIERS use genuinely different vetted backends (pure-Go crypto/ed25519 vs Node/OpenSSL); the BUILDER signs with a third (libsodium). No homemade primitive is in any trusted path. Go and Node are two independent N-version IMPLEMENTATIONS from one specification — NOT an independent organizational audit.",
     "unavailable_result": "CRYPTO_BACKEND_UNAVAILABLE",
     "rfc_anchor": {
       "vector": "RFC 8032 §7.1 TEST 2",
@@ -55,12 +81,24 @@
     "release_leaf_data": "UTF-8 bytes of the claim_id string, leaves ordered by ascending claim_id"
   },
   "time_attestation": {
-    "note": "DETACHED (correction #2): signs the message-imprint of an object's signature, never sits inside the object's signed fields. Deterministic TEST DOUBLE of an RFC 3161 TSR with the SAME verification contract; clearly non-production.",
-    "fields": ["attests_context", "target_sig_imprint", "gen_time", "accuracy_seconds", "tsa_kid", "sig"],
+    "note": "DETACHED (correction #2): signs the message-imprint of an object's signature, never sits inside the object's signed fields. This is a deterministic TEST DOUBLE of an RFC 3161 TSR with the SAME verification contract — it is NOT an actual TSR. A real DER RFC-3161 token (OpenSSL ts) lives in interop/rfc3161/token.tsr (C1.4).",
+    "fields": [
+      "attests_context",
+      "target_sig_imprint",
+      "gen_time",
+      "accuracy_seconds",
+      "tsa_kid",
+      "sig"
+    ],
     "rfc3161_semantics": "correction #10: gen_time is trusted evidence the imprint existed AT-OR-BEFORE (gen_time + accuracy). t_sig upper bound = gen_time + accuracy; the signing key's delegation window is checked conservatively against this bound.",
     "imprint": "target_sig_imprint = sha256(hex) of the raw 64-byte signature bytes of the attested object"
   },
-  "result_order": ["UNVERIFIED_FOR_MACHINE_RELIANCE", "UNVERIFIED_FOR_ATTRIBUTED_RELIANCE", "UNKNOWN", "VERIFIED"],
+  "result_order": [
+    "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "UNVERIFIED_FOR_ATTRIBUTED_RELIANCE",
+    "UNKNOWN",
+    "VERIFIED"
+  ],
   "result_rule": "bundle result = min over all claim results, certified-result results, and bundle-level checks, by result_order (lower index = weaker).",
   "error_taxonomy": {
     "malformed-envelope": "UNVERIFIED_FOR_MACHINE_RELIANCE",
@@ -102,23 +140,145 @@
     "provider-subject-mismatch": "UNVERIFIED_FOR_MACHINE_RELIANCE",
     "provider-nonconformant": "UNVERIFIED_FOR_MACHINE_RELIANCE",
     "misrepresented-treatment": "UNVERIFIED_FOR_MACHINE_RELIANCE",
-    "CRYPTO_BACKEND_UNAVAILABLE": "UNVERIFIED_FOR_MACHINE_RELIANCE"
+    "CRYPTO_BACKEND_UNAVAILABLE": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "untrusted-profile": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "nonmonotonic-revocation-state": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "profile-override-active": "UNKNOWN"
   },
   "construction_order": [
-    {"step": 1, "node": "ClaimBody", "preimage_excludes": ["claim_id", "signature", "time_attestation", "release_root", "inclusion_proof"]},
-    {"step": 2, "node": "claim_id", "derives_from": ["ClaimBody"]},
-    {"step": 3, "node": "SignedClaim.signature", "derives_from": ["claim_id", "ClaimBody", "signer"]},
-    {"step": 4, "node": "TimeAttestation(claim)", "derives_from": ["SignedClaim.signature"]},
-    {"step": 5, "node": "coverage-and-freshness claim", "derives_from": ["corpus", "known_time"]},
-    {"step": 6, "node": "ReleaseManifest", "derives_from": ["sorted claim_ids"]},
-    {"step": 7, "node": "release_root + ReleaseAttestation", "derives_from": ["ReleaseManifest"]},
-    {"step": 8, "node": "InclusionProof(claim_id)", "derives_from": ["claim_id", "release_root"]},
-    {"step": 9, "node": "CertifiedResultBody", "derives_from": ["claim_ids", "release_root", "coverage_ref", "citation"]},
-    {"step": 10, "node": "result_id", "derives_from": ["CertifiedResultBody"]},
-    {"step": 11, "node": "CertifiedResult.signature + TimeAttestation(result) + CitationToken", "derives_from": ["result_id", "CertifiedResultBody"]},
-    {"step": 12, "node": "compiler attestations / provider conformance / QSR", "derives_from": ["release_root"]},
-    {"step": 13, "node": "RevocationCheckpoint", "derives_from": ["revocations", "witnesses"]},
-    {"step": 14, "node": "BundleManifest -> bundle_id", "derives_from": ["all artifact ids and digests (never bundle_id)"]}
+    {
+      "step": 1,
+      "node": "ClaimBody",
+      "preimage_excludes": [
+        "claim_id",
+        "signature",
+        "time_attestation",
+        "release_root",
+        "inclusion_proof"
+      ]
+    },
+    {
+      "step": 2,
+      "node": "claim_id",
+      "derives_from": [
+        "ClaimBody"
+      ]
+    },
+    {
+      "step": 3,
+      "node": "SignedClaim.signature",
+      "derives_from": [
+        "claim_id",
+        "ClaimBody",
+        "signer"
+      ]
+    },
+    {
+      "step": 4,
+      "node": "TimeAttestation(claim)",
+      "derives_from": [
+        "SignedClaim.signature"
+      ]
+    },
+    {
+      "step": 5,
+      "node": "coverage-and-freshness claim",
+      "derives_from": [
+        "corpus",
+        "known_time"
+      ]
+    },
+    {
+      "step": 6,
+      "node": "ReleaseManifest",
+      "derives_from": [
+        "sorted claim_ids"
+      ]
+    },
+    {
+      "step": 7,
+      "node": "release_root + ReleaseAttestation",
+      "derives_from": [
+        "ReleaseManifest"
+      ]
+    },
+    {
+      "step": 8,
+      "node": "InclusionProof(claim_id)",
+      "derives_from": [
+        "claim_id",
+        "release_root"
+      ]
+    },
+    {
+      "step": 9,
+      "node": "CertifiedResultBody",
+      "derives_from": [
+        "claim_ids",
+        "release_root",
+        "coverage_ref",
+        "citation"
+      ]
+    },
+    {
+      "step": 10,
+      "node": "result_id",
+      "derives_from": [
+        "CertifiedResultBody"
+      ]
+    },
+    {
+      "step": 11,
+      "node": "CertifiedResult.signature + TimeAttestation(result) + CitationToken",
+      "derives_from": [
+        "result_id",
+        "CertifiedResultBody"
+      ]
+    },
+    {
+      "step": 12,
+      "node": "compiler attestations / provider conformance / QSR",
+      "derives_from": [
+        "release_root"
+      ]
+    },
+    {
+      "step": 13,
+      "node": "RevocationCheckpoint",
+      "derives_from": [
+        "revocations",
+        "witnesses"
+      ]
+    },
+    {
+      "step": 14,
+      "node": "BundleManifest -> bundle_id",
+      "derives_from": [
+        "all artifact ids and digests (never bundle_id)"
+      ]
+    }
   ],
-  "dag_rule": "every reference points to an object earlier in construction_order; no back edge; no node contains its own id in its preimage. dag_check.py verifies this mechanically over the fixtures."
+  "dag_rule": "every reference points to an object earlier in construction_order; no back edge; no node contains its own id in its preimage. dag_check.py verifies this mechanically over the fixtures.",
+  "profile_manifest": {
+    "note": "C1.1: signed manifest pinning the verification profile. Both verifiers reject a changed/downgraded/unknown schema or profile with untrusted-profile. Dev override (env MLTP_DEV_OVERRIDE=1) may proceed but NEVER returns VERIFIED (caps at UNKNOWN, reason profile-override-active).",
+    "context": "mltp3:profile-manifest",
+    "fields": [
+      "profile_id",
+      "schemas_sha256",
+      "canonicalization_profile",
+      "signature_contexts_digest",
+      "id_domains_digest",
+      "merkle_profile",
+      "error_taxonomy_version",
+      "qualification_policy_version",
+      "min_verifier_version",
+      "activation",
+      "expiry",
+      "revoked",
+      "owner_kid",
+      "sig"
+    ],
+    "expected_profile_id": "mltp3-executable-reference/1",
+    "verifier_version": "1"
+  }
 }

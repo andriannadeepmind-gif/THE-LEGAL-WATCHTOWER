@@ -700,8 +700,8 @@ default rendering χωρίς τη διπλή παραπομπή ⇒ conformance 
 `crypto/ed25519` (pure-Go)· Verifier B = Node `node:crypto` (OpenSSL)· builder = libsodium.
 **Κριτήριο:** `bash deployment/verify/mltp3/run.sh` exit 0 — (α) RFC 8032 cross-check
 των τριών backends· (β) δύο builds byte-ταυτόσημα (determinism)· (γ) DAG/no-self-id
-(`dag_check.py`)· (δ) θετικός φάκελος `VERIFIED` και από τους δύο· (ε) **31 μεταλλάξεις
-(KW-64 έως KW-94)** απορρίπτονται από **αμφότερους** με το **ίδιο typed error class**.
+(`dag_check.py`)· (δ) θετικός φάκελος `VERIFIED` και από τους δύο· (ε) **40 μεταλλάξεις
+(KW-64 έως KW-103)** απορρίπτονται από **αμφότερους** με το **ίδιο typed error class**.
 Το `fixtures/REPORT.json` φέρει tool versions + SHA-256 digests.
 **ΟΧΙ βαθμίδα:** η επιτυχία εδώ είναι `SEMANTICALLY CLOSED CANDIDATE` + *targeted
 executable protocol validation* (§2 στάδια 1 έως 2), **όχι** `SPEC QUALIFIED`. Το `TimeAttestation`
@@ -917,8 +917,27 @@ executable protocol validation* (§2 στάδια 1 έως 2), **όχι** `SPEC 
 | **KW-93** | crypto-malformed-key | crypto neg: malformed key | key-binding-mismatch (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
 | **KW-94** | crypto-replay-context | crypto neg: replay under different domain separator | sig-invalid (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
 
-**Ισολογισμός:** 94 witnesses — KW-1 έως KW-63 **προδηλωμένοι/μη εκτελεσμένοι** (16 + 31
-+ 12 + 4)· **KW-64 έως KW-94 ΕΚΤΕΛΕΣΜΕΝΟΙ** στην εκτελέσιμη αναφορά (§7.5). Κάθε KW με
+
+### 7.6 KW-95 έως KW-103 — C1 pre-freeze evidence hardening (ΕΚΤΕΛΕΣΜΕΝΟΙ)
+
+**ΕΚΤΕΛΕΣΜΕΝΟΙ** στην εκτελέσιμη αναφορά (Stage C1): profile-manifest pinning
+(C1.1) και LocalTrustState boundary (C1.2). Κάθε μετάλλαξη απορρίπτεται από
+**αμφότερους** τους verifiers με ίδιο typed error. `REPORT.json` negatives 40/40.
+
+| KW | μετάλλαξη | τι σπάει | αναμενόμενο typed αποτέλεσμα | κατάσταση |
+|---|---|---|---|---|
+| **KW-95** | profile-modified-schema | C1.1: modified schema, unchanged profile digest | untrusted-profile (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-96** | profile-downgraded-taxonomy | C1.1: downgraded claim/error taxonomy | untrusted-profile (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-97** | profile-changed-context | C1.1: changed signature context | untrusted-profile (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-98** | profile-changed-id-domain | C1.1: changed ID domain | untrusted-profile (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-99** | profile-untrusted-version | C1.1: min_verifier_version above supported | untrusted-profile (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-100** | profile-unsigned-by-owner | C1.1: profile not signed by pinned owner root | untrusted-profile (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-101** | bundle-supplies-own-owner-root | C1.2: bundle cannot replace LocalTrustState owner root | untrusted-root (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-102** | nonmonotonic-revocation | C1.2: trust-state must advance monotonically | nonmonotonic-revocation-state (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-103** | embedded-registry-only-witness | C1.2: bundle-embedded registry members do not count | unsigned-revocation-checkpoint (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+
+**Ισολογισμός:** 103 witnesses — KW-1 έως KW-63 **προδηλωμένοι/μη εκτελεσμένοι** (16 + 31
++ 12 + 4)· **KW-64 έως KW-103 ΕΚΤΕΛΕΣΜΕΝΟΙ** στην εκτελέσιμη αναφορά (§7.5, §7.6· 40 μεταλλάξεις, incl. C1 profile/LTS). Κάθε KW με
 μετάλλαξη, typed αναμενόμενο, έδρα. Default verdict του πάσου 4 όταν η επιβίωση δεν
 αποδεικνύεται: `FALSIFIED`.
 

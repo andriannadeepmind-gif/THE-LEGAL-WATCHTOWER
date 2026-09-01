@@ -280,10 +280,25 @@ func main() {
 	bundle := asMap(loadJSON(args[0]))
 	lts := asMap(loadJSON(args[1]))
 	_ = args[2] // keys.json (kids also present in bundle.keys); parity with Verifier B signature
+	schemasBytes, err := os.ReadFile(args[3])
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(2)
+	}
 	SCH = asMap(loadJSON(args[3]))
 	TAX = asMap(SCH["error_taxonomy"])
-
-	out := verify(bundle, lts)
+	var profile map[string]interface{}
+	if len(args) > 4 {
+		profile = asMap(loadJSON(args[4]))
+	}
+	pr := verifyProfile(profile, schemasBytes, SCH, lts)
+	devOverride := os.Getenv("MLTP_DEV_OVERRIDE") == "1"
+	var out output
+	if pr != "ok" && !devOverride {
+		out = output{"A", "UNVERIFIED_FOR_MACHINE_RELIANCE", "untrusted-profile", []map[string]interface{}{}}
+	} else {
+		out = verify(bundle, lts, pr != "ok")
+	}
 	b, _ := json.Marshal(out)
 	fmt.Println(string(b))
 }
@@ -295,10 +310,81 @@ type output struct {
 	CertifiedResults []map[string]interface{} `json:"certified_results"`
 }
 
-func verify(bundle, lts map[string]interface{}) output {
+
+// ---- C1.1 profile manifest pinning -------------------------------------------
+func canonSorted(arr []interface{}) string {
+	ss := make([]string, len(arr))
+	for i, x := range arr {
+		ss[i] = asStr(x)
+	}
+	sort.Strings(ss)
+	parts := make([]interface{}, len(ss))
+	for i, x := range ss {
+		parts[i] = x
+	}
+	c, _ := canon(parts)
+	return c
+}
+
+func verifyProfile(profile map[string]interface{}, schemasBytes []byte, sch, lts map[string]interface{}) string {
+	if profile == nil || asStr(profile["layer"]) != "MLTPProfileManifest" {
+		return "untrusted-profile"
+	}
+	owner := asMap(lts["owner_root"])
+	if asStr(profile["profile_id"]) != "mltp3-executable-reference/1" {
+		return "untrusted-profile"
+	}
+	if asStr(profile["owner_kid"]) != asStr(owner["kid"]) {
+		return "untrusted-profile"
+	}
+	if sigVerify(asStr(owner["x"]), "mltp3:profile-manifest", stripKey(profile, "sig"), asStr(profile["sig"])) != "ok" {
+		return "untrusted-profile"
+	}
+	if asStr(profile["schemas_sha256"]) != sha256hex(schemasBytes) {
+		return "untrusted-profile"
+	}
+	if asStr(profile["signature_contexts_digest"]) != sha256hex([]byte(canonSorted(asSlice(sch["sig_contexts"])))) {
+		return "untrusted-profile"
+	}
+	idc, _ := canon(sch["id_domains"])
+	if asStr(profile["id_domains_digest"]) != sha256hex([]byte(idc)) {
+		return "untrusted-profile"
+	}
+	vv := asStr(asMap(sch["profile_manifest"])["verifier_version"])
+	if toInt64s(asStr(profile["min_verifier_version"])) > toInt64s(vv) {
+		return "untrusted-profile"
+	}
+	if asStr(profile["error_taxonomy_version"]) != "1" || asStr(profile["qualification_policy_version"]) != "1" {
+		return "untrusted-profile"
+	}
+	if asStr(profile["revoked"]) == "true" {
+		return "untrusted-profile"
+	}
+	now := toInt(lts["trusted_now"])
+	if now < toInt(profile["activation"]) || now > toInt(profile["expiry"]) {
+		return "untrusted-profile"
+	}
+	return "ok"
+}
+
+func toInt64s(s string) int64 {
+	var n int64
+	for _, c := range s {
+		if c < '0' || c > '9' {
+			return 0
+		}
+		n = n*10 + int64(c-'0')
+	}
+	return n
+}
+
+func verify(bundle, lts map[string]interface{}, overrideCap bool) output {
 	var results []res
 	crOut := []map[string]interface{}{}
 	push := func(reason string) { results = append(results, res{tax(reason), reason}) }
+	if overrideCap {
+		results = append(results, res{"UNKNOWN", "profile-override-active"})
+	}
 	fin := func() output {
 		idx := len(resultOrder) - 1
 		reason := "ok"
@@ -755,8 +841,14 @@ func verify(bundle, lts map[string]interface{}) output {
 				signers[asStr(s["kid"])] = true
 			}
 		}
+		lastCp := int64(0)
+		if lc, ok := lts["last_revocation_checkpoint"].(map[string]interface{}); ok {
+			lastCp = toInt(lc["tree_size"])
+		}
 		if len(signers) < 2 {
 			rr = "unsigned-revocation-checkpoint"
+		} else if toInt(cp["tree_size"]) < lastCp {
+			rr = "nonmonotonic-revocation-state"
 		} else if trustedNow-toInt(cp["checkpoint_at"]) > toInt(lts["max_revocation_staleness_seconds"]) {
 			rr = "stale-revocation-state"
 		} else {

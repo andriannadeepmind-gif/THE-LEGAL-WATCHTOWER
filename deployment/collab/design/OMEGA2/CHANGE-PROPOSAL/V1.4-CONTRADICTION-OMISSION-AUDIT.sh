@@ -80,7 +80,7 @@ for l in rows:
 emit('P5d',bad,'eq',0); emit('P5e',ulinked,'eq',5)
 allt='\n'.join(docs.values())
 kwdef=set(re.findall(r'^\| \*\*(KW-\d+)\*\* \|',docs[Q],re.M)); kwref={f'KW-{k}' for k in re.findall(r'\bKW-(\d+)\b',allt)}
-emit('P5f',len(kwdef),'eq',94); emit('P5g',len(kwref-kwdef),'eq',0); emit('P5h',sum(1 for i in range(1,95) if f'KW-{i}' in kwdef),'eq',94)
+emit('P5f',len(kwdef),'eq',103); emit('P5g',len(kwref-kwdef),'eq',0); emit('P5h',sum(1 for i in range(1,104) if f'KW-{i}' in kwdef),'eq',103)
 qdef=set(re.findall(r'^### (Q\d\d) ',docs[Q],re.M)); qref={f'Q{q}' for q in re.findall(r'\bQ([0-4]\d)\b',allt)}
 emit('P5i',len(qdef),'eq',43); emit('P5j',len(qref-qdef),'eq',0)
 vdef=set(re.findall(r'^### (VS-\d\d) ',docs[VS],re.M)); vref=set(re.findall(r'\bVS-\d\d\b',allt)); emit('P5k',len(vdef),'eq',15); emit('P5l',len(vref-vdef),'eq',0)
@@ -141,7 +141,7 @@ ck C16a "$(c 'legal-timeline/1' $M $V $Q | sum)" ge 3
 ck C16b "$(c 'audit-timeline/1' $M $V $Q | sum)" ge 3
 ck C16c "$(c 'ΠΟΤΕ δεν κρίνει νομική ισχύ\|ποτέ δεν κρίνει νομική ισχύ\|ποτέ\*\* δεν κρίνει νομική ισχύ' $M $V | sum)" ge 2
 ck C18a "$(c '^### Q[0-4][0-9] ' $Q)" eq 43
-ck C18b "$(c '^| \*\*KW-[0-9]*\*\* |' $Q)" eq 94
+ck C18b "$(c '^| \*\*KW-[0-9]*\*\* |' $Q)" eq 103
 ck C18c "$(c '^### VS-' $VS)" eq 15
 ck C18d "$(c '^### D-' $DM)" eq 13
 ck C18e "$(c '^### Βήμα ' $SQ)" eq 15
@@ -158,7 +158,12 @@ ck E3 "$(c 'EXECUTABLE PROTOCOL CLOSURE PASSED' $MZ/fixtures/REPORT.json)" ge 1
 ck E4 "$(c '## 13. ΕΚΤΕΛΕΣΙΜΗ ΑΝΑΦΟΡΑ' $M)" ge 1
 ck E5 "$(c 'SEMANTICALLY CLOSED CANDIDATE' $V)" ge 1
 ck E6 "$(c 'homemade' $MZ/README.md | awk '{print ($1>=0)?1:1}')" eq 1
-ck E7 "$(python3 -c "import json;print(json.load(open('$MZ/fixtures/REPORT.json'))['totals']['negatives_passed'])")" eq 31
+ck E7 "$(python3 -c "import json;print(json.load(open('$MZ/fixtures/REPORT.json'))['totals']['negatives_passed'])")" eq 40
+ck E8 "$(python3 -c "import json;r=json.load(open('$MZ/fixtures/REPORT.json'));print(1 if r['interop']['rfc3161']['ok'] and r['interop']['cose']['ok'] else 0)")" eq 1
+ck E9 "$(test -f $MZ/fixtures/profile.json && echo 1 || echo 0)" eq 1
+ck E10 "$(c 'sodium_version_string' $MZ/crypto_libsodium.py)" ge 1
+ck E11 "$(c '23.3.0' $MZ/schemas.json $MZ/README.md | awk -F: '{s+=$NF}END{print s+0}')" eq 0
+ck E12 "$(test -f $MZ/interop/rfc3161/token.tsr && test -f $MZ/interop/cose/vector.cose && echo 1 || echo 0)" eq 1
 echo "# F regression floor: V1.3-CONSISTENCY-AUDIT.sh"
 bash ./V1.3-CONSISTENCY-AUDIT.sh > /dev/null 2>&1; f13=$?
 ck F1 "$f13" eq 0

@@ -4,7 +4,7 @@
 ετυμηγορίες, εκκρεμότητες, μπλοκαρίσματα. Ο διάλογος: `AI-DIALOGUE.md`.
 Πηγή αλήθειας παραμένουν τα gates/μητρώα — αυτό είναι ΣΥΝΟΨΗ, όχι απόδειξη.
 
-*Τελευταία ενημέρωση: Claude · 2026-09-01 (ζ) — **[0137] V1.4 EXECUTABLE PROTOCOL CLOSURE — ΑΚΥΚΛΙΚΟΣ ΠΥΡΗΝΑΣ MLTP v3, ΔΥΟ VETTED VERIFIERS]**: εκτελέσιμη αναφορά `deployment/verify/mltp3/` — ακυκλική κατασκευή (κανένα `*_id` στο preimage του, detached time/inclusion), δύο ανεξάρτητοι verifiers σε διαφορετικά vetted backends (Go pure-Go `crypto/ed25519` + Node/OpenSSL· builder libsodium· καμία homemade Ed25519· `cryptography` σπασμένο καταγεγραμμένο), RFC 8032 cross-check. `run.sh` exit 0: determinism + DAG/no-self-id + θετικό VERIFIED (2/2) + 31 μεταλλάξεις (KW-64–94) απορρίπτονται από αμφότερους με ίδιο typed error (διορθώσεις #1–#16 + 8 crypto vectors). Doc sync: MLTP §13 + §11 COSE· v1.4 κλίμακα διορθωμένη (#17 deadlock λυμένο) + #18 + D-13· Q43 + §7.5 (94 KW)· R-125–128. Audits v1.4 93/93, v1.3 64/64 exit 0. **PASSED — NOT YET SPEC QUALIFIED.** Κανένα freeze/qualification/υλοποίηση.*
+*Τελευταία ενημέρωση: Claude · 2026-09-01 (η) — **[0138] STAGE C1 — PRE-FREEZE EVIDENCE HARDENING]**: profile-manifest pinning (untrusted-profile, dev override ποτέ VERIFIED)· LocalTrustState boundary + monotonic transition· libsodium 1.0.18 από sodium_version_string()· πραγματικό RFC-3161 token (OpenSSL ts) + πραγματικό COSE_Sign1 (veraison/go-cose vendored) — TimeAttestation test double, SCITT MISSING· στενό GitHub Actions job (μόνο run.sh, pinned)· Go/Node = N-version, όχι οργανωτικός έλεγχος. `run.sh` exit 0: 40 μεταλλάξεις KW-64–103, interop OK. Audits v1.4 98/98, v1.3 64/64. **PASSED** (εκκρεμεί επιβεβαίωση CI). Επόμενο: Stage C2.*
 
 ## Κατάσταση συστήματος (τελευταία μετρημένη)
 
@@ -839,3 +839,19 @@ Citation-Bound Verification Profile). Design only, working tree, **κανένα 
   επιπέδων · refactoring. `TimeAttestation` = deterministic test double· COSE/SCITT
   projection = MISSING· custodians/auditors = U-2 (δεν εφευρέθηκαν).
   **PASSED — NOT YET SPEC QUALIFIED.**
+
+## [0138] STAGE C1 — PRE-FREEZE EVIDENCE HARDENING — πάνω στο `6dc80e45`
+
+- **C1.1 profile pinning:** signed `MLTPProfileManifest` (schemas SHA-256, profiles,
+  versions, expiry)· `untrusted-profile` fail-closed· dev override ποτέ `VERIFIED`.
+- **C1.2 LTS boundary:** bundle δεν αντικαθιστά owner root/registry· authenticated
+  monotonic transition (`nonmonotonic-revocation-state`).
+- **C1.3 backend:** libsodium **1.0.18** (soname .23, ABI 10.3) από `sodium_version_string()`.
+- **C1.4 interop:** πραγματικό RFC-3161 DER token (OpenSSL ts) + πραγματικό COSE_Sign1
+  (veraison/go-cose v1.3.0 vendored) πάνω στα ακριβή MLTP bytes· TimeAttestation =
+  test double· πλήρης SCITT `MISSING`.
+- **C1.5 CI:** `.github/workflows/mltp3-verify.yml` (στενό, pinned, μόνο run.sh).
+- **C1.6 honesty:** Go/Node = N-version υλοποιήσεις, όχι οργανωτικός έλεγχος.
+- **Αποτ.:** run.sh exit 0 (40 μεταλλάξεις KW-64–103, interop OK)· audits v1.4 98/98,
+  v1.3 64/64. **PRE-FREEZE EVIDENCE HARDENING PASSED** (εκκρεμεί CI επιβεβαίωση).
+  ΔΕΝ ΕΓΙΝΕ: freeze/qualification/refactoring/15 επίπεδα/SCITT service.

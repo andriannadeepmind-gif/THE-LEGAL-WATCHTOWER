@@ -86,9 +86,34 @@ function sigVerify(xb64u, context, objNoSig, sigb64u) {
   return ok ? "ok" : "bad";
 }
 
+
+// ---- C1.1 profile manifest pinning -------------------------------------------
+function sha256hexBytes(buf){ return createHash("sha256").update(buf).digest("hex"); }
+function verifyProfile(profile, schemasBytes, schemas, lts){
+  // returns "ok" | "untrusted-profile"
+  try{
+    const owner = lts.owner_root;
+    if(!profile || profile.layer!=="MLTPProfileManifest") return "untrusted-profile";
+    if(profile.profile_id!=="mltp3-executable-reference/1") return "untrusted-profile";
+    if(profile.owner_kid!==owner.kid) return "untrusted-profile";
+    const noSig={...profile}; delete noSig.sig;
+    if(sigVerify(owner.x,"mltp3:profile-manifest",noSig,profile.sig)!=="ok") return "untrusted-profile";
+    if(profile.schemas_sha256!==sha256hexBytes(schemasBytes)) return "untrusted-profile";
+    if(profile.signature_contexts_digest!==sha256hexBytes(Buffer.from(canon([...schemas.sig_contexts].sort()),"utf8"))) return "untrusted-profile";
+    if(profile.id_domains_digest!==sha256hexBytes(Buffer.from(canon(schemas.id_domains),"utf8"))) return "untrusted-profile";
+    if(Number(profile.min_verifier_version) > Number(schemas.profile_manifest.verifier_version)) return "untrusted-profile";
+    if(profile.error_taxonomy_version!=="1"||profile.qualification_policy_version!=="1") return "untrusted-profile";
+    if(profile.revoked==="true") return "untrusted-profile";
+    const now=lts.trusted_now;
+    if(now<profile.activation||now>profile.expiry) return "untrusted-profile";
+    return "ok";
+  }catch(e){ return "untrusted-profile"; }
+}
+
 // ---- verification --------------------------------------------------------------
-function verify(bundle, lts, TAX) {
-  const results = [];                    // list of {result,reason}
+function verify(bundle, lts, TAX, overrideCap) {
+  const results = [];
+  if (overrideCap) results.push({ result: "UNKNOWN", reason: "profile-override-active" });                    // list of {result,reason}
   const push = (reason) => results.push({ result: TAX[reason] || "UNVERIFIED_FOR_MACHINE_RELIANCE", reason });
   const crOut = [];
 
@@ -395,6 +420,7 @@ function verify(bundle, lts, TAX) {
       if (r === "ok") signers.add(s.kid);
     }
     if (signers.size < 2) rr = "unsigned-revocation-checkpoint";
+    else if (cp.tree_size < (lts.last_revocation_checkpoint ? lts.last_revocation_checkpoint.tree_size : 0)) rr = "nonmonotonic-revocation-state";
     else if (lts.trusted_now - cp.checkpoint_at > lts.max_revocation_staleness_seconds) rr = "stale-revocation-state";
     else {
       // every revocation statement in the bundle must be included in the checkpoint tree
@@ -438,14 +464,25 @@ function backendFail(crOut) { return { verifier: "B", result: "UNVERIFIED_FOR_MA
 
 let SCHEMAS, TAX;
 function main() {
-  const [bundleP, ltsP, keysP, schemasP] = process.argv.slice(2);
+  const [bundleP, ltsP, keysP, schemasP, profileP] = process.argv.slice(2);
   const bundle = JSON.parse(readFileSync(bundleP, "utf8"));
   const lts = JSON.parse(readFileSync(ltsP, "utf8"));
-  SCHEMAS = JSON.parse(readFileSync(schemasP || new URL("./schemas.json", import.meta.url), "utf8"));
+  const schemasPath = schemasP || new URL("./schemas.json", import.meta.url);
+  const schemasBytes = readFileSync(schemasPath);
+  SCHEMAS = JSON.parse(schemasBytes.toString("utf8"));
   TAX = SCHEMAS.error_taxonomy;
+  const profilePath = profileP || new URL("./fixtures/profile.json", import.meta.url);
+  let profile = null;
+  try { profile = JSON.parse(readFileSync(profilePath, "utf8")); } catch { profile = null; }
+  const pr = verifyProfile(profile, schemasBytes, SCHEMAS, lts);
+  const devOverride = process.env.MLTP_DEV_OVERRIDE === "1";
   let out;
-  try { out = verify(bundle, lts, TAX); }
-  catch (e) { out = { verifier: "B", result: "UNVERIFIED_FOR_MACHINE_RELIANCE", reason: (e && e.mltp) || "malformed-envelope", certified_results: [] }; }
+  if (pr !== "ok" && !devOverride) {
+    out = { verifier: "B", result: "UNVERIFIED_FOR_MACHINE_RELIANCE", reason: "untrusted-profile", certified_results: [] };
+  } else {
+    try { out = verify(bundle, lts, TAX, pr !== "ok"); }
+    catch (e) { out = { verifier: "B", result: "UNVERIFIED_FOR_MACHINE_RELIANCE", reason: (e && e.mltp) || "malformed-envelope", certified_results: [] }; }
+  }
   process.stdout.write(JSON.stringify(out) + "\n");
 }
 main();

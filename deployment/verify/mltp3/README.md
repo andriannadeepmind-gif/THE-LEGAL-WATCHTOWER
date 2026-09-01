@@ -29,11 +29,14 @@ Exit 0 ⇔ όλα τα κριτήρια αποδοχής ισχύουν. Παρ�
 |---|---|---|
 | Verifier A | **Go stdlib `crypto/ed25519`** | pure-Go (filippo edwards25519) — **ΟΧΙ** OpenSSL |
 | Verifier B | **Node `node:crypto`** | **OpenSSL** (η έκδοση καταγράφεται στο REPORT) |
-| Builder (signing) | **libsodium** (ctypes) | τρίτο διακριτό vetted· δεν είναι verifier |
+| Builder (signing) | **libsodium 1.0.18** (ctypes· soname libsodium.so.23) | τρίτο διακριτό vetted· **builder backend, ΟΧΙ verifier** |
 
 Οι δύο verifiers χρησιμοποιούν **γνήσια διαφορετικά** vetted backends (pure-Go vs
 OpenSSL) και μοιράζονται **μόνο** `schemas.json` + τα fixtures — καμία verification
-function. Το `cryptography` (Python) είναι **σπασμένο** εδώ (`ModuleNotFoundError:
+function. **Τιμιότητα ισχυρισμού (C1.6):** Go και Node είναι δύο **ανεξάρτητες
+N-version υλοποιήσεις** από **μία** προδιαγραφή, στην ίδια μηχανική συνεδρία —
+**ΟΧΙ** ανεξάρτητος οργανωτικός/θεσμικός έλεγχος. Ανεξάρτητη υλοποίηση και
+ανεξάρτητη adjudication είναι διαφορετικοί ισχυρισμοί. Το `cryptography` (Python) είναι **σπασμένο** εδώ (`ModuleNotFoundError:
 _cffi_backend` → pyo3 panic)· καταγράφεται, δεν αποκρύπτεται. **Καμία αυτοσχέδια
 Ed25519** δεν βρίσκεται σε trusted path. Αν κάποιο backend λείψει: typed
 `CRYPTO_BACKEND_UNAVAILABLE`, fail-closed — ποτέ αποδοχή υπογραφής χωρίς vetted backend.
@@ -67,9 +70,10 @@ independence binding (#12), canonical no-boolean (#14), jurisprudence
 `cites` vs treatment (#15), QSR separation-of-duty/quorum (#16), και τα 8 αρνητικά
 κρυπτογραφικά διανύσματα (#7 της εντολής).
 
-**ΔΕΝ αποδεικνύει:** παραγωγική ασφάλεια, πραγματικά RFC-3161 TSR (το
+**ΔΕΝ αποδεικνύει:** παραγωγική ασφάλεια, πραγματικά RFC-3161 TSR στον πυρήνα (το
 `TimeAttestation` είναι ρητά **deterministic test double** με το ίδιο verification
-contract), πραγματικούς custodians (#16 απαιτεί τα registries του U-2), ή οποιαδήποτε
+contract· ένα **πραγματικό** DER RFC-3161 token και ένα **πραγματικό** COSE_Sign1
+vector βρίσκονται στο `interop/` — C1.4, vetted OpenSSL ts + veraison/go-cose), πραγματικούς custodians (#16 απαιτεί τα registries του U-2), ή οποιαδήποτε
 βαθμίδα ποιοτικής επάρκειας. Το QSR εδώ φέρει **μη-qualifying** level και ασκεί μόνο
 τη διαδρομή επαλήθευσης.
 

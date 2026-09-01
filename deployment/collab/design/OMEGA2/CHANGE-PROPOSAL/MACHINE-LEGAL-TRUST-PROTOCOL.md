@@ -1219,16 +1219,42 @@ bytes· ο verifier ελέγχει `citation_digest`, `claim_id ∈ dependency_s
 `CRYPTO_BACKEND_UNAVAILABLE`. Η πλήρης λίστα + result mapping: `schemas.json`
 (`error_taxonomy`), επαληθευμένη ένα-προς-ένα από τους δύο verifiers.
 
-### 13.6 COSE/SCITT (#13) — τι λείπει ρητά
+### 13.6 COSE/SCITT (#13) — vetted interop vector + τι λείπει ρητά
 
-Η εκτελέσιμη αναφορά υλοποιεί **μόνο** το κανονικό-JSON σχήμα υπογραφής. Η
-COSE_Sign1/SCITT προβολή (§11) είναι **χωριστή, επαληθεύσιμη** υπογραφή πάνω στα
-ακριβή COSE `Sig_structure` bytes και παραμένει `MISSING` (βήμα 6) — **ποτέ**
-relabeling της JSON υπογραφής.
+Η εκτελέσιμη αναφορά υπογράφει με το κανονικό-JSON σχήμα. Ένα **πραγματικό**
+`COSE_Sign1` vector πάνω στα **ακριβή** MLTP canonical payload bytes παράγεται και
+επαληθεύεται με τη **vetted veraison/go-cose v1.3.0** (pinned, vendored, offline) —
+`deployment/verify/mltp3/interop/cose/` (C1.4· ποτέ hand-rolled CBOR/COSE). Η
+κανονική-JSON υπογραφή MLTP και το `COSE_Sign1` είναι **διακριτές κατασκευές**
+(διαφορετικά bytes, διαφορετικός container)· η JSON υπογραφή **δεν** είναι COSE και
+**δεν** μετονομάζεται σε τέτοια. Η **πλήρης SCITT υπηρεσία** παραμένει `MISSING`
+(μόνο το construction boundary + interop vector ζητήθηκαν).
+
+### 13.8 Pre-freeze evidence hardening (Stage C1)
+
+- **Profile manifest pinning (C1.1):** signed `MLTPProfileManifest`
+  (`fixtures/profile.json`, owner-root-signed, context `mltp3:profile-manifest`)
+  pins το SHA-256 του `schemas.json`, canonicalization/merkle profiles, sig-context
+  και id-domain digests, error-taxonomy/qualification-policy versions, min verifier
+  version, activation/expiry/revoked. Αλλαγμένο/υποβαθμισμένο/άγνωστο schema ή profile
+  ⇒ `untrusted-profile` (fail-closed). Dev override (`MLTP_DEV_OVERRIDE=1`) **ποτέ**
+  δεν επιστρέφει `VERIFIED` (cap σε `UNKNOWN`, `profile-override-active`). Μάρτυρες
+  KW-95 έως KW-100.
+- **LocalTrustState boundary (C1.2):** το `LocalTrustState` μένει **εξωτερικό** στο
+  untrusted bundle· bundle δεν αντικαθιστά owner root/registry/citation-policy·
+  embedded registries άκυρα μέχρι authentication· trust-state update = authenticated
+  **monotonic** transition (`nonmonotonic-revocation-state`). Μάρτυρες KW-101 έως KW-103.
+- **Backend evidence (C1.3):** libsodium version από `sodium_version_string()`
+  (**1.0.18**, soname libsodium.so.23, ABI 10.3) — όχι από το filename.
+- **Standards interop (C1.4):** πραγματικό DER RFC-3161 token (OpenSSL `ts`) +
+  πραγματικό `COSE_Sign1` (veraison/go-cose), `interop/`. Το core `TimeAttestation`
+  είναι deterministic **test double**, όχι TSR.
+- **Honesty (C1.6):** Go+Node = δύο ανεξάρτητες **N-version υλοποιήσεις** από μία
+  προδιαγραφή, **όχι** ανεξάρτητος οργανωτικός έλεγχος.
 
 ### 13.7 Κατάσταση
 
 `EXECUTABLE PROTOCOL CLOSURE PASSED — NOT YET SPEC QUALIFIED`. Δεν είναι freeze,
-δεν είναι υλοποίηση των 15 επιπέδων, δεν διεκδικεί βαθμίδα. Επόμενο (μόνο με ρητή
-εντολή δημιουργού): `SEMANTICALLY CLOSED CANDIDATE` → targeted executable protocol
-validation → `SPEC QUALIFIED` (κλίμακα v1.4 §10).
+δεν είναι υλοποίηση των 15 επιπέδων, δεν διεκδικεί βαθμίδα. Μάρτυρες KW-64 έως
+KW-103 εκτελεσμένοι (40 μεταλλάξεις). Επόμενο (μόνο με ρητή εντολή δημιουργού):
+targeted executable protocol validation → `SPEC QUALIFIED` (κλίμακα v1.4 §10).

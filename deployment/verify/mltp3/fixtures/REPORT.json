@@ -6,12 +6,19 @@
   "verifier_b": "Node node:crypto (OpenSSL)",
   "builder": "libsodium via ctypes"
  },
+ "independence_claim": "Go and Node are two independent N-version IMPLEMENTATIONS from one specification, same engineering session — NOT an independent organizational audit. Independent implementation and independent adjudication are different claims (C1.6).",
  "tool_versions": {
   "python": "3.11.15",
   "go": "go version go1.24.7 linux/amd64",
   "node": "v22.22.2",
   "node_openssl": "3.5.5",
-  "libsodium": "libsodium/libsodium.so.23"
+  "libsodium": {
+   "library": "libsodium",
+   "release_version": "1.0.18",
+   "soname": "libsodium.so.23",
+   "loaded_path": "/usr/lib/x86_64-linux-gnu/libsodium.so.23.3.0",
+   "abi": "10.3"
+  }
  },
  "rfc8032_crosscheck": {
   "libsodium": true,
@@ -37,6 +44,19 @@
    "dag_acyclic": true,
    "self_referential_ids": 0
   }
+ },
+ "interop": {
+  "rfc3161": {
+   "ok": true,
+   "impl": "OpenSSL ts",
+   "detail": "RFC3161 OK — real DER token verified via OpenSSL ts (cert chain, sha256 imprint, genTime+accuracy)"
+  },
+  "cose": {
+   "ok": true,
+   "impl": "veraison/go-cose v1.3.0 (vendored)",
+   "detail": "COSE OK — real COSE_Sign1 (veraison/go-cose v1.3.0, Ed25519) verified over exact MLTP payload bytes; deterministic; distinct construction from MLTP canonical-JSON signature"
+  },
+  "note": "TimeAttestation in the core reference is a deterministic test double, NOT an RFC-3161 TSR; the real TSR is interop/rfc3161/token.tsr. MLTP canonical-JSON signatures and COSE_Sign1 are distinct constructions."
  },
  "positive": {
   "ok": true,
@@ -625,22 +645,184 @@
    },
    "agree": true,
    "ok": true
+  },
+  {
+   "name": "profile-modified-schema",
+   "kw": 95,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "untrusted-profile"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "untrusted-profile"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "untrusted-profile"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "profile-downgraded-taxonomy",
+   "kw": 96,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "untrusted-profile"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "untrusted-profile"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "untrusted-profile"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "profile-changed-context",
+   "kw": 97,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "untrusted-profile"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "untrusted-profile"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "untrusted-profile"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "profile-changed-id-domain",
+   "kw": 98,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "untrusted-profile"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "untrusted-profile"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "untrusted-profile"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "profile-untrusted-version",
+   "kw": 99,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "untrusted-profile"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "untrusted-profile"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "untrusted-profile"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "profile-unsigned-by-owner",
+   "kw": 100,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "untrusted-profile"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "untrusted-profile"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "untrusted-profile"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "bundle-supplies-own-owner-root",
+   "kw": 101,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "untrusted-root"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "untrusted-root"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "untrusted-root"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "nonmonotonic-revocation",
+   "kw": 102,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "nonmonotonic-revocation-state"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "nonmonotonic-revocation-state"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "nonmonotonic-revocation-state"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "embedded-registry-only-witness",
+   "kw": 103,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "unsigned-revocation-checkpoint"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "unsigned-revocation-checkpoint"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "unsigned-revocation-checkpoint"
+   },
+   "agree": true,
+   "ok": true
   }
  ],
  "totals": {
   "positive": 1,
-  "negatives_total": 31,
-  "negatives_passed": 31
+  "negatives_total": 40,
+  "negatives_passed": 40
  },
  "artifact_digests": {
-  "schemas.json": "e7cdc6adee17e57df244be85f9bbcfcb5264328e63d5c50d0a202603ee0cb7db",
-  "build_fixtures.py": "4346c66819aa84a221db2bb15b267d64a4cc673225923c1a0b97b99743c39f89",
-  "crypto_libsodium.py": "922168c158dfdb95c15feaad3a980fcc937bb8f64c890023dbe39ac9764e0613",
-  "verify_a.go": "5ad685e94384a6cf7a6ae60112b1e864956c94c38b8ae5d3d7322e750a0ccb4e",
-  "verify_b.mjs": "e6204ed9b878b9b5962dace4d438ec16410ce9542ac761448a36c4306d780e6f",
-  "mutate.py": "37874ed5461c8af317838103c57d1c5bae02bea25e9ac0bf2e6e6c60b35e84ca",
+  "schemas.json": "46eb185e841d748ba07e03a5befd009bfa476799e39d7704f01f73c07a276fae",
+  "build_fixtures.py": "9f1ca2a9cda710b74cfe35b8eb8d863e7acbe6ebf3d66a8e6c193e88888d4026",
+  "crypto_libsodium.py": "e6e9a986dd202e282ffc0a15b1c043595604fefa56681773ffb74edae675e63d",
+  "verify_a.go": "086865407d1bd342497e4e1f1c6728c790671be059a5a6ae8101033e0d22cbb9",
+  "verify_b.mjs": "75fa094c15640382e0d9388d78fd2f2bd1e96373df7deca1378465d2bd69992c",
+  "mutate.py": "cf851b283a807777c6e6a923da52668d45404196207fd745fec9e0b46d1b2d19",
   "dag_check.py": "199c1a8b75efa3ee9003febec9f5441b023578cf415bcca45315763438dc35c6",
-  "harness.py": "789b25efe0d5736f5fa6cd2d2e7f474554b373168e64abdb9ef717ecc944d0c8",
+  "harness.py": "5f154b8558c0e13fb7b46015bd24303c4e71c5fe1e9074d7ee48ee0099d33f20",
   "fixtures/bundle.json": "18c16fb871f60e3c9994131b55bed5dc552fb444286509207437026e2fb19133"
  },
  "verdict": "EXECUTABLE PROTOCOL CLOSURE PASSED — NOT YET SPEC QUALIFIED"

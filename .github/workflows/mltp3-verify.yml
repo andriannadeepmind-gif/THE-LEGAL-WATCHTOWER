@@ -1,0 +1,57 @@
+# C1.5 — narrow, independent reproducibility job. Runs ONLY the MLTP v3 executable
+# reference from a clean checkout, with pinned toolchains, and uploads the report.
+# No unrelated repository suites. No floating "latest". Does not touch other CI.
+name: mltp3-verify
+
+on:
+  push:
+    branches: [claude/fable5-recovery-audit-xbucre]
+    paths:
+      - 'deployment/verify/mltp3/**'
+      - '.github/workflows/mltp3-verify.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  mltp3:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: System deps (libsodium runtime, openssl)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libsodium23 openssl
+          # expose the ABI soname the builder loads
+          python3 -c "import ctypes; ctypes.CDLL('libsodium.so.23'); print('libsodium OK')"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11.9'
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.7'
+          cache: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.18.0'
+
+      - name: Toolchain versions
+        run: |
+          python3 --version; go version; node --version; openssl version
+
+      - name: Run MLTP v3 executable reference
+        run: bash deployment/verify/mltp3/run.sh
+
+      - name: Upload report and logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mltp3-report
+          path: |
+            deployment/verify/mltp3/fixtures/REPORT.json
+          if-no-files-found: warn

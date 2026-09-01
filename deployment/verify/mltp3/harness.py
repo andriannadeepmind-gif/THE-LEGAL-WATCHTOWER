@@ -35,7 +35,7 @@ def tool_versions():
     v["node_openssl"] = sh(["node", "-e", "process.stdout.write(process.versions.openssl)"]).stdout.strip()
     try:
         import crypto_libsodium as cx
-        v["libsodium"] = cx.backend_id()
+        v["libsodium"] = cx.backend_info()
     except Exception as e:
         v["libsodium"] = "UNAVAILABLE: %s" % e
     return v
@@ -94,8 +94,10 @@ def determinism():
     return {"ok": d1 == d2, "digests": d2}
 
 
-def run_verifier(prog_args, bundle, lts):
-    r = sh(prog_args + [bundle, lts, os.path.join(FIX, "keys.json"), os.path.join(HERE, "schemas.json")])
+def run_verifier(prog_args, bundle, lts, schemas=None, profile=None):
+    schemas = schemas or os.path.join(HERE, "schemas.json")
+    profile = profile or os.path.join(FIX, "profile.json")
+    r = sh(prog_args + [bundle, lts, os.path.join(FIX, "keys.json"), schemas, profile])
     if r.returncode != 0 and not r.stdout.strip():
         return {"result": "CRYPTO_BACKEND_UNAVAILABLE", "reason": "verifier-error", "stderr": r.stderr[-400:]}
     try:
@@ -108,9 +110,9 @@ A_CMD = ["go", "run", os.path.join(HERE, "verify_a.go")]
 B_CMD = ["node", os.path.join(HERE, "verify_b.mjs")]
 
 
-def run_case(bundle, lts):
-    a = run_verifier(A_CMD, bundle, lts)
-    b = run_verifier(B_CMD, bundle, lts)
+def run_case(bundle, lts, schemas=None, profile=None):
+    a = run_verifier(A_CMD, bundle, lts, schemas, profile)
+    b = run_verifier(B_CMD, bundle, lts, schemas, profile)
     return a, b
 
 
@@ -120,6 +122,7 @@ def main():
               "backends": {"verifier_a": "Go stdlib crypto/ed25519 (pure Go, not OpenSSL)",
                            "verifier_b": "Node node:crypto (OpenSSL)",
                            "builder": "libsodium via ctypes"},
+              "independence_claim": "Go and Node are two independent N-version IMPLEMENTATIONS from one specification, same engineering session — NOT an independent organizational audit. Independent implementation and independent adjudication are different claims (C1.6).",
               "tool_versions": tool_versions()}
 
     report["rfc8032_crosscheck"] = rfc_crosscheck()
@@ -127,6 +130,14 @@ def main():
 
     dag = sh(["python3", "dag_check.py"])
     report["dag"] = {"ok": dag.returncode == 0, "detail": json.loads(dag.stdout.strip()) if dag.stdout.strip() else None}
+
+    # C1.4 standards-interoperability vectors (vetted, no hand-rolled crypto)
+    rfc = sh(["bash", os.path.join(HERE, "interop", "rfc3161", "verify.sh")])
+    cose = sh(["bash", os.path.join(HERE, "interop", "cose", "verify.sh")])
+    report["interop"] = {
+        "rfc3161": {"ok": rfc.returncode == 0, "impl": "OpenSSL ts", "detail": rfc.stdout.strip().splitlines()[-1] if rfc.stdout.strip() else rfc.stderr[-200:]},
+        "cose": {"ok": cose.returncode == 0, "impl": "veraison/go-cose v1.3.0 (vendored)", "detail": cose.stdout.strip().splitlines()[-1] if cose.stdout.strip() else cose.stderr[-200:]},
+        "note": "TimeAttestation in the core reference is a deterministic test double, NOT an RFC-3161 TSR; the real TSR is interop/rfc3161/token.tsr. MLTP canonical-JSON signatures and COSE_Sign1 are distinct constructions."}
 
     mut = sh(["python3", "mutate.py"])
     if mut.returncode != 0:
@@ -144,7 +155,9 @@ def main():
     neg_ok = 0
     for m in muts:
         d = os.path.join(FIX, "mut", m["name"])
-        a, b = run_case(os.path.join(d, "bundle.json"), os.path.join(d, "lts.json"))
+        sc = os.path.join(d, "schemas.json"); sc = sc if os.path.exists(sc) else None
+        pf = os.path.join(d, "profile.json"); pf = pf if os.path.exists(pf) else None
+        a, b = run_case(os.path.join(d, "bundle.json"), os.path.join(d, "lts.json"), sc, pf)
         agree = (a.get("result") == b.get("result") and a.get("reason") == b.get("reason"))
         res_ok = a.get("result") == m["expected_result"]
         rea_ok = a.get("reason") in m["expected_reasons"]
@@ -166,7 +179,8 @@ def main():
     report["artifact_digests"]["fixtures/bundle.json"] = sha256_file(os.path.join(FIX, "bundle.json"))
 
     passed = (report["rfc8032_crosscheck"]["all_ok"] and report["determinism"]["ok"]
-              and report["dag"]["ok"] and pos_ok and neg_ok == len(muts))
+              and report["dag"]["ok"] and pos_ok and neg_ok == len(muts)
+              and report["interop"]["rfc3161"]["ok"] and report["interop"]["cose"]["ok"])
     report["verdict"] = "EXECUTABLE PROTOCOL CLOSURE PASSED — NOT YET SPEC QUALIFIED" if passed \
         else "EXECUTABLE PROTOCOL CLOSURE BLOCKED — NO QUALIFICATION CLAIM"
 
@@ -180,6 +194,8 @@ def main():
     print("positive           :", pos_ok)
     print("negatives          : %d/%d rejected identically by A and B with expected typed error"
           % (neg_ok, len(muts)))
+    print("interop rfc3161    :", report["interop"]["rfc3161"]["ok"])
+    print("interop cose       :", report["interop"]["cose"]["ok"])
     print("VERDICT            :", report["verdict"])
     return 0 if passed else 1
 

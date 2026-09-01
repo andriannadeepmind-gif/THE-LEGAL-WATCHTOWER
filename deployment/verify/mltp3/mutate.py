@@ -45,19 +45,31 @@ def base():
 MUTATIONS = []
 
 
+def _w(d, name, obj):
+    with open(os.path.join(d, name), "w", encoding="utf-8") as fh:
+        fh.write(json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n")
+
+
 def add(name, kw, result, reasons, mutate_fn, desc, opts=None):
     if opts is not None:
         built = B.build(opts)
         bundle, lts = built["bundle"], built["lts"]
     else:
         bundle, lts = base()
-    bundle, lts = mutate_fn(bundle, lts)
+    extra = {}
+    out = mutate_fn(bundle, lts)
+    if isinstance(out, tuple) and len(out) == 3:
+        bundle, lts, extra = out
+    else:
+        bundle, lts = out
     d = os.path.join(MUT, name)
     os.makedirs(d, exist_ok=True)
-    with open(os.path.join(d, "bundle.json"), "w", encoding="utf-8") as fh:
-        fh.write(json.dumps(bundle, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n")
-    with open(os.path.join(d, "lts.json"), "w", encoding="utf-8") as fh:
-        fh.write(json.dumps(lts, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n")
+    _w(d, "bundle.json", bundle)
+    _w(d, "lts.json", lts)
+    if "schemas" in extra:
+        _w(d, "schemas.json", extra["schemas"])
+    if "profile" in extra:
+        _w(d, "profile.json", extra["profile"])
     MUTATIONS.append({"name": name, "kw": kw, "expected_result": result,
                       "expected_reasons": reasons, "desc": desc})
 
@@ -309,6 +321,71 @@ def m_crypto_replay_context(bundle, lts):
     return bundle, lts
 
 
+
+# ==== C1.1 profile-manifest boundary ==========================================
+import copy as _copy
+
+
+def _tampered_schemas(edit):
+    sc = json.load(open(os.path.join(B.HERE, "schemas.json"), encoding="utf-8"))
+    edit(sc)
+    return sc
+
+
+def m_profile_modified_schema(bundle, lts):
+    sc = _tampered_schemas(lambda s: s.__setitem__("_injected_field", "x"))
+    return bundle, lts, {"schemas": sc}   # default profile pins the ORIGINAL digest
+
+
+def m_profile_downgraded_taxonomy(bundle, lts):
+    sc = _tampered_schemas(lambda s: s["claim_types"].pop())   # drop a claim type
+    return bundle, lts, {"schemas": sc}
+
+
+def m_profile_changed_context(bundle, lts):
+    def ed(s):
+        s["sig_contexts"] = ["mltp3:EVIL" if c == "mltp3:issued-claim" else c for c in s["sig_contexts"]]
+    return bundle, lts, {"schemas": _tampered_schemas(ed)}
+
+
+def m_profile_changed_id_domain(bundle, lts):
+    def ed(s):
+        s["id_domains"]["clm1:"] = "mltp3:EVIL-claim-id"
+    return bundle, lts, {"schemas": _tampered_schemas(ed)}
+
+
+def m_profile_untrusted_version(bundle, lts):
+    prof = B.build_profile(os.path.join(B.HERE, "schemas.json"), min_verifier_version="99")
+    return bundle, lts, {"profile": prof}
+
+
+def m_profile_unsigned_by_owner(bundle, lts):
+    prof = B.build_profile(os.path.join(B.HERE, "schemas.json"), sign_role="delegate_release")
+    return bundle, lts, {"profile": prof}
+
+
+# ==== C1.2 LocalTrustState boundary ===========================================
+def m_bundle_owner_root_differs(bundle, lts):
+    # bundle tries to declare its own owner root (a bundle-embedded key); LTS pinned root wins
+    bundle["owner_kid"] = B.KEYS["delegate_release"]["kid"]
+    return bundle, lts
+
+
+def m_nonmonotonic_revocation(bundle, lts):
+    lts["last_revocation_checkpoint"] = {"tree_size": 5, "log_root": "sha256:" + "0" * 64}
+    return bundle, lts
+
+
+def m_embedded_registry_only_witness(bundle, lts):
+    # re-sign the checkpoint with keys NOT in the LTS witness registry (auditors);
+    # bundle-embedded "witnesses" must not count -> quorum 0 -> unsigned
+    cp = bundle["revocation_checkpoint"]
+    body = {k: v for k, v in cp.items() if k != "signers"}
+    cp["signers"] = [{"alg": "Ed25519", "kid": B.KEYS[r]["kid"],
+                      "sig": sign_as(r, "mltp3:witness-checkpoint", body)} for r in ("auditor1", "auditor2")]
+    return bundle, lts
+
+
 def main():
     os.makedirs(MUT, exist_ok=True)
     UFMR = "UNVERIFIED_FOR_MACHINE_RELIANCE"
@@ -346,6 +423,17 @@ def main():
     add("crypto-bad-length", 92, UFMR, ["sig-invalid"], m_crypto_bad_length, "crypto neg: invalid signature length")
     add("crypto-malformed-key", 93, UFMR, ["key-binding-mismatch"], m_crypto_malformed_key, "crypto neg: malformed key")
     add("crypto-replay-context", 94, UFMR, ["sig-invalid"], m_crypto_replay_context, "crypto neg: replay under different domain separator")
+    # C1.1 profile-manifest pinning
+    add("profile-modified-schema", 95, UFMR, ["untrusted-profile"], m_profile_modified_schema, "C1.1: modified schema, unchanged profile digest")
+    add("profile-downgraded-taxonomy", 96, UFMR, ["untrusted-profile"], m_profile_downgraded_taxonomy, "C1.1: downgraded claim/error taxonomy")
+    add("profile-changed-context", 97, UFMR, ["untrusted-profile"], m_profile_changed_context, "C1.1: changed signature context")
+    add("profile-changed-id-domain", 98, UFMR, ["untrusted-profile"], m_profile_changed_id_domain, "C1.1: changed ID domain")
+    add("profile-untrusted-version", 99, UFMR, ["untrusted-profile"], m_profile_untrusted_version, "C1.1: min_verifier_version above supported")
+    add("profile-unsigned-by-owner", 100, UFMR, ["untrusted-profile"], m_profile_unsigned_by_owner, "C1.1: profile not signed by pinned owner root")
+    # C1.2 LocalTrustState boundary
+    add("bundle-supplies-own-owner-root", 101, UFMR, ["untrusted-root"], m_bundle_owner_root_differs, "C1.2: bundle cannot replace LocalTrustState owner root")
+    add("nonmonotonic-revocation", 102, UFMR, ["nonmonotonic-revocation-state"], m_nonmonotonic_revocation, "C1.2: trust-state must advance monotonically")
+    add("embedded-registry-only-witness", 103, UFMR, ["unsigned-revocation-checkpoint"], m_embedded_registry_only_witness, "C1.2: bundle-embedded registry members do not count")
 
     with open(os.path.join(FIX, "mutations.json"), "w", encoding="utf-8") as fh:
         json.dump({"schema": "mltp3-mutations/1", "count": len(MUTATIONS), "mutations": MUTATIONS},

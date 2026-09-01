@@ -935,8 +935,8 @@ qualified release. **Σχεδιαστική αξίωση που δεν αποδ�
 |---|---|---|---|
 | 0 | `CURRENT CANDIDATE` | ενοποιημένος υποψήφιος + audits exit 0 | **ΝΑΙ** (v1.4) |
 | 1 | `SEMANTICALLY CLOSED CANDIDATE` | διορθωμένη ακυκλική κατασκευή· MLTP v3 §13 | **ΝΑΙ** — executable reference `PASSED` |
-| 2 | *targeted executable protocol validation* | `deployment/verify/mltp3/run.sh` exit 0 (δύο vetted verifiers· θετικό + KW-64 έως KW-94) | **ΝΑΙ** — `fixtures/REPORT.json` |
-| 3 | `SPEC QUALIFIED` | validation programme §8 (KW-1 έως KW-94) επιβιωμένο + audits | **ΟΧΙ** — δεν έχει εκτελεστεί |
+| 2 | *targeted executable protocol validation* | `deployment/verify/mltp3/run.sh` exit 0 (δύο vetted verifiers· θετικό + KW-64 έως KW-103) | **ΝΑΙ** — `fixtures/REPORT.json` |
+| 3 | `SPEC QUALIFIED` | validation programme §8 (KW-1 έως KW-103) επιβιωμένο + audits | **ΟΧΙ** — δεν έχει εκτελεστεί |
 | 4 | `SPEC FREEZE` | ρητό «εγκρίνω freeze target» δημιουργού | **ΟΧΙ** |
 | 5 | *refactoring / implementation* | μετά το freeze (`IMPLEMENTATION-SEQUENCE.md` βήματα 0–14) | **ΟΧΙ** |
 | 6 | *15 vertical slices* | **μετά** το freeze, στη φάση υλοποίησης (`VERTICAL-SLICES.md`) | **ΟΧΙ** |
@@ -993,7 +993,7 @@ AS-IS EV-11) καταγεγραμμένοι, μη διορθωμένοι (design
 Δεν ζητείται έγκριση υλοποίησης. Η διορθωμένη σειρά (§10): `CURRENT CANDIDATE` →
 `SEMANTICALLY CLOSED CANDIDATE` (εκτελέσιμη ακυκλική κατασκευή, MLTP v3 §13 — **έγινε**,
 `deployment/verify/mltp3/run.sh` exit 0) → *targeted executable protocol validation*
-(**έγινε**) → validation programme §8 (KW-1 έως **KW-94**) → `SPEC QUALIFIED` →
+(**έγινε**) → validation programme §8 (KW-1 έως **KW-103**) → `SPEC QUALIFIED` →
 ρητό `SPEC FREEZE` του δημιουργού → refactoring/implementation → **15 εκτελέσιμες
 φέτες** (μετά το freeze) → `IMPLEMENTATION QUALIFIED` → `MISSION` → `PROVIDER-ADOPTION`.
 Το SPEC FREEZE **δεν** απαιτεί τις φέτες (διόρθωση #17).
