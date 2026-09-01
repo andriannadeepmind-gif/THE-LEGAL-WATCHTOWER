@@ -62,7 +62,7 @@ verifier), `V1.3-SEMANTIC-CROSSWALK.md` (κάθε νέα έννοια → έδρ
 |---|---|---|---|
 | Α | Ταυτότητα «= PLANE-0 digest + path» **αντιφάσκει** στο Q07 | υιοθέτηση USC `Work→Expression→Manifestation→Item` | §2.1, #5 |
 | Β | Αυθεντικότητα «= RFC-3161» — αποδεικνύει ΧΡΟΝΟ, όχι ΠΡΟΕΛΕΥΣΗ | authority registry + institutional register + authority-proof-bundle + acquisition receipts + divergence witnesses | §2.2, #6 |
-| Γ | Καμία **μηχανικά καταναλώσιμη** μορφή εμπιστοσύνης | **Machine Legal Trust Protocol** — 7 πιστοποιητικά | §3, #3 |
+| Γ | Καμία **μηχανικά καταναλώσιμη** μορφή εμπιστοσύνης | **Machine Legal Trust Protocol** — typed `IssuedClaim` profiles (κανένας αριθμητικός στόχος) | §3, #3 |
 | Δ | Καμία **ανοιχτή offline** επαλήθευση για τρίτους/AI | minimal offline verifier + provider integration | §4, #4 |
 | Ε | Νομολογία ρηχή — αποθήκευση, όχι κωδικοποίηση εξέλιξης | Level-7 «Νομολογιακή συνείδηση-εξέλιξη» plane | §5, #7 |
 | Ζ | Cockpit ασαφές (παθητικό vs publish) | signed proposal/approval **intent**, ποτέ παράκαμψη M5 | §6, #8 |
@@ -175,8 +175,8 @@ authority root (`release_root`)· το `pcl_text_root` = legacy cross-check (§M
 gate, «να τον audit-άρει ο καθένας σε ένα απόγευμα»). **Δύο διακριτές πρωτόγονες,
 ποτέ συγχεόμενες (MLTP §4):** **SHA-256** για Merkle **inclusion**· **RS256 (ή
 Ed25519)** για **signatures/delegation/witnesses**. Ο ελεγκτής είναι μικρός αλλά
-**δεν** είναι hash-only — φέρει RS256/Ed25519 verifier. («TrustBundle verified only
-with SHA-256» = **λάθος**· αντιφάσκει με PCL RS256 + trust-bootstrap delegation.)
+**δεν** είναι hash-only — φέρει RS256/Ed25519 verifier. (Η hash-only-verification
+αξίωση της MLTP v1 = **λάθος**· αντιφάσκει με PCL RS256 + trust-bootstrap delegation.)
 Ελέγχει:
 
 1. **Merkle inclusion** (RFC 9162, profile `lawmax-merkle-sha256-v1`, **SHA-256**) —
@@ -211,8 +211,9 @@ statement υπογεγραμμένο από το παλιό κλειδί· revoc
   σε δημόσια νομική αναπαράσταση **χωρίς έγκυρη, φρέσκια πιστοποίηση** ΠΡΕΠΕΙ να
   επιστρέφει **`UNVERIFIED_FOR_MACHINE_RELIANCE`** ή **`UNKNOWN`** — ποτέ σιωπηλή
   παρουσίαση ως αυθεντικού. «Φρέσκια» = εντός του `freshness` του
-  `CoverageAndFreshnessCertificate` (§3), αλλιώς `UNKNOWN` (θετική απόδειξη
-  φρεσκάδας, όπως το v1.2 §8 KT1 ceiling).
+  `coverage-and-freshness` IssuedClaim (§3), αλλιώς `UNKNOWN`· χωρίς αξιόπιστο
+  current-time evidence στο `LocalTrustState` ⇒ `UNKNOWN_FRESHNESS`, ποτέ `VERIFIED`
+  (θετική απόδειξη φρεσκάδας — κλείνει το stopped-clock/KT1, MLTP §8).
 
 **De jure**: η επίσημη πηγή παραμένει **κράτος/δικαστήρια**. Το Watchtower είναι
 **Machine Legal Trust Root** για την **επαληθευμένη μηχανική αναπαράσταση** — ποτέ
@@ -246,8 +247,9 @@ primitive + L2 — line-of-authority temporal graph· status **✗**, phase Ω7�
 
 **Δομικοί φρουροί (μεταφορά v1.2 + USC):** `UNDEC ⇒ UNKNOWN` (KT6)· καμία απόφαση
 δεν παράγει νομοθετικό γεγονός (USC §6.3, μη εκφράσιμο)· AI inference (`PLANE-3`)
-**ποτέ** ως ratio/holding/source. Ο `JurisprudenceCertificate` (§3) πιστοποιεί
-αυτό το επίπεδο.
+**ποτέ** ως ratio/holding/source. Το επίπεδο πιστοποιείται από **δύο χωριστά**
+profiles (§3): `judgment-identity-and-text` (source-verifiable) και
+`jurisprudential-analysis` (institutional, με passage anchors + reviewer adoption).
 
 ---
 
@@ -283,9 +285,11 @@ primitive + L2 — line-of-authority temporal graph· status **✗**, phase Ω7�
   εξωτερικά επαληθεύσιμα metrics (κάλυψη, latency, μηδέν σιωπηλή απώλεια, source
   census). Λήξη παραθύρου χωρίς ανανέωση ⇒ πτώση σε `UNKNOWN`/`UNVERIFIED`.
 - **Freshness-bound:** δένει με το TUF `timestamp` role (key-lifecycle §1) και το
-  `CoverageAndFreshnessCertificate` (§3) — χωρίς φρέσκια απόδειξη, καμία αξίωση.
-- **Externally verifiable:** τα metrics επαληθεύονται από τους witnesses (§4.1,
-  trust-bootstrap §4), όχι από το ίδιο το σύστημα (καμία αυτο-πιστοποίηση, Σ-3).
+  `coverage-and-freshness` IssuedClaim (§3) — χωρίς φρέσκια απόδειξη, καμία αξίωση.
+- **Externally verifiable:** τα metrics **αναπαράγονται από independent auditors**
+  (MLTP §10) — όχι από το ίδιο το σύστημα (καμία αυτο-πιστοποίηση, Σ-3). Οι
+  **transparency witnesses** (GitHub/TSAs) πιστοποιούν **μόνο** publication/χρόνο/
+  consistency — **ποτέ** metrics ή ορθότητα περιεχομένου.
 - **Revocable:** ανακαλείται με υπογεγραμμένο revocation (key-lifecycle §2.5) ή
   αυτόματα όταν πέσει κάτω από κατώφλι — split-view/divergence ⇒ άμεση πτώση.
 - **Ξεχωριστό provider-adoption qualification:** το «οι providers το χρησιμοποιούν
@@ -352,7 +356,7 @@ correction/challenge governance, provider integration, **qualification expiry**)
 2. **Κανένα νέο τυπικό μοντέλο.** Καμία υλοποίηση, κανένα deployment.
 3. **Νέα κενά που ονομάζονται (crosswalk):** coverage ledger / national census
    (R-1)· Level-7 jurisprudence plane (status ✗)· εκδοχοποιημένο OpenAPI (EV-5)·
-   RBAC/MFA στο cockpit intent· η **σύνθεση** των 7 πιστοποιητικών σε ένα πρωτόκολλο.
+   RBAC/MFA στο cockpit intent· η **σύνθεση** των typed `IssuedClaim` profiles σε ένα πρωτόκολλο.
 4. **Καμία βαθμίδα ποιοτικής επάρκειας.** `MISSION GREECE-1` ορισμένη, μη εκκινημένη.
 5. **Άδεια/anonymization** (Q25) παραμένει ανοιχτή· δεν αποφασίζεται εδώ.
 6. **P0 υπερ-ισχυρισμοί** (§10) — καταγεγραμμένοι, μη διορθωμένοι (design-only).

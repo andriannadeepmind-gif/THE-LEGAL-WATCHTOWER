@@ -56,6 +56,12 @@ P4 (δηλωμένο).
   out-of-band από τον κυρίαρχο σε ≥2 κανάλια).
 - Ό,τι υπογράφηκε ΠΡΙΝ τον χρόνο ανάκλησης + έχει ΑΝΕΞΑΡΤΗΤΟ RFC-3161 χρόνο
   παραμένει έγκυρο (γι' αυτό ο χρόνος ριζώνει ΕΞΩ από τα κλειδιά μας, στις TSA).
+  **Εμβέλεια (versioned precedence, 2026-09-01):** ο κανόνας αυτός ισχύει ΜΟΝΟ για
+  προγραμματισμένη rotation/supersession/policy. Για **key-compromise** υπερισχύει
+  το `deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/MACHINE-LEGAL-TRUST-PROTOCOL.md §9`
+  (MLTP v2): `invalid_from`/`compromise_known_at` + **αναδρομική ακύρωση** —
+  υπογραφές με trusted signature time ≥ `invalid_from` ακυρώνονται ακόμη κι αν
+  φέρουν προγενέστερο timestamp. Μία ετυμηγορία ανά υπογραφή, όχι δύο.
 
 ### 2.6 Διαδοχή (κληρονομική συνέχεια του Ιδρύματος)
 - Ο κυρίαρχος ορίζει διάδοχο-κλειδί υπό σφραγισμένη διαδικασία (offline).

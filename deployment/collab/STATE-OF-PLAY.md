@@ -4,7 +4,7 @@
 ετυμηγορίες, εκκρεμότητες, μπλοκαρίσματα. Ο διάλογος: `AI-DIALOGUE.md`.
 Πηγή αλήθειας παραμένουν τα gates/μητρώα — αυτό είναι ΣΥΝΟΨΗ, όχι απόδειξη.
 
-*Τελευταία ενημέρωση: Claude · 2026-09-01 (δ) — **[0134] v1.3 SEMANTIC CLOSURE — MLTP v2 τρία επίπεδα, ΠΡΙΝ το destruction pass]**: Design only, κανένας κώδικας, **ΚΑΝΕΝΑ destruction pass** (εντολή «STOP BEFORE»), καμία αξίωση qualification, καμία νέα αρχιτεκτονική, καμία αλλαγή scope. Ένα semantic-closure commit πάνω στο `e0d589e`. **11 διορθώσεις γνωστών αντιφάσεων, μηχανικά επαληθευμένες (`V1.3-CONSISTENCY-AUDIT.md` 33/33 PASS):** MLTP τρία επίπεδα (IssuedClaim/TrustBundle/VerificationReceipt — issuer ΠΟΤΕ self-verdict· assurance→signed QualificationStateRecord)· `claim_type`+typed payload· crypto profile SHA-256(inclusion)+RS256/Ed25519(signatures)· μία authority root `release_root`, `pcl_text_root`=legacy cross-check· TrustBundle=container, correction≠revocation, temporal μόνο όπου ισχύει· νομολογία split (judgment-identity vs jurisprudential-analysis, AI inference ΠΟΤΕ ως θεσμικό ratio)· transparency-witness≠auditor· revocation retroactive σε compromise· AS-IS πλήρως αναπαραγώγιμο (71 CI runs/0 successes, artifact-count 4.550)· 8 προδηλωμένοι kill witnesses (μη εκτελεσμένοι). Qualification sync v1.3 (Q03/Q13/Q15/Q21/Q22). Επόμενο ΜΟΝΟ με χωριστή ρητή εντολή: destruction pass v1.3.*
+*Τελευταία ενημέρωση: Claude · 2026-09-01 (ε) — **[0135] v1.3 ERRATA + ΕΚΤΕΛΕΣΙΜΟΣ AUDIT — CONDITIONAL GO TO DESTRUCTION]**: ένα ελάχιστο design-only errata commit πάνω στο `aed4eba9`, καμία νέα αρχιτεκτονική/scope. 8 errata: stale κατάλοιπα (v1.2-prereq, JurisprudenceCertificate, witnesses-as-auditors, «7 certs»)· delegated-key chain root→delegation(scope)→key→claim, ΟΧΙ thumbprint==root, `delegation-scope-violation`· `verify_bundle(bundle, LocalTrustState)` με trusted-time evidence ⇒ `UNKNOWN_FRESHNESS` ποτέ VERIFIED χωρίς αξιόπιστο now (κλείνει KT1)· TrustBundle offline-resolvable + embedded registries UNTRUSTED· έμμεση αυτοπιστοποίηση κλειστή (issuer roles, release issuer ποτέ για εαυτό, quorum)· trusted `issued_at`, revocation έναντι signature time· KEY-LIFECYCLE §2.5 ↔ MLTP §9 versioned precedence· audit = committed `.sh` + `.out` με exit code, C1–C19. +8 kill witnesses (KW-9…16). **Πύλη: exit 0 ⇒ άμεσο destruction pass· exit 1 ⇒ στάση.** Καμία υλοποίηση, κανένα freeze, καμία αξίωση qualification.*
 
 ## Κατάσταση συστήματος (τελευταία μετρημένη)
 
@@ -771,3 +771,28 @@ destruction pass να μη σπαταλήσει γύρο σε ήδη γνωστ�
 
 **ΔΕΝ ΕΓΙΝΕ:** destruction pass v1.3 · υλοποίηση · deployment · qualification claim.
 Επόμενο βήμα ΜΟΝΟ μετά από εξέταση δημιουργού και χωριστή ρητή εντολή για destruction.
+
+## [0135] v1.3 ERRATA — εκτελέσιμος consistency audit — πύλη προς destruction — πάνω στο `aed4eba9`
+
+**CONDITIONAL GO TO DESTRUCTION** (δημιουργός, μετά έλεγχο του `aed4eba9`). Ένα
+ελάχιστο design-only errata commit. **Καμία νέα αρχιτεκτονική, νέο scope ή γενικός
+σχεδιαστικός γύρος.**
+
+- **8 errata (μόνο):** stale κατάλοιπα → v1.3 ονοματολογία· delegated-key chain
+  διορθωμένη (root ≠ delegated thumbprint, scope vs `claim_type`)· πλήρες
+  `verify_bundle(bundle, LocalTrustState)` με trusted-time evidence ⇒
+  `UNKNOWN_FRESHNESS` ποτέ `VERIFIED` χωρίς αξιόπιστο now (κλείνει KT1)· TrustBundle
+  offline-resolvable + embedded registries UNTRUSTED· έμμεση αυτοπιστοποίηση κλειστή
+  (issuer roles ανά level, release issuer ποτέ για εαυτό, quorum/evidence/expiry)·
+  trusted `issued_at` + revocation έναντι signature time (fail-closed)·
+  KEY-LIFECYCLE §2.5 ↔ MLTP v2 §9 versioned precedence (και στα δύο)· audit =
+  committed `V1.3-CONSISTENCY-AUDIT.sh` + `.out` (exit code), C1–C19, ΟΛΑ τα active
+  docs, ειδικοί stale checks.
+- **+8 kill witnesses** KW-9…KW-16 — σύνολο 16, **ΜΗ εκτελεσμένοι**, υποχρεωτική βάση.
+- **Πύλη:** μετά το push ο audit εκτελείται· **exit 1 ⇒ στάση**· **exit 0 ⇒ άμεσο
+  ανεξάρτητο destruction pass** του πλήρους v1.3 (default `FALSIFIED`· μηχανικό
+  finding = artifact+command+output+digest· argument-only χωριστά· κατάθεση prompts,
+  opponent→test mapping, ετυμηγοριών, raw outputs, adjudication· τελική ετυμηγορία
+  `SPEC SURVIVED — ELIGIBLE FOR FREEZE REVIEW` ή `FALSIFIED — NOT FREEZEABLE`).
+
+**ΔΕΝ ΕΓΙΝΕ:** υλοποίηση · deployment · freeze · qualification claim.

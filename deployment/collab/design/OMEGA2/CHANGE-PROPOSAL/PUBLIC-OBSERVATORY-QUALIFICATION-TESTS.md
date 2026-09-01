@@ -75,7 +75,7 @@ IssuedClaim / TrustBundle / VerificationReceipt).
 ### Q03 — Αυθεντικότητα πηγής (προέλευση, όχι μόνο χρόνος) · Β: I
 **Ισχυρισμός:** κάθε `SOURCE-SEALED` αντικείμενο ανάγεται σε **επίσημη αρχή/μητρώο**
 — όχι απλώς σε χρονοσφραγισμένα bytes (v1.3 §2.2: RFC-3161 = χρόνος, όχι προέλευση).
-**Κριτήριο:** 100% των `RELEASED` αντικειμένων φέρουν **`SourceAuthenticityReceipt`**
+**Κριτήριο:** 100% των `RELEASED` αντικειμένων φέρουν **`source-authenticity` IssuedClaim**
 με `authority_id` (`auth1:`) **ΚΑΙ** `institutional_register_id` (`ireg1:`) **ΚΑΙ**
 `authority_proof_ref` (authority-proof-bundle) **ΚΑΙ** `acquisition_receipt_id`·
 όπου δύο επίσημες πηγές διαφωνούν, `divergence_ref` (`official-sources-conflict`) ⇒
@@ -270,8 +270,8 @@ VERIFIED` ⇒ **απορρίπτεται** (issuer self-verdict, §7)· (β) inl
 πρωτόγονη ανά λειτουργία (v1.3 §4· MLTP §4).
 **Κριτήριο:** **inclusion** proofs επαληθεύονται με **SHA-256 μόνο** (RFC 9162)·
 **signatures/delegation/witnesses** επαληθεύονται με **RS256 (ή Ed25519)** — **ΟΧΙ**
-«μόνο SHA-256»· pinned root **μόνο** out-of-band· χωρίς δίκτυο. (Το «TrustBundle
-verified only with SHA-256» είναι **λάθος** και δεν επιβάλλεται.)
+«μόνο SHA-256»· pinned root **μόνο** out-of-band· χωρίς δίκτυο. (Η hash-only-verification
+αξίωση της MLTP v1 είναι **λάθος** και δεν επιβάλλεται.)
 **Αρνητικός μάρτυρας:** (α) bundle με embedded `public_key` που δεν κάνει
 thumbprint-match ⇒ `untrusted-key`· (β) verifier που «επαληθεύει» RS256/Ed25519
 υπογραφή **μόνο** με SHA-256 (δηλ. δεν ελέγχει πραγματικά την υπογραφή) ⇒ αποτυχία
@@ -310,7 +310,8 @@ manifestation ⇒ κανένα υπάρχον `expression_id` δεν αλλάζ�
 ### Q26 — Διακυβέρνηση διόρθωσης & αμφισβήτησης · Β: I → M
 **Ισχυρισμός:** υπάρχει διαδικασία διόρθωσης/ανάκλησης/αμφισβήτησης, με εξουσία και
 χωρίς διαγραφή.
-**Κριτήριο:** κάθε `CorrectionOrRevocationRecord` (MLTP §6) φέρει εξουσία, χρόνο,
+**Κριτήριο:** κάθε `legal-object-correction-or-withdrawal` **και** (χωριστά) κάθε
+`trust-key-or-delegation-revocation` IssuedClaim (MLTP §2.7 / §2.8) φέρει εξουσία, χρόνο,
 `superseded_by`/`supersedes`· **καμία διαγραφή**· ανακληθέν παραμένει ανακτήσιμο
 στη διτεμπορική τομή· υπογεγραμμένο πριν την ανάκληση + RFC-3161 χρόνο = ακόμη
 έγκυρο (key-lifecycle §2.5).
@@ -345,8 +346,8 @@ manifestation ⇒ κανένα υπάρχον `expression_id` δεν αλλάζ�
 **Ορισμός.** 30 συνεχόμενες ημέρες **ζωντανής** ποιοτικής επάρκειας έναντι
 **κάθε νέου ΦΕΚ** και της διαθέσιμης ροής νομολογίας.
 
-**Προϋποθέσεις εισόδου:** `IMPLEMENTATION QUALIFIED` (όλες οι Q01–Q20 πράσινες,
-μηδέν `BLOCKED`) **και** επιβιωμένο destruction pass στο v1.2.
+**Προϋποθέσεις εισόδου:** `IMPLEMENTATION QUALIFIED` (όλες οι Q01–Q28 πράσινες,
+μηδέν `BLOCKED`) **και** επιβιωμένο destruction pass στο v1.3.
 
 **Απαιτήσεις κατά τη διάρκεια — όλες ταυτόχρονα:**
 
