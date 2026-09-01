@@ -1,0 +1,647 @@
+{
+ "schema": "mltp3-acceptance-report/1",
+ "generated_from": "clean build of deployment/verify/mltp3",
+ "backends": {
+  "verifier_a": "Go stdlib crypto/ed25519 (pure Go, not OpenSSL)",
+  "verifier_b": "Node node:crypto (OpenSSL)",
+  "builder": "libsodium via ctypes"
+ },
+ "tool_versions": {
+  "python": "3.11.15",
+  "go": "go version go1.24.7 linux/amd64",
+  "node": "v22.22.2",
+  "node_openssl": "3.5.5",
+  "libsodium": "libsodium/libsodium.so.23"
+ },
+ "rfc8032_crosscheck": {
+  "libsodium": true,
+  "go": true,
+  "node": true,
+  "all_ok": true
+ },
+ "determinism": {
+  "ok": true,
+  "digests": {
+   "bundle.json": "18c16fb871f60e3c9994131b55bed5dc552fb444286509207437026e2fb19133",
+   "keys.json": "b0d633e57e3db9fe4c79d682955513f6e1eb210668a567b9f394237b936fb35b",
+   "lts.json": "412cd12fe71b27e842f8bb2ae8a14137f8d19c1a9d05e2bd4066e92c7d6da51a",
+   "expected.json": "3c4307f5b5b87bac387c4312e912a0bd0d9a1677fbb977ebccde8de951454576"
+  }
+ },
+ "dag": {
+  "ok": true,
+  "detail": {
+   "schema": "mltp3-dag/1",
+   "ids": 8,
+   "problems": [],
+   "dag_acyclic": true,
+   "self_referential_ids": 0
+  }
+ },
+ "positive": {
+  "ok": true,
+  "verifier_a": {
+   "verifier": "A",
+   "result": "VERIFIED",
+   "reason": "ok",
+   "certified_results": [
+    {
+     "citation_bound": "true",
+     "reason": "ok",
+     "result": "VERIFIED",
+     "result_id": "res1:ca5a90846887d56b3fec0fcbd9bfec2e30805a3821dab185cce9ae6ec30f4348"
+    }
+   ]
+  },
+  "verifier_b": {
+   "verifier": "B",
+   "result": "VERIFIED",
+   "reason": "ok",
+   "certified_results": [
+    {
+     "result_id": "res1:ca5a90846887d56b3fec0fcbd9bfec2e30805a3821dab185cce9ae6ec30f4348",
+     "result": "VERIFIED",
+     "reason": "ok",
+     "citation_bound": "true"
+    }
+   ]
+  }
+ },
+ "negatives": [
+  {
+   "name": "selfid-claim",
+   "kw": 64,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "self-referential-id"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "self-referential-id"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "self-referential-id"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "id-mismatch",
+   "kw": 65,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "id-mismatch"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "id-mismatch"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "id-mismatch"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "timestamp-in-signed",
+   "kw": 66,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "schema-mismatch"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "schema-mismatch"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "schema-mismatch"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "release-root-in-claim",
+   "kw": 67,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "schema-mismatch"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "schema-mismatch"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "schema-mismatch"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "result-bundle-cycle",
+   "kw": 68,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "result-bundle-cycle"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "result-bundle-cycle"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "result-bundle-cycle"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "unsigned-checkpoint",
+   "kw": 69,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "unsigned-revocation-checkpoint"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "unsigned-revocation-checkpoint"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "unsigned-revocation-checkpoint"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "stale-checkpoint",
+   "kw": 70,
+   "expected_result": "UNKNOWN",
+   "expected_reasons": [
+    "stale-revocation-state"
+   ],
+   "a": {
+    "result": "UNKNOWN",
+    "reason": "stale-revocation-state"
+   },
+   "b": {
+    "result": "UNKNOWN",
+    "reason": "stale-revocation-state"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "omitted-revocation",
+   "kw": 71,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "omitted-revocation"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "omitted-revocation"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "omitted-revocation"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "wrong-scope",
+   "kw": 72,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "delegation-scope-violation"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "delegation-scope-violation"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "delegation-scope-violation"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "expired-delegation",
+   "kw": 73,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "delegation-expired"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "delegation-expired"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "delegation-expired"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "revoked-signer",
+   "kw": 74,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "retroactively-revoked"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "retroactively-revoked"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "retroactively-revoked"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "dependency-unverified",
+   "kw": 75,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "dependency-unverified"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "dependency-unverified"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "dependency-unverified"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "arbitrary-answer-one-citation",
+   "kw": 76,
+   "expected_result": "UNVERIFIED_FOR_ATTRIBUTED_RELIANCE",
+   "expected_reasons": [
+    "citation-unbound"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_ATTRIBUTED_RELIANCE",
+    "reason": "citation-unbound"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_ATTRIBUTED_RELIANCE",
+    "reason": "citation-unbound"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "citation-digest-altered",
+   "kw": 77,
+   "expected_result": "UNVERIFIED_FOR_ATTRIBUTED_RELIANCE",
+   "expected_reasons": [
+    "citation-unbound"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_ATTRIBUTED_RELIANCE",
+    "reason": "citation-unbound"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_ATTRIBUTED_RELIANCE",
+    "reason": "citation-unbound"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "citation-policy-untrusted",
+   "kw": 78,
+   "expected_result": "UNVERIFIED_FOR_ATTRIBUTED_RELIANCE",
+   "expected_reasons": [
+    "citation-policy-untrusted"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_ATTRIBUTED_RELIANCE",
+    "reason": "citation-policy-untrusted"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_ATTRIBUTED_RELIANCE",
+    "reason": "citation-policy-untrusted"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "provider-nonconformant",
+   "kw": 79,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "provider-nonconformant"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "provider-nonconformant"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "provider-nonconformant"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "provider-subject-mismatch",
+   "kw": 80,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "provider-subject-mismatch"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "provider-subject-mismatch"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "provider-subject-mismatch"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "missing-coverage",
+   "kw": 81,
+   "expected_result": "UNKNOWN",
+   "expected_reasons": [
+    "coverage-missing"
+   ],
+   "a": {
+    "result": "UNKNOWN",
+    "reason": "coverage-missing"
+   },
+   "b": {
+    "result": "UNKNOWN",
+    "reason": "coverage-missing"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "fabricated-compiler-independence",
+   "kw": 82,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "fabricated-compiler-independence"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "fabricated-compiler-independence"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "fabricated-compiler-independence"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "canonical-bool",
+   "kw": 83,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "malformed-envelope"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "malformed-envelope"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "malformed-envelope"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "misrepresented-treatment",
+   "kw": 84,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "misrepresented-treatment"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "misrepresented-treatment"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "misrepresented-treatment"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "qsr-no-quorum",
+   "kw": 85,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "unauthorized-qualification-issuer"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "unauthorized-qualification-issuer"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "unauthorized-qualification-issuer"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "qsr-issuer-not-disjoint",
+   "kw": 86,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "unauthorized-qualification-issuer"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "unauthorized-qualification-issuer"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "unauthorized-qualification-issuer"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "crypto-modified-payload",
+   "kw": 87,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "id-mismatch"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "id-mismatch"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "id-mismatch"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "crypto-modified-headers",
+   "kw": 88,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "sig-invalid"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "sig-invalid"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "sig-invalid"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "crypto-modified-signature",
+   "kw": 89,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "sig-invalid"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "sig-invalid"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "sig-invalid"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "crypto-wrong-pubkey",
+   "kw": 90,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "sig-invalid"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "sig-invalid"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "sig-invalid"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "crypto-noncanonical",
+   "kw": 91,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "malformed-envelope"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "malformed-envelope"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "malformed-envelope"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "crypto-bad-length",
+   "kw": 92,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "sig-invalid"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "sig-invalid"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "sig-invalid"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "crypto-malformed-key",
+   "kw": 93,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "key-binding-mismatch"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "key-binding-mismatch"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "key-binding-mismatch"
+   },
+   "agree": true,
+   "ok": true
+  },
+  {
+   "name": "crypto-replay-context",
+   "kw": 94,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "sig-invalid"
+   ],
+   "a": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "sig-invalid"
+   },
+   "b": {
+    "result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+    "reason": "sig-invalid"
+   },
+   "agree": true,
+   "ok": true
+  }
+ ],
+ "totals": {
+  "positive": 1,
+  "negatives_total": 31,
+  "negatives_passed": 31
+ },
+ "artifact_digests": {
+  "schemas.json": "e7cdc6adee17e57df244be85f9bbcfcb5264328e63d5c50d0a202603ee0cb7db",
+  "build_fixtures.py": "4346c66819aa84a221db2bb15b267d64a4cc673225923c1a0b97b99743c39f89",
+  "crypto_libsodium.py": "922168c158dfdb95c15feaad3a980fcc937bb8f64c890023dbe39ac9764e0613",
+  "verify_a.go": "5ad685e94384a6cf7a6ae60112b1e864956c94c38b8ae5d3d7322e750a0ccb4e",
+  "verify_b.mjs": "e6204ed9b878b9b5962dace4d438ec16410ce9542ac761448a36c4306d780e6f",
+  "mutate.py": "37874ed5461c8af317838103c57d1c5bae02bea25e9ac0bf2e6e6c60b35e84ca",
+  "dag_check.py": "199c1a8b75efa3ee9003febec9f5441b023578cf415bcca45315763438dc35c6",
+  "harness.py": "789b25efe0d5736f5fa6cd2d2e7f474554b373168e64abdb9ef717ecc944d0c8",
+  "fixtures/bundle.json": "18c16fb871f60e3c9994131b55bed5dc552fb444286509207437026e2fb19133"
+ },
+ "verdict": "EXECUTABLE PROTOCOL CLOSURE PASSED — NOT YET SPEC QUALIFIED"
+}

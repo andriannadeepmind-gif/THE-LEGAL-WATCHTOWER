@@ -55,6 +55,7 @@ statements· IssuedClaim / TrustBundle / VerificationReceipt· CertifiedResult).
 
 | βαθμίδα | Β | τι απαιτεί | ποιος υπογράφει το QSR (MLTP v3 §3.1) | v1.4 σήμερα |
 |---|---|---|---|---|
+| **`SEMANTICALLY CLOSED CANDIDATE` + targeted executable validation`** | πριν το S | εκτελέσιμη ακυκλική κατασκευή· `deployment/verify/mltp3/run.sh` exit 0 (θετικό + KW-64 έως KW-94)· **ΟΧΙ** qualification | — (executable reference) | **ΝΑΙ** (`PASSED`) |
 | **`SPEC QUALIFIED`** | S | (α) προδιαγραφή πλήρης και εσωτερικά συνεπής — `V1.4-CONTRADICTION-OMISSION-AUDIT.sh` exit 0 **και** `V1.3-CONSISTENCY-AUDIT.sh` exit 0 (regression floor)· (β) **κάθε** οικογένεια Q01–Q42 έχει falsifier + μετρήσιμο κριτήριο + αρνητικό μάρτυρα· (γ) το πρόγραμμα επικύρωσης §8 (πάσα 1–6) **εκτελεσμένο και επιβιωμένο** πάνω στο v1.4 με τους KW-1 έως KW-63 ως υποχρεωτική βάση· (δ) κανένα ACTIVE έγγραφο δεν ονομάζει falsified ή historical στόχο ως canonical | ≥1 independent-auditor | **ΟΧΙ** — το πρόγραμμα §8 δεν έχει εκτελεστεί |
 | **`IMPLEMENTATION QUALIFIED`** | I | υλοποίηση περνά **όλες** τις οικογένειες Q01–Q42 σε ιστορικά/επαναπαιγμένα δεδομένα, ντετερμινιστικά, με **ανεξάρτητη** (proposer-blind) επαλήθευση, μηδέν `BLOCKED`· και οι **15** κάθετες φέτες VS-01 έως VS-15 (`VERTICAL-SLICES.md`) έχουν evidence bundle με digest | ≥2 διακριτοί independent-auditors | **ΟΧΙ** — δεν υπάρχει υλοποίηση |
 | **`MISSION GREECE QUALIFIED`** | M | `MISSION GREECE-1` περασμένη ζωντανά (§4) | ≥2 διακριτοί independent-auditors | **ΟΧΙ** — δεν έχει εκκινήσει |
@@ -691,6 +692,25 @@ default rendering χωρίς τη διπλή παραπομπή ⇒ conformance 
 
 ---
 
+### Q43 — Executable protocol closure (ΕΚΤΕΛΕΣΜΕΝΗ, ΟΧΙ qualification) · Β: πριν το S
+
+**Ισχυρισμός:** ο κρίσιμος πυρήνας του MLTP v3 είναι **κατασκευάσιμος χωρίς κύκλους**
+και κάθε προδηλωμένη μετάλλαξη απορρίπτεται από **δύο ανεξάρτητους vetted verifiers**.
+**Έδρα:** `deployment/verify/mltp3/` (MLTP v3 §13). **Backends:** Verifier A = Go stdlib
+`crypto/ed25519` (pure-Go)· Verifier B = Node `node:crypto` (OpenSSL)· builder = libsodium.
+**Κριτήριο:** `bash deployment/verify/mltp3/run.sh` exit 0 — (α) RFC 8032 cross-check
+των τριών backends· (β) δύο builds byte-ταυτόσημα (determinism)· (γ) DAG/no-self-id
+(`dag_check.py`)· (δ) θετικός φάκελος `VERIFIED` και από τους δύο· (ε) **31 μεταλλάξεις
+(KW-64 έως KW-94)** απορρίπτονται από **αμφότερους** με το **ίδιο typed error class**.
+Το `fixtures/REPORT.json` φέρει tool versions + SHA-256 digests.
+**ΟΧΙ βαθμίδα:** η επιτυχία εδώ είναι `SEMANTICALLY CLOSED CANDIDATE` + *targeted
+executable protocol validation* (§2 στάδια 1 έως 2), **όχι** `SPEC QUALIFIED`. Το `TimeAttestation`
+είναι ρητά deterministic test double· καμία production ασφάλεια δεν διεκδικείται.
+**Αρνητικός μάρτυρας:** οποιαδήποτε μετάλλαξη γίνεται δεκτή από έστω έναν verifier,
+ή διαφωνία των δύο verifiers ⇒ `BLOCKED`.
+
+---
+
 ## 4. `MISSION GREECE-1` — ΟΡΙΖΕΤΑΙ, **ΔΕΝ ΕΚΚΙΝΕΙ**
 
 **ΔΕΝ ΕΧΕΙ ΕΚΚΙΝΗΣΕΙ. ΔΕΝ ΠΡΟΓΡΑΜΜΑΤΙΖΕΤΑΙ ΕΔΩ. ΑΠΑΙΤΕΙ ΡΗΤΗ ΕΝΤΟΛΗ ΤΟΥ
@@ -855,9 +875,52 @@ default rendering χωρίς τη διπλή παραπομπή ⇒ conformance 
 | **KW-62** | stripped citation | `CertifiedResult` με αφαιρεμένο ή αλλοιωμένο `citation` (ή `citation_digest` ≠ hash) που ο verifier επιστρέφει `VERIFIED` | `citation-unbound` (C) ⇒ `UNVERIFIED_FOR_ATTRIBUTED_RELIANCE` — ποτέ `VERIFIED`· η υπογραφή καλύπτει το citation | MLTP v3 §2.10, §8.3 C· v1.4 §4.16 I-4.16a/b | Q42, Q14, Q27 |
 | **KW-63** | ελλιπής διπλή παραπομπή / provider χωρίς συμμόρφωση | `attribution_text` με μία μόνο παραπομπή (μόνο Κράτος ή μόνο Watchtower, ή Watchtower ως εκδότης δικαίου)· ή provider που κυκλοφορεί stripped αποτελέσματα και διατηρεί `provider-adoption-qualified` μετά τη λήξη | κοκκίνισμα — `citation_policy_id` επιβάλλει και τις δύο· QSR μη-ανανέωση/ανάκληση (I-4.16c/d) | MLTP v3 §2.10· v1.4 §4.13, §4.16 | Q42, Q16 |
 
-**Ισολογισμός:** 63 witnesses (16 + 31 + 12 + 4)· κάθε KW με μετάλλαξη, typed
-αναμενόμενο, έδρα και Q· κανένας εκτελεσμένος. Default verdict του πάσου 4 όταν η
-επιβίωση δεν αποδεικνύεται: `FALSIFIED`.
+### 7.5 KW-64 έως KW-94 — ΕΚΤΕΛΕΣΜΕΝΟΙ στην εκτελέσιμη αναφορά (MLTP v3 §13)
+
+**ΔΙΑΚΡΙΣΗ: αυτοί οι 31 witnesses ΕΧΟΥΝ ΕΚΤΕΛΕΣΤΕΙ** πάνω στην εκτελέσιμη αναφορά
+`deployment/verify/mltp3/` (όχι στα 15 επίπεδα — μόνο στον πυρήνα του πρωτοκόλλου).
+Κάθε μετάλλαξη απορρίπτεται από **αμφότερους** τους ανεξάρτητους verifiers (Go, Node)
+με το ίδιο typed error class. Καλύπτουν τις διορθώσεις #1–#16 + τα 8 αρνητικά
+κρυπτογραφικά διανύσματα (#7). Απόδειξη: `fixtures/REPORT.json` (`negatives_passed: 31/31`).
+
+| KW | μετάλλαξη | τι σπάει | αναμενόμενο typed αποτέλεσμα | κατάσταση |
+|---|---|---|---|---|
+| **KW-64** | selfid-claim | correction #1: id in own preimage | self-referential-id (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-65** | id-mismatch | tampered payload caught at id layer | id-mismatch (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-66** | timestamp-in-signed | correction #2: signed_at re-injected | schema-mismatch (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-67** | release-root-in-claim | correction #3: release_root re-injected | schema-mismatch (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-68** | result-bundle-cycle | correction #4: bundle_id inside result | result-bundle-cycle (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-69** | unsigned-checkpoint | correction #5: <2 witnesses | unsigned-revocation-checkpoint (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-70** | stale-checkpoint | correction #5: checkpoint too old | stale-revocation-state (UNKNOWN) | εκτελεσμένο (REPORT.json) |
+| **KW-71** | omitted-revocation | correction #5: newer revocation hidden | omitted-revocation (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-72** | wrong-scope | correction #6: scope not covering claim_type | delegation-scope-violation (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-73** | expired-delegation | correction #6/#10: t_sig after window | delegation-expired (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-74** | revoked-signer | correction #6: signature by revoked key | retroactively-revoked (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-75** | dependency-unverified | correction #7: unresolvable dependency | dependency-unverified (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-76** | arbitrary-answer-one-citation | correction #7/#8: valid citation, answer not dependent | citation-unbound (UATTRIBUTED_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-77** | citation-digest-altered | correction #8: stripped/altered citation | citation-unbound (UATTRIBUTED_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-78** | citation-policy-untrusted | correction #8: untrusted citation policy | citation-policy-untrusted (UATTRIBUTED_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-79** | provider-nonconformant | correction #9: expired conformance | provider-nonconformant (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-80** | provider-subject-mismatch | correction #9: provider not in registry | provider-subject-mismatch (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-81** | missing-coverage | correction #11: no coverage evidence | coverage-missing (UNKNOWN) | εκτελεσμένο (REPORT.json) |
+| **KW-82** | fabricated-compiler-independence | correction #12: same family/source | fabricated-compiler-independence (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-83** | canonical-bool | correction #14: boolean in hash-bearing record | malformed-envelope (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-84** | misrepresented-treatment | correction #15: 'overruled' without adoption | misrepresented-treatment (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-85** | qsr-no-quorum | correction #16: <2 auditors | unauthorized-qualification-issuer (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-86** | qsr-issuer-not-disjoint | correction #16: issuer signs own QSR | unauthorized-qualification-issuer (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-87** | crypto-modified-payload | crypto neg: modified payload (caught at id layer) | id-mismatch (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-88** | crypto-modified-headers | crypto neg: modified protected header | sig-invalid (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-89** | crypto-modified-signature | crypto neg: modified signature | sig-invalid (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-90** | crypto-wrong-pubkey | crypto neg: wrong public key | sig-invalid (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-91** | crypto-noncanonical | crypto neg: non-canonical payload | malformed-envelope (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-92** | crypto-bad-length | crypto neg: invalid signature length | sig-invalid (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-93** | crypto-malformed-key | crypto neg: malformed key | key-binding-mismatch (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+| **KW-94** | crypto-replay-context | crypto neg: replay under different domain separator | sig-invalid (UMACHINE_RELIANCE) | εκτελεσμένο (REPORT.json) |
+
+**Ισολογισμός:** 94 witnesses — KW-1 έως KW-63 **προδηλωμένοι/μη εκτελεσμένοι** (16 + 31
++ 12 + 4)· **KW-64 έως KW-94 ΕΚΤΕΛΕΣΜΕΝΟΙ** στην εκτελέσιμη αναφορά (§7.5). Κάθε KW με
+μετάλλαξη, typed αναμενόμενο, έδρα. Default verdict του πάσου 4 όταν η επιβίωση δεν
+αποδεικνύεται: `FALSIFIED`.
 
 ---
 

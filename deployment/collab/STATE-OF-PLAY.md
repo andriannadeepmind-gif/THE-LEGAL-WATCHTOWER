@@ -4,7 +4,7 @@
 ετυμηγορίες, εκκρεμότητες, μπλοκαρίσματα. Ο διάλογος: `AI-DIALOGUE.md`.
 Πηγή αλήθειας παραμένουν τα gates/μητρώα — αυτό είναι ΣΥΝΟΨΗ, όχι απόδειξη.
 
-*Τελευταία ενημέρωση: Claude · 2026-09-01 (στ) — **[0136] STAGE A ΑΝΑΠΑΡΑΓΩΓΙΜΗ ΚΡΙΣΗ + STAGE B v1.4 CPEI PUBLIC OBSERVATORY PROFILE — ΑΚΑΤΑΘΕΤΟ, ΣΤΑΣΗ ΓΙΑ ΕΠΙΘΕΩΡΗΣΗ]**: Stage A: 46 ευρήματα A1–A4 → 31 ρίζες CONFIRMED / 15 DUPLICATE_OF / 0 REFUTED / 0 UNREPRODUCIBLE, ξανατρεγμένα σε απομονωμένο HEAD με SHA-256, καμία επισκευή. Stage B: ένας ενοποιημένος δημόσιος υποψήφιος v1.4 (CPEI ανακλήθηκε από «ιδιωτικό» — κοινή αρχιτεκτονική, 3 profiles, 12/12 στρώσεις)· MLTP v3· διευκρίνιση χρονολογίων + Citation-Bound Verification Profile ενσωματωμένη· dispositions 133/133 + 48/48· 153 capabilities· 124 απαιτήσεις × 10 κρίκοι· Q01–Q42· KW-1 έως KW-63· D-01 έως D-13· VS-01 έως VS-15· βήματα 0–14· μητρώο. Audits: v1.4 **86/86 exit 0**, v1.3 floor **64/64 exit 0**. 8 `UNKNOWN` με owner/προθεσμία. **Κανένα commit, push, destruction programme, freeze, qualification — αναμένεται εντολή δημιουργού.***
+*Τελευταία ενημέρωση: Claude · 2026-09-01 (ζ) — **[0137] V1.4 EXECUTABLE PROTOCOL CLOSURE — ΑΚΥΚΛΙΚΟΣ ΠΥΡΗΝΑΣ MLTP v3, ΔΥΟ VETTED VERIFIERS]**: εκτελέσιμη αναφορά `deployment/verify/mltp3/` — ακυκλική κατασκευή (κανένα `*_id` στο preimage του, detached time/inclusion), δύο ανεξάρτητοι verifiers σε διαφορετικά vetted backends (Go pure-Go `crypto/ed25519` + Node/OpenSSL· builder libsodium· καμία homemade Ed25519· `cryptography` σπασμένο καταγεγραμμένο), RFC 8032 cross-check. `run.sh` exit 0: determinism + DAG/no-self-id + θετικό VERIFIED (2/2) + 31 μεταλλάξεις (KW-64–94) απορρίπτονται από αμφότερους με ίδιο typed error (διορθώσεις #1–#16 + 8 crypto vectors). Doc sync: MLTP §13 + §11 COSE· v1.4 κλίμακα διορθωμένη (#17 deadlock λυμένο) + #18 + D-13· Q43 + §7.5 (94 KW)· R-125–128. Audits v1.4 93/93, v1.3 64/64 exit 0. **PASSED — NOT YET SPEC QUALIFIED.** Κανένα freeze/qualification/υλοποίηση.*
 
 ## Κατάσταση συστήματος (τελευταία μετρημένη)
 
@@ -817,3 +817,25 @@ Citation-Bound Verification Profile). Design only, working tree, **κανένα 
 - **Ανοιχτά:** U-1 έως U-8 με owner/προθεσμία (v1.4 §12).
 - **ΔΕΝ ΕΓΙΝΕ:** commit · push · destruction/validation programme · επισκευή κώδικα ·
   refactor · freeze · qualification · υλοποίηση. **Πύλη: ρητή επόμενη εντολή δημιουργού.**
+
+## [0137] V1.4 EXECUTABLE PROTOCOL CLOSURE — πάνω στο `39e8ffb9`
+
+Εντολή «V1.4 EXECUTABLE PROTOCOL CLOSURE» + «CRYPTOGRAPHIC CORRECTION». Ο κρίσιμος
+πυρήνας MLTP v3 έγινε **εκτελέσιμος και επαληθεύσιμος** (`deployment/verify/mltp3/`).
+
+- **Δύο vetted verifiers, διαφορετικά backends:** A = Go pure-Go `crypto/ed25519`
+  (ΟΧΙ OpenSSL)· B = Node/OpenSSL 3.5.5. Builder = libsodium 23.3.0. Καμία homemade
+  Ed25519 (το πειραματικό αφαιρέθηκε)· `cryptography` σπασμένο (`_cffi_backend`,
+  καταγεγραμμένο). RFC 8032 TEST 2 cross-check.
+- **`run.sh` exit 0:** RFC cross-check· determinism (byte-ταυτόσημα builds)·
+  DAG/no-self-id· θετικό VERIFIED (2/2)· **31 μεταλλάξεις KW-64–94 απορρίπτονται από
+  αμφότερους με ίδιο typed error** (ακυκλικοί κύκλοι, verify_attestation, citation
+  binding, provider/compiler/QSR/revocation, 8 αρνητικά crypto vectors). `REPORT.json`.
+- **Doc sync:** MLTP §13 (αυθεντικό επί σύγκρουσης) + §11 COSE (#13)· v1.4 §10
+  διορθωμένη κλίμακα (λύνει το #17 freeze/slice deadlock) + §1.4 (#18) + D-13 (#19)·
+  Q43 + §7.5 KW-64–94 (94)· R-125–128· crosswalk seat.
+- **Audits:** v1.4 93/93, v1.3 64/64, exit 0.
+- **ΔΕΝ ΕΓΙΝΕ:** freeze · qualification · merge · destruction pass · υλοποίηση 15
+  επιπέδων · refactoring. `TimeAttestation` = deterministic test double· COSE/SCITT
+  projection = MISSING· custodians/auditors = U-2 (δεν εφευρέθηκαν).
+  **PASSED — NOT YET SPEC QUALIFIED.**

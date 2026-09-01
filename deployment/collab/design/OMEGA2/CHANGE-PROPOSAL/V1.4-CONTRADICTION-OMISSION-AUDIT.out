@@ -1,4 +1,4 @@
-### V1.4 CONTRADICTION/OMISSION AUDIT — 9dabc2bb — 2026-09-01T21:36:27Z
+### V1.4 CONTRADICTION/OMISSION AUDIT — 39e8ffb9 — 2026-09-01T22:45:53Z
 # P1 καμία ταξινόμηση «CPEI = ιδιωτικό» σε ACTIVE έγγραφο (μόνο ως ανακληθέν παράθεμα)
 P1a   | actual=1      | want ge 1      | PASS
 P1b   | actual=1      | want ge 1      | PASS
@@ -24,15 +24,15 @@ P4d   | actual=1      | want ge 1      | PASS
 P4e   | actual=1      | want ge 1      | PASS
 P4f   | actual=2      | want eq 2      | PASS
 # P5 καμία απαίτηση χωρίς έδρα/τεστ/τεκμήριο· κάθε αναφερόμενο id ορισμένο
-P5a   | actual=124    | want eq 124    | PASS
-P5b   | actual=124    | want eq 124    | PASS
-P5c   | actual=124    | want eq 124    | PASS
+P5a   | actual=128    | want eq 128    | PASS
+P5b   | actual=128    | want eq 128    | PASS
+P5c   | actual=128    | want eq 128    | PASS
 P5d   | actual=0      | want eq 0      | PASS
 P5e   | actual=5      | want eq 5      | PASS
-P5f   | actual=63     | want eq 63     | PASS
+P5f   | actual=94     | want eq 94     | PASS
 P5g   | actual=0      | want eq 0      | PASS
-P5h   | actual=63     | want eq 63     | PASS
-P5i   | actual=42     | want eq 42     | PASS
+P5h   | actual=94     | want eq 94     | PASS
+P5i   | actual=43     | want eq 43     | PASS
 P5j   | actual=0      | want eq 0      | PASS
 P5k   | actual=15     | want eq 15     | PASS
 P5l   | actual=0      | want eq 0      | PASS
@@ -80,8 +80,8 @@ C15   | actual=6      | want eq 6      | PASS
 C16a  | actual=9      | want ge 3      | PASS
 C16b  | actual=14     | want ge 3      | PASS
 C16c  | actual=3      | want ge 2      | PASS
-C18a  | actual=42     | want eq 42     | PASS
-C18b  | actual=63     | want eq 63     | PASS
+C18a  | actual=43     | want eq 43     | PASS
+C18b  | actual=94     | want eq 94     | PASS
 C18c  | actual=15     | want eq 15     | PASS
 C18d  | actual=13     | want eq 13     | PASS
 C18e  | actual=15     | want eq 15     | PASS
@@ -90,8 +90,16 @@ C20   | actual=1      | want ge 1      | PASS
 C21   | actual=1      | want ge 1      | PASS
 C22   | actual=1      | want ge 1      | PASS
 C23   | actual=11     | want ge 10     | PASS
+# E executable protocol closure (MLTP v3 §13)
+E1    | actual=1      | want eq 1      | PASS
+E2    | actual=1      | want eq 1      | PASS
+E3    | actual=1      | want ge 1      | PASS
+E4    | actual=1      | want ge 1      | PASS
+E5    | actual=2      | want ge 1      | PASS
+E6    | actual=1      | want eq 1      | PASS
+E7    | actual=31     | want eq 31     | PASS
 # F regression floor: V1.3-CONSISTENCY-AUDIT.sh
 F1    | actual=0      | want eq 0      | PASS
 F2    | actual=0      | want eq 0      | PASS
-### SUMMARY: checks=86 pass=86 fail=0
+### SUMMARY: checks=93 pass=93 fail=0
 ### EXIT 0 — ALL PASS

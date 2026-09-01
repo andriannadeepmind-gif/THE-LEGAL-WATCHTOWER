@@ -1,4 +1,4 @@
-### V1.3 CONSISTENCY AUDIT — 9dabc2bb — 2026-09-01T21:36:28Z
+### V1.3 CONSISTENCY AUDIT — 39e8ffb9 — 2026-09-01T22:45:54Z
 # C1 issuer self-verdict
 C1a    | actual=1    | want ge1    | PASS
 C1b    | actual=1    | want ge1    | PASS
@@ -12,7 +12,7 @@ C2d    | actual=0    | want eq0    | PASS
 C3a    | actual=20   | want ge1    | PASS
 C3b    | actual=1    | want ge1    | PASS
 # C4 one authority root
-C4a    | actual=30   | want ge1    | PASS
+C4a    | actual=35   | want ge1    | PASS
 C4b    | actual=1    | want ge1    | PASS
 # C5 assurance separated
 C5a    | actual=4    | want ge1    | PASS

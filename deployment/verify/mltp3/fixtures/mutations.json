@@ -1,0 +1,285 @@
+{
+ "schema": "mltp3-mutations/1",
+ "count": 31,
+ "mutations": [
+  {
+   "name": "selfid-claim",
+   "kw": 64,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "self-referential-id"
+   ],
+   "desc": "correction #1: id in own preimage"
+  },
+  {
+   "name": "id-mismatch",
+   "kw": 65,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "id-mismatch"
+   ],
+   "desc": "tampered payload caught at id layer"
+  },
+  {
+   "name": "timestamp-in-signed",
+   "kw": 66,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "schema-mismatch"
+   ],
+   "desc": "correction #2: signed_at re-injected"
+  },
+  {
+   "name": "release-root-in-claim",
+   "kw": 67,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "schema-mismatch"
+   ],
+   "desc": "correction #3: release_root re-injected"
+  },
+  {
+   "name": "result-bundle-cycle",
+   "kw": 68,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "result-bundle-cycle"
+   ],
+   "desc": "correction #4: bundle_id inside result"
+  },
+  {
+   "name": "unsigned-checkpoint",
+   "kw": 69,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "unsigned-revocation-checkpoint"
+   ],
+   "desc": "correction #5: <2 witnesses"
+  },
+  {
+   "name": "stale-checkpoint",
+   "kw": 70,
+   "expected_result": "UNKNOWN",
+   "expected_reasons": [
+    "stale-revocation-state"
+   ],
+   "desc": "correction #5: checkpoint too old"
+  },
+  {
+   "name": "omitted-revocation",
+   "kw": 71,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "omitted-revocation"
+   ],
+   "desc": "correction #5: newer revocation hidden"
+  },
+  {
+   "name": "wrong-scope",
+   "kw": 72,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "delegation-scope-violation"
+   ],
+   "desc": "correction #6: scope not covering claim_type"
+  },
+  {
+   "name": "expired-delegation",
+   "kw": 73,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "delegation-expired"
+   ],
+   "desc": "correction #6/#10: t_sig after window"
+  },
+  {
+   "name": "revoked-signer",
+   "kw": 74,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "retroactively-revoked"
+   ],
+   "desc": "correction #6: signature by revoked key"
+  },
+  {
+   "name": "dependency-unverified",
+   "kw": 75,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "dependency-unverified"
+   ],
+   "desc": "correction #7: unresolvable dependency"
+  },
+  {
+   "name": "arbitrary-answer-one-citation",
+   "kw": 76,
+   "expected_result": "UNVERIFIED_FOR_ATTRIBUTED_RELIANCE",
+   "expected_reasons": [
+    "citation-unbound"
+   ],
+   "desc": "correction #7/#8: valid citation, answer not dependent"
+  },
+  {
+   "name": "citation-digest-altered",
+   "kw": 77,
+   "expected_result": "UNVERIFIED_FOR_ATTRIBUTED_RELIANCE",
+   "expected_reasons": [
+    "citation-unbound"
+   ],
+   "desc": "correction #8: stripped/altered citation"
+  },
+  {
+   "name": "citation-policy-untrusted",
+   "kw": 78,
+   "expected_result": "UNVERIFIED_FOR_ATTRIBUTED_RELIANCE",
+   "expected_reasons": [
+    "citation-policy-untrusted"
+   ],
+   "desc": "correction #8: untrusted citation policy"
+  },
+  {
+   "name": "provider-nonconformant",
+   "kw": 79,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "provider-nonconformant"
+   ],
+   "desc": "correction #9: expired conformance"
+  },
+  {
+   "name": "provider-subject-mismatch",
+   "kw": 80,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "provider-subject-mismatch"
+   ],
+   "desc": "correction #9: provider not in registry"
+  },
+  {
+   "name": "missing-coverage",
+   "kw": 81,
+   "expected_result": "UNKNOWN",
+   "expected_reasons": [
+    "coverage-missing"
+   ],
+   "desc": "correction #11: no coverage evidence"
+  },
+  {
+   "name": "fabricated-compiler-independence",
+   "kw": 82,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "fabricated-compiler-independence"
+   ],
+   "desc": "correction #12: same family/source"
+  },
+  {
+   "name": "canonical-bool",
+   "kw": 83,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "malformed-envelope"
+   ],
+   "desc": "correction #14: boolean in hash-bearing record"
+  },
+  {
+   "name": "misrepresented-treatment",
+   "kw": 84,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "misrepresented-treatment"
+   ],
+   "desc": "correction #15: 'overruled' without adoption"
+  },
+  {
+   "name": "qsr-no-quorum",
+   "kw": 85,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "unauthorized-qualification-issuer"
+   ],
+   "desc": "correction #16: <2 auditors"
+  },
+  {
+   "name": "qsr-issuer-not-disjoint",
+   "kw": 86,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "unauthorized-qualification-issuer"
+   ],
+   "desc": "correction #16: issuer signs own QSR"
+  },
+  {
+   "name": "crypto-modified-payload",
+   "kw": 87,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "id-mismatch"
+   ],
+   "desc": "crypto neg: modified payload (caught at id layer)"
+  },
+  {
+   "name": "crypto-modified-headers",
+   "kw": 88,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "sig-invalid"
+   ],
+   "desc": "crypto neg: modified protected header"
+  },
+  {
+   "name": "crypto-modified-signature",
+   "kw": 89,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "sig-invalid"
+   ],
+   "desc": "crypto neg: modified signature"
+  },
+  {
+   "name": "crypto-wrong-pubkey",
+   "kw": 90,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "sig-invalid"
+   ],
+   "desc": "crypto neg: wrong public key"
+  },
+  {
+   "name": "crypto-noncanonical",
+   "kw": 91,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "malformed-envelope"
+   ],
+   "desc": "crypto neg: non-canonical payload"
+  },
+  {
+   "name": "crypto-bad-length",
+   "kw": 92,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "sig-invalid"
+   ],
+   "desc": "crypto neg: invalid signature length"
+  },
+  {
+   "name": "crypto-malformed-key",
+   "kw": 93,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "key-binding-mismatch"
+   ],
+   "desc": "crypto neg: malformed key"
+  },
+  {
+   "name": "crypto-replay-context",
+   "kw": 94,
+   "expected_result": "UNVERIFIED_FOR_MACHINE_RELIANCE",
+   "expected_reasons": [
+    "sig-invalid"
+   ],
+   "desc": "crypto neg: replay under different domain separator"
+  }
+ ]
+}

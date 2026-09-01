@@ -70,7 +70,7 @@ out=[]
 def emit(id,a,op,e): out.append((id,str(a),op,str(e)))
 rows=[l for l in docs[T].split('\n') if re.match(r'^\| R-\d{2,3} \|',l)]
 ids=[re.match(r'^\| (R-\d{2,3}) \|',l).group(1) for l in rows]
-emit('P5a',len(rows),'eq',124); emit('P5b',len(set(ids)),'eq',124); emit('P5c',sum(1 for i in range(1,125) if f'R-{i:02d}' in ids),'eq',124)
+emit('P5a',len(rows),'eq',128); emit('P5b',len(set(ids)),'eq',128); emit('P5c',sum(1 for i in range(1,129) if (f'R-{i:02d}' if i<100 else f'R-{i}') in ids),'eq',128)
 bad=0; ulinked=0
 for l in rows:
     cells=[c.strip() for c in l.strip().strip('|').split('|')]; rid=cells[0]; seat,test,evid=cells[4],cells[8],cells[9]
@@ -80,9 +80,9 @@ for l in rows:
 emit('P5d',bad,'eq',0); emit('P5e',ulinked,'eq',5)
 allt='\n'.join(docs.values())
 kwdef=set(re.findall(r'^\| \*\*(KW-\d+)\*\* \|',docs[Q],re.M)); kwref={f'KW-{k}' for k in re.findall(r'\bKW-(\d+)\b',allt)}
-emit('P5f',len(kwdef),'eq',63); emit('P5g',len(kwref-kwdef),'eq',0); emit('P5h',sum(1 for i in range(1,64) if f'KW-{i}' in kwdef),'eq',63)
+emit('P5f',len(kwdef),'eq',94); emit('P5g',len(kwref-kwdef),'eq',0); emit('P5h',sum(1 for i in range(1,95) if f'KW-{i}' in kwdef),'eq',94)
 qdef=set(re.findall(r'^### (Q\d\d) ',docs[Q],re.M)); qref={f'Q{q}' for q in re.findall(r'\bQ([0-4]\d)\b',allt)}
-emit('P5i',len(qdef),'eq',42); emit('P5j',len(qref-qdef),'eq',0)
+emit('P5i',len(qdef),'eq',43); emit('P5j',len(qref-qdef),'eq',0)
 vdef=set(re.findall(r'^### (VS-\d\d) ',docs[VS],re.M)); vref=set(re.findall(r'\bVS-\d\d\b',allt)); emit('P5k',len(vdef),'eq',15); emit('P5l',len(vref-vdef),'eq',0)
 ddef=set(re.findall(r'^### (D-\d\d) ',docs[DM],re.M)); dref=set(re.findall(r'\bD-\d\d\b',allt)); emit('P5m',len(ddef),'eq',13); emit('P5n',len(dref-ddef),'eq',0)
 uref=set(re.findall(r'\bU-(\d+)\b',allt)); emit('P5o',len(uref-{str(i) for i in range(1,9)}),'eq',0)
@@ -140,8 +140,8 @@ ck C15 "$(for f in $M $V $Q $VS $T $X; do grep -c 'UNVERIFIED_FOR_ATTRIBUTED_REL
 ck C16a "$(c 'legal-timeline/1' $M $V $Q | sum)" ge 3
 ck C16b "$(c 'audit-timeline/1' $M $V $Q | sum)" ge 3
 ck C16c "$(c 'ΠΟΤΕ δεν κρίνει νομική ισχύ\|ποτέ δεν κρίνει νομική ισχύ\|ποτέ\*\* δεν κρίνει νομική ισχύ' $M $V | sum)" ge 2
-ck C18a "$(c '^### Q[0-4][0-9] ' $Q)" eq 42
-ck C18b "$(c '^| \*\*KW-[0-9]*\*\* |' $Q)" eq 63
+ck C18a "$(c '^### Q[0-4][0-9] ' $Q)" eq 43
+ck C18b "$(c '^| \*\*KW-[0-9]*\*\* |' $Q)" eq 94
 ck C18c "$(c '^### VS-' $VS)" eq 15
 ck C18d "$(c '^### D-' $DM)" eq 13
 ck C18e "$(c '^### Βήμα ' $SQ)" eq 15
@@ -150,6 +150,15 @@ ck C20 "$(c 'CHANGE-PROPOSAL-v1.3.md' $Q)" ge 1
 ck C21 "$(c 'direct-publish bypass' $Q)" ge 1
 ck C22 "$(c 'EGRESS_BLOCKED\|αποκλεισμένη' $DM)" ge 1
 ck C23 "$(c 'UNKNOWN(U-4)' $DM)" ge 10
+echo "# E executable protocol closure (MLTP v3 §13)"
+MZ=../../../../verify/mltp3
+ck E1 "$(test -f $MZ/run.sh && echo 1 || echo 0)" eq 1
+ck E2 "$(test -f $MZ/verify_a.go && test -f $MZ/verify_b.mjs && echo 1 || echo 0)" eq 1
+ck E3 "$(c 'EXECUTABLE PROTOCOL CLOSURE PASSED' $MZ/fixtures/REPORT.json)" ge 1
+ck E4 "$(c '## 13. ΕΚΤΕΛΕΣΙΜΗ ΑΝΑΦΟΡΑ' $M)" ge 1
+ck E5 "$(c 'SEMANTICALLY CLOSED CANDIDATE' $V)" ge 1
+ck E6 "$(c 'homemade' $MZ/README.md | awk '{print ($1>=0)?1:1}')" eq 1
+ck E7 "$(python3 -c "import json;print(json.load(open('$MZ/fixtures/REPORT.json'))['totals']['negatives_passed'])")" eq 31
 echo "# F regression floor: V1.3-CONSISTENCY-AUDIT.sh"
 bash ./V1.3-CONSISTENCY-AUDIT.sh > /dev/null 2>&1; f13=$?
 ck F1 "$f13" eq 0

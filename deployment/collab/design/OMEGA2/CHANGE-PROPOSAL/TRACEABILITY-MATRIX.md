@@ -220,8 +220,12 @@ I = IMPLEMENTATION, M = MISSION GREECE, O = SECURITY/OPERATIONS, P = PROVIDER-AD
 | R-122 | MIS-5, MIS-1 | CAP-151 | typed `citation/1` (6 πεδία) μέσα στα υπογεγραμμένα bytes κάθε CertifiedResult· stripped/altered ⇒ `UNVERIFIED_FOR_ATTRIBUTED_RELIANCE` | MLTP v3 §2.10, §8.3 C | CertifiedResult | I-4.16a, I-4.16b | KW-62 | Q42 / VS-11 | receipts + vectors | S→I |
 | R-123 | MIS-8 | CAP-151 | διπλή παραπομπή: de jure εκδότης + Watchtower ως πηγή επαληθευμένης αναπαράστασης | `citation_policy_id` registry | `attribution_text` | I-4.16c | KW-63 | Q42 | policy + rendering | S→I |
 | R-124 | MIS-5 | CAP-152, CAP-153 | canonical URLs, JSON-LD, CitationToken, υποχρεωτικά πεδία OpenAPI/MCP/SDK, default SDK rendering, conformance vectors, provider monitoring, observatory, downgrade/API-access | v1.4 §4.16 έδρες | SDK/API schemas | I-4.16d | KW-63, Q27 witness | Q42, Q16, Q27 | vectors + monitoring reports | I→P |
+| R-125 | MIS-1, MIS-5 | CAP-76, CAP-77 | ακυκλική κατασκευή: κανένα `*_id` στο δικό του preimage· detached time/inclusion | `deployment/verify/mltp3/` (dag_check, build_fixtures) | construction DAG (schemas.json) | MLTP v3 §13.1 | KW-64, KW-66, KW-67, KW-68 | Q43 / dag_check | REPORT.json (dag_acyclic) | εκτελεσμένο (πυρήνας) |
+| R-126 | MIS-5 | CAP-78, CAP-79 | δύο ανεξάρτητοι vetted verifiers (Go pure-Go + Node/OpenSSL), ίδιο typed αποτέλεσμα | `verify_a.go` + `verify_b.mjs` | verify_attestation contract | MLTP v3 §13.2 | KW-72, KW-73, KW-74, KW-88 έως KW-94 | Q43 / harness | REPORT.json (backends, negatives 31/31) | εκτελεσμένο (πυρήνας) |
+| R-127 | MIS-5, MIS-8 | CAP-151 | εκτελεσμένο citation binding μέσα στην υπογραφή + πλήρης απάντηση | MLTP v3 §13.3 | `CertifiedResult`/`citation/1` | I-4.16a, I-4.16b | KW-75, KW-76, KW-77, KW-78 | Q42, Q43 | REPORT.json (certified VERIFIED) | εκτελεσμένο (πυρήνας) |
+| R-128 | MIS-9 | CAP-48, CAP-50 | εκτελεσμένα: compiler independence binding, provider conformance, QSR separation-of-duty, revocation checkpoint | MLTP v3 §13.4/§13.1 | typed records | R4· MLTP v3 §13 | KW-69 έως KW-71, KW-79, KW-82, KW-85, KW-86 | Q43 | REPORT.json | εκτελεσμένο (πυρήνας) |
 
-**Ισολογισμός:** 124 απαιτήσεις· 124 γραμμές· γραμμές με κρίκο σε `U-n`: R-08 (U-7),
+**Ισολογισμός:** 128 απαιτήσεις· 128 γραμμές (R-125 έως R-128 = εκτελέσιμη αναφορά MLTP v3 §13, ΕΚΤΕΛΕΣΜΕΝΑ στον πυρήνα)· γραμμές με κρίκο σε `U-n`: R-08 (U-7),
 R-11 (U-3), R-16 (U-6), R-33 (U-5), R-98 (U-1) — **5 μη πλήρεις** (δηλωμένες στο
 crosswalk §B.11, όχι σιωπηλές)· R-118 δεν έχει witness επειδή είναι το ίδιο το
 πρόγραμμα (δεν εκτελείται — δηλωμένο). Ο audit μετρά τις γραμμές και τα `U-` ίχνη.

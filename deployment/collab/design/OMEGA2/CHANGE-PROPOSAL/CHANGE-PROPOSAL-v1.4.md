@@ -132,9 +132,12 @@ telemetry`. Ένας μελλοντικός Private Matter Profile μπορεί 
 A απέδειξε ότι υπήρχαν ελεύθερα πεδία (`description`) και ότι το cockpit intent
 εδραζόταν σε envelope με untyped matter-solving πεδία. Η ακριβής αξίωση του v1.4:
 
-1. **Κανένα υπογεγραμμένο δημόσιο αντικείμενο δεν έχει ελεύθερο κείμενο.** Το
-   `description` αφαιρέθηκε (MLTP v3 §1.0). Θεσμικό κείμενο (ratio/holding) είναι
-   typed, passage-anchored, reviewer-adopted (MLTP v3 §2.6).
+1. **Κανένα ελεύθερο κείμενο δεν ελέγχει trust/verification (διόρθωση #18).**
+   Επιτρεπτό είναι **opaque, anchored νομικό κείμενο** (το ίδιο το κείμενο του νόμου
+   ή της απόφασης, passage-anchored)· απαγορεύεται το ελεύθερο κείμενο να καθορίζει
+   trust decisions, branching ή verification semantics. Το control-πεδίο
+   `description` αφαιρέθηκε (MLTP v3 §1.0)· θεσμικό ratio/holding είναι typed,
+   passage-anchored, reviewer-adopted (MLTP v3 §2.6).
 2. **Public InstitutionalAct profile** (έδρα: CPEI §2 `%ask-envelope` — μία έδρα,
    ΚΛΕΙΣΤΟ δημόσιο υποσύνολο πεδίων): `act_id`, `turn_id`, `jurisdiction`, `mode`
    (ΜΟΝΟ `legal-trusted | general | self-meta`), `authority` (capability/contract
@@ -453,7 +456,11 @@ graph, line-of-authority).
 compiler δεν πιστοποιεί τον εαυτό του — καθένας υπογράφει το δικό του
 `compiler-attestation` με δικό του delegated κλειδί (scope `compiler-attestation`)·
 ο verifier απαιτεί ισότητα (MLTP v3 §8.3 R4)· **η συμφωνία N-version ΠΟΤΕ δεν
-γίνεται admission predicate** (KT10: συμφωνία = ένδειξη, διαφωνία = `CONFLICTING`).
+γίνεται admission predicate** (KT10: συμφωνία = ένδειξη, διαφωνία = `CONFLICTING`). Η
+ανεξαρτησία **δεσμεύεται**: κάθε `compiler-attestation` δηλώνει κοινό `input_journal_root`
+και `output_root`, με **διακριτά** `compiler_family_id`, `source_digest`, toolchain
+manifest και `kid`· ίδιο family/source/kid ⇒ `fabricated-compiler-independence` (διόρθωση
+#12, εκτελεσμένο MLTP v3 §13.4). Διαφορετικό όνομα runtime από μόνο του δεν αποδεικνύει ανεξαρτησία.
 
 **Έδρες:** Lisp compiler = `consolidation-engine.lisp` + `version-graph.lisp` +
 `legal-inference-engine.lisp` (REUSE)· proposer-blind M5 = `release-authority.lisp`
@@ -570,7 +577,9 @@ HAS_SEAT με αυτό το επίπεδο)· **ECLI υλοποίηση = `MISSI
 
 ### 4.10 MLTP v2 → v3 και Distributed Trust Mesh — R-57 έως R-70
 
-Έδρα: `MACHINE-LEGAL-TRUST-PROTOCOL.md` v3 — τα τρία επίπεδα `IssuedClaim` /
+Έδρα: `MACHINE-LEGAL-TRUST-PROTOCOL.md` v3 (+ **εκτελέσιμη αναφορά** `deployment/verify/mltp3/`,
+MLTP v3 §13: `EXECUTABLE PROTOCOL CLOSURE PASSED`, ακυκλική κατασκευή, δύο vetted
+verifiers) — τα τρία επίπεδα `IssuedClaim` /
 `TrustBundle` / `VerificationReceipt` **διατηρούνται**· προστίθεται Layer 0
 (root-signed statements). Ιδιότητες (όλες με witness):
 
@@ -727,7 +736,10 @@ feed = `MISSING`**.
 ### 4.15 AI-Provider Integration (M6) — R-101 έως R-110
 
 Παρέχει: ελάχιστο ανοιχτό offline verifier (MLTP v3 §8 — SHA-256 για inclusion,
-Ed25519/RS256 για υπογραφές, RFC-3161 για χρόνο· LOC-ceiling)· εκδοχοποιημένο
+Ed25519/RS256 για υπογραφές, RFC-3161 για χρόνο· LOC-ceiling)· **εκτελέσιμη διπλή
+αναφορά** (`deployment/verify/mltp3/`): Verifier A = Go stdlib `crypto/ed25519`
+(pure-Go), Verifier B = Node `node:crypto` (OpenSSL) — γνήσια διαφορετικά vetted
+backends, κανένα homemade primitive, fail-closed `CRYPTO_BACKEND_UNAVAILABLE`· εκδοχοποιημένο
 OpenAPI· versioned MCP· λεπτά SDKs (Python, TypeScript, Rust — μόνο περιτύλιγμα
 του verifier, χωρίς λογική εμπιστοσύνης)· delta/update feeds (signed deltas ανά
 release, RSS/Atom + MLTP bundle)· οδηγίες pinned-root και rotation (ceremony record,
@@ -850,7 +862,8 @@ compiler· D-04 νευρωνικό επίπεδο εκτός trusted path με c
 MLTP v3 τρία επίπεδα + Layer 0· D-06 RFC 9162 Merkle + Ed25519 + RFC-3161 επί της
 υπογραφής· D-07 threshold owner root· D-08 HSM delegated keys ≤90 ημέρες· D-09 δύο
 logs + cross-client witnesses· D-10 SCITT ως προβολή· D-11 απόρριψη blockchain/ZK/
-VC-DID στον πυρήνα· D-12 proposer-blind M5 + dual compilers αντί N-version voting.
+VC-DID στον πυρήνα· D-12 proposer-blind M5 + dual compilers αντί N-version voting· D-13
+παραπομπή ΜΕΣΑ στα υπογεγραμμένα bytes (`CertifiedResult` + `citation/1`), όχι έξω από την υπογραφή.
 
 ---
 
@@ -892,7 +905,7 @@ VC-DID στον πυρήνα· D-12 proposer-blind M5 + dual compilers αντί 
 
 ---
 
-## 9. ΕΚΤΕΛΕΣΙΜΕΣ ΚΑΘΕΤΕΣ ΦΕΤΕΣ ΠΡΙΝ ΤΟ FREEZE (προδηλωμένες, `VERTICAL-SLICES.md`)
+## 9. ΕΚΤΕΛΕΣΙΜΕΣ ΚΑΘΕΤΕΣ ΦΕΤΕΣ — ΜΕΤΑ ΤΟ SPEC FREEZE, ΣΤΗ ΦΑΣΗ ΥΛΟΠΟΙΗΣΗΣ (προδηλωμένες, `VERTICAL-SLICES.md`· #17)
 
 VS-01 πηγή → receipt → Legal IR → γεγονός → bitemporal state → proof-carrying answer ·
 VS-02 άμεση και έμμεση τροποποίηση · VS-03 σύγκρουση δύο επίσημων manifestations ·
@@ -905,25 +918,37 @@ rotation, ληγμένη delegation, compromise, αναδρομική ανάκλ
 αναμενόμενο ΦΕΚ/δικαστικό αντικείμενο ⇒ αποτυχία κάλυψης · VS-14 cockpit πρόταση
 αποτυγχάνει να παρακάμψει την M5 · VS-15 disaster recovery αναπαράγει το ίδιο
 qualified release. **Σχεδιαστική αξίωση που δεν αποδεικνύεται με εκτελέσιμη φέτα
-δεν είναι freezeable.**
+δεν είναι freezeable.** (Διόρθωση #17: οι φέτες τρέχουν **μετά** το SPEC FREEZE στη
+φάση υλοποίησης — δεν είναι προϋπόθεση του freeze· ο πυρήνας του πρωτοκόλλου
+επικυρώνεται νωρίτερα, εκτελέσιμα, από το `deployment/verify/mltp3/run.sh`, MLTP v3 §13.)
 
 ---
 
-## 10. ΚΛΙΜΑΚΑ ΠΟΙΟΤΙΚΗΣ ΕΠΑΡΚΕΙΑΣ — ΠΕΝΤΕ ΛΗΞΙΠΡΟΘΕΣΜΕΣ ΚΑΤΑΣΤΑΣΕΙΣ
+## 10. ΚΛΙΜΑΚΑ ΠΟΙΟΤΙΚΗΣ ΕΠΑΡΚΕΙΑΣ — ΔΙΟΡΘΩΜΕΝΗ ΣΕΙΡΑ (λύνει το freeze/vertical-slice deadlock, #17)
 
-| βαθμίδα | v1.4 | υπογράφει (MLTP v3 §3.1) |
-|---|---|---|
-| `SPEC QUALIFIED` | **ΟΧΙ** — κανένα destruction programme στο v1.4 | ≥1 independent-auditor |
-| `IMPLEMENTATION QUALIFIED` | **ΟΧΙ** — καμία υλοποίηση | ≥2 independent-auditors |
-| `MISSION GREECE QUALIFIED` | **ΟΧΙ** — `MISSION GREECE-1` ορισμένη, μη εκκινημένη | ≥2 independent-auditors |
-| `SECURITY/OPERATIONS QUALIFIED` | **ΟΧΙ** — CI 0 successes (EV-12) | ≥2 independent-auditors |
-| `PROVIDER-ADOPTION QUALIFIED` | **ΟΧΙ** — κανένας provider | ≥2 registered providers |
+Η σειρά είναι **αυστηρά διατεταγμένη**· κανένα state δεν αποδίδεται πριν τις
+προϋποθέσεις του. Το **παλιό** deadlock («15 φέτες απαιτούνται ΠΡΙΝ το freeze» ενώ
+«καμία υλοποίηση πριν το freeze») **αίρεται**: το SPEC FREEZE προηγείται της
+υλοποίησης· οι κάθετες φέτες τρέχουν **μετά** το SPEC FREEZE στη φάση υλοποίησης.
 
-Καμία μόνιμη qualification. **Root Authority** υπάρχει μόνο όσο ΟΛΑ τα απαιτούμενα
-τεκμήρια είναι φρέσκα και έγκυρα (QSR ανά βαθμίδα, μη ληγμένα, με έγκυρο
-`coverage-and-freshness`)· υποβαθμίζεται **αυτόματα** σε `UNKNOWN`/`UNVERIFIED` όταν
-οποιαδήποτε qualification λήξει ή τεκμήριο αποτύχει (MLTP v3 §8.3 F/Q). Οι πρώτες
-τέσσερις είναι διαδοχικές κατά την εκκίνηση· όλες συνεχείς και ανακλητές μετά.
+| # | κατάσταση | προϋπόθεση | v1.4 σήμερα |
+|---|---|---|---|
+| 0 | `CURRENT CANDIDATE` | ενοποιημένος υποψήφιος + audits exit 0 | **ΝΑΙ** (v1.4) |
+| 1 | `SEMANTICALLY CLOSED CANDIDATE` | διορθωμένη ακυκλική κατασκευή· MLTP v3 §13 | **ΝΑΙ** — executable reference `PASSED` |
+| 2 | *targeted executable protocol validation* | `deployment/verify/mltp3/run.sh` exit 0 (δύο vetted verifiers· θετικό + KW-64 έως KW-94) | **ΝΑΙ** — `fixtures/REPORT.json` |
+| 3 | `SPEC QUALIFIED` | validation programme §8 (KW-1 έως KW-94) επιβιωμένο + audits | **ΟΧΙ** — δεν έχει εκτελεστεί |
+| 4 | `SPEC FREEZE` | ρητό «εγκρίνω freeze target» δημιουργού | **ΟΧΙ** |
+| 5 | *refactoring / implementation* | μετά το freeze (`IMPLEMENTATION-SEQUENCE.md` βήματα 0–14) | **ΟΧΙ** |
+| 6 | *15 vertical slices* | **μετά** το freeze, στη φάση υλοποίησης (`VERTICAL-SLICES.md`) | **ΟΧΙ** |
+| 7 | `IMPLEMENTATION QUALIFIED` | Q01–Q42 + 15 φέτες, ≥2 auditors | **ΟΧΙ** |
+| 8 | `MISSION GREECE QUALIFIED` | MISSION GREECE-1, ≥2 auditors | **ΟΧΙ** |
+| 9 | `SECURITY/OPERATIONS QUALIFIED` | SLO/DR/CI, ≥2 auditors | **ΟΧΙ** — CI 0 successes (EV-12) |
+| ∥ | `PROVIDER-ADOPTION QUALIFIED` | παράλληλο/ανακλητό, ≥2 registered providers | **ΟΧΙ** |
+
+Οι στάδια 2 μόνο επικυρώνουν τον **πυρήνα του πρωτοκόλλου** (όχι τα 15 επίπεδα)·
+δεν είναι qualification. Καμία μόνιμη qualification· κάθε QSR φέρει `expiry`.
+**Root Authority** υπάρχει μόνο όσο ΟΛΑ τα απαιτούμενα τεκμήρια είναι φρέσκα και
+έγκυρα· υποβαθμίζεται **αυτόματα** σε `UNKNOWN`/`UNVERIFIED` (MLTP v3 §8.3 F/Q).
 **Απόλυτο όριο:** de jure αυθεντία πάντα Εφημερίδα της Κυβερνήσεως και δικαστήρια.
 
 ---
@@ -965,8 +990,11 @@ AS-IS EV-11) καταγεγραμμένοι, μη διορθωμένοι (design
 
 ## 13. ΔΙΑΔΙΚΑΣΙΑ
 
-Δεν ζητείται έγκριση υλοποίησης. Επόμενο βήμα, **μόνο** με ρητή εντολή δημιουργού:
-το validation programme §8 (πάσα 1–6) πάνω στο v1.4 με τα προδηλωμένα KW-1 έως
-KW-63. Μόνο μετά την επιβίωσή του τίθεται ζήτημα `SPEC QUALIFIED`. Freeze = ρητό
-«εγκρίνω freeze target» του δημιουργού μετά από επιβίωση ΚΑΙ 15 εκτελέσιμες φέτες.
-Κανένα έγγραφο δεν ονομάζει το v1.4 canonical πριν από αυτό.
+Δεν ζητείται έγκριση υλοποίησης. Η διορθωμένη σειρά (§10): `CURRENT CANDIDATE` →
+`SEMANTICALLY CLOSED CANDIDATE` (εκτελέσιμη ακυκλική κατασκευή, MLTP v3 §13 — **έγινε**,
+`deployment/verify/mltp3/run.sh` exit 0) → *targeted executable protocol validation*
+(**έγινε**) → validation programme §8 (KW-1 έως **KW-94**) → `SPEC QUALIFIED` →
+ρητό `SPEC FREEZE` του δημιουργού → refactoring/implementation → **15 εκτελέσιμες
+φέτες** (μετά το freeze) → `IMPLEMENTATION QUALIFIED` → `MISSION` → `PROVIDER-ADOPTION`.
+Το SPEC FREEZE **δεν** απαιτεί τις φέτες (διόρθωση #17).
+Κανένα έγγραφο δεν ονομάζει το v1.4 canonical πριν το `SPEC QUALIFIED`.

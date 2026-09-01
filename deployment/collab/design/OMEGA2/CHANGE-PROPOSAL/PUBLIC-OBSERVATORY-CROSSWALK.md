@@ -280,6 +280,7 @@ PUBLIC OBSERVATORY PROFILE (v1.4 §5). Design only.
 | `deployment/verify/kernel-verify.lisp` | kernel verifier | §4.15 | EXTEND | MLTP v3 §8.3 |
 | `deployment/verify/vectors/` | test vectors (θετικά + tampered) | §4.15 | EXTEND | + αρνητικά vectors ανά error name |
 | `deployment/verify/README.md`, `canonical-serialization-spec.md` | τεκμηρίωση, canonical spec | §4.10 | REUSE | README: EXTEND για MLTP v3 |
+| `deployment/verify/mltp3/` (schemas, build_fixtures, crypto_libsodium, verify_a.go, verify_b.mjs, mutate, dag_check, harness, run.sh, fixtures) | **εκτελέσιμη αναφορά MLTP v3** — ακυκλική κατασκευή, δύο vetted verifiers (Go/pure-Go + Node/OpenSSL), 31 kill witnesses | §4.10, §4.15, MLTP v3 §13 | **present** (EXTEND → 15 επίπεδα) | `EXECUTABLE PROTOCOL CLOSURE PASSED`· δεν είναι qualification/freeze |
 | `deployment/verify/gate-registry.sexp`, `hash-seat-registry.sexp`, `merkle-profile.sexp`, `capability-baseline.sexp`, `assess-gate-*`, `census-execution-constructs.sh`, `blind-failure-test.sh`, `golden/`, `consciousness-audit/`, `self-understanding-audit/`, `ontology-raw-live-dump.sexp` | μητρώα πυλών/εδρών, audits | L10, §4.14 | REUSE | — |
 | `authority-v2/roles/ROLES-MODEL.sexp`, `ceremony.sh` | roles model, ceremony | §4.10 | EXTEND | threshold owner root, HSM roles |
 | `authority-v2/proofs/witness-quorum-test.py` | witness quorum | §4.10 | EXTEND | cross-client witnesses |

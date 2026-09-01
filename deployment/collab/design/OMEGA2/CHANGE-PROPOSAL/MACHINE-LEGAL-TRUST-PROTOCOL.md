@@ -1108,11 +1108,11 @@ quorum λαμβάνει `UNKNOWN(split-view-unverifiable)` — ποτέ VERIFIED
 
 | MLTP v3 αντικείμενο | SCITT αντίστοιχο | κανόνας |
 |---|---|---|
-| `IssuedClaim` | Signed Statement (COSE_Sign1) με `payload` = canonical JSON του envelope, protected header: `alg`, `kid`, `cwt.iss` = `issuer_name` της delegation, `cty` = `application/mltp3+json` | η υπογραφή MLTP (`signature.sig`) είναι η υπογραφή του COSE_Sign1 πάνω στο ίδιο signed input — μία υπογραφή, δύο συντακτικές μορφές |
+| `IssuedClaim` | Signed Statement (COSE_Sign1, RFC 9052) πάνω στα **ακριβή** COSE `Sig_structure` bytes | **ΔΙΑΚΡΙΤΗ υπογραφή** (διόρθωση #13): η κανονική-JSON υπογραφή MLTP (`sig = Ed25519(context ‖ 0x1F ‖ canonical(obj))`) **ΔΕΝ είναι** αυτομάτως COSE_Sign1. Η SCITT/COSE προβολή φέρει **δική της** επαληθεύσιμη υπογραφή πάνω στα COSE Sig_structure bytes (RFC 9052/9943)· ένα relabeling της JSON υπογραφής ως COSE **απορρίπτεται**. Η COSE προβολή = `MISSING` (βήμα 6, §13) |
 | tlog inclusion + `SignedCheckpoint` | SCITT Receipt (COSE countersignature με inclusion proof) | ο verifier δέχεται receipt από **registered** transparency service (log_id ∈ witness_registry) |
 | `TrustBundle` | Statement + Receipts + όλα τα resolvable αντικείμενα ως attached bundle | το bundle παραμένει η μονάδα offline επαλήθευσης |
 | `RevocationStatement` | Signed Statement τύπου revocation στο ίδιο log | root-signed |
-| `CertifiedResult` + `citation/1` | JSON-LD προβολή (`@context` lawmax/citation/1 → schema.org `Legislation`/`LegalForceStatus` και ELI ιδιότητες), `CitationToken` ως COSE_Sign1 | η παραπομπή ταξιδεύει με την υπογραφή της· JSON-LD = προβολή, όχι πηγή αλήθειας |
+| `CertifiedResult` + `citation/1` | JSON-LD προβολή (`@context` lawmax/citation/1 → schema.org `Legislation`/`LegalForceStatus` και ELI ιδιότητες), `CitationToken` ως COSE_Sign1 | η παραπομπή ταξιδεύει με την υπογραφή της· `CitationToken` COSE = **χωριστή** υπογραφή πάνω στα COSE bytes, όχι relabeling (διόρθωση #13)· JSON-LD = προβολή, όχι πηγή αλήθειας |
 
 Τα πρότυπα είναι επιφάνειες διαλειτουργικότητας, **όχι** ανταγωνιστική πηγή
 αλήθειας: η σημασιολογία (ποιος υπογράφει τι, τι σημαίνει VERIFIED) ζει ΜΟΝΟ εδώ.
@@ -1128,3 +1128,107 @@ disposition στο `PUBLIC-OBSERVATORY-CROSSWALK.md`. Οι kill witnesses που
 αντιστοιχούν σε κάθε ρίζα RC-01 έως RC-31 ζουν στο
 `PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md §7` (KW-17 έως KW-47) — **προδηλωμένοι,
 ΜΗ εκτελεσμένοι**.
+
+
+---
+
+## 13. ΕΚΤΕΛΕΣΙΜΗ ΑΝΑΦΟΡΑ — ΑΚΥΚΛΙΚΗ ΚΑΤΑΣΚΕΥΗ (ΑΥΘΕΝΤΙΚΗ ΕΠΙ ΣΥΓΚΡΟΥΣΗΣ ΜΕ §1–§6)
+
+**Έδρα: `deployment/verify/mltp3/` — `EXECUTABLE PROTOCOL CLOSURE PASSED — NOT YET
+SPEC QUALIFIED`.** Δύο ανεξάρτητοι επαληθευτές (Go pure-Go `crypto/ed25519` και Node
+`node:crypto`/OpenSSL — γνήσια διαφορετικά vetted backends· builder: libsodium)
+επαληθεύουν έναν θετικό `TrustBundle` και απορρίπτουν 31 μεταλλάξεις (KW-64 έως KW-94),
+**ο καθένας με το ίδιο typed error class**. `bash deployment/verify/mltp3/run.sh`
+(exit 0· `fixtures/REPORT.json` με tool versions + SHA-256). Αυτή η ενότητα
+**υπερισχύει** των §1–§6 όπου η ανεπίσημη διατύπωσή τους για `*_id`, χρόνο ή release
+membership συγκρούεται με την ακυκλική κατασκευή.
+
+### 13.1 Οι διορθωμένοι κύκλοι (ρητά)
+
+- **(#1 self-id):** κάθε `*_id` = `prefix ‖ hex(sha256(id_domain ‖ 0x1F ‖ canonical(BODY)))`
+  όπου το `BODY` **αποκλείει** το ίδιο το id, την υπογραφή, το detached χρονικό
+  στοιχείο, το `release_root` και τα inclusion proofs. Το `claim_id`/`result_id`/
+  `bundle_id` **ποτέ** δεν εμφανίζεται στο δικό του preimage (`self-referential-id`).
+- **(#2 timestamp cycle):** ο αξιόπιστος χρόνος είναι **detached `TimeAttestation`**
+  που υπογράφει το `message-imprint` της υπογραφής ενός αντικειμένου — **έξω** από τα
+  signed fields. Το `signed_at` **δεν** είναι πλέον υπογεγραμμένο πεδίο του
+  `IssuedClaim` στην εκτελέσιμη μορφή· ο verifier παράγει `t_sig` από το detached
+  `TimeAttestation`. (Το §1.0 διατηρεί το `signed_at` ως ιστορική διατύπωση· εδώ
+  αποσπάται.)
+- **(#3 release/merkle cycle):** το claim **δεν** φέρει `release_root`/`release_ref`
+  στο υπογεγραμμένο σώμα του· η ένταξη αποδεικνύεται με **detached inclusion proof**
+  στην υπογεγραμμένη `release_root` (που παράγεται **μετά** τα claim_ids).
+- **(#4 result/bundle cycle):** το `CertifiedResultBody` αναφέρεται μόνο σε
+  προϋπάρχοντα ids· το `bundle_id` = `hash(BundleManifest)` όπου το manifest
+  **δεν** περιέχει το `bundle_id`, και κανένα result δεν ενσωματώνει το `bundle_id`.
+- **(#5 revocation checkpoint):** υπογεγραμμένο από ≥2 witnesses, με authenticated
+  time (φρεσκάδα ≤ `max_revocation_staleness` αλλιώς `stale-revocation-state`),
+  consistency proof, και inclusion/non-inclusion ανά statement (`omitted-revocation`).
+
+### 13.2 Ενιαίο `verify_attestation` συμβόλαιο (#6)
+
+Κάθε υπογεγραμμένη οντότητα (claims, release, QSR, results, compiler/provider/
+witness/reviewer records) περνά από **ένα** συμβόλαιο: (1) υπογραφή Ed25519 πάνω στο
+`context ‖ 0x1F ‖ canonical(obj χωρίς sig)`· (2) ταυτότητα υπογράφοντα (delegation
+chain → owner root για issuer keys· registry για auditor/witness/provider/reviewer/
+tsa)· (3) delegated scope που καλύπτει τον σκοπό· (4) παράθυρο ισχύος έναντι
+**συντηρητικού** `t_sig = gen_time + accuracy` (RFC 3161: το `genTime` είναι
+τεκμήριο ότι το imprint υπήρχε **το αργότερο** τότε — **όχι** ακριβής χρόνος
+δημιουργίας, διόρθωση #10)· (5) ανάκληση έναντι `t_sig`· (6) canonical recompute·
+(7) trusted roots. Άγνωστο backend ⇒ `CRYPTO_BACKEND_UNAVAILABLE`, fail-closed.
+
+### 13.3 Πλήρης επαλήθευση `CertifiedResult` + citation binding (#7, #8)
+
+Ο verifier ελέγχει **ολόκληρη** την απάντηση: `dependency_set` ⊆ επαληθευμένων
+claims, `release_root`/`projection` ρίζες, `derivation_proof`/`counterproof`,
+`coverage_ref` παρόν και φρέσκο (#11). Το `citation/1` είναι **μέσα** στα signed
+bytes· ο verifier ελέγχει `citation_digest`, `claim_id ∈ dependency_set`,
+`watchtower_release_uri` δεσμεύει το `release_root`, `citation_policy_id` ∈ trusted,
+**διπλή** απόδοση (de jure εκδότης ΚΑΙ Watchtower ως πηγή αναπαράστασης), και τον
+`CitationToken`. Αποτυχία ⇒ `citation-unbound`/`citation-policy-untrusted`/
+`citation-incomplete-dual` ⇒ **`UNVERIFIED_FOR_ATTRIBUTED_RELIANCE`**. Μία έγκυρη
+παραπομπή σε ένα claim **δεν** αρκεί.
+
+### 13.4 Provider conformance (#9), compiler independence (#12), jurisprudence (#15), governance (#16)
+
+- **`ProviderConformanceRecord`** (typed, §13.5): `provider_id`, `provider_kid` ∈
+  provider registry, `policy_version`, `evidence_window`, `expiry`, υπογραφή —
+  **διακριτό** από τη γενική «υιοθέτηση providers». Ληγμένο ⇒ `provider-nonconformant`·
+  εκτός registry ⇒ `provider-subject-mismatch`.
+- **Compiler independence:** δύο attestations δεσμεύουν **κοινό** `input_journal_root`
+  και `output_root`, με **διακριτά** `compiler_family_id`, `source_digest`, `kid`.
+  Ίδιο family/source/kid ⇒ `fabricated-compiler-independence`· άνισο output ⇒
+  `compiler-divergence`.
+- **Jurisprudence (#15):** ντετερμινιστικός parser πιστοποιεί μόνο `cites`· ρήματα
+  μεταχείρισης (`followed`/`overruled` κ.λπ.) χωρίς reviewer adoption ⇒
+  `misrepresented-treatment`.
+- **Governance (#16):** το QSR απαιτεί ≥2 auditors **ξένους** προς τα issuer keys
+  (separation-of-duty)· δύο συσκευές ίδιου operator **δεν** είναι ανεξάρτητοι
+  custodians — οι πραγματικές ταυτότητες custodians/quorum παραμένουν **U-2**
+  (δεν εφευρίσκονται).
+
+### 13.5 Επεκταμένη ταξινομία σφαλμάτων (superset της §4.3 για την ακυκλική κατασκευή)
+
+Επιπλέον των 35 ονομάτων της §4.3, η εκτελέσιμη αναφορά εκπέμπει typed:
+`self-referential-id`, `id-mismatch`, `release-root-cycle`, `result-bundle-cycle`,
+`time-imprint-mismatch`, `no-trusted-signature-time`, `unsigned-revocation-checkpoint`,
+`omitted-revocation`, `answer-incomplete`, `dependency-unverified`,
+`citation-policy-untrusted`, `citation-incomplete-dual`, `provider-conformance`
+(`provider-nonconformant`/`provider-subject-mismatch`),
+`fabricated-compiler-independence`, `misrepresented-treatment`,
+`CRYPTO_BACKEND_UNAVAILABLE`. Η πλήρης λίστα + result mapping: `schemas.json`
+(`error_taxonomy`), επαληθευμένη ένα-προς-ένα από τους δύο verifiers.
+
+### 13.6 COSE/SCITT (#13) — τι λείπει ρητά
+
+Η εκτελέσιμη αναφορά υλοποιεί **μόνο** το κανονικό-JSON σχήμα υπογραφής. Η
+COSE_Sign1/SCITT προβολή (§11) είναι **χωριστή, επαληθεύσιμη** υπογραφή πάνω στα
+ακριβή COSE `Sig_structure` bytes και παραμένει `MISSING` (βήμα 6) — **ποτέ**
+relabeling της JSON υπογραφής.
+
+### 13.7 Κατάσταση
+
+`EXECUTABLE PROTOCOL CLOSURE PASSED — NOT YET SPEC QUALIFIED`. Δεν είναι freeze,
+δεν είναι υλοποίηση των 15 επιπέδων, δεν διεκδικεί βαθμίδα. Επόμενο (μόνο με ρητή
+εντολή δημιουργού): `SEMANTICALLY CLOSED CANDIDATE` → targeted executable protocol
+validation → `SPEC QUALIFIED` (κλίμακα v1.4 §10).
