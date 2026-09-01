@@ -4,7 +4,7 @@
 ετυμηγορίες, εκκρεμότητες, μπλοκαρίσματα. Ο διάλογος: `AI-DIALOGUE.md`.
 Πηγή αλήθειας παραμένουν τα gates/μητρώα — αυτό είναι ΣΥΝΟΨΗ, όχι απόδειξη.
 
-*Τελευταία ενημέρωση: Claude · 2026-09-01 — **[0132] CHANGE-PROPOSAL v1.2 ΚΑΤΑΤΕΘΕΙΜΕΝΗ — `CURRENT CANDIDATE / NOT YET FREEZEABLE`, ΟΧΙ CANONICAL]**: Design only, καμία γραμμή κώδικα, κανένα destruction pass στο v1.2, καμία βαθμίδα ποιοτικής επάρκειας. **ΔΕΝ ΥΠΑΡΧΕΙ ΚΑΝΟΝΙΚΟΣ ΠΑΓΩΜΕΝΟΣ ΣΤΟΧΟΣ.** Το v1.1 είναι `HISTORICAL / FALSIFIED / NOT CANONICAL`· η ασυνέπεια του μητρώου (ονόμαζε canonical το falsified v1.1) ΑΝΑΚΛΗΘΗΚΕ. Το v1.2 είναι **μόνο δημόσιο** — ο ιδιωτικός βραχίονας υποθέσεων ΕΚΤΟΣ ΕΥΡΟΥΣ με μονόδρομο όριο PUBLIC→PRIVATE και δομική απουσία τύπου υπόθεσης· αυτό ΔΕΝ λύνει τα KT2/KT3/KT9/KT12/KT13, ΑΦΑΙΡΕΙ το πεδίο τους. Νέα μηχανικά ευρήματα στο τεκμήριο του v1.1: «20 έλεγχοι» → **19** πραγματικοί (2× v1.1, 1× [0131])· **καμία κατατεθειμένη έξοδος** του `run-falsifiers.sh` (το μόνο results αρχείο είναι έξοδος του `run-pack.sh`)· **`TPKill` (KT5) ουδέποτε εκτελέστηκε** (0 αναφορές στον runner)· **διπλή έδρα** `MatterCell.tla`/`PublicRoot.tla` byte-ταυτόσημα σε δύο καταλόγους· KT4 έχει εκτελούμενο counterexample αλλά ετυμηγορία `UNCERTAIN`. Επόμενο: ανεξάρτητο destruction pass στο v1.2.*
+*Τελευταία ενημέρωση: Claude · 2026-09-01 (γ) — **[0133] CHANGE-PROPOSAL v1.3 ΚΑΤΑΤΕΘΕΙΜΕΝΗ — `CURRENT PUBLIC CANDIDATE / NOT YET FREEZEABLE`]**: Design only, καμία γραμμή κώδικα, **ΚΑΝΕΝΑ destruction pass** (εντολή «STOP BEFORE»), καμία αξίωση qualification. Parent `973b614b`. Έξι παραδοτέα: v1.3 (δημόσιος στόχος ως **Machine Legal Trust Root**), `MACHINE-LEGAL-TRUST-PROTOCOL.md` (7 πιστοποιητικά proof-carrying + offline verifier), `V1.3-SEMANTIC-CROSSWALK.md`, `AS-IS-EVIDENCE-MANIFEST.md`, ενημερωμένα SUPERSEDED-REGISTER + QUALIFICATION-TESTS. **Επτά διορθώσεις:** ταυτότητα→USC Work/Expression/Manifestation/Item (raw bytes=item όχι work, λύνει Q07)· αυθεντικότητα→authority+institutional registry+authority-proof-bundle+divergence-witnesses (RFC-3161=μόνο χρόνος)· Machine Legal Trust Protocol· offline verifier (SHA-256, pinned root out-of-band, tlog consistency+gossip, provider rule UNVERIFIED_FOR_MACHINE_RELIANCE/UNKNOWN)· νομολογία→Level-7 line-of-authority· cockpit signed intent→M5 ποτέ παράκαμψη· Root Authority συνεχής/ανακλητή+PROVIDER-ADOPTION. **Ταξινόμηση:** v1.2=HISTORICAL/SUPERSEDED· CPEI+CEILING-CROSSWALK=DEFERRED/SEPARATE PRIVATE—NOT SUPERSEDED· ARCHITECTURE-CONSTITUTION=ACTIVE ENFORCED· PCL/trust/key/temporal/USC=ACTIVE SHARED TRUST FOUNDATIONS. **AS-IS τιμιότητα:** EV-1…EV-12 CONFIRMED αναπαραγώγιμα (git-tracked article-*.txt=**4.550** όχι 4.694)· R-1…R-6 υποβαθμίστηκαν σε REPORTED/NOT REPRODUCIBLE. Επόμενο (ρητή εντολή): destruction pass v1.3.*
 
 ## Κατάσταση συστήματος (τελευταία μετρημένη)
 
@@ -692,3 +692,41 @@ Q01–Q20 · υλοποίηση · deployment · **καμία διόρθωση �
 ευρήματα AS-IS (design-only). **Root Authority μόνο μετά από
 `MISSION QUALIFIED`· η de jure αυθεντία παραμένει πάντα στην Εφημερίδα της
 Κυβερνήσεως και στα αρμόδια δικαστήρια.**
+
+## [0133] CHANGE-PROPOSAL v1.3 — MACHINE LEGAL TRUST ROOT — πάνω στο `973b614b`
+
+**Design only, καμία γραμμή κώδικα, ΚΑΝΕΝΑ destruction pass** (εντολή δημιουργού
+«STOP BEFORE DESTRUCTION PASS»), καμία αξίωση qualification, **καμία δεύτερη
+παράλληλη αρχιτεκτονική** (κάθε νέα έννοια → έδρα ή ρητό κενό, `V1.3-SEMANTIC-CROSSWALK.md`).
+
+- **`CHANGE-PROPOSAL-v1.3.md` = `CURRENT PUBLIC CANDIDATE / NOT YET FREEZEABLE`.**
+  Ο δημόσιος στόχος γίνεται **Machine Legal Trust Root** για την επαληθευμένη
+  μηχανική αναπαράσταση — de jure πάντα κράτος/δικαστήρια.
+- **Επτά διορθώσεις κενών v1.2:** (#5) ταυτότητα → USC `Work→Expression→Manifestation→Item`,
+  raw bytes ταυτοποιούν **item**, όχι work (λύνει την αντίφαση με Q07)· (#6)
+  αυθεντικότητα → authority-registry + institutional-register + authority-proof-bundle
+  + acquisition-receipts + `official-sources-conflict` witnesses (RFC-3161 = **μόνο
+  χρόνος bytes**)· (#3) **Machine Legal Trust Protocol** 7 proof-carrying certs·
+  (#4) offline verifier (6 γρ., SHA-256, pinned root out-of-band, delegation, tlog
+  consistency+gossip, witnesses· provider rule `UNVERIFIED_FOR_MACHINE_RELIANCE`/
+  `UNKNOWN`)· (#7) νομολογία → Level-7 «Νομολογιακή συνείδηση-εξέλιξη» (ratio/obiter/
+  holding/authority-weight/line-of-authority)· (#8) cockpit **signed intent** → M5,
+  ποτέ παράκαμψη/direct-publish· (#9) Root Authority = **συνεχής/ανακλητή**
+  κατάσταση + ξεχωριστό `PROVIDER-ADOPTION QUALIFIED`.
+- **Ταξινόμηση (SUPERSEDED-REGISTER):** v1.2 = HISTORICAL/SUPERSEDED (όχι falsified)·
+  **CPEI + CEILING-CROSSWALK = DEFERRED / SEPARATE PRIVATE TARGET — NOT SUPERSEDED**
+  (`:matter` + L5–L7 = ιδιωτικός πυρήνας)· **ARCHITECTURE-CONSTITUTION = ACTIVE
+  ENFORCED FOUNDATION** (gate 12/12· διορθώθηκε λανθασμένη ιστορική εγγραφή)·
+  **PCL/PROOF-OBJECT/TRUST-BOOTSTRAP/KEY-LIFECYCLE/TEMPORAL×2/USC = ACTIVE SHARED
+  TRUST FOUNDATIONS**· μία έδρα ανά scope, μόνο PUBLIC→PRIVATE.
+- **#11 AS-IS τιμιότητα (`AS-IS-EVIDENCE-MANIFEST.md`):** EV-1…EV-12 = **CONFIRMED**
+  αναπαραγώγιμα (εντολή+output+digest· **διόρθωση: git-tracked `article-*.txt` =
+  4.550**, όχι 4.694 — η διαφορά ήταν `find` στο working tree· CI 100% failure via
+  API incl. το push αυτού του κλάδου)· R-1…R-6 (national-census, cockpit-real,
+  citation-stub-default, publish-gate-flow, version-graph-KT5, CI-total) =
+  **REPORTED / NOT REPRODUCIBLE** — υποβαθμίστηκαν από VERIFIED.
+- **Νέα κενά δηλωμένα:** coverage ledger/εθνική απογραφή (κύριο)· Level-7 plane·
+  εκδοχοποιημένο OpenAPI + SDKs· RBAC/MFA· η σύνθεση 7 certs· Root Authority ως κατάσταση.
+
+**ΔΕΝ ΕΓΙΝΕ:** destruction pass v1.3 · τυπικά μοντέλα v1.3 · υλοποίηση · deployment ·
+καμία βαθμίδα qualification. Επόμενο βήμα ΜΟΝΟ με ρητή εντολή δημιουργού.

@@ -1,4 +1,4 @@
-# ΜΗΤΡΩΟ ΑΡΧΙΤΕΚΤΟΝΙΚΩΝ — ΤΡΙΜΕΡΗΣ ΤΑΞΙΝΟΜΗΣΗ
+# ΜΗΤΡΩΟ ΑΡΧΙΤΕΚΤΟΝΙΚΩΝ — ΤΑΞΙΝΟΜΗΣΗ ΑΝΑ SCOPE ΚΑΙ ΡΟΛΟ
 
 # **ΔΕΝ ΥΠΑΡΧΕΙ ΣΗΜΕΡΑ ΚΑΝΟΝΙΚΟΣ ΠΑΓΩΜΕΝΟΣ ΣΤΟΧΟΣ.**
 
@@ -33,31 +33,88 @@ pass) και **δεν ενημερώθηκε** όταν το `78277cc0` κατέ
 
 ---
 
-## ΟΙ ΤΡΕΙΣ ΚΑΤΗΓΟΡΙΕΣ
+## ΜΙΑ ΕΔΡΑ ΑΝΑ SCOPE — ΔΥΟ ΞΕΧΩΡΙΣΤΟΙ ΣΤΟΧΟΙ
 
-| κατηγορία | σημασία | επιτρέπεται ως στόχος; | επεξεργάζεται; |
+Δύο στόχοι, ποτέ αναμειγμένοι, με **αυστηρά μονόδρομο** όριο `PUBLIC → PRIVATE`:
+
+- **PUBLIC TARGET** = η δημόσια γραμμή `CHANGE-PROPOSAL` (τρέχων υποψήφιος: v1.3).
+- **PRIVATE TARGET** = CPEI + CEILING-CROSSWALK — **DEFERRED, NOT SUPERSEDED**.
+
+Καμία δεύτερη παράλληλη αρχιτεκτονική· κάθε scope έχει **μία** έδρα στόχου.
+
+## ΟΙ ΚΑΤΗΓΟΡΙΕΣ
+
+| κατηγορία | σημασία | στόχος; | επεξεργάζεται; |
 |---|---|---|---|
-| **`HISTORICAL / FALSIFIED`** | δεν ορίζει στόχο· διατηρείται ως τεκμήριο της αναζήτησης | **όχι** | **ποτέ** |
-| **`REUSABLE FOUNDATION OR EVIDENCE`** | θεμέλιο ή μέτρηση που μπορεί να επαναχρησιμοποιηθεί **μετά από επαλήθευση** | όχι από μόνο του | αρχειακά: ποτέ· κανονιστικά: με νέα έκδοση |
-| **`CURRENT CANDIDATE`** | ο τρέχων υποψήφιος στόχος — **υποψήφιος, όχι κανονικός** | ναι, ως υποψήφιος | ναι, με νέα έκδοση |
+| **`CURRENT PUBLIC CANDIDATE`** | ο τρέχων δημόσιος υποψήφιος — **υποψήφιος, όχι κανονικός** | ναι (public) | ναι, με νέα έκδοση |
+| **`DEFERRED / SEPARATE PRIVATE TARGET — NOT SUPERSEDED`** | ο ιδιωτικός στόχος· αναβεβλημένος, **όχι** καταργημένος | ναι (private, deferred) | όχι εδώ — δικό του scope |
+| **`ACTIVE ENFORCED FOUNDATION`** | επιβάλλεται **τώρα** από πύλη (ratchet) | — (θεμέλιο) | μόνο με έγκριση |
+| **`ACTIVE SHARED TRUST FOUNDATIONS`** | ενεργές προδιαγραφές που **και τα δύο** scopes καταναλώνουν | — (θεμέλιο) | με νέα έκδοση ανά spec |
+| **`HISTORICAL / FALSIFIED`** | δεν ορίζει στόχο· τεκμήριο της αναζήτησης | **όχι** | **ποτέ** |
+| **`HISTORICAL / SUPERSEDED`** | προηγούμενη έκδοση δημόσιου στόχου, **όχι** falsified | **όχι** | **ποτέ** |
+| **`REUSABLE FOUNDATION OR EVIDENCE`** | θεμέλιο/μέτρηση, επαναχρήσιμο **μετά από επαλήθευση** | όχι μόνο του | αρχειακά: ποτέ |
 
 ---
 
-## 1. `CURRENT CANDIDATE`
+## 1. `CURRENT PUBLIC CANDIDATE`
 
 | έγγραφο | κατάσταση |
 |---|---|
-| **`CHANGE-PROPOSAL-v1.2.md`** | **`CURRENT CANDIDATE / NOT YET FREEZEABLE`** |
+| **`CHANGE-PROPOSAL-v1.3.md`** | **`CURRENT PUBLIC CANDIDATE / NOT YET FREEZEABLE`** |
 
-Ρητοί περιορισμοί του v1.2:
+Ρητοί περιορισμοί του v1.3:
 
 - **ΔΕΝ** είναι canonical. **ΔΕΝ** είναι frozen. **ΔΕΝ** είναι qualified.
-- **ΔΕΝ** έχει δεχθεί destruction pass. Καμία σχεδιαστική του θέση δεν είναι
-  αποδεδειγμένη.
-- Είναι **μόνο δημόσιο**. Ο ιδιωτικός βραχίονας υποθέσεων είναι **εκτός ευρους**
-  και δεν επιτρέπεται να επανεισαχθεί (μονόδρομο όριο `PUBLIC → PRIVATE`).
-- Βαθμίδα: **καμία** από `SPEC QUALIFIED` / `IMPLEMENTATION QUALIFIED` /
-  `MISSION QUALIFIED`.
+- **ΔΕΝ** έχει δεχθεί destruction pass (εντολή: STOP BEFORE). Καμία θέση αποδεδειγμένη.
+- **Μόνο δημόσιο.** Ο ιδιωτικός στόχος (CPEI) είναι **εκτός ευρους**, μονόδρομο
+  όριο `PUBLIC → PRIVATE`.
+- Βαθμίδα: **καμία** από `SPEC` / `IMPLEMENTATION` / `MISSION` / `PROVIDER-ADOPTION`
+  `QUALIFIED`.
+- Συνοδεύεται από: `MACHINE-LEGAL-TRUST-PROTOCOL.md`, `V1.3-SEMANTIC-CROSSWALK.md`,
+  `AS-IS-EVIDENCE-MANIFEST.md`.
+
+## 1α. `DEFERRED / SEPARATE PRIVATE TARGET — NOT SUPERSEDED`
+
+| έγγραφο | κατάσταση | γιατί |
+|---|---|---|
+| `LAWMAX-CPEI-TARGET-SPEC.{md,sexp}` | **DEFERRED / SEPARATE PRIVATE TARGET — NOT SUPERSEDED** | το πλήρες Ίδρυμα με `:matter` primitive + L5–L7 (hypothesis workspace, adversarial parliament, legal world simulator) — ο ιδιωτικός matter-solving στόχος· αναβάλλεται, **δεν** καταργείται από τον δημόσιο στόχο |
+| `LAWMAX-CEILING-CROSSWALK.{md,sexp}` | **DEFERRED / SEPARATE PRIVATE TARGET — NOT SUPERSEDED** | η «σάρκα» (15 capabilities) πάνω στο CPEI· περιλαμβάνει το Level-7 plane που ο δημόσιος στόχος δανείζεται (§5 v1.3) — αλλά ως **σύνολο** είναι ο ιδιωτικός/πλήρης στόχος |
+
+**Ρητά:** DEFERRED ≠ HISTORICAL· NOT SUPERSEDED. Το v1.3 δεν επιδιορθώνει και δεν
+υποβιβάζει το CPEI — απλώς **δεν** ανήκει στο δημόσιο εύρος. Ο δημόσιος στόχος
+μπορεί να δανειστεί **επιμέρους** έδρες (π.χ. Level-7 για νομολογία), αλλά ο
+ιδιωτικός matter-solving πυρήνας μένει εκτός.
+
+## 1β. `ACTIVE ENFORCED FOUNDATION`
+
+| έγγραφο | κατάσταση | επιβολή |
+|---|---|---|
+| `LAWMAX-ARCHITECTURE-CONSTITUTION.sexp` | **ACTIVE ENFORCED FOUNDATION** | επιβάλλεται **τώρα** από `--architecture-constitution-gate` (12/12, read-only ratchet): αχαρτογράφητη εντολή/έδρα/store ⇒ κόκκινη πύλη (CPEI §1, CEILING-CROSSWALK §3). Δένει και τα δύο scopes· κανένα δεν το παρακάμπτει. |
+
+## 1γ. `ACTIVE SHARED TRUST FOUNDATIONS`
+
+Ενεργές προδιαγραφές που **και ο δημόσιος και ο ιδιωτικός** στόχος καταναλώνουν —
+θεμέλια εμπιστοσύνης, όχι ανταγωνιστικοί στόχοι:
+
+| έγγραφο | ρόλος |
+|---|---|
+| `PROOF-CARRYING-LAW.md` (PCL-1) | Merkle inclusion + authentic-against-pinned-key (RFC 9162) |
+| `LAWMAX-PROOF-OBJECT-SPEC.md` | proof object + census-2 + Legal Proof Receipt + kernel LOC-ceiling |
+| `LAWMAX-TRUST-BOOTSTRAP-SPEC.md` | owner key ceremony, out-of-band pinned root, delegation, witnesses, gossip |
+| `LAWMAX-KEY-LIFECYCLE-SPEC.md` | TUF-class roles, kid/alg/lineage, rotation/revocation/succession |
+| `LAWMAX-TEMPORAL-IDENTITY-DESIGN.md` | διτεμπορική ταυτότητα (per-event) |
+| `LAWMAX-TEMPORAL-SEMANTICS-SPEC.md` | διτεμπορική σημασιολογία |
+| `LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md` | Work→Expression→Manifestation→Item, authority/institutional registries |
+
+**Κανόνας:** το v1.3 τα **καταναλώνει**, δεν τα αναδιατυπώνει (βλ.
+`V1.3-SEMANTIC-CROSSWALK.md`). Αλλαγή σε αυτά = νέα έκδοση **του spec**, με δική του
+έγκριση — ποτέ αντιγραφή στη γραμμή `CHANGE-PROPOSAL`.
+
+## 1δ. `HISTORICAL / SUPERSEDED` (δημόσιοι στόχοι, ΟΧΙ falsified)
+
+| έγγραφο | κατάσταση | από |
+|---|---|---|
+| `CHANGE-PROPOSAL-v1.2.md` | **`HISTORICAL / SUPERSEDED`** (όχι falsified) | αντικαταστάθηκε ως τρέχων δημόσιος υποψήφιος από το v1.3· το περιεχόμενό του που κρατιέται μεταφέρθηκε/διορθώθηκε στο v1.3 (ταυτότητα §2.1, αυθεντικότητα §2.2, cockpit §6, Root Authority §7, AS-IS §9) |
 
 ---
 
@@ -82,7 +139,7 @@ pass) και **δεν ενημερώθηκε** όταν το `78277cc0` κατέ
 | `LAWMAX-OMEGA-CANON/02-ARCHITECTURE.md` (+ `GR/02-ΑΡΧΙΤΕΚΤΟΝΙΚΗ.md`) | αρχιτεκτονική CANON | `HISTORICAL` | — |
 | `LAWMAX-OMEGA-CANON/06-TRANSITION.md`, `07-VERIFICATION.md` | μετάβαση/επαλήθευση | `HISTORICAL` | η μετάβαση ορίζεται πλέον ως μεταβατικά στάδια με ημ. θανάτου |
 | `phase2-r5/phase-2/PHASE-2-CANDIDATE-ARCHITECTURES.md`, `PHASE-2-FRONTIER-ARCHITECTURE.md` | υποψήφιες/frontier | `HISTORICAL` | — |
-| `deployment/LAWMAX-OMEGA-PLAN.md`, `LAWMAX-CONSOLIDATION-PLAN.md`, `LAWMAX-ARCHITECTURE-CONSTITUTION.sexp` | σχέδια/σύνταγμα αρχιτεκτονικής | `HISTORICAL ως προς τον στόχο` | το λειτουργικό/περιγραφικό τους περιεχόμενο για τον σημερινό σπόρο παραμένει περιγραφικό — **ποτέ κανονιστικός στόχος** |
+| `deployment/LAWMAX-OMEGA-PLAN.md`, `LAWMAX-CONSOLIDATION-PLAN.md` | σχέδια αρχιτεκτονικής | `HISTORICAL ως προς τον στόχο` | το λειτουργικό/περιγραφικό τους περιεχόμενο για τον σημερινό σπόρο παραμένει περιγραφικό — **ποτέ κανονιστικός στόχος** (ΣΗΜ.: το `LAWMAX-ARCHITECTURE-CONSTITUTION.sexp` **ΔΕΝ** είναι εδώ — είναι `ACTIVE ENFORCED FOUNDATION`, §1β· ήταν λάθος να λογίζεται ιστορικό) |
 | `OMEGA2/v07R/REDUCED-CONSTITUTION.md` + `v07R/**` | μειωμένο σύνταγμα v0.7-R | `HISTORICAL / ΑΝΑΣΚΕΥΑΣΜΕΝΟ` | κενότητα `KernelL1.tla` ([0128]) |
 
 ---
@@ -90,9 +147,9 @@ pass) και **δεν ενημερώθηκε** όταν το `78277cc0` κατέ
 ## 3. `REUSABLE FOUNDATION OR EVIDENCE`
 
 **ΟΡΟΣ ΕΠΑΝΑΧΡΗΣΗΣ (δεσμευτικός):** τίποτα εδώ δεν θεωρείται πλήρες ή σωστό
-επειδή υπάρχει. Πριν ενσωματωθεί στο v1.2 πρέπει να **επαληθευθεί** η πραγματική
-του υλοποίηση, κάλυψη, τεστ και σχέση με τον στόχο. **Η ύπαρξη αρχείου δεν είναι
-απόδειξη λειτουργίας.**
+επειδή υπάρχει. Πριν ενσωματωθεί στο v1.3 πρέπει να **επαληθευθεί** η πραγματική
+του υλοποίηση, κάλυψη, τεστ και σχέση με τον στόχο (βλ. `AS-IS-EVIDENCE-MANIFEST.md`
+για το αναπαραγώγιμο τεκμήριο). **Η ύπαρξη αρχείου δεν είναι απόδειξη λειτουργίας.**
 
 ### 3.1 Κανονιστικό θεμέλιο
 
@@ -127,9 +184,9 @@ pass) και **δεν ενημερώθηκε** όταν το `78277cc0` κατέ
 
 ## 4. ΚΑΝΟΝΑΣ ΑΠΟ ΕΔΩ ΚΑΙ ΠΕΡΑ
 
-1. **Μία έδρα στόχου.** Καμία νέα «αρχιτεκτονική» δεν γράφεται εκτός της
-   τρέχουσας γραμμής `CHANGE-PROPOSAL`. Αλλαγή στόχου = **νέα έκδοση**
-   (v1.3, …), ποτέ νέο παράλληλο έγγραφο.
+1. **Μία έδρα ανά scope.** Δημόσιος στόχος = η γραμμή `CHANGE-PROPOSAL` (νυν v1.3)·
+   ιδιωτικός στόχος = CPEI (deferred). Αλλαγή δημόσιου στόχου = **νέα έκδοση**
+   (v1.4, …), ποτέ νέο παράλληλο έγγραφο, ποτέ ανάμειξη με τον ιδιωτικό.
 2. **Κανένα falsified έγγραφο δεν ονομάζεται canonical** — από κανένα αρχείο.
 3. **Το `CURRENT CANDIDATE` δεν είναι canonical.** Κανονικότητα κερδίζεται μόνο
    με `MISSION QUALIFIED` και ρητό «εγκρίνω freeze target» του δημιουργού.
