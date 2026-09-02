@@ -1,4 +1,5 @@
-### V1.4 CONTRADICTION/OMISSION AUDIT — 6dc80e45 — 2026-09-01T23:39:35Z
+### V1.4 DOCUMENT/REFERENCE CONSISTENCY AUDIT — 88129099 — 2026-09-02T15:39:05Z
+### SCOPE: document/reference consistency ONLY — NOT proof of semantic/legal/security correctness or source-universe completeness (SIK-1..9 UNEXECUTED· entries PENDING_LEGAL_VALIDATION)
 # P1 καμία ταξινόμηση «CPEI = ιδιωτικό» σε ACTIVE έγγραφο (μόνο ως ανακληθέν παράθεμα)
 P1a   | actual=1      | want ge 1      | PASS
 P1b   | actual=1      | want ge 1      | PASS
@@ -24,23 +25,23 @@ P4d   | actual=1      | want ge 1      | PASS
 P4e   | actual=1      | want ge 1      | PASS
 P4f   | actual=2      | want eq 2      | PASS
 # P5 καμία απαίτηση χωρίς έδρα/τεστ/τεκμήριο· κάθε αναφερόμενο id ορισμένο
-P5a   | actual=128    | want eq 128    | PASS
-P5b   | actual=128    | want eq 128    | PASS
-P5c   | actual=128    | want eq 128    | PASS
+P5a   | actual=134    | want eq 134    | PASS
+P5b   | actual=134    | want eq 134    | PASS
+P5c   | actual=134    | want eq 134    | PASS
 P5d   | actual=0      | want eq 0      | PASS
 P5e   | actual=5      | want eq 5      | PASS
-P5f   | actual=103    | want eq 103    | PASS
+P5f   | actual=109    | want eq 109    | PASS
 P5g   | actual=0      | want eq 0      | PASS
-P5h   | actual=103    | want eq 103    | PASS
+P5h   | actual=109    | want eq 109    | PASS
 P5i   | actual=43     | want eq 43     | PASS
 P5j   | actual=0      | want eq 0      | PASS
 P5k   | actual=15     | want eq 15     | PASS
 P5l   | actual=0      | want eq 0      | PASS
-P5m   | actual=13     | want eq 13     | PASS
+P5m   | actual=16     | want eq 16     | PASS
 P5n   | actual=0      | want eq 0      | PASS
 P5o   | actual=0      | want eq 0      | PASS
 P5p   | actual=8      | want eq 8      | PASS
-P5q   | actual=153    | want eq 153    | PASS
+P5q   | actual=159    | want eq 159    | PASS
 P5r   | actual=0      | want eq 0      | PASS
 P5s   | actual=0      | want eq 0      | PASS
 P5t   | actual=15     | want eq 15     | PASS
@@ -55,6 +56,12 @@ C13b  | actual=0      | want eq 0      | PASS
 C13c  | actual=0      | want eq 0      | PASS
 C13d  | actual=0      | want eq 0      | PASS
 C17   | actual=6      | want eq 6      | PASS
+H1a   | actual=0      | want eq 0      | PASS
+H1b   | actual=5      | want ge 3      | PASS
+H2a   | actual=0      | want eq 0      | PASS
+H2b   | actual=6      | want eq 6      | PASS
+H2c   | actual=0      | want eq 0      | PASS
+H3    | actual=5      | want eq 5      | PASS
 # P6 μία κανονική γραμμή: v1.4 CURRENT, v1.3 HISTORICAL, banners
 P6a   | actual=1      | want eq 1      | PASS
 P6c   | actual=1      | want eq 1      | PASS
@@ -65,10 +72,10 @@ C1    | actual=133    | want eq 133    | PASS
 C2    | actual=48     | want eq 48     | PASS
 C1b   | actual=133    | want eq 133    | PASS
 C2b   | actual=48     | want eq 48     | PASS
-C3    | actual=153    | want eq 153    | PASS
+C3    | actual=159    | want eq 159    | PASS
 C4    | actual=135    | want eq 135    | PASS
 C5    | actual=10     | want eq 10     | PASS
-C6    | actual=8      | want eq 8      | PASS
+C6    | actual=14     | want eq 14     | PASS
 C7    | actual=1      | want ge 1      | PASS
 C7b   | actual=1      | want ge 1      | PASS
 C11   | actual=0      | want eq 0      | PASS
@@ -77,13 +84,13 @@ C12b  | actual=0      | want eq 0      | PASS
 C14a  | actual=2      | want ge 1      | PASS
 C14b  | actual=1      | want ge 1      | PASS
 C15   | actual=6      | want eq 6      | PASS
-C16a  | actual=9      | want ge 3      | PASS
-C16b  | actual=14     | want ge 3      | PASS
+C16a  | actual=10     | want ge 3      | PASS
+C16b  | actual=15     | want ge 3      | PASS
 C16c  | actual=3      | want ge 2      | PASS
 C18a  | actual=43     | want eq 43     | PASS
-C18b  | actual=103    | want eq 103    | PASS
+C18b  | actual=109    | want eq 109    | PASS
 C18c  | actual=15     | want eq 15     | PASS
-C18d  | actual=13     | want eq 13     | PASS
+C18d  | actual=16     | want eq 16     | PASS
 C18e  | actual=15     | want eq 15     | PASS
 C19   | actual=0      | want eq 0      | PASS
 C20   | actual=1      | want ge 1      | PASS
@@ -103,8 +110,67 @@ E9    | actual=1      | want eq 1      | PASS
 E10   | actual=3      | want ge 1      | PASS
 E11   | actual=0      | want eq 0      | PASS
 E12   | actual=1      | want eq 1      | PASS
+# G POST-C2 ARCHITECTURE RECONCILIATION — τρία findings σεατισμένα (design-only)
+G1    | actual=1      | want ge 1      | PASS
+G2    | actual=2      | want ge 1      | PASS
+G3    | actual=3      | want ge 1      | PASS
+G4    | actual=1      | want eq 1      | PASS
+G5    | actual=1      | want ge 1      | PASS
+G6    | actual=3      | want eq 3      | PASS
+G7    | actual=3      | want eq 3      | PASS
+G8    | actual=5      | want ge 2      | PASS
+# H POST-C2 CORRECTION — unique canonical ownership + error-to-verification-step coverage + formal-semantics honesty + no invented substantive canon
+H4a   | actual=1      | want eq 1      | PASS
+H4b   | actual=1      | want eq 1      | PASS
+H4c   | actual=1      | want eq 1      | PASS
+H5a   | actual=2      | want ge 2      | PASS
+H5b   | actual=3      | want ge 2      | PASS
+H5c   | actual=3      | want ge 2      | PASS
+H6a   | actual=1      | want ge 1      | PASS
+H6b   | actual=6      | want ge 5      | PASS
+H7a   | actual=1      | want ge 1      | PASS
+H7b   | actual=0      | want eq 0      | PASS
+H7c   | actual=1      | want ge 1      | PASS
+H8    | actual=2      | want ge 1      | PASS
+# I FINAL ARCHITECTURE CLOSURE — source-registry completeness · trust-boundary coverage · Legal-IR non-executability · exact algorithm-policy binding · public/internal time separation
+I1a   | actual=2      | want ge 1      | PASS
+I1b   | actual=28     | want ge 28     | PASS
+I1c   | actual=4      | want ge 1      | PASS
+I1d   | actual=1      | want ge 1      | PASS
+I1e   | actual=1      | want ge 1      | PASS
+I1f   | actual=0      | want eq 0      | PASS
+I1g   | actual=1      | want ge 1      | PASS
+I1h   | actual=1      | want ge 1      | PASS
+I1i   | actual=1      | want ge 1      | PASS
+I1j   | actual=0      | want eq 0      | PASS
+I2a   | actual=1      | want eq 1      | PASS
+I2b   | actual=2      | want ge 1      | PASS
+I2c   | actual=2      | want ge 1      | PASS
+I2d   | actual=2      | want ge 1      | PASS
+I3a   | actual=1      | want ge 1      | PASS
+I3b   | actual=2      | want ge 1      | PASS
+I3c   | actual=1      | want ge 1      | PASS
+I3d   | actual=2      | want ge 1      | PASS
+I3e   | actual=3      | want ge 1      | PASS
+I3f   | actual=4      | want ge 1      | PASS
+I3g   | actual=2      | want ge 1      | PASS
+I4a   | actual=1      | want ge 1      | PASS
+I4b   | actual=0      | want eq 0      | PASS
+I5a   | actual=1      | want eq 1      | PASS
+I5b   | actual=2      | want ge 1      | PASS
+# J ARCHITECTURE-CLOSURE-MATRIX — πληρότητα αλυσίδας + καμία απαγορευμένη κατάσταση + κανένα αρχιτεκτονικό UNKNOWN
+J1    | actual=1      | want eq 1      | PASS
+J2    | actual=1      | want ge 1      | PASS
+J3    | actual=18     | want eq 18     | PASS
+J4    | actual=1      | want ge 1      | PASS
+J5    | actual=5      | want ge 4      | PASS
+J6    | actual=19     | want ge 10     | PASS
+# N NEGATIVE CHECKS (Task-4· DOCUMENT/REFERENCE CONSISTENCY ΜΟΝΟ) — μηδέν stale-ownership / overclaim σε ACTIVE έγγραφα
+N1    | actual=0      | want eq 0      | PASS
+N2    | actual=0      | want eq 0      | PASS
+N3    | actual=0      | want eq 0      | PASS
 # F regression floor: V1.3-CONSISTENCY-AUDIT.sh
 F1    | actual=0      | want eq 0      | PASS
 F2    | actual=0      | want eq 0      | PASS
-### SUMMARY: checks=98 pass=98 fail=0
-### EXIT 0 — ALL PASS
+### SUMMARY: checks=158 pass=158 fail=0
+### EXIT 0 — DOCUMENT/REFERENCE CONSISTENCY PASS (ΟΧΙ semantic/legal/security proof· ΟΧΙ completeness)
