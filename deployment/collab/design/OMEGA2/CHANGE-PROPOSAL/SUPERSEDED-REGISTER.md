@@ -147,7 +147,10 @@ KT13) **δεν** λύθηκαν — απλώς δεν έχουν πεδίο στ
 | `LAWMAX-TEMPORAL-IDENTITY-DESIGN.md` | διτεμπορική ταυτότητα (per-event), receipts, μία ρίζα | — |
 | `LAWMAX-TEMPORAL-SEMANTICS-SPEC.md` | διτεμπορική σημασιολογία (effectivity conditions) | — |
 | `LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md` (+ closure matrix) | Work→Expression→Manifestation→Item, authority/institutional registries, receipts, relations, uncertainty | — |
-| `LAWMAX-THREAT-MODEL.md` | Θ1–Θ14 | κενά Θ3/Θ4/Θ5/Θ9/Θ10 κλείνουν με v1.4 §4.14 / MLTP v3 |
+| `LAWMAX-LEGAL-IR-SEMANTIC-CONTRACT.md` (POST-C2) | Legal IR semantic **requirements** spec· conflict = adopted scoped bundle· μηχανοποιημένα artifacts = Implementation Book | conflict mechanism ≠ επινοημένος ουσιαστικός κανόνας (semantic-contract §4) |
+| `LAWMAX-PUBLIC-SOURCE-TYPE-AUTHORITY-REGISTRY.md` (POST-C2) | απαριθμήσιμο δημόσιο νομικό σύμπαν ST-01..21 + encoding profiles | census total function (v1.4 §4.1/§4.20) |
+| `LAWMAX-SECURE-SEMANTIC-INGRESS-CONTRACT.md` (POST-C2) | trust boundary: external bytes ≠ Lisp forms· taint states· SIK-1..9 | EXTEND `safe-read.lisp` (μοναδική έδρα)· v1.4 §4.21 |
+| `LAWMAX-THREAT-MODEL.md` | Θ1–Θ18 | Θ3/Θ4/Θ5/Θ9/Θ10 → v1.4 §4.14· Θ15/Θ16 → MLTP §14/§2.11· Θ17 → v1.4 §4.22· Θ18 → ingress contract |
 
 **Κανόνας:** το v1.4 τα **καταναλώνει**, δεν τα αναδιατυπώνει (βλ.
 `PUBLIC-OBSERVATORY-CROSSWALK.md §A.2`). Όπου το v1.4/MLTP v3 απαιτεί διαφορετική

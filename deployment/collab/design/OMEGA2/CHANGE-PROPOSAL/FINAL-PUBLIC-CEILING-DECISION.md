@@ -460,8 +460,33 @@ freeze/merge είναι ο δημιουργός (ρητό `εγκρίνω SPEC F
 μηχανική εμπιστοσύνη **μόνο** για την επαληθευμένη αναπαράστασή του — ποτέ εξουσία
 δημιουργίας δικαίου.
 
+### ΜΕΡΟΣ 8-quater — FINAL ARCHITECTURE CLOSURE ([0142])
+
+Ο Final Architecture Closure Pass έκλεισε τα εναπομείναντα ορφανά/αντιφάσεις της
+αρχιτεκτονικής (design-only, μία bounded pass, χωρίς παράλληλη αρχιτεκτονική): (α) πλήρες
+δημόσιο νομικό σύμπαν ως απαριθμήσιμο μητρώο — `LAWMAX-PUBLIC-SOURCE-TYPE-AUTHORITY-REGISTRY.md`
+(ST-01..21, v1.4 §4.20)· (β) `LAWMAX-SECURE-SEMANTIC-INGRESS-CONTRACT.md` — external bytes ≠
+Lisp forms (v1.4 §4.21, Θ18)· (γ) nation-state compromise-tolerant security (v1.4 §4.22,
+Θ17)· (δ) URL topology + isolation (§4.12)· (ε) trust-packet πληρότητα (§4.7)· (στ)
+`ARCHITECTURE-CLOSURE-MATRIX.md` — mission→subsystem→trust boundary→data type→contract→seat→
+test→kill test→evidence→work package, **καμία ορφανή κατάσταση**. Οι δομικοί audits
+επεκτάθηκαν (blocks H/I/J): **v1.4 143/143, v1.3 64/64, run.sh PASSED**. **Αρχιτεκτονικά
+UNKNOWN: 0** — κάθε υπόλοιπο ταξινομημένο IMPLEMENTATION-BOOK / IMPLEMENTATION /
+QUALIFICATION / EXTERNAL-OPERATIONAL.
+
+> # `SPEC FREEZE CANDIDATE READY — AWAITING CREATOR APPROVAL`
+
+**Ακριβές εύρος:** η **αρχιτεκτονική/προδιαγραφή** είναι κλειστή, εσωτερικά συνεπής και
+falsifiable· καμία ανοιχτή αρχιτεκτονική απόφαση, κανένα orphan/undefined-context/cyclic-id/
+duplicate-ownership/type-without-schema/requirement-without-test. **Δεν** σημαίνει
+qualified ή implemented: το `SPEC QUALIFIED` (§8) και το Implementation Book παραμένουν
+**μεταγενέστερες** πύλες (QUALIFICATION / IMPLEMENTATION-BOOK), **όχι** architecture
+blockers. Μετά το ρητό `ΕΓΚΡΙΝΩ SPEC FREEZE` καρφώνεται το freeze SHA και ξεκινά το
+`LAWMAX OMEGA — PUBLIC OBSERVATORY IMPLEMENTATION BOOK v1.0` (εντολή §7). Το AI **δεν**
+παγώνει, δεν υλοποιεί, δεν κάνει refactor/merge/qualify.
+
 ---
 
-*Design-only. Σταματά εδώ, αναμένοντας το ρητό `εγκρίνω SPEC FREEZE` του δημιουργού ή
+*Design-only. Σταματά εδώ, αναμένοντας το ρητό `ΕΓΚΡΙΝΩ SPEC FREEZE` του δημιουργού ή
 διορθωτική εντολή. Καμία αυτόματη ενέργεια, κανένα άνοιγμα φάσης χωρίς την υπογραφή του
 δημιουργού.*

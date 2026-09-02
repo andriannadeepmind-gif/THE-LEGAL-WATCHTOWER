@@ -70,7 +70,7 @@ out=[]
 def emit(id,a,op,e): out.append((id,str(a),op,str(e)))
 rows=[l for l in docs[T].split('\n') if re.match(r'^\| R-\d{2,3} \|',l)]
 ids=[re.match(r'^\| (R-\d{2,3}) \|',l).group(1) for l in rows]
-emit('P5a',len(rows),'eq',131); emit('P5b',len(set(ids)),'eq',131); emit('P5c',sum(1 for i in range(1,132) if (f'R-{i:02d}' if i<100 else f'R-{i}') in ids),'eq',131)
+emit('P5a',len(rows),'eq',134); emit('P5b',len(set(ids)),'eq',134); emit('P5c',sum(1 for i in range(1,135) if (f'R-{i:02d}' if i<100 else f'R-{i}') in ids),'eq',134)
 bad=0; ulinked=0
 for l in rows:
     cells=[c.strip() for c in l.strip().strip('|').split('|')]; rid=cells[0]; seat,test,evid=cells[4],cells[8],cells[9]
@@ -80,14 +80,14 @@ for l in rows:
 emit('P5d',bad,'eq',0); emit('P5e',ulinked,'eq',5)
 allt='\n'.join(docs.values())
 kwdef=set(re.findall(r'^\| \*\*(KW-\d+)\*\* \|',docs[Q],re.M)); kwref={f'KW-{k}' for k in re.findall(r'\bKW-(\d+)\b',allt)}
-emit('P5f',len(kwdef),'eq',106); emit('P5g',len(kwref-kwdef),'eq',0); emit('P5h',sum(1 for i in range(1,107) if f'KW-{i}' in kwdef),'eq',106)
+emit('P5f',len(kwdef),'eq',109); emit('P5g',len(kwref-kwdef),'eq',0); emit('P5h',sum(1 for i in range(1,110) if f'KW-{i}' in kwdef),'eq',109)
 qdef=set(re.findall(r'^### (Q\d\d) ',docs[Q],re.M)); qref={f'Q{q}' for q in re.findall(r'\bQ([0-4]\d)\b',allt)}
 emit('P5i',len(qdef),'eq',43); emit('P5j',len(qref-qdef),'eq',0)
 vdef=set(re.findall(r'^### (VS-\d\d) ',docs[VS],re.M)); vref=set(re.findall(r'\bVS-\d\d\b',allt)); emit('P5k',len(vdef),'eq',15); emit('P5l',len(vref-vdef),'eq',0)
 ddef=set(re.findall(r'^### (D-\d\d) ',docs[DM],re.M)); dref=set(re.findall(r'\bD-\d\d\b',allt)); emit('P5m',len(ddef),'eq',16); emit('P5n',len(dref-ddef),'eq',0)
 uref=set(re.findall(r'\bU-(\d+)\b',allt)); emit('P5o',len(uref-{str(i) for i in range(1,9)}),'eq',0)
 emit('P5p',len(re.findall(r'^\| U-[1-8] \|',docs[V],re.M)),'eq',8)
-capdef=set(re.findall(r'^\| (CAP-\d{2,3}) \|',docs[X],re.M)); capref=set(re.findall(r'\bCAP-\d{2,3}\b',allt)); emit('P5q',len(capdef),'eq',156); emit('P5r',len(capref-capdef),'eq',0)
+capdef=set(re.findall(r'^\| (CAP-\d{2,3}) \|',docs[X],re.M)); capref=set(re.findall(r'\bCAP-\d{2,3}\b',allt)); emit('P5q',len(capdef),'eq',159); emit('P5r',len(capref-capdef),'eq',0)
 rref=set(re.findall(r'\bR-\d{2,3}\b',allt)); emit('P5s',len(rref-set(ids)),'eq',0)
 emit('P5t',len(re.findall(r'^### Βήμα (\d+) ',docs[SQ],re.M)),'eq',15)
 pat=re.compile(r'SEPARATE PRIVATE TARGET|PRIVATE TARGET = CPEI|CPEI = ιδιωτικ|CPEI[^|\n]{0,40}= *(DEFERRED|PRIVATE)|ΜΙΑ ΚΑΙ ΜΟΝΗ κανονική target architecture')
@@ -137,12 +137,12 @@ ck C1 "$src_rows" eq "$src_fs"
 ck C2 "$cli_rows" eq "$cli_fs"
 ck C1b "$src_fs" eq 133
 ck C2b "$cli_fs" eq 48
-ck C3 "$(c '^| CAP-[0-9]* |' $X)" eq 156
+ck C3 "$(c '^| CAP-[0-9]* |' $X)" eq 159
 ck C4 "$(c '^| CAP-[0-9]* |.*| HAS_SEAT |' $X)" eq 135
 ck C5 "$(c '^| CAP-[0-9]* |.*| EXCLUDED_WITH_PROOF |' $X)" eq 10
-ck C6 "$(c '^| CAP-[0-9]* |.*| UNKNOWN_WITH_OWNER_AND_DEADLINE |' $X)" eq 11
-ck C7 "$(c '156 capabilities · HAS_SEAT \*\*135\*\* · EXCLUDED_WITH_PROOF \*\*10\*\*' $X)" ge 1
-ck C7b "$(c 'UNKNOWN_WITH_OWNER_AND_DEADLINE \*\*11\*\*' $X)" ge 1
+ck C6 "$(c '^| CAP-[0-9]* |.*| UNKNOWN_WITH_OWNER_AND_DEADLINE |' $X)" eq 14
+ck C7 "$(c '159 capabilities · HAS_SEAT \*\*135\*\* · EXCLUDED_WITH_PROOF \*\*10\*\*' $X)" ge 1
+ck C7b "$(c 'UNKNOWN_WITH_OWNER_AND_DEADLINE \*\*14\*\*' $X)" ge 1
 ck C11 "$(c 'TODO\|TBD\|PLACEHOLDER\|FIXME' $STAGEB | sum)" eq 0
 ck C12a "$(for f in $STAGEB; do grep -o '…' "$f" | wc -l; done | awk '{s+=$1}END{print s+0}')" eq 0
 ck C12b "$(c '\.\.\.' $STAGEB | sum)" eq 0
@@ -153,7 +153,7 @@ ck C16a "$(c 'legal-timeline/1' $M $V $Q | sum)" ge 3
 ck C16b "$(c 'audit-timeline/1' $M $V $Q | sum)" ge 3
 ck C16c "$(c 'ΠΟΤΕ δεν κρίνει νομική ισχύ\|ποτέ δεν κρίνει νομική ισχύ\|ποτέ\*\* δεν κρίνει νομική ισχύ' $M $V | sum)" ge 2
 ck C18a "$(c '^### Q[0-4][0-9] ' $Q)" eq 43
-ck C18b "$(c '^| \*\*KW-[0-9]*\*\* |' $Q)" eq 106
+ck C18b "$(c '^| \*\*KW-[0-9]*\*\* |' $Q)" eq 109
 ck C18c "$(c '^### VS-' $VS)" eq 15
 ck C18d "$(c '^### D-' $DM)" eq 16
 ck C18e "$(c '^### Βήμα ' $SQ)" eq 15
@@ -199,6 +199,36 @@ ck H7a "$(c 'independent n-of-m ML-DSA multisignature' $M)" ge 1
 ck H7b "$(cE 'lex superior ≻ lex specialis ≻ lex posterior' $SC)" eq 0
 ck H7c "$(c 'ΑΦΑΙΡΕΘΗΚΕ η καθολική ουσιαστική παραδοχή' $SC)" ge 1
 ck H8 "$(c 'Implementation Book completion + approval' $V)" ge 1
+echo "# I FINAL ARCHITECTURE CLOSURE — source-registry completeness · trust-boundary coverage · Legal-IR non-executability · exact algorithm-policy binding · public/internal time separation"
+SR=$ROOT/deployment/LAWMAX-PUBLIC-SOURCE-TYPE-AUTHORITY-REGISTRY.md
+IN=$ROOT/deployment/LAWMAX-SECURE-SEMANTIC-INGRESS-CONTRACT.md
+ck I1a "$(cE '^\| ST-[0-9]' $SR)" eq 21
+ck I1b "$(python3 -c "
+import re
+s=open('$SR',encoding='utf-8').read()
+rows=[l for l in s.split(chr(10)) if re.match(r'^\| ST-[0-9]',l)]
+ok=sum(1 for l in rows for cells in [[c.strip() for c in l.strip().strip('|').split('|')]] if len(cells)>=10 and '·' in cells[8] and cells[9] not in ('','—') and cells[8] not in ('','—'))
+print(ok)
+")" eq 21
+ck I2a "$(test -f $IN && echo 1 || echo 0)" eq 1
+ck I2b "$(c 'Θ17' $ROOT/deployment/LAWMAX-THREAT-MODEL.md)" ge 1
+ck I2c "$(c 'Θ18' $ROOT/deployment/LAWMAX-THREAT-MODEL.md)" ge 1
+ck I2d "$(c 'unhackable' $ROOT/deployment/LAWMAX-THREAT-MODEL.md)" ge 1
+ck I3a "$(c 'External bytes ΔΕΝ γίνονται ποτέ Lisp forms' $IN)" ge 1
+ck I3b "$(c 'read-from-string' $IN)" ge 1
+ck I3c "$(c 'UNTRUSTED → PARSED → VALIDATED → ADOPTED → CANONICAL' $IN)" ge 1
+ck I4a "$(c 'independent n-of-m ML-DSA multisignature' $M)" ge 1
+ck I4b "$(c 'threshold/multisig ML-DSA' $M)" eq 0
+ck I5a "$(python3 -c "s=open('$M',encoding='utf-8').read();print(1 if 'legal-timeline/1' in s and 'audit-timeline/1' in s else 0)")" eq 1
+ck I5b "$(c 'ΠΟΤΕ δεν κρίνει νομική ισχύ\|ποτέ δεν κρίνει νομική ισχύ\|ποτέ\*\* δεν κρίνει νομική ισχύ' $M)" ge 1
+echo "# J ARCHITECTURE-CLOSURE-MATRIX — πληρότητα αλυσίδας + καμία απαγορευμένη κατάσταση + κανένα αρχιτεκτονικό UNKNOWN"
+CM=ARCHITECTURE-CLOSURE-MATRIX.md
+ck J1 "$(test -f $CM && echo 1 || echo 0)" eq 1
+ck J2 "$(c 'mission → subsystem → trust boundary → data type → contract → repository seat' $CM)" ge 1
+ck J3 "$(cE '^\| [0-9]+ \| MIS' $CM)" eq 18
+ck J4 "$(c 'Αρχιτεκτονικά UNKNOWN: 0' $CM)" ge 1
+ck J5 "$(cE 'IMPLEMENTATION-BOOK|IMPLEMENTATION |QUALIFICATION|EXTERNAL / OPERATIONAL' $CM)" ge 4
+ck J6 "$(cE 'WP-1[0-8]|WP-0[1-9]' $CM)" ge 10
 echo "# F regression floor: V1.3-CONSISTENCY-AUDIT.sh"
 bash ./V1.3-CONSISTENCY-AUDIT.sh > /dev/null 2>&1; f13=$?
 ck F1 "$f13" eq 0

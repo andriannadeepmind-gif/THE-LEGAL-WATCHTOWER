@@ -489,6 +489,16 @@ proof-carrying αντικείμενο και ο provider την επαληθεύ
 `citation` (`lawmax/citation/1`, §4.16 — δεσμευμένη μέσα στην υπογραφή του
 `CertifiedResult`).
 
+**Πληρότητα Machine-Legal-Trust packet (§3.F της εντολής) — χαρτογράφηση στα παραπάνω
+πεδία (καμία δεύτερη δομή):** applicable rules → `derivation_proof` premises (Legal IR
+`Norm`)· conditions & exceptions → `Norm.determinacy` + effectivity conditions· requested
+legal time → `valid_at`· related jurisprudence → line-of-authority refs (§4.9)· passage
+anchors → `official_source_chain` anchors· official sources → `official_source_chain`·
+amendment graph → `applied_legal_events` + impact (§4.8)· coverage state → `coverage_state`·
+uncertainty/unknowns → `uncertainty`· verification receipt → `VerificationReceipt` (MLTP
+§7)· citation-bound identifiers → `citation`. **Όλα τα 11 πεδία του §3.F υπάρχουν ήδη· δεν
+προστίθεται τύπος.**
+
 **Χωρίς έγκυρο, φρέσκο τεκμήριο το μηχανικό αποτέλεσμα είναι** `UNKNOWN` |
 `CONFLICTING` | `UNVERIFIED_FOR_MACHINE_RELIANCE` — **ποτέ** απάντηση χωρίς
 προσδιορισμό. Το `CONFLICTING` είναι typed reason του `UNKNOWN` (official-sources-conflict
@@ -666,6 +676,18 @@ cockpit_intent = { "kind": <"proposal" | "approval" | "rejection" | "revocation-
 **Ο δημόσιος ιστότοπος** δημοσιεύει ανθρωπο-αναγνώσιμο δίκαιο και νομολογία **από
 το ίδιο canonical release** που καταναλώνουν οι μηχανές (`static-site.lisp` +
 census-2: ο ιστότοπος είναι προβολή, ποτέ δεύτερη πηγή).
+
+**URL topology & τεχνική απομόνωση (§3.E της εντολής):** η δημόσια παρουσία είναι ενότητα
+πρώτου επιπέδου στο ίδιο κύριο domain — `stavropouloslaw.com/lawmax/` με
+`/lawmax/legislation/`, `/lawmax/case-law/`, `/lawmax/search/`, `/lawmax/cockpit/`,
+`/lawmax/methodology/`, `/lawmax/developers/`. Το API μπορεί τεχνικά να τρέχει στο
+`api.stavropouloslaw.com`, αλλά **κάθε Legal Object έχει ΕΝΑ μόνο stable canonical public
+URL κάτω από `/lawmax/`**. Διαχωρισμός ταυτότητας (αμετάβλητος): **Official source** =
+κράτος/ΕΕ/δικαστήριο/θεσμός· **Processing & verification** = LAWMAX OMEGA· **Founder &
+operator** = Stavropoulos Law® (MIS-8). Το εταιρικό CMS, το public observatory, το Cockpit,
+το API, το control plane και το offline trust root είναι **τεχνικά απομονωμένα** (security
+cells, §4.14/§4.22) ακόμη κι υπό το ίδιο domain: παραβίαση του εταιρικού site **δεν**
+παραβιάζει το legal root (I-4.22a).
 
 **Έδρες:** `systems/orchestrator-cli/cockpit.lisp` (`/api/ask`, `/api/pending`,
 `/api/decide`, `/api/publish`, `/api/catalog`: EXTEND· `/api/publish` → REPLACE)·
@@ -899,6 +921,57 @@ CAPABILITY`** (υπάρχει SHACL validator + shapes.ttl· απούσα η ver
 
 **Μάρτυρες:** KW-106 (ontology evolution: 2025 object retroactively rejected από 2027
 shapes ⇒ κόκκινο· revalidation δημιουργεί χωριστό receipt). **Βήματα:** 11.
+
+### 4.20 Public Source-Type Authority Registry (L9 · M1 · POST-C2 closure) — R-132
+
+**Σκοπός:** το πλήρες δημόσιο νομικό σύμπαν ως **απαριθμήσιμο μητρώο** (ST-01..ST-21) με
+authority-metadata ανά τύπο, ώστε το §4.1 census να είναι ολική συνάρτηση χωρίς σιωπηλή
+απώλεια. **Έδρα (κανονική):** `deployment/LAWMAX-PUBLIC-SOURCE-TYPE-AUTHORITY-REGISTRY.md`
+(τύπος·εκδότης·αρμοδιότητα·εξουσιοδοτική βάση·επίσημη πηγή·δεσμευτικότητα·πεδίο·έναρξη/
+λήξη·collector/profile/compiler·coverage test)· source-specific encoding profiles πάνω σε
+`legislation-ingestion.lisp`/`government-source.lisp`/`legal-decisions.lisp`/`eu-interop-layer.lisp`
+(EXTEND). Καλύπτει Σύνταγμα, νόμους, ΠΝΠ, κυρωτικούς, ΠΔ, ΥΑ/ΚΥΑ, ανεξάρτητες αρχές,
+ΟΤΑ, εγκυκλίους (`binding` typed), συνθήκες (άρ.28), πρωτογενές/παράγωγο ΕΕ, soft law, ΣΣΕ,
+νομολογία ελληνική/ΔΕΕ/ΕΔΔΑ, ΝΣΚ, προπαρασκευαστικές, doctrine.
+
+**Invariants:** (I-4.20a) κάθε ST έχει collector+profile+compiler+coverage test (καμία
+κατηγορία χωρίς αυτά)· (I-4.20b) «ειδικός/γενικός» = τεκμηριωμένη σχέση ανά ζήτημα (adopted
+`ConflictPolicyBundle`), ποτέ μόνιμη ετικέτα· (I-4.20c) `binding` typed κλειστό sum.
+
+**Μάρτυρες:** KW-109 (ST κατηγορία χωρίς collector/profile/compiler ⇒ κόκκινο). **Βήμα:** 1.
+
+### 4.21 Secure Semantic Ingress (L1/L3 · POST-C2 closure) — R-133
+
+**Σκοπός:** δομικό trust boundary — **external bytes ≠ Lisp forms**· καμία διαδρομή
+untrusted input → Lisp reader/macro/eval. **Έδρα (κανονική):**
+`deployment/LAWMAX-SECURE-SEMANTIC-INGRESS-CONTRACT.md` (taint states UNTRUSTED→PARSED→
+VALIDATED→ADOPTED→CANONICAL· sandboxed capability-less parsing· `*read-eval*` off μη-μόνη
+άμυνα· καμία `read`/`read-from-string` σε untrusted· reader-macro/package escape prevention·
+constrained grammar· structural+symbolic validators· neural = μη εξουσιοδοτικό· τρεις
+ξεχωριστές είσοδοι legal/cockpit/code)· EXTEND `safe-read.lisp` (μοναδική έδρα, ΟΧΙ δεύτερη).
+SIK-1..9 predeclared.
+
+**Invariants:** (I-4.21a) καμία `read`/eval σε untrusted (δομικά)· (I-4.21b) μονότονο taint,
+regressive ⇒ `ingress-nonmonotonic-taint`· (I-4.21c) neural δεν προάγει μόνο του σε VALIDATED.
+
+**Μάρτυρες:** KW-108 (untrusted input επιχειρεί read-time execution ⇒ 0 side effect, typed
+reject). **Βήματα:** 2, 7, 8.
+
+### 4.22 Nation-State Compromise-Tolerant Security (L10/L11/L12 · POST-C2 closure) — R-134
+
+**Σκοπός:** **compromise-tolerant** μοντέλο — καμία μοναδική μηχανή/υπηρεσία/cloud/
+διαχειριστής/κλειδί δεν αρκεί για μεταβολή του public legal root. **Έδρα:** MLTP v3
+§10.2 (threshold FROST-Ed25519 3-of-5) + §14.4 (n-of-m PQ ML-DSA) σε **ανεξάρτητα failure
+domains**· §4.14 (απομονωμένες security cells, offline/HSM root, append-only journal, ≥2
+cross-client witnesses, reproducible builds, SBOM, signed provenance, fail-closed
+publication, revocation/recovery/rebuild). `LAWMAX-THREAT-MODEL.md Θ17`.
+
+**Invariants:** (I-4.22a) παραβίαση **μίας** ζώνης ΔΕΝ παράγει canonical authority·
+(I-4.22b) αλλοίωση ανιχνεύσιμη (witnesses/journal), περιορισμένη (cells), αναστρέψιμη
+(revocation/rebuild)· (I-4.22c) **κανένας ισχυρισμός «unhackable»** (μη αποδείξιμος).
+
+**Μάρτυρες:** KW-107 (single-zone compromise επιχειρεί canonical publication ⇒ αποτυγχάνει,
+ανιχνεύεται). **Φέτα:** VS-12. **Βήμα:** 6.
 
 ---
 

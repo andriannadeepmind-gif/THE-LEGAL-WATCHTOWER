@@ -948,8 +948,19 @@ executable protocol validation* (§2 στάδια 1 έως 2), **όχι** `SPEC 
 | **KW-105** | Semantic ambiguity | δύο ανεξάρτητοι compilers που, **χωρίς καλύπτον υιοθετημένο `ConflictPolicyBundle`**, παράγουν οποιαδήποτε ντετερμινιστική διάταξη (αντί να επιστρέψουν UNKNOWN/CONFLICTING) ⇒ πρέπει να αποτύχει· ο ουσιαστικός κανόνας **ποτέ** επινοημένος από την αρχιτεκτονική | no-applicable-conflict-policy (UNKNOWN) / conflict-policy-underdetermined (CONFLICTING) / compiler-divergence· ποτέ σιωπηλή ολικοποίηση (SEMANTIC-CONTRACT §4, §9) | προδηλωμένος (POST-C2) |
 | **KW-106** | Ontology evolution | object του 2025 επικυρωμένο έναντι bound 2025 shapes ΔΕΝ πρέπει να απορριφθεί αναδρομικά όταν εισαχθεί 2027 bundle· revalidation δημιουργεί **χωριστό** receipt | ontology-evidence-mutated αν αλλοιωθεί το ιστορικό· αλλιώς νέο receipt (MLTP §2.11) | προδηλωμένος (POST-C2) |
 
-**Ισολογισμός:** 106 witnesses — KW-1 έως KW-63 **προδηλωμένοι/μη εκτελεσμένοι** (16 + 31
-+ 12 + 4)· **KW-64 έως KW-103 ΕΚΤΕΛΕΣΜΕΝΟΙ** στην εκτελέσιμη αναφορά (§7.5, §7.6· 40 μεταλλάξεις, incl. C1 profile/LTS)· **KW-104 έως KW-106 POST-C2, προδηλωμένοι/ΜΗ εκτελεσμένοι** (§7.7). Κάθε KW με
+### 7.8 KW-107 έως KW-109 — POST-C2 architecture-closure families (ΠΡΟΔΗΛΩΜΕΝΟΙ, **ΜΗ ΕΚΤΕΛΕΣΜΕΝΟΙ**)
+
+Οι τρεις οικογένειες του Final Architecture Closure Pass (nation-state security, secure
+semantic ingress, source-registry completeness). Design-only, ΜΗ εκτελεσμένοι.
+
+| KW | οικογένεια | τι σπάει | αναμενόμενο typed αποτέλεσμα | κατάσταση |
+|---|---|---|---|---|
+| **KW-107** | Nation-state single-zone compromise | παραβίαση **μίας** ζώνης (μηχανή/υπηρεσία/cloud/admin/κλειδί) επιχειρεί να παραγάγει canonical public legal authority ⇒ πρέπει να αποτύχει, να ανιχνευθεί, να είναι αναστρέψιμη | fail-closed publication· witness/journal detection· threshold+n-of-m δεν συμπληρώνεται (v1.4 §4.22, MLTP §10.2/§14.4)· ΟΧΙ «unhackable» | προδηλωμένος (POST-C2) |
+| **KW-108** | Secure semantic ingress | untrusted external bytes επιχειρούν read-time execution / reader-macro / package escape ⇒ **μηδενική** παρενέργεια, ποτέ Lisp form | typed reject (read-time-execution-attempt / reader-macro-escape / package-symbol-escape)· 0 side effect· taint μένει UNTRUSTED (INGRESS-CONTRACT SIK-1..9) | προδηλωμένος (POST-C2) |
+| **KW-109** | Source-registry completeness | τύπος πηγής (ST) χωρίς collector/profile/compiler/coverage-test ⇒ πρέπει να κοκκινίσει (καμία κατηγορία σιωπηλά ακάλυπτη) | source-registry-incomplete (I-4.20a)· census θέση χωρίς κατάσταση ⇒ κόκκινο (KW-48) | προδηλωμένος (POST-C2) |
+
+**Ισολογισμός:** 109 witnesses — KW-1 έως KW-63 **προδηλωμένοι/μη εκτελεσμένοι** (16 + 31
++ 12 + 4)· **KW-64 έως KW-103 ΕΚΤΕΛΕΣΜΕΝΟΙ** στην εκτελέσιμη αναφορά (§7.5, §7.6· 40 μεταλλάξεις, incl. C1 profile/LTS)· **KW-104 έως KW-106 POST-C2 reconciliation** (§7.7)· **KW-107 έως KW-109 POST-C2 architecture-closure** (§7.8), προδηλωμένοι/ΜΗ εκτελεσμένοι. Κάθε KW με
 μετάλλαξη, typed αναμενόμενο, έδρα. Default verdict του πάσου 4 όταν η επιβίωση δεν
 αποδεικνύεται: `FALSIFIED`.
 

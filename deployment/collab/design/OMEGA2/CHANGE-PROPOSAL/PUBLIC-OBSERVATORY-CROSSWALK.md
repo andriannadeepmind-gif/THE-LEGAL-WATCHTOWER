@@ -519,6 +519,9 @@ owner+προθεσμία (για UNKNOWN) · υλοποίηση σήμερα (`p
 | CAP-154 | POST-C2 Finding 2: cryptographic agility & long-term evidence — suite registry, crypto-policy epochs, hybrid classical/PQ (ML-DSA-65), downgrade resistance, evidence-renewal chains | UNKNOWN_WITH_OWNER_AND_DEADLINE | MLTP v3 §14 + v1.4 §4.18 | missing | R-130 | owner δημιουργός· hybrid epoch με ρητή πράξη (πριν βήμα 6) |
 | CAP-155 | POST-C2 Finding 3: temporal ontology & validation governance — content-addressed bundles, receipts δεσμευμένα σε `ontology_bundle_id`+`shapes_graph_digest`, καμία αναδρομική ακύρωση | UNKNOWN_WITH_OWNER_AND_DEADLINE | MLTP v3 §2.11 + `shacl-validator.lisp` (EXTEND) + v1.4 §4.19 | missing | R-131 | owner δημιουργός· πριν βήμα 11 |
 | CAP-156 | POST-C2 Finding 1: formal Legal-IR semantic contract — γλωσσο-ανεξάρτητο, conformance corpus input→derivation, δύο compilers χωρίς κοινό evaluator code | UNKNOWN_WITH_OWNER_AND_DEADLINE | `LAWMAX-LEGAL-IR-SEMANTIC-CONTRACT.md` + v1.4 §4.17 | missing | R-129 | owner δημιουργός· πριν βήμα 5 (PARTIALLY CLOSED) |
+| CAP-157 | POST-C2 closure: Public Source-Type Authority Registry — απαριθμήσιμο δημόσιο νομικό σύμπαν ST-01..21 + source-specific profiles/compilers | UNKNOWN_WITH_OWNER_AND_DEADLINE | `LAWMAX-PUBLIC-SOURCE-TYPE-AUTHORITY-REGISTRY.md` + v1.4 §4.20 | missing | R-132 | owner δημιουργός· census βήμα 1 (U-7 εύρος) |
+| CAP-158 | POST-C2 closure: Secure Semantic Ingress — external bytes ≠ Lisp forms· taint states· sandboxed parsing· SIK-1..9 | UNKNOWN_WITH_OWNER_AND_DEADLINE | `LAWMAX-SECURE-SEMANTIC-INGRESS-CONTRACT.md` + `safe-read.lisp` (EXTEND) + v1.4 §4.21 | missing | R-133 | owner δημιουργός· βήμα 2/7 |
+| CAP-159 | POST-C2 closure: Nation-state compromise-tolerant security — single-zone compromise ≠ canonical authority· ανιχνεύσιμη/περιορισμένη/αναστρέψιμη | UNKNOWN_WITH_OWNER_AND_DEADLINE | MLTP v3 §10.2/§14.4 + v1.4 §4.22/§4.14 | missing | R-134 | owner δημιουργός· βήμα 6 |
 
 ### B.10 EXCLUDED_WITH_PROOF — τι ΔΕΝ είναι capability του δημόσιου στόχου
 
@@ -548,9 +551,9 @@ owner+προθεσμία (για UNKNOWN) · υλοποίηση σήμερα (`p
 | CAP-147 | ποια δικαστήρια εκδίδουν νομίμως δημοσιεύσιμες αποφάσεις (μέγεθος census) — U-7 | UNKNOWN_WITH_OWNER_AND_DEADLINE | δημιουργός + census | έξοδος βήματος 1 |
 | CAP-148 | AS-IS R-1 έως R-6 (REPORTED) — U-8 | UNKNOWN_WITH_OWNER_AND_DEADLINE | βήμα 0 | έξοδος βήματος 0 |
 
-**Ισολογισμός §B:** 156 capabilities · HAS_SEAT **135** · EXCLUDED_WITH_PROOF **10** ·
-UNKNOWN_WITH_OWNER_AND_DEADLINE **11** · καμία χωρίς κατάσταση (POST-C2: +CAP-154/155/156,
-UNKNOWN 8→11). Υλοποίηση σήμερα
+**Ισολογισμός §B:** 159 capabilities · HAS_SEAT **135** · EXCLUDED_WITH_PROOF **10** ·
+UNKNOWN_WITH_OWNER_AND_DEADLINE **14** · καμία χωρίς κατάσταση (POST-C2: +CAP-154/155/156,
++CAP-157/158/159· UNKNOWN 8→14). Υλοποίηση σήμερα
 (επί των 135 HAS_SEAT): `present` **19** · `partial` **51** · `missing` **64** ·
 `blocked` **1**. Η καταμέτρηση επαληθεύεται μηχανικά από τον
 `V1.4-CONTRADICTION-OMISSION-AUDIT.sh`.
