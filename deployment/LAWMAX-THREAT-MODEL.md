@@ -40,9 +40,14 @@ taxonomy + Certificate Transparency split-view. Δεμένο στο Σύνταγ
 | Θ12 | **Κλοπή moat** (αντιγραφή δεδομένων) | ο κλέφτης ΔΕΝ εκδίδει έγκυρα receipts (χωρίς prover/κλειδιά)· RFC-3161 anchors αποδεικνύουν αρχαιότητα | ✅ σχεδιακό (ισχυρότερο με P4 receipts) |
 | Θ13 | **LLM δηλητηρίαση** (μοντέλο στο έμπιστο μονοπάτι) | κανένα LLM στο trusted path (αξίωμα)· τίμια άγνοια | ✅ δομικό |
 | Θ14 | **Network MITM** | HTTPS + CA bundle· τα artifacts self-verifying offline | ✅ (η επαλήθευση δεν χρειάζεται δίκτυο) |
+| Θ15 | **Αλγοριθμική απαξίωση / harvest-now-forge-later** (Ed25519/SHA-256 σπάνε σε βάθος δεκαετιών· ιστορικά υπογεγραμμένα αντικείμενα γίνονται πλαστογραφήσιμα· long-term evidence forgeability) | versioned suite registry + crypto-policy epochs + hybrid classical/PQ (ML-DSA-65, AND) + downgrade resistance + **archival evidence-renewal chains** (re-anchor ΠΡΙΝ το `sunset_at`) | ⚠ ΚΕΝΟ → MLTP v3 §14 (POST-C2, **design-only**) |
+| Θ16 | **Αναδρομική ακύρωση οντολογίας / σιωπηλό schema drift** (shapes του 2027 ακυρώνουν αναδρομικά συμμόρφωση του 2025· ή σιωπηλή μετάλλαξη ιστορικού validation receipt) | content-addressed ontology bundles + receipts δεσμευμένα στο ακριβές `shapes_graph_digest`· revalidation ⇒ **νέο** receipt· καμία σιωπηλή μετάλλαξη ιστορικού | ⚠ ΚΕΝΟ → MLTP v3 §2.11 (POST-C2, **design-only**) |
 
 ## 4 · Παραδοχές (ρητές, μη-αποδεδειγμένες)
-- SHA-256 / RSA-4096 (→Ed25519) δεν σπάνε στον ορίζοντα.
+- SHA-256 / RSA-4096 (→Ed25519) δεν σπάνε **εντός του τρέχοντος ορίζοντα** — η
+  παραδοχή είναι **χρονικά φραγμένη**: πέρα από τον ορίζοντα ισχύει το Θ15
+  (cryptographic agility & long-term evidence preservation, MLTP v3 §14), όχι η
+  αιώνια ισχύς της παραδοχής.
 - Οι RFC-3161 TSA δεν συμπαιγνιούν ΟΛΕΣ (γι' αυτό ≥3 ανεξάρτητες).
 - Ο κυρίαρχος κρατά τα ιδιωτικά κλειδιά ασφαλή (§ key-lifecycle).
 - Το ΦΕΚ/η πηγή είναι αυθεντική (αποδεικνύουμε δέσιμο στην πηγή, όχι ότι η
@@ -60,3 +65,8 @@ taxonomy + Certificate Transparency split-view. Δεμένο στο Σύνταγ
 Θ5 (split-view) → prev-release-root στο P1.5 census + self-hosted CT log P4+.
 Θ9 (bootstrap) → out-of-band pinned root στο P1.5 verify-kit-v2.
 Θ10 (TSR crypto) → πλήρης RFC-3161 επαλήθευση P4.
+Θ15 (αλγοριθμική απαξίωση) → Cryptographic Agility & Long-Term Evidence Preservation
+Profile (MLTP v3 §14)· ενεργοποίηση hybrid epoch με ρητή πράξη όταν το threat model το
+απαιτεί (POST-C2, design-only, μη υλοποιημένο).
+Θ16 (retroactive ontology invalidation) → Temporal Ontology & Validation Governance
+(MLTP v3 §2.11· content-addressed bundles + bound receipts· POST-C2, design-only).

@@ -509,6 +509,52 @@ CitationToken = SIGN(kid, "mltp3:citation" ‖ 0x1F ‖ canonical_bytes(citation
   `provider-adoption-qualified` και, όπου εφαρμόζεται, ενέργεια API-access.
   Εμπορικές συμφωνίες είναι εξωτερικές — όχι αρχιτεκτονική εξάρτηση.
 
+### 2.11 TEMPORAL ONTOLOGY & VALIDATION GOVERNANCE — `ontology-bundle` + `shacl-validation-receipt` (POST-C2 Finding 3, v1.4 §4.19)
+
+Content-addressed, immutable κύκλος ζωής οντολογίας/SHACL· η επικύρωση δένεται στην
+**ακριβή** έκδοση σχημάτων ώστε ένα αντικείμενο του 2025 να μην απορρίπτεται αναδρομικά
+όταν εισαχθεί bundle του 2027. **Τρεις χρονικοί άξονες διακριτοί** (ρητή εντολή): νομικός
+χρόνος γεγονότος (`legal-timeline/1`) ≠ **εφαρμοσιμότητα οντολογίας** (`applicability`) ≠
+θεσμικός χρόνος υιοθέτησης/ελέγχου (`audit-timeline/1`).
+
+```
+OntologyBundle = { "mltp": "3", "record": "ontology-bundle",
+  "ontology_bundle_id": <"onto1:" + canonical-hash(record χωρίς sig)>,
+  "shapes_graph_digest": "sha256:<hex>",       # URDNA2015 canonical N-Quads των SHACL shapes
+  "ontology_graph_digest": "sha256:<hex>",
+  "semver": <"MAJOR.MINOR.PATCH">,
+  "applicability": { "from": <legal-instant>, "to": <legal-instant> | null },   # εφαρμοσιμότητα, ΟΧΙ νομικός χρόνος γεγονότος
+  "adopted_at": { "trusted_time", "anchor" },  # θεσμικός χρόνος (audit-timeline)
+  "published_at": <legal-instant>,
+  "approving_act": "clm1:<hash>",              # InstitutionalAct (L8/L12)
+  "supersedes": "onto1:<hash>" | null,
+  "compat": <"backward" | "breaking" | "orthogonal">,   # typed migration rule, ΟΧΙ boolean
+  "sig": { "alg","kid": <delegated release key>, "sig": <context "mltp3:ontology-bundle"> } }
+
+ShaclValidationReceipt = { "mltp": "3", "record": "shacl-validation-receipt",
+  "receipt_id": <"shr1:" + canonical-hash(record χωρίς sig)>,
+  "object_ref": { "manifestation_id": "lsm1:<hash>", "artifact_digest": "sha256:<hex>" },
+  "ontology_bundle_id": "onto1:<hash>", "shapes_graph_digest": "sha256:<hex>",   # ΔΕΣΜΕΥΣΗ στην ακριβή έκδοση
+  "object_legal_time": <legal-instant>,        # νομικός χρόνος του αντικειμένου
+  "result": <"conforms" | "violates" | "migration-required">,   # typed enum, ΟΧΙ boolean (repo law)
+  "violations": [ { "shape": <iri>, "focus": <iri>, "detail_anchor": <anchor> } ],
+  "validated_at": { "trusted_time", "anchor" },  # audit-timeline
+  "validator_version": <string>,
+  "sig": { "alg","kid": <delegated release key>, "sig": <context "mltp3:shacl-receipt"> } }
+```
+
+**Κανόνες (fail-closed):** (α) receipt χωρίς `ontology_bundle_id` **ΚΑΙ**
+`shapes_graph_digest` ⇒ `ontology-unbound`· (β) revalidation υπό νεότερο bundle παράγει
+**νέο** receipt — το παλιό παραμένει έγκυρο τεκμήριο «συμμορφώθηκε στα σχήματα που ίσχυαν
+στον χρόνο του»· **καμία σιωπηλή μετάλλαξη/ακύρωση ιστορικού receipt** (`ontology-evidence-
+mutated`)· (γ) δύο bundles με επικαλυπτόμενη `applicability` και ασύμβατα shapes ⇒
+`ontology-conflict` ⇒ `CONFLICTING` (ποτέ σιωπηλός νικητής)· (δ) rollback = νέα υιοθέτηση
+προηγούμενου bundle ως **νέα** πράξη, ποτέ σιωπηλή επαναφορά. Extension error taxonomy
+(διακριτή από §4.3): `ontology-unbound · ontology-evidence-mutated · ontology-conflict ·
+shapes-digest-mismatch · unadopted-ontology-bundle`. Έδρες: `source/shacl-validator.lisp`
+(EXTEND — δέσμευση receipt στο bundle+digest)· `deployment/shapes/*.ttl` (γίνονται
+versioned bundles). **Falsifier: KW-106.**
+
 ---
 
 ## 3. `QualificationStateRecord` — assurance ΩΣ ΞΕΧΩΡΙΣΤΟ ΥΠΟΓΕΓΡΑΜΜΕΝΟ RECORD (RC-06, RC-08, RC-30)
@@ -1258,3 +1304,101 @@ bytes· ο verifier ελέγχει `citation_digest`, `claim_id ∈ dependency_s
 δεν είναι υλοποίηση των 15 επιπέδων, δεν διεκδικεί βαθμίδα. Μάρτυρες KW-64 έως
 KW-103 εκτελεσμένοι (40 μεταλλάξεις). Επόμενο (μόνο με ρητή εντολή δημιουργού):
 targeted executable protocol validation → `SPEC QUALIFIED` (κλίμακα v1.4 §10).
+
+---
+
+## 14. CRYPTOGRAPHIC AGILITY & LONG-TERM EVIDENCE PRESERVATION PROFILE (POST-C2 Finding 2, v1.4 §4.10)
+
+**Σκοπός:** ένα δημόσιο νομικό παρατηρητήριο πρέπει να διατηρεί **επαληθεύσιμο** τεκμήριο
+για **δεκαετίες**. Η §4 πινάρει Ed25519/SHA-256/RFC-3161 και έχει μόνο δι-εποχικό
+μονοπάτι `{era-1-legacy, era-2}` (RSA→Ed25519, §5). Αυτό **δεν** είναι γενική
+κρυπτογραφική ευελιξία. Αυτή η ενότητα **επεκτείνει** (δεν αντικαθιστά) την §4/§5/§9/§10
+με versioned suites, epochs, hybrid classical/PQ, downgrade resistance και long-term
+evidence renewal. **ΔΕΝ** ανάγεται σε «αντικατάσταση Ed25519» ή «επιβολή SHA-3». Ένα
+χρονοδιάγραμμα US/NSS **δεν** είναι νομικά δεσμευτικό για αυτό το ελληνικό παρατηρητήριο·
+η πολιτική epochs ορίζεται από τον δημιουργό/ελληνική διακυβέρνηση, **ενημερωμένη** από
+NIST FIPS 204 (ML-DSA), ETSI/CEN long-term signatures, χωρίς εξωτερική δέσμευση.
+
+### 14.1 Versioned algorithm-suite registry
+```
+AlgorithmSuite = { "suite_id": <"suite:" + short>, "sig_alg": <"Ed25519" | "ML-DSA-65" | "RS256">,
+  "hash_alg": <"SHA-256" | "SHA-384" | "SHA3-256">, "canonical_binding": "jcs-0x1F-context",
+  "status": <"active" | "sunset-announced" | "sunset" | "forbidden">,   # typed, ΟΧΙ boolean
+  "activation": <legal-instant>, "sunset_at": <legal-instant> | null }
+```
+Κλειστό, versioned. `ML-DSA-65` = FIPS 204 (Dilithium level 3). Η δέσμευση υπογραφής
+παραμένει `SIGN(kid, context ‖ 0x1F ‖ canonical_bytes)` με **suite tag** στο signed
+structure ώστε να μην συγχέεται suite (cross-suite confusion ⇒ `suite-mismatch`).
+
+### 14.2 Crypto-policy epochs — root-signed, monotonic
+```
+CryptoPolicyEpoch = { "record": "crypto-policy-epoch", "seq": <int monotonic>,
+  "required_new": [ <suite_id> ],   # suites υποχρεωτικά για ΝΕΕΣ υπογραφές (AND, όχι OR)
+  "accepted_verify": [ <suite_id> ], "forbidden": [ <suite_id> ],
+  "hybrid_required": <"none" | "classical+pq">,   # typed
+  "effective_from": <legal-instant>, "sig": <threshold owner root, context "mltp3:crypto-policy-epoch"> }
+```
+Το epoch πινιέται στο `MLTPProfileManifest` (C1.1) και στο `LocalTrustState`. Ο verifier
+απορρίπτει suite κάτω από το `required_new`/`accepted_verify` του epoch που ισχύει για την
+εποχή του αντικειμένου ⇒ `algorithm-downgrade` / `suite-below-policy` (**downgrade
+resistance**: η επίθεση υποβάθμισης δεν περνά επειδή το ελάχιστο είναι root-pinned).
+
+### 14.3 Hybrid classical + post-quantum
+Σε epoch με `hybrid_required = classical+pq`, κάθε υπογεγραμμένο αντικείμενο φέρει **ΚΑΙ**
+Ed25519 **ΚΑΙ** ML-DSA υπογραφή πάνω στα **ίδια** canonical bytes, με **ανεξάρτητα
+κλειδιά σε διακριτά failure domains**. Ο verifier απαιτεί **AND** (και οι δύο έγκυρες)·
+απούσα/άκυρη απαιτούμενη PQ υπογραφή ⇒ `pq-signature-missing` / `pq-signature-invalid`,
+**ποτέ VERIFIED** (ένας αντίπαλος που σπάει ΜΟΝΟ την Ed25519 δεν μπορεί να πλαστογραφήσει).
+**Falsifier: KW-104.**
+
+### 14.4 Threshold Ed25519 root ↔ PQ authorization
+Το owner root (§10.2 FROST-Ed25519 3-of-5) αποκτά **παράλληλο PQ owner root** (threshold/
+multisig ML-DSA) σε **ανεξάρτητη custody και failure domain**. Σε hybrid epoch, τα Layer-0
+statements co-signed από **αμφότερα** τα roots· ο pinned root γίνεται pinned **root-set**
+(classical + PQ) με AND-απαίτηση. Καμία μονή αλγοριθμική οικογένεια δεν κρατά μόνη της το
+Layer 0 στην hybrid εποχή.
+
+### 14.5 Migration χωρίς επανεγγραφή ιστορικών αντικειμένων + evidence renewal
+Τα ιστορικά αντικείμενα **δεν** ξαναγράφονται· διατηρούν τις αρχικές υπογραφές τους. Η
+συνέχιση εμπιστοσύνης τους γίνεται με **archival re-anchoring**:
+```
+EvidenceRenewalStatement = { "record": "evidence-renewal", "renews": "sha256:<digest ιστορικού object>",
+  "prev_renewal": "sha256:<hex>" | null,   # αλυσίδα ανανεώσεων
+  "fresh_suite": <suite_id>, "fresh_tsr": <RFC-3161 TSR με fresh suite>,
+  "renewed_at": <legal-instant>, "sig": <root/delegated, context "mltp3:evidence-renewal"> }
+```
+Πρότυπο: ERS/LTA long-term signature renewal — ένα φρέσκο-suite timestamp+υπογραφή πάνω
+στο digest του ιστορικού αντικειμένου **ΠΡΙΝ** η παλιά suite γίνει `sunset`, επεκτείνει την
+αποδεικτική ζωή **χωρίς** αλλοίωση του αντικειμένου. Αλυσίδα renewals (`prev_renewal`)
+γεφυρώνει εποχές.
+
+### 14.6 Verifier behavior ανά εποχή (legacy / hybrid / PQ-only)
+| εποχή αντικειμένου | κανόνας verifier |
+|---|---|
+| legacy (classical-only) | δεκτό **μόνο** με έγκυρη αλυσίδα renewal αγκυρωμένη πριν το `sunset_at`· αλλιώς `evidence-expired-algorithm` (UNKNOWN, ποτέ VERIFIED) |
+| hybrid | απαιτούνται classical **AND** pq (§14.3) |
+| PQ-only | απαιτείται pq· classical προαιρετική/αγνοείται |
+Χωρίς αλυσίδα renewal για object που στηρίζεται σε `sunset` suite μετά το `sunset_at` ⇒
+`evidence-expired-algorithm`.
+
+### 14.7 Transparency-log & witness continuity across migrations
+Το tlog και τα witness checkpoints (§10.1) **μεταναστεύουν** ρητά: σε hybrid epoch τα
+`SignedCheckpoint` co-signed classical+PQ· consistency proof **γεφυρώνει** pre/post
+migration roots· witness registry entries φέρουν `suite`· witness που δεν co-signs στην
+απαιτούμενη suite **δεν** μετρά για τη νέα εποχή. SCITT (§11) προβολή με PQ COSE
+algorithms (RFC 9053 + PQ registrations) — χωριστή υπογραφή, όχι relabeling.
+
+### 14.8 Compromise & revocation semantics (per-algorithm)
+Ένα αλγοριθμικό σπάσιμο είναι **class-wide compromise**: root-signed `CryptoPolicyEpoch`
+με το suite σε `forbidden` ακυρώνει κάθε **ΝΕΑ** στήριξη σε αυτό (ανάλογο §9 key-compromise,
+αλλά **ανά αλγόριθμο**, όχι ανά κλειδί). Ιστορικά αντικείμενα επιβιώνουν **μόνο** μέσω
+renewal chains αγκυρωμένων **πριν** το σπάσιμο. Διακριτό από key-compromise (ανά κλειδί).
+
+### 14.9 Extension error taxonomy (διακριτή από §4.3)
+```
+suite-mismatch · algorithm-downgrade · suite-below-policy · pq-signature-missing ·
+pq-signature-invalid · evidence-expired-algorithm · stale-crypto-policy-epoch · unrenewed-legacy-evidence
+```
+**Απορρίψεις:** κανένα PQ signature στον πυρήνα ΔΕΝ επιβάλλεται *σήμερα* — η προεπιλογή
+epoch παραμένει `era-2` (Ed25519)· η hybrid εποχή **ενεργοποιείται με ρητή πράξη** όταν το
+threat model (Θ15) το απαιτεί. Design-only· καμία υλοποίηση.

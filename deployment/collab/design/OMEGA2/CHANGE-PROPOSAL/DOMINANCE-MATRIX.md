@@ -220,8 +220,56 @@ v3 γίνεται SCITT profile (διαδρομή εξελιξιμότητας, 
 **επαληθευμένη** αναπαράσταση δεν επιβιώνει χωρίς παραπομπή.
 **Witness:** Q42, KW-62, KW-63.
 
-**Ισολογισμός §A:** 13 επιλογές· 0 `DOMINATED` κατά τη σύνταξη· 1 ισοπαλία που
-είναι απόφαση δημιουργού (D-03 c, U-5)· κάθε D με ονομαστικό falsifier.
+### D-14 — Cryptographic agility & long-term evidence preservation (POST-C2 Finding 2)
+**Έδρα:** MLTP v3 §14· v1.4 §4.18.
+
+| εναλλακτική | γιατί δεν κυριαρχεί |
+|---|---|
+| (a) πινάρισμα μιας suite για πάντα (μόνο Ed25519/SHA-256) | αποτυγχάνει μακροπρόθεσμα: αλγοριθμική απαξίωση + harvest-now-forge-later· ένα δημόσιο νομικό αρχείο πρέπει να επιβιώνει δεκαετίες |
+| (b) rip-and-replace migration (επανεγγραφή ιστορικών αντικειμένων στη νέα suite) | καταστρέφει την ακεραιότητα content-addressing και την ιστορική αποδεικτική αλυσίδα· τα `*_id` αλλάζουν |
+| (c) επιβολή SHA-3 / PQ **τώρα** ανεπιφύλακτα | πρόωρο (κανένα threat σήμερα), σπάει interop, «ψευδο-ασφάλεια» χωρίς πολιτική |
+| (d) OR-σύνθεση classical/PQ (αρκεί μία υπογραφή) | ο αντίπαλος που σπάει τη μία επιλέγει την ασθενέστερη ⇒ καμία downgrade resistance |
+
+**Επιλογή:** versioned suite registry + root-signed policy epochs + hybrid **AND** +
+evidence-renewal chains + verifier ανά εποχή. Κυριαρχεί: ιστορικά αντικείμενα αμετάβλητα
+**ΚΑΙ** επιβίωση αλγοριθμικού σπασίματος (renewal) **ΚΑΙ** downgrade-resistant (root-pinned
+epoch). **Falsifier:** object που στηρίζεται σε `sunset` suite μετά το `sunset_at` και
+επιστρέφει `VERIFIED` χωρίς renewal chain ⇒ το προφίλ είναι λάθος. **Witness:** KW-104.
+**Τίμιο όριο:** το χρονοδιάγραμμα US/NSS **δεν** δεσμεύει· η πολιτική epochs είναι
+απόφαση ελληνικής διακυβέρνησης.
+
+### D-15 — Temporal ontology & validation governance (POST-C2 Finding 3)
+**Έδρα:** MLTP v3 §2.11· v1.4 §4.19.
+
+| εναλλακτική | γιατί δεν κυριαρχεί |
+|---|---|
+| (a) μετάλλαξη shapes επί τόπου + επαναεπικύρωση όλων | αναδρομικά ακυρώνει ιστορική συμμόρφωση ⇒ παραβιάζει διτεμπορική τιμιότητα (MIS-3) |
+| (b) `valid × known` σε κάθε SHACL shape | συγχέει τρεις χρονικούς άξονες — ρητό anti-pattern του δημιουργού |
+| (c) καμία έκδοση (ένα shapes graph) | αλλαγή του 2027 σπάει σιωπηλά τα receipts του 2025 |
+
+**Επιλογή:** content-addressed ontology bundles + receipts δεσμευμένα στο ακριβές
+`ontology_bundle_id` + `shapes_graph_digest` + typed migration + καμία σιωπηλή αναδρομική
+ακύρωση. **Falsifier:** object του 2025 απορρίπτεται αναδρομικά από 2027 shapes ⇒ λάθος.
+**Witness:** KW-106.
+
+### D-16 — Formal semantic contract για ανεξάρτητους compilers (POST-C2 Finding 1)
+**Έδρα:** `LAWMAX-LEGAL-IR-SEMANTIC-CONTRACT.md`· v1.4 §4.17.
+
+| εναλλακτική | γιατί δεν κυριαρχεί |
+|---|---|
+| (a) παραγωγή αμφότερων compilers από κοινό evaluator | **common-mode failure** — ακυρώνει τον σκοπό του §4.6 (differential verification) |
+| (b) υλοποίηση αμφότερων «κατά την πρόζα» | σιωπηλή διάσταση σε προτεραιότητα εξαίρεσης (lex specialis vs posterior) — KW-105 |
+| (c) ένας compiler + εξωτερικός έλεγχος | καμία N-version διαφορετικότητα υλοποίησης |
+
+**Επιλογή:** γλωσσο-ανεξάρτητο κανονιστικό συμβόλαιο + conformance corpus
+input→derivation + δέσμευση ανεξαρτησίας· μηχανοποιημένο μοντέλο = **oracle μόνο**, ποτέ
+κοινή υλοποίηση. **Falsifier:** δύο compilers σιωπηλά διαφορετική προτεραιότητα και
+αμφότεροι περνούν ⇒ το συμβόλαιο είναι υποπροσδιορισμένο. **Witness:** KW-105. Επιλογή
+Rust/OCaml = implementation decision.
+
+**Ισολογισμός §A:** 16 επιλογές (D-01 έως D-13 + POST-C2 D-14, D-15, D-16)· 0 `DOMINATED`
+κατά τη σύνταξη· 1 ισοπαλία που είναι απόφαση δημιουργού (D-03 c, U-5)· κάθε D με
+ονομαστικό falsifier.
 
 ---
 

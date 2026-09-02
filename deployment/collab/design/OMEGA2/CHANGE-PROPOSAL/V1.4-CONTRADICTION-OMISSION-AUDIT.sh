@@ -70,7 +70,7 @@ out=[]
 def emit(id,a,op,e): out.append((id,str(a),op,str(e)))
 rows=[l for l in docs[T].split('\n') if re.match(r'^\| R-\d{2,3} \|',l)]
 ids=[re.match(r'^\| (R-\d{2,3}) \|',l).group(1) for l in rows]
-emit('P5a',len(rows),'eq',128); emit('P5b',len(set(ids)),'eq',128); emit('P5c',sum(1 for i in range(1,129) if (f'R-{i:02d}' if i<100 else f'R-{i}') in ids),'eq',128)
+emit('P5a',len(rows),'eq',131); emit('P5b',len(set(ids)),'eq',131); emit('P5c',sum(1 for i in range(1,132) if (f'R-{i:02d}' if i<100 else f'R-{i}') in ids),'eq',131)
 bad=0; ulinked=0
 for l in rows:
     cells=[c.strip() for c in l.strip().strip('|').split('|')]; rid=cells[0]; seat,test,evid=cells[4],cells[8],cells[9]
@@ -80,14 +80,14 @@ for l in rows:
 emit('P5d',bad,'eq',0); emit('P5e',ulinked,'eq',5)
 allt='\n'.join(docs.values())
 kwdef=set(re.findall(r'^\| \*\*(KW-\d+)\*\* \|',docs[Q],re.M)); kwref={f'KW-{k}' for k in re.findall(r'\bKW-(\d+)\b',allt)}
-emit('P5f',len(kwdef),'eq',103); emit('P5g',len(kwref-kwdef),'eq',0); emit('P5h',sum(1 for i in range(1,104) if f'KW-{i}' in kwdef),'eq',103)
+emit('P5f',len(kwdef),'eq',106); emit('P5g',len(kwref-kwdef),'eq',0); emit('P5h',sum(1 for i in range(1,107) if f'KW-{i}' in kwdef),'eq',106)
 qdef=set(re.findall(r'^### (Q\d\d) ',docs[Q],re.M)); qref={f'Q{q}' for q in re.findall(r'\bQ([0-4]\d)\b',allt)}
 emit('P5i',len(qdef),'eq',43); emit('P5j',len(qref-qdef),'eq',0)
 vdef=set(re.findall(r'^### (VS-\d\d) ',docs[VS],re.M)); vref=set(re.findall(r'\bVS-\d\d\b',allt)); emit('P5k',len(vdef),'eq',15); emit('P5l',len(vref-vdef),'eq',0)
-ddef=set(re.findall(r'^### (D-\d\d) ',docs[DM],re.M)); dref=set(re.findall(r'\bD-\d\d\b',allt)); emit('P5m',len(ddef),'eq',13); emit('P5n',len(dref-ddef),'eq',0)
+ddef=set(re.findall(r'^### (D-\d\d) ',docs[DM],re.M)); dref=set(re.findall(r'\bD-\d\d\b',allt)); emit('P5m',len(ddef),'eq',16); emit('P5n',len(dref-ddef),'eq',0)
 uref=set(re.findall(r'\bU-(\d+)\b',allt)); emit('P5o',len(uref-{str(i) for i in range(1,9)}),'eq',0)
 emit('P5p',len(re.findall(r'^\| U-[1-8] \|',docs[V],re.M)),'eq',8)
-capdef=set(re.findall(r'^\| (CAP-\d{2,3}) \|',docs[X],re.M)); capref=set(re.findall(r'\bCAP-\d{2,3}\b',allt)); emit('P5q',len(capdef),'eq',153); emit('P5r',len(capref-capdef),'eq',0)
+capdef=set(re.findall(r'^\| (CAP-\d{2,3}) \|',docs[X],re.M)); capref=set(re.findall(r'\bCAP-\d{2,3}\b',allt)); emit('P5q',len(capdef),'eq',156); emit('P5r',len(capref-capdef),'eq',0)
 rref=set(re.findall(r'\bR-\d{2,3}\b',allt)); emit('P5s',len(rref-set(ids)),'eq',0)
 emit('P5t',len(re.findall(r'^### Βήμα (\d+) ',docs[SQ],re.M)),'eq',15)
 pat=re.compile(r'SEPARATE PRIVATE TARGET|PRIVATE TARGET = CPEI|CPEI = ιδιωτικ|CPEI[^|\n]{0,40}= *(DEFERRED|PRIVATE)|ΜΙΑ ΚΑΙ ΜΟΝΗ κανονική target architecture')
@@ -125,12 +125,12 @@ ck C1 "$src_rows" eq "$src_fs"
 ck C2 "$cli_rows" eq "$cli_fs"
 ck C1b "$src_fs" eq 133
 ck C2b "$cli_fs" eq 48
-ck C3 "$(c '^| CAP-[0-9]* |' $X)" eq 153
+ck C3 "$(c '^| CAP-[0-9]* |' $X)" eq 156
 ck C4 "$(c '^| CAP-[0-9]* |.*| HAS_SEAT |' $X)" eq 135
 ck C5 "$(c '^| CAP-[0-9]* |.*| EXCLUDED_WITH_PROOF |' $X)" eq 10
-ck C6 "$(c '^| CAP-[0-9]* |.*| UNKNOWN_WITH_OWNER_AND_DEADLINE |' $X)" eq 8
-ck C7 "$(c '153 capabilities · HAS_SEAT \*\*135\*\* · EXCLUDED_WITH_PROOF \*\*10\*\*' $X)" ge 1
-ck C7b "$(c 'UNKNOWN_WITH_OWNER_AND_DEADLINE \*\*8\*\*' $X)" ge 1
+ck C6 "$(c '^| CAP-[0-9]* |.*| UNKNOWN_WITH_OWNER_AND_DEADLINE |' $X)" eq 11
+ck C7 "$(c '156 capabilities · HAS_SEAT \*\*135\*\* · EXCLUDED_WITH_PROOF \*\*10\*\*' $X)" ge 1
+ck C7b "$(c 'UNKNOWN_WITH_OWNER_AND_DEADLINE \*\*11\*\*' $X)" ge 1
 ck C11 "$(c 'TODO\|TBD\|PLACEHOLDER\|FIXME' $STAGEB | sum)" eq 0
 ck C12a "$(for f in $STAGEB; do grep -o '…' "$f" | wc -l; done | awk '{s+=$1}END{print s+0}')" eq 0
 ck C12b "$(c '\.\.\.' $STAGEB | sum)" eq 0
@@ -141,9 +141,9 @@ ck C16a "$(c 'legal-timeline/1' $M $V $Q | sum)" ge 3
 ck C16b "$(c 'audit-timeline/1' $M $V $Q | sum)" ge 3
 ck C16c "$(c 'ΠΟΤΕ δεν κρίνει νομική ισχύ\|ποτέ δεν κρίνει νομική ισχύ\|ποτέ\*\* δεν κρίνει νομική ισχύ' $M $V | sum)" ge 2
 ck C18a "$(c '^### Q[0-4][0-9] ' $Q)" eq 43
-ck C18b "$(c '^| \*\*KW-[0-9]*\*\* |' $Q)" eq 103
+ck C18b "$(c '^| \*\*KW-[0-9]*\*\* |' $Q)" eq 106
 ck C18c "$(c '^### VS-' $VS)" eq 15
-ck C18d "$(c '^### D-' $DM)" eq 13
+ck C18d "$(c '^### D-' $DM)" eq 16
 ck C18e "$(c '^### Βήμα ' $SQ)" eq 15
 ck C19 "$(grep -ci 'claude\|anthropic\|openai\|chatgpt\|\bgpt\b\|\bfable\b\|\bopus\b\|\bsonnet\b' $STAGEB | sum)" eq 0
 ck C20 "$(c 'CHANGE-PROPOSAL-v1.3.md' $Q)" ge 1
@@ -164,6 +164,15 @@ ck E9 "$(test -f $MZ/fixtures/profile.json && echo 1 || echo 0)" eq 1
 ck E10 "$(c 'sodium_version_string' $MZ/crypto_libsodium.py)" ge 1
 ck E11 "$(c '23.3.0' $MZ/schemas.json $MZ/README.md | awk -F: '{s+=$NF}END{print s+0}')" eq 0
 ck E12 "$(test -f $MZ/interop/rfc3161/token.tsr && test -f $MZ/interop/cose/vector.cose && echo 1 || echo 0)" eq 1
+echo "# G POST-C2 ARCHITECTURE RECONCILIATION — τρία findings σεατισμένα (design-only)"
+ck G1 "$(c '## 14. CRYPTOGRAPHIC AGILITY' $M)" ge 1
+ck G2 "$(c 'shacl-validation-receipt' $M)" ge 1
+ck G3 "$(c 'evidence-renewal' $M)" ge 1
+ck G4 "$(test -f $ROOT/deployment/LAWMAX-LEGAL-IR-SEMANTIC-CONTRACT.md && echo 1 || echo 0)" eq 1
+ck G5 "$(c 'PARTIALLY CLOSED' $ROOT/deployment/LAWMAX-LEGAL-IR-SEMANTIC-CONTRACT.md)" ge 1
+ck G6 "$(cE '^### 4\.1[789] ' $V)" eq 3
+ck G7 "$(cE '^\| \*\*KW-10[456]\*\* \|' $Q)" eq 3
+ck G8 "$(cE 'Θ1[56]' $ROOT/deployment/LAWMAX-THREAT-MODEL.md)" ge 2
 echo "# F regression floor: V1.3-CONSISTENCY-AUDIT.sh"
 bash ./V1.3-CONSISTENCY-AUDIT.sh > /dev/null 2>&1; f13=$?
 ck F1 "$f13" eq 0
