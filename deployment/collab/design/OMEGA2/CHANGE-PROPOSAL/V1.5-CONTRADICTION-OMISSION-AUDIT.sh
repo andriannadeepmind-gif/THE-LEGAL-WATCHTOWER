@@ -57,7 +57,7 @@ ck D2f "$(cE 'ποτέ .* absence|never .* absence|δεν.*αποδεικνύ.*�
 echo "# D3 — Evidence-Backed Independence Quorums"
 ck D3a "$(c 'ActorIndependenceEvidence' $P $S $M | sum)" ge 3
 ck D3b "$(c 'IndependencePolicy' $P $S $M | sum)" ge 3
-ck D3c "$(c 'distinct-valid-kids AND satisfies' $P $M | sum)" ge 2
+ck D3c "$(cE 'distinct-components\(control-domain-partition|distinct-control-domain-components' $P $M | sum)" ge 2   # type-closed predicate (D3.7): counts control-domain components, not kids
 ck D3d "$(c 'INDEPENDENCE_UNKNOWN' $P $S $M | sum)" ge 3
 ck D3e "$(cE 'δεν αποδεικνύουν ανεξαρτησία|does NOT prove independence' $P $S $M | sum)" ge 2
 ck D3f "$(c 'consumer-local' $P $S $M | sum)" ge 3
@@ -109,6 +109,133 @@ ck K4 "$(cE 'V5R-D1-0[1-5]|V5R-D2-0[1-5]|V5R-D3-0[1-6]|V5R-C1-0[1-4]' $P | grep 
 # every affected seat carries its v1.5 appendix
 ck K5 "$(for f in "$IN" "$SR" "$USC" "$M" "$SC" "$CPEI"; do grep -lq 'SPEC v1.5 NARROW-DELTA' "$f" && echo 1; done | sum)" eq 6
 ck K6 "$(c 'SPEC v1.5 NARROW-DELTA' $CONST)" ge 1
+
+echo "# V5S — STRUCTURAL PARSE of $S (schema/cardinality/reference presence + conditional cardinality)"
+echo "#       HONEST SCOPE: parse-level structural checks over the s-expression ONLY (that the closed types,"
+echo "#       cardinality codes, required-refs, crypto-bind fields, deterministic partition, quorum predicate,"
+echo "#       non-circular argument record, and record/enum reference closure are PRESENT and well-formed as"
+echo "#       DATA). It is NOT semantic/legal/security proof and executes NONE of the predeclared V5Q/V5KW tests."
+while IFS='|' read -r vid va ve; do
+  [ -n "$vid" ] && ck "$vid" "$va" eq "$ve"
+done < <(python3 - "$S" <<'PYV5S'
+import sys,re
+src=open(sys.argv[1],encoding='utf-8').read()
+def strip_line_comments(s):
+    out=[];i=0;n=len(s);instr=False
+    while i<n:
+        c=s[i]
+        if instr:
+            out.append(c)
+            if c=='\\' and i+1<n: out.append(s[i+1]);i+=2;continue
+            if c=='"':instr=False
+            i+=1;continue
+        if c=='"':instr=True;out.append(c);i+=1;continue
+        if c==';':
+            while i<n and s[i]!='\n': i+=1
+            continue
+        out.append(c);i+=1
+    return ''.join(out)
+code=strip_line_comments(src)
+def form(head):
+    idx=code.find('('+head)
+    if idx<0: return ''
+    i=idx;depth=0;instr=False;n=len(code)
+    while i<n:
+        c=code[i]
+        if instr:
+            if c=='\\': i+=2;continue
+            if c=='"':instr=False
+            i+=1;continue
+        if c=='"':instr=True
+        elif c=='(':depth+=1
+        elif c==')':
+            depth-=1
+            if depth==0: return code[idx:i+1]
+        i+=1
+    return code[idx:]
+def fields(rf): return re.findall(r'\(:([A-Za-z0-9_]+)\s+:type',rf)
+def emembers(ef): return re.findall(r'\(:([A-Za-z0-9_]+)',ef)
+R=[]
+def out(i,a,e): R.append((i,str(a),str(e)))
+# V5S01 D1 cardinality matrix: 16 rows, key cells correct
+mform=form('define-cardinality-matrix SemanticAdmissionEvidence/1');rows={}
+for m in re.finditer(r'\(([a-z_0-9]+)\s+(:[RFC])\s+(:[RFC])\s+(:[RFC])\)',mform):
+    rows[m.group(1)]=(m.group(2),m.group(3),m.group(4))
+key_ok=(len(rows)==16 and rows.get('transformation_proof_ref',('',))[0]==':F'
+    and rows.get('independent_derivation_ref')==(':F',':F',':R')
+    and rows.get('adoption_act_ref')==(':F',':F',':R')
+    and rows.get('derivation_independence_evidence_ref')==(':F',':F',':C')
+    and rows.get('residual_independence_assumption')==(':F',':F',':C')
+    and rows.get('independent_check_ref')==(':F',':R',':R'))
+out('V5S01',1 if key_ok else 0,1)
+# V5S02 record fields == matrix domain
+rf=set(fields(form('define-record SemanticAdmissionEvidence/1')))
+out('V5S02',len(rf-set(rows))+len(set(rows)-rf),0)
+# V5S03 StateEventKind SA-2 completeness
+sa2=set(re.findall(r'\(:([A-Z_]+)\s+:sa\s+:SA-2\)',form('define-closed-enum StateEventKind')))
+req={'ENACTMENT','AMENDMENT','COMMENCEMENT','REPEAL','SUSPENSION','REVIVAL','ANNULMENT','CORRECTION',
+ 'DELEGATED_AUTHORITY_CHANGE','REGIME_EFFECTIVITY_TRANSITION','CONSTITUTIONAL_REVIEW_STATE_CHANGE',
+ 'JUDICIAL_REVIEW_STATE_CHANGE','LINE_OF_AUTHORITY_MUTATION'}
+out('V5S03',1 if req<=sa2 else 0,1)
+# V5S04 coverage_state exactly 3
+cs={x for x in emembers(form('define-closed-enum coverage_state')) if x.isupper()}
+out('V5S04',1 if cs=={'PRESENT','EXPLICITLY_ABSENT','UNKNOWN'} else 0,1)
+# V5S05 NegativeEvidence/1 fields
+ne=set(fields(form('define-record NegativeEvidence/1')))
+out('V5S05',1 if {'census_space_ref','issuing_authority_ref','source_ref','scope','observation_time','completeness_or_serial_rule_ref','evidence_artifact_digest','expiry','signature'}<=ne else 0,1)
+# V5S06 required-refs AUTHENTICATED_SERIAL_SPACE
+mss=re.search(r'\(:AUTHENTICATED_SERIAL_SPACE([^)]*)\)',form('define-required-refs CensusSpaceClassification/1'))
+sr=set(mss.group(1).split()) if mss else set()
+out('V5S06',1 if {'serial_authority_ref','completeness_assertion_ref','serial_position_semantics_ref'}<=sr else 0,1)
+# V5S07 IndependenceAssuranceProfile IA-0/1/2 distinct enum
+iap=form('define-closed-enum IndependenceAssuranceProfile')
+ia=set(re.findall(r'\(:(IA-[0-2])',iap))
+out('V5S07',1 if (ia=={'IA-0','IA-1','IA-2'} and 'define-closed-enum SemanticAdmissionAssuranceProfile' in code and iap) else 0,1)
+# V5S08 ActorIndependenceEvidence/1 crypto-bind + invariant
+aie=set(fields(form('define-record ActorIndependenceEvidence/1')))
+inv=form('define-invariant :V5I-D3-bind')
+bind={'actor_identity','actor_kid','actor_public_key','control_domain_id','evidence_subject_digest'}
+out('V5S08',1 if (bind<=aie and all(k in inv for k in bind)) else 0,1)
+# V5S09 issuer registry
+ie=set(fields(form('define-record IssuerEntry/1')))
+out('V5S09',1 if (form('define-record TrustedIssuerRegistry/1') and {'issuer_id','issuer_public_key','issuer_authority','scope','revocation_ref'}<=ie) else 0,1)
+# V5S10 partition deterministic + fail-closed
+alg=form('define-algorithm control-domain-partition')
+out('V5S10',1 if (('union-find' in alg or 'connected components' in alg) and 'deterministic' in alg and 'fail-closed' in alg and 'UNKNOWN' in alg) else 0,1)
+# V5S11 quorum counts components not kids
+qp=form('define-quorum-predicate mesh-independence-quorum')
+out('V5S11',1 if ('control-domain-partition' in qp and 'distinct-components' in qp and 'distinct-valid-kids' in qp) else 0,1)
+# V5S12 ArgumentRecord/1 non-circular
+arf=set(fields(form('define-record ArgumentRecord/1')))
+out('V5S12',1 if ('claim_ref' in arf and 'argument_ref' not in arf) else 0,1)
+# V5S13 InterpretiveProfile/1 expanded
+ip=set(fields(form('define-record InterpretiveProfile/1')))
+out('V5S13',1 if {'methodology_canons','precedence_stance','applicability','authority_basis','conflict_handling','adoption_status'}<=ip else 0,1)
+# V5S14 ClaimRecord/1 binding
+crf=set(fields(form('define-record ClaimRecord/1')))
+out('V5S14',1 if {'statement_ref','interpretive_profile_ref','argument_refs'}<=crf else 0,1)
+# V5S15 constitution reference adds nothing
+cref=form('define-constitution-reference v1.5-interpretive-binding')
+out('V5S15',1 if (':adds-primitive nil' in cref and ':adds-engine nil' in cref and ':adds-gate nil' in cref and ':represents-primitive :argument' in cref) else 0,1)
+# V5S16 reference closure (records + enums)
+drec=set(re.findall(r'\(define-record\s+([A-Za-z0-9_]+/1)',code))
+den=set(re.findall(r'\(define-closed-enum\s+([A-Za-z0-9_]+)',code))
+prim={'id','ref','sha256','sig','instant','scope','semver','text','keyword','pubkey','kid','anchor','usc-id','duration','uncertainty','canon','requirement','quorum-spec','null'}
+unres=set()
+for tm in re.finditer(r':type\s+(\([^()]*\)|[A-Za-z0-9_+/.-]+)',code):
+    t=tm.group(1);atoms=[]
+    if t.startswith('('):
+        inner=t.strip('()').split();head=inner[0] if inner else ''
+        if head=='member': continue
+        atoms=[a for a in inner[1:] if a!='null'] if head in ('list','or') else inner
+    else: atoms=[t]
+    for a in atoms:
+        if a in prim or a.startswith(':') or a in drec or a in den: continue
+        unres.add(a)
+out('V5S16',len(unres),0)
+for i,a,e in R: print(f"{i}|{a}|{e}")
+PYV5S
+)
 
 echo "### SUMMARY: checks=$n pass=$pass fail=$fail"
 [ "$fail" -eq 0 ] && { echo "### EXIT 0 — V1.5 DOCUMENT/REFERENCE CONSISTENCY PASS (CANDIDATE· ΟΧΙ semantic/legal/security/qualification proof)"; exit 0; } || { echo "### EXIT 1 — DEVIATIONS PRESENT"; exit 1; }

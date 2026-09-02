@@ -237,3 +237,34 @@ I = IMPLEMENTATION, M = MISSION GREECE, O = SECURITY/OPERATIONS, P = PROVIDER-AD
 R-11 (U-3), R-16 (U-6), R-33 (U-5), R-98 (U-1) — **5 μη πλήρεις** (δηλωμένες στο
 crosswalk §B.11, όχι σιωπηλές)· R-118 δεν έχει witness επειδή είναι το ίδιο το
 πρόγραμμα (δεν εκτελείται — δηλωμένο). Ο audit μετρά τις γραμμές και τα `U-` ίχνη.
+
+## §v1.5 SEMANTIC TYPE-CLOSURE (CANDIDATE · NOT FROZEN · frozen baseline `88129099` αμετάβλητο)
+
+**Additive· δεν αλλάζει καμία v1.4 γραμμή R-01..R-134 ή τον ισολογισμό τους.** Πηγές:
+`CHANGE-PROPOSAL-v1.5.md §11`, `V1.5-SCHEMAS.sexp`. Οι απαιτήσεις χρησιμοποιούν πρόθεμα `V5R-` και τα
+kill witnesses `V5KW-`/tests `V5Q-` ώστε να **μην** αγγίζουν τις μετρήσεις `R-\d`/`KW-\d`/`Q\d\d` του
+v1.4 audit. Όλα **predeclared, UNEXECUTED**.
+
+| V5R | Δέσμη | Requirement | Seat (design) | Type/Invariant | Kill witness | Test | Qual |
+|---|---|---|---|---|---|---|---|
+| V5R-D1-06 | D1 | per-profile cardinality κάθε πεδίου `SemanticAdmissionEvidence/1` (SA-0/1/2 = R/F/C) ρητά | `V1.5-SCHEMAS.sexp` define-cardinality-matrix· §11.1 | cardinality-matrix + V5I-D1 | V5KW-D1-6 | V5Q-D1-06 | S (design) |
+| V5R-D1-07 | D1 | `transformation_proof_ref` **F** για SA-0 (καμία transformation)· SA-2 απαιτεί **και** `independent_check_ref` **και** `independent_derivation_ref` (ξένα failure modes· μία rationale) | ίδιο· §11.1 (D1.2/D1.3) | cardinality-matrix `:F/:R` | V5KW-D1-7 | V5Q-D1-07 | S (design) |
+| V5R-D1-08 | D1 | πλήρης state-mutating enum `StateEventKind` (ENACTMENT..LINE_OF_AUTHORITY_MUTATION)· `LATER_TREATMENT_EXTRACTION`(SA-1) ≠ `LINE_OF_AUTHORITY_MUTATION`(SA-2) | `V1.5-SCHEMAS.sexp` define-closed-enum· §11.2 (D1.4/D1.5) | closed-enum + V5I-D1 | V5KW-D1-8 | V5Q-D1-08 | S (design) |
+| V5R-D1-09 | D1 | πραγματική derivation independence = `DerivationIndependenceEvidence/1` (distinct spec **και** provenance **και** failure-domain)· distinct `family_id` μόνο ⇒ INSUFFICIENT· υπόθεση ⇒ `residual_independence_assumption` ρητά | `V1.5-SCHEMAS.sexp`· §11.1 (D1.6) | define-record + XOR invariant | V5KW-D1-9 | V5Q-D1-09 | S (design) |
+| V5R-D2-06 | D2 | typed `NegativeEvidence/1` (census space/authority/source/scope/observation-time/completeness-serial-rule/artifact/expiry/signature)· `AUTHENTICATED_SERIAL_SPACE` ⇒ serial_authority + completeness_assertion + serial_position_semantics | `V1.5-SCHEMAS.sexp`· §11.3 (D2.1/D2.3) | define-record + define-required-refs | V5KW-D2-6 | V5Q-D2-06 | S (design) |
+| V5R-D2-07 | D2 | serial gap ⇒ `EXPLICITLY_ABSENT` **μόνο** αν ο κανόνας αποδεικνύει μη-reservable/void/cancelled/unused· αλλιώς/insufficient/expired ⇒ `UNKNOWN` (fail-closed) | `V1.5-SCHEMAS.sexp` gap->coverage_state mapping· §11.3 (D2.2/D2.5) | define-mapping fail-closed | V5KW-D2-7 | V5Q-D2-07 | S (design) |
+| V5R-D2-08 | D2 | type-closure: `coverage_state = {PRESENT, EXPLICITLY_ABSENT, UNKNOWN}`· `observation_state`/`availability_state` = **χωριστές διαστάσεις** (NOT_OBSERVED / NON_PUBLIC δεν είναι coverage μέλη) | `V1.5-SCHEMAS.sexp` τρία define-closed-enum· §11.3 (D2.4) | closed-enum disjoint | V5KW-D2-8 | V5Q-D2-08 | S (design) |
+| V5R-D3-07 | D3 | χωριστό `IndependenceAssuranceProfile {IA-0 DECLARED, IA-1 ATTESTED, IA-2 CRYPTO_BOUND}` (≠ SemanticAdmissionAssuranceProfile) | `V1.5-SCHEMAS.sexp`· MLTP §15· §11.4 (D3.1) | define-closed-enum | V5KW-D3-7 | V5Q-D3-07 | S (design) |
+| V5R-D3-08 | D3 | `ActorIndependenceEvidence/1` δένει **κρυπτογραφικά** actor_identity + actor_kid + actor_public_key + control_domain_id + evidence_subject_digest | `V1.5-SCHEMAS.sexp`· MLTP §15· §11.4 (D3.2) | V5I-D3-bind | V5KW-D3-8 | V5Q-D3-08 | S (design) |
+| V5R-D3-09 | D3 | typed `TrustedIssuerRegistry/1` + `IssuerEntry/1` (issuer authority/scope/delegation/validity/revocation) | `V1.5-SCHEMAS.sexp`· MLTP §15· §11.4 (D3.3) | define-record | V5KW-D3-9 | V5Q-D3-09 | S (design) |
+| V5R-D3-10 | D3 | `revocation_ref` required όταν ο issuer υποστηρίζει revocation· verify: revoked@t_use ⇒ δεν μετρά· μη-επιλύσιμο ⇒ UNKNOWN (fail-closed) | `V1.5-SCHEMAS.sexp` revocation-semantics· §11.4 (D3.4) | fail-closed rule | V5KW-D3-10 | V5Q-D3-10 | S (design) |
+| V5R-D3-11 | D3 | ντετερμινιστικός `control-domain-partition` (union-find equivalence classes· UNKNOWN edge ⇒ fail-closed union)· `unknown_handling ∈ {FAIL_CLOSED, DEGRADE}`, ποτέ σιωπηλό | `V1.5-SCHEMAS.sexp` define-algorithm· §11.4 (D3.5/D3.6) | define-algorithm deterministic | V5KW-D3-11 | V5Q-D3-11 | S (design) |
+| V5R-D3-12 | D3 | final quorum predicate **κανονιστικό + machine-readable**: distinct control-domain components ≥ n AND covers(required dims) AND no prohibited-shared AND (FAIL_CLOSED ⇒ κανένα UNKNOWN counted) | `V1.5-SCHEMAS.sexp` define-quorum-predicate `mesh-independence-quorum`· §11.4 (D3.7) | define-quorum-predicate | V5KW-D3-12 | V5Q-D3-12 | S (design) |
+| V5R-C1-05 | C1 | expanded `InterpretiveProfile/1` (methodology_canons, precedence_stance, applicability, authority_basis, conflict_handling, adoption/withdrawal) — όχι opaque label | `LAWMAX-LEGAL-IR-SEMANTIC-CONTRACT.md §12`· `V1.5-SCHEMAS.sexp`· §11.5 (C1.1) | define-record | V5KW-C1-5 | V5Q-C1-05 | S (design) |
+| V5R-C1-06 | C1 | `ArgumentRecord/1` μη-κυκλικό (claim_ref, premises, conclusion, support/attack edges, argument_scheme, source_anchors, authority_scope, uncertainty, adoption)· **αφαιρέθηκε** το self `argument_ref` | ίδιο· §11.5 (C1.2/C1.3) | define-record (no self ref) | V5KW-C1-6 | V5Q-C1-06 | S (design) |
+| V5R-C1-07 | C1 | `ClaimRecord/1` (claim/hypothesis) δεμένο σε `interpretive_profile_ref` + `argument_refs[]` στο machine schema | ίδιο· §11.5 (C1.4) | define-record binding | V5KW-C1-7 | V5Q-C1-07 | S (design) |
+| V5R-C1-08 | C1 | inert Constitution comment ⇒ formal `(v1.5-interpretive-binding :represents-primitive :argument :adds-primitive nil :adds-engine nil :adds-gate nil)` — καμία νέα μηχανή | `LAWMAX-ARCHITECTURE-CONSTITUTION.sexp`· §11.5 (C1.5) | define-constitution-reference | V5KW-C1-8 | V5Q-C1-08 | S (design) |
+
+**Ισολογισμός v1.5 (candidate):** 17 απαιτήσεις type-closure (D1×4, D2×3, D3×6, C1×4)· 17 kill witnesses·
+17 tests· όλα predeclared **UNEXECUTED**· καμία v1.4 γραμμή/μέτρηση δεν μεταβάλλεται· νέα απειλή Θ19
+(correlated/common-control independence) στο THREAT-MODEL· κανένα νέο engine/primitive/gate.

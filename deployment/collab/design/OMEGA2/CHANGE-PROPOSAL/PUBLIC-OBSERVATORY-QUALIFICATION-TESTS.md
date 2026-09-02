@@ -1036,3 +1036,59 @@ FREEZEABLE` όταν η επιβίωση δεν αποδεικνύεται. Κα
 Καμία εκτέλεση τεστ· κανένας KW εκτελεσμένος· κανένα πάσο· καμία βαθμίδα· καμία
 υλοποίηση· κανένα freeze· καμία αξίωση Root Authority. Τα U-1 έως U-8 μένουν
 ανοιχτά με owner και προθεσμία στο v1.4 §12.
+
+---
+
+## 10. §v1.5 SEMANTIC TYPE-CLOSURE — PREDECLARED TESTS + KILL WITNESSES (CANDIDATE · UNEXECUTED)
+
+**Additive· δεν αγγίζει τα Q01–Q43 ή τα 109 KW του v1.4 (πρόθεμα `V5Q-`/`V5KW-`).** Πηγή:
+`CHANGE-PROPOSAL-v1.5.md §11`, `V1.5-SCHEMAS.sexp`, `TRACEABILITY-MATRIX §v1.5`. Κάθε test είναι
+**predeclared** με ονομαστικό falsifier (kill witness)· **κανένα** δεν εκτελείται (απαιτεί κώδικα που
+είναι IMPLEMENTATION BLOCKED). «Pass» δεν διεκδικείται.
+
+### 10.1 Kill witnesses (falsifiers) — ό,τι πρέπει να **κοκκινίσει**
+
+| witness | Δέσμη | Falsifier — αν συμβεί, η σχεδίαση **σπάει** |
+|---|---|---|
+| **V5KW-D1-6** | D1 | `SemanticAdmissionEvidence/1` δεκτό με πεδίο σε λάθος cardinality για το profile του (π.χ. required πεδίο απόν, forbidden πεδίο παρόν) ⇒ πρέπει malformed |
+| **V5KW-D1-7** | D1 | SA-0 με `transformation_proof_ref` παρόν **ή** SA-2 δεκτό με μόνο `independent_check_ref` (χωρίς `independent_derivation_ref`) ⇒ πρέπει reject |
+| **V5KW-D1-8** | D1 | state-mutating γεγονός εκτός του κλειστού `StateEventKind` δεκτό ως SA-2· **ή** `LATER_TREATMENT_EXTRACTION` χειρισμένο ως line-of-authority mutation |
+| **V5KW-D1-9** | D1 | independence «αποδεδειγμένη» από distinct `family_id` μόνο, χωρίς `DerivationIndependenceEvidence/1` και χωρίς `residual_independence_assumption` |
+| **V5KW-D2-6** | D2 | `AUTHENTICATED_SERIAL_SPACE` negative evidence δεκτό χωρίς `completeness_assertion_ref`/`serial_position_semantics_ref`· **ή** `NegativeEvidence/1` χωρίς observation_time/expiry |
+| **V5KW-D2-7** | D2 | serial gap ⇒ `EXPLICITLY_ABSENT` χωρίς κανόνα που αποδεικνύει μη-reservable/void/cancelled/unused (silent inference) |
+| **V5KW-D2-8** | D2 | `NOT_OBSERVED_IN_DECLARED_SOURCE` ή `COVERED_STATE_NON_PUBLIC` χρησιμοποιημένο ως τιμή `coverage_state` (type ambiguity) αντί ως διάσταση |
+| **V5KW-D3-7** | D3 | `IA-0 DECLARED` (self-declared) evidence μετρημένο σε strict quorum· **ή** independence profile ταυτισμένο με το D1 semantic profile |
+| **V5KW-D3-8** | D3 | `ActorIndependenceEvidence/1` χωρίς signature που δένει actor_kid+actor_public_key+control_domain_id+evidence_subject_digest, να μετρά (unbound evidence) |
+| **V5KW-D3-9** | D3 | evidence από issuer εκτός `TrustedIssuerRegistry/1` **ή** εκτός `issuer_authority` του issuer, να μετρά |
+| **V5KW-D3-10** | D3 | revoked-at-`t_use` evidence να μετρά· **ή** μη-επιλύσιμο revocation status σιωπηλά μετρημένο (αντί UNKNOWN) |
+| **V5KW-D3-11** | D3 | δύο actors στο **ίδιο** control domain μετρημένοι ως δύο· **ή** UNKNOWN shared-control edge να **μην** ενώνει domains υπό FAIL_CLOSED· **ή** μη-ντετερμινιστικό partition |
+| **V5KW-D3-12** | D3 | quorum ικανοποιημένο μετρώντας distinct `kid` αντί distinct control-domain components· **ή** UNKNOWN counted υπό FAIL_CLOSED |
+| **V5KW-C1-5** | C1 | `InterpretiveProfile/1` δεκτό ως opaque label (χωρίς methodology/precedence/conflict/adoption) |
+| **V5KW-C1-6** | C1 | `ArgumentRecord/1` που αναφέρει τον εαυτό του (`argument_ref` self) ⇒ κύκλος· **ή** χωρίς claim/premises/conclusion/edges/scheme |
+| **V5KW-C1-7** | C1 | `Claim`/`Hypothesis` χωρίς `interpretive_profile_ref` **ή** χωρίς `argument_refs[]` δεσμό στο machine schema |
+| **V5KW-C1-8** | C1 | το interpretive binding παραμένει inert comment (όχι machine-readable form)· **ή** εισάγει νέο engine/primitive/gate/second-seat |
+
+### 10.2 Predeclared tests (design-only· UNEXECUTED) — ό,τι θα εκτελούσε την κάθε απαίτηση
+
+- **V5Q-D1-06** — parse `V1.5-SCHEMAS.sexp` cardinality matrix· fixture κάθε profile × κάθε πεδίο· R/F/C επιβεβαιωμένα· falsifier V5KW-D1-6.
+- **V5Q-D1-07** — SA-0-με-transformation & SA-2-χωρίς-derivation fixtures ⇒ και τα δύο reject· falsifier V5KW-D1-7.
+- **V5Q-D1-08** — enum-membership fixtures (in/out)· later-treatment vs line-of-authority διαχωρισμός· falsifier V5KW-D1-8.
+- **V5Q-D1-09** — distinct-family-only fixture ⇒ INSUFFICIENT· residual-assumption path καταγράφεται ρητά· falsifier V5KW-D1-9.
+- **V5Q-D2-06** — `NegativeEvidence/1` required-refs fixtures· AUTHENTICATED_SERIAL_SPACE χωρίς completeness ⇒ reject· falsifier V5KW-D2-6.
+- **V5Q-D2-07** — serial-gap fixtures (με/χωρίς κανόνα) ⇒ EXPLICITLY_ABSENT μόνο με απόδειξη, αλλιώς UNKNOWN· falsifier V5KW-D2-7.
+- **V5Q-D2-08** — type-membership fixtures· coverage_state = 3 μέλη· observation/availability χωριστά· falsifier V5KW-D2-8.
+- **V5Q-D3-07** — assurance-profile ladder fixtures· IA-0 δεν μετρά strict· falsifier V5KW-D3-7.
+- **V5Q-D3-08** — signature-binding fixtures (bound/unbound) ⇒ unbound ⇒ INDEPENDENCE_UNKNOWN· falsifier V5KW-D3-8.
+- **V5Q-D3-09** — issuer-registry fixtures (in/out authority/scope)· falsifier V5KW-D3-9.
+- **V5Q-D3-10** — revocation fixtures (revoked/unresolved) ⇒ δεν μετρά / UNKNOWN· falsifier V5KW-D3-10.
+- **V5Q-D3-11** — control-domain-partition fixtures· ίδια είσοδος ⇒ ίδιες classes· UNKNOWN edge ⇒ union υπό FAIL_CLOSED· falsifier V5KW-D3-11.
+- **V5Q-D3-12** — quorum-predicate fixtures μετρώντας components· falsifier V5KW-D3-12.
+- **V5Q-C1-05** — InterpretiveProfile completeness fixtures· falsifier V5KW-C1-5.
+- **V5Q-C1-06** — acyclic ArgumentRecord fixtures· self-ref ⇒ reject· falsifier V5KW-C1-6.
+- **V5Q-C1-07** — Claim/Hypothesis binding fixtures· falsifier V5KW-C1-7.
+- **V5Q-C1-08** — constitution binding form fixtures· `:adds-engine nil`/`:adds-primitive nil`/`:adds-gate nil` invariant· falsifier V5KW-C1-8.
+
+### 10.3 Τι ΔΕΝ έγινε στο §10
+
+Καμία εκτέλεση· κανένα V5Q εκτελεσμένο· κανένα V5KW εκτελεσμένο· κανένα pass· καμία βαθμίδα· καμία
+υλοποίηση· κανένα freeze. Design-only· απαιτεί κώδικα που παραμένει IMPLEMENTATION BLOCKED.

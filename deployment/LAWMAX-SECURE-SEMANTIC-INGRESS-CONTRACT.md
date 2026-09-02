@@ -171,12 +171,15 @@ spec: `CHANGE-PROPOSAL-v1.5.md §1`. **Καμία universal N-version processing
 
 Στην adoption boundary ορίζεται `SemanticAdmissionAssuranceProfile` (κλειστό): **SA-0 STRUCTURAL**
 (schema+anchors), **SA-1 CHECKABLE** (derivation + μικρός ανεξάρτητος checker), **SA-2 STATE_MUTATING**
-(ανεξάρτητη source→event derivation + divergence gate + adoption act). `SemanticAdmissionEvidence/1`
-υποχρεωτικά: `candidate_id · assurance_profile · source_manifestation_id · source_anchors ·
-derivation_family_id · derivation_artifact_digest · transformation_proof_ref · independent_check_ref
-(SA-1/SA-2) · independent_derivation_ref (SA-2) · divergence_state · adoption_act_ref (SA-2) · policy_ref
-· schema_id · version`. Event kinds: SA-0 `ANCHOR/CITATION_ANCHOR/OBSERVATION`· SA-1
-`CLASSIFICATION/LATER_TREATMENT_LINK/CROSS_REFERENCE`· SA-2 `ENACTMENT/AMENDMENT/COMMENCEMENT/REPEAL`.
+(ανεξάρτητη source→event derivation + independent check + divergence gate + adoption act). **Type-closed
+(v1.5 micro-pass· §11.1):** τα πεδία του `SemanticAdmissionEvidence/1` έχουν **per-profile cardinality**
+(R required / F forbidden / C conditional) — π.χ. `transformation_proof_ref` **forbidden** για SA-0 (καμία
+transformation)· `independent_derivation_ref` **R μόνο** για SA-2· `derivation_independence_evidence_ref`
+XOR `residual_independence_assumption` (SA-2)· `adoption_act_ref` R μόνο για SA-2. Event kinds: SA-0
+`ANCHOR/CITATION_ANCHOR/OBSERVATION`· SA-1 `CLASSIFICATION/CROSS_REFERENCE/LATER_TREATMENT_EXTRACTION`·
+SA-2 **πλήρης κατάλογος (§11.2)**: `ENACTMENT/AMENDMENT/COMMENCEMENT/REPEAL/SUSPENSION/REVIVAL/ANNULMENT/
+CORRECTION/DELEGATED_AUTHORITY_CHANGE/REGIME_EFFECTIVITY_TRANSITION/CONSTITUTIONAL_REVIEW_STATE_CHANGE/
+JUDICIAL_REVIEW_STATE_CHANGE/LINE_OF_AUTHORITY_MUTATION`.
 
 Πραγματική diversity μηχανισμού = διακριτό `derivation_family_id` **ΚΑΙ** διακριτό
 `derivation_artifact_digest` σε ανεξάρτητη source→event διαδρομή· ίδιο family/artifact ⇒

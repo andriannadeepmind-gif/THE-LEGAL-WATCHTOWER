@@ -174,11 +174,16 @@ engine, **ΔΕΝ** νέος top-level constitutional primitive — **αναπα�
 Constitution `:argument` και σύνδεση L6 Adversarial Parliament ↔ Legal IR ↔ Claim/Hypothesis ↔
 Proof/Counterproof ↔ InstitutionalAct ↔ proof dependency graph.
 
-`InterpretiveProfile/1{profile_id, version, scope, source_anchors}` (versioned/scoped)·
-`ArgumentRecord/1{argument_id, interpretive_profile_ref, argument_ref (→ existing :argument), proof_ref,
-counterproof_ref, adoption_act_ref?}`. Competing interpretations συνυπάρχουν: `Claim-X → Profile-A`,
-`Claim-Y → Profile-B`, **χωρίς ψευδή επιλογή νικητή**· κάθε interpretive conclusion φέρει υποχρεωτικά
-`interpretive_profile_ref` + `argument_ref`. **Invariants V5I-08/V5I-09:** η InstitutionalAct adoption
+**Type-closed (v1.5 micro-pass· §11.5):** `InterpretiveProfile/1{profile_id, version, methodology_canons,
+precedence_stance, applicability, authority_basis, conflict_handling, adoption_status, adoption_act_ref?,
+withdrawal_ref?, source_anchors}` (μη-opaque)· `ArgumentRecord/1{argument_id, interpretive_profile_ref,
+claim_ref, premises[], conclusion, support_edges[], attack_edges[], argument_scheme, source_anchors[],
+authority_scope, uncertainty, adoption_status, adoption_act_ref?, constitution_primitive=:argument}` —
+**αφαιρέθηκε** το κυκλικό self `argument_ref`· `constitution_primitive` = αναπαράσταση του υπάρχοντος
+`:argument`, όχι νέο primitive. `ClaimRecord/1{claim_id, kind, statement_ref, interpretive_profile_ref,
+argument_refs[], status}` δένει Claim/Hypothesis σε profile + arguments. Competing interpretations
+συνυπάρχουν: `Claim-X → Profile-A`, `Claim-Y → Profile-B`, **χωρίς ψευδή επιλογή νικητή**· κάθε
+interpretive conclusion φέρει υποχρεωτικά `interpretive_profile_ref`. **Invariants V5I-08/V5I-09:** η InstitutionalAct adoption
 αλλάζει institutional/epistemic status, **ΟΧΙ** την αντικειμενική «αλήθεια» μιας ερμηνείας. Interpretive
 disagreement παραμένει typed hypothesis/argument/UNKNOWN/CONFLICTING — ποτέ compiler error ή majority
 vote. Kill witnesses V5KW-C1-1..4.

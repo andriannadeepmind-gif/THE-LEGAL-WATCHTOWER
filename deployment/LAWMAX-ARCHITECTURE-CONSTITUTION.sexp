@@ -351,10 +351,18 @@
    :does-not-duplicate ("gates — τα flake checks τις ΤΥΛΙΓΟΥΝ") :new-folder-needed :yes-nix-dir-only)))
 
 ;;;; ---------------------------------------------------------------------------------------------
-;;;; SPEC v1.5 NARROW-DELTA — C1 POINTER (CANDIDATE · NOT FROZEN · inert comment, no primitive added)
-;;;; The existing :argument primitive (see :primitives above) is REPRESENTED — not extended — by
-;;;; ArgumentRecord/1 (interpretive_profile_ref, argument_ref, proof_ref, counterproof_ref,
-;;;; adoption_act_ref?). Machine-readable schema: V1.5-SCHEMAS.sexp. Full spec: CHANGE-PROPOSAL-v1.5.md.
-;;;; No new top-level constitutional primitive, no new gate, no second seat. The frozen v1.4 baseline
-;;;; 88129099 is unchanged; this comment does not alter the enforced constitution above.
-;;;; ---------------------------------------------------------------------------------------------
+;;;; SPEC v1.5 NARROW-DELTA — C1 FORMAL INTERPRETIVE BINDING (CANDIDATE · NOT FROZEN).
+;;;; A machine-readable reference/invariant DATA form (replaces the prior inert comment). It REFERENCES
+;;;; the existing :argument primitive (see :primitives above); it does NOT extend :primitives, add an
+;;;; engine, or add a gate. The frozen v1.4 baseline 88129099 is unchanged.
+(v1.5-interpretive-binding
+  :status :CANDIDATE :not-frozen t :frozen-baseline "88129099"
+  :represents-primitive :argument
+  :by-record "ArgumentRecord/1" :claims-record "ClaimRecord/1" :profile-record "InterpretiveProfile/1"
+  :adds-primitive nil :adds-engine nil :adds-gate nil :second-seat nil
+  :invariant "ArgumentRecord/1 REPRESENTS the existing :argument primitive; it does not extend
+              :primitives, create a reasoning engine, or add a gate. L6 Adversarial Parliament consumes
+              these as typed arguments with proof/counterproof; adoption changes institutional status,
+              not objective truth."
+  :machine-readable "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.5-SCHEMAS.sexp"
+  :spec "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.5.md")

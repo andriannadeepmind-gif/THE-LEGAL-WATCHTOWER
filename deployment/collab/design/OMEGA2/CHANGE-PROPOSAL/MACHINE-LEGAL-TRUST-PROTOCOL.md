@@ -1473,20 +1473,52 @@ threat model (Θ15) το απαιτεί. Design-only· καμία υλοποίη
 ## 15. APPENDIX — SPEC v1.5 NARROW-DELTA · D3 EVIDENCE-BACKED INDEPENDENCE QUORUMS (CANDIDATE · NOT FROZEN)
 
 **Additive· frozen v1.4 περιεχόμενο (§0–§14) αμετάβλητο· frozen commit `88129099` δεν γίνεται amend.**
-Full spec `CHANGE-PROPOSAL-v1.5.md §3`· machine-readable `V1.5-SCHEMAS.sexp`. **Μία** quorum έδρα — καμία
-δεύτερη. Δύο διακριτά objects στο LocalTrustState/qualification layer:
+Full spec `CHANGE-PROPOSAL-v1.5.md §3` + `§11.4` (type-closure micro-pass)· machine-readable
+`V1.5-SCHEMAS.sexp`. **Μία** quorum έδρα — καμία δεύτερη. Τρία διακριτά objects στο
+LocalTrustState/qualification layer (D3 type-closure):
 
-`ActorIndependenceEvidence/1` δεσμεύει: `actor_identity · evidence_issuer · evidence_type · valid_from ·
-valid_to · legal_beneficial_control_evidence · privileged_administration_evidence · key_custody_evidence ·
+**(1) Assurance stratification** — `IndependenceAssuranceProfile` (χωριστό από το D1 semantic profile):
+`IA-0 DECLARED` (self-declared· **ποτέ** δεν μετρά υπό strict), `IA-1 ATTESTED` (third-party attested),
+`IA-2 CRYPTO_BOUND` (cryptographic identity + custody). Η αντικατάσταση του κοινού
+`SemanticAdmissionAssuranceProfile` κλείνει το D3.1.
+
+**(2) Κρυπτογραφικά δεσμευμένο evidence** — `ActorIndependenceEvidence/1` δεσμεύει:
+`actor_identity · actor_kid · actor_public_key · control_domain_id · evidence_subject_digest ·
+evidence_issuer · evidence_type · assurance_profile · valid_from · valid_to ·
+legal_beneficial_control_evidence · privileged_administration_evidence · key_custody_evidence ·
 infrastructure_dependency_evidence · conflict_of_interest_evidence · digest · signature · revocation_ref`.
+Invariant `V5I-D3-bind`: η `signature` **ΠΡΕΠΕΙ** να καλύπτει canonical body που δένει
+`actor_identity + actor_kid + actor_public_key + control_domain_id + evidence_subject_digest`· evidence
+που δεν είναι έτσι δεμένο ⇒ αγνοείται (`INDEPENDENCE_UNKNOWN` υπό strict). Κλείνει το D3.2 (η ταυτότητα
+actor, το `kid`/public key, το control/custody domain και το evidence subject δένονται κρυπτογραφικά).
+
+**(3) Typed trusted issuer registry** — `TrustedIssuerRegistry/1` + `IssuerEntry/1`
+(`issuer_id · issuer_public_key · issuer_authority(list IndependenceDimension) · scope · delegated_from ·
+valid_from · valid_to · revocation_ref`). Το `revocation_ref` είναι **required** όταν η αποδεχόμενη
+`IssuerEntry`/`IndependencePolicy` δηλώνει ότι ο issuer υποστηρίζει revocation· verify semantics: resolve
+revocation source, αν δείχνει revoked στο `t_use` ⇒ **δεν** μετρά· **fail-closed** — evidence με μη
+επιλύσιμο revocation status ⇒ `UNKNOWN` (ποτέ σιωπηλά μετρημένο). Κλείνει τα D3.3/D3.4.
+
 `IndependencePolicy/1` ορίζει: `required_distinct_dimensions · prohibited_shared_dimensions ·
-accepted_evidence_issuers · evidence_freshness · unknown_handling · assurance_profile · quorum`.
+accepted_issuer_registry_ref (→ TrustedIssuerRegistry/1) · evidence_freshness ·
+min_independence_assurance · unknown_handling · quorum`. `unknown_handling ∈ {FAIL_CLOSED, DEGRADE}` με
+**αυστηρή** σημασιολογία: unknown evidence **ποτέ** δεν μετρά προς strict quorum· `DEGRADE` μειώνει το
+attainable assurance profile αντί να προσποιείται γνώση (D3.6).
 
-Κανόνες: διαφορετικά `kid` δεν αποδεικνύουν ανεξαρτησία· self-signed independence declaration δεν μετρά·
-expired/revoked evidence δεν μετρά· ανεπαρκές evidence ⇒ `INDEPENDENCE_UNKNOWN`· ο **consumer-local**
-verifier αποφασίζει την policy· το Ίδρυμα/οι auditors δεν αυτοπιστοποιούν την ανεξαρτησία τους· shared
-provider/cloud δεν έχει **καθολικό** αποτέλεσμα — αξιολογείται ανά assurance profile και control domain.
+**Control-domain partition (D3.5)** — ντετερμινιστικός `control-domain-partition` αλγόριθμος:
+union-find πάνω σε shared-control edges· κάθε edge με άγνωστη κατάσταση **δεν** ενώνει domains υπό
+FAIL_CLOSED (fail-closed· ίδια είσοδος ⇒ ίδιες equivalence classes). Το τελικό quorum μετρά **διακριτά
+control-domain components**, όχι διακριτά `kid` — δύο actors στο ίδιο control domain μετρούν ως **ένας**.
 
-Το υπάρχον §10 mesh quorum παραμένει **μία** έδρα· η predicate αλλάζει **μόνο** από `distinct-valid-kids`
-σε `distinct-valid-kids AND satisfies(local_independence_policy, accepted_evidence)`. Invariants
-V5I-06/V5I-07· kill witnesses V5KW-D3-1..6. Design-only· καμία υλοποίηση· ο executable core αμετάβλητος.
+Κανόνες (αμετάβλητοι): διαφορετικά `kid` δεν αποδεικνύουν ανεξαρτησία· self-signed independence
+declaration δεν μετρά· expired/revoked evidence δεν μετρά· ανεπαρκές evidence ⇒ `INDEPENDENCE_UNKNOWN`·
+ο **consumer-local** verifier αποφασίζει την policy· το Ίδρυμα/οι auditors δεν αυτοπιστοποιούν την
+ανεξαρτησία τους· shared provider/cloud δεν έχει **καθολικό** αποτέλεσμα — αξιολογείται ανά assurance
+profile και control domain.
+
+Το υπάρχον §10 mesh quorum παραμένει **μία** έδρα· η predicate εκφράζεται **κανονιστικά + machine-readable**
+(`mesh-independence-quorum`, `define-quorum-predicate`) και αλλάζει **μόνο** από `distinct-valid-kids` σε
+`distinct-control-domain-components(valid, assurance>=policy) >= required`. Invariants
+V5I-06/V5I-07/V5I-D3-bind· kill witnesses V5KW-D3-1..6 **και** V5KW-D3-7..12 (assurance-strip,
+unbound-evidence, cross-issuer-authority, unresolved-revocation, shared-control-collapse, degrade-abuse).
+Design-only· καμία υλοποίηση· ο executable core αμετάβλητος.
