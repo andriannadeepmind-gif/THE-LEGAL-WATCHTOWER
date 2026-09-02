@@ -1,0 +1,182 @@
+file	disposition	layer	package	n_toplevel	foreign_cffi	ext_libs	qualified_refs(APPROX;unqualified/dynamic=UNKNOWN)	kinds
+adoption-decision.lisp	REUSE	L8	orchestrator.adoption	5	no	babel,ironclad	orchestrator.institution,orchestrator.journal,orchestrator.paths,orchestrator.trace,orchestrator.whatif	defun:5
+ai-citation-strategy.lisp	EXTEND	§4.13	orchestrator.ai-citation	43	no	cl-ppcre,drakma,jonathan,local-time,uuid	orchestrator.hash-authority,orchestrator.time,orchestrator.uris,orchestrator.write-authority	defclass:6,defmethod:11,defparameter:3,defun:23
+ai-corpus-dump.lisp	EXTEND	§4.15	orchestrator.ai-dump	9	no	-	UNKNOWN-none-qualified	defun:9
+ai-ingest-manifest.lisp	EXTEND	§4.15	orchestrator.ai-ingest	53	no	cl-ppcre,jonathan,local-time	orchestrator.consolidation,orchestrator.spec,orchestrator.time	defclass:4,defmethod:8,defparameter:4,defun:37
+akoma-ntoso-emitter.lisp	REUSE	§4.11	orchestrator.akoma-ntoso	10	no	-	orchestrator.consolidation	defparameter:1,defun:9
+amendment-extractor.lisp	EXTEND	§4.5	orchestrator.amendment-extractor	38	no	cl-ppcre	UNKNOWN-none-qualified	defparameter:12,defun:26
+anomaly-detection.lisp	REUSE	L5/L9	orchestrator.anomaly	7	no	cl-ppcre	UNKNOWN-none-qualified	defparameter:1,defun:6
+archive-authority.lisp	REUSE	§4.2	orchestrator.archive-authority	7	no	alexandria,drakma,jonathan	orchestrator.time	define-condition:2,defparameter:2,defun:3
+asn1-der.lisp	EXTEND	§4.10	orchestrator.asn1	22	no	babel,cl-base64,ironclad	UNKNOWN-none-qualified	define-condition:1,defparameter:1,defun:20
+ast-gate.lisp	REUSE	§4.2	orchestrator.ast-gate	7	no	-	orchestrator.legal-ast,orchestrator.validate-ast	defun:7
+authority-evidence-replay.lisp	EXTEND	§4.10	orchestrator.authority-evidence-replay	39	no	babel,ironclad	UNKNOWN-none-qualified	defparameter:8,defun:29,defvar:2
+authority-proof-bundle.lisp	EXTEND	§4.10	orchestrator.authority-proof-bundle	23	no	babel,ironclad	UNKNOWN-none-qualified	defparameter:4,defun:19
+autonomy.lisp	REUSE	§4.1	orchestrator.autonomy	7	no	-	orchestrator.deliberation,orchestrator.memory,orchestrator.self-history	defclass:1,defun:5,defvar:1
+blockchain-authority.lisp	REMOVE	—	orchestrator.blockchain-authority	54	no	alexandria,babel,cl-base64,drakma,ironclad,jonathan,uiop	UNKNOWN-none-qualified	defconstant:4,defgeneric:1,define-condition:3,defmethod:5,defstruct:1,defun:33,defvar:7
+canonical-representation.lisp	REUSE	§4.10	orchestrator.canonical-representation	24	no	babel,cl-ppcre,ieee-floats,ironclad	UNKNOWN-none-qualified	defstruct:1,defun:20,defvar:3
+canonical-uris.lisp	REUSE	§4.11	orchestrator.uris	22	no	-	orchestrator.trace	defparameter:1,defun:21
+capability-api.lisp	REUSE	§4.7, §4.12	orchestrator.capability-api	8	no	-	UNKNOWN-none-qualified	define-condition:1,defparameter:1,defun:6
+capability-registry.lisp	REUSE	L9	orchestrator.capability	21	no	-	orchestrator.paths	define-condition:2,defmacro:1,defparameter:3,defun:15
+circuit-breaker.lisp	REUSE	§4.14	orchestrator.circuit-breaker	21	no	-	orchestrator.time	defclass:1,defconstant:4,define-condition:1,defmacro:1,defun:12,defvar:2
+citation-authority.lisp	EXTEND	§4.9, §4.13	orchestrator.citation-authority	32	no	-	orchestrator.greek-tokenizer,orchestrator.spec	defparameter:1,defun:31
+cognition.lisp	REUSE	CORE	orchestrator.cognition	22	no	-	orchestrator.deliberation	defclass:2,defgeneric:6,defun:11,defvar:3
+component-scan.lisp	REUSE	L9	orchestrator.component-scan	20	no	cl-ppcre,ironclad,uiop	orchestrator.components,orchestrator.contracts,orchestrator.paths,orchestrator.safe-read,orchestrator.self-model	defun:18,defvar:2
+components.lisp	REUSE	L9	orchestrator.components	14	no	-	UNKNOWN-none-qualified	define-condition:1,defun:11,defvar:2
+config.lisp	REUSE	—	orchestrator.config	7	no	cl-yaml	UNKNOWN-none-qualified	defparameter:1,defun:6
+consolidation-bridge.lisp	REUSE	§4.5	orchestrator.consolidation.bridge	16	no	-	orchestrator.amendment-extractor,orchestrator.time	defun:16
+consolidation-engine.lisp	REUSE	§4.5, §4.6	orchestrator.consolidation	23	no	-	UNKNOWN-none-qualified	defgeneric:1,define-condition:1,defun:20,defvar:1
+consolidation-feed.lisp	REUSE	§4.5	orchestrator.consolidation.feed	5	no	-	UNKNOWN-none-qualified	defstruct:1,defun:4
+consolidation-proof.lisp	REUSE	§4.5, §4.7	orchestrator.consolidation	11	no	babel,ironclad	UNKNOWN-none-qualified	defclass:2,defmethod:3,defun:6
+constitutional-gate.lisp	REUSE	L10	orchestrator.constitution	6	no	uiop	UNKNOWN-none-qualified	defun:5,defvar:1
+contracts.lisp	REUSE	L10	orchestrator.contracts	14	no	-	UNKNOWN-none-qualified	defmacro:1,defparameter:1,defun:10,defvar:2
+corpus-diff.lisp	EXTEND	§4.7, §4.12	orchestrator.corpus-diff	6	no	-	UNKNOWN-none-qualified	defun:6
+corpus-eu-links.lisp	EXTEND	§4.5	orchestrator.corpus-eu-links	13	no	cl-ppcre	UNKNOWN-none-qualified	defparameter:2,defun:11
+corpus-fingerprint.lisp	EXTEND	§4.14	orchestrator.fingerprint	27	no	uiop	orchestrator.hash-authority,orchestrator.merkle,orchestrator.safe-read	defun:27
+corpus-intelligence.lisp	REUSE	§4.3	orchestrator.intelligence	20	no	closer-mop	orchestrator.spec	defclass:2,defgeneric:3,define-corpus-check:4,defmacro:1,defmethod:2,defstruct:1,defun:7
+corpus-provenance.lisp	EXTEND	§4.2	orchestrator.corpus-provenance	9	no	local-time	UNKNOWN-none-qualified	defun:9
+corpus-search.lisp	REUSE	§4.12	orchestrator.corpus-search	8	no	-	UNKNOWN-none-qualified	defparameter:1,defun:7
+corpus-service.lisp	REUSE	§4.15	orchestrator.corpus-service	41	no	closer-mop,uiop	UNKNOWN-none-qualified	defclass:4,defgeneric:1,define-condition:4,define-representation:5,defmacro:1,defmethod:2,defparameter:3,defun:21
+corpus-sparql.lisp	REUSE	§4.11	orchestrator.corpus-sparql	9	no	cl-ppcre	UNKNOWN-none-qualified	defparameter:4,defun:5
+deliberation.lisp	EXTEND	L6	orchestrator.deliberation	22	no	-	UNKNOWN-none-qualified	defclass:7,defgeneric:1,defmacro:1,defmethod:7,defun:3,defvar:3
+deterministic-time.lisp	REUSE	§4.10	orchestrator.time	13	no	local-time,uiop	UNKNOWN-none-qualified	defparameter:3,defun:10
+document-fetch.lisp	REUSE	§4.2, §4.4	orchestrator.document-fetch	23	no	uiop	UNKNOWN-none-qualified	defparameter:2,defun:20,defvar:1
+embeddings-authority.lisp	EXTEND	PLANE-3	orchestrator.embeddings-authority	28	no	cl-ppcre,drakma,jonathan,uiop	UNKNOWN-none-qualified	define-condition:3,defun:20,defvar:5
+eu-interop-layer.lisp	EXTEND	§4.11	orchestrator.eu-interop	44	no	babel,cl-ppcre,drakma,jonathan,uiop	orchestrator.hash-authority,orchestrator.time	defclass:4,defmethod:1,defparameter:8,defun:31
+execution-trace.lisp	REUSE	L1	orchestrator.trace	23	no	-	UNKNOWN-none-qualified	defmacro:1,defparameter:1,defun:14,defvar:7
+fluid-induction.lisp	REUSE	L5	orchestrator.fluid	34	no	-	UNKNOWN-none-qualified	defparameter:1,defun:33
+generation.lisp	EXTEND	§4.12	orchestrator.generation	17	no	-	orchestrator.citation-authority,orchestrator.knowledge-packs	defparameter:3,defun:14
+government-source.lisp	EXTEND	§4.1, §4.2	orchestrator.gov-source	40	no	cl-ppcre,drakma,uiop	orchestrator.engine.sbcl	defparameter:9,defun:31
+graph-reasoning.lisp	EXTEND	§4.8	orchestrator.graph-reason	3	no	-	orchestrator.graph	defun:3
+greek-legislation-ontology.lisp	EXTEND	§4.3, §4.11	orchestrator.legal-ontology	48	no	-	UNKNOWN-none-qualified	defclass:1,defconcept:33,defmacro:1,defparameter:1,defun:11,defvar:1
+greek-lemmatizer.lisp	REUSE	§4.3 (symbolic NLP)	orchestrator.citation-authority	34	no	uiop	UNKNOWN-none-qualified	defparameter:13,defun:20,defvar:1
+greek-nlp-core.lisp	REUSE	§4.3	orchestrator.greek-nlp	67	no	-	orchestrator.safe-read	defclass:11,defgeneric:6,define-condition:4,defmacro:2,defmethod:14,defun:27,defvar:3
+greek-tokenizer-advanced.lisp	REUSE	§4.3	orchestrator.greek-tokenizer	45	no	-	orchestrator.journal,orchestrator.safe-read	defclass:1,defgeneric:1,define-condition:3,defmacro:1,defmethod:4,defparameter:4,defstruct:1,defun:27,defvar:3
+guard-metaeval.lisp	REUSE	L4	orchestrator.metaeval	45	no	-	orchestrator.trace	defparameter:1,defun:36,defvar:8
+guard-ops-pack.lisp	REUSE	L4	orchestrator.metaeval	0	no	-	orchestrator.knowledge-packs	-
+hash-authority.lisp	EXTEND	§4.10	orchestrator.hash-authority	2	no	babel,ironclad	UNKNOWN-none-qualified	defun:2
+http-server.lisp	REUSE	§4.12	orchestrator.http	20	no	babel,bordeaux-threads,uiop,usocket	UNKNOWN-none-qualified	defclass:1,defmacro:1,defparameter:4,defstruct:2,defun:12
+ingestion-daemon.lisp	EXTEND	§4.1	orchestrator.ingestion.daemon	7	no	uiop	orchestrator.paths	defparameter:1,defun:6
+injection.lisp	REUSE	—	orchestrator.injection	26	no	-	orchestrator.logging,orchestrator.paths	defclass:1,defconstant:2,defmacro:1,defstruct:1,deftype:1,defun:19,defvar:1
+institution.lisp	REUSE	CORE	orchestrator.institution	8	no	-	UNKNOWN-none-qualified	defun:6,defvar:2
+introspection.lisp	REUSE	L9	orchestrator.introspection	5	no	-	orchestrator.deliberation,orchestrator.proposals	defun:4,defvar:1
+journal.lisp	REUSE	L1, §4.5	orchestrator.journal	33	no	ironclad,uiop	UNKNOWN-none-qualified	defconstant:1,define-condition:5,defmacro:1,defun:21,defvar:5
+json-emit.lisp	REUSE	§4.10	orchestrator.json-emit	5	no	-	orchestrator.spec	defun:5
+jws-authority.lisp	EXTEND	§4.10	orchestrator.jws-authority	34	no	alexandria,babel,cl-base64,ironclad,jonathan,uiop	orchestrator.asn1	define-condition:3,defparameter:2,defun:29
+knowledge-graph.lisp	EXTEND	§4.3	orchestrator.graph	38	no	-	orchestrator.journal,orchestrator.safe-read,orchestrator.temporal	defclass:5,defconstant:3,defmacro:1,defmethod:2,defun:25,defvar:2
+knowledge-packs.lisp	REUSE	CORE	orchestrator.knowledge-packs	13	no	ironclad	orchestrator.paths,orchestrator.safe-read	defun:10,defvar:3
+layout-types.lisp	EXTEND	§4.2	orchestrator.layout-types	95	no	-	UNKNOWN-none-qualified	defclass:5,defgeneric:6,define-condition:6,defmacro:2,defmethod:36,defparameter:1,defun:33,defvar:6
+legal-ast.lisp	EXTEND	§4.3 (Legal IR)	orchestrator.legal-ast	102	no	cl-ppcre	orchestrator.journal,orchestrator.safe-read	defclass:17,defgeneric:4,define-condition:4,defmacro:4,defmethod:13,defparameter:7,defun:47,defvar:6
+legal-audit-system.lisp	EXTEND	§4.14	orchestrator.audit	40	no	alexandria,jonathan,local-time	orchestrator.hash-authority,orchestrator.jws-authority,orchestrator.merkle,orchestrator.time,orchestrator.uris,orchestrator.write-authority	defclass:3,defmethod:7,defparameter:5,defun:23,defvar:2
+legal-authority-receipt.lisp	EXTEND	§4.2, §4.7	orchestrator.legal-receipt	12	no	-	orchestrator.canonical-representation,orchestrator.version-graph	defun:12
+legal-casegrammar.lisp	DEFER_PRIVATE	private	orchestrator.casegrammar	40	no	cl-ppcre	orchestrator.citation-authority,orchestrator.knowledge-packs,orchestrator.subsumption	defparameter:6,defun:29,defvar:5
+legal-conflict-resolution.lisp	REUSE	§4.3	orchestrator.conflict	9	no	-	UNKNOWN-none-qualified	defrule:5,defun:4
+legal-counterfactual.lisp	REUSE	§4.8	orchestrator.counterfactual	4	no	-	orchestrator.deontic,orchestrator.subsumption	defun:4
+legal-decisions.lisp	EXTEND	§4.9	orchestrator.decisions	57	no	cl-ppcre	UNKNOWN-none-qualified	defclass:3,defparameter:18,defun:29,defvar:7
+legal-deontic.lisp	REUSE	§4.3	orchestrator.deontic	17	no	-	orchestrator.conflict	defparameter:1,defrule:3,defun:12,defvar:1
+legal-dialectic.lisp	EXTEND	L6	orchestrator.dialectic	1	no	-	orchestrator.deontic,orchestrator.inference,orchestrator.subsumption	defun:1
+legal-event-calculus.lisp	REUSE	§4.5	orchestrator.eventcalculus	3	no	-	UNKNOWN-none-qualified	defrule:3
+legal-extraction-verify.lisp	EXTEND	§4.3	orchestrator.extraction	18	no	uiop	UNKNOWN-none-qualified	defparameter:3,defun:15
+legal-hypergraph.lisp	REUSE	§4.8	orchestrator.hypergraph	22	no	-	UNKNOWN-none-qualified	defclass:5,defgeneric:3,defmethod:6,defun:8
+legal-hypo.lisp	DEFER_PRIVATE	private	orchestrator.hypo	5	no	-	UNKNOWN-none-qualified	defun:5
+legal-id-registry.lisp	EXTEND	§4.2	orchestrator.legal-id	29	no	cl-ppcre	UNKNOWN-none-qualified	defparameter:2,defun:27
+legal-identity.lisp	EXTEND	§4.2	orchestrator.identity	31	no	uiop	orchestrator.paths,orchestrator.safe-read,orchestrator.spec,orchestrator.trace	define-condition:1,defparameter:3,defun:26,defvar:1
+legal-inference-engine.lisp	REUSE	§4.3, §4.7	orchestrator.inference	54	no	-	orchestrator.metaeval,orchestrator.trace	defclass:4,defgeneric:1,defmacro:1,defmethod:2,defrule:3,defun:43
+legal-knowledge.lisp	REUSE	CORE	orchestrator.knowledge	26	no	-	UNKNOWN-none-qualified	defparameter:1,defun:23,defvar:2
+legal-penalty.lisp	REUSE	§4.5	orchestrator.penalty	15	no	cl-ppcre	UNKNOWN-none-qualified	defparameter:4,defstruct:1,defun:10
+legal-precedent.lisp	DEFER_PRIVATE	private	orchestrator.precedent	8	no	-	UNKNOWN-none-qualified	defrule:6,defun:2
+legal-qa.lisp	EXTEND	§4.7	orchestrator.legal-qa	11	no	-	UNKNOWN-none-qualified	defun:11
+legal-reasoning-bridge.lisp	EXTEND	§4.7	orchestrator.reasoning	9	no	-	orchestrator.identity,orchestrator.inference,orchestrator.legal-receipt,orchestrator.references,orchestrator.version-graph	define-condition:1,defun:6,defvar:2
+legal-references.lisp	REUSE	§4.5, §4.8	orchestrator.references	13	no	cl-ppcre	UNKNOWN-none-qualified	defparameter:3,defun:10
+legal-strategy.lisp	DEFER_PRIVATE	private	orchestrator.strategy	6	no	-	orchestrator.knowledge-packs,orchestrator.temporal	defun:5,defvar:1
+legal-subsumption.lisp	DEFER_PRIVATE	private	orchestrator.subsumption	17	no	-	orchestrator.deontic,orchestrator.inference,orchestrator.knowledge,orchestrator.knowledge-packs,orchestrator.safe-read,orchestrator.trace	defparameter:4,defun:12,defvar:1
+legal-temporal.lisp	REUSE	§4.5	orchestrator.temporal	4	no	-	UNKNOWN-none-qualified	defun:4
+legislation-ingestion.lisp	EXTEND	§4.1	orchestrator.ingestion	11	no	-	UNKNOWN-none-qualified	defstruct:3,defun:8
+lexicon-neurolingo.lisp	REUSE	§4.3	orchestrator.greek-nlp	13	no	-	UNKNOWN-none-qualified	defclass:2,defmethod:2,defparameter:1,defun:8
+logging.lisp	REUSE	—	orchestrator.logging	23	no	ironclad	orchestrator.json-emit,orchestrator.time	defconstant:3,defmacro:1,defparameter:1,defun:14,defvar:4
+mcp-server.lisp	EXTEND	§4.7, §4.15	orchestrator.mcp	18	no	jonathan,uiop	orchestrator.paths	defmacro:1,defparameter:2,defun:11,defvar:4
+memory.lisp	REUSE	L1/L9	orchestrator.memory	31	no	-	orchestrator.citation-authority,orchestrator.journal,orchestrator.paths	defun:29,defvar:2
+merkle-authority.lisp	REUSE	§4.10	orchestrator.merkle	16	no	alexandria,babel,ironclad	UNKNOWN-none-qualified	defparameter:3,defun:13
+narrative-provenance.lisp	REUSE	§4.2	orchestrator.provenance	28	no	local-time,uuid	orchestrator.time,orchestrator.uris	defclass:4,defmethod:1,defparameter:3,defun:20
+orthography-lexicon.lisp	REUSE	§4.3	orchestrator.orthography	25	no	cl-ppcre	UNKNOWN-none-qualified	defclass:1,defmethod:3,defparameter:8,defun:13
+paths.lisp	REUSE	—	orchestrator.paths	30	no	uiop	orchestrator.time	define-condition:1,defmacro:2,defparameter:7,defun:20
+pdf-authority.lisp	REUSE	§4.2	orchestrator.pdf-authority	51	yes	babel,cl-ppcre,uiop	orchestrator.layout-types	defctype:6,define-condition:5,define-foreign-library:3,defun:35,defvar:2
+proof-carrying.lisp	EXTEND	§4.10, §4.15	orchestrator.proof-carrying	17	no	jonathan,uiop	UNKNOWN-none-qualified	define-condition:1,defparameter:1,defun:15
+proposals.lisp	REUSE	L5/L8	orchestrator.proposals	17	no	-	orchestrator.journal,orchestrator.paths	defun:16,defvar:1
+protocols.lisp	REUSE	—	orchestrator.protocols	41	no	-	UNKNOWN-none-qualified	defgeneric:41
+provenance-link.lisp	REUSE	L1	orchestrator.exec-provenance	7	no	-	orchestrator.component-scan,orchestrator.components,orchestrator.contracts,orchestrator.trace	defun:6,defvar:1
+rdfs-inference.lisp	REUSE	§4.11	orchestrator.rdfs-inference	31	no	alexandria	UNKNOWN-none-qualified	defparameter:2,defstruct:4,defun:25
+reasoning-authority.lisp	REUSE	§4.11	orchestrator.reasoning-authority	45	no	-	UNKNOWN-none-qualified	defparameter:16,defun:27,defvar:2
+review-queue.lisp	REUSE	L8	orchestrator.review	51	no	closer-mop	orchestrator.journal,orchestrator.jws-authority	defclass:3,defgeneric:5,define-condition:1,define-review-kind:4,defmacro:1,defmethod:3,defparameter:2,defun:29,defvar:3
+review-service.lisp	EXTEND	§4.12	orchestrator.review-service	20	no	babel	orchestrator.journal	defclass:1,defparameter:2,defun:15,defvar:2
+safe-read.lisp	REUSE	§4.4	orchestrator.safe-read	23	no	-	UNKNOWN-none-qualified	define-condition:1,defmacro:1,defparameter:4,defun:16,defvar:1
+self-constitution.lisp	REUSE	L10	orchestrator.self	14	no	ironclad	orchestrator.paths,orchestrator.safe-read	defun:11,defvar:3
+self-history.lisp	REUSE	L1	orchestrator.self-history	8	no	-	orchestrator.journal,orchestrator.paths	defparameter:1,defun:7
+self-model.lisp	REUSE	L9	orchestrator.self-model	16	no	uiop	orchestrator.cognition,orchestrator.contracts,orchestrator.inference,orchestrator.institution,orchestrator.memory	defmacro:1,defun:12,defvar:3
+semantic-authority.lisp	EXTEND	§4.11	orchestrator.authority	27	no	uuid	orchestrator.hash-authority,orchestrator.merkle,orchestrator.time,orchestrator.uris	defclass:4,defmethod:1,defparameter:2,defun:20
+semantic-versioning-system.lisp	REUSE	§4.15	orchestrator.semantic-versioning	45	no	local-time	orchestrator.hash-authority,orchestrator.time,orchestrator.uris,orchestrator.write-authority	defclass:5,defgeneric:1,defmethod:8,defparameter:2,defun:29
+shacl-validator.lisp	REUSE	§4.11	orchestrator.shacl	36	no	cl-ppcre	UNKNOWN-none-qualified	defparameter:7,defstruct:5,defun:24
+signed-embedding-manifest.lisp	EXTEND	PLANE-3	orchestrator.signed-embedding-manifest	25	no	alexandria,babel,ieee-floats,ironclad,jonathan	UNKNOWN-none-qualified	define-condition:1,defstruct:1,defun:19,defvar:4
+source-profile.lisp	REUSE	§4.2	orchestrator.source-authority	50	no	closer-mop	orchestrator.hash-authority,orchestrator.ingestion,orchestrator.time	defclass:2,defgeneric:4,define-source-channel:5,defmacro:1,defmethod:2,defparameter:1,defun:34,defvar:1
+sparql-endpoint.lisp	REUSE	§4.11	orchestrator.sparql-endpoint	38	no	jonathan	UNKNOWN-none-qualified	define-condition:1,defparameter:2,defstruct:5,defun:24,defvar:6
+static-site.lisp	REUSE	§4.12	orchestrator.static-site	40	no	cl-ppcre,uiop	UNKNOWN-none-qualified	defparameter:7,defun:33
+text-canonicalizer.lisp	REUSE	§4.2	orchestrator.text-canonicalizer	26	no	cl-ppcre	UNKNOWN-none-qualified	defclass:1,defmethod:1,defparameter:2,defun:14,defvar:8
+timestamp-authority.lisp	EXTEND	§4.10	orchestrator.timestamp-authority	50	no	alexandria,babel,drakma,ironclad,usocket	orchestrator.jws-authority	define-condition:3,defparameter:20,defun:27
+trace-core.lisp	REUSE	L1	orchestrator.trace-core	56	no	babel,ironclad	orchestrator.journal,orchestrator.safe-read	defclass:1,defgeneric:3,define-condition:5,defmacro:4,defmethod:9,defparameter:4,defun:25,defvar:5
+turtle-parser.lisp	REUSE	§4.11	orchestrator.turtle	43	no	-	UNKNOWN-none-qualified	define-condition:1,defparameter:5,defstruct:2,defun:35
+typographic-classifier.lisp	EXTEND	§4.2	orchestrator.typographic-classifier	82	no	cl-ppcre	orchestrator.layout-types	defclass:2,defgeneric:1,defmacro:3,defmethod:1,defparameter:3,defrule:30,defstruct:1,defun:40,defvar:1
+validate-ast.lisp	REUSE	§4.2	orchestrator.validate-ast	35	no	-	orchestrator.legal-ast	defgeneric:1,define-condition:4,defmacro:1,defmethod:7,defun:14,defvar:8
+validate-layout-graph.lisp	REUSE	§4.2	orchestrator.validate-layout-graph	39	no	-	UNKNOWN-none-qualified	defgeneric:1,define-condition:6,defmacro:2,defmethod:6,defun:18,defvar:6
+validate-logical-blocks.lisp	REUSE	§4.2	orchestrator.validate-logical-blocks	20	no	-	UNKNOWN-none-qualified	defmacro:1,defun:13,defvar:6
+validation-authority.lisp	REUSE	L10	orchestrator.validation-authority	9	no	cl-ppcre	UNKNOWN-none-qualified	defun:9
+version-graph.lisp	EXTEND	§4.5, §4.9	orchestrator.version-graph	130	no	-	orchestrator.canonical-representation,orchestrator.journal,orchestrator.paths,orchestrator.safe-read	define-condition:7,defparameter:6,deftype:2,defun:114,defvar:1
+what-if.lisp	REUSE	§4.8	orchestrator.whatif	8	no	uiop	orchestrator.component-scan,orchestrator.components,orchestrator.contracts,orchestrator.paths,orchestrator.safe-read,orchestrator.self-model,orchestrator.trace	defun:7,defvar:1
+write-authority.lisp	REUSE	§4.3	orchestrator.write-authority	3	no	-	UNKNOWN-none-qualified	defmacro:1,defun:1,defvar:1
+x509-authority.lisp	EXTEND	§4.2, §4.10	orchestrator.x509-authority	33	no	ironclad	orchestrator.asn1,orchestrator.jws-authority	define-condition:1,defparameter:12,defun:20
+advisor.lisp	REUSE	§4.3	orchestrator.cli	15	no	drakma,uiop	orchestrator.casegrammar,orchestrator.citation-authority,orchestrator.cognition,orchestrator.contracts,orchestrator.decisions,orchestrator.knowledge-packs,orchestrator.proposals,orchestrator.self-model	defmethod:1,defparameter:3,defun:11
+approval-policy.lisp	REUSE	L12	orchestrator.cli	15	no	uiop	orchestrator.constitution,orchestrator.contracts,orchestrator.deontic,orchestrator.extraction,orchestrator.journal,orchestrator.paths,orchestrator.proposals,orchestrator.self-model	defparameter:2,defun:13
+architecture-gate.lisp	REUSE	L10	orchestrator.cli	15	no	uiop	orchestrator.component-scan,orchestrator.contracts,orchestrator.memory,orchestrator.paths,orchestrator.self-model	defparameter:5,defun:10
+autonomy-missions.lisp	REUSE	§4.1	orchestrator.cli	7	no	jonathan	orchestrator.autonomy,orchestrator.deontic,orchestrator.extraction,orchestrator.paths,orchestrator.proposals	defparameter:1,defun:5,defvar:1
+builtin-commands.lisp	REUSE	—	orchestrator.cli	0	no	-	orchestrator.gr-syntagma,orchestrator.mcp,orchestrator.meta,orchestrator.spec	-
+capability-gate.lisp	REUSE	L9	orchestrator.cli	5	no	-	orchestrator.contracts,orchestrator.journal,orchestrator.paths,orchestrator.safe-read,orchestrator.self-model,orchestrator.time	defparameter:1,defun:4
+case-workspace.lisp	DEFER_PRIVATE	private	orchestrator.cli	3	no	jonathan,uiop	orchestrator.casegrammar,orchestrator.counterfactual,orchestrator.deontic,orchestrator.dialectic,orchestrator.knowledge,orchestrator.knowledge-packs,orchestrator.paths,orchestrator.strategy,orchestrator.subsumption	defun:3
+cli-util.lisp	REUSE	—	orchestrator.cli	30	no	cl-ppcre,uiop	orchestrator.journal,orchestrator.paths,orchestrator.spec,orchestrator.trace	define-condition:2,defun:21,defvar:7
+cockpit.lisp	EXTEND	§4.12	orchestrator.cli	13	no	uiop	orchestrator.ai-dump,orchestrator.capability,orchestrator.capability-api,orchestrator.http,orchestrator.paths,orchestrator.review,orchestrator.self-model	defparameter:2,defun:11
+cognition-legal.lisp	EXTEND	§4.12	orchestrator.cli	47	no	cl-ppcre	orchestrator.casegrammar,orchestrator.citation-authority,orchestrator.cognition,orchestrator.decisions,orchestrator.deontic,orchestrator.generation,orchestrator.graph,orchestrator.inference,orchestrator.journal,orchestrator.knowledge,orchestrator.knowledge-packs,orchestrator.paths,orchestrator.proposals,orchestrator.subsumption	defclass:14,defmethod:22,defparameter:3,defun:8
+cognition-self.lisp	REUSE	L9	orchestrator.cli	54	no	cl-ppcre,uiop	orchestrator.autonomy,orchestrator.citation-authority,orchestrator.cognition,orchestrator.decisions,orchestrator.journal,orchestrator.knowledge-packs,orchestrator.memory,orchestrator.metaeval,orchestrator.paths,orchestrator.proposals,orchestrator.self,orchestrator.self-history,orchestrator.self-model,orchestrator.trace	defclass:20,defmethod:20,defparameter:1,defun:12,defvar:1
+commands.lisp	REMOVE	—	orchestrator.cli	5	no	uiop	orchestrator.meta,orchestrator.spec	defun:5
+component-gate.lisp	REUSE	L9	orchestrator.cli	8	no	-	orchestrator.component-scan,orchestrator.components,orchestrator.contracts,orchestrator.identity,orchestrator.self-model,orchestrator.uris	defun:8
+config-loader.lisp	REUSE	—	orchestrator.cli	1	no	cl-yaml,uiop	UNKNOWN-none-qualified	defun:1
+constitutional-dispatch.lisp	REUSE	L10	orchestrator.cli	5	no	-	orchestrator.constitution,orchestrator.self-history,orchestrator.trace	defgeneric:1,defmethod:2,defun:2
+content-validation.lisp	REUSE	§4.2	orchestrator.cli	22	no	cl-ppcre	UNKNOWN-none-qualified	defclass:6,defgeneric:1,defmethod:6,defparameter:3,defun:6
+contract-gate.lisp	REUSE	L10	orchestrator.cli	1	no	-	orchestrator.contracts,orchestrator.institution,orchestrator.legal-id,orchestrator.self-model,orchestrator.uris	defun:1
+decisions.lisp	EXTEND	§4.9	orchestrator.cli	76	no	babel,cl-ppcre,cl-yaml,jonathan,uiop	orchestrator.adoption,orchestrator.casegrammar,orchestrator.citation-authority,orchestrator.cognition,orchestrator.decisions,orchestrator.exec-provenance,orchestrator.gov-source,orchestrator.journal,orchestrator.knowledge-packs,orchestrator.memory,orchestrator.paths,orchestrator.pdf-authority,orchestrator.precedent,orchestrator.self,orchestrator.self-history,orchestrator.self-model,orchestrator.spec,orchestrator.trace,orchestrator.whatif	defparameter:7,defun:65,defvar:4
+deontic-gate.lisp	REUSE	§4.3	orchestrator.cli	2	no	-	orchestrator.contracts,orchestrator.extraction,orchestrator.self-model	defparameter:1,defun:1
+dialogue-gate.lisp	REUSE	§4.12	orchestrator.cli	9	no	cl-ppcre	orchestrator.cognition,orchestrator.contracts,orchestrator.knowledge-packs,orchestrator.memory,orchestrator.self-model	defclass:2,defmethod:3,defparameter:1,defun:3
+draft-commands.lisp	DEFER_PRIVATE	private	orchestrator.cli	9	no	-	orchestrator.casegrammar,orchestrator.contracts,orchestrator.counterfactual,orchestrator.deontic,orchestrator.inference,orchestrator.journal,orchestrator.knowledge,orchestrator.knowledge-packs,orchestrator.metaeval,orchestrator.self-history,orchestrator.self-model,orchestrator.subsumption,orchestrator.trace	defun:9
+event-gate.lisp	REUSE	§4.5	orchestrator.cli	3	no	-	orchestrator.contracts,orchestrator.inference,orchestrator.self-model	defparameter:1,defun:2
+evolution-gate.lisp	REUSE	L8	orchestrator.cli	12	no	uiop	orchestrator.adoption,orchestrator.contracts,orchestrator.paths,orchestrator.self-model,orchestrator.subsumption,orchestrator.trace,orchestrator.whatif	defun:12
+external-benchmark-gate.lisp	REUSE	§4.14	orchestrator.cli	22	no	cl-ppcre,ironclad,uiop	orchestrator.contracts,orchestrator.self-model	defparameter:8,defun:14
+fluid-gate.lisp	REUSE	L5	orchestrator.cli	6	no	jonathan,uiop	orchestrator.contracts,orchestrator.fluid,orchestrator.paths,orchestrator.self-model	defun:5,defvar:1
+gates-runner.lisp	REUSE	L10	orchestrator.cli	2	no	-	orchestrator.safe-read,orchestrator.trace	defun:2
+generation-gate.lisp	REUSE	§4.12	orchestrator.cli	2	no	uiop	orchestrator.citation-authority,orchestrator.contracts,orchestrator.generation,orchestrator.knowledge-packs,orchestrator.self-model	defparameter:1,defun:1
+golden-gate.lisp	REUSE	§4.14	orchestrator.cli	2	no	uiop	orchestrator.contracts,orchestrator.paths,orchestrator.self-model	defun:2
+graph-import.lisp	REUSE	§4.5	orchestrator.cli	16	no	jonathan,uiop	orchestrator.decisions,orchestrator.graph,orchestrator.graph-reason,orchestrator.memory,orchestrator.paths,orchestrator.references,orchestrator.self,orchestrator.self-history	defun:16
+inference-gate.lisp	REUSE	§4.3	orchestrator.cli	1	no	uiop	orchestrator.contracts,orchestrator.graph,orchestrator.graph-reason,orchestrator.inference,orchestrator.metaeval,orchestrator.self-model	defun:1
+ingestion-commands.lisp	EXTEND	§4.1	orchestrator.cli	18	no	cl-ppcre,jonathan,uiop	orchestrator.engine.sbcl,orchestrator.gov-source,orchestrator.gr-syntagma,orchestrator.ingestion.daemon,orchestrator.paths,orchestrator.reasoning,orchestrator.review,orchestrator.spec	defun:18
+iq-gate.lisp	REUSE	§4.3	orchestrator.cli	9	no	-	orchestrator.contracts,orchestrator.inference,orchestrator.knowledge,orchestrator.self-model	defun:8,defvar:1
+jurisprudence-judge.lisp	REUSE	§4.9	orchestrator.cli	5	no	-	orchestrator.graph,orchestrator.hash-authority	defun:5
+legal-eval.lisp	DEFER_PRIVATE	private	orchestrator.cli	6	no	-	orchestrator.casegrammar,orchestrator.deontic,orchestrator.knowledge-packs,orchestrator.subsumption	defparameter:1,defun:5
+log.lisp	REUSE	—	orchestrator.cli	3	no	-	UNKNOWN-none-qualified	defmacro:3
+main.lisp	REUSE	—	orchestrator.cli	96	no	alexandria,cl-ppcre,ironclad,jonathan,uiop	orchestrator.cognition,orchestrator.consolidation,orchestrator.consolidation.bridge,orchestrator.core,orchestrator.corpus-service,orchestrator.engine.sbcl,orchestrator.gov-source,orchestrator.gr-syntagma,orchestrator.graph,orchestrator.hash-authority,orchestrator.http,orchestrator.identity,orchestrator.inference,orchestrator.journal,orchestrator.knowledge-packs,orchestrator.meta,orchestrator.model,orchestrator.paths,orchestrator.pdf-authority,orchestrator.reasoning,orchestrator.references,orchestrator.review,orchestrator.safe-read,orchestrator.self-model,orchestrator.source-authority,orchestrator.spec,orchestrator.static-site,orchestrator.time,orchestrator.trace,orchestrator.version-graph	define-condition:1,defmacro:1,defparameter:6,defun:84,defvar:4
+memory-commands.lisp	REUSE	L1	orchestrator.cli	6	no	uiop	orchestrator.contracts,orchestrator.memory,orchestrator.self-model	defun:6
+package.lisp	REUSE	—	cl-user	0	no	-	UNKNOWN-none-qualified	-
+provenance-gate.lisp	REUSE	L1	orchestrator.cli	7	no	-	orchestrator.component-scan,orchestrator.contracts,orchestrator.exec-provenance,orchestrator.identity,orchestrator.inference,orchestrator.self-model,orchestrator.subsumption,orchestrator.trace,orchestrator.uris	defun:7
+release-authority.lisp	EXTEND	§4.6, §4.10	orchestrator.cli	4	no	uiop	orchestrator.contracts,orchestrator.core,orchestrator.engine.sbcl,orchestrator.gr-syntagma,orchestrator.meta,orchestrator.paths,orchestrator.self-model,orchestrator.spec,orchestrator.uris	defun:4
+release-gate.lisp	EXTEND	§4.6	orchestrator.cli	3	no	jonathan,uiop	orchestrator.contracts,orchestrator.paths,orchestrator.self-model	defun:3
+reporting.lisp	REUSE	—	orchestrator.cli	1	no	-	orchestrator.core	defun:1
+self-extension.lisp	REUSE	L8	orchestrator.cli	18	no	uiop	orchestrator.casegrammar,orchestrator.citation-authority,orchestrator.cognition,orchestrator.contracts,orchestrator.decisions,orchestrator.deontic,orchestrator.inference,orchestrator.journal,orchestrator.knowledge-packs,orchestrator.paths,orchestrator.proposals,orchestrator.self,orchestrator.self-history,orchestrator.self-model,orchestrator.subsumption	defun:17,defvar:1
+self-reflection.lisp	REUSE	L9	orchestrator.cli	21	no	-	orchestrator.adoption,orchestrator.component-scan,orchestrator.components,orchestrator.constitution,orchestrator.contracts,orchestrator.exec-provenance,orchestrator.institution,orchestrator.introspection,orchestrator.knowledge-packs,orchestrator.paths,orchestrator.proposals,orchestrator.self,orchestrator.self-history,orchestrator.self-model,orchestrator.trace,orchestrator.whatif	defun:21
+subsumption-commands.lisp	EXTEND	§4.8 + private	orchestrator.cli	9	no	-	orchestrator.casegrammar,orchestrator.contracts,orchestrator.counterfactual,orchestrator.deontic,orchestrator.dialectic,orchestrator.inference,orchestrator.knowledge,orchestrator.knowledge-packs,orchestrator.self-model,orchestrator.strategy,orchestrator.subsumption	defparameter:1,defun:8
+understanding-learning.lisp	REUSE	L9	orchestrator.cli	27	no	cl-ppcre,jonathan,uiop	orchestrator.citation-authority,orchestrator.cognition,orchestrator.contracts,orchestrator.decisions,orchestrator.journal,orchestrator.knowledge-packs,orchestrator.memory,orchestrator.paths,orchestrator.proposals,orchestrator.self-model,orchestrator.trace	defparameter:1,defun:24,defvar:2
+verify-truth-gate.lisp	EXTEND	§4.14	orchestrator.cli	19	no	cl-ppcre,uiop	orchestrator.contracts,orchestrator.paths,orchestrator.self-model	defparameter:9,defun:10
+version-graph-import.lisp	REUSE	§4.5	orchestrator.cli	14	no	alexandria,babel,ironclad,jonathan,uiop	orchestrator.ai-dump,orchestrator.consolidation,orchestrator.corpus-service,orchestrator.epistemic,orchestrator.identity,orchestrator.journal,orchestrator.jws-authority,orchestrator.legal-receipt,orchestrator.merkle,orchestrator.paths,orchestrator.spec,orchestrator.timestamp-authority,orchestrator.version-graph	defun:14

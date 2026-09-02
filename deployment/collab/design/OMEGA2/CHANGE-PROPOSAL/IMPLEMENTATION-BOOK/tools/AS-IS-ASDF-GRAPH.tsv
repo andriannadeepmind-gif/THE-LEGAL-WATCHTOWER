@@ -1,0 +1,17 @@
+system	orchestrator_depends_on	n_components
+orchestrator	orchestrator-ai-core,orchestrator-cli,orchestrator-core,orchestrator-engine-sbcl,orchestrator-gr-syntagma,orchestrator-infrastructure,orchestrator-meta,orchestrator-model,orchestrator-omega,orchestrator-spec	0
+orchestrator-ai-core	orchestrator-infrastructure,orchestrator-model,orchestrator-spec	7
+orchestrator-cli	-	48
+orchestrator-core	orchestrator-infrastructure,orchestrator-model,orchestrator-spec	8
+orchestrator-core-runtime	orchestrator-ai-core,orchestrator-cli,orchestrator-core,orchestrator-engine-sbcl,orchestrator-gr-syntagma,orchestrator-infrastructure,orchestrator-meta,orchestrator-model,orchestrator-omega,orchestrator-spec	0
+orchestrator-engine-sbcl	orchestrator-ai-core,orchestrator-core,orchestrator-epistemic,orchestrator-model,orchestrator-omega,orchestrator-spec	25
+orchestrator-epistemic	-	16
+orchestrator-gr-syntagma	orchestrator-core,orchestrator-meta,orchestrator-model,orchestrator-spec	7
+orchestrator-infrastructure	-	132
+orchestrator-meta	orchestrator-infrastructure,orchestrator-model,orchestrator-spec	7
+orchestrator-model	orchestrator-infrastructure,orchestrator-spec	8
+orchestrator-omega	orchestrator-infrastructure	24
+orchestrator-spec	-	8
+orchestrator-tests	orchestrator-ai-core,orchestrator-cli,orchestrator-core,orchestrator-engine-sbcl,orchestrator-gr-syntagma,orchestrator-meta,orchestrator-model,orchestrator-spec	13
+orchestrator-tests-runtime	orchestrator-core-runtime,orchestrator-tests	0
+orchestrator-tooling	orchestrator-core-runtime	0

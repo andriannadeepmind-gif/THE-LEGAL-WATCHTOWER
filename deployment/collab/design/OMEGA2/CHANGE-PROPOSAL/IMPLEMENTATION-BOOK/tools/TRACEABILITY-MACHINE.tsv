@@ -1,0 +1,135 @@
+requirement	work_packet	subsystem	seat_file	test(Q/KW/VS)	evidence
+R-01	WP-01	S1/S16	`legislation-ingestion.lisp` + census snapshot	Q01, Q29 / VS-13	census snapshot + ledger root
+R-02	WP-01	S1/S16	ίδιο	Q01, Q05	ledger inclusion proofs
+R-03	WP-01	S1/S16	ίδιο	Q01	ledger
+R-04	WP-01	S1/S16	ίδιο + Διαύγεια κανάλι	Q01	ledger
+R-05	WP-01	S1/S16	ίδιο	Q01	ledger
+R-06	WP-01	S1/S16	`corpus-eu-links.lisp`	Q01, Q08	ledger + rel1 records
+R-07	WP-01	S1/S16	`legal-decisions.lisp`	Q01, Q07	ledger
+R-08	WP-01	S1/S16	`decisions.lisp` (EXTEND)	Q01, Q07 / VS-13	ledger· U-7
+R-09	WP-01	S1/S16	census space `gr/preparatory`	Q01	ledger
+R-10	WP-01	S1/S16	space attribute `binding:false`	Q29	census snapshot
+R-11	WP-01	S1/S16	space attribute + U-3	Q29, Q25	άδεια + snapshot
+R-12	WP-01	S1/S16	ledger + `coverage-and-freshness`	Q01, Q02, Q29 / VS-13	signed claim + inclusion
+R-13	WP-01	S1/S16	census snapshot + auditor re-enumeration	Q29 / VS-13	δύο απαριθμήσεις + διαφορά
+R-14	WP-02	S2	`document-fetch.lisp`	Q03 / VS-01	receipt + digest
+R-15	WP-02	S2	`pdf-authority.lisp`	Q04	byte-ταυτόσημη έξοδος
+R-16	WP-02	S2	neural OCR → `ocr-text` candidate	Q30 / VS-04	held-out σφάλμα (U-6)
+R-17	WP-02	S2	`layout-types.lisp`	Q30 / VS-04	validation report
+R-18	WP-02	S2	`typographic-classifier.lisp` (EXTEND)	Q30	block census
+R-19	WP-02	S2	`x509-authority.lisp` + authority-proof/2	Q03, Q30	signer cert chain
+R-20	WP-02	S2	USC §1.3 manifestation	Q13	manifestation records
+R-21	WP-02	S2	media-verification/1	Q30	media record
+R-22	WP-02	S2	USC §1.1–§1.3	Q24 / VS-03	ids
+R-23	WP-02	S2	`legal-identity.lisp`, `corpus-provenance.lisp`, MLTP v3 §2.1	Q03, Q07, Q13 / VS-01, VS-03	claim + registry inclusion + TSR
+R-24	WP-07	S2/S3/S17	εξωτερικό runtime + `legal-extraction-verify.lisp`	Q31 / VS-04, VS-05, VS-06	candidates + provenance
+R-25	WP-07	S2/S3/S17	v1.4 §4.3 σχήμα	Q31	schema validation log
+R-26	WP-07	S2/S3/S17	`write-authority.lisp` + Σύνταγμα	Q09, Q31 / VS-06	gate output
+R-27	WP-07	S2/S3/S17	inference/deontic/event/dialectic seats	Q10, Q32 / VS-07	proof objects
+R-28	WP-07	S2/S3/S17	`legal-ast.lisp` `norm.determinacy`	Q32 / VS-07	typed answer
+R-29	WP-07	S2/S3/S17	non-evaluating ingress decoder (`SECURE-SEMANTIC-INGRESS-CONTRACT`)	Q31	journal
+R-30	WP-07	S2/S3/S17	κλειστό σχήμα	Q31	schema
+R-31	WP-03	S4/S5	`systems/orchestrator-*`	Q33	component manifest
+R-32	WP-03	S4/S5	v1.4 §4.4	Q33 / VS-06	runtime manifest
+R-33	WP-03	S4/S5	v1.4 §4.6	Q34 / VS-09	δύο attestations
+R-34	WP-03	S4/S5	v1.4 §4.4	Q31	schema version
+R-35	WP-03	S4/S5	`version-graph.lisp` + `journal.lisp`	Q06 / VS-01	replay log
+R-36	WP-03	S4/S5	v1.4 §4.5	Q05, Q08 / VS-02	typed events
+R-37	WP-03	S4/S5	snapshot-at	Q06	προβολή
+R-38	WP-03	S4/S5	recorded-from predicate	Q06	προβολή
+R-39	WP-05	S8b/S8g	Lisp A + Rust B	Q34 / VS-09	attestations
+R-40	WP-04	S8a	καθένας	Q34 / VS-09	ρίζες
+R-41	WP-05	S8b/S8g	`release-gate.lisp`	Q34 / VS-10	diff report
+R-42	WP-05	S8b/S8g	`release-gate.lisp`	Q34 / VS-10	QUARANTINED record
+R-43	WP-04	S8a	χωριστά delegated κλειδιά	Q34	delegation scope
+R-44	WP-11	S9/S14	`legal-qa.lisp` + v1.4 §4.7	Q35 / VS-01, VS-11	answer objects
+R-45	WP-11	S9/S14	MLTP v3 §8	Q22, Q27 / VS-11	receipts
+R-46	WP-11	S9/S14	MLTP v3 §7	Q27, Q35	receipts
+R-47	WP-11	S9/S14	v1.4 §4.7	Q14, Q35	API schema
+R-48	WP-10	S5/S6	`graph-reasoning.lisp`	Q36 / VS-02	replay manifest
+R-49	WP-10	S5/S6	MLTP v3 §2.8 τύπος	Q20, Q36	schema
+R-50	WP-10	S5/S6	`eu-interop-layer.lisp`	Q38	SHACL report
+R-51	WP-09	S7	MLTP v3 §2.5/§2.6 + `legal-decisions.lisp`	Q07, Q37 / VS-08	claims
+R-52	WP-09	S7	v1.4 §4.9 πίνακας	Q37	ταξινομημένα records
+R-53	WP-09	S7	USC §6.3 + events	Q08, Q37 / VS-08	rel1 records
+R-54	WP-09	S7	`version-graph.lisp` (EXTEND)	Q37 / VS-08	γράφος
+R-55	WP-09	S7	`line-split` uncertainty	Q37	uncertainty records
+R-56	WP-09	S7	MLTP v3 §8.3 J	Q37	adoption acts
+R-57	WP-06	S10/S11	MLTP v3 §0	Q21	receipts
+R-58	WP-06	S10/S11	MLTP v3 §1.1, §2	Q21 (γ)	schema
+R-59	WP-06	S10/S11	MLTP v3 §1.2	Q22 / VS-11	vectors
+R-60	WP-06	S10/S11	MLTP v3 §3	Q21, Q28	QSR records
+R-61	WP-06	S10/S11	MLTP v3 §1.3, §8.3 T	Q23 / VS-12	TSR bytes
+R-62	WP-06	S10/S11	MLTP v3 §8.3 K2/K3	Q23 / VS-12	vectors
+R-63	WP-06	S10/S11	MLTP v3 §8.3 F/Q	Q28	receipts
+R-64	WP-06	S10/S11	MLTP v3 §2.7/§2.9	Q26	records
+R-65	WP-06	S10/S11	MLTP v3 §9	Q23, Q26 / VS-12	vectors
+R-66	WP-06	S10/S11	MLTP v3 §5	Q12, Q22	vectors
+R-67	WP-06	S10/S11	MLTP v3 §6, §8	Q22 / VS-11	receipts
+R-68	WP-06	S10/S11	MLTP v3 §1.0, §8.3 βήμα 0	Q21 (α)	schema
+R-69	WP-06	S10/S11	MLTP v3 §10	Q23, Q40 / VS-12	ceremony records, checkpoints
+R-70	WP-06	S10/S11	`DOMINANCE-MATRIX.md` D-11	validation pass 2	dominance record
+R-71	WP-11	S9/S14	crosswalk §B.6 έδρες	Q14, Q38 / VS-11	validation reports
+R-72	WP-11	S9/S14	`shacl-validator.lisp` + shapes	Q38	report
+R-73	WP-11	S9/S14	v1.4 §4.11	Q38	αρχή
+R-74	WP-12	S12/S13/S18	`cockpit.lisp`	Q15 / VS-14	UI + answers
+R-75	WP-12	S12/S13/S18	`cognition-legal.lisp`	Q15	answers
+R-76	WP-12	S12/S13/S18	proof-carrying answer + `/api/pending`	Q15	screenshots + answers
+R-77	WP-12	S12/S13/S18	`static-site.lisp` + `corpus-diff.lisp`	Q15, Q36	site snapshot ↔ release digest σύγκριση
+R-78	WP-12	S12/S13/S18	`cockpit_intent` + M5	Q15 / VS-14	intent records
+R-79	WP-12	S12/S13/S18	`review-service.lisp` + role registry	Q17, Q39	auth log
+R-80	WP-12	S12/S13/S18	L1 + review-queue + L12	Q39	journal
+R-81	WP-12	S12/S13/S18	`static-site.lisp` + census-2	Q12, Q15	digests
+R-82	WP-13	S15	`ai-citation-strategy.lisp`, `citation-authority.lisp`	Q16	measurements ή typed UNKNOWN
+R-83	WP-13	S15	Q16 κριτήριο	Q16, Q20	schema
+R-84	WP-13	S15	v1.4 §4.13	Q16	αρχή
+R-85	WP-00	S11/S15	census-2 materials + CI	Q18	attestations
+R-86	WP-00	S11/S15	Dockerfile + deps.lock (+ NixOS)	Q12, Q19 / VS-15	digests
+R-87	WP-00	S11/S15	`docker/sbom.json`	Q40	SBOM
+R-88	WP-00	S11/S15	cosign	Q12	signatures
+R-89	WP-06	S10/S11	M5 + threshold/HSM	Q17, Q23	ceremony/audit trail
+R-90	WP-06	S10/S11	trust boundaries	Q17	policy + test
+R-91	WP-12	S12/S13/S18	= R-79	Q17, Q39	auth log
+R-92	WP-06	S10/S11	`keys/` custody, HSM	Q17, Q40	custody record
+R-93	WP-13	S15	SBOM scan	Q40	scan reports
+R-94	WP-06	S10/S11	MLTP v3 §8.3 L	Q23, Q40 / VS-12	drill record
+R-95	WP-13	S15	PLANE-0 + journal replay	Q19 / VS-15	replay digests
+R-96	WP-13	S15	δύο υποδομές	Q40	topology record
+R-97	WP-13	S15	L1 δημόσια γεγονότα + §2.7	Q26, Q40	incident feed
+R-98	WP-13	S15	SLO registry (U-1)	Q40	measurements
+R-99	WP-00	S11/S15	`.github/workflows` (REPLACE)	Q18	CI runs (API)
+R-100	WP-00	S11/S15	`BLOCKED ≠ FAIL`	Q18	exit code log
+R-101	WP-11	S9/S14	`deployment/verify/*` + MLTP v3 §8	Q22 / VS-11	receipts + LOC count
+R-102	WP-11	S9/S14	νέο OpenAPI πάνω στο capability-api	Q14, Q27	spec + validation
+R-103	WP-11	S9/S14	`mcp-server.lisp`	Q27 / VS-11	tool list
+R-104	WP-11	S9/S14	περιτυλίγματα verifier	Q22	SDK tests
+R-105	WP-11	S9/S14	`ai-corpus-dump.lisp` κ.λπ.	Q12, Q27	feed digests
+R-106	WP-11	S9/S14	README + TRUST-BOOTSTRAP §3	Q23	docs
+R-107	WP-11	S9/S14	vectors + second impl	Q21, Q22	conformance report
+R-108	WP-11	S9/S14	`deployment/verify/vectors/`	Q22	vectors
+R-109	WP-11	S9/S14	v1.4 §4.15	Q27, Q28	provider test
+R-110	WP-11	S9/S14	MLTP v3 §3.1	Q26, Q28	attestations
+R-111	WP-12	S12/S13/S18	v1.4 §1.3/§1.4 + MLTP v3 §1.0	Q20	schema compile failure
+R-112	WP-14	qualification	v1.4 §1.1	contradiction audit	audit output
+R-113	WP-14	qualification	crosswalk §B + αυτό	contradiction audit	audit output
+R-114	WP-14	qualification	MLTP v3 §3.1 + v1.4 §10	Q28	QSR records
+R-115	WP-14	qualification	MLTP v3 §8.3 F/Q	Q28	receipts
+R-116	WP-14	qualification	`DOMINANCE-MATRIX.md`	validation pass 2	dominance record
+R-117	WP-14	qualification	v1.4 §7 + register	contradiction audit	audit
+R-118	WP-14	qualification	Q-tests §8	—	programme text
+R-119	WP-11	S9/S14	MLTP v3 §2.0	Q41 / VS-01, VS-02	claims με legal_timeline
+R-120	WP-11	S9/S14	MLTP v3 §2.0, §8.3 S	Q41, Q06	verifier trace
+R-121	WP-11	S9/S14	v1.4 §4.7	Q41, Q14	API schema
+R-122	WP-11	S9/S14	MLTP v3 §2.10, §8.3 C	Q42 / VS-11	receipts + vectors
+R-123	WP-11	S9/S14	`citation_policy_id` registry	Q42	policy + rendering
+R-124	WP-11	S9/S14	v1.4 §4.16 έδρες	Q42, Q16, Q27	vectors + monitoring reports
+R-125	WP-06	S10/S11	`deployment/verify/mltp3/` (dag_check, build_fixtures)	Q43 / dag_check	REPORT.json (dag_acyclic)
+R-126	WP-06	S10/S11	`verify_a.go` + `verify_b.mjs`	Q43 / harness	REPORT.json (backends, negatives 31/31)
+R-127	WP-06	S10/S11	MLTP v3 §13.3	Q42, Q43	REPORT.json (certified VERIFIED)
+R-128	WP-06	S10/S11	MLTP v3 §13.4/§13.1	Q43	REPORT.json
+R-129	WP-08	S4	`LAWMAX-LEGAL-IR-SEMANTIC-CONTRACT.md`· v1.4 §4.17	VS-09, VS-10	SEMANTIC-CONTRACT (design· PARTIALLY CLOSED· Implementation Book pending)
+R-130	WP-06	S10/S11	MLTP v3 §14· v1.4 §4.18	VS-12	MLTP §14 (design)· threat Θ15
+R-131	WP-07	S2/S3/S17	MLTP v3 §2.11· `source/shacl-validator.lisp` (EXTEND)· v1.4 §4.19	VS-11	MLTP §2.11 (design)· threat Θ16
+R-132	WP-01	S1/S16	`LAWMAX-PUBLIC-SOURCE-TYPE-AUTHORITY-REGISTRY.md`· v1.4 §4.20	VS-13	SOURCE-REGISTRY (design)· census total function
+R-133	WP-02	S2	`LAWMAX-SECURE-SEMANTIC-INGRESS-CONTRACT.md`· **NEW non-evaluating decoder** (ΟΧΙ safe-read· safe-read=internal-only)· v1.4 §4.21	VS-06	INGRESS-CONTRACT (design)· threat Θ18
+R-134	WP-06	S10/S11	MLTP v3 §10.2/§14.4· v1.4 §4.22/§4.14	VS-12	threat Θ17 (design)
