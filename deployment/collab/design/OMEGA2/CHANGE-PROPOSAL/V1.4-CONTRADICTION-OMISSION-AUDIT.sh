@@ -218,8 +218,8 @@ ck I1b "$(python3 -c "
 import re
 s=open('$SR',encoding='utf-8').read()
 rows=[l for l in s.split(chr(10)) if re.match(r'^\| ST-[0-9]',l)]
-# κάθε ουσιαστικό entry: collector·profile·compiler (cells[5]) + coverage (cells[6]) + review_state PENDING (cells[8])
-ok=sum(1 for l in rows for cells in [[c.strip() for c in l.strip().strip('|').split('|')]] if len(cells)>=9 and '·' in cells[5] and cells[6] not in ('','—') and cells[8]=='PENDING_LEGAL_VALIDATION')
+# 12-column typed entries table: collector·profile·compiler (cells[8]) + coverage (cells[9]) + review_state PENDING (cells[11])
+ok=sum(1 for l in rows for cells in [[c.strip() for c in l.strip().strip('|').split('|')]] if len(cells)>=12 and '·' in cells[8] and cells[9] not in ('','—') and cells[11]=='PENDING_LEGAL_VALIDATION')
 print(ok)
 ")" ge 28
 ck I1c "$(c 'UNKNOWN_SOURCE_TYPE' $SR)" ge 1
@@ -228,7 +228,28 @@ ck I1e "$(c 'επεκτάσιμο, versioned' $SR)" ge 1
 ck I1f "$(c 'λήγει αν δεν κυρωθεί σε 40 ημέρες' $SR)" eq 0
 ck I1g "$(c 'cjeu-profile' $SR)" ge 1
 ck I1h "$(c 'ecthr-profile' $SR)" ge 1
-ck I1i "$(cE 'Κανονισμός ΕΕ \| ΕΕ \| \*\*secondary' $SR)" ge 1
+ck I1i "$(cE 'Κανονισμός ΕΕ \| ΕΕ \| supranational-secondary' $SR)" ge 1
+# I1j (Task-4): κάθε SourceType entry χρησιμοποιεί ΚΛΕΙΣΤΑ typed enum tokens (normative_tier/procedure_kind/
+# binding_force/classification_rule), ΟΧΙ slash-combined ελεύθερο κείμενο — μηδέν παραβιάσεις
+ck I1j "$(python3 -c "
+import re
+s=open('$SR',encoding='utf-8').read()
+tier={'constitutional','statutory','statutory-provisional','supranational-primary','supranational-secondary','regulatory','jurisprudential','advisory','preparatory','collective-normative','soft-law','doctrinal','UNKNOWN'}
+proc={'legislative','non-legislative','executive-regulatory','administrative-internal','judicial','advisory-opinion','preparatory','negotiated-collective','international-ratification','scholarly','historical-regime','constitutional-revision','parliamentary-autonomous','UNKNOWN'}
+force={'binding','binding-if-accepted','binding-inter-partes','binding-erga-omnes-interpretation','non-binding','UNKNOWN'}
+rule={'fixed','per-instance-from-authority'}
+allowed=[tier,proc,force,rule]
+viol=0
+for l in s.split(chr(10)):
+    if not re.match(r'^\| (\*\*)?ST-',l): continue
+    cells=[c.strip() for c in l.strip().strip('|').split('|')]
+    if len(cells)<12: viol+=1; continue
+    for idx,allow in zip((3,4,5,6),allowed):
+        cell=cells[idx].replace('**','')
+        if '/' in cell or re.search(r'[^\x00-\x7f]',cell): viol+=1; continue
+        if any(t not in allow for t in re.findall(r'[A-Za-z][A-Za-z-]*',cell)): viol+=1
+print(viol)
+")" eq 0
 ck I2a "$(test -f $IN && echo 1 || echo 0)" eq 1
 ck I2b "$(c 'Θ17' $ROOT/deployment/LAWMAX-THREAT-MODEL.md)" ge 1
 ck I2c "$(c 'Θ18' $ROOT/deployment/LAWMAX-THREAT-MODEL.md)" ge 1
@@ -252,6 +273,24 @@ ck J3 "$(cE '^\| [0-9]+ \| MIS' $CM)" eq 18
 ck J4 "$(c 'Αρχιτεκτονικά UNKNOWN: 0' $CM)" ge 1
 ck J5 "$(cE 'IMPLEMENTATION-BOOK|IMPLEMENTATION |QUALIFICATION|EXTERNAL / OPERATIONAL' $CM)" ge 4
 ck J6 "$(cE 'WP-1[0-8]|WP-0[1-9]' $CM)" ge 10
+echo "# N NEGATIVE CHECKS (Task-4· DOCUMENT/REFERENCE CONSISTENCY ΜΟΝΟ) — μηδέν stale-ownership / overclaim σε ACTIVE έγγραφα"
+ACTIVE_NEG="$V $M $Q $X $T $R $DM $VS $SQ $AM $AS $SR $IN"
+while IFS='|' read -r id a op e; do ck "$id" "$a" "$op" "$e"; done < <(python3 - $ACTIVE_NEG <<'PY' 2>/dev/null
+import re,sys
+docs={p:open(p,encoding='utf-8').read() for p in sys.argv[1:]}
+# N1: κανένα ενεργό 'EXTEND safe-read' (safe-read ΔΕΝ επεκτείνεται ως έδρα εξωτερικής εισόδου)
+n1=sum(s.count('EXTEND safe-read') for s in docs.values())
+# N2: κανένα ενεργό safe-read παρουσιασμένο ΩΣ external/public/neural-candidate decoder (affirmative, χωρίς negation guard)
+claim=re.compile(r'external decoder|public ingestion|δημόσι\w*\s+(?:decoder|εισόδ|ingress)|neural-candidate ingress|μοναδική είσοδος|μοναδική έδρα|external ingress')
+neg=re.compile(r'ΟΧΙ|ΔΕΝ|δεν |ΕΣΩΤΕΡΙΚΟ|internal-only|internal only|defect|γειτονικ|ούτε|primitive')
+n2=sum(1 for s in docs.values() for l in s.split('\n') if 'safe-read' in l and claim.search(l) and not neg.search(l))
+# N3: καμία αξίωση ότι ο symbolic/structural validator ΑΠΟΔΕΙΚΝΥΕΙ/ΑΝΙΧΝΕΥΕΙ κακόβουλη πρόθεση (affirmative overclaim)
+mal=re.compile(r'symbolic validator απορρίπτει|απορρίπτεται από\s+\S*\s*symbolic|(?:symbolic|συμβολικ\w*)[^\n]{0,60}(?:αποδεικνύει|ανιχνεύει|εντοπίζει)[^\n]{0,40}(?:κακόβουλ|malicious|πρόθεσ|intent)')
+negm=re.compile(r'\bΟΧΙ\b|\bΔΕΝ\b|δεν |μαγικ|Κανένας|καμία υπερβολ')
+n3=sum(1 for s in docs.values() for l in s.split('\n') if mal.search(l) and not negm.search(l))
+print(f'N1|{n1}|eq|0'); print(f'N2|{n2}|eq|0'); print(f'N3|{n3}|eq|0')
+PY
+)
 echo "# F regression floor: V1.3-CONSISTENCY-AUDIT.sh"
 bash ./V1.3-CONSISTENCY-AUDIT.sh > /dev/null 2>&1; f13=$?
 ck F1 "$f13" eq 0

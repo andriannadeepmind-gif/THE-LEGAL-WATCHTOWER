@@ -173,7 +173,7 @@ Q23, Q26, Q28. **KW:** KW-1, KW-2, KW-5, KW-6, KW-9 έως KW-47.
 `neural-candidate/1`), OCR/layout candidates, alignment candidates, held-out
 μέτρηση (§4.2, §4.3, §4.4).
 **Πύλη εισόδου:** έξοδος 2· U-6 (held-out) ορισμένο.
-**Έδρες / dispositions:** `safe-read.lisp` (REUSE: μοναδική είσοδος)· `document-fetch.lisp`
+**Έδρες / dispositions:** **non-evaluating JSON/CBOR decoder** (`SECURE-SEMANTIC-INGRESS-CONTRACT`, NEW/MISSING — WP-02· μοναδική είσοδος εξωτερικής αποκωδικοποίησης· ΟΧΙ safe-read, defect 1)· `safe-read.lisp` (REUSE: ΕΣΩΤΕΡΙΚΟ-ΜΟΝΟ, δεν αγγίζει external ingress)· `document-fetch.lisp`
 (REUSE ως πρότυπο εξωτερικού fetcher)· `legal-extraction-verify.lisp` (EXTEND)·
 `greek-legislation-ontology.lisp`, `knowledge-graph.lisp`, `rdfs-inference.lisp`,
 `shacl-validator.lisp` (EXTEND: alignment)· `proposals.lisp`, `anomaly-detection.lisp`,

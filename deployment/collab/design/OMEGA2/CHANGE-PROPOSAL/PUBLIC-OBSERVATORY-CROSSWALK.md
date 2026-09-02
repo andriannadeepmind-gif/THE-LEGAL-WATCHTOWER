@@ -193,7 +193,7 @@ PUBLIC OBSERVATORY PROFILE (v1.4 §5). Design only.
 | `reasoning-authority.lisp` | OWL/RDFS reasoning | §4.11 | REUSE | — |
 | `review-queue.lisp` | review queue | L8 | REUSE | — |
 | `review-service.lisp` | οθόνη έγκρισης | §4.12 | EXTEND | RBAC/MFA |
-| `safe-read.lisp` | ασφαλής αποσειριοποίηση | §4.4 | REUSE | το μοναδικό σημείο εισόδου neural-candidate |
+| `safe-read.lisp` | ασφαλής αποσειριοποίηση | §4.4 | REUSE | ΕΣΩΤΕΡΙΚΟ-ΜΟΝΟ data-only S-expr primitive (έμπιστα/αυτο-γραμμένα)· **ΟΧΙ** external/neural-candidate ingress (defect 1) |
 | `self-constitution.lisp` | ανάγνωση Συντάγματος | L10 | REUSE | — |
 | `self-history.lisp` | βιογραφία (append-only) | L1 | REUSE | — |
 | `self-model.lisp` | ζωντανό αυτο-μοντέλο | L9 | REUSE | — |
@@ -367,7 +367,7 @@ owner+προθεσμία (για UNKNOWN) · υλοποίηση σήμερα (`p
 
 | id | capability | κατάσταση | έδρα / απόδειξη / owner | υλοποίηση | R-ids | CEILING |
 |---|---|---|---|---|---|---|
-| CAP-22 | closed typed protocol `neural-candidate/1` / `neural-task/1` | HAS_SEAT | v1.4 §4.3/§4.4 + `safe-read.lisp` | missing | R-25, R-29, R-30, R-34 | — |
+| CAP-22 | closed typed protocol `neural-candidate/1` / `neural-task/1` (external ⇒ **non-evaluating JSON/CBOR decoder**, ΟΧΙ safe-read· defect 1) | HAS_SEAT | v1.4 §4.3/§4.4 + `SECURE-SEMANTIC-INGRESS-CONTRACT.md` non-evaluating decoder (NEW, MISSING) | missing | R-25, R-29, R-30, R-34 | — |
 | CAP-23 | OCR + layout understanding (neural) | HAS_SEAT | εξωτερικό runtime | missing | R-24 | — |
 | CAP-24 | πολυτροπική συμφιλίωση εγγράφων | HAS_SEAT | εξωτερικό runtime → candidates | missing | R-24 | — |
 | CAP-25 | εξαγωγή οντοτήτων/σχέσεων (candidates) | HAS_SEAT | εξωτερικό runtime + `legal-extraction-verify.lisp` | partial (symbolic) | R-24 | 2 |

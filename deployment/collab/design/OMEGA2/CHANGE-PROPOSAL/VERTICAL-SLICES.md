@@ -114,7 +114,7 @@ verifier.
 
 ### VS-04 — OCR/layout διαφθορά και ανάκαμψη
 **Αποστολή / επίπεδα:** MIS-2, MIS-7 · §4.2, §4.3, §4.4.
-**Έδρες:** νευρωνικό runtime (εξωτερικό), `safe-read.lisp`, `legal-extraction-verify.lisp`,
+**Έδρες:** νευρωνικό runtime (εξωτερικό), **non-evaluating JSON/CBOR decoder** (`SECURE-SEMANTIC-INGRESS-CONTRACT`, ΟΧΙ safe-read· defect 1), `legal-extraction-verify.lisp`,
 `layout-types.lisp`, `validate-layout-graph.lisp`.
 **Είσοδος (ορισμένη):** μία σαρωμένη σελίδα ιστορικού ΦΕΚ (προ-2000, χωρίς text
 layer) από το census· και η **δηλωμένη μετάλλαξή** της (σελίδα περιστραμμένη 90°,
@@ -160,12 +160,12 @@ release ⇒ δεν μεταγλωττίζεται (Q09)· (γ) σιωπηλή ε
 ### VS-06 — Νευρωνικός candidate απορριπτόμενος από συμβολικούς περιορισμούς
 **Αποστολή / επίπεδα:** MIS-1, MIS-7 · §4.3, §4.4, §4.5.
 **Έδρες:** `legal-extraction-verify.lisp`, `amendment-extractor.lisp`, `version-graph.lisp`,
-`write-authority.lisp`, `safe-read.lisp`.
+`write-authority.lisp`, **non-evaluating JSON/CBOR decoder** (`SECURE-SEMANTIC-INGRESS-CONTRACT`, ΟΧΙ safe-read· defect 1).
 **Είσοδος (ορισμένη):** `neural-candidate/1 kind=legal-event` που ισχυρίζεται
 τροποποίηση **ανύπαρκτου** άρθρου (π.χ. αναφορά σε αριθμό άρθρου πέραν του τελευταίου
 του νόμου-στόχου) — παραγόμενος από το runtime πάνω σε πραγματικό ΦΕΚ με λάθος
 ανάγνωση αριθμού.
-**Βήματα:** (1) candidate μέσω `safe-read.lisp`· (2) συμβολικός έλεγχος: ο στόχος
+**Βήματα:** (1) candidate μέσω **non-evaluating decoder** (ΟΧΙ safe-read· defect 1)· (2) συμβολικός έλεγχος: ο στόχος
 δεν υπάρχει στη διτεμπορική κατάσταση ⇒ απόρριψη με typed αιτία· (3) καταγραφή της
 απόρριψης στο journal ως L5 συμβάν (όχι ως γεγονός νόμου)· (4) απόπειρα του runtime
 να γράψει απευθείας στο journal.

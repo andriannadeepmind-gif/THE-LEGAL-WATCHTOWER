@@ -501,8 +501,9 @@ anchor που γίνεται δεκτό ⇒ κοκκίνισμα· (γ) ίδια
 **Κριτήριο:** κλειστό `kind` sum (13 τιμές)· `anchors` ≥1 υποχρεωτικό·
 `candidate_id` model-independent (hash χωρίς `model_provenance`)· `alternatives`,
 `uncertainty`, `evidence`, `transformation_provenance` υποχρεωτικά· κάθε μήνυμα
-journaled· μοναδική είσοδος `safe-read.lisp`· **κανένα ελεύθερο πεδίο κειμένου**
-εκτός anchored `ocr-text`/`ratio-candidate` content.
+journaled· είσοδος (external/untrusted) μέσω του **non-evaluating JSON/CBOR decoder**
+(`SECURE-SEMANTIC-INGRESS-CONTRACT`, ΟΧΙ `safe-read.lisp` — defect 1)· **κανένα ελεύθερο
+πεδίο κειμένου** εκτός anchored `ocr-text`/`ratio-candidate` content.
 **Αρνητικός μάρτυρας (KW-49):** (α) candidate χωρίς anchor γίνεται δεκτό ⇒
 κοκκίνισμα· (β) ελεύθερο πεδίο κειμένου στο πρωτόκολλο ⇒ **δεν μεταγλωττίζεται**·
 (γ) candidate χωρίς `transformation_provenance` ⇒ απόρριψη (I-4.3c)· (δ) candidate
@@ -527,7 +528,8 @@ underdetermined}`· για μη-`mechanical` ⇒ `UNKNOWN(interpretive)` με τ
 γλώσσα, στη διεργασία και στα δικαιώματα.
 **Κριτήριο:** το runtime δεν κατέχει kid σε κανένα registry· δεν έχει διαδρομή
 εγγραφής στο journal (`write-authority.lisp` μία έδρα)· η μόνη επικοινωνία είναι
-τα δύο typed μηνύματα (Q31) μέσω `safe-read.lisp`· `runtime_manifest_sha256` +
+τα δύο typed μηνύματα (Q31) μέσω του **non-evaluating JSON/CBOR decoder** (ΟΧΙ
+`safe-read.lisp` — defect 1)· `runtime_manifest_sha256` +
 `weights_sha256` καρφωμένα ανά task· ο συμβολικός πυρήνας (Common Lisp) και ο
 δεύτερος compiler (Rust) δεν φορτώνουν νευρωνικό κώδικα.
 **Αρνητικός μάρτυρας:** (α) μήνυμα του runtime που επιχειρεί εγγραφή στο journal ⇒
@@ -854,7 +856,7 @@ executable protocol validation* (§2 στάδια 1 έως 2), **όχι** `SPEC 
 | KW | επίπεδο | μετάλλαξη (stand-up) | αναμενόμενο (want) | έδρα | Q |
 |---|---|---|---|---|---|
 | **KW-48** | §4.1 census | θέση του δηλωμένου σύμπαντος χωρίς κατάσταση στο coverage ledger· `coverage-and-freshness` claim που περνά | `coverage-not-total` (P) ⇒ `UNKNOWN` — ολική συνάρτηση ή τίποτα | v1.4 §4.1 I-4.1a· MLTP v3 §2.4 | Q01, Q29 |
-| **KW-49** | §4.3 neural | `neural-candidate/1` χωρίς `anchors` (ή με ελεύθερο πεδίο κειμένου) που γίνεται δεκτό από τη συμβολική πλευρά | **δεν μεταγλωττίζεται** / απόρριψη στη `safe-read.lisp` — κάθε candidate ≥1 anchor, κλειστό σχήμα | v1.4 §4.3 I-4.3b, §4.4 | Q30, Q31 |
+| **KW-49** | §4.3 neural | `neural-candidate/1` χωρίς `anchors` (ή με ελεύθερο πεδίο κειμένου) που γίνεται δεκτό από τη συμβολική πλευρά | **δεν μεταγλωττίζεται** / απόρριψη στον **non-evaluating decoder + structural validator** (ΟΧΙ safe-read· defect 1) — κάθε candidate ≥1 anchor, κλειστό σχήμα | v1.4 §4.3 I-4.3b, §4.4 | Q30, Q31 |
 | **KW-50** | §4.3 determinacy | διάταξη με `norm.determinacy: interpretive` που επιστρέφεται ως αποφασισμένη `IN/OUT` | `UNKNOWN(interpretive)` με typed εναλλακτικές — ποτέ ψευδοβεβαιότητα | v1.4 §4.3 | Q32 |
 | **KW-51** | §4.5 twin | γεγονός του καταλόγου χωρίς `manifestation_id` + anchor που γίνεται δεκτό στο journal | απόρριψη στην admission (I-4.5d) — κάθε γεγονός φέρει πηγή | v1.4 §4.5 | Q05 |
 | **KW-52** | §4.6 compilers | release υπογεγραμμένο με **μία** μόνο `compiler-attestation` (ή δύο από το ίδιο κλειδί) | `compiler-divergence` (R4) για ολόκληρο το bundle / `delegation-scope-violation` — δύο ανεξάρτητες attestations, ισότητα ριζών | v1.4 §4.6· MLTP v3 §8.3 R4 | Q34 |

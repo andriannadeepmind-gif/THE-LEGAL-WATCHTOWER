@@ -4,8 +4,16 @@
 **ΚΑΤΑΣΤΑΣΗ: `DESIGN-ONLY · ACTIVE SHARED TRUST FOUNDATION`.** Καμία γραμμή κώδικα, κανένα
 freeze. Η **κανονική έδρα** (μία ανά έννοια) του trust boundary εισόδου, απαιτούμενη από
 `CHANGE-PROPOSAL-v1.4.md §4.3/§4.4` και τον νόμο του repo «ΚΑΝΕΝΑ LLM/untrusted input στο
-έμπιστο μονοπάτι». Επεκτείνει τη **μοναδική** υπάρχουσα έδρα ασφαλούς αποσειριοποίησης
-`source/safe-read.lisp` (REUSE/EXTEND — **όχι** δεύτερη έδρα). POST-C2 closure §3.H/§4.8.
+έμπιστο μονοπάτι». POST-C2 closure §3.H/§4.8.
+
+**Μοντέλο ιδιοκτησίας (ρητό):**
+- **Secure Semantic Ingress Contract** = η **κανονική** έδρα-συμβόλαιο του **εξωτερικού
+  trust boundary** (αυτό το κείμενο).
+- **External non-evaluating JSON/CBOR decoder** = **ΝΕΑ, MISSING** έδρα υλοποίησης
+  (**WP-02**) — το μόνο σημείο αποκωδικοποίησης εξωτερικής εισόδου.
+- **`source/safe-read.lisp`** = **γειτονικό ΕΣΩΤΕΡΙΚΟ-ΜΟΝΟ primitive** για έμπιστα/
+  αυτο-γραμμένα S-expressions· **ούτε επεκτείνεται ούτε χρησιμοποιείται** από την εξωτερική
+  ingestion (χρησιμοποιεί `cl:read`· ρητά «ΟΧΙ public ingestion boundary»).
 
 ## 0. Ο αμετάκλητος invariant
 
@@ -82,8 +90,21 @@ neural-candidate/1 = (§4.3, PLANE-3)                            # ΜΟΝΟ η �
 - **Structural validator:** επιβάλλει το closed AST schema (βάθος, arity, κλειστά kinds).
 - **Deterministic symbolic validator:** typing + anchors + no-boolean-in-hash-record.
 - **Neural semantic detector:** **μη εξουσιοδοτική ένδειξη** μόνο (`neural-candidate/1`,
-  PLANE-3)· ποτέ δεν προάγει μόνο του UNTRUSTED→VALIDATED (I-4.3a). «Semantically
-  valid-looking malicious» υλικό απορρίπτεται από τον **symbolic** validator, όχι από το neural.
+  PLANE-3)· ποτέ δεν προάγει μόνο του UNTRUSTED→VALIDATED (I-4.3a).
+
+**Τι ΑΠΟΔΕΙΚΝΥΟΥΝ — και τι ΔΕΝ αποδεικνύουν — οι validators (καμία υπερβολική αξίωση):**
+- Ο **structural** validator αποδεικνύει **μόνο** συμμόρφωση με το κλειστό AST schema
+  (βάθος/arity/κλειστά kinds) — **schema conformance**, τίποτα παραπάνω.
+- Ο **symbolic** validator αποδεικνύει **μόνο** το **δηλωμένο** typing + invariants + anchors.
+- **Κανένας** από τους δύο **δεν** αποδεικνύει καλόπιστη **πρόθεση**, ούτε **αυθεντικότητα/
+  προέλευση** πηγής. Ένα «semantically valid-looking malicious» candidate **μπορεί να περάσει**
+  και τους δύο validators — αυτό **δεν** το καθιστά έμπιστο και **δεν** ανιχνεύεται «μαγικά» ως
+  κακόβουλο.
+- Ένα candidate που περνά structural + symbolic **παραμένει VALIDATED**, **ΠΟΤΕ** αυτομάτως
+  ADOPTED/CANONICAL: η προαγωγή απαιτεί **επιπλέον** (i) **επαληθευμένη προέλευση**
+  (provenance), (ii) **εξουσιοδοτημένη πηγή/αρμοδιότητα** (source-registry authority · §4.9
+  τάξη 3) και (iii) **εφαρμοστέα adoption policy** (InstitutionalAct). Απόντα, ανεπαρκή ή
+  **συγκρουόμενα** ⇒ **καμία CANONICAL προαγωγή** και **μηδενική παρενέργεια** (fail-closed).
 
 ## 5. Τρεις ΞΕΧΩΡΙΣΤΕΣ είσοδοι (καμία σύγχυση)
 
@@ -119,8 +140,8 @@ hash-record.
 | **SIK-5** | archive/PDF decompression bomb | `decompression-bomb`· bounded output, sandbox killed |
 | **SIK-6** | XML entity expansion (billion laughs) | `xml-entity-expansion`· entities disabled |
 | **SIK-7** | prompt injection στο κείμενο εγγράφου | `injected-directive`· neural = μη εξουσιοδοτικό· καμία εντολή εκτελείται |
-| **SIK-8** | ontology poisoning (κακόβουλο mapping candidate) | `ontology-poisoning-candidate`· symbolic validator απορρίπτει· καμία CANONICAL προαγωγή |
-| **SIK-9** | semantically valid-looking malicious legal candidate | απορρίπτεται από deterministic symbolic validator (όχι neural)· μένει PLANE-3 |
+| **SIK-8** | ontology poisoning (κακόβουλο mapping candidate) | φραγμένο από **υπογεγραμμένη/versioned ontology authority + adoption policy** (ΟΧΙ από «ανίχνευση κακίας» του validator)· ένα schema-valid mapping **μπορεί** να περάσει validation αλλά **μένει μη-CANONICAL** χωρίς εξουσιοδοτημένη ontology έκδοση· απαιτούμενο: **καμία CANONICAL προαγωγή + μηδενική παρενέργεια** |
+| **SIK-9** | semantically valid-looking malicious legal candidate | ένα schema-valid candidate **μπορεί** να περάσει structural + symbolic validation· **μένει μη-CANONICAL** όταν provenance/authority/adoption είναι **απόν ή συγκρουόμενο**· απαιτούμενο αποτέλεσμα: **καμία CANONICAL προαγωγή + μηδενική παρενέργεια** (ΟΧΙ «μαγική» ανίχνευση πρόθεσης) |
 
 **Απόδειξη μηδενικής παρενέργειας:** κάθε SIK τρέχει σε sandbox με 0 capabilities· το
 harness επιβεβαιώνει καμία εγγραφή fs/net/proc, καμία μεταβολή taint state πέρα από
