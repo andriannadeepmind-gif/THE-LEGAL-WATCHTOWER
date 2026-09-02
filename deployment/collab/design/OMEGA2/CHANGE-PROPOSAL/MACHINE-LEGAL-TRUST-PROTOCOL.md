@@ -1491,13 +1491,28 @@ Invariant `V5I-D3-bind`: η `signature` **ΠΡΕΠΕΙ** να καλύπτει c
 `actor_identity + actor_kid + actor_public_key + control_domain_id + evidence_subject_digest`· evidence
 που δεν είναι έτσι δεμένο ⇒ αγνοείται (`INDEPENDENCE_UNKNOWN` υπό strict). Κλείνει το D3.2 (η ταυτότητα
 actor, το `kid`/public key, το control/custody domain και το evidence subject δένονται κρυπτογραφικά).
+**F4 (ποιος υπογράφει + επιλογή κλειδιού):** το `ActorIndependenceEvidence/1` υπογράφεται από τον issuer
+του `evidence_issuer`· κλειδί επαλήθευσης = το `IssuerEntry.issuer_public_key` που επιλύεται με `issuer_id`
+στο **pinned** registry· self-issued (`evidence_issuer = actor_identity`) = IA-0 και **δεν** μετρά ως
+ανεξάρτητη βεβαίωση (invariant `V5I-D3-issuer-signing`).
 
-**(3) Typed trusted issuer registry** — `TrustedIssuerRegistry/1` + `IssuerEntry/1`
-(`issuer_id · issuer_public_key · issuer_authority(list IndependenceDimension) · scope · delegated_from ·
-valid_from · valid_to · revocation_ref`). Το `revocation_ref` είναι **required** όταν η αποδεχόμενη
-`IssuerEntry`/`IndependencePolicy` δηλώνει ότι ο issuer υποστηρίζει revocation· verify semantics: resolve
-revocation source, αν δείχνει revoked στο `t_use` ⇒ **δεν** μετρά· **fail-closed** — evidence με μη
-επιλύσιμο revocation status ⇒ `UNKNOWN` (ποτέ σιωπηλά μετρημένο). Κλείνει τα D3.3/D3.4.
+**(2b) Normalized per-dimension input (F4)** — ένα `control_domain_id` **δεν** εκφράζει όλες τις
+`IndependenceDimension` σχέσεις· ο partition καταναλώνει typed `DomainAssertion/1`
+(`dimension · subject_actor_id · subject_kid · normalized_domain_id ·
+relation(:same-domain|:distinct-domain|:unknown) · source_evidence_ref · issuer_id · valid_from · valid_to ·
+revocation_ref · digest · signature`), **μία ανά (actor,dimension)**· το `control_domain_id` είναι
+convenience summary, **ποτέ** input (invariant `V5I-D3-domainassertion`).
+
+**(3) Typed trusted issuer registry (F4· versioned + content-addressed + pinned)** —
+`TrustedIssuerRegistry/1` (`registry_id = hash(BODY) · version · entries · supersedes · digest · signature`)
++ `IssuerEntry/1` (`issuer_id · issuer_public_key · issuer_authority(list IndependenceDimension) · scope ·
+delegated_from · valid_from · valid_to · revocation_ref`). **Pinned** από
+`LocalTrustState.independence_issuer_registry_ref` (content-addressed `registry_id`)· authenticity υπό
+LocalTrustState-pinned root· **monotonic** update (`supersedes`)· ένα delivered bundle **δεν** αλλάζει το
+pinned registry (rule `trusted-issuer-registry-pinning`). Το `revocation_ref` είναι **required** όταν η
+αποδεχόμενη `IssuerEntry`/`IndependencePolicy` δηλώνει ότι ο issuer υποστηρίζει revocation· verify
+semantics: resolve revocation source, αν δείχνει revoked στο `t_use` ⇒ **δεν** μετρά· **fail-closed** —
+evidence με μη επιλύσιμο revocation status ⇒ `UNKNOWN` (ποτέ σιωπηλά μετρημένο). Κλείνει τα D3.3/D3.4.
 
 `IndependencePolicy/1` ορίζει: `required_distinct_dimensions · prohibited_shared_dimensions ·
 accepted_issuer_registry_ref (→ TrustedIssuerRegistry/1) · evidence_freshness ·
@@ -1505,10 +1520,12 @@ min_independence_assurance · unknown_handling · quorum`. `unknown_handling ∈
 **αυστηρή** σημασιολογία: unknown evidence **ποτέ** δεν μετρά προς strict quorum· `DEGRADE` μειώνει το
 attainable assurance profile αντί να προσποιείται γνώση (D3.6).
 
-**Control-domain partition (D3.5)** — ντετερμινιστικός `control-domain-partition` αλγόριθμος:
-union-find πάνω σε shared-control edges· κάθε edge με άγνωστη κατάσταση **δεν** ενώνει domains υπό
-FAIL_CLOSED (fail-closed· ίδια είσοδος ⇒ ίδιες equivalence classes). Το τελικό quorum μετρά **διακριτά
-control-domain components**, όχι διακριτά `kid` — δύο actors στο ίδιο control domain μετρούν ως **ένας**.
+**Control-domain partition (D3.5· F4)** — ντετερμινιστικός `control-domain-partition` αλγόριθμος που
+καταναλώνει typed `DomainAssertion/1`: union-find· ακμή μεταξύ actors με `:same-domain` σε **ίδιο**
+`normalized_domain_id` για prohibited dimension (proven)· κάθε `:unknown`/missing shared status **προσθέτει
+ακμή** (fail-closed: potentially-shared) υπό FAIL_CLOSED (ίδια είσοδος ⇒ ίδιες equivalence classes). Το
+τελικό quorum μετρά **διακριτά control-domain components**, όχι διακριτά `kid` — δύο actors στο ίδιο
+control domain μετρούν ως **ένας**.
 
 Κανόνες (αμετάβλητοι): διαφορετικά `kid` δεν αποδεικνύουν ανεξαρτησία· self-signed independence
 declaration δεν μετρά· expired/revoked evidence δεν μετρά· ανεπαρκές evidence ⇒ `INDEPENDENCE_UNKNOWN`·

@@ -1056,7 +1056,7 @@ FREEZEABLE` όταν η επιβίωση δεν αποδεικνύεται. Κα
 | **V5KW-D1-9** | D1 | independence «αποδεδειγμένη» από distinct `family_id` μόνο, χωρίς `DerivationIndependenceEvidence/1` και χωρίς `residual_independence_assumption` |
 | **V5KW-D2-6** | D2 | `AUTHENTICATED_SERIAL_SPACE` negative evidence δεκτό χωρίς `completeness_assertion_ref`/`serial_position_semantics_ref`· **ή** `NegativeEvidence/1` χωρίς observation_time/expiry |
 | **V5KW-D2-7** | D2 | serial gap ⇒ `EXPLICITLY_ABSENT` χωρίς κανόνα που αποδεικνύει μη-reservable/void/cancelled/unused (silent inference) |
-| **V5KW-D2-8** | D2 | `NOT_OBSERVED_IN_DECLARED_SOURCE` ή `COVERED_STATE_NON_PUBLIC` χρησιμοποιημένο ως τιμή `coverage_state` (type ambiguity) αντί ως διάσταση |
+| **V5KW-D2-8** | D2 | `NOT_OBSERVED_IN_DECLARED_SOURCE` ή `COVERED_STATE_NON_PUBLIC` χρησιμοποιημένο ως τιμή του παγωμένου `census_coverage_state` (F3) αντί ως χαρτογραφούμενη διάσταση |
 | **V5KW-D3-7** | D3 | `IA-0 DECLARED` (self-declared) evidence μετρημένο σε strict quorum· **ή** independence profile ταυτισμένο με το D1 semantic profile |
 | **V5KW-D3-8** | D3 | `ActorIndependenceEvidence/1` χωρίς signature που δένει actor_kid+actor_public_key+control_domain_id+evidence_subject_digest, να μετρά (unbound evidence) |
 | **V5KW-D3-9** | D3 | evidence από issuer εκτός `TrustedIssuerRegistry/1` **ή** εκτός `issuer_authority` του issuer, να μετρά |
@@ -1065,8 +1065,13 @@ FREEZEABLE` όταν η επιβίωση δεν αποδεικνύεται. Κα
 | **V5KW-D3-12** | D3 | quorum ικανοποιημένο μετρώντας distinct `kid` αντί distinct control-domain components· **ή** UNKNOWN counted υπό FAIL_CLOSED |
 | **V5KW-C1-5** | C1 | `InterpretiveProfile/1` δεκτό ως opaque label (χωρίς methodology/precedence/conflict/adoption) |
 | **V5KW-C1-6** | C1 | `ArgumentRecord/1` που αναφέρει τον εαυτό του (`argument_ref` self) ⇒ κύκλος· **ή** χωρίς claim/premises/conclusion/edges/scheme |
-| **V5KW-C1-7** | C1 | `Claim`/`Hypothesis` χωρίς `interpretive_profile_ref` **ή** χωρίς `argument_refs[]` δεσμό στο machine schema |
+| **V5KW-C1-7** | C1 | `Claim`/`Hypothesis` χωρίς `interpretive_profile_ref`/`statement_ref` δεσμό· **ή** (F1) `argument_refs` επαναφερμένο στο hash-bearing `ClaimRecord` σώμα |
 | **V5KW-C1-8** | C1 | το interpretive binding παραμένει inert comment (όχι machine-readable form)· **ή** εισάγει νέο engine/primitive/gate/second-seat |
+| **V5KW-C1-9** | F1 | κύκλος content-addressing `ClaimID ↔ ArgumentID` (`argument_refs` στο hash-bearing `ClaimRecord`, ή Argument→Claim→Argument στο hash-bearing graph) |
+| **V5KW-F2** | F2 | SA-2 record προάγεται σε `CANONICAL`/`PUBLISHED` με `residual_independence_assumption` αντί για έγκυρο `DerivationIndependenceEvidence/1` (assumption ως trust bypass) |
+| **V5KW-F3** | F3 | ο υποψήφιος ορίζει shadow coverage-state enum, ή μετονομάζει `INGESTED→PRESENT`, ή αφαιρεί `QUARANTINED`, ή αποκλίνει από το παγωμένο v1.4 `census_coverage_state` |
+| **V5KW-F4** | F4 | ο partition κρίνει ανεξαρτησία από ένα `control_domain_id`/opaque ref αντί για typed `DomainAssertion/1`· ή evidence μετρά χωρίς επίλυση issuer σε **pinned** content-addressed registry |
+| **V5KW-F5** | F5 | interpretive canon opaque (χωρίς `CanonRule/1`)· ή ordering/conflict με επινοημένη καθολική προτεραιότητα αντί adopted `CanonPolicy/1` → `ConflictPolicyBundle` |
 
 ### 10.2 Predeclared tests (design-only· UNEXECUTED) — ό,τι θα εκτελούσε την κάθε απαίτηση
 
@@ -1087,6 +1092,11 @@ FREEZEABLE` όταν η επιβίωση δεν αποδεικνύεται. Κα
 - **V5Q-C1-06** — acyclic ArgumentRecord fixtures· self-ref ⇒ reject· falsifier V5KW-C1-6.
 - **V5Q-C1-07** — Claim/Hypothesis binding fixtures· falsifier V5KW-C1-7.
 - **V5Q-C1-08** — constitution binding form fixtures· `:adds-engine nil`/`:adds-primitive nil`/`:adds-gate nil` invariant· falsifier V5KW-C1-8.
+- **V5Q-F1** — build the hash-bearing ref graph· acyclicity holds· inject a `ClaimRecord→ArgumentRecord` back-edge ⇒ cycle detected (non-vacuous)· falsifier V5KW-C1-9.
+- **V5Q-F2** — SA-2 canonical-gate fixtures· assumption-only ⇒ inadmissible (max CANDIDATE/UNKNOWN/QUARANTINED)· valid `DerivationIndependenceEvidence/1` ⇒ admissible· falsifier V5KW-F2.
+- **V5Q-F3** — cross-spec enum fixtures· frozen v1.4 `state` == v1.5 `census_coverage_state`· no shadow enum· falsifier V5KW-F3.
+- **V5Q-F4** — `DomainAssertion/1` partition fixtures· pinned content-addressed registry + issuer key selection· self-issued ⇒ IA-0 not counted· falsifier V5KW-F4.
+- **V5Q-F5** — typed `CanonRule/1`/`CanonPolicy/1` fixtures delegating στο `ConflictPolicyBundle`· no-covering-policy ⇒ UNKNOWN, incompatible ⇒ CONFLICTING· falsifier V5KW-F5.
 
 ### 10.3 Τι ΔΕΝ έγινε στο §10
 

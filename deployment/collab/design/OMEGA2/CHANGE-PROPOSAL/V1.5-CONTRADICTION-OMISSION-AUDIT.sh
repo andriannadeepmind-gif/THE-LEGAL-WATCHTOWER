@@ -49,7 +49,7 @@ ck D1i "$(c 'universal N-version' $P)" ge 1
 echo "# D2 — Census Enumerability + Negative Evidence"
 ck D2a "$(for v in AUTHORITATIVE_COMPLETE_INDEX AUTHENTICATED_SERIAL_SPACE AUTHORITATIVE_PARTIAL_INDEX OBSERVATIONAL_OPEN_WORLD_SOURCE; do grep -lq "$v" $S && echo 1; done | sum)" eq 4
 ck D2b "$(for v in PUBLICLY_AVAILABLE LEGALLY_UNAVAILABLE_OR_NON_PUBLIC ACCESS_RESTRICTED LICENSING_RESTRICTED; do grep -lq "$v" $S && echo 1; done | sum)" eq 4
-ck D2c "$(c 'EXPLICITLY_ABSENT' $P $S $SR | sum)" ge 3
+ck D2c "$(c 'EXPLICITLY-ABSENT' $P $S $SR | sum)" ge 3   # F3: canonical frozen v1.4 spelling (hyphen), not the shadow underscore
 ck D2d "$(c 'NOT_OBSERVED_IN_DECLARED_SOURCE' $P $S $SR | sum)" ge 3
 ck D2e "$(c 'authenticated negative evidence' $P $SR $USC | sum)" ge 3
 ck D2f "$(cE 'ποτέ .* absence|never .* absence|δεν.*αποδεικνύ.*ανυπαρξ' $P $SR | sum)" ge 1
@@ -177,9 +177,11 @@ req={'ENACTMENT','AMENDMENT','COMMENCEMENT','REPEAL','SUSPENSION','REVIVAL','ANN
  'DELEGATED_AUTHORITY_CHANGE','REGIME_EFFECTIVITY_TRANSITION','CONSTITUTIONAL_REVIEW_STATE_CHANGE',
  'JUDICIAL_REVIEW_STATE_CHANGE','LINE_OF_AUTHORITY_MUTATION'}
 out('V5S03',1 if req<=sa2 else 0,1)
-# V5S04 coverage_state exactly 3
-cs={x for x in emembers(form('define-closed-enum coverage_state')) if x.isupper()}
-out('V5S04',1 if cs=={'PRESENT','EXPLICITLY_ABSENT','UNKNOWN'} else 0,1)
+# V5S04 F3: NO shadow coverage_state enum; census state is the FROZEN v1.4 reference (4 members, incl QUARANTINED)
+no_shadow = '(define-closed-enum coverage_state' not in code
+fref=form('define-frozen-enum-reference census_coverage_state')
+fmembers=set(re.findall(r':([A-Z][A-Z_-]+)',fref.split(':members',1)[1])) if ':members' in fref else set()
+out('V5S04',1 if (no_shadow and {'INGESTED','EXPLICITLY-ABSENT','QUARANTINED','UNKNOWN'}<=fmembers) else 0,1)
 # V5S05 NegativeEvidence/1 fields
 ne=set(fields(form('define-record NegativeEvidence/1')))
 out('V5S05',1 if {'census_space_ref','issuing_authority_ref','source_ref','scope','observation_time','completeness_or_serial_rule_ref','evidence_artifact_digest','expiry','signature'}<=ne else 0,1)
@@ -199,9 +201,9 @@ out('V5S08',1 if (bind<=aie and all(k in inv for k in bind)) else 0,1)
 # V5S09 issuer registry
 ie=set(fields(form('define-record IssuerEntry/1')))
 out('V5S09',1 if (form('define-record TrustedIssuerRegistry/1') and {'issuer_id','issuer_public_key','issuer_authority','scope','revocation_ref'}<=ie) else 0,1)
-# V5S10 partition deterministic + fail-closed
+# V5S10 partition deterministic + fail-closed + consumes typed DomainAssertion (F4)
 alg=form('define-algorithm control-domain-partition')
-out('V5S10',1 if (('union-find' in alg or 'connected components' in alg) and 'deterministic' in alg and 'fail-closed' in alg and 'UNKNOWN' in alg) else 0,1)
+out('V5S10',1 if (('union-find' in alg or 'connected components' in alg) and 'deterministic' in alg and 'fail-closed' in alg and 'DomainAssertion' in alg and re.search(r'unknown',alg,re.I)) else 0,1)
 # V5S11 quorum counts components not kids
 qp=form('define-quorum-predicate mesh-independence-quorum')
 out('V5S11',1 if ('control-domain-partition' in qp and 'distinct-components' in qp and 'distinct-valid-kids' in qp) else 0,1)
@@ -211,9 +213,11 @@ out('V5S12',1 if ('claim_ref' in arf and 'argument_ref' not in arf) else 0,1)
 # V5S13 InterpretiveProfile/1 expanded
 ip=set(fields(form('define-record InterpretiveProfile/1')))
 out('V5S13',1 if {'methodology_canons','precedence_stance','applicability','authority_basis','conflict_handling','adoption_status'}<=ip else 0,1)
-# V5S14 ClaimRecord/1 binding
+# V5S14 F1: ClaimRecord/1 binds profile+statement AND has NO argument_refs in its hash-bearing body;
+#          reverse lookup is the derived ClaimArgumentIndex projection.
 crf=set(fields(form('define-record ClaimRecord/1')))
-out('V5S14',1 if {'statement_ref','interpretive_profile_ref','argument_refs'}<=crf else 0,1)
+out('V5S14',1 if ({'statement_ref','interpretive_profile_ref'}<=crf and 'argument_refs' not in crf
+                  and 'define-projection ClaimArgumentIndex' in code) else 0,1)
 # V5S15 constitution reference adds nothing
 cref=form('define-constitution-reference v1.5-interpretive-binding')
 out('V5S15',1 if (':adds-primitive nil' in cref and ':adds-engine nil' in cref and ':adds-gate nil' in cref and ':represents-primitive :argument' in cref) else 0,1)
@@ -235,6 +239,123 @@ for tm in re.finditer(r':type\s+(\([^()]*\)|[A-Za-z0-9_+/.-]+)',code):
 out('V5S16',len(unres),0)
 for i,a,e in R: print(f"{i}|{a}|{e}")
 PYV5S
+)
+
+echo "# V5F — INDEPENDENT-REVIEW REPAIR structural checks (F1-F5). HONEST: parse-level structural/type"
+echo "#       consistency only (a real content-addressing cycle detector, a cross-spec conflicting-enum"
+echo "#       check, the no-assumption SA-2 gate, typed DomainAssertion inputs, typed canons) — NOT a"
+echo "#       semantic/legal/security proof; no predeclared V5Q/V5KW test is executed."
+while IFS='|' read -r fid fa fe; do
+  [ -n "$fid" ] && ck "$fid" "$fa" eq "$fe"
+done < <(python3 - "$S" V1.4-CONTRADICTION-OMISSION-AUDIT.sh CHANGE-PROPOSAL-v1.4.md <<'PYV5F'
+import sys,re
+from collections import defaultdict
+code=open(sys.argv[1],encoding='utf-8').read()
+v14=open(sys.argv[3],encoding='utf-8').read()
+def strip(s):
+    o=[];i=0;n=len(s);ins=False
+    while i<n:
+        c=s[i]
+        if ins:
+            if c=='\\': o.append(c); i+=1
+            if i<n: o.append(s[i])
+            if c=='"': ins=False
+            i+=1; continue
+        if c=='"': ins=True; o.append(c); i+=1; continue
+        if c==';':
+            while i<n and s[i]!='\n': i+=1
+            continue
+        o.append(c); i+=1
+    return ''.join(o)
+code_nc=strip(code)
+def form(head,src=None):
+    src=code_nc if src is None else src
+    idx=src.find('('+head)
+    if idx<0: return ''
+    i=idx;d=0;ins=False;n=len(src)
+    while i<n:
+        c=src[i]
+        if ins:
+            if c=='\\': i+=2; continue
+            if c=='"': ins=False
+            i+=1; continue
+        if c=='"': ins=True
+        elif c=='(': d+=1
+        elif c==')':
+            d-=1
+            if d==0: return src[idx:i+1]
+        i+=1
+    return src[idx:]
+def fields(rf): return re.findall(r'\(:([A-Za-z0-9_]+)\s+:type',rf)
+R=[]
+def out(i,a,e): R.append((i,str(a),str(e)))
+
+# V5F1 — F1 content-hash dependency cycle: real cycle detector over declared :hash-bearing edges,
+# plus ClaimRecord body free of any argument reference, plus construction order + derived projection.
+rt=form('define-ref-targets')
+entries=[(m.group(1),m.group(2),m.start()) for m in re.finditer(r'\(([A-Za-z0-9_/]+)\s+:(hash-bearing|derived)\b',rt)]
+g=defaultdict(list)
+for k,(name,kind,pos) in enumerate(entries):
+    end=entries[k+1][2] if k+1<len(entries) else len(rt)
+    seg=rt[pos:end]
+    if kind=='hash-bearing':
+        for t in re.findall(r'->\s*([A-Za-z0-9_/]+)',seg): g[name].append(t)
+color=defaultdict(int); cyc=[False]   # 0=white 1=gray 2=black
+def dfs(u):
+    color[u]=1
+    for v in g[u]:
+        if color[v]==1: cyc[0]=True
+        elif color[v]==0: dfs(v)
+    color[u]=2
+for nnode in list(g):
+    if color[nnode]==0: dfs(nnode)
+claim_body=form('define-record ClaimRecord/1')
+no_arg=not re.search(r':argument_ref|:argument_refs|:argument_id',claim_body)
+ok1 = (not cyc[0]) and no_arg and ('define-construction-order legal-ir-interpretive' in code_nc) and ('define-projection ClaimArgumentIndex' in code_nc) and (len(g)>=3)
+out('V5F1',1 if ok1 else 0,1)
+
+# V5F2 — F2 no assumption alternative in the SA-2 canonical gate.
+gate=form('define-gate SA-2-canonical-admission')
+inv=form('define-invariant :V5I-D1-no-assumption-canonical')
+ok2 = ('derivation_independence_evidence_ref' in gate
+       and ':forbids-alternative residual_independence_assumption' in gate
+       and inv!='' and 'never' in inv.lower())
+out('V5F2',1 if ok2 else 0,1)
+
+# V5F3 — F3 cross-spec conflicting-enum: frozen v1.4 census enum == v1.5 census_coverage_state reference,
+# and NO shadow coverage_state enum in the candidate.
+m14=re.search(r'state\s*∈\s*\{([^}]*)\}',v14)
+v14set=set(x.strip() for x in re.split(r'[,\s]+',m14.group(1)) if x.strip()) if m14 else set()
+fref=form('define-frozen-enum-reference census_coverage_state')
+v15set=set(re.findall(r':([A-Z][A-Z_-]+)',fref.split(':members',1)[1])) if ':members' in fref else set()
+no_shadow='(define-closed-enum coverage_state' not in code_nc
+ok3 = (v14set=={'INGESTED','EXPLICITLY-ABSENT','QUARANTINED','UNKNOWN'}
+       and v14set==v15set and no_shadow)
+out('V5F3',1 if ok3 else 0,1)
+
+# V5F4 — F4 typed DomainAssertion input + versioned/content-addressed/pinned registry + issuer signing.
+da=set(fields(form('define-record DomainAssertion/1')))
+tir=fields(form('define-record TrustedIssuerRegistry/1'))
+pin=form('define-rule trusted-issuer-registry-pinning')
+sign=form('define-invariant :V5I-D3-issuer-signing')
+ok4 = ({'dimension','subject_actor_id','normalized_domain_id','relation','issuer_id','revocation_ref'}<=da
+       and {'registry_id','version','supersedes'}<=set(tir)
+       and 'LocalTrustState' in pin and 'evidence-issuer-key-selection' in pin
+       and sign!='' and 'issuer_public_key' in sign)
+out('V5F4',1 if ok4 else 0,1)
+
+# V5F5 — F5 typed canons (CanonRule/CanonPolicy) + delegate to existing ConflictPolicyBundle; no opaque canon.
+cr=form('define-record CanonRule/1'); cp=form('define-record CanonPolicy/1')
+ip=form('define-record InterpretiveProfile/1')
+inv5=form('define-invariant :V5I-C1-canon')
+no_opaque = ':methodology_canons :type (list canon)' not in code_nc
+ok5 = (cr!='' and cp!='' and 'conflict_policy_bundle_ref' in cp
+       and '(list CanonRule/1)' in ip and 'canon_policy_ref' in ip
+       and inv5!='' and 'ConflictPolicyBundle' in inv5 and no_opaque)
+out('V5F5',1 if ok5 else 0,1)
+
+for i,a,e in R: print(f"{i}|{a}|{e}")
+PYV5F
 )
 
 echo "### SUMMARY: checks=$n pass=$pass fail=$fail"

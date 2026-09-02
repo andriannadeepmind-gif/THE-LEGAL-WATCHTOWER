@@ -174,16 +174,29 @@ engine, **ΔΕΝ** νέος top-level constitutional primitive — **αναπα�
 Constitution `:argument` και σύνδεση L6 Adversarial Parliament ↔ Legal IR ↔ Claim/Hypothesis ↔
 Proof/Counterproof ↔ InstitutionalAct ↔ proof dependency graph.
 
-**Type-closed (v1.5 micro-pass· §11.5):** `InterpretiveProfile/1{profile_id, version, methodology_canons,
-precedence_stance, applicability, authority_basis, conflict_handling, adoption_status, adoption_act_ref?,
-withdrawal_ref?, source_anchors}` (μη-opaque)· `ArgumentRecord/1{argument_id, interpretive_profile_ref,
-claim_ref, premises[], conclusion, support_edges[], attack_edges[], argument_scheme, source_anchors[],
-authority_scope, uncertainty, adoption_status, adoption_act_ref?, constitution_primitive=:argument}` —
-**αφαιρέθηκε** το κυκλικό self `argument_ref`· `constitution_primitive` = αναπαράσταση του υπάρχοντος
-`:argument`, όχι νέο primitive. `ClaimRecord/1{claim_id, kind, statement_ref, interpretive_profile_ref,
-argument_refs[], status}` δένει Claim/Hypothesis σε profile + arguments. Competing interpretations
-συνυπάρχουν: `Claim-X → Profile-A`, `Claim-Y → Profile-B`, **χωρίς ψευδή επιλογή νικητή**· κάθε
-interpretive conclusion φέρει υποχρεωτικά `interpretive_profile_ref`. **Invariants V5I-08/V5I-09:** η InstitutionalAct adoption
-αλλάζει institutional/epistemic status, **ΟΧΙ** την αντικειμενική «αλήθεια» μιας ερμηνείας. Interpretive
-disagreement παραμένει typed hypothesis/argument/UNKNOWN/CONFLICTING — ποτέ compiler error ή majority
-vote. Kill witnesses V5KW-C1-1..4.
+**Type-closed (v1.5 micro-pass· §11.5· F1/F5 repair):** `InterpretiveProfile/1{profile_id, version,
+methodology_canons: (list CanonRule/1), canon_policy_ref → CanonPolicy/1, precedence_stance, applicability,
+authority_basis, conflict_handling, adoption_status, adoption_act_ref?, withdrawal_ref?, source_anchors}`.
+**F5 (canons ΔΕΝ είναι opaque):** κάθε canon = typed `CanonRule/1{canon_id, version, canon_kind,
+applicability, authority_basis, source_anchors, adoption_status, adoption_act_ref?}`· ordering/conflict =
+adopted scoped `CanonPolicy/1{policy_id, version, canon_refs, ordering, conflict_policy_bundle_ref,
+applicability, authority_basis, adoption_status}` που **delegates** στο **υπάρχον** v1.4
+`ConflictPolicyBundle` (§4.17) — **καμία** επινοημένη καθολική προτεραιότητα· απών ⇒
+`UNKNOWN(no-applicable-conflict-policy)`, ασύμβατα ⇒ `CONFLICTING` (invariant `V5I-C1-canon`)· καμία νέα
+μηχανή/έδρα. `ArgumentRecord/1{argument_id, interpretive_profile_ref, claim_ref, premises[], conclusion,
+support_edges[], attack_edges[], argument_scheme, source_anchors[], authority_scope, uncertainty,
+adoption_status, adoption_act_ref?, constitution_primitive=:argument}` — **αφαιρέθηκε** το κυκλικό self
+`argument_ref`· αναπαράσταση του υπάρχοντος `:argument`, όχι νέο primitive.
+**F1 (content-hash ακυκλικότητα):** `ClaimRecord/1{claim_id, kind, statement_ref, interpretive_profile_ref,
+status}` — **χωρίς** `argument_refs[]` στο hash-bearing σώμα (έσπαγε `ClaimID ↔ ArgumentID`). `claim_id =
+hex(sha256(id_domain ‖ 0x1F ‖ canonical(BODY)))`, BODY χωρίς id/signatures/detached και χωρίς καμία
+αναφορά argument. Το `ClaimRecord` κατασκευάζεται **πριν** κάθε `ArgumentRecord` (σειρά
+`define-construction-order legal-ir-interpretive`)· το `ArgumentRecord.claim_ref` δείχνει σε **ήδη υπάρχον**
+`claim_id`. Η αντίστροφη αναζήτηση claim→arguments είναι **derived projection** `ClaimArgumentIndex` πάνω
+στο υπάρχον proof-dependency graph (L5/L6), **ποτέ** μέρος της ταυτότητας claim (invariant `V5I-C1-acyclic`,
+kill `V5KW-C1-9`). Competing interpretations συνυπάρχουν: `Claim-X → Profile-A`, `Claim-Y → Profile-B`,
+**χωρίς ψευδή επιλογή νικητή**· κάθε interpretive conclusion φέρει υποχρεωτικά `interpretive_profile_ref`.
+**Invariants V5I-08/V5I-09:** η InstitutionalAct adoption αλλάζει institutional/epistemic status,
+**ΟΧΙ** την αντικειμενική «αλήθεια» μιας ερμηνείας. Interpretive disagreement παραμένει typed
+hypothesis/argument/UNKNOWN/CONFLICTING — ποτέ compiler error ή majority vote. Kill witnesses V5KW-C1-1..4,
+V5KW-C1-9.

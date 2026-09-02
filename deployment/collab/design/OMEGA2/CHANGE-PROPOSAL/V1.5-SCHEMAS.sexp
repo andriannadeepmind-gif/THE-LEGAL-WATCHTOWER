@@ -57,8 +57,8 @@
   (independent_check_ref                     :F    :R    :R)   ; D1.3 — required for SA-1 and SA-2
   (independent_derivation_ref                :F    :F    :R)   ; D1.3 — required for SA-2 only
   (divergence_state                          :F    :R    :R)   ; SA-0 has no derivation ⇒ no divergence
-  (derivation_independence_evidence_ref      :F    :F    :C)   ; D1.6 — SA-2: this XOR residual_independence_assumption
-  (residual_independence_assumption          :F    :F    :C)   ; D1.6 — SA-2: required iff independence not evidence-proven
+  (derivation_independence_evidence_ref      :F    :F    :C)   ; D1.6 — SA-2 candidate record; F2: REQUIRED (valid) at the SA-2-canonical-admission gate
+  (residual_independence_assumption          :F    :F    :C)   ; D1.6/F2 — SA-2 CANDIDATE-only holder; NEVER admits to CANONICAL (see SA-2-canonical-admission)
   (adoption_act_ref                          :F    :F    :R))  ; SA-2 only
 
 ;; D1.3 — NORMATIVE RATIONALE (single): SA-2 requires BOTH independent_check_ref AND
@@ -91,8 +91,29 @@
 (define-invariant :V5I-01
   "SA-2 MUST NOT transition ADOPTED -> CANONICAL unless its SemanticAdmissionEvidence obligation is
    satisfied per the cardinality matrix (independent_check_ref AND independent_derivation_ref AND
-   divergence_state=:AGREED AND independence-evidence-or-recorded-assumption AND adoption_act_ref). A
-   schema-valid but wrong SA-2 event is QUARANTINED even if downstream compilers agree.")
+   divergence_state=:AGREED AND a VALID DerivationIndependenceEvidence/1 AND adoption_act_ref). There is
+   NO assumption alternative in this gate (F2). A schema-valid but wrong SA-2 event is QUARANTINED even
+   if downstream compilers agree.")
+
+;; F2 — SA-2 canonical-promotion gate. residual_independence_assumption is NEVER an alternative to evidence.
+(define-gate SA-2-canonical-admission
+  :from :ADOPTED :to :CANONICAL
+  :requires (independent_check_ref
+             independent_derivation_ref
+             (divergence_state :is :AGREED)
+             derivation_independence_evidence_ref     ; MUST resolve to a VALID DerivationIndependenceEvidence/1
+             adoption_act_ref)
+  :forbids-alternative residual_independence_assumption
+  :assumption-disposition (:candidate-only (:CANDIDATE :UNKNOWN :QUARANTINED))
+  :note "A record whose independence rests on residual_independence_assumption (no valid
+         DerivationIndependenceEvidence/1) is inadmissible for ADOPTED->CANONICAL and for PUBLISHED
+         machine-reliance; it is held at most at CANDIDATE/UNKNOWN/QUARANTINED.")
+(define-invariant :V5I-D1-no-assumption-canonical
+  "STRUCTURAL: the SA-2 ADOPTED->CANONICAL gate (SA-2-canonical-admission) contains NO assumption
+   alternative — derivation_independence_evidence_ref (a VALID DerivationIndependenceEvidence/1) is a hard
+   requirement, and residual_independence_assumption appears ONLY under :assumption-disposition as a
+   CANDIDATE/UNKNOWN/QUARANTINED holder, never as an admission path to CANONICAL or PUBLISHED
+   machine-reliance. Assumption ⇒ never canonical.")
 (define-invariant :V5I-02
   "INTERPRETIVE_DISAGREEMENT (D1.5: distinct from DETERMINISTIC_DIVERGENCE) is never a compiler error
    and never resolved by majority vote; it stays a typed hypothesis/argument/UNKNOWN/CONFLICTING in
@@ -108,14 +129,19 @@
   (:PUBLICLY_AVAILABLE) (:LEGALLY_UNAVAILABLE_OR_NON_PUBLIC)
   (:ACCESS_RESTRICTED) (:LICENSING_RESTRICTED) (:UNKNOWN))
 
-;; D2.4 — TYPE DECISION (eliminates the ambiguity): the CANONICAL coverage-state type has EXACTLY
-;; three members; NOT_OBSERVED_IN_DECLARED_SOURCE and COVERED_STATE_NON_PUBLIC are NOT members of it —
-;; they are SEPARATE observation / availability DIMENSIONS that map INTO coverage_state.
-(define-closed-enum coverage_state                 ; canonical, fail-closed
-  (:PRESENT) (:EXPLICITLY_ABSENT) (:UNKNOWN))
-(define-closed-enum observation_state              ; dimension (input), NOT a coverage_state member
+;; D2.4 / F3 — TYPE DECISION (eliminates the ambiguity AND the shadow definition): the CANONICAL
+;; census/coverage state is the FROZEN v1.4 enum — it is NOT redefined, renamed, or shrunk here.
+;; Frozen v1.4 (CHANGE-PROPOSAL-v1.4.md §4.1, 88129099): state ∈ {INGESTED, EXPLICITLY-ABSENT,
+;; QUARANTINED, UNKNOWN}. v1.5 reuses it EXACTLY (INGESTED not renamed to PRESENT; QUARANTINED kept).
+;; NOT_OBSERVED_IN_DECLARED_SOURCE and COVERED_STATE_NON_PUBLIC are SEPARATE observation / availability
+;; DIMENSIONS that MAP INTO this frozen state, never members of it.
+(define-frozen-enum-reference census_coverage_state
+  :canonical-in "CHANGE-PROPOSAL-v1.4.md §4.1 (frozen 88129099)"
+  :members (:INGESTED :EXPLICITLY-ABSENT :QUARANTINED :UNKNOWN)   ; EXACT v1.4 enum; reused, not redefined
+  :reuses-frozen t :adds-member nil :removes-member nil :renames-member nil)
+(define-closed-enum observation_state              ; dimension (input), NOT a census_coverage_state member
   (:OBSERVED) (:NOT_OBSERVED_IN_DECLARED_SOURCE) (:UNKNOWN))
-(define-closed-enum availability_state             ; dimension (input), NOT a coverage_state member
+(define-closed-enum availability_state             ; dimension (input), NOT a census_coverage_state member
   (:PUBLIC_PRESENT) (:COVERED_STATE_NON_PUBLIC) (:ACCESS_RESTRICTED) (:LICENSING_RESTRICTED) (:UNKNOWN))
 
 ;; D2.1 — typed negative evidence.
@@ -143,28 +169,35 @@
   (:OBSERVATIONAL_OPEN_WORLD_SOURCE)
   (:UNKNOWN))
 
-;; D2.2 / D2.4 / D2.5 — strict gap -> coverage_state mapping (canonical output ∈ {PRESENT,EXPLICITLY_ABSENT,UNKNOWN}):
-(define-mapping gap->coverage_state
-  ;; EXPLICITLY_ABSENT only with fresh authenticated NegativeEvidence over a space whose serial/
+;; D2.2 / D2.4 / D2.5 / F3 — strict mapping of the (enumerability × observation × availability × neg-evidence
+;; × divergence) DIMENSIONS INTO the FROZEN v1.4 census_coverage_state {INGESTED, EXPLICITLY-ABSENT,
+;; QUARANTINED, UNKNOWN}. Output is the frozen enum; no shadow output type.
+(define-mapping dimensions->census_coverage_state
+  ((:observation :OBSERVED)                                                  :INGESTED)      ; present in census
+  ;; EXPLICITLY-ABSENT only with fresh authenticated NegativeEvidence over a space whose serial/
   ;; completeness rule PROVES the position cannot be reserved/void/cancelled/legally-unused.
-  ((:enum :AUTHORITATIVE_COMPLETE_INDEX :neg-evidence :fresh-authenticated) :EXPLICITLY_ABSENT)
+  ((:enum :AUTHORITATIVE_COMPLETE_INDEX :neg-evidence :fresh-authenticated)  :EXPLICITLY-ABSENT)
   ((:enum :AUTHENTICATED_SERIAL_SPACE   :neg-evidence :fresh-authenticated
-          :serial-rule :dense-non-reservable-proven)                        :EXPLICITLY_ABSENT)
+          :serial-rule :dense-non-reservable-proven)                         :EXPLICITLY-ABSENT)
+  ((:divergence :DETERMINISTIC_DIVERGENCE)                                    :QUARANTINED)   ; from D1 admission (kept, F3)
   ((:enum :AUTHENTICATED_SERIAL_SPACE   :serial-rule :reservable-or-void-or-unknown) :UNKNOWN) ; D2.2 fail-closed
-  ((:enum :AUTHORITATIVE_PARTIAL_INDEX) :UNKNOWN)   ; observation_state=NOT_OBSERVED_IN_DECLARED_SOURCE
-  ((:enum :OBSERVATIONAL_OPEN_WORLD_SOURCE) :UNKNOWN)
-  ((:availability :LEGALLY_UNAVAILABLE_OR_NON_PUBLIC) :UNKNOWN) ; availability_state=COVERED_STATE_NON_PUBLIC (not crawler failure)
-  ((:neg-evidence :insufficient-or-expired) :UNKNOWN))          ; D2.5 fail-closed
+  ((:observation :NOT_OBSERVED_IN_DECLARED_SOURCE)                           :UNKNOWN)        ; AUTHORITATIVE_PARTIAL_INDEX
+  ((:enum :OBSERVATIONAL_OPEN_WORLD_SOURCE)                                   :UNKNOWN)
+  ((:availability :COVERED_STATE_NON_PUBLIC)                                  :UNKNOWN)        ; LEGALLY_UNAVAILABLE (not crawler failure)
+  ((:neg-evidence :insufficient-or-expired)                                  :UNKNOWN))       ; D2.5 fail-closed
 
 (define-invariant :V5I-04
-  "EXPLICITLY_ABSENT requires fresh authenticated NegativeEvidence/1 over an AUTHORITATIVE_COMPLETE_INDEX,
-   or over an AUTHENTICATED_SERIAL_SPACE whose serial_position_semantics_ref PROVES gaps cannot be
-   reserved/void/cancelled/legally-unused. A serial gap alone is NEVER EXPLICITLY_ABSENT (⇒ UNKNOWN).")
+  "EXPLICITLY-ABSENT (frozen v1.4 census state) requires fresh authenticated NegativeEvidence/1 over an
+   AUTHORITATIVE_COMPLETE_INDEX, or over an AUTHENTICATED_SERIAL_SPACE whose serial_position_semantics_ref
+   PROVES gaps cannot be reserved/void/cancelled/legally-unused. A serial gap alone is NEVER
+   EXPLICITLY-ABSENT (⇒ UNKNOWN).")
 (define-invariant :V5I-05
-  "coverage_state is exactly {PRESENT, EXPLICITLY_ABSENT, UNKNOWN}. NOT_OBSERVED_IN_DECLARED_SOURCE and
-   COVERED_STATE_NON_PUBLIC are observation_state / availability_state DIMENSIONS, not coverage_state
-   members. Insufficient/expired negative evidence, or missing completeness assertion ⇒ coverage_state
-   = UNKNOWN (fail-closed).")
+  "F3: v1.5 does NOT define a coverage-state type. The canonical census/coverage state is the FROZEN v1.4
+   enum census_coverage_state = {INGESTED, EXPLICITLY-ABSENT, QUARANTINED, UNKNOWN} (INGESTED not renamed
+   to PRESENT; QUARANTINED preserved). observation_state and availability_state are separate DIMENSIONS
+   that map into it (dimensions->census_coverage_state); NOT_OBSERVED_IN_DECLARED_SOURCE and
+   COVERED_STATE_NON_PUBLIC are dimension members, never census_coverage_state members. Insufficient/
+   expired negative evidence, or missing completeness assertion ⇒ UNKNOWN (fail-closed).")
 
 ;; ============================ D3 — EVIDENCE-BACKED INDEPENDENCE QUORUMS ======================
 ;; Seat: MACHINE-LEGAL-TRUST-PROTOCOL.md (§10 mesh) + LocalTrustState + qualification. One quorum seat.
@@ -196,13 +229,52 @@
    actor_public_key + control_domain_id + evidence_subject_digest. Evidence not so bound ⇒ ignored
    (INDEPENDENCE_UNKNOWN under strict profile).")
 
-;; D3.3 — typed trusted issuer registry (consumer-local).
-(define-record TrustedIssuerRegistry/1 (:registry_id :type id) (:entries :type (list IssuerEntry/1)))
+;; F4 — WHO signs ActorIndependenceEvidence, and how the verification key is selected.
+(define-invariant :V5I-D3-issuer-signing
+  "ActorIndependenceEvidence/1 is signed by the issuer named in evidence_issuer. Its verification key is
+   the IssuerEntry.issuer_public_key resolved by issuer_id in the LocalTrustState-pinned, content-addressed
+   TrustedIssuerRegistry/1; no matching / expired / revoked / out-of-authority entry ⇒ evidence does NOT
+   count. Self-issued (evidence_issuer = actor_identity) is IA-0 DECLARED and NEVER counts as independent
+   attestation under a strict policy.")
+
+;; F4 — normalized, per-dimension DomainAssertion is the TYPED INPUT of the partition algorithm.
+;; control_domain_id (a single id on ActorIndependenceEvidence) cannot represent all IndependenceDimension
+;; relations and evidence refs are opaque; one DomainAssertion per (actor, dimension) makes them typed.
+(define-record DomainAssertion/1
+  (:dimension :type IndependenceDimension)
+  (:subject_actor_id :type id) (:subject_kid :type kid)
+  (:normalized_domain_id :type id)                    ; canonical id of the shared control domain for THIS dimension
+  (:relation :type (member :same-domain :distinct-domain :unknown))
+  (:source_evidence_ref :type ref) (:issuer_id :type id)   ; issuer resolved in the pinned registry (F4)
+  (:valid_from :type instant) (:valid_to :type instant) (:revocation_ref :type ref)
+  (:digest :type sha256) (:signature :type sig))
+(define-invariant :V5I-D3-domainassertion
+  "control-domain-partition consumes DomainAssertion/1 (one per (actor,dimension)). A pairwise relation is
+   :same-domain only with fresh, non-revoked, registry-accepted assertions carrying the SAME
+   normalized_domain_id for a prohibited dimension. :unknown, missing, or unaccepted ⇒ fail-closed edge
+   (potentially shared). ActorIndependenceEvidence.control_domain_id is a convenience summary and is NEVER
+   the partition input.")
+
+;; D3.3 / F4 — typed trusted issuer registry: versioned, content-addressed, pinned by LocalTrustState.
+(define-record TrustedIssuerRegistry/1
+  (:registry_id :type id)                    ; = hex(sha256(id_domain ‖ 0x1F ‖ canonical(BODY))); content-addressed
+  (:version :type semver) (:entries :type (list IssuerEntry/1))
+  (:supersedes :type (or id null))           ; monotonic update chain (previous registry_id or null)
+  (:digest :type sha256) (:signature :type sig))
 (define-record IssuerEntry/1
   (:issuer_id :type id) (:issuer_public_key :type pubkey)
   (:issuer_authority :type (list IndependenceDimension))   ; what this issuer may attest
   (:scope :type scope) (:delegated_from :type (or id null))
   (:valid_from :type instant) (:valid_to :type instant) (:revocation_ref :type ref))
+(define-rule trusted-issuer-registry-pinning
+  (:pinned-by "LocalTrustState.independence_issuer_registry_ref = a content-addressed registry_id")
+  (:authenticity "the registry signature verifies under a LocalTrustState-pinned root key; an unpinned or
+     unsigned registry is NOT accepted")
+  (:update "monotonic: a new registry_id with supersedes = the pinned one, signed under the pinned root;
+     consumer-local adoption only; a delivered bundle CANNOT change the pinned registry")
+  (:evidence-issuer-key-selection "ActorIndependenceEvidence.evidence_issuer -> IssuerEntry with matching
+     issuer_id in the PINNED registry; verification key = that entry's issuer_public_key; no entry /
+     expired / revoked / out-of-authority ⇒ evidence does NOT count"))
 
 ;; D3.4 — revocation requiredness + verification semantics.
 (define-rule revocation-semantics
@@ -212,16 +284,15 @@
   (:fail-closed "under a strict IndependencePolicy, evidence whose revocation status cannot be resolved
      ⇒ treated as UNKNOWN (never silently counted)"))
 
-;; D3.5 — deterministic pairwise/group equivalence-class algorithm for independent control domains.
+;; D3.5 / F4 — deterministic equivalence-class algorithm consuming TYPED DomainAssertion/1 records.
 (define-algorithm control-domain-partition
-  :input  (actors evidence policy)
+  :input  (actors domain-assertions policy)
   :steps  ((1 "nodes := actors")
-           (2 "for each unordered pair (a,b): edge(a,b) iff they SHARE any dimension in
-               policy.prohibited_shared_dimensions, proven by accepted, fresh, non-revoked evidence
-               (same control_domain_id | same privileged administrator | same key custody | same infra
-               dependency | declared COI)")
-           (3 "under strict policy: if a shared/not-shared status is UNKNOWN, add the edge (fail-closed:
-               treat as potentially-shared)")
+           (2 "for each unordered pair (a,b) and each dimension d in policy.prohibited_shared_dimensions:
+               edge(a,b) iff a fresh, non-revoked, registry-accepted DomainAssertion/1 pair places a and b
+               on the SAME normalized_domain_id for d (relation = :same-domain)")
+           (3 "under strict policy: if the relation for any prohibited d is :unknown or lacks an accepted
+               DomainAssertion, add the edge (fail-closed: treat as potentially-shared)")
            (4 "components := union-find connected components over (nodes, edges)  ; deterministic, order-independent")
            (5 "each component is one INDEPENDENT CONTROL DOMAIN (equivalence class)"))
   :output "a deterministic partition of actors into control-domain equivalence classes")
@@ -238,7 +309,7 @@
 (define-record IndependencePolicy/1
   (:required_distinct_dimensions :type (list IndependenceDimension))
   (:prohibited_shared_dimensions :type (list IndependenceDimension))
-  (:accepted_issuer_registry_ref :type ref)              ; -> TrustedIssuerRegistry/1
+  (:accepted_issuer_registry_ref :type ref)              ; -> content-addressed TrustedIssuerRegistry/1.registry_id, pinned by LocalTrustState (F4)
   (:evidence_freshness :type duration)
   (:min_independence_assurance :type IndependenceAssuranceProfile)
   (:unknown_handling :type unknown_handling)
@@ -270,10 +341,30 @@
 ;; Seats: LAWMAX-LEGAL-IR-SEMANTIC-CONTRACT.md + CPEI L6 + Architecture Constitution :argument.
 ;; NOT a new engine, NOT a new top-level constitutional primitive. Represents the existing :argument.
 
+;; C1.1 / F5 — canons are NOT opaque. Each is a typed, versioned, scoped, source-anchored CanonRule/1;
+;; ordering/conflict is an adopted scoped CanonPolicy/1 that DELEGATES to the existing v1.4
+;; ConflictPolicyBundle (§4.17). No invented universal Greek priority; no new engine or seat.
+(define-record CanonRule/1
+  (:canon_id :type id) (:version :type semver)
+  (:canon_kind :type ArgumentScheme)               ; textual/teleological/systematic/historical/analogy/etc.
+  (:applicability :type scope)                     ; jurisdiction/subject/time
+  (:authority_basis :type ref) (:source_anchors :type (list anchor))
+  (:adoption_status :type (member :proposed :adopted :withdrawn))
+  (:adoption_act_ref :type (or ref null)))
+(define-record CanonPolicy/1
+  (:policy_id :type id) (:version :type semver)
+  (:canon_refs :type (list CanonRule/1))           ; the canons this policy orders/scopes
+  (:ordering :type (member :ordered :unordered :scoped-by-adopted-conflict-policy))
+  (:conflict_policy_bundle_ref :type ref)          ; -> EXISTING v1.4 ConflictPolicyBundle (§4.17); no invented priority
+  (:applicability :type scope) (:authority_basis :type ref)
+  (:adoption_status :type (member :proposed :adopted :withdrawn))
+  (:adoption_act_ref :type (or ref null)))
+
 ;; C1.1 — expanded, non-opaque interpretive profile.
 (define-record InterpretiveProfile/1
   (:profile_id :type id) (:version :type semver)
-  (:methodology_canons :type (list canon))        ; e.g. textual, teleological, systematic, historical
+  (:methodology_canons :type (list CanonRule/1))   ; F5: typed canon rules, NOT an opaque (list canon)
+  (:canon_policy_ref :type ref)                    ; F5: -> CanonPolicy/1 (ordering/conflict via adopted ConflictPolicyBundle)
   (:precedence_stance :type (member :precedential :non-precedential :persuasive))
   (:applicability :type scope)                     ; jurisdiction/subject/time
   (:authority_basis :type ref)
@@ -281,6 +372,12 @@
   (:adoption_status :type (member :proposed :adopted :withdrawn))
   (:adoption_act_ref :type (or ref null)) (:withdrawal_ref :type (or ref null))
   (:source_anchors :type (list anchor)))
+(define-invariant :V5I-C1-canon
+  "F5: interpretive canons are typed CanonRule/1 (versioned, scoped, source-anchored, with adoption_status);
+   ordering and conflict are an adopted scoped CanonPolicy/1 that DELEGATES to the existing v1.4
+   ConflictPolicyBundle (§4.17) — never an invented universal Greek priority. No covering adopted policy
+   ⇒ UNKNOWN(no-applicable-conflict-policy); incompatible adopted policies ⇒ CONFLICTING. Reuses the
+   existing argument engine and ConflictPolicyBundle: no new engine, no new seat.")
 
 (define-closed-enum ArgumentScheme
   (:TEXTUAL) (:TELEOLOGICAL) (:SYSTEMATIC) (:HISTORICAL) (:ANALOGY) (:A_CONTRARIO)
@@ -301,12 +398,46 @@
   (:adoption_act_ref :type (or ref null))
   (:constitution_primitive :type keyword :fixed :argument))   ; represents existing primitive; NOT a new one
 
-;; C1.4 — Claim/Hypothesis bound to profile + arguments in the machine schema.
+;; C1.4 / F1 — Claim/Hypothesis. claim_id = hex(sha256(id_domain ‖ 0x1F ‖ canonical(BODY))); BODY excludes
+;; id + signatures + detached. The hash-bearing BODY contains NO argument reference (acyclic construction).
 (define-record ClaimRecord/1
   (:claim_id :type id) (:kind :type (member :claim :hypothesis))
-  (:statement_ref :type ref) (:interpretive_profile_ref :type ref)
-  (:argument_refs :type (list id))                 ; -> ArgumentRecord/1 ids
+  (:statement_ref :type ref) (:interpretive_profile_ref :type ref)   ; both -> ALREADY-EXISTING records
   (:status :type (member :open :adopted :conflicting :unknown)))
+  ;; F1: NO argument_refs in the hash-bearing ClaimRecord body. The reverse claim->arguments lookup is the
+  ;; derived projection ClaimArgumentIndex below, NOT part of claim identity.
+
+;; F1 — reverse claim->arguments is a DERIVED projection over the EXISTING proof-dependency graph
+;; (L5/L6 proof/counterproof edges). It carries no *_id in any hash-bearing body; it is recomputable.
+(define-projection ClaimArgumentIndex
+  :over "existing L5/L6 proof-dependency graph"
+  :maps "claim_id -> { argument_id : ArgumentRecord/1.claim_ref = claim_id }"
+  :identity :none :hash-bearing nil :derived t)
+
+;; F1 — exact ACYCLIC construction order (each stage refers only to earlier-constructed, already-hashed records).
+(define-construction-order legal-ir-interpretive
+  (1 InterpretiveProfile/1)   ; refers to CanonRule/1 / CanonPolicy/1, never to Claim/Argument
+  (2 statement)               ; the interpreted statement/anchor (statement_ref target)
+  (3 ClaimRecord/1)           ; claim_id = hash(BODY); BODY refs only (1),(2) — NEVER an argument
+  (4 ArgumentRecord/1)        ; argument_id = hash(BODY); BODY refs the ALREADY-EXISTING claim_id from (3)
+  (5 ClaimArgumentIndex))     ; derived projection over (4); not hash-bearing identity
+
+;; F1 — hash-bearing reference targets (the edges that define content-addressing identity). The
+;; type-dependency-cycle audit builds a graph over these :hash-bearing edges and proves ACYCLICITY.
+;; The derived projection's edges are explicitly excluded.
+(define-ref-targets
+  (InterpretiveProfile/1 :hash-bearing (canon_policy_ref -> CanonPolicy/1))
+  (CanonPolicy/1         :hash-bearing (conflict_policy_bundle_ref -> ConflictPolicyBundle))
+  (ClaimRecord/1         :hash-bearing (interpretive_profile_ref -> InterpretiveProfile/1))
+  (ArgumentRecord/1      :hash-bearing (claim_ref -> ClaimRecord/1)
+                                       (interpretive_profile_ref -> InterpretiveProfile/1))
+  (ClaimArgumentIndex    :derived      (claim -> ClaimRecord/1) (arguments -> ArgumentRecord/1)))
+(define-invariant :V5I-C1-acyclic
+  "STRUCTURAL: the content-addressing dependency graph over hash-bearing bodies is ACYCLIC. ClaimRecord/1
+   BODY MUST NOT contain any argument_id / argument_ref / argument_refs; ArgumentRecord/1 references an
+   already-constructed claim_id (Claim built before Argument, per legal-ir-interpretive). The reverse
+   claim->arguments relation is ClaimArgumentIndex (derived projection), never part of claim identity.
+   A cycle among hash-bearing records ⇒ kill (V5KW-C1-9).")
 
 (define-invariant :V5I-08
   "Competing interpretations coexist: Claim-X -> Profile-A and Claim-Y -> Profile-B, no forced winner.
