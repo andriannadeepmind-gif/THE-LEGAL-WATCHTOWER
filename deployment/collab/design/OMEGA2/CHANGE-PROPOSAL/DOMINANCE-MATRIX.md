@@ -258,14 +258,17 @@ epoch). **Falsifier:** object που στηρίζεται σε `sunset` suite μ
 | εναλλακτική | γιατί δεν κυριαρχεί |
 |---|---|
 | (a) παραγωγή αμφότερων compilers από κοινό evaluator | **common-mode failure** — ακυρώνει τον σκοπό του §4.6 (differential verification) |
-| (b) υλοποίηση αμφότερων «κατά την πρόζα» | σιωπηλή διάσταση σε προτεραιότητα εξαίρεσης (lex specialis vs posterior) — KW-105 |
-| (c) ένας compiler + εξωτερικός έλεγχος | καμία N-version διαφορετικότητα υλοποίησης |
+| (b) υλοποίηση αμφότερων «κατά την πρόζα» | σιωπηλή διάσταση όπου το adopted conflict-policy bundle δεν αποφασίζει — KW-105 |
+| (c) η αρχιτεκτονική **επινοεί** ουσιαστικό canon (lex superior/specialis/posterior) | παραβιάζει MIS-8 (de jure αρχή) — ο ουσιαστικός κανόνας είναι jurisdiction-scoped, όχι AI-invented |
+| (d) ένας compiler + εξωτερικός έλεγχος | καμία N-version διαφορετικότητα υλοποίησης |
 
-**Επιλογή:** γλωσσο-ανεξάρτητο κανονιστικό συμβόλαιο + conformance corpus
-input→derivation + δέσμευση ανεξαρτησίας· μηχανοποιημένο μοντέλο = **oracle μόνο**, ποτέ
-κοινή υλοποίηση. **Falsifier:** δύο compilers σιωπηλά διαφορετική προτεραιότητα και
-αμφότεροι περνούν ⇒ το συμβόλαιο είναι υποπροσδιορισμένο. **Witness:** KW-105. Επιλογή
-Rust/OCaml = implementation decision.
+**Επιλογή:** γλωσσο-ανεξάρτητο συμβόλαιο **απαιτήσεων** (μηχανοποιημένα artifacts =
+Implementation Book, ΜΗ ΠΑΡΑΧΘΕΝΤΑ) + conformance corpus input→derivation + δέσμευση
+ανεξαρτησίας· ο ουσιαστικός κανόνας σύγκρουσης έρχεται **μόνο** από υιοθετημένο scoped
+`ConflictPolicyBundle` (source-anchored, InstitutionalAct-approved), **ποτέ** επινοημένος·
+απών bundle ⇒ `UNKNOWN`, ασύμβατα ⇒ `CONFLICTING`. **Falsifier:** δύο compilers που, χωρίς
+καλύπτον bundle, παράγουν οποιαδήποτε ντετερμινιστική διάταξη ⇒ κόκκινο. **Witness:**
+KW-105. Επιλογή Rust/OCaml = implementation decision.
 
 **Ισολογισμός §A:** 16 επιλογές (D-01 έως D-13 + POST-C2 D-14, D-15, D-16)· 0 `DOMINATED`
 κατά τη σύνταξη· 1 ισοπαλία που είναι απόφαση δημιουργού (D-03 c, U-5)· κάθε D με

@@ -517,9 +517,15 @@ Content-addressed, immutable κύκλος ζωής οντολογίας/SHACL· 
 χρόνος γεγονότος (`legal-timeline/1`) ≠ **εφαρμοσιμότητα οντολογίας** (`applicability`) ≠
 θεσμικός χρόνος υιοθέτησης/ελέγχου (`audit-timeline/1`).
 
+**Ακυκλική κατασκευή (POST-C2 correction, §4.2 κανόνας 2):** το `*_id` υπολογίζεται από
+το **BODY** (όλα τα πεδία **εκτός** του ίδιου του `*_id` και του `sig`)· η υπογραφή μετά
+καλύπτει BODY + id. Envelope = BODY ∪ {`*_id`}· detached/signature πεδίο = `sig`.
 ```
-OntologyBundle = { "mltp": "3", "record": "ontology-bundle",
-  "ontology_bundle_id": <"onto1:" + canonical-hash(record χωρίς sig)>,
+OntologyBundle:
+  # BODY = { record, shapes_graph_digest, ontology_graph_digest, semver, applicability,
+  #          adopted_at, published_at, approving_act, supersedes, compat }   (ΟΧΙ id, ΟΧΙ sig)
+  "ontology_bundle_id": <"onto1:" + hex(sha256("mltp3:ontology-bundle-id" ‖ 0x1F ‖ canonical(BODY)))>,
+  "record": "ontology-bundle", "mltp": "3",
   "shapes_graph_digest": "sha256:<hex>",       # URDNA2015 canonical N-Quads των SHACL shapes
   "ontology_graph_digest": "sha256:<hex>",
   "semver": <"MAJOR.MINOR.PATCH">,
@@ -529,18 +535,21 @@ OntologyBundle = { "mltp": "3", "record": "ontology-bundle",
   "approving_act": "clm1:<hash>",              # InstitutionalAct (L8/L12)
   "supersedes": "onto1:<hash>" | null,
   "compat": <"backward" | "breaking" | "orthogonal">,   # typed migration rule, ΟΧΙ boolean
-  "sig": { "alg","kid": <delegated release key>, "sig": <context "mltp3:ontology-bundle"> } }
+  "sig": { "alg","kid": <delegated release key>, "sig": <SIGN over (envelope minus sig), context "mltp3:ontology-bundle"> }
 
-ShaclValidationReceipt = { "mltp": "3", "record": "shacl-validation-receipt",
-  "receipt_id": <"shr1:" + canonical-hash(record χωρίς sig)>,
+ShaclValidationReceipt:
+  # BODY = { record, object_ref, ontology_bundle_id, shapes_graph_digest, object_legal_time,
+  #          result, violations, validated_at, validator_version }   (ΟΧΙ receipt_id, ΟΧΙ sig)
+  "receipt_id": <"shr1:" + hex(sha256("mltp3:shacl-receipt-id" ‖ 0x1F ‖ canonical(BODY)))>,
+  "record": "shacl-validation-receipt", "mltp": "3",
   "object_ref": { "manifestation_id": "lsm1:<hash>", "artifact_digest": "sha256:<hex>" },
-  "ontology_bundle_id": "onto1:<hash>", "shapes_graph_digest": "sha256:<hex>",   # ΔΕΣΜΕΥΣΗ στην ακριβή έκδοση
+  "ontology_bundle_id": "onto1:<hash>", "shapes_graph_digest": "sha256:<hex>",   # ΔΕΣΜΕΥΣΗ στην ακριβή έκδοση (ξένο id, ΟΧΙ δικό του)
   "object_legal_time": <legal-instant>,        # νομικός χρόνος του αντικειμένου
   "result": <"conforms" | "violates" | "migration-required">,   # typed enum, ΟΧΙ boolean (repo law)
   "violations": [ { "shape": <iri>, "focus": <iri>, "detail_anchor": <anchor> } ],
   "validated_at": { "trusted_time", "anchor" },  # audit-timeline
   "validator_version": <string>,
-  "sig": { "alg","kid": <delegated release key>, "sig": <context "mltp3:shacl-receipt"> } }
+  "sig": { "alg","kid": <delegated release key>, "sig": <SIGN over (envelope minus sig), context "mltp3:shacl-receipt"> }
 ```
 
 **Κανόνες (fail-closed):** (α) receipt χωρίς `ontology_bundle_id` **ΚΑΙ**
@@ -561,7 +570,7 @@ versioned bundles). **Falsifier: KW-106.**
 
 ```
 { "mltp": "3", "record": "QualificationStateRecord",
-  "record_id": <"qsr1:" + canonical-hash(record χωρίς signers[].sig)>,
+  "record_id": <"qsr1:" + hex(sha256(id_domain(qsr1) ‖ 0x1F ‖ canonical(BODY)))>,   # ακυκλικό (§4.2 κανόνας 2, §13.1): BODY = record εκτός record_id ΚΑΙ signers[].sig
   "subject": { "kind": <"release" | "claim">, "release_root": "sha256:<hex>", "claim_id": "clm1:<hash>" | null },
   "level": <"spec-qualified" | "implementation-qualified" | "mission-greece-qualified" |
             "security-operations-qualified" | "provider-adoption-qualified" | "none">,
@@ -630,17 +639,35 @@ versioned bundles). **Falsifier: KW-106.**
 ΜΟΝΟ ως interoperability projection για SCITT (§11) — η υπογραφή γίνεται ΠΑΝΤΑ
 πάνω στο canonical JSON· η CBOR μορφή φέρει το ίδιο `sig` και τον ίδιο digest.
 
-### 4.2 Domain separation — ΠΛΗΡΗΣ ΚΛΕΙΣΤΟΣ κατάλογος context strings
+### 4.2 Domain separation — ΠΛΗΡΗΣ ΚΛΕΙΣΤΟΣ ΚΑΤΑΛΟΓΟΣ context strings (canonical versioned registry)
 
+**Executed-core contexts (era-2, στο εκτελέσιμο `schemas.json`):**
 ```
 mltp3:issued-claim · mltp3:delegation · mltp3:revocation · mltp3:registry-snapshot ·
 mltp3:release-root · mltp3:witness-checkpoint · mltp3:qual-state · mltp3:receipt ·
 mltp3:reviewer-adoption · mltp3:provider-attestation · mltp3:compiler-attestation ·
-mltp3:cockpit-intent · mltp3:certified-result · mltp3:citation
+mltp3:cockpit-intent · mltp3:certified-result · mltp3:citation · mltp3:profile-manifest
 ```
-`sig = SIGN(kid, context_string ‖ 0x1F ‖ canonical_bytes(target))` όπου target =
-το πλήρες αντικείμενο χωρίς το πεδίο `sig`. Υπογραφή με λάθος context ⇒
-`sig-invalid`. Ο κατάλογος είναι κλειστός: νέο context = νέα έκδοση MLTP.
+**POST-C2 design-only extension contexts (ΟΧΙ ακόμη στο εκτελέσιμο `schemas.json`· §2.11, §14, semantic-contract §4):**
+```
+mltp3:ontology-bundle · mltp3:shacl-receipt · mltp3:crypto-policy-epoch ·
+mltp3:evidence-renewal · mltp3:pq-authorization · mltp3:conflict-policy
+```
+**Κανόνες (RC-26· POST-C2 correction):**
+1. `sig = SIGN(kid, context_string ‖ 0x1F ‖ canonical_bytes(SIGNING_TARGET))` όπου
+   **`SIGNING_TARGET` = το πλήρες αντικείμενο εξαιρώντας ΚΑΘΕ πεδίο υπογραφής**
+   (`sig`, `signers[].sig`, `signatures[].sig`) — ώστε καμία υπογραφή να μην υπογράφει
+   άλλη υπογραφή (no cross-signature cycle). Υπογραφή με λάθος context ⇒ `sig-invalid`.
+2. **Ακυκλικά `*_id` (RC-#1, §13.1):** για κάθε record που φέρει `*_id`, το
+   `*_id = prefix ‖ hex(sha256(id_domain ‖ 0x1F ‖ canonical(BODY)))` όπου **`BODY` =
+   το αντικείμενο εξαιρώντας το ίδιο το `*_id`, ΚΑΘΕ πεδίο υπογραφής και κάθε detached
+   στοιχείο** (time attestation, inclusion proofs, `release_root`). Το `*_id` **ΠΟΤΕ**
+   δεν εμφανίζεται στο δικό του preimage (`self-referential-id`). Η υπογραφή (κανόνας 1)
+   καλύπτει το αντικείμενο **μαζί** με το ήδη υπολογισμένο `*_id`.
+3. **Κλειστότητα registry:** κανένα context δεν χρησιμοποιείται αν δεν ορίζεται
+   **ακριβώς μία φορά** εδώ. Νέο context = νέα έκδοση MLTP. `id_domain` ανά prefix:
+   `onto1:→mltp3:ontology-bundle-id`, `shr1:→mltp3:shacl-receipt-id` (domain separation
+   ταυτότητας, διακριτό από το signature context).
 
 ### 4.3 Error taxonomy — ΚΛΕΙΣΤΗ, ΟΝΟΜΑΣΤΙΚΗ (35 ονόματα)
 
@@ -1343,20 +1370,55 @@ CryptoPolicyEpoch = { "record": "crypto-policy-epoch", "seq": <int monotonic>,
 εποχή του αντικειμένου ⇒ `algorithm-downgrade` / `suite-below-policy` (**downgrade
 resistance**: η επίθεση υποβάθμισης δεν περνά επειδή το ελάχιστο είναι root-pinned).
 
-### 14.3 Hybrid classical + post-quantum
-Σε epoch με `hybrid_required = classical+pq`, κάθε υπογεγραμμένο αντικείμενο φέρει **ΚΑΙ**
-Ed25519 **ΚΑΙ** ML-DSA υπογραφή πάνω στα **ίδια** canonical bytes, με **ανεξάρτητα
-κλειδιά σε διακριτά failure domains**. Ο verifier απαιτεί **AND** (και οι δύο έγκυρες)·
-απούσα/άκυρη απαιτούμενη PQ υπογραφή ⇒ `pq-signature-missing` / `pq-signature-invalid`,
-**ποτέ VERIFIED** (ένας αντίπαλος που σπάει ΜΟΝΟ την Ed25519 δεν μπορεί να πλαστογραφήσει).
-**Falsifier: KW-104.**
+### 14.3 Hybrid classical + post-quantum (ordinary signed objects)
+Σε epoch με `hybrid_required = classical+pq`, κάθε **ordinary** υπογεγραμμένο αντικείμενο
+(delegated-signer: IssuedClaim, receipt κ.λπ.) φέρει **ΚΑΙ** μία Ed25519 **ΚΑΙ** μία
+ML-DSA υπογραφή πάνω στα **ίδια** canonical bytes = `SIGNING_TARGET` (§4.2 κανόνας 1:
+αντικείμενο **εξαιρώντας ΚΑΘΕ πεδίο υπογραφής** — καμία υπογραφή δεν υπογράφει άλλη),
+με **ανεξάρτητα κλειδιά σε διακριτά failure domains**. `signatures = [ {suite, kid, sig}
+(Ed25519), {suite, kid, sig} (ML-DSA-65) ]`. Ο verifier απαιτεί **AND**· απούσα/άκυρη
+απαιτούμενη PQ υπογραφή ⇒ `pq-signature-missing` / `pq-signature-invalid`, **ποτέ
+VERIFIED**. **Falsifier: KW-104.**
 
-### 14.4 Threshold Ed25519 root ↔ PQ authorization
-Το owner root (§10.2 FROST-Ed25519 3-of-5) αποκτά **παράλληλο PQ owner root** (threshold/
-multisig ML-DSA) σε **ανεξάρτητη custody και failure domain**. Σε hybrid epoch, τα Layer-0
-statements co-signed από **αμφότερα** τα roots· ο pinned root γίνεται pinned **root-set**
-(classical + PQ) με AND-απαίτηση. Καμία μονή αλγοριθμική οικογένεια δεν κρατά μόνη της το
-Layer 0 στην hybrid εποχή.
+### 14.4 PQ ROOT AUTHORIZATION — ΕΠΙΛΟΓΗ: independent n-of-m ML-DSA multisignature (ΟΧΙ threshold)
+
+**Ρητή επιλογή (POST-C2 correction):** η PQ εξουσιοδότηση Layer-0 είναι **independent
+n-of-m ML-DSA multisignature policy**, **ΟΧΙ** threshold construction. Λόγος: το FROST
+είναι vetted threshold **μόνο** για Ed25519· **δεν υπάρχει vetted standardized threshold
+ML-DSA** (το FIPS 204 είναι single-signer). Ένα threshold ML-DSA θα ήταν **homemade crypto
+στο trusted path** — απαγορευμένο (repo law). Άρα η κατασκευή είναι σκόπιμα **ασύμμετρη**:
+classical = FROST-Ed25519 3-of-5 (ένα aggregate public key)· PQ = **m ανεξάρτητα** ML-DSA
+κλειδιά, ≥n έγκυρες ανεξάρτητες υπογραφές. Κάθε πλευρά χρησιμοποιεί **μόνο** vetted primitive.
+
+```
+PQRootSet = { "record": "pq-root-set", "seq": <int monotonic>,
+  "members": [ { "kid": <RFC 7638 thumbprint ML-DSA pubkey>, "custody": <domain-id> } × m ],
+  "threshold_n": <int, 1 ≤ n ≤ m>,   # m ανεξάρτητες custody/failure domains
+  "sig": <υπογεγραμμένο από το ΤΡΕΧΟΝ root-set (bootstrap: out-of-band ceremony), context "mltp3:pq-authorization"> }
+
+PQAuthorization = { "suite": "ML-DSA-65",
+  "signatures": [ { "kid": <member kid>, "sig": <ML-DSA over SIGNING_TARGET> } × ≥n distinct ] }
+```
+- **Canonical detached signing target:** `sig_i = ML-DSA(member_i,
+  "mltp3:pq-authorization" ‖ 0x1F ‖ canonical(SIGNING_TARGET))` όπου `SIGNING_TARGET` = το
+  Layer-0 statement **εξαιρώντας ΚΑΘΕ πεδίο υπογραφής (classical ΚΑΙ PQ) και κάθε `*_id`**
+  — **κανένα signature-over-signature, κανένας κύκλος** (§4.2 κανόνες 1–2). Κάθε member
+  υπογράφει τα **ίδια** bytes ανεξάρτητα· καμία aggregation.
+- **Root-set policy (hybrid epoch):** ένα Layer-0 statement είναι έγκυρο ⇔ **classical
+  FROST-Ed25519 threshold sig ΕΓΚΥΡΗ ΚΑΙ ≥n διακριτές ML-DSA member υπογραφές έγκυρες**
+  (AND). PQ-only epoch: μόνο ≥n PQ. Legacy epoch: μόνο classical (+ renewal §14.5).
+- **Rotation:** νέο `PQRootSet` με `seq+1`, υπογεγραμμένο από το τρέχον root-set (hybrid:
+  classical+PQ)· ιστορικά statements κρατούν το **τότε** member set (versioned precedence §4.5).
+- **Revocation:** per-member — compromised member ⇒ `RevocationStatement` (§9)· αν έγκυρα
+  members < n ⇒ το root-set θεωρείται compromised και ανασυστήνεται με ceremony.
+- **Downgrade behavior:** λιγότερες από n έγκυρες PQ member υπογραφές σε hybrid epoch ⇒
+  `pq-authorization-insufficient`, **ποτέ VERIFIED**· ελλείπουσα classical ⇒ ως §10.2.
+- **Verifier rules:** (1) verify classical aggregate έναντι pinned classical root· (2)
+  verify ≥n διακριτές ML-DSA sigs έναντι pinned `PQRootSet`· (3) και οι δύο πάνω στα
+  **ταυτόσημα** `SIGNING_TARGET` bytes· (4) καμία υπογραφή δεν είναι μέρος του
+  `SIGNING_TARGET` (acyclic). Το `PQRootSet` πινιέται out-of-band μαζί με το classical root
+  (LocalTrustState / `MLTPProfileManifest`). Καμία μονή αλγοριθμική οικογένεια δεν κρατά το
+  Layer 0 στην hybrid εποχή.
 
 ### 14.5 Migration χωρίς επανεγγραφή ιστορικών αντικειμένων + evidence renewal
 Τα ιστορικά αντικείμενα **δεν** ξαναγράφονται· διατηρούν τις αρχικές υπογραφές τους. Η
@@ -1394,11 +1456,16 @@ algorithms (RFC 9053 + PQ registrations) — χωριστή υπογραφή, ό
 αλλά **ανά αλγόριθμο**, όχι ανά κλειδί). Ιστορικά αντικείμενα επιβιώνουν **μόνο** μέσω
 renewal chains αγκυρωμένων **πριν** το σπάσιμο. Διακριτό από key-compromise (ανά κλειδί).
 
-### 14.9 Extension error taxonomy (διακριτή από §4.3)
+### 14.9 Extension error taxonomy (διακριτή από §4.3· κάθε όνομα έχει βήμα verifier §14.6/§14.4)
 ```
 suite-mismatch · algorithm-downgrade · suite-below-policy · pq-signature-missing ·
-pq-signature-invalid · evidence-expired-algorithm · stale-crypto-policy-epoch · unrenewed-legacy-evidence
+pq-signature-invalid · pq-authorization-insufficient · evidence-expired-algorithm ·
+stale-crypto-policy-epoch · unrenewed-legacy-evidence
 ```
+Ontology extension taxonomy (§2.11): `ontology-unbound · ontology-evidence-mutated ·
+ontology-conflict · shapes-digest-mismatch · unadopted-ontology-bundle`. Οι δύο extension
+taxonomies είναι **διακριτές** από τη core §4.3 «35 ονόματα» (η core αμετάβλητη)· κάθε
+όνομα έχει ονομαστικό βήμα εκπομπής στην έδρα του (§14.4/§14.6, §2.11).
 **Απορρίψεις:** κανένα PQ signature στον πυρήνα ΔΕΝ επιβάλλεται *σήμερα* — η προεπιλογή
 epoch παραμένει `era-2` (Ed25519)· η hybrid εποχή **ενεργοποιείται με ρητή πράξη** όταν το
 threat model (Θ15) το απαιτεί. Design-only· καμία υλοποίηση.

@@ -945,7 +945,7 @@ executable protocol validation* (§2 στάδια 1 έως 2), **όχι** `SPEC 
 | KW | οικογένεια | τι σπάει | αναμενόμενο typed αποτέλεσμα | κατάσταση |
 |---|---|---|---|---|
 | **KW-104** | Hybrid era | έγκυρη classical Ed25519 + άκυρη/απούσα απαιτούμενη PQ (ML-DSA) υπογραφή σε hybrid epoch ⇒ πρέπει να απορριφθεί | pq-signature-missing / pq-signature-invalid (UMACHINE_RELIANCE), ποτέ VERIFIED (MLTP §14.3) | προδηλωμένος (POST-C2) |
-| **KW-105** | Semantic ambiguity | δύο ανεξάρτητοι compilers σιωπηλά διαφορετική προτεραιότητα εξαίρεσης ⇒ πρέπει να λυθεί από το formal contract ή να αποτύχει πριν το release | canon-conflict / compiler-divergence (CONFLICTING/UMACHINE_RELIANCE), ποτέ σιωπηλός νικητής (SEMANTIC-CONTRACT §4, §9) | προδηλωμένος (POST-C2) |
+| **KW-105** | Semantic ambiguity | δύο ανεξάρτητοι compilers που, **χωρίς καλύπτον υιοθετημένο `ConflictPolicyBundle`**, παράγουν οποιαδήποτε ντετερμινιστική διάταξη (αντί να επιστρέψουν UNKNOWN/CONFLICTING) ⇒ πρέπει να αποτύχει· ο ουσιαστικός κανόνας **ποτέ** επινοημένος από την αρχιτεκτονική | no-applicable-conflict-policy (UNKNOWN) / conflict-policy-underdetermined (CONFLICTING) / compiler-divergence· ποτέ σιωπηλή ολικοποίηση (SEMANTIC-CONTRACT §4, §9) | προδηλωμένος (POST-C2) |
 | **KW-106** | Ontology evolution | object του 2025 επικυρωμένο έναντι bound 2025 shapes ΔΕΝ πρέπει να απορριφθεί αναδρομικά όταν εισαχθεί 2027 bundle· revalidation δημιουργεί **χωριστό** receipt | ontology-evidence-mutated αν αλλοιωθεί το ιστορικό· αλλιώς νέο receipt (MLTP §2.11) | προδηλωμένος (POST-C2) |
 
 **Ισολογισμός:** 106 witnesses — KW-1 έως KW-63 **προδηλωμένοι/μη εκτελεσμένοι** (16 + 31

@@ -822,32 +822,39 @@ provider χωρίς συμμόρφωση δεν διατηρεί `provider-adopt
 
 ### 4.17 Formal Legal-IR Semantic Contract (L3/L10 · M5 · POST-C2 Finding 1) — R-129
 
-**Σκοπός:** ένα **γλωσσο-ανεξάρτητο κανονιστικό σημασιολογικό συμβόλαιο** ώστε οι δύο
+**Σκοπός:** ένα **γλωσσο-ανεξάρτητο σημασιολογικό συμβόλαιο απαιτήσεων** ώστε οι δύο
 ανεξάρτητοι compilers (§4.6, Common Lisp + Rust/OCaml) να συμμορφώνονται **χωρίς κοινό
 evaluator code** — αλλιώς η N-version ανεξαρτησία είναι common-mode. **Disposition
 Finding 1 = `PARTIALLY CLOSED`** (τεκμηριωμένο από κώδικα): γλωσσο-ανεξάρτητα σήμερα μόνο
 canonical serialization, protocol error-taxonomy/result-lattice, temporal Π1· ο πυρήνας
-συλλογισμού (grammar epistemic set, typing, WFS evaluation order, canon priority lex
-superior/specialis/posterior, conflict/abstention, compiler error taxonomy) είναι
-**Lisp-only**.
+συλλογισμού (grammar epistemic set, typing, WFS evaluation order, conflict-resolution
+mechanism, conflict/abstention, compiler error taxonomy) είναι **Lisp-only**.
 
 **Έδρα (νέα κανονική, μία ανά έννοια):** `deployment/LAWMAX-LEGAL-IR-SEMANTIC-CONTRACT.md`
-(8 συστατικά: κλειστό grammar/typing · evaluation order (WFS, order-independence proof
-obligation) · **ολική** canon-priority ως δεδομένα (ισοπαλία ⇒ `CONFLICTING`) · temporal
-projection · conflict/abstention · compiler error taxonomy · canonical serialization ·
-**conformance corpus** input-IR→expected-derivation). Reference impl (προς ανύψωση):
-`legal-ast.lisp`, `validate-ast.lisp`, `legal-inference-engine.lisp`,
-`legal-conflict-resolution.lisp`, `legal-deontic.lisp`, `legal-subsumption.lisp`,
-`legal-event-calculus.lisp`. Μηχανοποιημένο μοντέλο = conformance **oracle**, ποτέ κοινή
-υλοποίηση. **MISSING:** το ανυψωμένο συμβόλαιο + το derivation conformance corpus + ο
-δεύτερος compiler (U-5 Rust/OCaml = implementation decision).
+— **προδιαγραφή απαιτήσεων, ΟΧΙ ολοκληρωμένο μηχανοποιημένο συμβόλαιο** (POST-C2 honesty
+correction): κάθε μηχανοποιημένο artifact (IR grammar file, WFS εξισώσεις/termination,
+typing judgments, conflict-policy evaluator, error mapping, **derivation conformance
+corpus**) είναι σημασμένο **Implementation Book deliverable, ΜΗ ΠΑΡΑΧΘΕΝ**. **Δεν
+διεκδικείται μηχανοποιημένο κλείσιμο από πρόζα.** Μηχανοποιημένο μοντέλο = conformance
+**oracle**, ποτέ κοινή υλοποίηση. Reference impl (προς ανύψωση): `legal-ast.lisp`,
+`validate-ast.lisp`, `legal-inference-engine.lisp`, `legal-conflict-resolution.lisp`,
+`legal-deontic.lisp`, `legal-subsumption.lisp`, `legal-event-calculus.lisp`.
 
-**Invariants:** (I-4.17a) καμία σιωπηλή επιλογή εξαίρεσης — canon-priority **ολική** ή
-`CONFLICTING`· (I-4.17b) δύο compilers που διαφωνούν ⇒ `compiler-divergence` ⇒ QUARANTINED
-(ποτέ νικητής, KT10)· (I-4.17c) κανένα κοινό evaluator code (`fabricated-compiler-independence`).
+**Σύγκρουση = ΜΗΧΑΝΙΣΜΟΣ, όχι ουσιαστικός κανόνας (POST-C2 correction):** η αρχιτεκτονική
+**ΔΕΝ** επινοεί `lex superior/specialis/posterior`· αξιολογεί **υιοθετημένο, scoped**
+`ConflictPolicyBundle` (jurisdiction/authority/competence/subject/time-scoped,
+source-anchored, versioned, InstitutionalAct-approved). Κανένα καλύπτον bundle ⇒
+`UNKNOWN(no-applicable-conflict-policy)`· ασύμβατα ⇒ `CONFLICTING(conflict-policy-underdetermined)`·
+**ποτέ σιωπηλή ολικοποίηση**.
 
-**Μάρτυρες:** KW-105 (semantic ambiguity: δύο compilers σιωπηλά διαφορετική προτεραιότητα
-εξαίρεσης ⇒ κόκκινο). **Φέτες:** VS-06, VS-09, VS-10. **Βήματα:** 4, 5.
+**Invariants:** (I-4.17a) καμία επινοημένη ουσιαστική διάταξη — απόφαση **μόνο** από
+υιοθετημένο scoped bundle, αλλιώς `UNKNOWN`/`CONFLICTING`· (I-4.17b) δύο compilers που
+διαφωνούν ⇒ `compiler-divergence` ⇒ QUARANTINED (ποτέ νικητής, KT10)· (I-4.17c) κανένα
+κοινό evaluator code (`fabricated-compiler-independence`).
+
+**Μάρτυρες:** KW-105 (semantic ambiguity: δύο compilers που, χωρίς καλύπτον υιοθετημένο
+bundle, παράγουν οποιαδήποτε ντετερμινιστική διάταξη αντί `UNKNOWN`/`CONFLICTING` ⇒
+κόκκινο). **Φέτες:** VS-06, VS-09, VS-10. **Βήματα:** 4, 5.
 
 ### 4.18 Cryptographic Agility & Long-Term Evidence Preservation (L10/L11 · POST-C2 Finding 2) — R-130
 
@@ -857,11 +864,13 @@ policy epochs, downgrade resistance, hybrid classical/PQ και archival renewal
 §4 πινάρει Ed25519/SHA-256/RFC-3161· γενική ευελιξία απούσα).
 
 **Έδρα (κανονική):** `MACHINE-LEGAL-TRUST-PROTOCOL.md §14` (algorithm-suite registry ·
-crypto-policy epochs · ML-DSA-65/FIPS 204 profile · hybrid AND-σύνθεση · threshold Ed25519
-↔ PQ root σε διακριτά failure domains · evidence-renewal chains · verifier ανά εποχή
-legacy/hybrid/PQ-only · tlog/witness continuity · per-algorithm compromise). Threat:
-`LAWMAX-THREAT-MODEL.md Θ15`. **Δεν** ανάγεται σε «αντικατάσταση Ed25519»· χρονοδιάγραμμα
-US/NSS **δεν** δεσμεύει το ελληνικό παρατηρητήριο (de jure αρχή πάντα το Κράτος, MIS-8).
+crypto-policy epochs · ML-DSA-65/FIPS 204 profile · hybrid AND-σύνθεση · PQ root =
+**independent n-of-m ML-DSA multisignature** (ΟΧΙ threshold — δεν υπάρχει vetted threshold
+ML-DSA· classical = FROST-Ed25519) σε διακριτά failure domains · evidence-renewal chains ·
+verifier ανά εποχή legacy/hybrid/PQ-only · tlog/witness continuity · per-algorithm
+compromise). Threat: `LAWMAX-THREAT-MODEL.md Θ15`. **Δεν** ανάγεται σε «αντικατάσταση
+Ed25519»· χρονοδιάγραμμα US/NSS **δεν** δεσμεύει το ελληνικό παρατηρητήριο (de jure αρχή
+πάντα το Κράτος, MIS-8).
 
 **Invariants:** (I-4.18a) hybrid epoch ⇒ classical **AND** pq· απούσα απαιτούμενη PQ
 υπογραφή ⇒ ποτέ VERIFIED· (I-4.18b) migration **χωρίς** επανεγγραφή ιστορικών αντικειμένων
@@ -1002,14 +1011,24 @@ qualified release. **Σχεδιαστική αξίωση που δεν αποδ�
 «καμία υλοποίηση πριν το freeze») **αίρεται**: το SPEC FREEZE προηγείται της
 υλοποίησης· οι κάθετες φέτες τρέχουν **μετά** το SPEC FREEZE στη φάση υλοποίησης.
 
+**Διαχωρισμός πυλών (POST-C2 correction — μη κυκλικός):** (α) **architecture/specification
+closure** (πλήρεις, εσωτερικά συνεπείς, falsifiable προδιαγραφές — αυτό απαιτεί το freeze)·
+(β) **Implementation Book completion + approval** (τα μηχανοποιημένα artifacts:
+`legal-ir-grammar.json`, WFS εξισώσεις, conformance corpus, ML-DSA profile λεπτομέρειες,
+ontology schemas — παράγονται **ΜΕΤΑ** το freeze, εγκρίνονται πριν το product)· (γ)
+**product implementation**· (δ) **SPEC/IMPLEMENTATION/MISSION qualification**. **Η
+υλοποιησιακή εργασία B-1/B-2/B-3 ΔΕΝ είναι προϋπόθεση του architecture freeze** — αλλιώς
+ο βρόχος γίνεται κυκλικός. Freeze = πλήρεις **προδιαγραφές**, όχι υλοποίηση.
+
 | # | κατάσταση | προϋπόθεση | v1.4 σήμερα |
 |---|---|---|---|
 | 0 | `CURRENT CANDIDATE` | ενοποιημένος υποψήφιος + audits exit 0 | **ΝΑΙ** (v1.4) |
 | 1 | `SEMANTICALLY CLOSED CANDIDATE` | διορθωμένη ακυκλική κατασκευή· MLTP v3 §13 | **ΝΑΙ** — executable reference `PASSED` |
 | 2 | *targeted executable protocol validation* | `deployment/verify/mltp3/run.sh` exit 0 (δύο vetted verifiers· θετικό + KW-64 έως KW-103) | **ΝΑΙ** — `fixtures/REPORT.json` |
-| 3 | `SPEC QUALIFIED` | validation programme §8 (KW-1 έως KW-103) επιβιωμένο + audits | **ΟΧΙ** — δεν έχει εκτελεστεί |
-| 4 | `SPEC FREEZE` | ρητό «εγκρίνω freeze target» δημιουργού | **ΟΧΙ** |
-| 5 | *refactoring / implementation* | μετά το freeze (`IMPLEMENTATION-SEQUENCE.md` βήματα 0–14) | **ΟΧΙ** |
+| 3 | `SPEC QUALIFIED` (= architecture/specification closure) | προδιαγραφές πλήρεις/συνεπείς/falsifiable· validation programme §8 (KW-1 έως **KW-106**) επιβιωμένο + audits (incl. δομικοί: id-acyclicity, context-registry closure, schema/ref closure, canonical ownership, error-step coverage) | **ΟΧΙ** — δεν έχει εκτελεστεί |
+| 4 | `SPEC FREEZE` | ρητό «εγκρίνω freeze target» δημιουργού (απαιτεί μόνο πλήρεις προδιαγραφές, ΟΧΙ υλοποίηση) | **ΟΧΙ** |
+| 4b | *Implementation Book completion + approval* | τα μηχανοποιημένα artifacts (grammar/WFS/corpus/ML-DSA/ontology schemas) παράγονται **μετά** το freeze, εγκρίνονται πριν το product | **ΟΧΙ** — B-1/B-2/B-3 ζουν εδώ, ΟΧΙ πριν το freeze |
+| 5 | *refactoring / implementation* | μετά το approved Implementation Book (`IMPLEMENTATION-SEQUENCE.md` βήματα 0–14) | **ΟΧΙ** |
 | 6 | *15 vertical slices* | **μετά** το freeze, στη φάση υλοποίησης (`VERTICAL-SLICES.md`) | **ΟΧΙ** |
 | 7 | `IMPLEMENTATION QUALIFIED` | Q01–Q42 + 15 φέτες, ≥2 auditors | **ΟΧΙ** |
 | 8 | `MISSION GREECE QUALIFIED` | MISSION GREECE-1, ≥2 auditors | **ΟΧΙ** |

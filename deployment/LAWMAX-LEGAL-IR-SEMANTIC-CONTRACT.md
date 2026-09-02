@@ -1,151 +1,167 @@
-# LAWMAX — LEGAL-IR FORMAL SEMANTIC CONTRACT (canonical, language-independent)
-# Η ΕΔΡΑ ΤΗΣ ΣΗΜΑΣΙΟΛΟΓΙΑΣ ΓΙΑ ΔΥΟ ΑΝΕΞΑΡΤΗΤΟΥΣ COMPILERS — ΟΧΙ ΔΕΥΤΕΡΗ ΑΡΧΙΤΕΚΤΟΝΙΚΗ
+# LAWMAX — LEGAL-IR SEMANTIC REQUIREMENTS SPECIFICATION (language-independent)
+# ΟΙ ΑΠΑΙΤΗΣΕΙΣ ΤΟΥ ΣΗΜΑΣΙΟΛΟΓΙΚΟΥ ΣΥΜΒΟΛΑΙΟΥ ΓΙΑ ΔΥΟ ΑΝΕΞΑΡΤΗΤΟΥΣ COMPILERS — ΟΧΙ ΔΕΥΤΕΡΗ ΑΡΧΙΤΕΚΤΟΝΙΚΗ
 
-**ΚΑΤΑΣΤΑΣΗ: `DESIGN-ONLY · NORMATIVE CONTRACT SPEC`. Καμία γραμμή κώδικα, κανένα
-freeze, καμία qualification.** Είναι η κανονική έδρα (μία ανά έννοια) του σημασιολογικού
-συμβολαίου του Legal IR, απαιτούμενη από `CHANGE-PROPOSAL-v1.4.md §4.6` (Dual Independent
-Legal Compilers) και `LAWMAX-CPEI-TARGET-SPEC.md` L3 (Typed Epistemic Objects) / L10
-(Constitutional Compiler). Εισάγεται από το **POST-C2 ARCHITECTURE RECONCILIATION**
-(Finding 1). ΔΕΝ είναι δεύτερη αρχιτεκτονική· είναι το **λείπον κανονιστικό συμβόλαιο**
-πάνω σε υπάρχουσες έδρες.
+**ΚΑΤΑΣΤΑΣΗ: `DESIGN-ONLY · NORMATIVE REQUIREMENTS SPEC — ΟΧΙ ΟΛΟΚΛΗΡΩΜΕΝΟ ΜΗΧΑΝΟΠΟΙΗΜΕΝΟ
+ΣΥΜΒΟΛΑΙΟ`.** Καμία γραμμή κώδικα, κανένα freeze, καμία qualification. **Τιμιότητα
+(POST-C2 correction, Finding 3-honesty):** αυτό το κείμενο **ΔΕΝ** είναι ένα πλήρες
+μηχανοποιημένο σημασιολογικό συμβόλαιο· είναι η **προδιαγραφή απαιτήσεων** που **απαριθμεί
+ρητά** τα γλωσσο-ανεξάρτητα μηχανοποιημένα artifacts που **λείπουν**, καθένα σημασμένο ως
+**Implementation Book deliverable (ΜΗ ΠΑΡΑΧΘΕΝ)**. **Δεν διεκδικείται μηχανοποιημένο
+κλείσιμο από πρόζα.** Είναι η κανονική έδρα (μία ανά έννοια), απαιτούμενη από
+`CHANGE-PROPOSAL-v1.4.md §4.6` (Dual Independent Legal Compilers) και
+`LAWMAX-CPEI-TARGET-SPEC.md` L3/L10.
 
-## 0. ΔΙΑΘΕΣΗ FINDING 1 (τεκμηριωμένη από κώδικα, όχι από πρόζα): `PARTIALLY CLOSED`
+## 0. ΔΙΑΘΕΣΗ FINDING 1: `PARTIALLY CLOSED` (τεκμηριωμένη από κώδικα)
 
-Μηχανικά επαληθευμένη απογραφή (read-only) των πραγματικών εδρών:
+Μηχανικά επαληθευμένη απογραφή των πραγματικών εδρών:
 
-| # | συστατικό συμβολαίου | κατάσταση σήμερα | έδρα (ακριβής) |
+| # | συστατικό | κατάσταση σήμερα | έδρα |
 |---|---|---|---|
-| 1 | Κλειστό Legal IR grammar / node-type set | **SPLIT** — document-AST κλειστό ως δεδομένα· epistemic IR (Fact/Norm/Claim/Proof/Hypothesis) ABSENT | `source/legal-ast.lisp:+ast-schema+` / `+ast-schema-tags+`· epistemic set = v1.4 §1.1 L3 (proposal) |
-| 2 | Typing / well-formedness | **LISP-ONLY** | `source/validate-ast.lisp` (CLOS `validate-ast-node`)· `source/legal-deontic.lisp:make-norm` |
-| 3 | Evaluation order | **LISP-ONLY** (WFS, Van Gelder alternating fixpoint· ιδιότητα, όχι κανονιστικό έγγραφο) | `source/legal-inference-engine.lisp` |
-| 4 | Rule priority & exceptions (lex superior/specialis/posterior) | **LISP-ONLY** — canons ως `defrule` με `:unless`· source-rank data-driven | `source/legal-conflict-resolution.lisp` |
-| 5 | Temporal projection (valid × known) | **MACHINE-DEFINED (μερικό)** — Π1 language-independent, Π2–Π7 **FROZEN**· event-history LISP-ONLY | `deployment/LAWMAX-TEMPORAL-SEMANTICS-SPEC.md`· `source/legal-event-calculus.lisp` |
-| 6 | Conflict / abstention (CONFLICTING / UNKNOWN / abstain) | **LISP-ONLY** (WFS three-valued· `:prevails`/`:deontic-conflict`)· protocol-level UNKNOWN machine-defined | `source/legal-inference-engine.lisp`, `source/legal-subsumption.lisp`· `deployment/verify/mltp3/schemas.json:result_order` |
-| 7 | Deterministic error taxonomy | **SPLIT** — protocol taxonomy MACHINE-DEFINED· **compiler/semantic** taxonomy ABSENT | `deployment/verify/mltp3/schemas.json:error_taxonomy`· semantic errors = scattered Lisp conditions |
-| 8 | Canonical serialization (RFC 8785 JCS) | **MACHINE-DEFINED** (+ conformance vectors + independent verifier) | `deployment/verify/canonical-serialization-spec.md`· `deployment/verify/verify-canonical.py` |
+| 1 | Κλειστό Legal IR grammar / node set | **SPLIT** — document-AST κλειστό ως δεδομένα· epistemic IR ABSENT | `source/legal-ast.lisp:+ast-schema+`· epistemic set = v1.4 §1.1 L3 |
+| 2 | Typing / well-formedness | **LISP-ONLY** | `source/validate-ast.lisp`· `source/legal-deontic.lisp:make-norm` |
+| 3 | Evaluation order (WFS) | **LISP-ONLY** (ιδιότητα, όχι κανονιστικό έγγραφο) | `source/legal-inference-engine.lisp` |
+| 4 | Conflict-resolution mechanism | **LISP-ONLY** — canons hardcoded `:unless` (**substantive· λάθος έδρα**, §4) | `source/legal-conflict-resolution.lisp` |
+| 5 | Temporal projection | **MACHINE-DEFINED (μερικό)** — Π1· Π2–Π7 FROZEN | `deployment/LAWMAX-TEMPORAL-SEMANTICS-SPEC.md` |
+| 6 | Conflict / abstention | **LISP-ONLY** (WFS three-valued)· protocol UNKNOWN machine-defined | `source/legal-inference-engine.lisp`· `mltp3/schemas.json:result_order` |
+| 7 | Compiler error taxonomy | **ABSENT** ως κλειστό αντικείμενο | scattered Lisp conditions |
+| 8 | Canonical serialization | **MACHINE-DEFINED** (+ vectors + independent verifier) | `deployment/verify/canonical-serialization-spec.md` |
 
-**Συμπέρασμα:** δεν υπάρχει **ενιαίο** κανονιστικό, γλωσσο-ανεξάρτητο σημασιολογικό
-συμβόλαιο για το reasoning IR. Τρία στενά κομμάτια (5-μερικό, 7-protocol, 8) είναι
-γλωσσο-ανεξάρτητα και conformance-tested· ο **πυρήνας συλλογισμού** (1–4, 6, compiler-7)
-υπάρχει **μόνο ως Common-Lisp**. Ένας δεύτερος Rust/OCaml compiler **δεν μπορεί** να
-συμμορφωθεί χωρίς κοινό evaluator code — δηλαδή η ανεξαρτησία του §4.6 (D-03) κινδυνεύει
-από **common-mode failure**. Αυτό το κείμενο ορίζει το συμβόλαιο ώστε η συμμόρφωση να
-γίνεται **χωρίς κοινό κώδικα**.
+Γλωσσο-ανεξάρτητα και conformance-tested σήμερα μόνο τα 5-μερικό, 7-protocol, 8. Ο πυρήνας
+συλλογισμού (1–4, 6, compiler-7) είναι **Lisp-only** ⇒ οι δύο compilers (§4.6, D-03)
+κινδύνευαν από **common-mode failure**.
 
-## 1. Κλειστό Legal IR grammar και node/type set (Component 1)
+## 0.1 IMPLEMENTATION BOOK DELIVERABLES — ΤΙ ΛΕΙΠΕΙ ΓΙΑ ΜΗΧΑΝΟΠΟΙΗΜΕΝΟ ΚΛΕΙΣΙΜΟ (κανένα δεν έχει παραχθεί)
 
-Δύο διακριτά επίπεδα, κλειστά και τα δύο:
+Κάθε γραμμή είναι **απαίτηση**, όχι ολοκληρωμένο artifact. Παράγεται στο **Implementation
+Book** (μετά το SPEC FREEZE, πριν το product implementation — v1.4 §10 διορθωμένη κλίμακα).
 
-- **Document-structure AST** (Layer-4 δομή): κλειστό, versioned σύνολο ~17 node kinds
-  ήδη ως δεδομένα (`+ast-schema+`). ΚΑΝΟΝΑΣ: το σύνολο ανυψώνεται σε γλωσσο-ανεξάρτητο
-  αρχείο σχήματος `legal-ir-grammar.json` (canonical JSON) ώστε ο δεύτερος compiler να
-  το καταναλώνει **χωρίς parsing Lisp** — δεν αναδιατυπώνεται η σημασιολογία, μεταφέρεται
-  η έδρα.
-- **Epistemic reasoning IR**: κλειστό sum `{ Fact, Norm, Claim, Proof, Counterproof,
-  Hypothesis }`, καθένα με `plane ∈ {PLANE-0..PLANE-3}` στον τύπο (v1.4 §4.3 I-4.3a). Κάθε
-  κόμβος: `id` (domain-separated hash του BODY χωρίς το id, MLTP §13.1), `source_anchor`
-  (≥1 `manifestation_id` + span, ΥΠΟΧΡΕΩΤΙΚΟ), `kind`, `content` (typed κατά kind).
-  **Καμία boolean σε hash-bearing record** (repo law· typed enums).
+| απαίτηση | συγκεκριμένο γλωσσο-ανεξάρτητο artifact | κατάσταση |
+|---|---|---|
+| IR grammar | `legal-ir-grammar.json` (κλειστό node/type set, machine-readable) | **IMPLEMENTATION BOOK — ΜΗ ΠΑΡΑΧΘΕΝ** |
+| Typing judgments | κανόνες `⊢ node : kind` ως machine-checkable rule set | **IMPLEMENTATION BOOK — ΜΗ ΠΑΡΑΧΘΕΝ** |
+| WFS εξισώσεις + termination | ακριβείς alternating-fixpoint εξισώσεις + όρος τερματισμού, machine-checkable | **IMPLEMENTATION BOOK — ΜΗ ΠΑΡΑΧΘΕΝ** |
+| Conflict/abstention formal rules | ο evaluator του adopted `ConflictPolicyBundle` (§4) ως formal rules | **IMPLEMENTATION BOOK — ΜΗ ΠΑΡΑΧΘΕΝ** |
+| Error mapping | compiler error taxonomy (§7) → result lattice, machine-readable | **IMPLEMENTATION BOOK — ΜΗ ΠΑΡΑΧΘΕΝ** |
+| Conformance corpus | concrete `input-IR → expected-derivation` vectors (θετικά + αρνητικά) | **IMPLEMENTATION BOOK — ΜΗ ΠΑΡΑΧΘΕΝ** |
 
-## 2. Typing / well-formedness (Component 2)
+Ήδη γλωσσο-ανεξάρτητα (reusable, ΟΧΙ Implementation Book): canonical serialization
+(`canonical-serialization-spec.md` + vectors), protocol error-taxonomy/result-lattice
+(`mltp3/schemas.json`), temporal Π1 (`LAWMAX-TEMPORAL-SEMANTICS-SPEC.md`).
 
-Κρίση τύπου `⊢ node : kind` ανά κόμβο, γλωσσο-ανεξάρτητη: υποχρεωτικά πεδία ανά kind·
-`Norm` απαιτεί `modality ∈ +modalities+` (κλειστό δεοντικό σύνολο), `consequent`, και
-**υποχρεωτική** πηγή· `determinacy ∈ {mechanical, interpretive, discretionary,
-underdetermined}` (v1.4 §4.3). Reference impl: `validate-ast.lisp` / `make-norm`. Μη
-καλοσχηματισμένος κόμβος ⇒ typed `ir-type-error`/`ir-malformed` (§7), ποτέ σιωπηλή
-αποδοχή.
+## 1. Κλειστό Legal IR grammar και node/type set (Component 1) — REQUIREMENT
 
-## 3. Evaluation order (Component 3)
+Δύο επίπεδα: document-structure AST (κλειστό ήδη ως δεδομένα, `+ast-schema+` — απαίτηση:
+ανύψωση σε `legal-ir-grammar.json`) και epistemic reasoning IR = κλειστό sum
+`{ Fact, Norm, Claim, Proof, Counterproof, Hypothesis }`, καθένα με `plane ∈ {PLANE-0..3}`
+στον τύπο· `id` domain-separated hash του BODY χωρίς id/sig (MLTP §4.2 κανόνας 2)·
+`source_anchor` ≥1 ΥΠΟΧΡΕΩΤΙΚΟ· καμία boolean σε hash-bearing record (typed enums).
 
-**Κανονιστική σημασιολογία = Well-Founded Semantics (WFS)** μέσω του alternating fixpoint
-(Van Gelder). Η σειρά αξιολόγησης ορίζεται **ως κανονιστική διαδικασία** (όχι ως
-παρενέργεια της ροής ελέγχου της Lisp): δίνεται το alternating-fixpoint ως αριθμήσιμη
-ακολουθία `(K_i, U_i)` με ρητό όρο τερματισμού και **υποχρέωση απόδειξης
-order-independence** (η τελική τριάδα δεν εξαρτάται από τη σειρά εφαρμογής κανόνων).
-Reference impl: `legal-inference-engine.lisp`. Μη τερματισμός ⇒ `evaluation-nonterminating`.
+## 2. Typing / well-formedness (Component 2) — REQUIREMENT
 
-## 4. Rule priority & exceptions — ΤΟΤΑΛ διάταξη ως ΔΕΔΟΜΕΝΑ (Component 4)
+Κρίση `⊢ node : kind`: υποχρεωτικά πεδία ανά kind· `Norm` απαιτεί `modality ∈ +modalities+`,
+`consequent`, υποχρεωτική πηγή· `determinacy ∈ {mechanical, interpretive, discretionary,
+underdetermined}`. Reference impl (προς ανύψωση): `validate-ast.lisp`. Μη καλοσχηματισμένος
+⇒ `ir-type-error`/`ir-malformed` (§7).
 
-Το κρίσιμο σημείο (KW-105). Η προτεραιότητα ΔΕΝ ζει σε `:unless` clauses· ορίζεται ως
-**ολική, ντετερμινιστική** διάταξη ως δεδομένα:
+## 3. Evaluation order (Component 3) — REQUIREMENT (μη μηχανοποιημένο ακόμη)
 
-1. **Source-rank** (pinned rank table): `Σύνταγμα ≻ διεθνής συνθήκη (άρ.28) ≻ ενωσιακό
-   (κατά αρμοδιότητα) ≻ τυπικός νόμος ≻ π.δ. ≻ υπουργική/κανονιστική ≻ (κλειστός rank)` — data-driven
-   από την οντολογία (§Finding 3 δένει την έκδοση της οντολογίας).
-2. **Canon ordering:** `lex-superior ≻ lex-specialis ≻ lex-posterior`, με τον **ρητό
-   meta-κανόνα** «specialis νικά posterior» δηλωμένο ως δεδομένο, όχι ως `:unless`.
-3. **Ισοπαλία / μη-συγκρισιμότητα** (δύο κανόνες ίδιου rank, κανένας canon δεν αποφασίζει)
-   ⇒ **`CONFLICTING`** (typed `canon-conflict`) — **ποτέ** σιωπηλή επιλογή νικητή.
+**Απαίτηση:** η κανονιστική σημασιολογία είναι Well-Founded Semantics (WFS) μέσω
+alternating fixpoint (Van Gelder). Το **μηχανοποιημένο artifact** (ακριβείς εξισώσεις
+`(K_i, U_i)`, όρος τερματισμού, **υποχρέωση απόδειξης order-independence**) είναι
+**Implementation Book deliverable, ΜΗ ΠΑΡΑΧΘΕΝ** — εδώ δηλώνεται η απαίτηση, **όχι**
+ολοκληρωμένη μηχανοποίηση. Reference impl: `legal-inference-engine.lisp`. Μη τερματισμός ⇒
+`evaluation-nonterminating`.
 
-Η ολικότητα αυτής της διάταξης είναι **υποχρέωση απόδειξης** (§9): για κάθε ζεύγος
-συγκρουόμενων κανόνων, ή αποφασίζεται ντετερμινιστικά από (1)+(2), ή επιστρέφεται
-`CONFLICTING`· **δεν υπάρχει τρίτη, σιωπηλή έκβαση** (αυτό εξαλείφει δομικά το KW-105).
+## 4. CONFLICT RESOLUTION — ΜΗΧΑΝΙΣΜΟΣ, ΟΧΙ ΟΥΣΙΑΣΤΙΚΟΣ ΚΑΝΟΝΑΣ (Component 4· POST-C2 correction)
 
-## 5. Temporal projection (Component 5)
+**ΑΦΑΙΡΕΘΗΚΕ η καθολική ουσιαστική παραδοχή** `lex superior ≻ lex specialis ≻ lex
+posterior` και «specialis νικά posterior». **Η αρχιτεκτονική ΔΕΝ επινοεί τον ουσιαστικό
+κανόνα** — αυτός εξαρτάται από jurisdiction/authority/competence/subject/time και είναι
+**αμφισβητούμενος**. Η αρχιτεκτονική ορίζει **ΜΟΝΟ τον μηχανισμό αξιολόγησης** ενός
+**υιοθετημένου, scoped** `ConflictPolicyBundle`.
 
-**REUSE** του `LAWMAX-TEMPORAL-SEMANTICS-SPEC.md` (γλωσσο-ανεξάρτητο, denotational `sat`,
-Allen relations, ήδη εντέλλεται ανεξάρτητο Python verifier — Π1). Η **event-history
-προβολή** (σήμερα Lisp-only `legal-event-calculus.lisp`) ανυψώνεται σε κανονιστικό
-απόσπασμα Discrete Event Calculus. **Τρεις χρονικοί άξονες διακριτοί** (δένει με Finding 3):
-νομικός χρόνος γεγονότος (`legal-timeline/1`), **εφαρμοσιμότητα οντολογίας/shapes**
-(`OntologyBundle.applicability_interval`), θεσμικός χρόνος υιοθέτησης/ελέγχου
-(`audit-timeline/1`). Κανένας δεν κρίνει τη σημασία του άλλου.
+```
+ConflictPolicyBundle:
+  # BODY = { record, scope, rules, approving_act, supersedes }   (ΟΧΙ id, ΟΧΙ sig)
+  "policy_bundle_id": <"cpb1:" + hex(sha256("mltp3:conflict-policy-id" ‖ 0x1F ‖ canonical(BODY)))>,
+  "record": "conflict-policy",
+  "scope": { "jurisdiction": <iri>, "authority": <iri>, "competence": <iri>,
+             "subject": [<iri>], "valid_from": <legal-instant>, "valid_to": <legal-instant>|null },
+  "rules": [ { "when": <scoped predicate>, "prefer": <ordering πάνω σε source-classes>,
+               "source_anchor": [ <manifestation_id + span> ] } ],   # ΚΑΘΕ rule source-anchored
+  "approving_act": "clm1:<hash>",     # InstitutionalAct (L8/L12) — versioned adoption
+  "supersedes": "cpb1:<hash>" | null,
+  "sig": { "alg","kid": <delegated release key>, "sig": <SIGN over (envelope minus sig), context "mltp3:conflict-policy"> }
+```
 
-## 6. Conflict & abstention (Component 6)
+**Αξιολόγηση σύγκρουσης δύο εφαρμοστέων κανόνων N1, N2 (ντετερμινιστική, χωρίς επινόηση):**
+1. Επίλεξε τα υιοθετημένα `ConflictPolicyBundle` των οποίων το `scope` **καλύπτει**
+   (jurisdiction, authority, competence, subject, time) της σύγκρουσης.
+2. **Κανένα** υιοθετημένο bundle δεν καλύπτει ⇒ **`UNKNOWN(no-applicable-conflict-policy)`**
+   — ΠΟΤΕ επινοημένη διάταξη.
+3. Ακριβώς ένα rule αποφασίζει ⇒ εφαρμόζεται (η διάταξη είναι **ΔΕΔΟΜΕΝΑ** από το bundle,
+   source-anchored).
+4. Δύο υιοθετημένα bundles ίσης προτεραιότητας με ασύμβατες διατάξεις, **ή** σιωπηλό rule
+   ⇒ **`CONFLICTING(conflict-policy-underdetermined)`**.
+5. **Ποτέ σιωπηλή ολικοποίηση** για να εξαναγκαστεί ντετερμινιστική έξοδος. Η μη-ολικότητα
+   είναι **αποδεκτή έξοδος** (`CONFLICTING`/`UNKNOWN`), όχι σφάλμα να «διορθωθεί».
 
-- **Reasoning layer:** three-valued WFS `{in, out, undec}`. `undec` ⇒ πρωτόκολλο
-  `UNKNOWN(undecided-legal-state)`. Ρητή αποχή είναι **υποχρεωτική** — τίμια άγνοια,
-  ποτέ μάντεμα.
-- **Conflict:** `canon-conflict` / `deontic-conflict` ⇒ `CONFLICTING` (typed reason του
-  `UNKNOWN`, ίδιο πρότυπο με `official-sources-conflict` / `compiler-divergence`).
-- **Protocol layer:** κλειστό πλέγμα `UNVERIFIED_FOR_MACHINE_RELIANCE <
-  UNVERIFIED_FOR_ATTRIBUTED_RELIANCE < UNKNOWN < VERIFIED` (reuse
-  `mltp3/schemas.json:result_order`).
+Extension error taxonomy (compiler §7): `no-applicable-conflict-policy ·
+conflict-policy-underdetermined · unadopted-conflict-policy · conflict-policy-unscoped`.
+**Falsifier: KW-105** (δύο compilers που, χωρίς καλύπτον υιοθετημένο bundle, παράγουν
+**οποιαδήποτε** ντετερμινιστική διάταξη αντί `UNKNOWN`/`CONFLICTING` ⇒ κόκκινο).
 
-## 7. Deterministic COMPILER error taxonomy — ΚΛΕΙΣΤΗ, ΝΕΑ (Component 7)
+## 5. Temporal projection (Component 5) — REUSE + REQUIREMENT
 
-Διακριτή από την protocol taxonomy (MLTP §4.3). Κλειστό, ονομαστικό σύνολο σφαλμάτων
-compiler/σημασιολογίας:
+REUSE `LAWMAX-TEMPORAL-SEMANTICS-SPEC.md` (Π1). Event-history projection
+(`legal-event-calculus.lisp`, Lisp-only) → κανονιστικό Discrete Event Calculus =
+**Implementation Book deliverable**. **Τρεις χρονικοί άξονες διακριτοί:** νομικός χρόνος
+γεγονότος · εφαρμοσιμότητα οντολογίας (`OntologyBundle.applicability`) · χρόνος υιοθέτησης/
+ελέγχου (`audit-timeline/1`).
+
+## 6. Conflict & abstention (Component 6) — REQUIREMENT
+
+Reasoning layer: three-valued WFS `{in, out, undec}`· `undec` ⇒ `UNKNOWN(undecided-legal-state)`·
+ρητή αποχή ΥΠΟΧΡΕΩΤΙΚΗ. Conflict ⇒ `CONFLICTING` (§4). Protocol lattice
+`UNVERIFIED_FOR_MACHINE_RELIANCE < UNVERIFIED_FOR_ATTRIBUTED_RELIANCE < UNKNOWN < VERIFIED`
+(reuse `mltp3/schemas.json:result_order`).
+
+## 7. Deterministic COMPILER error taxonomy (Component 7) — REQUIREMENT (κλειστή)
+
+Διακριτή από την protocol taxonomy. Κλειστό σύνολο:
 ```
 ir-malformed · ir-type-error · unknown-node-kind · missing-source-anchor ·
-priority-underdetermined · canon-conflict · evaluation-nonterminating ·
-temporal-inconsistent · deontic-conflict-unresolved · subsumption-undetermined ·
-serialization-noncanonical
+evaluation-nonterminating · temporal-inconsistent · deontic-conflict-unresolved ·
+subsumption-undetermined · serialization-noncanonical ·
+no-applicable-conflict-policy · conflict-policy-underdetermined ·
+unadopted-conflict-policy · conflict-policy-unscoped
 ```
-Κάθε όνομα → αποτέλεσμα (`UNKNOWN` ή `UNVERIFIED_FOR_MACHINE_RELIANCE`)· κλειστό: νέο
-όνομα = νέα έκδοση του συμβολαίου. Ο δεύτερος compiler πρέπει να παράγει το **ίδιο typed
-όνομα** για το ίδιο ελαττωματικό input (conformance, §9).
+Το machine-readable mapping σε result lattice = **Implementation Book deliverable**.
 
-## 8. Canonical serialization (Component 8)
+## 8. Canonical serialization (Component 8) — REUSE
 
-**REUSE** `deployment/verify/canonical-serialization-spec.md` (RFC 8785 JCS, NFC/LF, χωρίς
-floats/booleans, type tags, `0x1F`) + conformance vectors + ο ανεξάρτητος
-`verify-canonical.py`. Κάθε Legal IR object σειριοποιείται μέσω αυτού· non-canonical bytes
-⇒ `serialization-noncanonical`.
+REUSE `canonical-serialization-spec.md` (RFC 8785 JCS) + vectors + `verify-canonical.py`.
+Non-canonical ⇒ `serialization-noncanonical`.
 
-## 9. Proof obligations & conformance corpus (Component 9)
+## 9. Proof obligations & conformance corpus (Component 9) — REQUIREMENT
 
-**Corpus διανυσμάτων `input-IR → expected-derivation`** που **αμφότεροι** οι compilers
-περνούν **ανεξάρτητα** (κανένα κοινό evaluator code). Κλάσεις υποχρεώσεων:
-grammar-roundtrip · typing · WFS-determinism (order-independence) · **canon-priority
-totality** (κάθε ζεύγος → αποφασισμένο ή `CONFLICTING`) · temporal-projection ·
-conflict/abstention · error-taxonomy (ίδιο typed όνομα) · serialization. Διάσταση των δύο
-compilers σε οποιοδήποτε διάνυσμα ⇒ `compiler-divergence` ⇒ **QUARANTINED** (ποτέ επιλογή
-νικητή· v1.4 §4.6, KT10). Το corpus είναι **input→output**, όχι implementation — γι' αυτό
-δεν εισάγει κοινό κώδικα.
+Corpus `input-IR → expected-derivation` (θετικά + αρνητικά), που **αμφότεροι** οι compilers
+περνούν **ανεξάρτητα** (κανένα κοινό evaluator code). Κλάσεις: grammar-roundtrip · typing ·
+WFS-determinism · **conflict-policy evaluation** (καλύπτον bundle ⇒ ντετερμινιστικά·
+απών ⇒ UNKNOWN· ασύμβατα ⇒ CONFLICTING) · temporal-projection · error-taxonomy · serialization.
+Διάσταση ⇒ `compiler-divergence` ⇒ QUARANTINED (ποτέ νικητής). **Το corpus είναι
+Implementation Book deliverable, ΜΗ ΠΑΡΑΧΘΕΝ.**
 
-## 10. Απαίτηση ανεξαρτησίας (δέσμευση, όχι σύσταση)
+## 10. Απαίτηση ανεξαρτησίας
 
-Οι δύο compilers (Common Lisp + Rust/OCaml) **ΔΕΝ** παράγονται από κοινό evaluator code.
-Ένα μηχανοποιημένο μοντέλο (TLA+/Rocq/Lean) επιτρέπεται **μόνο ως conformance oracle**,
-**ποτέ** ως κοινή υλοποίηση. Διακριτά `compiler_family_id`, `source_digest`, toolchain,
-`kid` (MLTP §13.4)· ίδιο family/source ⇒ `fabricated-compiler-independence`. Διαφορετικό
-όνομα runtime από μόνο του δεν αποδεικνύει ανεξαρτησία. **Falsifier: KW-105.**
+Οι δύο compilers ΔΕΝ παράγονται από κοινό evaluator code. Μηχανοποιημένο μοντέλο (TLA+/
+Rocq/Lean) = **conformance oracle μόνο**, ΠΟΤΕ κοινή υλοποίηση. Διακριτά `compiler_family_id`,
+`source_digest`, toolchain, `kid` (MLTP §13.4)· ίδιο ⇒ `fabricated-compiler-independence`.
+**Falsifier: KW-105.**
 
-## 11. Τι ΔΕΝ κάνει αυτό το κείμενο
+## 11. Τι ΔΕΝ κάνει
 
-Καμία υλοποίηση· κανένα freeze· καμία qualification· δεν επιλέγει Rust vs OCaml (U-5,
-implementation decision)· δεν ξεπαγώνει τα Π2–Π7 του TEMPORAL-SEMANTICS-SPEC. Ορίζει
-**τι** πρέπει να ικανοποιεί κάθε ανεξάρτητος compiler, ώστε η N-version ανεξαρτησία του
-§4.6 να είναι **γνήσια** και όχι common-mode.
+Καμία υλοποίηση· κανένα freeze/qualification· δεν επιλέγει Rust vs OCaml (U-5)· δεν
+ξεπαγώνει Π2–Π7· **δεν επινοεί ουσιαστικό νομικό κανόνα σύγκρουσης**· **δεν διεκδικεί
+μηχανοποιημένο κλείσιμο** — τα μηχανοποιημένα artifacts είναι Implementation Book
+deliverables (§0.1), όλα ΜΗ ΠΑΡΑΧΘΕΝΤΑ.

@@ -429,13 +429,29 @@ CAP-154/155/156)· η αρχική απαρίθμηση ήταν **ελλιπή�
 (ΜΗ εκτελεσμένα). (iii) **`RAISE=0`** παραμένει (καμία αυστηρά ανώτερη *αρχιτεκτονική*),
 αλλά τρεις **`MISSING CAPABILITY`** προστέθηκαν (σύνολο 8, όχι 5).
 
-> # `SPEC FREEZE BLOCKED — POST-C2: ΤΡΙΑ ΟΝΟΜΑΣΜΕΝΑ ΑΡΧΙΤΕΚΤΟΝΙΚΑ DELTA ΠΡΟΔΙΑΓΡΑΦΗΚΑΝ, ΜΗ QUALIFIED`
+### ΜΕΡΟΣ 8-ter — ΔΙΟΡΘΩΣΗ ΠΥΛΩΝ ([0141], POST-C2 CORRECTION PASS)
 
-**Ακριβές εύρος:** το freeze **δεν** μπορεί να συσταθεί όσο τα τρία delta (formal semantic
-contract, cryptographic agility & long-term evidence, temporal ontology governance) δεν
-έχουν (α) εγκριθεί από τον δημιουργό στο συμφιλιωμένο spec **και** (β) περάσει την πύλη
-`SPEC QUALIFIED` (§8, τώρα με KW-104..KW-106). Τα delta είναι **design-only
-προδιαγεγραμμένα**, όχι υλοποιημένα. **Το AI δεν παγώνει, δεν παρακάμπτει το §8, δεν
+Ανεξάρτητη επιθεώρηση βρήκε **έξι δομικά ελαττώματα** που ο presence/count audit δεν
+ανιχνεύει· διορθώθηκαν design-only (`POST-C2-CORRECTION-PASS.md`): (1) ακυκλικά `*_id`
+(ontology/receipt/QSR)· (2) κλειστό context registry §4.2 (+6 contexts)· (3) formal-
+semantics honesty (REQUIREMENTS SPEC· μηχανοποιημένα artifacts = Implementation Book, ΜΗ
+ΠΑΡΑΧΘΕΝΤΑ)· (4) **αφαίρεση επινοημένου ουσιαστικού canon** (conflict = adopted scoped
+`ConflictPolicyBundle`, ποτέ AI-invented)· (5) PQ root = **independent n-of-m ML-DSA
+multisig** (ΟΧΙ threshold)· (6) **διαχωρισμός πυλών**. Ο audit επεκτάθηκε με δομικό block
+H (id-acyclicity, context closure, schema/ref closure, canonical ownership, error-step):
+v1.4 **124/124**.
+
+**Διόρθωση της ετυμηγορίας (μη κυκλική):** τα τρία delta που είναι **αδιαφόρμωτα/
+αϋλοποίητα** (B-1/B-2/B-3) **ΔΕΝ** είναι freeze blockers — μετακινήθηκαν στο **Implementation
+Book** (v1.4 §10 στάδιο 4b, **μετά** το freeze). Το architecture freeze απαιτεί **πλήρεις,
+συνεπείς, falsifiable προδιαγραφές**, όχι υλοποίηση.
+
+> # `SPEC FREEZE BLOCKED — SPEC-LEVEL: FB-2 (SPEC QUALIFIED §8 μη εκτελεσμένο)· τα 6 δομικά ελαττώματα ΔΙΟΡΘΩΘΗΚΑΝ`
+
+**Ακριβές εύρος:** ο μόνος εναπομείνων **μη κυκλικός** freeze blocker είναι το
+`SPEC QUALIFIED` (§8, KW-1..**KW-106** + οι δομικοί audits, ανεξάρτητοι adjudicators) —
+**specification closure**, όχι υλοποίηση. Τα έξι δομικά ελαττώματα διορθώθηκαν και
+επιβάλλονται μηχανικά (block H). **Το AI δεν παγώνει, δεν παρακάμπτει το §8, δεν
 ξεκινά refactoring/implementation, δεν υλοποιεί τα 15 επίπεδα.** Η μόνη αρχή
 freeze/merge είναι ο δημιουργός (ρητό `εγκρίνω SPEC FREEZE`).
 

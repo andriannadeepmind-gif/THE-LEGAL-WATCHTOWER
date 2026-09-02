@@ -1,6 +1,14 @@
 # POST-C2 ARCHITECTURE RECONCILIATION — CPEI PUBLIC OBSERVATORY PROFILE v1.4
 # LAWMAX OMEGA — THE LEGAL WATCHTOWER OF GREECE
 
+> **ΔΙΟΡΘΩΘΗΚΕ ΕΝ ΜΕΡΕΙ ([0141], `POST-C2-CORRECTION-PASS.md`):** έξι δομικά ελαττώματα
+> διορθώθηκαν (ακυκλικά ids, context registry, formal-semantics honesty, αφαίρεση
+> επινοημένου ουσιαστικού canon, n-of-m ML-DSA PQ root, διαχωρισμός πυλών). **ΚΡΙΣΙΜΟ:** το
+> §5 παρακάτω πλαισίωνε τα B-1/B-2/B-3 (υλοποίηση) ως freeze blockers — αυτό ήταν **κυκλικό**
+> και **διορθώθηκε**: B-1/B-2/B-3 = **Implementation Book** (post-freeze, v1.4 §10 στάδιο 4b),
+> **ΟΧΙ** freeze blockers. Ο μόνος μη κυκλικός freeze blocker = `SPEC QUALIFIED` (§8, FB-2).
+> Δες `POST-C2-CORRECTION-PASS.md` για την αναθεωρημένη ετυμηγορία.
+
 **ΚΑΤΑΣΤΑΣΗ: `DESIGN-ONLY · BOUNDED RECONCILIATION`.** Καμία γραμμή κώδικα, κανένα
 refactoring, καμία υλοποίηση, κανένα destruction pass, κανένα agent swarm, κανένα freeze,
 καμία qualification, καμία δεύτερη αρχιτεκτονική. Ένα και μόνο σκοπός: **συμφιλίωση τριών

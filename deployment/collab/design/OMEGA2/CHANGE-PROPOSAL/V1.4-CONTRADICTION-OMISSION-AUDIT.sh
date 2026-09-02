@@ -109,6 +109,18 @@ env=docs[M][docs[M].index('### 1.0'):docs[M].index('### 1.1')]; blk=re.search(r'
 emit('C13a',blk.count('"signed_at"'),'ge',1); emit('C13b',blk.count('"description"'),'eq',0); emit('C13c',blk.count('"issuer"'),'eq',0); emit('C13d',blk.count('"profile"'),'eq',0)
 cit=docs[M][docs[M].index('### 2.10'):docs[M].index('## 3.')]
 emit('C17',sum(1 for f in ['official_source_uri','watchtower_release_uri','claim_id','certificate_uri','attribution_text','citation_policy_id'] if f'"{f}"' in cit),'eq',6)
+# H — POST-C2 CORRECTION δομικοί έλεγχοι (πέρα από grep/count): id-acyclicity, context-registry closure, schema/ref closure
+emit('H1a',docs[M].count('canonical-hash(record'),'eq',0)                        # κανένα *_id πάνω σε ολόκληρο record (self-including)
+emit('H1b',docs[M].count('canonical(BODY)'),'ge',3)                              # ακυκλικά *_id πάνω σε BODY (εξαιρεί id+sig)
+reg42=docs[M][docs[M].index('### 4.2'):docs[M].index('### 4.3')]
+registry=set(re.findall(r'mltp3:[a-z0-9-]+',reg42))
+usedctx=set(re.findall(r'context "?(mltp3:[a-z0-9-]+)"?',docs[M]))|set(re.findall(r'SIGN\(kid, "(mltp3:[a-z0-9-]+)"',docs[M]))
+emit('H2a',len(usedctx-registry),'eq',0)                                         # context-registry closure: κάθε χρησιμοποιούμενο context ορίζεται
+emit('H2b',sum(1 for c in ['mltp3:ontology-bundle','mltp3:shacl-receipt','mltp3:crypto-policy-epoch','mltp3:evidence-renewal','mltp3:pq-authorization','mltp3:conflict-policy'] if c in registry),'eq',6)
+blocks=re.findall(r'```\n([^`]*?)```',reg42); regtoks=re.findall(r'mltp3:[a-z0-9-]+','\n'.join(blocks))
+emit('H2c',len(regtoks)-len(set(regtoks)),'eq',0)                                # κάθε context ορίζεται ΑΚΡΙΒΩΣ μία φορά (χωρίς διπλά)
+newrec=set(re.findall(r'"record": "(ontology-bundle|shacl-validation-receipt|crypto-policy-epoch|evidence-renewal|pq-root-set)"',docs[M]))
+emit('H3',len(newrec),'eq',5)                                                    # κάθε extension record ορισμένο (schema/ref closure)
 for id,a,op,e in out: print(f'{id}|{a}|{op}|{e}')
 PY
 )
@@ -173,6 +185,20 @@ ck G5 "$(c 'PARTIALLY CLOSED' $ROOT/deployment/LAWMAX-LEGAL-IR-SEMANTIC-CONTRACT
 ck G6 "$(cE '^### 4\.1[789] ' $V)" eq 3
 ck G7 "$(cE '^\| \*\*KW-10[456]\*\* \|' $Q)" eq 3
 ck G8 "$(cE 'Θ1[56]' $ROOT/deployment/LAWMAX-THREAT-MODEL.md)" ge 2
+echo "# H POST-C2 CORRECTION — unique canonical ownership + error-to-verification-step coverage + formal-semantics honesty + no invented substantive canon"
+SC=$ROOT/deployment/LAWMAX-LEGAL-IR-SEMANTIC-CONTRACT.md
+ck H4a "$(c '## 14. CRYPTOGRAPHIC AGILITY' $M)" eq 1
+ck H4b "$(c '### 2.11 TEMPORAL ONTOLOGY' $M)" eq 1
+ck H4c "$(c '### 14.4 PQ ROOT AUTHORIZATION' $M)" eq 1
+ck H5a "$(c 'pq-authorization-insufficient' $M)" ge 2
+ck H5b "$(c 'ontology-unbound' $M)" ge 2
+ck H5c "$(c 'no-applicable-conflict-policy' $SC)" ge 2
+ck H6a "$(c 'ΟΧΙ ΟΛΟΚΛΗΡΩΜΕΝΟ ΜΗΧΑΝΟΠΟΙΗΜΕΝΟ' $SC)" ge 1
+ck H6b "$(c 'IMPLEMENTATION BOOK — ΜΗ ΠΑΡΑΧΘΕΝ' $SC)" ge 5
+ck H7a "$(c 'independent n-of-m ML-DSA multisignature' $M)" ge 1
+ck H7b "$(cE 'lex superior ≻ lex specialis ≻ lex posterior' $SC)" eq 0
+ck H7c "$(c 'ΑΦΑΙΡΕΘΗΚΕ η καθολική ουσιαστική παραδοχή' $SC)" ge 1
+ck H8 "$(c 'Implementation Book completion + approval' $V)" ge 1
 echo "# F regression floor: V1.3-CONSISTENCY-AUDIT.sh"
 bash ./V1.3-CONSISTENCY-AUDIT.sh > /dev/null 2>&1; f13=$?
 ck F1 "$f13" eq 0
