@@ -1,74 +1,118 @@
-# LAWMAX — PUBLIC-SOURCE-TYPE-AUTHORITY-REGISTRY (canonical)
-# ΤΟ ΔΗΜΟΣΙΟ ΝΟΜΙΚΟ ΣΥΜΠΑΝ ΩΣ ΑΠΑΡΙΘΜΗΣΙΜΟ ΜΗΤΡΩΟ — ΜΙΑ ΕΔΡΑ
+# LAWMAX — PUBLIC-SOURCE-TYPE-AUTHORITY-REGISTRY (canonical, extensible, versioned)
+# ΤΟ ΔΗΜΟΣΙΟ ΝΟΜΙΚΟ ΣΥΜΠΑΝ ΩΣ ΑΠΑΡΙΘΜΗΣΙΜΟ, ΕΠΕΚΤΑΣΙΜΟ ΜΗΤΡΩΟ — ΜΙΑ ΕΔΡΑ
 
 **ΚΑΤΑΣΤΑΣΗ: `DESIGN-ONLY · ACTIVE SHARED TRUST FOUNDATION`.** Καμία γραμμή κώδικα, κανένα
-freeze. Η **κανονική έδρα** (μία ανά έννοια) του απαριθμήσιμου δημόσιου νομικού σύμπαντος,
-απαιτούμενη από `CHANGE-PROPOSAL-v1.4.md §4.1` (National Legal Census) — δίνει, ανά τύπο
-πηγής, την **πλήρη authority-metadata** που το §4.1 census καταναλώνει ως ολική συνάρτηση.
-**ΔΕΝ** είναι δεύτερη αρχιτεκτονική· είναι το λείπον ορφανό registry (POST-C2 closure,
-§3.A/§4.7 της εντολής).
+freeze. **ΑΡΧΙΤΕΚΤΟΝΙΚΗ, ΟΧΙ ΠΙΣΤΟΠΟΙΗΜΕΝΟ ΝΟΜΙΚΟ ΠΕΡΙΕΧΟΜΕΝΟ (micro-pass defect 2):** το
+**σχήμα** (`SourceTypeSchema`) είναι αρχιτεκτονικό· οι **ουσιαστικές ταξινομήσεις** ανά
+τύπο είναι **περιεχόμενο** που φέρει `evidence_state`/`review_state` και μένει
+**`PENDING_LEGAL_VALIDATION`** μέχρι νομική επιθεώρηση — **δεν** παρουσιάζεται ως
+πιστοποιημένη νομική αλήθεια. Το μητρώο είναι **ιεραρχικό, επεκτάσιμο, versioned** —
+**ΔΕΝ** ισχυρίζεται ότι N επίπεδες γραμμές συνιστούν αιώνια πλήρες νομικό σύμπαν.
 
-## 0. Αρχή — απαρίθμηση ΠΡΙΝ από το περιεχόμενο
+## 0. Αρχή — απαρίθμηση ΠΡΙΝ το περιεχόμενο· `UNKNOWN_SOURCE_TYPE` fail-closed
 
-Το σύμπαν δηλώνεται ως **census space** ανά τύπο (I-4.1a: κάθε θέση ακριβώς μία κατάσταση
-`INGESTED | EXPLICITLY-ABSENT | QUARANTINED | UNKNOWN`). Καμία σιωπηλή απώλεια είναι
-**δομικά αδύνατη**: μη-δηλωμένος τύπος επιφαίνεται ως `UNKNOWN`. Οι έννοιες
-**«ειδικός/γενικός»** είναι **τεκμηριωμένες σχέσεις ανά νομικό ζήτημα** (`rel1:` USC §6.3,
-scoped από adopted `ConflictPolicyBundle` — MLTP semantic-contract §4), **ΟΧΙ** μόνιμες
-αυθαίρετες ετικέτες.
+Το σύμπαν δηλώνεται ως census space ανά τύπο (I-4.1a). **Κάθε μελλοντική ή παραλειμμένη
+μορφή** που δεν ταιριάζει σε ορισμένο `SourceTypeEntry` **επιφαίνεται** ως
+**`UNKNOWN_SOURCE_TYPE`** (fail-closed) — **ποτέ σιωπηλά χαμένη**, ποτέ αυθαίρετα
+ταξινομημένη. «ειδικός/γενικός» = **τεκμηριωμένες σχέσεις ανά νομικό ζήτημα** (adopted
+scoped `ConflictPolicyBundle`, semantic-contract §4), **ΟΧΙ** μόνιμες ετικέτες.
 
-## 1. ΜΗΤΡΩΟ ΤΥΠΩΝ ΠΗΓΗΣ (`ST-nn`) — στήλες: εκδότης · αρμοδιότητα · εξουσιοδοτική βάση · επίσημη πηγή · δεσμευτικότητα · πεδίο (εδαφικό/προσωπικό/θεματικό) · έναρξη/λήξη ισχύος · collector/profile/compiler · coverage test
+## 1. `SourceTypeSchema/1` — ΤΟ ΑΡΧΙΤΕΚΤΟΝΙΚΟ ΣΧΗΜΑ (versioned· διακριτό από το περιεχόμενο)
 
-| ST | τύπος πράξης | εκδότης | εξουσιοδοτική βάση | επίσημη πηγή | δεσμευτικότητα | πεδίο | έναρξη / λήξη | collector · profile · compiler | coverage test |
-|---|---|---|---|---|---|---|---|---|---|
-| ST-01 | Σύνταγμα + αναθεωρήσεις | Αναθεωρητική Βουλή | άρ. 110 Σ | ΦΕΚ Α΄ | **primary, ύψιστη** | εθνικό / erga omnes / όλα | δημοσίευση→έναρξη ρητή· λήξη μόνο με αναθεώρηση | `legislation-ingestion` · `syntagma-profile` · Lisp compiler | ΦΕΚ Α΄ census × άρθρο |
-| ST-02 | Τυπικός νόμος / κώδικας | Βουλή | άρ. 73–77 Σ | ΦΕΚ Α΄ | **primary** | εθνικό / κατά περιεχόμενο | `effective_from` (ή ρητή)· κατάργηση/λήξη/sunset | `legislation-ingestion` · `law-profile` · Lisp compiler | ΦΕΚ Α΄ × έτος × αριθμός |
-| ST-03 | Πράξη Νομοθετικού Περιεχομένου (ΠΝΠ) | Πρόεδρος Δημ. + Υπ. Συμβ. | άρ. 44§1 Σ | ΦΕΚ Α΄ | **primary, υπό κύρωση** | εθνικό | έναρξη άμεση· **λήγει αν δεν κυρωθεί σε 40 ημέρες** (typed `ratification_deadline`) | `legislation-ingestion` · `pnp-profile` · Lisp compiler | ΦΕΚ Α΄ + κυρωτικός νόμος link |
-| ST-04 | Κυρωτικός νόμος (συνθήκης/ΠΝΠ) | Βουλή | άρ. 28, 36§2, 44§1 Σ | ΦΕΚ Α΄ | **primary** | κατά το κυρούμενο | ως ST-02· δένει ST-10 | `legislation-ingestion` · `ratification-profile` · Lisp compiler | link κυρωτικός↔κυρούμενο |
-| ST-05 | Προεδρικό διάταγμα | Πρόεδρος Δημ. | νομοθετική εξουσιοδότηση (άρ. 43 Σ) | ΦΕΚ Α΄ | **secondary (κανονιστικό)** | κατά εξουσιοδότηση | `effective_from`· λήξη με ανάκληση/κατάργηση | `legislation-ingestion` · `pd-profile` · Lisp compiler | ΦΕΚ Α΄ + εξουσιοδοτική βάση link |
-| ST-06 | Υπουργική / Κοινή Υπουργική Απόφαση (ΥΑ/ΚΥΑ) | Υπουργός/-οί | ρητή νομοθετική εξουσιοδότηση | ΦΕΚ Β΄ | **secondary** | κατά εξουσιοδότηση | `effective_from`· ανάκληση | `government-source` · `mad-profile` · Lisp compiler | ΦΕΚ Β΄ + εξουσιοδότηση link (ΟΧΙ βάση ⇒ `insufficient-authorization`) |
-| ST-07 | Κανονιστική πράξη ανεξάρτητης αρχής | ΑΑΔΕ/ΕΕΤΤ/ΑΠΔΠΧ/ΡΑΕ/Ε.Κ. κ.λπ. | ιδρυτικός νόμος αρχής | ΦΕΚ Β΄ (+ κανάλι αρχής) | **secondary** | θεματικό (αρμοδιότητα αρχής) | `effective_from`· ανάκληση | `government-source` · `iauth-profile` · Lisp compiler | census ανά αρχή × έτος |
-| ST-08 | Περιφερειακή / δημοτική κανονιστική πράξη | Περιφέρεια / Δήμος | Κώδικας Δήμων/Περιφερειών | ΦΕΚ Β΄/τοπικό + Διαύγεια | **secondary, τοπικό** | **εδαφικό (ΟΤΑ)** | ανά πράξη | `government-source` · `ota-profile` · Lisp compiler | census ΟΤΑ × έτος (U-7 εύρος) |
-| ST-09 | Εγκύκλιος / οδηγία / ερμηνευτική πράξη | διοίκηση | ιεραρχική/οργανωτική εξουσία | Διαύγεια / κανάλι φορέα | **`binding: interpretive-non-binding`** (typed· ΟΧΙ δίκαιο) | θεματικό | ανά πράξη | `government-source` · `circular-profile` · parser | χωριστός census space `binding:false` |
-| ST-10 | Διεθνής συνθήκη / πρωτόκολλο / επιφύλαξη / κύρωση | Κράτος (κύρωση Βουλή) | άρ. 28 Σ | ΦΕΚ Α΄ (κυρωτικός) + depositary | **primary (υπερνομοθετική, άρ.28§1)** | κατά τη συνθήκη | θέση σε ισχύ διεθνώς + εσωτερικά· καταγγελία | `treaty-collector` · `treaty-profile` · Lisp compiler | census συνθηκών × depositary link |
-| ST-11 | Πρωτογενές ενωσιακό δίκαιο (Συνθήκες ΕΕ, Χάρτης) | ΕΕ | Συνθήκες ΕΕ | EUR-Lex/Cellar | **primary, υπεροχή** | ΕΕ / εθνικό (interaction) | κατά τη Συνθήκη | `eu-collector` · `eu-primary-profile` · Lisp compiler | Cellar CELEX census |
-| ST-12 | Κανονισμός ΕΕ | ΕΕ | άρ. 288 ΣΛΕΕ | EUR-Lex/Cellar (ΕΕ Επίσημη Εφημερίδα) | **primary, άμεσης ισχύος** | ΕΕ / **άμεσα εφαρμοστέο** | `date_of_effect`· κατάργηση | `eu-collector` · `eu-regulation-profile` · Lisp compiler | CELEX × έτος |
-| ST-13 | Οδηγία ΕΕ + εθνική μεταφορά | ΕΕ + Κράτος | άρ. 288 ΣΛΕΕ | Cellar + εθνικό ΦΕΚ (μεταφορά) | **primary (ΕΕ) → μεταφορά (εθνικό)** | ΕΕ→εθνικό | προθεσμία μεταφοράς· `EU-TRANSPOSITION` event | `eu-collector` · `eu-directive-profile` · Lisp compiler | οδηγία↔μεταφορά link (§4.5) |
-| ST-14 | Απόφαση ΕΕ / delegated / implementing act | ΕΕ (Επιτροπή/Συμβ.) | άρ. 288–291 ΣΛΕΕ | Cellar | **secondary/primary κατά τύπο** | κατά αποδέκτη | `date_of_effect` | `eu-collector` · `eu-act-profile` · Lisp compiler | CELEX census |
-| ST-15 | Ενωσιακό / διεθνές soft law | ΕΕ/διεθνείς οργανισμοί | — | επίσημο κανάλι οργανισμού | **`binding: soft-law-non-binding`** (typed) | καθοδηγητικό | ανά πράξη | `soft-law-collector` · `softlaw-profile` · parser | census space `authoritative:false` |
-| ST-16 | Κανονιστική Συλλογική Σύμβαση Εργασίας / Διαιτητική Απόφαση | κοινωνικοί εταίροι / ΟΜΕΔ | ν.1876/1990 κ.λπ. | ΦΕΚ Β΄ / μητρώο ΣΣΕ | **secondary, όπου παράγει έννομα αποτελέσματα** | κλαδικό/επαγγελματικό/επιχειρησιακό | κήρυξη υποχρεωτικότητας· λήξη/καταγγελία | `government-source` · `cla-profile` · Lisp compiler | census ΣΣΕ × κλάδος |
-| ST-17 | Ελληνική νομολογία | ΑΠ/ΣτΕ/Ελ.Συν./δικαστήρια ουσίας | δικαιοδοσία δικαστηρίου | επίσημη δημοσίευση/ECLI | **jurisprudential (§4.9 τάξεις)** | κατά αντικείμενο | χρόνος έκδοσης· later treatment | `legal-decisions` · `judgment-profile` · Lisp compiler | census δικαστήριο × έτος (U-7) |
-| ST-18 | ΔΕΕ / ΕΔΔΑ νομολογία (επηρεάζει ελληνικό δίκαιο) | ΔΕΕ/ΕΔΔΑ | Συνθήκες/ΕΣΔΑ | Curia/HUDOC/ECLI | **jurisprudential, ερμηνευτικά δεσμευτική** | ΕΕ/ΕΣΔΑ→εθνικό | χρόνος έκδοσης | `legal-decisions` · `intl-judgment-profile` · Lisp compiler | Curia/HUDOC census |
-| ST-19 | Γνωμοδότηση ΝΣΚ | ΝΣΚ | ν. περί ΝΣΚ | κανάλι ΝΣΚ | **`binding: advisory` (δεσμευτική μόνο επί αποδοχής)** | θεματικό | αποδοχή από όργανο | `government-source` · `nsk-profile` · parser | census ΝΣΚ × έτος |
-| ST-20 | Αιτιολογική έκθεση / προπαρασκευαστικές εργασίες | Βουλή | — | Βουλή (πρακτικά) | **`binding: preparatory-non-binding`** (τελεολογία §4.3 μόνο ως πηγή) | ερμηνευτικό | ανά νομοσχέδιο | `legislation-ingestion` · `travaux-profile` · parser | link νόμος↔αιτιολογική |
-| ST-21 | Δευτερογενής θεωρία (doctrine) | συγγραφείς | — | εκδότες (αδειοδότηση U-3) | **`authoritative: false`** | ερμηνευτικό | — | `doctrine-collector` · `doctrine-profile` · parser | census space `authoritative:false` (μόνο όπου νόμιμο) |
+Κάθε `SourceTypeEntry` **πρέπει** να φέρει:
+```
+SourceTypeSchema/1 = {
+  "type_id",              # ST-nn (σταθερό)
+  "act_type",             # ονομασία μορφής
+  "issuer", "competence", "authorizing_basis",
+  "official_source",
+  "bindingness",          # ΚΛΕΙΣΤΟ typed sum (§1.1) — παράγεται, ΟΧΙ από τον τίτλο
+  "scope": { "territorial", "personal", "subject" },
+  "commencement_rule", "cessation_rule",
+  "collector", "profile", "compiler", "coverage_test",
+  # --- ΥΠΟΧΡΕΩΤΙΚΑ πεδία περιεχομένου (micro-pass defect 2) ---
+  "authority_citation",   # πρωτογενής παραπομπή (άρθρο Συντάγματος/νόμου/Συνθήκης)
+  "evidence_state",       # { PRIMARY-SOURCE-CITED | DECLARED-ONLY | UNKNOWN }
+  "review_state",         # { PENDING_LEGAL_VALIDATION | LEGALLY-REVIEWED | DISPUTED }
+  "valid_from", "valid_to"
+}
+```
+**Κανόνας:** μέχρι νομική επιθεώρηση, `review_state = PENDING_LEGAL_VALIDATION` και η
+ουσιαστική ταξινόμηση **δεν** είναι πιστοποιημένη. Η νομική βεβαίωση απαιτεί
+**πρωτογενή πηγή** + ταυτοποιημένη **review gate** (Impl-Book / MISSION legal review).
 
-**Invariants:** (I-STR-a) κάθε ST έχει ≥1 collector, ≥1 profile, ≥1 compiler-plan, ≥1
-coverage test — **καμία κατηγορία χωρίς αυτά** (audit source-registry completeness)·
-(I-STR-b) `binding` είναι **typed κλειστό sum**, ποτέ ελεύθερο· (I-STR-c) πράξη χωρίς
-εξουσιοδοτική βάση όπου απαιτείται ⇒ `insufficient-authorization` (ΟΧΙ σιωπηλή αποδοχή)·
-(I-STR-d) εδαφικό/προσωπικό/θεματικό πεδίο υποχρεωτικό ανά αντικείμενο.
+### 1.1 `bindingness` — ΚΛΕΙΣΤΟ typed sum (παράγεται από issuer/competence/addressee/content/authority)
+```
+primary-constitutional · primary-statutory · primary-statutory-provisional ·
+primary-supranational · secondary-legislative · secondary-non-legislative ·
+secondary-regulatory · interpretive-non-binding · advisory · soft-law-non-binding ·
+preparatory-non-binding · jurisprudential · doctrinal-non-authoritative
+```
+Η δεσμευτικότητα **δεν** αντλείται από τον **τίτλο** μιας πράξης (π.χ. «εγκύκλιος»),
+αλλά από **issuer + competence + addressee + content + authority evidence**.
 
-## 2. Source-specific encoding profiles / compilers (§3.B, §4.7 της εντολής)
+## 2. `SourceTypeEntry` — ΤΟ ΠΕΡΙΕΧΟΜΕΝΟ (versioned· ΟΛΑ `review_state: PENDING_LEGAL_VALIDATION`)
 
-Κάθε ST → **source-specific profile** (δομικοί κανόνες του τύπου) → **source-specific
-compiler** (παράγει το κοινό Legal Object Model + Legal IR). Κανένα δημόσιο αντικείμενο
-δεν δημοσιεύεται ως απλό PDF/αδόμητο κείμενο (invariant B της εντολής): κάθε πηγή περνά
-τα 11 βήματα (authentic manifestation → provenance receipt → structural encoding →
-source profile/compiler → Legal Object Model → **μη εκτελέσιμο** Legal IR → semantic
-encoding κανόνων/προϋποθέσεων/εξαιρέσεων/αποτελεσμάτων → valid-time projection + audit/
-known-time → σχέσεις στον υπεργράφο → verification/qualification → proof-carrying output).
+Πίνακας (στήλες: act_type · issuer · bindingness (typed) · authority_citation · collector·profile·compiler · coverage_test · evidence_state · review_state):
 
-**Έδρες (EXTEND, μία ανά profile):** `legislation-ingestion.lisp`, `government-source.lisp`,
-`legal-decisions.lisp`, `corpus-eu-links.lisp`/`eu-interop-layer.lisp`,
-`pdf-authority.lisp`, `legal-ast.lisp`, `consolidation-engine.lisp`. Οι profiles ST-01..21
-είναι **νέες capabilities πάνω σε αυτές τις έδρες** (crosswalk CAP), **ΟΧΙ** νέα stores.
-Το semantic encoding περνά **υποχρεωτικά** από το `SECURE-SEMANTIC-INGRESS-CONTRACT`
-(external bytes ≠ Lisp forms).
+| ST | act_type | issuer | bindingness | authority_citation | collector · profile · compiler | coverage_test | evidence_state | review_state |
+|---|---|---|---|---|---|---|---|---|
+| ST-01 | Σύνταγμα + αναθεωρήσεις | Αναθεωρητική Βουλή | primary-constitutional | άρ. 110 Σ | `legislation-ingestion` · `syntagma-profile` · Lisp | ΦΕΚ Α΄ × άρθρο | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-02 | τυπικός νόμος / κώδικας | Βουλή | primary-statutory | άρ. 73–77 Σ | `legislation-ingestion` · `law-profile` · Lisp | ΦΕΚ Α΄ × έτος × αρ. | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-03 | Πράξη Νομοθετικού Περιεχομένου (ΠΝΠ) | Πρόεδρος Δημ. + Υπ.Συμβ. | primary-statutory-provisional | **άρ. 44§1 Σ** | `legislation-ingestion` · `pnp-profile` · Lisp | ΦΕΚ Α΄ + submission/κύρωση links | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-04 | κυρωτικός νόμος | Βουλή | primary-statutory | άρ. 28/36§2/44§1 Σ | `legislation-ingestion` · `ratification-profile` · Lisp | κυρωτικός↔κυρούμενο | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-05 | προεδρικό διάταγμα | Πρόεδρος Δημ. | secondary-regulatory | άρ. 43 Σ (εξουσιοδότηση) | `legislation-ingestion` · `pd-profile` · Lisp | ΦΕΚ Α΄ + εξουσιοδ. βάση | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-06 | ΥΑ / ΚΥΑ | Υπουργός/-οί | secondary-regulatory | ρητή νομοθ. εξουσιοδότηση | `government-source` · `mad-profile` · Lisp | ΦΕΚ Β΄ + εξουσιοδότηση | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-07 | κανονιστική πράξη ανεξ. αρχής | ΑΑΔΕ/ΕΕΤΤ/ΑΠΔΠΧ/ΡΑΕ κ.λπ. | secondary-regulatory | ιδρυτικός νόμος αρχής | `government-source` · `iauth-profile` · Lisp | census αρχή × έτος | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-08 | περιφερειακή / δημοτική κανονιστική | Περιφέρεια / Δήμος | secondary-regulatory | Κώδικας Δήμων/Περιφερειών | `government-source` · `ota-profile` · Lisp | census ΟΤΑ × έτος (U-7) | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-09 | εγκύκλιος / οδηγία / ερμηνευτική | διοίκηση | **παράγεται per-instance** (default interpretive-non-binding· **ΟΧΙ από τίτλο**) | ιεραρχική/οργανωτική εξουσία | `government-source` · `circular-profile` · parser | χωριστός space `binding` derived | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-10 | Κανονισμός της Βουλής | Βουλή (Ολομέλεια) | primary-constitutional (οργανικός· αυτονομία) | άρ. 65 Σ | `legislation-ingestion` · `parliament-rules-profile` · Lisp | census Κανονισμού × αναθεώρηση | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-11 | Πράξη Υπουργικού Συμβουλίου (ΠΥΣ) | Υπ. Συμβούλιο | secondary-regulatory / κατά περιεχόμενο | κατά εξουσιοδότηση/αρμοδιότητα | `government-source` · `pys-profile` · Lisp | ΦΕΚ Α΄/Β΄ census | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-12 | αναγκαστικός νόμος (α.ν.) — **ιστορικός, δυνητικά ισχύων** | (ιστορικό καθεστώς) | primary-statutory (historical) | κατά το ιστορικό καθεστώς | `legislation-ingestion` · `historical-law-profile` · Lisp | census ιστορικών × ισχύς | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-13 | νομοθετικό διάταγμα (ν.δ.) — **ιστορικό, δυνητικά ισχύον** | (ιστορικό καθεστώς) | primary-statutory (historical) | κατά το ιστορικό καθεστώς | `legislation-ingestion` · `historical-law-profile` · Lisp | census ιστορικών × ισχύς | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-14 | βασιλικό διάταγμα (β.δ.) — **ιστορικό, δυνητικά ισχύον** | (ιστορικό καθεστώς) | secondary-regulatory (historical) | κατά το ιστορικό καθεστώς | `legislation-ingestion` · `historical-pd-profile` · Lisp | census ιστορικών × ισχύς | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-15 | διεθνής συνθήκη / πρωτόκολλο / επιφύλαξη | Κράτος (κύρωση Βουλή) | primary-supranational | **άρ. 28§1 Σ** | `treaty-collector` · `treaty-profile` · Lisp | census συνθηκών × depositary | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-16 | πρωτογενές ενωσιακό (Συνθήκες ΕΕ, Χάρτης) | ΕΕ | primary-supranational | Συνθήκες ΕΕ / άρ. 28§2-3 Σ | `eu-collector` · `eu-primary-profile` · Lisp | Cellar CELEX | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-17 | Κανονισμός ΕΕ | ΕΕ | **secondary-legislative/non-legislative** (§2.1: directly applicable· direct effect δυνατό· addressee: όλοι) | **άρ. 288 ΣΛΕΕ** | `eu-collector` · `eu-regulation-profile` · Lisp | CELEX × έτος | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-18 | Οδηγία ΕΕ | ΕΕ | **secondary** (§2.1: δεσμευτική ως προς αποτέλεσμα· **ΟΧΙ** άμεσα εφαρμοστέα· direct effect κάθετο μετά προθεσμία· addressee: ΚΜ) | άρ. 288 ΣΛΕΕ | `eu-collector` · `eu-directive-profile` · Lisp | οδηγία↔μεταφορά | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-19 | Απόφαση ΕΕ | ΕΕ | **secondary** (§2.1: δεσμευτική στο σύνολο· **addressee-specific** ή γενική) | άρ. 288 ΣΛΕΕ | `eu-collector` · `eu-decision-profile` · Lisp | CELEX census | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-20 | delegated / implementing act ΕΕ | Επιτροπή/Συμβ. | secondary-non-legislative | άρ. 290–291 ΣΛΕΕ | `eu-collector` · `eu-act-profile` · Lisp | CELEX census | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-21 | ενωσιακό / διεθνές soft law | ΕΕ/διεθνείς οργαν. | soft-law-non-binding | — | `soft-law-collector` · `softlaw-profile` · parser | space `authoritative:false` | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-22 | ελληνική νομολογία | ελληνικά δικαστήρια | jurisprudential (§4.9 τάξεις) | δικαιοδοσία δικαστηρίου | `legal-decisions` · `judgment-profile` · Lisp | census δικαστήριο × έτος | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-23 | νομολογία ΔΕΕ (CJEU) | ΔΕΕ | jurisprudential — **effect profile: ερμηνεία δικαίου ΕΕ (άρ.267 ΣΛΕΕ), δεσμευτική ερμηνεία· διακριτό από ΕΔΔΑ** | άρ. 267/19 ΣΛΕΕ | `legal-decisions` · `cjeu-profile` · Lisp | Curia census | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-24 | νομολογία ΕΔΔΑ (ECtHR) | ΕΔΔΑ | jurisprudential — **effect profile: δεσμευτική inter partes (άρ.46 ΕΣΔΑ)· res interpretata erga omnes = συζητούμενο· διακριτό από ΔΕΕ** | άρ. 46 ΕΣΔΑ | `legal-decisions` · `ecthr-profile` · Lisp | HUDOC census | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-25 | γνωμοδότηση ΝΣΚ | ΝΣΚ | advisory (δεσμευτική **μόνο επί αποδοχής**) | ν. περί ΝΣΚ | `government-source` · `nsk-profile` · parser | census ΝΣΚ × έτος | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-26 | αιτιολογική έκθεση / προπαρασκευαστικές | Βουλή | preparatory-non-binding | — | `legislation-ingestion` · `travaux-profile` · parser | νόμος↔αιτιολογική | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-27 | κανονιστική ΣΣΕ / διαιτητική απόφαση | κοιν. εταίροι / ΟΜΕΔ | secondary (όπου παράγει έννομα αποτελέσματα) | ν.1876/1990 κ.λπ. | `government-source` · `cla-profile` · Lisp | census ΣΣΕ × κλάδο | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| ST-28 | δευτερογενής θεωρία (doctrine) | συγγραφείς | doctrinal-non-authoritative | — | `doctrine-collector` · `doctrine-profile` · parser | space `authoritative:false` (U-3) | DECLARED-ONLY | PENDING_LEGAL_VALIDATION |
+| **ST-UNKNOWN** | **`UNKNOWN_SOURCE_TYPE`** (fail-closed catch-all) | — | **UNKNOWN** (ποτέ αυθαίρετη) | — | radar surfacing | κάθε μη-ταξινομημένη μορφή ⇒ UNKNOWN | UNKNOWN | PENDING_LEGAL_VALIDATION |
 
-## 3. Τι ΔΕΝ κάνει
+### 2.1 EU δίκαιο — διακριτές ιδιότητες (ΟΧΙ ενιαία «primary»)
+| | primary/secondary | legislative/non-legislative | δεσμευτικότητα | άμεση εφαρμογή | δυνητικό direct effect | αποδέκτης |
+|---|---|---|---|---|---|---|
+| Συνθήκες/Χάρτης (ST-16) | **primary** | — | ναι | — | ναι (CJEU) | — |
+| Κανονισμός (ST-17) | **secondary** | legislative ή non-legislative | στο σύνολο | **ναι** | ναι | όλοι |
+| Οδηγία (ST-18) | **secondary** | συνήθως legislative | ως προς αποτέλεσμα | **όχι** (μεταφορά) | κάθετο μετά προθεσμία | ΚΜ |
+| Απόφαση (ST-19) | **secondary** | κατά περίπτωση | στο σύνολο | κατά αποδέκτη | δυνατό | **addressee-specific** ή γενική |
+| Delegated/implementing (ST-20) | **secondary** | **non-legislative** | κατά πράξη | κατά πράξη | κατά πράξη | κατά πράξη |
 
-Καμία υλοποίηση των profiles/collectors (Implementation Book work packages). Δεν ορίζει
-ουσιαστικές σχέσεις ειδικός/γενικός (adopted `ConflictPolicyBundle`). Δεν επινοεί
-δεσμευτικότητα — αντλείται από την εξουσιοδοτική βάση. Το εύρος census (ποια δικαστήρια/
-ΟΤΑ δημοσιεύουν νομίμως) = U-7 (external). Αδειοδότηση doctrine/full-text = U-3 (external).
+## 3. Source-specific encoding profiles / compilers (§4.7)
+
+Κάθε `SourceTypeEntry` → source-specific profile → source-specific compiler → κοινό Legal
+Object Model + **μη εκτελέσιμο** Legal IR (μέσω `SECURE-SEMANTIC-INGRESS-CONTRACT`). Κανένα
+δημόσιο αντικείμενο δεν δημοσιεύεται ως απλό PDF/αδόμητο κείμενο (invariant B). Έδρες
+(EXTEND· μία ανά profile): `legislation-ingestion.lisp`, `government-source.lisp`,
+`legal-decisions.lisp`, `eu-interop-layer.lisp`, `pdf-authority.lisp`, `legal-ast.lisp`.
+
+## 4. Invariants & τι ΔΕΝ κάνει
+
+(I-STR-a) κάθε ST έχει collector+profile+compiler+coverage test· (I-STR-b) `bindingness`
+typed κλειστό sum, **παραγόμενο**, ποτέ από τίτλο· (I-STR-c) κάθε ουσιαστικό entry φέρει
+`authority_citation`+`evidence_state`+`review_state`+`valid_from`+`valid_to` και μένει
+`PENDING_LEGAL_VALIDATION` μέχρι πρωτογενή-πηγή review gate· (I-STR-d) `UNKNOWN_SOURCE_TYPE`
+fail-closed· (I-STR-e) μητρώο **επεκτάσιμο/versioned**, ΟΧΙ αιώνια πλήρες.
+
+**Δεν κάνει:** καμία υλοποίηση profiles/collectors (Impl-Book WP-16)· **δεν πιστοποιεί
+νομικά** (νομική βεβαίωση = MISSION legal review, όχι αυτό το κείμενο)· δεν ορίζει
+ουσιαστικές σχέσεις ειδικός/γενικός (adopted `ConflictPolicyBundle`). Εύρος census/
+νομιμότητα δημοσίευσης = U-7· αδειοδότηση doctrine/full-text = U-3 (external).

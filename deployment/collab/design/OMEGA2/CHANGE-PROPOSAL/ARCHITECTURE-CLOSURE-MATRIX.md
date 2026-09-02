@@ -13,7 +13,7 @@ test → kill test → evidence → implementation-book work package (WP)**. Ο�
 | # | mission | subsystem | trust boundary | data type | contract (έδρα) | repository seat | test | kill test | evidence state | Impl-Book WP |
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | MIS-2 | National Legal Census / Radar (M1·L9) | source authenticity (S1–S3) | census position (`state ∈ INGESTED/EXPLICITLY-ABSENT/QUARANTINED/UNKNOWN`) | v1.4 §4.1 + `LAWMAX-PUBLIC-SOURCE-TYPE-AUTHORITY-REGISTRY.md` | `ingestion-daemon.lisp`, `legislation-ingestion.lisp` (EXTEND) | Q01/Q29 | KW-48, KW-109 | UNKNOWN_WITH_OWNER (CAP-157) | WP-01 census + coverage ledger |
-| 2 | MIS-1 | Multimodal acquisition (M2·L1/L3) | **Secure Semantic Ingress** | `source-authenticity` + manifestation (USC) | v1.4 §4.2 + `SECURE-SEMANTIC-INGRESS-CONTRACT.md` | `pdf-authority.lisp`, `safe-read.lisp` (EXTEND) | Q03/Q30 | KW-108 (+SIK-1..9) | partial (CAP-158) | WP-02 acquisition + ingress sandbox |
+| 2 | MIS-1 | Multimodal acquisition (M2·L1/L3) | **Secure Semantic Ingress** (external bytes ≠ Lisp forms) | `source-authenticity` + `ingress-envelope/1`/`parser-result/1` | v1.4 §4.2 + `SECURE-SEMANTIC-INGRESS-CONTRACT.md` | `pdf-authority.lisp` + **non-evaluating JSON/CBOR decoder (NEW, ΟΧΙ safe-read)**· `safe-read.lisp` = internal-only | Q03/Q30 | KW-108 (SIK-1..9 UNEXECUTED) | MISSING (CAP-158) | WP-02 acquisition + ingress sandbox + schema decoder |
 | 3 | MIS-1 | Neuro-symbolic bridge (§4.3/§4.4) | epistemic wall (PLANE-3 ≠ trusted) | `neural-candidate/1` (closed) | v1.4 §4.3/§4.4 | `legal-extraction-verify.lisp` (EXTEND) | Q09/Q31 | KW-7, KW-49, KW-50 | missing (CAP-135 EXCLUDED core) | WP-03 neural runtime + closed protocol |
 | 4 | MIS-1 | Symbolic Common Lisp core | Legal IR non-executability | typed Legal IR (Fact/Norm/Claim/Proof) | `LAWMAX-LEGAL-IR-SEMANTIC-CONTRACT.md` (REQUIREMENTS) | `legal-ast.lisp`, `legal-inference-engine.lisp` | Q07 | KW-105 | UNKNOWN_WITH_OWNER (CAP-156) | WP-04 Legal IR grammar+WFS+conflict evaluator+corpus |
 | 5 | MIS-3 | Bitemporal Legal Digital Twin (M3·L2) | valid-time vs audit-time separation | event (closed catalog) + `legal-timeline/1` / `audit-timeline/1` | v1.4 §4.5 + MLTP §2.0 | `version-graph.lisp`, `legal-temporal.lisp` (EXTEND) | Q05/Q06/Q41 | KW-51 | partial (CAP L2) | WP-05 event store + bitemporal projection |
@@ -27,11 +27,21 @@ test → kill test → evidence → implementation-book work package (WP)**. Ο�
 | 13 | MIS-6 | Public search + website (§4.12) | ιστότοπος = προβολή, ποτέ δεύτερη πηγή | canonical URL `/lawmax/...` (ένα ανά Legal Object) | v1.4 §4.12 (URL topology) | `static-site.lisp` (REUSE) | Q15 | KW-57 (site cell isolation) | missing (app shell) | WP-13 site + search + isolation |
 | 14 | MIS-5 | OpenAPI / MCP / SDKs / feeds (§4.15) | citation-bound (§4.16) | `CertifiedResult` + `citation/1` | v1.4 §4.15/§4.16, MLTP §2.10 | `mcp-server.lisp` (EXTEND), OpenAPI (MISSING) | Q26/Q28/Q42 | KW-62, KW-63 | HAS_SEAT partial | WP-14 OpenAPI+SDK+conformance |
 | 15 | MIS-9 | Observatories: citation/security/coverage (§4.13/§4.14) | metrics ≠ legal correctness | L9 metrics (typed UNKNOWN if stub) | v1.4 §4.13/§4.14 | `ai-citation-strategy.lisp` (EXTEND) | Q16/Q40 | KW-58, KW-59 | missing (collectors) | WP-15 observatories + SLO/DR |
-| 16 | MIS-2 | Source-type authority registry (§4.20) | source-registry completeness | `ST-01..21` + encoding profiles | `LAWMAX-PUBLIC-SOURCE-TYPE-AUTHORITY-REGISTRY.md` | source-profile seats (EXTEND) | I1a/I1b (audit) | KW-109 | UNKNOWN_WITH_OWNER (CAP-157) | WP-16 per-ST collectors/profiles/compilers |
+| 16 | MIS-2 | Source-type authority registry (§4.20) | source-registry completeness | `ST-01..28` + `SourceTypeSchema/1`/`SourceTypeEntry` + `UNKNOWN_SOURCE_TYPE` + encoding profiles | `LAWMAX-PUBLIC-SOURCE-TYPE-AUTHORITY-REGISTRY.md` | source-profile seats (EXTEND) | I1a/I1b (audit) | KW-109 | UNKNOWN_WITH_OWNER (CAP-157) | WP-16 per-ST collectors/profiles/compilers |
 | 17 | MIS-8 | Ontology & validation governance (§4.19) | ontology version binding | `ontology-bundle` + `shacl-validation-receipt` | MLTP §2.11 | `shacl-validator.lisp` (EXTEND) | (audit H) | KW-106 | UNKNOWN_WITH_OWNER (CAP-155) | WP-17 ontology bundle lifecycle |
 | 18 | MIS-10 | Public→private boundary (§1.3/§1.4) | 9 απόντες ιδιωτικοί τύποι (structural) | κλειστά σχήματα | v1.4 §1.3/§1.4 | InstitutionalAct public profile | Q20 | KW-39 | HAS_SEAT (type-level) | WP-18 schema enforcement (compile-time) |
 
-## 2. ΕΓΓΥΗΣΕΙΣ ΚΛΕΙΣΙΜΑΤΟΣ — καμία από τις απαγορευμένες καταστάσεις (μηχανικά επιβαλλόμενο)
+## 2. ΕΓΓΥΗΣΕΙΣ ΚΛΕΙΣΙΜΑΤΟΣ — καμία από τις απαγορευμένες καταστάσεις (document/reference επιβολή)
+
+**ΤΙΜΙΑ ΤΑΞΙΝΟΜΗΣΗ ΤΕΚΜΗΡΙΟΥ (micro-pass defect 3):** ο `V1.4-CONTRADICTION-OMISSION-AUDIT.sh`
+είναι **DOCUMENT/REFERENCE CONSISTENCY PASS** — deterministic έλεγχοι σε κείμενο/δομή/
+αναφορές. **ΔΕΝ** αποδεικνύει semantic/legal/security correctness ούτε source-universe
+completeness. Πέντε **διακριτές** κατηγορίες τεκμηρίου: **[1]** deterministic document/
+reference checks (αυτός ο audit)· **[2]** executable protocol tests (`run.sh`/mltp3 — μόνο
+ο πυρήνας MLTP)· **[3]** legal-content review (MISSION legal gate — τα ST entries είναι
+`PENDING_LEGAL_VALIDATION`)· **[4]** security implementation tests (Impl-Book + SIK-1..9,
+**UNEXECUTED**)· **[5]** specification qualification (§8 `SPEC QUALIFIED`). Οι παρακάτω
+έλεγχοι αποδεικνύουν **δομή**, όχι ουσία:
 
 | απαγόρευση (εντολή §5) | μηχανικός έλεγχος |
 |---|---|
@@ -42,7 +52,7 @@ test → kill test → evidence → implementation-book work package (WP)**. Ο�
 | type χωρίς schema | audit **H3** (κάθε extension record ορισμένο) |
 | requirement χωρίς test | audit **P5d** (κάθε R-row seat+test+evidence) |
 | error χωρίς emission seat | audit C9 (§4.3 35/35) + §14.9/§2.11/ingress §6 (κάθε όνομα με βήμα) |
-| source category χωρίς collector/profile/compiler | audit **I1a/I1b** (21 ST, όλα με collector·profile·compiler + coverage) |
+| source category χωρίς collector/profile/compiler | audit **I1a-I1i** (SourceTypeSchema/1 + 28 SourceTypeEntry + UNKNOWN_SOURCE_TYPE· όλα PENDING_LEGAL_VALIDATION· collector·profile·compiler+coverage) |
 | public claim χωρίς evidence state | crosswalk 159/159 caps με κατάσταση· traceability 134/134 με evidence |
 | αρχείο χωρίς classification | superseded register (CURRENT/ACTIVE FOUNDATION/EVIDENCE/HISTORICAL/FALSIFIED/SUPERSEDED) |
 | untrusted → Lisp code | audit **I3a/I3b/I3c** (Legal IR non-executability) |

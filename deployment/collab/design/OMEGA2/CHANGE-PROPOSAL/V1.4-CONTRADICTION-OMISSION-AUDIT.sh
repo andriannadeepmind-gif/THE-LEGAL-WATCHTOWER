@@ -1,9 +1,19 @@
 #!/usr/bin/env bash
-# V1.4 CONTRADICTION / OMISSION AUDIT — ΕΚΤΕΛΕΣΙΜΟΣ, ΝΤΕΤΕΡΜΙΝΙΣΤΙΚΟΣ, ΑΝΑΠΑΡΑΓΩΓΙΜΟΣ
+# V1.4 DOCUMENT/REFERENCE CONSISTENCY AUDIT — ΕΚΤΕΛΕΣΙΜΟΣ, ΝΤΕΤΕΡΜΙΝΙΣΤΙΚΟΣ, ΑΝΑΠΑΡΑΓΩΓΙΜΟΣ
 # Τρέξε από οπουδήποτε:  bash deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.4-CONTRADICTION-OMISSION-AUDIT.sh
 # Exit 0 = ΟΛΟΙ οι έλεγχοι PASS. Exit 1 = τουλάχιστον ένας FAIL. Κάθε γραμμή: id | actual | want | verdict.
-# Αποδεικνύει τα 6 στοιχεία του v1.4 §12/§13 (P1–P6), μετρά τις καταμετρήσεις (C), και τρέχει τον
-# V1.3-CONSISTENCY-AUDIT.sh ως regression floor (F). Ελέγχει ΜΟΝΟ κείμενο — καμία αξίωση υλοποίησης.
+#
+# ΤΙΜΙΑ ΤΑΞΙΝΟΜΗΣΗ (micro-pass defect 3): ΑΥΤΟΣ Ο AUDIT ΕΙΝΑΙ **DOCUMENT/REFERENCE CONSISTENCY**
+# ΜΟΝΟ — deterministic έλεγχοι σε κείμενο/δομή/αναφορές (counts, id/context/schema closure,
+# acyclic-id/signature ΣΤΗΝ ΠΡΟΔΙΑΓΡΑΦΗ, presence/phrase). ΔΕΝ αποδεικνύει: (α) semantic
+# correctness, (β) LEGAL correctness (νομική βεβαίωση = πρωτογενής πηγή + review gate· τα
+# entries είναι PENDING_LEGAL_VALIDATION), (γ) security effectiveness (τα SIK-1..9 είναι
+# UNEXECUTED· το boundary ΔΕΝ έχει επιβιώσει), (δ) source-universe completeness (extensible/
+# versioned μητρώο, ΟΧΙ αιώνια πλήρες). Διακριτές κατηγορίες τεκμηρίου: [1] deterministic
+# document/reference checks (ΑΥΤΟΣ)· [2] executable protocol tests (run.sh, mltp3)· [3]
+# legal-content review (MISSION legal gate)· [4] security implementation tests (Impl-Book +
+# SIK harness)· [5] specification qualification (§8 SPEC QUALIFIED). Τρέχει και τον
+# V1.3-CONSISTENCY-AUDIT.sh ως regression floor (F).
 set -u
 cd "$(dirname "$0")"
 V=CHANGE-PROPOSAL-v1.4.md
@@ -33,7 +43,8 @@ c(){ grep -c "$@" 2>/dev/null || true; }
 cE(){ grep -cE "$@" 2>/dev/null || true; }
 sum(){ awk -F: '{s+=$NF}END{print s+0}'; }
 
-echo "### V1.4 CONTRADICTION/OMISSION AUDIT — $(git -C $ROOT rev-parse --short HEAD 2>/dev/null || echo no-git) — $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+echo "### V1.4 DOCUMENT/REFERENCE CONSISTENCY AUDIT — $(git -C $ROOT rev-parse --short HEAD 2>/dev/null || echo no-git) — $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+echo "### SCOPE: document/reference consistency ONLY — NOT proof of semantic/legal/security correctness or source-universe completeness (SIK-1..9 UNEXECUTED· entries PENDING_LEGAL_VALIDATION)"
 echo "# P1 καμία ταξινόμηση «CPEI = ιδιωτικό» σε ACTIVE έγγραφο (μόνο ως ανακληθέν παράθεμα)"
 ck P1a "$(c '^| `LAWMAX-CPEI-TARGET-SPEC.{md,sexp}` | \*\*ACTIVE SHARED CORE\*\*' $R)" ge 1
 ck P1b "$(c '^| `LAWMAX-CPEI-TARGET-SPEC.md` + `.sexp` | .* | CORE | REUSE |' $X)" ge 1
@@ -202,14 +213,22 @@ ck H8 "$(c 'Implementation Book completion + approval' $V)" ge 1
 echo "# I FINAL ARCHITECTURE CLOSURE — source-registry completeness · trust-boundary coverage · Legal-IR non-executability · exact algorithm-policy binding · public/internal time separation"
 SR=$ROOT/deployment/LAWMAX-PUBLIC-SOURCE-TYPE-AUTHORITY-REGISTRY.md
 IN=$ROOT/deployment/LAWMAX-SECURE-SEMANTIC-INGRESS-CONTRACT.md
-ck I1a "$(cE '^\| ST-[0-9]' $SR)" eq 21
+ck I1a "$(c 'SourceTypeSchema/1' $SR)" ge 1
 ck I1b "$(python3 -c "
 import re
 s=open('$SR',encoding='utf-8').read()
 rows=[l for l in s.split(chr(10)) if re.match(r'^\| ST-[0-9]',l)]
-ok=sum(1 for l in rows for cells in [[c.strip() for c in l.strip().strip('|').split('|')]] if len(cells)>=10 and '·' in cells[8] and cells[9] not in ('','—') and cells[8] not in ('','—'))
+# κάθε ουσιαστικό entry: collector·profile·compiler (cells[5]) + coverage (cells[6]) + review_state PENDING (cells[8])
+ok=sum(1 for l in rows for cells in [[c.strip() for c in l.strip().strip('|').split('|')]] if len(cells)>=9 and '·' in cells[5] and cells[6] not in ('','—') and cells[8]=='PENDING_LEGAL_VALIDATION')
 print(ok)
-")" eq 21
+")" ge 28
+ck I1c "$(c 'UNKNOWN_SOURCE_TYPE' $SR)" ge 1
+ck I1d "$(c 'ΑΡΧΙΤΕΚΤΟΝΙΚΗ, ΟΧΙ ΠΙΣΤΟΠΟΙΗΜΕΝΟ ΝΟΜΙΚΟ ΠΕΡΙΕΧΟΜΕΝΟ' $SR)" ge 1
+ck I1e "$(c 'επεκτάσιμο, versioned' $SR)" ge 1
+ck I1f "$(c 'λήγει αν δεν κυρωθεί σε 40 ημέρες' $SR)" eq 0
+ck I1g "$(c 'cjeu-profile' $SR)" ge 1
+ck I1h "$(c 'ecthr-profile' $SR)" ge 1
+ck I1i "$(cE 'Κανονισμός ΕΕ \| ΕΕ \| \*\*secondary' $SR)" ge 1
 ck I2a "$(test -f $IN && echo 1 || echo 0)" eq 1
 ck I2b "$(c 'Θ17' $ROOT/deployment/LAWMAX-THREAT-MODEL.md)" ge 1
 ck I2c "$(c 'Θ18' $ROOT/deployment/LAWMAX-THREAT-MODEL.md)" ge 1
@@ -217,6 +236,10 @@ ck I2d "$(c 'unhackable' $ROOT/deployment/LAWMAX-THREAT-MODEL.md)" ge 1
 ck I3a "$(c 'External bytes ΔΕΝ γίνονται ποτέ Lisp forms' $IN)" ge 1
 ck I3b "$(c 'read-from-string' $IN)" ge 1
 ck I3c "$(c 'UNTRUSTED → PARSED → VALIDATED → ADOPTED → CANONICAL' $IN)" ge 1
+ck I3d "$(c 'ΕΣΩΤΕΡΙΚΟ-ΜΟΝΟ\|internal-only\|ΔΕΝ είναι ο decoder δημόσιας' $IN)" ge 1
+ck I3e "$(c 'ingress-envelope/1' $IN)" ge 1
+ck I3f "$(c 'non-evaluating' $IN)" ge 1
+ck I3g "$(c 'εξωτερικό byte' $IN)" ge 1
 ck I4a "$(c 'independent n-of-m ML-DSA multisignature' $M)" ge 1
 ck I4b "$(c 'threshold/multisig ML-DSA' $M)" eq 0
 ck I5a "$(python3 -c "s=open('$M',encoding='utf-8').read();print(1 if 'legal-timeline/1' in s and 'audit-timeline/1' in s else 0)")" eq 1
@@ -234,4 +257,4 @@ bash ./V1.3-CONSISTENCY-AUDIT.sh > /dev/null 2>&1; f13=$?
 ck F1 "$f13" eq 0
 ck F2 "$(bash ./V1.3-CONSISTENCY-AUDIT.sh 2>/dev/null | grep -c '| FAIL$')" eq 0
 echo "### SUMMARY: checks=$n pass=$pass fail=$fail"
-[ "$fail" -eq 0 ] && { echo "### EXIT 0 — ALL PASS"; exit 0; } || { echo "### EXIT 1 — DEVIATIONS PRESENT"; exit 1; }
+[ "$fail" -eq 0 ] && { echo "### EXIT 0 — DOCUMENT/REFERENCE CONSISTENCY PASS (ΟΧΙ semantic/legal/security proof· ΟΧΙ completeness)"; exit 0; } || { echo "### EXIT 1 — DEVIATIONS PRESENT"; exit 1; }

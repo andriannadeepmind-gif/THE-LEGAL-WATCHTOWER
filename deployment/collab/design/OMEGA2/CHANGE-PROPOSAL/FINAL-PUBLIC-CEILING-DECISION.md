@@ -465,14 +465,16 @@ freeze/merge είναι ο δημιουργός (ρητό `εγκρίνω SPEC F
 Ο Final Architecture Closure Pass έκλεισε τα εναπομείναντα ορφανά/αντιφάσεις της
 αρχιτεκτονικής (design-only, μία bounded pass, χωρίς παράλληλη αρχιτεκτονική): (α) πλήρες
 δημόσιο νομικό σύμπαν ως απαριθμήσιμο μητρώο — `LAWMAX-PUBLIC-SOURCE-TYPE-AUTHORITY-REGISTRY.md`
-(ST-01..21, v1.4 §4.20)· (β) `LAWMAX-SECURE-SEMANTIC-INGRESS-CONTRACT.md` — external bytes ≠
+(ST-01..28 + UNKNOWN_SOURCE_TYPE, schema/entry, PENDING_LEGAL_VALIDATION, v1.4 §4.20)· (β) `LAWMAX-SECURE-SEMANTIC-INGRESS-CONTRACT.md` — external bytes ≠
 Lisp forms (v1.4 §4.21, Θ18)· (γ) nation-state compromise-tolerant security (v1.4 §4.22,
 Θ17)· (δ) URL topology + isolation (§4.12)· (ε) trust-packet πληρότητα (§4.7)· (στ)
 `ARCHITECTURE-CLOSURE-MATRIX.md` — mission→subsystem→trust boundary→data type→contract→seat→
 test→kill test→evidence→work package, **καμία ορφανή κατάσταση**. Οι δομικοί audits
-επεκτάθηκαν (blocks H/I/J): **v1.4 143/143, v1.3 64/64, run.sh PASSED**. **Αρχιτεκτονικά
-UNKNOWN: 0** — κάθε υπόλοιπο ταξινομημένο IMPLEMENTATION-BOOK / IMPLEMENTATION /
-QUALIFICATION / EXTERNAL-OPERATIONAL.
+επεκτάθηκαν (blocks H/I/J): **v1.4 DOCUMENT/REFERENCE CONSISTENCY PASS, v1.3 64/64, run.sh
+PASSED (πυρήνας MLTP)** — ο audit αποδεικνύει **δομή/αναφορές**, **ΟΧΙ** semantic/legal/
+security correctness ή completeness (τα ST entries `PENDING_LEGAL_VALIDATION`· SIK-1..9
+UNEXECUTED). **Αρχιτεκτονικά UNKNOWN: 0** — κάθε υπόλοιπο ταξινομημένο IMPLEMENTATION-BOOK /
+IMPLEMENTATION / QUALIFICATION / EXTERNAL-OPERATIONAL.
 
 > # `SPEC FREEZE CANDIDATE READY — AWAITING CREATOR APPROVAL`
 
@@ -484,6 +486,32 @@ qualified ή implemented: το `SPEC QUALIFIED` (§8) και το Implementation
 blockers. Μετά το ρητό `ΕΓΚΡΙΝΩ SPEC FREEZE` καρφώνεται το freeze SHA και ξεκινά το
 `LAWMAX OMEGA — PUBLIC OBSERVATORY IMPLEMENTATION BOOK v1.0` (εντολή §7). Το AI **δεν**
 παγώνει, δεν υλοποιεί, δεν κάνει refactor/merge/qualify.
+
+### ΜΕΡΟΣ 8-quinquies — CORRECTIVE MICRO-PASS ([0143], ακριβώς τρία ελαττώματα)
+
+Ανεξάρτητη επιθεώρηση του `5351baed` βρήκε **τρία** αναπαραγώγιμα ελαττώματα· διορθώθηκαν
+design-only (χωρίς νέα αρχιτεκτονική/υλοποίηση):
+1. **Secure Ingress αντίφαση:** το `safe-read.lisp` (που **ρητά** δηλώνει «ΟΧΙ public
+   ingestion boundary», χρησιμοποιεί `cl:read`, data-only S-expr — ΟΧΙ JSON) **δεν** είναι
+   πλέον ο external decoder. Ορίστηκε διακριτός αγωγός `opaque bytes → sandboxed parser →
+   ingress-envelope/1 (JSON/CBOR) → non-evaluating schema decoder → typed DTO`· `parser-
+   result/1` ξεχωριστό από `neural-candidate/1`· κανένα εξωτερικό byte στον `cl:read`
+   (διορθώθηκε και §4.4/R-29).
+2. **Source-Type Registry:** διακριτό `SourceTypeSchema/1` από versioned `SourceTypeEntry`·
+   κάθε entry `authority_citation`/`evidence_state`/`review_state`/`valid_from`/`valid_to`,
+   όλα `PENDING_LEGAL_VALIDATION`· διορθώσεις (ΠΝΠ 44§1: 40 ημέρες υποβολή + 3 μήνες κύρωση,
+   **prospective** cessation· EU regulations/directives/decisions = secondary με direct
+   applicability/effect/addressee· ΔΕΕ≠ΕΔΔΑ profiles· εγκύκλιος από issuer/content ΟΧΙ
+   τίτλο)· προστέθηκαν αναγκαστικοί νόμοι/ν.δ./β.δ./Κανονισμός Βουλής/ΠΥΣ· `UNKNOWN_SOURCE_TYPE`
+   fail-closed· **επεκτάσιμο/versioned**, ΟΧΙ αιώνια πλήρες.
+3. **Audit ταξινόμηση:** ο `V1.4-...AUDIT.sh` = **DOCUMENT/REFERENCE CONSISTENCY PASS** μόνο·
+   ΟΧΙ απόδειξη semantic/legal/security/completeness· πέντε διακριτές κατηγορίες τεκμηρίου·
+   SIK-1..9 `UNEXECUTED`· entries `PENDING_LEGAL_VALIDATION`.
+
+Regressions: v1.4 **154/154** (document/reference), v1.3 **64/64**, run.sh **PASSED**· core
+αμετάβλητος. Καμία υλοποίηση/refactoring.
+
+> # `SPEC FREEZE CANDIDATE CORRECTED — AWAITING CREATOR APPROVAL`
 
 ---
 

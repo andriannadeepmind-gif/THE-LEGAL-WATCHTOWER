@@ -29,13 +29,39 @@ UNTRUSTED → PARSED → VALIDATED → ADOPTED → CANONICAL
 Καμία κατάσταση δεν παρακάμπτεται· κάθε μετάβαση journaled (L1). Regressive μετάβαση ⇒
 `ingress-nonmonotonic-taint` (fail-closed).
 
-## 2. Sandboxed parsing (out-of-process, capability-less)
+## 2. Ο ΑΓΩΓΟΣ ΕΞΩΤΕΡΙΚΗΣ ΕΙΣΟΔΟΥ (distinct από το `safe-read.lisp`)
 
-PDF/XML/HTML/OCR/archive parsing εκτελείται σε **απομονωμένο process** (§4.4 external
-runtime) με **καμία** ικανότητα filesystem / network / subprocess / clock-write. Επικοινωνία
-μόνο μέσω του closed `neural-task/1` ↔ `neural-candidate/1` protocol (canonical JSON,
-`safe-read.lisp` = **μοναδικό** σημείο εισόδου αποσειριοποίησης). Ο parser επιστρέφει
-**typed AST bytes**, ποτέ εκτελέσιμο.
+**ΔΙΟΡΘΩΣΗ (micro-pass defect 1):** το `source/safe-read.lisp` είναι **ΕΛΑΧΙΣΤΟ ΕΣΩΤΕΡΙΚΟ
+primitive** για **έμπιστα, αυτο-γραμμένα data-only S-expressions** (χρησιμοποιεί `cl:read`
+με `*read-eval*` NIL, keyword package, data-only readtable· δηλώνει ρητά «ΟΧΙ public
+ingestion boundary»). **ΔΕΝ είναι ο decoder δημόσιας νομικής εισόδου** και **κανένα
+εξωτερικό byte δεν φτάνει σε αυτό.** Ο εξωτερικός αγωγός είναι **διακριτός** και **δεν
+περνά ποτέ από τον Lisp reader**:
+
+```
+opaque bytes
+  → sandboxed format parser (out-of-process, καμία ικανότητα fs/net/subprocess/clock-write)
+  → canonical JSON/CBOR ingress envelope  (`ingress-envelope/1` — RFC 8785 JCS / RFC 8949)
+  → non-evaluating schema decoder  (JSON/CBOR → typed DTO· ΟΧΙ `cl:read`, ΟΧΙ eval/macro/compile)
+  → typed DTO / Legal IR  (δεδομένα)
+```
+- **Κανένα εξωτερικό byte** δεν περνά από `cl:read`/`read-from-string`/reader-macro ούτε
+  ερμηνεύεται ως Lisp source syntax.
+- Το προκύπτον **typed DTO** μπορεί να γίνει εσωτερικό Lisp αντικείμενο, αλλά **ποτέ
+  reader-produced source form** και **ποτέ** όρισμα σε `eval`, macro-expansion ή compilation.
+- Ο **non-evaluating schema decoder** είναι νέα, χωριστή έδρα (MISSING, Implementation Book
+  WP-02) — **ΟΧΙ** το `safe-read.lisp`.
+
+**Τυποποιημένα envelopes — δύο ξεχωριστές διαδρομές:**
+```
+parser-result/1  = { "kind": <"pdf"|"xml"|"html"|"ocr"|"json"|"feed">, "manifestation_id",
+                     "artifact_digest": "sha256:<hex>", "content": <canonical JSON DTO>,
+                     "parser_id", "parser_manifest_sha256" }   # ΝΤΕΤΕΡΜΙΝΙΣΤΙΚΟΙ parsers
+neural-candidate/1 = (§4.3, PLANE-3)                            # ΜΟΝΟ η νευρωνική λωρίδα
+```
+**ΔΕΝ** δρομολογείται κάθε ντετερμινιστικός parser μέσω `neural-task/1 ↔ neural-candidate/1`·
+οι ντετερμινιστικοί parsers παράγουν `parser-result/1` (`ingress-envelope/1`)· το
+`neural-candidate/1` κρατιέται **αποκλειστικά** για τη νευρωνική (μη εξουσιοδοτική) λωρίδα.
 
 ## 3. Απαγορεύσεις στο trusted (Lisp) επίπεδο — πολυεπίπεδη άμυνα
 
@@ -73,13 +99,16 @@ runtime) με **καμία** ικανότητα filesystem / network / subproces
 ## 6. Extension error taxonomy (διακριτή από MLTP §4.3)
 ```
 ingress-nonmonotonic-taint · ingress-grammar-violation · ingress-channel-confusion ·
+non-canonical-ingress-envelope · schema-decode-failed · reader-reached-external-bytes ·
 read-time-execution-attempt · reader-macro-escape · package-symbol-escape ·
 excessive-nesting · decompression-bomb · xml-entity-expansion · injected-directive ·
 ontology-poisoning-candidate · unvalidated-neural-promotion
 ```
-Κάθε όνομα έχει βήμα εκπομπής (§4/§5). Καμία boolean σε hash-record.
+Κάθε όνομα έχει βήμα εκπομπής (§2/§4/§5). `reader-reached-external-bytes` = δομικό
+invariant violation (εξωτερικά bytes έφτασαν σε `cl:read`) ⇒ fail-closed. Καμία boolean σε
+hash-record.
 
-## 7. Predeclared kill tests (design-only, ΜΗ εκτελεσμένα) — κάθε ένα αποδεικνύει ΜΗΔΕΝΙΚΗ παρενέργεια
+## 7. Predeclared kill tests — `UNEXECUTED` (design-only· το boundary ΔΕΝ έχει ακόμη επιβιώσει) — κάθε ένα ΘΑ αποδεικνύει ΜΗΔΕΝΙΚΗ παρενέργεια
 
 | SIK | επίθεση | αναμενόμενο |
 |---|---|---|
@@ -99,9 +128,16 @@ harness επιβεβαιώνει καμία εγγραφή fs/net/proc, καμί
 
 ## 8. Έδρες & τι ΔΕΝ κάνει
 
-**Έδρες:** `safe-read.lisp` (μοναδικό deserialization entry: EXTEND)· `document-fetch.lisp`
-(external fetcher orchestration πρότυπο: REUSE)· §4.3/§4.4 neural runtime (sandbox host).
-**MISSING (Implementation Book):** capability-less sandbox host, constrained-grammar
-parsers ανά ST, taint-state enforcer, SIK harness. **Δεν** υλοποιεί τίποτα· δεν είναι
-γενική παράγραφος ασφαλείας — είναι **δομικό trust boundary** με invariant, taint states,
-κλειστή error taxonomy και predeclared kill tests.
+**Έδρες:**
+- `source/safe-read.lisp` — **ΕΣΩΤΕΡΙΚΟ ΜΟΝΟ**, για έμπιστα/αυτο-γραμμένα data-only
+  S-expressions· **ΟΧΙ** έδρα δημόσιας νομικής εισόδου, **ΟΧΙ** external decoder (διατηρείται
+  αμετάβλητο· το `cl:read` του δεν αγγίζει ποτέ εξωτερικά bytes).
+- `document-fetch.lisp` (external fetcher orchestration πρότυπο: REUSE).
+- §4.3/§4.4 neural runtime = sandbox host (νευρωνική λωρίδα μόνο).
+
+**MISSING (Implementation Book, WP-02):** capability-less sandbox host, sandboxed format
+parsers ανά ST → `ingress-envelope/1`, **non-evaluating JSON/CBOR schema decoder** (η
+ΝΕΑ, χωριστή έδρα εξωτερικής εισόδου — ΟΧΙ `safe-read.lisp`), taint-state enforcer, SIK
+harness. **Δεν** υλοποιεί τίποτα· δεν είναι γενική παράγραφος ασφαλείας — είναι **δομικό
+trust boundary** με invariant, taint states, κλειστή error taxonomy και **UNEXECUTED**
+predeclared kill tests (§7: το boundary **δεν** έχει ακόμη επιβιώσει των SIK-1..9).

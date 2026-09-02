@@ -385,12 +385,16 @@ closed protocol = `MISSING`** (§4.4)· **`norm.determinacy` τύπος = `MISSI
 **Closed, versioned, typed protocol** νευρωνικού ↔ συμβολικού: μηνύματα ΜΟΝΟ
 `neural-candidate/1` (είσοδος στο symbolic) και `neural-task/1` (`task_id`,
 `manifestation_id`, `kind`, `tool_manifest_sha256`, `deadline`) (έξοδος προς
-neural)· σειριοποίηση canonical JSON· κάθε μήνυμα journaled· **κανένα ελεύθερο
-πεδίο κειμένου εκτός anchored `ocr-text`/`ratio-candidate` content**. Η
-`safe-read.lisp` (μία έδρα ασφαλούς αποσειριοποίησης) είναι το μοναδικό σημείο
-εισόδου. Έδρες: `safe-read.lisp` (REUSE), `document-fetch.lisp` (πρότυπο
-«pure-Lisp ορχήστρωση εξωτερικού fetcher»: REUSE ως πρότυπο), **protocol schema =
-`MISSING`**, **Rust compiler = `MISSING`**.
+neural)· σειριοποίηση **canonical JSON/CBOR**· κάθε μήνυμα journaled· **κανένα ελεύθερο
+πεδίο κειμένου εκτός anchored `ocr-text`/`ratio-candidate` content**. **ΔΙΟΡΘΩΣΗ
+(micro-pass defect 1):** το νευρωνικό runtime είναι **εξωτερικό/untrusted**, άρα η έξοδός
+του (`neural-candidate/1`) περνά από τον **non-evaluating JSON/CBOR schema decoder** του
+`SECURE-SEMANTIC-INGRESS-CONTRACT` — **ΟΧΙ** από το `safe-read.lisp` (που είναι
+**ΕΣΩΤΕΡΙΚΟ-ΜΟΝΟ** για έμπιστα data-only S-expr και ρητά απαγορεύει LLM/external input).
+Κανένα `neural-candidate/1`/`parser-result/1` byte δεν φτάνει σε `cl:read`. Έδρες:
+**non-evaluating decoder (NEW, MISSING)**, `document-fetch.lisp` (πρότυπο «pure-Lisp
+ορχήστρωση εξωτερικού fetcher»: REUSE), **protocol schema = `MISSING`**, **Rust compiler
+= `MISSING`**. Το `safe-read.lisp` = εσωτερικό primitive (δεν αγγίζει το πρωτόκολλο).
 
 **Μάρτυρες:** Q31 (ελεύθερο κείμενο στο πρωτόκολλο ⇒ δεν μεταγλωττίζεται), Q33.
 **Φέτες:** VS-06, VS-09. **Βήματα:** 5, 7.
@@ -924,19 +928,25 @@ shapes ⇒ κόκκινο· revalidation δημιουργεί χωριστό rec
 
 ### 4.20 Public Source-Type Authority Registry (L9 · M1 · POST-C2 closure) — R-132
 
-**Σκοπός:** το πλήρες δημόσιο νομικό σύμπαν ως **απαριθμήσιμο μητρώο** (ST-01..ST-21) με
-authority-metadata ανά τύπο, ώστε το §4.1 census να είναι ολική συνάρτηση χωρίς σιωπηλή
-απώλεια. **Έδρα (κανονική):** `deployment/LAWMAX-PUBLIC-SOURCE-TYPE-AUTHORITY-REGISTRY.md`
-(τύπος·εκδότης·αρμοδιότητα·εξουσιοδοτική βάση·επίσημη πηγή·δεσμευτικότητα·πεδίο·έναρξη/
-λήξη·collector/profile/compiler·coverage test)· source-specific encoding profiles πάνω σε
-`legislation-ingestion.lisp`/`government-source.lisp`/`legal-decisions.lisp`/`eu-interop-layer.lisp`
-(EXTEND). Καλύπτει Σύνταγμα, νόμους, ΠΝΠ, κυρωτικούς, ΠΔ, ΥΑ/ΚΥΑ, ανεξάρτητες αρχές,
-ΟΤΑ, εγκυκλίους (`binding` typed), συνθήκες (άρ.28), πρωτογενές/παράγωγο ΕΕ, soft law, ΣΣΕ,
-νομολογία ελληνική/ΔΕΕ/ΕΔΔΑ, ΝΣΚ, προπαρασκευαστικές, doctrine.
+**Σκοπός:** το δημόσιο νομικό σύμπαν ως **απαριθμήσιμο, ιεραρχικό, επεκτάσιμο, versioned
+μητρώο**, ώστε το §4.1 census να είναι ολική συνάρτηση. **Έδρα (κανονική):**
+`deployment/LAWMAX-PUBLIC-SOURCE-TYPE-AUTHORITY-REGISTRY.md`. **ΑΡΧΙΤΕΚΤΟΝΙΚΗ, ΟΧΙ
+πιστοποιημένο νομικό περιεχόμενο (micro-pass defect 2):** διακριτό `SourceTypeSchema/1`
+(αρχιτεκτονικό) από versioned `SourceTypeEntry` (περιεχόμενο)· κάθε entry φέρει
+`authority_citation`·`evidence_state`·`review_state`·`valid_from`·`valid_to` και μένει
+**`PENDING_LEGAL_VALIDATION`** μέχρι πρωτογενή-πηγή review gate. `bindingness` = κλειστό
+typed sum **παραγόμενο** από issuer/competence/addressee/content/authority (**ΟΧΙ από
+τίτλο**). EU: primary vs secondary, legislative vs non-legislative, direct applicability,
+direct effect, addressee (§2.1). ΔΕΕ vs ΕΔΔΑ = διακριτά effect profiles. Ιστορικές μορφές
+(αναγκαστικοί νόμοι, ν.δ., β.δ., Κανονισμός Βουλής, ΠΥΣ) καλυμμένες. **`UNKNOWN_SOURCE_TYPE`
+fail-closed** (μελλοντική/παραλειμμένη μορφή ⇒ surfaced, ποτέ σιωπηλά χαμένη). Source-
+specific profiles/compilers EXTEND `legislation-ingestion.lisp`/`government-source.lisp`/
+`legal-decisions.lisp`/`eu-interop-layer.lisp`. Το μητρώο **δεν** ισχυρίζεται αιώνια πληρότητα.
 
-**Invariants:** (I-4.20a) κάθε ST έχει collector+profile+compiler+coverage test (καμία
-κατηγορία χωρίς αυτά)· (I-4.20b) «ειδικός/γενικός» = τεκμηριωμένη σχέση ανά ζήτημα (adopted
-`ConflictPolicyBundle`), ποτέ μόνιμη ετικέτα· (I-4.20c) `binding` typed κλειστό sum.
+**Invariants:** (I-4.20a) κάθε ST έχει collector+profile+compiler+coverage test· (I-4.20b)
+«ειδικός/γενικός» = σχέση ανά ζήτημα (adopted `ConflictPolicyBundle`), ποτέ ετικέτα·
+(I-4.20c) `binding` typed κλειστό sum, παραγόμενο· (I-4.20d) κάθε ουσιαστικό entry
+`PENDING_LEGAL_VALIDATION` μέχρι νομική επιθεώρηση — **όχι** πιστοποιημένη αλήθεια.
 
 **Μάρτυρες:** KW-109 (ST κατηγορία χωρίς collector/profile/compiler ⇒ κόκκινο). **Βήμα:** 1.
 
@@ -945,11 +955,13 @@ authority-metadata ανά τύπο, ώστε το §4.1 census να είναι �
 **Σκοπός:** δομικό trust boundary — **external bytes ≠ Lisp forms**· καμία διαδρομή
 untrusted input → Lisp reader/macro/eval. **Έδρα (κανονική):**
 `deployment/LAWMAX-SECURE-SEMANTIC-INGRESS-CONTRACT.md` (taint states UNTRUSTED→PARSED→
-VALIDATED→ADOPTED→CANONICAL· sandboxed capability-less parsing· `*read-eval*` off μη-μόνη
-άμυνα· καμία `read`/`read-from-string` σε untrusted· reader-macro/package escape prevention·
-constrained grammar· structural+symbolic validators· neural = μη εξουσιοδοτικό· τρεις
-ξεχωριστές είσοδοι legal/cockpit/code)· EXTEND `safe-read.lisp` (μοναδική έδρα, ΟΧΙ δεύτερη).
-SIK-1..9 predeclared.
+VALIDATED→ADOPTED→CANONICAL· διακριτός εξωτερικός αγωγός `opaque bytes → sandboxed parser →
+ingress-envelope/1 (JSON/CBOR) → non-evaluating schema decoder → typed DTO/Legal IR`·
+**κανένα εξωτερικό byte στον `cl:read`/eval/macro**· `parser-result/1` (ντετερμινιστικοί)
+ξεχωριστό από `neural-candidate/1` (νευρωνική λωρίδα μόνο)· structural+symbolic validators·
+τρεις ξεχωριστές είσοδοι legal/cockpit/code). **`safe-read.lisp` = ΕΣΩΤΕΡΙΚΟ-ΜΟΝΟ**
+(έμπιστα data-only S-expr)· ο external decoder είναι **ΝΕΑ, χωριστή** έδρα (MISSING).
+SIK-1..9 **UNEXECUTED**.
 
 **Invariants:** (I-4.21a) καμία `read`/eval σε untrusted (δομικά)· (I-4.21b) μονότονο taint,
 regressive ⇒ `ingress-nonmonotonic-taint`· (I-4.21c) neural δεν προάγει μόνο του σε VALIDATED.
