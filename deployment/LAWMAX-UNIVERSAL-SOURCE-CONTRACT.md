@@ -646,3 +646,14 @@ W-REGISTRY-EXTENSION.
 | **W-RELATION-FALSE-ENDPOINT-TYPE** | relation με δηλωμένο form executive-administrative ενώ η authoritative assertion στο checkpoint λέει άλλο → verifier reject· relation χωρίς endpoint_assertion_pins → schema reject |
 | **W-AUTHORITY-KIND-EXTENSION** | προσθήκη kind «notary» ως registry εγγραφή → ΚΑΜΙΑ schema revision· υπάρχοντα authority_ids ΑΜΕΤΑΒΛΗΤΑ· τιμή εκτός registry → reject |
 | **W-MANUAL-ORIGIN-SELF-CONTAINED** | manual-deposit με actor-ref/medium/archive αυστηρά κατά τα ΕΔΩ ορισμένα schemas → έγκυρο· αναφορά σε μη ορισμένο schema/registry → ο μηχανικός έλεγχος αυτοτέλειας FAIL |
+
+## 13. APPENDIX — SPEC v1.5 NARROW-DELTA · D2 NEGATIVE-EVIDENCE BINDING (CANDIDATE · NOT FROZEN)
+
+**Additive· frozen v1.4 περιεχόμενο (§1–§12) αμετάβλητο· frozen commit `88129099` δεν γίνεται amend.**
+Full spec `CHANGE-PROPOSAL-v1.5.md §2`· machine-readable `V1.5-SCHEMAS.sexp`. Η USC uncertainty
+(`lawmax/uncertainty/1`, §8) δένεται με τη νέα `CensusSpaceClassification/1`: μια θέση που λείπει
+αποδίδεται σε coverage state **μόνο** μέσω του `enumerability_class`/`availability_class` του space και
+του `negative_evidence_policy` — ποτέ ως σιωπηλή absence. `EXPLICITLY_ABSENT` απαιτεί admissible
+authenticated negative evidence πάνω σε complete-index/serial-space· αλλιώς `NOT_OBSERVED_IN_DECLARED_SOURCE`
+(partial) ή `UNKNOWN` (open-world / expired completeness / legally non-public → `COVERED_STATE_NON_PUBLIC`).
+Καμία νέα datastore, κανένα δεύτερο registry — μία έδρα, versioned. Kill witnesses: V5KW-D2-1..5.

@@ -338,3 +338,14 @@ Coverage: ✅ existing · ◐ partial · ✗ missing. Phases: Φ1-Φ5 = Memory K
 3. memory types ≠ stores: §4 δεσμευτική αρχή + appendix χωρίς κανένα νέο store
 4. δέσιμο στα 13 primitives: κάθε στρώμα φέρει primitive mapping (κανένα νέο primitive)
 5. κανένα νέο top-level subsystem εκτός Συντάγματος: όλα τα στρώματα = ωρίμανση υπαρχουσών εδρών, υπό architecture-gate
+
+## 7 · APPENDIX — SPEC v1.5 NARROW-DELTA · C1 L6 ADVERSARIAL PARLIAMENT BINDING (CANDIDATE · NOT FROZEN)
+
+**Additive· frozen v1.4 περιεχόμενο (§1–§6) αμετάβλητο· frozen commit `88129099` δεν γίνεται amend.**
+Full spec `CHANGE-PROPOSAL-v1.5.md §4`· machine-readable `V1.5-SCHEMAS.sexp`. Η **L6 Adversarial
+Parliament** (στρώση CPEI) δένεται με το `ArgumentRecord/1` ως αναπαράσταση του Συνταγματικού
+`:argument` primitive — **χωρίς** νέο primitive και **χωρίς** νέο engine. Ανταγωνιστικές ερμηνείες
+(`InterpretiveProfile`) συνυπάρχουν στην L6 ως typed arguments με proof/counterproof· η InstitutionalAct
+adoption (L8) αλλάζει institutional/epistemic status, **όχι** την αντικειμενική αλήθεια. Οι 12 στρώσεις
+και το InstitutionalAct schema παραμένουν αμετάβλητα· C1 είναι σύνδεση, όχι νέα έδρα. Kill witnesses
+V5KW-C1-1..4.

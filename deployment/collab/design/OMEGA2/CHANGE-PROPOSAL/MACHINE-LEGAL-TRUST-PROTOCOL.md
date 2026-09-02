@@ -1469,3 +1469,24 @@ taxonomies είναι **διακριτές** από τη core §4.3 «35 ονό�
 **Απορρίψεις:** κανένα PQ signature στον πυρήνα ΔΕΝ επιβάλλεται *σήμερα* — η προεπιλογή
 epoch παραμένει `era-2` (Ed25519)· η hybrid εποχή **ενεργοποιείται με ρητή πράξη** όταν το
 threat model (Θ15) το απαιτεί. Design-only· καμία υλοποίηση.
+
+## 15. APPENDIX — SPEC v1.5 NARROW-DELTA · D3 EVIDENCE-BACKED INDEPENDENCE QUORUMS (CANDIDATE · NOT FROZEN)
+
+**Additive· frozen v1.4 περιεχόμενο (§0–§14) αμετάβλητο· frozen commit `88129099` δεν γίνεται amend.**
+Full spec `CHANGE-PROPOSAL-v1.5.md §3`· machine-readable `V1.5-SCHEMAS.sexp`. **Μία** quorum έδρα — καμία
+δεύτερη. Δύο διακριτά objects στο LocalTrustState/qualification layer:
+
+`ActorIndependenceEvidence/1` δεσμεύει: `actor_identity · evidence_issuer · evidence_type · valid_from ·
+valid_to · legal_beneficial_control_evidence · privileged_administration_evidence · key_custody_evidence ·
+infrastructure_dependency_evidence · conflict_of_interest_evidence · digest · signature · revocation_ref`.
+`IndependencePolicy/1` ορίζει: `required_distinct_dimensions · prohibited_shared_dimensions ·
+accepted_evidence_issuers · evidence_freshness · unknown_handling · assurance_profile · quorum`.
+
+Κανόνες: διαφορετικά `kid` δεν αποδεικνύουν ανεξαρτησία· self-signed independence declaration δεν μετρά·
+expired/revoked evidence δεν μετρά· ανεπαρκές evidence ⇒ `INDEPENDENCE_UNKNOWN`· ο **consumer-local**
+verifier αποφασίζει την policy· το Ίδρυμα/οι auditors δεν αυτοπιστοποιούν την ανεξαρτησία τους· shared
+provider/cloud δεν έχει **καθολικό** αποτέλεσμα — αξιολογείται ανά assurance profile και control domain.
+
+Το υπάρχον §10 mesh quorum παραμένει **μία** έδρα· η predicate αλλάζει **μόνο** από `distinct-valid-kids`
+σε `distinct-valid-kids AND satisfies(local_independence_policy, accepted_evidence)`. Invariants
+V5I-06/V5I-07· kill witnesses V5KW-D3-1..6. Design-only· καμία υλοποίηση· ο executable core αμετάβλητος.

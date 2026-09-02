@@ -162,3 +162,29 @@ parsers ανά ST → `ingress-envelope/1`, **non-evaluating JSON/CBOR schema de
 harness. **Δεν** υλοποιεί τίποτα· δεν είναι γενική παράγραφος ασφαλείας — είναι **δομικό
 trust boundary** με invariant, taint states, κλειστή error taxonomy και **UNEXECUTED**
 predeclared kill tests (§7: το boundary **δεν** έχει ακόμη επιβιώσει των SIK-1..9).
+
+## 9. APPENDIX — SPEC v1.5 NARROW-DELTA · D1 INDEPENDENT SEMANTIC ADMISSION (CANDIDATE · NOT FROZEN)
+
+**Additive· το frozen v1.4 περιεχόμενο (§0–§8) είναι αμετάβλητο· frozen commit `88129099` δεν γίνεται
+amend.** Machine-readable: `deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.5-SCHEMAS.sexp`. Full
+spec: `CHANGE-PROPOSAL-v1.5.md §1`. **Καμία universal N-version processing.**
+
+Στην adoption boundary ορίζεται `SemanticAdmissionAssuranceProfile` (κλειστό): **SA-0 STRUCTURAL**
+(schema+anchors), **SA-1 CHECKABLE** (derivation + μικρός ανεξάρτητος checker), **SA-2 STATE_MUTATING**
+(ανεξάρτητη source→event derivation + divergence gate + adoption act). `SemanticAdmissionEvidence/1`
+υποχρεωτικά: `candidate_id · assurance_profile · source_manifestation_id · source_anchors ·
+derivation_family_id · derivation_artifact_digest · transformation_proof_ref · independent_check_ref
+(SA-1/SA-2) · independent_derivation_ref (SA-2) · divergence_state · adoption_act_ref (SA-2) · policy_ref
+· schema_id · version`. Event kinds: SA-0 `ANCHOR/CITATION_ANCHOR/OBSERVATION`· SA-1
+`CLASSIFICATION/LATER_TREATMENT_LINK/CROSS_REFERENCE`· SA-2 `ENACTMENT/AMENDMENT/COMMENCEMENT/REPEAL`.
+
+Πραγματική diversity μηχανισμού = διακριτό `derivation_family_id` **ΚΑΙ** διακριτό
+`derivation_artifact_digest` σε ανεξάρτητη source→event διαδρομή· ίδιο family/artifact ⇒
+`INDEPENDENCE_INSUFFICIENT` (αποφυγή «δύο binaries πάνω στο ίδιο σφάλμα/spec»). `DivergenceState`:
+`AGREED · DETERMINISTIC_DIVERGENCE (⇒ QUARANTINED) · INTERPRETIVE_DISAGREEMENT (⇒ typed argument L5/L6,
+ΟΧΙ error, ΟΧΙ majority vote) · INDEPENDENCE_INSUFFICIENT · UNKNOWN`.
+
+**Invariant V5I-01 (hard):** `SA-2 MUST NOT transition ADOPTED → CANONICAL unless its semantic-admission
+evidence obligation is satisfied.` Ένα schema-valid αλλά λάθος state-mutating γεγονός γίνεται
+**`QUARANTINED`**, ακόμη κι αν οι downstream compilers συμφωνούν. Kill witnesses (predeclared, ΜΗ
+εκτελεσμένα): V5KW-D1-1..5.

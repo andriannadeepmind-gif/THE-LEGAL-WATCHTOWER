@@ -349,3 +349,12 @@
    :belongs-to (:substrate)
    :extends-existing ("deployment/LAWMAX-NIXOS-COGNITIVE-SUBSTRATE.md" "Dockerfile")
    :does-not-duplicate ("gates — τα flake checks τις ΤΥΛΙΓΟΥΝ") :new-folder-needed :yes-nix-dir-only)))
+
+;;;; ---------------------------------------------------------------------------------------------
+;;;; SPEC v1.5 NARROW-DELTA — C1 POINTER (CANDIDATE · NOT FROZEN · inert comment, no primitive added)
+;;;; The existing :argument primitive (see :primitives above) is REPRESENTED — not extended — by
+;;;; ArgumentRecord/1 (interpretive_profile_ref, argument_ref, proof_ref, counterproof_ref,
+;;;; adoption_act_ref?). Machine-readable schema: V1.5-SCHEMAS.sexp. Full spec: CHANGE-PROPOSAL-v1.5.md.
+;;;; No new top-level constitutional primitive, no new gate, no second seat. The frozen v1.4 baseline
+;;;; 88129099 is unchanged; this comment does not alter the enforced constitution above.
+;;;; ---------------------------------------------------------------------------------------------

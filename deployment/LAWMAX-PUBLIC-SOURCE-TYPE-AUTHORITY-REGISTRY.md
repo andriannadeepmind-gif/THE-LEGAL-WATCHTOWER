@@ -164,3 +164,26 @@ fail-closed· (I-STR-e) μητρώο **επεκτάσιμο/versioned**, ΟΧΙ 
 νομικά** (νομική βεβαίωση = MISSION legal review, όχι αυτό το κείμενο)· δεν ορίζει
 ουσιαστικές σχέσεις ειδικός/γενικός (adopted `ConflictPolicyBundle`). Εύρος census/
 νομιμότητα δημοσίευσης = U-7· αδειοδότηση doctrine/full-text = U-3 (external).
+
+## 5. APPENDIX — SPEC v1.5 NARROW-DELTA · D2 CENSUS ENUMERABILITY + NEGATIVE-EVIDENCE (CANDIDATE · NOT FROZEN)
+
+**Additive· το frozen v1.4 περιεχόμενο (§0–§4) αμετάβλητο· frozen commit `88129099` δεν γίνεται amend.**
+Machine-readable: `V1.5-SCHEMAS.sexp`· full spec `CHANGE-PROPOSAL-v1.5.md §2`. Δύο **χωριστές** κλειστές
+διαστάσεις ανά census space (`CensusSpaceClassification/1`), διακριτές από το `SourceTypeEntry`:
+
+```
+enumerability_class := AUTHORITATIVE_COMPLETE_INDEX | AUTHENTICATED_SERIAL_SPACE |
+                       AUTHORITATIVE_PARTIAL_INDEX | OBSERVATIONAL_OPEN_WORLD_SOURCE | UNKNOWN
+availability_class  := PUBLICLY_AVAILABLE | LEGALLY_UNAVAILABLE_OR_NON_PUBLIC |
+                       ACCESS_RESTRICTED | LICENSING_RESTRICTED | UNKNOWN
+fields := space_id · enumerability_class · availability_class · negative_evidence_policy ·
+          authoritative_index_ref · serial_authority_ref · completeness_assertion_ref ·
+          gap_evidence_requirements · valid_from · valid_to · revocation_correction_semantics
+```
+
+**Αυστηροί κανόνες κενού → coverage state:** `EXPLICITLY_ABSENT` **μόνο** με admissible authenticated
+negative evidence πάνω σε `AUTHORITATIVE_COMPLETE_INDEX` ή `AUTHENTICATED_SERIAL_SPACE`· partial index
+gap ⇒ `NOT_OBSERVED_IN_DECLARED_SOURCE`· open-world gap ⇒ `UNKNOWN`· legally non-public ⇒ ρητό
+`COVERED_STATE_NON_PUBLIC` (**όχι** crawler failure)· expired/missing completeness assertion ⇒ **ποτέ**
+absence proof (⇒ `UNKNOWN`). **Invariants V5I-04/V5I-05:** η μη εμφάνιση μιας δικαστικής απόφασης σε
+**επιλεκτική** πηγή δεν αποδεικνύει ανυπαρξία. Kill witnesses: V5KW-D2-1..5.
