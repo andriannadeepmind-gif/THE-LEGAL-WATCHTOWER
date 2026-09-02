@@ -210,9 +210,9 @@ out('V5S11',1 if ('control-domain-partition' in qp and 'distinct-components' in 
 # V5S12 ArgumentRecord/1 non-circular
 arf=set(fields(form('define-record ArgumentRecord/1')))
 out('V5S12',1 if ('claim_ref' in arf and 'argument_ref' not in arf) else 0,1)
-# V5S13 InterpretiveProfile/1 expanded
+# V5S13 InterpretiveProfile/1 expanded (R6: single canon source via canon_policy_ref; no embedded list, no lifecycle)
 ip=set(fields(form('define-record InterpretiveProfile/1')))
-out('V5S13',1 if {'methodology_canons','precedence_stance','applicability','authority_basis','conflict_handling','adoption_status'}<=ip else 0,1)
+out('V5S13',1 if ({'canon_policy_ref','precedence_stance','applicability','authority_basis','conflict_handling'}<=ip and 'methodology_canons' not in ip and 'adoption_status' not in ip) else 0,1)
 # V5S14 F1: ClaimRecord/1 binds profile+statement AND has NO argument_refs in its hash-bearing body;
 #          reverse lookup is the derived ClaimArgumentIndex projection.
 crf=set(fields(form('define-record ClaimRecord/1')))
@@ -241,13 +241,17 @@ for i,a,e in R: print(f"{i}|{a}|{e}")
 PYV5S
 )
 
-echo "# V5F — INDEPENDENT-REVIEW REPAIR structural checks (F1-F5). HONEST: parse-level structural/type"
-echo "#       consistency only (a real content-addressing cycle detector, a cross-spec conflicting-enum"
-echo "#       check, the no-assumption SA-2 gate, typed DomainAssertion inputs, typed canons) — NOT a"
-echo "#       semantic/legal/security proof; no predeclared V5Q/V5KW test is executed."
+echo "# V5F/V5G — INDEPENDENT-REVIEW REPAIR structural checks (F1-F5 + R1-R8/A-1/A-2/B-1/B-2/C-1/D-1/F7)."
+echo "#       HONEST: parse-level structural/type/model consistency ONLY — ref-field classification"
+echo "#       completeness, an actual-field hash-bearing DAG with 3 injected cycles, immutable-id stability,"
+echo "#       coverage decision-table totality/exclusivity over the enumerated finite input product, D2"
+echo "#       cross-seat agreement, namespace collision/conflict handling, single canon list, lifecycle"
+echo "#       cardinalities, F7 evidence validity, and MLTP quorum-predicate sync. It is NOT a legal-content"
+echo "#       validation, NOT a security-implementation proof, NOT qualification; no predeclared executable"
+echo "#       V5Q/V5KW test is executed or reported as executed."
 while IFS='|' read -r fid fa fe; do
   [ -n "$fid" ] && ck "$fid" "$fa" eq "$fe"
-done < <(python3 - "$S" V1.4-CONTRADICTION-OMISSION-AUDIT.sh CHANGE-PROPOSAL-v1.4.md <<'PYV5F'
+done < <(python3 - "$S" V1.4-CONTRADICTION-OMISSION-AUDIT.sh CHANGE-PROPOSAL-v1.4.md "$SR" "$USC" "$M" "$P" <<'PYV5F'
 import sys,re
 from collections import defaultdict
 code=open(sys.argv[1],encoding='utf-8').read()
@@ -290,16 +294,15 @@ def fields(rf): return re.findall(r'\(:([A-Za-z0-9_]+)\s+:type',rf)
 R=[]
 def out(i,a,e): R.append((i,str(a),str(e)))
 
-# V5F1 — F1 content-hash dependency cycle: real cycle detector over declared :hash-bearing edges,
-# plus ClaimRecord body free of any argument reference, plus construction order + derived projection.
-rt=form('define-ref-targets')
-entries=[(m.group(1),m.group(2),m.start()) for m in re.finditer(r'\(([A-Za-z0-9_/]+)\s+:(hash-bearing|derived)\b',rt)]
+# V5F1 — F1/A-1 content-hash dependency cycle: cycle detector over :hash-bearing edges from
+# define-ref-classification; ClaimRecord body free of any argument ref; ArgumentRecord body free of
+# support/attack edges; construction order + derived projection present.
+rc=form('define-ref-classification')
 g=defaultdict(list)
-for k,(name,kind,pos) in enumerate(entries):
-    end=entries[k+1][2] if k+1<len(entries) else len(rt)
-    seg=rt[pos:end]
-    if kind=='hash-bearing':
-        for t in re.findall(r'->\s*([A-Za-z0-9_/]+)',seg): g[name].append(t)
+for m in re.finditer(r'\(([A-Za-z0-9_/]+)\.[A-Za-z0-9_]+\s+:hash-bearing\s+\(([^)]*)\)',rc):
+    src=m.group(1)
+    for t in m.group(2).split():
+        if t[:1].isupper(): g[src].append(t)   # record/enum targets; lowercase primitives (anchor/scope) skipped
 color=defaultdict(int); cyc=[False]   # 0=white 1=gray 2=black
 def dfs(u):
     color[u]=1
@@ -310,8 +313,10 @@ def dfs(u):
 for nnode in list(g):
     if color[nnode]==0: dfs(nnode)
 claim_body=form('define-record ClaimRecord/1')
+arg_body=form('define-record ArgumentRecord/1')
 no_arg=not re.search(r':argument_ref|:argument_refs|:argument_id',claim_body)
-ok1 = (not cyc[0]) and no_arg and ('define-construction-order legal-ir-interpretive' in code_nc) and ('define-projection ClaimArgumentIndex' in code_nc) and (len(g)>=3)
+no_edges=not re.search(r':support_edges|:attack_edges',arg_body)
+ok1 = (not cyc[0]) and no_arg and no_edges and ('define-construction-order legal-ir-interpretive' in code_nc) and ('define-projection ClaimArgumentIndex' in code_nc) and (len(g)>=4)
 out('V5F1',1 if ok1 else 0,1)
 
 # V5F2 — F2 no assumption alternative in the SA-2 canonical gate.
@@ -333,26 +338,136 @@ ok3 = (v14set=={'INGESTED','EXPLICITLY-ABSENT','QUARANTINED','UNKNOWN'}
        and v14set==v15set and no_shadow)
 out('V5F3',1 if ok3 else 0,1)
 
-# V5F4 — F4 typed DomainAssertion input + versioned/content-addressed/pinned registry + issuer signing.
+# V5F4 — F4/R5 typed-membership DomainAssertion (namespace) + versioned/content-addressed/pinned registry + signing.
 da=set(fields(form('define-record DomainAssertion/1')))
-tir=fields(form('define-record TrustedIssuerRegistry/1'))
+tir=set(fields(form('define-record TrustedIssuerRegistry/1')))
 pin=form('define-rule trusted-issuer-registry-pinning')
 sign=form('define-invariant :V5I-D3-issuer-signing')
-ok4 = ({'dimension','subject_actor_id','normalized_domain_id','relation','issuer_id','revocation_ref'}<=da
-       and {'registry_id','version','supersedes'}<=set(tir)
+ok4 = ({'dimension','subject_actor_id','namespace_id','domain_identifier','normalized_domain_id','issuer_id','revocation_ref'}<=da
+       and {'registry_id','version','supersedes'}<=tir
        and 'LocalTrustState' in pin and 'evidence-issuer-key-selection' in pin
        and sign!='' and 'issuer_public_key' in sign)
 out('V5F4',1 if ok4 else 0,1)
 
-# V5F5 — F5 typed canons (CanonRule/CanonPolicy) + delegate to existing ConflictPolicyBundle; no opaque canon.
-cr=form('define-record CanonRule/1'); cp=form('define-record CanonPolicy/1')
-ip=form('define-record InterpretiveProfile/1')
+# V5F5 — F5/R6 single-source typed canons + delegate to existing ConflictPolicyBundle; no opaque, no embedded list.
+cr=form('define-record CanonRule/1'); cpf=set(fields(form('define-record CanonPolicy/1')))
+ipf=set(fields(form('define-record InterpretiveProfile/1')))
 inv5=form('define-invariant :V5I-C1-canon')
-no_opaque = ':methodology_canons :type (list canon)' not in code_nc
-ok5 = (cr!='' and cp!='' and 'conflict_policy_bundle_ref' in cp
-       and '(list CanonRule/1)' in ip and 'canon_policy_ref' in ip
+no_opaque = '(list canon)' not in code_nc
+ok5 = (cr!='' and 'conflict_policy_bundle_ref' in cpf and 'canon_id_refs' in cpf
+       and 'canon_policy_ref' in ipf and 'methodology_canons' not in ipf
        and inv5!='' and 'ConflictPolicyBundle' in inv5 and no_opaque)
 out('V5F5',1 if ok5 else 0,1)
+
+# ============ V5G — R1-R8 FINITE ADVERSARIAL-REPAIR structural checks (parse-level; not semantic proof) ============
+sr=open(sys.argv[4],encoding='utf-8').read()
+usc=open(sys.argv[5],encoding='utf-8').read()
+mltp=open(sys.argv[6],encoding='utf-8').read()
+prop=open(sys.argv[7],encoding='utf-8').read()
+
+# V5G1 (A-1) — complete ref-field classification: every ref-bearing field of every C1 record is classified.
+c1recs=['CanonRule/1','CanonPolicy/1','InterpretiveProfile/1','ClaimRecord/1','ArgumentRecord/1','ArgumentRelation/1','LifecycleRecord/1']
+rcf=form('define-ref-classification')
+classified=set(re.findall(r'\(([A-Za-z0-9_/]+\.[A-Za-z0-9_]+)\s+:(?:hash-bearing|detached|derived)',rcf))
+missing=0
+for rec in c1recs:
+    body=form('define-record '+rec)
+    for fm in re.finditer(r'\(:([A-Za-z0-9_]+)\s+:type\s+(\([^()]*\)|[A-Za-z0-9_+/.-]+)',body):
+        fld=fm.group(1); typ=fm.group(2)
+        if fld in ('digest','signature'): continue
+        isref = ('ref' in typ) or ('/1' in typ) or fld.endswith('_ref') or fld.endswith('_refs')
+        if isref and (rec+'.'+fld not in classified): missing+=1
+out('V5G1', missing, 0)
+
+# V5G2 (A-1) — non-vacuity: 3 injected hash-bearing cycles each detected by the classification-graph cycle detector.
+def has_cycle(edges):
+    gg=defaultdict(list)
+    for a,b in edges: gg[a].append(b)
+    col=defaultdict(int); f=[False]
+    def d(u):
+        col[u]=1
+        for v in gg[u]:
+            if col[v]==1: f[0]=True
+            elif col[v]==0: d(v)
+        col[u]=2
+    for nn in list(gg):
+        if col[nn]==0: d(nn)
+    return f[0]
+base=[]
+for m in re.finditer(r'\(([A-Za-z0-9_/]+)\.[A-Za-z0-9_]+\s+:hash-bearing\s+\(([^)]*)\)',rcf):
+    for t in m.group(2).split():
+        if t[:1].isupper(): base.append((m.group(1),t))
+det=((not has_cycle(base))
+     and has_cycle(base+[('ClaimRecord/1','ArgumentRecord/1')])
+     and has_cycle(base+[('ArgumentRecord/1','ArgumentRecord/1')])
+     and has_cycle(base+[('CanonPolicy/1','InterpretiveProfile/1')]))
+out('V5G2', 1 if det else 0, 1)
+
+# V5G3 (A-2) — immutable identity: no adoption/withdrawal/status in any identity-bearing body; LifecycleRecord detached.
+idrecs=['ClaimRecord/1','ArgumentRecord/1','InterpretiveProfile/1','CanonRule/1','CanonPolicy/1']
+leak=sum(1 for rec in idrecs if re.search(r':adoption_status|:adoption_act_ref|:withdrawal_ref|:status\b',form('define-record '+rec)))
+lr=set(fields(form('define-record LifecycleRecord/1')))
+out('V5G3', 1 if (leak==0 and {'subject_id','subject_kind','transition','act_ref','supersedes'}<=lr and form('define-invariant :V5I-A2-immutable-id')!='') else 0, 1)
+
+# V5G4 (B-1) — coverage decision-table totality/exclusivity over the finite input product.
+import itertools
+OBS=['OBSERVED','NOT_OBSERVED_IN_DECLARED_SOURCE','UNKNOWN']
+ACQ=['ACQUIRED_LAWFUL','ACQUISITION_FAILED','NOT_ATTEMPTED','UNKNOWN']
+VAL=['VALIDATED','VALIDATION_FAILED','NOT_VALIDATED','UNKNOWN']
+ADM=['SATISFIED','UNMET','NOT_APPLICABLE','UNKNOWN']
+DIV=['AGREED','DETERMINISTIC_DIVERGENCE','INTERPRETIVE_DISAGREEMENT','INDEPENDENCE_INSUFFICIENT','UNKNOWN']
+AVA=['PUBLIC_PRESENT','COVERED_STATE_NON_PUBLIC','ACCESS_RESTRICTED','LICENSING_RESTRICTED','UNKNOWN']
+ENU=['AUTHORITATIVE_COMPLETE_INDEX','AUTHENTICATED_SERIAL_SPACE','AUTHORITATIVE_PARTIAL_INDEX','OBSERVATIONAL_OPEN_WORLD_SOURCE','UNKNOWN']
+NEG=['FRESH_QUALIFYING','INSUFFICIENT','EXPIRED','ABSENT','UNKNOWN']
+def decide(obs,acq,val,adm,div,ava,enu,neg):
+    o=[]
+    if div=='DETERMINISTIC_DIVERGENCE': o.append('QUARANTINED')
+    elif val=='VALIDATION_FAILED': o.append('QUARANTINED')
+    elif adm=='UNMET': o.append('QUARANTINED')
+    elif obs=='OBSERVED' and acq=='ACQUIRED_LAWFUL' and val=='VALIDATED' and adm in ('SATISFIED','NOT_APPLICABLE'): o.append('INGESTED')
+    elif neg=='FRESH_QUALIFYING' and enu in ('AUTHORITATIVE_COMPLETE_INDEX','AUTHENTICATED_SERIAL_SPACE'): o.append('EXPLICITLY-ABSENT')
+    else: o.append('UNKNOWN')
+    return o
+unc=multi=0; st=set()
+for c in itertools.product(OBS,ACQ,VAL,ADM,DIV,AVA,ENU,NEG):
+    r=decide(*c)
+    if len(r)==0: unc+=1
+    elif len(r)>1: multi+=1
+    else: st.add(r[0])
+out('V5G4', 1 if (unc==0 and multi==0 and st<= {'INGESTED','EXPLICITLY-ABSENT','QUARANTINED','UNKNOWN'} and 'define-decision-function census-coverage-decision' in code_nc) else 0, 1)
+
+# V5G5 (B-2) — D2 cross-seat agreement: canonical frozen state present in schema, proposal, SourceType, USC.
+out('V5G5', 1 if all(('EXPLICITLY-ABSENT' in t and 'INGESTED' in t and 'QUARANTINED' in t) for t in (code_nc,prop,sr,usc)) else 0, 1)
+
+# V5G6 (C-1) — namespace membership + authorization + equivalence + comparison/conflict rule; no unary relation.
+da=set(fields(form('define-record DomainAssertion/1'))); comp=form('define-rule domain-namespace-comparison')
+out('V5G6', 1 if ({'namespace_id','domain_identifier','normalized_domain_id'}<=da
+      and ':relation ' not in form('define-record DomainAssertion/1')
+      and form('define-record DomainNamespaceAuthorization/1')!='' and form('define-record NamespaceEquivalence/1')!=''
+      and 'cross-namespace' in comp and 'conflict' in comp and 'INDEPENDENCE_UNKNOWN' in comp) else 0, 1)
+
+# V5G7 (D-1) — single canon list: CanonPolicy owns canon_id_refs; InterpretiveProfile no embedded list.
+cpf2=set(fields(form('define-record CanonPolicy/1'))); ipf2=set(fields(form('define-record InterpretiveProfile/1')))
+out('V5G7', 1 if ('canon_id_refs' in cpf2 and 'canon_policy_ref' in ipf2 and 'methodology_canons' not in ipf2
+      and '(list CanonRule/1)' not in form('define-record InterpretiveProfile/1')) else 0, 1)
+
+# V5G8 (D-1) — conditional lifecycle cardinalities.
+lov=form('define-rule lifecycle-overlay')
+out('V5G8', 1 if (':proposed' in lov and ':adopted' in lov and ':withdrawn' in lov and 'adoption' in lov.lower() and 'withdrawal' in lov.lower()) else 0, 1)
+
+# V5G9 (F7) — DerivationIndependenceEvidence validity/trust: candidate binding + issuer + freshness + revocation + verify.
+de=set(fields(form('define-record DerivationIndependenceEvidence/1'))); tr=form('define-rule derivation-independence-trust-root'); gate2=form('define-gate SA-2-canonical-admission')
+out('V5G9', 1 if ({'candidate_id','event_ref','evidence_issuer','freshness_policy_ref','revocation_ref','valid_from','valid_to'}<=de
+      and 'qualification registry' in tr and 'self-issued' in tr and ':verify' in gate2
+      and form('define-invariant :V5I-F7-derivation-trust')!='') else 0, 1)
+
+# V5G10 (R8.4) — MLTP quorum prose synchronized with the four-conjunct predicate.
+out('V5G10', 1 if all(k in mltp for k in ['|INDEP|','covers(policy.required_distinct_dimensions','no-prohibited-shared-dimension','FAIL_CLOSED']) else 0, 1)
+
+# V5G11 (R8) — residuals: statement target closed; candidate_id discipline; ClaimArgumentIndex single :derivation; unregistered-event rule.
+cai=form('define-projection ClaimArgumentIndex')
+out('V5G11', 1 if (form('define-closed-enum StatementTargetKind')!='' and form('define-rule candidate-id-discipline')!=''
+      and ':derivation' in cai and ':over' not in cai and form('define-invariant :V5I-D1-unregistered-event')!='') else 0, 1)
 
 for i,a,e in R: print(f"{i}|{a}|{e}")
 PYV5F

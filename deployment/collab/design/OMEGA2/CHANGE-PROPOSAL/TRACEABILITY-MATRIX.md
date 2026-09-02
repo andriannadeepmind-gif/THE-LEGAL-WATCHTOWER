@@ -275,7 +275,20 @@ v1.4 audit. Όλα **predeclared, UNEXECUTED**.
 | V5R-F4 | F4 | typed per-dimension `DomainAssertion/1` = partition input· `TrustedIssuerRegistry/1` versioned/content-addressed/pinned by LocalTrustState· ρητό signer + key selection | `V1.5-SCHEMAS.sexp`· MLTP §15· §11.4/§11.7 | V5I-D3-domainassertion + V5I-D3-issuer-signing + trusted-issuer-registry-pinning | V5KW-F4 | V5Q-F4 | S (design) |
 | V5R-F5 | F5 | typed `CanonRule/1` + adopted scoped `CanonPolicy/1` delegating στο v1.4 `ConflictPolicyBundle`· καμία επινοημένη προτεραιότητα· απών ⇒ UNKNOWN, ασύμβατα ⇒ CONFLICTING | `V1.5-SCHEMAS.sexp`· Legal-IR §12· §11.5/§11.7 | V5I-C1-canon | V5KW-F5 | V5Q-F5 | S (design) |
 
-**Ισολογισμός v1.5 (candidate):** 17 type-closure requirements (D1×4, D2×3, D3×6, C1×4) + **5 F1–F5 repair
-requirements** = 22· 22 kill witnesses (V5KW-*· incl. V5KW-C1-9, V5KW-F2..F5)· 22 tests· όλα predeclared
-**UNEXECUTED**· καμία v1.4 γραμμή/μέτρηση δεν μεταβάλλεται· απειλή Θ19 (correlated/common-control
-independence)· κανένα νέο engine/primitive/gate/seat.
+**R1–R8 FINITE ADVERSARIAL-REPAIR (bounded corrective pass πάνω στο `4a55a1eb`):**
+
+| V5R | Blocker | Requirement (repaired) | Seat | Type/Invariant | Kill witness | Test | Qual |
+|---|---|---|---|---|---|---|---|
+| V5R-A1 | A-1 | πλήρες ακυκλικό content-addressing: `support_edges`/`attack_edges` έξω από `ArgumentRecord/1`· detached `ArgumentRelation/1`· `define-ref-classification` (κάθε ref-πεδίο άπαξ) + actual-field cycle DAG (3 injected cycles) | `V1.5-SCHEMAS.sexp`· Legal-IR §12· §11.8 | V5I-C1-acyclic + V5I-C1-relation-detached + V5G1/V5G2 | V5KW-A1 | V5Q-A1 | S (design) |
+| V5R-A2 | A-2 | immutable identity· detached `LifecycleRecord/1` στο InstitutionalAct + event-ledger seat· adoption/withdrawal ποτέ αλλάζει `*_id` | `V1.5-SCHEMAS.sexp`· Legal-IR §12· §11.8 | V5I-A2-immutable-id + V5G3 | V5KW-A2 | V5Q-A2 | S (design) |
+| V5R-B1 | B-1 | total/exclusive `census-coverage-decision` (8 typed inputs· ordered precedence· `:otherwise ⇒ UNKNOWN`· `OBSERVED ≠ INGESTED`) | `V1.5-SCHEMAS.sexp` define-decision-function· §2.4/§11.8 | V5I-04 + V5G4 enumeration | V5KW-B1 | V5Q-B1 | S (design) |
+| V5R-B2 | B-2 | κάθε D2 έδρα συγχρονισμένη (SourceType §5, USC §13, schema, proposal)· canonical `EXPLICITLY-ABSENT`· INGESTED/QUARANTINED· serial_position_semantics_ref | SourceType §5· USC §13· §11.8 | V5I-05 + V5G5 cross-seat | V5KW-B2 | V5Q-B2 | S (design) |
+| V5R-C1x | C-1 | namespace membership `DomainAssertion/1` + `DomainNamespaceAuthorization/1` + root-authorized `NamespaceEquivalence/1`· cross-namespace fail-closed· contradictory ⇒ INDEPENDENCE_UNKNOWN | `V1.5-SCHEMAS.sexp`· MLTP §15· §11.4/§11.8 | V5I-D3-domainassertion + domain-namespace-comparison + V5G6 | V5KW-C1x | V5Q-C1x | S (design) |
+| V5R-D1x | D-1 | μία canonical canon list: `CanonPolicy/1.canon_id_refs` μόνη πηγή· `InterpretiveProfile/1` μόνο `canon_policy_ref`· lifecycle cardinalities | `V1.5-SCHEMAS.sexp`· Legal-IR §12· §11.8 | V5I-C1-canon + lifecycle-overlay + V5G7/V5G8 | V5KW-D1x | V5Q-D1x | S (design) |
+| V5R-F7 | F7 | `DerivationIndependenceEvidence/1` validity/trust root (candidate+event+issuer+freshness+revocation+signed body)· MLTP qualification· self-issued default reject· gate **verifies** | `V1.5-SCHEMAS.sexp`· Ingress §9· §11.1/§11.8 | V5I-F7-derivation-trust + V5G9 | V5KW-F7 | V5Q-F7 | S (design) |
+| V5R-R8 | residuals | statement→`StatementTargetKind`· candidate_id discipline· `ClaimArgumentIndex` μία `:derivation`· MLTP quorum τετρα-συζευκτικό· unregistered event ⇒ SA-2/QUARANTINED | `V1.5-SCHEMAS.sexp`· MLTP §15· §11.8 | V5I-D1-unregistered-event + V5G10/V5G11 | V5KW-R8-event | V5Q-R8 | S (design) |
+
+**Ισολογισμός v1.5 (candidate):** 17 type-closure + **5 F1–F5** + **8 R1–R8 (A-1/A-2/B-1/B-2/C-1/D-1/F7 +
+residuals)** = 30 `V5R-*` requirements· 30 kill witnesses (incl. V5KW-C1-9, V5KW-F2..F5, V5KW-A1/A2/B1/B2/
+C1x/D1x/F7/R8-event)· 30 tests· όλα predeclared **UNEXECUTED**· καμία v1.4 γραμμή/μέτρηση δεν μεταβάλλεται·
+απειλή Θ19 (correlated/common-control independence, F4/R5-refined)· κανένα νέο engine/primitive/gate/seat.

@@ -652,8 +652,13 @@ W-REGISTRY-EXTENSION.
 **Additive· frozen v1.4 περιεχόμενο (§1–§12) αμετάβλητο· frozen commit `88129099` δεν γίνεται amend.**
 Full spec `CHANGE-PROPOSAL-v1.5.md §2`· machine-readable `V1.5-SCHEMAS.sexp`. Η USC uncertainty
 (`lawmax/uncertainty/1`, §8) δένεται με τη νέα `CensusSpaceClassification/1`: μια θέση που λείπει
-αποδίδεται σε coverage state **μόνο** μέσω του `enumerability_class`/`availability_class` του space και
-του `negative_evidence_policy` — ποτέ ως σιωπηλή absence. `EXPLICITLY_ABSENT` απαιτεί admissible
-authenticated negative evidence πάνω σε complete-index/serial-space· αλλιώς `NOT_OBSERVED_IN_DECLARED_SOURCE`
-(partial) ή `UNKNOWN` (open-world / expired completeness / legally non-public → `COVERED_STATE_NON_PUBLIC`).
-Καμία νέα datastore, κανένα δεύτερο registry — μία έδρα, versioned. Kill witnesses: V5KW-D2-1..5.
+αποδίδεται στο **παγωμένο v1.4** `census_coverage_state = {INGESTED, EXPLICITLY-ABSENT, QUARANTINED,
+UNKNOWN}` (F3/R4· ταυτόσημα με schema/SourceType/proposal) **μόνο** μέσω του `enumerability_class`/
+`availability_class` του space και του `negative_evidence_policy` — ποτέ ως σιωπηλή absence. Τα
+`observation_state`/`availability_state` είναι **διαστάσεις** που χαρτογραφούνται, όχι μέλη του enum.
+`EXPLICITLY-ABSENT` απαιτεί admissible fresh authenticated negative evidence (`NegativeEvidence/1`) πάνω σε complete-index, ή σε
+serial-space **όπου** ο `serial_position_semantics_ref` αποδεικνύει dense-non-reservable/void/cancelled/
+unused· serial gap χωρίς τέτοια απόδειξη ⇒ `UNKNOWN`· partial gap ⇒ `observation_state =
+NOT_OBSERVED_IN_DECLARED_SOURCE` ⇒ `UNKNOWN`· open-world / expired completeness ⇒ `UNKNOWN`· legally
+non-public ⇒ `availability_state = COVERED_STATE_NON_PUBLIC` ⇒ `UNKNOWN`. Καμία νέα datastore, κανένα
+δεύτερο registry — μία έδρα, versioned. Kill witnesses: V5KW-D2-1..5, V5KW-F3.

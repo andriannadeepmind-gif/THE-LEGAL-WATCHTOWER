@@ -174,12 +174,25 @@ spec: `CHANGE-PROPOSAL-v1.5.md §1`. **Καμία universal N-version processing
 (ανεξάρτητη source→event derivation + independent check + divergence gate + adoption act). **Type-closed
 (v1.5 micro-pass· §11.1):** τα πεδία του `SemanticAdmissionEvidence/1` έχουν **per-profile cardinality**
 (R required / F forbidden / C conditional) — π.χ. `transformation_proof_ref` **forbidden** για SA-0 (καμία
-transformation)· `independent_derivation_ref` **R μόνο** για SA-2· `derivation_independence_evidence_ref`
-XOR `residual_independence_assumption` (SA-2)· `adoption_act_ref` R μόνο για SA-2. Event kinds: SA-0
+transformation)· `independent_derivation_ref` **R μόνο** για SA-2· `adoption_act_ref` R μόνο για SA-2.
+**F2/R7:** για την προαγωγή SA-2 → CANONICAL απαιτείται **έγκυρο** `DerivationIndependenceEvidence/1` — η
+πύλη `SA-2-canonical-admission` **δεν** έχει assumption εναλλακτική· το `residual_independence_assumption`
+κρατά record **το πολύ** σε `CANDIDATE/UNKNOWN/QUARANTINED`. Event kinds: SA-0
 `ANCHOR/CITATION_ANCHOR/OBSERVATION`· SA-1 `CLASSIFICATION/CROSS_REFERENCE/LATER_TREATMENT_EXTRACTION`·
 SA-2 **πλήρης κατάλογος (§11.2)**: `ENACTMENT/AMENDMENT/COMMENCEMENT/REPEAL/SUSPENSION/REVIVAL/ANNULMENT/
 CORRECTION/DELEGATED_AUTHORITY_CHANGE/REGIME_EFFECTIVITY_TRANSITION/CONSTITUTIONAL_REVIEW_STATE_CHANGE/
-JUDICIAL_REVIEW_STATE_CHANGE/LINE_OF_AUTHORITY_MUTATION`.
+JUDICIAL_REVIEW_STATE_CHANGE/LINE_OF_AUTHORITY_MUTATION`. **R8.5:** κάθε **μη-καταχωρημένο ή μελλοντικό**
+γεγονός ικανό να μεταβάλει canonical legal state ⇒ **SA-2/QUARANTINED** εν αναμονή versioned taxonomy
+update· **ποτέ** downgrade σε SA-0/SA-1 (fail-closed· `V5I-D1-unregistered-event`).
+
+**F7 — trust root του `DerivationIndependenceEvidence/1`:** δένει `candidate_id + event_ref` (ακριβές SA-2
+candidate) + τις δύο derivations + distinct spec/provenance/failure-domain + `evidence_issuer` + validity
+interval + `freshness_policy_ref` + `revocation_ref` + signed body. **VALID** μόνο αν: η υπογραφή επαληθεύεται
+υπό κλειδί issuer στο **υπάρχον MLTP qualification registry** (καμία παράλληλη trust protocol), ο issuer scope
+εξουσιοδοτεί attestation ανεξαρτησίας derivation, εντός validity, fresh, μη-revoked, και το candidate binding
+ταιριάζει. **Self/operator-issued** evidence **δεν** μετρά υπό strict SA-2 (default rejection). Απόν/expired/
+revoked/untrusted/out-of-scope/λάθος-candidate ⇒ **καμία** CANONICAL προαγωγή. Η πύλη **επαληθεύει** το
+evidence — η απλή παρουσία reference **δεν** αρκεί (`V5I-F7-derivation-trust`).
 
 Πραγματική diversity μηχανισμού = διακριτό `derivation_family_id` **ΚΑΙ** διακριτό
 `derivation_artifact_digest` σε ανεξάρτητη source→event διαδρομή· ίδιο family/artifact ⇒

@@ -1496,23 +1496,26 @@ actor, το `kid`/public key, το control/custody domain και το evidence s
 στο **pinned** registry· self-issued (`evidence_issuer = actor_identity`) = IA-0 και **δεν** μετρά ως
 ανεξάρτητη βεβαίωση (invariant `V5I-D3-issuer-signing`).
 
-**(2b) Normalized per-dimension input (F4)** — ένα `control_domain_id` **δεν** εκφράζει όλες τις
-`IndependenceDimension` σχέσεις· ο partition καταναλώνει typed `DomainAssertion/1`
-(`dimension · subject_actor_id · subject_kid · normalized_domain_id ·
-relation(:same-domain|:distinct-domain|:unknown) · source_evidence_ref · issuer_id · valid_from · valid_to ·
-revocation_ref · digest · signature`), **μία ανά (actor,dimension)**· το `control_domain_id` είναι
-convenience summary, **ποτέ** input (invariant `V5I-D3-domainassertion`).
+**(2b) Typed-membership per-dimension input (F4· R5/C-1)** — ένα `control_domain_id` **δεν** εκφράζει όλες
+τις `IndependenceDimension` σχέσεις· ο partition καταναλώνει typed **membership** `DomainAssertion/1`
+(`dimension · subject_actor_id · subject_kid · **namespace_id** · **domain_identifier** · normalized_domain_id ·
+issuer_id · source_evidence_ref · valid_from · valid_to · revocation_ref · digest · signature`) — «ο actor/key
+ανήκει στο domain identifier X, στο accepted namespace N, για dimension D». Domain identifiers είναι
+συγκρίσιμα **μόνο** μέσα στο **ίδιο** accepted namespace ή μέσω root-authorized equivalence· δύο issuers που
+χρησιμοποιούν **διαφορετικά** namespace vocabularies για τον **ίδιο** πραγματικό owner **δεν** μπορούν να
+πλαστογραφήσουν ανεξαρτησία (invariant `V5I-D3-domainassertion`, rule `domain-namespace-comparison`).
 
-**(3) Typed trusted issuer registry (F4· versioned + content-addressed + pinned)** —
-`TrustedIssuerRegistry/1` (`registry_id = hash(BODY) · version · entries · supersedes · digest · signature`)
-+ `IssuerEntry/1` (`issuer_id · issuer_public_key · issuer_authority(list IndependenceDimension) · scope ·
-delegated_from · valid_from · valid_to · revocation_ref`). **Pinned** από
-`LocalTrustState.independence_issuer_registry_ref` (content-addressed `registry_id`)· authenticity υπό
-LocalTrustState-pinned root· **monotonic** update (`supersedes`)· ένα delivered bundle **δεν** αλλάζει το
-pinned registry (rule `trusted-issuer-registry-pinning`). Το `revocation_ref` είναι **required** όταν η
-αποδεχόμενη `IssuerEntry`/`IndependencePolicy` δηλώνει ότι ο issuer υποστηρίζει revocation· verify
-semantics: resolve revocation source, αν δείχνει revoked στο `t_use` ⇒ **δεν** μετρά· **fail-closed** —
-evidence με μη επιλύσιμο revocation status ⇒ `UNKNOWN` (ποτέ σιωπηλά μετρημένο). Κλείνει τα D3.3/D3.4.
+**(3) Typed trusted issuer registry (F4· versioned + content-addressed + pinned· R5.4/R5.5)** —
+`TrustedIssuerRegistry/1` (`registry_id = hash(BODY) · version · entries · **domain_namespace_authorizations
+(list DomainNamespaceAuthorization/1)** · **namespace_equivalences (list NamespaceEquivalence/1)** ·
+supersedes · digest · signature`) + `IssuerEntry/1`. Το registry κρατά την per-dimension namespace authorization
+(`namespace_id · dimension · namespace_authority · normalization_rule_ref · version · uniqueness_guarantee ·
+issuer · validity · revocation`) και τα content-addressed, root-authorized `NamespaceEquivalence/1`. **Pinned**
+από `LocalTrustState.independence_issuer_registry_ref`· authenticity υπό LocalTrustState-pinned root·
+**monotonic** update (`supersedes`)· ένα delivered bundle **δεν** αλλάζει το pinned registry/namespaces/
+equivalences (rule `trusted-issuer-registry-pinning`, `domain-namespace-comparison :bundle`). `revocation_ref`
+required όταν ο issuer υποστηρίζει revocation· revoked@`t_use` ⇒ **δεν** μετρά· **fail-closed** — μη-επιλύσιμο
+⇒ `UNKNOWN`. Κλείνει τα D3.3/D3.4 + R5.
 
 `IndependencePolicy/1` ορίζει: `required_distinct_dimensions · prohibited_shared_dimensions ·
 accepted_issuer_registry_ref (→ TrustedIssuerRegistry/1) · evidence_freshness ·
@@ -1520,12 +1523,13 @@ min_independence_assurance · unknown_handling · quorum`. `unknown_handling ∈
 **αυστηρή** σημασιολογία: unknown evidence **ποτέ** δεν μετρά προς strict quorum· `DEGRADE` μειώνει το
 attainable assurance profile αντί να προσποιείται γνώση (D3.6).
 
-**Control-domain partition (D3.5· F4)** — ντετερμινιστικός `control-domain-partition` αλγόριθμος που
-καταναλώνει typed `DomainAssertion/1`: union-find· ακμή μεταξύ actors με `:same-domain` σε **ίδιο**
-`normalized_domain_id` για prohibited dimension (proven)· κάθε `:unknown`/missing shared status **προσθέτει
-ακμή** (fail-closed: potentially-shared) υπό FAIL_CLOSED (ίδια είσοδος ⇒ ίδιες equivalence classes). Το
-τελικό quorum μετρά **διακριτά control-domain components**, όχι διακριτά `kid` — δύο actors στο ίδιο
-control domain μετρούν ως **ένας**.
+**Control-domain partition (D3.5· F4· R5)** — ντετερμινιστικός `control-domain-partition` που καταναλώνει
+typed-membership `DomainAssertion/1`: union-find· `SHARED(a,b,d)` iff (ίδιο `namespace_id` **και** ίδιο
+`normalized_domain_id`) **ή** valid root-authorized `NamespaceEquivalence/1` για το d· ακμή αν SHARED για
+οποιοδήποτε prohibited d· κάθε missing / unauthorized-namespace / cross-namespace-χωρίς-equivalence /
+contradictory / `:unknown` ⇒ **προσθέτει ακμή** (fail-closed: potentially-shared) υπό FAIL_CLOSED (ίδια
+είσοδος ⇒ ίδιες equivalence classes). Το τελικό quorum μετρά **διακριτά control-domain components**, όχι
+διακριτά `kid` — δύο actors στο ίδιο control domain μετρούν ως **ένας**.
 
 Κανόνες (αμετάβλητοι): διαφορετικά `kid` δεν αποδεικνύουν ανεξαρτησία· self-signed independence
 declaration δεν μετρά· expired/revoked evidence δεν μετρά· ανεπαρκές evidence ⇒ `INDEPENDENCE_UNKNOWN`·
@@ -1534,8 +1538,13 @@ declaration δεν μετρά· expired/revoked evidence δεν μετρά· α�
 profile και control domain.
 
 Το υπάρχον §10 mesh quorum παραμένει **μία** έδρα· η predicate εκφράζεται **κανονιστικά + machine-readable**
-(`mesh-independence-quorum`, `define-quorum-predicate`) και αλλάζει **μόνο** από `distinct-valid-kids` σε
-`distinct-control-domain-components(valid, assurance>=policy) >= required`. Invariants
+(`mesh-independence-quorum`, `define-quorum-predicate`) και αλλάζει **μόνο** από `distinct-valid-kids` στην
+πλήρη **τετρα-συζευκτική** μορφή (R8.4, ταυτόσημη με το `V1.5-SCHEMAS.sexp :now`):
+`VALID := {a : fresh ∧ non-revoked ∧ issuer∈accepted-registry ∧ assurance≥policy.min}`·
+`INDEP := distinct-components(control-domain-partition(VALID))`· και η predicate είναι
+`|INDEP| ≥ policy.quorum.n` **AND** `covers(policy.required_distinct_dimensions, VALID)` **AND**
+`no-prohibited-shared-dimension(INDEP)` **AND** `(unknown_handling=:FAIL_CLOSED ⇒ κανένα UNKNOWN counted)`·
+insufficient ⇒ `INDEPENDENCE_UNKNOWN`. Invariants
 V5I-06/V5I-07/V5I-D3-bind· kill witnesses V5KW-D3-1..6 **και** V5KW-D3-7..12 (assurance-strip,
 unbound-evidence, cross-issuer-authority, unresolved-revocation, shared-control-collapse, degrade-abuse).
 Design-only· καμία υλοποίηση· ο executable core αμετάβλητος.

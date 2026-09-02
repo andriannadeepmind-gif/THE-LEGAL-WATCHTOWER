@@ -1072,6 +1072,14 @@ FREEZEABLE` όταν η επιβίωση δεν αποδεικνύεται. Κα
 | **V5KW-F3** | F3 | ο υποψήφιος ορίζει shadow coverage-state enum, ή μετονομάζει `INGESTED→PRESENT`, ή αφαιρεί `QUARANTINED`, ή αποκλίνει από το παγωμένο v1.4 `census_coverage_state` |
 | **V5KW-F4** | F4 | ο partition κρίνει ανεξαρτησία από ένα `control_domain_id`/opaque ref αντί για typed `DomainAssertion/1`· ή evidence μετρά χωρίς επίλυση issuer σε **pinned** content-addressed registry |
 | **V5KW-F5** | F5 | interpretive canon opaque (χωρίς `CanonRule/1`)· ή ordering/conflict με επινοημένη καθολική προτεραιότητα αντί adopted `CanonPolicy/1` → `ConflictPolicyBundle` |
+| **V5KW-A1** | A-1 | `support_edges`/`attack_edges` πίσω στο hash-bearing `ArgumentRecord/1` (mutual-attack ArgumentID↔ArgumentID hash cycle)· ή ref-πεδίο εκτός `define-ref-classification` (understated graph) |
+| **V5KW-A2** | A-2 | flip adoption/withdrawal state αλλάζει το `*_id` ενός Claim/Argument/Profile/Canon/Policy (lifecycle σε identity-bearing σώμα αντί detached `LifecycleRecord/1`) |
+| **V5KW-B1** | B-1 | coverage decision επιστρέφει πολλαπλά states ή κανένα για κάποιον συνδυασμό· ή `OBSERVED` ⇒ `INGESTED` χωρίς acquisition/validation/admission |
+| **V5KW-B2** | B-2 | D2 έδρα (SourceType/USC/schema/proposal) με stale semantics: underscore `EXPLICITLY_ABSENT` shadow, χαμένο `QUARANTINED`, ή dimension ως coverage μέλος |
+| **V5KW-C1x** | C-1 | ίδιος owner με δύο namespace vocabularies μετρά ανεξάρτητος· ή contradictory/ unauthorized-namespace/ stale-equivalence/ bundle-substitution περνά ως independence |
+| **V5KW-D1x** | D-1 | profile και policy φέρουν **διαφορετικές** canon lists (δεύτερη ενσωματωμένη λίστα στο `InterpretiveProfile`) |
+| **V5KW-F7** | F7 | self/operator-attested `DerivationIndependenceEvidence` περνά strict SA-2· ή stale/revoked/untrusted/wrong-candidate/shared-toolchain evidence προάγει σε CANONICAL· ή η gate δεν επαληθεύει |
+| **V5KW-R8-event** | R8 | μη-καταχωρημένο/μελλοντικό state-mutating event admitted ως SA-0/SA-1 αντί SA-2/QUARANTINED |
 
 ### 10.2 Predeclared tests (design-only· UNEXECUTED) — ό,τι θα εκτελούσε την κάθε απαίτηση
 
@@ -1097,6 +1105,14 @@ FREEZEABLE` όταν η επιβίωση δεν αποδεικνύεται. Κα
 - **V5Q-F3** — cross-spec enum fixtures· frozen v1.4 `state` == v1.5 `census_coverage_state`· no shadow enum· falsifier V5KW-F3.
 - **V5Q-F4** — `DomainAssertion/1` partition fixtures· pinned content-addressed registry + issuer key selection· self-issued ⇒ IA-0 not counted· falsifier V5KW-F4.
 - **V5Q-F5** — typed `CanonRule/1`/`CanonPolicy/1` fixtures delegating στο `ConflictPolicyBundle`· no-covering-policy ⇒ UNKNOWN, incompatible ⇒ CONFLICTING· falsifier V5KW-F5.
+- **V5Q-A1** — build the hash-bearing DAG από τα **πραγματικά** record fields (cross-checked με ref-classification)· acyclic· inject Claim↔Argument, Argument↔Argument, CanonPolicy↔InterpretiveProfile ⇒ όλα detected· falsifier V5KW-A1.
+- **V5Q-A2** — construct subject· emit adopt+withdraw `LifecycleRecord`· subject `*_id` σταθερό (ίδιο hash)· falsifier V5KW-A2.
+- **V5Q-B1** — enumerate το finite input product· μηδέν uncovered, μηδέν multi-output, ένα frozen state ανά combination· `OBSERVED`-only ⇏ INGESTED· falsifier V5KW-B1.
+- **V5Q-B2** — cross-seat D2 fixtures (schema/proposal/SourceType/USC ταυτόσημα· canonical spelling)· falsifier V5KW-B2.
+- **V5Q-C1x** — namespace fixtures: same-owner-two-namespaces ⇒ fail-closed (no equivalence)· contradictory ⇒ INDEPENDENCE_UNKNOWN· unauthorized/stale/bundle ⇒ rejected· falsifier V5KW-C1x.
+- **V5Q-D1x** — single-canon-list fixtures: profile χωρίς embedded list· CanonPolicy μόνη πηγή· falsifier V5KW-D1x.
+- **V5Q-F7** — evidence-validity fixtures: self-issued/stale/revoked/wrong-candidate/shared-toolchain ⇒ no canonical promotion· η gate επαληθεύει· falsifier V5KW-F7.
+- **V5Q-R8** — unregistered/future mutating event ⇒ SA-2/QUARANTINED· statement target closed· candidate_id discipline· quorum-predicate sync· falsifier V5KW-R8-event.
 
 ### 10.3 Τι ΔΕΝ έγινε στο §10
 

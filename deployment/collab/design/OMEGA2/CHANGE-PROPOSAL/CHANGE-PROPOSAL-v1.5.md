@@ -302,11 +302,13 @@ expired ⇒ UNKNOWN (fail-closed).
   **F4 (ποιος υπογράφει):** υπογράφει ο issuer του `evidence_issuer`· κλειδί επαλήθευσης = το
   `IssuerEntry.issuer_public_key` που επιλύεται στο **pinned** registry· self-issued (`evidence_issuer =
   actor_identity`) = IA-0 και **δεν** μετρά ως ανεξάρτητη βεβαίωση (invariant `V5I-D3-issuer-signing`).
-- **F4 (typed partition input):** ένα `control_domain_id` **δεν** εκφράζει όλες τις `IndependenceDimension`
-  σχέσεις· ο partition καταναλώνει **normalized per-dimension** `DomainAssertion/1{dimension, subject_actor_id,
-  subject_kid, normalized_domain_id, relation(:same-domain|:distinct-domain|:unknown), source_evidence_ref,
-  issuer_id, valid_from/to, revocation_ref, digest, signature}` (μία ανά (actor,dimension)). Το
-  `control_domain_id` είναι convenience summary, **ποτέ** input (invariant `V5I-D3-domainassertion`).
+- **F4/R5 (typed-membership partition input):** ο partition καταναλώνει typed **membership**
+  `DomainAssertion/1{dimension, subject_actor_id, subject_kid, namespace_id, domain_identifier,
+  normalized_domain_id, issuer_id, source_evidence_ref, valid_from/to, revocation_ref, digest, signature}` —
+  «ο actor ανήκει στο domain identifier X, στο accepted namespace N, για dimension D». **Το unary
+  `relation :same-domain|:distinct-domain|:unknown` αντικαταστάθηκε.** Domain identifiers συγκρίνονται μόνο
+  εντός **ίδιου** namespace ή μέσω root-authorized `NamespaceEquivalence/1`· το `control_domain_id` είναι
+  convenience summary, **ποτέ** input (invariant `V5I-D3-domainassertion`, §11.8/R5).
 - **D3.3 (F4):** `TrustedIssuerRegistry/1` **versioned + content-addressed** (`registry_id =
   hash(BODY)`, `version`, `supersedes`, signature) + `IssuerEntry/1{issuer_id, issuer_public_key,
   issuer_authority, scope, delegated_from, valid_from/to, revocation_ref}`· **pinned** από
@@ -314,10 +316,10 @@ expired ⇒ UNKNOWN (fail-closed).
   bundle **δεν** αλλάζει το pinned registry (rule `trusted-issuer-registry-pinning`).
 - **D3.4:** `revocation_ref` required όταν ο issuer υποστηρίζει revocation· ο verifier επιλύει revocation
   source· μη-επιλύσιμο υπό strict ⇒ UNKNOWN (fail-closed).
-- **D3.5:** `control-domain-partition` = union-find equivalence classes (ντετερμινιστικό) πάνω σε
-  `DomainAssertion/1`: ακμή μεταξύ actors με `:same-domain` σε **ίδιο** `normalized_domain_id` για
-  prohibited dimension (proven)· υπό strict, `:unknown`/missing shared status ⇒ ακμή (fail-closed)·
-  components = independent control domains.
+- **D3.5/R5:** `control-domain-partition` = union-find (ντετερμινιστικό) πάνω σε typed-membership
+  `DomainAssertion/1`: `SHARED(a,b,d)` iff (ίδιο namespace + ίδιο normalized id) **ή** valid root-authorized
+  `NamespaceEquivalence/1`· missing / unauthorized-namespace / cross-namespace-χωρίς-equivalence /
+  contradictory / `:unknown` ⇒ ακμή (fail-closed)· components = independent control domains.
 - **D3.6:** `unknown_handling ∈ {FAIL_CLOSED, DEGRADE}`· υπό FAIL_CLOSED, UNKNOWN actor **δεν** μετρά ποτέ
   σε strict quorum· υπό DEGRADE, ρητό downgrade, ποτέ σιωπηλό.
 - **D3.7 (final quorum predicate):** `satisfies := |distinct-components(control-domain-partition(valid))|
@@ -325,22 +327,22 @@ expired ⇒ UNKNOWN (fail-closed).
   ⇒ κανένα UNKNOWN counted)`· insufficient ⇒ `INDEPENDENCE_UNKNOWN`.
 
 ### 11.5 C1 — expanded interpretive types (no new engine/primitive)
-- **C1.1 (F5):** `InterpretiveProfile/1{profile_id, version, methodology_canons: (list CanonRule/1),
-  canon_policy_ref → CanonPolicy/1, precedence_stance (:precedential|:non-precedential|:persuasive),
-  applicability, authority_basis, conflict_handling (:coexist|:scoped-priority-by-adopted-policy|
-  :unresolved-conflicting), adoption_status, adoption_act_ref?, withdrawal_ref?, source_anchors}` — **όχι
-  opaque canon**. Κάθε canon = typed `CanonRule/1{canon_id, version, canon_kind, applicability,
-  authority_basis, source_anchors, adoption_status}`· ordering/conflict = adopted scoped `CanonPolicy/1`
-  που **delegates** στο υπάρχον v1.4 `ConflictPolicyBundle` (§4.17) — **καμία** επινοημένη καθολική
-  ελληνική προτεραιότητα· απών ⇒ `UNKNOWN`, ασύμβατα ⇒ `CONFLICTING` (invariant `V5I-C1-canon`)· καμία νέα
-  μηχανή/έδρα.
-- **C1.2/C1.3:** `ArgumentRecord/1{argument_id, interpretive_profile_ref, claim_ref, premises[],
-  conclusion, support_edges[], attack_edges[], argument_scheme, source_anchors[], authority_scope,
-  uncertainty, adoption_status, adoption_act_ref?, constitution_primitive=:argument}` — **αφαιρέθηκε** το
-  κυκλικό self `argument_ref`· `constitution_primitive` = αναπαράσταση, όχι νέο primitive.
-- **C1.4 (F1):** `ClaimRecord/1{claim_id, kind (:claim|:hypothesis), statement_ref, interpretive_profile_ref,
-  status (:open|:adopted|:conflicting|:unknown)}` — **αφαιρέθηκε** το `argument_refs[]` από το hash-bearing
-  σώμα (έσπαγε ακυκλικότητα `ClaimID ↔ ArgumentID`). Το `ClaimRecord` κατασκευάζεται/hash-άρεται **πριν**
+- **C1.1 (F5/R6· single canon source):** `InterpretiveProfile/1{profile_id, version, **canon_policy_ref
+  μόνο**, precedence_stance, applicability, authority_basis, conflict_handling, source_anchors}` — **καμία
+  ενσωματωμένη `methodology_canons` λίστα** (R6). Ο **μοναδικός** κάτοχος = `CanonPolicy/1{policy_id, version,
+  **canon_id_refs (list id) → CanonRule/1**, ordering, conflict_policy_bundle_ref, applicability,
+  authority_basis}` (content-addressed refs, όχι embedded records)· `CanonRule/1{canon_id, version,
+  canon_kind, applicability, authority_basis, source_anchors}` immutable· convenience list = derived
+  `InterpretiveProfileCanons`. Ordering/conflict delegate στο v1.4 `ConflictPolicyBundle` (§4.17) — καμία
+  επινοημένη προτεραιότητα· απών ⇒ `UNKNOWN`, ασύμβατα ⇒ `CONFLICTING` (`V5I-C1-canon`).
+- **C1.2/C1.3 (R1):** `ArgumentRecord/1{argument_id, interpretive_profile_ref, claim_ref, premises[],
+  conclusion, argument_scheme, source_anchors[], authority_scope, uncertainty, constitution_primitive=
+  :argument}` — **αφαιρέθηκαν** τα `support_edges`/`attack_edges` (και το adoption) από το hash-bearing σώμα·
+  οι σχέσεις argument↔argument είναι typed `ArgumentRelation/1{relation_id, relation, from_argument_ref,
+  to_target_ref, to_target_kind}` κατασκευασμένη **μετά** τα δύο ids (καμία ArgumentID↔ArgumentID hash-cycle).
+- **C1.4 (F1/R1/R8.1):** `ClaimRecord/1{claim_id, kind, statement_ref, **statement_kind (Norm|Fact)**,
+  interpretive_profile_ref}` — **χωρίς** `argument_refs` **και χωρίς** `status` στο hash-bearing σώμα. Το
+  `statement_ref` δείχνει σε υπάρχον epistemic node `Norm|Fact`. Το `ClaimRecord` κατασκευάζεται **πριν**
   κάθε `ArgumentRecord`· το `ArgumentRecord.claim_ref` δείχνει σε **ήδη υπάρχον** `claim_id`. Η αντίστροφη
   αναζήτηση claim→arguments είναι **derived projection** `ClaimArgumentIndex` πάνω στο υπάρχον
   proof-dependency graph (όχι μέρος της ταυτότητας claim). Σειρά: `define-construction-order
@@ -380,9 +382,51 @@ failure, THREAT-MODEL). Όλα **predeclared, UNEXECUTED**.
 Νέος audit block **V5F** (structural): cycle detection, cross-spec conflicting-enum, no-assumption-in-gate,
 DomainAssertion inputs, typed canons. Τίμια: parse-level, **ΟΧΙ** semantic/legal proof.
 
+### 11.8 R1–R8 FINITE ADVERSARIAL-REPAIR (bounded corrective pass πάνω στο `4a55a1eb`)
+Δεύτερη ανεξάρτητη επιθεώρηση: 6 named finite blockers (A-1/A-2/B-1/B-2/C-1/D-1) + F7 + finite residuals·
+η μακροαρχιτεκτονική **δεν** απορρίφθηκε. Design-only, μία εντολή, κανένα νέο axis/store/engine/primitive.
+- **R1 (A-1· πλήρες ακυκλικό content-addressing):** αφαιρέθηκαν `support_edges`/`attack_edges` από το
+  hash-bearing `ArgumentRecord/1`· argument↔argument = detached typed `ArgumentRelation/1` στο υπάρχον L5/L6
+  proof-dependency graph (μετά τα δύο ids)· πλήρης `define-ref-classification` (κάθε ref-πεδίο άπαξ:
+  hash-bearing/detached/derived) + `define-construction-order`· ο cycle audit παράγει edges από τα **πραγματικά
+  record fields** και αποτυγχάνει σε unclassified πεδίο ή κύκλο· non-vacuity: Claim↔Argument, Argument↔Argument
+  mutual-attack, CanonPolicy↔InterpretiveProfile — όλα ανιχνεύονται.
+- **R2 (A-2· immutable identity· detached lifecycle):** ClaimRecord/ArgumentRecord/InterpretiveProfile/
+  CanonRule/CanonPolicy immutable (κανένα adoption/withdrawal/status στο σώμα)· lifecycle = detached
+  `LifecycleRecord/1` στο υπάρχον InstitutionalAct + L2 event-ledger/`audit-timeline/1` seat, κλειδωμένο στο
+  αμετάβλητο `subject_id`· current status = projection `SubjectCurrentStatus`· adoption/withdrawal **ποτέ** δεν
+  αλλάζει `*_id` (`V5I-A2-immutable-id`, kill V5KW-A2)· correction/revocation/supersession μέσω supersedes-chain.
+- **R3 (B-1· total exclusive coverage):** `define-decision-function census-coverage-decision` με 8 typed inputs
+  (observation/acquisition/validation/admission/divergence/availability/enumerability/negative_evidence),
+  ordered precedence `QUARANTINED > INGESTED > EXPLICITLY-ABSENT > UNKNOWN`, `:otherwise ⇒ UNKNOWN`· `INGESTED`
+  απαιτεί lawful acquisition+validation+admission (όχι απλό OBSERVED)· audit V5G απαριθμεί το πεπερασμένο
+  γινόμενο (μηδέν uncovered, μηδέν multi-output, ένα state ανά combination).
+- **R4 (B-2· D2 seat sync):** SourceType §5 + USC §13 συγχρονισμένα με schema/proposal — canonical spelling
+  `EXPLICITLY-ABSENT`, `INGESTED`/`QUARANTINED` διατηρημένα, dimensions χαρτογραφούνται, `serial_position_
+  semantics_ref` απαίτηση, dense-non-reservable rule αλλιώς UNKNOWN· audit ελέγχει **όλες** τις D2 έδρες.
+- **R5 (C-1· namespaces):** το unary relation αντικαταστάθηκε από typed membership `DomainAssertion/1`
+  (namespace_id + domain_identifier + normalized_domain_id)· `DomainNamespaceAuthorization/1` per dimension +
+  content-addressed root-authorized `NamespaceEquivalence/1` στο pinned registry· cross-namespace μόνο με
+  accepted equivalence, αλλιώς fail-closed· contradictory ⇒ INDEPENDENCE_UNKNOWN· issuer-scope checks.
+- **R6 (D-1· μία canon list):** `CanonPolicy/1.canon_id_refs` = ο μοναδικός κάτοχος (content-addressed)·
+  `InterpretiveProfile/1` **μόνο** `canon_policy_ref`· convenience = derived `InterpretiveProfileCanons`·
+  lifecycle cardinalities (proposed/adopted/withdrawn) στο `lifecycle-overlay` rule.
+- **R7 (F7· derivation trust root):** `DerivationIndependenceEvidence/1` δένει candidate+event+issuer+validity+
+  freshness+revocation+signed body· VALID μόνο υπό MLTP qualification registry/trust root (καμία παράλληλη)·
+  self/operator-issued default rejection· η SA-2 gate **επαληθεύει** (όχι απλή παρουσία reference).
+- **R8 (residuals):** `statement` → closed `StatementTargetKind {Norm,Fact}`· `candidate_id` discipline
+  (`candidate-id-discipline`)· `ClaimArgumentIndex` μία `:derivation`· MLTP §15 quorum prose τετρα-συζευκτικό·
+  unregistered/future mutating event ⇒ SA-2/QUARANTINED (`V5I-D1-unregistered-event`).
+
+Νέος audit block **V5G** (structural): field-classification completeness, actual-field cycle DAG + 3
+injected cycles, immutable-id stability, coverage decision-table totality/exclusivity, D2 cross-seat
+agreement, namespace-collision/contradiction, single canon list, lifecycle cardinalities, F7 validity,
+quorum-predicate sync, F1–F5 + six-blocker regressions. Τίμια: structural/type/model, **ΟΧΙ** legal-content/
+security/qualification proof· κανένα predeclared executable test εκτελεσμένο.
+
 ## 12. STATUS
 `SPEC v1.5 NARROW-DELTA CANDIDATE — NOT FROZEN — NOT QUALIFIED — IMPLEMENTATION BLOCKED`. No re-freeze,
 no Implementation Book update, no WP-00, no implementation without a new explicit creator order.
-`V1.5 REPAIR COMPLETE — READY FOR BOUNDED ADVERSARIAL REVIEW` (the five independent-review witnesses
-F1–F5 are repaired structurally; subject to the predeclared, UNEXECUTED tests and the finite unknowns
-recorded in the manifest).
+`V1.5 FINITE REPAIR COMPLETE — READY FOR SAME REVIEWER DELTA RE-TEST` (A-1/A-2/B-1/B-2/C-1/D-1/F7 and the
+finite residuals are repaired structurally; subject to the predeclared, UNEXECUTED tests and the finite
+unknowns recorded in the manifest).

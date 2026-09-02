@@ -181,9 +181,16 @@ fields := space_id · enumerability_class · availability_class · negative_evid
           gap_evidence_requirements · valid_from · valid_to · revocation_correction_semantics
 ```
 
-**Αυστηροί κανόνες κενού → coverage state:** `EXPLICITLY_ABSENT` **μόνο** με admissible authenticated
-negative evidence πάνω σε `AUTHORITATIVE_COMPLETE_INDEX` ή `AUTHENTICATED_SERIAL_SPACE`· partial index
-gap ⇒ `NOT_OBSERVED_IN_DECLARED_SOURCE`· open-world gap ⇒ `UNKNOWN`· legally non-public ⇒ ρητό
-`COVERED_STATE_NON_PUBLIC` (**όχι** crawler failure)· expired/missing completeness assertion ⇒ **ποτέ**
-absence proof (⇒ `UNKNOWN`). **Invariants V5I-04/V5I-05:** η μη εμφάνιση μιας δικαστικής απόφασης σε
-**επιλεκτική** πηγή δεν αποδεικνύει ανυπαρξία. Kill witnesses: V5KW-D2-1..5.
+**Αυστηροί κανόνες κενού → FROZEN census state (F3/R4· ταυτόσημα με schema/USC/proposal):** το v1.5 **δεν**
+ορίζει coverage-state τύπο· ο κανονικός census/coverage state είναι ο **παγωμένος v1.4**
+`census_coverage_state = {INGESTED, EXPLICITLY-ABSENT, QUARANTINED, UNKNOWN}` (το `INGESTED` **δεν**
+μετονομάζεται· το `QUARANTINED` διατηρείται). Τα `observation_state`/`availability_state` είναι **διαστάσεις**
+που χαρτογραφούνται στο παγωμένο enum, **όχι** μέλη του. `EXPLICITLY-ABSENT` **μόνο** με admissible fresh
+authenticated negative evidence (`NegativeEvidence/1`) πάνω σε `AUTHORITATIVE_COMPLETE_INDEX`, ή σε `AUTHENTICATED_SERIAL_SPACE`
+**όπου** ο `serial_position_semantics_ref` **αποδεικνύει** ότι το κενό είναι dense-non-reservable/void/
+cancelled/unused· serial gap χωρίς τέτοια απόδειξη ⇒ `UNKNOWN`· `DETERMINISTIC_DIVERGENCE` (D1 admission) ⇒
+`QUARANTINED`· partial-index gap ⇒ `observation_state = NOT_OBSERVED_IN_DECLARED_SOURCE` ⇒ `UNKNOWN`·
+open-world gap ⇒ `UNKNOWN`· legally non-public ⇒ `availability_state = COVERED_STATE_NON_PUBLIC` ⇒ `UNKNOWN`
+(**όχι** crawler failure)· expired/missing completeness assertion ⇒ `UNKNOWN`. **Invariants V5I-04/V5I-05:**
+η μη εμφάνιση μιας δικαστικής απόφασης σε **επιλεκτική** πηγή δεν αποδεικνύει ανυπαρξία. Kill witnesses:
+V5KW-D2-1..5, V5KW-F3.

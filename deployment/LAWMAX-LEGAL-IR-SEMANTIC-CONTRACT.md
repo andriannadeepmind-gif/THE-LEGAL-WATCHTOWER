@@ -174,29 +174,38 @@ engine, **ΔΕΝ** νέος top-level constitutional primitive — **αναπα�
 Constitution `:argument` και σύνδεση L6 Adversarial Parliament ↔ Legal IR ↔ Claim/Hypothesis ↔
 Proof/Counterproof ↔ InstitutionalAct ↔ proof dependency graph.
 
-**Type-closed (v1.5 micro-pass· §11.5· F1/F5 repair):** `InterpretiveProfile/1{profile_id, version,
-methodology_canons: (list CanonRule/1), canon_policy_ref → CanonPolicy/1, precedence_stance, applicability,
-authority_basis, conflict_handling, adoption_status, adoption_act_ref?, withdrawal_ref?, source_anchors}`.
-**F5 (canons ΔΕΝ είναι opaque):** κάθε canon = typed `CanonRule/1{canon_id, version, canon_kind,
-applicability, authority_basis, source_anchors, adoption_status, adoption_act_ref?}`· ordering/conflict =
-adopted scoped `CanonPolicy/1{policy_id, version, canon_refs, ordering, conflict_policy_bundle_ref,
-applicability, authority_basis, adoption_status}` που **delegates** στο **υπάρχον** v1.4
-`ConflictPolicyBundle` (§4.17) — **καμία** επινοημένη καθολική προτεραιότητα· απών ⇒
-`UNKNOWN(no-applicable-conflict-policy)`, ασύμβατα ⇒ `CONFLICTING` (invariant `V5I-C1-canon`)· καμία νέα
-μηχανή/έδρα. `ArgumentRecord/1{argument_id, interpretive_profile_ref, claim_ref, premises[], conclusion,
-support_edges[], attack_edges[], argument_scheme, source_anchors[], authority_scope, uncertainty,
-adoption_status, adoption_act_ref?, constitution_primitive=:argument}` — **αφαιρέθηκε** το κυκλικό self
-`argument_ref`· αναπαράσταση του υπάρχοντος `:argument`, όχι νέο primitive.
-**F1 (content-hash ακυκλικότητα):** `ClaimRecord/1{claim_id, kind, statement_ref, interpretive_profile_ref,
-status}` — **χωρίς** `argument_refs[]` στο hash-bearing σώμα (έσπαγε `ClaimID ↔ ArgumentID`). `claim_id =
-hex(sha256(id_domain ‖ 0x1F ‖ canonical(BODY)))`, BODY χωρίς id/signatures/detached και χωρίς καμία
-αναφορά argument. Το `ClaimRecord` κατασκευάζεται **πριν** κάθε `ArgumentRecord` (σειρά
-`define-construction-order legal-ir-interpretive`)· το `ArgumentRecord.claim_ref` δείχνει σε **ήδη υπάρχον**
-`claim_id`. Η αντίστροφη αναζήτηση claim→arguments είναι **derived projection** `ClaimArgumentIndex` πάνω
-στο υπάρχον proof-dependency graph (L5/L6), **ποτέ** μέρος της ταυτότητας claim (invariant `V5I-C1-acyclic`,
-kill `V5KW-C1-9`). Competing interpretations συνυπάρχουν: `Claim-X → Profile-A`, `Claim-Y → Profile-B`,
-**χωρίς ψευδή επιλογή νικητή**· κάθε interpretive conclusion φέρει υποχρεωτικά `interpretive_profile_ref`.
-**Invariants V5I-08/V5I-09:** η InstitutionalAct adoption αλλάζει institutional/epistemic status,
-**ΟΧΙ** την αντικειμενική «αλήθεια» μιας ερμηνείας. Interpretive disagreement παραμένει typed
-hypothesis/argument/UNKNOWN/CONFLICTING — ποτέ compiler error ή majority vote. Kill witnesses V5KW-C1-1..4,
-V5KW-C1-9.
+**Type-closed + R1/R2/R6 repair (§11.5/§11.8):** **IMMUTABLE** identity-bearing records — κάθε `*_id =
+hex(sha256(id_domain ‖ 0x1F ‖ canonical(BODY)))`, BODY χωρίς id/signatures/**και χωρίς κανένα lifecycle
+πεδίο**. **Κανένα** `adoption_status / adoption_act_ref / withdrawal_ref / status / support_edges /
+attack_edges` σε identity-bearing σώμα.
+- **R6 (μία canonical canon list):** `CanonRule/1{canon_id, version, canon_kind, applicability,
+  authority_basis, source_anchors}` (immutable). `CanonPolicy/1{policy_id, version, **canon_id_refs (list id)
+  → CanonRule/1**, ordering, conflict_policy_bundle_ref → v1.4 `ConflictPolicyBundle` §4.17, applicability,
+  authority_basis}` = ο **μοναδικός** κάτοχος της διατεταγμένης λίστας (content-addressed refs, όχι embedded
+  records). `InterpretiveProfile/1{profile_id, version, **canon_policy_ref μόνο**, precedence_stance,
+  applicability, authority_basis, conflict_handling, source_anchors}` — καμία δεύτερη ενσωματωμένη λίστα.
+  Convenience list = derived projection `InterpretiveProfileCanons` (όχι identity). Απών adopted policy ⇒
+  `UNKNOWN`, ασύμβατα ⇒ `CONFLICTING` (`V5I-C1-canon`)· καμία επινοημένη προτεραιότητα.
+- **R1 (πλήρες ακυκλικό content-addressing):** `ArgumentRecord/1{argument_id, interpretive_profile_ref,
+  claim_ref, premises[], conclusion, argument_scheme, source_anchors[], authority_scope, uncertainty,
+  constitution_primitive=:argument}` — **αφαιρέθηκαν** τα `support_edges`/`attack_edges` από το hash-bearing
+  σώμα. Οι σχέσεις argument↔argument είναι typed `ArgumentRelation/1{relation_id, relation(:supports|:attacks),
+  from_argument_ref, to_target_ref, to_target_kind, source_anchors}` στο υπάρχον L5/L6 proof-dependency graph,
+  κατασκευασμένη **μετά** την ύπαρξη και των δύο ids (καμία ArgumentID↔ArgumentID hash-cycle). `ClaimRecord/1
+  {claim_id, kind, statement_ref, statement_kind, interpretive_profile_ref}` — **χωρίς** `argument_refs` και
+  **χωρίς** `status`. **R8.1:** το `statement_ref` δείχνει σε υπάρχον epistemic node kind `Norm|Fact`
+  (`StatementTargetKind`, υποσύνολο του παγωμένου `{Fact,Norm,Claim,Proof,Counterproof,Hypothesis}`).
+  Πλήρης `define-ref-classification` (κάθε ref-πεδίο ταξινομημένο άπαξ: hash-bearing/detached/derived) +
+  `define-construction-order legal-ir-interpretive` (CanonRule→ConflictPolicyBundle→CanonPolicy→
+  InterpretiveProfile→statement→ClaimRecord→ArgumentRecord→ArgumentRelation→lifecycle→derived indexes)·
+  `V5I-C1-acyclic` (kill `V5KW-C1-9`/`V5KW-A1`). **R8.3:** το `ClaimArgumentIndex` έχει **μία** canonical
+  `:derivation` (χωρίς `:over`/`:maps` ambiguity).
+- **R2 (immutable identity· detached lifecycle):** τα lifecycle changes μπαίνουν στο **υπάρχον** InstitutionalAct
+  + L2 event-ledger/`audit-timeline/1` seat ως detached `LifecycleRecord/1{lifecycle_record_id, subject_id,
+  subject_kind, transition(:propose|:adopt|:withdraw|:correct|:revoke|:supersede), act_ref → InstitutionalAct,
+  legal_time, audit_time, supersedes, signer, evidence_ref, signature}` κλειδωμένο στο **αμετάβλητο**
+  `subject_id`. Το τρέχον status = reproducible projection `SubjectCurrentStatus`. Η υιοθέτηση/ανάκληση
+  **ποτέ** δεν αλλάζει το `*_id` του subject (`V5I-A2-immutable-id`, kill `V5KW-A2`)· correction/revocation/
+  supersession μέσω `supersedes`-chain.
+  Adoption αλλάζει institutional/epistemic status, **ΟΧΙ** την αντικειμενική «αλήθεια» μιας ερμηνείας
+  (`V5I-08`/`V5I-09`). Kill witnesses V5KW-C1-1..4, V5KW-C1-9, V5KW-A1, V5KW-A2.
