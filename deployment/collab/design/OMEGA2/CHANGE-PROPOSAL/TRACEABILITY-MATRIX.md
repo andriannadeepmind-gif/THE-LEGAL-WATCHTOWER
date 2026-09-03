@@ -391,6 +391,7 @@ FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED (memory/resolver/license/tenant)· κ
 | RA8-EPOCH | canonical citation identity + multi-commitment + re-anchoring | S25 | `CanonicalCitationURI/1` + `MultiCommitment/1` + `ReAnchoringManifest/1` | canonical-uris.lisp (EXTEND) | T8-EPOCH | FUTURE_BOOK | :V8I-EPOCH-one-expression |
 | RA8-CONT | continuity policy; separated authorities; emergency freeze | S11 | `ContinuityPolicy/1` + `EmergencyFreeze/1` | MLTP governance | T8-CONT | WP-06 | :V8I-CONT-separated |
 | RA8-CORR | public correction with privacy | S18 | `PublicCorrectionEvent/1` + `RestrictedForensicRecord/1` | boundary schemas | T8-CORR | WP-12 | :V8I-CORR-privacy |
+| RA8-JURNS | jurisdiction namespace seat; ELI/USC namespace disambiguation (own seat, NOT FROST) | S25 | `JurisdictionNamespace/1` | canonical-uris.lisp (EXTEND) | T8-JURNS | FUTURE_BOOK | :V8I-JURNS-namespace |
 | RA8-K | tiered reproducibility; metrics≠legal truth | S15 | `CitationMetricV8/1` | ai-citation-strategy.lisp (EXTEND) | T8-K | WP-13 | :V8I-RA-K-tiered |
 | RA8-SIDE | sidecar source profile (spec-only, creator-gated) | S26 | `SidecarSourceProfile/1` | INTERFACE_ONLY | T8-SIDE | DEFERRED | :V8I-SIDE-gdpr-honest |
 | RA8-MARK | status vs trademark/certification separation | S25 | `LawmaxStatusVsMark/1` | LAWMAX-LICENSE-POLICY.md | T8-MARK | FUTURE_BOOK | :V8I-MARK-separated |
@@ -452,3 +453,18 @@ DFT-02 V8-WP επαναφέρθηκε (opens WP-00..14). 43 held-out fixtures (�
 schema-generated property mutations (11 families)· 10 injected meta-kills. Runner: `V1.8-VERIFY.py` (11 guards, 90
 mutations, 101 rows). **ΕΤΥΜΗΓΟΡΙΑ: `V1.8 VERIFIER-SOUNDNESS CLOSURE COMPLETE — READY FOR FRESH INDEPENDENT
 RE-VERIFICATION #4`· το v1.8 ΔΕΝ πέρασε ανεξάρτητη επαλήθευση, ΔΕΝ freeze.**
+
+**IR4 corrective pass (re-verification #4 `56da942a` FAILED):** τέταρτη ανεξάρτητη επαλήθευση ΑΠΕΡΡΙΨΕ τον harness
+με πέντε ευρήματα: (IR4-01) πραγματική capability εξαφανιζόταν σε `#| |#` ενώ ο audit περνούσε — regex/substring
+αντικαταστάθηκε με **CL-aware structural reader** για `.lisp` (`V8-CAP`/`V8-XREF`, reason
+`required-top-level-definition-missing`)· (IR4-02) το manifest δεν επέβαλλε exact universe — ανεξάρτητο
+`EXPECTED_ARTIFACTS` (set/count/missing/extra/duplicate + per-file digest) + 5 meta-kills· (IR4-03) shallow clone
+δεν ήταν αναπαραγώγιμο — το bootstrap εξασφαλίζει corrective parent + `HEAD^` (bounded deepen/fetch)· (IR4-04)
+πραγματικό dangling `RA-JUR-NS → RA8-JURNS/T8-JURNS` — έκλεισε end-to-end (RA8-JURNS σε traceability δεμένο σε
+`JurisdictionNamespace/1`, T8-JURNS σε qualification, distinct από FROST· `V8-RA-DELTAS` λύνει requirement→
+traceability + test→qualification)· (IR4-05) 23 counterexamples γενικεύτηκαν (exact universes, duplicate detection,
+edge/type compatibility, cardinality↔record binding, typed aggregation `total`/`deterministic`/`preserve-causes`,
+private-bearing enum traversal, exact WP concept→file map, per-row traceability cells resolved against real
+registries). Runner `V1.8-VERIFY.py` (11 guards, 117 mutations, 70 held-out, 128 rows)· 15 injected meta-kills.
+**ΕΤΥΜΗΓΟΡΙΑ: `V1.8 IR4 CORRECTIVE PASS COMPLETE — AWAITING FRESH INDEPENDENT RE-VERIFICATION #5`· το v1.8 ΔΕΝ
+πέρασε ανεξάρτητη επαλήθευση, ΔΕΝ freeze.**

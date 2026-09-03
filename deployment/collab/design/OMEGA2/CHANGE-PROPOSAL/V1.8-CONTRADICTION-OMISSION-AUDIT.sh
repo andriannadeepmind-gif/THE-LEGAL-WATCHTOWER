@@ -21,7 +21,7 @@ VERIFY=./V1.8-VERIFY.py
 P=CHANGE-PROPOSAL-v1.8.md; S=V1.8-SCHEMAS.sexp; MAN=V1.8-CANDIDATE-MANIFEST.md
 EVID=V1.8-VERIFICATION-EVIDENCE.md; ROOT=../../../../..
 pass=0; fail=0; n=0
-tier_for(){ case "$1" in V8-XREF|V8-CAP|V8-WP) echo '[XFILE]';; V8-RASTATUS|V8-CLARIFY) echo '[EXEC-MODEL]';; *) echo '[AST]';; esac; }
+tier_for(){ case "$1" in V8-XREF|V8-CAP|V8-WP) echo '[XFILE]';; V8-RASTATUS|V8-CLARIFY) echo '[EXEC-MODEL]';; V8-MANIFEST) echo '[MANIFEST]';; *) echo '[AST]';; esac; }
 
 ck(){ n=$((n+1)); local id="$1" a="$2" op="$3" e="$4" v
   case "$op" in ge) [ "$a" -ge "$e" ] && v=PASS || v=FAIL ;; eq) [ "$a" = "$e" ] && v=PASS || v=FAIL ;; esac
@@ -36,17 +36,17 @@ echo "### V1.8 VERIFICATION-EVIDENCE AUDIT (fail-closed · AST) — $(git -C "$R
 
 DECLARED_GUARDS="V8-PUBPRIV V8-XREF V8-CAP V8-OWN V8-COGLIFE V8-CLARIFY V8-RASTATUS V8-SYM V8-REQ V8-RA-DELTAS V8-WP"
 declare -A DECLARED_MUTS=(
- [V8-PUBPRIV]="field-type ref-target interface-io subsystem-dep store-owner-writer api-mcp-schema publication declassification undefined-endpoint held/nested-or-list-type held/erase-mcp-source held/erase-site-source held/malformed-block-comment held/malformed-vbar"
- [V8-XREF]="wrong-file wrong-identity wrong-version wrong-reference-target locator-absent held/generic-substring-locator held/remove-all-canon held/remove-one-canon held/canon-wrong-locator"
- [V8-CAP]="nonexistent-symbol wrong-package wrong-file symbol-in-other-package held/cap-unrelated-symbol"
+ [V8-PUBPRIV]="field-type ref-target interface-io subsystem-dep store-owner-writer api-mcp-schema publication declassification undefined-endpoint held/nested-or-list-type held/erase-mcp-source held/erase-site-source held/malformed-block-comment held/malformed-vbar held/public-record-refs-private-enum held/public-root-demoted"
+ [V8-XREF]="wrong-file wrong-identity wrong-version wrong-reference-target locator-absent held/generic-substring-locator held/remove-all-canon held/remove-one-canon held/canon-wrong-locator held/xref-lisp-def-in-block-comment"
+ [V8-CAP]="nonexistent-symbol wrong-package wrong-file symbol-in-other-package held/cap-unrelated-symbol held/cap-def-in-block-comment"
  [V8-OWN]="dup-store two-writers writer-on-readonly held/ghost-owner held/ghost-writer held/owner-unrelated-real held/writer-unrelated-real"
- [V8-COGLIFE]="remove-resume-edge wrong-instance-binding incompatible-edge-type orphan-terminal illegal-cycle held/flow-edge-undeclared-node held/extra-dangling-resume held/terminal-outgoing-any-family held/incompatible-terminal-edge held/incompatible-resume-edge held/disconnected-node held/duplicate-graph"
- [V8-CLARIFY]="corrupt-abstain-fixture corrupt-selection-fixture corrupt-merge-provenance held/remove-cardinality-table"
- [V8-RASTATUS]="merge-proof-into-security derived-not-constant self-qualification-allowed drop-unknown-state advisory-can-block held/remove-cause-refs held/remove-advisory-dims held/bogus-failure-class held/policy-weaken-security held/duplicate-dimension held/record-field-wrong-type held/blocking-bad-cardinality held/aggregation-always-full held/enum-duplicate-state"
- [V8-SYM]="broken-edge unreachable-mandatory mandatory-model-node proposer-removal-inequiv held/empty-node-universe held/remove-proof-mandatory held/remove-mutation-list"
- [V8-REQ]="blank-requirement blank-owner-seat blank-test blank-future-wp blank-interface unresolvable-interface-id held/substitute-id-keep-17 held/traceability-wp99 held/traceability-ghost-test"
- [V8-RA-DELTAS]="drop-to-six rename-jurns-to-frost blank-seat held/delta-nonexistent-seat held/delta-shared-seat held/delta-ghost-owner"
- [V8-WP]="held/wp-evidence-absent held/wp-future-mapped-to-file held/wp-ghost-file"
+ [V8-COGLIFE]="remove-resume-edge wrong-instance-binding incompatible-edge-type orphan-terminal illegal-cycle held/flow-edge-undeclared-node held/extra-dangling-resume held/terminal-outgoing-any-family held/incompatible-terminal-edge held/incompatible-resume-edge held/disconnected-node held/duplicate-graph held/duplicate-node-type held/resume-binding-wrong-type held/duplicate-graph-edge"
+ [V8-CLARIFY]="corrupt-abstain-fixture corrupt-selection-fixture corrupt-merge-provenance held/remove-cardinality-table held/selected-non-nullable held/duplicate-cardinality-rule"
+ [V8-RASTATUS]="merge-proof-into-security derived-not-constant self-qualification-allowed drop-unknown-state advisory-can-block held/remove-cause-refs held/remove-advisory-dims held/bogus-failure-class held/policy-weaken-security held/duplicate-dimension held/record-field-wrong-type held/blocking-bad-cardinality held/aggregation-always-full held/enum-duplicate-state held/duplicate-security-field held/aggregation-prose-always-full held/aggregation-total-nil held/aggregation-deterministic-nil held/aggregation-preserve-causes-nil"
+ [V8-SYM]="broken-edge unreachable-mandatory mandatory-model-node proposer-removal-inequiv held/empty-node-universe held/remove-proof-mandatory held/remove-mutation-list held/mutations-renamed-abcd held/edge-ghost-node held/proposer-optional-corrupted"
+ [V8-REQ]="blank-requirement blank-owner-seat blank-test blank-future-wp blank-interface unresolvable-interface-id held/substitute-req-id held/traceability-wp99 held/traceability-ghost-test held/req-test-arbitrary-prose held/req-interface-arbitrary-prose held/req-owner-arbitrary-prose held/req-wp-wrong-existing"
+ [V8-RA-DELTAS]="drop-to-six rename-jurns-to-frost blank-seat held/delta-nonexistent-seat held/delta-shared-seat held/delta-ghost-owner held/delta-req-not-in-traceability held/delta-test-not-in-qualification"
+ [V8-WP]="held/wp-evidence-absent held/wp-future-mapped-to-file held/wp-ghost-file held/wp-concept-removed held/wp-wrong-existing-file held/wp-bad-future-marker held/wp-duplicate-concept"
 )
 EXPECTED_EVIDENCE=0
 for g in $DECLARED_GUARDS; do EXPECTED_EVIDENCE=$((EXPECTED_EVIDENCE+1)); for _ in ${DECLARED_MUTS[$g]}; do EXPECTED_EVIDENCE=$((EXPECTED_EVIDENCE+1)); done; done
@@ -90,6 +90,31 @@ ck MK9-evidence-write-fault "$([ "$wec" -ne 0 ] && echo 1 || echo 0)" eq 1
 MD="$(mktemp -d)"; sed 's/(:dimension :security          :class :MANDATORY/(:dimension :security          :class :ADVISORY /' "$S" > "$MD/mut.sexp"
 capture python3 "$VERIFY" manifest --file schema="$MD/mut.sexp"; ck MK10-manifest-drift-detected "$([ "$CAP_EC" -eq 3 ] && echo 1 || echo 0)" eq 1
 rm -rf "$MD"
+
+# MK11..MK15 — IR4-02 exact-manifest-universe meta-kills: removing / adding / duplicating / substituting a manifest
+# row, or removing a required corrective artifact, must make the manifest guard (and therefore the full audit) FAIL.
+manmut(){ local d; d="$(mktemp -d)"; python3 - "$MAN" "$d/m.md" "$1" >/dev/null <<'PY'
+import re, sys
+t = open(sys.argv[1], encoding='utf-8').read(); op = sys.argv[3]
+R57 = r'(?m)^\|[^\n]*`deployment/collab/dialogue/0157-claude\.md`[^\n]*\n'
+if op == 'remove-row':
+    t = re.sub(R57, '', t, count=1)
+elif op == 'remove-required':
+    t = re.sub(r'(?m)^\|[^\n]*`deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1\.8-VERIFY\.py`[^\n]*\n', '', t, count=1)
+elif op == 'add-unexpected':
+    t = re.sub(R57, lambda mo: mo.group(0) + '| A | — | `0000000000000000000000000000000000000000000000000000000000000000` | `deployment/collab/dialogue/9999-ghost.md` | DIALOGUE |\n', t, count=1)
+elif op == 'duplicate-row':
+    t = re.sub(R57, lambda mo: mo.group(0) + mo.group(0), t, count=1)
+elif op == 'substitute-path':
+    t = t.replace('deployment/collab/dialogue/0157-claude.md', 'deployment/collab/dialogue/0153-claude.md', 1)
+open(sys.argv[2], 'w', encoding='utf-8').write(t)
+PY
+echo "$d/m.md"; }
+for pair in "MK11-manifest-remove-row:remove-row" "MK12-manifest-remove-required:remove-required" "MK13-manifest-add-unexpected:add-unexpected" "MK14-manifest-duplicate-row:duplicate-row" "MK15-manifest-substitute-path:substitute-path"; do
+  nm="${pair%%:*}"; op="${pair##*:}"; mm="$(manmut "$op")"
+  capture python3 "$VERIFY" manifest --file man="$mm"; ck "$nm" "$([ "$CAP_EC" -eq 3 ] && echo 1 || echo 0)" eq 1
+  rm -rf "$(dirname "$mm")"
+done
 rm -rf "$WK" "$WK2"
 
 echo "# B — guards + real-byte AST mutations (writes $EVID atomically)"
@@ -99,8 +124,8 @@ TMPEVID="$(mktemp)"; WORK="$(mktemp -d)"; trap 'rm -rf "$WORK" "$TMPEVID"' EXIT
   echo
   echo "Every mutation alters ACTUAL bytes of a real source file in a unique mktemp workspace; the SAME AST guard is"
   echo "rerun against the mutated bytes. Rows carry the full 64-char SHA-256 of the actual baseline and mutant bytes,"
-  echo "the differ-assertion, the exact command, its exit code and the guard reason. Rows marked \`held/\` are the 43"
-  echo "independent held-out counterexamples (including all 26 reported by re-verification #3) that the reader now rejects."
+  echo "the differ-assertion, the exact command, its exit code and the guard reason. Rows marked \`held/\` are the 70"
+  echo "independent held-out counterexamples (including every counterexample reported by re-verifications #3 and #4) that the guards now reject."
   echo
   echo "| guard/mutation | tier | baseline_sha256 | mutant_sha256 | differ | command | exit | reason |"
   echo "|---|---|---|---|---|---|---|---|"
@@ -156,7 +181,7 @@ H="$(git -C "$ROOT" rev-parse HEAD 2>/dev/null || echo none)"; HP="$(git -C "$RO
 if [ -n "$CP" ] && { [ "$CP" = "$H" ] || [ "$CP" = "$HP" ]; }; then pb=1; else pb=0; fi
 ck A3-corrective-parent-binding "$pb" eq 1
 ck A4-frozen-88129099 "$(grep -c '88129099' "$MAN" || true)" ge 1
-ck A5-honest-status "$(grep -cE 'READY FOR FRESH INDEPENDENT RE-VERIFICATION' "$MAN" || true)" ge 1
+ck A5-honest-status "$(grep -cE '(READY FOR|AWAITING) FRESH INDEPENDENT RE-VERIFICATION' "$MAN" || true)" ge 1
 ck A6-no-256-full-product "$(grep -cE '2\^8|256 states.*full|full product.*256' "$S" "$MAN" "$EVID" 2>/dev/null | awk -F: '{s+=$2}END{print s+0}')" eq 0
 
 echo "# MAN — manifest enforcement (every non-self artifact SHA verified against its pin) + generated property families"
@@ -181,7 +206,7 @@ ck D6-pinned-out "$(sha256sum V1.4-CONTRADICTION-OMISSION-AUDIT.out | grep -c '^
 
 echo "### SUMMARY: checks=$n pass=$pass fail=$fail"
 if [ "$fail" -eq 0 ]; then
-  echo "### EXIT 0 — V1.8 VERIFICATION-EVIDENCE PASS (parse-gated · manifest-enforced · AST reader · full 4^8 · $MUT_KILLED/$MUT_TOTAL mutations killed incl 43 held-out · 10 injected meta-kills detected) — NOT executable/legal/security/qualification/behavioral proof · NOT sound/complete/freeze-ready until independent re-verification #4"
+  echo "### EXIT 0 — V1.8 VERIFICATION-EVIDENCE PASS (parse-gated · manifest-enforced · AST reader · full 4^8 · $MUT_KILLED/$MUT_TOTAL mutations killed incl 70 held-out · 15 injected meta-kills detected) — NOT executable/legal/security/qualification/behavioral proof · NOT sound/complete/freeze-ready until independent re-verification #5"
   exit 0
 else
   echo "### EXIT 1 — DEVIATIONS PRESENT"; exit 1

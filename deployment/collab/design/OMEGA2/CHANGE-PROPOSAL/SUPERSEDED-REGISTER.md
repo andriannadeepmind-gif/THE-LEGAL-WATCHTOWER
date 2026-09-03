@@ -325,3 +325,24 @@ mutations across 11 families, and 10 injected meta-kills. Runner `V1.8-VERIFY.py
 rows); verification tooling only; schema/subsystem/v1.6/v1.7 unchanged; frozen v1.4 `88129099` immutable; pinned
 `.out` `4873e610` unchanged. **Verdict: `V1.8 VERIFIER-SOUNDNESS CLOSURE COMPLETE — READY FOR FRESH INDEPENDENT
 RE-VERIFICATION #4`. The v1.8 candidate has NOT passed independent verification.**
+
+### v1.8 IR4 CORRECTIVE PASS note (parent `56da942a` · CANDIDATE — re-verification #4 FAILED, five systemic corrections)
+A fourth fresh independent re-verification **FAILED** `56da942a`: (IR4-01) a real source capability could be hidden
+inside a `#| |#` block comment while the full audit still passed — the `.lisp` structural checks (`V8-CAP`,
+`V8-XREF`) now use a Common-Lisp-aware reader over real top-level forms (never regex/substring), failing with
+`required-top-level-definition-missing`; (IR4-02) the manifest did not enforce an exact artifact universe — an
+independent `EXPECTED_ARTIFACTS` anchor now enforces exact set / count / no missing-extra-duplicate path plus every
+per-file digest, with five row-mutation meta-kills; (IR4-03) a shallow depth-1 clone was not reproducible — the
+bootstrap now makes the corrective parent and `HEAD^` available via a bounded deepen/fetch or stops with a precise
+prerequisite; (IR4-04) a real dangling identifier `RA-JUR-NS → RA8-JURNS/T8-JURNS` is closed end-to-end
+(`RA8-JURNS` requirement bound to `JurisdictionNamespace/1`, `T8-JURNS` qualification test, distinct from FROST) and
+`V8-RA-DELTAS` now resolves requirement→traceability and test→qualification; (IR4-05) 23 new counterexamples are
+killed by generalized guards (exact node/edge/mutation/concept universes, duplicate detection, edge-endpoint and
+typed compatibility, cardinality bound to record fields, typed aggregation with `total`/`deterministic`/
+`preserve-causes` instead of keyword-inspection of prose, full traversal into private-bearing enums, an exact WP
+concept→file map, and per-row traceability cells resolved against the real registries — nonempty text is never
+sufficient). Runner `V1.8-VERIFY.py` (11 guards, 117 mutations, 70 held-out, 128 rows); 15 injected meta-kills;
+verification tooling only (plus the IR4-04 traceability/qualification closure); schema/subsystem/v1.6/v1.7
+unchanged; frozen v1.4 `88129099` immutable; pinned `.out` `4873e610` unchanged. **Verdict: `V1.8 IR4 CORRECTIVE
+PASS COMPLETE — AWAITING FRESH INDEPENDENT RE-VERIFICATION #5`. The v1.8 candidate has NOT passed independent
+verification.**

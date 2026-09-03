@@ -39,6 +39,29 @@ if [ "$got_tree" != "$PINNED_TREE" ]; then
   exit 3
 fi
 
+# IR4-03: a shallow (depth=1) clone does NOT contain the corrective commit's PARENT, so `git rev-parse HEAD^`
+# (used by A3-corrective-parent-binding) fails. Make the declared parent available with a bounded deepen/fetch —
+# no manual `git fetch --deepen=1` may be required. Stop precisely if it still cannot be resolved.
+DECL_PARENT="$(grep -oE 'CORRECTIVE_COMMIT_PARENT[[:space:]]*=[[:space:]]*[0-9a-f]{40}' V1.8-CANDIDATE-MANIFEST.md | grep -oE '[0-9a-f]{40}' | head -1)"
+if [ -n "$DECL_PARENT" ]; then
+  if ! have_obj "$DECL_PARENT" || ! git -C "$ROOT" rev-parse -q --verify 'HEAD^' >/dev/null 2>&1; then
+    echo "bootstrap: corrective parent $DECL_PARENT / HEAD^ not present (shallow clone?) — bounded deepen+fetch"
+    git -C "$ROOT" fetch --no-tags --deepen=1 origin >/dev/null 2>&1 || true
+    have_obj "$DECL_PARENT" || git -C "$ROOT" fetch --no-tags origin "$DECL_PARENT" >/dev/null 2>&1 || true
+  fi
+  if ! have_obj "$DECL_PARENT"; then
+    echo "MISSING_PINNED_OBJECT: corrective parent commit $DECL_PARENT — fetch it with:"
+    echo "  git fetch --no-tags origin $DECL_PARENT     # or: git fetch --deepen=1 origin"
+    echo "bootstrap: PREREQUISITE NOT MET (corrective parent absent)"
+    exit 6
+  fi
+  if ! git -C "$ROOT" rev-parse -q --verify 'HEAD^' >/dev/null 2>&1; then
+    echo "MISSING_PINNED_OBJECT: HEAD^ unresolved after deepen (declared parent $DECL_PARENT)"
+    echo "bootstrap: PREREQUISITE NOT MET (HEAD^ unresolved — A3-corrective-parent-binding cannot run)"
+    exit 7
+  fi
+fi
+
 # pinned .out artifact (checked into this directory) must be present + match
 OUT=V1.4-CONTRADICTION-OMISSION-AUDIT.out
 PINNED_OUT=4873e61069d4a1a2a1047d059b81cd9103171776346650a3b5ed4eee077624fb
@@ -52,5 +75,5 @@ if [ "$got_out" != "$PINNED_OUT" ]; then
   exit 5
 fi
 
-echo "bootstrap: OK — pinned commit $PINNED_COMMIT present (tree $PINNED_TREE), pinned .out verified"
+echo "bootstrap: OK — pinned commit $PINNED_COMMIT present (tree $PINNED_TREE), corrective parent + HEAD^ resolvable, pinned .out verified"
 exit 0

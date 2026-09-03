@@ -34,6 +34,12 @@ DEFAULTS = {
     'man':    os.path.join(HERE, 'V1.8-CANDIDATE-MANIFEST.md'),
     'mcp':    os.path.join(ROOT, 'source', 'mcp-server.lisp'),
     'site':   os.path.join(ROOT, 'source', 'static-site.lisp'),
+    'cap_uris': os.path.join(ROOT, 'source', 'canonical-uris.lisp'),
+    'cap_cite': os.path.join(ROOT, 'source', 'ai-citation-strategy.lisp'),
+    'cap_dump': os.path.join(ROOT, 'source', 'ai-corpus-dump.lisp'),
+    'cap_dec':  os.path.join(ROOT, 'source', 'legal-decisions.lisp'),
+    'mem':      os.path.join(ROOT, 'source', 'memory.lisp'),
+    'qual':   os.path.join(HERE, 'PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md'),
 }
 BYBASENAME = {os.path.basename(p): k for k, p in DEFAULTS.items()}
 
@@ -233,6 +239,141 @@ def top_forms(text):
     # fail-closed: a malformed source raises ParseError (caught by the parse-gate as a VIOLATION, never swallowed)
     return read_all(text)
 
+
+# ==================== CL-aware .lisp structural reader (no eval; comments/strings/chars/bar-symbols honoured) ====================
+# Reuses Sym/Str/_ATOM_STOP/_skip_ws/ParseError. Unlike the strict sexp reader it accepts the reader macros that
+# real Common Lisp source uses (#' #: #( #b/#x/#o #S ` , ,@ and #\char), but stays FAIL-CLOSED: any unclosed list,
+# string, block comment or vertical-bar symbol, a read-eval/unquote dispatch (#. #,) or trailing junk raises. It is
+# used to decide whether a capability's defining form REALLY exists as a top-level form — never regex/substring.
+def _lread_one(text, i):
+    n = len(text)
+    i = _skip_ws(text, i, n)
+    if i >= n:
+        return None, i
+    c = text[i]
+    if c == '(':
+        i += 1; lst = []
+        while True:
+            i = _skip_ws(text, i, n)
+            if i >= n:
+                raise ParseError('unclosed list')
+            if text[i] == ')':
+                return lst, i + 1
+            f, i = _lread_one(text, i)
+            lst.append(f)
+    if c == ')':
+        raise ParseError('unexpected )')
+    if c == '"':
+        i += 1; buf = []
+        while i < n:
+            d = text[i]
+            if d == '\\' and i + 1 < n:
+                buf.append(text[i + 1]); i += 2; continue
+            if d == '"':
+                return Str(''.join(buf)), i + 1
+            buf.append(d); i += 1
+        raise ParseError('unterminated string')
+    if c == '|':
+        i += 1; buf = []
+        while i < n:
+            d = text[i]
+            if d == '\\' and i + 1 < n:
+                buf.append(text[i + 1]); i += 2; continue
+            if d == '|':
+                return Sym('|' + ''.join(buf) + '|'), i + 1
+            buf.append(d); i += 1
+        raise ParseError('unterminated vertical-bar symbol')
+    if c == '#':
+        nxt = text[i + 1] if i + 1 < n else ''
+        if nxt == '':
+            raise ParseError('dangling # at eof')
+        if nxt == '\\':                     # #\x character literal (its next char is data, never a delimiter)
+            j = i + 2
+            if j < n:
+                j += 1
+            while j < n and text[j] not in _ATOM_STOP:
+                j += 1
+            return Sym(text[i:j]), j
+        if nxt == '(':                      # #( ... ) vector — parens balance like a list
+            return _lread_one(text, i + 1)
+        if nxt in '.,':                     # #. read-eval / #, load-eval are unsupported and rejected fail-closed
+            raise ParseError('unsupported read-eval dispatch #' + nxt)
+        j = i + 1                            # #' #: #b #x #o #S #A #p ... prefix atom; a following '(' opens normally
+        while j < n and text[j] not in _ATOM_STOP:
+            j += 1
+        return Sym(text[i:j]), j
+    j = i
+    while j < n and text[j] not in _ATOM_STOP:
+        j += 1
+    return Sym(text[i:j]), j
+
+def lisp_read_all(text):
+    """Parse a whole .lisp source into top-level forms, fail-closed (raises on any malformed or trailing content)."""
+    out = []; i = 0; n = len(text)
+    while True:
+        f, i = _lread_one(text, i)
+        if f is None:
+            break
+        out.append(f)
+    i = _skip_ws(text, i, n)
+    if i < n:
+        raise ParseError('trailing content at offset %d: %r' % (i, text[i:i + 20]))
+    return out
+
+def lisp_toplevel_spans(text):
+    """[(start,end,form), ...] for every top-level form, using the same lexer (so a def inside a comment/string is
+    not a form). Raises ParseError on malformed input."""
+    spans = []; i = 0; n = len(text)
+    while True:
+        j = _skip_ws(text, i, n)
+        if j >= n:
+            break
+        f, k = _lread_one(text, j)
+        if f is None:
+            break
+        spans.append((j, k, f)); i = k
+    return spans
+
+def _norm_pkg(name):
+    s = str(name)
+    if s.startswith('#:'):
+        return s[2:]
+    if s.startswith(':'):
+        return s[1:]
+    return s
+
+LISP_DEF_OPS = {'defun', 'defmethod', 'defgeneric', 'defmacro', 'defparameter', 'defvar', 'defclass',
+                'defstruct', 'define-condition', 'defconstant', 'define-modify-macro', 'defsetf'}
+
+def lisp_defs(text):
+    """(packages_set, [(pkg,index)] in-package order, {defined-name: first-index}) from REAL top-level forms.
+    Raises ParseError (fail-closed) on malformed input."""
+    forms = lisp_read_all(text)
+    pkgs = set(); inpkgs = []; defs = {}
+    for idx, f in enumerate(forms):
+        if not is_list(f) or not f or not isinstance(f[0], Sym):
+            continue
+        op = str(f[0]); name = f[1] if len(f) > 1 else None
+        if op == 'defpackage' and name is not None:
+            pkgs.add(_norm_pkg(name))
+        elif op == 'in-package' and name is not None:
+            inpkgs.append((_norm_pkg(name), idx))
+        elif op in LISP_DEF_OPS and name is not None:
+            nm = str(name[0]) if (is_list(name) and name and isinstance(name[0], Sym)) else str(name)
+            defs.setdefault(nm, idx)
+    return pkgs, inpkgs, defs
+
+def wrap_toplevel_block_comment(text, defname):
+    """Wrap the whole top-level defining form named `defname` inside #| |# (real byte mutation for the held-out
+    'definition hidden in a block comment' counterexample). Uses the lexer's exact span so the mutant stays valid."""
+    for start, end, f in lisp_toplevel_spans(text):
+        if is_list(f) and len(f) > 1 and isinstance(f[0], Sym) and str(f[0]) in LISP_DEF_OPS:
+            nm = f[1]
+            nm = str(nm[0]) if (is_list(nm) and nm and isinstance(nm[0], Sym)) else str(nm)
+            if nm == defname:
+                return text[:start] + '#|\n' + text[start:end] + '\n|#' + text[end:]
+    return text
+
 def top_symbols(text):
     """Names of every top-level def/define-* form. Line-anchored `^(` (prose-level) locates each top-level open;
     each form is then re-read with the AST reader — the identity is proven structurally, never by substring."""
@@ -246,6 +387,16 @@ def top_symbols(text):
         if h is not None and (str(h).startswith('def')) and nm is not None:
             syms.add(str(nm))
     return syms
+
+def sexp_top_defnames(text):
+    """Names of top-level def*/define-* forms in a .sexp source, via the fail-closed sexp reader — a form hidden
+    inside #| |# is skipped by the reader, so it is NOT counted (block-comment safe, unlike a ^( line scan)."""
+    out = set()
+    for f in read_all(text):
+        h = head(f); nm = form_name(f)
+        if h is not None and str(h).startswith('def') and nm is not None:
+            out.add(str(nm))
+    return out
 
 # ============================ derived type universe (AST) ============================
 def all_record_forms(F):
@@ -351,6 +502,22 @@ EXPECTED_STORES = {   # store -> (owner_string, write_authority_string)
     'resolver-dataset':      ('RA-S25 canonical-uris.lisp', 'none'),
     'tenant-profile':        ('RA-S26 [interface-only]', 'none'),
 }
+
+EXPECTED_PUBLIC_ROOTS = {
+    'ActionIntent/1', 'AmbiguityResult/1', 'AnonymizationReceipt/1', 'Approval/1', 'CandidateInterpretation/1',
+    'CanonicalCitationURI/1', 'CanonicalRetrievalView/1', 'CapabilityManifest/1',
+    'CensusSpaceClassification/1', 'CitationMetricV8/1', 'CitationSupremacyMetric/1', 'ClarificationRequest/1',
+    'ClarificationResponse/1', 'ClarifiedInterpretation/1', 'CognitionResult/1', 'ContinuityPolicy/1',
+    'CryptoSuiteRegistry/1', 'DatasetSnapshot/1', 'DeclassificationReceipt/1', 'EmergencyFreeze/1',
+    'ExecutionReceipt/1', 'IndependencePolicy/1', 'InterpretiveProfile/1', 'JurisdictionNamespace/1',
+    'LanguageCognitionLayer/1', 'LawmaxStatusVsMark/1', 'LegalIR/1', 'LicensePolicy/1', 'MemoryEvent/1',
+    'MemoryPolicy/1', 'MemoryProjection/1', 'MultiCommitment/1', 'NonAuthoritativeTranslation/1',
+    'PerceptionEnvelope/1', 'Plan/1', 'PublicCorrectionEvent/1', 'ReAnchoringManifest/1', 'RecoveryEpoch/1',
+    'RelianceProjection/1', 'ResolutionRecord/1', 'ResolverQuery/1', 'ResolverReceipt/1', 'ResolverResult/1',
+    'RightsMatrix/1', 'RootAuthorityQualification/1', 'RootAuthorityStatus/1', 'SafetyState/1',
+    'SemanticAdmissionEvidence/1', 'SemanticProposer', 'ToolInvocation/1', 'TrustBundle/1', 'audit-timeline/1',
+    'citation/1', 'legal-timeline/1',
+}
 EXPECTED_DIMS = {   # dimension -> (class, failure-class)   — the pinned mandatory/advisory + failure policy
     'security':         ('MANDATORY', 'WITHHELD'),
     'proof_integrity':  ('MANDATORY', 'MACHINE_UNVERIFIED'),
@@ -362,10 +529,10 @@ EXPECTED_DIMS = {   # dimension -> (class, failure-class)   — the pinned manda
     'qualification':    ('ADVISORY', 'ATTRIBUTED_RELIANCE'),
 }
 EXPECTED_DFT = set('DFT-%02d' % i for i in range(1, 11))
-EXPECTED_RA8 = {'RA8-EPOCH', 'RA8-CONT', 'RA8-CORR', 'RA8-K', 'RA8-SIDE', 'RA8-MARK', 'RA8-FROST'}
+EXPECTED_RA8 = {'RA8-EPOCH', 'RA8-CONT', 'RA8-CORR', 'RA8-JURNS', 'RA8-K', 'RA8-SIDE', 'RA8-MARK', 'RA8-FROST'}
 EXPECTED_REQ_IDS = EXPECTED_DFT | EXPECTED_RA8
 EXPECTED_T8 = {'T8-' + x for x in ('XREF WP CAP OWN PUBPRIV COGLIFE CLARIFY RASTATUS SYM REQ '
-                                   'EPOCH CONT CORR K SIDE MARK FROST').split()}
+                                   'EPOCH CONT CORR JURNS K SIDE MARK FROST').split()}
 EXPECTED_WPS = {'WP-%02d' % i for i in range(0, 15)}
 EXPECTED_SUBSYS = {'S%02d' % i for i in range(1, 27)}
 EXPECTED_RA_DELTAS = {   # delta -> (seat_type, owner_subsystem, requirement, test)
@@ -376,6 +543,74 @@ EXPECTED_RA_DELTAS = {   # delta -> (seat_type, owner_subsystem, requirement, te
     'RA-MARK':   ('LawmaxStatusVsMark/1', 'S25', 'RA8-MARK', 'T8-MARK'),
     'RA-K':      ('CitationMetricV8/1', 'S15', 'RA8-K', 'T8-K'),
     'RA-SIDE':   ('SidecarSourceProfile/1', 'S26', 'RA8-SIDE', 'T8-SIDE'),
+}
+# ---- IR4-05 pinned universes (exact sets the generalized guards enforce; nonempty text is never sufficient) ----
+EXPECTED_AGG_RULE = ('reliance = min over {failure-class(d) | d MANDATORY and state(d) in (FAILED DEGRADED UNKNOWN)}'
+                     ' else FULL_RELIANCE')
+EXP_SYM_MUTATIONS = {'broken-edge', 'unreachable-mandatory-stage', 'mandatory-model-node',
+                     'proposer-removal-inequivalence'}
+EXP_PROPOSER_OPTIONAL = {'ADMIT', 'IR', 'REASON'}
+EXPECTED_WP_CONCEPTS = {   # concept -> (wp-or-marker, file)
+    'COGNITION_DAG': ('WP-08', 'WP-08.md'), 'NEURAL_PROPOSER': ('WP-07', 'WP-07.md'),
+    'SECURE_INGRESS': ('WP-02', 'WP-02.md'), 'LEGAL_IR': ('WP-03', 'WP-03.md'),
+    'TRUST_BUNDLE': ('WP-06', 'WP-06.md'), 'PUBLIC_PRIVATE_BOUNDARY': ('WP-12', 'WP-12.md'),
+    'PROOF_CARRYING_QUERY': ('WP-11', 'WP-11.md'), 'ECLI': ('WP-09', 'WP-09.md'),
+    'CITATION_MEASUREMENT': ('WP-13', 'WP-13.md'), 'DATASET_DISTRIBUTION': ('WP-11', 'WP-11.md'),
+    'PROVIDER_REGISTRY': ('WP-14', 'WP-14.md'),
+    'MEMORY_KERNEL': ('FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED', 'none'),
+    'UNIFIED_RESOLVER': ('FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED', 'none'),
+    'LICENSE_RIGHTS_MATRIX': ('FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED', 'none'),
+    'TENANT_PROFILES': ('FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED', 'none'),
+    'ROOT_AUTHORITY_FLYWHEEL': ('FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED', 'none'),
+}
+WP_FUTURE_MARKER = 'FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED'
+EXPECTED_REQ_ROWS = {   # traceability id -> (interface cell, owner-seat cell, test cell) pinned EXACTLY
+    'DFT-01': ('`define-ra-closure-roots`', 'boundary schemas', 'T8-PUBPRIV'),
+    'DFT-02': ('`define-wp-reconciliation`', 'WP-NN.md', 'T8-WP'),
+    'DFT-03': ('`define-reference`', 'canonical files', 'T8-XREF'),
+    'DFT-04': ('`define-write-authority`', 'write-authority.lisp', 'T8-OWN'),
+    'DFT-05': ('`define-capability-seat`', 'source/*.lisp', 'T8-CAP'),
+    'DFT-06': ('`ClarifiedInterpretation/1`', 'legal-dialectic.lisp', 'T8-CLARIFY'),
+    'DFT-07': ('`ClarificationRequest/1` + `ClarificationResponse/1` + `cognition-graph-v8`', 'legal-dialectic.lisp', 'T8-COGLIFE'),
+    'DFT-08': ('`symbolic-only-path`', 'write-authority.lisp', 'T8-SYM'),
+    'DFT-09': ('§v1.8 rows', 'traceability', 'T8-REQ'),
+    'DFT-10': ('`RootAuthorityStatus/1` + `RelianceProjection/1`', 'provider_registry', 'T8-RASTATUS'),
+    'RA8-EPOCH': ('`CanonicalCitationURI/1` + `MultiCommitment/1` + `ReAnchoringManifest/1`', 'canonical-uris.lisp (EXTEND)', 'T8-EPOCH'),
+    'RA8-CONT': ('`ContinuityPolicy/1` + `EmergencyFreeze/1`', 'MLTP governance', 'T8-CONT'),
+    'RA8-CORR': ('`PublicCorrectionEvent/1` + `RestrictedForensicRecord/1`', 'boundary schemas', 'T8-CORR'),
+    'RA8-JURNS': ('`JurisdictionNamespace/1`', 'canonical-uris.lisp (EXTEND)', 'T8-JURNS'),
+    'RA8-K': ('`CitationMetricV8/1`', 'ai-citation-strategy.lisp (EXTEND)', 'T8-K'),
+    'RA8-SIDE': ('`SidecarSourceProfile/1`', 'INTERFACE_ONLY', 'T8-SIDE'),
+    'RA8-MARK': ('`LawmaxStatusVsMark/1`', 'LAWMAX-LICENSE-POLICY.md', 'T8-MARK'),
+    'RA8-FROST': ('`CryptoSuiteRegistry/1` + `RecoveryEpoch/1`', 'MLTP v3', 'T8-FROST'),
+}
+EXPECTED_REQ_WP = {   # traceability id -> exact future-WP cell (a wrong-but-existing WP must still fail)
+    'DFT-01': 'WP-12', 'DFT-02': 'cross', 'DFT-03': 'cross', 'DFT-04': 'cross', 'DFT-05': 'WP-08',
+    'DFT-06': 'WP-08', 'DFT-07': 'WP-08', 'DFT-08': 'WP-07/WP-08', 'DFT-09': 'cross', 'DFT-10': 'WP-14',
+    'RA8-EPOCH': 'FUTURE_BOOK', 'RA8-CONT': 'WP-06', 'RA8-CORR': 'WP-12', 'RA8-JURNS': 'FUTURE_BOOK',
+    'RA8-MARK': 'FUTURE_BOOK', 'RA8-K': 'WP-13', 'RA8-SIDE': 'DEFERRED', 'RA8-FROST': 'WP-06',
+}
+EXPECTED_ARTIFACTS = {   # IR4-02: independent exact universe of non-self pinned artifacts (anchored HERE, not
+                      # derived from the manifest rows the guard validates — a removed/added/substituted row fails)
+    'deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-VERIFY.py',
+    'deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-CONTRADICTION-OMISSION-AUDIT.sh',
+    'deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-CLEAN-CLONE-BOOTSTRAP.sh',
+    'deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-VERIFICATION-EVIDENCE.md',
+    'deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/TRACEABILITY-MATRIX.md',
+    'deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/SUPERSEDED-REGISTER.md',
+    'deployment/collab/AI-DIALOGUE.md',
+    'deployment/collab/dialogue/0158-claude.md',
+    'deployment/collab/dialogue/0159-claude.md',
+    'deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-SCHEMAS.sexp',
+    'deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/CHANGE-PROPOSAL-v1.8.md',
+    'deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/PUBLIC-OBSERVATORY-QUALIFICATION-TESTS.md',
+    'deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/INTERFACE-AND-SCHEMA-REGISTRY.sexp',
+    'deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.6-CANDIDATE-MANIFEST.md',
+    'deployment/LAWMAX-THREAT-MODEL.md',
+    'deployment/collab/dialogue/0154-claude.md',
+    'deployment/collab/dialogue/0155-claude.md',
+    'deployment/collab/dialogue/0156-claude.md',
+    'deployment/collab/dialogue/0157-claude.md',
 }
 DIMSTATE_REQUIRED = {'OK', 'DEGRADED', 'FAILED', 'UNKNOWN'}
 CLASS_ENUM = {'MANDATORY', 'ADVISORY'}
@@ -388,6 +623,10 @@ def g_pubpriv(F):
     roots = public_interfaces(F, priv); adj = record_field_edges(F)
     recnames = set(adj)
     v = 0; why = []
+    # IR4-05 #2: the ISR public-root set is pinned exactly — a silently demoted root (no longer :NORMATIVE, or
+    # newly marked private) drops out of this set and fails
+    if set(roots) != EXPECTED_PUBLIC_ROOTS:
+        v += 1; why.append('public-roots!=expected:' + ','.join(sorted(set(roots) ^ EXPECTED_PUBLIC_ROOTS))[:40])
     seen = set(); stack = [r for r in roots if r in recnames]
     while stack:
         x = stack.pop()
@@ -397,6 +636,17 @@ def g_pubpriv(F):
         if x in priv:
             v += 1; why.append('field-closure-leak:' + x); continue
         stack += adj.get(x, [])
+    # IR4-05 #1: full traversal into ENUMS — a v1.8-defined public (reachable) record must not reference a
+    # private-bearing enum (the v1.6 grandfathered references are governed by v1.6's own closure and excluded here).
+    v8recforms = {str(form_name(f)): f for f in forms_by_head(top_forms(F['schema']), 'define-record') if form_name(f)}
+    for rname in (seen - priv):
+        rf = v8recforms.get(rname)
+        if rf is None:
+            continue
+        _, flds = record_attrs_fields(rf)
+        for fld in flds:
+            for en in enum_refs_in_type(field_type_expr(fld), PRIVATE_BEARING_ENUMS):
+                v += 1; why.append('private-enum-leak:%s->%s' % (rname, en))
     for f in forms_by_head(top_forms(F['schema']), 'define-canonical-identity'):
         loc = kv_after(f, ':type-locator')
         if isinstance(loc, Str):
@@ -494,8 +744,16 @@ def g_xref(F):
         if cftxt is None:
             v += 1; why.append('canonical-file-missing:' + nm); continue
         locator = str(lc); cfl = str(cf).lower()
-        if cfl.endswith('.lisp') or cfl.endswith('.sexp'):
-            if locator not in top_symbols(cftxt):
+        if cfl.endswith('.lisp'):
+            # IR4-01: a .lisp locator must be a REAL top-level definition (CL-aware reader), never a substring
+            try:
+                _, _, ldefs = lisp_defs(cftxt)
+            except ParseError as pe:
+                v += 1; why.append('canonical-lisp-parse-fail:' + nm + ':' + str(pe)); continue
+            if locator not in ldefs:
+                v += 1; why.append('locator-not-top-symbol:' + nm + ':' + locator); continue
+        elif cfl.endswith('.sexp'):
+            if locator not in sexp_top_defnames(cftxt):
                 v += 1; why.append('locator-not-top-symbol:' + nm + ':' + locator); continue
         else:
             if not re.search(r'(?<![\w/-])' + re.escape(locator) + r'(?![\w/-])', cftxt):
@@ -526,19 +784,25 @@ def g_cap(F):
         if kind != ':' + ekind or not isinstance(f, Str) or str(f) != efile \
                 or str(sub or '') != esub or str(req or '') != ereq or str(test or '') != etest:
             v += 1; why.append('cap-decl-mismatch:' + cap); continue
-        txt = openroot(efile)
+        txt = open_or_loaded(efile, F)
         if txt is None:
             v += 1; why.append('cap-file-missing:' + cap); continue
         if ekind == 'CODE':
             pkg = str(kv_after(e, ':package') or ''); sym = str(kv_after(e, ':symbol') or '')
             if pkg != epkg or sym != esym:
                 v += 1; why.append('cap-code-decl:' + cap); continue
-            if (('defpackage :' + epkg) not in txt and ('defpackage #:' + epkg) not in txt and ('defpackage ' + epkg) not in txt):
+            # IR4-01: definition existence is decided by a CL-aware reader over REAL top-level forms, never by
+            # regex/substring (a defun hidden inside #| |# or a string no longer exists as an executable form).
+            try:
+                pkgs, inpkgs, defs = lisp_defs(txt)
+            except ParseError as pe:
+                v += 1; why.append('cap-lisp-parse-fail:%s:%s' % (cap, pe)); continue
+            if epkg not in pkgs:
                 v += 1; why.append('cap-pkg-absent:' + cap)
-            if not re.search(TOPFORMS + re.escape(esym) + r'\b', txt):
-                v += 1; why.append('cap-sym-not-topform:' + cap)
-            ip = txt.find('(in-package :' + epkg); dp = re.search(TOPFORMS + re.escape(esym) + r'\b', txt)
-            if not (ip >= 0 and dp and dp.start() > ip):
+            if esym not in defs:
+                v += 1; why.append('required-top-level-definition-missing:' + esym); continue
+            def_idx = defs[esym]
+            if not any(p == epkg and pi < def_idx for p, pi in inpkgs):
                 v += 1; why.append('cap-pkg-ownership:' + cap)
         else:
             sec = kv_after(e, ':section')
@@ -665,6 +929,19 @@ def g_coglife(F):
     ng, nnt, nodes, nodetypes, flow, branch, resume, term, terminals, entry, resp = cog_model(F)
     v = 0; why = []
     fam = {'flow': flow, 'branch': branch, 'resume': resume, 'terminal': term}
+    # IR4-05 #3: duplicate node-type (a repeated (:node X ...) is deduped by the dict, so count the raw list)
+    ntforms = forms_by_head(top_forms(F['schema']), 'define-cognition-node-types')
+    ntnames = []
+    if ntforms:
+        for spec in ntforms[0][2:]:
+            if is_list(spec) and len(spec) >= 2 and isinstance(spec[0], Sym) and str(spec[0]) == ':node' and isinstance(spec[1], Sym):
+                ntnames.append(str(spec[1]))
+    if len(ntnames) != len(set(ntnames)):
+        v += 1; why.append('duplicate-node-type')
+    # IR4-05 #5: duplicate graph edge in any family
+    for fname, edges in fam.items():
+        if len(edges) != len(set(edges)):
+            v += 1; why.append('duplicate-edge:' + fname)
     if ng != 1:
         v += 1; why.append('cognition-graphs!=1:%d' % ng)
     if nnt != 1:
@@ -750,6 +1027,11 @@ def g_coglife(F):
         v += 1; why.append('resume-not-response')
     if resp is None or field_by_key(resp, ':resume_binding_ref') is None:
         v += 1; why.append('resume-binding-missing')
+    else:
+        # IR4-05 #4: resume_binding_ref must be typed `ref` (a wrong type breaks the exact-instance binding)
+        rbr = field_by_key(resp, ':resume_binding_ref')
+        if str(field_type_expr(rbr)) != 'ref':
+            v += 1; why.append('resume-binding-wrong-type')
     return v, ('clean:%d nodes,%d edges' % (len(nodes), sum(len(e) for e in fam.values()))) if v == 0 else '; '.join(why[:6])
 
 def g_clarify(F):
@@ -769,6 +1051,22 @@ def g_clarify(F):
         if is_list(spec) and spec and isinstance(spec[0], Sym) and str(spec[0]) == ':when':
             ms = str(spec[1])[1:] if isinstance(spec[1], Sym) else ''
             rules[ms] = (str(kv_after(spec, ':selected')), str(kv_after(spec, ':merged')), str(kv_after(spec, ':input-provenance')))
+    # IR4-05 #7: a duplicate cardinality rule is deduped by the dict, so count the raw :when specs
+    when_specs = [spec for spec in tbls[0][2:] if is_list(spec) and spec and isinstance(spec[0], Sym) and str(spec[0]) == ':when']
+    if len(when_specs) != len(set(str(spec[1]) for spec in when_specs if len(spec) > 1)):
+        v += 1; why.append('duplicate-cardinality-rule')
+    # IR4-05 #6: ClarifiedInterpretation/1.selected_alternative_ref MUST stay nullable (ABSTAIN/EXPLICIT_MERGE => null)
+    ci = None
+    for f in forms_by_head(forms, 'define-record'):
+        if str(form_name(f) or '') == 'ClarifiedInterpretation/1':
+            ci = f; break
+    if ci is None:
+        v += 1; why.append('ClarifiedInterpretation-missing')
+    else:
+        sar = field_by_key(ci, ':selected_alternative_ref')
+        te = field_type_expr(sar) if sar is not None else None
+        if not (is_list(te) and str(te[0]) == 'or' and any(str(x) == 'null' for x in te)):
+            v += 1; why.append('selected-not-nullable')
     if set(rules) != {'ABSTAIN', 'EXPLICIT_SELECTION', 'EXPLICIT_MERGE'}:
         v += 1; why.append('cardinality-modes!=3'); return v, '; '.join(why[:6])
     def table_ok(ms, sel, mrg, prov):
@@ -800,6 +1098,20 @@ def enum_members(F, name):
         if form_name(f) is not None and str(form_name(f)) == name:
             return [str(x[0])[1:] for x in f[2:] if is_list(x) and x and isinstance(x[0], Sym)]
     return []
+
+# The v1.6 `MemoryScope` closed enum is the full private-bearing scope taxonomy (it carries :client and :matter);
+# its public counterpart is `PublicMemoryScope` (:public :user :ephemeral). A v1.8 public record referencing the
+# private-bearing enum is a boundary leak (IR4-05 #1 — the closure now traverses enum-typed fields too).
+PRIVATE_BEARING_ENUMS = {'MemoryScope'}
+
+def enum_refs_in_type(te, enms):
+    out = []
+    if isinstance(te, Sym) and str(te) in enms:
+        out.append(str(te))
+    elif is_list(te):
+        for x in te:
+            out.extend(enum_refs_in_type(x, enms))
+    return out
 
 def ra_model(F):
     states = enum_members(F, 'DimensionState')
@@ -836,6 +1148,10 @@ def g_rastatus(F):
         v += 1; why.append('record-dim-fields!=8-named')
     if len(ras_dim_fields) != len(set(ras_dim_fields)):
         v += 1; why.append('duplicate-record-dim-field')
+    # IR4-05 #8: a duplicate record field (even with a different type, e.g. a second :security) must fail
+    all_field_keys = [field_key(fl) for fl in ras_fields if field_key(fl) is not None]
+    if len(all_field_keys) != len(set(all_field_keys)):
+        v += 1; why.append('duplicate-record-field')
     cr = field_by_key(ras, ':cause_refs')
     if cr is None:
         v += 1; why.append('cause_refs-missing')
@@ -879,14 +1195,22 @@ def g_rastatus(F):
     order = [str(x) for x in kv_after(agg, ':order')] if is_list(kv_after(agg, ':order')) else []
     if order != ['WITHHELD', 'MACHINE_UNVERIFIED', 'ATTRIBUTED_RELIANCE', 'FULL_RELIANCE']:
         v += 1; why.append('aggregation-order-changed')
+    # IR4-05 #9: the declared aggregation rule is PINNED exactly (typed order + this string) — misleading prose
+    # such as "always FULL" that merely retains the keyword tokens no longer passes a fuzzy keyword scan.
     rule = str(kv_after(agg, ':rule') or '')
-    for tok in ('min', 'MANDATORY', 'FAILED DEGRADED UNKNOWN', 'FULL_RELIANCE'):
-        if tok not in rule:
-            v += 1; why.append('aggregation-rule-weakened'); break
+    if rule != EXPECTED_AGG_RULE:
+        v += 1; why.append('aggregation-rule-changed')
     if str(kv_after(agg, ':advisory-never-blocks') or '') != 't':
         v += 1; why.append('advisory-can-block')
     if str(kv_after(agg, ':self-qualification') or '') != ':rejected':
         v += 1; why.append('self-qualification-not-rejected')
+    # IR4-05 #10/#11/#12: aggregation must be declared total, deterministic and cause-preserving (t, not nil)
+    if str(kv_after(agg, ':total') or '') != 't':
+        v += 1; why.append('aggregation-not-total')
+    if str(kv_after(agg, ':deterministic') or '') != 't':
+        v += 1; why.append('aggregation-not-deterministic')
+    if str(kv_after(agg, ':preserve-causes') or '') != 't':
+        v += 1; why.append('preserve-causes-not-t')
     if ':derived :type (member :true)' not in F['schema']:
         v += 1; why.append('derived-not-constant')
     if not (field_by_key(ras, ':proof_integrity') is not None and field_by_key(ras, ':security') is not None):
@@ -969,6 +1293,19 @@ def g_sym(F):
         v += 1; why.append('mandatory-set!=expected')
     if len(muts) != 4 or mcount != 4:
         v += 1; why.append('declared-mutations!=4')
+    # IR4-05 #13: the 4 declared mutation NAMES are pinned exactly (A/B/C/D substitution fails)
+    if set(muts) != EXP_SYM_MUTATIONS:
+        v += 1; why.append('mutations!=expected')
+    # IR4-05 #15: proposer-optional-nodes pinned exactly (corruption fails)
+    if set(g(':proposer-optional-nodes')) != EXP_PROPOSER_OPTIONAL:
+        v += 1; why.append('proposer-optional!=expected')
+    # IR4-05 #14: every edge endpoint must be a declared node (an edge to a ghost node fails)
+    nodeset = set(nodesu)
+    for a, b in edges:
+        if a not in nodeset:
+            v += 1; why.append('edge-ghost-node:' + a)
+        if b not in nodeset:
+            v += 1; why.append('edge-ghost-node:' + b)
     if entry != 'ACQUIRE' or exit_ != 'PUBLISH':
         v += 1; why.append('entry/exit-changed')
     for mn in mand:
@@ -997,6 +1334,7 @@ def g_wp(F):
         return 1, 'wp-reconciliation-missing'
     wpdir = os.path.join(ROOT, 'deployment', 'collab', 'design', 'OMEGA2', 'CHANGE-PROPOSAL',
                          'IMPLEMENTATION-BOOK', 'WORK-PACKETS')
+    concepts = []
     for spec in wprec[1:]:
         if not is_list(spec):
             continue
@@ -1004,7 +1342,12 @@ def g_wp(F):
         fnm = kv_after(spec, ':file'); ev = kv_after(spec, ':evidence')
         if concept is None:
             continue
+        concepts.append(str(concept))
         wps = str(wp or ''); fns = str(fnm or ''); evs = str(ev or '')
+        # IR4-05 #17: each concept's (wp, file) must EXACTLY match the pinned map (a wrong-but-existing WP fails)
+        exp = EXPECTED_WP_CONCEPTS.get(str(concept))
+        if exp is not None and (wps, fns) != exp:
+            v += 1; why.append('wp-map-mismatch:' + str(concept))
         if wps.startswith('WP-') and wps[3:].isdigit():
             if fns == 'none' or not fns.endswith('.md'):
                 v += 1; why.append('wp-file-decl:' + str(concept)); continue
@@ -1014,9 +1357,16 @@ def g_wp(F):
             if evs and evs not in readpath(fp):
                 v += 1; why.append('evidence-absent:' + fns); continue
         else:
-            # FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED -> must stay file 'none' (never a real WP)
+            # IR4-05 #18: the ONLY allowed non-WP marker is the exact future marker, and it must stay file 'none'
+            if wps != WP_FUTURE_MARKER:
+                v += 1; why.append('bad-future-marker:' + str(concept))
             if fns != 'none':
                 v += 1; why.append('future-mapped-to-file:' + str(concept))
+    # IR4-05 #16: exact concept universe (a removed mapping fails); #19: no duplicate concept
+    if set(concepts) != set(EXPECTED_WP_CONCEPTS):
+        v += 1; why.append('concept-set!=expected:' + ','.join(sorted(set(concepts) ^ set(EXPECTED_WP_CONCEPTS)))[:40])
+    if len(concepts) != len(set(concepts)):
+        v += 1; why.append('duplicate-concept')
     return v, 'clean:wp-reconciliation opens WP files' if v == 0 else '; '.join(why[:6])
 
 def g_req(F):
@@ -1078,7 +1428,38 @@ def g_req(F):
         for wk in re.findall(r'WP-\d+', wcell):
             if wk not in EXPECTED_WPS or not os.path.isfile(os.path.join(wpdir, wk + '.md')):
                 v += 1; why.append('ghost-wp:%s@%s' % (wk, rid))
+        # IR4-05 #20/#22/#23: interface, owner-seat and test cells are pinned EXACTLY per row (nonempty prose
+        # substituted for any of them fails — resolution against the registry, never mere nonemptiness)
+        oi = idx['owner seat']
+        ocell = cells[oi].strip() if (0 <= oi < len(cells)) else ''
+        exprow = EXPECTED_REQ_ROWS.get(rid)
+        if exprow is not None:
+            eifc, eown, etst = exprow
+            if ifc.strip() != eifc:
+                v += 1; why.append('interface-mismatch:@' + rid)
+            if ocell != eown:
+                v += 1; why.append('owner-mismatch:@' + rid)
+            if tcell != etst:
+                v += 1; why.append('test-mismatch:@' + rid)
+        # IR4-05 #21: the future-WP cell must EXACTLY match the pinned req->wp map (a wrong-but-existing WP fails)
+        if EXPECTED_REQ_WP.get(rid) is not None and wcell.strip() != EXPECTED_REQ_WP[rid]:
+            v += 1; why.append('req-wp-mismatch:@' + rid)
     return v, ('clean:%d rows' % len(rows)) if v == 0 else '; '.join(why[:6])
+
+def _qual_test_universe(qual):
+    """Registered `T8-*` tests parsed from the qualification file's §v1.8 slash-enumeration (real registration,
+    never nonempty text). e.g. `T8-XREF/WP/CAP/.../FROST/JURNS` -> {T8-XREF, T8-WP, ..., T8-JURNS}."""
+    tests = set()
+    for m in re.finditer(r'`(T8-[A-Z0-9/\s]+?)`', qual):     # a `T8-XREF/WP/.../JURNS` enumeration may wrap lines
+        raw = re.sub(r'\s+', '', m.group(1))
+        parts = raw.split('/')
+        tests.add(parts[0])
+        for suf in parts[1:]:
+            if suf:
+                tests.add('T8-' + suf)
+    for t in re.findall(r'\bT8-[A-Z0-9]+\b', qual):
+        tests.add(t)
+    return tests
 
 def g_radeltas(F):
     forms = top_forms(F['schema'])
@@ -1119,7 +1500,16 @@ def g_radeltas(F):
     for seatn, dls in seats_seen.items():
         if len(dls) > 1:
             v += 1; why.append('shared-seat:' + seatn)
-    return v, 'clean:7 deltas' if v == 0 else '; '.join(why[:6])
+    # IR4-04: each delta's requirement and test must RESOLVE against the real traceability + qualification files
+    # (a pinned tuple is not enough — RA8-JURNS/T8-JURNS must actually be registered, distinct from FROST).
+    trc_reqs = set(re.findall(r'(?m)^\|\s*(RA8-[A-Z0-9-]+)\s*\|', F['trc']))
+    qual_tests = _qual_test_universe(F['qual'])
+    for dl, seat, owner, req, test in deltas:
+        if realval(req) and str(req) not in trc_reqs:
+            v += 1; why.append('req-unresolved-in-traceability:' + str(req))
+        if realval(test) and str(test) not in qual_tests:
+            v += 1; why.append('test-unresolved-in-qualification:' + str(test))
+    return v, 'clean:7 deltas resolved' if v == 0 else '; '.join(why[:6])
 
 REQUIRED_SEXP = ('schema', 's17', 's16', 'isr', 'sub')
 def parse_gate(F):
@@ -1135,6 +1525,48 @@ def run_guard(gid, F):
     if pg is not None:
         return 1, pg
     return GUARDS[gid](F)
+
+def g_manifest(F):
+    """IR4-02: the manifest is verified against an INDEPENDENT exact universe (EXPECTED_ARTIFACTS) — exact set,
+    exact count, no missing / extra / duplicate path, and every non-self pin recomputed against the file on disk.
+    Removing, adding, duplicating or substituting a row fails (the expected set is NOT derived from the rows)."""
+    man = F['man']
+    rows = re.findall(r'\|\s*`([0-9a-f]{64})`\s*\|\s*`([^`]+)`\s*\|', man)
+    self_rows = re.findall(r'\|\s*\(self\)\s*\|\s*`([^`]+)`\s*\|', man)
+    v = 0; why = []
+    if len(self_rows) != 1:
+        v += 1; why.append('self-rows!=1:%d' % len(self_rows))
+    paths = [p for _, p in rows]
+    pathset = set(paths)
+    missing = EXPECTED_ARTIFACTS - pathset
+    extra = pathset - EXPECTED_ARTIFACTS
+    if missing:
+        v += 1; why.append('missing-artifact:' + ','.join(sorted(missing))[:70])
+    if extra:
+        v += 1; why.append('unexpected-artifact:' + ','.join(sorted(extra))[:70])
+    if len(paths) != len(pathset):
+        v += 1; why.append('duplicate-row')
+    if len(rows) != len(EXPECTED_ARTIFACTS):
+        v += 1; why.append('count!=%d:%d' % (len(EXPECTED_ARTIFACTS), len(rows)))
+    seen = set()
+    for pin, path in rows:
+        if path in seen:
+            continue
+        seen.add(path)
+        bn = os.path.basename(path)
+        if bn in BYBASENAME and BYBASENAME[bn] in F:
+            content = F[BYBASENAME[bn]]
+        else:
+            fp = os.path.join(ROOT, path)
+            if not os.path.isfile(fp):
+                v += 1; why.append('missing-file:' + path); continue
+            content = readpath(fp)
+        actual = hashlib.sha256(content.encode('utf-8')).hexdigest()
+        if actual != pin:
+            v += 1; why.append('SHA-DRIFT:' + bn)
+    if not rows:
+        v += 1; why.append('no-pinned-rows')
+    return v, ('manifest: %d pinned artifacts match, 1 self' % len(rows)) if v == 0 else '; '.join(why[:8])
 
 GUARDS = {
     'V8-PUBPRIV': g_pubpriv, 'V8-XREF': g_xref, 'V8-CAP': g_cap, 'V8-OWN': g_own,
@@ -1162,6 +1594,8 @@ MUT = {
    'held/erase-site-source': ('site', lambda t: '(defpackage :nothing)\n'),
    'held/malformed-block-comment': ('schema', lambda t: t + '\n#| unterminated block comment'),
    'held/malformed-vbar': ('schema', lambda t: t + '\n(|unterminated'),
+   'held/public-record-refs-private-enum': ('schema', lambda t: t.replace('(define-record RootAuthorityStatus/1', '(define-record RootAuthorityStatus/1 (:memscope :type MemoryScope)', 1)),
+   'held/public-root-demoted': ('isr', lambda t: t.replace(':consumers (S05 S06 S07 S09) :classification :NORMATIVE', ':consumers (S05 S06 S07 S09) :classification :RESTRICTED', 1)),
  },
  'V8-XREF': {
    'wrong-file':      ('schema', lambda t: R(t, ':verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-SCHEMAS.sexp" :type-locator "define-reference LegalIR/1"', ':verify-file "deployment/NO_SUCH_FILE.sexp" :type-locator "define-reference LegalIR/1"')),
@@ -1173,6 +1607,7 @@ MUT = {
    'held/remove-all-canon': ('schema', lambda t: re.sub(r'\(define-canonical-identity[^\n]*\n','',t)),
    'held/remove-one-canon': ('schema', lambda t: re.sub(r'\(define-canonical-identity LegalIR/1[^\n]*\n','',t,count=1)),
    'held/canon-wrong-locator': ('schema', lambda t: t.replace(':version "1" :locator "record-episode")', ':version "1" :locator "episode-id")', 1)),
+   'held/xref-lisp-def-in-block-comment': ('mem', lambda t: wrap_toplevel_block_comment(t, 'record-episode')),
  },
  'V8-CAP': {
    'nonexistent-symbol':      ('schema', lambda t: R(t, ':symbol "get-eli-law-prefix"', ':symbol "zzz_no_such_symbol"')),
@@ -1180,6 +1615,7 @@ MUT = {
    'wrong-file':              ('schema', lambda t: R(t, ':file "source/canonical-uris.lisp"', ':file "source/NO_SUCH.lisp"')),
    'symbol-in-other-package': ('schema', lambda t: R(t, ':symbol "get-eli-law-prefix"', ':symbol "defpackage"')),
    'held/cap-unrelated-symbol': ('schema', lambda t: t.replace(':symbol "get-eli-law-prefix"', ':symbol "get-base-uri"', 1)),
+   'held/cap-def-in-block-comment': ('cap_uris', lambda t: wrap_toplevel_block_comment(t, 'get-eli-law-prefix')),
  },
  'V8-OWN': {
    'dup-store':            ('schema', lambda t: R(t, '(define-write-authority :store "journal"', '(define-write-authority :store "journal"               :owner "WP-03 journal.lisp" :write-authority "write-authority.lisp" :writers 1)\n(define-write-authority :store "journal"')),
@@ -1203,12 +1639,17 @@ MUT = {
    'held/incompatible-resume-edge': ('schema', lambda t: t.replace('(:node CLARIFY-RESUME    :in ClarificationResponse/1         :out ClarificationDecision/1)', '(:node CLARIFY-RESUME    :in ClarificationResponse/1         :out WrongOut/1)', 1)),
    'held/disconnected-node': ('schema', lambda t: t.replace(':nodes (PERCEIVE',':nodes (GHOSTISLAND PERCEIVE',1).replace('(:node PERCEIVE','(:node GHOSTISLAND      :in X/1 :out Y/1)\n  (:node PERCEIVE',1)),
    'held/duplicate-graph': ('schema', lambda t: t.replace('(define-cognition-graph cognition-graph-v8', '(define-cognition-graph dup-graph :nodes (A) :entry A)\n(define-cognition-graph cognition-graph-v8', 1)),
+   'held/duplicate-node-type': ('schema', lambda t: t.replace('  (:node PERCEIVE          :in PerceptionEnvelope/1            :out NormalizedDocument/1)', '  (:node PERCEIVE          :in PerceptionEnvelope/1            :out NormalizedDocument/1)\n  (:node PERCEIVE          :in PerceptionEnvelope/1            :out NormalizedDocument/1)', 1)),
+   'held/resume-binding-wrong-type': ('schema', lambda t: t.replace('(:resume_binding_ref :type ref)', '(:resume_binding_ref :type id)', 1)),
+   'held/duplicate-graph-edge': ('schema', lambda t: t.replace(':flow-edges ((PERCEIVE SEGMENT)', ':flow-edges ((PERCEIVE SEGMENT) (PERCEIVE SEGMENT)', 1)),
  },
  'V8-CLARIFY': {
    'corrupt-abstain-fixture':   ('schema', lambda t: R(t, '(:valid   ABSTAIN            :selected 0 :merged 0 :provenance-preserved t)', '(:valid   ABSTAIN            :selected 1 :merged 0 :provenance-preserved t)')),
    'corrupt-selection-fixture': ('schema', lambda t: R(t, '(:valid   EXPLICIT_SELECTION :selected 1 :merged 0 :provenance-preserved t)', '(:valid   EXPLICIT_SELECTION :selected 0 :merged 0 :provenance-preserved t)')),
    'corrupt-merge-provenance':  ('schema', lambda t: R(t, '(:invalid EXPLICIT_MERGE     :selected 0 :merged 1 :provenance-preserved nil)', '(:valid   EXPLICIT_MERGE     :selected 0 :merged 1 :provenance-preserved nil)')),
    'held/remove-cardinality-table': ('schema', lambda t: re.sub(r'\(define-cardinality-table[\s\S]*?all-preserved\)\)','',t,count=1)),
+   'held/selected-non-nullable': ('schema', lambda t: t.replace('(:selected_alternative_ref :type (or ref null))', '(:selected_alternative_ref :type ref)', 1)),
+   'held/duplicate-cardinality-rule': ('schema', lambda t: t.replace('(:when :ABSTAIN            :selected null :merged null :input-provenance any)', '(:when :ABSTAIN            :selected null :merged null :input-provenance any)\n  (:when :ABSTAIN            :selected null :merged null :input-provenance any)', 1)),
  },
  'V8-RASTATUS': {
    'merge-proof-into-security': ('schema', lambda t: R(t, ' (:proof_integrity :type DimensionState)', '')),
@@ -1225,6 +1666,11 @@ MUT = {
    'held/blocking-bad-cardinality': ('schema', lambda t: t.replace('(:blocking_dimensions :type (list ref))', '(:blocking_dimensions :type ref)', 1)),
    'held/aggregation-always-full': ('schema', lambda t: t.replace(':rule "reliance = min over', ':rule "reliance = FULL_RELIANCE always ignore', 1)),
    'held/enum-duplicate-state': ('schema', lambda t: t.replace('(define-closed-enum DimensionState (:OK) (:DEGRADED) (:FAILED) (:UNKNOWN))', '(define-closed-enum DimensionState (:OK) (:DEGRADED) (:FAILED) (:UNKNOWN) (:UNKNOWN))', 1)),
+   'held/duplicate-security-field': ('schema', lambda t: t.replace('(define-record RootAuthorityStatus/1', '(define-record RootAuthorityStatus/1\n  (:security :type text)', 1)),
+   'held/aggregation-prose-always-full': ('schema', lambda t: t.replace('} else FULL_RELIANCE"', '} else FULL_RELIANCE - but always FULL_RELIANCE in practice (min MANDATORY FAILED DEGRADED UNKNOWN retained)"', 1)),
+   'held/aggregation-total-nil': ('schema', lambda t: t.replace(':total t :deterministic t)', ':total nil :deterministic t)', 1)),
+   'held/aggregation-deterministic-nil': ('schema', lambda t: t.replace(':total t :deterministic t)', ':total t :deterministic nil)', 1)),
+   'held/aggregation-preserve-causes-nil': ('schema', lambda t: t.replace(':preserve-causes t :advisory-never-blocks t', ':preserve-causes nil :advisory-never-blocks t', 1)),
  },
  'V8-SYM': {
    'broken-edge':           ('schema', lambda t: R(t, ' (PROOF PUBLISH))', ')')),
@@ -1234,6 +1680,9 @@ MUT = {
    'held/empty-node-universe': ('schema', lambda t: t.replace(':nodes (ACQUIRE CENSUS ADMIT IR REASON COMPILE PROOF PUBLISH)', ':nodes ()', 1)),
    'held/remove-proof-mandatory': ('schema', lambda t: t.replace(':mandatory-nodes (ACQUIRE CENSUS IR COMPILE PROOF PUBLISH)', ':mandatory-nodes (ACQUIRE CENSUS IR COMPILE PUBLISH)', 1)),
    'held/remove-mutation-list': ('schema', lambda t: t.replace(':mutations (broken-edge unreachable-mandatory-stage mandatory-model-node proposer-removal-inequivalence)', ':mutations ()', 1)),
+   'held/mutations-renamed-abcd': ('schema', lambda t: t.replace(':mutations (broken-edge unreachable-mandatory-stage mandatory-model-node proposer-removal-inequivalence)', ':mutations (mut-a mut-b mut-c mut-d)', 1)),
+   'held/edge-ghost-node': ('schema', lambda t: t.replace('(REASON PROOF) (COMPILE PROOF) (PROOF PUBLISH))', '(REASON PROOF) (COMPILE PROOF) (PROOF PUBLISH) (PUBLISH GHOSTNODE))', 1)),
+   'held/proposer-optional-corrupted': ('schema', lambda t: t.replace(':proposer-optional-nodes (ADMIT IR REASON)', ':proposer-optional-nodes (ADMIT IR CORRUPTED)', 1)),
  },
  'V8-REQ': {
    'blank-requirement':   ('trc', lambda t: _req_blank(t, 'requirement')),
@@ -1242,9 +1691,13 @@ MUT = {
    'blank-future-wp':     ('trc', lambda t: _req_blank(t, 'future wp')),
    'blank-interface':     ('trc', lambda t: _req_blank(t, 'interface')),
    'unresolvable-interface-id': ('trc', lambda t: _req_set_if(t, ' `define-public-edge` ')),
-   'held/substitute-id-keep-17': ('trc', lambda t: R(t, '| DFT-01 | real public/private closure', '| RA8-FAKE | real public/private closure')),
+   'held/substitute-req-id': ('trc', lambda t: R(t, '| DFT-01 | real public/private closure', '| RA8-FAKE | real public/private closure')),
    'held/traceability-wp99': ('trc', lambda t: t.replace('| T8-PUBPRIV | WP-12 |', '| T8-PUBPRIV | WP-99 |', 1)),
    'held/traceability-ghost-test': ('trc', lambda t: t.replace('| T8-PUBPRIV | WP-12 |', '| T8-NOPE | WP-12 |', 1)),
+   'held/req-test-arbitrary-prose': ('trc', lambda t: t.replace('| canonical files | T8-XREF |', '| canonical files | arbitrary test prose |', 1)),
+   'held/req-interface-arbitrary-prose': ('trc', lambda t: t.replace('| `define-ra-closure-roots` | boundary schemas | T8-PUBPRIV |', '| arbitrary interface prose | boundary schemas | T8-PUBPRIV |', 1)),
+   'held/req-owner-arbitrary-prose': ('trc', lambda t: t.replace('| `define-ra-closure-roots` | boundary schemas | T8-PUBPRIV |', '| `define-ra-closure-roots` | arbitrary owner prose | T8-PUBPRIV |', 1)),
+   'held/req-wp-wrong-existing': ('trc', lambda t: t.replace('| T8-PUBPRIV | WP-12 |', '| T8-PUBPRIV | WP-08 |', 1)),
  },
  'V8-RA-DELTAS': {
    'drop-to-six':           ('schema', lambda t: R(t, '  (:delta RA-SIDE    :seat SidecarSourceProfile/1     :owner S26 :requirement RA8-SIDE  :test T8-SIDE))', '  )')),
@@ -1253,11 +1706,17 @@ MUT = {
    'held/delta-nonexistent-seat': ('schema', lambda t: t.replace('(:delta RA-EPOCH   :seat CanonicalCitationURI/1   :owner S25', '(:delta RA-EPOCH   :seat NoSuchType/1   :owner S25', 1)),
    'held/delta-shared-seat': ('schema', lambda t: t.replace('(:delta RA-CONT    :seat ContinuityPolicy/1', '(:delta RA-CONT    :seat CanonicalCitationURI/1', 1)),
    'held/delta-ghost-owner': ('schema', lambda t: t.replace('(:delta RA-EPOCH   :seat CanonicalCitationURI/1   :owner S25', '(:delta RA-EPOCH   :seat CanonicalCitationURI/1   :owner S999', 1)),
+   'held/delta-req-not-in-traceability': ('trc', lambda t: re.sub(r'(?m)^\| RA8-JURNS \|[^\n]*\n', '', t, count=1)),
+   'held/delta-test-not-in-qualification': ('qual', lambda t: t.replace('/MARK/FROST/JURNS`', '/MARK/FROST`', 1)),
  },
  'V8-WP': {
    'held/wp-evidence-absent': ('schema', lambda t: t.replace(':wp WP-03 :file "WP-03.md" :evidence "Legal IR"', ':wp WP-03 :file "WP-03.md" :evidence "ZZZ_ABSENT_EVIDENCE"', 1)),
    'held/wp-future-mapped-to-file': ('schema', lambda t: t.replace(':concept MEMORY_KERNEL            :wp FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED :file "none"', ':concept MEMORY_KERNEL            :wp FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED :file "WP-11.md"', 1)),
    'held/wp-ghost-file': ('schema', lambda t: t.replace(':concept COGNITION_DAG            :wp WP-08 :file "WP-08.md"', ':concept COGNITION_DAG            :wp WP-08 :file "WP-99.md"', 1)),
+   'held/wp-concept-removed': ('schema', lambda t: re.sub(r'\n  \(:concept COGNITION_DAG[^\n]*', '', t, count=1)),
+   'held/wp-wrong-existing-file': ('schema', lambda t: t.replace(':concept COGNITION_DAG            :wp WP-08 :file "WP-08.md"', ':concept COGNITION_DAG            :wp WP-07 :file "WP-07.md"', 1)),
+   'held/wp-bad-future-marker': ('schema', lambda t: t.replace(':concept MEMORY_KERNEL            :wp FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED :file "none"', ':concept MEMORY_KERNEL            :wp ARBITRARY_FUTURE_MARKER :file "none"', 1)),
+   'held/wp-duplicate-concept': ('schema', lambda t: t.replace('  (:concept NEURAL_PROPOSER          :wp WP-07 :file "WP-07.md" :evidence "neural runtime")', '  (:concept NEURAL_PROPOSER          :wp WP-07 :file "WP-07.md" :evidence "neural runtime")\n  (:concept NEURAL_PROPOSER          :wp WP-07 :file "WP-07.md" :evidence "neural runtime")', 1)),
  },
 }
 
@@ -1348,41 +1807,13 @@ def do_selftest():
     return 0
 
 def do_manifest(overrides):
-    """Recompute every non-self artifact SHA-256 declared in the manifest and compare to its pin; verify the file
-    exists and that no path row is duplicated. A working-tree drift (e.g. MANDATORY->ADVISORY in the schema without
-    updating the manifest) makes the real SHA differ from the pin and is REJECTED. --file KEY=PATH overrides one
-    artifact so a mutation can be injected. Prints OK/VIOLATION; exit 0/3/2."""
+    """CLI wrapper over g_manifest (used by the orchestrator MAN section and MK10 manifest-drift meta-kill)."""
     try:
-        F = load(overrides)
-        man = F['man']
-        rows = re.findall(r'\|\s*`([0-9a-f]{64})`\s*\|\s*`([^`]+)`\s*\|', man)
-        self_rows = re.findall(r'\|\s*\(self\)\s*\|\s*`([^`]+)`\s*\|', man)
-        v = 0; why = []
-        if len(self_rows) != 1:
-            v += 1; why.append('self-rows!=1:%d' % len(self_rows))
-        seen = set()
-        for pin, path in rows:
-            if path in seen:
-                v += 1; why.append('duplicate-row:' + path)
-            seen.add(path)
-            bn = os.path.basename(path)
-            if bn in BYBASENAME and BYBASENAME[bn] in F:
-                content = F[BYBASENAME[bn]]
-            else:
-                fp = os.path.join(ROOT, path)
-                if not os.path.isfile(fp):
-                    v += 1; why.append('missing-file:' + path); continue
-                content = readpath(fp)
-            actual = hashlib.sha256(content.encode('utf-8')).hexdigest()
-            if actual != pin:
-                v += 1; why.append('SHA-DRIFT:' + bn)
-        if not rows:
-            v += 1; why.append('no-pinned-rows')
+        v, reason = g_manifest(load(overrides))
     except Exception as e:
         print('ERROR ' + type(e).__name__ + ': ' + str(e)); return 2
-    if v == 0:
-        print('OK manifest: %d pinned artifacts match, 1 self' % len(rows)); return 0
-    print('VIOLATION ' + '; '.join(why[:8])); return 3
+    print(('OK ' if v == 0 else 'VIOLATION ') + reason)
+    return 0 if v == 0 else 3
 
 def do_genrun(verbose=False):
     """Property-based mutation families GENERATED from the declared schema/registries (never tied to one literal
