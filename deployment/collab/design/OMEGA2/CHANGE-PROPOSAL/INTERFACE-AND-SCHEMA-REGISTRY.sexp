@@ -40,6 +40,8 @@
   :signature-owner "n/a (protocol)" :consumers (S03) :classification :NORMATIVE)
 (define-interface LanguageCognitionLayer/1   :owner S04 :seat "V1.6-SCHEMAS.sexp §3" :version "1" :new t
   :signature-owner "cognition layer owner" :consumers (S04 S06 S09) :classification :NORMATIVE)
+(define-interface CognitionResult/1          :owner S04 :seat "V1.6-SCHEMAS.sexp §3" :version "1" :new t
+  :signature-owner "cognition layer owner" :consumers (S04 S09 S12) :classification :NORMATIVE)
 (define-interface MemoryProjection/1         :owner S19 :seat "V1.6-SCHEMAS.sexp §4" :version "1" :new t
   :signature-owner "memory kernel" :consumers (S03 "proposers") :classification :NORMATIVE)
 (define-interface MemoryPolicy/1             :owner S19 :seat "V1.6-SCHEMAS.sexp §4" :version "1" :new t

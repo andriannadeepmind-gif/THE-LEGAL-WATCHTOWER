@@ -46,9 +46,15 @@ C1 interpretive (immutable records + detached `LifecycleRecord/1` + single `Cano
 adapter-based (`OCRPerceptionAdapter`)· καμία OCR engine/runtime δεν είναι source of truth (ίδια bytes ⇒ ίδια
 manifestation identity).
 
-## 4. Public Legal Language Cognition Layer (`V6I-13`)
+## 4. Public Legal Language Cognition Layer (`V6I-13` · seat **WP-08**, όχι WP-06)
 **Καμία δεύτερη reasoning engine.** Προστίθεται `LanguageCognitionLayer/1` **μέσα** στον υπάρχοντα Public Legal
-Discernment Engine, ως composition + language front-end, επαναχρησιμοποιώντας `greek-nlp-core.lisp`,
+Discernment Engine (**WP-08 core** — WP-08.md:19 «Deliverable 6 … composition S3+S4+S6+S7+S9, no second engine»),
+ως **construction contract**: ordered stage DAG (`cognition-stage-dag`, COG-1..COG-12, κάθε στάδιο `:symbolic-only t`)
+πάνω σε typed I/O records (`MorphLattice/1`, `PackedParseForest/1`, `CoreferenceRecord/1`, `DiscourseState/1`,
+`LegalSemanticAlternative/1`, `ClarificationState/1`, `PromotionEvidence/1`, `CognitionResult/1`, error taxonomy
+`CognitionError`), κάθε `CognitionCapability` mapped **ακριβώς μία φορά** σε existing seat ή declared extension
+(`V6I-COG-one-to-one`)· symbolic-only execution path πλήρες (`V6I-COG-symbolic-only`). Composition + language
+front-end, επαναχρησιμοποιώντας `greek-nlp-core.lisp`,
 `greek-tokenizer-advanced.lisp`, `greek-lemmatizer.lisp`, `legal-casegrammar.lisp[general]`,
 `greek-legislation-ontology.lisp`, `legal-ast.lisp`, `legal-inference-engine.lisp`, `legal-deontic.lisp`,
 `legal-event-calculus.lisp`, `legal-dialectic.lisp`, `legal-qa.lisp`, `legal-reasoning-bridge.lisp`, `memory.lisp`.
@@ -67,26 +73,34 @@ generation· package boundaries + forbidden dependencies· immutable/versioned i
 incremental/hot-swappable analyzers μέσω capability registry· **κανένα** `cl:read`/`eval`/`macroexpand`/
 `compile` πάνω σε external bytes· **καμία** «Python-σε-Lisp» υλοποίηση.
 
-## 5. Πλήρης Memory Architecture (`V6I-05/14/15`)
-**Μία μόνο έδρα μνήμης:** ο υπάρχων Memory Kernel / `memory.lisp` — **EXTEND**, καμία δεύτερη. `MemoryType`
-(13): working/context, episodic, semantic, procedural, prospective goals, source/provenance, temporal,
-argument/counterargument, uncertainty/contradiction, user-preference, skill/capability, meta-memory,
-**private client/matter (deferred private type)**. `MemoryScope`: `public | user | client | matter | ephemeral`.
-`MemoryPolicy/1`: retention, forgetting, consolidation, explainable recall, correction/supersession, scope
-isolation. **Κανένα μοντέλο** δεν κατέχει/τροποποιεί μνήμη — λαμβάνει `MemoryProjection/1` (scoped) και
-επιστρέφει `CandidateInterpretation/1`· canonical `MemoryEvent/1` γράφεται **μόνο** από την authorized write
-authority. Αντικατάσταση μοντέλου ⇒ **byte-verifiable memory continuity**. Πλήρης κάλυψη (EXISTING/PARTIAL/
-MISSING) στο `V1.6-CANDIDATE-MANIFEST.md`.
+## 5. Πλήρης Memory Architecture (`V6I-05/14/15` · **PUBLIC base / PRIVATE extension split**)
+**Μία μόνο έδρα μνήμης:** ο υπάρχων Memory Kernel / `memory.lisp` — **EXTEND**, καμία δεύτερη. **Public base
+(defect 4):** `MemoryEvent/1` φέρει **μόνο** `PublicMemoryType × PublicMemoryScope` — 12 public types
+(working/context, episodic, semantic, procedural, prospective goals, source/provenance, temporal,
+argument/counterargument, uncertainty/contradiction, user-preference, skill/capability, meta-memory) × 3 public
+scopes (`public | user | ephemeral`). **Κανένας private τύπος/scope (client/matter/`PRIVATE_CLIENT_MATTER`) στο
+public hash-bearing contract** — verified ως transitive type-closure (`V6S12`, `V6I-MEM-public-base-clean`). Ο
+private τύπος ζει στο `PrivateMemoryEvent/1` (§5 extension, `:public-dependency nil`), που **καταναλώνει** το
+public base by ref, ποτέ αντίστροφα. `MemoryPolicy/1`: retention, forgetting, consolidation, explainable recall,
+correction/supersession, scope isolation. **Κανένα μοντέλο** δεν κατέχει/τροποποιεί μνήμη — λαμβάνει
+`MemoryProjection/1` (scoped) και επιστρέφει `CandidateInterpretation/1`· canonical `MemoryEvent/1` γράφεται
+**μόνο** από την authorized write authority. Αντικατάσταση μοντέλου ⇒ **byte-verifiable memory continuity**.
+Πλήρης κάλυψη (EXISTING/PARTIAL/MISSING, με file:line:symbol) στο `V1.6-CANDIDATE-MANIFEST.md §5`: PROSPECTIVE_GOALS/
+EPISODIC **EXISTING** (memory.lisp record-goal/arm-intention/record-episode)· knowledge/ontology είναι **ξεχωριστή
+έδρα**, όχι semantic memory. **Η 13-type taxonomy δεν έχει owning WP** ⇒ `FUTURE BOOK REVISION REQUIRED` (μόνη
+substrate-επικάλυψη = WP-03 bitemporal store)· **όχι** WP-11.
 
-## 6. Σταθερά καθολικά contracts (§6 · `V6I-11/12`)
-13 versioned contracts, type-closed & non-circular (`V1.6-SCHEMAS.sexp §2`), το καθένα με identity
-construction (content-address του immutable BODY), version, required/conditional fields, temporal semantics,
-provenance, signature scope, owner, valid transitions, error taxonomy, migration, falsifier:
-`PerceptionEnvelope/1` (new), `CandidateInterpretation/1` (reuse `neural-candidate/1`), `LegalIR/1` (reuse),
-`MemoryEvent/1` (reuse+extend memory.lisp), `CapabilityManifest/1` (new), `ToolInvocation/1` (reuse
-`neural-task/1` shape), `Plan/1`, `ActionIntent/1`, `Approval/1` (reuse L12 approval), `ExecutionReceipt/1`
-(new), `SafetyState/1` (new), `TrustBundle/1` (reuse), `DeclassificationReceipt/1` (reuse). **Κανένας
-vendor type** στον πυρήνα Legal IR/memory — adapter-specific δεδομένα ζουν μόνο σε
+## 6. Σταθερά καθολικά contracts (§6 · `V6I-11/12/REF`)
+13 versioned contracts, type-closed & non-circular (`V1.6-SCHEMAS.sexp §2`). **Μία πηγή αλήθειας (defect 7):**
+οι υπάρχοντες canonical τύποι **REFERENCED** by identity/version (`define-reference`) — **ΔΕΝ** ξαναορίζονται σε
+απλοποιημένη v1.6 μορφή: `CandidateInterpretation/1` → `neural-candidate/1`, `LegalIR/1` → legal-ast/LEGAL-IR-
+SEMANTIC-CONTRACT, `ActionIntent/1` → `cockpit_intent`, `Approval/1` → approval-policy (L12), `TrustBundle/1` →
+MLTP LocalTrustState, `DeclassificationReceipt/1` → declassification gateway. **Genuinely-new records**
+(`define-record`): `PerceptionEnvelope/1`, `MemoryEvent/1` (public base πάνω στη memory.lisp substrate),
+`CapabilityManifest/1`, `ExecutionReceipt/1`, `SafetyState/1`. **Reference-derived** (`:extends` canonical seat,
+προσθέτει μόνο v1.6 fields): `ToolInvocation/1` (`neural-task/1`), `Plan/1` (`cockpit_intent`). Ένας τύπος
+ορισμένος **και** ως record **και** ως reference (ή δύο φορές) = duplicate source of truth ⇒ **REJECT** (`V6S13`).
+**Κανένας vendor type** στον πυρήνα Legal IR/memory — adapter-specific δεδομένα ζουν μόνο σε
 `CapabilityManifest`/`PerceptionEnvelope` και normalize πριν κάθε canonical write.
 
 ## 7. Μελλοντικό Private / Real-time / Embodiment boundary (`V6I-07/16`)
@@ -148,7 +162,27 @@ semantic/legal/security/qualification proof.**
 ## 12. STATUS
 `SPEC v1.6 CURRENT CANDIDATE — NOT FROZEN — NOT QUALIFIED — IMPLEMENTATION BLOCKED`. No freeze/re-freeze, no
 Implementation Book update, no WP-00, no implementation, no qualification claim, χωρίς νέα ρητή εντολή
-δημιουργού.
-`V1.6 CANDIDATE INTEGRATED — READY FOR INDEPENDENT ADVERSARIAL REVIEW` (υπό τα predeclared, UNEXECUTED tests
+δημιουργού. Η προηγούμενη ετυμηγορία «READY FOR INDEPENDENT ADVERSARIAL REVIEW» είναι **ΑΝΑΣΤΑΛΜΕΝΗ**·
+εκτελέστηκε μία bounded corrective integration micro-pass ([0152]) που έκλεισε 9 defects (§13).
+`V1.6 INTEGRATION CORRECTED — READY FOR BOUNDED ADVERSARIAL REVIEW` (υπό τα predeclared, UNEXECUTED tests
 και τα finite unknowns του manifest· τα consistency audits είναι structural/document checks, όχι semantic/
 legal/security/qualification proof).
+
+## 13. Corrective integration micro-pass [0152] — 9 defects closed (design-only)
+1. **WP reconciliation:** actual-purpose→impact πίνακας WP-00..WP-14 (migration §2, `define-wp-purpose` στο
+   SUBSYSTEM-REGISTRY)· διόρθωση cognition→**WP-08**, TrustBundle→**WP-06**, neural/model→**WP-07**,
+   DeclassificationReceipt→**WP-12**· memory taxonomy = `FUTURE_BOOK_REVISION` (καμία WP)· parse-check `WPX`.
+2. **ONNX/model independence:** ακριβείς FUTURE Book modifications (migration §6: WP-07.md:25/17, v1.1:118,
+   CAP-40, R-32) ώστε κάθε proposer = optional replaceable adapter· ο frozen Book **δεν** αλλάζει· `V6S15`.
+3. **Memory disposition:** manifest §5 ξαναχτισμένο από πραγματικό κώδικα (file:line:symbol)· knowledge/ontology
+   ≠ semantic memory· PROSPECTIVE_GOALS/EPISODIC **EXISTING**.
+4. **Private types out of public memory:** `MemoryEvent/1` public base = `PublicMemoryType × PublicMemoryScope`·
+   private → `PrivateMemoryEvent/1` (`:public-dependency nil`)· `V6I-MEM-public-base-clean`.
+5. **Transitive closure:** το manual public-build set αντικαταστάθηκε από real transitive type-closure (`V6S12`
+   + injected-mutation self-test `V6S12M`).
+6. **LanguageCognitionLayer construction contract:** stage DAG COG-1..12 (`:symbolic-only t`), typed I/O records,
+   error taxonomy, clarification state machine, promotion evidence, one-to-one capability→seat (`V6S14`).
+7. **No duplicate sources of truth:** existing canonical types → `define-reference` (identity/version)· `V6S13`.
+8. **Traceability:** §v1.6 επεκτάθηκε από 6 umbrella σε 23 λεπτομερείς `R-V6-*` γραμμές (owner/test/future-WP).
+9. **Audit strengthened to PARSE:** `V6S11-V6S17` + `WPX`, καθεμία non-vacuous με injected-mutation self-test
+   (`…M`). Audit = **56/56 exit 0**· v1.5 **75/75**· v1.4 **158/158** regressions πράσινα.

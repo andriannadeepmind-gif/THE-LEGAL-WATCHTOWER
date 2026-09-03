@@ -298,16 +298,39 @@ C1x/D1x/F7/R8-event)· 30 tests· όλα predeclared **UNEXECUTED**· καμία
 Πηγές: `CHANGE-PROPOSAL-v1.6.md`, `V1.6-SCHEMAS.sexp`, `SUBSYSTEM-REGISTRY.sexp`,
 `INTERFACE-AND-SCHEMA-REGISTRY.sexp`. Όλα predeclared **UNEXECUTED**· καμία v1.4/v1.5 γραμμή δεν μεταβάλλεται.
 
-| R-V6 | Requirement | Subsystem | Interface | Owner seat | Test | Future WP | Invariant |
-|---|---|---|---|---|---|---|---|
-| R-V6-MEM | complete memory taxonomy (13 types, 5 scopes), model boundary, byte-verifiable continuity | S19 Memory Kernel | `MemoryEvent/1` + `MemoryProjection/1` + `MemoryPolicy/1` | memory.lisp (ONE seat, EXTEND) | V6Q-02/15 | WP-11 | V6I-05/14/15 |
-| R-V6-ADP | every tool a replaceable adapter (manifest, shadow/canary/rollback, fail-closed); no vendor canonical type | S20 Adapter plane | `CapabilityManifest/1` + `ToolInvocation/1` | capability registry | V6Q-03/17 | WP-14 | V6I-04/12 |
-| R-V6-SAFE | model/ONNX/cloud independence; SYMBOLIC_ONLY complete path | S21 SafetyState | `SafetyState/1` + `SemanticProposer` | safe-mode controller (EXTEND write-authority.lisp) | V6Q-01/07 | WP-00 | V6I-02/03/10 |
-| R-V6-COG | Public Language Cognition Layer (one seat, casegrammar SPLIT, no second engine) | S04 cognition | `LanguageCognitionLayer/1` | existing Public Legal Discernment Engine (EXTEND) | V6Q-14 | WP-06 | V6I-13 |
-| R-V6-PRIV | Private Matter Profile extension contract (interfaces only, never public dep) | S22 | `PrivateMatterProfile/1` | DEFERRED_PRIVATE | V6Q-09/11 | DEFERRED | V6I-07/16 |
-| R-V6-RTE | real-time + embodiment extension contracts (interfaces only, acyclic) | S23/S24 | `RealTimeAssistance/1` + `EmbodimentInterfaces/1` | DEFERRED_PRIVATE | V6Q-13 | DEFERRED | V6I-16 |
+Κάθε **λεπτομερής** v1.6 απαίτηση = ΜΙΑ γραμμή με ONE owner seat, ONE test/falsifier, ONE future-WP impact
+(αντικαθιστά τις 6 umbrella γραμμές). Το future-WP είναι **διορθωμένο** (grounded στα WP-NN.md): cognition→WP-08,
+neural/model→WP-07, memory taxonomy→`FUTURE_BOOK` (καμία WP δεν την κατέχει), adapters→WP-07+11+14.
 
-**Ισολογισμός v1.6 (candidate):** 6 `R-V6-*` requirements (memory, adapters, safety/model-independence,
-cognition, private, real-time/embodiment)· 6 seats· 6 future-WP mappings· όλα predeclared **UNEXECUTED**·
-καμία v1.4 `R-01..134` ή v1.5 `V5R-*` γραμμή/μέτρηση δεν μεταβάλλεται· απειλή Θ20 (proposer/adapter
-substitution & memory-scope leakage)· κανένα νέο engine/store/primitive/seat (μία έδρα ανά έννοια).
+| R-V6 | Detailed requirement | Subsystem | Interface / typed I/O | Owner seat (file:symbol) | Test/Falsifier | Future WP | Invariant |
+|---|---|---|---|---|---|---|---|
+| R-V6-MEM-01 | public memory base carries PublicMemoryType × PublicMemoryScope only (no client/matter/private) | S19 | `MemoryEvent/1` | memory.lisp:79 record-episode | V6Q-02 | FUTURE_BOOK (substrate WP-03) | V6I-MEM-public-base-clean |
+| R-V6-MEM-02 | model boundary: scoped projection in, candidate out; canonical write only by write-authority | S19 | `MemoryProjection/1` | memory.lisp + write-authority.lisp | V6Q-15 | FUTURE_BOOK | V6I-05/14 |
+| R-V6-MEM-03 | byte-verifiable memory continuity across model replacement | S19 | `MemoryEvent/1` | memory.lisp:167 verify-episode-chain | V6Q-02 | FUTURE_BOOK | V6I-14 |
+| R-V6-MEM-04 | prospective goals + armed intentions EXISTING (not missing) | S19 | `MemoryEvent/1` (:PROSPECTIVE_GOALS) | memory.lisp:203 record-goal · :247 arm-intention | V6Q-02 | WP-03 (substrate) | V6I-05 |
+| R-V6-MEM-05 | scope isolation + private→public only via receipt | S18/S19 | `DeclassificationReceipt/1` | boundary schemas (§1.3/§1.4) | V6Q-11 | WP-12 | V6I-15 |
+| R-V6-MEM-06 | private memory extension, no public dependency | S22 | `PrivateMemoryEvent/1` | DEFERRED_PRIVATE | V6Q-09 | DEFERRED | V6I-16 |
+| R-V6-ADP-01 | CapabilityManifest: versioned iface, digest, conformance, SLO, security, shadow/canary/rollback, fail-closed | S20 | `CapabilityManifest/1` | capability-registry.lisp | V6Q-17 | WP-07+WP-11+WP-14 | V6I-04 |
+| R-V6-ADP-02 | bounded ToolInvocation: scoped projection, latency budget, safety mode | S20 | `ToolInvocation/1` | capability-registry.lisp | V6Q-03 | WP-11 | V6I-04 |
+| R-V6-ADP-03 | no vendor identifier enters canonical Legal IR / memory | S20 | `CapabilityManifest/1` | normalize-before-write | V6Q-17 | WP-07 | V6I-12 |
+| R-V6-SAFE-01 | no mandatory model/ONNX/cloud anywhere in the public build | S03/S21 | `SemanticProposer` + `ONNXProposerAdapter` | legal-extraction-verify.lisp | V6Q-01 | WP-07 | V6I-02/10 |
+| R-V6-SAFE-02 | SYMBOLIC_ONLY is a complete architectural path | S21 | `SafetyState/1` + `SafetyMode` | safe-mode controller (EXTEND write-authority.lisp) | V6Q-07 | WP-08 | V6I-03/COG-symbolic-only |
+| R-V6-SAFE-03 | proposer never authority; malicious proposer ⇒ zero canonical writes | S03 | `SemanticProposer` | write-authority.lisp (ONE seat) | V6Q-01 | WP-07 | V6I-10 |
+| R-V6-COG-01 | Unicode normalization/segmentation + reversible tokenization with spans | S04 | `LanguageCognitionLayer/1` | greek-nlp-core.lisp + greek-tokenizer-advanced.lisp | V6Q-14 | WP-08 | V6I-13 |
+| R-V6-COG-02 | morphological lattice + constraint syntax packed parse forest | S04 | `MorphLattice/1` + `PackedParseForest/1` | greek-lemmatizer.lisp + legal-casegrammar.lisp[general] | V6Q-14 | WP-08 | V6I-13 |
+| R-V6-COG-03 | coreference/anaphora/discourse + inter-sentence/document linking | S04 | `CoreferenceRecord/1` + `DiscourseState/1` | greek-nlp-core.lisp (EXTEND) | V6Q-14 | WP-08 | V6I-13 |
+| R-V6-COG-04 | legal entities/citations/terms + temporal/deontic/conditional/exception/scope semantics | S04 | `LegalSemanticAlternative/1` | greek-legislation-ontology.lisp + legal-deontic.lisp + legal-event-calculus.lisp | V6Q-14 | WP-08 | V6I-13 |
+| R-V6-COG-05 | interpretive profiles + candidate→Legal IR promotion via the symbolic wall | S04 | `PromotionEvidence/1` + `InterpretiveProfile/1` | legal-extraction-verify.lisp + legal-ast.lisp + legal-reasoning-bridge.lisp | V6Q-14 | WP-08 | V6I-13/COG-symbolic-only |
+| R-V6-COG-06 | explicit ambiguity + clarification state machine (never a guess) | S04 | `ClarificationState/1` | legal-dialectic.lisp + condition/restart | V6Q-14 | WP-08 | V6I-06/13 |
+| R-V6-COG-07 | controlled NLG w/ citation+proof; declared coverage, UNKNOWN outside; no perfect-understanding claim | S04 | `CognitionResult/1` | legal-qa.lisp + citation/1 | V6Q-14 | WP-08 | V6I-13 |
+| R-V6-COG-08 | casegrammar SPLIT general→public / client-fact→private, no second implementation | S04/S22 | `casegrammar-split` | legal-casegrammar.lisp [SPLIT] | V6Q-14 | WP-08 / DEFERRED | V6I-13 |
+| R-V6-PRIV-01 | Private Matter Profile extension contract (interfaces only, never public dep) | S22 | `PrivateMatterProfile/1` | DEFERRED_PRIVATE | V6Q-09 | DEFERRED | V6I-07/16 |
+| R-V6-RT-01 | real-time assistance (streaming, human final authority, ephemeral) | S23 | `RealTimeAssistance/1` | DEFERRED_PRIVATE | V6Q-13 | DEFERRED | V6I-16 |
+| R-V6-EMB-01 | embodiment (independent emergency stop + sim/HIL gate + prior Approval) | S24 | `EmbodimentInterfaces/1` | DEFERRED_PRIVATE | V6Q-13 | DEFERRED | V6I-16 |
+
+**Ισολογισμός v1.6 (candidate):** 23 λεπτομερείς `R-V6-*` απαιτήσεις (6 memory + 3 adapters + 3 safety/model +
+8 cognition [incl. casegrammar-split=COG-08] + 1 private + 1 real-time + 1 embodiment), κάθε μία με ONE owner
+seat, ONE test/falsifier, ONE future-WP impact· future-WP **διορθωμένο** (cognition→WP-08, model→WP-07, memory→FUTURE_BOOK,
+adapters→WP-07+11+14)· όλα predeclared **UNEXECUTED**· καμία v1.4 `R-01..134` ή v1.5 `V5R-*` γραμμή/μέτρηση δεν
+μεταβάλλεται· απειλή Θ20 (proposer/adapter substitution & memory-scope leakage)· κανένα νέο engine/store/
+primitive/seat (μία έδρα ανά έννοια).
