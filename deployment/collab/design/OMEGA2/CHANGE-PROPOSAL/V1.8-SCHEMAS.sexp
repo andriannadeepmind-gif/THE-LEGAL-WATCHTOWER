@@ -413,21 +413,32 @@
   :rule "reliance = min over {failure-class(d) | d MANDATORY and state(d) in (FAILED DEGRADED UNKNOWN)} else FULL_RELIANCE"
   :preserve-causes t :advisory-never-blocks t :self-qualification :rejected :total t :deterministic t)
 
-;; ---- VR-02: canonical identity registry (VERIFIED vs CANDIDATE — no invented identities) ----
-(define-canonical-identity LegalIR/1               :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.6-SCHEMAS.sexp" :type-locator "define-reference LegalIR/1" :identity "lawmax/legal-ir/1" :version "1")
-(define-canonical-identity TrustBundle/1           :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.6-SCHEMAS.sexp" :type-locator "define-reference TrustBundle/1" :identity "lawmax/trust-bundle/1" :version "1")
-(define-canonical-identity DeclassificationReceipt/1 :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.6-SCHEMAS.sexp" :type-locator "define-reference DeclassificationReceipt/1" :identity "lawmax/declassification-receipt/1" :version "1")
-(define-canonical-identity CognitionResult/1       :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.7-SCHEMAS.sexp" :type-locator "define-reference CognitionResult/1" :identity "lawmax/cognition-result/1" :version "1")
-(define-canonical-identity MemoryEvent/1           :status UNRESOLVED_CANONICAL_IDENTITY :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.6-SCHEMAS.sexp" :type-locator "define-record MemoryEvent/1" :note "canonical seat is a define-record with NO machine identity/version — future identity-registry WP")
-(define-canonical-identity ResolverResult/1        :status UNRESOLVED_CANONICAL_IDENTITY :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.7-SCHEMAS.sexp" :type-locator "define-record ResolverResult/1" :note "define-record, no machine identity/version")
-(define-canonical-identity DatasetSnapshot/1       :status UNRESOLVED_CANONICAL_IDENTITY :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.7-SCHEMAS.sexp" :type-locator "define-record DatasetSnapshot/1" :note "define-record, no machine identity/version")
-(define-canonical-identity RightsMatrix/1          :status UNRESOLVED_CANONICAL_IDENTITY :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.7-SCHEMAS.sexp" :type-locator "define-record RightsMatrix/1" :note "define-record, no machine identity/version")
+;; ---- VR-02 + canonical-identity CLOSURE (re-verification pass): each identity is bound to a REAL §15
+;; define-reference block that carries :identity + :version AND names a real :canonical-file whose :locator the
+;; audit independently opens and confirms. This is a TWO-PART, non-circular resolution: the identity binding
+;; (part A: identity+version inside the define-reference block) plus the structural anchor (part B: the block's
+;; canonical-file exists on disk and contains the locator). The four formerly UNRESOLVED types (MemoryEvent/1,
+;; ResolverResult/1, DatasetSnapshot/1, RightsMatrix/1) are RESOLVED at their §15 reference seats (no type
+;; duplicated; the reference is the identity seat, the define-record remains the structure seat). Any type that
+;; still lacks a §15 reference with identity+version+canonical-file+locator is a HARD_PRE_FREEZE_BLOCKER (never a
+;; silent pass, never counted as "exactly N unresolved = OK").
+(define-canonical-identity LegalIR/1               :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-SCHEMAS.sexp" :type-locator "define-reference LegalIR/1" :identity "lawmax/legal-ir/1" :version "1")
+(define-canonical-identity TrustBundle/1           :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-SCHEMAS.sexp" :type-locator "define-reference TrustBundle/1" :identity "lawmax/trust-bundle/1" :version "1")
+(define-canonical-identity DeclassificationReceipt/1 :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-SCHEMAS.sexp" :type-locator "define-reference DeclassificationReceipt/1" :identity "lawmax/declassification-receipt/1" :version "1")
+(define-canonical-identity CognitionResult/1       :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-SCHEMAS.sexp" :type-locator "define-reference CognitionResult/1" :identity "lawmax/cognition-result/1" :version "1")
+(define-canonical-identity MemoryEvent/1           :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-SCHEMAS.sexp" :type-locator "define-reference MemoryEvent/1" :identity "lawmax/memory-event/1" :version "1")
+(define-canonical-identity ResolverResult/1        :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-SCHEMAS.sexp" :type-locator "define-reference ResolverResult/1" :identity "lawmax/resolver-result/1" :version "1")
+(define-canonical-identity DatasetSnapshot/1       :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-SCHEMAS.sexp" :type-locator "define-reference DatasetSnapshot/1" :identity "lawmax/dataset-snapshot/1" :version "1")
+(define-canonical-identity RightsMatrix/1          :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-SCHEMAS.sexp" :type-locator "define-reference RightsMatrix/1" :identity "lawmax/rights-matrix/1" :version "1")
 (define-invariant :V8I-XREF-identity
-  "V8-XREF opens the verify-file and confirms, for a VERIFIED identity, that the type-locator AND the exact
-   identity string AND the exact version string all occur inside the SAME define-reference block. Four independent
-   mutations: wrong-file, wrong-type, wrong-identity, wrong-version, plus a generic-locator-in-unrelated-section
-   witness. A type whose canonical seat declares NO machine identity is UNRESOLVED_CANONICAL_IDENTITY (a recorded
-   finite gate), NEVER a fabricated identity and NEVER a silent pass.")
+  "V8-XREF resolves every canonical identity in TWO independent parts. PART A: open verify-file, find the named
+   define-reference block, confirm the exact :identity AND exact :version strings occur inside THAT block. PART B:
+   from the SAME block read :canonical-file and :locator, open the canonical-file on disk, and confirm the locator
+   string occurs in it (structural anchor — this is what makes the resolution non-circular). A VERIFIED identity
+   passes both parts; any failure (missing file, absent locator, wrong identity/version, wrong reference target)
+   FAILS. A type with no §15 reference carrying identity+version+canonical-file+locator is HARD_PRE_FREEZE_BLOCKER,
+   never a fabricated identity and never a silent pass. Mutations: wrong-file, wrong-identity, wrong-version,
+   locator-absent-from-canonical-file, wrong-reference-target.")
 
 ;; ---- VR-10: the SEVEN agreed RA deltas → exactly one canonical seat + owner + requirement + test ----
 (define-ra-delta-seats

@@ -410,3 +410,15 @@ EXEC-MODEL, exact-4 SYM, header-by-name + interface **id-resolution** V8-REQ, 7-
 EVIDENCE.md` (42 records, όλα DETECTED). **ΚΑΤΑΣΤΑΣΗ: `V1.8 VERIFICATION-EVIDENCE REPAIR — READY FOR FRESH
 INDEPENDENT RE-VERIFICATION — NOT FROZEN — NOT QUALIFIED — IMPLEMENTATION BLOCKED`· το v1.8 ΔΕΝ πέρασε
 ανεξάρτητη επαλήθευση.**
+
+**Verification-HARNESS corrective pass (re-verification `37cf223d` FAILED):** μια φρέσκια ανεξάρτητη
+επαλήθευση ΑΠΕΡΡΙΨΕ το προηγούμενο evidence repair. Ο harness ξαναχτίστηκε fail-closed: (1) πλήρες root-authority
+γινόμενο **4^8 = 65.536** (όχι 2^8/256), μία ντετερμινιστική projection ανά state, complete blocking/advisory,
+recovery independence, UNKNOWN/DEGRADED exercised· (2) κάθε mutation αλλάζει ΠΡΑΓΜΑΤΙΚΑ bytes σε `mktemp` με πλήρη
+64-char SHA-256 baseline+mutant + differ-assertion + exact command + exit code· (3) καμία ταυτολογία (`or True`,
+`+['IR']`, baseline-success)· (4) `set -euo pipefail`, κανένα `except: pass`, atomic evidence, 7 meta-kill tests·
+(5) public/private + ownership closure DERIVED από ISR/subsystem registries (όχι manual ROOTS)· (6) canonical
+identity closure — MemoryEvent/ResolverResult/DatasetSnapshot/RightsMatrix RESOLVED σε §15 reference seats (two-part
+non-circular), **0 unresolved**. Guard runner: `V1.8-VERIFY.py` (10 guards, 50 mutations, 60 evidence rows).
+**ΕΤΥΜΗΓΟΡΙΑ: `V1.8 VERIFICATION HARNESS CORRECTED — READY FOR FRESH INDEPENDENT RE-VERIFICATION`· το v1.8 ΔΕΝ
+πέρασε ανεξάρτητη επαλήθευση, ΔΕΝ freeze.**

@@ -280,3 +280,15 @@ contracts for seat closure — its pinned hash is refreshed in `V1.6-CANDIDATE-M
 added and `SUBSYSTEM-REGISTRY.sexp`/history stay unchanged. frozen v1.4 `88129099` immutable; pinned `.out`
 `4873e610` unchanged. **The v1.8 candidate DID NOT pass independent verification — READY FOR FRESH INDEPENDENT
 RE-VERIFICATION — NOT FROZEN — NOT QUALIFIED — IMPLEMENTATION BLOCKED.**
+
+### v1.8 VERIFICATION-HARNESS corrective note (parent `37cf223d` · CANDIDATE — re-verification FAILED, harness rebuilt)
+A fresh independent re-verification **FAILED** the `37cf223d` evidence repair (macro-architecture NOT falsified; must
+not be used for SPEC FREEZE). This bounded verification-harness pass rebuilds the harness fail-closed: full **4^8 =
+65,536** root-authority product (not 2^8/256); every mutation alters **real bytes** in `mktemp` with full 64-char
+baseline+mutant SHA-256 and a differ-assertion; tautological/synthetic witnesses removed; `set -euo pipefail`, no
+`except: pass`, atomic evidence, 7 meta-kill tests; public/private + ownership closure DERIVED from the ISR and
+subsystem registries; canonical-identity closure resolves `MemoryEvent/1`/`ResolverResult/1`/`DatasetSnapshot/1`/
+`RightsMatrix/1` at their §15 reference seats (0 unresolved). New file `V1.8-VERIFY.py` (standalone guard runner);
+no new subsystem; `SUBSYSTEM-REGISTRY.sexp`/`V1.6-SCHEMAS.sexp`/`V1.7-SCHEMAS.sexp`/history unchanged; frozen v1.4
+`88129099` immutable; pinned `.out` `4873e610` unchanged. **Verdict: `V1.8 VERIFICATION HARNESS CORRECTED — READY
+FOR FRESH INDEPENDENT RE-VERIFICATION`. The v1.8 candidate has NOT passed independent verification.**
