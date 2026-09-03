@@ -90,3 +90,19 @@ DeclassificationReceipt/1 + CapabilityManifest fail-closed + gated self-improvem
 crypto-bound actor evidence, trusted issuer registry, deterministic control-domain partition,
 quorum σε distinct control-domain components· POST-C2, **design-only, CANDIDATE** (μη frozen,
 μη υλοποιημένο· V5KW-D3-7..12 UNEXECUTED).
+
+## Θ21 — v1.8 pre-freeze threats (design-only)
+- **Continuity capture:** a custodian is NOT institutional/approval authority; one person may invoke only a
+  temporary time-limited `EmergencyFreeze`; extension/thaw needs quorum (no permanent single-custodian DoS)
+  (`:V8I-CONT-separated`).
+- **Re-anchoring forgery:** a root signature alone cannot re-anchor; `ReAnchoringManifest/1` requires pre-existing
+  pre-transition commitments/timestamps/witnesses/archival bytes; the same versioned citation URI never resolves
+  to a different Expression (`:V8I-EPOCH-one-expression`).
+- **Correction-privacy leak:** `PublicCorrectionEvent/1` carries no re-published content and no PII; digests may
+  be sensitive; the chain verifies with `content unavailable/withdrawn` without retaining withdrawn public content
+  (`:V8I-CORR-privacy`).
+- **Silent epoch demotion / algorithm downgrade:** an emergency transition creates a new monotonic
+  `RECOVERY_EPOCH N+1`, never a demotion; the verifier never silently reverts or accepts a single-algorithm
+  fallback (`:V8I-FROST-precise`).
+- **Sidecar lawful-basis overreach:** `SidecarSourceProfile/1` is spec-only + creator-gated; lawful basis is
+  per source/controller/purpose and `PENDING_LEGAL_VALIDATION`; no source (incl. ΦΕΚ) is zero-GDPR-weight.

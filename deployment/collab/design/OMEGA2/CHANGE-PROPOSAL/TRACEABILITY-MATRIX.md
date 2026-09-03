@@ -370,3 +370,32 @@ primitive/seat (μία έδρα ανά έννοια).
 μία ONE owner seat / ONE test-falsifier / ONE future-WP· namespace `RA-*`/`RA-Q-*` ⇒ οι v1.4, v1.5 (`V5R-*`)
 και v1.6 (`R-V6-*`) μετρήσεις **αμετάβλητες** (καμία νέα `R-\d`/`KW`/`Q\d\d` γραμμή)· FUTURE_BOOK ==
 FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED (memory/resolver/license/tenant)· κανένα νέο engine/store/seat.
+
+## §v1.8 FINAL PRE-FREEZE INTEGRATION (CANDIDATE · additive· namespace `DFT-*`/`RA8-*`/`T8-*` avoids v1.4 counts)
+
+Πηγές: `CHANGE-PROPOSAL-v1.8.md`, `V1.8-SCHEMAS.sexp`. Κάθε requirement ΜΙΑ owner seat, ΜΙΑ test/falsifier,
+ΜΙΑ future-WP. Όλα predeclared **UNEXECUTED**· καμία v1.4–v1.7 γραμμή/μέτρηση δεν μεταβάλλεται.
+
+| id | requirement | subsystem | interface / typed I/O | owner seat (file:symbol) | test/falsifier | future WP | invariant |
+|---|---|---|---|---|---|---|---|
+| DFT-01 | real public/private closure over all edge families | S18 | `define-public-edge` | boundary schemas | T8-PUBPRIV | WP-12 | :V8I-PUBPRIV-all-families |
+| DFT-02 | WP validation opens real WP-NN.md | cross | `define-wp-reconciliation` | WP-NN.md | T8-WP | cross | :V8I-WP-real |
+| DFT-03 | canonical reference opens real file+locator | cross | `define-reference` | canonical files | T8-XREF | cross | :V8I-XREF-real |
+| DFT-04 | store/write-authority uniqueness | cross | `define-write-authority` | write-authority.lisp | T8-OWN | cross | :V8I-OWN-universal |
+| DFT-05 | capability opens real code/doc seat | S04 | `define-capability-seat` | source/*.lisp | T8-CAP | WP-08 | :V8I-CAP-real |
+| DFT-06 | ClarifiedInterpretation conditional cardinality | S04 | `ClarifiedInterpretation/1` | legal-dialectic.lisp | T8-CLARIFY | WP-08 | :V8I-CLARIFY-cardinality |
+| DFT-07 | real clarification lifecycle graph | S04 | `ClarificationRequest/1` + `ClarificationResponse/1` + `cognition-graph-v8` | legal-dialectic.lisp | T8-COGLIFE | WP-08 | :V8I-COGGRAPH-acyclic-except-resume |
+| DFT-08 | symbolic-only path exact mutations + equivalence | S21 | `symbolic-only-path` | write-authority.lisp | T8-SYM | WP-07/WP-08 | :V8I-SYM-exact |
+| DFT-09 | real negative traceability mutation | cross | §v1.8 rows | traceability | T8-REQ | cross | :V8I-CAP-real |
+| DFT-10 | Root Authority product state + derived projection | S14 | `RootAuthorityStatus/1` + `RelianceProjection/1` | provider_registry | T8-RASTATUS | WP-14 | :V8I-RASTATUS-product |
+| RA8-EPOCH | canonical citation identity + multi-commitment + re-anchoring | S25 | `CanonicalCitationURI/1` + `MultiCommitment/1` + `ReAnchoringManifest/1` | canonical-uris.lisp (EXTEND) | T8-EPOCH | FUTURE_BOOK | :V8I-EPOCH-one-expression |
+| RA8-CONT | continuity policy; separated authorities; emergency freeze | S11 | `ContinuityPolicy/1` + `EmergencyFreeze/1` | MLTP governance | T8-CONT | WP-06 | :V8I-CONT-separated |
+| RA8-CORR | public correction with privacy | S18 | `PublicCorrectionEvent/1` + `RestrictedForensicRecord/1` | boundary schemas | T8-CORR | WP-12 | :V8I-CORR-privacy |
+| RA8-K | tiered reproducibility; metrics≠legal truth | S15 | `CitationMetricV8/1` | ai-citation-strategy.lisp (EXTEND) | T8-K | WP-13 | :V8I-RA-K-tiered |
+| RA8-SIDE | sidecar source profile (spec-only, creator-gated) | S26 | `SidecarSourceProfile/1` | INTERFACE_ONLY | T8-SIDE | DEFERRED | :V8I-SIDE-gdpr-honest |
+| RA8-MARK | status vs trademark/certification separation | S25 | `LawmaxStatusVsMark/1` | LAWMAX-LICENSE-POLICY.md | T8-MARK | FUTURE_BOOK | :V8I-MARK-separated |
+| RA8-FROST | FROST/PQ precise claims; recovery epoch | S10 | `CryptoSuiteRegistry/1` + `RecoveryEpoch/1` | MLTP v3 | T8-FROST | WP-06 | :V8I-FROST-precise |
+
+**Ισολογισμός v1.8 (candidate):** 17 rows (10 `DFT-*` + 7 `RA8-*`), κάθε μία ONE owner seat / ONE test /
+ONE future-WP· namespace `DFT-*`/`RA8-*`/`T8-*` ⇒ v1.4–v1.7 μετρήσεις αμετάβλητες· FUTURE_BOOK ==
+FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED.

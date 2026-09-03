@@ -1158,3 +1158,11 @@ expiry· `V6Q-18` self-improvement authorization. **Τα consistency audits δη
 document checks — ΟΧΙ semantic/legal/security/qualification proof.**
 
 Design-only· κανένα `V6Q`/`V6KW` δεν εκτελείται· απαιτεί κώδικα που παραμένει IMPLEMENTATION BLOCKED.
+
+## §v1.8 FINAL PRE-FREEZE — predeclared tests (UNEXECUTED · namespace `T8-*`/`V8-*`)
+Predeclared v1.8 falsifiers, ALL UNEXECUTED (require code): `T8-XREF/WP/CAP/OWN/PUBPRIV/COGLIFE/CLARIFY/RASTATUS/
+SYM/REQ/EPOCH/CONT/CORR/K/SIDE/MARK/FROST`. The v1.8 audit (`V1.8-CONTRADICTION-OMISSION-AUDIT.sh`) is honestly
+tiered **[DOC] document/reference + [STR] structural/type + [XFILE] real-file existence ONLY** — it opens the real
+WP/source/canonical files and greps symbols/sections, but is NOT executable-protocol / legal-content / security-
+qualification / operational proof. Each defect-guard carries a real negative mutation. No `SEMANTICALLY CLOSED`
+claim is made from parse/graph checks. Counts of the v1.4-v1.7 `KW`/`Q` families are unchanged (T8/V8 prefixes).

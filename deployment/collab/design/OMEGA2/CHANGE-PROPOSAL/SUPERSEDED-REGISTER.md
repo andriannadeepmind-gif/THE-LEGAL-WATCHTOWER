@@ -259,3 +259,9 @@ is superseded by `census-coverage-decision-v7` (C-11: availability made a live i
 for that, the v1.7 seat carries the correction. The shared registries (`SUBSYSTEM-REGISTRY.sexp`,
 `INTERFACE-AND-SCHEMA-REGISTRY.sexp`, `TRACEABILITY-MATRIX.md`) are EXTENDED in place (one seat). frozen v1.4
 `88129099` immutable; pinned `.out` `4873e610` unchanged. Design-only, CANDIDATE — no freeze/qualification.
+
+## v1.8 note (2026-09-03 · parent 04cca6ed · CANDIDATE)
+`CHANGE-PROPOSAL-v1.7.md` is **superseded at the candidate layer** by `CHANGE-PROPOSAL-v1.8.md` (final pre-freeze
+integration). All valid v1.7 seats carried forward; the 10 v1.7 defects (DFT-01..10) and 7 RA deltas are closed
+with audits that OPEN THE REAL FILES. frozen v1.4 `88129099` immutable; pinned `.out` `4873e610` unchanged;
+registries/history unchanged (no new subsystem). Design-only, CANDIDATE — no freeze/qualification.
