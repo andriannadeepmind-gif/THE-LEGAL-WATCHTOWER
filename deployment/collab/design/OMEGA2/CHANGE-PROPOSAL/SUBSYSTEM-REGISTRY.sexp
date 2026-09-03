@@ -115,6 +115,17 @@
   :requirement R-V6-EMB :interface "EmbodimentInterfaces/1 (interfaces only)" :owner "DEFERRED_PRIVATE"
   :test V6Q-13 :future-wp DEFERRED :migration DEFER_PRIVATE :rollback "independent emergency stop; sim/HIL gate")
 
+;; ---- v1.7 ADDITIONS (Root Authority; each ONE seat; FUTURE_BOOK_REVISION == FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED) ----
+(define-subsystem S25 :mission MIS-5 :name "Universal Legal Resolver (RA-I · read-only)"
+  :requirement R-V6-RESOLVE :interface "ResolverQuery/1 + ResolverResult/1 + AmbiguityResult/1 + ResolverReceipt/1"
+  :owner "canonical-uris.lisp (EXTEND: ECLI/CELEX/ADA/FEK) + legal-identity.lisp" :test RA-Q-RESOLVE
+  :future-wp FUTURE_BOOK_REVISION :migration EXTEND :rollback "resolver read-only; mints no canonical identity; fail-closed to AmbiguityResult"
+  :wp-note "deterministic grammar + offline dataset; unified ELI/ECLI/CELEX resolver = FUTURE packet (CELEX in zero WPs)")
+(define-subsystem S26 :mission MIS-10 :name "Provider / Institutional tenant profiles (RA-INST · interface-only)"
+  :requirement R-V6-TENANT :interface "TenantProfile/1 (interfaces only)" :owner "INTERFACE_ONLY (no public dependency)"
+  :test RA-Q-TENANT :future-wp DEFERRED :migration DEFER_PRIVATE :rollback "n/a — never public canonical write / root / adoption bypass"
+  :wp-note "provider registry = WP-14 LocalTrustState.provider_registry; per-tenant profile abstraction = FUTURE packet")
+
 ;; ---- casegrammar SPLIT (a file-level disposition surfaced for the migration map) ----
 (define-file-disposition "legal-casegrammar.lisp"
   :was DEFER_PRIVATE :now SPLIT

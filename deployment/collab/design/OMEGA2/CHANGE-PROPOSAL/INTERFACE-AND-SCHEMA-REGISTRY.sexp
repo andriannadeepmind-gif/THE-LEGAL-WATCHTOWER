@@ -73,6 +73,34 @@
 (define-interface citation/1                  :owner S09 :seat "MACHINE-LEGAL-TRUST-PROTOCOL.md §2.10 (CertifiedResult)" :version "1" :reuse "v1.4 typed citation/1"
   :signature-owner "certified-result signer" :consumers (S09 S13) :classification :NORMATIVE)
 
+;; ---- v1.7 Root-Authority interfaces (defined in V1.7-SCHEMAS.sexp; registered here for closure) ----
+(define-interface ResolverQuery/1            :owner S25 :seat "V1.7-SCHEMAS.sexp §4" :version "1" :new t
+  :signature-owner "resolver front" :consumers (S25) :classification :NORMATIVE)
+(define-interface ResolverResult/1           :owner S25 :seat "V1.7-SCHEMAS.sexp §4" :version "1" :new t
+  :signature-owner "resolver front" :consumers (S25 S11) :classification :NORMATIVE)
+(define-interface AmbiguityResult/1          :owner S25 :seat "V1.7-SCHEMAS.sexp §4" :version "1" :new t
+  :signature-owner "resolver front" :consumers (S25) :classification :NORMATIVE)
+(define-interface ResolverReceipt/1          :owner S25 :seat "V1.7-SCHEMAS.sexp §4" :version "1" :new t
+  :signature-owner "resolver front" :consumers (S25) :classification :NORMATIVE)
+(define-interface CanonicalRetrievalView/1   :owner S13 :seat "V1.7-SCHEMAS.sexp §5" :version "1" :new t
+  :signature-owner "static-site.lisp" :consumers (S13 S25) :classification :NORMATIVE)
+(define-interface RightsMatrix/1             :owner S25 :seat "V1.7-SCHEMAS.sexp §3 + LAWMAX-LICENSE-POLICY.md" :version "1" :new t
+  :signature-owner "license authority" :consumers (S14 S15) :classification :NORMATIVE)
+(define-interface LicensePolicy/1            :owner S25 :seat "V1.7-SCHEMAS.sexp §3 + LAWMAX-LICENSE-POLICY.md" :version "1" :new t
+  :signature-owner "license authority" :consumers (S14 S15) :classification :NORMATIVE)
+(define-interface CitationSupremacyMetric/1  :owner S15 :seat "V1.7-SCHEMAS.sexp §6" :version "1" :new t
+  :signature-owner "citation observatory" :consumers (S15) :classification :NORMATIVE)
+(define-interface DatasetSnapshot/1          :owner S14 :seat "V1.7-SCHEMAS.sexp §7" :version "1" :new t
+  :signature-owner "RA-T signer" :consumers (S14) :classification :NORMATIVE)
+(define-interface AnonymizationReceipt/1     :owner S07 :seat "V1.7-SCHEMAS.sexp §8" :version "1" :new t
+  :signature-owner "anonymization reviewer" :consumers (S07) :classification :NORMATIVE)
+(define-interface NonAuthoritativeTranslation/1 :owner S16 :seat "V1.7-SCHEMAS.sexp §8" :version "1" :new t
+  :signature-owner "translation reviewer" :consumers (S13 S16) :classification :NORMATIVE)
+(define-interface TenantProfile/1            :owner S26 :seat "V1.7-SCHEMAS.sexp §8" :version "1" :new t :status :INTERFACE_ONLY
+  :signature-owner "tenant delegated signer" :consumers () :classification :NORMATIVE :public-dependency nil)
+(define-interface RootAuthorityQualification/1 :owner S14 :seat "V1.7-SCHEMAS.sexp §9" :version "1" :new t
+  :signature-owner "qualification authority" :consumers (S14 S15) :classification :NORMATIVE)
+
 (define-invariant :ISR-V6-closure
   "Every contract referenced by any subsystem or schema is DEFINED here exactly once with an owner and a
    definition seat. No adapter-specific (vendor) type is a canonical interface. No interface has two owners.

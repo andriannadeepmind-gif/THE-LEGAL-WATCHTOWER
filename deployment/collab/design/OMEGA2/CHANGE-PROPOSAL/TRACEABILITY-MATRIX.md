@@ -334,3 +334,39 @@ seat, ONE test/falsifier, ONE future-WP impact· future-WP **διορθωμέν�
 adapters→WP-07+11+14)· όλα predeclared **UNEXECUTED**· καμία v1.4 `R-01..134` ή v1.5 `V5R-*` γραμμή/μέτρηση δεν
 μεταβάλλεται· απειλή Θ20 (proposer/adapter substitution & memory-scope leakage)· κανένα νέο engine/store/
 primitive/seat (μία έδρα ανά έννοια).
+
+## §v1.7 NO-LOSS ROOT-AUTHORITY (CANDIDATE · additive· namespace `RA-*`/`RA-Q-*` avoids v1.4 `R-\d`/`KW-`/`Q\d\d` counts)
+
+Πηγές: `CHANGE-PROPOSAL-v1.7.md`, `V1.7-SCHEMAS.sexp`, `V1.7-ARCHITECTURE-IDEA-SURVIVAL-LEDGER.md`,
+`V1.7-ROOT-AUTHORITY-FLYWHEEL.md`. Κάθε requirement ΜΙΑ owner seat, ΜΙΑ test/falsifier, ΜΙΑ future-WP.
+Όλα predeclared **UNEXECUTED**· καμία v1.4/v1.5/v1.6 γραμμή/μέτρηση δεν μεταβάλλεται.
+
+| RA-req | requirement | subsystem | interface / typed I/O | owner seat (file:symbol) | test/falsifier | future WP | invariant |
+|---|---|---|---|---|---|---|---|
+| RA-MIS | citation primacy via superior representation; no false certainty | S15 | `CitationSupremacyMetric/1` | ai-citation-strategy.lisp | RA-Q-MIS | WP-13/WP-14 | :RA-I-2 |
+| RA-L | rights/license matrix; no unlicensed licensing; PD needs legal validation | S25 | `RightsMatrix/1` + `LicensePolicy/1` | LAWMAX-LICENSE-POLICY.md | RA-Q-LICENSE | FUTURE_BOOK | :V7I-RA-L-no-unlicensed |
+| RA-R | public retrieval surface; proof-carrying pages; content-negotiation | S13 | `CanonicalRetrievalView/1` | static-site.lisp (EXTEND) | RA-Q-RETRIEVE | WP-12 | :V7I-RA-R-proof-carrying-pages |
+| RA-E | non-authoritative multilingual translation | S16 | `NonAuthoritativeTranslation/1` | USC expression model (EXTEND) | RA-Q-TRANSLATE | WP-03/WP-09 | :V7I-RA-R-proof-carrying-pages |
+| RA-I | universal resolver; deterministic grammar; no fuzzy pick | S25 | `ResolverResult/1` + `AmbiguityResult/1` | canonical-uris.lisp (EXTEND) | RA-Q-RESOLVE | FUTURE_BOOK | :V7I-RA-I-deterministic |
+| RA-J | jurisprudence + typed anonymization receipt | S07 | `AnonymizationReceipt/1` | legal-decisions.lisp (EXTEND) | RA-Q-JURIS | WP-09 | :V7I-RA-INST-no-authority |
+| RA-K | citation supremacy measurement; metrics≠legal truth | S15 | `CitationSupremacyMetric/1` | ai-citation-strategy.lisp (EXTEND) | RA-Q-CITE | WP-13 | :V7I-RA-K-metrics-not-truth |
+| RA-T | dataset distribution; LAWMAX canonical home | S14 | `DatasetSnapshot/1` + `DatasetDelta/1` | ai-corpus-dump.lisp (EXTEND) | RA-Q-DATASET | WP-11 | :V7I-RA-T-lawmax-canonical-home |
+| RA-F | breaking-law fast lane; provisional never verified | S01/S02 | SA-0/1/2 states (v1.5) | acquisition (EXTEND) | RA-Q-FAST | WP-01/WP-02 | :RA-I-2 |
+| RA-INST | tenant profiles; interface-only; no canonical authority | S26 | `TenantProfile/1` | INTERFACE_ONLY | RA-Q-TENANT | DEFERRED | :V7I-RA-INST-no-authority |
+| RA-QUAL | root-authority state typed/measurable/expiring/revocable | S14 | `RootAuthorityQualification/1` | provider_registry (EXTEND) | RA-Q-QUAL | WP-14 | :V7I-RA-qual-revocable |
+| RA-C1 | single true memory owner (no WP-11) | S19 | `MemoryEvent/1` | memory.lisp | RA-Q-MEM | FUTURE_BOOK | :V7I-MEM-one-owner |
+| RA-C2 | type-correct information-preserving cognition DAG | S04 | `cognition-stage-dag-v7` | cognition seats | RA-Q-COGDAG | WP-08 | :V7I-COG-info-preserving |
+| RA-C3 | real symbolic-only reachability | S21 | `symbolic-only-path` | write-authority.lisp | RA-Q-SYM | WP-07/WP-08 | :V7I-SYM-reachable |
+| RA-C4 | full public/private transitive closure | S18 | `define-ra-closure-roots` | boundary schemas | RA-Q-PUBPRIV | WP-12 | :V7I-PUBPRIV-acyclic |
+| RA-C5 | cross-spec canonical type uniqueness | cross | `define-reference` targets | registries | RA-Q-XREF | cross | :V6I-REF-single-source-of-truth |
+| RA-C6 | actual WP reconciliation (real WP files) | cross | `define-wp-reconciliation` | WP-NN.md | RA-Q-WP | cross | :V7I-WP-honest |
+| RA-C7 | exactly one owner/write authority per store | cross | `define-write-authority` | write-authority.lisp | RA-Q-OWN | cross | :V7I-OWN-single-writer |
+| RA-C8 | capability→seat closure | S04 | `define-capability-seat` | seats | RA-Q-CAP | WP-08 | :V7I-CAP-seat-closure |
+| RA-C9 | typed public-system memory scopes | S19 | `MemoryScopeV7` + `MemoryScopePolicy/1` | memory.lisp | RA-Q-SCOPE | FUTURE_BOOK | :V7I-MEM-user-private-no-auto-public |
+| RA-C10 | model/tool independence; no mandatory model | S03/S21 | `SemanticProposer` | legal-extraction-verify.lisp | RA-Q-NOMODEL | WP-07 | :RA-I-3 |
+| RA-C11 | coverage availability live; total single-valued | S01 | `census-coverage-decision-v7` | coverage-ledger.lisp | RA-Q-COV | WP-01 | :V7I-COV-availability-live |
+
+**Ισολογισμός v1.7 (candidate):** 22 `RA-*` requirements (11 Root-Authority deltas + 11 C-corrections), κάθε
+μία ONE owner seat / ONE test-falsifier / ONE future-WP· namespace `RA-*`/`RA-Q-*` ⇒ οι v1.4, v1.5 (`V5R-*`)
+και v1.6 (`R-V6-*`) μετρήσεις **αμετάβλητες** (καμία νέα `R-\d`/`KW`/`Q\d\d` γραμμή)· FUTURE_BOOK ==
+FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED (memory/resolver/license/tenant)· κανένα νέο engine/store/seat.

@@ -249,3 +249,13 @@ ELI / ECLI υλικό · provenance, Merkle, JWS, RFC 3161 · source profiles ·
    Common Lisp symbolic kernel + SYMBOLIC_ONLY complete path. Ιστορικό: το v1.4/v1.5 περιεχόμενο **δεν**
    falsified — απλώς η ορολογία «neural» δεν είναι πλέον η κανονική· ο τύπος `neural-candidate/1` παραμένει
    ως `CandidateInterpretation/1`. Design-only, CANDIDATE (`CHANGE-PROPOSAL-v1.6.md`).
+
+## v1.7 note (2026-09-03 · parent f05f5514 · CANDIDATE)
+`CHANGE-PROPOSAL-v1.6.md` and its candidate manifest are **superseded at the candidate layer** by
+`CHANGE-PROPOSAL-v1.7.md` (no-loss successor on the SAME CPEI Public Observatory Profile v1.4). Nothing is
+falsified: all valid v1.6 seats (D1/D2/D3/C1 + repairs) are carried forward; the v1.6 memory-owner contradiction
+(C-1) is corrected to `FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED` (NOT WP-11). The v1.6 `census-coverage-decision`
+is superseded by `census-coverage-decision-v7` (C-11: availability made a live input); v1.6 files are not edited
+for that, the v1.7 seat carries the correction. The shared registries (`SUBSYSTEM-REGISTRY.sexp`,
+`INTERFACE-AND-SCHEMA-REGISTRY.sexp`, `TRACEABILITY-MATRIX.md`) are EXTENDED in place (one seat). frozen v1.4
+`88129099` immutable; pinned `.out` `4873e610` unchanged. Design-only, CANDIDATE — no freeze/qualification.
