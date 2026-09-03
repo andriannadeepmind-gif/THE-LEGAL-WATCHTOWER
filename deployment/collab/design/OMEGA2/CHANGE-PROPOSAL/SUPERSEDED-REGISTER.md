@@ -305,3 +305,23 @@ meta-kill tests, and a clean-clone bootstrap. New files `V1.8-VERIFY.py` (rebuil
 `V1.8-CLEAN-CLONE-BOOTSTRAP.sh`; verification tooling only; schema/subsystem/v1.6/v1.7 unchanged; frozen v1.4
 `88129099` immutable; pinned `.out` `4873e610` unchanged. **Verdict: `V1.8 VERIFIER GENERALIZED — READY FOR FRESH
 INDEPENDENT RE-VERIFICATION #3`. The v1.8 candidate has NOT passed independent verification.**
+
+### v1.8 VERIFIER-SOUNDNESS CLOSURE note (parent `a928ff6a` · CANDIDATE — re-verification #3 FAILED, verifier soundness closed)
+A third fresh independent re-verification **FAILED** `a928ff6a`: the harness killed every declared mutant (38/38,
+65,536 states, evidence byte-identical) but (a) the AST reader silently accepted unterminated block comments and
+vertical-bar symbols, (b) 26 of 27 held-out counterexamples survived the ten-guard suite, and (c) — decisively —
+the harness did not enforce its own artifact manifest: editing `security` from MANDATORY to ADVISORY changed the
+schema SHA yet the audit still returned 38/38 exit 0 (macro-architecture NOT falsified; verification soundness
+falsified). This bounded pass (verification tooling only) makes `read_all` fail-closed (any unclosed
+list/string/block-comment/vertical-bar, unsupported `#`-dispatch or trailing content raises `ParseError`; a
+parse-gate runs before every guard), adds a `manifest` guard that recomputes every non-self artifact SHA-256 against
+its pin (exact set — no missing/extra/duplicate) with the orchestrator binding the declared parent to `HEAD`/`HEAD^`
+and a meta-kill proving a working-tree drift is rejected, pins the exact universe and referential integrity in every
+guard (canonical identities, capability seats, store→owner→writer relation, one cognition graph with reachability
+and the resume-transition rule, the parsed cardinality table, a policy-weakening rejection, exact
+node/mandatory/mutation sets, and the exact requirement id-set with per-id resolution), and restores the DFT-02
+V8-WP guard opening WP-00..14. 43 held-out fixtures (including all 26 reported), 65 schema-generated property
+mutations across 11 families, and 10 injected meta-kills. Runner `V1.8-VERIFY.py` (11 guards, 90 mutations, 101
+rows); verification tooling only; schema/subsystem/v1.6/v1.7 unchanged; frozen v1.4 `88129099` immutable; pinned
+`.out` `4873e610` unchanged. **Verdict: `V1.8 VERIFIER-SOUNDNESS CLOSURE COMPLETE — READY FOR FRESH INDEPENDENT
+RE-VERIFICATION #4`. The v1.8 candidate has NOT passed independent verification.**

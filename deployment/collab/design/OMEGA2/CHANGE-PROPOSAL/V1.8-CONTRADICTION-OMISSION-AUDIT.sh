@@ -21,7 +21,7 @@ VERIFY=./V1.8-VERIFY.py
 P=CHANGE-PROPOSAL-v1.8.md; S=V1.8-SCHEMAS.sexp; MAN=V1.8-CANDIDATE-MANIFEST.md
 EVID=V1.8-VERIFICATION-EVIDENCE.md; ROOT=../../../../..
 pass=0; fail=0; n=0
-tier_for(){ case "$1" in V8-XREF|V8-CAP) echo '[XFILE]';; V8-RASTATUS|V8-CLARIFY) echo '[EXEC-MODEL]';; *) echo '[AST]';; esac; }
+tier_for(){ case "$1" in V8-XREF|V8-CAP|V8-WP) echo '[XFILE]';; V8-RASTATUS|V8-CLARIFY) echo '[EXEC-MODEL]';; *) echo '[AST]';; esac; }
 
 ck(){ n=$((n+1)); local id="$1" a="$2" op="$3" e="$4" v
   case "$op" in ge) [ "$a" -ge "$e" ] && v=PASS || v=FAIL ;; eq) [ "$a" = "$e" ] && v=PASS || v=FAIL ;; esac
@@ -34,18 +34,19 @@ sha(){ sha256sum "$1" | cut -d' ' -f1; }
 
 echo "### V1.8 VERIFICATION-EVIDENCE AUDIT (fail-closed · AST) — $(git -C "$ROOT" rev-parse --short HEAD 2>/dev/null || echo no-git) — $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
-DECLARED_GUARDS="V8-PUBPRIV V8-XREF V8-CAP V8-OWN V8-COGLIFE V8-CLARIFY V8-RASTATUS V8-SYM V8-REQ V8-RA-DELTAS"
+DECLARED_GUARDS="V8-PUBPRIV V8-XREF V8-CAP V8-OWN V8-COGLIFE V8-CLARIFY V8-RASTATUS V8-SYM V8-REQ V8-RA-DELTAS V8-WP"
 declare -A DECLARED_MUTS=(
- [V8-PUBPRIV]="field-type ref-target interface-io subsystem-dep store-owner-writer api-mcp-schema publication declassification undefined-endpoint held/nested-or-list-type"
- [V8-XREF]="wrong-file wrong-identity wrong-version wrong-reference-target locator-absent held/generic-substring-locator"
- [V8-CAP]="nonexistent-symbol wrong-package wrong-file symbol-in-other-package"
- [V8-OWN]="dup-store two-writers writer-on-readonly held/ghost-owner held/ghost-writer"
- [V8-COGLIFE]="remove-resume-edge wrong-instance-binding incompatible-edge-type orphan-terminal illegal-cycle held/flow-edge-undeclared-node held/extra-dangling-resume held/terminal-outgoing-any-family"
- [V8-CLARIFY]="corrupt-abstain-fixture corrupt-selection-fixture corrupt-merge-provenance"
- [V8-RASTATUS]="merge-proof-into-security derived-not-constant self-qualification-allowed drop-unknown-state advisory-can-block held/remove-cause-refs held/remove-advisory-dims held/bogus-failure-class"
- [V8-SYM]="broken-edge unreachable-mandatory mandatory-model-node proposer-removal-inequiv"
- [V8-REQ]="blank-requirement blank-owner-seat blank-test blank-future-wp blank-interface unresolvable-interface-id held/substitute-id-keep-17"
- [V8-RA-DELTAS]="drop-to-six rename-jurns-to-frost blank-seat"
+ [V8-PUBPRIV]="field-type ref-target interface-io subsystem-dep store-owner-writer api-mcp-schema publication declassification undefined-endpoint held/nested-or-list-type held/erase-mcp-source held/erase-site-source held/malformed-block-comment held/malformed-vbar"
+ [V8-XREF]="wrong-file wrong-identity wrong-version wrong-reference-target locator-absent held/generic-substring-locator held/remove-all-canon held/remove-one-canon held/canon-wrong-locator"
+ [V8-CAP]="nonexistent-symbol wrong-package wrong-file symbol-in-other-package held/cap-unrelated-symbol"
+ [V8-OWN]="dup-store two-writers writer-on-readonly held/ghost-owner held/ghost-writer held/owner-unrelated-real held/writer-unrelated-real"
+ [V8-COGLIFE]="remove-resume-edge wrong-instance-binding incompatible-edge-type orphan-terminal illegal-cycle held/flow-edge-undeclared-node held/extra-dangling-resume held/terminal-outgoing-any-family held/incompatible-terminal-edge held/incompatible-resume-edge held/disconnected-node held/duplicate-graph"
+ [V8-CLARIFY]="corrupt-abstain-fixture corrupt-selection-fixture corrupt-merge-provenance held/remove-cardinality-table"
+ [V8-RASTATUS]="merge-proof-into-security derived-not-constant self-qualification-allowed drop-unknown-state advisory-can-block held/remove-cause-refs held/remove-advisory-dims held/bogus-failure-class held/policy-weaken-security held/duplicate-dimension held/record-field-wrong-type held/blocking-bad-cardinality held/aggregation-always-full held/enum-duplicate-state"
+ [V8-SYM]="broken-edge unreachable-mandatory mandatory-model-node proposer-removal-inequiv held/empty-node-universe held/remove-proof-mandatory held/remove-mutation-list"
+ [V8-REQ]="blank-requirement blank-owner-seat blank-test blank-future-wp blank-interface unresolvable-interface-id held/substitute-id-keep-17 held/traceability-wp99 held/traceability-ghost-test"
+ [V8-RA-DELTAS]="drop-to-six rename-jurns-to-frost blank-seat held/delta-nonexistent-seat held/delta-shared-seat held/delta-ghost-owner"
+ [V8-WP]="held/wp-evidence-absent held/wp-future-mapped-to-file held/wp-ghost-file"
 )
 EXPECTED_EVIDENCE=0
 for g in $DECLARED_GUARDS; do EXPECTED_EVIDENCE=$((EXPECTED_EVIDENCE+1)); for _ in ${DECLARED_MUTS[$g]}; do EXPECTED_EVIDENCE=$((EXPECTED_EVIDENCE+1)); done; done
@@ -85,6 +86,10 @@ ck MK8-stale-evidence-detected "$stale_detected" eq 1
 # MK9 evidence write / atomic move fault: writing under a non-existent dir fails
 set +e; ( : > /nonexistent_dir_xyz/evid.tmp ) 2>/dev/null; wec=$?; set -e
 ck MK9-evidence-write-fault "$([ "$wec" -ne 0 ] && echo 1 || echo 0)" eq 1
+# MK10 manifest drift: MANDATORY->ADVISORY in a working copy of the schema (no manifest update) -> manifest gate REJECTS
+MD="$(mktemp -d)"; sed 's/(:dimension :security          :class :MANDATORY/(:dimension :security          :class :ADVISORY /' "$S" > "$MD/mut.sexp"
+capture python3 "$VERIFY" manifest --file schema="$MD/mut.sexp"; ck MK10-manifest-drift-detected "$([ "$CAP_EC" -eq 3 ] && echo 1 || echo 0)" eq 1
+rm -rf "$MD"
 rm -rf "$WK" "$WK2"
 
 echo "# B — guards + real-byte AST mutations (writes $EVID atomically)"
@@ -94,8 +99,8 @@ TMPEVID="$(mktemp)"; WORK="$(mktemp -d)"; trap 'rm -rf "$WORK" "$TMPEVID"' EXIT
   echo
   echo "Every mutation alters ACTUAL bytes of a real source file in a unique mktemp workspace; the SAME AST guard is"
   echo "rerun against the mutated bytes. Rows carry the full 64-char SHA-256 of the actual baseline and mutant bytes,"
-  echo "the differ-assertion, the exact command, its exit code and the guard reason. Rows marked \`held/\` are the 11"
-  echo "independent held-out counterexamples that a regex parser accepted and the AST parser rejects."
+  echo "the differ-assertion, the exact command, its exit code and the guard reason. Rows marked \`held/\` are the 43"
+  echo "independent held-out counterexamples (including all 26 reported by re-verification #3) that the reader now rejects."
   echo
   echo "| guard/mutation | tier | baseline_sha256 | mutant_sha256 | differ | command | exit | reason |"
   echo "|---|---|---|---|---|---|---|---|"
@@ -146,10 +151,19 @@ capture python3 "$VERIFY" aggregate
 ck A1-full-product-4^8 "$(echo "$CAP_OUT" | grep -c '65536/65536 states=4 dims=8 OK' || true)" eq 1
 echo "  (aggregate: $CAP_OUT)"
 ck A2-artifacts "$(for f in "$P" "$S" "$MAN" "$EVID" V1.8-CONTRADICTION-OMISSION-AUDIT.sh V1.8-VERIFY.py V1.8-CLEAN-CLONE-BOOTSTRAP.sh; do [ -f "$f" ] && echo 1; done | grep -c 1)" eq 7
-ck A3-parent-afa8c7d "$(grep -c 'afa8c7d' "$MAN" || true)" ge 1
+CP="$(grep -oE 'CORRECTIVE_COMMIT_PARENT[[:space:]]*=[[:space:]]*[0-9a-f]{40}' "$MAN" | grep -oE '[0-9a-f]{40}' | head -1)"
+H="$(git -C "$ROOT" rev-parse HEAD 2>/dev/null || echo none)"; HP="$(git -C "$ROOT" rev-parse HEAD^ 2>/dev/null || echo none)"
+if [ -n "$CP" ] && { [ "$CP" = "$H" ] || [ "$CP" = "$HP" ]; }; then pb=1; else pb=0; fi
+ck A3-corrective-parent-binding "$pb" eq 1
 ck A4-frozen-88129099 "$(grep -c '88129099' "$MAN" || true)" ge 1
 ck A5-honest-status "$(grep -cE 'READY FOR FRESH INDEPENDENT RE-VERIFICATION' "$MAN" || true)" ge 1
 ck A6-no-256-full-product "$(grep -cE '2\^8|256 states.*full|full product.*256' "$S" "$MAN" "$EVID" 2>/dev/null | awk -F: '{s+=$2}END{print s+0}')" eq 0
+
+echo "# MAN — manifest enforcement (every non-self artifact SHA verified against its pin) + generated property families"
+capture python3 "$VERIFY" manifest; ck MAN-manifest-pins "$CAP_EC" eq 0
+echo "  ($CAP_OUT)"
+capture python3 "$VERIFY" gen-run; ck GEN-generated-families "$([ "$CAP_EC" -eq 0 ] && echo 1 || echo 0)" eq 1
+echo "  ($CAP_OUT)"
 
 echo "# CC — clean-clone bootstrap (pinned-object prerequisite)"
 capture bash ./V1.8-CLEAN-CLONE-BOOTSTRAP.sh
@@ -167,7 +181,7 @@ ck D6-pinned-out "$(sha256sum V1.4-CONTRADICTION-OMISSION-AUDIT.out | grep -c '^
 
 echo "### SUMMARY: checks=$n pass=$pass fail=$fail"
 if [ "$fail" -eq 0 ]; then
-  echo "### EXIT 0 — V1.8 VERIFICATION-EVIDENCE PASS (fail-closed · AST reader · full 4^8 · $MUT_KILLED/$MUT_TOTAL mutations killed incl 11 held-out · 9 injected meta-kills detected) — NOT executable/legal/security/qualification/behavioral proof"
+  echo "### EXIT 0 — V1.8 VERIFICATION-EVIDENCE PASS (parse-gated · manifest-enforced · AST reader · full 4^8 · $MUT_KILLED/$MUT_TOTAL mutations killed incl 43 held-out · 10 injected meta-kills detected) — NOT executable/legal/security/qualification/behavioral proof · NOT sound/complete/freeze-ready until independent re-verification #4"
   exit 0
 else
   echo "### EXIT 1 — DEVIATIONS PRESENT"; exit 1

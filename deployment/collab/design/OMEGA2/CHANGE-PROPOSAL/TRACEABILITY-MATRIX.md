@@ -434,3 +434,21 @@ recovery independence για ΚΑΘΕ pair)· exact locators (top-level symbol, 
 (σετ ισότητα DFT-01..10 + 7 RA8)· 9 injected meta-kill tests· clean-clone bootstrap (MISSING_PINNED_OBJECT).
 Runner: `V1.8-VERIFY.py` (10 guards, 58 mutations, 68 rows). **ΕΤΥΜΗΓΟΡΙΑ: `V1.8 VERIFIER GENERALIZED — READY FOR
 FRESH INDEPENDENT RE-VERIFICATION #3`· το v1.8 ΔΕΝ πέρασε ανεξάρτητη επαλήθευση, ΔΕΝ freeze.**
+
+**Verifier-SOUNDNESS CLOSURE (re-verification #3 `a928ff6a` FAILED):** τρίτη ανεξάρτητη επαλήθευση σκότωσε όλα τα
+declared mutants (38/38, 65.536 states, evidence byte-identical) αλλά ΑΠΕΡΡΙΨΕ τον harness σε τρία σημεία:
+(α) ο AST reader δεχόταν σιωπηλά unterminated block comments και vertical-bar symbols· (β) 26 από 27 held-out
+counterexamples επιβίωσαν τη suite· (γ) — αποφασιστικά — ο harness ΔΕΝ επέβαλλε το δικό του artifact manifest
+(αλλαγή `security` MANDATORY→ADVISORY άλλαξε το schema SHA αλλά ο audit επέστρεφε 38/38 exit 0). Disposition:
+`verification soundness falsified · macro-architecture OXI · do not freeze`. Bounded closure (verification tooling
+μόνο): (1) `read_all` fail-closed — κάθε unclosed list/string/block-comment/vertical-bar, unsupported `#`-dispatch,
+trailing content εγείρει ParseError· parse-gate τρέχει πριν από κάθε guard· (2) `manifest` guard ξαναϋπολογίζει
+κάθε non-self artifact SHA-256 vs το pin του (exact set, χωρίς missing/extra/duplicate)· ο orchestrator δένει τον
+declared parent σε `HEAD`/`HEAD^`· injected meta-kill αποδεικνύει ότι working-tree drift απορρίπτεται (exit 3)·
+(3) κάθε guard πινάρει το ακριβές universe + referential integrity — canonical identities, capability seats,
+stores→owners→writers, ΜΙΑ cognition graph με reachability + resume-transition, cardinality table parse+execute,
+policy-weakening αποτυγχάνει, exact node/mandatory/mutation sets, exact requirement id-set + resolution — και
+DFT-02 V8-WP επαναφέρθηκε (opens WP-00..14). 43 held-out fixtures (τα 26 reported συμπεριλαμβανομένα)· 65
+schema-generated property mutations (11 families)· 10 injected meta-kills. Runner: `V1.8-VERIFY.py` (11 guards, 90
+mutations, 101 rows). **ΕΤΥΜΗΓΟΡΙΑ: `V1.8 VERIFIER-SOUNDNESS CLOSURE COMPLETE — READY FOR FRESH INDEPENDENT
+RE-VERIFICATION #4`· το v1.8 ΔΕΝ πέρασε ανεξάρτητη επαλήθευση, ΔΕΝ freeze.**
