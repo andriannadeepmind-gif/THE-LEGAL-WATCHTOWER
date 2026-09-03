@@ -265,3 +265,18 @@ for that, the v1.7 seat carries the correction. The shared registries (`SUBSYSTE
 integration). All valid v1.7 seats carried forward; the 10 v1.7 defects (DFT-01..10) and 7 RA deltas are closed
 with audits that OPEN THE REAL FILES. frozen v1.4 `88129099` immutable; pinned `.out` `4873e610` unchanged;
 registries/history unchanged (no new subsystem). Design-only, CANDIDATE — no freeze/qualification.
+
+### v1.8 VERIFICATION-EVIDENCE REPAIR note (micro-pass · parent `451ce01a` · CANDIDATE — NOT independently verified)
+An independent review **FALSIFIED the v1.8 audit's verification claims** (the ten confirmed defects VR-01..VR-10):
+the guards loaded real sources but did not truly consume them (manual `define-public-edge` restatement as proof;
+xref that ignored identity/version; capability check that accepted any occurrence; store-uniqueness that only
+rejected owner changes; pseudo-tests for cognition/cardinality/aggregation/symbolic; requirement guard that
+checked two cells with no reference resolution; delta dictionary drift). This micro-pass repairs the
+**verification evidence only** — no new architecture, requirement, delta, production code, freeze or qualification.
+The audit was rewritten to consume real sources with real per-family mutations and to emit
+`V1.8-VERIFICATION-EVIDENCE.md` (42 records, all DETECTED). Correction to the note above: the shared
+`INTERFACE-AND-SCHEMA-REGISTRY.sexp` **is now EXTENDED in place** (one seat) to register the 19 new v1.8
+contracts for seat closure — its pinned hash is refreshed in `V1.6-CANDIDATE-MANIFEST.md`; no new subsystem is
+added and `SUBSYSTEM-REGISTRY.sexp`/history stay unchanged. frozen v1.4 `88129099` immutable; pinned `.out`
+`4873e610` unchanged. **The v1.8 candidate DID NOT pass independent verification — READY FOR FRESH INDEPENDENT
+RE-VERIFICATION — NOT FROZEN — NOT QUALIFIED — IMPLEMENTATION BLOCKED.**

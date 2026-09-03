@@ -378,7 +378,7 @@ FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED (memory/resolver/license/tenant)· κ
 
 | id | requirement | subsystem | interface / typed I/O | owner seat (file:symbol) | test/falsifier | future WP | invariant |
 |---|---|---|---|---|---|---|---|
-| DFT-01 | real public/private closure over all edge families | S18 | `define-public-edge` | boundary schemas | T8-PUBPRIV | WP-12 | :V8I-PUBPRIV-all-families |
+| DFT-01 | real public/private closure over all edge families | S18 | `define-ra-closure-roots` | boundary schemas | T8-PUBPRIV | WP-12 | :V8I-PUBPRIV-all-families |
 | DFT-02 | WP validation opens real WP-NN.md | cross | `define-wp-reconciliation` | WP-NN.md | T8-WP | cross | :V8I-WP-real |
 | DFT-03 | canonical reference opens real file+locator | cross | `define-reference` | canonical files | T8-XREF | cross | :V8I-XREF-real |
 | DFT-04 | store/write-authority uniqueness | cross | `define-write-authority` | write-authority.lisp | T8-OWN | cross | :V8I-OWN-universal |
@@ -399,3 +399,14 @@ FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED (memory/resolver/license/tenant)· κ
 **Ισολογισμός v1.8 (candidate):** 17 rows (10 `DFT-*` + 7 `RA8-*`), κάθε μία ONE owner seat / ONE test /
 ONE future-WP· namespace `DFT-*`/`RA8-*`/`T8-*` ⇒ v1.4–v1.7 μετρήσεις αμετάβλητες· FUTURE_BOOK ==
 FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED.
+
+**VR verification-evidence repair (micro-pass, no new requirement/delta/architecture):** μια ανεξάρτητη
+επιθεώρηση ΔΙΕΨΕΥΣΕ τους ισχυρισμούς επαλήθευσης του v1.8 audit (VR-01..VR-10). Ο audit ξαναγράφτηκε ώστε ΝΑ
+ΚΑΤΑΝΑΛΩΝΕΙ πραγματικές πηγές με πραγματικά negative mutations (per-family PUBPRIV, XREF identity+version,
+CAP top-level defining form, universal store uniqueness, typed cognition graph, cardinality/aggregation
+EXEC-MODEL, exact-4 SYM, header-by-name + interface **id-resolution** V8-REQ, 7-delta map). Οι 19 νέοι v1.8
+τύποι έλαβαν έδρα στο `INTERFACE-AND-SCHEMA-REGISTRY.sexp` (registry seat closure)· ο `DFT-01` interface δείκτης
+διορθώθηκε από το καταργημένο `define-public-edge` στο `define-ra-closure-roots`. Evidence: `V1.8-VERIFICATION-
+EVIDENCE.md` (42 records, όλα DETECTED). **ΚΑΤΑΣΤΑΣΗ: `V1.8 VERIFICATION-EVIDENCE REPAIR — READY FOR FRESH
+INDEPENDENT RE-VERIFICATION — NOT FROZEN — NOT QUALIFIED — IMPLEMENTATION BLOCKED`· το v1.8 ΔΕΝ πέρασε
+ανεξάρτητη επαλήθευση.**

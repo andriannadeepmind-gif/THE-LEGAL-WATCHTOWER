@@ -84,7 +84,7 @@
 (define-record RelianceProjection/1                  ; DERIVED, not stored truth
   (:projection_id :type id) (:status_ref :type ref) (:reliance :type RelianceClass)
   (:blocking_dimensions :type (list ref))            ; every failing MANDATORY dimension named (causes preserved)
-  (:advisory_dimensions :type (list ref)) (:derived :type (member :true :false)) (:as_of :type instant))
+  (:advisory_dimensions :type (list ref)) (:derived :type (member :true)) (:as_of :type instant))  ; VR-07: derived CONSTANT true
 (define-dimension-policy root-authority-dimensions
   (:dimension :security          :class :MANDATORY :failure :WITHHELD          :recovery-evidence "red-team + patch attestation" :authority "security cell")
   (:dimension :proof_integrity   :class :MANDATORY :failure :MACHINE_UNVERIFIED :recovery-evidence "authenticity/provenance/tlog/witness/MLTP re-verify" :authority "MLTP root")
@@ -243,7 +243,7 @@
 (define-capability-seat :capability :RESOLVE_IDENTIFIER :kind :CODE :file "source/canonical-uris.lisp" :package "orchestrator.uris" :symbol "get-eli-law-prefix" :subsystem S25 :requirement RA-I :test RA-Q-RESOLVE)
 (define-capability-seat :capability :PUBLIC_RETRIEVAL   :kind :CODE :file "source/static-site.lisp"    :package "orchestrator.static-site" :symbol "emit-corpus-site" :subsystem S13 :requirement RA-R :test RA-Q-RETRIEVE)
 (define-capability-seat :capability :CITATION_MEASURE   :kind :CODE :file "source/ai-citation-strategy.lisp" :package "orchestrator.ai-citation" :symbol "export-citation-metrics" :subsystem S15 :requirement RA-K :test RA-Q-CITE)
-(define-capability-seat :capability :DATASET_DISTRIBUTE :kind :CODE :file "source/ai-corpus-dump.lisp"  :package "orchestrator.corpus" :symbol "ai-corpus-dump" :subsystem S14 :requirement RA-T :test RA-Q-DATASET)
+(define-capability-seat :capability :DATASET_DISTRIBUTE :kind :CODE :file "source/ai-corpus-dump.lisp"  :package "orchestrator.ai-dump" :symbol "emit-corpus-jsonl" :subsystem S14 :requirement RA-T :test RA-Q-DATASET)
 (define-capability-seat :capability :JURIS_RATIO        :kind :CODE :file "source/legal-decisions.lisp" :package "orchestrator.decisions" :symbol "decision-ratio" :subsystem S07 :requirement RA-J :test RA-Q-JURIS)
 (define-capability-seat :capability :RIGHTS_LICENSE     :kind :DOCUMENT :file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/LAWMAX-LICENSE-POLICY.md" :section "RightsMatrix/1" :subsystem S25 :requirement RA-L :test RA-Q-LICENSE)
 (define-capability-seat :capability :EXPRESSION_TRANSLATE :kind :DOCUMENT :file "deployment/LAWMAX-UNIVERSAL-SOURCE-CONTRACT.md" :section "lawmax/expression/1" :subsystem S16 :requirement RA-E :test RA-Q-TRANSLATE)
@@ -263,20 +263,24 @@
                       EmbodimentInterfaces/1 RestrictedForensicRecord/1 SidecarSourceProfile/1))
   (edge-families (field-type ref-target interface-io subsystem-dep store-owner-writer api-mcp-schema
                   publication declassification)))
-(define-public-edge :family field-type       :from CanonicalCitationURI/1 :to CitationTemporalResolution)
-(define-public-edge :family ref-target        :from ResolutionRecord/1 :to CanonicalCitationURI/1)
-(define-public-edge :family interface-io      :from S13 :to CanonicalRetrievalView/1)
-(define-public-edge :family subsystem-dep     :from S25 :to S13)
-(define-public-edge :family store-owner-writer :from "static-site" :to "WP-12 static-site.lisp")
-(define-public-edge :family api-mcp-schema    :from "mcp:get_article" :to CanonicalRetrievalView/1)
-(define-public-edge :family publication       :from CognitionResult/1 :to CanonicalRetrievalView/1)
-(define-public-edge :family declassification  :from DeclassificationReceipt/1 :to MemoryEvent/1)
+;; VR-01 repair: edges are DERIVED FROM REAL SOURCES, never from manual restatement of the same claim.
+;; field-type     ⇐ define-record :type fields in the active schemas (V1.8/V1.7/V1.6-SCHEMAS.sexp)
+;; ref-target     ⇐ define-reference :canonical-file in the active schemas
+;; interface-io   ⇐ INTERFACE-AND-SCHEMA-REGISTRY.sexp (:owner + :consumers)
+;; subsystem-dep  ⇐ SUBSYSTEM-REGISTRY.sexp (:interface X/1 tokens + :owner)
+;; store-owner-writer ⇐ define-write-authority (:store → :owner/:write-authority)
+;; api-mcp-schema ⇐ source/mcp-server.lisp (define-mcp-tool + returned type)
+;; publication    ⇐ source/static-site.lisp (emit-* → article/corpus) + ISR CanonicalRetrievalView owner
+;; declassification ⇐ V1.6-SCHEMAS.sexp DeclassificationReceipt/1 (from_scope→to_scope) + ISR S18 consumers
+;; Each derived edge carries (source_file · exact-locator · family). The audit's per-family mutation modifies the
+;; REAL source fixture (temp copy) and proves the derived graph detects the injected private leak.
 (define-invariant :V8I-PUBPRIV-all-families
-  "The public dependency closure follows ALL edge families (field-type, ref-target, interface-io, subsystem-dep,
-   store-owner-writer, api-mcp-schema, publication, declassification) and contains ZERO :DEFERRED_PRIVATE /
-   :INTERFACE_ONLY / :SPECIFICATION_ONLY record and zero private-bearing enum. Audit V8-PUBPRIV runs an
-   INDEPENDENT mutation witness PER edge family (inject a private target via that family ⇒ closure flips). No
-   universal-closure claim is made for a family that is not checked.")
+  "The public dependency closure is built ONLY from edges DERIVED FROM REAL machine-readable sources (schemas,
+   ISR, SUB, write-authority, mcp-server.lisp, static-site.lisp), each edge carrying source_file + exact locator +
+   family; it contains ZERO :DEFERRED_PRIVATE / :INTERFACE_ONLY / :SPECIFICATION_ONLY record and zero
+   private-bearing enum. Audit V8-PUBPRIV runs an INDEPENDENT mutation witness PER family that mutates the REAL
+   source fixture; no universal-closure claim is made for a family whose real source is not parsed. Manual
+   `define-public-edge` restatements are FORBIDDEN as proof (VR-01).")
 
 ;; ============================ 12. STORE / WRITE-AUTHORITY (DFT-04 universal) ====================
 (define-write-authority :store "journal"               :owner "WP-03 journal.lisp"                :write-authority "write-authority.lisp" :writers 1)
@@ -350,3 +354,100 @@
   "V8-XREF OPENS each :canonical-file and confirms the :locator string occurs in it (the type/symbol really
    exists), plus a declared :identity and :version. A nonexistent file, or a locator absent from it, FAILS
    (mutation: point a reference at a nonexistent file).")
+
+;; ============================ 17. EXECUTION CONTRACTS (VR repair — machine-readable, executed) ==
+;; These are executed by the repaired audit over the model (tier [EXEC-MODEL]); they are NOT executable
+;; production-code / behavioral proof. Behavioral equivalence is bound to a future WP (see :V8I-SYM-structural).
+
+;; ---- VR-05: cognition node input/output types (edge type-compatibility is CHECKED) ----
+(define-cognition-node-types cognition-graph-v8-types
+  (:node PERCEIVE          :in PerceptionEnvelope/1            :out NormalizedDocument/1)
+  (:node SEGMENT           :in NormalizedDocument/1            :out SegmentSequence/1)
+  (:node TOKENIZE          :in SegmentSequence/1               :out TokenStream/1)
+  (:node MORPH             :in TokenStream/1                   :out MorphLattice/1)
+  (:node PARSE             :in MorphLattice/1                  :out PackedParseForest/1)
+  (:node REFERENCE         :in PackedParseForest/1             :out ReferenceGraph/1)
+  (:node DISCOURSE         :in ReferenceGraph/1                :out DiscourseState/1)
+  (:node ENTITY            :in DiscourseState/1                :out LegalEntityGraph/1)
+  (:node SEMANTICS         :in LegalEntityGraph/1              :out LegalSemanticAlternativeSet/1)
+  (:node PROFILES          :in LegalSemanticAlternativeSet/1   :out InterpretiveProfileEvaluation/1)
+  (:node CLARIFY-DECIDE    :in InterpretiveProfileEvaluation/1 :out ClarificationDecision/1)
+  (:node RESOLVE           :in ClarificationDecision/1         :out ClarifiedInterpretation/1)
+  (:node PROMOTE           :in ClarifiedInterpretation/1       :out PromotionEvidence/1)
+  (:node RESULT            :in PromotionEvidence/1             :out CognitionResult/1)
+  (:node CLARIFY-SUSPEND   :in ClarificationDecision/1         :out ClarificationRequest/1)
+  (:node CLARIFY-RESUME    :in ClarificationResponse/1         :out ClarificationDecision/1)
+  (:node TERM-UNDERDETERMINED :in ClarificationDecision/1      :out TERMINAL)
+  (:node TERM-CONFLICTING  :in ClarifiedInterpretation/1       :out TERMINAL)
+  (:node TERM-ABSTAINED    :in ClarifiedInterpretation/1       :out TERMINAL)
+  (:node TERM-ERROR        :in PromotionEvidence/1             :out TERMINAL))
+;; resume rule: SUSPEND(out ClarificationRequest/1) → RESUME needs a ClarificationResponse/1 whose
+;; resume_binding_ref binds the exact suspended instance (checked via ClarificationResponse.resume_binding_ref).
+(define-invariant :V8I-COG-typed-edges
+  "Every flow/branch edge is type-compatible: out-type(src)=in-type(tgt). The resume edge SUSPEND→RESUME is legal
+   only because ClarificationResponse/1 carries resume_binding_ref binding the exact suspended instance; RESUME→
+   RESOLVE is plain-compatible. Terminals have out-type TERMINAL and no outgoing flow edge. Audit V8-COGLIFE runs
+   7 independent witnesses: remove-resume-edge, dangling-resume-target, wrong-instance-binding, incompatible-edge-
+   type, terminal-with-outgoing-edge, orphan-terminal, illegal-cycle.")
+
+;; ---- VR-06: ClarifiedInterpretation conditional-cardinality TABLE + fixtures (rules EXECUTED) ----
+(define-cardinality-table clarified-interpretation-cardinality
+  (:when :ABSTAIN            :selected null :merged null :input-provenance any)
+  (:when :EXPLICIT_SELECTION :selected one  :merged null :input-provenance any)
+  (:when :EXPLICIT_MERGE     :selected null :merged one  :input-provenance all-preserved))
+(define-fixtures clarified-interpretation-fixtures
+  (:valid   ABSTAIN            :selected 0 :merged 0 :provenance-preserved t)
+  (:valid   EXPLICIT_SELECTION :selected 1 :merged 0 :provenance-preserved t)
+  (:valid   EXPLICIT_MERGE     :selected 0 :merged 1 :provenance-preserved t)
+  (:invalid ABSTAIN            :selected 1 :merged 0 :provenance-preserved t)   ; abstain-with-selection
+  (:invalid EXPLICIT_SELECTION :selected 0 :merged 0 :provenance-preserved t)   ; selection-without-selected
+  (:invalid EXPLICIT_MERGE     :selected 0 :merged 0 :provenance-preserved t)   ; merge-without-merged
+  (:invalid EXPLICIT_MERGE     :selected 0 :merged 1 :provenance-preserved nil)) ; merge-loses-provenance
+
+;; ---- VR-07: RelianceProjection total deterministic aggregation FUNCTION (executed over full product) ----
+;; reliance = worst (min) reliance over the FAILED/DEGRADED MANDATORY dimensions (per define-dimension-policy),
+;; else FULL_RELIANCE; UNKNOWN on a mandatory dimension ⇒ its failure class; advisory dims never block; every
+;; failing dimension is preserved in blocking/advisory lists; self-issued qualification evidence is rejected.
+(define-reliance-aggregation reliance-of
+  :order (WITHHELD MACHINE_UNVERIFIED ATTRIBUTED_RELIANCE FULL_RELIANCE)   ; ascending reliance
+  :rule "reliance = min over {failure-class(d) | d MANDATORY and state(d) in (FAILED DEGRADED UNKNOWN)} else FULL_RELIANCE"
+  :preserve-causes t :advisory-never-blocks t :self-qualification :rejected :total t :deterministic t)
+
+;; ---- VR-02: canonical identity registry (VERIFIED vs CANDIDATE — no invented identities) ----
+(define-canonical-identity LegalIR/1               :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.6-SCHEMAS.sexp" :type-locator "define-reference LegalIR/1" :identity "lawmax/legal-ir/1" :version "1")
+(define-canonical-identity TrustBundle/1           :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.6-SCHEMAS.sexp" :type-locator "define-reference TrustBundle/1" :identity "lawmax/trust-bundle/1" :version "1")
+(define-canonical-identity DeclassificationReceipt/1 :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.6-SCHEMAS.sexp" :type-locator "define-reference DeclassificationReceipt/1" :identity "lawmax/declassification-receipt/1" :version "1")
+(define-canonical-identity CognitionResult/1       :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.7-SCHEMAS.sexp" :type-locator "define-reference CognitionResult/1" :identity "lawmax/cognition-result/1" :version "1")
+(define-canonical-identity MemoryEvent/1           :status UNRESOLVED_CANONICAL_IDENTITY :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.6-SCHEMAS.sexp" :type-locator "define-record MemoryEvent/1" :note "canonical seat is a define-record with NO machine identity/version — future identity-registry WP")
+(define-canonical-identity ResolverResult/1        :status UNRESOLVED_CANONICAL_IDENTITY :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.7-SCHEMAS.sexp" :type-locator "define-record ResolverResult/1" :note "define-record, no machine identity/version")
+(define-canonical-identity DatasetSnapshot/1       :status UNRESOLVED_CANONICAL_IDENTITY :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.7-SCHEMAS.sexp" :type-locator "define-record DatasetSnapshot/1" :note "define-record, no machine identity/version")
+(define-canonical-identity RightsMatrix/1          :status UNRESOLVED_CANONICAL_IDENTITY :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.7-SCHEMAS.sexp" :type-locator "define-record RightsMatrix/1" :note "define-record, no machine identity/version")
+(define-invariant :V8I-XREF-identity
+  "V8-XREF opens the verify-file and confirms, for a VERIFIED identity, that the type-locator AND the exact
+   identity string AND the exact version string all occur inside the SAME define-reference block. Four independent
+   mutations: wrong-file, wrong-type, wrong-identity, wrong-version, plus a generic-locator-in-unrelated-section
+   witness. A type whose canonical seat declares NO machine identity is UNRESOLVED_CANONICAL_IDENTITY (a recorded
+   finite gate), NEVER a fabricated identity and NEVER a silent pass.")
+
+;; ---- VR-10: the SEVEN agreed RA deltas → exactly one canonical seat + owner + requirement + test ----
+(define-ra-delta-seats
+  (:delta RA-EPOCH   :seat CanonicalCitationURI/1   :owner S25 :requirement RA8-EPOCH :test T8-EPOCH)
+  (:delta RA-CONT    :seat ContinuityPolicy/1        :owner S11 :requirement RA8-CONT  :test T8-CONT)
+  (:delta RA-CORR    :seat PublicCorrectionEvent/1   :owner S18 :requirement RA8-CORR  :test T8-CORR)
+  (:delta RA-JUR-NS  :seat JurisdictionNamespace/1   :owner S25 :requirement RA8-JURNS :test T8-JURNS)
+  (:delta RA-MARK    :seat LawmaxStatusVsMark/1       :owner S25 :requirement RA8-MARK  :test T8-MARK)
+  (:delta RA-K       :seat CitationMetricV8/1         :owner S15 :requirement RA8-K     :test T8-K)
+  (:delta RA-SIDE    :seat SidecarSourceProfile/1     :owner S26 :requirement RA8-SIDE  :test T8-SIDE))
+(define-record JurisdictionNamespace/1 :status CANDIDATE_DEFINITION   ; RA-JUR-NS — its OWN seat (not FROST)
+  (:ns_id :type id) (:version :type semver) (:jurisdiction :type keyword) (:federation_level :type (member :GR :EU :FEDERATION))
+  (:identifier_grammar_ref :type ref) (:no_grammar_change :type (member :true)))
+(define-invariant :V8I-RA-DELTA-seats
+  "Exactly SEVEN RA deltas (RA-EPOCH/CONT/CORR/JUR-NS/MARK/K/SIDE), each resolving to EXACTLY ONE registered
+   canonical seat + owner subsystem + requirement + test. FROST/PQ is a supporting crypto correction, NOT a
+   substitute for RA-JUR-NS. Zero or multiple seats for any delta ⇒ failure (audit V8-RA-DELTAS).")
+(define-invariant :V8I-SYM-structural
+  "V8-SYM proves MANDATORY-PATH STRUCTURAL/INTERFACE EQUIVALENCE ONLY (reachability + node-type compatibility +
+   proposer-mandatory-empty + structural equivalence of the mandatory node sequence after proposer removal). It
+   does NOT claim behavioral SEMANTIC equivalence; a behavioral-equivalence test is bound to a future WP with its
+   own test/fixture. Exactly 4 independent mutations: broken-edge, unreachable-mandatory-stage, mandatory-model-
+   node, proposer-removal-structural-inequivalence.")

@@ -101,6 +101,79 @@
 (define-interface RootAuthorityQualification/1 :owner S14 :seat "V1.7-SCHEMAS.sexp §9" :version "1" :new t
   :signature-owner "qualification authority" :consumers (S14 S15) :classification :NORMATIVE)
 
+;; ---- v1.8 contracts (defined ONCE in V1.8-SCHEMAS.sexp; registered here for seat closure — VR registry pass) ----
+;; Registry index only: the single definition seat is V1.8-SCHEMAS.sexp (:seat points to the exact section).
+;; Each entry carries owner subsystem · definition seat · version · classification · future WP · migration ·
+;; rollback. Candidate-only contracts (no committed definition yet) are :status :CANDIDATE_DEFINITION. Private
+;; contracts are RESTRICTED with an empty public :consumers and :public-dependency nil.
+;; § ROOT-AUTHORITY product state + derived projection (V1.8-SCHEMAS.sexp §2) ----
+(define-interface RootAuthorityStatus/1      :owner S14 :seat "V1.8-SCHEMAS.sexp §2" :version "1" :new t
+  :signature-owner "root-authority aggregator" :consumers (S14 S15) :classification :NORMATIVE
+  :future-wp FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED :migration NEW :rollback "RootAuthorityQualification/1 (v1.7) projection only; no orthogonal product state")
+(define-interface RelianceProjection/1       :owner S14 :seat "V1.8-SCHEMAS.sexp §2" :version "1" :new t
+  :signature-owner "root-authority aggregator" :consumers (S14 S15) :classification :NORMATIVE
+  :future-wp FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED :migration NEW :rollback "no derived projection; status read directly (no deterministic reliance derivation)")
+;; § COGNITION clarification lifecycle (V1.8-SCHEMAS.sexp §1) ----
+(define-interface ClarifiedInterpretation/1  :owner S04 :seat "V1.8-SCHEMAS.sexp §1" :version "1" :new t
+  :signature-owner "public cognition layer" :consumers (S04 S12) :classification :NORMATIVE
+  :future-wp WP-08 :migration NEW :rollback "CandidateInterpretation/1 without conditional-cardinality clarification")
+(define-interface ClarificationRequest/1     :owner S04 :seat "V1.8-SCHEMAS.sexp §1" :version "1" :new t
+  :signature-owner "public cognition layer" :consumers (S04 S12) :classification :NORMATIVE
+  :future-wp WP-08 :migration NEW :rollback "single-shot interpretation; no suspend/resume clarification loop")
+(define-interface ClarificationResponse/1    :owner S04 :seat "V1.8-SCHEMAS.sexp §1" :version "1" :new t
+  :signature-owner "public cognition layer" :consumers (S04 S12) :classification :NORMATIVE
+  :future-wp WP-08 :migration NEW :rollback "no clarification response binding; interpretation cannot resume")
+;; § RA-EPOCH citation identity + crypto commitments + resolver record (V1.8-SCHEMAS.sexp §3) ----
+(define-interface CanonicalCitationURI/1     :owner S25 :seat "V1.8-SCHEMAS.sexp §3" :version "1" :new t
+  :signature-owner "resolver / canonical-uris.lisp" :consumers (S25 S13) :classification :NORMATIVE
+  :future-wp FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED :migration NEW :rollback "ELI/USC identity used directly; no RA-EPOCH address layer")
+(define-interface MultiCommitment/1          :owner S25 :seat "V1.8-SCHEMAS.sexp §3" :version "1" :new t
+  :signature-owner "commitment signer" :consumers (S25 S10) :classification :NORMATIVE
+  :future-wp WP-06 :migration NEW :rollback "single-hash commitment (pre-RA-EPOCH multi-family anchoring)")
+(define-interface ReAnchoringManifest/1      :owner S25 :seat "V1.8-SCHEMAS.sexp §3" :version "1" :new t
+  :signature-owner "re-anchoring authority" :consumers (S25 S10) :classification :NORMATIVE
+  :future-wp WP-06 :migration NEW :rollback "no re-anchoring; original commitments only")
+(define-interface ResolutionRecord/1         :owner S25 :seat "V1.8-SCHEMAS.sexp §3" :version "1" :new t
+  :signature-owner "resolver front" :consumers (S25) :classification :NORMATIVE
+  :future-wp FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED :migration NEW :rollback "resolver returns ResolverResult/1 only; no persisted resolution record")
+;; § RA-CONT continuity + emergency freeze (V1.8-SCHEMAS.sexp §4) ----
+(define-interface ContinuityPolicy/1         :owner S11 :seat "V1.8-SCHEMAS.sexp §4" :version "1" :new t
+  :signature-owner "continuity authority (separated)" :consumers (S11 S14) :classification :NORMATIVE
+  :future-wp FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED :migration NEW :rollback "no versioned continuity policy; single authority")
+(define-interface EmergencyFreeze/1          :owner S11 :seat "V1.8-SCHEMAS.sexp §4" :version "1" :new t
+  :signature-owner "continuity authority (separated)" :consumers (S11 S14) :classification :NORMATIVE
+  :future-wp FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED :migration NEW :rollback "no emergency freeze; standard authority path only")
+;; § RA-CORR public correction + restricted forensic record (V1.8-SCHEMAS.sexp §5) ----
+(define-interface PublicCorrectionEvent/1    :owner S18 :seat "V1.8-SCHEMAS.sexp §5" :version "1" :new t
+  :signature-owner "correction authority" :consumers (S18 S13) :classification :NORMATIVE
+  :future-wp WP-12 :migration NEW :rollback "correction via full republish; no privacy-preserving correction event")
+(define-interface RestrictedForensicRecord/1 :owner S18 :seat "V1.8-SCHEMAS.sexp §5" :version "1" :new t :status :DEFERRED_PRIVATE
+  :signature-owner "restricted forensic custodian" :consumers () :classification :RESTRICTED :public-dependency nil
+  :future-wp WP-12 :migration NEW :rollback "no forensic record retained; correction unaudited")
+;; § RA-K tiered reproducibility metric (V1.8-SCHEMAS.sexp §6) ----
+(define-interface CitationMetricV8/1         :owner S15 :seat "V1.8-SCHEMAS.sexp §6" :version "1" :new t
+  :signature-owner "citation observatory" :consumers (S15 S14) :classification :NORMATIVE
+  :future-wp WP-13 :migration NEW :rollback "CitationSupremacyMetric/1 (v1.7) only; no tiered assurance class")
+;; § RA-SIDE sidecar source profile (capture-only spec) (V1.8-SCHEMAS.sexp §7) ----
+(define-interface SidecarSourceProfile/1     :owner S26 :seat "V1.8-SCHEMAS.sexp §7" :version "1" :status :CANDIDATE_DEFINITION
+  :signature-owner "sidecar profile custodian" :consumers () :classification :RESTRICTED :public-dependency nil
+  :future-wp FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED :migration NEW :rollback "no sidecar profile; spec-only, lawful basis PENDING_LEGAL_VALIDATION")
+;; § RA-MARK status vs mark separation (V1.8-SCHEMAS.sexp §8) ----
+(define-interface LawmaxStatusVsMark/1       :owner S25 :seat "V1.8-SCHEMAS.sexp §8" :version "1" :new t
+  :signature-owner "status authority (mark-separated)" :consumers (S25 S13) :classification :NORMATIVE
+  :future-wp FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED :migration NEW :rollback "status and trademark/certification not separated")
+;; § FROST / PQ crypto suite registry + recovery epoch (V1.8-SCHEMAS.sexp §9) ----
+(define-interface CryptoSuiteRegistry/1      :owner S10 :seat "V1.8-SCHEMAS.sexp §9" :version "1" :new t
+  :signature-owner "MLTP root / crypto agility" :consumers (S10 S11) :classification :NORMATIVE
+  :future-wp WP-06 :migration NEW :rollback "fixed crypto suite; no agility registry")
+(define-interface RecoveryEpoch/1            :owner S11 :seat "V1.8-SCHEMAS.sexp §9" :version "1" :new t
+  :signature-owner "security cells (independent domains)" :consumers (S11 S10) :classification :NORMATIVE
+  :future-wp WP-06 :migration NEW :rollback "no recovery epoch; manual re-key (emergency = demotion, rejected)")
+;; § RA-JUR-NS jurisdiction namespace (candidate) (V1.8-SCHEMAS.sexp RA-JUR-NS seat) ----
+(define-interface JurisdictionNamespace/1    :owner S25 :seat "V1.8-SCHEMAS.sexp §RA-JUR-NS" :version "1" :status :CANDIDATE_DEFINITION
+  :signature-owner "resolver / canonical-uris.lisp" :consumers (S25) :classification :NORMATIVE
+  :future-wp FUTURE_IMPLEMENTATION_BOOK_PACKET_REQUIRED :migration NEW :rollback "GR/EU jurisdiction implicit; no explicit namespace dimension")
+
 (define-invariant :ISR-V6-closure
   "Every contract referenced by any subsystem or schema is DEFINED here exactly once with an owner and a
    definition seat. No adapter-specific (vendor) type is a canonical interface. No interface has two owners.
