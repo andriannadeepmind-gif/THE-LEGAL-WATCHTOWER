@@ -292,3 +292,22 @@ v1.4 audit. Όλα **predeclared, UNEXECUTED**.
 residuals)** = 30 `V5R-*` requirements· 30 kill witnesses (incl. V5KW-C1-9, V5KW-F2..F5, V5KW-A1/A2/B1/B2/
 C1x/D1x/F7/R8-event)· 30 tests· όλα predeclared **UNEXECUTED**· καμία v1.4 γραμμή/μέτρηση δεν μεταβάλλεται·
 απειλή Θ19 (correlated/common-control independence, F4/R5-refined)· κανένα νέο engine/primitive/gate/seat.
+
+## §v1.6 FUTURE-EXTENSIBILITY & PUBLIC COGNITION (CANDIDATE · additive· prefix `R-V6-` avoids the v1.4 `R-\d` count)
+
+Πηγές: `CHANGE-PROPOSAL-v1.6.md`, `V1.6-SCHEMAS.sexp`, `SUBSYSTEM-REGISTRY.sexp`,
+`INTERFACE-AND-SCHEMA-REGISTRY.sexp`. Όλα predeclared **UNEXECUTED**· καμία v1.4/v1.5 γραμμή δεν μεταβάλλεται.
+
+| R-V6 | Requirement | Subsystem | Interface | Owner seat | Test | Future WP | Invariant |
+|---|---|---|---|---|---|---|---|
+| R-V6-MEM | complete memory taxonomy (13 types, 5 scopes), model boundary, byte-verifiable continuity | S19 Memory Kernel | `MemoryEvent/1` + `MemoryProjection/1` + `MemoryPolicy/1` | memory.lisp (ONE seat, EXTEND) | V6Q-02/15 | WP-11 | V6I-05/14/15 |
+| R-V6-ADP | every tool a replaceable adapter (manifest, shadow/canary/rollback, fail-closed); no vendor canonical type | S20 Adapter plane | `CapabilityManifest/1` + `ToolInvocation/1` | capability registry | V6Q-03/17 | WP-14 | V6I-04/12 |
+| R-V6-SAFE | model/ONNX/cloud independence; SYMBOLIC_ONLY complete path | S21 SafetyState | `SafetyState/1` + `SemanticProposer` | safe-mode controller (EXTEND write-authority.lisp) | V6Q-01/07 | WP-00 | V6I-02/03/10 |
+| R-V6-COG | Public Language Cognition Layer (one seat, casegrammar SPLIT, no second engine) | S04 cognition | `LanguageCognitionLayer/1` | existing Public Legal Discernment Engine (EXTEND) | V6Q-14 | WP-06 | V6I-13 |
+| R-V6-PRIV | Private Matter Profile extension contract (interfaces only, never public dep) | S22 | `PrivateMatterProfile/1` | DEFERRED_PRIVATE | V6Q-09/11 | DEFERRED | V6I-07/16 |
+| R-V6-RTE | real-time + embodiment extension contracts (interfaces only, acyclic) | S23/S24 | `RealTimeAssistance/1` + `EmbodimentInterfaces/1` | DEFERRED_PRIVATE | V6Q-13 | DEFERRED | V6I-16 |
+
+**Ισολογισμός v1.6 (candidate):** 6 `R-V6-*` requirements (memory, adapters, safety/model-independence,
+cognition, private, real-time/embodiment)· 6 seats· 6 future-WP mappings· όλα predeclared **UNEXECUTED**·
+καμία v1.4 `R-01..134` ή v1.5 `V5R-*` γραμμή/μέτρηση δεν μεταβάλλεται· απειλή Θ20 (proposer/adapter
+substitution & memory-scope leakage)· κανένα νέο engine/store/primitive/seat (μία έδρα ανά έννοια).

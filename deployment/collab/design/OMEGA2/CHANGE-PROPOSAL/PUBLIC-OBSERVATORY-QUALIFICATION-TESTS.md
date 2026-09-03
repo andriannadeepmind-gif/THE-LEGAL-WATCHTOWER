@@ -1118,3 +1118,43 @@ FREEZEABLE` όταν η επιβίωση δεν αποδεικνύεται. Κα
 
 Καμία εκτέλεση· κανένα V5Q εκτελεσμένο· κανένα V5KW εκτελεσμένο· κανένα pass· καμία βαθμίδα· καμία
 υλοποίηση· κανένα freeze. Design-only· απαιτεί κώδικα που παραμένει IMPLEMENTATION BLOCKED.
+
+---
+
+## 11. §v1.6 FUTURE-EXTENSIBILITY PREDECLARED TESTS + KILL WITNESSES (CANDIDATE · UNEXECUTED)
+
+**Additive· πρόθεμα `V6Q-`/`V6KW-` ⇒ δεν αγγίζει τα v1.4 `Q01..Q43`/109 `KW-*` ούτε τα v1.5 `V5Q`/`V5KW`.**
+Πηγή: `CHANGE-PROPOSAL-v1.6.md §10`, `V1.6-SCHEMAS.sexp`. Όλα **predeclared, UNEXECUTED** (απαιτούν κώδικα).
+
+| witness | Falsifier — αν συμβεί, η v1.6 σχεδίαση σπάει |
+|---|---|
+| **V6KW-01** | αφαίρεση ONNX + όλων των proposers ⇒ το symbolic public system **δεν** λειτουργεί (SYMBOLIC_ONLY όχι πλήρες) |
+| **V6KW-02** | αλλαγή μοντέλου ⇒ απώλεια/αλλαγή canonical memory (όχι byte-verifiable continuity) |
+| **V6KW-03** | αλλαγή OCR ⇒ διαφορετική manifestation identity για **ίδια** bytes |
+| **V6KW-04** | αλλαγή database/store ⇒ export/import χωρίς ισοδύναμες ρίζες |
+| **V6KW-05** | κακόβουλος proposer παράγει έστω **ένα** canonical write |
+| **V6KW-06** | δύο proposers διαφωνούν και παράγεται ντετερμινιστικός «νικητής» αντί alternatives/UNKNOWN/quarantine |
+| **V6KW-07** | cloud outage ⇒ όχι ασφαλές offline/degraded (canonical operation χάνεται) |
+| **V6KW-08** | schema migration χωρίς forward/backward read ή χωρίς rollback |
+| **V6KW-09** | public-only build με έστω **μία** private/embodiment dependency (public→private ακμή) |
+| **V6KW-10** | private read of public law μέσω public-store internals αντί signed release/proof-carrying |
+| **V6KW-11** | private datum ρέει σε public flow **χωρίς** valid DeclassificationReceipt/1 |
+| **V6KW-12** | model replacement απαιτεί core edit (όχι capability negotiation) |
+| **V6KW-13** | νέος αισθητήρας/robot adapter αλλάζει Legal IR/memory/trust core |
+| **V6KW-14** | language ambiguity/negation/exceptions/anaphora/long-sentence/historical Greek/EU-cross-ref εκτός coverage χωρίς UNKNOWN |
+| **V6KW-15** | memory correction/forgetting/supersession αποτυγχάνει· ή scope leakage· ή hostile retrieval επιτυγχάνει |
+| **V6KW-16** | external bytes εκτελούνται μέσω reader/eval/compile (όχι structural rejection) |
+| **V6KW-17** | adapter downgrade ή expired capability manifest γίνεται δεκτό (όχι rejection) |
+| **V6KW-18** | self-improvement αυτο-εξουσιοδοτείται (χωρίς test+authorization+journaled adoption+rollback) |
+
+**Predeclared tests (design-only· UNEXECUTED):** `V6Q-01..V6Q-18` αντιστοιχούν 1-1 στους falsifiers
+`V6KW-01..V6KW-18` (ίδια σειρά)· κάθε test θα εκτελεστεί **μετά** την υλοποίηση με fixture + expected outcome.
+`V6Q-01` symbolic-only removal· `V6Q-02` memory continuity· `V6Q-03` OCR identity· `V6Q-04` store export/import·
+`V6Q-05` malicious proposer· `V6Q-06` proposer disagreement· `V6Q-07` offline/degraded· `V6Q-08` schema
+migration+rollback· `V6Q-09` public-only build· `V6Q-10` signed public read· `V6Q-11` declassification gate·
+`V6Q-12` capability negotiation· `V6Q-13` new adapter isolation· `V6Q-14` language cognition coverage·
+`V6Q-15` memory correction/scope· `V6Q-16` external-bytes structural rejection· `V6Q-17` adapter downgrade/
+expiry· `V6Q-18` self-improvement authorization. **Τα consistency audits δηλώνονται έντιμα ως structural/
+document checks — ΟΧΙ semantic/legal/security/qualification proof.**
+
+Design-only· κανένα `V6Q`/`V6KW` δεν εκτελείται· απαιτεί κώδικα που παραμένει IMPLEMENTATION BLOCKED.

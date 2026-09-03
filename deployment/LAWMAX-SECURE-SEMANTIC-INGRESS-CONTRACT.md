@@ -204,3 +204,12 @@ evidence — η απλή παρουσία reference **δεν** αρκεί (`V5I-
 evidence obligation is satisfied.` Ένα schema-valid αλλά λάθος state-mutating γεγονός γίνεται
 **`QUARANTINED`**, ακόμη κι αν οι downstream compilers συμφωνούν. Kill witnesses (predeclared, ΜΗ
 εκτελεσμένα): V5KW-D1-1..5.
+
+## §v1.6 note — SemanticProposer through the non-evaluating ingress (CANDIDATE · additive)
+
+Design-only v1.6: κάθε **`SemanticProposer`** (model/ONNX/OCR/heuristic, όλοι προαιρετικοί) παράγει μόνο typed
+anchored `CandidateInterpretation/1` (= ο υπάρχων `neural-candidate/1`) και περνά **αποκλειστικά** από τον
+non-evaluating JSON/CBOR schema decoder αυτού του συμβολαίου — **κανένα** external byte σε `cl:read`/eval/
+macro/compile (SIK-1..9· `V6KW-16`). Ο proposer δεν κατέχει κλειδιά, δεν γράφει canonical state, δεν
+αυτοπιστοποιείται, το score **ποτέ** νομική αλήθεια, και αφαιρείται χωρίς απώλεια μνήμης/canonical data
+(⇒ `SafetyMode :SYMBOLIC_ONLY`). `safe-read.lisp` παραμένει **ΕΣΩΤΕΡΙΚΟ-ΜΟΝΟ** (δεν είναι external decoder).

@@ -349,3 +349,17 @@ Parliament** (στρώση CPEI) δένεται με το `ArgumentRecord/1` ω�
 adoption (L8) αλλάζει institutional/epistemic status, **όχι** την αντικειμενική αλήθεια. Οι 12 στρώσεις
 και το InstitutionalAct schema παραμένουν αμετάβλητα· C1 είναι σύνδεση, όχι νέα έδρα. Kill witnesses
 V5KW-C1-1..4.
+
+## §v1.6 note — Public Language Cognition Layer + complete Memory (CANDIDATE · additive)
+
+Design-only v1.6 (`CHANGE-PROPOSAL-v1.6.md`, `V1.6-SCHEMAS.sexp`, `SUBSYSTEM-REGISTRY.sexp`): **καμία δεύτερη
+reasoning engine**. (α) `LanguageCognitionLayer/1` = μία έδρα **μέσα** στον υπάρχοντα Public Legal Discernment
+Engine (composition + language front-end· REUSE `greek-nlp-core.lisp`, `greek-tokenizer-advanced.lisp`,
+`greek-lemmatizer.lisp`, `legal-legislation-ontology`, `legal-ast.lisp`, `legal-inference-engine.lisp`,
+`legal-deontic.lisp`, `legal-event-calculus.lisp`, `legal-dialectic.lisp`, `legal-qa.lisp`,
+`legal-reasoning-bridge.lisp`)· `legal-casegrammar.lisp` **SPLIT**: γενικοί ελληνικοί μηχανισμοί → shared/
+public· client-fact schemas + matter-solving → private/deferred· **καμία** δεύτερη υλοποίηση· εκτός δηλωμένης
+coverage ⇒ `UNKNOWN`. (β) **Memory** = μία έδρα (`memory.lisp` EXTEND): 13 `MemoryType` × 5 `MemoryScope`
+(`public|user|client|matter|ephemeral`)· κανένα μοντέλο δεν κατέχει/τροποποιεί μνήμη (projection-in /
+candidate-out)· canonical write μόνο από write-authority· byte-verifiable continuity σε αλλαγή μοντέλου. Δεν
+προστίθεται primitive/engine/gate/store· ό,τι νέο είναι contract/adapter/profile.

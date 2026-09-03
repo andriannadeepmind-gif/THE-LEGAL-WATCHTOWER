@@ -241,3 +241,11 @@ ELI / ECLI υλικό · provenance, Merkle, JWS, RFC 3161 · source profiles ·
 5. **Το CPEI δεν αποκαλείται ιδιωτικό.** Ό,τι είναι ιδιωτικό είναι ΤΥΠΟΣ, όχι
    στρώση: οι 12 στρώσεις είναι κοινές.
 6. **Ιστορικοί υποψήφιοι δεν ανταγωνίζονται ποτέ τον τρέχοντα** (anti-loop 11).
+
+## §v1.6 (CANDIDATE · design-only· δεν ανταγωνίζεται τον τρέχοντα)
+
+7. **Το «neural plane» framing** γενικεύεται σε **model-agnostic `SemanticProposer`** (v1.6): ONNX/μοντέλο/
+   OCR/embeddings = προαιρετικοί adapters χωρίς canonical authority· η ανώτερη μορφή είναι το mandatory
+   Common Lisp symbolic kernel + SYMBOLIC_ONLY complete path. Ιστορικό: το v1.4/v1.5 περιεχόμενο **δεν**
+   falsified — απλώς η ορολογία «neural» δεν είναι πλέον η κανονική· ο τύπος `neural-candidate/1` παραμένει
+   ως `CandidateInterpretation/1`. Design-only, CANDIDATE (`CHANGE-PROPOSAL-v1.6.md`).

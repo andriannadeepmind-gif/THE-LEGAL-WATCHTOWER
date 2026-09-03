@@ -568,3 +568,14 @@ PCL §5-6 | REUSE» **αντικαθίσταται** από: «offline verifier 
 signatures, RFC-3161 time, delegation, witnesses, revocation, qualification) |
 `PROOF-CARRYING-LAW.md` + `MACHINE-LEGAL-TRUST-PROTOCOL.md` | **EXTEND**». Ο
 ελεγκτής είναι μικρός (LOC-ceiling) αλλά **δεν είναι hash-only**.
+
+## §v1.6 note — model independence, cognition & memory seats (CANDIDATE · additive)
+
+Design-only v1.6 (`CHANGE-PROPOSAL-v1.6.md`, `SUBSYSTEM-REGISTRY.sexp`): το «neural plane» framing
+γενικεύεται σε **model-agnostic `SemanticProposer`** — **ONNX αφαιρείται από κάθε mandatory dependency** και
+γίνεται προαιρετικός `ONNXProposerAdapter` (`embeddings-authority.lisp`/εξωτερικό runtime = optional adapters,
+εκτός trusted path, καμία write authority). Public **Language Cognition Layer** = μία έδρα **μέσα** στον
+υπάρχοντα Public Legal Discernment Engine (`greek-nlp-core.lisp` κ.λπ. REUSE· `legal-casegrammar.lisp`
+**SPLIT** general→public / client-fact→private, καμία δεύτερη υλοποίηση). **Memory** = μία έδρα (`memory.lisp`
+EXTEND, 13 `MemoryType` × 5 `MemoryScope`). Όταν λείπουν όλοι οι proposers ⇒ `SafetyMode :SYMBOLIC_ONLY`
+(πλήρες path). Καμία νέα έδρα/engine· ό,τι είναι νέο είναι contract/adapter/profile.
