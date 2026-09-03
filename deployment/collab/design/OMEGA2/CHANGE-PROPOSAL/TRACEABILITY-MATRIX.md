@@ -422,3 +422,15 @@ identity closure — MemoryEvent/ResolverResult/DatasetSnapshot/RightsMatrix RES
 non-circular), **0 unresolved**. Guard runner: `V1.8-VERIFY.py` (10 guards, 50 mutations, 60 evidence rows).
 **ΕΤΥΜΗΓΟΡΙΑ: `V1.8 VERIFICATION HARNESS CORRECTED — READY FOR FRESH INDEPENDENT RE-VERIFICATION`· το v1.8 ΔΕΝ
 πέρασε ανεξάρτητη επαλήθευση, ΔΕΝ freeze.**
+
+**Verifier-GENERALIZATION pass (re-verification #2 `afa8c7d` FAILED):** δεύτερη ανεξάρτητη επαλήθευση σκότωσε όλα τα
+declared mutants αλλά ο **regex parser** δέχτηκε 11 held-out counterexamples (coverage falsified, macro-architecture
+OXI). Ο structural parser αντικαταστάθηκε με πραγματικό recursive-descent **AST reader** (χωρίς eval, χωρίς
+regex/substring ως structural identity). Προστέθηκαν: 11 held-out fixtures (καθένα exit 3 για τον ακριβή λόγο)·
+πλήρης graph validation (declared==node-types, όλα τα endpoints δηλωμένα, terminals ΜΗΔΕΝ outgoing σε κάθε family,
+explicit resume-transition)· πραγματική owner/writer resolution (ghost .lisp/WP/subsystem αποτυγχάνουν)·
+root-authority schema binding (cause_refs/blocking/advisory, class∈{MANDATORY,ADVISORY}, failure∈RelianceClass,
+recovery independence για ΚΑΘΕ pair)· exact locators (top-level symbol, όχι substring)· exact traceability universe
+(σετ ισότητα DFT-01..10 + 7 RA8)· 9 injected meta-kill tests· clean-clone bootstrap (MISSING_PINNED_OBJECT).
+Runner: `V1.8-VERIFY.py` (10 guards, 58 mutations, 68 rows). **ΕΤΥΜΗΓΟΡΙΑ: `V1.8 VERIFIER GENERALIZED — READY FOR
+FRESH INDEPENDENT RE-VERIFICATION #3`· το v1.8 ΔΕΝ πέρασε ανεξάρτητη επαλήθευση, ΔΕΝ freeze.**

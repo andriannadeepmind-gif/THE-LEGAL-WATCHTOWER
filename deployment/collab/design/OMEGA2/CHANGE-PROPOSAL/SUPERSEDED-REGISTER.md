@@ -292,3 +292,16 @@ subsystem registries; canonical-identity closure resolves `MemoryEvent/1`/`Resol
 no new subsystem; `SUBSYSTEM-REGISTRY.sexp`/`V1.6-SCHEMAS.sexp`/`V1.7-SCHEMAS.sexp`/history unchanged; frozen v1.4
 `88129099` immutable; pinned `.out` `4873e610` unchanged. **Verdict: `V1.8 VERIFICATION HARNESS CORRECTED — READY
 FOR FRESH INDEPENDENT RE-VERIFICATION`. The v1.8 candidate has NOT passed independent verification.**
+
+### v1.8 VERIFIER-GENERALIZATION note (parent `afa8c7d` · CANDIDATE — re-verification #2 FAILED, verifier generalized)
+A second fresh independent re-verification **FAILED** `afa8c7d`: all declared mutants were killed but a regex-based
+structural parser accepted **eleven held-out counterexamples** (macro-architecture NOT falsified; verification
+coverage falsified). This bounded pass replaces the regex structural parser with a real recursive-descent
+s-expression **AST reader** (no eval, no substring-as-identity), adds the 11 held-out fixtures (each rejected for the
+exact reason), complete cognition-graph validation, real owner/writer resolution against the source/WP/subsystem
+registries, root-authority schema binding (cause_refs/blocking/advisory + class/failure-class enums + recovery
+independence for every pair), exact top-level-symbol locators, exact traceability id-set equality, 9 injected
+meta-kill tests, and a clean-clone bootstrap. New files `V1.8-VERIFY.py` (rebuilt) and
+`V1.8-CLEAN-CLONE-BOOTSTRAP.sh`; verification tooling only; schema/subsystem/v1.6/v1.7 unchanged; frozen v1.4
+`88129099` immutable; pinned `.out` `4873e610` unchanged. **Verdict: `V1.8 VERIFIER GENERALIZED — READY FOR FRESH
+INDEPENDENT RE-VERIFICATION #3`. The v1.8 candidate has NOT passed independent verification.**

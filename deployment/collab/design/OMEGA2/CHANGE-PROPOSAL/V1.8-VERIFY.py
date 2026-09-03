@@ -1,25 +1,29 @@
 #!/usr/bin/env python3
 # V1.8-VERIFY.py — standalone, re-runnable guard runner for the v1.8 verification harness.
 #
-# Each guard READS real machine-readable source files by PATH and returns (violations, reason).
-# A guard is "clean" when violations==0 (exit 0) and "rejects" when violations>0 (exit 3). A crash exits 2.
-# Mutations are produced by `mutate`, which writes the REAL baseline bytes and the REAL mutated bytes to a
-# workspace so the orchestrator can hash the actual files and rerun the SAME guard against the mutated bytes.
-# Nothing here treats a filename / label / description as a substitute for mutated content.
+# GENERALIZATION PASS: structural verification of the .sexp sources is done with a REAL recursive-descent
+# s-expression reader (an AST reader, the same shape as a Lisp reader with *read-eval* nil — it never evaluates,
+# only builds a tree). No `.*?`, bounded substring window, or raw substring is used as structural-identity proof.
+# The AST preserves nested type expressions, exact top-level form identity, duplicate forms, field ownership and
+# cardinality, edge families and endpoints, exact enum membership, and exact reference targets. Regex is used ONLY
+# for Markdown prose (the traceability table, .md locators) and for locating line-anchored top-level form opens,
+# after which each form is re-read with the AST reader.
+#
+# Guard = clean (violations==0, exit 0) or rejects (violations>0, exit 3). A crash exits 2. Mutations are produced
+# by `mutate`, which writes REAL baseline + REAL mutated bytes to a workspace so the orchestrator can hash the
+# actual files and rerun the SAME guard against the mutated bytes.
 #
 # Usage:
-#   V1.8-VERIFY.py list-guards                          -> exact declared guard-id set, one per line
-#   V1.8-VERIFY.py list-muts   <GID>                    -> mutation ids for a guard, one per line
-#   V1.8-VERIFY.py run <GID> [--file KEY=PATH ...]      -> run one guard; print "OK|VIOLATION <reason>"; exit 0/3/2
-#   V1.8-VERIFY.py mutate <GID> <MID> --outdir DIR      -> write baseline+mutant real bytes; print "KEY BASE MUT"
-#   V1.8-VERIFY.py aggregate                            -> print the full 4^N root-authority product result line
-#   V1.8-VERIFY.py selftest                             -> internal: baseline 0 for every guard, every mutant flips
-#   V1.8-VERIFY.py --selfcrash                          -> deliberately crash (meta-kill test hook)
+#   V1.8-VERIFY.py list-guards | list-muts <GID>
+#   V1.8-VERIFY.py run <GID> [--file KEY=PATH ...]      -> "OK|VIOLATION <reason>"; exit 0/3/2
+#   V1.8-VERIFY.py mutate <GID> <MID> --outdir DIR      -> "KEY BASE MUT"
+#   V1.8-VERIFY.py aggregate                            -> full 4^N root-authority product result line
+#   V1.8-VERIFY.py selftest                             -> baseline 0 for every guard; every mutant flips
+#   V1.8-VERIFY.py --selfcrash                          -> deliberate crash (meta-kill hook)
 import sys, os, re, hashlib, itertools
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, '..', '..', '..', '..', '..'))
-
 DEFAULTS = {
     'schema': os.path.join(HERE, 'V1.8-SCHEMAS.sexp'),
     's17':    os.path.join(HERE, 'V1.7-SCHEMAS.sexp'),
@@ -30,16 +34,14 @@ DEFAULTS = {
     'mcp':    os.path.join(ROOT, 'source', 'mcp-server.lisp'),
     'site':   os.path.join(ROOT, 'source', 'static-site.lisp'),
 }
+BYBASENAME = {os.path.basename(p): k for k, p in DEFAULTS.items()}
 
 def readpath(p):
     with open(p, encoding='utf-8', errors='replace') as f:
         return f.read()
 
 def load(overrides):
-    F = {}
-    for k, dp in DEFAULTS.items():
-        F[k] = readpath(overrides.get(k, dp))
-    return F
+    return {k: readpath(overrides.get(k, dp)) for k, dp in DEFAULTS.items()}
 
 def openroot(relpath):
     for base in (os.path.join(ROOT, relpath), os.path.join(HERE, relpath), relpath):
@@ -50,151 +52,271 @@ def openroot(relpath):
                 return None
     return None
 
-BYBASENAME = {os.path.basename(p): k for k, p in DEFAULTS.items()}
 def open_or_loaded(relpath, F):
-    """Prefer the loaded (possibly mutated) content when the referenced file is one the run already holds,
-    so a mutation of a self-referential verify-file/canonical-file is actually seen by the guard."""
     bn = os.path.basename(relpath)
     if bn in BYBASENAME and BYBASENAME[bn] in F:
         return F[BYBASENAME[bn]]
     return openroot(relpath)
 
-# ---- shared s-expression helpers -------------------------------------------------------------
-def strip(s):
-    o = []; i = 0; ins = False
-    while i < len(s):
-        ch = s[i]
-        if ins:
-            o.append(ch)
-            if ch == '\\' and i + 1 < len(s):
-                o.append(s[i + 1]); i += 2; continue
-            if ch == '"':
-                ins = False
-            i += 1; continue
-        if ch == '"':
-            ins = True; o.append(ch); i += 1; continue
-        if ch == ';':
-            while i < len(s) and s[i] != '\n':
-                i += 1
-            continue
-        o.append(ch); i += 1
-    return ''.join(o)
+# ============================ REAL s-expression AST reader (no eval, no regex) ============================
+class Sym(str):
+    __slots__ = ()
+class Str(str):
+    __slots__ = ()
 
-def blocks(cs, head):
-    res = {}
-    pat = re.compile(r'\(' + head + r'\s+([A-Za-z0-9_/+.-]+)')
-    for m in pat.finditer(cs):
-        s = m.start(); d = 0; j = s; ins = False
-        while j < len(cs):
-            ch = cs[j]
-            if ins:
-                if ch == '\\':
-                    j += 2; continue
-                if ch == '"':
-                    ins = False
-                j += 1; continue
-            if ch == '"':
-                ins = True
-            elif ch == '(':
-                d += 1
-            elif ch == ')':
-                d -= 1
-                if d == 0:
-                    j += 1; break
+_ATOM_STOP = set(' \t\r\n\f()";')
+
+def _read_one(text, i):
+    n = len(text)
+    # skip whitespace / line comments / #| block comments |#
+    while i < n:
+        c = text[i]
+        if c == ';':
+            while i < n and text[i] != '\n':
+                i += 1
+        elif c == '#' and i + 1 < n and text[i + 1] == '|':
+            depth = 1; i += 2
+            while i < n and depth > 0:
+                if text[i] == '#' and i + 1 < n and text[i + 1] == '|':
+                    depth += 1; i += 2
+                elif text[i] == '|' and i + 1 < n and text[i + 1] == '#':
+                    depth -= 1; i += 2
+                else:
+                    i += 1
+        elif c in ' \t\r\n\f':
+            i += 1
+        else:
+            break
+    if i >= n:
+        return None, i
+    c = text[i]
+    if c == '(':
+        i += 1; lst = []
+        while True:
+            # skip ws/comments before each element
+            while i < n and (text[i] in ' \t\r\n\f' or text[i] == ';'
+                             or (text[i] == '#' and i + 1 < n and text[i + 1] == '|')):
+                if text[i] == ';':
+                    while i < n and text[i] != '\n':
+                        i += 1
+                elif text[i] == '#':
+                    depth = 1; i += 2
+                    while i < n and depth > 0:
+                        if text[i] == '#' and i + 1 < n and text[i + 1] == '|':
+                            depth += 1; i += 2
+                        elif text[i] == '|' and i + 1 < n and text[i + 1] == '#':
+                            depth -= 1; i += 2
+                        else:
+                            i += 1
+                else:
+                    i += 1
+            if i >= n:
+                raise ValueError('unbalanced (')
+            if text[i] == ')':
+                return lst, i + 1
+            f, i = _read_one(text, i)
+            lst.append(f)
+    if c == ')':
+        raise ValueError('unexpected )')
+    if c == '"':
+        i += 1; buf = []
+        while i < n:
+            d = text[i]
+            if d == '\\' and i + 1 < n:
+                buf.append(text[i + 1]); i += 2; continue
+            if d == '"':
+                return Str(''.join(buf)), i + 1
+            buf.append(d); i += 1
+        raise ValueError('unterminated string')
+    if c == '|':                       # |vertical-bar symbol|
+        i += 1; buf = []
+        while i < n and text[i] != '|':
+            buf.append(text[i]); i += 1
+        return Sym('|' + ''.join(buf) + '|'), i + 1
+    if c == '#' and i + 1 < n and text[i + 1] == '\\':   # #\x character literal
+        j = i + 2
+        if j < n:
             j += 1
-        res[m.group(1)] = cs[s:j]
-    return res
+        while j < n and text[j] not in _ATOM_STOP:
+            j += 1
+        return Sym(text[i:j]), j
+    j = i
+    while j < n and text[j] not in _ATOM_STOP:
+        j += 1
+    return Sym(text[i:j]), j
 
-def paren_depth(raw):
-    d = 0; i = 0; ins = False
-    while i < len(raw):
-        c = raw[i]
-        if ins:
-            if c == '\\':
-                i += 2; continue
-            if c == '"':
-                ins = False
-            i += 1; continue
-        if c == '"':
-            ins = True
-        elif c == ';':
-            while i < len(raw) and raw[i] != '\n':
-                i += 1
+def read_all(text):
+    out = []; i = 0; n = len(text)
+    while True:
+        f, i = _read_one(text, i)
+        if f is None:
+            break
+        out.append(f)
+        if i >= n:
+            break
+    return out
+
+def is_list(x):
+    return isinstance(x, list)
+def head(f):
+    return f[0] if (is_list(f) and f and isinstance(f[0], Sym)) else None
+def form_name(f):
+    return f[1] if (is_list(f) and len(f) > 1 and isinstance(f[1], Sym)) else None
+def forms_by_head(forms, h):
+    return [f for f in forms if head(f) is not None and str(head(f)) == h]
+
+def kv_after(form, key):
+    """value that immediately follows a bare keyword Sym `key` at the top level of `form`."""
+    for idx, el in enumerate(form):
+        if isinstance(el, Sym) and str(el) == key and idx + 1 < len(form):
+            return form[idx + 1]
+    return None
+
+def record_attrs_fields(form):
+    attrs = {}; fields = []
+    items = form[2:] if (is_list(form) and len(form) > 2) else []
+    k = 0
+    while k < len(items):
+        it = items[k]
+        if isinstance(it, Sym) and it.startswith(':'):
+            attrs[str(it)] = items[k + 1] if k + 1 < len(items) else None
+            k += 2; continue
+        if is_list(it):
+            fields.append(it)
+        k += 1
+    return attrs, fields
+
+def field_key(field):
+    return str(field[0]) if (is_list(field) and field and isinstance(field[0], Sym)) else None
+def field_type_expr(field):
+    return kv_after(field, ':type')
+
+def type_refs(node):
+    out = []
+    if isinstance(node, Sym):
+        if node.endswith('/1'):
+            out.append(str(node))
+    elif is_list(node):
+        for x in node:
+            out.extend(type_refs(x))
+    return out
+
+def type_tokens(s):
+    """Whole-word `X/1` type references in a free-text label or in source code (prose/code, not schema structure).
+    Used for subsystem :interface labels, canonical type-locator strings, and mcp/static-site source scans."""
+    return re.findall(r'(?<![\\w/-])([A-Za-z][A-Za-z0-9_]*/1)(?![\\w/-])', s)
+
+def edge_pairs(node):
+    """node is a list of 2-element (src tgt) lists -> [(src,tgt),...] preserving endpoints exactly."""
+    out = []
+    if is_list(node):
+        for e in node:
+            if is_list(e) and len(e) >= 2 and isinstance(e[0], Sym) and isinstance(e[1], Sym):
+                out.append((str(e[0]), str(e[1])))
+    return out
+
+def sym_list(node):
+    return [str(x) for x in node if isinstance(x, Sym)] if is_list(node) else []
+
+def top_forms(text):
+    try:
+        return read_all(text)
+    except Exception:
+        return []
+
+def top_symbols(text):
+    """Names of every top-level def/define-* form. Line-anchored `^(` (prose-level) locates each top-level open;
+    each form is then re-read with the AST reader — the identity is proven structurally, never by substring."""
+    syms = set()
+    for m in re.finditer(r'(?m)^\(', text):
+        try:
+            f, _ = _read_one(text, m.start())
+        except Exception:
             continue
-        elif c == '(':
-            d += 1
-        elif c == ')':
-            d -= 1
-        i += 1
-    return d
+        h = head(f); nm = form_name(f)
+        if h is not None and (str(h).startswith('def')) and nm is not None:
+            syms.add(str(nm))
+    return syms
 
-# ---- derived type universe -------------------------------------------------------------------
-def record_defs(F):
-    """name -> (rest_of_head_line, body) for every define-record across active schemas."""
-    d = {}
-    for txt in (F['schema'], F['s17'], F['s16']):
-        s = strip(txt)
-        for name, body in blocks(s, 'define-record').items():
-            head = body.split('\n', 1)[0]
-            d[name] = (head, body)
-    return d
+# ============================ derived type universe (AST) ============================
+def all_record_forms(F):
+    forms = []
+    for key in ('schema', 's17', 's16'):
+        forms += forms_by_head(top_forms(F[key]), 'define-record')
+    return forms
+def all_reference_forms(F):
+    forms = []
+    for key in ('schema', 's17', 's16'):
+        forms += forms_by_head(top_forms(F[key]), 'define-reference')
+    return forms
+def isr_interface_forms(F):
+    return forms_by_head(top_forms(F['isr']), 'define-interface')
 
 def defined_types(F):
     d = set()
-    for txt in (F['schema'], F['s17'], F['s16']):
-        s = strip(txt)
-        d |= set(re.findall(r'\(define-record\s+([A-Za-z0-9_]+/1)', s))
-        d |= set(re.findall(r'\(define-reference\s+([A-Za-z0-9_]+/1)', s))
-    d |= set(re.findall(r'\(define-interface\s+([A-Za-z0-9_/-]+)', strip(F['isr'])))
+    for f in all_record_forms(F) + all_reference_forms(F) + isr_interface_forms(F):
+        if form_name(f):
+            d.add(str(form_name(f)))
     return d
 
 def private_types(F):
     priv = set()
-    for name, (head, body) in record_defs(F).items():
-        if (':public-dependency nil' in head or ':status :DEFERRED_PRIVATE' in head
-                or ':status :SPECIFICATION_ONLY' in head or ':status :INTERFACE_ONLY' in head):
-            priv.add(name)
-    for m in re.finditer(r'\(define-interface\s+([A-Za-z0-9_/-]+)(.*?)(?=\(define|\Z)', strip(F['isr']), re.S):
-        name, body = m.group(1), m.group(2)
-        if (':RESTRICTED' in body or ':DEFERRED_PRIVATE' in body or ':INTERFACE_ONLY' in body
-                or ':public-dependency nil' in body):
-            priv.add(name)
+    for f in all_record_forms(F):
+        attrs, _ = record_attrs_fields(f)
+        st = attrs.get(':status')
+        pd = attrs.get(':public-dependency')
+        if (pd is not None and str(pd) == 'nil') or (st is not None and str(st) in
+                (':DEFERRED_PRIVATE', ':INTERFACE_ONLY', ':SPECIFICATION_ONLY')):
+            if form_name(f):
+                priv.add(str(form_name(f)))
+    for f in isr_interface_forms(F):
+        # interface head keyword attrs
+        body = f[2:] if len(f) > 2 else []
+        flat = ' '.join(str(x) for x in body if isinstance(x, (Sym, Str)))
+        st = kv_after(f, ':status')
+        pd = kv_after(f, ':public-dependency')
+        cl = kv_after(f, ':classification')
+        if ((pd is not None and str(pd) == 'nil') or (st is not None and str(st) in
+                (':DEFERRED_PRIVATE', ':INTERFACE_ONLY')) or (cl is not None and str(cl) == ':RESTRICTED')):
+            if form_name(f):
+                priv.add(str(form_name(f)))
     return priv
 
 def public_interfaces(F, priv):
     roots = {}
-    for m in re.finditer(r'\(define-interface\s+([A-Za-z0-9_/-]+)(.*?)(?=\(define|\Z)', strip(F['isr']), re.S):
-        name, body = m.group(1), m.group(2)
-        if name in priv:
+    for f in isr_interface_forms(F):
+        nm = form_name(f)
+        if nm is None or str(nm) in priv:
             continue
-        if ':classification :NORMATIVE' in body:
-            roots[name] = body
+        if kv_after(f, ':classification') is not None and str(kv_after(f, ':classification')) == ':NORMATIVE':
+            roots[str(nm)] = f
     return roots
 
-def field_type_edges(F):
-    """record name -> list of /1 types referenced in its :type fields (the field-type edge family)."""
+def record_field_edges(F):
     adj = {}
-    for name, (head, body) in record_defs(F).items():
-        toks = []
-        for fm in re.finditer(r'\(:([A-Za-z0-9_]+)\s+:type\s+(\([^()]*\)|[^()\s]+)', body):
-            for t in re.findall(r'([A-Za-z0-9_]+/1)', fm.group(2)):
-                toks.append(t)
-        adj[name] = toks
+    for f in all_record_forms(F):
+        nm = form_name(f)
+        if nm is None:
+            continue
+        _, fields = record_attrs_fields(f)
+        refs = []
+        for fld in fields:
+            te = field_type_expr(fld)
+            refs += type_refs(te)
+        adj[str(nm)] = refs
     return adj
 
-# ---- GUARDS -----------------------------------------------------------------------------------
+# ============================ GUARDS ============================
+PRIM = {'ref', 'id', 'sha256', 'sig', 'instant', 'scope', 'semver', 'text', 'keyword', 'pubkey',
+        'kid', 'anchor', 'usc-id', 'duration', 'uncertainty', 'null', 'span', 'mime', 'url', 'bool'}
+
 def g_pubpriv(F):
-    priv = private_types(F)
-    defined = defined_types(F)
-    roots = public_interfaces(F, priv)
-    adj = field_type_edges(F)
-    recs = record_defs(F)
+    priv = private_types(F); defined = defined_types(F)
+    roots = public_interfaces(F, priv); adj = record_field_edges(F)
+    recnames = set(adj)
     v = 0; why = []
-    PRIM = {'ref', 'id', 'sha256', 'sig', 'instant', 'scope', 'semver', 'text', 'keyword', 'pubkey',
-            'kid', 'anchor', 'usc-id', 'duration', 'uncertainty', 'null', 'span', 'mime', 'url', 'bool'}
-    # (1) transitive field-type closure from every public record root: no private node reachable
-    public_records = [r for r in roots if r in recs]
-    seen = set(); stack = list(public_records)
+    # (1) transitive field-type closure from public record roots
+    seen = set(); stack = [r for r in roots if r in recnames]
     while stack:
         x = stack.pop()
         if x in seen:
@@ -203,176 +325,268 @@ def g_pubpriv(F):
         if x in priv:
             v += 1; why.append('field-closure-leak:' + x); continue
         stack += adj.get(x, [])
-    # (1b) ref-target: a canonical-identity / define-reference type-locator pointing at a PRIVATE type
-    for tok in re.findall(r':type-locator\s+"[^"]*?([A-Za-z0-9_]+/1)"', F['schema']):
-        if tok in priv:
-            v += 1; why.append('ref-target-leak->' + tok)
-    # (2) interface-io: a public interface body naming a private TYPE
-    for name, body in roots.items():
-        for t in re.findall(r'([A-Za-z0-9_]+/1)', body):
+    # (1b) ref-target: a canonical-identity / define-reference type-locator naming a private type
+    for f in forms_by_head(top_forms(F['schema']), 'define-canonical-identity'):
+        loc = kv_after(f, ':type-locator')
+        if isinstance(loc, Str):
+            for t in type_tokens(str(loc)):
+                if t in priv:
+                    v += 1; why.append('ref-target-leak->' + t)
+    # (2) interface-io: public interface body naming a private TYPE
+    for name, f in roots.items():
+        for t in type_refs(f):
             if t in priv:
                 v += 1; why.append('interface-io-leak:' + name + '->' + t)
     # (3) subsystem-dep: a PUBLIC subsystem :interface naming a private TYPE
-    for m in re.finditer(r'\(define-subsystem\s+S\d+(.*?)(?=\(define-subsystem|\Z)', strip(F['sub']), re.S):
-        b = m.group(1)
-        owner = (re.search(r':owner\s+"([^"]*)"', b) or [None, ''])[1]
-        if 'DEFERRED_PRIVATE' in owner or 'INTERFACE_ONLY' in owner:
+    for f in forms_by_head(top_forms(F['sub']), 'define-subsystem'):
+        owner = kv_after(f, ':owner'); itf = kv_after(f, ':interface')
+        ow = str(owner) if owner is not None else ''
+        if 'DEFERRED_PRIVATE' in ow or 'INTERFACE_ONLY' in ow:
             continue
-        itf = re.search(r':interface\s+"([^"]*)"', b)
-        if itf:
-            for t in re.findall(r'([A-Za-z0-9_]+/1)', itf.group(1)):
+        if isinstance(itf, Str):
+            for t in type_tokens(str(itf)):
                 if t in priv:
                     v += 1; why.append('subsystem-dep-leak->' + t)
-    # (4) store-owner-writer: private token in owner/writer, or read-only store carrying a writer
-    for m in re.finditer(r'\(define-write-authority\s+:store\s+"[^"]+"\s+:owner\s+"([^"]+)"\s+:write-authority\s+"([^"]+)"\s+:writers\s+(\d+)(\s+:read-only\s+t)?', strip(F['schema'])):
-        owner, auth, w, ro = m.group(1), m.group(2), int(m.group(3)), m.group(4)
+    # (4) store-owner-writer
+    for f in forms_by_head(top_forms(F['schema']), 'define-write-authority'):
+        owner = str(kv_after(f, ':owner') or ''); auth = str(kv_after(f, ':write-authority') or '')
+        w = kv_after(f, ':writers'); ro = kv_after(f, ':read-only')
+        try:
+            wn = int(str(w))
+        except Exception:
+            wn = 0
         if any(p in owner or p in auth for p in priv):
             v += 1; why.append('store-owner-leak')
-        if ro and w != 0:
+        if ro is not None and str(ro) == 't' and wn != 0:
             v += 1; why.append('store-readonly-writer')
-    # (5) api-mcp-schema: mcp source naming a private type
-    for t in re.findall(r'([A-Za-z0-9_]+/1)', F['mcp']):
-        if t in priv:
-            v += 1; why.append('mcp-leak->' + t)
-    # (6) publication: static-site naming a private type
-    for t in re.findall(r'([A-Za-z0-9_]+/1)', F['site']):
-        if t in priv:
-            v += 1; why.append('site-leak->' + t)
-    # (7) declassification: a PUBLIC record other than DeclassificationReceipt carrying a private scope type
-    for name, (head, body) in recs.items():
-        if name in priv or 'DeclassificationReceipt' in name:
-            continue
-        for t in adj.get(name, []):
+    # (5) mcp / (6) site: private type token anywhere in the parsed source
+    for keyf, tag in (('mcp', 'mcp'), ('site', 'site')):
+        for t in type_tokens(F[keyf]):
             if t in priv:
-                v += 1; why.append('declass-leak:' + name + '->' + t)
-    # (8) reject every UNDEFINED endpoint in the record field-type / interface graph
-    for name, (head, body) in recs.items():
-        for t in adj.get(name, []):
-            base = t.split('/')[0]
-            if t not in defined and base.lower() not in PRIM:
-                v += 1; why.append('undefined-endpoint:' + name + '->' + t)
+                v += 1; why.append(tag + '-leak->' + t)
+    # (7) declassification: a public record other than DeclassificationReceipt carrying a private field-type
+    for f in all_record_forms(F):
+        nm = form_name(f)
+        if nm is None or str(nm) in priv or 'DeclassificationReceipt' in str(nm):
+            continue
+        for t in adj.get(str(nm), []):
+            if t in priv:
+                v += 1; why.append('declass-leak:' + str(nm) + '->' + t)
+    # (8) reject every UNDEFINED endpoint in the record field-type graph
+    for nm, refs in adj.items():
+        for t in refs:
+            if t not in defined and t.split('/')[0].lower() not in PRIM:
+                v += 1; why.append('undefined-endpoint:' + nm + '->' + t)
     return v, ('clean:%d roots,%d private' % (len(roots), len(priv))) if v == 0 else '; '.join(why[:6])
 
 def g_xref(F):
-    """Two-part canonical-identity resolution (part A identity+version in the ref block; part B the block's
-    canonical-file exists and contains the locator). Zero unresolved, zero blockers -> clean."""
-    s = strip(F['schema'])
-    ci = re.findall(r'\(define-canonical-identity\s+(\S+)\s+:status\s+(\S+)(.*?)\)', s)
-    refs = {}
-    for name, body in blocks(s, 'define-reference').items():
-        refs[name] = body
-    v = 0; why = []; verified = 0; blockers = 0
-    for name, status, rest in ci:
-        if status != 'VERIFIED':
-            blockers += 1; v += 1; why.append('unresolved:' + name); continue
-        vf = re.search(r':verify-file\s+"([^"]+)"', rest)
-        loc = re.search(r':type-locator\s+"([^"]+)"', rest)
-        idn = re.search(r':identity\s+"([^"]+)"', rest)
-        ver = re.search(r':version\s+"([^"]+)"', rest)
-        if not (vf and loc and idn and ver):
-            v += 1; why.append('incomplete:' + name); continue
-        vftxt = open_or_loaded(vf.group(1), F)
+    forms = top_forms(F['schema'])
+    ci = forms_by_head(forms, 'define-canonical-identity')
+    v = 0; why = []; verified = 0
+    for f in ci:
+        nm = str(form_name(f) or '?')
+        status = kv_after(f, ':status')
+        if status is None or str(status) != 'VERIFIED':
+            v += 1; why.append('unresolved:' + nm); continue
+        vf = kv_after(f, ':verify-file'); loc = kv_after(f, ':type-locator')
+        idn = kv_after(f, ':identity'); ver = kv_after(f, ':version')
+        if not (isinstance(vf, Str) and isinstance(loc, Str) and isinstance(idn, Str) and isinstance(ver, Str)):
+            v += 1; why.append('incomplete:' + nm); continue
+        vftxt = open_or_loaded(str(vf), F)
         if vftxt is None:
-            v += 1; why.append('verify-file-missing:' + name); continue
-        # PART A: identity + version inside the referenced define-reference block
-        refname = loc.group(1).replace('define-reference', '').strip()
-        block = blocks(strip(vftxt), 'define-reference').get(refname, '')
-        if not block or idn.group(1) not in block or ('"' + ver.group(1) + '"') not in block:
-            v += 1; why.append('identity/version-not-in-block:' + name); continue
-        # PART B: the block's canonical-file exists on disk and contains the locator (structural anchor)
-        cf = re.search(r':canonical-file\s+"([^"]+)"', block)
-        lc = re.search(r':locator\s+"([^"]+)"', block)
-        if not (cf and lc):
-            v += 1; why.append('no-canonical-anchor:' + name); continue
-        cftxt = open_or_loaded(cf.group(1), F)
+            v += 1; why.append('verify-file-missing:' + nm); continue
+        refname = str(loc).replace('define-reference', '').strip()
+        block = None
+        for rf in forms_by_head(top_forms(vftxt), 'define-reference'):
+            if form_name(rf) is not None and str(form_name(rf)) == refname:
+                block = rf; break
+        if block is None:
+            v += 1; why.append('reference-target-absent:' + nm); continue
+        bidn = kv_after(block, ':identity'); bver = kv_after(block, ':version')
+        if not (isinstance(bidn, Str) and str(bidn) == str(idn) and isinstance(bver, Str) and str(bver) == str(ver)):
+            v += 1; why.append('identity/version-mismatch:' + nm); continue
+        cf = kv_after(block, ':canonical-file'); lc = kv_after(block, ':locator')
+        if not (isinstance(cf, Str) and isinstance(lc, Str)):
+            v += 1; why.append('no-canonical-anchor:' + nm); continue
+        cftxt = open_or_loaded(str(cf), F)
         if cftxt is None:
-            v += 1; why.append('canonical-file-missing:' + name); continue
-        if lc.group(1) not in cftxt:
-            v += 1; why.append('locator-absent:' + name); continue
+            v += 1; why.append('canonical-file-missing:' + nm); continue
+        locator = str(lc)
+        cfl = str(cf).lower()
+        if cfl.endswith('.lisp') or cfl.endswith('.sexp'):
+            if locator not in top_symbols(cftxt):        # EXACT top-level symbol, not substring
+                v += 1; why.append('locator-not-top-symbol:' + nm + ':' + locator); continue
+        else:                                            # Markdown prose: exact whole-word term
+            if not re.search(r'(?<![\w/-])' + re.escape(locator) + r'(?![\w/-])', cftxt):
+                v += 1; why.append('locator-not-a-term:' + nm + ':' + locator); continue
         verified += 1
     return v, ('clean:%d verified, 0 unresolved' % verified) if v == 0 else '; '.join(why[:6])
 
 TOPFORMS = r'\(def(?:un|method|generic|class|struct|parameter|var|macro)\s+'
 def g_cap(F):
-    s = strip(F['schema'])
-    entries = re.findall(r'\(define-capability-seat\s+(.*?)\)\s*(?=\(define|\Z)', s, re.S)
     v = 0; why = []
+    entries = forms_by_head(top_forms(F['schema']), 'define-capability-seat')
     for e in entries:
-        kind = (re.search(r':kind\s+(\S+)', e) or [None, None])[1]
-        f = (re.search(r':file\s+"([^"]+)"', e) or [None, None])[1]
-        txt = openroot(f) if f else None
-        if kind == ':CODE':
-            sym = (re.search(r':symbol\s+"?([A-Za-z0-9_/*+.-]+)"?', e) or [None, None])[1]
-            pkg = (re.search(r':package\s+"([^"]+)"', e) or [None, None])[1]
+        kind = kv_after(e, ':kind'); f = kv_after(e, ':file')
+        txt = openroot(str(f)) if isinstance(f, Str) else None
+        if kind is not None and str(kind) == ':CODE':
+            sym = kv_after(e, ':symbol'); pkg = kv_after(e, ':package')
+            syms = str(sym) if sym is not None else ''
+            pkgs = str(pkg) if pkg is not None else ''
             if txt is None:
                 v += 1; why.append('cap-file-missing'); continue
-            if not pkg or (('defpackage :' + pkg) not in txt and ('defpackage #:' + pkg) not in txt
-                           and ('defpackage ' + pkg) not in txt):
-                v += 1; why.append('cap-pkg-absent:' + str(pkg))
-            if not sym or not re.search(TOPFORMS + re.escape(sym) + r'\b', txt):
-                v += 1; why.append('cap-sym-not-topform:' + str(sym))
-            ip = txt.find('(in-package :' + (pkg or ''))
-            dp = re.search(TOPFORMS + re.escape(sym or 'zzz') + r'\b', txt)
+            if not pkgs or (('defpackage :' + pkgs) not in txt and ('defpackage #:' + pkgs) not in txt
+                            and ('defpackage ' + pkgs) not in txt):
+                v += 1; why.append('cap-pkg-absent:' + pkgs)
+            if not syms or not re.search(TOPFORMS + re.escape(syms) + r'\b', txt):
+                v += 1; why.append('cap-sym-not-topform:' + syms)
+            ip = txt.find('(in-package :' + pkgs)
+            dp = re.search(TOPFORMS + re.escape(syms or 'zzz') + r'\b', txt)
             if not (ip >= 0 and dp and dp.start() > ip):
-                v += 1; why.append('cap-pkg-ownership:' + str(sym))
-        elif kind == ':DOCUMENT':
-            sec = (re.search(r':section\s+"([^"]+)"', e) or [None, None])[1]
-            if txt is None or not sec or txt.count(sec) < 1:
+                v += 1; why.append('cap-pkg-ownership:' + syms)
+        elif kind is not None and str(kind) == ':DOCUMENT':
+            sec = kv_after(e, ':section')
+            if txt is None or not isinstance(sec, Str) or txt.count(str(sec)) < 1:
                 v += 1; why.append('cap-doc-section')
-            if re.search(r':package\s', e):
+            if kv_after(e, ':package') is not None:
                 v += 1; why.append('cap-doc-has-package')
         else:
             v += 1; why.append('cap-unknown-kind')
     return v, ('clean:%d seats' % len(entries)) if v == 0 else '; '.join(why[:6])
 
+def _repo_source_files():
+    try:
+        return set(os.listdir(os.path.join(ROOT, 'source')))
+    except Exception:
+        return set()
+def _wp_ids(F):
+    return set(str(form_name(f)) for f in forms_by_head(top_forms(F['sub']), 'define-wp-purpose') if form_name(f))
+def _subsystem_ids(F):
+    return set(str(form_name(f)) for f in forms_by_head(top_forms(F['sub']), 'define-subsystem') if form_name(f))
+
+def _resolve_authority(s, srcfiles, wps, subs, require_anchor):
+    """Resolve a write-authority owner/writer STRING: every concrete resource token must resolve; a .lisp token
+    must be a real source file unless the string carries a [design-target] marker; WP-/S- ids must be registered.
+    Bare authority-role labels (e.g. 'coverage-owner', 'none') are permitted; an owner additionally needs at least
+    one concrete anchor. Returns (ok, reason)."""
+    design_target = '[design-target]' in s
+    anchor = False
+    toks = s.replace('[', ' [').replace(']', '] ').split()
+    for t in toks:
+        tt = t.strip('[]')
+        if not tt or tt == 'design-target' or tt == 'interface-only':
+            continue
+        if tt.endswith('.lisp'):
+            if tt in srcfiles:
+                anchor = True
+            elif design_target:
+                anchor = True
+            else:
+                return False, 'ghost-file:' + tt
+        elif tt.startswith('WP-') and tt[3:].isdigit():
+            if tt in wps:
+                anchor = True
+            else:
+                return False, 'ghost-wp:' + tt
+        elif (tt.startswith('S') and tt[1:].isdigit()) or (tt.startswith('RA-S') and tt[4:].isdigit()):
+            sid = tt[3:] if tt.startswith('RA-') else tt
+            if sid in subs:
+                anchor = True
+            else:
+                return False, 'ghost-subsystem:' + tt
+        # else: bare authority-role label (allowed)
+    if require_anchor and not anchor:
+        return False, 'no-concrete-anchor'
+    return True, 'ok'
+
 def g_own(F):
-    s = strip(F['schema']); subc = strip(F['sub'])
-    wa = re.findall(r'\(define-write-authority\s+:store\s+"([^"]+)"\s+:owner\s+"([^"]+)"\s+:write-authority\s+"([^"]+)"\s+:writers\s+(\d+)(\s+:read-only\s+t)?', s)
-    # reconciliation universe: owner tokens seen in the subsystem registry + write-authority.lisp seat
-    sub_owner_tokens = set(re.findall(r'[A-Za-z0-9_.-]+\.lisp', subc)) | set(re.findall(r'\bS\d+\b', subc))
-    v = 0; why = []; seen = set()
+    v = 0; why = []
+    wa = forms_by_head(top_forms(F['schema']), 'define-write-authority')
+    srcfiles = _repo_source_files(); wps = _wp_ids(F); subs = _subsystem_ids(F)
+    seen = set()
     if len(wa) < 10:
-        v += 1; why.append('too-few-stores')
-    for store, owner, auth, w, ro in wa:
+        v += 1; why.append('too-few-stores:%d' % len(wa))
+    for f in wa:
+        store = str(kv_after(f, ':store') or '')
+        owner = str(kv_after(f, ':owner') or '')
+        auth = str(kv_after(f, ':write-authority') or '')
+        wraw = kv_after(f, ':writers'); ro = kv_after(f, ':read-only')
+        try:
+            wn = int(str(wraw))
+        except Exception:
+            wn = 0
         if store in seen:
             v += 1; why.append('dup-store:' + store)
         seen.add(store)
         if not owner:
             v += 1; why.append('no-owner:' + store)
-        if int(w) > 1:
+        if wn > 1:
             v += 1; why.append('two-writers:' + store)
-        if ro and int(w) != 0:
+        if ro is not None and str(ro) == 't' and wn != 0:
             v += 1; why.append('ro-writer:' + store)
-        # cross-source reconciliation: the owner must name a real .lisp seat or subsystem, or a declared WP/none
-        owner_ok = (('.lisp' in owner) or re.search(r'\bS\d+\b', owner) or owner.startswith('WP-')
-                    or 'MLTP' in owner or owner in ('none',) or any(tok in owner for tok in sub_owner_tokens)
-                    or '[interface-only]' in owner or '[design-target]' in owner)
-        if not owner_ok:
-            v += 1; why.append('owner-unreconciled:' + store + '/' + owner)
+        ok, r = _resolve_authority(owner, srcfiles, wps, subs, require_anchor=True)
+        if not ok:
+            v += 1; why.append('owner-unresolved:' + store + '/' + r)
+        ok2, r2 = _resolve_authority(auth, srcfiles, wps, subs, require_anchor=False)
+        if not ok2:
+            v += 1; why.append('writer-unresolved:' + store + '/' + r2)
     return v, ('clean:%d stores' % len(wa)) if v == 0 else '; '.join(why[:6])
 
-def cog(F):
-    s = strip(F['schema'])
-    cg = blocks(s, 'define-cognition-graph').get('cognition-graph-v8', '')
-    nt = blocks(s, 'define-cognition-node-types').get('cognition-graph-v8-types', '')
-    nodetypes = {m.group(1): (m.group(2), m.group(3))
-                 for m in re.finditer(r'\(:node\s+(\S+)\s+:in\s+(\S+)\s+:out\s+(\S+)\)', nt)}
-    def elist(key):
-        m = re.search(r':' + re.escape(key) + r'\s+\((.*?)\)\s*\n\s*:', cg, re.S)
-        return re.findall(r'\(([\w-]+)\s+([\w-]+)\)', m.group(1)) if m else []
-    flow = elist('flow-edges'); branch = elist('branch-edges'); resume = elist('resume-edges'); term = elist('terminal-edges')
-    tm = re.search(r':terminals\s+\(([^)]*)\)', cg)
-    terminals = set(tm.group(1).split()) if tm else set()
-    resp = blocks(s, 'define-record').get('ClarificationResponse/1', '')
-    return cg, nodetypes, flow, branch, resume, term, terminals, resp
+def cog_model(F):
+    forms = top_forms(F['schema'])
+    g = None
+    for f in forms_by_head(forms, 'define-cognition-graph'):
+        g = f; break
+    nt = None
+    for f in forms_by_head(forms, 'define-cognition-node-types'):
+        nt = f; break
+    nodes = set(sym_list(kv_after(g, ':nodes'))) if g is not None else set()
+    flow = edge_pairs(kv_after(g, ':flow-edges')) if g is not None else []
+    branch = edge_pairs(kv_after(g, ':branch-edges')) if g is not None else []
+    resume = edge_pairs(kv_after(g, ':resume-edges')) if g is not None else []
+    term = edge_pairs(kv_after(g, ':terminal-edges')) if g is not None else []
+    terminals = set(sym_list(kv_after(g, ':terminals'))) if g is not None else set()
+    entry = str(kv_after(g, ':entry')) if (g is not None and kv_after(g, ':entry') is not None) else None
+    nodetypes = {}
+    if nt is not None:
+        for spec in nt[2:]:
+            if is_list(spec) and len(spec) >= 6 and isinstance(spec[1], Sym):
+                nm = str(spec[1]); it = str(kv_after(spec, ':in')); ot = str(kv_after(spec, ':out'))
+                nodetypes[nm] = (it, ot)
+    resp = None
+    for f in forms_by_head(forms, 'define-record'):
+        if form_name(f) is not None and str(form_name(f)) == 'ClarificationResponse/1':
+            resp = f; break
+    return nodes, nodetypes, flow, branch, resume, term, terminals, entry, resp
 
 def g_coglife(F):
-    cg, nodetypes, flow, branch, resume, term, terminals, resp = cog(F)
+    nodes, nodetypes, flow, branch, resume, term, terminals, entry, resp = cog_model(F)
     v = 0; why = []
-    # type-compat over flow+branch edges
+    fam = {'flow': flow, 'branch': branch, 'resume': resume, 'terminal': term}
+    # declared graph nodes must equal the declared node-type set
+    if nodes != set(nodetypes):
+        v += 1; why.append('nodes!=node-types:%s' % ','.join(sorted(nodes ^ set(nodetypes)))[:60])
+    # every endpoint in every edge family must be a declared node
+    for fname, edges in fam.items():
+        for a, b in edges:
+            if a not in nodes:
+                v += 1; why.append('undeclared-endpoint:%s:%s' % (fname, a))
+            if b not in nodes:
+                v += 1; why.append('undeclared-endpoint:%s:%s' % (fname, b))
+    # flow/branch type compatibility: out(src)==in(tgt)
     for a, b in flow + branch:
         if a in nodetypes and b in nodetypes and nodetypes[a][1] != nodetypes[b][0]:
             v += 1; why.append('typed-incompat:%s->%s' % (a, b))
+    # terminals: zero outgoing edges across EVERY family
+    for fname, edges in fam.items():
+        for a, b in edges:
+            if a in terminals and a != 'RESULT':
+                v += 1; why.append('terminal-outgoing:%s:%s' % (fname, a))
+    # orphan terminal: every terminal (except RESULT) has an incoming edge
+    incoming = set(b for e in fam.values() for a, b in e)
+    for t in terminals:
+        if t != 'RESULT' and t not in incoming:
+            v += 1; why.append('orphan-terminal:' + t)
     # acyclic over flow+branch+terminal (resume edges are the only legal re-entry)
     def has_cycle(edges):
         adj = {}
@@ -390,143 +604,184 @@ def g_coglife(F):
         return any(col.get(u, 0) == 0 and dfs(u) for u in list(adj))
     if has_cycle(flow + branch + term):
         v += 1; why.append('illegal-cycle')
-    # terminals have NO outgoing flow edge
-    flow_srcs = [a for a, b in flow]
-    for t in terminals:
-        if t != 'RESULT' and t in flow_srcs:
-            v += 1; why.append('terminal-outgoing:' + t)
-    # every terminal reachable via an incoming edge (no orphan terminal)
-    incoming = set(b for a, b in (flow + branch + term + resume))
-    for t in terminals:
-        if t != 'RESULT' and t not in incoming:
-            v += 1; why.append('orphan-terminal:' + t)
-    # resume edge present and its target reachable; resume binding present
-    if ('CLARIFY-SUSPEND', 'CLARIFY-RESUME') not in resume:
-        v += 1; why.append('resume-edge-missing')
-    resume_targets = set(b for a, b in resume)
-    resume_nodes = set(a for a, b in resume) | resume_targets
-    allnodes = set(a for a, b in (flow + branch + term + resume)) | set(b for a, b in (flow + branch + term + resume)) | terminals
-    for rn in resume_targets:
-        if rn not in allnodes:
-            v += 1; why.append('dangling-resume-target:' + rn)
-    if 'resume_binding_ref' not in resp:
+    # explicit resume-transition rule: every resume edge is one of {SUSPEND->RESUME, RESUME->RESOLVE};
+    # both required edges present; response binds the suspended instance.
+    allowed_resume = {('CLARIFY-SUSPEND', 'CLARIFY-RESUME'), ('CLARIFY-RESUME', 'RESOLVE')}
+    for e in resume:
+        if e not in allowed_resume:
+            v += 1; why.append('illegal-resume-transition:%s->%s' % e)
+    for req in allowed_resume:
+        if req not in set(resume):
+            v += 1; why.append('missing-resume-edge:%s->%s' % req)
+    if resp is None or field_by_key(resp, ':resume_binding_ref') is None:
         v += 1; why.append('resume-binding-missing')
-    return v, ('clean:%d flow,%d resume,%d terminals' % (len(flow), len(resume), len(terminals))) if v == 0 else '; '.join(why[:6])
+    return v, ('clean:%d nodes,%d edges' % (len(nodes), sum(len(e) for e in fam.values()))) if v == 0 else '; '.join(why[:6])
+
+def field_by_key(record_form, key):
+    _, fields = record_attrs_fields(record_form)
+    for fld in fields:
+        if field_key(fld) == key:
+            return fld
+    return None
 
 def g_clarify(F):
-    s = strip(F['schema'])
-    fix = re.findall(r'\((:valid|:invalid)\s+(\w+)\s+:selected\s+(\d+)\s+:merged\s+(\d+)\s+:provenance-preserved\s+(t|nil)\)', s)
-    def card_ok(ms, selected, merged, provok):
+    forms = top_forms(F['schema'])
+    fx = None
+    for f in forms_by_head(forms, 'define-fixtures'):
+        fx = f; break
+    fixtures = []
+    if fx is not None:
+        for spec in fx[2:]:
+            if is_list(spec) and len(spec) >= 2 and isinstance(spec[0], Sym):
+                kind = str(spec[0])
+                if kind in (':valid', ':invalid'):
+                    ms = str(spec[1])
+                    sel = kv_after(spec, ':selected'); mrg = kv_after(spec, ':merged'); prov = kv_after(spec, ':provenance-preserved')
+                    fixtures.append((kind, ms, str(sel), str(mrg), str(prov)))
+    def card_ok(ms, sel, mrg, prov):
+        s = sel == '1'; m = mrg == '1'
         if ms == 'ABSTAIN':
-            return selected == 0 and merged == 0
+            return (not s) and (not m)
         if ms == 'EXPLICIT_SELECTION':
-            return selected == 1 and merged == 0
+            return s and (not m)
         if ms == 'EXPLICIT_MERGE':
-            return selected == 0 and merged == 1 and provok
+            return (not s) and m and prov == 't'
         return False
     v = 0; why = []
-    if len(fix) < 7:
-        v += 1; why.append('too-few-fixtures:%d' % len(fix))
-    for kind, ms, sel, mrg, prov in fix:
-        ok = card_ok(ms, int(sel), int(mrg), prov == 't')
+    if len(fixtures) < 7:
+        v += 1; why.append('too-few-fixtures:%d' % len(fixtures))
+    for kind, ms, sel, mrg, prov in fixtures:
+        ok = card_ok(ms, sel, mrg, prov)
         if kind == ':valid' and not ok:
-            v += 1; why.append('valid-fails-rule:' + ms)
+            v += 1; why.append('valid-fails:' + ms)
         if kind == ':invalid' and ok:
-            v += 1; why.append('invalid-passes-rule:' + ms)
-    return v, ('clean:%d fixtures' % len(fix)) if v == 0 else '; '.join(why[:6])
+            v += 1; why.append('invalid-passes:' + ms)
+    return v, ('clean:%d fixtures' % len(fixtures)) if v == 0 else '; '.join(why[:6])
 
 DIMSTATE_REQUIRED = {'OK', 'DEGRADED', 'FAILED', 'UNKNOWN'}
+CLASS_ENUM = {'MANDATORY', 'ADVISORY'}
+def enum_members(F, name):
+    for f in forms_by_head(top_forms(F['schema']), 'define-closed-enum'):
+        if form_name(f) is not None and str(form_name(f)) == name:
+            return [str(x[0])[1:] for x in f[2:] if is_list(x) and x and isinstance(x[0], Sym)]
+    return []
+
 def ra_model(F):
-    s = strip(F['schema'])
-    enum = re.search(r'\(define-closed-enum\s+DimensionState\s+(.*?)\)\s*\n', s)
-    states = re.findall(r'\(:(\w+)\)', enum.group(1)) if enum else []
-    dimpol = blocks(s, 'define-dimension-policy').get('root-authority-dimensions', '')
-    dims = re.findall(r'\(:dimension\s+:(\w+)\s+:class\s+:(\w+)\s+:failure\s+:(\w+)', dimpol)
-    return s, states, dims, dimpol
+    states = enum_members(F, 'DimensionState')
+    reliance = set(enum_members(F, 'RelianceClass'))
+    dp = None
+    for f in forms_by_head(top_forms(F['schema']), 'define-dimension-policy'):
+        dp = f; break
+    dims = []
+    if dp is not None:
+        for spec in dp[2:]:
+            if is_list(spec):
+                dn = kv_after(spec, ':dimension'); cl = kv_after(spec, ':class'); fl = kv_after(spec, ':failure')
+                if dn is not None and cl is not None and fl is not None:
+                    dims.append((str(dn)[1:], str(cl)[1:], str(fl)[1:]))
+    return states, reliance, dims
 
 def g_rastatus(F):
-    s, states, dims, dimpol = ra_model(F)
+    states, reliance, dims = ra_model(F)
+    forms = top_forms(F['schema'])
+    ras = relp = None
+    for f in forms_by_head(forms, 'define-record'):
+        if str(form_name(f) or '') == 'RootAuthorityStatus/1':
+            ras = f
+        if str(form_name(f) or '') == 'RelianceProjection/1':
+            relp = f
     v = 0; why = []
     names = [d[0] for d in dims]
-    order = ['WITHHELD', 'MACHINE_UNVERIFIED', 'ATTRIBUTED_RELIANCE', 'FULL_RELIANCE']  # ascending reliance
-    BAD = {'FAILED', 'DEGRADED', 'UNKNOWN'}
-    def project(state):
-        worst = 'FULL_RELIANCE'; blocking = []; advisory = []
-        for dname, cls, fail in dims:
-            if state[dname] in BAD:
-                if cls == 'MANDATORY':
-                    blocking.append(dname)
-                    if fail in order and order.index(fail) < order.index(worst):
-                        worst = fail
-                elif cls == 'ADVISORY':
-                    advisory.append(dname)
-        return worst, tuple(sorted(blocking)), tuple(sorted(advisory))
-    # exercise flags
+    # schema binding
+    if ras is None or field_by_key(ras, ':cause_refs') is None:
+        v += 1; why.append('cause_refs-missing')
+    else:
+        te = field_type_expr(field_by_key(ras, ':cause_refs'))
+        if not (is_list(te) and len(te) >= 2 and str(te[0]) == 'list' and str(te[1]) == 'ref'):
+            v += 1; why.append('cause_refs-bad-cardinality')
+    if relp is None or field_by_key(relp, ':blocking_dimensions') is None:
+        v += 1; why.append('blocking_dimensions-missing')
+    if relp is None or field_by_key(relp, ':advisory_dimensions') is None:
+        v += 1; why.append('advisory_dimensions-missing')
     if set(states) != DIMSTATE_REQUIRED:
-        v += 1; why.append('dimstate!=OK/DEGRADED/FAILED/UNKNOWN:%s' % ','.join(states))
+        v += 1; why.append('dimstate!=OK/DEGRADED/FAILED/UNKNOWN')
     if len(dims) != 8:
         v += 1; why.append('dims!=8:%d' % len(dims))
-    if v == 0:
-        total = len(states) ** len(names)          # the FULL product 4^8
-        seen = 0; multi = 0; exercised = set()
-        proj_cache = {}
-        for combo in itertools.product(states, repeat=len(names)):
-            st = dict(zip(names, combo))
-            key = combo
-            p = project(st)
-            if key in proj_cache and proj_cache[key] != p:
-                multi += 1
-            proj_cache[key] = p
-            seen += 1
-            exercised.update(combo)
-            # completeness: blocking == exactly the MANDATORY dims in bad state
-            expect_block = tuple(sorted(d for d, c, fl in dims if c == 'MANDATORY' and st[d] in BAD))
-            if p[1] != expect_block:
-                v += 1; why.append('blocking-incomplete'); break
-            expect_adv = tuple(sorted(d for d, c, fl in dims if c == 'ADVISORY' and st[d] in BAD))
-            if p[2] != expect_adv:
-                v += 1; why.append('advisory-incomplete'); break
-        if seen != total:
-            v += 1; why.append('coverage:%d!=%d' % (seen, total))
-        if multi:
-            v += 1; why.append('non-deterministic-projection')
-        if not DIMSTATE_REQUIRED.issubset(exercised):
-            v += 1; why.append('UNKNOWN/DEGRADED-not-exercised')
-        # recovery independence: two mandatory dims failed; recovering one keeps the other blocking
-        mand = [d for d, c, fl in dims if c == 'MANDATORY']
-        if len(mand) >= 2:
-            st = {d: ('FAILED' if d in mand[:2] else 'OK') for d in names}
-            st2 = dict(st); st2[mand[0]] = 'OK'
-            if mand[1] not in project(st2)[1]:
-                v += 1; why.append('recovery-not-independent')
+    for dn, cl, fl in dims:
+        if cl not in CLASS_ENUM:
+            v += 1; why.append('bad-class:%s:%s' % (dn, cl))
+        if fl not in reliance:
+            v += 1; why.append('bad-failure-class:%s:%s' % (dn, fl))
+    if v:
+        return v, '; '.join(why[:6])
+    order = ['WITHHELD', 'MACHINE_UNVERIFIED', 'ATTRIBUTED_RELIANCE', 'FULL_RELIANCE']
+    BAD = {'FAILED', 'DEGRADED', 'UNKNOWN'}
+    def project(st):
+        worst = 'FULL_RELIANCE'; blocking = []; advisory = []
+        for dn, cl, fl in dims:
+            if st[dn] in BAD:
+                if cl == 'MANDATORY':
+                    blocking.append(dn)
+                    if order.index(fl) < order.index(worst):
+                        worst = fl
+                else:
+                    advisory.append(dn)
+        return worst, tuple(sorted(blocking)), tuple(sorted(advisory))
+    total = len(states) ** len(names); seen = 0; exercised = set()
+    for combo in itertools.product(states, repeat=len(names)):
+        st = dict(zip(names, combo)); p = project(st); seen += 1; exercised.update(combo)
+        expect_b = tuple(sorted(d for d, c, fl in dims if c == 'MANDATORY' and st[d] in BAD))
+        expect_a = tuple(sorted(d for d, c, fl in dims if c == 'ADVISORY' and st[d] in BAD))
+        if p[1] != expect_b:
+            v += 1; why.append('blocking-incomplete'); break
+        if p[2] != expect_a:
+            v += 1; why.append('advisory-incomplete'); break
+    if seen != total:
+        v += 1; why.append('coverage:%d!=%d' % (seen, total))
+    if not DIMSTATE_REQUIRED.issubset(exercised):
+        v += 1; why.append('UNKNOWN/DEGRADED-not-exercised')
+    # recovery independence for EVERY ordered pair of distinct mandatory dimensions
+    mand = [d for d, c, fl in dims if c == 'MANDATORY']
+    for a in mand:
+        for b in mand:
+            if a == b:
+                continue
+            st = {d: ('FAILED' if d in (a, b) else 'OK') for d in names}
+            st2 = dict(st); st2[a] = 'OK'
+            if b not in project(st2)[1]:
+                v += 1; why.append('recovery-not-independent:%s/%s' % (a, b)); break
+        if 'recovery-not-independent' in ' '.join(why):
+            break
     # structural invariants
-    ras = blocks(s, 'define-record').get('RootAuthorityStatus/1', '')
-    if not (':proof_integrity :type DimensionState' in ras and ':security :type DimensionState' in ras):
-        v += 1; why.append('proof_integrity-not-separate')
-    if not re.search(r':dimension\s+:proof_integrity\s+:class\s+:MANDATORY', dimpol):
-        v += 1; why.append('proof_integrity-not-mandatory')
+    s = F['schema']
     if ':derived :type (member :true)' not in s:
-        v += 1; why.append('derived-not-constant-true')
+        v += 1; why.append('derived-not-constant')
     if ':self-qualification :rejected' not in s:
         v += 1; why.append('self-qualification-not-rejected')
     if ':advisory-never-blocks t' not in s:
         v += 1; why.append('advisory-can-block')
-    return v, ('clean:%d states, 8 dims' % (len(states) ** len(names))) if v == 0 else '; '.join(why[:6])
+    if not (ras is not None and field_by_key(ras, ':proof_integrity') is not None and field_by_key(ras, ':security') is not None):
+        v += 1; why.append('proof_integrity-not-separate')
+    return v, ('clean:%d states, 8 dims' % total) if v == 0 else '; '.join(why[:6])
 
 def g_sym(F):
-    s = strip(F['schema'])
-    pip = blocks(s, 'define-pipeline').get('symbolic-only-path', '')
-    def grp(key):
-        m = re.search(r':' + key + r'\s+\(([^)]*)\)', pip)
-        return m.group(1).split() if m else []
-    mand = grp('mandatory-nodes')
-    propmand = [x for x in grp('proposer-mandatory-nodes') if x]
-    prop_opt = set(grp('proposer-optional-nodes'))
-    em = re.search(r':edges\s+\((.*?)\)\s*\n?\s*:symbolic', pip, re.S)
-    edges = re.findall(r'\((\w+)\s+(\w+)\)', em.group(1)) if em else []
-    entry = (re.search(r':entry\s+(\w+)', pip) or [None, 'ACQUIRE'])[1]
-    exit_ = (re.search(r':exit\s+(\w+)', pip) or [None, 'PUBLISH'])[1]
-    mcount = int((re.search(r':mutation-count\s+(\d+)', pip) or [0, '0'])[1])
+    forms = top_forms(F['schema'])
+    pip = None
+    for f in forms_by_head(forms, 'define-pipeline'):
+        pip = f; break
+    if pip is None:
+        return 1, 'pipeline-missing'
+    def g(key):
+        return sym_list(kv_after(pip, key))
+    mand = g(':mandatory-nodes'); propmand = [x for x in g(':proposer-mandatory-nodes') if x]
+    symbolic = set(g(':symbolic-only-nodes'))
+    edges = edge_pairs(kv_after(pip, ':edges'))
+    entry = str(kv_after(pip, ':entry') or 'ACQUIRE'); exit_ = str(kv_after(pip, ':exit') or 'PUBLISH')
+    mc = kv_after(pip, ':mutation-count')
+    try:
+        mcount = int(str(mc))
+    except Exception:
+        mcount = -1
     def reach(a, b, eds):
         adj = {}
         for x, y in eds:
@@ -541,37 +796,38 @@ def g_sym(F):
     v = 0; why = []
     if mcount != 4:
         v += 1; why.append('mutation-count!=4:%d' % mcount)
-    for mnode in mand:
-        if not reach(entry, mnode, edges):
-            v += 1; why.append('mandatory-unreachable:' + mnode)
+    for mn in mand:
+        if not reach(entry, mn, edges):
+            v += 1; why.append('mandatory-unreachable:' + mn)
     if not reach(entry, exit_, edges):
         v += 1; why.append('exit-unreachable')
     if len(propmand) != 0:
-        v += 1; why.append('proposer-mandatory-nonempty:%s' % ','.join(propmand))
-    # proposer-removal STRUCTURAL/INTERFACE EQUIVALENCE: the proposer is optional everywhere (proposer-mandatory
-    # is empty), so removing it leaves the SYMBOLIC-ONLY subgraph (edges whose endpoints are both symbolic-only
-    # nodes). Every mandatory node must still be reachable entry->exit in that symbolic-only subgraph; if a
-    # mandatory node were reachable only through a non-symbolic (proposer-exclusive) node, removal breaks it.
-    symbolic = set(grp('symbolic-only-nodes'))
+        v += 1; why.append('proposer-mandatory-nonempty')
     sym_edges = [(a, b) for a, b in edges if a in symbolic and b in symbolic]
-    for mnode in mand:
-        if mnode != entry and not reach(entry, mnode, sym_edges):
-            v += 1; why.append('mandatory-not-symbolic-reachable:' + mnode)
+    for mn in mand:
+        if mn != entry and not reach(entry, mn, sym_edges):
+            v += 1; why.append('mandatory-not-symbolic-reachable:' + mn)
     return v, ('clean:%d mand,%d edges' % (len(mand), len(edges))) if v == 0 else '; '.join(why[:6])
 
+EXPECTED_REQ_IDS = set('DFT-%02d' % i for i in range(1, 11)) | {
+    'RA8-EPOCH', 'RA8-CONT', 'RA8-CORR', 'RA8-K', 'RA8-SIDE', 'RA8-MARK', 'RA8-FROST'}
 def g_req(F):
-    trc = F['trc']; s = strip(F['schema']); s17 = strip(F['s17']); s16 = strip(F['s16']); isr = strip(F['isr'])
-    drec = set(re.findall(r'\(define-record\s+([A-Za-z0-9_]+/1)', s + s17 + s16))
-    dref = set(re.findall(r'\(define-reference\s+([A-Za-z0-9_]+/1)', s + s17 + s16))
-    isrif = set(re.findall(r'\(define-interface\s+([A-Za-z0-9_/-]+)', isr))
+    trc = F['trc']; s = F['schema']; s17 = F['s17']; s16 = F['s16']
+    drec = set(str(form_name(f)) for f in all_record_forms({'schema': s, 's17': s17, 's16': s16}) if form_name(f))
+    dref = set(str(form_name(f)) for f in all_reference_forms({'schema': s, 's17': s17, 's16': s16}) if form_name(f))
+    isrif = set(str(form_name(f)) for f in isr_interface_forms(F) if form_name(f))
     deftypes = drec | dref | isrif
+    schema_forms_names = set()
+    for f in top_forms(s):
+        if head(f) is not None:
+            schema_forms_names.add((str(head(f)), str(form_name(f)) if form_name(f) else ''))
     def ref_resolves(tok):
         tok = tok.strip()
-        if re.fullmatch(r'[A-Za-z][A-Za-z0-9_]*/1', tok):
+        if tok.endswith('/1'):
             return tok in deftypes
         if tok.startswith('define-'):
-            return ('(' + tok) in s
-        return re.search(r'\(define-[a-z-]+\s+' + re.escape(tok) + r'\b', s) is not None
+            return any(h == tok for h, nm in schema_forms_names)
+        return any(nm == tok for h, nm in schema_forms_names)
     v18 = trc.split('§v1.8', 1)[1] if '§v1.8' in trc else ''
     hdr = re.search(r'\|\s*id\s*\|(.+?)\|\s*\n', v18)
     cols = [h.strip().lower() for h in (hdr.group(1).split('|') if hdr else [])]
@@ -582,13 +838,16 @@ def g_req(F):
         return -1
     idx = {k: colidx(k) for k in ('owner seat', 'test', 'requirement', 'future wp', 'interface')}
     rows = re.findall(r'\|\s*(RA8-[A-Z0-9-]+|DFT-\d+)\s*\|([^\n]*)', v18)
-    v = 0; why = []; seen_ids = {}
+    v = 0; why = []
     if any(i < 0 for i in idx.values()):
         v += 1; why.append('missing-column')
-    if len(rows) < 17:
-        v += 1; why.append('too-few-rows:%d' % len(rows))
+    ids = [rid for rid, _ in rows]
+    idset = set(ids)
+    if idset != EXPECTED_REQ_IDS:
+        v += 1; why.append('id-set!=expected:%s' % ','.join(sorted(idset ^ EXPECTED_REQ_IDS))[:60])
+    if len(ids) != len(idset):
+        v += 1; why.append('duplicate-req-id')
     for rid, rest in rows:
-        seen_ids[rid] = seen_ids.get(rid, 0) + 1
         cells = [c.strip() for c in rest.split('|')]
         for k, ix in idx.items():
             if ix < 0 or ix >= len(cells) or not cells[ix].strip():
@@ -598,18 +857,20 @@ def g_req(F):
         for tok in re.findall(r'`([^`]+)`', ifc):
             if not ref_resolves(tok):
                 v += 1; why.append('unresolved-if:%s@%s' % (tok, rid))
-    for k, c in seen_ids.items():
-        if c > 1:
-            v += 1; why.append('dup-req:' + k)
     return v, ('clean:%d rows' % len(rows)) if v == 0 else '; '.join(why[:6])
 
 def g_radeltas(F):
-    s = strip(F['schema'])
-    ds = blocks(s, 'define-ra-delta-seats').get('', '')
-    if not ds:
-        m = re.search(r'\(define-ra-delta-seats(.*?)\n\(define', s, re.S)
-        ds = m.group(1) if m else ''
-    deltas = re.findall(r'\(:delta\s+(\S+)\s+:seat\s+(\S+)\s+:owner\s+(\S+)\s+:requirement\s+(\S+)\s+:test\s+(\S+)\)', ds)
+    dsf = None
+    for f in forms_by_head(top_forms(F['schema']), 'define-ra-delta-seats'):
+        dsf = f; break
+    deltas = []
+    if dsf is not None:
+        for spec in dsf[1:]:
+            if is_list(spec) and spec and isinstance(spec[0], Sym) and str(spec[0]) == ':delta':
+                dl = str(spec[1]) if len(spec) > 1 else ''
+                seat = kv_after(spec, ':seat'); owner = kv_after(spec, ':owner')
+                req = kv_after(spec, ':requirement'); test = kv_after(spec, ':test')
+                deltas.append((dl, seat, owner, req, test))
     agreed = {'RA-EPOCH', 'RA-CONT', 'RA-CORR', 'RA-JUR-NS', 'RA-MARK', 'RA-K', 'RA-SIDE'}
     got = {d[0] for d in deltas}
     v = 0; why = []
@@ -619,8 +880,10 @@ def g_radeltas(F):
         v += 1; why.append('count!=7:%d' % len(deltas))
     if 'RA-FROST' in got:
         v += 1; why.append('frost-substitutes-jurns')
+    def realval(x):
+        return x is not None and not (isinstance(x, Sym) and str(x).startswith(':'))
     for dl, seat, owner, req, test in deltas:
-        if not (seat and owner and req and test):
+        if not (realval(seat) and realval(owner) and realval(req) and realval(test)):
             v += 1; why.append('incomplete-delta:' + dl)
     return v, ('clean:7 deltas') if v == 0 else '; '.join(why[:6])
 
@@ -630,68 +893,74 @@ GUARDS = {
     'V8-SYM': g_sym, 'V8-REQ': g_req, 'V8-RA-DELTAS': g_radeltas,
 }
 
-# ---- MUTATIONS: (target file KEY, transform bytes->bytes). Each MUST change bytes and flip its guard. ----
-def _sub_once(pat, repl, text, why):
-    new = re.sub(pat, repl, text, count=1)
-    return new
+# ============================ MUTATIONS (real byte edits; each killed by the production guard) ============================
+def R(t, a, b):
+    return t.replace(a, b, 1)
 
 MUT = {
  'V8-PUBPRIV': {
-   'field-type':      ('schema', lambda t: t.replace('(define-record RootAuthorityStatus/1', '(define-record RootAuthorityStatus/1 (:leak :type TenantProfile/1)', 1)),
-   'ref-target':      ('schema', lambda t: t.replace(':type-locator "define-reference RightsMatrix/1"', ':type-locator "define-record TenantProfile/1"', 1)),
+   'field-type':      ('schema', lambda t: R(t, '(define-record RootAuthorityStatus/1', '(define-record RootAuthorityStatus/1 (:leak :type TenantProfile/1)')),
+   'ref-target':      ('schema', lambda t: R(t, ':type-locator "define-reference RightsMatrix/1"', ':type-locator "define-reference TenantProfile/1"')),
    'interface-io':    ('isr',    lambda t: re.sub(r'(\(define-interface\s+RootAuthorityStatus/1[^\n]*\n[^\n]*:consumers \()', r'\1TenantProfile/1 ', t, count=1)),
-   'subsystem-dep':   ('sub',    lambda t: t.replace(':interface "CensusSpaceClassification/1 + census-coverage-decision"', ':interface "CensusSpaceClassification/1 + TenantProfile/1"', 1)),
-   'store-owner-writer': ('schema', lambda t: t.replace(':store "static-site"           :owner "WP-12 static-site.lisp"            :write-authority "none" :writers 0 :read-only t', ':store "static-site"           :owner "WP-12 static-site.lisp"            :write-authority "none" :writers 1 :read-only t', 1)),
+   'subsystem-dep':   ('sub',    lambda t: R(t, ':interface "CensusSpaceClassification/1 + census-coverage-decision"', ':interface "CensusSpaceClassification/1 + TenantProfile/1"')),
+   'store-owner-writer': ('schema', lambda t: R(t, ':store "static-site"           :owner "WP-12 static-site.lisp"            :write-authority "none" :writers 0 :read-only t', ':store "static-site"           :owner "WP-12 static-site.lisp"            :write-authority "none" :writers 1 :read-only t')),
    'api-mcp-schema':  ('mcp',    lambda t: t + '\n(define-mcp-tool leak (:returns TenantProfile/1))\n'),
    'publication':     ('site',   lambda t: t + '\n(defun emit-leak () (publish TenantProfile/1))\n'),
-   'declassification':('schema', lambda t: t.replace('(define-record CanonicalCitationURI/1', '(define-record CanonicalCitationURI/1 (:leak :type RestrictedForensicRecord/1)', 1)),
-   'undefined-endpoint':('schema', lambda t: t.replace('(define-record RootAuthorityStatus/1', '(define-record RootAuthorityStatus/1 (:leak :type NoSuchType/1)', 1)),
+   'declassification':('schema', lambda t: R(t, '(define-record CanonicalCitationURI/1', '(define-record CanonicalCitationURI/1 (:leak :type RestrictedForensicRecord/1)')),
+   'undefined-endpoint':('schema', lambda t: R(t, '(define-record RootAuthorityStatus/1', '(define-record RootAuthorityStatus/1 (:leak :type NoSuchType/1)')),
+   'held/nested-or-list-type': ('schema', lambda t: R(t, '(define-record RootAuthorityStatus/1', '(define-record RootAuthorityStatus/1 (:leak :type (or (list TenantProfile/1) null))')),
  },
  'V8-XREF': {
-   'wrong-file':      ('schema', lambda t: t.replace(':verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-SCHEMAS.sexp" :type-locator "define-reference LegalIR/1"', ':verify-file "deployment/NO_SUCH_FILE.sexp" :type-locator "define-reference LegalIR/1"', 1)),
-   'wrong-identity':  ('schema', lambda t: t.replace(':type-locator "define-reference LegalIR/1" :identity "lawmax/legal-ir/1"', ':type-locator "define-reference LegalIR/1" :identity "lawmax/WRONG-IDENTITY/9"', 1)),
-   'wrong-version':   ('schema', lambda t: t.replace(':type-locator "define-reference LegalIR/1" :identity "lawmax/legal-ir/1" :version "1"', ':type-locator "define-reference LegalIR/1" :identity "lawmax/legal-ir/1" :version "9"', 1)),
-   'wrong-reference-target': ('schema', lambda t: t.replace('(define-canonical-identity LegalIR/1               :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-SCHEMAS.sexp" :type-locator "define-reference LegalIR/1"', '(define-canonical-identity LegalIR/1               :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-SCHEMAS.sexp" :type-locator "define-reference NoSuchRef/1"', 1)),
-   'locator-absent':  ('schema', lambda t: t.replace('(define-reference MemoryEvent/1 :canonical-file "source/memory.lisp" :identity "lawmax/memory-event/1" :version "1" :locator "record-episode")', '(define-reference MemoryEvent/1 :canonical-file "source/memory.lisp" :identity "lawmax/memory-event/1" :version "1" :locator "ZZZ_NO_SUCH_LOCATOR")', 1)),
+   'wrong-file':      ('schema', lambda t: R(t, ':verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-SCHEMAS.sexp" :type-locator "define-reference LegalIR/1"', ':verify-file "deployment/NO_SUCH_FILE.sexp" :type-locator "define-reference LegalIR/1"')),
+   'wrong-identity':  ('schema', lambda t: R(t, ':type-locator "define-reference LegalIR/1" :identity "lawmax/legal-ir/1"', ':type-locator "define-reference LegalIR/1" :identity "lawmax/WRONG-IDENTITY/9"')),
+   'wrong-version':   ('schema', lambda t: R(t, ':type-locator "define-reference LegalIR/1" :identity "lawmax/legal-ir/1" :version "1"', ':type-locator "define-reference LegalIR/1" :identity "lawmax/legal-ir/1" :version "9"')),
+   'wrong-reference-target': ('schema', lambda t: R(t, '(define-canonical-identity LegalIR/1               :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-SCHEMAS.sexp" :type-locator "define-reference LegalIR/1"', '(define-canonical-identity LegalIR/1               :status VERIFIED :verify-file "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/V1.8-SCHEMAS.sexp" :type-locator "define-reference NoSuchRef/1"')),
+   'locator-absent':  ('schema', lambda t: R(t, '(define-reference MemoryEvent/1 :canonical-file "source/memory.lisp" :identity "lawmax/memory-event/1" :version "1" :locator "record-episode")', '(define-reference MemoryEvent/1 :canonical-file "source/memory.lisp" :identity "lawmax/memory-event/1" :version "1" :locator "ZZZ_NO_SUCH_LOCATOR")')),
+   'held/generic-substring-locator': ('schema', lambda t: R(t, '(define-reference MemoryEvent/1 :canonical-file "source/memory.lisp" :identity "lawmax/memory-event/1" :version "1" :locator "record-episode")', '(define-reference MemoryEvent/1 :canonical-file "source/memory.lisp" :identity "lawmax/memory-event/1" :version "1" :locator "memory")')),
  },
  'V8-CAP': {
-   'nonexistent-symbol':   ('schema', lambda t: t.replace(':symbol "get-eli-law-prefix"', ':symbol "zzz_no_such_symbol"', 1)),
-   'wrong-package':        ('schema', lambda t: t.replace(':package "orchestrator.uris"', ':package "orchestrator.NOPE"', 1)),
-   'wrong-file':           ('schema', lambda t: t.replace(':file "source/canonical-uris.lisp"', ':file "source/NO_SUCH.lisp"', 1)),
-   'symbol-in-other-package': ('schema', lambda t: t.replace(':symbol "get-eli-law-prefix"', ':symbol "defpackage"', 1)),
+   'nonexistent-symbol':      ('schema', lambda t: R(t, ':symbol "get-eli-law-prefix"', ':symbol "zzz_no_such_symbol"')),
+   'wrong-package':           ('schema', lambda t: R(t, ':package "orchestrator.uris"', ':package "orchestrator.NOPE"')),
+   'wrong-file':              ('schema', lambda t: R(t, ':file "source/canonical-uris.lisp"', ':file "source/NO_SUCH.lisp"')),
+   'symbol-in-other-package': ('schema', lambda t: R(t, ':symbol "get-eli-law-prefix"', ':symbol "defpackage"')),
  },
  'V8-OWN': {
-   'dup-store':       ('schema', lambda t: t.replace('(define-write-authority :store "journal"', '(define-write-authority :store "journal"               :owner "DUP" :write-authority "x" :writers 1)\n(define-write-authority :store "journal"', 1)),
-   'two-writers':     ('schema', lambda t: t.replace(':store "journal"               :owner "WP-03 journal.lisp"                :write-authority "write-authority.lisp" :writers 1', ':store "journal"               :owner "WP-03 journal.lisp"                :write-authority "write-authority.lisp" :writers 2', 1)),
-   'writer-on-readonly': ('schema', lambda t: t.replace(':store "static-site"           :owner "WP-12 static-site.lisp"            :write-authority "none" :writers 0 :read-only t', ':store "static-site"           :owner "WP-12 static-site.lisp"            :write-authority "none" :writers 1 :read-only t', 1)),
-   'owner-unreconciled': ('schema', lambda t: t.replace(':store "journal"               :owner "WP-03 journal.lisp"', ':store "journal"               :owner "GHOST-OWNER-XYZ"', 1)),
+   'dup-store':            ('schema', lambda t: R(t, '(define-write-authority :store "journal"', '(define-write-authority :store "journal"               :owner "WP-03 journal.lisp" :write-authority "write-authority.lisp" :writers 1)\n(define-write-authority :store "journal"')),
+   'two-writers':          ('schema', lambda t: R(t, ':store "journal"               :owner "WP-03 journal.lisp"                :write-authority "write-authority.lisp" :writers 1', ':store "journal"               :owner "WP-03 journal.lisp"                :write-authority "write-authority.lisp" :writers 2')),
+   'writer-on-readonly':   ('schema', lambda t: R(t, ':store "static-site"           :owner "WP-12 static-site.lisp"            :write-authority "none" :writers 0 :read-only t', ':store "static-site"           :owner "WP-12 static-site.lisp"            :write-authority "none" :writers 1 :read-only t')),
+   'held/ghost-owner':     ('schema', lambda t: R(t, ':store "journal"               :owner "WP-03 journal.lisp"', ':store "journal"               :owner "WP-99 ghost-does-not-exist.lisp"')),
+   'held/ghost-writer':    ('schema', lambda t: R(t, ':store "journal"               :owner "WP-03 journal.lisp"                :write-authority "write-authority.lisp"', ':store "journal"               :owner "WP-03 journal.lisp"                :write-authority "ghost-writer-does-not-exist.lisp"')),
  },
  'V8-COGLIFE': {
-   'remove-resume-edge':  ('schema', lambda t: t.replace('(CLARIFY-SUSPEND CLARIFY-RESUME) ', '', 1)),
-   'dangling-resume-target': ('schema', lambda t: t.replace('(CLARIFY-SUSPEND CLARIFY-RESUME) (CLARIFY-RESUME RESOLVE)', '(CLARIFY-SUSPEND CLARIFY-DANGLE) (CLARIFY-RESUME RESOLVE)', 1)),
-   'wrong-instance-binding': ('schema', lambda t: t.replace('(:resume_binding_ref :type ref)', '(:no_binding :type ref)', 1)),
-   'incompatible-edge-type': ('schema', lambda t: t.replace('(:node MORPH             :in TokenStream/1                   :out MorphLattice/1)', '(:node MORPH             :in TokenStream/1                   :out WrongOut/1)', 1)),
-   'terminal-with-outgoing': ('schema', lambda t: t.replace(':flow-edges ((PERCEIVE SEGMENT)', ':flow-edges ((TERM-ERROR PERCEIVE) (PERCEIVE SEGMENT)', 1)),
-   'orphan-terminal':     ('schema', lambda t: t.replace(':terminals (TERM-UNDERDETERMINED TERM-CONFLICTING TERM-ABSTAINED TERM-ERROR RESULT)', ':terminals (TERM-UNDERDETERMINED TERM-CONFLICTING TERM-ABSTAINED TERM-ERROR TERM-ORPHAN RESULT)', 1)),
-   'illegal-cycle':       ('schema', lambda t: t.replace('(PROMOTE RESULT))', '(PROMOTE RESULT) (RESULT PERCEIVE))', 1)),
+   'remove-resume-edge':      ('schema', lambda t: R(t, '(CLARIFY-SUSPEND CLARIFY-RESUME) ', '')),
+   'wrong-instance-binding':  ('schema', lambda t: R(t, '(:resume_binding_ref :type ref)', '(:no_binding :type ref)')),
+   'incompatible-edge-type':  ('schema', lambda t: R(t, '(:node MORPH             :in TokenStream/1                   :out MorphLattice/1)', '(:node MORPH             :in TokenStream/1                   :out WrongOut/1)')),
+   'orphan-terminal':         ('schema', lambda t: R(t, ':terminals (TERM-UNDERDETERMINED TERM-CONFLICTING TERM-ABSTAINED TERM-ERROR RESULT)', ':terminals (TERM-UNDERDETERMINED TERM-CONFLICTING TERM-ABSTAINED TERM-ERROR TERM-ORPHAN RESULT)')),
+   'illegal-cycle':           ('schema', lambda t: R(t, '(PROMOTE RESULT))', '(PROMOTE RESULT) (RESULT PERCEIVE))')),
+   'held/flow-edge-undeclared-node': ('schema', lambda t: R(t, ':flow-edges ((PERCEIVE SEGMENT)', ':flow-edges ((PERCEIVE GHOSTNODE) (PERCEIVE SEGMENT)')),
+   'held/extra-dangling-resume':     ('schema', lambda t: R(t, ':resume-edges ((CLARIFY-SUSPEND CLARIFY-RESUME)', ':resume-edges ((CLARIFY-RESUME DANGLE2) (CLARIFY-SUSPEND CLARIFY-RESUME)')),
+   'held/terminal-outgoing-any-family': ('schema', lambda t: R(t, ':terminal-edges ((CLARIFY-DECIDE TERM-UNDERDETERMINED)', ':terminal-edges ((TERM-ERROR PERCEIVE) (CLARIFY-DECIDE TERM-UNDERDETERMINED)')),
  },
  'V8-CLARIFY': {
-   'corrupt-abstain-fixture':   ('schema', lambda t: t.replace('(:valid   ABSTAIN            :selected 0 :merged 0 :provenance-preserved t)', '(:valid   ABSTAIN            :selected 1 :merged 0 :provenance-preserved t)', 1)),
-   'corrupt-selection-fixture': ('schema', lambda t: t.replace('(:valid   EXPLICIT_SELECTION :selected 1 :merged 0 :provenance-preserved t)', '(:valid   EXPLICIT_SELECTION :selected 0 :merged 0 :provenance-preserved t)', 1)),
-   'corrupt-merge-provenance':  ('schema', lambda t: t.replace('(:invalid EXPLICIT_MERGE     :selected 0 :merged 1 :provenance-preserved nil)', '(:valid   EXPLICIT_MERGE     :selected 0 :merged 1 :provenance-preserved nil)', 1)),
+   'corrupt-abstain-fixture':   ('schema', lambda t: R(t, '(:valid   ABSTAIN            :selected 0 :merged 0 :provenance-preserved t)', '(:valid   ABSTAIN            :selected 1 :merged 0 :provenance-preserved t)')),
+   'corrupt-selection-fixture': ('schema', lambda t: R(t, '(:valid   EXPLICIT_SELECTION :selected 1 :merged 0 :provenance-preserved t)', '(:valid   EXPLICIT_SELECTION :selected 0 :merged 0 :provenance-preserved t)')),
+   'corrupt-merge-provenance':  ('schema', lambda t: R(t, '(:invalid EXPLICIT_MERGE     :selected 0 :merged 1 :provenance-preserved nil)', '(:valid   EXPLICIT_MERGE     :selected 0 :merged 1 :provenance-preserved nil)')),
  },
  'V8-RASTATUS': {
-   'merge-proof-into-security': ('schema', lambda t: t.replace(' (:proof_integrity :type DimensionState)', '', 1)),
-   'derived-not-constant':      ('schema', lambda t: t.replace(':derived :type (member :true)', ':derived :type (member :true :false)', 1)),
-   'self-qualification-allowed':('schema', lambda t: t.replace(':self-qualification :rejected', ':self-qualification :accepted', 1)),
-   'drop-unknown-state':        ('schema', lambda t: t.replace('(define-closed-enum DimensionState (:OK) (:DEGRADED) (:FAILED) (:UNKNOWN))', '(define-closed-enum DimensionState (:OK) (:DEGRADED) (:FAILED))', 1)),
-   'advisory-can-block':        ('schema', lambda t: t.replace(':advisory-never-blocks t', ':advisory-never-blocks nil', 1)),
+   'merge-proof-into-security': ('schema', lambda t: R(t, ' (:proof_integrity :type DimensionState)', '')),
+   'derived-not-constant':      ('schema', lambda t: R(t, ':derived :type (member :true)', ':derived :type (member :true :false)')),
+   'self-qualification-allowed':('schema', lambda t: R(t, ':self-qualification :rejected', ':self-qualification :accepted')),
+   'drop-unknown-state':        ('schema', lambda t: R(t, '(define-closed-enum DimensionState (:OK) (:DEGRADED) (:FAILED) (:UNKNOWN))', '(define-closed-enum DimensionState (:OK) (:DEGRADED) (:FAILED))')),
+   'advisory-can-block':        ('schema', lambda t: R(t, ':advisory-never-blocks t', ':advisory-never-blocks nil')),
+   'held/remove-cause-refs':    ('schema', lambda t: R(t, '  (:cause_refs :type (list ref))                     ; full simultaneous causes, never collapsed\n', '')),
+   'held/remove-advisory-dims': ('schema', lambda t: R(t, '(:advisory_dimensions :type (list ref)) ', '')),
+   'held/bogus-failure-class':  ('schema', lambda t: R(t, ':failure :WITHHELD          :recovery-evidence "red-team', ':failure :BOGUS_CLASS       :recovery-evidence "red-team')),
  },
  'V8-SYM': {
-   'broken-edge':          ('schema', lambda t: t.replace(' (PROOF PUBLISH))', ')', 1)),
-   'unreachable-mandatory':('schema', lambda t: t.replace(' (IR COMPILE)', '', 1)),
-   'mandatory-model-node': ('schema', lambda t: t.replace(':proposer-mandatory-nodes ()', ':proposer-mandatory-nodes (IR)', 1)),
-   'proposer-removal-inequiv': ('schema', lambda t: t.replace(':symbolic-only-nodes (ACQUIRE CENSUS ADMIT IR REASON COMPILE PROOF PUBLISH)', ':symbolic-only-nodes (ACQUIRE CENSUS IR REASON COMPILE PROOF PUBLISH)', 1)),
+   'broken-edge':           ('schema', lambda t: R(t, ' (PROOF PUBLISH))', ')')),
+   'unreachable-mandatory': ('schema', lambda t: R(t, ' (IR COMPILE)', '')),
+   'mandatory-model-node':  ('schema', lambda t: R(t, ':proposer-mandatory-nodes ()', ':proposer-mandatory-nodes (IR)')),
+   'proposer-removal-inequiv': ('schema', lambda t: R(t, ':symbolic-only-nodes (ACQUIRE CENSUS ADMIT IR REASON COMPILE PROOF PUBLISH)', ':symbolic-only-nodes (ACQUIRE CENSUS IR REASON COMPILE PROOF PUBLISH)')),
  },
  'V8-REQ': {
    'blank-requirement':   ('trc', lambda t: _req_blank(t, 'requirement')),
@@ -700,38 +969,32 @@ MUT = {
    'blank-future-wp':     ('trc', lambda t: _req_blank(t, 'future wp')),
    'blank-interface':     ('trc', lambda t: _req_blank(t, 'interface')),
    'unresolvable-interface-id': ('trc', lambda t: _req_set_if(t, ' `define-public-edge` ')),
+   'held/substitute-id-keep-17': ('trc', lambda t: R(t, '| DFT-01 | real public/private closure', '| RA8-FAKE | real public/private closure')),
  },
  'V8-RA-DELTAS': {
-   'drop-to-six':     ('schema', lambda t: t.replace('  (:delta RA-SIDE    :seat SidecarSourceProfile/1     :owner S26 :requirement RA8-SIDE  :test T8-SIDE))', '  )', 1)),
-   'rename-jurns-to-frost': ('schema', lambda t: t.replace('(:delta RA-JUR-NS  :seat JurisdictionNamespace/1   :owner S25 :requirement RA8-JURNS :test T8-JURNS)', '(:delta RA-FROST   :seat JurisdictionNamespace/1   :owner S25 :requirement RA8-JURNS :test T8-JURNS)', 1)),
-   'blank-seat':      ('schema', lambda t: t.replace('(:delta RA-K       :seat CitationMetricV8/1         :owner S15 :requirement RA8-K     :test T8-K)', '(:delta RA-K       :seat  :owner S15 :requirement RA8-K     :test T8-K)', 1)),
+   'drop-to-six':           ('schema', lambda t: R(t, '  (:delta RA-SIDE    :seat SidecarSourceProfile/1     :owner S26 :requirement RA8-SIDE  :test T8-SIDE))', '  )')),
+   'rename-jurns-to-frost': ('schema', lambda t: R(t, '(:delta RA-JUR-NS  :seat JurisdictionNamespace/1   :owner S25 :requirement RA8-JURNS :test T8-JURNS)', '(:delta RA-FROST   :seat JurisdictionNamespace/1   :owner S25 :requirement RA8-JURNS :test T8-JURNS)')),
+   'blank-seat':            ('schema', lambda t: R(t, '(:delta RA-K       :seat CitationMetricV8/1         :owner S15 :requirement RA8-K     :test T8-K)', '(:delta RA-K       :seat  :owner S15 :requirement RA8-K     :test T8-K)')),
  },
 }
 
 def _trc_cols(v18):
     hdr = re.search(r'\|\s*id\s*\|(.+?)\|\s*\n', v18)
-    cols = [h.strip().lower() for h in (hdr.group(1).split('|') if hdr else [])]
-    return cols
-
-def _req_first_row_edit(t, fn):
-    """apply fn(cells)->cells to the FIRST §v1.8 DFT/RA8 data row and return the whole file text."""
-    head, _, v18 = t.partition('§v1.8')
-    cols = _trc_cols(v18)
-    m = re.search(r'(\|\s*(?:RA8-[A-Z0-9-]+|DFT-\d+)\s*\|)([^\n]*)', v18)
-    if not m:
-        return t
-    cells = m.group(2).split('|')
-    cells = fn(cells, cols)
-    newrow = m.group(1) + '|'.join(cells)
-    v18b = v18[:m.start()] + newrow + v18[m.end():]
-    return head + '§v1.8' + v18b
-
+    return [h.strip().lower() for h in (hdr.group(1).split('|') if hdr else [])]
 def _colidx(cols, name):
     for i, c in enumerate(cols):
         if name in c:
             return i
     return -1
-
+def _req_first_row_edit(t, fn):
+    head_, _, v18 = t.partition('§v1.8')
+    cols = _trc_cols(v18)
+    m = re.search(r'(\|\s*(?:RA8-[A-Z0-9-]+|DFT-\d+)\s*\|)([^\n]*)', v18)
+    if not m:
+        return t
+    cells = fn(m.group(2).split('|'), cols)
+    v18b = v18[:m.start()] + m.group(1) + '|'.join(cells) + v18[m.end():]
+    return head_ + '§v1.8' + v18b
 def _req_blank(t, colname):
     def fn(cells, cols):
         ix = _colidx(cols, colname)
@@ -739,7 +1002,6 @@ def _req_blank(t, colname):
             cells[ix] = '   '
         return cells
     return _req_first_row_edit(t, fn)
-
 def _req_set_if(t, val):
     def fn(cells, cols):
         ix = _colidx(cols, 'interface')
@@ -748,69 +1010,58 @@ def _req_set_if(t, val):
         return cells
     return _req_first_row_edit(t, fn)
 
-# ---- CLI --------------------------------------------------------------------------------------
+# ============================ CLI ============================
 def do_run(gid, overrides):
     if gid not in GUARDS:
         print('ERROR unknown-guard ' + gid); return 2
     try:
-        F = load(overrides)
-        v, reason = GUARDS[gid](F)
+        v, reason = GUARDS[gid](load(overrides))
     except Exception as e:
         print('ERROR ' + type(e).__name__ + ': ' + str(e)); return 2
-    if v == 0:
-        print('OK ' + reason); return 0
-    print('VIOLATION ' + reason); return 3
+    print(('OK ' if v == 0 else 'VIOLATION ') + reason)
+    return 0 if v == 0 else 3
 
 def do_mutate(gid, mid, outdir):
     if gid not in MUT or mid not in MUT[gid]:
         print('ERROR unknown-mutation ' + gid + '/' + mid); return 2
     key, fn = MUT[gid][mid]
-    base = readpath(DEFAULTS[key])
-    mut = fn(base)
+    base = readpath(DEFAULTS[key]); mut = fn(base)
     if mut == base:
         print('ERROR mutation-did-not-change-bytes ' + gid + '/' + mid); return 2
     os.makedirs(outdir, exist_ok=True)
     ext = os.path.splitext(DEFAULTS[key])[1] or '.txt'
-    bp = os.path.join(outdir, 'baseline' + ext)
-    mp = os.path.join(outdir, 'mutant' + ext)
-    with open(bp, 'w', encoding='utf-8') as f:
-        f.write(base)
-    with open(mp, 'w', encoding='utf-8') as f:
-        f.write(mut)
-    print('%s %s %s' % (key, bp, mp))
-    return 0
+    bp = os.path.join(outdir, 'baseline' + ext); mp = os.path.join(outdir, 'mutant' + ext)
+    open(bp, 'w', encoding='utf-8').write(base)
+    open(mp, 'w', encoding='utf-8').write(mut)
+    print('%s %s %s' % (key, bp, mp)); return 0
 
 def do_selftest():
+    import tempfile
     fails = []
     for gid, fn in GUARDS.items():
-        F = load({})
-        v, reason = fn(F)
+        v, reason = fn(load({}))
         if v != 0:
             fails.append('BASELINE %s not clean: %s' % (gid, reason))
-    import tempfile
     for gid in MUT:
         for mid in MUT[gid]:
             key, fn = MUT[gid][mid]
-            base = readpath(DEFAULTS[key])
-            mut = fn(base)
+            base = readpath(DEFAULTS[key]); mut = fn(base)
             if mut == base:
                 fails.append('MUT %s/%s did-not-change-bytes' % (gid, mid)); continue
             with tempfile.NamedTemporaryFile('w', suffix=os.path.splitext(DEFAULTS[key])[1], delete=False, encoding='utf-8') as tf:
                 tf.write(mut); mp = tf.name
             try:
-                F = load({key: mp})
-                v, reason = GUARDS[gid](F)
+                v, reason = GUARDS[gid](load({key: mp}))
             finally:
                 os.unlink(mp)
             if v == 0:
-                fails.append('MUT %s/%s SURVIVED (guard clean): %s' % (gid, mid, reason))
+                fails.append('MUT %s/%s SURVIVED: %s' % (gid, mid, reason))
     if fails:
         print('SELFTEST-FAIL')
         for f in fails:
             print('  ' + f)
         return 1
-    nmut = sum(len(MUT[g]) for g in MUT)
-    print('SELFTEST-OK guards=%d mutations=%d' % (len(GUARDS), nmut))
+    print('SELFTEST-OK guards=%d mutations=%d' % (len(GUARDS), sum(len(MUT[g]) for g in MUT)))
     return 0
 
 def main(argv):
@@ -824,30 +1075,25 @@ def main(argv):
             print(g)
         return 0
     if cmd == 'list-muts':
-        gid = argv[1]
-        for m in MUT.get(gid, {}):
+        for m in MUT.get(argv[1], {}):
             print(m)
         return 0
     if cmd == 'aggregate':
-        F = load({})
-        s, states, dims, dimpol = ra_model(F)
+        F = load({}); states, reliance, dims = ra_model(F)
         total = len(states) ** len(dims)
         v, reason = g_rastatus(F)
         print('%d/%d states=%d dims=%d %s' % (total if v == 0 else 0, total, len(states), len(dims), 'OK' if v == 0 else 'VIOLATION:' + reason))
         return 0 if v == 0 else 3
     if cmd == 'run':
-        gid = argv[1]; overrides = {}
-        i = 2
+        gid = argv[1]; overrides = {}; i = 2
         while i < len(argv):
             if argv[i] == '--file':
-                k, _, p = argv[i + 1].partition('=')
-                overrides[k] = p; i += 2
+                k, _, p = argv[i + 1].partition('='); overrides[k] = p; i += 2
             else:
                 i += 1
         return do_run(gid, overrides)
     if cmd == 'mutate':
-        gid = argv[1]; mid = argv[2]; outdir = None
-        i = 3
+        gid = argv[1]; mid = argv[2]; outdir = None; i = 3
         while i < len(argv):
             if argv[i] == '--outdir':
                 outdir = argv[i + 1]; i += 2
@@ -856,8 +1102,7 @@ def main(argv):
         return do_mutate(gid, mid, outdir)
     if cmd == 'selftest':
         return do_selftest()
-    print('ERROR unknown-command ' + cmd)
-    return 2
+    print('ERROR unknown-command ' + cmd); return 2
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))
