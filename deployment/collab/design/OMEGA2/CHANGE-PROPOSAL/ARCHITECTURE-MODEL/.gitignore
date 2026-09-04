@@ -1,0 +1,4 @@
+CHECKER/NEUTRAL-EXPORT.json
+__pycache__/
+*.pyc
+.conflicts.json
