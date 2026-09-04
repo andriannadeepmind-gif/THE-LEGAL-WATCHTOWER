@@ -54,7 +54,7 @@
 (fact type RootAuthorityStatus/1 :classification PUBLIC :owner-subsystem S14)
 (fact type SafetyState/1 :classification PUBLIC :owner-subsystem S21)
 (fact type SemanticAdmissionEvidence/1 :classification PUBLIC :owner-subsystem S03)
-(fact type SemanticProposer :classification PUBLIC :owner-subsystem S03)
+(fact type SemanticProposer :classification PUBLIC :consumer-role PROPOSER :owner-subsystem S03)
 (fact type SidecarSourceProfile/1 :classification PRIVATE :owner-subsystem S26)
 (fact type TenantProfile/1 :classification PRIVATE :owner-subsystem S26)
 (fact type ToolInvocation/1 :classification PUBLIC :owner-subsystem S20)

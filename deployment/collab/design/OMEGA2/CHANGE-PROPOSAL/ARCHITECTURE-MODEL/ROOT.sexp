@@ -3,17 +3,18 @@
 ;;;; commit and the schema version. Editing a module without re-running build_root.py makes kernel law L7 fail.
 (define-model-root architecture-model
   :model-version "1"
-  :schema-version "1"
+  :schema-version "2"
   :parent-architecture-commit "4787b342282f8d5f2ec4b9e64b11e32b7a64813a"
-  :canonical-model-root-digest "7be2aee1985b5998e2ad83e728d834603a0bf8b419f2df233a09e29de2baa231"
-  :module-count 10
+  :canonical-model-root-digest "9202ad3aa7bc5bdc3592569b6dff222c05e641bd587edc1e8cf7a95fb1e7dcd4"
+  :module-count 11
   :composition (
-    (:module "MODEL-SCHEMA.sexp" :sha256 "337ff4eac818759954f67ef2b3e5a2a68a83ef1e03c82fbbd2dcd7a65f36125c")
-    (:module "TOOLCHAIN.sexp" :sha256 "4e590f8b9649685fd32448850496155d7e7838a73a4d7c45d693384f0300cb17")
+    (:module "MODEL-SCHEMA.sexp" :sha256 "48c6a5d2096248cef82faa58b5dbb1c0b945b47d9a0de013b3e849f24af06bf9")
+    (:module "TOOLCHAIN.sexp" :sha256 "c90b8defbee2e4fb746209d5ce36c48feef53b1a166ee1ab814343de3f1d1cac")
     (:module "deferred-imports.sexp" :sha256 "ec4b6e86d43fd286abfe0187ee654e32d3ffbb6271efd0cc9a55bfb360fbe895")
     (:module "dependencies-and-boundaries.sexp" :sha256 "132d074c4ae6adda39ff00d239983f9d73b6fffa5b93ee9c6c74ff87d6a6bc16")
-    (:module "files-and-roles.sexp" :sha256 "37e84d0a176da2216858dbca5565fbf747384b6476edc5ab9d994607550bb1ba")
-    (:module "interfaces-and-types.sexp" :sha256 "b22e3471f38c4d106296bd4ce89458514af6f25603cd6c477023496ab28bd76c")
+    (:module "files-and-roles.sexp" :sha256 "c154f2aa3801d71d85d1292a283099f7174ed73e3170e238d35d9c2d70dc9369")
+    (:module "generation-order.sexp" :sha256 "2cb9a2482ea85c197ec29ba1296ad7e22bfa5a18cc2aa583fa0a8019ff9b81cc")
+    (:module "interfaces-and-types.sexp" :sha256 "d809def3283a3f4a802d37aebeaf75cc3367b02bae0360b2869a40d6eb9f95a5")
     (:module "rationale-references.sexp" :sha256 "c39888e27c03723205238798e334e34f7fe93da5ca8217a583537154e37569ec")
     (:module "requirements-tests-workpackets.sexp" :sha256 "d91dbe5637630a6e7d2dbfa6ac8ecb6d81dd1e552a45a8036d7881fea3fce7dc")
     (:module "stores-and-authorities.sexp" :sha256 "9772e235cab74267399950aa0931a2836d719a21496df32ef8eb7cddfcaff5cb")

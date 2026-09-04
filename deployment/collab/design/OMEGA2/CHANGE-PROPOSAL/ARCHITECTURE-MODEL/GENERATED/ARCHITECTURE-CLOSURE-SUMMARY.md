@@ -1,23 +1,33 @@
-<!-- GENERATED — DO NOT EDIT. Regenerate: generate_views.py -->
+<!-- GENERATED — DO NOT EDIT. Regenerate: python3 ARCHITECTURE-MODEL/generate_views.py -->
 # Architecture Closure Summary (GENERATED VIEW — DO NOT EDIT)
 
-- generator: `generate_views.py/1`
-- canonical-model-root-digest: `7be2aee1985b5998e2ad83e728d834603a0bf8b419f2df233a09e29de2baa231`
-- regeneration command: `generate_views.py`
+- generator: `generate_views.py/2`
+- canonical-model-root-digest: `9202ad3aa7bc5bdc3592569b6dff222c05e641bd587edc1e8cf7a95fb1e7dcd4`
+- regeneration command: `python3 ARCHITECTURE-MODEL/generate_views.py`
 
 | entity | count |
 |---|---|
-| subsystem | 26 |
-| type | 60 |
 | component | 2 |
-| store | 10 |
+| consumes | 102 |
+| dir-rule | 65 |
+| file | 989 |
+| gen-edge | 4 |
+| gen-step | 5 |
+| inventory-total | 1 |
+| rationale | 5 |
+| req-map | 29 |
+| requirement | 24 |
+| source-class | 66 |
 | stage | 8 |
 | stage-edge | 8 |
-| consumes | 102 |
-| requirement | 24 |
+| store | 10 |
+| subsystem | 26 |
 | test | 21 |
+| type | 60 |
 | wp | 14 |
-| req-map | 29 |
+| **total facts** | **1439** |
 | private-types | 6 |
 
-Private-bearing types: EmbodimentInterfaces/1, PrivateMatterProfile/1, RealTimeAssistance/1, RestrictedForensicRecord/1, SidecarSourceProfile/1, TenantProfile/1
+Private-bearing types: EMBODIMENTINTERFACES/1, PRIVATEMATTERPROFILE/1, REALTIMEASSISTANCE/1, RESTRICTEDFORENSICRECORD/1, SIDECARSOURCEPROFILE/1, TENANTPROFILE/1
+
+Tracked-file inventory: 36622 tracked paths = 989 per-file facts + 35633 counted by 65 directory-rule facts.

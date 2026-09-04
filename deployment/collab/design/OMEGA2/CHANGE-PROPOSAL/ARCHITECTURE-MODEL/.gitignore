@@ -1,4 +1,6 @@
+# Derived artifacts of the architecture-governance seat. Everything here is recomputed by the declared
+# generation order (generation-order.sexp) and must never be committed or pinned.
 CHECKER/NEUTRAL-EXPORT.json
-__pycache__/
-*.pyc
+KERNEL-COMMITMENT.txt
+CHECKER-COMMITMENT.txt
 .conflicts.json

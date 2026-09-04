@@ -1,9 +1,9 @@
-<!-- GENERATED — DO NOT EDIT. Regenerate: generate_views.py -->
+<!-- GENERATED — DO NOT EDIT. Regenerate: python3 ARCHITECTURE-MODEL/generate_views.py -->
 # Migration-Scope Ledger View (imported vs DEFERRED_DATA_IMPORT) (GENERATED VIEW — DO NOT EDIT)
 
-- generator: `generate_views.py/1`
-- canonical-model-root-digest: `7be2aee1985b5998e2ad83e728d834603a0bf8b419f2df233a09e29de2baa231`
-- regeneration command: `generate_views.py`
+- generator: `generate_views.py/2`
+- canonical-model-root-digest: `9202ad3aa7bc5bdc3592569b6dff222c05e641bd587edc1e8cf7a95fb1e7dcd4`
+- regeneration command: `python3 ARCHITECTURE-MODEL/generate_views.py`
 
 | source-file | fact-class | count | status | batch | maps-to / reason |
 |---|---|---|---|---|---|
@@ -73,3 +73,5 @@
 | V1.6-SCHEMAS.sexp | spec-version | 1 | OUT_OF_MIGRATION_SCOPE | — | version-metadata form, not a migratable data fact class |
 | V1.7-SCHEMAS.sexp | spec-version | 1 | OUT_OF_MIGRATION_SCOPE | — | version-metadata form, not a migratable data fact class |
 | V1.8-SCHEMAS.sexp | spec-version | 1 | OUT_OF_MIGRATION_SCOPE | — | version-metadata form, not a migratable data fact class |
+
+Source classes: 66 total — 56 DEFERRED_DATA_IMPORT, 4 IMPORTED, 6 OUT_OF_MIGRATION_SCOPE.

@@ -1,103 +1,97 @@
 #!/usr/bin/env bash
-# ARCHITECTURE-MODEL-GATE — top-level orchestrator for the canonical architecture-model system. Runs the SBCL
-# model-law kernel, the independent clingo checker, deterministic generation, the golden/property fixtures, and the
-# tampering / disagreement / omission meta-tests, then reports the acceptance gates. NOT a semantic/legal/security/
-# operational/qualification proof. Legacy v1.x PASS results are NEVER used as proof here.
+# ARCHITECTURE-MODEL-GATE — the acceptance gate of the canonical architecture-model system.
+#
+# It executes the generation order the MODEL declares (generation-order.sexp, topologically sorted — the gate
+# carries no private order of its own), then runs the SBCL model-law kernel, the independent clingo checker, the
+# golden/property fixtures and the held-out falsifiers, and reports each check.
+#
+# Two rules govern what may be counted here:
+#   * a check that cannot fail is not a check. Nothing in the counted set is satisfied by grepping the
+#     repository's own prose for a phrase the repository wrote;
+#   * a check whose evidence is only the presence of text is reported as INFORMATIONAL_PRESENCE_CHECK and is
+#     EXCLUDED from the architecture-law count. The count is not a target; what each check can catch is.
+#
+# Nothing here restores a file before comparing it. `git checkout` does not appear in this gate.
+# This is NOT a semantic, legal, security, operational or qualification proof.
 set -uo pipefail
 cd "$(dirname "$0")"
-pass=0; fail=0
+pass=0; fail=0; info=0
 ck(){ if [ "$2" = "$3" ]; then echo "GATE $1: PASS"; pass=$((pass+1)); else echo "GATE $1: FAIL (got '$2' want '$3')"; fail=$((fail+1)); fi; }
+note(){ echo "GATE $1: INFORMATIONAL_PRESENCE_CHECK ($2) — reported, not counted"; info=$((info+1)); }
+SEAT="."
 
-# G1 file-role inventory zero unclassified
-u=$(python3 build_inventory.py | grep -oE 'unclassified=[0-9]+' | cut -d= -f2); python3 build_inventory.py >/dev/null; git checkout -- files-and-roles.sexp 2>/dev/null || true
-ck 01-inventory-zero-unclassified "$u" 0
+echo "== generation: the order declared by the model =="
+ORDER=$(python3 gate_checks.py generation-order) || { echo "GATE gen-order: FAIL (the declared order is unusable)"; exit 1; }
+echo "$ORDER" | sed 's/^/  step: /'
+genrun(){ for p in $ORDER; do python3 "$p" >/dev/null || return 1; done; return 0; }
+genrun; gen1=$?
+ck gen-01-declared-order-runs "$gen1" 0
 
-# G4 model parses/composes + kernel PASS
-sbcl --script KERNEL/model-law-kernel.lisp ROOT.sexp >/tmp/k.out 2>&1; kec=$?
-ck 04-kernel-parses-and-passes "$([ $kec -eq 0 ] && echo 1 || echo 0)" 1
-# G5 exact module/hash universe = kernel L7 (no L7 violation in a passing run)
-ck 05-exact-hash-universe "$(grep -c 'VIOLATION L7' /tmp/k.out)" 0
-# G2 no duplicate facts (L2) + ledger present
-ck 02-no-duplicate-facts "$(grep -c 'VIOLATION L2' /tmp/k.out)" 0
-ck 03-conflicts-recorded "$([ -f MODEL-MIGRATION-CONFLICT-LEDGER.md ] && grep -cq '| 1 |' MODEL-MIGRATION-CONFLICT-LEDGER.md && echo 1 || echo 0)" 1
-
-# G13 independent checker PASS + agreement
-python3 CHECKER/independent_check.py ROOT.sexp >/tmp/c.out 2>&1; cec=$?
-kv=$(grep -q 'ARCHITECTURE MODEL LAWS: PASS' /tmp/k.out && echo PASS || echo FAIL)
-cv=$(grep -q 'INDEPENDENT ARCHITECTURE INVARIANTS: PASS' /tmp/c.out && echo PASS || echo FAIL)
-ck 13-independent-agree "$([ "$kv" = "$cv" ] && [ "$kv" = PASS ] && echo 1 || echo 0)" 1
-
-# G6 two clean generations byte-identical (generator + ROOT)
-python3 generate_views.py >/dev/null; python3 build_root.py >/dev/null
-cp -r GENERATED /tmp/g1; cp ROOT.sexp /tmp/r1
-python3 generate_views.py >/dev/null; python3 build_root.py >/dev/null
-if diff -rq /tmp/g1 GENERATED >/dev/null && diff -q /tmp/r1 ROOT.sexp >/dev/null; then g6=1; else g6=0; fi; rm -rf /tmp/g1 /tmp/r1
-ck 06-two-generations-identical "$g6" 1
-# G7 clean regeneration leaves the working tree byte-identical to the canonical index/HEAD content.
-# Porcelain columns are XY (X=index, Y=worktree); a regeneration that DRIFTS a tracked file makes the
-# worktree column non-blank (' M' committed-drift, 'AM' staged-drift). A staged-but-unchanged add is 'A '
-# (worktree clean) and is NOT a drift. So count only worktree-dirty lines (2nd column neither space nor '?').
-python3 generate_views.py >/dev/null; python3 build_root.py >/dev/null
-ck 07-regen-empty-diff "$(git status --porcelain GENERATED ROOT.sexp 2>/dev/null | grep -E '^.[^ ?]' | wc -l | tr -d ' ')" 0
-# G8 manual generated-view edit detected
+echo "== inventory =="
+python3 gate_checks.py inventory; ck inv-01-inventory-equals-tracked-universe "$?" 0
+# regeneration must leave the tracked tree byte-identical to what is committed. Porcelain columns are XY
+# (X=index, Y=worktree); a regeneration that DRIFTS a tracked file makes the worktree column non-blank.
+drift=$(git status --porcelain "$SEAT" 2>/dev/null | grep -E '^.[^ ?]' | wc -l | tr -d ' ')
+ck inv-02-regeneration-leaves-no-drift "$drift" 0
+snap=$(mktemp -d); cp -a GENERATED "$snap/"; cp ROOT.sexp files-and-roles.sexp deferred-imports.sexp ROOT-OPERATOR-DECISION-PACKET.md "$snap/"
+genrun; gen2=$?
+same=1; diff -rq "$snap/GENERATED" GENERATED >/dev/null 2>&1 || same=0
+for f in ROOT.sexp files-and-roles.sexp deferred-imports.sexp ROOT-OPERATOR-DECISION-PACKET.md; do diff -q "$snap/$f" "$f" >/dev/null 2>&1 || same=0; done
+rm -rf "$snap"
+ck inv-03-two-generations-identical "$([ $gen2 -eq 0 ] && echo $same || echo 0)" 1
 cp GENERATED/OWNERSHIP-MATRIX.md /tmp/ov.bak; echo "MANUAL TAMPER" >> GENERATED/OWNERSHIP-MATRIX.md
 python3 generate_views.py >/dev/null
-if diff -q /tmp/ov.bak GENERATED/OWNERSHIP-MATRIX.md >/dev/null; then g8=1; else g8=0; fi   # regen restores canonical -> tamper gone -> detected
-ck 08-manual-view-edit-detected "$g8" 1; rm -f /tmp/ov.bak
+if diff -q /tmp/ov.bak GENERATED/OWNERSHIP-MATRIX.md >/dev/null; then g=1; else g=0; fi
+rm -f /tmp/ov.bak
+ck inv-04-manual-view-edit-detected "$g" 1
 
-# G9 kernel budget + no regex/grep-as-proof
-sloc=$(grep -vE '^[[:space:]]*;|^[[:space:]]*$' KERNEL/model-law-kernel.lisp KERNEL/sha256.lisp | wc -l | tr -d ' ')
-ck 09a-kernel-sloc-budget "$([ "$sloc" -le 400 ] && echo 1 || echo 0)" 1
-ck 09b-kernel-no-regex "$(grep -vE '^[[:space:]]*;' KERNEL/model-law-kernel.lisp KERNEL/sha256.lisp | grep -ciE 'ppcre|run-program|sb-ext:run|\(search |cl-ppcre|shell-out')" 0
+echo "== model-law kernel (SBCL) =="
+sbcl --script KERNEL/model-law-kernel.lisp ROOT.sexp >/tmp/k.out 2>&1; kec=$?
+ck krn-01-kernel-passes "$([ $kec -eq 0 ] && echo 1 || echo 0)" 1
+ck krn-02-no-hash-universe-violation "$(grep -c 'VIOLATION L7' /tmp/k.out)" 0
+ck krn-03-no-duplicate-seat-violation "$(grep -c 'VIOLATION L2' /tmp/k.out)" 0
+sloc=$(grep -vE '^[[:space:]]*;|^[[:space:]]*$' KERNEL/model-law-kernel.lisp KERNEL/hash-provider.lisp | wc -l | tr -d ' ')
+ck krn-04-kernel-source-budget "$([ "$sloc" -le 400 ] && echo 1 || echo 0)" 1
 
-# G10-G12 golden PASS/FAIL fixtures + property families
+echo "== independent path (clingo) =="
+python3 CHECKER/independent_check.py ROOT.sexp >/tmp/c.out 2>&1; cec=$?
+ck chk-01-independent-path-passes "$([ $cec -eq 0 ] && echo 1 || echo 0)" 1
+diff -q KERNEL-COMMITMENT.txt CHECKER-COMMITMENT.txt >/dev/null 2>&1; ck chk-02-fact-set-commitments-identical "$?" 0
+python3 gate_checks.py module-universe; ck chk-03-both-paths-consume-root-universe "$?" 0
+
+echo "== hashing =="
+python3 gate_checks.py hash-engines; ck hsh-01-two-vetted-engines-agree "$?" 0
+
+echo "== fixtures and held-out falsifiers =="
 python3 run_fixtures.py >/tmp/fx.out 2>&1; fxc=$?
-ck 10-12-fixtures-and-properties "$([ $fxc -eq 0 ] && echo 1 || echo 0)" 1
+tail -1 /tmp/fx.out | sed 's/^/  /'
+ck fix-01-golden-and-property-fixtures "$([ $fxc -eq 0 ] && echo 1 || echo 0)" 1
+python3 run_falsifiers.py >/tmp/fl.out 2>&1; flc=$?
+grep -E '^held-out falsifiers' /tmp/fl.out | sed 's/^/  /'
+grep -E '^  NOT REJECTED' /tmp/fl.out | sed 's/^/  /'
+ck fls-01-held-out-falsifiers-rejected "$([ $flc -eq 0 ] && echo 1 || echo 0)" 1
 
-# G14 corrupt neutral export / omit fact detected: (a) omit a fact -> kernel FAILs; (b) export regen restores
-d=$(mktemp -d); for m in *.sexp; do cp "$m" "$d/"; done
-python3 - "$d" <<'PY'
-import sys,re,hashlib,os
-d=sys.argv[1]; p=os.path.join(d,'requirements-tests-workpackets.sexp')
-ls=[l for l in open(p) if not l.startswith('(fact req-map S03__')]; open(p,'w').write(''.join(ls))
-# rehash omitted -> also drift; but we want the OMISSION detected (L6). recompute ROOT so only L6 shows.
-mods=re.findall(r':module "([^"]+)"',open(os.path.join(d,'ROOT.sexp')).read())   # single source: exactly what ROOT pins
-def sha(fp): return hashlib.sha256(open(fp,encoding='utf-8',errors='replace').read().encode('utf-8')).hexdigest()
-t=open(os.path.join(d,'ROOT.sexp')).read()
-for m in mods: t=re.sub(r'(:module "%s" :sha256 ")[0-9a-f]{64}'%re.escape(m), r'\g<1>'+sha(os.path.join(d,m)), t)
-dig=hashlib.sha256('\n'.join('%s:%s'%(m,sha(os.path.join(d,m))) for m in mods).encode()).hexdigest()
-t=re.sub(r'(:canonical-model-root-digest ")[0-9a-f]{64}', r'\g<1>'+dig, t); open(os.path.join(d,'ROOT.sexp'),'w').write(t)
-PY
-sbcl --script KERNEL/model-law-kernel.lisp "$d/ROOT.sexp" >/tmp/omit.out 2>&1; omitec=$?
-ck 14-omission-detected "$([ $omitec -ne 0 ] && echo 1 || echo 0)" 1; rm -rf "$d"
+echo "== migration-scope ledger =="
+python3 build_deferred.py --verify >/tmp/ddi.out 2>&1; ddic=$?
+ck led-01-deferred-ledger-exact-universe "$([ $ddic -eq 0 ] && grep -q 'DEFERRED-IMPORT LEDGER: PASS' /tmp/ddi.out && echo 1 || echo 0)" 1
+ck led-02-ledger-inside-model-universe "$(grep -q 'deferred-imports.sexp' ROOT.sexp && grep -q ':status DEFERRED_DATA_IMPORT' deferred-imports.sexp && echo 1 || echo 0)" 1
 
-# G15 deliberate kernel/clingo disagreement BLOCKS: run clingo on an L4-cycle temp while kernel sees baseline
-d=$(mktemp -d); for m in *.sexp; do cp "$m" "$d/"; done; cp ROOT.sexp "$d/"
-printf '\n(fact stage-edge PUBLISH__ACQUIRE :from PUBLISH :to ACQUIRE)\n' >> "$d/dependencies-and-boundaries.sexp"
-python3 CHECKER/independent_check.py "$d/ROOT.sexp" >/tmp/dis.out 2>&1; disc=$?
-# kernel(baseline)=PASS, clingo(mutated)=FAIL -> disagreement -> agreement check must be FALSE
-ck 15-disagreement-blocks "$([ "$kv" = PASS ] && [ $disc -ne 0 ] && echo 1 || echo 0)" 1; rm -rf "$d"
+echo "== derived documents =="
+python3 gate_checks.py conflict-ledger; ck doc-01-conflict-ledger-reconciled "$?" 0
+python3 gate_checks.py packet; ck doc-02-decision-packet-reconciled "$?" 0
+python3 gate_checks.py live-path; ck doc-03-no-historical-code-on-live-path "$?" 0
 
-# G16 decision packet from evidence
-python3 build_decision_packet.py >/dev/null 2>&1
-ck 16-decision-packet "$([ -f ROOT-OPERATOR-DECISION-PACKET.md ] && grep -cq 'APPROVE / REJECT / DEFER\|APPROVE\b' ROOT-OPERATOR-DECISION-PACKET.md && echo 1 || echo 0)" 1
-# G17 no gate requires exhaustive human review (asserted in packet)
-ck 17-no-exhaustive-human-review "$(grep -cq 'No gate requires exhaustive human repository review' ROOT-OPERATOR-DECISION-PACKET.md && echo 1 || echo 0)" 1
-# G18 legacy audits classified non-authoritative (not used as proof here)
-ck 18-legacy-nonauthoritative "$(grep -cq 'NON_AUTHORITATIVE_GATE' files-and-roles.sexp && echo 1 || echo 0)" 1
+echo "== reported, not counted =="
+rx=$(grep -vE '^[[:space:]]*;' KERNEL/model-law-kernel.lisp KERNEL/hash-provider.lisp | grep -ciE 'ppcre|run-program|sb-ext:run|shell-out')
+note krn-lexical-scan "a lexical scan of the kernel sources for regex/shell constructs found $rx; a lexical scan cannot prove absence"
+note packet-single-operator-assurance "the decision packet states that no gate requires exhaustive human repository review; the statement is prose, its totals are what the counted checks reconcile"
 
-# G19 no source fact class silently omitted: every v1.6-v1.8 (file,class) is IMPORTED|DEFERRED_DATA_IMPORT|
-#     OUT_OF_MIGRATION_SCOPE, exact-universe against an independent re-scan, every deferred class finite-batched.
-python3 build_deferred.py >/dev/null 2>&1; python3 build_deferred.py --verify >/tmp/ddi.out 2>&1; ddic=$?
-ck 19-deferred-ledger-exact-universe "$([ $ddic -eq 0 ] && grep -q 'DEFERRED-IMPORT LEDGER: PASS' /tmp/ddi.out && echo 1 || echo 0)" 1
-# G20 the deferred ledger is inside the hash-rooted model universe (pinned in ROOT + carries DEFERRED_DATA_IMPORT rows)
-ck 20-deferred-in-model-universe "$(grep -q 'deferred-imports.sexp' ROOT.sexp && grep -q ':status DEFERRED_DATA_IMPORT' deferred-imports.sexp && echo 1 || echo 0)" 1
-# G21 anti-omission gate actually bites: drop one ledger row -> --verify FAILs with MISSING-FROM-LEDGER; regen restores
-grep -v 'source-class V1.8-SCHEMAS__define-record ' deferred-imports.sexp > /tmp/ddi.mut && cp /tmp/ddi.mut deferred-imports.sexp
-python3 build_deferred.py --verify >/tmp/ddi2.out 2>&1; bitec=$?
-python3 build_deferred.py >/dev/null 2>&1                                # regenerate -> canonical ledger restored
-ck 21-omission-gate-bites "$([ $bitec -ne 0 ] && grep -q 'MISSING-FROM-LEDGER' /tmp/ddi2.out && echo 1 || echo 0)" 1; rm -f /tmp/ddi.mut
-
-echo "### ARCHITECTURE-MODEL-GATE SUMMARY: pass=$pass fail=$fail"
-if [ $fail -eq 0 ]; then echo "### ARCHITECTURE MODEL LAWS: PASS — (structural model-law + independent-checker + fixtures; NOT semantic/legal/security/operational/qualification proof)"; exit 0
-else echo "### ARCHITECTURE MODEL LAWS: FAIL"; exit 1; fi
+echo "### ARCHITECTURE-MODEL-GATE SUMMARY: pass=$pass fail=$fail informational=$info"
+if [ $fail -eq 0 ]; then
+  echo "### ARCHITECTURE MODEL LAWS: PASS — structural model-law + independent-path + fixture + held-out-falsifier evidence."
+  echo "### NOT semantic, legal, security, behavioral, operational or qualification proof. No freeze and no qualification follows."
+  exit 0
+else
+  echo "### ARCHITECTURE MODEL LAWS: FAIL"
+  exit 1
+fi

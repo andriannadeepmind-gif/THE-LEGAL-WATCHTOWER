@@ -1,9 +1,9 @@
-<!-- GENERATED — DO NOT EDIT. Regenerate: generate_views.py -->
+<!-- GENERATED — DO NOT EDIT. Regenerate: python3 ARCHITECTURE-MODEL/generate_views.py -->
 # Requirement -> Seat -> Test -> WP Traceability View (GENERATED VIEW — DO NOT EDIT)
 
-- generator: `generate_views.py/1`
-- canonical-model-root-digest: `7be2aee1985b5998e2ad83e728d834603a0bf8b419f2df233a09e29de2baa231`
-- regeneration command: `generate_views.py`
+- generator: `generate_views.py/2`
+- canonical-model-root-digest: `9202ad3aa7bc5bdc3592569b6dff222c05e641bd587edc1e8cf7a95fb1e7dcd4`
+- regeneration command: `python3 ARCHITECTURE-MODEL/generate_views.py`
 
 | subsystem | requirement | test | wp |
 |---|---|---|---|

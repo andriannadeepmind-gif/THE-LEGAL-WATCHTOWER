@@ -5,30 +5,47 @@ registries become CANONICAL_MODEL_INPUT (migration input) + GENERATED views. Thi
 verification path (the kernel and the independent checker read only the emitted model). Deterministic output."""
 import importlib.util, os, sys, hashlib, collections
 HERE=os.path.dirname(os.path.abspath(__file__)); CP=os.path.dirname(HERE)
-spec=importlib.util.spec_from_file_location('vfy',os.path.join(CP,'V1.8-VERIFY.py'))
-m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
-R=lambda p: m.read_all(m.readpath(os.path.join(CP,p)))
-kv=lambda f,k: m.kv_after(f,k)
-def syms(node): return [str(x) for x in node if isinstance(x,(m.Sym,m.Str))] if m.is_list(node) else []
+# The migration sources are read through the repository's single classified reader seat. The historical
+# v1.8 harness is NOT imported here: a file classified HISTORICAL_EVIDENCE / NON_AUTHORITATIVE_GATE cannot be
+# a live dependency of the model that supersedes it.
+_spec=importlib.util.spec_from_file_location('sexp_reader',os.path.join(HERE,'SEXP-READER.py'))
+SR=importlib.util.module_from_spec(_spec); _spec.loader.exec_module(SR)
+def R(p):
+    try: return SR.read_forms_file(os.path.join(CP,p), SR.REGISTRY)
+    except SR.MissingSourceFile as e:
+        sys.stderr.write('MISSING-SOURCE-FILE: %s\n'%e.path); sys.exit(5)
+    except SR.SexpError as e:
+        sys.stderr.write('UNREADABLE-SOURCE-FILE: %s\n'%e); sys.exit(5)
+def head(f): return SR.head(f)
+def form_name(f): return f[1] if (isinstance(f,list) and len(f)>1 and isinstance(f[1],SR.Sym)) else None
+def kv(f,k): return SR.kv(f,k)
+def T(x):
+    """Exact source text of a scalar token: a keyword keeps its leading colon, so a registry value written
+    as :RESTRICTED is never confused with a bare symbol RESTRICTED."""
+    return (':'+str(x)) if isinstance(x,SR.Kw) else str(x)
+def edge_pairs(node):
+    return [(str(e[0]),str(e[1])) for e in node if isinstance(e,list) and len(e)>=2
+            and isinstance(e[0],SR.Sym) and isinstance(e[1],SR.Sym)] if isinstance(node,list) else []
+def syms(node): return [str(x) for x in node if isinstance(x,(SR.Sym,SR.Str))] if isinstance(node,list) else []
 conflicts=[]
 
 # ---- subsystems ----
 subs={}
 for f in R('SUBSYSTEM-REGISTRY.sexp'):
-    if m.head(f) is not None and str(m.head(f))=='define-subsystem':
-        sid=str(m.form_name(f))
-        subs[sid]=dict(mission=str(kv(f,':mission')),req=str(kv(f,':requirement')),test=str(kv(f,':test')),
-                       wp=str(kv(f,':future-wp')),migration=str(kv(f,':migration')),owner=str(kv(f,':owner')))
+    if head(f) is not None and head(f)=='define-subsystem':
+        sid=str(form_name(f))
+        subs[sid]=dict(mission=T(kv(f,'mission')),req=T(kv(f,'requirement')),test=T(kv(f,'test')),
+                       wp=T(kv(f,'future-wp')),migration=T(kv(f,'migration')),owner=T(kv(f,'owner')))
 priv_sub={s for s,d in subs.items() if d['migration']=='DEFER_PRIVATE'}
 
 # ---- types/interfaces ----
 types={}; consumes=[]; components={}
-_isr=[f for f in R('INTERFACE-AND-SCHEMA-REGISTRY.sexp') if m.head(f) is not None and str(m.head(f))=='define-interface']
+_isr=[f for f in R('INTERFACE-AND-SCHEMA-REGISTRY.sexp') if head(f) is not None and head(f)=='define-interface']
 for f in _isr:                                   # pass 1: collect all type names first
-    types[str(m.form_name(f))]=dict(owner=str(kv(f,':owner')),cls=str(kv(f,':classification')))
+    types[str(form_name(f))]=dict(owner=T(kv(f,'owner')),cls=T(kv(f,'classification')))
 for f in _isr:                                   # pass 2: consumes edges + non-subsystem/non-type consumers => components
-    nm=str(m.form_name(f))
-    for c in syms(kv(f,':consumers')):
+    nm=str(form_name(f))
+    for c in syms(kv(f,'consumers')):
         consumes.append((c,nm))
         if c not in subs and c not in types and c not in components:
             components[c]='S03'                  # proposers / legal-extraction-verify.lisp are S03 components (SemanticProposer is a type)
@@ -42,15 +59,15 @@ def sub_cls(sid): return 'PRIVATE' if sid in priv_sub else 'PUBLIC'
 # ---- stores ----
 stores={}
 for f in R('V1.8-SCHEMAS.sexp'):
-    if m.head(f) is not None and str(m.head(f))=='define-write-authority':
-        st=str(kv(f,':store')); stores[st]=dict(owner=str(kv(f,':owner')),writer=str(kv(f,':write-authority')))
+    if head(f) is not None and head(f)=='define-write-authority':
+        st=T(kv(f,'store')); stores[st]=dict(owner=T(kv(f,'owner')),writer=T(kv(f,'write-authority')))
 
 # ---- pipeline stages (the acyclic PERMITTED dependency graph) ----
 stages=[]; stage_edges=[]
 for f in R('V1.8-SCHEMAS.sexp'):
-    if m.head(f) is not None and str(m.head(f))=='define-pipeline':
-        stages=[str(x) for x in kv(f,':nodes')]
-        stage_edges=[(a,b) for a,b in m.edge_pairs(kv(f,':edges'))]
+    if head(f) is not None and head(f)=='define-pipeline':
+        stages=[str(x) for x in kv(f,'nodes')]
+        stage_edges=[(a,b) for a,b in edge_pairs(kv(f,'edges'))]
 
 # ---- requirements/tests/wps ----
 def wp_tokens(w):
@@ -65,17 +82,24 @@ edges=set()
 for c,nm in consumes:
     o=types[nm]['owner']
     if c in subs and c!=o: edges.add((c,o))
+# Deterministic enumeration: sorted adjacency, sorted start order, and each cycle canonicalised to its
+# lexicographically smallest rotation and de-duplicated. A set iteration order must never decide what an
+# architecture record says.
 adj=collections.defaultdict(list)
-for a,b in edges: adj[a].append(b)
+for a,b in sorted(edges): adj[a].append(b)
+for a in adj: adj[a].sort()
 col=collections.defaultdict(int); cyc=[]
 def dfs(u,st):
     col[u]=1; st.append(u)
     for w in adj[u]:
-        if col[w]==1: cyc.append(st[st.index(w):]+[w])
+        if col[w]==1: cyc.append(st[st.index(w):])
         elif col[w]==0: dfs(w,st)
     col[u]=2; st.pop()
-for u in list(subs):
+for u in sorted(subs):
     if col[u]==0: dfs(u,[])
+def canon(c):
+    k=min(range(len(c)),key=lambda i:c[i:]+c[:i]); r=c[k:]+c[:k]; return tuple(r+[r[0]])
+cyc=sorted({canon(c) for c in cyc})
 for c in cyc:
     conflicts.append(('DATAFLOW-CYCLE','subsystem consumer/data-flow graph','->'.join(c),
         'RECORD as non-invariant: the acyclic law (L4) governs the PERMITTED processing pipeline (stage graph), '
@@ -114,7 +138,14 @@ emit('subsystems.sexp','subsystems.sexp — one fact per subsystem (owner-seat =
      [fact('subsystem',s,**{'owner-seat':subs[s]['owner'],'mission':subs[s]['mission'],'migration':subs[s]['migration'],
         'classification':sub_cls(s)}) for s in sorted(subs)])
 
-tlines=[fact('type',t,**{'owner-subsystem':types[t]['owner'],'classification':type_cls(t)}) for t in sorted(types)]
+# a type that appears as a consumer is a PROPOSER class: it must say so explicitly, because the consumer
+# universe is closed (subsystem | component | consumer-role-bearing type) and fails closed otherwise.
+proposer_types={c for c,_nm in consumes if c in types}
+def type_kw(t):
+    kw={'owner-subsystem':types[t]['owner'],'classification':type_cls(t)}
+    if t in proposer_types: kw['consumer-role']='PROPOSER'
+    return kw
+tlines=[fact('type',t,**type_kw(t)) for t in sorted(types)]
 clines=[fact('component',c,**{'owner-subsystem':components[c]}) for c in sorted(components)]
 emit('interfaces-and-types.sexp','interfaces-and-types.sexp — one fact per canonical type/interface + components',tlines+['']+clines)
 
@@ -135,6 +166,7 @@ emit('requirements-tests-workpackets.sexp','requirements-tests-workpackets.sexp 
 
 print('EMITTED modules. subsystems=%d types=%d components=%d stores=%d stages=%d stage-edges=%d consumes=%d reqs=%d tests=%d wps=%d conflicts=%d'
       %(len(subs),len(types),len(components),len(stores),len(stages),len(stage_edges),len(set(consumes)),len(reqs),len(tests),len(wps),len(conflicts)))
-# stash conflicts for the ledger step
-import json
-json.dump(conflicts,open(os.path.join(HERE,'.conflicts.json'),'w'))
+# The conflict set is REPORTED, not stashed: MODEL-MIGRATION-CONFLICT-LEDGER.md is the adjudication record and
+# the gate reconciles every one of its rows against the canonical model (gate_checks.py conflict-ledger check),
+# so there is no derived side-file to go stale.
+for c in conflicts: print('CONFLICT %s | %s | %s'%(c[0],c[1],c[2]))

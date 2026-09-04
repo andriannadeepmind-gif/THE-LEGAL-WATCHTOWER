@@ -2,16 +2,38 @@
 """Emit deferred-imports.sexp: enumerate EVERY top-level fact class in the v1.6-v1.8 migration-source registries
 exactly once and mark each IMPORTED (this pass), DEFERRED_DATA_IMPORT (enumerated + mapped to a finite migration
 batch), or OUT_OF_MIGRATION_SCOPE (version metadata, not a data class). No source fact class may be silently
-omitted and none may be left as an open architecture decision: build_deferred.py --verify re-scans the sources
-with an INDEPENDENT reader and fails closed unless the on-disk (file,class) universe and the ledger are exactly
-equal, every deferred class has a declared finite batch, and every ledger row maps to a real source form.
+omitted and none may be left as an open architecture decision.
+
+`build_deferred.py --verify` re-derives the (file, class) universe from the sources and compares it with the
+committed ledger as a MULTISET: duplicated ledger rows are detected before anything is folded into a dictionary,
+missing and phantom rows are named, counts must match, every deferred class must carry a declared finite batch,
+and no row may over-claim an import this pass did not perform. A source file that is absent yields the typed
+result MISSING-SOURCE-FILE: <path> and a controlled non-zero exit — never an unhandled traceback.
+
+Honest scope of --verify: both sides of that comparison are read through the repository's single classified
+reader seat (SEXP-READER.py). It therefore proves that the LEDGER matches the SOURCES; it does not, and is not
+claimed to, cross-check the reader against a second implementation. The reader's own behaviour is covered by its
+fixtures, and the canonical model — not this ledger — is what the two independent verification paths compare.
 
 This is a MIGRATION/enumeration tool, not part of the kernel verification path. The kernel loads the emitted
 deferred-imports.sexp facts like any other model facts (L1 well-formedness + L2 uniqueness apply)."""
 import importlib.util, os, sys, collections
 HERE=os.path.dirname(os.path.abspath(__file__)); CP=os.path.dirname(HERE)
-spec=importlib.util.spec_from_file_location('vfy',os.path.join(CP,'V1.8-VERIFY.py'))
-m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+_spec=importlib.util.spec_from_file_location('sexp_reader',os.path.join(HERE,'SEXP-READER.py'))
+SR=importlib.util.module_from_spec(_spec); _spec.loader.exec_module(SR)
+
+def read_source(fn):
+    """Read one migration-source registry, or report a typed missing-source verdict and stop."""
+    try:
+        return SR.read_forms_file(os.path.join(CP,fn), SR.REGISTRY)
+    except SR.MissingSourceFile as e:
+        print('MISSING-SOURCE-FILE: %s'%e.path)
+        print('DEFERRED-IMPORT LEDGER: FAIL (a declared migration source is absent; the universe is unknowable)')
+        sys.exit(5)
+    except SR.SexpError as e:
+        print('UNREADABLE-SOURCE-FILE: %s'%e)
+        print('DEFERRED-IMPORT LEDGER: FAIL (a declared migration source could not be read)')
+        sys.exit(5)
 
 # The exact migration-source universe (v1.6-v1.8 registries + schemas). V1.5 is a superseded ancestor: enumerated
 # too so nothing is silently omitted. build_model.py migrates FROM these files.
@@ -55,14 +77,13 @@ BATCH_TITLE={'DDI-1':'seats / canonical identities / RA closure / pipeline+autho
              'DDI-4':'normative invariants / rules / prose'}
 
 def scan():
-    """Independent scan of the sources -> {(file,head): count} for every top-level form (define-* and metadata)."""
+    """Re-scan the sources -> {(file,head): count} for every top-level form (define-* and metadata)."""
     universe=collections.OrderedDict()
     for fn in SOURCES:
-        forms=m.read_all(m.readpath(os.path.join(CP,fn)))
         heads=collections.Counter()
-        for f in forms:
-            h=m.head(f)
-            if h is not None: heads[str(h)]+=1
+        for f in read_source(fn):
+            h=SR.head(f)
+            if h is not None: heads[h]+=1
         for h in sorted(heads): universe[(fn,h)]=heads[h]
     return universe
 
@@ -110,27 +131,42 @@ def build():
           %(len(rows),len(imp),len(dfr),len(oos),','.join(sorted(set(r['batch'] for r in dfr)))))
 
 def parse_ledger():
-    """Read deferred-imports.sexp back with an independent reader -> {(source_file,fact_class): row}."""
-    forms=m.read_all(m.readpath(os.path.join(HERE,'deferred-imports.sexp')))
-    led={}
+    """Read deferred-imports.sexp back as an ORDERED LIST of rows. Nothing is folded into a dict here: a
+    duplicated row must still be visible to the caller, which is exactly what a dict would destroy."""
+    try:
+        forms=SR.read_forms_file(os.path.join(HERE,'deferred-imports.sexp'))
+    except SR.MissingSourceFile as e:
+        print('MISSING-SOURCE-FILE: %s'%e.path)
+        print('DEFERRED-IMPORT LEDGER: FAIL (the ledger itself is absent)')
+        sys.exit(5)
+    except SR.SexpError as e:
+        print('UNREADABLE-LEDGER: %s'%e)
+        print('DEFERRED-IMPORT LEDGER: FAIL')
+        sys.exit(5)
+    rows=[]
     for f in forms:
-        if m.head(f) is None or str(m.head(f))!='fact': continue
-        if m.form_name(f) is None or str(m.form_name(f))!='source-class': continue
-        sf=str(m.kv_after(f,':source-file')).strip('"'); fc=str(m.kv_after(f,':fact-class')).strip('"')
-        cnt=int(str(m.kv_after(f,':source-count'))); st=str(m.kv_after(f,':status'))
-        bt=m.kv_after(f,':batch'); bt=None if bt is None else str(bt)
-        led[(sf,fc)]=dict(count=cnt,status=st,batch=bt)
-    return led
+        if SR.head(f)!='fact' or len(f)<3 or str(f[1])!='source-class': continue
+        sf=str(SR.kv(f,'source-file')); fc=str(SR.kv(f,'fact-class'))
+        cnt=SR.kv(f,'source-count'); st=str(SR.kv(f,'status')); bt=SR.kv(f,'batch')
+        rows.append(((sf,fc),dict(count=int(cnt) if isinstance(cnt,SR.Int) else None,
+                                  status=st,batch=None if bt is None else str(bt))))
+    return rows
 
 def verify():
-    uni=scan(); led=parse_ledger(); ok=True
+    uni=scan(); rows=parse_ledger(); ok=True
+    # (0) MULTISET first: a duplicated ledger row must be named BEFORE any dict/set folding hides it
+    keycount=collections.Counter(k for k,_r in rows)
+    for k,n in sorted(keycount.items()):
+        if n>1: print('DUPLICATE-LEDGER-ROW: %s %s appears %d times'%(k[0],k[1],n)); ok=False
+    led={}
+    for k,r in rows: led.setdefault(k,r)
     # (a) exact universe: every on-disk (file,class) has exactly one ledger row and vice-versa
-    us=set(uni.keys()); ls=set(led.keys())
+    us=set(uni.keys()); ls=set(keycount.keys())
     for k in sorted(us-ls): print('MISSING-FROM-LEDGER: %s %s'%k); ok=False
     for k in sorted(ls-us): print('PHANTOM-LEDGER-ROW: %s %s'%k); ok=False
     # (b) counts match (no silent normalization of how many forms a class has)
     for k in sorted(us&ls):
-        if uni[k]!=led[k]['count']: print('COUNT-MISMATCH: %s %s on-disk=%d ledger=%d'%(k[0],k[1],uni[k],led[k]['count'])); ok=False
+        if uni[k]!=led[k]['count']: print('COUNT-MISMATCH: %s %s on-disk=%d ledger=%s'%(k[0],k[1],uni[k],led[k]['count'])); ok=False
     # (c) every deferred row has a declared finite batch + the class is batch-mapped
     valid_batches=set(BATCH_TITLE)
     for k in sorted(ls):
@@ -145,7 +181,9 @@ def verify():
     for k in sorted(IMPORTED):
         if k not in led or led[k]['status']!='IMPORTED': print('IMPORT-NOT-LEDGERED: %s %s'%k); ok=False
     ndef=sum(1 for k in ls if led[k]['status']=='DEFERRED_DATA_IMPORT')
-    if ok: print('DEFERRED-IMPORT LEDGER: PASS (source-classes=%d exact-universe deferred=%d all-batched)'%(len(ls),ndef)); sys.exit(0)
+    if ok:
+        print('DEFERRED-IMPORT LEDGER: PASS (rows=%d source-classes=%d exact-universe multiset-checked deferred=%d all-batched)'
+              %(len(rows),len(ls),ndef)); sys.exit(0)
     print('DEFERRED-IMPORT LEDGER: FAIL'); sys.exit(3)
 
 if __name__=='__main__':
