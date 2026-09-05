@@ -256,16 +256,29 @@ def plist(items, source='<text>', what='form'):
     return out
 
 
+# The complete top-level header vocabulary of a model module: everything else at top level must be a `fact`.
+# One seat, because a consumer that carried its own list would silently tolerate a form the laws reject — a
+# stale entry here is exactly how `define-toolchain` outlived the schema that declared it.
+HEADERS = ('define-model-schema', 'define-model-root')
+
+
 def canonical_value(v, source='<text>', what='value'):
     """The ONE canonical rendering of a fact value. See the module docstring for the specification."""
     if isinstance(v, Str):
+        # A control character inside a string would make a canonical commitment line ambiguous — the render
+        # joins fact lines with '\n' — so such a string is not a legal value at all, not a special case.
+        bad = next((c for c in str(v) if ord(c) < 32 or ord(c) == 127), None)
+        if bad is not None:
+            raise ValueKindError(source, what, 'control character U+%04X inside a string value; canonical '
+                                               'strings are control-character free' % ord(bad))
         return str(v)
     if isinstance(v, Int):
         return str(int(v))
     if isinstance(v, Sym):
         return str(v).upper()
     raise ValueKindError(source, what,
-                         'illegal value kind %s (permitted: string, integer, plain symbol)' % type(v).__name__)
+                         'illegal value kind %s (permitted: control-character-free string, integer, plain '
+                         'symbol)' % type(v).__name__)
 
 
 def canonical_fact_render(ftype, fid, pairs, source='<text>'):

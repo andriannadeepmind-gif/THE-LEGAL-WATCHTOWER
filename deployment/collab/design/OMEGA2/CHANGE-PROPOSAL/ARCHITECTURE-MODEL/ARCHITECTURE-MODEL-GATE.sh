@@ -1,97 +1,147 @@
 #!/usr/bin/env bash
 # ARCHITECTURE-MODEL-GATE — the acceptance gate of the canonical architecture-model system.
 #
-# It executes the generation order the MODEL declares (generation-order.sexp, topologically sorted — the gate
-# carries no private order of its own), then runs the SBCL model-law kernel, the independent clingo checker, the
-# golden/property fixtures and the held-out falsifiers, and reports each check.
+# WHAT THIS IS. A judgement, not a build. It resolves ONE immutable candidate tree, exports it into a private
+# workspace, and asks every question of that tree. It regenerates nothing in place, restores nothing before
+# comparing it, and writes no file outside its own workspace — so "the gate passed" can never mean "the gate
+# rewrote the thing it was about to inspect". Applying belongs to a different command: `regenerate.py`.
 #
-# Two rules govern what may be counted here:
-#   * a check that cannot fail is not a check. Nothing in the counted set is satisfied by grepping the
-#     repository's own prose for a phrase the repository wrote;
-#   * a check whose evidence is only the presence of text is reported as INFORMATIONAL_PRESENCE_CHECK and is
-#     EXCLUDED from the architecture-law count. The count is not a target; what each check can catch is.
+# Review-2 N-2, N-14, N-16, N-18 are the reasons for each of those properties:
+#   * the previous gate ran the five in-place producers BEFORE comparing anything, so a hand-edited generated
+#     artifact was overwritten and the run then reported `pass=20 fail=0` having named nothing;
+#   * its drift measure was a porcelain-column regex that could not see the index at all;
+#   * it deliberately tampered with a tracked view in the working tree and restored it afterwards, so an
+#     interrupted run left the repository damaged;
+#   * it wrote to fixed `/tmp/*.out` paths, which are attacker- and collision-reachable on a shared host.
 #
-# Nothing here restores a file before comparing it. `git checkout` does not appear in this gate.
-# This is NOT a semantic, legal, security, operational or qualification proof.
+# WHAT IS COUNTED. A check that cannot fail is not a check. Everything counted here can fail on a defect it
+# names. Anything whose evidence is only the presence of text is reported as INFORMATIONAL_PRESENCE_CHECK and
+# is EXCLUDED from the count. The count is not a target; what each check can catch is.
+#
+# WHAT THIS IS NOT. Not a semantic, legal, security, behavioural, operational or qualification proof. No freeze
+# and no qualification follows from a PASS here.
+#
+# Usage:  ARCHITECTURE-MODEL-GATE.sh [<tree-ish>]
+#         with no argument, or with WORKTREE, the candidate is the tree the current state would commit to.
 set -uo pipefail
 cd "$(dirname "$0")"
-pass=0; fail=0; info=0
-ck(){ if [ "$2" = "$3" ]; then echo "GATE $1: PASS"; pass=$((pass+1)); else echo "GATE $1: FAIL (got '$2' want '$3')"; fail=$((fail+1)); fi; }
+
+umask 077
+WORK="$(mktemp -d "${TMPDIR:-/tmp}/aml-gate-XXXXXXXXXX")" || { echo "GATE: FAIL (no private workspace)"; exit 1; }
+chmod 700 "$WORK"
+cleanup(){ rm -rf "$WORK"; }
+trap cleanup EXIT INT TERM HUP
+
+pass=0; fail=0; info=0; failed_names=""
+ck(){ # ck <name> <exit-code>
+  if [ "$2" = "0" ]; then echo "GATE $1: PASS"; pass=$((pass+1));
+  else echo "GATE $1: FAIL"; fail=$((fail+1)); failed_names="$failed_names $1"; fi
+}
 note(){ echo "GATE $1: INFORMATIONAL_PRESENCE_CHECK ($2) — reported, not counted"; info=$((info+1)); }
-SEAT="."
 
-echo "== generation: the order declared by the model =="
-ORDER=$(python3 gate_checks.py generation-order) || { echo "GATE gen-order: FAIL (the declared order is unusable)"; exit 1; }
-echo "$ORDER" | sed 's/^/  step: /'
-genrun(){ for p in $ORDER; do python3 "$p" >/dev/null || return 1; done; return 0; }
-genrun; gen1=$?
-ck gen-01-declared-order-runs "$gen1" 0
+CAND="${1:-${AML_CANDIDATE_TREE:-WORKTREE}}"
 
-echo "== inventory =="
-python3 gate_checks.py inventory; ck inv-01-inventory-equals-tracked-universe "$?" 0
-# regeneration must leave the tracked tree byte-identical to what is committed. Porcelain columns are XY
-# (X=index, Y=worktree); a regeneration that DRIFTS a tracked file makes the worktree column non-blank.
-drift=$(git status --porcelain "$SEAT" 2>/dev/null | grep -E '^.[^ ?]' | wc -l | tr -d ' ')
-ck inv-02-regeneration-leaves-no-drift "$drift" 0
-snap=$(mktemp -d); cp -a GENERATED "$snap/"; cp ROOT.sexp files-and-roles.sexp deferred-imports.sexp ROOT-OPERATOR-DECISION-PACKET.md "$snap/"
-genrun; gen2=$?
-same=1; diff -rq "$snap/GENERATED" GENERATED >/dev/null 2>&1 || same=0
-for f in ROOT.sexp files-and-roles.sexp deferred-imports.sexp ROOT-OPERATOR-DECISION-PACKET.md; do diff -q "$snap/$f" "$f" >/dev/null 2>&1 || same=0; done
-rm -rf "$snap"
-ck inv-03-two-generations-identical "$([ $gen2 -eq 0 ] && echo $same || echo 0)" 1
-cp GENERATED/OWNERSHIP-MATRIX.md /tmp/ov.bak; echo "MANUAL TAMPER" >> GENERATED/OWNERSHIP-MATRIX.md
-python3 generate_views.py >/dev/null
-if diff -q /tmp/ov.bak GENERATED/OWNERSHIP-MATRIX.md >/dev/null; then g=1; else g=0; fi
-rm -f /tmp/ov.bak
-ck inv-04-manual-view-edit-detected "$g" 1
+# The exact state of the working tree BEFORE anything else runs — captured first, so that a write performed by
+# any later line of this gate, including the very first one, is visible to the read-only check at the end.
+WT_BEFORE=$(git -C ../../../../../.. status --porcelain -uall | sha256sum)
 
-echo "== model-law kernel (SBCL) =="
-sbcl --script KERNEL/model-law-kernel.lisp ROOT.sexp >/tmp/k.out 2>&1; kec=$?
-ck krn-01-kernel-passes "$([ $kec -eq 0 ] && echo 1 || echo 0)" 1
-ck krn-02-no-hash-universe-violation "$(grep -c 'VIOLATION L7' /tmp/k.out)" 0
-ck krn-03-no-duplicate-seat-violation "$(grep -c 'VIOLATION L2' /tmp/k.out)" 0
-sloc=$(grep -vE '^[[:space:]]*;|^[[:space:]]*$' KERNEL/model-law-kernel.lisp KERNEL/hash-provider.lisp | wc -l | tr -d ' ')
-ck krn-04-kernel-source-budget "$([ "$sloc" -le 400 ] && echo 1 || echo 0)" 1
+echo "== candidate =="
+if ! python3 gate_checks.py candidate --tree "$CAND" --work "$WORK" >"$WORK/candidate.out" 2>&1; then
+  cat "$WORK/candidate.out"; echo "### ARCHITECTURE MODEL LAWS: FAIL (no candidate tree)"; exit 1
+fi
+TREE=$(sed -n 's/^CANDIDATE-TREE //p' "$WORK/candidate.out")
+SEAT=$(sed -n 's/^CANDIDATE-SEAT //p' "$WORK/candidate.out")
+SEATREL=$(sed -n 's/^CANDIDATE-REL //p' "$WORK/candidate.out")
+[ -n "$TREE" ] && [ -d "$SEAT" ] || { cat "$WORK/candidate.out"; echo "### ARCHITECTURE MODEL LAWS: FAIL"; exit 1; }
+grep -v '^CANDIDATE-' "$WORK/candidate.out"
+export AML_CANDIDATE_TREE="$TREE"
 
-echo "== independent path (clingo) =="
-python3 CHECKER/independent_check.py ROOT.sexp >/tmp/c.out 2>&1; cec=$?
-ck chk-01-independent-path-passes "$([ $cec -eq 0 ] && echo 1 || echo 0)" 1
-diff -q KERNEL-COMMITMENT.txt CHECKER-COMMITMENT.txt >/dev/null 2>&1; ck chk-02-fact-set-commitments-identical "$?" 0
-python3 gate_checks.py module-universe; ck chk-03-both-paths-consume-root-universe "$?" 0
+# every check reads the SAME exported candidate and the SAME workspace: one export, one commitment, one answer
+gc(){ python3 gate_checks.py "$1" --tree "$TREE" --work "$WORK" >"$WORK/$1.out" 2>&1; rc=$?; cat "$WORK/$1.out"; return $rc; }
+
+echo "== toolchain identity (before any verdict is issued) =="
+gc toolchain; ck tch-01-pinned-tools-are-the-tools-executed "$?"
+
+echo "== generation: the declared order, run in the workspace and byte-compared =="
+gc generation-order; ck gen-01-declared-order-is-total-and-acyclic "$?"
+gc generation;       ck gen-02-artifacts-regenerate-byte-identical "$?"
+
+echo "== the tracked universe =="
+gc inventory; ck inv-01-inventory-equals-candidate-universe "$?"
+gc artifacts; ck art-01-generated-artifact-universe-is-exact "$?"
+gc seats;     ck sea-01-every-seat-resolves-or-declares-why "$?"
+
+echo "== the two verification paths =="
+gc commitments; ck ver-01-both-paths-agree-on-one-fact-universe "$?"
+KSLOC=$(grep -vE '^[[:space:]]*;|^[[:space:]]*$' "$SEAT/KERNEL/model-law-kernel.lisp" "$SEAT/KERNEL/hash-provider.lisp" | wc -l | tr -d ' ')
+[ "$KSLOC" -le 400 ]; ck ver-02-kernel-source-budget-400-lines "$?"
+echo "  kernel + hash provider: $KSLOC non-blank non-comment lines (budget 400)"
 
 echo "== hashing =="
-python3 gate_checks.py hash-engines; ck hsh-01-two-vetted-engines-agree "$?" 0
+gc hash-engines; ck hsh-01-two-vetted-engines-agree-on-raw-bytes "$?"
 
-echo "== fixtures and held-out falsifiers =="
-python3 run_fixtures.py >/tmp/fx.out 2>&1; fxc=$?
-tail -1 /tmp/fx.out | sed 's/^/  /'
-ck fix-01-golden-and-property-fixtures "$([ $fxc -eq 0 ] && echo 1 || echo 0)" 1
-python3 run_falsifiers.py >/tmp/fl.out 2>&1; flc=$?
-grep -E '^held-out falsifiers' /tmp/fl.out | sed 's/^/  /'
-grep -E '^  NOT REJECTED' /tmp/fl.out | sed 's/^/  /'
-ck fls-01-held-out-falsifiers-rejected "$([ $flc -eq 0 ] && echo 1 || echo 0)" 1
+echo "== the verification corpus itself =="
+gc corpus; ck cor-01-corpus-universe-is-exact "$?"
+python3 "$SEAT/run_fixtures.py" >"$WORK/fixtures.out" 2>&1; fxc=$?
+tail -1 "$WORK/fixtures.out" | sed 's/^/  /'
+ck fix-01-golden-and-generated-fixtures "$fxc"
+# COMPONENT falsifiers only. The COMPOSED_GATE falsifiers execute THIS script and are therefore run by the
+# separate battery, run_gate_falsifiers.py — a gate that ran them would recurse forever (Review-2 N-2).
+#
+# The battery needs a real git repository, so it is the working copy that executes rather than the export. That
+# is only honest if the two are the same bytes, so the candidate's own blob is compared to it first: a battery
+# that is not the candidate's battery proves nothing about the candidate.
+# When the candidate IS the working tree the two are the same bytes by construction, and a check that cannot
+# fail is not a check — so it is reported, not counted, in that mode, and counted only when it can fail.
+if [ "$CAND" = "WORKTREE" ]; then
+  note fls-00-battery-executed-is-the-candidates-battery "the candidate is the working tree, so the battery executed is the candidate's by construction"
+else
+  git -C ../../../../../.. cat-file blob "$TREE:$SEATREL/run_falsifiers.py" 2>/dev/null | cmp -s - run_falsifiers.py
+  ck fls-00-battery-executed-is-the-candidates-battery "$?"
+fi
+python3 run_falsifiers.py >"$WORK/falsifiers.out" 2>&1; flc=$?
+grep -E '^held-out falsifiers' "$WORK/falsifiers.out" | sed 's/^/  /'
+grep -E '^  NOT REJECTED' "$WORK/falsifiers.out" | sed 's/^/  /'
+ck fls-01-component-falsifiers-all-rejected "$flc"
 
 echo "== migration-scope ledger =="
-python3 build_deferred.py --verify >/tmp/ddi.out 2>&1; ddic=$?
-ck led-01-deferred-ledger-exact-universe "$([ $ddic -eq 0 ] && grep -q 'DEFERRED-IMPORT LEDGER: PASS' /tmp/ddi.out && echo 1 || echo 0)" 1
-ck led-02-ledger-inside-model-universe "$(grep -q 'deferred-imports.sexp' ROOT.sexp && grep -q ':status DEFERRED_DATA_IMPORT' deferred-imports.sexp && echo 1 || echo 0)" 1
+(cd "$SEAT" && python3 build_deferred.py --verify) >"$WORK/ledger.out" 2>&1; ddic=$?
+grep -E 'DEFERRED-IMPORT LEDGER' "$WORK/ledger.out" | sed 's/^/  /'
+[ $ddic -eq 0 ] && grep -q 'DEFERRED-IMPORT LEDGER: PASS' "$WORK/ledger.out"
+ck led-01-deferred-ledger-exact-source-universe "$?"
 
 echo "== derived documents =="
-python3 gate_checks.py conflict-ledger; ck doc-01-conflict-ledger-reconciled "$?" 0
-python3 gate_checks.py packet; ck doc-02-decision-packet-reconciled "$?" 0
-python3 gate_checks.py live-path; ck doc-03-no-historical-code-on-live-path "$?" 0
+gc conflict-ledger;    ck doc-01-conflict-ledger-reconciled-both-ways "$?"
+gc packet;             ck doc-02-decision-packet-reconciled-to-the-model "$?"
+gc dependency-closure; ck doc-03-governance-closure-declared-and-historic-free "$?"
+
+echo "== the gate's own effect on the repository =="
+WT_AFTER=$(git -C ../../../../../.. status --porcelain -uall | sha256sum)
+TREE_AFTER=$(python3 gate_checks.py candidate --tree WORKTREE --work "$WORK/verify" 2>/dev/null | sed -n 's/^CANDIDATE-TREE //p')
+[ "$WT_BEFORE" = "$WT_AFTER" ]; a=$?
+ck ro-01-working-tree-byte-identical-after-the-run "$a"
+if [ "$CAND" = "WORKTREE" ]; then
+  [ "$TREE_AFTER" = "$TREE" ]; b=$?
+  ck ro-02-candidate-tree-unchanged-by-the-run "$b"
+else
+  note ro-02-candidate-tree-unchanged-by-the-run "an explicit tree-ish was judged; the working-tree candidate is not the subject"
+fi
 
 echo "== reported, not counted =="
-rx=$(grep -vE '^[[:space:]]*;' KERNEL/model-law-kernel.lisp KERNEL/hash-provider.lisp | grep -ciE 'ppcre|run-program|sb-ext:run|shell-out')
+rx=$(grep -vE '^[[:space:]]*;' "$SEAT/KERNEL/model-law-kernel.lisp" "$SEAT/KERNEL/hash-provider.lisp" | grep -ciE 'ppcre|shell-out')
 note krn-lexical-scan "a lexical scan of the kernel sources for regex/shell constructs found $rx; a lexical scan cannot prove absence"
 note packet-single-operator-assurance "the decision packet states that no gate requires exhaustive human repository review; the statement is prose, its totals are what the counted checks reconcile"
+note composed-gate-battery "the $(grep -c ':harness COMPOSED_GATE' "$SEAT/verification-corpus.sexp") COMPOSED_GATE falsifiers execute this script and are run by run_gate_falsifiers.py, never from inside it"
 
-echo "### ARCHITECTURE-MODEL-GATE SUMMARY: pass=$pass fail=$fail informational=$info"
+echo "### ARCHITECTURE-MODEL-GATE SUMMARY: candidate=$TREE pass=$pass fail=$fail informational=$info"
 if [ $fail -eq 0 ]; then
-  echo "### ARCHITECTURE MODEL LAWS: PASS — structural model-law + independent-path + fixture + held-out-falsifier evidence."
-  echo "### NOT semantic, legal, security, behavioral, operational or qualification proof. No freeze and no qualification follows."
+  echo "### ARCHITECTURE MODEL LAWS: PASS — structural model-law + independent-path + fixture + held-out-falsifier"
+  echo "### evidence over the immutable candidate tree $TREE."
+  echo "### NOT semantic, legal, security, behavioural, operational or qualification proof. No freeze and no"
+  echo "### qualification follows."
   exit 0
 else
+  echo "### FAILED CHECKS:$failed_names"
   echo "### ARCHITECTURE MODEL LAWS: FAIL"
   exit 1
 fi

@@ -882,3 +882,30 @@ Citation-Bound Verification Profile). Design only, working tree, **κανένα 
   refactoring · Implementation-Book · WP-00 · `RAW-JOURNAL` · amend/rebase.
   **`OPTION-2 CANONICAL CORE CORRECTION COMPLETE — AWAITING FRESH INDEPENDENT REVIEW #2 — DDI-1 BLOCKED —
   NOT FULL-BUILD COMPLETE — NOT FROZEN — NOT QUALIFIED`.**
+
+## [0162] OPTION-2 CORE ΣΥΣΤΗΜΙΚΗ ΔΙΟΡΘΩΣΗ REVIEW #2 (N-1…N-20) — πάνω στο `f04bf7e6`
+
+- **Κυβερνών τεκμήριο:** ανεξάρτητη έκθεση `INDEPENDENT CANONICAL-MODEL CORE REVIEW #2 — OPTION-2 CORE
+  @ f04bf7e6`· ετυμηγορία `... REVIEW #2 FAILED — CORRECTION REQUIRED` (7×P1 N-1…N-7, 10×P2 N-8…N-17,
+  3×P3 N-18…N-20, + υπόλειμμα F-1…F-13). Read-only συνημμένο, ΟΧΙ artifact του repo.
+- **TCB (N-1/N-11):** το vendored SHA-256 closure αποσύρθηκε· ένας εξωτερικός digest provider δηλωμένος ως
+  `tool` fact, πιναρισμένος σε path + ακριβές εκτελέσιμο digest + semantic version και μετρημένος από την ΑΛΛΗ
+  διαδρομή· κανένα εργαλείο δεν πιστοποιεί τον εαυτό του· σύγκριση κυριαρχίας A vs B στο `TCB-DECISION.md`.
+- **Read-only gate (N-2/N-12/N-14):** `regenerate.py` γράφει, το gate μόνο κρίνει, πάνω σε ΑΜΕΤΑΒΛΗΤΟ candidate
+  tree· ένας ιδιωτικός `mktemp -d` χώρος (mode 0700, cleanup trap), καμία σταθερή `/tmp` διαδρομή· η παραγωγή
+  τρέχει σε ξεχωριστό ιδιωτικό αντίγραφο ώστε κανένας έλεγχος να μη διαβάζει bytes προηγούμενου ελέγχου· το
+  gate αποδεικνύει στο τέλος ότι το working tree και το candidate tree έμειναν byte-πανομοιότυπα.
+- **Ακριβή σύμπαντα (N-3/N-4/N-5/N-6):** gen-artifacts, fixtures, property families με δηλωμένη cardinality,
+  falsifiers ανά harness, migration sources — όλα ως facts, με ισότητα συνόλων και προς τις δύο κατευθύνσεις.
+- **Αυθεντία (N-7/N-10):** τυπωμένο `:authority`, `promotion` facts (`GLOBAL` = `FORBIDDEN_UNTIL_DDI_COMPLETE`),
+  33 τυπωμένες έδρες, μοναδική εγγραφική αρχή ανά store, `APPROVE (bounded)` μόνο στο decision packet.
+- **Κλειστότητα σχήματος (N-8/N-9/N-16/N-17):** `:required ∪ :optional` = ΟΛΟ το επιτρεπτό λεξιλόγιο· πλήρης
+  πειθαρχία `ROOT.sexp`· καμία μη δηλωμένη έδρα ανάγνωσης· τυπωμένα αποτελέσματα αντί tracebacks.
+- **Αποτ.:** 1.567 facts / 26 fact-types / 13 modules (schema 3)· 36.631 tracked = 998 per-file + 35.633 σε 65
+  dir-rules· 18 μετρούμενοι έλεγχοι, 4 informational εκτός μετρήματος· 8 golden + 83 property cases·
+  **52/52 held-out falsifiers απορρίφθηκαν με τον προβλεπόμενο λόγο (44 COMPONENT + 8 COMPOSED_GATE)**·
+  kernel + hash-provider 400/400 γραμμές.
+- **ΔΕΝ ΕΓΙΝΕ:** DDI-1…DDI-4 · option-1/full-build · freeze · qualification · MISSION · WP-00 ·
+  Implementation-Book · production implementation · νέοι αρχιτεκτονικοί άξονες · merge · amend/rebase.
+  **`OPTION-2 REVIEW-2 CORRECTION COMPLETE — AWAITING FRESH INDEPENDENT REVIEW #3 — DDI-1 BLOCKED —
+  NOT FULL-BUILD COMPLETE — NOT FROZEN — NOT QUALIFIED — IMPLEMENTATION BLOCKED`.**

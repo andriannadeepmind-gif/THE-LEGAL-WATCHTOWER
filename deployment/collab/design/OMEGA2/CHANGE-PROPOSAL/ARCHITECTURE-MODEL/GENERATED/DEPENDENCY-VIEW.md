@@ -1,9 +1,9 @@
-<!-- GENERATED — DO NOT EDIT. Regenerate: python3 ARCHITECTURE-MODEL/generate_views.py -->
+<!-- GENERATED — DO NOT EDIT. Regenerate: python3 ARCHITECTURE-MODEL/regenerate.py -->
 # Dependency View (GENERATED VIEW — DO NOT EDIT)
 
-- generator: `generate_views.py/2`
-- canonical-model-root-digest: `9202ad3aa7bc5bdc3592569b6dff222c05e641bd587edc1e8cf7a95fb1e7dcd4`
-- regeneration command: `python3 ARCHITECTURE-MODEL/generate_views.py`
+- generator: `generate_views.py/3`
+- canonical-model-root-digest: `46bf277330e42ef431350ae96d7bb845b755ae6e157b88587cf3a21d46f9f5ce`
+- regeneration command: `python3 ARCHITECTURE-MODEL/regenerate.py`
 
 ## Permitted pipeline (acyclic stage DAG — law L4)
 
@@ -18,8 +18,8 @@
 
 ## Declared generation order (acyclic — law L4)
 
-- DEFERRED-LEDGER -> INVENTORY
-- INVENTORY -> ROOT
+- DEFERRED-LEDGER -> ROOT
+- INVENTORY -> DEFERRED-LEDGER
 - ROOT -> VIEWS
 - VIEWS -> PACKET
 

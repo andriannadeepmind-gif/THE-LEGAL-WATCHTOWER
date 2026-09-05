@@ -15,7 +15,7 @@ import hashlib, importlib.util, os, subprocess, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 _spec = importlib.util.spec_from_file_location('sexp_reader', os.path.join(HERE, 'SEXP-READER.py'))
 SR = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(SR)
-HEADERS = ('define-model-schema', 'define-model-root', 'define-toolchain')
+HEADERS = SR.HEADERS          # one seat: the reader declares the header vocabulary
 
 
 def sh(cmd):
@@ -68,12 +68,15 @@ def main():
     for mod, t, _i, _p in fs:
         fam[t] = fam.get(t, 0) + 1
         permod[mod] = permod.get(mod, 0) + 1
-    status, batch = {}, {}
+    status, batch, forms, batch_forms = {}, {}, {}, {}
     for _m, t, _i, p in fs:
         if t == 'source-class':
             status[p['status']] = status.get(p['status'], 0) + 1
+            forms[p['status']] = forms.get(p['status'], 0) + int(p['source-count'])
             if 'batch' in p:
                 batch[p['batch']] = batch.get(p['batch'], 0) + 1
+                batch_forms[p['batch']] = batch_forms.get(p['batch'], 0) + int(p['source-count'])
+    promo = {p['scope']: p for _m, t, _i, p in fs if t == 'promotion'}
     inv = [p for _m, t, _i, p in fs if t == 'inventory-total']
     kdig, cdig = digest_of(os.path.join(HERE, 'KERNEL-COMMITMENT.txt')), digest_of(os.path.join(HERE, 'CHECKER-COMMITMENT.txt'))
     if kdig is None or cdig is None:
@@ -90,6 +93,12 @@ def main():
 
     recon = ['total-facts %d' % len(fs), 'modules %d' % len(mods), 'model-root-digest %s' % dig]
     recon += ['family %s %d' % (t, fam[t]) for t in sorted(fam)]
+    # Review-2 N-7: the packet must disclose the deferred VOLUME, not only the class count, and must state the
+    # promotion state the model itself computes. The gate recomputes every one of these from the model.
+    recon += ['deferred-classes %d' % status.get('DEFERRED_DATA_IMPORT', 0),
+              'deferred-source-forms %d' % forms.get('DEFERRED_DATA_IMPORT', 0),
+              'imported-classes %d' % status.get('IMPORTED', 0),
+              'global-promotion %s' % (promo['GLOBAL']['state'] if 'GLOBAL' in promo else 'ABSENT')]
     recon += ['commitment kernel %s' % kdig, 'commitment checker %s' % cdig]
 
     m = """# ROOT-OPERATOR-DECISION-PACKET — canonical architecture model (initial import)
@@ -123,14 +132,24 @@ Every v1.6-v1.8 source fact class is enumerated exactly once in `deferred-import
 file + a finite migration batch); none is silently omitted and none is left as an open architecture decision.
 Ledger verification (multiset-aware re-derivation from the sources): **%s** — `%s`.
 
-| status | source-classes |
-|---|---|
+| status | source-classes | source forms |
+|---|---|---|
 %s
 
-Deferred fact classes by finite batch: %s (batch scopes are declared in `build_deferred.py`;
-DEFERRED_DATA_IMPORT means enumerated + scheduled, NOT dropped). This pass imported only the structural
-seat/topology classes; the deferred data is a finite, batched follow-up. No freeze claim follows from this pass,
-and none of those batches has been started.
+Deferred fact classes by finite batch, with the number of SOURCE FORMS each batch actually carries: %s
+(batch scopes are declared in `build_deferred.py`; DEFERRED_DATA_IMPORT means enumerated + scheduled, NOT
+dropped). This pass imported only the structural seat/topology classes. None of those batches has been started.
+
+### 2b-i. Typed authority split — what this model is, and is not, authoritative for
+| authority | applies to | meaning |
+|---|---|---|
+| `CANONICAL_IN_MODEL` | the %d IMPORTED classes (%d source forms) | the detail lives here; this model is the source of truth for them |
+| `AUTHORITATIVE_AT_SOURCE` | the %d DEFERRED classes (%d source forms) and the %d out-of-scope classes | the detail still lives in the declared legacy registry and is authoritative THERE until that class's DDI batch is complete AND independently reviewed |
+
+The split is not prose: `authority` is a required, enum-constrained field of every `source-class` fact, both
+verification paths enforce it, and the gate recomputes the totals above from the model. The model additionally
+carries a `promotion` fact whose GLOBAL scope is **%s** — a machine-checkable statement that global
+single-source-of-truth status is withheld while any class remains authoritative at its source.
 
 ## 2c. Tracked-file inventory
 %s
@@ -175,24 +194,39 @@ Migration: build_model.py + build_deferred.py + build_inventory.py, in the order
 a dependency of anything on the live path.
 
 ## 10. Decision
-- **APPROVE** — promote this canonical model root as the architecture source of truth.
-- **REJECT** — discard; keep the registries as source.
-- **DEFER** — request the fresh independent review first.
+The options below are bounded by the authority split in §2b-i. There is deliberately NO option to promote this
+model as the global architecture source of truth, because %d source classes covering %d source forms are still
+authoritative at their declared legacy sources; the model's own `promotion` fact records that state as **%s**,
+and it is the gate, not this prose, that enforces it.
 
-Final canonical promotion requires the Root Operator's signed approval. This packet asserts NO freeze and NO
-qualification.
+- **APPROVE (bounded)** — accept this canonical model root as the source of truth **for the imported classes
+  only**, leaving every deferred class authoritative at its declared legacy source. This authorizes a fresh
+  independent review; it does NOT authorize DDI-1, and it does not make this model globally canonical.
+- **REJECT** — discard; keep the registries as source.
+- **DEFER** — request the fresh independent review before deciding anything.
+
+Global single-source-of-truth status becomes available only after DDI-1…DDI-4 are complete and each has been
+independently reviewed. Final canonical promotion requires the Root Operator's signed approval. This packet
+asserts NO freeze, NO qualification, and NO independent verification: an internal PASS authorizes a fresh
+independent review and nothing else.
 """ % ('\n'.join(recon), len(fs), len(mods), str(pl['parent-architecture-commit']), dig,
        '\n'.join('| %s | %d |' % (t, fam[t]) for t in sorted(fam)), len(fs),
        '\n'.join('| %s | %d |' % (m, permod[m]) for m in sorted(permod)),
        'PASS' if dvc == 0 else 'FAIL', last(dvo),
-       '\n'.join('| %s | %d |' % (k, status[k]) for k in sorted(status)),
-       ', '.join('%s=%d' % (k, batch[k]) for k in sorted(batch)),
+       '\n'.join('| %s | %d | %d |' % (k, status[k], forms[k]) for k in sorted(status)),
+       ', '.join('%s=%d classes / %d forms' % (k, batch[k], batch_forms[k]) for k in sorted(batch)),
+       status.get('IMPORTED', 0), forms.get('IMPORTED', 0),
+       status.get('DEFERRED_DATA_IMPORT', 0), forms.get('DEFERRED_DATA_IMPORT', 0),
+       status.get('OUT_OF_MIGRATION_SCOPE', 0),
+       promo['GLOBAL']['state'] if 'GLOBAL' in promo else 'ABSENT',
        ('%s tracked paths are classified exactly once: %s carry an individual `file` fact and %s are counted by '
         '%s `dir-rule` facts.' % (inv[0]['tracked'], inv[0]['file-facts'], inv[0]['dir-rule-sum'],
                                   inv[0]['dir-rule-facts'])) if inv else 'No inventory-total fact is present.',
        kernel_verdict, kc, checker_verdict, cc, 'PASS' if fc == 0 else 'FAIL', last(fo),
        'AGREE' if kernel_verdict == checker_verdict else 'DISAGREE', kdig,
-       str(pl['parent-architecture-commit']))
+       str(pl['parent-architecture-commit']),
+       status.get('DEFERRED_DATA_IMPORT', 0), forms.get('DEFERRED_DATA_IMPORT', 0),
+       promo['GLOBAL']['state'] if 'GLOBAL' in promo else 'ABSENT')
     with open(os.path.join(HERE, 'ROOT-OPERATOR-DECISION-PACKET.md'), 'w', encoding='utf-8', newline='\n') as f:
         f.write(m)
     print('decision packet written (kernel=%s checker=%s commitments identical fixtures=%s facts=%d)'

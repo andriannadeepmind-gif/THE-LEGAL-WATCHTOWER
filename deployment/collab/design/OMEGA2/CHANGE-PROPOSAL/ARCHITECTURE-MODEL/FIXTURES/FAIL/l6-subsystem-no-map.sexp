@@ -1,3 +1,3 @@
-(fixture FAIL-L6-subsystem-no-map :law L6 :expect FAIL :reason "has no requirement->seat->test->WP mapping"
+(fixture FX-L6-SUBSYSTEM-NO-MAP
   :provenance "v1.8 V8-REQ completeness / complete requirement->seat->test->WP mapping"
-  :mutate (remove-line "requirements-tests-workpackets.sexp" "(fact req-map S01__WP-01"))
+  :mutate (remove-fact "requirements-tests-workpackets.sexp" "req-map" "S01__WP-01"))

@@ -1,48 +1,76 @@
-;;;; TOOLCHAIN.sexp — pinned identities of every tool on the verification path.
-;;;; Each tool is pinned on THREE SEPARATE AXES that are never conflated:
-;;;;   (:semantic-requirement ...)  what the architecture actually requires — the conformance level a substitute
-;;;;                                build must meet. A source-built conforming binary satisfies this axis.
-;;;;   (:distribution-variant ...)  the package/build actually used in this environment. EVIDENCE, not a
-;;;;                                requirement: ".debian", a pip wheel or a vendored tree are variants, and a
-;;;;                                different variant of the same semantic version is conforming.
-;;;;   (:execution-digest ...)      the concrete binary/module digest observed in this container. EVIDENCE only;
-;;;;                                it differs per host and can never be a portable requirement.
-;;;; Hashing on this model's paths has ONE definition: SHA-256 over exact raw bytes (files) and over the UTF-8
-;;;; encoding (strings). Two independently vetted engines compute it — ironclad on the Common Lisp path and
-;;;; hashlib/OpenSSL on the Python path — and the gate compares them over identical inputs.
-(define-toolchain architecture-model-toolchain
-  (:kernel-runtime
-     (:name "SBCL" :kind ANSI-COMMON-LISP
-      :semantic-requirement (:implementation "SBCL" :version "2.2.9" :conformance ANSI-COMMON-LISP)
-      :distribution-variant (:package "sbcl" :build "SBCL 2.2.9.debian" :install "apt-get install -y sbcl")
-      :execution-digest (:path "/usr/bin/sbcl"
-                         :sha256 "2409c8befe0ca3d6309fcce4f820d8257ceff316a437b38115e228d9259f5670")
-      :invocation "sbcl --script ARCHITECTURE-MODEL/KERNEL/model-law-kernel.lisp <ROOT.sexp>"))
-  (:independent-checker
-     (:name "clingo" :kind ANSWER-SET-PROGRAMMING
-      :semantic-requirement (:implementation "clingo" :version "5.8.2" :conformance ASP-CORE-2)
-      :distribution-variant (:package "clingo" :build "clingo 5.8.2 (pip wheel, cpython-311)"
-                             :install "pip install clingo==5.8.2")
-      :execution-digest (:path "/usr/local/lib/python3.11/dist-packages/clingo/_clingo.cpython-311-x86_64-linux-gnu.so"
-                         :sha256 "6ce9dd49177b81bcb5ae15a042de6c8f98368d880510484a68017e5220faec9f")
-      :rationale "stock declarative logic solver (Datalog/ASP family); shares no parsing or invariant-evaluation code with the Common Lisp kernel"
-      :invocation "python3 ARCHITECTURE-MODEL/CHECKER/independent_check.py <ROOT.sexp>"))
-  (:hash-provider
-     (:name "ironclad" :kind SHA-256-PROVIDER :path COMMON-LISP
-      :semantic-requirement (:implementation "ironclad" :version "0.61" :conformance FIPS-180-4-SHA-256)
-      :distribution-variant (:package "ironclad" :build "ironclad v0.61 vendored in-repo"
-                             :install "already vendored: third-party/ironclad-v0.61 (ASDF source-registry tree)")
-      :execution-digest (:path "third-party/ironclad-v0.61/src/digests/sha256.lisp"
-                         :sha256 "94fefad71e8162e6bef4daac85ffca36ae160873e7c7d08628d5fd30268ffc81")
-      :source-registry-tree "third-party/"
-      :system-name "ironclad"
-      :self-test "FIPS 180-4 SHA-256 known-answer vectors (empty, abc, 448-bit, 1e6 x 'a') verified in-process before any model hash is computed; failure aborts with exit code 4"
-      :decision "DELIBERATE DEPENDENCY: a vetted maintained provider replaces the former in-repo SHA-256. Kernel smallness does not override cryptographic assurance; there is no fallback implementation."))
-  (:checker-hash-provider
-     (:name "python-hashlib" :kind SHA-256-PROVIDER :path PYTHON
-      :semantic-requirement (:implementation "hashlib" :version "OpenSSL 3.0.13" :conformance FIPS-180-4-SHA-256)
-      :distribution-variant (:package "python3" :build "CPython 3.11.15 / OpenSSL 3.0.13 30 Jan 2024"
-                             :install "python3 standard library (OpenSSL-backed)")
-      :execution-digest (:path "python3 -c \"import ssl; print(ssl.OPENSSL_VERSION)\"" :sha256 NOT-A-FILE)
-      :self-test "the same FIPS 180-4 known-answer vectors are verified in-process by the independent checker before any model hash is computed"
-      :decision "second independently vetted engine; the gate requires both engines to agree on identical raw-byte inputs")))
+;;;; TOOLCHAIN.sexp — the pinned identity of every tool on either verification path, AS MODEL FACTS.
+;;;;
+;;;; REVIEW-2 N-11. Before this pass the toolchain was a bespoke `(define-toolchain ...)` form whose
+;;;; `:execution-digest` values were read by NO executable: a shim reporting "SBCL 9.9.9.evil" passed, a clingo
+;;;; whose __version__ said "0.0.1-EVIL" passed, and rewriting the declared requirement to 9.9.9 passed while the
+;;;; kernel printed the fabricated version back as its own evidence. Pins that nothing reads are documentation.
+;;;; They are now ordinary `tool` facts: schema-validated, hash-pinned inside ROOT.sexp, and ENFORCED by
+;;;; `gate_checks.py toolchain` before either verifier is allowed to run.
+;;;;
+;;;; :verified-by is the anti-self-certification rule. No tool proves its own identity: the digest program that
+;;;; the Common Lisp path depends on is measured by the Python path's engine, the Python runtime and the ASP
+;;;; solver are measured by the digest program, and the SBCL binary is measured by both. A tool whose declared
+;;;; verifier is the tool itself would be rejected by the schema's `verifier` enum having no such value.
+;;;;
+;;;; :sha256 is the exact executable identity on the DECLARED SUPPORTED BASE ENVIRONMENT (see
+;;;; SETUP-TOOLCHAIN.sh, Review-2 N-20): Ubuntu 24.04 LTS x86-64, sbcl 2:2.2.9-1ubuntu2 from the Ubuntu
+;;;; universe pocket, coreutils 9.4, CPython 3.11 and clingo 5.8.2 from the pinned wheel. On any other host the
+;;;; gate stops with a typed TOOLCHAIN-IDENTITY-MISMATCH naming the tool, the observed digest and the pinned
+;;;; one; it never silently downgrades to trusting a self-reported version string. Re-pinning for another
+;;;; supported environment is an explicit, reviewable edit of these facts — never an automatic accommodation.
+;;;;
+;;;; There is exactly ONE hashing definition on every path of this model:
+;;;;   hash(file)   = SHA-256 over the exact raw bytes;  hash(string) = SHA-256 over the UTF-8 encoding.
+;;;; Two independently vetted engines compute it — GNU coreutils sha256sum on the Common Lisp path and
+;;;; hashlib/OpenSSL on the Python path — and the gate requires them to agree over identical inputs, including
+;;;; CRLF, a lone CR, a UTF-8 BOM and bytes that are not valid UTF-8 at all.
+
+(fact tool SBCL
+      :role KERNEL_RUNTIME
+      :name "SBCL"
+      :semantic-version "2.2.9"
+      :variant "SBCL 2.2.9.debian (Ubuntu 24.04 universe, sbcl 2:2.2.9-1ubuntu2)"
+      :path "/usr/bin/sbcl"
+      :sha256 "2409c8befe0ca3d6309fcce4f820d8257ceff316a437b38115e228d9259f5670"
+      :verified-by CHECKER_PATH
+      :note "ANSI Common Lisp implementation that runs KERNEL/model-law-kernel.lisp. It is the irreducible bootstrap anchor of the Common Lisp path and is therefore measured by the OTHER path, never by itself.")
+
+(fact tool DIGEST-PROGRAM
+      :role DIGEST_PROVIDER
+      :name "sha256sum"
+      :semantic-version "9.4"
+      :variant "sha256sum (GNU coreutils) 9.4"
+      :path "/usr/bin/sha256sum"
+      :sha256 "e484c36c0613879fbd11058f7a2e194783bced59d4805d64c3d4b0d7f664094d"
+      :verified-by CHECKER_PATH
+      :note "The ONLY SHA-256 provider of the Common Lisp path (Review-2 N-1). It replaces the former vendored ironclad ASDF closure: 276 tracked files (129 Lisp sources) reached through an ASDF source registry rooted at the whole 3,307-file `third-party/` tree, not one of which was pinned by any executable check. It is a separate implementation lineage from the Python path's OpenSSL engine, so agreement between the two is real cross-engine evidence rather than one engine agreeing with itself.")
+
+(fact tool CPYTHON
+      :role CHECKER_RUNTIME
+      :name "CPython"
+      :semantic-version "3.11.15"
+      :variant "CPython 3.11.15 (GCC 13.3.0)"
+      :path "/usr/local/bin/python3"
+      :sha256 "f56a588548dd013906ae1dcd1b6faa417f4e204da634ff354840d9643e78ff9e"
+      :verified-by KERNEL_PATH
+      :note "Runtime of the independent checker, the generators and the gate checks. Measured by the Common Lisp path's digest program.")
+
+(fact tool CLINGO
+      :role ASP_SOLVER
+      :name "clingo"
+      :semantic-version "5.8.2"
+      :variant "clingo 5.8.2 (pip wheel, cpython-311, manylinux2014 x86-64)"
+      :path "/usr/local/lib/python3.11/dist-packages/clingo/_clingo.cpython-311-x86_64-linux-gnu.so"
+      :sha256 "6ce9dd49177b81bcb5ae15a042de6c8f98368d880510484a68017e5220faec9f"
+      :verified-by KERNEL_PATH
+      :note "Stock declarative ASP solver; the compiled extension module is the real executable identity, so that is what is pinned rather than the Python wrapper. Shares no parsing or invariant-evaluation code with the Common Lisp kernel.")
+
+(fact tool OPENSSL-HASH
+      :role CHECKER_DIGEST_PROVIDER
+      :name "hashlib/OpenSSL"
+      :semantic-version "3.0.13"
+      :variant "OpenSSL 3.0.13 30 Jan 2024, via CPython hashlib"
+      :path "/usr/local/bin/python3"
+      :sha256 "f56a588548dd013906ae1dcd1b6faa417f4e204da634ff354840d9643e78ff9e"
+      :verified-by KERNEL_PATH
+      :note "Second independently vetted SHA-256 engine. It is reached through the CPython binary, so its executable identity is that binary's; the OpenSSL semantic version is checked separately at run time and both engines must agree on every adversarial byte case.")

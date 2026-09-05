@@ -12,9 +12,21 @@ Correction of the three reported inventory defects, at their source rather than 
     no rule becomes UNCLASSIFIED, is named on stderr, and makes this program exit non-zero.  There is no
     terminal rule that accepts anything, so "silently swallowed" is not a reachable state.
 
-  * NO DEAD RULES.  Every rule must match at least one tracked path.  A rule that matches nothing — whether
-    because it is obsolete or because an earlier rule shadows it — makes this program exit non-zero (exit 3).
-    A rule that cannot fire is therefore not merely unused: it is a build failure.
+  * NO BROAD BLESSING INSIDE A GOVERNED SUBTREE (Review-2 N-18).  The terminal catch-all was removed in the
+    previous pass, but broad prefix rules still absorbed anything newly added under an already-governed
+    subtree: a brand-new binary dropped into deployment/collab/design/ was silently labelled
+    HISTORICAL_EVIDENCE, and a new document in the change-proposal round was silently labelled authored prose.
+    Inside the governed, normative, model and toolchain subtrees the rules now match declared EXTENSIONS only;
+    anything else there becomes REVIEW_REQUIRED, which is named and fails the build exactly like UNCLASSIFIED.
+    A prefix may still classify in bulk where the subtree is genuinely out of architectural scope (vendored
+    dependencies, corpora, runtime state) — and `third-party/` is now a role of its own, VENDORED_DEPENDENCY,
+    so an executable dependency tree is never filed under the same word as a data corpus.
+
+  * NO DEAD RULES.  Every classifying rule must match at least one tracked path.  A rule that matches nothing —
+    whether because it is obsolete or because an earlier rule shadows it — makes this program exit non-zero
+    (exit 3).  A rule that cannot fire is therefore not merely unused: it is a build failure.  The QUARANTINE
+    rules are the one declared exception: they exist to fire only when an undeclared kind appears, so a healthy
+    tree is exactly the tree in which they match nothing.
 
   * REPRESENTATION IS DERIVED, NOT LISTED.  Whether a path gets its own `file` fact or is folded into a
     counted `dir-rule` fact follows from its ROLE alone (PER_FILE_ROLES below).  There is no second,
@@ -37,19 +49,38 @@ DESIGN = 'deployment/collab/design/'
 PER_FILE_ROLES = {'CANONICAL_MODEL_INPUT', 'GENERATED_VIEW', 'ARCHITECTURE_DECISION', 'AUTHORED_NORMATIVE_PROSE',
                   'HISTORICAL_EVIDENCE', 'DEFERRED_PRIVATE', 'GOVERNANCE_MACHINERY', 'GOVERNANCE_FIXTURE'}
 # Roles the model never names individually -> counted `dir-rule` facts (exact counts, no loss).
-AGGREGATE_ROLES = {'PRODUCTION_CODE', 'TEST_OR_FIXTURE', 'OUT_OF_SCOPE_WITH_REASON'}
-ROLES = PER_FILE_ROLES | AGGREGATE_ROLES | {'UNCLASSIFIED'}
+AGGREGATE_ROLES = {'PRODUCTION_CODE', 'TEST_OR_FIXTURE', 'OUT_OF_SCOPE_WITH_REASON', 'VENDORED_DEPENDENCY'}
+# Quarantine roles: reachable, named, and fatal. Neither may ever appear in a committed inventory.
+QUARANTINE_ROLES = {'UNCLASSIFIED', 'REVIEW_REQUIRED'}
+ROLES = PER_FILE_ROLES | AGGREGATE_ROLES | QUARANTINE_ROLES
 
+# Declared extensions inside the governed subtrees. Anything else there is REVIEW_REQUIRED, never blessed.
+GOVERNED_DOC_EXT = ('.md',)
+GOVERNED_MODEL_EXT = ('.sexp',)
+# Every kind a design/collaboration round is allowed to contain, enumerated. Adding a kind is a reviewable edit
+# here; a kind that is not listed quarantines instead of being blessed by the prefix it happens to sit under.
+DESIGN_ROUND_EXT = ('.md', '.sexp', '.json', '.jsonl', '.html', '.txt', '.tsv', '.csv', '.yml', '.yaml',
+                    '.tla', '.cfg', '.py', '.sh', '.js', '.mjs')
 _HIST_RE = re.compile(r'/V1\.\d.*(AUDIT|VERIFY|EVIDENCE|MANIFEST|BOOTSTRAP|CONSISTENCY|KILL-WITNESSES'
                       r'|SEMANTIC-CROSSWALK|DESTRUCTION-PASS-RECORD|NARROW-DELTA)')
 _DEP_TOP_EXT = ('.ttl', '.jsonld', '.json', '.js', '.sh')
 
 
-def tracked_paths():
-    """Exact tracked paths as git stores them.  -z => no quoting, no escaping, no ambiguity."""
-    r = subprocess.run(['git', '-C', ROOT, 'ls-files', '-z'], capture_output=True)
+REPO = None            # bound by --repo when the generator runs against an exported candidate workspace
+
+
+def tracked_paths(tree=None):
+    """Exact tracked paths as git stores them.  -z => no quoting, no escaping, no ambiguity.
+
+    With TREE the universe is enumerated from an IMMUTABLE git tree object rather than from the mutable index
+    (Review-2 N-2/N-14): the read-only gate pins the candidate it is judging, so nothing a concurrent process
+    stages can change what the inventory is compared against."""
+    repo = REPO or ROOT
+    cmd = (['git', '-C', repo, 'ls-tree', '-r', '--name-only', '-z', tree] if tree
+           else ['git', '-C', repo, 'ls-files', '-z'])
+    r = subprocess.run(cmd, capture_output=True)
     if r.returncode != 0:
-        sys.stderr.write('FATAL: git ls-files -z failed: %s\n' % r.stderr.decode('utf-8', 'replace'))
+        sys.stderr.write('FATAL: %s failed: %s\n' % (' '.join(cmd[3:]), r.stderr.decode('utf-8', 'replace')))
         sys.exit(2)
     ok, undecodable = [], []
     for b in r.stdout.split(b'\0'):
@@ -88,8 +119,11 @@ RULES = [
      'single-operator decision packet'),
     ('R-008', lambda p: p.startswith(AM) and p.endswith('.sexp'), 'CANONICAL_MODEL_INPUT',
      'canonical model module (single source of truth)'),
-    ('R-009', lambda p: p.startswith(AM) and p.endswith('.md'), 'AUTHORED_NORMATIVE_PROSE',
+    ('R-009', lambda p: p.startswith(AM) and p.endswith(GOVERNED_DOC_EXT), 'AUTHORED_NORMATIVE_PROSE',
      'architecture-model authored document'),
+    ('R-009Q', lambda p: p.startswith(AM), 'REVIEW_REQUIRED',
+     'a file inside the architecture-model seat whose kind no rule declares — the model seat never blesses by '
+     'prefix (Review-2 N-18)'),
     # --- the change-proposal round ---
     ('R-010', lambda p: p in (CPP + 'SUBSYSTEM-REGISTRY.sexp', CPP + 'INTERFACE-AND-SCHEMA-REGISTRY.sexp'),
      'CANONICAL_MODEL_INPUT', 'v1.6 registry — migration input to the canonical model'),
@@ -132,10 +166,10 @@ RULES = [
      'authored normative document under deployment/'),
     ('R-028', lambda p: p.startswith('deployment/') and p.endswith('.sexp'), 'AUTHORED_NORMATIVE_PROSE',
      'authored normative contract in S-expression form under deployment/'),
-    ('R-029', lambda p: p.startswith(DESIGN), 'HISTORICAL_EVIDENCE',
-     'design-round artifact (formal model, analysis tool or evidence data) — round record, not a live path'),
-    ('R-030', lambda p: p.startswith('deployment/collab/'), 'HISTORICAL_EVIDENCE',
-     'collaboration-round record (freeze/launch verification evidence outside the design subtree)'),
+    ('R-029', lambda p: p.startswith(DESIGN) and p.endswith(DESIGN_ROUND_EXT), 'HISTORICAL_EVIDENCE',
+     'design-round artifact of a declared kind (formal model, analysis tool or evidence data) — round record, not a live path'),
+    ('R-030', lambda p: p.startswith('deployment/collab/') and p.endswith(DESIGN_ROUND_EXT), 'HISTORICAL_EVIDENCE',
+     'collaboration-round record of a declared kind (freeze/launch verification evidence outside the design subtree)'),
     # --- product code, tests, corpora and repository furniture ---
     ('R-031', lambda p: p.startswith('source/') or p.startswith('systems/'), 'PRODUCTION_CODE',
      'LAWMAX product source (untouched by this pass)'),
@@ -150,8 +184,10 @@ RULES = [
     ('R-036', lambda p: p.startswith('determinism/'), 'TEST_OR_FIXTURE',
      'determinism verification harness'),
     ('R-037', lambda p: p.startswith('tests/'), 'TEST_OR_FIXTURE', 'product test/fixture'),
-    ('R-038', lambda p: p.startswith('third-party/'), 'OUT_OF_SCOPE_WITH_REASON',
-     'vendored third-party sources (not architecture facts)'),
+    ('R-038', lambda p: p.startswith('third-party/'), 'VENDORED_DEPENDENCY',
+     'vendored third-party dependency tree — executable material, kept distinct from data corpora so that a '
+     'dependency can never be filed under the same role as a corpus (Review-2 N-18); no governance path compiles '
+     'or loads any of it since the kernel stopped using the vendored ironclad closure (Review-2 N-1)'),
     ('R-039', lambda p: p.startswith('output/') or p.startswith('output_run1/') or p.startswith('input/'),
      'OUT_OF_SCOPE_WITH_REASON', 'pipeline data/artifact corpus (not architecture facts)'),
     ('R-040', lambda p: p.startswith('docs/'), 'OUT_OF_SCOPE_WITH_REASON',
@@ -201,13 +237,21 @@ def wq(v):
 def main():
     # --out <path> writes the regenerated inventory somewhere else and leaves the committed module untouched.
     # The gate uses it to COMPARE regenerated against committed; nothing is ever restored before comparison.
+    global REPO
     out_path = os.path.join(HERE, 'files-and-roles.sexp')
-    if len(sys.argv) == 3 and sys.argv[1] == '--out':
-        out_path = os.path.abspath(sys.argv[2])
-    elif len(sys.argv) != 1:
-        sys.stderr.write('usage: build_inventory.py [--out PATH]\n')
-        sys.exit(2)
-    files, undecodable = tracked_paths()
+    tree = None
+    argv = sys.argv[1:]
+    while argv:
+        if argv[0] == '--out' and len(argv) > 1:
+            out_path = os.path.abspath(argv[1]); argv = argv[2:]
+        elif argv[0] == '--tree' and len(argv) > 1:
+            tree = argv[1]; argv = argv[2:]
+        elif argv[0] == '--repo' and len(argv) > 1:
+            REPO = os.path.abspath(argv[1]); argv = argv[2:]
+        else:
+            sys.stderr.write('usage: build_inventory.py [--out PATH] [--tree TREE-ISH] [--repo DIR]\n')
+            sys.exit(2)
+    files, undecodable = tracked_paths(tree)
     if undecodable:
         sys.stderr.write('UNDECODABLE-PATH: %d tracked path(s) are not valid UTF-8; rejected:\n' % len(undecodable))
         for b in undecodable[:20]:
@@ -223,14 +267,17 @@ def main():
             sys.exit(2)
         rolec[role] += 1
         rulec[rid] += 1
-        if role == 'UNCLASSIFIED':
-            quarantined.append(p)
+        if role in QUARANTINE_ROLES:
+            quarantined.append((role, p))
         elif role in PER_FILE_ROLES:
             per_file.append((p, rid, role, reason))
         else:
             bulk.append((p, rid, role, reason))
 
-    dead = [rid for rid, _p, _r, _x in RULES if rulec.get(rid, 0) == 0]
+    # A rule that matches nothing is obsolete or shadowed, and that is a build failure — EXCEPT for the
+    # quarantine rules, whose whole purpose is to fire only when something undeclared appears. A healthy tree is
+    # precisely the tree in which they match nothing, so requiring them to fire would invert their meaning.
+    dead = [rid for rid, _p, role, _x in RULES if rulec.get(rid, 0) == 0 and role not in QUARANTINE_ROLES]
 
     out = [';;;; files-and-roles.sexp — every tracked file classified exactly once (no-loss).',
            ';;;; GENERATED by build_inventory.py.  Do not edit by hand.',
@@ -239,7 +286,9 @@ def main():
            ';;;; Roles named individually (one `file` fact each): ' + ' '.join(sorted(PER_FILE_ROLES)),
            ';;;; Roles counted in bulk (one `dir-rule` fact per top-level directory and rule): '
            + ' '.join(sorted(AGGREGATE_ROLES)),
-           ';;;; Invariant: (count of file facts) + (sum of dir-rule :count) = (count of tracked paths).', '']
+           ';;;; Invariant: (count of file facts) + (sum of dir-rule :count) = (count of tracked paths).',
+           ';;;; A path whose kind no rule declares becomes UNCLASSIFIED or, inside a governed subtree,',
+           ';;;; REVIEW_REQUIRED; both are named on stderr and both fail this build (Review-2 N-2, N-18).', '']
     for p, rid, role, reason in sorted(per_file):
         out.append('(fact file %s :role %s :rule %s :reason %s)' % (wq(p), role, rid, wq(reason)))
     out.append('')
@@ -263,9 +312,9 @@ def main():
           % (len(files), len(per_file), len(agg), sum(agg.values()), len(quarantined), len(dead)))
     print('role counts:', dict(sorted(rolec.items())))
     if quarantined:
-        sys.stderr.write('UNCLASSIFIED — %d tracked path(s) matched no explicit rule:\n' % len(quarantined))
-        for p in quarantined:
-            sys.stderr.write('  %s\n' % p)
+        sys.stderr.write('QUARANTINED — %d tracked path(s) need an explicit decision:\n' % len(quarantined))
+        for role, p in quarantined:
+            sys.stderr.write('  %-16s %s\n' % (role, p))
         sys.exit(1)
     if len(per_file) + sum(agg.values()) != len(files):
         sys.stderr.write('FATAL: inventory does not reconcile with the tracked path multiset\n')

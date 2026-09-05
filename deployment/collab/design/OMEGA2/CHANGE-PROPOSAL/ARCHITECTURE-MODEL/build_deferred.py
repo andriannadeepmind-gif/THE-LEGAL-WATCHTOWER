@@ -35,10 +35,41 @@ def read_source(fn):
         print('DEFERRED-IMPORT LEDGER: FAIL (a declared migration source could not be read)')
         sys.exit(5)
 
-# The exact migration-source universe (v1.6-v1.8 registries + schemas). V1.5 is a superseded ancestor: enumerated
-# too so nothing is silently omitted. build_model.py migrates FROM these files.
-SOURCES=['SUBSYSTEM-REGISTRY.sexp','INTERFACE-AND-SCHEMA-REGISTRY.sexp',
-         'V1.5-SCHEMAS.sexp','V1.6-SCHEMAS.sexp','V1.7-SCHEMAS.sexp','V1.8-SCHEMAS.sexp']
+# The migration-source universe is DERIVED, not listed (Review-2 N-6). Before this pass it was six literal
+# filenames here, while build_inventory.py independently classified any CHANGE-PROPOSAL/*-SCHEMAS.sexp as
+# CANONICAL_MODEL_INPUT — two seats for one concept, and they disagreed: a new V1.9-SCHEMAS.sexp was recorded by
+# the inventory as a migration input and was still invisible to a ledger that reported "exact-universe".
+# There is now ONE seat. A migration source is exactly a file the canonical inventory classifies
+# CANONICAL_MODEL_INPUT that is NOT one of the model's own modules, so a qualifying file cannot be added without
+# being adjudicated here, and this program fails closed if the inventory is absent or unreadable.
+AM_PREFIX='deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/'
+def migration_sources():
+    inv=os.path.join(HERE,'files-and-roles.sexp')
+    try:
+        forms=SR.read_forms_file(inv)
+    except SR.MissingSourceFile as e:
+        print('MISSING-SOURCE-FILE: %s'%e.path)
+        print('DEFERRED-IMPORT LEDGER: FAIL (the canonical inventory that defines the source universe is absent)')
+        sys.exit(5)
+    except SR.SexpError as e:
+        print('UNREADABLE-SOURCE-FILE: %s'%e)
+        print('DEFERRED-IMPORT LEDGER: FAIL (the canonical inventory could not be read)')
+        sys.exit(5)
+    out=[]
+    for f in forms:
+        if SR.head(f)!='fact' or len(f)<3 or str(f[1])!='file': continue
+        path=str(f[2]); role=SR.kv(f,'role')
+        if role is None or str(role)!='CANONICAL_MODEL_INPUT': continue
+        if path.startswith(AM_PREFIX): continue          # the model's own modules are not migration inputs
+        rel=os.path.relpath(os.path.join(REPO_ROOT,path), CP)
+        if os.sep in rel:
+            print('UNADJUDICATED-MIGRATION-SOURCE: %s is classified CANONICAL_MODEL_INPUT outside the '
+                  'change-proposal directory; the ledger cannot enumerate it'%path)
+            sys.exit(5)
+        out.append(rel)
+    return sorted(set(out))
+REPO_ROOT=os.path.abspath(os.path.join(HERE,'..','..','..','..','..','..'))
+SOURCES=None                                              # bound in main(); never a literal list
 
 # What THIS pass imported: (source-file, top-level form head) -> the model fact-type(s) it became.
 IMPORTED={
@@ -91,17 +122,21 @@ def classify(fn,head,count):
     stem=fn[:-5] if fn.endswith('.sexp') else fn   # id stem
     fid='%s__%s'%(stem,head)
     if (fn,head) in IMPORTED:
+        # imported detail now lives in the model, so the model is where it is authoritative
         return dict(fid=fid,fact_class=head,source_file=fn,source_count=count,status='IMPORTED',
-                    maps_to=IMPORTED[(fn,head)])
+                    authority='CANONICAL_IN_MODEL',maps_to=IMPORTED[(fn,head)])
     if head in METADATA:
         return dict(fid=fid,fact_class=head,source_file=fn,source_count=count,status='OUT_OF_MIGRATION_SCOPE',
+                    authority='AUTHORITATIVE_AT_SOURCE',
                     reason='version-metadata form, not a migratable data fact class')
     batch=BATCH.get(head)
     if batch is None:
         sys.stderr.write('FATAL: deferred source class with no finite batch: %s (%s)\n'%(head,fn)); sys.exit(2)
     ver='prior-version (may be superseded by v1.8)' if fn.startswith(('V1.5','V1.6','V1.7')) else 'current source'
+    # NOT YET IMPORTED, so NOT canonical here: the detail of this class stays authoritative at its declared
+    # source until its DDI batch is complete and independently reviewed (Review-2 N-7).
     return dict(fid=fid,fact_class=head,source_file=fn,source_count=count,status='DEFERRED_DATA_IMPORT',
-                batch=batch,reason='%s class enumerated, not imported in the initial structural pass; '
+                authority='AUTHORITATIVE_AT_SOURCE',batch=batch,reason='%s class enumerated, not imported in the initial structural pass; '
                 'scheduled for batch %s (%s)'%(ver,batch,BATCH_TITLE[batch]))
 
 def wq(v): return '"%s"'%str(v).replace('"','\\"')
@@ -110,7 +145,8 @@ def fact(row):
            ':source-file %s'%wq(row['source_file']),
            ':fact-class %s'%wq(row['fact_class']),
            ':source-count %d'%row['source_count'],
-           ':status %s'%row['status']]
+           ':status %s'%row['status'],
+           ':authority %s'%row['authority']]
     if 'batch' in row: parts.append(':batch %s'%row['batch'])
     if 'maps-to' in row or 'maps_to' in row: parts.append(':maps-to %s'%wq(row.get('maps_to',row.get('maps-to'))))
     if 'reason' in row: parts.append(':reason %s'%wq(row['reason']))
@@ -126,7 +162,22 @@ def build():
          ';;;; DEFERRED_DATA_IMPORT (enumerated + finite batch, never an open decision) | OUT_OF_MIGRATION_SCOPE.',
          ';;;; Uniform fact form: (fact source-class <id> :key value ...). No eval. Read with *read-eval* nil.','']
     for r in rows: out.append(fact(r))
-    open(os.path.join(HERE,'deferred-imports.sexp'),'w').write('\n'.join(out)+'\n')
+    # The typed promotion seat (Review-2 N-7). While ANY class is still authoritative at its source, global
+    # single-source-of-truth status is mechanically forbidden — the decision packet reads this, it does not assert it.
+    deferred_forms=sum(r['source_count'] for r in dfr)
+    out += ['', ';;;; Typed authority split. Imported classes are canonical in this model; every deferred class '
+                'remains',
+            ';;;; authoritative at its declared legacy source until its DDI batch is completed AND independently '
+                'reviewed.',
+            '(fact promotion PROMOTION-IMPORTED :scope IMPORTED_CLASSES_ONLY :state PERMITTED :reason %s)'
+            % wq('the %d imported source classes are fully represented as canonical model facts' % len(imp)),
+            '(fact promotion PROMOTION-GLOBAL :scope GLOBAL :state %s :reason %s)'
+            % ('FORBIDDEN_UNTIL_DDI_COMPLETE' if dfr else 'PERMITTED',
+               wq('%d source classes covering %d source forms are still authoritative at their declared legacy '
+                  'source; global single-source-of-truth status is withheld until DDI-1..DDI-4 are complete and '
+                  'independently reviewed' % (len(dfr), deferred_forms)))]
+    target=os.path.join(OUTDIR if OUTDIR else HERE,'deferred-imports.sexp')
+    open(target,'w',encoding='utf-8',newline='\n').write('\n'.join(out)+'\n')
     print('deferred-imports.sexp: source-classes=%d imported=%d deferred=%d out-of-scope=%d batches=%s'
           %(len(rows),len(imp),len(dfr),len(oos),','.join(sorted(set(r['batch'] for r in dfr)))))
 
@@ -148,8 +199,10 @@ def parse_ledger():
         if SR.head(f)!='fact' or len(f)<3 or str(f[1])!='source-class': continue
         sf=str(SR.kv(f,'source-file')); fc=str(SR.kv(f,'fact-class'))
         cnt=SR.kv(f,'source-count'); st=str(SR.kv(f,'status')); bt=SR.kv(f,'batch')
+        au=SR.kv(f,'authority')
         rows.append(((sf,fc),dict(count=int(cnt) if isinstance(cnt,SR.Int) else None,
-                                  status=st,batch=None if bt is None else str(bt))))
+                                  status=st,batch=None if bt is None else str(bt),
+                                  authority=None if au is None else str(au))))
     return rows
 
 def verify():
@@ -175,6 +228,10 @@ def verify():
             if r['batch'] not in valid_batches: print('DEFERRED-WITHOUT-BATCH: %s %s batch=%r'%(k[0],k[1],r['batch'])); ok=False
         elif r['status'] not in ('IMPORTED','OUT_OF_MIGRATION_SCOPE'):
             print('UNKNOWN-STATUS: %s %s status=%r'%(k[0],k[1],r['status'])); ok=False
+        want='CANONICAL_IN_MODEL' if r['status']=='IMPORTED' else 'AUTHORITATIVE_AT_SOURCE'
+        if r['authority']!=want:
+            print('AUTHORITY-MISMATCH: %s %s status=%s declares :authority %s, must be %s'
+                  %(k[0],k[1],r['status'],r['authority'],want)); ok=False
     # (d) every IMPORTED (file,class) in the ledger is one this pass actually imported (no over-claim)
     for k in sorted(ls):
         if led[k]['status']=='IMPORTED' and k not in IMPORTED: print('OVER-CLAIMED-IMPORT: %s %s'%k); ok=False
@@ -186,6 +243,16 @@ def verify():
               %(len(rows),len(ls),ndef)); sys.exit(0)
     print('DEFERRED-IMPORT LEDGER: FAIL'); sys.exit(3)
 
+OUTDIR=None
+CP=os.path.dirname(HERE)
 if __name__=='__main__':
-    if len(sys.argv)>1 and sys.argv[1]=='--verify': verify()
+    args=sys.argv[1:]
+    if '--out' in args:
+        i=args.index('--out'); OUTDIR=os.path.abspath(args[i+1]); del args[i:i+2]
+    SOURCES=migration_sources()
+    if not SOURCES:
+        print('NO-MIGRATION-SOURCES: the canonical inventory classifies no file CANONICAL_MODEL_INPUT outside '
+              'the model directory; the source universe would be empty, which is never a correct answer')
+        sys.exit(5)
+    if args and args[0]=='--verify': verify()
     else: build()

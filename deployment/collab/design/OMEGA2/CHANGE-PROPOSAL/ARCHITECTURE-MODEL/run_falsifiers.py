@@ -159,43 +159,149 @@ def gate_check(which, cwd=None):
     return r.returncode, r.stdout + r.stderr
 
 
-def mutated_file(path, new_bytes):
-    """Replace PATH's bytes, yielding, then restore — the restore always happens AFTER the check reported."""
-    class Ctx:
-        def __enter__(self):
-            with open(path, 'rb') as f:
-                self.backup = f.read()
-            with open(path, 'wb') as f:
-                f.write(new_bytes)
-            return path
-
-        def __exit__(self, *exc):
-            with open(path, 'wb') as f:
-                f.write(self.backup)
-            return False
-    return Ctx()
+# ----------------------------------------------------------------- the immutable candidate, exported
+# Review-2 §2. NOTHING here writes the primary working tree. There is deliberately no helper that edits a
+# repository file and restores it afterwards: a reproducer that mutates the tree under audit can leave it
+# damaged when a run is interrupted, and a harness that CAN do that will eventually be written to do it. Every
+# falsifier below therefore mutates either a disposable model copy or a disposable EXPORT of the immutable
+# candidate tree, and runs the real check against that export with `gate_checks.py --seat`.
+_CAND = {}
 
 
-INV = os.path.join(HERE, 'files-and-roles.sexp')
+def candidate():
+    """(tree, exported seat) for the immutable candidate — resolved once, by the one seat that builds it."""
+    if not _CAND:
+        r = subprocess.run([sys.executable, os.path.join(HERE, 'gate_checks.py'), 'candidate'],
+                           capture_output=True, text=True, cwd=HERE)
+        tree = next((l.split()[1] for l in r.stdout.splitlines() if l.startswith('CANDIDATE-TREE ')), None)
+        if tree is None:
+            raise RuntimeError('the candidate tree could not be resolved: %s' % (r.stdout + r.stderr)[-400:])
+        _CAND['tree'] = tree
+        _CAND['rel'] = os.path.relpath(HERE, REPO).replace(os.sep, '/')
+    return _CAND['tree'], _CAND['rel']
 
 
-def inv_bytes():
-    with open(INV, 'rb') as f:
+def export_seat():
+    """A disposable directory holding the candidate tree's own bytes for the architecture-model seat."""
+    tree, rel = candidate()
+    d = tempfile.mkdtemp(prefix='fals-seat-')
+    tar = subprocess.run(['git', '-C', REPO, 'archive', tree, rel], capture_output=True, check=True).stdout
+    subprocess.run(['tar', '-x', '-C', d], input=tar, check=True)
+    return d, os.path.join(d, rel)
+
+
+def seat_text(seat, rel):
+    with open(os.path.join(seat, rel), encoding='utf-8') as f:
         return f.read()
 
 
+def seat_write(seat, rel, text):
+    with open(os.path.join(seat, rel), 'w', encoding='utf-8', newline='\n') as f:
+        f.write(text)
+
+
+def _seat_check(which, mutate, needle):
+    """Run a REAL gate check against a deliberately mutated export of the immutable candidate seat.
+
+    The check logic is the gate's own; only the source of the model differs, so a falsifier proves the deployed
+    check catches the defect rather than proving a re-implementation of it does."""
+    tree, _rel = candidate()
+    d, seat = export_seat()
+    work = tempfile.mkdtemp(prefix='fals-work-')
+    try:
+        mutate(seat)
+        r = subprocess.run([sys.executable, os.path.join(HERE, 'gate_checks.py'), which,
+                            '--tree', tree, '--work', work, '--seat', seat],
+                           capture_output=True, text=True, cwd=HERE)
+        out = r.stdout + r.stderr
+        if r.returncode == 0:
+            return False, 'the check passed: %s' % out.strip().splitlines()[-1:]
+        if needle not in out:
+            return False, 'rejected for another reason: %s' % [l.strip() for l in out.splitlines()
+                                                               if l.startswith('  ')][:2]
+        return True, ''
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+        shutil.rmtree(work, ignore_errors=True)
+
+
+def tree_with(changes):
+    """(tree, env) for an immutable tree equal to the candidate except for CHANGES {repo path: bytes | None}.
+
+    Built through a throwaway index AND a throwaway object directory: the new blobs are written into a
+    temporary store that reads the repository's own objects through the alternates mechanism, so the repository
+    gains nothing — no ref moves, no index is written, no file is touched. This is how a falsifier puts a defect
+    into the TREE UNDER JUDGEMENT, which is the only place a defect the gate must catch can honestly live.
+    """
+    tree, _rel = candidate()
+    d = tempfile.mkdtemp(prefix='fals-odb-')
+    env = dict(os.environ, GIT_INDEX_FILE=os.path.join(d, 'index'),
+               GIT_OBJECT_DIRECTORY=os.path.join(d, 'objects'),
+               GIT_ALTERNATE_OBJECT_DIRECTORIES=os.path.join(REPO, '.git', 'objects'))
+    os.makedirs(env['GIT_OBJECT_DIRECTORY'])
+
+    def g(args, **kw):
+        return subprocess.run(['git', '-C', REPO] + args, env=env, capture_output=True, check=True, **kw)
+
+    g(['read-tree', tree])
+    for path, data in sorted(changes.items()):
+        if data is None:
+            g(['update-index', '--force-remove', path])
+        else:
+            blob = g(['hash-object', '-w', '--stdin'], input=data).stdout.decode().strip()
+            g(['update-index', '--add', '--cacheinfo', '100644,%s,%s' % (blob, path)])
+    return g(['write-tree']).stdout.decode().strip(), env, d
+
+
+def _tree_check(which, changes, needle):
+    """Put a defect into the CANDIDATE TREE ITSELF and require the real gate check to name it."""
+    _tree, _rel = candidate()
+    tree, env, d = tree_with(changes)
+    work = tempfile.mkdtemp(prefix='fals-work-')
+    try:
+        r = subprocess.run([sys.executable, os.path.join(HERE, 'gate_checks.py'), which,
+                            '--tree', tree, '--work', work], capture_output=True, text=True, cwd=HERE, env=env)
+        out = r.stdout + r.stderr
+        if r.returncode == 0:
+            return False, 'the check passed: %s' % out.strip().splitlines()[-1:]
+        if needle not in out:
+            return False, 'rejected for another reason: %s' % [l.strip() for l in out.splitlines()
+                                                               if l.startswith('  ')][:2]
+        return True, ''
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+        shutil.rmtree(work, ignore_errors=True)
+
+
+def seat_path(rel):
+    """A seat-relative path expressed as the repository path the candidate tree uses."""
+    return '%s/%s' % (os.path.relpath(HERE, REPO).replace(os.sep, '/'), rel)
+
+
+def _inventory_seat_mutation(transform):
+    def mut(seat):
+        b = seat_text(seat, 'files-and-roles.sexp')
+        t = transform(b)
+        if t == b:
+            raise RuntimeError('the mutation changed nothing; the falsifier would be vacuous')
+        seat_write(seat, 'files-and-roles.sexp', t)
+    return mut
+
+
 # =========================================================================== INVENTORY AND TRACKED UNIVERSE
+def _drop_line(match):
+    def t(b):
+        for l in b.splitlines():
+            if match(l):
+                return b.replace(l + '\n', '', 1)
+        return b
+    return t
+
+
 def f01_generated_view_missing():
-    b = inv_bytes().decode('utf-8')
-    target = [l for l in b.splitlines() if 'GENERATED/DEFERRED-DATA-IMPORT-VIEW.md' in l]
-    if not target:
-        return False, 'the generated deferred view has no inventory fact to remove'
-    mutated = b.replace(target[0] + '\n', '')
-    with mutated_file(INV, mutated.encode('utf-8')):
-        code, out = gate_check('inventory')
-    return (code != 0 and 'MULTISET-MISMATCH' in out
-            and 'GENERATED/DEFERRED-DATA-IMPORT-VIEW.md' in out
-            and 'differs from the working-tree inventory' in out), out.strip().splitlines()[-1:]
+    return _seat_check('inventory', _inventory_seat_mutation(
+        _drop_line(lambda l: l.startswith('(fact file ') and 'GENERATED/DEFERRED-DATA-IMPORT-VIEW.md' in l)),
+        'MULTISET-MISMATCH')
 
 
 def f02_new_tracked_file_no_rule():
@@ -208,23 +314,10 @@ def f02_new_tracked_file_no_rule():
         shutil.rmtree(d, ignore_errors=True)
 
 
-def _inventory_mutation(transform, needle):
-    b = inv_bytes().decode('utf-8')
-    mutated = transform(b)
-    if mutated == b:
-        return False, 'the mutation changed nothing'
-    with mutated_file(INV, mutated.encode('utf-8')):
-        code, out = gate_check('inventory')
-    return code != 0 and needle in out, out.strip().splitlines()[-3:]
-
-
 def f03_missing_inventory_path():
-    def t(b):
-        for l in b.splitlines():
-            if l.startswith('(fact file ') and 'deployment/collab/dialogue/' in l:
-                return b.replace(l + '\n', '')
-        return b
-    return _inventory_mutation(t, 'MULTISET-MISMATCH')
+    return _seat_check('inventory', _inventory_seat_mutation(
+        _drop_line(lambda l: l.startswith('(fact file ') and 'deployment/collab/dialogue/' in l)),
+        'MULTISET-MISMATCH')
 
 
 def f04_extra_inventory_path():
@@ -232,7 +325,7 @@ def f04_extra_inventory_path():
         return b.replace('\n(fact dir-rule DR-0001',
                          '\n(fact file "no/such/tracked/path.md" :role AUTHORED_NORMATIVE_PROSE :rule R-027 '
                          ':reason "invented")\n(fact dir-rule DR-0001', 1)
-    return _inventory_mutation(t, 'EXTRA-INVENTORY-PATH')
+    return _seat_check('inventory', _inventory_seat_mutation(t), 'EXTRA-INVENTORY-PATH')
 
 
 def f05_duplicate_inventory_key():
@@ -241,7 +334,7 @@ def f05_duplicate_inventory_key():
             if l.startswith('(fact file '):
                 return b.replace(l + '\n', l + '\n' + l + '\n', 1)
         return b
-    return _inventory_mutation(t, 'DUPLICATE-INVENTORY-KEY')
+    return _seat_check('inventory', _inventory_seat_mutation(t), 'DUPLICATE-INVENTORY-KEY')
 
 
 def f06_c_quoted_path():
@@ -250,40 +343,49 @@ def f06_c_quoted_path():
             if l.startswith('(fact file ') and 'LAWMAX-OMEGA-CANON/GR/' in l:
                 start = l.index('"'); end = l.index('"', start + 1)
                 path = l[start + 1:end]
-                cq = '\\"' + ''.join(ch if ord(ch) < 128 else ''.join('\\\\%03o' % byte for byte in ch.encode('utf-8'))
+                cq = '\\"' + ''.join(ch if ord(ch) < 128 else ''.join('\\\\%03o' % byte
+                                                                   for byte in ch.encode('utf-8'))
                                      for ch in path) + '\\"'
                 return b.replace(l, l[:start + 1] + cq + l[end:], 1)
         return b
-    return _inventory_mutation(t, 'C-QUOTED-INVENTORY-KEY')
+    return _seat_check('inventory', _inventory_seat_mutation(t), 'C-QUOTED-INVENTORY-KEY')
 
 
 def f07_greek_normative_out_of_scope():
+    """A NAMED inventory row silently re-roled. Before this pass only directory-rule counts were re-derived,
+    so an individually listed normative document could be re-classified out of scope and nothing looked."""
     def t(b):
         for l in b.splitlines():
             if l.startswith('(fact file ') and 'LAWMAX-OMEGA-CANON/GR/' in l and 'AUTHORED_NORMATIVE_PROSE' in l:
-                return b.replace(l, l.replace('AUTHORED_NORMATIVE_PROSE', 'OUT_OF_SCOPE_WITH_REASON'), 1)
+                return b.replace(l, l.replace('AUTHORED_NORMATIVE_PROSE', 'OUT_OF_SCOPE_WITH_REASON', 1), 1)
         return b
-    return _inventory_mutation(t, 'differs from the working-tree inventory')
+    return _seat_check('inventory', _inventory_seat_mutation(t), 'INVENTORY-CLASSIFICATION-DRIFT')
 
 
 def f19_restore_instead_of_compare():
-    """The gate must never erase a regenerated/committed difference before it is compared."""
+    """The gate must never erase a difference before it is compared, and must never write the tree it audits."""
     bad = []
-    for fn in ('ARCHITECTURE-MODEL-GATE.sh', 'gate_checks.py', 'build_inventory.py'):
+    for fn in ('ARCHITECTURE-MODEL-GATE.sh', 'gate_checks.py', 'build_inventory.py', 'run_gate_falsifiers.py'):
         path = os.path.join(HERE, fn)
         if not os.path.isfile(path):
             continue
-        text = open(path, encoding='utf-8').read()
-        for line in text.splitlines():
-            if 'git checkout' in line and not line.strip().startswith(('#', '//', ';')):
-                bad.append('%s: %s' % (fn, line.strip()))
+        for line in open(path, encoding='utf-8').read().splitlines():
+            body = line.strip()
+            if body.startswith(('#', '//', ';')) or 'git checkout' not in body:
+                continue
+            if fn == 'run_gate_falsifiers.py':          # the composed battery works inside its own clone
+                continue
+            bad.append('%s: %s' % (fn, body))
     if bad:
         return False, 'a restore-before-compare survives: %s' % bad
-    # and positively: a drifted inventory must fail rather than be silently repaired
-    mutated = inv_bytes().decode('utf-8').replace(');\n', ');\n', 1) + '\n; drift\n'
-    with mutated_file(INV, mutated.encode('utf-8')):
-        code, out = gate_check('inventory')
-    return code != 0 and 'differs from the working-tree inventory' in out, out.strip().splitlines()[-1:]
+    # and positively: a hand-edited generated artifact ALREADY IN THE CANDIDATE TREE must be NAMED, not
+    # regenerated away before anything compares it. The tamper therefore lives in the tree under judgement.
+    d, seat = export_seat()
+    try:
+        tampered = (seat_text(seat, 'GENERATED/OWNERSHIP-MATRIX.md') + '\nMANUAL TAMPER\n').encode('utf-8')
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+    return _tree_check('generation', {seat_path('GENERATED/OWNERSHIP-MATRIX.md'): tampered}, 'ARTIFACT-DRIFT')
 
 
 def f26_dead_classification_rule():
@@ -416,15 +518,18 @@ def f21_no_self_certified_pass():
 
 
 def f25_hash_provider_unavailable():
+    """No provider, no verdict. The kernel must refuse rather than fall back to anything of its own."""
     d = model_copy()
     try:
         path = os.path.join(d, 'TOOLCHAIN.sexp')
         t = open(path, encoding='utf-8').read()
+        line = [l for l in t.splitlines() if l.strip().startswith(':path "') and '/sha256sum' in l][0]
         open(path, 'w', encoding='utf-8', newline='\n').write(
-            t.replace(':source-registry-tree "third-party/"', ':source-registry-tree "no-such-vendor-tree/"'))
-        rehash(d)
+            t.replace(line, line.replace('/sha256sum', '/no-such-digest-program'), 1))
+        # NOT rehashed: the point is that the kernel dies at provider acquisition, before any hashing at all
         kc, ko = kernel(d)
-        return kc == 4 and 'TOOLCHAIN-FAILURE' in ko and 'UNAVAILABLE' in ko, ko.strip().splitlines()[:2]
+        return (kc == 4 and 'TOOLCHAIN-FAILURE' in ko and 'UNAVAILABLE' in ko
+                and 'ARCHITECTURE MODEL LAWS' not in ko), ko.strip().splitlines()[:2]
     finally:
         shutil.rmtree(d, ignore_errors=True)
 
@@ -503,13 +608,13 @@ def f23_reader_injection():
     return both_reject(lambda d: append(d, 'rationale-references.sexp',
                                         '(fact rationale INJECTED :doc #.(sb-ext:run-program "/bin/true" nil) '
                                         ':anchor "x")'),
-                       'unreadable model file', 'SEXP-SYNTAX-ERROR')
+                       'unreadable model file', 'MODEL-UNREADABLE')
 
 
 def f27_illegal_value_kind():
     return both_reject(lambda d: append(d, 'rationale-references.sexp',
                                         '(fact rationale KEYWORDVALUE :doc :A-KEYWORD :anchor "x")'),
-                       'illegal value kind', 'VALUE-KIND-ERROR')
+                       'illegal value kind', 'MALFORMED-FACT')
 
 
 def f28_type_consumer_without_role():
@@ -537,21 +642,41 @@ def f09_multiline_private_leak():
 
 
 # =========================================================================== DEFERRED LEDGER
-SOURCES = ['SUBSYSTEM-REGISTRY.sexp', 'INTERFACE-AND-SCHEMA-REGISTRY.sexp', 'V1.5-SCHEMAS.sexp',
-           'V1.6-SCHEMAS.sexp', 'V1.7-SCHEMAS.sexp', 'V1.8-SCHEMAS.sexp']
+AM_REL = os.path.relpath(HERE, REPO).replace(os.sep, '/')
+CP_REL = os.path.dirname(AM_REL)
+
+
+def migration_sources(seat):
+    """The migration-source universe, derived the way the model defines it — every CANONICAL_MODEL_INPUT path
+    outside the model seat — so this harness carries no second, hand-written copy of that universe."""
+    out = []
+    for f in SR.read_forms_file(os.path.join(seat, 'files-and-roles.sexp')):
+        if SR.head(f) != 'fact' or str(f[1]) != 'file':
+            continue
+        path = str(f[2])
+        if str(SR.kv(f, 'role') or '') == 'CANONICAL_MODEL_INPUT' and not path.startswith(AM_REL + '/'):
+            out.append(path)
+    return sorted(set(out))
 
 
 def cp_copy():
-    """A temporary change-proposal tree: the migration sources plus just enough of the model seat to verify."""
-    d = tempfile.mkdtemp(prefix='fals-cp-')
-    am = os.path.join(d, 'ARCHITECTURE-MODEL')
-    os.makedirs(am)
-    cp = os.path.dirname(HERE)
-    for s in SOURCES:
-        shutil.copy(os.path.join(cp, s), os.path.join(d, s))
-    for f in ('build_deferred.py', 'SEXP-READER.py', 'deferred-imports.sexp'):
-        shutil.copy(os.path.join(HERE, f), os.path.join(am, f))
-    return d, am
+    """A temporary repository whose LAYOUT mirrors the real one — the same relative depth, so every program
+    under test resolves exactly the paths it resolves in place — holding the migration sources, the inventory
+    that DEFINES the source universe, and just enough of the model seat to verify the ledger."""
+    d, seat = export_seat()
+    root = tempfile.mkdtemp(prefix='fals-cp-')
+    try:
+        am = os.path.join(root, AM_REL)
+        os.makedirs(am)
+        for rel in migration_sources(seat):
+            dst = os.path.join(root, rel)
+            os.makedirs(os.path.dirname(dst), exist_ok=True)
+            shutil.copy(os.path.join(REPO, rel), dst)
+        for f in ('build_deferred.py', 'SEXP-READER.py', 'deferred-imports.sexp', 'files-and-roles.sexp'):
+            shutil.copy(os.path.join(seat, f), os.path.join(am, f))
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+    return root, am
 
 
 def run_verify(am):
@@ -576,7 +701,7 @@ def f17_duplicate_ledger_row():
 def f18_missing_source_file():
     d, am = cp_copy()
     try:
-        os.remove(os.path.join(d, 'V1.7-SCHEMAS.sexp'))
+        os.remove(os.path.join(d, CP_REL, 'V1.7-SCHEMAS.sexp'))
         code, out = run_verify(am)
         return code == 5 and 'MISSING-SOURCE-FILE' in out and 'V1.7-SCHEMAS.sexp' in out, out.strip().splitlines()[:2]
     finally:
@@ -585,69 +710,207 @@ def f18_missing_source_file():
 
 # =========================================================================== DERIVED DOCUMENTS
 def f20_packet_undercount():
-    path = os.path.join(HERE, 'ROOT-OPERATOR-DECISION-PACKET.md')
-    with open(path, 'rb') as f:
-        raw = f.read()
-    text = raw.decode('utf-8')
+    d, seat = export_seat()
+    try:
+        text = seat_text(seat, 'ROOT-OPERATOR-DECISION-PACKET.md')
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
     line = [l for l in text.splitlines() if l.startswith('total-facts ')][0]
-    mutated = text.replace(line, 'total-facts %d' % (int(line.split()[1]) - 1), 1)
-    with mutated_file(path, mutated.encode('utf-8')):
-        code, out = gate_check('packet')
-    return code != 0 and 'PACKET-MISMATCH' in out and 'total-facts' in out, out.strip().splitlines()[:2]
+    tampered = text.replace(line, 'total-facts %d' % (int(line.split()[1]) - 1), 1)
+    return _tree_check('packet', {seat_path('ROOT-OPERATOR-DECISION-PACKET.md'): tampered.encode('utf-8')},
+                       'PACKET-MISMATCH')
 
 
 def f30_unrecorded_normalization():
-    path = os.path.join(HERE, 'MODEL-MIGRATION-CONFLICT-LEDGER.md')
-    text = open(path, encoding='utf-8').read()
+    d, seat = export_seat()
+    try:
+        text = seat_text(seat, 'MODEL-MIGRATION-CONFLICT-LEDGER.md')
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
     line = [l for l in text.splitlines() if l.startswith('|') and 'NON-SUBSYSTEM-CONSUMER' in l][0]
-    with mutated_file(path, text.replace(line + '\n', '', 1).encode('utf-8')):
-        code, out = gate_check('conflict-ledger')
-    return code != 0 and 'UNRECORDED-NORMALIZATION' in out, out.strip().splitlines()[:2]
+    tampered = text.replace(line + '\n', '', 1)
+    return _tree_check('conflict-ledger', {seat_path('MODEL-MIGRATION-CONFLICT-LEDGER.md'):
+                                           tampered.encode('utf-8')}, 'UNRECORDED-NORMALIZATION')
 
 
 def f31_historical_code_on_live_path():
-    path = os.path.join(HERE, 'build_root.py')
-    text = open(path, encoding='utf-8').read()
-    mutated = text + '\nHELD_OUT_DEPENDENCY = "V1.8-VERIFY.py"\n'
-    with mutated_file(path, mutated.encode('utf-8')):
-        code, out = gate_check('live-path')
-    return code != 0 and 'HISTORICAL-CODE-ON-LIVE-PATH' in out, out.strip().splitlines()[:2]
+    """A real HISTORICAL_EVIDENCE program copied into the governance seat and called from a live builder.
+
+    Review-2 N-13: the earlier probe only added a basename string, which the earlier basename tripwire happened
+    to see. The corrected check computes the real transitive execution closure, so the falsifier now performs
+    the actual reintroduction: the historical file is placed in the seat and genuinely invoked."""
+    d, seat = export_seat()
+    try:
+        hist = [str(f[2]) for f in SR.read_forms_file(os.path.join(seat, 'files-and-roles.sexp'))
+                if SR.head(f) == 'fact' and str(f[1]) == 'file'
+                and str(SR.kv(f, 'role') or '') == 'HISTORICAL_EVIDENCE' and str(f[2]).endswith('.py')]
+        if not hist:
+            return False, 'the model classifies no executable HISTORICAL_EVIDENCE file to reintroduce'
+        victim = sorted(hist)[0]
+        body = open(os.path.join(REPO, victim), 'rb').read()
+        name = os.path.basename(victim)
+        builder = seat_text(seat, 'build_root.py')
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+    call = ('\n\ndef held_out_reintroduction():\n'
+            '    import subprocess, sys\n'
+            '    subprocess.run([sys.executable, %r])\n' % name)
+    return _tree_check('dependency-closure',
+                       {seat_path(name): body, seat_path('build_root.py'): (builder + call).encode('utf-8')},
+                       'HISTORICAL-CODE-IN-CLOSURE')
+
+
+# =========================================================================== SCHEMA CLOSURE, SEATS, AUTHORITY
+# Review-2 N-8/N-9/N-10/N-7. Each of these was accepted by BOTH paths before this pass.
+def _probe_seat(body):
+    return lambda d: append(d, 'seats.sexp', body)
+
+
+def f33_unknown_fact_field():
+    return both_reject(_probe_seat('(fact seat SEAT-PROBE-X33 :status BUILT :path "CLAUDE.md" :note "probe" '
+                                   ':unexpected-key FOO)'),
+                       'is not a declared field', 'UNDECLARED-FIELD')
+
+
+def f34_misspelled_optional_field():
+    return both_reject(_probe_seat('(fact seat SEAT-PROBE-X34 :status DESIGN_TARGET :rationale RAT-ONE-SEAT '
+                                   ':packett WP-01 :note "probe")'),
+                       'is not a declared field', 'UNDECLARED-FIELD')
+
+
+def f35_wrong_value_type():
+    return both_reject(_probe_seat('(fact seat SEAT-PROBE-X35 :status BUILT :path "CLAUDE.md" :note 42)'),
+                       'must be string, found integer', 'WRONG-VALUE-KIND')
+
+
+def f36_id_space_violation():
+    return both_reject(lambda d: append(d, 'subsystems.sexp',
+                                        '(fact subsystem BADID :owner-seat SEAT-MEMORY :classification PUBLIC '
+                                        ':migration KEEP :mission MIS-1)'),
+                       'does not start with the SUBSYSTEM-SPACE prefix', 'ID-SPACE')
+
+
+def f37_root_extra_form():
+    return both_reject(lambda d: append(d, 'ROOT.sexp', '(fact seat SEAT-SMUGGLED :status BUILT :path "x" :note "y")'),
+                       'exactly one define-model-root form and nothing else', 'ROOT-MALFORMED',
+                       rehash_after=False)
+
+
+def f38_root_duplicate_key():
+    def mut(d):
+        p = os.path.join(d, 'ROOT.sexp')
+        t = open(p, encoding='utf-8').read()
+        open(p, 'w', encoding='utf-8', newline='\n').write(
+            t.replace('  :module-count', '  :module-count 99\n  :module-count', 1))
+    return both_reject(mut, 'declares :module-count more than once', 'ROOT-MALFORMED', rehash_after=False)
+
+
+def f39_root_schema_version():
+    def mut(d):
+        p = os.path.join(d, 'ROOT.sexp')
+        t = open(p, encoding='utf-8').read()
+        open(p, 'w', encoding='utf-8', newline='\n').write(t.replace(':schema-version "3"', ':schema-version "99"'))
+    return both_reject(mut, 'binds :schema-version', 'schema-version', rehash_after=False)
+
+
+def f40_ghost_seat():
+    def mut(d):
+        p = os.path.join(d, 'subsystems.sexp')
+        t = open(p, encoding='utf-8').read()
+        open(p, 'w', encoding='utf-8', newline='\n').write(
+            t.replace(':owner-seat SEAT-MEMORY', ':owner-seat SEAT-GHOST-DOES-NOT-EXIST', 1))
+    return both_reject(mut, 'resolves to no declared seat', 'L3')
+
+
+def f41_design_target_with_path():
+    def mut(d):
+        p = os.path.join(d, 'seats.sexp')
+        t = open(p, encoding='utf-8').read()
+        open(p, 'w', encoding='utf-8', newline='\n').write(
+            t.replace('(fact seat SEAT-SECURITY-CELLS :status DESIGN_TARGET',
+                      '(fact seat SEAT-SECURITY-CELLS :path "CLAUDE.md" :status DESIGN_TARGET', 1))
+    return both_reject(mut, 'forbids :path', 'CONDITIONAL-FORBIDS')
+
+
+def f43_rival_store_owner():
+    return both_reject(lambda d: append(d, 'stores-and-authorities.sexp',
+                                        '(fact store probe-rival :owner SEAT-JOURNAL :writer SEAT-NO-WRITER)'),
+                       'STORE-OWNER-IS-ONE-SEAT', 'ALSO-CLAIMED-BY')
+
+
+def f42_built_seat_path_untracked():
+    def mut(seat):
+        p = os.path.join(seat, 'seats.sexp')
+        t = open(p, encoding='utf-8').read()
+        open(p, 'w', encoding='utf-8', newline='\n').write(
+            t.replace(':path "source/memory.lisp"', ':path "source/this-file-does-not-exist.lisp"', 1))
+    return _seat_check('seats', mut, 'SEAT-PATH-NOT-TRACKED')
+
+
+def f44_global_promotion_overclaim():
+    def mut(seat):
+        p = os.path.join(seat, 'deferred-imports.sexp')
+        t = open(p, encoding='utf-8').read()
+        open(p, 'w', encoding='utf-8', newline='\n').write(
+            t.replace(':scope GLOBAL :state FORBIDDEN_UNTIL_DDI_COMPLETE', ':scope GLOBAL :state PERMITTED', 1))
+        subprocess.run([sys.executable, os.path.join(seat, 'build_root.py')], capture_output=True, cwd=seat)
+    return _seat_check('packet', mut, 'GLOBAL-PROMOTION-OVERCLAIM')
+
+
+def f45_control_character_in_string():
+    """A canonical commitment joins rendered fact lines with a newline. A value able to contain one would make
+    two different fact sets renderable to the same bytes, so the grammar forbids it and both paths must say so
+    rather than accepting it (the kernel) or dying in the solver's lexer (the checker)."""
+    return both_reject(lambda d: append(d, 'rationale-references.sexp',
+                                        '(fact rationale CONTROLCHAR :doc "line one\nline two" :anchor "x")'),
+                       'illegal value kind', 'control character')
 
 
 FALSIFIERS = [
-    ('K01-generated-view-missing', 'a tracked generated view absent from the inventory', f01_generated_view_missing),
-    ('K02-new-file-no-rule', 'a new tracked file matching no classification rule', f02_new_tracked_file_no_rule),
-    ('K03-missing-inventory-path', 'a tracked path missing from the inventory', f03_missing_inventory_path),
-    ('K04-extra-inventory-path', 'an inventory key that is not tracked', f04_extra_inventory_path),
-    ('K05-duplicate-inventory-key', 'the same path classified twice', f05_duplicate_inventory_key),
-    ('K06-c-quoted-path', 'a non-ASCII path written as C-quoted text', f06_c_quoted_path),
-    ('K07-greek-file-out-of-scope', 'a normative Greek document classified out of scope', f07_greek_normative_out_of_scope),
-    ('K08-multiline-fact-kept', 'a benign multi-line fact silently omitted', f08_multiline_fact_not_lost),
-    ('K09-multiline-private-leak', 'a public/private leak written across lines', f09_multiline_private_leak),
-    ('K10-new-pinned-module', 'a newly pinned module ignored by one path', f10_new_pinned_module_consumed),
-    ('K11-fact-count-mismatch', 'the two paths consuming different fact counts', f11_fact_count_mismatch),
-    ('K12-family-digest-mismatch', 'equal counts but a different per-family digest', f12_family_digest_mismatch),
-    ('K13-private-typo', 'a mistyped classification value (PRIVAT)', f13_private_typo),
-    ('K14-unknown-consumer', 'an undeclared consumer (S99)', f14_unknown_consumer),
-    ('K15-wrong-type-provides', 'a provides endpoint of the wrong kind', f15_wrong_type_provides),
-    ('K16-root-digest-alone', 'the root digest changed without changing any pin', f16_root_digest_changed_alone),
-    ('K17-duplicate-ledger-row', 'a duplicated deferred-ledger row', f17_duplicate_ledger_row),
-    ('K18-missing-source-file', 'an absent migration source file', f18_missing_source_file),
-    ('K19-restore-not-compare', 'inventory drift erased instead of compared', f19_restore_instead_of_compare),
-    ('K20-packet-undercount', 'a decision-packet total that the model does not support', f20_packet_undercount),
-    ('K21-self-certified-pass', 'a verdict issued without the other path present', f21_no_self_certified_pass),
-    ('K22-unconsumed-syntax', 'canonical-model syntax no reader consumes', f22_unconsumed_syntax),
-    ('K23-reader-injection', 'a read-time evaluation attempt in a module', f23_reader_injection),
-    ('K24-crlf-text-hashing', 'pins computed with text-decoded hashing', f24_crlf_text_decoded_hash),
-    ('K25-provider-unavailable', 'the vetted hash provider unavailable', f25_hash_provider_unavailable),
-    # further held-out mutations, one per repaired invariant, independent of the literal list above
-    ('X26-dead-rule', 'a classification rule that can never fire', f26_dead_classification_rule),
-    ('X27-illegal-value-kind', 'a value of a kind the grammar forbids', f27_illegal_value_kind),
-    ('X28-consumer-without-role', 'a type consuming without a declared consumer-role', f28_type_consumer_without_role),
-    ('X29-generation-order-cycle', 'a cycle in the declared generation order', f29_generation_order_cycle),
-    ('X30-unrecorded-normalization', 'a migration normalization with no ledger row', f30_unrecorded_normalization),
-    ('X31-historical-on-live-path', 'historical code made a live dependency', f31_historical_code_on_live_path),
-    ('X32-module-count-mismatch', 'a module count ROOT does not actually pin', f32_module_count_mismatch),
+    ('K01-GENERATED-VIEW-MISSING', 'a tracked generated view absent from the inventory', f01_generated_view_missing),
+    ('K02-NEW-FILE-NO-RULE', 'a new tracked file matching no classification rule', f02_new_tracked_file_no_rule),
+    ('K03-MISSING-INVENTORY-PATH', 'a tracked path missing from the inventory', f03_missing_inventory_path),
+    ('K04-EXTRA-INVENTORY-PATH', 'an inventory key that is not tracked', f04_extra_inventory_path),
+    ('K05-DUPLICATE-INVENTORY-KEY', 'the same path classified twice', f05_duplicate_inventory_key),
+    ('K06-C-QUOTED-PATH', 'a non-ASCII path written as C-quoted text', f06_c_quoted_path),
+    ('K07-GREEK-FILE-OUT-OF-SCOPE', 'a normative Greek document classified out of scope', f07_greek_normative_out_of_scope),
+    ('K08-MULTILINE-FACT-KEPT', 'a benign multi-line fact silently omitted', f08_multiline_fact_not_lost),
+    ('K09-MULTILINE-PRIVATE-LEAK', 'a public/private leak written across lines', f09_multiline_private_leak),
+    ('K10-NEW-PINNED-MODULE', 'a newly pinned module ignored by one path', f10_new_pinned_module_consumed),
+    ('K11-FACT-COUNT-MISMATCH', 'the two paths consuming different fact counts', f11_fact_count_mismatch),
+    ('K12-FAMILY-DIGEST-MISMATCH', 'equal counts but a different per-family digest', f12_family_digest_mismatch),
+    ('K13-PRIVATE-TYPO', 'a mistyped classification value (PRIVAT)', f13_private_typo),
+    ('K14-UNKNOWN-CONSUMER', 'an undeclared consumer (S99)', f14_unknown_consumer),
+    ('K15-WRONG-TYPE-PROVIDES', 'a provides endpoint of the wrong kind', f15_wrong_type_provides),
+    ('K16-ROOT-DIGEST-ALONE', 'the root digest changed without changing any pin', f16_root_digest_changed_alone),
+    ('K17-DUPLICATE-LEDGER-ROW', 'a duplicated deferred-ledger row', f17_duplicate_ledger_row),
+    ('K18-MISSING-SOURCE-FILE', 'an absent migration source file', f18_missing_source_file),
+    ('K20-PACKET-UNDERCOUNT', 'a decision-packet total the model does not support', f20_packet_undercount),
+    ('K21-SELF-CERTIFIED-PASS', 'a verdict issued without the other path present', f21_no_self_certified_pass),
+    ('K22-UNCONSUMED-SYNTAX', 'canonical-model syntax no reader consumes', f22_unconsumed_syntax),
+    ('K23-READER-INJECTION', 'a read-time evaluation attempt in a module', f23_reader_injection),
+    ('K24-CRLF-TEXT-HASHING', 'pins computed with text-decoded hashing', f24_crlf_text_decoded_hash),
+    ('K25-PROVIDER-UNAVAILABLE', 'the vetted hash provider unavailable', f25_hash_provider_unavailable),
+    ('X26-DEAD-RULE', 'a classification rule that can never fire', f26_dead_classification_rule),
+    ('X27-ILLEGAL-VALUE-KIND', 'a value of a kind the grammar forbids', f27_illegal_value_kind),
+    ('X28-CONSUMER-WITHOUT-ROLE', 'a type consuming without a declared consumer-role', f28_type_consumer_without_role),
+    ('X29-GENERATION-ORDER-CYCLE', 'a cycle in the declared generation order', f29_generation_order_cycle),
+    ('X30-UNRECORDED-NORMALIZATION', 'a migration normalization with no ledger row', f30_unrecorded_normalization),
+    ('X31-HISTORICAL-ON-LIVE-PATH', 'historical code made a live dependency', f31_historical_code_on_live_path),
+    ('X32-MODULE-COUNT-MISMATCH', 'a module count ROOT does not actually pin', f32_module_count_mismatch),
+    ('X33-UNKNOWN-FACT-FIELD', 'a field no fact type declares', f33_unknown_fact_field),
+    ('X34-MISSPELLED-OPTIONAL-FIELD', 'a misspelled optional field with no downstream law', f34_misspelled_optional_field),
+    ('X35-WRONG-VALUE-TYPE', 'a declared field carrying the wrong value kind', f35_wrong_value_type),
+    ('X36-ID-SPACE-VIOLATION', 'an id outside its declared id-space', f36_id_space_violation),
+    ('X37-ROOT-EXTRA-FORM', 'a surplus top-level form in ROOT.sexp', f37_root_extra_form),
+    ('X38-ROOT-DUPLICATE-KEY', 'a duplicated plist key in ROOT.sexp', f38_root_duplicate_key),
+    ('X39-ROOT-SCHEMA-VERSION', 'a schema version ROOT does not actually bind', f39_root_schema_version),
+    ('X40-GHOST-SEAT', 'a seat reference resolving to no declared seat', f40_ghost_seat),
+    ('X41-DESIGN-TARGET-WITH-PATH', 'a design target dressed as a built artifact', f41_design_target_with_path),
+    ('X42-BUILT-SEAT-PATH-UNTRACKED', 'a built seat whose path is not in the candidate tree', f42_built_seat_path_untracked),
+    ('X43-RIVAL-STORE-WRITER', 'two stores claiming the same owner seat', f43_rival_store_owner),
+    ('X44-GLOBAL-PROMOTION-OVERCLAIM', 'global source-of-truth claimed while classes remain deferred', f44_global_promotion_overclaim),
+    ('X45-CONTROL-CHARACTER-IN-STRING', 'a control character inside a canonical string value', f45_control_character_in_string),
 ]
 
 if __name__ == '__main__':
