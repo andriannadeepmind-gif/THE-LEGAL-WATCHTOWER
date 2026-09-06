@@ -2,11 +2,13 @@
 """SEXP-READER.py — the ONE classified Python reader seat for the s-expression grammars of this repository.
 
 Declared users (there is no second Python s-expression reader in the architecture-governance seat):
-    CHECKER/independent_check.py   canonical model modules + ROOT.sexp + MODEL-SCHEMA.sexp
+    gate_checks.py                 canonical model modules + ROOT.sexp + the AMC2 reference implementation
     generate_views.py              canonical model modules + ROOT.sexp
     build_decision_packet.py       canonical model modules + ROOT.sexp
-    build_model.py                 v1.6-v1.8 migration-source registries
     build_deferred.py              v1.6-v1.8 migration-source registries + the emitted ledger
+    run_corpus.py                  the declared verification corpus and its mutations
+CHECKER/independent_check.py deliberately does NOT appear above: the independent path carries its own reader, so
+that the two verification paths share a written specification and no code.
 
 Properties this seat guarantees:
   * BOUNDED GRAMMAR, TWO DECLARED PROFILES — lists, bare symbols, integers, keywords and strings; `;` line
@@ -32,7 +34,7 @@ A bare symbol must match [A-Za-z][A-Za-z0-9_.+/-]* so that no Common Lisp reader
 and an integer must match [+-]?[0-9]+. Keywords, floats, ratios, nested lists and NIL are not permitted values.
 This is what lets two implementations in two languages commit to bit-identical fact digests.
 """
-import os
+import hashlib, os
 
 MAX_BYTES = 8_000_000
 MAX_DEPTH = 40
@@ -281,8 +283,138 @@ def canonical_value(v, source='<text>', what='value'):
                          'symbol)' % type(v).__name__)
 
 
-def canonical_fact_render(ftype, fid, pairs, source='<text>'):
-    """TYPE|ID|KEY=VALUE|... with keys upper-cased and the KEY=VALUE parts sorted. Identical in both paths."""
+class UncontainedPath(SexpError):
+    """A model-declared output path that does not name a location strictly inside its output root."""
+
+    def __init__(self, what, reason):
+        self.what, self.reason = what, reason
+        super().__init__('UNCONTAINED-PATH: %s %s' % (what, reason))
+
+
+def contained_path(root, rel, what='path'):
+    """The absolute location ROOT/REL, or a typed refusal — the ONE place a model-declared write target is
+    resolved (Review-3 R3-6).
+
+    A `:path` is model data, and model data was able to name `/tmp/h-probe/PWNED.md`: `os.path.join` lets an
+    absolute component win outright, and the generator wrote 1231 bytes outside its output root before anything
+    compared anything. Rejecting the reported example would not have removed the class, so every hostile shape is
+    refused here, BEFORE any filesystem call: absolute paths, drive/UNC-ish roots, `..`, `.`, empty or
+    whitespace-only components, backslash separators, and any resolution that leaves the root — including one
+    reached through a symlink, which is why the parents are resolved rather than trusted.
+    """
+    r = str(rel)
+    if not r or r != r.strip():
+        raise UncontainedPath(what, 'is empty or padded with whitespace: %r' % r)
+    if os.path.isabs(r) or r.startswith(('/', '\\')) or (len(r) > 1 and r[1] == ':'):
+        raise UncontainedPath(what, 'is absolute: %r' % r)
+    parts = r.replace('\\', '/').split('/')
+    for c in parts:
+        if c in ('', '.', '..') or c != c.strip():
+            raise UncontainedPath(what, 'has an empty, relative or padded component: %r' % r)
+    root_real = os.path.realpath(root)
+    target = os.path.join(root_real, *parts)
+    # every existing ancestor must resolve inside the root: a symlinked directory must not become an escape
+    probe = target
+    while True:
+        parent = os.path.dirname(probe)
+        if parent == probe:
+            break
+        if os.path.exists(parent):
+            if os.path.realpath(parent) != root_real and not os.path.realpath(parent).startswith(root_real + os.sep):
+                raise UncontainedPath(what, 'resolves outside its output root through %r' % parent)
+            break
+        probe = parent
+    if os.path.lexists(target) and os.path.islink(target):
+        raise UncontainedPath(what, 'names an existing symlink: %r' % r)
+    return target
+
+
+CANONICAL_ENCODING = 'AMC2'          # must equal MODEL-SCHEMA.sexp's :canonical-encoding
+
+
+def enc(s):
+    """AMC2: <byte-length of the UTF-8 form>:<the UTF-8 form>. See CANONICAL-ENCODING.md.
+
+    Injective by construction. The superseded delimiter encoding let a value containing '|' impersonate a field
+    boundary, so two different legal models rendered to identical commitment bytes; here nothing is ever searched
+    for, because every component carries its own exact length."""
+    return '%d:%s' % (len(str(s).encode('utf-8')), s)
+
+
+def canonical_fact_render(ftype, fid, pairs, schema_version, source='<text>'):
+    """The AMC2 render of one fact — the REFERENCE implementation of the specification the kernel and the
+    independent checker each implement separately. `gate_checks.py encoding` requires all three to agree."""
     what = '%s %s' % (ftype, fid)
-    parts = sorted('%s=%s' % (k.upper(), canonical_value(v, source, what)) for k, v in pairs)
-    return '%s|%s|%s' % (ftype.upper(), fid, '|'.join(parts)) if parts else '%s|%s|' % (ftype.upper(), fid)
+    kv = sorted(enc(k.upper()) + enc(canonical_value(v, source, what)) for k, v in pairs)
+    return ''.join([enc(CANONICAL_ENCODING), enc(schema_version), enc(ftype.upper()), enc(fid),
+                    enc(str(len(kv)))] + kv)
+
+
+def canonical_digest(scope, renders, schema_version):
+    """The AMC2 commitment digest of a rendered set, domain-separated by SCOPE and bound to the schema."""
+    body = ''.join([enc('AMC2-COMMITMENT'), enc(schema_version), enc(scope), enc(str(len(renders)))]
+                   + [enc(r) for r in sorted(renders)])
+    return hashlib.sha256(body.encode('utf-8')).hexdigest()
+
+
+# ─────────────────────────────────────────────────────── the one canonical model read (Review-3 §15)
+# Four programs carried the same twenty lines: open ROOT.sexp, take the single define-model-root form, walk its
+# composition, then read every module and turn each fact into (type, id, plist). Four copies of one concept is
+# four places for the header vocabulary, the value canonicalisation or the error typing to drift. This is that
+# seat. The result is cached per directory because the gate, the generators and the packet each read the same
+# model several times in one run and the model does not change under them.
+#
+# The independent checker deliberately does NOT use this: its own reader is what makes it a second path.
+_MODEL_CACHE = {}
+
+
+class Model(object):
+    """One canonical model read: the root plist, the ordered module list, and every fact of every module."""
+
+    def __init__(self, root, modules, facts):
+        self.root = root
+        self.modules = modules
+        self.facts = facts
+        self.by_type = {}
+        for ftype, fid, pairs, _mod, _form in facts:
+            self.by_type.setdefault(ftype, []).append((fid, pairs))
+
+    def of(self, ftype):
+        return self.by_type.get(ftype, [])
+
+
+def read_model(dirp, cache=True):
+    """Read the model rooted at DIRP/ROOT.sexp. A malformed root is a typed error, never a traceback."""
+    key = os.path.abspath(dirp)
+    if cache and key in _MODEL_CACHE:
+        return _MODEL_CACHE[key]
+    forms = read_forms_file(os.path.join(key, 'ROOT.sexp'))
+    roots = [f for f in forms if head(f) == 'define-model-root']
+    if len(roots) != 1 or len(forms) != 1:
+        raise SexpError('ROOT-MALFORMED: exactly one define-model-root form and nothing else is permitted')
+    root = dict(plist(roots[0][2:], 'ROOT.sexp', 'define-model-root'))
+    modules = [str(dict(plist(e, 'ROOT.sexp', 'composition entry'))['module']) for e in root['composition']]
+    facts = []
+    for mod in modules:
+        for form in read_forms_file(os.path.join(key, mod)):
+            if head(form) in HEADERS:
+                continue
+            if head(form) != 'fact' or len(form) < 3:
+                raise SexpError('%s: unconsumed top-level form %r' % (mod, head(form)))
+            ftype = str(form[1]).lower()
+            fid = canonical_value(form[2], mod, 'fact id')
+            pairs = plist(form[3:], mod, '%s %s' % (ftype, fid))
+            facts.append((ftype, fid, {k.lower(): canonical_value(v, mod, k) for k, v in pairs}, mod, form))
+    model = Model(root, modules, facts)
+    if cache:
+        _MODEL_CACHE[key] = model
+    return model
+
+
+def tool_path(dirp, role):
+    """The pinned absolute executable for ROLE, from TOOLCHAIN.sexp. Review-3 R3-3: no program in this seat
+    resolves an interpreter by NAME, so a binary planted earlier on PATH is never the thing that runs."""
+    for form in read_forms_file(os.path.join(dirp, 'TOOLCHAIN.sexp')):
+        if head(form) == 'fact' and str(form[1]).lower() == 'tool' and str(kv(form, 'role') or '') == role:
+            return str(kv(form, 'path'))
+    raise SexpError('TOOLCHAIN-UNDECLARED: no tool fact declares role %s' % role)

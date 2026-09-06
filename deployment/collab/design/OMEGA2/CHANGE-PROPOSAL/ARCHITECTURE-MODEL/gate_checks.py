@@ -43,16 +43,24 @@ Checks (each prints GATECHECK <name>: PASS|FAIL and exits 0/1):
                       equal the declared manifest and must contain no file classified HISTORICAL_EVIDENCE.
   hash-engines        the two vetted SHA-256 engines must agree over identical RAW BYTES for every pinned module
                       and for adversarial inputs — CRLF, lone CR, a UTF-8 BOM and bytes that are not valid UTF-8.
+  tcb                 the acceptance trusted computing base, re-derived from the candidate by file KIND (never
+                      by role name), matched against the measurement the model records, and held under the cap
+                      authored in a different module from the one that counts it.
 """
 import argparse, ast, hashlib, importlib.util, json, os, shutil, subprocess, sys, tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-REPO = os.path.abspath(os.path.join(HERE, '..', '..', '..', '..', '..', '..'))
-REL = os.path.relpath(HERE, REPO).replace(os.sep, '/')
+# The seat's path INSIDE the repository is a property of the layout, not of where this file happens to sit:
+# ACCEPT.sh executes this machinery from an export of the candidate, and AML_REPO then names the real
+# repository. Deriving REL from AML_REPO would have produced a '../..'-laden path and matched nothing.
+LAYOUT_ROOT = os.path.abspath(os.path.join(HERE, '..', '..', '..', '..', '..', '..'))
+REL = os.path.relpath(HERE, LAYOUT_ROOT).replace(os.sep, '/')
+REPO = os.environ.get('AML_REPO') or LAYOUT_ROOT
 CPREL = os.path.dirname(REL)
 _spec = importlib.util.spec_from_file_location('sexp_reader', os.path.join(HERE, 'SEXP-READER.py'))
 SR = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(SR)
-HEADERS = SR.HEADERS          # one seat: the reader declares the header vocabulary
+_aspec = importlib.util.spec_from_file_location('acceptance_runtime', os.path.join(HERE, 'acceptance_runtime.py'))
+AR = importlib.util.module_from_spec(_aspec); _aspec.loader.exec_module(AR)
 
 SEAT = None          # the exported candidate seat directory; every check reads the model from here
 TREE = None          # the immutable candidate tree object
@@ -70,8 +78,11 @@ def ok(name, note):
     sys.exit(0)
 
 
+GIT_ENV = dict(os.environ, GIT_OPTIONAL_LOCKS='0')   # Review-3 R3-9: never write .git/index.lock while reading
+
+
 def git(*args, binary=False):
-    r = subprocess.run(['git', '-C', REPO] + list(args), capture_output=True)
+    r = AR.bounded_run(['git', '-C', REPO] + list(args), env=GIT_ENV, timeout=900, text=False)
     if r.returncode != 0:
         raise SystemExit('git %s failed: %s' % (' '.join(args), r.stderr.decode('utf-8', 'replace')))
     return r.stdout if binary else r.stdout.decode('utf-8')
@@ -96,7 +107,7 @@ def candidate_tree(rev):
         shutil.copyfile(os.path.join(gitdir, 'index'), idx)
         env = dict(os.environ, GIT_INDEX_FILE=idx)
         for args in (['add', '-u'], ['write-tree']):
-            r = subprocess.run(['git', '-C', REPO] + args, capture_output=True, text=True, env=env)
+            r = AR.bounded_run(['git', '-C', REPO] + args, capture_output=True, text=True, env=env)
             if r.returncode != 0:
                 raise SystemExit('CANDIDATE-TREE-FAILED: git %s: %s' % (args[0], r.stderr.strip()))
         return r.stdout.strip()
@@ -110,7 +121,7 @@ def tree_paths():
 
 def tree_blob(path):
     """The candidate tree's bytes for PATH, or None if the candidate does not contain it."""
-    r = subprocess.run(['git', '-C', REPO, 'cat-file', 'blob', '%s:%s' % (TREE, path)], capture_output=True)
+    r = AR.bounded_run(['git', '-C', REPO, 'cat-file', 'blob', '%s:%s' % (TREE, path)], text=False, env=GIT_ENV)
     return r.stdout if r.returncode == 0 else None
 
 
@@ -121,40 +132,30 @@ def ensure_seat(work):
     seat = os.path.join(cand, REL)
     if not os.path.isdir(seat):
         os.makedirs(cand, exist_ok=True)
-        tar = subprocess.run(['git', '-C', REPO, 'archive', TREE, CPREL], capture_output=True, check=True).stdout
-        subprocess.run(['tar', '-x', '-C', cand], input=tar, check=True)
+        tar = AR.checked(['git', '-C', REPO, 'archive', TREE, CPREL], capture_output=True).stdout
+        AR.checked(['tar', '-x', '-C', cand], input=tar)
     SEAT = seat
     return seat
 
 
 # --------------------------------------------------------------------------- model access (candidate only)
+# One seat reads the model (SEXP-READER.read_model); this only types its failures for the gate's vocabulary.
+def model():
+    try:
+        return SR.read_model(SEAT)
+    except SR.MissingSourceFile as e:                          # Review-2 N-17: typed, never a traceback
+        raise SystemExit('MISSING-MODEL-FILE: %s' % e.path)
+    except SR.SexpError as e:
+        raise SystemExit('UNREADABLE-MODEL-FILE: %s' % e)
+
+
 def modules():
-    forms = SR.read_forms_file(os.path.join(SEAT, 'ROOT.sexp'))
-    roots = [f for f in forms if SR.head(f) == 'define-model-root']
-    if len(roots) != 1 or len(forms) != 1:
-        raise SystemExit('ROOT-MALFORMED: exactly one define-model-root form and nothing else is permitted')
-    pl = dict(SR.plist(roots[0][2:], 'ROOT.sexp', 'define-model-root'))
-    return [str(dict(SR.plist(e, 'ROOT.sexp', 'entry'))['module']) for e in pl['composition']], pl
+    m = model()
+    return m.modules, m.root
 
 
 def facts():
-    out = []
-    for mod in modules()[0]:
-        path = os.path.join(SEAT, mod)
-        try:
-            forms = SR.read_forms_file(path)
-        except SR.MissingSourceFile as e:                      # Review-2 N-17: typed, never a traceback
-            raise SystemExit('MISSING-MODEL-FILE: %s' % e.path)
-        except SR.SexpError as e:
-            raise SystemExit('UNREADABLE-MODEL-FILE: %s' % e)
-        for form in forms:
-            if SR.head(form) in HEADERS:
-                continue
-            ftype = str(form[1]).lower()
-            fid = SR.canonical_value(form[2], mod, 'fact id')
-            pairs = SR.plist(form[3:], mod, '%s %s' % (ftype, fid))
-            out.append((ftype, fid, {k.lower(): SR.canonical_value(v, mod, k) for k, v in pairs}))
-    return out
+    return [(t, i, p) for t, i, p, _mod, _form in model().facts]
 
 
 def by_type(fs):
@@ -173,6 +174,11 @@ def working_tree_difference():
              for l in git('diff', '--name-status', TREE, '--').splitlines() if l.strip()]
     drift += ['?? %s' % p for p in git('ls-files', '--others', '--exclude-standard').splitlines() if p.strip()]
     return sorted(drift)
+
+
+def repository_content_state():
+    """A CONTENT hash of everything in the repository this run could disturb — the one seat, Review-3 R3-9."""
+    return AR.repo_content_state(REPO, candidate_tree('WORKTREE'))
 
 
 def check_candidate():
@@ -198,7 +204,7 @@ def sha_bytes(b):
 
 
 def coreutils_digest(tool, path):
-    r = subprocess.run([tool, '--binary', '--', path], capture_output=True)
+    r = AR.bounded_run([tool, '--binary', '--', path], capture_output=True)
     return r.stdout[:64].decode('ascii') if r.returncode == 0 else None
 
 
@@ -231,27 +237,60 @@ def check_toolchain():
         if got is not None and p['semantic-version'] not in got:
             reasons.append('TOOLCHAIN-VERSION-MISMATCH: %s reports %r, TOOLCHAIN.sexp requires %s'
                            % (tid, got.strip(), p['semantic-version']))
+    # Review-3 R3-3. Measuring the pinned FILE is not the same claim as executing it. The superseded check said
+    # "5 declared tools verified" while itself running inside a PATH wrapper, and named nothing about the
+    # interpreter that actually ran. What executed is therefore established and PRINTED, not inferred.
+    executed = []
+    me = os.path.realpath(sys.executable)
+    for tid in sorted(tools):
+        p = tools[tid]
+        if p.get('role') == 'CHECKER_RUNTIME' and me != os.path.realpath(p['path']):
+            reasons.append('EXECUTED-IS-NOT-PINNED: this process is running %s, but %s pins %s; a wrapper earlier '
+                           'on PATH would otherwise be invisible' % (me, tid, os.path.realpath(p['path'])))
+        if p.get('role') == 'ASP_SOLVER':
+            r = AR.bounded_run([tool_path('CHECKER_RUNTIME'), '-c',
+                                'import clingo, clingo._clingo as c, os; print(os.path.realpath(c.__file__))'],
+                               capture_output=True, text=True, timeout=120)
+            got = r.stdout.strip()
+            if got != os.path.realpath(p['path']):
+                reasons.append('EXECUTED-IS-NOT-PINNED: the imported solver extension is %r, but %s pins %s'
+                               % (got or r.stderr.strip()[:60], tid, os.path.realpath(p['path'])))
+        with open(p['path'], 'rb') as f:
+            executed.append('%s realpath=%s sha256=%s version=%s'
+                            % (tid, os.path.realpath(p['path']), sha_bytes(f.read())[:16],
+                               (observed_version(tid, p) or '?').strip().splitlines()[0][:40]))
     if reasons:
         fail('toolchain', reasons)
-    ok('toolchain', '%d declared tools verified before any verdict: path, exact executable digest measured by the '
-                    'other path\'s engine, and semantic version' % len(tools))
+    for line in executed:
+        print('  EXECUTED %s' % line)
+    print('  BOOTSTRAP-TCB (unpinned BY CONSTRUCTION, trusted before this check can run, and an EXTERNAL '
+          'ASSUMPTION rather than anything this gate proves): bash, coreutils (mktemp/chmod/sed/grep/awk/cmp/'
+          'sha256sum), git, tar, the dynamic loader and every shared library each binary maps. The interpreter '
+          'is NOT in this layer when the gate started it: the gate lifts the pinned absolute path out of '
+          'TOOLCHAIN.sexp with awk and executes that, so a python3 planted earlier on PATH is not invoked at '
+          'all. It IS in this layer when a person runs a program of this seat directly. The mutual '
+          'certification of sha256sum and hashlib is a two-cycle: it is consistency, not an external root.')
+    ok('toolchain', '%d declared tools verified before any verdict — path, exact executable digest measured by '
+                    'the other path\'s engine, semantic version — and the process that is running plus the '
+                    'solver extension actually imported are the pinned ones; the bootstrap layer above is '
+                    'declared, not claimed to be verified' % len(tools))
 
 
 def observed_version(tid, p):
     """What the tool ITSELF reports, so a pinned digest and a self-reported version must agree."""
     try:
         if p.get('role') == 'KERNEL_RUNTIME':
-            return subprocess.run([p['path'], '--version'], capture_output=True, text=True, timeout=60).stdout
+            return AR.bounded_run([p['path'], '--version'], capture_output=True, text=True, timeout=60).stdout
         if p.get('role') == 'DIGEST_PROVIDER':
-            return subprocess.run([p['path'], '--version'], capture_output=True, text=True, timeout=60).stdout
+            return AR.bounded_run([p['path'], '--version'], capture_output=True, text=True, timeout=60).stdout
         if p.get('role') == 'CHECKER_RUNTIME':
-            return subprocess.run([p['path'], '-c', 'import sys;print(sys.version.split()[0])'],
+            return AR.bounded_run([p['path'], '-c', 'import sys;print(sys.version.split()[0])'],
                                   capture_output=True, text=True, timeout=60).stdout
         if p.get('role') == 'ASP_SOLVER':
-            return subprocess.run([sys.executable, '-c', 'import clingo;print(clingo.__version__)'],
+            return AR.bounded_run([sys.executable, '-c', 'import clingo;print(clingo.__version__)'],
                                   capture_output=True, text=True, timeout=60).stdout
         if p.get('role') == 'CHECKER_DIGEST_PROVIDER':
-            return subprocess.run([sys.executable, '-c', 'import ssl;print(ssl.OPENSSL_VERSION)'],
+            return AR.bounded_run([sys.executable, '-c', 'import ssl;print(ssl.OPENSSL_VERSION)'],
                                   capture_output=True, text=True, timeout=60).stdout
     except Exception:
         return None
@@ -286,7 +325,8 @@ def check_generation(work):
         args = [sys.executable, os.path.join(seat, producer)]
         if producer == 'build_inventory.py':
             args += ['--repo', REPO, '--tree', TREE, '--out', os.path.join(seat, 'files-and-roles.sexp')]
-        r = subprocess.run(args, capture_output=True, text=True, cwd=seat)
+        # CLOSURE-BOUND: gen-step.producer — the only programs run here are the model's declared producers
+        r = AR.bounded_run(args, capture_output=True, text=True, cwd=seat)
         if r.returncode != 0:
             fail('generation', ['producer %s exited %d inside the workspace' % (producer, r.returncode)]
                  + ['  %s' % l for l in (r.stdout + r.stderr).strip().splitlines()[-6:]])
@@ -376,11 +416,19 @@ def check_generation_order():
 def check_artifacts():
     reasons = []
     declared = {p['path']: i for i, p in by_type(facts()).get('gen-artifact', [])}
-    present = {p[len(REL) + 1:] for p in tree_paths()
-               if p.startswith(REL + '/') and (p.endswith('.md') or p.endswith('.sexp'))}
-    # the declared universe is exactly the derived artifacts; authored documents are not derived
-    derived_present = {p for p in present if p.startswith('GENERATED/')}
-    derived_declared = {p for p in declared if p.startswith('GENERATED/')}
+    # Review-3 R3-6: a declared destination that is not contained is a named failure BEFORE anything is written
+    for rel, aid in sorted(declared.items()):
+        try:
+            SR.contained_path(SEAT, rel, 'gen-artifact %s :path' % aid)
+        except SR.UncontainedPath as e:
+            reasons.append('UNCONTAINED-ARTIFACT-PATH: %s' % e)
+    # Review-3 R3-11: the generated roots are enumerated WHOLE. The old check filtered on .md/.sexp, so
+    # `GENERATED/evil.py` — arbitrary code sitting in the generated seat — was invisible to the very check whose
+    # PASS line says "no extra". A root is any directory a declared artifact lives in under the seat.
+    roots = sorted({os.path.dirname(p) + '/' for p in declared if '/' in p})
+    present = {p[len(REL) + 1:] for p in tree_paths() if p.startswith(REL + '/')}
+    derived_present = {p for p in present if any(p.startswith(r) for r in roots)}
+    derived_declared = {p for p in declared if any(p.startswith(r) for r in roots)}
     for p in sorted(derived_declared - derived_present):
         reasons.append('GENERATED-ARTIFACT-MISSING: %s is declared by the model but absent from the candidate '
                        'tree' % p)
@@ -392,8 +440,10 @@ def check_artifacts():
             reasons.append('DECLARED-ARTIFACT-MISSING: %s is declared but the candidate tree does not hold it' % p)
     if reasons:
         fail('artifacts', reasons)
-    ok('artifacts', 'the model declares %d generated artifacts (%d views) and the candidate tree holds exactly '
-                    'those — no missing, extra, renamed or orphaned artifact' % (len(declared), len(derived_declared)))
+    ok('artifacts', 'the model declares %d generated artifacts, %d of them under the %d generated root(s) %s, '
+                    'and the candidate tree holds exactly those and nothing else there — every file counted '
+                    'whatever its extension; every declared destination is contained'
+       % (len(declared), len(derived_declared), len(roots), ', '.join(roots)))
 
 
 # --------------------------------------------------------------------------- corpus (N-4)
@@ -426,7 +476,10 @@ def check_corpus():
             continue
         # ids are compared on the CANONICAL rendering (symbols render upper-case), so the model and the runner
         # cannot disagree merely about letter case
-        impl = {i.upper() for i in implemented_falsifiers(runner)}
+        # a falsifier the model declares WITH a mutation is implemented by the runner's driver, not by a
+        # function of its own — that is the point of moving the cases into data (Review-3 §15)
+        impl = {i.upper() for i in implemented_falsifiers(runner, h)}
+        impl |= {i.upper() for i, q in bt.get('falsifier', []) if q.get('mutation') and q['harness'] == h}
         for i in sorted(declared_fl.get(h, set()) - impl):
             reasons.append('FALSIFIER-NOT-IMPLEMENTED: %s is declared for harness %s but %s does not implement '
                            'it' % (i, h, runner))
@@ -450,19 +503,128 @@ def check_corpus():
           ', '.join('%s %d' % (h, len(declared_fl.get(h, ()))) for h in sorted(harnesses))))
 
 
-def implemented_falsifiers(runner):
-    """The falsifier ids RUNNER actually registers, read from its AST — no import, no execution."""
+def implemented_falsifiers(runner, harness):
+    """The falsifier ids RUNNER registers in code for HARNESS, read from its AST — no import, no execution.
+    Cases the model declares as a mutation are implemented by the runner's driver and are counted separately."""
     path = os.path.join(SEAT, runner)
     if not os.path.isfile(path):
         return set()
     tree = ast.parse(open(path, encoding='utf-8').read(), filename=runner)
+    want = 'CODED_COMPONENT' if harness == 'COMPONENT' else 'COMPOSED'
     out = set()
     for node in ast.walk(tree):
-        if isinstance(node, ast.Assign) and any(getattr(t, 'id', None) == 'FALSIFIERS' for t in node.targets):
+        if isinstance(node, ast.Assign) and any(getattr(t, 'id', None) == want for t in node.targets):
             for elt in getattr(node.value, 'elts', []):
                 if isinstance(elt, ast.Tuple) and elt.elts and isinstance(elt.elts[0], ast.Constant):
                     out.add(str(elt.elts[0].value))
     return out
+
+
+def machinery_set():
+    """The acceptance machinery, AS THE MODEL DECLARES IT — every file the inventory classifies
+    GOVERNANCE_MACHINERY inside this seat. There is no second, hand-written list to drift from."""
+    return sorted(p[len(REL) + 1:] for p, r in role_map().items()
+                  if r == 'GOVERNANCE_MACHINERY' and p.startswith(REL + '/'))
+
+
+def check_provenance():
+    """What is JUDGING must be the candidate's own machinery, and it must be bound and shown.
+
+    Review-3 R3-2 (P1). In tree-ish mode the gate judged an immutable candidate with the WORKING TREE's tools:
+    tampering `check_artifacts` into an unconditional pass turned a genuinely broken tree into
+    `GATECHECK artifacts: PASS`, while `candidate` printed the drift INSIDE that pass. Two things are therefore
+    established here, before any other check may report anything:
+
+      * the machinery actually EXECUTING (this copy, resolved from this file's own directory) is byte-identical
+        to the candidate's blobs — under ACCEPT.sh that copy IS an export of the candidate tree;
+      * the repository's working tree carries the same bytes for that machinery, so an invocation from a
+        tampered checkout is a named failure rather than a silent qualifier.
+
+    Missing, extra and different are each named. A drift here can never be reported as informational.
+    """
+    reasons, rows = [], []
+    machinery = machinery_set()
+    if not machinery:
+        fail('provenance', ['the model classifies no GOVERNANCE_MACHINERY in this seat; nothing could be bound'])
+    for rel in machinery:
+        blob = tree_blob('%s/%s' % (REL, rel))
+        if blob is None:
+            reasons.append('VERIFIER-MISSING-FROM-CANDIDATE: %s is machinery but the candidate tree lacks it' % rel)
+            continue
+        want = hashlib.sha256(blob).hexdigest()
+        rows.append('%s %s' % (rel, want))
+        for label, base in (('executing', HERE), ('working-tree', os.path.join(REPO, REL))):
+            path = os.path.join(base, rel)
+            if not os.path.isfile(path):
+                reasons.append('VERIFIER-ABSENT: the %s copy has no %s' % (label, rel)); continue
+            with open(path, 'rb') as f:
+                got = hashlib.sha256(f.read()).hexdigest()
+            if got != want:
+                reasons.append('VERIFIER-DIFFERS: the %s copy of %s is %s, the candidate holds %s — a mismatched '
+                               'verifier/candidate pair must not produce an unqualified PASS'
+                               % (label, rel, got[:12], want[:12]))
+    for base, label in ((HERE, 'executing'), (os.path.join(REPO, REL), 'working-tree')):
+        classified = {p[len(REL) + 1:] for p in role_map() if p.startswith(REL + '/')}
+        for f in sorted(os.listdir(base)):
+            if f.endswith(('.py', '.sh')) and f not in machinery and f not in classified \
+               and os.path.isfile(os.path.join(base, f)):
+                reasons.append('VERIFIER-EXTRA: the %s copy holds executable %s, which the model classifies as '
+                               'nothing at all' % (label, f))
+    verifier_tree = hashlib.sha256('\n'.join(rows).encode('utf-8')).hexdigest()
+    print('PROVENANCE candidate_commit %s' % git('rev-parse', 'HEAD').strip())
+    print('PROVENANCE candidate_tree   %s' % TREE)
+    print('PROVENANCE verifier_tree    %s  (%d machinery files)' % (verifier_tree, len(machinery)))
+    for r in rows:
+        print('PROVENANCE verifier-file    %s' % r)
+    if reasons:
+        fail('provenance', reasons)
+    ok('provenance', 'the %d acceptance-machinery files the model declares are byte-identical in the candidate '
+                     'tree, in the copy that is executing and in the repository working tree; verifier_tree '
+                     '%s == candidate_tree %s for that set' % (len(machinery), verifier_tree[:12], TREE[:12]))
+
+
+def check_universe():
+    """No declared family may shrink below its constitutional floor without a typed authorization.
+
+    Review-3 R3-7. An INCOHERENT deletion was already caught in both directions. A COHERENT one — the fact and
+    its implementation removed together — was not: dropping a whole property family reported
+    `4 property families totalling 75 generated cases` as a PASS, and nothing said the universe had shrunk. The
+    floor is model data; going below it is a named failure; lowering the floor is itself a model edit that must
+    carry a `universe-authorization` naming who decided it, against which model root, and why.
+    """
+    reasons, bt = [], by_type(facts())
+    floors = {i: p for i, p in bt.get('universe-floor', [])}
+    if not floors:
+        fail('universe', ['the model declares no universe-floor; a family could shrink to nothing silently'])
+    auths = {}
+    for i, p in bt.get('universe-authorization', []):
+        auths.setdefault(p['family'], []).append((i, p))
+    _mods, rootpl = modules()
+    root_now = str(rootpl['canonical-model-root-digest'])
+    for fid in sorted(floors):
+        fam, low = floors[fid]['family'], int(floors[fid]['minimum'])
+        actual = len(bt.get(fam.lower(), []))
+        if actual < low:
+            reasons.append('UNIVERSE-BELOW-FLOOR: family %s holds %d fact(s), below its declared floor of %d '
+                           '(%s); a smaller universe is not a smaller success' % (fam, actual, low, fid))
+    for fam in sorted(auths):
+        for aid, p in auths[fam]:
+            if int(p['minimum']) >= int(p['previous-minimum']):
+                reasons.append('AUTHORIZATION-NOT-A-REDUCTION: %s records %s -> %s, which is not a reduction'
+                               % (aid, p['previous-minimum'], p['minimum']))
+            prev = str(p['previous-model-root'])
+            if len(prev) != 64 or any(c not in '0123456789abcdef' for c in prev) or prev == root_now:
+                reasons.append('AUTHORIZATION-ROOT-SHAPE: %s names :previous-model-root %r, which is not a '
+                               'distinct 64-character lower-case model root' % (aid, prev[:16]))
+            if fam not in {floors[f]['family'] for f in floors}:
+                reasons.append('AUTHORIZATION-UNKNOWN-FAMILY: %s authorizes %s, which declares no floor'
+                               % (aid, fam))
+    if reasons:
+        fail('universe', reasons)
+    ok('universe', '%d declared families are at or above their constitutional floor (%s); %d recorded '
+                   'universe-authorization(s), each a reduction against a distinct previous model root'
+       % (len(floors), ', '.join('%s>=%s' % (floors[f]['family'], floors[f]['minimum']) for f in sorted(floors)),
+          sum(len(v) for v in auths.values())))
 
 
 # --------------------------------------------------------------------------- seats (N-10)
@@ -618,11 +780,8 @@ def packet_block():
 
 
 def tool_path(role):
-    """The pinned executable for ROLE, taken from the model — the gate never hard-codes a binary name."""
-    for _i, p in by_type(facts()).get('tool', []):
-        if p.get('role') == role:
-            return p['path']
-    raise SystemExit('TOOLCHAIN-UNDECLARED: the model declares no tool with role %s' % role)
+    """The pinned executable for ROLE — one seat, in the reader; the gate never hard-codes a binary name."""
+    return SR.tool_path(SEAT, role)
 
 
 def ensure_commitments(work):
@@ -639,10 +798,10 @@ def ensure_commitments(work):
         with open(state, encoding='utf-8') as f:
             return json.load(f)
     root = os.path.join(SEAT, 'ROOT.sexp')
-    k = subprocess.run([tool_path('KERNEL_RUNTIME'), '--script', os.path.join(SEAT, 'KERNEL',
+    k = AR.bounded_run([tool_path('KERNEL_RUNTIME'), '--script', os.path.join(SEAT, 'KERNEL',
                                                                               'model-law-kernel.lisp'),
                         root, '--commitment', kpath], capture_output=True, text=True, cwd=SEAT)
-    c = subprocess.run([tool_path('CHECKER_RUNTIME'), os.path.join(SEAT, 'CHECKER', 'independent_check.py'),
+    c = AR.bounded_run([tool_path('CHECKER_RUNTIME'), os.path.join(SEAT, 'CHECKER', 'independent_check.py'),
                         root, '--kernel-commitment', kpath, '--commitment', cpath,
                         '--export', os.path.join(work, 'NEUTRAL-EXPORT.json')],
                        capture_output=True, text=True, cwd=SEAT)
@@ -678,6 +837,67 @@ def check_commitments(work):
     ok('commitments', 'both verification paths reached a verdict over the candidate tree and committed to a '
                       'byte-identical fact universe of %s facts (%d commitment lines, digest %s)'
        % (n, len(kb.decode('utf-8').splitlines()), hashlib.sha256(kb).hexdigest()[:12]))
+
+
+def check_encoding(work):
+    """The commitment is recomputed by a THIRD implementation and must equal the other two, byte for byte.
+
+    Review-3 R3-1. Two verification paths agreeing proves they agree; it does not prove the encoding is
+    injective. The specification is CANONICAL-ENCODING.md; the kernel, the independent checker and the reference
+    implementation in the reader seat each implement it separately, and this check is where the three meet.
+    """
+    reasons = []
+    ensure_commitments(work)
+    sv = str(schema_header().get('version'))
+    enc_declared = str(schema_header().get('canonical-encoding'))
+    if enc_declared != SR.CANONICAL_ENCODING:
+        fail('encoding', ['ENCODING-VERSION: the schema declares :canonical-encoding %r; the reference '
+                          'implementation implements %r' % (enc_declared, SR.CANONICAL_ENCODING)])
+    per_mod, per_fam, allr = {}, {}, []
+    for mod in modules()[0]:
+        for form in SR.read_forms_file(os.path.join(SEAT, mod)):
+            if SR.head(form) in SR.HEADERS:
+                continue
+            ftype = str(form[1]).lower()
+            fid = SR.canonical_value(form[2], mod, 'fact id')
+            r = SR.canonical_fact_render(ftype, fid, SR.plist(form[3:], mod, fid), sv, mod)
+            allr.append(r); per_mod.setdefault(mod, []).append(r); per_fam.setdefault(ftype, []).append(r)
+    lines = ['COMMITMENT total-facts %d' % len(allr),
+             'COMMITMENT total-digest %s' % SR.canonical_digest('TOTAL', allr, sv)]
+    for m in sorted(per_mod):
+        lines.append('COMMITMENT module %s %d %s'
+                     % (m, len(per_mod[m]), SR.canonical_digest('MODULE:' + m, per_mod[m], sv)))
+    for f in sorted(per_fam):
+        lines.append('COMMITMENT family %s %d %s'
+                     % (f, len(per_fam[f]), SR.canonical_digest('FAMILY:' + f, per_fam[f], sv)))
+    mine = '\n'.join(lines) + '\n'
+    for who in ('KERNEL', 'CHECKER'):
+        path = os.path.join(work, '%s-COMMITMENT.txt' % who)
+        theirs = open(path, encoding='utf-8').read() if os.path.isfile(path) else None
+        if theirs is None:
+            reasons.append('ENCODING-UNCOMPARED: %s produced no commitment' % who)
+        elif theirs != mine:
+            d = next((i for i, (a, b) in enumerate(zip(theirs.splitlines(), lines)) if a != b), None)
+            reasons.append('ENCODING-DISAGREEMENT: the %s path and the reference implementation differ%s'
+                           % (who, ' first at line %d: %r vs %r' % (d + 1, theirs.splitlines()[d], lines[d])
+                              if d is not None else ' in length'))
+    if reasons:
+        fail('encoding', reasons)
+    ok('encoding', 'three independent implementations of %s — the Common Lisp kernel, the independent checker '
+                   'and the reference renderer — produce a byte-identical %d-line commitment over %d facts '
+                   '(digest %s)' % (enc_declared, len(lines), len(allr),
+                                    hashlib.sha256(mine.encode('utf-8')).hexdigest()[:12]))
+
+
+def schema_header():
+    forms = SR.read_forms_file(os.path.join(SEAT, 'MODEL-SCHEMA.sexp'))
+    decl = [f for f in forms if SR.head(f) == 'define-model-schema'][0]
+    head = []
+    for x in decl[2:]:
+        if isinstance(x, list):
+            break
+        head.append(x)
+    return {k.lower(): SR.canonical_value(v, 'MODEL-SCHEMA.sexp', k) for k, v in SR.plist(head, 'schema', 'header')}
 
 
 def check_packet(work):
@@ -745,16 +965,118 @@ def role_map():
     return roles
 
 
-def local_closure(entry, seat):
-    """The transitive set of seat-local Python files an entrypoint actually pulls in.
+# The call shapes that make a file EXECUTE. `open` is deliberately not among them: reading bytes cannot make a
+# file an executable dependency, and pretending otherwise would put 79 data reads in a list nobody could use.
+# Which argument carries the path is per-shape, because scanning "any argument" would let a mode string like
+# 'rb' pass for a resolved path.
+CODE_LOADS = {'spec_from_file_location': 1, 'import_module': 0, '__import__': 0, 'run_path': 0, 'run': 0,
+              'Popen': 0, 'call': 0, 'check_output': 0, 'system': 0, 'execv': 0, 'execvp': 0,
+              'bounded_run': 0, 'checked': 0}
+# `AR` is the acceptance runtime: routing execution through it must not make execution invisible to this walk.
+SUBPROCESS_OWNERS = ('subprocess', 'os', 'util', 'importlib', 'runpy', 'AR', 'acceptance_runtime')
 
-    Review-2 N-13: the previous check scanned for a HISTORICAL_EVIDENCE BASENAME among ast.Constant strings, and
-    five of seven reintroduction forms walked straight past it. A basename tripwire cannot establish a dependency
-    closure, so this computes the real one: every seat-local module reachable through an import or through a
-    spec_from_file_location/open/run of a path built from ANY expression, resolved by evaluating the constant
-    parts and treating a non-constant part as a wildcard that matches any seat file. The wildcard is what makes
-    concatenation, f-strings and joins fail closed instead of passing silently."""
-    seen, work = set(), [entry]
+
+ENV_SOURCES = ('environ', 'getenv', 'argv', 'stdin')
+
+
+def constant_strings(node):
+    """The string constants of NODE — empty when the expression draws from the environment.
+
+    `os.environ['AML_EXTRA_STEP']` contains the constant 'AML_EXTRA_STEP', which is the NAME of a variable, not a
+    path. Counting it as static resolution is exactly how the reported reproducer stayed invisible, so an
+    expression reaching into the environment, argv or stdin resolves to nothing here however many constants it
+    happens to carry."""
+    for x in ast.walk(node):
+        if (isinstance(x, ast.Attribute) and x.attr in ENV_SOURCES) or \
+           (isinstance(x, ast.Name) and x.id in ('input', 'environ', 'getenv')):
+            return []
+    return [c.value for c in ast.walk(node) if isinstance(c, ast.Constant) and isinstance(c.value, str)]
+
+
+def indeterminate_loads(tree, lines, where):
+    """Every site that EXECUTES something it cannot name statically (Review-3 R3-5).
+
+    The superseded analyzer collected constants and, when an expression had none, contributed nothing — so a
+    load from `os.environ[...]` was not a wildcard, as its own docstring claimed, but INVISIBLE, and a
+    HISTORICAL_EVIDENCE program reached that way passed the check. Absence of evidence is now a finding.
+
+    Two things make a dynamic site legitimate, and both are verified rather than asserted:
+      * a `# CLOSURE-BOUND: <fact-type>.<field>` marker naming a declared model family, so the possible targets
+        are exactly that family's values and the model — not the comment — is what bounds them; or
+      * the path is a parameter of the enclosing function and every call to that function in the same module
+        passes a constant-bearing argument, which is an ordinary wrapper rather than an unknown.
+    """
+    bound = {}
+    for t, p in by_type(facts()).get('gen-step', []):
+        bound.setdefault('gen-step.producer', set()).add(p['producer'])
+    for t, p in by_type(facts()).get('harness', []):
+        bound.setdefault('harness.runner', set()).add(p['runner'])
+    calls = {}
+    for n in ast.walk(tree):
+        if isinstance(n, ast.Call) and isinstance(n.func, ast.Name):
+            calls.setdefault(n.func.id, []).append(n.args)
+    out = []
+    for n in ast.walk(tree):
+        if not isinstance(n, ast.Call):
+            continue
+        if isinstance(n.func, ast.Attribute):
+            owner = getattr(n.func.value, 'id', None) or getattr(getattr(n.func.value, 'value', None), 'id', None)
+            if owner not in SUBPROCESS_OWNERS:
+                continue
+            key = n.func.attr
+        elif isinstance(n.func, ast.Name) and n.func.id in ('__import__', 'exec', 'eval'):
+            key = n.func.id
+        else:
+            continue
+        i = CODE_LOADS.get(key, 0 if key in ('exec', 'eval') else None)
+        if i is None or len(n.args) <= i or constant_strings(n.args[i]):
+            continue
+        near = (lines[n.lineno - 1], lines[max(0, n.lineno - 2)])
+        # CLOSURE-DELEGATED is only honoured where the path really is a parameter of the enclosing function, so
+        # a generic execution seat defers to its callers' sites instead of hiding them.
+        if any('CLOSURE-DELEGATED' in l for l in near):
+            enclosing = [f for f in ast.walk(tree) if isinstance(f, ast.FunctionDef)
+                         and f.lineno <= n.lineno <= getattr(f, 'end_lineno', f.lineno)]
+            if enclosing and isinstance(n.args[i], ast.Name) and \
+               n.args[i].id in {a.arg for a in enclosing[-1].args.args}:
+                continue
+            out.append('CLOSURE-INDETERMINATE: %s:%d claims :CLOSURE-DELEGATED, but the path is not a parameter '
+                       'of the enclosing function' % (where, n.lineno))
+            continue
+        marker = next((l.split('CLOSURE-BOUND:')[1].strip().split()[0] for l in near if 'CLOSURE-BOUND:' in l), None)
+        if marker:
+            if marker in bound:
+                continue
+            out.append('CLOSURE-INDETERMINATE: %s:%d claims :CLOSURE-BOUND %s, which the model does not declare'
+                       % (where, n.lineno, marker))
+            continue
+        arg = n.args[i]
+        names = {x.id for x in ast.walk(arg) if isinstance(x, ast.Name)}
+        # a plain local name assigned from a constant-bearing expression IS statically resolved
+        if any(isinstance(a, ast.Assign) and any(getattr(t, 'id', None) in names for t in a.targets)
+               and constant_strings(a.value) for a in ast.walk(tree)):
+            continue
+        fn = next((f for f in ast.walk(tree) if isinstance(f, ast.FunctionDef)
+                   and f.lineno <= n.lineno <= max(getattr(f, 'end_lineno', f.lineno), f.lineno)
+                   and names & {a.arg for a in f.args.args}), None)
+        if fn and calls.get(fn.name) and all(constant_strings(c[0]) for c in calls[fn.name] if c):
+            continue
+        out.append('CLOSURE-INDETERMINATE: %s:%d executes a path no static analysis can resolve (%s)'
+                   % (where, n.lineno, lines[n.lineno - 1].strip()[:70]))
+    return out
+
+
+def local_closure(entry, seat):
+    """The transitive set of seat-local files an entrypoint actually EXECUTES.
+
+    Review-2 N-13 removed the basename tripwire; Review-3 R3-5 removed the two remaining approximations. The
+    walk now follows exactly the contexts in which a file can become executable — an import, and the path
+    argument of a code-loading or process-starting call — instead of every string constant in the source. A
+    constant that merely NAMES a file, such as the classification rule that files a one-time migration under
+    HISTORICAL_EVIDENCE, is not an execution and no longer drags that file into the closure. Whatever cannot be
+    resolved in those contexts is reported by `indeterminate_loads`, so the gap is a finding, not a silence.
+    """
+    seen, work, indet = set(), [entry], []
     seatfiles = {f for f in os.listdir(seat) if f.endswith('.py')}
     seatfiles |= {os.path.join(d, f) for d in ('KERNEL', 'CHECKER') if os.path.isdir(os.path.join(seat, d))
                   for f in os.listdir(os.path.join(seat, d)) if f.endswith('.py')}
@@ -766,22 +1088,24 @@ def local_closure(entry, seat):
         path = os.path.join(seat, cur)
         if not os.path.isfile(path):
             continue
-        tree = ast.parse(open(path, encoding='utf-8').read(), filename=cur)
+        text = open(path, encoding='utf-8').read()
+        tree, lines = ast.parse(text, filename=cur), text.splitlines()
+        indet += indeterminate_loads(tree, lines, cur)
         for node in ast.walk(tree):
             fragments = []
-            if isinstance(node, ast.Constant) and isinstance(node.value, str):
-                fragments = [node.value]
-            elif isinstance(node, (ast.JoinedStr, ast.BinOp, ast.Call)):
-                fragments = [c.value for c in ast.walk(node)
-                             if isinstance(c, ast.Constant) and isinstance(c.value, str)]
+            if isinstance(node, (ast.Import, ast.ImportFrom)):
+                fragments = [a.name for a in getattr(node, 'names', [])] + [getattr(node, 'module', None) or '']
+            elif isinstance(node, ast.Call):
+                key = node.func.attr if isinstance(node.func, ast.Attribute) else getattr(node.func, 'id', None)
+                i = CODE_LOADS.get(key)
+                if i is not None and len(node.args) > i:
+                    fragments = constant_strings(node.args[i])
             for frag in fragments:
-                base = os.path.basename(frag)
+                base = os.path.basename(str(frag))
                 for cand in seatfiles:
-                    cb = os.path.basename(cand)
-                    if cb == base or (frag and cb.startswith(frag.strip('./')) and frag.strip('./')):
-                        if cand not in seen:
-                            work.append(cand)
-    return seen
+                    if os.path.basename(cand) in (base, base + '.py') and cand not in seen:
+                        work.append(cand)
+    return seen, indet
 
 
 def check_dependency_closure():
@@ -791,8 +1115,12 @@ def check_dependency_closure():
     machinery = sorted(p for p, r in roles.items() if r == 'GOVERNANCE_MACHINERY' and p.endswith('.py'))
     entries = [os.path.relpath(os.path.join(REPO, p), os.path.join(REPO, REL)) for p in machinery]
     closure = set()
+    indeterminate = []
     for e in entries:
-        closure |= local_closure(e, SEAT)
+        got, ind = local_closure(e, SEAT)
+        closure |= got; indeterminate += ind
+    for i in sorted(set(indeterminate)):
+        reasons.append(i)
     for c in sorted(closure):
         if os.path.basename(c) in hist:
             reasons.append('HISTORICAL-CODE-IN-CLOSURE: %s is reachable from a GOVERNANCE_MACHINERY entrypoint '
@@ -804,8 +1132,11 @@ def check_dependency_closure():
     if reasons:
         fail('dependency-closure', reasons)
     ok('dependency-closure', '%d governance entrypoints; their transitive seat-local execution closure is %d '
-                             'files, every one classified GOVERNANCE_MACHINERY, and none of the %d executable '
-                             'HISTORICAL_EVIDENCE files is reachable' % (len(entries), len(closure), len(hist)))
+                             'files, every one classified GOVERNANCE_MACHINERY; none of the %d executable '
+                             'HISTORICAL_EVIDENCE files is reachable; and every execution site resolves '
+                             'statically or is bounded by a declared model family — a path that resolves to '
+                             'nothing knowable is a finding, not an absence'
+       % (len(entries), len(closure), len(hist)))
 
 
 # --------------------------------------------------------------------------- hash engines
@@ -837,7 +1168,7 @@ def check_hash_engines(work):
     with open(tcl, 'w', encoding='utf-8') as f:
         f.write(LISP_PROBE % (os.path.join(SEAT, 'KERNEL') + '/', dt['path'], dt['sha256']))
     sbcl = next(p['path'] for _i, p in bt.get('tool', []) if p['role'] == 'KERNEL_RUNTIME')
-    r = subprocess.run([sbcl, '--script', tcl] + probes, capture_output=True, text=True)
+    r = AR.bounded_run([sbcl, '--script', tcl] + probes, capture_output=True, text=True)
     lisp = {}
     for line in r.stdout.splitlines():
         parts = line.split(' ', 1)
@@ -920,6 +1251,15 @@ def check_inventory():
             if mine != theirs:
                 reasons.append('INVENTORY-CLASSIFICATION-DRIFT: %s records %s %r, but reapplying the classifier '
                                'seat yields %r' % (fid, what, theirs, mine))
+    # Review-3: a rule that can never fire is a model defect, and it was visible only to the generator's own
+    # exit code. The gate names it here, from the classifications the inventory actually cites, so a dead or
+    # shadowed rule cannot sit in the canonical table unnoticed. The quarantine rules are the declared
+    # exception: a healthy tree is precisely the tree in which they match nothing.
+    fired = {str(p.get('rule')) for p in named.values()} | {r for _t, r in dirrules}
+    for rid, _expr, role, _reason in BI.RULES:
+        if rid not in fired and role not in BI.QUARANTINE_ROLES:
+            reasons.append('DEAD RULE: %s is declared in the classification table but classifies no tracked '
+                           'path in the candidate (obsolete, or shadowed by an earlier rule)' % rid)
     for k in sorted(set(expected) | set(counted)):
         if k in counted and k in expected:
             rid, role, reason = BI.classify(examples[k][0])
@@ -948,28 +1288,96 @@ def check_inventory():
        % (len(tr), len(keys), dirsum, len(dirrules)))
 
 
+def check_tcb():
+    """The acceptance trusted computing base: re-derived from the candidate, matched against the measurement the
+    model records, and held under the AUTHORED cap (Review-3 §15).
+
+    Two separations make the number hard to fake. Membership comes from path kind and file bytes, never from a
+    role name, so a file cannot leave the base by being re-classified, renamed, or filed as a helper, a fixture
+    or a migration. And the cap is an authored fact in the corpus while the measurement is a generated fact in
+    the inventory, so the program that counts the lines is never the program that says how many are allowed.
+    """
+    fs = by_type(facts())
+    budget = fs.get('tcb-budget', [])
+    if len(budget) != 1:
+        fail('tcb', ['TCB-BUDGET-UNDECLARED: exactly one authored tcb-budget fact is required; the candidate '
+                     'declares %d' % len(budget)])
+    cap = int(budget[0][1]['cap'])
+    declared = {str(p['path']): p for _i, p in fs.get('tcb-file', [])}
+    machinery = {p for p, r in role_map().items() if r == 'GOVERNANCE_MACHINERY'}
+    blobs = {}
+    for path in sorted({p for p in tree_paths() if p.startswith(REL + '/')} | machinery):
+        blob = tree_blob(path)
+        if blob is None:
+            fail('tcb', ['TCB-PATH-ABSENT: %s is classified machinery but the candidate tree holds no blob for '
+                         'it' % path])
+        blobs[path] = blob
+    rows = AR.tcb_measure(blobs)
+    reasons = []
+    for path, physical, nbnc in rows:
+        rec = declared.get(path)
+        if rec is None:
+            reasons.append('TCB-UNRECORDED: %s is acceptance machinery in the candidate but the model records no '
+                           'measurement for it' % path)
+        elif (int(rec['physical']), int(rec['nbnc'])) != (physical, nbnc):
+            reasons.append('TCB-MISMEASURED: %s measures %d physical / %d nbnc in the candidate; the model '
+                           'records %s / %s' % (path, physical, nbnc, rec['physical'], rec['nbnc']))
+    for path in sorted(set(declared) - {r[0] for r in rows}):
+        reasons.append('TCB-PHANTOM: the model records a measurement for %s, which is not acceptance machinery '
+                       'in the candidate' % path)
+    total, physical_total = sum(r[2] for r in rows), sum(r[1] for r in rows)
+    recorded = fs.get('tcb-total', [])
+    if len(recorded) != 1:
+        reasons.append('TCB-TOTAL-UNDECLARED: exactly one tcb-total fact is required; the candidate has %d'
+                       % len(recorded))
+    elif (int(recorded[0][1]['files']), int(recorded[0][1]['physical']), int(recorded[0][1]['nbnc'])) != \
+            (len(rows), physical_total, total):
+        reasons.append('TCB-TOTAL-MISMATCH: the candidate measures %d files / %d physical / %d nbnc; the model '
+                       'records %s / %s / %s' % (len(rows), physical_total, total, recorded[0][1]['files'],
+                                                 recorded[0][1]['physical'], recorded[0][1]['nbnc']))
+    if total > cap:
+        reasons.append('TCB-OVER-CAP: the acceptance base measures %d non-blank/non-comment lines against the '
+                       'authored cap of %d (+%d). The cap is not raised to fit the machinery.'
+                       % (total, cap, total - cap))
+    if reasons:
+        fail('tcb', reasons)
+    for path, physical, nbnc in rows:
+        print('  TCB %-46s %6d %6d' % (path, physical, nbnc))
+    ok('tcb', '%d executable files, %d physical, %d non-blank/non-comment against an authored cap of %d '
+              '(headroom %d); the file set is derived from the candidate by kind, so no re-classification, '
+              'rename or relocation can shrink it' % (len(rows), physical_total, total, cap, cap - total))
+
+
 CHECKS = {'candidate': check_candidate, 'toolchain': check_toolchain, 'inventory': check_inventory,
-          'artifacts': check_artifacts, 'corpus': check_corpus, 'seats': check_seats,
+          'artifacts': check_artifacts, 'corpus': check_corpus, 'seats': check_seats, 'universe': check_universe,
           'generation-order': check_generation_order, 'conflict-ledger': check_conflict_ledger,
-          'dependency-closure': check_dependency_closure}
+          'dependency-closure': check_dependency_closure, 'provenance': check_provenance,
+          'tcb': check_tcb}
 WORK_CHECKS = {'generation': check_generation, 'packet': check_packet, 'hash-engines': check_hash_engines,
-               'commitments': check_commitments}
+               'commitments': check_commitments, 'encoding': check_encoding}
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(description='model-derived gate checks over an immutable candidate tree')
-    ap.add_argument('check', choices=sorted(set(CHECKS) | set(WORK_CHECKS)))
+    # `content-state` is not a check — it prints the content-sensitive measurement the gate compares before and
+    # after itself (Review-3 R3-9). It has no verdict, so it is deliberately not in the counted set.
+    ap.add_argument('check', choices=sorted(set(CHECKS) | set(WORK_CHECKS) | {'content-state'}))
     ap.add_argument('--tree', default=os.environ.get('AML_CANDIDATE_TREE', 'WORKTREE'),
                     help="a revision naming the immutable tree to judge, or WORKTREE (default) for the tree the "
                          "current state would commit to")
-    ap.add_argument('--work', default=None, help='private workspace; one is created and kept if omitted')
+    ap.add_argument('--work', default=None, help='reuse this workspace instead of creating a private one')
+    ap.add_argument('--keep-work', action='store_true', help='keep the private workspace for inspection')
     ap.add_argument('--seat', default=None,
                     help='use an ALREADY EXPORTED seat directory instead of exporting the candidate. The check '
                          'logic is identical; only the source of the model differs. Held-out falsifiers use this '
                          'to exercise a real check against a deliberately mutated candidate.')
     a = ap.parse_args()
+    # Review-3 R3-8: a scratch root inside the repository under audit is refused before any work is done, and a
+    # workspace this process created is removed on success, failure, signal and timeout alike — keeping it is an
+    # explicit request, not the default that littered 291 directories into /tmp.
+    work = AR.workspace('aml-gatecheck-', REPO, keep=a.keep_work, reuse=a.work)
+    if a.check == 'content-state':
+        print(repository_content_state()); sys.exit(0)
     TREE = candidate_tree(a.tree)
-    work = a.work or tempfile.mkdtemp(prefix='aml-gatecheck-')
-    os.makedirs(work, exist_ok=True)
     if a.seat:
         SEAT = os.path.abspath(a.seat)
     else:

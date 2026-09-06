@@ -28,10 +28,13 @@
 ;;;;     hand-written implementations: when fact type T has K = V, every key in :require must be present and
 ;;;;     every key in :forbid must be absent. This is what makes a DESIGN_TARGET structurally unable to carry a
 ;;;;     path, and a BUILT seat structurally unable to be a plan.
+;;;; :canonical-encoding names the NORMATIVE fact/commitment encoding (see CANONICAL-ENCODING.md). It is
+;;;;     declared here, inside the hash-pinned schema, so the encoding is bound to the schema that defines the
+;;;;     fact types; every implementation refuses to issue a verdict against a version it does not implement.
 ;;;; (define-unique NAME :type T :field K)
 ;;;;     no two facts of type T may carry the same value of K. One canonical write authority per store is a
 ;;;;     uniqueness law, not a convention.
-(define-model-schema architecture-model-schema :version "3"
+(define-model-schema architecture-model-schema :version "3" :canonical-encoding "AMC2"
 
   ;; ─────────────────────────────────────────────────────────────────── id spaces
   (define-id-space PATH-SPACE      :charset PATH  :min 1 :max 400)
@@ -60,6 +63,8 @@
   (define-enum artifact-kind (MODEL_MODULE GENERATED_VIEW DECISION_DOCUMENT))
   (define-enum law-id (L1 L2 L3 L4 L5 L6 L7))
   (define-enum fixture-expectation (PASS FAIL))
+  (define-enum falsifier-mutation (APPEND REPLACE CHECK))
+  (define-enum yes-no (YES NO))
   (define-enum tool-role (KERNEL_RUNTIME DIGEST_PROVIDER CHECKER_RUNTIME ASP_SOLVER CHECKER_DIGEST_PROVIDER))
   ;; which verification path is required to prove a tool's identity — never the tool's own self-report alone.
   (define-enum verifier (KERNEL_PATH CHECKER_PATH BOTH_PATHS))
@@ -67,6 +72,15 @@
   (define-enum promotion-state (PERMITTED FORBIDDEN_UNTIL_DDI_COMPLETE))
 
   ;; ─────────────────────────────────────────────────────────────────── inventory
+  ;; ─────────────────────────────────────────────────────────────── the classification table (Review-3 §15 M2)
+  ;; The rule that classifies every tracked path is DATA with one canonical seat, not a table inside the
+  ;; generator. `match` is a disjunction of conjunctions over the atoms prefix:/suffix:/equals:/depth:/pattern:
+  ;; (the grammar is stated in classification-rules.sexp); `order` makes first-match-wins a model property
+  ;; rather than a file-order accident. A rule that matches no tracked path fails the build as dead or shadowed.
+  (define-fact-type classification-rule :id-space TOKEN-SPACE
+                    :required (order match role reason) :optional ()
+                    :types ((order INTEGER) (match STRING) (role SYMBOL) (reason STRING))
+                    :enum ((role file-role)))
   (define-fact-type file        :id-space PATH-SPACE
                     :required (role rule reason) :optional ()
                     :types ((role SYMBOL) (rule SYMBOL) (reason STRING))
@@ -79,6 +93,24 @@
                     :required (tracked file-facts dir-rule-facts dir-rule-sum) :optional ()
                     :types ((tracked INTEGER) (file-facts INTEGER) (dir-rule-facts INTEGER)
                             (dir-rule-sum INTEGER)))
+
+  ;; ─────────────────────────────────────────────────────────────── the acceptance TCB (Review-3 §15)
+  ;; The MEASUREMENT is generated with the inventory, from the candidate's own bytes, by the one counting rule
+  ;; in acceptance_runtime.py. The BUDGET is authored, and lives in a different module, so the program that
+  ;; counts the lines is never the program that decides how many are permitted. Membership of `tcb-file` follows
+  ;; from path kind and file bytes and not from any role name: re-classifying a file cannot remove it.
+  ;; The id is a token, not the path: a path is already the id space of `file`, and one id may be owned by one
+  ;; fact type only (law L2). The path is a field, and it is unique across the family.
+  (define-fact-type tcb-file    :id-space TOKEN-SPACE
+                    :required (path physical nbnc) :optional ()
+                    :types ((path STRING) (physical INTEGER) (nbnc INTEGER)))
+  (define-fact-type tcb-total   :id-space TOKEN-SPACE
+                    :required (files physical nbnc) :optional ()
+                    :types ((files INTEGER) (physical INTEGER) (nbnc INTEGER)))
+  (define-fact-type tcb-budget  :id-space TOKEN-SPACE
+                    :required (cap baseline baseline-files baseline-commit rule rationale) :optional ()
+                    :types ((cap INTEGER) (baseline INTEGER) (baseline-files INTEGER)
+                            (baseline-commit STRING) (rule STRING) (rationale STRING)))
 
   ;; ─────────────────────────────────────────────────────────────────── seats (N-10)
   ;; One typed seat per subsystem and per store authority. `path` is REQUIRED for BUILT and DOCUMENT_SEAT and
@@ -190,10 +222,38 @@
   ;; COMPONENT falsifiers run inside the gate; COMPOSED_GATE falsifiers execute ARCHITECTURE-MODEL-GATE.sh
   ;; itself and are therefore run by the separate acceptance battery — a falsifier that ran the gate from
   ;; inside the gate would recurse forever (Review-2 N-2).
+  ;; A falsifier whose defect is an ordinary model mutation is DATA: the module, the injected or replaced text
+  ;; and the reason each path must name. The runner then carries one driver per shape instead of one function
+  ;; per falsifier, so a new held-out defect costs a corpus row and no code (Review-3 §15, TCB).
+  ;;   APPEND   append :form to :module; BOTH verification paths must reject, naming :kernel-reason/:checker-reason
+  ;;   REPLACE  replace :replace-from with :replace-to in :module; same obligation
+  ;;   CHECK    mutate :module in an exported seat and require `gate_checks.py :check` to name :reason
+  ;; In :form and :replace-* the token {NL} expands to a newline and {BS} to a backslash — canonical string
+  ;; values are control-character free, so a defect that IS a control character has to be written this way.
   (define-fact-type falsifier   :id-space TOKEN-SPACE
-                    :required (intent harness) :optional ()
-                    :types ((intent STRING) (harness SYMBOL))
+                    :required (intent harness)
+                    :optional (mutation module form replace-from replace-to check reason kernel-reason
+                               checker-reason rehash)
+                    :types ((intent STRING) (harness SYMBOL) (mutation SYMBOL) (module STRING) (form STRING)
+                            (replace-from STRING) (replace-to STRING) (check SYMBOL) (reason STRING)
+                            (kernel-reason STRING) (checker-reason STRING) (rehash SYMBOL))
+                    :enum ((mutation falsifier-mutation) (rehash yes-no))
                     :ref ((harness harness)))
+
+  ;; ─────────────────────────────────────────────────────────────────── universe floors (Review-3 R3-7)
+  ;; A COHERENT deletion — the fact AND its implementation removed together — used to read as a smaller success:
+  ;; "4 property families totalling 75 generated cases" is a PASS line, and nothing said the universe had shrunk.
+  ;; The floor is the constitutional minimum cardinality of a declared family. Going below it is a named failure;
+  ;; lowering the floor itself is a model edit that must carry a universe-authorization recording who decided it,
+  ;; against which model root, and why. The link to the previous root is a RECORDED ASSERTION, checked for shape
+  ;; and distinctness — it is not, and is not presented as, proof that the previous root was that value.
+  (define-fact-type universe-floor :id-space TOKEN-SPACE
+                    :required (family minimum rationale) :optional ()
+                    :types ((family SYMBOL) (minimum INTEGER) (rationale STRING)))
+  (define-fact-type universe-authorization :id-space TOKEN-SPACE
+                    :required (family previous-minimum minimum previous-model-root rationale approver) :optional ()
+                    :types ((family SYMBOL) (previous-minimum INTEGER) (minimum INTEGER)
+                            (previous-model-root STRING) (rationale STRING) (approver STRING)))
 
   ;; ─────────────────────────────────────────────────────────────────── toolchain identity (N-1, N-11, N-13)
   ;; Executable policy, not prose: every tool on either verification path is pinned on its semantic version
@@ -219,6 +279,10 @@
                       :require (rationale) :forbid (path packet))
   (define-conditional SEAT-NO-WRITER       :type seat :when-key status :when-value NO_WRITER
                       :require (rationale) :forbid (path packet))
+  ;; Review-3 R3-12. A canonical seat path belongs to exactly ONE seat identity. Before this, two ids could claim
+  ;; the same artifact and both be referenced as a writer — duplicate ownership that read as two seats. A
+  ;; genuinely shared artifact must be declared as such, not arrived at by two seats quietly naming one file.
+  (define-unique SEAT-PATH-UNIQUE :type seat :field path)
   ;; A deferred migration class stays authoritative at its source and must name the batch that will import it;
   ;; an imported class is canonical here and must name what it became. Neither state can be half-declared.
   (define-conditional CLASS-DEFERRED       :type source-class :when-key status :when-value DEFERRED_DATA_IMPORT
@@ -231,4 +295,5 @@
   ;; ─────────────────────────────────────────────────────────────────── uniqueness laws (N-10)
   (define-unique STORE-OWNER-IS-ONE-SEAT   :type store       :field owner)
   (define-unique ARTIFACT-PATH-IS-ONE-SEAT :type gen-artifact :field path)
-  (define-unique FIXTURE-PATH-IS-ONE       :type fixture     :field path))
+  (define-unique FIXTURE-PATH-IS-ONE       :type fixture     :field path)
+  (define-unique TCB-PATH-IS-ONE           :type tcb-file    :field path))

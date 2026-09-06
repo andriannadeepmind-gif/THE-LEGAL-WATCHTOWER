@@ -17,6 +17,7 @@
 (in-package :aml-kernel)
 (load (merge-pathnames "hash-provider.lisp" *load-pathname*))
 (defparameter +max-file-bytes+ 4000000) (defparameter +max-depth+ 40) (defparameter +max-list+ 60000)
+(defparameter +canon+ "AMC2")           ; the canonical encoding this kernel implements (CANONICAL-ENCODING.md)
 (defvar *dir*) (defvar *facts* (make-hash-table :test 'equal)) (defvar *by-type* (make-hash-table :test 'equal))
 (defvar *id-owner* (make-hash-table :test 'equal)) (defvar *ftypes* (make-hash-table :test 'equal))
 (defvar *enums* (make-hash-table :test 'equal)) (defvar *spaces* (make-hash-table :test 'equal))
@@ -24,7 +25,7 @@
 (defun v! (law reason loc) (push (list law reason loc) *viol*))
 (defun sname (x) (cond ((symbolp x) (symbol-name x)) ((stringp x) x) (t (princ-to-string x))))
 (defun kwname (x) (and (keywordp x) (symbol-name x)))
-(defun fget (plist name) (loop for (k val) on plist by #'cddr when (and (keywordp k) (string-equal (kwname k) name)) return val))
+(defun fget (plist name) (loop for c = plist then (cddr c) while (consp c) when (and (keywordp (car c)) (string-equal (kwname (car c)) name)) return (cadr c)))  ; total over improper plists (R3-4)
 (defun ulist (x) (mapcar (lambda (s) (string-upcase (sname s))) x))
 (defun vkind (v)                        ; the declared value kinds STRING/INTEGER/SYMBOL and the ONE canonical
   (cond ((and (stringp v)               ; rendering of each. A control character inside a string would make the
@@ -34,31 +35,35 @@
               (every (lambda (c) (or (char<= #\A c #\Z) (char<= #\0 c #\9) (find c "_.+/-"))) (symbol-name v)))
          (values "SYMBOL" (symbol-name v)))))
 (defun vrender (v) (nth-value 1 (vkind v)))  ; the canonical rendering alone; NIL exactly when the value is illegal
-(defun depth-ok (form d)                ; walks cons cells; tolerates improper lists defensively
-  (cond ((> d +max-depth+) nil)
+(defun enc (s) (format nil "~a:~a" (length (sb-ext:string-to-octets s :external-format :utf-8)) s))  ; AMC2 length prefix
+(defun form-defect (form d)             ; NIL when the form is admissible, else the typed reason it is not
+  (cond ((> d +max-depth+) "nesting limit exceeded")
         ((consp form)
          (let ((n 0) (cur form))
            (loop while (consp cur) do
-             (incf n) (when (> n +max-list+) (return-from depth-ok nil))
-             (unless (depth-ok (car cur) (1+ d)) (return-from depth-ok nil))
+             (incf n) (when (> n +max-list+) (return-from form-defect "collection limit exceeded"))
+             (let ((r (form-defect (car cur) (1+ d)))) (when r (return-from form-defect r)))
              (setf cur (cdr cur)))
-           (depth-ok cur (1+ d))))
-        (t t)))
+           (and cur "improper (dotted) list")))   ; Review-3 R3-4: a dotted fact is named, never a backtrace
+        (t nil)))
 (defun forms-of (path &key (missing-law "L1"))
   "Every top-level form of PATH. A missing or unreadable file is a typed, named violation — never a traceback."
   (unless (probe-file path)             ; Review-2 N-17
     (v! missing-law (format nil "MISSING-MODEL-FILE: ~a" (file-namestring path)) (file-namestring path))
     (return-from forms-of '()))
-  (when (> (with-open-file (s path :element-type '(unsigned-byte 8)) (file-length s)) +max-file-bytes+)
-    (v! "L1" "file exceeds size limit" path) (return-from forms-of '()))
+  (when (> (with-open-file (s path :element-type '(unsigned-byte 8)) (file-length s)) +max-file-bytes+) (v! "L1" "file exceeds size limit" path) (return-from forms-of '()))
   (with-standard-io-syntax
-    (let ((*read-eval* nil) (*read-default-float-format* 'double-float) (out '()))
+    (let ((*read-eval* nil) (*read-default-float-format* 'double-float) (*readtable* (copy-readtable nil)) (out '()))
+      ;; Review-3 R3-13: the ACCEPTED LANGUAGE is the declared grammar and nothing else. The standard readtable
+      ;; admits #x10, #(...), quote and backquote, which the Python readers reject — one grammar, or none.
+      (dolist (c '(#\# #\' #\` #\,))
+        (set-macro-character c (lambda (st ch) (declare (ignore st)) (error "reader macro ~a is outside the canonical grammar" ch)) nil *readtable*))
       (handler-case
           (with-open-file (s path :external-format :utf-8)
             (loop for f = (read s nil :eof) until (eq f :eof) do
-              (unless (depth-ok f 0) (v! "L1" "form exceeds nesting/collection limit" path) (return))
+              (let ((r (form-defect f 0))) (when r (v! "L1" (format nil "MALFORMED-FACT: ~a" r) path) (return)))
               (push f out)))
-        (error (e) (v! "L1" (format nil "unreadable model file (~a)" (type-of e)) path)))
+        (error (e) (v! "L1" (format nil "unreadable model file: ~a" e) path)))
       (nreverse out))))
 
 ;;; ─────────────────────────────────────────────────────────────────────── schema
@@ -68,6 +73,7 @@
   (dolist (form (forms-of (merge-pathnames "MODEL-SCHEMA.sexp" *dir*)))
     (when (and (consp form) (string-equal (sname (car form)) "DEFINE-MODEL-SCHEMA"))
       (setf *schema-version* (sname (fget (cddr form) "VERSION")))
+      (unless (equal (sname (fget (cddr form) "CANONICAL-ENCODING")) +canon+) (v! "L1" (format nil "MODEL-SCHEMA.sexp declares :canonical-encoding ~s but this kernel implements ~s; no commitment is issued" (sname (fget (cddr form) "CANONICAL-ENCODING")) +canon+) "MODEL-SCHEMA.sexp"))
       (dolist (sub (cddr form))
         (when (consp sub)
           (let ((h (string-upcase (sname (car sub)))) (nm (string-upcase (sname (second sub)))) (pl (cddr sub)))
@@ -104,9 +110,7 @@
                 ((and prefix (not (and (>= (length id) (length prefix)) (string= prefix (subseq id 0 (length prefix))))))
                  (format nil "does not start with the ~a prefix ~s" space prefix))
                 ((and (string= charset "TOKEN") (notevery #'token-char-p id))
-                 (format nil "contains a character outside the ~a token charset" space))
-                ((and (string= charset "PATH") (some (lambda (c) (< (char-code c) 32)) id))
-                 (format nil "contains a control character, which the ~a charset forbids" space)))))))
+                 (format nil "contains a character outside the ~a token charset" space)))))))
 
 ;;; ─────────────────────────────────────────────────────────────────────── facts
 (defun add-fact (type id plist loc)
@@ -137,7 +141,7 @@
                 (v! "L1" (format nil "~a ~a: :~a has an illegal value kind (permitted: control-character-free string, integer, plain symbol)"
                                  tn idn (string-downcase kn)) loc)
                 (progn
-                  (push (format nil "~a=~a" (string-upcase kn) vr) pairs)
+                  (push (concatenate 'string (enc (string-upcase kn)) (enc vr)) pairs)
                   (when (and want (not (string= want (vkind val))))
                     (v! "L1" (format nil "~a ~a: :~a must be ~a, found ~a"
                                      tn idn (string-downcase kn) (string-downcase want)
@@ -161,13 +165,11 @@
             (dolist (k cforbid) (when (fget plist k)
                                   (v! "L1" (format nil "~a ~a: ~a=~a forbids :~a (rule ~a)"
                                                    tn idn (string-downcase ckey) cval (string-downcase k) cname) loc))))))
-      (push (list loc tn (format nil "~a|~a|~{~a~^|~}" tn idn (sort pairs #'string<))) *renders*))))
+      (push (list loc tn (format nil "~a~a~a~a~a~{~a~}" (enc +canon+) (enc *schema-version*) (enc tn) (enc idn) (enc (princ-to-string (length pairs))) (sort pairs #'string<))) *renders*))))
 
 (defun root-forms () (forms-of (merge-pathnames "ROOT.sexp" *dir*) :missing-law "L7"))
 (defun root-form ()
-  (let ((roots (remove-if-not (lambda (f) (and (consp f) (string-equal (sname (car f)) "DEFINE-MODEL-ROOT")))
-                              (root-forms))))
-    (car roots)))
+  (find-if (lambda (f) (and (consp f) (string-equal (sname (car f)) "DEFINE-MODEL-ROOT"))) (root-forms)))
 (defun root-composition ()              ; single source of the module universe = ROOT.sexp composition, in order
   (let ((root (root-form)))
     (when root (loop for entry in (fget (cddr root) "COMPOSITION")
@@ -263,8 +265,7 @@
       (unless (gethash s covered)
         (v! "L6" (format nil "subsystem ~a has no requirement->seat->test->WP mapping" s)
             "requirements-tests-workpackets.sexp")))))
-(defun hexp (s n) (and (stringp s) (= (length s) n)
-                       (every (lambda (c) (or (char<= #\0 c #\9) (char<= #\a c #\f))) s)))
+(defun hexp (s n) (and (stringp s) (= (length s) n) (every (lambda (c) (or (char<= #\0 c #\9) (char<= #\a c #\f))) s)))
 (defun law7-hash-universe ()
   (let* ((all (root-forms)) (root (root-form)) (comp (root-composition)) (declared '()) (rows '()))
     (unless root
@@ -327,13 +328,14 @@
   (let ((mods (make-hash-table :test 'equal)) (fams (make-hash-table :test 'equal)) (all '()) (out '()))
     (dolist (r *renders*)
       (push (third r) all) (push (third r) (gethash (first r) mods)) (push (third r) (gethash (second r) fams)))
-    (flet ((dig (l) (aml-hash:sha256-hex-of-string (format nil "~{~a~^~%~}" (sort (copy-list l) #'string<)))))
+    (flet ((dig (scope l) (aml-hash:sha256-hex-of-string
+                            (format nil "~a~a~a~a~{~a~}" (enc "AMC2-COMMITMENT") (enc *schema-version*) (enc scope) (enc (princ-to-string (length l))) (mapcar #'enc (sort (copy-list l) #'string<))))))
       (push (format nil "COMMITMENT total-facts ~a" (length all)) out)
-      (push (format nil "COMMITMENT total-digest ~a" (dig all)) out)
+      (push (format nil "COMMITMENT total-digest ~a" (dig "TOTAL" all)) out)
       (dolist (m (sort (loop for k being the hash-keys of mods collect k) #'string<))
-        (push (format nil "COMMITMENT module ~a ~a ~a" m (length (gethash m mods)) (dig (gethash m mods))) out))
+        (push (format nil "COMMITMENT module ~a ~a ~a" m (length (gethash m mods)) (dig (concatenate 'string "MODULE:" m) (gethash m mods))) out))
       (dolist (f (sort (loop for k being the hash-keys of fams collect k) #'string<))
-        (push (format nil "COMMITMENT family ~a ~a ~a" (string-downcase f) (length (gethash f fams)) (dig (gethash f fams))) out)))
+        (push (format nil "COMMITMENT family ~a ~a ~a" (string-downcase f) (length (gethash f fams)) (dig (concatenate 'string "FAMILY:" (string-downcase f)) (gethash f fams))) out)))
     (nreverse out)))
 (defun main ()
   (setf *dir* (merge-pathnames "../" *load-pathname*))

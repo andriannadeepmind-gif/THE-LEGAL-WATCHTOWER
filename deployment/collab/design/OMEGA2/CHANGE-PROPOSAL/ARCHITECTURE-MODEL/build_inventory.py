@@ -36,10 +36,14 @@ Correction of the three reported inventory defects, at their source rather than 
 Determinism: paths sorted by exact code point sequence; rule order is the file order below; first match wins.
 Exit 0 only when every tracked path is classified by a named rule and every rule fired.
 """
-import subprocess, os, re, sys
+import importlib.util, subprocess, os, re, sys
 from collections import Counter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+_aspec = importlib.util.spec_from_file_location('acceptance_runtime', os.path.join(HERE, 'acceptance_runtime.py'))
+AR = importlib.util.module_from_spec(_aspec); _aspec.loader.exec_module(AR)
+_sspec = importlib.util.spec_from_file_location('sexp_reader', os.path.join(HERE, 'SEXP-READER.py'))
+SR = importlib.util.module_from_spec(_sspec); _sspec.loader.exec_module(SR)
 ROOT = os.path.abspath(os.path.join(HERE, '..', '..', '..', '..', '..', '..'))
 CPP = 'deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/'
 AM = CPP + 'ARCHITECTURE-MODEL/'
@@ -97,141 +101,91 @@ def _hist(p):
     return bool(_HIST_RE.search(p)) or p.endswith('.out')
 
 
-# Ordered, explicit, reviewable rule table.  (rule-id, predicate, role, reason)
-# First match wins.  Nothing outside this table is classified; nothing in it may match zero paths.
-RULES = [
-    # --- the architecture-model seat: the live governance path ---
-    ('R-001', lambda p: p.startswith(AM + 'GENERATED/'), 'GENERATED_VIEW',
-     'deterministically generated from the canonical model'),
-    ('R-002', lambda p: p.startswith(AM + 'FIXTURES/'), 'GOVERNANCE_FIXTURE',
-     'golden PASS/FAIL fixture exercising the model laws'),
-    ('R-003', lambda p: p.startswith(AM + 'KERNEL/') or p.startswith(AM + 'CHECKER/')
-     or (p.startswith(AM) and (p.endswith('.py') or p == AM + 'ARCHITECTURE-MODEL-GATE.sh'
-                               or p == AM + 'SETUP-TOOLCHAIN.sh')), 'GOVERNANCE_MACHINERY',
-     'executable seat of the architecture-governance path (kernel, independent checker, builders, gate)'),
-    ('R-004', lambda p: p.startswith(CPP) and p.endswith('/.gitignore'), 'GOVERNANCE_MACHINERY',
-     'ignore rules for the derived and interpreter-generated areas of the architecture-governance seat'),
-    ('R-005', lambda p: p == AM + 'TOOLCHAIN.sexp', 'CANONICAL_MODEL_INPUT',
-     'pinned toolchain identities (part of the model root)'),
-    ('R-006', lambda p: p == AM + 'MODEL-MIGRATION-CONFLICT-LEDGER.md', 'ARCHITECTURE_DECISION',
-     'migration conflict adjudications'),
-    ('R-007', lambda p: p == AM + 'ROOT-OPERATOR-DECISION-PACKET.md', 'ARCHITECTURE_DECISION',
-     'single-operator decision packet'),
-    ('R-008', lambda p: p.startswith(AM) and p.endswith('.sexp'), 'CANONICAL_MODEL_INPUT',
-     'canonical model module (single source of truth)'),
-    ('R-009', lambda p: p.startswith(AM) and p.endswith(GOVERNED_DOC_EXT), 'AUTHORED_NORMATIVE_PROSE',
-     'architecture-model authored document'),
-    ('R-009Q', lambda p: p.startswith(AM), 'REVIEW_REQUIRED',
-     'a file inside the architecture-model seat whose kind no rule declares — the model seat never blesses by '
-     'prefix (Review-2 N-18)'),
-    # --- the change-proposal round ---
-    ('R-010', lambda p: p in (CPP + 'SUBSYSTEM-REGISTRY.sexp', CPP + 'INTERFACE-AND-SCHEMA-REGISTRY.sexp'),
-     'CANONICAL_MODEL_INPUT', 'v1.6 registry — migration input to the canonical model'),
-    ('R-011', lambda p: p.startswith(CPP) and p.endswith('-SCHEMAS.sexp'), 'CANONICAL_MODEL_INPUT',
-     'versioned schema — type/record facts migration input'),
-    ('R-012', _hist, 'HISTORICAL_EVIDENCE',
-     'legacy v1.x verifier/audit/manifest or captured run output — NON_AUTHORITATIVE (frozen at 4787b342)'),
-    ('R-013', lambda p: p in (CPP + 'ARCHITECTURE-CLOSURE-MATRIX.md', CPP + 'PUBLIC-OBSERVATORY-CROSSWALK.md',
-                              CPP + 'DOMINANCE-MATRIX.md'), 'GENERATED_VIEW',
-     'human-readable table generated from the registries/model'),
-    ('R-014', lambda p: p.startswith(CPP + 'IMPLEMENTATION-BOOK/tools/'), 'HISTORICAL_EVIDENCE',
-     'AS-IS extraction tool and its extracted inventory (Implementation-Book execution not authorized)'),
-    ('R-015', lambda p: p.startswith(CPP + 'IMPLEMENTATION-BOOK/'), 'AUTHORED_NORMATIVE_PROSE',
-     'Implementation Book construction detail (execution not authorized)'),
-    ('R-016', lambda p: p.startswith(CPP + 'V1.3-DESTRUCTION-PASS/'), 'HISTORICAL_EVIDENCE',
-     'v1.3 destruction-pass record'),
-    ('R-017', lambda p: p.startswith(CPP + 'formal-v1.1/'), 'HISTORICAL_EVIDENCE',
-     'v1.1 TLA+ specifications, configurations and falsifiers (v1.1 is FALSIFIED — historical candidate)'),
-    # --- collaboration and deployment-level normative material ---
-    ('R-018', lambda p: p.startswith('deployment/collab/dialogue/'), 'HISTORICAL_EVIDENCE',
-     'append-only AI-dialogue record'),
-    ('R-019', lambda p: p.startswith('deployment/self/'), 'OUT_OF_SCOPE_WITH_REASON',
-     'runtime self-state (restored before every commit; not a model fact)'),
-    ('R-020', lambda p: p.startswith('deployment/knowledge/'), 'OUT_OF_SCOPE_WITH_REASON',
-     'product knowledge base (legal lexicon/taxonomy; not architecture facts)'),
-    ('R-021', lambda p: p.startswith('deployment/self-study/'), 'HISTORICAL_EVIDENCE',
-     'dated external-review / intelligence-audit record'),
-    ('R-022', lambda p: p.startswith('deployment/verify/'), 'PRODUCTION_CODE',
-     'MLTP verification runtime (product)'),
-    ('R-023', lambda p: p.startswith('deployment/data/'), 'OUT_OF_SCOPE_WITH_REASON',
-     'reference/corpus data under deployment (not architecture facts)'),
-    ('R-024', lambda p: p.startswith('deployment/state/'), 'OUT_OF_SCOPE_WITH_REASON',
-     'daemon runtime state (not a model fact)'),
-    ('R-025', lambda p: p.startswith('deployment/templates/') or p.startswith('deployment/shapes/')
-     or p.startswith('deployment/mcp/'), 'PRODUCTION_CODE',
-     'RDF templates, SHACL shapes and MCP wiring for publication (product)'),
-    ('R-026', lambda p: p.startswith('deployment/') and p.count('/') == 1 and p.endswith(_DEP_TOP_EXT),
-     'PRODUCTION_CODE', 'FEK ingestion and semantic-web publication runtime (product)'),
-    ('R-027', lambda p: p.startswith('deployment/') and p.endswith('.md'), 'AUTHORED_NORMATIVE_PROSE',
-     'authored normative document under deployment/'),
-    ('R-028', lambda p: p.startswith('deployment/') and p.endswith('.sexp'), 'AUTHORED_NORMATIVE_PROSE',
-     'authored normative contract in S-expression form under deployment/'),
-    ('R-029', lambda p: p.startswith(DESIGN) and p.endswith(DESIGN_ROUND_EXT), 'HISTORICAL_EVIDENCE',
-     'design-round artifact of a declared kind (formal model, analysis tool or evidence data) — round record, not a live path'),
-    ('R-030', lambda p: p.startswith('deployment/collab/') and p.endswith(DESIGN_ROUND_EXT), 'HISTORICAL_EVIDENCE',
-     'collaboration-round record of a declared kind (freeze/launch verification evidence outside the design subtree)'),
-    # --- product code, tests, corpora and repository furniture ---
-    ('R-031', lambda p: p.startswith('source/') or p.startswith('systems/'), 'PRODUCTION_CODE',
-     'LAWMAX product source (untouched by this pass)'),
-    ('R-032', lambda p: p.startswith('authority-v2/'), 'PRODUCTION_CODE',
-     'authority-v2 attestation/proof machinery (product)'),
-    ('R-033', lambda p: p.startswith('docker/'), 'PRODUCTION_CODE',
-     'container build and proof machinery (product)'),
-    ('R-034', lambda p: p.startswith('scripts/') or p.startswith('tools/'), 'PRODUCTION_CODE',
-     'build and verification scripts (product)'),
-    ('R-035', lambda p: p.startswith('cloudflare/'), 'PRODUCTION_CODE',
-     'edge publication runtime (product)'),
-    ('R-036', lambda p: p.startswith('determinism/'), 'TEST_OR_FIXTURE',
-     'determinism verification harness'),
-    ('R-037', lambda p: p.startswith('tests/'), 'TEST_OR_FIXTURE', 'product test/fixture'),
-    ('R-038', lambda p: p.startswith('third-party/'), 'VENDORED_DEPENDENCY',
-     'vendored third-party dependency tree — executable material, kept distinct from data corpora so that a '
-     'dependency can never be filed under the same role as a corpus (Review-2 N-18); no governance path compiles '
-     'or loads any of it since the kernel stopped using the vendored ironclad closure (Review-2 N-1)'),
-    ('R-039', lambda p: p.startswith('output/') or p.startswith('output_run1/') or p.startswith('input/'),
-     'OUT_OF_SCOPE_WITH_REASON', 'pipeline data/artifact corpus (not architecture facts)'),
-    ('R-040', lambda p: p.startswith('docs/'), 'OUT_OF_SCOPE_WITH_REASON',
-     'product documentation (not architecture facts)'),
-    ('R-041', lambda p: p.startswith('configs/'), 'OUT_OF_SCOPE_WITH_REASON',
-     'corpus pipeline configuration (not architecture facts)'),
-    ('R-042', lambda p: p.startswith('keys/'), 'OUT_OF_SCOPE_WITH_REASON',
-     'key material placeholder/README (not architecture facts)'),
-    ('R-043', lambda p: p.startswith('evidence/') or p.startswith('state/') or p.startswith('candidates/')
-     or p.startswith('releases/'), 'OUT_OF_SCOPE_WITH_REASON',
-     'runtime evidence/state/release artifacts (not architecture facts)'),
-    ('R-044', lambda p: p.startswith('examples/'), 'OUT_OF_SCOPE_WITH_REASON',
-     'example material (not architecture facts)'),
-    ('R-045', lambda p: p.startswith('deps/') or p in ('deps.lock', 'deps.archives.lock'),
-     'OUT_OF_SCOPE_WITH_REASON', 'vendored dependency lock/manifest (not architecture facts)'),
-    ('R-046', lambda p: p.startswith('.github/'), 'OUT_OF_SCOPE_WITH_REASON',
-     'CI workflow configuration (not architecture facts)'),
-    ('R-047', lambda p: p.startswith('.'), 'OUT_OF_SCOPE_WITH_REASON',
-     'repository dotfile configuration (not architecture facts)'),
-    ('R-048', lambda p: '/' not in p and p.endswith('.asd'), 'PRODUCTION_CODE',
-     'ASDF system definition (LAWMAX product build)'),
-    ('R-049', lambda p: p in ('build.lisp', 'entrypoint.lisp'), 'PRODUCTION_CODE',
-     'product build/entrypoint (LAWMAX product)'),
-    ('R-050', lambda p: '/' not in p and (p == 'Dockerfile' or p.startswith('Dockerfile.')
-                                          or p.startswith('docker-compose')), 'PRODUCTION_CODE',
-     'container build/compose definition (product)'),
-    ('R-051', lambda p: p in ('package.json', 'package-lock.json'), 'OUT_OF_SCOPE_WITH_REASON',
-     'node tooling manifest (not architecture facts)'),
-    ('R-052', lambda p: p in ('LICENSE', 'PROVENANCE.yaml', 'SYSTEM-HIERARCHY.txt'),
-     'OUT_OF_SCOPE_WITH_REASON', 'repository licence/provenance/hierarchy manifest (not architecture facts)'),
-    ('R-053', lambda p: '/' not in p and p.endswith('.md'), 'AUTHORED_NORMATIVE_PROSE',
-     'repository-root normative document/contract'),
-]
+# --------------------------------------------------------------------------- the classification table
+# Review-3 §15 M2. The table is DATA, in one canonical seat (classification-rules.sexp), read here and read by
+# both verification paths. There is no second hand-written copy to drift out of step with the model, and a rule
+# can no longer be silently added to the generator without appearing in the facts the verifiers check.
+def atom_matches(a, p):
+    """One match atom against one path. An atom outside the declared vocabulary is fatal, never a false."""
+    kind, _, arg = a.strip().partition(':')
+    if kind == 'prefix':
+        return p.startswith(arg)
+    if kind == 'suffix':
+        return p.endswith(arg)
+    if kind == 'equals':
+        return p == arg
+    if kind == 'depth':
+        return p.count('/') == int(arg)
+    if kind == 'pattern':
+        return re.search(arg, p) is not None
+    sys.stderr.write('UNKNOWN-MATCH-ATOM: %r is not prefix/suffix/equals/depth/pattern\n' % a)
+    sys.exit(2)
+
+
+def rule_matches(expr, p):
+    """The :match grammar: a disjunction of conjunctions, '|' between terms and '&' between atoms."""
+    return any(all(atom_matches(a, p) for a in term.split('&')) for term in expr.split('|'))
+
+
+def rules():
+    """The classification table from its one canonical seat, ordered, with every degenerate shape named."""
+    seen, table = {}, []
+    for form in SR.read_forms_file(os.path.join(HERE, 'classification-rules.sexp')):
+        if SR.head(form) != 'fact' or str(form[1]).lower() != 'classification-rule':
+            continue
+        rid = str(form[2])
+        pl = dict(SR.plist(form[3:], 'classification-rules.sexp', rid))
+        table.append((int(str(pl['order'])), rid, str(pl['match']), str(pl['role']), str(pl['reason'])))
+    for field, index in (('id', 1), ('order', 0), ('match expression', 2)):
+        dupes = [k for k, n in Counter(row[index] for row in table).items() if n > 1]
+        if dupes:
+            sys.stderr.write('DUPLICATE-RULE-%s: %s\n' % (field.split()[0].upper(), ' '.join(map(str, dupes))))
+            sys.exit(3)
+    if not table:
+        sys.stderr.write('EMPTY-RULE-TABLE: classification-rules.sexp declares no classification-rule fact\n')
+        sys.exit(3)
+    for _order, rid, _m, role, _r in table:
+        if role not in ROLES:
+            sys.stderr.write('UNDECLARED-RULE-ROLE: %s assigns %r, which is not a declared role\n' % (rid, role))
+            sys.exit(3)
+    return [(rid, expr, role, reason) for _order, rid, expr, role, reason in sorted(table)]
+
+
+RULES = rules()
 
 
 def classify(p):
-    for rid, pred, role, reason in RULES:
-        if pred(p):
+    for rid, expr, role, reason in RULES:
+        if rule_matches(expr, p):
             return rid, role, reason
     return None, 'UNCLASSIFIED', 'no explicit classification rule matched this tracked path'
 
 
 def wq(v):
     return '"%s"' % v.replace('\\', '\\\\').replace('"', '\\"')
+
+
+def tcb_blobs(paths, tree):
+    """Exact candidate bytes for PATHS.
+
+    With a pinned TREE the bytes come from that tree object. Without one the candidate is what the current state
+    would commit, so a tracked path present in the working tree is read from there and one that is only staged
+    is read from the index. A path that is in neither is named and fatal: dropping it would understate the
+    acceptance base by exactly the amount an attacker most wants understated."""
+    repo = REPO or ROOT
+    blobs = {}
+    for p in paths:
+        rev = '%s:%s' % (tree, p) if tree else ':%s' % p
+        if not tree and os.path.isfile(os.path.join(repo, p)):
+            with open(os.path.join(repo, p), 'rb') as fh:                 # the working tree IS the candidate
+                blobs[p] = fh.read()
+            continue
+        r = subprocess.run(['git', '-C', repo, 'cat-file', 'blob', rev], capture_output=True)
+        if r.returncode != 0:
+            sys.stderr.write('FATAL: no blob for %s at %s\n' % (p, rev))
+            sys.exit(2)
+        blobs[p] = r.stdout
+    return blobs
 
 
 def main():
@@ -277,7 +231,7 @@ def main():
     # A rule that matches nothing is obsolete or shadowed, and that is a build failure — EXCEPT for the
     # quarantine rules, whose whole purpose is to fire only when something undeclared appears. A healthy tree is
     # precisely the tree in which they match nothing, so requiring them to fire would invert their meaning.
-    dead = [rid for rid, _p, role, _x in RULES if rulec.get(rid, 0) == 0 and role not in QUARANTINE_ROLES]
+    dead = [rid for rid, _m, role, _x in RULES if rulec.get(rid, 0) == 0 and role not in QUARANTINE_ROLES]
 
     out = [';;;; files-and-roles.sexp — every tracked file classified exactly once (no-loss).',
            ';;;; GENERATED by build_inventory.py.  Do not edit by hand.',
@@ -303,6 +257,24 @@ def main():
         out.append('(fact dir-rule DR-%04d :top %s :role %s :rule %s :count %d :reason %s)'
                    % (i, wq(top), role, rid, cnt, wq(reason)))
     out.append('')
+    # The acceptance trusted computing base, measured from the candidate's own bytes by the ONE rule in
+    # acceptance_runtime.py. The set is every executable KIND in the seat plus every GOVERNANCE_MACHINERY file
+    # wherever it sits, so neither moving a file out of the seat nor re-classifying it removes it from the count.
+    machinery = {p for p, rid, role, reason in per_file if role == 'GOVERNANCE_MACHINERY'}
+    tcb = AR.tcb_measure(tcb_blobs(sorted({p for p in files if p.startswith(AM)} | machinery), tree))
+    out.append(';;;; The acceptance TCB, measured by the one rule in acceptance_runtime.py'
+               ' (TCB-BASELINE-RECONCILIATION.md §1).')
+    out.append(';;;; Membership follows from path kind and file bytes, never from a role name, so no'
+               ' re-classification and no')
+    out.append(';;;; rename can shrink it. The ceiling is authored elsewhere (tcb-budget, verification-corpus)'
+               ' and `gate_checks.py tcb`')
+    out.append(';;;; re-derives every number below from the candidate tree before letting the gate reach a'
+               ' verdict.')
+    for n, (p, physical, nbnc) in enumerate(tcb, 1):
+        out.append('(fact tcb-file TCB-%04d :path %s :physical %d :nbnc %d)' % (n, wq(p), physical, nbnc))
+    out.append('(fact tcb-total TCB-TOTAL :files %d :physical %d :nbnc %d)'
+               % (len(tcb), sum(r[1] for r in tcb), sum(r[2] for r in tcb)))
+    out.append('')
     out.append('(fact inventory-total INV-TOTAL :tracked %d :file-facts %d :dir-rule-facts %d :dir-rule-sum %d)'
                % (len(files), len(per_file), len(agg), sum(agg.values())))
     with open(out_path, 'w', encoding='utf-8', newline='\n') as fh:
@@ -311,6 +283,8 @@ def main():
     print('tracked=%d  file-facts=%d  dir-rule-facts=%d  dir-rule-sum=%d  unclassified=%d  dead-rules=%d'
           % (len(files), len(per_file), len(agg), sum(agg.values()), len(quarantined), len(dead)))
     print('role counts:', dict(sorted(rolec.items())))
+    print('acceptance TCB: %d executable files, %d physical, %d non-blank/non-comment'
+          % (len(tcb), sum(r[1] for r in tcb), sum(r[2] for r in tcb)))
     if quarantined:
         sys.stderr.write('QUARANTINED — %d tracked path(s) need an explicit decision:\n' % len(quarantined))
         for role, p in quarantined:

@@ -4,3 +4,6 @@ CHECKER/NEUTRAL-EXPORT.json
 KERNEL-COMMITMENT.txt
 CHECKER-COMMITMENT.txt
 .conflicts.json
+
+# transient staging of generated artifacts (removed by the generator itself)
+.aml-stage-*

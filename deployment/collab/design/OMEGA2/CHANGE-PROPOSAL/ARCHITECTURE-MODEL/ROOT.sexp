@@ -8,14 +8,15 @@
   :model-version "1"
   :schema-version "3"
   :parent-architecture-commit "4787b342282f8d5f2ec4b9e64b11e32b7a64813a"
-  :canonical-model-root-digest "46bf277330e42ef431350ae96d7bb845b755ae6e157b88587cf3a21d46f9f5ce"
-  :module-count 13
+  :canonical-model-root-digest "48ff0c72cc83f99df6f4176a4fd276261f9c1907fcc0afe6d00dcb9bbe734fd0"
+  :module-count 14
   :composition (
-    (:module "MODEL-SCHEMA.sexp" :sha256 "e649d5f8cac15585b3cdf91fc42a3a92d5771473748894f25e52b8ac48d5848b")
+    (:module "MODEL-SCHEMA.sexp" :sha256 "c235ce835a587c4575f84dcf2638313ee4d82bbe45395b7d52a3358428b7d934")
     (:module "TOOLCHAIN.sexp" :sha256 "edc3e7575d6cf00caf4a80ed84f2335d8fdb500575c197ed038571c41ebab216")
+    (:module "classification-rules.sexp" :sha256 "07b0d75282820ecc1539a5d9f9f59bcf0b1751649c0b2decc6ddddc2de42c426")
     (:module "deferred-imports.sexp" :sha256 "292067c5d78525a9777efa45fa380c6320bd7c91671da7e35d39fca2abb48177")
     (:module "dependencies-and-boundaries.sexp" :sha256 "132d074c4ae6adda39ff00d239983f9d73b6fffa5b93ee9c6c74ff87d6a6bc16")
-    (:module "files-and-roles.sexp" :sha256 "4e00e7b44e1f6663f1f81e7e899a428af10fed2fa7c5f80938aa15e07de7fcb3")
+    (:module "files-and-roles.sexp" :sha256 "7a57e215da312cb019cfc97620a9cbb6a6de0ac731531b99d3932c81505baf3f")
     (:module "generation-order.sexp" :sha256 "bede6968851351fbdacc30a76cd5c89ba105d0957cdc4ad1f0ca4a4aed200128")
     (:module "interfaces-and-types.sexp" :sha256 "d809def3283a3f4a802d37aebeaf75cc3367b02bae0360b2869a40d6eb9f95a5")
     (:module "rationale-references.sexp" :sha256 "c39888e27c03723205238798e334e34f7fe93da5ca8217a583537154e37569ec")
@@ -23,5 +24,5 @@
     (:module "seats.sexp" :sha256 "5a220af64cf4e0deb1b45e7819923e251b17dd46bc5450c94413bfa907347fa9")
     (:module "stores-and-authorities.sexp" :sha256 "5ed5c95450bbda902ef350d77bed924bd4ef9ab0938a101c469a7f920ba35b60")
     (:module "subsystems.sexp" :sha256 "f3c7ea6634b6e3ad280afc68544247fef4b6fa96a4fd0bc86cd46d03c22ad18f")
-    (:module "verification-corpus.sexp" :sha256 "85d727c8af862d767509bb0bb80dc36d656a63f13af9b1d7ed5de59c610363f2")
+    (:module "verification-corpus.sexp" :sha256 "42a8299892c778f34595f0400e4345108d914c64aa329d60112d03bdee27f913")
   ))

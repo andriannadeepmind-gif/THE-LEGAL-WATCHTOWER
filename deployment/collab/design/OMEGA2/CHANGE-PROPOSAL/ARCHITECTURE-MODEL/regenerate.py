@@ -79,6 +79,7 @@ def main():
         if not os.path.isfile(path):
             sys.stderr.write('REGENERATION-BLOCKED: declared producer %s does not exist\n' % producer)
             sys.exit(2)
+        # CLOSURE-BOUND: gen-step.producer
         r = subprocess.run([sys.executable, path], capture_output=True, text=True, cwd=HERE)
         if r.returncode != 0:
             sys.stderr.write('REGENERATION-FAILED: %s exited %d\n%s\n' % (producer, r.returncode, r.stdout + r.stderr))

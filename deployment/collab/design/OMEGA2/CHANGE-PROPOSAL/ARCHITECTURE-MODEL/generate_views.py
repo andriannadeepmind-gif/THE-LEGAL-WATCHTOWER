@@ -19,42 +19,17 @@ generation time, so no total can go stale.
 Review-2 N-2: `--out DIR` renders into another directory and leaves the tracked tree untouched, which is what
 lets the gate COMPARE instead of overwrite.
 """
-import argparse, importlib.util, os, sys
+import shutil, tempfile, argparse, importlib.util, os, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 _spec = importlib.util.spec_from_file_location('sexp_reader', os.path.join(HERE, 'SEXP-READER.py'))
 SR = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(SR)
 GEN_VERSION = "generate_views.py/3"
-HEADERS = SR.HEADERS          # one seat: the reader declares the header vocabulary
 
 
 def fail(msg):
     sys.stderr.write('FATAL: %s\n' % msg)
     sys.exit(2)
-
-
-def root_plist():
-    forms = SR.read_forms_file(os.path.join(HERE, 'ROOT.sexp'))
-    roots = [f for f in forms if SR.head(f) == 'define-model-root']
-    if len(roots) != 1 or len(forms) != 1:
-        fail('ROOT.sexp must contain exactly one define-model-root form and nothing else')
-    return dict(SR.plist(roots[0][2:], 'ROOT.sexp', 'define-model-root'))
-
-
-def read_facts(modules):
-    out = []
-    for mod in modules:
-        for form in SR.read_forms_file(os.path.join(HERE, mod)):
-            h = SR.head(form)
-            if h in HEADERS:
-                continue
-            if h != 'fact' or len(form) < 3:
-                fail('%s: unconsumed top-level form %r' % (mod, h))
-            ftype = str(form[1]).lower()
-            fid = SR.canonical_value(form[2], mod, 'fact id')
-            pairs = SR.plist(form[3:], mod, '%s %s' % (ftype, fid))
-            out.append((ftype, fid, {k.lower(): SR.canonical_value(v, mod, k) for k, v in pairs}))
-    return out
 
 
 def main():
@@ -63,14 +38,10 @@ def main():
     args = ap.parse_args()
     outdir = os.path.abspath(args.out) if args.out else HERE
 
-    pl = root_plist()
-    digest = str(pl.get('canonical-model-root-digest', ''))
-    modules = [str(dict(SR.plist(e, 'ROOT.sexp', 'composition entry'))['module'])
-               for e in pl.get('composition', [])]
-    facts = read_facts(modules)
-    byt = {}
-    for t, i, p in facts:
-        byt.setdefault(t, []).append((i, p))
+    model = SR.read_model(HERE)
+    digest = str(model.root.get('canonical-model-root-digest', ''))
+    facts = model.facts
+    byt = model.by_type
     cmd = "python3 ARCHITECTURE-MODEL/regenerate.py"
 
     def stamp(title):
@@ -200,14 +171,32 @@ def main():
     if extra:
         fail('this generator can render view(s) the model does not declare: %s' % ', '.join(extra))
 
-    written = []
-    for aid in sorted(declared):
-        rel = declared[aid]['path']
-        target = os.path.join(outdir, rel)
-        os.makedirs(os.path.dirname(target), exist_ok=True)
-        with open(target, 'w', encoding='utf-8', newline='\n') as f:
-            f.write(RENDER[aid]())
-        written.append(rel)
+    # Review-3 R3-6. `:path` is MODEL data, and model data was able to name an absolute path: os.path.join let it
+    # win and 1231 bytes landed outside the output root. Every destination is now resolved through the one
+    # containment seat BEFORE any filesystem call, every write goes to a private staging directory on the same
+    # filesystem, and nothing moves into place until the WHOLE generation has succeeded.
+    written, destinations = [], {}
+    stage = tempfile.mkdtemp(prefix='.aml-stage-', dir=outdir)
+    try:
+        for aid in sorted(declared):
+            rel = declared[aid]['path']
+            try:
+                staged = SR.contained_path(stage, rel, 'gen-artifact %s :path' % aid)
+                final = SR.contained_path(outdir, rel, 'gen-artifact %s :path' % aid)
+            except SR.UncontainedPath as e:
+                fail('UNCONTAINED-ARTIFACT-PATH: %s' % e)
+            if final in destinations:
+                fail('DUPLICATE-ARTIFACT-DESTINATION: %s and %s both render to %s' % (destinations[final], aid, rel))
+            destinations[final] = aid
+            os.makedirs(os.path.dirname(staged), exist_ok=True)
+            with open(staged, 'w', encoding='utf-8', newline='\n') as f:
+                f.write(RENDER[aid]())
+            written.append((staged, final, rel))
+        for staged, final, _rel in written:
+            os.makedirs(os.path.dirname(final), exist_ok=True)
+            os.replace(staged, final)                 # same filesystem, so this is atomic per artifact
+    finally:
+        shutil.rmtree(stage, ignore_errors=True)
     print("generated %d model-declared views from %d facts (root-digest %s)" % (len(written), len(facts), digest[:12]))
 
 

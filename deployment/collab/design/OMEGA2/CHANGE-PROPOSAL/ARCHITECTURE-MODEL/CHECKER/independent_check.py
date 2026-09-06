@@ -234,10 +234,17 @@ def read_schema(dirp):
     if len(decls) != 1 or len(forms) != 1:
         die(3, 'SCHEMA-MALFORMED: expected exactly one define-model-schema form and nothing else, found %d '
                'declaration(s) among %d top-level form(s)' % (len(decls), len(forms)))
-    version = None
-    for k, v in plist(decls[0][2:4] if len(decls[0]) > 3 else [], 'schema header'):
+    version = encoding = None
+    header = []                          # the header plist is everything before the first declaration sub-form
+    for x in decls[0][2:]:
+        if isinstance(x, list):
+            break
+        header.append(x)
+    for k, v in plist(header, 'schema header'):
         if k == 'version':
             version = render(v, 'schema :version')
+        if k == 'canonical-encoding':
+            encoding = render(v, 'schema :canonical-encoding')
     enums, spaces, ftypes, conds, uniques = {}, {}, {}, [], []
     for sub in decls[0]:
         if not isinstance(sub, list):
@@ -270,6 +277,9 @@ def read_schema(dirp):
                 enum={render(p[0], 'e').lower(): render(p[1], 'e').upper() for p in pl.get('enum', [])},
                 ref={render(r[0], 'r').lower(): [render(t, 'r').lower() for t in r[1:]] for r in pl.get('ref', [])},
                 id_space=render(pl['id-space'], 'id-space').upper() if 'id-space' in pl else None)
+    if encoding != CANONICAL_ENCODING:
+        die(3, 'ENCODING-VERSION: MODEL-SCHEMA.sexp declares :canonical-encoding %r; this path implements %r, so '
+               'no commitment and no verdict is issued' % (encoding, CANONICAL_ENCODING))
     return version, enums, spaces, ftypes, conds, uniques
 
 
@@ -430,22 +440,40 @@ def read_facts(dirp, comp, schema, viol):
     return facts
 
 
-def canonical_fact_render(ftype, fid, pairs):
-    parts = sorted('%s=%s' % (k.upper(), render(v, '%s %s :%s' % (ftype, fid, k))) for k, v in pairs)
-    return '%s|%s|%s' % (ftype.upper(), fid, '|'.join(parts))
+CANONICAL_ENCODING = 'AMC2'          # this path's own implementation of CANONICAL-ENCODING.md
 
 
-def commitment_lines(facts):
+def enc(s):
+    """AMC2: <byte-length of the UTF-8 form>:<the UTF-8 form>. Nothing is ever searched for, so no value can
+    impersonate a field boundary — the defect the superseded '|' delimiter encoding had."""
+    return '%d:%s' % (len(str(s).encode('utf-8')), s)
+
+
+def canonical_fact_render(ftype, fid, pairs, schema_version):
+    kv = sorted(enc(k.upper()) + enc(render(v, '%s %s :%s' % (ftype, fid, k))) for k, v in pairs)
+    return ''.join([enc(CANONICAL_ENCODING), enc(schema_version), enc(ftype.upper()), enc(fid),
+                    enc(str(len(kv)))] + kv)
+
+
+def canonical_digest(scope, renders, schema_version):
+    body = ''.join([enc('AMC2-COMMITMENT'), enc(schema_version), enc(scope), enc(str(len(renders)))]
+                   + [enc(r) for r in sorted(renders)])
+    return sha_text(body)
+
+
+def commitment_lines(facts, schema_version):
     per_mod, per_fam, allr = {}, {}, []
     for mod, ftype, fid, pairs in facts:
-        r = canonical_fact_render(ftype, fid, pairs)
+        r = canonical_fact_render(ftype, fid, pairs, schema_version)
         allr.append(r); per_mod.setdefault(mod, []).append(r); per_fam.setdefault(ftype, []).append(r)
-    dig = lambda rs: sha_text('\n'.join(sorted(rs)))
-    out = ['COMMITMENT total-facts %d' % len(allr), 'COMMITMENT total-digest %s' % dig(allr)]
+    out = ['COMMITMENT total-facts %d' % len(allr),
+           'COMMITMENT total-digest %s' % canonical_digest('TOTAL', allr, schema_version)]
     for m in sorted(per_mod):
-        out.append('COMMITMENT module %s %d %s' % (m, len(per_mod[m]), dig(per_mod[m])))
+        out.append('COMMITMENT module %s %d %s'
+                   % (m, len(per_mod[m]), canonical_digest('MODULE:' + m, per_mod[m], schema_version)))
     for f in sorted(per_fam):
-        out.append('COMMITMENT family %s %d %s' % (f, len(per_fam[f]), dig(per_fam[f])))
+        out.append('COMMITMENT family %s %d %s'
+                   % (f, len(per_fam[f]), canonical_digest('FAMILY:' + f, per_fam[f], schema_version)))
     return out, per_mod, per_fam
 
 
@@ -562,7 +590,7 @@ def main():
     pl, comp = read_root(dirp)
     recomputed = verify_root(dirp, pl, comp, version, viol)
     facts = read_facts(dirp, comp, schema, viol)
-    lines, per_mod, per_fam = commitment_lines(facts)
+    lines, per_mod, per_fam = commitment_lines(facts, version)
 
     mine_path = args.commitment or os.path.join(dirp, 'CHECKER-COMMITMENT.txt')
     with open(mine_path, 'w', encoding='utf-8', newline='\n') as f:

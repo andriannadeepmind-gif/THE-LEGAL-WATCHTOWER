@@ -909,3 +909,50 @@ Citation-Bound Verification Profile). Design only, working tree, **κανένα 
   Implementation-Book · production implementation · νέοι αρχιτεκτονικοί άξονες · merge · amend/rebase.
   **`OPTION-2 REVIEW-2 CORRECTION COMPLETE — AWAITING FRESH INDEPENDENT REVIEW #3 — DDI-1 BLOCKED —
   NOT FULL-BUILD COMPLETE — NOT FROZEN — NOT QUALIFIED — IMPLEMENTATION BLOCKED`.**
+
+## [0163] OPTION-2 CORE ΣΥΣΤΗΜΙΚΗ ΔΙΟΡΘΩΣΗ REVIEW #3 (R3-1…R3-15 + §15 TCB) — πάνω στο `af0eb3c9`
+
+- **Κυβερνών τεκμήριο:** ανεξάρτητη έκθεση `INDEPENDENT CANONICAL-MODEL CORE REVIEW #3 — OPTION-2 CORE
+  @ af0eb3c9`· ετυμηγορία `... REVIEW #3 FAILED — CORRECTION REQUIRED` (1×P1 R3-2, 5×P2 R3-1/3/4/5/6,
+  9×P3 R3-7…R3-15). Read-only συνημμένο, ΟΧΙ artifact του repo. Κάθε εύρημα **αναπαράχθηκε ανεξάρτητα πρώτα**.
+- **Provenance (R3-2, P1):** η αποδοχή δένει τη μηχανή στον υποψήφιο (byte-identical σε candidate / εκτελούμενο
+  αντίγραφο / working tree) και εκτελεί ΟΛΗ την μπαταρία από **export του υποψηφίου**· αποτυχία σταματά πριν
+  από κάθε ετυμηγορία.
+- **Μία εντολή (R3-15):** το `ACCEPT.sh` **διαγράφηκε**· μία εντολή, δύο φάσεις — χωρίς όρισμα ΕΙΝΑΙ η αποδοχή,
+  `--checks` είναι η φάση που εκτελούν οι composed falsifiers.
+- **Ταυτότητα εκτελεσίμων (R3-3):** κανένας interpreter δεν λύνεται με ΟΝΟΜΑ (το pinned absolute path βγαίνει
+  από το `TOOLCHAIN.sexp` με `awk`)· επαληθεύεται ο realpath του τρέχοντος interpreter και του πραγματικά
+  εισηγμένου solver extension· το bootstrap root δηλώνεται ΡΗΤΑ ως εξωτερική παραδοχή. **Εκτελεσμένη ισχυρή
+  επίθεση wrapper (python3+sbcl+clingo πρώτα στο PATH): κανένα wrapper δεν κλήθηκε ποτέ.** PYTHONPATH shadowing
+  με ταιριαστό version: ονομασμένη αποτυχία `EXECUTED-IS-NOT-PINNED`.
+- **Encoding (R3-1/R3-13):** AMC2 length-prefixed canonical encoding, μία προδιαγραφή και τρεις ανεξάρτητες
+  υλοποιήσεις· ο kernel έκλεισε τα reader macros — και οι τρεις readers απορρίπτουν πλέον το `#x10`.
+- **Λοιπά:** ολικός kernel σε improper plists (R3-4)· αδύνατη στατική επίλυση = **εύρημα** (R3-5)· μία έδρα
+  containment (R3-6)· `universe-floor` + τυπωμένο `universe-authorization` (R3-7)· μία έδρα workspace με
+  άρνηση εχθρικού TMPDIR (R3-8)· content-sensitive read-only μέτρο + `GIT_OPTIONAL_LOCKS=0` (R3-9)· bounded
+  execution με process-group kill (R3-10)· extension-blind σύμπαν artifacts (R3-11)· `SEAT-PATH-UNIQUE` (R3-12)·
+  κοινή αποθήκη αντικειμένων μέσω `--git-common-dir` (R3-14).
+- **§15 TCB — συμφιλίωση βάσης:** πλήρες πραγματικό baseline `af0eb3c9` = **17 αρχεία / 5.544 physical /
+  4.577 NBNC**· η έκθεση ανέφερε «16 / 5.544 / 4.440» μετρώντας physical στα 17 και NBNC στα 16 και αθροίζοντας
+  τη Lisp διαδρομή στο κάτω άκρο «399»: **4.577 = 4.440 + 136 + 1**. Ο cap διορθώθηκε τεκμηριωμένα σε
+  **≤ 4.577**· η μέτρηση και το file-set είναι **generated evidence** (`tcb-file`/`tcb-total`), ο cap είναι
+  **authored** σε άλλο module (`tcb-budget`), και ο `tcb-01` τα ξαναπαράγει από τον υποψήφιο **κατά ΕΙΔΟΣ
+  αρχείου, ποτέ κατά ρόλο**. Πλήρες path-by-path: `ARCHITECTURE-MODEL/TCB-BASELINE-RECONCILIATION.md`.
+- **Τελική βάση:** **5.020 NBNC / 16 αρχεία = +443 πάνω από το ιστορικό baseline**. Ολόκληρη η αύξηση είναι το
+  τίμημα των κλεισιμάτων R3· οι ενοποιήσεις έδωσαν πίσω 201 γραμμές. ΔΕΝ αφαιρέθηκε ο reader του checker, η
+  τρίτη υλοποίηση AMC2, ο closure-indeterminacy analyser ή το `build_model.py`· ΔΕΝ πακεταρίστηκαν γραμμές· ΔΕΝ
+  άλλαξε ο κανόνας μέτρησης· ΔΕΝ εξαιρέθηκε αρχείο τεχνητά. **Ρητή απόφαση δημιουργού:
+  `R3-CLOSURE-JUSTIFIED-EXCEPTION` έως 5.020 NBNC· το 4.577 παραμένει το ιστορικό baseline και ΔΕΝ διορθώνεται
+  αναδρομικά· το 5.020 είναι πλέον το ανώτατο όριο μη ανάπτυξης· η εξαίρεση ΔΕΝ αποτελεί απόδειξη ποιότητας.**
+- **Μπαταρία (εκτελεσμένη):** shallow depth-1 clone → μόνο ο `tcb-01` αποτυγχάνει· linked `git worktree` →
+  **51/51** COMPONENT falsifiers· ταυτόχρονα δύο gates → ίδια ετυμηγορία, `ro-01`/`ro-02` PASS· **strace 476.842
+  syscalls → καμία εγγραφή μέσα στο repo, κανένα `.git/index.lock`**· εχθρικό TMPDIR → άρνηση· bounded execution
+  → τυπωμένο `TIMEOUT`· σταθερό σημείο αναπαραγωγής → `0 changed` δύο φορές· kernel 400/400 (budget ΜΙΑΣ
+  διαδρομής, ΟΧΙ το συνολικό TCB).
+- **Αριθμοί:** 14 hash-pinned modules (schema 3)· 55 classification rules ως δεδομένα του μοντέλου· **59 held-out
+  falsifiers (51 COMPONENT + 8 COMPOSED_GATE)**· 22 μετρούμενοι έλεγχοι (21 PASS / 1 FAIL = `tcb-01`),
+  3 informational εκτός μετρήματος.
+- **ΔΕΝ ΕΓΙΝΕ:** DDI-1…DDI-4 · option-1/full-build · freeze · qualification · WP-00 · Implementation-Book ·
+  production implementation · νέοι αρχιτεκτονικοί άξονες · merge · amend/rebase.
+  **`OPTION-2 REVIEW-3 CORRECTION COMPLETE — JUSTIFIED TCB EXCEPTION 5.020 NBNC — AWAITING FRESH INDEPENDENT
+  REVIEW #4 — DDI-1 BLOCKED — NOT FROZEN — NOT QUALIFIED — IMPLEMENTATION BLOCKED`.**
