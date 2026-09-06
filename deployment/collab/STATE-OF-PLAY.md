@@ -938,12 +938,16 @@ Citation-Bound Verification Profile). Design only, working tree, **κανένα 
   **≤ 4.577**· η μέτρηση και το file-set είναι **generated evidence** (`tcb-file`/`tcb-total`), ο cap είναι
   **authored** σε άλλο module (`tcb-budget`), και ο `tcb-01` τα ξαναπαράγει από τον υποψήφιο **κατά ΕΙΔΟΣ
   αρχείου, ποτέ κατά ρόλο**. Πλήρες path-by-path: `ARCHITECTURE-MODEL/TCB-BASELINE-RECONCILIATION.md`.
-- **Τελική βάση:** **5.020 NBNC / 16 αρχεία = +443 πάνω από το ιστορικό baseline**. Ολόκληρη η αύξηση είναι το
-  τίμημα των κλεισιμάτων R3· οι ενοποιήσεις έδωσαν πίσω 201 γραμμές. ΔΕΝ αφαιρέθηκε ο reader του checker, η
+- **Τελική βάση:** **5.019 NBNC / 16 αρχεία = +442 πάνω από το ιστορικό baseline** (cap 5.020, headroom 1). Ολόκληρη η αύξηση είναι το
+  τίμημα των κλεισιμάτων R3· οι ενοποιήσεις έδωσαν πίσω 203 γραμμές (ένας runner αντί τριών −131, producers −72). ΔΕΝ αφαιρέθηκε ο reader του checker, η
   τρίτη υλοποίηση AMC2, ο closure-indeterminacy analyser ή το `build_model.py`· ΔΕΝ πακεταρίστηκαν γραμμές· ΔΕΝ
   άλλαξε ο κανόνας μέτρησης· ΔΕΝ εξαιρέθηκε αρχείο τεχνητά. **Ρητή απόφαση δημιουργού:
   `R3-CLOSURE-JUSTIFIED-EXCEPTION` έως 5.020 NBNC· το 4.577 παραμένει το ιστορικό baseline και ΔΕΝ διορθώνεται
   αναδρομικά· το 5.020 είναι πλέον το ανώτατο όριο μη ανάπτυξης· η εξαίρεση ΔΕΝ αποτελεί απόδειξη ποιότητας.**
+- **Πλήρες `ACCEPT` στο ακριβές committed tree: PASS** — 4/4 subsets, 21 έλεγχοι / 0 FAIL, 51/51 COMPONENT και
+  8/8 COMPOSED_GATE falsifiers, control HOLDS. **Μετάλλαξη πραγματικής αποδυνάμωσης** (`check_tcb` χωρίς
+  αναφορά και χωρίς cap) σε αναλώσιμο κλώνο: πιάστηκε και ονομάστηκε μέσω των held-out `X54`/`X55`/`X56` ⇒
+  `fls-01` FAIL ⇒ `ACCEPT model-checks: FAIL`.
 - **Μπαταρία (εκτελεσμένη):** shallow depth-1 clone → μόνο ο `tcb-01` αποτυγχάνει· linked `git worktree` →
   **51/51** COMPONENT falsifiers· ταυτόχρονα δύο gates → ίδια ετυμηγορία, `ro-01`/`ro-02` PASS· **strace 476.842
   syscalls → καμία εγγραφή μέσα στο repo, κανένα `.git/index.lock`**· εχθρικό TMPDIR → άρνηση· bounded execution

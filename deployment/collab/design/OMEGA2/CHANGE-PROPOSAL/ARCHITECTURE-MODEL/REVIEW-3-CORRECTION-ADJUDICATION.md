@@ -40,10 +40,10 @@ sound, complete or freeze-ready.
 The measurement, the exact file set and the cap are handled in `TCB-BASELINE-RECONCILIATION.md`. In summary:
 the baseline at `af0eb3c9` was reconciled to **17 files / 5,544 physical / 4,577 NBNC**, the counter now has one
 definition, the measurement is generated evidence in the model, and `tcb-01` re-derives it from the candidate by
-FILE KIND — never by role name — and holds it under an authored cap. The measured closure is **16 files / 6,067
-physical / 5,020 NBNC**, `+443` over the reviewed baseline, and every one of those 443 lines is attributed to a
+FILE KIND — never by role name — and holds it under an authored cap. The measured closure is **16 files / 6,072
+physical / 5,019 NBNC**, `+442` over the reviewed baseline, and every one of those 443 lines is attributed to a
 named `R3-*` closure or to the shared infrastructure those closures require. The creator granted an explicit
-`R3-CLOSURE-JUSTIFIED-EXCEPTION` up to 5,020 on that attribution; the historic baseline of 4,577 stands and is
+`R3-CLOSURE-JUSTIFIED-EXCEPTION` up to 5,020 on that attribution, and the final measurement is 5,019; the historic baseline of 4,577 stands and is
 not rewritten, 5,020 is now the non-growth ceiling, and the exception is expressly not evidence of quality.
 
 ## Defects this pass found in its own new machinery, and closed
@@ -59,3 +59,7 @@ not rewritten, 5,020 is now the non-growth ceiling, and the exception is express
 * The synthetic index repository could not read the objects it indexed, which would have forced the generator to
   tolerate an unreadable tracked path — the one tolerance that lets real machinery drop out of the measured
   base unseen. It now carries an alternate to the real object store.
+* The composed-gate battery inherited `AML_REPO` and `AML_CANDIDATE_TREE` from the full acceptance phase, so
+  every composed falsifier injected its defect into a disposable repository and then made the inner gate judge
+  the outer, unmutated tree instead. Eight falsifiers reported NOT REJECTED for defects that were never placed
+  in front of a check. The inner gate now runs with `AML_*` stripped.

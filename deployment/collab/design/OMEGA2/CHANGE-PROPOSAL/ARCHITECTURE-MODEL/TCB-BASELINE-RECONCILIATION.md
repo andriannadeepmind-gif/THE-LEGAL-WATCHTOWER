@@ -154,26 +154,26 @@ Measured by rule §1 over the same full execution closure, at the end of the Rev
 | | files | physical | NBNC |
 |---|---:|---:|---:|
 | baseline `af0eb3c9` | 17 | 5,544 | **4,577** |
-| after the Review-3 correction | 16 | 6,061 | **5,017** |
-| difference | −1 | +517 | **+440** |
+| after the Review-3 correction | 16 | 6,072 | **5,019** |
+| difference | −1 | +528 | **+442** |
 
 Per file, the whole of the difference:
 
 | path | af0eb3c9 | now | Δ | what the change is |
 |---|---:|---:|---:|---|
 | `run_fixtures.py` + `run_falsifiers.py` + `run_gate_falsifiers.py` | 1,242 | — | −1,242 | three runners, three copies of one scaffolding |
-| `run_corpus.py` | — | 1,114 | +1,114 | the ONE runner that replaced them (net **−128**) |
-| `gate_checks.py` | 853 | 1,192 | **+339** | R3-2 provenance (51), R3-7 universe floors (41), R3-1/R3-13 encoding agreement (47), §15 TCB counter (57), R3-3 executed-identity (~25), R3-5 closure indeterminacy (~40), R3-6 generation workspace (14), R3-9 content-state and candidate (~20), R3-11 extension-blind artifacts |
-| `acceptance_runtime.py` | — | 117 | **+117** | R3-8 workspace lifecycle + hostile-TMPDIR refusal, R3-9 content-sensitive state, R3-10 bounded execution, R3-14 real git dir, §15 the one counting rule |
-| `SEXP-READER.py` | 235 | 328 | **+93** | R3-1 the AMC2 reference implementation, R3-6 the containment seat, the one canonical model read, the one pinned-tool lookup |
-| `ARCHITECTURE-MODEL-GATE.sh` (+ the deleted `ACCEPT.sh`) | 94 | 145 | **+51** | R3-15 one command with two phases; R3-3 pinned-interpreter resolution |
+| `run_corpus.py` | — | 1,111 | +1,111 | the ONE runner that replaced them (net **−131**) |
+| `gate_checks.py` | 853 | 1,196 | **+343** | R3-2 provenance, R3-7 universe floors, R3-1/R3-13 encoding agreement, §15 the TCB counter, R3-3 executed-identity, R3-5 closure indeterminacy, R3-6 generation workspace, R3-9 content-state and candidate resolution, R3-11 extension-blind artifacts, and the dead-rule finding this pass added |
+| `acceptance_runtime.py` | — | 123 | **+123** | R3-8 workspace lifecycle and hostile-TMPDIR refusal, R3-9 content-sensitive state, R3-10 bounded execution, R3-14 the common object store, §15 the one counting rule |
+| `SEXP-READER.py` | 235 | 335 | **+100** | R3-1 the AMC2 reference implementation, R3-6 the containment seat, the one canonical model read, the one pinned-tool lookup (R3-3) |
+| `ARCHITECTURE-MODEL-GATE.sh` (+ the deleted `ACCEPT.sh`) | 94 | 151 | **+57** | R3-15 one command with two phases, R3-3 pinned-interpreter resolution, and the exit-code check that stopped a vacuous battery reporting PASS |
 | `CHECKER/independent_check.py` | 525 | 547 | +22 | R3-1 its own independent AMC2 implementation |
-| producers (`build_inventory` −36, `build_decision_packet` −26, `generate_views` −11) | 645 | 572 | **−73** | §15 M2 the classification table moved to model data; §15 M3 the packet's mechanical skeleton moved to a template and its authored prose out of the generator |
-| everything else (kernel, hash provider, setup, `build_deferred`, `build_model`, `build_root`, `regenerate`) | 983 | 983 | 0 | unchanged |
-| **total** | **4,577** | **5,017** | **+440** | |
+| producers (`build_inventory` −36, `build_decision_packet` −25, `generate_views` −11) | 1,022 | 950 | **−72** | §15 M2 the classification table moved to model data; §15 M3 the packet's mechanical skeleton moved to a template and its authored prose out of the generator |
+| everything else (kernel, hash provider, setup, `build_deferred`, `build_model`, `build_root`, `regenerate`) | 683 | 683 | 0 | unchanged |
+| **total** | **4,577** | **5,019** | **+442** | |
 
 Read plainly: **the entire overrun is the price of closing R3-1…R3-15.** The consolidations went the other way
-and gave back 201 lines (−128 on the runner, −73 on the producers), and there is no remaining duplication of
+and gave back 203 lines (−131 on the runner, −72 on the producers), and there is no remaining duplication of
 comparable size: the three-runner duplication the previous pass carried is already gone, and what is left in
 `gate_checks.py` and `run_corpus.py` is one seat per check and one case per defect class.
 
@@ -197,7 +197,8 @@ Each of these would have closed the arithmetic. None of them was taken.
 ## 7. The creator's adjudication, and the cap that now holds
 
 The decision was taken by the creator: **`R3-CLOSURE-JUSTIFIED-EXCEPTION`, granted explicitly, up to 5,020
-NBNC**, on the finding that the additional 443 lines close named and independently reproduced defects. Its exact
+NBNC**, on the finding that the additional lines close named and independently reproduced defects. The final
+measured closure is **5,019 NBNC**, one line under the granted ceiling. Its exact
 terms, recorded here because the exception is meaningless without them:
 
 * The historic baseline stands at **4,577 NBNC / 17 files / 5,544 physical at `af0eb3c9`** and is **NOT
@@ -223,5 +224,22 @@ verifies, and `400/400` is the Lisp path's budget, not the total trusted computi
 A shared data-driven renderer for the eight generated views was authorised and was **not** implemented. It would
 move roughly 30 lines of straight-line rendering into an interpreter plus a view-specification mini-language
 inside the canonical model. That makes no error class structurally impossible, it puts a second language in the
-model, and it cannot change a 443-line figure. Recorded here as declined-with-reason so the creator can overrule
+model, and it cannot change a 442-line figure. Recorded here as declined-with-reason so the creator can overrule
 it, not silently skipped.
+
+## 9. Two findings the final batteries produced, after the exception was granted
+
+Both are recorded here because they changed the final number and because neither came from review.
+
+* **The composed battery was judging the wrong tree.** The full acceptance phase exports `AML_REPO` and
+  `AML_CANDIDATE_TREE` so the exported verifier knows which repository it is judging. Those variables were
+  inherited by the inner gate each composed falsifier starts inside its own disposable repository, so eight
+  falsifiers injected a defect into one tree and then made the gate judge a different, unmutated one — all eight
+  reported NOT REJECTED against a defect that was never put in front of a check. `run_gate` now strips `AML_*`
+  from the inner environment; verified by re-running a composed falsifier with exactly those variables exported.
+  Cost: one line, paid for by deleting two single-use local aliases of the reader's own header vocabulary.
+* **A real weakening mutation was run through the whole acceptance command** on a disposable clone: `check_tcb`
+  was neutered to report nothing and enforce no cap. `tcb-01` then reports PASS, as the mutation intends — and
+  the three held-out falsifiers for that check (`X54`, `X55`, `X56`) report NOT REJECTED, `fls-01` FAILS, and
+  the acceptance subset fails by name. A weakened check does not pass acceptance quietly; the falsifiers that
+  exercise it are what makes that true.
