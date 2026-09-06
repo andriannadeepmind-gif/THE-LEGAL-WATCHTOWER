@@ -19,6 +19,8 @@ digest `{{root-digest}}`, RECOMPUTED from the ordered module pins by both verifi
 from the file.
 
 ## 2. Affected model facts (per family)
+{{schema-summary}}
+
 | family | count |
 |---|---|
 {{family-table}}
@@ -60,6 +62,10 @@ Deferred fact classes by finite batch, with the number of SOURCE FORMS each batc
 {{block:invariants}}
 
 ## 4. Pass/fail evidence
+The acceptance command's counted checks (21 in this correction; the command prints the live count) are
+**OPTION-2 ACCEPTANCE CHECKS — NOT THE ORIGINAL 20 OPTION-A FULL-BUILD GATES**. Those original gates remain a
+mandatory future stage after DDI-1…DDI-4; nothing below completes, replaces or executes them.
+
 - SBCL model-law kernel: **{{kernel-verdict}}** (exit {{kernel-exit}}). SHA-256 from a vetted external provider over raw bytes.
 - Independent clingo checker (derives every model law from its own reading of the model): **{{checker-verdict}}** (exit {{checker-exit}}).
 - Golden fixtures + generated property families, each run through BOTH paths: **{{fixtures-verdict}}** — `{{fixtures-line}}`.

@@ -33,7 +33,7 @@ sound, complete or freeze-ready.
 | **R3-12** | P3 | a second seat with the SAME `:path` passes: "duplicate seat" only ever meant duplicate ids | `(define-unique SEAT-PATH-UNIQUE :type seat :field path)` — a schema-level uniqueness law both paths enforce | **closed** |
 | **R3-13** | P3 | the kernel's accepted language is strictly wider than the spec: `#x10` reads as INTEGER 16 where the Python readers refuse it | the kernel's readtable disables the reader macros `#`, `'`, `` ` `` and `,`; all three readers now refuse `#x10` — kernel: *reader macro # is outside the canonical grammar*; checker: *symbol '#x10' is outside the canonical grammar*; reference reader: the same, with position | **closed** |
 | **R3-14** | P3 | `tree_with` assumes a `.git/objects` layout and breaks under `git worktree` | the real git directory is resolved once, through `rev-parse --absolute-git-dir`, in the one runtime seat every harness uses | **closed** |
-| **R3-15** | P3 | acceptance is TWO commands bound by a printed note; an operator who runs only the gate sees `pass=18` and a sentence | ONE command with two phases. Without an argument it IS acceptance: bind, export, re-run ITSELF with `--checks` from that export, then the composed-gate battery, then evidence validation, then one verdict. `--checks` is the model-check phase the composed falsifiers execute. The separate `ACCEPT.sh` was deleted, not kept as a wrapper | **closed** |
+| **R3-15** | P3 | acceptance is TWO commands bound by a printed note; an operator who runs only the gate sees `pass=18` and a sentence | ONE command with two phases. Without an argument it IS acceptance: bind, export, re-run ITSELF with `--checks` from that export, then the composed-gate battery, then evidence validation, then one verdict. `--checks` is the model-check phase the composed falsifiers execute. The transient `ACCEPT.sh` of the correction session was never tracked in any commit (Review-4 R4-6 corrected the earlier wording "deleted"); no second entry point exists in the tree | **closed** |
 
 ## §15 — the trusted computing base
 
@@ -41,7 +41,7 @@ The measurement, the exact file set and the cap are handled in `TCB-BASELINE-REC
 the baseline at `af0eb3c9` was reconciled to **17 files / 5,544 physical / 4,577 NBNC**, the counter now has one
 definition, the measurement is generated evidence in the model, and `tcb-01` re-derives it from the candidate by
 FILE KIND — never by role name — and holds it under an authored cap. The measured closure is **16 files / 6,072
-physical / 5,019 NBNC**, `+442` over the reviewed baseline, and every one of those 443 lines is attributed to a
+physical / 5,019 NBNC**, `+442` over the reviewed baseline, and every one of those 442 lines is attributed to a
 named `R3-*` closure or to the shared infrastructure those closures require. The creator granted an explicit
 `R3-CLOSURE-JUSTIFIED-EXCEPTION` up to 5,020 on that attribution, and the final measurement is 5,019; the historic baseline of 4,577 stands and is
 not rewritten, 5,020 is now the non-growth ceiling, and the exception is expressly not evidence of quality.

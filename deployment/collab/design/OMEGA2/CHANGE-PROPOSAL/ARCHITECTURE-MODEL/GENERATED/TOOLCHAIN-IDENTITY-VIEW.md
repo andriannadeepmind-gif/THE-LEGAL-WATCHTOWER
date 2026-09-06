@@ -2,7 +2,7 @@
 # Toolchain Identity View — what each verification path is allowed to execute (GENERATED VIEW — DO NOT EDIT)
 
 - generator: `generate_views.py/3`
-- canonical-model-root-digest: `48ff0c72cc83f99df6f4176a4fd276261f9c1907fcc0afe6d00dcb9bbe734fd0`
+- canonical-model-root-digest: `0902776d4672fe77b491e9d6b55fc4865a7362d22efe0382554d132fe847db92`
 - regeneration command: `python3 ARCHITECTURE-MODEL/regenerate.py`
 
 Review-2 N-11: these are executable policy, not prose. `gate_checks.py toolchain` verifies every row below — path, semantic version and exact executable digest — and refuses to let either verifier run on a mismatch. No tool proves its own identity: `verified by` names the OTHER path.

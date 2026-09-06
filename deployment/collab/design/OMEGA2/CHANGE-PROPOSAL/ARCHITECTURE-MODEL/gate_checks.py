@@ -43,9 +43,12 @@ Checks (each prints GATECHECK <name>: PASS|FAIL and exits 0/1):
                       equal the declared manifest and must contain no file classified HISTORICAL_EVIDENCE.
   hash-engines        the two vetted SHA-256 engines must agree over identical RAW BYTES for every pinned module
                       and for adversarial inputs — CRLF, lone CR, a UTF-8 BOM and bytes that are not valid UTF-8.
-  tcb                 the acceptance trusted computing base, re-derived from the candidate by file KIND (never
-                      by role name), matched against the measurement the model records, and held under the cap
-                      authored in a different module from the one that counts it.
+  universe            history-bound: no floored family below the floor the BASE commit declares, reductions
+                      only on a base-anchored prospective authorization carried unchanged into the candidate,
+                      nothing self-authorised, and a changed schema carries a strictly greater version.
+  tcb                 the acceptance trusted computing base as an accountability gate: exact file universe by
+                      KIND, real measurement matched against the model, per-file delta against the verified
+                      baseline, every growth attributed to a reproduced finding — a measured fact, not a cap.
 """
 import argparse, ast, hashlib, importlib.util, json, os, shutil, subprocess, sys, tempfile
 
@@ -64,6 +67,8 @@ AR = importlib.util.module_from_spec(_aspec); _aspec.loader.exec_module(AR)
 
 SEAT = None          # the exported candidate seat directory; every check reads the model from here
 TREE = None          # the immutable candidate tree object
+CAND_REV = None      # what the operator named as the candidate: a commit, WORKTREE, or a bare tree
+BASE = None          # the explicit --base commit SHA, if one was given
 
 
 def fail(name, reasons):
@@ -78,11 +83,8 @@ def ok(name, note):
     sys.exit(0)
 
 
-GIT_ENV = dict(os.environ, GIT_OPTIONAL_LOCKS='0')   # Review-3 R3-9: never write .git/index.lock while reading
-
-
 def git(*args, binary=False):
-    r = AR.bounded_run(['git', '-C', REPO] + list(args), env=GIT_ENV, timeout=900, text=False)
+    r = AR.bounded_run(['git', '-C', REPO] + list(args), timeout=900, text=False)
     if r.returncode != 0:
         raise SystemExit('git %s failed: %s' % (' '.join(args), r.stderr.decode('utf-8', 'replace')))
     return r.stdout if binary else r.stdout.decode('utf-8')
@@ -99,7 +101,8 @@ def candidate_tree(rev):
     forms coincide, which is why the fresh-clone gate and the pre-commit gate ask the same question.
     """
     if rev != 'WORKTREE':
-        return git('rev-parse', rev).strip()
+        # a commit-ish names the TREE it carries; the commit itself stays in CAND_REV, where the base is derived
+        return git('rev-parse', rev + '^{tree}').strip()
     gitdir = git('rev-parse', '--absolute-git-dir').strip()
     d = tempfile.mkdtemp(prefix='aml-cand-')
     try:
@@ -121,7 +124,7 @@ def tree_paths():
 
 def tree_blob(path):
     """The candidate tree's bytes for PATH, or None if the candidate does not contain it."""
-    r = AR.bounded_run(['git', '-C', REPO, 'cat-file', 'blob', '%s:%s' % (TREE, path)], text=False, env=GIT_ENV)
+    r = AR.bounded_run(['git', '-C', REPO, 'cat-file', 'blob', '%s:%s' % (TREE, path)], text=False)
     return r.stdout if r.returncode == 0 else None
 
 
@@ -136,6 +139,92 @@ def ensure_seat(work):
         AR.checked(['tar', '-x', '-C', cand], input=tar)
     SEAT = seat
     return seat
+
+
+# --------------------------------------------------------------------------- the base: history the candidate cannot edit
+# Review-4 R4-1. Every history-bound invariant — universe floors, authorizations, the schema version — is judged
+# against a BASE that the candidate cannot rewrite. The rule is canonical and has no fallback:
+#   1. a candidate named as a commit has, as its base, that commit's unique first parent;
+#   2. a working-tree or export candidate (WORKTREE, or a bare tree object) needs its base as an explicit full
+#      commit SHA — never HEAD, never a branch, never a merge base, never whichever parent happens to exist;
+#   3. zero or several parents is a typed failure unless an explicit base was given, and an explicit base that
+#      contradicts a unique parent is a typed failure too;
+#   4. a base whose object is absent is UNIVERSE-BASE-UNAVAILABLE, naming the exact object a bounded fetch must
+#      bring. The gate performs no network access itself.
+_BASE = {}
+
+
+def commit_parents(rev):
+    """(commit, [parents]) read from the commit OBJECT itself — visible even in a shallow clone, where rev-list
+    would report the grafted boundary commit as parentless."""
+    r = AR.bounded_run(['git', '-C', REPO, 'cat-file', '-t', rev], text=True)
+    if r.returncode != 0 or r.stdout.strip() != 'commit':
+        return None, []
+    commit = git('rev-parse', rev + '^{commit}').strip()
+    header = git('cat-file', '-p', commit).split('\n\n', 1)[0].splitlines()
+    return commit, [l.split()[1] for l in header if l.startswith('parent ')]
+
+
+def base_commit(check):
+    if 'commit' in _BASE:
+        return _BASE['commit']
+    cand, parents = commit_parents(CAND_REV) if CAND_REV != 'WORKTREE' else (None, [])
+    if BASE is not None:
+        if len(BASE) != 40 or any(c not in '0123456789abcdef' for c in BASE):
+            fail(check, ['UNIVERSE-BASE-MALFORMED: --base must be a full 40-character lower-case commit SHA, not %r'
+                         % BASE])
+        if cand and len(parents) == 1 and parents[0] != BASE:
+            fail(check, ['UNIVERSE-BASE-MISMATCH: candidate commit %s has the unique parent %s; --base %s '
+                         'contradicts it' % (cand[:12], parents[0][:12], BASE[:12])])
+        base = BASE
+    elif cand is None:
+        fail(check, ['UNIVERSE-BASE-UNSPECIFIED: the candidate is a working tree or a bare tree, so its base must '
+                     'be given explicitly as --base <full commit SHA>; no fallback to HEAD, to a branch or to a '
+                     'merge base is taken'])
+    elif len(parents) != 1:
+        fail(check, ['UNIVERSE-BASE-AMBIGUOUS: candidate commit %s has %d parents; its base must be given '
+                     'explicitly as --base <full commit SHA>' % (cand[:12], len(parents))])
+    else:
+        base = parents[0]
+    if AR.bounded_run(['git', '-C', REPO, 'cat-file', '-e', base + '^{commit}']).returncode != 0:
+        fail(check, ['UNIVERSE-BASE-UNAVAILABLE: the base commit %s is not present in this repository (a shallow '
+                     'clone, or an unfetched object). Precondition: fetch exactly that commit with its tree — '
+                     '`git fetch --depth=1 <remote> %s` — and re-run; the gate performs no network access itself'
+                     % (base, base)])
+    _BASE['commit'] = base
+    return base
+
+
+def base_blob(check, name):
+    """The bytes of seat file NAME at the base — read from the repository's objects, which the candidate cannot
+    edit."""
+    base = base_commit(check)
+    r = AR.bounded_run(['git', '-C', REPO, 'cat-file', 'blob', '%s:%s/%s' % (base, REL, name)], text=False)
+    if r.returncode != 0:
+        fail(check, ['UNIVERSE-BASE-UNAVAILABLE: %s cannot be read at base %s (%s); fetch that commit with its '
+                     'whole tree' % (name, base[:12], r.stderr.decode('utf-8', 'replace').strip()[:80])])
+    return r.stdout
+
+
+def base_facts(check, name, ftype):
+    out = {}
+    for f in SR.read_forms(base_blob(check, name).decode('utf-8'), '%s@base' % name):
+        if SR.head(f) == 'fact' and str(f[1]).lower() == ftype:
+            fid = SR.canonical_value(f[2], name, 'fact id')
+            out[fid] = {k.lower(): SR.canonical_value(v, name, k) for k, v in SR.plist(f[3:], name, fid)}
+    return out
+
+
+def root_digest_at(check, commit):
+    """(model-root digest, tree) of a COMMIT, from its own ROOT.sexp."""
+    r = AR.bounded_run(['git', '-C', REPO, 'cat-file', 'blob', '%s:%s/ROOT.sexp' % (commit, REL)], text=False)
+    if r.returncode != 0:
+        fail(check, ['UNIVERSE-BASE-UNAVAILABLE: ROOT.sexp cannot be read at commit %s; fetch that commit with '
+                     'its tree' % commit[:12]])
+    root = [f for f in SR.read_forms(r.stdout.decode('utf-8'), 'ROOT.sexp@' + commit[:12])
+            if SR.head(f) == 'define-model-root'][0]
+    return (str(dict(SR.plist(root[2:], 'ROOT.sexp', 'root'))['canonical-model-root-digest']),
+            git('rev-parse', commit + '^{tree}').strip())
 
 
 # --------------------------------------------------------------------------- model access (candidate only)
@@ -184,10 +273,19 @@ def repository_content_state():
 def check_candidate():
     paths = tree_paths()
     drift = working_tree_difference()
+    cand = commit_parents(CAND_REV)[0] if CAND_REV != 'WORKTREE' else None
+    base = base_commit('candidate')
+    base_root, base_tree = root_digest_at('candidate', base)
+    print('CANDIDATE-COMMIT %s' % (cand or ('WORKTREE' if CAND_REV == 'WORKTREE' else 'TREE-ONLY')))
     print('CANDIDATE-TREE %s' % TREE)
+    print('CANDIDATE-MODEL-ROOT %s' % model().root['canonical-model-root-digest'])
     print('CANDIDATE-SEAT %s' % SEAT)
     print('CANDIDATE-REL %s' % REL)
-    print('  candidate tree: %s (%d paths)' % (TREE, len(paths)))
+    print('BASE-COMMIT %s' % base)
+    print('BASE-TREE %s' % base_tree)
+    print('BASE-MODEL-ROOT %s' % base_root)
+    print('  candidate tree: %s (%d paths); base commit %s (tree %s), the history every floor, authorization '
+          'and schema version is judged against' % (TREE, len(paths), base[:12], base_tree[:12]))
     if drift:
         print('  the WORKING TREE differs from the candidate in %d path(s); the gate judges the candidate and '
               'changes nothing:' % len(drift))
@@ -214,13 +312,15 @@ def check_toolchain():
     if not tools:
         fail('toolchain', ['the model declares no tool facts; nothing pins what the verifiers may execute'])
     digest_tool = next((p['path'] for p in tools.values() if p.get('role') == 'DIGEST_PROVIDER'), None)
-    if not digest_tool or not os.path.isfile(digest_tool):
-        fail('toolchain', ['the declared DIGEST_PROVIDER is absent; the Common Lisp path has no SHA-256 engine'])
+    if not digest_tool or AR.tool_defect(digest_tool):
+        fail('toolchain', ['TOOLCHAIN-MISSING: the declared DIGEST_PROVIDER %s cannot be executed; the Common Lisp '
+                           'path has no SHA-256 engine' % digest_tool])
     for tid in sorted(tools):
         p = tools[tid]
         path = p['path']
-        if not os.path.isfile(path):
-            reasons.append('TOOLCHAIN-MISSING: %s declares %s, which does not exist' % (tid, path)); continue
+        defect = AR.tool_defect(path)
+        if defect:
+            reasons.append('%s: %s declares %s — %s' % (defect[0], tid, path, defect[1])); continue
         with open(path, 'rb') as f:
             by_python = sha_bytes(f.read())
         by_coreutils = coreutils_digest(digest_tool, path)
@@ -237,6 +337,10 @@ def check_toolchain():
         if got is not None and p['semantic-version'] not in got:
             reasons.append('TOOLCHAIN-VERSION-MISMATCH: %s reports %r, TOOLCHAIN.sexp requires %s'
                            % (tid, got.strip(), p['semantic-version']))
+    # Review-4 R4-2. Nothing below may execute a tool the loop above found defective: the verdict is the typed
+    # reason, never a traceback from a probe that assumed the interpreter exists.
+    if reasons:
+        fail('toolchain', reasons)
     # Review-3 R3-3. Measuring the pinned FILE is not the same claim as executing it. The superseded check said
     # "5 declared tools verified" while itself running inside a PATH wrapper, and named nothing about the
     # interpreter that actually ran. What executed is therefore established and PRINTED, not inferred.
@@ -493,10 +597,17 @@ def check_corpus():
         if int(fams[fid]['cardinality']) <= 0:
             reasons.append('EMPTY-PROPERTY-FAMILY: %s declares cardinality %s; a family that generates no case '
                            'is not a family' % (fid, fams[fid]['cardinality']))
+    nfl = sum(len(v) for v in declared_fl.values())
+    # Review-4 R4-1: what is IMPLEMENTED is reconciled against the floors, not only against the declarations —
+    # a corpus whose declarations and implementation agree at a smaller number is still a shrunk corpus.
+    floors = {str(p['family']).lower(): int(p['minimum']) for _i, p in bt.get('universe-floor', [])}
+    for fam, n in sorted({'fixture': len(declared_fx), 'property-family': len(fams), 'falsifier': nfl}.items()):
+        if fam in floors and n < floors[fam]:
+            reasons.append('CORPUS-BELOW-FLOOR: the corpus implements %d %s(s) against a floor of %d'
+                           % (n, fam, floors[fam]))
     if reasons:
         fail('corpus', reasons)
     total = sum(int(p['cardinality']) for p in fams.values())
-    nfl = sum(len(v) for v in declared_fl.values())
     ok('corpus', '%d fixtures, %d property families totalling %d generated cases, and %d falsifiers across %d '
                  'declared harnesses (%s) — declared set equals implemented set in both directions'
        % (len(declared_fx), len(fams), total, nfl, len(harnesses),
@@ -584,47 +695,91 @@ def check_provenance():
 
 
 def check_universe():
-    """No declared family may shrink below its constitutional floor without a typed authorization.
+    """No declared family may shrink below the floor the BASE declares for it, nothing in the candidate can
+    authorise its own reduction, and a changed schema must carry a greater version (Review-3 R3-7, Review-4
+    R4-1 and R4-5).
 
-    Review-3 R3-7. An INCOHERENT deletion was already caught in both directions. A COHERENT one — the fact and
-    its implementation removed together — was not: dropping a whole property family reported
-    `4 property families totalling 75 generated cases` as a PASS, and nothing said the universe had shrunk. The
-    floor is model data; going below it is a named failure; lowering the floor is itself a model edit that must
-    carry a `universe-authorization` naming who decided it, against which model root, and why.
+    The reference frame is HISTORY. The floors, the authorizations and the schema of the base commit are read
+    from the repository's objects, which the candidate cannot edit; comparing a candidate's floors with the same
+    candidate's floors is what let a floor and its family be deleted together and reported as a smaller
+    success. A floor lowered, deleted or renamed away is a reduction. A reduction stands only on a BASE-ANCHORED
+    PROSPECTIVE AUTHORIZATION: one committed in the base, naming this family, recording the base's own floor as
+    its previous minimum, naming the model root the authority reviewed (the root of the base's parent, since
+    the base's own root cannot contain a fact that names it), and carried into the candidate unchanged. It is
+    spent the moment the floor it names has moved, so it cannot be replayed, and it grants exactly the minimum it
+    states, not less. An authorization that appears only in the candidate authorises nothing: the attacker
+    cannot write their own permission. No external approval mechanism exists in this repository and none is
+    invented here — a reduction without a base-anchored authorization is forbidden until a separate creator
+    or governance order anchors one.
     """
     reasons, bt = [], by_type(facts())
-    floors = {i: p for i, p in bt.get('universe-floor', [])}
+    floors = {str(p['family']).lower(): (i, int(p['minimum'])) for i, p in bt.get('universe-floor', [])}
     if not floors:
         fail('universe', ['the model declares no universe-floor; a family could shrink to nothing silently'])
-    auths = {}
-    for i, p in bt.get('universe-authorization', []):
-        auths.setdefault(p['family'], []).append((i, p))
-    _mods, rootpl = modules()
-    root_now = str(rootpl['canonical-model-root-digest'])
-    for fid in sorted(floors):
-        fam, low = floors[fid]['family'], int(floors[fid]['minimum'])
-        actual = len(bt.get(fam.lower(), []))
+    base = base_commit('universe')
+    base_floors = {str(p['family']).lower(): int(p['minimum'])
+                   for p in base_facts('universe', 'verification-corpus.sexp', 'universe-floor').values()}
+    base_auths = base_facts('universe', 'verification-corpus.sexp', 'universe-authorization')
+    cand_auths = {i: p for i, p in bt.get('universe-authorization', [])}
+    for aid in sorted(set(cand_auths) - set(base_auths)):
+        reasons.append('AUTHORIZATION-CANDIDATE-INJECTED: %s exists only in the candidate; an authorization the '
+                       'candidate wrote for itself authorises nothing' % aid)
+    for aid in sorted(base_auths):
+        if cand_auths.get(aid) != base_auths[aid]:
+            reasons.append('AUTHORIZATION-TAMPERED: %s is altered in or absent from the candidate; the record of '
+                           'who authorised what is not the candidate\'s to edit' % aid)
+    reviewed = {}                                             # the root an authority reviewed: the base's parent
+    for fam in sorted(set(base_floors) | set(floors)):
+        before, now = base_floors.get(fam), floors[fam][1] if fam in floors else 0
+        if before is None or now >= before:
+            continue
+        grants = [(aid, p) for aid, p in sorted(base_auths.items())
+                  if str(p['family']).lower() == fam and int(p['previous-minimum']) == before]
+        why = 'no base-anchored authorization names %s at its base floor of %d' % (fam, before)
+        for aid, p in grants:
+            new, named_root = int(p['minimum']), str(p['previous-model-root'])
+            if not reviewed:
+                bparent = commit_parents(base)[1]
+                if len(bparent) != 1:
+                    fail('universe', ['AUTHORIZATION-UNVERIFIABLE: base %s has %d parents, so the model root an '
+                                      'authorization was reviewed against cannot be established' % (base[:12], len(bparent))])
+                reviewed['root'] = root_digest_at('universe', bparent[0])[0]
+            if new >= before:
+                why = '%s is not a reduction (%d -> %d)' % (aid, before, new)
+            elif named_root != reviewed['root']:
+                why = '%s names previous model root %s, but the model the base was authored against is %s' \
+                      % (aid, named_root[:12], reviewed['root'][:12])
+            elif now != new:
+                why = '%s authorises exactly %d, not %d' % (aid, new, now)
+            else:
+                why = None
+                break
+        if why:
+            reasons.append('UNIVERSE-FLOOR-REDUCED: %s %d -> %d (%s); a smaller universe is not a smaller success'
+                           % (fam, before, now, why))
+    for fam, (fid, low) in sorted(floors.items()):
+        actual = len(bt.get(fam, []))
         if actual < low:
             reasons.append('UNIVERSE-BELOW-FLOOR: family %s holds %d fact(s), below its declared floor of %d '
                            '(%s); a smaller universe is not a smaller success' % (fam, actual, low, fid))
-    for fam in sorted(auths):
-        for aid, p in auths[fam]:
-            if int(p['minimum']) >= int(p['previous-minimum']):
-                reasons.append('AUTHORIZATION-NOT-A-REDUCTION: %s records %s -> %s, which is not a reduction'
-                               % (aid, p['previous-minimum'], p['minimum']))
-            prev = str(p['previous-model-root'])
-            if len(prev) != 64 or any(c not in '0123456789abcdef' for c in prev) or prev == root_now:
-                reasons.append('AUTHORIZATION-ROOT-SHAPE: %s names :previous-model-root %r, which is not a '
-                               'distinct 64-character lower-case model root' % (aid, prev[:16]))
-            if fam not in {floors[f]['family'] for f in floors}:
-                reasons.append('AUTHORIZATION-UNKNOWN-FAMILY: %s authorizes %s, which declares no floor'
-                               % (aid, fam))
+    # Review-4 R4-5. The model root binds the schema's BYTES; the version is the enforced policy discriminator.
+    cand_schema, base_schema = open(os.path.join(SEAT, 'MODEL-SCHEMA.sexp'), 'rb').read(), \
+        base_blob('universe', 'MODEL-SCHEMA.sexp')
+    cv, bv = str(schema_header()['version']), str(schema_header(base_schema.decode('utf-8'))['version'])
+    if cand_schema != base_schema and not (cv.isdigit() and bv.isdigit() and int(cv) > int(bv)):
+        reasons.append('SCHEMA-VERSION-STALE: MODEL-SCHEMA.sexp differs from the base\'s bytes but carries version '
+                       '%r against the base\'s %r; a changed schema must carry a strictly greater integer version'
+                       % (cv, bv))
+    if cand_schema == base_schema and cv != bv:
+        reasons.append('SCHEMA-VERSION-UNMOTIVATED: MODEL-SCHEMA.sexp is byte-identical to the base\'s but its '
+                       'version moved %r -> %r' % (bv, cv))
     if reasons:
         fail('universe', reasons)
-    ok('universe', '%d declared families are at or above their constitutional floor (%s); %d recorded '
-                   'universe-authorization(s), each a reduction against a distinct previous model root'
-       % (len(floors), ', '.join('%s>=%s' % (floors[f]['family'], floors[f]['minimum']) for f in sorted(floors)),
-          sum(len(v) for v in auths.values())))
+    ok('universe', '%d floored families at or above the floors base %s declares (%s); %d base-anchored '
+                   'authorization(s), %d relied on; schema version %s%s'
+       % (len(floors), base[:12], ', '.join('%s>=%s' % (f, floors[f][1]) for f in sorted(floors)),
+          len(base_auths), len(reviewed), cv,
+          ' (unchanged schema)' if cand_schema == base_schema else ' (schema changed, version raised from %s)' % bv))
 
 
 # --------------------------------------------------------------------------- seats (N-10)
@@ -780,8 +935,13 @@ def packet_block():
 
 
 def tool_path(role):
-    """The pinned executable for ROLE — one seat, in the reader; the gate never hard-codes a binary name."""
-    return SR.tool_path(SEAT, role)
+    """The pinned executable for ROLE — one seat, in the reader; the gate never hard-codes a binary name — and
+    a typed refusal, never a traceback, when it cannot be executed (Review-4 R4-2)."""
+    path = SR.tool_path(SEAT, role)
+    defect = AR.tool_defect(path)
+    if defect:
+        raise AR.ToolUnavailable(defect[0], path, '%s (%s)' % (defect[1], role))
+    return path
 
 
 def ensure_commitments(work):
@@ -889,15 +1049,27 @@ def check_encoding(work):
                                     hashlib.sha256(mine.encode('utf-8')).hexdigest()[:12]))
 
 
-def schema_header():
-    forms = SR.read_forms_file(os.path.join(SEAT, 'MODEL-SCHEMA.sexp'))
-    decl = [f for f in forms if SR.head(f) == 'define-model-schema'][0]
+def schema_decl(text=None):
+    forms = SR.read_forms(text, 'MODEL-SCHEMA.sexp@base') if text is not None else \
+        SR.read_forms_file(os.path.join(SEAT, 'MODEL-SCHEMA.sexp'))
+    return [f for f in forms if SR.head(f) == 'define-model-schema'][0]
+
+
+def schema_header(text=None):
     head = []
-    for x in decl[2:]:
+    for x in schema_decl(text)[2:]:
         if isinstance(x, list):
             break
         head.append(x)
     return {k.lower(): SR.canonical_value(v, 'MODEL-SCHEMA.sexp', k) for k, v in SR.plist(head, 'schema', 'header')}
+
+
+def schema_enum(name):
+    """The closed value set of a schema enum — the one seat that declares it."""
+    for x in schema_decl()[2:]:
+        if isinstance(x, list) and SR.head(x) == 'define-enum' and str(x[1]).lower() == name:
+            return {str(v) for v in x[2]}
+    raise SystemExit('SCHEMA-ENUM-UNDECLARED: MODEL-SCHEMA.sexp declares no enum %s' % name)
 
 
 def check_packet(work):
@@ -1289,20 +1461,33 @@ def check_inventory():
 
 
 def check_tcb():
-    """The acceptance trusted computing base: re-derived from the candidate, matched against the measurement the
-    model records, and held under the AUTHORED cap (Review-3 §15).
+    """The acceptance trusted computing base as an ACCOUNTABILITY gate (Review-3 §15, Review-4 §1).
 
-    Two separations make the number hard to fake. Membership comes from path kind and file bytes, never from a
-    role name, so a file cannot leave the base by being re-classified, renamed, or filed as a helper, a fixture
-    or a migration. And the cap is an authored fact in the corpus while the measurement is a generated fact in
-    the inventory, so the program that counts the lines is never the program that says how many are allowed.
+    It holds: the exact TCB file universe, derived from the candidate by file KIND and never by role name, so
+    nothing executable is hidden, undeclared, phantom or duplicated; the real physical and NBNC measurement of
+    every file, matched against what the model records; the per-file and total delta against the verified
+    baseline `af0eb3c9` (17 files / 5,544 physical / 4,577 NBNC), whose per-file rows are authored data; and
+    the rule that EVERY growth over the baseline is attributed to a specific reproduced finding. The total size
+    is printed as a measured fact and a complexity signal. There is no numeric ceiling here: a budget that is
+    raised to meet the measurement would be a tautology, and a protection deleted to meet a number would be
+    the defect this gate exists to expose.
     """
     fs = by_type(facts())
     budget = fs.get('tcb-budget', [])
     if len(budget) != 1:
         fail('tcb', ['TCB-BUDGET-UNDECLARED: exactly one authored tcb-budget fact is required; the candidate '
                      'declares %d' % len(budget)])
-    cap = int(budget[0][1]['cap'])
+    budget = budget[0][1]
+    baseline = {str(p['path']): (int(p['physical']), int(p['nbnc'])) for _i, p in fs.get('tcb-baseline', [])}
+    reasons = []
+    if (len(baseline), sum(v[0] for v in baseline.values()), sum(v[1] for v in baseline.values())) != \
+            (int(budget['baseline-files']), int(budget['baseline-physical']), int(budget['baseline'])):
+        reasons.append('TCB-BASELINE-INCONSISTENT: the %d tcb-baseline rows sum to %d physical / %d nbnc, but '
+                       'tcb-budget records %s files / %s / %s' % (len(baseline), sum(v[0] for v in baseline.values()),
+                                                                  sum(v[1] for v in baseline.values()), budget['baseline-files'],
+                                                                  budget['baseline-physical'], budget['baseline']))
+    attributions = {str(p['path']): p for _i, p in fs.get('tcb-attribution', [])}
+    findings = schema_enum('finding-id')
     declared = {str(p['path']): p for _i, p in fs.get('tcb-file', [])}
     machinery = {p for p, r in role_map().items() if r == 'GOVERNANCE_MACHINERY'}
     blobs = {}
@@ -1313,7 +1498,6 @@ def check_tcb():
                          'it' % path])
         blobs[path] = blob
     rows = AR.tcb_measure(blobs)
-    reasons = []
     for path, physical, nbnc in rows:
         rec = declared.get(path)
         if rec is None:
@@ -1325,6 +1509,9 @@ def check_tcb():
     for path in sorted(set(declared) - {r[0] for r in rows}):
         reasons.append('TCB-PHANTOM: the model records a measurement for %s, which is not acceptance machinery '
                        'in the candidate' % path)
+    for path in sorted(set(attributions) - {r[0] for r in rows}):
+        reasons.append('TCB-ATTRIBUTION-PHANTOM: an attribution names %s, which is not acceptance machinery in '
+                       'the candidate' % path)
     total, physical_total = sum(r[2] for r in rows), sum(r[1] for r in rows)
     recorded = fs.get('tcb-total', [])
     if len(recorded) != 1:
@@ -1335,17 +1522,30 @@ def check_tcb():
         reasons.append('TCB-TOTAL-MISMATCH: the candidate measures %d files / %d physical / %d nbnc; the model '
                        'records %s / %s / %s' % (len(rows), physical_total, total, recorded[0][1]['files'],
                                                  recorded[0][1]['physical'], recorded[0][1]['nbnc']))
-    if total > cap:
-        reasons.append('TCB-OVER-CAP: the acceptance base measures %d non-blank/non-comment lines against the '
-                       'authored cap of %d (+%d). The cap is not raised to fit the machinery.'
-                       % (total, cap, total - cap))
+    table = []
+    for path, physical, nbnc in rows:
+        delta = nbnc - baseline.get(path, (0, 0))[1]
+        ids = str(attributions[path]['findings']).split() if path in attributions else []
+        unknown = sorted(set(ids) - findings)
+        if delta > 0 and not ids:
+            reasons.append('TCB-GROWTH-UNATTRIBUTED: %s is %+d NBNC over the baseline and no tcb-attribution '
+                           'names the reproduced finding that required it' % (path, delta))
+        if unknown:
+            reasons.append('TCB-ATTRIBUTION-UNKNOWN-FINDING: %s cites %s, which the finding-id enum does not '
+                           'declare' % (path, ' '.join(unknown)))
+        table.append('  TCB %-46s %6d %6d %+6d  %s' % (path, physical, nbnc, delta, ' '.join(ids) or '-'))
+    for path in sorted(set(baseline) - {r[0] for r in rows}):
+        table.append('  TCB %-46s %6s %6d %+6d  removed' % (path, '-', 0, -baseline[path][1]))
     if reasons:
         fail('tcb', reasons)
-    for path, physical, nbnc in rows:
-        print('  TCB %-46s %6d %6d' % (path, physical, nbnc))
-    ok('tcb', '%d executable files, %d physical, %d non-blank/non-comment against an authored cap of %d '
-              '(headroom %d); the file set is derived from the candidate by kind, so no re-classification, '
-              'rename or relocation can shrink it' % (len(rows), physical_total, total, cap, cap - total))
+    for line in table:
+        print(line)
+    ok('tcb', '%d executable files, %d physical, %d NBNC measured from the candidate by kind; baseline %s = %s '
+              'files / %s physical / %s NBNC; delta %+d files / %+d physical / %+d NBNC, every growth attributed '
+              'to a reproduced finding. The size is a measured fact and a complexity signal, not a threshold'
+       % (len(rows), physical_total, total, str(budget['baseline-commit'])[:12], budget['baseline-files'],
+          budget['baseline-physical'], budget['baseline'], len(rows) - int(budget['baseline-files']),
+          physical_total - int(budget['baseline-physical']), total - int(budget['baseline'])))
 
 
 CHECKS = {'candidate': check_candidate, 'toolchain': check_toolchain, 'inventory': check_inventory,
@@ -1364,6 +1564,10 @@ if __name__ == '__main__':
     ap.add_argument('--tree', default=os.environ.get('AML_CANDIDATE_TREE', 'WORKTREE'),
                     help="a revision naming the immutable tree to judge, or WORKTREE (default) for the tree the "
                          "current state would commit to")
+    ap.add_argument('--base', default=None,
+                    help='the full commit SHA every history-bound invariant is judged against. Required for a '
+                         'WORKTREE or bare-tree candidate; derived as the unique first parent for a commit '
+                         'candidate; never defaulted to HEAD (Review-4 R4-1)')
     ap.add_argument('--work', default=None, help='reuse this workspace instead of creating a private one')
     ap.add_argument('--keep-work', action='store_true', help='keep the private workspace for inspection')
     ap.add_argument('--seat', default=None,
@@ -1375,11 +1579,15 @@ if __name__ == '__main__':
     # workspace this process created is removed on success, failure, signal and timeout alike — keeping it is an
     # explicit request, not the default that littered 291 directories into /tmp.
     work = AR.workspace('aml-gatecheck-', REPO, keep=a.keep_work, reuse=a.work)
-    if a.check == 'content-state':
-        print(repository_content_state()); sys.exit(0)
-    TREE = candidate_tree(a.tree)
-    if a.seat:
-        SEAT = os.path.abspath(a.seat)
-    else:
-        ensure_seat(work)
-    (WORK_CHECKS[a.check](work) if a.check in WORK_CHECKS else CHECKS[a.check]())
+    CAND_REV, BASE = a.tree, a.base
+    try:
+        if a.check == 'content-state':
+            print(repository_content_state()); sys.exit(0)
+        TREE = candidate_tree(a.tree)
+        if a.seat:
+            SEAT = os.path.abspath(a.seat)
+        else:
+            ensure_seat(work)
+        (WORK_CHECKS[a.check](work) if a.check in WORK_CHECKS else CHECKS[a.check]())
+    except (AR.ToolUnavailable, AR.Timeout) as e:      # Review-4 R4-2: a typed line, never a traceback
+        fail(a.check, [str(e)])

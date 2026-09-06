@@ -960,3 +960,64 @@ Citation-Bound Verification Profile). Design only, working tree, **κανένα 
   production implementation · νέοι αρχιτεκτονικοί άξονες · merge · amend/rebase.
   **`OPTION-2 REVIEW-3 CORRECTION COMPLETE — JUSTIFIED TCB EXCEPTION 5.020 NBNC — AWAITING FRESH INDEPENDENT
   REVIEW #4 — DDI-1 BLOCKED — NOT FROZEN — NOT QUALIFIED — IMPLEMENTATION BLOCKED`.**
+
+## [0164] OPTION-2 CORE ΣΤΟΧΕΥΜΕΝΗ ΔΙΟΡΘΩΣΗ REVIEW #4 (R4-1…R4-7 + TCB accountability) — πάνω στο `cc52a27d`
+
+- **Κυβερνών τεκμήριο:** ανεξάρτητη έκθεση `INDEPENDENT REVIEW #4 — TARGETED VERIFICATION OF THE REVIEW-3
+  CORRECTION @ cc52a27d`· ετυμηγορία `OPTION-2 INDEPENDENT REVIEW #4 FAILED — CORRECTION REQUIRED — DDI-1 BLOCKED`
+  (1 blocking P2 R4-1, 1 P2 R4-2, 5 P3 R4-3…R4-7). Read-only συνημμένο, ΟΧΙ artifact του repo. R4-1/R4-2
+  **αναπαράχθηκαν πρώτα** σε αναλώσιμα exports (coherent shrink περνούσε `uni-01`/`cor-01` με 83→75 cases· απών
+  pinned tool = `FileNotFoundError` traceback).
+- **R4-1 (blocking) — ιστορικά δεμένα floors:** ο `uni-01` διαβάζει floors/authorizations/schema του **base
+  commit** από τα objects του repository και απαιτεί κάθε base family να κρατά floor ≥ του base· χαμήλωμα,
+  διαγραφή floor (= μείωση στο 0), διαγραφή floor+family, μετονομασία ⇒ `UNIVERSE-FLOOR-REDUCED`· το σύνολο
+  `universe-floor` προστατεύεται από το base σύνολο· ο `cor-01` συμφιλιώνει counts με effective floors.
+  **Canonical base χωρίς fallback:** committed candidate ⇒ μοναδικός πρώτος γονέας· working-tree/export ⇒ ρητό
+  `--base <full SHA>`· 0/πολλοί γονείς, αντιφατικό base, απόν base object ⇒ typed
+  `UNIVERSE-BASE-AMBIGUOUS/-MISMATCH/-UNSPECIFIED/-UNAVAILABLE` (με την ακριβή bounded-fetch προϋπόθεση· το gate
+  δεν κάνει network fetch)· τυπώνονται candidate/base commit, tree, model-root.
+- **Καμία self-authorization:** εξουσιοδότηση μόνο στον υποψήφιο = `AUTHORIZATION-CANDIDATE-INJECTED`. Μόνο
+  **base-anchored prospective** `universe-authorization` — committed στο base, δεμένη σε id / authority / family /
+  previous-minimum (= floor του base) / new-minimum / previous-model-root (= root του γονέα του base) / bounded
+  scope, μεταφερόμενη αμετάβλητη (`AUTHORIZATION-TAMPERED`), χορηγεί ακριβώς το δηλωμένο minimum, ξοδεύεται μόλις
+  μετακινηθεί το floor (replay ⇒ FAIL). Κανένας εξωτερικός μηχανισμός έγκρισης δεν υπάρχει και κανένας δεν
+  εφευρέθηκε.
+- **R4-2:** μία έδρα tool-resolution/bounded-execution → typed `TOOLCHAIN-MISSING`/`-UNEXECUTABLE`/`-SPAWN-FAILED`
+  για missing/non-regular/non-executable/broken symlink/EACCES/ENOEXEC/εξαφάνιση μεταξύ pre-check και spawn·
+  non-zero, μηδέν traceback· ο harness απορρίπτει κάθε case με traceback.
+- **R4-3:** μητρώο ΔΙΚΩΝ παιδιών + process groups (INT/TERM/HUP)· κάθε φάση job σε δικό της process group, το
+  σήμα προωθείται μόνο σε αυτό· καμία glob διαγραφή· τίποτα για SIGKILL. **R4-4:** ΟΧΙ `setdefault` — μία έδρα
+  επιβάλλει `GIT_OPTIONAL_LOCKS=0` σε ΚΑΘΕ git subprocess και η εντολή το εξάγει· strace με κληρονομημένο
+  `GIT_OPTIONAL_LOCKS=1` (195.082 syscalls) → **0 `.git/index.lock`**, 0 εγγραφές στο repo. **R4-5:** schema
+  **version 4**· bytes ≠ base ⇒ ακέραια έκδοση αυστηρά μεγαλύτερη αλλιώς `SCHEMA-VERSION-STALE`·
+  `CANONICAL-ENCODING.md` §2.1 διορθωμένο (root δεσμεύει bytes· έκδοση = enforced policy discriminator).
+- **R4-6 — ρητή διόρθωση των records του [0163] (το [0163] παραμένει ως έχει):** το `ACCEPT.sh` **δεν ήταν ποτέ
+  tracked** (0 commits)· οι προσθήκες ήταν **8 στην έδρα + 1 dialogue**· το delta ήταν **+442** όχι 443· «fact
+  types» = δύο generated αριθμοί: `cc52a27d` **32 declared / 31 instantiated**, `af0eb3c9` 26/26, τώρα **34 / 33 /
+  18 enums / 14 modules** — μόνος declared-but-uninstantiated τύπος το `universe-authorization`.
+- **R4-7:** το `ro-02` αφαιρέθηκε ως γνήσιο υποσύνολο του content-sensitive `ro-01`. Η εντολή τυπώνει τον ζωντανό
+  αριθμό: **«21 OPTION-2 ACCEPTANCE CHECKS — NOT THE ORIGINAL 20 OPTION-A FULL-BUILD GATES»** — η εντολή του
+  δημιουργού προέβλεπε 20 υποθέτοντας ότι το `ro-02` μετριόταν· δεν μετριόταν (αυτό ήταν το εύρημα).
+- **TCB — ο αριθμητικός κόφτης καταργήθηκε (εντολή δημιουργού):** ο `tcb-01` είναι accountability gate — ακριβές
+  file universe κατά είδος, πραγματική μέτρηση, per-file delta έναντι `af0eb3c9 = 17 / 5.544 / 4.577` (authored
+  `tcb-baseline`), **κάθε αύξηση αντιστοιχισμένη** σε αναπαραχθέν εύρημα (`tcb-attribution`, κλειστό `finding-id`).
+  Τελική μέτρηση **16 αρχεία / 6.550 physical / 5.420 NBNC = +843 έναντι `af0eb3c9`, +401 έναντι `cc52a27d`**
+  (gate_checks +178, run_corpus +149, acceptance_runtime +57, packet +14, εντολή +3). Τίποτα δεν αφαιρέθηκε,
+  πακεταρίστηκε ή μετακινήθηκε για αριθμητικό λόγο· μετά από Review #5 PASS η μέτρηση γίνεται το νέο observed
+  baseline και το verifier infrastructure κλειδώνει.
+- **Μπαταρία (εκτελεσμένη):** R4 falsifiers X54, X61–X78 με controls X68/X76 → **19/19 REJECTED as intended**,
+  μηδέν traceback· COMPONENT **69/69**· COMPOSED **11/11** — G09/G10 coherent shrink μέσα από την ΠΡΑΓΜΑΤΙΚΗ
+  top-level εντολή (αναλώσιμο repo, αναγεννημένα artifacts) ⇒ `uni-01`/`UNIVERSE-FLOOR-REDUCED`· G11 SIGTERM σε
+  μία από δύο ταυτόχρονες ⇒ μηδέν δικά της workspaces/orphans, η άλλη ανεπηρέαστη, repo byte-identical· depth-1
+  clone χωρίς base object ⇒ typed `UNIVERSE-BASE-UNAVAILABLE`, μετά από fetch ακριβώς του ονομασμένου object ⇒
+  **21/21 PASS, 69/69**· μετάλλαξη πραγματικής αποδυνάμωσης (`check_universe` βουβός, ΠΛΗΡΗΣ εντολή) ⇒
+  X61–X67/X69 NOT REJECTED ⇒ `fls-01 FAIL` ⇒ composed `CONTROL BROKEN … BATTERY-VACUOUS` ⇒ exit 1· σταθερό σημείο
+  `0 changed`. **Πλήρες `ACCEPT --base=cc52a27d` στο ακριβές committed tree: PASS** (4/4 subsets, 21 έλεγχοι /
+  0 FAIL, 69/69 + 11/11, control HOLDS).
+- **Αριθμοί:** 14 hash-pinned modules (schema 4)· **80 held-out falsifiers (69 COMPONENT + 11 COMPOSED_GATE)**·
+  21 μετρούμενοι έλεγχοι, 3 informational εκτός μετρήματος· 34 declared / 33 instantiated fact types.
+- **ΔΕΝ ΕΓΙΝΕ:** DDI-1…DDI-4 · Επιλογή Α / αρχικά 20 Full-Build gates · freeze · qualification · WP-00 ·
+  Implementation-Book · production implementation · νέοι αρχιτεκτονικοί άξονες · δημόσιο/ιδιωτικό όριο · merge ·
+  amend/rebase/squash.
+  **`OPTION-2 REVIEW-4 CORRECTION COMPLETE — AWAITING TARGETED INDEPENDENT REVIEW #5 — DDI-1 BLOCKED — NOT
+  FROZEN — NOT QUALIFIED — IMPLEMENTATION BLOCKED`.**

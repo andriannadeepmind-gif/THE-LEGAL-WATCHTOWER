@@ -26,7 +26,7 @@ model carries a `universe-authorization` for the reduction.
 The composed kind is run by the gate's FULL phase and never from its --checks phase: a checks phase
 that ran it would recurse forever.
 """
-import argparse, ast, contextlib, hashlib, importlib.util, io, os, re, shutil, subprocess, sys, tempfile
+import argparse, ast, contextlib, hashlib, importlib.util, io, os, re, shutil, signal, subprocess, sys, tempfile, time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 LAYOUT_ROOT = os.path.abspath(os.path.join(HERE, '..', '..', '..', '..', '..', '..'))
@@ -41,6 +41,7 @@ GATE = 'ARCHITECTURE-MODEL-GATE.sh'
 IDENT = ['-c', 'user.name=Stavropoulos Law\u00ae', '-c', 'user.email=info@stavropouloslaw.com']
 LEGACY_SCRATCH = ['/tmp/k.out', '/tmp/c.out', '/tmp/fx.out', '/tmp/fl.out', '/tmp/ov.bak', '/tmp/ddi.out']
 RESULTS, FAILURES, MODULES, _CAND = [], [], [], {}
+BASE = None                    # the full commit SHA every history-bound check is judged against (R4-1)
 
 
 PY = SR.tool_path(HERE, 'CHECKER_RUNTIME')
@@ -154,12 +155,12 @@ def seat_path(rel):
 def candidate():
     """(tree, exported seat) for the immutable candidate — resolved once, by the one seat that builds it."""
     if not _CAND:
-        r = AR.bounded_run([PY, os.path.join(HERE, 'gate_checks.py'), 'candidate'],
+        r = AR.bounded_run([PY, os.path.join(HERE, 'gate_checks.py'), 'candidate', '--base', BASE],
                            capture_output=True, text=True, cwd=HERE)
-        tree = next((l.split()[1] for l in r.stdout.splitlines() if l.startswith('CANDIDATE-TREE ')), None)
-        if tree is None:
-            raise RuntimeError('the candidate tree could not be resolved: %s' % (r.stdout + r.stderr)[-400:])
-        _CAND['tree'] = tree
+        got = dict(l.split(' ', 1) for l in r.stdout.splitlines() if l.startswith(('CANDIDATE-', 'BASE-')))
+        if 'CANDIDATE-TREE' not in got or 'BASE-MODEL-ROOT' not in got:
+            raise RuntimeError('the candidate could not be resolved: %s' % (r.stdout + r.stderr)[-400:])
+        _CAND['tree'], _CAND['base_root'] = got['CANDIDATE-TREE'], got['BASE-MODEL-ROOT']
         _CAND['rel'] = os.path.relpath(HERE, LAYOUT_ROOT).replace(os.sep, '/')
     return _CAND['tree'], _CAND['rel']
 
@@ -287,29 +288,39 @@ def _bspec_fresh():
                                                   os.path.join(HERE, 'build_inventory.py'))
 
 
-def _seat_check(which, mutate, needle):
+def _seat_check(which, mutate, needle, expect='FAIL', base=None, env=None):
     """Run a REAL gate check against a deliberately mutated export of the immutable candidate seat.
 
     The check logic is the gate's own; only the source of the model differs, so a falsifier proves the deployed
-    check catches the defect rather than proving a re-implementation of it does."""
+    check catches the defect rather than proving a re-implementation of it does. A positive control (EXPECT
+    PASS) proves the guard accepts the legitimate case, without which every FAIL it reports would be vacuous.
+    Review-4 R4-2: a traceback in the output is a failure of the case whatever the exit code says."""
     tree, _rel = candidate()
     d, seat = export_seat()
     work = tempfile.mkdtemp(prefix='fals-work-')
     try:
         mutate(seat)
-        r = AR.bounded_run([PY, os.path.join(HERE, 'gate_checks.py'), which,
-                            '--tree', tree, '--work', work, '--seat', seat],
-                           capture_output=True, text=True, cwd=HERE)
-        out = r.stdout + r.stderr
-        if r.returncode == 0:
-            return False, 'the check passed: %s' % out.strip().splitlines()[-1:]
-        if needle not in out:
-            return False, 'rejected for another reason: %s' % [l.strip() for l in out.splitlines()
-                                                               if l.startswith('  ')][:2]
-        return True, ''
+        r = AR.bounded_run([PY, os.path.join(HERE, 'gate_checks.py'), which, '--tree', tree, '--work', work,
+                            '--seat', seat, '--base', base or BASE],
+                           capture_output=True, text=True, cwd=HERE, env=env)
+        return verdict(r.returncode, r.stdout + r.stderr, needle, expect)
     finally:
         shutil.rmtree(d, ignore_errors=True)
         shutil.rmtree(work, ignore_errors=True)
+
+
+def verdict(code, out, needle, expect='FAIL'):
+    """The one reading of a check's outcome: typed reason named, no traceback, expected exit direction."""
+    if 'Traceback (most recent call last)' in out:
+        return False, 'a traceback escaped: %s' % [l for l in out.splitlines() if l.strip()][-1:]
+    if expect == 'PASS':
+        return (code == 0 and needle in out), ('the check did not pass: %s' % out.strip().splitlines()[-1:])
+    if code == 0:
+        return False, 'the check passed: %s' % out.strip().splitlines()[-1:]
+    if needle not in out:
+        return False, 'rejected for another reason: %s' % [l.strip() for l in out.splitlines()
+                                                           if l.startswith('  ')][:2]
+    return True, ''
 
 
 def tree_with(changes):
@@ -346,15 +357,9 @@ def _tree_check(which, changes, needle):
     tree, env, d = tree_with(changes)
     work = tempfile.mkdtemp(prefix='fals-work-')
     try:
-        r = AR.bounded_run([PY, os.path.join(HERE, 'gate_checks.py'), which,
-                            '--tree', tree, '--work', work], capture_output=True, text=True, cwd=HERE, env=env)
-        out = r.stdout + r.stderr
-        if r.returncode == 0:
-            return False, 'the check passed: %s' % out.strip().splitlines()[-1:]
-        if needle not in out:
-            return False, 'rejected for another reason: %s' % [l.strip() for l in out.splitlines()
-                                                               if l.startswith('  ')][:2]
-        return True, ''
+        r = AR.bounded_run([PY, os.path.join(HERE, 'gate_checks.py'), which, '--tree', tree, '--work', work,
+                            '--base', BASE], capture_output=True, text=True, cwd=HERE, env=env)
+        return verdict(r.returncode, r.stdout + r.stderr, needle)
     finally:
         shutil.rmtree(d, ignore_errors=True)
         shutil.rmtree(work, ignore_errors=True)
@@ -446,8 +451,11 @@ def _probe_seat(body):
     return lambda d: append(d, 'seats.sexp', body)
 
 
-def expand(text):
-    return str(text).replace('{NL}', '\n').replace('{Q}', '"').replace('{BS}', '\\')
+def expand(text, seat=''):
+    if '{BASE-ROOT}' in str(text):
+        candidate()
+    return (str(text).replace('{NL}', '\n').replace('{Q}', '"').replace('{BS}', '\\')
+            .replace('{BASE-ROOT}', _CAND.get('base_root', '')).replace('{SEAT}', seat))
 
 
 def declared_falsifiers(harness):
@@ -464,34 +472,80 @@ def declared_falsifiers(harness):
     return sorted(out)
 
 
+def apply_ops(dirp, module, spec, prefix=''):
+    """Apply, in order, the declared DROP, REPLACE and APPEND operations of one falsifier row to MODULE in DIRP.
+
+    One engine for every copy a falsifier mutates — the model copy the two verifiers judge, the exported seat a
+    single check judges, the synthetic base, the disposable repository the whole gate judges. DROP removes whole
+    facts structurally ("type id; type id"), so a removal can never leave a half-deleted form behind."""
+    path, changed = os.path.join(dirp, module), False
+    for item in [x.strip() for x in str(spec.get(prefix + 'drop', '')).split(';') if x.strip()]:
+        ftype, fid = item.split()
+        remove_fact(dirp, module, ftype, fid)
+        changed = True
+    text = open(path, encoding='utf-8').read()
+    if prefix + 'replace-from' in spec:
+        new = text.replace(expand(spec[prefix + 'replace-from'], dirp), expand(spec[prefix + 'replace-to'], dirp), 1)
+        if new == text:
+            raise RuntimeError('the declared :%sreplace-from does not occur in %s' % (prefix, module))
+        text, changed = new, True
+    if prefix + 'form' in spec:
+        text, changed = text + '\n' + expand(spec[prefix + 'form'], dirp) + '\n', True
+    if not changed:
+        raise RuntimeError('the declared %smutation changed nothing in %s' % (prefix, module))
+    open(path, 'w', encoding='utf-8', newline='\n').write(text)
+
+
 def data_driven(spec):
-    """Run one model-declared mutation and require the intended named rejection."""
+    """Run one model-declared mutation and require the intended named outcome."""
     kind, mod = spec['mutation'], spec.get('module')
-
-    def mutate(d):
-        path = os.path.join(d, mod)
-        text = open(path, encoding='utf-8').read()
-        if kind == 'APPEND':
-            text += '\n' + expand(spec['form']) + '\n'
-        else:
-            was = text
-            text = text.replace(expand(spec['replace-from']), expand(spec['replace-to']), 1)
-            if text == was:
-                raise RuntimeError('the declared :replace-from does not occur in %s' % mod)
-        open(path, 'w', encoding='utf-8', newline='\n').write(text)
-
+    needle, expect = expand(spec.get('reason', '')), str(spec.get('expect', 'FAIL'))
+    if kind == 'CHECK' and any(k.startswith('base-') for k in spec):
+        return _base_check(spec['check'].lower(), spec, needle, expect)
     if kind == 'CHECK':
-        def seat_mutate(seat):
-            path = os.path.join(seat, mod)
-            text = open(path, encoding='utf-8').read()
-            new = (text + '\n' + expand(spec['form']) + '\n') if 'form' in spec else \
-                text.replace(expand(spec['replace-from']), expand(spec['replace-to']), 1)
-            if new == text:
-                raise RuntimeError('the declared mutation changed nothing in %s' % mod)
-            open(path, 'w', encoding='utf-8', newline='\n').write(new)
-        return _seat_check(spec['check'].lower(), seat_mutate, expand(spec['reason']))
-    return both_reject(mutate, expand(spec['kernel-reason']), expand(spec['checker-reason']),
-                       rehash_after=spec.get('rehash', 'YES') == 'YES')
+        return _seat_check(spec['check'].lower(), lambda seat: apply_ops(seat, mod, spec), needle, expect)
+    if kind == 'GATE':
+        # the defect goes into a disposable repository and is made COHERENT — the derived artifacts regenerated
+        # exactly as a careful attacker would — so that the named check, and not artifact drift, is what fails
+        d, root = disposable_repo()
+        try:
+            seat = os.path.join(root, REL)
+            apply_ops(seat, mod, spec)
+            AR.checked([PY, os.path.join(seat, 'regenerate.py')], cwd=seat, capture_output=True)
+            AR.checked(['git', '-C', root, 'add', '-A'], capture_output=True)
+            return gate_must_fail(root, str(spec['check']).lower(), needle)
+        finally:
+            shutil.rmtree(d, ignore_errors=True)
+    return both_reject(lambda d: apply_ops(d, mod, spec), expand(spec['kernel-reason']),
+                       expand(spec['checker-reason']), rehash_after=spec.get('rehash', 'YES') == 'YES')
+
+
+def _base_check(which, spec, needle, expect):
+    """Exercise a base-anchored authorization: a SYNTHETIC BASE is committed on top of the real base — the
+    candidate's own module with the row's :base-* edits — and the check judges the mutated export against it.
+
+    The synthetic commit lives in a throwaway object store that reads the repository's objects through the
+    alternates mechanism, so the repository under audit gains no object and no ref. The check sees it because
+    the same object-directory environment is handed to it explicitly."""
+    tree, rel = candidate()
+    d, seat = export_seat()
+    scratch = tempfile.mkdtemp(prefix='fals-base-')
+    try:
+        shutil.copy(os.path.join(seat, spec['module']), os.path.join(scratch, spec['module']))
+        apply_ops(scratch, spec['module'], spec, prefix='base-')
+        with open(os.path.join(scratch, spec['module']), 'rb') as fh:
+            base_tree, env, odb = tree_with({'%s/%s' % (rel, spec['module']): fh.read()})
+        try:
+            synthetic = AR.checked(['git', '-C', REPO] + IDENT + ['commit-tree', base_tree, '-p', BASE, '-m',
+                                    'synthetic base for a held-out authorization case'],
+                                   env=env, capture_output=True, text=True).stdout.strip()
+            return _seat_check(which, lambda st: apply_ops(st, spec['module'], spec), needle, expect,
+                               base=synthetic, env=env)
+        finally:
+            shutil.rmtree(odb, ignore_errors=True)
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+        shutil.rmtree(scratch, ignore_errors=True)
 
 
 def rebuild_root(dirp):
@@ -968,7 +1022,7 @@ def disposable_repo():
         f.write(AR.git_object_dir(REPO) + '\n')
     for args in (['read-tree', tree], ['checkout-index', '-a', '-f']):
         AR.checked(['git', '-C', root] + args, capture_output=True)
-    commit = AR.checked(['git', '-C', root] + IDENT + ['commit-tree', tree, '-m',
+    commit = AR.checked(['git', '-C', root] + IDENT + ['commit-tree', tree, '-p', BASE, '-m',
                                                            'candidate tree under audit'],
                             capture_output=True, text=True).stdout.strip()
     AR.checked(['git', '-C', root, 'reset', '--hard', '-q', commit], capture_output=True)
@@ -991,8 +1045,8 @@ def run_gate(root, env=None):
     # NOT REJECTED for a defect that was never actually put in front of the check. The inner gate resolves its
     # own repository and its own worktree candidate, which is the only thing a composed falsifier proves.
     clean = {k: v for k, v in (env or os.environ).items() if not k.startswith('AML_')}
-    r = AR.bounded_run(['bash', os.path.join(seat, GATE), '--checks'], capture_output=True, text=True, cwd=seat,
-                       env=clean)
+    r = AR.bounded_run(['bash', os.path.join(seat, GATE), '--checks', '--base=' + BASE], capture_output=True,
+                       text=True, cwd=seat, env=clean)
     return r.returncode, r.stdout + r.stderr
 
 
@@ -1186,6 +1240,106 @@ def g08_tmp_collision():
             except OSError:
                 pass
 
+def f73_tool_vanishes_before_spawn():
+    """Review-4 R4-2. The execution seat must turn a spawn failure into a typed refusal: an executable that passes
+    the pre-check and is gone by the time of the spawn (the race, made deterministic here), and a regular file
+    that is not executable at all. Neither may surface as a traceback."""
+    d = tempfile.mkdtemp(prefix='fals-spawn-')
+    try:
+        tool = os.path.join(d, 'tool')
+        with open(tool, 'w') as fh:
+            fh.write('#!/bin/sh\nexit 0\n')
+        os.chmod(tool, 0o755)
+        if AR.tool_defect(tool):
+            return False, 'the pre-check rejected a valid executable'
+        os.remove(tool)
+        try:
+            AR.bounded_run([tool], timeout=30)
+            return False, 'no typed failure for a tool that vanished before the spawn'
+        except AR.ToolUnavailable as e:
+            if e.reason != 'TOOLCHAIN-MISSING':
+                return False, 'vanished tool reported %s' % e.reason
+        flat = os.path.join(d, 'flat')
+        with open(flat, 'w') as fh:
+            fh.write('not a program\n')
+        try:
+            AR.bounded_run([flat], timeout=30)
+            return False, 'no typed failure for a non-executable regular file'
+        except AR.ToolUnavailable as e:
+            return e.reason == 'TOOLCHAIN-UNEXECUTABLE', str(e)
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+
+def group_alive(pgid):
+    """Processes still in process group PGID, read from /proc so the harness needs no extra binary."""
+    alive = []
+    for pid in os.listdir('/proc'):
+        if pid.isdigit():
+            try:
+                with open('/proc/%s/stat' % pid) as fh:
+                    if int(fh.read().rsplit(')', 1)[1].split()[2]) == pgid:
+                        alive.append(int(pid))
+            except (OSError, ValueError, IndexError):
+                continue
+    return alive
+
+
+def g11_signal_cleans_only_its_own():
+    """Review-4 R4-3. Two concurrent acceptance runs on the same disposable repository, each with its own scratch
+    root. SIGTERM goes to ONE of them. That one must leave no workspace of its own and no process in its group;
+    the other must finish with its normal verdict; the repository content must be byte-identical throughout.
+    Nothing here promises anything for SIGKILL, which no process can handle."""
+    d, root = disposable_repo()
+    seat = os.path.join(root, REL)
+    clean = {k: v for k, v in os.environ.items() if not k.startswith('AML_')}
+    tmps = [tempfile.mkdtemp(prefix='fals-sig-') for _ in range(2)]
+    procs = []
+
+    def state():
+        return AR.checked([PY, os.path.join(seat, 'gate_checks.py'), 'content-state'], cwd=seat, env=clean,
+                          text=True).stdout
+    try:
+        before = state()
+        for t in tmps:
+            procs.append(subprocess.Popen(['bash', os.path.join(seat, GATE), '--checks', '--base=' + BASE],
+                                          cwd=seat, env=dict(clean, TMPDIR=t), stdout=subprocess.DEVNULL,
+                                          stderr=subprocess.DEVNULL, start_new_session=True))
+        deadline = time.time() + 600
+        while time.time() < deadline and not all(os.listdir(t) for t in tmps):
+            time.sleep(1)
+        if not all(os.listdir(t) for t in tmps):
+            return False, 'the two runs never opened their workspaces'
+        time.sleep(20)                                   # let both be inside a child check, not between two
+        os.killpg(procs[0].pid, signal.SIGTERM)
+        try:
+            procs[0].wait(timeout=600)
+        except subprocess.TimeoutExpired:
+            return False, 'the signalled run did not exit'
+        time.sleep(3)
+        left, orphans = os.listdir(tmps[0]), group_alive(procs[0].pid)
+        procs[1].wait(timeout=AR.DEFAULT_TIMEOUT * 3)
+        after = state()
+        if left:
+            return False, 'the signalled run left %s in its own scratch root' % left
+        if orphans:
+            return False, 'orphans survive in the signalled process group: %s' % orphans
+        if procs[1].returncode != 0:
+            return False, 'the concurrent run was disturbed (exit %d)' % procs[1].returncode
+        if not os.listdir(tmps[1]) == []:
+            return False, 'the concurrent run left %s behind' % os.listdir(tmps[1])
+        if before != after:
+            return False, 'the repository content changed during the runs'
+        return True, ''
+    finally:
+        for pr in procs:
+            if pr.poll() is None:
+                os.killpg(pr.pid, signal.SIGKILL)
+        for t in tmps:
+            shutil.rmtree(t, ignore_errors=True)
+        shutil.rmtree(d, ignore_errors=True)
+
+
 CODED_COMPONENT = [
     ('K01-GENERATED-VIEW-MISSING', 'a tracked generated view absent from the inventory', f01_generated_view_missing),
     ('K02-NEW-FILE-NO-RULE', 'a new tracked file matching no classification rule', f02_new_tracked_file_no_rule),
@@ -1211,7 +1365,8 @@ CODED_COMPONENT = [
     ('X33-UNKNOWN-FACT-FIELD', 'a field no fact type declares', f33_unknown_fact_field),
     ('X34-MISSPELLED-OPTIONAL-FIELD', 'a misspelled optional field with no downstream law', f34_misspelled_optional_field),
     ('X35-WRONG-VALUE-TYPE', 'a declared field carrying the wrong value kind', f35_wrong_value_type),
-    ('X44-GLOBAL-PROMOTION-OVERCLAIM', 'global source-of-truth claimed while classes remain deferred', f44_global_promotion_overclaim),]
+    ('X44-GLOBAL-PROMOTION-OVERCLAIM', 'global source-of-truth claimed while classes remain deferred', f44_global_promotion_overclaim),
+    ('X73-TOOL-VANISHES-BEFORE-SPAWN', 'a tool that passes the pre-check and vanishes before the spawn; a non-executable spawn', f73_tool_vanishes_before_spawn),]
 COMPOSED = [
     ('G01-GATE-WRITES-TO-TREE', 'the validation gate modifying the tree it audits', g01_gate_writes_to_tree),
     ('G02-PRE-EXISTING-DRIFT-ERASED', 'pre-existing drift regenerated away before comparison',
@@ -1221,7 +1376,8 @@ COMPOSED = [
     ('G05-CORPUS-SHRUNK', 'a fixture, property family or falsifier silently removed', g05_corpus_shrunk),
     ('G06-TOOLCHAIN-IDENTITY', 'a tool whose executable identity is not the pinned one', g06_toolchain_identity),
     ('G07-UNADJUDICATED-SOURCE', 'a qualifying migration source absent from the ledger', g07_unadjudicated_source),
-    ('G08-TMP-COLLISION', 'a hostile pre-existing path at a gate scratch location', g08_tmp_collision),]
+    ('G08-TMP-COLLISION', 'a hostile pre-existing path at a gate scratch location', g08_tmp_collision),
+    ('G11-SIGNAL-CLEANS-ONLY-ITS-OWN-RESOURCES', 'SIGTERM to one of two concurrent runs: own resources gone, the other unaffected, repository identical', g11_signal_cleans_only_its_own),]
 
 # ═══════════════════════════════════════════════════════════════════════ the declared universe, then the cases
 def universe_integrity():
@@ -1328,7 +1484,15 @@ if __name__ == '__main__':
     ap.add_argument('--work', default=None)
     ap.add_argument('--keep-work', action='store_true')
     ap.add_argument('--only', default=None, help='run only these falsifier ids, comma separated')
+    ap.add_argument('--base', default=None,
+                    help='the full commit SHA the candidate is judged against (Review-4 R4-1); required for the '
+                         'falsifier kinds, never defaulted; the fixtures kind judges model copies and needs none')
     a = ap.parse_args()
+    BASE = a.base
+    if a.kind != 'fixtures' and not BASE:
+        print('  UNIVERSE-BASE-UNSPECIFIED: the %s battery judges candidates against history and needs --base '
+              '<full commit SHA>; no fallback to HEAD is taken' % a.kind)
+        sys.exit(1)
     problems = universe_integrity()
     if problems:
         for p in problems:

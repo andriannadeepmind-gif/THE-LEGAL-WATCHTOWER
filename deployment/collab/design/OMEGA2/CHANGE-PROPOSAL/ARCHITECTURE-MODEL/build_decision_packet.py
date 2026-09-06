@@ -134,7 +134,19 @@ def main():
               'global-promotion %s' % (promo['GLOBAL']['state'] if 'GLOBAL' in promo else 'ABSENT')]
     recon += ['commitment kernel %s' % kdig, 'commitment checker %s' % cdig]
 
+    # Review-4 R4-6: "fact types" is two numbers, and the packet names both — the types the schema DECLARES and
+    # the types the model INSTANTIATES — together with the declared-but-uninstantiated ones, so the two counts
+    # can never again be quoted as if they measured the same universe.
+    declared_types = [str(x[1]).lower() for x in SR.read_forms_file(os.path.join(HERE, 'MODEL-SCHEMA.sexp'))[0][2:]
+                      if isinstance(x, list) and SR.head(x) == 'define-fact-type']
+    enums = sum(1 for x in SR.read_forms_file(os.path.join(HERE, 'MODEL-SCHEMA.sexp'))[0][2:]
+                if isinstance(x, list) and SR.head(x) == 'define-enum')
+    idle = sorted(set(declared_types) - set(fam))
     values = {
+        'schema-summary': ('schema version %s: %d schema-declared fact types, %d instantiated fact types, %d '
+                           'enums, %d modules; declared but not instantiated: %s.'
+                           % (pl['schema-version'], len(declared_types), len(fam), enums, len(mods),
+                              ', '.join(idle) if idle else 'none')),
         'reconciliation': '\n'.join(recon),
         'total-facts': str(len(fs)),
         'modules': str(len(mods)),
@@ -158,10 +170,15 @@ def main():
                                % (inv[0]['tracked'], inv[0]['file-facts'], inv[0]['dir-rule-sum'],
                                   inv[0]['dir-rule-facts'])) if inv else 'No inventory-total fact is present.',
         'tcb-sentence': ('The acceptance machinery the operator is asked to trust is %s executable files, %s '
-                         'physical and %s non-blank/non-comment lines, against an authored cap of %s. The %s/400 '
-                         'Lisp kernel budget is one path\'s budget and is not this number.'
-                         % (tcb[0]['files'], tcb[0]['physical'], tcb[0]['nbnc'], budget[0]['cap'],
-                            budget[0]['cap'])) if tcb and budget else 'No TCB measurement is present.',
+                         'physical and %s non-blank/non-comment lines; the verified baseline %s was %s files / '
+                         '%s physical / %s non-blank/non-comment. The size is a measured fact and a complexity '
+                         'signal, not a threshold, and every growth over the baseline is attributed to a '
+                         'reproduced finding by the acceptance command. The 400/400 Lisp kernel budget is one '
+                         'path\'s budget and is not this number.'
+                         % (tcb[0]['files'], tcb[0]['physical'], tcb[0]['nbnc'],
+                            str(budget[0]['baseline-commit'])[:12], budget[0]['baseline-files'],
+                            budget[0]['baseline-physical'], budget[0]['baseline']))
+                        if tcb and budget else 'No TCB measurement is present.',
         'kernel-verdict': kernel_verdict,
         'kernel-exit': str(kc),
         'checker-verdict': checker_verdict,

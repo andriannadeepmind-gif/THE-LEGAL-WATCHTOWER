@@ -166,7 +166,7 @@ Per file, the whole of the difference:
 | `gate_checks.py` | 853 | 1,196 | **+343** | R3-2 provenance, R3-7 universe floors, R3-1/R3-13 encoding agreement, §15 the TCB counter, R3-3 executed-identity, R3-5 closure indeterminacy, R3-6 generation workspace, R3-9 content-state and candidate resolution, R3-11 extension-blind artifacts, and the dead-rule finding this pass added |
 | `acceptance_runtime.py` | — | 123 | **+123** | R3-8 workspace lifecycle and hostile-TMPDIR refusal, R3-9 content-sensitive state, R3-10 bounded execution, R3-14 the common object store, §15 the one counting rule |
 | `SEXP-READER.py` | 235 | 335 | **+100** | R3-1 the AMC2 reference implementation, R3-6 the containment seat, the one canonical model read, the one pinned-tool lookup (R3-3) |
-| `ARCHITECTURE-MODEL-GATE.sh` (+ the deleted `ACCEPT.sh`) | 94 | 151 | **+57** | R3-15 one command with two phases, R3-3 pinned-interpreter resolution, and the exit-code check that stopped a vacuous battery reporting PASS |
+| `ARCHITECTURE-MODEL-GATE.sh` (the session's transient `ACCEPT.sh` was never tracked) | 94 | 151 | **+57** | R3-15 one command with two phases, R3-3 pinned-interpreter resolution, and the exit-code check that stopped a vacuous battery reporting PASS |
 | `CHECKER/independent_check.py` | 525 | 547 | +22 | R3-1 its own independent AMC2 implementation |
 | producers (`build_inventory` −36, `build_decision_packet` −25, `generate_views` −11) | 1,022 | 950 | **−72** | §15 M2 the classification table moved to model data; §15 M3 the packet's mechanical skeleton moved to a template and its authored prose out of the generator |
 | everything else (kernel, hash provider, setup, `build_deferred`, `build_model`, `build_root`, `regenerate`) | 683 | 683 | 0 | unchanged |
@@ -243,3 +243,40 @@ Both are recorded here because they changed the final number and because neither
   the three held-out falsifiers for that check (`X54`, `X55`, `X56`) report NOT REJECTED, `fls-01` FAILS, and
   the acceptance subset fails by name. A weakened check does not pass acceptance quietly; the falsifiers that
   exercise it are what makes that true.
+
+---
+
+## 10. Review-4: the numeric ceiling is withdrawn; the gate becomes an accountability gate
+
+The creator's Review-4 order supersedes §7's ceiling **as a pass/fail condition only**. There is no numeric TCB
+cap any more. What `tcb-01` now holds, on every run, is:
+
+* the **exact TCB file universe**, derived from the candidate by file kind and never by role name — nothing
+  executable hidden, undeclared, phantom or duplicated;
+* the **real measurement** of every file, physical and NBNC, matched against what the model records;
+* the **per-file and total delta** against the verified baseline `af0eb3c9 = 17 files / 5,544 physical /
+  4,577 NBNC`, whose per-file rows are now authored `tcb-baseline` facts (independent review #4 reproduced
+  every one of them with its own counter);
+* the rule that **every growth is attributed** (`tcb-attribution`) to a specific reproduced finding from the
+  closed `finding-id` set — an unattributed growth, an unknown finding id, an attribution for a file that does
+  not exist, or baseline rows that do not sum to the recorded baseline are each a named failure.
+
+The total is printed as a **measured fact and a complexity signal**. It is not the sole reason for a verdict:
+a budget raised to meet a measurement would be a tautology, and a protection removed to meet a number would be
+exactly the defect this gate exists to expose. §5–§7 remain as the record of how the 4,577 baseline and the
+5,020 exception were established; §8's declined consolidation stands. After independent review #5, if it
+passes, the measured size becomes the next observed baseline and this verifier infrastructure is locked; growth
+after that is permitted only for a new reproduced counterexample or a new explicitly approved architecture law.
+The `400` for the Lisp path remains a design target and a measurement, never a reason to pack a line or drop a
+protection.
+
+Measured at the end of the Review-4 correction, by `tcb-01` on the candidate: **16 files / 6,550 physical /
+5,420 NBNC** — `+843` NBNC over `af0eb3c9`, `+401` over `cc52a27d`. The Review-4 growth, file by file:
+`gate_checks.py` +178 (history-bound base, base-anchored authorization, schema-version policy, accountability
+`tcb-01`, typed toolchain refusal), `run_corpus.py` +149 (data-driven `GATE`/`CHECK`/`APPEND`/`REPLACE`
+falsifiers with synthetic bases and PASS controls, the spawn-time and concurrent-signal falsifiers),
+`acceptance_runtime.py` +57 (typed spawn failures, forced `GIT_OPTIONAL_LOCKS=0`, live child registry with
+signal forwarding), `build_decision_packet.py` +14 (schema-declared versus instantiated fact types, and the
+sentence that names the counted checks as Option-2 acceptance checks), `ARCHITECTURE-MODEL-GATE.sh` +3 (`--base`,
+own process groups, the check-count label). Every row above the baseline carries a `tcb-attribution`, and
+`tcb-01` names any that does not.

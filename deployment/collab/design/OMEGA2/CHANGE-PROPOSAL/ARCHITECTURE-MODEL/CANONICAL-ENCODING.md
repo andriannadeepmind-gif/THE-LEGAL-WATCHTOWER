@@ -41,8 +41,14 @@ Given a fact of type `T`, id `I` and pairs `(k, v)`:
 
   where `n` is the number of pairs.
 
-The `enc("AMC2")` prefix is **domain separation**; `enc(schema-version)` **binds the render to the schema** that
-declared the fact types, so the same bytes under a different schema are a different render by construction.
+The `enc("AMC2")` prefix is **domain separation**. `enc(schema-version)` is an **enforced policy
+discriminator**, not a cryptographic identity of the schema: the version is a short authored string, and two
+materially different schemas could carry the same one. What binds the schema's actual BYTES is the canonical
+model-root digest, which pins `MODEL-SCHEMA.sexp` among the modules; that is the mitigation, stated honestly. The
+version becomes meaningful because the acceptance command enforces it against history (Review-4 R4-5): whenever
+the schema's bytes differ from the base commit's, the version must be a strictly greater integer, and a schema
+that changed under an unchanged, lower or reused version is `SCHEMA-VERSION-STALE`. No claim is made that the
+version number alone separates renders "by construction".
 
 ### 2.2 Commitment digest
 

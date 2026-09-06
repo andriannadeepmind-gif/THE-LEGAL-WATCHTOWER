@@ -1,12 +1,24 @@
 #!/usr/bin/env python3
 """acceptance_runtime.py — the ONE seat for how acceptance programs run things and hold a workspace.
 
-Four properties the acceptance battery needs, in one place instead of four (Review-3 R3-8, R3-9, R3-10, §15):
+The properties the acceptance battery needs, in one place (Review-3 R3-8, R3-9, R3-10, §15; Review-4 R4-2, R4-3, R4-4):
 
   * BOUNDED EXECUTION. Every subprocess an acceptance program starts has a deadline and is killed as a PROCESS
     GROUP, so a producer that hangs — or that leaves a hung child behind — ends as a typed TIMEOUT rather than
     as a gate that never reaches a verdict. Before this there were 35 unbounded `subprocess.run` calls across
     the three runners and not one `timeout=`.
+  * TYPED TOOL FAILURE (R4-2). A pinned tool that is missing, not a regular file, not executable, a broken
+    symlink, unreadable, or that vanishes between the pre-check and the spawn — ENOENT, EACCES, ENOEXEC — is a
+    typed ToolUnavailable with a closed reason, never a Python traceback. The reason vocabulary is
+    TOOLCHAIN-MISSING, TOOLCHAIN-UNEXECUTABLE and TOOLCHAIN-SPAWN-FAILED, and every seat program turns it into
+    one printed line and a non-zero exit.
+  * OWN-CHILD CLEANUP (R4-3). This seat keeps an exact registry of the children IT started; on SIGINT, SIGTERM
+    or SIGHUP they are terminated as process groups and the workspace is removed. Nothing else is touched: no
+    glob over a scratch root, no other execution's workspace, because a concurrent independent run may own it.
+    Nothing is promised for SIGKILL, which no process can handle.
+  * ONE GIT LOCK POLICY (R4-4). Every git subprocess started through this seat carries an EXPLICIT
+    GIT_OPTIONAL_LOCKS=0, overriding whatever the environment inherited, so a read never creates .git/index.lock
+    in the repository under audit. A hostile inherited GIT_OPTIONAL_LOCKS=1 changes nothing.
   * WORKSPACE LIFECYCLE. A private workspace is removed on success, failure, signal and timeout alike; keeping
     it is an explicit request. A scratch root inside the repository under audit is refused before any work.
   * ONE TCB MEASUREMENT. "How much machinery does acceptance trust" has exactly one definition here, used both
@@ -17,13 +29,43 @@ Four properties the acceptance battery needs, in one place instead of four (Revi
     them, so replacing an untracked file's contents left the old read-only measurement bit-identical. Tracked
     content is measured as the tree the current state would commit to; untracked content is hashed.
 """
-import atexit, hashlib, os, shutil, signal, subprocess, sys, tempfile
+import atexit, errno, hashlib, os, shutil, signal, stat, subprocess, sys, tempfile
 
 DEFAULT_TIMEOUT = 1800
+_LIVE = {}                       # pid -> Popen, exactly the children THIS process started and has not reaped
 
 
 class Timeout(Exception):
     """A bounded execution that did not finish. Typed, so a hang is a verdict rather than a hang."""
+
+
+class ToolUnavailable(Exception):
+    """A tool that could not be executed, with a CLOSED reason. Typed, so an absent host binary is a printed
+    line and a non-zero exit, never a traceback (Review-4 R4-2)."""
+
+    def __init__(self, reason, path, detail):
+        Exception.__init__(self, '%s: %s — %s' % (reason, path, detail))
+        self.reason = reason
+
+
+def tool_defect(path):
+    """The typed reason PATH cannot be executed, or None. Checked before a spawn; the spawn checks again."""
+    if not os.path.lexists(path):
+        return 'TOOLCHAIN-MISSING', 'the path does not exist'
+    if not os.path.exists(path):
+        return 'TOOLCHAIN-MISSING', 'the path is a symbolic link whose target does not exist'
+    if not stat.S_ISREG(os.stat(path).st_mode):
+        return 'TOOLCHAIN-UNEXECUTABLE', 'the path is not a regular file'
+    if not os.access(path, os.X_OK | os.R_OK):
+        return 'TOOLCHAIN-UNEXECUTABLE', 'the file is not readable and executable by this process'
+    return None
+
+
+def git_env(**extra):
+    """The environment of EVERY git subprocess: GIT_OPTIONAL_LOCKS forced to 0, whatever was inherited."""
+    env = dict(os.environ, **extra)
+    env['GIT_OPTIONAL_LOCKS'] = '0'
+    return env
 
 
 def bounded_run(cmd, timeout=DEFAULT_TIMEOUT, **kw):
@@ -34,8 +76,14 @@ def bounded_run(cmd, timeout=DEFAULT_TIMEOUT, **kw):
     data = kw.pop('input', None)
     if data is not None:
         kw['stdin'] = subprocess.PIPE
-    # CLOSURE-DELEGATED: cmd is this function's own parameter; every caller's argument is analysed there
-    proc = subprocess.Popen(cmd, start_new_session=True, **_popen_kw(kw))
+    if os.path.basename(str(cmd[0])) == 'git':
+        kw['env'] = git_env(**{k: v for k, v in kw.get('env', os.environ).items() if k != 'GIT_OPTIONAL_LOCKS'})
+    try:
+        # CLOSURE-DELEGATED: cmd is this function's own parameter; every caller's argument is analysed there
+        proc = subprocess.Popen(cmd, start_new_session=True, **_popen_kw(kw))
+    except OSError as e:
+        raise ToolUnavailable(_spawn_reason(e), cmd[0], '%s (%s)' % (e.strerror, errno.errorcode.get(e.errno, e.errno)))
+    _LIVE[proc.pid] = proc
     try:
         out, err = proc.communicate(data, timeout=timeout)
     except subprocess.TimeoutExpired:
@@ -43,7 +91,23 @@ def bounded_run(cmd, timeout=DEFAULT_TIMEOUT, **kw):
         proc.communicate()
         raise Timeout('TIMEOUT: %s exceeded %ss and its process group was terminated'
                       % (' '.join(str(c) for c in cmd)[:120], timeout))
+    finally:
+        _LIVE.pop(proc.pid, None)
     return subprocess.CompletedProcess(cmd, proc.returncode, out, err)
+
+
+def _spawn_reason(e):
+    if e.errno == errno.ENOENT:
+        return 'TOOLCHAIN-MISSING'
+    if e.errno in (errno.EACCES, errno.EPERM, errno.ENOEXEC, errno.EISDIR):
+        return 'TOOLCHAIN-UNEXECUTABLE'
+    return 'TOOLCHAIN-SPAWN-FAILED'
+
+
+def terminate_children():
+    """Terminate, as process groups, exactly the children this process started and still owns."""
+    for proc in list(_LIVE.values()):
+        _kill_group(proc)
 
 
 def _popen_kw(kw):
@@ -87,17 +151,25 @@ def refuse_hostile_tmpdir(repo):
         raise SystemExit('HOSTILE-TMPDIR: the scratch root %s is inside the repository under audit' % tmp)
 
 
+def _on_signal(*_):
+    terminate_children()
+    sys.exit(130)
+
+
 def workspace(prefix, repo, keep=False, reuse=None):
-    """A private workspace that is cleaned up unless KEEP, on every exit path including a signal."""
+    """A private workspace that is cleaned up unless KEEP, on every exit path including a catchable signal.
+
+    On SIGINT, SIGTERM and SIGHUP the children this process started are terminated as process groups first,
+    then the interpreter exits and the atexit hook removes THIS workspace — never any other."""
     refuse_hostile_tmpdir(repo)
+    for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
+        signal.signal(sig, _on_signal)
     if reuse:
         os.makedirs(reuse, exist_ok=True)
         return reuse
     d = tempfile.mkdtemp(prefix=prefix)
     if not keep:
         atexit.register(shutil.rmtree, d, True)
-        for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
-            signal.signal(sig, lambda *_: sys.exit(130))
     return d
 
 
@@ -112,15 +184,14 @@ def git_object_dir(repo):
 
 
 def _rev_parse(repo, what):
-    return subprocess.run(['git', '-C', repo, 'rev-parse', '--path-format=absolute', what],
-                          capture_output=True, text=True, check=True, timeout=120).stdout.strip()
+    return checked(['git', '-C', repo, 'rev-parse', '--path-format=absolute', what], text=True,
+                   timeout=120).stdout.strip()
 
 
 def repo_content_state(repo, worktree_tree):
     """A content hash of everything in REPO this run could disturb: the tracked tree plus untracked bytes."""
-    env = dict(os.environ, GIT_OPTIONAL_LOCKS='0')
-    others = subprocess.run(['git', '-C', repo, 'ls-files', '--others', '--exclude-standard'],
-                            capture_output=True, text=True, env=env, timeout=600).stdout.splitlines()
+    others = bounded_run(['git', '-C', repo, 'ls-files', '--others', '--exclude-standard'], text=True,
+                         timeout=600).stdout.splitlines()
     parts = [worktree_tree]
     for rel in sorted(p for p in others if p.strip()):
         try:
