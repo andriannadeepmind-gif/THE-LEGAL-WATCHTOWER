@@ -36,7 +36,7 @@ Correction of the three reported inventory defects, at their source rather than 
 Determinism: paths sorted by exact code point sequence; rule order is the file order below; first match wins.
 Exit 0 only when every tracked path is classified by a named rule and every rule fired.
 """
-import importlib.util, subprocess, os, re, sys
+import importlib.util, os, re, sys
 from collections import Counter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -82,7 +82,7 @@ def tracked_paths(tree=None):
     repo = REPO or ROOT
     cmd = (['git', '-C', repo, 'ls-tree', '-r', '--name-only', '-z', tree] if tree
            else ['git', '-C', repo, 'ls-files', '-z'])
-    r = subprocess.run(cmd, capture_output=True)
+    r = AR.bounded_run(cmd)                 # Review-5 §5.6: the one bounded-execution seat, no raw subprocess
     if r.returncode != 0:
         sys.stderr.write('FATAL: %s failed: %s\n' % (' '.join(cmd[3:]), r.stderr.decode('utf-8', 'replace')))
         sys.exit(2)
@@ -180,7 +180,7 @@ def tcb_blobs(paths, tree):
             with open(os.path.join(repo, p), 'rb') as fh:                 # the working tree IS the candidate
                 blobs[p] = fh.read()
             continue
-        r = subprocess.run(['git', '-C', repo, 'cat-file', 'blob', rev], capture_output=True)
+        r = AR.bounded_run(['git', '-C', repo, 'cat-file', 'blob', rev])
         if r.returncode != 0:
             sys.stderr.write('FATAL: no blob for %s at %s\n' % (p, rev))
             sys.exit(2)

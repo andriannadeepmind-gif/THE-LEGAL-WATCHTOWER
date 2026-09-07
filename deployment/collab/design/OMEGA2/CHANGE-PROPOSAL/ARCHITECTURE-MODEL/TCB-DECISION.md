@@ -109,3 +109,11 @@ the pinned `sha256sum` binary is free of defect — only that the binary actuall
 one the model names, and that a second, independently sourced engine agrees with it on every input the gate
 tries. That is cross-engine evidence, not a correctness proof of SHA-256, and it is stated as such everywhere it
 is reported.
+
+## 7. Review-5: the binding decision on numeric ceilings
+
+The creator's binding decision — numeric TCB ceilings withdrawn as pass/fail criteria; discovery, measurement,
+historical comparison and per-file attribution mandatory; nothing removed, weakened, packed or obscured for a
+line count — is recorded verbatim in the canonical model, in the `:rationale` of `tcb-budget ACCEPTANCE-TCB`
+(`verification-corpus.sexp`), which is the one seat `tcb-01` reads. This section only points there; the text is
+not duplicated. The `400` for the Lisp path remains a design target of that path alone, never a verdict gate.

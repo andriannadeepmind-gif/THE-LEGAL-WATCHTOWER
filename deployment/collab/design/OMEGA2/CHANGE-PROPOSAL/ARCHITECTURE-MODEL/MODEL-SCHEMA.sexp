@@ -34,7 +34,7 @@
 ;;;; (define-unique NAME :type T :field K)
 ;;;;     no two facts of type T may carry the same value of K. One canonical write authority per store is a
 ;;;;     uniqueness law, not a convention.
-(define-model-schema architecture-model-schema :version "4" :canonical-encoding "AMC2"
+(define-model-schema architecture-model-schema :version "5" :canonical-encoding "AMC2"
 
   ;; ─────────────────────────────────────────────────────────────────── id spaces
   (define-id-space PATH-SPACE      :charset PATH  :min 1 :max 400)
@@ -67,7 +67,8 @@
   ;; Review-4 §1: every line of acceptance machinery above the verified baseline is attributed to the reproduced
   ;; finding that required it. This is the closed set of findings an attribution may cite.
   (define-enum finding-id (R3-1 R3-2 R3-3 R3-4 R3-5 R3-6 R3-7 R3-8 R3-9 R3-10 R3-11 R3-12 R3-13 R3-14 R3-15
-                           R4-1 R4-2 R4-3 R4-4 R4-5 R4-6 R4-7 S15-M1 S15-M2 S15-M3 S15-TCB))
+                           R4-1 R4-2 R4-3 R4-4 R4-5 R4-6 R4-7 S15-M1 S15-M2 S15-M3 S15-TCB
+                           R5-1 R5-2 R5-P3-1 R5-P3-2 R5-P3-3 R5-P3-4 R5-P3-5 R5-P3-6 R5-P3-7))
   (define-enum yes-no (YES NO))
   (define-enum tool-role (KERNEL_RUNTIME DIGEST_PROVIDER CHECKER_RUNTIME ASP_SOLVER CHECKER_DIGEST_PROVIDER))
   ;; which verification path is required to prove a tool's identity — never the tool's own self-report alone.
@@ -241,17 +242,26 @@
   ;;   APPEND   append :form to :module; BOTH verification paths must reject, naming :kernel-reason/:checker-reason
   ;;   REPLACE  replace :replace-from with :replace-to in :module; same obligation
   ;;   CHECK    mutate :module in an exported seat and require `gate_checks.py :check` to name :reason
+  ;;   GATE     mutate :module in a disposable repository, regenerate, and require the whole checks phase to fail
+  ;;            through :check naming :reason
+  ;; :drop removes whole facts structurally ("type id; type id"); with :relocate-to the dropped facts are appended
+  ;; unchanged to that other canonical module (Review-5 R5-1: a fact that moved must be discovered where it went);
+  ;; :form is appended to :form-module when given, else to :module. The base-* twins describe a SYNTHETIC BASE
+  ;; built from the candidate's own modules (:base-module names the module they edit), re-pinned so the
+  ;; historical loader accepts it; the candidate is then judged as the commit its tree would be over that base.
   ;; In :form and :replace-* the token {NL} expands to a newline and {BS} to a backslash — canonical string
   ;; values are control-character free, so a defect that IS a control character has to be written this way.
   (define-fact-type falsifier   :id-space TOKEN-SPACE
                     :required (intent harness)
                     :optional (mutation module form replace-from replace-to drop check reason kernel-reason
-                               checker-reason rehash base-form base-replace-from base-replace-to base-drop expect)
+                               checker-reason rehash base-form base-replace-from base-replace-to base-drop expect
+                               relocate-to form-module base-module base-relocate-to base-form-module)
                     :types ((intent STRING) (harness SYMBOL) (mutation SYMBOL) (module STRING) (form STRING)
                             (replace-from STRING) (replace-to STRING) (check SYMBOL) (reason STRING)
                             (kernel-reason STRING) (checker-reason STRING) (rehash SYMBOL) (drop STRING)
                             (base-form STRING) (base-replace-from STRING) (base-replace-to STRING)
-                            (base-drop STRING) (expect SYMBOL))
+                            (base-drop STRING) (expect SYMBOL) (relocate-to STRING) (form-module STRING)
+                            (base-module STRING) (base-relocate-to STRING) (base-form-module STRING))
                     :enum ((mutation falsifier-mutation) (rehash yes-no) (expect fixture-expectation))
                     :ref ((harness harness)))
 
@@ -262,6 +272,12 @@
   ;; lowering the floor is a reduction that the gate judges against the floors of the BASE COMMIT, read from
   ;; history the candidate cannot edit (Review-4 R4-1); it stands only on a base-anchored universe-authorization,
   ;; whose :previous-model-root is VERIFIED against the model root of the base's parent — not merely recorded.
+  ;; Review-5 R5-1: floors are discovered by FACT TYPE across the WHOLE model of the base and of the candidate —
+  ;; the base's model is loaded from the commit's objects and verified against its own root — never by the name
+  ;; of a module, so relocating a floor between canonical modules neither hides it nor changes its meaning. There
+  ;; is exactly ONE active floor per :family (a second is UNIVERSE-FLOOR-DUPLICATE, never a last-write-wins), the
+  ;; family must be a fact type this schema declares (UNIVERSE-FLOOR-FAMILY-UNDEFINED), and the `universe-floor`
+  ;; family floors ITSELF (UF-UNIVERSE-FLOOR), so the floor set cannot be deleted together with what it protects.
   (define-fact-type universe-floor :id-space TOKEN-SPACE
                     :required (family minimum rationale) :optional ()
                     :types ((family SYMBOL) (minimum INTEGER) (rationale STRING)))
@@ -270,9 +286,14 @@
   ;; must equal the base's floor) to :minimum, to the immediate child of a base that carries it, and it names
   ;; in :previous-model-root the model root the approver reviewed — the root of that base's parent, because a
   ;; base's own root cannot contain a fact that states it. It is spent once the floor has moved (replay fails on
-  ;; :previous-minimum), it must be carried unchanged into the candidate, and one that appears only in the
-  ;; candidate is a finding, never a permission. No external approval mechanism exists in this repository;
-  ;; none is invented: without a base-anchored authorization, reductions are forbidden.
+  ;; :previous-minimum), it must be carried unchanged into the candidate — its module may differ, its content
+  ;; may not — and one that appears only in the candidate authorises nothing on that edge (it may be INTRODUCED,
+  ;; well-formed and prospective, to authorise the next one). :approver and :rationale must be non-empty; they
+  ;; attribute a decision to someone and are NOT a cryptographic or externally validated approval. Consumption is
+  ;; per-lineage, per-edge, not global: two sibling candidates of the same base can each cite the same
+  ;; authorization mechanically, and only the Root Authority decides which sibling acquires canonical standing —
+  ;; the gate makes no such choice and proves no independent human approval. No external approval mechanism exists
+  ;; in this repository; none is invented: without a base-anchored authorization, reductions are forbidden.
   (define-fact-type universe-authorization :id-space TOKEN-SPACE
                     :required (family previous-minimum minimum previous-model-root rationale approver) :optional ()
                     :types ((family SYMBOL) (previous-minimum INTEGER) (minimum INTEGER)

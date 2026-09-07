@@ -41,7 +41,9 @@ GATE = 'ARCHITECTURE-MODEL-GATE.sh'
 IDENT = ['-c', 'user.name=Stavropoulos Law\u00ae', '-c', 'user.email=info@stavropouloslaw.com']
 LEGACY_SCRATCH = ['/tmp/k.out', '/tmp/c.out', '/tmp/fx.out', '/tmp/fl.out', '/tmp/ov.bak', '/tmp/ddi.out']
 RESULTS, FAILURES, MODULES, _CAND = [], [], [], {}
-BASE = None                    # the full commit SHA every history-bound check is judged against (R4-1)
+BASE = None                    # the base every history-bound check is judged against — DERIVED by the candidate
+                               # step from what was named; a --base only confirms it (Review-4 R4-1, Review-5 R5-2)
+CANDIDATE = 'WORKTREE'         # what is judged: a commit-ish, or WORKTREE; never a bare tree
 
 
 PY = SR.tool_path(HERE, 'CHECKER_RUNTIME')
@@ -78,13 +80,9 @@ def read_facts(dirp, module):
 
 
 def corpus():
-    fx, fam = {}, {}
-    for ftype, fid, p, _f in read_facts(HERE, 'verification-corpus.sexp'):
-        if ftype == 'fixture':
-            fx[fid] = p
-        elif ftype == 'property-family':
-            fam[fid] = p
-    return fx, fam
+    """The declared fixtures and property families — discovered by fact type across the whole model."""
+    m = SR.read_model(HERE)
+    return dict(m.of('fixture')), dict(m.of('property-family'))
 
 
 def emit(form):
@@ -102,8 +100,7 @@ def remove_fact(dirp, module, ftype, fid, field=None):
     """Remove facts structurally. With FIELD, every fact of FTYPE whose FIELD equals FID goes — which is what
     'this subsystem has no mapping at all' means when a subsystem legitimately carries several req-map rows."""
     path = os.path.join(dirp, module)
-    kept = []
-    dropped = 0
+    kept, dropped = [], []
     for form in SR.read_forms_file(path):
         if SR.head(form) == 'fact' and str(form[1]).lower() == ftype.lower():
             if field is None:
@@ -112,12 +109,12 @@ def remove_fact(dirp, module, ftype, fid, field=None):
                 v = SR.kv(form, field)
                 match = v is not None and SR.canonical_value(v, module, field) == fid
             if match:
-                dropped += 1
+                dropped.append(form)
                 continue
         kept.append(form)
     with open(path, 'w', encoding='utf-8', newline='\n') as f:
         f.write('\n'.join(emit(x) for x in kept) + '\n')
-    return dropped
+    return dropped                      # the removed forms, so a caller can RELOCATE them structurally
 
 
 def modules():
@@ -153,15 +150,23 @@ def seat_path(rel):
 
 
 def candidate():
-    """(tree, exported seat) for the immutable candidate — resolved once, by the one seat that builds it."""
+    """(tree, exported seat rel) for the immutable candidate — resolved once by the one seat that derives the
+    candidate AND its base from what was named (Review-5 R5-2). The derived base is this battery's BASE; a
+    --base given on the command line was only confirmed by that step."""
+    global BASE
     if not _CAND:
-        r = AR.bounded_run([PY, os.path.join(HERE, 'gate_checks.py'), 'candidate', '--base', BASE],
-                           capture_output=True, text=True, cwd=HERE)
+        cmd = [PY, os.path.join(HERE, 'gate_checks.py'), 'candidate', '--candidate', CANDIDATE]
+        r = AR.bounded_run(cmd + (['--base', BASE] if BASE else []), capture_output=True, text=True, cwd=HERE)
         got = dict(l.split(' ', 1) for l in r.stdout.splitlines() if l.startswith(('CANDIDATE-', 'BASE-')))
-        if 'CANDIDATE-TREE' not in got or 'BASE-MODEL-ROOT' not in got:
-            raise RuntimeError('the candidate could not be resolved: %s' % (r.stdout + r.stderr)[-400:])
-        _CAND['tree'], _CAND['base_root'] = got['CANDIDATE-TREE'], got['BASE-MODEL-ROOT']
-        _CAND['rel'] = os.path.relpath(HERE, LAYOUT_ROOT).replace(os.sep, '/')
+        if r.returncode != 0 or 'CANDIDATE-TREE' not in got or 'BASE-COMMIT' not in got:
+            print('  CANDIDATE-UNRESOLVED: no case can run against an unresolved candidate:')
+            for l in (r.stdout + r.stderr).strip().splitlines()[-3:]:
+                print('  ' + l[:200])
+            sys.exit(1)
+        _CAND.update(tree=got['CANDIDATE-TREE'], commit=got['CANDIDATE-COMMIT'], base=got['BASE-COMMIT'],
+                     base_root=got['BASE-MODEL-ROOT'],
+                     rel=os.path.relpath(HERE, LAYOUT_ROOT).replace(os.sep, '/'))
+        BASE = _CAND['base']
     return _CAND['tree'], _CAND['rel']
 
 
@@ -195,7 +200,7 @@ def rehash(d, digest_fn=None, order=None):
     rows = [(m, (digest_fn or sha_file)(os.path.join(d, m))) for m in mods]
     for m, h in rows:
         t = re.sub(r'(:module "%s" :sha256 ")[0-9a-f]{64}' % re.escape(m), r'\g<1>' + h, t)
-    dig = hashlib.sha256('\n'.join('%s:%s' % (m, h) for m, h in rows).encode('utf-8')).hexdigest()
+    dig = SR.root_digest(rows)
     t = re.sub(r'(:canonical-model-root-digest ")[0-9a-f]{64}', r'\g<1>' + dig, t)
     open(os.path.join(d, 'ROOT.sexp'), 'w', encoding='utf-8', newline='\n').write(t)
 
@@ -288,25 +293,34 @@ def _bspec_fresh():
                                                   os.path.join(HERE, 'build_inventory.py'))
 
 
-def _seat_check(which, mutate, needle, expect='FAIL', base=None, env=None):
+def seat_run(which, mutate, base=None, env=None, cand=None):
+    """(exit code, output) of a REAL gate check over a deliberately mutated export of the immutable candidate
+    seat, judged as candidate CAND (default: this battery's candidate identity) against BASE (default: the
+    derived base). The check re-derives the base from the candidate identity itself; the base passed here only
+    confirms it, exactly as on the command line."""
+    tree, _rel = candidate()
+    d, seat = export_seat()
+    work = tempfile.mkdtemp(prefix='fals-work-')
+    try:
+        mutate(seat)
+        r = AR.bounded_run([PY, os.path.join(HERE, 'gate_checks.py'), which, '--candidate', cand or CANDIDATE,
+                            '--tree', tree, '--work', work, '--seat', seat, '--base', base or BASE],
+                           capture_output=True, text=True, cwd=HERE, env=env)
+        return r.returncode, r.stdout + r.stderr
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+        shutil.rmtree(work, ignore_errors=True)
+
+
+def _seat_check(which, mutate, needle, expect='FAIL', base=None, env=None, cand=None):
     """Run a REAL gate check against a deliberately mutated export of the immutable candidate seat.
 
     The check logic is the gate's own; only the source of the model differs, so a falsifier proves the deployed
     check catches the defect rather than proving a re-implementation of it does. A positive control (EXPECT
     PASS) proves the guard accepts the legitimate case, without which every FAIL it reports would be vacuous.
     Review-4 R4-2: a traceback in the output is a failure of the case whatever the exit code says."""
-    tree, _rel = candidate()
-    d, seat = export_seat()
-    work = tempfile.mkdtemp(prefix='fals-work-')
-    try:
-        mutate(seat)
-        r = AR.bounded_run([PY, os.path.join(HERE, 'gate_checks.py'), which, '--tree', tree, '--work', work,
-                            '--seat', seat, '--base', base or BASE],
-                           capture_output=True, text=True, cwd=HERE, env=env)
-        return verdict(r.returncode, r.stdout + r.stderr, needle, expect)
-    finally:
-        shutil.rmtree(d, ignore_errors=True)
-        shutil.rmtree(work, ignore_errors=True)
+    code, out = seat_run(which, mutate, base, env, cand)
+    return verdict(code, out, needle, expect)
 
 
 def verdict(code, out, needle, expect='FAIL'):
@@ -351,14 +365,23 @@ def tree_with(changes):
     return g(['write-tree']).stdout.decode().strip(), env, d
 
 
+def synthetic_commit(tree, parents, env, message='held-out synthetic commit'):
+    """A commit over TREE with exactly PARENTS, written into the throwaway object store ENV names — the
+    repository under audit gains no object and no ref. A bare tree is no candidate (Review-5 R5-2), so a falsifier
+    that puts a defect into a tree presents it as the commit that tree would be."""
+    args = ['commit-tree', tree] + [x for par in parents for x in ('-p', par)] + ['-m', message]
+    return AR.checked(['git', '-C', REPO] + IDENT + args, env=env, capture_output=True, text=True).stdout.strip()
+
+
 def _tree_check(which, changes, needle):
     """Put a defect into the CANDIDATE TREE ITSELF and require the real gate check to name it."""
     _tree, _rel = candidate()
     tree, env, d = tree_with(changes)
     work = tempfile.mkdtemp(prefix='fals-work-')
     try:
-        r = AR.bounded_run([PY, os.path.join(HERE, 'gate_checks.py'), which, '--tree', tree, '--work', work,
-                            '--base', BASE], capture_output=True, text=True, cwd=HERE, env=env)
+        cand = synthetic_commit(tree, [BASE], env)
+        r = AR.bounded_run([PY, os.path.join(HERE, 'gate_checks.py'), which, '--candidate', cand, '--tree', tree,
+                            '--work', work, '--base', BASE], capture_output=True, text=True, cwd=HERE, env=env)
         return verdict(r.returncode, r.stdout + r.stderr, needle)
     finally:
         shutil.rmtree(d, ignore_errors=True)
@@ -461,15 +484,8 @@ def expand(text, seat=''):
 def declared_falsifiers(harness):
     """Every falsifier the MODEL declares with a mutation, for one harness — the runner carries the shapes,
     the model carries the cases."""
-    out = []
-    for f in SR.read_forms_file(os.path.join(HERE, 'verification-corpus.sexp')):
-        if SR.head(f) != 'fact' or str(f[1]) != 'falsifier':
-            continue
-        p = {str(k).lower(): SR.canonical_value(v, 'verification-corpus.sexp', 'falsifier')
-             for k, v in SR.plist(f[3:], 'verification-corpus.sexp', str(f[2]))}
-        if p.get('harness') == harness and p.get('mutation'):
-            out.append((SR.canonical_value(f[2], 'verification-corpus.sexp', 'id'), p))
-    return sorted(out)
+    return sorted((fid, p) for fid, p in SR.read_model(HERE).of('falsifier')
+                  if p.get('harness') == harness and p.get('mutation'))
 
 
 def apply_ops(dirp, module, spec, prefix=''):
@@ -478,11 +494,18 @@ def apply_ops(dirp, module, spec, prefix=''):
     One engine for every copy a falsifier mutates — the model copy the two verifiers judge, the exported seat a
     single check judges, the synthetic base, the disposable repository the whole gate judges. DROP removes whole
     facts structurally ("type id; type id"), so a removal can never leave a half-deleted form behind."""
-    path, changed = os.path.join(dirp, module), False
+    path, changed, moved = os.path.join(dirp, module), False, []
     for item in [x.strip() for x in str(spec.get(prefix + 'drop', '')).split(';') if x.strip()]:
         ftype, fid = item.split()
-        remove_fact(dirp, module, ftype, fid)
+        moved += remove_fact(dirp, module, ftype, fid)
         changed = True
+    if prefix + 'relocate-to' in spec:
+        # RELOCATE: the dropped facts are appended, unchanged, to another canonical module — the Review-5 shape:
+        # a fact that moved between modules must be discovered where it went, never lost with its old file
+        if not moved:
+            raise RuntimeError('the declared :%srelocate-to moves nothing: no fact was dropped' % prefix)
+        with open(os.path.join(dirp, str(spec[prefix + 'relocate-to'])), 'a', encoding='utf-8', newline='\n') as fh:
+            fh.write('\n' + '\n'.join(emit(f) for f in moved) + '\n')
     text = open(path, encoding='utf-8').read()
     if prefix + 'replace-from' in spec:
         new = text.replace(expand(spec[prefix + 'replace-from'], dirp), expand(spec[prefix + 'replace-to'], dirp), 1)
@@ -490,7 +513,13 @@ def apply_ops(dirp, module, spec, prefix=''):
             raise RuntimeError('the declared :%sreplace-from does not occur in %s' % (prefix, module))
         text, changed = new, True
     if prefix + 'form' in spec:
-        text, changed = text + '\n' + expand(spec[prefix + 'form'], dirp) + '\n', True
+        target = str(spec.get(prefix + 'form-module', module))     # the module the form is appended to
+        if target == module:
+            text = text + '\n' + expand(spec[prefix + 'form'], dirp) + '\n'
+        else:
+            with open(os.path.join(dirp, target), 'a', encoding='utf-8', newline='\n') as fh:
+                fh.write('\n' + expand(spec[prefix + 'form'], dirp) + '\n')
+        changed = True
     if not changed:
         raise RuntimeError('the declared %smutation changed nothing in %s' % (prefix, module))
     open(path, 'w', encoding='utf-8', newline='\n').write(text)
@@ -528,23 +557,30 @@ def _base_check(which, spec, needle, expect):
     alternates mechanism, so the repository under audit gains no object and no ref. The check sees it because
     the same object-directory environment is handed to it explicitly."""
     tree, rel = candidate()
-    d, seat = export_seat()
-    scratch = tempfile.mkdtemp(prefix='fals-base-')
+    scratch = model_copy()
     try:
-        shutil.copy(os.path.join(seat, spec['module']), os.path.join(scratch, spec['module']))
-        apply_ops(scratch, spec['module'], spec, prefix='base-')
-        with open(os.path.join(scratch, spec['module']), 'rb') as fh:
-            base_tree, env, odb = tree_with({'%s/%s' % (rel, spec['module']): fh.read()})
+        # the synthetic base is a COHERENT model: every module it changed is re-pinned and its root digest
+        # recomputed, because the historical loader verifies a base against its own root (Review-5 R5-1)
+        apply_ops(scratch, str(spec.get('base-module', spec['module'])), spec, prefix='base-')
+        rehash(scratch)
+        changes = {}
+        for name in modules() + ['ROOT.sexp']:
+            with open(os.path.join(scratch, name), 'rb') as fh:
+                data = fh.read()
+            with open(os.path.join(HERE, name), 'rb') as fh:
+                if fh.read() != data:
+                    changes['%s/%s' % (rel, name)] = data
+        base_tree, env, odb = tree_with(changes)
         try:
-            synthetic = AR.checked(['git', '-C', REPO] + IDENT + ['commit-tree', base_tree, '-p', BASE, '-m',
-                                    'synthetic base for a held-out authorization case'],
-                                   env=env, capture_output=True, text=True).stdout.strip()
+            synthetic_base = synthetic_commit(base_tree, [BASE], env, 'synthetic base for a held-out case')
+            # the candidate under judgement is the COMMIT the candidate tree would be on top of that base, so the
+            # check derives the base from the candidate's own parentage — nothing is chosen for it
+            synthetic_cand = synthetic_commit(tree, [synthetic_base], env, 'candidate over a synthetic base')
             return _seat_check(which, lambda st: apply_ops(st, spec['module'], spec), needle, expect,
-                               base=synthetic, env=env)
+                               base=synthetic_base, env=env, cand=synthetic_cand)
         finally:
             shutil.rmtree(odb, ignore_errors=True)
     finally:
-        shutil.rmtree(d, ignore_errors=True)
         shutil.rmtree(scratch, ignore_errors=True)
 
 
@@ -573,7 +609,7 @@ def apply_mutation(d, mut):
         rebuild_root(d)
     elif op in ('remove-fact', 'remove-facts-where'):
         field = str(mut[4]) if op == 'remove-facts-where' else None
-        if remove_fact(d, str(mut[1]), str(mut[2]), str(mut[3]), field) == 0:
+        if not remove_fact(d, str(mut[1]), str(mut[2]), str(mut[3]), field):
             raise SystemExit('FIXTURE-MUTATION-VACUOUS: %s %s is not present in %s; the fixture would test '
                              'nothing' % (mut[2], mut[3], mut[1]))
         rebuild_root(d)
@@ -1034,7 +1070,7 @@ def disposable_repo():
     return d, root
 
 
-def run_gate(root, env=None):
+def run_gate(root, env=None, base=None):
     seat = os.path.join(root, REL)
     # --checks is the gate's model-check phase. The full phase runs THIS battery, so a composed falsifier that
     # invoked it would recurse forever; the phase argument is what makes that structurally impossible.
@@ -1044,9 +1080,12 @@ def run_gate(root, env=None):
     # tree instead of the disposable repository it had just injected a defect into — eight falsifiers reporting
     # NOT REJECTED for a defect that was never actually put in front of the check. The inner gate resolves its
     # own repository and its own worktree candidate, which is the only thing a composed falsifier proves.
+    # The inner gate DERIVES its base from its own repository (Review-5 R5-2): a clean checkout of the disposable
+    # HEAD is judged against that HEAD's parent (the real base), a mutated working tree against the disposable
+    # HEAD itself. A base is passed only where the caller knows it is the derived one, as a confirmation.
     clean = {k: v for k, v in (env or os.environ).items() if not k.startswith('AML_')}
-    r = AR.bounded_run(['bash', os.path.join(seat, GATE), '--checks', '--base=' + BASE], capture_output=True,
-                       text=True, cwd=seat, env=clean)
+    r = AR.bounded_run(['bash', os.path.join(seat, GATE), '--checks'] + (['--base=' + base] if base else []),
+                       capture_output=True, text=True, cwd=seat, env=clean)
     return r.returncode, r.stdout + r.stderr
 
 
@@ -1064,9 +1103,9 @@ def repo_seat_write(root, rel, text):
         f.write(text)
 
 
-def gate_must_fail(root, check, reason=None, env=None):
+def gate_must_fail(root, check, reason=None, env=None, base=None):
     """The gate must FAIL, and the NAMED check must be the one that failed."""
-    code, out = run_gate(root, env)
+    code, out = run_gate(root, env, base)
     if code == 0:
         return False, 'the composed gate PASSED: %s' % [l for l in out.splitlines()
                                                         if l.startswith('### ARCHITECTURE MODEL LAWS')][:1]
@@ -1090,7 +1129,7 @@ def control_unmutated():
     """
     d, root = disposable_repo()
     try:
-        code, out = run_gate(root)
+        code, out = run_gate(root, base=BASE)          # clean checkout: derived base = HEAD's parent = BASE
         if code != 0:
             failed = [l.split(':')[0].replace('GATE ', '') for l in out.splitlines() if l.endswith(': FAIL')]
             return False, 'the gate FAILS on an unmutated copy (%s); every falsifier below would pass ' \
@@ -1110,7 +1149,7 @@ def g01_gate_writes_to_tree():
     d, root = disposable_repo()
     try:
         gate = repo_seat_text(root, GATE)
-        marker = 'export AML_CANDIDATE_TREE="$TREE"'
+        marker = 'export AML_CANDIDATE="$CANDID" AML_CANDIDATE_TREE="$TREE"'
         if marker not in gate:
             return False, 'the gate no longer pins the candidate; this falsifier cannot be placed'
         repo_seat_write(root, GATE, gate.replace(
@@ -1340,6 +1379,239 @@ def g11_signal_cleans_only_its_own():
         shutil.rmtree(d, ignore_errors=True)
 
 
+# ═══════════════════════════════════════ Review-5: candidate/base derivation and whole-model discovery — the cases
+# that need a process, a repository or a history rather than a model mutation
+def throwaway_odb():
+    """(env, dir) of a throwaway object store that reads the repository's objects through alternates: synthetic
+    commits are written there, and the repository under audit gains no object and no ref."""
+    d = tempfile.mkdtemp(prefix='fals-odb-')
+    env = dict(os.environ, GIT_OBJECT_DIRECTORY=os.path.join(d, 'objects'),
+               GIT_ALTERNATE_OBJECT_DIRECTORIES=AR.git_object_dir(REPO))
+    os.makedirs(env['GIT_OBJECT_DIRECTORY'])
+    return env, d
+
+
+def clean_env(extra=None):
+    """An environment in which the inner seat resolves its OWN repository: no AML_* crosses in."""
+    env = {k: v for k, v in os.environ.items() if not k.startswith('AML_')}
+    env.update(extra or {})
+    return env
+
+
+def candidate_step(args, env=None, cwd=None):
+    """(exit code, output, the CANDIDATE-/BASE- lines) of the REAL candidate step, run from CWD's seat."""
+    work = tempfile.mkdtemp(prefix='fals-work-')
+    try:
+        r = AR.bounded_run([PY, os.path.join(cwd or HERE, 'gate_checks.py'), 'candidate', '--work', work] + args,
+                           capture_output=True, text=True, cwd=cwd or HERE, env=env)
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+    out = r.stdout + r.stderr
+    return r.returncode, out, dict(l.split(' ', 1) for l in out.splitlines() if l.startswith(('CANDIDATE-', 'BASE-')))
+
+
+def x79_candidate_tree_is_tree_not_commit():
+    """A commit-ish candidate resolves to the TREE it carries, never to the commit's own id (Review-5 §5.4)."""
+    tree, _rel = candidate()
+    env, d = throwaway_odb()
+    try:
+        c = synthetic_commit(tree, [BASE], env)
+        code, out, got = candidate_step(['--candidate', c], env=env)
+        if code != 0:
+            return False, 'the candidate step failed: %s' % out.strip().splitlines()[-1:]
+        if got.get('CANDIDATE-TREE') != tree or got.get('CANDIDATE-COMMIT') != c:
+            return False, 'commit %s resolved to tree %s / commit %s; expected tree %s' \
+                          % (c[:12], got.get('CANDIDATE-TREE', '')[:12], got.get('CANDIDATE-COMMIT', '')[:12], tree[:12])
+        return True, ''
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+
+def x80_worktree_arbitrary_base_refused():
+    """An arbitrary --base for a WORKTREE candidate — an unrelated history — is refused by name (R5-2)."""
+    tree, _rel = candidate()
+    env, d = throwaway_odb()
+    try:
+        wrong = synthetic_commit(tree, [], env, 'an unrelated history')
+        code, out, _got = candidate_step(['--candidate', 'WORKTREE', '--base', wrong], env=env)
+        return verdict(code, out, 'UNIVERSE-BASE-MISMATCH')
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+
+def x81_commit_base_not_parent_refused():
+    """A committed candidate with a --base other than its unique parent is refused by name (R5-2)."""
+    tree, _rel = candidate()
+    env, d = throwaway_odb()
+    try:
+        c, wrong = synthetic_commit(tree, [BASE], env), synthetic_commit(tree, [], env, 'not the parent')
+        code, out, _got = candidate_step(['--candidate', c, '--base', wrong], env=env)
+        return verdict(code, out, 'UNIVERSE-BASE-MISMATCH')
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+
+def x82_merge_candidate_refused():
+    """A merge commit has no single history: refused with and without an explicit base (R5-2)."""
+    tree, _rel = candidate()
+    env, d = throwaway_odb()
+    try:
+        other = synthetic_commit(tree, [], env, 'the other side')
+        m = synthetic_commit(tree, [BASE, other], env, 'a merge')
+        code, out, _got = candidate_step(['--candidate', m], env=env)
+        okk, why = verdict(code, out, 'UNIVERSE-BASE-AMBIGUOUS')
+        if not okk:
+            return False, why
+        code, out, _got = candidate_step(['--candidate', m, '--base', BASE], env=env)
+        okk, why = verdict(code, out, 'UNIVERSE-BASE-AMBIGUOUS')
+        return okk, ('' if okk else 'with an explicit base: ' + why)
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+
+def x83_orphan_candidate_refused():
+    """A zero-parent candidate has no history to be judged against (R5-2)."""
+    tree, _rel = candidate()
+    env, d = throwaway_odb()
+    try:
+        o = synthetic_commit(tree, [], env, 'an orphan')
+        code, out, _got = candidate_step(['--candidate', o], env=env)
+        return verdict(code, out, 'UNIVERSE-BASE-ORPHAN')
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+
+def x84_worktree_differs_base_is_head():
+    """A working tree that differs from HEAD is the candidate, and HEAD is its base (R5-2)."""
+    d, root = disposable_repo()
+    try:
+        head = AR.checked(['git', '-C', root, 'rev-parse', 'HEAD'], capture_output=True, text=True).stdout.strip()
+        head_tree = AR.checked(['git', '-C', root, 'rev-parse', 'HEAD^{tree}'], capture_output=True, text=True).stdout.strip()
+        with open(seat_file(root, 'PACKET-TEMPLATE.md'), 'a', encoding='utf-8', newline='\n') as fh:
+            fh.write('\n<!-- held-out working-tree change -->\n')
+        code, out, got = candidate_step(['--candidate', 'WORKTREE'], env=clean_env(), cwd=os.path.join(root, REL))
+        if code != 0:
+            return False, 'the candidate step failed: %s' % out.strip().splitlines()[-1:]
+        if got.get('CANDIDATE-COMMIT') != 'WORKTREE' or got.get('BASE-COMMIT') != head or got.get('CANDIDATE-TREE') == head_tree:
+            return False, 'candidate %s tree %s base %s; expected WORKTREE, a tree other than HEAD\'s, base HEAD %s' \
+                          % (got.get('CANDIDATE-COMMIT'), got.get('CANDIDATE-TREE', '')[:12], got.get('BASE-COMMIT', '')[:12], head[:12])
+        return True, ''
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+
+def x85_worktree_equals_head_base_is_parent():
+    """A working tree equal to HEAD's tree IS HEAD, and HEAD's unique parent is its base (R5-2)."""
+    tree, _rel = candidate()
+    d, root = disposable_repo()
+    try:
+        head = AR.checked(['git', '-C', root, 'rev-parse', 'HEAD'], capture_output=True, text=True).stdout.strip()
+        code, out, got = candidate_step(['--candidate', 'WORKTREE'], env=clean_env(), cwd=os.path.join(root, REL))
+        if code != 0:
+            return False, 'the candidate step failed: %s' % out.strip().splitlines()[-1:]
+        if got.get('CANDIDATE-COMMIT') != head or got.get('BASE-COMMIT') != BASE or got.get('CANDIDATE-TREE') != tree:
+            return False, 'candidate %s base %s; expected HEAD %s with base %s' \
+                          % (got.get('CANDIDATE-COMMIT', '')[:12], got.get('BASE-COMMIT', '')[:12], head[:12], BASE[:12])
+        return True, ''
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+
+def x86_shallow_clone_base_missing_then_fetched():
+    """In a depth-1 clone the base object is absent: a typed refusal naming exactly the object to fetch; after
+    a bounded fetch of exactly that object the same step passes (R5-2)."""
+    d, root = disposable_repo()
+    sh = tempfile.mkdtemp(prefix='fals-shallow-')
+    try:
+        AR.checked(['git', '-C', root, 'config', 'uploadpack.allowReachableSHA1InWant', 'true'], capture_output=True)
+        repo = os.path.join(sh, 'repo')
+        AR.checked(['git', 'clone', '-q', '--depth=1', 'file://' + root, repo], capture_output=True, timeout=900)
+        seat = os.path.join(repo, REL)
+        code, out, _got = candidate_step(['--candidate', 'HEAD'], env=clean_env(), cwd=seat)
+        okk, why = verdict(code, out, 'UNIVERSE-BASE-OBJECT-MISSING')
+        if not okk:
+            return False, 'before the fetch: ' + why
+        if BASE not in out or 'git fetch --depth=1' not in out:
+            return False, 'the refusal does not name the exact object and the bounded fetch that brings it'
+        AR.checked(['git', '-C', repo, 'fetch', '-q', '--depth=1', 'origin', BASE], capture_output=True, timeout=900)
+        code, out, got = candidate_step(['--candidate', 'HEAD'], env=clean_env(), cwd=seat)
+        if code != 0 or got.get('BASE-COMMIT') != BASE:
+            return False, 'after fetching exactly %s: %s' % (BASE[:12], out.strip().splitlines()[-1:])
+        return True, ''
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+        shutil.rmtree(sh, ignore_errors=True)
+
+
+def x87_floors_reported_separately():
+    """uni-01 reports the base's floors and the candidate's floors as two lines, and they differ when the
+    candidate floors one more family (Review-5 §5.1). Every existing floor is tight, so the difference is a new
+    floor rather than a raised one."""
+    def add_floor(seat):
+        with open(os.path.join(seat, 'verification-corpus.sexp'), 'a', encoding='utf-8', newline='\n') as fh:
+            fh.write('\n(fact universe-floor UF-HARNESS :family harness :minimum 2 :rationale "held-out")\n')
+    code, out = seat_run('universe', add_floor)
+    if code != 0 or 'Traceback' in out:
+        return False, 'adding a floor was refused: %s' % out.strip().splitlines()[-1:]
+    lines = dict(l.split(' ', 1) for l in out.splitlines() if l.startswith('UNIVERSE-'))
+    b, c = lines.get('UNIVERSE-BASE-FLOORS', ''), lines.get('UNIVERSE-CANDIDATE-FLOORS', '')
+    if not b or not c:
+        return False, 'base and candidate floors are not reported as separate lines'
+    if 'harness>=2' in b or 'harness>=2' not in c or b == c:
+        return False, 'base %r / candidate %r do not show the added floor separately' % (b, c)
+    if lines.get('UNIVERSE-REDUCTIONS') != 'none' or lines.get('UNIVERSE-AUTHORIZATIONS-CONSUMED') != 'none':
+        return False, 'reductions / consumed authorizations are not reported: %r' % lines
+    return True, ''
+
+
+def relocate_facts(dirp, src, dst, ftype):
+    """Move every fact of FTYPE from module SRC to module DST, structurally and unchanged."""
+    forms = SR.read_forms_file(os.path.join(dirp, src))
+    moved = [f for f in forms if SR.head(f) == 'fact' and str(f[1]).lower() == ftype]
+    kept = [f for f in forms if not (SR.head(f) == 'fact' and str(f[1]).lower() == ftype)]
+    with open(os.path.join(dirp, src), 'w', encoding='utf-8', newline='\n') as fh:
+        fh.write('\n'.join(emit(x) for x in kept) + '\n')
+    with open(os.path.join(dirp, dst), 'a', encoding='utf-8', newline='\n') as fh:
+        fh.write('\n' + '\n'.join(emit(x) for x in moved) + '\n')
+    return len(moved)
+
+
+def g12_two_commit_relocation_then_shrink():
+    """Review-5 R5-1 C1 -> C2 through the REAL command. C1 relocates every floor to another canonical module,
+    values unchanged — legal, and the single history-bound check passes against the candidate. C2, on top of
+    C1, deletes five floors and shrinks the corpus coherently. Judged edge by edge, C2 against C1, the whole
+    checks phase must fail through uni-01: the floors are discovered where C1 put them."""
+    d, root = disposable_repo()
+    seat = os.path.join(root, REL)
+    try:
+        def commit(msg):
+            AR.checked(['git', '-C', root, 'add', '-A'], capture_output=True)
+            AR.checked(['git', '-C', root] + IDENT + ['commit', '-q', '-m', msg], capture_output=True)
+        if relocate_facts(seat, 'verification-corpus.sexp', 'seats.sexp', 'universe-floor') < 7:
+            return False, 'fewer than seven floors were found to relocate'
+        AR.checked([PY, os.path.join(seat, 'regenerate.py')], cwd=seat, capture_output=True)
+        commit('C1: relocate the universe floors, values unchanged')
+        work = tempfile.mkdtemp(prefix='fals-work-')
+        try:
+            r = AR.bounded_run([PY, os.path.join(seat, 'gate_checks.py'), 'universe', '--candidate', 'HEAD',
+                                '--work', work], capture_output=True, text=True, cwd=seat, env=clean_env())
+        finally:
+            shutil.rmtree(work, ignore_errors=True)
+        okk, why = verdict(r.returncode, r.stdout + r.stderr, 'GATECHECK universe: PASS', 'PASS')
+        if not okk:
+            return False, 'C1 (relocation, values unchanged) must pass and did not: ' + why
+        for fid in ('UF-FIXTURE', 'UF-PROPERTY-FAMILY', 'UF-FALSIFIER', 'UF-GEN-ARTIFACT', 'UF-SEAT'):
+            if not remove_fact(seat, 'seats.sexp', 'universe-floor', fid):
+                return False, '%s was not found where C1 relocated it' % fid
+        remove_fact(seat, 'verification-corpus.sexp', 'property-family', 'PF-L4-STAGE-CYCLE')
+        remove_fact(seat, 'verification-corpus.sexp', 'falsifier', 'X69-FLOOR-SET-WEAKENED')
+        AR.checked([PY, os.path.join(seat, 'regenerate.py')], cwd=seat, capture_output=True)
+        commit('C2: delete five floors and shrink the corpus coherently')
+        return gate_must_fail(root, 'uni-01-no-declared-family-below-its-floor', 'UNIVERSE-FLOOR-REDUCED')
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+
 CODED_COMPONENT = [
     ('K01-GENERATED-VIEW-MISSING', 'a tracked generated view absent from the inventory', f01_generated_view_missing),
     ('K02-NEW-FILE-NO-RULE', 'a new tracked file matching no classification rule', f02_new_tracked_file_no_rule),
@@ -1366,7 +1638,16 @@ CODED_COMPONENT = [
     ('X34-MISSPELLED-OPTIONAL-FIELD', 'a misspelled optional field with no downstream law', f34_misspelled_optional_field),
     ('X35-WRONG-VALUE-TYPE', 'a declared field carrying the wrong value kind', f35_wrong_value_type),
     ('X44-GLOBAL-PROMOTION-OVERCLAIM', 'global source-of-truth claimed while classes remain deferred', f44_global_promotion_overclaim),
-    ('X73-TOOL-VANISHES-BEFORE-SPAWN', 'a tool that passes the pre-check and vanishes before the spawn; a non-executable spawn', f73_tool_vanishes_before_spawn),]
+    ('X73-TOOL-VANISHES-BEFORE-SPAWN', 'a tool that passes the pre-check and vanishes before the spawn; a non-executable spawn', f73_tool_vanishes_before_spawn),
+    ('X79-CANDIDATE-TREE-NOT-COMMIT-ID', 'a commit-ish candidate resolves to its tree, never to the commit id', x79_candidate_tree_is_tree_not_commit),
+    ('X80-WORKTREE-ARBITRARY-BASE', 'an arbitrary --base for a WORKTREE candidate', x80_worktree_arbitrary_base_refused),
+    ('X81-COMMIT-BASE-NOT-PARENT', 'a committed candidate with a --base other than its unique parent', x81_commit_base_not_parent_refused),
+    ('X82-MERGE-CANDIDATE', 'a merge commit as candidate, with and without an explicit base', x82_merge_candidate_refused),
+    ('X83-ORPHAN-CANDIDATE', 'a zero-parent commit as candidate', x83_orphan_candidate_refused),
+    ('X84-WORKTREE-DIFFERS-BASE-IS-HEAD', 'a working tree differing from HEAD is judged against HEAD', x84_worktree_differs_base_is_head),
+    ('X85-WORKTREE-EQUALS-HEAD-BASE-IS-PARENT', 'a working tree equal to HEAD is HEAD, judged against its parent', x85_worktree_equals_head_base_is_parent),
+    ('X86-SHALLOW-BASE-MISSING-THEN-FETCHED', 'a depth-1 clone: typed refusal naming the object, PASS after fetching exactly it', x86_shallow_clone_base_missing_then_fetched),
+    ('X87-FLOORS-REPORTED-SEPARATELY', 'base floors and candidate floors reported as distinct lines that differ', x87_floors_reported_separately),]
 COMPOSED = [
     ('G01-GATE-WRITES-TO-TREE', 'the validation gate modifying the tree it audits', g01_gate_writes_to_tree),
     ('G02-PRE-EXISTING-DRIFT-ERASED', 'pre-existing drift regenerated away before comparison',
@@ -1377,28 +1658,29 @@ COMPOSED = [
     ('G06-TOOLCHAIN-IDENTITY', 'a tool whose executable identity is not the pinned one', g06_toolchain_identity),
     ('G07-UNADJUDICATED-SOURCE', 'a qualifying migration source absent from the ledger', g07_unadjudicated_source),
     ('G08-TMP-COLLISION', 'a hostile pre-existing path at a gate scratch location', g08_tmp_collision),
-    ('G11-SIGNAL-CLEANS-ONLY-ITS-OWN-RESOURCES', 'SIGTERM to one of two concurrent runs: own resources gone, the other unaffected, repository identical', g11_signal_cleans_only_its_own),]
+    ('G11-SIGNAL-CLEANS-ONLY-ITS-OWN-RESOURCES', 'SIGTERM to one of two concurrent runs: own resources gone, the other unaffected, repository identical', g11_signal_cleans_only_its_own),
+    ('G12-RELOCATE-THEN-SHRINK-TWO-COMMITS', 'C1 relocates every floor (passes), C2 deletes five and shrinks the corpus: judged against C1 through the real command', g12_two_commit_relocation_then_shrink),]
 
 # ═══════════════════════════════════════════════════════════════════════ the declared universe, then the cases
 def universe_integrity():
     """Missing, extra, duplicate or coherently deleted — each a named failure before a single case runs."""
-    bad, seen, floors, auths, nfals = [], {}, {}, set(), 0
-    fx, fam = corpus()
-    for ftype, fid, p, _f in read_facts(HERE, 'verification-corpus.sexp'):
+    bad, seen = [], {}
+    m = SR.read_model(HERE)
+    for ftype, fid, _p, mod, _form in m.facts:
         if (ftype, fid) in seen:
-            bad.append('DUPLICATE-CORPUS-ID: %s %s is declared twice' % (ftype, fid))
-        seen[(ftype, fid)] = True
-        if ftype == 'universe-floor':
-            floors[p['family']] = (fid, int(p['minimum']))
-        elif ftype == 'universe-authorization':
-            auths.add(p['family'])
-        elif ftype == 'falsifier':
-            nfals += 1
-    counts = {'FIXTURE': len(fx), 'PROPERTY-FAMILY': len(fam), 'FALSIFIER': nfals}
-    for fam_name, (fid, low) in sorted(floors.items()):
-        if fam_name in counts and counts[fam_name] < low and fam_name not in auths:
+            bad.append('DUPLICATE-FACT-ID: %s %s is declared in %s and again in %s' % (ftype, fid, seen[(ftype, fid)], mod))
+        seen[(ftype, fid)] = mod
+    try:                                     # whole-model discovery, never one module's (Review-5 R5-1)
+        floors = SR.universe_floors(m)
+        auths = {str(p['family']).lower() for p in SR.universe_authorizations(m).values()}
+    except SR.SexpError as e:
+        bad.append(str(e)); floors, auths = {}, set()
+    fx, fam = corpus()
+    counts = {'fixture': len(fx), 'property-family': len(fam), 'falsifier': len(m.of('falsifier'))}
+    for fam_name, d in sorted(floors.items()):
+        if fam_name in counts and counts[fam_name] < d['minimum'] and fam_name not in auths:
             bad.append('UNIVERSE-BELOW-FLOOR: family %s holds %d, floor %d (%s), and no universe-authorization '
-                       'records the reduction' % (fam_name, counts[fam_name], low, fid))
+                       'records the reduction' % (fam_name, counts[fam_name], d['minimum'], d['id']))
     present = set()
     for sub in ('PASS', 'FAIL'):
         d = os.path.join(HERE, 'FIXTURES', sub)
@@ -1409,7 +1691,7 @@ def universe_integrity():
             for p in sorted(declared_paths - present)]
     bad += ['FIXTURE-FILE-UNDECLARED: %s exists but the corpus declares no fixture for it' % p
             for p in sorted(present - declared_paths)]
-    declared = {i: p for t, i, p, _f in read_facts(HERE, 'verification-corpus.sexp') if t == 'falsifier'}
+    declared = dict(m.of('falsifier'))
     coded = {n for n, _i, _fn in CODED_COMPONENT} | {n for n, _i, _fn in COMPOSED}
     datad = {i for i, p in declared.items() if p.get('mutation')}
     bad += ['FALSIFIER-NOT-IMPLEMENTED: %s is declared but neither coded nor given a mutation' % i
@@ -1484,21 +1766,22 @@ if __name__ == '__main__':
     ap.add_argument('--work', default=None)
     ap.add_argument('--keep-work', action='store_true')
     ap.add_argument('--only', default=None, help='run only these falsifier ids, comma separated')
+    ap.add_argument('--candidate', default=os.environ.get('AML_CANDIDATE', 'WORKTREE'),
+                    help='what the falsifier kinds judge: a commit-ish (base = its unique parent) or WORKTREE '
+                         '(base = HEAD, or HEAD\'s parent when the working tree equals HEAD); never a bare tree')
     ap.add_argument('--base', default=None,
-                    help='the full commit SHA the candidate is judged against (Review-4 R4-1); required for the '
-                         'falsifier kinds, never defaulted; the fixtures kind judges model copies and needs none')
+                    help='confirmation of the base the candidate determines (Review-5 R5-2); one that differs is '
+                         'a typed refusal, never a choice; the fixtures kind judges model copies and needs none')
     a = ap.parse_args()
-    BASE = a.base
-    if a.kind != 'fixtures' and not BASE:
-        print('  UNIVERSE-BASE-UNSPECIFIED: the %s battery judges candidates against history and needs --base '
-              '<full commit SHA>; no fallback to HEAD is taken' % a.kind)
-        sys.exit(1)
+    BASE, CANDIDATE = a.base, a.candidate
     problems = universe_integrity()
     if problems:
         for p in problems:
             print('  UNIVERSE:', p)
         print('corpus universe integrity: FAIL (%d finding(s)) — no case was run' % len(problems))
         sys.exit(1)
+    if a.kind != 'fixtures':
+        candidate()                          # typed refusal before any case if the candidate has no legal base
     work = AR.workspace('aml-corpus-', REPO, keep=a.keep_work, reuse=a.work)
     sys.exit(fixtures_kind(work) if a.kind == 'fixtures'
              else falsifier_kind('COMPONENT' if a.kind == 'component' else 'COMPOSED_GATE', a.only))

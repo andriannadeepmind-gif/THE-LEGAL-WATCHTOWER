@@ -1021,3 +1021,47 @@ Citation-Bound Verification Profile). Design only, working tree, **κανένα 
   amend/rebase/squash.
   **`OPTION-2 REVIEW-4 CORRECTION COMPLETE — AWAITING TARGETED INDEPENDENT REVIEW #5 — DDI-1 BLOCKED — NOT
   FROZEN — NOT QUALIFIED — IMPLEMENTATION BLOCKED`.**
+
+## [0165] OPTION-2 CORE ΣΥΣΤΗΜΙΚΗ ΔΙΟΡΘΩΣΗ REVIEW #5 (R5-1, R5-2, P3-1…P3-7) — πάνω στο `4ee2b58a`
+
+- **Κυβερνών τεκμήριο:** η εντολή *FINAL R5 SYSTEMIC CLOSURE ORDER* του δημιουργού πάνω στην ανεξάρτητη επιθεώρηση #5
+  (`OPTION-2 INDEPENDENT REVIEW #5 FAILED — CORRECTION REQUIRED — DDI-1 BLOCKED`). Το `REVIEW5.md` **δεν υπήρχε στα
+  uploads της συνεδρίας**· κυβερνών κείμενο η απαρίθμηση των ευρημάτων στην ίδια την εντολή. Κάθε before-state
+  **αναπαράχθηκε πρώτα** σε αναλώσιμα αντίγραφα (C1 relocation PASS → C2 πέντε floors διαγραμμένα: PASS με 75 cases /
+  79 falsifiers· αυθαίρετο παλαιό `--base` δεκτό· duplicate floor last-write-wins· provenance = HEAD για ξένο candidate).
+- **R5-1 — ιστορία ως ολόκληρο μοντέλο, ποτέ ως filename:** ΜΙΑ ιστορική φόρτωση `read_model_at(commit)` πάνω στον ΕΝΑ
+  πυρήνα `SEXP-READER.read_model_from` (ROOT → ακριβές module universe → pins/root digest/schema version
+  επαληθευμένα → duplicate modules/facts, undeclared types απορρίπτονται → όλα τα facts ανά τύπο)· μία φόρμουλα root
+  digest (`SR.root_digest`) για builder, rehash και loader· `SR.universe_floors`/`SR.universe_authorizations`
+  ανακαλύπτουν σε ΟΛΟ το μοντέλο base και candidate· **ακριβώς ένα floor ανά family** (`UNIVERSE-FLOOR-DUPLICATE`),
+  family = δηλωμένος τύπος (`UNIVERSE-FLOOR-FAMILY-UNDEFINED`), **constitutional self-floor** `UF-UNIVERSE-FLOOR`
+  (`UNIVERSE-SELF-FLOOR-MISSING`)· ο integrity προέλεγχος του runner επίσης από το μοντέλο.
+- **R5-2 — candidate/base παράγονται, δεν επιλέγονται:** commit ⇒ μοναδικός γονέας (`UNIVERSE-BASE-ORPHAN` /
+  `-AMBIGUOUS`, κανένα `--base` δεν επιλέγει)· WORKTREE ≠ HEAD ⇒ candidate working tree, base HEAD· WORKTREE = HEAD ⇒
+  candidate HEAD, base ο γονέας του· bare tree ⇒ `CANDIDATE-NOT-COMMIT`· `--base` μόνο επιβεβαίωση
+  (`UNIVERSE-BASE-MISMATCH`)· `--tree` επαληθευόμενο hint· `UNIVERSE-BASE-OBJECT-MISSING` (ακριβής bounded fetch, κανένα
+  network fetch, καμία άλλη βάση) / `-NOT-COMMIT` / `-SEAT-MISSING`· κάθε έλεγχος ξαναπαράγει τη σχέση· η εντολή περνά
+  ταυτότητα candidate, ποτέ tree· συνθετικοί candidates ως commits πάνω σε re-pinned συνθετικές βάσεις· ο εσωτερικός
+  gate των composed παράγει μόνος τη βάση. **Διαδοχή commits ακμή προς ακμή**, κανένα ενδιάμεσο παραλείπεται, το
+  τελευταίο ανεξάρτητα επιθεωρημένο commit = procedural anchor· καμία αξίωση «ανεξάρτητης ανθρώπινης έγκρισης».
+- **Authorization (§4):** base-anchored, family/previous-minimum/minimum/previous-model-root/bounded scope ελεγμένα,
+  μη κενά `approver`/`rationale` (`AUTHORIZATION-UNATTRIBUTED`) — ΟΧΙ κρυπτογραφική/εξωτερική έγκριση· κατανάλωση
+  **per-edge, per-lineage, όχι global** (siblings μπορούν να την επικαλεστούν, μόνο ο Root Authority επιλέγει)·
+  candidate-only ⇒ εξουσιοδοτεί τίποτα (`AUTHORIZATION-CANDIDATE-INJECTED`), εισάγεται μόνο well-formed prospective
+  (`AUTHORIZATION-MALFORMED-PROSPECTIVE`)· relocation test `X92` PASS επειδή η ανακάλυψη είναι σημασιολογική.
+- **P3:** `uni-01` τυπώνει χωριστά base floors / candidate floors / reductions / consumed / prospective· schema version
+  = quoted ASCII `[1-9][0-9]*` (`SCHEMA-VERSION-MALFORMED` για unquoted / leading zero / Arabic-Indic), νεκρός
+  `UNMOTIVATED` branch διαγράφηκε, **schema version 5**· λογιστική Review-4 **23 + 3 = 26 paths**· μόνιμος `X79` για
+  `candidate_tree()`· `PROVENANCE candidate_commit` = WORKTREE + tree / commit / `(HEAD)` μόνο όταν είναι HEAD·
+  `build_inventory.py` git μέσω της μίας bounded-execution seat· attribution **per-file**, όχι per-line.
+- **TCB (§6, δεσμευτική απόφαση δημιουργού, αυτολεξεί στο `tcb-budget ACCEPTANCE-TCB :rationale`):** κανένα αριθμητικό
+  ceiling ως PASS/FAIL· discovery/μέτρηση/ιστορική σύγκριση/per-file attribution υποχρεωτικά· τίποτα δεν αφαιρείται
+  για γραμμές· 400 = design target μίας διαδρομής. Μέτρηση: **16 / 7.079 / 5.866 NBNC = +446 έναντι `4ee2b58a`, +1.289 έναντι `af0eb3c9`** (run_corpus +239, SEXP-READER +118, gate_checks +97, εντολή +1, build_root −9)· κάθε αρχείο που μεγάλωσε με `tcb-attribution` R5.
+- **Μπαταρία (§8, εκτελεσμένη):** before-states αναπαραχθέντα· R5 + R4 universe cases **36/36** (μετά από δύο διορθώσεις rows και μία επανασχεδίαση, καταγεγραμμένες)· COMPONENT **92/92** (4′33″)· COMPOSED επηρεαζόμενες (control, G01, G09, G10, G12 two-commit) **4/4** (35′)· σταθερό σημείο `0 changed`· **πλήρες `ACCEPT` στο ακριβές committed tree, βάση παραγόμενη `4ee2b58a`: PASS** (4/4 subsets, 21 έλεγχοι / 0 FAIL, 92/92 + 12/12, control HOLDS).
+- **Αριθμοί:** 14 hash-pinned modules (schema 5)· **104 held-out falsifiers (92 COMPONENT + 12 COMPOSED_GATE)** με
+  τέσσερα PASS controls· 21 μετρούμενοι έλεγχοι, 3 informational εκτός μετρήματος· 7 floors (με το self-floor).
+- **ΔΕΝ ΕΓΙΝΕ:** DDI-1…DDI-4 · Επιλογή Α / αρχικά 20 Full-Build gates · freeze · qualification · WP-00 ·
+  Implementation-Book · production implementation · δεύτερο canonical model / authority seat / governance σύστημα ·
+  αφαίρεση checker/reference implementation/closure analysis · merge · amend/rebase/squash.
+  **`OPTION-2 REVIEW-5 CORRECTION COMPLETE — AWAITING FINAL TARGETED INDEPENDENT RE-VERIFICATION #6 — DDI-1 BLOCKED —
+  NOT FROZEN — NOT QUALIFIED — IMPLEMENTATION BLOCKED`.**

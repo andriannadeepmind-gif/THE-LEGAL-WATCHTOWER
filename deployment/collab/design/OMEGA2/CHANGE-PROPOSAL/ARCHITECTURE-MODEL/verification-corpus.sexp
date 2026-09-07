@@ -61,7 +61,7 @@
       :rationale "one golden fixture per model law plus the passing baseline")
 (fact universe-floor UF-PROPERTY-FAMILY :family property-family :minimum 5
       :rationale "one enumerated family per law that has a generable counterexample shape")
-(fact universe-floor UF-FALSIFIER :family falsifier :minimum 80
+(fact universe-floor UF-FALSIFIER :family falsifier :minimum 104
       :rationale "one held-out falsifier per closed defect class across both harnesses")
 (fact universe-floor UF-GEN-ARTIFACT :family gen-artifact :minimum 12
       :rationale "every derived artifact the model declares")
@@ -69,6 +69,8 @@
       :rationale "every seat the subsystems, stores and requirement maps refer to")
 (fact universe-floor UF-TOOL :family tool :minimum 5
       :rationale "every tool on either verification path")
+(fact universe-floor UF-UNIVERSE-FLOOR :family universe-floor :minimum 7
+      :rationale "the constitutional self-floor: the floor set floors itself, so it cannot be deleted together with the floors it protects (Review-5 R5-1)")
 
 ;; ── the acceptance TCB: baseline AUTHORED here, measurement GENERATED in files-and-roles.sexp (Review-3 §15, Review-4 §1)
 ;; There is NO numeric ceiling. tcb-01 holds the exact file universe by kind, the real measurement, the per-file delta
@@ -81,7 +83,7 @@
 (fact tcb-budget ACCEPTANCE-TCB :baseline 4577 :baseline-files 17 :baseline-physical 5544
       :baseline-commit "af0eb3c9452cdbcefa25fd457f16dd727706e7d6"
       :rule "physical = UTF-8 lines with one trailing empty element dropped; nbnc = those whose stripped form is non-empty and does not start with the kind's comment marker (; for .lisp, % for .lp, # otherwise); no other exclusion, and line packing is a defect"
-      :rationale "the verified baseline the acceptance machinery is measured against; growth is permitted only for a reproduced counterexample or an explicitly approved architecture law, and every grown file names the finding that required it")
+      :rationale "Binding creator decision (Review-5 §6): Numeric TCB ceilings are withdrawn as pass/fail criteria. Exact TCB file-universe discovery, exact physical/NBNC measurement, historical comparison and honest per-file attribution remain mandatory. No protection, independent implementation, coverage mechanism or falsifier may be removed, weakened, packed or obscured merely to satisfy a line-count target. The baseline is the verified measurement the machinery is compared against; growth is permitted only for a reproduced counterexample or an explicitly approved architecture law, and every grown file names, per file, the finding that required it; 400 remains the design target of the Lisp path alone, never a verdict gate")
 (fact tcb-baseline TB-01 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/ARCHITECTURE-MODEL-GATE.sh" :physical 147 :nbnc 94)
 (fact tcb-baseline TB-02 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/CHECKER/independent_check.py" :physical 602 :nbnc 525)
 (fact tcb-baseline TB-03 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/KERNEL/hash-provider.lisp" :physical 109 :nbnc 67)
@@ -100,23 +102,23 @@
 (fact tcb-baseline TB-16 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/run_fixtures.py" :physical 276 :nbnc 228)
 (fact tcb-baseline TB-17 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/run_gate_falsifiers.py" :physical 334 :nbnc 273)
 (fact tcb-attribution TA-01 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/ARCHITECTURE-MODEL-GATE.sh"
-      :findings "R3-15 R3-3 R4-1 R4-3 R4-4 R4-7"
-      :rationale "one command with two phases (R3-15); the pinned interpreter lifted with awk (R3-3); --base threaded to every history-bound check (R4-1); job-control signal forwarding to its own children (R4-3); GIT_OPTIONAL_LOCKS exported (R4-4); ro-02 removed as a strict subset of ro-01 (R4-7)")
+      :findings "R3-15 R3-3 R4-1 R4-3 R4-4 R4-7 R5-2 R5-P3-5"
+      :rationale "the candidate identity carried to every phase and check, the base only confirmed (R5-2); the summary names the real candidate (R5-P3-5); one command with two phases (R3-15); the pinned interpreter lifted with awk (R3-3); --base threaded to every history-bound check (R4-1); job-control signal forwarding to its own children (R4-3); GIT_OPTIONAL_LOCKS exported (R4-4); ro-02 removed as a strict subset of ro-01 (R4-7)")
 (fact tcb-attribution TA-02 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/CHECKER/independent_check.py"
       :findings "R3-1"
       :rationale "its own independent AMC2 implementation")
 (fact tcb-attribution TA-03 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/SEXP-READER.py"
-      :findings "R3-1 R3-6 R3-3 S15-M1"
-      :rationale "the AMC2 reference implementation (R3-1), the containment seat (R3-6), the pinned-tool lookup (R3-3), the one canonical model read that replaced four copies (S15-M1)")
+      :findings "R3-1 R3-6 R3-3 S15-M1 R5-1 R5-P3-2"
+      :rationale "the one model read over any source, verified for history, with whole-model discovery of floors and authorizations and the one root-digest formula (R5-1); the canonical schema-version rule (R5-P3-2); the AMC2 reference implementation (R3-1), the containment seat (R3-6), the pinned-tool lookup (R3-3), the one canonical model read that replaced four copies (S15-M1)")
 (fact tcb-attribution TA-04 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/acceptance_runtime.py"
       :findings "R3-8 R3-9 R3-10 R3-14 S15-TCB R4-2 R4-3 R4-4"
       :rationale "workspace lifecycle and hostile-TMPDIR refusal (R3-8), content-sensitive state (R3-9), bounded execution (R3-10), the common object store (R3-14), the one counting rule (S15-TCB), typed tool failure (R4-2), own-child registry and termination (R4-3), the one git lock policy (R4-4)")
 (fact tcb-attribution TA-05 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/gate_checks.py"
-      :findings "R3-2 R3-3 R3-5 R3-6 R3-7 R3-9 R3-11 R3-13 S15-TCB S15-M2 R4-1 R4-2 R4-5"
-      :rationale "provenance (R3-2), executed-identity and bootstrap declaration (R3-3), closure indeterminacy (R3-5), generation workspace (R3-6), floors (R3-7), content-state and candidate (R3-9), extension-blind artifacts (R3-11), encoding agreement (R3-13), the accountability gate (S15-TCB), dead-rule detection (S15-M2), history-bound base, authorizations and schema version (R4-1, R4-5), typed tool failure (R4-2)")
+      :findings "R3-2 R3-3 R3-5 R3-6 R3-7 R3-9 R3-11 R3-13 S15-TCB S15-M2 R4-1 R4-2 R4-5 R5-1 R5-2 R5-P3-1 R5-P3-2 R5-P3-5"
+      :rationale "the derived candidate/base seat and the verified whole-model historical load (R5-1, R5-2), the separated floor report (R5-P3-1), the version rule (R5-P3-2), the real candidate in provenance (R5-P3-5); provenance (R3-2), executed-identity and bootstrap declaration (R3-3), closure indeterminacy (R3-5), generation workspace (R3-6), floors (R3-7), content-state and candidate (R3-9), extension-blind artifacts (R3-11), encoding agreement (R3-13), the accountability gate (S15-TCB), dead-rule detection (S15-M2), history-bound base, authorizations and schema version (R4-1, R4-5), typed tool failure (R4-2)")
 (fact tcb-attribution TA-06 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/run_corpus.py"
-      :findings "S15-M1 R3-7 R3-14 R4-1 R4-2 R4-3"
-      :rationale "the one runner that replaced three (S15-M1, net negative), universe integrity (R3-7), worktree-safe object store (R3-14), --base threading and base-anchored falsifier harness (R4-1), spawn-time typed falsifiers (R4-2), the concurrent-signal falsifier (R4-3)")
+      :findings "S15-M1 R3-7 R3-14 R4-1 R4-2 R4-3 R5-1 R5-2 R5-P3-4"
+      :rationale "synthetic candidate commits over coherent synthetic bases, relocation ops, the derived inner-gate base and the nine candidate/base process cases plus the two-commit reproducer (R5-1, R5-2), the permanent candidate_tree falsifier (R5-P3-4); the one runner that replaced three (S15-M1, net negative), universe integrity (R3-7), worktree-safe object store (R3-14), --base threading and base-anchored falsifier harness (R4-1), spawn-time typed falsifiers (R4-2), the concurrent-signal falsifier (R4-3)")
 
 ;; ── the two harnesses: one program each, declared so a rename cannot orphan a class of falsifiers ─────────
 (fact harness COMPONENT :runner "run_corpus.py"
@@ -198,7 +200,7 @@
       :kernel-reason "declares :module-count more than once" :checker-reason "ROOT-MALFORMED" :rehash NO)
 (fact falsifier X39-ROOT-SCHEMA-VERSION :harness COMPONENT :intent "a schema version ROOT does not actually bind"
       :mutation REPLACE :module "ROOT.sexp"
-      :replace-from ":schema-version {Q}4{Q}" :replace-to ":schema-version {Q}99{Q}"
+      :replace-from ":schema-version {Q}5{Q}" :replace-to ":schema-version {Q}99{Q}"
       :kernel-reason "binds :schema-version" :checker-reason "schema-version" :rehash NO)
 (fact falsifier X40-GHOST-SEAT :harness COMPONENT :intent "a seat reference resolving to no declared seat"
       :mutation REPLACE :module "subsystems.sexp"
@@ -284,9 +286,9 @@
       :drop "universe-floor UF-PROPERTY-FAMILY; property-family PF-L4-STAGE-CYCLE"
       :reason "UNIVERSE-FLOOR-REDUCED")
 (fact falsifier X63-FLOOR-RENAMED-OLD-FAMILY-GONE :harness COMPONENT
-      :intent "a floor renamed so that the base family disappears"
+      :intent "a floor renamed to another declared family so that the base family disappears"
       :mutation CHECK :check universe :module "verification-corpus.sexp"
-      :replace-from "UF-PROPERTY-FAMILY :family property-family :minimum 5" :replace-to "UF-PROPERTY-FAMILY :family property-family-legacy :minimum 5"
+      :replace-from "UF-PROPERTY-FAMILY :family property-family :minimum 5" :replace-to "UF-PROPERTY-FAMILY :family harness :minimum 2"
       :drop "property-family PF-L4-STAGE-CYCLE"
       :reason "UNIVERSE-FLOOR-REDUCED")
 (fact falsifier X64-AUTHORIZATION-WRONG-PREVIOUS-ROOT :harness COMPONENT
@@ -360,12 +362,12 @@
 (fact falsifier X75-SCHEMA-CHANGED-VERSION-LOWER :harness COMPONENT
       :intent "schema bytes changed, version lowered"
       :mutation CHECK :check universe :module "MODEL-SCHEMA.sexp"
-      :replace-from ":version {Q}4{Q}" :replace-to ":version {Q}3{Q}"
+      :replace-from ":version {Q}5{Q}" :replace-to ":version {Q}4{Q}"
       :reason "SCHEMA-VERSION-STALE")
 (fact falsifier X76-SCHEMA-CHANGED-VERSION-RAISED :harness COMPONENT
       :intent "schema bytes changed, version raised (positive control)"
       :mutation CHECK :check universe :module "MODEL-SCHEMA.sexp"
-      :replace-from ":version {Q}4{Q}" :replace-to ":version {Q}5{Q}"
+      :replace-from ":version {Q}5{Q}" :replace-to ":version {Q}6{Q}"
       :expect PASS
       :reason "GATECHECK universe: PASS")
 
@@ -382,6 +384,114 @@
       :reason "TCB-BASELINE-INCONSISTENT")
 
 ;; ── the critical shrink cases through the REAL top-level acceptance command, and the signal falsifier
+;; ── Review-5 R5-1 / R5-2 (data). Floors and authorizations discovered across the whole model, exactly one floor
+;; per family, the self-floor, honest authorization attributes, the canonical schema-version rule.
+(fact falsifier X79-CANDIDATE-TREE-NOT-COMMIT-ID :harness COMPONENT
+      :intent "a commit-ish candidate resolves to its tree, never to the commit id (permanent, Review-5 §5.4)")
+(fact falsifier X80-WORKTREE-ARBITRARY-BASE :harness COMPONENT
+      :intent "an arbitrary --base for a WORKTREE candidate is refused by name")
+(fact falsifier X81-COMMIT-BASE-NOT-PARENT :harness COMPONENT
+      :intent "a committed candidate with a --base other than its unique parent is refused by name")
+(fact falsifier X82-MERGE-CANDIDATE :harness COMPONENT
+      :intent "a merge commit as candidate is refused, with and without an explicit base")
+(fact falsifier X83-ORPHAN-CANDIDATE :harness COMPONENT
+      :intent "a zero-parent commit as candidate is refused")
+(fact falsifier X84-WORKTREE-DIFFERS-BASE-IS-HEAD :harness COMPONENT
+      :intent "a working tree differing from HEAD is the candidate and HEAD is its base")
+(fact falsifier X85-WORKTREE-EQUALS-HEAD-BASE-IS-PARENT :harness COMPONENT
+      :intent "a working tree equal to HEAD's tree is HEAD, judged against HEAD's unique parent")
+(fact falsifier X86-SHALLOW-BASE-MISSING-THEN-FETCHED :harness COMPONENT
+      :intent "a depth-1 clone: a typed refusal naming the exact base object, then PASS after fetching exactly it")
+(fact falsifier X87-FLOORS-REPORTED-SEPARATELY :harness COMPONENT
+      :intent "base floors and candidate floors reported as distinct lines that differ when one was raised")
+(fact falsifier X88-FLOORS-RELOCATED-CONTROL :harness COMPONENT
+      :intent "every floor moved unchanged to another canonical module (positive control)"
+      :mutation CHECK :check universe :module "verification-corpus.sexp"
+      :drop "universe-floor UF-FIXTURE; universe-floor UF-PROPERTY-FAMILY; universe-floor UF-FALSIFIER; universe-floor UF-GEN-ARTIFACT; universe-floor UF-SEAT; universe-floor UF-TOOL; universe-floor UF-UNIVERSE-FLOOR"
+      :relocate-to "seats.sexp"
+      :expect PASS
+      :reason "GATECHECK universe: PASS")
+(fact falsifier X89-BASE-FLOORS-RELOCATED-THEN-LOWERED :harness COMPONENT
+      :intent "the base keeps its floors in another module; the candidate lowers one — discovered where the base put them"
+      :mutation CHECK :check universe :module "verification-corpus.sexp"
+      :base-drop "universe-floor UF-FIXTURE; universe-floor UF-PROPERTY-FAMILY; universe-floor UF-FALSIFIER; universe-floor UF-GEN-ARTIFACT; universe-floor UF-SEAT; universe-floor UF-TOOL; universe-floor UF-UNIVERSE-FLOOR"
+      :base-relocate-to "seats.sexp"
+      :replace-from "UF-PROPERTY-FAMILY :family property-family :minimum 5" :replace-to "UF-PROPERTY-FAMILY :family property-family :minimum 4"
+      :reason "UNIVERSE-FLOOR-REDUCED")
+(fact falsifier X90-SELF-FLOOR-DELETED :harness COMPONENT
+      :intent "the floor that floors the floor set itself deleted"
+      :mutation CHECK :check universe :module "verification-corpus.sexp"
+      :drop "universe-floor UF-UNIVERSE-FLOOR"
+      :reason "UNIVERSE-SELF-FLOOR-MISSING")
+(fact falsifier X91-DUPLICATE-FLOOR-SAME-FAMILY :harness COMPONENT
+      :intent "a second floor for a family that already has one"
+      :mutation CHECK :check universe :module "verification-corpus.sexp"
+      :form "(fact universe-floor UF-FIXTURE-AGAIN :family fixture :minimum 8 :rationale {Q}held-out duplicate{Q})"
+      :reason "UNIVERSE-FLOOR-DUPLICATE")
+(fact falsifier X92-AUTHORIZATION-RELOCATED-CONTROL :harness COMPONENT
+      :intent "a base-anchored authorization living in another module, carried there and consumed validly (positive control)"
+      :mutation CHECK :check universe :module "verification-corpus.sexp"
+      :base-module "seats.sexp"
+      :base-form "(fact universe-authorization UA-HELD-OUT :family property-family :previous-minimum 5 :minimum 4 :previous-model-root {Q}{BASE-ROOT}{Q} :rationale {Q}held-out{Q} :approver {Q}held-out{Q})"
+      :form-module "seats.sexp"
+      :form "(fact universe-authorization UA-HELD-OUT :family property-family :previous-minimum 5 :minimum 4 :previous-model-root {Q}{BASE-ROOT}{Q} :rationale {Q}held-out{Q} :approver {Q}held-out{Q})"
+      :replace-from "UF-PROPERTY-FAMILY :family property-family :minimum 5" :replace-to "UF-PROPERTY-FAMILY :family property-family :minimum 4"
+      :expect PASS
+      :reason "GATECHECK universe: PASS")
+(fact falsifier X93-AUTHORIZATION-WRONG-PREVIOUS-MINIMUM :harness COMPONENT
+      :intent "a base-anchored authorization recording a previous minimum that is not the base's floor"
+      :mutation CHECK :check universe :module "verification-corpus.sexp"
+      :base-form "(fact universe-authorization UA-HELD-OUT :family property-family :previous-minimum 4 :minimum 3 :previous-model-root {Q}{BASE-ROOT}{Q} :rationale {Q}held-out{Q} :approver {Q}held-out{Q})"
+      :form "(fact universe-authorization UA-HELD-OUT :family property-family :previous-minimum 4 :minimum 3 :previous-model-root {Q}{BASE-ROOT}{Q} :rationale {Q}held-out{Q} :approver {Q}held-out{Q})"
+      :replace-from "UF-PROPERTY-FAMILY :family property-family :minimum 5" :replace-to "UF-PROPERTY-FAMILY :family property-family :minimum 3"
+      :reason "UNIVERSE-FLOOR-REDUCED")
+(fact falsifier X94-AUTHORIZATION-EMPTY-APPROVER :harness COMPONENT
+      :intent "a base-anchored authorization with an empty approver"
+      :mutation CHECK :check universe :module "verification-corpus.sexp"
+      :base-form "(fact universe-authorization UA-HELD-OUT :family property-family :previous-minimum 5 :minimum 4 :previous-model-root {Q}{BASE-ROOT}{Q} :rationale {Q}held-out{Q} :approver {Q}{Q})"
+      :form "(fact universe-authorization UA-HELD-OUT :family property-family :previous-minimum 5 :minimum 4 :previous-model-root {Q}{BASE-ROOT}{Q} :rationale {Q}held-out{Q} :approver {Q}{Q})"
+      :replace-from "UF-PROPERTY-FAMILY :family property-family :minimum 5" :replace-to "UF-PROPERTY-FAMILY :family property-family :minimum 4"
+      :reason "AUTHORIZATION-UNATTRIBUTED")
+(fact falsifier X95-AUTHORIZATION-EMPTY-RATIONALE :harness COMPONENT
+      :intent "a base-anchored authorization with an empty rationale"
+      :mutation CHECK :check universe :module "verification-corpus.sexp"
+      :base-form "(fact universe-authorization UA-HELD-OUT :family property-family :previous-minimum 5 :minimum 4 :previous-model-root {Q}{BASE-ROOT}{Q} :rationale {Q}{Q} :approver {Q}held-out{Q})"
+      :form "(fact universe-authorization UA-HELD-OUT :family property-family :previous-minimum 5 :minimum 4 :previous-model-root {Q}{BASE-ROOT}{Q} :rationale {Q}{Q} :approver {Q}held-out{Q})"
+      :replace-from "UF-PROPERTY-FAMILY :family property-family :minimum 5" :replace-to "UF-PROPERTY-FAMILY :family property-family :minimum 4"
+      :reason "AUTHORIZATION-UNATTRIBUTED")
+(fact falsifier X96-SCHEMA-VERSION-UNQUOTED :harness COMPONENT
+      :intent "a schema version written as an unquoted integer"
+      :mutation CHECK :check universe :module "MODEL-SCHEMA.sexp"
+      :replace-from ":version {Q}5{Q}" :replace-to ":version 6"
+      :reason "SCHEMA-VERSION-MALFORMED")
+(fact falsifier X97-SCHEMA-VERSION-LEADING-ZERO :harness COMPONENT
+      :intent "a schema version with a leading zero"
+      :mutation CHECK :check universe :module "MODEL-SCHEMA.sexp"
+      :replace-from ":version {Q}5{Q}" :replace-to ":version {Q}06{Q}"
+      :reason "SCHEMA-VERSION-MALFORMED")
+(fact falsifier X98-SCHEMA-VERSION-NON-ASCII-DIGIT :harness COMPONENT
+      :intent "a schema version written with an Arabic-Indic digit"
+      :mutation CHECK :check universe :module "MODEL-SCHEMA.sexp"
+      :replace-from ":version {Q}5{Q}" :replace-to ":version {Q}٦{Q}"
+      :reason "SCHEMA-VERSION-MALFORMED")
+(fact falsifier X99-FLOOR-FAMILY-UNDEFINED :harness COMPONENT
+      :intent "a floor for a family the schema declares nowhere"
+      :mutation CHECK :check universe :module "verification-corpus.sexp"
+      :form "(fact universe-floor UF-GHOST :family ghost-family :minimum 1 :rationale {Q}held-out{Q})"
+      :reason "UNIVERSE-FLOOR-FAMILY-UNDEFINED")
+(fact falsifier X100-PROSPECTIVE-AUTHORIZATION-CONTROL :harness COMPONENT
+      :intent "a well-formed prospective authorization introduced for the next edge, reducing nothing here (positive control)"
+      :mutation CHECK :check universe :module "verification-corpus.sexp"
+      :form "(fact universe-authorization UA-NEXT-EDGE :family property-family :previous-minimum 5 :minimum 4 :previous-model-root {Q}{BASE-ROOT}{Q} :rationale {Q}for the next edge{Q} :approver {Q}held-out{Q})"
+      :expect PASS
+      :reason "GATECHECK universe: PASS")
+(fact falsifier X101-SELF-FLOOR-LOWERED :harness COMPONENT
+      :intent "the self-floor of the floor set lowered against a base that carries it"
+      :mutation CHECK :check universe :module "verification-corpus.sexp"
+      :base-form ";; the base carries the self-floor at 7"
+      :replace-from "UF-UNIVERSE-FLOOR :family universe-floor :minimum 7" :replace-to "UF-UNIVERSE-FLOOR :family universe-floor :minimum 6"
+      :reason "UNIVERSE-FLOOR-REDUCED")
+
 (fact falsifier G09-COHERENT-SHRINK-FLOOR-LOWERED :harness COMPOSED_GATE
       :intent "the whole gate on a candidate whose floor was lowered with its family member removed"
       :mutation GATE :check uni-01-no-declared-family-below-its-floor :module "verification-corpus.sexp"
@@ -395,3 +505,5 @@
       :reason "UNIVERSE-FLOOR-REDUCED")
 (fact falsifier G11-SIGNAL-CLEANS-ONLY-ITS-OWN-RESOURCES :harness COMPOSED_GATE
       :intent "SIGTERM to one of two concurrent acceptance runs: it leaves no workspace or orphan of its own, the other is unaffected, the repository is byte-identical")
+(fact falsifier G12-RELOCATE-THEN-SHRINK-TWO-COMMITS :harness COMPOSED_GATE
+      :intent "C1 relocates every floor to another canonical module and passes; C2 deletes five floors and shrinks the corpus coherently; judged edge by edge against C1 through the real command, C2 fails through uni-01")

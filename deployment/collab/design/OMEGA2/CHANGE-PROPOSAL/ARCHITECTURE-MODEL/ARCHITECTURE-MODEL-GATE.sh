@@ -31,9 +31,10 @@
 # and no qualification follows from a PASS here.
 #
 # Usage:  ARCHITECTURE-MODEL-GATE.sh [--checks] [--base=<full commit SHA>] [<commit-ish>|WORKTREE]
-#         with no candidate, or with WORKTREE, the candidate is the tree the current state would commit to and
-#         --base is REQUIRED; for a commit candidate the base is its unique first parent and --base, if given,
-#         must agree with it. There is no fallback to HEAD (Review-4 R4-1).
+#         The candidate is a COMMIT (its base is its unique parent) or WORKTREE, the default: the tree the current
+#         state would commit to, whose base is HEAD — or, when that tree equals HEAD's, HEAD itself with HEAD's
+#         unique parent as base. A bare tree is not a candidate. --base only CONFIRMS the base the candidate
+#         determines; one that differs is a typed failure, never a choice (Review-4 R4-1, Review-5 R5-2).
 set -uo pipefail
 cd "$(dirname "$0")"
 
@@ -61,7 +62,7 @@ PHASE=full; CAND=""; BASE=""
 for arg in "$@"; do
   case "$arg" in --checks) PHASE=checks ;; --base=*) BASE="${arg#--base=}" ;; *) CAND="$arg" ;; esac
 done
-CAND="${CAND:-${AML_CANDIDATE_TREE:-WORKTREE}}"
+CAND="${CAND:-${AML_CANDIDATE:-WORKTREE}}"
 BASEARG=(); [ -n "$BASE" ] && BASEARG=(--base "$BASE")
 TMPROOT=$("$PY" -c 'import tempfile,os;print(os.path.realpath(tempfile.gettempdir()))')
 case "$TMPROOT" in
@@ -103,17 +104,20 @@ sub(){ # sub <name> <exit-code> <logfile> <expected-marker>  — one acceptance 
 WT_BEFORE=$("$PY" gate_checks.py content-state)
 
 echo "== candidate and base =="
-if ! job "$PY" gate_checks.py candidate --tree "$CAND" "${BASEARG[@]}" --work "$WORK" >"$WORK/candidate.out" 2>&1; then
-  cat "$WORK/candidate.out"; echo "### ARCHITECTURE MODEL LAWS: FAIL (no candidate tree or no base)"; exit 1
+if ! job "$PY" gate_checks.py candidate --candidate "$CAND" "${BASEARG[@]}" --work "$WORK" >"$WORK/candidate.out" 2>&1; then
+  cat "$WORK/candidate.out"; echo "### ARCHITECTURE MODEL LAWS: FAIL (no candidate commit or no base)"; exit 1
 fi
 TREE=$(sed -n 's/^CANDIDATE-TREE //p' "$WORK/candidate.out")
+CANDID=$(sed -n 's/^CANDIDATE-COMMIT //p' "$WORK/candidate.out")
 SEAT=$(sed -n 's/^CANDIDATE-SEAT //p' "$WORK/candidate.out")
 SEATREL=$(sed -n 's/^CANDIDATE-REL //p' "$WORK/candidate.out")
 BASE=$(sed -n 's/^BASE-COMMIT //p' "$WORK/candidate.out")
-[ -n "$TREE" ] && [ -d "$SEAT" ] && [ -n "$BASE" ] || { cat "$WORK/candidate.out"; echo "### ARCHITECTURE MODEL LAWS: FAIL"; exit 1; }
-grep -E '^(CANDIDATE|BASE)-(COMMIT|TREE|MODEL-ROOT) ' "$WORK/candidate.out" | sed 's/^/  /'
+[ -n "$TREE" ] && [ -n "$CANDID" ] && [ -d "$SEAT" ] && [ -n "$BASE" ] || { cat "$WORK/candidate.out"; echo "### ARCHITECTURE MODEL LAWS: FAIL"; exit 1; }
+grep -E '^(CANDIDATE|BASE)-(COMMIT|TREE|MODEL-ROOT|RELATION) ' "$WORK/candidate.out" | sed 's/^/  /'
 grep -v -E '^(CANDIDATE|BASE)-' "$WORK/candidate.out"
-export AML_CANDIDATE_TREE="$TREE"
+# every later invocation names the SAME candidate identity (a commit, or WORKTREE) and re-derives the base from
+# it; the resolved tree travels along only to be verified against that derivation, never to replace it
+export AML_CANDIDATE="$CANDID" AML_CANDIDATE_TREE="$TREE"
 
 # ── the FULL phase: bind the machinery to the candidate, then run every acceptance subset from ITS export ────
 # Review-3 R3-2 and R3-15. In tree-ish mode the candidate used to be judged by the WORKING TREE's tools, so
@@ -126,17 +130,17 @@ if [ "$PHASE" = "full" ]; then
   git -C "$REPO" archive "$TREE" "$(dirname "$REL")" | tar -x -C "$WORK/verifier" || { echo "### ACCEPTANCE: FAIL (export)"; exit 1; }
   VSEAT="$WORK/verifier/$REL"
   export AML_REPO="$REPO"
-  job bash -c 'cd "$1" && exec "$2" gate_checks.py provenance --tree "$3" --base "$4" --work "$5"' _ "$VSEAT" "$PY" "$TREE" "$BASE" "$WORK" >"$WORK/provenance.out" 2>&1
+  job bash -c 'cd "$1" && exec "$2" gate_checks.py provenance --candidate "$3" --tree "$4" --base "$5" --work "$6"' _ "$VSEAT" "$PY" "$CANDID" "$TREE" "$BASE" "$WORK" >"$WORK/provenance.out" 2>&1
   prc=$?; cat "$WORK/provenance.out"
   [ $prc -eq 0 ] || { echo "### ACCEPTANCE: FAIL — the verifier is not the candidate's; no PASS may be issued from here"; exit 1; }
   sub provenance "$prc" "$WORK/provenance.out" 'GATECHECK provenance: PASS'
   echo "== acceptance: the model checks, executed from the verifier export =="
-  job bash -c 'cd "$1" && exec ./ARCHITECTURE-MODEL-GATE.sh --checks "--base=$2" "$3"' _ "$VSEAT" "$BASE" "$TREE" >"$WORK/checks.out" 2>&1
+  job bash -c 'cd "$1" && exec ./ARCHITECTURE-MODEL-GATE.sh --checks "--base=$2" "$3"' _ "$VSEAT" "$BASE" "$CANDID" >"$WORK/checks.out" 2>&1
   ckc=$?
   sed 's/^/  /' "$WORK/checks.out"
   sub model-checks "$ckc" "$WORK/checks.out" '### ARCHITECTURE MODEL LAWS: PASS'
   echo "== acceptance: the composed-gate falsifiers, executed from the verifier export =="
-  job bash -c 'cd "$1" && exec "$2" run_corpus.py --kind composed --base "$3"' _ "$VSEAT" "$PY" "$BASE" >"$WORK/composed.out" 2>&1
+  job bash -c 'cd "$1" && exec "$2" run_corpus.py --kind composed --candidate "$3" --base "$4"' _ "$VSEAT" "$PY" "$CANDID" "$BASE" >"$WORK/composed.out" 2>&1
   cfc=$?
   sed 's/^/  /' "$WORK/composed.out"
   sub composed-gate-falsifiers "$cfc" "$WORK/composed.out" 'not-rejected=0'
@@ -147,7 +151,7 @@ if [ "$PHASE" = "full" ]; then
   grep -q 'CONTROL HOLDS' "$WORK/composed.out" || missing="$missing [composed-gate control]"
   if [ -n "$missing" ]; then echo "ACCEPT evidence: FAIL (subset(s) absent from the evidence:$missing)"; fail=$((fail+1)); failed_names="$failed_names evidence"
   else echo "ACCEPT evidence: PASS"; pass=$((pass+1)); fi
-  echo "### ACCEPTANCE SUMMARY: candidate=$TREE base=$BASE subsets-passed=$pass subsets-failed=$fail"
+  echo "### ACCEPTANCE SUMMARY: candidate=$CANDID tree=$TREE base=$BASE subsets-passed=$pass subsets-failed=$fail"
   if [ $fail -eq 0 ]; then
     echo "### ARCHITECTURE MODEL LAWS: PASS — the complete acceptance battery ran from an export of candidate"
     echo "### $TREE, bound to the machinery that tree declares."
@@ -159,7 +163,7 @@ if [ "$PHASE" = "full" ]; then
 fi
 
 # every check reads the SAME exported candidate and the SAME workspace: one export, one commitment, one answer
-gc(){ job "$PY" gate_checks.py "$1" --tree "$TREE" --base "$BASE" --work "$WORK" >"$WORK/$1.out" 2>&1; rc=$?; cat "$WORK/$1.out"; return $rc; }
+gc(){ job "$PY" gate_checks.py "$1" --candidate "$CANDID" --tree "$TREE" --base "$BASE" --work "$WORK" >"$WORK/$1.out" 2>&1; rc=$?; cat "$WORK/$1.out"; return $rc; }
 
 echo "== toolchain identity (before any verdict is issued) =="
 gc toolchain; ck tch-01-pinned-tools-are-the-tools-executed "$?"
@@ -186,7 +190,7 @@ gc hash-engines; ck hsh-01-two-vetted-engines-agree-on-raw-bytes "$?"
 
 echo "== provenance, universe and encoding =="
 gc provenance; ck prv-01-verifier-is-the-candidates-machinery "$?"
-gc universe;   ck uni-01-no-declared-family-below-its-floor "$?"   # history-bound: floors, authorizations, schema version
+gc universe;   ck uni-01-no-declared-family-below-its-floor "$?"   # history-bound: the base's whole model, floors, authorizations, schema version
 gc encoding;   ck enc-01-three-implementations-one-encoding "$?"
 
 echo "== the verification corpus itself =="
@@ -196,7 +200,7 @@ tail -1 "$WORK/fixtures.out" | sed 's/^/  /'
 ck fix-01-golden-and-generated-fixtures "$fxc"
 # COMPONENT falsifiers only. The COMPOSED_GATE falsifiers execute THIS script's --checks phase and are
 # therefore run by its full phase — a checks phase that ran them would recurse forever (Review-2 N-2).
-job "$PY" run_corpus.py --kind component --base "$BASE" >"$WORK/falsifiers.out" 2>&1; flc=$?
+job "$PY" run_corpus.py --kind component --candidate "$CANDID" --base "$BASE" >"$WORK/falsifiers.out" 2>&1; flc=$?
 grep -E '^held-out falsifiers' "$WORK/falsifiers.out" | sed 's/^/  /'
 grep -E '^  NOT REJECTED' "$WORK/falsifiers.out" | sed 's/^/  /'
 ck fls-01-component-falsifiers-all-rejected "$flc"
@@ -226,7 +230,7 @@ note krn-lexical-scan "a lexical scan of the kernel sources for regex/shell cons
 note packet-single-operator-assurance "the decision packet states that no gate requires exhaustive human repository review; the statement is prose, its totals are what the counted checks reconcile"
 note composed-gate-battery "the $(grep -c ':harness COMPOSED_GATE' "$SEAT/verification-corpus.sexp") COMPOSED_GATE falsifiers execute this script with --checks and are run by its own full phase as run_corpus.py --kind composed, never from inside the checks phase"
 
-echo "### ARCHITECTURE-MODEL-GATE SUMMARY: candidate=$TREE base=$BASE pass=$pass fail=$fail informational=$info"
+echo "### ARCHITECTURE-MODEL-GATE SUMMARY: candidate=$CANDID tree=$TREE base=$BASE pass=$pass fail=$fail informational=$info"
 echo "### $((pass+fail)) OPTION-2 ACCEPTANCE CHECKS — NOT THE ORIGINAL 20 OPTION-A FULL-BUILD GATES (those remain a"
 echo "### mandatory future stage after DDI-1…DDI-4; nothing here completes, replaces or executes them)"
 if [ $fail -eq 0 ]; then

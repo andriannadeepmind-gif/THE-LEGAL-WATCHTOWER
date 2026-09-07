@@ -43,12 +43,14 @@ Checks (each prints GATECHECK <name>: PASS|FAIL and exits 0/1):
                       equal the declared manifest and must contain no file classified HISTORICAL_EVIDENCE.
   hash-engines        the two vetted SHA-256 engines must agree over identical RAW BYTES for every pinned module
                       and for adversarial inputs — CRLF, lone CR, a UTF-8 BOM and bytes that are not valid UTF-8.
-  universe            history-bound: no floored family below the floor the BASE commit declares, reductions
-                      only on a base-anchored prospective authorization carried unchanged into the candidate,
-                      nothing self-authorised, and a changed schema carries a strictly greater version.
+  universe            history-bound: the BASE commit's whole model is loaded and verified, its floors and
+                      authorizations discovered by fact type wherever they live; no floored family below the
+                      base's floor, exactly one floor per family, the floor set floors itself, reductions only
+                      on a base-anchored authorization carried unchanged and consumed on this edge, nothing
+                      self-authorised, and a changed schema carries a strictly greater canonical version.
   tcb                 the acceptance trusted computing base as an accountability gate: exact file universe by
                       KIND, real measurement matched against the model, per-file delta against the verified
-                      baseline, every growth attributed to a reproduced finding — a measured fact, not a cap.
+                      baseline, every grown FILE attributed to a reproduced finding — a measured fact, not a cap.
 """
 import argparse, ast, hashlib, importlib.util, json, os, shutil, subprocess, sys, tempfile
 
@@ -67,8 +69,9 @@ AR = importlib.util.module_from_spec(_aspec); _aspec.loader.exec_module(AR)
 
 SEAT = None          # the exported candidate seat directory; every check reads the model from here
 TREE = None          # the immutable candidate tree object
-CAND_REV = None      # what the operator named as the candidate: a commit, WORKTREE, or a bare tree
-BASE = None          # the explicit --base commit SHA, if one was given
+CAND_REV = None      # what the operator named as the candidate: a commit-ish, or WORKTREE — never a bare tree
+BASE = None          # the explicit --base, if one was given: a CONFIRMATION of the derived base, never a choice
+TREE_HINT = None     # the tree the candidate step resolved, if passed along: verified, never substituted
 
 
 def fail(name, reasons):
@@ -90,19 +93,11 @@ def git(*args, binary=False):
     return r.stdout if binary else r.stdout.decode('utf-8')
 
 
-def candidate_tree(rev):
-    """Resolve, once, the IMMUTABLE tree object this run judges. One seat; every check reads only its blobs.
-
-    A named revision (`HEAD`, a tag, a tree sha) resolves directly. The sentinel `WORKTREE` builds the tree the
-    current state WOULD commit to, through a THROWAWAY index copied from the real one and refreshed for tracked
-    paths only: no ref moves, nothing is checked out, the real index is never written, and an untracked path is
-    never staged by the gate — a file joins the candidate by being tracked or already staged, and until then
-    `candidate` names it as a working-tree difference instead of quietly judging it. In a clean checkout the two
-    forms coincide, which is why the fresh-clone gate and the pre-commit gate ask the same question.
-    """
-    if rev != 'WORKTREE':
-        # a commit-ish names the TREE it carries; the commit itself stays in CAND_REV, where the base is derived
-        return git('rev-parse', rev + '^{tree}').strip()
+def worktree_tree():
+    """The tree the current state WOULD commit to, built through a THROWAWAY index copied from the real one and
+    refreshed for tracked paths only: no ref moves, nothing is checked out, the real index is never written, and
+    an untracked path is never staged by the gate — a file joins the candidate by being tracked or already
+    staged, and until then `candidate` names it as a working-tree difference instead of quietly judging it."""
     gitdir = git('rev-parse', '--absolute-git-dir').strip()
     d = tempfile.mkdtemp(prefix='aml-cand-')
     try:
@@ -116,7 +111,6 @@ def candidate_tree(rev):
         return r.stdout.strip()
     finally:
         shutil.rmtree(d, ignore_errors=True)
-
 
 def tree_paths():
     return [b.decode('utf-8') for b in git('ls-tree', '-r', '--name-only', '-z', TREE, binary=True).split(b'\0') if b]
@@ -141,91 +135,138 @@ def ensure_seat(work):
     return seat
 
 
-# --------------------------------------------------------------------------- the base: history the candidate cannot edit
-# Review-4 R4-1. Every history-bound invariant — universe floors, authorizations, the schema version — is judged
-# against a BASE that the candidate cannot rewrite. The rule is canonical and has no fallback:
-#   1. a candidate named as a commit has, as its base, that commit's unique first parent;
-#   2. a working-tree or export candidate (WORKTREE, or a bare tree object) needs its base as an explicit full
-#      commit SHA — never HEAD, never a branch, never a merge base, never whichever parent happens to exist;
-#   3. zero or several parents is a typed failure unless an explicit base was given, and an explicit base that
-#      contradicts a unique parent is a typed failure too;
-#   4. a base whose object is absent is UNIVERSE-BASE-UNAVAILABLE, naming the exact object a bounded fetch must
-#      bring. The gate performs no network access itself.
-_BASE = {}
+# --------------------------------------------------------------------------- the candidate and its base
+# Review-4 R4-1, Review-5 R5-2. Every history-bound invariant — universe floors, authorizations, the schema
+# version — is judged against a BASE the candidate cannot rewrite, and the base is DERIVED from what was named,
+# never chosen. --base is a confirmation of that derivation and nothing else:
+#   * a candidate named as a commit must have exactly one parent, and that parent is the base — a merge
+#     (UNIVERSE-BASE-AMBIGUOUS) or an orphan (UNIVERSE-BASE-ORPHAN) has no single history to be judged against,
+#     and no --base can choose one for it;
+#   * WORKTREE names the tree the current state would commit to: when it differs from HEAD's tree, the
+#     candidate is the working tree and its base is HEAD; when it equals HEAD's tree, the candidate IS HEAD and
+#     its base is HEAD's unique parent — the same edge a fresh clone judges;
+#   * a bare tree object is not a candidate: it has no commit identity, so it has no history (CANDIDATE-NOT-COMMIT);
+#   * a --base that is not the derived base is UNIVERSE-BASE-MISMATCH, whatever it names — an older commit is
+#     not a legal base, it is a different history;
+#   * a base whose object is absent (UNIVERSE-BASE-OBJECT-MISSING) is named together with the exact bounded fetch
+#     that would bring it; the gate performs no network access and takes no other base. A base that is not a
+#     commit (UNIVERSE-BASE-NOT-COMMIT) or that carries no canonical model (UNIVERSE-BASE-SEAT-MISSING) is typed too.
+# A sequence of commits is judged EDGE BY EDGE: every commit against its own unique parent, none skipped. The
+# last independently reviewed commit is the procedural anchor of the next judgement; nothing here proves that a
+# human reviewed anything — it proves what each edge changed against the edge before it.
+_RES = {}
 
 
-def commit_parents(rev):
-    """(commit, [parents]) read from the commit OBJECT itself — visible even in a shallow clone, where rev-list
-    would report the grafted boundary commit as parentless."""
+def object_type(rev):
     r = AR.bounded_run(['git', '-C', REPO, 'cat-file', '-t', rev], text=True)
-    if r.returncode != 0 or r.stdout.strip() != 'commit':
-        return None, []
-    commit = git('rev-parse', rev + '^{commit}').strip()
+    return r.stdout.strip() if r.returncode == 0 else None
+
+
+def commit_parents(commit):
+    """The parents recorded in the commit OBJECT itself — visible even in a shallow clone, where rev-list would
+    report the grafted boundary commit as parentless."""
     header = git('cat-file', '-p', commit).split('\n\n', 1)[0].splitlines()
-    return commit, [l.split()[1] for l in header if l.startswith('parent ')]
+    return [l.split()[1] for l in header if l.startswith('parent ')]
 
 
-def base_commit(check):
-    if 'commit' in _BASE:
-        return _BASE['commit']
-    cand, parents = commit_parents(CAND_REV) if CAND_REV != 'WORKTREE' else (None, [])
+def resolve(check):
+    """(candidate commit or None, candidate tree, base commit, relation) — derived once, from the named
+    candidate and the repository alone. Every failure is typed and stops the check that asked."""
+    if _RES:
+        return _RES
+    if CAND_REV == 'WORKTREE':
+        if object_type('HEAD') != 'commit':
+            fail(check, ['CANDIDATE-HEAD-MISSING: a working-tree candidate is judged against HEAD, and this '
+                         'repository has no HEAD commit'])
+        head = git('rev-parse', 'HEAD^{commit}').strip()
+        tree, head_tree = worktree_tree(), git('rev-parse', head + '^{tree}').strip()
+        if tree != head_tree:
+            commit, base = None, head
+            relation = 'the working tree differs from HEAD %s, so the candidate is the working tree and the ' \
+                       'base is HEAD' % head[:12]
+        else:
+            commit, base = head, None
+            relation = 'the working tree equals HEAD %s, so the candidate is HEAD and the base is its unique ' \
+                       'parent' % head[:12]
+    else:
+        kind = object_type(CAND_REV)
+        if kind is None:
+            fail(check, ['CANDIDATE-OBJECT-MISSING: %s names no object in this repository' % CAND_REV])
+        if kind != 'commit':
+            fail(check, ['CANDIDATE-NOT-COMMIT: %s is a %s object; a history-bound candidate is a commit (its base '
+                         'is its unique parent) or WORKTREE (its base is HEAD) — a bare tree has no history to be '
+                         'judged against' % (CAND_REV, kind)])
+        commit = git('rev-parse', CAND_REV + '^{commit}').strip()
+        tree, base = git('rev-parse', commit + '^{tree}').strip(), None
+        relation = 'candidate commit %s, so the base is its unique parent' % commit[:12]
+    if base is None:
+        parents = commit_parents(commit)
+        if not parents:
+            fail(check, ['UNIVERSE-BASE-ORPHAN: candidate commit %s has no parent; there is no history to judge it '
+                         'against, and no --base can supply one' % commit[:12]])
+        if len(parents) > 1:
+            fail(check, ['UNIVERSE-BASE-AMBIGUOUS: candidate commit %s is a merge with %d parents; a history-bound '
+                         'candidate has exactly one parent, and no --base can choose among them'
+                         % (commit[:12], len(parents))])
+        base = parents[0]
     if BASE is not None:
         if len(BASE) != 40 or any(c not in '0123456789abcdef' for c in BASE):
             fail(check, ['UNIVERSE-BASE-MALFORMED: --base must be a full 40-character lower-case commit SHA, not %r'
                          % BASE])
-        if cand and len(parents) == 1 and parents[0] != BASE:
-            fail(check, ['UNIVERSE-BASE-MISMATCH: candidate commit %s has the unique parent %s; --base %s '
-                         'contradicts it' % (cand[:12], parents[0][:12], BASE[:12])])
-        base = BASE
-    elif cand is None:
-        fail(check, ['UNIVERSE-BASE-UNSPECIFIED: the candidate is a working tree or a bare tree, so its base must '
-                     'be given explicitly as --base <full commit SHA>; no fallback to HEAD, to a branch or to a '
-                     'merge base is taken'])
-    elif len(parents) != 1:
-        fail(check, ['UNIVERSE-BASE-AMBIGUOUS: candidate commit %s has %d parents; its base must be given '
-                     'explicitly as --base <full commit SHA>' % (cand[:12], len(parents))])
-    else:
-        base = parents[0]
-    if AR.bounded_run(['git', '-C', REPO, 'cat-file', '-e', base + '^{commit}']).returncode != 0:
-        fail(check, ['UNIVERSE-BASE-UNAVAILABLE: the base commit %s is not present in this repository (a shallow '
+        if BASE != base:
+            fail(check, ['UNIVERSE-BASE-MISMATCH: --base %s is not the base this candidate determines, %s (%s); '
+                         '--base confirms a derived base, it never chooses one' % (BASE[:12], base[:12], relation)])
+    if TREE_HINT is not None and TREE_HINT != tree:
+        fail(check, ['CANDIDATE-TREE-MISMATCH: --tree %s is not the tree of the candidate (%s), which is %s'
+                     % (TREE_HINT[:12], relation, tree[:12])])
+    bkind = object_type(base)
+    if bkind is None:
+        fail(check, ['UNIVERSE-BASE-OBJECT-MISSING: the base commit %s is not present in this repository (a shallow '
                      'clone, or an unfetched object). Precondition: fetch exactly that commit with its tree — '
-                     '`git fetch --depth=1 <remote> %s` — and re-run; the gate performs no network access itself'
-                     % (base, base)])
-    _BASE['commit'] = base
-    return base
+                     '`git fetch --depth=1 <remote> %s` — and re-run; the gate performs no network access itself '
+                     'and takes no other base' % (base, base)])
+    if bkind != 'commit':
+        fail(check, ['UNIVERSE-BASE-NOT-COMMIT: the base %s is a %s object, not a commit' % (base[:12], bkind)])
+    if AR.bounded_run(['git', '-C', REPO, 'cat-file', '-e', '%s:%s/ROOT.sexp' % (base, REL)]).returncode != 0:
+        fail(check, ['UNIVERSE-BASE-SEAT-MISSING: base commit %s carries no %s/ROOT.sexp; there is no canonical '
+                     'model at the base to judge against' % (base[:12], REL)])
+    _RES.update(commit=commit, tree=tree, base=base, relation=relation)
+    return _RES
+
+
+_HIST = {}
 
 
 def base_blob(check, name):
     """The bytes of seat file NAME at the base — read from the repository's objects, which the candidate cannot
     edit."""
-    base = base_commit(check)
+    base = resolve(check)['base']
     r = AR.bounded_run(['git', '-C', REPO, 'cat-file', 'blob', '%s:%s/%s' % (base, REL, name)], text=False)
     if r.returncode != 0:
-        fail(check, ['UNIVERSE-BASE-UNAVAILABLE: %s cannot be read at base %s (%s); fetch that commit with its '
-                     'whole tree' % (name, base[:12], r.stderr.decode('utf-8', 'replace').strip()[:80])])
+        fail(check, ['UNIVERSE-BASE-MODULE-MISSING: %s cannot be read at base %s (%s)'
+                     % (name, base[:12], r.stderr.decode('utf-8', 'replace').strip()[:80])])
     return r.stdout
 
 
-def base_facts(check, name, ftype):
-    out = {}
-    for f in SR.read_forms(base_blob(check, name).decode('utf-8'), '%s@base' % name):
-        if SR.head(f) == 'fact' and str(f[1]).lower() == ftype:
-            fid = SR.canonical_value(f[2], name, 'fact id')
-            out[fid] = {k.lower(): SR.canonical_value(v, name, k) for k, v in SR.plist(f[3:], name, fid)}
-    return out
+def read_model_at(check, commit):
+    """The WHOLE canonical model of COMMIT, read from the repository's objects by the one reader seat and
+    VERIFIED — module set, pins, root digest, schema version, no duplicate fact, no undeclared type — so that
+    what history is judged against is the model that commit committed to (Review-5 R5-1). Nothing here names a
+    module: the floors and authorizations of the base are found wherever the base kept them."""
+    if commit in _HIST:
+        return _HIST[commit]
 
-
-def root_digest_at(check, commit):
-    """(model-root digest, tree) of a COMMIT, from its own ROOT.sexp."""
-    r = AR.bounded_run(['git', '-C', REPO, 'cat-file', 'blob', '%s:%s/ROOT.sexp' % (commit, REL)], text=False)
-    if r.returncode != 0:
-        fail(check, ['UNIVERSE-BASE-UNAVAILABLE: ROOT.sexp cannot be read at commit %s; fetch that commit with '
-                     'its tree' % commit[:12]])
-    root = [f for f in SR.read_forms(r.stdout.decode('utf-8'), 'ROOT.sexp@' + commit[:12])
-            if SR.head(f) == 'define-model-root'][0]
-    return (str(dict(SR.plist(root[2:], 'ROOT.sexp', 'root'))['canonical-model-root-digest']),
-            git('rev-parse', commit + '^{tree}').strip())
-
+    def load(name):
+        r = AR.bounded_run(['git', '-C', REPO, 'cat-file', 'blob', '%s:%s/%s' % (commit, REL, name)], text=False)
+        if r.returncode != 0:
+            raise SR.MissingSourceFile('%s:%s/%s' % (commit[:12], REL, name))
+        return r.stdout
+    try:
+        _HIST[commit] = SR.read_model_from(load, 'commit %s' % commit[:12], verify=True)
+    except SR.SexpError as e:
+        fail(check, ['UNIVERSE-BASE-MODEL-INVALID: the canonical model at commit %s cannot be established: %s'
+                     % (commit[:12], e)])
+    return _HIST[commit]
 
 # --------------------------------------------------------------------------- model access (candidate only)
 # One seat reads the model (SEXP-READER.read_model); this only types its failures for the gate's vocabulary.
@@ -267,34 +308,35 @@ def working_tree_difference():
 
 def repository_content_state():
     """A CONTENT hash of everything in the repository this run could disturb — the one seat, Review-3 R3-9."""
-    return AR.repo_content_state(REPO, candidate_tree('WORKTREE'))
+    return AR.repo_content_state(REPO, worktree_tree())
 
 
 def check_candidate():
-    paths = tree_paths()
-    drift = working_tree_difference()
-    cand = commit_parents(CAND_REV)[0] if CAND_REV != 'WORKTREE' else None
-    base = base_commit('candidate')
-    base_root, base_tree = root_digest_at('candidate', base)
-    print('CANDIDATE-COMMIT %s' % (cand or ('WORKTREE' if CAND_REV == 'WORKTREE' else 'TREE-ONLY')))
+    res = resolve('candidate')
+    paths, drift = tree_paths(), working_tree_difference()
+    bmodel = read_model_at('candidate', res['base'])
+    base_tree = git('rev-parse', res['base'] + '^{tree}').strip()
+    print('CANDIDATE-COMMIT %s' % (res['commit'] or 'WORKTREE'))
     print('CANDIDATE-TREE %s' % TREE)
     print('CANDIDATE-MODEL-ROOT %s' % model().root['canonical-model-root-digest'])
     print('CANDIDATE-SEAT %s' % SEAT)
     print('CANDIDATE-REL %s' % REL)
-    print('BASE-COMMIT %s' % base)
+    print('CANDIDATE-RELATION %s' % res['relation'])
+    print('BASE-COMMIT %s' % res['base'])
     print('BASE-TREE %s' % base_tree)
-    print('BASE-MODEL-ROOT %s' % base_root)
-    print('  candidate tree: %s (%d paths); base commit %s (tree %s), the history every floor, authorization '
-          'and schema version is judged against' % (TREE, len(paths), base[:12], base_tree[:12]))
+    print('BASE-MODEL-ROOT %s' % bmodel.root['canonical-model-root-digest'])
+    print('  candidate tree: %s (%d paths); %s — base commit %s (tree %s) is the history every floor, '
+          'authorization and schema version is judged against; --base, when given, confirmed it'
+          % (TREE, len(paths), res['relation'], res['base'][:12], base_tree[:12]))
     if drift:
         print('  the WORKING TREE differs from the candidate in %d path(s); the gate judges the candidate and '
               'changes nothing:' % len(drift))
         for l in drift[:20]:
             print('    %s' % l)
-    ok('candidate', 'immutable candidate tree %s pinned; %d tracked paths; working-tree difference measured '
-                    'against that very tree and reported, not altered (%d path(s))'
-                    % (TREE[:12], len(paths), len(drift)))
-
+    ok('candidate', 'immutable candidate tree %s pinned (%s); %d tracked paths; base %s derived, not chosen; '
+                    'working-tree difference measured against that very tree and reported, not altered '
+                    '(%d path(s))' % (TREE[:12], res['commit'][:12] if res['commit'] else 'WORKTREE', len(paths),
+                                      res['base'][:12], len(drift)))
 
 # --------------------------------------------------------------------------- toolchain (N-11)
 def sha_bytes(b):
@@ -600,7 +642,10 @@ def check_corpus():
     nfl = sum(len(v) for v in declared_fl.values())
     # Review-4 R4-1: what is IMPLEMENTED is reconciled against the floors, not only against the declarations —
     # a corpus whose declarations and implementation agree at a smaller number is still a shrunk corpus.
-    floors = {str(p['family']).lower(): int(p['minimum']) for _i, p in bt.get('universe-floor', [])}
+    try:                                   # discovered across the whole model, never from one module (R5-1)
+        floors = {fam: d['minimum'] for fam, d in SR.universe_floors(model()).items()}
+    except SR.SexpError as e:
+        fail('corpus', [str(e)])
     for fam, n in sorted({'fixture': len(declared_fx), 'property-family': len(fams), 'falsifier': nfl}.items()):
         if fam in floors and n < floors[fam]:
             reasons.append('CORPUS-BELOW-FLOOR: the corpus implements %d %s(s) against a floor of %d'
@@ -682,8 +727,14 @@ def check_provenance():
                 reasons.append('VERIFIER-EXTRA: the %s copy holds executable %s, which the model classifies as '
                                'nothing at all' % (label, f))
     verifier_tree = hashlib.sha256('\n'.join(rows).encode('utf-8')).hexdigest()
-    print('PROVENANCE candidate_commit %s' % git('rev-parse', 'HEAD').strip())
-    print('PROVENANCE candidate_tree   %s' % TREE)
+    res = resolve('provenance')
+    head = git('rev-parse', 'HEAD^{commit}').strip() if object_type('HEAD') == 'commit' else None
+    # Review-5 §5.5: the candidate as it really is — HEAD only when the candidate IS HEAD, the named commit when
+    # one was named, and WORKTREE with the computed tree when the working tree is what is judged.
+    print('PROVENANCE candidate_commit %s' % ('WORKTREE' if res['commit'] is None
+                                              else res['commit'] + (' (HEAD)' if res['commit'] == head else '')))
+    print('PROVENANCE candidate_tree   %s%s' % (TREE, ' (computed from the working tree)' if res['commit'] is None
+                                                 else ''))
     print('PROVENANCE verifier_tree    %s  (%d machinery files)' % (verifier_tree, len(machinery)))
     for r in rows:
         print('PROVENANCE verifier-file    %s' % r)
@@ -694,93 +745,149 @@ def check_provenance():
                      '%s == candidate_tree %s for that set' % (len(machinery), verifier_tree[:12], TREE[:12]))
 
 
+def authorization_defect(p, fam, previous, reviewed_root):
+    """Why authorization P cannot stand for family FAM, whose floor before the reduction is PREVIOUS, under the
+    model root REVIEWED_ROOT the approver must have reviewed — or None when it can. One rule for an
+    authorization the base anchors (PREVIOUS = the base's floor, REVIEWED_ROOT = the root of the base's parent)
+    and for one the candidate introduces prospectively (PREVIOUS = the candidate's own floor, REVIEWED_ROOT = the
+    base's root: what the next edge will be judged against)."""
+    if not str(p.get('approver', '')).strip() or not str(p.get('rationale', '')).strip():
+        return 'carries an empty :approver or :rationale (AUTHORIZATION-UNATTRIBUTED); these strings attribute ' \
+               'a decision to someone — they are not a cryptographic or externally validated approval'
+    if previous is None:
+        return 'names family %s, which is floored nowhere (AUTHORIZATION-FAMILY-UNDEFINED)' % fam
+    if int(p['previous-minimum']) != previous:
+        return 'records previous minimum %d, but the floor it would lower is %d' % (int(p['previous-minimum']), previous)
+    if int(p['minimum']) >= int(p['previous-minimum']):
+        return 'is not a reduction (%d -> %d)' % (int(p['previous-minimum']), int(p['minimum']))
+    if str(p['previous-model-root']) != reviewed_root:
+        return 'names previous model root %s, but the model it was authored against is %s' \
+               % (str(p['previous-model-root'])[:12], reviewed_root[:12])
+    return None
+
+
 def check_universe():
     """No declared family may shrink below the floor the BASE declares for it, nothing in the candidate can
-    authorise its own reduction, and a changed schema must carry a greater version (Review-3 R3-7, Review-4
-    R4-1 and R4-5).
+    authorise its own reduction, the floor set protects itself, and a changed schema must carry a greater
+    version (Review-3 R3-7, Review-4 R4-1/R4-5, Review-5 R5-1).
 
-    The reference frame is HISTORY. The floors, the authorizations and the schema of the base commit are read
-    from the repository's objects, which the candidate cannot edit; comparing a candidate's floors with the same
-    candidate's floors is what let a floor and its family be deleted together and reported as a smaller
-    success. A floor lowered, deleted or renamed away is a reduction. A reduction stands only on a BASE-ANCHORED
-    PROSPECTIVE AUTHORIZATION: one committed in the base, naming this family, recording the base's own floor as
-    its previous minimum, naming the model root the authority reviewed (the root of the base's parent, since
-    the base's own root cannot contain a fact that names it), and carried into the candidate unchanged. It is
-    spent the moment the floor it names has moved, so it cannot be replayed, and it grants exactly the minimum it
-    states, not less. An authorization that appears only in the candidate authorises nothing: the attacker
-    cannot write their own permission. No external approval mechanism exists in this repository and none is
-    invented here — a reduction without a base-anchored authorization is forbidden until a separate creator
-    or governance order anchors one.
+    The reference frame is HISTORY, read as a WHOLE MODEL: the base commit's canonical model is loaded from the
+    repository's objects through the one reader seat, verified against its own root, and its floors and
+    authorizations are discovered by fact type across every module it pins — never by the name of a module, so
+    relocating them between canonical modules neither hides them nor changes what they mean. A floor lowered,
+    deleted or renamed away is a reduction; a second floor for the same family, or a floor for a family the
+    schema does not declare, is a typed failure instead of a silent last-write-wins; and the `universe-floor`
+    family floors itself, so the floor set cannot be deleted together with the floors it protects.
+
+    A reduction stands only on a BASE-ANCHORED authorization: committed in the base, naming this family,
+    recording the base's own floor as its previous minimum, naming the model root the approver reviewed (the
+    root of the base's parent, since the base's own root cannot contain a fact that names it), carrying a
+    non-empty approver and rationale, and carried into the candidate unchanged — its module may differ, its
+    content may not. It grants exactly the minimum it states and is consumed on THIS EDGE: the moment the floor
+    it names has moved it no longer applies, so it cannot be replayed on a later edge. That consumption is
+    per-lineage, not global: two sibling candidates of the same base can each cite it mechanically, and only the
+    Root Authority decides which sibling acquires canonical standing — the gate makes no such choice and proves
+    no independent human approval. An authorization that appears only in the candidate authorises nothing on
+    this edge; it may be INTRODUCED, well-formed and prospective, to authorise the next one. No external approval
+    mechanism exists in this repository and none is invented here.
     """
-    reasons, bt = [], by_type(facts())
-    floors = {str(p['family']).lower(): (i, int(p['minimum'])) for i, p in bt.get('universe-floor', [])}
-    if not floors:
-        fail('universe', ['the model declares no universe-floor; a family could shrink to nothing silently'])
-    base = base_commit('universe')
-    base_floors = {str(p['family']).lower(): int(p['minimum'])
-                   for p in base_facts('universe', 'verification-corpus.sexp', 'universe-floor').values()}
-    base_auths = base_facts('universe', 'verification-corpus.sexp', 'universe-authorization')
-    cand_auths = {i: p for i, p in bt.get('universe-authorization', [])}
-    for aid in sorted(set(cand_auths) - set(base_auths)):
-        reasons.append('AUTHORIZATION-CANDIDATE-INJECTED: %s exists only in the candidate; an authorization the '
-                       'candidate wrote for itself authorises nothing' % aid)
+    res = resolve('universe')
+    base, reasons = res['base'], []
+    cand = model()
+    try:
+        floors, auths = SR.universe_floors(cand), SR.universe_authorizations(cand)
+    except SR.SexpError as e:
+        fail('universe', [str(e)])
+    bmodel = read_model_at('universe', base)
+    try:
+        base_floors, base_auths = SR.universe_floors(bmodel), SR.universe_authorizations(bmodel)
+    except SR.SexpError as e:
+        fail('universe', ['UNIVERSE-BASE-MODEL-INVALID: base %s: %s' % (base[:12], e)])
+    base_root = str(bmodel.root['canonical-model-root-digest'])
+    if 'universe-floor' not in floors:
+        reasons.append('UNIVERSE-SELF-FLOOR-MISSING: no universe-floor floors the universe-floor family itself, so '
+                       'the floor set could be deleted together with the floors it protects')
+    content = lambda p: {k: v for k, v in p.items() if k != 'module'}
     for aid in sorted(base_auths):
-        if cand_auths.get(aid) != base_auths[aid]:
+        if aid not in auths or content(auths[aid]) != content(base_auths[aid]):
             reasons.append('AUTHORIZATION-TAMPERED: %s is altered in or absent from the candidate; the record of '
                            'who authorised what is not the candidate\'s to edit' % aid)
-    reviewed = {}                                             # the root an authority reviewed: the base's parent
-    for fam in sorted(set(base_floors) | set(floors)):
-        before, now = base_floors.get(fam), floors[fam][1] if fam in floors else 0
-        if before is None or now >= before:
-            continue
-        grants = [(aid, p) for aid, p in sorted(base_auths.items())
-                  if str(p['family']).lower() == fam and int(p['previous-minimum']) == before]
+        if str(base_auths[aid]['family']).lower() not in base_floors:
+            reasons.append('AUTHORIZATION-FAMILY-UNDEFINED: %s names family %s, which the base floors nowhere'
+                           % (aid, str(base_auths[aid]['family']).lower()))
+    now_of = lambda fam: floors[fam]['minimum'] if fam in floors else 0
+    reduced = {fam: (base_floors[fam]['minimum'], now_of(fam)) for fam in sorted(base_floors)
+               if now_of(fam) < base_floors[fam]['minimum']}
+    prospective = []
+    for aid in sorted(set(auths) - set(base_auths)):
+        fam = str(auths[aid]['family']).lower()
+        if fam in reduced:
+            reasons.append('AUTHORIZATION-CANDIDATE-INJECTED: %s exists only in the candidate and names %s, which '
+                           'this same candidate reduces; an authorization the candidate wrote for itself '
+                           'authorises nothing' % (aid, fam))
+        why = authorization_defect(auths[aid], fam, floors[fam]['minimum'] if fam in floors else None, base_root)
+        if why:
+            reasons.append('AUTHORIZATION-MALFORMED-PROSPECTIVE: %s %s' % (aid, why))
+        prospective.append(aid)
+    reviewed, consumed = {}, []
+    for fam, (before, now) in sorted(reduced.items()):
         why = 'no base-anchored authorization names %s at its base floor of %d' % (fam, before)
-        for aid, p in grants:
-            new, named_root = int(p['minimum']), str(p['previous-model-root'])
-            if not reviewed:
-                bparent = commit_parents(base)[1]
-                if len(bparent) != 1:
+        for aid, p in sorted(base_auths.items()):
+            if str(p['family']).lower() != fam or int(p['previous-minimum']) != before:
+                continue
+            if 'root' not in reviewed:
+                bparents = commit_parents(base)
+                if len(bparents) != 1:
                     fail('universe', ['AUTHORIZATION-UNVERIFIABLE: base %s has %d parents, so the model root an '
-                                      'authorization was reviewed against cannot be established' % (base[:12], len(bparent))])
-                reviewed['root'] = root_digest_at('universe', bparent[0])[0]
-            if new >= before:
-                why = '%s is not a reduction (%d -> %d)' % (aid, before, new)
-            elif named_root != reviewed['root']:
-                why = '%s names previous model root %s, but the model the base was authored against is %s' \
-                      % (aid, named_root[:12], reviewed['root'][:12])
-            elif now != new:
-                why = '%s authorises exactly %d, not %d' % (aid, new, now)
-            else:
-                why = None
+                                      'authorization was reviewed against cannot be established'
+                                      % (base[:12], len(bparents))])
+                reviewed['root'] = str(read_model_at('universe', bparents[0]).root['canonical-model-root-digest'])
+            why = authorization_defect(p, fam, before, reviewed['root'])
+            if why is None and now != int(p['minimum']):
+                why = 'authorises exactly %d, not %d' % (int(p['minimum']), now)
+            if why is None:
+                consumed.append('%s(%s %d->%d)' % (aid, fam, before, now))
                 break
+            why = '%s %s' % (aid, why)
         if why:
             reasons.append('UNIVERSE-FLOOR-REDUCED: %s %d -> %d (%s); a smaller universe is not a smaller success'
                            % (fam, before, now, why))
-    for fam, (fid, low) in sorted(floors.items()):
-        actual = len(bt.get(fam, []))
-        if actual < low:
-            reasons.append('UNIVERSE-BELOW-FLOOR: family %s holds %d fact(s), below its declared floor of %d '
-                           '(%s); a smaller universe is not a smaller success' % (fam, actual, low, fid))
-    # Review-4 R4-5. The model root binds the schema's BYTES; the version is the enforced policy discriminator.
-    cand_schema, base_schema = open(os.path.join(SEAT, 'MODEL-SCHEMA.sexp'), 'rb').read(), \
-        base_blob('universe', 'MODEL-SCHEMA.sexp')
-    cv, bv = str(schema_header()['version']), str(schema_header(base_schema.decode('utf-8'))['version'])
-    if cand_schema != base_schema and not (cv.isdigit() and bv.isdigit() and int(cv) > int(bv)):
+    for fam in sorted(floors):
+        actual = len(cand.of(fam))
+        if actual < floors[fam]['minimum']:
+            reasons.append('UNIVERSE-BELOW-FLOOR: family %s holds %d fact(s), below its declared floor of %d (%s); '
+                           'a smaller universe is not a smaller success'
+                           % (fam, actual, floors[fam]['minimum'], floors[fam]['id']))
+    # Review-4 R4-5, Review-5 §5.2. The model root binds the schema's BYTES; the version is the enforced policy
+    # discriminator, judged under one canonical rule. A byte-identical schema carries an identical version by
+    # construction, so there is no "unmotivated" case to check.
+    cv = None
+    try:
+        cv = SR.schema_version_of(cand.schema)
+    except SR.SexpError as e:
+        reasons.append(str(e))
+    bv = SR.schema_version_of(bmodel.schema)
+    with open(os.path.join(SEAT, 'MODEL-SCHEMA.sexp'), 'rb') as fh:
+        cand_schema = fh.read()
+    base_schema = base_blob('universe', 'MODEL-SCHEMA.sexp')
+    if cv is not None and cand_schema != base_schema and int(cv) <= int(bv):
         reasons.append('SCHEMA-VERSION-STALE: MODEL-SCHEMA.sexp differs from the base\'s bytes but carries version '
-                       '%r against the base\'s %r; a changed schema must carry a strictly greater integer version'
+                       '%s against the base\'s %s; a changed schema must carry a strictly greater integer version'
                        % (cv, bv))
-    if cand_schema == base_schema and cv != bv:
-        reasons.append('SCHEMA-VERSION-UNMOTIVATED: MODEL-SCHEMA.sexp is byte-identical to the base\'s but its '
-                       'version moved %r -> %r' % (bv, cv))
+    show = lambda d: ' '.join('%s>=%d' % (f, d[f]['minimum']) for f in sorted(d)) or 'none'
+    print('UNIVERSE-BASE-FLOORS %s' % show(base_floors))
+    print('UNIVERSE-CANDIDATE-FLOORS %s' % show(floors))
+    print('UNIVERSE-REDUCTIONS %s' % (' '.join('%s %d->%d' % (f, b, n) for f, (b, n) in sorted(reduced.items()))
+                                      or 'none'))
+    print('UNIVERSE-AUTHORIZATIONS-CONSUMED %s' % (' '.join(consumed) or 'none'))
+    print('UNIVERSE-AUTHORIZATIONS-PROSPECTIVE %s' % (' '.join(prospective) or 'none'))
     if reasons:
         fail('universe', reasons)
-    ok('universe', '%d floored families at or above the floors base %s declares (%s); %d base-anchored '
-                   'authorization(s), %d relied on; schema version %s%s'
-       % (len(floors), base[:12], ', '.join('%s>=%s' % (f, floors[f][1]) for f in sorted(floors)),
-          len(base_auths), len(reviewed), cv,
-          ' (unchanged schema)' if cand_schema == base_schema else ' (schema changed, version raised from %s)' % bv))
-
+    ok('universe', 'base %s declares %d floor(s) and the candidate %d, discovered across the whole model of each; '
+                   '%d reduction(s), each consuming a base-anchored authorization on this edge (%s); %d prospective '
+                   'authorization(s) introduced, authorising nothing here; schema version %s%s'
+       % (base[:12], len(base_floors), len(floors), len(reduced), ', '.join(consumed) or 'none', len(prospective),
+          cv, ' (unchanged schema)' if cand_schema == base_schema else ' (schema changed, version raised from %s)' % bv))
 
 # --------------------------------------------------------------------------- seats (N-10)
 def check_seats():
@@ -1541,7 +1648,7 @@ def check_tcb():
     for line in table:
         print(line)
     ok('tcb', '%d executable files, %d physical, %d NBNC measured from the candidate by kind; baseline %s = %s '
-              'files / %s physical / %s NBNC; delta %+d files / %+d physical / %+d NBNC, every growth attributed '
+              'files / %s physical / %s NBNC; delta %+d files / %+d physical / %+d NBNC, every grown file attributed '
               'to a reproduced finding. The size is a measured fact and a complexity signal, not a threshold'
        % (len(rows), physical_total, total, str(budget['baseline-commit'])[:12], budget['baseline-files'],
           budget['baseline-physical'], budget['baseline'], len(rows) - int(budget['baseline-files']),
@@ -1561,13 +1668,16 @@ if __name__ == '__main__':
     # `content-state` is not a check — it prints the content-sensitive measurement the gate compares before and
     # after itself (Review-3 R3-9). It has no verdict, so it is deliberately not in the counted set.
     ap.add_argument('check', choices=sorted(set(CHECKS) | set(WORK_CHECKS) | {'content-state'}))
-    ap.add_argument('--tree', default=os.environ.get('AML_CANDIDATE_TREE', 'WORKTREE'),
-                    help="a revision naming the immutable tree to judge, or WORKTREE (default) for the tree the "
-                         "current state would commit to")
+    ap.add_argument('--candidate', default=os.environ.get('AML_CANDIDATE', 'WORKTREE'),
+                    help='what is judged: a commit-ish, whose base is its unique parent, or WORKTREE (default), '
+                         'the tree the current state would commit to, whose base is HEAD — or, when it equals '
+                         "HEAD's tree, HEAD itself with HEAD's unique parent as base. Never a bare tree (Review-5)")
+    ap.add_argument('--tree', default=os.environ.get('AML_CANDIDATE_TREE'),
+                    help='the immutable tree the candidate step resolved, passed along so every check names the '
+                         'same object; it is verified against the candidate, never substituted for it')
     ap.add_argument('--base', default=None,
-                    help='the full commit SHA every history-bound invariant is judged against. Required for a '
-                         'WORKTREE or bare-tree candidate; derived as the unique first parent for a commit '
-                         'candidate; never defaulted to HEAD (Review-4 R4-1)')
+                    help='the full commit SHA of the derived base, as a CONFIRMATION; a --base that differs from '
+                         'the base the candidate determines is a typed failure, never a choice (Review-5 R5-2)')
     ap.add_argument('--work', default=None, help='reuse this workspace instead of creating a private one')
     ap.add_argument('--keep-work', action='store_true', help='keep the private workspace for inspection')
     ap.add_argument('--seat', default=None,
@@ -1579,11 +1689,11 @@ if __name__ == '__main__':
     # workspace this process created is removed on success, failure, signal and timeout alike — keeping it is an
     # explicit request, not the default that littered 291 directories into /tmp.
     work = AR.workspace('aml-gatecheck-', REPO, keep=a.keep_work, reuse=a.work)
-    CAND_REV, BASE = a.tree, a.base
+    CAND_REV, BASE, TREE_HINT = a.candidate, a.base, a.tree
     try:
         if a.check == 'content-state':
             print(repository_content_state()); sys.exit(0)
-        TREE = candidate_tree(a.tree)
+        TREE = resolve(a.check)['tree']
         if a.seat:
             SEAT = os.path.abspath(a.seat)
         else:

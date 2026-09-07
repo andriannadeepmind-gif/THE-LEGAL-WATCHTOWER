@@ -172,7 +172,7 @@ def main():
         'tcb-sentence': ('The acceptance machinery the operator is asked to trust is %s executable files, %s '
                          'physical and %s non-blank/non-comment lines; the verified baseline %s was %s files / '
                          '%s physical / %s non-blank/non-comment. The size is a measured fact and a complexity '
-                         'signal, not a threshold, and every growth over the baseline is attributed to a '
+                         'signal, not a threshold, and every file grown over the baseline is attributed, per file, to a '
                          'reproduced finding by the acceptance command. The 400/400 Lisp kernel budget is one '
                          'path\'s budget and is not this number.'
                          % (tcb[0]['files'], tcb[0]['physical'], tcb[0]['nbnc'],

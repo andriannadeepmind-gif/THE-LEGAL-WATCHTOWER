@@ -48,7 +48,10 @@ model-root digest, which pins `MODEL-SCHEMA.sexp` among the modules; that is the
 version becomes meaningful because the acceptance command enforces it against history (Review-4 R4-5): whenever
 the schema's bytes differ from the base commit's, the version must be a strictly greater integer, and a schema
 that changed under an unchanged, lower or reused version is `SCHEMA-VERSION-STALE`. No claim is made that the
-version number alone separates renders "by construction".
+version number alone separates renders "by construction". The version has ONE canonical form (Review-5): a
+quoted ASCII decimal string matching `[1-9][0-9]*`; an unquoted integer, a leading zero or a non-ASCII digit is
+`SCHEMA-VERSION-MALFORMED` — the value is judged as written, in the gate and in the root builder alike, never
+after a numeric conversion that would have made `"05"`, `5` and an Arabic-Indic five look equal.
 
 ### 2.2 Commitment digest
 

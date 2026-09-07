@@ -280,3 +280,30 @@ signal forwarding), `build_decision_packet.py` +14 (schema-declared versus insta
 sentence that names the counted checks as Option-2 acceptance checks), `ARCHITECTURE-MODEL-GATE.sh` +3 (`--base`,
 own process groups, the check-count label). Every row above the baseline carries a `tcb-attribution`, and
 `tcb-01` names any that does not.
+
+---
+
+## 11. Review-5: the decision recorded where it binds; the measurement after the correction
+
+The creator's Review-5 order records the TCB decision verbatim in the canonical model — the `:rationale` of
+`tcb-budget ACCEPTANCE-TCB` in `verification-corpus.sexp` — so that the policy lives beside the numbers it
+governs and `tcb-01` reads both from the same fact: *numeric TCB ceilings are withdrawn as pass/fail criteria;
+exact TCB file-universe discovery, exact physical/NBNC measurement, historical comparison and honest per-file
+attribution remain mandatory; no protection, independent implementation, coverage mechanism or falsifier may be
+removed, weakened, packed or obscured merely to satisfy a line-count target.* `TCB-DECISION.md` §7 points there.
+
+Attribution is **per file**, and is described as such everywhere: a file that grew over the baseline names the
+findings that required its growth. There is no per-line mapping and none is claimed.
+
+Measured at the end of the Review-5 correction, by `tcb-01` on the candidate: **16 files / 7,079 physical /
+5,866 NBNC** — `+1,289` NBNC over `af0eb3c9`, `+446` over `4ee2b58a`. The Review-5 growth, file by file:
+`run_corpus.py` +239 (synthetic candidate commits over coherent synthetic bases, relocation and form-module
+operations, the derived inner-gate base, whole-model integrity, the nine candidate/base process cases and the
+two-commit reproducer), `SEXP-READER.py` +118 (one model read over any source with historical verification, the
+one root-digest formula, the canonical version rule, whole-model discovery of floors and authorizations),
+`gate_checks.py` +97 (the derived candidate/base seat, the verified historical load, the rewritten universe
+check with its separated report, the real candidate in provenance), `ARCHITECTURE-MODEL-GATE.sh` +1 (the
+candidate identity carried to every phase), `build_root.py` −9 (its own copies of the digest formula and the
+version rule replaced by the reader's). Every grown file carries a `tcb-attribution` naming its Review-5
+findings; `build_inventory.py`, whose two raw git calls now go through the execution seat, stays at −36 against
+the baseline.

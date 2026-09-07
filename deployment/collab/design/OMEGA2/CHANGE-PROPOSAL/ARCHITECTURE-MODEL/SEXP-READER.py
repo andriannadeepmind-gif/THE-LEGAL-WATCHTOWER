@@ -89,18 +89,28 @@ class Int(int):
     __slots__ = ()
 
 
-def read_file(path):
-    """Read PATH as raw bytes decoded strictly as UTF-8. A missing file is a typed result, never a traceback."""
+def read_bytes(path):
+    """The raw bytes of PATH. A missing file is a typed result, never a traceback."""
     if not os.path.isfile(path):
         raise MissingSourceFile(path)
     with open(path, 'rb') as f:
-        raw = f.read()
+        return f.read()
+
+
+def decode_text(raw, source):
+    """RAW decoded strictly as UTF-8 under the byte limit — the one decoding rule of every source this reader
+    accepts, whether the bytes came from a file or from a repository object."""
     if len(raw) > MAX_BYTES:
-        raise SexpSyntaxError(path, 1, 1, 'file exceeds the %d byte limit' % MAX_BYTES)
+        raise SexpSyntaxError(source, 1, 1, 'file exceeds the %d byte limit' % MAX_BYTES)
     try:
         return raw.decode('utf-8')
     except UnicodeDecodeError as e:
-        raise SexpSyntaxError(path, 1, 1, 'file is not valid UTF-8 (%s)' % e)
+        raise SexpSyntaxError(source, 1, 1, 'file is not valid UTF-8 (%s)' % e)
+
+
+def read_file(path):
+    """Read PATH as raw bytes decoded strictly as UTF-8. A missing file is a typed result, never a traceback."""
+    return decode_text(read_bytes(path), path)
 
 
 class _Reader:
@@ -369,12 +379,17 @@ _MODEL_CACHE = {}
 
 
 class Model(object):
-    """One canonical model read: the root plist, the ordered module list, and every fact of every module."""
+    """One canonical model read: the root plist, the ordered module list, every fact of every module, the
+    schema declaration and the set of fact types it declares."""
 
-    def __init__(self, root, modules, facts):
+    def __init__(self, root, modules, facts, schema=None, source='<model>'):
         self.root = root
         self.modules = modules
         self.facts = facts
+        self.schema = schema
+        self.source = source
+        self.declared_types = {str(x[1]).lower() for x in (schema[2:] if schema else [])
+                               if isinstance(x, list) and head(x) == 'define-fact-type'}
         self.by_type = {}
         for ftype, fid, pairs, _mod, _form in facts:
             self.by_type.setdefault(ftype, []).append((fid, pairs))
@@ -383,20 +398,79 @@ class Model(object):
         return self.by_type.get(ftype, [])
 
 
-def read_model(dirp, cache=True):
-    """Read the model rooted at DIRP/ROOT.sexp. A malformed root is a typed error, never a traceback."""
-    key = os.path.abspath(dirp)
-    if cache and key in _MODEL_CACHE:
-        return _MODEL_CACHE[key]
-    forms = read_forms_file(os.path.join(key, 'ROOT.sexp'))
+def root_digest(rows):
+    """The ONE formula of the canonical model-root digest: SHA-256 over 'module:sha256' lines in composition
+    order. build_root.py writes it, the corpus runner re-derives it for mutated copies, and the historical loader
+    verifies it — one seat, so no copy can drift."""
+    return hashlib.sha256('\n'.join('%s:%s' % (m, h) for m, h in rows).encode('utf-8')).hexdigest()
+
+
+VERSION_RULE = 'a quoted ASCII decimal string matching [1-9][0-9]* — no leading zero, no unquoted integer, no ' \
+               'non-ASCII digit'
+
+
+def schema_version_of(decl, source='MODEL-SCHEMA.sexp'):
+    """The schema's declared :version under the ONE canonical rule (Review-5 §5.2), or a typed error. The value
+    is judged as written — an unquoted integer, a leading zero and a non-ASCII digit each fail even though
+    Python would happily turn them into the same number."""
+    v = kv(decl, 'version')
+    if v is None or not isinstance(v, Str):
+        raise SexpError('SCHEMA-VERSION-MALFORMED: %s declares :version %r; the version must be %s'
+                        % (source, v, VERSION_RULE))
+    s = str(v)
+    if not s.isascii() or not (s[:1] in '123456789' and all(c in '0123456789' for c in s)):
+        raise SexpError('SCHEMA-VERSION-MALFORMED: %s declares :version %r; the version must be %s'
+                        % (source, s, VERSION_RULE))
+    return s
+
+
+def schema_declaration(forms, source='MODEL-SCHEMA.sexp'):
+    """The single define-model-schema form of a schema module, or a typed error."""
+    decls = [f for f in forms if head(f) == 'define-model-schema']
+    if len(decls) != 1 or len(forms) != 1:
+        raise SexpError('SCHEMA-MALFORMED: %s must carry exactly one define-model-schema form and nothing else '
+                        '(found %d declaration(s) among %d form(s))' % (source, len(decls), len(forms)))
+    return decls[0]
+
+
+def read_model_from(load, source, verify=False):
+    """The ONE canonical model read over an arbitrary SOURCE of module bytes: LOAD(name) returns the raw bytes
+    of module NAME (raising MissingSourceFile when it has none), whether from a directory or from the objects
+    of a commit. Nothing here depends on the name or the position of a module: every fact of every pinned
+    module is read, and a consumer that wants the facts of one family asks the model, never a file.
+
+    VERIFY is the discipline of a HISTORICAL read (Review-5 R5-1). A live candidate's pins are re-derived by the
+    kernel and the independent checker (law L7, ver-01); a base commit has no verifier running over it, so the
+    loader itself must establish that what it read is the model that commit committed to: the module set is
+    exact and duplicate-free, every module's SHA-256 equals its pin, the root digest equals the composition,
+    the root's schema version equals the schema's, no fact is declared twice and every fact type is one the
+    schema declares. Each violation is a typed error naming the source.
+    """
+    forms = read_forms(decode_text(load('ROOT.sexp'), source + ':ROOT.sexp'), source + ':ROOT.sexp')
     roots = [f for f in forms if head(f) == 'define-model-root']
     if len(roots) != 1 or len(forms) != 1:
-        raise SexpError('ROOT-MALFORMED: exactly one define-model-root form and nothing else is permitted')
-    root = dict(plist(roots[0][2:], 'ROOT.sexp', 'define-model-root'))
-    modules = [str(dict(plist(e, 'ROOT.sexp', 'composition entry'))['module']) for e in root['composition']]
-    facts = []
-    for mod in modules:
-        for form in read_forms_file(os.path.join(key, mod)):
+        raise SexpError('ROOT-MALFORMED: %s: exactly one define-model-root form and nothing else is permitted'
+                        % source)
+    root = dict(plist(roots[0][2:], source + ':ROOT.sexp', 'define-model-root'))
+    entries = [dict(plist(e, source + ':ROOT.sexp', 'composition entry')) for e in root['composition']]
+    modules = [str(e['module']) for e in entries]
+    if verify and len(set(modules)) != len(modules):
+        raise SexpError('ROOT-DUPLICATE-MODULE: %s pins %s more than once'
+                        % (source, sorted({m for m in modules if modules.count(m) > 1})))
+    if verify and int(root.get('module-count', -1)) != len(modules):
+        raise SexpError('ROOT-MODULE-COUNT: %s declares module-count %s for %d pinned modules'
+                        % (source, root.get('module-count'), len(modules)))
+    facts, seen, rows, schema = [], {}, [], None
+    for mod, entry in zip(modules, entries):
+        raw = load(mod)
+        rows.append((mod, hashlib.sha256(raw).hexdigest()))
+        if verify and rows[-1][1] != str(entry.get('sha256', '')):
+            raise SexpError('ROOT-PIN-MISMATCH: %s pins %s as %s but its bytes hash to %s'
+                            % (source, mod, str(entry.get('sha256', ''))[:12], rows[-1][1][:12]))
+        mforms = read_forms(decode_text(raw, source + ':' + mod), source + ':' + mod)
+        if mod == 'MODEL-SCHEMA.sexp':
+            schema = schema_declaration(mforms, source + ':MODEL-SCHEMA.sexp')
+        for form in mforms:
             if head(form) in HEADERS:
                 continue
             if head(form) != 'fact' or len(form) < 3:
@@ -404,11 +478,78 @@ def read_model(dirp, cache=True):
             ftype = str(form[1]).lower()
             fid = canonical_value(form[2], mod, 'fact id')
             pairs = plist(form[3:], mod, '%s %s' % (ftype, fid))
+            if verify and (ftype, fid) in seen:
+                raise SexpError('DUPLICATE-FACT: %s: %s %s is declared in %s and again in %s'
+                                % (source, ftype, fid, seen[(ftype, fid)], mod))
+            seen[(ftype, fid)] = mod
             facts.append((ftype, fid, {k.lower(): canonical_value(v, mod, k) for k, v in pairs}, mod, form))
-    model = Model(root, modules, facts)
+    model = Model(root, modules, facts, schema, source)
+    if verify:
+        if schema is None:
+            raise SexpError('SCHEMA-MISSING: %s pins no MODEL-SCHEMA.sexp module' % source)
+        if str(root.get('canonical-model-root-digest', '')) != root_digest(rows):
+            raise SexpError('ROOT-DIGEST-MISMATCH: %s declares root digest %s but its composition hashes to %s'
+                            % (source, str(root.get('canonical-model-root-digest', ''))[:12], root_digest(rows)[:12]))
+        if str(root.get('schema-version', '')) != schema_version_of(schema, source + ':MODEL-SCHEMA.sexp'):
+            raise SexpError('ROOT-SCHEMA-VERSION: %s binds schema version %r but the schema declares %r'
+                            % (source, str(root.get('schema-version', '')), schema_version_of(schema)))
+        undeclared = sorted({t for t, _i, _p, _m, _f in facts} - model.declared_types)
+        if undeclared:
+            raise SexpError('FACT-TYPE-UNDECLARED: %s instantiates %s, which its schema does not declare'
+                            % (source, ', '.join(undeclared)))
+    return model
+
+
+def read_model(dirp, cache=True):
+    """Read the model rooted at DIRP/ROOT.sexp. A malformed root is a typed error, never a traceback."""
+    key = os.path.abspath(dirp)
+    if cache and key in _MODEL_CACHE:
+        return _MODEL_CACHE[key]
+    model = read_model_from(lambda name: read_bytes(os.path.join(key, name)), key)
     if cache:
         _MODEL_CACHE[key] = model
     return model
+
+
+# ─────────────────────────────────────────────────────── whole-model discovery of the universe facts
+# Review-5 R5-1. The floors and the authorizations of a model are found by FACT TYPE across every module the
+# root pins — never by the name or the position of a module. Moving them between canonical modules neither hides
+# them nor changes their meaning, and a base read through read_model_from sees them wherever they went.
+def universe_floors(model):
+    """{family: {'id', 'minimum', 'module'}} — exactly ONE active floor per family. A second floor for the same
+    family, a family that is no fact type the schema declares, or a minimum that is not a non-negative integer is
+    a typed error, never a silent last-write-wins."""
+    out = {}
+    for ftype, fid, p, mod, form in model.facts:
+        if ftype != 'universe-floor':
+            continue
+        fam = str(p.get('family', '')).lower()
+        raw_min = kv(form, 'minimum')
+        if not fam or not isinstance(raw_min, Int) or int(raw_min) < 0:
+            raise SexpError('UNIVERSE-FLOOR-MALFORMED: %s (%s) must name a :family and a non-negative integer '
+                            ':minimum' % (fid, mod))
+        if fam not in model.declared_types:
+            raise SexpError('UNIVERSE-FLOOR-FAMILY-UNDEFINED: %s (%s) floors family %s, which is no fact type '
+                            'the schema declares' % (fid, mod, fam))
+        if fam in out:
+            raise SexpError('UNIVERSE-FLOOR-DUPLICATE: family %s is floored by %s (%s) and again by %s (%s); '
+                            'exactly one active floor per family, never a silent last-write-wins'
+                            % (fam, out[fam]['id'], out[fam]['module'], fid, mod))
+        out[fam] = {'id': fid, 'minimum': int(raw_min), 'module': mod}
+    return out
+
+
+def universe_authorizations(model):
+    """{id: plist + 'module'} of every universe-authorization the model carries, wherever it lives."""
+    out = {}
+    for ftype, fid, p, mod, _form in model.facts:
+        if ftype != 'universe-authorization':
+            continue
+        if fid in out:
+            raise SexpError('AUTHORIZATION-DUPLICATE: %s is declared in %s and again in %s'
+                            % (fid, out[fid]['module'], mod))
+        out[fid] = dict(p, module=mod)
+    return out
 
 
 def tool_path(dirp, role):
