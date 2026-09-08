@@ -248,6 +248,18 @@ def base_blob(check, name):
     return r.stdout
 
 
+def base_parent_model(check):
+    """The whole model of the BASE's unique parent — the model an approver reviewed, and the history that decides
+    whether an authorization was ever prospective (Review-6 R6-1). A base without a single parent cannot supply
+    it, and nothing is guessed in its place."""
+    base = resolve(check)['base']
+    parents = commit_parents(base)
+    if len(parents) != 1:
+        fail(check, ['AUTHORIZATION-UNVERIFIABLE: base %s has %d parents, so the model an authorization was '
+                     'reviewed against cannot be established' % (base[:12], len(parents))])
+    return read_model_at(check, parents[0])
+
+
 def read_model_at(check, commit):
     """The WHOLE canonical model of COMMIT, read from the repository's objects by the one reader seat and
     VERIFIED — module set, pins, root digest, schema version, no duplicate fact, no undeclared type — so that
@@ -808,13 +820,35 @@ def check_universe():
         reasons.append('UNIVERSE-SELF-FLOOR-MISSING: no universe-floor floors the universe-floor family itself, so '
                        'the floor set could be deleted together with the floors it protects')
     content = lambda p: {k: v for k, v in p.items() if k != 'module'}
+    spent, parent_auths = {}, None
     for aid in sorted(base_auths):
         if aid not in auths or content(auths[aid]) != content(base_auths[aid]):
             reasons.append('AUTHORIZATION-TAMPERED: %s is altered in or absent from the candidate; the record of '
                            'who authorised what is not the candidate\'s to edit' % aid)
-        if str(base_auths[aid]['family']).lower() not in base_floors:
-            reasons.append('AUTHORIZATION-FAMILY-UNDEFINED: %s names family %s, which the base floors nowhere'
-                           % (aid, str(base_auths[aid]['family']).lower()))
+        fam = str(base_auths[aid]['family']).lower()
+        state = SR.authorization_state(base_auths[aid], base_floors)
+        if state == 'UNDEFINED':
+            reasons.append('AUTHORIZATION-FAMILY-UNDEFINED: %s names family %s, which the base floors nowhere and '
+                           'authorised no removal of' % (aid, fam))
+        elif state == 'TERMINALLY-SPENT':
+            # Review-6 R6-1. The removal this record authorised has happened, so it no longer needs a live floor:
+            # it is immutable historical evidence, it grants nothing further, and it stops being a reason to fail
+            # every later edge. Only HISTORY can put a record into that state — one that appears in the base
+            # without appearing in the base's PARENT was never prospective anywhere, and would be an injected
+            # cure for a removal nobody authorised.
+            if parent_auths is None:
+                parent_auths = SR.universe_authorizations(base_parent_model('universe'))
+            if aid not in parent_auths:
+                reasons.append('AUTHORIZATION-SPENT-WITHOUT-HISTORY: %s claims the family %s it removed, but it is '
+                               'absent from the base\'s parent, so it was never prospective and authorised nothing'
+                               % (aid, fam))
+            else:
+                spent[fam] = aid
+    for fam in sorted(spent):
+        if fam in floors:
+            reasons.append('AUTHORIZATION-SPENT-FAMILY-REVIVED: %s floors %s again, and the terminally spent %s '
+                           'still names it; a spent authorization is never revived into a fresh permission'
+                           % (floors[fam]['id'], fam, spent[fam]))
     now_of = lambda fam: floors[fam]['minimum'] if fam in floors else 0
     reduced = {fam: (base_floors[fam]['minimum'], now_of(fam)) for fam in sorted(base_floors)
                if now_of(fam) < base_floors[fam]['minimum']}
@@ -836,12 +870,7 @@ def check_universe():
             if str(p['family']).lower() != fam or int(p['previous-minimum']) != before:
                 continue
             if 'root' not in reviewed:
-                bparents = commit_parents(base)
-                if len(bparents) != 1:
-                    fail('universe', ['AUTHORIZATION-UNVERIFIABLE: base %s has %d parents, so the model root an '
-                                      'authorization was reviewed against cannot be established'
-                                      % (base[:12], len(bparents))])
-                reviewed['root'] = str(read_model_at('universe', bparents[0]).root['canonical-model-root-digest'])
+                reviewed['root'] = str(base_parent_model('universe').root['canonical-model-root-digest'])
             why = authorization_defect(p, fam, before, reviewed['root'])
             if why is None and now != int(p['minimum']):
                 why = 'authorises exactly %d, not %d' % (int(p['minimum']), now)
@@ -881,13 +910,17 @@ def check_universe():
                                       or 'none'))
     print('UNIVERSE-AUTHORIZATIONS-CONSUMED %s' % (' '.join(consumed) or 'none'))
     print('UNIVERSE-AUTHORIZATIONS-PROSPECTIVE %s' % (' '.join(prospective) or 'none'))
+    print('UNIVERSE-AUTHORIZATIONS-TERMINALLY-SPENT %s'
+          % (' '.join('%s(%s)' % (spent[f], f) for f in sorted(spent)) or 'none'))
     if reasons:
         fail('universe', reasons)
     ok('universe', 'base %s declares %d floor(s) and the candidate %d, discovered across the whole model of each; '
                    '%d reduction(s), each consuming a base-anchored authorization on this edge (%s); %d prospective '
-                   'authorization(s) introduced, authorising nothing here; schema version %s%s'
+                   'authorization(s) introduced, authorising nothing here; %d terminally spent, carried as '
+                   'historical evidence and granting nothing; schema version %s%s'
        % (base[:12], len(base_floors), len(floors), len(reduced), ', '.join(consumed) or 'none', len(prospective),
-          cv, ' (unchanged schema)' if cand_schema == base_schema else ' (schema changed, version raised from %s)' % bv))
+          len(spent), cv, ' (unchanged schema)' if cand_schema == base_schema
+          else ' (schema changed, version raised from %s)' % bv))
 
 # --------------------------------------------------------------------------- seats (N-10)
 def check_seats():

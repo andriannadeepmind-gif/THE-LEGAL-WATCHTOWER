@@ -307,3 +307,26 @@ candidate identity carried to every phase), `build_root.py` −9 (its own copies
 version rule replaced by the reader's). Every grown file carries a `tcb-attribution` naming its Review-5
 findings; `build_inventory.py`, whose two raw git calls now go through the execution seat, stays at −36 against
 the baseline.
+
+---
+
+## 12. Review-6: the two residuals, and what they cost
+
+The Review-6 re-verification passed with two P3 residuals, both outside the verifier lock boundary. Closing them
+is a bounded change at two seats, and its cost is recorded here per file, as every growth since `af0eb3c9` is:
+
+* `SEXP-READER.py` — `authorization_state`, the derived lifecycle of an authorization: four states read from a
+  record's own immutable fields and the floors of the model carrying it, so nothing about a record's standing is
+  ever written by a candidate (R6-1).
+* `gate_checks.py` — one seat for the base's parent model, the lifecycle applied in `uni-01`, the two rules that
+  keep the spent state from becoming a hole (`AUTHORIZATION-SPENT-WITHOUT-HISTORY`,
+  `AUTHORIZATION-SPENT-FAMILY-REVIVED`), and the `UNIVERSE-AUTHORIZATIONS-TERMINALLY-SPENT` evidence line (R6-1).
+* `run_corpus.py` — the fourteen held-out cases and the edge-chain harness they need, plus `--count`, the
+  model-derived number the command's informational note now prints (R6-1, R6-2).
+* `ARCHITECTURE-MODEL-GATE.sh` — one line: the note's count comes from the model instead of from a `grep` over a
+  named module (R6-2). The file's measurement does not change.
+
+There is still no numeric ceiling: the total is a measured fact and a complexity signal. The creator's binding
+decision remains recorded verbatim in the `:rationale` of `tcb-budget ACCEPTANCE-TCB`, and nothing was removed,
+compressed, packed or weakened to change a number. The measurement of the corrected tree is produced by the
+canonical acceptance run on the declared toolchain, and is recorded there rather than asserted here.

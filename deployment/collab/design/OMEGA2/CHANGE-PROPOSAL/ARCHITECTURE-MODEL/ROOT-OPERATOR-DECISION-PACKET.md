@@ -4,15 +4,15 @@
 > changed facts + evidence the Root Operator adjudicates and signs. No gate requires exhaustive human repository review.
 
 <!-- PACKET-RECONCILIATION
-total-facts 1732
+total-facts 1748
 modules 14
-model-root-digest 5621efcaed1ac6478e7ad3dd2ab9c2986b36bc4812d9a2ef04704d9f94835dd8
+model-root-digest 1f7da75c3053c7223024e8e0daf23d2ae074f780d42eb7847bd9393c535d0f53
 family classification-rule 55
 family component 2
 family consumes 102
 family dir-rule 65
-family falsifier 104
-family file 1008
+family falsifier 118
+family file 1010
 family fixture 8
 family gen-artifact 12
 family gen-edge 4
@@ -44,18 +44,18 @@ deferred-classes 56
 deferred-source-forms 332
 imported-classes 4
 global-promotion FORBIDDEN_UNTIL_DDI_COMPLETE
-commitment kernel 75b5a3b9df9e49c4ec749f6e3ab65054529ea31a3ccd14cd4c4b1148400a3cee
-commitment checker 75b5a3b9df9e49c4ec749f6e3ab65054529ea31a3ccd14cd4c4b1148400a3cee
+commitment kernel 1ec24e22b8609eb7f0b28bf5a9acdf681463be61f9d643b96bb5ea5f0492f4a9
+commitment checker 1ec24e22b8609eb7f0b28bf5a9acdf681463be61f9d643b96bb5ea5f0492f4a9
 -->
 
 ## 1. Change summary
-Initial import of the canonical ARCHITECTURE-MODEL: 1732 facts across 14 hash-pinned modules,
+Initial import of the canonical ARCHITECTURE-MODEL: 1748 facts across 14 hash-pinned modules,
 migrated from the v1.6-v1.8 registries. Parent architecture commit `4787b342282f8d5f2ec4b9e64b11e32b7a64813a`. Canonical model-root
-digest `5621efcaed1ac6478e7ad3dd2ab9c2986b36bc4812d9a2ef04704d9f94835dd8`, RECOMPUTED from the ordered module pins by both verification paths rather than read
+digest `1f7da75c3053c7223024e8e0daf23d2ae074f780d42eb7847bd9393c535d0f53`, RECOMPUTED from the ordered module pins by both verification paths rather than read
 from the file.
 
 ## 2. Affected model facts (per family)
-schema version 5: 34 schema-declared fact types, 33 instantiated fact types, 18 enums, 14 modules; declared but not instantiated: universe-authorization.
+schema version 6: 34 schema-declared fact types, 33 instantiated fact types, 18 enums, 14 modules; declared but not instantiated: universe-authorization.
 
 | family | count |
 |---|---|
@@ -63,8 +63,8 @@ schema version 5: 34 schema-declared fact types, 33 instantiated fact types, 18 
 | component | 2 |
 | consumes | 102 |
 | dir-rule | 65 |
-| falsifier | 104 |
-| file | 1008 |
+| falsifier | 118 |
+| file | 1010 |
 | fixture | 8 |
 | gen-artifact | 12 |
 | gen-edge | 4 |
@@ -92,7 +92,7 @@ schema version 5: 34 schema-declared fact types, 33 instantiated fact types, 18 
 | type | 60 |
 | universe-floor | 7 |
 | wp | 14 |
-| **total** | **1732** |
+| **total** | **1748** |
 
 Per pinned module:
 
@@ -102,7 +102,7 @@ Per pinned module:
 | classification-rules.sexp | 55 |
 | deferred-imports.sexp | 68 |
 | dependencies-and-boundaries.sexp | 118 |
-| files-and-roles.sexp | 1091 |
+| files-and-roles.sexp | 1093 |
 | generation-order.sexp | 21 |
 | interfaces-and-types.sexp | 62 |
 | rationale-references.sexp | 5 |
@@ -110,7 +110,7 @@ Per pinned module:
 | seats.sexp | 33 |
 | stores-and-authorities.sexp | 10 |
 | subsystems.sexp | 26 |
-| verification-corpus.sexp | 150 |
+| verification-corpus.sexp | 164 |
 
 ## 2b. Migration-scope ledger — imported vs DEFERRED_DATA_IMPORT
 Every v1.6-v1.8 source fact class is enumerated exactly once in `deferred-imports.sexp` (mapped to its source
@@ -140,10 +140,10 @@ carries a `promotion` fact whose GLOBAL scope is **FORBIDDEN_UNTIL_DDI_COMPLETE*
 global single-source-of-truth status is withheld while any class remains authoritative at its source.
 
 ## 2c. Tracked-file inventory
-36641 tracked paths are classified exactly once: 1008 carry an individual `file` fact and 35633 are counted by 65 `dir-rule` facts.
+36643 tracked paths are classified exactly once: 1010 carry an individual `file` fact and 35633 are counted by 65 `dir-rule` facts.
 
 ## 2d. Acceptance trusted computing base
-The acceptance machinery the operator is asked to trust is 16 executable files, 7079 physical and 5866 non-blank/non-comment lines; the verified baseline af0eb3c9452c was 17 files / 5544 physical / 4577 non-blank/non-comment. The size is a measured fact and a complexity signal, not a threshold, and every file grown over the baseline is attributed, per file, to a reproduced finding by the acceptance command. The 400/400 Lisp kernel budget is one path's budget and is not this number.
+The acceptance machinery the operator is asked to trust is 16 executable files, 7370 physical and 6084 non-blank/non-comment lines; the verified baseline af0eb3c9452c was 17 files / 5544 physical / 4577 non-blank/non-comment. The size is a measured fact and a complexity signal, not a threshold, and every file grown over the baseline is attributed, per file, to a reproduced finding by the acceptance command. The 400/400 Lisp kernel budget is one path's budget and is not this number.
 
 ## 3. Invariants affected
 All model laws: L1 well-formedness (declared fact type, required keys, permitted value kinds, closed enum
@@ -164,7 +164,7 @@ mandatory future stage after DDI-1…DDI-4; nothing below completes, replaces or
 ## 5. Independent-checker agreement
 The two paths **AGREE**. Agreement is not asserted from two verdict strings: each path publishes a
 fact-set commitment (total, per-module and per-family counts and digests) and the checker refuses to issue a
-verdict unless its commitment is byte-identical to the kernel's. Commitment digest: `75b5a3b9df9e49c4ec749f6e3ab65054529ea31a3ccd14cd4c4b1148400a3cee`.
+verdict unless its commitment is byte-identical to the kernel's. Commitment digest: `1ec24e22b8609eb7f0b28bf5a9acdf681463be61f9d643b96bb5ea5f0492f4a9`.
 
 ## 6. Independent AI review receipts and independence evidence
 None attached in this pass. AI reviewers have no canonical-write authority; agreement reduces workload but is not

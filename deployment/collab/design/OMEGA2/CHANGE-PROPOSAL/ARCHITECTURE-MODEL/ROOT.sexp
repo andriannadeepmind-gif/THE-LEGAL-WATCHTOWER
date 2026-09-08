@@ -6,17 +6,17 @@
 ;;;; well-formed 40-character parent commit. Both verification paths enforce all of it.
 (define-model-root architecture-model
   :model-version "1"
-  :schema-version "5"
+  :schema-version "6"
   :parent-architecture-commit "4787b342282f8d5f2ec4b9e64b11e32b7a64813a"
-  :canonical-model-root-digest "5621efcaed1ac6478e7ad3dd2ab9c2986b36bc4812d9a2ef04704d9f94835dd8"
+  :canonical-model-root-digest "1f7da75c3053c7223024e8e0daf23d2ae074f780d42eb7847bd9393c535d0f53"
   :module-count 14
   :composition (
-    (:module "MODEL-SCHEMA.sexp" :sha256 "3437b1eb80f6408c4ee8af301679df5803df7918e2dd60596a0d943cb9ee926d")
+    (:module "MODEL-SCHEMA.sexp" :sha256 "874fe0bbb9456823a771c47f599d16c19645b95fb8aa7cf565ba219d347080e5")
     (:module "TOOLCHAIN.sexp" :sha256 "edc3e7575d6cf00caf4a80ed84f2335d8fdb500575c197ed038571c41ebab216")
     (:module "classification-rules.sexp" :sha256 "07b0d75282820ecc1539a5d9f9f59bcf0b1751649c0b2decc6ddddc2de42c426")
     (:module "deferred-imports.sexp" :sha256 "292067c5d78525a9777efa45fa380c6320bd7c91671da7e35d39fca2abb48177")
     (:module "dependencies-and-boundaries.sexp" :sha256 "132d074c4ae6adda39ff00d239983f9d73b6fffa5b93ee9c6c74ff87d6a6bc16")
-    (:module "files-and-roles.sexp" :sha256 "1de208056dc98c852d6f9b953ab518fa32f0f54a6745ee87020656cbf0261bf5")
+    (:module "files-and-roles.sexp" :sha256 "d6d5166b976164d6fa1ed2c3e8cfc93e168172eb230b6406049d1094f27d278c")
     (:module "generation-order.sexp" :sha256 "bede6968851351fbdacc30a76cd5c89ba105d0957cdc4ad1f0ca4a4aed200128")
     (:module "interfaces-and-types.sexp" :sha256 "d809def3283a3f4a802d37aebeaf75cc3367b02bae0360b2869a40d6eb9f95a5")
     (:module "rationale-references.sexp" :sha256 "c39888e27c03723205238798e334e34f7fe93da5ca8217a583537154e37569ec")
@@ -24,5 +24,5 @@
     (:module "seats.sexp" :sha256 "5a220af64cf4e0deb1b45e7819923e251b17dd46bc5450c94413bfa907347fa9")
     (:module "stores-and-authorities.sexp" :sha256 "5ed5c95450bbda902ef350d77bed924bd4ef9ab0938a101c469a7f920ba35b60")
     (:module "subsystems.sexp" :sha256 "f3c7ea6634b6e3ad280afc68544247fef4b6fa96a4fd0bc86cd46d03c22ad18f")
-    (:module "verification-corpus.sexp" :sha256 "bd8941450c5d32b8a480c159f68831d25986f049fd34fcc3a130c1d2f3c28a51")
+    (:module "verification-corpus.sexp" :sha256 "1027ad00c75d18c5ff2f2632b6e30c8479e051f3ff582e46d1b6e4a442090aac")
   ))

@@ -1065,3 +1065,48 @@ Citation-Bound Verification Profile). Design only, working tree, **κανένα 
   αφαίρεση checker/reference implementation/closure analysis · merge · amend/rebase/squash.
   **`OPTION-2 REVIEW-5 CORRECTION COMPLETE — AWAITING FINAL TARGETED INDEPENDENT RE-VERIFICATION #6 — DDI-1 BLOCKED —
   NOT FROZEN — NOT QUALIFIED — IMPLEMENTATION BLOCKED`.**
+
+## [0166] OPTION-2 CORE REVIEW-6 ΚΛΕΙΣΙΜΟ ΤΩΝ ΔΥΟ ΥΠΟΛΕΙΜΜΑΤΩΝ (R6-1, R6-2) — πάνω στο `720452ab`
+
+- **Κυβερνών τεκμήριο:** η ανεξάρτητη έκθεση *FINAL TARGETED INDEPENDENT RE-VERIFICATION #6 — STRICTLY READ-ONLY*
+  πάνω στο `720452ab…` (ετυμηγορία `OPTION-2 INDEPENDENT RE-VERIFICATION #6 PASSED — VERIFIER INFRASTRUCTURE LOCK
+  ELIGIBLE`) και η εντολή του δημιουργού *POST-REVIEW-6 TWO-RESIDUAL PRE-LOCK CLOSURE*. Δύο ευρήματα, αμφότερα P3,
+  αμφότερα εκτός του ορίου του verifier lock, αμφότερα αναπαραγμένα πριν αλλάξει οτιδήποτε.
+- **Toolchain (προϋπόθεση, όχι αποτέλεσμα):** και οι **πέντε** pinned ταυτότητες του `TOOLCHAIN.sexp` μετρήθηκαν
+  **byte-identical** στον host της τελικοποίησης (`SBCL 2409c8be…`, `DIGEST-PROGRAM e484c36c…`, `CPYTHON f56a5885…`,
+  `CLINGO 6ce9dd49…`, `OPENSSL-HASH f56a5885…`) και `gate_checks.py toolchain` έδωσε **PASS πάνω στο αμετάβλητο
+  `720452ab`, πριν εφαρμοστεί οτιδήποτε**. **Κανένα re-pin**· το `TOOLCHAIN.sexp` παραμένει `edc3e757…`.
+- **R6-1 (liveness, fail-closed):** μετά από πλήρως εξουσιοδοτημένη αφαίρεση floor, **κάθε** επόμενη ακμή αποτύγχανε
+  μόνιμα. Έδρα: η κατάσταση της authorization είναι **παραγόμενη**, ποτέ γραμμένη —
+  `SEXP-READER.authorization_state(p, floors)` δίνει ακριβώς μία από `PROSPECTIVE / CONSUMED / TERMINALLY-SPENT /
+  UNDEFINED` από τα αμετάβλητα πεδία της εγγραφής και τα floors του μοντέλου που την φέρει· **καμία εγγραφή δεν
+  πιστοποιεί τον εαυτό της**. Ο `uni-01` εξαιρεί από την απαίτηση ζωντανού floor μόνο τις TERMINALLY-SPENT, και μόνο
+  όταν τις έφερε εκεί η **ιστορία**. Τρεις φρουροί: `AUTHORIZATION-SPENT-WITHOUT-HISTORY` (καμία εκ των υστέρων
+  θεραπεία μη εξουσιοδοτημένης αφαίρεσης), `AUTHORIZATION-SPENT-FAMILY-REVIVED` (καμία αναβίωση οικογένειας όσο η
+  δαπανημένη εγγραφή την ονομάζει· η επανα-θεμελίωση είναι χωριστή απόφαση του δημιουργού), και αμετάβλητα τα
+  `AUTHORIZATION-TAMPERED` / `-MALFORMED-PROSPECTIVE` / per-edge, per-lineage κατανάλωση. Νέα γραμμή τεκμηρίου
+  `UNIVERSE-AUTHORIZATIONS-TERMINALLY-SPENT` δίπλα στα base/candidate floors, reductions, consumed, prospective.
+- **R6-2 (informational):** έφυγε η **τελευταία** εκτελέσιμη αναζήτηση με όνομα module (`grep -c ':harness
+  COMPOSED_GATE' …/verification-corpus.sexp`, που τύπωνε `0` μετά από μετακίνηση ενώ η μπαταρία έτρεχε και τα 12).
+  Ο αριθμός έρχεται από `run_corpus.py --count COMPOSED_GATE` = `SR.read_model(HERE)` πάνω σε **διακριτά ids**.
+- **Μοντέλο:** schema version **5 → 6** (το κλειστό `finding-id` αποκτά `R6-1`, `R6-2`· η `universe-authorization`
+  φέρει τον κύκλο ζωής)· falsifier floor **104 → 118**· κανένας τύπος, πεδίο ή τιμή enum δεν αφαιρέθηκε.
+- **Δεκατέσσερις held-out περιπτώσεις `X116`–`X129`** (τέσσερις θετικοί controls), κωδικοποιημένες επειδή ιστορία δεν
+  εκφράζεται ως γραμμή corpus: καθεμία χτίζει **πραγματική αλυσίδα commits** σε αναλώσιμο object store — το
+  repository δεν αποκτά ούτε object ούτε ref — και κρίνει την τελευταία ακμή με τον εγκατεστημένο έλεγχο.
+  **14/14 rejected-as-intended.**
+- **Μπαταρία (εκτελεσμένη στο δηλωμένο toolchain):** cross-check μοντέλου `:schema-version "6"` / model root
+  `3df5c0201fbc0155519d2d0f92733559a27f041a60d22a6106c96123d6494863`· αναγέννηση **σταθερό σημείο `0 changed`**·
+  `cor-01` 8 fixtures / 5 property families / 83 generated / **118 falsifiers (106 COMPONENT + 12 COMPOSED_GATE)`·
+  `enc-01` byte-identical 48-line commitment πάνω σε **1747 facts** (`155a91eeacaa`)· `inv-01` 36 642 = 1009 + 35 633,
+  0 unclassified· `fix-01` 8 golden + 83 generated, 0 failures· `fls-01` **106/106**· composed **12/12 + CONTROL
+  HOLDS**· **πλήρες `ACCEPT` (candidate και base παραγόμενα, όχι δοσμένα): PASS — 4/4 subsets, 21 έλεγχοι / 0 FAIL,
+  3 informational, exit 0.**
+- **TCB:** **16** εκτελέσιμα αρχεία, **7370** physical, **6084** NBNC· baseline `af0eb3c9452c` = 17 / 5544 / 4577·
+  delta −1 file / +1826 physical / +1507 NBNC, **κάθε αρχείο που μεγάλωσε αποδοθέν** σε αναπαραγμένο εύρημα· ο
+  αριθμητικός κόφτης παραμένει **καταργημένος** (μέγεθος = μετρημένο γεγονός και σήμα πολυπλοκότητας, όχι threshold).
+- **ΔΕΝ ΕΓΙΝΕ:** DDI-1…DDI-4 · Επιλογή Α / αρχικά 20 Full-Build gates · **verifier lock** · freeze · qualification ·
+  WP-00 · Implementation-Book · production implementation · δεύτερο canonical model / authority seat / governance
+  σύστημα · re-pin του `TOOLCHAIN.sexp` · merge · amend/rebase/squash.
+  **`OPTION-2 R6 RESIDUAL CLOSURE COMPLETE — AWAITING FINAL TWO-FINDING INDEPENDENT CONFIRMATION — DDI-1 BLOCKED —
+  VERIFIER NOT YET LOCKED — NOT FROZEN — NOT QUALIFIED — IMPLEMENTATION BLOCKED`.**

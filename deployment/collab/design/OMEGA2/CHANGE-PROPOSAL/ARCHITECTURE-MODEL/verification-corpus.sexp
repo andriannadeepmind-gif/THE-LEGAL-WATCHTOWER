@@ -61,7 +61,7 @@
       :rationale "one golden fixture per model law plus the passing baseline")
 (fact universe-floor UF-PROPERTY-FAMILY :family property-family :minimum 5
       :rationale "one enumerated family per law that has a generable counterexample shape")
-(fact universe-floor UF-FALSIFIER :family falsifier :minimum 104
+(fact universe-floor UF-FALSIFIER :family falsifier :minimum 118
       :rationale "one held-out falsifier per closed defect class across both harnesses")
 (fact universe-floor UF-GEN-ARTIFACT :family gen-artifact :minimum 12
       :rationale "every derived artifact the model declares")
@@ -102,22 +102,22 @@
 (fact tcb-baseline TB-16 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/run_fixtures.py" :physical 276 :nbnc 228)
 (fact tcb-baseline TB-17 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/run_gate_falsifiers.py" :physical 334 :nbnc 273)
 (fact tcb-attribution TA-01 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/ARCHITECTURE-MODEL-GATE.sh"
-      :findings "R3-15 R3-3 R4-1 R4-3 R4-4 R4-7 R5-2 R5-P3-5"
+      :findings "R3-15 R3-3 R4-1 R4-3 R4-4 R4-7 R5-2 R5-P3-5 R6-2"
       :rationale "the candidate identity carried to every phase and check, the base only confirmed (R5-2); the summary names the real candidate (R5-P3-5); one command with two phases (R3-15); the pinned interpreter lifted with awk (R3-3); --base threaded to every history-bound check (R4-1); job-control signal forwarding to its own children (R4-3); GIT_OPTIONAL_LOCKS exported (R4-4); ro-02 removed as a strict subset of ro-01 (R4-7)")
 (fact tcb-attribution TA-02 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/CHECKER/independent_check.py"
       :findings "R3-1"
       :rationale "its own independent AMC2 implementation")
 (fact tcb-attribution TA-03 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/SEXP-READER.py"
-      :findings "R3-1 R3-6 R3-3 S15-M1 R5-1 R5-P3-2"
+      :findings "R3-1 R3-6 R3-3 S15-M1 R5-1 R5-P3-2 R6-1"
       :rationale "the one model read over any source, verified for history, with whole-model discovery of floors and authorizations and the one root-digest formula (R5-1); the canonical schema-version rule (R5-P3-2); the AMC2 reference implementation (R3-1), the containment seat (R3-6), the pinned-tool lookup (R3-3), the one canonical model read that replaced four copies (S15-M1)")
 (fact tcb-attribution TA-04 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/acceptance_runtime.py"
       :findings "R3-8 R3-9 R3-10 R3-14 S15-TCB R4-2 R4-3 R4-4"
       :rationale "workspace lifecycle and hostile-TMPDIR refusal (R3-8), content-sensitive state (R3-9), bounded execution (R3-10), the common object store (R3-14), the one counting rule (S15-TCB), typed tool failure (R4-2), own-child registry and termination (R4-3), the one git lock policy (R4-4)")
 (fact tcb-attribution TA-05 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/gate_checks.py"
-      :findings "R3-2 R3-3 R3-5 R3-6 R3-7 R3-9 R3-11 R3-13 S15-TCB S15-M2 R4-1 R4-2 R4-5 R5-1 R5-2 R5-P3-1 R5-P3-2 R5-P3-5"
+      :findings "R3-2 R3-3 R3-5 R3-6 R3-7 R3-9 R3-11 R3-13 S15-TCB S15-M2 R4-1 R4-2 R4-5 R5-1 R5-2 R5-P3-1 R5-P3-2 R5-P3-5 R6-1"
       :rationale "the derived candidate/base seat and the verified whole-model historical load (R5-1, R5-2), the separated floor report (R5-P3-1), the version rule (R5-P3-2), the real candidate in provenance (R5-P3-5); provenance (R3-2), executed-identity and bootstrap declaration (R3-3), closure indeterminacy (R3-5), generation workspace (R3-6), floors (R3-7), content-state and candidate (R3-9), extension-blind artifacts (R3-11), encoding agreement (R3-13), the accountability gate (S15-TCB), dead-rule detection (S15-M2), history-bound base, authorizations and schema version (R4-1, R4-5), typed tool failure (R4-2)")
 (fact tcb-attribution TA-06 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/run_corpus.py"
-      :findings "S15-M1 R3-7 R3-14 R4-1 R4-2 R4-3 R5-1 R5-2 R5-P3-4"
+      :findings "S15-M1 R3-7 R3-14 R4-1 R4-2 R4-3 R5-1 R5-2 R5-P3-4 R6-1 R6-2"
       :rationale "synthetic candidate commits over coherent synthetic bases, relocation ops, the derived inner-gate base and the nine candidate/base process cases plus the two-commit reproducer (R5-1, R5-2), the permanent candidate_tree falsifier (R5-P3-4); the one runner that replaced three (S15-M1, net negative), universe integrity (R3-7), worktree-safe object store (R3-14), --base threading and base-anchored falsifier harness (R4-1), spawn-time typed falsifiers (R4-2), the concurrent-signal falsifier (R4-3)")
 
 ;; ── the two harnesses: one program each, declared so a rename cannot orphan a class of falsifiers ─────────
@@ -200,7 +200,7 @@
       :kernel-reason "declares :module-count more than once" :checker-reason "ROOT-MALFORMED" :rehash NO)
 (fact falsifier X39-ROOT-SCHEMA-VERSION :harness COMPONENT :intent "a schema version ROOT does not actually bind"
       :mutation REPLACE :module "ROOT.sexp"
-      :replace-from ":schema-version {Q}5{Q}" :replace-to ":schema-version {Q}99{Q}"
+      :replace-from ":schema-version {Q}6{Q}" :replace-to ":schema-version {Q}99{Q}"
       :kernel-reason "binds :schema-version" :checker-reason "schema-version" :rehash NO)
 (fact falsifier X40-GHOST-SEAT :harness COMPONENT :intent "a seat reference resolving to no declared seat"
       :mutation REPLACE :module "subsystems.sexp"
@@ -362,12 +362,12 @@
 (fact falsifier X75-SCHEMA-CHANGED-VERSION-LOWER :harness COMPONENT
       :intent "schema bytes changed, version lowered"
       :mutation CHECK :check universe :module "MODEL-SCHEMA.sexp"
-      :replace-from ":version {Q}5{Q}" :replace-to ":version {Q}4{Q}"
+      :replace-from ":version {Q}6{Q}" :replace-to ":version {Q}5{Q}"
       :reason "SCHEMA-VERSION-STALE")
 (fact falsifier X76-SCHEMA-CHANGED-VERSION-RAISED :harness COMPONENT
       :intent "schema bytes changed, version raised (positive control)"
       :mutation CHECK :check universe :module "MODEL-SCHEMA.sexp"
-      :replace-from ":version {Q}5{Q}" :replace-to ":version {Q}6{Q}"
+      :replace-from ":version {Q}6{Q}" :replace-to ":version {Q}7{Q}"
       :expect PASS
       :reason "GATECHECK universe: PASS")
 
@@ -462,17 +462,17 @@
 (fact falsifier X96-SCHEMA-VERSION-UNQUOTED :harness COMPONENT
       :intent "a schema version written as an unquoted integer"
       :mutation CHECK :check universe :module "MODEL-SCHEMA.sexp"
-      :replace-from ":version {Q}5{Q}" :replace-to ":version 6"
+      :replace-from ":version {Q}6{Q}" :replace-to ":version 7"
       :reason "SCHEMA-VERSION-MALFORMED")
 (fact falsifier X97-SCHEMA-VERSION-LEADING-ZERO :harness COMPONENT
       :intent "a schema version with a leading zero"
       :mutation CHECK :check universe :module "MODEL-SCHEMA.sexp"
-      :replace-from ":version {Q}5{Q}" :replace-to ":version {Q}06{Q}"
+      :replace-from ":version {Q}6{Q}" :replace-to ":version {Q}07{Q}"
       :reason "SCHEMA-VERSION-MALFORMED")
 (fact falsifier X98-SCHEMA-VERSION-NON-ASCII-DIGIT :harness COMPONENT
       :intent "a schema version written with an Arabic-Indic digit"
       :mutation CHECK :check universe :module "MODEL-SCHEMA.sexp"
-      :replace-from ":version {Q}5{Q}" :replace-to ":version {Q}٦{Q}"
+      :replace-from ":version {Q}6{Q}" :replace-to ":version {Q}٧{Q}"
       :reason "SCHEMA-VERSION-MALFORMED")
 (fact falsifier X99-FLOOR-FAMILY-UNDEFINED :harness COMPONENT
       :intent "a floor for a family the schema declares nowhere"
@@ -507,3 +507,37 @@
       :intent "SIGTERM to one of two concurrent acceptance runs: it leaves no workspace or orphan of its own, the other is unaffected, the repository is byte-identical")
 (fact falsifier G12-RELOCATE-THEN-SHRINK-TWO-COMMITS :harness COMPOSED_GATE
       :intent "C1 relocates every floor to another canonical module and passes; C2 deletes five floors and shrinks the corpus coherently; judged edge by edge against C1 through the real command, C2 fails through uni-01")
+
+;; ── Review-6 R6-1: the derived authorization lifecycle, judged edge by edge ─────────────────────────────────
+;; These are CODED, not data: each one commits a real chain of edges in a throwaway object store, and no corpus
+;; row can express a history. Four are positive controls: without them every refusal below would be vacuous.
+(fact falsifier X116-PROSPECTIVE-REMOVAL-CONTROL :harness COMPONENT
+      :intent "a prospective authorization for a full removal, reducing nothing on the edge that introduces it (positive control)")
+(fact falsifier X117-AUTHORISED-REMOVAL-CONTROL :harness COMPONENT
+      :intent "the next edge removing the floor and consuming the record exactly (positive control)")
+(fact falsifier X118-SPENT-NOOP-EDGE-CONTROL :harness COMPONENT
+      :intent "a no-op edge after an authorised removal: a terminally spent record is evidence, not a permanent refusal (positive control)")
+(fact falsifier X119-SPENT-SECOND-NOOP-CONTROL :harness COMPONENT
+      :intent "a second no-op edge, so the spent state is a state and not a one-off exemption (positive control)")
+(fact falsifier X120-SPENT-RECORD-REMOVED :harness COMPONENT
+      :intent "the spent record dropped by a later candidate")
+(fact falsifier X121-SPENT-RECORD-ALTERED :harness COMPONENT
+      :intent "the spent record edited by a later candidate")
+(fact falsifier X122-SPENT-RECORD-REPLAYED :harness COMPONENT
+      :intent "a spent record replayed for a further reduction")
+(fact falsifier X123-CANDIDATE-INJECTED-SPENT-RECORD :harness COMPONENT
+      :intent "a candidate writing itself a record that merely looks terminally spent")
+(fact falsifier X124-NONZERO-AUTHORIZATION-UNDEFINED-FAMILY :harness COMPONENT
+      :intent "a record that authorised no removal used to excuse one")
+(fact falsifier X125-SPENT-FAMILY-REVIVED :harness COMPONENT
+      :intent "the removed family floored again while its spent record still names it")
+(fact falsifier X126-SIBLING-NO-EXTRA-AUTHORITY :harness COMPONENT
+      :intent "two siblings of one authorised base gaining no authority beyond the grant itself")
+(fact falsifier X127-UNAUTHORISED-REMOVAL-NOT-CURED :harness COMPONENT
+      :intent "an unauthorised removal cured after the fact by a record claiming to have authorised it")
+
+;; ── Review-6 R6-2: the informational count is model-derived, never a filename lookup ────────────────────────
+(fact falsifier X128-COMPOSED-COUNT-RELOCATED :harness COMPONENT
+      :intent "the informational composed count with every COMPOSED_GATE fact moved to another canonical module")
+(fact falsifier X129-COMPOSED-COUNT-SPLIT :harness COMPONENT
+      :intent "the informational composed count with those facts split across two canonical modules")

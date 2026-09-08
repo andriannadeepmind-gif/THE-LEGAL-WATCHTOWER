@@ -228,7 +228,7 @@ echo "== reported, not counted =="
 rx=$(grep -vE '^[[:space:]]*;' "$SEAT/KERNEL/model-law-kernel.lisp" "$SEAT/KERNEL/hash-provider.lisp" | grep -ciE 'ppcre|shell-out')
 note krn-lexical-scan "a lexical scan of the kernel sources for regex/shell constructs found $rx; a lexical scan cannot prove absence"
 note packet-single-operator-assurance "the decision packet states that no gate requires exhaustive human repository review; the statement is prose, its totals are what the counted checks reconcile"
-note composed-gate-battery "the $(grep -c ':harness COMPOSED_GATE' "$SEAT/verification-corpus.sexp") COMPOSED_GATE falsifiers execute this script with --checks and are run by its own full phase as run_corpus.py --kind composed, never from inside the checks phase"
+note composed-gate-battery "the $("$PY" "$SEAT/run_corpus.py" --count COMPOSED_GATE) COMPOSED_GATE falsifiers execute this script with --checks and are run by its own full phase as run_corpus.py --kind composed, never from inside the checks phase"
 
 echo "### ARCHITECTURE-MODEL-GATE SUMMARY: candidate=$CANDID tree=$TREE base=$BASE pass=$pass fail=$fail informational=$info"
 echo "### $((pass+fail)) OPTION-2 ACCEPTANCE CHECKS — NOT THE ORIGINAL 20 OPTION-A FULL-BUILD GATES (those remain a"

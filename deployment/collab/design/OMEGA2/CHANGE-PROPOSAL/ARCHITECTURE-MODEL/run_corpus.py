@@ -1612,6 +1612,224 @@ def g12_two_commit_relocation_then_shrink():
         shutil.rmtree(d, ignore_errors=True)
 
 
+# ═══════════════════════════════════════ Review-6 R6-1: the derived lifecycle of an authorization, edge by edge
+# A reduction costs two commits: one that introduces a well-formed prospective authorization, one that consumes
+# it. A removal (:minimum 0) leaves behind a record that no longer names a live floor, and these cases pin down
+# exactly what that record may and may not do afterwards. Every case builds a REAL chain of commits in a
+# throwaway object store and judges the last edge with the deployed check, so nothing here re-implements it; a
+# history cannot be expressed as a corpus row, which is why they are coded rather than data.
+AUTH_ROW = ('(fact universe-authorization %s :family %s :previous-minimum %d :minimum %d :previous-model-root "%s" '
+            ':rationale "held-out lifecycle case" :approver "held-out authority")')
+
+
+def _corpus_text():
+    with open(os.path.join(HERE, 'verification-corpus.sexp'), encoding='utf-8') as fh:
+        return fh.read()
+
+
+def _auth(fid, fam, prev, new):
+    """A well-formed record for a held-out chain. Its :previous-model-root is the CANDIDATE's own model root:
+    every chain is grown from the candidate as a commit, so that is the root the first edge is judged against
+    and, one edge later, the root of the base's parent the consumption is checked against."""
+    return AUTH_ROW % (fid, fam, prev, new, str(SR.read_model(HERE).root['canonical-model-root-digest']))
+
+
+def _edge(env, rel, edits, parent):
+    """One committed edge: the candidate's modules with EDITS {module: text}, re-pinned exactly as build_root.py
+    would, committed over PARENT in the caller's throwaway object store."""
+    m = model_copy()
+    try:
+        for name, text in edits.items():
+            with open(os.path.join(m, name), 'w', encoding='utf-8', newline='\n') as fh:
+                fh.write(text)
+        rehash(m)
+
+        def g(args, **kw):
+            return AR.checked(['git', '-C', REPO] + args, env=env, capture_output=True, **kw)
+
+        g(['read-tree', _CAND['tree']])
+        for name in modules() + ['ROOT.sexp']:
+            with open(os.path.join(m, name), 'rb') as fh:
+                data = fh.read()
+            with open(os.path.join(HERE, name), 'rb') as fh:
+                if fh.read() == data:
+                    continue
+            blob = g(['hash-object', '-w', '--stdin'], input=data).stdout.decode().strip()
+            g(['update-index', '--add', '--cacheinfo', '100644,%s,%s/%s' % (blob, rel, name)])
+        return synthetic_commit(g(['write-tree']).stdout.decode().strip(), [parent], env, 'held-out lifecycle edge')
+    finally:
+        shutil.rmtree(m, ignore_errors=True)
+
+
+def lifecycle(steps, expect, needle, check='universe'):
+    """Judge the LAST of a chain of edges, each committed over the one before, the first over the candidate
+    itself — the same edge-by-edge discipline the command uses."""
+    _tree, rel = candidate()
+    env, d = throwaway_odb()
+    # the chain's edges are candidates of their own: the acceptance command exports AML_CANDIDATE and
+    # AML_CANDIDATE_TREE for ITS candidate, and an inherited tree hint would make every edge a
+    # CANDIDATE-TREE-MISMATCH. AML_REPO stays: the seat still resolves the real repository through it.
+    env = {k: v for k, v in env.items() if k not in ('AML_CANDIDATE', 'AML_CANDIDATE_TREE')}
+    env = dict(env, GIT_INDEX_FILE=os.path.join(d, 'index'))
+    try:
+        parent = synthetic_commit(_CAND['tree'], [BASE], env, 'the candidate itself, as a commit')
+        for text in steps:
+            parent = _edge(env, rel, {'verification-corpus.sexp': text}, parent)
+        work = tempfile.mkdtemp(prefix='fals-work-')
+        try:
+            r = AR.bounded_run([PY, os.path.join(HERE, 'gate_checks.py'), check, '--candidate', parent,
+                                '--work', work], capture_output=True, text=True, cwd=HERE, env=env)
+        finally:
+            shutil.rmtree(work, ignore_errors=True)
+        return verdict(r.returncode, r.stdout + r.stderr, needle, expect)
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+
+def _removal_chain():
+    """The two edges of a LEGITIMATE authorised removal: one that introduces the prospective records, one that
+    consumes them by deleting the floor and lowering the self-floor the deletion costs."""
+    base = _corpus_text()
+    e1 = (base + '\n' + _auth('UA-HELD-OUT-REMOVAL', 'property-family', 5, 0) + '\n'
+          + _auth('UA-HELD-OUT-SELF', 'universe-floor', 7, 6) + '\n')
+    e2 = (re.sub(r'\(fact universe-floor UF-PROPERTY-FAMILY[^)]*\)\n?', '', e1)
+          .replace(':family universe-floor :minimum 7', ':family universe-floor :minimum 6'))
+    return e1, e2
+
+
+def x116_prospective_removal_control():
+    """A prospective authorization for a full removal reduces nothing on the edge that introduces it."""
+    return lifecycle([_removal_chain()[0]], 'PASS', 'UNIVERSE-AUTHORIZATIONS-PROSPECTIVE UA-HELD-OUT-REMOVAL')
+
+
+def x117_authorised_removal_control():
+    """The next edge removes the floor and lowers the self-floor, consuming both records exactly."""
+    return lifecycle(list(_removal_chain()), 'PASS', 'UNIVERSE-AUTHORIZATIONS-CONSUMED UA-HELD-OUT-REMOVAL')
+
+
+def x118_spent_noop_edge_control():
+    """A no-op edge after an authorised removal passes: a terminally spent record is historical evidence, not a
+    permanent refusal of every later edge."""
+    e1, e2 = _removal_chain()
+    return lifecycle([e1, e2, e2], 'PASS', 'UNIVERSE-AUTHORIZATIONS-TERMINALLY-SPENT UA-HELD-OUT-REMOVAL')
+
+
+def x119_spent_second_noop_control():
+    """And the edge after that, so the state is a state and not a one-off exemption."""
+    e1, e2 = _removal_chain()
+    return lifecycle([e1, e2, e2, e2], 'PASS', 'GATECHECK universe: PASS')
+
+
+def x120_spent_record_removed():
+    """Dropping the spent record is still tampering with the record of who authorised what."""
+    e1, e2 = _removal_chain()
+    return lifecycle([e1, e2, re.sub(r'\(fact universe-authorization UA-HELD-OUT-REMOVAL[^)]*\)\n?', '', e2)],
+                     'FAIL', 'AUTHORIZATION-TAMPERED')
+
+
+def x121_spent_record_altered():
+    """Nor may its content be edited once it is history."""
+    e1, e2 = _removal_chain()
+    e3 = e2.replace('UA-HELD-OUT-REMOVAL :family property-family :previous-minimum 5 :minimum 0',
+                    'UA-HELD-OUT-REMOVAL :family property-family :previous-minimum 5 :minimum 1', 1)
+    return lifecycle([e1, e2, e3], 'FAIL', 'AUTHORIZATION-TAMPERED')
+
+
+def x122_spent_record_replayed():
+    """A spent record grants nothing further: a later reduction of another floored family is refused."""
+    e1, e2 = _removal_chain()
+    return lifecycle([e1, e2, e2.replace(':family fixture :minimum 8', ':family fixture :minimum 7', 1)],
+                     'FAIL', 'UNIVERSE-FLOOR-REDUCED')
+
+
+def x123_candidate_injected_spent_record():
+    """A candidate cannot write itself a record that merely LOOKS terminally spent."""
+    return lifecycle([_corpus_text() + '\n' + _auth('UA-HELD-OUT-FAKE', 'harness', 2, 0) + '\n'],
+                     'FAIL', 'AUTHORIZATION-MALFORMED-PROSPECTIVE')
+
+
+def x124_nonzero_authorization_undefined_family():
+    """A record that authorised no removal cannot excuse one: the edge that deletes the floor it names is
+    refused, and the record never reaches a spent state."""
+    e1 = _corpus_text() + '\n' + _auth('UA-HELD-OUT-GHOST', 'property-family', 5, 4) + '\n'
+    e2 = (re.sub(r'\(fact universe-floor UF-PROPERTY-FAMILY[^)]*\)\n?', '', e1)
+          .replace(':family universe-floor :minimum 7', ':family universe-floor :minimum 6'))
+    return lifecycle([e1, e2], 'FAIL', 'UNIVERSE-FLOOR-REDUCED')
+
+
+def x125_spent_family_revived():
+    """The removed family may not be floored again while its spent record still names it: a revived floor would
+    turn a spent authorization back into a fresh permission."""
+    e1, e2 = _removal_chain()
+    e3 = (e2 + '\n(fact universe-floor UF-PROPERTY-FAMILY-REVIVED :family property-family :minimum 5 '
+               ':rationale "held-out revival")\n')
+    return lifecycle([e1, e2, e3], 'FAIL', 'AUTHORIZATION-SPENT-FAMILY-REVIVED')
+
+
+def x126_sibling_no_extra_authority():
+    """Two siblings of one authorised base each consume exactly the grant and nothing more: the sibling that
+    takes more than its minimum is refused, so sibling consumption adds no authority to either."""
+    e1, e2 = _removal_chain()
+    okk, why = lifecycle([e1, e2], 'PASS', 'UNIVERSE-AUTHORIZATIONS-CONSUMED UA-HELD-OUT-REMOVAL')
+    if not okk:
+        return False, 'the first sibling was refused: %s' % why
+    return lifecycle([e1, e2.replace(':family fixture :minimum 8', ':family fixture :minimum 7', 1)],
+                     'FAIL', 'UNIVERSE-FLOOR-REDUCED')
+
+
+def x127_unauthorised_removal_not_cured():
+    """A removal nobody authorised is not cured by a later record claiming to have authorised it: such a record
+    is absent from the base's parent, so it was never prospective anywhere."""
+    e1 = (re.sub(r'\(fact universe-floor UF-PROPERTY-FAMILY[^)]*\)\n?', '', _corpus_text())
+          .replace(':family universe-floor :minimum 7', ':family universe-floor :minimum 6'))
+    e2 = e1 + '\n' + _auth('UA-HELD-OUT-CURE', 'property-family', 5, 0) + '\n'
+    return lifecycle([e1, e2, e2], 'FAIL', 'AUTHORIZATION-SPENT-WITHOUT-HISTORY')
+
+
+# ═══════════════════════════════════════ Review-6 R6-2: every count comes from the model, never from a filename
+def _composed_ids():
+    return sorted(i for i, p in SR.read_model(HERE).of('falsifier') if str(p.get('harness')) == 'COMPOSED_GATE')
+
+
+def _count_after_moving(destinations):
+    """The command's own count expression, over a seat whose COMPOSED_GATE facts were moved to DESTINATIONS
+    [(module, [ids])]. The count is a property of the model, so relocating or splitting cannot change it."""
+    d, seat = export_seat()
+    try:
+        for dest, ids in destinations:
+            src = os.path.join(seat, 'verification-corpus.sexp')
+            forms = SR.read_forms_file(src)
+            take = [f for f in forms if SR.head(f) == 'fact' and str(f[1]).lower() == 'falsifier'
+                    and str(SR.canonical_value(f[2], 'corpus', 'fact id')) in ids]
+            keep = [f for f in forms if not (SR.head(f) == 'fact' and str(f[1]).lower() == 'falsifier'
+                    and str(SR.canonical_value(f[2], 'corpus', 'fact id')) in ids)]
+            with open(src, 'w', encoding='utf-8', newline='\n') as fh:
+                fh.write('\n'.join(emit(x) for x in keep) + '\n')
+            with open(os.path.join(seat, dest), 'a', encoding='utf-8', newline='\n') as fh:
+                fh.write('\n' + '\n'.join(emit(x) for x in take) + '\n')
+        rehash(seat)
+        r = AR.bounded_run([PY, os.path.join(seat, 'run_corpus.py'), '--count', 'COMPOSED_GATE'],
+                           capture_output=True, text=True, cwd=seat)
+        return r.returncode, (r.stdout + r.stderr).strip()
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+
+def x128_composed_count_relocated():
+    """Every COMPOSED_GATE fact moved to another canonical module: the informational count is unchanged."""
+    ids = _composed_ids()
+    code, out = _count_after_moving([('seats.sexp', ids)])
+    return (code == 0 and out == str(len(ids))), 'after relocation the count is %r, not %d' % (out[:60], len(ids))
+
+
+def x129_composed_count_split():
+    """The same facts split across two modules: still one exact count, still from the model."""
+    ids = _composed_ids()
+    half = len(ids) // 2
+    code, out = _count_after_moving([('seats.sexp', ids[:half]), ('rationale-references.sexp', ids[half:])])
+    return (code == 0 and out == str(len(ids))), 'after the split the count is %r, not %d' % (out[:60], len(ids))
+
+
 CODED_COMPONENT = [
     ('K01-GENERATED-VIEW-MISSING', 'a tracked generated view absent from the inventory', f01_generated_view_missing),
     ('K02-NEW-FILE-NO-RULE', 'a new tracked file matching no classification rule', f02_new_tracked_file_no_rule),
@@ -1639,6 +1857,20 @@ CODED_COMPONENT = [
     ('X35-WRONG-VALUE-TYPE', 'a declared field carrying the wrong value kind', f35_wrong_value_type),
     ('X44-GLOBAL-PROMOTION-OVERCLAIM', 'global source-of-truth claimed while classes remain deferred', f44_global_promotion_overclaim),
     ('X73-TOOL-VANISHES-BEFORE-SPAWN', 'a tool that passes the pre-check and vanishes before the spawn; a non-executable spawn', f73_tool_vanishes_before_spawn),
+    ('X116-PROSPECTIVE-REMOVAL-CONTROL', 'a prospective authorization for a full removal, reducing nothing yet', x116_prospective_removal_control),
+    ('X117-AUTHORISED-REMOVAL-CONTROL', 'the next edge removing the floor and consuming the record', x117_authorised_removal_control),
+    ('X118-SPENT-NOOP-EDGE-CONTROL', 'a no-op edge after an authorised removal', x118_spent_noop_edge_control),
+    ('X119-SPENT-SECOND-NOOP-CONTROL', 'a second no-op edge, so the spent state is not a one-off exemption', x119_spent_second_noop_control),
+    ('X120-SPENT-RECORD-REMOVED', 'the spent record dropped by a later candidate', x120_spent_record_removed),
+    ('X121-SPENT-RECORD-ALTERED', 'the spent record edited by a later candidate', x121_spent_record_altered),
+    ('X122-SPENT-RECORD-REPLAYED', 'a spent record replayed for a further reduction', x122_spent_record_replayed),
+    ('X123-CANDIDATE-INJECTED-SPENT-RECORD', 'a candidate writing itself a record that looks terminally spent', x123_candidate_injected_spent_record),
+    ('X124-NONZERO-AUTHORIZATION-UNDEFINED-FAMILY', 'a record that authorised no removal excusing one', x124_nonzero_authorization_undefined_family),
+    ('X125-SPENT-FAMILY-REVIVED', 'the removed family floored again while its spent record still names it', x125_spent_family_revived),
+    ('X126-SIBLING-NO-EXTRA-AUTHORITY', 'two siblings of one authorised base gaining no authority beyond the grant', x126_sibling_no_extra_authority),
+    ('X127-UNAUTHORISED-REMOVAL-NOT-CURED', 'an unauthorised removal cured by a later record claiming to have authorised it', x127_unauthorised_removal_not_cured),
+    ('X128-COMPOSED-COUNT-RELOCATED', 'the informational composed count with every such fact in another module', x128_composed_count_relocated),
+    ('X129-COMPOSED-COUNT-SPLIT', 'the informational composed count with those facts split across two modules', x129_composed_count_split),
     ('X79-CANDIDATE-TREE-NOT-COMMIT-ID', 'a commit-ish candidate resolves to its tree, never to the commit id', x79_candidate_tree_is_tree_not_commit),
     ('X80-WORKTREE-ARBITRARY-BASE', 'an arbitrary --base for a WORKTREE candidate', x80_worktree_arbitrary_base_refused),
     ('X81-COMMIT-BASE-NOT-PARENT', 'a committed candidate with a --base other than its unique parent', x81_commit_base_not_parent_refused),
@@ -1762,7 +1994,7 @@ def falsifier_kind(harness, only=None):
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--kind', choices=('fixtures', 'component', 'composed'), required=True)
+    ap.add_argument('--kind', choices=('fixtures', 'component', 'composed'), default=None)
     ap.add_argument('--work', default=None)
     ap.add_argument('--keep-work', action='store_true')
     ap.add_argument('--only', default=None, help='run only these falsifier ids, comma separated')
@@ -1772,7 +2004,17 @@ if __name__ == '__main__':
     ap.add_argument('--base', default=None,
                     help='confirmation of the base the candidate determines (Review-5 R5-2); one that differs is '
                          'a typed refusal, never a choice; the fixtures kind judges model copies and needs none')
+    ap.add_argument('--count', default=None, choices=('COMPONENT', 'COMPOSED_GATE'),
+                    help='print how many falsifiers of that harness THIS SEAT\'s model declares, and exit. It is '
+                         'the same whole-model ROOT-composed read the battery itself uses, so no count anywhere '
+                         'depends on the name of a module (Review-6 R6-2); distinct ids, so a duplicate is a '
+                         'model-law failure rather than a double count')
     a = ap.parse_args()
+    if a.count:
+        print(len({i for i, p in SR.read_model(HERE).of('falsifier') if str(p.get('harness')) == a.count}))
+        sys.exit(0)
+    if not a.kind:
+        ap.error('--kind is required unless --count is given')
     BASE, CANDIDATE = a.base, a.candidate
     problems = universe_integrity()
     if problems:

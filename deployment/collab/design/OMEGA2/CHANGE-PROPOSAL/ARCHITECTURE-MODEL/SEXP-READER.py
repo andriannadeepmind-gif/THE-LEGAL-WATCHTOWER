@@ -539,6 +539,22 @@ def universe_floors(model):
     return out
 
 
+# Review-6 R6-1. An authorization carries no writable state: what it IS follows from its own immutable fields
+# and from the floors of the model that carries it, so no candidate can certify its own record as retired.
+#   PROSPECTIVE       the family it names is still floored at exactly its :previous-minimum — it can be consumed
+#   CONSUMED          the family is still floored but the floor has moved: it granted its reduction, it cannot be
+#                     replayed (a grant is matched on :previous-minimum), and it stays as historical evidence
+#   TERMINALLY-SPENT  it authorised :minimum 0 and the family is floored nowhere: the removal it authorised has
+#                     happened, so it no longer needs a live floor and never grants again
+#   UNDEFINED         it names a family floored nowhere and authorised no removal — there is nothing it applies to
+def authorization_state(p, floors):
+    """The derived lifecycle state of authorization P against FLOORS, the floor set of the model carrying it."""
+    fam = str(p['family']).lower()
+    if fam in floors:
+        return 'PROSPECTIVE' if int(floors[fam]['minimum']) == int(p['previous-minimum']) else 'CONSUMED'
+    return 'TERMINALLY-SPENT' if int(p['minimum']) == 0 else 'UNDEFINED'
+
+
 def universe_authorizations(model):
     """{id: plist + 'module'} of every universe-authorization the model carries, wherever it lives."""
     out = {}

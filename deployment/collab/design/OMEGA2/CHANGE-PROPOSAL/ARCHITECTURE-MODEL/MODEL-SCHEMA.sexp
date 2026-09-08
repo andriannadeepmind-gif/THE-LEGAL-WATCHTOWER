@@ -34,7 +34,7 @@
 ;;;; (define-unique NAME :type T :field K)
 ;;;;     no two facts of type T may carry the same value of K. One canonical write authority per store is a
 ;;;;     uniqueness law, not a convention.
-(define-model-schema architecture-model-schema :version "5" :canonical-encoding "AMC2"
+(define-model-schema architecture-model-schema :version "6" :canonical-encoding "AMC2"
 
   ;; ─────────────────────────────────────────────────────────────────── id spaces
   (define-id-space PATH-SPACE      :charset PATH  :min 1 :max 400)
@@ -68,7 +68,8 @@
   ;; finding that required it. This is the closed set of findings an attribution may cite.
   (define-enum finding-id (R3-1 R3-2 R3-3 R3-4 R3-5 R3-6 R3-7 R3-8 R3-9 R3-10 R3-11 R3-12 R3-13 R3-14 R3-15
                            R4-1 R4-2 R4-3 R4-4 R4-5 R4-6 R4-7 S15-M1 S15-M2 S15-M3 S15-TCB
-                           R5-1 R5-2 R5-P3-1 R5-P3-2 R5-P3-3 R5-P3-4 R5-P3-5 R5-P3-6 R5-P3-7))
+                           R5-1 R5-2 R5-P3-1 R5-P3-2 R5-P3-3 R5-P3-4 R5-P3-5 R5-P3-6 R5-P3-7
+                           R6-1 R6-2))
   (define-enum yes-no (YES NO))
   (define-enum tool-role (KERNEL_RUNTIME DIGEST_PROVIDER CHECKER_RUNTIME ASP_SOLVER CHECKER_DIGEST_PROVIDER))
   ;; which verification path is required to prove a tool's identity — never the tool's own self-report alone.
@@ -294,6 +295,19 @@
   ;; authorization mechanically, and only the Root Authority decides which sibling acquires canonical standing —
   ;; the gate makes no such choice and proves no independent human approval. No external approval mechanism exists
   ;; in this repository; none is invented: without a base-anchored authorization, reductions are forbidden.
+  ;; Review-6 R6-1 — the LIFECYCLE, derived and never written. A record carries no state field a candidate could
+  ;; set: what it IS follows from its own immutable fields and from the floors of the model that carries it
+  ;; (`SEXP-READER.authorization_state`). PROSPECTIVE while its family is still floored at exactly its
+  ;; :previous-minimum; CONSUMED once that floor has moved (a grant is matched on :previous-minimum, so it can
+  ;; never be replayed); TERMINALLY-SPENT when it authorised :minimum 0 and the family is floored nowhere — the
+  ;; removal it authorised has happened, so it is kept as immutable historical evidence, needs no live floor and
+  ;; grants nothing further; UNDEFINED when it names an unfloored family and authorised no removal, which stays
+  ;; AUTHORIZATION-FAMILY-UNDEFINED. Only history can reach the spent state: a record that appears in the base
+  ;; but not in the BASE'S PARENT was never prospective anywhere and is AUTHORIZATION-SPENT-WITHOUT-HISTORY, so
+  ;; a removal nobody authorised cannot be cured after the fact. A terminally removed family may not be floored
+  ;; again while its spent record still names it (AUTHORIZATION-SPENT-FAMILY-REVIVED), because a revived floor
+  ;; would turn a spent authorization back into a fresh permission; re-flooring such a family is a separate
+  ;; creator decision, not something this mechanism grants.
   (define-fact-type universe-authorization :id-space TOKEN-SPACE
                     :required (family previous-minimum minimum previous-model-root rationale approver) :optional ()
                     :types ((family SYMBOL) (previous-minimum INTEGER) (minimum INTEGER)

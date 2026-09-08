@@ -2,7 +2,7 @@
 # Architecture Closure Summary (GENERATED VIEW — DO NOT EDIT)
 
 - generator: `generate_views.py/3`
-- canonical-model-root-digest: `5621efcaed1ac6478e7ad3dd2ab9c2986b36bc4812d9a2ef04704d9f94835dd8`
+- canonical-model-root-digest: `1f7da75c3053c7223024e8e0daf23d2ae074f780d42eb7847bd9393c535d0f53`
 - regeneration command: `python3 ARCHITECTURE-MODEL/regenerate.py`
 
 | entity | count |
@@ -11,8 +11,8 @@
 | component | 2 |
 | consumes | 102 |
 | dir-rule | 65 |
-| falsifier | 104 |
-| file | 1008 |
+| falsifier | 118 |
+| file | 1010 |
 | fixture | 8 |
 | gen-artifact | 12 |
 | gen-edge | 4 |
@@ -40,9 +40,9 @@
 | type | 60 |
 | universe-floor | 7 |
 | wp | 14 |
-| **total facts** | **1732** |
+| **total facts** | **1748** |
 | private-types | 6 |
 
 Private-bearing types: EMBODIMENTINTERFACES/1, PRIVATEMATTERPROFILE/1, REALTIMEASSISTANCE/1, RESTRICTEDFORENSICRECORD/1, SIDECARSOURCEPROFILE/1, TENANTPROFILE/1
 
-Tracked-file inventory: 36641 tracked paths = 1008 per-file facts + 35633 counted by 65 directory-rule facts.
+Tracked-file inventory: 36643 tracked paths = 1010 per-file facts + 35633 counted by 65 directory-rule facts.

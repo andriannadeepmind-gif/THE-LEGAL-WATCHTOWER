@@ -2,7 +2,7 @@
 # Subsystem Registry View (GENERATED VIEW — DO NOT EDIT)
 
 - generator: `generate_views.py/3`
-- canonical-model-root-digest: `5621efcaed1ac6478e7ad3dd2ab9c2986b36bc4812d9a2ef04704d9f94835dd8`
+- canonical-model-root-digest: `1f7da75c3053c7223024e8e0daf23d2ae074f780d42eb7847bd9393c535d0f53`
 - regeneration command: `python3 ARCHITECTURE-MODEL/regenerate.py`
 
 | subsystem | classification | owner-seat | seat status | mission | migration |
