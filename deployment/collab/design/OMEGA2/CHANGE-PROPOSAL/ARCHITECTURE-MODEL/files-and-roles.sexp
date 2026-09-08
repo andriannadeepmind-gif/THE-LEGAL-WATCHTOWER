@@ -1013,6 +1013,7 @@
 (fact file "deployment/collab/dialogue/0165-claude.md" :role HISTORICAL_EVIDENCE :rule R-018 :reason "append-only AI-dialogue record")
 (fact file "deployment/collab/dialogue/0166-claude.md" :role HISTORICAL_EVIDENCE :rule R-018 :reason "append-only AI-dialogue record")
 (fact file "deployment/collab/dialogue/0167-claude.md" :role HISTORICAL_EVIDENCE :rule R-018 :reason "append-only AI-dialogue record")
+(fact file "deployment/collab/dialogue/0168-claude.md" :role HISTORICAL_EVIDENCE :rule R-018 :reason "append-only AI-dialogue record")
 (fact file "deployment/collab/fresh-phase-2-launch/COORDINATOR-PLAYBOOK.md" :role AUTHORED_NORMATIVE_PROSE :rule R-027 :reason "authored normative document under deployment/")
 (fact file "deployment/collab/fresh-phase-2-launch/EXTERNAL-PACKAGE-POINTER.md" :role AUTHORED_NORMATIVE_PROSE :rule R-027 :reason "authored normative document under deployment/")
 (fact file "deployment/collab/fresh-phase-2-launch/FREEZE-VERIFICATION-RECORD.json" :role HISTORICAL_EVIDENCE :rule R-030 :reason "collaboration-round record of a declared kind (freeze/launch verification evidence outside the design subtree)")
@@ -1105,7 +1106,7 @@
 (fact tcb-file TCB-0013 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/gate_checks.py" :physical 1736 :nbnc 1497)
 (fact tcb-file TCB-0014 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/generate_views.py" :physical 204 :nbnc 174)
 (fact tcb-file TCB-0015 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/regenerate.py" :physical 98 :nbnc 81)
-(fact tcb-file TCB-0016 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/run_corpus.py" :physical 2053 :nbnc 1707)
-(fact tcb-total TCB-TOTAL :files 16 :physical 7394 :nbnc 6106)
+(fact tcb-file TCB-0016 :path "deployment/collab/design/OMEGA2/CHANGE-PROPOSAL/ARCHITECTURE-MODEL/run_corpus.py" :physical 2093 :nbnc 1741)
+(fact tcb-total TCB-TOTAL :files 16 :physical 7434 :nbnc 6140)
 
-(fact inventory-total INV-TOTAL :tracked 36644 :file-facts 1011 :dir-rule-facts 65 :dir-rule-sum 35633)
+(fact inventory-total INV-TOTAL :tracked 36645 :file-facts 1012 :dir-rule-facts 65 :dir-rule-sum 35633)

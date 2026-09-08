@@ -1139,3 +1139,32 @@ Citation-Bound Verification Profile). Design only, working tree, **κανένα 
   freeze · qualification · οποιαδήποτε εκκαθάριση ή refactoring άσχετη με το εύρημα.
   **`R6-2 P3 TYPED-OUTCOME MICRO-CORRECTION COMPLETE — AWAITING SINGLE-CASE INDEPENDENT CONFIRMATION —
   VERIFIER INFRASTRUCTURE NOT YET LOCKED — DDI-1 BLOCKED — NOT FROZEN — NOT QUALIFIED — IMPLEMENTATION BLOCKED`.**
+
+## [0168] OPTION-2 CORE R6-2 ΣΥΣΤΗΜΙΚΟ ΚΛΕΙΣΙΜΟ ΤΗΣ ΚΛΑΣΗΣ ΟΛΙΚΟΤΗΤΑΣ ΣΦΑΛΜΑΤΟΣ — πάνω στο `49e0fc2b`
+
+- **Κυβερνών τεκμήριο:** η ανεξάρτητη επιβεβαίωση του `49e0fc2b` **απέρριψε** τη μικροδιόρθωση του [0167] ως
+  μερική — η ίδια κλάση επιβίωνε στα `--kind fixtures|component|composed`, με έδρα `run_corpus.py:1918` μέσα
+  στο `universe_integrity()` — μαζί με την εντολή *R6-2 ERROR-TOTALITY SYSTEMIC CLOSURE*.
+- **Το δίδαγμα, ρητά:** φρουρός γύρω από **ένα** σημείο δεν εξαλείφει την κλάση. Το `run_corpus.py` καλούσε
+  `SR.read_model` σε **επτά** σημεία και η κλήση του `universe_integrity()` κυριαρχεί και στα τρία `--kind`
+  entry points.
+- **Πριν (4 δημόσιες διαδρομές × malformed/missing):** `--count` typed και στα δύο· και τα τρία `--kind` με
+  **traceback 9 γραμμών** (malformed) / **7 γραμμών** (missing) και typed=0. **Κανένα false PASS** πουθενά.
+- **Η διόρθωση, μία έδρα:** `read_model(source=HERE, **kw)` — το **μοναδικό** σημείο που καλεί `SR.read_model`.
+  Μετατρέπει **μόνο** τις δηλωμένες αστοχίες του αναγνώστη στο **υπάρχον** λεξιλόγιο της `gate_checks.model()`:
+  `MissingSourceFile` → `MISSING-MODEL-FILE`, `SexpError` → `UNREADABLE-MODEL-FILE`. **Καμία** `except Exception`,
+  `except BaseException` ή γυμνή `except`. Και οι **επτά** κλήσεις δρομολογήθηκαν μέσα από αυτήν
+  (`root_modules`, `corpus`, `declared_falsifiers`, `_auth`, `_composed_ids`, `universe_integrity`,
+  `__main__ --count`)· το inline `try/except` του [0167] **αποσύρθηκε**. Απόδειξη: `grep -c 'SR\.read_model('` = **1**.
+- **Μετά:** και οι **οκτώ** περιπτώσεις exit ≠ 0, σωστός typed marker, **traceback 0**, κανένα false PASS.
+  Καλοσχηματισμένα controls και στις τέσσερις διαδρομές.
+- **Μόνιμη προστασία:** `X130` (για το `--count`) + νέος **παραμετροποιημένος** `X131-KIND-MODEL-READS-TYPED`
+  (COMPONENT): 3 entry points × {malformed, missing} = **6 υποπεριπτώσεις**. **Αρνητικός έλεγχος** στην
+  αδιόρθωτη βάση `49e0fc2b`: `NOT REJECTED`, και οι έξι `typed=False traceback=True`.
+- **Αριθμοί (παραγόμενοι από το μοντέλο):** `UF-FALSIFIER` **119 → 120**· falsifiers **120** =
+  **108 COMPONENT + 12 COMPOSED_GATE**· facts **1751**· **schema αμετάβλητη στο `6`**.
+- **ΔΕΝ ΕΓΙΝΕ:** `TOOLCHAIN.sexp` · R6-1 lifecycle · `SEXP-READER.py` · `gate_checks.py` · `MODEL-SCHEMA.sexp` ·
+  `CLAUDE.md` · DDI-1…DDI-4 · production/protected/frozen paths · verifier lock · freeze · qualification ·
+  άσχετο refactoring ή νέες γενικές πολιτικές.
+  **`R6-2 ERROR-TOTALITY CLASS SYSTEMICALLY CLOSED — AWAITING FINAL BOUNDED INDEPENDENT CONFIRMATION —
+  VERIFIER INFRASTRUCTURE NOT YET LOCKED — DDI-1 BLOCKED — NOT FROZEN — NOT QUALIFIED — IMPLEMENTATION BLOCKED`.**

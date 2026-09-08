@@ -2,7 +2,7 @@
 # Seat Registry View — every declared seat, its status and its artifact (GENERATED VIEW — DO NOT EDIT)
 
 - generator: `generate_views.py/3`
-- canonical-model-root-digest: `e802249e86c2d6a9c028556a2ec8494054b25967e34b06f98d8de5e8814d81af`
+- canonical-model-root-digest: `038ce1e7dd3d55b0c594205c571d867fe5559e1bfd7c6f6a5c17c3378b45cba5`
 - regeneration command: `python3 ARCHITECTURE-MODEL/regenerate.py`
 
 Review-2 N-10: a seat is BUILT or DOCUMENT_SEAT only when it names a tracked path, and a seat that is not built carries the rationale and the work packet that will build it. No seat is a bare string.

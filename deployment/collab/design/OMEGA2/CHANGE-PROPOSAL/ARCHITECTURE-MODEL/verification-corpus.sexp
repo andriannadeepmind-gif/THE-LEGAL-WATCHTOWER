@@ -61,7 +61,7 @@
       :rationale "one golden fixture per model law plus the passing baseline")
 (fact universe-floor UF-PROPERTY-FAMILY :family property-family :minimum 5
       :rationale "one enumerated family per law that has a generable counterexample shape")
-(fact universe-floor UF-FALSIFIER :family falsifier :minimum 119
+(fact universe-floor UF-FALSIFIER :family falsifier :minimum 120
       :rationale "one held-out falsifier per closed defect class across both harnesses")
 (fact universe-floor UF-GEN-ARTIFACT :family gen-artifact :minimum 12
       :rationale "every derived artifact the model declares")
@@ -543,3 +543,5 @@
       :intent "the informational composed count with those facts split across two canonical modules")
 (fact falsifier X130-COUNT-UNREADABLE-MODEL-TYPED :harness COMPONENT
       :intent "the informational count over a malformed canonical module: the model's own typed outcome, never a traceback")
+(fact falsifier X131-KIND-MODEL-READS-TYPED :harness COMPONENT
+      :intent "every --kind entry point over a malformed and over an absent canonical module: typed outcome, non-zero, no traceback")

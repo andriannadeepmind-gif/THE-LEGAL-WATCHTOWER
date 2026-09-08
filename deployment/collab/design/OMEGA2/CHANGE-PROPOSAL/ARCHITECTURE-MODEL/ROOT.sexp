@@ -8,7 +8,7 @@
   :model-version "1"
   :schema-version "6"
   :parent-architecture-commit "4787b342282f8d5f2ec4b9e64b11e32b7a64813a"
-  :canonical-model-root-digest "e802249e86c2d6a9c028556a2ec8494054b25967e34b06f98d8de5e8814d81af"
+  :canonical-model-root-digest "038ce1e7dd3d55b0c594205c571d867fe5559e1bfd7c6f6a5c17c3378b45cba5"
   :module-count 14
   :composition (
     (:module "MODEL-SCHEMA.sexp" :sha256 "874fe0bbb9456823a771c47f599d16c19645b95fb8aa7cf565ba219d347080e5")
@@ -16,7 +16,7 @@
     (:module "classification-rules.sexp" :sha256 "07b0d75282820ecc1539a5d9f9f59bcf0b1751649c0b2decc6ddddc2de42c426")
     (:module "deferred-imports.sexp" :sha256 "292067c5d78525a9777efa45fa380c6320bd7c91671da7e35d39fca2abb48177")
     (:module "dependencies-and-boundaries.sexp" :sha256 "132d074c4ae6adda39ff00d239983f9d73b6fffa5b93ee9c6c74ff87d6a6bc16")
-    (:module "files-and-roles.sexp" :sha256 "2b7e47d3d0885cb909b626d6d6d5e5d58195123016521a6846ed92932162f6fc")
+    (:module "files-and-roles.sexp" :sha256 "49a1918a819734c532e2787fdf39c6e5dda28f9196086d4c8ed156758f0765a5")
     (:module "generation-order.sexp" :sha256 "bede6968851351fbdacc30a76cd5c89ba105d0957cdc4ad1f0ca4a4aed200128")
     (:module "interfaces-and-types.sexp" :sha256 "d809def3283a3f4a802d37aebeaf75cc3367b02bae0360b2869a40d6eb9f95a5")
     (:module "rationale-references.sexp" :sha256 "c39888e27c03723205238798e334e34f7fe93da5ca8217a583537154e37569ec")
@@ -24,5 +24,5 @@
     (:module "seats.sexp" :sha256 "5a220af64cf4e0deb1b45e7819923e251b17dd46bc5450c94413bfa907347fa9")
     (:module "stores-and-authorities.sexp" :sha256 "5ed5c95450bbda902ef350d77bed924bd4ef9ab0938a101c469a7f920ba35b60")
     (:module "subsystems.sexp" :sha256 "f3c7ea6634b6e3ad280afc68544247fef4b6fa96a4fd0bc86cd46d03c22ad18f")
-    (:module "verification-corpus.sexp" :sha256 "a92a04ef7e7ed3fdea0da66a502f9a82018673720a3116119797313039e59577")
+    (:module "verification-corpus.sexp" :sha256 "d37eb46613381d06bd26ca1b1a6363c89fd11a74b196e953cfb3069c5b1b307c")
   ))

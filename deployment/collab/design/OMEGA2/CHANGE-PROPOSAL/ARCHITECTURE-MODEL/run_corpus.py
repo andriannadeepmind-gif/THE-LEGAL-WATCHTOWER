@@ -50,6 +50,24 @@ PY = SR.tool_path(HERE, 'CHECKER_RUNTIME')
 SBCL = SR.tool_path(HERE, 'KERNEL_RUNTIME')
 
 
+def read_model(source=HERE, **kw):
+    """The ONE seat of this program that reads a model, and the only place SR.read_model is called.
+
+    Every failure the READER declares becomes the model's own typed outcome — the same vocabulary
+    gate_checks.model() speaks — so no entry point of this program can end in a Python traceback over an
+    unreadable or absent canonical module (Review-6 R6-2 error totality). Only the reader's DECLARED failures
+    are converted: SR.SexpError is the base of every typed reader failure, and anything outside it is a
+    programming fault that must keep its traceback. There is no `except Exception` here, by design.
+    """
+    try:
+        return SR.read_model(source, **kw)
+    except SR.MissingSourceFile as e:
+        raise SystemExit('MISSING-MODEL-FILE: %s' % e.path)
+    except SR.SexpError as e:
+        raise SystemExit('UNREADABLE-MODEL-FILE: %s' % e)
+
+
+
 def record(name, intent, ok_, detail):
     detail = detail if isinstance(detail, str) else repr(detail)
     RESULTS.append((name, intent, ok_, detail))
@@ -64,7 +82,7 @@ def run_one(name, intent, fn):
     record(name, intent, okk, detail)
 def root_modules(dirp):
     """The pinned module order of a (possibly mutated) copy — never cached: the copies are mutated in place."""
-    return SR.read_model(dirp, cache=False).modules
+    return read_model(dirp, cache=False).modules
 
 
 def read_facts(dirp, module):
@@ -81,7 +99,7 @@ def read_facts(dirp, module):
 
 def corpus():
     """The declared fixtures and property families — discovered by fact type across the whole model."""
-    m = SR.read_model(HERE)
+    m = read_model()
     return dict(m.of('fixture')), dict(m.of('property-family'))
 
 
@@ -484,7 +502,7 @@ def expand(text, seat=''):
 def declared_falsifiers(harness):
     """Every falsifier the MODEL declares with a mutation, for one harness — the runner carries the shapes,
     the model carries the cases."""
-    return sorted((fid, p) for fid, p in SR.read_model(HERE).of('falsifier')
+    return sorted((fid, p) for fid, p in read_model().of('falsifier')
                   if p.get('harness') == harness and p.get('mutation'))
 
 
@@ -1631,7 +1649,7 @@ def _auth(fid, fam, prev, new):
     """A well-formed record for a held-out chain. Its :previous-model-root is the CANDIDATE's own model root:
     every chain is grown from the candidate as a commit, so that is the root the first edge is judged against
     and, one edge later, the root of the base's parent the consumption is checked against."""
-    return AUTH_ROW % (fid, fam, prev, new, str(SR.read_model(HERE).root['canonical-model-root-digest']))
+    return AUTH_ROW % (fid, fam, prev, new, str(read_model().root['canonical-model-root-digest']))
 
 
 def _edge(env, rel, edits, parent):
@@ -1788,7 +1806,7 @@ def x127_unauthorised_removal_not_cured():
 
 # ═══════════════════════════════════════ Review-6 R6-2: every count comes from the model, never from a filename
 def _composed_ids():
-    return sorted(i for i, p in SR.read_model(HERE).of('falsifier') if str(p.get('harness')) == 'COMPOSED_GATE')
+    return sorted(i for i, p in read_model().of('falsifier') if str(p.get('harness')) == 'COMPOSED_GATE')
 
 
 def _count_after_moving(destinations):
@@ -1847,6 +1865,32 @@ def x130_count_unreadable_model_typed():
         shutil.rmtree(d, ignore_errors=True)
 
 
+def x131_kind_model_reads_typed():
+    """Every public entry point of this program is a model read, so the typed outcome cannot be the property of
+    one flag. Over all three --kind entry points, with a malformed and with an absent canonical module, the run
+    must end non-zero, in the model's own vocabulary, with no traceback and no count printed (Review-6 R6-2)."""
+    bad = []
+    for kind in ('fixtures', 'component', 'composed'):
+        for how, marker in (('malformed', 'UNREADABLE-MODEL-FILE'), ('missing', 'MISSING-MODEL-FILE')):
+            d, seat = export_seat()
+            try:
+                vc = os.path.join(seat, 'verification-corpus.sexp')
+                if how == 'malformed':
+                    with io.open(vc, 'a', encoding='utf-8', newline='\n') as fh:
+                        fh.write('\n(fact falsifier X-UNTERMINATED :harness COMPONENT\n')
+                else:
+                    os.remove(vc)
+                r = AR.bounded_run([PY, os.path.join(seat, 'run_corpus.py'), '--kind', kind],
+                                   capture_output=True, text=True, cwd=seat)
+                out = (r.stdout + r.stderr).strip()
+                if r.returncode == 0 or marker not in out or 'Traceback' in out:
+                    bad.append('--kind %s/%s: exit=%d typed=%s traceback=%s'
+                               % (kind, how, r.returncode, marker in out, 'Traceback' in out))
+            finally:
+                shutil.rmtree(d, ignore_errors=True)
+    return (not bad), ('; '.join(bad) if bad else 'six subcases all typed, none a traceback')
+
+
 CODED_COMPONENT = [
     ('K01-GENERATED-VIEW-MISSING', 'a tracked generated view absent from the inventory', f01_generated_view_missing),
     ('K02-NEW-FILE-NO-RULE', 'a new tracked file matching no classification rule', f02_new_tracked_file_no_rule),
@@ -1889,6 +1933,7 @@ CODED_COMPONENT = [
     ('X128-COMPOSED-COUNT-RELOCATED', 'the informational composed count with every such fact in another module', x128_composed_count_relocated),
     ('X129-COMPOSED-COUNT-SPLIT', 'the informational composed count with those facts split across two modules', x129_composed_count_split),
     ('X130-COUNT-UNREADABLE-MODEL-TYPED', 'the informational count over a malformed canonical module', x130_count_unreadable_model_typed),
+    ('X131-KIND-MODEL-READS-TYPED', 'every --kind entry point over a malformed and an absent canonical module', x131_kind_model_reads_typed),
     ('X79-CANDIDATE-TREE-NOT-COMMIT-ID', 'a commit-ish candidate resolves to its tree, never to the commit id', x79_candidate_tree_is_tree_not_commit),
     ('X80-WORKTREE-ARBITRARY-BASE', 'an arbitrary --base for a WORKTREE candidate', x80_worktree_arbitrary_base_refused),
     ('X81-COMMIT-BASE-NOT-PARENT', 'a committed candidate with a --base other than its unique parent', x81_commit_base_not_parent_refused),
@@ -1915,7 +1960,7 @@ COMPOSED = [
 def universe_integrity():
     """Missing, extra, duplicate or coherently deleted — each a named failure before a single case runs."""
     bad, seen = [], {}
-    m = SR.read_model(HERE)
+    m = read_model()
     for ftype, fid, _p, mod, _form in m.facts:
         if (ftype, fid) in seen:
             bad.append('DUPLICATE-FACT-ID: %s %s is declared in %s and again in %s' % (ftype, fid, seen[(ftype, fid)], mod))
@@ -2029,12 +2074,7 @@ if __name__ == '__main__':
                          'model-law failure rather than a double count')
     a = ap.parse_args()
     if a.count:
-        try:                                 # a count is a model read: it fails in the model's own
-            m = SR.read_model(HERE)          # vocabulary, never as a traceback (Review-6 R6-2 P3)
-        except SR.MissingSourceFile as e:
-            raise SystemExit('MISSING-MODEL-FILE: %s' % e.path)
-        except SR.SexpError as e:
-            raise SystemExit('UNREADABLE-MODEL-FILE: %s' % e)
+        m = read_model()                     # the one typed model-read seat, like every other read here
         print(len({i for i, p in m.of('falsifier') if str(p.get('harness')) == a.count}))
         sys.exit(0)
     if not a.kind:
