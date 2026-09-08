@@ -1110,3 +1110,32 @@ Citation-Bound Verification Profile). Design only, working tree, **κανένα 
   σύστημα · re-pin του `TOOLCHAIN.sexp` · merge · amend/rebase/squash.
   **`OPTION-2 R6 RESIDUAL CLOSURE COMPLETE — AWAITING FINAL TWO-FINDING INDEPENDENT CONFIRMATION — DDI-1 BLOCKED —
   VERIFIER NOT YET LOCKED — NOT FROZEN — NOT QUALIFIED — IMPLEMENTATION BLOCKED`.**
+
+## [0167] OPTION-2 CORE R6-2 P3 ΜΙΚΡΟΔΙΟΡΘΩΣΗ ΤΥΠΟΠΟΙΗΜΕΝΗΣ ΕΚΒΑΣΗΣ — πάνω στο `ca31b62d`
+
+- **Κυβερνών τεκμήριο:** η ανεξάρτητη επιβεβαίωση επί του `ca31b62d` — R6-1 **CLOSED** (29/29 ανεξάρτητα
+  κατασκευασμένα σενάρια), R6-2 filename/grep εξάρτηση **CLOSED**, πλήρης canonical regression **PASS**
+  (4/4 subsets, 21/21, 106/106 COMPONENT, 12/12 COMPOSED_GATE, CONTROL HOLDS, exit 0), **κανένα P0/P1**, και
+  **ένα P3** που μόνο του εμπόδιζε το verifier lock — μαζί με την εντολή *R6-2 P3 TYPED-OUTCOME MICRO-CORRECTION*.
+- **Το εύρημα:** `run_corpus.py --count COMPOSED_GATE` πάνω σε κακοσχηματισμένη canonical ενότητα τερμάτιζε
+  μη μηδενικά αλλά τύπωνε traceback αντί για την τυποποιημένη έκβαση ανάγνωσης μοντέλου που χρησιμοποιεί κάθε
+  άλλη διαδρομή. Οι μετρούμενοι έλεγχοι εξακολουθούσαν να αποτυγχάνουν κλειστά — πειθαρχία διαγνωστικού
+  λεξιλογίου, **όχι** παράκαμψη ορθότητας.
+- **Αναπαραγωγή πριν από κάθε αλλαγή:** exit 1, **21 γραμμές traceback**, τελευταία
+  `sexp_reader.SexpSyntaxError: SEXP-SYNTAX-ERROR: …:545:1: unterminated list`, μηδέν typed reason.
+- **Η διόρθωση, στη μία έδρα:** στο κεντρικό όριο φόρτωσης μοντέλου της διαδρομής `--count`, με σύλληψη **μόνο**
+  της δηλωμένης κλάσης αστοχίας `SR.SexpError` και το **υπάρχον** λεξιλόγιο της έδρας `gate_checks.model()`:
+  `MISSING-MODEL-FILE` / `UNREADABLE-MODEL-FILE`. **Μετά:** exit 1, **μία γραμμή**, μηδέν traceback.
+  Καλά σχηματισμένο μοντέλο: `COMPOSED_GATE`=12, `COMPONENT`=107, exit 0.
+- **Μόνιμη προστασία:** `X130-COUNT-UNREADABLE-MODEL-TYPED` (COMPONENT), κωδικοποιημένος δίπλα στους `X128`/`X129`,
+  καθολικότητα παραγόμενη από το μοντέλο — κανένας νέος χειρόγραφος κατάλογος, καμία έδρα εξαρτημένη από όνομα
+  αρχείου. **Αρνητικός έλεγχος:** έναντι της αδιόρθωτης συμπεριφοράς του `ca31b62d` δίνει
+  `NOT REJECTED — exit=1 typed=False traceback=True`· έναντι της διορθωμένης, `REJECTED as intended`.
+- **Αριθμοί:** `UF-FALSIFIER` **118 → 119** (αύξηση ορίου, δεν απαιτεί authorization)· falsifiers **119**
+  (**107 COMPONENT + 12 COMPOSED_GATE**)· facts **1749**· **schema version αμετάβλητη στο `6`** — η γραμματική
+  δεν άλλαξε.
+- **ΔΕΝ ΕΓΙΝΕ:** άνοιγμα ή επανασχεδίαση του κύκλου ζωής authorization του R6-1 · `TOOLCHAIN.sexp` · άσχετοι
+  έλεγχοι ή falsifiers · protected/frozen paths · `CLAUDE.md` · DDI-1…DDI-4 · production code · verifier lock ·
+  freeze · qualification · οποιαδήποτε εκκαθάριση ή refactoring άσχετη με το εύρημα.
+  **`R6-2 P3 TYPED-OUTCOME MICRO-CORRECTION COMPLETE — AWAITING SINGLE-CASE INDEPENDENT CONFIRMATION —
+  VERIFIER INFRASTRUCTURE NOT YET LOCKED — DDI-1 BLOCKED — NOT FROZEN — NOT QUALIFIED — IMPLEMENTATION BLOCKED`.**

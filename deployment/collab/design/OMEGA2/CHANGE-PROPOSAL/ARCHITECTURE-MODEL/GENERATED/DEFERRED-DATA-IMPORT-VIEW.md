@@ -2,7 +2,7 @@
 # Migration-Scope Ledger View (imported vs DEFERRED_DATA_IMPORT) (GENERATED VIEW — DO NOT EDIT)
 
 - generator: `generate_views.py/3`
-- canonical-model-root-digest: `1f7da75c3053c7223024e8e0daf23d2ae074f780d42eb7847bd9393c535d0f53`
+- canonical-model-root-digest: `e802249e86c2d6a9c028556a2ec8494054b25967e34b06f98d8de5e8814d81af`
 - regeneration command: `python3 ARCHITECTURE-MODEL/regenerate.py`
 
 Review-2 N-7: `authority` is the column that matters. A DEFERRED class is enumerated and scheduled, and its DETAIL remains authoritative at its declared legacy source until its batch is complete and independently reviewed — it is not canonical here merely because it is listed here.

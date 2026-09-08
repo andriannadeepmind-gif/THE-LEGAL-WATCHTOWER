@@ -1830,6 +1830,23 @@ def x129_composed_count_split():
     return (code == 0 and out == str(len(ids))), 'after the split the count is %r, not %d' % (out[:60], len(ids))
 
 
+def x130_count_unreadable_model_typed():
+    """A malformed canonical module must reach the operator as the model's own typed outcome. --count is a model
+    read like every other, so its failure speaks the same vocabulary the checks speak and never a traceback."""
+    d, seat = export_seat()
+    try:
+        with io.open(os.path.join(seat, 'verification-corpus.sexp'), 'a', encoding='utf-8', newline='\n') as fh:
+            fh.write('\n(fact falsifier X-UNTERMINATED :harness COMPONENT\n')      # an unterminated list
+        r = AR.bounded_run([PY, os.path.join(seat, 'run_corpus.py'), '--count', 'COMPOSED_GATE'],
+                           capture_output=True, text=True, cwd=seat)
+        out = (r.stdout + r.stderr).strip()
+        typed, trace = 'UNREADABLE-MODEL-FILE' in out, 'Traceback' in out
+        return (r.returncode != 0 and typed and not trace), \
+               'exit=%d typed=%s traceback=%s: %r' % (r.returncode, typed, trace, out[:70])
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+
 CODED_COMPONENT = [
     ('K01-GENERATED-VIEW-MISSING', 'a tracked generated view absent from the inventory', f01_generated_view_missing),
     ('K02-NEW-FILE-NO-RULE', 'a new tracked file matching no classification rule', f02_new_tracked_file_no_rule),
@@ -1871,6 +1888,7 @@ CODED_COMPONENT = [
     ('X127-UNAUTHORISED-REMOVAL-NOT-CURED', 'an unauthorised removal cured by a later record claiming to have authorised it', x127_unauthorised_removal_not_cured),
     ('X128-COMPOSED-COUNT-RELOCATED', 'the informational composed count with every such fact in another module', x128_composed_count_relocated),
     ('X129-COMPOSED-COUNT-SPLIT', 'the informational composed count with those facts split across two modules', x129_composed_count_split),
+    ('X130-COUNT-UNREADABLE-MODEL-TYPED', 'the informational count over a malformed canonical module', x130_count_unreadable_model_typed),
     ('X79-CANDIDATE-TREE-NOT-COMMIT-ID', 'a commit-ish candidate resolves to its tree, never to the commit id', x79_candidate_tree_is_tree_not_commit),
     ('X80-WORKTREE-ARBITRARY-BASE', 'an arbitrary --base for a WORKTREE candidate', x80_worktree_arbitrary_base_refused),
     ('X81-COMMIT-BASE-NOT-PARENT', 'a committed candidate with a --base other than its unique parent', x81_commit_base_not_parent_refused),
@@ -2011,7 +2029,13 @@ if __name__ == '__main__':
                          'model-law failure rather than a double count')
     a = ap.parse_args()
     if a.count:
-        print(len({i for i, p in SR.read_model(HERE).of('falsifier') if str(p.get('harness')) == a.count}))
+        try:                                 # a count is a model read: it fails in the model's own
+            m = SR.read_model(HERE)          # vocabulary, never as a traceback (Review-6 R6-2 P3)
+        except SR.MissingSourceFile as e:
+            raise SystemExit('MISSING-MODEL-FILE: %s' % e.path)
+        except SR.SexpError as e:
+            raise SystemExit('UNREADABLE-MODEL-FILE: %s' % e)
+        print(len({i for i, p in m.of('falsifier') if str(p.get('harness')) == a.count}))
         sys.exit(0)
     if not a.kind:
         ap.error('--kind is required unless --count is given')
